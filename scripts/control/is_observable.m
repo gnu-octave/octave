@@ -6,6 +6,8 @@ function retval = is_observable (a,c,tol)
 #
 # See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
 
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+
   if (nargin == 2)
     retval = is_controllable (a', c');
   elseif (nargin == 3)

@@ -11,7 +11,7 @@ function [n, m, p] = abcddim (a, b, c, d)
 #
 # Returns n = m = p = -1 if the system is not compatible.
 
-# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin != 4)
     error ("abcddim: illegal number of arguments.  need four.")

@@ -129,7 +129,7 @@ DEFCONSTFUN (__end__, , ,
 	{
 	case -1:
 	  {
-	    // We want numel = prod (size ()) here, so dont' use
+	    // We want numel = prod (size ()) here, so don't use
 	    // index_object->numel () as that may be different (it is
 	    // the number of nonzero elements for sparse arrays).
 

@@ -2548,37 +2548,6 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   return retval;
 }
 
-#define MAYBE_RESIZE_ND_DIMS \
-  do \
-    { \
-      if (n_idx >= lhs_dims_len && ! rhs_is_empty) \
-	{ \
-	  Array<int> max_idx (n_idx); \
-	  dim_vector new_dims; \
-          new_dims.resize (n_idx); \
- \
-	  for (int i = 0; i < n_idx; i++) \
-	    { \
-	      if (lhs_dims_len == 0 || i >= lhs_dims_len) \
-		new_dims(i) = idx(i).max () + 1; \
-	      else \
-		{ \
-		  if (i < rhs_dims.length ()) \
-		    max_idx(i) = idx(i).is_colon () ? rhs_dims(i) : idx(i).max () + 1; \
-		  else \
-		    max_idx(i) = idx(i).max () + 1; \
- \
-		  new_dims(i) = max_idx(i) > lhs_dims(i) ? max_idx(i) : lhs_dims(i); \
-		} \
-            } \
- \
-	  lhs.resize_and_fill (new_dims, rfv); \
-	  lhs_dims = lhs.dims ();  \
-          lhs_dims_len = lhs_dims.length (); \
-        } \
-    } \
-  while (0)
-
 template <class LT, class RT>
 int
 assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
@@ -2590,9 +2559,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   dim_vector lhs_dims = lhs.dims ();
   dim_vector rhs_dims = rhs.dims ();
 
-  idx_vector *tmp = lhs.get_idx ();
+  idx_vector *idx_vex = lhs.get_idx ();
 
-  Array<idx_vector> idx = conv_to_array (tmp, n_idx);
+  Array<idx_vector> idx = conv_to_array (idx_vex, n_idx);
 
   // This needs to be defined before MAYBE_RESIZE_ND_DIMS.
 
@@ -2604,7 +2573,25 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   int lhs_dims_len = lhs_dims.length ();
 
-  MAYBE_RESIZE_ND_DIMS;
+  if (! rhs_is_empty && n_idx >= lhs_dims_len)
+    {
+      dim_vector new_dims;
+      new_dims.resize (n_idx);
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  int tmp = (i < rhs_dims.length () && idx(i).is_colon ())
+	    ? rhs_dims(i) : idx(i).max () + 1;
+
+	  new_dims(i)
+	    = ((lhs_dims_len == 0 || i >= lhs_dims_len || tmp > lhs_dims(i))
+	       ? tmp : lhs_dims(i));
+	}
+
+      lhs.resize_and_fill (new_dims, rfv);
+      lhs_dims = lhs.dims ();
+      lhs_dims_len = lhs_dims.length ();
+    }
 
   Array<int> idx_is_colon (n_idx, 0);
   Array<int> idx_is_colon_equiv (n_idx, 0);
@@ -2703,39 +2690,64 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     }
   else
     {
+      dim_vector orig_lhs_dims = lhs_dims;
+
       if (n_idx < lhs_dims_len)
 	{
-	  // Append 1's so that there are as many indices as
-	  // dimensions on the LHS.
-
-	  idx.resize (lhs_dims_len);
+	  // First, reshape.
 
 	  for (int i = n_idx; i < lhs_dims_len; i++)
-	    idx(i) = idx_vector (1);
+	    lhs_dims(n_idx-1) *= lhs_dims(i);
+
+	  lhs_dims.resize (n_idx);
+
+	  lhs.resize (lhs_dims);
+
+	  lhs_dims = lhs.dims ();
+
+	  lhs_dims_len = lhs_dims.length ();
+
+	  // Now, check to make sure that all indices are within
+	  // bounds (we can only resize if we have at least as many
+	  // indices as dimensions).
+
+	  for (int i = 0; i < n_idx; i++)
+	    {
+	      if (! idx(i).is_colon ())
+		{
+		  int max_idx = idx(i).max () + 1;
+
+		  if (max_idx > lhs_dims(i))
+		    {
+		      (*current_liboctave_error_handler)
+			("array index %d (= %d) for assignment requires invalid resizing operation",
+			 i+1, max_idx);
+
+		      retval = 0;
+		      goto done;
+		    }
+		}
+	    }
 
 	  // We didn't freeze yet.
 	  frozen_len = freeze (idx, lhs_dims, resize_ok);
 
-	  idx_is_colon.resize (lhs_dims_len);
-
-	  idx_is_colon_equiv.resize (lhs_dims_len);
-
 	  // Now that we have frozen, we can update these.
-	  for (int i = n_idx; i < lhs_dims_len; i++)
+
+	  // XXX FIXME XXX -- do we need to do all, or just the last
+	  // index which corresponds to the last dimension, which was
+	  // the only one modified?
+
+	  for (int i = 0; i < n_idx; i++)
 	    {
 	      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
 
 	      idx_is_colon(i) = idx(i).is_colon ();
 	    }
-
-	  n_idx = lhs_dims_len;
 	}
 
       if (rhs_is_scalar)
 	{
-	  // Scalar to matrix assignment with as many indices as lhs
-	  // dimensions.
-
 	  int n = Array<LT>::get_size (frozen_len);
 
 	  Array<int> result_idx (lhs_dims_len, 0);
@@ -2788,100 +2800,24 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	  else
 	    {
-	      dim_vector new_dims;
-	      new_dims.resize (n_idx);
-
-	      bool resize = false;
-
-	      int ii = 0;
-
-	      // Update idx vectors.
-
-	      for (int i = 0; i < n_idx; i++)
-		{
-		  if (idx(i).is_colon ())
-		    {
-		      // Add appropriate idx_vector to idx(i) since
-		      // index with : contains no indexes.
-
-		      if (lhs_dims(i) > rhs_dims(ii))
-			{
-			  frozen_len(i) = lhs_dims(i);
-			  new_dims(i) = lhs_dims(i);
-			}
-		      else
-			{
-			  frozen_len(i) = rhs_dims(ii);
-			  new_dims(i) = rhs_dims(ii);
-			}
-
-		      ii++;
-
-		      Range idxrange (1, frozen_len(i), 1);
-
-		      idx_vector idxv (idxrange);
-
-		      idx(i) = idxv;
-		    }
-		  else
-		    {
-		      if (lhs_dims(i) > idx(i).max () + 1)
-			new_dims(i) = lhs_dims(i);
-		      else
-			new_dims(i) = idx(i).max () + 1;
-
-		      // Changed this from 1 to 0.
-		      if ((ii < rhs_dims_len && rhs_dims (ii) == 1)
-			  || frozen_len(i) > 1)
-			ii++;
-		    }
-		  if (new_dims(i) != lhs_dims(i))
-		    resize = true;
-		}
-
-	      // Resize LHS if dimensions have changed.
-
-	      if (resize)
-		{
-		  lhs.resize (new_dims, rfv);
-
-		  lhs_dims = lhs.dims ();
-		}
-
-	      // Number of elements which need to be set.
-
 	      int n = Array<LT>::get_size (frozen_len);
 
 	      Array<int> result_idx (lhs_dims_len, 0);
-	      Array<int> elt_idx;
-
-	      Array<int> result_rhs_idx (rhs_dims_len, 0);
-
-	      dim_vector frozen_rhs;
-	      frozen_rhs.resize (rhs_dims_len);
-
-	      for (int i = 0; i < rhs_dims_len; i++)
-		frozen_rhs(i) = rhs_dims(i);
 
 	      for (int i = 0; i < n; i++)
 		{
-		  elt_idx = get_elt_idx (idx, result_idx);
+		  Array<int> elt_idx = get_elt_idx (idx, result_idx);
 
-		  if (index_in_bounds (elt_idx, lhs_dims))
-		    {
-		      int s = compute_index (result_rhs_idx, rhs_dims);
-
-		      lhs.checkelem (elt_idx) = rhs.elem (s);
-
-		      increment_index (result_rhs_idx, frozen_rhs);
-		    }
-		  else
-		    lhs.checkelem (elt_idx) = rfv;
+		  lhs.elem (elt_idx) = rhs.elem (i);
 
 		  increment_index (result_idx, frozen_len);
 		}
 	    }
 	}
+
+    done:
+
+      lhs.resize (orig_lhs_dims);
     }
 
   lhs.chop_trailing_singletons ();

@@ -153,9 +153,9 @@ function saveimage (filename, img, img_form, map)
     if (grey && map_nr == 2 && bw)
 
       if (map(1) != 0)
-        map = [1; 0];
-      else
         map = [0; 1];
+      else
+        map = [1; 0];
       endif
 
       n_long = rem (img_nc, 8);
@@ -168,13 +168,14 @@ function saveimage (filename, img, img_form, map)
         else
           img_row = map(img(idx));
         endif
+	l_img_row = length (img_row);
         if (img_nc < 8)
           for j = 1:8
             tmp(:,i) = tmp(:,i) + img_row (j) * 2^(8-j);
           endfor
         else
           for j = 1:8
-            tmp(:,i) = tmp(:,i) + img_row (j:8:img_nc) * 2^(8-j);
+            tmp(:,i) = tmp(:,i) + img_row (j:8:l_img_row) * 2^(8-j);
           endfor
         endif
       endfor

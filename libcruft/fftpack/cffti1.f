@@ -1,6 +1,6 @@
       subroutine cffti1 (n,wa,ifac)
       implicit double precision (a-h,o-z)
-      dimension       wa(1)      ,ifac(1)    ,ntryh(4)
+      dimension       wa(*)      ,ifac(*)    ,ntryh(4)
       data ntryh(1),ntryh(2),ntryh(3),ntryh(4)/3,4,2,5/
       nl = n
       nf = 0

@@ -13,8 +13,8 @@ CLLL. OPTIMIZE
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND
       DOUBLE PRECISION CON, DI, FAC, HL0, R, R0, SRUR, YI, YJ, YJJ,
      1   VNORM
-      DIMENSION NEQ(1), Y(1), YH(NYH,1), EWT(1), FTEM(1), SAVF(1),
-     1   WM(1), IWM(1)
+      DIMENSION NEQ(*), Y(*), YH(NYH,*), EWT(*), FTEM(*), SAVF(*),
+     1   WM(*), IWM(*)
       COMMON /LS0001/ ROWNS(209),
      2   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND,
      3   IOWND(14), IOWNS(6), 

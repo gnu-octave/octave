@@ -57,7 +57,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #if ! defined (MAKE_BUILTINS)
 #define DEFUN_DLD(name, fname, sname, fsname, nargin_max, nargout_max, doc) \
-  DECLARE_FUN (fname);
+  DECLARE_FUN (fname); \
   DEFINE_FUN_STRUCT (name, fname, sname, nargin_max, nargout_max, 0, doc); \
   DEFINE_FUN_STRUCT_FUN (sname, fsname) \
   DECLARE_FUN (fname)

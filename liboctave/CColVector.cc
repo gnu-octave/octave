@@ -79,7 +79,7 @@ ComplexColumnVector::resize (int n)
       return *this;
     }
 
-  Complex *new_data = (Complex *) NULL;
+  Complex *new_data = 0;
   if (n > 0)
     {
       new_data = new Complex [n];

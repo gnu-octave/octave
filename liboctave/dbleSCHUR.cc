@@ -94,8 +94,8 @@ SCHUR::init (const Matrix& a, const char *ord)
 
 // These are not referenced for the non-ordered Schur routine.
 
-  int *iwork = (int *) NULL;
-  int *bwork = (int *) NULL;
+  int *iwork = 0;
+  int *bwork = 0;
   if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
     {
       iwork = new int [liwork];

@@ -61,7 +61,7 @@ DiagMatrix::resize (int r, int c)
     }
 
   int new_len = r < c ? r : c;
-  double *new_data = (double *) NULL;
+  double *new_data = 0;
   if (new_len > 0)
     {
       new_data = new double [new_len];
@@ -92,7 +92,7 @@ DiagMatrix::resize (int r, int c, double val)
     }
 
   int new_len = r < c ? r : c;
-  double *new_data = (double *) NULL;
+  double *new_data = 0;
   if (new_len > 0)
     {
       new_data = new double [new_len];
@@ -265,7 +265,7 @@ DiagMatrix::row (int i) const
 RowVector
 DiagMatrix::row (char *s) const
 {
-  if (s == (char *) NULL)
+  if (! s)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return RowVector (); 
@@ -304,7 +304,7 @@ DiagMatrix::column (int i) const
 ColumnVector
 DiagMatrix::column (char *s) const
 {
-  if (s == (char *) NULL)
+  if (! s)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ColumnVector (); 

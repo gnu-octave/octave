@@ -1,7 +1,7 @@
 // error.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,7 +36,7 @@ liboctave_error_handler current_liboctave_error_handler = liboctave_fatal;
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
-  if (name != (char *) NULL)
+  if (name)
     fprintf (stderr, "%s: ", name);
 
   vfprintf (stderr, fmt, args);

@@ -127,7 +127,7 @@ ComplexMatrix::resize (int r, int c)
     }
 
   int new_len = r * c;
-  Complex* new_data = (Complex *) NULL;
+  Complex* new_data = 0;
   if (new_len > 0)
     {
       new_data = new Complex [new_len];
@@ -160,7 +160,7 @@ ComplexMatrix::resize (int r, int c, double val)
     }
 
   int new_len = r * c;
-  Complex *new_data = (Complex *) NULL;
+  Complex *new_data = 0;
   if (new_len > 0)
     {
       new_data = new Complex [new_len];
@@ -198,7 +198,7 @@ ComplexMatrix::resize (int r, int c, const Complex& val)
     }
 
   int new_len = r * c;
-  Complex *new_data = (Complex *) NULL;
+  Complex *new_data = 0;
   if (new_len > 0)
     {
       new_data = new Complex [new_len];
@@ -845,7 +845,7 @@ ComplexMatrix::row (int i) const
 ComplexRowVector
 ComplexMatrix::row (char *s) const
 {
-  if (s == (char *) NULL)
+  if (! s)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return ComplexRowVector ();
@@ -883,7 +883,7 @@ ComplexMatrix::column (int i) const
 ComplexColumnVector
 ComplexMatrix::column (char *s) const
 {
-  if (s == (char *) NULL)
+  if (! s)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ComplexColumnVector ();
@@ -1703,7 +1703,7 @@ operator * (const ComplexMatrix& m, const DiagMatrix& a)
     return ComplexMatrix (nr, nc, 0.0);
 
   Complex *c = new Complex [nr*a_nc];
-  Complex *ctmp = (Complex *) NULL;
+  Complex *ctmp = 0;
 
   for (int j = 0; j < a.length (); j++)
     {
@@ -1796,7 +1796,7 @@ operator * (const ComplexMatrix& m, const ComplexDiagMatrix& a)
     return ComplexMatrix (nr, nc, 0.0);
 
   Complex *c = new Complex [nr*a_nc];
-  Complex *ctmp = (Complex *) NULL;
+  Complex *ctmp = 0;
 
   for (int j = 0; j < a.length (); j++)
     {

@@ -97,7 +97,7 @@ npsol_objfun (int *mode, int *n, double *xx, double *objf,
 #endif
     }
 
-  if ((*mode == 1 || *mode == 2) && user_grad != NULL)
+  if ((*mode == 1 || *mode == 2) && user_grad)
     {
       Vector tmp_grad (nn);
 
@@ -139,7 +139,7 @@ npsol_confun (int *mode, int *ncnln, int *n, int *nrowj, int *needc,
 	cons[i] = tmp_c.elem (i);
     }
 
-  if (user_jac != NULL)
+  if (user_jac)
     {
       Matrix tmp_jac (nncnln, nn);
 
@@ -291,13 +291,13 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
 
   pass_options_to_npsol ();
 
-  if (user_jac == NULL && user_grad == NULL)
+  if (! user_jac && ! user_grad)
     F77_FCN (npoptn) ("Derivative Level 0", 18L);
-  else if (user_jac == NULL && user_grad != NULL)
+  else if (! user_jac && user_grad)
     F77_FCN (npoptn) ("Derivative Level 1", 18L);
-  else if (user_jac != NULL && user_grad == NULL)
+  else if (user_jac && ! user_grad)
     F77_FCN (npoptn) ("Derivative Level 2", 18L);
-  else if (user_jac != NULL && user_grad != NULL)
+  else if (user_jac && user_grad)
     F77_FCN (npoptn) ("Derivative Level 3", 18L);
 
   int attempt = 0;

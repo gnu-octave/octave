@@ -72,7 +72,7 @@ ColumnVector::resize (int n)
       return *this;
     }
 
-  double *new_data = (double *) NULL;
+  double *new_data = 0;
   if (n > 0)
     {
       new_data = new double [n];

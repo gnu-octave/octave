@@ -82,7 +82,7 @@ ComplexDiagMatrix::resize (int r, int c)
     }
 
   int new_len = r < c ? r : c;
-  Complex *new_data = (Complex *) NULL;
+  Complex *new_data = 0;
   if (new_len > 0)
     {
       new_data = new Complex [new_len];
@@ -113,7 +113,7 @@ ComplexDiagMatrix::resize (int r, int c, double val)
     }
 
   int new_len = r < c ? r : c;
-  Complex *new_data = (Complex *) NULL;
+  Complex *new_data = 0;
   if (new_len > 0)
     {
       new_data = new Complex [new_len];
@@ -147,7 +147,7 @@ ComplexDiagMatrix::resize (int r, int c, const Complex& val)
     }
 
   int new_len = r < c ? r : c;
-  Complex *new_data = (Complex *) NULL;
+  Complex *new_data = 0;
   if (new_len > 0)
     {
       new_data = new Complex [new_len];
@@ -448,7 +448,7 @@ ComplexDiagMatrix::row (int i) const
 ComplexRowVector
 ComplexDiagMatrix::row (char *s) const
 {
-  if (s == (char *) NULL)
+  if (! s)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return ComplexRowVector (); 
@@ -487,7 +487,7 @@ ComplexDiagMatrix::column (int i) const
 ComplexColumnVector
 ComplexDiagMatrix::column (char *s) const
 {
-  if (s == (char *) NULL)
+  if (! s)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ColumnVector (); 

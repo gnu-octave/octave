@@ -567,7 +567,7 @@ statement	: WHILE expression optsep opt_list END
 		    looping--;
 		    $$ = new tree_while_command ($2, $4);
 		  }
-		| FOR identifier '=' expression optsep opt_list END
+		| FOR variable '=' expression optsep opt_list END
 		  {
 		    if ($7 != for_end && $7 != simple_end)
 		      {

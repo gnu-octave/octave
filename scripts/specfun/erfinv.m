@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} erfinv (@var{z})
-## Computes the inverse of the error function,
+## Computes the inverse of the error function.
 ## @end deftypefn
 ## @seealso{erf and erfc}
 
@@ -27,7 +27,7 @@
 function [y, iterations] = erfinv (x)
 
   if (nargin != 1)
-    usage ("erfinv (x)");
+    usage ("erfinv (x, maxit)");
   endif
 
   maxit = 100;
@@ -55,7 +55,7 @@ function [y, iterations] = erfinv (x)
     s = sqrt (pi) / 2;
     z_old = ones (length (i), 1);
     z_new = sqrt (-log (1 - abs (x(i)))) .* sign (x(i));
-    while (any (abs (erf (z_old) - x(i)) > tol * abs (x(i))))
+    while (any (abs (erf (z_new) - x(i)) > tol * abs (x(i))))
       z_old = z_new;
       z_new = z_old - (erf (z_old) - x(i)) .* exp (z_old.^2) * s;
       if (++iterations > maxit)

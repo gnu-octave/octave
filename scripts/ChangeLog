@@ -1,3 +1,7 @@
+2000-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/erfinv.m: Use z_new in convergence test, not z_old.
+
 2000-02-11  Georg Thimm <mgeorg@SGraphicsWS1.mpe.ntu.edu.sg>
 
 	* set/create_set.m: Use find to avoid while loop.

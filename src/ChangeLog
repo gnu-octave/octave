@@ -1,3 +1,8 @@
+2002-04-25  Paul Kienzle <pkienzle@users.sf.net>
+
+	* DLD-FUNCTIONS/kron.cc: New file.
+	* Makefile.in (DLD_SRC): Add it to the list.
+
 2002-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (save_symtab): New non-terminal.  Save current symbol
@@ -54,7 +59,7 @@
 	* DLD-FUNCTIONS/qz.cc: Likewise.
 	* DLD-FUNCTIONS/rand.cc: Likewise.
 	* octave.cc: Likewise.
-	* src/toplev.cc (Foctave_config_info): Delete use of FORTRAN_MAIN_FLAG.
+	* toplev.cc (Foctave_config_info): Delete use of FORTRAN_MAIN_FLAG.
 	* oct-conf.h.in: Delete use of OCTAVE_CONF_FORTRAN_MAIN_FLAG.
 	* syscalls.cc (mk_stat_map):
 	Use HAVE_STRUCT_STAT_ST_RDEV instead of HAVE_ST_RDEV.

@@ -27,24 +27,22 @@ function retval = tril (x, k)
 
   if (nargin > 0)
     [nr, nc] = size (x);
-    retval = x;
+    retval = zeros (nr, nc);
   endif
 
   if (nargin == 1)
     k = 0;
   elseif (nargin == 2)
-    max_nr_nc = max (nr, nc);
-    if ((k > 0 && k > nr - 1) || (k < 0 && k < 1 - nc))
+    if ((k > 0 && k > nc) || (k < 0 && k < -nr))
       error ("tril: requested diagonal out of range")
     endif
   else
     usage ("tril (x [, k])");
   endif
 
-  for i = 1:nr
-    for j = i+1-k:nc
-      retval (i, j) = 0.0;
-    endfor
+  for j = 1 : min (nc, nc + abs (k))
+    nr_limit = max (1, j-k);
+    retval (nr_limit:nr, j) = x (nr_limit:nr, j);
   endfor
 
 endfunction

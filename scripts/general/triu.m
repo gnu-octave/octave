@@ -27,24 +27,22 @@ function retval = triu (x, k)
 
   if (nargin > 0)
     [nr, nc] = size (x);
-    retval = x;
+    retval = zeros (nr, nc);
   endif
 
   if (nargin == 1)
     k = 0;
   elseif (nargin == 2)
-    max_nr_nc = max (nr, nc);
-    if ((k > 0 && k > nc - 1) || (k < 0 && k < 1 - nr))
+    if ((k > 0 && k > nc) || (k < 0 && k < -nr))
       error ("triu: requested diagonal out of range")
     endif
   else
     usage ("triu (x [, k])");
   endif
 
-  for j = 1:nc
-    for i = j+1-k:nr
-      retval (i, j) = 0.0;
-    endfor
+  for j = max (1, k) : nc
+    nr_limit = min (nr, j-k);
+    retval (1:nr_limit, j) = x (1:nr_limit, j);
   endfor
 
 endfunction

@@ -281,7 +281,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_arg)
 	  if (--rep->count <= 0)
 	    delete rep;
 
-	  rep = new Array<T>::ArrayRep (new_data, new_n);
+	  rep = new typename Array<T>::ArrayRep (new_data, new_n);
 
 	  if (nr == 1)
 	    {
@@ -395,7 +395,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      if (--rep->count <= 0)
 			delete rep;
 
-		      rep = new Array<T>::ArrayRep (new_data, nr * new_nc);
+		      rep = new typename Array<T>::ArrayRep (new_data, nr * new_nc);
 
 		      d2 = new_nc;
 
@@ -459,7 +459,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      if (--rep->count <= 0)
 			delete rep;
 
-		      rep = new Array<T>::ArrayRep (new_data, new_nr * nc);
+		      rep = new typename Array<T>::ArrayRep (new_data, new_nr * nc);
 
 		      d1 = new_nr;
 

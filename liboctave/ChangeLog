@@ -1,7 +1,7 @@
 2002-08-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Array2-idx.h, DiagArray2.cc, Array2.cc, Array3.cc, ArrayN.cc:
-	Try to avoid implicit typename warnings from g++-3.2.
+	* Array.h, Array2-idx.h, DiagArray2.cc, Array2.cc, Array3.cc,
+	ArrayN.cc: Add typename where needed.
 
 	* DASPK.cc: Include lo-sstream.h and use macros instead of using
 	strstream classes directly.

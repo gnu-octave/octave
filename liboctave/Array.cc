@@ -48,7 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 template <class T>
 Array<T>::Array (int n, const T& val)
 {
-  rep = new ArrayRep (n);
+  rep = new typename Array<T>::ArrayRep (n);
 
   for (int i = 0; i < n; i++)
     rep->data[i] = val;
@@ -105,11 +105,11 @@ Array<T>::resize (int n)
   if (n == length ())
     return;
 
-  ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_len = length ();
 
-  rep = new ArrayRep (n);
+  rep = new typename Array<T>::ArrayRep (n);
 
   if (old_data && old_len > 0)
     {
@@ -136,11 +136,11 @@ Array<T>::resize (int n, const T& val)
   if (n == length ())
     return;
 
-  ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_len = length ();
 
-  rep = new ArrayRep (n);
+  rep = new typename Array<T>::ArrayRep (n);
 
   int min_len = old_len < n ? old_len : n;
 
@@ -164,7 +164,7 @@ Array<T>::fortran_vec (void)
   if (rep->count > 1)
     {
       --rep->count;
-      rep = new ArrayRep (*rep);
+      rep = new typename Array<T>::ArrayRep (*rep);
     }
   return rep->data;
 }

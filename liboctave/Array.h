@@ -108,11 +108,11 @@ protected:
 
 protected:
 
-  ArrayRep *rep;
+  typename Array<T>::ArrayRep *rep;
 
   Array (T *d, int l)
     {
-      rep = new ArrayRep (d, l);
+      rep = new typename Array<T>::ArrayRep (d, l);
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -125,7 +125,7 @@ public:
 
   Array (void)
     {
-      rep = new ArrayRep ();
+      rep = new typename Array<T>::ArrayRep ();
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -136,7 +136,7 @@ public:
 
   explicit Array (int n)
     {
-      rep = new ArrayRep (n);
+      rep = new typename Array<T>::ArrayRep (n);
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;

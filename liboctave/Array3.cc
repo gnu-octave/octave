@@ -68,7 +68,7 @@ Array3<T>::resize (int r, int c, int p)
 
   int ts = get_size (get_size (r, c), p);
 
-  rep = new Array<T>::ArrayRep (ts);
+  rep = new typename Array<T>::ArrayRep (ts);
 
   d1 = r;
   d2 = c;
@@ -115,7 +115,7 @@ Array3<T>::resize (int r, int c, int p, const T& val)
 
   int ts = get_size (get_size (r, c), p);
 
-  rep = new Array<T>::ArrayRep (ts);
+  rep = new typename Array<T>::ArrayRep (ts);
 
   d1 = r;
   d2 = c;

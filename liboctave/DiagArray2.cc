@@ -140,7 +140,7 @@ DiagArray2<T>::resize (int r, int c)
 
   int new_len = r < c ? r : c;
 
-  rep = new Array<T>::ArrayRep (new_len);
+  rep = new typename Array<T>::ArrayRep (new_len);
 
   nr = r;
   nc = c;
@@ -176,7 +176,7 @@ DiagArray2<T>::resize (int r, int c, const T& val)
 
   int new_len = r < c ? r : c;
 
-  rep = new Array<T>::ArrayRep (new_len);
+  rep = new typename Array<T>::ArrayRep (new_len);
 
   nr = r;
   nc = c;

@@ -129,7 +129,7 @@ Array2<T>::resize (int r, int c)
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new Array<T>::ArrayRep (get_size (r, c));
+  rep = new typename Array<T>::ArrayRep (get_size (r, c));
 
   d1 = r;
   d2 = c;
@@ -169,7 +169,7 @@ Array2<T>::resize (int r, int c, const T& val)
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new Array<T>::ArrayRep (get_size (r, c));
+  rep = new typename Array<T>::ArrayRep (get_size (r, c));
 
   d1 = r;
   d2 = c;

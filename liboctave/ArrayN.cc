@@ -230,7 +230,7 @@ ArrayN<T>::resize (const Array<int>& dims)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  rep = new Array<T>::ArrayRep (get_size (dims));
+  rep = new typename Array<T>::ArrayRep (get_size (dims));
 
   Array<int> old_dimensions = dimensions;
 
@@ -287,7 +287,7 @@ ArrayN<T>::resize (const Array<int>& dims, const T& val)
 
   int len = get_size (dims);
 
-  rep = new Array<T>::ArrayRep (len);
+  rep = new typename Array<T>::ArrayRep (len);
 
   Array<int> old_dimensions = dimensions;
 

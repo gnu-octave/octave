@@ -165,7 +165,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_arg)
 	      if (--rep->count <= 0)
 		delete rep;
 
-	      rep = new ArrayRep (new_data, new_len);
+	      rep = new typename Array<T>::ArrayRep (new_data, new_len);
 
 	      set_max_indices (1);
 	    }

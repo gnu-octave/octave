@@ -1386,6 +1386,7 @@ alias_builtin (const char *alias, const char *name)
 
 // Defining variables.
 
+#if 0
 void
 bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
 {
@@ -1402,6 +1403,7 @@ bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
   tmp = new tree_constant (nargout);
   sr->define (tmp);
 }
+#endif
 
 // Give a global variable a definition.  This will insert the symbol
 // in the global table if necessary.

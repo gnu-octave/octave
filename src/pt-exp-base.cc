@@ -2556,6 +2556,25 @@ tree_builtin::max_expected_args (void)
 
 // User defined functions.
 
+void
+tree_function::install_nargin_and_nargout (void)
+{
+  nargin_sr = sym_tab->lookup ("nargin", 1, 0);
+  nargout_sr = sym_tab->lookup ("nargout", 1, 0);
+}
+
+void
+tree_function::bind_nargin_and_nargout (int nargin, int nargout)
+{
+  tree_constant *tmp;
+
+  tmp = new tree_constant (nargin);
+  nargin_sr->define (tmp);
+
+  tmp = new tree_constant (nargout);
+  nargout_sr->define (tmp);
+}
+
 #if 0
 tree_function *
 tree_function::define (tree statement_list *t)
@@ -2789,7 +2808,7 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 // variables.
 
   {
-    bind_nargin_and_nargout (sym_tab, nargin, nargout);
+    bind_nargin_and_nargout (nargin, nargout);
       
 // Evaluate the commands that make up the function.  Always turn on
 // printing for commands inside functions.   Maybe this should be

@@ -805,6 +805,10 @@ class
 tree_function : public tree_fvc
 {
 private:
+  void install_nargin_and_nargout (void);
+
+  void bind_nargin_and_nargout (int nargin, int nargout);
+
   void init (void)
     {
       call_depth = 0;
@@ -833,6 +837,7 @@ public:
 	 init ();
 	 sym_tab = st;
 	 cmd_list = cl;
+	 install_nargin_and_nargout ();
        }
 
 //  tree_function *define (tree_statement_list *t);
@@ -898,6 +903,8 @@ private:
   int num_args_passed;
   int curr_va_arg_number;
   tree_va_return_list *vr_list;
+  symbol_record *nargin_sr;
+  symbol_record *nargout_sr;
 };
 
 #endif

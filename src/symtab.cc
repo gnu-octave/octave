@@ -723,39 +723,29 @@ symbol_record::pop_def (void)
 // A structure for handling verbose information about a symbol_record.
 
 symbol_record_info::symbol_record_info (void)
-{
-  init_state ();
-}
+  : initialized (0), nr (-1), nc (-1), type (symbol_def::UNKNOWN),
+    hides (SR_INFO_NONE), eternal (0), read_only (0), nm (),
+    const_type () { }
 
 symbol_record_info::symbol_record_info (const symbol_record& sr)
+  : initialized (0), nr (-1), nc (-1), type (sr.type ()),
+    hides (SR_INFO_NONE), eternal (0), read_only (0), nm (),
+    const_type ()
 {
-  init_state ();
-
-  type = sr.type ();
-
   if (sr.is_variable () && sr.is_defined ())
     {
       // Would be nice to avoid this cast.  XXX FIXME XXX
 
       tree_constant *tmp = (tree_constant *) sr.def ();
-      if (tmp->is_real_scalar ())
-	const_type = SR_INFO_SCALAR;
-      else if (tmp->is_complex_scalar ())
-	const_type = SR_INFO_COMPLEX_SCALAR;
-      else if (tmp->is_real_matrix ())
-	const_type = SR_INFO_MATRIX;
-      else if (tmp->is_complex_matrix ())
-	const_type = SR_INFO_COMPLEX_MATRIX;
-      else if (tmp->is_range ())
-	const_type = SR_INFO_RANGE;
-      else if (tmp->is_string ())
-	const_type = SR_INFO_STRING;
+
+      const_type = tmp->type_name ();
 
       nr = tmp->rows ();
       nc = tmp->columns ();
 
       symbol_def *sr_def = sr.definition;
       symbol_def *hidden_def = sr_def->next_elem;
+
       if (hidden_def)
 	{
 	  if (hidden_def->is_user_function ())
@@ -774,32 +764,24 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
 }
 
 symbol_record_info::symbol_record_info (const symbol_record_info& s)
-{
-  type = s.type;
-  const_type = s.const_type;
-  hides = s.hides;
-  eternal = s.eternal;
-  read_only = s.read_only;
-  nr = s.nr;
-  nc = s.nc;
-  nm = s.nm;
-  initialized = s.initialized;
-}
+  : initialized (s.initialized), nr (s.nr), nc (s.nc), type (s.type),
+    hides (s.hides), eternal (s.eternal), read_only (s.read_only),
+    nm (s.nm), const_type (s.const_type) { }
 
 symbol_record_info&
 symbol_record_info::operator = (const symbol_record_info& s)
 {
   if (this != &s)
     {
+      initialized = s.initialized;
+      nr = s.nr;
+      nc = s.nc;
       type = s.type;
-      const_type = s.const_type;
       hides = s.hides;
       eternal = s.eternal;
       read_only = s.read_only;
-      nr = s.nr;
-      nc = s.nc;
       nm = s.nm;
-      initialized = s.initialized;
+      const_type = s.const_type;
     }
   return *this;
 }
@@ -837,34 +819,32 @@ symbol_record_info::hides_builtin (void) const
 string
 symbol_record_info::type_name (void) const
 {
+  string retval;
+
   if (type == symbol_def::USER_FUNCTION)
-    return "user function";
-  else if (type == symbol_def::BUILTIN_FUNCTION)
-    return "builtin function";
-  else
+    retval = "user function";
+  else if (type & symbol_def::BUILTIN_FUNCTION)
     {
-      if (const_type == SR_INFO_SCALAR)
-	return "real scalar";
-      else if (const_type == SR_INFO_COMPLEX_SCALAR)
-	return "complex scalar";
-      else if (const_type == SR_INFO_MATRIX)
-	return "real matrix";
-      else if (const_type == SR_INFO_COMPLEX_MATRIX)
-	return "complex matrix";
-      else if (const_type == SR_INFO_RANGE)
-	return "range";
-      else if (const_type == SR_INFO_STRING)
-	return "string";
+      if (type & symbol_def::TEXT_FUNCTION)
+	retval = "text function";
+      else if (type & symbol_def::MAPPER_FUNCTION)
+	retval = "mapper function";
       else
-	return "";
+	retval = "builtin function";
     }
+  else
+    retval = const_type;
+
+  return retval;
 }
 
 int
 symbol_record_info::is_function (void) const
 {
   return (type == symbol_def::USER_FUNCTION
-	  || type == symbol_def::BUILTIN_FUNCTION);
+	  || type == symbol_def::BUILTIN_FUNCTION
+	  || symbol_def::TEXT_FUNCTION
+	  || symbol_def::MAPPER_FUNCTION);
 }
 
 int
@@ -883,19 +863,6 @@ string
 symbol_record_info::name (void) const
 {
   return nm;
-}
-
-void
-symbol_record_info::init_state (void)
-{
-  initialized = 0;
-  type = symbol_def::UNKNOWN;
-  const_type = SR_INFO_UNKNOWN;
-  hides = SR_INFO_NONE;
-  eternal = 0;
-  read_only = 0;
-  nr = -1;
-  nc = -1;
 }
 
 // A symbol table.

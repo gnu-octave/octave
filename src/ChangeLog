@@ -1,8 +1,16 @@
 Sun Oct 13 10:52:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (print_symbol_info_line): Never print negative
+	diminsions.
+
+	* symtab.h (octave_symbol_record_info): Store const_type as string.
+	(octave_symbol_record_info::init): Delete.  Fix constructors.
+	(octave_symbol_record_info::type_name): Handle const_type as string.
+
 	* octave.cc (maximum_braindamage): Replace "true" with 1.0 and
 	"false" with 0.0 in calls to bind_builtin_variable().
 	Include sun-utils.h here.
+	(intern_argv): Also bind __argv__.
 
 Sat Oct 12 13:40:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

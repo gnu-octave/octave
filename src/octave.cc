@@ -179,6 +179,7 @@ intern_argv (int argc, char **argv)
 	octave_argv[i-1] = argv[i];
 
       bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
+      bind_builtin_variable ("__argv__", octave_argv, 1, 1, 0);
     }
 
   bind_builtin_variable ("nargin", (double) argc-1, 1, 1, 0);

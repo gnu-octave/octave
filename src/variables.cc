@@ -1026,13 +1026,20 @@ print_symbol_info_line (ostream& os, const symbol_record_info& s)
   os << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
 #endif
   os.form ("  %-16s", s.type_name ().c_str ());
-  if (s.is_function ())
-    os << "      -      -";
+
+  int nr = s.rows ();
+  int nc = s.columns ();
+
+  if (nr < 0)
+    os << "      -";
   else
-    {
-      os.form ("%7d", s.rows ());
-      os.form ("%7d", s.columns ());
-    }
+    os.form ("%7d", nr);
+
+  if (nc < 0)
+    os << "      -";
+  else
+    os.form ("%7d", nc);
+
   os << "  " << s.name () << "\n";
 }
 

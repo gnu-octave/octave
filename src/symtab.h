@@ -249,31 +249,17 @@ public:
       SR_INFO_BUILTIN_FUNCTION = 2
     };
 
-  enum CONST_TYPE
-    {
-      SR_INFO_UNKNOWN = 0,
-      SR_INFO_SCALAR = 1,
-      SR_INFO_COMPLEX_SCALAR = 2,
-      SR_INFO_MATRIX = 4,
-      SR_INFO_COMPLEX_MATRIX = 8,
-      SR_INFO_RANGE = 16,
-      SR_INFO_STRING = 32
-    };
-
 private:
 
-  void init_state (void);
-
-  unsigned type : 4;
-  unsigned const_type : 6;
+  int initialized;
+  int nr;
+  int nc;
+  unsigned type : 6;
   unsigned hides : 2;
   unsigned eternal : 1;
   unsigned read_only : 1;
-  int nr;
-  int nc;
   string nm;
-  
-  int initialized;
+  string const_type;
 };
 
 // A symbol table.

@@ -33,7 +33,7 @@ LIBCRUFT_OBJS = $(CRUFT_OBJ) $(SPECIAL_DEPEND)
 
 LIBCRUFT_DEPS = $(LIBCRUFT)($(LIBCRUFT_OBJS))
 
-all: stamp-picdir $(LIBCRUFT) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
+all: pic $(LIBCRUFT) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
 .PHONY: all
 
 # Cancel the default action for when an archive member is out of
@@ -53,20 +53,13 @@ $(LIBCRUFT): $(LIBCRUFT_DEPS)
 
 .PRECIOUS: $(LIBCRUFT_OBJS)
 
-stamp-picdir:
-	@if $(SHARED_LIBS); then \
-	  if [ -n "$(FPICFLAG)" ]; then \
-	    if [ -d pic ]; then \
-	      true ; \
-	    else \
-	      echo "mkdir pic" ; \
-	      mkdir pic ; \
-	    fi ; \
-	  fi ; \
+pic:
+	@if [ -d pic ]; then \
+	  true; \
 	else \
-	  true ; \
+	  echo "mkdir pic"; \
+	  mkdir pic; \
 	fi
-	touch stamp-picdir
 
 install:: all
 .PHONY: install
@@ -89,12 +82,12 @@ mostlyclean::
 .PHONY: mostlyclean
 
 distclean:: clean
-	rm -f Makefile stamp-picdir
+	rm -f Makefile
 	-rmdir pic
 .PHONY: distclean
 	
 maintainer-clean::
-	rm -f tags TAGS stamp-picdir Makefile
+	rm -f tags TAGS Makefile
 	-rmdir pic
 .PHONY: maintainer-clean
 

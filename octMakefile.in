@@ -81,7 +81,7 @@ mkoctfile: mkoctfile.in Makeconf octMakefile
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@ ; $(MAKE) all
+	cd $@; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
 check:
@@ -89,29 +89,29 @@ check:
 .PHONY: check
 
 kpathsea.info:
-	cd kpathsea ; $(MAKE) kpathsea.info
+	cd kpathsea; $(MAKE) kpathsea.info
 .PHONY: kpathsea.info
 
 octave.info:
-	cd doc/interpreter ; $(MAKE) octave.info
+	cd doc/interpreter; $(MAKE) octave.info
 .PHONY: octave.info
 
 INSTALL.OCTAVE:
-	cd doc ; $(MAKE) ../INSTALL.OCTAVE
+	cd doc; $(MAKE) ../INSTALL.OCTAVE
 .PHONY: INSTALL.OCTAVE
 
 BUGS:
-	cd doc ; $(MAKE) ../BUGS
+	cd doc; $(MAKE) ../BUGS
 .PHONY: BUGS
 
 install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
 	rm -f $(bindir)/octave-bug
 	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug-$(version)
-	cd $(bindir) ; $(LN_S) octave-bug-$(version) octave-bug
+	cd $(bindir); $(LN_S) octave-bug-$(version) octave-bug
 	rm -f $(bindir)/mkoctfile
 	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile-$(version)
-	cd $(bindir) ; $(LN_S) mkoctfile-$(version) mkoctfile
+	cd $(bindir); $(LN_S) mkoctfile-$(version) mkoctfile
 	$(INSTALL_DATA) config.h $(octincludedir)/config.h
 	$(mk-includedir-link)
 
@@ -156,10 +156,10 @@ dist: dist-info-files
 	ln $(DISTFILES) `cat .fname`
 	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
 	for dir in $(DISTSUBDIRS); do \
-	  mkdir `cat .fname`/$$dir ; \
-	  cd $$dir ; \
-	  $(MAKE) dist ; \
-	  cd .. ; \
+	  mkdir `cat .fname`/$$dir; \
+	  cd $$dir; \
+	  $(MAKE) dist; \
+	  cd ..; \
 	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
@@ -202,10 +202,10 @@ conf-dist:
 	mkdir `cat .fname`
 	ln $(CONF_DISTFILES) `cat .fname`
 	for dir in $(CONF_DISTSUBDIRS); do \
-	  mkdir `cat .fname`/$$dir ; \
-	  cd $$dir ; \
-	  $(MAKE) conf-dist ; \
-	  cd .. ; \
+	  mkdir `cat .fname`/$$dir; \
+	  cd $$dir; \
+	  $(MAKE) conf-dist; \
+	  cd ..; \
 	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
@@ -229,10 +229,10 @@ binary-dist: VERSION ARCH octave-bug dist-info-files
 	mkdir `cat .fname`
 	ln $(BINDISTFILES) `cat .fname`
 	for dir in $(BINDISTSUBDIRS); do \
-	  mkdir `cat .fname`/$$dir ; \
-	  cd $$dir ; \
-	  $(MAKE) bin-dist ; \
-	  cd .. ; \
+	  mkdir `cat .fname`/$$dir; \
+	  cd $$dir; \
+	  $(MAKE) bin-dist; \
+	  cd ..; \
 	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`

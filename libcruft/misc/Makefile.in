@@ -41,14 +41,14 @@ include ../Makerules
 
 install install-strip::
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
-	for f in $(INCLUDES) ; do \
-	  rm -f $(octincludedir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
+	for f in $(INCLUDES); do \
+	  rm -f $(octincludedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f; \
 	done
 	$(mk-includedir-link)
 
 uninstall::
-	for f in $(INCLUDES) ; do rm -f $(octincludedir)/$$f ; done
+	for f in $(INCLUDES); do rm -f $(octincludedir)/$$f; done
 
 # Don't optimize.
 

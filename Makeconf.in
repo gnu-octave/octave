@@ -9,6 +9,14 @@
  
 SHELL = /bin/sh
 
+# A shell command to extract the version number from version.h.
+getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
+
+# Look for version.h to get version information.
+xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
+version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
+version := $(shell $(getversion) $(version_file))
+
 #### Start of system configuration section. ####
 
 EXE = @EXE@
@@ -42,6 +50,9 @@ OCTAVE_LITE = @OCTAVE_LITE@
 
 SHARED_LIBS = @SHARED_LIBS@
 SHLEXT = @SHLEXT@
+SHLEXT_VER = $(SHLEXT).$(version)
+
+LIBEXT = a
 
 # Fortran to C translator and associated flags.
 
@@ -129,14 +140,6 @@ LIBREADLINE = @LIBREADLINE@
 # The arguments passed to configure.
 config_opts = @config_opts@
 
-# A shell command to extract the version number from version.h.
-getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
-
-# Look for version.h to get version information.
-xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
-version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
-version := $(shell $(getversion) $(version_file))
-
 # ==================== Where To Install Things ====================
 
 # The default location for installation.  Everything is placed in
@@ -185,10 +188,6 @@ infofile = @infofile@
 
 # These variables hold the values specific to Octave.  They are
 # based on the values of the standard Make variables above.
-
-# Where to install Octave's library files.  The default is
-# ${libdir}/octave-${version}
-octlibdir = @octlibdir@
 
 # Where to install Octave's include files.  The default is
 # ${includedir}/octave-${version}
@@ -328,7 +327,7 @@ sed < $< \
   -e "s;%LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%LEXLIB%;\"${LEXLIB}\";" \
   -e "s;%LIBDLFCN%;\"${LIBDLFCN}\";" \
-  -e "s;%LIBFLAGS%;\"-L${octlibdir} -L${libdir}\";" \
+  -e "s;%LIBFLAGS%;\"-L${libdir}\";" \
   -e "s;%LIBPLPLOT%;\"${LIBPLPLOT}\";" \
   -e "s;%LIBS%;\"${LIBS}\";" \
   -e "s;%NO_IMPLICIT_TEMPLATES%;\"${NO_IMPLICIT_TEMPLATES}\";" \
@@ -373,28 +372,13 @@ endef
 # of $includedir.
 
 define mk-includedir-link
-src=`echo $(octincludedir) | sed 's|^$(includedir)/*||'` ; \
-echo $$src ; \
-if [ "$$src" = "octave" ] ; then \
-  true ; \
+src=`echo $(octincludedir) | sed 's|^$(includedir)/*||'`; \
+echo $$src; \
+if [ "$$src" = "octave" ]; then \
+  true; \
 else \
-  cd $(includedir) ; \
-  rm -f octave ; \
-  $(LN_S) $$src octave ; \
-fi
-endef
-
-# Make a relative symbolic link from $libdir/octave to $octlibdir. 
-
-# XXX FIXME XXX -- this assumes that $octlibdir is a subdirectory of $libdir.
-
-define mk-libdir-link
-src=`echo $(octlibdir) | sed 's|^$(libdir)/*||'` ; \
-if [ "$$src" = "octave" ] ; then \
-  true ; \
-else \
-  cd $(libdir) ; \
-  rm -f octave ; \
-  $(LN_S) $$src octave ; \
+  cd $(includedir); \
+  rm -f octave; \
+  $(LN_S) $$src octave; \
 fi
 endef

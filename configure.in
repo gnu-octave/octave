@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.272 $)
+AC_REVISION($Revision: 1.273 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -45,18 +45,22 @@ OCTAVE_SET_DEFAULT(infodir)
 OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
 OCTAVE_SET_DEFAULT(man1ext, '.1')
 OCTAVE_SET_DEFAULT(infofile, '$(infodir)/octave.info')
-OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
-OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave')
-OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/m')
+OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)/octave')
+OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
 OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localfcnfilepath, '$(localfcnfiledir)//')
-OCTAVE_SET_DEFAULT(archlibdir, '$(libexecdir)/octave/exec/$(target_host_type)')
-OCTAVE_SET_DEFAULT(localarchlibdir, '$(libexecdir)/octave/site/exec/$(target_host_type)')
-OCTAVE_SET_DEFAULT(octfiledir, '$(libexecdir)/octave/oct/$(target_host_type)')
-OCTAVE_SET_DEFAULT(localoctfiledir, '$(libexecdir)/octave/site/oct/$(target_host_type)')
+OCTAVE_SET_DEFAULT(archlibdir,
+  '$(libexecdir)/octave/$(version)/exec/$(target_host_type)')
+OCTAVE_SET_DEFAULT(localarchlibdir,
+  '$(libexecdir)/octave/site/exec/$(target_host_type)')
+OCTAVE_SET_DEFAULT(octfiledir,
+  '$(libexecdir)/octave/$(version)/oct/$(target_host_type)')
+OCTAVE_SET_DEFAULT(localoctfiledir,
+  '$(libexecdir)/octave/site/oct/$(target_host_type)')
 OCTAVE_SET_DEFAULT(localoctfilepath, '$(localoctfiledir)//')
-OCTAVE_SET_DEFAULT(fcnfilepath, '.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir)//:$(fcnfiledir)//')
-OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/imagelib')
+OCTAVE_SET_DEFAULT(fcnfilepath,
+  '.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir)//:$(fcnfiledir)//')
+OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
 OCTAVE_SET_DEFAULT(imagepath, '.:$(imagedir)//')
 
 ### Make configure args available for other uses.

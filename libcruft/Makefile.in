@@ -34,11 +34,11 @@ DISTFILES = Makefile.in ChangeLog Makerules.in configure.in \
 	$(SOURCES) STOP.patch
 
 ifeq ($(SHARED_LIBS), true)
-  BINDISTFILES = libcruft.$(SHLEXT)
-  BINDISTLIBS = $(addprefix libcruft/, libcruft.$(SHLEXT))
+  BINDISTFILES = libcruft.$(SHLEXT_VER)
+  BINDISTLIBS = libcruft/libcruft.$(SHLEXT_VER)
 endif
 
-all: $(SUBDIRS) stamp-shared
+all: $(SUBDIRS) shared-lib
 .PHONY: all
 
 $(SUBDIRS):
@@ -68,13 +68,19 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-stamp-shared: $(CRUFT_PICOBJ)
-	if $(SHARED_LIBS); then \
-	  $(SH_LD) $(SH_LDFLAGS) -o libcruft.$(SHLEXT) $(CRUFT_PICOBJ) ; \
-	else \
-	  true ; \
-	fi
-	touch stamp-shared
+ifeq ($(SHARED_LIBS), true)
+shared-lib: libcruft.$(SHLEXT)
+else
+shared-lib:
+endif
+.PHONY: shared-lib
+
+libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
+	rm -f libcruft.$(SHLEXT)
+	$(LN_S) libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT)
+
+libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) -o libcruft.$(SHLEXT_VER) $(CRUFT_PICOBJ)
 
 $(CRUFT_OBJ):
 
@@ -85,22 +91,24 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)
 
 install::
-	$(top_srcdir)/mkinstalldirs $(octlibdir)
-	rm -f $(octlibdir)/libcruft.a
-	$(INSTALL_DATA) libcruft.a $(octlibdir)/libcruft.a
-	$(RANLIB) $(octlibdir)/libcruft.a
+	$(top_srcdir)/mkinstalldirs $(libdir)
+	rm -f $(libdir)/libcruft.$(LIBEXT)
+	$(INSTALL_DATA) libcruft.$(LIBEXT) $(libdir)/libcruft.$(LIBEXT)
+	$(RANLIB) $(libdir)/libcruft.a
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/libcruft.$(SHLEXT); \
+	  rm -f $(libdir)/libcruft.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
-	    libcruft.$(SHLEXT) $(octlibdir)/libcruft.$(SHLEXT); \
+	    libcruft.$(SHLEXT_VER) $(libdir)/libcruft.$(SHLEXT_VER); \
+	  cd $(libdir); \
+	  rm -f libcruft.$(SHLEXT); \
+	  $(LN_S) libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT); \
 	fi
-	$(mk-libdir-link)
 
 install-strip::
 	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
 
 uninstall::
-	rm -f $(octlibdir)/libcruft.a
+	rm -f $(libdir)/libcruft.$(LIBEXT)
 
 tags TAGS:: $(SOURCES)
 	$(SUBDIR_FOR_COMMAND)
@@ -112,16 +120,17 @@ TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
 clean mostlyclean::
-	rm -f *.a *.o
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
+	rm -f *.$(LIBEXT) *.o
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 
 distclean::
-	rm -f *.a *.o Makefile Makerules so_locations stamp-shared
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
+	rm -f *.$(LIBEXT) *.o Makefile Makerules so_locations
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER); fi
 
 maintainer-clean::
-	rm -f *.a *.o configure Makefile Makerules so_locations tags TAGS
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
+	rm -f *.$(LIBEXT) *.o configure Makefile Makerules 
+	rm -f so_locations tags TAGS
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER); fi
 
 dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
@@ -130,9 +139,9 @@ dist:
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/libcruft ; \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/libcruft; \
 	fi
 	if [ -n "$(BINDISTLIBS)" ]; then \
-	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES ; \
+	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
 	fi
 .PHONY: bin-dist

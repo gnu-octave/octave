@@ -23,13 +23,13 @@ $(NO_DEP_TARGETS): FORCE
 	$(MAKE) -f octMakefile omit_deps=true $@
 
 binary-dist: FORCE
-	@if test -f configure && test -f octMakefile.in ; then \
-	  ./configure --disable-shared --disable-dl --disable-shl ; \
+	@if test -f configure && test -f octMakefile.in; then \
+	  ./configure --disable-shared --disable-dl --disable-shl; \
 	else \
-	  echo "" ; \
-	  echo "*** You must run make binary-dist in the source directory." ; \
-	  echo "" ; \
-	  exit 1 ; \
+	  echo ""; \
+	  echo "*** You must run make binary-dist in the source directory."; \
+	  echo ""; \
+	  exit 1; \
 	fi
 	$(MAKE) -f octMakefile CFLAGS=-O CXXFLAGS=-O LDFLAGS=-static all
 	$(MAKE) -f octMakefile binary-dist
@@ -101,17 +101,17 @@ help: header-msg
 	@echo ""
 
 config-check:
-	@if test -f octMakefile ; then \
-	  true ; \
+	@if test -f octMakefile; then \
+	  true; \
 	else \
-	  echo "" ; \
-	  echo "*** You must run configure before running make." ; \
-	  echo "***" ; \
-	  echo "*** Please read the INSTALL and INSTALL.OCTAVE files" ; \
-	  echo "*** for more information about how to configure and" ; \
-	  echo "*** compile Octave." ; \
-	  echo "" ; \
-	  exit 1 ; \
+	  echo ""; \
+	  echo "*** You must run configure before running make."; \
+	  echo "***"; \
+	  echo "*** Please read the INSTALL and INSTALL.OCTAVE files"; \
+	  echo "*** for more information about how to configure and"; \
+	  echo "*** compile Octave."; \
+	  echo ""; \
+	  exit 1; \
 	fi
 
 FORCE:

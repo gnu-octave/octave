@@ -48,7 +48,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	glob-match.h idx-vector.h lo-ieee.h lo-mappers.h lo-sysdep.h \
 	lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h oct-env.h \
 	oct-math.h oct-group.h oct-passwd.h oct-syscalls.h pathsearch.h \
-	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \
+	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h syswait.h \
 	$(MATRIX_INC) \
 	$(MX_OP_INC)
 
@@ -97,8 +97,8 @@ DISTFILES := Makefile.in ChangeLog safe-xstat.cin safe-xstat.hin \
 	$(SOURCES) $(INCLUDES) $(EXTRAS)
 
 ifeq ($(SHARED_LIBS), true)
-  BINDISTFILES = liboctave.$(SHLEXT)
-  BINDISTLIBS = $(addprefix liboctave/, liboctave.$(SHLEXT))
+  BINDISTFILES = liboctave.$(SHLEXT_VER)
+  BINDISTLIBS = liboctave/liboctave.$(SHLEXT_VER)
 endif
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
@@ -115,40 +115,39 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-LIBOCTAVE_DEPEND := $(patsubst %, liboctave.a(%), $(OBJECTS))
+LIBOCTAVE_DEPEND := $(patsubst %, liboctave.$(LIBEXT)(%), $(OBJECTS))
 
-all: liboctave.a stamp-shared
+all: libraries
 .PHONY: all
 
-stamp-prereq: stamp-picdir safe-stat.h safe-lstat.h
+stamp-prereq: pic safe-stat.h safe-lstat.h
 	touch stamp-prereq
 
-stamp-picdir:
-	@if $(SHARED_LIBS); then \
-	  if [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
-	    if [ -d pic ]; then \
-	      true ; \
-	    else \
-	      echo "mkdir pic" ; \
-	      mkdir pic ; \
-	    fi ; \
-	  fi ; \
+pic:
+	@if [ -d pic ]; then \
+	  true; \
 	else \
-	  true ; \
+	  echo "mkdir pic"; \
+	  mkdir pic; \
 	fi
-	touch stamp-picdir
 
-liboctave.a: stamp-prereq $(OBJECTS)
-	$(AR) $(ARFLAGS) liboctave.a $(OBJECTS)
-	$(RANLIB) liboctave.a
+ifeq ($(SHARED_LIBS), true)
+libraries: liboctave.$(LIBEXT) liboctave.$(SHLEXT)
+else
+libraries: liboctave.$(LIBEXT)
+endif
+.PHONY: libraries
 
-stamp-shared: stamp-prereq $(PICOBJ)
-	if $(SHARED_LIBS); then \
-	  $(SH_LD) $(SH_LDFLAGS) -o liboctave.$(SHLEXT) $(PICOBJ) ; \
-	else \
-	  true ; \
-	fi
-	touch stamp-shared
+liboctave.$(LIBEXT): stamp-prereq $(OBJECTS)
+	$(AR) $(ARFLAGS) liboctave.$(LIBEXT) $(OBJECTS)
+	$(RANLIB) liboctave.$(LIBEXT)
+
+liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
+	rm -f liboctave.$(SHLEXT)
+	$(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT)
+
+liboctave.$(SHLEXT_VER): stamp-prereq $(PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) -o liboctave.$(SHLEXT_VER) $(PICOBJ)
 
 extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'
 extract_lstat = sed 's/@l@/l/g; s/@L@/L/g; s/	*@LSTAT_ONLY@//'
@@ -187,30 +186,34 @@ install-strip:
 .PHONY: install-strip
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(octlibdir)
-	rm -f $(octlibdir)/liboctave.a
-	$(INSTALL_DATA) liboctave.a $(octlibdir)/liboctave.a
-	$(RANLIB) $(octlibdir)/liboctave.a
+	$(top_srcdir)/mkinstalldirs $(libdir)
+	rm -f $(libdir)/liboctave.$(LIBEXT)
+	$(INSTALL_DATA) liboctave.$(LIBEXT) $(libdir)/liboctave.$(LIBEXT)
+	$(RANLIB) $(libdir)/liboctave.$(LIBEXT)
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/liboctave.$(SHLEXT); \
+	  rm -f $(libdir)/liboctave.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
-	    liboctave.$(SHLEXT) $(octlibdir)/liboctave.$(SHLEXT); \
+	    liboctave.$(SHLEXT_VER) $(libdir)/liboctave.$(SHLEXT_VER); \
+	  cd $(libdir); \
+	  rm -f liboctave.$(SHLEXT); \
+	  $(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT); \
 	fi
-	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
-	for f in $(INCLUDES_FOR_INSTALL) ; do \
-	  rm -f $(octincludedir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
+	for f in $(INCLUDES_FOR_INSTALL); do \
+	  rm -f $(octincludedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f; \
 	done
 	$(mk-includedir-link)
 .PHONY: install-inc
 
 uninstall:
-	rm -f $(octlibdir)/liboctave.a $(octlibdir)/liboctave.$(SHLEXT)
-	for f in $(INCLUDES) ; do rm -f $(octincludedir)/$$f ; done
+	rm -f $(libdir)/liboctave.$(LIBEXT)
+	rm -f $(libdir)/liboctave.$(SHLEXT)
+	rm -f $(libdir)/liboctave.$(SHLEXT_VER)
+	for f in $(INCLUDES); do rm -f $(octincludedir)/$$f; done
 .PHONY: uninstall
 
 tags: $(SOURCES)
@@ -220,21 +223,20 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f safe-stat.h safe-lstat.h *.a *.o *.d pic/*.o
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
+	rm -f safe-stat.h safe-lstat.h *.$(LIBEXT) *.o *.d pic/*.o
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations stamp-picdir stamp-shared stamp-prereq
+	rm -f Makefile so_locations stamp-prereq
 	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS stamp-picdir stamp-shared stamp-prereq
-	-rmdir pic
+	rm -f tags TAGS
 .PHONY: maintainer-clean
 
 dist:
@@ -243,10 +245,10 @@ dist:
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/liboctave ; \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/liboctave; \
 	fi
 	if [ -n "$(BINDISTLIBS)" ]; then \
-	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES ; \
+	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
 	fi
 .PHONY: bin-dist
 

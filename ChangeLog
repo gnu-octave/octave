@@ -1,3 +1,8 @@
+Thu Jun  5 01:38:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (LIBEXT, SHLEXT_VER): New macros.
+	(octlibdir, mk-libdir-link): Delete.
+
 Wed Jun  4 00:07:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (mk-includedir-link, mk-libdir-link): Make them work.

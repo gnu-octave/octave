@@ -84,7 +84,7 @@ INCLUDES := BaseSLList.h Map.h SLList.h SLStack.h Stack.h defun-dld.h \
 	oct-stdstrm.h oct-stream.h oct-strstrm.h \
 	oct-lvalue.h oct.h ops.h pager.h parse.h \
 	pr-output.h procstream.h sighandlers.h symtab.h sysdep.h \
-	systime.h syswait.h token.h toplev.h unwind-prot.h utils.h \
+	systime.h token.h toplev.h unwind-prot.h utils.h \
 	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
 
 TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc Map-fnc.cc \
@@ -171,11 +171,7 @@ OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../glob \
 	-L../dlfcn -L. $(RLD_FLAG)
 
 OCTAVE_LIBS = -loctinterp -loctave -lcruft $(LIBPLPLOT) \
-	$(LIBREADLINE) ../kpathsea/libkpathsea.a -lglob $(LIBDLFCN)
-
-LIBS_TO_INSTALL = liboctinterp.a
-
-SH_LIBS_TO_INSTALL = liboctinterp.$(SHLEXT)
+	$(LIBREADLINE) ../kpathsea/libkpathsea.$(LIBEXT) -lglob $(LIBDLFCN)
 
 LIBS = @LIBS@
 
@@ -185,8 +181,8 @@ DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES)
 
 ifeq ($(SHARED_LIBS), true)
-  BINDISTFILES = octave $(OCT_FILES) $(SH_LIBS_TO_INSTALL)
-  BINDISTLIBS = $(addprefix src/, $(SH_LIBS_TO_INSTALL))
+  BINDISTFILES = octave $(OCT_FILES) liboctinterp.$(SHLEXT_VER)
+  BINDISTLIBS = src/liboctinterp.$(SHLEXT_VER)
 else
   BINDISTFILES = octave $(OCT_FILES)
 endif
@@ -196,11 +192,11 @@ all: libraries stamp-oct-links octave
 
 stamp-oct-links: $(OCT_FILES)
 	if [ -n "$(OCT_FILES)" ]; then \
-	  $(srcdir)/mk-oct-links . $(addprefix $(srcdir)/, $(DLD_SRC)) ; \
+	  $(srcdir)/mk-oct-links . $(addprefix $(srcdir)/, $(DLD_SRC)); \
 	fi
 	touch stamp-oct-links
 
-stamp-prereq: stamp-picdir defaults.h oct-conf.h
+stamp-prereq: pic defaults.h oct-conf.h
 	touch stamp-prereq
 
 octave: octave.o builtins.o ops.o $(DLD_STATIC_OBJ) libraries
@@ -210,34 +206,31 @@ octave: octave.o builtins.o ops.o $(DLD_STATIC_OBJ) libraries
 	$(OCTAVE_LIBS) \
 	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
 
-stamp-picdir:
-	@if $(SHARED_LIBS) || [ "$(OCTAVE_LITE)" = true ]; then \
-	  if [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
-	    if [ -d pic ]; then \
-	      true ; \
-	    else \
-	      echo "mkdir pic" ; \
-	      mkdir pic ; \
-	    fi ; \
-	  fi ; \
+pic:
+	@if [ -d pic ]; then \
+	  true; \
 	else \
-	  true ; \
+	  echo "mkdir pic"; \
+	  mkdir pic; \
 	fi
-	touch stamp-picdir
 
-libraries: liboctinterp.a stamp-interp
+ifeq ($(SHARED_LIBS), true)
+libraries: liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
+else
+libraries: liboctinterp.$(LIBEXT)
+endif
+.PHONY: libraries
 
-liboctinterp.a: stamp-prereq $(OBJECTS)
-	$(AR) $(ARFLAGS) liboctinterp.a $(OBJECTS)
-	$(RANLIB) liboctinterp.a
+liboctinterp.$(LIBEXT): stamp-prereq $(OBJECTS)
+	$(AR) $(ARFLAGS) liboctinterp.$(LIBEXT) $(OBJECTS)
+	$(RANLIB) liboctinterp.$(LIBEXT)
 
-stamp-interp: stamp-prereq $(PICOBJ)
-	if $(SHARED_LIBS); then \
-	  $(SH_LD) $(SH_LDFLAGS) -o liboctinterp.$(SHLEXT) $(PICOBJ) ; \
-	else \
-	  true ; \
-	fi
-	touch stamp-interp
+liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
+	rm -f liboctinterp.$(SHLEXT)
+	$(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
+
+liboctinterp.$(SHLEXT_VER): stamp-prereq $(PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) -o liboctinterp.$(SHLEXT_VER) $(PICOBJ)
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@
@@ -273,49 +266,54 @@ install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave$(EXE)
 	$(INSTALL_PROGRAM) octave$(EXE) $(bindir)/octave-$(version)$(EXE)
-	cd $(bindir) ; $(LN_S) octave-$(version)$(EXE) octave$(EXE)
+	cd $(bindir); $(LN_S) octave-$(version)$(EXE) octave$(EXE)
 .PHONY: install-bin
 
 install-oct:
 	if [ -n "$(OCT_FILES)" ]; then \
-	  $(top_srcdir)/mkinstalldirs $(octfiledir) ; \
-	  xfiles="$(OCT_FILES)" ; \
-	  for f in $$xfiles ; do \
+	  $(top_srcdir)/mkinstalldirs $(octfiledir); \
+	  xfiles="$(OCT_FILES)"; \
+	  for f in $$xfiles; do \
 	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
-	  done ; \
+	  done; \
 	  $(srcdir)/mk-oct-links \
-	    $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)) ; \
+	    $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)); \
 	fi
 .PHONY: install-oct
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(octlibdir)
-	for f in $(LIBS_TO_INSTALL); do \
-	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(octlibdir)/$$f; fi; \
-	done
-	for f in $(SH_LIBS_TO_INSTALL); do \
-	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(octlibdir)/$$f; fi; \
-	done
-	$(mk-libdir-link)
+	$(top_srcdir)/mkinstalldirs $(libdir)
+	rm -f $(libdir)/liboctinterp.$(LIBEXT)
+	$(INSTALL_DATA) liboctinterp.$(LIBEXT) \
+	  $(libdir)/liboctinterp.$(LIBEXT)
+	if $(SHARED_LIBS); then \
+	  rm -f $(libdir)/liboctinterp.$(SHLEXT_VER); \
+	  $(INSTALL_PROGRAM) \
+	    liboctinterp.$(SHLEXT_VER) $(libdir)/liboctinterp.$(SHLEXT_VER); \
+	  cd $(libdir); \
+	  rm -f liboctinterp.$(SHLEXT); \
+	  $(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT); \
+	fi
 .PHONY: install-lib
 
 install-inc:
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
-	for f in $(INCLUDES) ; do \
-	  rm -f $(octincludedir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
+	for f in $(INCLUDES); do \
+	  rm -f $(octincludedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f; \
 	done
-	for f in defaults.h oct-conf.h oct-gperf.h ; do \
-	  rm -f $(octincludedir)/$$f ; \
-	  $(INSTALL_DATA) $$f $(octincludedir)/$$f ; \
+	for f in defaults.h oct-conf.h oct-gperf.h; do \
+	  rm -f $(octincludedir)/$$f; \
+	  $(INSTALL_DATA) $$f $(octincludedir)/$$f; \
 	done
 	$(mk-includedir-link)
 .PHONY: install-inc
 
 uninstall:
 	rm -f $(bindir)/octave$(EXE)
-	for f in $(LIBS_TO_INSTALL); do rm -f $(octlibdir)/$$f; done
-	for f in $(SH_LIBS_TO_INSTALL); do rm -f $(octlibdir)/$$f; done
+	rm -f $(libdir)/liboctinterp.$(LIBEXT)
+	rm -f $(libdir)/liboctinterp.$(SHLEXT)
+	rm -f $(libdir)/liboctinterp.$(SHLEXT_VER)
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
 	  rm -f $(octincludedir)/$$f; \
 	done
@@ -328,9 +326,9 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
-	rm -f *.a *.o *.d *.df *.oct pic/*.o
+	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean:
@@ -339,13 +337,13 @@ mostlyclean:
 
 distclean: clean
 	rm -f Makefile octave .fname so_locations
-	rm -f stamp-picdir stamp-interp stamp-prereq
+	rm -f stamp-prereq
 	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h stamp-picdir stamp-interp stamp-prereq
+	rm -f oct-gperf.h stamp-prereq
 	-rmdir pic
 .PHONY: maintainer-clean
 
@@ -361,15 +359,15 @@ conf-dist:
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/src ; \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/src; \
 	fi
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(srcdir)/mk-oct-links -p $(octfiledir) \
 	    $(addprefix $(srcdir)/, $(DLD_SRC)) \
-	    > ../`cat ../.fname`/src/links-to-make ; \
+	    > ../`cat ../.fname`/src/links-to-make; \
 	fi
 	if [ -n "$(BINDISTLIBS)" ]; then \
-	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES ; \
+	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
 	fi
 .PHONY: bin-dist
 

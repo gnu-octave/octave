@@ -1,3 +1,12 @@
+Thu Jun  5 01:40:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in (stamp-picdir): Delete.
+	(pic): New target.  Don't worry so much about creating pic
+	directory only when it is really needed.
+
+	* Makefile.in (stamp-shared): Delete.
+	(shared-lib): New target.  Depend on shared libraries directly.
+
 Wed May 21 16:29:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in (install): Ensure include directory link is made.

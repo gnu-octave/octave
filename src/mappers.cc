@@ -44,8 +44,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  double F77_FCN (dgamma) (double*);
-  int F77_FCN (dlgams) (double*, double*, double*);
+  double F77_FCN (dgamma) (const double&);
+  int F77_FCN (dlgams) (const double&, double&, double&);
 }
 
 #ifndef M_LOG10E
@@ -159,7 +159,7 @@ xfinite (double x)
 double
 xgamma (double x)
 {
-  return F77_FCN (dgamma) (&x);
+  return F77_FCN (dgamma) (x);
 }
 
 double
@@ -180,7 +180,7 @@ xlgamma (double x)
   double result;
   double sgngam;
 
-  F77_FCN (dlgams) (&x, &result, &sgngam);
+  F77_FCN (dlgams) (x, result, sgngam);
 
   return result;
 }

@@ -123,7 +123,7 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(srcdir)/mkbuiltins $(DEF_FILES) > $@.tmp
 	@$(top_srcdir)/move-if-change $@.tmp $@
 
-$(DEF_FILES): mkdefs
+$(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h
 
 check: all
 .PHONY: check

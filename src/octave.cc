@@ -152,19 +152,8 @@ int input_from_command_line_file = 1;
 // Top level context (?)
 jmp_buf toplevel;
 
-// This is not really the right place to do this...
-typedef void (*one_arg_error_handler_t) (const char*);
-extern one_arg_error_handler_t set_Complex_error_handler
-  (one_arg_error_handler_t f);
-
 // This is from readline's paren.c:
 extern int rl_blink_matching_paren;
-
-static void
-octave_Complex_error_handler (const char* msg)
-{
-  warning (msg);
-}
 
 // Nonzero means we read ~/.octaverc and ./.octaverc.
 // (--norc; --ignore-init-file; -f)
@@ -320,11 +309,9 @@ parse_and_execute (FILE *f, int print)
   switch_to_buffer (new_buf);
 
   unwind_protect_int (using_readline);
-  unwind_protect_int (saving_history);
   unwind_protect_int (input_from_command_line_file);
 
   using_readline = 0;
-  saving_history = 0;
   input_from_command_line_file = 0;
 
   unwind_protect_ptr (curr_sym_tab);
@@ -429,11 +416,14 @@ execute_startup_files (void)
 {
   begin_unwind_frame ("execute_startup_files");
 
-  unwind_protect_int (user_pref.echo_executing_commands);
-  unwind_protect_int (input_from_startup_file);
+  // XXX FIXME XXX -- need to make it possible to set this in startup
+  // files.
 
-  user_pref.echo_executing_commands = ECHO_OFF;
+  unwind_protect_int (input_from_startup_file);
+  unwind_protect_int (user_pref.echo_executing_commands);
+
   input_from_startup_file = 1;
+  user_pref.echo_executing_commands = ECHO_OFF;
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
 
@@ -553,8 +543,6 @@ print_version_and_exit (void)
 static void
 initialize_error_handlers ()
 {
-  set_Complex_error_handler (octave_Complex_error_handler);
-
   set_liboctave_error_handler (error);
 }
 
@@ -670,7 +658,7 @@ main (int argc, char **argv)
 	}
     }
 
-#if defined (HAVE_ATEXIT) || (HAVE_ON_EXIT)
+#if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
   // Make sure we clean up when we exit.  If we don't have atexit or
   // on_exit, we're going to leave some junk files around if we exit
   // abnormally.
@@ -681,8 +669,6 @@ main (int argc, char **argv)
   // defaults that might be changed by command line options.
 
   install_signal_handlers ();
-
-  initialize_history ();
 
   initialize_file_io ();
 
@@ -704,11 +690,9 @@ main (int argc, char **argv)
 			 (double) echo_commands);
 
   if (read_init_files)
-    {
-      saving_history = 0;
-      execute_startup_files ();
-      saving_history = 1;
-    }
+    execute_startup_files ();
+
+  initialize_history ();
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     cout << endl;
@@ -792,7 +776,7 @@ main (int argc, char **argv)
 
   can_interrupt = 1;
 
-  octave_set_signal_handler (SIGINT, saved_sigint_handler);
+  catch_interrupts ();
 
   // The big loop.
 

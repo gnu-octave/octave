@@ -215,6 +215,12 @@ sigpipe_handler (int /* sig */)
 #endif
 }
 
+void
+catch_interrupts (void)
+{
+  octave_set_signal_handler (SIGINT, sigint_handler);
+}
+
 // Install all the handlers for the signals we might care about.
 
 void

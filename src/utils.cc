@@ -38,8 +38,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#include <Complex.h>
-
 #if defined (HAVE_TERMIOS_H)
 #include <termios.h>
 #elif defined (HAVE_TERMIO_H)
@@ -57,6 +55,8 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #endif
 
 #include "SLStack.h"
+
+#include "oct-cmplx.h"
 
 #include "defun.h"
 #include "dirfns.h"

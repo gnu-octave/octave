@@ -24,7 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_xpow_h)
 #define octave_xpow_h 1
 
-class Complex;
+#include "oct-cmplx.h"
+
 class Matrix;
 class ComplexMatrix;
 class tree_constant;

@@ -47,6 +47,8 @@ extern sig_handler *octave_set_signal_handler (int, sig_handler *);
 
 extern void install_signal_handlers (void);
 
+extern void catch_interrupts (void);
+
 // This is taken directly from Emacs 19:
 
 #ifndef SYS_SIGLIST_DECLARED

@@ -24,9 +24,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_arith_ops_h)
 #define octave_arith_ops_h 1
 
+#include "oct-cmplx.h"
+
 #include "tree-expr.h"
 
-class Complex;
 class Matrix;
 class ComplexMatrix;
 class tree_constant;

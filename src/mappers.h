@@ -24,7 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_mappers_h)
 #define octave_mappers_h 1
 
-class Complex;
+#include "oct-cmplx.h"
 
 typedef double (*d_d_Mapper)(double);
 typedef double (*d_c_Mapper)(const Complex&);

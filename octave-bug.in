@@ -73,7 +73,7 @@ fi
 cat > $TEMP << EOF
 To: $BUGADDR
 Subject: $SUBJECT
-
+--------
 Bug report for Octave $VERSION configured for $MACHINE
 
 Description:
@@ -144,6 +144,33 @@ then
     echo "file not changed -- no bug report submitted"
     status=1
   else
+
+# Try to extract the recipient address, in case the To: line in the
+# message template has been changed.
+
+    TMP_BUGADDR=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^To://p'`
+    if test -z "$TMP_BUGADDR"
+    then
+      echo "no valid \`To:' field found in header -- using $BUGADDR instead"
+    else
+      BUGADDR="$TMP_BUGADDR"      
+    fi
+
+# Delete the `--------' separator in the message.
+
+    awk 'BEGIN{ in_header = 1; } \
+         /^--------[ \t]*$/ {
+           if (in_header) {
+             in_header = 0;
+             print "";
+             next;
+           }
+         } {
+           print $0;
+         }' $TEMP > $TEMP.msg
+
+# Now try to mail it.
+
     rmail $BUGADDR < $TEMP > /dev/null 2>&1 || \
     mailx -s "$SUBJECT" $BUGADDR < $TEMP > /dev/null 2>&1 || \
     Mail -s "$SUBJECT" $BUGADDR < $TEMP > /dev/null 2>&1 || \

@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include "defun.h"
+#include "defun-dld.h"
 #include "error.h"
 #include "help.h"
 #include "oct-map.h"
@@ -89,7 +89,7 @@ extract_tm (Octave_map &m, double& fraction)
   return &tm;
 }
 
-DEFUN (time, , ,
+DEFUN_DLD (time, , ,
   "time ()\n\
 \n\
   Return current time.  On Unix systems, this is the number of\n\
@@ -121,7 +121,7 @@ DEFUN (time, , ,
   return (double) now + fraction;
 }
 
-DEFUN (gmtime, args, ,
+DEFUN_DLD (gmtime, args, ,
   "gmtime (TIME)\n\
 \n\
   Given a value returned from time(), return a structure like that\n\
@@ -149,7 +149,7 @@ DEFUN (gmtime, args, ,
   return retval;
 }
 
-DEFUN (localtime, args, ,
+DEFUN_DLD (localtime, args, ,
   "localtime (TIME)\n\
 \n\
   Given a value returned from time(), return a structure with\n\
@@ -188,7 +188,7 @@ DEFUN (localtime, args, ,
   return retval;
 }
 
-DEFUN (mktime, args, ,
+DEFUN_DLD (mktime, args, ,
   "mktime (TMSTRUCT)")
 {
   octave_value_list retval;
@@ -210,7 +210,7 @@ DEFUN (mktime, args, ,
   return retval;
 }
 
-DEFUN (strftime, args, ,
+DEFUN_DLD (strftime, args, ,
   "strftime (FMT, TMSTRUCT)\n\
 \n\
   Performs `%' substitutions similar to those in printf.  Except where\n\

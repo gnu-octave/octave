@@ -85,7 +85,7 @@ mk_stat_map (const file_stat& fs)
   return m;
 }
 
-DEFUN(dup2, args, ,
+DEFUN (dup2, args, ,
  "fid = dup2 (old, new): duplicate a file descriptor")
 {
   double retval = -1.0;
@@ -124,7 +124,7 @@ DEFUN(dup2, args, ,
   return retval;
 }
 
-DEFUN(exec, args, ,
+DEFUN (exec, args, ,
  "exec (file, args): replace current process with a new process")
 {
   double retval = -1.0;
@@ -192,7 +192,7 @@ DEFUN(exec, args, ,
   return retval;
 }
 
-DEFUN(fcntl, args, ,
+DEFUN (fcntl, args, ,
  "fcntl (fid, request, argument): control open file descriptors")
 {
   double retval = -1.0;
@@ -233,7 +233,7 @@ DEFUN(fcntl, args, ,
   return retval;
 }
 
-DEFUN(fork, args, ,
+DEFUN (fork, args, ,
  "fork (): create a copy of the current process")
 {
   double retval = -1.0;
@@ -252,7 +252,7 @@ DEFUN(fork, args, ,
   return retval;
 }
 
-DEFUN(getpgrp, args, ,
+DEFUN (getpgrp, args, ,
   "pgid = getpgrp (): return the process group id of the current process")
 {
   double retval = -1.0;
@@ -271,7 +271,7 @@ DEFUN(getpgrp, args, ,
   return retval;
 }
 
-DEFUN(getpid, args, ,
+DEFUN (getpid, args, ,
   "pid = getpid (): return the process id of the current process")
 {
   double retval = -1.0;
@@ -290,7 +290,7 @@ DEFUN(getpid, args, ,
   return retval;
 }
 
-DEFUN(getppid, args, ,
+DEFUN (getppid, args, ,
   "pid = getppid (): return the process id of the parent process")
 {
   double retval = -1.0;

@@ -62,10 +62,10 @@ endif
 
 DLD_SRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
 	   expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
-	   fsqp.cc givens.cc hess.cc ifft.cc ifft2.cc inv.cc log.cc \
-	   lpsolve.cc lsode.cc lu.cc minmax.cc npsol.cc pinv.cc \
-	   qpsol.cc qr.cc quad.cc qzval.cc rand.cc schur.cc sort.cc \
-	   svd.cc syl.cc
+	   fsqp.cc getpwent.cc getrusage.cc givens.cc hess.cc \
+	   ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc lsode.cc \
+	   lu.cc minmax.cc npsol.cc pinv.cc qpsol.cc qr.cc quad.cc \
+	   qzval.cc rand.cc schur.cc sort.cc svd.cc syl.cc time.cc 
 
 DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
 
@@ -119,17 +119,17 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-SOURCES := data.cc defaults.cc dirfns.cc dynamic-ld.cc \
-	error.cc file-io.cc fn-cache.cc gripes.cc help.cc input.cc \
-	lex.l load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
-	oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
+SOURCES := data.cc defaults.cc dirfns.cc dynamic-ld.cc error.cc \
+	file-io.cc fn-cache.cc gripes.cc \
+	help.cc input.cc lex.l load-save.cc mappers.cc oct-fstrm.cc \
+	oct-hist.cc oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
-	pager.cc parse.y pr-output.cc procstream.cc \
-	pt-base.cc pt-cmd.cc pt-const.cc pt-exp-base.cc pt-exp.cc \
-	pt-fcn.cc pt-fvc-base.cc pt-fvc.cc pt-mat.cc pt-misc.cc \
-	pt-mvr-base.cc pt-mvr.cc pt-plot.cc pt-pr-code.cc resource.cc \
+	pager.cc parse.y pr-output.cc procstream.cc pt-base.cc \
+	pt-cmd.cc pt-const.cc pt-exp-base.cc pt-exp.cc pt-fcn.cc \
+	pt-fvc-base.cc pt-fvc.cc pt-mat.cc pt-misc.cc pt-mvr-base.cc \
+	pt-mvr.cc pt-plot.cc pt-pr-code.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
-	symtab.cc syscalls.cc sysdep.cc timefns.cc token.cc toplev.cc \
+	symtab.cc syscalls.cc sysdep.cc token.cc toplev.cc \
 	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
 	ov-base.cc ov-ch-mat.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc \
 	ov-scalar.cc ov-complex.cc ov-str-mat.cc ov-struct.cc \

@@ -210,7 +210,7 @@ octave_value_typeinfo::do_installed_type_names (void)
   return retval;
 }
 
-DEFUN(typeinfo, args, ,
+DEFUN (typeinfo, args, ,
   "usage: typeinfo ([typename])")
 {
   octave_value retval;

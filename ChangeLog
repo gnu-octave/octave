@@ -1,3 +1,16 @@
+Sun Aug  3 15:33:18 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* info: Delete subdirectory.
+	* Makefile.in (TARGETS, help): Delete info.
+	* octMakefile.in (DISTSUBDIRS, BINDISTSUBDIRS): Delete info
+	(binary-dist): Don't strip info/info.
+	* install-octave: Don't install info.
+	* configure.in: Don't run configure in info subdirectory.
+
+Fri Jul 25 14:05:15 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Avoid adding -lcrt0.o to FLIBS.
+
 Thu Jul 17 13:31:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_FLIBS): Only accept an ld_run_path that is

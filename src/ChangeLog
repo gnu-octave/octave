@@ -1,3 +1,8 @@
+Thu Jul 31 22:59:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l <TEXT_FCN>: Ensure that we handle words that begin with
+	single or double quotes as strings.
+
 Thu Jul 17 13:06:48 1997  Klaus Gebhardt <gebhardt@crunch.ikp.physik.th-darmstadt.de>
 
 	* DLD-FUNCTIONS/rand.cc (Frand): Use F77_XFCN to call getsd,

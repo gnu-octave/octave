@@ -226,6 +226,8 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	resize (0, 0);
       else
 	{
+	  idx_j.sort (true);
+
 	  int num_to_delete = idx_j.length (nc);
 
 	  if (num_to_delete != 0)
@@ -288,6 +290,8 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	resize (0, 0);
       else
 	{
+	  idx_i.sort (true);
+
 	  int num_to_delete = idx_i.length (nr);
 
 	  if (num_to_delete != 0)

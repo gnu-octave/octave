@@ -545,6 +545,15 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort_uniq)
 }
 
 void
+IDX_VEC_REP::sort (bool uniq)
+{
+  sort_data (data, len);
+
+  if (uniq)
+    len = make_uniq (data, len);
+}
+
+void
 IDX_VEC_REP::shorten (int n)
 {
   if (n > 0 && n <= len)

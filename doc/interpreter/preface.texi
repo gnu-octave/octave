@@ -48,7 +48,7 @@ Octave more useful by writing and contributing additional functions for
 it, and by reporting any problems you may have.
 
 @menu
-* Acknowledgements::             
+* Acknowledgements::            
 * How You Can Contribute to Octave::  
 * Distribution::                
 @end menu

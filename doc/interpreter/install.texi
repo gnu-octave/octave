@@ -105,13 +105,15 @@ Gnuplot is copyrighted, but freely distributable.  The `gnu' in gnuplot
 is a coincidence---it is not related to the GNU project or the FSF in
 any but the most peripheral sense.
 
+For reading the on-line documentation, you will need the GNU Info reader
+from the GNU Texinfo package, version 3.11 or later.
+
 For version @value{VERSION}, you must have the GNU C++ compiler
 (@code{gcc}) version 2.7.2 or later to compile Octave.  You will also
 need version 2.7.1 or 2.7.2 of the GNU C++ class library
 (@code{libg++}).  If you plan to modify the parser you will also need
 GNU @code{bison} and @code{flex}.  If you modify the documentation, you
-will need GNU Texinfo, along with the patch for the @code{makeinfo}
-program that is distributed with Octave.
+will need the @code{makeinfo} from the GNU Texinfo package.
 
 GNU Make, @code{gcc}, and @code{libg++}, @code{gnuplot}, @code{bison},
 @code{flex}, and Texinfo are all available from many anonymous ftp
@@ -198,28 +200,11 @@ Image files that are distributed with Octave.
 @end itemize
 
 @menu
-* Notes::                       
 * Installation Problems::       
 * Binary Distributions::        
 @end menu
 
-@node Notes, Installation Problems, Installation, Installation
-@appendixsec Notes
-
-@itemize @bullet
-@item
-You must use the version of GNU Info distributed with Octave, because it
-includes some changes to allow Octave to search the indices of the info
-files.  If you would like, you should be able to replace other copies of
-the Info browser that you have with the one distributed with Octave.
-Patches relative to a recent release of the GNU Info browser are
-included in the file @file{INFO.PATCH} in the Octave source
-distribution.  This modification has been submitted to the GNU Info
-maintainer, and should appear in some future release.  Once that
-happens, the GNU Info browser will no longer be distributed with Octave.
-@end itemize
-
-@node Installation Problems, Binary Distributions, Notes, Installation
+@node Installation Problems, Binary Distributions, Installation, Installation
 @appendixsec Installation Problems
 
 This section contains a list of problems (and some apparent problems
@@ -306,15 +291,6 @@ gcc -print-libgcc-file-name
 @noindent
 The directory of @code{gcc} include files normally begins in the same directory
 that contains the file @file{libgcc.a}.
-
-@item
-There is a bug with the @code{makeinfo} program that is distributed with
-Texinfo (through version 3.9) that causes the indices in Octave's
-on-line manual to be generated incorrectly.  If you need to recreate the
-on-line documentation, you should get the @code{makeinfo} program that
-is distributed with texinfo-3.9 and apply the patch for @code{makeinfo}
-that is distributed with Octave.  See the file @file{MAKEINFO.PATCH} for
-more details.
 
 @item
 Some of the Fortran subroutines may fail to compile with older versions

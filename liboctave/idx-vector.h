@@ -99,6 +99,8 @@ private:
     int is_colon (void) const { return colon; }
     int is_colon_equiv (int n, int sort_uniq);
 
+    void sort (bool uniq);
+
     int orig_rows (void) const { return orig_nr; }
     int orig_columns (void) const { return orig_nc; }
 
@@ -230,6 +232,8 @@ public:
   int is_colon (void) const { return rep->is_colon (); }
   int is_colon_equiv (int n, int sort_uniq = 0) const
     { return rep->is_colon_equiv (n, sort_uniq); }
+
+  void sort (bool uniq = false) { rep->sort (uniq); }
 
   int orig_rows (void) const { return rep->orig_rows (); }
   int orig_columns (void) const { return rep->orig_columns (); }

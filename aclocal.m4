@@ -153,7 +153,7 @@ dnl
 	    fi
 	  fi
 	;;
-	-lang*)
+	-lang* | -lcrt0.o)
 	  arg=
 	;;
 	-[lLR])

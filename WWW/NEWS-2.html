@@ -8,6 +8,59 @@
 <h1> News for Octave Version 2 </h1>
 <hr>
 
+<h2>Summary of changes for version 2.0.9</h2>
+
+This is a bug-fixing release, but there is one new user-visible
+feature:
+
+<ul>
+<li>It is now possible to specify a label for lines in the plot key
+    when using the plot function.  For example,
+<pre>
+      plot (x, y, "-*;sin(x);")
+</pre>
+    plots y vs. x using the linespoints style and sets the title of
+    the line in the key to be `sin(x)'
+</li>
+</ul>
+
+<h2>Summary of changes for version 2.0.8</h2>
+
+This is a bug-fixing release.  There are only a few new user-visible
+features.
+
+<ul>
+<li>If the argument to eig() is symmetric, Octave uses the specialized
+    Lapack subroutine for symmetric matrices for a significant
+    increase in performance.
+</li>
+<li>It is now possible to use the mkoctfile script to create .oct
+    files from multiple source and object files.
+</li>
+</ul>
+
+<h2>Summary of changes for version 2.0.7</h2>
+
+This is a bug-fixing release.  There are no new user-visible features.
+
+<h2>Summary of changes for version 2.0.6</h2>
+
+This is primarily a bug-fixing release.  There are only a few new
+user-visilbe features.
+
+<ul>
+<li>The new built-in variable default_eval_print_flag controls whether
+    Octave prints the results of commands executed by eval() that do
+    not end with semicolons.  The default is 1.
+</li>
+<li>The new built-in constant OCTAVE_HOME specifies the top-level
+    directory where Octave is installed.
+</li>
+<li>Octave no longer includes functions to work with NPSOL or QPSOL,
+    because they are not free software.
+</li>
+</ul>
+
 <h2>Summary of changes for version 2.0.5</h2>
 
 <ul>

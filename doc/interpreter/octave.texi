@@ -151,7 +151,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 
 Preface
 
-* Acknowledgements::             
+* Acknowledgements::            
 * How You Can Contribute to Octave::  
 * Distribution::                
 
@@ -260,7 +260,7 @@ Boolean Expressions
 Statements
 
 * The if Statement::            
-* The switch Statement::            
+* The switch Statement::        
 * The while Statement::         
 * The for Statement::           
 * The break Statement::         

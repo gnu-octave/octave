@@ -1,3 +1,10 @@
+Thu Jul 31 22:13:54 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.cc (IDX_VEC_REP::sort): New function.
+	* idx-vector.h (idx_vector::sort): Ditto.
+	* Array2-idx.h (Array2<T>::maybe_delete_elements): Use it before
+	trying to delete elements specified by the index vectors.
+
 Fri Jul 25 17:31:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (Matrix::lssolve): Increase lwork by factor of 16.

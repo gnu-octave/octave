@@ -241,7 +241,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     return handle_string (yytext[0], 1);
   }
 
-<TEXT_FCN>[^ \t\n\;\,]*{S}* {
+<TEXT_FCN>[^ \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
     string tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, TEXT);
   }

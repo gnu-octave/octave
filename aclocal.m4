@@ -464,17 +464,17 @@ AC_CACHE_VAL(octave_cv_signal_vintage,
 		int mask = sigmask(SIGINT);
 		sigset(SIGINT, foo); sigrelse(SIGINT);
 		sighold(SIGINT); sigpause(SIGINT);
-        ], octave_cv_signal_vintage=svr3
+        ], octave_cv_signal_vintage=svr3, octave_cv_signal_vintage=v7
     )]
   )]
 )
 ])
 AC_MSG_RESULT($octave_cv_signal_vintage)
-if test $octave_cv_signal_vintage = posix; then
+if test "$octave_cv_signal_vintage" = posix; then
 AC_DEFINE(HAVE_POSIX_SIGNALS)
-elif test $octave_cv_signal_vintage = "4.2bsd"; then
+elif test "$octave_cv_signal_vintage" = "4.2bsd"; then
 AC_DEFINE(HAVE_BSD_SIGNALS)
-elif test $octave_cv_signal_vintage = svr3; then
+elif test "$octave_cv_signal_vintage" = svr3; then
 AC_DEFINE(HAVE_USG_SIGHOLD)
 fi
 ])
@@ -525,7 +525,7 @@ main()
 ], octave_cv_must_reinstall_sighandlers=no, octave_cv_must_reinstall_sighandlers=yes,
 AC_MSG_ERROR(cannot check signal handling if cross compiling))])
 AC_MSG_RESULT($octave_cv_must_reinstall_sighandlers)
-if test $octave_cv_must_reinstall_sighandlers = yes; then
+if test "$octave_cv_must_reinstall_sighandlers" = yes; then
 AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
 fi
 ])

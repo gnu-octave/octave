@@ -756,15 +756,29 @@ Return a list of the names of the elements of the structure S.")
 	{
 	  Octave_map m = args(0).map_value ();
 	  char **names = m.make_name_list ();
-	  Octave_str_obj list (m.length ());
+
 	  char **ptr = names;
+	  int max_len = 0;
+	  while (*ptr)
+	    {
+	      int len = strlen (*ptr);
+	      if (len > max_len)
+		max_len = len;
+	      ptr++;
+	    }
+
+	  charMatrix list (m.length (), max_len);
+
+	  ptr = names;
 	  int i = 0;
 	  while (*ptr)
 	    {
-	      list(i++) = *ptr;
+	      list.insert (*ptr, i++, 0);
 	      delete [] *ptr++;
 	    }
+
 	  delete [] names;
+
 	  retval(0) = list;
 	}
       else

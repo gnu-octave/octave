@@ -54,7 +54,6 @@ Free Software Foundation, Inc.
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "oct-str.h"
 #include "octave.h"
 #include "pager.h"
 #include "pathlen.h"
@@ -493,7 +492,7 @@ named directory.  If sucessful, returns 0; otherwise an error message
 is printed.")
 {
   Octave_object retval;
-  Octave_str_obj dirlist;
+  charMatrix dirlist;
   int status = 0;
 
   if (args.length () == 1)
@@ -516,20 +515,28 @@ is printed.")
 	  if (dir)
 	    {
 	      int count = 0;
-	      while (readdir (dir))
-		count++;
+	      int max_len = 0;
+
+	      struct dirent *dir_entry;
+
+	      while ((dir_entry = readdir (dir)))
+		{
+		  count++;
+		  int len = strlen (dir_entry->d_name);
+		  if (len > max_len)
+		    max_len = len;
+		}
 
 	      rewinddir (dir);
 
-	      dirlist.resize (count);
+	      dirlist.resize (count, max_len, 0);
 
-	      struct dirent *dir_entry;
 	      while ((dir_entry = readdir (dir)))
 		{
 		  if (--count < 0)
 		    break;
 
-		  dirlist (count) = dir_entry->d_name;
+		  dirlist.insert (dir_entry->d_name, count, 0);
 		}
 
 #if defined (CLOSEDIR_VOID)
@@ -559,7 +566,7 @@ is printed.")
     print_usage ("readdir");
 
   if (status == 0)
-    retval(0) = dirlist;
+    retval(0) = tree_constant (dirlist, 1);
 
   return retval;
 }

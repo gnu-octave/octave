@@ -58,7 +58,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "lex.h"
-#include "oct-str.h"
 #include "octave-hist.h"
 #include "octave.h"
 #include "pager.h"
@@ -133,7 +132,7 @@ tree_function *curr_function = 0;
 int input_from_startup_file = 0;
 
 // The command-line options.
-Octave_str_obj octave_argv;
+charMatrix octave_argv;
 
 // Nonzero means that input is coming from a file that was named on
 // the command line.
@@ -211,9 +210,18 @@ intern_argv (int argc, char **argv)
 {
   if (argc > 1)
     {
-      octave_argv.resize (argc-1);
+      int max_len = 0;
       for (int i = 1; i < argc; i++)
-	octave_argv.elem (i-1) = argv[i];
+	{
+	  int tmp_len = strlen (argv[i]);
+	  if (tmp_len > max_len)
+	    max_len = tmp_len;
+	}
+
+      octave_argv.resize (argc-1, max_len, 0);
+
+      for (int i = 1; i < argc; i++)
+	octave_argv.insert (argv[i], i-1, 0);
 
       bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
     }

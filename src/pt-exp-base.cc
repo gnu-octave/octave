@@ -392,8 +392,7 @@ tree_matrix::eval (int /* print */)
 
   Matrix m;
   ComplexMatrix cm;
-
-  Octave_str_obj string;
+  charMatrix chm;
 
   // Eliminate empties and gather stats.
 
@@ -498,7 +497,10 @@ tree_matrix::eval (int /* print */)
 		else
 		  {
 		    cols_this_row += nc;
+
 		    if (first_row)
+		      col_total = cols_this_row;
+		    else if (all_strings && cols_this_row > col_total)
 		      col_total = cols_this_row;
 		  }
 	      }
@@ -527,7 +529,11 @@ tree_matrix::eval (int /* print */)
 
   // Don't forget to check to see if the last element will fit.
 
-  if (cols_this_row != col_total && ! all_strings)
+  if (all_strings && cols_this_row > col_total)
+    {
+      col_total = cols_this_row;
+    }
+  else if (cols_this_row != col_total)
     {
       ::error ("number of columns must match");
       goto done;
@@ -537,7 +543,7 @@ tree_matrix::eval (int /* print */)
   // them in the result matrix.
 
   if (all_strings)
-    string.resize (row_total);
+    chm.resize (row_total, col_total, 0);
   else if (found_complex)
     cm.resize (row_total, col_total, 0.0);
   else
@@ -609,24 +615,12 @@ tree_matrix::eval (int /* print */)
 	    }
 	  else if (tmp.is_string () && all_strings)
 	    {
-	      switch (list[i].direction)
-		{
-		case md_right:
-		  if (nr == 1)
-		    string.append_right (put_row, tmp.string_value ());
-		  else
-		    string.append_right (tmp.all_strings ());
-		  break;
+	      charMatrix chm_tmp = tmp.all_strings ();
 
-		case md_none:
-		case md_down:
-		  string.append_down (put_row, tmp.all_strings ());
-		  break;
-		  
-		default:
-		  panic_impossible ();
-		  break;
-		}
+	      if (error_state)
+		goto done;
+
+	      chm.insert (chm_tmp, put_row, put_col);
 	    }
 	  else
 	    {
@@ -643,8 +637,8 @@ tree_matrix::eval (int /* print */)
       prev_nc = nc;
     }
 
-  if (all_strings && string.num_strings () > 0)
-    retval = string;
+  if (all_strings && chm.rows () > 0 && chm.cols () > 0)
+    retval = tree_constant (chm, 1);
   else if (found_complex)
     retval = cm;
   else
@@ -2532,7 +2526,11 @@ tree_builtin::eval (int /* print */, int nargout, const Octave_object& args)
 	{
 	  tree_constant tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
 	  retval(0) = tmp;
-	}	
+	}
+      else
+	{
+	  ::error ("%s: too few arguments", my_name);
+	}
     }
   else
     {

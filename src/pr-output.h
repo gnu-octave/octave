@@ -29,8 +29,8 @@ class ostream;
 class Matrix;
 class Complex;
 class ComplexMatrix;
+class charMatrix;
 class Range;
-class Octave_str_obj;
 
 extern void octave_print_internal (ostream& os, double d,
 				   int pr_as_read_syntax = 0);
@@ -47,8 +47,9 @@ extern void octave_print_internal (ostream& os, const ComplexMatrix& cm,
 extern void octave_print_internal (ostream& os, const Range& r,
 				   int pr_as_read_syntax = 0);
 
-extern void octave_print_internal (ostream& os, Octave_str_obj& s,
-				   int pr_as_read_syntax = 0);
+extern void octave_print_internal (ostream& os, const charMatrix& chm,
+				   int pr_as_read_syntax = 0,
+				   int pr_as_string = 0);
 
 extern void set_format_style (int argc, char **argv);
 

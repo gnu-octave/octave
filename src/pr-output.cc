@@ -42,7 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "help.h"
 #include "mappers.h"
-#include "oct-str.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "sysdep.h"
@@ -1454,29 +1453,36 @@ octave_print_internal (ostream& os, const Range& r,
 }
 
 void
-octave_print_internal (ostream& os, Octave_str_obj& s,
-		       int pr_as_read_syntax)
+octave_print_internal (ostream& os, const charMatrix& chm,
+		       int pr_as_read_syntax, int pr_as_string)
 {
-  int nstr = s.num_strings ();
-
-  if (pr_as_read_syntax && nstr > 1)
-    os << "[ ";
-
-  for (int i = 0; i < nstr; i++)
+  if (pr_as_string)
     {
-      if (pr_as_read_syntax)
+      int nstr = chm.rows ();
+
+      if (pr_as_read_syntax && nstr > 1)
+	os << "[ ";
+
+      for (int i = 0; i < nstr; i++)
 	{
-	  os << "\"" << s.elem (i) << "\"";
+	  if (pr_as_read_syntax)
+	    {
+	      os << "\"" << chm.row_as_string (i) << "\"";
 
-	  if (i < nstr - 1)
-	    os << "; ";
+	      if (i < nstr - 1)
+		os << "; ";
+	    }
+	  else
+	    os << chm.row_as_string (i) << "\n";
 	}
-      else
-	os << s.elem (i) << "\n";
-    }
 
-  if (pr_as_read_syntax && nstr > 1)
-    os << " ]";
+      if (pr_as_read_syntax && nstr > 1)
+	os << " ]";
+    }
+  else
+    {
+      os << "sorry, printing char matrices not implemented yet\n";
+    }
 }
 
 DEFUN ("disp", Fdisp, Sdisp, 10,

@@ -68,7 +68,8 @@ private:
 	    matrix_constant,
 	    complex_scalar_constant,
 	    complex_matrix_constant,
-	    string_constant,
+	    char_matrix_constant,
+	    char_matrix_constant_str,
 	    range_constant,
 	    map_constant,
 	    magic_colon,
@@ -97,7 +98,7 @@ private:
 	tree_constant_rep (const ComplexColumnVector& v, int pcv);
 
 	tree_constant_rep (const char *s);
-	tree_constant_rep (const Octave_str_obj& s);
+	tree_constant_rep (const charMatrix& chm, int is_string);
 
 	tree_constant_rep (double base, double limit, double inc);
 	tree_constant_rep (const Range& r);
@@ -117,40 +118,43 @@ private:
 	int columns (void) const;
 
 	int is_defined (void) const
-	  { return type_tag != tree_constant_rep::unknown_constant; }
+	  { return type_tag != unknown_constant; }
 
 	int is_undefined (void) const
-	  { return type_tag == tree_constant_rep::unknown_constant; }
+	  { return type_tag == unknown_constant; }
 
 	int is_unknown (void) const
-	  { return type_tag == tree_constant_rep::unknown_constant; }
+	  { return type_tag == unknown_constant; }
 
 	int is_real_scalar (void) const
-	  { return type_tag == tree_constant_rep::scalar_constant; }
+	  { return type_tag == scalar_constant; }
 
 	int is_real_matrix (void) const
-	  { return type_tag == tree_constant_rep::matrix_constant; }
+	  { return type_tag == matrix_constant; }
 
 	int is_complex_scalar (void) const
-	  { return type_tag == tree_constant_rep::complex_scalar_constant; }
+	  { return type_tag == complex_scalar_constant; }
 
 	int is_complex_matrix (void) const
-	  { return type_tag == tree_constant_rep::complex_matrix_constant; }
+	  { return type_tag == complex_matrix_constant; }
+
+	int is_char_matrix (void) const
+	  { return type_tag == char_matrix_constant; }
 
 	int is_string (void) const
-	  { return type_tag == tree_constant_rep::string_constant; }
+	  { return type_tag == char_matrix_constant_str; }
 
 	int is_range (void) const
-	  { return type_tag == tree_constant_rep::range_constant; }
+	  { return type_tag == range_constant; }
 
 	int is_map (void) const
-	  { return type_tag == tree_constant_rep::map_constant; }
+	  { return type_tag == map_constant; }
 
 	int is_magic_colon (void) const
-	  { return type_tag == tree_constant_rep::magic_colon; }
+	  { return type_tag == magic_colon; }
 
 	int is_all_va_args (void) const
-	  { return type_tag == tree_constant_rep::all_va_args; }
+	  { return type_tag == all_va_args; }
 
 	tree_constant all (void) const;
 	tree_constant any (void) const;
@@ -160,7 +164,8 @@ private:
 	    return (type_tag == scalar_constant
 		    || type_tag == matrix_constant
 		    || type_tag == range_constant
-		    || type_tag == string_constant);
+		    || type_tag == char_matrix_constant
+		    || type_tag == char_matrix_constant_str);
 	  }
 
 	int is_complex_type (void) const
@@ -209,7 +214,8 @@ private:
 	Matrix matrix_value (int frc_str_conv = 0) const;
 	Complex complex_value (int frc_str_conv = 0) const;
 	ComplexMatrix complex_matrix_value (int frc_str_conv = 0) const;
-	Octave_str_obj all_strings (void) const;
+	charMatrix char_matrix_value (int frc_str_conv = 0) const;
+	charMatrix all_strings (void) const;
 	const char *string_value (void) const;
 	Range range_value (void) const;
 	Octave_map map_value (void) const;
@@ -293,7 +299,7 @@ private:
 	    Matrix *matrix;		    // A real matrix constant.
 	    Complex *complex_scalar;	    // A real scalar constant.
 	    ComplexMatrix *complex_matrix;  // A real matrix constant.
-	    Octave_str_obj *str_obj;	    // A character string constant.
+	    charMatrix *char_matrix;	    // A character string constant.
 	    Range *range;		    // A set of evenly spaced values.
 	    Octave_map *a_map;	      	    // An associative array.
 
@@ -334,8 +340,9 @@ public:
   //                  ComplexDiagMatrix
   //                  ComplexRowVector
   //                  ComplexColumnVector
+  // char matrix      charMatrix
   // string           char* (null terminated)
-  //                  Octave_str_obj
+  //                  charMatrix
   // range            double, double, double
   //                  Range
   // map              Octave_map
@@ -370,16 +377,16 @@ public:
     { rep = new tree_constant_rep (d); rep->count = 1; }
 
   tree_constant (const ComplexRowVector& v, int pcv = -1) : tree_fvc ()
-      { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const ComplexColumnVector& v, int pcv = -1) : tree_fvc () 
-      { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const char *s) : tree_fvc ()
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
-  tree_constant (const Octave_str_obj& s) : tree_fvc ()
-    { rep = new tree_constant_rep (s); rep->count = 1; }
+  tree_constant (const charMatrix& chm, int is_string = 0) : tree_fvc ()
+    { rep = new tree_constant_rep (chm, is_string); rep->count = 1; }
 
   tree_constant (double base, double limit, double inc) : tree_fvc ()
     { rep = new tree_constant_rep (base, limit, inc); rep->count = 1; }
@@ -534,7 +541,10 @@ public:
   ComplexMatrix complex_matrix_value (int frc_str_conv = 0) const
     { return rep->complex_matrix_value (frc_str_conv); }
 
-  Octave_str_obj all_strings (void) const
+  charMatrix char_matrix_value (int frc_str_conv = 0) const
+    { return rep->char_matrix_value (frc_str_conv); }
+
+  charMatrix all_strings (void) const
     { return rep->all_strings (); }
 
   const char *string_value (void) const

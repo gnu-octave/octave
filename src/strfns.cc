@@ -80,23 +80,9 @@ DEFUN ("toascii", Ftoascii, Stoascii, 10,
 
       if (arg.is_string ())
 	{
-	  Octave_str_obj str = args(0).all_strings ();
+	  charMatrix chm = args(0).all_strings ();
 
-	  int nr = str.num_strings ();
-	  int nc = str.max_length ();
-
-	  // XXX FIXME XXX -- should fill with user-specified value.
-
-	  Matrix m (nr, nc, 0);
-
-	  for (int i = 0; i < nr; i++)
-	    {
-	      nc = str.elem (i).length ();
-	      for (int j = 0; j < nc; j++)
-		m (i, j) = toascii (str.elem (i) [j]);
-	    }
-
-	  retval = m;
+	  retval = Matrix (chm);
 	}
       else
 	gripe_wrong_type_arg ("toascii", arg);

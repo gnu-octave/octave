@@ -1365,7 +1365,11 @@ read_ascii_data (istream& is, const char *filename, int& global,
 	  int elements;
 	  if (extract_keyword (is, "elements", elements) && elements > 0)
 	    {
-	      Octave_str_obj s (elements);
+	      // XXX FIXME XXX -- need to be able to get max length
+	      // before doing anything.
+
+	      charMatrix chm (elements, 0);
+	      int max_len = 0;
 	      for (int i = 0; i < elements; i++)
 		{
 		  int len;
@@ -1378,7 +1382,14 @@ read_ascii_data (istream& is, const char *filename, int& global,
 			  break;
 			}
 		      else
-			s.elem (i).assign (tmp, len);
+			{
+			  if (len > max_len)
+			    {
+			      max_len = len;
+			      chm.resize (elements, max_len, 0);
+			    }
+			  chm.insert (tmp, i, 0);
+			}
 		      delete [] tmp;
 		    }
 		  else
@@ -1386,7 +1397,7 @@ read_ascii_data (istream& is, const char *filename, int& global,
 		}
 
 	      if (! error_state)
-		tc = s;
+		tc = chm;
 	    }
 	  else
 	    error ("load: failed to extract number of string elements");
@@ -1670,7 +1681,8 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes ((char *) &elements);
-	Octave_str_obj s (elements);
+	charMatrix chm (elements, 0);
+	int max_len = 0;
 	for (int i = 0; i < elements; i++)
 	  {
 	    FOUR_BYTE_INT len;
@@ -1684,10 +1696,15 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 		delete [] tmp;
 		goto data_read_error;
 	      }
-	    s.elem (i).assign (tmp, len);
+	    if (len > max_len)
+	      {
+		max_len = len;
+		chm.resize (elements, max_len, 0);
+	      }
+	    chm.insert (tmp, i, 0);
 	    delete [] tmp;
 	  }
-	tc = s;
+	tc = chm;
       }
       break;
 
@@ -2492,13 +2509,14 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
       os.write (&tmp, 1);
       FOUR_BYTE_INT nr = tc.rows ();
       os.write (&nr, 4);
-      Octave_str_obj s = tc.all_strings ();
+      charMatrix chm = tc.all_strings ();
       for (int i = 0; i < nr; i++)
 	{
-	  FOUR_BYTE_INT len = s.elem (i).length ();
+	  FOUR_BYTE_INT len = chm.cols ();
 	  os.write (&len, 4);
-	  const char *tmp = s.elem (i).data ();
+	  const char *tmp = chm.row_as_string (i);
 	  os.write (tmp, len);
+	  delete [] tmp;
 	}
     }
   else if (tc.is_range ())
@@ -2796,14 +2814,16 @@ save_ascii_data (ostream& os, const tree_constant& tc,
   else if (tc.is_string ())
     {
       ascii_save_type (os, "string array", mark_as_global);
-      Octave_str_obj tmp = tc.all_strings ();
-      int elements = tmp.length ();
+      charMatrix chm = tc.all_strings ();
+      int elements = chm.rows ();
       os << "# elements: " << elements << "\n";
       for (int i = 0; i < elements; i++)
 	{
-	  int len = tmp.elem (i).length ();
+	  int len = chm.cols ();
 	  os << "# length: " << len << "\n";
-	  os.write (tmp.elem (i).data (), len);
+	  char *tmp = chm.row_as_string (i);
+	  os.write (tmp, len);
+	  delete [] tmp;
 	  os << "\n";
 	}
     }

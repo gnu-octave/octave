@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class tree_constant;
 class tree_function;
 class tree_statement_list;
-class Octave_str_obj;
+class charMatrix;
 
 extern void clean_up_and_exit (int) NORETURN;
 
@@ -88,7 +88,7 @@ extern tree_function *curr_function;
 extern int input_from_startup_file;
 
 // The command-line options.
-extern Octave_str_obj octave_argv;
+extern charMatrix octave_argv;
 
 // Nonzero means that input is coming from a file that was named on
 // the command line.

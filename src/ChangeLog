@@ -1,3 +1,7 @@
+2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Freshape): Chop trailing singletons from new dimensions.
+
 2004-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* error.cc (defun_usage_message): Only accept one arg, a const

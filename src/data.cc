@@ -1342,7 +1342,20 @@ matrix must match the total number of elements in the new matrix.\n\
       return retval;
     }
 
+  // Remove trailing singletons in new_size, but leave at least 2
+  // elements.
+
   int n = new_size.length ();
+
+  while (n > 2)
+    {
+      if (new_size(n-1) == 1)
+	n--;
+      else
+	break;
+    }
+
+  new_size.resize (n);
 
   if (n < 2)
     {

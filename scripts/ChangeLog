@@ -1,5 +1,8 @@
 2005-03-23  John W. Eaton  <jwe@octave.org>
 
+	* general/tril.m, general/triu.m: Return value of same class as
+	argument.
+
 	* optimization/glpk.m: Simplify interface.  By default, solve
 	standard LP min C'*x s.t. A*x = b, x >= 0.
 	* optimization/glpkmex.m: New file.

@@ -28,7 +28,7 @@ function retval = triu (x, k)
 
   if (nargin > 0)
     [nr, nc] = size (x);
-    retval = zeros (nr, nc);
+    retval = zeros (nr, nc, class (x));
   endif
 
   if (nargin == 1)

@@ -56,36 +56,36 @@ do
 
 Options:
 
-  -h, -?, --help      Print this message.
+  -h, -?, --help        Print this message.
 
-  --m-site-dir        Print the name of the directory where Octave
-                      expects to find locally installed .m files.
+  --m-site-dir          Print the name of the directory where Octave
+                        expects to find locally installed .m files.
 
-  --oct-site-dir      Print the name of the directory where Octave
-                      expects to find locally installed .oct files.
+  --oct-site-dir        Print the name of the directory where Octave
+                        expects to find locally installed .oct files.
 
-  -v, --version       Print the Octave version number.
+  -p VAR, --print VAR   Print the value of the given configuration
+		        variable VAR.  Recognized variables are:
 
-  --variable VAR      Print the value of the given configuration
-		      variable VAR:
+			  CANONICAL_HOST_TYPE    LOCALFCNFILEDIR    
+			  DEFAULT_PAGER          LOCALFCNFILEPATH
+			  ARCHLIBDIR             LOCALOCTFILEDIR
+			  BINDIR                 LOCALOCTFILEPATH
+			  DATADIR                LOCALSTARTUPFILEDIR
+			  EXEC_PREFIX            LOCALVERARCHLIBDIR
+			  FCNFILEDIR             LOCALVERFCNFILEDIR
+			  FCNFILEPATH            LOCALVEROCTFILEDIR
+			  IMAGEDIR               MAN1DIR
+			  IMAGEPATH              MAN1EXT
+			  INCLUDEDIR             MANDIR
+			  INFODIR                OCTFILEDIR
+			  INFOFILE               OCTINCLUDEDIR
+			  LIBDIR                 OCTLIBDIR
+			  LIBEXECDIR             PREFIX
+			  LIBEXECDIR             STARTUPFILEDIR
+			  LOCALARCHLIBDIR        VERSION
 
-			CANONICAL_HOST_TYPE    LOCALFCNFILEDIR    
-			DEFAULT_PAGER	       LOCALFCNFILEPATH
-			ARCHLIBDIR	       LOCALOCTFILEDIR
-			BINDIR		       LOCALOCTFILEPATH
-			DATADIR		       LOCALSTARTUPFILEDIR
-			EXEC_PREFIX	       LOCALVERARCHLIBDIR
-			FCNFILEDIR	       LOCALVERFCNFILEDIR
-			FCNFILEPATH	       LOCALVEROCTFILEDIR
-			IMAGEDIR	       MAN1DIR
-			IMAGEPATH	       MAN1EXT
-			INCLUDEDIR	       MANDIR
-			INFODIR		       OCTFILEDIR
-			INFOFILE	       OCTINCLUDEDIR
-			LIBDIR		       OCTLIBDIR
-			LIBEXECDIR	       PREFIX
-			LIBEXECDIR	       STARTUPFILEDIR
-			LOCALARCHLIBDIR        VERSION
+  -v, --version         Print the Octave version number.
 
 EOF
       exit 0
@@ -99,10 +99,11 @@ EOF
     -v | --version)
       echo $VERSION
     ;;
-    --variable)
+    -p | --print)
+      opt="$1"
       shift
       if [ $# -eq 0 ]; then
-        echo "octave-config: --version option requires argument" 1>&2
+        echo "octave-config: $opt option requires argument" 1>&2
         exit 1
       fi
       eval echo \${$1}

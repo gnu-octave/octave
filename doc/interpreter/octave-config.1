@@ -23,6 +23,30 @@ Display the main directory for local, or site-specific, .m script files.
 .TP 8
 .B \--oct-site-dir
 Display the main directory for local, or site-specific, .oct dynamic-link libraries.
+.TP 8
+.B \-p|\-\-print VAR
+Print the default value of the Octave configuration variable VAR.
+Recognized variables are:
+.RS
+    CANONICAL_HOST_TYPE    LOCALFCNFILEDIR    
+    DEFAULT_PAGER          LOCALFCNFILEPATH
+    ARCHLIBDIR             LOCALOCTFILEDIR
+    BINDIR                 LOCALOCTFILEPATH
+    DATADIR                LOCALSTARTUPFILEDIR
+    EXEC_PREFIX            LOCALVERARCHLIBDIR
+    FCNFILEDIR             LOCALVERFCNFILEDIR
+    FCNFILEPATH            LOCALVEROCTFILEDIR
+    IMAGEDIR               MAN1DIR
+    IMAGEPATH              MAN1EXT
+    INCLUDEDIR             MANDIR
+    INFODIR                OCTFILEDIR
+    INFOFILE               OCTINCLUDEDIR
+    LIBDIR                 OCTLIBDIR
+    LIBEXECDIR             PREFIX
+    LIBEXECDIR             STARTUPFILEDIR
+    LOCALARCHLIBDIR        VERSION
+.RE
+.TP 8
 .B \-v|\-\-version
 Display the version number of 
 .BR octave (1).

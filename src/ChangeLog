@@ -1,3 +1,16 @@
+2004-08-06  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-struct.cc: New file.
+	* ov-struct.h (octave_struct::resize (const dim_vector&)):
+	New function.
+	* oct-map.h (Octave_map::resize (const dim_vector&)): New function.
+	* ov-map.cc (Octave_map::reshape):
+	Correct return for same sized reshape.
+	(Octave_map::resize (const dim_vector&)): New function.
+	(concat (const Octave_map&, const Octave_map&, const Array<int>&)):
+	Complete concatenation function.
+	* Makefile.in (OP_XSRC): Include op-struct.cc in the list.
+
 2004-08-05  John W. Eaton  <jwe@octave.org>
 
 	* pt-stmt.h (tree_statement::set_command,

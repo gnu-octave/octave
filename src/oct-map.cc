@@ -66,8 +66,10 @@ Octave_map::reshape (const dim_vector& new_dims) const
       for (const_iterator p = begin (); p != end (); p++)
 	retval.assign (key(p), contents(p).reshape (new_dims));
 
-      dimensions = new_dims;
+      retval.dimensions = new_dims;
     }
+  else
+    retval = *this;
 
   return retval;
 }
@@ -88,13 +90,51 @@ Octave_map::numel (void) const
   return retval;
 }
 
+Octave_map 
+Octave_map::resize (const dim_vector& dv) const
+{
+  Octave_map retval;
+
+  if (dv != dims ())
+    {
+      for (const_iterator p = begin (); p != end (); p++)
+	{
+	  Cell tmp = contents(p);
+	  tmp.resize(dv);
+	  retval.assign (key(p), tmp);
+	}
+      
+      retval.dimensions = dv;
+    }
+  else
+    retval = *this;
+
+
+  return retval;
+}
+
 Octave_map
 concat (const Octave_map& ra, const Octave_map& rb, const Array<int>& ra_idx)
 {
-  // XXX FIXME XXX
+  if (ra.length() != rb.length())
+    {
+      error ("field name mismatch in structure concatenation");
+      return Octave_map ();
+    }
+
   Octave_map retval;
-  //Octave_map retval (ra);
-  //::concat_ra (retval, rb, dim) 
+  for (Octave_map::const_iterator pa = ra.begin (); pa != ra.end (); pa++)
+    {
+      Octave_map::const_iterator pb = rb.seek (ra.key(pa));
+      if (pa == rb.end())
+	{
+	  error ("field name mismatch in structure concatenation");
+	  return Octave_map ();
+	}
+	
+      retval.assign (ra.key(pa), ra.contents(pa).insert(rb.contents(pb), 
+							ra_idx));
+    }
   return retval;
 }
 

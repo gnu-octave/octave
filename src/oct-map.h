@@ -116,6 +116,8 @@ Octave_map
 
   Octave_map reshape (const dim_vector& new_dims) const;
 
+  Octave_map resize (const dim_vector& dv) const;
+
   int numel (void) const;
 
   friend Octave_map concat (const Octave_map& ra, const Octave_map& rb, 

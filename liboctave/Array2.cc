@@ -43,6 +43,51 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 
 template <class T>
+int
+Array2<T>::get_size (int r, int c) const
+{
+  // XXX KLUGE XXX
+
+  // If an allocation of an array with r * c elements of type T
+  // would cause an overflow in the allocator when computing the
+  // size of the allocation, then return a value which, although
+  // not equivalent to the actual request, should be too large for
+  // most current hardware, but not so large to cause the
+  // allocator to barf on computing retval * sizeof (T).
+
+  // A guess (should be quite conservative).
+  static const int MALLOC_OVERHEAD = 1024;
+
+  static int nl;
+  static double dl
+    = frexp (static_cast<double>
+	     (INT_MAX - MALLOC_OVERHEAD) / sizeof (T), &nl);
+
+  // This value should be an integer.  If we return this value and
+  // things work the way we expect, we should be paying a visit to
+  // new_handler in no time flat.
+  static int max_items = static_cast<int> (ldexp (dl, nl));
+
+  int nr, nc;
+  double dr = frexp (static_cast<double> (r), &nr);
+  double dc = frexp (static_cast<double> (c), &nc);
+
+  int nt = nr + nc;
+  double dt = dr * dc;
+
+  if (dt <= 0.5)
+    {
+      nt--;
+      dt *= 2;
+
+      if (dt <= 0.5)
+	nt--;
+    }
+
+  return (nt < nl || (nt == nl && dt < dl)) ? r * c : max_items;
+}
+
+template <class T>
 T
 Array2<T>::range_error (const char *fcn, int i, int j) const
 {
@@ -84,7 +129,7 @@ Array2<T>::resize (int r, int c)
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new ArrayRep (r*c);
+  rep = new ArrayRep (get_size (r, c));
 
   d1 = r;
   d2 = c;
@@ -124,7 +169,7 @@ Array2<T>::resize (int r, int c, const T& val)
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new ArrayRep (r*c);
+  rep = new ArrayRep (get_size (r, c));
 
   d1 = r;
   d2 = c;

@@ -1,3 +1,8 @@
+2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2.cc (Array2<T>::get_size): New function.
+	(Array2<T>::Array2, Array2<T>::resize): Use it.
+
 2000-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::maybe_delete_elements (idx_vector&)):

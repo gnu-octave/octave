@@ -1,3 +1,8 @@
+2000-01-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-mode-syntax-table):
+	Make `%' a comment start character too.
+
 2000-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for strptime and localtime_r.

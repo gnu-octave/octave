@@ -58,7 +58,7 @@ function pdf = weibull_pdf (x, shape, scale)
 
   k = find ((x > 0) & (x < Inf) & ok);
   if (any (k))
-    pdf(k) = (shape(k) .* (scale(k) .^ shape(k))
+    pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
               .* (x(k) .^ (shape(k) - 1))
               .* exp(- (x(k) ./ scale(k)) .^ shape(k)));
   endif

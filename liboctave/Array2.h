@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
+#include <climits>
+#include <cmath>
 #include <cstdlib>
 
 #include "Array.h"
@@ -41,9 +43,13 @@ class idx_vector;
 template <class T>
 class Array2 : public Array<T>
 {
+private:
+
+  int get_size (int r, int c) const;
+
 protected:
 
-  Array2 (T *d, int n, int m) : Array<T> (d, n*m)
+  Array2 (T *d, int n, int m) : Array<T> (d, get_size (n, m))
     {
       d1 = n;
       d2 = m;
@@ -66,14 +72,14 @@ public:
       set_max_indices (2);
     }
 
-  Array2 (int n, int m) : Array<T> (n*m)
+  Array2 (int n, int m) : Array<T> (get_size (n, m))
     {
       d1 = n;
       d2 = m;
       set_max_indices (2);
     }
 
-  Array2 (int n, int m, const T& val) : Array<T> (n*m, val)
+  Array2 (int n, int m, const T& val) : Array<T> (get_size (n, m), val)
     {
       d1 = n;
       d2 = m;

@@ -1,5 +1,10 @@
 Wed Oct 16 12:00:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::eval_error,
+	tm_row_const::tm_row_const_rep::eval_warning): New functions.
+	(tm_row_const::tm_row_const (const tree_matrix_row&): Use them to
+	give better error messages.
+
 	* pt-fvc.cc (tree_identifier::eval): Avoid dereferencing null
 	object_to_eval.
 

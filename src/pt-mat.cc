@@ -98,6 +98,11 @@ private:
 
     tm_row_const_rep& operator =
       (const tm_row_const_rep&);
+
+
+    void eval_error (const char *msg, int l, int c) const;
+
+    void eval_warning (const char *msg, int l, int c) const;
   };
 
 public:
@@ -182,10 +187,12 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
 	  if (this_elt_nr == 0 || this_elt_nc == 0)
 	    {
 	      if (Vempty_list_elements_ok < 0)
-		warning ("empty matrix found in matrix list");
+		eval_warning ("empty matrix found in matrix list",
+			      elt->line (), elt->column ());
 	      else if (Vempty_list_elements_ok == 0)
 		{
-		  ::error ("empty matrix found in matrix list");
+		  eval_error ("empty matrix found in matrix list",
+			      elt->line (), elt->column ());
 		  break;
 		}
 	    }
@@ -199,7 +206,8 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
 		}
 	      else if (this_elt_nr != nr)
 		{
-		  ::error ("number of rows must match");
+		  eval_error ("number of rows must match",
+			      elt->line (), elt->column ());
 		  break;
 		}
 
@@ -217,6 +225,26 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
     }
 
   ok = ! error_state;
+}
+
+void
+tm_row_const::tm_row_const_rep::eval_error (const char *msg, int l,
+					    int c) const
+{
+  if (l == -1 && c == -1)
+    ::error ("%s", msg);
+  else
+    ::error ("%s near line %d, column %d", msg, l, c);
+}
+
+void
+tm_row_const::tm_row_const_rep::eval_warning (const char *msg, int l,
+					      int c) const
+{
+  if (l == -1 && c == -1)
+    ::warning ("%s", msg);
+  else
+    ::warning ("%s near line %d, column %d", msg, l, c);
 }
 
 template class SLNode<tm_row_const>;

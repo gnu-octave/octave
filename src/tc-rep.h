@@ -119,45 +119,64 @@ private:
   tree_constant any (void) const;
 
   int is_scalar_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == complex_scalar_constant; }
+    {
+      return (type_tag == scalar_constant
+	      || type_tag == complex_scalar_constant);
+    }
 
   int is_matrix_type (void) const
-    { return type_tag == matrix_constant
-             || type_tag == complex_matrix_constant; }
+    {
+      return (type_tag == matrix_constant
+	      || type_tag == complex_matrix_constant);
+    }
 
   int is_real_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == matrix_constant
-	     || type_tag == range_constant; }
+    {
+      return (type_tag == scalar_constant
+	      || type_tag == matrix_constant
+	      || type_tag == range_constant
+	      || type_tag == string_constant);
+    }
 
   int is_complex_type (void) const
-    { return type_tag == complex_matrix_constant
-             || type_tag == complex_scalar_constant; }
+    {
+      return (type_tag == complex_matrix_constant
+	      || type_tag == complex_scalar_constant);
+    }
 
   int is_numeric_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == matrix_constant
-	     || type_tag == complex_matrix_constant
-             || type_tag == complex_scalar_constant; }
+    {
+      return (type_tag == scalar_constant
+	      || type_tag == matrix_constant
+	      || type_tag == complex_matrix_constant
+	      || type_tag == complex_scalar_constant);
+    }
 
   int is_numeric_or_range_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == matrix_constant
-	     || type_tag == complex_matrix_constant
-             || type_tag == complex_scalar_constant
-	     || type_tag == range_constant; }
+    {
+      return (type_tag == scalar_constant
+	      || type_tag == matrix_constant
+	      || type_tag == complex_matrix_constant
+	      || type_tag == complex_scalar_constant
+	      || type_tag == range_constant);
+    }
 
   int valid_as_scalar_index (void) const;
 
   int is_true (void) const;
 
-  double double_value (void) const;
-  Matrix matrix_value (void) const;
-  Complex complex_value (void) const;
-  ComplexMatrix complex_matrix_value (void) const;
+  double double_value (int force_string_conversion = 0) const;
+  Matrix matrix_value (int force_string_conversion = 0) const;
+  Complex complex_value (int force_string_conversion = 0) const;
+  ComplexMatrix complex_matrix_value (int force_string_conversion = 0) const;
   char *string_value (void) const;
   Range range_value (void) const;
+
+  ColumnVector vector_value (int force_string_conversion = 0,
+			     int force_vector_conversion = 0) const;
+
+  ComplexColumnVector complex_vector_value (int force_string_conv = 0,
+					    int force_vec_conv = 0) const;
 
   tree_constant convert_to_str (void);
 
@@ -238,10 +257,6 @@ private:
   void do_matrix_assignment (const tree_constant& rhs,
 			     const tree_constant& i_arg);
 
-  void do_matrix_assignment (const tree_constant& rhs,
-			     const tree_constant& i_arg,
-			     const tree_constant& j_arg);
-
   void fortran_style_matrix_assignment (const tree_constant& rhs,
 					const tree_constant& i_arg);
 
@@ -260,6 +275,10 @@ private:
   void do_vector_assign (const tree_constant& rhs, int i);
   void do_vector_assign (const tree_constant& rhs, idx_vector& i);
   void do_vector_assign (const tree_constant& rhs, Range& i);
+
+  void do_matrix_assignment (const tree_constant& rhs,
+			     const tree_constant& i_arg,
+			     const tree_constant& j_arg);
 
   void do_matrix_assignment (const tree_constant& rhs, int i,
 			     const tree_constant& j_arg);
@@ -315,6 +334,8 @@ private:
 
   void print_code (ostream& os);
 
+  char *type_as_string (void) const;
+
 // Binary and unary operations.
 
   friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
@@ -358,14 +379,6 @@ private:
 // We want to eliminate this.
 
   constant_type const_type (void) const { return type_tag; }
-
-// More conversions.  These should probably be eliminated.  If a user
-// of this class wants a certain kind of constant, he should simply
-// ask for it, and we should convert it if possible.
-
-  double to_scalar (void) const;
-  ColumnVector to_vector (void) const;
-  Matrix to_matrix (void) const;
 };
 
 #endif

@@ -1111,7 +1111,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 
   int chars_from_fmt_str = 0;
   int store_value = 1;
-  int string_width = -1;
+  int string_width = 0;
   int success = 1;
 
   if (*s == '*')
@@ -1168,6 +1168,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	  values(fmt_arg_count++) = tree_constant ((double) temp);
       }
       break;
+
     case 'e': case 'E': case 'f': case 'g': case 'G':
       {
 	chars_from_fmt_str++;
@@ -1180,12 +1181,20 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	  values(fmt_arg_count++) = tree_constant (temp);
       }
       break;
+
     case 's':
       {
 	if (string_width < 1)
 	  {
+// XXX FIXME XXX -- The code below is miscompiled on the Alpha with
+// gcc 2.6.0, so that string_width is never incremented, even though
+// reading the data works correctly.  One fix is to use a fixed-size
+// buffer...
+//	    string_width = 8192;
+
 	    string_width = 0;
 	    long original_position = ftell (fptr);
+
 	    int c;
 
 	    while ((c = getc (fptr)) != EOF
@@ -1212,10 +1221,11 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	char *str = fmt.str ();
 	success = fscanf (fptr, str, temp);
 	delete [] str;
-	if (success && store_value)
+	if (success > 0 && store_value)
 	  values(fmt_arg_count++) = tree_constant (temp);
       }
       break;
+
     case 'c':
       {
 	if (string_width < 1)
@@ -1232,6 +1242,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	  values(fmt_arg_count++) = tree_constant (temp);
       }
       break;
+
     default:
       goto invalid_format;
     }
@@ -1590,7 +1601,7 @@ fread_internal (const Octave_object& args, int nargout)
 	}
       else if (args(2).is_matrix_type ())
 	{
-	  ColumnVector tmp = args(2).to_vector ();
+	  ColumnVector tmp = args(2).vector_value ();
 
 	  if (tmp.length () == 2)
 	    {
@@ -1730,7 +1741,7 @@ fwrite_internal (const Octave_object& args, int nargout)
 
   file_info file = file_list (p);
 
-  Matrix m = args(2).to_matrix ();
+  Matrix m = args(2).matrix_value ();
 
   int count = m.write (file.fptr (), prec);
 

@@ -210,11 +210,13 @@ public:
   int is_matrix_type (void) const { return rep->is_matrix_type (); }
 
   int is_real_type (void) const { return rep->is_real_type (); }
+
   int is_complex_type (void) const { return rep->is_complex_type (); }
 
 // These need better names, since a range really is a numeric type.
 
-  int is_numeric_type (void) const { return rep->is_numeric_type (); }
+  int is_numeric_type (void) const
+    { return rep->is_numeric_type (); }
 
   int is_numeric_or_range_type (void) const
     { return rep->is_numeric_or_range_type (); }
@@ -246,19 +248,38 @@ public:
 
 // Values.
 
-  double double_value (void) const { return rep->double_value (); }
-  Matrix matrix_value (void) const { return rep->matrix_value (); }
-  Complex complex_value (void) const { return rep->complex_value (); }
-  ComplexMatrix complex_matrix_value (void) const
-    { return rep->complex_matrix_value (); }
-  char *string_value (void) const { return rep->string_value (); }
-  Range range_value (void) const { return rep->range_value (); }
+  double double_value (int force_string_conversion = 0) const
+    { return rep->double_value (force_string_conversion); }
+
+  Matrix matrix_value (int force_string_conversion = 0) const
+    { return rep->matrix_value (force_string_conversion); }
+
+  Complex complex_value (int force_string_conversion = 0) const
+    { return rep->complex_value (force_string_conversion); }
+
+  ComplexMatrix complex_matrix_value (int force_string_conversion = 0) const
+    { return rep->complex_matrix_value (force_string_conversion); }
+
+  char *string_value (void) const
+    { return rep->string_value (); }
+
+  Range range_value (void) const
+    { return rep->range_value (); }
+
+  ColumnVector vector_value (int force_string_conversion = 0,
+			     int force_vector_conversion = 0) const 
+    { return rep->vector_value (); }
+
+  ComplexColumnVector complex_vector_value (int force_string_conv = 0,
+					    int force_vec_conv = 0) const
+    { return rep->complex_vector_value (); }
 
 // Conversions.  These should probably be private.  If a user of this
 // class wants a certain kind of constant, he should simply ask for
 // it, and we should convert it if possible.
 
-  tree_constant convert_to_str (void) { return rep->convert_to_str (); }
+  tree_constant convert_to_str (void)
+    { return rep->convert_to_str (); }
 
   void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
@@ -354,6 +375,9 @@ public:
 
   friend void gripe_wrong_type_arg (const char *name, const tree_constant& tc);
 
+  char *type_as_string (void) const
+    { return rep->type_as_string (); }
+
 // -------------------------------------------------------------------
 
 // These may not need to be member functions.
@@ -377,18 +401,7 @@ public:
   tree_constant_rep::constant_type const_type (void) const
     { return rep->const_type (); }
 
-// More conversions.  These should probably be eliminated.  If a user
-// of this class wants a certain kind of constant, he should simply
-// ask for it, and we should convert it if possible.
-
-  double to_scalar (void) const { return rep->to_scalar (); }
-  ColumnVector to_vector (void) const { return rep->to_vector (); }
-  Matrix to_matrix (void) const { return rep->to_matrix (); }
-
 // -------------------------------------------------------------------
-
-private:
-  char *type_as_string (void) const;
 };
 
 // XXX FIXME XXX -- this is not used very much now.  Perhaps it can be

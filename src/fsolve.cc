@@ -103,7 +103,7 @@ fsolve_user_function (const ColumnVector& x)
       Octave_object tmp = fsolve_fcn->eval (0, 1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp(0).to_vector ();
+	  retval = tmp(0).vector_value ();
 
 	  if (retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
@@ -141,7 +141,7 @@ where y and x are vectors.")
   if (! fsolve_fcn || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
-  ColumnVector x = args(2).to_vector ();
+  ColumnVector x = args(2).vector_value ();
 
   if (nargin > 3)
     warning ("fsolve: ignoring extra arguments");

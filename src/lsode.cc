@@ -82,7 +82,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp(0).to_vector ();
+	  retval = tmp(0).vector_value ();
 
 	  if (retval.length () == 0)
 	    gripe_user_supplied_eval ("lsode");
@@ -118,13 +118,13 @@ where xdot and x are vectors and t is a scalar.\n")
   if (! lsode_fcn || takes_correct_nargs (lsode_fcn, 3, "lsode", 1) != 1)
     return retval;
 
-  ColumnVector state = args(2).to_vector ();
-  ColumnVector out_times = args(3).to_vector ();
+  ColumnVector state = args(2).vector_value ();
+  ColumnVector out_times = args(3).vector_value ();
   ColumnVector crit_times;
   int crit_times_set = 0;
   if (nargin > 4)
     {
-      crit_times = args(4).to_vector ();
+      crit_times = args(4).vector_value ();
       crit_times_set = 1;
     }
 

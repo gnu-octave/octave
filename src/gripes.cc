@@ -80,6 +80,12 @@ gripe_user_returned_invalid (const char *name)
   error ("%s: user-supplied function returned invalid value", name);
 }
 
+void
+gripe_invalid_conversion (const char *from, const char *to)
+{
+  error ("invalid conversion from %s to %s", from, to);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

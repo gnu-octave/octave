@@ -118,8 +118,8 @@ A and B must be real matrices.")
 // XXX FIXME ??? XXX
 	  double eps = DBL_EPSILON;
 
-	  Matrix ca = arga.to_matrix ();
-	  Matrix cb = argb.to_matrix ();
+	  Matrix ca = arga.matrix_value ();
+	  Matrix cb = argb.matrix_value ();
 
 // Use EISPACK qz functions.
 

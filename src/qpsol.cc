@@ -96,21 +96,21 @@ Handle all of the following:
       return retval;
     }
 
-  ColumnVector x = args(1).to_vector ();
+  ColumnVector x = args(1).vector_value ();
   if (x.capacity () == 0)
     {
       error ("qpsol: expecting vector as first argument");
       return retval;
     }
 
-  Matrix H = args(2).to_matrix ();
+  Matrix H = args(2).matrix_value ();
   if (H.rows () != H.columns () || H.rows () != x.capacity ())
     {
       error ("qpsol: H must be a square matrix consistent with the size of x");
       return retval;
     }
 
-  ColumnVector c = args(3).to_vector ();
+  ColumnVector c = args(3).vector_value ();
   if (c.capacity () != x.capacity ())
     {
       error ("qpsol: c must be a vector the same size as x");
@@ -120,8 +120,8 @@ Handle all of the following:
   Bounds bounds;
   if (nargin == 6 || nargin == 9)
     {
-      ColumnVector lb = args(4).to_vector ();
-      ColumnVector ub = args(5).to_vector ();
+      ColumnVector lb = args(4).vector_value ();
+      ColumnVector ub = args(5).vector_value ();
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
@@ -166,9 +166,9 @@ Handle all of the following:
 
   if (nargin == 7 || nargin == 9)
     {
-      ColumnVector lub = args(nargin-1).to_vector ();
-      Matrix A = args(nargin-2).to_matrix ();
-      ColumnVector llb = args(nargin-3).to_vector ();
+      ColumnVector lub = args(nargin-1).vector_value ();
+      Matrix A = args(nargin-2).matrix_value ();
+      ColumnVector llb = args(nargin-3).vector_value ();
 
       if (llb.capacity () == 0 || lub.capacity () == 0)
 	{

@@ -68,6 +68,8 @@ extern double D_NINT (double x);
 
 extern char **make_argv (const Octave_object& args, const char *fcn_name);
 
+extern int empty_arg (const char *name, int nr, int nc);
+
 extern ostrstream& list_in_columns (ostrstream& os, char **list);
 
 #endif

@@ -205,13 +205,13 @@ rand (SEED, N)        -- set seed")
       if (args(1).is_string ()
 	  && strcmp (args(1).string_value (), "seed") == 0)
 	{
-	  double d = args(2).to_scalar ();
+	  double d = args(2).double_value ();
 	  set_rand_seed (d);
 	}
       else
 	{
-	  n = NINT (args(1).to_scalar ());
-	  m = NINT (args(2).to_scalar ());
+	  n = NINT (args(1).double_value ());
+	  m = NINT (args(2).double_value ());
 	  goto gen_matrix;
 	}
     }

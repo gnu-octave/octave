@@ -200,7 +200,7 @@ sort the columns of X, optionally return sort index")
     }
   else if (tmp.is_real_matrix () || tmp.is_string () || tmp.is_range ())
     {
-      Matrix m = tmp.to_matrix ();
+      Matrix m = tmp.matrix_value ();
       if (m.rows () == 1)
 	{
 	  int nc = m.columns ();

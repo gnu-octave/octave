@@ -157,7 +157,7 @@ npsol_constraint_function (const ColumnVector& x)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp(0).to_vector ();
+	  retval = tmp(0).vector_value ();
 
 	  if (retval.length () <= 0)
 	    error ("npsol: error evaluating constraints");
@@ -294,7 +294,7 @@ Handle all of the following:
       return retval;
     }
 
-  ColumnVector x = args(1).to_vector ();
+  ColumnVector x = args(1).vector_value ();
 
   if (x.capacity () == 0)
     {
@@ -314,8 +314,8 @@ Handle all of the following:
   Bounds bounds;
   if (nargin == 5 || nargin == 8 || nargin == 11)
     {
-      ColumnVector lb = args(3).to_vector ();
-      ColumnVector ub = args(4).to_vector ();
+      ColumnVector lb = args(3).vector_value ();
+      ColumnVector ub = args(4).vector_value ();
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
@@ -365,9 +365,9 @@ Handle all of the following:
     {
       if (! npsol_constraints)
 	{
-	  ColumnVector lub = args(nargin-1).to_vector ();
-	  Matrix c = args(nargin-2).to_matrix ();
-	  ColumnVector llb = args(nargin-3).to_vector ();
+	  ColumnVector lub = args(nargin-1).vector_value ();
+	  Matrix c = args(nargin-2).matrix_value ();
+	  ColumnVector llb = args(nargin-3).vector_value ();
 
 	  if (llb.capacity () == 0 || lub.capacity () == 0)
 	    {
@@ -402,8 +402,8 @@ Handle all of the following:
 	{
 	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
 	    {
-	      ColumnVector nlub = args(nargin-1).to_vector ();
-	      ColumnVector nllb = args(nargin-3).to_vector ();
+	      ColumnVector nlub = args(nargin-1).vector_value ();
+	      ColumnVector nllb = args(nargin-3).vector_value ();
 
 	      NLFunc const_func (npsol_constraint_function);
 
@@ -445,8 +445,8 @@ Handle all of the following:
 	{
 	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
 	    {
-	      ColumnVector nlub = args(nargin-1).to_vector ();
-	      ColumnVector nllb = args(nargin-3).to_vector ();
+	      ColumnVector nlub = args(nargin-1).vector_value ();
+	      ColumnVector nllb = args(nargin-3).vector_value ();
 
 	      NLFunc const_func (npsol_constraint_function);
 
@@ -456,9 +456,9 @@ Handle all of the following:
 
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
-	      ColumnVector lub = args(nargin-4).to_vector ();
-	      Matrix c = args(nargin-5).to_matrix ();
-	      ColumnVector llb = args(nargin-6).to_vector ();
+	      ColumnVector lub = args(nargin-4).vector_value ();
+	      Matrix c = args(nargin-5).matrix_value ();
+	      ColumnVector llb = args(nargin-6).vector_value ();
 
 	      if (llb.capacity () == 0 || lub.capacity () == 0)
 		{

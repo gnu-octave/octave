@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -42,7 +43,7 @@ Compute the singular value decomposition of X.  Given a second input\n\
 argument, an `economy' sized factorization is computed that omits\n\
 unnecessary rows and columns of U and V")
 {
-  Octave_object retval;
+  Octave_object retval (3, Matrix ());
 
   int nargin = args.length ();
 
@@ -52,35 +53,15 @@ unnecessary rows and columns of U and V")
       return retval;
     }
 
-  tree_constant arg = args(1).make_numeric ();
-
-  if (error_state)
-    return retval;
-
-  if (arg.rows () == 0 || arg.columns () == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    gripe_empty_arg ("svd", 0);
-
-	  Matrix m;
-	  retval.resize (3, m);
-	}
-      else
-	gripe_empty_arg ("svd", 1);
-
-      return retval;
-    }
-
   SVD::type type = (nargin == 3) ? SVD::economy : SVD::std;
+
+  tree_constant arg = args(1);
 
   if (arg.is_real_type ())
     {
       Matrix tmp = arg.matrix_value ();
 
-      if (error_state)
+      if (error_state || empty_arg ("svd", tmp.rows (), tmp.columns ()))
 	return retval;
 
       SVD result (tmp, type);
@@ -102,7 +83,7 @@ unnecessary rows and columns of U and V")
     {
       ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-      if (error_state)
+      if (error_state || empty_arg ("svd", ctmp.rows (), ctmp.columns ()))
 	return retval;
 
       ComplexSVD result (ctmp, type);

@@ -34,6 +34,7 @@ extern void gripe_empty_arg (const char *name, int is_error);
 extern void gripe_square_matrix_required (const char *name);
 extern void gripe_user_supplied_eval (const char *name);
 extern void gripe_user_returned_invalid (const char *name);
+extern void gripe_invalid_conversion (const char *from, const char *to);
 
 #endif
 

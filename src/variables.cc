@@ -1128,6 +1128,7 @@ install_builtin_mapper (builtin_mapper_function *mf)
   sym_rec->unprotect ();
 
   Mapper_fcn mfcn;
+  mfcn.name = strsave (mf->name);
   mfcn.can_return_complex_for_real_arg = mf->can_return_complex_for_real_arg;
   mfcn.lower_limit = mf->lower_limit;
   mfcn.upper_limit = mf->upper_limit;

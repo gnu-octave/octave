@@ -40,6 +40,7 @@ typedef Complex (*c_c_Mapper)(const Complex&);
 
 struct Mapper_fcn
 {
+  char *name;
   int can_return_complex_for_real_arg;
   double lower_limit;
   double upper_limit;

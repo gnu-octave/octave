@@ -102,6 +102,7 @@ LOSE! LOSE!
 #include "variables.h"
 #include "dirfns.h"
 #include "error.h"
+#include "gripes.h"
 #include "pager.h"
 #include "utils.h"
 #include "input.h"
@@ -504,6 +505,26 @@ make_argv (const Octave_object& args, const char *fcn_name)
     error ("%s: expecting all arguments to be strings", fcn_name);
 
   return argv;
+}
+
+int
+empty_arg (const char *name, int nr, int nc)
+{
+  int is_empty = 0;
+
+  if (nr == 0 || nc == 0)
+    {
+      is_empty = 0;
+
+      int flag = user_pref.propagate_empty_matrices;
+
+      if (flag < 0)
+	gripe_empty_arg (name, 0);
+      else if (flag > 0)
+	gripe_empty_arg (name, 1);
+    }
+
+  return is_empty;
 }
 
 // Format a list in neat columns.  Mostly stolen from GNU ls.  This

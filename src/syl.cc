@@ -146,9 +146,9 @@ DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
 
 // Do everything in real arithmetic;
 
-	Matrix ca = arga.to_matrix ();
-	Matrix cb = argb.to_matrix ();
-	Matrix cc = argc.to_matrix ();
+	Matrix ca = arga.matrix_value ();
+	Matrix cb = argb.matrix_value ();
+	Matrix cc = argc.matrix_value ();
   
 // Compute Schur decompositions.
 

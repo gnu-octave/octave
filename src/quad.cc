@@ -66,7 +66,7 @@ quad_user_function (double x)
 	}
 
       if (tmp.length () && tmp(0).is_defined ())
-	retval = tmp(0).to_scalar ();
+	retval = tmp(0).double_value ();
       else
 	{
 	  quad_integration_error = 1;  // XXX FIXME XXX
@@ -106,8 +106,8 @@ at which the integrand is singular.")
   if (! quad_fcn || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
-  double a = args(2).to_scalar ();
-  double b = args(3).to_scalar ();
+  double a = args(2).double_value ();
+  double b = args(3).double_value ();
 
   int indefinite = 0;
   IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
@@ -148,9 +148,9 @@ at which the integrand is singular.")
 	  return retval;
 	}
       have_sing = 1;
-      sing = args(5).to_vector ();
+      sing = args(5).vector_value ();
     case 5:
-      tol = args(4).to_vector ();
+      tol = args(4).vector_value ();
       switch (tol.capacity ())
 	{
 	case 2:

@@ -14,18 +14,18 @@ VPATH = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
-MATRIX_INC = CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h \
+MATRIX_INC = Array.h MArray.h Matrix.h mx-base.h mx-defs.h mx-ext.h \
+	mx-kludge.h CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h \
 	CmplxAEPBAL.h CmplxCHOL.h CmplxColVec.h CmplxDET.h CmplxHESS.h \
 	CmplxLU.h CmplxQR.h CmplxQRP.h CmplxSCHUR.h CmplxSVD.h EIG.h \
 	dColVector.h dDiagMatrix.h dMatrix.h dRowVector.h dbleAEPBAL.h \
 	dbleCHOL.h dbleDET.h dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h \
 	dbleQRP.h dbleSCHUR.h dbleSVD.h
 
-INCLUDES = Array.h Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h \
-	FSQP.h LinConst.h LP.h LPsolve.h MArray.h Matrix.h NLConst.h \
-	NLEqn.h NLFunc.h NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h \
-	QLD.h QP.h QPSOL.h Quad.h Range.h mx-base.h mx-defs.h \
-	mx-kludge.h lo-error.h f77-uscore.h sun-utils.h \
+INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
+	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
+	NPSOL.h ODE.h ODEFunc.h Objective.h QLD.h QP.h QPSOL.h \
+	Quad.h Range.h lo-error.h f77-uscore.h sun-utils.h \
 	$(MATRIX_INC)
 
 TEMPLATE_SRC = Array.cc

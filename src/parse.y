@@ -38,8 +38,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <strstream.h>
 
 #include "Matrix.h"
+#include "cmd-edit.h"
+#include "cmd-hist.h"
+#include "file-ops.h"
+#include "file-stat.h"
 
 #include "defun.h"
+#include "dynamic-ld.h"
 #include "error.h"
 #include "input.h"
 #include "lex.h"
@@ -51,8 +56,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-all.h"
 #include "symtab.h"
 #include "token.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+
+// TRUE means we print 
+static bool Vdefault_eval_print_flag = true;
 
 // If TRUE, generate a warning for the assignment in things like
 //
@@ -87,6 +96,20 @@ int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
 string help_buf;
+
+// TRUE means we are using readline.
+// (--no-line-editing)
+bool line_editing = true;
+
+// TRUE means we printed messages about reading startup files.
+bool reading_startup_message_printed = false;
+
+// TRUE means input is coming from startup file.
+bool input_from_startup_file = false;
+
+// TRUE means that input is coming from a file that was named on
+// the command line.
+bool input_from_command_line_file = true;
 
 // Forward declarations for some functions defined at the bottom of
 // the file.
@@ -2374,6 +2397,676 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
     }
 }
 
+void
+parse_and_execute (FILE *f)
+{
+  unwind_protect::begin_frame ("parse_and_execute");
+  
+  YY_BUFFER_STATE old_buf = current_buffer ();
+  YY_BUFFER_STATE new_buf = create_buffer (f);
+
+  unwind_protect::add (restore_input_buffer, old_buf);
+  unwind_protect::add (delete_input_buffer, new_buf);
+
+  switch_to_buffer (new_buf);
+
+  unwind_protect_bool (line_editing);
+  unwind_protect_bool (input_from_command_line_file);
+
+  line_editing = false;
+  input_from_command_line_file = false;
+
+  unwind_protect_ptr (curr_sym_tab);
+
+  int retval;
+  do
+    {
+      reset_parser ();
+
+      retval = yyparse ();
+
+      if (retval == 0 && global_command)
+	{
+	  global_command->eval ();
+
+	  delete global_command;
+
+	  global_command = 0;
+
+	  bool quit = (tree_return_command::returning
+		       || tree_break_command::breaking);
+
+	  if (tree_return_command::returning)
+	    tree_return_command::returning = 0;
+
+	  if (tree_break_command::breaking)
+	    tree_break_command::breaking--;
+
+	  if (error_state)
+	    {
+	      error ("near line %d of file `%s'", input_line_number,
+		     curr_fcn_file_full_name.c_str ());
+
+	      break;
+	    }
+
+	  if (quit)
+	    break;
+	}
+    }
+  while (retval == 0);
+
+  unwind_protect::run_frame ("parse_and_execute");
+}
+
+static void
+safe_fclose (void *f)
+{
+  if (f)
+    fclose (static_cast<FILE *> (f));
+}
+
+void
+parse_and_execute (const string& s, bool verbose, const char *warn_for)
+{
+  unwind_protect::begin_frame ("parse_and_execute_2");
+
+  unwind_protect_bool (reading_script_file);
+  unwind_protect_str (curr_fcn_file_full_name);
+
+  reading_script_file = true;
+  curr_fcn_file_full_name = s;
+
+  FILE *f = get_input_from_file (s, 0);
+
+  if (f)
+    {
+      unwind_protect::add (safe_fclose, f);
+
+      unwind_protect_int (input_line_number);
+      unwind_protect_int (current_input_column);
+
+      input_line_number = 0;
+      current_input_column = 1;
+
+      if (verbose)
+	{
+	  cout << "reading commands from " << s << " ... ";
+	  reading_startup_message_printed = true;
+	  cout.flush ();
+	}
+
+      parse_and_execute (f);
+
+      if (verbose)
+	cout << "done." << endl;
+    }
+  else if (warn_for)
+    error ("%s: unable to open file `%s'", warn_for, s.c_str ());
+
+  unwind_protect::run_frame ("parse_and_execute_2");
+}
+
+static bool
+looks_like_octave_copyright (const string& s)
+{
+  bool retval = false;
+
+  string t = s.substr (0, 15);
+
+  if (t == " Copyright (C) ")
+    {
+      size_t pos = s.find ('\n');
+
+      if (pos != NPOS)
+	{
+	  pos = s.find ('\n', pos + 1);
+
+	  if (pos != NPOS)
+	    {
+	      pos++;
+
+	      t = s.substr (pos, 29);
+
+	      if (t == " This file is part of Octave."
+		  || t == " This program is free softwar")
+		retval = true;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+// Eat whitespace and comments from FFILE, returning the text of the
+// comments read if it doesn't look like a copyright notice.  If
+// IN_PARTS, consider each block of comments separately; otherwise,
+// grab them all at once.  If UPDATE_POS is TRUE, line and column
+// number information is updated.
+
+// XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
+// code!
+
+static string
+gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
+{
+  string help_txt;
+
+  bool first_comments_seen = false;
+  bool begin_comment = false;
+  bool have_help_text = false;
+  bool in_comment = false;
+  int c;
+
+  while ((c = getc (ffile)) != EOF)
+    {
+      if (update_pos)
+	current_input_column++;
+
+      if (begin_comment)
+	{
+	  if (c == '%' || c == '#')
+	    continue;
+	  else
+	    begin_comment = false;
+	}
+
+      if (in_comment)
+	{
+	  if (! have_help_text)
+	    {
+	      first_comments_seen = true;
+	      help_txt += (char) c;
+	    }
+
+	  if (c == '\n')
+	    {
+	      if (update_pos)
+		{
+		  input_line_number++;
+		  current_input_column = 0;
+		}
+	      in_comment = false;
+
+	      if (in_parts)
+		{
+		  if ((c = getc (ffile)) != EOF)
+		    {
+		      if (update_pos)
+			current_input_column--;
+		      ungetc (c, ffile);
+		      if (c == '\n')
+			break;
+		    }
+		  else
+		    break;
+		}
+	    }
+	}
+      else
+	{
+	  switch (c)
+	    {
+	    case ' ':
+	    case '\t':
+	      if (first_comments_seen)
+		have_help_text = true;
+	      break;
+
+	    case '\n':
+	      if (first_comments_seen)
+		have_help_text = true;
+	      if (update_pos)
+		{
+		  input_line_number++;
+		  current_input_column = 0;
+		}
+	      continue;
+
+	    case '%':
+	    case '#':
+	      begin_comment = true;
+	      in_comment = true;
+	      break;
+
+	    default:
+	      if (update_pos)
+		current_input_column--;
+	      ungetc (c, ffile);
+	      goto done;
+	    }
+	}
+    }
+
+ done:
+
+  if (! help_txt.empty ())
+    {
+      if (looks_like_octave_copyright (help_txt)) 
+	help_txt.resize (0);
+
+      if (in_parts && help_txt.empty ())
+	help_txt = gobble_leading_white_space (ffile, in_parts, update_pos);
+    }
+
+  return help_txt;
+}
+
+string
+get_help_from_file (const string& path)
+{
+  string retval;
+
+  if (! path.empty ())
+    {
+      FILE *fptr = fopen (path.c_str (), "r");
+
+      if (fptr)
+	{
+	  unwind_protect::add (safe_fclose, (void *) fptr);
+
+	  retval = gobble_leading_white_space (fptr, true, true);
+
+	  unwind_protect::run ();
+	}
+    }
+
+  return retval;
+}
+
+static int
+is_function_file (FILE *ffile)
+{
+  int status = 0;
+
+  long pos = ftell (ffile);
+
+  gobble_leading_white_space (ffile, false, false);
+
+  char buf [10];
+  fgets (buf, 10, ffile);
+  int len = strlen (buf);
+  if (len > 8 && strncmp (buf, "function", 8) == 0
+      && ! (isalnum (buf[8]) || buf[8] == '_'))
+    status = 1;
+
+  fseek (ffile, pos, SEEK_SET);
+
+  return status;
+}
+
+static void
+restore_command_history (void *)
+{
+  command_history::ignore_entries (! Vsaving_history);
+}
+
+static void
+restore_input_stream (void *f)
+{
+  command_editor::set_input_stream (static_cast<FILE *> (f));
+}
+
+static bool
+parse_fcn_file (bool exec_script, const string& ff)
+{
+  unwind_protect::begin_frame ("parse_fcn_file");
+
+  int script_file_executed = false;
+
+  // Open function file and parse.
+
+  bool old_reading_fcn_file_state = reading_fcn_file;
+
+  FILE *in_stream = command_editor::get_input_stream ();
+
+  unwind_protect::add (restore_input_stream, in_stream);
+
+  unwind_protect_ptr (ff_instream);
+
+  unwind_protect_int (input_line_number);
+  unwind_protect_int (current_input_column);
+  unwind_protect_bool (reading_fcn_file);
+  unwind_protect_bool (line_editing);
+
+  input_line_number = 0;
+  current_input_column = 1;
+  reading_fcn_file = true;
+  line_editing = false;
+
+  FILE *ffile = get_input_from_file (ff, 0);
+
+  unwind_protect::add (safe_fclose, ffile);
+
+  if (ffile)
+    {
+      // Check to see if this file defines a function or is just a
+      // list of commands.
+
+      if (is_function_file (ffile))
+	{
+	  // XXX FIXME XXX -- we shouldn't need both the
+	  // command_history object and the
+	  // Vsaving_history variable...
+	  command_history::ignore_entries ();
+
+	  unwind_protect::add (restore_command_history, 0);
+
+	  unwind_protect_int (Vecho_executing_commands);
+	  unwind_protect_bool (Vsaving_history);
+	  unwind_protect_bool (reading_fcn_file);
+	  unwind_protect_bool (input_from_command_line_file);
+
+	  Vecho_executing_commands = ECHO_OFF;
+	  Vsaving_history = false;
+	  reading_fcn_file = true;
+	  input_from_command_line_file = false;
+
+	  YY_BUFFER_STATE old_buf = current_buffer ();
+	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
+
+	  unwind_protect::add (restore_input_buffer, (void *) old_buf);
+	  unwind_protect::add (delete_input_buffer, (void *) new_buf);
+
+	  switch_to_buffer (new_buf);
+
+	  unwind_protect_ptr (curr_sym_tab);
+
+	  reset_parser ();
+
+	  help_buf = gobble_leading_white_space (ffile, true, true);
+
+	  // XXX FIXME XXX -- this should not be necessary.
+	  gobble_leading_white_space (ffile, false, true);
+
+	  int status = yyparse ();
+
+	  if (status != 0)
+	    {
+	      error ("parse error while reading function file %s",
+		     ff.c_str ());
+	      global_sym_tab->clear (curr_fcn_file_name);
+	    }
+	}
+      else if (exec_script)
+	{
+	  // The value of `reading_fcn_file' will be restored to the
+	  // proper value when we unwind from this frame.
+	  reading_fcn_file = old_reading_fcn_file_state;
+
+	  // XXX FIXME XXX -- we shouldn't need both the
+	  // command_history object and the
+	  // Vsaving_history variable...
+	  command_history::ignore_entries ();
+
+	  unwind_protect::add (restore_command_history, 0);
+
+	  unwind_protect_bool (Vsaving_history);
+	  unwind_protect_bool (reading_script_file);
+
+	  Vsaving_history = false;
+	  reading_script_file = true;
+
+	  parse_and_execute (ffile);
+
+	  script_file_executed = true;
+	}
+    }
+
+  unwind_protect::run_frame ("parse_fcn_file");
+
+  return script_file_executed;
+}
+
+bool
+load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
+{
+  bool script_file_executed = false;
+
+  string nm = sym_rec->name ();
+
+  if (octave_dynamic_loader::load_fcn_from_dot_oct_file (nm))
+    {
+      force_link_to_function (nm);
+    }
+  else
+    {
+      string ff = fcn_file_in_path (nm);
+
+      // These are needed by yyparse.
+
+      unwind_protect::begin_frame ("load_fcn_from_file");
+
+      unwind_protect_str (curr_fcn_file_name);
+      unwind_protect_str (curr_fcn_file_full_name);
+
+      curr_fcn_file_name = nm;
+      curr_fcn_file_full_name = ff;
+
+      if (ff.length () > 0)
+	script_file_executed = parse_fcn_file (exec_script, ff);
+
+      if (! (error_state || script_file_executed))
+	force_link_to_function (nm);
+
+      unwind_protect::run_frame ("load_fcn_from_file");
+    }
+
+  return script_file_executed;
+}
+
+DEFUN (source, args, ,
+  "source (FILE)\n\
+\n\
+Parse and execute the contents of FILE.  Like executing commands in a\n\
+script file but without requiring the file to be named `FILE.m'.")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      string file = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  file = file_ops::tilde_expand (file);
+
+	  parse_and_execute (file, false, "source");
+
+	  if (error_state)
+	    error ("source: error sourcing file `%s'", file.c_str ());
+	}
+      else
+	error ("source: expecting file name as argument");
+    }
+  else
+    print_usage ("source");
+
+  return retval;
+}
+
+octave_value_list
+feval (const octave_value_list& args, int nargout)
+{
+  octave_value_list retval;
+
+  octave_function *fcn = is_valid_function (args(0), "feval", 1);
+
+  if (fcn)
+    {
+      string_vector arg_names = args.name_tags ();
+
+      int tmp_nargin = args.length () - 1;
+
+      octave_value_list tmp_args (tmp_nargin, octave_value ());
+
+      string_vector tmp_arg_names (tmp_nargin);
+
+      for (int i = 0; i < tmp_nargin; i++)
+	{
+	  tmp_args(i) = args(i+1);
+	  tmp_arg_names(i) = arg_names(i+1);
+	}
+
+      tmp_args.stash_name_tags (tmp_arg_names);
+
+      retval = fcn->do_index_op (nargout, tmp_args);
+    }
+
+  return retval;
+}
+
+DEFUN (feval, args, nargout,
+  "feval (NAME, ARGS, ...)\n\
+\n\
+evaluate NAME as a function, passing ARGS as its arguments")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 0)
+    retval = feval (args, nargout);
+  else
+    print_usage ("feval");
+
+  return retval;
+}
+
+static octave_value_list
+eval_string (const string& s, bool silent, int& parse_status, int nargout)
+{
+  unwind_protect::begin_frame ("eval_string");
+
+  unwind_protect_bool (get_input_from_eval_string);
+  unwind_protect_bool (input_from_command_line_file);
+  unwind_protect_ptr (global_command);
+  unwind_protect_str (current_eval_string);
+
+  get_input_from_eval_string = true;
+  input_from_command_line_file = false;
+  current_eval_string = s;
+
+  YY_BUFFER_STATE old_buf = current_buffer ();
+  YY_BUFFER_STATE new_buf = create_buffer (0);
+
+  unwind_protect::add (restore_input_buffer, old_buf);
+  unwind_protect::add (delete_input_buffer, new_buf);
+
+  switch_to_buffer (new_buf);
+
+  unwind_protect_ptr (curr_sym_tab);
+
+  reset_parser ();
+
+  parse_status = yyparse ();
+
+  // Important to reset the idea of where input is coming from before
+  // trying to eval the command we just parsed -- it might contain the
+  // name of an function file that still needs to be parsed!
+
+  tree_statement_list *command = global_command;
+
+  unwind_protect::run_frame ("eval_string");
+
+  octave_value_list retval;
+
+  if (parse_status == 0 && command)
+    {
+      retval = command->eval (silent, nargout);
+      delete command;
+    }
+
+  return retval;
+}
+
+octave_value
+eval_string (const string& s, bool silent, int& parse_status)
+{
+  octave_value retval;
+
+  octave_value_list tmp = eval_string (s, silent, parse_status, 1);
+
+  if (! tmp.empty ())
+    retval = tmp(0);
+
+  return retval;
+}
+
+static octave_value_list
+eval_string (const octave_value& arg, bool silent, int& parse_status,
+	     int nargout)
+{
+  string s = arg.string_value ();
+
+  if (error_state)
+    {
+      error ("eval: expecting string argument");
+      return -1.0;
+    }
+
+  return eval_string (s, silent, parse_status, nargout);
+}
+
+DEFUN (eval, args, nargout,
+  "eval (TRY, CATCH)\n\
+\n\
+Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
+string CATCH.")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 0)
+    {
+      unwind_protect::begin_frame ("Feval");
+
+      if (nargin > 1)
+	{
+	  unwind_protect_bool (buffer_error_messages);
+	  buffer_error_messages = true;
+	}
+
+      int parse_status = 0;
+
+      retval = eval_string (args(0), ! Vdefault_eval_print_flag,
+			    parse_status, nargout);
+
+      if (nargin > 1 && (parse_status != 0 || error_state))
+	{
+	  error_state = 0;
+
+	  // Set up for letting the user print any messages from
+	  // errors that occurred in the first part of this eval().
+
+	  buffer_error_messages = false;
+	  bind_global_error_variable ();
+	  unwind_protect::add (clear_global_error_variable, 0);
+
+	  eval_string (args(1), 0, parse_status, nargout);
+
+	  retval = octave_value_list ();
+	}
+
+      unwind_protect::run_frame ("Feval");
+    }
+  else
+    print_usage ("eval");
+
+  return retval;
+}
+
+static int
+default_eval_print_flag (void)
+{
+  Vdefault_eval_print_flag = check_preference ("default_eval_print_flag");
+
+  return 0;
+}
+
 static int
 warn_assign_as_truth_value (void)
 {
@@ -2411,6 +3104,10 @@ warn_variable_switch_label (void)
 void
 symbols_of_parse (void)
 {
+  DEFVAR (default_eval_print_flag, 1.0, 0, default_eval_print_flag,
+    "If the value of this variable is nonzero, Octave will print the\n\
+results of commands executed by eval() that do not end with semicolons.");
+
   DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 

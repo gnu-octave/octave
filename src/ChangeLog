@@ -1,3 +1,65 @@
+Tue Jun  3 16:47:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (parse_and_execute): Move here from toplev.cc
+	(default_eval_print_flag): Likewise.
+	(safe_fclose): Likewise.
+	(eval_string): Likewise.
+	(Fsource): Likewise.
+	(Ffeval): Likewise.
+	(feval): Likewise.
+	(Feval): Likewise.
+	(symbols_of_parse): Define default_eval_print_flag here instead of
+	in varaibles.cc.
+	(looks_like_octave_copyright): Move here from variables.cc
+	(gobble_leading_whitespace): Likeiwse.
+	(is_function_file): Likewise.
+	(restore_input_stream): Likewise.
+	(parse_fcn_file): Likewise.
+	(load_fcn_from_file): Likewise.
+	(get_help_from_file): Likewise.
+
+	* toplev.cc (syms_of_toplev): Define argv, program_name, and
+	program_invocation_name here instead of in variables.cc.
+
+	* parse.h (line_editing): Move here from toplev.h.  Now bool, not int.
+	(reading_startup_message_printed) Likewise.
+	(input_from_startup_file): Likewise.
+	(input_from_command_line_file): Likewise.
+
+	* load-save.cc: Use bool instead of int where appropriate.
+
+	* input.h (enum echo_state): Move here from variables.h.
+	(Vecho_executing_commands): Likewise.  Now bool, not int.
+	* input.cc (echo_executing_commands): Move here from variables.cc.
+	(symbols_of_input): Define echo_executing_commands here instead of
+	in variables.cc.
+
+	* octave.cc (program_invocation_name): Don't define.
+	(intern_argv): Don't set program_invocation_name here.
+	(main): Call octave_env::set_program_name here, not in intern_argv.
+
+	* toplev.cc (quitting_gracefully): Move here from octave.h and
+	make static bool instead of extern int.
+
+	* error.cc (bind_global_error_variable, clear_global_error_variable):
+	Move here from variables.cc.
+	(symbols_of_error): Define error_text here instead of in variables.cc.
+
+	* pager.cc (write_to_diary_file): Now bool, not int.
+	(really_flush_to_pager): Likewise.
+ 	(flushing_to_pager): Likewise.
+	* sighandlers.h (can_interrupt): Likewise.
+	* error.h (buffer_error_messages): Likewise.
+	* oct-hist.h (input_from_tmp_history_file, Vsaving_history): Likewise.
+	* input.h (forced_interactive): Likewise.
+	(get_input_from_eval_string): Likeiwse.
+	(reading_script_file): Likeiwse.
+	(reading_fcn_file): Likeiwse.
+	(interactive): Likewise.
+
+	* unwind-prot.cc (saved_variable::saved_variable (bool *, bool)):
+	Set type_tag to boolean, not int. 
+
 Mon Jun  2 00:40:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.h (Octave_builtin_fcn): Delete typedef.

@@ -23,6 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_parse_h)
 #define octave_parse_h 1
 
+#include <cstdio>
+
 #include <string>
 
 #include "SLStack.h"
@@ -34,7 +36,10 @@ extern int yyparse (void);
 class tree;
 class tree_matrix;
 class tree_identifier;
+class symbol_record;
 class symbol_table;
+class octave_value;
+class octave_value_list;
 
 // Temporary symbol table pointer used to cope with bogus function syntax.
 extern symbol_table *tmp_local_sym_tab;
@@ -50,6 +55,37 @@ extern int current_input_column;
 
 // Buffer for help text snagged from function files.
 extern string help_buf;
+
+// TRUE means we are using readline.
+extern bool line_editing;
+
+// TRUE means we printed messages about reading startup files.
+extern bool reading_startup_message_printed;
+
+// TRUE means input is coming from startup file.
+extern bool input_from_startup_file;
+
+// TRUE means that input is coming from a file that was named on
+// the command line.
+extern bool input_from_command_line_file;
+
+extern void
+parse_and_execute (FILE *f);
+
+extern void
+parse_and_execute (const string& s, bool verbose = false,
+		   const char *warn_for = 0);
+
+extern string get_help_from_file (const string& f);
+
+extern bool
+load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
+
+extern octave_value_list
+feval (const octave_value_list& args, int nargout);
+
+extern octave_value
+eval_string (const string&, bool silent, int& parse_status);
 
 #endif
 

@@ -836,40 +836,42 @@ display the definition of each NAME that refers to a function")
 		  tree_constant *tmp = static_cast<tree_constant *> (defn);
 
 		  int var_ok = 1;
-		  if (tmp && tmp->is_map ())
-		    {
-		      if (! elts.empty ())
-			{
-			  octave_value ult =
-			    tmp->lookup_map_element (elts, 0, 1);
 
-			  if (! ult.is_defined ())
-			    var_ok = 0;			    
-			}
+		  // XXX FIXME XXX -- need to handle structure
+		  // references correctly.
+
+		  if (tmp)
+		    {
+		      octave_value vtmp = tmp->value ();
+
+		      if (vtmp.is_map ())
+			error ("type: operations on structs not implemented");
 		    }
 
-		  if (nargout == 0 && ! quiet)
+		  if (! error_state)
 		    {
-		      if (var_ok)
+		      if (nargout == 0 && ! quiet)
 			{
-			  output_buf << argv[i];
-			  if (sym_rec->is_user_variable ())
-			    output_buf << " is a user-defined variable\n";
+			  if (var_ok)
+			    {
+			      output_buf << argv[i];
+			      if (sym_rec->is_user_variable ())
+				output_buf << " is a user-defined variable\n";
+			      else
+				output_buf << " is a built-in variable\n";
+			    }
 			  else
-			    output_buf << " is a built-in variable\n";
+			    {
+			      if (! elts.empty ())
+				output_buf << "type: structure `" << id
+					   << "' has no member `" << elts
+					   << "'\n";
+			      else
+				output_buf << "type: `" << id
+					   << "' has unknown type!\n";
+			    }
 			}
-		      else
-			{
-			  if (! elts.empty ())
-			    output_buf << "type: structure `" << id
-			      << "' has no member `" << elts << "'\n";
-			  else
-			    output_buf << "type: `" << id
-			      << "' has unknown type!\n";
-			}
-		    }
-		  if (! tmp->is_map ())
-		    {
+
 		      tree_print_code tpc (output_buf, "", pr_orig_txt);
 
 		      tmp->accept (tpc);

@@ -525,7 +525,7 @@ DEFUN (fprintf, args, ,
 
   int nargin = args.length ();
 
-  if (nargin > 1)
+  if (nargin > 1 || (nargin > 0 && args(0).is_string ()))
     {
       octave_stream *os	= 0;
       int fmt_n = 0;

@@ -102,12 +102,12 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
     dmag = 0.2;         # desired max change in magnitude
     while(pcnt)
       pd = abs(diff(phase));                    # phase variation
-      pdbig = vec(find(pd > dphase));
+      pdbig = find(pd > dphase);
 
       lp = length(f);  lp1 = lp-1;              # relative variation
       fd = abs(diff(f));
       fm = max(abs([f(1:lp1); f(2:lp)]));
-      fdbig = vec(find(fd > fm/10));
+      fdbig = find(fd > fm/10);
 
       bigpts = union(fdbig, pdbig);
 

@@ -1,3 +1,8 @@
+2003-04-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/base/__bodquist__.m: Don't convert pdbig and fdbig to
+	column vectors.
+
 2003-03-24  Quentin Spencer <qspencer@ieee.org>
 
 	* linear-algebra/null.m: Handle empty matrix arg.

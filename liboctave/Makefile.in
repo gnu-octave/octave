@@ -29,7 +29,7 @@ MATRIX_INC = Array.h MArray.h Matrix.h mx-base.h mx-defs.h mx-ext.h \
 INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
 	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
 	NPSOL.h ODE.h ODEFunc.h Objective.h QLD.h QP.h QPSOL.h \
-	Quad.h Range.h lo-error.h f77-uscore.h sun-utils.h \
+	Quad.h Range.h base-min.h lo-error.h f77-uscore.h sun-utils.h \ 
 	$(MATRIX_INC)
 
 TEMPLATE_SRC = Array.cc MArray.cc
@@ -43,9 +43,9 @@ MATRIX_SRC = CColVector.cc CDiagMatrix.cc CMatrix.cc CRowVector.cc \
 	dbleAEPBAL.cc dbleCHOL.cc dbleDET.cc dbleGEPBAL.cc dbleHESS.cc \
 	dbleLU.cc dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
-SOURCES = Bounds.cc CollocWt.cc DAE.cc DAEFunc.cc FEGrid.cc FSQP.cc \
-	LinConst.cc LP.cc LPsolve.cc NLConst.cc NLEqn.cc NLFunc.cc \
-	NPSOL.cc Objective.cc ODE.cc ODEFunc.cc QLD.cc QP.cc QPSOL.cc \
+SOURCES = Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc \
+	LinConst.cc LPsolve.cc NLEqn.cc NLFunc.cc \
+	NPSOL.cc Objective.cc ODE.cc ODEFunc.cc QLD.cc QPSOL.cc \
 	Quad.cc Range.cc lo-error.cc sun-utils.cc $(TEMPLATE_SRC) \
 	$(TI_SRC) $(MATRIX_SRC)
 

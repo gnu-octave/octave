@@ -67,7 +67,7 @@ liboctave.ps: liboctave.dvi
 	dvips -o liboctave.ps liboctave.dvi
 
 refcard.dvi: refcard.tex
-	tex refcard.tex
+	tex $(srcdir)/refcard.tex
 
 refcard.ps: refcard.dvi
 	dvips -t landscape -o refcard.ps refcard.dvi

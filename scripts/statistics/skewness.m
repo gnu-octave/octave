@@ -26,26 +26,32 @@ function retval = skewness (x)
 #
 # of x.
 #
-# If x is a matrix, return the row vector containing the skewness
-# of each column.
+# If x is a matrix, return a row vector containing the skewness for each
+# column.
 
-# Written by Kurt Hornik (hornik@neuro.tuwien.ac.at) June 1993.
-# Dept of Probability Theory and Statistics TU Wien, Austria.
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
+# Copyright Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 1)
-    error("usage: skewness (x)");
+    error ("usage: skewness (x)");
   endif
 
-  [nr, nc] = size (x);
-  if (nr == 1 || nc == 1)
-    n = max (nr, nc);
-    x = x - ones (x) * sum (x) / n;
-    retval = sum (x.^3) / (n * max (sumsq (x)^(3/2), ! any (x)));
-  elseif (nr > 0 && nc > 0)
-    x = x - ones (nr, 1) * sum (x) / nr;
-    retval = sum (x.^3) ./ (nr * max (sumsq (x).^(3/2), ! any (x)));
+  if (is_vector (x))
+    x = x - mean (x);
+    if (! any (x))
+      retval = 0;
+    else
+      retval = sum (x .^ 3) / (length (x) * std (x) ^ 3);
+    endif
+  elseif (is_matrix (x))
+    [nr, nc] = size (x);
+    x = x - ones (nr, 1) * mean (x);
+    retval = zeros (1, nc);
+    s      = std (x);
+    ind    = find (s > 0);
+    retval (ind) = sum (x (:, ind) .^ 3) ./ (nr * s (ind) .^ 3);
   else
-    error ("skewness: invalid matrix argument");
+    error ("skewness: x has to be a matrix or a vector.");
   endif
 
 endfunction

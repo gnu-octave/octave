@@ -21,28 +21,37 @@ function retval = kurtosis (x)
 # usage: kurtosis (x)
 #
 # If x is a vector of length N, return the kurtosis
+#
 # 	kurtosis(x) = N^(-1) std(x)^(-4) SUM_i (x(i)-mean(x))^4 - 3
+#
 # of x.
-# If x is a matrix, return the row vector containing the kurtosis
-# of each column.
+#
+# If x is a matrix, return a row vector containing the kurtosis for each
+# column.
 
-# Written by Kurt Hornik (hornik@neuro.tuwien.ac.at) June 1993.
-# Dept of Probability Theory and Statistics TU Wien, Austria.
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
+# Copyright Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 1)
-    error("usage: kurtosis (x)");
+    error ("usage: kurtosis (x)");
   endif
 
-  [nr, nc] = size (x);
-  if (nr == 1 || nc == 1)
-    n = max (nr, nc);
-    x = x - ones (x) * sum (x) / n;
-    retval = sum (x.^4) / (n * max (sumsq (x)^2, ! any (x)));
-  elseif (nr > 0 && nc > 0)
-    x = x - ones (nr, 1) * sum(x) / nr;
-    retval = sum (x.^4) ./ (nr * max (sumsq (x).^2, ! any (x)));
+  if (is_vector (x))
+    x = x - mean (x);
+    if (! any (x))
+      retval = 0;
+    else
+      retval = sum (x .^ 4) / (length (x) * std (x) ^ 4) - 3;
+    endif
+  elseif (is_matrix (x))
+    [nr, nc] = size (x);
+    x = x - ones (nr, 1) * mean (x);
+    retval = zeros (1, nc);
+    s      = std (x);
+    ind    = find (s > 0);
+    retval (ind) = sum (x (:, ind) .^ 4) ./ (nr * s (ind) .^ 4) - 3;
   else
-    error ("kurtosis: invalid matrix argument");
+    error ("kurtosis: x has to be a matrix or a vector.");
   endif
 
 endfunction

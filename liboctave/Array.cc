@@ -3003,23 +3003,37 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       dim_vector new_dims;
       new_dims.resize (n_idx);
 
-      for (int i = 0; i < n_idx; i++)
+      if (orig_empty)
 	{
-	  if (orig_empty)
+	  int k = 0;
+	  for (int i = 0; i < n_idx; i++)
 	    {
 	      // If index is a colon, resizing to RHS dimensions is
 	      // allowed because we started out empty.
 
-	      new_dims(i)
-		= (i < rhs_dims.length () && idx(i).is_colon ())
-		? rhs_dims(i) : idx(i).max () + 1;
+	      if (idx(i).is_colon ())
+		{
+		  if (k < rhs_dims.length ())
+		    new_dims(i) = rhs_dims(k++);
+		  else
+		    {
+		      (*current_liboctave_error_handler)
+			("A(IDX-LIST) = RHS: A previously undefined and more colons in IDX-LIST than dimensions for RHS");
+		      return retval;
+		    }
+		}
+	      else
+		new_dims(i) = idx(i).max () + 1;
 	    }
-	  else
+	}
+      else
+	{
+	  for (int i = 0; i < n_idx; i++)
 	    {
 	      // We didn't start out with all zero dimensions, so if
 	      // index is a colon, it refers to the current LHS
 	      // dimension.  Otherwise, it is OK to enlarge to a
-	      // dimension given by the largest index, but if that 
+	      // dimension given by the largest index, but if that
 	      // index is a colon the new dimension is singleton.
 
 	      if (i < lhs_dims_len
@@ -3095,33 +3109,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		{
 		  // RHS is matrix or higher dimension.
 
-		  // Check that non-singleton RHS dimensions conform to
-		  // non-singleton LHS index dimensions.
+		  int n = Array<LT>::get_size (frozen_len);
 
-		  dim_vector t_rhs_dims = rhs_dims.squeeze ();
-		  dim_vector t_frozen_len = frozen_len.squeeze ();
-
-		  // If after sqeezing out singleton dimensions, RHS is
-		  // vector and LHS is vector, force them to have the same
-		  // orientation so that operations like
-		  //
-		  //   a = zeros (3, 3, 3);
-		  //   a(1:3,1,1) = [1,2,3];
-		  //
-		  // will work.
-
-		  if (t_rhs_dims.length () == 2 && t_frozen_len.length () == 2
-		      && ((t_rhs_dims.elem(1) == 1
-			   && t_frozen_len.elem(0) == 1)
-			  || (t_rhs_dims.elem(0) == 1
-			      && t_frozen_len.elem(1) == 1)))
-		    {
-		      int t0 = t_rhs_dims.elem(0);
-		      t_rhs_dims.elem(0) = t_rhs_dims.elem(1);
-		      t_rhs_dims.elem(1) = t0;
-		    }
-
-		  if (t_rhs_dims != t_frozen_len)
+		  if (n != rhs.numel ())
 		    {
 		      (*current_liboctave_error_handler)
 			("A(IDX-LIST) = X: X must be a scalar or size of X must equal number of elements indexed by IDX-LIST");

@@ -1,3 +1,11 @@
+2005-04-01  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assignN): For A(IDX-LIST) = RHS with A previously
+	undefined, correctly match colons in IDX-LIST with RHS dimensions
+	when resizing A.  When performing the assignment, just check that
+	the number of elements in RHS matches the number of elements
+	indexed by IDX-LIST.
+
 2005-03-30  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.cc (log10, tan, tanh): Delete functions.

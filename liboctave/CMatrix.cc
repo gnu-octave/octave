@@ -59,6 +59,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
+  int F77_FCN (zgebal, ZGEBAL) (const char*, const int&, Complex*,
+                                const int&, int&, int&, double*, int&,
+                                long, long);
+
+  int F77_FCN (dgebak, DGEBAK) (const char*, const char*, const int&,
+                                const int&, const int&, double*,
+                                const int&, double*, const int&,
+                                int&, long, long);
+
   int F77_FCN (zgemm, ZGEMM) (const char*, const char*, const int&,
 			      const int&, const int&, const Complex&,
 			      const Complex*, const int&,
@@ -1592,18 +1601,69 @@ ComplexMatrix::expm (void) const
     m.elem (i, i) -= trshift;
 
   // Preconditioning step 2: eigenvalue balancing.
+  // code follows development in AEPBAL
 
-  ComplexAEPBALANCE mbal (m, "B");
-  m = mbal.balanced_matrix ();
-  ComplexMatrix d = mbal.balancing_matrix ();
+  Complex *mp = m.fortran_vec ();
+  int ilo, ihi, info;
+
+  // FIXME: should pass job as a parameter in expm
+  char job = 'B';
+
+  Array<double> scale(nc);
+  double *pscale = scale.fortran_vec ();
+
+  F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilo, ihi, pscale, info,
+			     1L, 1L));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
+      return retval;
+    }
+
+  // construct balancing matrices dmat, dinv
+
+  Matrix dmat = Matrix (nc, nc, 0.0);
+  Matrix dinv = Matrix (nc, nc, 0.0);
+
+  for (int i = 0; i < nc; i++)
+    dmat(i,i) = dinv(i,i) = 1.0;
+
+  // pscale contains real data, so just use dgebak, dside=R => dmat := D*dmat
+  char dside = 'R';
+  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
+			     dmat.fortran_vec(), nc, info, 1L, 1L));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
+      return retval;
+    }
+
+  // dgebak, dside=L => dinv := dinv*D^{-1}
+  dside = 'L';
+  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
+			     dinv.fortran_vec(), nc, info, 1L, 1L));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
+      return retval;
+    }
 
   // Preconditioning step 3: scaling.
 
   ColumnVector work (nc);
   double inf_norm;
 
-  F77_FCN (xzlange, XZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
-			      work.fortran_vec (), inf_norm);
+  F77_XFCN (xzlange, XZLANGE, ("I", nc, nc, m.fortran_vec (), nc,
+			       work.fortran_vec (), inf_norm));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in zlange");
+      return retval;
+    }
 
   int sqpow = (inf_norm > 0.0
 	       ? static_cast<int> (1.0 + log (inf_norm) / log (2.0)) : 0);
@@ -1659,14 +1719,10 @@ ComplexMatrix::expm (void) const
     }
 
   // Reverse preconditioning step 2: inverse balancing.
-  // XXX FIXME XXX -- should probably do this with Lapack calls
-  // instead of a complete matrix inversion.
-
-  retval = retval.transpose ();
-  d = d.transpose ();
-  retval = retval * d;
-  retval = d.solve (retval);
-  retval = retval.transpose ();
+  // FIXME: need to figure out how to get dgebak to do
+  // dmat*retval*dinv instead of dinv*retval*dmat
+  // This works for now
+  retval = dmat*retval*dinv;
 
   // Reverse preconditioning step 1: fix trace normalization.
 

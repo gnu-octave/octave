@@ -54,6 +54,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
+  int F77_FCN (dgebal, DGEBAL) (const char*, const int&, double*,
+                                const int&, int&, int&, double*,
+                                int&, long, long);
+
+  int F77_FCN (dgebak, DGEBAK) (const char*, const char*, const int&,
+                                const int&, const int&, double*,
+                                const int&, double*, const int&,
+                                int&, long, long);
+
   int F77_FCN (dgemm, DGEMM) (const char*, const char*, const int&,
 			      const int&, const int&, const double&,
 			      const double*, const int&,
@@ -1313,7 +1322,7 @@ Matrix::expm (void) const
   // range of poles, but avoid making stable eigenvalues unstable.
 
   // trace shift value
-  double trshift = 0.0;
+  volatile double trshift = 0.0;
 
   for (int i = 0; i < nc; i++)
     trshift += m.elem (i, i);
@@ -1326,45 +1335,97 @@ Matrix::expm (void) const
 	m.elem (i, i) -= trshift;
     }
 
-  // Preconditioning step 2: balancing.
+  // Preconditioning step 2: balancing; code follows development
+  // in AEPBAL
 
-  AEPBALANCE mbal (m, "B");
-  m = mbal.balanced_matrix ();
-  Matrix d = mbal.balancing_matrix ();
+  double *p_m = m.fortran_vec ();
+
+  Array<double> scale(nc);
+  double *pscale = scale.fortran_vec ();
+
+  int info, ilo, ihi;
+
+  // both scale and permute
+  char job = 'B';
+
+  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilo, ihi, pscale, info,
+			     1L, 1L));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
+      return retval;
+    }
+
+  // construct balancing matrices D, Dinv
+
+  Matrix dmat = Matrix (nc, nc, 0.0);
+  Matrix dinv = Matrix (nc, nc, 0.0);
+
+  for (int i = 0; i < nc; i++)
+    dmat(i,i) = dinv(i,i) = 1.0;
+
+  // dgebak, dside=R => dmat := D*dmat
+  char dside = 'R';
+  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
+			     dmat.fortran_vec(), nc, info, 1L, 1L));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
+      return retval;
+    }
+
+  // dgebak, dside=L => dinv := dinv*D^{-1}
+  dside = 'L';
+  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
+			     dinv.fortran_vec(), nc, info, 1L, 1L));
+
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
+      return retval;
+    }
 
   // Preconditioning step 3: scaling.
-
+  
   ColumnVector work(nc);
   double inf_norm;
-
-  F77_FCN (xdlange, XDLANGE) ("I", nc, nc, m.fortran_vec (), nc,
-			      work.fortran_vec (), inf_norm);
+  
+  F77_XFCN (xdlange, XDLANGE, ("I", nc, nc, m.fortran_vec (), nc,
+			       work.fortran_vec (), inf_norm));
+  
+  if (f77_exception_encountered)
+    {
+      (*current_liboctave_error_handler) ("unrecoverable error in dlange");
+      return retval;
+    }
 
   int sqpow = (int) (inf_norm > 0.0
 		     ? (1.0 + log (inf_norm) / log (2.0))
 		     : 0.0);
-
+  
   // Check whether we need to square at all.
-
+  
   if (sqpow < 0)
     sqpow = 0;
-
+  
   if (sqpow > 0)
     {
       double scale_factor = 1.0;
       for (int i = 0; i < sqpow; i++)
 	scale_factor *= 2.0;
-
+  
       m = m / scale_factor;
     }
-
+  
   // npp, dpp: pade' approx polynomial matrices.
-
+  
   Matrix npp (nc, nc, 0.0);
   Matrix dpp = npp;
-
+  
   // Now powers a^8 ... a^1.
-
+  
   int minus_one_j = -1;
   for (int j = 7; j >= 0; j--)
     {
@@ -1372,38 +1433,33 @@ Matrix::expm (void) const
       dpp = m * dpp + m * (minus_one_j * padec[j]);
       minus_one_j *= -1;
     }
-
+  
   // Zero power.
-
+  
   dpp = -dpp;
   for (int j = 0; j < nc; j++)
     {
       npp.elem (j, j) += 1.0;
       dpp.elem (j, j) += 1.0;
     }
-
+  
   // Compute pade approximation = inverse (dpp) * npp.
 
-  retval = dpp.solve (npp);
-
+  retval = dpp.solve (npp, info);
+  
   // Reverse preconditioning step 3: repeated squaring.
-
+  
   while (sqpow)
     {
       retval = retval * retval;
       sqpow--;
     }
-
+  
   // Reverse preconditioning step 2: inverse balancing.
-
-  retval = retval.transpose();
-  d = d.transpose ();
-  retval = retval * d;
-  retval = d.solve (retval);
-  retval = retval.transpose ();
-
+  retval = dmat*retval*dinv;
+  
   // Reverse preconditioning step 1: fix trace normalization.
-
+  
   if (trshift > 0.0)
     retval = exp (trshift) * retval;
 

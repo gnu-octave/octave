@@ -1,3 +1,9 @@
+1999-11-02  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+
+	* dMatrix.cc (Matrix::expm): Do balancing here instead of using
+	AEPBALANCE class.
+	* CMatrix.cc (ComplexMatrix::expm): Likewise.
+
 1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-shlib.cc, oct-shlib.h: New files.

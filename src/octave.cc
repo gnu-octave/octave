@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <pwd.h>
 #include <setjmp.h>
@@ -230,16 +231,23 @@ execute_startup_files (void)
 
 // Try to execute commands from $HOME/.octaverc and ./.octaverc.
 
+  char *home_rc = (char *) NULL;
   if (home_directory != NULL)
     {
-      char *rc = strconcat (home_directory, "/.octaverc");
-
-      parse_and_execute (rc, 0);
-
-      delete [] rc;
+      home_rc = strconcat (home_directory, "/.octaverc");
+      parse_and_execute (home_rc, 0);
     }
 
-  if (strcmp (the_current_working_directory, home_directory) != 0)
+// Names alone are not enough.
+
+  struct stat home_rc_statbuf;
+  stat (home_rc, &home_rc_statbuf);
+  delete [] home_rc;
+
+  struct stat dot_rc_statbuf;
+  stat ("./.octaverc", &dot_rc_statbuf);
+
+  if (home_rc_statbuf.st_ino != dot_rc_statbuf.st_ino)
     parse_and_execute ("./.octaverc", 0);
 }
 

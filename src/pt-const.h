@@ -744,6 +744,13 @@ private:
   tree_constant_rep *rep;
 };
 
+/*
+ * Here are some extra functions that are related to the tree_constant
+ * class but that don't need to be class members or friends.
+ */
+
+extern tree_constant *make_empties (int nargout, char *fcn_name);
+
 #endif
 
 /*

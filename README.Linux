@@ -1,16 +1,24 @@
 Since July 1996, most work on Octave has been done using a Linux
 system, and a number of people who regularly test Octave snapshot
-releases also primarily use Linux systems.
+releases also primarily use Linux systems.  Because of this, I believe
+Octave should run reasonably well on most current Linux systems.
+However, there have been some problems in the past, usually the result
+of improper installation of compilers or libraries.  Sometimes the
+problems have happened because of a botched upgrade or even a buggy
+Linux distribution.
 
-However, I have recently started to receive a significant number of
-reports from people who say that they can't compile or run Octave on
-Linux systems.  In nearly every case, the problem has turned out
-to be that the compilers or libraries have not been installed
-properly.  I suspect that this often results from a botched upgrade,
-or from attempting to install the compilers from the standard source
-distributions.  But in some cases, the cause has been a buggy Linux
-distribution.  Many of these problems go unnoticed because much of the
-software for Linux is written in C, not C++.
+If you can, you should probably install Octave from one of the binary
+distributions available from ftp.che.wisc.edu, or using one of the
+Debian or RPM packages that are available at other sites.  For
+example, Dirk Eddelbuettel <edd@rosebud.sps.queensu.ca> maintains the
+Debian Octave package and usually has them ready within a day or so of
+new Octave releases.  They are available via the WWW at
+http://www.debian.org/Packages/dist/math/octave.html.
+
+If for some reason you can't (or choose not to) install Octave from
+one of the binary distributions or by using one of the Debian or RPM
+packages and something goes wrong, please check the following list to
+see if your problem is already well known before reporting a bug.
 
 Octave compiles, but it won't run
 ---------------------------------
@@ -19,40 +27,6 @@ If you can compile Octave, but it crashes with a segmentation fault
 right away, you probably have incompatible versions of libc and libg++
 installed, or you have a version of the dynamic loader, ld.so, that is
 incompatible with your versions of the libraries, or both.
-
-On my development system, I am using the following software:
-
-  * Linux kernel 2.0.6
-  * gcc/g++ 2.7.2
-  * g77 0.5.18
-  * libg++/libstdc++ 2.7.1.0
-  * libm 5.0.5
-  * libc 5.2.18
-  * libncurses 3.0
-  * ld.so 1.7.14
-  * binutils 2.6
-
-I know from experience that the versions listed above seem to work
-well together.  But if you have a newer version of the kernel, you may
-need a newer version of the C library.  I don't have time to keep up
-with all the various library versions (life is much too short for
-that), nor do I know which combinations are supposed to work together.
-That sort of information should be clearly stated in the release notes
-for the libraries.  If it is not, please ask the maintainers of the
-libraries to clarify the documentation.
-
-Please note that I am NOT recommending that everyone running Linux and
-using Octave should install the same versions of the libraries and
-compilers that I have.  I am simply saying that the versions listed
-above work for me.  Other version combinations may also work, but I
-don't have time to map out all the possibilities...
-
-Craig Earls <cpearls@ziplink.net> reports that the order of installing
-libc and lig++ is important.  If libg++ is installed *first*, Octave
-will work, but if the libraries are installed in the reverse orfer,
-Octave fails.  The conflict apparently arises because libc and libg++
-shared libraries both use libio, however no one seems to be able to
-provide a clear explanation of exactly what is happening.
 
 Octave won't even compile
 -------------------------
@@ -124,7 +98,8 @@ My system doesn't have g77
 
 A binary release of g77 that should work with gcc 2.7.2 is available
 from sunsite.unc.edu in the directory /pub/Linux/devel/lang/fortran.
-There is also a Debian package for g77.
+There is also a Debian package for g77.  Also, g77 is now included as
+part of egcs (http://www.cygnus.com/egcs).
 
 Problems with g77 on Debian 1.2 systems (and possibly others)
 -------------------------------------------------------------
@@ -149,7 +124,7 @@ notes for the compiler and libraries.
 
 If you decide to install versions of the libraries that are older (or
 newer) than the ones you already have, you should follow the
-directions in the release notes very carefully.
+directions in the release notes carefully.
 
 I/O in dynamically loaded .oct files doesn't work
 -------------------------------------------------
@@ -157,7 +132,7 @@ I/O in dynamically loaded .oct files doesn't work
 If Octave prints things like `%.-1e' instead of numbers when you use a
 dynamically linked .oct file, you probably need to create shared
 versions of the Octave libraries.  To do that, configure Octave with
---enable-shared.
+--enable-shared, recompile, and reinstall.
 
 
 If you have comments or suggestions for this document, please contact
@@ -168,4 +143,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Mon May 19 23:13:35 1997
+Tue Feb  3 02:37:37 1998

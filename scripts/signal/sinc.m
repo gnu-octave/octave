@@ -34,27 +34,13 @@
 
 function result = sinc (x)
 
-  ## We either need to set the do_fortran_indexing variable to "true"
-  ## or use reshape to convert the input matrix to a vector, so that
-  ## we can use find to determine the elements of x that equal zero.
-  ## I prefer reshaping.
+  result = ones (size (x));
 
-  [nr, nc] = size(x);
+  i = (x != 0);
 
-  nels = nr*nc;
-
-  x = reshape(x,nels,1);
-
-  ## Set result to all ones initially.
-  result = ones(nels,1);
-
-  ## Find non-zero elements in the input matrix.
-  i = find(x);
-
-  if (!isempty(i))
-    result(i) = sin(pi*x(i))./(pi*x(i));
+  if (any (i))
+    t = pi * x(i);
+    result(i) = sin (t) ./ t;
   endif
-
-  result = reshape(result,nr,nc);
 
 endfunction

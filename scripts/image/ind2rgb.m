@@ -40,22 +40,8 @@ function [R, G, B] = ind2rgb (X, map)
 
   ## XXX FIXME XXX -- we should check size of X and map.
 
-  pref = do_fortran_indexing;
-
-  unwind_protect
-
-    do_fortran_indexing = 1;
-
-    R = map (X(:), 1);
-    G = map (X(:), 2);
-    B = map (X(:), 3);
-
-    R = reshape (R, hi, wi);
-    G = reshape (G, hi, wi);
-    B = reshape (B, hi, wi);
-
-  unwind_protect_cleanup
-    do_fortran_indexing = pref;
-  end_unwind_protect
+  R = reshape (map (X(:), 1), hi, wi);
+  G = reshape (map (X(:), 2), hi, wi);
+  B = reshape (map (X(:), 3), hi, wi);
 
 endfunction

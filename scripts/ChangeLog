@@ -1,3 +1,13 @@
+2000-01-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* signal/sinc.m: Avoid reshaping.
+
+	* image/rgb2ind.m: No longer needs to reset do_fortran_indexing.
+	* image/ind2rgb.m: Ditto.
+	* image/ind2gray.m: Ditto.
+	* general/reshape.m: Ditto.  Also no longer needs to reset
+	implicit_str_to_num_ok.
+
 2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/popen2.m: Deal with the fact that pipe now returns

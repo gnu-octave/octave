@@ -64,20 +64,11 @@ function retval = reshape (a, m, n)
   if (nargin == 3)
     [nr, nc] = size (a);
     if (nr * nc == m * n)
-      dfi = do_fortran_indexing;
-      istno = implicit_str_to_num_ok;
-      unwind_protect
-        do_fortran_indexing = 1;
-        implicit_str_to_num_ok = 1;
-        retval = zeros (m, n);
-        retval (:) = a;
-        if (isstr (a))
-          retval = setstr (retval);
-        endif
-      unwind_protect_cleanup
-        do_fortran_indexing = dfi;
-        implicit_str_to_num_ok = istno;
-      end_unwind_protect
+      retval = zeros (m, n);
+      if (isstr (a))
+	retval = setstr (retval);
+      endif
+      retval(:) = a;
     else
       error ("reshape: sizes must match");
     endif

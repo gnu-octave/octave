@@ -37,29 +37,14 @@ function Y = ind2gray (X, map)
     map = colormap ();
   endif
 
-  ## Convert colormap to intensity values.
+  [rows, cols] = size (X);
 
-  yiq = rgb2ntsc (map);
-  y = yiq(:,1);
+  ## Convert colormap to intensity values (the first column of the
+  ## result of the call to rgb2ntsc) and then replace indices in
+  ## the input matrix with indexed values in the output matrix (indexed
+  ## values are the result of indexing the the intensity values by the
+  ## elements of X(:)).
 
-  ## We need Fortran indexing capability, but be sure to save the user's
-  ## preference.
-
-  pref = do_fortran_indexing;
-
-  unwind_protect
-
-    do_fortran_indexing = 1;
-
-    ## Replace indices in the input matrix with indexed values in the output
-    ## matrix.
-
-    [rows, cols] = size (X);
-    Y = y(X(:));
-    Y = reshape (Y, rows, cols);
-
-  unwind_protect_cleanup
-    do_fortran_indexing = pref;
-  end_unwind_protect
+  Y = reshape (((rgb2ntsc (map))(:,1))(X(:)), rows, cols);
 
 endfunction

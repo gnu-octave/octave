@@ -78,15 +78,11 @@ file_ops
   static int unlink (const std::string&, std::string&);
 
   static bool is_dir_sep (char);
-};
 
-#define OCTAVE_DIR_SEP_CHAR '/'
-#define OCTAVE_DIR_SEP_STR "/"
-#if defined (__WIN32__) || defined (__CYGWIN__)
-#define OCTAVE_DIR_SEP_CHARS "/\\"
-#else
-#define OCTAVE_DIR_SEP_CHARS OCTAVE_DIR_SEP_STR
-#endif
+  static char dir_sep_char;
+  static std::string dir_sep_str;
+  static std::string dir_sep_chars;
+};
 
 #endif
 

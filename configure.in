@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.374 $)
+AC_REVISION($Revision: 1.375 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1287,6 +1287,20 @@ typedef short nlink_t;
 
 #if !defined(HAVE_SIGSET_T)
 typedef int sigset_t;
+#endif
+
+#define OCTAVE_HAVE_POSIX_FILESYSTEM 1
+
+#if defined (__WIN32__)
+#define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
+#if ! defined (__CYGWIN__)
+#undef OCTAVE_HAVE_POSIX_FILESYSTEM
+#endif
+#endif
+
+/* Define if we expect to have <windows.h>, Sleep, etc. */
+#if defined (__WIN32__) || ! defined (__CYGWIN__)
+#define OCTAVE_USE_WINDOWS_API 1
 #endif
 ])
 

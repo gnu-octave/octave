@@ -46,11 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 // Number of microseconds to delay in the parent after forking.
-#if defined (__CYGWIN32__)
-static int Vkluge_procbuf_delay = 500000;
-#else
 static int Vkluge_procbuf_delay = 0;
-#endif
 
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.

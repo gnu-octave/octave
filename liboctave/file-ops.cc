@@ -49,6 +49,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NOT_SUPPORTED(nm) \
   nm ": not supported on this system"
 
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+char file_ops::dir_sep_char = '\\';
+std::string file_ops::dir_sep_str ("\\");
+#else
+char file_ops::dir_sep_char = '/';
+std::string file_ops::dir_sep_str ("/");
+#endif
+
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
+     && defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+std::string file_ops::dir_sep_chars ("/\\");
+#else
+std::string file_ops::dir_sep_chars (file_ops::dir_sep_str);
+#endif
+
 // We provide a replacement for mkdir().
 
 int
@@ -324,9 +340,6 @@ file_ops::tempnam (const std::string& dir, const std::string& pfx,
 // The following tilde-expansion code was stolen and adapted from
 // readline.
 
-// XXX FIXME XXX
-#define DIR_SEP_CHAR '/'
-
 // The default value of tilde_additional_prefixes.  This is set to
 // whitespace preceding a tilde so that simple programs which do not
 // perform any word separation get desired behaviour.
@@ -412,7 +425,7 @@ tilde_find_suffix (const std::string& s)
 
   for ( ; i < s_len; i++)
     {
-      if (s[i] == DIR_SEP_CHAR)
+      if (s[i] == file_ops::dir_sep_char)
 	break;
 
       if (! suffixes.empty ())
@@ -439,7 +452,7 @@ isolate_tilde_prefix (const std::string& fname)
 
   size_t len = 1;
 
-  while (len < f_len && fname[len] != DIR_SEP_CHAR)
+  while (len < f_len && fname[len] != file_ops::dir_sep_char)
     len++;
 
   return fname.substr (1, len);
@@ -460,7 +473,7 @@ tilde_expand_word (const std::string& filename)
   // of $HOME or the home directory of the current user, regardless of
   // any preexpansion hook.
 
-  if (f_len == 1 || filename[1] == DIR_SEP_CHAR)
+  if (f_len == 1 || filename[1] == file_ops::dir_sep_char)
     return octave_env::get_home_directory () + filename.substr (1);
 
   std::string username = isolate_tilde_prefix (filename);
@@ -623,11 +636,7 @@ file_ops::unlink (const std::string& name, std::string& msg)
 bool
 file_ops::is_dir_sep (char c)
 {
-#if defined (__WIN32__) || defined (__CYGWIN__)
-  return (c == '/' || c == '\\');
-#else
-  return (c == '/');
-#endif
+  return dir_sep_chars.find (c) != NPOS;
 }
 
 /*

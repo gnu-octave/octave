@@ -1,3 +1,29 @@
+2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.cc: Use OCTAVE_USE_WINDOWS_API instead of __WIN32__ and
+	__CYGWIN__.
+
+	* file-ops.cc (file_ops::dir_sep_char, file_ops::dir_sep_str,
+	file_ops::dir_sep_chars): New static functions to replace
+	OCTAVE_DIR_SEP_CHAR, OCTAVE_DIR_SEP_STR, OCTAVE_DIR_SEP_CHARS.
+
+	* oct-env.cc (octave_env::do_set_program_name):
+	Use file_ops::dir_sep_chars instead of OCTAVE_DIR_SEP_CHARS.
+	(octave_env::do_base_pathname): Likewise.
+	(octave_env::do_make_absolute): Likewise.
+
+	* oct-env.cc (octave_env::do_make_absolute):
+	Use file_ops::dir_sep_str instead of OCTAVE_DIR_SEP_STR.
+	(octave_env::do_get_home_directory): Likewise.
+
+	* file-ops.cc (is_dir_sep): Use dir_sep_chars instead of embedding
+	that information here too.
+	(tilde_find_suffix, isolate_tilde_prefix, tilde_expand_word):
+	Use file_ops::dir_sep_char instead of OCTAVE_DIR_SEP_CHAR.
+
+	* file-ops.h: Use OCTAVE_HAVE_WINDOWS_FILESYSTEM and
+	OCTAVE_HAVE_POSIX_FILESYSTEM instead of __WIN32__ and __CYGWIN__.
+
 2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-env.h (octave_env::current_directory): Now mutable.

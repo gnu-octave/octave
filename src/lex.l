@@ -1247,6 +1247,9 @@ is_variable (const std::string& name)
 static void
 force_local_variable (const std::string& name)
 {
+  if (! is_variable (name))
+    curr_sym_tab->clear (name);
+
   symbol_record *sr = curr_sym_tab->lookup (name, true);
 
   if (sr)
@@ -2313,7 +2316,6 @@ handle_identifier (void)
 
   int c1 = yyinput ();
 
-  bool next_tok_is_dot = (c1 == '.');
   bool next_tok_is_paren = (c1 == '(');
 
   bool next_tok_is_eq = false;
@@ -2356,8 +2358,7 @@ handle_identifier (void)
       if (next_tok_is_eq
 	  || lexer_flags.looking_at_return_list
 	  || lexer_flags.looking_at_parameter_list
-	  || lexer_flags.looking_at_matrix_or_assign_lhs
-	  || (next_tok_is_dot && next_token_is_bin_op (spc_gobbled)))
+	  || lexer_flags.looking_at_matrix_or_assign_lhs)
 	{
 	  force_local_variable (tok);
 	}

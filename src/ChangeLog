@@ -1,5 +1,18 @@
 2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (handle_identifier): Don't enter token in local symbol
+	table if the following token is a dot and it looks like a binary
+	operator.
+	(force_local_variable): If name is not a variable, clear it before
+	defining.
+
+	* oct-procbuf.cc (Vkluge_procbuf_delay): Make default 0 for all
+	systems.
+
+	* octave.cc (execute_startup_files, initialize_pathsearch):
+	Use file_ops::dir_sep_str instead of OCTAVE_DIR_SEP_STR.
+	(main): Use file_ops::dir_sep_chars instead of OCTAVE_DIR_SEP_CHARS.
+
 	* ov-re-mat.cc (octave_matrix::convert_to_str): Warn for out of
 	range conversions.  For negative values, set to 0.
 	* ov-scalar.cc (octave_scalar:convert_to_str): Likewise.

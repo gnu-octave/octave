@@ -1,3 +1,8 @@
+2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AH_BOTTOM): Maybe define OCTAVE_USE_WINDOWS_API
+	and OCTAVE_HAVE_WINDOWS_FILESYSTEM.
+
 2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_PROG_GNUPLOT): AC_DEFINE GNUPLOT_BINARY

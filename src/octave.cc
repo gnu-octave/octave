@@ -191,8 +191,8 @@ initialize_pathsearch (void)
     odb = octave_env::getenv ("OCTAVE_DB_DIR");
 
   if (odb.empty ())
-    odb = Vdata_dir + OCTAVE_DIR_SEP_STR + "octave:"
-      + Vlibexec_dir + OCTAVE_DIR_SEP_STR + "octave";
+    odb = Vdata_dir + file_ops::dir_sep_str + "octave:"
+      + Vlibexec_dir + file_ops::dir_sep_str + "octave";
 
   octave_original_texmfdbs = octave_env::getenv ("TEXMFDBS");
 
@@ -242,9 +242,9 @@ execute_startup_files (void)
 
       std::string home_dir = octave_env::get_home_directory ();
 
-      std::string home_rc = home_dir + OCTAVE_DIR_SEP_STR + initfile;
+      std::string home_rc = home_dir + file_ops::dir_sep_str + initfile;
       std::string local_rc
-	= octave_env::getcwd () + OCTAVE_DIR_SEP_STR + initfile;
+	= octave_env::getcwd () + file_ops::dir_sep_str + initfile;
 
       if (! home_dir.empty ())
 	{
@@ -539,7 +539,8 @@ main (int argc, char **argv)
 	  bind_builtin_variable ("program_invocation_name",
 				 curr_fcn_file_name);
 
-	  size_t pos = curr_fcn_file_name.find_last_of (OCTAVE_DIR_SEP_CHARS);
+	  size_t pos
+	    = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars);
 
 	  std::string tmp = (pos != NPOS)
 	    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;

@@ -1137,7 +1137,7 @@ Four byte integer.\n\
 The default precision is @code{\"uchar\"}.\n\
 \n\
 The optional argument @var{skip} specifies the number of bytes to skip\n\
-before each element is read.  If it is not specified, a value of 0 is\n\
+after each element is read.  If it is not specified, a value of 0 is\n\
 assumed.\n\
 \n\
 The optional argument @var{arch} is a string specifying the data format\n\

@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#if defined (__WIN32__)  && ! defined (HAVE_GETTIMEOFDAY)
+#if defined (OCTAVE_USE_WINDOWS_API)
 #include <windows.h>
 #endif
 
@@ -93,7 +93,7 @@ octave_time::stamp (void)
   ot_unix_time = tp.tv_sec;
   ot_usec = tp.tv_usec;
 
-#elif defined (__WIN32__)
+#elif defined (OCTAVE_USE_WINDOWS_API)
 
   // Loosely based on the code from Cygwin
   // Copyright 1996-2002 Red Hat, Inc.

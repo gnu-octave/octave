@@ -54,7 +54,7 @@ NINT (double x)
   else if (x < INT_MIN)
     return INT_MIN;
   else
-    return (x > 0) ? ((int) (x + 0.5)) : ((int) (x - 0.5));
+    return static_cast<int> ((x > 0) ? (x + 0.5) : (x - 0.5));
 }
 
 double

@@ -373,7 +373,7 @@ octave_fftw::fftNd (const Complex *in, Complex *out, const int rank,
 
 int
 octave_fftw::ifftNd (const Complex *in, Complex *out, const int rank, 
-		    const dim_vector &dv)
+		     const dim_vector &dv)
 {
   int dist = 1;
   for (int i = 0; i < rank; i++)

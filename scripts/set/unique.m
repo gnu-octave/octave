@@ -35,49 +35,55 @@
 
 function [y, i, j] = unique (x, r)
 
-  if ( nargin < 1 || nargin > 2 || (nargin == 2 && !strcmp(r,"rows")) )
+  if (nargin < 1 || nargin > 2 || (nargin == 2 && ! strcmp (r, "rows")))
     usage ("unique (x) or unique (x, 'rows')");
   endif
 
   if (nargin == 1)
-    n = prod(size(x));
+    n = prod (size (x));
   else
-    n = size(x,1);
+    n = size (x, 1);
   endif
 
-  y = x; 
+  y = x;
   if (n < 1)
     i = j = [];
-    return
+    return;
   elseif (n < 2)
     i = j = 1;
-    return
+    return;
   endif
 
-  if isstr(x), y = toascii(y); endif
+  if (isstr (x))
+    y = toascii (y);
+  endif
 
-  if nargin == 2
-    [y, i] = sortrows(y);
-    match = all( [ y(1:n-1,:) == y(2:n,:) ]' );
+  if (nargin == 2)
+    [y, i] = sortrows (y);
+    match = all ((y(1:n-1,:) == y(2:n,:))');
     idx = find (match);
-    y (idx, :) = [];
+    y(idx,:) = [];
   else
-    if (size(y,1) != 1) y = y(:); endif
-    [y, i] = sort(y);
-    match = [ y(1:n-1) == y(2:n) ];
+    if (size (y, 1) != 1)
+      y = y(:);
+    endif
+    [y, i] = sort (y);
+    match = y(1:n-1) == y(2:n);
     idx = find (match);
-    y (idx) = [];
+    y(idx) = [];
   endif
 
   ## I don't know why anyone would need reverse indices, but it
   ## was an interesting challenge.  I welcome cleaner solutions.
   if (nargout >= 3)
     j = i;
-    j (i) = cumsum ( prepad ( ~match, n, 1 ) );
+    j(i) = cumsum (prepad (! match, n, 1));
   endif
-  i (idx) = [];
+  i(idx) = [];
 
-  if isstr(x), y = setstr(y); endif
+  if (isstr (x))
+    y = setstr (y);
+  endif
 
 endfunction
 

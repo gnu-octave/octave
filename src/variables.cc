@@ -1469,10 +1469,13 @@ bind_ans (const octave_value& val, bool print)
 {
   static symbol_record *sr = global_sym_tab->lookup ("ans", true);
 
-  sr->define (val);
+  if (val.is_defined ())
+    {
+      sr->define (val);
 
-  if (print)
-    val.print_with_name (octave_stdout, "ans");
+      if (print)
+	val.print_with_name (octave_stdout, "ans");
+    }
 }
 
 void

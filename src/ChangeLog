@@ -1,5 +1,8 @@
 Thu May 15 11:48:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (bind_ans): Only bind ans and print result if value
+	is defined.
+
 	* defun.cc: New file.  Move functions for installing objects in
 	the symbol table here from variables.cc.
 

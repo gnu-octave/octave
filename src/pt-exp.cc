@@ -913,7 +913,7 @@ tree_multi_assignment::rvalue (int nargout)
 			      ult.assign (octave_value::asn_eq, tmp);
 			    }
 			  else
-			    error ("element number %d undefined in return list", k+1);
+			    error ("element number %d undefined in return list", k);
 
 			  if (error_state)
 			    eval_error ();

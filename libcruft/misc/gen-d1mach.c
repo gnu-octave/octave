@@ -408,6 +408,7 @@ main (void)
   999 write(*,1999) i\n\
  1999 format(' d1mach - i out of bounds', i10)\n\
       call xstopx (' ')\n\
+      d1mach = 0\n\
       end\n");
 
   return 0;

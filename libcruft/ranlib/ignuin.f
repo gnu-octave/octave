@@ -95,6 +95,7 @@ C     TO ABORT-PROGRAM
       WRITE (*,*) ' Abort on Fatal ERROR'
       IF (.NOT. (err.EQ.1)) GO TO 110
       CALL XSTOPX ('LOW > HIGH in IGNUIN')
+      IGNUIN = 0
 
       GO TO 120
 

@@ -48,6 +48,11 @@ Free Software Foundation, Inc.
 
 #include <strstream.h>
 
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 #include "str-vec.h"
 
 #include "defun.h"

@@ -30,14 +30,7 @@ class tree_statement_list;
 class tree_function;
 class Octave_str_obj;
 
-// Tell g++ that clean_up_and_exit doesn't return;
-
-#ifdef __GNUG__
-typedef void v_fcn_i (int);
-volatile v_fcn_i clean_up_and_exit;
-#endif
-
-extern void clean_up_and_exit (int);
+extern void clean_up_and_exit (int) NORETURN;
 
 extern void parse_and_execute (FILE *f, int print = 0);
 extern void parse_and_execute (char *s, int print = 0, int verbose = 0);

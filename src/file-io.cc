@@ -54,6 +54,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun.h"
 #include "error.h"
+#include "file-info.h"
 #include "file-io.h"
 #include "help.h"
 #include "input.h"
@@ -80,75 +81,6 @@ static int fmt_arg_count = 0;
 
 // double linked list containing relevant information about open files
 static DLList <file_info> file_list;
-
-file_info::file_info (void)
-{
-  file_number = -1;
-  file_name = 0;
-  file_fptr = 0;
-  file_mode = 0;
-}
-
-file_info::file_info (int n, const char *nm, FILE *t, const char *md)
-{
-  file_number = n;
-  file_name = strsave (nm);
-  file_fptr = t;
-  file_mode = strsave (md);
-}
-
-file_info::file_info (const file_info& f)
-{
-  file_number = f.file_number;
-  file_name = strsave (f.file_name);
-  file_fptr = f.file_fptr;
-  file_mode = strsave (f.file_mode);
-}
-
-file_info&
-file_info::operator = (const file_info& f)
-{
-  if (this != & f)
-    {
-      file_number = f.file_number;
-      delete [] file_name;
-      file_name = strsave (f.file_name);
-      file_fptr = f.file_fptr;
-      delete [] file_mode;
-      file_mode = strsave (f.file_mode);
-    }
-  return *this;
-}
-
-file_info::~file_info (void)
-{
-  delete [] file_name;
-  delete [] file_mode;
-}
-
-int
-file_info::number (void) const
-{
-  return file_number;
-}
-
-const char *
-file_info::name (void) const
-{
-  return file_name;
-}
-
-FILE *
-file_info::fptr (void) const
-{
-  return file_fptr;
-}
-
-const char *
-file_info::mode (void) const
-{
-  return file_mode;
-}
 
 void
 initialize_file_io (void)
@@ -177,7 +109,7 @@ return_valid_file (const tree_constant& arg)
 	{
 	  const char *file_name = arg.string_value ();
 	  file = file_list (p);
-	  if (strcmp (file.name (), file_name) == 0)
+	  if (file.name () == file_name)
 	    return p;
 	  file_list.next (p);
 	}
@@ -230,7 +162,7 @@ fopen_file_for_user (const char *name, const char *mode,
       for (int i = 0; i < file_count; i++)
 	{
 	  file_from_list = file_list (p);
-	  if (strcmp (file_from_list.name (), name) == 0)
+	  if (file_from_list.name () == name)
 	    return p;
 	  file_list.next (p);
 	}
@@ -334,7 +266,7 @@ fflush_internal (const Octave_object& args)
 
   file_info file = file_list (p);
 
-  if (strcmp (file.mode (), "r") == 0)
+  if (file.mode () == "r")
     {
       warning ("can't flush an input stream");
       return retval;
@@ -613,8 +545,8 @@ freport_internal (void)
   for (int i = 0; i < file_count; i++)
     {
       file_info file = file_list (p);
-      output_buf.form ("%7d%6s  %s\n", file.number (), file.mode (),
-		       file.name ());
+      output_buf.form ("%7d%6s  %s\n", file.number (),
+		       file.mode ().data (), file.name ().data ());
       file_list.next (p);
     }
 
@@ -822,7 +754,7 @@ close_files (void)
 	    {
 	      int success = fclose (file.fptr ());
 	      if (success != 0)
-		error ("closing %s", file.name ());
+		error ("closing %s", file.name ().data ());
 	    }
 
 	  file_list.del (p);
@@ -1395,7 +1327,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 
       file = file_list (p);
 
-      if (strcmp (file.mode (), "w") == 0 || strcmp (file.mode (), "a") == 0)
+      if (file.mode () == "w" || file.mode () == "a")
 	{
 	  error ("%s: this file is opened for writing only", type);
 	  return retval;

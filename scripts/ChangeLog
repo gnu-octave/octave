@@ -1,3 +1,9 @@
+2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/int2str.m: Handle matrices.
+	* general/num2str.m: Likewise.
+	Also handle optional precision, and format args.
+
 2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* audio/Makefile.in, control/base/Makefile.in,

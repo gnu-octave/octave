@@ -481,6 +481,11 @@ tree_checker::visit_subplot (subplot& cmd)
 }
 
 void
+tree_checker::visit_subplot_axes (subplot_axes& cmd)
+{
+}
+
+void
 tree_checker::visit_subplot_list (subplot_list& lst)
 {
   subplot_list::iterator p = lst.begin ();
@@ -615,6 +620,20 @@ tree_checker::visit_while_command (tree_while_command& cmd)
 
   if (list)
     list->accept (*this);
+}
+
+void
+tree_checker::visit_do_until_command (tree_do_until_command& cmd)
+{
+  tree_statement_list *list = cmd.body ();
+
+  if (list)
+    list->accept (*this);
+
+  tree_expression *expr = cmd.condition ();
+
+  if (expr)
+    expr->accept (*this);
 }
 
 void

@@ -39,7 +39,6 @@ set -e
 : ${LIBOCTAVE=-loctave}
 : ${LIBOCTINTERP=-loctinterp}
 : ${LIBREADLINE=-lreadline}
-: ${LIBKPATHSEA=-lkpathsea}
 : ${LIBCRUFT=-lcruft}
 : ${BLAS_LIBS=%OCTAVE_CONF_BLAS_LIBS%}
 : ${FFTW_LIBS=%OCTAVE_CONF_FFTW_LIBS%}
@@ -379,7 +378,7 @@ fi
 if $link; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $output_option $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBKPATHSEA $LIBS $FLIBS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $output_option $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS"
       $dbg $cmd
       eval $cmd
     else

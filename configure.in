@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.398 $)
+AC_REVISION($Revision: 1.399 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -135,6 +135,9 @@ dnl   AC_DEFINE(USE_PLPLOT, 1, [Define to use plplot.])
 dnl fi
 AC_SUBST(LIBPLPLOT)
 AC_SUBST(PLPLOT_DIR)
+
+### Don't change the definition of LIBKPATHSEA without understanding
+### the way it is used in liboctave/Makefile.
 
 LIBKPATHSEA='$(TOPDIR)/kpathsea/libkpathsea.$(LIBEXT)'
 AC_SUBST(LIBKPATHSEA)

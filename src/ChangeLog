@@ -1,3 +1,14 @@
+2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: No need to add $(LIBKPATHSEA) to LINK_DEPS, since
+	it is not included in liboctave.
+
+2002-12-18  JD Cole <jdcole@san.rr.com>
+
+	* pt-check.cc (tree_checker::visit_subplot_axes,
+	tree_checker::visit_do_until_command): New functions.
+	* pt-check.h: Provide decl.
+
 2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (Fclear): Fix off-by-one error.

@@ -22,7 +22,7 @@ ifeq ($(INCLUDE_LINK_DEPS), true)
   LINK_DEPS = \
     -L../libcruft -L../kpathsea -L../glob -L. $(RLD_FLAG) \
     $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) \
-    -lglob $(LIBS) $(LIBKPATHSEA) $(FLIBS)
+    -lglob $(LIBS) $(FLIBS)
 endif
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h Array-flags.h \
@@ -210,18 +210,27 @@ else
 endif
 .PHONY: libraries
 
-liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
+libkpathsea-target:
+	$(MAKE) -C ../kpathsea
+.PHONY: libkpathsea-target
+
+liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS) libkpathsea-target
 	rm -f $@
-	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
+	rm -rf kpse-tmp
+	mkdir kpse-tmp
+	( cd kpse-tmp; $(AR) x ../$(LIBKPATHSEA) )
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS) kpse-tmp/*.o
+	rm -rf kpse-tmp
 	$(RANLIB) $@
 
 liboctave.$(SHLEXT_VER): liboctave.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
+liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ) libkpathsea-target
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS)
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ \
+	$(LIBOCTAVE_PICOBJ) $(LINK_DEPS) $(LIBKPATHSEA) 
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 

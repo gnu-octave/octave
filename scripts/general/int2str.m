@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} int2str (@var{n})
-## @deftypefnx {Function File} {} num2str (@var{x})
+## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
+## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
 ## Convert a number to a string.  These functions are not very flexible,
 ## but are provided for compatibility with @sc{Matlab}.  For better control
 ## over the results, use @code{sprintf} (@pxref{Formatted Output}).
@@ -33,11 +34,13 @@ function retval = int2str (x)
   ## XXX FIXME XXX -- this will fail for very large values.
 
   if (nargin == 1)
-    if (rows (x) == 1 && columns (x) == 1)
-      retval = sprintf ("%d", round (x));
-    else
-      error ("int2str: expecting scalar argument");
-    endif
+    x = round (x);
+    fw = max (log10 (abs (x(:))) + 3);
+    fmt = sprintf ("%%%dd", fw);
+    fmt = strcat (repmat (fmt, 1, columns (x)), "\n");
+    tmp = sprintf (fmt, round (x.'));
+    tmp(length (tmp)) = "";
+    retval = split (tmp, "\n");
   else
     usage ("int2str (x)");
   endif

@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} int2str (@var{n})
-## @deftypefnx {Function File} {} num2str (@var{x})
+## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
+## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
 ## Convert a number to a string.  These functions are not very flexible,
 ## but are provided for compatibility with @sc{Matlab}.  For better control
 ## over the results, use @code{sprintf} (@pxref{Formatted Output}).
@@ -28,16 +29,28 @@
 
 ## Author: jwe
 
-function retval = num2str (x)
+function retval = num2str (x, arg)
 
-  if (nargin == 1)
-    if (rows (x) == 1 && columns (x) == 1)
-      retval = sprintf ("%g", x);
+  if (nargin == 1 || nargin == 2)
+    if (nargin == 2)
+      if (isstr (arg))
+	fmt = arg;
+      else
+	fmt = sprintf ("%%.%dg", arg);
+      endif
     else
-      error ("num2str: expecting scalar argument");
+      fmt = "%11.4g";
+    endif
+    if (iscomplex (x))
+      error ("num2str: sorry, can't handle complex numbers yet");
+    else
+      fmt = strcat (repmat (fmt, 1, columns (x)), "\n");
+      tmp = sprintf (fmt, x.');
+      tmp(length (tmp)) = "";
+      retval = split (tmp, "\n");
     endif
   else
-    usage ("num2str (x)");
+    usage ("num2str (x) or num2str (x, precision) or num2str (x, fmt)");
   endif
 
 endfunction

@@ -107,6 +107,8 @@ public:
 
   void visit_subplot (subplot&);
 
+  void visit_subplot_axes (subplot_axes&);
+
   void visit_subplot_list (subplot_list&);
 
   void visit_subplot_style (subplot_style&);
@@ -124,6 +126,8 @@ public:
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
   void visit_while_command (tree_while_command&);
+
+  void visit_do_until_command (tree_do_until_command&);
 
 private:
 

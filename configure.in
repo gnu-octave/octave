@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.55 $)dnl
+AC_REVISION($Revision: 1.56 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -170,6 +170,8 @@ AC_SUBST(localoctfilepath)
 AC_SUBST(fcnfilepath)
 AC_SUBST(imagepath)
 dnl
+dnl Do special stuff if using dld.
+dnl
 DLD_DIR=
 LIBDLD=
 LIBOCTDLD='liboctdld.a'
@@ -185,6 +187,15 @@ if $use_dld; then
   LD_STATIC_FLAG=-static
   AC_DEFINE(WITH_DLD, 1)dnl
 fi
+dnl
+dnl Also use -static if compiling on Alpha OSF/1 1.3 systems.
+dnl
+case "$canonical_host_type" in
+  alpha-dec-osf1.3)
+    LD_STATIC_FLAG=-static
+  ;;
+esac
+dnl
 if test -n "$DLD_DIR"; then
   AC_VERBOSE([defining DLD_DIR to be $DLD_DIR])
 fi

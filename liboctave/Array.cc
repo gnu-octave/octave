@@ -2002,28 +2002,16 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
       int len = tmp.length ();
 
-      if (len == 0)
+      if ((len != 0 && idx_arg.one_zero_only ())
+	  || idx_orig_rows == 1 || idx_orig_columns == 1)
 	{
-	  if (idx_orig_rows == 0 || idx_orig_columns == 0)
-	    retval = Array<T> (dim_vector (idx_orig_rows, idx_orig_columns));
-	  else if (nr == 1)
-	    retval = Array<T> (dim_vector (1, 0));
+	  if (nr == 1)
+	    retval = Array<T> (tmp, dim_vector (1, len));
 	  else
-	    retval = Array<T> (dim_vector (0, 1));
+	    retval = Array<T> (tmp, dim_vector (len, 1));
 	}
       else
-	{
-	  if (idx_arg.one_zero_only ()
-	      || idx_orig_rows == 1 || idx_orig_columns == 1)
-	    {
-	      if (nr == 1)
-		retval = Array<T> (tmp, dim_vector (1, len));
-	      else
-		retval = Array<T> (tmp, dim_vector (len, 1));
-	    }
-	  else
-	    retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
-	}
+	retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
     }
   else
     {

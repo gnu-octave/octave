@@ -144,9 +144,9 @@ public:
   int rows (void) { return rep->nr; }
   int cols (void) { return rep->nc; }
 
-  bool all_strings (void) const { return rep->all_str; }
-  bool is_complex (void) const { return rep->is_cmplx; }
-  bool all_empty (void) const { return rep->all_mt; }
+  bool all_strings_p (void) const { return rep->all_str; }
+  bool complex_p (void) const { return rep->is_cmplx; }
+  bool all_empty_p (void) const { return rep->all_mt; }
 
   octave_value& operator () (Pix p) { return rep->operator () (p); }
 
@@ -273,9 +273,9 @@ public:
   int rows (void) const { return nr; }
   int cols (void) const { return nc; }
 
-  bool all_strings (void) const { return all_str; }
-  bool is_complex (void) const { return is_cmplx; }
-  bool all_empty (void) const { return all_mt; }
+  bool all_strings_p (void) const { return all_str; }
+  bool complex_p (void) const { return is_cmplx; }
+  bool all_empty_p (void) const { return all_mt; }
 
   operator void* () const
     { return ok ? static_cast<void *> (-1) : static_cast<void *> (0); }
@@ -320,13 +320,13 @@ tm_const::init (const tree_matrix& tm)
 
       if (tmp)
 	{
-	  if (all_str && ! tmp.all_strings ())
+	  if (all_str && ! tmp.all_strings_p ())
 	    all_str = false;
 
-	  if (! is_cmplx && tmp.is_complex ())
+	  if (! is_cmplx && tmp.complex_p ())
 	    is_cmplx = true;
 
-	  if (all_mt && ! tmp.all_empty ())
+	  if (all_mt && ! tmp.all_empty_p ())
 	    all_mt = false;
 
 	  append (tmp);
@@ -475,8 +475,8 @@ tree_matrix::eval (bool /* print */)
 
   tm_const tmp (*this);
 
-  bool all_strings = false;
-  bool all_empty = false;
+  bool all_strings_p = false;
+  bool all_empty_p = false;
 
   if (tmp)
     {
@@ -490,12 +490,12 @@ tree_matrix::eval (bool /* print */)
       // Now, extract the values from the individual elements and
       // insert them in the result matrix.
 
-      bool found_complex = tmp.is_complex ();
+      bool found_complex = tmp.complex_p ();
 
-      all_strings = tmp.all_strings ();
-      all_empty = tmp.all_empty ();
+      all_strings_p = tmp.all_strings_p ();
+      all_empty_p = tmp.all_empty_p ();
 
-      if (all_strings)
+      if (all_strings_p)
 	chm.resize (nr, nc, Vstring_fill_char);
       else if (found_complex)
 	cm.resize (nr, nc, 0.0);
@@ -536,7 +536,7 @@ tree_matrix::eval (bool /* print */)
 		{
 		  if (elt.is_real_scalar ())
 		    m (put_row, put_col) = elt.double_value ();
-		  else if (elt.is_string () && all_strings)
+		  else if (elt.is_string () && all_strings_p)
 		    {
 		      charMatrix chm_elt = elt.char_matrix_value ();
 
@@ -556,7 +556,7 @@ tree_matrix::eval (bool /* print */)
 		    }
 		}
 
-	      if (all_strings && chm.rows () > 0 && chm.cols () > 0)
+	      if (all_strings_p && chm.rows () > 0 && chm.cols () > 0)
 		retval = octave_value (chm, true);
 	      else if (found_complex)
 		retval = cm;
@@ -572,9 +572,9 @@ tree_matrix::eval (bool /* print */)
 
 done:
 
-  if (! error_state && retval.is_undefined () && all_empty)
+  if (! error_state && retval.is_undefined () && all_empty_p)
     {
-      if (all_strings)
+      if (all_strings_p)
 	retval = "";
       else
 	retval = Matrix ();

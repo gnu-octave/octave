@@ -34,10 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-sparse.h"
 #include "ov-cx-sparse.h"
 
-#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
-#pragma implementation
-#endif
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

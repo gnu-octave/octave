@@ -1,3 +1,7 @@
+2005-04-06  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-scm-scm.cc: Delete #pragma implementation.
+
 2005-04-05  John W. Eaton  <jwe@octave.org>
 
 	* ov-ch-mat.h (octave_char_matrix::index_vector): New function.
@@ -748,7 +752,7 @@
 	pt-fcn-handle.cc, pt-id.cc, pt-idx.cc, pt-jump.cc, pt-loop.cc,
 	pt-mat.cc, pt-misc.cc, pt-pr-code.cc, pt-select.cc, pt-stmt.cc,
 	pt-unop.cc, symtab.cc, token.cc, unwind-prot.cc:
-	Delete #pragma implementation
+	Delete #pragma implementation.
 
 	* Cell.h, c-file-ptr-stream.h, comment-list.h, oct-map.h,
 	oct-obj.h, ov-base.h, ov-base-int.h, ov-base-mat.h,

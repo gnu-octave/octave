@@ -54,7 +54,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "lex.h"
+#include "oct-conf.h"
 #include "oct-hist.h"
+#include "oct-map.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
@@ -747,7 +749,7 @@ do_octave_atexit (void)
     }
 }
 
-DEFUN(atexit, args, ,
+DEFUN (atexit, args, ,
   "atexit (NAME): register NAME as a function to call when Octave exits\n\
 \n\
 Functions are called with no arguments in the reverse of the order in
@@ -774,6 +776,58 @@ which they were registered with atexit()")
 #endif
 
   return retval;
+}
+
+DEFUN (octave_config_info, , ,
+  "return a structure containing configuration information")
+{
+  Octave_map m;
+
+  m ["default_pager"] = DEFAULT_PAGER;
+  m ["prefix"] = OCTAVE_PREFIX;
+  m ["exec_prefix"] = OCTAVE_EXEC_PREFIX;
+  m ["datadir"] = OCTAVE_DATADIR;
+  m ["libdir"] = OCTAVE_LIBDIR;
+  m ["bindir"] = OCTAVE_BINDIR;
+  m ["infodir"] = OCTAVE_INFODIR;
+  m ["fcnfiledir"] = OCTAVE_FCNFILEDIR;
+  m ["localfcnfiledir"] = OCTAVE_LOCALFCNFILEDIR;
+  m ["localstartupfiledir"] = OCTAVE_LOCALSTARTUPFILEDIR;
+  m ["startupfiledir"] = OCTAVE_STARTUPFILEDIR;
+  m ["localfcnfilepath"] = OCTAVE_LOCALFCNFILEPATH;
+  m ["archlibdir"] = OCTAVE_ARCHLIBDIR;
+  m ["octfiledir"] = OCTAVE_OCTFILEDIR;
+  m ["localoctfilepath"] = OCTAVE_LOCALOCTFILEPATH;
+  m ["fcnfilepath"] = OCTAVE_FCNFILEPATH;
+  m ["imagepath"] = OCTAVE_IMAGEPATH;
+  m ["target_host_type"] = TARGET_HOST_TYPE;
+  m ["configure_options"] = config_opts;
+  m ["F77"] = F77;
+  m ["FFLAGS"] = FFLAGS;
+  m ["FPICFLAG"] = FPICFLAG;
+  m ["F2C"] = F2C;
+  m ["F2CFLAGS"] = F2CFLAGS;
+  m ["FLIBS"] = FLIBS;
+  m ["CPPFLAGS"] = CPPFLAGS;
+  m ["INCFLAGS"] = INCFLAGS;
+  m ["CC"] = CC " " CC_VERSION;
+  m ["CFLAGS"] = CFLAGS;
+  m ["CPICFLAG"] = CPICFLAG;
+  m ["CXX"] = CXX " " CXX_VERSION;
+  m ["CXXFLAGS"] = CXXFLAGS;
+  m ["CXXPICFLAG"] = CXXPICFLAG;
+  m ["LDFLAGS"] = LDFLAGS;
+  m ["LIBFLAGS"] = LIBFLAGS;
+  m ["RLD_FLAG"] = RLD_FLAG;
+  m ["CXXLIBS"] = CXXLIBS;
+  m ["TERMLIBS"] = TERMLIBS;
+  m ["LIBS"] = LIBS;
+  m ["LEXLIB"] = LEXLIB;
+  m ["LIBPLPLOT"] = LIBPLPLOT;
+  m ["LIBDLFCN"] = LIBDLFCN;
+  m ["DEFS"] = DEFS;
+
+  return octave_value (m);
 }
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)

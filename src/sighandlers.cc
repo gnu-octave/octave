@@ -176,11 +176,28 @@ octave_set_signal_handler (int sig, sig_handler *handler)
 {
 #if defined (HAVE_POSIX_SIGNALS)
   struct sigaction act, oact;
+
   act.sa_handler = handler;
   act.sa_flags = 0;
+
+  if (sig == SIGALRM)
+    {
+#if defined (SA_INTERRUPT)
+      act.sa_flags |= SA_INTERRUPT;
+#endif
+    }
+  else
+    {
+#if defined (SA_RESTART)
+      act.sa_flags |= SA_RESTART;
+#endif
+    }
+
   sigemptyset (&act.sa_mask);
   sigemptyset (&oact.sa_mask);
+
   sigaction (sig, &act, &oact);
+
   return oact.sa_handler;
 #else
   return signal (sig, handler);

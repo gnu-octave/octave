@@ -61,6 +61,10 @@ Free Software Foundation, Inc.
     } \
   while (0)
 
+#if !defined (SIGCHLD) && defined (SIGCLD)
+#define SIGCHLD SIGCLD
+#endif
+
 #if defined (HAVE_POSIX_SIGNALS)
 #define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
 #define UNBLOCK_CHILD(ovar) sigprocmask (SIG_SETMASK, &ovar, 0)

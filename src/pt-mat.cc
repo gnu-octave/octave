@@ -603,7 +603,8 @@ tree_matrix::rvalue (void)
 
       // Now, extract the values from the individual elements and
       // insert them in the result matrix.
-      Array<int> ra_idx (dv.length (), 0);
+      int dv_len = dv.length ();
+      Array<int> ra_idx (dv_len > 1 ? dv_len : 2, 0);
       for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 	{
 	  tm_row_const row = *p;

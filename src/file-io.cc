@@ -219,6 +219,31 @@ otherwise, it returns -1.\n\
   return retval;
 }
 
+DEFUN (fclear, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fclear (@var{fid})\n\
+Clear the stream state for the specified file.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      int fid = octave_stream_list::get_file_number (args (0));
+
+      octave_stream os = octave_stream_list::lookup (fid, "fclear");
+
+      if (! error_state)
+	os.clearerr ();
+    }
+  else
+    print_usage ("fclear");
+
+  return retval;
+}
+
 DEFUN (fflush, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fflush (@var{fid})\n\

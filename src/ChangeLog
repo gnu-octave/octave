@@ -1,3 +1,16 @@
+2005-02-15  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (tree_matrix::rvalue): Min size of ra_idx is 2.
+
+	* file-io.cc (Ffclear): New function.
+
+	* sighandlers.h: Define SIGCHLD if it is not already defined and
+	SIGCLD is defined.
+
+	* sighandlers.cc (octave_set_signal_handler): Request system calls
+	restarted if interrupted by signals (except for SIGALRM).
+	* dirfns.cc (Fls): Don't bother with sleeping or checking errno.
+
 2005-02-11  John W. Eaton  <jwe@octave.org>
 
 	* sighandlers.cc (sigpipe_handler): Don't try to take action.

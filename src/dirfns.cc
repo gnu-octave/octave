@@ -182,16 +182,8 @@ from system to system.\n\
 
   unwind_protect::add (cleanup_iprocstream, cmd);
 
-  // XXX FIXME XXX -- Perhaps we should read more than one character
-  // at a time and find a way to avoid the call to octave_usleep as
-  // well?
-
   if (cmd && *cmd)
     {
-      // This is a bit of a kluge...
-
-      octave_usleep (100);
-
       char ch;
 
       OSSTREAM output_buf;
@@ -204,16 +196,7 @@ from system to system.\n\
 	      output_buf << ch;
 	    }
 	  else
-	    {
-	      if (! cmd->eof () && errno == EAGAIN)
-		{
-		  cmd->clear ();
-
-		  octave_usleep (100);
-		}
-	      else
-		break;
-	    }
+	    break;
 	}
 
       output_buf << OSSTREAM_ENDS;

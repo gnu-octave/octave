@@ -11,7 +11,7 @@ SHELL = /bin/sh
 #### Start of system configuration section. ####
 
 # The top of the directory tree where the sources live.
-root_srcdir = @root_srcdir@
+top_srcdir = @top_srcdir@
 
 LEX = @LEX@
 LFLAGS = @LFLAGS@
@@ -48,11 +48,11 @@ ifeq ($(srcdir),.)
 else
   TMP_IF_1 = -I. -I$(srcdir)
 endif
-ifeq ($(TOPDIR),$(root_srcdir))
+ifeq ($(TOPDIR),$(top_srcdir))
   TMP_IF_2 = -I$(TOPDIR) -I$(TOPDIR)/liboctave
 else
   TMP_IF_2 = -I$(TOPDIR) -I$(TOPDIR)/liboctave \
-	-I$(root_srcdir) -I$(root_srcdir)/liboctave 
+	-I$(top_srcdir) -I$(top_srcdir)/liboctave 
 endif
 INCFLAGS = $(TMP_IF_1) $(TMP_IF_2)
 

@@ -234,19 +234,19 @@ IEEE_big_double_to_IEEE_little_double (double *d, int len)
 static void
 VAX_D_double_to_IEEE_little_double (double *d, int len)
 {
-  error ("unable to convert from VAX D float to IEEE little endian format");
+  gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
 VAX_G_double_to_IEEE_little_double (double *d, int len)
 {
-  error ("unable to convert from VAX G float to IEEE little endian format");
+  gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
 Cray_to_IEEE_little_double (double *d, int len)
 {
-  error ("unable to convert from Cray to IEEE little endian format");
+  gripe_data_conversion ("Cray", "IEEE little endian format");
 }
 
 static void
@@ -258,19 +258,19 @@ IEEE_big_float_to_IEEE_little_float (float *d, int len)
 static void
 VAX_D_float_to_IEEE_little_float (float *d, int len)
 {
-  error ("unable to convert from VAX D float to IEEE little endian format");
+  gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
 VAX_G_float_to_IEEE_little_float (float *d, int len)
 {
-  error ("unable to convert from VAX G float to IEEE little endian format");
+  gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
 Cray_to_IEEE_little_float (float *d, int len)
 {
-  error ("unable to convert from Cray to IEEE little endian format");
+  gripe_data_conversion ("Cray", "IEEE little endian format");
 }
 
 #elif defined (IEEE_BIG_ENDIAN)
@@ -284,19 +284,19 @@ IEEE_little_double_to_IEEE_big_double (double *d, int len)
 static void
 VAX_D_double_to_IEEE_big_double (double *d, int len)
 {
-  error ("unable to convert from VAX D float to IEEE big endian format");
+  gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
 VAX_G_double_to_IEEE_big_double (double *d, int len)
 {
-  error ("unable to convert from VAX G float to IEEE big endian format");
+  gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
 Cray_to_IEEE_big_double (double *d, int len)
 {
-  error ("unable to convert from Cray to IEEE big endian format");
+  gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 static void
@@ -308,19 +308,19 @@ IEEE_little_float_to_IEEE_big_float (float *d, int len)
 static void
 VAX_D_float_to_IEEE_big_float (float *d, int len)
 {
-  error ("unable to convert from VAX D float to IEEE big endian format");
+  gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
 VAX_G_float_to_IEEE_big_float (float *d, int len)
 {
-  error ("unable to convert from VAX G float to IEEE big endian format");
+  gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
 Cray_to_IEEE_big_float (float *d, int len)
 {
-  error ("unable to convert from Cray to IEEE big endian format");
+  gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 #elif defined (VAX_D_FLOAT)
@@ -328,49 +328,49 @@ Cray_to_IEEE_big_float (float *d, int len)
 static void
 IEEE_little_double_to_VAX_D_double (double *d, int len)
 {
-  error ("unable to convert from IEEE little endian to VAX D float format");
+  gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
 IEEE_big_double_to_VAX_D_double (double *d, int len)
 {
-  error ("unable to convert from IEEE big endian to VAX D float format");
+  gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
 VAX_G_double_to_VAX_D_double (double *d, int len)
 {
-  error ("unable to convert from VAX G float to VAX D float format");
+  gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
 Cray_to_VAX_D_double (double *d, int len)
 {
-  error ("unable to convert from Cray to VAX D float format");
+  gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
 IEEE_little_float_to_VAX_D_float (float *d, int len)
 {
-  error ("unable to convert from IEEE little endian to VAX D float format");
+  gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
 IEEE_big_float_to_VAX_D_float (float *d, int len)
 {
-  error ("unable to convert from IEEE big endian to VAX D float format");
+  gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
 VAX_G_float_to_VAX_D_float (float *d, int len)
 {
-  error ("unable to convert from VAX G float to VAX D float format");
+  gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
 Cray_to_VAX_D_float (float *d, int len)
 {
-  error ("unable to convert from Cray to VAX D float format");
+  gripe_data_conversion ("Cray", "VAX D");
 }
 
 #elif defined (VAX_G_FLOAT)
@@ -378,49 +378,49 @@ Cray_to_VAX_D_float (float *d, int len)
 static void
 IEEE_little_double_to_VAX_G_double (double *d, int len)
 {
-  error ("unable to convert from IEEE little endian to VAX G float format");
+  gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
 IEEE_big_double_to_VAX_G_double (double *d, int len)
 {
-  error ("unable to convert from IEEE big endian to VAX G float format");
+  gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
 VAX_D_double_to_VAX_G_double (double *d, int len)
 {
-  error ("unable to convert from VAX D float to VAX G float format");
+  gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
 Cray_to_VAX_G_double (double *d, int len)
 {
-  error ("unable to convert from VAX G float to VAX G float format");
+  gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 static void
 IEEE_little_float_to_VAX_G_float (float *d, int len)
 {
-  error ("unable to convert from IEEE little endian to VAX G float format");
+  gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
 IEEE_big_float_to_VAX_G_float (float *d, int len)
 {
-  error ("unable to convert from IEEE big endian to VAX G float format");
+  gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
 VAX_D_float_to_VAX_G_float (float *d, int len)
 {
-  error ("unable to convert from VAX D float to VAX G float format");
+  gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
 Cray_to_VAX_G_float (float *d, int len)
 {
-  error ("unable to convert from VAX G float to VAX G float format");
+  gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 #endif
@@ -2097,11 +2097,11 @@ found in the file will be replaced with the values read from the file.")
 	  break;
 
 	default:
-	  panic_impossible ();
+	  gripe_unrecognized_data_fmt ("load");
 	  break;
 	}
 
-      if (stream.eof ())
+      if (error_state || stream.eof ())
 	{
 	  break;
 	}
@@ -2565,7 +2565,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
       break;
 
     default:
-      error ("save: unrecognized data format requested");
+      gripe_unrecognized_data_fmt ("save");
       break;
     }
 }

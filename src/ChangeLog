@@ -1,3 +1,8 @@
+2002-07-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (make_diag const octave_value&, const octave_value&):
+	Allow first arg to be 1x0 or 0x1.
+
 2002-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.cc (loadpath): Comment out previous change.

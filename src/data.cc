@@ -317,6 +317,9 @@ is omitted, it defaults to 1 (column-wise cumulative sums).\n\
   DATA_REDUCTION (cumsum);
 }
 
+// XXX FIXME XXX -- we could eliminate some duplicate code here with
+// some template functions or macros.
+
 static octave_value
 make_diag (const Matrix& v, int k)
 {
@@ -480,10 +483,10 @@ make_diag (const octave_value& a, const octave_value& b)
 	  int nr = m.rows ();
 	  int nc = m.columns ();
 
-	  if (nr == 0 || nc == 0)
-	    retval = Matrix ();
-	  else if (nr == 1 || nc == 1)
+	  if (nr == 1 || nc == 1)
 	    retval = make_diag (m, k);
+	  else if (nr == 0 || nc == 0)
+	    retval = Matrix ();
 	  else
 	    {
 	      ColumnVector d = m.diag (k);
@@ -500,10 +503,10 @@ make_diag (const octave_value& a, const octave_value& b)
 	  int nr = cm.rows ();
 	  int nc = cm.columns ();
 
-	  if (nr == 0 || nc == 0)
-	    retval = Matrix ();
-	  else if (nr == 1 || nc == 1)
+	  if (nr == 1 || nc == 1)
 	    retval = make_diag (cm, k);
+	  else if (nr == 0 || nc == 0)
+	    retval = Matrix ();
 	  else
 	    {
 	      ComplexColumnVector d = cm.diag (k);

@@ -33,6 +33,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "f-syl.h"
 
 extern "C"
 {

@@ -31,8 +31,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "error.h"
 #include "gripes.h"
+#include "error.h"
+#include "f-balance.h"
 
 #ifdef WITH_DLD
 tree_constant *

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -44,13 +44,13 @@ function [xs, ys] = stairs (x, y)
   if (nargin == 1)
     if (is_vector (x))
       len = 2 * length (x);
-      xs = ys = zeros (len, 1);
+      tmp_xs = tmp_ys = zeros (len, 1);
       k = 0;
       for i = 1:2:len
-        xs(i) = k++;
-        ys(i) = x(k);
-        ys(i+1) = x(k);
-        xs(i+1) = k;
+        tmp_xs(i) = k++;
+        tmp_ys(i) = x(k);
+        tmp_ys(i+1) = x(k);
+        tmp_xs(i+1) = k;
       endfor
     else
       error ("stairs: argument must be a vector");
@@ -61,24 +61,24 @@ function [xs, ys] = stairs (x, y)
       ylen = length (y);
       if (xlen == ylen)
         len = 2 * xlen;
-        xs = ys = zeros (len, 1);
+        tmp_xs = tmp_ys = zeros (len, 1);
 	k = 1;
         len_m2 = len - 2;
 	for i = 1:2:len_m2
-	  xs(i) = x(k);
-	  ys(i) = y(k);
-	  ys(i+1) = y(k);
+	  tmp_xs(i) = x(k);
+	  tmp_ys(i) = y(k);
+	  tmp_ys(i+1) = y(k);
           k++;
-	  xs(i+1) = x(k);
+	  tmp_xs(i+1) = x(k);
           if (x(k) < x(k-1))
             error ("stairs: x vector values must be in ascending order");
           endif
 	endfor
-        xs(len-1) = x(xlen);
+        tmp_xs(len-1) = x(xlen);
         delta = x(xlen) - x(xlen-1);
-        xs(len) = x(xlen) + delta;
-        ys(len-1) = y(ylen);
-        ys(len) = y(ylen);
+        tmp_xs(len) = x(xlen) + delta;
+        tmp_ys(len-1) = y(ylen);
+        tmp_ys(len) = y(ylen);
       else
         error ("stairs: arguments must be the same length");
       endif
@@ -89,8 +89,11 @@ function [xs, ys] = stairs (x, y)
     error ("usage: [xs, ys] = stairs (x, y)");
   endif
 
-  if (nargout == 1)
-    plot (xs, ys);
+  if (nargout == 0)
+    plot (tmp_xs, tmp_ys);
+  else
+    xs = tmp_xs;
+    ys = tmp_ys;
   endif
 
 endfunction

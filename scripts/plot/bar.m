@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -43,17 +43,17 @@ function [xb, yb] = bar (x, y)
   if (nargin == 1)
     if (is_vector (x))
       len = 3 * length (x) + 1;
-      xb = yb = zeros (len, 1);
-      xb(1) = 0.5;
-      yb(1) = 0;
+      tmp_xb = tmp_yb = zeros (len, 1);
+      tmp_xb(1) = 0.5;
+      tmp_yb(1) = 0;
       k = 1;
       for i = 2:3:len
-        xb(i) = k-0.5;
-        xb(i+1) = k+0.5;
-        xb(i+2) = k+0.5;
-        yb(i) = x(k);
-        yb(i+1) = x(k);
-        yb(i+2) = 0.0;
+        tmp_xb(i) = k-0.5;
+        tmp_xb(i+1) = k+0.5;
+        tmp_xb(i+2) = k+0.5;
+        tmp_yb(i) = x(k);
+        tmp_yb(i+1) = x(k);
+        tmp_yb(i+2) = 0.0;
         k++;
       endfor
     else
@@ -65,18 +65,18 @@ function [xb, yb] = bar (x, y)
       ylen = length (y);
       if (xlen == ylen)
         len = 3 * xlen + 1;
-        xb = yb = zeros (len, 1);
+        tmp_xb = tmp_yb = zeros (len, 1);
         delta = (x(2) - x(1)) / 2.0;
-        xb(1) = x(1) - delta;
-        yb(1) = 0.0;
+        tmp_xb(1) = x(1) - delta;
+        tmp_yb(1) = 0.0;
 	k = 1;
         for i = 2:3:len
-          xb(i) = xb(i-1);
-          xb(i+1) = xb(i) + 2.0 * delta;
-          xb(i+2) = xb(i+1);
-	  yb(i) = y(k);
-	  yb(i+1) = y(k);
-	  yb(i+2) = 0.0;
+          tmp_xb(i) = tmp_xb(i-1);
+          tmp_xb(i+1) = tmp_xb(i) + 2.0 * delta;
+          tmp_xb(i+2) = tmp_xb(i+1);
+	  tmp_yb(i) = y(k);
+	  tmp_yb(i+1) = y(k);
+	  tmp_yb(i+2) = 0.0;
           if (k < xlen)
             delta = (x(k+1) - x(k)) / 2.0;
             if (x(k+1) < x(k))
@@ -95,8 +95,11 @@ function [xb, yb] = bar (x, y)
     error ("usage: [xb, yb] = bar (x, y)");
   endif
 
-  if (nargout == 1)
-    plot (xb, yb);
+  if (nargout == 0)
+    plot (tmp_xb, tmp_yb);
+  else
+    xb = tmp_xb;
+    yb = tmp_yb;
   endif
 
 endfunction

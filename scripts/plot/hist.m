@@ -87,21 +87,11 @@ function [nn, xx] = hist (y, x)
   endfor
   freq (n) = sum (y >= cutoff (n-1));
 
-# With Octave 1.0, nargout is never zero, so we have to do this: 
-
-  nn = freq;
-  xx = x;
-  if (nargout != 2)
-    bar (xx, nn);
+  if (nargout == 2)
+    nn = freq;
+    xx = x;
+  else
+    bar (x, freq);
   endif
-
-# Once 1.1 is released, we can do this instead:
-#
-#  if (nargout == 2)
-#    nn = freq;
-#    xx = x;
-#  else
-#    bar (x, freq);
-#  endif
 
 endfunction

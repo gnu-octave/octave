@@ -11,6 +11,10 @@
 
 2005-03-28  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
 
+	* plot/__axis_label__.m, plot/axis.m, plot/grid.m,
+	plot/plot_border.m, plot/replot.m, plot/title.m, plot/top_title.m:
+	Use __gnuplot_replot__ instead of replot.
+
 	* plot/__axis_label__.m, plot/axis.m, plot/bottom_title.m,
 	plot/contour.m, plot/errorbar.m, plot/figure.m, plot/grid.m,
 	plot/loglogerr.m, plot/loglog.m, plot/mesh.m, plot/mplot.m,

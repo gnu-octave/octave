@@ -39,7 +39,8 @@ function top_title (text)
     __gnuplot_raw__ (sprintf ("set top_title \"%s\";\n",
 			      undo_string_escapes (text)));
     if (automatic_replot)
-      replot ();
+      ## No semicolon (see replot.m).
+      __gnuplot_replot__
     endif
   else
     error ("error: top_title: text must be a string");

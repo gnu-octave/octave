@@ -37,7 +37,8 @@ function h = title (text)
     __gnuplot_raw__ (sprintf ("set title \"%s\";\n",
 			      undo_string_escapes (text)));
     if (automatic_replot)
-      replot ();
+      ## No semicolon (see replot.m).
+      __gnuplot_replot__
     endif
   else
     error ("title: text must be a string");

@@ -169,7 +169,8 @@ function curr_axis = axis (ax, varargin)
       __gnuplot_raw__ ("set yrange [] writeback;\n");
       __gnuplot_raw__ ("set zrange [] writeback;\n");
       ## XXX FIXME XXX if writeback were set in plot, no need to replot here.
-      replot ();
+      ## No semicolon (see replot.m).
+      __gnuplot_replot__
       __gnuplot_raw__ ("set noautoscale x;\n");
       __gnuplot_raw__ ("set noautoscale y;\n");
       __gnuplot_raw__ ("set noautoscale z;\n");
@@ -264,7 +265,8 @@ function curr_axis = axis (ax, varargin)
   if (nargin > 1)
     axis (varargin{:});
   elseif (automatic_replot)
-    replot ();
+    ## No semicolon (see replot.m).
+    __gnuplot_replot__
   endif
 endfunction
 

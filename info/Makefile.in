@@ -23,7 +23,7 @@ TOPDIR = ..
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-VPATH  = @srcdir@:$(common)
+VPATH  = @srcdir@
 
 include $(TOPDIR)/Makeconf
 
@@ -33,8 +33,6 @@ CFLAGS = @CFLAGS@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
-
-common = @srcdir@/../liboctave
 
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
@@ -55,7 +53,7 @@ SOURCES = dir.c display.c echo_area.c filesys.c info-utils.c info.c \
 	infodoc.c infomap.c m-x.c nodes.c search.c session.c \
 	signals.c terminal.c tilde.c window.c xmalloc.c	indices.c \
 	makedoc.c nodemenu.c footnotes.c dribble.c variables.c gc.c \
-	error.c
+	error.c getopt.c getopt1.c
 
 INCLUDES = display.h doc.h echo_area.h filesys.h general.h \
 	info-utils.h info.h infomap.h nodes.h search.h session.h \
@@ -202,7 +200,7 @@ echo_area.o: 	info.h
 filesys.o: 	general.h tilde.h filesys.h
 footnotes.o: 	footnotes.h
 info-utils.o: 	info-utils.h nodes.h search.h
-info.o: 	info.h $(common)/getopt.h
+info.o: 	info.h getopt.h
 infodoc.o: 	info.h doc.h
 infomap.o: 	infomap.h funs.h
 gc.o:		info.h

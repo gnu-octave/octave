@@ -1,3 +1,9 @@
+Wed Oct 30 11:42:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array3.h (T Array3<T>::checkelem): Return T() for bogus value,
+	since that is now accepatble syntax, even for built-in types.
+	* Array2.h (T Array2<T>::checkelem): Likewise
+
 Sat Oct 26 23:37:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc (mkfifo) [! HAVE_MKFIFO]: Just print an error

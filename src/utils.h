@@ -40,7 +40,7 @@ extern string file_in_path (const string&, const string&);
 extern string fcn_file_in_path (const string&);
 extern string oct_file_in_path (const string&);
 
-extern "C" void jump_to_top_level (void) NORETURN;
+extern "C" void jump_to_top_level (void) GCC_ATTR_NORETURN;
 
 extern int almost_match (const string& std, const string& s,
 			 int min_match_len = 1, int case_sens = 1);

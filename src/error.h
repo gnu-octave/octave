@@ -34,7 +34,7 @@ extern void usage (const char *fmt, ...);
 extern void warning (const char *fmt, ...);
 extern void error (const char *fmt, ...);
 extern void parse_error (const char *fmt, ...);
-extern void panic (const char *fmt, ...) NORETURN;
+extern void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 // Current error state.
 extern int error_state;

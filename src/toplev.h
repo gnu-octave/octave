@@ -32,7 +32,7 @@ class charMatrix;
 
 #include <string>
 
-extern void clean_up_and_exit (int) NORETURN;
+extern void clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
 extern void parse_and_execute (FILE *f, int print = 0);
 

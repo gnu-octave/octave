@@ -36,30 +36,34 @@
 
 function retval = null (A, tol)
 
-  [U, S, V] = svd (A);
-
-  [rows, cols] = size (A);
-
-  [S_nr, S_nc] = size (S);
-
-  if (S_nr == 1 || S_nc == 1)
-    s = S(1);
+  if (isempty (A))
+    retval = [];
   else
-    s = diag (S);
-  endif
+    [U, S, V] = svd (A);
 
-  if (nargin == 1)
-    tol = max (size (A)) * s (1) * eps;
-  elseif (nargin != 2)
-    usage ("null (A, tol)");
-  endif
+    [rows, cols] = size (A);
 
-  rank = sum (s > tol);
+    [S_nr, S_nc] = size (S);
 
-  if (rank < cols)
-    retval = V (:, rank+1:cols);
-  else
-    retval = zeros (cols, 0);
+    if (S_nr == 1 || S_nc == 1)
+      s = S(1);
+    else
+      s = diag (S);
+    endif
+
+    if (nargin == 1)
+      tol = max (size (A)) * s (1) * eps;
+    elseif (nargin != 2)
+      usage ("null (A, tol)");
+    endif
+
+    rank = sum (s > tol);
+
+    if (rank < cols)
+      retval = V (:, rank+1:cols);
+    else
+      retval = zeros (cols, 0);
+    endif
   endif
 
 endfunction

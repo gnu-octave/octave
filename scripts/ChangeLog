@@ -1,3 +1,7 @@
+2003-03-24  Quentin Spencer <qspencer@ieee.org>
+
+	* linear-algebra/null.m: Handle empty matrix arg.
+
 2003-03-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/shift.m: Force empty_list_elements_ok to 1.

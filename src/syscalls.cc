@@ -495,7 +495,7 @@ Return the real user id of the current process.\n\
 }
 
 DEFUN (kill, args, ,
-  "-*- textinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} kill (@var{pid}, @var{sig})\n\
 Send signal @var{sig} to process @var{pid}.\n\
 \n\
@@ -510,7 +510,7 @@ except process 1.\n\
 If @var{pid} is less than -1, then signal @var{sig} is sent to every\n\
 process in the process group @var{-pid}.\n\
 \n\
-If @var{sig} is 0, then no signal is sent, but error checing is still\n\
+If @var{sig} is 0, then no signal is sent, but error checking is still\n\
 performed.\n\
 \n\
 Return 0 if sucessful, otherwise return -1.\n\

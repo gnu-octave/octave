@@ -2,7 +2,7 @@ Octave -- a high-level language for numerical computations.
 
 Copyright (C) 1996 John W. Eaton
 
-Last updated: Tue Dec 10 00:20:31 1996
+Last updated: Tue Dec 10 01:41:30 1996
 
 Overview
 --------
@@ -91,6 +91,13 @@ compiled with a C compiler.  Better performance is usually achieved if
 the intermediate translation to C is avoided.
 
 The library of C++ classes may also be useful by itself.
+
+Additional Information
+----------------------
+
+Up to date information about Octave is available on the WWW at the
+URL http://bevo.che.wisc.edu/octave, including archives of the
+help-octave, bug-octave, and octave-sources mailing lists.
 
 --
 John W. Eaton

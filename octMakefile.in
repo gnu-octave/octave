@@ -199,7 +199,20 @@ clean-bin-dist-tar: bin-dist-tar
 	$(MAKE) clean-tar
 .PHONY: clean-bin-dist-tar
 
-binary-dist: clean-bin-dist-tar
+# binary-dist: clean-bin-dist-tar
+binary-dist:
+	@echo ""
+	@echo "**********************************************************"
+	@echo "*                                                        *"
+	@echo "* The binary-dist target doesn't work for this version   *"
+	@echo "* of Octave.                                             *"
+	@echo "*                                                        *"
+	@echo "* If you are interested in making a binary distribution  *"
+	@echo "* of this version of Octave, please contact              *"
+	@echo "* bug-octave@bevo.che.wisc.edu.                          *"
+	@echo "*                                                        *"
+	@echo "**********************************************************"
+	@echo ""
 .PHONY: binary-dist
 
 # Rules for making a distribution of the docs.

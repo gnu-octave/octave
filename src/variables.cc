@@ -711,8 +711,6 @@ link_to_global_variable (symbol_record *sr)
 
 	  if (sr->is_variable ())
 	    gsr->define (sr->def ());
-	  else
-	    sr->clear ();
 
 	  // Make sure this symbol is a variable.
 

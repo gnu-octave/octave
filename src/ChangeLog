@@ -1,3 +1,9 @@
+1999-12-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (link_to_global_variable): If the local symbol is
+	not a variable, don't bother to clear it.  Instead, just redefine
+	it by aliasing to the global symbol.
+
 1999-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/balance.cc (Fbalance): Texinfoize doc string.

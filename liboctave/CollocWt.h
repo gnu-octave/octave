@@ -37,35 +37,34 @@ CollocWt
 {
 public:
 
-  CollocWt::CollocWt (void)
+  CollocWt (void)
     : n (0), inc_left (0), inc_right (0), lb (0.0), rb (1.0),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt::CollocWt (int nc, int il, int ir)
+  CollocWt (int nc, int il, int ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt::CollocWt (int nc, int il, int ir, double l, double r)
+  CollocWt (int nc, int il, int ir, double l, double r)
     : n (nc), inc_left (il), inc_right (ir), lb (l), rb (r),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt::CollocWt (int nc, double a, double b, int il, int ir)
+  CollocWt (int nc, double a, double b, int il, int ir)
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
       Alpha (a), Beta (b), initialized (0) { }
 
-  CollocWt::CollocWt (int nc, double a, double b, int il, int ir,
+  CollocWt (int nc, double a, double b, int il, int ir,
 		      double l, double r)  
     : n (nc), inc_left (il), inc_right (ir), lb (l), rb (r),
       Alpha (a), Beta (b), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt::CollocWt (const CollocWt& a)
+  CollocWt (const CollocWt& a)
     : n (a.n), inc_left (a.inc_left), inc_right (a.inc_right),
       lb (a.lb), rb (a.rb), Alpha (a.Alpha), Beta (a.Beta),
       r (a.r), q (a.q), A (a.A), B (a.B),
       initialized (a.initialized) { } 
 
-  CollocWt&
-  CollocWt::operator = (const CollocWt& a)
+  CollocWt& operator = (const CollocWt& a)
     {
       if (this != &a)
 	{

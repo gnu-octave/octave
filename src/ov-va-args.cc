@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "pr-output.h"
+#include "oct-obj.h"
 #include "ov-va-args.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_all_va_args, "va-arg");

@@ -1,3 +1,28 @@
+2002-08-17  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* c-file-ptr-stream.h (c_file_ptr_buf::c_file_ptr_buf): Add Intel
+	C++ runtime support.
+
+	* Cell.h, gripes.cc, ov-base-scalar.cc, ov-colon.cc, ov-fcn.cc,
+	ov-file.cc, ov-mapper.h, ov-va-args.cc, token.cc, xpow.cc,
+	OPERATORS/op-b-b.cc, OPERATORS/op-bm-b.cc, OPERATORS/op-bm-bm.cc,
+	OPERATORS/op-cell.cc, OPERATORS/op-chm.cc, OPERATORS/op-cm-cm.cc,
+	OPERATORS/op-cm-cs.cc, OPERATORS/op-cm-m.cc, OPERATORS/op-cm-s.cc,
+	OPERATORS/op-cs-cm.cc, OPERATORS/op-cs-cs.cc, OPERATORS/op-cs-m.cc,
+	OPERATORS/op-cs-s.cc, OPERATORS/op-fil-b.cc, OPERATORS/op-fil-bm.cc,
+	OPERATORS/op-fil-cm.cc, OPERATORS/op-fil-cs.cc,
+	OPERATORS/op-fil-lis.cc, OPERATORS/op-fil-m.cc,
+	OPERATORS/op-fil-rec.cc, OPERATORS/op-fil-s.cc,
+	OPERATORS/op-fil-str.cc, OPERATORS/op-list.cc, OPERATORS/op-m-cm.cc,
+	OPERATORS/op-m-cs.cc, OPERATORS/op-m-m.cc, OPERATORS/op-m-s.cc,
+	OPERATORS/op-range.cc, OPERATORS/op-s-cm.cc, OPERATORS/op-s-cs.cc,
+	OPERATORS/op-s-m.cc, OPERATORS/op-s-s.cc, OPERATORS/op-str-str.cc,
+	TEMPLATE-INST/Array-sym.cc, TEMPLATE-INST/Array-tc.cc,
+	TEMPLATE-INST/Map-tc.cc, TEMPLATE-INST/SLList-expr.cc,
+	TEMPLATE-INST/SLList-tc.cc, TEMPLATE-INST/SLList-tm.cc,
+	TEMPLATE-INST/SLStack-sym.cc: Make the implementation of
+	octave_value_list visibile for template instantiation.
+
 2002-08-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/dasrt.cc: Include <iostream> not <iostream.h>.

@@ -38,17 +38,17 @@ public:
 
   ComplexCHOL (void) : chol_mat () { }
 
-  ComplexCHOL::ComplexCHOL (const ComplexMatrix& a) { init (a); }
+  ComplexCHOL (const ComplexMatrix& a) { init (a); }
 
-  ComplexCHOL::ComplexCHOL (const ComplexMatrix& a, int& info)
+  ComplexCHOL (const ComplexMatrix& a, int& info)
     {
       info = init (a);
     }
 
-  ComplexCHOL::ComplexCHOL (const ComplexCHOL& a)
+  ComplexCHOL (const ComplexCHOL& a)
     : chol_mat (a.chol_mat) { }
 
-  ComplexCHOL& ComplexCHOL::operator = (const ComplexCHOL& a)
+  ComplexCHOL& operator = (const ComplexCHOL& a)
     {
       if (this != &a)
 	chol_mat = a.chol_mat;
@@ -56,7 +56,7 @@ public:
       return *this;
     }
 
-  ComplexMatrix ComplexCHOL::chol_matrix (void) const
+  ComplexMatrix chol_matrix (void) const
     {
       return chol_mat;
     }

@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Map.h"
 #include "Map.cc"
 
-#include "ov.h"
+#include "oct-obj.h"
 
 template class Map<octave_value>;
 template class CHNode<octave_value>;

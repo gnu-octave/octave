@@ -49,7 +49,7 @@ public:
 
   octave_shlib (void) : rep (make_shlib ()) { }
 
-  octave_shlib::octave_shlib (const std::string& f, bool warn_future)
+  octave_shlib (const std::string& f, bool warn_future)
     : rep (make_shlib ())
   {
     open (f, warn_future);

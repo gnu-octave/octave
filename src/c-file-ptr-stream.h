@@ -72,6 +72,8 @@ public:
     : 
 #if defined __GNUC__ && __GNUC__ >= 3
     OCTAVE_STD_FILEBUF (f_arg, std::ios::in | std::ios::out),
+#elif defined __INTEL_COMPILER
+    OCTAVE_STD_FILEBUF (f_arg),
 #else
     OCTAVE_STD_FILEBUF (f_arg ? fileno (f_arg) : -1),
 #endif

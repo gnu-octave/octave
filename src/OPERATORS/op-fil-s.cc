@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mach-info.h"
 
 #include "error.h"
+#include "oct-obj.h"
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov.h"

@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
+#include "oct-obj.h"
 #include "ov-fcn.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_function);

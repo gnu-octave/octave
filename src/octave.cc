@@ -484,7 +484,6 @@ main (int argc, char **argv)
       retval = yyparse ();
       if (retval == 0 && global_command != NULL_TREE)
 	{
-	  error_state = 0;
 	  global_command->eval (1);
 	  delete global_command;
 	  current_command_number++;

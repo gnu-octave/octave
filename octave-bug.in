@@ -22,7 +22,7 @@ CXX="%CXX%"
 CXXFLAGS="%CXXFLAGS%"
 DEFS="%DEFS%"
 
-PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+PATH=/bin:/usr/bin:/usr/ucb:/usr/local/bin:$PATH
 export PATH
 
 TEMP=/tmp/octave-bug.$$
@@ -144,7 +144,13 @@ then
     echo "file not changed -- no bug report submitted"
     status=1
   else
-    rmail $BUGADDR < $TEMP || cat $TEMP >> $HOME/dead.octave-bug
+    rmail $BUGADDR < $TEMP > /dev/null 2>&1 || \
+    mailx -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
+    Mail -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
+    /usr/ucb/mail -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
+    /bin/mail  -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
+    ( echo "unable to send mail -- saving message in \$HOME/dead.octave-bug"; \
+      cat $TEMP >> $HOME/dead.octave-bug )
   fi
 else
   echo "problems with edit -- no bug report submitted"

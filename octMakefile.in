@@ -27,10 +27,10 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
-DISTDIRS = emacs kpathsea make plplot
+DISTDIRS = emacs glob kpathsea make plplot
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ kpathsea \
+SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ glob kpathsea \
 	libcruft liboctave src scripts doc
 
 # Subdirectories in which to run `make dist'.

@@ -143,7 +143,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x)
 
   int si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-  MArray<T> si (si_len, 0.0);
+  MArray<T> si (si_len, T (0.0));
 
   return filter (b, a, x, si);
 }

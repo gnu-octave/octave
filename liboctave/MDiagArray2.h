@@ -46,7 +46,6 @@ public:
   MDiagArray2 (int r, int c) : DiagArray2<T> (r, c) { }
   MDiagArray2 (int r, int c, const T& val) : DiagArray2<T> (r, c, val) { }
   MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
-  MDiagArray2 (const MArray<T>& a) : DiagArray2<T> (a) { }
   MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
   MDiagArray2 (const MDiagArray2<T>& a) : DiagArray2<T> (a) { }
 

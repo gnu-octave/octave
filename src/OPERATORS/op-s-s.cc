@@ -125,6 +125,7 @@ void
 install_s_s_ops (void)
 {
   INSTALL_UNOP (op_not, octave_scalar, not);
+  INSTALL_UNOP (op_uplus, octave_scalar, uplus);
   INSTALL_UNOP (op_uminus, octave_scalar, uminus);
   INSTALL_UNOP (op_transpose, octave_scalar, transpose);
   INSTALL_UNOP (op_hermitian, octave_scalar, hermitian);

@@ -164,16 +164,6 @@ set test warn-assign-as-truth-value-2
 set prog_output "warning:.*"
 do_test prefer-35.m
 
-## warn_comma_in_global_decl
-
-set test warn-comma-in-global-decl-1
-set prog_output ""
-do_test prefer-36.m
-
-set test warn-comma-in-global-decl-2
-set prog_output "warning:.*"
-do_test prefer-37.m
-
 ## warn_divide_by_zero
 
 set test warn-divide-by-zero-1

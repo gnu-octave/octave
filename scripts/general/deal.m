@@ -67,7 +67,7 @@ function [varargout] = deal (varargin)
   if (nargin == 0)
     usage ("[a, b, c, d] = deal (x, y, z, a)");
   elseif (nargin == 1 || nargin == nargout)
-    varargout(:) = varargin;
+    varargout(1:nargout) = varargin;
   else
     error ("deal: nargin > 1 and nargin != nargout");
   endif

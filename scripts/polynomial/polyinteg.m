@@ -1,39 +1,55 @@
-function p = polyinteg(p)
+# Copyright (C) 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# polyinteg(c)
+function p = polyinteg (p)
+
+# usage: polyinteg (p)
+#
 # Returns the coefficients of the integral the polynomial whose coefficients
-# are represented by the vector c.
+# are represented by the vector p.
 #
 # The constant of integration is zero.
 #
 # SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
 #           filter, polyval, polyvalm
 
-# Author:
-#  Tony Richardson
-#  amr@mpl.ucsd.edu
-#  June 1994
+# Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 
   if(nargin != 1)
-    usage ("polyinteg(vector)");
+    usage ("polyinteg (vector)");
   endif
 
-  if(is_matrix(p))
-    error("argument must be a vector");
+  if (is_matrix (p))
+    error ("argument must be a vector");
   endif
 
-  lp = length(p);
+  lp = length (p);
 
-  if(lp == 0)
+  if (lp == 0)
     p = [];
     return;
   end
 
-  if(rows(p) > 1)
-    # Convert to column vector
+  if (rows (p) > 1)
+# Convert to column vector
     p = p.';
   endif
 
-  p = [ p 0 ] ./ [lp:-1:1 1];
+  p = [ p, 0 ] ./ [ lp:-1:1, 1 ];
 
 endfunction

@@ -1,6 +1,25 @@
-function [r, p, k, e] = residue(b,a,toler)
+# Copyright (C) 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# [r p k e] = residue(b,a)
+function [r, p, k, e] = residue (b, a, toler)
+
+# usage: [r, p, k, e] = residue (b, a)
+#
 # If b and a are vectors of polynomial coefficients, then residue
 # calculates the partial fraction expansion corresponding to the
 # ratio of the two polynomials. The vector r contains the residue
@@ -17,23 +36,24 @@ function [r, p, k, e] = residue(b,a,toler)
 # the r, p, and e vectors) and N is the length of the k vector.
 #
 # [r p k e] = residue(b,a,tol)
+#
 # This form of the function call may be used to set a tolerance value.
 # The default value is 0.001. The tolerance value is used to determine
 # whether poles with small imaginary components are declared real. It is
 # also used to determine if two poles are distinct. If the ratio of the
-# imaginary part of a pole to the real part is less than tol, the imaginary
-# part is discarded. If two poles are farther apart than tol they are
-# distinct.
+# imaginary part of a pole to the real part is less than tol, the
+# imaginary part is discarded. If two poles are farther apart than tol
+# they are distinct.
 #
 # Example:
-#  b = [1 1 1];
-#  a = [1  -5   8  -4];
+#  b = [1,  1, 1];
+#  a = [1, -5, 8, -4];
 #
-#  [r p k e] = residue(b,a)
+#  [r, p, k, e] = residue (b, a)
 #
 #  returns
 #
-#  r = [-2 7 3]; p = [2 2 1]; k = []; e = [1 2 1];
+#  r = [-2, 7, 3]; p = [2, 2, 1]; k = []; e = [1, 2, 1];
 #
 #  which implies the following partial fraction expansion
 #
@@ -43,10 +63,7 @@ function [r, p, k, e] = residue(b,a,toler)
 #
 # SEE ALSO: poly, roots, conv, deconv, polyval, polyderiv, polyinteg
 
-# Author:
-#  Tony Richardson
-#  amr@mpl.ucsd.edu
-#  June 1994
+# Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 
 # Here's the method used to find the residues.
 # The partial fraction expansion can be written as:
@@ -78,13 +95,13 @@ function [r, p, k, e] = residue(b,a,toler)
 #
 # s^2 = r(1)*(s^2+2s+1) + r(2)*(s^2+3s+2) +r(3)*(s+2)
 #
-# The coefficients of the polynomials on the right are stored
-# in a row vector called rhs, while the coefficients of the
-# polynomial on the left is stored in a row vector called lhs.
-# If the multiplicity of any root is greater than one we'll
-# also need derivatives of this equation of order up to the
-# maximum multiplicity minus one.  The derivative coefficients
-# are stored in successive rows of lhs and rhs.
+# The coefficients of the polynomials on the right are stored in a row
+# vector called rhs, while the coefficients of the polynomial on the
+# left is stored in a row vector called lhs.  If the multiplicity of
+# any root is greater than one we'll also need derivatives of this
+# equation of order up to the maximum multiplicity minus one.  The
+# derivative coefficients are stored in successive rows of lhs and
+# rhs.
 #
 # For our example lhs and rhs would be:
 #
@@ -109,153 +126,169 @@ function [r, p, k, e] = residue(b,a,toler)
 #
 # We then solve for the residues using matrix division.
 
-  if(nargin < 2 || nargin > 3)
-    usage ("residue(b,a[,toler])");
+  if (nargin < 2 || nargin > 3)
+    usage ("residue (b, a [, toler])");
   endif
 
   if (nargin == 2)
-    # Set the default tolerance level
     toler = .001;
   endif
 
-  # Make sure both polynomials are in reduced form.
-  a = polyreduce(a);
-  b = polyreduce(b);
+# Make sure both polynomials are in reduced form.
 
-  b = b/a(1);
-  a = a/a(1);
+  a = polyreduce (a);
+  b = polyreduce (b);
 
-  la = length(a);
-  lb = length(b);
+  b = b / a(1);
+  a = a / a(1);
 
-  # Handle special cases here.
-  if(la == 0 || lb == 0)
+  la = length (a);
+  lb = length (b);
+
+# Handle special cases here.
+
+  if (la == 0 || lb == 0)
     k = r = p = e = [];
     return;
   elseif (la == 1)
-    k = b/a;
+    k = b / a;
     r = p = e = [];
     return;
   endif
 
-  # Find the poles.
-  p = roots(a);
-  lp = length(p);
+# Find the poles.
 
-  # Determine if the poles are (effectively) real.
-  index = find(abs(imag(p) ./ real(p)) < toler);
-  if (length(index) != 0)
-    p(index) = real(p(index));
+  p = roots (a);
+  lp = length (p);
+
+# Determine if the poles are (effectively) real.
+
+  index = find (abs (imag (p) ./ real (p)) < toler);
+  if (length (index) != 0)
+    p (index) = real (p (index));
   endif
 
-  # Find the direct term if there is one.
-  if(lb>=la)
-    # Also returns the reduced numerator.
-    [k, b] = deconv(b,a);
-    lb = length(b);
+# Find the direct term if there is one.
+
+  if (lb >= la)
+# Also returns the reduced numerator.
+    [k, b] = deconv (b, a);
+    lb = length (b);
   else
     k = [];
   endif
 
-  if(lp == 1)
-    r = polyval(b,p);
+  if (lp == 1)
+    r = polyval (b, p);
     e = 1;
     return;
   endif
 
 
-  # We need to determine the number and multiplicity of the roots.
-  # D is the number of distinct roots.
-  # M is a vector of length D containing the multiplicity of each root.
-  # pr is a vector of length D containing only the distinct roots.
-  # e is a vector of length lp which indicates the power in the partial
-  # fraction expansion of each term in p.
+# We need to determine the number and multiplicity of the roots.
+#
+# D  is the number of distinct roots.
+# M  is a vector of length D containing the multiplicity of each root.
+# pr is a vector of length D containing only the distinct roots.
+# e  is a vector of length lp which indicates the power in the partial
+#    fraction expansion of each term in p.
 
-  # Set initial values.  We'll remove elements from pr as we find
-  # multiplicities.  We'll shorten M afterwards.
-  e = ones(lp,1);
-  M = zeros(lp,1);
+# Set initial values.  We'll remove elements from pr as we find
+# multiplicities.  We'll shorten M afterwards.
+
+  e = ones (lp, 1);
+  M = zeros (lp, 1);
   pr = p;
-  D = 1; M(1) = 1;
+  D = 1;
+  M(1) = 1;
 
-  old_p_index = 1; new_p_index = 2;
-  M_index = 1; pr_index = 2;
-  while(new_p_index<=lp)
-    if(abs(p(new_p_index) - p(old_p_index)) < toler)
-      # We've found a multiple pole.
-      M(M_index) = M(M_index) + 1;
-      e(new_p_index) = e(new_p_index-1) + 1;
-      # Remove the pole from pr.
-      pr(pr_index) = [];
+  old_p_index = 1;
+  new_p_index = 2;
+  M_index = 1;
+  pr_index = 2;
+
+  while (new_p_index <= lp)
+    if (abs (p (new_p_index) - p (old_p_index)) < toler)
+# We've found a multiple pole.
+      M (M_index) = M (M_index) + 1;
+      e (new_p_index) = e (new_p_index-1) + 1;
+# Remove the pole from pr.
+      pr (pr_index) = [];
     else
-      # It's a different pole.
-      D++; M_index++; M(M_index) = 1;
-      old_p_index = new_p_index; pr_index++;
+# It's a different pole.
+      D++;
+      M_index++;
+      M (M_index) = 1;
+      old_p_index = new_p_index;
+      pr_index++;
     endif
     new_p_index++;
   endwhile
 
-  # Shorten M to it's proper length
-  M = M(1:D);
+# Shorten M to it's proper length
 
-  # Now set up the polynomial matrices.
+  M = M (1:D);
+
+# Now set up the polynomial matrices.
 
   MM = max(M);
-  # Left hand side polynomial
-  lhs = zeros(MM,lb);
-  rhs = zeros(MM,lp*lp);
-  lhs(1,:) = b;
+
+# Left hand side polynomial
+
+  lhs = zeros (MM, lb);
+  rhs = zeros (MM, lp*lp);
+  lhs (1, :) = b;
   rhi = 1;
   dpi = 1;
   mpi = 1;
-  while(dpi<=D)
+  while (dpi <= D)
     for ind = 1:M(dpi)
-      if(mpi>1 && (mpi+ind)<=lp)
+      if (mpi > 1 && (mpi+ind) <= lp)
         cp = [p(1:mpi-1); p(mpi+ind:lp)];
-      elseif (mpi==1)
-        cp = p(mpi+ind:lp);
+      elseif (mpi == 1)
+        cp = p (mpi+ind:lp);
       else
-        cp = p(1:mpi-1);
+        cp = p (1:mpi-1);
       endif
-      rhs(1,rhi:rhi+lp-1) = prepad(poly(cp),lp);
+      rhs (1, rhi:rhi+lp-1) = prepad (poly (cp), lp);
       rhi = rhi + lp;
     endfor
-    mpi = mpi + M(dpi);
+    mpi = mpi + M (dpi);
     dpi++;
   endwhile
-  if(MM > 1)
+  if (MM > 1)
     for index = 2:MM
-      lhs(index,:) = prepad(polyderiv(lhs(index-1,:)),lb);
+      lhs (index, :) = prepad (polyderiv (lhs (index-1, :)), lb);
       ind = 1;
       for rhi = 1:lp
-        cp = rhs(index-1,ind:ind+lp-1);
-        rhs(index,ind:ind+lp-1) = prepad(polyderiv(cp),lp);
+        cp = rhs (index-1, ind:ind+lp-1);
+        rhs (index, ind:ind+lp-1) = prepad (polyderiv (cp), lp);
         ind = ind + lp;
       endfor
     endfor
   endif
 
-  # Now lhs contains the numerator polynomial and as many derivatives as are
-  # required.  rhs is a matrix of polynomials, the first row contains the
-  # corresponding polynomial for each residue and successive rows are
-  # derivatives.
+# Now lhs contains the numerator polynomial and as many derivatives as
+# are required.  rhs is a matrix of polynomials, the first row
+# contains the corresponding polynomial for each residue and
+# successive rows are derivatives.
 
-  # Now we need to evaluate the first row of lhs and rhs at each distinct
-  # pole value.  If there are multiple poles we will also need to evaluate
-  # the derivatives at the pole value also.
+# Now we need to evaluate the first row of lhs and rhs at each
+# distinct pole value.  If there are multiple poles we will also need
+# to evaluate the derivatives at the pole value also.
 
-  B = zeros(lp,1);
-  A = zeros(lp,lp);
+  B = zeros (lp, 1);
+  A = zeros (lp, lp);
 
   dpi = 1;
   row = 1;
-  while(dpi<=D)
+  while (dpi <= D)
     for mi = 1:M(dpi)
-      B(row) = polyval(lhs(mi,:),pr(dpi));
+      B (row) = polyval (lhs (mi, :), pr (dpi));
       ci = 1;
       for col = 1:lp
-        cp = rhs(mi,ci:ci+lp-1);
-        A(row,col) = polyval(cp,pr(dpi));
+        cp = rhs (mi, ci:ci+lp-1);
+        A (row, col) = polyval (cp, pr(dpi));
         ci = ci + lp;
       endfor
       row++;
@@ -263,7 +296,8 @@ function [r, p, k, e] = residue(b,a,toler)
     dpi++;
   endwhile
 
-  # Solve for the residues.
-  r = A\B;
+# Solve for the residues.
+
+  r = A \ B;
 
 endfunction

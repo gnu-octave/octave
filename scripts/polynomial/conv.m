@@ -1,23 +1,42 @@
+# Copyright (C) 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
 function y = conv (a, b)
   
+# usage: conv (a, b)
+#
 # Convolve two vectors.
+#
 # y = conv (a, b) returns a vector of length equal to length (a) +
 # length (b) -1.
+#
 # If a and b are polynomial coefficient vectors, conv returns the
 # coefficients of the product polynomial.
 #
 # SEE ALSO: deconv, poly, roots, residue, polyval, polyderiv, polyinteg 
 
-# Author:
-#  Tony Richardson
-#  amr@mpl.ucsd.edu
-#  June 1994
+# Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 
   if (nargin != 2)
-    usage (" conv(a,b)");
+    usage ("conv(a, b)");
   endif
 
-  if (is_matrix(a) || is_matrix(b))
+  if (is_matrix (a) || is_matrix (b))
     error("conv: both arguments must be vectors");
   endif
 
@@ -37,14 +56,14 @@ function y = conv (a, b)
   # Use the shortest vector as the coefficent vector to filter.
   if (la < lb)
     if (ly > lb)
-      x = [b zeros (1, ly - lb)];
+      x = [b, zeros (1, ly - lb)];
     else
       x = b;
     endif
     y = filter (a, 1, x);
   else
     if(ly > la)
-      x = [a zeros (1, ly - la)];
+      x = [a, zeros (1, ly - la)];
     else
       x = a;
     endif

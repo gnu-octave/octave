@@ -1,6 +1,25 @@
-function A = compan(c)
+# Copyright (C) 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# compan (c)
+function A = compan (c)
+
+# usage: compan (c)
+#
 # Compute the companion matrix corresponding to polynomial vector c.
 #
 # In octave a polynomial is represented by it's coefficients (arranged
@@ -24,26 +43,24 @@ function A = compan(c)
 #
 # SEE ALSO: poly, roots, residue, conv, deconv, polyval, polyderiv, polyinteg
 
-# Author:
-#  Tony Richardson
-#  amr@mpl.ucsd.edu
-#  June 1994
+# Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
 
-  if(nargin != 1)
-    usage ("compan(vector)");
+  if (nargin != 1)
+    usage ("compan (vector)");
   endif
 
-  if(!is_vector(c))
+  if(is_matrix (c))
     error("compan: expecting a vector argument.");
   endif
 
-  # Ensure that c is a row vector.
+# Ensure that c is a row vector.
+
   if(rows(c) > 1)
     c = c.';
   endif
 
-  n = length(c);
-  A = diag(ones(n-2,1),-1);
-  A(1,:) = -c(2:n)/c(1);
+  n = length (c);
+  A = diag (ones (n-2, 1), -1);
+  A (1, :) = -c (2:n) /c (1);
 
 endfunction

@@ -34,13 +34,6 @@ extern int load_octave_oct_file (const char *name);
 
 extern void init_dynamic_linker (void);
 
-// OLD:
-
-#if 0
-extern void octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1);
-extern void octave_dld_tc2_unlink_by_file (const char *name, int hard = 1);
-#endif
-
 #endif
 
 /*

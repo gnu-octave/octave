@@ -4,3 +4,7 @@
 #else
 #define NORETURN
 #endif
+
+#if defined (WITH_DL) || defined (WITH_SHL) || defined (WITH_DLD)
+#define WITH_DYNAMIC_LINKING 1
+#endif

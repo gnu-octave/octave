@@ -25,11 +25,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#if defined (WITH_SHL)
+#include <cerrno>
+#include <cstring>
+#endif
+
 #include <strstream.h>
 
 extern "C"
 {
-#ifdef WITH_DLD
+#if defined (WITH_DL)
+#include <dlfcn.h>
+#elif defined (WITH_SHL)
+#include <dl.h>
+#elif defined (WITH_DLD)
 #include <dld/dld.h>
 #endif
 }
@@ -47,10 +56,119 @@ extern "C"
 
 typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
 
+#if defined (WITH_DYNAMIC_LINKING)
+
+// XXX FIXME XXX -- need to provide some way to ensure that functions
+// that we are going to use will use the same naming convention as
+// Octave's internal functions.  It needs to be simpler than the
+// current DEFUN_DLD() macro, which assumes you know how to name the
+// function, the struct, and the helper function.
+
+static char *
+mangle_octave_builtin_name (const char *name)
+{
+  char *tmp = strconcat (name, "__FRC13Octave_objecti");
+  char *retval = strconcat ("F", tmp);
+  delete [] tmp;
+  return retval;
+}
+
+static char *
+mangle_octave_oct_file_name (const char *name)
+{
+  char *tmp = strconcat (name, "__Fv");
+  char *retval = strconcat ("FS", tmp);
+  delete [] tmp;
+  return retval;
+}
+
+#endif
+
+#if defined (WITH_DL)
+
+static void *
+dl_resolve_octave_reference (const char *name, const char *file)
+{
+  // Dynamic linking with dlopen/dlsym doesn't require specification
+  // of the libraries at runtime.  Instead, they are specified when
+  // the .oct file is created.
+
+  void *handle = dlopen (file, RTLD_LAZY);
+
+  if (handle)
+    {
+      void *func = dlsym (handle, name);
+
+      if (func)
+	return func;
+      else
+	{
+	  const char *errmsg = dlerror ();
+
+	  if (errmsg)
+	    error("%s: `%s'", name, errmsg);
+	  else
+	    error("unable to link function `%s'", name);
+
+	  dlclose (handle);
+	  return 0;
+	}
+    }
+  else
+    {
+      error ("%s: %s `%s'", dlerror (), file, name);
+      return 0;
+    }
+}
+
+#elif defined (WITH_SHL)
+
+static void *
+shl_resolve_octave_reference (const char *name, const char *file)
+{
+  // Dynamic linking with shl_load/shl_findsym doesn't require
+  // specification of the libraries at runtime.  Instead, they are
+  // specified when the .oct file is created.
+
+  void *handle = shl_load (file, BIND_DEFERRED, 0L);
+
+  if (handle)
+    {
+      void *func = 0;
+
+      int status = shl_findsym ((shl_t *) &handle, name,
+				TYPE_UNDEFINED, func);
+
+      if (status < 0)
+	{
+	  const char *errmsg = strerror (errno);
+
+	  if (errmsg)
+	    error("%s: `%s'", name, errmsg);
+	  else
+	    error("unable to link function `%s'", name);
+
+	  return 0;
+	}
+      else
+	return func;
+    }
+  else
+    {
+      error ("%s: %s `%s'", strerror (errno), file, name);
+      return 0;
+    }
+}
+
+#elif defined (WITH_DLD)
+
+// Now that we have the code above to do dynamic linking with the
+// dlopen/dlsym interface and Linux uses elf, I doubt that this code
+// will be used very much.  Maybe it will be able to go away
+// eventually.  Consider it unsupported...
+
 // XXX FIXME XXX -- should this list be in a user-level variable,
 // with default taken from the environment?
-
-#ifdef WITH_DLD
 
 #ifndef STD_LIB_PATH
 #define STD_LIB_PATH "/lib:/usr/lib:/usr/local/lib"
@@ -76,24 +194,6 @@ static char *lib_dir_path = OCTAVE_LIB_PATH ":" STD_LIB_PATH;
 #endif
 
 static char *lib_list = OCTAVE_LIB_LIST ":" FLIB_LIST ":" SYSTEM_LIB_LIST;
-
-static char *
-mangle_octave_builtin_name (const char *name)
-{
-  char *tmp = strconcat (name, "__FRC13Octave_objecti");
-  char *retval = strconcat ("F", tmp);
-  delete [] tmp;
-  return retval;
-}
-
-static char *
-mangle_octave_oct_file_name (const char *name)
-{
-  char *tmp = strconcat (name, "__Fv");
-  char *retval = strconcat ("FS", tmp);
-  delete [] tmp;
-  return retval;
-}
 
 static void
 octave_dld_init (void)
@@ -143,7 +243,7 @@ octave_list_undefined_symbols (ostream& os)
 }
 
 static void *
-dld_octave_resolve_reference (const char *name, const char *file = 0)
+dld_resolve_octave_reference (const char *name, const char *file)
 {
   dld_create_reference (name);
 
@@ -151,7 +251,7 @@ dld_octave_resolve_reference (const char *name, const char *file = 0)
     {
       if (dld_link (file) != 0)
 	{
-	  error ("failed to link file %s", file);
+	  error ("failed to link file `%s'", file);
 	  return 0;
 	}
 
@@ -194,23 +294,51 @@ dld_octave_resolve_reference (const char *name, const char *file = 0)
   return 0;
 }
 
-static Octave_builtin_fcn
-dld_octave_builtin (const char *name)
+#endif
+
+static void *
+resolve_octave_reference (const char *name, const char *file = 0)
+{
+#if defined (WITH_DL)
+
+  dl_resolve_octave_reference (name, file);
+
+#elif defined (WITH_SHL)
+
+  shl_resolve_octave_reference (name, file);
+
+#elif defined (WITH_DLD)
+
+  dld_resolve_octave_reference (name, file);
+
+#endif
+}
+
+Octave_builtin_fcn
+load_octave_builtin (const char *name)
 {
   Octave_builtin_fcn retval = 0;
 
+#if defined (WITH_DYNAMIC_LINKING)
+
   char *mangled_name = mangle_octave_builtin_name (name);
 
-  retval = (Octave_builtin_fcn) dld_octave_resolve_reference (mangled_name);
+  retval = (Octave_builtin_fcn) resolve_octave_reference (mangled_name);
 
   delete [] mangled_name;
+
+#endif
 
   return retval;
 }
 
-static int
-dld_octave_oct_file (const char *name)
+int
+load_octave_oct_file (const char *name)
 {
+  int retval = 0;
+
+#if defined (WITH_DYNAMIC_LINKING)
+
   char *oct_file = oct_file_in_path (name);
 
   if (oct_file)
@@ -218,7 +346,7 @@ dld_octave_oct_file (const char *name)
       char *mangled_name = mangle_octave_oct_file_name (name);
 
       Octave_builtin_fcn_struct_fcn f =
-	(Octave_builtin_fcn_struct_fcn) dld_octave_resolve_reference
+	(Octave_builtin_fcn_struct_fcn) resolve_octave_reference
 	  (mangled_name, oct_file);
 
       if (f)
@@ -228,78 +356,31 @@ dld_octave_oct_file (const char *name)
 	  if (s)
 	    {
 	      install_builtin_function (s);
-	      return 1;
+	      retval = 1;
 	    }
 	}
 
       delete [] oct_file;
     }
 
-  return 0;
-}
-
-#endif
-
-Octave_builtin_fcn
-load_octave_builtin (const char *name)
-{
-#ifdef WITH_DLD
-  return dld_octave_builtin (name);
 #else
-  (void) name;
-  return 0;
-#endif
-}
 
-int
-load_octave_oct_file (const char *name)
-{
-#ifdef WITH_DLD
-  return dld_octave_oct_file (name);
-#endif
   (void) name;
-  return 0;
+
+#endif
+
+  return retval;
 }
 
 void
 init_dynamic_linker (void)
 {
-#ifdef WITH_DLD
+#if defined (WITH_DLD)
+
   octave_dld_init ();
-#endif
-}
-
-// OLD:
-
-#if 0
-
-void
-octave_dld_tc2_unlink_by_symbol (const char *name, int hard)
-{
-  // XXX FIXME XXX -- need to determine the name mangling scheme
-  // automatically, in case it changes, or is different on different
-  // systems, even if they have g++.
-
-  char *mangled_fcn_name = strconcat (name, "__FRC13Octave_objecti");
-
-  int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
-
-  if (status != 0)
-    error ("octave_dld_tc2_unlink_by_symbol: %s", dld_strerror (0));
-
-  delete [] mangled_fcn_name;
-}
-
-void
-octave_dld_tc2_unlink_by_file (const char *name, int hard)
-{
-  int status = dld_unlink_by_file (name, hard);
-
-  if (status != 0)
-    error ("octave_dld_tc2_unlink_by_file: %s", dld_strerror (0));
-}
 
 #endif
+}
 
 /*
 ;;; Local Variables: ***

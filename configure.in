@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.142 $)
+AC_REVISION($Revision: 1.143 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -65,6 +65,23 @@ AC_ARG_ENABLE(dld,
   [if test $enableval = no; then use_dld=false; else use_dld=true; fi],
   use_dld=false)
 AC_SUBST(use_dld)
+
+### Allow the user to experiment with dynamic linking using dlopen/dlsym.
+
+AC_ARG_ENABLE(dl,
+  [  --enable-dl             use dlopen/dlsym for dynamic linking (not all systems)],
+  [if test $enableval = no; then use_dl=false; else use_dl=true; fi],
+  use_dl=false)
+AC_SUBST(use_dl)
+
+### Allow the user to experiment with dynamic linking using
+### shl_load/shl_findsym (HP/UX only?).
+
+AC_ARG_ENABLE(shl,
+  [  --enable-shl            use shl_load/shl_findsym for dynamic linking (HP only?)],
+  [if test $enableval = no; then use_shl=false; else use_shl=true; fi],
+  use_shl=false)
+AC_SUBST(use_shl)
 
 ### Allow compilation of smaller kernel.  This only works if some form
 ### of dynamic linking is also supported and used.
@@ -294,7 +311,7 @@ changequote([,])dnl
 changequote(,)dnl
   1.*|2.[012345].*)
 changequote([,])dnl
-    AC_MSG_WARN([g++ version $gxx_version will not work to compile Octave])
+    AC_MSG_ERROR([g++ version $gxx_version will not work to compile Octave])
   ;;
   *)
     AC_MSG_WARN([Octave has only been tested with g++, and I can't find it])
@@ -494,8 +511,7 @@ elif $have_f2c; then
 else
   AC_MSG_WARN([in order to build octave, you must have a compatible])
   AC_MSG_WARN([Fortran compiler or f2c installed and in your path.])
-  AC_MSG_WARN([See the file INSTALL for more information.])
-  AC_MSG_WARN([Continuing anyway...])
+  AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
 
 FC=$F77
@@ -584,6 +600,37 @@ AC_CHECK_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror atexit)
 AC_CHECK_FUNCS(on_exit tempnam memmove putenv getrusage)
 AC_CHECK_FUNCS(mkdir rmdir rename umask)
 AC_CHECK_FUNCS(sigaction sigprocmask sigpending sigsuspend)
+
+AC_CHECK_LIB(dl, dlopen)
+AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
+
+if test "$ac_cv_func_dlopen" = yes \
+    && test "$ac_cv_func_dlopen" = yes \
+    && test "$ac_cv_func_dlsym" = yes \
+    && test "$ac_cv_func_dlerror" = yes \
+    && test "$ac_cv_func_dlclose" = yes; then
+  use_dl=true
+elif $use_dl; then
+  AC_MSG_ERROR([--enable-dl specified, but required functions are missing!])
+fi
+
+if $use_dl; then
+  AC_DEFINE(WITH_DL, 1)
+fi
+
+AC_CHECK_LIB(dld, shl_load)
+AC_CHECK_FUNCS(shl_load shl_findsym)
+
+if test "$ac_cv_func_shl_load" = yes \
+    && test "$ac_cv_func_shl_findsym" = yes; then
+  use_shl=true
+elif $use_shl; then
+  AC_MSG_ERROR([--enable-shl specified, but required functions are missing!])
+fi
+
+if $use_shl; then
+  AC_DEFINE(WITH_SHL, 1)
+fi
 
 ### There is more than one possible prototype for gettimeofday.  See
 ### which one (if any) appears in sys/time.h.
@@ -826,12 +873,8 @@ AC_CONFIG_SUBDIRS(kpathsea libcruft scripts $INFO_DIR $PLPLOT_DIR $READLINE_DIR)
 
 ### Do the substitutions in all the Makefiles.
 
-define([tmpA], [Makefile octMakefile Makeconf])dnl
-define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
-define([tmpC], [doc/Makefile test/Makefile])dnl
-define([srcdirs], [tmpA tmpB tmpC])dnl
-
-AC_OUTPUT([srcdirs])
+AC_OUTPUT(Makefile octMakefile Makeconf liboctave/Makefile
+	  src/Makefile dld/Makefile doc/Makefile test/Makefile)
 
 ### Print a summary so that important information isn't missed.
 
@@ -847,16 +890,19 @@ AC_MSG_RESULT([
 
 Octave is now configured for $canonical_host_type
 
-  Source directory:       $srcdir
-  Installation prefix:    $prefix
-  C compiler:             $CC $GCC_IEEE_FP_FLAG $CFLAGS
-  C++ compiler:           $CXX $CXX_EXTRAS $CXXFLAGS
-  Fortran compiler:       $FORT
-  Fortran libraries:      $FLIBS
-  Dynamic Linking:        $use_dld
-  Minimal kernel option:  $lite_kernel
-  Use GNU readline:       $USE_READLINE
-  Use GNU info reader:    $USE_GNU_INFO
-  Default pager:          $DEFAULT_PAGER
-  gnuplot:                $GNUPLOT_BINARY
+  Source directory:     $srcdir
+  Installation prefix:  $prefix
+  C compiler:           $CC $GCC_IEEE_FP_FLAG $CFLAGS
+  C++ compiler:         $CXX $CXX_EXTRAS $CXXFLAGS
+  Fortran compiler:     $FORT
+  Fortran libraries:    $FLIBS
+  Use GNU readline:     $USE_READLINE
+  Use GNU info reader:  $USE_GNU_INFO
+  Default pager:        $DEFAULT_PAGER
+  gnuplot:              $GNUPLOT_BINARY
+
+  Minimal kernel option:                   $lite_kernel
+  Dynamic Linking (dld):                   $use_dld
+  Dynamic Linking (dlopen/dlsym):          $use_dl
+  Dynamic Linking (shl_load/shl_findsym):  $use_shl
 ])

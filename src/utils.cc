@@ -370,7 +370,7 @@ get_fcn_file_names (int& num, const char *dir, int no_suffix)
       while ((entry = readdir (dirp)) != 0)
 	{
 	  int len = NLENGTH (entry);
-#ifdef WITH_DLD
+#if defined (WITH_DYNAMIC_LINKING)
 	  if ((len > 2
 	       && entry->d_name[len-2] == '.'
 	       && entry->d_name[len-1] == 'm')

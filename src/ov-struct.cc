@@ -379,8 +379,12 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
   unwind_protect_int (Vstruct_levels_to_print);
 
-  if (Vstruct_levels_to_print-- > 0)
+  if (Vstruct_levels_to_print >= 0)
     {
+      bool print_keys_only = (Vstruct_levels_to_print == 0);
+
+      Vstruct_levels_to_print--;
+
       indent (os);
       os << "{";
       newline (os);
@@ -394,13 +398,16 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	  std::string key = map.key (p);
 	  octave_value_list val = map.contents (p);
 
-	  if (n == 1)
-	    val(0).print_with_name (os, key);
-	  else
+	  octave_value tmp = (n == 1) ? val(0) : octave_list (val);
+
+	  if (print_keys_only)
 	    {
-	      octave_list tmp (val);
-	      tmp.print_with_name (os, key);
+	      indent (os);
+	      os << key << ": " << tmp.type_name ();
+	      newline (os);
 	    }
+	  else
+	    val(0).print_with_name (os, key);
 	}
 
       decrement_indent_level ();
@@ -411,7 +418,8 @@ octave_struct::print_raw (std::ostream& os, bool) const
     }
   else
     {
-      os << " <structure>";
+      indent (os);
+      os << "<structure>";
       newline (os);
     }
 
@@ -421,10 +429,20 @@ octave_struct::print_raw (std::ostream& os, bool) const
 bool
 octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
 {
+  bool retval = false;
+
   indent (os);
-  os << name << " =";
-  newline (os);
-  return false;
+
+  if (Vstruct_levels_to_print < 0)
+    os << name << " = ";
+  else
+    {
+      os << name << " =";
+      newline (os);
+      retval = true;
+    }
+
+  return retval;
 }
 
 /*

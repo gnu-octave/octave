@@ -1608,7 +1608,7 @@ struct_levels_to_print (void)
       && ! xisnan (val))
     {
       int ival = NINT (val);
-      if (ival >= 0 && ival == val)
+      if (ival == val)
 	{
 	  Vstruct_levels_to_print = ival;
 	  return 0;

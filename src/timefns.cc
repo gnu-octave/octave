@@ -137,7 +137,7 @@ DEFUN ("gmtime", Fgmtime, Sgmtime, 1, 1,
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
-	  retval = tree_constant (mk_tm_map (gmtime (&timeval), fraction));
+	  retval = tree_constant (mk_tm_map (gmtime (timeval), fraction));
 	}
     }
   else
@@ -176,7 +176,7 @@ DEFUN ("localtime", Flocaltime, Slocaltime, 1, 1,
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
-	  retval = tree_constant (mk_tm_map (localtime (&timeval), fraction));
+	  retval = tree_constant (mk_tm_map (localtime (timeval), fraction));
 	}
     }
   else

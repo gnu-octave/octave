@@ -1,7 +1,7 @@
 // tc-inlines.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -140,12 +140,12 @@ fortran_column (int i, int nr)
 }
 
 static inline int
-valid_scalar_indices (const tree_constant *args, int nargs)
+valid_scalar_indices (const Octave_object& args, int nargs)
 {
-  int valid = args != NULL_TREE_CONST
-    && ((nargs == 3 && args[2].valid_as_scalar_index ()
-	 && args[1].valid_as_scalar_index ())
-	|| (nargs == 2 && args[1].valid_as_scalar_index ()));
+  int valid = (args.length () > 0)
+    && ((nargs == 3 && args(2).valid_as_scalar_index ()
+	 && args(1).valid_as_scalar_index ())
+	|| (nargs == 2 && args(1).valid_as_scalar_index ()));
 
   return valid;
 }

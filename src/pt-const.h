@@ -30,13 +30,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdlib.h>
 
+#include "Array.h"
+#include "mx-base.h"
+#include "Range.h"
+
 #include "builtins.h"
 #include "tree-base.h"
 #include "tree-expr.h"
 #include "tc-rep.h"
-
-#include "mx-base.h"
-#include "Range.h"
+#include "oct-obj.h"
 
 class idx_vector;
 
@@ -171,7 +173,8 @@ public:
 	return rep->make_numeric ();
     }
 
-  tree_constant assign (tree_constant& rhs, tree_constant *args, int nargs)
+  tree_constant assign (tree_constant& rhs, const Octave_object& args,
+			int nargs)
     {
       if (rep->count > 1)
 	{
@@ -265,19 +268,18 @@ public:
       return *this;
     }
 
-  tree_constant *eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0)
+  Octave_object eval (int print, int nargout, const Octave_object& args,
+		      int nargin)
     {
-      tree_constant *retval = new tree_constant [2];
+      Octave_object retval (1);
 
-      if (args != NULL_TREE_CONST && nargin > 0)
-	retval[0] = rep->do_index (args, nargin);
+      if (args.length () > 0 && nargin > 0)
+	retval(0) = rep->do_index (args, nargin);
       else
-	retval[0] = *this;
+	retval(0) = *this;
 
-      if (retval[0].is_defined ())
-	retval[0].eval (print);
+      if (retval(0).is_defined ())
+	retval(0).eval (print);
       return retval;
     }
 
@@ -290,7 +292,7 @@ private:
  * class but that don't need to be class members or friends.
  */
 
-extern tree_constant *vector_of_empties (int nargout, const char *fcn_name);
+extern Octave_object vector_of_empties (int nargout, const char *fcn_name);
 
 extern tree_constant fill_matrix (const tree_constant& a,
 				  double d, const char *warn_for);
@@ -304,25 +306,25 @@ extern tree_constant identity_matrix (const tree_constant& a,
 
 extern tree_constant find_nonzero_elem_idx (const tree_constant& a);
 
-extern tree_constant *matrix_log (const tree_constant& a);
-extern tree_constant *matrix_sqrt (const tree_constant& a);
+extern Octave_object matrix_log (const tree_constant& a);
+extern Octave_object matrix_sqrt (const tree_constant& a);
 
-extern tree_constant *column_max (const tree_constant *args, int nargin,
-				  int nargout);
+extern Octave_object column_max (const Octave_object& args, int nargin,
+				 int nargout);
 
-extern tree_constant *column_min (const tree_constant *args, int nargin,
-				  int nargout);
+extern Octave_object column_min (const Octave_object& args, int nargin,
+				 int nargout);
   
-extern tree_constant *sort (const tree_constant *args, int nargin,
-			    int nargout);
+extern Octave_object sort (const Octave_object& args, int nargin,
+			   int nargout);
  
-extern tree_constant *feval (const tree_constant *args, int nargin,
-			     int nargout);
+extern Octave_object feval (const Octave_object& args, int nargin,
+			    int nargout);
 
 extern tree_constant eval_string (const tree_constant& arg, int&
 				  parse_status);
 
-extern tree_constant get_user_input (const tree_constant *args,
+extern tree_constant get_user_input (const Octave_object& args,
 				     int nargin, int nargout,
 				     int debug = 0);
 

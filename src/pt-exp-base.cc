@@ -108,11 +108,11 @@ print_as_scalar (const tree_constant& val)
  * Make sure that all arguments have values.
  */
 static int
-all_args_defined (tree_constant *args, int nargs)
+all_args_defined (const Octave_object& args, int nargs)
 {
   while (--nargs > 0)
     {
-      if (args[nargs].is_undefined ())
+      if (args(nargs).is_undefined ())
 	return 0;
     }
   return 1;
@@ -122,11 +122,11 @@ all_args_defined (tree_constant *args, int nargs)
  * Are any of the arguments `:'?
  */
 static int
-any_arg_is_magic_colon (const tree_constant *args, int nargs)
+any_arg_is_magic_colon (const Octave_object& args, int nargs)
 {
   while (--nargs > 0)
     {
-      if (args[nargs].const_type () == tree_constant_rep::magic_colon)
+      if (args(nargs).const_type () == tree_constant_rep::magic_colon)
 	return 1;
     }
   return 0;
@@ -573,7 +573,7 @@ tree_matrix::eval (int print)
 }
 
 tree_constant
-tree_fvc::assign (tree_constant& t, tree_constant *args, int nargs)
+tree_fvc::assign (tree_constant& t, const Octave_object& args, int nargs)
 {
   panic_impossible ();
   return tree_constant ();
@@ -650,21 +650,18 @@ tree_builtin::eval (int print)
     {
       char **argv = new char * [1];
       argv[0] = strsave (my_name);
-      tree_constant *tmp = (*text_fcn) (1, argv, 1);
-      if (tmp != NULL_TREE)
-	retval = tmp[0];
-      delete [] tmp;
+      Octave_object tmp = (*text_fcn) (1, argv, 1);
+      if (tmp.length () > 0)
+	retval = tmp(0);
       delete [] argv;
     }
   else if (general_fcn != (General_fcn) NULL)
     {
-      tree_constant *args = new tree_constant [1];
-      args[0] = tree_constant (my_name);
-      tree_constant *tmp = (*general_fcn) (args, 1, 1);
-      delete [] args;
-      if (tmp != NULL_TREE_CONST)
-	retval = tmp[0];
-      delete [] tmp;
+      Octave_object args (1);
+      args(0) = tree_constant (my_name);
+      Octave_object tmp = (*general_fcn) (args, 1, 1);
+      if (tmp.length () > 0)
+	retval = tmp(0);
     }
   else // Assume mapper function
     ::error ("%s: argument expected", my_name);
@@ -672,12 +669,11 @@ tree_builtin::eval (int print)
   return retval;
 }
 
-tree_constant *
-tree_builtin::eval (int print, int nargout,
-		    const tree_constant *args = NULL_TREE_CONST,
-		    int nargin = 0)
+Octave_object
+tree_builtin::eval (int print, int nargout, const Octave_object& args,
+		    int nargin)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (error_state)
     return retval;
@@ -690,7 +686,7 @@ tree_builtin::eval (int print, int nargout,
       char **argv = new char * [argc + 1];
       argv[0] = strsave (my_name);
       for (int i = 1; i < argc; i++)
-	argv[i] = strsave (args[i].string_value ());
+	argv[i] = strsave (args(i).string_value ());
       argv[argc] = (char *) NULL;
 
       retval = (*text_fcn) (argc, argv, nargout);
@@ -710,12 +706,11 @@ tree_builtin::eval (int print, int nargout,
     {
       if (nargin > nargin_max)
 	::error ("%s: too many arguments", my_name);
-      else if (nargin > 0 && args != NULL_TREE_CONST && args[1].is_defined ())
+      else if (nargin > 0 && args.length () > 0 && args(1).is_defined ())
 	{
-	  tree_constant tmp = args[1].mapper (mapper_fcn, 0);
-	  retval = new tree_constant [2];
-	  retval[0] = tmp;
-	  retval[1] = tree_constant ();
+	  tree_constant tmp = args(1).mapper (mapper_fcn, 0);
+	  retval.resize (1);
+	  retval(0) = tmp;
 	}	
     }
 
@@ -841,7 +836,8 @@ tree_identifier::assign (tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (tree_constant& rhs, tree_constant *args, int nargs)
+tree_identifier::assign (tree_constant& rhs, const Octave_object& args,
+			 int nargs)
 {
   tree_constant retval;
 
@@ -884,6 +880,12 @@ tree_identifier::assign (tree_constant& rhs, tree_constant *args, int nargs)
     }
 
   return retval;
+}
+
+int
+tree_identifier::is_defined (void)
+{
+  return (sym != (symbol_record *) NULL && sym->is_defined ());
 }
 
 void
@@ -1149,12 +1151,11 @@ tree_identifier::eval (int print)
 	{
 	  int nargout = maybe_do_ans_assign ? 0 : 1;
 
-	  tree_constant *tmp = ans->eval (0, nargout);
+	  Octave_object tmp_args;
+	  Octave_object tmp = ans->eval (0, nargout, tmp_args, 0);
 
-	  if (tmp != NULL_TREE_CONST)
-	    retval = tmp[0];
-
-	  delete [] tmp;
+	  if (tmp.length () > 0)
+	    retval = tmp(0);
 	}
     }
 
@@ -1214,12 +1215,11 @@ tree_identifier::eval (int print)
   return retval;
 }
 
-tree_constant *
-tree_identifier::eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0)
+Octave_object
+tree_identifier::eval (int print, int nargout, const Octave_object& args,
+		       int nargin)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (error_state)
     return retval;
@@ -1243,7 +1243,7 @@ tree_identifier::eval (int print, int nargout,
 
 	      retval = ans->eval (0, nargout, args, nargin);
 
-	      if (retval != NULL_TREE_CONST && retval[0].is_defined ())
+	      if (retval.length () > 0 && retval(0).is_defined ())
 		{
 		  symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
@@ -1251,7 +1251,7 @@ tree_identifier::eval (int print, int nargout,
       
 		  tree_identifier *ans_id = new tree_identifier (sr);
 
-		  tree_constant *tmp = new tree_constant (retval[0]);
+		  tree_constant *tmp = new tree_constant (retval(0));
 
 		  tree_simple_assignment_expression tmp_ass (ans_id, tmp);
 
@@ -1284,7 +1284,6 @@ tree_function::tree_function (void)
   system_fcn_file = 0;
   varargs_ok = 0;
   num_named_args = 0;
-  args_passed = NULL_TREE_CONST;
   num_args_passed = 0;
   curr_arg_number = 0;
 }
@@ -1302,7 +1301,6 @@ tree_function::tree_function (tree *cl, symbol_table *st)
   system_fcn_file = 0;
   varargs_ok = 0;
   num_named_args = 0;
-  args_passed = NULL_TREE_CONST;
   num_args_passed = 0;
   curr_arg_number = 0;
 }
@@ -1414,7 +1412,7 @@ tree_function::octave_va_arg (void)
 
   if (curr_arg_number < num_args_passed)
     {
-      retval = args_passed[curr_arg_number];
+      retval = args_passed(curr_arg_number);
       curr_arg_number++;
     }
   else
@@ -1445,11 +1443,11 @@ tree_function::eval (int print)
   if (error_state || cmd_list == NULL_TREE)
     return retval;
 
-  tree_constant *tmp = eval (print, 1);
+  Octave_object tmp_args;
+  Octave_object tmp = eval (print, 1, tmp_args, 0);
 
-  if (! error_state && tmp != NULL_TREE_CONST)
-    retval = tmp[0];
-  delete [] tmp;
+  if (! error_state && tmp.length () > 0)
+    retval = tmp(0);
 
   return retval;
 }
@@ -1470,12 +1468,11 @@ clear_symbol_table (void *table)
   tmp->clear ();
 }
 
-tree_constant *
-tree_function::eval (int print, int nargout,
-		     const tree_constant *args = NULL_TREE_CONST,
-		     int nargin = 0)
+Octave_object
+tree_function::eval (int print, int nargout, const Octave_object& args,
+		     int nargin)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (error_state)
     return retval;
@@ -1506,7 +1503,7 @@ tree_function::eval (int print, int nargout,
   unwind_protect_ptr (curr_function);
   curr_function = this;
 
-  unwind_protect_ptr (args_passed);
+//  unwind_protect_ptr (args_passed);
   args_passed = args;
 
   unwind_protect_int (num_args_passed);
@@ -1553,9 +1550,8 @@ tree_function::eval (int print, int nargout,
       }
     else if (user_pref.return_last_computed_value)
       {
-	retval = new tree_constant [2];
-	retval[0] = last_computed_value;
-	retval[1] = tree_constant ();
+	retval.resize (1);
+	retval(0) = last_computed_value;
       }
   }
 
@@ -1618,6 +1614,14 @@ tree_expression::eval (int print)
 {
   panic ("invalid evaluation of generic expression");
   return tree_constant ();
+}
+
+Octave_object
+tree_expression::eval (int print, int nargout, const Octave_object& args,
+		       int nargin)
+{
+  panic_impossible ();
+  return Octave_object ();
 }
 
 /*
@@ -2123,7 +2127,7 @@ tree_simple_assignment_expression::eval (int print)
 	{
 // Extract the arguments into a simple vector.
 	  int nargs = 0;
-	  tree_constant *args = index->convert_to_const_vector (nargs);
+	  Octave_object args = index->convert_to_const_vector (nargs);
 
 	  if (error_state)
 	    eval_error ();
@@ -2133,8 +2137,6 @@ tree_simple_assignment_expression::eval (int print)
 	      if (error_state)
 		eval_error ();
 	    }
-
-	  delete [] args;
 	}
     }
 
@@ -2223,30 +2225,28 @@ tree_multi_assignment_expression::eval (int print)
   if (error_state)
     return retval;
 
-  tree_constant *result = eval (print, 1);
+  Octave_object tmp_args;
+  Octave_object result = eval (print, 1, tmp_args, 0);
 
-  if (result != NULL_TREE_CONST)
-    {
-      retval = result[0];
-      delete [] result;
-    }
+  if (result.length () > 0)
+    retval = result(0);
 
   return retval;
 }
 
-tree_constant *
+Octave_object
 tree_multi_assignment_expression::eval (int print, int nargout,
-					const tree_constant *args =
-					NULL_TREE_CONST,
-					int nargin = 0)
+					const Octave_object& args,
+					int nargin)
 {
   assert (etype == tree::multi_assignment);
 
   if (error_state || rhs == (tree_expression *) NULL)
-    return NULL_TREE_CONST;
+    return Octave_object ();
 
   nargout = lhs->length ();
-  tree_constant *results = rhs->eval (0, nargout);
+  Octave_object tmp_args;
+  Octave_object results = rhs->eval (0, nargout, tmp_args, 0);
 
   if (error_state)
     eval_error ();
@@ -2254,7 +2254,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
   int ma_line = line ();
   int ma_column = column ();
 
-  if (results != NULL_TREE_CONST)
+  if (results.length () > 0)
     {
       tree_return_list *elem;
       int i = 0;
@@ -2266,63 +2266,57 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 	  tree_index_expression *lhs_expr = elem->idx_expr ();
 	  if (i < nargout)
 	    {
-	      if (results[i].is_undefined ())
+// XXX FIXME? XXX -- this is apparently the way Matlab works, but
+// maybe we should have the option of skipping the assignment instead.
+
+	      tree_constant *tmp = NULL_TREE_CONST;
+	      if (results(i).is_undefined ())
 		{
-		  tree_simple_assignment_expression tmp_expr
-		    (lhs_expr, NULL_TREE_CONST, ma_line, ma_column);
-
-		  results[i] = tmp_expr.eval (0); // Should stay undefined!
-
-		  if (error_state)
-		    break;
-
-		  if (last_was_scalar_type && i == 1)
-		    pad_after = 0;
-
-		  break;
+		  Matrix m;
+		  tmp = new tree_constant (m);
 		}
 	      else
+		tmp = new tree_constant (results(i));
+
+	      tree_simple_assignment_expression tmp_expr
+		(lhs_expr, tmp, ma_line, ma_column);
+
+	      results(i) = tmp_expr.eval (0); // May change
+
+	      if (error_state)
+		break;
+
+	      if (print && pad_after)
 		{
-		  tree_constant *tmp = new tree_constant (results[i]);
+		  ostrstream output_buf;
+		  output_buf << "\n" << '\0';
+		  maybe_page_output (output_buf);
+		}
 
-		  tree_simple_assignment_expression tmp_expr
-		    (lhs_expr, tmp, ma_line, ma_column);
-
-		  results[i] = tmp_expr.eval (0); // May change
-
-		  if (error_state)
-		    break;
-
-		  if (print && pad_after)
+	      if (print && user_pref.print_answer_id_name)
+		{
+		  tree_identifier *tmp_id = lhs_expr->ident ();
+		  char *tmp_nm = tmp_id->name ();
+		  
+		  if (print_as_scalar (results(i)))
 		    {
 		      ostrstream output_buf;
-		      output_buf << "\n" << '\0';
+		      output_buf << tmp_nm << " = " << '\0';
 		      maybe_page_output (output_buf);
+		      last_was_scalar_type = 1;
 		    }
-
-		  if (print && user_pref.print_answer_id_name)
+		  else
 		    {
-		      tree_identifier *tmp_id = lhs_expr->ident ();
-		      char *tmp_nm = tmp_id->name ();
-
-		      if (print_as_scalar (results[i]))
-			{
-			  ostrstream output_buf;
-			  output_buf << tmp_nm << " = " << '\0';
-			  maybe_page_output (output_buf);
-			  last_was_scalar_type = 1;
-			}
-		      else
-			{
-			  ostrstream output_buf;
-			  output_buf << tmp_nm << " =\n\n" << '\0';
-			  maybe_page_output (output_buf);
-			  last_was_scalar_type = 0;
-			}
+		      ostrstream output_buf;
+		      output_buf << tmp_nm << " =\n\n" << '\0';
+		      maybe_page_output (output_buf);
+		      last_was_scalar_type = 0;
 		    }
-		  results[i].eval (print);
-		  pad_after++;
 		}
+
+	      results(i).eval (print);
+
+	      pad_after++;
 	      i++;
 	    }
 	  else
@@ -2572,40 +2566,37 @@ tree_index_expression::eval (int print)
     {
 // Extract the arguments into a simple vector.
       int nargin = 0;
-      tree_constant *args = list->convert_to_const_vector (nargin);
+      Octave_object args = list->convert_to_const_vector (nargin);
 // Don't pass null arguments.
       if (error_state)
 	eval_error ();
       else if (nargin > 1 && all_args_defined (args, nargin))
 	{
-	  tree_constant *tmp = id->eval (print, 1, args, nargin);
+	  Octave_object tmp = id->eval (print, 1, args, nargin);
 
 	  if (error_state)
 	    eval_error ();
 
-	  if (tmp != NULL_TREE_CONST)
-	    retval = tmp[0];
-
-	  delete [] tmp;
+	  if (tmp.length () > 0)
+	    retval = tmp(0);
 	}
-      delete [] args;
     }
   return retval;
 }
 
-tree_constant *
+Octave_object
 tree_index_expression::eval (int print, int nargout,
-			     const tree_constant *args = NULL_TREE_CONST,
-			     int nargin = 0)
+			     const Octave_object& args, int nargin)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (error_state)
     return retval;
 
   if (list == (tree_argument_list *) NULL)
     {
-      retval = id->eval (print, nargout);
+      Octave_object tmp_args;
+      retval = id->eval (print, nargout, tmp_args, 0);
       if (error_state)
 	eval_error ();
     }
@@ -2613,7 +2604,7 @@ tree_index_expression::eval (int print, int nargout,
     {
 // Extract the arguments into a simple vector.
       int nargin = 0;
-      tree_constant *args = list->convert_to_const_vector (nargin);
+      Octave_object args = list->convert_to_const_vector (nargin);
 // Don't pass null arguments.
       if (error_state)
 	eval_error ();
@@ -2623,8 +2614,6 @@ tree_index_expression::eval (int print, int nargout,
 	  if (error_state)
 	    eval_error ();
 	}
-
-      delete [] args;
     }
   return retval;
 }
@@ -2725,12 +2714,12 @@ tree_argument_list::next_elem (void)
  * Convert a linked list of trees to a vector of pointers to trees,
  * evaluating them along the way.
  */
-tree_constant *
+Octave_object
 tree_argument_list::convert_to_const_vector (int& len)
 {
   len = length () + 1;
 
-  tree_constant *args = new tree_constant [len];
+  Octave_object args (len);
 
 // args[0] may eventually hold something useful, like the function
 // name.
@@ -2739,7 +2728,7 @@ tree_argument_list::convert_to_const_vector (int& len)
     {
       if (tmp_list != (tree_argument_list *) NULL)
 	{
-	  args[k] = tmp_list->eval (0);
+	  args(k) = tmp_list->eval (0);
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k);
@@ -2749,7 +2738,7 @@ tree_argument_list::convert_to_const_vector (int& len)
 	}
       else
 	{
-	  args[k] = tree_constant ();
+	  args(k) = tree_constant ();
 	  break;
 	}
     }
@@ -2859,10 +2848,10 @@ tree_parameter_list::define (tree_constant *t)
 }
 
 void
-tree_parameter_list::define_from_arg_vector (const tree_constant *args,
+tree_parameter_list::define_from_arg_vector (const Octave_object& args,
 					     int nargin)
 {
-  if (args == NULL_TREE_CONST)
+  if (args.length () <= 0)
     return;
 
   int expected_nargin = length () + 1;
@@ -2875,13 +2864,13 @@ tree_parameter_list::define_from_arg_vector (const tree_constant *args,
 
       if (i < nargin)
 	{
-	  if (args[i].is_defined ()
-	      && (args[i].const_type () == tree_constant_rep::magic_colon))
+	  if (args(i).is_defined ()
+	      && (args(i).const_type () == tree_constant_rep::magic_colon))
 	    {
 	      ::error ("invalid use of colon in function argument list");
 	      return;
 	    }
-	  tmp = new tree_constant (args[i]);
+	  tmp = new tree_constant (args(i));
 	}
 
       ptr->define (tmp);
@@ -2889,26 +2878,31 @@ tree_parameter_list::define_from_arg_vector (const tree_constant *args,
     }
 }
 
-// XXX FIXME XXX -- need a way to prevent this from setting
-// error_state and printing an error message if the elements are not
-// defined.
-tree_constant *
+Octave_object
 tree_parameter_list::convert_to_const_vector (void)
 {
   int nout = length ();
 
-  tree_constant *retval = new tree_constant [nout+1];
+  Octave_object retval (nout);
 
   int i = 0;
 
   tree_parameter_list *elem = this;
 
-  for ( ; elem != (tree_parameter_list *) NULL;	elem = elem->next) 
-    retval[i++] = elem->eval (0);
-
-  retval [nout] = tree_constant ();
+  for ( ; elem != (tree_parameter_list *) NULL;	elem = elem->next)
+    {
+      if (elem->is_defined ())
+	retval(i) = elem->eval (0);
+      i++;
+    }
 
   return retval;
+}
+
+int
+tree_parameter_list::is_defined (void)
+{
+  return (param != (tree_identifier *) NULL && param->is_defined ());
 }
 
 tree_parameter_list *

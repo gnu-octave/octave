@@ -94,10 +94,10 @@ tree_constant::operator delete (void *p, size_t size)
  * Construct return vector of empty matrices.  Return empty matrices
  * and/or gripe when appropriate.
  */
-tree_constant *
+Octave_object
 vector_of_empties (int nargout, const char *fcn_name)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 // Got an empty argument, check if should gripe/return empty values.
 
@@ -108,9 +108,9 @@ vector_of_empties (int nargout, const char *fcn_name)
 	gripe_empty_arg (fcn_name, 0);
 
       Matrix m;
-      retval = new tree_constant [nargout+1];
+      retval.resize (nargout ? nargout : 1);
       for (int i = 0; i < nargout; i++)
-	retval[i] = tree_constant (m);
+	retval(i) = tree_constant (m);
     }
   else
     gripe_empty_arg (fcn_name, 1);
@@ -482,10 +482,10 @@ find_nonzero_elem_idx (const tree_constant& a)
 // XXX FIXME XXX -- the next two functions (and expm) should really be just
 // one...
 
-tree_constant *
+Octave_object
 matrix_log (const tree_constant& a)
 {
-  tree_constant *retval = new tree_constant [2];
+  Octave_object retval (1);
 
   tree_constant tmp = a.make_numeric ();;
     
@@ -497,8 +497,7 @@ matrix_log (const tree_constant& a)
 	  if (flag < 0)
 	    gripe_empty_arg ("logm", 0);
 	  Matrix m;
-	  retval = new tree_constant [2];
-	  retval[0] = tree_constant (m);
+	  retval(0) = tree_constant (m);
 	  return retval;
 	}
       else
@@ -534,7 +533,7 @@ matrix_log (const tree_constant& a)
 	    ComplexDiagMatrix D (lambda);
 	    ComplexMatrix result = Q * D * Q.inverse ();
 
-	    retval[0] = tree_constant (result);
+	    retval(0) = tree_constant (result);
 	  }
       }
       break;
@@ -565,7 +564,7 @@ matrix_log (const tree_constant& a)
 	    ComplexDiagMatrix D (lambda);
 	    ComplexMatrix result = Q * D * Q.inverse ();
 
-	    retval[0] = tree_constant (result);
+	    retval(0) = tree_constant (result);
 	  }
       }
       break;
@@ -573,18 +572,18 @@ matrix_log (const tree_constant& a)
       {
 	double d = tmp.double_value ();
 	if (d > 0.0)
-	  retval[0] = tree_constant (log (d));
+	  retval(0) = tree_constant (log (d));
 	else
 	  {
 	    Complex dtmp (d);
-	    retval[0] = tree_constant (log (dtmp));
+	    retval(0) = tree_constant (log (dtmp));
 	  }
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval[0] = tree_constant (log (c));
+	retval(0) = tree_constant (log (c));
       }
       break;
     default:
@@ -593,10 +592,10 @@ matrix_log (const tree_constant& a)
   return retval;
 }
 
-tree_constant *
+Octave_object
 matrix_sqrt (const tree_constant& a)
 {
-  tree_constant *retval = new tree_constant [2];
+  Octave_object retval (1);
 
   tree_constant tmp = a.make_numeric ();;
     
@@ -608,8 +607,7 @@ matrix_sqrt (const tree_constant& a)
 	  if (flag < 0)
 	    gripe_empty_arg ("sqrtm", 0);
 	  Matrix m;
-	  retval = new tree_constant [2];
-	  retval[0] = tree_constant (m);
+	  retval(0) = tree_constant (m);
 	  return retval;
 	}
       else
@@ -645,7 +643,7 @@ matrix_sqrt (const tree_constant& a)
 	    ComplexDiagMatrix D (lambda);
 	    ComplexMatrix result = Q * D * Q.inverse ();
 
-	    retval[0] = tree_constant (result);
+	    retval(0) = tree_constant (result);
 	  }
       }
       break;
@@ -676,7 +674,7 @@ matrix_sqrt (const tree_constant& a)
 	    ComplexDiagMatrix D (lambda);
 	    ComplexMatrix result = Q * D * Q.inverse ();
 
-	    retval[0] = tree_constant (result);
+	    retval(0) = tree_constant (result);
 	  }
       }
       break;
@@ -684,18 +682,18 @@ matrix_sqrt (const tree_constant& a)
       {
 	double d = tmp.double_value ();
 	if (d > 0.0)
-	  retval[0] = tree_constant (sqrt (d));
+	  retval(0) = tree_constant (sqrt (d));
 	else
 	  {
 	    Complex dtmp (d);
-	    retval[0] = tree_constant (sqrt (dtmp));
+	    retval(0) = tree_constant (sqrt (dtmp));
 	  }
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval[0] = tree_constant (log (c));
+	retval(0) = tree_constant (log (c));
       }
       break;
     default:
@@ -704,10 +702,10 @@ matrix_sqrt (const tree_constant& a)
   return retval;
 }
 
-tree_constant *
-column_max (const tree_constant *args, int nargin, int nargout)
+Octave_object
+column_max (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   tree_constant arg1;
   tree_constant arg2;
@@ -719,11 +717,11 @@ column_max (const tree_constant *args, int nargin, int nargout)
   switch (nargin)
     {
     case 3:
-      arg2 = args[2].make_numeric ();
+      arg2 = args(2).make_numeric ();
       arg2_type = arg2.const_type ();
 // Fall through...
     case 2:
-      arg1 = args[1].make_numeric ();
+      arg1 = args(1).make_numeric ();
       arg1_type = arg1.const_type ();
       break;
     default:
@@ -731,33 +729,33 @@ column_max (const tree_constant *args, int nargin, int nargout)
       break;
     }
 
-  if (nargin == 2 && nargout == 1)
+  if (nargin == 2 && (nargout == 1 || nargout == 0))
     {
-      retval = new tree_constant [2];
+      retval.resize (1);
       switch (arg1_type)
 	{
         case tree_constant_rep::scalar_constant:
-	  retval[0] = tree_constant (arg1.double_value ());
+	  retval(0) = tree_constant (arg1.double_value ());
           break;
         case tree_constant_rep::complex_scalar_constant:
-          retval[0] = tree_constant (arg1.complex_value ());
+          retval(0) = tree_constant (arg1.complex_value ());
           break;
         case tree_constant_rep::matrix_constant:
           {
   	    Matrix m = arg1.matrix_value ();
 	    if (m.rows () == 1)
-	      retval[0] = tree_constant (m.row_max ());
+	      retval(0) = tree_constant (m.row_max ());
 	    else
-	      retval[0] = tree_constant (m.column_max (), 0);
+	      retval(0) = tree_constant (m.column_max (), 0);
  	  }
           break;
         case tree_constant_rep::complex_matrix_constant:
           {
             ComplexMatrix m = arg1.complex_matrix_value ();
             if (m.rows () == 1)
-              retval[0] = tree_constant (m.row_max ());
+              retval(0) = tree_constant (m.row_max ());
             else
-              retval[0] = tree_constant (m.column_max (), 0);
+              retval(0) = tree_constant (m.column_max (), 0);
           }
 	  break;
 	default:
@@ -767,19 +765,19 @@ column_max (const tree_constant *args, int nargin, int nargout)
     }
   else if (nargin == 2 && nargout == 2)
     {
-      retval = new tree_constant [2];
+      retval.resize (2);
       switch (arg1_type)
         {
 	case tree_constant_rep::scalar_constant:
 	  {
-	    retval[0] = tree_constant (arg1.double_value ());
-	    retval[1] = tree_constant (1);
+	    retval(0) = tree_constant (arg1.double_value ());
+	    retval(1) = tree_constant (1);
 	  }
           break;
 	case tree_constant_rep::complex_scalar_constant:
 	  {
-	    retval[0] = tree_constant (arg1.complex_value ());
-	    retval[1] = tree_constant (1);
+	    retval(0) = tree_constant (arg1.complex_value ());
+	    retval(1) = tree_constant (1);
 	  }
           break;
 	case tree_constant_rep::matrix_constant:
@@ -787,13 +785,13 @@ column_max (const tree_constant *args, int nargin, int nargout)
 	    Matrix m = arg1.matrix_value ();
 	    if (m.rows () == 1)
 	      {
-		retval[0] = tree_constant (m.row_max ());
-		retval[1] = tree_constant (m.row_max_loc ());
+		retval(0) = tree_constant (m.row_max ());
+		retval(1) = tree_constant (m.row_max_loc ());
 	      }
 	    else
 	      {
-		retval[0] = tree_constant (m.column_max (), 0);
-		retval[1] = tree_constant (m.column_max_loc (), 0);
+		retval(0) = tree_constant (m.column_max (), 0);
+		retval(1) = tree_constant (m.column_max_loc (), 0);
 	      }
 	  }
           break;
@@ -802,13 +800,13 @@ column_max (const tree_constant *args, int nargin, int nargout)
 	    ComplexMatrix m = arg1.complex_matrix_value ();
 	    if (m.rows () == 1)
 	      {
-		retval[0] = tree_constant (m.row_max ());
-		retval[1] = tree_constant (m.row_max_loc ());
+		retval(0) = tree_constant (m.row_max ());
+		retval(1) = tree_constant (m.row_max_loc ());
 	      }
 	    else
 	      {
-		retval[0] = tree_constant (m.column_max (), 0);
-		retval[1] = tree_constant (m.column_max_loc (), 0);
+		retval(0) = tree_constant (m.column_max (), 0);
+		retval(1) = tree_constant (m.column_max_loc (), 0);
 	      }
 	  }
           break;
@@ -822,7 +820,7 @@ column_max (const tree_constant *args, int nargin, int nargout)
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())
 	{
-	  retval = new tree_constant [2];
+	  retval.resize (1);
           switch (arg1_type)
             {
 	    case tree_constant_rep::scalar_constant:
@@ -831,7 +829,7 @@ column_max (const tree_constant *args, int nargin, int nargout)
 		double a_elem = arg1.double_value ();
 		double b_elem = arg2.double_value ();
 		result = MAX (a_elem, b_elem);
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
               break;
 	    case tree_constant_rep::complex_scalar_constant:
@@ -843,14 +841,14 @@ column_max (const tree_constant *args, int nargin, int nargout)
 		  result = a_elem;
 		else
 		  result = b_elem;
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
               break;
 	    case tree_constant_rep::matrix_constant:
 	      {
 		Matrix result;
 		result = max (arg1.matrix_value (), arg2.matrix_value ());
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
               break;
 	    case tree_constant_rep::complex_matrix_constant:
@@ -858,7 +856,7 @@ column_max (const tree_constant *args, int nargin, int nargout)
 		ComplexMatrix result;
 		result = max (arg1.complex_matrix_value (),
 			      arg2.complex_matrix_value ());
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
 	      break;
 	    default:
@@ -875,10 +873,10 @@ column_max (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-column_min (const tree_constant *args, int nargin, int nargout)
+Octave_object
+column_min (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   tree_constant arg1;
   tree_constant arg2;
@@ -890,11 +888,11 @@ column_min (const tree_constant *args, int nargin, int nargout)
   switch (nargin)
     {
     case 3:
-      arg2 = args[2].make_numeric ();
+      arg2 = args(2).make_numeric ();
       arg2_type = arg2.const_type ();
 // Fall through...
     case 2:
-      arg1 = args[1].make_numeric ();
+      arg1 = args(1).make_numeric ();
       arg1_type = arg1.const_type ();
       break;
     default:
@@ -902,33 +900,33 @@ column_min (const tree_constant *args, int nargin, int nargout)
       break;
     }
 
-  if (nargin == 2 && nargout == 1)
+  if (nargin == 2 && (nargout == 1 || nargout == 0))
     {
-      retval = new tree_constant [2];
+      retval.resize (1);
       switch (arg1_type)
 	{
         case tree_constant_rep::scalar_constant:
-	  retval[0] = tree_constant (arg1.double_value ());
+	  retval(0) = tree_constant (arg1.double_value ());
           break;
         case tree_constant_rep::complex_scalar_constant:
-          retval[0] = tree_constant (arg1.complex_value ());
+          retval(0) = tree_constant (arg1.complex_value ());
           break;
         case tree_constant_rep::matrix_constant:
           {
   	    Matrix m = arg1.matrix_value ();
 	    if (m.rows () == 1)
-	      retval[0] = tree_constant (m.row_min ());
+	      retval(0) = tree_constant (m.row_min ());
 	    else
-	      retval[0] = tree_constant (m.column_min (), 0);
+	      retval(0) = tree_constant (m.column_min (), 0);
  	  }
           break;
         case tree_constant_rep::complex_matrix_constant:
           {
             ComplexMatrix m = arg1.complex_matrix_value ();
             if (m.rows () == 1)
-              retval[0] = tree_constant (m.row_min ());
+              retval(0) = tree_constant (m.row_min ());
             else
-              retval[0] = tree_constant (m.column_min (), 0);
+              retval(0) = tree_constant (m.column_min (), 0);
           }
 	  break;
 	default:
@@ -938,19 +936,19 @@ column_min (const tree_constant *args, int nargin, int nargout)
     }
   else if (nargin == 2 && nargout == 2)
     {
-      retval = new tree_constant [2];
+      retval.resize (2);
       switch (arg1_type)
         {
 	case tree_constant_rep::scalar_constant:
 	  {
-	    retval[0] = tree_constant (arg1.double_value ());
-	    retval[1] = tree_constant (1);
+	    retval(0) = tree_constant (arg1.double_value ());
+	    retval(1) = tree_constant (1);
 	  }
           break;
 	case tree_constant_rep::complex_scalar_constant:
 	  {
-	    retval[0] = tree_constant (arg1.complex_value ());
-	    retval[1] = tree_constant (1);
+	    retval(0) = tree_constant (arg1.complex_value ());
+	    retval(1) = tree_constant (1);
 	  }
           break;
 	case tree_constant_rep::matrix_constant:
@@ -958,13 +956,13 @@ column_min (const tree_constant *args, int nargin, int nargout)
 	    Matrix m = arg1.matrix_value ();
 	    if (m.rows () == 1)
 	      {
-		retval[0] = tree_constant (m.row_min ());
-		retval[1] = tree_constant (m.row_min_loc ());
+		retval(0) = tree_constant (m.row_min ());
+		retval(1) = tree_constant (m.row_min_loc ());
 	      }
 	    else
 	      {
-		retval[0] = tree_constant (m.column_min (), 0);
-		retval[1] = tree_constant (m.column_min_loc (), 0);
+		retval(0) = tree_constant (m.column_min (), 0);
+		retval(1) = tree_constant (m.column_min_loc (), 0);
 	      }
 	  }
           break;
@@ -973,13 +971,13 @@ column_min (const tree_constant *args, int nargin, int nargout)
 	    ComplexMatrix m = arg1.complex_matrix_value ();
 	    if (m.rows () == 1)
 	      {
-		retval[0] = tree_constant (m.row_min ());
-		retval[1] = tree_constant (m.row_min_loc ());
+		retval(0) = tree_constant (m.row_min ());
+		retval(1) = tree_constant (m.row_min_loc ());
 	      }
 	    else
 	      {
-		retval[0] = tree_constant (m.column_min (), 0);
-		retval[1] = tree_constant (m.column_min_loc (), 0);
+		retval(0) = tree_constant (m.column_min (), 0);
+		retval(1) = tree_constant (m.column_min_loc (), 0);
 	      }
 	  }
           break;
@@ -993,7 +991,7 @@ column_min (const tree_constant *args, int nargin, int nargout)
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())
 	{
-	  retval = new tree_constant [2];
+	  retval.resize (1);
           switch (arg1_type)
             {
 	    case tree_constant_rep::scalar_constant:
@@ -1002,7 +1000,7 @@ column_min (const tree_constant *args, int nargin, int nargout)
 		double a_elem = arg1.double_value ();
 		double b_elem = arg2.double_value ();
 		result = MIN (a_elem, b_elem);
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
               break;
 	    case tree_constant_rep::complex_scalar_constant:
@@ -1014,14 +1012,14 @@ column_min (const tree_constant *args, int nargin, int nargout)
 		  result = a_elem;
 		else
 		  result = b_elem;
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
               break;
 	    case tree_constant_rep::matrix_constant:
 	      {
 		Matrix result;
 		result = min (arg1.matrix_value (), arg2.matrix_value ());
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
               break;
 	    case tree_constant_rep::complex_matrix_constant:
@@ -1029,7 +1027,7 @@ column_min (const tree_constant *args, int nargin, int nargout)
 		ComplexMatrix result;
 		result = min (arg1.complex_matrix_value (),
 			      arg2.complex_matrix_value ());
-		retval[0] = tree_constant (result);
+		retval(0) = tree_constant (result);
 	      }
 	      break;
 	    default:
@@ -1180,40 +1178,40 @@ mx_sort (ComplexRowVector& cv, RowVector& idx, int return_idx)
 	}
 }
 
-tree_constant *
-sort (const tree_constant *args, int nargin, int nargout)
+Octave_object
+sort (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   int return_idx = nargout > 1;
   if (return_idx)
-    retval = new tree_constant [3];
+    retval.resize (2);
   else
-    retval = new tree_constant [2];
+    retval.resize (1);
 
-  switch (args[1].const_type ())
+  switch (args(1).const_type ())
     {
     case tree_constant_rep::scalar_constant:
       {
-	retval [0] = tree_constant (args[1].double_value ());
+	retval(0) = tree_constant (args(1).double_value ());
 	if (return_idx)
-	  retval [1] = tree_constant (1.0);
+	  retval(1) = tree_constant (1.0);
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
-	retval [0] = tree_constant (args[1].complex_value ());
+	retval(0) = tree_constant (args(1).complex_value ());
 	if (return_idx)
-	  retval [1] = tree_constant (1.0);
+	  retval(1) = tree_constant (1.0);
       }
       break;
     case tree_constant_rep::string_constant:
     case tree_constant_rep::range_constant:
     case tree_constant_rep::matrix_constant:
       {
-	Matrix m = args[1].to_matrix ();
+	Matrix m = args(1).to_matrix ();
 	if (m.rows () == 1)
 	  {
 	    int nc = m.columns ();
@@ -1223,9 +1221,9 @@ sort (const tree_constant *args, int nargin, int nargout)
 	    RowVector idx;
 	    mx_sort (v, idx, return_idx);
 
-	    retval [0] = tree_constant (v, 0);
+	    retval(0) = tree_constant (v, 0);
 	    if (return_idx)
-	      retval [1] = tree_constant (idx, 0);
+	      retval(1) = tree_constant (idx, 0);
 	  }
 	else
 	  {
@@ -1233,15 +1231,15 @@ sort (const tree_constant *args, int nargin, int nargout)
 	    Matrix idx;
 	    mx_sort (m, idx, return_idx);
 
-	    retval [0] = tree_constant (m);
+	    retval(0) = tree_constant (m);
 	    if (return_idx)
-	      retval [1] = tree_constant (idx);
+	      retval(1) = tree_constant (idx);
 	  }
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
-	ComplexMatrix cm = args[1].complex_matrix_value ();
+	ComplexMatrix cm = args(1).complex_matrix_value ();
 	if (cm.rows () == 1)
 	  {
 	    int nc = cm.columns ();
@@ -1251,9 +1249,9 @@ sort (const tree_constant *args, int nargin, int nargout)
 	    RowVector idx;
 	    mx_sort (cv, idx, return_idx);
 
-	    retval [0] = tree_constant (cv, 0);
+	    retval(0) = tree_constant (cv, 0);
 	    if (return_idx)
-	      retval [1] = tree_constant (idx, 0);
+	      retval(1) = tree_constant (idx, 0);
 	  }
 	else
 	  {
@@ -1261,9 +1259,9 @@ sort (const tree_constant *args, int nargin, int nargout)
 	    Matrix idx;
 	    mx_sort (cm, idx, return_idx);
 
-	    retval [0] = tree_constant (cm);
+	    retval(0) = tree_constant (cm);
 	    if (return_idx)
-	      retval [1] = tree_constant (idx);
+	      retval(1) = tree_constant (idx);
 	  }
       }
       break;
@@ -1275,19 +1273,20 @@ sort (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
-tree_constant *
-feval (const tree_constant *args, int nargin, int nargout)
+Octave_object
+feval (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_fvc *fcn = is_valid_function (args[1], "feval", 1);
+  tree_fvc *fcn = is_valid_function (args(1), "feval", 1);
   if (fcn != (tree_fvc *) NULL)
     {
-      args++;
-      nargin--;
-      retval = fcn->eval (0, nargout, args, nargin);
+      Octave_object tmp_args (--nargin);
+      for (int i = 0; i < nargin; i++)
+	tmp_args(i) = args(i+1);
+      retval = fcn->eval (0, nargout, tmp_args, nargin);
     }
 
   return retval;
@@ -1372,7 +1371,7 @@ match_sans_spaces (const char *standard, const char *test)
 }
 
 tree_constant
-get_user_input (const tree_constant *args, int nargin, int nargout,
+get_user_input (const Octave_object& args, int nargin, int nargout,
 		int debug = 0)
 {
   tree_constant retval;
@@ -1380,8 +1379,8 @@ get_user_input (const tree_constant *args, int nargin, int nargout,
   int read_as_string = 0;
   if (nargin == 3)
     {
-      if (args[2].is_string_type ()
-	  && strcmp ("s", args[2].string_value ()) == 0)
+      if (args(2).is_string_type ()
+	  && strcmp ("s", args(2).string_value ()) == 0)
 	read_as_string++;
       else
 	{
@@ -1393,8 +1392,8 @@ get_user_input (const tree_constant *args, int nargin, int nargout,
   char *prompt = "debug> ";
   if (nargin > 1)
    {
-      if (args[1].is_string_type ())
-	prompt = args[1].string_value ();
+      if (args(1).is_string_type ())
+	prompt = args(1).string_value ();
       else
 	{
 	  error ("input: unrecognized argument");

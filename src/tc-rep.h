@@ -156,13 +156,13 @@ public:
   tree_constant_rep::constant_type force_numeric (int force_str_conv = 0);
   tree_constant make_numeric (int force_str_conv = 0) const;
 
-  void assign (tree_constant& rhs, tree_constant *args, int nargs);
+  void assign (tree_constant& rhs, const Octave_object& args, int nargs);
 
   void do_scalar_assignment
-    (tree_constant& rhs, tree_constant *args, int nargin);
+    (tree_constant& rhs, const Octave_object& args, int nargin);
 
   void do_matrix_assignment
-    (tree_constant& rhs, tree_constant *args, int nargin);
+    (tree_constant& rhs, const Octave_object& args, int nargin);
 
   void do_matrix_assignment
     (tree_constant& rhs, tree_constant& i_arg);
@@ -232,12 +232,11 @@ public:
   void maybe_mutate (void);
   void print (void);
 
-  tree_constant do_index (const tree_constant *args, int nargin);
+  tree_constant do_index (const Octave_object& args, int nargin);
 
-  tree_constant do_scalar_index (const tree_constant *args,
-				 int nargin) const;
+  tree_constant do_scalar_index (const Octave_object& args, int nargin) const;
 
-  tree_constant do_matrix_index (const tree_constant *args, int nargin) const;
+  tree_constant do_matrix_index (const Octave_object& args, int nargin) const;
 
   tree_constant do_matrix_index (const tree_constant& i_arg) const;
 

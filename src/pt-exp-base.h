@@ -30,28 +30,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdio.h>
 
+#include "Array.h"
+
 #include "builtins.h"
 #include "error.h"
+#include "oct-obj.h"
 
 class tree_constant;
 class symbol_record;
 class symbol_table;
 
-#ifndef TREE_FCN_TYPEDEFS
-#define TREE_FCN_TYPEDEFS 1
-
-typedef tree_constant* (*Text_fcn)(int, char **, int);
-typedef tree_constant* (*General_fcn)(const tree_constant *, int, int);
-
-#endif
-
-#ifndef NULL_TREE
-#define NULL_TREE (tree *) NULL
-#endif
-
-#ifndef NULL_TREE_CONST
-#define NULL_TREE_CONST (tree_constant *) NULL
-#endif
+typedef Octave_object (*Text_fcn)(int, char **, int);
+typedef Octave_object (*General_fcn)(const Octave_object&, int, int);
 
 class tree_matrix;
 class tree_builtin;
@@ -99,10 +89,8 @@ public:
   virtual void mark_for_possible_ans_assign (void)
     { panic_impossible (); }
 
-  virtual tree_constant *eval (int print, int nargout,
-			       const tree_constant *args = NULL_TREE_CONST,
-			       int nargin = 0)
-    { panic_impossible (); return NULL_TREE_CONST; }
+  virtual Octave_object eval (int print, int nargout,
+			      const Octave_object& args, int nargin);
 
 protected:
   expression_type etype;
@@ -282,9 +270,8 @@ tree_multi_assignment_expression : public tree_assignment_expression
 
   tree_constant eval (int print);
 
-  tree_constant *eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0);
+  Octave_object eval (int print, int nargout, const Octave_object& args,
+		      int nargin);
 
   void eval_error (void);
 
@@ -342,9 +329,8 @@ tree_index_expression : public tree_expression
 
   tree_constant eval (int print);
 
-  tree_constant *eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0);
+  Octave_object eval (int print, int nargout, const Octave_object& args,
+		      int nargin);
 
   void eval_error (void);
 
@@ -366,7 +352,7 @@ public:
 //  virtual int is_builtin (void) const
 //    { return 0; }
 
-  virtual tree_constant assign (tree_constant& t, tree_constant *args,
+  virtual tree_constant assign (tree_constant& t, const Octave_object& args,
 				int nargs);
 
   virtual char *name (void) const
@@ -416,9 +402,8 @@ public:
 
   tree_constant eval (int print);
 
-  tree_constant *eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0);
+  Octave_object eval (int print, int nargout, const Octave_object& args,
+		      int nargin);
 
   char *name (void) const;
 
@@ -458,7 +443,10 @@ public:
   void document (char *s);
 
   tree_constant assign (tree_constant& t);
-  tree_constant assign (tree_constant& t, tree_constant *args, int nargs);
+  tree_constant assign (tree_constant& t, const Octave_object& args,
+			int nargs);
+
+  int is_defined (void);
 
   void bump_value (tree::expression_type);
 
@@ -474,9 +462,8 @@ public:
 
   tree_constant eval (int print);
 
-  tree_constant *eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0);
+  Octave_object eval (int print, int nargout, const Octave_object& args,
+		      int nargin);
 
   void eval_undefined_error (void);
 
@@ -519,9 +506,8 @@ public:
 
   tree_constant eval (int print);
 
-  tree_constant *eval (int print, int nargout,
-		       const tree_constant *args = NULL_TREE_CONST,
-		       int nargin = 0);
+  Octave_object eval (int print, int nargout, const Octave_object& args,
+		      int nargin);
 
   int max_expected_args (void);
 
@@ -539,7 +525,7 @@ private:
   int system_fcn_file;
   int varargs_ok;
   int num_named_args;
-  const tree_constant *args_passed;
+  Octave_object args_passed;
   int num_args_passed;
   int curr_arg_number;
 };
@@ -562,7 +548,7 @@ tree_argument_list : public tree
 
   tree_argument_list *next_elem (void);
 
-  tree_constant *convert_to_const_vector (int& nargs);
+  Octave_object convert_to_const_vector (int& nargs);
 
   tree_constant eval (int print);
 
@@ -598,9 +584,11 @@ tree_parameter_list : public tree
 
   tree_identifier *define (tree_constant *t);
 
-  void define_from_arg_vector (const tree_constant *args, int nargin);
+  void define_from_arg_vector (const Octave_object& args, int nargin);
 
-  tree_constant *convert_to_const_vector (void);
+  int is_defined (void);
+
+  Octave_object convert_to_const_vector (void);
 
   tree_parameter_list *next_elem (void);
 

@@ -1315,7 +1315,7 @@ tree_constant_rep::print (void)
 }
 
 tree_constant
-tree_constant_rep::do_index (const tree_constant *args, int nargin)
+tree_constant_rep::do_index (const Octave_object& args, int nargin)
 {
   tree_constant retval;
 
@@ -2655,7 +2655,8 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
  * hand off to other functions to do the real work.
  */
 void
-tree_constant_rep::assign (tree_constant& rhs, tree_constant *args, int nargs)
+tree_constant_rep::assign (tree_constant& rhs,
+			   const Octave_object& args, int nargs)
 {
   tree_constant rhs_tmp = rhs.make_numeric ();
 
@@ -2695,7 +2696,7 @@ tree_constant_rep::assign (tree_constant& rhs, tree_constant *args, int nargs)
  */
 void
 tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
-					 tree_constant *args, int nargs)
+					 const Octave_object& args, int nargs)
 {
   assert (type_tag == unknown_constant
 	  || type_tag == scalar_constant
@@ -2800,7 +2801,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
  */
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 tree_constant *args, int nargs)
+					 const Octave_object& args, int nargs)
 {
   assert (type_tag == unknown_constant
 	  || type_tag == matrix_constant
@@ -2832,21 +2833,21 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
   switch (nargs)
     {
     case 2:
-      if (! args)
+      if (args.length () <= 0)
 	::error ("matrix index is null");
-      else if (args[1].is_undefined ())
+      else if (args(1).is_undefined ())
 	::error ("matrix index is undefined");
       else
-	do_matrix_assignment (rhs, args[1]);
+	do_matrix_assignment (rhs, args(1));
       break;
     case 3:
-      if (! args)
+      if (args.length () <= 0)
 	::error ("matrix indices are null");
-      else if (args[1].is_undefined ())
+      else if (args(1).is_undefined ())
 	::error ("first matrix index is undefined");
-      else if (args[2].is_undefined ())
+      else if (args(2).is_undefined ())
 	::error ("second matrix index is undefined");
-      else if (args[1].is_empty () || args[2].is_empty ())
+      else if (args(1).is_empty () || args(2).is_empty ())
 	{
 	  if (! rhs.is_empty ())
 	    {
@@ -2858,7 +2859,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 // work than it's worth right now...
 	}
       else
-	do_matrix_assignment (rhs, args[1], args[2]);
+	do_matrix_assignment (rhs, args(1), args(2));
       break;
     default:
       ::error ("too many indices for matrix expression");
@@ -4999,7 +5000,7 @@ tree_constant_rep::valid_as_scalar_index (void) const
 }
 
 tree_constant
-tree_constant_rep::do_scalar_index (const tree_constant *args,
+tree_constant_rep::do_scalar_index (const Octave_object& args,
 				    int nargs) const
 {
   if (valid_scalar_indices (args, nargs))
@@ -5020,9 +5021,9 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 	{
 	case 3:
 	  {
-	    if (args[2].is_matrix_type ())
+	    if (args(2).is_matrix_type ())
 	      {
-		Matrix mj = args[2].matrix_value ();
+		Matrix mj = args(2).matrix_value ();
 
 		idx_vector j (mj, user_pref.do_fortran_indexing, "");
 		if (! j)
@@ -5032,9 +5033,9 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 		if (len == j.ones_count ())
 		  cols = len;
 	      }
-	    else if (args[2].const_type () == magic_colon
-		     || (args[2].is_scalar_type ()
-			 && NINT (args[2].double_value ()) == 1))
+	    else if (args(2).const_type () == magic_colon
+		     || (args(2).is_scalar_type ()
+			 && NINT (args(2).double_value ()) == 1))
 	      {
 		cols = 1;
 	      }
@@ -5044,9 +5045,9 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 // Fall through...
 	case 2:
 	  {
-	    if (args[1].is_matrix_type ())
+	    if (args(1).is_matrix_type ())
 	      {
-		Matrix mi = args[1].matrix_value ();
+		Matrix mi = args(1).matrix_value ();
 
 		idx_vector i (mi, user_pref.do_fortran_indexing, "");
 		if (! i)
@@ -5056,14 +5057,14 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 		if (len == i.ones_count ())
 		  rows = len;
 	      }
-	    else if (args[1].const_type () == magic_colon
-		     || (args[1].is_scalar_type ()
-			 && NINT (args[1].double_value ()) == 1))
+	    else if (args(1).const_type () == magic_colon
+		     || (args(1).is_scalar_type ()
+			 && NINT (args(1).double_value ()) == 1))
 	      {
 		rows = 1;
 	      }
-	    else if (args[1].is_scalar_type ()
-		     && NINT (args[1].double_value ()) == 0)
+	    else if (args(1).is_scalar_type ()
+		     && NINT (args(1).double_value ()) == 0)
 	      {
 		Matrix m (0, 0);
 		return tree_constant (m);
@@ -5108,7 +5109,7 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (const tree_constant *args,
+tree_constant_rep::do_matrix_index (const Octave_object& args,
 				    int nargin) const
 {
   tree_constant retval;
@@ -5116,22 +5117,22 @@ tree_constant_rep::do_matrix_index (const tree_constant *args,
   switch (nargin)
     {
     case 2:
-      if (! args)
+      if (args.length () <= 0)
 	::error ("matrix index is null");
-      else if (args[1].is_undefined ())
+      else if (args(1).is_undefined ())
 	::error ("matrix index is a null expression");
       else
-	retval = do_matrix_index (args[1]);
+	retval = do_matrix_index (args(1));
       break;
     case 3:
-      if (! args)
+      if (args.length () <= 0)
 	::error ("matrix indices are null");
-      else if (args[1].is_undefined ())
+      else if (args(1).is_undefined ())
 	::error ("first matrix index is a null expression");
-      else if (args[2].is_undefined ())
+      else if (args(2).is_undefined ())
 	::error ("second matrix index is a null expression");
       else
-	retval = do_matrix_index (args[1], args[2]);
+	retval = do_matrix_index (args(1), args(2));
       break;
     default:
       ::error ("too many indices for matrix expression");

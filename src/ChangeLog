@@ -1,3 +1,8 @@
+2005-03-21  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (maximum_braindamage):
+	Don't set warn_matlab_incompatible to true.
+
 2005-03-17  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (class bracket_brace_paren_nesting_level): Use static

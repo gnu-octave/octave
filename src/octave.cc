@@ -436,7 +436,6 @@ maximum_braindamage (void)
   bind_builtin_variable ("page_screen_output", false);
   bind_builtin_variable ("print_empty_dimensions", false);
   bind_builtin_variable ("warn_function_name_clash", false);
-  bind_builtin_variable ("warn_matlab_incompatible", true);
 }
 
 // You guessed it.

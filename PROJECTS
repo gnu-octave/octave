@@ -493,6 +493,9 @@ Interpreter:
     matrix in memory and change one or more elements without
     generating a second copy of the data.
 
+  * Use nanosleep instead of usleep if it is available?  Apparently
+    nanosleep is to be preferred over usleep on Solaris systems.
+
 -------
 History:
 -------

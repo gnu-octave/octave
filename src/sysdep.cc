@@ -430,7 +430,7 @@ returning the empty string if no key is available.\n\
 
   // XXX FIXME XXX -- add timeout and default value args?
 
-  if (interactive)
+  if (interactive || forced_interactive)
     {
       int c = kbhit (args.length () == 0);
 

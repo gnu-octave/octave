@@ -5,6 +5,14 @@
 	problems like this were noticed by Przemek Klosowski
 	<przemek@rrdjazz.nist.gov>.
 	* octave.test/quad/quad-2.m: Likewise.
+	* octave.test/arith/exp-1.m: Likewise.
+	* octave.test/linalg/cond-1.m: Likewise.
+	* octave.test/linalg/eig-1.m: Likewise.
+	* octave.test/linalg/eig-2.m: Likewise.
+	* octave.test/linalg/inv-1.m: Likewise.
+	* octave.test/linalg/lu-2.m: Likewise.
+	* octave.test/linalg/svd-2.m: Likewise.
+	* octave.test/linalg/svd-10.m: Likewise.
 
 1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

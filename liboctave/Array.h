@@ -31,8 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 #include <cstdlib>
 
-#include "lo-error.h"
-
 class idx_vector;
 
 // For now, define this here if it is not already defined.  Not doing
@@ -176,11 +174,7 @@ public:
   T& Array<T>::checkelem (int n)
     {
       if (n < 0 || n >= rep->length ())
-	{
-	  (*current_liboctave_error_handler) ("range error");
-	  static T foo;
-	  return foo;
-	}
+	return range_error ("T& Array<T>::checkelem", n);
       else
 	{
 	  make_unique ();
@@ -194,7 +188,7 @@ public:
   T& elem (int n)
     {
       make_unique ();
-      return xelem ();
+      return xelem (n);
     }
 #endif
 
@@ -203,7 +197,7 @@ public:
   T Array<T>::checkelem (int n) const
     {
       if (n < 0 || n >= rep->length ())
-	return range_error ();
+	return range_error ("T Array<T>::checkelem", n);
       else
 	return xelem (n);
     }
@@ -236,8 +230,8 @@ public:
       return *this;
     }
 
-  T range_error (void) const;
-  T& range_error (void);
+  T range_error (const char *fcn, int n) const;
+  T& range_error (const char *fcn, int n);
 
 #ifdef HEAVYWEIGHT_INDEXING
   void set_max_indices (int mi) { max_indices = mi; }

@@ -42,6 +42,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 
+template <class T>
+T
+Array2<T>::range_error (const char *fcn, int i, int j) const
+{
+  (*current_liboctave_error_handler)
+    ("%s (%d, %d): range error", fcn, i, j);
+  return T ();
+}
+
+template <class T>
+T&
+Array2<T>::range_error (const char *fcn, int i, int j)
+{
+  (*current_liboctave_error_handler)
+    ("%s (%d, %d): range error", fcn, i, j);
+  static T foo;
+  return foo;
+}
+
 // Two dimensional array class.
 
 template <class T>
@@ -50,7 +69,8 @@ Array2<T>::resize (int r, int c)
 {
   if (r < 0 || c < 0)
     {
-      (*current_liboctave_error_handler) ("can't resize to negative dimension");
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimension");
       return;
     }
 
@@ -89,7 +109,8 @@ Array2<T>::resize (int r, int c, const T& val)
 {
   if (r < 0 || c < 0)
     {
-      (*current_liboctave_error_handler) ("can't resize to negative dimension");
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimension");
       return;
     }
 

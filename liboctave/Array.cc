@@ -169,20 +169,19 @@ Array<T>::fortran_vec (void)
     }
   return rep->data;
 }
-
 template <class T>
 T
-Array<T>::range_error (void) const
+Array<T>::range_error (const char *fcn, int n) const
 {
-  (*current_liboctave_error_handler) ("range error");
+  (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
   return T ();
 }
 
 template <class T>
 T&
-Array<T>::range_error (void)
+Array<T>::range_error (const char *fcn, int n)
 {
-  (*current_liboctave_error_handler) ("range error");
+  (*current_liboctave_error_handler) ("%s (%d): range error", fcn, n);
   static T foo;
   return foo;
 }

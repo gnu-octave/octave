@@ -115,51 +115,60 @@ public:
   int cols (void) const { return d2; }
   int columns (void) const { return d2; }
 
-  T& elem (int i, int j) { return Array<T>::elem (d1*j+i); }
+  // No checking of any kind, ever.
+
+  T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
+  T xelem (int i, int j) const { return Array<T>::xelem (d1*j+i); }
+
+  // Note that the following element references don't use
+  // Array2<T>::xelem() because they still need to make use of the
+  // code in Array<T> that checks the reference count.
 
   T& checkelem (int i, int j)
     {
       if (i < 0 || j < 0 || i >= d1 || j >= d2)
 	{
-	  (*current_liboctave_error_handler) ("range error");
+	  (*current_liboctave_error_handler)
+	    ("T& Array2<T>::checkelem (%d, %d): range error", i, j);
 	  static T foo;
 	  return foo;
 	}
       else
-	return elem (i, j);
+	return Array<T>::elem (d1*j+i);
     }
 
-#if defined (NO_BOUNDS_CHECKING)
-  T& operator () (int i, int j) { return elem (i, j); }
+#if defined (BOUNDS_CHECKING)
+  T& elem (int i, int j) { return checkelem (i, j); }
 #else
-  T& operator () (int i, int j) { return checkelem (i, j); }
+  T& elem (int i, int j) { return Array<T>::elem (d1*j+i); }
 #endif
 
-  T elem (int i, int j) const { return Array<T>::elem (d1*j+i); }
+  T& operator () (int i, int j) { return elem (i, j); }
 
   T checkelem (int i, int j) const
     {
       if (i < 0 || j < 0 || i >= d1 || j >= d2)
 	{
-	  (*current_liboctave_error_handler) ("range error");
+	  (*current_liboctave_error_handler)
+	    ("T Array2<T>::checkelem (%d, %d): range error", i, j);
 	  T foo;
 	  static T *bar = &foo;
 	  return foo;
 	}
       else
-	return elem (i, j);
+	return Array<T>::elem (d1*j+i);
     }
 
-#if defined (NO_BOUNDS_CHECKING)
-  T operator () (int i, int j) const { return elem (i, j); }
+#if defined (BOUNDS_CHECKING)
+  T elem (int i, int j) const { return checkelem (i, j); }
 #else
-  T operator () (int i, int j) const { return checkelem (i, j); }
+  T elem (int i, int j) const { return Array<T>::elem (d1*j+i); }
 #endif
 
-  // No checking of any kind, ever.
+  T operator () (int i, int j) const { return elem (i, j); }
 
-  T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
-  T xelem (int i, int j) const { return Array<T>::xelem (d1*j+i); }
+  T range_error (const char *fcn, int i, int j) const;
+  T& range_error (const char *fcn, int i, int j);
 
   void resize (int n, int m);
   void resize (int n, int m, const T& val);

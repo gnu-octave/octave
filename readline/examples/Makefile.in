@@ -1,0 +1,21 @@
+# This is the Makefile for the examples subdirectory of readline. -*- text -*-
+#
+
+EXECUTABLES = fileman
+CFLAGS  = -g -I../..
+LDFLAGS = -g -L..
+
+DISTFILES = Inputrc Makefile.in fileman.c histexamp.c manexamp.c
+
+fileman: fileman.o
+	$(CC) $(LDFLAGS) -o fileman fileman.o -lreadline -ltermcap
+
+fileman.o: fileman.c
+  
+local-dist:
+	ln $(DISTFILES) ../../`cat ../../.fname`/readline/examples
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../../`cat ../../.fname`/readline/examples
+.PHONY: dist

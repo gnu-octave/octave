@@ -20,10 +20,6 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_SLQueue_h)
 #define _SLQueue_h 1
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-//#pragma interface
-#endif
-
 #include "SLList.h"
 #include "Queue.h"
 

@@ -1002,8 +1002,8 @@ DiagArray<T>::resize (int r, int c, const T& val)
     delete old_rep;
 }
 
-#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#if defined (OCTAVE_SOURCE)
+#if defined (__GNUG__)
+#if defined (OCTAVE_SOURCE) && defined (USE_EXTERNAL_TEMPLATES)
 
 typedef Array<double> array_type_double;
 typedef Array2<double> array2_type_double;
@@ -1016,20 +1016,6 @@ typedef DiagArray<Complex> diag_array_type_complex;
 
 #include "tree-const.h"
 typedef Array<tree_constant> array_type_tree_constant;
-
-#elif defined (USER_TYPEDEFS)
-
-// Users can generate their own .o files with their own types, as many
-// times as they like.  USER_TYPEDEFS should be defined to be the name
-// of an include file that contains typdefs for the desired types.
-//
-// For example, if my-types.h contains typedefs for the Array types
-// you are interested in, you might compile this file with the command
-//
-//   g++ -fexternal-templates -DUSE_EXTERNAL_TEMPLATES \
-//       -DUSER_TYPEDEFS=\"my-types.h\"
-
-#include USER_TYPEDEFS
 
 #endif
 #endif

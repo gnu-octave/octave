@@ -2479,64 +2479,55 @@ Matrix::read (std::istream& is, int nr, int nc,
 	      break;
 	    }
 
-	  if (is)
+	  double tmp = 0.0;
+
+	  ok = do_read (is, dt, flt_fmt, swap_bytes, do_float_conversion, tmp);
+
+	  if (ok)
 	    {
-	      double tmp = 0.0;
-
-	      ok = do_read (is, dt, flt_fmt, swap_bytes,
-			    do_float_conversion, tmp);
-
-	      if (ok)
+	      if (is)
 		{
-		  if (is)
+		  if (count == max_size)
 		    {
-		      if (count == max_size)
-			{
-			  max_size *= 2;
+		      max_size *= 2;
 
-			  if (nr > 0)
-			    resize (nr, max_size / nr, 0.0);
-			  else
-			    resize (max_size, 1, 0.0);
+		      if (nr > 0)
+			resize (nr, max_size / nr, 0.0);
+		      else
+			resize (max_size, 1, 0.0);
 
-			  data = fortran_vec ();
-			}
-
-		      data[count++] = tmp;
+		      data = fortran_vec ();
 		    }
 
-		  if (ok && skip != 0)
-		    is.seekg (skip, std::ios::cur);
-
-		  if (! ok || is.eof ())
-		    {
-		      if (is.eof ())
-			{
-			  if (nr > 0)
-			    {
-			      if (count > nr)
-				{
-				  final_nr = nr;
-				  final_nc = (count - 1) / nr + 1;
-				}
-			      else
-				{
-				  final_nr = count;
-				  final_nc = 1;
-				}
-			    }
-			  else
-			    {
-			      final_nr = count;
-			      final_nc = 1;
-			    }
-			}
-
-		      break;
-		    }
+		  data[count++] = tmp;
 		}
-	      else
-		break;
+
+	      if (skip != 0)
+		is.seekg (skip, std::ios::cur);
+
+	      if (is.eof ())
+		{
+		  if (nr > 0)
+		    {
+		      if (count > nr)
+			{
+			  final_nr = nr;
+			  final_nc = (count - 1) / nr + 1;
+			}
+		      else
+			{
+			  final_nr = count;
+			  final_nc = 1;
+			}
+		    }
+		  else
+		    {
+		      final_nr = count;
+		      final_nc = 1;
+		    }
+
+		  break;
+		}
 	    }
 	  else
 	    {

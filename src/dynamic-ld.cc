@@ -89,6 +89,8 @@ mangle_octave_oct_file_name (const char *name)
 static void *
 dl_resolve_octave_reference (const char *name, const char *file)
 {
+  void *retval = 0;
+
   // Dynamic linking with dlopen/dlsym doesn't require specification
   // of the libraries at runtime.  Instead, they are specified when
   // the .oct file is created.
@@ -97,11 +99,9 @@ dl_resolve_octave_reference (const char *name, const char *file)
 
   if (handle)
     {
-      void *func = dlsym (handle, name);
+      retval = dlsym (handle, name);
 
-      if (func)
-	return func;
-      else
+      if (! retval)
 	{
 	  const char *errmsg = dlerror ();
 
@@ -111,14 +111,12 @@ dl_resolve_octave_reference (const char *name, const char *file)
 	    error("unable to link function `%s'", name);
 
 	  dlclose (handle);
-	  return 0;
 	}
     }
   else
-    {
-      error ("%s: %s `%s'", dlerror (), file, name);
-      return 0;
-    }
+    error ("%s: %s `%s'", dlerror (), file, name);
+
+  return retval;
 }
 
 #elif defined (WITH_SHL)
@@ -126,6 +124,8 @@ dl_resolve_octave_reference (const char *name, const char *file)
 static void *
 shl_resolve_octave_reference (const char *name, const char *file)
 {
+  void *retval = 0;
+
   // Dynamic linking with shl_load/shl_findsym doesn't require
   // specification of the libraries at runtime.  Instead, they are
   // specified when the .oct file is created.
@@ -134,10 +134,8 @@ shl_resolve_octave_reference (const char *name, const char *file)
 
   if (handle)
     {
-      void *func = 0;
-
       int status = shl_findsym ((shl_t *) &handle, name,
-				TYPE_UNDEFINED, func);
+				TYPE_UNDEFINED, retval);
 
       if (status < 0)
 	{
@@ -148,16 +146,13 @@ shl_resolve_octave_reference (const char *name, const char *file)
 	  else
 	    error("unable to link function `%s'", name);
 
-	  return 0;
+	  retval = 0;
 	}
-      else
-	return func;
     }
   else
-    {
-      error ("%s: %s `%s'", strerror (errno), file, name);
-      return 0;
-    }
+    error ("%s: %s `%s'", strerror (errno), file, name);
+
+  return retval;
 }
 
 #elif defined (WITH_DLD)
@@ -301,15 +296,15 @@ resolve_octave_reference (const char *name, const char *file = 0)
 {
 #if defined (WITH_DL)
 
-  dl_resolve_octave_reference (name, file);
+  return dl_resolve_octave_reference (name, file);
 
 #elif defined (WITH_SHL)
 
-  shl_resolve_octave_reference (name, file);
+  return shl_resolve_octave_reference (name, file);
 
 #elif defined (WITH_DLD)
 
-  dld_resolve_octave_reference (name, file);
+  return dld_resolve_octave_reference (name, file);
 
 #endif
 }

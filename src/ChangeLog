@@ -1,3 +1,9 @@
+2004-03-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-list.cc (octave_list::subsref): Correctly create return value.
+	Return comma-separate list if {-style indexing extracts more than
+	one value.
+
 2004-03-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cell.cc (octave_cell::save_hdf5): Handle empty cells.

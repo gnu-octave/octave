@@ -229,9 +229,7 @@ DASPK::do_integrate (double tout)
       if (ccic == 1 || eavfet == 1)
 	liw += n;
 
-      lrw = 50 + 9*n;
-      if (! user_jac)
-	lrw += n*n;
+      lrw = 50 + 9*n + n*n;
       if (eavfet == 1)
 	lrw += n;
 

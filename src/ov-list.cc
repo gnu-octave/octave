@@ -76,7 +76,9 @@ octave_list::subsref (const std::string& type,
 	  {
 	    idx_vector i = tmp_idx (0).index_vector ();
 
-	    retval = octave_list (data.index (i));
+	    Cell tmp = data.index (i);
+
+	    retval = octave_value (new octave_list (tmp));
 	  }
 	else
 	  error ("only one index allowed for lists");
@@ -95,6 +97,8 @@ octave_list::subsref (const std::string& type,
 
 	    if (tmp.length () == 1)
 	      retval = tmp(0);
+	    else
+	      retval = octave_value (tmp, true);
 	  }
 	else
 	  error ("only one index allowed for lists");

@@ -1,3 +1,8 @@
+2004-03-17  David Hoover  <jazzdaq@yahoo.com>
+
+	* DASPK.cc (DASPK::do_integrate): Always add n*n elements to the
+	work vector, not just when using a numerical Jacobian.
+
 2004-03-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* so-array.cc (SND_CMP_OP, NDS_CMP_OP, NDND_CMP_OP):

@@ -1,5 +1,8 @@
 2003-09-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-plot.cc (symbols_of_pt_plot): Default for automatic replot is
+	now true.
+
 	* pr-output.cc (Fformat): Doc fix.
 	(current_output_max_field_width, current_output_precision):
 	New functions.

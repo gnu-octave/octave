@@ -1275,13 +1275,14 @@ gnuplot_has_frames (void)
 void
 symbols_of_pt_plot (void)
 {
-  DEFVAR (automatic_replot, false, automatic_replot,
+  DEFVAR (automatic_replot, true, automatic_replot,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} automatic_replot\n\
 You can tell Octave to redisplay the plot each time anything about it\n\
 changes by setting the value of the builtin variable\n\
-@code{automatic_replot} to a nonzero value.  Since this is fairly\n\
-inefficient, the default value is 0.\n\
+@code{automatic_replot} to a nonzero value.  Although it is fairly\n\
+inefficient, especially for large plots, the default value is 1 for\n\
+compatibility with Matlab.\n\
 @end defvr");
 
   DEFVAR (gnuplot_binary, GNUPLOT_BINARY, gnuplot_binary,

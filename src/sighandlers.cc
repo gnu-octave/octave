@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "pt-bp.h"
 #include "sighandlers.h"
+#include "sysdep.h"
 #include "syswait.h"
 #include "toplev.h"
 #include "utils.h"
@@ -93,7 +94,8 @@ static bool Vsigterm_dumps_octave_core;
 #endif
 
 static void
-my_friendly_exit (const char *sig_name, int sig_number)
+my_friendly_exit (const char *sig_name, int sig_number,
+		  bool save_vars = true)
 {
   static bool been_there_done_that = false;
 
@@ -112,7 +114,8 @@ my_friendly_exit (const char *sig_name, int sig_number)
 
       std::cerr << "panic: " << sig_name << " -- stopping myself...\n";
 
-      save_user_variables ();
+      if (save_vars)
+	save_user_variables ();
 
       if (sig_number < 0)
 	exit (1);
@@ -235,7 +238,7 @@ sigfpe_handler (int /* sig */)
   // here?
 
   if (can_interrupt)
-    octave_interrupt_state = 1;
+    octave_interrupt_state++;
 
   SIGHANDLER_RETURN (0);
 }
@@ -303,11 +306,7 @@ sigwinch_handler (int /* sig */)
 // for SIGINT only.
 
 static RETSIGTYPE
-#if defined (ACK_USES_SIG) || defined (REINSTALL_USES_SIG)
 sigint_handler (int sig)
-#else
-sigint_handler (int)
-#endif
 {
   MAYBE_ACK_SIGNAL (sig);
 
@@ -334,7 +333,47 @@ sigint_handler (int)
       if (octave_interrupt_immediately)
 	octave_jump_to_enclosing_context ();
       else
-	octave_interrupt_state = 1;
+	{
+	  octave_interrupt_state++;
+
+	  if (interactive)
+	    {
+	      if (octave_interrupt_state > 3)
+		{
+		  // XXX FIXME XXX -- might want to attempt to flush
+		  // any pending input first...
+
+		  std::cerr << "abort [y/N]? ";
+
+		  int c = octave_kbhit ();
+
+		  std::cerr << static_cast<char> (c) << std::endl;
+
+		  if (c == 'y' || c == 'Y')
+		    {
+		      std::cerr << "save top-level workspace [y/N]? ";
+
+		      c = octave_kbhit ();
+
+		      std::cerr << static_cast<char> (c) << std::endl;
+
+		      my_friendly_exit (sys_siglist[sig], sig,
+					(c == 'y' || c == 'Y'));
+		    }
+		  else
+		    {
+		      // We will still eventually interrupt and jump to
+		      // the top level even if no additional interrupts
+		      // happen, but we will have to wait until it is
+		      // safe to do so.  It will take 3 more
+		      // consecutive interrupts before we offer to
+		      // abort again.
+
+		      octave_interrupt_state = 1;
+		    }
+		}
+	    }
+	}
     }
 
   SIGHANDLER_RETURN (0);
@@ -357,7 +396,7 @@ sigpipe_handler (int /* sig */)
   // here?
 
   if (pipe_handler_error_count  > 100)
-    octave_interrupt_state = 1;
+    octave_interrupt_state++;
 
   SIGHANDLER_RETURN (0);
 }

@@ -77,12 +77,12 @@
 ## @item tvals
 ## time values at which @var{p}(@var{t}) is computed
 ## @item plist
-## list values of @var{p}(@var{t}); @var{plist} {  @var{ii} }
+## list values of @var{p}(@var{t}); @var{plist} @{ @var{ii} @}
 ## is @var{p}(@var{tvals}(@var{ii})).
 ##
 ## @item tvals
 ## @example
-## is selected so that || Plist{ii} - Plist{ii-1} || < Ptol
+## is selected so that || Plist@{ii@} - Plist@{ii-1@} || < Ptol
 ## for ii=2:length(tvals)
 ## @end example
 ## @end table

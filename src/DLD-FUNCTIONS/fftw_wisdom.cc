@@ -108,8 +108,11 @@ Octave.\n\
 	}
 
       std::string wisdom = octave_env::make_absolute
-	(Vload_path_dir_path.find_first_of (args(0).string_value ().c_str ()),
+	(Vload_path_dir_path.find_first_of (args(0).string_value ()),
 	 octave_env::getcwd ());
+
+      // XXX FIXME XXX -- should probably protect FILE* resources with
+      // auto_ptr or similar...
 
       if (wisdom.empty () || overwrite)
 	{
@@ -190,7 +193,7 @@ Octave.\n\
 
 #else
 
-  error ("fftw_wisdom: this copy of Octave was not configured to use FFTW3");
+  warning ("fftw_wisdom: this copy of Octave was not configured to use FFTW3");
 
 #endif
 

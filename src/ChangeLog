@@ -1,3 +1,12 @@
+2004-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (my_friendly_exit): New optional arg, save_vars.
+	Only call save_user_variables if save_vars is true.
+	(sigint_handler): If interactive, offer to abort and save
+	workspace after three consecutive interrupts.
+	(sigint_handler, sigpipe_handler, sigfpe_handler):
+	Increment octave_interrupt_handler instead of setting it to 1.
+
 2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.54.

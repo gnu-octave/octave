@@ -120,14 +120,14 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
 
 DEFUN_DLD (fftn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} fftn (@var{a}, @var{siz})\n\
+@deftypefn {Loadable Function} {} fftn (@var{a}, @var{size})\n\
 Compute the N dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The optional vector argument @var{siz} may be used specify the\n\
-dimensions of the array to be used. If an element of @var{siz} is\n\
+". The optional vector argument @var{size} may be used specify the\n\
+dimensions of the array to be used. If an element of @var{size} is\n\
 smaller than the corresponding dimension, then the dimension is\n\
 truncated prior to performing the FFT. Otherwise if an element\n\
-of @var{siz} is larger than the corresponding dimension @var{a}\n\
+of @var{size} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
 @end deftypefn\n\
 @seealso {ifftn, fft, fft2, fftw_wisdom}")
@@ -137,14 +137,14 @@ is resized and padded with zeros.\n\
 
 DEFUN_DLD (ifftn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} ifftn (@var{a}, @var{siz})\n\
+@deftypefn {Loadable Function} {} ifftn (@var{a}, @var{size})\n\
 Compute the invesre N dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
-". The optional vector argument @var{siz} may be used specify the\n\
-dimensions of the array to be used. If an element of @var{siz} is\n\
+". The optional vector argument @var{size} may be used specify the\n\
+dimensions of the array to be used. If an element of @var{size} is\n\
 smaller than the corresponding dimension, then the dimension is\n\
 truncated prior to performing the inverse FFT. Otherwise if an element\n\
-of @var{siz} is larger than the corresponding dimension @var{a}\n\
+of @var{size} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
 @end deftypefn\n\
 @seealso {fftn, ifft, ifft2, fftw_wisdom}")

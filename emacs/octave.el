@@ -452,21 +452,54 @@ The marks are pushed."
   (push-mark (point))
   (octave-beginning-of-subprogram))
 
+(defun octave-is-continuation-line ()
+  "Returns t if the current line is a continuation line, nil otherwise."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "^\\S<*\\(\\\\\\|\\.\\.\\.\\)[ \t]*\\(\\s<.*\\)?$")))
+
+(defun octave-point (position)
+  "Returns the value of point at certain positions." 
+  (save-excursion
+    (cond
+     ((eq position 'bol)  (beginning-of-line))
+     ((eq position 'eol)  (end-of-line))
+     ((eq position 'boi)  (back-to-indentation))
+     ((eq position 'bonl) (forward-line 1))
+     ((eq position 'bopl) (forward-line -1))
+     (t (error "unknown buffer position requested: %s" position)))
+    (point)))
+
+(defun octave-previous-line ()
+  "Moves point to beginning of the previous Octave code line (i.e.,
+skips past all empty and comment lines."
+  (interactive)
+  (beginning-of-line)
+  (while (progn
+	   (forward-line -1)
+	   (or (looking-at octave-comment-line-start-skip)
+	       (looking-at "[ \t]*$")))))
+
 (defun octave-previous-statement ()
   "Moves point to beginning of the previous Octave statement.
 Returns `first-statement' if that statement is the first
 non-comment Octave statement in the file, and nil otherwise."
   (interactive)
-  (let (not-first-statement)
+  (let ((eol (octave-point 'eol))
+	not-first-statement)
     (beginning-of-line)
     (while (and (setq not-first-statement (= (forward-line -1) 0))
-		(or (looking-at octave-comment-line-start-skip)
-		    (looking-at "[ \t]*$")
-		    (save-excursion
-		      (forward-line -1)
-		      (looking-at octave-continuation-regexp))
-		    (looking-at
-		     (concat "[ \t]*"  octave-comment-start-skip)))))
+                (or (looking-at octave-comment-line-start-skip)
+                    (looking-at "[ \t]*$")
+		    (< (car (save-excursion
+			      (parse-partial-sexp (octave-point 'bol)
+						  eol)))
+		       0)
+                    (save-excursion
+                      (forward-line -1)
+                      (looking-at octave-continuation-regexp))
+                    (looking-at
+                     (concat "[ \t]*"  octave-comment-start-skip)))))
   (if (not not-first-statement)
       'first-statement)))
 
@@ -658,12 +691,12 @@ The marks are pushed."
 	     (point))))))
 
 (defun octave-indent-line ()
-  "Indents current Octave line based on its contents and on previous lines."
+  "Indents current Octave line based on its contents and on previous
+lines."
   (interactive)
   (let ((cfi (octave-calculate-indent))
 	(prev-indent (current-indentation))
-	(prev-point (point))
-	new-indent new-point new-eol new-bol new-indent-point)
+	(prev-column (current-column)))
     (if (save-excursion
 	  (beginning-of-line)
 	  (and (not (looking-at octave-comment-line-start-skip))
@@ -671,24 +704,13 @@ The marks are pushed."
 	(progn
 	  (beginning-of-line)
 	  (delete-horizontal-space)
-;;
-;; There must be a better way!
-;;
-	  (setq new-indent (indent-to cfi))
-	  (setq new-point (+ prev-point (- new-indent prev-indent)))
-	  (setq new-eol (save-excursion (end-of-line) (point)))
-	  (setq new-bol (save-excursion (beginning-of-line) (point)))
-	  (setq new-indent-point (+ new-bol new-indent))
-	  (cond
-	   ((> prev-point new-eol)
-	    (goto-char new-eol))
-	   ((< new-point new-indent-point)
-	    (goto-char new-indent-point))
-	   (t
-	    (goto-char new-point))))
+	  (indent-to cfi)
+	  (if (> prev-column prev-indent)
+	      (goto-char (+ (point) (- prev-column prev-indent)))))
       (octave-indent-comment))
     (if (and auto-fill-function
-	     (> (save-excursion (end-of-line) (current-column)) fill-column))
+	     (> (save-excursion (end-of-line) (current-column))
+		fill-column))
 	(save-excursion
 	  (end-of-line)
 	  (octave-do-auto-fill)))
@@ -793,24 +815,40 @@ An abbrev before point is expanded if `abbrev-mode' is non-nil."
 
 (defun octave-calculate-indent ()
   "Calculates the Octave indent column based on previous lines."
-  (let ((indent-col 0)
-	first-statement)
+  (interactive)
+  (let* ((prev-line-is-continuation-line
+	  (save-excursion
+	    (octave-previous-line)
+	    (octave-is-continuation-line)))
+	 (indent-col 0)
+	 first-statement)
     (save-excursion
-      (setq first-statement (octave-previous-statement))
-      (if (not first-statement)
-	  (progn
-	    (skip-chars-forward " \t")
-	    (setq indent-col (+ (octave-current-line-indentation)
-				(octave-calc-indent-this-line 1 0))))))
+      (beginning-of-line)
+      (if (condition-case nil
+	      (progn
+		(up-list -1)
+		t)
+	    (error nil))
+	  (setq indent-col (+ 1 (current-column)))
+	(setq first-statement (octave-previous-statement))
+	(if (not first-statement)
+	    (progn
+	      (skip-chars-forward " \t")
+	      (setq indent-col (+ (octave-current-line-indentation)
+				  (octave-calc-indent-this-line 1 0)))
+	      (if (and prev-line-is-continuation-line
+		       (octave-is-continuation-line))
+		  (setq indent-col (+ indent-col
+				      octave-continuation-indent)))))))
+
     ;; This fixes things if the line we are on is and else- or
     ;; end-type statement.
-
     (if (save-excursion
-	  (beginning-of-line)
-	  (skip-chars-forward " \t")
-	  (looking-at "\\(end\\|else\\|catch\\|unwind_protect_cleanup\\)"))
-	(setq indent-col (+ indent-col
-			    (octave-calc-indent-this-line -1 1))))
+          (beginning-of-line)
+          (skip-chars-forward " \t")
+          (looking-at "\\(end\\|else\\|catch\\|unwind_protect_cleanup\\)"))
+        (setq indent-col (+ indent-col
+                            (octave-calc-indent-this-line -1 1))))
     indent-col))
 
 (defun octave-electric-semi ()

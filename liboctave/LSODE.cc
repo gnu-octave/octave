@@ -245,8 +245,6 @@ LSODE::do_integrate (double tout)
   int *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();
 
- again:
-
   F77_XFCN (lsode, LSODE, (lsode_f, n, xp, t, tout, itol, rel_tol,
 			   abs_tol, itask, istate, iopt, prwork, lrw,
 			   piwork, liw, lsode_j, method_flag));
@@ -272,18 +270,10 @@ LSODE::do_integrate (double tout)
 	  break;
 
 	case -1:  // excess work done on this call (perhaps wrong mf).
-	  if (step_limit () > 0)
-	    {
-	      (*current_liboctave_error_handler)
-		("giving up after more than %d steps attempted in lsode",
-		 step_limit ());
-	      integration_error = 1;
-	    }
-	  else
-	    {
-	      istate = 2;
-	      goto again;
-	    }
+	  (*current_liboctave_error_handler)
+	    ("giving up after more than %d steps attempted in lsode",
+	     step_limit ());
+	  integration_error = 1;
 	  break;
 
 	case 2:  // lsode was successful

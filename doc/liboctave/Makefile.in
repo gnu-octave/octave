@@ -25,7 +25,8 @@ TEXINFO = array.texi bugs.texi cp-idx.texi dae.texi diffeq.texi \
 	liboctave.texi matvec.texi nleqn.texi nlfunc.texi ode.texi \
 	optim.texi preface.texi quad.texi range.texi
 
-FORMATTED = liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
+FORMATTED = liboctave.dvi liboctave.ps liboctave.info \
+	liboctave.info-[0-9]* liboctave_*.html
 
 DISTFILES = Makefile.in gpl.texi $(TEXINFO) $(FORMATTED)
 
@@ -38,7 +39,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: liboctave.info liboctave.dvi liboctave.ps
+all: liboctave.info liboctave.dvi liboctave.ps liboctave_toc.html
 .PHONY: all
 
 liboctave.info: $(TEXINFO) ../conf.texi
@@ -51,6 +52,9 @@ liboctave.dvi: $(TEXINFO) ../conf.texi
 
 liboctave.ps: liboctave.dvi
 	-dvips -o liboctave.ps liboctave.dvi
+
+liboctave_toc.html:
+	-texi2html -split_chapter -I$(srcdir)/.. $(srcdir)/liboctave.texi
 
 check:
 .PHONY: check
@@ -84,8 +88,9 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS liboctave.info liboctave.info-* \
-	liboctave.dvi liboctave.ps
+	rm -f tags TAGS liboctave.info liboctave.info-*
+	rm -f liboctave.dvi liboctave.ps
+	rm -f liboctave_*.html
 .PHONY: maintainer-clean
 
 dist: all

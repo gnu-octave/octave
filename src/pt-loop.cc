@@ -217,13 +217,20 @@ tree_simple_for_command::eval (void)
     }
   else if (rhs.is_matrix_type ())
     {
+      charMatrix chm_tmp;
       Matrix m_tmp;
       ComplexMatrix cm_tmp;
 
       int nr;
       int steps;
 
-      if (rhs.is_real_matrix ())
+      if (rhs.is_string ())
+	{
+	  chm_tmp = rhs.char_matrix_value ();
+	  nr = chm_tmp.rows ();
+	  steps = chm_tmp.columns ();
+	}
+      else if (rhs.is_real_matrix ())
 	{
 	  m_tmp = rhs.matrix_value ();
 	  nr = m_tmp.rows ();
@@ -239,7 +246,26 @@ tree_simple_for_command::eval (void)
       if (error_state)
 	return;
 
-      if (rhs.is_real_matrix ())
+      if (rhs.is_string ())
+	{
+	  if (nr == 1)
+	    DO_LOOP (chm_tmp (0, i));
+	  else
+	    {
+	      for (int i = 0; i < steps; i++)
+		{
+		  octave_value val (chm_tmp.extract (0, i, nr-1, i), true);
+
+		  bool quit = false;
+
+		  do_for_loop_once (ult, val, quit);
+
+		  if (quit)
+		    break;
+		}
+	    }
+	}
+      else if (rhs.is_real_matrix ())
 	{
 	  if (nr == 1)
 	    DO_LOOP (m_tmp (0, i));

@@ -4,6 +4,11 @@ Summary of changes for version 2.1.x:
   * If fread is given a skip parameter, the skip is performed after
     the read instead of before (for compatibility with Matlab).
 
+  * The new built-in variable `crash_dumps_octave_core' controls
+    whether Octave writes user variables to the file `octave-core'
+    when it crashes or is killed by a signal.  The default value is 1
+    (0 if you use --traditional).
+
   * Running `make check' should work now before you run `make install', 
     even if you build a copy of Octave that depends on shared versions
     of the Octave libraries.

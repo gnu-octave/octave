@@ -915,6 +915,7 @@ close_plot_stream (void)
 
   if (plot_stream)
     {
+      send_to_plot_stream ("\nquit\n");
       delete plot_stream;
       plot_stream = 0;
     }

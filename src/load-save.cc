@@ -59,6 +59,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include "version.h"
 
+// The number of decimal digits to use when writing ascii data.
+static bool Vcrash_dumps_octave_core;
+
 // The default output format.  May be one of "binary", "text", or
 // "mat-binary".
 static string Vdefault_save_format;
@@ -2436,27 +2439,30 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 void
 save_user_variables (void)
 {
-  // XXX FIXME XXX -- should choose better file name?
-
-  const char *fname = "octave-core";
-
-  message (0, "attempting to save variables to `%s'...", fname);
-
-  load_save_format format = get_default_save_format ();
-
-  unsigned mode = ios::out|ios::trunc;
-  if (format == LS_BINARY || format == LS_MAT_BINARY)
-    mode |= ios::bin;
-
-  ofstream file (fname, mode);
-
-  if (file)
+  if (Vcrash_dumps_octave_core)
     {
-      save_vars (string_vector (), 0, 0, file, false, format, false, true);
-      message (0, "save to `%s' complete", fname);
+      // XXX FIXME XXX -- should choose better file name?
+
+      const char *fname = "octave-core";
+
+      message (0, "attempting to save variables to `%s'...", fname);
+
+      load_save_format format = get_default_save_format ();
+
+      unsigned mode = ios::out|ios::trunc;
+      if (format == LS_BINARY || format == LS_MAT_BINARY)
+	mode |= ios::bin;
+
+      ofstream file (fname, mode);
+
+      if (file)
+	{
+	  save_vars (string_vector (), 0, 0, file, false, format, false, true);
+	  message (0, "save to `%s' complete", fname);
+	}
+      else
+	warning ("unable to open `%s' for writing...", fname);
     }
-  else
-    warning ("unable to open `%s' for writing...", fname);
 }
 
 DEFUN_TEXT (save, args, ,
@@ -2641,6 +2647,14 @@ save_three_d (ostream& os, const octave_value& tc, bool parametric)
 }
 
 static int
+crash_dumps_octave_core (void)
+{
+  Vcrash_dumps_octave_core = check_preference ("crash_dumps_octave_core");
+  return 0;
+}
+
+
+static int
 default_save_format (void)
 {
   int status = 0;
@@ -2679,6 +2693,9 @@ save_precision (void)
 void
 symbols_of_load_save (void)
 {
+  DEFVAR (crash_dumps_octave_core, 1.0, 0, crash_dumps_octave_core,
+    "write octave-core file if Octave crashes or is killed by a signal");
+
   DEFVAR (default_save_format, "ascii", 0, default_save_format,
     "default format for files created with save, may be one of\n\
 \"binary\", \"text\", or \"mat-binary\"");

@@ -22,7 +22,7 @@ SOURCES =
 
 TEXINFO := Octave-FAQ.texi
 
-FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps
+FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ_toc.html
 
 DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
 
@@ -35,7 +35,7 @@ SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps
+all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ_toc.html
 .PHONY: all
 
 Octave-FAQ.info: Octave-FAQ.texi
@@ -48,6 +48,9 @@ Octave-FAQ.dvi: Octave-FAQ.texi
 
 Octave-FAQ.ps: Octave-FAQ.dvi
 	-dvips -o Octave-FAQ.ps Octave-FAQ.dvi
+
+Octave-FAQ_toc.html:
+	-texi2html -split_chapter $(srcdir)/Octave-FAQ.texi
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall
@@ -73,8 +76,9 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS Octave-FAQ.info Octave-FAQ.info-* \
-	Octave-FAQ.dvi Octave-FAQ.ps
+	rm -f tags TAGS Octave-FAQ.info Octave-FAQ.info-*
+	rm -f Octave-FAQ.dvi Octave-FAQ.ps
+	rm -f Octave-FAQ_*.html
 .PHONY: maintainer-clean
 
 dist: all

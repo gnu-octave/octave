@@ -114,6 +114,8 @@ public:
 
   void do_restore_startup_hook (void);
 
+  void do_read_init_file (const string& file);
+
   static void operate_and_get_next (int, int);
 
 private:
@@ -321,6 +323,15 @@ void
 gnu_readline::do_restore_startup_hook (void)
 {
   rl_startup_hook = previous_startup_hook;
+}
+
+void
+gnu_readline::do_read_init_file (const string& file)
+{
+  if (file.empty ())
+    rl_re_read_init_file ();
+  else
+    rl_read_init_file (file.c_str ());
 }
 
 void
@@ -648,6 +659,13 @@ command_editor::restore_startup_hook (void)
 {
   if (instance_ok ())
     instance->do_restore_startup_hook ();
+}
+
+void
+command_editor::read_init_file (const string& file)
+{
+  if (instance_ok ())
+    instance->do_read_init_file (file);
 }
 
 // Return a string which will be printed as a prompt.  The string may

@@ -30,7 +30,7 @@ TEXINFO = arith.texi audio.texi basics.texi bugs.texi control.texi \
 	strings.texi struct.texi system.texi tips.texi var.texi \
 	vr-idx.texi
 
-FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]*
+FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
 
 DISTFILES = Makefile.in dir octave.1 $(TEXINFO) $(FORMATTED)
 
@@ -52,7 +52,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps
+all: octave.info octave.dvi octave.ps octave_toc.html
 .PHONY: all
 
 octave.info: $(TEXINFO) ../conf.texi
@@ -79,6 +79,9 @@ octave.ps: octave.dvi
 	  --no-validate --no-headers --no-split --output BUGS \
 	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/bugs.texi
 	mv BUGS ../../BUGS
+
+octave_toc.html:
+	-texi2html -split_chapter -I$(srcdir)/.. $(srcdir)/octave.texi
 
 check: all
 .PHONY: check
@@ -148,7 +151,8 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps \
+	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps
+	rm -f octave_*.html
 .PHONY: maintainer-clean
 
 dist: all

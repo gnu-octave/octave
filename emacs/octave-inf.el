@@ -33,7 +33,7 @@
   "*Program invoked by `inferior-octave'.")
 
 (defvar inferior-octave-prompt
-  "\\(^octave\\(:[0-9]+\\)?\\|^debug\\|^\\)>+ "
+  "\\(^octave\\(\\|.bin\\)\\(:[0-9]+\\)?\\|^debug\\|^\\)>+ "
   "*Regexp to match prompts for the inferior Octave process.")
 
 (defvar inferior-octave-startup-file nil

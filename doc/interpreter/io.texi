@@ -379,7 +379,14 @@ saves the variable @samp{a} and all variables beginning with @samp{b} to
 the file @file{data} in Octave's binary format.
 @end deffn
 
-There are two variables that modify the behavior of @code{save}.
+There are two variables that modify the behavior of @code{save} and one
+that controls whether variables are saved when Octave exits unexpectedly.
+
+@defvr {Built-in Variable} crash_dumps_octave_core
+If this variable is set to a nonzero value, Octave tries to save all
+current variables the the file "octave-core" if it crashes or receives a
+hangup, terminate or similar signal.  The default value is 1.
+@end defvr
 
 @defvr {Built-in Variable} default_save_format
 This variable specifies the default format for the @code{save} command.

@@ -51,19 +51,19 @@ static int initialized = 0;
 
 extern "C"
 {
-  int *F77_FCN (dgennor, DGENNOR) (const double&, const double&,
-				   double&);
+  int F77_FCN (dgennor, DGENNOR) (const double&, const double&,
+				  double&);
 
-  int *F77_FCN (dgenunf, DGENUNF) (const double&, const double&,
-				   double&);
+  int F77_FCN (dgenunf, DGENUNF) (const double&, const double&,
+				  double&);
 
-  int *F77_FCN (setall, SETALL) (const int&, const int&);
+  int F77_FCN (setall, SETALL) (const int&, const int&);
 
-  int *F77_FCN (getsd, GETSD) (int&, int&);
+  int F77_FCN (getsd, GETSD) (int&, int&);
 
-  int *F77_FCN (setsd, SETSD) (const int&, const int&);
+  int F77_FCN (setsd, SETSD) (const int&, const int&);
 
-  int *F77_FCN (setcgn, SETCGN) (const int&);
+  int F77_FCN (setcgn, SETCGN) (const int&);
 }
 
 static double

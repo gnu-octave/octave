@@ -1802,14 +1802,16 @@ handle_identifier (const string& tok, int spc_gobbled)
   // arguments.
   //
   // If the following token is `=', or if we are parsing a function
-  // return list or function parameter list, force the symbol to be
-  // inserted as a variable in the current symbol table.
+  // return list or function parameter list, or if we are looking at
+  // something like [ab,cd] = foo (), force the symbol to be inserted
+  // as a variable in the current symbol table.
 
   if (is_text_function_name (tok) && ! is_variable (tok))
     {
       if (next_tok_is_eq
 	  || lexer_flags.looking_at_return_list
-	  || lexer_flags.looking_at_parameter_list)
+	  || lexer_flags.looking_at_parameter_list
+	  || lexer_flags.looking_at_matrix_or_assign_lhs)
 	{
 	  force_local_variable (tok);
 	}

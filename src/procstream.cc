@@ -54,10 +54,10 @@ procstreambase::close (void)
 
   if (is_open ())
     {
-      status = pb.sys_close ();
-
       if (! pb.close ())
 	set (ios::failbit);
+
+      status = pb.wait_status ();
     }
 
   return status;

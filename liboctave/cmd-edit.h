@@ -85,6 +85,8 @@ public:
 
   static void restore_startup_hook (void);
 
+  static void read_init_file (const string& file = string ());
+
   static int current_command_number (void);
 
   static void reset_current_command_number (int n);
@@ -155,6 +157,8 @@ protected:
   virtual void do_set_startup_hook (fcn) { }
 
   virtual void do_restore_startup_hook (void) { }
+
+  virtual void do_read_init_file (const string&) { }
 
   int read_octal (const string& s);
 

@@ -146,6 +146,10 @@ public:
   // TRUE means we're parsing the parameter list for a function.
   bool looking_at_parameter_list;
 
+  // TRUE means we're parsing a matrix or the left hand side of
+  // multi-value assignment statement.
+  bool looking_at_matrix_or_assign_lhs;
+
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;
 

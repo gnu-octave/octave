@@ -141,6 +141,7 @@ public:
   octave_value (const ComplexColumnVector& v, int pcv = -1);
   octave_value (bool b);
   octave_value (const boolMatrix& bm);
+  octave_value (char c);
   octave_value (const char *s);
   octave_value (const string& s);
   octave_value (const string_vector& s);

@@ -365,6 +365,13 @@ octave_value::octave_value (const boolMatrix& bm)
   maybe_mutate ();
 }
 
+octave_value::octave_value (char c)
+  : rep (new octave_char_matrix_str (c))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const char *s)
   : rep (new octave_char_matrix_str (s))
 {

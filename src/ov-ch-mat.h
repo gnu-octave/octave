@@ -59,6 +59,9 @@ public:
   octave_char_matrix (const charMatrix& chm, bool = false)
     : octave_base_value (), matrix (chm) { }
 
+  octave_char_matrix (char c)
+    : octave_base_value (), matrix (c) { }
+
   octave_char_matrix (const char *s)
     : octave_base_value (), matrix (s) { }
 

@@ -38,10 +38,11 @@ octave_procbuf : public filebuf
 public:
 
   octave_procbuf (void)
-    : filebuf (), proc_pid (-1), next (0) { }
+    : filebuf (), wstatus (-1), proc_pid (-1), next (0) { }
 
   octave_procbuf (const char *command, int mode)
-    : filebuf (), proc_pid (-1), next (0) { open (command, mode); }
+    : filebuf (), wstatus (-1), proc_pid (-1), next (0)
+  { open (command, mode); }
 
   ~octave_procbuf (void) { close (); }
 
@@ -52,9 +53,13 @@ public:
 
   virtual int sys_close (void);
 
+  int wait_status (void) const { return wstatus; }
+
   pid_t pid (void) { return proc_pid; }
 
 protected:
+
+  int wstatus;
 
   pid_t proc_pid;
 

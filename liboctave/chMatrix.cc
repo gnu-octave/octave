@@ -40,6 +40,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // charMatrix class.
 
+charMatrix::charMatrix (char c)
+  : MArray2<char> ()
+{
+  int nc = 1;
+  int nr = 1;
+
+  resize (nr, nc);
+
+  elem (0, 0) = c;
+}
+
 charMatrix::charMatrix (const char *s)
   : MArray2<char> ()
 {
@@ -173,6 +184,24 @@ charMatrix::transpose (void) const
 	for (int i = 0; i < nr; i++)
 	  result.elem (j, i) = elem (i, j);
     }
+  return result;
+}
+
+charMatrix
+charMatrix::extract (int r1, int c1, int r2, int c2) const
+{
+  if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
+  if (c1 > c2) { int tmp = c1; c1 = c2; c2 = tmp; }
+
+  int new_r = r2 - r1 + 1;
+  int new_c = c2 - c1 + 1;
+
+  charMatrix result (new_r, new_c);
+
+  for (int j = 0; j < new_c; j++)
+    for (int i = 0; i < new_r; i++)
+      result.elem (i, j) = elem (r1+i, c1+j);
+
   return result;
 }
 

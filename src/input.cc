@@ -45,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "cmd-edit.h"
+#include "file-ops.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -788,6 +789,28 @@ not a bug.")
     }
   else
     print_usage ("completion_matches");
+
+  return retval;
+}
+
+DEFUN (read_readline_init_file, args, ,
+  "read_readline_init_file (FILE)")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    command_editor::read_init_file ();
+  else if (nargin == 1)
+    {
+      string file = file_ops::tilde_expand (args(0).string_value ());
+
+      if (! error_state)
+	command_editor::read_init_file (file);
+    }
+  else
+    print_usage ("read_readline_init_file");
 
   return retval;
 }

@@ -1,3 +1,9 @@
+Fri Oct  2 14:23:59 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* octave-inf.el (inferior-octave-prompt):  Also match prompts of
+	the form `octave.bin:1>' which come from using precopiled binary
+	versions.
+
 Thu Sep 24 13:51:03 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_OUTPUT): Add libcruft/ordered-qz to the list.

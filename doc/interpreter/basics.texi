@@ -157,6 +157,7 @@ beep_on_error                 = 1
 default_save_format           = "mat-binary"
 define_all_return_values      = 1
 do_fortran_indexing           = 1
+crash_dumps_octave_core       = 0
 empty_list_elements_ok        = 1
 implicit_str_to_num_ok        = 1
 ok_to_lose_imaginary_part     = 1

@@ -1023,12 +1023,6 @@ directory is not changed.
 Return the current working directory.
 @end deftypefn
 
-@defvr {Built-in Variable} PWD
-The current working directory.  The value of @code{PWD} is updated each
-time the current working directory is changed with the @samp{cd}
-command.
-@end defvr
-
 @deffn {Command} ls options
 @deffnx {Command} dir options
 List directory contents.  For example,

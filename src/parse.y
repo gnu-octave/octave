@@ -522,12 +522,17 @@ constant	: NUM
 		  { $$ = make_constant (TEXT, $1); }
 		;
 
+in_matrix_or_assign_lhs
+		: // empty
+		  { lexer_flags.looking_at_matrix_or_assign_lhs = true; }
+		;
+
 matrix		: '[' ']'
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
 		| '[' ';' ']'
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| '[' rows ']'
-		  { $$ = finish_matrix ($2); }
+		| '[' in_matrix_or_assign_lhs rows ']'
+		  { $$ = finish_matrix ($3); }
 		;
 
 rows		: rows1
@@ -707,8 +712,11 @@ simple_expr	: colon_expr
 
 assign_lhs	: simple_expr
 		  { $$ = new tree_argument_list ($1); }
-		| '[' arg_list CLOSE_BRACE
-		  { $$ = $2; }
+		| '[' in_matrix_or_assign_lhs arg_list CLOSE_BRACE
+		  {
+		    $$ = $3;
+		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		  }
 		;
 
 assign_expr	: assign_lhs '=' expression
@@ -1026,7 +1034,7 @@ param_list1	: param_list_beg identifier
 // List of function return value names
 // ===================================
 
-return_list_beg	: '[' local_symtab in_return_list
+return_list_beg	: '[' in_return_list local_symtab
 		;
 
 return_list	: return_list_beg return_list_end

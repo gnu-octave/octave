@@ -147,8 +147,6 @@ octave_procbuf::sys_close (void)
 {
 #if defined (HAVE_SYS_WAIT_H)
 
-  int wstatus;
-
   pid_t wait_pid;
 
   int status = -1;

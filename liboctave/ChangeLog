@@ -1,3 +1,14 @@
+Fri Oct 16 01:08:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* chMatrix.cc (charMatrix::extract): New function.
+	(charMatrix::charMatrix (char c)): New constructor.
+
+Tue Oct 13 22:11:08 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.h: (command_editor::do_read_init_file): New function.
+	* cmd-edit.cc (command_editor::read_init_file): New function.
+	(gnu_readline::do_read_init_file): Likewise.
+
 Fri Sep 25 14:26:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-env.cc (octave_env::do_get_home_directory): 

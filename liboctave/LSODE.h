@@ -64,7 +64,11 @@ public:
       x_maximum_step_size = -1.0;
       x_minimum_step_size = 0.0;
       x_relative_tolerance = sqrt_eps;
-      x_step_limit = 500;
+
+      // This is consistent with earlier versions of Octave, and is
+      // much larger than the default of 500 specified in the LSODE
+      // sources.
+      x_step_limit = 100000;
     }
 
   void copy (const LSODE_options& opt)

@@ -41,7 +41,7 @@ variable's current value.  Variables are given new values with
 @xref{Assignment Ops, ,Assignment Expressions}.
 
 A number of variables have special built-in meanings.  For example,
-@code{PWD} holds the current working directory, and @code{pi} names the
+@code{ans} holds the current working directory, and @code{pi} names the
 ratio of the circumference of a circle to its diameter. @xref{Summary of
 Built-in Variables}, for a list of all the predefined variables.  Some
 of these built-in symbols are constants and may not be changed.  Others
@@ -395,6 +395,11 @@ Default value: @code{"ascii"}.
 @xref{Index Expressions}.
 
 Default value: 0.
+
+@item crash_dumps_octave_core
+@xref{Simple File I/O}.
+
+Default value: 1.
 
 @item define_all_return_values
 @xref{Multiple Return Values}.

@@ -1,3 +1,60 @@
+Fri Oct 16 00:52:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (in_matrix_or_assign_lhs): New subroutine for lexical
+	feedback.
+	(matrix): Use it.
+	(assign_lhs): Ditto.
+	* lex.h (lexical_feedback::looking_at_matrix_or_assign_lhs): New
+	data member.
+	* lex.l (handle_identifier): Use it to handle keywords like `cd'
+	as variables in contexts like [ab, cd] = foo ().
+
+	* ov-str-mat.h
+	(octave_char_matrix_str::octave_char_matrix_str (char c)): 
+	New constructor.
+	* ov-ch-mat.h (octave_char_matrix::octave_char_matrix (char c)):
+ 	New constructor.
+	* ov.cc (octave_value::octave_value (char c): New constructor.
+
+	* pt-loop.cc (tree_simple_for_command::eval): Handle case of RHS
+	as string.
+
+Thu Oct 15 00:56:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/rand.cc: Declare Fortran subroutines as returning
+	int, not int*.
+
+Wed Oct 14 23:51:31 1998  Georg Thimm <thimm@idiap.ch>
+
+	* load-save.cc (Vcrash_dumps_octave_core): New static variable.
+	(save_user_variables): Only save variables if
+	Vcrash_dumps_octave_core is true.
+	(symbols_of_load_save): Add DEFVAR for it here.
+	(crash_dumps_octave_core): New function.
+	* octave.cc (maximum_braindamage): Bind crash_dumps_octave_core to
+	0.0 here.
+
+Tue Oct 13 22:05:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (read_readline_init_file): New function.
+
+Thu Oct  8 13:47:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-procbuf.h (octave_procbuf::wstatus): New data member.
+	Initialize in constructors.
+	(octave_procbuf::wait_status): New member function.
+	* oct-procbuf.cc (octave_procbuf::sys_close): Use class data
+	member wstatus, not local variable.
+	* procstream.cc (procstreambase::close): Don't call sys_close directly.
+	Get subprocess exit status by calling wait_status for our procbuf.
+	* pt-plot.cc (close_plot_stream): Send "quit" command to gnuplot
+	before deleting plot_stream.
+
+
+Thu Oct  1 22:39:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Fis_complex): New function.
+
 Fri Sep 25 11:50:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (write_header): Rename from write_binary_header.

@@ -46,6 +46,7 @@ public:
   charMatrix (int r, int c, char val) : MArray2<char> (r, c, val) { }
   charMatrix (const MArray2<char>& a) : MArray2<char> (a) { }
   charMatrix (const charMatrix& a) : MArray2<char> (a) { }
+  charMatrix (char c);
   charMatrix (const char *s);
   charMatrix (const string& s);
   charMatrix (const string_vector& s);
@@ -67,6 +68,10 @@ public:
   string row_as_string (int r, bool strip_trailing_whitespace = false) const;
 
   charMatrix transpose (void) const;
+
+  // resize is the destructive equivalent for this one
+
+  charMatrix extract (int r1, int c1, int r2, int c2) const;
 
   Matrix all (void) const;
   Matrix any (void) const;

@@ -78,9 +78,7 @@ public:
   ~iprocstream (void) { }
 
   void open (const char *name, int mode=ios::in)
-    {
-      procstreambase::open (name, mode);
-    }
+    { procstreambase::open (name, mode); }
 
 private:
 
@@ -102,9 +100,7 @@ public:
   ~oprocstream (void) { }
 
   void open (const char *name, int mode=ios::out)
-    {
-      procstreambase::open(name, mode);
-    }
+    { procstreambase::open(name, mode); }
 
 private:
 
@@ -123,13 +119,10 @@ public:
   procstream (const char *name, int mode)
     : procstreambase(name, mode) { }
 
-
   ~procstream (void) { }
 
   void open (const char *name, int mode)
-    {
-      procstreambase::open(name, mode);
-    }
+    { procstreambase::open(name, mode); }
 
 private:
 

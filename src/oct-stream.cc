@@ -588,7 +588,7 @@ printf_format_list::printf_format_list (const std::string& s)
   int i = 0;
 
   int args = 0;
-  string flags;
+  std::string flags;
   int fw = 0;
   int prec = 0;
   char modifier = '\0';
@@ -744,7 +744,7 @@ printf_format_list::process_conversion
 	  if (isdigit (s[i]))
 	    {
 	      int n = 0;
-	      string tmp = s.substr (i);
+	      std::string tmp = s.substr (i);
 	      sscanf (tmp.c_str (), "%d%n", &fw, &n);
 	    }
 
@@ -770,7 +770,7 @@ printf_format_list::process_conversion
 	      if (isdigit (s[i]))
 		{
 		  int n = 0;
-		  string tmp = s.substr (i);
+		  std::string tmp = s.substr (i);
 		  sscanf (tmp.c_str (), "%d%n", &prec, &n);
 		}
 

@@ -51,9 +51,20 @@ class
 tree_plot_command : public tree_command
 {
 public:
-  tree_plot_command (void);
-  tree_plot_command (subplot_list *plt, int nd);
-  tree_plot_command (subplot_list *plt, plot_limits *rng, int nd);
+  tree_plot_command (void) : tree_command ()
+    {
+      range = 0;
+      plot_list = 0;
+      ndim = 0;
+    }
+
+  tree_plot_command (subplot_list *plt, plot_limits *rng, int nd)
+    : tree_command ()
+      {
+	range = rng;
+	plot_list = plt;
+	ndim = nd;
+      }
 
   ~tree_plot_command (void);
 
@@ -71,11 +82,33 @@ class
 plot_limits : public tree_print_code
 {
 public:
-  plot_limits (void);
-  plot_limits (plot_range *xlim);
-  plot_limits (plot_range *xlim, plot_range *ylim);
-  plot_limits (plot_range *xlim, plot_range *ylim,
-		    plot_range *zlim);
+  plot_limits (void)
+    {
+      x_range = 0;
+      y_range = 0;
+      z_range = 0;
+    }
+
+  plot_limits (plot_range *xlim)
+    {
+      x_range = xlim;
+      y_range = 0;
+      z_range = 0;
+    }
+
+  plot_limits (plot_range *xlim, plot_range *ylim)
+    {
+      x_range = xlim;
+      y_range = ylim;
+      z_range = 0;
+    }
+
+  plot_limits (plot_range *xlim, plot_range *ylim, plot_range *zlim)
+    {
+      x_range = xlim;
+      y_range = ylim;
+      z_range = zlim;
+    }
 
   ~plot_limits (void);
 
@@ -93,8 +126,17 @@ class
 plot_range : public tree_print_code
 {
 public:
-  plot_range (void);
-  plot_range (tree_expression *l, tree_expression *u);
+  plot_range (void)
+    {
+      lower = 0;
+      upper = 0;
+    }
+
+  plot_range (tree_expression *l, tree_expression *u)
+    {
+      lower = l;
+      upper = u;
+    }
 
   ~plot_range (void);
 
@@ -111,14 +153,37 @@ class
 subplot_using : public tree_print_code
 {
 public:
-  subplot_using (void);
-  subplot_using (tree_expression *fmt);
+  subplot_using (void)
+    {
+      qualifier_count = 0;
+      x[0] = x[1] = x[2] = x[3] = 0;
+      scanf_fmt = 0;
+    }
+
+  subplot_using (tree_expression *fmt) : val (4, -1)
+    {
+      qualifier_count = 0;
+      x[0] = x[1] = x[2] = x[3] = 0;
+      scanf_fmt = fmt;
+    }
 
   ~subplot_using (void);
 
-  subplot_using *set_format (tree_expression *fmt);
+  subplot_using *set_format (tree_expression *fmt)
+    {
+      scanf_fmt = fmt;
+      return this;
+    }
 
-  subplot_using *add_qualifier (tree_expression *t);
+  subplot_using *add_qualifier (tree_expression *t)
+    {
+      if (qualifier_count < 4)
+	x[qualifier_count] = t;
+
+      qualifier_count++;
+
+      return this;
+    }
 
   int eval (int ndim, int n_max);
 
@@ -139,7 +204,13 @@ class
 subplot_style : public tree_print_code
 {
 public:
-  subplot_style (void);
+  subplot_style (void)
+    {
+      style = 0;
+      linetype = 0;
+      pointtype = 0;
+    }
+
   subplot_style (char *s);
   subplot_style (char *s, tree_expression *lt);
   subplot_style (char *s, tree_expression *lt, tree_expression *pt);
@@ -162,13 +233,37 @@ class
 subplot : public tree_print_code
 {
 public:
-  subplot (void);
-  subplot (tree_expression *data);
-  subplot (subplot_using *u, tree_expression *t, subplot_style *s);
+  subplot (void)
+    {
+      plot_data = 0;
+      using_clause = 0;
+      title_clause = 0;
+      style_clause = 0;
+    }
+
+  subplot (tree_expression *data)
+    {
+      plot_data = data;
+      using_clause = 0;
+      title_clause = 0;
+      style_clause = 0;
+    }
+
+  subplot (subplot_using *u, tree_expression *t, subplot_style *s)
+    {
+      plot_data = 0;
+      using_clause = u;
+      title_clause = t;
+      style_clause = s;
+    }
 
   ~subplot (void);
 
-  void set_data (tree_expression *data);
+  subplot *set_data (tree_expression *data)
+    {
+      plot_data = data;
+      return this;
+    }
 
   tree_constant extract_plot_data (int ndim, tree_constant& data);
 
@@ -194,14 +289,7 @@ subplot_list : public SLList<subplot *>, public tree_print_code
   subplot_list (subplot *t) : SLList<subplot *> (), tree_print_code ()
     { append (t); }
 
-  ~subplot_list (void)
-    {
-      while (! empty ())
-	{
-	  subplot *t = remove_front ();
-	  delete t;
-	}
-    }
+  ~subplot_list (void);
 
   int print (int ndim, ostrstream& plot_buf);
 

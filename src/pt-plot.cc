@@ -214,30 +214,6 @@ send_to_plot_stream (const char *cmd)
 
 // Plotting, eh?
 
-tree_plot_command::tree_plot_command (void) : tree_command ()
-{
-  range = 0;
-  plot_list = 0;
-  ndim = 0;
-}
-
-tree_plot_command::tree_plot_command (subplot_list *plt, int nd)
-  : tree_command ()
-{
-  range = 0;
-  plot_list = plt;
-  ndim = nd;
-}
-
-tree_plot_command::tree_plot_command (subplot_list *plt,
-				      plot_limits *rng, int nd)
-  : tree_command ()
-{
-  range = rng;
-  plot_list = plt;
-  ndim = nd;
-}
-
 tree_plot_command::~tree_plot_command (void)
 {
   delete range;
@@ -370,37 +346,6 @@ tree_plot_command::print_code (ostream& os)
     plot_list->print_code (os);
 }
 
-plot_limits::plot_limits (void)
-{
-  x_range = 0;
-  y_range = 0;
-  z_range = 0;
-}
-
-plot_limits::plot_limits (plot_range *xlim)
-{
-  x_range = xlim;
-  y_range = 0;
-  z_range = 0;
-}
-
-plot_limits::plot_limits (plot_range *xlim,
-				    plot_range *ylim)
-{
-  x_range = xlim;
-  y_range = ylim;
-  z_range = 0;
-}
-
-plot_limits::plot_limits (plot_range *xlim,
-				    plot_range *ylim,
-				    plot_range *zlim)
-{
-  x_range = xlim;
-  y_range = ylim;
-  z_range = zlim;
-}
-
 plot_limits::~plot_limits (void)
 {
   delete x_range;
@@ -439,18 +384,6 @@ plot_limits::print_code (ostream& os)
 
   if (z_range)
     z_range->print_code (os);
-}
-
-plot_range::plot_range (void)
-{
-  lower = 0;
-  upper = 0;
-}
-
-plot_range::plot_range (tree_expression *l, tree_expression *u)
-{
-  lower = l;
-  upper = u;
 }
 
 plot_range::~plot_range (void)
@@ -515,41 +448,9 @@ plot_range::print_code (ostream& os)
   os << "]";
 }
 
-subplot_using::subplot_using (void)
-{
-  qualifier_count = 0;
-  x[0] = x[1] = x[2] = x[3] = 0;
-  scanf_fmt = 0;
-}
-
-subplot_using::subplot_using (tree_expression *fmt) : val (4, -1)
-{
-  qualifier_count = 0;
-  x[0] = x[1] = x[2] = x[3] = 0;
-  scanf_fmt = fmt;
-}
-
 subplot_using::~subplot_using (void)
 {
   delete scanf_fmt;
-}
-
-subplot_using *
-subplot_using::set_format (tree_expression *fmt)
-{
-  scanf_fmt = fmt;
-  return this;
-}
-
-subplot_using *
-subplot_using::add_qualifier (tree_expression *t)
-{
-  if (qualifier_count < 4)
-    x[qualifier_count] = t;
-
-  qualifier_count++;
-
-  return this;
 }
 
 int
@@ -656,13 +557,6 @@ subplot_using::print_code (ostream& os)
     }
 }
 
-subplot_style::subplot_style (void)
-{
-  style = 0;
-  linetype = 0;
-  pointtype = 0;
-}
-
 subplot_style::subplot_style (char *s)
 {
   style = strsave (s);
@@ -678,7 +572,7 @@ subplot_style::subplot_style (char *s, tree_expression *lt)
 }
 
 subplot_style::subplot_style (char *s, tree_expression *lt,
-					tree_expression *pt)
+			      tree_expression *pt)
 {
   style = strsave (s);
   linetype = lt;
@@ -686,7 +580,7 @@ subplot_style::subplot_style (char *s, tree_expression *lt,
 }
 
 subplot_style::~subplot_style (void)
-{ 
+{
   delete [] style;
   delete linetype;
   delete pointtype;
@@ -773,42 +667,12 @@ subplot_style::print_code (ostream& os)
     }
 }
 
-subplot::subplot (void)
-{
-  plot_data = 0;
-  using_clause = 0;
-  title_clause = 0;
-  style_clause = 0;
-}
-
-subplot::subplot (tree_expression *data)
-{
-  plot_data = data;
-  using_clause = 0;
-  title_clause = 0;
-  style_clause = 0;
-}
-
-subplot::subplot (subplot_using *u, tree_expression *t, subplot_style *s)
-{
-  plot_data = 0;
-  using_clause = u;
-  title_clause = t;
-  style_clause = s;
-}
-
 subplot::~subplot (void)
 {
   delete plot_data;
   delete using_clause;
   delete title_clause;
   delete style_clause;
-}
-
-void
-subplot::set_data (tree_expression *data)
-{
-  plot_data = data;
 }
 
 tree_constant
@@ -987,6 +851,15 @@ subplot::print_code (ostream& os)
 
   if (style_clause)
     style_clause->print_code (os);
+}
+
+subplot_list::~subplot_list (void)
+{
+  while (! empty ())
+    {
+      subplot *t = remove_front ();
+      delete t;
+    }
 }
 
 int

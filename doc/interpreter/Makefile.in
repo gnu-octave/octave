@@ -30,10 +30,9 @@ TEXINFO = arith.texi audio.texi basics.texi bugs.texi control.texi \
 	strings.texi struct.texi system.texi tips.texi var.texi \
 	vr-idx.texi
 
-FORMATTED = octave.dvi octave.ps octave.info octave.info octave.info-[0-9]*
+FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]*
 
-DISTFILES = Makefile.in dir octave.1 conf.texi gpl.texi \
-	$(TEXINFO) $(FORMATTED)
+DISTFILES = Makefile.in dir octave.1 conf.texi $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
   BINDISTFILES = $(srcdir)/octave.1 $(srcdir)/octave.info \

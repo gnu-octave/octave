@@ -767,7 +767,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 
   string nm = sym_rec->name ();
 
-  if (load_octave_oct_file (nm))
+  if (octave_dynamic_loader::load_fcn_from_dot_oct_file (nm))
     {
       force_link_to_function (nm);
     }

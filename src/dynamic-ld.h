@@ -25,9 +25,38 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-class octave_value_list;
+class octave_builtin;
 
-extern int load_octave_oct_file (const string& name);
+class
+octave_dynamic_loader
+{
+protected:
+
+  octave_dynamic_loader (void);
+
+public:
+
+  typedef octave_builtin * (*builtin_fcn) (void);
+
+  virtual ~octave_dynamic_loader (void);
+
+  static int load_fcn_from_dot_oct_file (const string& fcn_name);
+
+private:
+
+  static octave_dynamic_loader *instance;
+
+  virtual builtin_fcn
+  resolve_reference (const string& mangled_name, const string& oct_file);
+
+  string mangle_name (const string& name);
+
+  // No copying!
+
+  octave_dynamic_loader (const octave_dynamic_loader&);
+
+  octave_dynamic_loader& operator = (const octave_dynamic_loader&);
+};
 
 #endif
 

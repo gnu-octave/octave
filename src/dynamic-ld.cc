@@ -55,25 +55,36 @@ extern "C"
 #include "utils.h"
 #include "variables.h"
 
-#if defined (WITH_DYNAMIC_LINKING)
-
-typedef void * (*resolver_fcn) (const string& name, const string& file);
-
-static string
-mangle_octave_oct_file_name (const string& name)
-{
-  string retval ("FS");
-  retval.append (name);
-  retval.append ("__Fv");
-  return retval;
-}
-
 #if defined (WITH_DL)
 
-static void *
-dl_resolve_octave_reference (const string& name, const string& file)
+class
+octave_dlopen_dynamic_loader : public octave_dynamic_loader
 {
-  void *retval = 0;
+public:
+
+  octave_dlopen_dynamic_loader (void)
+    : octave_dynamic_loader () { }
+
+  ~octave_dlopen_dynamic_loader (void) { }
+
+private:
+
+  octave_dynamic_loader::builtin_fcn
+  resolve_reference (const string& mangled_name, const string& file);
+
+  // No copying!
+
+  octave_dlopen_dynamic_loader (const octave_dlopen_dynamic_loader&);
+
+  octave_dlopen_dynamic_loader&
+  operator = (const octave_dlopen_dynamic_loader&);
+};
+
+octave_dynamic_loader::builtin_fcn
+octave_dlopen_dynamic_loader::resolve_reference (const string& name,
+						 const string& file)
+{
+  octave_dynamic_loader::builtin_fcn retval = 0;
 
   // Dynamic linking with dlopen/dlsym doesn't require specification
   // of the libraries at runtime.  Instead, they are specified when
@@ -81,36 +92,60 @@ dl_resolve_octave_reference (const string& name, const string& file)
 
   void *handle = dlopen (file.c_str (), RTLD_LAZY);
 
+  const char *nm = name.c_str ();
+
   if (handle)
     {
-      retval = dlsym (handle, name.c_str ());
+      retval = (octave_dynamic_loader::builtin_fcn) dlsym (handle, nm);
 
       if (! retval)
 	{
 	  const char *errmsg = dlerror ();
 
 	  if (errmsg)
-	    error("%s: `%s'", name.c_str (), errmsg);
+	    error("%s: `%s'", nm, errmsg);
 	  else
-	    error("unable to link function `%s'", name.c_str ());
+	    error("unable to link function `%s'", nm);
 
 	  dlclose (handle);
 	}
     }
   else
-    error ("%s: %s `%s'", dlerror (), file.c_str (), name.c_str ());
+    error ("%s: %s `%s'", dlerror (), file.c_str (), nm);
 
   return retval;
 }
 
-static resolver_fcn resolve_octave_reference = dl_resolve_octave_reference;
-
 #elif defined (WITH_SHL)
 
-static void *
-shl_resolve_octave_reference (const string& name, const string& file)
+class
+octave_shl_load_dynamic_loader : public octave_dynamic_loader
 {
-  void *retval = 0;
+public:
+
+  octave_shl_load_dynamic_loader (void)
+    : octave_dynamic_loader () { }
+
+  ~octave_shl_load_dynamic_loader (void) { }
+
+private:
+
+  octave_dynamic_loader::builtin_fcn
+  resolve_reference (const string& mangled_name, const string& file);
+
+  // No copying!
+
+  octave_shl_load_dynamic_loader (const octave_shl_load_dynamic_loader&);
+
+  octave_shl_load_dynamic_loader&
+  operator = (const octave_shl_load_dynamic_loader&);
+};
+
+octave_dynamic_loader::builtin_fcn
+octave_shl_load_dynamic_loader::resolve_reference (const string& name,
+						   const string& file)
+{
+  octave_dynamic_loader::builtin_fcn retval = 0;
 
   // Dynamic linking with shl_load/shl_findsym doesn't require
   // specification of the libraries at runtime.  Instead, they are
@@ -118,48 +153,69 @@ shl_resolve_octave_reference (const string& name, const string& file)
 
   shl_t handle = shl_load (file.c_str (), BIND_DEFERRED, 0L);
 
+  const char *nm = name.c_str ();
+
   if (handle)
     {
-      int status = shl_findsym (&handle, name.c_str (),
-				TYPE_UNDEFINED, retval);
+      int status = shl_findsym (&handle, nm, TYPE_UNDEFINED, retval);
 
       if (status < 0)
 	{
 	  const char *errmsg = strerror (errno);
 
 	  if (errmsg)
-	    error("%s: `%s'", name.c_str (), errmsg);
+	    error("%s: `%s'", nm, errmsg);
 	  else
-	    error("unable to link function `%s'", name.c_str ());
+	    error("unable to link function `%s'", nm);
 
 	  retval = 0;
 	}
     }
   else
-    error ("%s: %s `%s'", strerror (errno), file.c_str (), name.c_str ());
+    error ("%s: %s `%s'", strerror (errno), file.c_str (), nm);
 
   return retval;
 }
 
-static resolver_fcn resolve_octave_reference = shl_resolve_octave_reference;
-
 #endif
 
-typedef octave_builtin * (*builtin_obj_fcn) (void);
+static octave_dynamic_loader *
+make_dynamic_loader (void)
+{
+#if defined (WITH_DL)
+  return new octave_dlopen_dynamic_loader ();
+#elif defined (WITH_SHL)
+  return new octave_sh_load_dynamic_loader ();
+#else
+  return new octave_dynamic_loader ();
+#endif
+}
+
+octave_dynamic_loader *octave_dynamic_loader::instance = 0;
+
+octave_dynamic_loader::octave_dynamic_loader (void)
+{
+}
+
+octave_dynamic_loader::~octave_dynamic_loader (void)
+{
+}
 
 int
-load_octave_oct_file (const string& name)
+octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
 {
+  if (! instance)
+    instance = make_dynamic_loader ();
+
   int retval = 0;
 
-  string oct_file = oct_file_in_path (name);
+  string oct_file = oct_file_in_path (fcn_name);
 
   if (! oct_file.empty ())
     {
-      string mangled_name = mangle_octave_oct_file_name (name);
+      string mangled_name = instance->mangle_name (fcn_name);
 
-      builtin_obj_fcn f
-	= (builtin_obj_fcn) resolve_octave_reference (mangled_name, oct_file);
+      builtin_fcn f = instance->resolve_reference (mangled_name, oct_file);
 
       if (f)
 	{
@@ -176,15 +232,20 @@ load_octave_oct_file (const string& name)
   return retval;
 }
 
-#else
-
-int
-load_octave_oct_file (const string&)
+octave_dynamic_loader::builtin_fcn
+octave_dynamic_loader::resolve_reference (const string&, const string&)
 {
   return 0;
 }
 
-#endif
+string
+octave_dynamic_loader::mangle_name (const string& name)
+{
+  string retval ("FS");
+  retval.append (name);
+  retval.append ("__Fv");
+  return retval;
+}
 
 /*
 ;;; Local Variables: ***

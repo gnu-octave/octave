@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "error.h"
+#include "oct-var-ref.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
 #include "variables.h"

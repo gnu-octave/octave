@@ -76,13 +76,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // How builtin variables are actually installed.
 
 #define DEFVAR_INT(name, sname, defn, inst_as_fcn, protect, sv_fcn, doc) \
-  do \
-    { \
-      builtin_variable sname (name, octave_value (defn), inst_as_fcn, \
-			      protect, (sv_fcn != 0), sv_fcn, doc); \
-      install_builtin_variable (sname); \
-    } \
-  while (0)
+  install_builtin_variable (name, octave_value (defn), inst_as_fcn, \
+			    protect, (sv_fcn != 0), sv_fcn, doc)
 
 // Define a builtin function.
 //

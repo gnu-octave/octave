@@ -1533,14 +1533,17 @@ install_builtin_function (octave_builtin *f, bool is_text_fcn)
 }
 
 void
-install_builtin_variable (const builtin_variable& v)
+install_builtin_variable (const string& name, const octave_value& value,
+			  bool install_as_function, bool protect,
+			  bool eternal, symbol_record::sv_function sv_fcn,
+			  const string& help_string);
 {
-  if (v.install_as_function)
-    install_builtin_variable_as_function (v.name, v.value, v.protect,
-					  v.eternal, v.help_string);
+  if (install_as_function)
+    install_builtin_variable_as_function (name, value, protect,
+					  eternal, help_string);
   else
-    bind_builtin_variable (v.name, v.value, v.protect, v.eternal,
-			   v.sv_fcn, v.help_string);
+    bind_builtin_variable (name, value, protect, eternal,
+			   sv_fcn, help_string);
 }
 
 void

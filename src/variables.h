@@ -40,22 +40,6 @@ class string_vector;
 #include "ov.h"
 #include "symtab.h"
 
-struct builtin_variable
-{
-  builtin_variable (const string& n, const octave_value& v, bool iaf,
-		    bool p, bool e, sv_Function svf, const string& h)
-    : name (n), value (v), install_as_function (iaf), protect (p),
-      eternal (e), sv_fcn (svf), help_string (h) { }
-
-  string name;
-  octave_value value;
-  bool install_as_function;
-  bool protect;
-  bool eternal;
-  symbol_record::sv_function sv_fcn;
-  string help_string;
-};
-
 typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
 
 extern void initialize_symbol_tables (void);
@@ -114,7 +98,9 @@ extern void
 install_builtin_function (octave_builtin *f, bool is_text_fcn = false);
 
 extern void
-install_builtin_variable (const builtin_variable& v);
+install_builtin_variable (const string& n, const octave_value& v,
+			  bool iaf, bool p, bool e,
+			  symbol_record::sv_function svf, const string& h);
 
 extern void
 install_builtin_variable_as_function (const string& name,

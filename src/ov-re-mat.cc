@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gripes.h"
 #include "oct-obj.h"
+#include "oct-var-ref.h"
 #include "ops.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"

@@ -24,7 +24,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_defun_int_h 1
 
 #include "oct-builtin.h"
-#include "variables.h"
 
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.def files that are eventually used to

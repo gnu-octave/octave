@@ -45,17 +45,23 @@ tree_colon_expression : public tree_expression
 public:
 
   tree_colon_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), op_base (0), op_limit (0), op_increment (0) { }
+    : tree_expression (l, c), op_base (0), op_limit (0),
+      op_increment (0), save_base (false) { }
 
   tree_colon_expression (tree_expression *e, int l = -1, int c = -1)
-    : tree_expression (l, c), op_base (e), op_limit (0), op_increment (0) { }
+    : tree_expression (l, c), op_base (e), op_limit (0),
+      op_increment (0), save_base (false) { }
 
   ~tree_colon_expression (void)
     {
-      delete op_base;
+      if (! save_base)
+	delete op_base;
+
       delete op_limit;
       delete op_increment;
     }
+
+  void preserve_base (void) { save_base = true; }
 
   tree_colon_expression *append (tree_expression *t);
 
@@ -82,6 +88,8 @@ private:
   tree_expression *op_base;
   tree_expression *op_limit;
   tree_expression *op_increment;
+
+  bool save_base;
 
   // No copying!
 

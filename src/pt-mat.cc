@@ -104,38 +104,40 @@ private:
 
 public:
 
-  tm_row_const (void) : rep (0) { }
+  tm_row_const (void)
+    : rep (0) { }
 
   tm_row_const (const tree_argument_list& row)
     : rep (new tm_row_const_rep (row)) { }
 
-  tm_row_const (const tm_row_const& x) : rep (x.rep)
-    {
-      if (rep)
-	rep->count++;
-    }
+  tm_row_const (const tm_row_const& x)
+    : rep (x.rep)
+  {
+    if (rep)
+      rep->count++;
+  }
 
   tm_row_const& operator = (const tm_row_const& x)
-    {
-      if (this != &x && rep != x.rep)
-	{
-	  if (rep && --rep->count == 0)
-	    delete rep;
+  {
+    if (this != &x && rep != x.rep)
+      {
+	if (rep && --rep->count == 0)
+	  delete rep;
 
-	  rep = x.rep;
+	rep = x.rep;
 
-	  if (rep)
-	    rep->count++;
-	}
+	if (rep)
+	  rep->count++;
+      }
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~tm_row_const (void)
-    {
-      if (rep && --rep->count == 0)
-	delete rep;
-    }
+  {
+    if (rep && --rep->count == 0)
+      delete rep;
+  }
 
   int rows (void) { return rep->nr; }
   int cols (void) { return rep->nc; }
@@ -153,10 +155,10 @@ public:
   void next (Pix& p) const { rep->next (p); }
   
   operator void* () const
-    {
-      return (rep && rep->ok)
-	? static_cast<void *> (-1) : static_cast<void *> (0);
-    }
+  {
+    return (rep && rep->ok)
+      ? static_cast<void *> (-1) : static_cast<void *> (0);
+  }
 
 private:
 
@@ -377,6 +379,15 @@ tm_const::init (const tree_matrix& tm)
     }
 
   ok = ! error_state;
+}
+
+tree_matrix::~tree_matrix (void)
+{
+  while (! empty ())
+    {
+      tree_argument_list *t = remove_front ();
+      delete t;
+    }
 }
 
 bool

@@ -1,5 +1,13 @@
 Fri May 16 00:07:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-colon.h (tree_colon_expression::save_base): New data memmber.
+	(tree_colon_expression::preserve_base): New function.
+	* parse.y (finish_colon_expression): When converting to a simple
+	expression, be sure to delete the original colon expression but
+	not the base value.
+
+	* pt-mat.cc (tree_matrix::~tree_matrix): Actually do something.
+
 	* pt-all.h: New file.
 	* parse.y, lex.l, pt-pr-code.cc: Use it.
 

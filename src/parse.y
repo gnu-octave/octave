@@ -1556,8 +1556,8 @@ finish_colon_expression (tree_colon_expression *e)
 	}
       else
 	{
-	  // XXX FIXME XXX -- need to delete this without deleting base too.
-	  // delete e;
+	  e->preserve_base ();
+	  delete e;
 
 	  // XXX FIXME XXX -- need to attempt constant folding here
 	  // too (we need a generic way to do that).

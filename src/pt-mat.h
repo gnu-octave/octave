@@ -49,12 +49,12 @@ public:
 
   tree_matrix (tree_argument_list *row = 0)
     : tree_expression (), SLList<tree_argument_list *> ()
-      {
-	if (row)
-	  append (row);
-      }
+  {
+    if (row)
+      append (row);
+  }
 
-  ~tree_matrix (void) { }
+  ~tree_matrix (void);
 
   bool all_elements_are_constant (void) const;
 

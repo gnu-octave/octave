@@ -665,7 +665,7 @@ search_path_for_file (const char *path, const char *name)
   return retval;
 }
 
-DEFUN ("file_in_path", Ffile_in_pat, Sfile_in_path, 3, 1,
+DEFUN ("file_in_path", Ffile_in_path, Sfile_in_path, 3, 1,
   "file_in_path (PATH, NAME)")
 {
   Octave_object retval;

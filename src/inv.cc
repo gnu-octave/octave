@@ -111,6 +111,16 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 2, 1,
   return retval;
 }
 
+// XXX FIXME XXX -- this should really be done with an alias, but
+// alias_builtin() won't do the right thing if we are actually using
+// dynamic linking.
+
+DEFUN_DLD_BUILTIN ("inverse", Finverse, Sinverse, 2, 1,
+  "inverse (X): inverse of a square matrix")
+{
+  return Finv (args, nargout);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

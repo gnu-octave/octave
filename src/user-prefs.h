@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_user_prefs_h)
 #define _user_prefs_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 struct user_preferences
 {
   int do_fortran_indexing;

@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <iostream.h>
@@ -425,7 +425,7 @@ tree_plot_range::print (ostrstream& plot_buf)
       tree_constant lower_val = lower->eval (0);
       if (error_state)
 	{
-	  error ("evaluating lower bound of plot range");
+	  ::error ("evaluating lower bound of plot range");
 	  return;
 	}
       else
@@ -442,7 +442,7 @@ tree_plot_range::print (ostrstream& plot_buf)
       tree_constant upper_val = upper->eval (0);
       if (error_state)
 	{
-	  error ("evaluating upper bound of plot range");
+	  ::error ("evaluating upper bound of plot range");
 	  return;
 	}
       else
@@ -519,7 +519,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 	  tree_constant tmp = x[i]->eval (0);
 	  if (error_state)
 	    {
-	      error ("evaluating plot using command");
+	      ::error ("evaluating plot using command");
 	      return -1;
 	    }
 
@@ -536,7 +536,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 
 	      if (n > n_max || n < 1)
 		{
-		  error ("using: column %d out of range", n); 
+		  ::error ("using: column %d out of range", n); 
 		  return -1;
 		}
 	      else
@@ -614,7 +614,7 @@ tree_subplot_style::print (ostrstream& plot_buf)
 	    }
 	  else
 	    {
-	      error ("evaluating plot style command");
+	      ::error ("evaluating plot style command");
 	      return -1;
 	    }
 	}
@@ -629,7 +629,7 @@ tree_subplot_style::print (ostrstream& plot_buf)
 	    }
 	  else
 	    {
-	      error ("evaluating plot style command");
+	      ::error ("evaluating plot style command");
 	      return -1;
 	    }
 	}

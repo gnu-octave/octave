@@ -93,6 +93,9 @@ extern void delete_input_buffer (void *buf);
 // See if a function file has extra garbage after the end statement.
 extern void check_for_garbage_after_fcn_def (void);
 
+// Return transpose or start a string?
+extern int quote_is_transpose;
+
 #endif
 
 /*

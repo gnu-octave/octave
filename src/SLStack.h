@@ -16,12 +16,12 @@ License along with this library; if not, write to the Free Software
 Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-#ifndef _SLStack_h
-#ifdef __GNUG__
-//#pragma interface
-#endif
+#if !defined (_SLStack_h)
 #define _SLStack_h 1
+
+#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
+#pragma interface
+#endif
 
 #include "SLList.h"
 #include "Stack.h"
@@ -53,83 +53,15 @@ class SLStack : public Stack<T>
   int OK (void);
 };
 
-template <class T>
-inline SLStack<T>::SLStack (void) : p () { }
-
-template <class T>
-inline SLStack<T>::SLStack (const SLStack<T>& a) : p (a.p) { }
-
-template <class T>
-inline SLStack<T>::~SLStack (void) { }
-
-template <class T>
-inline void
-SLStack<T>::push (const T& item)
-{
-  p.prepend (item);
-}
-
-template <class T>
-inline T
-SLStack<T>::pop (void)
-{
-  return p.remove_front ();
-}
-
-template <class T>
-inline T&
-SLStack<T>::top (void)
-{
-  return p.front ();
-}
-
-template <class T>
-inline void
-SLStack<T>::del_top (void)
-{
-  p.del_front ();
-}
-
-template <class T>
-inline void
-SLStack<T>::operator = (const SLStack<T>& s)
-{
-  p = s.p;
-}
-
-template <class T>
-inline int
-SLStack<T>::empty (void)
-{
-  return p.empty ();
-}
-
-template <class T>
-inline int
-SLStack<T>::full (void)
-{
-  return 0;
-}
-
-template <class T>
-inline int
-SLStack<T>::length (void)
-{
-  return p.length ();
-}
-
-template <class T>
-inline int
-SLStack<T>::OK (void)
-{
-  return p.OK ();
-}
-
-template <class T>
-inline void
-SLStack<T>::clear (void)
-{
-  p.clear ();
-}
+#if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)
+#include "SLStack.cc"
+#endif
 
 #endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

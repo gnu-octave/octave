@@ -30,6 +30,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 %{
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "input.h"
 #include "token.h"
 
@@ -65,7 +69,7 @@ static do_comma_insert = 0;
 static int braceflag = 0;
 
 // Return transpose or start a string?
-static int quote_is_transpose = 0;
+int quote_is_transpose = 0;
 
 // Nonzero means that we should convert spaces to a comma inside a
 // matrix definition.

@@ -23,8 +23,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Use the GNU readline library for command line editing and hisory.
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <stdio.h>

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_procstream_h)
 #define _procstream_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <iostream.h>
 #include <procbuf.h>
 

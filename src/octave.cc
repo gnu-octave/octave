@@ -23,8 +23,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Born February 20, 1992.
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <sys/types.h>
@@ -44,7 +44,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "getopt.h"
 
-#include "liboctave-error.h"
+#include "lo-error.h"
 
 #include "sighandlers.h"
 #include "variables.h"

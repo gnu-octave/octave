@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <iostream.h>
@@ -86,7 +86,7 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
     }
   else if (nr > 1 && nc > 1 && do_ftn_idx)
     {
-      double *cop_out = m.fortran_vec ();
+      const double *cop_out = m.data ();
       len = nr * nc;
       data = new int [len];
       for (int i = 0; i < len; i++)
@@ -108,7 +108,7 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
     }
   else
     {
-      error ("invalid matrix used as index");
+      ::error ("invalid matrix used as index");
       return;
     }
 
@@ -123,7 +123,7 @@ idx_vector::idx_vector (const Range& r)
 
   if (len < 0)
     {
-      error ("invalid range used as index");
+      ::error ("invalid range used as index");
       return;
     }
   else if (len == 0)
@@ -217,7 +217,7 @@ idx_vector::init_state (const char *rc, int z_len = 0)
     }
   else if (min_val < 0)
     {
-      error ("%s index %d out of range", rc, min_val+1);
+      ::error ("%s index %d out of range", rc, min_val+1);
       initialized = 0;
       return;
     }
@@ -275,7 +275,7 @@ idx_vector::checkelem (int n) const
 {
   if (n < 0 || n >= len)
     {
-      error ("idx-vector: index out of range");
+      ::error ("idx-vector: index out of range");
       return 0;
     }
 

@@ -25,10 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_arith_ops_h)
 #define _arith_ops_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include "tree-base.h"
 
 class Complex;

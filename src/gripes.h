@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_gripes_h)
 #define _gripes_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 extern void gripe_string_invalid (void);
 extern void gripe_range_invalid (void);
 extern void gripe_nonconformant (void);

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_variables_h)
 #define _variables_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 class istream;
 class symbol_record;
 class symbol_table;

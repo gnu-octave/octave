@@ -13,10 +13,6 @@ include $(TOPDIR)/Makeconf
 srcdir = @srcdir@
 VPATH = @srcdir@:@srcdir@/../bsd-math
 
-# Can this be fixed?
-
-INCFLAGS = -I. -I$(srcdir)/../liboctave -I$(srcdir)/.. -I$(srcdir) -I$(TOPDIR)/liboctave -I$(TOPDIR)
-
 LIBOBJS = @LIBOBJS@
 
 # Cancel default rule for .c from .y and make .cc from .y instead.
@@ -87,7 +83,7 @@ SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc f-chol.cc \
 	sysdep.cc t-builtins.cc tc-assign.cc tc-extras.cc \
 	tc-index.cc tc-inlines.cc token.cc tree.cc tree-const.cc \
 	tree-plot.cc unwind-prot.cc user-prefs.cc utils.cc \
-	variables.cc xdiv.cc xpow.cc
+	variables.cc xdiv.cc xpow.cc SLStack.cc
 
 DEP_SOURCES_2 = $(patsubst %.l, %.cc, $(SOURCES))
 DEP_SOURCES_1 = $(patsubst %.y, %.cc, $(DEP_SOURCES_2))
@@ -106,7 +102,7 @@ OBJECTS = arith-ops.o builtins.o error.o file-io.o g-builtins.o \
 	pr-output.o procstream.o sighandlers.o symtab.o sysdep.o \
 	t-builtins.o tc-assign.o tc-extras.o tc-index.o token.o \
 	tree.o tree-const.o tree-plot.o unwind-prot.o user-prefs.o \
-	utils.o variables.o xdiv.o xpow.o \
+	utils.o variables.o xdiv.o xpow.o SLStack.o \
 	@DYNAMIC_LD_OBJ@
 
 OCTAVE_LIBS = ../liboctave.a ../libcruft.a ../libinfo.a \

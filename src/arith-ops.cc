@@ -22,8 +22,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <ctype.h>
@@ -1329,7 +1329,7 @@ do_binary_op (const Matrix& a, const Matrix& b, tree::expression_type t)
       break;
     case tree::el_mul:
       if (m_add_conform (a, b, 1))
-	result = a.product (b);
+	result = product (a, b);
       break;
     case tree::multiply:
       if (m_mul_conform (a, b, 1))
@@ -1337,11 +1337,11 @@ do_binary_op (const Matrix& a, const Matrix& b, tree::expression_type t)
       break;
     case tree::el_div:
       if (m_add_conform (a, b, 1))
-	result = a.quotient (b);
+	result = quotient (a, b);
       break;
     case tree::el_leftdiv:
       if (m_add_conform (a, b, 1))
-	result = b.quotient (a);
+	result = quotient (b, a);
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -1514,7 +1514,7 @@ do_binary_op (const Matrix& a, const ComplexMatrix& b, tree::expression_type t)
     case tree::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.product (b);
+	complex_result = product (a, b);
       break;
     case tree::multiply:
       result_type = RT_complex;
@@ -1524,12 +1524,12 @@ do_binary_op (const Matrix& a, const ComplexMatrix& b, tree::expression_type t)
     case tree::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.quotient (b);
+	complex_result = quotient (a, b);
       break;
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = b.quotient (a);
+	complex_result = quotient (b, a);
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -2082,7 +2082,7 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
     case tree::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.product (b);
+	complex_result = product (a, b);
       break;
     case tree::multiply:
       result_type = RT_complex;
@@ -2092,12 +2092,12 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
     case tree::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.quotient (b);
+	complex_result = quotient (a, b);
       break;
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.quotient (b);
+	complex_result = quotient (a, b);
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -2285,7 +2285,7 @@ do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
     case tree::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.product (b);
+	complex_result = product (a, b);
       break;
     case tree::multiply:
       result_type = RT_complex;
@@ -2295,12 +2295,12 @@ do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
     case tree::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = a.quotient (b);
+	complex_result = quotient (a, b);
       break;
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
-	complex_result = b.quotient (a);
+	complex_result = quotient (b, a);
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);

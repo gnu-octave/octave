@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_sighandlers_h)
 #define _sighandlers_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 // Nonzero means we have already printed a message for this series of
 // SIGPIPES.  We assume that the writer will eventually give up.
 extern int pipe_handler_error_count;

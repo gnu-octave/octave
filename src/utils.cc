@@ -36,8 +36,8 @@ Free Software Foundation, Inc.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <sys/types.h>
@@ -349,11 +349,11 @@ pathstring_to_vector (char *pathstring)
   if (pathstring != (char *) NULL)
     {
       int nelem = 0;
-      pathstring = strsave (pathstring);
-      if (*pathstring != '\0')
+      char *tmp_path = strsave (pathstring);
+      if (*tmp_path != '\0')
 	{
 	  nelem++;
-	  char *ptr = pathstring;
+	  char *ptr = tmp_path;
 	  while (*ptr != '\0')
 	    {
 	      if (*ptr == ':')
@@ -362,12 +362,22 @@ pathstring_to_vector (char *pathstring)
 	    }
 	}
 
+// Why do I have to do this?
+
+      char **foo = path;
+      while (foo && *foo)
+	{
+	  delete [] *foo;
+	  *foo = (char *) NULL;
+	  foo++;
+	}
+      
       delete [] path;
       path = new char * [nelem+1];
       path[nelem] = (char *) NULL;
 
       int i = 0;
-      char *ptr = pathstring;
+      char *ptr = tmp_path;
       while (i < nelem)
 	{
 	  char *end = strchr (ptr, ':');
@@ -380,7 +390,7 @@ pathstring_to_vector (char *pathstring)
 	  i++;
 	}
 
-      delete [] pathstring;
+      delete [] tmp_path;
     }
 
   return path;
@@ -533,15 +543,17 @@ default_pager (void)
 char *
 file_in_path (const char *name, const char *suffix)
 {
+  char *retval = (char *) NULL;
+
   char *nm = strconcat ("/", name);
-  char *tmp = nm;
   if (suffix != (char *) NULL)
     {
+      char *tmp = nm;
       nm = strconcat (tmp, suffix);
       delete [] tmp;
     }
 
-  if (!the_current_working_directory)
+  if (! the_current_working_directory)
     get_working_directory ("file_in_path");
 
   char **path = pathstring_to_vector (user_pref.loadpath);
@@ -551,23 +563,24 @@ file_in_path (const char *name, const char *suffix)
     {
       while (*ptr != (char *) NULL)
 	{
-	  char *tmp_p = strconcat (*ptr, nm);
-	  char *p = make_absolute (tmp_p, the_current_working_directory);
-	  delete [] tmp_p;
+	  char *tmp = strconcat (*ptr, nm);
+	  char *p = make_absolute (tmp, the_current_working_directory);
+	  delete [] tmp;
 	  ifstream in_file (p);
 	  if (in_file)
 	    {
 	      in_file.close ();
-	      delete [] nm;
-	      return p;
+	      retval = p;
+	      goto done;
 	    }
 	  delete [] p;
 	  ptr++;
 	}
     }
 
+ done:
   delete [] nm;
-  return (char *) NULL;
+  return retval;
 }
 
 /*
@@ -590,7 +603,7 @@ polite_directory_format (char *name)
   int l = home_directory ? strlen (home_directory) : 0;
 
   if (l > 1 && strncmp (home_directory, name, l) == 0
-      && (!name[l] || name[l] == '/'))
+      && (! name[l] || name[l] == '/'))
     {
       strcpy (tdir + 1, name + l);
       tdir[0] = '~';
@@ -606,7 +619,7 @@ polite_directory_format (char *name)
 int
 absolute_pathname (const char *string)
 {
-  if (!string || !*string)
+  if (! string || ! *string)
     return 0;
 
   if (*string == '/')
@@ -614,11 +627,11 @@ absolute_pathname (const char *string)
 
   if (*string++ == '.')
     {
-      if ((!*string) || *string == '/')
+      if ((! *string) || *string == '/')
 	return 1;
 
       if (*string++ == '.')
-	if (!*string || *string == '/')
+	if (! *string || *string == '/')
 	  return 1;
     }
   return 0;
@@ -644,7 +657,7 @@ base_pathname (char *string)
 {
   char *p = strrchr (string, '/');
 
-  if (!absolute_pathname (string))
+  if (! absolute_pathname (string))
     return (string);
 
   if (p)
@@ -669,7 +682,7 @@ read_octal (const char *string)
       result = (result * 8) + *string++ - '0';
     }
 
-  if (!digits || result > 0777 || *string)
+  if (! digits || result > 0777 || *string)
     result = -1;
 
   return result;
@@ -786,7 +799,7 @@ decode_prompt_string (const char *string)
 	      }
 
 	    case 'n':
-	      if (!no_line_editing)
+	      if (! no_line_editing)
 		temp = strsave ("\r\n");
 	      else
 		temp = strsave ("\n");
@@ -810,7 +823,7 @@ decode_prompt_string (const char *string)
 
 		temp = user_pref.pwd;
 
-		if (!temp)
+		if (! temp)
 		  getcwd (t_string, MAXPATHLEN);
 		else
 		  strcpy (t_string, temp);
@@ -907,7 +920,7 @@ decode_prompt_string (const char *string)
 
 #if 0
   /* I don't really think that this is a good idea.  Do you? */
-  if (!find_variable ("NO_PROMPT_VARS"))
+  if (! find_variable ("NO_PROMPT_VARS"))
     {
       WORD_LIST *expand_string (), *list;
       char *string_list ();
@@ -931,7 +944,7 @@ pathname_backup (char *path, int n)
 {
   register char *p;
 
-  if (!*path)
+  if (! *path)
     return;
 
   p = path + (strlen (path) - 1);
@@ -960,12 +973,12 @@ make_absolute (const char *string, const char *dot_path)
   static char current_path[MAXPATHLEN];
   register char *cp;
 
-  if (!dot_path || *string == '/')
+  if (! dot_path || *string == '/')
     return strsave (string);
 
   strcpy (current_path, dot_path);
 
-  if (!current_path[0])
+  if (! current_path[0])
     strcpy (current_path, "./");
 
   cp = current_path + (strlen (current_path) - 1);
@@ -979,7 +992,7 @@ make_absolute (const char *string, const char *dot_path)
     {
       if (*string == '.')
 	{
-	  if (!string[1])
+	  if (! string[1])
 	    return strsave (current_path);
 
 	  if (string[1] == '/')
@@ -988,7 +1001,7 @@ make_absolute (const char *string, const char *dot_path)
 	      continue;
 	    }
 
-	  if (string[1] == '.' && (string[2] == '/' || !string[2]))
+	  if (string[1] == '.' && (string[2] == '/' || ! string[2]))
 	    {
 	      string += 2;
 
@@ -1019,7 +1032,7 @@ make_absolute (const char *string, const char *dot_path)
 char *
 get_working_directory (const char *for_whom)
 {
-  if (!follow_symbolic_links)
+  if (! follow_symbolic_links)
     {
       if (the_current_working_directory)
 	delete [] the_current_working_directory;
@@ -1027,13 +1040,13 @@ get_working_directory (const char *for_whom)
       the_current_working_directory = (char *)NULL;
     }
 
-  if (!the_current_working_directory)
+  if (! the_current_working_directory)
     {
       char *directory;
 
       the_current_working_directory = new char [MAXPATHLEN];
       directory = getcwd (the_current_working_directory, MAXPATHLEN);
-      if (!directory)
+      if (! directory)
 	{
 	  message (for_whom, the_current_working_directory);
 	  delete [] the_current_working_directory;
@@ -1056,7 +1069,7 @@ change_to_directory (const char *newdir)
 
   if (follow_symbolic_links)
     {
-      if (!the_current_working_directory)
+      if (! the_current_working_directory)
 	get_working_directory ("cd_links");
 
       if (the_current_working_directory)

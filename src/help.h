@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_help_h)
 #define _help_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 typedef struct help_list
 {
   char *name;

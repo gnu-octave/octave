@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include "idx-vector.h"
@@ -54,7 +54,7 @@ tree_constant_rep::assign (tree_constant& rhs, tree_constant *args, int nargs)
       do_matrix_assignment (rhs_tmp, args, nargs);
       break;
     case string_constant:
-      error ("invalid assignment to string type");
+      ::error ("invalid assignment to string type");
       break;
     case range_constant:
     case magic_colon:
@@ -88,7 +88,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 	    }
 	  else
 	    {
-	      error ("invalid assignment to scalar");
+	      ::error ("invalid assignment to scalar");
 	      return;
 	    }
 	}
@@ -106,7 +106,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 	    }
 	  else
 	    {
-	      error ("invalid assignment to scalar");
+	      ::error ("invalid assignment to scalar");
 	      return;
 	    }
 	}
@@ -148,9 +148,9 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 	}
     }
   else if (nargs > 3 || nargs < 2)
-    error ("invalid index expression for scalar type");
+    ::error ("invalid index expression for scalar type");
   else
-    error ("index invalid or out of range for scalar type");
+    ::error ("index invalid or out of range for scalar type");
 }
 
 void
@@ -186,30 +186,30 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     {
     case 2:
       if (args == NULL_TREE_CONST)
-	error ("matrix index is null");
+	::error ("matrix index is null");
       else if (args[1].is_undefined ())
-	error ("matrix index is undefined");
+	::error ("matrix index is undefined");
       else if (args[1].is_empty ())
-	error ("matrix index is an empty matrix");
+	::error ("matrix index is an empty matrix");
       else
 	do_matrix_assignment (rhs, args[1]);
       break;
     case 3:
       if (args == NULL_TREE_CONST)
-	error ("matrix indices are null");
+	::error ("matrix indices are null");
       else if (args[1].is_undefined ())
-	error ("first matrix index is undefined");
+	::error ("first matrix index is undefined");
       else if (args[2].is_undefined ())
-	error ("second matrix index is undefined");
+	::error ("second matrix index is undefined");
       else if (args[1].is_empty ())
-	error ("first matrix index is an empty matrix");
+	::error ("first matrix index is an empty matrix");
       else if (args[2].is_empty ())
-	error ("second matrix index is an empty matrix");
+	::error ("second matrix index is an empty matrix");
       else
 	do_matrix_assignment (rhs, args[1], args[2]);
       break;
     default:
-      error ("too many indices for matrix expression");
+      ::error ("too many indices for matrix expression");
       break;
     }
 }
@@ -226,7 +226,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
   else if (nr <= 1 || nc <= 1)
     vector_assignment (rhs, i_arg);
   else
-    error ("single index only valid for row or column vector");
+    ::error ("single index only valid for row or column vector");
 }
 
 void
@@ -265,7 +265,7 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 
 	if (! indexed_assign_conforms (1, 1, rhs_nr, rhs_nc))
 	  {
-	    error ("for A(int) = X: X must be a scalar");
+	    ::error ("for A(int) = X: X must be a scalar");
 	    return;
 	  }
 	int ii = fortran_row (i, nr) - 1;
@@ -293,8 +293,8 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 
 	if (ii.capacity () != rhs_nr * rhs_nc)
 	  {
-	    error ("A(matrix) = X: X and matrix must have the same number");
-	    error ("of elements"); 
+	    ::error ("A(matrix) = X: X and matrix must have the same number");
+	    ::error ("of elements"); 
 	    return;
 	  }
 	fortran_style_matrix_assignment (rhs, ii);
@@ -381,7 +381,7 @@ tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
 
 	if (! indexed_assign_conforms (nr, nc, rhs_nr, rhs_nc))
 	  {
-	    error ("A(:) = X: X and A must have the same dimensions");
+	    ::error ("A(:) = X: X and A must have the same dimensions");
 	    return;
 	  }
 	do_matrix_assignment (rhs, magic_colon, magic_colon);
@@ -404,7 +404,7 @@ tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
     {
       if (! (ilen == rhs_nr || ilen == rhs_nc))
 	{
-	  error ("A(%s) = X: X and %s must have the same number of elements",
+	  ::error ("A(%s) = X: X and %s must have the same number of elements",
 		 rm, rm);
 	}
     }
@@ -412,16 +412,16 @@ tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
     {
       if (! (rhs_nr == 1 && rhs_nc == ilen))
 	{
-	  error ("A(%s) = X: where A is a row vector, X must also be a", rm);
-	  error ("row vector with the same number of elements as %s", rm);
+	  ::error ("A(%s) = X: where A is a row vector, X must also be a", rm);
+	  ::error ("row vector with the same number of elements as %s", rm);
 	}
     }
   else if (nc == 1)  // Preserve current column orientation.
     {
       if (! (rhs_nc == 1 && rhs_nr == ilen))
 	{
-	  error ("A(%s) = X: where A is a column vector, X must also be", rm);
-	  error ("a column vector with the same number of elements as %s", rm);
+	  ::error ("A(%s) = X: where A is a column vector, X must also be", rm);
+	  ::error ("a column vector with the same number of elements as %s", rm);
 	}
     }
   else
@@ -465,7 +465,7 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
 
       if (i < 0 || i >= len)
 	{
-	  error ("A(int) = []: index out of range");
+	  ::error ("A(int) = []: index out of range");
 	  return;
 	}
 
@@ -478,7 +478,7 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
     }
   else
     {
-      error ("for A(int) = X: X must be a scalar");
+      ::error ("for A(int) = X: X must be a scalar");
       return;
     }
 }
@@ -495,7 +495,7 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
 
       if (iv.max () >= len)
 	{
-	  error ("A(matrix) = []: index out of range");
+	  ::error ("A(matrix) = []: index out of range");
 	  return;
 	}
 
@@ -559,7 +559,7 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
       int l = tree_to_mat_idx (ri.max ());
       if (b < 0 || l >= len)
 	{
-	  error ("A(range) = []: index out of range");
+	  ::error ("A(range) = []: index out of range");
 	  return;
 	}
 
@@ -646,7 +646,7 @@ tree_constant_rep::fortran_style_matrix_assignment
     }
   else if (nr*nc != rhs_size)
     {
-      error ("A(:) = X: X and A must have the same number of elements");
+      ::error ("A(:) = X: X and A must have the same number of elements");
       return;
     }
 
@@ -705,7 +705,7 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 	}
     }
   else
-    error ("number of rows and columns must match for indexed assignment");
+    ::error ("number of rows and columns must match for indexed assignment");
 }
 
 void
@@ -792,7 +792,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	  return;
 	if (! indexed_assign_conforms (1, 1, rhs_nr, rhs_nc))
 	  {
-	    error ("A(int,int) = X, X must be a scalar");
+	    ::error ("A(int,int) = X, X must be a scalar");
 	    return;
 	  }
 	maybe_resize (i, j);
@@ -813,8 +813,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 
 	if (! indexed_assign_conforms (1, jv.capacity (), rhs_nr, rhs_nc))
 	  {
-	    error ("A(int,matrix) = X: X must be a row vector with the same");
-	    error ("number of elements as matrix"); 
+	    ::error ("A(int,matrix) = X: X must be a row vector with the same");
+	    ::error ("number of elements as matrix"); 
 	    return;
 	  }
 	maybe_resize (i, jv.max ());
@@ -832,8 +832,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	Range rj = tmp_j.range_value ();
 	if (! indexed_assign_conforms (1, rj.nelem (), rhs_nr, rhs_nc))
 	  {
-	    error ("A(int,range) = X: X must be a row vector with the same");
-	    error ("number of elements as range"); 
+	    ::error ("A(int,range) = X: X must be a row vector with the same");
+	    ::error ("number of elements as range"); 
 	    return;
 	  }
 
@@ -888,14 +888,14 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	  {
 	    if (i < 0 || i >= nr)
 	      {
-		error ("A(int,:) = []: row index out of range");
+		::error ("A(int,:) = []: row index out of range");
 		return;
 	      }
 	  }
 	else
 	  {
-	    error ("A(int,:) = X: X must be a row vector with the same");
-	    error ("number of columns as A"); 
+	    ::error ("A(int,:) = X: X must be a row vector with the same");
+	    ::error ("number of columns as A"); 
 	    return;
 	  }
 
@@ -929,8 +929,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	  return;
 	if (! indexed_assign_conforms (iv.capacity (), 1, rhs_nr, rhs_nc))
 	  {
-	    error ("A(matrix,int) = X: X must be a column vector with the");
-	    error ("same number of elements as matrix");  
+	    ::error ("A(matrix,int) = X: X must be a column vector with the");
+	    ::error ("same number of elements as matrix");  
 	    return;
 	  }
 	maybe_resize (iv.max (), j);
@@ -952,9 +952,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	if (! indexed_assign_conforms (iv.capacity (), jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(r_mat,c_mat) = X: the number of rows in X must match");
-	    error ("the number of elements in r_mat and the number of");
-	    error ("columns in X must match the number of elements in c_mat");
+	    ::error ("A(r_mat,c_mat) = X: the number of rows in X must match");
+	    ::error ("the number of elements in r_mat and the number of");
+	    ::error ("columns in X must match the number of elements in c_mat");
 	    return;
 	  }
 	maybe_resize (iv.max (), jv.max ());
@@ -973,9 +973,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	if (! indexed_assign_conforms (iv.capacity (), rj.nelem (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(matrix,range) = X: the number of rows in X must match");
-	    error ("the number of elements in matrix and the number of");
-	    error ("columns in X must match the number of elements in range");
+	    ::error ("A(matrix,range) = X: the number of rows in X must match");
+	    ::error ("the number of elements in matrix and the number of");
+	    ::error ("columns in X must match the number of elements in range");
 	    return;
 	  }
 
@@ -1018,15 +1018,15 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	  {
 	    if (iv.max () >= rows ())
 	      {
-		error ("A(matrix,:) = []: row index out of range");
+		::error ("A(matrix,:) = []: row index out of range");
 		return;
 	      }
 	  }
 	else
 	  {
-	    error ("A(matrix,:) = X: the number of rows in X must match the");
-	    error ("number of elements in matrix, and the number of columns");
-	    error ("in X must match the number of columns in A");
+	    ::error ("A(matrix,:) = X: the number of rows in X must match the");
+	    ::error ("number of elements in matrix, and the number of columns");
+	    ::error ("in X must match the number of columns in A");
 	    return;
 	  }
 
@@ -1060,8 +1060,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  return;
 	if (! indexed_assign_conforms (ri.nelem (), 1, rhs_nr, rhs_nc))
 	  {
-	    error ("A(range,int) = X: X must be a column vector with the");
-	    error ("same number of elements as range");
+	    ::error ("A(range,int) = X: X must be a column vector with the");
+	    ::error ("same number of elements as range");
 	    return;
 	  }
 	maybe_resize (tree_to_mat_idx (ri.max ()), j);
@@ -1083,9 +1083,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (! indexed_assign_conforms (ri.nelem (), jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(range,matrix) = X: the number of rows in X must match");
-	    error ("the number of elements in range and the number of");
-	    error ("columns in X must match the number of elements in matrix");
+	    ::error ("A(range,matrix) = X: the number of rows in X must match");
+	    ::error ("the number of elements in range and the number of");
+	    ::error ("columns in X must match the number of elements in matrix");
 	    return;
 	  }
 	maybe_resize (tree_to_mat_idx (ri.max ()), jv.max ());
@@ -1104,10 +1104,10 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (! indexed_assign_conforms (ri.nelem (), rj.nelem (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(r_range,c_range) = X: the number of rows in X must");
-	    error ("match the number of elements in r_range and the number");
-	    error ("of columns in X must match the number of elements in");
-	    error ("c_range");
+	    ::error ("A(r_range,c_range) = X: the number of rows in X must");
+	    ::error ("match the number of elements in r_range and the number");
+	    ::error ("of columns in X must match the number of elements in");
+	    ::error ("c_range");
 	    return;
 	  }
 
@@ -1154,15 +1154,15 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    int l = tree_to_mat_idx (ri.max ());
 	    if (b < 0 || l >= rows ())
 	      {
-		error ("A(range,:) = []: row index out of range");
+		::error ("A(range,:) = []: row index out of range");
 		return;
 	      }
 	  }
 	else
 	  {
-	    error ("A(range,:) = X: the number of rows in X must match the");
-	    error ("number of elements in range, and the number of columns");
-	    error ("in X must match the number of columns in A");  
+	    ::error ("A(range,:) = X: the number of rows in X must match the");
+	    ::error ("number of elements in range, and the number of columns");
+	    ::error ("in X must match the number of columns in A");  
 	    return;
 	  }
 
@@ -1223,14 +1223,14 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  {
 	    if (j < 0 || j >= nc)
 	      {
-		error ("A(:,int) = []: column index out of range");
+		::error ("A(:,int) = []: column index out of range");
 		return;
 	      }
 	  }
 	else
 	  {
-	    error ("A(:,int) = X: X must be a column vector with the same");
-	    error ("number of rows as A"); 
+	    ::error ("A(:,int) = X: X must be a column vector with the same");
+	    ::error ("number of rows as A"); 
 	    return;
 	  }
 
@@ -1262,15 +1262,15 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  {
 	    if (jv.max () >= columns ())
 	      {
-		error ("A(:,matrix) = []: column index out of range");
+		::error ("A(:,matrix) = []: column index out of range");
 		return;
 	      }
 	  }
 	else
 	  {
-	    error ("A(:,matrix) = X: the number of rows in X must match the");
-	    error ("number of rows in A, and the number of columns in X must");
-	    error ("match the number of elements in matrix");   
+	    ::error ("A(:,matrix) = X: the number of rows in X must match the");
+	    ::error ("number of rows in A, and the number of columns in X must");
+	    ::error ("match the number of elements in matrix");   
 	    return;
 	  }
 
@@ -1314,15 +1314,15 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    int l = tree_to_mat_idx (rj.max ());
 	    if (b < 0 || l >= columns ())
 	      {
-		error ("A(:,range) = []: column index out of range");
+		::error ("A(:,range) = []: column index out of range");
 		return;
 	      }
 	  }
 	else
 	  {
-	    error ("A(:,range) = X: the number of rows in X must match the");
-	    error ("number of rows in A, and the number of columns in X");
-	    error ("must match the number of elements in range");
+	    ::error ("A(:,range) = X: the number of rows in X must match the");
+	    ::error ("number of rows in A, and the number of columns in X");
+	    ::error ("must match the number of elements in range");
 	    return;
 	  }
 

@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include "idx-vector.h"
@@ -136,13 +136,13 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 	  }
 	  break;
 	default:
-	  error ("illegal number of arguments for scalar type");
+	  ::error ("illegal number of arguments for scalar type");
 	  return tree_constant ();
 	  break;
 	}
     }
 
-  error ("index invalid or out of range for scalar type");
+  ::error ("index invalid or out of range for scalar type");
   return tree_constant ();
 }
 
@@ -156,24 +156,24 @@ tree_constant_rep::do_matrix_index (const tree_constant *args,
     {
     case 2:
       if (args == NULL_TREE_CONST)
-	error ("matrix index is null");
+	::error ("matrix index is null");
       else if (args[1].is_undefined ())
-	error ("matrix index is a null expression");
+	::error ("matrix index is a null expression");
       else
 	retval = do_matrix_index (args[1]);
       break;
     case 3:
       if (args == NULL_TREE_CONST)
-	error ("matrix indices are null");
+	::error ("matrix indices are null");
       else if (args[1].is_undefined ())
-	error ("first matrix index is a null expression");
+	::error ("first matrix index is a null expression");
       else if (args[2].is_undefined ())
-	error ("second matrix index is a null expression");
+	::error ("second matrix index is a null expression");
       else
 	retval = do_matrix_index (args[1], args[2]);
       break;
     default:
-      error ("too many indices for matrix expression");
+      ::error ("too many indices for matrix expression");
       break;
     }
 
@@ -193,7 +193,7 @@ tree_constant_rep::do_matrix_index (const tree_constant& i_arg) const
   else if (nr <= 1 || nc <= 1)
     retval = do_vector_index (i_arg);
   else
-    error ("single index only valid for row or column vector");
+    ::error ("single index only valid for row or column vector");
 
   return retval;
 }
@@ -276,15 +276,15 @@ tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
 
   if (index_nr >= 1 && index_nc >= 1)
     {
-      double *cop_out = (double *) NULL;
-      Complex *c_cop_out = (Complex *) NULL;
+      const double *cop_out = (const double *) NULL;
+      const Complex *c_cop_out = (const Complex *) NULL;
       int real_type = type_tag == matrix_constant;
       if (real_type)
-	cop_out = matrix->fortran_vec ();
+	cop_out = matrix->data ();
       else
-	c_cop_out = complex_matrix->fortran_vec ();
+	c_cop_out = complex_matrix->data ();
 
-      double *cop_out_index = mi.fortran_vec ();
+      const double *cop_out_index = mi.data ();
 
       idx_vector iv (mi, 1, "", len);
       if (! iv)
@@ -337,9 +337,9 @@ tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
   else
     {
       if (index_nr == 0 || index_nc == 0)
-	error ("empty matrix invalid as index");
+	::error ("empty matrix invalid as index");
       else
-	error ("invalid matrix index");
+	::error ("invalid matrix index");
       return tree_constant ();
     }
 

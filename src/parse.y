@@ -28,6 +28,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 %{
 #define YYDEBUG 1
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "SLStack.h"
 
 #include "Matrix.h"
@@ -765,6 +769,16 @@ simple_expr1	: NUM
 		  { $$ = $1; }
 		| matrix
 		  { $$ = $1; }
+		| '[' ']'
+		  {
+		    mlnm.pop ();
+		    $$ = new tree_constant (Matrix ());
+		  }
+		| '[' ';' ']'
+		  {
+		    mlnm.pop ();
+		    $$ = new tree_constant (Matrix ());
+		  }
 		| colon_expr
 		  { $$ = $1; }
 		| PLUS_PLUS identifier %prec UNARY
@@ -919,8 +933,6 @@ func_def3	: param_list optsep opt_list fcn_end_or_eof
 		    tree_function *fcn = new tree_function ($3, curr_sym_tab);
 		    $$ = fcn->define_param_list ($1);
 		  }
-		| '(' ')' optsep opt_list fcn_end_or_eof
-		  { $$ = new tree_function ($4, curr_sym_tab); }
 		| optsep opt_list fcn_end_or_eof
 		  { $$ = new tree_function ($2, curr_sym_tab); }
 		;
@@ -966,14 +978,21 @@ variable	: identifier
 		  }
 		;
 
-param_list	: param_list1 ')'
+param_list	: '(' ')'
 		  {
+		    quote_is_transpose = 0;
+		    $$ = (tree_parameter_list *) NULL;
+		  }
+		| param_list1 ')'
+		  {
+		    quote_is_transpose = 0;
 		    tree_parameter_list *tmp = $1->reverse ();
 		    tmp->mark_as_formal_parameters ();
 		    $$ = tmp;
 		  }
 		| param_list1 ',' ELLIPSIS ')'
 		  {
+		    quote_is_transpose = 0;
 		    tree_parameter_list *tmp = $1->reverse ();
 		    tmp->mark_as_formal_parameters ();
 		    tmp->mark_varargs ();
@@ -1036,17 +1055,7 @@ arg_list1	: ':'
 		  }
 		;
 
-matrix		: '[' ']'
-		  {
-		    mlnm.pop ();
-		    $$ = new tree_matrix ();
-		  }
-		| '[' ';' ']'
-		  {
-		    mlnm.pop ();
-		    $$ = new tree_matrix ();
-		  }
-		| '[' screwed_again rows ']'
+matrix		: '[' screwed_again rows ']'
 		  {
 		    mlnm.pop ();
 		    maybe_screwed_again--;

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_pr_output_h)
 #define _pr_output_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 class ostrstream;
 
 class Matrix;

@@ -24,13 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_tree_h)
 #define _tree_h 1
 
-// This seems to leave vt$tree undefined with g++ 2.3.3.
-#if 0
-#ifdef __GNUG__
-#pragma interface
-#endif
-#endif
-
 #include <stdio.h>
 
 class ostrstream;

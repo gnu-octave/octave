@@ -23,8 +23,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Written by John C. Campbell <jcc@che.utexas.edu>.
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <DLList.h>
@@ -50,21 +50,21 @@ static int file_count = 0;
 // keeps a count of args sent to printf or scanf
 static int fmt_arg_count = 0;
 
-class File_info
+class file_info
 {
  public:
-  File_info (void);
-  File_info (int num, const char *nm, FILE *t, const char *md);
-  File_info (const File_info& f);
+  file_info (void);
+  file_info (int num, const char *nm, FILE *t, const char *md);
+  file_info (const file_info& f);
 
-  File_info& operator = (const File_info& f);
+  file_info& operator = (const file_info& f);
 
-  ~File_info (void);
+  ~file_info (void);
 
   int number (void) const;
-  char *name (void) const;
+  const char *name (void) const;
   FILE *fptr (void) const;
-  char *mode (void) const;
+  const char *mode (void) const;
 
  private:
   int _number;
@@ -73,7 +73,7 @@ class File_info
   char *_mode;
 };
 
-File_info::File_info (void)
+file_info::file_info (void)
 {
   _number = -1;
   _name = (char *) NULL;
@@ -81,32 +81,7 @@ File_info::File_info (void)
   _mode = (char *) NULL;
 }
 
-File_info::File_info (const File_info& f)
-{
-  _number = f._number;
-  _name = strsave (f._name);
-  _fptr = f._fptr;
-  _mode = strsave (f._mode);
-}
-
-File_info&
-File_info::operator = (const File_info& f)
-{
-  _number = f._number;
-  _name = strsave (f._name);
-  _fptr = f._fptr;
-  _mode = strsave (f._mode);
-
-  return *this;
-}
-
-File_info::~File_info (void)
-{
-  delete [] _name;
-  delete [] _mode;
-}
-
-File_info::File_info (int n, const char *nm, FILE *t, const char *md)
+file_info::file_info (int n, const char *nm, FILE *t, const char *md)
 {
   _number = n;
   _name = strsave (nm);
@@ -114,40 +89,69 @@ File_info::File_info (int n, const char *nm, FILE *t, const char *md)
   _mode = strsave (md);
 }
 
+file_info::file_info (const file_info& f)
+{
+  _number = f._number;
+  _name = strsave (f._name);
+  _fptr = f._fptr;
+  _mode = strsave (f._mode);
+}
+
+file_info&
+file_info::operator = (const file_info& f)
+{
+  if (this != & f)
+    {
+      _number = f._number;
+      delete [] _name;
+      _name = strsave (f._name);
+      _fptr = f._fptr;
+      delete [] _mode;
+      _mode = strsave (f._mode);
+    }
+  return *this;
+}
+
+file_info::~file_info (void)
+{
+  delete [] _name;
+  delete [] _mode;
+}
+
 int
-File_info::number (void) const
+file_info::number (void) const
 {
   return _number;
 }
 
-char *
-File_info::name (void) const
+const char *
+file_info::name (void) const
 {
   return _name;
 }
 
 FILE *
-File_info::fptr (void) const
+file_info::fptr (void) const
 {
   return _fptr;
 }
 
-char *
-File_info::mode (void) const
+const char *
+file_info::mode (void) const
 {
   return _mode;
 }
 
 
 // double linked list containing relevant information about open files
-static DLList <File_info> file_list;
+static DLList <file_info> file_list;
 
 void
 initialize_file_io (void)
 {
-  File_info _stdin (0, "stdin", stdin, "r");
-  File_info _stdout (1, "stdout", stdout, "w");
-  File_info _stderr (2, "stderr", stderr, "w");
+  file_info _stdin (0, "stdin", stdin, "r");
+  file_info _stdout (1, "stdout", stdout, "w");
+  file_info _stderr (2, "stderr", stderr, "w");
 
   file_list.append (_stdin);
   file_list.append (_stdout);
@@ -162,7 +166,7 @@ return_valid_file (const tree_constant& arg)
   if (arg.is_string_type ())
     {
       Pix p = file_list.first ();
-      File_info file;
+      file_info file;
       for (int i = 0; i < file_count; i++)
 	{
 	  char *file_name = arg.string_value ();
@@ -180,7 +184,7 @@ return_valid_file (const tree_constant& arg)
       else
 	{
 	  Pix p = file_list.first ();
-	  File_info file;
+	  file_info file;
 	  for (int i = 0; i < file_count; i++)
 	    {
 	      file = file_list (p);
@@ -205,11 +209,11 @@ fopen_file_for_user (const tree_constant& arg, const char *mode)
   FILE *file_ptr = fopen (file_name, mode);
   if (file_ptr != (FILE *) NULL)
     {
-      File_info file (++file_count, file_name, file_ptr, mode);
+      file_info file (++file_count, file_name, file_ptr, mode);
       file_list.append (file);
       
       Pix p = file_list.first ();
-      File_info file_from_list;
+      file_info file_from_list;
       
       for (int i = 0; i < file_count; i++)
 	{
@@ -221,6 +225,7 @@ fopen_file_for_user (const tree_constant& arg, const char *mode)
     }
 
   error ("problems automatically opening file for user");
+
   return (Pix) NULL;
 }
 
@@ -235,7 +240,7 @@ fclose_internal (const tree_constant *args)
   if (p == (Pix) NULL)
     return retval;
 
-  File_info file = file_list (p);
+  file_info file = file_list (p);
 
   if (file.number () < 3)
     {
@@ -269,7 +274,7 @@ fflush_internal (const tree_constant *args)
   if (p == (Pix) NULL)
     return retval;
 
-  File_info file = file_list (p);
+  file_info file = file_list (p);
 
   if (strcmp (file.mode (), "r") == 0)
     {
@@ -278,6 +283,7 @@ fflush_internal (const tree_constant *args)
     }
 
   int success = 0;
+
   if (file.number () == 1)
     flush_output_to_pager ();
   else
@@ -351,7 +357,7 @@ fgets_internal (const tree_constant *args, int nargout)
     }
 
   char string[length+1];
-  File_info file = file_list (p);
+  file_info file = file_list (p);
   char *success = fgets (string, length+1, file.fptr ());
 
   if (success == (char *) NULL)
@@ -390,7 +396,7 @@ fopen_internal (const tree_constant *args)
 
   if (p != (Pix) NULL)
     {
-      File_info file = file_list (p);
+      file_info file = file_list (p);
 
       retval = new tree_constant[2];
       retval[0] = tree_constant ((double) file.number ());
@@ -430,7 +436,7 @@ fopen_internal (const tree_constant *args)
 
   int number = file_count++;
 
-  File_info file (number, name, file_ptr, mode);
+  file_info file (number, name, file_ptr, mode);
   file_list.append (file);
 
   retval = new tree_constant[2];
@@ -450,7 +456,7 @@ freport_internal (void)
   output_buf << "\n number  mode  name\n\n";
   for (int i = 0; i < file_count; i++)
     {
-      File_info file = file_list (p);
+      file_info file = file_list (p);
       output_buf.form ("%7d%6s  %s\n", file.number (), file.mode (),
 		       file.name ());
       file_list.next (p);
@@ -471,7 +477,7 @@ frewind_internal (const tree_constant *args)
   if (p == (Pix) NULL)
     p = fopen_file_for_user (args[1], "a+");   
 
-  File_info file = file_list (p);
+  file_info file = file_list (p);
   rewind (file.fptr ());
 
   return retval;
@@ -516,7 +522,7 @@ fseek_internal (const tree_constant *args, int nargin)
 	}
     }
 
-  File_info file = file_list (p);
+  file_info file = file_list (p);
   int success = fseek (file.fptr (), offset, origin);
   retval = new tree_constant[2];
 
@@ -540,7 +546,7 @@ ftell_internal (const tree_constant *args)
   if (p == (Pix) NULL)
     p = fopen_file_for_user (args[1], "a+");
 
-  File_info file = file_list (p);
+  file_info file = file_list (p);
   long offset = ftell (file.fptr ());
   retval = new tree_constant[2];
   retval[0] = tree_constant ((double) offset);
@@ -558,7 +564,7 @@ close_files (void)
 
   for (int i = 0; i < file_count; i++)
     {
-      File_info file = file_list (p);
+      file_info file = file_list (p);
       if (i > 2)   // do not close stdin, stdout, stderr!
 	{
 	  int success = fclose (file.fptr ());
@@ -775,7 +781,7 @@ do_printf (const char *type, const tree_constant *args, int nargin,
   tree_constant *retval = NULL_TREE_CONST;
   fmt_arg_count = 1;
   char *fmt;
-  File_info file;
+  file_info file;
 
   if (strcmp (type, "fprintf") == 0)
     {
@@ -1058,7 +1064,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
   char *tmp_file = (char *) NULL;
   int tmp_file_open = 0;
   FILE *fptr = (FILE *) NULL;
-  File_info file;
+  file_info file;
 
   fmt_arg_count = 0;
 

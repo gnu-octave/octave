@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <ctype.h>
@@ -396,9 +396,9 @@ tree_constant_rep::tree_constant_rep (double b, double l, double i)
       delete range;
       type_tag = unknown_constant;
       if (nel == -1)
-	error ("number of elements in range exceeds INT_MAX");
+	::error ("number of elements in range exceeds INT_MAX");
       else
-	error ("invalid range");
+	::error ("invalid range");
     }
   else if (nel > 1)
     type_tag = range_constant;
@@ -582,11 +582,11 @@ tree_constant_rep::maybe_resize (int i, int j)
       else
 	{
 	  if (i > nr)
-	    error ("row index = %d exceeds max row dimension = %d", i, nr);
+	    ::error ("row index = %d exceeds max row dimension = %d", i, nr);
 
 	  if (j > nc)
-	    error ("column index = %d exceeds max column dimension = %d",
-		   j, nc);
+	    ::error ("column index = %d exceeds max column dimension = %d",
+		     j, nc);
 	}
     }
 }
@@ -615,21 +615,21 @@ tree_constant_rep::maybe_resize (int i, force_orient f_orient = no_orient)
 	    resize (1, i, 0.0);
 	}
       else
-	error ("matrix index = %d exceeds max dimension = %d", i, nc);
+	::error ("matrix index = %d exceeds max dimension = %d", i, nc);
     }
   else if (nr == 1 && i > nc)
     {
       if (user_pref.resize_on_range_error)
 	resize (1, i, 0.0);
       else
-	error ("matrix index = %d exceeds max dimension = %d", i, nc);
+	::error ("matrix index = %d exceeds max dimension = %d", i, nc);
     }
   else if (nc == 1 && i > nr)
     {
       if (user_pref.resize_on_range_error)
 	resize (i, 1, 0.0);
       else
-	error ("matrix index = %d exceeds max dimension = ", i, nc);
+	::error ("matrix index = %d exceeds max dimension = ", i, nc);
     }
 }
 
@@ -663,14 +663,14 @@ tree_constant_rep::to_scalar (void) const
 	  if (flag != 0)
 	    {
 	      ComplexMatrix m = tmp.complex_matrix_value ();
-	      return real (m (0, 0));
+	      return ::real (m (0, 0));
 	    }
 	  else
 	    jump_to_top_level ();
 	}
       else
 	{
-	  error ("complex matrix used in invalid context");
+	  ::error ("complex matrix used in invalid context");
 	  jump_to_top_level ();
 	}
       break;
@@ -757,8 +757,8 @@ tree_constant_rep::force_numeric (int force_str_conv = 0)
       {
 	if (! force_str_conv && ! user_pref.implicit_str_to_num_ok)
 	  {
-	    error ("failed to convert `%s' to a numeric type --", string);
-	    error ("default conversion turned off");
+	    ::error ("failed to convert `%s' to a numeric type --", string);
+	    ::error ("default conversion turned off");
 // Abort!
 	    jump_to_top_level ();
 	  }
@@ -777,6 +777,13 @@ tree_constant_rep::force_numeric (int force_str_conv = 0)
 	    type_tag = scalar_constant;
 	    scalar = toascii ((int) string[0]);
 	  }
+	else if (len == 0)
+	  {
+	    type_tag = matrix_constant;
+	    matrix = new Matrix (0, 0);
+	  }
+	else
+	  panic_impossible ();
       }
       break;
     case range_constant:
@@ -856,7 +863,7 @@ do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
 	warning ("binary operation on empty matrix");
       else if (flag == 0)
 	{
-	  error ("invalid binary operation on empty matrix");
+	  ::error ("invalid binary operation on empty matrix");
 	  return ans;
 	}
     }
@@ -998,7 +1005,7 @@ do_unary_op (tree_constant& a, tree::expression_type t)
 	warning ("unary operation on empty matrix");
       else if (flag == 0)
 	{
-	  error ("invalid unary operation on empty matrix");
+	  ::error ("invalid unary operation on empty matrix");
 	  return ans;
 	}
     }
@@ -1054,7 +1061,7 @@ tree_constant_rep::bump_value (tree::expression_type etype)
 	  *complex_matrix = *complex_matrix + 1.0;
 	  break;
 	case string_constant:
-	  error ("string++ and ++string not implemented yet, ok?");
+	  ::error ("string++ and ++string not implemented yet, ok?");
 	  break;
 	case range_constant:
 	  range->set_base (range->base () + 1.0);
@@ -1076,7 +1083,7 @@ tree_constant_rep::bump_value (tree::expression_type etype)
 	  *matrix = *matrix - 1.0;
 	  break;
 	case string_constant:
-	  error ("string-- and -- string not implemented yet, ok?");
+	  ::error ("string-- and -- string not implemented yet, ok?");
 	  break;
 	case range_constant:
 	  range->set_base (range->base () - 1.0);
@@ -1103,9 +1110,9 @@ tree_constant_rep::eval (int print)
   switch (type_tag)
     {
     case complex_scalar_constant:
-      if (imag (*complex_scalar) == 0.0)
+      if (::imag (*complex_scalar) == 0.0)
 	{
-	  double d = real (*complex_scalar);
+	  double d = ::real (*complex_scalar);
 	  delete complex_scalar;
 	  scalar = d;
 	  type_tag = scalar_constant;
@@ -1114,7 +1121,7 @@ tree_constant_rep::eval (int print)
     case complex_matrix_constant:
       if (! any_element_is_complex (*complex_matrix))
 	{
-	  Matrix *m = new Matrix (real (*complex_matrix));
+	  Matrix *m = new Matrix (::real (*complex_matrix));
 	  delete complex_matrix;
 	  matrix = m;
 	  type_tag = matrix_constant;
@@ -1370,7 +1377,7 @@ tree_constant_rep::save_three_d (ostream& os, int parametric)
 	}
       break;
     default:
-      error ("for now, I can only save real matrices in 3D format");
+      ::error ("for now, I can only save real matrices in 3D format");
       return 0;
       break;
     }
@@ -1415,10 +1422,10 @@ tree_constant_rep::load (istream& is)
 	  else if (strncmp (ptr, "range", 5) == 0)
 	    type_tag = load (is, range_constant);
 	  else
-	    error ("unknown constant type `%s'", tag);
+	    ::error ("unknown constant type `%s'", tag);
 	}
       else
-	error ("failed to extract keyword specifying value type");
+	::error ("failed to extract keyword specifying value type");
     }
 
   return is_global;
@@ -1436,7 +1443,7 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
       if (is)
 	status = scalar_constant;
       else
-	error ("failed to load scalar constant");
+	::error ("failed to load scalar constant");
       break;
     case matrix_constant:
       {
@@ -1450,10 +1457,10 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
 	    if (is)
 	      status = matrix_constant;
 	    else
-	      error ("failed to load matrix constant");
+	      ::error ("failed to load matrix constant");
 	  }
 	else
-	  error ("failed to extract number of rows and columns");
+	  ::error ("failed to extract number of rows and columns");
       }
       break;
     case complex_scalar_constant:
@@ -1461,7 +1468,7 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
       if (is)
 	status = complex_scalar_constant;
       else
-	error ("failed to load complex scalar constant");
+	::error ("failed to load complex scalar constant");
       break;
     case complex_matrix_constant:
       {
@@ -1475,10 +1482,10 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
 	    if (is)
 	      status = complex_matrix_constant;
 	    else
-	      error ("failed to load complex matrix constant");
+	      ::error ("failed to load complex matrix constant");
 	  }
 	else
-	  error ("failed to extract number of rows and columns");
+	  ::error ("failed to extract number of rows and columns");
       }
       break;
     case string_constant:
@@ -1491,10 +1498,10 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
 	    if (is)
 	      status = string_constant;
 	    else
-	      error ("failed to load string constant");
+	      ::error ("failed to load string constant");
 	  }
 	else
-	  error ("failed to extract string length");
+	  ::error ("failed to extract string length");
       }
       break;
     case range_constant:
@@ -1504,7 +1511,7 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
       if (is)
 	status = range_constant;
       else
-	error ("failed to load range constant");
+	::error ("failed to load range constant");
       break;
     default:
       panic_impossible ();
@@ -1527,9 +1534,10 @@ tree_constant_rep::double_value (void) const
 	  warning ("implicit conversion of complex value to real value");
 
 	if (flag != 0)
-	  return real (*complex_scalar);
+	  return ::real (*complex_scalar);
 
-	error ("implicit conversion of complex value to real value not allowed");
+	::error ("implicit conversion of complex value to real value");
+	::error ("not allowed");
 	jump_to_top_level ();
       }
     default:
@@ -1544,7 +1552,7 @@ tree_constant_rep::matrix_value (void) const
   switch (type_tag)
     {
     case scalar_constant:
-      return Matrix (scalar);
+      return Matrix (1, 1, scalar);
     case matrix_constant:
       return *matrix;
     case complex_scalar_constant:
@@ -1557,14 +1565,17 @@ tree_constant_rep::matrix_value (void) const
 	if (flag != 0)
 	  {
 	    if (type_tag == complex_scalar_constant)
-	      return Matrix (real (*complex_scalar));
+	      return Matrix (1, 1, ::real (*complex_scalar));
 	    else if (type_tag == complex_matrix_constant)
-	      return real (*complex_matrix);
+	      return ::real (*complex_matrix);
 	    else
 	      panic_impossible ();
 	  }
 	else
-	  error ("implicit conversion of complex matrix to real matrix not allowed");
+	  {
+	    ::error ("implicit conversion of complex matrix to real matrix");
+	    ::error ("not allowed");
+	  }
 	jump_to_top_level ();
       }
     default:
@@ -1595,11 +1606,11 @@ tree_constant_rep::complex_matrix_value (void) const
     {
     case scalar_constant:
       {
-	return ComplexMatrix (scalar);
+	return ComplexMatrix (1, 1, Complex (scalar));
       }
     case complex_scalar_constant:
       {
-	return ComplexMatrix (*complex_scalar);
+	return ComplexMatrix (1, 1, *complex_scalar);
       }
     case matrix_constant:
       {
@@ -1647,7 +1658,7 @@ tree_constant_rep::rows (void) const
       retval = complex_matrix->rows ();
       break;
     case magic_colon:
-      error ("invalid use of colon operator");
+      ::error ("invalid use of colon operator");
       break;
     case unknown_constant:
       retval = 0;
@@ -1682,7 +1693,7 @@ tree_constant_rep::columns (void) const
       retval = range->nelem ();
       break;
     case magic_colon:
-      error ("invalid use of colon operator");
+      ::error ("invalid use of colon operator");
       break;
     case unknown_constant:
       retval = 0;
@@ -1811,6 +1822,7 @@ tree_constant_rep::convert_to_str (void)
 // Warn about out of range conversions?
 	char s[2];
 	s[0] = (char) i;
+	s[1] = '\0';
 	retval = tree_constant (s);
       }
       break;
@@ -1820,7 +1832,7 @@ tree_constant_rep::convert_to_str (void)
 	ColumnVector v = to_vector ();
 	int len = v.length ();
 	if (len == 0)
-	  error ("can only convert vectors and scalars to strings");
+	  ::error ("can only convert vectors and scalars to strings");
 	else
 	  {
 	    char *s = new char [len+1];
@@ -2263,7 +2275,7 @@ tree_constant_rep::diag (const tree_constant& a) const
 	    }
 	}
       else
-	error ("diag: invalid second argument");
+	::error ("diag: invalid second argument");
 
       break;
     case complex_scalar_constant:
@@ -2302,7 +2314,7 @@ tree_constant_rep::diag (const tree_constant& a) const
 	    }
 	}
       else
-	error ("diag: invalid second argument");
+	::error ("diag: invalid second argument");
 
       break;
     case string_constant:

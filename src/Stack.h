@@ -18,10 +18,11 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 #ifndef _Stack_h
-#ifdef __GNUG__
-//#pragma interface
-#endif
 #define _Stack_h 1
+
+#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
+// #pragma interface
+#endif
 
 template <class T>
 class Stack

@@ -26,10 +26,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_files_h)
 #define _files_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <Pix.h>
 
 class tree_constant;

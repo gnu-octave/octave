@@ -21,11 +21,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 // Don't even think about moving the tree.h include to symtab.h...
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "symtab.h"
 #include "error.h"
@@ -666,7 +666,7 @@ symbol_record::read_only_error (void)
       else if (is_function ())
 	tag = "function";
 	
-      error ("can't redefined read-only %s `%s'", tag, nm);
+      ::error ("can't redefined read-only %s `%s'", tag, nm);
 
       return 1;
     }

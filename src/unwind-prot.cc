@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <stddef.h>
@@ -34,27 +34,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "unwind-prot.h"
 #include "error.h"
 #include "utils.h"
-
-class unwind_elem
-{
- public:
-  unwind_elem (void);
-  unwind_elem (char *t);
-  unwind_elem (cleanup_func f, void *p);
-  unwind_elem (const unwind_elem& el);
-  ~unwind_elem (void);
-
-  unwind_elem& operator = (const unwind_elem& el);
-
-  char *tag (void);
-  cleanup_func fptr (void);
-  void *ptr (void);
-
- private:
-  char *_tag;
-  cleanup_func _fptr;
-  void *_ptr;
-};
 
 unwind_elem::unwind_elem (void)
 {

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_tree_const_h)
 #define _tree_const_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <stdlib.h>
 
 #include "builtins.h"

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_symtab_h)
 #define _symtab_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <stdlib.h>
 #include <string.h>
 #include <iostream.h>

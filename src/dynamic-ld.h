@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_dynamic_ld_h)
 #define _dynamic_ld_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 class tree_constant;
 
 typedef tree_constant* (*builtin_fcn_ptr) (tree_constant*, int, int);

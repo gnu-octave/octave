@@ -26,10 +26,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_input_h)
 #define _input_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <stdio.h>
 
 extern char *octave_gets (void);

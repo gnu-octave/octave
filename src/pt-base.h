@@ -28,9 +28,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <time.h>
 #include <assert.h>
 
-// NOTE: don\'t put #pragma interface here because there is no
-// corresponding tree-base.cc file that implements this class!
-
 #ifndef NULL_TREE
 #define NULL_TREE (tree *)NULL
 #endif

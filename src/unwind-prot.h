@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_unwind_prot_h)
 #define _unwind_prot_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 typedef void (*cleanup_func)(void *ptr);
 
 void add_unwind_protect (cleanup_func fptr, void *ptr);
@@ -54,6 +50,27 @@ void unwind_protect_var_internal (void *ptr, void *value, size_t size);
 
 #define unwind_protect_var(i) \
   unwind_protect_var_internal ((void *) &(i), (void *) &(i), sizeof (int))
+
+class unwind_elem
+{
+ public:
+  unwind_elem (void);
+  unwind_elem (char *t);
+  unwind_elem (cleanup_func f, void *p);
+  unwind_elem (const unwind_elem& el);
+  ~unwind_elem (void);
+
+  unwind_elem& operator = (const unwind_elem& el);
+
+  char *tag (void);
+  cleanup_func fptr (void);
+  void *ptr (void);
+
+ private:
+  char *_tag;
+  cleanup_func _fptr;
+  void *_ptr;
+};
 
 #endif
 

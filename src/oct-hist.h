@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_octave_hist_h)
 #define _octave_hist_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 extern void initialize_history (void);
 extern void clean_up_history (void);
 extern void maybe_save_history (char*);

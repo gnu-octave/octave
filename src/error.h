@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_error_h)
 #define _error_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \
 	 __FILE__, __LINE__)

@@ -89,7 +89,7 @@ extract_tm (Octave_map &m, double& fraction)
   return &tm;
 }
 
-DEFUN_DLD (time, , ,
+DEFUN_DLD_BUILTIN (time, , ,
   "time ()\n\
 \n\
 Return current time.  On Unix systems, this is the number of\n\
@@ -121,7 +121,7 @@ seconds since the epoch.")
   return (double) now + fraction;
 }
 
-DEFUN_DLD (gmtime, args, ,
+DEFUN_DLD_BUILTIN (gmtime, args, ,
   "gmtime (TIME)\n\
 \n\
 Given a value returned from time(), return a structure like that\n\
@@ -149,7 +149,7 @@ Coordinated Universal Time (UTC).")
   return retval;
 }
 
-DEFUN_DLD (localtime, args, ,
+DEFUN_DLD_BUILTIN (localtime, args, ,
   "localtime (TIME)\n\
 \n\
 Given a value returned from time(), return a structure with\n\
@@ -188,7 +188,7 @@ the following elements:\n\
   return retval;
 }
 
-DEFUN_DLD (mktime, args, ,
+DEFUN_DLD_BUILTIN (mktime, args, ,
   "mktime (TMSTRUCT)")
 {
   octave_value_list retval;
@@ -210,7 +210,7 @@ DEFUN_DLD (mktime, args, ,
   return retval;
 }
 
-DEFUN_DLD (strftime, args, ,
+DEFUN_DLD_BUILTIN (strftime, args, ,
   "strftime (FMT, TMSTRUCT)\n\
 \n\
 Performs `%' substitutions similar to those in printf.  Except where\n\

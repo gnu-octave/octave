@@ -63,7 +63,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // System resource functions.
 
-DEFUN_DLD (getrusage, , ,
+DEFUN_DLD_BUILTIN (getrusage, , ,
   "getrusage ()\n\
 \n\
 Return system resource statistics.")

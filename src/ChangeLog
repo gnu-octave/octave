@@ -1,3 +1,7 @@
+2004-11-05  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.61.
+
 2004-11-04  John W. Eaton  <jwe@octave.org>
 
 	* pt-colon.cc (tree_colon_expression::line,

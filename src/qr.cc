@@ -67,9 +67,13 @@ that R = triu (qr (X))")
     }
 
   tree_constant arg = args(0);
-    
-  if (empty_arg ("qr", arg.rows (), arg.columns ()) < 0)
+
+  int arg_is_empty = empty_arg ("qr", arg.rows (), arg.columns ());
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Octave_object (3, Matrix ());
 
   QR::type type = nargout == 1 ? QR::raw
     : (nargin == 2 ? QR::economy : QR::std);

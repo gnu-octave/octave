@@ -53,8 +53,12 @@ DEFUN_DLD_BUILTIN ("lu", Flu, Slu, 2, 3,
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("lu", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("lu", nr, nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Octave_object (3, Matrix ());
 
   if (nr != nc)
     {

@@ -65,10 +65,8 @@ npsol_objective_function (const ColumnVector& x)
       decision_vars = d;
     }
 
-//  tree_constant name = npsol_objective->name ();
   Octave_object args;
-  args(1) = decision_vars;
-//  args(0) = name;
+  args(0) = decision_vars;
 
   static double retval;
   retval = 0.0;
@@ -140,10 +138,8 @@ npsol_constraint_function (const ColumnVector& x)
       decision_vars = d;
     }
 
-//  tree_constant name = npsol_constraints->name ();
   Octave_object args;
-  args(1) = decision_vars;
-//  args(0) = name;
+  args(0) = decision_vars;
 
   if (npsol_constraints)
     {
@@ -232,12 +228,12 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 11, 3,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 10, 4,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 11, 3,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 10, 4,
   "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
@@ -306,7 +302,7 @@ Handle all of the following:
 
   npsol_objective = is_valid_function (args(1), "npsol", 1);
   if (! npsol_objective
-      || takes_correct_nargs (npsol_objective, 2, "npsol", 1) != 1)
+      || takes_correct_nargs (npsol_objective, 1, "npsol", 1) != 1)
     return retval;
 
   Objective func (npsol_objective_function);
@@ -410,7 +406,7 @@ Handle all of the following:
 	}
       else
 	{
-	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
+	  if (takes_correct_nargs (npsol_constraints, 1, "npsol", 1))
 	    {
 	      ColumnVector nlub = args(nargin).vector_value ();
 	      ColumnVector nllb = args(nargin-2).vector_value ();
@@ -453,7 +449,7 @@ Handle all of the following:
 	}
       else
 	{
-	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
+	  if (takes_correct_nargs (npsol_constraints, 1, "npsol", 1))
 	    {
 	      ColumnVector nlub = args(nargin).vector_value ();
 	      ColumnVector nllb = args(nargin-2).vector_value ();

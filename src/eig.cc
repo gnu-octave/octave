@@ -53,8 +53,11 @@ DEFUN_DLD_BUILTIN ("eig", Feig, Seig, 2, 1,
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("eig", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("eig", nr, nc);
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Octave_object (2, Matrix ());
 
   if (nr != nc)
     {

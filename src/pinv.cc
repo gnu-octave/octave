@@ -69,7 +69,7 @@ Returns the pseudoinverse of X; singular values less than tol are ignored.")
 
   if (arg_is_empty < 0)
     return retval;
-  else if (arg_is_empty)
+  else if (arg_is_empty > 0)
     return Matrix ();
 
   if (arg.is_real_type ())

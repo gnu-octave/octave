@@ -54,8 +54,12 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 2, 1,
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("inverse", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("inverse", nr, nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Matrix ();
 
   if (nr != nc)
     {

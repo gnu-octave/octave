@@ -51,9 +51,13 @@ DEFUN_DLD_BUILTIN ("logm", Flogm, Slogm, 2, 1,
     }
 
   tree_constant arg = args(0);
-    
-  if (empty_arg ("logm", arg.rows (), arg.columns ()) < 0)
+
+  int arg_is_empty = empty_arg ("logm", arg.rows (), arg.columns ());
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Matrix ();
 
   if (arg.is_real_scalar ())
     {
@@ -159,9 +163,13 @@ DEFUN_DLD_BUILTIN ("sqrtm", Fsqrtm, Ssqrtm, 2, 1,
     }
 
   tree_constant arg = args(0);
-    
-  if (empty_arg ("sqrtm", arg.rows (), arg.columns ()))
+
+  int arg_is_empty = empty_arg ("sqrtm", arg.rows (), arg.columns ());
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Matrix ();
 
   if (arg.is_real_scalar ())
     {

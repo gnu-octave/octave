@@ -46,6 +46,8 @@ static NLEqn_options fsolve_opts;
 int
 hybrd_info_to_fsolve_info (int info)
 {
+  cerr << "info: " << info << "\n";
+
   switch (info)
     {
     case -1:
@@ -119,7 +121,7 @@ fsolve_user_function (const ColumnVector& x)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("fsolve", Ffsolve, Sfsolve, 5, 1,
+DEFUN_DLD_BUILTIN ("fsolve", Ffsolve, Sfsolve, 2, 1,
   "Solve nonlinear equations using Minpack.  Usage:\n\
 \n\
   [X, INFO] = fsolve (F, X0)\n\
@@ -135,14 +137,14 @@ where y and x are vectors.")
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 6 || nargout > 3)
+  if (nargin != 2 || nargout > 3)
     {
       print_usage ("fsolve");
       return retval;
     }
 
   fsolve_fcn = is_valid_function (args(0), "fsolve", 1);
-  if (! fsolve_fcn || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
+  if (! fsolve_fcn || takes_correct_nargs (fsolve_fcn, 1, "fsolve", 1) != 1)
     return retval;
 
   ColumnVector x = args(1).vector_value ();

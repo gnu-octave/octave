@@ -78,9 +78,13 @@ A and B must be real matrices.")
 
   int b_nr = arg_b.rows();
   int b_nc = arg_b.columns();
-  
-  if (empty_arg ("qzvalue", a_nr, a_nc) < 0
-      || empty_arg ("qzvalue", b_nr, b_nc) < 0)
+
+  int arg_a_is_empty = empty_arg ("qzvalue", a_nr, a_nc);
+  int arg_b_is_empty = empty_arg ("qzvalue", b_nr, b_nc);
+
+  if (arg_a_is_empty > 0 && arg_b_is_empty > 0)
+    return Matrix ();
+  else if (arg_a_is_empty || arg_b_is_empty)
     return retval;
 
 // Arguments are not empty, so check for correct dimensions.

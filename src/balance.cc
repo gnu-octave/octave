@@ -96,8 +96,12 @@ where OPT is an optional single character argument as follows: \n\
 
 // Check argument 1 dimensions.
 
-  if (empty_arg ("balance", a_nr, a_nc) < 0)
+  int arg_is_empty = empty_arg ("balance", a_nr, a_nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  if (arg_is_empty > 0)
+    return Octave_object (2, Matrix ());
 
   if (a_nr != a_nc)
     {

@@ -83,8 +83,12 @@ characters:\n\
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("schur", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("schur", nr, nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Octave_object (2, Matrix ());
 
   if (nr != nc)
     {

@@ -92,7 +92,7 @@ lsode_user_function (const ColumnVector& x, double t)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("lsode", Flsode, Slsode, 6, 1,
+DEFUN_DLD_BUILTIN ("lsode", Flsode, Slsode, 4, 1,
   "lsode (F, X0, T_OUT, T_CRIT)\n\
 \n\
 The first argument is the name of the function to call to\n\
@@ -113,7 +113,7 @@ where xdot and x are vectors and t is a scalar.\n")
     }
 
   lsode_fcn = is_valid_function (args(0), "lsode", 1);
-  if (! lsode_fcn || takes_correct_nargs (lsode_fcn, 3, "lsode", 1) != 1)
+  if (! lsode_fcn || takes_correct_nargs (lsode_fcn, 2, "lsode", 1) != 1)
     return retval;
 
   ColumnVector state = args(1).vector_value ();

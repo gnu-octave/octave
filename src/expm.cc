@@ -85,8 +85,12 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("expm", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("expm", nr, nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  if (arg_is_empty > 0)
+    return Matrix ();
 
   if (nr != nc)
     {

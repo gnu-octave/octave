@@ -83,7 +83,7 @@ quad_user_function (double x)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("quad", Fquad, Squad, 6, 3,
+DEFUN_DLD_BUILTIN ("quad", Fquad, Squad, 5, 3,
   "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
 \n\
 Where the first argument is the name of the  function to call to\n\
@@ -108,8 +108,8 @@ at which the integrand is singular.")
       return retval;
     }
 
-  quad_fcn = is_valid_function (args(0), "fsolve", 1);
-  if (! quad_fcn || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
+  quad_fcn = is_valid_function (args(0), "quad", 1);
+  if (! quad_fcn || takes_correct_nargs (quad_fcn, 1, "quad", 1) != 1)
     return retval;
 
   double a = args(1).double_value ();

@@ -81,10 +81,14 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
 
   int c_nr = arg_c.rows ();
   int c_nc = arg_c.columns ();
-  
-  if (empty_arg ("syl", a_nr, a_nc) < 0
-      || empty_arg ("syl", b_nr, b_nc) < 0
-      || empty_arg ("syl", c_nr, c_nc) < 0)
+
+  int arg_a_is_empty = empty_arg ("syl", a_nr, a_nc);
+  int arg_b_is_empty = empty_arg ("syl", b_nr, b_nc);
+  int arg_c_is_empty = empty_arg ("syl", c_nr, c_nc);
+
+  if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
+    return Matrix ();
+  else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
     return retval;
 
 // Arguments are not empty, so check for correct dimensions.

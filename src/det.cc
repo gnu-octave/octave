@@ -60,8 +60,11 @@ DEFUN_DLD_BUILTIN ("det", Fdet, Sdet, 2, 1,
       return retval;
     }
 
-  if (empty_arg ("det", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("det", nr, nc);
+  if (arg_is_empty < 0)
     return retval;
+  if (arg_is_empty > 0)
+    return Matrix (1, 1, 1.0);
 
   if (nr != nc)
     {

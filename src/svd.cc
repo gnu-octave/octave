@@ -55,8 +55,12 @@ unnecessary rows and columns of U and V")
 
   tree_constant arg = args(0);
 
-  if (empty_arg ("svd", arg.rows (), arg.columns ()) < 0)
+  int arg_is_empty = empty_arg ("svd", arg.rows (), arg.columns ());
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Octave_object (3, Matrix ());
 
   SVD::type type = (nargin == 2) ? SVD::economy : SVD::std;
 

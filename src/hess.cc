@@ -54,8 +54,12 @@ DEFUN_DLD_BUILTIN ("hess", Fhess, Shess, 2, 2,
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("hess", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("hess", nr, nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  else if (arg_is_empty > 0)
+    return Octave_object (2, Matrix ());
 
   if (nr != nc)
     {

@@ -54,8 +54,12 @@ DEFUN_DLD_BUILTIN ("chol", Fchol, Schol, 2, 1,
   int nr = arg.rows ();
   int nc = arg.columns ();
 
-  if (empty_arg ("chol", nr, nc) < 0)
+  int arg_is_empty = empty_arg ("chol", nr, nc);
+
+  if (arg_is_empty < 0)
     return retval;
+  if (arg_is_empty > 0)
+    return Matrix ();
 
   if (arg.is_real_type ())
     {

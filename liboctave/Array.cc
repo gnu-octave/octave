@@ -1165,10 +1165,19 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
     n = nr;
   else
     {
-      (*current_liboctave_error_handler)
-	("A(idx) = []: expecting A to be row or column vector or scalar");
+      // Reshape to row vector for Matlab compatibility.
 
-      return;
+      n = nr * nc;
+      nr = 1;
+      nc = n;
+
+      if (liboctave_wfi_flag)
+	{
+	  (*current_liboctave_warning_handler)
+	    ("A(idx) = []: expecting A to be row or column vector or scalar");
+
+	  return;
+	}
     }
 
   if (idx_arg.is_colon_equiv (n, 1))
@@ -1214,10 +1223,7 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
 		iidx++;
 	      else
 		{
-		  if (nr == 1)
-		    new_data[ii] = elem (0, i);
-		  else
-		    new_data[ii] = elem (i, 0);
+		  new_data[ii] = elem (i);
 
 		  ii++;
 		}
@@ -2629,7 +2635,9 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	  if (idx_i)
 	    {
-	      if (len == 0)
+	      if (rhs_nr == 0 && rhs_nc == 0)
+		lhs.maybe_delete_elements (idx_i);
+	      else if (len == 0)
 		{
 		  if (! ((rhs_nr == 1 && rhs_nc == 1)
 			 || (rhs_nr == 0 && rhs_nc == 0)))

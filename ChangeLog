@@ -1,3 +1,7 @@
+2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (header-msg): Required bison version now 1.31 or later.
+
 2004-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave-mod.el: If line-end-position is not defined,

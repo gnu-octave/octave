@@ -1,3 +1,9 @@
+2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (maybe_delete_elements_2): Allow X(n) = [] for 2-d X.
+	(Array<T>assign2): Also call maybe_delete_elements for single
+	index when rows and columns or LHS are both greater than 1.
+
 2004-02-13  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (Array<T>::maybe_delete_elements):

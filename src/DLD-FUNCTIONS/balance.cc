@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CmplxAEPBAL.h"
 #include "dbleAEPBAL.h"
 #include "dbleAEPBAL.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -272,7 +273,11 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
       for (int ii = 0; ii < nn; ii++)
 	for (int jj = 0; jj < nn; jj++)
-	  Pl(ii,jj) = Pr(ii,jj) = (ii == jj ? 1.0 : 0.0);
+	  {
+	    OCTAVE_QUIT;
+
+	    Pl(ii,jj) = Pr(ii,jj) = (ii == jj ? 1.0 : 0.0);
+	  }
   
       // left first
       F77_XFCN (dggbak, DGGBAK,

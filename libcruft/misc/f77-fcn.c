@@ -28,13 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 
 #include "f77-fcn.h"
+#include "quit.h"
 #include "lo-error.h"
-
-void
-copy_f77_context (void *from, void *to, unsigned int size)
-{
-  memcpy (to, from, size);
-}
 
 /* All the STOP statements in the Fortran routines have been replaced
    with a call to XSTOPX.
@@ -46,11 +41,13 @@ copy_f77_context (void *from, void *to, unsigned int size)
 void
 F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
 {
+  f77_exception_encountered = 1;
+
   /* Skip printing message if it is just a single blank character.  */
   if (s && slen > 0 && ! (slen == 1 && *s == ' '))
     (*current_liboctave_error_handler) ("%.*s", slen, s);
 
-  longjmp (f77_context, 1);
+  octave_jump_to_enclosing_context ();
 }
 
 /*

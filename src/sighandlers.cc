@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "cmd-edit.h"
+#include "quit.h"
 
 #include "error.h"
 #include "load-save.h"
@@ -52,18 +53,6 @@ int pipe_handler_error_count = 0;
 
 // TRUE means we can be interrupted.
 bool can_interrupt = false;
-
-// Allow us to save the signal mask and then restore it to the most
-// recently saved value.  This is necessary when using the POSIX
-// signal handling interface on some systems calling longjmp out of
-// the signal handler to get to the top level on an interrupt doesn't
-// restore the original signal mask.  Alternatively, we could use
-// sigsetjmp/siglongjmp, but saving and restoring the signal mask
-// ourselves works ok and seems simpler just now.
-
-#if defined (HAVE_POSIX_SIGNALS)
-static sigset_t octave_signal_mask;
-#endif
 
 #if RETSIGTYPE == void
 #define SIGHANDLER_RETURN(status) return
@@ -94,22 +83,6 @@ static sigset_t octave_signal_mask;
 #else
 #define OCTAVE_MEMORY_EXHAUSTED_ERROR (-1)
 #endif
-
-void
-octave_save_signal_mask (void)
-{
-#if defined (HAVE_POSIX_SIGNALS)
-  sigprocmask (0, 0, &octave_signal_mask);
-#endif
-}
-
-void
-octave_restore_signal_mask (void)
-{
-#if defined (HAVE_POSIX_SIGNALS)
-  sigprocmask (SIG_SETMASK, &octave_signal_mask, 0);
-#endif
-}
 
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
@@ -160,7 +133,7 @@ octave_new_handler (void)
 
   if (can_interrupt)
     {
-      jump_to_top_level ();
+      OCTAVE_JUMP_TO_TOP_LEVEL;
       panic_impossible ();
     }
   else
@@ -268,7 +241,7 @@ sigfpe_handler (int /* sig */)
 
   if (can_interrupt)
     {
-      jump_to_top_level ();
+      OCTAVE_OCTAVE_JUMP_TO_TOP_LEVEL;
       panic_impossible ();
     }
 
@@ -312,8 +285,15 @@ sigint_handler (int)
 
   if (can_interrupt)
     {
-      jump_to_top_level ();
+#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
+      octave_interrupt_state = 1;
+
+      if (octave_interrupt_immediately)
+	octave_jump_to_enclosing_context ();
+#else
+      OCTAVE_JUMP_TO_TOP_LEVEL;
       panic_impossible ();
+#endif
     }
 
   SIGHANDLER_RETURN (0);
@@ -333,7 +313,7 @@ sigpipe_handler (int /* sig */)
   // Don't loop forever on account of this.
 
   if (pipe_handler_error_count  > 100)
-    jump_to_top_level ();
+    OCTAVE_JUMP_TO_TOP_LEVEL;
 
   SIGHANDLER_RETURN (0);
 }

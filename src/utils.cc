@@ -100,16 +100,6 @@ valid_identifier (const std::string& s)
   return valid_identifier (s.c_str ());
 }
 
-// Return to the main command loop in octave.cc.
-
-void
-jump_to_top_level (void)
-{
-  unwind_protect::run_all ();
-
-  longjmp (toplevel, 1);
-}
-
 int
 almost_match (const std::string& std, const std::string& s, int min_match_len,
 	      int case_sens)

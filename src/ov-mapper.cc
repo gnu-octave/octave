@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "quit.h"
+
 #include "error.h"
 #include "gripes.h"
 #include "oct-obj.h"
@@ -47,8 +49,12 @@ any_element_less_than (const Matrix& a, double val)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a (i, j) < val)
-	return true;
+      {
+	OCTAVE_QUIT;
+
+	if (a (i, j) < val)
+	  return true;
+      }
 
   return false;
 }
@@ -61,8 +67,12 @@ any_element_greater_than (const Matrix& a, double val)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a (i, j) > val)
-	return true;
+      {
+	OCTAVE_QUIT;
+
+	if (a (i, j) > val)
+	  return true;
+      }
 
   return false;
 }
@@ -84,6 +94,8 @@ any_element_greater_than (const Matrix& a, double val)
 	{ \
 	   for (int i = 0; i < nr; i++) \
 	     { \
+                OCTAVE_QUIT; \
+ \
 		result (i, j) = CONV (F (M (i, j))); \
  \
 		if (error_state) \

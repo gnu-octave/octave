@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "EIG.h"
 #include "mx-cm-cdm.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -98,6 +99,7 @@ needs to be improved to be more robust.\n\
 
 	      for (int i = 0; i < nr; i++)
 		{
+		  OCTAVE_QUIT;
 		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
 		    lambda (i) = log (real (elt));
@@ -131,6 +133,7 @@ needs to be improved to be more robust.\n\
 
 	      for (int i = 0; i < nr; i++)
 		{
+		  OCTAVE_QUIT;
 		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
 		    lambda (i) = log (real (elt));
@@ -215,6 +218,7 @@ needs to be improved to be more robust.\n\
 
 	      for (int i = 0; i < nr; i++)
 		{
+		  OCTAVE_QUIT;
 		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
 		    lambda (i) = sqrt (real (elt));
@@ -248,6 +252,7 @@ needs to be improved to be more robust.\n\
 
 	      for (int i = 0; i < nr; i++)
 		{
+		  OCTAVE_QUIT;
 		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
 		    lambda (i) = sqrt (real (elt));

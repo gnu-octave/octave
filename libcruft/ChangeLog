@@ -1,3 +1,20 @@
+2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/f77-fcn.h (F77_XFCN): Adapt to new signal/exception
+	handling scheme.
+	(f77_context): Delete decl.
+	(copy_f77_context): Likewise.
+	* misc/f77-fcn.cn (copy_f77_context): Delete.
+	(Fxstopx): Set f77_exception_encountered.
+	Use octave_jump_to_enclosing_context, not longjmp.
+
+	* misc/f77-extern.cc (f77_context): Delete definition.
+
+	* misc/quit.h, misc/quit.cc: New files.
+	* misc/Makefile: Add them to the appropriate lists.
+
+	* Makefile (MISC_OBJ): Add misc/quit.o
+
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* odessa/odessa.f (ODESSA): Second arg of xerrwd is string length.

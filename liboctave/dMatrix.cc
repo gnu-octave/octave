@@ -49,6 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-dm-m.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
+#include "quit.h"
 
 #ifdef HAVE_FFTW
 #include "oct-fftw.h"
@@ -681,6 +682,8 @@ Matrix::fourier (void) const
 
   for (size_t i = 0; i < nsamples; i++)
     {
+      OCTAVE_QUIT;
+
       octave_fftw::fft (&in[npts * i], &out[npts * i], npts);
     }
 
@@ -714,6 +717,8 @@ Matrix::ifourier (void) const
 
   for (size_t i = 0; i < nsamples; i++)
     {
+      OCTAVE_QUIT;
+
       octave_fftw::ifft (&in[npts * i], &out[npts * i], npts);
     }
 
@@ -782,7 +787,11 @@ Matrix::fourier (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   return retval;
 }
@@ -819,7 +828,11 @@ Matrix::ifourier (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
@@ -859,7 +872,11 @@ Matrix::fourier2d (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   npts = nc;
   nsamples = nr;
@@ -875,6 +892,8 @@ Matrix::fourier2d (void) const
 
   for (int j = 0; j < nsamples; j++)
     {
+      OCTAVE_QUIT;
+
       for (int i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
@@ -919,7 +938,11 @@ Matrix::ifourier2d (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
@@ -938,6 +961,8 @@ Matrix::ifourier2d (void) const
 
   for (int j = 0; j < nsamples; j++)
     {
+      OCTAVE_QUIT;
+
       for (int i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
@@ -1610,6 +1635,8 @@ Matrix::expm (void) const
     for (int j = 0; j < nc; j++)
        retval(i,j) *= dscale(i) / dscale(j);
 
+  OCTAVE_QUIT;
+
   // construct balancing permutation vector
   Array<int> ipermute (nc);
   for (int i = 0; i < nc; i++)
@@ -1637,6 +1664,8 @@ Matrix::expm (void) const
   Array<int> invpvec (nc);
   for (int i = 0; i < nc; i++)
     invpvec(ipermute(i)) = i;     // Thanks to R. A. Lippert for this method
+
+  OCTAVE_QUIT;
  
   Matrix tmpMat = retval;
   for (int i = 0; i < nc; i++)

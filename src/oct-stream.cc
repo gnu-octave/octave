@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-sstream.h"
 #include "lo-utils.h"
 #include "str-vec.h"
+#include "quit.h"
 
 #include "error.h"
 #include "input.h"
@@ -1436,6 +1437,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
       for (;;)
 	{
+	  OCTAVE_QUIT;
+
 	  if (elt)
 	    {
 	      if (max_conv > 0 && conversion_count == max_conv)
@@ -2246,6 +2249,8 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
       for (;;)
 	{
+	  OCTAVE_QUIT;
+
 	  if (elt)
 	    {
 	      // NSA is the number of `star' args to convert.

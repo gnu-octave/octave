@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CMatrix.h"
 #include "dMatrix.h"
 #include "oct-cmplx.h"
+#include "quit.h"
 
 #include "error.h"
 #include "xdiv.h"
@@ -242,7 +243,10 @@ x_el_div (double a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = a / b (i, j);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = a / b (i, j);
+      }
 
   return result;
 }
@@ -257,7 +261,10 @@ x_el_div (double a, const ComplexMatrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = a / b (i, j);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = a / b (i, j);
+      }
 
   return result;
 }
@@ -272,7 +279,10 @@ x_el_div (const Complex a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = a / b (i, j);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = a / b (i, j);
+      }
 
   return result;
 }
@@ -287,7 +297,10 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = a / b (i, j);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = a / b (i, j);
+      }
 
   return result;
 }

@@ -13,9 +13,9 @@ top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
 SPECIAL := machar.c d1mach-tst.for f77-extern.cc \
-	f77-fcn.c f77-fcn.h lo-error.c lo-error.h
+	f77-fcn.c f77-fcn.h lo-error.c lo-error.h quit.h quit.cc
 
-SPECIAL_DEPEND := machar.o f77-extern.o f77-fcn.o lo-error.o
+SPECIAL_DEPEND := machar.o f77-extern.o f77-fcn.o lo-error.o quit.o
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
@@ -25,14 +25,14 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-INCLUDES := f77-fcn.h lo-error.h
+INCLUDES := f77-fcn.h lo-error.h quit.h
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
     CPICDEP := pic/machar.o pic/f77-fcn.o
   endif
   ifdef CXXPICFLAG
-    CXXPICDEP := pic/f77-extern.o pic/lo-error.o
+    CXXPICDEP := pic/f77-extern.o pic/lo-error.o pic/quit.o
   endif
   SPECIAL_PICDEPEND := $(CPICDEP) $(CXXPICDEP)
 endif

@@ -1,5 +1,35 @@
 2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* utils.cc (jump_to_top_level): Delete.
+
+	* toplev.cc (toplevel): Delete.
+	(main_loop): Adapt to new signal/exception handling scheme.
+
+	* sighandlers.cc (octave_signal_mask, octave_save_signal_mask,
+	octave_restore_signal_mask): Move to libcruft/misc/quit.cc.
+	(sigint_handler) [USE_EXCEPTIONS_FOR_INTERRUPTS]: set
+	octave_interrupt_state.  Only jump if octave_interrupt_immediately
+	is true, and then only to enclosing context.
+
+	* lex.h (YY_FATAL_ERROR): Use OCTAVE_JUMP_TO_TOP_LEVEL, not
+	jump_to_top_level.
+	* sighandlers.cc (octave_new_handler, sigfpe_handler, endif,
+	sigpipe_handler): Likewise.
+
+	* input.cc (gnu_readline): Surround call to
+	command_editor::readline with
+	BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE and 
+	END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE.
+
+	* data.cc, oct-stream.cc, ov-cell.cc, ov-mapper.cc, ov-re-mat.cc,
+	ov.cc, pr-output.cc, pt-loop.cc, pt-stmt.cc, xdiv.cc, xpow.cc,
+	DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/besselj.cc,
+	DLD-FUNCTIONS/filter.cc, DLD-FUNCTIONS/find.cc,
+	DLD-FUNCTIONS/kron.cc, DLD-FUNCTIONS/log.cc,
+	DLD-FUNCTIONS/minmax.cc, DLD-FUNCTIONS/qz.cc,
+	DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/sort.cc: Sprinkle with
+	OCTAVE_QUIT.
+
 	* DLD-FUNCTIONS/odessa.cc (Fodessa): Correctly extract bsub from
 	function arg.
 

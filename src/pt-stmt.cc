@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <SLList.h>
 
+#include "quit.h"
+
 #include "defun.h"
 #include "error.h"
 #include "ov.h"
@@ -156,6 +158,8 @@ tree_statement_list::eval (bool silent, int nargout)
 
       if (elt)
 	{
+	  OCTAVE_QUIT;
+
 	  retval = elt->eval (silent, nargout, function_body);
 
 	  if (error_state)

@@ -25,6 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lo-specfun.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -87,7 +88,11 @@ int_array2_to_matrix (const Array2<int>& a)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval(i,j) = (double) (a(i,j));
+      {
+	OCTAVE_QUIT;
+
+	retval(i,j) = (double) (a(i,j));
+      }
 
   return retval;
 }

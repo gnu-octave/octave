@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "quit.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "oct-obj.h"
@@ -93,8 +95,12 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
 	  if (si_len > 1)
 	    {
 	      for (int j = 0; j < si_len - 1; j++)
-		si (j) = si (j+1) - a (j+1) * y (i)
-		  + b (j+1) * x (i);
+		{
+		  OCTAVE_QUIT;
+
+		  si (j) = si (j+1) - a (j+1) * y (i)
+		    + b (j+1) * x (i);
+		}
 
 	      si (si_len-1) = b (si_len) * x (i)
 		- a (si_len) * y (i);
@@ -113,7 +119,11 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
 	  if (si_len > 1)
 	    {
 	      for (int j = 0; j < si_len - 1; j++)
-		si (j) = si (j+1) + b (j+1) * x (i);
+		{
+		  OCTAVE_QUIT;
+
+		  si (j) = si (j+1) + b (j+1) * x (i);
+		}
 
 	      si (si_len-1) = b (si_len) * x (i);
 	    }

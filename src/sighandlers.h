@@ -103,10 +103,6 @@ extern octave_interrupt_handler octave_ignore_interrupts (void);
 extern octave_interrupt_handler
 octave_set_interrupt_handler (const volatile octave_interrupt_handler&);
 
-extern void octave_save_signal_mask (void);
-
-extern void octave_restore_signal_mask (void);
-
 // extern void ignore_sigchld (void);
 
 // Maybe this should be in a separate file?

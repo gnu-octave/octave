@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   do \
     { \
       error (msg); \
-      jump_to_top_level (); \
+      OCTAVE_JUMP_TO_TOP_LEVEL; \
       yy_fatal_error (msg); \
     } \
   while (0)

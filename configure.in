@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.384 $)
+AC_REVISION($Revision: 1.385 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1308,6 +1308,8 @@ typedef int sigset_t;
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #define OCTAVE_USE_WINDOWS_API 1
 #endif
+
+#define USE_EXCEPTIONS_FOR_INTERRUPTS 1
 ])
 
 ### Do the substitutions in all the Makefiles.

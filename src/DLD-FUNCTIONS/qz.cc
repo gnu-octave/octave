@@ -38,9 +38,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "CmplxQRP.h"
 #include "dbleQR.h"
+#include "f77-fcn.h"
+#include "quit.h"
+
 #include "defun-dld.h"
 #include "error.h"
-#include "f77-fcn.h"
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-map.h"
@@ -397,7 +399,10 @@ See also: balance, dare, eig, schur\n\
   if (compq == 'V' || compz == 'V')
     for (int ii = 0; ii < nn; ii++)
       for (int jj = 0; jj < nn; jj++)
-        QQ(ii,jj) = ZZ(ii,jj) = (ii == jj ? 1.0 : 0.0);
+	{
+	  OCTAVE_QUIT;
+	  QQ(ii,jj) = ZZ(ii,jj) = (ii == jj ? 1.0 : 0.0);
+	}
 
   // always perform permutation balancing
   char bal_job = 'P';
@@ -836,6 +841,8 @@ See also: balance, dare, eig, schur\n\
 
 	  while (jj < nn)
 	    {
+	      OCTAVE_QUIT;
+
 	      // see if real or complex eigenvalue
 	      int cinc = 2;	// column increment; assume complex eigenvalue
 

@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array-flags.h"
 #include "str-vec.h"
+#include "quit.h"
 
 #include "oct-obj.h"
 #include "ov.h"
@@ -896,7 +897,11 @@ octave_value::vector_value (bool force_string_conv,
       int k = 0;
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  retval (k++) = m (i, j);
+	  {
+	    OCTAVE_QUIT;
+
+	    retval (k++) = m (i, j);
+	  }
     }
   else
     {
@@ -926,6 +931,8 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
       retval.resize (nc);
       for (int i = 0; i < nc; i++)
 	{
+	  OCTAVE_QUIT;
+
 	  double d = m (0, i);
 
 	  if (require_int && D_NINT (d) != d)
@@ -942,6 +949,8 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
       retval.resize (nr);
       for (int i = 0; i < nr; i++)
 	{
+	  OCTAVE_QUIT;
+
 	  double d = m (i, 0);
 
 	  if (require_int && D_NINT (d) != d)
@@ -962,6 +971,8 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
+	      OCTAVE_QUIT;
+
 	      double d = m (i, j);
 
 	      if (require_int && D_NINT (d) != d)
@@ -1001,13 +1012,19 @@ octave_value::complex_vector_value (bool force_string_conv,
     {
       retval.resize (nc);
       for (int i = 0; i < nc; i++)
-	retval (i) = m (0, i);
+	{
+	  OCTAVE_QUIT;
+	  retval (i) = m (0, i);
+	}
     }
   else if (nc == 1)
     {
       retval.resize (nr);
       for (int i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
+	{
+	  OCTAVE_QUIT;
+	  retval (i) = m (i, 0);
+	}
     }
   else if (nr > 0 && nc > 0
 	   && (Vdo_fortran_indexing || force_vector_conversion))
@@ -1016,7 +1033,10 @@ octave_value::complex_vector_value (bool force_string_conv,
       int k = 0;
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  retval (k++) = m (i, j);
+	  {
+	    OCTAVE_QUIT;
+	    retval (k++) = m (i, j);
+	  }
     }
   else
     {

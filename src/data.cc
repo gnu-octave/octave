@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-ieee.h"
 #include "str-vec.h"
+#include "quit.h"
 
 #include "defun.h"
 #include "error.h"
@@ -131,7 +132,10 @@ map_d_m (d_dd_fcn f, double x, const Matrix& y)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval (i, j) = f (x, y (i, j));
+      {
+	OCTAVE_QUIT;
+	retval (i, j) = f (x, y (i, j));
+      }
 
   return retval;
 }
@@ -146,7 +150,10 @@ map_m_d (d_dd_fcn f, const Matrix& x, double y)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval (i, j) = f (x (i, j), y);
+      {
+	OCTAVE_QUIT;
+	retval (i, j) = f (x (i, j), y);
+      }
 
   return retval;
 }
@@ -166,7 +173,10 @@ map_m_m (d_dd_fcn f, const Matrix& x, const Matrix& y)
 
   for (int j = 0; j < x_nc; j++)
     for (int i = 0; i < x_nr; i++)
-      retval (i, j) = f (x (i, j), y (i, j));
+      {
+	OCTAVE_QUIT;
+	retval (i, j) = f (x (i, j), y (i, j));
+      }
 
   return retval;
 }

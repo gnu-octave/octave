@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "quit.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -170,7 +171,11 @@ gnu_readline (const std::string& s, bool force_readline)
     {
       bool eof;
 
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
       retval = command_editor::readline (s, eof);
+
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (! eof && retval.empty ())
 	retval = "\n";

@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "f77-fcn.h"
 #include "lo-mappers.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -71,7 +72,7 @@ curr_rand_seed (void)
 {
   union d2i { double d; int i[2]; };
   union d2i u;
-  F77_XFCN (getsd, GETSD, (u.i[0], u.i[1]));
+  F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
   return u.d;
 }
 
@@ -98,7 +99,7 @@ set_rand_seed (double val)
   u.d = val;
   int i0 = force_to_fit_range (u.i[0], 1, 2147483563);
   int i1 = force_to_fit_range (u.i[1], 1, 2147483399);
-  F77_XFCN (setsd, SETSD, (i0, i1));
+  F77_FUNC (setsd, SETSD) (i0, i1);
 }
 
 static const char *
@@ -139,10 +140,24 @@ do_initialization (void)
   s0 = force_to_fit_range (s0, 1, 2147483563);
   s1 = force_to_fit_range (s1, 1, 2147483399);
 
-  F77_XFCN (setall, SETALL, (s0, s1));
+  F77_FUNC (setall, SETALL) (s0, s1);
 
   initialized = 1;
 }
+
+#define MAKE_RAND_MAT(mat, nr, nc, f, F) \
+  do \
+    { \
+      double val; \
+      for (volatile int j = 0; j < nc; j++) \
+	for (volatile int i = 0; i < nr; i++) \
+	  { \
+	    OCTAVE_QUIT; \
+	    F77_FUNC (f, F) (0.0, 1.0, val); \
+	    mat(i,j) = val; \
+	  } \
+    } \
+  while (0)
 
 static octave_value_list
 do_rand (const octave_value_list& args, int nargin)
@@ -179,13 +194,13 @@ do_rand (const octave_value_list& args, int nargin)
 	    {
 	      current_distribution = uniform_dist;
 
-	      F77_XFCN (setcgn, SETCGN, (uniform_dist));
+	      F77_FUNC (setcgn, SETCGN) (uniform_dist);
 	    }
 	  else if (s_arg == "normal")
 	    {
 	      current_distribution = normal_dist;
 
-	      F77_XFCN (setcgn, SETCGN, (normal_dist));
+	      F77_FUNC (setcgn, SETCGN) (normal_dist);
 	    }
 	  else
 	    error ("rand: unrecognized string argument");
@@ -297,27 +312,20 @@ do_rand (const octave_value_list& args, int nargin)
     {
       Matrix rand_mat (n, m);
 
-      for (volatile int j = 0; j < m; j++)
-	for (volatile int i = 0; i < n; i++)
-	  {
-	    double val;
-	    switch (current_distribution)
-	      {
-	      case uniform_dist:
-		F77_XFCN (dgenunf, DGENUNF, (0.0, 1.0, val));
-		rand_mat (i, j) = val;
-		break;
+      switch (current_distribution)
+	{
+	case uniform_dist:
+	  MAKE_RAND_MAT (rand_mat, n, m, dgenunf, DGENUNF);
+	  break;
 
-	      case normal_dist:
-		F77_XFCN (dgennor, DGENNOR, (0.0, 1.0, val));
-		rand_mat (i, j) = val;
-		break;
+	case normal_dist:
+	  MAKE_RAND_MAT (rand_mat, n, m, dgennor, DGENNOR);
+	  break;
 
-	      default:
-		panic_impossible ();
-		break;
-	      }
-	  }
+	default:
+	  panic_impossible ();
+	  break;
+	}
 
       retval(0) = rand_mat;
     }
@@ -373,7 +381,7 @@ rand (\"seed\")\n\
 static void
 reset_rand_generator (void *)
 {
-  F77_XFCN (setcgn, SETCGN, (current_distribution));
+  F77_FUNC (setcgn, SETCGN) (current_distribution);
 }
 
 DEFUN_DLD (randn, args, nargout,
@@ -424,7 +432,7 @@ randn (\"seed\")\n\
 
       current_distribution = normal_dist;
 
-      F77_XFCN (setcgn, SETCGN, (normal_dist));
+      F77_FUNC (setcgn, SETCGN) (normal_dist);
 
       retval = do_rand (args, nargin);
 

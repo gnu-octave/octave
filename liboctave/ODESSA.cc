@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-sstream.h"
+#include "quit.h"
 
 typedef int (*odessa_fcn_ptr) (int*, const double&, double*,
 			       double*, double*);
@@ -85,7 +86,7 @@ odessa_f (int* neq, const double& t, double *state,
   ColumnVector tmp_fval = user_fsub (tmp_state, t, tmp_param);
 
   if (tmp_fval.length () == 0)
-    longjmp (f77_context, 1);
+    octave_jump_to_enclosing_context ();
   else
     {
       for (int i = 0; i < n; i++)
@@ -115,7 +116,7 @@ odessa_j (int* neq, const double& t, double *state,
   Matrix tmp_fval = user_jsub (tmp_state, t, tmp_param);
 
   if (tmp_fval.length () == 0)
-    longjmp (f77_context, 1);
+    octave_jump_to_enclosing_context ();
   else
     {
       for (int j = 0; j < n; j++)
@@ -146,7 +147,7 @@ odessa_b (int* neq, const double& t, double *state,
   ColumnVector tmp_fval = user_bsub (tmp_state, t, tmp_param, jpar);
 
   if (tmp_fval.length () == 0)
-    longjmp (f77_context, 1);
+    octave_jump_to_enclosing_context ();
   else
     {
       for (int i = 0; i < n; i++)

@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "quit.h"
+
 #include "error.h"
 #include "gripes.h"
 #include "oct-map.h"
@@ -50,6 +52,8 @@ bool evaluating_looping_command = false;
 static inline bool
 quit_loop_now (void)
 {
+  OCTAVE_QUIT;
+
   // Maybe handle `continue N' someday...
 
   if (tree_continue_command::continuing)

@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "quit.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
@@ -92,8 +94,12 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
   int i, j;
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
-      if (m (i, j) != 0.0)
-	count++;
+      {
+	OCTAVE_QUIT;
+
+	if (m (i, j) != 0.0)
+	  count++;
+      }
 
   octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
@@ -108,6 +114,8 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
       {
+	OCTAVE_QUIT;
+
 	double d = m (i, j);
 	if (d != 0.0)
 	  {
@@ -131,8 +139,12 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
   int i, j;
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
-      if (m (i, j) != 0.0)
-	count++;
+      {
+	OCTAVE_QUIT;
+
+	if (m (i, j) != 0.0)
+	  count++;
+      }
 
   octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
@@ -147,6 +159,8 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
       {
+	OCTAVE_QUIT;
+
 	Complex c = m (i, j);
 	if (c != 0.0)
 	  {

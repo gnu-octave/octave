@@ -25,6 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lo-mappers.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -120,6 +121,7 @@ create_index_array (int n)
       SORT_INIT_PHASE(n); \
       while (1) \
 	{ \
+          OCTAVE_QUIT; \
 	  if (condition) \
 	    { \
 	      SORT_REORDER_PHASE_ONE; \
@@ -137,6 +139,7 @@ create_index_array (int n)
   vs (0) = v (k-1); \
   for (int i = 1; i < n; i++) \
     { \
+      OCTAVE_QUIT; \
       k = l (static_cast<int> (idx (i-1))); \
       idx (i) = k; \
       vs (i) = v (k-1); \
@@ -148,6 +151,7 @@ create_index_array (int n)
   ms (0, j) = m (k-1, j); \
   for (int i = 1; i < nr; i++) \
     { \
+      OCTAVE_QUIT; \
       k = l (static_cast<int> (idx (i-1, j))); \
       idx (i, j) = k; \
       ms (i, j) = m (k-1, j); \
@@ -247,11 +251,14 @@ mx_sort (const ComplexMatrix& cm)
 
 	  bool all_elts_real = true;
 	  for (int i = 0; i < nr; i++)
-	    if (imag (cm (i, j)) != 0.0)
-	      {
-		all_elts_real = false;
-		break;
-	      }
+	    {
+	      OCTAVE_QUIT;
+	      if (imag (cm (i, j)) != 0.0)
+		{
+		  all_elts_real = false;
+		  break;
+		}
+	    }
 
 	  DO_SORT (nr, ((all_elts_real
 			 && (xisnan (real (cm (p-1, j)))
@@ -292,11 +299,14 @@ mx_sort (ComplexRowVector& cv)
 
       bool all_elts_real = true;
       for (int i = 0; i < n; i++)
-	if (imag (cv (i)) != 0.0)
-	  {
-	    all_elts_real = false;
-	    break;
-	  }
+	{
+	  OCTAVE_QUIT;
+	  if (imag (cv (i)) != 0.0)
+	    {
+	      all_elts_real = false;
+	      break;
+	    }
+	}
 
       DO_SORT (n, ((all_elts_real
 		    && (xisnan (real (cv (p-1)))

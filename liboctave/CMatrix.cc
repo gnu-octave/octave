@@ -986,6 +986,8 @@ ComplexMatrix::fourier (void) const
 
   for (size_t i = 0; i < nsamples; i++)
     {
+      OCTAVE_QUIT;
+
       octave_fftw::fft (&in[npts * i], &out[npts * i], npts);
     }
 
@@ -1018,6 +1020,8 @@ ComplexMatrix::ifourier (void) const
 
   for (size_t i = 0; i < nsamples; i++)
     {
+      OCTAVE_QUIT;
+
       octave_fftw::ifft (&in[npts * i], &out[npts * i], npts);
     }
 
@@ -1086,7 +1090,11 @@ ComplexMatrix::fourier (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   return retval;
 }
@@ -1123,7 +1131,11 @@ ComplexMatrix::ifourier (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
@@ -1163,7 +1175,11 @@ ComplexMatrix::fourier2d (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   npts = nc;
   nsamples = nr;
@@ -1179,6 +1195,8 @@ ComplexMatrix::fourier2d (void) const
 
   for (int j = 0; j < nsamples; j++)
     {
+      OCTAVE_QUIT;
+
       for (int i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
@@ -1223,7 +1241,11 @@ ComplexMatrix::ifourier2d (void) const
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    {
+      OCTAVE_QUIT;
+
+      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    }
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
@@ -1242,6 +1264,8 @@ ComplexMatrix::ifourier2d (void) const
 
   for (int j = 0; j < nsamples; j++)
     {
+      OCTAVE_QUIT;
+
       for (int i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
@@ -1937,6 +1961,8 @@ ComplexMatrix::expm (void) const
     for (int j = 0; j < nc; j++)
        retval(i,j) *= dscale(i) / dscale(j);
 
+  OCTAVE_QUIT;
+
   // construct balancing permutation vector
   Array<int> ipermute (nc);
   for (int i = 0; i < nc; i++)
@@ -1964,6 +1990,8 @@ ComplexMatrix::expm (void) const
   Array<int> invpvec (nc);
   for (int i = 0; i < nc; i++)
     invpvec(ipermute(i)) = i;     // Thanks to R. A. Lippert for this method
+
+  OCTAVE_QUIT;
 
   ComplexMatrix tmpMat = retval;
   for (int i = 0; i < nc; i++)

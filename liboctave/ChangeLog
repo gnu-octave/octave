@@ -1,5 +1,7 @@
 2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* CMatrix.cc, dMatrix.cc: Sprinkle with OCTAVE_QUIT.
+
 	* ODESSA.cc (odessa_f, odessa_j, odessa_b): Abort on error.
 
 	* Array.h: Include <cstddef> here.

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dMatrix.h"
 #include "mx-cm-cdm.h"
 #include "oct-cmplx.h"
+#include "quit.h"
 
 #include "error.h"
 #include "oct-obj.h"
@@ -500,7 +501,10 @@ elem_xpow (double a, const Matrix& b)
       ComplexMatrix result (nr, nc);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (atmp, b (i, j));
+	  {
+	    OCTAVE_QUIT;
+	    result (i, j) = pow (atmp, b (i, j));
+	  }
 
       retval = result;
     }
@@ -509,7 +513,10 @@ elem_xpow (double a, const Matrix& b)
       Matrix result (nr, nc);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (a, b (i, j)); 
+	  {
+	    OCTAVE_QUIT;
+	    result (i, j) = pow (a, b (i, j));
+	  }
 
       retval = result;
     }
@@ -528,7 +535,10 @@ elem_xpow (double a, const ComplexMatrix& b)
   Complex atmp (a);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (atmp, b (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = pow (atmp, b (i, j));
+      }
 
   return result;
 }
@@ -548,6 +558,7 @@ elem_xpow (const Matrix& a, double b)
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  {
+	    OCTAVE_QUIT;
 	    Complex atmp (a (i, j));
 	    result (i, j) = pow (atmp, b);
 	  }
@@ -559,7 +570,10 @@ elem_xpow (const Matrix& a, double b)
       Matrix result (nr, nc);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (a (i, j), b);
+	  {
+	    OCTAVE_QUIT;
+	    result (i, j) = pow (a (i, j), b);
+	  }
 
       retval = result;
     }
@@ -589,6 +603,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
+	OCTAVE_QUIT;
 	double atmp = a (i, j);
 	double btmp = b (i, j);
 	if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
@@ -607,6 +622,7 @@ done:
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  {
+	    OCTAVE_QUIT;
 	    Complex atmp (a (i, j));
 	    Complex btmp (b (i, j));
 	    complex_result (i, j) = pow (atmp, btmp);
@@ -620,7 +636,10 @@ done:
 
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (a (i, j), b (i, j));
+	  {
+	    OCTAVE_QUIT;
+	    result (i, j) = pow (a (i, j), b (i, j));
+	  }
 
       retval = result;
     }
@@ -638,7 +657,10 @@ elem_xpow (const Matrix& a, const Complex& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (Complex (a (i, j)), b);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = pow (Complex (a (i, j)), b);
+      }
 
   return result;
 }
@@ -662,7 +684,10 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (Complex (a (i, j)), b (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = pow (Complex (a (i, j)), b (i, j));
+      }
 
   return result;
 }
@@ -678,6 +703,7 @@ elem_xpow (const Complex& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
+	OCTAVE_QUIT;
 	double btmp = b (i, j);
 	if (xisint (btmp))
 	  result (i, j) = pow (a, static_cast<int> (btmp));
@@ -698,7 +724,10 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (a, b (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = pow (a, b (i, j));
+      }
 
   return result;
 }
@@ -716,13 +745,19 @@ elem_xpow (const ComplexMatrix& a, double b)
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (a (i, j), static_cast<int> (b));
+	  {
+	    OCTAVE_QUIT;
+	    result (i, j) = pow (a (i, j), static_cast<int> (b));
+	  }
     }
   else
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (a (i, j), b);
+	  {
+	    OCTAVE_QUIT;
+	    result (i, j) = pow (a (i, j), b);
+	  }
     }
 
   return result;
@@ -748,6 +783,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
+	OCTAVE_QUIT;
 	double btmp = b (i, j);
 	if (xisint (btmp))
 	  result (i, j) = pow (a (i, j), static_cast<int> (btmp));
@@ -768,7 +804,10 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (a (i, j), b);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = pow (a (i, j), b);
+      }
 
   return result;
 }
@@ -792,7 +831,10 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (a (i, j), b (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = pow (a (i, j), b (i, j));
+      }
 
   return result;
 }

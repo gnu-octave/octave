@@ -27,9 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C" {
 #endif
 
-#include <setjmp.h>
+#include "quit.h"
 
-/* hack to stringize macro results */
+#include <stdio.h>
+
+/* Hack to stringize macro results. */
 #define xSTRINGIZE(x) #x
 #define STRINGIZE(x) xSTRINGIZE(x)
 
@@ -41,39 +43,39 @@ extern "C" {
      STRINGIZE (F77_FUNC (f, F)))
 
 /* This can be used to call a Fortran subroutine that might call
-   XSTOPX.  XSTOPX will call lonjmp with f77_context and we'll return,
-   call the error function, restore the previous context.  After using
-   this macro, error_state should be checked. */
+   XSTOPX.  XSTOPX will call lonjmp with current_context.  Once back
+   here, we'll restore the previous context and return.  We may also
+   end up here if an interrupt is processed when the Fortran
+   subroutine is called.  In that case, we resotre the context and go
+   to the top level.  The error_state should be checked immediately
+   after this macro is used. */
 
 #define F77_XFCN(f, F, args) \
   do \
     { \
-      jmp_buf saved_f77_context; \
+      jmp_buf saved_context; \
       f77_exception_encountered = 0; \
-      copy_f77_context ((char *) f77_context, (char *) saved_f77_context, \
-			sizeof (jmp_buf)); \
-      if (setjmp (f77_context)) \
+      octave_save_current_context ((char *) saved_context); \
+      if (octave_set_current_context) \
 	{ \
-	  f77_exception_encountered = 1; \
-	  F77_XFCN_ERROR (f, F); \
+          octave_restore_current_context ((char *) saved_context); \
+	  if (f77_exception_encountered) \
+	    F77_XFCN_ERROR (f, F); \
+          else \
+            OCTAVE_THROW_TO_TOP_LEVEL; \
 	} \
       else \
-	F77_FUNC (f, F) args; \
-      copy_f77_context ((char *) saved_f77_context, (char *) f77_context, \
-			sizeof (jmp_buf)); \
+        { \
+	  octave_interrupt_immediately++; \
+	  F77_FUNC (f, F) args; \
+	  octave_interrupt_immediately--; \
+          octave_restore_current_context ((char *) saved_context); \
+        } \
     } \
   while (0)
 
 /* So we can check to see if an exception has occurred. */
 extern int f77_exception_encountered;
-
-/* For setjmp/longjmp. */
-extern jmp_buf f77_context;
-
-/* Defining this as a separate function allows us to avoid having to
-   include string.h in this file. */
-
-extern void copy_f77_context (void *, void *, unsigned int);
 
 extern void
 F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen) GCC_ATTR_NORETURN;

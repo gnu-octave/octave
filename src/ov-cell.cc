@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-sstream.h"
 #include "lo-utils.h"
+#include "quit.h"
 
 #include "defun.h"
 #include "error.h"
@@ -78,7 +79,10 @@ octave_cell::subsref (const std::string type,
 	    int k = 0;
 	    for (int j = 0; j < nc; j++)
 	      for (int i = 0; i < nr; i++)
-		lst(k++) = tcell(i,j);
+		{
+		  OCTAVE_QUIT;
+		  lst(k++) = tcell(i,j);
+		}
 	    retval = octave_value (lst, true);
 	  }
       }
@@ -268,6 +272,8 @@ octave_cell::print_raw (std::ostream& os, bool) const
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
+	      OCTAVE_QUIT;
+
 	      OSSTREAM buf;
 	      buf << "[" << i+1 << "," << j+1 << "]" << OSSTREAM_ENDS;
 

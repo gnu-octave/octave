@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SLStack.h"
 
 #include "cmd-edit.h"
+#include "quit.h"
 #include "lo-sstream.h"
 
 // These would be alphabetical, but y.tab.h must be included before

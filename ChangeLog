@@ -1,3 +1,7 @@
+2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AH_BOTTOM): Define USE_EXCEPTIONS_FOR_INTERRUPTS.
+
 2002-11-04  Joseph P. Skudlarek  <jskud@jskud.com>
 
 	* emacs/otags: handle declarations without arguments and/or return

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "dMatrix.h"
 #include "CMatrix.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -55,7 +56,10 @@ kron (const Array2<T>& A, const Array2<T>& B, Array2<T>& C)
 	const T v = A (Ar, Ac);
 	for (int Bc = 0; Bc < B.columns (); Bc++)
 	  for (int Br = 0; Br < B.rows (); Br++)
-	    C.xelem (Cr+Br, Cc+Bc) = v * B.elem (Br, Bc);
+	    {
+	      OCTAVE_QUIT;
+	      C.xelem (Cr+Br, Cc+Bc) = v * B.elem (Br, Bc);
+	    }
       }
 }
 

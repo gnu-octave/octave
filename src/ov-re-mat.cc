@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-ieee.h"
 #include "lo-utils.h"
 #include "mx-base.h"
+#include "quit.h"
 
 #include "gripes.h"
 #include "oct-obj.h"
@@ -140,6 +141,8 @@ octave_matrix::convert_to_str (void) const
 	    {
 	      for (int i = 0; i < nr; i++)
 		{
+		  OCTAVE_QUIT;
+
 		  double d = matrix (i, j);
 
 		  if (xisnan (d))

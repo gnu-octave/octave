@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
+#include "quit.h"
 #include "str-vec.h"
 
 #include "Cell.h"
@@ -1311,6 +1312,8 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 	{
 	  for (int j = 0; j < nc; j++)
 	    {
+	      OCTAVE_QUIT;
+
 	      if (j == 0)
 		os << "  ";
 
@@ -1370,6 +1373,8 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
 		  for (int j = col; j < lim; j++)
 		    {
+		      OCTAVE_QUIT;
+
 		      if (i == 0 && j == 0)
 			os << "[ ";
 		      else
@@ -1414,6 +1419,8 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 
 		  for (int j = col; j < lim; j++)
 		    {
+		      OCTAVE_QUIT;
+
 		      os << "  ";
 
 		      pr_float (os, m(i,j), fw, scale);
@@ -1479,6 +1486,8 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 	{
 	  for (int j = 0; j < nc; j++)
 	    {
+	      OCTAVE_QUIT;
+
 	      if (j == 0)
 		os << "  ";
 
@@ -1539,6 +1548,8 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
 		  for (int j = col; j < lim; j++)
 		    {
+		      OCTAVE_QUIT;
+
 		      if (i == 0 && j == 0)
 			os << "[ ";
 		      else
@@ -1583,6 +1594,8 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
 		  for (int j = col; j < lim; j++)
 		    {
+		      OCTAVE_QUIT;
+
 		      os << "  ";
 
 		      pr_complex (os, cm(i,j), r_fw, i_fw, scale);
@@ -1610,6 +1623,8 @@ octave_print_internal (std::ostream& os, const Range& r,
       os << "  ";
       for (int i = 0; i < num_elem; i++)
 	{
+	  OCTAVE_QUIT;
+
 	  double val = base + i * increment;
 	  if (val == 0.0)
 	    os << " ";
@@ -1683,6 +1698,8 @@ octave_print_internal (std::ostream& os, const Range& r,
 
 	      for (int i = col; i < lim; i++)
 		{
+		  OCTAVE_QUIT;
+
 		  double val = base + i * increment;
 
 		  os << "  ";
@@ -1725,6 +1742,8 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 	{
 	  for (int i = 0; i < nstr; i++)
 	    {
+	      OCTAVE_QUIT;
+
 	      std::string row = chm.row_as_string (i);
 
 	      if (pr_as_read_syntax)

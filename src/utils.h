@@ -37,8 +37,6 @@ class string_vector;
 extern bool valid_identifier (const char *s);
 extern bool valid_identifier (const std::string& s);
 
-extern void jump_to_top_level (void) GCC_ATTR_NORETURN;
-
 extern int almost_match (const std::string& std, const std::string& s,
 			 int min_match_len = 1, int case_sens = 1);
 

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "quit.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -53,7 +54,10 @@ min (double d, const Matrix& m)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmin (d, m (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (d, m (i, j));
+      }
 
   return result;
 }
@@ -70,7 +74,10 @@ min (const Matrix& m, double d)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmin (m (i, j), d);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (m (i, j), d);
+      }
 
   return result;
 }
@@ -87,7 +94,10 @@ min (const Complex& c, const ComplexMatrix& m)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmin (c, m (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (c, m (i, j));
+      }
 
   return result;
 }
@@ -104,7 +114,10 @@ min (const ComplexMatrix& m, const Complex& c)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmin (m (i, j), c);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (m (i, j), c);
+      }
 
   return result;
 }
@@ -127,7 +140,10 @@ min (const Matrix& a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmin (a (i, j), b (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (a (i, j), b (i, j));
+      }
 
   return result;
 }
@@ -152,11 +168,14 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
     {
       int columns_are_real_only = 1;
       for (int i = 0; i < nr; i++)
-	if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
-	  {
-	    columns_are_real_only = 0;
-	    break;
-	  }
+	{
+	  OCTAVE_QUIT;
+	  if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
+	    {
+	      columns_are_real_only = 0;
+	      break;
+	    }
+	}
 
       if (columns_are_real_only)
 	{
@@ -166,7 +185,10 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    result (i, j) = xmin (a (i, j), b (i, j));
+	    {
+	      OCTAVE_QUIT;
+	      result (i, j) = xmin (a (i, j), b (i, j));
+	    }
 	}
     }
 
@@ -185,7 +207,10 @@ max (double d, const Matrix& m)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmax (d, m (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (d, m (i, j));
+      }
 
   return result;
 }
@@ -202,7 +227,10 @@ max (const Matrix& m, double d)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmax (m (i, j), d);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (m (i, j), d);
+      }
 
   return result;
 }
@@ -219,7 +247,10 @@ max (const Complex& c, const ComplexMatrix& m)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmax (c, m (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (c, m (i, j));
+      }
 
   return result;
 }
@@ -236,7 +267,10 @@ max (const ComplexMatrix& m, const Complex& c)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmax (m (i, j), c);
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (m (i, j), c);
+      }
 
   return result;
 }
@@ -259,7 +293,10 @@ max (const Matrix& a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = xmax (a (i, j), b (i, j));
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (a (i, j), b (i, j));
+      }
 
   return result;
 }
@@ -284,21 +321,30 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
     {
       int columns_are_real_only = 1;
       for (int i = 0; i < nr; i++)
-	if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
-	  {
-	    columns_are_real_only = 0;
-	    break;
-	  }
+	{
+	  OCTAVE_QUIT;
+	  if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
+	    {
+	      columns_are_real_only = 0;
+	      break;
+	    }
+	}
 
       if (columns_are_real_only)
 	{
 	  for (int i = 0; i < nr; i++)
-	    result (i, j) = xmax (real (a (i, j)), real (b (i, j)));
+	    {
+	      OCTAVE_QUIT;
+	      result (i, j) = xmax (real (a (i, j)), real (b (i, j)));
+	    }
 	}
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    result (i, j) = xmax (a (i, j), b (i, j));
+	    {
+	      OCTAVE_QUIT;
+	      result (i, j) = xmax (a (i, j), b (i, j));
+	    }
 	}
     }
 
@@ -428,6 +474,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
  \
 	  for (int i = 0; i < len; i++) \
 	    { \
+	      OCTAVE_QUIT; \
 	      int tmp = index.elem (i) + 1; \
 	      idx.elem (i) = (tmp <= 0) \
 		? nan_val : static_cast<double> (tmp); \

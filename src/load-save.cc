@@ -2636,7 +2636,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  goto data_read_error;
 
 	// fields subelements
-	for (i=0; i < len/field_name_length; i++)
+	for (i = 0; i < len/field_name_length; i++)
 	  {
 	    char *thename;
 	    octave_value fieldtc;

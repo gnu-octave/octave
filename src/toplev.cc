@@ -39,17 +39,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-// Include setjmp.h, not csetjmp since the latter might only define
-// the ANSI standard C interface.
-
-#include <setjmp.h>
-
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
 #include "lo-sstream.h"
 #include "oct-env.h"
+#include "quit.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -91,23 +87,21 @@ octave_user_function *curr_function = 0;
 // Original value of TEXMFDBS environment variable.
 std::string octave_original_texmfdbs;
 
-// Top level context (?)
-jmp_buf toplevel;
-
 int
 main_loop (void)
 {
-  // Allow the user to interrupt us without exiting.
-
   octave_save_signal_mask ();
 
-  if (setjmp (toplevel) != 0)
+  if (octave_set_current_context)
     {
+#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
+      panic_impossible ();
+#else
+      unwind_protect::run_all ();
       raw_mode (0);
-
       std::cout << "\n";
-
       octave_restore_signal_mask ();
+#endif
     }
 
   can_interrupt = true;
@@ -116,59 +110,72 @@ main_loop (void)
 
   // The big loop.
 
-  int retval;
+  int retval = 0;
   do
     {
-      curr_sym_tab = top_level_sym_tab;
-
-      reset_parser ();
-
-      retval = yyparse ();
-
-      if (retval == 0)
+      OCTAVE_TRY_WITH_INTERRUPTS
 	{
-	  if (global_command)
+	  curr_sym_tab = top_level_sym_tab;
+
+	  reset_parser ();
+
+	  retval = yyparse ();
+
+	  if (retval == 0)
 	    {
-	      global_command->eval ();
-
-	      delete global_command;
-
-	      global_command = 0;
-
-	      if (! (interactive || forced_interactive))
+	      if (global_command)
 		{
-		  bool quit = (tree_return_command::returning
-			       || tree_break_command::breaking);
+		  global_command->eval ();
 
-		  if (tree_return_command::returning)
-		    tree_return_command::returning = 0;
+		  delete global_command;
 
-		  if (tree_break_command::breaking)
-		    tree_break_command::breaking--;
+		  global_command = 0;
 
-		  if (quit)
-		    break;
-		}
-
-	      if (error_state)
-		{
 		  if (! (interactive || forced_interactive))
 		    {
-		      // We should exit with a non-zero status.
-		      retval = 1;
-		      break;
+		      bool quit = (tree_return_command::returning
+				   || tree_break_command::breaking);
+
+		      if (tree_return_command::returning)
+			tree_return_command::returning = 0;
+
+		      if (tree_break_command::breaking)
+			tree_break_command::breaking--;
+
+		      if (quit)
+			break;
+		    }
+
+		  if (error_state)
+		    {
+		      if (! (interactive || forced_interactive))
+			{
+			  // We should exit with a non-zero status.
+			  retval = 1;
+			  break;
+			}
+		    }
+		  else
+		    {
+		      if (octave_completion_matches_called)
+			octave_completion_matches_called = false;	    
+		      else
+			command_editor::increment_current_command_number ();
 		    }
 		}
-	      else
-		{
-		  if (octave_completion_matches_called)
-		    octave_completion_matches_called = false;	    
-		  else
-		    command_editor::increment_current_command_number ();
-		}
+	      else if (parser_end_of_input)
+		break;
 	    }
-	  else if (parser_end_of_input)
-	    break;
+	}
+      OCTAVE_CATCH_INTERRUPTS
+	{
+	  unwind_protect::run_all ();
+	  can_interrupt = true;
+	  octave_interrupt_immediately = 0;
+	  octave_interrupt_state = 0;
+	  std::cout << "\n"; \
+	  octave_restore_signal_mask (); \
+	  octave_catch_interrupts ();
 	}
     }
   while (retval == 0);

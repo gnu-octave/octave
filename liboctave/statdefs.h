@@ -1,4 +1,4 @@
-// statdefs.h                                               -*- C++ -*-
+/* statdefs.h                                             -*- C -*-  */
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -67,7 +67,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 /*
 ;;; Local Variables: ***
-;;; mode: C++ ***
+;;; mode: C ***
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

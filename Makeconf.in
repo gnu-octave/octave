@@ -202,9 +202,9 @@ target_host_type = @target_host_type@
 # no pattern or command for that.
 
 %.c : %.f
-@DEFAULT_DOT_C_FROM_DOT_F_CMD@
+@DOT_C_FROM_DOT_F_CMD@
 
-@DEFAULT_DOT_O_FROM_DOT_F_PAT@
+@DOT_O_FROM_DOT_F_PAT@
 
 # How to make .o files from .c files:
 

@@ -116,7 +116,7 @@ file_stat::update_internal (bool force)
       struct stat buf;
 
       int status = follow_links
-	? safe_stat (cname, &buf) : safe_lstat (cname, &buf);
+	? SAFE_STAT (cname, &buf) : SAFE_LSTAT (cname, &buf);
 
       if (status < 0)
 	{

@@ -139,8 +139,13 @@ generic_sig_handler (int sig)
 // functions elsewhere and this function doesn't have to change.
 
 static RETSIGTYPE
-sigchld_handler (int sig)
+sigchld_handler (int /* sig */)
 {
+  // Can this ever cause trouble on systems that don't forget signal
+  // handlers when they are invoked?
+
+  octave_set_signal_handler (SIGCHLD, sigchld_handler);
+
   int status;
   pid_t pid = wait (&status);
 
@@ -157,8 +162,6 @@ sigchld_handler (int sig)
 	    }
 	}
     }
-
-  octave_set_signal_handler (SIGCHLD, sigchld_handler);
 }
 
 #if defined (__alpha__)

@@ -1,3 +1,7 @@
+2001-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* skip-autoheader: New file.
+
 2001-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* terminal.c (rl_get_screen_size): New function.

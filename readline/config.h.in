@@ -1,4 +1,9 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  */
+
+/* This file was created by hand, NOT autoheader.  There is no
+   config.h.bot file or acconfig.h file in the readline sources.  If
+   you run autoheader in this directory, you will end up with a
+   broken config.h.in file.  */
 
 /* Define if on MINIX.  */
 #undef _MINIX

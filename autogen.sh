@@ -23,10 +23,19 @@ echo "calling autoconf and autoheader..."
 }
 
 for i in `find . -name configure.in -print`; do (
-    cd `dirname $i`
+    dir=`dirname $i`
+    cd $dir
     pwd
-    autoconf 
-    autoheader
+    if [ -f skip-autoconf ]; then
+      echo "skipping autoconf in $dir"
+    else
+      autoconf
+    fi
+    if [ -f skip-autoheader ]; then
+      echo "skipping autoheader in $dir"
+    else
+      autoheader
+    fi
 ); done
 
 echo done

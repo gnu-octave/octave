@@ -1,3 +1,8 @@
+2003-05-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: In check for f_open in libf2c, only use
+	-L. -lconflib if we have created libconflib.a.
+
 2003-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_PROG_GPERF): Provide struct decl so -t option

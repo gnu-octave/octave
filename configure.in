@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.427 $)
+AC_REVISION($Revision: 1.428 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -543,14 +543,16 @@ elif $have_f2c; then
   oct_conflib=libconflib.a
   oct_obj_ext=o
 
+  CONFLIB_ARG=
   if AC_TRY_EVAL(ac_compile); then
     $AR $ARFLAGS $oct_conflib conftest.$oct_obj_ext 1>&AS_MESSAGE_LOG_FD()
     if test -n "$RANLIB"; then
       $RANLIB $oct_conflib 1>&AS_MESSAGE_LOG_FD()
     fi
+    CONFLIB_ARG="-L. -lconflib"
   fi
   rm -f conftest*
-  AC_CHECK_LIB(f2c, f_open, FLIBS=-lf2c, FLIBS=, [-L. -lconflib])
+  AC_CHECK_LIB(f2c, f_open, FLIBS=-lf2c, FLIBS=, $CONFLIB_ARG)
   rm -f $oct_conflib
 
   if test -z "$FLIBS"; then

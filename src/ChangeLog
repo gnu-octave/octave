@@ -1,3 +1,8 @@
+2003-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-range.cc (octave_range::try_narrowing_conversion): Convert to
+	[](1x0) instead of [](0x0) if range is empty.
+
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Handle DESTDIR.

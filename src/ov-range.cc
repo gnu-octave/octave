@@ -71,7 +71,7 @@ octave_range::try_narrowing_conversion (void)
       break;
 
     case 0:
-      retval = new octave_matrix (Matrix ());
+      retval = new octave_matrix (Matrix (1, 0));
       break;
 
     default:

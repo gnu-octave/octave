@@ -3471,8 +3471,18 @@ octave_stream::write (const Array<T>& data, int block_size,
 	{
 	  std::ostream& os = *osp;
 
+	  // It seems that Matlab writes zeros instead of actually
+	  // seeking.  Hmm...
+
 	  if (skip != 0 && (i % block_size) == 0)
-	    seek (skip, SEEK_CUR);
+	    {
+	      // XXX FIXME XXX -- probably should try to write larger
+	      // blocks...
+
+	      unsigned char zero = 0;
+	      for (int j = 0; j < skip; j++)
+		os.write (reinterpret_cast<const char *> (&zero), 1);
+	    }
 
 	  if (os)
 	    {

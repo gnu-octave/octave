@@ -1,5 +1,8 @@
 2005-03-28  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_stream::write): For compatibility, Write
+	zeros instead of seeking if SKIP is nonzero.
+
 	* DLD-FUNCTIONS/gplot.l (Fgraw): Recommend __gnuplot_raw__, not
 	__gnuplot__raw__.
 	(Fgshow): Recommend __gnuplot_show__, not __gnuplot__show__.

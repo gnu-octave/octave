@@ -69,8 +69,8 @@ public:
       return *this;
     }
 
-  int operator == (const ComplexMatrix& a) const;
-  int operator != (const ComplexMatrix& a) const;
+  bool operator == (const ComplexMatrix& a) const;
+  bool operator != (const ComplexMatrix& a) const;
 
   // destructive insert/delete/reorder operations
 
@@ -320,8 +320,9 @@ public:
   friend ComplexMatrix map (c_c_Mapper f, const ComplexMatrix& a);
   void map (c_c_Mapper f);
 
-  int all_integers (double& max_val, double& min_val) const;
-  int too_large_for_float (void) const;
+  bool any_element_is_inf_or_nan (void) const;
+  bool all_integers (double& max_val, double& min_val) const;
+  bool too_large_for_float (void) const;
 
   Matrix all (void) const;
   Matrix any (void) const;

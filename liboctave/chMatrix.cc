@@ -73,7 +73,7 @@ charMatrix::charMatrix (const string_vector& s)
     }
 }
 
-int
+bool
 charMatrix::operator == (const charMatrix& a) const
 {
   if (rows () != a.rows () || cols () != a.cols ())
@@ -82,7 +82,7 @@ charMatrix::operator == (const charMatrix& a) const
   return equal (data (), a.data (), length ());
 }
 
-int
+bool
 charMatrix::operator != (const charMatrix& a) const
 {
   return !(*this == a);

@@ -59,8 +59,8 @@ public:
       return *this;
     }
 
-  int operator == (const charMatrix& a) const;
-  int operator != (const charMatrix& a) const;
+  bool operator == (const charMatrix& a) const;
+  bool operator != (const charMatrix& a) const;
 
   // destructive insert/delete/reorder operations
 

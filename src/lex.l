@@ -246,13 +246,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <NESTED_FUNCTION_END>. {
     BEGIN (NESTED_FUNCTION_BEGIN);
-    unput (yytext[0]);
+    yyunput (yytext[0], yytext);
     return ';';
   }
 
 <NESTED_FUNCTION_BEGIN>. {
     BEGIN (INITIAL);
-    unput (yytext[0]);
+    yyunput (yytext[0], yytext);
     prep_for_nested_function ();
     return FCN;
   }
@@ -338,7 +338,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	maybe_warn_separator_insert (';');
 
 	if (Vwhitespace_in_literal_matrix != 2)
-	  unput (';');
+	  yyunput (';', yytext);
       }
 
     return (',');
@@ -367,7 +367,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	    maybe_warn_separator_insert (';');
 
 	    if (Vwhitespace_in_literal_matrix != 2)
-	      unput (';');
+	      yyunput (';', yytext);
 	  }
 
 	if (Vwhitespace_in_literal_matrix != 2)
@@ -796,7 +796,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     // EOF happens here if we are parsing nested functions.
 
-    unput (yytext[0]);
+    yyunput (yytext[0], yytext);
 
     int c = yyinput ();
 
@@ -828,10 +828,10 @@ do_comma_insert_check (void)
 
   int c = yyinput ();
 
-  unput (c);
+  yyunput (c, yytext);
 
   if (spc_gobbled)
-    unput (' ');
+    yyunput (' ', yytext);
 
   lexer_flags.do_comma_insert = (lexer_flags.bracketflag && c == '[');
 }
@@ -1444,7 +1444,7 @@ grab_help_text (void)
  done:
 
   if (c)
-    unput (c);
+    yyunput (c, yytext);
 }
 
 // Return 1 if the given character matches any character in the given
@@ -1499,12 +1499,12 @@ next_token_is_sep_op (void)
 	  retval = true;
 	}
       else
-	unput (c2);
+	yyunput (c2, yytext);
     }
   else
     retval = match_any (c1, ",;\n]");
 
-  unput (c1);
+  yyunput (c1, yytext);
 
   return retval;
 }
@@ -1527,10 +1527,10 @@ next_token_is_postfix_unary_op (bool spc_prev)
     {
       int c1 = yyinput ();
       un_op = (c1 == '\'');
-      unput (c1);
+      yyunput (c1, yytext);
     }
 
-  unput (c0);
+  yyunput (c0, yytext);
 
   return un_op;
 }
@@ -1579,7 +1579,7 @@ next_token_is_bin_op (bool spc_prev)
 	    break;
 	  }
 
-	unput (c1);
+	yyunput (c1, yytext);
       }
       break;
 
@@ -1603,7 +1603,7 @@ next_token_is_bin_op (bool spc_prev)
 	  // A structure element reference is a binary op.
 	  bin_op = true;
 
-	unput (c1);
+	yyunput (c1, yytext);
       }
       break;
 
@@ -1633,7 +1633,7 @@ next_token_is_bin_op (bool spc_prev)
 	if (c1 == '=')
 	  bin_op = true;
 
-	unput (c1);
+	yyunput (c1, yytext);
       }
       break;
 
@@ -1641,7 +1641,7 @@ next_token_is_bin_op (bool spc_prev)
       break;
     }
 
-  unput (c0);
+  yyunput (c0, yytext);
 
   return bin_op;
 }
@@ -1847,7 +1847,7 @@ eat_whitespace (void)
     octave_comment_buffer::append (comment_buf);
 
  done:
-  unput (c);
+  yyunput (c, yytext);
   current_input_column--;
   return retval;
 }
@@ -2007,7 +2007,7 @@ have_continuation (bool trailing_comments_ok)
 	}
     }
 
-  unput (c);
+  yyunput (c, yytext);
   return false;
 
 cleanup:
@@ -2018,7 +2018,7 @@ cleanup:
 
   int len = s.length ();
   while (len--)
-    unput (s[len]);
+    yyunput (s[len], yytext);
 
   return false;
 }
@@ -2038,12 +2038,12 @@ have_ellipsis_continuation (bool trailing_comments_ok)
 	return true;
       else
 	{
-	  unput (c2);
-	  unput (c1);
+	  yyunput (c2, yytext);
+	  yyunput (c1, yytext);
 	}
     }
   else
-    unput (c1);
+    yyunput (c1, yytext);
 
   return false;
 }
@@ -2064,7 +2064,7 @@ eat_continuation (void)
       || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
   else
-    unput (c);
+    yyunput (c, yytext);
 
   return retval;
 }
@@ -2124,7 +2124,7 @@ handle_string (char delim, int text_style)
 		buf << static_cast<char> (c);
 	      else
 		{
-		  unput (c);
+		  yyunput (c, yytext);
 		  buf << OSSTREAM_ENDS;
 		  std::string s = do_string_escapes (OSSTREAM_STR (buf));
 		  OSSTREAM_FREEZE (buf);
@@ -2175,7 +2175,7 @@ next_token_is_assign_op (void)
     case '=':
       {
 	int c1 = yyinput ();
-	unput (c1);
+	yyunput (c1, yytext);
 	if (c1 != '=')
 	  retval = true;
       }
@@ -2190,7 +2190,7 @@ next_token_is_assign_op (void)
     case '|':
       {
 	int c1 = yyinput ();
-	unput (c1);
+	yyunput (c1, yytext);
 	if (c1 == '=')
 	  retval = true;
       }
@@ -2202,11 +2202,11 @@ next_token_is_assign_op (void)
 	if (match_any (c1, "+-*/\\"))
 	  {
 	    int c2 = yyinput ();
-	    unput (c2);
+	    yyunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
 	  }
-	unput (c1);
+	yyunput (c1, yytext);
       }
       break;
 
@@ -2216,11 +2216,11 @@ next_token_is_assign_op (void)
 	if (c1 == '>')
 	  {
 	    int c2 = yyinput ();
-	    unput (c2);
+	    yyunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
 	  }
-	unput (c1);
+	yyunput (c1, yytext);
       }
       break;
 
@@ -2230,11 +2230,11 @@ next_token_is_assign_op (void)
 	if (c1 == '<')
 	  {
 	    int c2 = yyinput ();
-	    unput (c2);
+	    yyunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
 	  }
-	unput (c1);
+	yyunput (c1, yytext);
       }
       break;
 
@@ -2242,7 +2242,7 @@ next_token_is_assign_op (void)
       break;
     }
 
-  unput (c0);
+  yyunput (c0, yytext);
 
   return retval;
 }
@@ -2268,7 +2268,7 @@ handle_close_bracket (int spc_gobbled)
   else
     {
       int c1 = yyinput ();
-      unput (c1);
+      yyunput (c1, yytext);
 
       if (lexer_flags.bracketflag)
 	{
@@ -2286,7 +2286,7 @@ handle_close_bracket (int spc_gobbled)
 
 	      if (Vwhitespace_in_literal_matrix != 2)
 		{
-		  unput (',');
+		  yyunput (',', yytext);
 		  return ']';
 		}
 	    }
@@ -2312,8 +2312,8 @@ maybe_unput_comma (int spc_gobbled)
       int c1 = yyinput ();
       int c2 = yyinput ();
 
-      unput (c2);
-      unput (c1);
+      yyunput (c2, yytext);
+      yyunput (c1, yytext);
 
       int sep_op = next_token_is_sep_op ();
 
@@ -2337,14 +2337,14 @@ maybe_unput_comma (int spc_gobbled)
 	  // If there is a space, we only insert a comma if we are
 	  // trying to be Matlab-like.
 	  if (Vwhitespace_in_literal_matrix == 1)
-	    unput (',');
+	    yyunput (',', yytext);
 	}
       else
 	{
 	  maybe_warn_separator_insert (',');
 
 	  if (Vwhitespace_in_literal_matrix != 2)
-	    unput (',');
+	    yyunput (',', yytext);
 	}
     }
 }
@@ -2447,13 +2447,13 @@ handle_identifier (void)
   if (c1 == '=')
     {
       int c2 = yyinput ();
-      unput (c2);
+      yyunput (c2, yytext);
 
       if (c2 != '=')
 	next_tok_is_eq = true;
     }
 
-  unput (c1);
+  yyunput (c1, yytext);
 
   // Make sure we put the return values of a function in the symbol
   // table that is local to the function.

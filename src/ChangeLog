@@ -1,3 +1,8 @@
+2003-05-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l: Use yyunput (X, yytext) instead of unput (X) for newer
+	versions of flex.
+
 2003-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (save_ascii_data): If saving a range with

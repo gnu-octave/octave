@@ -69,6 +69,7 @@ private:
   tree_constant_rep (const ComplexColumnVector& v, int pcv);
 
   tree_constant_rep (const char *s);
+  tree_constant_rep (const Octave_str_obj& s);
 
   tree_constant_rep (double base, double limit, double inc);
   tree_constant_rep (const Range& r);
@@ -186,7 +187,8 @@ private:
   Matrix matrix_value (int force_string_conversion = 0) const;
   Complex complex_value (int force_string_conversion = 0) const;
   ComplexMatrix complex_matrix_value (int force_string_conversion = 0) const;
-  char *string_value (void) const;
+  Octave_str_obj all_strings (void) const;
+  const char *string_value (void) const;
   Range range_value (void) const;
   Octave_map map_value (void) const;
 
@@ -385,7 +387,7 @@ private:
       Matrix *matrix;		      // A real matrix constant.
       Complex *complex_scalar;	      // A real scalar constant.
       ComplexMatrix *complex_matrix;  // A real matrix constant.
-      char *string;		      // A character string constant.
+      Octave_str_obj *str_obj;	      // A character string constant.
       Range *range;		      // A set of evenly spaced values.
       Octave_map *a_map;	      // An associative array.
 

@@ -24,10 +24,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_h)
 #define octave_octave_h 1
 
-#include <stdio.h>
+#include <cstdio>
 
 class tree_statement_list;
 class tree_function;
+class Octave_str_obj;
 
 // Tell g++ that clean_up_and_exit doesn't return;
 
@@ -88,6 +89,9 @@ extern tree_function *curr_function;
 
 // Nonzero means input is coming from startup file.
 extern int input_from_startup_file;
+
+// The command-line options.
+extern Octave_str_obj octave_argv;
 
 #endif
 

@@ -27,55 +27,55 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <sys/stat.h>
-#include <time.h>
-#include <pwd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
-#include <assert.h>
+#include <cassert>
+#include <csetjmp>
+#include <csignal>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
+#include <fstream.h>
 #include <iostream.h>
 #include <strstream.h>
-#include <fstream.h>
 
-extern "C"
-{
-#include <setjmp.h>
-}
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+#include <pwd.h>
 
 #include "getopt.h"
 
 #include "lo-error.h"
 
-#include "sighandlers.h"
-#include "variables.h"
-#include "error.h"
-#include "dynamic-ld.h"
-#include "tree-misc.h"
-#include "tree-const.h"
-#include "tree-plot.h"
-#include "utils.h"
-#include "input.h"
-#include "pager.h"
-#include "lex.h"
-#include "help.h"
-#include "octave.h"
-#include "parse.h"
-#include "defaults.h"
-#include "user-prefs.h"
-#include "procstream.h"
-#include "unwind-prot.h"
-#include "octave-hist.h"
-#include "pathsearch.h"
 #include "builtins.h"
-#include "version.h"
-#include "file-io.h"
-#include "sysdep.h"
+#include "defaults.h"
 #include "defun.h"
+#include "dynamic-ld.h"
+#include "error.h"
+#include "file-io.h"
+#include "help.h"
+#include "input.h"
+#include "lex.h"
+#include "oct-str.h"
+#include "octave-hist.h"
+#include "octave.h"
+#include "pager.h"
+#include "parse.h"
+#include "pathsearch.h"
+#include "procstream.h"
+#include "sighandlers.h"
+#include "statdefs.h"
+#include "sysdep.h"
+#include "tree-const.h"
+#include "tree-misc.h"
+#include "tree-plot.h"
+#include "unwind-prot.h"
+#include "user-prefs.h"
+#include "utils.h"
+#include "variables.h"
+#include "version.h"
 
 #if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
 extern "C" { int on_exit (); }
@@ -131,6 +131,9 @@ tree_function *curr_function = 0;
 
 // Nonzero means input is coming from startup file.
 int input_from_startup_file = 0;
+
+// The command-line options.
+Octave_str_obj octave_argv;
 
 // Top level context (?)
 jmp_buf toplevel;
@@ -190,11 +193,33 @@ static struct option long_opts[] =
     { 0,                  0,                 0, 0 }
   };
 
+// Store the command-line options for later use.
+
+static void
+intern_argv (int argc, char **argv)
+{
+  if (argc > 1)
+    {
+      octave_argv.resize (argc-1);
+      for (int i = 1; i < argc; i++)
+	octave_argv.elem (i-1) = argv[i];
+    }
+
+  tree_constant *tmp = new tree_constant (octave_argv);
+  bind_builtin_variable ("argv", tmp, 1, 1, 0);
+}
+
 // Initialize some global variables for later use.
 
 static void
 initialize_globals (char *name)
 {
+  raw_prog_name = strsave (name);
+  char *tmp = strrchr (raw_prog_name, '/');
+  prog_name = tmp ? strsave (tmp+1) : strsave (raw_prog_name);
+
+  kpse_set_progname (name);
+
   struct passwd *entry = getpwuid (getuid ());
   if (entry)
     user_name = strsave (entry->pw_name);
@@ -259,11 +284,6 @@ initialize_globals (char *name)
       else  
 	putenv (strsave ("TEXMF=" OCTAVE_DATADIR "/octave"));
     }
-
-  raw_prog_name = strsave (name);
-  prog_name = strsave ("octave");
-
-  kpse_set_progname (name);
 
   load_path = default_path ();
 
@@ -478,7 +498,7 @@ initialize_error_handlers ()
 int
 main (int argc, char **argv)
 {
-// The order of these calls is important, and initialize globals must
+// The order of these calls is important, and initialize_globals must
 // come before the options are processed because some command line
 // options override defaults.
 
@@ -587,14 +607,17 @@ main (int argc, char **argv)
   current_command_number = 1;
 
 // If there is an extra argument, see if it names a file to read.
+// Additional arguments are taken as command line options for the
+// script.
 
   int remaining_args = argc - optind;
-  if (remaining_args > 1)
+  if (remaining_args > 0)
     {
-      usage ();
-    }
-  else if (remaining_args == 1)
-    {
+      if (remaining_args == 1)
+	intern_argv (argc, argv);
+      else
+	intern_argv (remaining_args, argv+optind);
+
       reading_script_file = 1;
       curr_fcn_file_name = argv[optind];
       FILE *infile = get_input_from_file (curr_fcn_file_name);
@@ -608,12 +631,14 @@ main (int argc, char **argv)
     }
   else
     {
-      switch_to_buffer (create_buffer (get_input_from_stdin ()));
-
-// Is input coming from a terminal?  If so, we are probably
-// interactive.
+      // Is input coming from a terminal?  If so, we are probably
+      // interactive.
 
       interactive = (isatty (fileno (stdin)) && isatty (fileno (stdout)));
+
+      intern_argv (argc, argv);
+
+      switch_to_buffer (create_buffer (get_input_from_stdin ()));
     }
 
 // Force input to be echoed if not really interactive, but the user

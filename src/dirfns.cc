@@ -44,54 +44,28 @@ Free Software Foundation, Inc.
 #include <cstdlib>
 #include <cstring>
 
-#include <sys/types.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <strstream.h>
-#include <sys/param.h>
 
-// This mess suggested by the autoconf manual.
-// unistd.h defines _POSIX_VERSION on POSIX.1 systems.
-#if defined (HAVE_DIRENT_H) || defined (_POSIX_VERSION)
-#include <dirent.h>
-#define NLENGTH(dirent) (strlen((dirent)->d_name))
-#else
-#define dirent direct
-#define NLENGTH(dirent) ((dirent)->d_namlen)
-#if defined (HAVE_SYS_NDIR_H)
-#include <sys/ndir.h>
-#endif
-#if defined (HAVE_SYS_DIR_H)
-#include <sys/dir.h>
-#endif
-#if defined (HAVE_NDIR_H)
-#include <ndir.h>
-#endif
-#endif
-
-#include "statdefs.h"
+#include "defun.h"
+#include "dirfns.h"
+#include "error.h"
+#include "oct-obj.h"
+#include "octave.h"
+#include "pager.h"
+#include "pathlen.h"
 #include "procstream.h"
+#include "statdefs.h"
+#include "sysdep.h"
+#include "sysdir.h"
 #include "tree-const.h"
 #include "tree-plot.h"
-#include "oct-obj.h"
-#include "sysdep.h"
-#include "octave.h"
-#include "dirfns.h"
-#include "pager.h"
-#include "error.h"
 #include "utils.h"
-#include "defun.h"
 
 extern "C"
 {
 #include <readline/tilde.h>
 extern char *strerror (int);
 }
-
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 1024
-#endif
 
 // Temp storage for a path.
 static char tdir[MAXPATHLEN];

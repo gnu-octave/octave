@@ -28,16 +28,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <cstdlib>
+
 #include <iostream.h>
 
-#include <stdlib.h>
-
-#include "mx-base.h"
 #include "Range.h"
+#include "mx-base.h"
 
+#include "oct-obj.h"
+#include "oct-str.h"
 #include "tree-base.h"
 #include "tree-expr.h"
-#include "oct-obj.h"
 
 class idx_vector;
 class Octave_map;
@@ -83,8 +84,10 @@ public:
 //                  ComplexRowVector
 //                  ComplexColumnVector
 // string           char* (null terminated)
-// range            double, double, dobule
+//                  Octave_str_obj
+// range            double, double, double
 //                  Range
+// map              Octave_map
 // magic colon      tree_constant::magic_colon
 // all_va_args      tree_constant::all_va_args
 
@@ -122,6 +125,9 @@ public:
       { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const char *s) : tree_fvc ()
+    { rep = new tree_constant_rep (s); rep->count = 1; }
+
+  tree_constant (const Octave_str_obj& s) : tree_fvc ()
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
   tree_constant (double base, double limit, double inc) : tree_fvc ()
@@ -283,7 +289,10 @@ public:
   ComplexMatrix complex_matrix_value (int force_string_conversion = 0) const
     { return rep->complex_matrix_value (force_string_conversion); }
 
-  char *string_value (void) const
+  Octave_str_obj all_strings (void) const
+    { return rep->all_strings (); }
+
+  const char *string_value (void) const
     { return rep->string_value (); }
 
   Range range_value (void) const

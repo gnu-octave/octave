@@ -25,18 +25,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <ctype.h>
-#include <string.h>
+#include <cctype>
 
 #include "dMatrix.h"
 
-#include "tree-const.h"
-#include "oct-obj.h"
+#include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "defun.h"
-#include "utils.h"
 #include "help.h"
+#include "oct-obj.h"
+#include "tree-const.h"
+#include "utils.h"
 
 DEFUN ("isstr", Fisstr, Sisstr, 1, 1,
   "isstr (X): return 1 if X is a string, 0 otherwise")
@@ -81,14 +80,21 @@ DEFUN ("toascii", Ftoascii, Stoascii, 1, 1,
 
       if (arg.is_string ())
 	{
-	  char *str = args(0).string_value ();
+	  Octave_str_obj str = args(0).all_strings ();
 
-	  int len = strlen (str);
+	  int nr = str.num_strings ();
+	  int nc = str.max_length ();
 
-	  Matrix m (1, len);
+// XXX FIXME XXX -- should fill with user-specified value.
 
-	  for (int i = 0; i < len; i++)
-	    m (0, i) = toascii (str[i]);
+	  Matrix m (nr, nc, 0);
+
+	  for (int i = 0; i < nr; i++)
+	    {
+	      nc = str.elem (i).length ();
+	      for (int j = 0; j < nc; j++)
+		m (i, j) = toascii (str.elem (i) [j]);
+	    }
 
 	  retval = m;
 	}

@@ -29,16 +29,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <string.h>
+#include <cstring>
+
 #include <iostream.h>
 #include <strstream.h>
 
-#include "tree-const.h"
-#include "user-prefs.h"
-#include "pager.h"
 #include "error.h"
 #include "gripes.h"
 #include "oct-map.h"
+#include "oct-str.h"
+#include "pager.h"
+#include "tree-const.h"
+#include "user-prefs.h"
 
 // The following three variables could be made static members of the
 // tree_constant class.
@@ -310,7 +312,7 @@ print_as_scalar (const tree_constant& val)
   int nr = val.rows ();
   int nc = val.columns ();
   return (val.is_scalar_type ()
-	  || val.is_string ()
+	  || (val.is_string () && nr <= 1)
 	  || (val.is_matrix_type ()
 	      && ((nr == 1 && nc == 1)
 		  || nr == 0
@@ -363,8 +365,9 @@ vector_of_empties (int nargout, const char *fcn_name)
 // #include <config.h>
 // #endif
 
-#include <ctype.h>
-// #include <string.h>
+#include <cctype>
+// #include <cstring>
+
 #include <fstream.h>
 // #include <iostream.h>
 
@@ -644,7 +647,14 @@ TC_REP::tree_constant_rep (const ComplexColumnVector& v, int
 
 TC_REP::tree_constant_rep (const char *s)
 {
-  string = strsave (s);
+  str_obj = new Octave_str_obj (s);
+  type_tag = string_constant;
+  orig_text = 0;
+}
+
+TC_REP::tree_constant_rep (const Octave_str_obj& s)
+{
+  str_obj = new Octave_str_obj (s);
   type_tag = string_constant;
   orig_text = 0;
 }
@@ -742,7 +752,7 @@ TC_REP::tree_constant_rep (const tree_constant_rep& t)
       break;
 
     case string_constant:
-      string = strsave (t.string);
+      str_obj = new Octave_str_obj (*(t.str_obj));
       break;
 
     case complex_matrix_constant:
@@ -786,7 +796,7 @@ TC_REP::~tree_constant_rep (void)
       break;
 
     case string_constant:
-      delete [] string;
+      delete str_obj;
       break;
 
     case range_constant:
@@ -851,6 +861,9 @@ TC_REP::rows (void) const
       break;
 
     case string_constant:
+      retval = str_obj->num_strings ();
+      break;
+
     case range_constant:
       retval = (columns () > 0);
       break;
@@ -891,7 +904,7 @@ TC_REP::columns (void) const
       break;
 
     case string_constant:
-      retval = strlen (string);
+      retval = str_obj->max_length ();
       break;
 
     case range_constant:
@@ -926,31 +939,19 @@ TC_REP::all (void) const
   switch (type_tag)
     {
     case scalar_constant:
-      {
-	double status = (scalar != 0.0);
-	retval = tree_constant (status);
-      }
+      retval = (double) (scalar != 0.0);
       break;
 
     case matrix_constant:
-      {
-	Matrix m = matrix->all ();
-	retval = tree_constant (m);
-      }
+      retval = matrix->all ();
       break;
 
     case complex_scalar_constant:
-      {
-	double status = (*complex_scalar != 0.0);
-	retval = tree_constant (status);
-      }
+      retval = (double) (*complex_scalar != 0.0);
       break;
 
     case complex_matrix_constant:
-      {
-	Matrix m = complex_matrix->all ();
-	retval = tree_constant (m);
-      }
+      retval = complex_matrix->all ();
       break;
 
     default:
@@ -982,31 +983,19 @@ TC_REP::any (void) const
   switch (type_tag)
     {
     case scalar_constant:
-      {
-	double status = (scalar != 0.0);
-	retval = tree_constant (status);
-      }
+      retval = (double) (scalar != 0.0);
       break;
 
     case matrix_constant:
-      {
-	Matrix m = matrix->any ();
-	retval = tree_constant (m);
-      }
+      retval = matrix->any ();
       break;
 
     case complex_scalar_constant:
-      {
-	double status = (*complex_scalar != 0.0);
-	retval = tree_constant (status);
-      }
+      retval = (double) (*complex_scalar != 0.0);
       break;
 
     case complex_matrix_constant:
-      {
-	Matrix m = complex_matrix->any ();
-	retval = tree_constant (m);
-      }
+      retval = complex_matrix->any ();
       break;
 
     default:
@@ -1162,9 +1151,11 @@ TC_REP::double_value (int force_string_conversion) const
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "real scalar");
 
-	int len = strlen (string);
-	if (flag && (len == 1 || (len > 1 && user_pref.do_fortran_indexing)))
-	  retval = toascii ((int) string[0]);
+	int len = str_obj->max_length ();
+	if (flag
+	    && ((str_obj->num_strings () == 1 && len == 1)
+		|| (len > 1 && user_pref.do_fortran_indexing)))
+	  retval = toascii ((int) str_obj->elem (0, 0));
 	else
 	  gripe_invalid_conversion ("string", "real scalar");
       }
@@ -1235,17 +1226,24 @@ TC_REP::matrix_value (int force_string_conversion) const
 
 	if (flag)
 	  {
-	    int len = strlen (string);
+	    int nr = str_obj->num_strings ();
+	    int nc = str_obj->max_length ();
 
-	    if (len > 0)
+	    if (nr > 0 && nc > 0)
 	      {
-		retval.resize (1, len);
+		retval.resize (nr, nc);
 
-		for (int i = 0; i < len; i++)
-		  retval.elem (0, i) = toascii ((int) string[i]);
+		for (int i = 0; i < nr; i++)
+		  {
+		    for (int j = 0; j < nc; j++)
+		      {
+			int c = (int) str_obj->elem (i, j);
+			retval.elem (i, j) = toascii (c);
+		      }
+		  }
 	      }
 	    else
-	      retval = Matrix ();
+	      retval = Matrix ();  // XXX FIXME XXX -- is this correct?
 	  }
 	else
 	  gripe_invalid_conversion ("string", "real matrix");
@@ -1303,9 +1301,11 @@ TC_REP::complex_value (int force_string_conversion) const
 	if (flag < 0)
 	  warn_implicit_conversion ("string", "complex scalar");
 
-	int len = strlen (string);
-	if (flag && (len == 1 || (len > 1 && user_pref.do_fortran_indexing)))
-	  retval = toascii ((int) string[0]);
+	int len = str_obj->max_length ();
+	if (flag
+	    && ((str_obj->num_strings () == 1 && len == 1)
+		|| (len > 1 && user_pref.do_fortran_indexing)))
+	  retval = toascii ((int) str_obj->elem (0, 0));
 	else
 	  gripe_invalid_conversion ("string", "complex scalar");
       }
@@ -1363,17 +1363,22 @@ TC_REP::complex_matrix_value (int force_string_conversion) const
 
 	if (flag)
 	  {
-	    int len = strlen (string);
+	    int nr = str_obj->num_strings ();
+	    int nc = str_obj->max_length ();
 
-	    retval.resize (1, len);
-
-	    if (len > 1)
+	    if (nr > 0 && nc > 0)
 	      {
-		for (int i = 0; i < len; i++)
-		  retval.elem (0, i) = toascii ((int) string[i]);
+		retval.resize (nr, nc);
+
+		for (int i = 0; i < nr; i++)
+		  {
+		    for (int j = 0; j < nc; j++)
+		      {
+			int c = (int) str_obj->elem (i, j);
+			retval.elem (i, j) = toascii (c);
+		      }
+		  }
 	      }
-	    else if (len == 1)
-	      retval.elem (0, 0) = toascii ((int) string[0]);
 	    else
 	      panic_impossible ();
 	  }
@@ -1394,11 +1399,23 @@ TC_REP::complex_matrix_value (int force_string_conversion) const
   return retval;
 }
 
-char *
+Octave_str_obj
+TC_REP::all_strings (void) const
+{
+  if (type_tag == string_constant)
+    return *str_obj;
+  else
+    {
+      gripe_invalid_conversion (type_as_string (), "string");
+      return 0;
+    }
+}
+
+const char *
 TC_REP::string_value (void) const
 {
   if (type_tag == string_constant)
-    return string;
+    return str_obj->elem (0).c_str ();  // XXX FIXME??? XXX
   else
     {
       gripe_invalid_conversion (type_as_string (), "string");
@@ -1553,7 +1570,7 @@ TC_REP::convert_to_str (void) const
 	    char s[2];
 	    s[0] = (char) i;
 	    s[1] = '\0';
-	    retval = tree_constant (s);
+	    retval = s;
 	  }
       }
       break;
@@ -1564,40 +1581,51 @@ TC_REP::convert_to_str (void) const
 	if (rows () == 0 && columns () == 0)
 	  {
 	    char s = '\0';
-	    retval = tree_constant (&s);
+	    retval = &s;
 	  }
 	else
 	  {
-	    ColumnVector v = vector_value ();
-	    int len = v.length ();
-	    if (len == 0)
+	    Matrix m = matrix_value ();
+
+	    int nr = m.rows ();
+	    int nc = m.columns ();
+
+	    if (nr == 0 || nc == 0)
 	      {
 		char s = '\0';
-		retval = tree_constant (&s);
+		retval = &s;
 	      }
 	    else
 	      {
-		char *s = new char [len+1];
-		s[len] = '\0';
-		for (int i = 0; i < len; i++)
-		  {
-		    double d = v.elem (i);
+		Octave_str_obj s (nr);
 
-		    if (xisnan (d))
+		for (int i = 0; i < nr; i++)
+		  {
+		    char buf[nc+1];
+		    buf[nc] = '\0';
+
+		    for (int j = 0; j < nc; j++)
 		      {
-			::error ("invalid conversion from NaN to character");
-			delete [] s;
-			return retval;
+			double d = m.elem (i, j);
+
+			if (xisnan (d))
+			  {
+			    ::error ("invalid conversion from NaN to character");
+			    return retval;
+			  }
+			else
+			  {
+			    // Warn about out of range conversions?
+
+			    int ival = NINT (d);
+			    buf[j] = (char) ival;
+			  }
 		      }
-		    else
-		      {
-			int ival = NINT (d);
-// Warn about out of range conversions?
-			s[i] = (char) ival;
-		      }
+
+		    s.elem (i).assign (buf, nc);
 		  }
-		retval = tree_constant (s);
-		delete [] s;
+
+		retval = s;
 	      }
 	  }
       }
@@ -1628,13 +1656,13 @@ TC_REP::convert_to_str (void) const
 		s[i] = (char) ival;
 	      }
 	  }
-	retval = tree_constant (s);
+	retval = s;
 	delete [] s;
       }
       break;
 
     case string_constant:
-      retval = string;
+      retval = *str_obj;
       break;
 
     default:
@@ -1719,30 +1747,40 @@ TC_REP::force_numeric (int force_str_conv)
       {
 	if (! force_str_conv && ! user_pref.implicit_str_to_num_ok)
 	  {
-	    ::error ("failed to convert `%s' to a numeric type --", string);
+	    ::error ("failed to convert `%s' to a numeric type --", str_obj);
 	    ::error ("default conversion turned off");
 
 	    return;
 	  }
 
-	int len = strlen (string);
-	if (len > 1)
-	  {
-	    type_tag = matrix_constant;
-	    Matrix *tm = new Matrix (1, len);
-	    for (int i = 0; i < len; i++)
-	      tm->elem (0, i) = toascii ((int) string[i]);
-	    matrix = tm;
-	  }
-	else if (len == 1)
+	int nr = str_obj->num_strings ();
+	int nc = str_obj->max_length ();
+
+	if (nr == 1 && nc == 1)
 	  {
 	    type_tag = scalar_constant;
-	    scalar = toascii ((int) string[0]);
+	    scalar = toascii ((int) str_obj->elem (0, 0));
 	  }
-	else if (len == 0)
+	else if (nr == 0 || nc == 0)
 	  {
 	    type_tag = matrix_constant;
 	    matrix = new Matrix (0, 0);
+	  }
+	else if (nr > 0 && nc > 0)
+	  {
+	    type_tag = matrix_constant;
+
+	    Matrix *tm = new Matrix (nr, nc);
+
+	    for (int i = 0; i < nr; i++)
+	      {
+		for (int j = 0; j < nc; j++)
+		  {
+		    int c = (int) str_obj->elem (i, j);
+		    tm->elem (i, j) = toascii (c);
+		  }
+	      }
+	    matrix = tm;
 	  }
 	else
 	  panic_impossible ();
@@ -1784,28 +1822,28 @@ TC_REP::make_numeric (int force_str_conv) const
   switch (type_tag)
     {
     case scalar_constant:
-      retval = tree_constant (scalar);
+      retval = scalar;
       break;
 
     case matrix_constant:
-      retval = tree_constant (*matrix);
+      retval = *matrix;
       break;
 
     case complex_scalar_constant:
-      retval = tree_constant (*complex_scalar);
+      retval = *complex_scalar;
       break;
 
     case complex_matrix_constant:
-      retval = tree_constant (*complex_matrix);
+      retval = *complex_matrix;
       break;
 
     case string_constant:
-      retval = tree_constant (string);
+      retval = *str_obj;
       retval.force_numeric (force_str_conv);
       break;
 
     case range_constant:
-      retval = tree_constant (*range);
+      retval = *range;
       retval.force_numeric (force_str_conv);
       break;
 
@@ -2107,7 +2145,7 @@ TC_REP::print (ostream& output_buf)
       break;
 
     case string_constant:
-      output_buf << string << "\n";
+      octave_print_internal (output_buf, *str_obj);
       break;
 
     case range_constant:
@@ -2200,13 +2238,7 @@ TC_REP::print_code (ostream& os)
       break;
 
     case string_constant:
-      {
-	os << "\"";
-	char *s, *t = string;
-	while ((s = undo_string_escape (*t++)))
-	  os << s;
-	os << "\"";
-      }
+      octave_print_internal (os, *str_obj, 1);
       break;
 
     case range_constant:
@@ -2512,8 +2544,9 @@ do_unary_op (tree_constant& a, tree_expression::type t)
 // #include <config.h>
 // #endif
 
-// #include <ctype.h>
-// #include <string.h>
+// #include <cctype>
+// #include <cstring>
+
 // #include <fstream.h>
 // #include <iostream.h>
 // #include <strstream.h>
@@ -2864,7 +2897,7 @@ TC_REP::do_matrix_index (const tree_constant& i_arg,
 	if (iv.length () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  retval = do_matrix_index (iv, j_arg);
@@ -2980,7 +3013,7 @@ TC_REP::fortran_style_matrix_index (const tree_constant& i_arg) const
 	if (mi.rows () == 0 || mi.columns () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  {
@@ -3186,7 +3219,7 @@ TC_REP::do_vector_index (const tree_constant& i_arg) const
 	if (mi.rows () == 0 || mi.columns () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  {
@@ -3307,7 +3340,7 @@ TC_REP::do_matrix_index (int i, const tree_constant& j_arg) const
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  {
@@ -3404,7 +3437,7 @@ TC_REP::do_matrix_index (const idx_vector& iv,
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  {
@@ -3497,7 +3530,7 @@ TC_REP::do_matrix_index (const Range& ri,
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  {
@@ -3597,7 +3630,7 @@ TC_REP::do_matrix_index (TC_REP::constant_type mci,
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
+	    retval = mtmp;
 	  }
 	else
 	  {
@@ -3652,9 +3685,9 @@ TC_REP::do_matrix_index (int i, int j) const
   tree_constant retval;
 
   if (type_tag == matrix_constant)
-    retval = tree_constant (matrix->elem (i, j));
+    retval = matrix->elem (i, j);
   else
-    retval = tree_constant (complex_matrix->elem (i, j));
+    retval = complex_matrix->elem (i, j);
 
   return retval;
 }
@@ -4048,7 +4081,7 @@ TC_REP::do_matrix_index (TC_REP::constant_type mci,
       break;
 
     case string_constant:
-      retval = string;
+      retval = *str_obj;
       break;
 
     case magic_colon:
@@ -4073,8 +4106,9 @@ TC_REP::do_matrix_index (TC_REP::constant_type mci,
 // #include <config.h>
 // #endif
 
-// #include <ctype.h>
-// #include <string.h>
+// #include <cctype>
+// #include <cstring>
+
 // #include <fstream.h>
 // #include <iostream.h>
 // #include <strstream.h>
@@ -6163,7 +6197,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
       break;
 
     case string_constant:
-      delete [] string;
+      delete str_obj;
       break;
 
     case range_constant:
@@ -6189,7 +6223,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
       break;
 
     case string_constant:
-      string = strsave (rhs.string_value ());
+      str_obj = new Octave_str_obj (rhs.string_value ());
       break;
 
     case complex_matrix_constant:

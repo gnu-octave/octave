@@ -16,19 +16,24 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{retval}, @var{U}] =} is_detectable (@var{a}, @var{c}@{, @var{tol}@})
+## @deftypefnx {Function File } { [@var{retval}, @var{U}] =} is_detectable (@var{sys}@{, @var{tol}@})
+## Test for detactability (observability of unstable modes) of (@var{a},@var{c}).  
+## 
+##  Returns 1 if the system @var{a} or the pair (@var{a},@var{c})is 
+##  detectable, 0 if not.
+## 
+## @strong{See} @code{is_stabilizable} for detailed description of arguments and
+## computational method.
+## 
+##  Default: tol = 10*norm(a,'fro')*eps 
+## 
+## @end deftypefn
+
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
+
 function [retval,U] = is_detectable (a,c,tol)
-
-# [retval,U] = is_detectable (a,c,tol)
-# usage: is_detectable (a , c {,tol})
-#     or is_detectable (sys {,tol})
-#
-# Default: tol = 10*norm(a,'fro')*eps
-#
-# Returns 1 if the system, a, is detectable, 1 if the pair (a, c) is 
-# detectable, or 0 if not.
-#
-# See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.
 

@@ -16,31 +16,42 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function retsys = sysdup(Asys,output_list,input_list)
-# function retsys = sysdup(Asys,output_list,input_list)
-# Duplicate specified input/output connections of a system
-# 
-#
-# inputs:
-#   Asys: system data structure (see ss2sys)
-#   output_list,input_list: list of connections indices; 
-#       duplicates are made of y(output_list(ii)) and u(input_list(ii)).
-# output: retsys: resulting closed loop system:
-#    duplicated i/o names are appended with a "+" suffix.
-#
-# Operation: sysdup creates copies of selected inputs and outputs as
-# shown below.  u1/y1 is the set of original inputs/outputs, and 
-# u2,y2 is the set of duplicated inputs/outputs in the order specified
-# in input_list,output_list, respectively
-#                      ____________________
-#                      |                  |
-#     u1         ----->|                  |----> y1
-#                      |       Asys       |
-#                      |                  |
-#     u2 ------------->|                  |----->y2 
-#     (input_list)     |                  |      (output_list)
-#                      --------------------     
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retsys} =} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
+##  Duplicate specified input/output connections of a system
+## 
+## @strong{Inputs}
+## @table @var
+## @item Asys
+##  system data structure (@xref{ss2sys})
+## @item out_idx,in_idx
+##  list of connections indices; 
+##        duplicates are made of @var{y(out_idx(ii))} and @var{u(in_idx(ii))}.
+## @end table
+## 
+## @strong{Outputs}
+## @var{retsys}: resulting closed loop system:
+##     duplicated i/o names are appended with a @code{"+"} suffix.
+## 
+## 
+## @strong{Method}
+## @code{sysdup} creates copies of selected inputs and outputs as
+##  shown below.  u1/y1 is the set of original inputs/outputs, and 
+##  u2,y2 is the set of duplicated inputs/outputs in the order specified
+##  in @var{in_idx}, @var{out_idx}, respectively
+## @example
+## @group
+##           ____________________
+## u1  ----->|                  |----> y1
+##           |       Asys       |
+## u2 ------>|                  |----->y2 
+## (in_idx)  -------------------| (out_idx)
+## @end group
+## @end example
+## 
+## @end deftypefn
 
+function retsys = sysdup(Asys,output_list,input_list)
 # A. S. Hodel August 1995
 # modified by John Ingram July 1996
 

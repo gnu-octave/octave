@@ -15,45 +15,67 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn(@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}@{, @var{ptol}, @var{tol}@})
+## 
+## @strong{Inputs} input system is passed as either
+## @table @var
+## @item Asys
+## system data structure (see ss2sys, sys2ss)
+## @itemize @bullet
+## @item controller is implemented for continuous time systems 
+## @item controller is NOT implemented for discrete time systems  (see
+## bilinear transforms in @code{c2d}, @code{d2c})
+## @end itemize
+## @item nu
+## number of controlled inputs
+## @item ny
+## number of measured outputs
+## @item gmin
+## initial lower bound on H-infinity optimal gain
+## @item gmax
+## initial upper bound on H-infinity optimal gain
+## @item gtol
+## gain threshhold.  Routine quits when gmax/gmin < 1+tol
+## @item ptol
+## poles with abs(real(pole)) < ptol*||H|| (H is appropriate
+## Hamiltonian) are considered to be on the imaginary axis.  
+## Default: 1e-9
+## @item tol
+## threshhold for 0.  Default: 200*eps
+## 
+## @var{gmax}, @var{min}, @var{tol}, and @var{tol} must all be postive scalars.
+## @end table 
+## @strong{Outputs}
+## @table @var
+## @item K
+## system controller
+## @item g
+## designed gain value
+## @item GW
+## closed loop system
+## @item Xinf
+## ARE solution matrix for regulator subproblem
+## @item Yinf
+## ARE solution matrix for filter subproblem
+## @end table
+## 
+## @enumerate
+## @item Doyle, Glover, Khargonekar, Francis, "State Space Solutions
+##      to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
+## 
+## @item Maciejowksi, J.M., "Multivariable feedback design,"
+##      Addison-Wesley, 1989, ISBN 0-201-18243-2
+## 
+## @item Keith Glover and John C. Doyle, "State-space formulae for all
+##      stabilizing controllers that satisfy and h-infinity-norm bound
+##      and relations to risk sensitivity,"
+##      Systems & Control Letters 11, Oct. 1988, pp 167-172.
+## @end enumerate
+## @end deftypefn
  
 function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
-  # [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol[,ptol,tol])
-  #
-  # [1] Doyle, Glover, Khargonekar, Francis, "State Space Solutions
-  #     to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
-  #
-  # [2] Maciejowksi, J.M.: "Multivariable feedback design,"
-  #     Addison-Wesley, 1989, ISBN 0-201-18243-2
-  #
-  # [3] Keith Glover and John C. Doyle: "State-space formulae for all
-  #     stabilizing controllers that satisfy and h-infinity-norm bound
-  #     and relations to risk sensitivity,"
-  #     Systems & Control Letters 11, Oct. 1988, pp 167-172.
-  #
-  # inputs: input system is passed as either
-  #        Asys: system data structure (see ss2sys, sys2ss)
-  #              - controller is implemented for continuous time systems 
-  #              - controller is NOT implemented for discrete time systems 
-  #        nu: number of controlled inputs
-  #        ny: number of measured outputs
-  #        gmin: initial lower bound on H-infinity optimal gain
-  #        gmax: initial upper bound on H-infinity optimal gain
-  #        gtol: gain threshhold.  Routine quits when gmax/gmin < 1+tol
-  #        ptol: poles with abs(real(pole)) < ptol*||H|| (H is appropriate
-  #              Hamiltonian) are considered to be on the imaginary axis.  
-  #              Default: 1e-9
-  #        tol: threshhold for 0.  Default: 200*eps
-  #
-  #        gmax, gmin, gtol, and tol must all be postive scalars.
-  # 
-  # outputs: 
-  #        K:   system controller
-  #        g:   designed gain value
-  #       GW:   closed loop system
-  #     Xinf:   ARE solution matrix for regulator subproblem
-  #     Yinf:   ARE solution matrix for filter subproblem
-
-
   # A. S. Hodel August 1995
   # Updated for Packed system structures December 1996 by John Ingram
   #

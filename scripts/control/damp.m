@@ -16,17 +16,19 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function damp(p, tsam)
-# Usage: damp(p[, tsam])
-#      Displays eigenvalues, natural frequencies and damping ratios
-#      of the eigenvalues of a matrix p or the A-matrix of a
-#      system p, respectively.
-#      If p is a system, tsam must not be specified.
-#      If p is a matrix and tsam is specified, eigenvalues
-#      of p are assumed to be in z-domain.
-#
-# See also: eig
+## -*- texinfo -*-
+## @deftypefn {Function File } {} damp(@var{p}@{, @var{tsam}@})
+##       Displays eigenvalues, natural frequencies and damping ratios
+##       of the eigenvalues of a matrix @var{p} or the @var{A}-matrix of a
+##       system @var{p}, respectively.
+##       If @var{p} is a system, @var{tsam} must not be specified.
+##       If @var{p} is a matrix and @var{tsam} is specified, eigenvalues
+##       of @var{p} are assumed to be in @var{z}-domain.
+## 
+## See also: @code{eig}
+## @end deftypefn
 
+function damp(p, tsam)
 # Written by Kai P. Mueller September 29, 1997.
 # Update
 

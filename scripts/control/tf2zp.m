@@ -16,12 +16,19 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [zer,pol,k] = tf2zp(num,den)
-# Converts transfer functions to poles / zeros.
-#
-# [zer,pol,k] = tf2zp(num,den) returns the zeros and poles of the SISO system
-# defined by num/den.  K is a gain associated with the system zeros.
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} tf2zp ( inputs ) 
+## @format
+##  Converts transfer functions to poles / zeros.
+## 
+##  [zer,pol,k] = tf2zp(num,den) returns the zeros and poles of the SISO system
+##  defined by num/den.  K is a gain associated with the system zeros.
+## 
+## 
+## @end format
+## @end deftypefn
 
+function [zer,pol,k] = tf2zp(num,den)
 # Written by A. S. Hodel, etc.
 
   if(nargin == 2)

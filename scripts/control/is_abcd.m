@@ -16,16 +16,16 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
-function retval = is_abcd(a, b, c, d)
-  # ------------------------------------------------------
-  # retval = is_abcd(a [, b, c, d])
-  # Returns retval = 1 if the dimensions of a, b, c, d
-  # are compatible, otherwise retval = 0.
-  # The matrices b, c, or d may be omitted.
-  # ------------------------------------------------------
-  # 
-  # see also: abcddim
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retval} =} is_abcd( @var{a}@{, @var{b}, @var{c}, @var{d}@})
+##  Returns @var{retval} = 1 if the dimensions of @var{a}, @var{b}, @var{c}, @var{d}
+##  are compatible, otherwise @var{retval} = 0 with an appropriate diagnostic
+##  message printed to the screen.  The matrices b, c, or d may be omitted.
+## @end deftypefn
 
+## See also: abcddim
+
+function retval = is_abcd(a, b, c, d)
   # Written by Kai P. Mueller November 4, 1997
   # based on is_controllable.m of Scottedward Hodel
   # modified by

@@ -15,16 +15,27 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{x} =} qzval (@var{A}, @var{B})
+## Compute generalized eigenvalues of the matrix pencil 
+## @ifinfo
+## @example
+## (A - lambda B).
+## @end example
+## @end ifinfo
+## @iftex
+## @tex
+## $(A - \lambda B)$.
+## @end tex
+## @end iftex
+## 
+## @var{A} and @var{B} must be real matrices.
+##  
+## @strong{Note} @code{qzval} is obsolete; use @code{qz} instead.
+## @end deftypefn
  
 function lam = qzval(A,B)
-# X = qzval (A, B)
-# 
-# compute generalized eigenvalues of the matrix pencil (A - lambda B).
-# A and B must be real matrices.
-# 
-# This function is superseded by qz.  You should use qz instead.
-#
-
 # A. S. Hodel July 1998
 
   warning("qzval is obsolete; calling qz instead")

@@ -15,16 +15,19 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { } syschnamesl 
+##  used internally in syschnames
+##  item olist: index list 
+##  old_names: original list names
+##  inames: new names
+##  listname: name of index list
+## 
+##  combines the two string lists old_names and inames
+## @end deftypefn
  
 function old_names = syschnamesl(olist,old_names,inames,listname)
-  # used internally in syschnames
-  # olist: index list
-  # old_names: original list names
-  # inames: new names
-  # listname: name of index list
-  #
-  # combines the two string lists old_names and inames
-
   # $Revision: 2.1.14.5 $
   # $Log: syschnamesl.m,v $
 # Revision 2.1.14.5  1999/09/22  21:55:46  scotte

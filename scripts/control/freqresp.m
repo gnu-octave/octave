@@ -16,17 +16,30 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [ff,w] = freqresp(sys,USEW,w);
-  # function [ff,w] = freqresp(sys,USEW{,w});
-  # Frequency response function - used internally by bode, nyquist.
-  # minimal argument checking; "do not attempt to do this at home"
-  # USEW returned by freqchkw 
-  # w: optional, must be present if USEW is given
-  #
-  # returns: ff = vector of finite G(j*w) entries (or || G(j*w) || for MIMO)
-  #          w = vector of frequencies used
-  #      ff and w are both returned as row vectors
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{out} =} freqresp (@var{sys},@var{USEW}@{,@var{w}@});
+##  Frequency response function - used internally by @code{bode}, @code{nyquist}.
+##  minimal argument checking; "do not attempt to do this at home"
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+## system data structure
+## @item USEW
+## returned by @code{freqchkw}
+## @item optional
+##  must be present if @var{USEW} is true (nonzero)
+## @end table
+## @strong{Outputs}
+## @table @var
+## @item @var{out} 
+## vector of finite @math{G(j*w)} entries (or @math{||G(j*w)||} for MIMO)
+## @item w 
+## vector of corresponding frequencies 
+## @end table
+## @end deftypefn
 
+function [ff,w] = freqresp(sys,USEW,w);
   #  Written by: R. Bruce Tenison July 11, 1994
   # SYS_INTERNAL accesses members of system data structure
 

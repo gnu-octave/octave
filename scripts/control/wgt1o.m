@@ -15,20 +15,23 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{wsys} =} wgt1o (@var{vl}, @var{vh}, @var{fc})
+## State space description of a first order weighting function.
+## 
+##  Weighting function are needed by the H2/H_infinity design procedure.
+##  These function are part of thye augmented plant P (see hinfdemo
+##  for an applicattion example).
+## 
+##  vl = Gain @@ low frequencies
+## 
+##  vh = Gain @@ high frequencies
+## 
+##  fc = Corner frequency (in Hz, *not* in rad/sec)
+## @end deftypefn
  
 function wsys = wgt1o(vl, vh, fc)
-# wgt10  State space description of a first order weighting function.
-#
-#     wsys = wgt1o(vl, vh, fc)
-#
-# Weighting function are needed by the H2/H_infinity design procedure.
-# These function are part of thye augmented plant P (see hinfdemo
-# for an applicattion example).
-#
-# vl = Gain @ low frequencies
-# vh = Gain @ high frequencies
-# fc = Corner frequency (in Hz, *not* in rad/sec)
-
 # Written by Kai P. Mueller September 30, 1997
 
   if (nargin != 3)

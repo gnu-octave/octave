@@ -16,35 +16,40 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [sys] = starp(P, K, ny, nu);
-#
-# [sys] = starp(P, K, ny, nu)
-#
-# Redheffer star product or upper/lower LFT, respectively.
-#
-#
-#               +-------+
-#     --------->|       |---------> 
-#               |   P   |
-#          +--->|       |---+  ny
-#          |    +-------+   |
-#          +-------------------+
-#                           |  |
-#          +----------------+  |
-#          |                   |
-#          |    +-------+      |
-#          +--->|       |------+ nu 
-#               |   K   |
-#     --------->|       |--------->
-#               +-------+
-#
-# If ny and nu "consume" all inputs and outputs of K then the result
-# is a lower fractional transformation. If ny and nu "consume" all
-# inputs and outputs of P then the result is an upper fractional
-# transformation.
-#
-# ny and/or nu may be negative (= negative feedback)
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} starp ( inputs ) 
+## @format
+## 
+##  [sys] = starp(P, K, ny, nu)
+## 
+##  Redheffer star product or upper/lower LFT, respectively.
+## 
+## 
+##                +-------+
+##      --------->|       |---------> 
+##                |   P   |
+##           +--->|       |---+  ny
+##           |    +-------+   |
+##           +-------------------+
+##                            |  |
+##           +----------------+  |
+##           |                   |
+##           |    +-------+      |
+##           +--->|       |------+ nu 
+##                |   K   |
+##      --------->|       |--------->
+##                +-------+
+## 
+##  If ny and nu "consume" all inputs and outputs of K then the result
+##  is a lower fractional transformation. If ny and nu "consume" all
+##  inputs and outputs of P then the result is an upper fractional
+##  transformation.
+## 
+##  ny and/or nu may be negative (= negative feedback)
+## @end format
+## @end deftypefn
 
+function [sys] = starp(P, K, ny, nu);
 # Written by Kai Mueller May 1998
 
   if((nargin != 2) && (nargin != 4))

@@ -15,18 +15,22 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{pv} =} sysreorder( @var{vlen}, @{var{list})
+## 
+## @strong{Inputs}
+## @var{vlen}=vector length, @var{list}= a subset of @code{[1:vlen]},
+## 
+## @strong{Outputs}
+##  @var{pv}: a permutation vector to order elements of @code{[1:vlen]} in 
+## @code{list} to the end of a vector.
+## 
+##  Used internally by @code{sysconnect} to permute vector elements to their
+##  desired locations.  
+## @end deftypefn
  
 function pv = sysreorder(vlen,list)
-# function pv = sysreorder(vlen,list)
-#
-# inputs: vlen: vector length
-#         list: a subset of {1:vlen}
-# pv: a permutation vector to order elements of [1:vlen] in -list-
-#         to the end of a vector
-# used internally by sysconnect to permute vector elements to their
-# desired locations.  No user-serviceable parts inside; do not attempt
-# to use this at home!
-
 # A. S. Hodel, Aug 1995
   
   #disp('sysreorder: entry')

@@ -15,9 +15,13 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*- 
+## @deftypefn {Function File } { } frdemo ( ) 
+## Octave Controls toolbox demo: Frequency Response demo
+## @end deftypefn
+
 function frdemo()
-# Octave Controls toolbox demo: Frequency Response demo
 # Written by David Clem August 15, 1994 
 
 # a s hodel: updated to match new order of ss2zp outputs

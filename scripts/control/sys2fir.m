@@ -15,11 +15,18 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{c}, @var{tsam}, @var{input}, @var{output}] =} sys2fir (@var{sys})
+## 
+## Extract FIR data from system data structure; see @ref{fir2sys} for
+## parameter descriptions.
+## 
+## @end deftypefn
+
+## See also: fir2sys
  
 function [c,tsam,inname,outname] = sys2fir(sys)
-# function [c,tsam,inname,outname] = sys2fir(sys)
-# extract fir system from system data structure
-
 # a s hodel July 1996
 
   # let sys2tf do most of the work

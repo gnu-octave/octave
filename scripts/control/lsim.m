@@ -15,24 +15,26 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { } lsim (@var{sys}, @var{u}, @var{t}@{,@var{x0}@})
+## Produce output for a linear simulation of a system
+## 
+## Produces a plot for the output of the system, sys.
+## 
+## U is an array that contains the system's inputs.  Each column in u 
+## corresponds to a different time step.  Each row in u corresponds to a 
+## different input.  T is an array that contains the time index of the 
+## system.  T should be regularly spaced.  If initial conditions are required
+## on the system, the x0 vector should be added to the argument list.
+## 
+## When the lsim function is invoked with output parameters:
+## [y,x] = lsim(sys,u,t,[x0])
+## a plot is not displayed, however, the data is returned in y = system output
+## and x = system states.
+## @end deftypefn
  
 function [y,x] = lsim(sys,u,t,x0)
-# lsim: Produce output for a linear simulation of a system
-#
-# lsim(sys,u,t,[x0])
-# Produces a plot for the output of the system, sys.
-#
-# U is an array that contains the system's inputs.  Each column in u 
-# corresponds to a different time step.  Each row in u corresponds to a 
-# different input.  T is an array that contains the time index of the 
-# system.  T should be regularly spaced.  If initial conditions are required
-# on the system, the x0 vector should be added to the argument list.
-#
-# When the lsim function is invoked with output parameters:
-# [y,x] = lsim(sys,u,t,[x0])
-# a plot is not displayed, however, the data is returned in y = system output
-# and x = system states.
-
 # Written by David Clem, A. S. Hodel July 1995
 # modified by John Ingram for system format August 1996
 

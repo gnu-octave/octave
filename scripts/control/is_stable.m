@@ -16,20 +16,32 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retval} =} is_stable (@var{a}@{,@var{tol},@var{dflg}@})
+## @deftypefnx {Function File } { @var{retval} =} is_stable (@var{sys}@{,@var{tol}@})
+##  Returns retval = 1 if the matrix @var{a} or the system @var{sys}
+## is stable, or 0 if not.
+## 
+## @strong{Inputs}
+## @table @var
+## @item  tol
+## is a roundoff paramter, set to 200*@var{eps} if omitted.
+## @item dflg
+## Digital system flag (not required for system data structure):
+## @table @code
+## @item @var{dflg} != 0
+## stable if eig(a) in unit circle
+## 
+## @item @var{dflg} == 0
+## stable if eig(a) in open LHP (default)
+## @end table
+## @end table
+## @end deftypefn
+
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
+##     is_observable, is_stabilizable, is_detectable, krylov, krylovb
+
 function retval = is_stable (a, tol, disc)
-
-# Usage: retval = is_stable (a {,tol,disc})
-# or     retval = is_stable (sys{,tol})
-#
-# Returns retval = 1 if the matrix a or the system a is stable, or 0 if not.
-#
-# tol is a roundoff paramter, set to 200*eps if omitted.
-# disc != 0: stable if eig(a) in unit circle
-#         0: stable if eig(a) in open LHP (default)
-#
-# See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-#     is_observable, is_stabilizable, is_detectable, krylov, krylovb
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for systems
 # Updated to simpler form by a.s.hodel 1998

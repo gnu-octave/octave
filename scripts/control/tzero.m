@@ -16,27 +16,38 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
+## -*- texinfo -*-
+##@deftypefn {Function File} {} tzero (@var{a}, @var{b}, @var{c}, @var{d}@{, @var{opt}@})
+##@deftypefnx {Function File} {} tzero (@var{sys}@{,@var{opt}@})
+## Compute transmission zeros of a continuous
+##@example
+##.
+##x = Ax + Bu
+##y = Cx + Du
+##@end example
+##or discrete
+##@example
+##x(k+1) = A x(k) + B u(k)
+##y(k)   = C x(k) + D u(k)
+##@end example
+##system.
+##@strong{Outputs}
+##@table @var
+##@item zer
+## transmission zeros of the system
+##@item gain
+##leading coefficient (pole-zero form) of SISO transfer function
+##returns gain=0 if system is multivariable
+##@end table
+##@strong{References}
+##@enumerate
+##@item Emami-Naeini and Van Dooren, Automatica, 1982.
+##@item Hodel, "Computation of Zeros with Balancing," 1992 Lin. Alg. Appl.
+##@end enumerate
+##@end deftypefn
+
+
 function [zer, gain] = tzero(A,B,C,D)
-  # [zer{,gain}] = tzero(A,B,C,D) -or-
-  # [zer{,gain}] = tzero(Asys)
-  # Compute transmission zeros of a continuous
-  #      .
-  #      x = Ax + Bu
-  #      y = Cx + Du
-  #
-  # or discrete
-  #      x(k+1) = A x(k) + B u(k)
-  #      y(k)   = C x(k) + D u(k)
-  #
-  # system.
-  #
-  # outputs: 
-  #   zer: transmission zeros of the system
-  #   gain: leading coefficient (pole-zero form) of SISO transfer function
-  #         returns gain=0 if system is multivariable
-  # References:
-  # Hodel, "Computation of Zeros with Balancing," 1992 Lin. Alg. Appl.
-  
   # R. Bruce Tenison July 4, 1994
   # A. S. Hodel Aug 1995: allow for MIMO and system data structures
 

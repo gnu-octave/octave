@@ -15,15 +15,20 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{zer}, @var{pol}]=} pzmap (@var{sys})
+##  Plots the zeros and poles of a system in the complex plane.
+## @strong{Inputs}
+##  @var{sys} system data structure
+## 
+## @strong{Outputs}
+## if omitted, the poles and zeros are plotted on the screen.
+##           otherwise, pol, zer are returned as the system poles and zeros.
+##           (see sys2zp for a preferable function call)
+## @end deftypefn
  
 function [zer,pol]=pzmap(sys)
-# function [zer,pol]=pzmap(sys)
-# Plots the zeros and poles of a system in the complex plane.
-#
-# inputs: sys: system data structure
-# outputs: if omitted, the poles and zeros are plotted on the screen.
-#          otherwise, pol, zer are returned as the system poles and zeros.
-#          (see sys2zp for a preferable function call)
 
   save_val = implicit_str_to_num_ok;	# save for later
   save_emp = empty_list_elements_ok;

@@ -16,21 +16,26 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [yy,idx] = sortcom(xx,opt)
-# [yy,idx] = sortcom(xx[,opt]): sort a complex vector
-# xx: complex vector
-# opt: sorting option:
-#	"re": real part (default)
-#	"mag": by magnitude
-#	"im": by imaginary part
-#
-#  if opt != "im" then values with common real part/magnitude are
-#     sorted by imaginary part, i.e. a - jb followed by a + jb. 
-#     [Complex conjugate pairs may not be grouped consecutively if more than 2
-#     numbers share a common real part/magnitude]
-# yy: sorted values
-# idx: permutation vector: yy = xx(idx)
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} sortcom ( inputs ) 
+## @format
+##  [yy,idx] = sortcom(xx[,opt]): sort a complex vector
+##  xx: complex vector
+##  opt: sorting option:
+## 	"re": real part (default)
+## 	"mag": by magnitude
+## 	"im": by imaginary part
+## 
+##   if opt != "im" then complex conjugate pairs are grouped together,
+##      a - jb followed by a + jb.
+##  yy: sorted values
+##  idx: permutation vector: yy = xx(idx)
+## 
+## 
+## @end format
+## @end deftypefn
 
+function [yy,idx] = sortcom(xx,opt)
 # Written by A. S. Hodel June 1995
 
   if( nargin < 1 | nargin > 2 )

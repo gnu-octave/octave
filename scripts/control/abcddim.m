@@ -16,23 +16,52 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{n}, @var{m}, @var{p}] =} abcddim (@var{a}, @var{b}, @var{c}, @var{d})
+## Check for compatibility of the dimensions of the matrices defining
+## the linear system
+## @iftex
+## @tex
+## $[A, B, C, D]$ corresponding to
+## $$
+## \eqalign{
+##  {dx\over dt} &= A x + B u\cr
+##             y &= C x + D u}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## [A, B, C, D] corresponding to
+## 
+## @example
+## dx/dt = a x + b u
+## y = c x + d u
+## @end example
+## 
+## @end ifinfo
+## or a similar discrete-time system.
+## 
+## If the matrices are compatibly dimensioned, then @code{abcddim} returns
+## 
+## @table @var
+## @item n
+## The number of system states.
+## 
+## @item m
+## The number of system inputs.
+## 
+## @item p
+## The number of system outputs.
+## @end table
+## 
+## Otherwise @code{abcddim} returns @var{n} = @var{m} = @var{p} = @minus{}1.
+## 
+## Note: n = 0 (pure gain block) is returned without warning.
+## 
+## See also: is_abcd
+## @end deftypefn
+
 function [n, m, p] = abcddim (a, b, c, d)
-
-# Usage: [n, m, p] = abcddim (a, b, c, d)
-#
-# Check for compatibility of the dimensions of the matrices defining
-# the linear system (a, b, c, d).
-#
-# Returns n = number of system states,
-#         m = number of system inputs,
-#         p = number of system outputs.
-#
-# Note: n = 0 (pure gain block) is returned without warning.
-#
-# Returns n = m = p = -1 if the system is not compatible.
-#
-# See also: is_abcd
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # a s hodel: modified to accept pure-gain systems aug 1996
 

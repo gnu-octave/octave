@@ -16,12 +16,14 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function x = zgshsr(y)
-  # x = zgshsr(y)
-  # apply householder vector based on e^(m) to 
-  # (column vector) y.
-  # Called by zgfslv
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{x} =} zgshsr( @var{y})
+## apply householder vector based on @math{e^(m)} to 
+## (column vector) y.
+## Called by zgfslv
+## @end deftypefn
 
+function x = zgshsr(y)
   # A. S. Hodel July 24, 1992
   # Conversion to Octave by R. Bruce Tenison July 3, 1994
 

@@ -15,32 +15,38 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{sys} =} sysgroup ( @var{Asys}, @var{Bsys})
+## Combines two systems into a single system
+## 
+## @strong{Inputs}
+## @var{Asys}, @var{Bsys}: system data structures
+## 
+## @strong{Outputs}
+##  @math{sys = @r{block diag}(Asys,Bsys)}
+## @example
+## @group
+##          __________________
+##          |    ________    |
+## u1 ----->|--> | Asys |--->|----> y1
+##          |    --------    |
+##          |    ________    |
+## u2 ----->|--> | Bsys |--->|----> y2
+##          |    --------    |
+##          ------------------
+##               Ksys
+## @end group
+## @end example
+## The function also rearranges the internal state-space realization of @var{sys}
+## so that the
+##  continuous states come first and the discrete states come last.
+##  If there are duplicate names, the second name has a unique suffix appended
+##  on to the end of the name.
+## 
+## @end deftypefn
  
 function sys = sysgroup(...)
-# function sys = sysgroup(Asys{,Bsys,...})
-# Parallel connection of systems
-#
-# inputs: All input arguments must be system data structures;
-#         exits with an error if there is not at least one argument
-# output: sys: all systems are combined into a single system; e.g.,
-#         if two systems are passed as sysgroup(Asys,Bsys), the result
-#         is
-#
-#              __________________
-#              |    ________    |
-#     u1 ----->|--> | Asys |--->|----> y1
-#              |    --------    |
-#              |    ________    |
-#     u2 ----->|--> | Bsys |--->|----> y2
-#              |    --------    |
-#              ------------------
-#                   Ksys
-# 
-# The function also rearranges the A,B,C matrices so that the 
-# continuous states come first and the discrete states come last.
-# If there are duplicate names, the second name has a unique suffix appended
-# on to the end of the name (a warning message is printed).
-
 # A. S. Hodel August 1995
 # modified by John Ingram July 1996
 # A. S. Hodel: modified for variable number of arguments 1999

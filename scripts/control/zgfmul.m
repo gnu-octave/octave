@@ -15,19 +15,20 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } @var{y} = zgfmul(@var{a},@var{b},@var{c},@var{d},@var{x})
+## 
+## Compute product of zgep incidence matrix @var{F} with vector @var{x}.
+## Used by zgepbal (in zgscal) as part of generalized conjugate gradient
+## iteration.
+## @end deftypefn
+   
+## References:
+## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
+## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
+
 function y = zgfmul(a,b,c,d,x)
-  # y = zgfmul(a,b,c,d,x)
-  # 
-  # Compute product of zgep incidence matrix F with vector x.
-  # Used by zgepbal (in zgscal) as part of generalized conjugate gradient
-  # iteration.
-  #
-  # References:
-  # ZGEP: Hodel, "Computation of Zeros with Balancing," Linear algebra and
-  #    its Applications, 1993
-  # Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
-  
   # A. S. Hodel July 24 1992
   # Conversion to Octave July 3, 1994
   

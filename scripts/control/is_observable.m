@@ -16,18 +16,33 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{retval},@var{U}] =} is_observable (@var{a}, @var{c}@{,@var{tol}@})
+## @deftypefnx {Function File } { [@var{retval},@var{U}] =} is_observable (@var{sys}@{, @var{tol}@})
+## Logical check for system observability.  
+##  
+##  Default: tol = 10*norm(a,'fro')*eps
+## 
+##  Returns 1 if the system @var{sys} or the pair (@var{a},@var{c}) is 
+##  observable, 0 if not.
+## 
+## @strong{See} @code{is_controllable} for detailed description of arguments
+## and default values.
+## @end deftypefn
+
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
+
 function [retval,U] = is_observable (a,c,tol)
 
 # [retval,U] = is_observable (a,c,tol)
 # usage: is_observable (a , c {,tol})
 #     or is_observable (sys {,tol})
 #
-# Default: tol = 10*norm(a,'fro')*eps
 #
 # Returns 1 if the system, a, is observable, 1 if the pair (a, c) is 
 # observable, or 0 if not.
 #
-# See also: size, rows, columns, length, is_matrix, is_scalar, is_vector.
+
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.

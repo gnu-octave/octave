@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[a ,b ] =} zgsgiv(@var{c},@var{s},@var{a},@var{b})
+## apply givens rotation c,s to row vectors @var{a},@var{b}
+## No longer used in zero-balancing (zgpbal); kept for backward compatibility
+## @end deftypefn
+
 function [a,b] = zgsgiv(c,s,a,b)
-  # [a,b] = zgsgiv(c,s,a,b)
-  # apply givens rotation c,s to row vectors a,b
-  # No longer used in zero-balancing (zgpbal); kept for backward compatibility
-  
   # A. S. Hodel July 29, 1992
   # Convertion to Octave by R. Bruce Tenison July 3, 1994
 

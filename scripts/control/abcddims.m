@@ -16,13 +16,15 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{y}, @var{my}, @var{ny}] =} abcddims (@var{x})
+## 
+## Used internally in @code{abcddim}.  If @var{x} is a zero-size matrix, 
+## both dimensions are set to 0 in @var{y}.  
+## @var{my} and @var{ny} are the row and column dimensions of the result.
+## @end deftypefn
+
 function [y,my,ny] = abcddims (x)
-
-# Usage: [y,my,ny] = abcddims (x)
-#
-# Used internally in abcddim.  If x is a zero-size matrix, both dimensions
-# get set to 0.  my and ny are the row and column dimensions of the result.
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) Feb 1997
 
   y = x;

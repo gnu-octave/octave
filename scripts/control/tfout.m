@@ -16,17 +16,16 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function tfout(num,denom,x)
-#
-# usage: tfout(num,denom[,x])
-#
-# print formatted transfer function num(s)/d(s) 
-# to the screen
-# x defaults to the string "s"
-#
-#  SEE ALSO: polyval, polyvalm, poly, roots, conv, deconv, residue, 
-#	filter, polyderiv, polyinteg, polyout
+## -*- texinfo -*-
+## @deftypefn {Function File } { } tfout (@var{num}, @var{denom}@{, @var{x}@})
+##  print formatted transfer function @math{n(s)/d(s) } to the screen
+##  @var{x} defaults to the string @code{"s"}
+## @end deftypefn
 
+##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
+##	filter, polyderiv, polyinteg, polyout
+
+function tfout(num,denom,x)
 # Written by A. Scottedward Hodel (scotte@eng.auburn.edu) June 1995)
   
   save_val = implicit_str_to_num_ok;

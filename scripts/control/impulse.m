@@ -15,23 +15,36 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{y}, @var{t}] =} impulse (@var{sys}@{, @var{inp},@var{tstop}, @var{n}@})
+## Impulse response for a linear system.
+##        The system can be discrete or multivariable (or both).
+## If no output arguments are specified, @code{impulse}
+##  produces a plot or the impulse response data for system @var{sys}.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+## System data structure.
+## @item inp
+## Index of input being excited
+## @item tstop
+##  The argument @var{tstop} (scalar value) denotes the time when the
+##  simulation should end. 
+## @item n
+## the number of data values.
+## 
+##  Both parameters @var{tstop} and @var{n} can be omitted and will be
+##  computed from the eigenvalues of the A-Matrix.
+## @end table
+## @strong{Outputs}
+## @var{y}, @var{t}: impulse response
+## @end deftypefn
  
+## See also:  step, stepimp
+
 function [y, t] = impulse(sys, inp, tstop, n)
-# step: Impulse response for a linear system.
-#       The system can be discrete or multivariable (or both).
-#
-# [y, t] = impulse(sys[, inp, tstop, n])
-# Produces a plot or the step response data for system sys.
-#
-# The argument tstop (scalar value) denotes the time when the
-# simulation should end. The Parameter n is the number of data values.
-# Both parameters tstop and n can be ommitted and will be
-# computed from the eigenvalues of the A-Matrix.
-#
-# When the step function is invoked with the output parameter y
-# a plot is not displayed.
-#
-# See also: step, stepimp
 
 # Written by Kai P. Mueller October 2, 1997
 # based on lsim.m of Scottedward Hodel

@@ -15,18 +15,44 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{sys} =} zp2sys (@var{zer},@var{pol},@var{k}@{,@var{tsam},@var{inname},@var{outname}@})
+##  Create system data structure from zero-pole data
+## 
+## @strong{Inputs}
+## @table @var
+## @item   zer
+##  vector of system zeros
+## @item   pol
+##  vector of system poles
+## @item   k
+##  scalar leading coefficient
+## @item   tsam
+##  sampling period. default: 0 (continuous system)
+## @item   inname, outname
+##  input/output signal names (lists of strings)
+## @end table
+## 
+## @strong{Outputs}
+##  sys: system data structure
+## 
+## @strong{Example}
+## @example
+## octave:1> sys=zp2sys([1 -1],[-2 -2 0],1);
+## octave:2> sysout(sys)
+## Input(s)
+##         1: u_1
+## Output(s):
+##         1: y_1
+## zero-pole form:
+## 1 (s - 1) (s + 1)
+## -----------------
+## s (s + 2) (s + 2)
+## @end example
+## @end deftypefn
  
 function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
-  # sys = zp2sys (zer,pol,k{,tsam,inname,outname})
-  # Create system data structure from zero-pole data
-  # inputs:
-  #   zer: vector of system zeros
-  #   pol: vector of system poles
-  #   k: scalar leading coefficient
-  #   tsam: sampling period. default: 0 (continuous system)
-  #   inname, outname: input/output signal names (strings)
-  # outputs: sys: system data structure
-
   #  Modified by John Ingram  July 20, 1996  
 
   save_val = implicit_str_to_num_ok;	# save for restoring later

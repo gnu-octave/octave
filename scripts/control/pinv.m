@@ -16,19 +16,18 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { } pinv ( @var{X}@{,@var{tol}@} ) 
+## Returns the pseudoinverse of X; singular values less than tol are ignored.
+##  
+## If the second arguement is ommited , it is assummed that
+## @example
+##   tol = max (size (X)) * sigma_max (X) * eps,
+## @end example
+## where sigma_max(X) is the maximal singular value of X.  
+## @end deftypefn
+
 function retval = pinv (X, tol)
-
-# usage: pinv (X, tol)
-#
-# Returns the pseudoinverse of X; singular values less than tol are
-# ignored.
-#
-# If the second argument is omitted, it is assumed that
-#
-#   tol = max (size (X)) * sigma_max (X) * eps,
-#
-# where sigma_max(X) is the maximal singular value of X.
-
 # Written by Kurt Hornik (hornik@neuro.tuwien.ac.at) March 1993.
 # Dept of Probability Theory and Statistics TU Wien, Austria.
 

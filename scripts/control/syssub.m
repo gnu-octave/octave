@@ -15,28 +15,28 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{sys} =} syssub (@var{Gsys}, @var{Hsys})
+##  returns @math{sys = Gsys - Hsys}
+## 
+##  Method: @var{Gsys} and @var{Hsys} are connected in parallel
+##  The input vector is connected to both systems; the outputs are
+##  subtracted.  Returned system names are those of @var{Gsys}.
+## @example
+## @group
+##           ________
+##      ----|  Gsys  |---
+## u   |    ----------  +|         
+## -----                (_)----> y
+##     |     ________   -|
+##      ----|  Hsys  |---
+##           --------
+## @end group
+## @end example
+## @end deftypefn
  
 function sys = syssub(...)
-# 
-# sys = syssub(Gsys{,Hsys, ...})
-#
-# returns transfer function sys = Gsys - Hsys - ...
-#
-# Method: sysgroup used to connect systems in parallel
-# The input vector is connected to all systems; the outputs of all
-# systems are connected to a summing junction with the first system's
-# outputs added, all other outputs subtracted.
-# Returned system input/output signal names are those of Gsys.
-# Example: syssub(Gsys, Hsys) results in
-#
-#                  ________
-#             ----|  Gsys  |---
-#        u   |    ----------  +|         
-#        -----                (_)----> y
-#            |     ________   -|
-#             ----|  Hsys  |---
-#                  --------
-
 # Written by John Ingram July 1996
 # updated for variable numbers of input arguments by July 1999 A. S. Hodel
 

@@ -15,19 +15,18 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function h2gain = h2norm(sys)
-  # Usage: h2gain = h2norm(sys)
-  #
-  # Computes the H2 norm system data structure (continuous time only)
-  # sys = system data structure [see ss2sys()]
-  # returns h2gain = Inf if system is unstable
-  #
-  # Reference:
-  # Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
-  # H2 and Hinf Control Problems", IEEE TAC August 1989
-  #
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{retval} =} h2norm(@var{sys})
+## Computes the H2 norm of a system data structure (continuous time only)
+## 
+## Reference:
+##  Doyle, Glover, Khargonekar, Francis, ``State Space Solutions to Standard
+##  H2 and Hinf Control Problems", IEEE TAC August 1989
+## @end deftypefn
+
+
+function h2gain = h2norm(sys)
   # A. S. Hodel Aug 1995
   # updated for system data structure by John Ingram November 1996
 

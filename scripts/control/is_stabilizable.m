@@ -16,25 +16,32 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{retval}, @var{U}] =} is_stabilizable (@var{sys}@{, @var{tol}@})
+## @deftypefnx {Function File } {[@var{retval}, @var{U}] =} is_stabilizable (@var{a}@{, @var{b} ,@var{tol}@})
+## Logical check for system stabilizability (i.e., all unstable modes are controllable).
+## 
+## 
+## Test for stabilizability is performed via an ordered Schur decomposition
+## that reveals the unstable subspace of the system @var{A} matrix.
+##  
+## Returns @code{retval} = 1 if the system, @code{a}, is stabilizable, if the pair 
+## (@code{a}, @code{b}) is stabilizable, or 0 if not.
+##         @code{U} = orthogonal basis of controllable subspace.
+## 
+## Controllable subspace is determined by applying Arnoldi iteration with
+## complete re-orthogonalization to obtain an orthogonal basis of the
+## Krylov subspace.
+## @example
+##   span ([b,a*b,...,a^   b]).
+## @end example
+## tol is a roundoff paramter, set to 200*eps if omitted.
+## @end deftypefn
+
+## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
+##     is_observable, is_stabilizable, is_detectable
+
 function [retval,U] = is_stabilizable (a, b, tol)
-
-# Usage: [retval,U] = is_stabilizable (a {, b, tol})
-#
-# Returns retval = 1 if the system, a, is stabilizable, if the pair (a, b) is 
-# stabilizable, or 0 if not.
-#         U = orthogonal basis of controllable subspace.
-#
-# Controllable subspace is determined by applying Arnoldi iteration with
-# complete re-orthogonalization to obtain an orthogonal basis of the
-# Krylov subspace.
-#
-#   span ([b,a*b,...,a^   b]).
-#
-# tol is a roundoff paramter, set to 200*eps if omitted.
-#
-# See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-#     is_observable, is_stabilizable, is_detectable
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 to accept systems

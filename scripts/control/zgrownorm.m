@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function [sig, tau] = zgrownorm(mat,meps)
-# function [nonz, zer] = zgrownorm(mat,meps)
-# used internally in tzero
-# returns nonz = number of rows of mat whose two norm exceeds meps
-#         zer = number of rows of mat whose two norm is less than meps
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{nonz}, @var{zer}] =} zgrownorm (@var{mat}, @var{meps})
+## returns @var{nonz} = number of rows of @var{mat} whose two norm exceeds @var{meps}
+##         @var{zer} = number of rows of mat whose two norm is less than meps
+## @end deftypefn
+
+function [sig, tau] = zgrownorm(mat,meps)
 
   rownorm = [];
   for ii=1:rows(mat)

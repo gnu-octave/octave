@@ -16,17 +16,30 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
+## -*- texinfo -*-
+## @deftypefn {Function File } { } sysout ( @var{sys}@{, @var{opt}@}) 
+##  print out a system data structure in desired format
+## @table @var
+## @item  sys
+##  system data structure
+## @item  opt
+## Display option
+## @table @code
+## @item []
+##  primary system form (default); see @ref{sysgettype}.
+## @item      "ss"
+##  state space form
+## @item      "tf"
+##  transfer function form
+## @item      "zp"
+##  zero-pole form
+## @item      "all"
+##  all of the above
+## @end table
+## @end table
+## @end deftypefn
+ 
 function retsys = sysout(sys,opt)
-# function sysout(sys[,opt])
-# print out a system data structure in desired format
-#
-# sys: system data structure
-# opt: []: primary system form (default)
-#      "ss": state space form
-#      "tf": transfer function form
-#      "zp": zero-pole form
-#      "all": all of the above
-
 # Written by A S Hodel: 1995-1996
 
 # save for restoring at end of routine

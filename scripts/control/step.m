@@ -15,8 +15,37 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{y}, @var{t}] =} impulse (@var{sys}@{, @var{inp},@var{tstop}, @var{n}@})
+## Step response for a linear system.
+##        The system can be discrete or multivariable (or both).
+## If no output arguments are specified, @code{impulse}
+##  produces a plot or the step response data for system @var{sys}.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+## System data structure.
+## @item inp
+## Index of input being excited
+## @item tstop
+##  The argument @var{tstop} (scalar value) denotes the time when the
+##  simulation should end. 
+## @item n
+## the number of data values.
+## 
+##  Both parameters @var{tstop} and @var{n} can be omitted and will be
+##  computed from the eigenvalues of the A-Matrix.
+## @end table
+## @strong{Outputs}
+## @var{y}, @var{t}: impulse response
+## 
+## When invoked with the output paramter y the plot is not displayed.  
+## @end deftypefn
  
-function [y, t] = step(sys, inp, tstop, n)
+## See also:  impulse, stepimp
+
 # step: Step response for a linear system.
 #       The system can be discrete or multivariable (or both).
 #
@@ -33,6 +62,7 @@ function [y, t] = step(sys, inp, tstop, n)
 #
 # See also: impulse, stepimp
 
+function [y, t] = step(sys, inp, tstop, n)
 # Written by Kai P. Mueller September 30, 1997
 # based on lsim.m of Scottedward Hodel
 # modified by

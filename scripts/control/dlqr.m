@@ -16,33 +16,95 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function [k, p, e] = dlqr (a, b, q, r, s)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} dlqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+## Construct the linear quadratic regulator for the discrete time system
+## @iftex
+## @tex
+## $$
+##  x_{k+1} = A x_k + B u_k
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## x[k+1] = A x[k] + B u[k]
+## @end example
+## 
+## @end ifinfo
+## to minimize the cost functional
+## @iftex
+## @tex
+## $$
+##  J = \sum x^T Q x + u^T R u
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## J = Sum (x' Q x + u' R u)
+## @end example
+## @end ifinfo
+## 
+## @noindent
+## @var{z} omitted or
+## @iftex
+## @tex
+## $$
+##  J = \sum x^T Q x + u^T R u + 2 x^T Z u
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## J = Sum (x' Q x + u' R u + 2 x' Z u)
+## @end example
+## 
+## @end ifinfo
+## @var{z} included.
+## 
+## The following values are returned:
+## 
+## @table @var
+## @item k
+## The state feedback gain,
+## @iftex
+## @tex
+## $(A - B K)$
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{a} - @var{b}@var{k})
+## @end ifinfo
+## is stable.
+## 
+## @item p
+## The solution of algebraic Riccati equation.
+## 
+## @item e
+## The closed loop poles of
+## @iftex
+## @tex
+## $(A - B K)$.
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{a} - @var{b}@var{k}).
+## @end ifinfo
+## @end table
+## @strong{References}
+## @enumerate
+## @item Anderson and Moore, Optimal Control: Linear Quadratic Methods,
+##      Prentice-Hall, 1990, pp. 56-58
+## @item  Kuo, Digital Control Systems, Harcourt Brace Jovanovich, 1992, 
+##      section 11-5-2.
+## @end enumerate
+## @end deftypefn
 
-# Usage: [k, p, e] = dlqr (A, B, Q, R {,S})
-#
-# Linear quadratic regulator design for the discrete time system
-#
-#   x[k+1] = A x[k] + B u[k]
-#
-# to minimize the cost functional
-#
-#  J = Sum { x' Q x + u' R u } 			S omitted
-#
-# or
-#
-#  J = Sum { x' Q x + u' R u +2 x' S u}		S included
-#
-# Returns:
-#
-#   k = state feedback gain, (A - B K) is stable
-#   p = solution of algebraic Riccati equation
-#   e = closed loop poles of (A - B K)
-#
-# References:
-#   Anderson and Moore, Optimal Control: Linear Quadratic Methods,
-#     Prentice-Hall, 1990, pp. 56-58
-#   Kuo, Digital Control Systems, Harcourt Brace Jovanovich, 1992, 
-#     section 11-5-2.
+function [k, p, e] = dlqr (a, b, q, r, s)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Converted to discrete time by R. B. Tenison
 # (btenison@eng.auburn.edu) October 1993

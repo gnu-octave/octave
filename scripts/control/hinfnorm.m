@@ -15,30 +15,55 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm(@var{sys}@{, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol}@})
+##  Computes the H infinity norm of a system data structure.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys 
+## system data structure
+## @item tol 
+## H infinity norm search tolerance (default: 0.001)
+## @item gmin 
+## minimum value for norm search (default: 1e-9)
+## @item gmax 
+## maximum value for norm search (default: 1e+9)
+## @item ptol
+##  pole tolerance:
+## @itemize @bullet
+## @item if sys is continuous, poles with 
+## |real(pole)| < ptol*||H|| (H is appropriate Hamiltonian)
+## are considered to be on the imaginary axis.  
+## 
+## @item if sys is discrete, poles with
+## |abs(pole)-1| < ptol*||[s1,s2]|| (appropriate symplectic pencil)
+## are considered to be on the unit circle
+## 
+## @item Default: 1e-9
+## @end itemize
+## @end table
+## 
+## @strong{Outputs}
+## @table @var
+## @item g
+## Computed gain, within @var{tol} of actual gain.  @var{g} is returned as Inf 
+## if the system is unstable.
+## @item gmin, gmax
+## Actual system gain lies in the interval [@var{gmin}, @var{gmax}]
+## @end table
+## 
+##  References:
+##  Doyle, Glover, Khargonekar, Francis, "State space solutions to standard
+##     H2 and Hinf control problems", IEEE TAC August 1989
+##  Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
+##     Int. J. Control, vol 54, #5, 1991
+##  Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
+##  $Revision: 1.9 $
+## @end deftypefn
  
 function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
-  # Usage: [g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])
-  #
-  # Computes the H infinity norm of a system data structure
-  # sys = system data structure
-  # tol = H infinity norm search tolerance (default: 0.001)
-  # gmin = minimum value for norm search (default: 1e-9)
-  # gmax = maximum value for norm search (default: 1e+9)
-  # ptol: pole tolerance:
-  #       if sys is continuous, poles with 
-  #         |real(pole)| < ptol*||H|| (H is appropriate Hamiltonian)
-  #         are considered to be on the imaginary axis.  
-  #       if sys is discrete, poles with
-  #         |abs(pole)-1| < ptol*||[s1,s2]|| (appropriate symplectic pencil)
-  #         are considered to be on the unit circle
-  #       Default: 1e-9
-  #
-  # References:
-  # Doyle, Glover, Khargonekar, Francis, "State space solutions to standard
-  #    H2 and Hinf control problems", IEEE TAC August 1989
-  # Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
-  #    Int. J. Control, vol 54, #5, 1991
-  # Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
 
   if((nargin == 0) || (nargin > 4))
     usage("[g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])");

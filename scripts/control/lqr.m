@@ -16,38 +16,102 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+## construct the linear quadratic regulator for the continuous time system
+## @iftex
+## @tex
+## $$
+##  {dx\over dt} = A x + B u
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## dx
+## -- = A x + B u
+## dt
+## @end example
+## 
+## @end ifinfo
+## to minimize the cost functional
+## @iftex
+## @tex
+## $$
+##  J = \int_0^\infty x^T Q x + u^T R u
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+##       infinity
+##       /
+##   J = |  x' Q x + u' R u
+##      /
+##     t=0
+## @end example
+## @end ifinfo
+## 
+## @noindent
+## @var{z} omitted or
+## @iftex
+## @tex
+## $$
+##  J = \int_0^\infty x^T Q x + u^T R u + 2 x^T Z u
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+##       infinity
+##       /
+##   J = |  x' Q x + u' R u + 2 x' Z u
+##      /
+##     t=0
+## @end example
+## 
+## @end ifinfo
+## @var{z} included.
+## 
+## The following values are returned:
+## 
+## @table @var
+## @item k
+## The state feedback gain,
+## @iftex
+## @tex
+## $(A - B K)$
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{a} - @var{b}@var{k})
+## @end ifinfo
+## is stable and minimizes the cost functional
+## 
+## @item p
+## The stabilizing solution of appropriate algebraic Riccati equation.
+## 
+## @item e
+## The vector of the closed loop poles of
+## @iftex
+## @tex
+## $(A - B K)$.
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{a} - @var{b}@var{k}).
+## @end ifinfo
+## @end table
+##
+## @strong{Reference} 
+## Anderson and Moore, OPTIMAL CONTROL: LINEAR QUADRATIC METHODS,
+## Prentice-Hall, 1990, pp. 56-58
+## @end deftypefn
+
 function [k, p, e] = lqr (a, b, q, r, s)
-
-# Usage: [k, p, e] = lqr (A, B, Q, R {,S})
-#
-# Linear quadratic regulator design for the continuous time system
-#   dx/dt = A x + B u
-# to minimize the cost functional
-#
-#  J = int_0^\infty{ [x' u'] [Q  S'; S R] [x ; u] dt}
-#
-# inputs:
-#   A, B: coefficient matrices for continuous time system
-#   Q, R, S: cost functional coefficient matrices.
-#      Q: must be nonnegative definite.
-#      R: must be positive definite
-#      S: defaults to 0
-# 
-# if S is omitted, the optimization simplifies to the usual
-#
-#  J = int_0^\infty{ x' Q x + u' R u }
-#
-# Returns:
-#
-#   k = state feedback gain, (A - B K) is stable and minimizes the
-#       cost functional
-#   p = solution of algebraic Riccati equation
-#   e = closed loop poles of (A - B K)
-#
-# reference: Anderson and Moore, OPTIMAL CONTROL: LINEAR QUADRATIC METHODS,
-# Prentice-Hall, 1990, pp. 56-58
-
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   # disp("lqr: entry");

@@ -15,39 +15,55 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function sys = sysconnect(sys,output_list,input_list,order,tol)
-# function retsys = sysconnect(sys,output_list,input_list[,order,tol])
-# Close the loop from specified outputs to respective specified inputs
-# 
-# inputs:
-#   sys: system data structure
-#   output_list,input_list: list of connections indices; y(output_list(ii))
-#       is connected to u(input_list(ii)).
-#   order: logical flag (default = 0)
-#	0: leave inputs and outputs in their original order
-#	1: permute inputs and outputs to the order shown in the diagram below
-#     tol: tolerance for singularities in algebraic loops
-#	    default: 200*eps
-# output: sys: resulting closed loop system:
-#
-# Operation: sysconnect internally permutes selected inputs, outputs as shown
-# below, closes the loop, and then permutes inputs and outputs back to their
-# original order
-#                      ____________________
-#                      |                  |
-#    u_1         ----->|                  |----> y_1
-#                      |        sys       |
-#              old u_2 |                  |
-#   u_2* ------>(+)--->|                  |----->y_2 
-#   (input_list) ^     |                  |    | (output_list)
-#                |     --------------------    |
-#                |                             |
-#                -------------------------------
-#
-# The input that has the summing junction added to it has an * added to the end 
-# of the input name.
 
+## -*- texinfo -*- 
+## @deftypefn {Function File } {@var{retsys} =} sysconnect (@var{sys}, @var{out_idx},@var{in_idx}@{,@var{order}, @var{tol}@})
+## Close the loop from specified outputs to respective specified inputs
+## 
+## @strong{Inputs}
+## @table @var
+## @item   sys
+## system data structure
+## @item   out_idx, in_idx
+## list of connections indices; @math{y(out_idx(ii))}
+## is connected to @math{u(in_idx(ii))}.
+## @item   order
+## logical flag (default = 0)
+## @table @code
+## @item	0
+## leave inputs and outputs in their original order
+## @item	1
+## permute inputs and outputs to the order shown in the diagram below
+## @end table
+## @item     tol
+## tolerance for singularities in algebraic loops default: 200@var{eps}
+## @end table
+## 
+## @strong{Outputs}
+##  @var{sys}: resulting closed loop system.
+## 
+## @strong{Method}
+## @code{sysconnect} internally permutes selected inputs, outputs as shown
+##  below, closes the loop, and then permutes inputs and outputs back to their
+##  original order
+## @example
+## @group
+##                  ____________________
+##  u_1       ----->|                  |----> y_1
+##                  |        sys       |
+##          old u_2 |                  |
+## u_2* ---->(+)--->|                  |----->y_2 
+## (in_idx)   ^     -------------------|    | (out_idx)
+##            |                             |
+##            -------------------------------
+## @end group
+## @end example
+## The input that has the summing junction added to it has an * added to the end 
+## of the input name.
+## 
+## @end deftypefn
+
+function sys = sysconnect(sys,output_list,input_list,order,tol)
 # A. S. Hodel August 1995
 # modified by John Ingram July 1996
 

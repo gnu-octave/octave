@@ -15,26 +15,24 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function sys = sysmult(...)
-#
-# sys = sysmult(Asys{,Bsys,...})
-#
-# returns transfer function sys = Asys*Bsys* ...
-#
-# Same as series connection of systems; for example, sysmult(Asys,Bsys)
-# returns sys = Asys*Bsys with block diagram
-#
-#
-#     u   ----------     ----------
-#     --->|  Bsys  |---->|  Asys  |--->
-#         ----------     ----------
-#
-# A warning occurs if there is direct feed-through
-# from an input of Bsys or a continuous state of Bsys through a discrete 
-# output of Bsys to a continuous state or output in Asys (system data structure form 
-# does not recognize discrete inputs)
 
+## -*- texinfo -*- 
+## @deftypefn {Function File } { @var{sys} =} sysmult( @var{Asys}, @var{Bsys})
+## Compute @math{sys = Asys*Bsys} (series connection):
+## @example
+## @group
+## u   ----------     ----------
+## --->|  Bsys  |---->|  Asys  |--->
+##     ----------     ----------
+## @end group
+## @end example
+## A warning occurs if there is direct feed-through
+## from an input of Bsys or a continuous state of Bsys through a discrete 
+## output of Bsys to a continuous state or output in Asys (system data structure
+## does not recognize discrete inputs).
+## @end deftypefn
+
+function sys = sysmult(...)
 # Written by John Ingram July 1996
 # updated for variable number of arguments by A. S. Hodel July 1999
 

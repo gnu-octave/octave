@@ -17,29 +17,64 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: x = lyap (a, b {,c})
-##
-## If (a, b, c) are specified, then lyap returns the solution of the
-## Sylvester equation
-##
-##   a x + x b + c = 0
-##
-## If only (a, b) are specified, then lyap returns the solution of the
-## Lyapunov equation
-##
-##   a' x + x a + b = 0
-##
-## If b is not square, then lyap returns the solution of either
-##
-##   a' x + x a + b' b = 0
-##
-## or
-##
-##   a x + x a' + b b' = 0
-##
-## whichever is appropriate.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} lyap (@var{a}, @var{b}, @var{c})
+## @deftypefnx {Function File} {} lyap (@var{a}, @var{b})
+##   Solve the Lyapunov (or Sylvester) equation via the Bartels-Stewart
+##   algorithm (Communications of the ACM, 1972).
+## 
+##   If @var{a}, @var{b}, and @var{c} are specified, then @code{lyap} returns
+##   the solution of the  Sylvester equation
+##   @iftex
+##     @tex
+##       $$ A X + X B + C = 0 $$
+##     @end tex
+##   @end iftex
+##   @ifinfo
+##     @example
+##       a x + x b + c = 0
+##     @end example
+##   @end ifinfo
+##   If only @code{(a, b)} are specified, then @code{lyap} returns the
+##   solution of the Lyapunov equation
+##   @iftex
+##     @tex
+##       $$ A^T X + X A + B = 0 $$
+##     @end tex
+##   @end iftex
+##   @ifinfo
+##     @example
+##       a' x + x a + b = 0
+##     @end example
+##   @end ifinfo
+##   If @var{b} is not square, then @code{lyap} returns the solution of either
+##   @iftex
+##     @tex
+##       $$ A^T X + X A + B^T B = 0 $$
+##     @end tex
+##   @end iftex
+##   @ifinfo
+##     @example
+##       a' x + x a + b' b = 0
+##     @end example
+##   @end ifinfo
+##   @noindent
+##   or
+##   @iftex
+##     @tex
+##       $$ A X + X A^T + B B^T = 0 $$
+##     @end tex
+##   @end iftex
+##   @ifinfo
+##     @example
+##       a x + x a' + b b' = 0
+##     @end example
+##   @end ifinfo
+##   @noindent
+##   whichever is appropriate.
 ##
 ## Solves by using the Bartels-Stewart algorithm (1972).
+## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993

@@ -15,18 +15,31 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{n_tot}, @var{st_c}, @var{st_d}, @var{y_c}, @var{y_d}] =} syscont_disc(@var{sys})
+## Used internally in syscont and sysdisc.
+## 
+## @strong{Inputs}
+## @var{ sys} is a system data structure.
+## 
+## @strong{Outputs}
+## @table @var
+## @item n_tot
+## total number of states
+## @item st_c
+## vector of continuous state indices (empty if none)
+## @item st_d
+## vector of discrete state indices (empty if none)
+## @item y_c
+## vector of continuous output indices
+## @item y_d
+## vector of discrete output indices
+## @end table
+## 
+## @end deftypefn
  
 function [n_tot,st_c,st_d,y_c,y_d] = syscont_disc(sys)
-# function [n_tot,st_c,st_d,y_c,y_d] = syscont_disc(sys)
-# Used internally in syscont and sysdisc.
-#
-# inputs: sys is a system data structure
-# outputs: n_tot: total number of states
-#	   st_c: vector of continuous state indices (empty if none)
-#	   st_d: vector of discrete state indices (empty if none)
-#	   y_c: vector of continuous output indices
-#	   y_d: vector of discrete output indices
-
 # Written by A. S. Hodel (a.s.hodel@eng.auburn.edu) Feb 1997
 
   # get ranges for discrete/continuous states and outputs

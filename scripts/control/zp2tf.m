@@ -15,19 +15,23 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function [num,den] = zp2tf(zer,pol,k)
-# [num,den] = zp2tf(zer,pol,k)
-# Converts zeros / poles to a transfer function.
-#
-# Inputs:
-#   zer, pol: vectors of (possibly complex) poles and zeros of a transfer
-#             function.  Complex values should appear in conjugate pairs
-#   k: real scalar (leading coefficient)
-# Forms the transfer function num/den from
-# the vectors of poles and zeros.  K is a scalar gain associated with the
-# zeros.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{num}, @var{den}] =} zp2tf (@var{zer}, @var{pol}, @var{k})
+##  Converts zeros / poles to a transfer function.
+## @strong{Inputs}
+## @table
+## @item zer, pol
+## vectors of (possibly complex) poles and zeros of a transfer
+## function.  Complex values should appear in conjugate pairs
+## @item k
+## real scalar (leading coefficient)
+## @end table
+## @code{[num,den] = zp2tf(zer,pol,k)} forms the transfer function 
+## @code{num/den} from the vectors of poles and zeros.
+## @end deftypefn
+
+function [num,den] = zp2tf(zer,pol,k)
 # Find out whether data was entered as a row or a column vector and
 # convert to a column vector if necessary
 # Written by A. S. Hodel with help from students Ingram, McGowan.

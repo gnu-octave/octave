@@ -15,29 +15,32 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} rlocus ( inputs ) 
+## @format
+##  [rldata, k] = rlocus(sys[,increment,min_k,max_k])
+##  Displays root locus plot of the specified SISO system.
+##  
+##        -----   ---     -------- 
+##    --->| + |---|k|---->| SISO |----------->
+##        -----   ---     --------        | 
+##        - ^                             | 
+##          |_____________________________|  
+## 
+## inputs: sys = system data structure
+##         min_k, max_k,increment: minimum, maximum values of k and
+##                the increment used in computing gain values
+##  Outputs: plots the root locus to the screen.  
+##    rldata: Data points plotted column 1: real values, column 2: imaginary
+##            values)
+##    k: gains for real axis break points.
+## 
+## 
+## @end format
+## @end deftypefn
+
 function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,max_k)
-  # [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,max_k)
-  # Displays root locus plot of the specified SISO system.
-  # 
-  #       -----   ---     -------- 
-  #   --->| + |---|k|---->| SISO |----------->
-  #       -----   ---     --------        | 
-  #       - ^                             | 
-  #         |_____________________________|  
-  #
-  #inputs: sys = system data structure
-  #        min_k, max_k,increment: minimum, maximum values of k and
-  #               the increment used in computing gain values
-  # outputs: plots the root locus to the screen.  
-  #   rldata: Data points plotted column 1: real values, column 2: imaginary
-  #           values)
-  #   k_break: gains for real axis break points.
-  #   rlpol: complex vector: column ii of pol is the set of poles
-  #        corresponding to to gain gvec(ii)
-  #   gvec: gains used to compute root locus
-  #   real_ax_pts: breakpoints of the real axis locus.
-  
   # Convert the input to a transfer function if necessary
   # Written by Clem and Tenison
   # Updated by Kristi McGowan July 1996 for intelligent gain selection

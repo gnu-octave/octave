@@ -15,19 +15,27 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+##@deftypefn {Function File } {[@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname}] =} sys2zp (@var{sys})
+## Extract zero/pole/leading coefficient information from a system data
+## structure
+## 
+## See @ref{zp2sys} for parameter descriptions.
+## 
+## @strong{Example}
+## @example
+## octave:1> sys=ss2sys([1 -2; -1.1,-2.1],[0;1],[1 1]);
+## octave:2> [zer,pol,k] = sys2zp(sys)
+## zer = 3.0000
+## pol =
+##   -2.6953
+##    1.5953
+## k = 1
+## @end example
+## @end deftypefn
  
 function [zer,pol,k,tsam,inname,outname] = sys2zp(sys)
-# [zer,pol,k,tsam,inname,outname] = sys2zp(sys)
-# extract zero/pole/leading coefficient information from a system data
-# structure
-# inputs: sys: system data structure
-# outputs:
-#   zer: vector of system zeros
-#   pol: vector of system poles
-#   k: scalar leading coefficient
-#   tsam: sampling period. default: 0 (continuous system)
-#   inname, outname: input/output signal names (strings)
-
 # Created by John Ingram July 15 1996
 
   if(nargin != 1)

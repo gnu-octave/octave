@@ -15,13 +15,18 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function sysrepdemo()
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {} sysrepdemo 
+## Tutorial for the use of the system data structure functions.
+## @end deftypefn
 
 # Octave Controls toolbox demo: System representation
-
 # Written by A. S. Hodel June 1995
 # Revised Aug 1995 for system data structure format
+function sysrepdemo()
+
+
 
   save_val = page_screen_output;
   page_screen_output = 1;

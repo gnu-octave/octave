@@ -15,18 +15,17 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function zpout(zer,pol,k,x)
-#
-# usage: zpout(zer,pol,k,[,x])
-#  
-# print formatted zero-pole form
-# to the screen
-# x defaults to the string "s"
-#
-#  SEE ALSO: polyval, polyvalm, poly, roots, conv, deconv, residue, 
-#	filter, polyderiv, polyinteg, polyout
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { } zpout (@var{zer}, @var{pol}, @var{k}@{, @var{x}@})
+##  print formatted zero-pole form to the screen.  
+## @var{x} defaults to the string @code{"s"}
+## @end deftypefn
+
+##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
+##	filter, polyderiv, polyinteg, polyout 
+
+function zpout(zer,pol,k,x)
 # Written by A. Scottedward Hodel (scotte@eng.auburn.edu) June 1995)
 
   save_val = implicit_str_to_num_ok;

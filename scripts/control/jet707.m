@@ -15,17 +15,22 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{outsys}  =} jet707 ( ) 
+##  Creates linearized state space model of a Boeing 707-321 aircraft
+##  at v=80m/s. (M = 0.26, Ga0 = -3 deg, alpha0 = 4 deg, kappa = 50 deg)
+##  System inputs:   (1) thrust   and (2) elevator angle
+##  System outputs:  (1) airspeed and (2) pitch angle
+##  Ref: R. Brockhaus: Flugregelung (Flight Control), Springer, 1994
+## 
+##  see also: ord2
+## 
+## Contributed by Kai Mueller
+## @end deftypefn
+
  
 function outsys = jet707()
-  # function outsys = jet707()
-  # Creates linearized state space model of a Boeing 707-321 aircraft
-  # at v=80m/s. (M = 0.26, Ga0 = -3 deg, alpha0 = 4 deg, kappa = 50 deg)
-  # System inputs:   (1) thrust   and (2) elevator angle
-  # System outputs:  (1) airspeed and (2) pitch angle
-  # Ref: R. Brockhaus: Flugregelung (Flight Control), Springer, 1994
-  #
-  # see also: ord2
-
   # Written by Kai P. Mueller September 28, 1997
   # Updates
 

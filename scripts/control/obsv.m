@@ -16,27 +16,27 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
-function Qb = obsv(sys, c)
-  # ------------------------------------------------------
-  # Qb = obsv(sys [, c])
-  # Build observability matrix
-  #
-  #          +          +
-  #          | C        |
-  #          | CA       |
-  #     Qb = | CA^2     |
-  #          | ...      |
-  #          | CA^(n-1) |
-  #          +          +
-  #
-  # of a system data structure or the pair (A, C).
-  #
-  # Note: obsv() forms the observability matrix.
-  #       The numerical properties of is_observable()
-  #       are much better for observability tests.
-  # See also:  ctrb, is_observable, is_controllable
-  # ------------------------------------------------------
+## -*- texinfo -*-
+##@deftypefn {Function File } { @var{Qb} =} obsv (@var{sys}@{, @var{c}@})
+## Build observability matrix
+## @example
+## @group
+##      | C        |
+##      | CA       |
+## Qb = | CA^2     |
+##      | ...      |
+##      | CA^(n-1) |
+## @end group
+## @end example
+## of a system data structure or the pair (A, C).
+## 
+## Note: @code{obsv()} forms the observability matrix.
+## 
+##        The numerical properties of is_observable()
+##        are much better for observability tests.
+## @end deftypefn
 
+function Qb = obsv(sys, c)
   # Written by Kai P. Mueller November 4, 1997
   # modified by
 

@@ -16,20 +16,29 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function out = ltifr(a,b,w)
-  #ltifr:  Linear time invarient frequency response of SISO systems
-  # out = ltifr(A,B,w)
-  # user enters the A and B matrices
-  #
-  # out = ltifr(sys,w)
-  # user enters the system, SYS
-  #
-  # this function takes the system matrices, A and B and
-  # returns:               -1
-  #          G(s) = (jw I-A) B
-  #
-  # for complex frequencies s = jw. 
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{out} =} ltifr (@var{A}, @var{B}, @var{w})
+## @deftypefnx {Function File } {@var{out} =} ltifr (@var{sys}, @var{w})
+## Linear time invariant frequency response of single input systems
+## @strong{Inputs}
+## @table @var
+## @item A, B
+## coefficient matrices of @math{dx/dt = A x + B u}
+## @item sys
+##  system data structure
+## @item w
+##  vector of frequencies
+## @end table
+## @strong{Outputs}
+## @var{out}
+## @example
+##                            -1
+##             G(s) = (jw I-A) B
+## @end example
+## for complex frequencies @math{s = jw}.
+## @end deftypefn
 
+function out = ltifr(a,b,w)
   # R. B. Tenison, D. Clem, A. S. Hodel, July 1995
   # updated by John Ingram August 1996 for system format
   

@@ -16,21 +16,23 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function DIGITAL = is_digital(sys,eflg)
-# function DIGITAL = is_digital(sys{,eflg})
-# return nonzero if system is digital
-# inputs:
-#   sys: system data structure
-#   eflg: 0 [default] exit with an error if system is mixed (continuous and
-#           discrete components)
-#       : 1 print a warning if system is mixed (continuous and discrete)
-#       : 2 silent operation
-# outputs:
-#   DIGITAL:  0: system is purely continuous
-#          :  1: system is purely discrete
-#          : -1: system is mixed continuous and discrete
-# exits with an error of sys is a mixed (continuous and discrete) system
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retval} =} is_digital ( @var{sys})
+## Return nonzero if system is digital;
+##  inputs:
+##    sys: system data structure
+##    eflg: 0 [default] exit with an error if system is mixed (continuous and
+##            discrete components)
+##        : 1 print a warning if system is mixed (continuous and discrete)
+##        : 2 silent operation
+##  outputs:
+##    DIGITAL:  0: system is purely continuous
+##           :  1: system is purely discrete
+##           : -1: system is mixed continuous and discrete
+## Exits with an error of sys is a mixed (continuous and discrete) system
+## @end deftypefn
 
+function DIGITAL = is_digital(sys,eflg)
 # a s hodel July 1996
 
   switch(nargin)

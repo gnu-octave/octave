@@ -15,21 +15,27 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function K = hinf_ctr(dgs,F,H,Z,g)
-  # K = hinf_ctr(dgs,F,H,Z,g)
-  #
-  # Called by hinfsyn to compute the H_inf optimal controller.
-  # 
-  # inputs:
-  #   dgs: data structure returned by is_dgkf
-  #           F, H:         feedback and filter gain (not partitioned)
-  #           g:            final gamma value
-  # outputs: 
-  #           controller K (system data structure)
-  #
-  # Do not attempt to use this at home; no argument checking performed.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{K} =} hinf_ctr(@var{dgs}, @var{F}, @var{H}, @var{Z}, @var{g})
+## Called by @code{hinfsyn} to compute the H_inf optimal controller.
+## 
+## @strong{Inputs}
+## @table @var
+## @item dgs
+## data structure returned by @code{is_dgkf}
+## @item F, H
+## feedback and filter gain (not partitioned)
+## @item g
+## final gamma value
+## @end table
+## @strong{Outputs}
+## controller K (system data structure)
+## 
+## Do not attempt to use this at home; no argument checking performed.
+## @end deftypefn
+  
+function K = hinf_ctr(dgs,F,H,Z,g)
   # A. S. Hodel August 1995
   # Revised by Kai P Mueller April 1998 to solve the general H_infinity
   # problem using unitary transformations Q (on w and z)

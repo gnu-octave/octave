@@ -16,16 +16,19 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function outsys = ugain(n)
-  # function outsys = ugain(n)
-  # Creates a system with unity gain, no states.
-  # This trivial system is sometimes needed to create arbitrary
-  # complex systems from simple systems with buildssic.
-  # Watch out if you are forming sampled systems since "ugain"
-  # does not contain a sampling period.  
-  #
-  # See also: hinfdemo (MIMO H_infinty example, Boeing 707-321 aircraft model)
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{outsys} =} ugain(n)
+##  Creates a system with unity gain, no states.
+##  This trivial system is sometimes needed to create arbitrary
+##  complex systems from simple systems with buildssic.
+##  Watch out if you are forming sampled systems since "ugain"
+##  does not contain a sampling period.  
+## 
+## See also: hinfdemo (MIMO H_infinty example, Boeing 707-321 aircraft model)
+## 
+## @end deftypefn
 
+function outsys = ugain(n)
   # Written by Kai P. Mueller April, 1998
   # Updates
 

@@ -16,15 +16,21 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
+## -*- texinfo -*-
+## @deftypefn{Function File } { @var{axvec} =} axis2dlim (@var{axdata})
+##  determine axis limits for 2-d data(column vectors); leaves a 10% margin 
+##  around the plots.
+##  puts in margins of +/- 0.1 if data is one dimensional (or a single point)
+## 
+## @strong{Inputs}
+##    @var{axdata} nx2 matrix of data [x,y]
+## 
+## @strong{Outputs}
+##    @var{axvec} vector of axis limits appropriate for call to axis() function
+## @end deftypefn
+
 function axvec = axis2dlim(axdata)
-# function axvec = axis2dlim(axdata)
-# determine axis limits for 2-d data; leaves a 10% margin around the plots.
-# puts in margins of +/- 0.1 if data is one dimensional (or a single point)
-# inputs:
-#   axdata: nx2 matrix of data [x,y]
-# outputs:
-#   vector of axis limits appropriate for call to axis() function
- 
+
   if(isempty(axdata))
     axdata = 0;
   endif

@@ -15,6 +15,24 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{dsys}, @var{Adc}, @var{Cdc}] =} sysdisc (@var{sys})
+## 
+## @strong{Inputs}
+## @var{sys} = system data structure
+## 
+## @strong{Outputs}
+## @table @var
+## @item dsys
+##  purely discrete portion of sys (returned empty if there is
+##           no purely discrete path from inputs to outputs)
+## @item    Adc, Cdc
+##  connections from continuous states to discrete states and discrete
+##     outputs, respectively.
+## @end table
+## 
+## @end deftypefn
  
 function [dsys,Adc,Cdc] = sysdisc(sys)
 # function [dsys,Adc,Cdc] = sysdisc(sys)

@@ -15,26 +15,42 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{f}, @var{w}] =} bodquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+##  used internally by bode, nyquist; compute system frequency response.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+## input system structure
+## @item w
+## range of frequencies; empty if user wants default
+## @item out_idx
+## list of outputs; empty if user wants all
+## @item in_idx
+## list of inputs; empty if user wants all
+## @item rname
+## name of routine that called bodquist ("bode" or "nyquist")
+## @end table
+## @strong{Outputs}
+## @table @var
+## @item w
+##  list of frequencies 
+## @item f
+##  frequency response of sys; @math{f(ii) = f(omega(ii))}
+## @end table
+## @strong{Note} bodquist could easily be incorporated into a Nichols
+## plot function; this is in a "to do" list.
+##
+## Both bode and nyquist share the same introduction, so the common parts are 
+## in bodquist.  It contains the part that finds the number of arguments, 
+## determines whether or not the system is SISO, and computes the frequency 
+## response.  Only the way the response is plotted is different between the 
+## two functions.
+## @end deftypefn
  
 function [f,w] = bodquist(sys,w,outputs,inputs,rname)
-# [f,w] = bodquist(sys,w,outputs,inputs)
-# used by bode, nyquist
-# inputs:
-#   sys: input system structure
-#   w: range of frequencies; empty if user wants default
-#   outputs:list of outputs; empty if user wants all
-#   inputs: list of inputs; empty if user wants all
-#   rname: name of routine that called bodquist ("bode" or "nyquist")
-# outputs:
-#   w: list of frequencies 
-#   f: frequency response of sys; f(ii) = f(omega(ii))
-#
-# Both bode and nyquist share the same introduction, so the common parts are 
-# in this file bodquist.m.  It contains the part that finds the 
-# number of arguments, determines whether or not the system is SISO, and 
-# computes the frequency response.  Only the way the response is plotted is
-# different between the two functions.
-
   # check number of input arguments given
   if (nargin != 5)
     usage("[f,w] = bodquist(sys,w,outputs,inputs,rname)");

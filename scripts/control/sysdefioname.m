@@ -15,20 +15,28 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{ioname} =} sysdefioname (@var{n},@var{str} @{,@var{m}@})
+## return default input or output names given @var{n}, @var{str}, @var{m}.
+##  @var{n} is the final value, @var{str} is the string prefix, and @var{m}
+## is start value
+## 
+##  used internally, minimal argument checking
+## 
+## @strong{Example} @code{ioname = sysdefioname(5,"u",3)}
+## returns the list:
+## @example
+## ioname =
+## (
+##   [1] = u_3
+##   [2] = u_4
+##   [3] = u_5
+## )
+## @end example
+## @end deftypefn
  
 function ioname = sysdefioname(n,str,m)
-# function ioname = sysdefioname(n,str[,m])
-# return list of default input or output names given n, str, m
-# n is the final value, str is the string prefix, and m is start value
-# ex: ioname = sysdefioname(5,"u",3)
-#
-# returns: 	ioname =
-#               (
-#                 [1] = u_3
-#                 [2] = u_4
-#                 [3] = u_5
-#               )
-# used internally, minimal argument checking
 
   if (nargin < 2 | nargin > 3)
     usage("ioname = sysdefioname(n,str[,m])");

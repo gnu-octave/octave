@@ -15,15 +15,23 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} ss2zp ( inputs ) 
+## @format
+##  Converts a state space representation to a set of poles and zeros.
+## 
+##  [pol,zer,k] = ss2zp(a,b,c,d) returns the poles and zeros of the state space 
+##  system (a,b,c,d).  K is a gain associated with the zeros.
+## 
+##  used internally in system data structure format manipulations
+## 
+## 
+## @end format
+## @end deftypefn
+
  
 function [zer,pol,k] = ss2zp(a,b,c,d)
-# Converts a state space representation to a set of poles and zeros.
-#
-# [pol,zer,k] = ss2zp(a,b,c,d) returns the poles and zeros of the state space 
-# system (a,b,c,d).  K is a gain associated with the zeros.
-#
-# used internally in system data structure manipulations
-
 # Written by David Clem August 15, 1994
 # Hodel: changed order of output arguments to zer, pol, k. July 1996
 # a s hodel: added argument checking, allow for pure gain blocks aug 1996

@@ -15,24 +15,34 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function str_val = outlist(name_list,tabchar,yd,ilist)
-# function str_val = outlist(name_list[,tabchar,yd,ilist])
-#
-# internal use only; minimal argument checking performed
-#
-# print an enumerated list of strings
-# inputs:
-#	name_list: list of strings (one per entry)
-#	tabchar: tab character (default: none)
-#       yd: indices of entries to append with the string "(discrete)"
-#           (used by sysout; minimal checking of this argument)
-#	   yd = [] => all continuous
-#       ilist: index numbers to print with names
-#	  default: 1:length(name_list)
-# outputs:
-#   prints the list to the screen, numbering each string in order.
 
+## -*- texinfo -*- 
+## @deftypefn {Function File } { } outlist (@var{lmat}@{, @var{tabchar}, @var{yd}, @var{ilist} @})
+##  Prints an enumerated list of strings.
+##  internal use only; minimal argument checking performed
+## 
+## @strong{Inputs}
+## @table @var
+## @item 	lmat
+##  list of strings
+## @item 	tabchar
+##  tab character (default: none)
+## @item   yd
+##  indices of strings to append with the string "(discrete)"
+##            (used by @var{sysout}; minimal checking of this argument)
+## 	   @math{yd = [] } indicates all outputs are continuous
+## @item ilist
+## index numbers to print with names.  
+## 
+## default: @code{1:rows(lmat)}
+## @end table
+## 
+## @strong{Outputs}
+##    prints the list to the screen, numbering each string in order.
+## 
+## @end deftypefn
+
+function str_val = outlist(name_list,tabchar,yd,ilist)
 # A. S. Hodel Dec. 1995, 1998
 
 #save for restore later

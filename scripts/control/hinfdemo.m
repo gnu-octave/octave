@@ -16,105 +16,114 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-# hinfdemo  H_infinity design demos for continuous SISO and MIMO
-#           systems and a discrete system.
-#           The SISO system is difficult to control because
-#           it is non minimum phase and unstable. The second
-#           design example controls the "jet707" plant, the
-#           linearized state space model of a Boeing 707-321
-#           aircraft at v=80m/s (M = 0.26, Ga0 = -3 deg,
-#           alpha0 = 4 deg, kappa = 50 deg).
-#           inputs:  (1) thrust   and (2) elevator angle
-#           outputs: (1) airspeed and (2) pitch angle.
-#           The discrete system is a stable and second order.
-#
-# This is a script file for Octave.
-#
-# SISO plant:
-#
-#	           s - 2
-#	G(s) = --------------
-#	       (s + 2)(s - 1)
-#
-#	                         +----+
-#	    -------------------->| W1 |---> v1
-#	z   |                    +----+
-#	----|-------------+                   || T   ||     => min.
-#	    |             |                       vz   infty
-#	    |    +---+    v   y  +----+
-#	  u *--->| G |--->O--*-->| W2 |---> v2
-#	    |    +---+       |   +----+
-#	    |                |
-#	    |    +---+       |
-#	    -----| K |<-------
-#	         +---+
-#
-#	W1 und W2 are the robustness and performance weighting
-#       functions
-#
-# MIMO plant:
-# The optimal controller minimizes the H_infinity norm of the
-# augmented plant P (mixed-sensitivity problem):
-#
-#      w
-#       1 -----------+
-#                    |                   +----+
-#                +---------------------->| W1 |----> z1
-#      w         |   |                   +----+
-#       2 ------------------------+
-#                |   |            |
-#                |   v   +----+   v      +----+
-#             +--*-->o-->| G  |-->o--*-->| W2 |---> z2
-#             |          +----+      |   +----+
-#             |                      |
-#             ^                      v
-#              u (from                 y (to K)
-#                controller
-#                K)
-#
-#
-#                   +    +           +    +
-#                   | z  |           | w  |
-#                   |  1 |           |  1 |
-#                   | z  | = [ P ] * | w  |
-#                   |  2 |           |  2 |
-#                   | y  |           | u  |
-#                   +    +           +    +
-#
-# DISCRETE SYSTEM:
-#   This is not a true discrete design. The design is carried out
-#   in continuous time while the effect of sampling is described by
-#   a bilinear transformation of the sampled system.
-#   This method works quite well if the sampling period is "small"
-#   compared to the plant time constants.
-#
-# The continuous plant:
-#	              1
-#	G (s) = --------------
-#	 k      (s + 2)(s + 1)
-#
-# is discretised with a ZOH (Sampling period = Ts = 1 second):
-#
-#	          0.199788z + 0.073498
-#	G(s) = --------------------------
-#	       (z - 0.36788)(z - 0.13534)
-#
-#	                         +----+
-#	    -------------------->| W1 |---> v1
-#	z   |                    +----+
-#	----|-------------+                   || T   ||     => min.
-#	    |             |                       vz   infty
-#	    |    +---+    v      +----+
-#	    *--->| G |--->O--*-->| W2 |---> v2
-#	    |    +---+       |   +----+
-#	    |                |
-#	    |    +---+       |
-#	    -----| K |<-------
-#	         +---+
-#
-#	W1 and W2 are the robustness and performancs weighting
-#       functions
-
+## -*- texinfo -*-
+## hinfdemo  H_infinity design demos for continuous SISO and MIMO
+##           systems and a discrete system.
+##           The SISO system is difficult to control because
+##           it is non minimum phase and unstable. The second
+##           design example controls the "jet707" plant, the
+##           linearized state space model of a Boeing 707-321
+##           aircraft at v=80m/s (M = 0.26, Ga0 = -3 deg,
+##           alpha0 = 4 deg, kappa = 50 deg).
+##           inputs:  (1) thrust   and (2) elevator angle
+##           outputs: (1) airspeed and (2) pitch angle.
+##           The discrete system is a stable and second order.
+##
+## 
+## @table
+## @item SISO plant
+## @example
+## @group
+##	           s - 2
+##	G(s) = --------------
+##	       (s + 2)(s - 1)
+##
+##	                         +----+
+##	    -------------------->| W1 |---> v1
+##	z   |                    +----+
+##	----|-------------+                   || T   ||     => min.
+##	    |             |                       vz   infty
+##	    |    +---+    v   y  +----+
+##	  u *--->| G |--->O--*-->| W2 |---> v2
+##	    |    +---+       |   +----+
+##	    |                |
+##	    |    +---+       |
+##	    -----| K |<-------
+##	         +---+
+## @end group
+## @end example
+##	W1 und W2 are the robustness and performance weighting
+##       functions
+##
+## @item MIMO plant
+## The optimal controller minimizes the H_infinity norm of the
+## augmented plant P (mixed-sensitivity problem):
+## @example
+## @group
+##      w
+##       1 -----------+
+##                    |                   +----+
+##                +---------------------->| W1 |----> z1
+##      w         |   |                   +----+
+##       2 ------------------------+
+##                |   |            |
+##                |   v   +----+   v      +----+
+##             +--*-->o-->| G  |-->o--*-->| W2 |---> z2
+##             |          +----+      |   +----+
+##             |                      |
+##             ^                      v
+##              u (from                 y (to K)
+##                controller
+##                K)
+##
+##
+##                   +    +           +    +
+##                   | z  |           | w  |
+##                   |  1 |           |  1 |
+##                   | z  | = [ P ] * | w  |
+##                   |  2 |           |  2 |
+##                   | y  |           | u  |
+##                   +    +           +    +
+## @end group
+## @end example
+##
+## @item DISCRETE SYSTEM
+##   This is not a true discrete design. The design is carried out
+##   in continuous time while the effect of sampling is described by
+##   a bilinear transformation of the sampled system.
+##   This method works quite well if the sampling period is "small"
+##   compared to the plant time constants.
+##
+## @item The continuous plant
+## @group
+##	              1
+##	G (s) = --------------
+##	 k      (s + 2)(s + 1)
+##
+## @end group
+## is discretised with a ZOH (Sampling period = Ts = 1 second):
+## @group
+## 
+##	          0.199788z + 0.073498
+##	G(s) = --------------------------
+##	       (z - 0.36788)(z - 0.13534)
+##
+##	                         +----+
+##	    -------------------->| W1 |---> v1
+##	z   |                    +----+
+##	----|-------------+                   || T   ||     => min.
+##	    |             |                       vz   infty
+##	    |    +---+    v      +----+
+##	    *--->| G |--->O--*-->| W2 |---> v2
+##	    |    +---+       |   +----+
+##	    |                |
+##	    |    +---+       |
+##	    -----| K |<-------
+##	         +---+
+## @end group
+##	W1 and W2 are the robustness and performancs weighting
+##       functions
+## @end deftypefn
 
 # Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de
 

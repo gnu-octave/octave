@@ -16,17 +16,20 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{y} =} polyout ( @var{c}@{, @var{x}@})
+## write formatted polynomial 
+## @example
+##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
+## @end example
+##  to string @var{y} or to the screen (if @var{y} is omitted)
+##  @var{x} defaults to the string @code{"s"}
+## @end deftypefn
+
+##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
+##	filter, polyderiv, polyinteg
+
 function y = polyout(c,x)
-#
-# usage: [y=] polyout(c[,x])
-#
-# print formatted polynomial 
-#   c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
-# in a string or to the screen (if y is omitted)
-# x defaults to the string "s"
-#
-#  SEE ALSO: polyval, polyvalm, poly, roots, conv, deconv, residue, 
-#	filter, polyderiv, polyinteg
 
 # Written by A. Scottedward Hodel (scotte@eng.auburn.edu) May 1995)
 # Nov 1998: Correctly handles complex coefficients

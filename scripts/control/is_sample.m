@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retval} =} is_sample (@var{Ts}) 
+##  return true if @var{Ts} is a legal sampling time
+##  (real,scalar, > 0)
+## @end deftypefn
  
 function out = is_sample(Ts)
-#
-# out = is_sample(Ts): return true if Ts is a legal sampling time
-# (real,scalar, > 0)
-
 # A. S. Hodel July 1995
 
 out = (is_scalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );

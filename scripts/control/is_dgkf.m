@@ -15,59 +15,86 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{Asys}, @var{nu}, @var{ny}, @var{tol} )
+##  Determine whether a continuous time state space system meets
+##  assumptions of DGKF algorithm.  
+##  Partitions system into: 
+## @example
+## [dx/dt] = [A  | Bw  Bu  ][w] 
+## [ z   ]   [Cz | Dzw Dzu ][u]
+## [ y   ]   [Cy | Dyw Dyu ]
+## @end example
+## or similar discrete-time system.
+## If necessary, orthogonal transformations @var{Qw}, @var{Qz} and nonsingular
+##  transformations @var{Ru}, @var{Ry} are applied to respective vectors 
+## @var{w}, @var{z}, @var{u}, @var{y} in order to satisfy DGKF assumptions.  
+## Loop shifting is used if @var{Dyu} block is nonzero.
+## 
+## @strong{Inputs}
+## @table @var
+## @item         Asys
+## system data structure
+## @item           nu
+## number of controlled inputs
+## @item        ny
+##  number of measured outputs
+## @item        tol
+##  threshhold for 0.  Default: 200@var{eps}
+## @end table
+## @strong{Outputs}
+## @table @var
+## @item    retval
+##  true(1) if system passes check, false(0) otherwise
+## @item    dgkf_struct
+##  data structure of @code{is_dgkf} results.  Entries:
+## @table @var
+## @item      nw, nz
+##  dimensions of @var{w}, @var{z}
+## @item      A
+##  system @var{A} matrix
+## @item      Bw
+##  (@var{n} x @var{nw}) @var{Qw}-transformed disturbance input matrix
+## @item      Bu
+##  (@var{n} x @var{nu}) @var{Ru}-transformed controlled input matrix;
+## 
+##           @strong{Note} @math{B = [Bw Bu] }
+## @item      Cz
+##  (@var{nz} x @var{n}) Qz-transformed error output matrix
+## @item      Cy
+##  (@var{ny} x @var{n}) @var{Ry}-transformed measured output matrix 
+## 
+##           @strong{Note} @math{C = [Cz; Cy] }
+## @item      Dzu, Dyw
+##  off-diagonal blocks of transformed @var{D} matrix that enter 
+## @var{z}, @var{y} from @var{u}, @var{w} respectively
+## @item      Ru
+##  controlled input transformation matrix 
+## @item      Ry
+##  observed output transformation matrix
+## @item      Dyu_nz
+##  nonzero if the @var{Dyu} block is nonzero.
+## @item      Dyu
+##  untransformed @var{Dyu} block
+## @item      dflg
+##  nonzero if the system is discrete-time
+##   @end table
+## @end table 
+## @code{is_dgkf} exits with an error if the system is mixed discrete/continuous
+## 
+## @strong{References}
+## @table @strong
+## @item [1]
+##  Doyle, Glover, Khargonekar, Francis, "State Space Solutions
+##      to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
+## @item [2]
+##  Maciejowksi, J.M.: "Multivariable feedback design,"
+## @end table
+## 
+## @end deftypefn
  
 function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
-  # function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny{,tol})
-  # Determine whether a continuous time state space system meets
-  # assumptions of DGKF algorithm.  
-  # Partitions system into: [z] = [A  | Bw  Bu  ][w]
-  #                         [y]   [Cz | Dzw Dzu ][u]
-  #                               [Cy | Dyw Dyu ]
-  #If necessary, orthogonal transformations Qw, Qz and nonsingular
-  # transformations Ru, Ry are applied to respective vectors w, z, u, y 
-  # in order to satisfy DGKF assumptions.  Loop shifting is used if Dyu block
-  # is nonzero.
-  #
-  # inputs: 
-  #        Asys: structured system
-  #	   nu: number of controlled inputs
-  #        ny: number of measured outputs
-  #        tol: threshhold for 0.  Default: 200*eps
-  # outputs: 
-  #    retval: true(1) if system passes check, false(0) otherwise
-  #    dgkf_struct: data structure of is_dgkf results.  Entries:
-  #      nw, nz: dimensions of w, z
-  #      A: system A matrix
-  #      Bw: (n x nw) Qw-transformed disturbance input matrix
-  #      Bu: (n x nu) Ru-transformed controlled input matrix;
-  #          Note: B = [Bw Bu] 
-  #      Cz: (nz x n) Qz-transformed error output matrix
-  #      Cy: (ny x n) Ry-transformed measured output matrix 
-  #          Note: C = [Cz; Cy] 
-  #      Dzu, Dyw: off-diagonal blocks of transformed D matrix that enter 
-  #          z, y from u, w respectively
-  #      Ru: controlled input transformation matrix 
-  #      Ry: observed output transformation matrix
-  #      Dyu_nz: nonzero if the Dyu block is nonzero.
-  #      Dyu: untransformed Dyu block
-  #      dflg: nonzero if the system is discrete-time
-  #   
-  #    is_dgkf exits with an error if the system is mixed discrete/continuous
-  #
-  # [1] Doyle, Glover, Khargonekar, Francis, "State Space Solutions
-  #     to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
-  #
-  # [2] Maciejowksi, J.M.: "Multivariable feedback design,"
-  #     Addison-Wesley, 1989, ISBN 0-201-18243-2
-  #
-  # [3] Keith Glover and John C. Doyle: "State-space formulae for all
-  #     stabilizing controllers that satisfy and h-infinity-norm bound
-  #     and relations to risk sensitivity,"
-  #     Systems & Control Letters 11, Oct. 1988, pp 167-172.
-  # [4] P. A. Iglesias and K. Glover, "State-space approach to discrete-time
-  #     H-infinity control."  Int. J. Control, 1991, V. 54, #5, 1031-1073.
-  #
-  
   #  Written by A. S. Hodel
   #  Updated by John Ingram July 1996 to accept structured systems
   #

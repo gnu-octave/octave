@@ -16,29 +16,77 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} lqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+## Construct the linear quadratic estimator (Kalman filter) for the
+## continuous time system
+## @iftex
+## @tex
+## $$
+##  {dx\over dt} = A x + B u
+## $$
+## $$
+##  y = C x + D u
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## dx
+## -- = a x + b u
+## dt
+## 
+## y = c x + d u
+## @end example
+## 
+## @end ifinfo
+## where @var{w} and @var{v} are zero-mean gaussian noise processes with
+## respective intensities
+## 
+## @example
+## sigw = cov (w, w)
+## sigv = cov (v, v)
+## @end example
+## 
+## The optional argument @var{z} is the cross-covariance
+## @code{cov (@var{w}, @var{v})}.  If it is omitted,
+## @code{cov (@var{w}, @var{v}) = 0} is assumed.
+## 
+## Observer structure is @code{dz/dt = A z + B u + k (y - C z - D u)}
+## 
+## The following values are returned:
+## 
+## @table @var
+## @item k
+## The observer gain,
+## @iftex
+## @tex
+## $(A - K C)$
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{a} - @var{k}@var{c})
+## @end ifinfo
+## is stable.
+## 
+## @item p
+## The solution of algebraic Riccati equation.
+## 
+## @item e
+## The vector of closed loop poles of
+## @iftex
+## @tex
+## $(A - K C)$.
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{a} - @var{k}@var{c}).
+## @end ifinfo
+## @end table
+## @end deftypefn
+
 function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
-
-# Usage: [k, p, e] = lqe (A, G, C, SigW, SigV {,Z})
-#
-# Linear quadratic estimator (Kalman filter) design for the 
-# continuous time system
-#
-#   dx/dt = A x + B u + G w
-#       y = C x + D u + v
-#
-# where w, v are zero-mean gaussian noise processes with respective
-# intensities SigW = cov (w, w) and SigV = cov (v, v).
-#
-# Z (if specified) is cov(w,v); otherwise cov(w,v) = 0.
-#
-# Observer structure is dz/dt = A z + B u + k( y - C z - D u).
-#
-# Returns:
-#
-#   k = observer gain, (A - K C) is stable
-#   p = solution of algebraic Riccati equation
-#   e = closed loop poles of (A - K C)
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 
   if ( (nargin != 5) && (nargin != 6))

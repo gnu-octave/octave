@@ -15,41 +15,48 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{csys} =} d2c (@var{sys}@{,@var{tol}@})
+## @deftypefnx {Function File } {@var{csys} =} d2c (@var{sys}, @var{opt})
+## Convert discrete (sub)system to a purely continuous system.  Sampling
+## time used is @code{sysgettsam(@var{sys})}
+## 
+## @strong{Inputs}
+## @table @var
+## @item   sys
+##  system data structure with discrete components
+## @item   tol
+## Scalar value.
+##  tolerance for convergence of default @code{"log"} option (see below)
+## @item   opt
+##  conversion option.  Choose from:
+## @table @code
+## @item         "log"
+##  (default) Conversion is performed via a matrix logarithm.
+## Due to some problems with this computation, it is
+## followed by a steepest descent algorithm to identify continuous time 
+## @var{A}, @var{B}, to get a better fit to the original data.  
+## 
+## If called as @code{d2c}(@var{sys},@var{tol}), @var{tol=}positive scalar, 
+## 	the @code{"log"} option is used.  The default value for @var{tol} is 
+## 	@code{1e-8}.
+## @item        "bi"
+##  Conversion is performed via bilinear transform 
+## @math{z = (1 + s T / 2)/(1 - s T / 2)} where @var{T} is the 
+## system sampling time (see @code{sysgettsam}).
+## 
+## FIXME: bilinear option exits with an error if @var{sys} is not purely discrete
+## 
+## @end table
+## @end table
+## @strong{Outputs} @var{csys} continuous time system (same dimensions and
+## signal names as in @var{sys}).
+## @end deftypefn
+## 
+
  
 function csys = d2c(sys,opt)
-# csys = d2c(sys[,tol])
-# csys = d2c(sys,opt)
-#
-# inputs: 
-#   sys: system data structure with discrete components
-#   tol: tolerance for convergence of default "log" option (see below)
-#
-#   opt: conversion option.  Choose from:
-#        "log":  (default) Conversion is performed via a matrix logarithm.
-#                Due to some problems with this computation, it is
-#                followed by a steepest descent to identify continuous time 
-#                A, B, to get a better fit to the original data.  
-#
-#                If called as d2c(sys,tol), tol=positive scalar, the log
-#                option is used.  The default value for tol is 1e-8.
-#        "bi": Conversion is performed via bilinear transform
-#                  1 + s T/2
-#              z = ---------
-#                  1 - s T/2
-#              where T is the system sampling time (see syschtsam).
-#
-#              FIXME: exits with an error if sys is not purely discrete
-#
-# D2C converts the real-coefficient discrete time state space system
-#
-#        x(k+1) = A x(k) + B u(k)
-#
-# to a continuous time state space system
-#        .
-#        x = A1 x + B1 u
-#
-# The sample time used is that of the system. (see syschtsam).
-  
 # Written by R. Bruce Tenison August 23, 1994
 # Updated by John Ingram for system data structure  August 1996
 # SYS_INTERNAL accesses members of system data structure

@@ -15,7 +15,38 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} susball ( inputs ) 
+## @format
+## 
+## @end format
+## @end deftypefn
+## @deftypefn {Function File } { outputs =} swap ( inputs ) 
+## @format
+##  [a1,b1] = swap(a,b)
+##  interchange a and b
+## 
+## 
+## @end format
+## @end deftypefn
+## @deftypefn {Function File } { outputs =} swapcols ( inputs ) 
+## @format
+##  function B = swapcols(A)
+##  permute columns of A into reverse order
+## 
+## 
+## @end format
+## @end deftypefn
+## @deftypefn {Function File } { outputs =} swaprows ( inputs ) 
+## @format
+##  function B = swaprows(A)
+##  permute rows of A into reverse order
+## 
+## 
+## @end format
+## @end deftypefn
+
     cmd = "ballsys = margetsys(""disc"")";
     eval(cmd);
     

@@ -16,10 +16,13 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function USEW = freqchkw(w)
-  # function USEW = freqchkw(w)
-  # used by freqresp to check that input frequency vector is legal
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retval} =} freqchkw ( @var{w} ) 
+## Used by @code{freqresp} to check that input frequency vector @var{w} is legal.
+## Returns boolean value.
+## @end deftypefn
 
+function USEW = freqchkw(w)
   # A S Hodel July 1996
 
   if(isempty(w))

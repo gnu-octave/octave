@@ -15,17 +15,42 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{sys} = } tf2sys( @var{num}, @var{den} @{, @var{tsam}, @var{inname}, @var{outname} @})
+##  build system data structure from transfer function format data
+## 
+## @strong{Inputs}
+## @table @var
+## @item  num, den
+##  coefficients of numerator/denominator polynomials
+## @item tsam
+##  sampling interval. default: 0 (continuous time)
+## @item inname, outname
+##  input/output signal names; may be a string or list with a single string
+## entry.
+## @end table
+## 
+## @strong{Outputs}
+##  @var{sys} = system data structure
+## 
+## @strong{Example}
+## @example
+## octave:1> sys=tf2sys([2 1],[1 2 1],0.1);
+## octave:2> sysout(sys)
+## Input(s)
+##         1: u_1
+## Output(s):
+##         1: y_1 (discrete)
+## Sampling interval: 0.1
+## transfer function form:
+## 2*z^1 + 1
+## -----------------
+## 1*z^2 + 2*z^1 + 1
+## @end example
+## @end deftypefn
+
 function outsys = tf2sys(num,den,tsam,inname,outname)
-  #
-  # sys = tf2sys(num,den{,tsam,inname,outname})
-  # build system data structure from transfer function format data
-  # inputs:
-  #   num, den: coefficients of numerator/denominator polynomials
-  #   tsam: sampling interval. default: 0 (continuous time)
-  #   inname, outname: input/output signal names (string variables)
-  # outputs: sys = system data structure
-   
   #  Written by R. Bruce Tenison  July 29, 1994
   #  Name changed to TF2SYS July 1995
   #  updated for new system data structure format July 1996

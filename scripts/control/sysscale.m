@@ -15,28 +15,33 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function sys = sysscale(sys,outscale,inscale,outname,inname)
-#
-# function sys = sysscale(sys,outscale,inscale[,outname,inname])
-# scale inputs/outputs of a system.
-#
-# inputs:
-#   sys: system data structure
-#   outscale, inscale: constant matrices of appropriate dimension
-# output: sys: resulting open loop system:
-#
-#           -----------    -------    -----------
-#     u --->| inscale |--->| sys |--->| outscale |---> y
-#           -----------    -------    -----------
-# 
-# If the input names and output names are not given and the scaling matrices
-# are not square, then default names will be given to the inputs and/or
-# outputs.
-#
-# A warning message is printed if outscale attempts to add continuous
-# system outputs to discrete system outputs; otherwise yd is set appropriately
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{sys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}@{, @var{outname}, @var{inname}@})
+## scale inputs/outputs of a system.
+## 
+## @strong{Inputs}
+##    sys: structured system
+##    outscale, inscale: constant matrices of appropriate dimension
+## 
+## @strong{Outputs}
+## @var{sys}: resulting open loop system:
+## @example
+##       -----------    -------    -----------
+## u --->| inscale |--->| sys |--->| outscale |---> y
+##       -----------    -------    -----------
+## @end example
+##  If the input names and output names (each a list of strings)
+## are not given and the scaling matrices
+##  are not square, then default names will be given to the inputs and/or
+##  outputs.
+## 
+## A warning message is printed if outscale attempts to add continuous
+## system outputs to discrete system outputs; otherwise @var{yd} is 
+## set appropriately in the returned value of @var{sys}.
+## @end deftypefn
+
+function sys = sysscale(sys,outscale,inscale,outname,inname)
 # A. S. Hodel August 1995
 # modified by John Ingram 7-15-96
 

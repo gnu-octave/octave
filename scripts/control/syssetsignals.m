@@ -16,28 +16,77 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function retsys = syssetsignals(sys,opt,names,sig_idx)
-# retsys = syssetsignals(sys,opt,names{,sig_idx})
-# change the names of selected inputs, outputs and states.
-# inputs:
-# 	sys: system data structure
-#	opt: []: change default name (output)
-#	     "out": change selected output names
-#	     "in": change selected input names
-#	     "st": change selected state names	 
-#	     "yd": change selected outputs from discrete to continuous or 
-#		   from continuous to discrete.
-#    	names: opt = "out", "in", or "st": string or or list of strings
-#              opt = "yd": desired output continuous/discrete flag.
-#                          names(ii) = 0: output ii is continuous
-#                          names(ii) = 1: output ii is discrete
-#     	list: vector of indices of outputs, yd, inputs, or
-#             states whose respective names should be changed.
-#             Default: replace entire signal list/vector value
-# outputs:
-#    retsys=sys with appropriate signal names changed 
-#            (or yd values, where appropriate)
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{retsys} =} syssetsignals (@var{sys}, @var{opt}, @var{names}@{, @var{sig_idx}@})
+##  change the names of selected inputs, outputs and states.
+## @strong{Inputs}
+## @table @var
+## @item sys
+##  system data structure
+## 
+## @item opt
+## change default name (output)
+## 
+## @table @code
+## @item "out"
+##  change selected output names
+## @item "in"
+##  change selected input names
+## @item "st"
+##  change selected state names   
+## @item "yd"
+##  change selected outputs from discrete to continuous or 
+##                    from continuous to discrete.
+## @end table
+## 
+## @item names
+## @table @code
+## @item opt = "out", "in", or "st"
+##  string or string array containing desired signal names or values.
+## @item opt = "yd"
+## To desired output continuous/discrete flag.
+## Set name to 0 for continuous, or 1 for discrete.
+## @end table
+## @item list
+##  vector of indices of outputs, yd, inputs, or
+##              states whose respective names should be changed.
+## 
+##              Default: replace entire list of names/entire yd vector.
+## @end table
+## @strong{Outputs}
+##     @var{retsys=sys} with appropriate signal names changed 
+##             (or yd values, where appropriate)
+## 
+## 
+## @strong{Example}
+## @example
+## octave:1> sys=ss2sys([1 2; 3 4],[5;6],[7 8]);
+## octave:2> sys = syssetsignals(sys,"st",str2mat("Posx","Velx"));
+## octave:3> sysout(sys)
+## Input(s)
+##         1: u_1
+## Output(s):
+##         1: y_1
+## state-space form:
+## 2 continuous states, 0 discrete states
+## State(s):
+##         1: Posx
+##         2: Velx
+## A matrix: 2 x 2
+##   1  2
+##   3  4
+## B matrix: 2 x 1
+##   5
+##   6
+## C matrix: 1 x 2
+##   7  8
+## D matrix: 1 x 1
+## 0
+## @end example
+## 
+## @end deftypefn
 
+function retsys = syssetsignals(sys,opt,names,sig_idx)
 # Written by John Ingram August 1996
 
   save_val = implicit_str_to_num_ok;	# save for later

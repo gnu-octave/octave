@@ -15,30 +15,13 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function retsys = syschnames(sys,opt,list,names)
-# retsys = syschnames(sys,opt,list,names)
-# change the names of selected inputs, outputs and states.
-# inputs:
-# 	sys: system data structure
-#	opt: []: change default name (output)
-#	     "out": change selected output names
-#	     "in": change selected input names
-#	     "st": change selected state names	 
-#	     "yd": change selected outputs from discrete to continuous or 
-#		   from continuous to discrete.
-#
-#     	list: vector of indices of outputs, yd, inputs, or
-#             states whose respective names should be changed
-#
-#    	names: strings or string arrays containing
-#              names corresponding to the lists above.  To
-# 	       change yd, use a vector.  Set the name to 0 for continuous, 
-#	       or 1 for discrete.
-# outputs:
-#    retsys=sys with appropriate signal names changed 
-#            (or yd values, where appropriate)
 
+## -*- texinfo -*- 
+## @deftypefn {Function File } {@var{retsys} =} syschnames (@var{sys}, @var{opt}, @var{list}, @var{names})
+## Superseded by @code{syssetsignals}
+## @end deftypefn
+
+function retsys = syschnames(sys,opt,list,names)
 # Written by John Ingram August 1996; updated by A. S. Hodel 1998
 
   retsys = syssetsignals(sys,opt,names,list);

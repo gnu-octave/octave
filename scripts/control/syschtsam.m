@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { retsys =} syschtsam ( sys,tsam ) 
+## This function changes the sampling time (tsam) of the system.  Exits with
+## an error if sys is purely continuous time.
+## @end deftypefn
  
 function retsys = syschtsam(sys,tsam)
-#
-# retsys = syschtsam(sys,tsam);
-#
-# This function changes the sampling time (tsam) of the system.
-
 # Written by John Ingram August 1996
 
   if (nargin != 2)

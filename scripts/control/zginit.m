@@ -15,18 +15,21 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {zz =} zginit(@var{a},@var{b},@var{c},@var{d})
+## construct right hand side vector zz
+## for the zero-computation generalized eigenvalue problem
+## balancing procedure
+## called by zgepbal
+## 
+## @end deftypefn 
+
+## References:
+## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
+## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
+
 function zz = zginit(a,b,c,d)
-  # zz = zginit(a,b,c,d)
-  # construct right hand side vector zz
-  # for the zero-computation generalized eigenvalue problem
-  # balancing procedure
-  # called by zgepbal
-  # References:
-  # ZGEP: Hodel, "Computation of Zeros with Balancing," Linear Algebra and
-  #              its Applications, 1993
-  # Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
-  
   # A. S. Hodel July 24 1992
   # Conversion to Octave by R. Bruce Tenison, July 3, 1994
 

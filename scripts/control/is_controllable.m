@@ -16,24 +16,49 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function [retval,U] = is_controllable (a, b, tol)
-# [retval, U] = is_controllable (a, b {,tol})
-#             = is_controllable (sys{, tol})
-#      Returns retval=1 if the system sys or the pair (a, b) is controllable
-#                     0 if not.
-# U is an orthogonal basis of the controllable subspace. 
-#
-# Controllability is determined by applying Arnoldi iteration with
-# complete re-orthogonalization to obtain an orthogonal basis of the
-# Krylov subspace.
-#
-#   span ([b,a*b,...,a^   b]).
-#
-# tol is a roundoff paramter, set to 10*eps if omitted.
-#
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{retval}, @var{U}] =} is_controllable (@var{sys}@{, @var{tol}@})
+## @deftypefnx {Function File } {[@var{retval}, @var{U}] =} is_controllable (@var{a}@{, @var{b} ,@var{tol}@})
+## Logical check for system controllability.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+## system data structure
+## @item a, b
+## @var{n} by @var{n}, @var{n} by @var{m} matrices, respectively
+## @item tol
+## optional roundoff paramter.  default value: @code{10*eps}
+## @end table
+## 
+## @strong{Outputs}
+## @table @var
+## @item retval
+## Logical flag; returns true (1) if the system @var{sys} or the
+## pair (@var{a},@var{b}) is controllable, whichever was passed as input arguments.
+## @item U
+##  U is an orthogonal basis of the controllable subspace. 
+## @end table
+## 
+## @strong{Method}
+## Controllability is determined by applying Arnoldi iteration with
+## complete re-orthogonalization to obtain an orthogonal basis of the
+## Krylov subspace
+## @example
+## span ([b,a*b,...,a^@{n-1@}*b]).
+## @end example
+## The Arnoldi iteration is executed with @code{krylov} if the system has a single input; otherwise a block Arnoldi iteration is performed with @code{krylovb}.
+## 
+## @strong{See also}
+## @code{is_observable}, @code{is_stabilizable}, @code{is_detectable}, 
+## 	@code{krylov}, @code{krylovb}
+## 
+## @end deftypefn
+
 # See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 #     is_observable, is_stabilizable, is_detectable, krylov, krylovb
 
+function [retval,U] = is_controllable (a, b, tol)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems

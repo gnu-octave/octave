@@ -15,27 +15,30 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function [retsys] = zgpbal(Asys)
-  # function [retsys] = zgpbal(Asys)
-  #
-  # used internally in tzero; minimal argument checking performed
-  #
-  # implementation of zero computation generalized eigenvalue problem 
-  # balancing method (Hodel and Tiller, Allerton Conference, 1991)
-  # Based on Ward's balancing algorithm (SIAM J. Sci Stat. Comput., 1981)
-  #
-  # zgpbal computes a state/input/output weighting that attempts to 
-  # reduced the range of the magnitudes of the nonzero elements of [a,b,c,d]
-  # The weighting uses scalar multiplication by powers of 2, so no roundoff
-  # will occur.  
-  #
-  # zgpbal should be followed by zgpred
-  # References:
-  # ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, Linear Algebra
-  # and its Applications
-  # Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
-  
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[retsys] =} zgpbal(Asys)
+##
+## used internally in @code{tzero}; minimal argument checking performed
+##
+## implementation of zero computation generalized eigenvalue problem 
+## balancing method (Hodel and Tiller, Allerton Conference, 1991)
+## Based on Ward's balancing algorithm (SIAM J. Sci Stat. Comput., 1981)
+##
+## zgpbal computes a state/input/output weighting that attempts to 
+## reduced the range of the magnitudes of the nonzero elements of [a,b,c,d]
+## The weighting uses scalar multiplication by powers of 2, so no roundoff
+## will occur.  
+##
+## zgpbal should be followed by zgpred
+##
+## @end deftypefn
+
+## References:
+## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
+## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
+
+function [retsys] = zgpbal(Asys)  
   # A. S. Hodel July 24 1992
   # Conversion to Octave by R. Bruce Tenison July 3, 1994
 

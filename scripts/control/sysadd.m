@@ -15,26 +15,31 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{sys} =}  sysadd ( @var{Gsys},@var{Hsys})
+## returns @var{sys} = @var{Gsys} + @var{Hsys}.  
+## @itemize @bullet
+## @item Exits with
+## an error if @var{Gsys} and @var{Hsys} are not compatibly dimensioned.
+## @item Prints a warning message is system states have identical names;
+##   duplicate names are given a suffix to make them unique.
+## @item @var{sys} input/output names are taken from @var{Gsys}.
+## @end itemize
+## @example
+## @group
+##           ________
+##      ----|  Gsys  |---
+## u   |    ----------  +|         
+## -----                (_)----> y
+##     |     ________   +|
+##      ----|  Hsys  |---
+##           --------
+## @end group
+## @end example
+## @end deftypefn
  
 function sys = sysadd(...)
-# 
-# sys = sysadd(Gsys{,Hsys,...})
-#
-# returns transfer function sys = Gsys + Hsys + ...
-#
-# Method: sysgroup used to connect systems in parallel
-# The input vector is connected to all systems; the outputs are summed.
-# Returned system input/output signal names are those of Gsys.  For
-# example, sysadd(Gsys,Hsys) results in
-#
-#                  ________
-#             ----|  Gsys  |---
-#        u   |    ----------  +|         
-#        -----                (_)----> y
-#            |     ________   +|
-#             ----|  Hsys  |---
-#                  --------
-
 # Written by John Ingram July 1996
 # Updated for variable number of arguments July 1999 A. S. Hodel
 

@@ -16,16 +16,19 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
+## -*- texinfo -*-
+## @deftypefn {Function File } { x =} zgscal (@var{f}, @var{z}, @var{n}, @var{m}, @var{p})
+## Generalized conjugate gradient iteration to 
+## solve zero-computation generalized eigenvalue problem balancing equation 
+## @math{fx=z};
+## called by @code{zgepbal}
+## @end deftypefn
+
+## References:
+## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
+## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
+
 function x = zgscal(a,b,c,d,z,n,m,p)
-  # x = zgscal(f,z,n,m,p) generalized conjugate gradient iteration to 
-  # solve zero-computation generalized eigenvalue problem balancing equation 
-  # fx=z
-  # called by zgepbal
-  #
-  # References:
-  # ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
-  # Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
-  
   # A. S. Hodel July 24 1992
   # Conversion to Octave R. Bruce Tenison July 3, 1994
 

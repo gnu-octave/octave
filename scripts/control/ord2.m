@@ -16,26 +16,33 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function outsys = ord2(nfreq, damp, gain)
-  # function outsys = ord2(nfreq, damp[, gain])
-  # Creates a continuous 2nd order system with parameters:
-  #
-  #      nfreq:   natural frequency [Hz]. (not in rad/s)
-  #      damp:    damping coefficient
-  #      gain:    dc-gain
-  #               This is steady state value only for damp > 0.
-  #               gain is assumed to be 1.0 if ommitted.
-  #
-  #      The system has representation with w = 2 * pi * nfreq:
-  #
-  #          /                                        \
-  #          | / -2w*damp -w \  / w \                 |
-  #      G = | |             |, |   |, [ 0  gain ], 0 |
-  #          | \   w       0 /  \ 0 /                 |
-  #          \                                        /
-  #
-  # See also: jet707 (MIMO example, Boeing 707-321 aircraft model)
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{outsys} =} ord2 (@var{nfreq}, @var{damp}@{[, @var{gain}@})
+##  Creates a continuous 2nd order system with parameters:
+## @strong{Inputs}
+## @table @var
+## @item  nfreq:   natural frequency [Hz]. (not in rad/s)
+## @item      damp:    damping coefficient
+## @item      gain:    dc-gain
+##                This is steady state value only for damp > 0.
+##                gain is assumed to be 1.0 if ommitted.
+## @end table
+## @strong{Outputs}
+## @var{outsys}
+##       system data structure has representation with @math{w = 2 * pi * nfreq}:
+## @example
+##     /                                        \
+##     | / -2w*damp -w \  / w \                 |
+## G = | |             |, |   |, [ 0  gain ], 0 |
+##     | \   w       0 /  \ 0 /                 |
+##     \                                        /
+## @end example
+## @strong{See also} @code{jet707} (MIMO example, Boeing 707-321 aircraft model)
+## @end deftypefn
 
+## See also: jet707 (MIMO example, Boeing 707-321 aircraft model)
+
+function outsys = ord2(nfreq, damp, gain)
   # Written by Kai P. Mueller September 28, 1997
   # Updates
 

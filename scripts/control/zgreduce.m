@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { retsys = } zgreduce(@var{Asys},@var{meps})
+## Implementation of procedure REDUCE in (Emami-Naeini and Van Dooren, 
+## Automatica, # 1982).
+## @end deftypefn
  
 function retsys = zgreduce(Asys,meps)
-# function retsys = zgreduce(Asys,meps)
-# implementation of procedure REDUCE in (Emami-Naeini and Van Dooren, 
-# Automatica, # 1982).
-#
-# used internally in tzero; minimal argument checking performed
-
 # SYS_INTERNAL accesses members of system data structure
 
 is_digital(Asys);		# make sure it's pure digital/continuous

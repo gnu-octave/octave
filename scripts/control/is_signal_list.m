@@ -16,11 +16,13 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function flg = is_signal_list(mylist)
-# function flg = is_signal_list(mylist)
-# returns true if mylist is a list of individual strings.
-# 
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{flg} =} is_signal_list (@var{mylist})
+## Returns true if mylist is a list of individual strings (legal for input
+## to @var{syssetsignals}).
+## @end deftypefn
 
+function flg = is_signal_list(mylist)
 flg = is_list(mylist);
 if(flg)
   for ii=1:length(mylist)

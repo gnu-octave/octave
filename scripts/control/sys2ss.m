@@ -15,29 +15,54 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{a},@var{b},@var{c},@var{d},@var{tsam},@var{n},@var{nz},@var{stname},@var{inname},@var{outname},@var{yd}] =} sys2ss (@var{sys})
+## Extract state space representation from system data structure.  
+## 
+## @strong{Inputs}
+## @var{sys} system data structure (@xref{sysstruct})
+## 
+## @strong{Outputs}
+## @table @var
+## @item a,b,c,d
+##  state space matrices for sys
+## 
+## @item tsam
+##  sampling time of sys (0 if continuous)
+## 
+## @item n, nz
+##  number of continuous, discrete states (discrete states come
+##           last in state vector @var{x})
+## 
+## @item stname, inname, outname
+##  signal names (lists of strings);  names of states,
+##           inputs, and outputs, respectively
+## 
+## @item yd
+##  binary vector; @var{yd}(@var{ii}) is 1 if output @var{y}(@var{ii})$
+##  is discrete (sampled); otherwise  @var{yd}(@var{ii}) 0.
+##  
+## @end table
+## A warning massage is printed if the system is a mixed
+## continuous and discrete system
+## 
+## @strong{Example}
+## @example
+## octave:1> sys=tf2sys([1 2],[3 4 5]);
+## octave:2> [a,b,c,d] = sys2ss(sys)
+## a =
+##    0.00000   1.00000
+##   -1.66667  -1.33333
+## b =
+##   0
+##   1
+## c = 0.66667  0.33333
+## d = 0
+## @end example
+## @end deftypefn
  
 function [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)
-  # function [a,b,c,d(,tsam,n,nz,stname,inname,outname,yd)] = sys2ss(sys)
-  # Convert from system data structure to state space form
-  # inputs:
-  #    sys: system data structure for the state space system
-  #
-  #      x' = Ax + Bu
-  #      y  = Cx + Du
-  #
-  #  or a similar discrete-time system.  
-  #
-  # outputs:
-  #    a,b,c,d: state space matrices for sys
-  #    tsam: sampling time of sys (0 if continuous)
-  #    n, nz: number of continuous, discrete states (discrete states come
-  #          last in state vector x)
-  #    stname, inname, outname: signal names (strings);  names of states,
-  #          inputs, and outputs, respectively
-  #    yd: binary vector; yd(ii) is nonzero if output y is discrete.
-  # 
-  # A warning message is printed if the system is a mixed 
-  # continuous/discrete system.
 
   # Written by David Clem August 19, 1994
   # Updates by John Ingram July 14, 1996

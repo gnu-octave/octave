@@ -15,46 +15,82 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function [mag_r,phase_r,w_r] = bode(sys,w,outputs,inputs,plot_style)
-# [mag,phase,w] = bode(sys[,w,outputs,inputs,plot_style])
-# Produce Bode plots of a system
-#
-# Compute the frequency response of a system.
-# inputs:
-#   sys: system data structure (must be either purely continuous or discrete;
-#	 see is_digital)
-#   w: frequency values for evaluation.
-#      if sys is continuous, then bode evaluates G(jw)
-#      if sys is discrete, then bode evaluates G(exp(jwT)), where T=sys.tsam
-#         (the system sampling time)
-#      default: the default frequency range is selected as follows: (These
-#        steps are NOT performed if w is specified)
-#          (1) via routine bodquist, isolate all poles and zeros away from
-#              w=0 (jw=0 or exp(jwT)=1) and select the frequency
-#             range based on the breakpoint locations of the frequencies.
-#          (2) if sys is discrete time, the frequency range is limited
-#              to jwT in [0,2p*pi]
-#          (3) A "smoothing" routine is used to ensure that the plot phase does
-#              not change excessively from point to point and that singular
-#              points (e.g., crossovers from +/- 180) are accurately shown.
-#   outputs, inputs: the indices of the output(s) and input(s) to be used in
-#     the frequency response; see sysprune.
-#   plot_style: An optional argument specifying the type of plot to
-#               produce (if plotting is being done).  Valid values are
-#               "dB" or "mag".  If omitted, "dB" is assumed.
-#
-# outputs:
-#    mag, phase: the magnitude and phase of the frequency response
-#       G(jw) or G(exp(jwT)) at the selected frequency values.
-#    w: the vector of frequency values used
-# If no output arguments are given, bode plots the results to the screen.
-# Descriptive labels are automatically placed.  See xlabel, ylable, title,
-# and replot.
-#
-# Note: if the requested plot is for an MIMO system, mag is set to
-# ||G(jw)|| or ||G(exp(jwT))|| and phase information is not computed.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{mag}, @var{phase}, @var{w}] =} bode(@var{sys}@{,@var{w}, @var{out_idx}, @var{in_idx}@})
+## If no output arguments are given: produce Bode plots of a system; otherwise,
+## compute the frequency response of a system data structure
+## 
+## @strong{Inputs}
+## @table @var
+## @item   sys
+##  a system data structure (must be either purely continuous or discrete;
+## 	 see is_digital)
+## @item   w
+##  frequency values for evaluation.
+## 
+## if @var{sys} is continuous, then bode evaluates @math{G(jw)} where
+## @math{G(s)} is the system transfer function.
+## 
+## if @var{sys} is discrete, then bode evaluates G(@code{exp}(jwT)), where 
+## @itemize @bullet
+## @item @var{T}=@code{sysgettsam(@var{sys})} (the system sampling time) and
+## @item @math{G(z)} is the system transfer function.
+## @end itemize
+## 
+## @strong{ Default} the default frequency range is selected as follows: (These
+##         steps are NOT performed if @var{w} is specified)
+## @enumerate
+## @item via routine bodquist, isolate all poles and zeros away from
+## @var{w}=0 (@var{jw}=0 or @math{@code{exp}(jwT)}=1) and select the frequency
+## range based on the breakpoint locations of the frequencies.
+## @item if @var{sys} is discrete time, the frequency range is limited
+##               to @math{jwT} in 
+## @ifinfo
+## [0,2 pi /T]
+## @end ifinfo
+## @iftex
+## @tex 
+## $[0,2\pi/T]$
+## @end tex
+## @end iftex
+## @item A "smoothing" routine is used to ensure that the plot phase does
+##               not change excessively from point to point and that singular
+##               points (e.g., crossovers from +/- 180) are accurately shown.
+## 
+## @end enumerate
+## @item out_idx, in_idx
+##  the indices of the output(s) and input(s) to be used in
+##      the frequency response; see @code{sysprune}.
+## @end table
+## @strong{Outputs}
+## @table @var
+## @item  mag, phase
+##  the magnitude and phase of the frequency response
+##        @math{G(jw)} or @math{G(@code{exp}(jwT))} at the selected frequency values.
+## @item w
+## the vector of frequency values used
+## @end table
+## 
+## @strong{Notes}
+## @enumerate
+## @item If no output arguments are given, e.g.,
+## @example
+## bode(sys);
+## @end example
+## bode plots the results to the 
+## screen.  Descriptive labels are automatically placed. 
+## 
+## Failure to include a concluding semicolon will yield some garbage
+## being printed to the screen (@code{ans = []}).
+## 
+## @item If the requested plot is for an MIMO system, mag is set to
+##  @math{||G(jw)||} or @math{||G(@code{exp}(jwT))||}
+## and phase information is not computed.
+## @end enumerate
+## @end deftypefn 
+
+function [mag_r,phase_r,w_r] = bode(sys,w,outputs,inputs,plot_style)
 # Written by John Ingram  July 10th, 1996
 # Based on previous code
 # By R. Bruce Tenison, July 13, 1994

@@ -15,6 +15,74 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+##@deftypefn {Function File } {[@var{realp}, @var{imagp}, @var{w}] =} nyquist (@var{sys}@{, @var{w}, @var{out_idx}, @var{in_idx}, @var{atol}@})
+##@deftypefnx {Function File } {} nyquist (@var{sys}@{, @var{w}, @var{out_idx}, @var{in_idx}, @var{atol}@})
+##Produce Nyquist plots of a system; if no output arguments are given, Nyquist
+##plot is printed to the screen.
+##
+##Compute the frequency response of a system.
+##@strong{Inputs} (pass as empty to get default values)
+##@table
+##@item sys
+##       system data structure (must be either purely continuous or discrete;
+##       see is_digital)
+##@item w 
+##     frequency values for evaluation.
+##     if sys is continuous, then bode evaluates @math{G(jw)}
+##     if sys is discrete, then bode evaluates @math{G(exp(jwT))}, where 
+##        @math{@var{T}=sysgettsam(@var{sys})} (the system sampling time)
+##@item default
+##     the default frequency range is selected as follows: (These
+##     steps are NOT performed if @var{w} is specified)
+##@end table
+##@enumerate 
+##@item via routine bodquist, isolate all poles and zeros away from 
+##@var{w}=0 (@var{jw}=0 or @math{exp(@var{jwT})=1}) and select the frequency
+##range based on the breakpoint locations of the frequencies.
+##@item if @var{sys} is discrete time, the frequency range is limited
+##to @var{jwT} in 
+##@ifinfo
+##[0,2p*pi]
+##@end ifinfo
+##@iftex
+##$[0,2p*\pi]$
+##@end iftex
+##@item A "smoothing" routine is used to ensure that the plot phase does
+##             not change excessively from point to point and that singular
+##             points (e.g., crossovers from +/- 180) are accurately shown.
+##@end enumerate
+##  outputs, inputs: the indices of the output(s) and input(s) to be used in
+##    the frequency response; see sysprune.
+##
+##@strong{Inputs} (pass as empty to get default values)
+##@table @var
+##@item   atol
+##for interactive nyquist plots: atol is a change-in-slope tolerance 
+##for the of asymptotes (default = 0; 1e-2 is a good choice).  This allows
+##the user to ``zoom in'' on portions of the Nyquist plot too small to be
+##seen with large asymptotes.
+##@end table
+##@strong{Outputs}
+##@table @var
+##@item    realp, imagp
+##the real and imaginary parts of the frequency response
+##       @math{G(jw)} or @math{G(exp(jwT))} at the selected frequency values.
+##@item    w
+## the vector of frequency values used
+##@end table
+##
+## If no output arguments are given, nyquist plots the results to the screen.
+## If @var{atol} != 0 and asymptotes are detected then the user is asked 
+##    interactively if they wish to zoom in (remove asymptotes)
+## Descriptive labels are automatically placed.
+##
+## Note: if the requested plot is for an MIMO system, a warning message is
+## presented; the returned information is of the magnitude 
+## ||G(jw)|| or ||G(exp(jwT))|| only; phase information is not computed.
+##
+##@end deftypefn
  
 function [realp,imagp,w] = nyquist(sys,w,outputs,inputs,atol)
 # [realp,imagp,w] = nyquist(sys[,w,outputs,inputs,atol])

@@ -15,32 +15,50 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn(@var{Asys}, @var{nu}, @var{ny}, @var{tol})
+##  Design H2 optimal controller per procedure in 
+##  Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
+##  H2 and Hinf Control Problems", IEEE TAC August 1989
+## 
+##  Discrete time control per Zhou, Doyle, and Glover, ROBUST AND OPTIMAL
+##  CONTROL, Prentice-Hall, 1996
+## 
+## @strong{Inputs} input system is passed as either
+## @table @var
+## @item Asys
+## system data structure (see ss2sys, sys2ss)
+## @itemize @bullet
+## @item controller is implemented for continuous time systems 
+## @item controller is NOT implemented for discrete time systems 
+## @end itemize
+## @item nu
+## number of controlled inputs
+## @item ny
+## number of measured outputs
+## @item tol
+## threshhold for 0.  Default: 200*eps
+## @end table
+##  
+## @strong{Outputs}
+## @table @var
+## @item    K
+## system controller
+## @item    gain
+## optimal closed loop gain
+## @item    Kc
+## full information control (packed)
+## @item    Kf
+## state estimator (packed)
+## @item    Pc
+## ARE solution matrix for regulator subproblem
+## @item    Pf
+## ARE solution matrix for filter subproblem
+## @end table
+## @end deftypefn
  
 function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
-  #  [K,gain, Kc, Kf, Pc, Pf] = h2syn(Asys,nu,ny,tol)
-  #
-  # Design H2 optimal controller per procedure in 
-  # Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
-  # H2 and Hinf Control Problems", IEEE TAC August 1989
-  #
-  # Discrete time control per Zhou, Doyle, and Glover, ROBUST AND OPTIMAL
-  #   CONTROL, Prentice-Hall, 1996
-  #
-  # inputs: 
-  #   Asys: system data structure.
-  #   nu: number of controlled inputs
-  #   ny: number of measured outputs
-  #   tol: threshhold for 0.  Default: 200*eps
-  # outputs: 
-  #    K: system controller (system data structure)
-  #    gain: optimal closed loop gain (see Kc, Kf warning below)
-  #    Kc: full information control (system data structure)
-  #    Kf: state estimator (system data structure)
-  #       WARNING: incorporation of the is_dgkf nonsingular transformations
-  #       Ru and Ry into Kc and Kf has not been tested.  
-  #    Pc: ARE solution matrix for regulator subproblem
-  #    Pf: ARE solution matrix for filter subproblem
-
   # Updated for System structure December 1996 by John Ingram
 
   if ((nargin < 3) | (nargin > 4))

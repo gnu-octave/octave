@@ -15,23 +15,30 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*- 
+## @deftypefn {Function File } { outputs =} ss2tf ( inputs ) 
+## @format
+##  [num,den] = ss2tf(a,b,c,d)
+##  Conversion from tranfer function to state-space.
+##  The state space system
+##       . 
+##       x = Ax + Bu
+##       y = Cx + Du
+## 
+##  is converted to a transfer function
+## 
+##                 num(s)
+##           G(s)=-------
+##                 den(s)
+## 
+##  used internally in system data structure format manipulations
+## 
+## 
+## @end format
+## @end deftypefn
  
 function [num,den] = ss2tf(a,b,c,d)
-# [num,den] = ss2tf(a,b,c,d)
-# Conversion from tranfer function to state-space.
-# The state space system
-#      . 
-#      x = Ax + Bu
-#      y = Cx + Du
-#
-# is converted to a transfer function
-#
-#                num(s)
-#          G(s)=-------
-#                den(s)
-#
-# used internally in system data structure manipulations
-
 # Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
 # a s hodel: modified to allow for pure gain blocks Aug 1996
 

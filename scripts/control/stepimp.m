@@ -15,20 +15,24 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function [y, t] = stepimp(sitype, sys, inp, tstop, n)
-# step: Impulse or step response for a linear system.
-#       The system can be discrete or multivariable (or both).
-#       This m-file contains the "common code" of step and impulse.
-#
-# [y, t] = stepimp(sitype, sys[, inp, tstop, n])
-# Produces a plot or the response data for system sys.
-#
-# Limited argument checking; "do not attempt to do this at home".
-# Use step or impulse instead.
-#
-# See also:  step, impulse
 
+## -*- texinfo -*-
+## @deftypefn {Function File } {[y, t] = } stepimp(@var{sitype},@var{sys}[, @var{inp}, @var{tstop}, @var{n}]) 
+## Impulse or step response for a linear system.
+##       The system can be discrete or multivariable (or both).
+##       This m-file contains the "common code" of step and impulse.
+## 
+## Produces a plot or the response data for system sys.
+## 
+## Limited argument checking; "do not attempt to do this at home".
+## Used internally in @code{impulse}, @code{step}. Use @code{step}
+## or @code{impulse} instead.
+## 
+## @end deftypefn
+##  
+## ## See also: step, impulse
+
+function [y, t] = stepimp(sitype, sys, inp, tstop, n)
 # Written by Kai P. Mueller October 2, 1997
 # based on lsim.m of Scottedward Hodel
 

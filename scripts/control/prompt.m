@@ -15,14 +15,21 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} prompt ( inputs ) 
+## @format
+##  function prompt([str])
+##  Prompt user to continue
+##  str: input string. Default value: "\n ---- Press a key to continue ---"
+##  Written by David Clem August 15, 1994
+##  Modified A. S. Hodel June 1995
+## 
+## 
+## @end format
+## @end deftypefn
  
 function prompt(str)
-# function prompt([str])
-# Prompt user to continue
-# str: input string. Default value: "\n ---- Press a key to continue ---"
-# Written by David Clem August 15, 1994
-# Modified A. S. Hodel June 1995
-
 
 if(nargin > 1)
   usage("prompt([str])");

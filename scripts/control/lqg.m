@@ -16,36 +16,52 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
-#
-# function [K,Q,P,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
-# design a linear-quadratic-gaussian optimal controller for the system
-#
-#  dx/dt = A x + B u + G w       [w]=N(0,[Sigw 0    ])
-#      y = C x + v               [v]  (    0   Sigv ])
-#
-# or
-# 
-#  x(k+1) = A x(k) + B u(k) + G w(k)       [w]=N(0,[Sigw 0    ])
-#    y(k) = C x(k) + v(k)                  [v]  (    0   Sigv ])
-#
-# inputs:
-#  sys: system data structure
-#  Sigw, Sigv: intensities of independent Gaussian noise processes (as above)
-#  Q, R: state, control weighting respectively.  Control ARE is
-#  input_list: indices of controlled inputs
-#     default: last dim(R) inputs are assumed to be controlled inputs, all
-#              others are assumed to be noise inputs.
-# Outputs:
-#    K: system data structure LQG optimal controller
-#       (Obtain A,B,C matrices with sys2ss, sys2tf, or sys2zp as appropriate)
-#    P: Solution of control (state feedback) algebraic Riccati equation
-#    Q: Solution of estimation algebraic Riccati equation
-#    Ee: estimator poles
-#    Es: controller poles
-#
-# See also: h2syn, lqe, lqr
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg(@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
+## Design a linear-quadratic-gaussian optimal controller for the system
+## @example
+## dx/dt = A x + B u + G w       [w]=N(0,[Sigw 0    ])
+##     y = C x + v               [v]  (    0   Sigv ])
+## @end example
+## or
+## @example 
+## x(k+1) = A x(k) + B u(k) + G w(k)       [w]=N(0,[Sigw 0    ])
+##   y(k) = C x(k) + v(k)                  [v]  (    0   Sigv ])
+## @end example
+## 
+## @strong{Inputs}
+## @table @var
+## @item  sys
+## system data structure
+## @item  Sigw, Sigv
+## intensities of independent Gaussian noise processes (as above)
+## @item  Q, R
+## state, control weighting respectively.  Control ARE is
+## @item  in_idx
+## indices of controlled inputs
+## 
+##      default: last dim(R) inputs are assumed to be controlled inputs, all
+##               others are assumed to be noise inputs.
+## @end table
+## @strong{Outputs}
+## @table @var
+## @item    K
+## system data structure format LQG optimal controller
+## (Obtain A,B,C matrices with @code{sys2ss}, @code{sys2tf}, or @code{sys2zp} as appropriate)
+## @item    P
+## Solution of control (state feedback) algebraic Riccati equation
+## @item    Q
+## Solution of estimation algebraic Riccati equation
+## @item    Ee
+## estimator poles
+## @item    Es
+## controller poles
+## @end table
+## @end deftypefn
 
+## See also:  h2syn, lqe, lqr
+
+function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
 # Written by A. S. Hodel August 1995; revised for new system format
 # August 1996
 

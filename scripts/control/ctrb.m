@@ -16,22 +16,23 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
-function Qs = ctrb(sys, b)
-  # ------------------------------------------------------
-  # Qs = ctrb(sys [, b])
-  # Build controllability matrix
-  #
-  #                  2       n-1
-  #     Qs = [ B AB A B ... A   B
-  #
-  # of a system data structure or the pair (A, B).
-  #
-  # Note: ctrb() forms the controllability matrix.
-  #       The numerical properties of is_controllable()
-  #       are much better for controllability tests.
-  # See also: obsv, is_observable, is_controllable
-  # ------------------------------------------------------
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{Qs} =} ctrb(@var{sys} @{, @var{b}@})
+## @deftypefnx {Function File } {@var{Qs} =} ctrb(@var{A}, @var{B})
+## Build controllability matrix
+## @example
+##              2       n-1
+## Qs = [ B AB A B ... A   B ]
+## @end example
+## 
+##  of a system data structure or the pair (@var{A}, @var{B}).
+## 
+## @strong{Note} @code{ctrb} forms the controllability matrix.
+##        The numerical properties of @code{is_controllable}
+##        are much better for controllability tests.
+## @end deftypefn
 
+function Qs = ctrb(sys, b)
   # Written by Kai P. Mueller November 4, 1997
   # based on is_controllable.m of Scottedward Hodel
   # modified by

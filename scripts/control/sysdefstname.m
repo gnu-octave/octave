@@ -15,11 +15,15 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
+## -*- texinfo -*- 
+## @deftypefn {Function File } { @var{stname} =} sysdefstname (@var{n}, @var{nz}) 
+##  return default state names given @var{n}, @var{nz}
+## 
+##  used internally, minimal argument checking
+## @end deftypefn
+
 function stname = sysdefstname(n,nz)
-# function stname = sysdefstname(n,nz)
-# return default state names given n, nz
-# used internally, minimal argument checking
 
   stname = list();
   if(n > 0)

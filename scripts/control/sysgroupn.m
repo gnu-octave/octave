@@ -15,18 +15,23 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{names} =} sysgroupn (@var{names})
+## names = sysgroupn(names)
+## Locate and mark duplicate names
+## inputs:
+##   names: list of signal names
+##   kind: kind of signal name (used for diagnostic message purposes only)
+## outputs:
+##   returns names with unique suffixes added; diagnostic warning
+##      message is printed to inform the user of the new signal name
+##
+##  used internally in sysgroup and elsewhere. 
+## 
+## @end deftypefn
  
 function names = sysgroupn(names,kind)
-# names = sysgroupn(names)
-# locate and mark duplicate names
-# inputs:
-#   names: list of signal names
-#   kind: kind of signal name (used for diagnostic message purposes only)
-# outputs:
-#   returns names with unique suffixes added; diagnostic warning
-#      message is printed to inform the user of the new signal name
-#
-#  used internally in sysgroup
 
   # check for duplicate names
   l = length(names);

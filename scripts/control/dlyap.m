@@ -16,23 +16,51 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{x} = } dlyap (@var{a}, @var{b})
+## Solve the discrete-time Lyapunov equation
+## 
+##   @strong{Inputs}
+##   @table @var
+##     @item a
+##     @var{n} by @var{n} matrix
+##     @item b
+##     Matrix: @var{n} by @var{n}, @var{n} by @var{m}, or @var{p} by @var{n}.
+##   @end table
+## 
+##   @strong{Outputs}
+##   @var{x}: matrix satisfying appropriate discrete time Lyapunov equation.
+##   Options:
+##   @itemize @bullet
+##     @item @var{b} is square: solve @code{a x a' - x + b = 0}
+##     @item @var{b} is not square: @var{x} satisfies either
+##       @example
+##       a x a' - x + b b' = 0
+##       @end example
+##       @noindent
+##       or
+##       @example
+##  a' x a - x + b' b = 0,
+## 	@end example
+## 	@noindent
+##     whichever is appropriate.
+##   @end itemize
+##   
+## @strong{Method}
+##   Uses Schur decomposition method as in Kitagawa,
+##     @cite{An Algorithm for Solving the Matrix Equation @var{X} =
+##     @var{F}@var{X}@var{F}' + @var{S}},
+##   International Journal of Control, Volume 25, Number 5, pages 745--753
+##   (1977). 
+## 
+## Column-by-column solution method as suggested in
+##   Hammarling, @cite{Numerical Solution of the Stable, Non-Negative
+##   Definite Lyapunov Equation}, IMA Journal of Numerical Analysis, Volume
+##   2, pages 303--323 (1982).
+## 
+## @end deftypefn
+ 
 function x = dlyap (a, b)
-
-# Usage: x = dlyap (a, b)
-#
-# Solve a x a' - x + b = 0 (discrete Lyapunov equation) for square
-# matrices a and b.  If b is not square, then the function attempts 
-# to solve either
-#
-#  a x a' - x + b b' = 0
-#
-# or
-#
-#  a' x a - x + b' b = 0
-#
-# whichever is appropriate.  Uses Schur decomposition as in Kitagawa
-# (1977).
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if ((n = is_square (a)) == 0)

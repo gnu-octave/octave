@@ -15,19 +15,28 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File} { [@var{csys}, @var{Acd}, @var{Ccd}] = } syscont (@var{sys})
+## Extract the purely continuous subsystem of an input system.
+## 
+## @strong{Inputs}
+## @var{sys} is a system data structure
+## 
+## @strong{Outputs}
+## @table @var
+## @item csys
+##  is the purely continuous input/output connections of @var{sys}
+## @item Acd, Ccd:
+##  connections from discrete states to continuous states,
+##                discrete states to continuous outputs, respectively.
+## 
+##  returns @var{csys} empty if no continuous/continous path exists
+## @end table
+## 
+## @end deftypefn
  
 function [csys,Acd,Ccd] = syscont(sys)
-# function [csys,Acd,Ccd] = syscont(sys)
-# returns csys = sys with discrete states./utputs omitted.
-#
-# inputs: sys is a system data structure
-# outputs: csys is the purely continuous input/output connections of
-#               sys
-#          Acd, Ccd: connections from discrete states to continuous states,
-#               discrete states to continuous outputs, respectively.
-#
-# returns csys empty if no continuous/continous path exists
-
 # Written by John Ingram August 1996
 
   save_val = implicit_str_to_num_ok;	# save for later

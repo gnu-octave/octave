@@ -16,15 +16,15 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function gm = dcgain(sys, tol)
-# Usage: gm = dcgain(sys[, tol])
-#      Returns dc-gain matrix. If dc-gain is infinity
-#      an empty matrix is returned.
-#      The argument tol is an optional tolerance for the condition
-#      number of A-Matrix in sys (default tol = 1.0e-10)
-#      Prints a warning message of the system is unstable.
-#
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{gm} =} dcgain(@var{sys}@{, tol@})
+##       Returns dc-gain matrix. If dc-gain is infinite
+##       an empty matrix is returned.
+##       The argument @var{tol} is an optional tolerance for the condition
+##       number of @var{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
+## @end deftypefn
 
+function gm = dcgain(sys, tol)
 # Written by Kai P Mueller (mueller@ifr.ing.tu-bs.de) October 1, 1997
 
   if((nargin < 1) || (nargin > 2) || (nargout > 1))

@@ -16,24 +16,52 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} are (@var{a}, @var{b}, @var{c}, @var{opt})
+## Solve the algebraic Riccati equation
+## @iftex
+## @tex
+## $$
+## A^TX + XA - XBX + C = 0
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## a' * x + x * a - x * b * x + c = 0
+## @end example
+## @end ifinfo
+## 
+## @strong{Inputs}
+## @noindent
+## for identically dimensioned square matrices 
+## @table @var
+## @item a
+## @var{n}x@var{n} matrix.
+## @item b
+##   @var{n}x@var{n} matrix or @var{n}x@var{m} matrix; in the latter case
+##   @var{b} is replaced by @math{b:=b*b'}.
+## @item c
+##   @var{n}x@var{n} matrix or @var{p}x@var{m} matrix; in the latter case
+##   @var{c} is replaced by @math{c:=c'*c}.
+## @item opt
+## (optional argument; default = @code{"B"}):
+## String option passed to @code{balance} prior to ordered Schur decomposition.
+## @end table
+## 
+## @strong{Outputs}
+## @var{x}: solution of the ARE.
+## 
+## @strong{Method}
+## Laub's Schur method (IEEE Transactions on
+## Automatic Control, 1979) is applied to the appropriate Hamiltonian
+## matrix.
+## 
+## @end deftypefn
+
+## See also: balance, dare
+
 function x = are (a, b, c, opt)
-
-# Usage: x = are (a, b, c {,opt})
-#
-# Solves algebraic riccati equation
-#
-#   a' x + x a - x b x + c = 0
-#
-# for identically dimensioned square matrices a, b, c.  If b (c) is not
-# square, then the function attempts to use b * b' (c' * c) instead.
-#
-# Solution method: apply Laub's Schur method (IEEE Trans. Auto. Contr,
-# 1979) to the appropriate Hamiltonian matrix.
-#
-# opt is an option passed to the eigenvalue balancing routine default is "B".
-#
-# See also: balance
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin == 3 || nargin == 4)

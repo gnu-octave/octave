@@ -15,30 +15,37 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{retsys} =} sysprune ( @var{Asys}, @var{out_idx}, @var{in_idx})
+## Extract specified inputs/outputs from a system
+## 
+## @strong{Inputs}
+## @table @var
+## @item   Asys
+## system data structure
+## @item out_idx,in_idx
+##  list of connections indices; the new
+##        system has outputs y(out_idx(ii)) and inputs u(in_idx(ii)).
+##        May select as [] (empty matrix) to specify all outputs/inputs.
+## @end table
+## 
+## @strong{Outputs}
+## @var{retsys}: resulting system
+## @example
+## @group
+##            ____________________
+## u1 ------->|                  |----> y1
+##  (in_idx)  |       Asys       | (out_idx)
+## u2 ------->|                  |----| y2
+##   (deleted)-------------------- (deleted)   
+## @end group
+## @end example
+## 
+## @end deftypefn
+## 
  
 function sys = sysprune(sys,output_idx,input_idx,state_idx)
-# function retsys = sysprune(Asys,output_idx,input_idx{,state_idx})
-# Extract/permute specified inputs, outputs, and/or states of a system.
-#
-# inputs:
-#   Asys: system data structure 
-#   output_idx,input_idx: list of connections indices; the new
-#       system has outputs y(output_idx(ii)) and inputs u(input_idx(ii)).
-#       May select as [] (empty matrix) to specify all outputs/inputs.
-#   state_idx: optional argument; list of indices of states to keep
-#       in the reduced model.  May omit this argument or pass [] (empty 
-#       matrix) to keep all states in the returned model
-#
-# output: retsys: resulting system:
-#                      ____________________
-#                      |                  |
-#     u1         ----->|                  |----> y1
-#    (input_idx)       |       Asys       | (output_idx)
-#                      |                  |
-#   u2 (deleted) |---->|                  |----| y2  (deleted)
-#                      |                  |    
-#                      --------------------    
-
 # A. S. Hodel August 1995
 # Updated by John Ingram 7-15-96
 

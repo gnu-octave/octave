@@ -16,36 +16,57 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{dsys} =} c2d (@var{sys}@{, @var{opt}, @var{T}@})
+## @deftypefnx {Function File } { @var{dsys} =} c2d (@var{sys}@{, @var{T}@})
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+##  system data structure (may have both continuous time and discrete time subsystems)
+## @item opt
+## string argument; conversion option (optional argument; 
+## may be omitted as shown above) 
+## @table @code
+## @item "ex" 
+## use the matrix exponential (default)
+## @item "bi" 
+## use the bilinear transformation
+## @end table
+## @example
+##     2(z-1)
+## s = -----
+##     T(z+1)
+## @end example
+## FIXME: This option exits with an error if @var{sys} is not purely 
+## continuous. (The @code{ex} option can handle mixed systems.)
+## @item @var{T}
+## sampling time; required if sys is purely continuous.
+## 
+## @strong{Note} If the 2nd argument is not a string, @code{c2d} assumes that
+## the 2nd argument is @var{T} and performs appropriate argument checks.
+## @end table
+## 
+## @strong{Outputs}
+## @var{dsys} discrete time equivalent via zero-order hold, 
+## sample each @var{T} sec.
+## 
+## converts the system data structure describing
+## @example
+## .
+## x = Ac x + Bc u
+## @end example
+## into a discrete time equivalent model
+## @example
+## x[n+1] = Ad x[n] + Bd u[n]
+## @end example
+## via the matrix exponential or bilinear transform
+## 
+## @strong{Note} This function adds the suffix  @code{_d}
+## to the names of the new discrete states.   
+## @end deftypefn
+
 function dsys = c2d (sys, opt, T)
-
-# Usage: dsys = c2d (sys[, T])
-# Usage: dsys = c2d (sys[, opt[, T]])
-# inputs:
-#   sys: system data structure (may be mixed discrete/continiuous time)
-#   optional arguments:
-#     opt: conversion option: 
-#          "ex" - use the matrix exponential (default)
-#          "bi" - use the bilinear transformation
-#                   2(z-1)
-#               s = -----
-#                   T(z+1)
-#               FIXME: This option exits with an error if sys is not purely 
-#               continuous. (The ex can handle mixed systems.)
-#
-#     T: sampling time; required if sys is purely continuous.
-# outputs: 
-#   dsys: discrete time equivalent via zero-order hold, sample each T sec.
-#
-# converts the system described by:
-#   .
-#   x = Ac x + Bc u
-#
-# into a discrete time equivalent model via the matrix exponential
-#
-#   x[n+1] = Ad x[n] + Bd u[n]
-#
-# Note: This function adds _d to the names of the new discrete states.   
-
 # Written by R.B. Tenison (btenison@eng.auburn.edu)
 # October 1993
 # Updated by John Ingram for system data structure August 1996

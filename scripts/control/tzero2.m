@@ -16,16 +16,17 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+##@deftypefn {Function File } { @var{zr} =} tzero2 (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
+##Compute the transmission zeros of a, b, c, d.
+##
+##bal = balancing option (see balance); default is "B".
+##
+##Needs to incorporate @code{mvzero} algorithm to isolate finite zeros; use
+##@code{tzero} instead.
+##@end deftypefn
+
 function zr = tzero2 (a, b, c, d, bal)
-
-# Usage: zr = tzero2 (a, b, c, d, bal)
-#
-# Compute the transmission zeros of a, b, c, d.
-#
-# bal = balancing option (see balance); default is "B".
-#
-# Needs to incorporate mvzero algorithm to isolate finite zeros.
-
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin == 4)

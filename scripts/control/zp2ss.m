@@ -15,29 +15,37 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{A}, @var{B}, @var{C}, @var{D}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
+## Conversion from zero / pole to state space.
+## @strong{Inputs}
+## @table 
+## @item zer, pol
+## vectors of (possibly) complex poles and zeros of a transfer
+## function.  Complex values must come in conjugate pairs
+## (i.e., x+jy in zer means that x-jy is also in zer)
+## @item k
+## real scalar (leading coefficient)
+## @end table
+## @strong{Outputs}
+##  @var{A}, @var{B}, @var{C}, @var{D}
+## The state space system
+## @example
+## .
+## x = Ax + Bu
+## y = Cx + Du
+## @end example
+## is obtained from a vector of zeros and a vector of poles via the
+## function call @code{[a,b,c,d] = zp2ss(zer,pol,k)}.  
+## The vectors @samp{zer} and 
+## @samp{pol} may either be row or column vectors.  Each zero and pole that
+## has an imaginary part must have a conjugate in the list.
+## The number of zeros must not exceed the number of poles.
+## @samp{k} is @code{zp}-form leading coefficient.
+## @end deftypefn
  
 function [a,b,c,d] = zp2ss(zer,pol,k)
-# [A,B,C,D] = zp2ss(zer,pol,k)
-# Conversion from zero / pole to state space.
-# Inputs: 
-#   zer,  pol: vectors of (possibly) complex poles and zeros of a transfer
-#              function.  Complex values must come in conjugate pairs
-#              (i.e., x+jy in zer means that x-jy is also in zer)
-#   k:  real scalar (leading coefficient)
-# Outputs:
-#  A, B, C, D:
-# The state space system
-#      .
-#      x = Ax + Bu
-#      y = Cx + Du
-#
-# is obtained from a vector of zeros and a vector of poles via the
-# function call [a,b,c,d] = zp2ss(zer,pol,k).  The vectors 'zer' and 
-# 'pol' may either be row or column vectors.  Each zero and pole that
-# has an imaginary part must have a conjugate in the list.
-# The number of poles must at least equal the number of zeros.
-# k is a gain that is associated with the zero vector.
-
 # Written by David Clem August 15, 1994
 
   sav_val = empty_list_elements_ok;

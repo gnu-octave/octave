@@ -17,31 +17,58 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: x = dare (a, b, c, r {,opt})
-##
-## Solves discrete-time algebraic riccati equation
-##
-##   a' x a - x + a' x b (r + b' x b)^{-1} b' x a + c = 0
-##
-## for
-##
-##   a: nxn
-##   b: nxm
-##   c: nxn, symmetric positive semidefinite
-##   r: mxm, invertible
-##
-## If c is not square, then the function attempts to use c'*c instead.
-##
-## Solution method: Generalized eigenvalue approach (Van Dooren; SIAM J.
-## Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
-##
-## See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
-## Algebraic Riccati Equations," Mathematics of Control, Signals and
-## Systems, Vol 5, no 2 (1992)  pp 165-194.
-##
-## opt is an option passed to the eigenvalue balancing routine default
-## is "B".
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dare (@var{a}, @var{b}, @var{c}, @var{r}, @var{opt})
+## 
+## Return the solution, @var{x} of the discrete-time algebraic Riccati
+## equation
+## @iftex
+## @tex
+## $$
+## A^TXA - X + A^TXB (R + B^TXB)^{-1} B^TXA + C = 0
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## a' x a - x + a' x b (r + b' x b)^(-1) b' x a + c = 0
+## @end example
+## @end ifinfo
+## @noindent
+## 
+## @strong{Inputs}
+## @table @var
+## @item a
+## @var{n} by @var{n}.
+## 
+## @item b
+## @var{n} by @var{m}.
+## 
+## @item c
+## @var{n} by @var{n}, symmetric positive semidefinite, or @var{p} by @var{n}.
+## In the latter case @math{c:=c'*c} is used.
+## 
+## @item r
+## @var{m} by @var{m}, symmetric positive definite (invertible).
+## 
+## @item opt
+## (optional argument; default = @code{"B"}):
+## String option passed to @code{balance} prior to ordered @var{QZ} decomposition.
+## @end table
+## 
+## @strong{Outputs}
+## @var{x} solution of DARE.
+## 
+## @strong{Method}
+## Generalized eigenvalue approach (Van Dooren; SIAM J.
+##  Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
+## 
+##  See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
+##  Algebraic Riccati Equations," Mathematics of Control, Signals and
+##  Systems, Vol 5, no 2 (1992)  pp 165-194.
+## 
+## @end deftypefn
+
 ## See also: balance, are
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

@@ -16,27 +16,33 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
+## -*- texinfo -*-
+## @deftypefn {Function File } { outputs =} tf2ss ( inputs ) 
+## @format
+##  Conversion from tranfer function to state-space.
+##  The state space system
+##       .
+##       x = Ax + Bu
+##       y = Cx + Du
+## 
+##  is obtained from a transfer function
+## 
+##                 num(s)
+##           G(s)=-------
+##                 den(s)
+## 
+##  via the function call [a,b,c,d] = tf2ss(num,den).
+##  The vector 'den' must contain only one row, whereas the vector 'num'
+##  may contain as many rows as there are outputs of the system 'y'.
+##  The state space system matrices obtained from this function will be
+##  in controllable canonical form as described in "Modern Control Theory",
+##  [Brogan, 1991].
+## 
+## 
+## @end format
+## @end deftypefn
+
 function [a,b,c,d] = tf2ss(num,den)
-  # Conversion from tranfer function to state-space.
-  # The state space system
-  #      .
-  #      x = Ax + Bu
-  #      y = Cx + Du
-  #
-  # is obtained from a transfer function
-  #
-  #                num(s)
-  #          G(s)=-------
-  #                den(s)
-  #
-  # via the function call [a,b,c,d] = tf2ss(num,den).
-  # The vector 'den' must contain only one row, whereas the vector 'num'
-  # may contain as many rows as there are outputs of the system 'y'.
-  # The state space system matrices obtained from this function will be
-  # in controllable canonical form as described in "Modern Control Theory",
-  # [Brogan, 1991].
-
-
   # Written by R. Bruce Tenison (June 22, 1994) btenison@eng.auburn.edu
   # mod A S Hodel July, Aug  1995
 

@@ -16,27 +16,57 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function [n,nz,m,p,yd] = sysdimensions(sys,opt)
-# [n,nz,m,p,yd] = sysdimensions(sys{,opt})
-# return the number of states, inputs, and/or outputs in the system sys.
-# inputs: sys: system data structure
-#         opt: string
-#              "all" (default): return all output arguments (see below)
-#              "cst": return n=number of continuous states
-#              "dst": return n=number of discrete states
-#              "st":  return n=number of states (continuous and discrete)
-#              "in":  return n=number of inputs
-#              "out": return n=number of outputs
-# outputs:
-#  n: number of continuous states (or the specified dimension as shown above)
-#  nz: number of discrete states
-#  m: number of system inputs
-#  p: number of system outputs
-#  yd: is the discrete output vector: yd(ii) = 1 if output ii is sampled,
-#   				    yd(ii) = 0 if output ii is continous
-#
-# see also: sysgetsignals, sysgettsam
+## -*- texinfo -*-
+## @deftypefn {Function File } { [@var{n}, @var{nz}, @var{m}, @var{p},@var{yd}] =} sysdimensions (@var{sys}@{, @var{opt}@})
+##  return the number of states, inputs, and/or outputs in the system @var{sys}.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+##  system data structure
+## 
+## @item opt
+## String indicating which dimensions are desired.  Values:
+## @table @code
+## @item "all"
+## (default) return all parameters as specified under Outputs below.
+## 
+## @item "cst"  
+## return @var{n}= number of continuous states
+## 
+## @item "dst"  
+## return @var{n}= number of discrete states
+## 
+## @item "in"
+## return @var{n}= number of inputs
+## 
+## @item "out"
+## return @var{n}= number of outputs
+## @end table
+## @end table
+## 
+## @strong{Outputs}
+## @table @var
+## @item  n
+##  number of continuous states (or individual requested dimension as specified
+## by @var{opt}).
+## @item  nz
+##  number of discrete states
+## @item  m
+##  number of system inputs
+## @item  p
+##  number of system outputs
+## @item  yd
+##  binary vector; @var{yd}(@var{ii}) is nonzero if output @var{ii} is
+## discrete.
+## @math{yd(ii) = 0} if output @var{ii} is continous
+## @end table
+## 
+## @end deftypefn
 
+## See also: sysgetsignals, sysgettsam
+
+function [n,nz,m,p,yd] = sysdimensions(sys,opt)
 if(nargout > 5 | nargin < 1 | nargin > 2)
   usage("[n,nz,m,p[,yd]] = sysdimensions(sys{,opt})");
 elseif(!is_struct(sys))

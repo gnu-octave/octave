@@ -16,11 +16,33 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { } DEMOcontrol 
+## Octave Control Systems Toolbox demo/tutorial program.  The demo
+## allows the user to select among several categories of OCST function:
+## @example
+## @group
+## octave:1> DEMOcontrol
+##  O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X
+## Octave Controls System Toolbox Demo
+##
+##   [ 1] System representation
+##   [ 2] Block diagram manipulations 
+##   [ 3] Frequency response functions 
+##   [ 4] State space analysis functions 
+##   [ 5] Root locus functions 
+##   [ 6] LQG/H2/Hinfinity functions 
+##   [ 7] End
+## @end group
+## @end example
+## Command examples are interactively run for users to observe the use
+## of OCST functions.
+## @end deftypefn
+
+## Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
+## Written by David Clem August 15, 1994
+
 function DEMOcontrol()
-# Controls toolbox demo.
-# Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
-#  
-# Written by David Clem August 15, 1994
 
   disp(' O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X')
 

@@ -16,37 +16,65 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
+## -*- texinfo -*-
+## @deftypefn {Function File } {@var{retsys} =} sysappend (@var{sys},@var{b}@{, @var{c}, @var{d}, @var{outname}, @var{inname}, @var{yd}@})
+## appends new inputs and/or outputs to a system
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys
+## system data structure
+## 
+## @item b
+## matrix to be appended to sys "B" matrix (empty if none)
+## 
+## @item c
+## matrix to be appended to sys "C" matrix (empty if none)
+## 
+## @item d
+## revised sys d matrix (can be passed as [] if the revised d is all zeros)
+## 
+## @item outname
+## list of names for new outputs
+## 
+## @item inname
+## list of names for new inputs
+## 
+## @item yd
+## binary vector; @math{yd(ii)=0} indicates a continuous output;
+## @math{yd(ii)=1} indicates a discrete output.
+## @end table
+## 
+## @strong{Outputs} @var{sys}
+## @example
+## @group
+##    sys.b := [sys.b , b]
+##    sys.c := [sys.c  ]
+##             [ c     ]
+##    sys.d := [sys.d | D12 ]
+##             [D21   | D22 ]
+## @end group
+## @end example
+## where @var{D12}, @var{D21}, and @var{D22} are the appropriate dimensioned 
+## blocks of the input parameter @var{d}.  
+## @itemize @bullet
+## @item The leading block @var{D11} of @var{d} is ignored.
+## @item If @var{inname} and @var{outname} are not given as arguments, 
+## 	the new inputs and outputs are be assigned default names.  
+## @item @var{yd} is a binary vector of length rows(c) that indicates
+## 	continuous/sampled outputs.  Default value for @var{yd} is:
+## 
+## @item @var{sys} = continuous or mixed
+## @var{yd} = @code{zeros(1,rows(c))}
+## 
+## @item @var{sys} = discrete
+## @var{yd} = @code{ones(1,rows(c))}
+## 
+## @end itemize
+## 
+## @end deftypefn
+
 function retsys = sysappend(sys,b,c,d,outname,inname,yd)
-  # 
-  # function retsys = sysappend(sys,b[,c,d,outname,inname,yd])
-  #
-  # This function appends new inputs and/or outputs to a system
-  # Inputs:
-  #	sys:  system data structure
-  #	b: matrix to be appended to sys "B" matrix (empty if none)
-  #	c: matrix to be appended to sys "C" matrix (empty if none)
-  #     d: revised sys d matrix (can be passed as [] if the revised d is all 
-  #        zeros)
-  #     outname: names for new outputs
-  #     inname: names for new inputs
-  #     yd: indicator for which new outputs are continuous/discrete 
-  #         (yd(i) = 0 or , respectively)
-  # result:
-  #   sys.b := [sys.b , b]
-  #   sys.c := [sys.c  ]
-  #            [ c     ]
-  #   sys.d := [sys.d | D12 ]
-  #            [D21   | D22 ]
-  #         where D12, D21, and D22 are the appropriate dimensioned blocks
-  #         of the input parameter d.  The leading block D11 of d is ignored.
-  # If inname and outname are not given as arguments, the new inputs and 
-  # outputs are be assigned default names.  
-  # yd is a vector of length rows(c), and indicates which new outputs are
-  # discrete (yd(ii) = 1) and which are continuous (yd(ii) = 0).
-  # Default value for yd is:
-  #     sys = continuous or mixed: yd = zeros(1,rows(c))
-  #     sys = discrete:            yd = ones(1,rows(c))
-  
   # written by John Ingram August 1996
   
   sav_implicit_str_to_num_ok = implicit_str_to_num_ok;	# save for later

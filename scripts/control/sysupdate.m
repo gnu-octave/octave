@@ -14,25 +14,41 @@
 # 
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-function sys = sysupdate(sys,opt)
-# function retsys = sysupdate(sys,opt)
-# Update the internal representation of a system.
-# inputs:
-#  sys: system data structure
-#  opt: string:  "tf" -> update transfer function
-#                "zp" -> update zero-pole form
-#                "ss" -> update state space form
-#                "all" -> all of the above
-# outputs: retsys: contains union of data in sys and requested data.
-#     if requested data in sys is already up to date then retsys=sys.
-#
-# conversion to tf or zp exits with an error if the system is
-# mixed continuous/digital
-#
-# see also: tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, sys2zp
+# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 0211
 
+## -*- texinfo -*-
+## @deftypefn {Function File } { @var{sys} =} sysupdate ( @var{sys}, @var{opt} ) 
+##  Update the internal representation of a system.
+## 
+## @strong{Inputs}
+## @table @var
+## @item sys:
+## system data structure
+## @item opt
+##  string:  
+## @table @code
+## @item "tf"
+## update transfer function form
+## @item "zp" 
+## update zero-pole form
+## @item "ss" 
+## update state space form
+## @item "all" 
+## all of the above
+## @end table
+## @end table
+## 
+## @strong{Outputs}
+## @var{retsys}: contains union of data in sys and requested data.
+## If requested data in sys is already up to date then retsys=sys.
+## 
+## Conversion to @code{tf} or @code{zp} exits with an error if the system is 
+##  mixed continuous/digital.
+## @end deftypefn
+
+## See also: tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, sys2zp
+
+function sys = sysupdate(sys,opt)
 # Written by John Ingram  7-9-96
 
   # check for correct number of inputs 

@@ -15,11 +15,13 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {x =} zgfslv(@var{n},@var{m},@var{p},@var{b})
+## solve system of equations for dense zgep problem
+## @end deftypefn
  
 function x = zgfslv(n,m,p,b)
-  # x = zgfslv(n,m,p,b)
-  # solve system of equations for dense zgep problem
-  
   # Written by A. Scotte Hodel
   # Converted to Octave by R Bruce Tenison, July 3, 1994
 

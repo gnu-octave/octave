@@ -15,98 +15,118 @@
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
+
+## -*- texinfo -*-
+## @deftypefn {Function File } {[@var{sys}] =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
+## 
+## Contributed by Kai Mueller.
+## 
+##  Form an arbitrary complex (open or closed loop) system in
+##  state-space form from several systems. "@code{buildssic}" can
+##  easily (despite it's cryptic syntax) integrate transfer functions
+##  from a complex block diagram into a single system with one call.
+##  This function is especially useful for building open loop
+##  interconnections for H_infinity and H2 designs or for closing
+##  loops with these controllers.
+## 
+##  Although this function is general purpose, the use of "@code{sysgroup}"
+##  "@code{sysmult}", "@code{sysconnect}" and the like is recommended for standard
+##  operations since they can handle mixed discrete and continuous
+##  systems and also the names of inputs, outputs, and states.
+##  
+##  The parameters consist of 4 lists that describe the connections
+##  outputs and inputs and up to 8 systems s1-s8.
+##  Format of the lists:
+## @table @var
+## @item      Clst
+## connection list, describes the input signal of
+## each system. The maximum number of rows of Clst is
+## equal to the sum of all inputs of s1-s8.
+## 
+## Example:
+## @code{[1 2 -1; 2 1 0]} ==> new input 1 is old inpout 1
+## + output 2 - output 1, new input 2 is old input 2
+## + output 1. The order of rows is arbitrary.
+## 
+## @item     Ulst
+##  if not empty the old inputs in vector Ulst will
+##            be appended to the outputs. You need this if you
+##            want to "pull out" the input of a system. Elements
+##            are input numbers of s1-s8.
+## 
+## @item     Olst
+##  output list, specifiy the outputs of the resulting
+##            systems. Elements are output numbers of s1-s8.
+##            The numbers are alowed to be negative and may
+##            appear in any order. An empty matrix means
+##            all outputs.
+## 
+## @item     Ilst
+##  input list, specifiy the inputs of the resulting
+##            systems. Elements are input numbers of s1-s8.
+##            The numbers are alowed to be negative and may
+##            appear in any order. An empty matrix means
+##            all inputs.
+## @end table
+## 
+##  Example:  Very simple closed loop system.
+## @example
+## @group
+## w        e  +-----+   u  +-----+
+##  --->o--*-->|  K  |--*-->|  G  |--*---> y
+##      ^  |   +-----+  |   +-----+  |
+##    - |  |            |            |
+##      |  |            +----------------> u
+##      |  |                         |
+##      |  +-------------------------|---> e
+##      |                            |
+##      +----------------------------+
+## @end group
+## @end example
+## 
+## The closed loop system GW can be optained by
+## @example
+## GW = buildssic([1 2; 2 -1], [2], [1 2 3], [2], G, K);
+## @end example
+## @table @var
+## @item Clst
+## (1. row) connect input 1 (G) with output 2 (K).
+## (2. row) connect input 2 (K) with neg. output 1 (G).
+## @item Ulst
+## append input of (2) K to the number of outputs.
+## @item Olst
+## Outputs are output of 1 (G), 2 (K) and appended output 3 (from Ulst).
+## @item Ilst
+## the only input is 2 (K).
+## @end table
+## 
+## Here is a real example:
+## @example
+## @group
+##                          +----+
+##     -------------------->| W1 |---> v1
+## z   |                    +----+
+## ----|-------------+                   || GW   ||     => min.
+##     |             |                        vz   infty
+##     |    +---+    v      +----+
+##     *--->| G |--->O--*-->| W2 |---> v2
+##     |    +---+       |   +----+
+##     |                |
+##     |                v
+##    u                  y
+## @end group
+## @end example
+## 
+## The closed loop system GW from [z; u]' to [v1; v2; y]' can be
+## obtained by (all SISO systems):
+## @example
+## GW = buildssic([1 4;2 4;3 1],[3],[2 3 5],[3 4],G,W1,W2,One);
+## @end example
+## where "One" is a unity gain (auxillary) function with order 0.
+## (e.g. @code{One = ugain(1);})
+## @end deftypefn
  
 function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
-#
-# [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
-#
-# Form an arbitrary complex (open or closed loop) system in
-# state-space form from several systems. "buildssic" can
-# easily (despite it's cryptic syntax) integrate transfer functions
-# from a complex block diagram into a single system with one call.
-# This function is especially useful for building open loop
-# interconnections for H_infinity and H2 designs or for closing
-# loops with these controllers.
-#
-# Although this function is general purpose, the use of "sysgroup"
-# "sysmult", "sysconnect" and the like ist recommended for standard
-# operations since they can handle mixed discrete and continuous
-# systems and also the names of inputs, outputs, and states.
-# 
-# The parameters consist of 4 lists which describe the connections
-# outputs and inputs and up to 8 systems s1-s8.
-# Format of the lists:
-#
-#     Clst: connection list, describes the input signal of
-#           each system. The maximum number of rows of Clst is
-#           equal to the sum of all inputs of s1-s8.
-#           Example:
-#             [1 2 -1; 2 1 0] ==> new input 1 is old inpout 1
-#             + output 2 - output 1, new input 2 is old input 2
-#             + output 1. The order of rows is arbitrary.
-#
-#     Ulst: if not empty the old inputs in vector Ulst will
-#           be appended to the outputs. You need this if you
-#           want to "pull out" the input of a system. Elements
-#           are input numbers of s1-s8.
-#
-#     Olst: output list, specifiy the outputs of the resulting
-#           systems. Elements are output numbers of s1-s8.
-#           The numbers are alowed to be negative and may
-#           appear in any order. An empty matrix means
-#           all outputs.
-#
-#     Ilst: input list, specifiy the inputs of the resulting
-#           systems. Elements are input numbers of s1-s8.
-#           The numbers are alowed to be negative and may
-#           appear in any order. An empty matrix means
-#           all inputs.
-#
-# Example:  Very simple closed loop system.
-#
-#       w        e  +-----+   u  +-----+
-#        --->o--*-->|  K  |--*-->|  G  |--*---> y
-#            ^  |   +-----+  |   +-----+  |
-#          - |  |            |            |
-#            |  |            +----------------> u
-#            |  |                         |
-#            |  +-------------------------|---> e
-#            |                            |
-#            +----------------------------+
-#
-# The closed loop system GW can be optained by
-#
-#     GW = buildssic([1 2; 2 -1], [2], [1 2 3], [2], G, K);
-#
-# Clst: (1. row) connect input 1 (G) with output 2 (K).
-#       (2. row) connect input 2 (K) with neg. output 1 (G).
-# Ulst: append input of (2) K to the number of outputs.
-# Olst: Outputs are output of 1 (G), 2 (K) and appended
-#       output 3 (from Ulst).
-# Ilst: the only input is 2 (K).
-#
-# Here is a real example:
-#	                         +----+
-#	    -------------------->| W1 |---> v1
-#	z   |                    +----+
-#	----|-------------+                   || GW   ||     => min.
-#	    |             |                        vz   infty
-#	    |    +---+    v      +----+
-#	    *--->| G |--->O--*-->| W2 |---> v2
-#	    |    +---+       |   +----+
-#	    |                |
-#           |                v
-#          u                  y
-#
-# The closed loop system GW from [z; u]' to [v1; v2; y]' can be
-# obtained by (all SISO systems):
-#
-#     GW = buildssic([1 4;2 4;3 1],[3],[2 3 5],[3 4],G,W1,W2,One);
-#
-# where "One" is a unity gain (auxillary) function with order 0.
-# (e.g. One = ugain(1);)
-#
-
 # Written by Kai Mueller April 1998
 
   if((nargin < 5) || (nargin > 12))

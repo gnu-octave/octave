@@ -51,6 +51,8 @@ friend class SVD;
 
 public:
 
+  typedef void (*solve_singularity_handler) (double rcond);
+
   Matrix (void) : MArray2<double> () { }
   Matrix (int r, int c) : MArray2<double> (r, c) { }
   Matrix (int r, int c, double val) : MArray2<double> (r, c, val) { }
@@ -131,19 +133,28 @@ public:
   Matrix solve (const Matrix& b) const;
   Matrix solve (const Matrix& b, int& info) const;
   Matrix solve (const Matrix& b, int& info, double& rcond) const;
+  Matrix solve (const Matrix& b, int& info, double& rcond,
+		solve_singularity_handler sing_handler) const;
 
   ComplexMatrix solve (const ComplexMatrix& b) const;
   ComplexMatrix solve (const ComplexMatrix& b, int& info) const;
   ComplexMatrix solve (const ComplexMatrix& b, int& info, double& rcond) const;
+  ComplexMatrix solve (const ComplexMatrix& b, int& info, double& rcond,
+		       solve_singularity_handler sing_handler) const;
 
   ColumnVector solve (const ColumnVector& b) const;
   ColumnVector solve (const ColumnVector& b, int& info) const;
   ColumnVector solve (const ColumnVector& b, int& info, double& rcond) const;
+  ColumnVector solve (const ColumnVector& b, int& info, double& rcond,
+		      solve_singularity_handler sing_handler) const;
 
   ComplexColumnVector solve (const ComplexColumnVector& b) const;
   ComplexColumnVector solve (const ComplexColumnVector& b, int& info) const;
   ComplexColumnVector solve (const ComplexColumnVector& b, int& info,
 			     double& rcond) const;
+  ComplexColumnVector solve (const ComplexColumnVector& b, int& info,
+			     double& rcond,
+			     solve_singularity_handler sing_handler) const;
 
   Matrix lssolve (const Matrix& b) const;
   Matrix lssolve (const Matrix& b, int& info) const;

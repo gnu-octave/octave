@@ -373,6 +373,7 @@ main (int argc, char **argv)
 
   initialize_pathsearch ();
 
+  cerr << "installing octave signal handlers\n";
   install_signal_handlers ();
 
   initialize_file_io ();

@@ -918,7 +918,7 @@ ComplexMatrix::pseudo_inverse (double tol)
 {
   ComplexMatrix retval;
 
-  ComplexSVD result (*this);
+  ComplexSVD result (*this, SVD::economy);
 
   DiagMatrix S = result.singular_values ();
   ComplexMatrix U = result.left_singular_matrix ();
@@ -1233,21 +1233,28 @@ ComplexMatrix::solve (const Matrix& b) const
 {
   int info;
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b, int& info) const
 {
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b, int& info, double& rcond) const
 {
+  return solve (b, info, rcond, 0);
+}
+
+ComplexMatrix
+ComplexMatrix::solve (const Matrix& b, int& info, double& rcond,
+		      solve_singularity_handler sing_handler) const
+{
   ComplexMatrix tmp (b);
-  return solve (tmp, info, rcond);
+  return solve (tmp, info, rcond, sing_handler);
 }
 
 ComplexMatrix
@@ -1255,17 +1262,25 @@ ComplexMatrix::solve (const ComplexMatrix& b) const
 {
   int info;
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b, int& info) const
 {
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
+
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
+{
+  return solve (b, info, rcond, 0);
+}
+
+ComplexMatrix
+ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
+		      solve_singularity_handler sing_handler) const
 {
   ComplexMatrix retval;
 
@@ -1299,6 +1314,13 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
 	  if (rcond_plus_one == 1.0)
 	    {
 	      info = -2;
+
+	      if (sing_handler)
+		sing_handler (rcond);
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision, rcond = %g",
+		   rcond);
 	    }
 	  else
 	    {
@@ -1332,19 +1354,27 @@ ComplexMatrix::solve (const ComplexColumnVector& b) const
 {
   int info;
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, int& info) const
 {
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 		      double& rcond) const
+{
+  return solve (b, info, rcond, 0);
+}
+
+ComplexColumnVector
+ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
+		      double& rcond,
+		      solve_singularity_handler sing_handler) const
 {
   ComplexColumnVector retval;
 
@@ -1379,6 +1409,13 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 	  if (rcond_plus_one == 1.0)
 	    {
 	      info = -2;
+
+	      if (sing_handler)
+		sing_handler (rcond);
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision, rcond = %g",
+		   rcond);
 	    }
 	  else
 	    {

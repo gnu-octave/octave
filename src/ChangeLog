@@ -1,5 +1,13 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* xdiv.cc (result_ok): Just check value of info.
+	(solve_singularity_warning): New function.
+	(xleftdiv, xdiv): Pass pointer to solve_singularity_warning to
+	solve function.	
+
+	* lex.l (handle_identifier): Set next_tok_is_eq if we are looking
+	at `=', but not if we are looking at `=='.
+
 	* pt-pr-code.cc (tree_print_code::visit_unwind_protect_command): 
 	Print `unwind_protect_cleanup', not `cleanup_code'.
 

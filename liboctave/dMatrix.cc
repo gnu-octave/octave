@@ -612,7 +612,7 @@ Matrix::inverse (int& info, double& rcond, int force) const
 Matrix
 Matrix::pseudo_inverse (double tol)
 {
-  SVD result (*this);
+  SVD result (*this, SVD::economy);
 
   DiagMatrix S = result.singular_values ();
   Matrix U = result.left_singular_matrix ();
@@ -938,6 +938,13 @@ Matrix::solve (const Matrix& b, int& info) const
 Matrix
 Matrix::solve (const Matrix& b, int& info, double& rcond) const
 {
+  return solve (b, info, rcond, 0);
+}
+
+Matrix
+Matrix::solve (const Matrix& b, int& info, double& rcond,
+	       solve_singularity_handler sing_handler) const
+{
   Matrix retval;
 
   int nr = rows ();
@@ -970,6 +977,13 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
 	  if (rcond_plus_one == 1.0)
 	    {
 	      info = -2;
+
+	      if (sing_handler)
+		sing_handler (rcond);
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision, rcond = %g",
+		   rcond);
 	    }
 	  else
 	    {
@@ -1019,6 +1033,14 @@ Matrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
   return tmp.solve (b, info, rcond);
 }
 
+ComplexMatrix
+Matrix::solve (const ComplexMatrix& b, int& info, double& rcond,
+	       solve_singularity_handler sing_handler) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (b, info, rcond, sing_handler);
+}
+
 ColumnVector
 Matrix::solve (const ColumnVector& b) const
 {
@@ -1035,6 +1057,13 @@ Matrix::solve (const ColumnVector& b, int& info) const
 
 ColumnVector
 Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
+{
+  return solve (b, info, rcond, 0);
+}
+
+ColumnVector
+Matrix::solve (const ColumnVector& b, int& info, double& rcond,
+	       solve_singularity_handler sing_handler) const
 {
   ColumnVector retval;
 
@@ -1069,6 +1098,13 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
 	  if (rcond_plus_one == 1.0)
 	    {
 	      info = -2;
+
+	      if (sing_handler)
+		sing_handler (rcond);
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision, rcond = %g",
+		   rcond);
 	    }
 	  else
 	    {
@@ -1106,6 +1142,14 @@ Matrix::solve (const ComplexColumnVector& b, int& info, double& rcond) const
 {
   ComplexMatrix tmp (*this);
   return tmp.solve (b, info, rcond);
+}
+
+ComplexColumnVector
+Matrix::solve (const ComplexColumnVector& b, int& info, double& rcond,
+	       solve_singularity_handler sing_handler) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.solve (b, info, rcond, sing_handler);
 }
 
 Matrix

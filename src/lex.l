@@ -2050,11 +2050,22 @@ handle_identifier (const string& tok, int spc_gobbled)
 	TOK_RETURN (plot_option_kw);
     }
 
-  int c = yyinput ();
-  unput (c);
-  bool next_tok_is_eq = (c == '=');
-  bool next_tok_is_dot = (c == '.');
-  bool next_tok_is_paren = (c == '(');
+  int c1 = yyinput ();
+
+  bool next_tok_is_dot = (c1 == '.');
+  bool next_tok_is_paren = (c1 == '(');
+
+  bool next_tok_is_eq = false;
+  if (c1 == '=')
+    {
+      int c2 = yyinput ();
+      unput (c2);
+
+      if (c2 != '=')
+	next_tok_is_eq = true;
+    }
+
+  unput (c1);
 
   // Make sure we put the return values of a function in the symbol
   // table that is local to the function.

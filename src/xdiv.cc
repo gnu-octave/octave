@@ -33,22 +33,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "xdiv.h"
 
-static inline int
-result_ok (int info, double rcond, int warn = 1)
+static inline bool
+result_ok (int info)
 {
   assert (info != -1);
 
-  if (info == -2)
-    {
-      if (warn)
-	warning ("matrix singular to machine precision, rcond = %g", rcond);
-      else
-	error ("matrix singular to machine precision, rcond = %g", rcond);
+  return (info != -2);
+}
 
-      return 0;
-    }
-  else
-    return 1;
+static void
+solve_singularity_warning (double rcond)
+{
+  warning ("matrix singular to machine precision, rcond = %g", rcond);
 }
 
 template <class T1, class T2>
@@ -128,8 +124,11 @@ xdiv (const Matrix& a, const Matrix& b)
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
-      Matrix result = btmp.solve (atmp, info, rcond);
-      if (result_ok (info, rcond))
+
+      Matrix result
+	= btmp.solve (atmp, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return Matrix (result.transpose ());
     }
 
@@ -153,8 +152,11 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
-      ComplexMatrix result = btmp.solve (atmp, info, rcond);
-      if (result_ok (info, rcond))
+
+      ComplexMatrix result
+	= btmp.solve (atmp, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result.hermitian ();
     }
 
@@ -178,8 +180,11 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
-      ComplexMatrix result = btmp.solve (atmp, info, rcond);
-      if (result_ok (info, rcond))
+
+      ComplexMatrix result
+	= btmp.solve (atmp, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result.hermitian ();
     }
 
@@ -203,8 +208,11 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
   if (btmp.rows () == btmp.columns ())
     {
       double rcond = 0.0;
-      ComplexMatrix result = btmp.solve (atmp, info, rcond);
-      if (result_ok (info, rcond))
+
+      ComplexMatrix result
+	= btmp.solve (atmp, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result.hermitian ();
     }
 
@@ -303,8 +311,11 @@ xleftdiv (const Matrix& a, const Matrix& b)
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
-      Matrix result = a.solve (b, info, rcond);
-      if (result_ok (info, rcond))
+
+      Matrix result
+	= a.solve (b, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result;
     }
 
@@ -323,8 +334,11 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
-      ComplexMatrix result = a.solve (b, info, rcond);
-      if (result_ok (info, rcond))
+
+      ComplexMatrix result
+	= a.solve (b, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result;
     }
 
@@ -343,8 +357,11 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
-      ComplexMatrix result = a.solve (b, info, rcond);
-      if (result_ok (info, rcond))
+
+      ComplexMatrix result
+	= a.solve (b, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result;
     }
 
@@ -363,8 +380,11 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
   if (a.rows () == a.columns ())
     {
       double rcond = 0.0;
-      ComplexMatrix result = a.solve (b, info, rcond);
-      if (result_ok (info, rcond))
+
+      ComplexMatrix result
+	= a.solve (b, info, rcond, solve_singularity_warning);
+
+      if (result_ok (info))
 	return result;
     }
 

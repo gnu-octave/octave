@@ -1,5 +1,13 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dMatrix.cc (Matrix::solve (...)): Add new variant with
+	function pointer as final arg.  Passed function (if any) will be
+	called for singularity errors.
+	* CMatrix.cc (ComplexMatrix::solve (...)): Likewise.
+
+	* dMatrix.cc (Matrix::pseudo_inverse): Use economy SVD.
+	* CMatrix.cc (ComplexMatrix::pseudo_inverse): Likewise.
+
 	* lo-ieee.cc (octave_ieee_init): Don't include sunmath.h.
 	No longer bother with infinity or quiet_nan.
 

@@ -55,8 +55,6 @@ private:
   class
   tree_constant_rep
     {
-      friend class tree_constant;
-
       private:
 
 	enum constant_type

@@ -823,8 +823,6 @@ tree_identifier::eval (int print)
 	  tree_simple_assignment_expression tmp_ass (ans_id, tmp, 0, 1);
 
 	  tmp_ass.eval (print);
-
-	  delete ans_id;  // XXX FIXME XXX
 	}
       else
 	{
@@ -907,8 +905,6 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 							     tmp, 0, 1);
 
 		  tmp_ass.eval (print);
-
-		  delete ans_id;  // XXX FIXME XXX
 		}
 	    }
 	  else

@@ -61,13 +61,13 @@ tree_indirect_ref::rvalue (int nargout)
   octave_value_list retval;
 
   if (nargout > 1)
-    error ("%s, %s", __FILE__, __LINE__);
+    error ("invalid number of output arguments for structure reference");
   else
     {
       octave_value_list tmp = expr->rvalue (nargout);
 
       if (tmp.empty ())
-	error ("%s, %s", __FILE__, __LINE__);
+	eval_error ();
       else
 	{
 	  octave_value val = tmp(0).do_struct_elt_index_op (nm);
@@ -110,6 +110,14 @@ void
 tree_indirect_ref::accept (tree_walker& tw)
 {
   tw.visit_indirect_ref (*this);
+}
+
+void
+tree_indirect_ref::eval_error (void) const
+{
+  if (error_state > 0)
+    ::error ("evaluating structure reference operator near line %d, column %d",
+	     oper () . c_str (), line (), column ());
 }
 
 /*

@@ -82,6 +82,8 @@ private:
 
   // The sub-element name.
   string nm;
+
+  void eval_error (void) const;
 };
 
 #endif

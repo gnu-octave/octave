@@ -1,0 +1,15 @@
+CLASS = "Quad"
+
+OPTION
+  NAME = "absolute tolerance"
+  TYPE = "double"
+  INIT_VALUE = "::sqrt (DBL_EPSILON)"
+  SET_EXPR = "val"
+END_OPTION
+
+OPTION
+  NAME = "relative tolerance"
+  TYPE = "double"
+  INIT_VALUE = "::sqrt (DBL_EPSILON)"
+  SET_EXPR = "val"
+END_OPTION

@@ -1,0 +1,18 @@
+CLASS = "NLEqn"
+
+FCN_NAME = "fsolve"
+
+DOC_STRING
+When called with two arguments, this function allows you set options
+parameters for the function @code{fsolve}.  Given one argument,
+@code{fsolve_options} returns the value of the corresponding option.  If
+no arguments are supplied, the names of all the available options and
+their current values are displayed.
+END_DOC_STRING
+
+OPTION
+  NAME = "tolerance"
+  TYPE = "double"
+  INIT_VALUE = "::sqrt (DBL_EPSILON)"
+  SET_EXPR = "(val > 0.0) ? val : ::sqrt (DBL_EPSILON)"
+END_OPTION

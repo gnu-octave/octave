@@ -179,16 +179,16 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
   : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
-  for (int i = 0; i < a.cols (); i++)
-    for (int j = 0; j < a.rows (); j++)
+  for (int i = 0; i < a.rows (); i++)
+    for (int j = 0; j < a.cols (); j++)
       elem (i, j) = a.elem (i, j);
 }
 
 ComplexMatrix::ComplexMatrix (const charMatrix& a)
   : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
-  for (int i = 0; i < a.cols (); i++)
-    for (int j = 0; j < a.rows (); j++)
+  for (int i = 0; i < a.rows (); i++)
+    for (int j = 0; j < a.cols (); j++)
       elem (i, j) = a.elem (i, j);
 }
 

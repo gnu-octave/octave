@@ -39,6 +39,9 @@ ifeq ($(OCTAVE_LITE), true)
   endif
 endif
 
+OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
+	LSODE-opts.cc NLEqn-opts.cc ODESSA-opts.cc Quad-opts.cc
+
 DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc \
 	daspk.cc dasrt.cc dassl.cc det.cc eig.cc expm.cc fft.cc fft2.cc \
 	filter.cc find.cc fsolve.cc gammainc.cc getgrent.cc \
@@ -170,7 +173,7 @@ MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 DEFUN_PATTERN = "^[ \t]*DEFU(N|N_DLD|N_TEXT|N_MAPPER)[ \t]*\\("
 
 DEF_5 := $(SOURCES) $(DLD_SRC)
-DEF_4 := $(addprefix $(srcdir)/, $(DEF_5))
+DEF_4 := $(addprefix $(srcdir)/, $(DEF_5)) $(OPT_HANDLERS)
 DEF_3 := $(notdir $(shell egrep -l $(DEFUN_PATTERN) $(DEF_4)))
 DEF_2 := $(patsubst %.y, %.df, $(DEF_3))
 DEF_1 := $(patsubst %.l, %.df, $(DEF_2))
@@ -198,7 +201,7 @@ DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
-	$(INCLUDES) $(DIST_SRC)
+	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = src/liboctinterp
@@ -253,7 +256,7 @@ stamp-oct-links: $(OCT_FILES)
 	fi
 	touch stamp-oct-links
 
-stamp-prereq: defaults.h oct-conf.h
+stamp-prereq: defaults.h oct-conf.h $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
@@ -451,6 +454,11 @@ bin-dist:
 .PHONY: bin-dist
 
 # Special rules -- these files need special things to be defined.
+
+$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
+	@echo making $@ from $<
+	@perl $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@.t
+	@$(top_srcdir)/move-if-change $@.t $@
 
 parse.cc : parse.y
 	@echo "expect 11 shift/reduce conflicts"

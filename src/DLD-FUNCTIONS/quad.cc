@@ -42,14 +42,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+#include "Quad-opts.cc"
+
 #if defined (quad)
 #undef quad
 #endif
 
 // Global pointer for user defined function required by quadrature functions.
 static octave_function *quad_fcn;
-
-static Quad_options quad_opts;
 
 // Is this a recursive call?
 static int call_depth = 0;
@@ -209,18 +209,17 @@ parameters for @code{quad}.\n\
       int nfun = 0;
       double abserr = 0.0;
       double val = 0.0;
-      double abstol = 1e-6;
-      double reltol = 1e-6;
-      ColumnVector tol (2);
+      bool have_sing = false;
       ColumnVector sing;
-      int have_sing = 0;
+      ColumnVector tol;
+
       switch (nargin)
 	{
 	case 5:
 	  if (indefinite)
 	    QUAD_ABORT1 ("singularities not allowed on infinite intervals");
 
-	  have_sing = 1;
+	  have_sing = true;
 
 	  sing = ColumnVector (args(4).vector_value ());
 
@@ -236,10 +235,10 @@ parameters for @code{quad}.\n\
 	  switch (tol.capacity ())
 	    {
 	    case 2:
-	      reltol = tol (1);
+	      quad_opts.set_relative_tolerance (tol (1));
 
 	    case 1:
-	      abstol = tol (0);
+	      quad_opts.set_absolute_tolerance (tol (0));
 	      break;
 
 	    default:
@@ -249,22 +248,22 @@ parameters for @code{quad}.\n\
 	case 3:
 	  if (indefinite)
 	    {
-	      IndefQuad iq (quad_user_function, bound, indef_type, abstol, reltol);
-	      iq.set_options (quad_opts);
+	      IndefQuad iq (quad_user_function, bound, indef_type);
+	      iq.copy (quad_opts);
 	      val = iq.integrate (ier, nfun, abserr);
 	    }
 	  else
 	    {
 	      if (have_sing)
 		{
-		  DefQuad dq (quad_user_function, a, b, sing, abstol, reltol);
-		  dq.set_options (quad_opts);
+		  DefQuad dq (quad_user_function, a, b, sing);
+		  dq.copy (quad_opts);
 		  val = dq.integrate (ier, nfun, abserr);
 		}
 	      else
 		{
-		  DefQuad dq (quad_user_function, a, b, abstol, reltol);
-		  dq.set_options (quad_opts);
+		  DefQuad dq (quad_user_function, a, b);
+		  dq.copy (quad_opts);
 		  val = dq.integrate (ier, nfun, abserr);
 		}
 	    }
@@ -284,162 +283,6 @@ parameters for @code{quad}.\n\
     print_usage ("quad");
 
   unwind_protect::run_frame ("Fquad");
-
-  return retval;
-}
-
-typedef void (Quad_options::*d_set_opt_mf) (double);
-typedef double (Quad_options::*d_get_opt_mf) (void);
-
-#define MAX_TOKENS 2
-
-struct QUAD_OPTIONS
-{
-  const char *keyword;
-  const char *kw_tok[MAX_TOKENS + 1];
-  int min_len[MAX_TOKENS + 1];
-  int min_toks_to_match;
-  d_set_opt_mf d_set_fcn;
-  d_get_opt_mf d_get_fcn;
-};
-
-static QUAD_OPTIONS quad_option_table [] =
-{
-  { "absolute tolerance",
-    { "absolute", "tolerance", 0, },
-    { 1, 0, 0, }, 1,
-    &Quad_options::set_absolute_tolerance,
-    &Quad_options::absolute_tolerance, },
-
-  { "relative tolerance",
-    { "relative", "tolerance", 0, },
-    { 1, 0, 0, }, 1,
-    &Quad_options::set_relative_tolerance,
-    &Quad_options::relative_tolerance, },
-
-  { 0,
-    { 0, 0, 0, },
-    { 0, 0, 0, }, 0,
-    0, 0, },
-};
-
-static void
-print_quad_option_list (std::ostream& os)
-{
-  print_usage ("quad_options", 1);
-
-  os << "\n"
-     << "Options for quad include:\n\n"
-     << "  keyword                                  value\n"
-     << "  -------                                  -----\n\n";
-
-  QUAD_OPTIONS *list = quad_option_table;
-
-  const char *keyword;
-  while ((keyword = list->keyword) != 0)
-    {
-      os << "  "
-	 << std::setiosflags (std::ios::left) << std::setw (40)
-	 << keyword
-	 << std::resetiosflags (std::ios::left)
-	 << " ";
-
-      double val = (quad_opts.*list->d_get_fcn) ();
-      if (val < 0.0)
-	os << "computed automatically";
-      else
-	os << val;
-
-      os << "\n";
-      list++;
-    }
-
-  os << "\n";
-}
-
-static void
-set_quad_option (const std::string& keyword, double val)
-{
-  QUAD_OPTIONS *list = quad_option_table;
-
-  while (list->keyword != 0)
-    {
-      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
-				list->min_toks_to_match, MAX_TOKENS))
-	{
-	  (quad_opts.*list->d_set_fcn) (val);
-
-	  return;
-	}
-      list++;
-    }
-
-  warning ("quad_options: no match for `%s'", keyword.c_str ());
-}
-
-static octave_value_list
-show_quad_option (const std::string& keyword)
-{
-  octave_value retval;
-
-  QUAD_OPTIONS *list = quad_option_table;
-
-  while (list->keyword != 0)
-    {
-      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
-				list->min_toks_to_match, MAX_TOKENS))
-	{
-	  return (quad_opts.*list->d_get_fcn) ();
-	}
-      list++;
-    }
-
-  warning ("quad_options: no match for `%s'", keyword.c_str ());
-
-  return retval;
-}
-
-DEFUN_DLD (quad_options, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} quad_options (@var{opt}, @var{val})\n\
-When called with two arguments, this function allows you set options\n\
-parameters for the function @code{quad}.  Given one argument,\n\
-@code{quad_options} returns the value of the corresponding option.  If\n\
-no arguments are supplied, the names of all the available options and\n\
-their current values are displayed.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      print_quad_option_list (octave_stdout);
-      return retval;
-    }
-  else if (nargin == 1 || nargin == 2)
-    {
-      std::string keyword = args(0).string_value ();
-
-      if (! error_state)
-	{
-	  if (nargin == 1)
-	    return show_quad_option (keyword);
-	  else
-	    {
-	      double val = args(1).double_value ();
-
-	      if (! error_state)
-		{
-		  set_quad_option (keyword, val);
-		  return retval;
-		}
-	    }
-	}
-    }
-
-  print_usage ("quad_options");
 
   return retval;
 }

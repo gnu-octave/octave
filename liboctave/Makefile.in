@@ -44,6 +44,11 @@ VX_OP_INC := vx-ccv-s.h vx-crv-s.h vx-cs-cv.h vx-cs-rv.h vx-cv-cs.h \
 	vx-rv-cs.h vx-s-ccv.h vx-s-crv.h \
 	vx-rv-crv.h vx-cv-ccv.h vx-crv-rv.h vx-ccv-cv.h
 
+OPTS_INC_DATA := DASPK-opts.in DASRT-opts.in DASSL-opts.in \
+	LSODE-opts.in NLEqn-opts.in ODESSA-opts.in Quad-opts.in
+
+OPTS_INC := $(OPTS_INC_DATA:.in=.h)
+
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h DAERTFunc.h \
 	DASPK.h DASRT.h DASSL.h FEGrid.h LinConst.h \
 	LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h NLP.h \
@@ -57,6 +62,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h DAERTFunc.h \
 	oct-rl-hist.h oct-shlib.h oct-syscalls.h oct-time.h \
 	pathlen.h pathsearch.h prog-args.h statdefs.h str-vec.h\
 	sun-utils.h sysdir.h systime.h syswait.h \
+	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \
 	$(VX_OP_INC)
@@ -129,7 +135,8 @@ EXTRAS := mx-inlines.cc
 
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
-DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS)
+DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS) \
+	$(OPTS_INC_SRC)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = liboctave/liboctave
@@ -184,14 +191,19 @@ pic:
 	  mkdir pic; \
 	fi
 
+stamp-prereq: $(OPTS_INC)
+	touch stamp-prereq
+
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
     libraries: \
+	stamp-prereq \
 	liboctave.$(LIBEXT) liboctave.$(SHLEXT) \
 	liboct-readline.$(LIBEXT) liboct-readline.$(SHLEXT) \
 	liboct-pathsearch.$(LIBEXT) liboct-pathsearch.$(SHLEXT)
   else
     libraries: \
+	stamp-prereq \
 	liboctave.$(SHLEXT) \
 	liboct-readline.$(SHLEXT) \
 	liboct-pathsearch.$(SHLEXT)
@@ -199,11 +211,12 @@ ifeq ($(SHARED_LIBS), true)
 else
   ifeq ($(STATIC_LIBS), true)
     libraries: \
+	stamp-prereq \
 	liboctave.$(LIBEXT) \
 	liboct-readline.$(LIBEXT) \
 	liboct-pathsearch.$(LIBEXT)
   else
-    libraries:
+    libraries: stamp-prereq
   endif
 endif
 .PHONY: libraries
@@ -365,6 +378,16 @@ bin-dist:
 	fi
 .PHONY: bin-dist
 
+$(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
+	@echo making $@ from $<
+	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@.t
+	@$(top_srcdir)/move-if-change $@.t $@
+
+# If missing, GNU make attempts to create them in the reverse of the
+# order in which they are listed here.  We rely on that fact to ensure
+# that defaults.h is created before trying to create the .d files.
+# Hmm.  I wonder if we can count on that...
+
 ifndef omit_deps
--include $(MAKEDEPS)
+-include $(MAKEDEPS) stamp-prereq
 endif

@@ -45,59 +45,7 @@ typedef double (*integrand_fcn) (double x);
 // function, and the user wants us to quit.
 extern int quad_integration_error;
 
-class
-Quad_options
-{
- public:
-
-  Quad_options (void) { init (); }
-
-  // XXX FIXME XXX -- check for invalid values?
-  Quad_options (double abs, double rel)
-    : x_absolute_tolerance (abs), x_relative_tolerance (rel) { }
-
-  Quad_options (const Quad_options& opt)
-    : x_absolute_tolerance (opt.x_absolute_tolerance),
-      x_relative_tolerance (opt.x_relative_tolerance) { }
-
-  Quad_options& operator = (const Quad_options& opt)
-    {
-      if (this != &opt)
-	set_options (opt);
-
-      return *this;
-    }
-
-  ~Quad_options (void) { }
-
-  void init (void)
-    {
-      double sqrt_eps = ::sqrt (DBL_EPSILON);
-
-      x_absolute_tolerance = sqrt_eps;
-      x_relative_tolerance = sqrt_eps;
-    }
-
-  void set_default_options (void) { init (); }
-
-  void set_options (const Quad_options& opt)
-    {
-      x_absolute_tolerance = opt.x_absolute_tolerance;
-      x_relative_tolerance = opt.x_relative_tolerance;
-    }
-
-  // XXX FIXME XXX -- check for invalid values?
-  void set_absolute_tolerance (double val) { x_absolute_tolerance = val; }
-  void set_relative_tolerance (double val) { x_relative_tolerance = val; }
-
-  double absolute_tolerance (void) { return x_absolute_tolerance; }
-  double relative_tolerance (void) { return x_relative_tolerance; }
-
- private:
-
-  double x_absolute_tolerance;
-  double x_relative_tolerance;
-};
+#include "Quad-opts.h"
 
 class
 Quad : public Quad_options
@@ -106,9 +54,6 @@ Quad : public Quad_options
 
   Quad (integrand_fcn fcn)
     : Quad_options (), f (fcn) { }
-
-  Quad (integrand_fcn fcn, double abs, double rel)
-    : Quad_options (abs, rel), f (fcn) { }
 
   virtual ~Quad (void) { }
 
@@ -155,28 +100,13 @@ DefQuad : public Quad
   DefQuad (integrand_fcn fcn, double ll, double ul)
     : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
 
-  DefQuad (integrand_fcn fcn, double ll, double ul, double abs,
-	   double rel)
-    : Quad (fcn, abs, rel), lower_limit (ll), upper_limit (ul),
-      singularities () { }
-
   DefQuad (integrand_fcn fcn, double ll, double ul,
 	   const ColumnVector& sing)
     : Quad (fcn), lower_limit (ll), upper_limit (ul),
       singularities (sing) { }
 
-  DefQuad (integrand_fcn fcn, const ColumnVector& sing, double abs,
-	   double rel)
-    : Quad (fcn, abs, rel), lower_limit (0.0), upper_limit (1.0),
-      singularities (sing) { }
-
   DefQuad (integrand_fcn fcn, const ColumnVector& sing)
     : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
-      singularities (sing) { }
-
-  DefQuad (integrand_fcn fcn, double ll, double ul, const ColumnVector& sing,
-	   double abs, double rel)
-    : Quad (fcn, abs, rel), lower_limit (ll), upper_limit (ul),
       singularities (sing) { }
 
   ~DefQuad (void) { }
@@ -203,13 +133,6 @@ IndefQuad : public Quad
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), bound (b), type (t) { }
-
-  IndefQuad (integrand_fcn fcn, double b, IntegralType t, double abs,
-	     double rel)
-    : Quad (fcn, abs, rel), bound (b), type (t) { }
-
-  IndefQuad (integrand_fcn fcn, double abs, double rel)
-    : Quad (fcn, abs, rel), bound (0.0), type (bound_to_inf) { }
 
   ~IndefQuad (void) { }
 

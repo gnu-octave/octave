@@ -1,3 +1,30 @@
+2002-07-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const boolMatrix&)): 
+	Get rows and columns right in loop.
+	(ComplexMatrix::ComplexMatrix (const charMatrix&)): Likewise.
+
+2002-07-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASPK.cc (DASPK::do_integrate): Allow array tolerances.
+	* DASRT.cc (DASRT::integrate): Likewise.
+	* DASSL.cc (DASSL::do_integrate): Likewise.
+
+	* Quad.cc: Don't pass tolerances in constructors.
+
+	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in, LSODE-opts.in,
+	NLeqn-opts.in, ODESSA-opts.in, Quad-opts.in: New files.
+	* DASPK-opts.h, DASRT-opts.h, DASSL-opts.h, LSODE-opts.h,
+	NLeqn-opts.h, ODESSA-opts.h, Quad-opts.h: Generate automatically
+	from corresponding .in files.
+	* LSODE.h, Quad.h: Replace options class definitions with included
+	file.
+	* Makefile.in (OPTS_INC_SRC, OPTS_INC): New variables, new rule to
+	create OPTS_INC files from OPTS_INC_SRC files.	
+	(stamp-prereq): New target.
+	(libraries): Depend on stamp-prereq.
+	Include stamp-prereq along with $(MAKEDEPS).
+
 2002-07-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* base-de.h (base_diff_eqn::istate): New data member.

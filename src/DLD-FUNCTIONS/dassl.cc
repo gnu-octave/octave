@@ -41,13 +41,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+#include "DASSL-opts.cc"
+
 // Global pointer for user defined function required by dassl.
 static octave_function *dassl_fcn;
 
 // Global pointer for optional user defined jacobian function.
 static octave_function *dassl_jac;
-
-static DASSL_options dassl_opts;
 
 // Is this a recursive call?
 static int call_depth = 0;
@@ -376,180 +376,6 @@ parameters for @code{dassl}.\n\
     print_usage ("dassl");
 
   unwind_protect::run_frame ("Fdassl");
-
-  return retval;
-}
-
-typedef void (DASSL_options::*d_set_opt_mf) (double);
-typedef double (DASSL_options::*d_get_opt_mf) (void);
-
-#define MAX_TOKENS 3
-
-struct DASSL_OPTIONS
-{
-  const char *keyword;
-  const char *kw_tok[MAX_TOKENS + 1];
-  int min_len[MAX_TOKENS + 1];
-  int min_toks_to_match;
-  d_set_opt_mf d_set_fcn;
-  d_get_opt_mf d_get_fcn;
-};
-
-static DASSL_OPTIONS dassl_option_table [] =
-{
-  { "absolute tolerance",
-    { "absolute", "tolerance", 0, 0, },
-    { 1, 0, 0, 0, }, 1,
-    &DASSL_options::set_absolute_tolerance,
-    &DASSL_options::absolute_tolerance, },
-
-  { "initial step size",
-    { "initial", "step", "size", 0, },
-    { 1, 0, 0, 0, }, 1,
-    &DASSL_options::set_initial_step_size,
-    &DASSL_options::initial_step_size, },
-
-  { "maximum step size",
-    { "maximum", "step", "size", 0, },
-    { 2, 0, 0, 0, }, 1,
-    &DASSL_options::set_maximum_step_size,
-    &DASSL_options::maximum_step_size, },
-
-  { "relative tolerance",
-    { "relative", "tolerance", 0, 0, },
-    { 1, 0, 0, 0, }, 1,
-    &DASSL_options::set_relative_tolerance,
-    &DASSL_options::relative_tolerance, },
-
-  { 0,
-    { 0, 0, 0, 0, },
-    { 0, 0, 0, 0, }, 0,
-    0, 0, },
-};
-
-static void
-print_dassl_option_list (std::ostream& os)
-{
-  print_usage ("dassl_options", 1);
-
-  os << "\n"
-     << "Options for dassl include:\n\n"
-     << "  keyword                                  value\n"
-     << "  -------                                  -----\n\n";
-
-  DASSL_OPTIONS *list = dassl_option_table;
-
-  const char *keyword;
-  while ((keyword = list->keyword) != 0)
-    {
-      os << "  "
-	 << std::setiosflags (std::ios::left) << std::setw (40)
-	 << keyword
-	 << std::resetiosflags (std::ios::left)
-	 << " ";
-
-      double val = (dassl_opts.*list->d_get_fcn) ();
-      if (val < 0.0)
-	os << "computed automatically";
-      else
-	os << val;
-
-      os << "\n";
-      list++;
-    }
-
-  os << "\n";
-}
-
-static void
-set_dassl_option (const std::string& keyword, double val)
-{
-  DASSL_OPTIONS *list = dassl_option_table;
-
-  while (list->keyword != 0)
-    {
-      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
-				list->min_toks_to_match, MAX_TOKENS))
-	{
-	  (dassl_opts.*list->d_set_fcn) (val);
-
-	  return;
-	}
-      list++;
-    }
-
-  warning ("dassl_options: no match for `%s'", keyword.c_str ());
-}
-
-static octave_value_list
-show_dassl_option (const std::string& keyword)
-{
-  octave_value retval;
-
-  DASSL_OPTIONS *list = dassl_option_table;
-
-  while (list->keyword != 0)
-    {
-      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
-				list->min_toks_to_match, MAX_TOKENS))
-	{
-	  double val = (dassl_opts.*list->d_get_fcn) ();
-	  if (val < 0.0)
-	    retval = "computed automatically";
-	  else
-	    retval = val;
-
-	  return retval;
-	}
-      list++;
-    }
-
-  warning ("dassl_options: no match for `%s'", keyword.c_str ());
-
-  return retval;
-}
-
-DEFUN_DLD (dassl_options, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dassl_options (@var{opt}, @var{val})\n\
-When called with two arguments, this function allows you set options\n\
-parameters for the function @code{dassl}.  Given one argument,\n\
-@code{dassl_options} returns the value of the corresponding option.  If\n\
-no arguments are supplied, the names of all the available options and\n\
-their current values are displayed.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      print_dassl_option_list (octave_stdout);
-      return retval;
-    }
-  else if (nargin == 1 || nargin == 2)
-    {
-      std::string keyword = args(0).string_value ();
-
-      if (! error_state)
-	{
-	  if (nargin == 1)
-	    return show_dassl_option (keyword);
-	  else
-	    {
-	      double val = args(1).double_value ();
-
-	      if (! error_state)
-		{
-		  set_dassl_option (keyword, val);
-		  return retval;
-		}
-	    }
-	}
-    }
-
-  print_usage ("dassl_options");
 
   return retval;
 }

@@ -33,41 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "NLFunc.h"
 
-class
-NLEqn_options
-{
-public:
-
-  NLEqn_options (void)
-    : x_tolerance (::sqrt (DBL_EPSILON)) { }
-
-  NLEqn_options (const NLEqn_options& opt)
-    : x_tolerance (opt.x_tolerance) { }
-
-  NLEqn_options& operator = (const NLEqn_options& opt)
-    {
-      if (this != &opt)
-	x_tolerance = opt.x_tolerance;
-
-      return *this;
-    }
-
-  ~NLEqn_options (void) { }
-
-  void set_default_options (void) { x_tolerance = ::sqrt (DBL_EPSILON); }
-
-  void set_options (const NLEqn_options& opt)
-    { x_tolerance = opt.x_tolerance; }
-
-  void set_tolerance (double val)
-    { x_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
-
-  double tolerance (void) { return x_tolerance; }
-
-private:
-
-  double x_tolerance;
-};
+#include "NLEqn-opts.h"
 
 class
 NLEqn : public NLFunc, public NLEqn_options

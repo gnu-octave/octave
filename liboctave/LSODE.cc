@@ -37,18 +37,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
-void
-LSODE_options::set_integration_method (const std::string& val)
-{
-  if (val == "stiff" || val == "bdf")
-    x_integration_method = "stiff";
-  else if (val == "non-stiff" || val == "adams")
-    x_integration_method = "non-stiff";
-  else
-    (*current_liboctave_error_handler)
-      ("lsode_options: method must be \"stiff\", \"bdf\", \"non-stiff\", or \"adams\"");
-}
-
 typedef int (*lsode_fcn_ptr) (const int&, const double&, double*,
 			      double*, int&);
 

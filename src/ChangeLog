@@ -1,3 +1,22 @@
+2002-07-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (OPT_HANDLERS): New targets.
+
+	* DLD-FUNCTIONS/daspk.cc, DLD-FUNCTIONS/dasrt.cc,
+	DLD-FUNCTIONS/dassl.cc, DLD-FUNCTIONS/fsolve.cc,
+	DLD-FUNCTIONS/lsode.cc, DLD-FUNCTIONS/odessa.cc
+	DLD-FUNCTIONS/quad.cc: Replace option handling code with include
+	directive.
+
+2002-07-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-loop.cc (tree_simple_for_command::eval): Once we know the RHS
+	is a matrix type check for real_type, not real_matrix.
+
+2002-07-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/quad.cc (quad): Cope with changes to Quad constructors.
+
 2002-07-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/daspk.cc (Fdaspk): Also return istate and error

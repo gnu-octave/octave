@@ -65,7 +65,7 @@ typedef int (*dasrt_constr_ptr) (const int&, const double&, const double*,
 extern "C"
 int F77_FUNC (ddasrt, DASRT) (dasrt_fcn_ptr, const int&, double&,
 			      double*, double*, const double&, int*,
-			      double*, double*, int&, double*,
+			      const double*, const double*, int&, double*,
 			      const int&, int*, const int&, double*,
 			      int*, dasrt_jac_ptr, dasrt_constr_ptr,
 			      const int&, int*);
@@ -265,6 +265,26 @@ DASRT::integrate (double tout)
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
 
+      int abs_tol_len = abs_tol.length ();
+      int rel_tol_len = rel_tol.length ();
+
+      if (abs_tol_len == 1 && rel_tol_len == 1)
+	{
+	  info.elem (1) = 0;
+	}
+      else if (abs_tol_len == n && rel_tol_len == n)
+	{
+	  info.elem (1) = 1;
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("dassl: inconsistent sizes for tolerance arrays");
+
+	  integration_error = true;
+	  return;
+	}
+
       if (initial_step_size () >= 0.0)
 	{
 	  rwork(2) = initial_step_size ();
@@ -291,6 +311,8 @@ DASRT::integrate (double tout)
 
       pinfo = info.fortran_vec ();
       piwork = iwork.fortran_vec ();
+      pabs_tol = abs_tol.fortran_vec ();
+      prel_tol = rel_tol.fortran_vec ();
       prwork = rwork.fortran_vec ();
       pjroot = jroot.fortran_vec ();
 
@@ -316,7 +338,7 @@ DASRT::integrate (double tout)
   int *idummy = 0;
 
   F77_XFCN (ddasrt, DASRT, (ddasrt_f, n, t, px, pxdot, tout, pinfo,
-			    &rel_tol, &abs_tol, istate, prwork, lrw,
+			    prel_tol, pabs_tol, istate, prwork, lrw,
 			    piwork, liw, dummy, idummy, ddasrt_j,
 			    ddasrt_g, ng, pjroot));
 

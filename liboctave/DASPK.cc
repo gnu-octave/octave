@@ -53,7 +53,7 @@ typedef int (*daspk_psol_ptr) (const int&, const double&,
 extern "C"
 int F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const int&, double&,
 			      double*, double*, double&, const int*,
-			      const double&, const double&, int&,
+			      const double*, const double*, int&,
 			      double*, const int&, int*, const int&,
 			      const double*, const int*,
 			      daspk_jac_ptr, daspk_psol_ptr);
@@ -240,8 +240,28 @@ DASPK::do_integrate (double tout)
   else
     info.elem (3) = 0;
 
-  double abs_tol = absolute_tolerance ();
-  double rel_tol = relative_tolerance ();
+  Array<double> abs_tol = absolute_tolerance ();
+  Array<double> rel_tol = relative_tolerance ();
+
+  int abs_tol_len = abs_tol.length ();
+  int rel_tol_len = rel_tol.length ();
+
+  if (abs_tol_len == 1 && rel_tol_len == 1)
+    {
+      info.elem (1) = 0;
+    }
+  else if (abs_tol_len == n && rel_tol_len == n)
+    {
+      info.elem (1) = 1;
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+	("dassl: inconsistent sizes for tolerance arrays");
+
+      integration_error = true;
+      return retval;
+    }
 
   if (initial_step_size () >= 0.0)
     {
@@ -265,11 +285,13 @@ DASPK::do_integrate (double tout)
   int *pinfo = info.fortran_vec ();
   int *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();
+  double *pabs_tol = abs_tol.fortran_vec ();
+  double *prel_tol = rel_tol.fortran_vec ();
 
 // again:
 
   F77_XFCN (ddaspk, DDASPK, (ddaspk_f, n, t, px, pxdot, tout, pinfo,
-			     rel_tol, abs_tol, istate, prwork, lrw,
+			     prel_tol, pabs_tol, istate, prwork, lrw,
 			     piwork, liw, dummy, idummy, ddaspk_j,
 			     ddaspk_psol));
 

@@ -1,3 +1,8 @@
+2002-07-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-opts.pl: New file.
+	* Makefile.in (DISTFILES): Add it to the list.
+
 2002-07-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_CONFIG_FILES): Add libcruft/dasrt/Makefile to

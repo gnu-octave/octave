@@ -51,21 +51,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-#ifndef F77_FUNC
-#define F77_FUNC(x, X) F77_FCN (x, X)
-#endif
-void
-ODESSA_options::set_integration_method (const std::string& val)
-{
-  if (val == "stiff" || val == "bdf")
-    x_integration_method = "stiff";
-  else if (val == "non-stiff" || val == "adams")
-    x_integration_method = "non-stiff";
-  else
-    (*current_liboctave_error_handler)
-      ("odessa_options: method must be \"stiff\", \"bdf\", \"non-stiff\", or \"adams\"");
-}
-
 typedef int (*odessa_fcn_ptr) (int*, const double&, double*,
 			       double*, double*);
 

@@ -334,7 +334,7 @@ tree_simple_for_command::eval (void)
 	int nr;
 	int steps;
 
-	if (rhs.is_real_matrix ())
+	if (rhs.is_real_type ())
 	  {
 	    m_tmp = rhs.matrix_value ();
 	    nr = m_tmp.rows ();
@@ -350,7 +350,7 @@ tree_simple_for_command::eval (void)
 	if (error_state)
 	  goto cleanup;
 
-	if (rhs.is_real_matrix ())
+	if (rhs.is_real_type ())
 	  {
 	    if (nr == 1)
 	      DO_LOOP (m_tmp (0, i));

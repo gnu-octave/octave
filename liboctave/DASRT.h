@@ -32,87 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "DAERT.h"
 
-class
-DASRT_options
-{
-public:
-
-  DASRT_options (void) { init (); }
-
-  DASRT_options (const DASRT_options& opt) { copy (opt); }
-
-  DASRT_options& operator = (const DASRT_options& opt)
-    {
-      if (this != &opt)
-	copy (opt);
-
-      return *this;
-    }
-
-  ~DASRT_options (void) { }
-
-  void init (void)
-    {
-      double sqrt_eps = ::sqrt (DBL_EPSILON);
-      x_absolute_tolerance = sqrt_eps;
-      x_initial_step_size = -1.0;
-      x_maximum_step_size = -1.0;
-      x_minimum_step_size = 0.0;
-      x_relative_tolerance = sqrt_eps;
-      x_step_limit = -1;
-    }
-
-  void copy (const DASRT_options& opt)
-    {
-      x_absolute_tolerance = opt.x_absolute_tolerance;
-      x_initial_step_size = opt.x_initial_step_size;
-      x_maximum_step_size = opt.x_maximum_step_size;
-      x_minimum_step_size = opt.x_minimum_step_size;
-      x_relative_tolerance = opt.x_relative_tolerance;
-      x_step_limit = opt.x_step_limit;
-    }
-
-  void set_default_options (void) { init (); }
-
-  void set_absolute_tolerance (double val)
-    { x_absolute_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
-
-  void set_initial_step_size (double val)
-    { x_initial_step_size = (val >= 0.0) ? val : -1.0; }
-
-  void set_maximum_step_size (double val)
-    { x_maximum_step_size = (val >= 0.0) ? val : -1.0; }
-
-  void set_minimum_step_size (double val)
-    { x_minimum_step_size = (val >= 0.0) ? val : 0.0; }
-
-  void set_relative_tolerance (double val)
-    { x_relative_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
-
-  void set_step_limit (int val)
-    { x_step_limit = (val >= 0) ? val : -1; }
-
-  double absolute_tolerance (void) { return x_absolute_tolerance; }
-
-  double initial_step_size (void) { return x_initial_step_size; }
-
-  double maximum_step_size (void) { return x_maximum_step_size; }
-
-  double minimum_step_size (void) { return x_minimum_step_size; }
-
-  double relative_tolerance (void) { return x_relative_tolerance; }
-
-  int step_limit (void) { return x_step_limit; }
-
-private:
-
-  double x_absolute_tolerance;
-  double x_initial_step_size;
-  double x_maximum_step_size;
-  double x_minimum_step_size;
-  double x_relative_tolerance;
-  int x_step_limit;
-};
+#include "DASRT-opts.h"
 
 class
 DASRT_result
@@ -190,11 +110,13 @@ private:
 
   Array<double> rwork;
 
-  double abs_tol;
-  double rel_tol;
+  Array<double> abs_tol;
+  Array<double> rel_tol;
 
   double *px;
   double *pxdot;
+  double *pabs_tol;
+  double *prel_tol;
   int *pinfo;
   int *piwork;
   double *prwork;

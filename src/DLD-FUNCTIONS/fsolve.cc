@@ -41,10 +41,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+#include "NLEqn-opts.cc"
+
 // Global pointer for user defined function required by hybrd1.
 static octave_function *fsolve_fcn;
-
-static NLEqn_options fsolve_opts;
 
 // Is this a recursive call?
 static int call_depth = 0;
@@ -193,7 +193,7 @@ parameters for @code{fsolve}.\n\
 
       NLFunc nleqn_fcn (fsolve_user_function);
       NLEqn nleqn (x, nleqn_fcn);
-      nleqn.set_options (fsolve_opts);
+      nleqn.copy (fsolve_opts);
 
       int info;
       ColumnVector soln = nleqn.solve (info);
@@ -220,162 +220,6 @@ parameters for @code{fsolve}.\n\
     print_usage ("fsolve");
 
   unwind_protect::run_frame ("Ffsolve");
-
-  return retval;
-}
-
-typedef void (NLEqn_options::*d_set_opt_mf) (double);
-typedef double (NLEqn_options::*d_get_opt_mf) (void);
-
-#define MAX_TOKENS 1
-
-struct NLEQN_OPTIONS
-{
-  const char *keyword;
-  const char *kw_tok[MAX_TOKENS + 1];
-  int min_len[MAX_TOKENS + 1];
-  int min_toks_to_match;
-  d_set_opt_mf d_set_fcn;
-  d_get_opt_mf d_get_fcn;
-};
-
-static NLEQN_OPTIONS fsolve_option_table [] =
-{
-  { "tolerance",
-    { "tolerance", 0, },
-    { 1, 0, }, 1,
-    &NLEqn_options::set_tolerance,
-    &NLEqn_options::tolerance, },
-
-  { 0,
-    { 0, 0, },
-    { 0, 0, }, 0,
-    0, 0, },
-};
-
-static void
-print_fsolve_option_list (std::ostream& os)
-{
-  print_usage ("fsolve_options", 1);
-
-  os << "\n"
-     << "Options for fsolve include:\n\n"
-     << "  keyword                                  value\n"
-     << "  -------                                  -----\n\n";
-
-  NLEQN_OPTIONS *list = fsolve_option_table;
-
-  const char *keyword;
-  while ((keyword = list->keyword) != 0)
-    {
-      os << "  "
-	 << std::setiosflags (std::ios::left) << std::setw (40)
-	 << keyword
-	 << std::resetiosflags (std::ios::left)
-	 << " ";
-
-      double val = (fsolve_opts.*list->d_get_fcn) ();
-      if (val < 0.0)
-	os << "computed automatically";
-      else
-	os << val;
-
-      os << "\n";
-      list++;
-    }
-
-  os << "\n";
-}
-
-static void
-set_fsolve_option (const std::string& keyword, double val)
-{
-  NLEQN_OPTIONS *list = fsolve_option_table;
-
-  while (list->keyword != 0)
-    {
-      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
-				list->min_toks_to_match, MAX_TOKENS))
-	{
-	  (fsolve_opts.*list->d_set_fcn) (val);
-
-	  return;
-	}
-      list++;
-    }
-
-  warning ("fsolve_options: no match for `%s'", keyword.c_str ());
-}
-
-static octave_value_list
-show_fsolve_option (const std::string& keyword)
-{
-  octave_value retval;
-
-  NLEQN_OPTIONS *list = fsolve_option_table;
-
-  while (list->keyword != 0)
-    {
-      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
-				list->min_toks_to_match, MAX_TOKENS))
-	{
-	  double val = (fsolve_opts.*list->d_get_fcn) ();
-	  if (val < 0.0)
-	    retval = "computed automatically";
-	  else
-	    retval = val;
-
-	  return retval;
-	}
-      list++;
-    }
-
-  warning ("fsolve_options: no match for `%s'", keyword.c_str ());
-
-  return retval;
-}
-
-DEFUN_DLD (fsolve_options, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} fsolve_options (@var{opt}, @var{val})\n\
-When called with two arguments, this function allows you set options\n\
-parameters for the function @code{fsolve}.  Given one argument,\n\
-@code{fsolve_options} returns the value of the corresponding option.  If\n\
-no arguments are supplied, the names of all the available options and\n\
-their current values are displayed.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      print_fsolve_option_list (octave_stdout);
-      return retval;
-    }
-  else if (nargin == 1 || nargin == 2)
-    {
-      std::string keyword = args(0).string_value ();
-
-      if (! error_state)
-	{
-	  if (nargin == 1)
-	    return show_fsolve_option (keyword);
-	  else
-	    {
-	      double val = args(1).double_value ();
-
-	      if (! error_state)
-		{
-		  set_fsolve_option (keyword, val);
-		  return retval;
-		}
-	    }
-	}
-    }
-
-  print_usage ("fsolve_options");
 
   return retval;
 }

@@ -255,15 +255,6 @@ octave_env::do_absolute_pathname (const std::string& s) const
     return true;
 #endif
 
-  if (s[0] == '.')
-    {
-      if (len == 1 || is_dir_sep (s[1]))
-	return true;
-
-      if (s[1] == '.' && (len == 2 || is_dir_sep (s[2])))
-	return true;
-    }
-
   return false;
 }
 

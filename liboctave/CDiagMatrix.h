@@ -37,8 +37,6 @@ extern "C++" {
 
 class ComplexDiagMatrix : public DiagArray<Complex>
 {
-  friend DiagMatrix;
-
 public:
 
   ComplexDiagMatrix (void) : DiagArray<Complex> () { }
@@ -57,15 +55,12 @@ public:
   ComplexDiagMatrix (const DiagArray<Complex>& a)
     : DiagArray<Complex> (a) { }
   ComplexDiagMatrix (const ComplexDiagMatrix& a) : DiagArray<Complex> (a) { }
-//  ComplexDiagMatrix (const Complex& a) : DiagArray<Complex> (1, a) { }
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
     {
       DiagArray<Complex>::operator = (a);
       return *this;
     }
-
-//  operator DiagArray<Complex>& () const { return *this; }
 
   int operator == (const ComplexDiagMatrix& a) const;
   int operator != (const ComplexDiagMatrix& a) const;
@@ -86,8 +81,6 @@ public:
   ComplexDiagMatrix hermitian (void) const;  // complex conjugate transpose
   ComplexDiagMatrix transpose (void) const;
 
-  friend DiagMatrix real (const ComplexDiagMatrix& a);
-  friend DiagMatrix imag (const ComplexDiagMatrix& a);
   friend ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
 // resize is the destructive analog for this one
@@ -113,42 +106,19 @@ public:
   ComplexDiagMatrix& operator += (const ComplexDiagMatrix& a);
   ComplexDiagMatrix& operator -= (const ComplexDiagMatrix& a);
 
-// diagonal matrix by scalar -> matrix operations
-
-  friend ComplexMatrix operator + (const ComplexDiagMatrix& a, double s);
-  friend ComplexMatrix operator - (const ComplexDiagMatrix& a, double s);
-
-  friend ComplexMatrix operator + (const ComplexDiagMatrix& a,
-				   const Complex& s);
-  friend ComplexMatrix operator - (const ComplexDiagMatrix& a,
-				   const Complex& s);
-
 // diagonal matrix by scalar -> diagonal matrix operations
 
   friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a, double s);
   friend ComplexDiagMatrix operator / (const ComplexDiagMatrix& a, double s);
 
-// scalar by diagonal matrix -> matrix operations
-
-  friend ComplexMatrix operator + (double s, const ComplexDiagMatrix& a);
-  friend ComplexMatrix operator - (double s, const ComplexDiagMatrix& a);
-
-  friend ComplexMatrix operator + (const Complex& s,
-				   const ComplexDiagMatrix& a);
-  friend ComplexMatrix operator - (const Complex& s,
-				   const ComplexDiagMatrix& a);
+  friend ComplexDiagMatrix operator * (const DiagMatrix& a, const Complex& s);
+  friend ComplexDiagMatrix operator / (const DiagMatrix& a, const Complex& s);
 
 // scalar by diagonal matrix -> diagonal matrix operations
 
   friend ComplexDiagMatrix operator * (double s, const ComplexDiagMatrix& a);
 
-// diagonal matrix by column vector -> column vector operations
-
-  friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
-					 const ColumnVector& b);
-
-  friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
-					 const ComplexColumnVector& b);
+  friend ComplexDiagMatrix operator * (const Complex& s, const DiagMatrix& a);
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
@@ -162,24 +132,18 @@ public:
   friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
 				       const DiagMatrix& b);
 
+  friend ComplexDiagMatrix operator + (const DiagMatrix& a,
+				       const ComplexDiagMatrix& b);
+  friend ComplexDiagMatrix operator - (const DiagMatrix& a,
+				       const ComplexDiagMatrix& b);
+  friend ComplexDiagMatrix operator * (const DiagMatrix& a,
+				       const ComplexDiagMatrix& b);
+
   friend ComplexDiagMatrix product (const ComplexDiagMatrix& a,
 				    const DiagMatrix& b); 
 
-// diagonal matrix by matrix -> matrix operations
-
-  friend ComplexMatrix operator + (const ComplexDiagMatrix& a,
-				   const Matrix& b); 
-  friend ComplexMatrix operator - (const ComplexDiagMatrix& a,
-				   const Matrix& b);
-  friend ComplexMatrix operator * (const ComplexDiagMatrix& a,
-				   const Matrix& b);
-
-  friend ComplexMatrix operator + (const ComplexDiagMatrix& a,
-				   const ComplexMatrix& b);
-  friend ComplexMatrix operator - (const ComplexDiagMatrix& a,
-				   const ComplexMatrix& b);
-  friend ComplexMatrix operator * (const ComplexDiagMatrix& a,
-				   const ComplexMatrix& b);
+  friend ComplexDiagMatrix product (const DiagMatrix& a,
+				    const ComplexDiagMatrix& b);
 
 // other operations
 

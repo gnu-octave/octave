@@ -66,107 +66,6 @@ ComplexDiagMatrix::ComplexDiagMatrix (const DiagMatrix& a)
     elem (i, i) = a.elem (i, i);
 }
 
-#if 0
-ComplexDiagMatrix&
-ComplexDiagMatrix::resize (int r, int c)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimensions");
-      return *this;
-    }
-
-  int new_len = r < c ? r : c;
-  Complex *new_data = 0;
-  if (new_len > 0)
-    {
-      new_data = new Complex [new_len];
-
-      int min_len = new_len < len ? new_len : len;
-
-      for (int i = 0; i < min_len; i++)
-	new_data[i] = data[i];
-    }
-
-  delete [] data;
-  nr = r;
-  nc = c;
-  len = new_len;
-  data = new_data;
-
-  return *this;
-}
-
-ComplexDiagMatrix&
-ComplexDiagMatrix::resize (int r, int c, double val)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimensions");
-      return *this;
-    }
-
-  int new_len = r < c ? r : c;
-  Complex *new_data = 0;
-  if (new_len > 0)
-    {
-      new_data = new Complex [new_len];
-
-      int min_len = new_len < len ? new_len : len;
-
-      for (int i = 0; i < min_len; i++)
-	new_data[i] = data[i];
-
-      for (i = min_len; i < new_len; i++)
-	new_data[i] = val;
-    }
-
-  delete [] data;
-  nr = r;
-  nc = c;
-  len = new_len;
-  data = new_data;
-
-  return *this;
-}
-
-ComplexDiagMatrix&
-ComplexDiagMatrix::resize (int r, int c, const Complex& val)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimensions");
-      return *this;
-    }
-
-  int new_len = r < c ? r : c;
-  Complex *new_data = 0;
-  if (new_len > 0)
-    {
-      new_data = new Complex [new_len];
-
-      int min_len = new_len < len ? new_len : len;
-
-      for (int i = 0; i < min_len; i++)
-	new_data[i] = data[i];
-
-      for (i = min_len; i < new_len; i++)
-	new_data[i] = val;
-    }
-
-  delete [] data;
-  nr = r;
-  nc = c;
-  len = new_len;
-  data = new_data;
-
-  return *this;
-}
-#endif
-
 int
 ComplexDiagMatrix::operator == (const ComplexDiagMatrix& a) const
 {
@@ -180,12 +79,6 @@ int
 ComplexDiagMatrix::operator != (const ComplexDiagMatrix& a) const
 {
   return !(*this == a);
-}
-
-ComplexDiagMatrix
-ComplexDiagMatrix::hermitian (void) const
-{
-  return ComplexDiagMatrix (conj_dup (data (), length ()), cols (), rows ());
 }
 
 ComplexDiagMatrix&
@@ -363,31 +256,15 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a, int beg)
 }
 
 ComplexDiagMatrix
+ComplexDiagMatrix::hermitian (void) const
+{
+  return ComplexDiagMatrix (conj_dup (data (), length ()), cols (), rows ());
+}
+
+ComplexDiagMatrix
 ComplexDiagMatrix::transpose (void) const
 {
   return ComplexDiagMatrix (dup (data (), length ()), cols (), rows ());
-}
-
-DiagMatrix
-real (const ComplexDiagMatrix& a)
-{
-  DiagMatrix retval;
-  int a_len = a.length ();
-  if (a_len > 0)
-    retval = DiagMatrix (real_dup (a.data (), a_len), a.rows (),
-			 a.cols ());
-  return retval;
-}
-
-DiagMatrix
-imag (const ComplexDiagMatrix& a)
-{
-  DiagMatrix retval;
-  int a_len = a.length ();
-  if (a_len > 0)
-    retval = DiagMatrix (imag_dup (a.data (), a_len), a.rows (),
-			 a.cols ());
-  return retval;
 }
 
 ComplexDiagMatrix
@@ -622,36 +499,6 @@ ComplexDiagMatrix::operator -= (const ComplexDiagMatrix& a)
   return *this;
 }
 
-// diagonal matrix by scalar -> matrix operations
-
-ComplexMatrix
-operator + (const ComplexDiagMatrix& a, double s)
-{
-  ComplexMatrix tmp (a.rows (), a.cols (), s);
-  return a + tmp;
-}
-
-ComplexMatrix
-operator - (const ComplexDiagMatrix& a, double s)
-{
-  ComplexMatrix tmp (a.rows (), a.cols (), -s);
-  return a + tmp;
-}
-
-ComplexMatrix
-operator + (const ComplexDiagMatrix& a, const Complex& s)
-{
-  ComplexMatrix tmp (a.rows (), a.cols (), s);
-  return a + tmp;
-}
-
-ComplexMatrix
-operator - (const ComplexDiagMatrix& a, const Complex& s)
-{
-  ComplexMatrix tmp (a.rows (), a.cols (), -s);
-  return a + tmp;
-}
-
 // diagonal matrix by scalar -> diagonal matrix operations
 
 ComplexDiagMatrix
@@ -668,34 +515,18 @@ operator / (const ComplexDiagMatrix& a, double s)
 			    a.rows (), a.cols ());
 }
 
-// scalar by diagonal matrix -> matrix operations
-
-ComplexMatrix
-operator + (double s, const ComplexDiagMatrix& a)
+ComplexDiagMatrix
+operator * (const DiagMatrix& a, const Complex& s)
 {
-  ComplexMatrix tmp (a.rows (), a.cols (), s);
-  return tmp + a;
+  return ComplexDiagMatrix (multiply (a.data (), a.length (), s),
+			    a.rows (), a.cols ());
 }
 
-ComplexMatrix
-operator - (double s, const ComplexDiagMatrix& a)
+ComplexDiagMatrix
+operator / (const DiagMatrix& a, const Complex& s)
 {
-  ComplexMatrix tmp (a.rows (), a.cols (), s);
-  return tmp - a;
-}
-
-ComplexMatrix
-operator + (const Complex& s, const ComplexDiagMatrix& a)
-{
-  ComplexMatrix tmp (a.rows (), a.cols (), s);
-  return tmp + a;
-}
-
-ComplexMatrix
-operator - (const Complex& s, const ComplexDiagMatrix& a)
-{
-  ComplexMatrix tmp (a.rows (), a.cols (), s);
-  return tmp - a;
+  return ComplexDiagMatrix (divide (a.data (), a.length (), s),
+			    a.rows (), a.cols ());
 }
 
 // scalar by diagonal matrix -> diagonal matrix operations
@@ -707,60 +538,11 @@ operator * (double s, const ComplexDiagMatrix& a)
 			    a.rows (), a.cols ());
 }
 
-// diagonal matrix by column vector -> column vector operations
-
-ComplexColumnVector
-operator * (const ComplexDiagMatrix& m, const ColumnVector& a)
+ComplexDiagMatrix
+operator * (const Complex& s, const DiagMatrix& a)
 {
-  int nr = m.rows ();
-  int nc = m.cols ();
-  int a_len = a.length ();
-  if (nc != a_len)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix muliplication attempted");
-      return ComplexColumnVector ();
-    }
-
-  if (nc == 0 || nr == 0)
-    return ComplexColumnVector (0);
-
-  ComplexColumnVector result (nr);
-
-  for (int i = 0; i < a_len; i++)
-    result.elem (i) = a.elem (i) * m.elem (i, i);
-
-  for (i = a_len; i < nr; i++)
-    result.elem (i) = 0.0;
-
-  return result;
-}
-
-ComplexColumnVector
-operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  int a_len = a.length ();
-  if (nc != a_len)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix muliplication attempted");
-      return ComplexColumnVector ();
-    }
-
-  if (nc == 0 || nr == 0)
-    return ComplexColumnVector (0);
-
-  ComplexColumnVector result (nr);
-
-  for (int i = 0; i < a_len; i++)
-    result.elem (i) = a.elem (i) * m.elem (i, i);
-
-  for (i = a_len; i < nr; i++)
-    result.elem (i) = 0.0;
-
-  return result;
+  return ComplexDiagMatrix (multiply (a.data (), a.length (), s),
+			    a.rows (), a.cols ());
 }
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
@@ -881,6 +663,82 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 }
 
 ComplexDiagMatrix
+operator + (const DiagMatrix& m, const ComplexDiagMatrix& a)
+{
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexDiagMatrix ();
+    }
+
+  if (nc == 0 || nr == 0)
+    return ComplexDiagMatrix (nr, nc);
+
+  return ComplexDiagMatrix (add (m.data (), a.data (), m.length ()),  nr, nc);
+}
+
+ComplexDiagMatrix
+operator - (const DiagMatrix& m, const ComplexDiagMatrix& a)
+{
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexDiagMatrix ();
+    }
+
+  if (nc == 0 || nr == 0)
+    return ComplexDiagMatrix (nr, nc);
+
+  return ComplexDiagMatrix (subtract (m.data (), a.data (), m.length ()),
+			    nr, nc);
+}
+
+ComplexDiagMatrix
+operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
+{
+  int nr_a = a.rows ();
+  int nc_a = a.cols ();
+  int nr_b = b.rows ();
+  int nc_b = b.cols ();
+  if (nc_a != nr_b)
+    {
+      (*current_liboctave_error_handler)
+        ("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
+
+  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
+    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+
+  ComplexDiagMatrix c (nr_a, nc_b);
+
+  int len = nr_a < nc_b ? nr_a : nc_b;
+
+  for (int i = 0; i < len; i++)
+    {
+      double a_element = a.elem (i, i);
+      Complex b_element = b.elem (i, i);
+
+      if (a_element == 0.0 || b_element == 0.0)
+        c.elem (i, i) = 0.0;
+      else if (a_element == 1.0)
+        c.elem (i, i) = b_element;
+      else if (b_element == 1.0)
+        c.elem (i, i) = a_element;
+      else
+        c.elem (i, i) = a_element * b_element;
+    }
+
+  return c;
+}
+
+ComplexDiagMatrix
 product (const ComplexDiagMatrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
@@ -899,190 +757,23 @@ product (const ComplexDiagMatrix& m, const DiagMatrix& a)
 			    nr, nc);
 }
 
-// diagonal matrix by matrix -> matrix operations
-
-ComplexMatrix
-operator + (const ComplexDiagMatrix& m, const Matrix& a)
+ComplexDiagMatrix
+product (const DiagMatrix& m, const ComplexDiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
   if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
-      return ComplexMatrix ();
+	("nonconformant matrix product attempted");
+      return ComplexDiagMatrix ();
     }
 
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
+  if (nc == 0 || nr == 0)
+    return ComplexDiagMatrix (nr, nc);
 
-  ComplexMatrix result (a);
-  for (int i = 0; i < m.length (); i++)
-    result.elem (i, i) += m.elem (i, i);
-
-  return result;
-}
-
-ComplexMatrix
-operator - (const ComplexDiagMatrix& m, const Matrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  ComplexMatrix result (-a);
-  for (int i = 0; i < m.length (); i++)
-    result.elem (i, i) += m.elem (i, i);
-
-  return result;
-}
-
-ComplexMatrix
-operator * (const ComplexDiagMatrix& m, const Matrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-  if (nc != a_nr)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0 || a_nc == 0)
-    return ComplexMatrix (nr, a_nc, 0.0);
-
-  ComplexMatrix c (nr, a_nc);
-
-  for (int i = 0; i < m.length (); i++)
-    {
-      if (m.elem (i, i) == 1.0)
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = a.elem (i, j);
-	}
-      else if (m.elem (i, i) == 0.0)
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = 0.0;
-	}
-      else
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = m.elem (i, i) * a.elem (i, j);
-	}
-    }
-
-  if (nr > nc)
-    {
-      for (int j = 0; j < a_nc; j++)
-	for (int i = a_nr; i < nr; i++)
-	  c.elem (i, j) = 0.0;
-    }
-
-  return c;
-}
-
-ComplexMatrix
-operator + (const ComplexDiagMatrix& m, const ComplexMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  ComplexMatrix result (a);
-  for (int i = 0; i < m.length (); i++)
-    result.elem (i, i) += m.elem (i, i);
-
-  return result;
-}
-
-ComplexMatrix
-operator - (const ComplexDiagMatrix& m, const ComplexMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  ComplexMatrix result (-a);
-  for (int i = 0; i < m.length (); i++)
-    result.elem (i, i) += m.elem (i, i);
-
-  return result;
-}
-
-ComplexMatrix
-operator * (const ComplexDiagMatrix& m, const ComplexMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-  if (nc != a_nr)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0 || a_nc == 0)
-    return ComplexMatrix (nr, a_nc, 0.0);
-
-  ComplexMatrix c (nr, a_nc);
-
-  for (int i = 0; i < m.length (); i++)
-    {
-      if (m.elem (i, i) == 1.0)
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = a.elem (i, j);
-	}
-      else if (m.elem (i, i) == 0.0)
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = 0.0;
-	}
-      else
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = m.elem (i, i) * a.elem (i, j);
-	}
-    }
-
-  if (nr > nc)
-    {
-      for (int j = 0; j < a_nc; j++)
-	for (int i = a_nr; i < nr; i++)
-	  c.elem (i, j) = 0.0;
-    }
-
-  return c;
+  return ComplexDiagMatrix (multiply (m.data (), a.data (), m.length ()),
+			    nr, nc);
 }
 
 // other operations

@@ -33,7 +33,6 @@ extern "C++" {
 class RowVector : public Array<double>
 {
 friend class ColumnVector;
-friend class ComplexRowVector;
 
 public:
 
@@ -42,15 +41,12 @@ public:
   RowVector (int n, double val) : Array<double> (n, val) { }
   RowVector (const Array<double>& a) : Array<double> (a) { }
   RowVector (const RowVector& a) : Array<double> (a) { }
-//  RowVector (double a) : Array<double> (1, a) { }
 
   RowVector& operator = (const RowVector& a)
     {
       Array<double>::operator = (a);
       return *this;
     }
-
-//  operator Array<double>& () const { return *this; }
 
   int operator == (const RowVector& a) const;
   int operator != (const RowVector& a) const;
@@ -66,6 +62,9 @@ public:
 
   ColumnVector transpose (void) const;
 
+  friend RowVector real (const ComplexRowVector& a);
+  friend RowVector imag (const ComplexRowVector& a);
+
 // resize is the destructive equivalent for this one
 
   RowVector extract (int c1, int c2) const;
@@ -75,48 +74,14 @@ public:
   RowVector& operator += (const RowVector& a);
   RowVector& operator -= (const RowVector& a);
 
-// row vector by scalar -> row vector operations
-
-  friend ComplexRowVector operator + (const RowVector& a, const Complex& s);
-  friend ComplexRowVector operator - (const RowVector& a, const Complex& s);
-  friend ComplexRowVector operator * (const RowVector& a, const Complex& s);
-  friend ComplexRowVector operator / (const RowVector& a, const Complex& s);
-
-// scalar by row vector -> row vector operations
-
-  friend ComplexRowVector operator + (const Complex& s, const RowVector& a);
-  friend ComplexRowVector operator - (const Complex& s, const RowVector& a);
-  friend ComplexRowVector operator * (const Complex& s, const RowVector& a);
-  friend ComplexRowVector operator / (const Complex& s, const RowVector& a);
-
-// row vector by column vector -> scalar
-
-  friend double operator * (const RowVector& a, const ColumnVector& b);
-
-  friend Complex operator * (const RowVector& a, const ComplexColumnVector& b);
-
 // row vector by matrix -> row vector
 
   friend RowVector operator * (const RowVector& a, const Matrix& b);
 
-  friend ComplexRowVector operator * (const RowVector& a,
-				      const ComplexMatrix& b);
-
-// row vector by row vector -> row vector operations
-
-  friend ComplexRowVector operator + (const RowVector& a,
-				      const ComplexRowVector& b);
-  friend ComplexRowVector operator - (const RowVector& a,
-				      const ComplexRowVector& b);
-
-  friend ComplexRowVector product (const RowVector& a,
-				   const ComplexRowVector& b);
-  friend ComplexRowVector quotient (const RowVector& a,
-				    const ComplexRowVector& b);
-
 // other operations
 
   friend RowVector map (d_d_Mapper f, const RowVector& a);
+  friend RowVector map (d_c_Mapper f, const ComplexRowVector& a);
   void map (d_d_Mapper f);
 
   double min (void) const;
@@ -139,6 +104,14 @@ private:
 
   RowVector (double *d, int l) : Array<double> (d, l) { }
 };
+
+// row vector by column vector -> scalar
+
+double operator * (const RowVector& a, const ColumnVector& b);
+
+Complex operator * (const RowVector& a, const ComplexColumnVector& b);
+
+// other operations
 
 RowVector linspace (double x1, double x2, int n);
 

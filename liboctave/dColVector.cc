@@ -38,11 +38,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgemm) (const char*, const char*, const int*,
-		       const int*, const int*, const double*,
+  int F77_FCN (dgemv) (const char*, const int*, const int*,
+		       const double*, const double*, const int*,
 		       const double*, const int*, const double*,
-		       const int*, const double*, double*, const int*,
-		       long, long);
+		       double*, const int*, long);
 }
 
 /*
@@ -56,46 +55,6 @@ extern "C"
 #undef KLUDGE_VECTORS
 #undef TYPE
 #undef KL_VEC_TYPE
-
-#if 0
-ColumnVector&
-ColumnVector::resize (int n)
-{
-  if (n < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimension");
-      return *this;
-    }
-
-  double *new_data = 0;
-  if (n > 0)
-    {
-      new_data = new double [n];
-      int min_len = len < n ? len : n;
-
-      for (int i = 0; i < min_len; i++)
-	new_data[i] = data[i];
-    }
-
-  delete [] data;
-  len = n;
-  data = new_data;
-
-  return *this;
-}
-
-ColumnVector&
-ColumnVector::resize (int n, double val)
-{
-  int old_len = len;
-  resize (n);
-  for (int i = old_len; i < len; i++)
-    data[i] = val;
-
-  return *this;
-}
-#endif
 
 int
 ColumnVector::operator == (const ColumnVector& a) const
@@ -174,6 +133,26 @@ ColumnVector::transpose (void) const
   return RowVector (dup (data (), len), len);
 }
 
+ColumnVector
+real (const ComplexColumnVector& a)
+{
+  int a_len = a.length ();
+  ColumnVector retval;
+  if (a_len > 0)
+    retval = ColumnVector (real_dup (a.data (), a_len), a_len);
+  return retval;
+}
+
+ColumnVector
+imag (const ComplexColumnVector& a)
+{
+  int a_len = a.length ();
+  ColumnVector retval;
+  if (a_len > 0)
+    retval = ColumnVector (imag_dup (a.data (), a_len), a_len);
+  return retval;
+}
+
 // resize is the destructive equivalent for this one
 
 ColumnVector
@@ -233,171 +212,64 @@ ColumnVector::operator -= (const ColumnVector& a)
   return *this;
 }
 
-// scalar by column vector -> column vector operations
+// matrix by column vector -> column vector operations
 
-ComplexColumnVector
-operator + (const ColumnVector& a, const Complex& s)
+ColumnVector
+operator * (const Matrix& m, const ColumnVector& a)
 {
-  int len = a.length ();
-  return ComplexColumnVector (add (a.data (), len, s), len);
-}
-
-ComplexColumnVector
-operator - (const ColumnVector& a, const Complex& s)
-{
-  int len = a.length ();
-  return ComplexColumnVector (subtract (a.data (), len, s), len);
-}
-
-ComplexColumnVector
-operator * (const ColumnVector& a, const Complex& s)
-{
-  int len = a.length ();
-  return ComplexColumnVector (multiply (a.data (), len, s), len);
-}
-
-ComplexColumnVector
-operator / (const ColumnVector& a, const Complex& s)
-{
-  int len = a.length ();
-  return ComplexColumnVector (divide (a.data (), len, s), len);
-}
-
-// scalar by column vector -> column vector operations
-
-ComplexColumnVector
-operator + (const Complex& s, const ColumnVector& a)
-{
-  int a_len = a.length ();
-  return ComplexColumnVector (add (a.data (), a_len, s), a_len);
-}
-
-ComplexColumnVector
-operator - (const Complex& s, const ColumnVector& a)
-{
-  int a_len = a.length ();
-  return ComplexColumnVector (subtract (s, a.data (), a_len), a_len);
-}
-
-ComplexColumnVector
-operator * (const Complex& s, const ColumnVector& a)
-{
-  int a_len = a.length ();
-  return ComplexColumnVector (multiply (a.data (), a_len, s), a_len);
-}
-
-ComplexColumnVector
-operator / (const Complex& s, const ColumnVector& a)
-{
-  int a_len = a.length ();
-  return ComplexColumnVector (divide (s, a.data (), a_len), a_len);
-}
-
-// column vector by row vector -> matrix operations
-
-Matrix
-operator * (const ColumnVector& v, const RowVector& a)
-{
-  int len = v.length ();
-  int a_len = a.length ();
-  if (len != a_len)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
-	("nonconformant vector multiplication attempted");
-      return Matrix ();
+	("nonconformant matrix multiplication attempted");
+      return ColumnVector ();
     }
 
-  if (len == 0)
-    return Matrix (len, len, 0.0);
+  if (nr == 0 || nc == 0)
+    return ColumnVector (0);
 
-  char transa = 'N';
-  char transb = 'N';
+  char trans = 'N';
+  int ld = nr;
   double alpha = 1.0;
   double beta  = 0.0;
-  int anr = 1;
+  int i_one = 1;
 
-  double *c = new double [len * a_len];
+  double *y = new double [nr];
 
-  F77_FCN (dgemm) (&transa, &transb, &len, &a_len, &anr, &alpha,
-		   v.data (), &len, a.data (), &anr, &beta, c, &len,
-		   1L, 1L); 
+  F77_FCN (dgemv) (&trans, &nr, &nc, &alpha, m.data (), &ld, a.data (),
+		   &i_one, &beta, y, &i_one, 1L); 
 
-  return Matrix (c, len, a_len);
+  return ColumnVector (y, nr);
 }
 
-ComplexMatrix
-operator * (const ColumnVector& v, const ComplexRowVector& a)
-{
-  ComplexColumnVector tmp (v);
-  return tmp * a;
-}
+// diagonal matrix by column vector -> column vector operations
 
-ComplexColumnVector
-operator + (const ColumnVector& v, const ComplexColumnVector& a)
+ColumnVector
+operator * (const DiagMatrix& m, const ColumnVector& a)
 {
-  int len = v.length ();
-  if (len != a.length ())
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_len = a.length ();
+  if (nc != a_len)
     {
       (*current_liboctave_error_handler)
-	("nonconformant vector subtraction attempted");
-      return ComplexColumnVector ();
-    }
-
-  if (len == 0)
-    return ComplexColumnVector (0);
-
-  return ComplexColumnVector (add (v.data (), a.data (), len), len);
-}
-
-ComplexColumnVector
-operator - (const ColumnVector& v, const ComplexColumnVector& a)
-{
-  int len = v.length ();
-  if (len != a.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant vector subtraction attempted");
-      return ComplexColumnVector ();
-    }
-
-  if (len == 0)
-    return ComplexColumnVector (0);
-
-  return ComplexColumnVector (subtract (v.data (), a.data (), len), len);
-}
-
-ComplexColumnVector
-product (const ColumnVector& v, const ComplexColumnVector& a)
-{
-  int len = v.length ();
-  if (len != a.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant vector product attempted");
+	("nonconformant matrix multiplication attempted");
       return ColumnVector ();
     }
 
-  if (len == 0)
-    return ComplexColumnVector (0);
+  if (nc == 0 || nr == 0)
+    return ColumnVector (0);
 
-  return ComplexColumnVector (multiply (v.data (), a.data (), len), len);
-}
+  ColumnVector result (nr);
 
-ComplexColumnVector
-quotient (const ColumnVector& v, const ComplexColumnVector& a)
-{
-  int len = v.length ();
-  if (len != a.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant vector quotient attempted");
-      return ColumnVector ();
-    }
+  for (int i = 0; i < a_len; i++)
+    result.elem (i) = a.elem (i) * m.elem (i, i);
 
-  if (len == 0)
-    return ComplexColumnVector (0);
+  for (i = a_len; i < nr; i++)
+    result.elem (i) = 0.0;
 
-  return ComplexColumnVector (divide (v.data (), a.data (), len), len);
+  return result;
 }
 
 // other operations
@@ -407,6 +279,16 @@ map (d_d_Mapper f, const ColumnVector& a)
 {
   ColumnVector b (a);
   b.map (f);
+  return b;
+}
+
+ColumnVector
+map (d_c_Mapper f, const ComplexColumnVector& a)
+{
+  int a_len = a.length ();
+  ColumnVector b (a_len);
+  for (int i = 0; i < a_len; i++)
+    b.elem (i) = f (a.elem (i));
   return b;
 }
 

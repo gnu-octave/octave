@@ -33,7 +33,6 @@ extern "C++" {
 class ComplexRowVector : public Array<Complex>
 {
 friend class ComplexColumnVector;
-friend class RowVector;
 
 public:
 
@@ -43,16 +42,12 @@ public:
   ComplexRowVector (const RowVector& a);
   ComplexRowVector (const Array<Complex>& a) : Array<Complex> (a) { }
   ComplexRowVector (const ComplexRowVector& a) : Array<Complex> (a) { }
-//  ComplexRowVector (double a) : Array<Complex> (1, a) { }
-//  ComplexRowVector (const Complex& a) : Array<Complex> (1, a) { }
 
   ComplexRowVector& operator = (const ComplexRowVector& a)
     {
       Array<Complex>::operator = (a);
       return *this;
     }
-
-//  operator Array<Complex>& () const { return *this; }
 
   int operator == (const ComplexRowVector& a) const;
   int operator != (const ComplexRowVector& a) const;
@@ -73,8 +68,6 @@ public:
   ComplexColumnVector hermitian (void) const;  // complex conjugate transpose.
   ComplexColumnVector transpose (void) const;
 
-  friend RowVector real (const ComplexRowVector& a);
-  friend RowVector imag (const ComplexRowVector& a);
   friend ComplexRowVector conj (const ComplexRowVector& a);
 
 // resize is the destructive equivalent for this one
@@ -96,6 +89,11 @@ public:
   friend ComplexRowVector operator * (const ComplexRowVector& a, double s);
   friend ComplexRowVector operator / (const ComplexRowVector& a, double s);
 
+  friend ComplexRowVector operator + (const RowVector& a, const Complex& s);
+  friend ComplexRowVector operator - (const RowVector& a, const Complex& s);
+  friend ComplexRowVector operator * (const RowVector& a, const Complex& s);
+  friend ComplexRowVector operator / (const RowVector& a, const Complex& s);
+
 // scalar by row vector -> row vector operations
 
   friend ComplexRowVector operator + (double s, const ComplexRowVector& a);
@@ -103,16 +101,17 @@ public:
   friend ComplexRowVector operator * (double s, const ComplexRowVector& a);
   friend ComplexRowVector operator / (double s, const ComplexRowVector& a);
 
-// row vector by column vector -> scalar
-
-  friend Complex operator * (const ComplexRowVector& a, const ColumnVector& b);
-
-  friend Complex operator * (const ComplexRowVector& a,
-			     const ComplexColumnVector& b);
+  friend ComplexRowVector operator + (const Complex& s, const RowVector& a);
+  friend ComplexRowVector operator - (const Complex& s, const RowVector& a);
+  friend ComplexRowVector operator * (const Complex& s, const RowVector& a);
+  friend ComplexRowVector operator / (const Complex& s, const RowVector& a);
 
 // row vector by matrix -> row vector
 
   friend ComplexRowVector operator * (const ComplexRowVector& a,
+				      const ComplexMatrix& b);
+
+  friend ComplexRowVector operator * (const RowVector& a,
 				      const ComplexMatrix& b);
 
 // row vector by row vector -> row vector operations
@@ -122,15 +121,24 @@ public:
   friend ComplexRowVector operator - (const ComplexRowVector& a,
 				      const RowVector& b);
 
+  friend ComplexRowVector operator + (const RowVector& a,
+				      const ComplexRowVector& b);
+  friend ComplexRowVector operator - (const RowVector& a,
+				      const ComplexRowVector& b);
+
   friend ComplexRowVector product (const ComplexRowVector& a,
 				   const RowVector& b);
   friend ComplexRowVector quotient (const ComplexRowVector& a,
 				    const RowVector& b);
 
+  friend ComplexRowVector product (const RowVector& a,
+				   const ComplexRowVector& b);
+  friend ComplexRowVector quotient (const RowVector& a,
+				    const ComplexRowVector& b);
+
 // other operations
 
   friend ComplexRowVector map (c_c_Mapper f, const ComplexRowVector& a);
-  friend RowVector map (d_c_Mapper f, const ComplexRowVector& a);
   void map (c_c_Mapper f);
 
   Complex min (void) const;
@@ -153,6 +161,14 @@ private:
 
   ComplexRowVector (Complex *d, int l) : Array<Complex> (d, l) { }
 };
+
+// row vector by column vector -> scalar
+
+Complex operator * (const ComplexRowVector& a, const ColumnVector& b);
+
+Complex operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
+
+// other operations
 
 ComplexRowVector linspace (const Complex& x1, const Complex& x2, int n);
 

@@ -63,57 +63,6 @@ ComplexRowVector::ComplexRowVector (const RowVector& a)
     elem (i) = a.elem (i);
 }
 
-#if 0
-ComplexRowVector&
-ComplexRowVector::resize (int n)
-{
-  if (n < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimension");
-      return *this;
-    }
-
-  Complex *new_data = 0;
-  if (n > 0)
-    {
-      new_data = new Complex [n];
-      int min_len = len < n ? len : n;
-
-      for (int i = 0; i < min_len; i++)
-	new_data[i] = data[i];
-    }
-
-  delete [] data;
-  len = n;
-  data = new_data;
-
-  return *this;
-}
-
-ComplexRowVector&
-ComplexRowVector::resize (int n, double val)
-{
-  int old_len = len;
-  resize (n);
-  for (int i = old_len; i < len; i++)
-    data[i] = val;
-
-  return *this;
-}
-
-ComplexRowVector&
-ComplexRowVector::resize (int n, const Complex& val)
-{
-  int old_len = len;
-  resize (n);
-  for (int i = old_len; i < len; i++)
-    data[i] = val;
-
-  return *this;
-}
-#endif
-
 int
 ComplexRowVector::operator == (const ComplexRowVector& a) const
 {
@@ -255,26 +204,6 @@ ComplexRowVector::transpose (void) const
   return ComplexColumnVector (dup (data (), len), len);
 }
 
-RowVector
-real (const ComplexRowVector& a)
-{
-  int a_len = a.length ();
-  RowVector retval;
-  if (a_len > 0)
-    retval = RowVector (real_dup (a.data (), a_len), a_len);
-  return retval;
-}
-
-RowVector
-imag (const ComplexRowVector& a)
-{
-  int a_len = a.length ();
-  RowVector retval;
-  if (a_len > 0)
-    retval = RowVector (imag_dup (a.data (), a_len), a_len);
-  return retval;
-}
-
 ComplexRowVector
 conj (const ComplexRowVector& a)
 {
@@ -414,6 +343,34 @@ operator / (const ComplexRowVector& v, double s)
   return ComplexRowVector (divide (v.data (), len, s), len);
 }
 
+ComplexRowVector
+operator + (const RowVector& v, const Complex& s)
+{
+  int len = v.length ();
+  return ComplexRowVector (add (v.data (), len, s), len);
+}
+
+ComplexRowVector
+operator - (const RowVector& v, const Complex& s)
+{
+  int len = v.length ();
+  return ComplexRowVector (subtract (v.data (), len, s), len);
+}
+
+ComplexRowVector
+operator * (const RowVector& v, const Complex& s)
+{
+  int len = v.length ();
+  return ComplexRowVector (multiply (v.data (), len, s), len);
+}
+
+ComplexRowVector
+operator / (const RowVector& v, const Complex& s)
+{
+  int len = v.length ();
+  return ComplexRowVector (divide (v.data (), len, s), len);
+}
+
 // scalar by row vector -> row vector operations
 
 ComplexRowVector
@@ -444,32 +401,28 @@ operator / (double s, const ComplexRowVector& a)
   return ComplexRowVector (divide (s, a.data (), a_len), a_len);
 }
 
-// row vector by column vector -> scalar
-
-Complex
-operator * (const ComplexRowVector& v, const ColumnVector& a)
+ComplexRowVector
+operator + (const Complex& s, const RowVector& a)
 {
-  ComplexColumnVector tmp (a);
-  return v * tmp;
+  return ComplexRowVector ();
 }
 
-Complex
-operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
+ComplexRowVector
+operator - (const Complex& s, const RowVector& a)
 {
-  int len = v.length ();
-  if (len != a.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant vector multiplication attempted");
-      return 0.0;
-    }
+  return ComplexRowVector ();
+}
 
-  Complex retval (0.0, 0.0);
+ComplexRowVector
+operator * (const Complex& s, const RowVector& a)
+{
+  return ComplexRowVector ();
+}
 
-  for (int i = 0; i < len; i++)
-    retval += v.elem (i) * a.elem (i);
-
-  return retval;
+ComplexRowVector
+operator / (const Complex& s, const RowVector& a)
+{
+  return ComplexRowVector ();
 }
 
 // row vector by matrix -> row vector
@@ -507,6 +460,13 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
   return ComplexRowVector (y, len);
 }
 
+ComplexRowVector
+operator * (const RowVector& v, const ComplexMatrix& a)
+{
+  ComplexRowVector tmp (v);
+  return tmp * a;
+}
+
 // row vector by row vector -> row vector operations
 
 ComplexRowVector
@@ -528,6 +488,40 @@ operator + (const ComplexRowVector& v, const RowVector& a)
 
 ComplexRowVector
 operator - (const ComplexRowVector& v, const RowVector& a)
+{
+  int len = v.length ();
+  if (len != a.length ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector subtraction attempted");
+      return ComplexRowVector ();
+    }
+
+  if (len == 0)
+    return ComplexRowVector (0);
+
+  return ComplexRowVector (subtract (v.data (), a.data (), len), len);
+}
+
+ComplexRowVector
+operator + (const RowVector& v, const ComplexRowVector& a)
+{
+  int len = v.length ();
+  if (len != a.length ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector addition attempted");
+      return ComplexRowVector ();
+    }
+
+  if (len == 0)
+    return ComplexRowVector (0);
+
+  return ComplexRowVector (add (v.data (), a.data (), len), len);
+}
+
+ComplexRowVector
+operator - (const RowVector& v, const ComplexRowVector& a)
 {
   int len = v.length ();
   if (len != a.length ())
@@ -577,6 +571,40 @@ quotient (const ComplexRowVector& v, const RowVector& a)
   return ComplexRowVector (divide (v.data (), a.data (), len), len);
 }
 
+ComplexRowVector
+product (const RowVector& v, const ComplexRowVector& a)
+{
+  int len = v.length ();
+  if (len != a.length ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector product attempted");
+      return ComplexRowVector ();
+    }
+
+  if (len == 0)
+    return ComplexRowVector (0);
+
+  return ComplexRowVector (multiply (v.data (), a.data (), len), len);
+}
+
+ComplexRowVector
+quotient (const RowVector& v, const ComplexRowVector& a)
+{
+  int len = v.length ();
+  if (len != a.length ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector quotient attempted");
+      return ComplexRowVector ();
+    }
+
+  if (len == 0)
+    return ComplexRowVector (0);
+
+  return ComplexRowVector (divide (v.data (), a.data (), len), len);
+}
+
 // other operations
 
 ComplexRowVector
@@ -587,39 +615,11 @@ map (c_c_Mapper f, const ComplexRowVector& a)
   return b;
 }
 
-RowVector
-map (d_c_Mapper f, const ComplexRowVector& a)
-{
-  int a_len = a.length ();
-  RowVector b (a_len);
-  for (int i = 0; i < a_len; i++)
-    b.elem (i) = f (a.elem (i));
-  return b;
-}
-
 void
 ComplexRowVector::map (c_c_Mapper f)
 {
   for (int i = 0; i < length (); i++)
     elem (i) = f (elem (i));
-}
-
-ComplexRowVector
-linspace (const Complex& x1, const Complex& x2, int n)
-{
-  ComplexRowVector retval;
-
-  if (n > 0)
-    {
-      retval.resize (n);
-      Complex delta = (x2 - x1) / (n - 1);
-      retval.elem (0) = x1;
-      for (int i = 1; i < n-1; i++)
-	retval.elem (i) = x1 + i * delta;
-      retval.elem (n-1) = x2;
-    }
-
-  return retval;
 }
 
 Complex
@@ -693,6 +693,56 @@ operator >> (istream& is, ComplexRowVector& a)
         }
     }
   return is;
+}
+
+// row vector by column vector -> scalar
+
+// row vector by column vector -> scalar
+
+Complex
+operator * (const ComplexRowVector& v, const ColumnVector& a)
+{
+  ComplexColumnVector tmp (a);
+  return v * tmp;
+}
+
+Complex
+operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
+{
+  int len = v.length ();
+  if (len != a.length ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector multiplication attempted");
+      return 0.0;
+    }
+
+  Complex retval (0.0, 0.0);
+
+  for (int i = 0; i < len; i++)
+    retval += v.elem (i) * a.elem (i);
+
+  return retval;
+}
+
+// other operations
+
+ComplexRowVector
+linspace (const Complex& x1, const Complex& x2, int n)
+{
+  ComplexRowVector retval;
+
+  if (n > 0)
+    {
+      retval.resize (n);
+      Complex delta = (x2 - x1) / (n - 1);
+      retval.elem (0) = x1;
+      for (int i = 1; i < n-1; i++)
+	retval.elem (i) = x1 + i * delta;
+      retval.elem (n-1) = x2;
+    }
+
+  return retval;
 }
 
 /*

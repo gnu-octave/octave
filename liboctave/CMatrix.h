@@ -34,6 +34,7 @@ extern "C++" {
 
 class ComplexMatrix : public Array2<Complex>
 {
+friend class Matrix;
 friend class ComplexCHOL;
 friend class ComplexHESS;
 friend class ComplexLU;
@@ -41,8 +42,6 @@ friend class ComplexQR;
 friend class ComplexQRP;
 friend class ComplexSCHUR;
 friend class ComplexSVD;
-friend class ComplexColumnVector;
-friend class Matrix;
 
 public:
  
@@ -56,16 +55,12 @@ public:
   ComplexMatrix (const DiagMatrix& a);
   ComplexMatrix (const DiagArray<Complex>& a) : Array2<Complex> (a) { }
   ComplexMatrix (const ComplexDiagMatrix& a);
-//  ComplexMatrix (double a) : Array2<Complex> (1, 1, a) { }
-//  ComplexMatrix (const Complex& a) : Array2<Complex> (1, 1, a) { }
 
   ComplexMatrix& operator = (const ComplexMatrix& a)
     {
       Array2<Complex>::operator = (a);
       return *this;
     }
-
-//  operator Array2<Complex>& () const { return *this; }
 
   int operator == (const ComplexMatrix& a) const;
   int operator != (const ComplexMatrix& a) const;
@@ -110,8 +105,6 @@ public:
   ComplexMatrix hermitian (void) const;  // complex conjugate transpose
   ComplexMatrix transpose (void) const;
 
-  friend Matrix real (const ComplexMatrix& a);
-  friend Matrix imag (const ComplexMatrix& a);
   friend ComplexMatrix conj (const ComplexMatrix& a);
 
 // resize is the destructive equivalent for this one
@@ -165,6 +158,43 @@ public:
   ComplexColumnVector lssolve (const ComplexColumnVector& b, int& info,
 			       int& rank) const;
 
+// column vector by row vector -> matrix operations
+
+  friend ComplexMatrix operator * (const ColumnVector& a,
+				   const ComplexRowVector& b);
+
+  friend ComplexMatrix operator * (const ComplexColumnVector& a,
+				   const RowVector& b);
+
+  friend ComplexMatrix operator * (const ComplexColumnVector& a,
+				   const ComplexRowVector& b);
+
+// diagonal matrix by scalar -> matrix operations
+
+  friend ComplexMatrix operator + (const DiagMatrix& a, const Complex& s);
+  friend ComplexMatrix operator - (const DiagMatrix& a, const Complex& s);
+
+  friend ComplexMatrix operator + (const ComplexDiagMatrix& a, double s);
+  friend ComplexMatrix operator - (const ComplexDiagMatrix& a, double s);
+
+  friend ComplexMatrix operator + (const ComplexDiagMatrix& a,
+				   const Complex& s);
+  friend ComplexMatrix operator - (const ComplexDiagMatrix& a,
+				   const Complex& s);
+
+// scalar by diagonal matrix -> matrix operations
+
+  friend ComplexMatrix operator + (const Complex& s, const DiagMatrix& a);
+  friend ComplexMatrix operator - (const Complex& s, const DiagMatrix& a);
+
+  friend ComplexMatrix operator + (double s, const ComplexDiagMatrix& a);
+  friend ComplexMatrix operator - (double s, const ComplexDiagMatrix& a);
+
+  friend ComplexMatrix operator + (const Complex& s,
+				   const ComplexDiagMatrix& a);
+  friend ComplexMatrix operator - (const Complex& s,
+				   const ComplexDiagMatrix& a);
+
 // matrix by diagonal matrix -> matrix operations
 
   ComplexMatrix& operator += (const DiagMatrix& a);
@@ -172,6 +202,36 @@ public:
 
   ComplexMatrix& operator += (const ComplexDiagMatrix& a);
   ComplexMatrix& operator -= (const ComplexDiagMatrix& a);
+
+  friend ComplexMatrix operator + (const Matrix& a,
+				   const ComplexDiagMatrix& b); 
+  friend ComplexMatrix operator - (const Matrix& a,
+				   const ComplexDiagMatrix& b);
+  friend ComplexMatrix operator * (const Matrix& a,
+				   const ComplexDiagMatrix& b);
+
+// diagonal matrix by matrix -> matrix operations
+
+  friend ComplexMatrix operator + (const DiagMatrix& a,
+				   const ComplexMatrix& b);
+  friend ComplexMatrix operator - (const DiagMatrix& a,
+				   const ComplexMatrix& b);
+  friend ComplexMatrix operator * (const DiagMatrix& a,
+				   const ComplexMatrix& b);
+
+  friend ComplexMatrix operator + (const ComplexDiagMatrix& a,
+				   const Matrix& b); 
+  friend ComplexMatrix operator - (const ComplexDiagMatrix& a,
+				   const Matrix& b);
+  friend ComplexMatrix operator * (const ComplexDiagMatrix& a,
+				   const Matrix& b);
+
+  friend ComplexMatrix operator + (const ComplexDiagMatrix& a,
+				   const ComplexMatrix& b);
+  friend ComplexMatrix operator - (const ComplexDiagMatrix& a,
+				   const ComplexMatrix& b);
+  friend ComplexMatrix operator * (const ComplexDiagMatrix& a,
+				   const ComplexMatrix& b);
 
 // matrix by matrix -> matrix operations
 
@@ -187,6 +247,11 @@ public:
 
 // matrix by scalar -> matrix operations
 
+  friend ComplexMatrix operator + (const Matrix& a, const Complex& s);
+  friend ComplexMatrix operator - (const Matrix& a, const Complex& s);
+  friend ComplexMatrix operator * (const Matrix& a, const Complex& s);
+  friend ComplexMatrix operator / (const Matrix& a, const Complex& s);
+
   friend ComplexMatrix operator + (const ComplexMatrix& a, double s);
   friend ComplexMatrix operator - (const ComplexMatrix& a, double s);
   friend ComplexMatrix operator * (const ComplexMatrix& a, double s);
@@ -199,13 +264,10 @@ public:
   friend ComplexMatrix operator * (double s, const ComplexMatrix& a);
   friend ComplexMatrix operator / (double s, const ComplexMatrix& a);
 
-// matrix by column vector -> column vector operations
-
-  friend ComplexColumnVector operator * (const ComplexMatrix& a,
-					 const ColumnVector& b);
-
-  friend ComplexColumnVector operator * (const ComplexMatrix& a,
-					 const ComplexColumnVector& b);
+  friend ComplexMatrix operator + (const Complex& s, const Matrix& a);
+  friend ComplexMatrix operator - (const Complex& s, const Matrix& a);
+  friend ComplexMatrix operator * (const Complex& s, const Matrix& a);
+  friend ComplexMatrix operator / (const Complex& s, const Matrix& a);
 
 // matrix by diagonal matrix -> matrix operations
 
@@ -228,17 +290,25 @@ public:
   friend ComplexMatrix operator + (const ComplexMatrix& a, const Matrix& b);
   friend ComplexMatrix operator - (const ComplexMatrix& a, const Matrix& b);
 
+  friend ComplexMatrix operator + (const Matrix& a, const ComplexMatrix& b);
+  friend ComplexMatrix operator - (const Matrix& a, const ComplexMatrix& b);
+
   friend ComplexMatrix operator * (const ComplexMatrix& a, const Matrix& b);
+
+  friend ComplexMatrix operator * (const Matrix& a, const ComplexMatrix& b);
+
   friend ComplexMatrix operator * (const ComplexMatrix& a,
 				   const ComplexMatrix& b);
 
   friend ComplexMatrix product (const ComplexMatrix& a, const Matrix& b);
   friend ComplexMatrix quotient (const ComplexMatrix& a, const Matrix& b);
 
+  friend ComplexMatrix product (const Matrix& a, const ComplexMatrix& b);
+  friend ComplexMatrix quotient (const Matrix& a, const ComplexMatrix& b);
+
 // other operations
 
   friend ComplexMatrix map (c_c_Mapper f, const ComplexMatrix& a);
-  friend Matrix map (d_c_Mapper f, const ComplexMatrix& a);
   void map (c_c_Mapper f);
 
   Matrix all (void) const;

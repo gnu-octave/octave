@@ -32,21 +32,17 @@ extern "C++" {
 
 class ComplexColumnVector : public Array<Complex>
 {
-friend class ColumnVector;
-friend class ComplexRowVector;
 friend class ComplexMatrix;
+friend class ComplexRowVector;
 
 public:
 
   ComplexColumnVector (void) : Array<Complex> () { }
   ComplexColumnVector (int n) : Array<Complex> (n) { }
-  ComplexColumnVector (int n, const Complex& val)
-    : Array<Complex> (n, val) { }
+  ComplexColumnVector (int n, const Complex& val) : Array<Complex> (n, val) { }
   ComplexColumnVector (const ColumnVector& a);
   ComplexColumnVector (const Array<Complex>& a) : Array<Complex> (a) { }
   ComplexColumnVector (const ComplexColumnVector& a) : Array<Complex> (a) { }
-//  ComplexColumnVector (double a) : Array<Complex> (1, a) { }
-//  ComplexColumnVector (const Complex& a) : Array<Complex> (1, a) { }
 
   ComplexColumnVector& operator = (const ComplexColumnVector& a)
     {
@@ -75,8 +71,6 @@ public:
   ComplexRowVector hermitian (void) const;  // complex conjugate transpose.
   ComplexRowVector transpose (void) const;
 
-  friend ColumnVector real (const ComplexColumnVector& a);
-  friend ColumnVector imag (const ComplexColumnVector& a);
   friend ComplexColumnVector conj (const ComplexColumnVector& a);
 
 // resize is the destructive equivalent for this one
@@ -102,6 +96,15 @@ public:
   friend ComplexColumnVector operator / (const ComplexColumnVector& a,
 					 double s);
 
+  friend ComplexColumnVector operator + (const ColumnVector& a,
+					 const Complex& s);  
+  friend ComplexColumnVector operator - (const ColumnVector& a,
+					 const Complex& s);
+  friend ComplexColumnVector operator * (const ColumnVector& a,
+					 const Complex& s);
+  friend ComplexColumnVector operator / (const ColumnVector& a,
+					 const Complex& s);
+
 // scalar by column vector -> column vector operations
 
   friend ComplexColumnVector operator + (double s,
@@ -113,10 +116,22 @@ public:
   friend ComplexColumnVector operator / (double s,
 					 const ComplexColumnVector& a);
 
-// column vector by row vector -> matrix operations
+  friend ComplexColumnVector operator + (const Complex& s,
+					 const ColumnVector& a); 
+  friend ComplexColumnVector operator - (const Complex& s,
+					 const ColumnVector& a);
+  friend ComplexColumnVector operator * (const Complex& s,
+					 const ColumnVector& a);
+  friend ComplexColumnVector operator / (const Complex& s,
+					 const ColumnVector& a);
 
-  friend ComplexMatrix operator * (const ComplexColumnVector& a,
-				   const ComplexRowVector& b);
+// matrix by column vector -> column vector operations
+
+  friend ComplexColumnVector operator * (const ComplexMatrix& a,
+					 const ColumnVector& b);
+
+  friend ComplexColumnVector operator * (const ComplexMatrix& a,
+					 const ComplexColumnVector& b);
 
 // column vector by column vector -> column vector operations
 
@@ -125,15 +140,40 @@ public:
   friend ComplexColumnVector operator - (const ComplexColumnVector& a,
 					 const ColumnVector& b);
 
+  friend ComplexColumnVector operator + (const ColumnVector& a,
+					 const ComplexColumnVector& b);
+  friend ComplexColumnVector operator - (const ColumnVector& a,
+					 const ComplexColumnVector& b); 
+
   friend ComplexColumnVector product (const ComplexColumnVector& a,
 				      const ColumnVector& b);
   friend ComplexColumnVector quotient (const ComplexColumnVector& a,
 				       const ColumnVector& b);
 
+  friend ComplexColumnVector product (const ColumnVector& a,
+				      const ComplexColumnVector& b); 
+  friend ComplexColumnVector quotient (const ColumnVector& a,
+				       const ComplexColumnVector& b); 
+
+// matrix by column vector -> column vector operations
+
+  friend ComplexColumnVector operator * (const Matrix& a,
+					 const ComplexColumnVector& b);
+
+// diagonal matrix by column vector -> column vector operations
+
+  friend ComplexColumnVector operator * (const DiagMatrix& a,
+					 const ComplexColumnVector& b);
+
+  friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
+					 const ColumnVector& b);
+
+  friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
+					 const ComplexColumnVector& b);
+
 // other operations
 
   friend ComplexColumnVector map (c_c_Mapper f, const ComplexColumnVector& a);
-  friend ColumnVector map (d_c_Mapper f, const ComplexColumnVector& a);
   void map (c_c_Mapper f);
 
   Complex min (void) const;
@@ -152,10 +192,8 @@ public:
 #undef TYPE
 #undef KL_VEC_TYPE
 
-// private:
-// XXX FIXME XXX -- why does it not work to make this private, with
-// ColumnVector declared as a friend of ComplexColumnVector?  It seems
-// to work for the similar case with Matrix/ComplexMatrix.  Hmm...
+private:
+
   ComplexColumnVector (Complex *d, int l) : Array<Complex> (d, l) { }
 };
 

@@ -26,14 +26,14 @@ if test -z "$target_host_type" -o "$target_host_type" = unknown; then
   fi
 fi
 
-case "$target_host_type" in
-  unknown)
-    echo "configuring Octave for an unknown system type"
-  ;;
-  *)
-    echo "configuring Octave for a $target_host_type"
-  ;;
-esac
+canonical_host_type=`sh $srcdir/config.sub $target_host_type 2>&1`
+status=$?
+if test $status -eq 0; then
+  echo "configuring Octave for a $target_host_type"
+else
+  canonical_host_type=unknown
+  echo "configuring Octave for an unknown system type"
+fi
 AC_SUBST(target_host_type)dnl
 
 # Set up to handle --with-FOO options.
@@ -305,30 +305,35 @@ case "$RETSIGTYPE" in
 esac
 AC_SUBST(VOID_SIGHANDLER)dnl
 
-AC_HEADER_CHECK(termios.h, AC_DEFINE(HAVE_TERMIOS_H, 1),
-  AC_HEADER_CHECK(termio.h, AC_DEFINE(HAVE_TERMIO_H, 1),
-    AC_HEADER_CHECK(sgtty.h, AC_DEFINE(HAVE_SGTTY_H, 1), [])))dnl
+# Use sgtty on Ultrix so that using DEC Migrate to convert a Mips
+# binary to an Alpha binary will work.
+
+case "$canonical_host_type" in
+  mips-dec-ultrix*)
+    AC_HEADER_CHECK(sgtty.h, AC_DEFINE(HAVE_SGTTY_H, 1), [])dnl
+  ;;
+esac
+
 case "$DEFS" in
-  *HAVE_TERMIOS_H* | *HAVE_TERMIO_H* | *HAVE_SGTTY_H*)
+  *HAVE_SGTTY_H*)
   ;;
   *)
-    cat << EOF
+    AC_HEADER_CHECK(termios.h, AC_DEFINE(HAVE_TERMIOS_H, 1),
+      AC_HEADER_CHECK(termio.h, AC_DEFINE(HAVE_TERMIO_H, 1),
+        AC_HEADER_CHECK(sgtty.h, AC_DEFINE(HAVE_SGTTY_H, 1), [])))dnl
+
+    case "$DEFS" in
+      *HAVE_TERMIOS_H* | *HAVE_TERMIO_H* | *HAVE_SGTTY_H*)
+      ;;
+      *)
+        cat << EOF
 error: I couldn't find termios.h, termio.h, or sgtty.h, and I can't
        continue without them.  To compile Octave, your system must
        have at least one of these header files.
 EOF
-    exit 1
-  ;;
-esac
-
-
-# Hack for readline's sysdep.h
-
-case "$target_host_type" in
-  *next*)
-    echo "using BSD version of readline/sysdep.h on the NeXT"
-    rm -f readline/sysdep.h
-    cp readline/sysdep-obsd.h readline/sysdep.h
+        exit 1
+      ;;
+    esac
   ;;
 esac
 

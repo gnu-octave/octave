@@ -188,14 +188,17 @@ oct_data_conv::string_to_data_type (const std::string& str)
 #define LS_DO_READ(TYPE, swap, data, size, len, stream) \
   do \
     { \
-      volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
-      stream.read (X_CAST (char *, ptr), size * len); \
-      if (swap) \
-        swap_ ## size ## _bytes (ptr, len); \
-      TYPE tmp = ptr[0]; \
-      for (int i = len - 1; i > 0; i--) \
-        data[i] = ptr[i]; \
-      data[0] = tmp; \
+      if (len > 0) \
+	{ \
+	  volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
+	  stream.read (X_CAST (char *, ptr), size * len); \
+	  if (swap) \
+	    swap_ ## size ## _bytes (ptr, len); \
+	  TYPE tmp = ptr[0]; \
+	  for (int i = len - 1; i > 0; i--) \
+	    data[i] = ptr[i]; \
+	  data[0] = tmp; \
+	} \
     } \
   while (0)
 
@@ -205,13 +208,16 @@ oct_data_conv::string_to_data_type (const std::string& str)
 #define LS_DO_WRITE(TYPE, data, size, len, stream) \
   do \
     { \
-      char tmp_type = static_cast<char> (type); \
-      stream.write (&tmp_type, 1); \
-      TYPE *ptr = new TYPE [len]; \
-      for (int i = 0; i < len; i++) \
-        ptr[i] = X_CAST (TYPE, data[i]); \
-      stream.write (X_CAST (char *, ptr), size * len); \
-      delete [] ptr ; \
+      if (len > 0) \
+	{ \
+	  char tmp_type = static_cast<char> (type); \
+	  stream.write (&tmp_type, 1); \
+	  TYPE *ptr = new TYPE [len]; \
+	  for (int i = 0; i < len; i++) \
+	    ptr[i] = X_CAST (TYPE, data[i]); \
+	  stream.write (X_CAST (char *, ptr), size * len); \
+	  delete [] ptr ; \
+	} \
     } \
   while (0)
 

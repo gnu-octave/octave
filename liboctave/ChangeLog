@@ -1,3 +1,8 @@
+2001-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data-conv.cc (LS_DO_READ): Don't do anything unless len > 0.
+	(LS_DO_WRITE): Likewise.
+	
 2001-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-inlines.cc (MX_CUMMULATIVE_OP): New macro.

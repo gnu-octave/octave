@@ -719,13 +719,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     current_input_column++;
 
-    if (static_cast<int> (yytext[0]) == EOF)
-      error ("unexpected end of file near line %d, column %d",
-	     input_line_number, current_input_column);
-    else
-      error ("invalid character `%s' (ASCII %d) near line %d, column %d",
-	     undo_string_escape (yytext[0]), static_cast<int> (yytext[0]),
-	     input_line_number, current_input_column);
+    // EOF can't happen here (we catch it above).
+
+    error ("invalid character `%s' (ASCII %d) near line %d, column %d",
+	   undo_string_escape (yytext[0]), static_cast<int> (yytext[0]),
+	   input_line_number, current_input_column);
 
     return LEXICAL_ERROR;
   }

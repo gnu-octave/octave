@@ -118,13 +118,23 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 
       if (num_to_delete != 0)
 	{
-	  int new_len = len - num_to_delete;
+	  int new_len = len;
+
+	  int iidx = 0;
+
+	  for (int i = 0; i < len; i++)
+	    if (i == idx.elem (iidx))
+	      {
+		iidx++;
+		new_len--;
+	      }
+
 	  if (new_len > 0)
 	    {
 	      T *new_data = new T [new_len];
 
 	      int ii = 0;
-	      int iidx = 0;
+	      iidx = 0;
 	      for (int i = 0; i < len; i++)
 		{
 		  if (i == idx.elem (iidx))

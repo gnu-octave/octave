@@ -208,13 +208,23 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		resize (0, 0);
 	      else
 		{
-		  int new_nc = nc - num_to_delete;
+		  int new_nc = nc;
+
+		  int idx = 0;
+
+		  for (int j = 0; j < nc; j++)
+		    if (j == idx_j.elem (idx))
+		      {
+			idx++;
+			new_nc--;
+		      }
+
 		  if (new_nc > 0)
 		    {
 		      T *new_data = new T [nr * new_nc];
 
 		      int jj = 0;
-		      int idx = 0;
+		      idx = 0;
 		      for (int j = 0; j < nc; j++)
 			{
 			  if (j == idx_j.elem (idx))
@@ -257,13 +267,23 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		resize (0, 0);
 	      else 
 		{
-		  int new_nr = nr - num_to_delete;
+		  int new_nr = nr;
+
+		  int idx = 0;
+
+		  for (int i = 0; i < nr; i++)
+		    if (i == idx_i.elem (idx))
+		      {
+			idx++;
+			new_nr--;
+		      }
+
 		  if (new_nr > 0)
 		    {
 		      T *new_data = new T [new_nr * nc];
 
 		      int ii = 0;
-		      int idx = 0;
+		      idx = 0;
 		      for (int i = 0; i < nr; i++)
 			{
 			  if (i == idx_i.elem (idx))

@@ -609,7 +609,7 @@ The @samp{-import} is accepted but ignored for backward compatiability.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
 modifies variable names if they are invalid Octave identifiers.\n\
 \n\
-@item -text
+@item -text\n\
 Force Octave to assume the file is in Octave's text format.\n\
 @end table\n\
 @end deffn")
@@ -1271,7 +1271,7 @@ character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
 match all lower and upper case alphabetic characters. \n\
 \n\
-@item -text
+@item -text\n\
 Save the data in Octave's text data format.\n\
 @end table\n\
 \n\

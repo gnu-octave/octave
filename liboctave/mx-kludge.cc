@@ -24,7 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // Nothing like a little CPP abuse to brighten everyone's day.  Would
 // have been nice to do this with template functions but as of 2.5.x,
 // g++ seems to fail in various ways, either not resolving general
-// template functions, or not instatiating non-member template
+// template functions, or not instantiating non-member template
 // functions.
 //
 // When templates work more reliably in g++, this will be replaced by

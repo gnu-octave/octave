@@ -30,8 +30,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // When templates work more reliably in g++, this will be replaced by
 // the MArray class.
 
-extern "C++" {
-
 #ifdef KLUDGE_VECTORS
 
 /*
@@ -132,8 +130,6 @@ friend KL_DMAT_TYPE operator - (const KL_DMAT_TYPE& a);
 #undef DO_VS_OP
 #undef DO_VV_OP
 #undef NEG_V
-
-} // extern "C++"
 
 /*
 ;;; Local Variables: ***

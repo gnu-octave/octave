@@ -23,6 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_ls_hdf5_h)
 #define octave_ls_hdf5_h 1
 
+#if defined (HAVE_HDF5)
+
 // first, we need to define our own dummy stream subclass, since
 // HDF5 needs to do its own file i/o
 
@@ -159,6 +161,8 @@ extern bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,
 		const std::string& name, const std::string& doc,
 		bool mark_as_global, bool save_as_floats);
+
+#endif
 
 #endif
 

@@ -1,3 +1,7 @@
+2004-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ls-hdf5.h: Surround contents with #if defined (HAVE_HDF5).
+
 2004-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (convert_to_valid_int, get_size):

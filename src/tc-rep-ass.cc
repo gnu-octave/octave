@@ -54,7 +54,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // hand off to other functions to do the real work.
 
 void
-TC_REP::assign (const tree_constant& rhs, const Octave_object& args)
+TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 {
   tree_constant rhs_tmp = rhs.make_numeric ();
 

@@ -78,12 +78,6 @@ bool can_interrupt = false;
   do { } while (0)
 #endif
 
-#if defined (SIGABRT)
-#define OCTAVE_MEMORY_EXHAUSTED_ERROR SIGABRT
-#else
-#define OCTAVE_MEMORY_EXHAUSTED_ERROR (-1)
-#endif
-
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {

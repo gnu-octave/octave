@@ -104,7 +104,7 @@ octave_throw_interrupt_exception (void)
 void
 octave_throw_bad_alloc (void)
 {
-  throw bad_alloc ();
+  throw std::bad_alloc ();
 }
 
 #endif

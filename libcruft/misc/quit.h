@@ -148,7 +148,7 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
       SET_OCTAVE_INTERRUPT_IMMEDIATELY (saved_octave_interrupt_immediately); \
       octave_jump_to_enclosing_context (); \
     } \
-  catch (bad_alloc) \
+  catch (std::bad_alloc) \
     { \
       SET_OCTAVE_INTERRUPT_IMMEDIATELY (saved_octave_interrupt_immediately); \
       octave_allocation_error = 1; \

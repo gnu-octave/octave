@@ -191,7 +191,7 @@ main_loop (void)
 	  recover_from_exception ();
 	  std::cout << "\n";
 	}
-      catch (bad_alloc)
+      catch (std::bad_alloc)
 	{
 	  recover_from_exception ();
 	  std::cerr

@@ -1,3 +1,7 @@
+2004-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (do_cat): Merge with Fcat.
+
 2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* ov-cell.cc (Fstruct2cell): New function.

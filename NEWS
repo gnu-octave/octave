@@ -84,6 +84,25 @@ Summary of changes since version 2.0.5:
     defines a function that returns the number of times that it has
     been called.
 
+  * Within user-defined functions, the new automatic variable `argn'
+    contains the names of the arguments that were passed to the
+    function.  For example,
+
+      function f (...)
+        for i = 1:nargin
+          stdout << "argn(" << i << ") = `" << deblank (argn(i,:)) \
+                 << "' and its value is " << va_arg () << "\n";
+        endfor
+      endfunction
+      f (1+2, "foo", sin (pi/2))
+
+    prints
+
+      argn(1) = `1 + 2' and its value is 3
+      argn(2) = `"foo"' and its value is foo
+      argn(3) = `sin (pi)' and its value is 1
+
+    on the standard output stream.  If nargin is zero, argn is not defined.
   * Functions like quad, fsolve, and lsode can take either a function
     name or a simple function body as a string.  For example,
 

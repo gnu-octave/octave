@@ -1,3 +1,34 @@
+Wed May  7 21:17:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (generate_completion): Rename from command_generator.
+	Use string objects instead of char*.
+	(generate_possible_completions): Let qsort also make matches unique.
+	(initialize_command_input): Register generate_completion with the
+	command_editor class.
+	(completion_matches): Simplify using generate_completion.
+
+	* pt-pr-code.cc (tree_print_code::visit_constant): For val, call
+	print_raw, not print.
+
+	* oct-usr-fcn.h (octave_user_function::argn_sr): New data member.
+	(octave_user_function::install_automatic_vars): Rename from
+	install_nargin_and_nargout.
+	(octave_user_function::bind_automatic_vars): Rename from
+	bind_nargin_and_nargout.
+	* oct-usr-fcn.cc (octave_user_function::eval): Extract arg names
+	from args vector and bind them to argn.
+	* oct-obj.h (octave_value_list::names): New data member.
+	* oct-obj.cc (octave_value_list::stash_name_tags): New function.
+	(octave_value_list::name_tags): Ditto.
+	* pt-const.h, pt-const.cc (tree_constant::print_raw): New function.
+	* pt-misc.h, pt-misc.cc (tree_argument_list::get_arg_names):
+	New function.
+	* pt-mvr.h, pt-mvr.cc (class index_expression): Cache arg names.
+	* toplev.cc (feval): Now static.  Handle arg names.
+
+	* mkops: Cope with moving files defining operators to OPERATORS
+	subdirectory.
+
 Tue May  6 00:48:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/getgrent.cc: Use new octave_group class.

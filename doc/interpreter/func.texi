@@ -408,6 +408,7 @@ header followed by an unspecified number of values:
 function foo (heading, ...)
   disp (heading);
   va_start ();
+  ## Pre-decrement to skip `heading' arg.
   while (--nargin)
     disp (va_arg ());
   endwhile

@@ -360,35 +360,18 @@ generate_possible_completions (const string& text, string& prefix,
   else
     names = make_name_list ();
 
-  names.qsort ();
+  // Sort and remove duplicates.
 
-  // Remove duplicates.
-
-  // XXX FIXME XXX -- maybe this should be defined for all Array objects.
-
-  int k = 0;
-
-  int len = names.length ();
-
-  for (int i = 1; i < len; i++)
-    {
-      if (names[i] != names[k])
-	{
-	  k++;
-
-	  if (k != i)
-	    names[k] = names[i];
-	}
-    }
-
-  names.resize (k+1);
+  names.qsort (true);
 
   return names;
 }
 
-static char *
-command_generator (const char *text, int state)
+static string
+generate_completion (const string& text, int state)
 {
+  string retval;
+
   static string prefix;
   static string hint;
 
@@ -434,42 +417,24 @@ command_generator (const char *text, int state)
 
 	  if (! name.compare (hint, 0, hint_len))
 	    {
-	      int len = 2 + prefix_len + name.length ();
-
-	      char *buf = static_cast<char *> (malloc (len));
-
 	      if (! prefix.empty ())
-		{
-		  strcpy (buf, prefix.c_str ());
-		  strcat (buf, ".");
-		  strcat (buf, name.c_str ());
-		}
+		retval = prefix + "." + name;
 	      else
-		strcpy (buf, name.c_str ());
+		retval = name;
 
-	      if (matches == 1 && looks_like_struct (buf))
+	      if (matches == 1 && looks_like_struct (retval))
 		command_editor::set_completion_append_character ('.');
 	      else
 		command_editor::set_completion_append_character
 		  (Vcompletion_append_char);
 
-	      return buf;
+	      break;
 	    }
 	}
     }
 
-  return 0;
+  return retval;
 }
-
-#if 0
-static char **
-command_completer (char *text, int /* start */, int /* end */)
-{
-  char **matches = 0;
-  matches = completion_matches (text, command_generator);
-  return matches;
-}
-#endif
 
 void
 initialize_command_input (void)
@@ -480,6 +445,8 @@ initialize_command_input (void)
   command_editor::set_name ("Octave");
 
   command_editor::set_paren_string_delimiters ("\"");
+
+  command_editor::set_completion_function (generate_completion);
 }
 
 static bool
@@ -705,7 +672,7 @@ not a bug.")
 
   if (nargin == 1)
     {
-      string hint_string = args(0).string_value ();
+      string hint = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -713,26 +680,21 @@ not a bug.")
 
 	  string_vector list (n);
 
-	  const char *hint = hint_string.c_str ();
-
 	  int k = 0;
 
 	  for (;;)
 	    {
-	      const char *cmd = command_generator (hint, k);
+	      string cmd = generate_completion (hint, k);
 
-	      if (cmd)
+	      if (! cmd.empty ())
 		{
-		  if (*cmd)
+		  if (k == n)
 		    {
-		      if (k == n)
-			{
-			  n *= 2;
-			  list.resize (n);
-			}
-
-		      list[k++] = cmd;
+		      n *= 2;
+		      list.resize (n);
 		    }
+
+		  list[k++] = cmd;
 		}
 	      else
 		{

@@ -314,9 +314,6 @@ Interpreter:
     corresponding to the first argument if the number of requested
     points is 1.
 
-  * Make it possible to get the names of the arguments that are passed
-    to functions, at least if simple variables are passed.
-
   * Consider allowing an arbitrary property list to be attached to any
     variable.  This could be a more general way to handle the help
     string that can currently be added with `document'.

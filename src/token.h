@@ -47,6 +47,7 @@ public:
       function_end,
       if_end,
       while_end,
+      unwind_protect_end,
     };
 
   enum plot_tok_type

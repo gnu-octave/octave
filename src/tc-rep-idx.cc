@@ -306,6 +306,9 @@ TC_REP::do_matrix_index (const tree_constant& i_arg,
 
   tree_constant tmp_i = i_arg.make_numeric_or_range_or_magic ();
 
+  if (error_state)
+    return retval;
+
   TC_REP::constant_type itype = tmp_i.const_type ();
 
   switch (itype)
@@ -403,6 +406,9 @@ TC_REP::fortran_style_matrix_index (const tree_constant& i_arg) const
   tree_constant retval;
 
   tree_constant tmp_i = i_arg.make_numeric_or_magic ();
+
+  if (error_state)
+    return retval;
 
   TC_REP::constant_type itype = tmp_i.const_type ();
 
@@ -556,6 +562,9 @@ TC_REP::do_vector_index (const tree_constant& i_arg) const
 
   tree_constant tmp_i = i_arg.make_numeric_or_range_or_magic ();
 
+  if (error_state)
+    return retval;
+
   TC_REP::constant_type itype = tmp_i.const_type ();
 
   int nr = rows ();
@@ -681,6 +690,9 @@ TC_REP::do_matrix_index (int i, const tree_constant& j_arg) const
 
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
+  if (error_state)
+    return retval;
+
   TC_REP::constant_type jtype = tmp_j.const_type ();
 
   int nr = rows ();
@@ -779,6 +791,9 @@ TC_REP::do_matrix_index (const idx_vector& iv,
 
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
+  if (error_state)
+    return retval;
+
   TC_REP::constant_type jtype = tmp_j.const_type ();
 
   int nr = rows ();
@@ -868,6 +883,9 @@ TC_REP::do_matrix_index (const Range& ri,
   tree_constant retval;
 
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
+
+  if (error_state)
+    return retval;
 
   TC_REP::constant_type jtype = tmp_j.const_type ();
 
@@ -963,6 +981,9 @@ TC_REP::do_matrix_index (TC_REP::constant_type mci,
   tree_constant retval;
 
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
+
+  if (error_state)
+    return retval;
 
   TC_REP::constant_type jtype = tmp_j.const_type ();
 

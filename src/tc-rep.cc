@@ -539,6 +539,10 @@ TC_REP::all (void) const
   if (! is_numeric_type ())
     {
       tree_constant tmp = make_numeric ();
+
+      if (error_state)
+	return retval;
+
       return tmp.all ();
     }
 
@@ -591,6 +595,10 @@ TC_REP::any (void) const
   if (! is_numeric_type ())
     {
       tree_constant tmp = make_numeric ();
+
+      if (error_state)
+	return retval;
+
       return tmp.any ();
     }
 
@@ -652,6 +660,10 @@ TC_REP::is_true (void) const
   if (! is_numeric_type ())
     {
       tree_constant tmp = make_numeric ();
+
+      if (error_state)
+	return retval;
+
       return tmp.is_true ();
     }
 
@@ -1286,8 +1298,8 @@ TC_REP::force_numeric (int force_str_conv)
 	  {
 	    ::error ("failed to convert `%s' to a numeric type --", string);
 	    ::error ("default conversion turned off");
-// Abort!
-	    jump_to_top_level ();
+
+	    return;
 	  }
 
 	int len = strlen (string);

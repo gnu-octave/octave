@@ -58,6 +58,9 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 {
   tree_constant rhs_tmp = rhs.make_numeric ();
 
+  if (error_state)
+    return;
+
 // This is easier than actually handling assignments to strings.
 // An assignment to a range will normally require a conversion to a
 // vector since it will normally destroy the equally-spaced property
@@ -331,6 +334,9 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
 {
   tree_constant tmp_i = i_arg.make_numeric_or_magic ();
 
+  if (error_state)
+    return;
+
   TC_REP::constant_type itype = tmp_i.const_type ();
 
   int nr = rows ();
@@ -596,6 +602,9 @@ TC_REP::vector_assignment (const tree_constant& rhs,
 	  && ! user_pref.do_fortran_indexing);
 
   tree_constant tmp_i = i_arg.make_numeric_or_range_or_magic ();
+
+  if (error_state)
+    return;
 
   TC_REP::constant_type itype = tmp_i.const_type ();
 
@@ -983,6 +992,9 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 {
   tree_constant tmp_i = i_arg.make_numeric_or_range_or_magic ();
 
+  if (error_state)
+    return;
+
   TC_REP::constant_type itype = tmp_i.const_type ();
 
   switch (itype)
@@ -1048,6 +1060,9 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i,
 			      const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
+
+  if (error_state)
+    return;
 
   TC_REP::constant_type jtype = tmp_j.const_type ();
 
@@ -1201,6 +1216,9 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
+  if (error_state)
+    return;
+
   TC_REP::constant_type jtype = tmp_j.const_type ();
 
   int rhs_nr = rhs.rows ();
@@ -1337,6 +1355,9 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri,
 			      const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
+
+  if (error_state)
+    return;
 
   TC_REP::constant_type jtype = tmp_j.const_type ();
 
@@ -1480,6 +1501,9 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
+
+  if (error_state)
+    return;
 
   TC_REP::constant_type jtype = tmp_j.const_type ();
 

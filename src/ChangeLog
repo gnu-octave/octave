@@ -1,3 +1,8 @@
+2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dirfns.cc (symbols_of_dirfns): Install new built-in constant
+	P_tmpdir.
+
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dirfns.cc (symbols_of_dirfns): New function.

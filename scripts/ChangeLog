@@ -1,5 +1,9 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* miscellaneous/tempname.m: New file.
+
+	* miscellaneous/tempdir.m: New file.
+
 	* miscellaneous/fullfile.m: New file.
 
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>

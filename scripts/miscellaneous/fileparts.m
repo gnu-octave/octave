@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{dir}, @var{name}, @var{ext}, @var{ver}]} fnmatch (@var{filename})
+## @deftypefn {Built-in Function} {[@var{dir}, @var{name}, @var{ext}, @var{ver}] =} fileparts (@var{filename})
 ## Return the directory, name, extension, and version components of
 ## @var{filename}.
 ## @end deftypefn

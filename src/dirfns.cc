@@ -648,6 +648,17 @@ The character used to separate directory names.  The value\n\
 of this variable is system dependent.\n\
 @end defvr");
 
+#if ! defined (P_tmpdir)
+#define P_tmpdir "/tmp"
+#endif
+
+  DEFCONSTX ("P_tmpdir", SBV_P_tmpdir, P_tmpdir,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} P_tmpdir\n\
+The default name of the directory for temporary files on this system.\n\
+of this variable is system dependent.\n\
+@end defvr");
+
 }
 
 /*

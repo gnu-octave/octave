@@ -23,25 +23,11 @@
 ## @var{filename}.
 ## @end deftypefn
 
-function filename = fullfile (varargin)
+function dirname = tempdir ()
 
-  if (nargin > 0)
-    filename = varargin{1};
-    if (strcmp (filename(end), "/"))
-      filename(end) = "";
-    endif
-    for i = 2:nargin
-      tmp = varargin{i};
-      if (strcmp (tmp(1), "/"))
-	tmp(1) = "";
-      endif
-      if (i < nargin && strcmp (tmp(end), "/"))
-	tmp(end) = "";
-      endif
-      filename = strcat (filename, filesep, tmp);
-    endfor
-  else
-    usage ("fullfile (dir1, dir2, ..., file)");
+  dirname = getenv ("TMPDIR");
+  if (length (dirname) == 0)
+    dirname = P_tmpdir;
   endif
 
 endfunction

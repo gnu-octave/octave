@@ -18,30 +18,12 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{dir}, @var{name}, @var{ext}, @var{ver}] =} fullfile (@var{filename})
-## Return the directory, name, extension, and version components of
-## @var{filename}.
+## @deftypefn {Built-in Function} {filename = } tempname ()
+## This function is an alias for @code{tmpnam}.
 ## @end deftypefn
 
-function filename = fullfile (varargin)
+function filename = tempname ()
 
-  if (nargin > 0)
-    filename = varargin{1};
-    if (strcmp (filename(end), "/"))
-      filename(end) = "";
-    endif
-    for i = 2:nargin
-      tmp = varargin{i};
-      if (strcmp (tmp(1), "/"))
-	tmp(1) = "";
-      endif
-      if (i < nargin && strcmp (tmp(end), "/"))
-	tmp(end) = "";
-      endif
-      filename = strcat (filename, filesep, tmp);
-    endfor
-  else
-    usage ("fullfile (dir1, dir2, ..., file)");
-  endif
+  filename = tmpnam ();
 
 endfunction

@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
+#include "help.h"
 #include "defun-dld.h"
 
 DEFUN_DLD ("lpsolve", Flpsolve, Slpsolve, 11, 3,

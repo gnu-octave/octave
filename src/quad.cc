@@ -36,6 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "pager.h"
+#include "help.h"
 #include "defun-dld.h"
 
 // Global pointer for user defined function required by quadrature functions.

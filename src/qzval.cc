@@ -38,6 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "help.h"
 #include "defun-dld.h"
 
 extern "C"

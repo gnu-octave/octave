@@ -26,6 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include "tree-const.h"
+#include "help.h"
 #include "defun-dld.h"
 
 static void

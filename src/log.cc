@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
+#include "help.h"
 #include "defun-dld.h"
 
 // XXX FIXME XXX -- the next two functions should really be just one...

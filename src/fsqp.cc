@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
+#include "help.h"
 #include "defun-dld.h"
 
 // Global pointers for user defined functions required by fsqp.

@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "pager.h"
 #include "utils.h"
+#include "help.h"
 #include "defun-dld.h"
 
 // Global pointers for user defined functions required by npsol.

@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f77-uscore.h"
 #include "error.h"
 #include "utils.h"
+#include "help.h"
 #include "defun-dld.h"
 
 // Possible distributions of random numbers.

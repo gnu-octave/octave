@@ -34,6 +34,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
+#include "help.h"
 #include "defun-dld.h"
 
 DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,

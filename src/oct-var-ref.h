@@ -63,7 +63,11 @@ public:
 
   ~octave_variable_reference (void) { }
 
+  bool is_defined (void) { return val->is_defined (); }
+
   bool is_undefined (void) { return val->is_undefined (); }
+
+  bool is_map (void) { return val->is_map (); }
 
   void define (const octave_value& v) { *val = v; }
 

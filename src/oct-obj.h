@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "Array.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "ov.h"
@@ -96,6 +97,12 @@ public:
   octave_value_list (const octave_value_list& obj)
     : data (obj.data) { }
 
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
+
   octave_value_list& operator = (const octave_value_list& obj)
     {
       if (this != &obj)
@@ -135,6 +142,8 @@ public:
   string_vector name_tags (void) const { return names; }
 
 private:
+
+  static octave_allocator allocator;
 
   Array<octave_value> data;
 

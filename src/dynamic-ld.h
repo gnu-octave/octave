@@ -36,11 +36,11 @@ protected:
 
 public:
 
-  typedef octave_builtin * (*builtin_fcn) (void);
+  typedef bool (*builtin_fcn_installer) (void);
 
   virtual ~octave_dynamic_loader (void) { }
 
-  static int load_fcn_from_dot_oct_file (const string& fcn_name);
+  static bool load_fcn_from_dot_oct_file (const string& fcn_name);
 
 private:
 
@@ -58,7 +58,7 @@ private:
 
 protected:
 
-  virtual builtin_fcn
+  virtual builtin_fcn_installer
   resolve_reference (const string& mangled_name, const string& oct_file);
 
   string mangle_name (const string& name);

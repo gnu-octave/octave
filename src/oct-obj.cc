@@ -31,6 +31,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-obj.h"
 
+octave_allocator
+octave_value_list::allocator (sizeof (octave_value_list));
+
 octave_value_list&
 octave_value_list::prepend (const octave_value& val)
 {

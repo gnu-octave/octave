@@ -48,7 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "load-save.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "symtab.h"
@@ -2226,10 +2225,8 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   string name = sr->name ();
   string help = sr->help ();
   int global = sr->is_linked_to_global ();
-  octave_symbol *tmp = sr->def ();
 
-  // XXX FIXME XXX -- do we really want to do this?
-  octave_value tc = tmp->eval ();
+  octave_value tc = sr->def ();
 
   if (tc.is_undefined ())
     return;

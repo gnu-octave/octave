@@ -44,7 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
-#include "oct-usr-fcn.h"
+#include "ov-usr-fcn.h"
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
@@ -55,7 +55,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-indir.h"
 #include "pt-mat.h"
 #include "pt-misc.h"
-#include "pt-mvr.h"
 #include "pt-plot.h"
 #include "pt-pr-code.h"
 #include "symtab.h"
@@ -101,152 +100,158 @@ string help_buf;
 // the file.
 
 // Generic error messages.
-static void yyerror (const char *s);
+static void
+yyerror (const char *s);
 
 // Error mesages for mismatched end tokens.
-static void end_error
-	(const char *type, token::end_tok_type ettype, int l, int c);
+static void
+end_error (const char *type, token::end_tok_type ettype, int l, int c);
 
 // Check to see that end tokens are properly matched.
-static bool end_token_ok (token *tok, token::end_tok_type expected);
-
-// Try to figure out early if an expression should become an
-// assignment to the built-in variable ans.
-static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
+static bool
+end_token_ok (token *tok, token::end_tok_type expected);
 
 // Maybe print a warning if an assignment expression is used as the
 // test in a logical expression.
-static void maybe_warn_assign_as_truth_value (tree_expression *expr);
+static void
+maybe_warn_assign_as_truth_value (tree_expression *expr);
 
 // Maybe print a warning about switch labels that aren't constants.
-static void maybe_warn_variable_switch_label (tree_expression *expr);
+static void
+maybe_warn_variable_switch_label (tree_expression *expr);
 
 // Create a plot command.
-static tree_plot_command *make_plot_command
-	 (token *tok, plot_limits *range, subplot_list *list);
+static tree_plot_command *
+make_plot_command (token *tok, plot_limits *range, subplot_list *list);
 
 // Finish building a range.
-static tree_expression *finish_colon_expression (tree_colon_expression *e);
+static tree_expression *
+finish_colon_expression (tree_colon_expression *e);
 
 // Build a constant.
-static tree_constant *make_constant (int op, token *tok_val);
+static tree_constant *
+make_constant (int op, token *tok_val);
 
 // Build a binary expression.
-static tree_expression *make_binary_op
-	 (int op, tree_expression *op1,	token *tok_val, tree_expression *op2);
+static tree_expression *
+make_binary_op (int op, tree_expression *op1, token *tok_val,
+		tree_expression *op2);
 
 // Build a boolean expression.
-static tree_expression *make_boolean_op
-	 (int op, tree_expression *op1,	token *tok_val, tree_expression *op2);
+static tree_expression *
+make_boolean_op (int op, tree_expression *op1, token *tok_val,
+		 tree_expression *op2);
 
 // Build a prefix expression.
-static tree_expression *make_prefix_op
-	 (int op, tree_expression *op1, token *tok_val);
+static tree_expression *
+make_prefix_op (int op, tree_expression *op1, token *tok_val);
 
 // Build a postfix expression.
-static tree_expression *make_postfix_op
-	 (int op, tree_expression *op1, token *tok_val);
+static tree_expression *
+make_postfix_op (int op, tree_expression *op1, token *tok_val);
 
 // Build an unwind-protect command.
-static tree_command *make_unwind_command
-	 (token *unwind_tok, tree_statement_list *body,
-	  tree_statement_list *cleanup, token *end_tok);
+static tree_command *
+make_unwind_command (token *unwind_tok, tree_statement_list *body,
+		     tree_statement_list *cleanup, token *end_tok);
 
 // Build a try-catch command.
-static tree_command *make_try_command
-	 (token *try_tok, tree_statement_list *body,
-	  tree_statement_list *cleanup, token *end_tok);
+static tree_command *
+make_try_command (token *try_tok, tree_statement_list *body,
+		  tree_statement_list *cleanup, token *end_tok);
 
 // Build a while command.
-static tree_command *make_while_command
-	 (token *while_tok, tree_expression *expr,
-	  tree_statement_list *body, token *end_tok);
+static tree_command *
+make_while_command (token *while_tok, tree_expression *expr,
+		    tree_statement_list *body, token *end_tok);
 
 // Build a for command.
-static tree_command *make_for_command
-	 (token *for_tok, tree_index_expression *var,
-	  tree_expression *expr, tree_statement_list *body,
-	  token *end_tok);
-
-// Build a for command a different way.
-static tree_command *make_for_command
-	 (token *for_tok, tree_matrix_row *mr, tree_expression *expr,
-	  tree_statement_list *body, token *end_tok);
+static tree_command *
+make_for_command (token *for_tok, tree_argument_list *lhs,
+		  tree_expression *expr, tree_statement_list *body,
+		  token *end_tok);
 
 // Build a break command.
-static tree_command *make_break_command (token *break_tok);
+static tree_command *
+make_break_command (token *break_tok);
 
 // Build a continue command.
-static tree_command *make_continue_command (token *continue_tok);
+static tree_command *
+make_continue_command (token *continue_tok);
 
 // Build a return command.
-static tree_command *make_return_command (token *return_tok);
+static tree_command *
+make_return_command (token *return_tok);
 
 // Start an if command.
-static tree_if_command_list *start_if_command
-	 (tree_expression *expr, tree_statement_list *list);
+static tree_if_command_list *
+start_if_command (tree_expression *expr, tree_statement_list *list);
 
 // Finish an if command.
-static tree_if_command *finish_if_command
-	 (token *if_tok, tree_if_command_list *list, token *end_tok);
+static tree_if_command *
+finish_if_command (token *if_tok, tree_if_command_list *list, token *end_tok);
 
 // Build an elseif clause.
-static tree_if_clause *make_elseif_clause
-	 (tree_expression *expr, tree_statement_list *list);
+static tree_if_clause *
+make_elseif_clause (tree_expression *expr, tree_statement_list *list);
 
 // Finish a switch command.
-static tree_switch_command *finish_switch_command
-	 (token *switch_tok, tree_expression *expr,
-	  tree_switch_case_list *list, token *end_tok);
+static tree_switch_command *
+finish_switch_command (token *switch_tok, tree_expression *expr,
+		       tree_switch_case_list *list, token *end_tok);
 
 // Build a switch case.
-static tree_switch_case *make_switch_case
-	 (tree_expression *expr, tree_statement_list *list);
+static tree_switch_case *
+make_switch_case (tree_expression *expr, tree_statement_list *list);
 
 // Build an assignment to a variable.
-static tree_expression *make_assign_op
-	 (int op, tree_index_expression *var, token *eq_tok,
-	  tree_expression *expr);
-
-// Make an expression that handles assignment of multiple values.
-static tree_expression *make_multi_val_ret
-	 (tree_matrix_row *mr, tree_expression *rhs, token *eq_tok);
+static tree_expression *
+make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
+		tree_expression *rhs);
 
 // Begin defining a function.
-static octave_user_function *start_function
-	 (tree_parameter_list *param_list, tree_statement_list *body);
+static octave_user_function *
+start_function (tree_parameter_list *param_list, tree_statement_list *body);
 
 // Do most of the work for defining a function.
-static octave_user_function *frob_function
-	 (tree_identifier *id, octave_user_function *fcn);
+static octave_user_function *
+frob_function (tree_identifier *id, octave_user_function *fcn);
 
 // Finish defining a function.
-static octave_user_function *finish_function
-	(tree_identifier *id, octave_user_function *fcn);
+static octave_user_function *
+finish_function (tree_identifier *id, octave_user_function *fcn);
 
 // Finish defining a function a different way.
-static octave_user_function *finish_function
-	 (tree_parameter_list *ret_list, octave_user_function *fcn);
+static octave_user_function *
+finish_function (tree_parameter_list *ret_list, octave_user_function *fcn);
 
 // Reset state after parsing function.
-static void recover_from_parsing_function (void);
+static void
+recover_from_parsing_function (void);
 
 // Make an index expression.
-static tree_index_expression *make_index_expression
-	 (tree_indirect_ref *indir, tree_argument_list *args);
+static tree_index_expression *
+make_index_expression (tree_expression *expr, tree_argument_list *args);
+
+// Make an indirect reference expression.
+static tree_indirect_ref *
+make_indirect_ref (tree_expression *expr, const string&);
 
 // Make a declaration command.
-static tree_decl_command *make_decl_command
-	(int tok, token *tok_val, tree_decl_init_list *lst);
+static tree_decl_command *
+make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 
 // Finish building a matrix list.
-static tree_expression *finish_matrix (tree_matrix *m);
+static tree_expression *
+finish_matrix (tree_matrix *m);
 
 // Maybe print a warning.  Duh.
-static void maybe_warn_missing_semi (tree_statement_list *);
+static void
+maybe_warn_missing_semi (tree_statement_list *);
 
 // Set the print flag for a statement based on the separator type.
-static void set_stmt_print_flag (tree_statement_list *, char, bool);
+static void
+set_stmt_print_flag (tree_statement_list *, char, bool);
 
 #define ABORT_PARSE \
   do \
@@ -273,11 +278,9 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
   char sep_type;
   tree *tree_type;
   tree_matrix *tree_matrix_type;
-  tree_matrix_row *tree_matrix_row_type;
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
   tree_identifier *tree_identifier_type;
-  tree_indirect_ref *tree_indirect_ref_type;
   tree_index_expression *tree_index_expression_type;
   tree_colon_expression *tree_colon_expression_type;
   tree_argument_list *tree_argument_list_type;
@@ -315,6 +318,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> QUOTE TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok_val> NUM IMAG_NUM
+%token <tok_val> STRUCT_ELT
 %token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> PLOT
@@ -326,14 +330,10 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL STATIC
-%token <tok_val> TEXT_ID
 
 // Other tokens.
-%token LEXICAL_ERROR
-%token FCN SCREW_TWO
-%token ELLIPSIS
-%token ALL_VA_ARGS
-%token END_OF_INPUT
+%token END_OF_INPUT LEXICAL_ERROR
+%token FCN ELLIPSIS ALL_VA_ARGS
 %token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
 // Nonterminals we construct.
@@ -341,18 +341,18 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_type> input
 %type <tree_constant_type> constant magic_colon
 %type <tree_matrix_type> rows rows1
-%type <tree_matrix_row_type> matrix_row matrix_row1
-%type <tree_expression_type> expression simple_expr simple_expr1
-%type <tree_expression_type> ans_expression title matrix
+%type <tree_expression_type> title matrix
+%type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
+%type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier
-%type <tree_indirect_ref_type> indirect_ref indirect_ref1
 %type <octave_user_function_type> function1 function2 function3
-%type <tree_index_expression_type> variable word_list_cmd
-%type <tree_colon_expression_type> colon_expr
-%type <tree_argument_list_type> arg_list word_list
+%type <tree_index_expression_type> word_list_cmd
+%type <tree_colon_expression_type> colon_expr1
+%type <tree_argument_list_type> arg_list word_list assign_lhs matrix_row
 %type <tree_parameter_list_type> param_list param_list1
 %type <tree_parameter_list_type> return_list return_list1
-%type <tree_command_type> command function
+%type <tree_command_type> command select_command loop_command
+%type <tree_command_type> jump_command except_command function
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -386,13 +386,16 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %left QUOTE TRANSPOSE
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
 %right POW EPOW
+%left '(' '.'
 
 // Where to start.
 %start input
 
-// Grammar rules.
-
 %%
+
+// ==============================
+// Statements and statement lists
+// ==============================
 
 input		: input1
 		  {
@@ -420,11 +423,6 @@ input1		: '\n'
 		  { $$ = $1; }
 		| simple_list END_OF_INPUT
 		  { $$ = $1; }
-		;
-
-parse_error	: LEXICAL_ERROR
-		  { yyerror ("parse error"); }
-		| error
 		;
 
 simple_list	: simple_list1 opt_sep_no_nl
@@ -470,9 +468,9 @@ list1		: statement
 		  }
 		;
 
-statement	: command
+statement	: expression
 		  { $$ = new tree_statement ($1); }
-		| ans_expression
+		| command
 		  { $$ = new tree_statement ($1); }
 		| PLOT CLEAR
 		  {
@@ -481,6 +479,637 @@ statement	: command
 		    $$ = new tree_statement (id);
 		  }
 		;
+
+// ===========
+// Expressions
+// ===========
+
+identifier	: NAME
+		  {
+		    $$ = new tree_identifier
+		      ($1->sym_rec (), $1->line (), $1->column ());
+		  }
+		;
+
+constant	: NUM
+		  { $$ = make_constant (NUM, $1); }
+		| IMAG_NUM
+		  { $$ = make_constant (IMAG_NUM, $1); }
+		| TEXT
+		  { $$ = make_constant (TEXT, $1); }
+		;
+
+matrix		: '[' ']'
+		  { $$ = new tree_constant (octave_value (Matrix ())); }
+		| '[' ';' ']'
+		  { $$ = new tree_constant (octave_value (Matrix ())); }
+		| '[' rows ']'
+		  { $$ = finish_matrix ($2); }
+		;
+
+rows		: rows1
+		  { $$ = $1; }
+		| rows1 ';'	// Ignore trailing semicolon.
+		  { $$ = $1; }
+		;
+
+rows1		: matrix_row
+		  { $$ = new tree_matrix ($1); }
+		| rows1 ';' matrix_row
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		;
+
+matrix_row	: arg_list
+		  { $$ = $1; }
+		| arg_list ','	// Ignore trailing comma.
+		  { $$ = $1; }
+		;
+
+primary_expr	: identifier
+		  { $$ = $1; }
+		| constant
+		  { $$ = $1; }
+		| matrix
+		  { $$ = $1; }
+		| '(' expression ')'
+		  { $$ = $2->mark_in_parens (); }
+		;
+
+magic_colon	: ':'
+		  {
+		    octave_value tmp (octave_value::magic_colon_t);
+		    $$ = new tree_constant (tmp);
+		  }
+		;
+
+arg_list	: expression
+		  { $$ = new tree_argument_list ($1); }
+		| magic_colon
+		  { $$ = new tree_argument_list ($1); }
+		| ALL_VA_ARGS
+		  {
+		    octave_value tmp (octave_value::all_va_args_t);
+		    tree_constant *all_va_args = new tree_constant (tmp);
+		    $$ = new tree_argument_list (all_va_args);
+		  }
+		| arg_list ',' magic_colon
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		| arg_list ',' expression
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		| arg_list ',' ALL_VA_ARGS
+		  {
+		    octave_value tmp (octave_value::all_va_args_t);
+		    tree_constant *all_va_args = new tree_constant (tmp);
+		    $1->append (all_va_args);
+		    $$ = $1;
+		  }
+		;
+
+parsing_indir	: // empty
+		  { lexer_flags.looking_at_indirect_ref = true; }
+		;
+
+postfix_expr	: primary_expr
+		  { $$ = $1; }
+		| postfix_expr '(' ')'
+		  { $$ = make_index_expression ($1, 0); }
+		| postfix_expr '(' arg_list ')'
+		  { $$ = make_index_expression ($1, $3); }
+		| postfix_expr PLUS_PLUS
+		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
+		| postfix_expr MINUS_MINUS
+		  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
+		| postfix_expr QUOTE
+		  { $$ = make_postfix_op (QUOTE, $1, $2); }
+		| postfix_expr TRANSPOSE
+		  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
+		| postfix_expr '.' parsing_indir STRUCT_ELT
+		  { $$ = make_indirect_ref ($1, $4->text ()); }
+		;
+
+prefix_expr	: postfix_expr
+		  { $$ = $1; }
+		| PLUS_PLUS prefix_expr %prec UNARY
+		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
+		| MINUS_MINUS prefix_expr %prec UNARY
+		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
+		| EXPR_NOT prefix_expr %prec UNARY
+		  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
+		| '+' prefix_expr %prec UNARY
+		  { $$ = $2; }
+		| '-' prefix_expr %prec UNARY
+		  { $$ = make_prefix_op ('-', $2, $1); }
+		;
+
+binary_expr	: prefix_expr
+		  { $$ = $1; }
+		| binary_expr POW binary_expr
+		  { $$ = make_binary_op (POW, $1, $2, $3); }
+		| binary_expr EPOW binary_expr
+		  { $$ = make_binary_op (EPOW, $1, $2, $3); }
+		| binary_expr '+' binary_expr
+		  { $$ = make_binary_op ('+', $1, $2, $3); }
+		| binary_expr '-' binary_expr
+		  { $$ = make_binary_op ('-', $1, $2, $3); }
+		| binary_expr '*' binary_expr
+		  { $$ = make_binary_op ('*', $1, $2, $3); }
+		| binary_expr '/' binary_expr
+		  { $$ = make_binary_op ('/', $1, $2, $3); }
+		| binary_expr EPLUS binary_expr
+		  { $$ = make_binary_op ('+', $1, $2, $3); }
+		| binary_expr EMINUS binary_expr
+		  { $$ = make_binary_op ('-', $1, $2, $3); }
+		| binary_expr EMUL binary_expr
+		  { $$ = make_binary_op (EMUL, $1, $2, $3); }
+		| binary_expr EDIV binary_expr
+		  { $$ = make_binary_op (EDIV, $1, $2, $3); }
+		| binary_expr LEFTDIV binary_expr
+		  { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
+		| binary_expr ELEFTDIV binary_expr
+		  { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
+		;
+
+colon_expr	: colon_expr1
+		  { $$ = finish_colon_expression ($1); }
+		;
+
+colon_expr1	: binary_expr
+		  { $$ = new tree_colon_expression ($1); }
+		| colon_expr1 ':' binary_expr
+		  {
+		    if (! ($$ = $1->append ($3)))
+		      ABORT_PARSE;
+		  }
+		;
+
+simple_expr	: colon_expr
+		  { $$ = $1; }
+		| simple_expr LSHIFT simple_expr
+		  { $$ = make_binary_op (LSHIFT, $1, $2, $3); }
+		| simple_expr RSHIFT simple_expr
+		  { $$ = make_binary_op (RSHIFT, $1, $2, $3); }
+		| simple_expr EXPR_LT simple_expr
+		  { $$ = make_binary_op (EXPR_LT, $1, $2, $3); }
+		| simple_expr EXPR_LE simple_expr
+		  { $$ = make_binary_op (EXPR_LE, $1, $2, $3); }
+		| simple_expr EXPR_EQ simple_expr
+		  { $$ = make_binary_op (EXPR_EQ, $1, $2, $3); }
+		| simple_expr EXPR_GE simple_expr
+		  { $$ = make_binary_op (EXPR_GE, $1, $2, $3); }
+		| simple_expr EXPR_GT simple_expr
+		  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
+		| simple_expr EXPR_NE simple_expr
+		  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
+		| simple_expr EXPR_AND simple_expr
+		  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
+		| simple_expr EXPR_OR simple_expr
+		  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
+		| simple_expr EXPR_AND_AND simple_expr
+		  { $$ = make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+		| simple_expr EXPR_OR_OR simple_expr
+		  { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
+		;
+
+// Arrange for the lexer to return CLOSE_BRACE for `]' by looking ahead
+// one token for an assignment op.
+
+assign_lhs	: simple_expr
+		  { $$ = new tree_argument_list ($1); }
+		| '[' arg_list CLOSE_BRACE
+		  { $$ = $2; }
+		;
+
+assign_expr	: assign_lhs '=' expression
+		  { $$ = make_assign_op ('=', $1, $2, $3); }
+		| assign_lhs ADD_EQ expression
+		  { $$ = make_assign_op (ADD_EQ, $1, $2, $3); }
+		| assign_lhs SUB_EQ expression
+		  { $$ = make_assign_op (SUB_EQ, $1, $2, $3); }
+		| assign_lhs MUL_EQ expression
+		  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
+		| assign_lhs DIV_EQ expression
+		  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
+		| assign_lhs LSHIFT_EQ expression
+		  { $$ = make_assign_op (LSHIFT_EQ, $1, $2, $3); }
+		| assign_lhs RSHIFT_EQ expression
+		  { $$ = make_assign_op (RSHIFT_EQ, $1, $2, $3); }
+		| assign_lhs EMUL_EQ expression
+		  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
+		| assign_lhs EDIV_EQ expression
+		  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
+		| assign_lhs AND_EQ expression
+		  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
+		| assign_lhs OR_EQ expression
+		  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
+		;
+
+word_list_cmd	: identifier word_list
+		  { $$ = make_index_expression ($1, $2); }
+		;
+
+word_list	: TEXT
+		  {
+		    tree_constant *tmp = make_constant (TEXT, $1);
+		    $$ = new tree_argument_list (tmp);
+		  }
+		| word_list TEXT
+		  {
+		    tree_constant *tmp = make_constant (TEXT, $2);
+		    $1->append (tmp);
+		    $$ = $1;
+		  }
+		;
+
+expression	: simple_expr
+		  { $$ = $1; }
+		| word_list_cmd
+		  { $$ = $1; }
+		| assign_expr
+		  { $$ = $1; }
+		;
+
+// ================================================
+// Commands, declarations, and function definitions
+// ================================================
+
+command		: declaration
+		  { $$ = $1; }
+		| select_command
+		  { $$ = $1; }
+		| loop_command
+		  { $$ = $1; }
+		| jump_command
+		  { $$ = $1; }
+		| except_command
+		  { $$ = $1; }
+		| function
+		  { $$ = $1; }
+		| plot_command
+		  { $$ = $1; }
+		;
+
+// =====================
+// Declaration statemnts
+// =====================
+
+declaration	: GLOBAL decl1
+		  { $$ = make_decl_command (GLOBAL, $1, $2); }
+		| STATIC decl1
+		  { $$ = make_decl_command (STATIC, $1, $2); }
+		;
+
+decl1		: decl2
+		  { $$ = new tree_decl_init_list ($1); }
+		| decl1 decl2
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
+		;
+
+decl2		: identifier
+		  { $$ = new tree_decl_elt ($1); }
+		| identifier '=' expression
+		  { $$ = new tree_decl_elt ($1, $3); }
+		;
+
+// ====================
+// Selection statements
+// ====================
+
+select_command	: if_command
+		  { $$ = $1; }
+		| switch_command
+		  { $$ = $1; }
+		;
+
+// ============
+// If statement
+// ============
+
+if_command	: IF if_cmd_list END
+		  {
+		    if (! ($$ = finish_if_command ($1, $2, $3)))
+		      ABORT_PARSE;
+		  }
+		;
+
+if_cmd_list	: if_cmd_list1
+		  { $$ = $1; }
+		| if_cmd_list1 else_clause
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
+		;
+
+if_cmd_list1	: expression opt_sep opt_list
+		  { $$ = start_if_command ($1, $3); }
+		| if_cmd_list1 elseif_clause
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
+		;
+
+elseif_clause	: ELSEIF opt_sep expression opt_sep opt_list
+		  { $$ = make_elseif_clause ($3, $5); }
+		;
+
+else_clause	: ELSE opt_sep opt_list
+		  { $$ = new tree_if_clause ($3); }
+		;
+
+// ================
+// Switch statement
+// ================
+
+switch_command	: SWITCH expression opt_sep case_list END
+		  {
+		    if (! ($$ = finish_switch_command ($1, $2, $4, $5)))
+		      ABORT_PARSE;
+		  }
+		;
+
+case_list	: case_list1
+		  { $$ = $1; }
+		| case_list1 default_case
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }		
+		;
+
+case_list1	: switch_case
+		  { $$ = new tree_switch_case_list ($1); }
+		| case_list1 switch_case
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
+		;
+
+switch_case	: CASE opt_sep expression opt_sep list
+		  { $$ = make_switch_case ($3, $5); }
+		;
+
+default_case	: OTHERWISE opt_sep opt_list
+		  { $$ = new tree_switch_case ($3); }
+		;
+
+// =======
+// Looping
+// =======
+
+loop_command	: WHILE expression opt_sep opt_list END
+		  {
+		    if (! ($$ = make_while_command ($1, $2, $4, $5)))
+		      ABORT_PARSE;
+		  }
+		| FOR assign_lhs '=' expression opt_sep opt_list END
+		  {
+		    if (! ($$ = make_for_command ($1, $2, $4, $6, $7)))
+		      ABORT_PARSE;
+		  }
+		;
+
+// =======
+// Jumping
+// =======
+
+jump_command	: BREAK
+		  {
+		    if (! ($$ = make_break_command ($1)))
+		      ABORT_PARSE;
+		  }
+		| CONTINUE
+		  {
+		    if (! ($$ = make_continue_command ($1)))
+		      ABORT_PARSE;
+		  }
+		| FUNC_RET
+		  {
+		    if (! ($$ = make_return_command ($1)))
+		      ABORT_PARSE;
+		  }
+		;
+
+// ==========
+// Exceptions
+// ==========
+
+except_command	: UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
+		  {
+		    if (! ($$ = make_unwind_command ($1, $3, $6, $7)))
+		      ABORT_PARSE;
+		  }
+		| TRY opt_sep opt_list CATCH opt_sep opt_list END
+		  {
+		    if (! ($$ = make_try_command ($1, $3, $6, $7)))
+		      ABORT_PARSE;
+		  }
+		;
+
+// ===========================================
+// Some `subroutines' for function definitions
+// ===========================================
+
+global_symtab	: // empty
+		  { curr_sym_tab = global_sym_tab; }
+		;
+
+local_symtab	: // empty
+		  { curr_sym_tab = tmp_local_sym_tab; }
+		;
+
+in_return_list	: // empty
+		  { lexer_flags.looking_at_return_list = true; }
+		;
+
+parsed_fcn_name	: // empty
+		  { lexer_flags.parsed_function_name = true; }
+		;
+
+// ===========================
+// List of function parameters
+// ===========================
+
+param_list_beg	: '('
+		  { lexer_flags.looking_at_parameter_list = true; }
+		;
+
+param_list_end	: ')'
+		  { lexer_flags.looking_at_parameter_list = false; }
+		;
+
+param_list	: param_list_beg param_list_end
+		  {
+		    lexer_flags.quote_is_transpose = false;
+		    $$ = 0;
+		  }
+		| param_list_beg ELLIPSIS param_list_end
+		  {
+		    lexer_flags.quote_is_transpose = false;
+		    tree_parameter_list *tmp = new tree_parameter_list ();
+		    tmp->mark_varargs_only ();
+		    $$ = tmp;
+		  }
+		| param_list1 param_list_end
+		  {
+		    lexer_flags.quote_is_transpose = false;
+		    $1->mark_as_formal_parameters ();
+		    $$ = $1;
+		  }
+		| param_list1 ',' ELLIPSIS param_list_end
+		  {
+		    lexer_flags.quote_is_transpose = false;
+		    $1->mark_as_formal_parameters ();
+		    $1->mark_varargs ();
+		    $$ = $1;
+		  }
+		;
+
+param_list1	: param_list_beg identifier
+		  { $$ = new tree_parameter_list ($2); }
+		| param_list1 ',' identifier
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		| param_list_beg error
+		  {
+		    yyerror ("invalid parameter list");
+		    $$ = 0;
+		    ABORT_PARSE;
+		  }
+		| param_list1 ',' error
+		  {
+		    yyerror ("invalid parameter list");
+		    $$ = 0;
+		    ABORT_PARSE;
+		  }
+		;
+
+// ===================================
+// List of function return value names
+// ===================================
+
+return_list_beg	: '[' local_symtab in_return_list
+		;
+
+return_list	: return_list_beg return_list_end
+		  {
+		    lexer_flags.looking_at_return_list = false;
+		    $$ = new tree_parameter_list ();
+		  }
+		| return_list_beg ELLIPSIS return_list_end
+		  {
+		    lexer_flags.looking_at_return_list = false;
+		    tree_parameter_list *tmp = new tree_parameter_list ();
+		    tmp->mark_varargs_only ();
+		    $$ = tmp;
+		  }
+		| return_list_beg return_list1 return_list_end
+		  {
+		    lexer_flags.looking_at_return_list = false;
+		    $$ = $2;
+		  }
+		| return_list_beg return_list1 ',' ELLIPSIS return_list_end
+		  {
+		    lexer_flags.looking_at_return_list = false;
+		    $2->mark_varargs ();
+		    $$ = $2;
+		  }
+		;
+
+return_list1	: identifier
+		  { $$ = new tree_parameter_list ($1); }
+		| return_list1 ',' identifier
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		;
+
+return_list_end	: global_symtab ']'
+		;
+
+// ===================
+// Function definition
+// ===================
+
+function_beg	: FCN global_symtab
+		;
+
+function	: function_beg function2
+		  {
+		    recover_from_parsing_function ();
+		    $$ = 0;
+		  }
+		| function_beg identifier function1
+		  {
+		    finish_function ($2, $3);
+		    recover_from_parsing_function ();
+		    $$ = 0;
+		  }
+		| function_beg return_list function1
+		  {
+		    finish_function ($2, $3);
+		    recover_from_parsing_function ();
+		    $$ = 0;
+		  }
+		;
+
+function1	: global_symtab '=' function2
+		  { $$ = $3; }
+		;
+
+function2	: identifier local_symtab parsed_fcn_name function3
+		  {
+		    if (! ($$ = frob_function ($1, $4)))
+		      ABORT_PARSE;
+		  }
+		;
+
+function3	: param_list function4
+		  { $$ = start_function ($1, $2); }
+		| function4
+		  { $$ = start_function (0, $1); }
+		;
+
+function4	: opt_sep opt_list function_end
+		  { $$ = $2; }
+		;
+
+function_end	: END
+		  {
+		    if (end_token_ok ($1, token::function_end))
+		      {
+			if (reading_fcn_file)
+			  check_for_garbage_after_fcn_def ();
+		      }
+		    else
+		      ABORT_PARSE;
+		  }
+		| END_OF_INPUT
+		  {
+		    if (! (reading_fcn_file || reading_script_file))
+		      YYABORT;
+		  }
+		;
+
+// ========
+// Plotting
+// ========
 
 plot_command	: PLOT plot_command1
 		  {
@@ -596,604 +1225,13 @@ style		: WITH STYLE
 		  { $$ = new subplot_style ($2->text (), $3, $4); }
 		;
 
-ans_expression	: expression
-		  { $$ = maybe_convert_to_ans_assign ($1); }
-		;
+// =============
+// Miscellaneous
+// =============
 
-decl1		: decl2
-		  { $$ = new tree_decl_init_list ($1); }
-		| decl1 decl2
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
-
-decl2		: identifier
-		  { $$ = new tree_decl_elt ($1); }
-		| identifier '=' expression
-		  {
-		    tree_simple_assignment_expression *tmp_ass;
-		    tmp_ass = new tree_simple_assignment_expression
-		      ($1, $3, 0, 0, $2->line (), $2->column ());
-		    $$ = new tree_decl_elt (tmp_ass);
-		  }
-		;
-
-declaration	: GLOBAL decl1
-		  { $$ = make_decl_command (GLOBAL, $1, $2); }
-		| STATIC decl1
-		  { $$ = make_decl_command (STATIC, $1, $2); }
-		;
-
-command		: plot_command
-		  { $$ = $1; }
-		| function
-		  { $$ = $1; }
-		| declaration
-		  { $$ = $1; }
-		| switch_command
-		  { $$ = $1; }
-		| if_command
-		  { $$ = $1; }
-		| UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
-		  {
-		    if (! ($$ = make_unwind_command ($1, $3, $6, $7)))
-		      ABORT_PARSE;
-		  }
-		| TRY opt_sep opt_list CATCH opt_sep opt_list END
-		  {
-		    if (! ($$ = make_try_command ($1, $3, $6, $7)))
-		      ABORT_PARSE;
-		  }
-		| WHILE expression opt_sep opt_list END
-		  {
-		    if (! ($$ = make_while_command ($1, $2, $4, $5)))
-		      ABORT_PARSE;
-		  }
-		| FOR variable '=' expression opt_sep opt_list END
-		  {
-		    if (! ($$ = make_for_command ($1, $2, $4, $6, $7)))
-		      ABORT_PARSE;
-		  }
-		| FOR '[' screwed_again matrix_row SCREW_TWO '='
-		    expression opt_sep opt_list END
-		  {
-		    if (! ($$ = make_for_command ($1, $4, $7, $9, $10)))
-		      ABORT_PARSE;
-		  }
-		| BREAK
-		  {
-		    if (! ($$ = make_break_command ($1)))
-		      ABORT_PARSE;
-		  }
-		| CONTINUE
-		  {
-		    if (! ($$ = make_continue_command ($1)))
-		      ABORT_PARSE;
-		  }
-		| FUNC_RET
-		  {
-		    if (! ($$ = make_return_command ($1)))
-		      ABORT_PARSE;
-		  }
-		;
-
-if_command	: IF if_cmd_list END
-		  {
-		    if (! ($$ = finish_if_command ($1, $2, $3)))
-		      ABORT_PARSE;
-		  }
-		;
-
-if_cmd_list	: if_cmd_list1
-		  { $$ = $1; }
-		| if_cmd_list1 else_clause
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
-
-if_cmd_list1	: expression opt_sep opt_list
-		  { $$ = start_if_command ($1, $3); }
-		| if_cmd_list1 elseif_clause
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
-
-elseif_clause	: ELSEIF opt_sep expression opt_sep opt_list
-		  { $$ = make_elseif_clause ($3, $5); }
-		;
-
-else_clause	: ELSE opt_sep opt_list
-		  { $$ = new tree_if_clause ($3); }
-		;
-
-switch_command	: SWITCH expression opt_sep case_list END
-		  {
-		    if (! ($$ = finish_switch_command ($1, $2, $4, $5)))
-		      ABORT_PARSE;
-		  }
-		;
-
-case_list	: case_list1
-		  { $$ = $1; }
-		| case_list1 default_case
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }		
-		;
-
-case_list1	: switch_case
-		  { $$ = new tree_switch_case_list ($1); }
-		| case_list1 switch_case
-		  {
-		    $1->append ($2);
-		    $$ = $1;
-		  }
-		;
-
-switch_case	: CASE opt_sep expression opt_sep list
-		  { $$ = make_switch_case ($3, $5); }
-		;
-
-default_case	: OTHERWISE opt_sep opt_list
-		  { $$ = new tree_switch_case ($3); }
-		;
-
-screwed_again	: // empty
-		  { lexer_flags.maybe_screwed_again++; }
-		;
-
-expression	: simple_expr
-		  { $$ = $1; }
-		| NUM '=' expression
-		  {
-		    yyerror ("invalid assignment to a number");
-		    $$ = 0;
-		    ABORT_PARSE;
-		  }
-		;
-
-// Now that we do some simple constant folding, we have to make sure
-// that we get something valid back make_binary_op and make_unary_op.
-
-simple_expr	: simple_expr1
-		  {
-		    if (! ($$ = $1))
-		      ABORT_PARSE;
-		  }
-		;
-
-constant	: NUM
-		  { $$ = make_constant (NUM, $1); }
-		| IMAG_NUM
-		  { $$ = make_constant (IMAG_NUM, $1); }
-		| TEXT
-		  { $$ = make_constant (TEXT, $1); }
-		;
-
-simple_expr1	: constant
-		  { $$ = $1; }
-		| '(' simple_expr ')'
-		  { $$ = $2->mark_in_parens (); }
-		| word_list_cmd
-		  { $$ = $1; }
-		| variable
-		  { $$ = $1; }
-		| colon_expr
-		  { $$ = finish_colon_expression ($1); }
-		| matrix
-		  { $$ = $1; }
-		| '[' ']'
-		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| '[' ';' ']'
-		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| PLUS_PLUS simple_expr %prec UNARY
-		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
-		| MINUS_MINUS simple_expr %prec UNARY
-		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
-		| EXPR_NOT simple_expr %prec UNARY
-		  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
-		| '+' simple_expr %prec UNARY
-		  { $$ = $2; }
-		| '-' simple_expr %prec UNARY
-		  { $$ = make_prefix_op ('-', $2, $1); }
-		| variable '=' simple_expr
-		  { $$ = make_assign_op ('=', $1, $2, $3); }
-		| variable ADD_EQ simple_expr
-		  { $$ = make_assign_op (ADD_EQ, $1, $2, $3); }
-		| variable SUB_EQ simple_expr
-		  { $$ = make_assign_op (SUB_EQ, $1, $2, $3); }
-		| variable MUL_EQ simple_expr
-		  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
-		| variable DIV_EQ simple_expr
-		  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
-		| variable LSHIFT_EQ simple_expr
-		  { $$ = make_assign_op (LSHIFT_EQ, $1, $2, $3); }
-		| variable RSHIFT_EQ simple_expr
-		  { $$ = make_assign_op (RSHIFT_EQ, $1, $2, $3); }
-		| variable EMUL_EQ simple_expr
-		  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
-		| variable EDIV_EQ simple_expr
-		  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
-		| variable AND_EQ simple_expr
-		  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
-		| variable OR_EQ simple_expr
-		  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
-		| '[' screwed_again matrix_row SCREW_TWO '=' simple_expr
-		  { $$ = make_multi_val_ret ($3, $6, $5); }
-		| simple_expr PLUS_PLUS
-		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
-		| simple_expr MINUS_MINUS
-		  { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
-		| simple_expr QUOTE
-		  { $$ = make_postfix_op (QUOTE, $1, $2); }
-		| simple_expr TRANSPOSE
-		  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
-		| simple_expr POW simple_expr
-		  { $$ = make_binary_op (POW, $1, $2, $3); }
-		| simple_expr EPOW simple_expr
-		  { $$ = make_binary_op (EPOW, $1, $2, $3); }
-		| simple_expr '+' simple_expr
-		  { $$ = make_binary_op ('+', $1, $2, $3); }
-		| simple_expr '-' simple_expr
-		  { $$ = make_binary_op ('-', $1, $2, $3); }
-		| simple_expr '*' simple_expr
-		  { $$ = make_binary_op ('*', $1, $2, $3); }
-		| simple_expr '/' simple_expr
-		  { $$ = make_binary_op ('/', $1, $2, $3); }
-		| simple_expr EPLUS simple_expr
-		  { $$ = make_binary_op ('+', $1, $2, $3); }
-		| simple_expr EMINUS simple_expr
-		  { $$ = make_binary_op ('-', $1, $2, $3); }
-		| simple_expr EMUL simple_expr
-		  { $$ = make_binary_op (EMUL, $1, $2, $3); }
-		| simple_expr EDIV simple_expr
-		  { $$ = make_binary_op (EDIV, $1, $2, $3); }
-		| simple_expr LEFTDIV simple_expr
-		  { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
-		| simple_expr ELEFTDIV simple_expr
-		  { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
-		| simple_expr LSHIFT simple_expr
-		  { $$ = make_binary_op (LSHIFT, $1, $2, $3); }
-		| simple_expr RSHIFT simple_expr
-		  { $$ = make_binary_op (RSHIFT, $1, $2, $3); }
-		| simple_expr EXPR_LT simple_expr
-		  { $$ = make_binary_op (EXPR_LT, $1, $2, $3); }
-		| simple_expr EXPR_LE simple_expr
-		  { $$ = make_binary_op (EXPR_LE, $1, $2, $3); }
-		| simple_expr EXPR_EQ simple_expr
-		  { $$ = make_binary_op (EXPR_EQ, $1, $2, $3); }
-		| simple_expr EXPR_GE simple_expr
-		  { $$ = make_binary_op (EXPR_GE, $1, $2, $3); }
-		| simple_expr EXPR_GT simple_expr
-		  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
-		| simple_expr EXPR_NE simple_expr
-		  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
-		| simple_expr EXPR_AND simple_expr
-		  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
-		| simple_expr EXPR_OR simple_expr
-		  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
-		| simple_expr EXPR_AND_AND simple_expr
-		  { $$ = make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
-		| simple_expr EXPR_OR_OR simple_expr
-		  { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
-		;
-
-colon_expr	: simple_expr ':' simple_expr
-		  {
-		    $$ = new tree_colon_expression
-		      ($1, $3, $2->line (), $2->column ());
-		  }
-		| colon_expr ':' simple_expr
-		  {
-		    if (! ($$ = $1->chain ($3)))
-		      ABORT_PARSE;
-		  }
-		;
-
-word_list_cmd	: identifier word_list
-		  {
-		    $$ = new tree_index_expression
-		      ($1, $2, $1->line (), $1->column ());
-		  }
-		;
-
-word_list	: TEXT
-		  {
-		    tree_constant *tmp = make_constant (TEXT, $1);
-		    $$ = new tree_argument_list (tmp);
-		  }
-		| word_list TEXT
-		  {
-		    tree_constant *tmp = make_constant (TEXT, $2);
-		    $1->append (tmp);
-		    $$ = $1;
-		  }
-		;
-
-global_symtab	: // empty
-		  { curr_sym_tab = global_sym_tab; }
-		;
-
-local_symtab	: // empty
-		  { curr_sym_tab = tmp_local_sym_tab; }
-		;
-
-in_return_list	: // empty
-		  { lexer_flags.looking_at_return_list = true; }
-		;
-
-parsed_fcn_name	: // empty
-		  { lexer_flags.parsed_function_name = true; }
-
-return_list_beg	: '[' local_symtab in_return_list
-		;
-
-return_list	: return_list_beg return_list_end
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    $$ = new tree_parameter_list ();
-		  }
-		| return_list_beg ELLIPSIS return_list_end
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    tree_parameter_list *tmp = new tree_parameter_list ();
-		    tmp->mark_varargs_only ();
-		    $$ = tmp;
-		  }
-		| return_list_beg return_list1 return_list_end
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    $$ = $2;
-		  }
-		| return_list_beg return_list1 ',' ELLIPSIS return_list_end
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    $2->mark_varargs ();
-		    $$ = $2;
-		  }
-		;
-
-return_list1	: identifier
-		  { $$ = new tree_parameter_list ($1); }
-		| return_list1 ',' identifier
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
-
-return_list_end	: global_symtab ']'
-		;
-
-function_beg	: FCN global_symtab
-		;
-
-function	: function_beg function2
-		  {
-		    recover_from_parsing_function ();
-		    $$ = 0;
-		  }
-		| function_beg identifier function1
-		  {
-		    finish_function ($2, $3);
-		    recover_from_parsing_function ();
-		    $$ = 0;
-		  }
-		| function_beg return_list function1
-		  {
-		    finish_function ($2, $3);
-		    recover_from_parsing_function ();
-		    $$ = 0;
-		  }
-		;
-
-function1	: global_symtab '=' function2
-		  { $$ = $3; }
-		;
-
-function2	: identifier local_symtab parsed_fcn_name function3
-		  {
-		    if (! ($$ = frob_function ($1, $4)))
-		      ABORT_PARSE;
-		  }
-		;
-
-function3	: param_list function4
-		  { $$ = start_function ($1, $2); }
-		| function4
-		  { $$ = start_function (0, $1); }
-		;
-
-function4	: opt_sep opt_list function_end
-		  { $$ = $2; }
-		;
-
-function_end	: END
-		  {
-		    if (end_token_ok ($1, token::function_end))
-		      {
-			if (reading_fcn_file)
-			  check_for_garbage_after_fcn_def ();
-		      }
-		    else
-		      ABORT_PARSE;
-		  }
-		| END_OF_INPUT
-		  {
-		    if (! (reading_fcn_file || reading_script_file))
-		      YYABORT;
-		  }
-		;
-
-indirect_ref	: indirect_ref1
-		  {
-		    lexer_flags.looking_at_indirect_ref = false;
-		    $$ = $1;
-		  }
-
-indirect_ref1	: identifier
-		  {
-		    $$ = new tree_indirect_ref ($1, $1->line (),
-						$1->column ());
-		  }
-		| indirect_ref1 '.'
-		    { lexer_flags.looking_at_indirect_ref = true; } TEXT_ID
-		  { $$ = new tree_indirect_ref ($1, $4->text ()); }
-		;
-
-variable	: indirect_ref
-		  { $$ = make_index_expression ($1, 0); }
-		| indirect_ref '(' ')'
-		  { $$ = make_index_expression ($1, 0); }
-		| indirect_ref '(' arg_list ')'
-		  { $$ = make_index_expression ($1, $3); }
-		| indirect_ref '['
-		  {
-		    yyerror ("use `(\' and `)\' as index operators, not\
- `[\' and `]\'"); 
-		    $$ = 0;
-		    ABORT_PARSE;
-		  }
-		;
-
-param_list_beg	: '('
-		  { lexer_flags.looking_at_parameter_list = true; }
-		;
-
-param_list_end	: ')'
-		  { lexer_flags.looking_at_parameter_list = false; }
-		;
-
-param_list	: param_list_beg param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    $$ = 0;
-		  }
-		| param_list_beg ELLIPSIS param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    tree_parameter_list *tmp = new tree_parameter_list ();
-		    tmp->mark_varargs_only ();
-		    $$ = tmp;
-		  }
-		| param_list1 param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    $1->mark_as_formal_parameters ();
-		    $$ = $1;
-		  }
-		| param_list1 ',' ELLIPSIS param_list_end
-		  {
-		    lexer_flags.quote_is_transpose = false;
-		    $1->mark_as_formal_parameters ();
-		    $1->mark_varargs ();
-		    $$ = $1;
-		  }
-		;
-
-param_list1	: param_list_beg identifier
-		  { $$ = new tree_parameter_list ($2); }
-		| param_list1 ',' identifier
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| param_list_beg error
-		  {
-		    yyerror ("invalid parameter list");
-		    $$ = 0;
-		    ABORT_PARSE;
-		  }
-		| param_list1 ',' error
-		  {
-		    yyerror ("invalid parameter list");
-		    $$ = 0;
-		    ABORT_PARSE;
-		  }
-		;
-
-identifier	: NAME
-		  {
-		    $$ = new tree_identifier
-		      ($1->sym_rec (), $1->line (), $1->column ());
-		  }
-		;
-
-magic_colon	: ':'
-		  {
-		    octave_value tmp (octave_value::magic_colon_t);
-		    $$ = new tree_constant (tmp);
-		  }
-		;
-
-arg_list	: magic_colon
-		  { $$ = new tree_argument_list ($1); }
-		| expression
-		  { $$ = new tree_argument_list ($1); }
-		| ALL_VA_ARGS
-		  {
-		    octave_value tmp (octave_value::all_va_args_t);
-		    tree_constant *all_va_args = new tree_constant (tmp);
-		    $$ = new tree_argument_list (all_va_args);
-		  }
-		| arg_list ',' magic_colon
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| arg_list ',' expression
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| arg_list ',' ALL_VA_ARGS
-		  {
-		    octave_value tmp (octave_value::all_va_args_t);
-		    tree_constant *all_va_args = new tree_constant (tmp);
-		    $1->append (all_va_args);
-		    $$ = $1;
-		  }
-		;
-
-matrix		: '[' screwed_again rows ']'
-		  { $$ = finish_matrix ($3); }
-		;
-
-rows		: rows1
-		  { $$ = $1; }
-		| rows1 ';'	// Ignore trailing semicolon.
-		  { $$ = $1; }
-		;
-
-rows1		: matrix_row
-		  { $$ = new tree_matrix ($1); }
-		| rows1 ';' matrix_row
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
-
-matrix_row	: matrix_row1
-		  { $$ = $1; }
-		| matrix_row1 ','	// Ignore trailing comma.
-		  { $$ = $1; }
-		;
-
-matrix_row1	: expression		// First element on row.
-		  { $$ = new tree_matrix_row ($1); }
-		| matrix_row1 ',' expression
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
+parse_error	: LEXICAL_ERROR
+		  { yyerror ("parse error"); }
+		| error
 		;
 
 sep_no_nl	: ','
@@ -1380,45 +1418,6 @@ end_token_ok (token *tok, token::end_tok_type expected)
   return retval;
 }
 
-// Try to figure out early if an expression should become an
-// assignment to the built-in variable ans.
-//
-// Need to make sure that the expression is not already an identifier
-// that has a name, or an assignment expression.
-//
-// Note that an expression can not be just an identifier now -- it
-// must at least be an index expression (see the definition of the
-// non-terminal variable above).
-
-static tree_expression *
-maybe_convert_to_ans_assign (tree_expression *expr)
-{
-  if (expr->is_index_expression ())
-    {
-      expr->mark_for_possible_ans_assign ();
-      return expr;
-    }
-  else if (expr->is_assignment_expression ()
-	   || expr->is_prefix_expression ())
-    {
-      return expr;
-    }
-  else
-    {
-      // XXX FIXME XXX -- making ans_id static, passing its address to
-      // tree_simple_assignment_expression along with a flag to not
-      // delete it seems to create a memory leak.  Hmm.
-
-      static symbol_record *sr = global_sym_tab->lookup ("ans", true);
-      tree_identifier *ans_id = new tree_identifier (sr);
-
-      int l = expr->line ();
-      int c = expr->column ();
-
-      return new tree_simple_assignment_expression (ans_id, expr, 0, 1, l, c);
-    }
-}
-
 // Maybe print a warning if an assignment expression is used as the
 // test in a logical expression.
 
@@ -1482,7 +1481,7 @@ fold (tree_binary_expression *e)
 
   if (op1->is_constant () && op2->is_constant ())
     {
-      octave_value tmp = e->eval ();
+      octave_value tmp = e->rvalue ();
 
       if (! error_state)
 	{
@@ -1526,38 +1525,53 @@ finish_colon_expression (tree_colon_expression *e)
   tree_expression *limit = e->limit ();
   tree_expression *incr = e->increment ();
 
-  if (base->is_constant () && limit->is_constant ()
-      && (! incr || (incr && incr->is_constant ())))
+  if (base)
     {
-      octave_value tmp = e->eval ();
-
-      if (! error_state)
+      if (limit)
 	{
-	  tree_constant *tc_retval = new tree_constant (tmp);
+	  if (base->is_constant () && limit->is_constant ()
+	      && (! incr || (incr && incr->is_constant ())))
+	    {
+	      octave_value tmp = e->rvalue ();
 
-	  ostrstream buf;
+	      if (! error_state)
+		{
+		  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  tree_print_code tpc (buf);
+		  ostrstream buf;
 
-	  e->accept (tpc);
+		  tree_print_code tpc (buf);
 
-	  buf << ends;
+		  e->accept (tpc);
 
-	  char *s = buf.str ();
+		  buf << ends;
 
-	  tc_retval->stash_original_text (s);
+		  char *s = buf.str ();
 
-	  delete [] s;
+		  tc_retval->stash_original_text (s);
 
-	  delete e;
+		  delete [] s;
 
-	  retval = tc_retval;
+		  delete e;
+
+		  retval = tc_retval;
+		}
+	      else
+		delete e;
+	    }
+	  else
+	    retval = e;
 	}
       else
-	delete e;
+	{
+	  // XXX FIXME XXX -- need to delete this without deleting base too.
+	  // delete e;
+
+	  // XXX FIXME XXX -- need to attempt constant folding here
+	  // too (we need a generic way to do that).
+	  retval = base;
+	}
     }
-  else
-    retval = e;
 
   return retval;
 }
@@ -1877,7 +1891,7 @@ make_while_command (token *while_tok, tree_expression *expr,
 // Build a for command.
 
 static tree_command *
-make_for_command (token *for_tok, tree_index_expression *var,
+make_for_command (token *for_tok, tree_argument_list *lhs,
 		  tree_expression *expr, tree_statement_list *body,
 		  token *end_tok)
 {
@@ -1890,31 +1904,16 @@ make_for_command (token *for_tok, tree_index_expression *var,
       int l = for_tok->line ();
       int c = for_tok->column ();
 
-      retval = new tree_for_command (var, expr, body, l, c);
-    }
+      if (lhs->length () == 1)
+	{
+	  tree_expression *tmp = lhs->remove_front ();
 
-  return retval;
-}
+	  retval = new tree_simple_for_command (tmp, expr, body, l, c);
 
-// Build a for command a different way.
-
-static tree_command *
-make_for_command (token *for_tok, tree_matrix_row *mr,
-		  tree_expression *expr, tree_statement_list *body,
-		  token *end_tok)
-{
-  tree_command *retval = 0;
-
-  if (end_token_ok (end_tok, token::for_end))
-    {
-      lexer_flags.looping--;
-
-      tree_return_list *id_list = mr->to_return_list ();
-
-      int l = for_tok->line ();
-      int c = for_tok->column ();
-
-      retval = new tree_for_command (id_list, expr, body, l, c);
+	  delete lhs;
+	}
+      else
+	retval = new tree_complex_for_command (lhs, expr, body, l, c);
     }
 
   return retval;
@@ -2047,9 +2046,11 @@ make_switch_case (tree_expression *expr, tree_statement_list *list)
 // Build an assignment to a variable.
 
 static tree_expression *
-make_assign_op (int op, tree_index_expression *var, token *eq_tok,
-		tree_expression *expr)
+make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
+		tree_expression *rhs)
 {
+  tree_expression *retval = 0;
+
   octave_value::assign_op t = octave_value::unknown_assign_op;
 
   switch (op)
@@ -2106,59 +2107,16 @@ make_assign_op (int op, tree_index_expression *var, token *eq_tok,
   int l = eq_tok->line ();
   int c = eq_tok->column ();
 
-  return new tree_simple_assignment_expression (var, expr, 0, 0, l, c, t);
-}
-
-// Make an expression that handles assignment of multiple values.
-
-static tree_expression *
-make_multi_val_ret (tree_matrix_row *mr, tree_expression *rhs, token *eq_tok)
-{
-// Convert the matrix list to a list of identifiers.  If that fails,
-// we can abort here, without losing anything -- no other possible
-// syntax is valid if we've seen the equals sign as the next token
-// after the `]'. 
-
-  tree_expression *retval = 0;
-
-  lexer_flags.maybe_screwed_again--;
-
-  tree_return_list *id_list = mr->to_return_list ();
-
-  if (id_list)
+  if (lhs->length () == 1)
     {
-      int list_len = id_list->length ();
+      tree_expression *tmp = lhs->remove_front ();
 
-      if (list_len == 1)
-	{
-	  tree_index_expression *lhs = id_list->remove_front ();
+      retval = new tree_simple_assignment (tmp, rhs, false, l, c, t);
 
-	  int l = eq_tok->line ();
-	  int c = eq_tok->column ();
-
-	  retval = new tree_simple_assignment_expression (lhs, rhs,
-							  0, 0, l, c);
-	}
-      else if (list_len > 1)
-	{
-	  if (rhs->is_multi_val_ret_expression ())
-	    {
-	      tree_multi_val_ret *t = (tree_multi_val_ret *) rhs;
-
-	      int l = eq_tok->line ();
-	      int c = eq_tok->column ();
-
-	      retval = new tree_multi_assignment_expression (id_list, t,
-							     0, l, c);
-	    }
-	  else
-	    yyerror ("RHS must be an expression that returns multiple values");
-	}
-      else
-	panic_impossible ();
+      delete lhs;
     }
   else
-    yyerror ("invalid identifier list for assignment");
+    return new tree_multi_assignment (lhs, rhs, 0, l, c);
 
   return retval;
 }
@@ -2274,21 +2232,33 @@ recover_from_parsing_function (void)
 // Make an index expression.
 
 static tree_index_expression *
-make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
+make_index_expression (tree_expression *expr, tree_argument_list *args)
 {
   tree_index_expression *retval = 0;
 
-  int l = indir->line ();
-  int c = indir->column ();
+  int l = expr->line ();
+  int c = expr->column ();
 
-  if (indir->is_identifier_only ())
-    {
-      indir->preserve_identifier ();
-      retval = new tree_index_expression (indir->ident (), args, l, c);
-      delete indir;
-    }
-  else
-    retval =  new tree_index_expression (indir, args, l, c);
+  expr->mark_postfix_indexed ();
+
+  retval =  new tree_index_expression (expr, args, l, c);
+
+  return retval;
+}
+
+// Make an indirect reference expression.
+
+static tree_indirect_ref *
+make_indirect_ref (tree_expression *expr, const string& elt)
+{
+  tree_indirect_ref *retval = 0;
+
+  int l = expr->line ();
+  int c = expr->column ();
+
+  retval = new tree_indirect_ref (expr, elt, l, c);
+
+  lexer_flags.looking_at_indirect_ref = false;
 
   return retval;
 }
@@ -2337,11 +2307,9 @@ finish_matrix (tree_matrix *m)
 {
   tree_expression *retval = 0;
 
-  lexer_flags.maybe_screwed_again--;
-
   if (m->all_elements_are_constant ())
     {
-      octave_value tmp = m->eval ();
+      octave_value tmp = m->rvalue ();
 
       if (! error_state)
 	{

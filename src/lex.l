@@ -670,10 +670,14 @@ void
 do_comma_insert_check (void)
 {
   int spc_gobbled = eat_continuation ();
+
   int c = yyinput ();
+
   yyunput (c, yytext);
+
   if (spc_gobbled)
     yyunput (' ', yytext);
+
   lexer_flags.do_comma_insert = (lexer_flags.braceflag && c == '[');
 }
 
@@ -725,6 +729,7 @@ do_string_escapes (char *s)
 {
   char *p1 = s;
   char *p2 = s;
+
   while (*p2 != '\0')
     {
       if (*p2 == '\\' && *(p2+1) != '\0')
@@ -1638,6 +1643,8 @@ handle_close_brace (int spc_gobbled)
   if (lexer_flags.braceflag == 0)
     BEGIN 0;
 
+  // XXX FIXME XXX -- this needs to handle +=, -=, etc.
+
   int c1 = yyinput ();
   if (c1 == '=')
     {
@@ -1649,10 +1656,10 @@ handle_close_brace (int spc_gobbled)
       unput (c2);
       unput (c1);
 
-      if (c2 != '=' && lexer_flags.maybe_screwed_again)
-	return SCREW_TWO;
-      else
+      if (c2 == '=' || lexer_flags.looking_at_return_list)
 	return ']';
+      else
+	return CLOSE_BRACE;
     }
   else
     {
@@ -1685,21 +1692,24 @@ handle_close_brace (int spc_gobbled)
 static void
 maybe_unput_comma (int spc_gobbled)
 {
-  if (Vwhitespace_in_literal_matrix != 2
-      && nesting_level.is_brace ())
+  if (Vwhitespace_in_literal_matrix != 2 && nesting_level.is_brace ())
     {
       int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
 
-      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled,
-							  yytext);
+      int postfix_un_op
+	= next_token_is_postfix_unary_op (spc_gobbled, yytext);
 
       int c1 = yyinput ();
       int c2 = yyinput ();
+
       unput (c2);
       unput (c1);
+
       int sep_op = match_any (c1, ",;\n]");
+
       int dot_op = (c1 == '.'
 		    && (isalpha (c2) || isspace (c2) || c2 == '_'));
+
       int index_op = (c1 == '('
 		      && (Vwhitespace_in_literal_matrix == 0
 			  || ! spc_gobbled));
@@ -1721,12 +1731,15 @@ handle_identifier (const string& tok, int spc_gobbled)
 
   lexer_flags.cant_be_identifier = true;
 
-  // If we are expecting a structure element, we just want to return
-  // TEXT_ID, which is a string that is also a valid identifier.  But
-  // first, we have to decide whether to insert a comma.
+  // If we are expecting a structure element, avoid recognizing
+  // keywords and other special names and return STRUCT_ELT, which is
+  // a string that is also a valid identifier.  But first, we have to
+  // decide whether to insert a comma.
 
   if (lexer_flags.looking_at_indirect_ref)
     {
+      do_comma_insert_check ();
+
       maybe_unput_comma (spc_gobbled);
 
       yylval.tok_val = new token (tok, input_line_number,
@@ -1740,7 +1753,7 @@ handle_identifier (const string& tok, int spc_gobbled)
 
       current_input_column += yyleng;
 
-      return TEXT_ID;
+      return STRUCT_ELT;
     }
 
   // If we have a regular keyword, or a plot STYLE, return it.
@@ -1748,6 +1761,7 @@ handle_identifier (const string& tok, int spc_gobbled)
   // that).
 
   int kw_token = is_keyword (tok);
+
   if (kw_token)
     {
       if (kw_token == STYLE)
@@ -1776,6 +1790,7 @@ handle_identifier (const string& tok, int spc_gobbled)
       // Option keywords can't appear in parentheses or braces.
 
       int plot_option_kw = 0;
+
       if (nesting_level.none ())
 	plot_option_kw = is_plot_keyword (tok);
 

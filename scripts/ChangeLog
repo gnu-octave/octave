@@ -1,3 +1,7 @@
+2003-06-17  Aaron A. King <king@quercus.tiem.utk.edu>
+
+	* plot/hist.m: Don't forget to define n if x is a vector.
+
 2003-06-13  Alois Schloegl <alois.schloegl@tugraz.at>
 
 	* miscellaneous/fileparts.m: For compatibility with Matlab,

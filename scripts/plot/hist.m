@@ -78,6 +78,7 @@ function [nn, xx] = hist (y, x, norm)
         x = tmp;
       endif
       cutoff = (x(1:end-1) + x(2:end)) / 2;
+      n = length (x);
     else
       error ("hist: second argument must be a scalar or a vector");
     endif

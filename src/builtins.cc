@@ -324,7 +324,7 @@ where x, xdot, and res are vectors, and t is a scalar.", },
 
   { "fopen", 3, 1, builtin_fopen,
     "filenum = fopen (\"filename\", \"mode\"): open a file\n\n\
- Legal values for mode include:\n\n\
+  Valid values for mode include:\n\n\
    r  : open text file for reading\n\
    w  : open text file for writing; discard previous contents if any\n\
    a  : append; open or create text file for writing at end of file\n\

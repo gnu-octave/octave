@@ -46,7 +46,7 @@ $(SUBDIRS):
 MISC_OBJ := misc/machar.o misc/dostop.o misc/f77-extern.o misc/lo-error.o
 
 CRUFT_FSRC := $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))
-gCRUFT_OBJ2 := $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
+CRUFT_OBJ2 := $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
 CRUFT_OBJ1 := $(patsubst %.f, %.o, $(CRUFT_OBJ2))
 CRUFT_OBJ := $(CRUFT_OBJ1) $(MISC_OBJ)
 

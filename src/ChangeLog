@@ -1,4 +1,16 @@
+Thu Nov 14 00:06:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.92.
+
 Wed Nov 13 11:13:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (sys_siglist): [__EMX__]: Add definitions.
+
+	* octave.cc (execute_startup_files): Allow init file name ot be
+	specified by an environment variable.
+
+	* dirfns.cc (make_absolute): [__EMX__]: Path is already absolute
+	if it begins with any character followed by a colon.
 
 	* load-save.cc (read_mat_ascii_matrix, get_lines_and_columns,
 	get_complete_line): New functions, for reading headless text files.

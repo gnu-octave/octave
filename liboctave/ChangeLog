@@ -1,4 +1,11 @@
+Thu Nov 14 00:06:53 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.92.
+
 Wed Nov 13 11:19:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-hist.cc (command_history::add): Ignore empty input lines, or
+	lines that have only carriage return or newline.
 
 	* lo-ieee.cc (isnan, isinf): Provide functions for SCO.
 

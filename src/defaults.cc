@@ -184,15 +184,11 @@ set_default_path (void)
 static void
 set_default_info_file (void)
 {
+  string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
+
   char *oct_info_file = getenv ("OCTAVE_INFO_FILE");
 
-  if (oct_info_file)
-    Vinfo_file = string (oct_info_file);
-  else
-    {
-      Vinfo_file = Vinfo_dir;
-      Vinfo_file.append ("/octave.info");
-    }
+  Vinfo_file = oct_info_file ? string (oct_info_file) : std_info_file;
 }
 
 static void

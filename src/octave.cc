@@ -270,16 +270,22 @@ execute_startup_files (void)
 
   if (read_init_files)
     {
-      // Try to execute commands from $HOME/.octaverc and
-      // ./.octaverc.
+      // Try to execute commands from $HOME/$OCTAVE_INITFILE and
+      // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set, .octaverc
+      // is assumed.
 
       int home_rc_already_executed = 0;
-      string home_rc;
+
+      char *initfile = getenv ("OCTAVE_INITFILE");
+
+      if (! initfile)
+	initfile = ".octaverc";
+
+      string home_rc = Vhome_directory + "/" + initfile;
+      string local_rc = string ("./") + initfile;
 
       if (! Vhome_directory.empty ())
 	{
-	  home_rc = Vhome_directory;
-	  home_rc.append ("/.octaverc");
 	  parse_and_execute (home_rc, 0, verbose);
 
 	  // Names alone are not enough.
@@ -288,7 +294,7 @@ execute_startup_files (void)
 
 	  if (fs_home_rc)
 	    {
-	      file_stat fs_dot_rc ("./.octaverc");
+	      file_stat fs_dot_rc (local_rc);
 
 	      if (fs_dot_rc && fs_home_rc.ino () == fs_dot_rc.ino ())
 		home_rc_already_executed = 1;
@@ -296,7 +302,7 @@ execute_startup_files (void)
 	}
 
       if (! home_rc_already_executed)
-	parse_and_execute ("./.octaverc", 0, verbose);
+	parse_and_execute (local_rc, 0, verbose);
     }
 
   run_unwind_frame ("execute_startup_files");

@@ -385,6 +385,30 @@ char *sys_siglist[NSIG + 1] =
   "HFT sound done",			/* 30 SIGSOUND */
   "HFT input ready",			/* 31 SIGMSG */
 #else /* not AIX */
+#ifdef __EMX__
+  "bogus signal #0",                    /* 0 */
+  "hangup",                             /* 1  SIGHUP */
+  "interrupt (Ctrl-C)",                 /* 2  SIGINT (Ctrl-C) */
+  "quit",                               /* 3  SIGQUIT */
+  "illegal instruction",                /* 4  SIGILL */
+  "single step",                        /* 5  SIGTRAP */
+  "abort",                              /* 6  SIGABRT */
+  "EMT instruction",                    /* 7  SIGEMT */
+  "floating point exception",           /* 8  SIGFPE */
+  "kill",                               /* 9  SIGKILL */
+  "bus error",                          /* 10 SIGBUS */
+  "segmentation violation",             /* 11 SIGSEGV */
+  "bad argument to system call",        /* 12 SIGSYS */
+  "broken pipe",                        /* 13 SIGPIPE */
+  "alarm clock",                        /* 14 SIGALRM */
+  "software termination signum",        /* 15 SIGTERM */
+  "user defined signal 1",              /* 16 SIGUSR1 */
+  "user defined signal 2",              /* 17 SIGUSR2 */
+  "death of a child",                   /* 18 SIGCHLD */
+  "bogus signal #20",                   /* 19 */
+  "bogus signal #21",                   /* 20 */
+  "break (Ctrl-Break)",                 /* 21 SIGBREAK */
+#else /* not __EMX__ */
   "bogus signal",			/* 0 */
   "hangup",				/* 1  SIGHUP */
   "interrupt",				/* 2  SIGINT */
@@ -427,7 +451,8 @@ char *sys_siglist[NSIG + 1] =
   "Special Signal Used By CPR",	    /* 35 SIGTHAW */
 #endif
 #endif /* sun */
-#endif /* not AIX */
+#endif /* __EMX__ */
+#endif /* AIX */
   0
   };
 #endif

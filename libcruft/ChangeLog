@@ -1,3 +1,7 @@
+Thu Nov 14 00:07:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.92.
+
 Fri Nov  8 09:55:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (libcruft.a): Delete target.

@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.32 1996-11-14 01:15:33 jwe Exp $
+# $Id: Makefile.in,v 1.33 1996-11-14 08:39:43 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -78,7 +78,7 @@ HDRS =	display.h	doc.h		echo_area.h	filesys.h \
 	infomap.h	nodes.h		search.h 	session.h \
 	signals.h	termdep.h	terminal.h	tilde.h \
 	indices.h	window.h	footnotes.h	dribble.h \
-	variables.h	gc.h		clib.h
+	variables.h	gc.h		clib.h		man.h
 
 OBJS =	dir.o display.o doc.o echo_area.o filesys.o info-utils.o info.o \
 	infodoc.o infomap.o m-x.o nodes.o search.o session.o signals.o \

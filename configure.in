@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.232 $)
+AC_REVISION($Revision: 1.233 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -46,6 +46,7 @@ AC_PREFIX_DEFAULT(/usr/local)
 
 man1dir='$(mandir)/man1'
 man1ext='.1'
+infofile='$(infodir)/octave.info'
 octincludedir='$(includedir)/octave-$(version)'
 fcnfiledir='$(datadir)/octave/$(version)/m'
 localfcnfiledir='$(datadir)/octave/site/m'
@@ -71,6 +72,7 @@ AC_MSG_RESULT([defining mandir to be $mandir])
 AC_MSG_RESULT([defining man1dir to be $man1dir])
 AC_MSG_RESULT([defining man1ext to be $man1ext])
 AC_MSG_RESULT([defining infodir to be $infodir])
+AC_MSG_RESULT([defining infofile to be $infofile])
 AC_MSG_RESULT([defining fcnfiledir to be $fcnfiledir])
 AC_MSG_RESULT([defining localfcnfiledir to be $localfcnfiledir])
 AC_MSG_RESULT([defining localfcnfilepath to be $localfcnfilepath])
@@ -94,6 +96,7 @@ AC_SUBST(mandir)
 AC_SUBST(man1dir)
 AC_SUBST(man1ext)
 AC_SUBST(infodir)
+AC_SUBST(infofile)
 AC_SUBST(fcnfiledir)
 AC_SUBST(localfcnfiledir)
 AC_SUBST(localfcnfilepath)
@@ -139,18 +142,15 @@ fi
 
 INFO_DIR=info
 USE_GNU_INFO=true
-LIBINFO=../info/libinfo.a
 AC_ARG_ENABLE(info,
   [  --enable-info           use GNU info (default is yes)],
   [if test $enableval = no; then
      USE_GNU_INFO=false;
-     LIBINFO="";
      INFO_DIR="";
    fi], [])
 if $USE_GNU_INFO; then
   AC_DEFINE(USE_GNU_INFO, 1)
 fi
-AC_SUBST(LIBINFO)
 AC_SUBST(INFO_DIR)
 
 dnl ### Allow the user disable support for plplot.
@@ -379,7 +379,9 @@ case "$canonical_host_type" in
     FPICFLAG=
     RLD_FLAG='-Xlinker -rpath -Xlinker $(libdir)'
   ;;
+changequote(,)dnl
   i[3456789]86-*-linux*)
+changequote([,])dnl
     RLD_FLAG='-Xlinker -rpath -Xlinker $(libdir)'
   ;;
   rs6000-ibm-aix* | powerpc-ibm-aix*)

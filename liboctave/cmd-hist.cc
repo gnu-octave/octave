@@ -119,6 +119,10 @@ command_history::add (const string& s)
 {
   if (! ignoring_entries ())
     {
+      if (s.empty ()
+	  || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
+	return;
+
       ::add_history (s.c_str ());
       lines_this_session++;
     }

@@ -1,4 +1,15 @@
+Thu Nov 14 00:07:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (RLD_FLAG): Surround case pattern in changequote.
+
+	* Version 1.92.
+
 Wed Nov 13 11:04:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't set or substitute LIBINFO.
+	(infofile): Set and substitute a default value.
+
+	* Makeconf.in (do-subst-default-values): Substitute it here.
 
 	* configure.in: If running on an SCO system, define SCO, and force
 	HAVE_ISINF and HAVE_ISNAN to be defined.

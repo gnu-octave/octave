@@ -180,6 +180,11 @@ base_pathname (const string& s)
 string
 make_absolute (const string& s, const string& dot_path)
 {
+#if defined (__EMX__)
+  if (s.length () > 1 && s[1] == ':')
+    return s;
+#endif
+
   if (dot_path.empty () || s[0] == '/' || s.empty ())
     return s;
 

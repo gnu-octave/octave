@@ -54,6 +54,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_INFODIR %OCTAVE_INFODIR%
 #endif
 
+#ifndef OCTAVE_INFOFILE
+#define OCTAVE_INFOFILE %OCTAVE_INFOFILE%
+#endif
+
 #ifndef OCTAVE_FCNFILEDIR
 #define OCTAVE_FCNFILEDIR %OCTAVE_FCNFILEDIR%
 #endif

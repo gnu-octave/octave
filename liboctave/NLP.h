@@ -1,7 +1,7 @@
 // NLP.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -31,39 +31,41 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "NLConst.h"
 #include "base-min.h"
 
-class NLP : public base_minimizer
+class
+NLP : public base_minimizer
 {
- public:
+public:
 
-  NLP (void) : base_minimizer () { }
+  NLP (void)
+    : base_minimizer (), phi (), bnds (), lc (), nlc () { }
 
   NLP (const ColumnVector& x, const Objective& obj)
-    : base_minimizer (x), phi (obj) { }
+    : base_minimizer (x), phi (obj), bnds (), lc (), nlc () { }
 
   NLP (const ColumnVector& x, const Objective& obj, const Bounds& b)
-    : base_minimizer (x), phi (obj), bnds (b) { }
+    : base_minimizer (x), phi (obj), bnds (b), lc (), nlc () { }
 
   NLP (const ColumnVector& x, const Objective& obj, const Bounds& b,
        const LinConst& l)
-    : base_minimizer (x), phi (obj), bnds (b), lc (l) { }
+    : base_minimizer (x), phi (obj), bnds (b), lc (l), nlc () { }
 
   NLP (const ColumnVector& x, const Objective& obj, const Bounds& b,
        const LinConst& l, const NLConst& nl)
     : base_minimizer (x), phi (obj), bnds (b), lc (l), nlc (nl) { }
 
   NLP (const ColumnVector& x, const Objective& obj, const LinConst& l)
-    : base_minimizer (x), phi (obj), lc (l) { }
+    : base_minimizer (x), phi (obj), bnds (), lc (l), nlc () { }
 
   NLP (const ColumnVector& x, const Objective& obj, const LinConst& l,
        const NLConst& nl)
-    : base_minimizer (x), phi (obj), lc (l), nlc (nl) { }
+    : base_minimizer (x), phi (obj), bnds (), lc (l), nlc (nl) { }
 
   NLP (const ColumnVector& x, const Objective& obj, const NLConst& nl)
-    : base_minimizer (x), phi (obj), nlc (nl) { }
+    : base_minimizer (x), phi (obj), bnds (), lc (), nlc (nl) { }
 
   NLP (const ColumnVector& x, const Objective& obj, const Bounds& b,
        const NLConst& nl)
-    : base_minimizer (x), phi (obj), bnds (b), nlc (nl) { }
+    : base_minimizer (x), phi (obj), bnds (b), lc (), nlc (nl) { }
 
   NLP (const NLP& a)
     : base_minimizer (a), phi (a.phi), bnds (a.bnds), lc (a.lc), nlc (a.nlc)
@@ -85,9 +87,17 @@ class NLP : public base_minimizer
 
   virtual ~NLP (void) { }
 
- protected:
+  Objective objective (void) const { return phi; }
 
-  Objective phi;  
+  Bounds bounds (void) const { return bnds; }
+
+  LinConst linear_constraints (void) const { return lc; }
+
+  NLConst nonlinear_constraints (void) const { return nlc; }
+
+protected:
+
+  Objective phi;
   Bounds bnds;
   LinConst lc;
   NLConst nlc;

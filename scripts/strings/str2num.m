@@ -17,9 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  m = str2num (s)
-##
-## Convert the string S to a number.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} str2num (@var{s})
+## Convert the string @var{s} to a number.
+## @end deftypefn
 
 ## Author: jwe
 

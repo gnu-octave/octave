@@ -17,9 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  blanks (n)
-##
-## Returns a string of n blanks.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} blanks (@var{n})
+## Return a string of @var{n} blanks.
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

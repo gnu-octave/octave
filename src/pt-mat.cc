@@ -629,10 +629,41 @@ The default value is @code{\"warn\"}.\n\
 @end defvr");
 
   DEFVAR (implicit_num_to_str_ok, 0.0, implicit_num_to_str_ok,
-    "make the result of things like `[97, 98, 99, \"123\"]' be a string");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} implicit_num_to_str_ok\n\
+If the value of @code{implicit_num_to_str_ok} is nonzero, implicit\n\
+conversions of numbers to their ASCII character equivalents are\n\
+allowed when strings are constructed using a mixture of strings and\n\
+numbers in matrix notation.  Otherwise, an error message is printed and\n\
+control is returned to the top level. The default value is 0.  For\n\
+example,\n\
+\n\
+@example\n\
+@group\n\
+[ \"f\", 111, 111 ]\n\
+     @result{} \"foo\"\n\
+@end group\n\ 
+@end example\n\
+@end defvr")
 
   DEFVAR (string_fill_char, " ", string_fill_char,
-    "the character to fill with when creating string arrays.");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} string_fill_char\n\
+The value of this variable is used to pad all strings in a string matrix\n\
+to the same length.  It should be a single character.  The default value\n\
+is @code{\" \"} (a single space).  For example,\n\
+\n\
+@example\n\
+@group\n\
+string_fill_char = \"X\";\n\
+[ \"these\"; \"are\"; \"strings\" ]\n\
+     @result{} \"theseXX\"\n\
+        \"areXXXX\"\n\
+        \"strings\"\n\
+@end group\n\
+@end example\n\
+@end defvr")
+
 }
 
 /*

@@ -829,9 +829,22 @@ do_type (ostream& os, const string& name, bool pr_type_info,
 }
 
 DEFUN_TEXT (type, args, nargout,
-  "type NAME\n\
+  "-*- texinfo -*-\n\
 \n\
-display the definition of each NAME that refers to a function")
+@deffn {Command} type options name @dots{}\n\
+Display the definition of each @var{name} that refers to a function.\n\
+\n\
+Normally also displays if each @var{name} is user-defined or builtin;\n\
+the @code{-q} option suppresses this behaviour.\n\
+\n\
+Currently, Octave can only display functions that can be compiled\n\
+cleanly, because it uses its internal representation of the function to\n\
+recreate the program text.\n\
+\n\
+Comments are not displayed because Octave's parser currently discards\n\
+them as it converts the text of a function file to its internal\n\
+representation.  This problem may be fixed in a future release.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -944,10 +957,11 @@ do_which (ostream& os, const string& name)
 }
 
 DEFUN_TEXT (which, args, nargout,
-  "which NAME ...\n\
-\n\
-display the type of each NAME.  If NAME is defined from an function\n\
-file, print the full name of the file.")
+  "-*- texinfo -*-\n\
+@deffn {Command} which name @dots{}\n\
+Display the type of each @var{name}.  If @var{name} is defined from a\n\
+function file, the full name of the file is also displayed.\n\
+@end deffn")
 {
   octave_value_list retval;
 

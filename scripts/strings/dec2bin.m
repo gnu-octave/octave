@@ -17,10 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  dec2bin (x)
-##
-## Returns the binary number corresponding to the nonnegative integer
-## x.  For example, dec2bin (14) returns "1110".
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dec2bin (@var{n})
+## Return a binary number corresponding the nonnegative decimal number
+## @var{n}, as a string of ones and zeros.  For example,
+## 
+## @example
+## dec2bin (14)
+##      @result{} "1110"
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

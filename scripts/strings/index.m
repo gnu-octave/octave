@@ -17,12 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  index (s, t)
-##
-## Returns the position of the first occurence of the string T in the
-## string S or 0 if no occurence is found.
-##
-## NOTE: this function does not work for arrays of strings.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} index (@var{s}, @var{t})
+## Return the position of the first occurrence of the string @var{t} in the
+## string @var{s}, or 0 if no occurrence is found.  For example,
+## 
+## @example
+## index ("Teststring", "t")
+##      @result{} 4
+## @end example
+## 
+## @strong{Note:}  This function does not work for arrays of strings.
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

@@ -513,7 +513,32 @@ undo_string_escapes (const string& s)
 }
 
 DEFUN (undo_string_escapes, args, ,
-  "undo_string_escapes (STRING)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})\n\
+Converts special characters in strings back to their escaped forms.  For\n\
+example, the expression\n\
+\n\
+@example\n\
+bell = \"\\a\";\n\
+@end example\n\
+\n\
+@noindent\n\
+assigns the value of the alert character (control-g, ASCII code 7) to\n\
+the string variable @code{bell}.  If this string is printed, the\n\
+system will ring the terminal bell (if it is possible).  This is\n\
+normally the desired outcome.  However, sometimes it is useful to be\n\
+able to print the original representation of the string, with the\n\
+special characters replaced by their escape sequences.  For example,\n\
+\n\
+@example\n\
+octave:13> undo_string_escapes (bell)\n\
+ans = \\a\n\
+@end example\n\
+\n\
+@noindent\n\
+replaces the unprintable alert character with its printable\n\
+representation.\n\
+@end deftypefn")
 {
   octave_value retval;
 

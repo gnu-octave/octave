@@ -17,17 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: strcmp (s1, s2)
-##
-## Compare two strings.  Trailing blanks are significant.
-##
-## WARNING:  Unlike the C function of the same name, this function
-## returns 1 for equal and zero for not equal.  Why?  To be compatible
-## with Matlab, of course.
-##
-## Why doesn't this always return a scalar instead of vector with
-## elements corresponding to the rows of the string array?  To be
-## compatible with Matlab, of course.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
+## Compares two strings, returning 1 if they are the same, and 0 otherwise.
+## 
+## @strong{Note:}  For compatibility with @sc{Matlab}, Octave's strcmp
+## function returns 1 if the strings are equal, and 0 otherwise.  This is
+## just the opposite of the corresponding C library function.
+## @end deftypefn
 
 ## Author: jwe
 

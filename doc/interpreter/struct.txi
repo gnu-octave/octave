@@ -113,10 +113,7 @@ a =
 This prevents long and confusing output from large deeply nested
 structures.
 
-@defvr {Built-in Variable} struct_levels_to_print
-You can tell Octave how many structure levels to display by setting the
-built-in variable @code{struct_levels_to_print}.  The default value is 2.
-@end defvr
+@DOCSTRING(struct_levels_to_print)
 
 Functions can return structures.  For example, the following function
 separates the real and complex parts of a matrix and stores them in two
@@ -184,18 +181,8 @@ a loop, using a special form of the @code{for} statement
 The following functions are available to give you information about
 structures.
 
-@deftypefn {Built-in Function} {} is_struct (@var{expr})
-Return 1 if the value of the expression @var{expr} is a structure.
-@end deftypefn
+@DOCSTRING(is_struct)
 
-@deftypefn {Built-in Function} {} struct_contains (@var{expr}, @var{name})
-Return 1 if the expression @var{expr} is a structure and it includes an
-element named @var{name}.  The first argument must be a structure and
-the second must be a string.
-@end deftypefn
+@DOCSTRING(struct_contains)
 
-@deftypefn {Built-in Function} {} struct_elements (@var{struct})
-Return a list of strings naming the elements of the structure
-@var{struct}.  It is an error to call @code{struct_elements} with an
-argument that is not a structure.
-@end deftypefn
+@DOCSTRING(struct_elements)

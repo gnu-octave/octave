@@ -17,12 +17,28 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  substr (s, offset, len)
-##
-## Returns the substring of S of length LEN starting at index OFFSET.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} substr (@var{s}, @var{beg}, @var{len})
+## Return the substring of @var{s} which starts at character number
+## @var{beg} and is @var{len} characters long.
+## 
 ## If OFFSET is negative, extraction starts that far from the end of
 ## the string.  If LEN is omitted, the substring extends to the end
 ## of S.
+## 
+##   For example,
+## 
+## @example
+## substr ("This is a test string", 6, 9)
+##      @result{} "is a test"
+## @end example
+## 
+## @quotation
+## @strong{Note:}
+## This function is patterned after AWK.  You can get the same result by
+## @code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
+## @end quotation
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

@@ -17,11 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  hex2dec (h)
-##
-## Returns the decimal number corresponding to the hex number in
-## quotes.  For example, hex2dec ("12B") and hex2dec ("12b") both
-## return 299.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hex2dec (@var{s})
+## Return the decimal number corresponding to the hexadecimal number stored
+## in the string @var{s}.  For example,
+## 
+## @example
+## hex2dec ("12B")
+##      @result{} 299
+## hex2dec ("12b")
+##      @result{} 299
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

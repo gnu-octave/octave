@@ -17,12 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: rindex (s, t)
-##
-## Returns the position of the last occurence of the string T in the
-## string S or 0 if no occurence is found.
-##
-## NOTE: this function does not work for arrays of strings.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
+## Return the position of the last occurrence of the string @var{t} in the
+## string @var{s}, or 0 if no occurrence is found.  For example,
+## 
+## @example
+## rindex ("Teststring", "t")
+##      @result{} 6
+## @end example
+## 
+## @strong{Note:}  This function does not work for arrays of strings.
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

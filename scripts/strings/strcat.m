@@ -17,9 +17,19 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: strcat (s, t, ...)
-##
-## Concatenate strings.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
+## Return a string containing all the arguments concatenated.  For example,
+## 
+## @example
+## @group
+## s = [ "ab"; "cde" ];
+## strcat (s, s, s)
+##      @result{} "ab ab ab "
+##         "cdecdecde"
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

@@ -353,46 +353,85 @@ Return the imaginary part of @var{z} as a real number.\n\
 See also: real, conj");
 
   DEFUN_MAPPER (isalnum, xisalnum, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isalnum (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isalnum (@var{s})\n\
+Return 1 for characters that are letters or digits (@code{isalpha\n\
+(@var{a})} or @code{isdigit (@var{a})} is true).\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isalpha, xisalpha, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isalpha (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isalpha (@var{s})\n\
+Return true for characters that are letters (@code{isupper (@var{a})}\n\
+or @code{islower (@var{})} is true).\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isascii, xisascii, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isascii (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isascii (@var{s})\n\
+Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
+@end deftypefn");
 
   DEFUN_MAPPER (iscntrl, xiscntrl, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "iscntrl (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} iscntrl (@var{s})\n\
+Return 1 for control characters.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isdigit, xisdigit, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isdigit (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isdigit (@var{s})\n\
+Return 1 for characters that are decimal digits.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isinf, 0, xisinf, xisinf, 0, 0, 0, 0.0, 0.0, 0,
     "isinf (X): return 1 for elements of X infinite");
 
   DEFUN_MAPPER (isgraph, xisgraph, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isgraph (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isgraph (@var{s})\n\
+Return 1 for printable characters (but not the space character).\n\
+@end deftypefn");
 
   DEFUN_MAPPER (islower, xislower, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "islower (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} islower (@var{s})\n\
+Return 1 for characters that are lower case letters.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isnan, 0, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0,
     "isnan (X): return 1 where elements of X are NaNs");
 
   DEFUN_MAPPER (isprint, xisprint, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isprint (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isprint (@var{s})\n\
+Return 1 for printable characters (including the space character).\n\
+@end deftypefn");
 
   DEFUN_MAPPER (ispunct, xispunct, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "ispunct (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} ispunct (@var{s})\n\
+Return 1 for punctuation characters.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isspace, xisspace, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isspace (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isspace (@var{s})\n\
+Return 1 for whitespace characters (space, formfeed, newline,\n\
+carriage return, tab, and vertical tab).\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isupper, xisupper, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isupper (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isupper (@var{s})\n\
+Return 1 for upper case letters.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isxdigit, xisxdigit, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
-    "isxdigit (X): ");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isxdigit (@var{s})\n\
+Return 1 for characters that are hexadecimal digits.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (lgamma, 0, 0, 0, xlgamma, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -493,13 +532,46 @@ tanh (X): compute hyperbolic tangent of X for each element of X\n\
 @end deftypefn");
 
   DEFUN_MAPPER (toascii, xtoascii, 0, 0, 0, 0, 0, 0.0, 0.0, 1,
-    "toascii (STRING): return ASCII representation of STRING in a matrix");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} toascii (@var{s})\n\
+Return ASCII representation of @var{s} in a matrix.  For example,\n\
+\n\
+@example\n\
+@group\n\
+toascii (\"ASCII\")\n\
+     @result{} [ 65, 83, 67, 73, 73 ]\n\
+@end group\n\
+\n\
+@end example\n\
+@end deftypefn")
 
   DEFUN_MAPPER (tolower, xtolower, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
-    "tolower (STRING): convert upper case characters to lower case in STRING");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} tolower (@var{s})\n\
+Return a copy of the string @var{s}, with each upper-case character\n\
+replaced by the corresponding lower-case one; nonalphabetic characters\n\
+are left unchanged.  For example,\n\
+\n\
+@example\n\
+tolower (\"MiXeD cAsE 123\")\n\
+     @result{} \"mixed case 123\"\n\
+@end example\n\
+@end deftypefn")
 
   DEFUN_MAPPER (toupper, xtoupper, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
-    "toupper (STRING): convert lower case characters to upper case in STRING");
+    "-*- texinfo -*-\n\
+@deftypefn {Function File} {} toupper (@var{s})\n\
+Return a copy of the string @var{s}, with each  lower-case character\n\
+replaced by the corresponding upper-case one; nonalphabetic characters\n\
+are left unchanged.  For example,\n\
+\n\
+@example\n\
+@group\n\
+toupper (\"MiXeD cAsE 123\")
+     @result{} \"MIXED CASE 123\"\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 
   DEFALIAS (gammaln, lgamma);
 

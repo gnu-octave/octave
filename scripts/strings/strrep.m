@@ -17,10 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  strrep (s, x, y)
-##
-## Replace all occurences of the substring x of the string s with the
-## string y.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
+## Replaces all occurrences of the substring @var{x} of the string @var{s}
+## with the string @var{y}.  For example,
+## 
+## @example
+## strrep ("This is a test string", "is", "&%$")
+##      @result{} "Th&%$ &%$ a test string"
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 11 November 1994

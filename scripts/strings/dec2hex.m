@@ -17,10 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  dec2hex (d)
-##
-## Returns the hex number corresponding to the decimal number d.  For
-## example, dec2hex (2748) returns "abc".
+## -*- texinfo -*-
+## @deftypefn {Function File} {} dec2hex (@var{n})
+## Return the hexadecimal number corresponding to the nonnegative decimal
+## number @var{n}, as a string.  For example,
+## 
+## @example
+## dec2hex (2748)
+##      @result{} "abc"
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

@@ -17,11 +17,19 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  m = split (s, t)
-##
-## Divides the string S into pieces separated by T, and stores the
-## pieces as the rows of M (padded with blanks to form a valid
-## matrix).
+## -*- texinfo -*-
+## @deftypefn {Function File} {} split (@var{s}, @var{t})
+## Divides the string @var{s} into pieces separated by @var{t}, returning
+## the result in a string array (padded with blanks to form a valid
+## matrix).  For example,
+## 
+## @example
+## split ("Test string", "t")
+##      @result{} "Tes "
+##         " s  "
+##         "ring"
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

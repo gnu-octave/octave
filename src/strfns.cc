@@ -36,7 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN (isstr, args, ,
-  "isstr (X): return 1 if X is a string, 0 otherwise")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isstr (@var{a})\n\
+Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -51,7 +54,19 @@ DEFUN (isstr, args, ,
 }
 
 DEFUN (setstr, args, ,
-  "setstr (V): convert a vector to a string")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} setstr (@var{x})\n\
+Convert a matrix to a string.  Each element of the matrix is converted\n\
+to the corresponding ASCII \n\
+character.  For example,\n\
+\n\
+@example\n\
+@group\n\
+setstr ([97, 98, 99])\n\
+     @result{} "abc"\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

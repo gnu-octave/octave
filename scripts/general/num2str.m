@@ -17,10 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: num2str (x)
-##
-## Format x as a string.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} int2str (@var{n})
+## @deftypefnx {Function File} {} num2str (@var{x})
+## Convert a number to a string.  These functions are not very flexible,
+## but are provided for compatibility with @sc{Matlab}.  For better control
+## over the results, use @code{sprintf} (@pxref{Formatted Output}).
+## @end deftypefn
+
 ## See also: sprintf, int2str
 
 ## Author: jwe

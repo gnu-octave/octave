@@ -17,18 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: findstr (s, t [, overlap])
-##
-## Returns the vector of all positions in the longer of the two strings
-## S and T where an occurence of the shorter of the two starts.
-##
-## If the optional argument OVERLAP is nonzero, the returned vector
-## can include overlapping positions (this is the default).
-##
-## For example,
-##
-##   findstr ("abababa", "aba")     =>  [1, 3, 5]
-##   findstr ("abababa", "aba", 0)  =>  [1, 5]
+## -*- texinfo -*-
+## @deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
+## Return the vector of all positions in the longer of the two strings
+## @var{s} and @var{t} where an occurrence of the shorter of the two starts.
+## If the optional argument @var{overlap} is nonzero, the returned vector
+## can include overlapping positions (this is the default).  For example,
+## 
+## @example
+## findstr ("ababab", "a")
+##      @result{} [ 1, 3, 5 ]
+## findstr ("abababa", "aba", 0)
+##      @result{} [ 1, 5 ]
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

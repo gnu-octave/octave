@@ -138,162 +138,24 @@ will display the value of @code{x} from inside the function as 0,
 but the value of @code{x} at the top level remains unchanged, because
 the function works with a @emph{copy} of its argument.
 
-@defvr {Built-in Variable} warn_comma_in_global_decl
-If the value of @code{warn_comma_in_global_decl} is nonzero, a
-warning is issued for statements like
+@DOCSTRING(default_global_variable_value)
 
-@example
-global a = 1, b
-@end example
-
-@noindent
-which makes the variables @code{a} and @code{b} global and assigns the
-value 1 to the variable @code{a}, because in this context, the comma is
-not interpreted as a statement separator.
-
-The default value of @code{warn_comma_in_global_decl} is nonzero.
-@end defvr
-
-@defvr default_global_variable_value
-if @code{initialize_global_variables} is nonzero, the value of
-@code{default_glbaol_variable_value} is used as the initial value of
-global variables that are not explicitly initialized.  for example,
-
-@example
-@group
-initialize_global_variables = 1;
-default_global_variable_value = 13;
-global foo;
-foo
-     @result{} 13
-@end group
-@end example
-
-the variable @code{default_global_variable_value} is initially undefined.
-@end defvr
-
-@deftypefn {Built-in Function} {} is_global (@var{name})
-Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For
-example,
-
-@example
-@group
-global x
-is_global ("x")
-     @result{} 1
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(is_global)
 
 @node Status of Variables, Summary of Built-in Variables, Global Variables, Variables
 @section Status of Variables
 
-@deffn {Command} clear options pattern @dots{}
-Delete the names matching the given patterns from the symbol table.  The
-pattern may contain the following special characters:
-@table @code
-@item ?
-Match any single character.
+@DOCSTRING(clear)
 
-@item *
-Match zero or more characters.
+@DOCSTRING(who)
 
-@item [ @var{list} ]
-Match the list of characters specified by @var{list}.  If the first
-character is @code{!} or @code{^}, match all characters except those
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
-match all lower and upper case alphabetic characters. 
-@end table
+@DOCSTRING(exist)
 
-For example, the command
+@DOCSTRING(document)
 
-@example
-clear foo b*r
-@end example
+@DOCSTRING(type)
 
-@noindent
-clears the name @code{foo} and all names that begin with the letter
-@code{b} and end with the letter @code{r}.
-
-If @code{clear} is called without any arguments, all user-defined
-variables (local and global) are cleared from the symbol table.  If
-@code{clear} is called with at least one argument, only the visible
-names matching the arguments are cleared.  For example, suppose you have
-defined a function @code{foo}, and then hidden it by performing the
-assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
-will clear the variable definition and restore the definition of
-@code{foo} as a function.  Executing @kbd{clear foo} a second time will
-clear the function definition.
-
-This command may not be used within a function body.
-@end deffn
-
-@deffn {Command} who options pattern @dots{}
-@deffnx {Command} whos options pattern @dots{}
-List currently defined symbols matching the given patterns.  The
-following are valid options.  They may be shortened to one character but
-may not be combined.
-
-@table @code
-@item -all
-List all currently defined symbols.
-
-@item -builtins
-List built-in variables and functions.  This includes all currently
-compiled function files, but does not include all function files that
-are in the @code{LOADPATH}.
-
-@item -functions
-List user-defined functions.
-
-@item -long
-Print a long listing including the type and dimensions of any symbols.
-The symbols in the first column of output indicate whether it is
-possible to redefine the symbol, and whether it is possible for it to be
-cleared.
-
-@item -variables
-List user-defined variables.
-@end table
-
-Valid patterns are the same as described for the @code{clear} command
-above.  If no patterns are supplied, all symbols from the given category
-are listed.  By default, only user defined functions and variables
-visible in the local scope are displayed.
-
-The command @kbd{whos} is equivalent to @kbd{who -long}.
-@end deffn
-
-@deftypefn {Built-in Function} {} exist (@var{name})
-Return 1 if the name exists as a variable, 2 if the name (after
-appending @samp{.m}) is a function file in the path, 3 if the name is a
-@samp{.oct} file in the path, or 5 if the name is a built-in function.
-Otherwise, return 0.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} document (@var{symbol}, @var{text})
-Set the documentation string for @var{symbol} to @var{text}.
-@end deftypefn
-
-@deffn {Command} type options name @dots{}
-Display the definition of each @var{name} that refers to a function.
-
-Normally also displays if each @var{name} is user-defined or builtin;
-the @code{-q} option suppresses this behaviour.
-
-Currently, Octave can only display functions that can be compiled
-cleanly, because it uses its internal representation of the function to
-recreate the program text.
-
-Comments are not displayed because Octave's parser currently discards
-them as it converts the text of a function file to its internal
-representation.  This problem may be fixed in a future release.
-@end deffn
-
-@deffn {Command} which name @dots{}
-Display the type of each @var{name}.  If @var{name} is defined from a
-function file, the full name of the file is also displayed.
-@end deffn
+@DOCSTRING(which)
 
 @node Summary of Built-in Variables, Defaults from the Environment, Status of Variables, Variables
 @section Summary of Built-in Variables

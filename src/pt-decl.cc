@@ -189,8 +189,26 @@ void
 symbols_of_pt_decl (void)
 {
   DEFVAR (default_global_variable_value, , 0,
-    "the default for value for otherwise uninitialized global variables.\n\
-Only used if the variable initialize_global_variables is nonzero.");
+    "-*- texinfo -*-\n\
+@defvr default_global_variable_value\n\
+The default for value for otherwise uninitialized global variables.\n\
+Only used if the variable initialize_global_variables is nonzero.\n\
+If @code{initialize_global_variables} is nonzero, the value of\n\
+@code{default_glbaol_variable_value} is used as the initial value of\n\
+global variables that are not explicitly initialized.  for example,\n\
+\n\
+@example\n\
+@group\n\
+initialize_global_variables = 1;\n\
+default_global_variable_value = 13;\n\
+global foo;\n\
+foo\n\
+     @result{} 13\n\
+@end group\n\
+@end example\n\
+\n\
+the variable @code{default_global_variable_value} is initially undefined.\n\
+@end defvr");
 
   DEFVAR (initialize_global_variables, 0.0, initialize_global_variables,
     "control whether otherwise uninitialized global variables are\n\

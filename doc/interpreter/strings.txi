@@ -122,299 +122,63 @@ Data Types} for more information about creating matrices.
 @node Creating Strings, Searching and Replacing, Strings, Strings
 @section Creating Strings
 
-@deftypefn {Function File} {} blanks (@var{n})
-Return a string of @var{n} blanks.
-@end deftypefn
+@DOCSTRING(blanks)
 
-@deftypefn {Function File} {} int2str (@var{n})
-@deftypefnx {Function File} {} num2str (@var{x})
-Convert a number to a string.  These functions are not very flexible,
-but are provided for compatibility with @sc{Matlab}.  For better control
-over the results, use @code{sprintf} (@pxref{Formatted Output}).
-@end deftypefn
+@DOCSTRING(int2str)
 
-@deftypefn {Built-in Function} {} setstr (@var{x})
-Convert a matrix to a string.  Each element of the matrix is converted
-to the corresponding ASCII 
-character.  For example,
+@DOCSTRING(setstr)
 
-@example
-@group
-setstr ([97, 98, 99])
-     @result{} "abc"
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(strcat)
 
-@deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
-Return a string containing all the arguments concatenated.  For example,
+@DOCSTRING(string_fill_char)
 
-@example
-@group
-s = [ "ab"; "cde" ];
-strcat (s, s, s)
-     @result{} "ab ab ab "
-        "cdecdecde"
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(str2mat)
 
-@defvr {Built-in Variable} string_fill_char
-The value of this variable is used to pad all strings in a string matrix
-to the same length.  It should be a single character.  The default value
-is @code{" "} (a single space).  For example,
-
-@example
-@group
-string_fill_char = "X";
-[ "these"; "are"; "strings" ]
-     @result{} "theseXX"
-        "areXXXX"
-        "strings"
-@end group
-@end example
-@end defvr
-
-@deftypefn {Function File} {} str2mat (@var{s_1}, @dots{}, @var{s_n})
-Return a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
-its rows.  Each string is padded with blanks in order to form a valid
-matrix.
-
-@strong{Note:}
-This function is modelled after @sc{Matlab}.  In Octave, you can create
-a matrix of strings by @code{[@var{s_1}; @dots{}; @var{s_n}]} even if
-the strings are not all the same length.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} isstr (@var{a})
-Return 1 if @var{a} is a string.  Otherwise, return 0.
-@end deftypefn
+@DOCSTRING(isstr)
 
 @node Searching and Replacing, String Conversions, Creating Strings, Strings
 @section Searching and Replacing
 
-@deftypefn {Function File} {} deblank (@var{s})
-Removes the trailing blanks from the string @var{s}. 
-@end deftypefn
+@DOCSTRING(deblank)
 
-@deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
-Return the vector of all positions in the longer of the two strings
-@var{s} and @var{t} where an occurrence of the shorter of the two starts.
-If the optional argument @var{overlap} is nonzero, the returned vector
-can include overlapping positions (this is the default).  For example,
+@DOCSTRING(findstr)
 
-@example
-findstr ("ababab", "a")
-     @result{} [ 1, 3, 5 ]
-findstr ("abababa", "aba", 0)
-     @result{} [ 1, 5 ]
-@end example
-@end deftypefn
+@DOCSTRING(index)
 
-@deftypefn {Function File} {} index (@var{s}, @var{t})
-Return the position of the first occurrence of the string @var{t} in the
-string @var{s}, or 0 if no occurrence is found.  For example,
+@DOCSTRING(rindex)
 
-@example
-index ("Teststring", "t")
-     @result{} 4
-@end example
+@DOCSTRING(split)
 
-@strong{Note:}  This function does not work for arrays of strings.
-@end deftypefn
+@DOCSTRING(strcmp)
 
-@deftypefn {Function File} {} rindex (@var{s}, @var{t})
-Return the position of the last occurrence of the string @var{t} in the
-string @var{s}, or 0 if no occurrence is found.  For example,
+@DOCSTRING(strrep)
 
-@example
-rindex ("Teststring", "t")
-     @result{} 6
-@end example
-
-@strong{Note:}  This function does not work for arrays of strings.
-@end deftypefn
-
-@deftypefn {Function File} {} split (@var{s}, @var{t})
-Divides the string @var{s} into pieces separated by @var{t}, returning
-the result in a string array (padded with blanks to form a valid
-matrix).  For example,
-
-@example
-split ("Test string", "t")
-     @result{} "Tes "
-        " s  "
-        "ring"
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
-Compares two strings, returning 1 if they are the same, and 0 otherwise.
-
-@strong{Note:}  For compatibility with @sc{Matlab}, Octave's strcmp
-function returns 1 if the strings are equal, and 0 otherwise.  This is
-just the opposite of the corresponding C library function.
-@end deftypefn
-
-@deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
-Replaces all occurrences of the substring @var{x} of the string @var{s}
-with the string @var{y}.  For example,
-
-@example
-strrep ("This is a test string", "is", "&%$")
-     @result{} "Th&%$ &%$ a test string"
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} substr (@var{s}, @var{beg}, @var{len})
-Return the substring of @var{s} which starts at character number
-@var{beg} and is @var{len} characters long.  For example,
-
-@example
-substr ("This is a test string", 6, 9)
-     @result{} "is a test"
-@end example
-
-@quotation
-@strong{Note:}
-This function is patterned after AWK.  You can get the same result by
-@code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
-@end quotation
-@end deftypefn
+@DOCSTRING(substr)
 
 @node String Conversions, Character Class Functions, Searching and Replacing, Strings
 @section String Conversions
 
-@deftypefn {Function File} {} bin2dec (@var{s})
-Return a decimal number corresponding to the binary number
-represented as a string of zeros and ones.  For example,
+@DOCSTRING(bin2dec)
 
-@example
-bin2dec ("1110")
-     @result{} 14
-@end example
-@end deftypefn
+@DOCSTRING(dec2bin)
 
-@deftypefn {Function File} {} dec2bin (@var{n})
-Return a binary number corresponding the nonnegative decimal number
-@var{n}, as a string of ones and zeros.  For example,
+@DOCSTRING(dec2hex)
 
-@example
-dec2bin (14)
-     @result{} "1110"
-@end example
-@end deftypefn
+@DOCSTRING(hex2dec)
 
-@deftypefn {Function File} {} dec2hex (@var{n})
-Return the hexadecimal number corresponding to the nonnegative decimal
-number @var{n}, as a string.  For example,
+@DOCSTRING(str2num)
 
-@example
-dec2hex (2748)
-     @result{} "abc"
-@end example
-@end deftypefn
+@DOCSTRING(toascii)
 
-@deftypefn {Function File} {} hex2dec (@var{s})
-Return the decimal number corresponding to the hexadecimal number stored
-in the string @var{s}.  For example,
+@DOCSTRING(tolower)
 
-@example
-hex2dec ("12B")
-     @result{} 299
-hex2dec ("12b")
-     @result{} 299
-@end example
-@end deftypefn
+@DOCSTRING(toupper)
 
-@deftypefn {Function File} {} str2num (@var{s})
-Convert the string @var{s} to a number.
-@end deftypefn
+@DOCSTRING(undo_string_escapes)
 
-@deftypefn {Function File} {} toascii (@var{s})
-Return ASCII representation of @var{s} in a matrix.  For example,
+@DOCSTRING(implicit_num_to_str_ok)
 
-@example
-@group
-toascii ("ASCII")
-     @result{} [ 65, 83, 67, 73, 73 ]
-@end group
-
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} tolower (@var{s})
-Return a copy of the string @var{s}, with each upper-case character
-replaced by the corresponding lower-case one; nonalphabetic characters
-are left unchanged.  For example,
-
-@example
-tolower ("MiXeD cAsE 123")
-     @result{} "mixed case 123"
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} toupper (@var{s})
-Return a copy of the string @var{s}, with each  lower-case character
-replaced by the corresponding upper-case one; nonalphabetic characters
-are left unchanged.  For example,
-
-@example
-@group
-toupper ("MiXeD cAsE 123")
-     @result{} "MIXED CASE 123"
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})
-Converts special characters in strings back to their escaped forms.  For
-example, the expression
-
-@example
-bell = "\a";
-@end example
-
-@noindent
-assigns the value of the alert character (control-g, ASCII code 7) to
-the string variable @code{bell}.  If this string is printed, the
-system will ring the terminal bell (if it is possible).  This is
-normally the desired outcome.  However, sometimes it is useful to be
-able to print the original representation of the string, with the
-special characters replaced by their escape sequences.  For example,
-
-@example
-octave:13> undo_string_escapes (bell)
-ans = \a
-@end example
-
-@noindent
-replaces the unprintable alert character with its printable
-representation.
-@end deftypefn
-
-@defvr {Built-in Variable} implicit_num_to_str_ok
-If the value of @code{implicit_num_to_str_ok} is nonzero, implicit
-conversions of numbers to their ASCII character equivalents are
-allowed when strings are constructed using a mixture of strings and
-numbers in matrix notation.  Otherwise, an error message is printed and
-control is returned to the top level. The default value is 0.  For
-example,
-
-@example
-@group
-[ "f", 111, 111 ]
-     @result{} "foo"
-@end group
-@end example
-@end defvr
-
-@defvr {Built-in Variable} implicit_str_to_num_ok
-If the value of @code{implicit_str_to_num_ok} is nonzero, implicit
-conversions of strings to their numeric ASCII equivalents are allowed.
-Otherwise, an error message is printed and control is returned to the
-top level.  The default value is 0.
-@end defvr
+@DOCSTRING(implicit_str_to_num_ok)
 
 @node Character Class Functions,  , String Conversions, Strings
 @section Character Class Functions
@@ -432,53 +196,26 @@ isalpha ("!Q@@WERT^Y&")
 @end group
 @end example
 
-@deftypefn {Mapping Function} {} isalnum (@var{s})
-Return 1 for characters that are letters or digits (@code{isalpha
-(@var{a})} or @code{isdigit (@var{})} is true).
-@end deftypefn
+@DOCSTRING(isalnum)
 
-@deftypefn {Mapping Function} {} isalpha (@var{s})
-Return true for characters that are letters (@code{isupper (@var{a})}
-or @code{islower (@var{})} is true). 
-@end deftypefn
+@DOCSTRING(isalpha)
 
-@deftypefn {Mapping Function} {} isascii (@var{s})
-Return 1 for characters that are ASCII (in the range 0 to 127 decimal).
-@end deftypefn
+@DOCSTRING(isascii)
 
-@deftypefn {Mapping Function} {} iscntrl (@var{s})
-Return 1 for control characters.
-@end deftypefn
+@DOCSTRING(iscntrl)
 
-@deftypefn {Mapping Function} {} isdigit (@var{s})
-Return 1 for characters that are decimal digits.
-@end deftypefn
+@DOCSTRING(isdigit)
 
-@deftypefn {Mapping Function} {} isgraph (@var{s})
-Return 1 for printable characters (but not the space character).
-@end deftypefn
+@DOCSTRING(isgraph)
 
-@deftypefn {Mapping Function} {} islower (@var{s})
-Return 1 for characters that are lower case letters.
-@end deftypefn
+@DOCSTRING(islower)
 
-@deftypefn {Mapping Function} {} isprint (@var{s})
-Return 1 for printable characters (including the space character).
-@end deftypefn
+@DOCSTRING(isprint)
 
-@deftypefn {Mapping Function} {} ispunct (@var{s})
-Return 1 for punctuation characters.
-@end deftypefn
+@DOCSTRING(ispunct)
 
-@deftypefn {Mapping Function} {} isspace (@var{s})
-Return 1 for whitespace characters (space, formfeed, newline,
-carriage return, tab, and vertical tab).
-@end deftypefn
+@DOCSTRING(isspace)
 
-@deftypefn {Mapping Function} {} isupper (@var{s})
-Return 1 for upper case letters.
-@end deftypefn
+@DOCSTRING(isupper)
 
-@deftypefn {Mapping Function} {} isxdigit (@var{s})
-Return 1 for characters that are hexadecimal digits.
-@end deftypefn
+@DOCSTRING(isxdigit)

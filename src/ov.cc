@@ -1521,7 +1521,13 @@ symbols_of_ov (void)
     "allow single indices for matrices");
 
   DEFVAR (implicit_str_to_num_ok, 0.0, implicit_str_to_num_ok,
-    "allow implicit string to number conversion");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} implicit_str_to_num_ok\n\
+If the value of @code{implicit_str_to_num_ok} is nonzero, implicit\n\
+conversions of strings to their numeric ASCII equivalents are allowed.\n\
+Otherwise, an error message is printed and control is returned to the\n\
+top level.  The default value is 0.\n\
+@end defvr")
 
   DEFVAR (ok_to_lose_imaginary_part, "warn", ok_to_lose_imaginary_part,
     "silently convert from complex to real by dropping imaginary part");
@@ -1544,7 +1550,11 @@ if they are given one as an argument.  The default value is 1.\n\
     "enlarge matrices on assignment");
 
   DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
-    "number of levels of structure elements to print");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} struct_levels_to_print\n\
+You can tell Octave how many structure levels to display by setting the\n\
+built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
+@end defvr")
 
   DEFVAR (warn_divide_by_zero, 1.0, warn_divide_by_zero,
     "if TRUE, warn about division by zero");

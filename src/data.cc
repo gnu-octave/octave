@@ -814,7 +814,10 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 }
 
 DEFUN (is_struct, args, ,
-  "is_struct (x): return nonzero if x is a structure")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_struct (@var{expr})\n\
+Return 1 if the value of the expression @var{expr} is a structure.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -827,9 +830,12 @@ DEFUN (is_struct, args, ,
 }
 
 DEFUN (struct_elements, args, ,
-  "struct_elements (S)\n\
-\n\
-Return a list of the names of the elements of the structure S.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} struct_elements (@var{struct})\n\
+Return a list of strings naming the elements of the structure\n\
+@var{struct}.  It is an error to call @code{struct_elements} with an\n\
+argument that is not a structure.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -852,10 +858,12 @@ Return a list of the names of the elements of the structure S.")
 }
 
 DEFUN (struct_contains, args, ,
-  "struct_contains (S, NAME)\n\
-\n\
-Return nonzero if S is a structure with element NAME.\n\
-S must be a structure and NAME must be a string.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} struct_contains (@var{expr}, @var{name})\n\
+Return 1 if the expression @var{expr} is a structure and it includes an\n\
+element named @var{name}.  The first argument must be a structure and\n\
+the second must be a string.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

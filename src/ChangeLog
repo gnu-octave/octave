@@ -1,3 +1,18 @@
+1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-decl.cc (Vdefault_global_variable_value): Texinofize doc string.
+	* variables.cc (Fclear, Fdocument, Fexist, Fis_global, Fwho): Ditto.
+	* help.cc (Ftype, Fwhich): Ditto.
+	* ov.cc (Vstruct_levels_to_print, Vimplicit_str_to_num_ok): Ditto.
+	* data.cc (Fis_struct, Fstruct_elements, Fstruct_constains): Ditto.
+	* strfns.cc (Fisstr, Fsetstr): Ditto.
+	* pt-mat.cc: (Fimplicit_num_to_str_ok, Fstring_fill_char): Ditto.
+	* utils.cc (Fundo_string_escapes): Ditto.
+	* mappers.cc: (Fisalnum, Fisalpha, Fisascii, Fiscntrl, Fisdigit,
+	Fisgraph, Fislower, Fisprint, Fispunct, Fisspace, Fisupper,
+	Fisxdigit, Ftoascii, Ftolower, Ftoupper): Ditto.
+	
+
 1999-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* syscalls.cc (symbols_of_syscalls): Use DEFCONSTX to define
@@ -159,12 +174,12 @@
 
 1999-11-02  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
-	* src/help.cc (Fhelp): Texinfoize doc string.
-	* src/input.cc (Fecho, Fcompletion_matches): Ditto.
-	* src/oct-hist.cc (Fedit_history, Fhistory, Frun_history): Ditto.
-	* src/pager.cc (Fdiary): Ditto.
-	* src/sysdep.cc (Fclc): Ditto.
-	* src/toplev.cc (Fquit, Fatexit): Ditto.
+	* help.cc (Fhelp): Texinfoize doc string.
+	* input.cc (Fecho, Fcompletion_matches): Ditto.
+	* oct-hist.cc (Fedit_history, Fhistory, Frun_history): Ditto.
+	* pager.cc (Fdiary): Ditto.
+	* sysdep.cc (Fclc): Ditto.
+	* toplev.cc (Fquit, Fatexit): Ditto.
 	
 1999-11-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -303,11 +318,12 @@
 
 1999-10-23  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
-	* data.cc (Fis_matrix): Texinfoize doc string.  * ov.cc
-	(Vpropagate_empty_matrices): Ditto.  * pr-output.cc
-	(Vfixed_point_format, Voutput_max_field_width, Voutput_precision,
-	Vprint_empty_dimensions, Vsplit_long_rows): Ditto.  * pt-mat.cc:cd
-	(Vempty_list_elements_ok): Ditto.
+	* data.cc (Fis_matrix): Texinfoize doc string.
+	* ov.cc	(Vpropagate_empty_matrices): Ditto.
+	* pt-mat.cc: (Vempty_list_elements_ok): Ditto.
+	* pr-output.cc (Vfixed_point_format, Voutput_max_field_width,
+	Voutput_precision, Vprint_empty_dimensions, Vsplit_long_rows):
+	Ditto.
 
 1999-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

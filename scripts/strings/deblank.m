@@ -17,9 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  deblank (s)
-##
-## Remove trailing blanks from the string s.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} deblank (@var{s})
+## Removes the trailing blanks from the string @var{s}. 
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

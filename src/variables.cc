@@ -367,8 +367,19 @@ looks_like_struct (const string& text)
 }
 
 DEFUN (is_global, args, ,
-  "is_global (X): return 1 if the string X names a global variable\n\
-otherwise, return 0.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_global (@var{name})\n\
+Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For\n\
+example,\n\
+\n\
+@example\n\
+@group\n\
+global x\n\
+is_global (\"x\")\n\
+     @result{} 1\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval = 0.0;
 
@@ -396,20 +407,18 @@ otherwise, return 0.")
 }
 
 DEFUN (exist, args, ,
-  "exist (NAME): check if variable or file exists\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} exist (@var{name})\n\
+Return 1 if the name exists as a variable, 2 if the name (after\n\
+appending @samp{.m}) is a function file in the path, 3 if the name is a\n\
+@samp{.oct} file in the path, or 5 if the name is a built-in function.\n\
+Otherwise, return 0.\n\
 \n\
-returns:\n\
-\n\
-   0 : NAME is undefined\n\
-   1 : NAME is a variable\n\
-   2 : NAME is a function\n\
-   3 : NAME is a .oct file in the current LOADPATH\n\
-   5 : NAME is a built-in function\n\
-\n\
-This function also returns 2 if a regular file called NAME exists in\n\
-Octave's LOADPATH.  If you want information about other types of\n\
-files, you should use some combination of the functions file_in_path\n\
-and stat instead.")
+This function also returns 2 if a regular file called @var{name}\n\
+exists in Octave's @code{LOADPATH}.  If you want information about\n\
+other types of files, you should use some combination of the functions\n\
+@code{file_in_path} and @code{stat} instead.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -757,9 +766,10 @@ force_link_to_function (const string& id_name)
 }
 
 DEFUN (document, args, ,
-  "document (NAME, STRING)\n\
-\n\
-Associate a cryptic message with a variable name.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} document (@var{symbol}, @var{text})\n\
+Set the documentation string for @var{symbol} to @var{text}.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -901,10 +911,42 @@ do_who (int argc, const string_vector& argv)
 }
 
 DEFUN_TEXT (who, args, ,
-  "who [-all] [-builtins] [-functions] [-long] [-variables]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} who options pattern @dots{}\n\
+@deffnx {Command} whos options pattern @dots{}\n\
+List currently defined symbols matching the given patterns.  The\n\
+following are valid options.  They may be shortened to one character but\n\
+may not be combined.\n\
 \n\
-List currently defined symbol(s).  Options may be shortened to one\n\
-character, but may not be combined.")
+@table @code\n\
+@item -all\n\
+List all currently defined symbols.\n\
+\n\
+@item -builtins\n\
+List built-in variables and functions.  This includes all currently\n\
+compiled function files, but does not include all function files that\n\
+are in the @code{LOADPATH}.\n\
+\n\
+@item -functions\n\
+List user-defined functions.\n\
+\n\
+@item -long\n\
+Print a long listing including the type and dimensions of any symbols.\n\
+The symbols in the first column of output indicate whether it is\n\
+possible to redefine the symbol, and whether it is possible for it to be\n\
+cleared.\n\
+\n\
+@item -variables\n\
+List user-defined variables.\n\
+@end table\n\
+\n\
+Valid patterns are the same as described for the @code{clear} command\n\
+above.  If no patterns are supplied, all symbols from the given category\n\
+are listed.  By default, only user defined functions and variables\n\
+visible in the local scope are displayed.\n\
+\n\
+The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -1031,14 +1073,48 @@ bind_builtin_variable (const string& varname, const octave_value& val,
 // Deleting names from the symbol tables.
 
 DEFUN_TEXT (clear, args, ,
-  "clear [-x] [name ...]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} clear [-x] pattern @dots{}\n\
+Delete the names matching the given patterns from the symbol table.  The\n\
+pattern may contain the following special characters:\n\
+@table @code\n\
+@item ?\n\
+Match any single character.\n\
 \n\
-Clear symbol(s) matching a list of globbing patterns.\n\
+@item *\n\
+Match zero or more characters.\n\
 \n\
-If no arguments are given, clear all user-defined variables and\n\
-functions.\n\
+@item [ @var{list} ]\n\
+Match the list of characters specified by @var{list}.  If the first\n\
+character is @code{!} or @code{^}, match all characters except those\n\
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
+match all lower and upper case alphabetic characters.\n\
+@end table\n\
 \n\
-With -x, exclude the named variables")
+For example, the command\n\
+\n\
+@example\n\
+clear foo b*r\n\
+@end example\n\
+\n\
+@noindent\n\
+clears the name @code{foo} and all names that begin with the letter\n\
+@code{b} and end with the letter @code{r}.\n\
+\n\
+If @code{clear} is called without any arguments, all user-defined\n\
+variables (local and global) are cleared from the symbol table.  If\n\
+@code{clear} is called with at least one argument, only the visible\n\
+names matching the arguments are cleared.  For example, suppose you have\n\
+defined a function @code{foo}, and then hidden it by performing the\n\
+assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once\n\
+will clear the variable definition and restore the definition of\n\
+@code{foo} as a function.  Executing @kbd{clear foo} a second time will\n\
+clear the function definition.\n\
+\n\
+With -x, clear the variables that don't match the patterns.\n\
+\n\
+This command may not be used within a function body.\n\
+@end deffn")
 {
   octave_value_list retval;
 

@@ -82,137 +82,57 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Element by element vector by scalar ops.
 
-KL_VEC_TYPE
-operator + (const KL_VEC_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (+);
-  return KL_VEC_TYPE (result, l);
-}
+#define KL_VS_OP(OP) \
+  KL_VEC_TYPE \
+  operator OP (const KL_VEC_TYPE& a, const TYPE& s) \
+  { \
+    DO_VS_OP (OP); \
+    return KL_VEC_TYPE (result, l); \
+  }
 
-KL_VEC_TYPE
-operator - (const KL_VEC_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (-);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-operator * (const KL_VEC_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (*);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-operator / (const KL_VEC_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (/);
-  return KL_VEC_TYPE (result, l);
-}
+KL_VS_OP (+)
+KL_VS_OP (-)
+KL_VS_OP (*)
+KL_VS_OP (/)
 
 // Element by element scalar by vector ops.
 
-KL_VEC_TYPE
-operator + (const TYPE& s, const KL_VEC_TYPE& a)
-{
-  DO_SV_OP (+);
-  return KL_VEC_TYPE (result, l);
-}
+#define KL_SV_OP(OP) \
+  KL_VEC_TYPE \
+  operator OP (const TYPE& s, const KL_VEC_TYPE& a) \
+  { \
+    DO_SV_OP (OP); \
+    return KL_VEC_TYPE (result, l); \
+  }
 
-KL_VEC_TYPE
-operator - (const TYPE& s, const KL_VEC_TYPE& a)
-{
-  DO_SV_OP (-);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-operator * (const TYPE& s, const KL_VEC_TYPE& a)
-{
-  DO_SV_OP (*);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-operator / (const TYPE& s, const KL_VEC_TYPE& a)
-{
-  DO_SV_OP (/);
-  return KL_VEC_TYPE (result, l);
-}
+KL_SV_OP (+)
+KL_SV_OP (-)
+KL_SV_OP (*)
+KL_SV_OP (/)
 
 // Element by element vector by vector ops.
 
-KL_VEC_TYPE
-operator + (const KL_VEC_TYPE& a, const KL_VEC_TYPE& b)
-{
-  int l = a.length ();
-  if (l != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array addition attempted");
-      return KL_VEC_TYPE ();
-    }
+#define KL_VV_OP(FCN, OP, OP_STR) \
+  KL_VEC_TYPE \
+  FCN (const KL_VEC_TYPE& a, const KL_VEC_TYPE& b) \
+  { \
+    int l = a.length (); \
+    if (l != b.length ()) \
+      { \
+        (*current_liboctave_error_handler) \
+	  ("nonconformant array " OP_STR " attempted"); \
+        return KL_VEC_TYPE (); \
+      } \
+    if (l == 0) \
+      return KL_VEC_TYPE (); \
+    DO_VV_OP (OP); \
+    return KL_VEC_TYPE (result, l); \
+  }
 
-  if (l == 0)
-    return KL_VEC_TYPE ();
-
-  DO_VV_OP (+);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-operator - (const KL_VEC_TYPE& a, const KL_VEC_TYPE& b)
-{
-  int l = a.length ();
-  if (l != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array subtraction attempted");
-      return KL_VEC_TYPE ();
-    }
-
-  if (l == 0)
-    return KL_VEC_TYPE ();
-
-  DO_VV_OP (-);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-product (const KL_VEC_TYPE& a, const KL_VEC_TYPE& b)
-{
-  int l = a.length ();
-  if (l != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array product attempted");
-      return KL_VEC_TYPE ();
-    }
-
-  if (l == 0)
-    return KL_VEC_TYPE ();
-
-  DO_VV_OP (*);
-  return KL_VEC_TYPE (result, l);
-}
-
-KL_VEC_TYPE
-quotient (const KL_VEC_TYPE& a, const KL_VEC_TYPE& b)
-{
-  int l = a.length ();
-  if (l != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array quotient attempted");
-      return KL_VEC_TYPE ();
-    }
-
-  if (l == 0)
-    return KL_VEC_TYPE ();
-
-  DO_VV_OP (/);
-  return KL_VEC_TYPE (result, l);
-}
+KL_VV_OP(operator +, +, "addition")
+KL_VV_OP(operator -, -, "subtraction")
+KL_VV_OP(product, *, "product")
+KL_VV_OP(quotient, /, "quotient")
 
 // Unary MArray ops.
 
@@ -233,145 +153,59 @@ operator - (const KL_VEC_TYPE& a)
 
 // Element by element matrix by scalar ops.
 
-KL_MAT_TYPE
-operator + (const KL_MAT_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (+);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
+#define KL_MS_OP(OP) \
+  KL_MAT_TYPE \
+  operator OP (const KL_MAT_TYPE& a, const TYPE& s) \
+  { \
+    DO_VS_OP (OP); \
+    return KL_MAT_TYPE (result, a.rows (), a.cols ()); \
+  }
 
-KL_MAT_TYPE
-operator - (const KL_MAT_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (-);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
-
-KL_MAT_TYPE
-operator * (const KL_MAT_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (*);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
-
-KL_MAT_TYPE
-operator / (const KL_MAT_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (/);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
+KL_MS_OP(+)
+KL_MS_OP(-)
+KL_MS_OP(*)
+KL_MS_OP(/)
 
 // Element by element scalar by matrix ops.
 
-KL_MAT_TYPE
-operator + (const TYPE& s, const KL_MAT_TYPE& a)
-{
-  DO_SV_OP (+);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
+#define KL_SM_OP(OP) \
+  KL_MAT_TYPE \
+  operator OP (const TYPE& s, const KL_MAT_TYPE& a) \
+  { \
+    DO_SV_OP (OP); \
+    return KL_MAT_TYPE (result, a.rows (), a.cols ()); \
+  }
 
-KL_MAT_TYPE
-operator - (const TYPE& s, const KL_MAT_TYPE& a)
-{
-  DO_SV_OP (-);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
-
-KL_MAT_TYPE
-operator * (const TYPE& s, const KL_MAT_TYPE& a)
-{
-  DO_SV_OP (*);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
-
-KL_MAT_TYPE
-operator / (const TYPE& s, const KL_MAT_TYPE& a)
-{
-  DO_SV_OP (/);
-  return KL_MAT_TYPE (result, a.rows (), a.cols ());
-}
+KL_SM_OP(+)
+KL_SM_OP(-)
+KL_SM_OP(*)
+KL_SM_OP(/)
 
 // Element by element matrix by matrix ops.
 
-KL_MAT_TYPE
-operator + (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array addition attempted");
-      return KL_MAT_TYPE ();
-    }
+#define KL_MM_OP(FCN, OP, OP_STR) \
+  KL_MAT_TYPE \
+  FCN (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b) \
+  { \
+    int r = a.rows (); \
+    int c = a.cols (); \
+    if (r != b.rows () || c != b.cols ()) \
+      { \
+        (*current_liboctave_error_handler) \
+	  ("nonconformant array " OP_STR " attempted"); \
+        return KL_MAT_TYPE (); \
+      } \
+    if (r == 0 || c == 0) \
+      return KL_MAT_TYPE (r, c); \
+    int l = a.length (); \
+    DO_VV_OP (+); \
+    return KL_MAT_TYPE (result, r, c); \
+  }
 
-  if (r == 0 || c == 0)
-    return KL_MAT_TYPE (r, c);
-
-  int l = a.length ();
-  DO_VV_OP (+);
-  return KL_MAT_TYPE (result, r, c);
-}
-
-KL_MAT_TYPE
-operator - (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array subtraction attempted");
-      return KL_MAT_TYPE ();
-    }
-
-  if (r == 0 || c == 0)
-    return KL_MAT_TYPE (r, c);
-
-  int l = a.length ();
-  DO_VV_OP (-);
-  return KL_MAT_TYPE (result, r, c);
-}
-
-KL_MAT_TYPE
-product (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array product attempted");
-      return KL_MAT_TYPE ();
-    }
-
-  if (r == 0 || c == 0)
-    return KL_MAT_TYPE (r, c);
-
-  int l = a.length ();
-  DO_VV_OP (*);
-  return KL_MAT_TYPE (result, r, c);
-}
-
-KL_MAT_TYPE
-quotient (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array quotient attempted");
-      return KL_MAT_TYPE ();
-    }
-
-  if (r == 0 || c == 0)
-    return KL_MAT_TYPE (r, c);
-
-  int l = a.length ();
-  DO_VV_OP (/);
-  return KL_MAT_TYPE (result, r, c);
-}
+KL_MM_OP (operator +, +, "addition")
+KL_MM_OP (operator -, -, "subtraction")
+KL_MM_OP (product, *, "product")
+KL_MM_OP (quotient, /, "quotient")
 
 // Unary matrix ops.
 
@@ -392,90 +226,53 @@ operator - (const KL_MAT_TYPE& a)
 
 // Element by element MDiagArray by scalar ops.
 
-KL_DMAT_TYPE
-operator * (const KL_DMAT_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (*);
-  return KL_DMAT_TYPE (result, a.rows (), a.cols ());
-}
+#define KL_DMS_OP(OP) \
+  KL_DMAT_TYPE \
+  operator OP (const KL_DMAT_TYPE& a, const TYPE& s) \
+  { \
+    DO_VS_OP (OP); \
+    return KL_DMAT_TYPE (result, a.rows (), a.cols ()); \
+  }
 
-KL_DMAT_TYPE
-operator / (const KL_DMAT_TYPE& a, const TYPE& s)
-{
-  DO_VS_OP (/);
-  return KL_DMAT_TYPE (result, a.rows (), a.cols ());
-}
+KL_DMS_OP (*)
+KL_DMS_OP (/)
 
 // Element by element scalar by MDiagArray ops.
 
-KL_DMAT_TYPE
-operator * (const TYPE& s, const KL_DMAT_TYPE& a)
-{
-  DO_SV_OP (*);
-  return KL_DMAT_TYPE (result, a.rows (), a.cols ());
-}
+#define KL_SDM_OP(OP) \
+  KL_DMAT_TYPE \
+  operator OP (const TYPE& s, const KL_DMAT_TYPE& a) \
+  { \
+    DO_SV_OP (OP); \
+    return KL_DMAT_TYPE (result, a.rows (), a.cols ()); \
+  }
+
+KL_SDM_OP (*)
 
 // Element by element MDiagArray by MDiagArray ops.
 
-KL_DMAT_TYPE
-operator + (const KL_DMAT_TYPE& a, const KL_DMAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant diagonal array addition attempted");
-      return KL_DMAT_TYPE ();
-    }
+#define KL_DMDM_OP(FCN, OP, OP_STR) \
+  KL_DMAT_TYPE \
+  FCN (const KL_DMAT_TYPE& a, const KL_DMAT_TYPE& b) \
+  { \
+    int r = a.rows (); \
+    int c = a.cols (); \
+    if (r != b.rows () || c != b.cols ()) \
+      { \
+        (*current_liboctave_error_handler) \
+	  ("nonconformant diagonal array " OP_STR " attempted"); \
+        return KL_DMAT_TYPE (); \
+      } \
+    if (c == 0 || r == 0) \
+      return KL_DMAT_TYPE (); \
+    int l = a.length (); \
+    DO_VV_OP (OP); \
+    return KL_DMAT_TYPE (result, r, c); \
+  }
 
-  if (c == 0 || r == 0)
-    return KL_DMAT_TYPE ();
-
-  int l = a.length ();
-  DO_VV_OP (+);
-  return KL_DMAT_TYPE (result, r, c);
-}
-
-KL_DMAT_TYPE
-operator - (const KL_DMAT_TYPE& a, const KL_DMAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant diagonal array subtraction attempted");
-      return KL_DMAT_TYPE ();
-    }
-
-  if (c == 0 || r == 0)
-    return KL_DMAT_TYPE ();
-
-  int l = a.length ();
-  DO_VV_OP (-);
-  return KL_DMAT_TYPE (result, r, c);
-}
-
-KL_DMAT_TYPE
-product (const KL_DMAT_TYPE& a, const KL_DMAT_TYPE& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant diagonal array product attempted");
-      return KL_DMAT_TYPE ();
-    }
-
-  if (c == 0 || r == 0)
-    return KL_DMAT_TYPE ();
-
-  int l = a.length ();
-  DO_VV_OP (*);
-  return KL_DMAT_TYPE (result, r, c);
-}
+KL_DMDM_OP (operator +, +, "addition")
+KL_DMDM_OP (operator -, -, "subtraction")
+KL_DMDM_OP (product, *, "product")
 
 // Unary MDiagArray ops.
 

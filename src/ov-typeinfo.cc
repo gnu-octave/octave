@@ -35,7 +35,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "oct-obj.h"
 
-octave_value_typeinfo *octave_value_typeinfo::instance = 0;
+const int
+octave_value_typeinfo::init_tab_sz (16);
+
+octave_value_typeinfo *
+octave_value_typeinfo::instance (0);
 
 #include <Array.cc>
 #include <Array2.cc>

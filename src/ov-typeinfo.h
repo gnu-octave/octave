@@ -85,14 +85,16 @@ public:
 protected:
 
   octave_value_typeinfo (void)
-    : num_types (0), types (32, string ()),
-      binary_ops (octave_value::num_binary_ops, 32, 32,
-		  (binary_op_fcn) 0),
-      assign_ops (32, 32, (assign_op_fcn) 0),
-      pref_assign_conv (32, 32, -1),
-      widening_ops (32, 32, (type_conv_fcn) 0)  { }
+    : num_types (0), types (init_tab_sz, string ()),
+      binary_ops (octave_value::num_binary_ops, init_tab_sz,
+		  init_tab_sz, (binary_op_fcn) 0),
+      assign_ops (init_tab_sz, init_tab_sz, (assign_op_fcn) 0),
+      pref_assign_conv (init_tab_sz, init_tab_sz, -1),
+      widening_ops (init_tab_sz, init_tab_sz, (type_conv_fcn) 0)  { }
 
 private:
+
+  static const int init_tab_sz;
 
   static octave_value_typeinfo *instance;
 

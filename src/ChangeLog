@@ -1,5 +1,10 @@
 Thu Nov  7 07:59:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-fvc.cc (tree_indirect_ref::reference): If the lhs object is
+	not a map, convert it to one.
+
+	* ov-typeinfo.h (init_tab_sz): New static member.
+
 	* ov-struct.cc, ov-struct.h: Add hooks for custom memory management.
 	* ov-scalar.cc, ov-scalar.h: Likewise.
 	* ov-re-mat.cc, ov-re-mat.h: Likewise.

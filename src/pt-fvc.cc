@@ -531,14 +531,14 @@ tree_indirect_ref::reference (void)
       if (id)
 	{
 	  octave_value& tmp = id->reference ();
-	  if (tmp.is_undefined ())
+	  if (tmp.is_undefined () || ! tmp.is_map ())
 	    tmp = Octave_map ();
 	  return tmp.struct_elt_ref (nm);
 	}
       else if (indir)
 	{
 	  octave_value& tmp = indir->reference ();
-	  if (tmp.is_undefined ())
+	  if (tmp.is_undefined () || ! tmp.is_map ())
 	    tmp = Octave_map ();
 	  return tmp.struct_elt_ref (nm);
 	}

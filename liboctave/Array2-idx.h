@@ -374,15 +374,15 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		{
 		  int new_nc = nc;
 
-		  int idx = 0;
+		  int iidx = 0;
 
 		  for (int j = 0; j < nc; j++)
-		    if (j == idx_j.elem (idx))
+		    if (j == idx_j.elem (iidx))
 		      {
-			idx++;
+			iidx++;
 			new_nc--;
 
-			if (idx == num_to_delete)
+			if (iidx == num_to_delete)
 			  break;
 		      }
 
@@ -391,11 +391,11 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      T *new_data = new T [nr * new_nc];
 
 		      int jj = 0;
-		      idx = 0;
+		      iidx = 0;
 		      for (int j = 0; j < nc; j++)
 			{
-			  if (idx < num_to_delete && j == idx_j.elem (idx))
-			    idx++;
+			  if (iidx < num_to_delete && j == idx_j.elem (iidx))
+			    iidx++;
 			  else
 			    {
 			      for (int i = 0; i < nr; i++)

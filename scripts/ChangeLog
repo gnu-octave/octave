@@ -1,3 +1,8 @@
+2002-04-23  Paul Kienzle <pkienzle@users.sf.net>
+
+	* image/rgb2hsv.m: Faster, more accurate, remove the
+	divide by zero warning.
+
 2002-04-09  Paul Kienzle <pkienzle@users.sf.net>
 
 	* strings/deblank.m: Trim \0 as well as blank.

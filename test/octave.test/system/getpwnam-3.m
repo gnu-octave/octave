@@ -1,0 +1,1 @@
+getpwnam ("foo", 1)

@@ -1,0 +1,1 @@
+getenv ("foo", 1)

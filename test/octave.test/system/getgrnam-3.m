@@ -1,0 +1,1 @@
+getgrnam ("foo", 1)

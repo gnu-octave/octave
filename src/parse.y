@@ -242,6 +242,12 @@ input		: '\n'
 		    promptflag = 1;
 		    YYABORT;
 		  }
+		| simple_list
+		  {
+		    global_command = $1;
+		    promptflag = 1;
+		    YYACCEPT;
+		  }
 		| simple_list '\n'
 		  {
 		    global_command = $1;
@@ -261,6 +267,8 @@ input		: '\n'
 		| error END_OF_INPUT
 		  { ABORT_PARSE; }
 		| simple_list error
+		  { ABORT_PARSE; }
+		| simple_list error '\n'
 		  { ABORT_PARSE; }
 		| simple_list error END_OF_INPUT
 		  { ABORT_PARSE; }

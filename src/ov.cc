@@ -55,7 +55,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-mapper.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
-#include "ov-re-nd-array.h"
 #include "ov-typeinfo.h"
 
 #include "defun.h"

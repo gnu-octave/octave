@@ -307,7 +307,7 @@ subst_octave_home (char *s)
       char *p2 = p1;
       char *pdest = retval;
 
-// Is this really a good way to do this?
+      // Is this really a good way to do this?
 
       while (count >= 0)
 	{
@@ -644,8 +644,8 @@ parse_fcn_file (int exec_script, char *ff)
 
   if (ffile)
     {
-// Check to see if this file defines a function or is just a list of
-// commands.
+      // Check to see if this file defines a function or is just a
+      // list of commands.
 
       char *tmp_help_txt = gobble_leading_white_space (ffile);
 
@@ -684,8 +684,13 @@ parse_fcn_file (int exec_script, char *ff)
 	}
       else if (exec_script)
 	{
-// The value of `reading_fcn_file' will be restored to the proper value
-// when we unwind from this frame.
+	  // We don't need this now.
+
+	  delete [] tmp_help_txt;
+
+	  // The value of `reading_fcn_file' will be restored to the
+	  // proper value when we unwind from this frame.
+
 	  reading_fcn_file = old_reading_fcn_file_state;
 
 	  unwind_protect_int (reading_script_file);
@@ -710,7 +715,7 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 
   char *nm = sym_rec->name ();
 
-// This is needed by yyparse.
+  // This is needed by yyparse.
 
   curr_fcn_file_name = nm;
 
@@ -743,27 +748,27 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 int
 lookup (symbol_record *sym_rec, int exec_script)
 {
-  int script_file_executed = 0;
+  int script_executed = 0;
 
   if (! sym_rec->is_linked_to_global ())
     {
       if (sym_rec->is_defined ())
 	{
 	  if (sym_rec->is_function () && symbol_out_of_date (sym_rec))
-	    script_file_executed = load_fcn_from_file (sym_rec, exec_script);
+	    script_executed = load_fcn_from_file (sym_rec, exec_script);
 	}
       else if (! sym_rec->is_formal_parameter ())
 	{
 	  link_to_builtin_or_function (sym_rec);
-	  
+
 	  if (! sym_rec->is_defined ())
-	    script_file_executed = load_fcn_from_file (sym_rec, exec_script);
+	    script_executed = load_fcn_from_file (sym_rec, exec_script);
 	  else if (sym_rec->is_function () && symbol_out_of_date (sym_rec))
-	    script_file_executed = load_fcn_from_file (sym_rec, exec_script);
+	    script_executed = load_fcn_from_file (sym_rec, exec_script);
 	}
     }
 
-  return script_file_executed;
+  return script_executed;
 }
 
 // Get the symbol record for the given name that is visible in the
@@ -808,7 +813,7 @@ builtin_string_variable (const char *name)
 {
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
 
-// It is a prorgramming error to look for builtins that aren't.
+  // It is a prorgramming error to look for builtins that aren't.
 
   assert (sr);
 
@@ -842,7 +847,7 @@ builtin_real_scalar_variable (const char *name, double& d)
   int status = -1;
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
 
-// It is a prorgramming error to look for builtins that aren't.
+  // It is a prorgramming error to look for builtins that aren't.
 
   assert (sr);
 
@@ -871,7 +876,7 @@ builtin_any_variable (const char *name)
 
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
 
-// It is a prorgramming error to look for builtins that aren't.
+  // It is a prorgramming error to look for builtins that aren't.
 
   assert (sr);
 
@@ -903,11 +908,12 @@ link_to_global_variable (symbol_record *sr)
       return;
     }
 
-// There must be a better way to do this.   XXX FIXME XXX
+  // There must be a better way to do this.   XXX FIXME XXX
 
   if (sr->is_variable ())
     {
-// Would be nice not to have this cast.  XXX FIXME XXX
+      // Would be nice not to have this cast.  XXX FIXME XXX
+
       tree_constant *tmp = (tree_constant *) sr->def ();
       if (tmp)
 	tmp = new tree_constant (*tmp);
@@ -918,8 +924,8 @@ link_to_global_variable (symbol_record *sr)
   else
     sr->clear ();
 
-// If the global symbol is currently defined as a function, we need to
-// hide it with a variable.
+  // If the global symbol is currently defined as a function, we need
+  // to hide it with a variable.
 
   if (gsr->is_function ())
     gsr->define ((tree_constant *) 0);
@@ -995,8 +1001,8 @@ make_name_list (void)
   char **lcl = 0;
   char **ffl = 0;
 
-// Each of these functions returns a new vector of pointers to new
-// strings.
+  // Each of these functions returns a new vector of pointers to new
+  // strings.
 
   key = names (keyword_help (), key_len);
   glb = global_sym_tab->list (glb_len);
@@ -1009,9 +1015,9 @@ make_name_list (void)
 
   char **list = new char * [total_len+1];
   
-// Put all the symbols in one big list.  Only copy pointers, not the
-// strings they point to, then only delete the original array of
-// pointers, and not the strings they point to.
+  // Put all the symbols in one big list.  Only copy pointers, not the
+  // strings they point to, then only delete the original array of
+  // pointers, and not the strings they point to.
 
   int j = 0;
   int i = 0;
@@ -1191,8 +1197,8 @@ do_who (int argc, char **argv, int nargout)
 	break;
     }
 
-// If the user specified -l and nothing else, show variables.  If
-// evaluating this at the top level, also show functions.
+  // If the user specified -l and nothing else, show variables.  If
+  // evaluating this at the top level, also show functions.
 
   if (show_verbose && ! (show_builtins || show_functions || show_variables))
     {
@@ -1431,16 +1437,16 @@ bind_builtin_variable (const char *varname, tree_constant *val,
 {
   symbol_record *sr = global_sym_tab->lookup (varname, 1, 0);
 
-// It is a programming error for a builtin symbol to be missing.
-// Besides, we just inserted it, so it must be there.
+  // It is a programming error for a builtin symbol to be missing.
+  // Besides, we just inserted it, so it must be there.
 
   assert (sr);
 
   sr->unprotect ();
 
-// Must do this before define, since define will call the special
-// variable function only if it knows about it, and it needs to, so
-// that user prefs can be properly initialized.
+  // Must do this before define, since define will call the special
+  // variable function only if it knows about it, and it needs to, so
+  // that user prefs can be properly initialized.
 
   if (sv_fcn)
     sr->set_sv_function (sv_fcn);
@@ -1460,8 +1466,8 @@ bind_builtin_variable (const char *varname, tree_constant *val,
 void
 install_builtin_variables (void)
 {
-// XXX FIXME XX -- these should probably be moved to where they
-// logically belong instead of being all grouped here.
+  // XXX FIXME XX -- these should probably be moved to where they
+  // logically belong instead of being all grouped here.
 
   DEFVAR ("EDITOR", SBV_EDITOR, editor, 0, 0, 1, sv_editor,
     "name of the editor to be invoked by the edit_history command");
@@ -1721,9 +1727,9 @@ With -x, exclude the named variables")
   argc--;
   argv++;
 
-// Always clear the local table, but don't clear currently compiled
-// functions unless we are at the top level.  (Allowing that to happen
-// inside functions would result in pretty odd behavior...)
+  // Always clear the local table, but don't clear currently compiled
+  // functions unless we are at the top level.  (Allowing that to
+  // happen inside functions would result in pretty odd behavior...)
 
   int clear_user_functions = (curr_sym_tab == top_level_sym_tab);
 

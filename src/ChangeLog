@@ -1,3 +1,7 @@
+Fri Jan 31 13:55:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.cc (do_sync): Always flush the cout stream after writing.
+
 Wed Jan 29 08:25:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.cc (exec_path): Don't include bin_dir in std_path.

@@ -958,6 +958,75 @@ DEFUN ("eye", Feye, Seye, 2, 1,
   return retval;
 }
 
+DEFUN ("linspace", Flinspace, Slinspace, 2, 1,
+  "usage: linspace (x1, x2, n)\n\
+\n\
+Return a vector of n equally spaced points between x1 and x2\n\
+inclusive.\n\
+\n\
+If the final argument is omitted, n = 100 is assumed.\n\
+\n\
+All three arguments must be scalars.\n\
+\n\
+See also: logspace")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  int npoints = 100;
+
+  if (nargin == 3)
+    {
+      double n = args(2).double_value ();
+
+      if (! error_state)
+	npoints = NINT (n);
+    }
+  else
+    print_usage ("linspace");
+
+  if (! error_state)
+    {
+      if (npoints > 1)
+	{
+	  tree_constant arg_1 = args(0);
+	  tree_constant arg_2 = args(1);
+
+	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+	    {
+	      Complex x1 = arg_1.complex_value ();
+	      Complex x2 = arg_2.complex_value ();
+
+	      if (! error_state)
+		{
+		  ComplexRowVector rv = linspace (x1, x2, npoints);
+
+		  if (! error_state)
+		    retval (0) = tree_constant (rv, 0);
+		}
+	    }
+	  else
+	    {
+	      double x1 = arg_1.double_value ();
+	      double x2 = arg_2.double_value ();
+
+	      if (! error_state)
+		{
+		  RowVector rv = linspace (x1, x2, npoints);
+
+		  if (! error_state)
+		    retval (0) = tree_constant (rv, 0);
+		}
+	    }
+	}
+      else
+	error ("linspace: npoints must be greater than 2");
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -70,7 +70,10 @@ Array2<T>::index (idx_vector& idx_arg) const
     {
       Array<T> tmp = Array<T>::index (idx_arg);
 
-      retval = Array2<T> (tmp, idx_orig_rows, idx_orig_columns);
+      if (tmp.length () != 0)
+	retval = Array2<T> (tmp, idx_orig_rows, idx_orig_columns);
+      else
+	retval = Array2<T> (tmp, 0, 0);
     }
   else if (nr == 1 || nc == 1)
     {

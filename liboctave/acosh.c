@@ -21,19 +21,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #ifndef HAVE_ACOSH
 
 #include "f77-uscore.h"
 
-extern double F77_FCN (dacosh) (double*);
+extern double F77_FCN (dacosh) (const double&);
 
 double
 acosh (double x)
 {
-  return F77_FCN (dacosh) (&x);
+  return F77_FCN (dacosh) (x);
 }
 
 #endif

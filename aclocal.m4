@@ -154,7 +154,7 @@ for arg in $foutput; do
   case "$old_want_arg" in
     '')
       case $arg in
-	/*.a | /*values-X*.o)
+	/*.a)
 	  exists=false
 	  for f in $lflags; do
 	    if test x$arg = x$f; then
@@ -230,7 +230,7 @@ dnl
       IFS=:
       list=
       for elt in $arg; do
-	list="$list -L $elt"
+	list="$list -L$elt"
       done
       IFS=$SAVE_IFS
       arg="$list"

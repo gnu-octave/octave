@@ -181,6 +181,9 @@ echo "installing image files in $imagedir"
     chmod 644 $imagedir/$file
   done )
 
+echo "creating ls-R file in $datadir/octave"
+ls -R $datadir/octave > $datadir/octave/ls-R
+
 echo "installing info files in $infodir"
 for f in doc/octave.info*
 do

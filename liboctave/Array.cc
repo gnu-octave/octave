@@ -1987,10 +1987,12 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
     {
       Array<T> tmp = Array<T>::index1 (idx_arg, resize_ok);
 
-      if (tmp.length () != 0)
-	retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
-      else
+      int len = tmp.length ();
+
+      if (len == 0 && idx_arg.one_zero_only ())
 	retval = Array<T> (tmp, dim_vector (0, 0));
+      else
+	retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
     }
   else if (nr == 1 || nc == 1)
     {
@@ -1998,7 +2000,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
       // shape as the index.  Otherwise, it has same orientation as
       // indexed object.
 
-      Array<T> tmp = index1 (idx_arg, resize_ok);
+      Array<T> tmp = Array<T>::index1 (idx_arg, resize_ok);
 
       int len = tmp.length ();
 

@@ -29,27 +29,61 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Map.h"
 
-#include "ov.h"
+#include "oct-obj.h"
 
 class string_vector;
 
 class
-Octave_map : public CHMap<octave_value>
+Octave_map
 {
  public:
-  Octave_map (void) : CHMap<octave_value> (octave_value ()) { }
+  Octave_map (void) : map (octave_value_list ()) { }
 
   Octave_map (const std::string& key, const octave_value& value)
-    : CHMap<octave_value> (octave_value ())
+    : map (octave_value_list ())
       {
-	CHMap<octave_value>::operator [] (key) = value;
+	map[key] = octave_value_list (value);
       }
 
-  Octave_map (const Octave_map& m) : CHMap<octave_value> (m) { }
+  Octave_map (const Octave_map& m) : map (m.map) { }
+
+  Octave_map& operator = (const Octave_map& m)
+    {
+      if (this != &m)
+	map = m.map;
+
+      return *this;
+    }
 
   ~Octave_map (void) { }
 
+  int length (void) const { return map.length (); }
+
+  int empty (void) const { return map.empty (); }
+
+  octave_value& operator [] (const std::string& key) { return map[key](0); }
+
+  void del (const std::string& key) { map.del (key); }
+
+  Pix first (void) const { return map.first (); }
+  void next (Pix& i) const { map.next (i); }
+
+  std::string key (Pix p) const { return map.key (p); }
+
+  octave_value& contents (Pix p) const { return map.contents (p)(0); }
+
+  Pix seek (const std::string& key) const { return map.seek (key); }
+
+  int contains (const std::string& key) const { return map.contains (key); }
+
+  void clear (void) { map.clear (); }
+
   string_vector make_name_list (void);
+
+private:
+
+  // The map of names to values.
+  CHMap<octave_value_list> map;
 };
 
 #endif

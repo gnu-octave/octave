@@ -1,5 +1,12 @@
 2002-05-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* TEMPLATE-INST/Map-oct-obj.cc: New file.
+	* Makefile.in (TI_XSRC): Add it to the list.
+
+	* oct-map.h (Octave_map): Make CHMap<octave_value_list> a data
+	member instead of deriving from CHMap<octave_value>, in
+	preparation for structure arrays.
+
 	* pt-indir.h, pt-indir.cc: Delete.
 
 	* pt-all.h: Don't include pt-indir.h.

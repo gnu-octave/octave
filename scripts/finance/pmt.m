@@ -19,7 +19,7 @@
 ## Return the amount of periodic payment necessary to amortize a loan
 ## of amount a with interest rate @var{r} in @var{n} periods.
 ##
-## The optional argument @var{l} may be used to specify an initial
+## The optional argument @var{l} may be used to specify an terminal
 ## lump-sum payment.
 ##
 ## The optional argument @var{method} may be used to specify whether
@@ -33,15 +33,15 @@
 
 function p = pmt (r, n, a, l, m)
 
-  if ((nargin < 3) || (nargin > 5))
+  if (nargin < 3 || nargin > 5)
     usage ("pmt (r, n, a, l, method)");
   endif
 
-  if (! (is_scalar (r) && (r > -1)))
+  if (! (is_scalar (r) && r > -1))
     error ("pmt: rate must be a scalar > -1");
-  elseif (! (is_scalar (n) && (n > 0)))
+  elseif (! (is_scalar (n) && n > 0))
     error ("pmt: n must be a positive scalar");
-  elseif (! (is_scalar (a) && (a > 0)))
+  elseif (! (is_scalar (a) && a > 0))
     error ("pmt: a must be a positive scalar");
   endif
 

@@ -39,8 +39,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
    is necessary.  */
 
 F77_RET_T
-F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
+#if defined (F77_USES_CRAY_CALLING_CONVENTION)
+F77_FUNC (xstopx, XSTOPX) (octave_cray_ftn_ch_dsc desc)
+#elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
+F77_FUNC (xstopx, XSTOPX) (const char *s, int slen)
+#else
+F77_FUNC (xstopx, XSTOPX) (const char *s, long slen)
+#endif
 {
+#if defined (F77_USES_CRAY_CALLING_CONVENTION)
+  const char *s = desc.const_ptr = ptr_arg;
+  unsigned long slen = desc.mask.len;
+#endif
+
   f77_exception_encountered = 1;
 
   /* Skip printing message if it is just a single blank character.  */

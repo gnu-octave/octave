@@ -1,3 +1,10 @@
+2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/f77-fcn.c: Handle Cray, CVF, and f2c calling conventions.
+
+	* misc/f77-fcn.h (xstopx): Use F77_CHAR_ARG_DECL and
+	F77_CHAR_ARG_LEN_DECL in declaration.
+
 2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/quit.h (OCTAVE_QUIT): Set octave_interrupt_state to -1

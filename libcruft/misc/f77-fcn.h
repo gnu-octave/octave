@@ -176,7 +176,8 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #endif
 
 extern F77_RET_T
-F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen) GCC_ATTR_NORETURN;
+F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
+			   F77_CHAR_ARG_LEN_DECL) GCC_ATTR_NORETURN;
 
 #ifdef __cplusplus
 }

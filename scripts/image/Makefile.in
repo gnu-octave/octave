@@ -63,6 +63,7 @@ uninstall:
 .PHONY: uninstall
 
 clean:
+	rm -f octtopnm.o octtopnm
 .PHONY: clean
 
 tags: $(SOURCES)

@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 1996, 1997 A. S. Hodel <scotte@eng.auburn.edu>
 ##
 ## This file is part of Octave.
 ##
@@ -17,31 +17,28 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: is_symmetric (x {,tol})
+## Usage: is_duplicate_entry (x)
 ##
-## If x is symmetric, return the dimension of x, otherwise, return 0.
-##
-## See also: size, rows, columns, length, is_matrix, is_scalar,
-## is_square, is_vector
+## Return non-zero if any entries in x are duplicates of one another.
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
 
-function retval = is_symmetric (x,tol)
+function retval = is_duplicate_entry (x)
 
-  if (nargin == 1 || nargin == 2)
-    retval = is_square (x);
-    if (retval != 0)
-      if (nargin == 1)
-	tol = eps;
-      endif
-      if (norm (x - x') / norm(x) > tol)
-        retval = 0;
-      endif
+  if (nargin == 1)
+    if (is_matrix (x))
+      [m, n] = size (x);
+      lx = m*n;
+      lx1 = lx-1;
+      x = sort (reshape (x, 1, lx));
+      dx = x(1:lx1) - x(2:lx);
+      retval = sum (dx == 0);
+    else
+      error ("is_duplicate_entry: expecting matrix argument");
     endif
   else
-    usage ("is_symmetric (x {,tol})");
+    usage ("is_duplicate_entry (x)");
   endif
 
 endfunction
+  

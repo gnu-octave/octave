@@ -355,14 +355,6 @@ octave_user_function::do_multi_index_op (int nargout,
 
   unwind_protect::add (clear_param_list, param_list);
 
-  if (ret_list && Vdefine_all_return_values)
-    {
-      octave_value tmp = builtin_any_variable ("default_return_value");
-
-      if (tmp.is_defined ())
-	ret_list->initialize_undefined_elements (tmp);
-    }
-
   // Force return list to be undefined when this function exits.
   // Doing so decrements the reference counts on the values of local
   // variables that are also named values returned by this function.
@@ -411,7 +403,17 @@ octave_user_function::do_multi_index_op (int nargout,
     // Copy return values out.
 
     if (ret_list)
-      retval = ret_list->convert_to_const_vector (vr_list);
+      {
+	if (Vdefine_all_return_values)
+	  {
+	    octave_value tmp = builtin_any_variable ("default_return_value");
+
+	    if (tmp.is_defined ())
+	      ret_list->initialize_undefined_elements (tmp);
+	  }
+
+	retval = ret_list->convert_to_const_vector (vr_list);
+      }
     else if (Vreturn_last_computed_value)
       retval(0) = last_computed_value;
   }

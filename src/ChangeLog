@@ -1,5 +1,13 @@
 2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Handle define_all_return_values after function is evaluated.
+	From Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>.
+
+	* ov-scalar.cc (convert_to_str): Use octave_value (std::string)
+	constructor instead of octave_value (char *) constructor so that
+	setstr (0) will work.
+
 	* pager.cc (octave_pager_buf::sync): Set pointer to beginning
 	of buffer after calling flush_currnt_contents_to_diary.
 	(octave_diary_buf::sync): Call eback only once.

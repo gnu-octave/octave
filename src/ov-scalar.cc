@@ -98,12 +98,8 @@ octave_scalar::convert_to_str (void) const
   else
     {
       // XXX FIXME XXX -- warn about out of range conversions?
-
-      int i = NINT (scalar);
-      char s[2];
-      s[0] = (char) i;
-      s[1] = '\0';
-      retval = octave_value (s);
+      
+      retval = octave_value (std::string (1, char (NINT (scalar))));
     }
 
   return retval;

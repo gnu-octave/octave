@@ -889,7 +889,7 @@ octave_base_stream::do_read (int nr, int nc, data_type dt, int skip,
 
 	      if (is)
 		{
-		  double tmp;
+		  double tmp = 0.0;
 
 		  switch (dt)
 		    {

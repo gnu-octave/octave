@@ -86,9 +86,14 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
 	    //
 	    //  x = []; x(i).f = rhs
 
-	    octave_value tmp = octave_value::empty_conv (type, rhs);
+	    if (type[1] == '.')
+	      {
+		octave_value tmp = octave_value::empty_conv (type, rhs);
 
-	    retval = tmp.subsasgn (type, idx, rhs);
+		retval = tmp.subsasgn (type, idx, rhs);
+	      }
+	    else
+	      error ("invalid assignment expression");
 	  }
 	else
 	  {

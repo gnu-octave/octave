@@ -149,7 +149,7 @@ tree_static_command::do_init (tree_decl_elt& elt)
 
       octave_lvalue ult = id->lvalue ();
 
-      if (ult.is_defined ())
+      if (ult.is_undefined ())
 	{
 	  tree_expression *expr = elt.expression ();
 

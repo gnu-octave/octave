@@ -1,5 +1,8 @@
 2004-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-base-mat.cc (octave_base_matrix<MT>::subsasgn): Don't allow
+	expressions like x(i)(j) or x(i){j} when x is empty.
+
 	* load-save.cc (get_file_format): Error if file does not exist.
 	(Fload): Also complain here if specific file type is specified and
 	file does not exist.

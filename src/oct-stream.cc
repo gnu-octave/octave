@@ -1106,6 +1106,32 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, char* valptr)
   return is >> valptr;
 }
 
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, long int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, short int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, unsigned int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, unsigned long int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, unsigned short int*);
+
+#if 0
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, float*);
+#endif
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, double*);
+
 #endif
 
 template <class T>

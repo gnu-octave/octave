@@ -1,5 +1,7 @@
 2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc: Explicitly instantiate octave_scan functions.
+
 	* TEMPLATE-INST/Array-tc.cc, TEMPLATE-INST/Array-c.cc,
 	TEMPLATE-INST/Array-os.cc, TEMPLATE-INST/Array-sym.cc,
 	ov-typeinfo.cc: Use new INSTANTIATE_ARRAY macro.

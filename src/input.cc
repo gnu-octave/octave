@@ -403,13 +403,11 @@ gnu_readline (const char *s)
     {
       char *tmp = retval = ::readline (s);
 
-      if (tmp)
+      if (tmp && strlen (tmp) == 0)
 	{
-	  int len = strlen (tmp);
-	  retval = (char *) malloc (len + 2);
-	  strcpy (retval, tmp);
-	  retval[len] = '\n';
-	  retval[len+1] = '\0';
+	  retval = (char *) malloc (2);
+	  retval[0] = '\n';
+	  retval[1] = '\0';
 	}
     }
   else

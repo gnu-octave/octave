@@ -1,3 +1,9 @@
+2002-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.37.
+	(OCTAVE_CONTRIB_STATEMENT): New macro.
+	(OCTAVE_STARTUP_MESSAGE): Use it.
+
 2002-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (fill_matrix): If nargin is zero, use val, not 0.0.

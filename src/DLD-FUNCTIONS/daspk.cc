@@ -140,13 +140,33 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
 DEFUN_DLD (daspk, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} daspk (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})\n\
-Return a matrix of states and their first derivatives with respect to\n\
-@var{t}.  Each row in the result matrices correspond to one of the\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} daspk (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
+Solve the set of differential-algebraic equations\n\
+@tex\n\
+$$ 0 = f (\\dot{x}, x, t) $$\n\
+with\n\
+$$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
+@end tex\n\
+@ifinfo\n\
+\n\
+@example\n\
+0 = f (xdot, x, t)\n\
+@end example\n\
+\n\
+with\n\
+\n\
+@example\n\
+x(t_0) = x_0, xdot(t_0) = xdot_0\n\
+@end example\n\
+\n\
+@end ifinfo\n\
+The solution is returned in the matrices @var{x} and @var{xdot},\n\
+with each row in the result matrices corresponding to one of the\n\
 elements in the vector @var{t}.  The first element of @var{t}\n\
-corresponds to the initial state @var{x0} and derivative @var{xdot0}, so\n\
-that the first row of the output @var{x} is @var{x0} and the first row\n\
-of the output @var{xdot} is @var{xdot0}.\n\
+should be @math{t_0} and correspond to the initial state of the\n\
+system @var{x_0} and its derivative @var{xdot_0}, so that the first\n\
+row of the output @var{x} is @var{x_0} and the first row\n\
+of the output @var{xdot} is @var{xdot_0}.\n\
 \n\
 The first argument, @var{fcn}, is a string that names the function to\n\
 call to compute the vector of residuals for the set of equations.\n\
@@ -157,27 +177,61 @@ It must have the form\n\
 @end example\n\
 \n\
 @noindent\n\
-where @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
+in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
 scalar.\n\
+\n\
+If @var{fcn} is a two-element string array, the first element names\n\
+the function @math{f} described above, and the second element names\n\
+a function to compute the modified Jacobian
+\n\
+@tex\n\
+$$\n\
+J = {\\partial f \\over \\partial x}\n\
+  + c {\\partial f \\over \\partial \\dot{x}}\n\
+$$\n\
+@end tex\n\
+@ifinfo\n\
+      df       df\n\
+jac = -- + c ------\n\
+      dx     d xdot\n\
+@example\n\
+@end example\n\
+\n\
+@end ifinfo\n\
+\n\
+The modified Jacobian function must have the form\n\
+\n\
+@example\n\
+\n\
+@var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})\n\
+\n\
+@end example\n\
 \n\
 The second and third arguments to @code{daspk} specify the initial\n\
 condition of the states and their derivatives, and the fourth argument\n\
-specifies a vector of output times at which the solution is desired, \n\
+specifies a vector of output times at which the solution is desired,\n\
 including the time corresponding to the initial condition.\n\
 \n\
 The set of initial states and derivatives are not strictly required to\n\
-be consistent.  In practice, however, @sc{Dassl} is not very good at\n\
-determining a consistent set for you, so it is best if you ensure that\n\
-the initial values result in the function evaluating to zero.\n\
+be consistent.  If they are not consistent, you must use the\n\
+@code{daspk_options} function to provide additional information so\n\
+that @code{daspk} can compute a consistent starting point.\n\
 \n\
 The fifth argument is optional, and may be used to specify a set of\n\
 times that the DAE solver should not integrate past.  It is useful for\n\
 avoiding difficulties with singularities and points where there is a\n\
 discontinuity in the derivative.\n\
 \n\
+After a successful computation, the value of @var{istate} will be\n\
+greater than zero (consistent with the Fortran version of @sc{Daspk}).\n\
+\n\
+If the computation is not successful, the value of @var{istate} will be\n\
+less than zero and @var{msg} will contain additional information.\n\
+\n\
 You can use the function @code{daspk_options} to set optional\n\
 parameters for @code{daspk}.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{dassl}")
 {
   octave_value_list retval;
 

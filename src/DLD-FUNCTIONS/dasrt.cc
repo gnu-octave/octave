@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "DASRT-opts.cc"
 
-// Global pointers for user defined function required by dassl.
+// Global pointers for user defined function required by dasrt.
 static octave_function *dasrt_f;
 static octave_function *dasrt_j;
 static octave_function *dasrt_cf;
@@ -235,79 +235,134 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 
 DEFUN_DLD (dasrt, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{t}] =} dasrt (@var{fj} [, @var{g}], @var{x_0}, @var{xdot_0}, @var{t_out} [, @var{t_crit}])\n\
-Solve a system of differential/algebraic equations with functional\n\
-stopping criteria.\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn} [, @var{g}], @var{x_0}, @var{xdot_0}, @var{t} [, @var{t_crit}])\n\
+Solve the set of differential-algebraic equations\n\
+@tex\n\
+$$ 0 = f (\\dot{x}, x, t) $$\n\
+with\n\
+$$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
+@end tex\n\
+@ifinfo\n\
 \n\
-The function to be integrated must be of the form:\n\
 @example\n\
-@var{res} = f (@var{x}, @var{xdot}, @var{t}) = 0\n\
+0 = f (xdot, x, t)\n\
 @end example\n\
 \n\
-The stopping condition must be of the form:\n\
+with\n\
 \n\
 @example\n\
-@var{res} = g (@var{x}, @var{t}) = 0\n\
+x(t_0) = x_0, xdot(t_0) = xdot_0\n\
 @end example\n\
 \n\
-The Jacobian (if included) must be of the form:\n\
+@end ifinfo\n\
+with functional stopping criteria (root solving).\n\
+\n\
+The solution is returned in the matrices @var{x} and @var{xdot},\n\
+with each row in the result matrices corresponding to one of the\n\
+elements in the vector @var{t_out}.  The first element of @var{t}\n\
+should be @math{t_0} and correspond to the initial state of the\n\
+system @var{x_0} and its derivative @var{xdot_0}, so that the first\n\
+row of the output @var{x} is @var{x_0} and the first row\n\
+of the output @var{xdot} is @var{xdot_0}.\n\
+\n\
+The vector @var{t} provides an upper limit on the length of the\n\
+integration.  If the stopping condition is met, the vector\n\
+@var{t_out} will be shorter than @var{t}, and the final element of\n\
+@var{t_out} will be the point at which the stopping condition was met,\n\
+and may not correspond to any element of the vector @var{t}.\n\
+\n\
+The first argument, @var{fcn}, is a string that names the function to\n\
+call to compute the vector of residuals for the set of equations.\n\
+It must have the form\n\
 \n\
 @example\n\
-@var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{cj})\n\
-   =  df/dx + cj*df/dxdot\n\
+@var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
 @end example\n\
 \n\
 @noindent\n\
-The following inputs are entered:\n\
+in which @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
+scalar.\n\
 \n\
-@table @var\n\
-@item fj\n\
-The string vector containing either @var{f} or both @var{f} and @var{j}.\n\
+If @var{fcn} is a two-element string array, the first element names\n\
+the function @math{f} described above, and the second element names\n\
+a function to compute the modified Jacobian
 \n\
-@item f\n\
-The function to be integrated.\n\
+@tex\n\
+$$\n\
+J = {\\partial f \\over \\partial x}\n\
+  + c {\\partial f \\over \\partial \\dot{x}}\n\
+$$\n\
+@end tex\n\
+@ifinfo\n\
 \n\
-@item g\n\
-The function with the stopping conditions.\n\
+@example\n\
+      df       df\n\
+jac = -- + c ------\n\
+      dx     d xdot\n\
+@end example\n\
 \n\
-@item j\n\
-The optional Jacobian function.  If not included, it will be approximated\n\
-by finite differences.\n\
+@end ifinfo\n\
 \n\
-@item x_0\n\
-The initial state.\n\
+The modified Jacobian function must have the form\n\
 \n\
-@item xdot_0\n\
-The time derivative of the initial state.\n\
+@example\n\
 \n\
-@item t_out\n\
-The times at which the solution should be returned.  This vector should\n\
-include the initial time a the first value.\n\
+@var{jac} = j (@var{x}, @var{xdot}, @var{t}, @var{c})\n\
 \n\
-@item t_crit\n\
-The times at which the function is non-smooth or poorly behaved.\n\
+@end example\n\
 \n\
-@end table\n\
+The optional second argument names a function that defines the\n\
+constraint functions whose roots are desired during the integration.\n\
+This function must have the form\n\
 \n\
-@noindent\n\
-The following outputs are returned:\n\
+@example\n\
+@var{g_out} = g (@var{x}, @var{t})\n\
+@end example\n\
 \n\
-@table @var\n\
-@item x\n\
-The states at each time in @var{t}.\n\
+and return a vector of the constraint function values.\n\
+If the value of any of the constraint functions changes sign, @sc{Dasrt}\n\
+will attempt to stop the integration at the point of the sign change.\n\
 \n\
-@item xdot\n\
-The time derivative of the states at each time in @var{t}.\n\
+If the name of the constraint function is omitted, @code{dasrt} solves\n\
+the saem problem as @code{daspk} or @code{dassl}.
 \n\
-@item t\n\
-All the times in the requested output time vector up to the stopping\n\
-criteria.  The time at which the stopping criteria is achieved is returned\n\
-as the last time in the vector.\n\
-@end table\n\
+Note that because of numerical errors in the constraint functions\n\
+due to roundoff and integration error, @sc{Dasrt} may return false\n\
+roots, or return the same root at two or more nearly equal values of\n\
+@var{T}.  If such false roots are suspected, the user should consider\n\
+smaller error tolerances or higher precision in the evaluation of the\n\
+constraint functions.\n\
+\n\
+If a root of some constraint function defines the end of the problem,\n\
+the input to @sc{Dasrt} should nevertheless allow integration to a\n\
+point slightly past that root, so that @sc{Dasrt} can locate the root\n\
+by interpolation.\n\
+\n\
+The third and fourth arguments to @code{dasrt} specify the initial\n\
+condition of the states and their derivatives, and the fourth argument\n\
+specifies a vector of output times at which the solution is desired,\n\
+including the time corresponding to the initial condition.\n\
+\n\
+The set of initial states and derivatives are not strictly required to\n\
+be consistent.  In practice, however, @sc{Dassl} is not very good at\n\
+determining a consistent set for you, so it is best if you ensure that\n\
+the initial values result in the function evaluating to zero.\n\
+\n\
+The sixth argument is optional, and may be used to specify a set of\n\
+times that the DAE solver should not integrate past.  It is useful for\n\
+avoiding difficulties with singularities and points where there is a\n\
+discontinuity in the derivative.\n\
+\n\
+After a successful computation, the value of @var{istate} will be\n\
+greater than zero (consistent with the Fortran version of @sc{Dassl}).\n\
+\n\
+If the computation is not successful, the value of @var{istate} will be\n\
+less than zero and @var{msg} will contain additional information.\n\
 \n\
 You can use the function @code{dasrt_options} to set optional\n\
 parameters for @code{dasrt}.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{daspk, dasrt, lsode, odessa}")
 {
   octave_value_list retval;
 

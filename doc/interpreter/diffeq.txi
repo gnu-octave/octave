@@ -42,6 +42,8 @@ using Hindmarsh's ODE solver @sc{Lsode}.
 
 @DOCSTRING(lsode)
 
+@DOCSTRING(lsode_options)
+
 Here is an example of solving a set of three differential equations using
 @code{lsode}.  Given the function
 
@@ -85,7 +87,13 @@ t = [0, logspace (-1, log10(303), 150), \
 @end group
 @end example
 
-@DOCSTRING(lsode_options)
+Octave also includes @sc{Odessa}, a modification of @sc{Lsode} that
+allows for the computation of parametric sensitivity information
+simultaneously with the solution of the set of ODEs.
+
+@DOCSTRING(odessa)
+
+@DOCSTRING(odessa_options)
 
 See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
 Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
@@ -94,7 +102,7 @@ more information about the inner workings of @code{lsode}.
 @node Differential-Algebraic Equations,  , Ordinary Differential Equations, Differential Equations
 @section Differential-Algebraic Equations
 
-The function @code{dassl} can be used to solve DAEs of the form
+The function @code{daspk} can be used to solve DAEs of the form
 @iftex
 @tex
 $$
@@ -110,11 +118,19 @@ $$
 @end ifinfo
 
 @noindent
-using Petzold's DAE solver @sc{Dassl}.
+using Petzold's DAE solver @sc{Daspk}.
 
-@DOCSTRING(dassl)
+@DOCSTRING(daspk)
 
-@DOCSTRING(dassl_options)
+@DOCSTRING(daspk_options)
+
+Octave also includes @sc{Dassl}, an earlier version of @var{Daspk},
+and @var{dasrt}, which can be used to solve DAEs with constraints
+(stopping conditions).
+
+@DOCSTRING(dasrt)
+
+@DOCSTRING(dasrt_options)
 
 See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989) for

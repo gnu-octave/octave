@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.1.36"
+#define OCTAVE_VERSION "2.1.37"
 
 #define OCTAVE_COPYRIGHT \
   "Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 John W. Eaton."
@@ -37,6 +37,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_WARRANTY_STATEMENT \
   "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTIBILITY or\n\
 FITNESS FOR A PARTICULAR PURPOSE."
+
+#define OCTAVE_CONTRIB_STATEMENT \
+  "Please contribute if you find this software useful.  For more\n\
+information, please visit http://www.octave.org/help-wanted.html"
 
 #define OCTAVE_BUGS_STATEMENT \
   "Report bugs to <bug-octave@bevo.che.wisc.edu>."
@@ -53,15 +57,14 @@ FITNESS FOR A PARTICULAR PURPOSE."
 #define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS(ARG) \
   OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
   ARG \
-  "\n\n" \
   OCTAVE_BUGS_STATEMENT
 
 #define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS ("")
+  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS ("\n\n")
 
 #define OCTAVE_STARTUP_MESSAGE \
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-    ("  For details, type `warranty'.")
+    ("  For details, type `warranty'.\n\n" OCTAVE_CONTRIB_STATEMENT "\n\n")
 
 #endif
 

@@ -253,19 +253,126 @@ make_list (const Array<Matrix>& m_array)
     } \
   while (0)
 
-// --------------------------------
-// Everthing is so great above here
-// --------------------------------
-
 DEFUN_DLD (odessa, args, nargout,
-  "odessa (\"f\", x_0, theta, sx_0, t_out, t_crit)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{sx}, @var{istate}, @var{msg}]} odessa (@var{fcn}, @var{x_0}, @var{p}, @var{sx_0}, @var{t}, @var{t_crit})\n\
+Solve the set of differential equations\n\
+@tex\n\
+$$ {dx \\over dt} = f (x, t; p) $$\n\
+with\n\
+$$ x(t_0) = x_0 $$\n\
+@end tex\n\
+@ifinfo\n\
 \n\
-The string \"f\" may be substituted for the vector of strings\n\
+@example\n\
+dx\n\
+-- = f(x, t; p)\n\
+dt\n\
+@end example\n\
 \n\
-               [\"f\"; \"j\"; \"b\"] \n\
+with\n\
 \n\
-You can use the function @code{odessa_options} to set optional\n\
-parameters for @code{odessa}.")
+@example\n\
+x(t_0) = x_0\n\
+@end example\n\
+\n\
+@end ifinfo\n\
+and simultaneously compute the first-order sensitivity coefficients\n\
+given by\n\
+\n\
+@example\n\
+s'(t) = j(t)*s(t) + df/dp\n\
+@end example\n\
+\n\
+in which\n\
+\n\
+@example\n\
+s(t)  = dx(t)/dp        (sensitivity functions)\n\
+s'(t) = d(dx(t)/dp)/dt\n\
+j(t)  = df(x,t;p)/dx(t) (Jacobian matrix)\n\
+df/dp = df(x,t;p)/dp    (inhomogeneity matrix)\n\
+@end example\n\
+\n\
+The solution is returned in the matrix @var{x}, with each row\n\
+corresponding to an element of the vector @var{t}.  The first element\n\
+of @var{t} should be @math{t_0} and should correspond to the initial\n\
+state of the system @var{x_0}, so that the first row of the output\n\
+is @var{x_0}.\n\
+\n\
+The sensitivities are returned in a list of matrices, @var{sx},\n\
+with each element of the list corresponding to an element of the\n\
+vector @var{t}.\n\
+\n\
+The first argument, @var{fcn}, is a string that names the function to\n\
+call to compute the vector of right hand sides for the set of equations.\n\
+The function must have the form\n\
+\n\
+@example\n\
+@var{xdot} = f (@var{x}, @var{t})\n\
+@end example\n\
+\n\
+@noindent\n\
+in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.\n\
+\n\
+The @var{fcn} argument may also be an array of strings\n\
+\n\
+@example\n\
+[\"f\"; \"j\"; \"b\"]\n\
+@end example\n\
+\n\
+in which the first element names the function @math{f} described\n\
+above, the second element names a function to compute the Jacobian\n\
+of @math{f}, and the third element names a function to compute the\n
+inhomogeneity matrix.\n\
+\n\
+The Jacobian function must have the form\n\
+\n\
+@example\n\
+@var{jac} = j (@var{x}, @var{t})\n\
+@end example\n\
+\n\
+in which @var{jac} is the matrix of partial derivatives\n\
+@tex\n\
+$$ J = {\\partial f_i \\over \\partial x_j} $$\n\
+@end tex\n\
+@ifinfo\n\
+\n\
+@example\n\
+      df_i\n\
+jac = ----\n\
+      dx_j\n\
+@end example\n\
+\n\
+@end ifinfo\n\
+\n\
+The function @var{b} must have the form\n\
+\n\
+@example\n\
+@var{dfdp} = b (@var{t}, @var{x}, @var{p})\n\
+@end example\n\
+\n\
+The second argument, @var{x_0}, specifies the intial state of the system.\n\
+\n\
+The third argument, @var{p}, specifies the set of parameters.\n\
+\n\
+The fourth argument, @var{sx_0} specifies the initial values of the\n\
+sensitivities.\n\
+\n\
+The sixth argument is optional, and may be used to specify a set of\n\
+times that the ODE solver should not integrate past.  It is useful for\n\
+avoiding difficulties with singularities and points where there is a\n\
+discontinuity in the derivative.\n\
+\n\
+After a successful computation, the value of @var{istate} will be 2\n\
+(consistent with the Fortran version of @sc{Odessa}).\n\
+\n\
+If the computation is not successful, @var{istate} will be something\n\
+other than 2 and @var{msg} will contain additional information.\n\
+\n\
+You can use the function @code{lsode_options} to set optional\n\
+parameters for @code{lsode}.\n\
+@end deftypefn\n\
+@seealso{daspk, dassl, dasrt, lsode}")
 {
   octave_value_list retval;
 

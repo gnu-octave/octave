@@ -613,7 +613,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 
       OSSTREAM buf;
 
-      buf << "sed -e 's/^[#%]* *//' -e 's/^ *@/@/' | "
+      buf << "sed -e 's/^[#%][#%]* *//' -e 's/^ *@/@/' | "
 	  << Vmakeinfo_prog
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""

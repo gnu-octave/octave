@@ -54,8 +54,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	DAERTFunc.h DASPK.h DASRT.h DASSL.h FEGrid.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h \
 	NLFunc.h NLP.h ODE.h ODEFunc.h ODES.h ODESFunc.h \
-	ODESSA.h Objective.h QP.h Quad.h Range.h base-de.h \
-	base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
+	ODESSA.h Objective.h QP.h Quad.h Range.h base-dae.h \
+	base-de.h base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
 	data-conv.h dir-ops.h file-ops.h file-stat.h getopt.h \
 	glob-match.h idx-vector.h lo-ieee.h lo-mappers.h \
 	lo-specfun.h lo-sstream.h lo-sysdep.h lo-utils.h \
@@ -138,7 +138,7 @@ EXTRAS := mx-inlines.cc
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
 DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS) \
-	$(OPTS_INC_SRC)
+	$(OPTS_INC_DATA)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = liboctave/liboctave

@@ -255,9 +255,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 <MATRIX>{SNLCMT}*\n{SNLCMT}* {
+    fixup_column_count (yytext);
     if (user_pref.whitespace_in_literal_matrix != 2)
       {
-	fixup_column_count (yytext);
 	quote_is_transpose = 0;
 	cant_be_identifier = 0;
 	convert_spaces_to_comma = 1;
@@ -277,9 +277,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 \[{S}* {
-    fixup_column_count (yytext);
-
     nesting_level.push (BRACE);
+
+    current_input_column += yyleng;
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
 
     promptflag--;
     eat_whitespace ();
@@ -287,14 +290,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     if (plotting && ! past_plot_range)
       {
 	in_plot_range = 1;
-	TOK_RETURN (OPEN_BRACE);
+	return OPEN_BRACE;
       }
     else
       {
 	mlnm.push (1);
 	braceflag++;
 	BEGIN MATRIX;
-	TOK_RETURN ('[');
+	return '[';
       }
   }
 
@@ -1383,6 +1386,7 @@ eat_whitespace (void)
 
  done:
   yyunput (c, yytext);
+  current_input_column--;
   return retval;
 }
 

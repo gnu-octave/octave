@@ -611,7 +611,15 @@ tree_constant_rep::maybe_resize (int i, force_orient f_orient = no_orient)
 
   i++;
 
-  assert (i > 0 && (nr <= 1 || nc <= 1));
+  assert (i >= 0 && (nr <= 1 || nc <= 1));
+
+// This function never reduces the size of a vector, and all vectors
+// have dimensions of at least 0x0.  If i is 0, it is either because
+// a vector has been indexed with a vector of all zeros (in which case
+// the index vector is empty and nothing will happen) or a vector has
+// been indexed with 0 (an error which will be caught elsewhere).
+  if (i == 0)
+    return;
 
   if (nr <= 1 && nc <= 1 && i >= 1)
     {

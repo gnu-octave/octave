@@ -831,6 +831,41 @@ DiagArray<T>::columns (void) const
   return nc;
 }
 
+#if defind (_AIX)
+template <class T>
+T&
+DiagArray<T>::elem (int r, int c)
+{
+  static T foo (0);
+  return (r == c) ? Array<T>::elem (r) : foo;
+}
+
+template <class T>
+T&
+DiagArray<T>::checkelem (int r, int c)
+{
+  static T foo (0);
+  if (r < 0 || c < 0 || r >= nr || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return foo;
+    }
+  return (r == c) ? Array<T>::elem (r) : foo;
+}
+
+template <class T>
+T&
+DiagArray<T>::operator () (int r, int c)
+{
+  static T foo (0);
+  if (r < 0 || c < 0 || r >= nr || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return foo;
+    }
+  return (r == c) ? Array<T>::elem (r) : foo;
+}
+
 template <class T>
 T&
 DiagArray<T>::xelem (int r, int c)

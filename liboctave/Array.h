@@ -227,6 +227,7 @@ public:
 template <class T>
 class DiagArray : public Array<T>
 {
+#if ! defined (_AIX)
 private:
 
   class Proxy
@@ -276,6 +277,7 @@ private:
   };
 
 friend class Proxy;
+#endif
 
 protected:
 
@@ -303,6 +305,11 @@ public:
   int cols (void) const;
   int columns (void) const;
 
+#if defined (_AIX)
+  T& elem (int r, int c);
+  T& checkelem (int r, int c);
+  T& operator () (int r, int c);
+#else
   Proxy elem (int r, int c)
   {
     return Proxy (this, r, c);
@@ -329,6 +336,7 @@ public:
     else
       return Proxy (this, r, c);
   }
+#endif
 
 // No checking.
   T& xelem (int r, int c);

@@ -383,7 +383,7 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
-	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o stmp-pic
+	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o stmp-pic gendoc
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
 	-rmdir pic
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi

@@ -168,11 +168,12 @@ mostlyclean clean:
 	octave.ky octave.op octave.pg octave.rd octave.tp octave.vr \
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
-	octave.log octave.toc
+	octave.log octave.toc \
+	munge-texi munge-texi.o Map-s.o
 .PHONY: mostlyclean clean
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile 
 .PHONY: distclean
 
 maintainer-clean: distclean

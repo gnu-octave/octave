@@ -1,3 +1,8 @@
+2000-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (maintainer-clean distclean): Don't delete Makefile.
+	(dist): Delete stamp-auto.
+
 2000-02-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (octincludedir): Delete trailing /octave here.

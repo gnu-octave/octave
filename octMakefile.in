@@ -129,7 +129,7 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile octave-bug Makefile Makeconf config.cache \
+	rm -f octMakefile octave-bug Makeconf config.cache \
 	config.h config.log config.status Makerules.f77 mk-oct-links \
 	mkoctfile Makefrag.f77
 
@@ -158,7 +158,8 @@ dist: dist-info-files
 	  -o \( -name CVS -a -type d \) -o \( -name OLD -a -type d \) \
 	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name config.log \
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
-	  -o -name klibtool.config -o -name c-auto.h \) -print | xargs rm -rf
+	  -o -name klibtool.config -o -name stamp-auto \
+	  -o -name c-auto.h \) -print | xargs rm -rf
 	find `cat .fname`/readline `cat .fname`/kpathsea `cat .fname`/glob \
 	  -name Makefile | xargs rm -f
 	find `cat .fname`/readline `cat .fname`/info `cat .fname`/glob \

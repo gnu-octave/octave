@@ -73,6 +73,9 @@ tags::
 TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
+clean::
+	rm -f gethelp
+
 distclean::
 	rm -f Makefile config.log config.status
 

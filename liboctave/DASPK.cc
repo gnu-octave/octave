@@ -289,7 +289,10 @@ DASPK::do_integrate (double tout)
 	case 3: // The integration to TOUT was successfully completed
 	        // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
 	        // interpolation.  YPRIME(*) is obtained by interpolation.
-
+	case 4: // The initial condition calculation, with
+                // INFO(11) > 0, was successful, and INFO(14) = 1.
+                // No integration steps were taken, and the solution
+                // is not considered to have been started.
 	  retval = x;
 	  t = tout;
 	  break;
@@ -312,12 +315,22 @@ DASPK::do_integrate (double tout)
 	case -11: // IRES equal to -2 was encountered and control is being
 		  // returned to the calling program.
 	case -12: // DDASPK failed to compute the initial YPRIME.
+	case -13: // Unrecoverable error encountered inside user's
+                  // PSOL routine, and control is being returned to
+                  // the calling program.
+	case -14: // The Krylov linear system solver could not
+                  // achieve convergence.
 	case -33: // The code has encountered trouble from which it cannot
 		  // recover. A message is printed explaining the trouble
 		  // and control is returned to the calling program. For
 		  // example, this occurs when invalid input is detected.
+	  integration_error = true;
+	  break;
+
 	default:
 	  integration_error = true;
+	  (*current_liboctave_error_handler)
+	    ("unrecognized value of idid (= %d) returned from ddaspk", idid);
 	  break;
 	}
     }
@@ -483,6 +496,75 @@ DASPK::error_message (void) const
 
   switch (idid)
     {
+    case 1:
+      retval = "a step was successfully taken in intermediate-output mode.";
+      break;
+
+    case 2:
+      retval = "integration completed by stepping exactly to TOUT";
+      break;
+
+    case 3:
+      retval = "integration to tout completed by stepping past TOUT";
+      break;
+
+    case 4:
+      retval = "initial condition calculation completed successfully";
+      break;
+
+    case -1:
+      retval = "a large amount of work has been expended";
+      break;
+
+    case -2:
+      retval = "the error tolerances are too stringent";
+      break;
+
+    case -3:
+      retval = "error weight became zero during problem.\
+  (solution component i vanished, and atol or atol(i) == 0)";
+      break;
+
+    case -6:
+      retval = "repeated error test failures on the last attempted step";
+      break;
+
+    case -7:
+      retval = "the corrector could not converge";
+      break;
+
+    case -8:
+      retval = "the matrix of partial derivatives is singular";
+      break;
+
+    case -9:
+      retval = "the corrector could not converge (repeated test failures)";
+      break;
+
+    case -10:
+      retval = "corrector could not converge because IRES was -1";
+      break;
+
+    case -11:
+      retval = "return requested in user-supplied function";
+      break;
+
+    case -12:
+      retval = "failed to compute consistent initial conditions";
+      break;
+
+    case -13:
+      retval = "unrecoverable error encountered inside user's PSOL function";
+      break;
+
+    case -14:
+      retval = "the Krylov linear system solver failed to converge";
+      break;
+
+    case -33:
+      retval = "unrecoverable error (see printed message)";
+      break;
+
     default:
       retval = "unknown error state";
       break;

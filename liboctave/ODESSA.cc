@@ -390,7 +390,7 @@ ODESSA::integrate (double tout)
   else
     {
       (*current_liboctave_error_handler)
-        ("lsode: inconsistent sizes for state and absolute tolerance vectors");
+        ("odessa: inconsistent sizes for state and absolute tolerance vectors");
 
       integration_error = 1;
       return;
@@ -443,26 +443,28 @@ ODESSA::integrate (double tout)
     {
       switch (istate)
         {
-        case -13: // Return requested in user-supplied function.
-        case -6:  // error weight became zero during problem. (solution
-                  // component i vanished, and atol or atol(i) = 0.)
-        case -5:  // repeated convergence failures (perhaps bad jacobian
-                  // supplied or wrong choice of mf or tolerances).
-        case -4:  // repeated error test failures (check all inputs).
-        case -3:  // illegal input detected (see printed message).
-        case -2:  // excess accuracy requested (tolerances too small).
-        case -1:  // excess work done on this call (perhaps wrong mf).
-          integration_error = 1;
-          break;
-	  
-	case 1:  // tout is same as t
-        case 2:  // lsode was successful
+	case 1:  // prior to initial integration step.
+        case 2:  // odessa was successful.
           t = tout;
           break;
           
-        default: // Error?
+        case -1:  // excess work done on this call (perhaps wrong mf).
+        case -2:  // excess accuracy requested (tolerances too small).
+        case -3:  // illegal input detected (see printed message).
+        case -4:  // repeated error test failures (check all inputs).
+        case -5:  // repeated convergence failures (perhaps bad jacobian
+                  // supplied or wrong choice of mf or tolerances).
+        case -6:  // error weight became zero during problem. (solution
+                  // component i vanished, and atol or atol(i) = 0.)
+        case -13: // Return requested in user-supplied function.
+          integration_error = 1;
+          break;
+	  
+        default:
+          integration_error = 1;
           (*current_liboctave_error_handler)
-            ("unrecognized value of istate returned from lsode");
+            ("unrecognized value of istate (= %d) returned from odessa",
+	     istate);
           break;
         }
     }
@@ -475,38 +477,8 @@ ODESSA::error_message (void) const
 
   switch (istate)
     {
-    case -13:
-      retval = "return requested in user-supplied function";
-      break;
-
-    case -6:
-      retval = "Error weight became zero during problem.\
-  (solution component i vanished, and atol or atol(i) == 0)";
-      break;
-
-    case -5:
-      retval = "repeated convergence failures (perhaps bad jacobian\
- supplied or wrong choice of integration method or tolerances)";
-      break;
-
-    case -4:
-      retval = "repeated error test failures (check all inputs)";
-      break;
-
-    case -3:
-      retval = "invalid input detected (see printed message)";
-      break;
-
-    case -2:
-      retval = "excess accuracy requested (tolerances too small)";
-      break;
-
-    case -1:
-      retval = "excess work on this call (perhaps wrong integration method)";
-      break;
-
     case 1:
-      retval = "prior to initial call";
+      retval = "prior to initial integration step";
       break;
 
     case 2:
@@ -517,6 +489,36 @@ ODESSA::error_message (void) const
       retval = "prior to continuation call with modified parameters";
       break;
           
+    case -1:
+      retval = "excess work on this call (perhaps wrong integration method)";
+      break;
+
+    case -2:
+      retval = "excess accuracy requested (tolerances too small)";
+      break;
+
+    case -3:
+      retval = "invalid input detected (see printed message)";
+      break;
+
+    case -4:
+      retval = "repeated error test failures (check all inputs)";
+      break;
+
+    case -5:
+      retval = "repeated convergence failures (perhaps bad jacobian\
+ supplied or wrong choice of integration method or tolerances)";
+      break;
+
+    case -6:
+      retval = "Error weight became zero during problem.\
+  (solution component i vanished, and atol or atol(i) == 0)";
+      break;
+
+    case -13:
+      retval = "return requested in user-supplied function";
+      break;
+
     default:
       retval = "unknown error state";
       break;

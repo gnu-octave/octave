@@ -329,7 +329,6 @@ DASRT::integrate (double tout)
     {
       switch (idid)
 	{
-	case 0: // Initial conditions made consistent.
 	case 1: // A step was successfully taken in intermediate-output
 	        // mode. The code has not yet reached TOUT.
 	case 2: // The integration to TOUT was successfully completed
@@ -337,16 +336,14 @@ DASRT::integrate (double tout)
 	case 3: // The integration to TOUT was successfully completed
 	        // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
 	        // interpolation.  YPRIME(*) is obtained by interpolation.
-	case 5: // The integration to TSTOP was successfully completed
-	        // (T=TSTOP) by stepping to TSTOP within the
-	        // tolerance.  Must restart to continue.
 	  t = tout;
 	  break;
 
-	case 4: //  We've hit the stopping condition.
+	case 4: //  The integration was successfully completed
+	        // by finding one or more roots of G at T.
           break;
 
-	case -1: // A large amount of work has been expended.  (~500 steps).
+	case -1: // A large amount of work has been expended.
 	case -2: // The error tolerances are too stringent.
 	case -3: // The local error test cannot be satisfied because you
 	         // specified a zero component in ATOL and the
@@ -368,10 +365,13 @@ DASRT::integrate (double tout)
 		  // recover. A message is printed explaining the trouble
 		  // and control is returned to the calling program. For
 		  // example, this occurs when invalid input is detected.
+	  integration_error = true;
+	  break;
+
 	default:
 	  integration_error = true;
 	  (*current_liboctave_error_handler)
-	    ("ddasrt failed with IDID = %d", idid);
+	    ("unrecognized value of idid (= %d) returned from ddasrt", idid);
 	  break;
 	}
     }
@@ -560,6 +560,67 @@ DASRT::error_message (void) const
 
   switch (idid)
     {
+    case 1:
+      retval = "a step was successfully taken in intermediate-output mode.";
+      break;
+
+    case 2:
+      retval = "integration completed by stepping exactly to TOUT";
+      break;
+
+    case 3:
+      retval = "integration to tout completed by stepping past TOUT";
+      break;
+
+    case 4:
+      retval = "integration completed by finding one or more roots of G at T";
+      break;
+
+    case -1:
+      retval = "a large amount of work has been expended";
+      break;
+
+    case -2:
+      retval = "the error tolerances are too stringent";
+      break;
+
+    case -3:
+      retval = "error weight became zero during problem.\
+  (solution component i vanished, and atol or atol(i) == 0)";
+      break;
+
+    case -6:
+      retval = "repeated error test failures on the last attempted step";
+      break;
+
+    case -7:
+      retval = "the corrector could not converge";
+      break;
+
+    case -8:
+      retval = "the matrix of partial derivatives is singular";
+      break;
+
+    case -9:
+      retval = "the corrector could not converge (repeated test failures)";
+      break;
+
+    case -10:
+      retval = "corrector could not converge because IRES was -1";
+      break;
+
+    case -11:
+      retval = "return requested in user-supplied function";
+      break;
+
+    case -12:
+      retval = "failed to compute consistent initial conditions";
+      break;
+
+    case -33:
+      retval = "unrecoverable error (see printed message)";
+      break;
+
     default:
       retval = "unknown error state";
       break;

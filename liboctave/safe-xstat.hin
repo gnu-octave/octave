@@ -57,9 +57,7 @@ extern int errno;
 # endif
 # define SAFE_@L@STAT(name, buf) safe_@l@stat (name, buf)
 __static __inline int
-safe_@l@stat (name, buf)
-     const char *name;
-     struct stat *buf;
+safe_@l@stat (const char *name, struct stat *buf)
 {
   int ret;
 

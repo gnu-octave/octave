@@ -17,23 +17,23 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {}  sysadd (@var{Gsys}, @var{Hsys})
-## returns @var{sys} = @var{Gsys} + @var{Hsys}.
+## @deftypefn {Function File} {}  sysadd (@var{gsys}, @var{hsys})
+## returns @var{sys} = @var{gsys} + @var{hsys}.
 ## @itemize @bullet
 ## @item Exits with
-## an error if @var{Gsys} and @var{Hsys} are not compatibly dimensioned.
+## an error if @var{gsys} and @var{hsys} are not compatibly dimensioned.
 ## @item Prints a warning message is system states have identical names;
 ## duplicate names are given a suffix to make them unique.
-## @item @var{sys} input/output names are taken from @var{Gsys}.
+## @item @var{sys} input/output names are taken from @var{gsys}.
 ## @end itemize
 ## @example
 ## @group
 ##           ________
-##      ----|  Gsys  |---
+##      ----|  gsys  |---
 ## u   |    ----------  +|
 ## -----                (_)----> y
 ##     |     ________   +|
-##      ----|  Hsys  |---
+##      ----|  hsys  |---
 ##           --------
 ## @end group
 ## @end example

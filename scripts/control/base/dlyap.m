@@ -48,8 +48,7 @@
 ##
 ## @strong{Method}
 ## Uses Schur decomposition method as in Kitagawa,
-## @cite{An Algorithm for Solving the Matrix Equation @var{X} =
-## @var{F}@var{X}@var{F}' + @var{S}},
+## @cite{An Algorithm for Solving the Matrix Equation @math{X = F X F' + S}},
 ## International Journal of Control, Volume 25, Number 5, pages 745--753
 ## (1977).
 ##

@@ -18,14 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ctrb (@var{sys}, @var{b})
-## @deftypefnx {Function File} {} ctrb (@var{A}, @var{B})
+## @deftypefnx {Function File} {} ctrb (@var{a}, @var{b})
 ## Build controllability matrix
 ## @example
 ##              2       n-1
 ## Qs = [ B AB A B ... A   B ]
 ## @end example
 ##
-## of a system data structure or the pair (@var{A}, @var{B}).
+## of a system data structure or the pair (@var{a}, @var{b}).
 ##
 ## @strong{Note} @code{ctrb} forms the controllability matrix.
 ## The numerical properties of @code{is_controllable}

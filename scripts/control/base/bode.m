@@ -34,7 +34,7 @@
 ##
 ## if @var{sys} is discrete, then bode evaluates G(@code{exp}(jwT)), where
 ## @itemize @bullet
-## @item @var{T}=@code{sysgettsam(@var{sys})} (the system sampling time) and
+## @item @math{T} is the system sampling time
 ## @item @math{G(z)} is the system transfer function.
 ## @end itemize
 ##

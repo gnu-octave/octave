@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{dsys}, @var{Adc}, @var{Cdc}] =} sysdisc (@var{sys})
+## @deftypefn {Function File} {[@var{dsys}, @var{adc}, @var{cdc}] =} sysdisc (@var{sys})
 ##
 ## @strong{Inputs}
 ## @var{sys} = system data structure
@@ -27,8 +27,8 @@
 ## @item dsys
 ## purely discrete portion of sys (returned empty if there is
 ## no purely discrete path from inputs to outputs)
-## @item    Adc
-## @itemx   Cdc
+## @item    adc
+## @itemx   cdc
 ## connections from continuous states to discrete states and discrete
 ## outputs, respectively.
 ## @end table

@@ -17,12 +17,12 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {} sysdup (@var{asys}, @var{out_idx}, @var{in_idx})
 ## Duplicate specified input/output connections of a system
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item Asys
+## @item asys
 ## system data structure
 ## @item out_idx
 ## @itemx in_idx
@@ -44,7 +44,7 @@
 ## @group
 ##           ____________________
 ## u1  ----->|                  |----> y1
-##           |       Asys       |
+##           |       asys       |
 ## u2 ------>|                  |----->y2
 ## (in_idx)  -------------------| (out_idx)
 ## @end group

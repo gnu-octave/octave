@@ -36,14 +36,14 @@
 ## (default) Conversion is performed via a matrix logarithm.
 ## Due to some problems with this computation, it is
 ## followed by a steepest descent algorithm to identify continuous time
-## @var{A}, @var{B}, to get a better fit to the original data.
+## @var{a}, @var{b}, to get a better fit to the original data.
 ##
 ## If called as @code{d2c (@var{sys}, @var{tol})}, with @var{tol}
 ## positive scalar, the @code{"log"} option is used.  The default value
 ## for @var{tol} is @code{1e-8}.
 ## @item        "bi"
 ## Conversion is performed via bilinear transform
-## @math{z = (1 + s T / 2)/(1 - s T / 2)} where @var{T} is the
+## @math{z = (1 + s T / 2)/(1 - s T / 2)} where @math{T} is the
 ## system sampling time (see @code{sysgettsam}).
 ##
 ## FIXME: bilinear option exits with an error if @var{sys} is not purely

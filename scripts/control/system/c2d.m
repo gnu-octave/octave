@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} c2d (@var{sys}, @var{opt}, @var{T})
-## @deftypefnx {Function File} {} c2d (@var{sys}, @var{T})
+## @deftypefn {Function File} {} c2d (@var{sys}, @var{opt}, @var{t})
+## @deftypefnx {Function File} {} c2d (@var{sys}, @var{t})
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -41,16 +41,16 @@
 ## @end example
 ## FIXME: This option exits with an error if @var{sys} is not purely
 ## continuous. (The @code{ex} option can handle mixed systems.)
-## @item @var{T}
+## @item t
 ## sampling time; required if sys is purely continuous.
 ##
 ## @strong{Note} If the 2nd argument is not a string, @code{c2d} assumes that
-## the 2nd argument is @var{T} and performs appropriate argument checks.
+## the 2nd argument is @var{t} and performs appropriate argument checks.
 ## @end table
 ##
 ## @strong{Outputs}
 ## @var{dsys} discrete time equivalent via zero-order hold,
-## sample each @var{T} sec.
+## sample each @var{t} sec.
 ##
 ## converts the system data structure describing
 ## @example

@@ -17,10 +17,10 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{Ts2}, @var{cuflg})
+## @deftypefn {Function File} {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{ts2}, @var{cuflg})
 ## convert a multirate digital system to a single rate digital system
-## states specified by @var{idx}, @var{sprefix} are sampled at @var{Ts2}, all
-## others are assumed sampled at @var{Ts1} = @code{sysgettsam(@var{sys})}.
+## states specified by @var{idx}, @var{sprefix} are sampled at @var{ts2}, all
+## others are assumed sampled at @var{ts1} = @code{sysgettsam (@var{sys})}.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -33,14 +33,14 @@
 ## @item   sprefix
 ## list of string prefixes of states with sampling time
 ## @code{sysgettsam(@var{sys})} (may be empty)
-## @item   Ts2
+## @item   ts2
 ## sampling time of states not specified by @var{idx}, @var{sprefix}
 ## must be an integer multiple of @code{sysgettsam(@var{sys})}
 ## @item   cuflg
 ## "constant u flag" if @var{cuflg} is nonzero then the system inputs are
-## assumed to be constant over the revised sampling interval @var{Ts2}.
+## assumed to be constant over the revised sampling interval @var{ts2}.
 ## Otherwise, since the inputs can change during the interval
-## @var{t} in @math{[k Ts2, (k+1) Ts2]}, an additional set of inputs is
+## @var{t} in @math{[k ts2, (k+1) ts2]}, an additional set of inputs is
 ## included in the revised B matrix so that these intersample inputs
 ## may be included in the single-rate system.
 ## default @var{cuflg} = 1.
@@ -49,21 +49,21 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item   dsys
-## equivalent discrete time system with sampling time @var{Ts2}.
+## equivalent discrete time system with sampling time @var{ts2}.
 ##
-## The sampling time of sys is updated to @var{Ts2}.
+## The sampling time of sys is updated to @var{ts2}.
 ##
 ## if @var{cuflg}=0 then a set of additional inputs is added to
 ## the system with suffixes _d1, ..., _dn to indicate their
-## delay from the starting time k @var{Ts2}, i.e.
+## delay from the starting time k @var{ts2}, i.e.
 ## u = [u_1; u_1_d1; ..., u_1_dn] where u_1_dk is the input
-## k*Ts1 units of time after u_1 is sampled. (Ts1 is
-## the original sampling time of discrete time sys and
-## @var{Ts2} = (n+1)*Ts1)
+## k*ts1 units of time after u_1 is sampled. (@var{ts1} is
+## the original sampling time of the discrete time system and
+## @var{ts2} = (n+1)*ts1)
 ##
 ## @item   fidx
 ## indices of "formerly fast" states specified by @var{idx} and @var{sprefix};
-## these states are updated to the new (slower) sampling interval @var{Ts2}.
+## these states are updated to the new (slower) sampling interval @var{ts2}.
 ## @end table
 ##
 ## @strong{WARNING} Not thoroughly tested yet; especially when

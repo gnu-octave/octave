@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn (@var{Asys}, @var{nu}, @var{ny}, @var{tol})
+## @deftypefn {Function File} {[K}, @var{gain}, @var{kc}, @var{kf}, @var{pc}, @var{pf}] = h2syn (@var{asys}, @var{nu}, @var{ny}, @var{tol})
 ## Design H2 optimal controller per procedure in
 ## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
 ## H2 and Hinf Control Problems", IEEE TAC August 1989
@@ -27,7 +27,7 @@
 ##
 ## @strong{Inputs} input system is passed as either
 ## @table @var
-## @item Asys
+## @item asys
 ## system data structure (see ss2sys, sys2ss)
 ## @itemize @bullet
 ## @item controller is implemented for continuous time systems
@@ -43,17 +43,17 @@
 ##
 ## @strong{Outputs}
 ## @table @var
-## @item    K
+## @item    k
 ## system controller
 ## @item    gain
 ## optimal closed loop gain
-## @item    Kc
+## @item    kc
 ## full information control (packed)
-## @item    Kf
+## @item    kf
 ## state estimator (packed)
-## @item    Pc
+## @item    pc
 ## ARE solution matrix for regulator subproblem
-## @item    Pf
+## @item    pf
 ## ARE solution matrix for filter subproblem
 ## @end table
 ## @end deftypefn

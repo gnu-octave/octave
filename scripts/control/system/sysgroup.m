@@ -17,22 +17,22 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysgroup (@var{Asys}, @var{Bsys})
+## @deftypefn {Function File} {} sysgroup (@var{asys}, @var{bsys})
 ## Combines two systems into a single system
 ##
 ## @strong{Inputs}
-## @var{Asys}, @var{Bsys}: system data structures
+## @var{asys}, @var{bsys}: system data structures
 ##
 ## @strong{Outputs}
-## @math{sys = @r{block diag}(Asys,Bsys)}
+## @math{sys = @r{block diag}(asys,bsys)}
 ## @example
 ## @group
 ##          __________________
 ##          |    ________    |
-## u1 ----->|--> | Asys |--->|----> y1
+## u1 ----->|--> | asys |--->|----> y1
 ##          |    --------    |
 ##          |    ________    |
-## u2 ----->|--> | Bsys |--->|----> y2
+## u2 ----->|--> | bsys |--->|----> y2
 ##          |    --------    |
 ##          ------------------
 ##               Ksys

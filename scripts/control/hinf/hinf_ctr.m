@@ -17,21 +17,21 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hinf_ctr (@var{dgs}, @var{F}, @var{H}, @var{Z}, @var{g})
+## @deftypefn {Function File} {} hinf_ctr (@var{dgs}, @var{f}, @var{h}, @var{z}, @var{g})
 ## Called by @code{hinfsyn} to compute the H_inf optimal controller.
 ##
 ## @strong{Inputs}
 ## @table @var
 ## @item dgs
 ## data structure returned by @code{is_dgkf}
-## @item F
-## @itemx H
+## @item f
+## @itemx h
 ## feedback and filter gain (not partitioned)
 ## @item g
 ## final gamma value
 ## @end table
 ## @strong{Outputs}
-## controller K (system data structure)
+## controller (system data structure)
 ##
 ## Do not attempt to use this at home; no argument checking performed.
 ## @end deftypefn

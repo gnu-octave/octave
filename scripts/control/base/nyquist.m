@@ -32,7 +32,7 @@
 ## frequency values for evaluation.
 ## if sys is continuous, then bode evaluates @math{G(jw)}
 ## if sys is discrete, then bode evaluates @math{G(exp(jwT))}, where
-## @math{@var{T}=sysgettsam(@var{sys})} (the system sampling time)
+## @math{T} is the system sampling time.
 ## @item default
 ## the default frequency range is selected as follows: (These
 ## steps are NOT performed if @var{w} is specified)

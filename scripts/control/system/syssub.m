@@ -17,22 +17,22 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} syssub (@var{Gsys}, @var{Hsys})
-## returns @math{sys = Gsys - Hsys}
+## @deftypefn {Function File} {} syssub (@var{gsys}, @var{hsys})
+## Return @math{sys = Gsys - Hsys}.
 ##
-## Method: @var{Gsys} and @var{Hsys} are connected in parallel
+## Method: @var{gsys} and @var{hsys} are connected in parallel
 ## The input vector is connected to both systems; the outputs are
-## subtracted.  Returned system names are those of @var{Gsys}.
+## subtracted.  Returned system names are those of @var{gsys}.
 ## @example
 ## @group
 ##          +--------+
-##     +--->|  Gsys  |---+
+##     +--->|  gsys  |---+
 ##     |    +--------+   |
 ##     |                +|
 ## u --+                (_)--> y
 ##     |                -|
 ##     |    +--------+   |
-##     +--->|  Hsys  |---+
+##     +--->|  hsys  |---+
 ##          +--------+
 ## @end group
 ## @end example

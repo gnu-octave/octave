@@ -17,11 +17,11 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn (@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}, @var{ptol}, @var{tol})
+## @deftypefn {Function File} {[@var{k}, @var{g}, @var{gw}, @var{xinf}, @var{yinf}] =} hinfsyn (@var{asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}, @var{ptol}, @var{tol})
 ##
 ## @strong{Inputs} input system is passed as either
 ## @table @var
-## @item Asys
+## @item asys
 ## system data structure (see ss2sys, sys2ss)
 ## @itemize @bullet
 ## @item controller is implemented for continuous time systems
@@ -49,15 +49,15 @@
 ## @end table
 ## @strong{Outputs}
 ## @table @var
-## @item K
+## @item k
 ## system controller
 ## @item g
 ## designed gain value
-## @item GW
+## @item gw
 ## closed loop system
-## @item Xinf
+## @item xinf
 ## ARE solution matrix for regulator subproblem
-## @item Yinf
+## @item yinf
 ## ARE solution matrix for filter subproblem
 ## @end table
 ##

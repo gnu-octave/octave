@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg (@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
+## @deftypefn {Function File} {[@var{k}, @var{q1}, @var{p1}, @var{ee}, @var{er}] =} lqg (@var{sys}, @var{sigw}, @var{sigv}, @var{q}, @var{r}, @var{in_idx})
 ## Design a linear-quadratic-gaussian optimal controller for the system
 ## @example
 ## dx/dt = A x + B u + G w       [w]=N(0,[Sigw 0    ])
@@ -33,11 +33,11 @@
 ## @table @var
 ## @item  sys
 ## system data structure
-## @item  Sigw
-## @itemx  Sigv
+## @item  sigw
+## @itemx  sigv
 ## intensities of independent Gaussian noise processes (as above)
-## @item  Q
-## @itemx  R
+## @item  q
+## @itemx  r
 ## state, control weighting respectively.  Control ARE is
 ## @item  in_idx
 ## names or indices of controlled inputs (see @code{sysidx}, @code{listidx})
@@ -47,17 +47,17 @@
 ## @end table
 ## @strong{Outputs}
 ## @table @var
-## @item    K
+## @item    k
 ## system data structure format LQG optimal controller (Obtain A,B,C
 ## matrices with @code{sys2ss}, @code{sys2tf}, or @code{sys2zp} as
 ## appropriate)
-## @item    P
+## @item    p1
 ## Solution of control (state feedback) algebraic Riccati equation
-## @item    Q
+## @item    q1
 ## Solution of estimation algebraic Riccati equation
-## @item    Ee
+## @item    ee
 ## estimator poles
-## @item    Es
+## @item    es
 ## controller poles
 ## @end table
 ## @end deftypefn

@@ -17,11 +17,11 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dcgain (@var{sys}, tol)
+## @deftypefn {Function File} {} dcgain (@var{sys}, @var{tol})
 ## Returns dc-gain matrix. If dc-gain is infinite
 ## an empty matrix is returned.
 ## The argument @var{tol} is an optional tolerance for the condition
-## number of @var{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
+## number of the @math{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
 ## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{Asys}, @var{nu}, @var{ny}, @var{tol} )
+## @deftypefn {Function File} {[@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{asys}, @var{nu}, @var{ny}, @var{tol} )
 ## Determine whether a continuous time state space system meets
 ## assumptions of DGKF algorithm.
 ## Partitions system into:
@@ -27,14 +27,14 @@
 ## [ y   ]   [Cy | Dyw Dyu ]
 ## @end example
 ## or similar discrete-time system.
-## If necessary, orthogonal transformations @var{Qw}, @var{Qz} and nonsingular
-## transformations @var{Ru}, @var{Ry} are applied to respective vectors
+## If necessary, orthogonal transformations @var{qw}, @var{qz} and nonsingular
+## transformations @var{ru}, @var{ry} are applied to respective vectors
 ## @var{w}, @var{z}, @var{u}, @var{y} in order to satisfy DGKF assumptions.
-## Loop shifting is used if @var{Dyu} block is nonzero.
+## Loop shifting is used if @var{dyu} block is nonzero.
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item         Asys
+## @item         asys
 ## system data structure
 ## @item           nu
 ## number of controlled inputs
@@ -53,32 +53,32 @@
 ## @item      nw
 ## @itemx     nz
 ## dimensions of @var{w}, @var{z}
-## @item      A
-## system @var{A} matrix
-## @item      Bw
-## (@var{n} x @var{nw}) @var{Qw}-transformed disturbance input matrix
-## @item      Bu
-## (@var{n} x @var{nu}) @var{Ru}-transformed controlled input matrix;
+## @item      a
+## system @math{A} matrix
+## @item      bw
+## (@var{n} x @var{nw}) @var{qw}-transformed disturbance input matrix
+## @item      bu
+## (@var{n} x @var{nu}) @var{ru}-transformed controlled input matrix;
 ##
 ## @strong{Note} @math{B = [Bw Bu]}
-## @item      Cz
+## @item      cz
 ## (@var{nz} x @var{n}) Qz-transformed error output matrix
-## @item      Cy
-## (@var{ny} x @var{n}) @var{Ry}-transformed measured output matrix
+## @item      cy
+## (@var{ny} x @var{n}) @var{ry}-transformed measured output matrix
 ##
 ## @strong{Note} @math{C = [Cz; Cy]}
-## @item      Dzu
-## @item      Dyw
-## off-diagonal blocks of transformed @var{D} matrix that enter
+## @item      dzu
+## @item      dyw
+## off-diagonal blocks of transformed system @math{D} matrix that enter
 ## @var{z}, @var{y} from @var{u}, @var{w} respectively
-## @item      Ru
+## @item      ru
 ## controlled input transformation matrix
-## @item      Ry
+## @item      ry
 ## observed output transformation matrix
-## @item      Dyu_nz
-## nonzero if the @var{Dyu} block is nonzero.
-## @item      Dyu
-## untransformed @var{Dyu} block
+## @item      dyu_nz
+## nonzero if the @var{dyu} block is nonzero.
+## @item      dyu
+## untransformed @var{dyu} block
 ## @item      dflg
 ## nonzero if the system is discrete-time
 ## @end table

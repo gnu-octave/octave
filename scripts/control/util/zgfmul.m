@@ -18,8 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} zgfmul (@var{a}, @var{b}, @var{c}, @var{d}, @var{x})
-##
-## Compute product of zgep incidence matrix @var{F} with vector @var{x}.
+## Compute product of zgep incidence matrix @math{F} with vector @var{x}.
 ## Used by zgepbal (in zgscal) as part of generalized conjugate gradient
 ## iteration.
 ## @end deftypefn

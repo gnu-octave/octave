@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} qzval (@var{A}, @var{B})
+## @deftypefn {Function File} {} qzval (@var{a}, @var{b})
 ## Compute generalized eigenvalues of the matrix pencil
 ## @ifinfo
 ## @example
@@ -30,7 +30,7 @@
 ## @end tex
 ## @end iftex
 ##
-## @var{A} and @var{B} must be real matrices.
+## @var{a} and @var{b} must be real matrices.
 ##
 ## @strong{Note} @code{qzval} is obsolete; use @code{qz} instead.
 ## @end deftypefn

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{A}, @var{B}, @var{C}, @var{D}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
+## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
 ## Conversion from zero / pole to state space.
 ## @strong{Inputs}
 ## @table @var
@@ -30,7 +30,7 @@
 ## real scalar (leading coefficient)
 ## @end table
 ## @strong{Outputs}
-##  @var{A}, @var{B}, @var{C}, @var{D}
+##  @var{a}, @var{b}, @var{c}, @var{d}
 ## The state space system
 ## @example
 ## .

@@ -55,10 +55,10 @@
 ##             [D21   | D22 ]
 ## @end group
 ## @end example
-## where @var{D12}, @var{D21}, and @var{D22} are the appropriate dimensioned
+## where @math{D12}, @math{D21}, and @math{D22} are the appropriate dimensioned
 ## blocks of the input parameter @var{d}.
 ## @itemize @bullet
-## @item The leading block @var{D11} of @var{d} is ignored.
+## @item The leading block @math{D11} of @var{d} is ignored.
 ## @item If @var{inname} and @var{outname} are not given as arguments,
 ##      the new inputs and outputs are be assigned default names.
 ## @item @var{yd} is a binary vector of length rows(c) that indicates

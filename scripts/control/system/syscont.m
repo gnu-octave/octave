@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{csys}, @var{Acd}, @var{Ccd}] =} syscont (@var{sys})
+## @deftypefn {Function File} {[@var{csys}, @var{acd}, @var{ccd}] =} syscont (@var{sys})
 ## Extract the purely continuous subsystem of an input system.
 ##
 ## @strong{Inputs}
@@ -27,8 +27,8 @@
 ## @table @var
 ## @item csys
 ## is the purely continuous input/output connections of @var{sys}
-## @item Acd
-## @itemx Ccd
+## @item acd
+## @itemx ccd
 ## connections from discrete states to continuous states,
 ## discrete states to continuous outputs, respectively.
 ##

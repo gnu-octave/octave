@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} buildssic (@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
+## @deftypefn {Function File} {} buildssic (@var{clst}, @var{ulst}, @var{olst}, @var{ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
 ##
 ## Form an arbitrary complex (open or closed loop) system in
 ## state-space form from several systems. "@code{buildssic}" can
@@ -36,7 +36,7 @@
 ## outputs and inputs and up to 8 systems s1-s8.
 ## Format of the lists:
 ## @table @var
-## @item      Clst
+## @item      clst
 ## connection list, describes the input signal of
 ## each system. The maximum number of rows of Clst is
 ## equal to the sum of all inputs of s1-s8.
@@ -46,20 +46,20 @@
 ## + output 2 - output 1, new input 2 is old input 2
 ## + output 1. The order of rows is arbitrary.
 ##
-## @item     Ulst
+## @item     ulst
 ## if not empty the old inputs in vector Ulst will
 ## be appended to the outputs. You need this if you
 ## want to "pull out" the input of a system. Elements
 ## are input numbers of s1-s8.
 ##
-## @item     Olst
+## @item     olst
 ## output list, specifiy the outputs of the resulting
 ## systems. Elements are output numbers of s1-s8.
 ## The numbers are alowed to be negative and may
 ## appear in any order. An empty matrix means
 ## all outputs.
 ##
-## @item     Ilst
+## @item     ilst
 ## input list, specifiy the inputs of the resulting
 ## systems. Elements are input numbers of s1-s8.
 ## The numbers are alowed to be negative and may
@@ -87,14 +87,14 @@
 ## GW = buildssic([1 2; 2 -1], 2, [1 2 3], 2, G, K);
 ## @end example
 ## @table @var
-## @item Clst
+## @item clst
 ## (1. row) connect input 1 (G) with output 2 (K).
 ## (2. row) connect input 2 (K) with neg. output 1 (G).
-## @item Ulst
+## @item ulst
 ## append input of (2) K to the number of outputs.
-## @item Olst
+## @item olst
 ## Outputs are output of 1 (G), 2 (K) and appended output 3 (from Ulst).
-## @item Ilst
+## @item ilst
 ## the only input is 2 (K).
 ## @end table
 ##

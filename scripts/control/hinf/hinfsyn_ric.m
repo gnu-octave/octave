@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{Xinf}, @var{x_ha_err}] =} hinfsyn_ric (@var{A}, @var{BB}, @var{C1}, @var{d1dot}, @var{R}, @var{ptol})
+## @deftypefn {Function File} {[@var{xinf}, @var{x_ha_err}] =} hinfsyn_ric (@var{a}, @var{bb}, @var{c1}, @var{d1dot}, @var{r}, @var{ptol})
 ## Forms
 ## @example
 ## xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
@@ -30,17 +30,17 @@
 ## @item 0
 ## successful
 ## @item 1
-## Xinf has imaginary eigenvalues
+## @var{xinf} has imaginary eigenvalues
 ## @item 2
-## Hx not Hamiltonian
+## @var{hx} not Hamiltonian
 ## @item 3
-## Xinf has inf. eigenvalues (numerical overflow)
+## @var{xinf} has infinite eigenvalues (numerical overflow)
 ## @item 4
-## Xinf not symmetric
+## @var{xinf} not symmetric
 ## @item 5
-## Xinf not positive definite
+## @var{xinf} not positive definite
 ## @item 6
-## R is singular
+## @var{r} is singular
 ## @end table
 ## @end deftypefn
 

@@ -175,7 +175,7 @@
 ##   0  0
 ##   0  0
 ## @end example
-## Notice that the @var{D} matrix is constructed  by default to the
+## Notice that the @math{D} matrix is constructed  by default to the
 ## correct dimensions.  Default input and output signals names were assigned
 ## since none were given.
 ## @end deftypefn

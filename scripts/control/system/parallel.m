@@ -17,18 +17,18 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} parallel (@var{Asys}, @var{Bsys})
+## @deftypefn {Function File} {} parallel (@var{asys}, @var{bsys})
 ## Forms the parallel connection of two systems.
 ##
 ##              ____________________
 ##              |      ________    |
-##     u  ----->|----> | Asys |--->|----> y1
+##     u  ----->|----> | asys |--->|----> y1
 ##         |    |      --------    |
 ##         |    |      ________    |
-##         |--->|----> | Bsys |--->|----> y2
+##         |--->|----> | bsys |--->|----> y2
 ##              |      --------    |
 ##              --------------------
-##                   Ksys
+##                   ksys
 ## @end deftypefn
 
 ## Author: David Clem

@@ -17,12 +17,12 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysprune (@var{Asys}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {} sysprune (@var{asys}, @var{out_idx}, @var{in_idx})
 ## Extract specified inputs/outputs from a system
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item   Asys
+## @item asys
 ## system data structure
 ## @item out_idx
 ## @itemx in_idx

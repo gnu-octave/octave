@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{tvals}, @var{Plist}] =} dre (@var{sys}, @var{Q}, @var{R}, @var{Qf}, @var{t0}, @var{tf}[, @var{Ptol}, @var{maxits}]);
+## @deftypefn {Function File} {[@var{tvals}, @var{plist}] =} dre (@var{sys}, @var{q}, @var{r}, @var{qf}, @var{t0}, @var{tf}, @var{ptol}, @var{maxits});
 ## Solve the differential Riccati equation
 ## @ifinfo
 ## @example
@@ -58,16 +58,16 @@
 ## @table @var
 ## @item sys
 ## continuous time system data structure
-## @item Q
+## @item q
 ## state integral penalty
-## @item R
+## @item r
 ## input integral penalty
-## @item Qf
+## @item qf
 ## state terminal penalty
 ## @item t0
 ## @itemx tf
 ## limits on the integral
-## @item Ptol
+## @item ptol
 ## tolerance (used to select time samples; see below); default = 0.1
 ## @item maxits
 ## number of refinement iterations (default=10)
@@ -75,10 +75,10 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item tvals
-## time values at which @var{P}(@var{t}) is computed
-## @item Plist
-## list values of @var{P}(@var{t}); nth (@var{Plist}, @var{ii})
-## is @var{P}(@var{tvals}(@var{ii})).
+## time values at which @var{p}(@var{t}) is computed
+## @item plist
+## list values of @var{p}(@var{t}); nth (@var{plist}, @var{ii})
+## is @var{p}(@var{tvals}(@var{ii})).
 ##
 ## @item tvals
 ## @example

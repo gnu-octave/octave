@@ -17,13 +17,13 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ltifr (@var{A}, @var{B}, @var{w})
+## @deftypefn {Function File} {} ltifr (@var{a}, @var{b}, @var{w})
 ## @deftypefnx {Function File} {} ltifr (@var{sys}, @var{w})
 ## Linear time invariant frequency response of single input systems
 ## @strong{Inputs}
 ## @table @var
-## @item A
-## @itemx B
+## @item a
+## @itemx b
 ## coefficient matrices of @math{dx/dt = A x + B u}
 ## @item sys
 ## system data structure

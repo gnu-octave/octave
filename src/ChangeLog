@@ -1,3 +1,9 @@
+2005-02-16  John W. Eaton  <jwe@octave.org>
+
+	* ov.h, ov.cc
+	(octave_value::octave_value (const ArrayN<octave_value>&, bool)):
+	Delete.
+
 2005-02-15  John W. Eaton  <jwe@octave.org>
 
 	* dirfns.cc (deftypefn): Don't print to octave_stdout if nargout > 0.

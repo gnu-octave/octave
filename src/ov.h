@@ -189,7 +189,6 @@ public:
 
   octave_value (octave_time t);
   octave_value (double d);
-  octave_value (const ArrayN<octave_value>& a, bool is_cs_list = false);
   octave_value (const Cell& c, bool is_cs_list = false);
   octave_value (const Matrix& m);
   octave_value (const NDArray& nda);

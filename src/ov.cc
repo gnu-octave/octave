@@ -423,19 +423,6 @@ octave_value::octave_value (const Cell& c, bool is_csl)
   rep->count = 1;
 }
 
-octave_value::octave_value (const ArrayN<octave_value>& a, bool is_csl)
-  : rep (0)
-{
-  Cell c (a);
-
-  if (is_csl)
-    rep = new octave_cs_list (c);
-  else
-    rep = new octave_cell (c);
-
-  rep->count = 1;
-}
-
 octave_value::octave_value (const Matrix& m)
   : rep (new octave_matrix (m))
 {

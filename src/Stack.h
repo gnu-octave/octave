@@ -28,8 +28,8 @@ template <class T>
 class Stack
 {
  public:
-  Stack (void) { }
-  virtual ~Stack (void) { }
+  inline Stack (void) { }
+  inline virtual ~Stack (void) { }
 
   virtual void push (const T& item) = 0;
 

@@ -220,6 +220,14 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, const Matrix& a)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
+
   Matrix t (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -266,6 +274,14 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, const ComplexMatrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
 
   Matrix t (ar, ac);
 
@@ -314,6 +330,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, double s)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
+
   Matrix t (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -360,6 +384,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Complex& s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
 
   Matrix t (ar, ac);
 
@@ -411,6 +443,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Matrix& b)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 1.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 0.0);
+    }
+
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -461,6 +501,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const ComplexMatrix& b)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 1.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 0.0);
+    }
+
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -506,6 +554,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const Matrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
 
   Matrix t (ar, ac);
 
@@ -554,6 +610,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const ComplexMatrix& a)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
+
   Matrix t (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -601,6 +665,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, double s)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
+
   Matrix t (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -647,6 +719,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Complex& s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 0.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 1.0);
+    }
 
   Matrix t (ar, ac);
 
@@ -698,6 +778,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Matrix& b)
   int ar = a.rows ();
   int ac = a.columns ();
 
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 1.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 0.0);
+    }
+
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -747,6 +835,14 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
      
   int ar = a.rows ();
   int ac = a.columns ();
+
+  if (ar == 0 || ac == 0)
+    {
+      if (op == Matrix_EQ)
+	return Matrix (1, 1, 1.0);
+      else if (op == Matrix_NE)
+	return Matrix (1, 1, 0.0);
+    }
 
   Matrix c (ar, ac);
 

@@ -172,7 +172,7 @@ takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
   if (nargin != e_nargin)
     {
       if (warn)
-	error ("%s: expecting function to take %d argument%c", 
+	error ("%s: expecting function to take %d argument%s", 
 	       warn_for, e_nargin, (e_nargin == 1 ? "" : "s"));
       return 0;
     }
@@ -193,7 +193,7 @@ otherwise, return 0.")
       return retval;
     }
 
-  char *name = args(1).string_value ();
+  char *name = args(0).string_value ();
 
   if (error_state)
     {
@@ -224,7 +224,7 @@ a function.")
       return retval;
     }
 
-  char *name = args(1).string_value ();
+  char *name = args(0).string_value ();
 
   if (error_state)
     {
@@ -1183,7 +1183,7 @@ install_builtin_mapper (builtin_mapper_function *mf)
   mfcn.d_c_mapper = mf->d_c_mapper;
   mfcn.c_c_mapper = mf->c_c_mapper;
 
-  tree_builtin *def = new tree_builtin (2, 1, mfcn, mf->name);
+  tree_builtin *def = new tree_builtin (1, 1, mfcn, mf->name);
 
   sym_rec->define (def);
 

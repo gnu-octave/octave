@@ -180,7 +180,7 @@ private:
   ComplexColumnVector complex_vector_value (int force_string_conv = 0,
 					    int force_vec_conv = 0) const;
 
-  tree_constant convert_to_str (void);
+  tree_constant convert_to_str (void) const;
 
   void convert_to_row_or_column_vector (void);
 
@@ -346,7 +346,9 @@ private:
 // Data.
 
   int count;
+
   constant_type type_tag;
+
   union
     {
       double scalar;			// A real scalar constant.
@@ -356,6 +358,7 @@ private:
       char *string;			// A character string constant.
       Range *range;			// A set of evenly spaced values.
     };
+
   char *orig_text;
 
 // -------------------------------------------------------------------

@@ -192,7 +192,7 @@ Array<T>::checkelem (int n)
   if (n < 0 || n >= rep->length ())
     {
       (*current_liboctave_error_handler) ("range error");
-      static T foo (0);
+      static T foo;
       return foo;
     }
   return elem (n);
@@ -226,7 +226,8 @@ Array<T>::checkelem (int n) const
   if (n < 0 || n >= rep->length ())
     {
       (*current_liboctave_error_handler) ("range error");
-      return T (0);
+      T foo;
+      return foo;
     }
   return elem (n);
 }
@@ -430,14 +431,26 @@ template <class T>
 T&
 Array2<T>::checkelem (int i, int j)
 {
-  return Array<T>::checkelem (d1*j+i);
+  if (i < 0 || j < 0 || i >= d1 || j >= d2)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static T foo;
+      return foo;
+    }
+  return Array<T>::elem (d1*j+i);
 }
 
 template <class T>
 T&
 Array2<T>::operator () (int i, int j)
 {
-  return Array<T>::checkelem (d1*j+i);
+  if (i < 0 || j < 0 || i >= d1 || j >= d2)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static T foo;
+      return foo;
+    }
+  return Array<T>::elem (d1*j+i);
 }
 
 template <class T>
@@ -458,14 +471,26 @@ template <class T>
 T
 Array2<T>::checkelem (int i, int j) const
 {
-  return Array<T>::checkelem (d1*j+i);
+  if (i < 0 || j < 0 || i >= d1 || j >= d2)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      T foo;
+      return foo;
+    }
+  return Array<T>::elem (d1*j+i);
 }
 
 template <class T>
 T
 Array2<T>::operator () (int i, int j) const
 {
-  return Array<T>::checkelem (d1*j+i);
+  if (i < 0 || j < 0 || i >= d1 || j >= d2)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      T foo;
+      return foo;
+    }
+  return Array<T>::elem (d1*j+i);
 }
 
 template <class T>
@@ -626,14 +651,26 @@ template <class T>
 T&
 Array3<T>::checkelem (int i, int j, int k)
 {
-  return Array2<T>::checkelem (i, d1*k+j);
+  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static T foo;
+      return foo;
+    }
+  return Array2<T>::elem (i, d1*k+j);
 }
 
 template <class T>
 T&
 Array3<T>::operator () (int i, int j, int k)
 {
-  return Array2<T>::checkelem (i, d2*k+j);
+  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static T foo;
+      return foo;
+    }
+  return Array2<T>::elem (i, d2*k+j);
 }
 
 template <class T>
@@ -654,14 +691,26 @@ template <class T>
 T
 Array3<T>::checkelem (int i, int j, int k) const
 {
-  return Array2<T>::checkelem (i, d1*k+j);
+  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      T foo;
+      return foo;
+    }
+  return Array2<T>::elem (i, d1*k+j);
 }
 
 template <class T>
 T
 Array3<T>::operator () (int i, int j, int k) const
 {
-  return Array2<T>::checkelem (i, d2*k+j);
+  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      T foo;
+      return foo;
+    }
+  return Array2<T>::elem (i, d2*k+j);
 }
 
 template <class T>
@@ -795,7 +844,12 @@ T&
 DiagArray<T>::checkelem (int r, int c) 
 {
   static T foo (0);
-  return (r == c) ? Array<T>::checkelem (r) : foo;
+  if (r < 0 || c < 0 || r >= nr || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return foo;
+    }
+  return (r == c) ? Array<T>::elem (r) : foo;
 }
 
 template <class T>
@@ -803,7 +857,12 @@ T&
 DiagArray<T>::operator () (int r, int c) 
 {
   static T foo (0);
-  return (r == c) ? Array<T>::operator () (r) : foo;
+  if (r < 0 || c < 0 || r >= nr || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return foo;
+    }
+  return (r == c) ? Array<T>::elem (r) : foo;
 }
 
 template <class T>
@@ -825,14 +884,26 @@ template <class T>
 T
 DiagArray<T>::checkelem (int r, int c) const
 {
-  return (r == c) ? Array<T>::checkelem (r) : T (0);
+  if (r < 0 || c < 0 || r >= nr || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      T foo;
+      return foo;
+    }
+  return (r == c) ? Array<T>::elem (r) : T (0);
 }
 
 template <class T>
 T
 DiagArray<T>::operator () (int r, int c) const
 {
-  return (r == c) ? Array<T>::operator () (r) : T (0);
+  if (r < 0 || c < 0 || r >= nr || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      T foo;
+      return foo;
+    }
+  return (r == c) ? Array<T>::elem (r) : T (0);
 }
 
 template <class T>

@@ -10,12 +10,18 @@
 # ask octave to tell us the version number
 version=`./octave -v 2>/dev/null | awk '/version/ { print $NF }'`
 
-# ask octave to tell us the target host type
-target_host_type=`echo computer | ./octave -q`
-
 if test -z "$version"
 then
   echo "doinstall.sh: unable to extract version number from Octave!"
+  exit 1
+fi
+
+# ask octave to tell us the target host type
+target_host_type=`echo computer | ./octave -q`
+
+if test -z "$target_host_type"
+then
+  echo "doinstall.sh: unable to extract host type from Octave!"
   exit 1
 fi
 

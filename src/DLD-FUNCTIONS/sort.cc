@@ -304,7 +304,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 
   double *v = m.fortran_vec ();
 
-  unsigned EIGHT_BYTE_INT *p = (unsigned EIGHT_BYTE_INT *)v;
+  unsigned EIGHT_BYTE_INT *p = reinterpret_cast<unsigned EIGHT_BYTE_INT *> (v);
 
   octave_sort<unsigned EIGHT_BYTE_INT> sort;
 
@@ -440,7 +440,7 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 
   double *v = m.fortran_vec ();
 
-  unsigned EIGHT_BYTE_INT *p = (unsigned EIGHT_BYTE_INT *)v;
+  unsigned EIGHT_BYTE_INT *p = reinterpret_cast<unsigned EIGHT_BYTE_INT *> (v);
 
   octave_sort<vec_index<unsigned EIGHT_BYTE_INT> *> indexed_sort;
 

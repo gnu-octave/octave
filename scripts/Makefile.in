@@ -87,5 +87,5 @@ dist:
 .PHONY: dist
 
 bin-dist:
-	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -c $$dir $@; done
+	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: bin-dist

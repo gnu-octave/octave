@@ -1,3 +1,7 @@
+2000-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (bin-dist): Pass -C to $(MAKE), not -c.
+
 2000-11-16  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 	* plot/contour.m: Reorder args for Matlab compatibility.

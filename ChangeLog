@@ -1,3 +1,8 @@
+2000-11-27  Marcus.Brinkmann  <Marcus.Brinkmann@ruhr-uni-bochum.de>
+
+	* configure.in: Handle *-*-gnu* the same as *-*-linux* for shared
+	library creation.
+
 2000-11-03  Andy Adler  <en254@freenet.carleton.ca>
 
 	* mkoctfile.in: Handle -c to mean compile only.

@@ -320,7 +320,14 @@ public:
   virtual bool is_zero_by_zero (void) const
     { return rep->is_zero_by_zero (); }
 
+  bool is_constant (void) const
+    { return true; }
+
   // Values.
+
+  octave_value eval (void) { return *this; }
+
+  octave_value_list eval (int, const octave_value_list& idx);
 
   virtual double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }

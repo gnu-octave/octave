@@ -523,6 +523,12 @@ octave_value::assign (octave_value::assign_op op,
   return *this;
 }
 
+octave_value_list
+octave_value::eval (int, const octave_value_list& idx)
+{
+  return (idx.length () > 0) ? index (idx) : *this;
+}
+
 Octave_map
 octave_value::map_value (void) const
 {

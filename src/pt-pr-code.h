@@ -50,8 +50,6 @@ public:
 
   void visit_break_command (tree_break_command&);
 
-  void visit_builtin (tree_builtin&);
-
   void visit_colon_expression (tree_colon_expression&);
 
   void visit_continue_command (tree_continue_command&);
@@ -64,11 +62,11 @@ public:
 
   void visit_for_command (tree_for_command&);
 
-  void visit_function (tree_function&);
+  void visit_octave_user_function (octave_user_function&);
 
-  void visit_function_header (tree_function&);
+  void visit_octave_user_function_header (octave_user_function&);
 
-  void visit_function_trailer (tree_function&);
+  void visit_octave_user_function_trailer (octave_user_function&);
 
   void visit_identifier (tree_identifier&);
 

@@ -27,7 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_value;
 class octave_value_list;
-class tree_function;
+class octave_user_function;
 class tree_statement_list;
 class charMatrix;
 
@@ -86,7 +86,7 @@ extern int quitting_gracefully;
 extern tree_statement_list *global_command;
 
 // Pointer to function that is currently being evaluated.
-extern tree_function *curr_function;
+extern octave_user_function *curr_function;
 
 // Nonzero means input is coming from startup file.
 extern int input_from_startup_file;

@@ -44,17 +44,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
+#include "oct-usr-fcn.h"
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
 #include "pt-cmd.h"
 #include "pt-const.h"
-#include "pt-fcn.h"
-#include "pt-fvc.h"
-#include "pt-mat.h"
-#include "pt-mvr.h"
 #include "pt-exp.h"
+#include "pt-id.h"
+#include "pt-indir.h"
+#include "pt-mat.h"
 #include "pt-misc.h"
+#include "pt-mvr.h"
 #include "pt-plot.h"
 #include "pt-pr-code.h"
 #include "symtab.h"
@@ -216,20 +217,20 @@ static tree_expression *make_multi_val_ret
 	 (tree_matrix_row *mr, tree_expression *rhs, token *eq_tok);
 
 // Begin defining a function.
-static tree_function *start_function_def
+static octave_user_function *start_function
 	 (tree_parameter_list *param_list, tree_statement_list *body);
 
 // Do most of the work for defining a function.
-static tree_function *frob_function_def
-	 (tree_identifier *id, tree_function *fcn);
+static octave_user_function *frob_function
+	 (tree_identifier *id, octave_user_function *fcn);
 
 // Finish defining a function.
-static tree_function *finish_function_def
-	(tree_identifier *id, tree_function *fcn);
+static octave_user_function *finish_function
+	(tree_identifier *id, octave_user_function *fcn);
 
 // Finish defining a function a different way.
-static tree_function *finish_function_def
-	 (tree_parameter_list *ret_list, tree_function *fcn);
+static octave_user_function *finish_function
+	 (tree_parameter_list *ret_list, octave_user_function *fcn);
 
 // Reset state after parsing function.
 static void recover_from_parsing_function (void);
@@ -269,10 +270,10 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 
 %union
 {
-// The type of the basic tokens returned by the lexer.
+  // The type of the basic tokens returned by the lexer.
   token *tok_val;
 
-// Types for the nonterminals we generate.
+  // Types for the nonterminals we generate.
   char sep_type;
   tree *tree_type;
   tree_matrix *tree_matrix_type;
@@ -281,7 +282,6 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
   tree_constant *tree_constant_type;
   tree_identifier *tree_identifier_type;
   tree_indirect_ref *tree_indirect_ref_type;
-  tree_function *tree_function_type;
   tree_index_expression *tree_index_expression_type;
   tree_colon_expression *tree_colon_expression_type;
   tree_argument_list *tree_argument_list_type;
@@ -305,6 +305,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
   plot_range *plot_range_type;
   subplot_using *subplot_using_type;
   subplot_style *subplot_style_type;
+  octave_user_function *octave_user_function_type;
 }
 
 // Tokens with line and column information.
@@ -348,13 +349,13 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_expression_type> ans_expression title matrix
 %type <tree_identifier_type> identifier
 %type <tree_indirect_ref_type> indirect_ref indirect_ref1
-%type <tree_function_type> func_def1 func_def2 func_def3
+%type <octave_user_function_type> function1 function2 function3
 %type <tree_index_expression_type> variable word_list_cmd
 %type <tree_colon_expression_type> colon_expr
 %type <tree_argument_list_type> arg_list word_list
 %type <tree_parameter_list_type> param_list param_list1
 %type <tree_parameter_list_type> return_list return_list1
-%type <tree_command_type> command func_def
+%type <tree_command_type> command function
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -366,7 +367,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list input1 func_def4
+%type <tree_statement_list_type> opt_list input1 function4
 %type <tree_plot_command_type> plot_command 
 %type <subplot_type> plot_command2 plot_options
 %type <subplot_list_type> plot_command1
@@ -629,7 +630,7 @@ declaration	: GLOBAL decl1
 
 command		: plot_command
 		  { $$ = $1; }
-		| func_def
+		| function
 		  { $$ = $1; }
 		| declaration
 		  { $$ = $1; }
@@ -912,8 +913,6 @@ word_list	: TEXT
 		  }
 		;
 
-// This is truly disgusting.
-
 global_symtab	: // empty
 		  { curr_sym_tab = global_sym_tab; }
 		;
@@ -930,9 +929,6 @@ parsed_fcn_name	: // empty
 		  { lexer_flags.parsed_function_name = true; }
 
 return_list_beg	: '[' local_symtab in_return_list
-		;
-
-return_list_end	: global_symtab ']'
 		;
 
 return_list	: return_list_beg return_list_end
@@ -969,50 +965,53 @@ return_list1	: identifier
 		  }
 		;
 
-func_begin	: FCN global_symtab
+return_list_end	: global_symtab ']'
 		;
 
-func_def	: func_begin func_def2
+function_beg	: FCN global_symtab
+		;
+
+function	: function_beg function2
 		  {
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
-		| func_begin identifier func_def1
+		| function_beg identifier function1
 		  {
-		    finish_function_def ($2, $3);
+		    finish_function ($2, $3);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
-		| func_begin return_list func_def1
+		| function_beg return_list function1
 		  {
-		    finish_function_def ($2, $3);
+		    finish_function ($2, $3);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
 		;
 
-func_def1	: global_symtab '=' func_def2
+function1	: global_symtab '=' function2
 		  { $$ = $3; }
 		;
 
-func_def2	: identifier local_symtab parsed_fcn_name func_def3
+function2	: identifier local_symtab parsed_fcn_name function3
 		  {
-		    if (! ($$ = frob_function_def ($1, $4)))
+		    if (! ($$ = frob_function ($1, $4)))
 		      ABORT_PARSE;
 		  }
 		;
 
-func_def3	: param_list func_def4
-		  { $$ = start_function_def ($1, $2); }
-		| func_def4
-		  { $$ = start_function_def (0, $1); }
+function3	: param_list function4
+		  { $$ = start_function ($1, $2); }
+		| function4
+		  { $$ = start_function (0, $1); }
 		;
 
-func_def4	: opt_sep opt_list fcn_end_or_eof
+function4	: opt_sep opt_list function_end
 		  { $$ = $2; }
 		;
 
-fcn_end_or_eof	: END
+function_end	: END
 		  {
 		    if (end_token_ok ($1, token::function_end))
 		      {
@@ -1131,7 +1130,7 @@ magic_colon	: ':'
 		;
 
 arg_list	: magic_colon
-		  { $$ = new tree_argument_list (colon); }
+		  { $$ = new tree_argument_list ($1); }
 		| expression
 		  { $$ = new tree_argument_list ($1); }
 		| ALL_VA_ARGS
@@ -2211,23 +2210,23 @@ make_multi_val_ret (tree_matrix_row *mr, tree_expression *rhs, token *eq_tok)
 
 // Begin defining a function.
 
-static tree_function *
-start_function_def (tree_parameter_list *param_list,
-		    tree_statement_list *body)
+static octave_user_function *
+start_function (tree_parameter_list *param_list, tree_statement_list *body)
 {
   body->mark_as_function_body ();
 
-  tree_function *fcn = new tree_function (body, curr_sym_tab);
+  // We'll fill in the return list later.
 
-  fcn->define_param_list (param_list);
+  octave_user_function *fcn
+    = new octave_user_function (param_list, 0, body, curr_sym_tab);
 
   return fcn;
 }
 
 // Do most of the work for defining a function.
 
-static tree_function *
-frob_function_def (tree_identifier *id, tree_function *fcn)
+static octave_user_function *
+frob_function (tree_identifier *id, octave_user_function *fcn)
 {
   string id_name = id->name ();
 
@@ -2276,7 +2275,7 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
   else
     panic_impossible ();
 
-  id->define (fcn);
+  id->define (fcn, symbol_def::USER_FUNCTION);
 
   id->document (help_buf);
 
@@ -2285,8 +2284,8 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
 
 // Finish defining a function.
 
-static tree_function *
-finish_function_def (tree_identifier *id, tree_function *fcn)
+static octave_user_function *
+finish_function (tree_identifier *id, octave_user_function *fcn)
 {
   tree_parameter_list *tpl = new tree_parameter_list (id);
 
@@ -2297,8 +2296,8 @@ finish_function_def (tree_identifier *id, tree_function *fcn)
 
 // Finish defining a function a different way.
 
-static tree_function *
-finish_function_def (tree_parameter_list *ret_list, tree_function *fcn)
+static octave_user_function *
+finish_function (tree_parameter_list *ret_list, octave_user_function *fcn)
 {
   ret_list->mark_as_formal_parameters ();
 

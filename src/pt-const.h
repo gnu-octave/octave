@@ -33,7 +33,7 @@ class ostream;
 
 #include "oct-alloc.h"
 
-#include "pt-fvc.h"
+#include "pt-mvr-base.h"
 
 class octave_value_list;
 
@@ -42,18 +42,18 @@ class tree_walker;
 #include "ov.h"
 
 class
-tree_constant : public tree_fvc
+tree_constant : public tree_multi_val_ret
 {
 public:
 
   tree_constant (int l = -1, int c = -1)
-    : tree_fvc (l, c), val (), orig_text () { }
+    : tree_multi_val_ret (l, c), val (), orig_text () { }
 
   tree_constant (const octave_value& v, int l = -1, int c = -1)
-    : tree_fvc (l, c), val (v), orig_text () { }
+    : tree_multi_val_ret (l, c), val (v), orig_text () { }
 
   tree_constant (const tree_constant& a)
-    : tree_fvc (), val (a.val), orig_text () { }
+    : tree_multi_val_ret (-1, -1), val (a.val), orig_text () { }
 
   ~tree_constant (void) { }
 
@@ -61,7 +61,7 @@ public:
     {
       if (this != &a)
 	{
-	  tree_fvc::operator = (a);
+	  tree_multi_val_ret::operator = (a);
 	  val = a.val;
 	}
       return *this;

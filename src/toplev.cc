@@ -61,12 +61,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
+#include "oct-sym.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
 #include "ov.h"
-#include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
 #include "sighandlers.h"
@@ -128,7 +128,7 @@ int quitting_gracefully = 0;
 tree_statement_list *global_command = 0;
 
 // Pointer to function that is currently being evaluated.
-tree_function *curr_function = 0;
+octave_user_function *curr_function = 0;
 
 // Nonzero means input is coming from startup file.
 int input_from_startup_file = 0;
@@ -497,7 +497,8 @@ feval (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  tree_fvc *fcn = is_valid_function (args(0), "feval", 1);
+  octave_symbol *fcn = is_valid_function (args(0), "feval", 1);
+
   if (fcn)
     {
       int tmp_nargin = args.length () - 1;
@@ -505,7 +506,7 @@ feval (const octave_value_list& args, int nargout)
       tmp_args.resize (tmp_nargin);
       for (int i = 0; i < tmp_nargin; i++)
 	tmp_args(i) = args(i+1);
-      retval = fcn->eval (false, nargout, tmp_args);
+      retval = fcn->eval (nargout, tmp_args);
     }
 
   return retval;

@@ -26,14 +26,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class tree_argument_list;
 class tree_binary_expression;
 class tree_break_command;
-class tree_builtin;
 class tree_colon_expression;
 class tree_continue_command;
 class tree_decl_command;
 class tree_decl_elt;
 class tree_decl_init_list;
 class tree_for_command;
-class tree_function;
+class octave_user_function;
 class tree_identifier;
 class tree_if_clause;
 class tree_if_command;
@@ -84,9 +83,6 @@ public:
   visit_break_command (tree_break_command&) = 0;
 
   virtual void
-  visit_builtin (tree_builtin&) = 0;
-
-  virtual void
   visit_colon_expression (tree_colon_expression&) = 0;
 
   virtual void
@@ -105,7 +101,7 @@ public:
   visit_for_command (tree_for_command&) = 0;
 
   virtual void
-  visit_function (tree_function&) = 0;
+  visit_octave_user_function (octave_user_function&) = 0;
 
   virtual void
   visit_identifier (tree_identifier&) = 0;

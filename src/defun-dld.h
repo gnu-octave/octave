@@ -47,8 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #else
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name); \
-  DEFINE_FUN_STRUCT (name, 0, doc); \
-  DEFINE_FUN_STRUCT_FUN (name) \
+  DEFINE_FUN_STRUCT_FUN (name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 #endif
 

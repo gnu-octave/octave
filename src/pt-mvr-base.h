@@ -41,6 +41,7 @@ public:
 
   tree_multi_val_ret (int l = -1, int c = -1) : tree_expression (l, c) { }
 
+  // XXX FIXME XXX -- this can't be right!
   tree_multi_val_ret (int l = -1, int c = -1, tree_expression::type et)
     : tree_expression (l, c, et) { }
 

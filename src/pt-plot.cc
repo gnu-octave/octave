@@ -47,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "procstream.h"
 
 #include "file-ops.h"
+#include "lo-mappers.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -54,7 +55,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "load-save.h"
-#include "mappers.h"
 #include "oct-obj.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"

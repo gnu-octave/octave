@@ -40,13 +40,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "input.h"
 #include "oct-obj.h"
+#include "oct-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
 #include "pt-cmd.h"
 #include "pt-const.h"
 #include "pt-exp.h"
-#include "pt-fcn.h"
-#include "pt-fvc.h"
+#include "pt-id.h"
+#include "pt-indir.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
 #include "pt-pr-code.h"
@@ -343,8 +344,6 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
     {
       tree_identifier *elt = this->operator () (p);
 
-      tree_constant *tmp = 0;
-
       if (i < nargin)
 	{
 	  if (args(i).is_defined () && args(i).is_magic_colon ())
@@ -352,10 +351,11 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 	      ::error ("invalid use of colon in function argument list");
 	      return;
 	    }
-	  tmp = new tree_constant (args (i));
-	}
 
-      elt->define (tmp);
+	  elt->define (args(i));
+	}
+      else
+	elt->define (octave_value ());
 
       next (p);
     }

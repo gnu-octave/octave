@@ -23,6 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_defun_int_h)
 #define octave_defun_int_h 1
 
+#include "oct-builtin.h"
 #include "variables.h"
 
 // MAKE_BUILTINS is defined to extract function names and related
@@ -38,8 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
     extern DECLARE_FUN (name, args_name, nargout_name); \
-    DEFINE_FUN_STRUCT (name, is_text_fcn, doc); \
-    install_builtin_function (S ## name); \
+    install_builtin_function \
+      (new octave_builtin (F ## name, #name, doc), is_text_fcn); \
   END_INSTALL_BUILTIN
 
 // Generate code for making another name for an existing function.
@@ -66,14 +67,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Define the structure that will be used to insert this function into
 // the symbol table.
 
-#define DEFINE_FUN_STRUCT(name, is_text_fcn, doc) \
-  static builtin_function S ## name (#name, is_text_fcn, F ## name, doc)
-
-#define DEFINE_FUN_STRUCT_FUN(name) \
-  builtin_function& \
+#define DEFINE_FUN_STRUCT_FUN(name, doc) \
+  octave_builtin * \
   FS ## name (void) \
   { \
-    return S ## name; \
+    static octave_builtin *s = 0; \
+    if (! s) \
+      s = new octave_builtin (F ## name, #name, doc); \
+    return s; \
   }
 
 #define DECLARE_FUN(name, args_name, nargout_name) \

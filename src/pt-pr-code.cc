@@ -31,12 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "error.h"
+#include "oct-usr-fcn.h"
 #include "pr-output.h"
 #include "pt-cmd.h"
 #include "pt-const.h"
 #include "pt-exp.h"
-#include "pt-fcn.h"
-#include "pt-fvc.h"
+#include "pt-id.h"
+#include "pt-indir.h"
 #include "pt-mat.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
@@ -96,13 +97,6 @@ tree_print_code::visit_break_command (tree_break_command&)
   indent ();
 
   os << "break";
-}
-
-void
-tree_print_code::visit_builtin (tree_builtin& fcn)
-{
-  os << fcn.name ()
-     << " can't be printed because it is a built-in function\n";
 }
 
 void
@@ -234,11 +228,11 @@ tree_print_code::visit_for_command (tree_for_command& cmd)
 }
 
 void
-tree_print_code::visit_function (tree_function& fcn)
+tree_print_code::visit_octave_user_function (octave_user_function& fcn)
 {
   reset ();
 
-  visit_function_header (fcn);
+  visit_octave_user_function_header (fcn);
 
   tree_statement_list *cmd_list = fcn.body ();
 
@@ -249,11 +243,11 @@ tree_print_code::visit_function (tree_function& fcn)
       decrement_indent_level ();
     }
 
-  visit_function_trailer (fcn);
+  visit_octave_user_function_trailer (fcn);
 }
 
 void
-tree_print_code::visit_function_header (tree_function& fcn)
+tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 {
   indent ();
 
@@ -325,7 +319,7 @@ tree_print_code::visit_function_header (tree_function& fcn)
 }
 
 void
-tree_print_code::visit_function_trailer (tree_function&)
+tree_print_code::visit_octave_user_function_trailer (octave_user_function&)
 {
   indent ();
 

@@ -387,7 +387,7 @@ print_symbol_type (ostream& os, symbol_record *sym_rec,
 
   if (sym_rec->is_user_function ())
     {
-      tree_fvc *defn = sym_rec->def ();
+      octave_symbol *defn = sym_rec->def ();
 
       string fn = defn->fcn_file_name ();
 
@@ -782,7 +782,7 @@ display the definition of each NAME that refers to a function")
 	    {
 	      if (sym_rec->is_user_function ())
 		{
-		  tree_fvc *defn = sym_rec->def ();
+		  octave_symbol *defn = sym_rec->def ();
 
 		  string fn = defn->fcn_file_name ();
 		  string ff = fcn_file_in_path (fn);
@@ -815,7 +815,8 @@ display the definition of each NAME that refers to a function")
 
 		      tree_print_code tpc (output_buf, "", pr_orig_txt);
 
-		      defn->accept (tpc);
+		      // XXX FIXME XXX
+		      // defn->accept (tpc);
 		    }
 		}
 
@@ -829,7 +830,7 @@ display the definition of each NAME that refers to a function")
 	      else if (sym_rec->is_user_variable ()
 		       || sym_rec->is_builtin_variable ())
 		{
-		  tree_fvc *defn = sym_rec->def ();
+		  octave_symbol *defn = sym_rec->def ();
 
 		  assert (defn && defn->is_constant ());
 
@@ -874,7 +875,8 @@ display the definition of each NAME that refers to a function")
 
 		      tree_print_code tpc (output_buf, "", pr_orig_txt);
 
-		      tmp->accept (tpc);
+		      // XXX FIXME XXX
+		      // tmp->accept (tpc);
 
 		      if (nargout == 0)
 			output_buf << "\n";

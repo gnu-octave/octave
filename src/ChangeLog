@@ -1,5 +1,8 @@
 2003-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/qz.cc (qz): Use x.data()+offset instead of &a(i,j).
+	First and third args for dlag2 are const.
+
 	* DLD-FUNCTIONS/sort.cc (Fsort): Use const qualifier as appropriate.
 
 	* DLD-FUNCTIONS/balance.cc (balance): Use data() instead of

@@ -1,7 +1,14 @@
+2003-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/path.m: Fix thinko in previous change.
+
 2003-11-14  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
 
-	* control/base/dare.m: 
-	* control/base/dlqr.m: 
+	* control/base/dare.m: Check positive (semi)definiteness and
+	dimensions of r (and q). 
+	* control/base/dlqr.m: Check stabilizability of (A,B),
+	detectability of (A,Q), and whether (A,Q) has non minimal modes
+	near unit circle.
 
 	* control/system/is_detectable.m: Use Hautus Lemma.
 	Correct the behavior for discrete-time systems.

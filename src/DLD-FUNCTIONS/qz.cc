@@ -107,7 +107,7 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dlag2, DLAG2) (double* A, const int& LDA, double* B,
+  F77_FUNC (dlag2, DLAG2) (const double* A, const int& LDA, const double* B,
 			   const int& LDB, const double& SAFMIN,
 			   double& SCALE1, double& SCALE2,
 			   double& WR1, double& WR2, double& WI);
@@ -760,8 +760,10 @@ See also: balance, dare, eig, schur\n\
 		  // fortran_vec instead of &aa(jj,jj) here.
 
 		  double scale1, scale2, wr1, wr2, wi;
+		  const double *aa_ptr = aa.data () + jj*nn+jj;
+		  const double *bb_ptr = bb.data () + jj*nn+jj;
 		  F77_XFCN (dlag2, DLAG2,
-			    (&aa(jj,jj), nn, &bb(jj,jj), nn, safmin,
+			    (aa_ptr, nn, bb_ptr, nn, safmin,
 			     scale1, scale2, wr1, wr2, wi));
 
 #ifdef DEBUG_EIG

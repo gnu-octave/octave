@@ -40,8 +40,9 @@ function p = path (varargin)
 
   if (nargin == 0)
     if (nargout == 0)
-      puts ("\nLOADPATH contains the following directories:\n\n  %s\n\n",
-	    strrep (DEFAULT_LOADPATH, ":", "\n  ");
+      puts ("\nLOADPATH contains the following directories:\n\n  ");
+      puts (strrep (DEFAULT_LOADPATH, ":", "\n  "));
+      puts ("\n\n");
     else
       p = LOADPATH;
     endif

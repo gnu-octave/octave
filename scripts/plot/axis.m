@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-function axis (ax)
+function curr_axis = axis (ax)
 
 # usage: axis ()
 #        axis ([xmin, xmax])
@@ -30,12 +30,22 @@ function axis (ax)
 # If your plot is already drawn, then you need to REPLOT before 
 # the new axis limits will take effect.
 
+# This may not be correct if someone has used the gnuplot interface
+# directly...
+
+  global __current_axis__;
+
+  if (! exist ("__current_axis__"))
+    __current_axis__ = [-10, 10, -10, 10];
+  endif
+
   if (nargin > 1)
     usage ("axis ([xmin, xmax, ymin, ymax, zmin, zmax])");
   endif
 
   if (nargin == 0)
     set autoscale;
+    curr_axis = __current_axis__;
   elseif (is_vector (ax))
 
     len = length (ax);
@@ -43,6 +53,8 @@ function axis (ax)
     if (len != 2 && len != 4 && len != 6)
       error ("axis: expecting vector with 2, 4, or 6 elements");
     endif
+
+    __current_axis__ = reshape (ax, 1, len);
 
     if (len > 1)
       eval (sprintf ("set xrange [%g:%g];", ax (1), ax (2)));

@@ -31,7 +31,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
 	NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
 	Range.h base-de.h base-min.h cmd-hist.h dir-ops.h file-ops.h \
-	f77-uscore.h getopt.h idx-vector.h lo-error.h oct-cmplx.h \
+	f77-fcn.h getopt.h idx-vector.h lo-error.h oct-cmplx.h \
 	oct-glob.h oct-math.h oct-term.h pathsearch.h prog-args.h \
 	statdefs.h str-vec.h sun-utils.h sysdir.h \
 	$(MATRIX_INC)
@@ -53,8 +53,8 @@ MATRIX_SRC := Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc NPSOL.cc QPSOL.cc \
 	Quad.cc Range.cc acosh.c asinh.c atanh.c cmd-hist.cc \
-	dir-ops.cc erf.c erfc.c file-ops.cc filemode.c gamma.c \
-	getopt.c getopt1.c idx-vector.cc lo-error.cc lgamma.c \
+	dir-ops.cc erf.c erfc.c file-ops.cc filemode.c f77-fcn.c \
+	gamma.c getopt.c getopt1.c idx-vector.cc lo-error.cc lgamma.c \
 	mkdir.c oct-glob.cc oct-term.cc pathsearch.cc prog-args.cc \
 	rename.c rmdir.c str-vec.cc sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \

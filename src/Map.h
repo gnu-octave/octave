@@ -101,10 +101,10 @@ struct CHNode
   // table entry.  Not terrible, but not wonderful either.
 
   int goodCHptr (void)
-    { return (((X_CAST (unsigned long, this)) & 1) == 0); }
+    { return ((((unsigned long) this) & 1) == 0); }
 
   unsigned int CHptr_to_index (void)
-    { return (X_CAST (unsigned long, this)) >> 1; }
+    { return (((unsigned long) this) >> 1); }
 };
 
 #ifndef DEFAULT_INITIAL_CAPACITY

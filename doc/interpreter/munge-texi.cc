@@ -48,7 +48,7 @@ usage (void)
 }
 
 static std::string
-extract_symbol_name (istream& is)
+extract_symbol_name (std::istream& is)
 {
   std::string symbol_name;
 

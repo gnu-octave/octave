@@ -146,10 +146,10 @@ main (int argc, char **argv)
 
   if (! help_text.empty ())
     {
-      cout << "" << name << "\n" << help_text;
+      std::cout << "" << name << "\n" << help_text;
 
       if (help_text[help_text.length () - 1] != '\n')
-	cout << "\n";
+	std::cout << "\n";
     }
 
   return 0;

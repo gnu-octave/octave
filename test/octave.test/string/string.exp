@@ -1,0 +1,47 @@
+set test str-esc-1
+set prog_output "ok"
+do_test str-esc-1.m
+
+set test str-esc-2
+set prog_output "ok"
+do_test str-esc-2.m
+
+set test str-esc-3
+set prog_output "ok"
+do_test str-esc-3.m
+
+set test str-esc-4
+set prog_output "ok"
+do_test str-esc-4.m
+
+set test str-esc-5
+set prog_output "ok"
+do_test str-esc-5.m
+
+set test str-esc-6
+set prog_output "ok"
+do_test str-esc-6.m
+
+set test str-esc-7
+set prog_output "ok"
+do_test str-esc-7.m
+
+set test str-esc-8
+set prog_output "ok"
+do_test str-esc-8.m
+
+set test str-esc-9
+set prog_output "ok"
+do_test str-esc-9.m
+
+set test str-esc-10
+set prog_output "ok"
+do_test str-esc-10.m
+
+set test str-esc-11
+set prog_output ".*unrecognized escape sequence.*"
+do_test str-esc-11.m
+
+set test str-esc-12
+set prog_output "ok"
+do_test str-esc-12.m

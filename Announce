@@ -1,16 +1,40 @@
-Subject: ANNOUNCE: Octave Version 2.0.1 released
+Subject: ANNOUNCE: Octave Version 2.0.2 released
 
-Octave version 2.0.1 is now available for ftp from ftp.che.wisc.edu
+Octave version 2.0.2 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
-  -rw-r--r--   1 jwe  3269864 Jan  7 03:02 octave-2.0.1.tar.gz
-  -rw-r--r--   1 jwe    33695 Jan  7 03:10 octave-2.0-2.0.1.patch.gz
+  -rw-r--r--   1 jwe  3281655 Jan 27 19:43 octave-2.0.2.tar.gz
+  -rw-r--r--   1 jwe    91507 Jan 27 19:40 octave-2.0.1-2.0.2.patch.gz
 
-This is a bug-fixing release.  Most bugs reported since the release of
-version 2.0 have been fixed.  There are no new features.  You can help
-make Octave more reliable by reporting any bugs you find to
-bug-octave@bevo.che.wisc.edu.
+In addition to the source distributions, there are binary
+distributions available for Linux running on Intel systems and OSF/1
+running on Alpha systems.  Binary distributions for other platforms
+will be available from ftp.che.wisc.edu when they are contributed by
+volunteers.  If you would like to help to make a binary distribution
+available, please contact bug-octave@bevo.che.wisc.edu.
+
+Version 2.0.2 is primarily a bug-fixing release.  Most bugs reported
+since the release of version 2.0.1 have been fixed.  There are also a
+few new features, including:
+
+  * Octave now stops executing commands from a script file if an error
+    is encountered.
+
+  * The return, and break commands now cause Octave to quit executing
+    commands from script files.  When used in invalid contexts, the
+    break, continue, and return commands are now simply ignored
+    instead of producing parse errors.
+
+  * size ("") is now [0, 0].
+
+  * New functions:
+
+      sleep   -- pause execution for a specified number of seconds
+      usleep  -- pause execution for a specified number of microseconds
+
+You can help make Octave more reliable by reporting any bugs you find
+to bug-octave@bevo.che.wisc.edu.
 
 Octave is a high-level interactive language primarily intended for
 numerical computations.  It is mostly compatible with Matlab.

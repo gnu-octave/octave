@@ -126,7 +126,7 @@ if test -n "$xlf_p"; then
 fi
 dnl
 ld_run_path=`echo $foutput | \
-  sed -n -e 's/^.*\(LD_RUN_PATH *= *\([^ ]*\).*/\1/p'`
+  sed -n -e 's/^.*LD_RUN_PATH *= *\([^ ]*\).*/\1/p'`
 dnl
 dnl We are only supposed to find this on Solaris systems, and this
 dnl substitution is probably only going to work with gcc on those

@@ -1,3 +1,7 @@
+Thu Oct  2 01:37:15 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Handle -IDIR option.
+
 Thu Sep 25 11:47:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Really add link options to link command.

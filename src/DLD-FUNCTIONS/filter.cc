@@ -193,9 +193,31 @@ implementation.")
 
       if (! error_state)
 	{
+	  ComplexColumnVector si;
+
 	  if (nargin == 3)
 	    {
-	      ComplexColumnVector y (filter (b, a, x));
+	      int a_len = a.length ();
+	      int b_len = b.length ();
+
+	      int si_len = (a_len > b_len ? a_len : b_len) - 1;
+
+	      si.resize (si_len, 0.0);
+	    }
+	  else
+	    si = args(3).complex_vector_value ();
+
+	  if (! error_state)
+	    {
+	      ComplexColumnVector y (filter (b, a, x, si));
+
+	      if (nargout == 2)
+		{
+		  if (si_is_vector)
+		    retval (1) = octave_value (si, (args(3).columns () == 1));
+		  else
+		    retval (1) = si;
+		}
 
 	      if (x_is_vector)
 		retval (0) = octave_value (y, (args(2).columns () == 1));
@@ -203,26 +225,7 @@ implementation.")
 		retval (0) = y;
 	    }
 	  else
-	    {
-	      ComplexColumnVector si = args(3).complex_vector_value ();
-
-	      if (! error_state)
-		{
-		  ComplexColumnVector y (filter (b, a, x, si));
-
-		  if (si_is_vector)
-		    retval (1) = octave_value (si, (args(3).columns () == 1));
-		  else
-		    retval (1) = si;
-
-		  if (x_is_vector)
-		    retval (0) = octave_value (y, (args(2).columns () == 1));
-		  else
-		    retval (0) = y;
-		}
-	      else
-		error (errmsg);
-	    }
+	    error (errmsg);
 	}
       else
 	error (errmsg);
@@ -235,9 +238,31 @@ implementation.")
 
       if (! error_state)
 	{
+	  ColumnVector si;
+
 	  if (nargin == 3)
 	    {
-	      ColumnVector y (filter (b, a, x));
+	      int a_len = a.length ();
+	      int b_len = b.length ();
+
+	      int si_len = (a_len > b_len ? a_len : b_len) - 1;
+
+	      si.resize (si_len, 0.0);
+	    }
+	  else
+	    si = args(3).vector_value ();
+
+	  if (! error_state)
+	    {
+	      ColumnVector y (filter (b, a, x, si));
+
+	      if (nargout == 2)
+		{
+		  if (si_is_vector)
+		    retval (1) = octave_value (si, (args(3).columns () == 1));
+		  else
+		    retval (1) = si;
+		}
 
 	      if (x_is_vector)
 		retval (0) = octave_value (y, (args(2).columns () == 1));
@@ -245,26 +270,7 @@ implementation.")
 		retval (0) = y;
 	    }
 	  else
-	    {
-	      ColumnVector si = args(3).vector_value ();
-
-	      if (! error_state)
-		{
-		  ColumnVector y (filter (b, a, x, si));
-
-		  if (si_is_vector)
-		    retval (1) = octave_value (si, (args(3).columns () == 1));
-		  else
-		    retval (1) = si;
-
-		  if (x_is_vector)
-		    retval (0) = octave_value (y, (args(2).columns () == 1));
-		  else
-		    retval (0) = y;
-		}
-	      else
-		error (errmsg);
-	    }
+	    error (errmsg);
 	}
       else
 	error (errmsg);

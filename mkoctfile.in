@@ -44,6 +44,7 @@ f77files=
 objfiles=
 octfiles=
 octfile=
+incflags=
 ldflags=
 dbg=:
 strip=false
@@ -82,6 +83,7 @@ while [ $# -gt 0 ]; do
 Options:
 
   -h, -? --help           Print this message.
+  -IDIR                   Add -IDIR to compile commands.
   -lLIB                   Add library LIB to link command.
   -LDIR                   Add -LDIR to link command.
   -o FILE, --output FILE  Output file name.  Default extension is .oct.
@@ -101,10 +103,11 @@ Options:
 EOF
       exit 0
     ;;
+    -I*)
+      incflags="$incflags $1";;
+    ;;
     -[lL]*)
       ldflags="$ldflags $1";;
-    "")
-      break
     ;;
     -o | --output)
       shift
@@ -155,8 +158,8 @@ if [ -n "$cfiles" ]; then
     b=`echo $f | sed 's,\.c$,,'`
     o=$b.o
     objfiles="$objfiles $o"
-    $dbg $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $f -o $o
-    eval $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $f -o $o
+    $dbg $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $incflags $f -o $o
+    eval $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $incflags $f -o $o
   done
 fi
 
@@ -175,8 +178,8 @@ if [ -n "$ccfiles" ]; then
     esac
     o=$b.o
     objfiles="$objfiles $o"
-    $dbg $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $f -o $o
-    eval $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $f -o $o
+    $dbg $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $incflags $f -o $o
+    eval $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $incflags $f -o $o
   done
 fi
 

@@ -1,7 +1,13 @@
+Thu Sep 25 10:17:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/filter.cc (Ffilter): Return second output value
+	even when called with only 3 arguments.
+
 Mon Sep 22 16:44:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/rand.cc (do_rand): Print error if first of two
 	args is a string but doesn't match "seed".
+	(Frand, Frandn): Fix doc string.
 
 Mon Aug 25 10:42:07 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -569,6 +569,8 @@ get_global_value (const string& nm)
 
       if (sr_def.is_undefined ())
 	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
+      else
+	retval = sr_def;
     }
   else
     error ("get_global_by_name: unknown symbol `%s'", nm.c_str ());

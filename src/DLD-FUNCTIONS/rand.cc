@@ -327,13 +327,13 @@ do_rand (const octave_value_list& args, int nargin)
 }
 
 DEFUN_DLD (rand, args, nargout,
-  "rand            -- generate a random value from a uniform distribution\n\
+  "rand              -- generate a random value from a uniform distribution\n\
 \n\
-rand (N)        -- generate N x N matrix\n\
-rand (size (A)) -- generate matrix the size of A\n\
-rand (N, M)     -- generate N x M matrix\n\
-rand (SEED)     -- get current seed\n\
-rand (SEED, N)  -- set seed\n\
+rand (N)          -- generate N x N matrix\n\
+rand (size (A))   -- generate matrix the size of A\n\
+rand (N, M)       -- generate N x M matrix\n\
+rand (\"seed\")     -- get current seed\n\
+rand (\"seed\", N)  -- set seed\n\
 \n\
 See also: randn")
 {
@@ -361,13 +361,13 @@ reset_rand_generator (void *)
 }
 
 DEFUN_DLD (randn, args, nargout,
-  "randn            -- generate a random value from a normal distribution\n\
+  "randn              -- generate a random value from a normal distribution\n\
 \n\
-randn (N)        -- generate N x N matrix\n\
-randn (size (A)) -- generate matrix the size of A\n\
-randn (N, M)     -- generate N x M matrix\n\
-randn (SEED)     -- get current seed\n\
-randn (SEED, N)  -- set seed\n\
+randn (N)          -- generate N x N matrix\n\
+randn (size (A))   -- generate matrix the size of A\n\
+randn (N, M)       -- generate N x M matrix\n\
+randn (\"seed\")     -- get current seed\n\
+randn (\"seed\", N)  -- set seed\n\
 \n\
 See also: rand")
 {

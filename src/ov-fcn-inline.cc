@@ -608,19 +608,21 @@ If the second argument is an integer @var{n}, the arguments are\n\
 	      fargs.resize (1);
 	      fargs(0) = "x";
 
-	      for (int i = 0; i < fun.length(); i++)
+	      for (int i = 0; i < fun.length (); i++)
 		{
-		  if (islower (fun [i]) && 
-		      (i == 0 ? true : !islower (fun [i-1])) &&
-		      (i == fun.length() ? true : !islower (fun [i+1])))
+		  if (islower (fun[i])
+		      && (i == 0 || ! islower (fun[i-1]))
+		      && (i == fun.length () || ! islower (fun[i+1])))
 		    {
 		      char new_c = fun [i];
 
 		      if (new_c == 'i' || new_c == 'j') 
 			continue;
-		      int new_dist = std::abs(new_c - 'x');
-		      if (dist == -1 || (new_dist < dist) ||
-			  ((new_dist == dist) && (c < new_c)))
+
+		      int new_dist = std::abs (new_c - 'x');
+
+		      if (dist == -1 || (new_dist < dist)
+			  || (new_dist == dist && c < new_c))
 			{
 			  fargs(0) = new_c;
 			  dist = new_dist;

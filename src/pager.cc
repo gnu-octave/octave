@@ -123,6 +123,8 @@ more_than_a_screenful (const char *s)
     {
       int available_rows = terminal_rows () - 2;
 
+      int count = 0;
+
       char c;
 
       while ((c = *s++) != '\0')
@@ -152,7 +154,7 @@ octave_pager_buf::sync (void)
       bool bypass_pager = (really_flush_to_pager
 			   && user_pref.page_screen_output
 			   && ! user_pref.page_output_immediately
-			   && more_than_a_screenful (buf));
+			   && ! more_than_a_screenful (buf));
 
       do_sync (buf, bypass_pager);
 

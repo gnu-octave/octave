@@ -1046,6 +1046,8 @@ DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   return retval;
 }
 
+DEFALIAS (clg, clearplot);
+
 DEFUN ("closeplot", Fcloseplot, Scloseplot, 0, 0,
   "closeplot (): close the stream to plotter")
 {

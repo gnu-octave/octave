@@ -44,6 +44,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Two dimensional array class.
 
+// A guess (should be quite conservative).
+#define MALLOC_OVERHEAD 1024
+
 template <class T>
 int
 Array2<T>::get_size (int r, int c) const
@@ -56,9 +59,6 @@ Array2<T>::get_size (int r, int c) const
   // not equivalent to the actual request, should be too large for
   // most current hardware, but not so large to cause the
   // allocator to barf on computing retval * sizeof (T).
-
-  // A guess (should be quite conservative).
-  static const int MALLOC_OVERHEAD = 1024;
 
   static int nl;
   static double dl
@@ -88,6 +88,8 @@ Array2<T>::get_size (int r, int c) const
 
   return (nt < nl || (nt == nl && dt < dl)) ? r * c : max_items;
 }
+
+#undef MALLOC_OVERHEAD
 
 template <class T>
 T

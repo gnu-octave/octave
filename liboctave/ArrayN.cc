@@ -69,6 +69,9 @@ ArrayN<T>::compute_index (const Array<int>& arr_idx) const
   return retval;
 }
 
+// A guess (should be quite conservative).
+#define MALLOC_OVERHEAD 1024
+
 template <class T>
 int
 ArrayN<T>::get_size (const Array<int>& arr_idx)
@@ -81,9 +84,6 @@ ArrayN<T>::get_size (const Array<int>& arr_idx)
   // not equivalent to the actual request, should be too large for
   // most current hardware, but not so large to cause the
   // allocator to barf on computing retval * sizeof (T).
-
-  // A guess (should be quite conservative).
-  static const int MALLOC_OVERHEAD = 1024;
 
   static int nl;
   static double dl
@@ -130,6 +130,8 @@ ArrayN<T>::get_size (const Array<int>& arr_idx)
 
   return retval;
 }
+
+#undef MALLOC_OVERHEAD
 
 template <class T>
 T

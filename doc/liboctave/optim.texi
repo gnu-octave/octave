@@ -1,5 +1,9 @@
+@node Optimization
+@chapter Optimization
+@cindex optimization
+
 @node Objective Functions, Quadrature, Nonlinear Functions, Top
-@chapter Objective Functions
+@section Objective Functions
 @cindex objective functions
 
 @deftypefn  {} {}Objective (void)
@@ -26,7 +30,7 @@
 @c ------------------------------------------------------------------------
 
 @node Bounds, Linear Constraints, Objective Functions
-@chapter Bounds
+@section Bounds
 @cindex bounds
 
 @deftypefn  {} {}Bounds (void)
@@ -77,7 +81,7 @@
 @c ------------------------------------------------------------------------
 
 @node Linear Constraints, Nonlinear Constraints, Bounds
-@chapter Linear Constraints
+@section Linear Constraints
 @cindex linear Constraints
 
 @deftypefn  {} {}LinConst (void)
@@ -114,7 +118,7 @@
 @c ------------------------------------------------------------------------
 
 @node Nonlinear Constraints, Quadratic Programming, Linear Constraints
-@chapter Nonlinear Constraints
+@section Nonlinear Constraints
 @cindex nonlinear Constraints
 
 @deftypefn  {} {}NLConst (void)
@@ -127,7 +131,7 @@
 @end deftypefn
 
 @node Quadratic Programming, Nonlinear Programming, Nonlinear Constraints
-@chapter Quadratic Programming
+@section Quadratic Programming
 @cindex QP
 @cindex quadratic programming
 
@@ -209,7 +213,7 @@
 @c ------------------------------------------------------------------------
 
 @node Nonlinear Programming,  , Quadratic Programming
-@chapter Nonlinear Programming
+@section Nonlinear Programming
 @cindex NLP
 @cindex nonlinear programming
 

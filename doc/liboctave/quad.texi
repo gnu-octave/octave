@@ -56,7 +56,7 @@
 @end deftypefn
 
 @node Collocation Weights,  , Quadrature
-@chapter Collocation Weights
+@section Collocation Weights
 @cindex orthogonal collocation
 @cindex collocation weights
 

@@ -1,0 +1,24 @@
+@node Nonlinear Functions, Objective Functions, Ranges, Top
+@chapter Nonlinear Functions
+@cindex nonlinear functions
+
+@deftypefn  {} {}NLFunc (void)
+@deftypefnx  {} {}NLFunc (const @var{nonlinear_fcn})
+@deftypefnx  {} {}NLFunc (const @var{nonlinear_fcn}, const @var{jacobian_fcn})
+@deftypefnx  {} {}NLFunc (const NLFunc &@var{a})
+@end deftypefn
+
+@deftypefn {} NLFunc& {operator =} (const NLFunc &@var{a})
+@end deftypefn
+
+@deftypefn {} nonlinear_fcn function (void) const;
+@end deftypefn
+
+@deftypefn {} NLFunc& set_function (const nonlinear_fcn @var{f})
+@end deftypefn
+
+@deftypefn {} jacobian_fcn jacobian_function (void) const;
+@end deftypefn
+
+@deftypefn {} NLFunc& set_jacobian_function (const jacobian_fcn @var{j})
+@end deftypefn

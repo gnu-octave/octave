@@ -1,4 +1,4 @@
-@node Differential Algebraic Equations, Quadrature, Ordinary Differential Equations, Top
+@node Differential Algebraic Equations, Error Handling, Ordinary Differential Equations, Top
 @chapter Differential Algebraic Equations
 @cindex DAE
 
@@ -21,4 +21,3 @@
 @deftypefn {} Matrix integrate (const ColumnVector &@var{tout}, Matrix &@var{xdot_out})
 @deftypefnx {} Matrix integrate (const ColumnVector &@var{tout}, Matrix &@var{xdot_out}, const ColumnVector &@var{tcrit})
 @end deftypefn
-

@@ -24,7 +24,7 @@
 
 @defindex op
 
-@c xt@include conf.texi
+@c @include conf.texi
 
 @settitle Octave C++ Classes
 
@@ -101,6 +101,7 @@ library, and how to report bugs.  It corresponds to Octave version
 * Objective Functions::         
 * Quadrature::                  
 * Ordinary Differential Equations::  
+* Error Handling::              
 * Installation::                
 * Bugs::                        
 * Concept Index::               
@@ -124,10 +125,12 @@ Arrays
 @include matvec.texi
 @include factor.texi
 @include range.texi
+@include nlfunc.texi
 @include nleqn.texi
 @include optim.texi
 @include quad.texi
 @include diffeq.texi
+@include dae.texi
 @include error.texi
 @include install.texi
 @include bugs.texi

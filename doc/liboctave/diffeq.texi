@@ -1,4 +1,4 @@
-@node Ordinary Differential Equations, Installation, Quadrature, Top
+@node Ordinary Differential Equations, Error Handling, Quadrature, Top
 @chapter Ordinary Differential Equations
 @cindex ODE
 
@@ -75,28 +75,3 @@
 @deftypefn {} Matrix integrate (const ColumnVector &@var{tout})
 @deftypefnx {} Matrix integrate (const ColumnVector &@var{tout}, const ColumnVector &@var{tcrit})
 @end deftypefn
-
-@node Differential Algebraic Equations,  , Ordinary Differential Equations
-@chapter Differential Algebraic Equations
-@cindex DAE
-
-@deftypefn  {} {}DAE (void)
-@deftypefnx  {} {}DAE (int @var{n})
-@deftypefnx  {} {}DAE (const ColumnVector &@var{x}, double @var{time}, DAEFunc &@var{f})
-@deftypefnx  {} {}DAE (const ColumnVector &@var{x}, ColumnVector &@var{xdot}, double @var{time}, DAEFunc &@var{f})
-@end deftypefn
-
-@deftypefn {} ColumnVector deriv (void)
-@end deftypefn
-
-@deftypefn {} {virtual void} initialize (const ColumnVector &@var{x}, double @var{t})
-@deftypefnx {} {virtual void} initialize (const ColumnVector &@var{x}, ColumnVector &@var{xdot}, double @var{t})
-@end deftypefn
-
-@deftypefn {} ColumnVector integrate (double @var{t})
-@end deftypefn
-
-@deftypefn {} Matrix integrate (const ColumnVector &@var{tout}, Matrix &@var{xdot_out})
-@deftypefnx {} Matrix integrate (const ColumnVector &@var{tout}, Matrix &@var{xdot_out}, const ColumnVector &@var{tcrit})
-@end deftypefn
-

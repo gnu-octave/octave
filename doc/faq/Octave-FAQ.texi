@@ -15,7 +15,7 @@
 @end titlepage
 
 @ifinfo
-@node Top, What is Octave?, (dir), (dir)
+@node Top
 @top
 @unnumbered Preface
 @cindex FAQ for Octave, latest version
@@ -38,7 +38,8 @@ first check to see if the topic is covered in the manual.
 
 @menu
 * What is Octave?::             
-* Version 2.0::               
+* How can I cite Octave?::      
+* Version 2.0::                 
 * Octave Features::             
 * Documentation::               
 * Getting Octave::              
@@ -50,7 +51,7 @@ first check to see if the topic is covered in the manual.
 * Index::                       
 @end menu
 
-@node What is Octave?, Version 2.0, Top, Top
+@node What is Octave?
 @chapter What is Octave?
 
 Octave is a high-level interactive language, primarily intended for
@@ -87,7 +88,26 @@ Octave is also free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation.
 
-@node Version 2.0, Octave Features, What is Octave?, Top
+@node How can I cite Octave?
+@chapter How can I cite Octave?
+Pointing to @url{octave.org} is good, because that gives people a
+direct way to find out more.  If citation of a URL is not allowed by a
+publisher, or if you also want to point to a traditional reference,
+then you can cite the Octave manual:
+
+@example
+@group
+  @@BOOK{eaton:2002,
+    author =     "John W. Eaton",
+    title =      "GNU Octave Manual",
+    publisher =  "Network Theory Limited",
+    year =       "2002",
+    isbn =       "0-9541617-2-6"
+  }
+@end group
+@end example
+
+@node Version 2.0
 @chapter What's new in version 2.0 of Octave
 
 Version 2.0.10 of Octave was released February 6, 1998.  Most bugs
@@ -99,7 +119,7 @@ A list of user-visible changes in recent versions of Octave may be found
 in the file NEWS, distributed in both source and binary releases of
 Octave.
 
-@node Octave Features, Documentation, Version 2.0, Top
+@node Octave Features
 @chapter What features are unique to Octave?
 
 @menu
@@ -114,7 +134,7 @@ Octave.
 * Built-in ODE and DAE solvers::  
 @end menu
 
-@node Command and variable name completion, Command history, Octave Features, Octave Features
+@node Command and variable name completion
 @section Command and variable name completion
 
 @cindex Command completion
@@ -137,7 +157,7 @@ To complete the name, you may either edit the initial character sequence
 (usually adding more characters until completion is possible) or type
 another TAB to cause Octave to display the list of possible completions.
 
-@node Command history, Data structures, Command and variable name completion, Octave Features
+@node Command history
 @section Command history
 
 @cindex Command history
@@ -152,7 +172,7 @@ When Octave exits, the current command history is saved to the file
 contents of the @file{~/.octave_hist} file in the history list so that
 it is easy to begin working where you left off.
 
-@node Data structures, Short-circuit boolean operators, Command history, Octave Features
+@node Data structures
 @section Data structures
 
 @cindex Data structures
@@ -291,7 +311,7 @@ returns 1 if the value of the variable @var{x} is a data structure.
 This feature should be considered experimental, but you should expect it
 to work.  Suggestions for ways to improve it are welcome.
 
-@node Short-circuit boolean operators, Increment and decrement operators, Data structures, Octave Features
+@node Short-circuit boolean operators
 @section Short-circuit boolean operators
 
 @cindex Boolean operators, short-circuit
@@ -304,7 +324,7 @@ a short-circuit fashion (like the corresponding operators in the C
 language) and work differently than the element by element operators
 @samp{&} and @samp{|}.
 
-@node Increment and decrement operators, Unwind-protect, Short-circuit boolean operators, Octave Features
+@node Increment and decrement operators
 @section Increment and decrement operators
 
 @cindex Increment operators
@@ -335,7 +355,7 @@ increment the fourth element of the vector @var{v}, but instead it
 results in a parse error.  This problem may be fixed in a future
 release of Octave.
 
-@node Unwind-protect, Variable-length argument lists, Increment and decrement operators, Octave Features
+@node Unwind-protect
 @section Unwind-protect
 
 @cindex Unwind-protect
@@ -362,7 +382,7 @@ guaranteed to be executed regardless of how control exits @var{body}.
 The @code{unwind_protect} statement is often used to reliably restore
 the values of global variables that need to be temporarily changed.
 
-@node Variable-length argument lists, Variable-length return lists, Unwind-protect, Octave Features
+@node Variable-length argument lists
 @section Variable-length argument lists
 
 @cindex Variable-length argument lists
@@ -401,7 +421,7 @@ available.
 It is also possible to use the keyword @var{all_va_args} to pass all
 unnamed arguments to another function.
 
-@node Variable-length return lists, Built-in ODE and DAE solvers, Variable-length argument lists, Octave Features
+@node Variable-length return lists
 @section Variable-length return lists
 
 @cindex Variable-length return lists
@@ -424,7 +444,7 @@ endfunction
 @end group
 @end example
 
-@node Built-in ODE and DAE solvers,  , Variable-length return lists, Octave Features
+@node Built-in ODE and DAE solvers
 @section Built-in ODE and DAE solvers
 
 @cindex DASSL
@@ -434,7 +454,7 @@ Octave includes LSODE and DASSL for solving systems of stiff ordinary
 differential and differential-algebraic equations.  These functions are
 built in to the interpreter.
 
-@node Documentation, Getting Octave, Octave Features, Top
+@node Documentation
 @chapter What documentation exists for Octave?
 
 @cindex Octave, documentation
@@ -456,7 +476,7 @@ It is also possible to use your favorite WWW browser to read the Octave
 manual by converting the Texinfo source to HTML using the
 @code{texi2html} program.
 
-@node Getting Octave, Installation, Documentation, Top
+@node Getting Octave
 @chapter Obtaining Source Code
 
 @cindex Source code
@@ -467,7 +487,7 @@ manual by converting the Texinfo source to HTML using the
 * latest versions::             
 @end menu
 
-@node Octave for Unix, Octave for other platforms, Getting Octave, Getting Octave
+@node Octave for Unix
 @section How do I get a copy of Octave for Unix?
 
 You can get Octave from a friend who has a copy, by anonymous FTP, or by
@@ -515,7 +535,7 @@ the file @file{NEWS}.  The file @file{ChangeLog} in the source
 distribution contains a more detailed record of changes made since the
 last release.
 
-@node Octave for other platforms, latest versions, Octave for Unix, Getting Octave
+@node Octave for other platforms
 @section How do I get a copy of Octave for (some other platform)?
 
 @cindex VMS support
@@ -532,14 +552,14 @@ to make Octave work on other systems as well.  If you are interested in
 porting Octave to other systems, please contact
 bug-octave@@bevo.che.wisc.edu.
 
-@node latest versions,  , Octave for other platforms, Getting Octave
+@node latest versions
 @section What is the latest version of Octave
 
 @cindex Octave, version date
 
 The latest version of Octave is 2.0.10, released February 6, 1998.
 
-@node Installation, Common problems, Getting Octave, Top
+@node Installation
 @chapter Installation Issues and Problems
 
 @cindex Octave, building 
@@ -556,7 +576,7 @@ include debugging symbols).
 * Other C++ compilers?::        
 @end menu
 
-@node What else do I need?, Other C++ compilers?, Installation, Installation
+@node What else do I need?
 @section What else do I need?
 
 @cindex GNU gcc
@@ -581,7 +601,7 @@ with the compiler distribution.
 use features of GNU Make that are not present in other versions of make.
 GNU Make is very portable and easy to install.
 
-@node Other C++ compilers?,  , What else do I need?, Installation
+@node Other C++ compilers?
 @section Can I compile Octave with another C++ compiler?
 
 Currently, Octave can only be compiled with the GNU C++ compiler.  It
@@ -590,7 +610,7 @@ compilers, but the maintainers do not have sufficient time to devote to
 this.  If you are interested in working to make Octave portable to other
 compilers, please contact bug-octave@@bevo.che.wisc.edu.
 
-@node Common problems, Getting additional help, Installation, Top
+@node Common problems
 @chapter Common problems
 
 This list is probably far too short.  Feel free to suggest additional
@@ -611,7 +631,7 @@ mixture of both.  Check to make sure that Octave's standard set of
 function files is installed this way.
 @end itemize
 
-@node Getting additional help, Bug reports, Common problems, Top
+@node Getting additional help
 @chapter Getting additional help
 
 @cindex Additional help
@@ -644,7 +664,7 @@ mailing list, or other administrative trivia to the list itself.
 An archive of old postings to the help-octave mailing list is maintained
 on ftp.che.wisc.edu in the directory @file{/pub/octave/MAILING-LISTS}.
 
-@node Bug reports, MATLAB compatibility, Getting additional help, Top
+@node Bug reports
 @chapter I think I have found a bug in Octave.
 
 @cindex Bug in Octave, newly found
@@ -678,7 +698,7 @@ to fix the bug.  Please read the section on bugs and bug reports in the
 Octave manual for a list of things that should be included in every bug
 report.
 
-@node MATLAB compatibility, Index, Bug reports, Top
+@node MATLAB compatibility
 @chapter Porting programs from @sc{Matlab} to Octave
 
 @cindex @sc{Matlab} compatibility
@@ -744,7 +764,7 @@ if possible) to bug-octave@@bevo.che.wisc.edu.
 An archive of old postings to the Octave mailing lists is maintained
 on ftp.che.wisc.edu in the directory @file{/pub/octave/MAILING-LISTS}.
 
-@node Index,  , MATLAB compatibility, Top
+@node Index
 @appendix Concept Index
 
 @printindex cp

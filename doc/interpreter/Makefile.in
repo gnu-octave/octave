@@ -18,8 +18,6 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-MAIN_SOURCE := octave.txi
-
 SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi control.txi \
 	cp-idx.txi data.txi diffeq.txi emacs.txi errors.txi \
 	eval.txi expr.txi fn-idx.txi func.txi gpl.txi \
@@ -30,9 +28,9 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi control.txi \
 	strings.txi struct.txi system.txi tips.txi var.txi \
 	vr-idx.txi
 
-SOURCES := $(MAIN_SOURCE) $(SUB_SOURCE)
+SOURCES := $(SUB_SOURCE)
 
-MAIN_TEXINFO := $(MAIN_SOURCE:.txi=.texi)
+MAIN_TEXINFO := octave.texi
 
 SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 

@@ -1,3 +1,12 @@
+2000-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in: Don't generate octave.texi from octave.txi.
+	* interpreter/octave.texi: Rename from octave.txi.
+
+	* interpreter/munge-texi.cc (process_texi_input_file): Undo
+	previous change, since % doesn't work as a comment character after
+	texinfo.tex is included.
+
 2000-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* texinfo.tex: Update to version from texinfo-4.0.

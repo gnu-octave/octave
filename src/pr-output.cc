@@ -2087,6 +2087,191 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
     }
 }
 
+template <class T>
+class
+octave_print_conv
+{
+public:
+  typedef T print_conv_type;
+};
+
+#define PRINT_CONV(T1, T2) \
+  template <> \
+  class \
+  octave_print_conv<T1> \
+  { \
+  public: \
+    typedef T2 print_conv_type; \
+  }
+
+PRINT_CONV (octave_int8, octave_int16);
+PRINT_CONV (octave_uint8, octave_uint16);
+
+#undef PRINT_CONV
+
+template <class T>
+void
+octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0)
+{
+  // XXX FIXME XXX -- this mostly duplicates the code in the
+  // PRINT_ND_ARRAY macro.
+
+  if (nda.is_empty ())
+    print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
+  else if (nda.length () == 1)
+    {
+      os << typename octave_print_conv<T>::print_conv_type (nda(0));
+    }
+  else
+    {
+      int ndims = nda.ndims ();
+
+      dim_vector dims = nda.dims ();
+
+      Array<int> ra_idx (ndims, 0);
+
+      int m = 1;
+
+      for (int i = 2; i < ndims; i++)
+	m *= dims(i);
+
+      int nr = dims(0);
+      int nc = dims(1);
+
+      for (int i = 0; i < m; i++)
+	{
+	  std::string nm = "ans";
+
+	  if (m > 1)
+	    {
+	      nm += "(:,:,";
+
+	      OSSTREAM buf;
+
+	      for (int k = 2; k < ndims; k++)
+		{
+		  buf << ra_idx(k) + 1;
+
+		  if (k < ndims - 1)
+		    buf << ",";
+		  else
+		    buf << ")";
+		}
+
+	      buf << OSSTREAM_ENDS;
+
+	      nm += OSSTREAM_STR (buf);
+
+	      OSSTREAM_FREEZE (buf);
+	    }
+
+	  Array<idx_vector> idx (ndims);
+
+	  idx(0) = idx_vector (':');
+	  idx(1) = idx_vector (':');
+
+	  for (int k = 2; k < ndims; k++)
+	    idx(k) = idx_vector (ra_idx(k) + 1);
+
+	  Array2<T> page (nda.index (idx), nr, nc);
+
+	  // XXX FIXME XXX -- need to do some more work to put these
+	  // in neatly aligned columns...
+
+	  int n_rows = page.rows ();
+	  int n_cols = page.cols ();
+
+	  os << nm << " =\n\n";
+
+	  for (int ii = 0; ii < n_rows; ii++)
+	    {
+	      for (int jj = 0; jj < n_cols; jj++)
+		os << "  " << typename octave_print_conv<T>::print_conv_type (page(ii,jj));
+
+	      os << "\n";
+	    }
+
+	  if (i < m - 1)
+	    os << "\n";
+
+	  if (i < m)
+	    increment_index (ra_idx, dims, 2);
+	}
+    }
+}
+
+// XXX FIXME XXX -- this is not the right spot for this...
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_int8>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_int16>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_int32>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_int64>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_uint8>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_uint16>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_uint32>&,
+		       bool, int);
+
+template void
+octave_print_internal (std::ostream&, const intNDArray<octave_uint64>&,
+		       bool, int);
+
+template <class T>
+void
+octave_print_internal (std::ostream& os, const octave_int<T>& val,
+		       bool pr_as_read_syntax)
+{
+  // XXX FIXME XXX -- we need to handle various formats here...
+
+  os << typename octave_print_conv<octave_int<T> >::print_conv_type (val);
+}
+
+// XXX FIXME XXX -- this is not the right spot for this...
+
+template void
+octave_print_internal (std::ostream&, const octave_int8&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_int16&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_int32&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_int64&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_uint8&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_uint16&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_uint32&, bool);
+
+template void
+octave_print_internal (std::ostream&, const octave_uint64&, bool);
+
 extern void
 octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 {

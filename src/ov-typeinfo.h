@@ -63,6 +63,8 @@ public:
 
   static bool register_pref_assign_conv (int, int, int);
 
+  static bool register_type_conv_op (int, int, type_conv_fcn);
+
   static bool register_widening_op (int, int, type_conv_fcn);
 
   static octave_value
@@ -108,6 +110,12 @@ public:
   }
 
   static type_conv_fcn
+  lookup_type_conv_op (int t, int t_result)
+  {
+    return instance->do_lookup_type_conv_op (t, t_result);
+  }
+
+  static type_conv_fcn
   lookup_widening_op (int t, int t_result)
   {
     return instance->do_lookup_widening_op (t, t_result);
@@ -134,6 +142,7 @@ protected:
       assignany_ops (octave_value::num_assign_ops, init_tab_sz,
 		     (assign_op_fcn) 0),
       pref_assign_conv (init_tab_sz, init_tab_sz, -1),
+      type_conv_ops (init_tab_sz, init_tab_sz, (type_conv_fcn) 0),
       widening_ops (init_tab_sz, init_tab_sz, (type_conv_fcn) 0)  { }
 
 private:
@@ -160,6 +169,8 @@ private:
 
   Array2<int> pref_assign_conv;
 
+  Array2<type_conv_fcn> type_conv_ops;
+
   Array2<type_conv_fcn> widening_ops;
 
   int do_register_type (const std::string&, const std::string&,
@@ -181,6 +192,8 @@ private:
 
   bool do_register_pref_assign_conv (int, int, int);
 
+  bool do_register_type_conv_op (int, int, type_conv_fcn);
+
   bool do_register_widening_op (int, int, type_conv_fcn);
 
   octave_value do_lookup_type (const std::string& nm);
@@ -197,6 +210,8 @@ private:
   assign_op_fcn do_lookup_assignany_op (octave_value::assign_op, int);
 
   int do_lookup_pref_assign_conv (int, int);
+
+  type_conv_fcn do_lookup_type_conv_op (int, int);
 
   type_conv_fcn do_lookup_widening_op (int, int);
 

@@ -90,6 +90,9 @@ public:
   Cell& assign (const octave_value_list& idx, const Cell& rhs,
 		const octave_value& fill_val = octave_value ());
 
+  Cell reshape (const dim_vector& new_dims) const
+    { return ArrayN<octave_value>::reshape (new_dims); }
+
   // XXX FIXME XXX
   boolMatrix all (int dim = 0) const { return boolMatrix (); }
 

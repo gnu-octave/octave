@@ -70,6 +70,8 @@ public:
   octave_value *clone (void) const { return new octave_base_matrix (*this); }
   octave_value *empty_clone (void) const { return new octave_base_matrix (); }
 
+  size_t byte_size (void) const { return matrix.byte_size (); }
+
   octave_value squeeze (void) const { return matrix.squeeze (); }
 
   octave_value subsref (const std::string& type,

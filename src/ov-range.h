@@ -111,7 +111,7 @@ public:
   size_t byte_size (void) const { return 3 * sizeof (double); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return NDArray (matrix_value().reshape (new_dims)); }
+    { return NDArray (array_value().reshape (new_dims)); }
 
   bool is_defined (void) const { return true; }
 

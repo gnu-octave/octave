@@ -39,7 +39,6 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   endif
 endif
 
-
 OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc ODESSA-opts.cc Quad-opts.cc
 
@@ -66,12 +65,18 @@ else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif
 
+OV_INTTYPE_INC := ov-base-int.h ov-int-traits.h ov-intx.h \
+	ov-int8.h ov-int16.h ov-int32.h ov-int64.h \
+	ov-uint8.h ov-uint16.h ov-uint32.h ov-uint64.h
+
 OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-struct.h ov-scalar.h ov-range.h ov-complex.h ov-va-args.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-streamoff.h ov-str-mat.h ov-bool-mat.h ov-bool.h \
 	ov-file.h ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
-	ov-mapper.h ov-usr-fcn.h ov-fcn-handle.h ov-typeinfo.h
+	ov-mapper.h ov-usr-fcn.h ov-fcn-handle.h ov-typeinfo.h \
+	ov-type-conv.h \
+	$(OV_INTTYPE_INC)
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
@@ -95,6 +100,10 @@ TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc
 
 TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 
+INTTYPE_OP_XSRC := op-int-conv.cc op-double-conv.cc \
+	op-i8-i8.cc op-i16-i16.cc op-i32-i32.cc op-i64-i64.cc \
+	op-ui8-ui8.cc op-ui16-ui16.cc op-ui32-ui32.cc op-ui64-ui64.cc
+
 OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 	op-cell.cc op-chm.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
 	op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
@@ -103,9 +112,14 @@ OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 	op-fil-rec.cc op-fil-str.cc op-list.cc op-m-cm.cc \
 	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
 	op-s-cs.cc op-s-m.cc op-s-s.cc op-str-m.cc \
-	op-str-s.cc op-str-str.cc op-streamoff.cc op-fcn-handle.cc
+	op-str-s.cc op-str-str.cc op-streamoff.cc op-fcn-handle.cc \
+	$(INTTYPE_OP_XSRC)
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
+
+OV_INTTYPE_SRC := ov-base-int.cc \
+	ov-int8.cc ov-int16.cc ov-int32.cc ov-int64.cc \
+	ov-uint8.cc ov-uint16.cc ov-uint32.cc ov-uint64.cc
 
 OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-cs-list.cc ov-list.cc ov-re-mat.cc ov-cx-mat.cc \
@@ -113,7 +127,8 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-streamoff.cc ov-struct.cc ov-va-args.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
-	ov-usr-fcn.cc ov-fcn-handle.cc ov-typeinfo.cc
+	ov-usr-fcn.cc ov-fcn-handle.cc ov-typeinfo.cc \
+	$(OV_INTTYPE_SRC)
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 	pt-cell.cc pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc \

@@ -39,6 +39,9 @@ class charMatrix;
 class charNDArray;
 class Cell;
 
+#include "intNDArray.h"
+#include "oct-inttypes.h"
+
 extern void
 octave_print_internal (std::ostream& os, double d,
 		       bool pr_as_read_syntax = false);
@@ -98,6 +101,17 @@ extern void
 octave_print_internal (std::ostream& os, const ArrayN<std::string>& sa,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
+
+template <class T>
+extern void
+octave_print_internal (std::ostream& os, const intNDArray<T>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+template <class T>
+extern void
+octave_print_internal (std::ostream& os, const octave_int<T>& sa,
+		       bool pr_as_read_syntax = false);
 
 extern void
 octave_print_internal (std::ostream& os, const Cell& cell,

@@ -103,7 +103,7 @@ public:
     { return ComplexMatrix (matrix.matrix_value ( )); }
 
   ComplexNDArray complex_array_value (bool = false) const
-    { return ComplexNDArray (matrix.matrix_value ()); }
+    { return ComplexNDArray (matrix); }
 
   boolMatrix bool_matrix_value (void) const
     { return matrix.matrix_value (); }

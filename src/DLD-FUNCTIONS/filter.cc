@@ -414,7 +414,8 @@ $$\n\
 		  }
 
 	      if (si_is_vector)
-		si = ComplexNDArray (args(3).complex_vector_value ());
+		// XXX FIXME XXX -- there must be a better way...
+		si = ComplexNDArray (MArrayN<Complex> (ArrayN<Complex> (args(3).complex_vector_value ())));
 	      else
 		si = args(3).complex_array_value ();
 	    }
@@ -471,7 +472,8 @@ $$\n\
 		  }
 
 	      if (si_is_vector)
-		si = NDArray (args(3).vector_value ());
+		// XXX FIXME XXX -- there must be a better way...
+		si = NDArray (MArrayN<double> (ArrayN<double> (args(3).vector_value ())));
 	      else
 		si = args(3).array_value ();
 	    }

@@ -212,6 +212,22 @@ public:
   octave_value (const string_vector& s);
   octave_value (const charMatrix& chm, bool is_string = false);
   octave_value (const charNDArray& chnda, bool is_string = false);
+  octave_value (const octave_int8& i);
+  octave_value (const octave_uint8& i);
+  octave_value (const octave_int16& i);
+  octave_value (const octave_uint16& i);
+  octave_value (const octave_int32& i);
+  octave_value (const octave_uint32& i);
+  octave_value (const octave_int64& i);
+  octave_value (const octave_uint64& i);
+  octave_value (const int8NDArray& inda);
+  octave_value (const uint8NDArray& inda);
+  octave_value (const int16NDArray& inda);
+  octave_value (const uint16NDArray& inda);
+  octave_value (const int32NDArray& inda);
+  octave_value (const uint32NDArray& inda);
+  octave_value (const int64NDArray& inda);
+  octave_value (const uint64NDArray& inda);
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
@@ -674,6 +690,8 @@ public:
     { return rep->load_hdf5 (loc_id, name, have_h5giterate_bug); }
 #endif
 
+  octave_value *internal_rep (void) const { return rep; }
+
 protected:
 
   octave_value (const octave_xvalue&) : rep (0) { }
@@ -803,6 +821,8 @@ OV_BINOP_FN (op_struct_ref)
     std::string type_name (void) const { return t_name; } \
     std::string class_name (void) const { return c_name; } \
     static int static_type_id (void) { return t_id; } \
+    static std::string static_type_name (void) { return t_name; } \
+    static std::string static_class_name (void) { return c_name; } \
     static void register_type (void); \
  \
   private: \

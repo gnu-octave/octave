@@ -1,3 +1,72 @@
+2004-06-14  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.h, pr-output.cc (octave_print_conv): New traits class.
+	(template <class T> void octave_print_internal (std::ostream&,
+	const intNDArray<T>&, bool, int),
+	(template <class T> void octave_print_internal (std::ostream&,
+	const octave_int<T>&, bool)): New template functions.
+	Instantiate versions for new int types.
+
+	* ov-typeinfo.h (octave_value_typeinfo::type_conv_ops):
+	New data member.
+	(octave_value_typeinfo::register_type_conv_op,
+	octave_value_typeinfo::lookup_type_conv_op,
+	octave_value_typeinfo::do_register_type_conv_op,
+	octave_value_typeinfo::do_lookup_type_conv_op): New functions.
+
+	* ov-re-mat.cc (Fdouble): New function.
+
+	* ov-range.h (octave_range::reshape): Reshape array_value, not
+	matrix_value.
+
+	* ov-base-scalar.h (octave_base_scalar<ST>::all,
+	octave_base_scalar<ST>::any, octave_base_scalar<ST>::is_true): Use
+	ST() instead of 0.0.
+
+	* ov-base-mat.h (octave_base_matrix<MT>::byte_size): New function.
+	
+	* ops.h (INSTALL_COLNVOP, DEFCONVFNX, DEFDBLCONVFN, DEFCONVFN,
+	DEFCONVFN2): New macros.
+
+	* DLD-FUNCTIONS/filter.cc (Ffilter): Kluge type conversions.
+
+	* ov.cc (install_types): Register new integer types.
+
+	* ov.h, ov.cc (octave_value::octave_value (const octave_int8&),
+	octave_value::octave_value (const octave_uint8&),
+	octave_value::octave_value (const octave_int16&),
+	octave_value::octave_value (const octave_uint16&),
+	octave_value::octave_value (const octave_int32&),
+	octave_value::octave_value (const octave_uint32&),
+	octave_value::octave_value (const octave_int64&),
+	octave_value::octave_value (const octave_uint64&),
+	octave_value::octave_value (const int8NDArray&),
+	octave_value::octave_value (const uint8NDArray&),
+	octave_value::octave_value (const int16NDArray&),
+	octave_value::octave_value (const uint16NDArray&),
+	octave_value::octave_value (const int32NDArray&),
+	octave_value::octave_value (const uint32NDArray&),
+	octave_value::octave_value (const int64NDArray&),
+	octave_value::octave_value (const uint64NDArray&)):
+	New constructors.
+
+	* ov.h (octave_value::internal_rep): New function.
+	(DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Also define
+	static_type_id, static_type_name, and static_class_name
+	functions.
+
+	* Cell.h (Cell::reshape (const dim_vector&)): New forwarding
+	function for return type conversion.
+
+	* ov-int16.cc, ov-int32.cc, ov-int64.cc, ov-int8.cc, ov-uint16.cc,
+	ov-uint32.cc, ov-uint64.cc, ov-uint8.cc, ov-type-conv.h,
+	OPERATORS/op-int-conv.cc, OPERATORS/op-double-conv.cc, 
+	OPERATORS/op-i16-i16.cc, OPERATORS/op-i32-i32.cc,
+	OPERATORS/op-i64-i64.cc, OPERATORS/op-i8-i8.cc,
+	OPERATORS/op-ui16-ui16.cc, OPERATORS/op-ui32-ui32.cc,
+	OPERATORS/op-ui64-ui64.cc, OPERATORS/op-ui8-ui8.cc: New files.
+	Makefile.in: Add them to the appropriate lists.
+
 2004-06-03  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-handle.h (octave_function_handle::is_matrix_type,

@@ -40,6 +40,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-cell.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-int8.h"
+#include "ov-int16.h"
+#include "ov-int32.h"
+#include "ov-int64.h"
+#include "ov-uint8.h"
+#include "ov-uint16.h"
+#include "ov-uint32.h"
+#include "ov-uint64.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-ch-mat.h"
@@ -563,6 +571,118 @@ octave_value::octave_value (const charNDArray& chm, bool is_str)
   : rep (is_str
 	 ? new octave_char_matrix_str (chm)
 	 : new octave_char_matrix (chm))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_int8& i)
+  : rep (new octave_int8_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_uint8& i)
+  : rep (new octave_uint8_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_int16& i)
+  : rep (new octave_int16_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_uint16& i)
+  : rep (new octave_uint16_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_int32& i)
+  : rep (new octave_int32_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_uint32& i)
+  : rep (new octave_uint32_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_int64& i)
+  : rep (new octave_int64_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const octave_uint64& i)
+  : rep (new octave_uint64_scalar (i))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const int8NDArray& inda)
+  : rep (new octave_int8_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const uint8NDArray& inda)
+  : rep (new octave_uint8_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const int16NDArray& inda)
+  : rep (new octave_int16_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const uint16NDArray& inda)
+  : rep (new octave_uint16_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const int32NDArray& inda)
+  : rep (new octave_int32_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const uint32NDArray& inda)
+  : rep (new octave_uint32_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const int64NDArray& inda)
+  : rep (new octave_int64_matrix (inda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const uint64NDArray& inda)
+  : rep (new octave_uint64_matrix (inda))
 {
   rep->count = 1;
   maybe_mutate ();
@@ -1905,6 +2025,22 @@ install_types (void)
   octave_bool_matrix::register_type ();
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
+  octave_int8_scalar::register_type ();
+  octave_int16_scalar::register_type ();
+  octave_int32_scalar::register_type ();
+  octave_int64_scalar::register_type ();
+  octave_uint8_scalar::register_type ();
+  octave_uint16_scalar::register_type ();
+  octave_uint32_scalar::register_type ();
+  octave_uint64_scalar::register_type ();
+  octave_int8_matrix::register_type ();
+  octave_int16_matrix::register_type ();
+  octave_int32_matrix::register_type ();
+  octave_int64_matrix::register_type ();
+  octave_uint8_matrix::register_type ();
+  octave_uint16_matrix::register_type ();
+  octave_uint32_matrix::register_type ();
+  octave_uint64_matrix::register_type ();
   octave_struct::register_type ();
   octave_file::register_type ();
   octave_list::register_type ();

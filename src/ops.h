@@ -53,6 +53,10 @@ extern void install_ops (void);
   octave_value_typeinfo::register_pref_assign_conv \
     (t1::static_type_id (), t2::static_type_id (), tr::static_type_id ());
 
+#define INSTALL_CONVOP(t1, t2, f) \
+  octave_value_typeinfo::register_type_conv_op \
+    (t1::static_type_id (), t2::static_type_id (), oct_conv_ ## f);
+
 #define INSTALL_WIDENOP(t1, t2, f) \
   octave_value_typeinfo::register_widening_op \
     (t1::static_type_id (), t2::static_type_id (), oct_conv_ ## f);
@@ -128,14 +132,14 @@ extern void install_ops (void);
   while (0)
 
 #define CAST_UNOP_ARG(t) \
-  t v = DYNAMIC_CAST (t, a);
+  t v = DYNAMIC_CAST (t, a)
 
 #define CAST_BINOP_ARGS(t1, t2) \
   t1 v1 = DYNAMIC_CAST (t1, a1); \
-  t2 v2 = DYNAMIC_CAST (t2, a2);
+  t2 v2 = DYNAMIC_CAST (t2, a2)
 
 #define CAST_CONV_ARG(t) \
-  t v = DYNAMIC_CAST (t, a);
+  t v = DYNAMIC_CAST (t, a)
 
 #define ASSIGNOPDECL(name) \
   static octave_value \
@@ -181,8 +185,30 @@ extern void install_ops (void);
   static octave_value * \
   oct_conv_ ## name (const octave_value&)
 
-#define DEFCONV(name, from, to) \
+#define DEFCONV(name, a_dummy, b_dummy) \
   CONVDECL (name)
+
+#define DEFCONVFNX(name, tfrom, ovtto, tto, e) \
+  CONVDECL (name) \
+  { \
+    CAST_CONV_ARG (const octave_ ## tfrom&); \
+ \
+    return new octave_ ## ovtto (tto ## NDArray (v.e ## array_value ())); \
+  }
+
+#define DEFDBLCONVFN(name, ovtfrom, e) \
+  CONVDECL (name) \
+  { \
+    CAST_CONV_ARG (const octave_ ## ovtfrom&); \
+ \
+    return new octave_matrix (NDArray (v.e ## _value ())); \
+  }
+
+#define DEFCONVFN(name, tfrom, tto) \
+  DEFCONVFNX (name, tfrom, tto ## _matrix, tto, )
+
+#define DEFCONVFN2(name, tfrom, sm, tto) \
+  DEFCONVFNX (name, tfrom ## _ ## sm, tto ## _matrix, tto, tfrom ## _)
 
 #define UNOPDECL(name, a) \
   static octave_value \

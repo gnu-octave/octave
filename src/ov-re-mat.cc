@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-base.h"
 #include "quit.h"
 
+#include "defun.h"
 #include "gripes.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
@@ -47,6 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base-mat.cc"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
 
@@ -624,6 +626,15 @@ octave_matrix::print_raw (std::ostream& os,
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
 			 current_print_indent_level ());
+}
+
+DEFUN (double, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} double (@var{x})\n\
+Convert @var{x} to double precision type.\n\
+@end deftypefn")
+{
+  OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
 }
 
 /*

@@ -81,20 +81,20 @@ public:
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
-  octave_value permute (const Array<int>& vec, bool inv = false) const
+  octave_value permute (const Array<int>&, bool = false) const
     { return scalar; }
 
   size_t byte_size (void) const { return sizeof (ST); }
 
-  octave_value all (int = 0) const { return (scalar != 0.0); }
+  octave_value all (int = 0) const { return (scalar != ST ()); }
 
-  octave_value any (int = 0) const { return (scalar != 0.0); }
+  octave_value any (int = 0) const { return (scalar != ST ()); }
 
   bool is_scalar_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }
 
-  bool is_true (void) const { return (scalar != 0.0); }
+  bool is_true (void) const { return (scalar != ST ()); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

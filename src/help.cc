@@ -62,7 +62,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "symtab.h"
 #include "syswait.h"
 #include "toplev.h"
-#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
@@ -612,7 +611,7 @@ display_help_text (std::ostream& os, const std::string& msg)
       buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | makeinfo"
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
-	  << " -D \"TARGETHOSTTYPE " << CANONICAL_HOST_TYPE << "\""
+	  << " -D \"TARGETHOSTTYPE " << OCTAVE_CANONICAL_HOST_TYPE << "\""
 	  << " --fill-column " << cols
 	  << " --no-warn"
 	  << " --no-validate"
@@ -850,9 +849,7 @@ them as it converts the text of a function file to its internal\n\
 representation.  This problem may be fixed in a future release.\n\
 @end deffn")
 {
-  octave_value_list retval;
-
-  unwind_protect::begin_frame ("Ftype");
+  octave_value retval;
 
   int argc = args.length () + 1;
 
@@ -896,7 +893,7 @@ representation.  This problem may be fixed in a future release.\n\
 		    goto abort;
 		}
 
-	      if (nargout == 0)
+	      if (nargout != 0)
 		{
 		  output_buf << std::ends;
 

@@ -496,10 +496,10 @@ default_pager (void)
 {
   std::string pager_binary = octave_env::getenv ("PAGER");
 
-#ifdef DEFAULT_PAGER
+#ifdef OCTAVE_DEFAULT_PAGER
   if (pager_binary.empty ())
     {
-      pager_binary = std::string (DEFAULT_PAGER);
+      pager_binary = std::string (OCTAVE_DEFAULT_PAGER);
 
       if (pager_binary == "less")
 	{

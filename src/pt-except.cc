@@ -100,7 +100,8 @@ tree_try_catch_command::eval (void)
       unwind_protect::discard ();
 
       // For restoring buffer_error_messages.
-      unwind_protect::run ();
+      if (catch_code)
+	unwind_protect::run ();
     }
 }
 

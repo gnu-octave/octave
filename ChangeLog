@@ -1,3 +1,8 @@
+2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-default-vals, do-subst-config-vals):
+	Substitute more complete set of values.
+
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (octave_cv_string_npos): Add std:: qualifier.

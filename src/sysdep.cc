@@ -271,7 +271,6 @@ ten_little_endians (void)
 
 #if defined (EXCEPTION_IN_MATH)
 extern "C"
-{
 int
 matherr (struct exception *x)
 {
@@ -294,8 +293,6 @@ matherr (struct exception *x)
 
   return 1;
 }
-}
-#endif
 
 void
 sysdep_init (void)

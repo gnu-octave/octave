@@ -46,6 +46,8 @@ Software Foundation, Inc.
 
 #include <fcntl.h>
 
+#include <readline/history.h>
+
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -58,11 +60,6 @@ Software Foundation, Inc.
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
-
-extern "C"
-{
-#include <readline/history.h>
-}
 
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
@@ -350,11 +347,6 @@ edit_history_readline (fstream& stream)
   line[lindex++] = '\n';
   line[lindex++] = '\0';
   return line;
-}
-
-extern "C"
-{
-  HIST_ENTRY *history_get ();
 }
 
 // Use `command' to replace the last entry in the history list, which,

@@ -40,12 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <Complex.h>
 
-extern "C"
-{
-#ifndef HAVE_STRNCASECMP
-extern int strncasecmp (const char*, const char*, size_t);
-#endif
-
 #if defined (HAVE_TERMIOS_H)
 #include <termios.h>
 #elif defined (HAVE_TERMIO_H)
@@ -57,7 +51,10 @@ LOSE! LOSE!
 #endif
 
 #include <readline/tilde.h>
-}
+
+#ifndef HAVE_STRNCASECMP
+extern "C" int strncasecmp (const char*, const char*, size_t);
+#endif
 
 #include "SLStack.h"
 

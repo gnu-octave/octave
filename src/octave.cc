@@ -78,7 +78,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "version.h"
 
 #if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
-extern "C" { int on_exit (); }
+extern "C" int on_exit ();
 #define atexit on_exit
 #endif
 

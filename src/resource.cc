@@ -25,6 +25,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif
+
 #include "defun.h"
 #include "help.h"
 #include "oct-map.h"
@@ -32,13 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "systime.h"
 #include "tree-const.h"
 #include "utils.h"
-
-#ifdef HAVE_SYS_RESOURCE_H
-extern "C"
-{
-#include <sys/resource.h>
-}
-#endif
 
 #ifndef RUSAGE_SELF
 #define RUSAGE_SELF 0

@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "fnmatch.h"
+
 #include "error.h"
 #include "symtab.h"
 #include "tree-base.h"
@@ -37,11 +39,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
-
-extern "C"
-{
-#include "fnmatch.h"
-}
 
 // Variables and functions.
 

@@ -40,6 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include <readline/tilde.h>
+
 #include "SLStack.h"
 #include "procstream.h"
 
@@ -55,11 +57,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tree-plot.h"
 #include "user-prefs.h"
 #include "utils.h"
-
-extern "C"
-{
-#include <readline/tilde.h>
-}
 
 // The number of lines we've plotted so far.
 static int plot_line_count = 0;

@@ -34,6 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream.h>
 #include <strstream.h>
 
+#include <readline/tilde.h>
+
+#include "fnmatch.h"
+
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -48,13 +52,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
-
-extern "C"
-{
-#include <readline/tilde.h>
-
-#include "fnmatch.h"
-}
 
 #if CHAR_BIT != 8
 LOSE! LOSE!

@@ -35,6 +35,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include <readline/readline.h>
+
+#include "fnmatch.h"
+
 #include "defaults.h"
 #include "defun.h"
 #include "dirfns.h"
@@ -59,13 +63,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
-
-extern "C"
-{
-#include <readline/readline.h>
-
-#include "fnmatch.h"
-}
 
 // Symbol table for symbols at the top level.
 symbol_table *top_level_sym_tab = 0;

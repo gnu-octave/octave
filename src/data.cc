@@ -1397,6 +1397,20 @@ identity_matrix (int nr, int nc)
   return retval;
 }
 
+#define INSTANTIATE_EYE(T) \
+  template octave_value identity_matrix<T> (int, int)
+
+INSTANTIATE_EYE (int8NDArray);
+INSTANTIATE_EYE (uint8NDArray);
+INSTANTIATE_EYE (int16NDArray);
+INSTANTIATE_EYE (uint16NDArray);
+INSTANTIATE_EYE (int32NDArray);
+INSTANTIATE_EYE (uint32NDArray);
+INSTANTIATE_EYE (int64NDArray);
+INSTANTIATE_EYE (uint64NDArray);
+INSTANTIATE_EYE (NDArray);
+INSTANTIATE_EYE (boolNDArray);
+
 static octave_value
 identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 {

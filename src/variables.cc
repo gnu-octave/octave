@@ -1254,7 +1254,7 @@ do_who (int argc, const string_vector& argv, int return_list)
 
 	  octave_value_list ovl (len, octave_value ());
 
-	  for (int j = 0; j < len; i++)
+	  for (int j = 0; j < len; j++)
 	    ovl(j) = names(j);
 
 	  retval = Octave_map ("name", ovl);

@@ -889,13 +889,14 @@ save_mat5_binary_element (std::ostream& os,
 
 	int len = m.numel ();
 
-	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
+	for (int j = 0; j < len; j++)
 	  {
 	    // write the data of each element
-	    Cell elts = m.contents (i);
 
-	    for (int j = 0; j < len; j++)
+	    for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	      {
+		Cell elts = m.contents (i);
+
 		bool retval2 = save_mat5_binary_element (os, elts(j), "",
 							 mark_as_global,
 							 save_as_floats);

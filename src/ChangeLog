@@ -1,3 +1,15 @@
+2004-11-01  John W. Eaton  <jwe@octave.org>
+
+	* data.cc (INSTANTIATE_EYE): New macro.  Use it to instantiate
+	identity matrix functions for various matrix types.
+
+	* variables.cc (do_who): Fix typo in for loop.
+
+2004-10-28  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (save_mat5_binary_element): Save structure elements
+	in correct order.
+
 2004-10-26  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn.h (octave_function::octave_va_arg): No longer const.

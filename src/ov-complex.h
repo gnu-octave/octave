@@ -70,6 +70,8 @@ public:
   void operator delete (void *p, size_t size);
 #endif
 
+  octave_value *try_narrowing_conversion (void);
+
   octave_value index (const octave_value_list& idx) const;
 
   int rows (void) const { return 1; }

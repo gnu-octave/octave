@@ -33,7 +33,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gripes.h"
 #include "oct-obj.h"
+#include "ops.h"
+#include "ov-complex.h"
 #include "ov-cx-mat.h"
+#include "ov-re-mat.h"
+#include "ov-scalar.h"
 #include "pr-output.h"
 
 int octave_complex_matrix::t_id = -1;
@@ -52,7 +56,30 @@ octave_complex_matrix::octave_complex_matrix (const ComplexColumnVector& v,
     matrix ((pcv < 0 && Vprefer_column_vectors) || pcv
 	    ? ComplexMatrix (v) : ComplexMatrix (v.transpose ())) { }
 
-extern void assign (Array2<Complex>&, const Array2<Complex>&);
+octave_value *
+octave_complex_matrix::try_narrowing_conversion (void)
+{
+  octave_value *retval = 0;
+
+  int nr = matrix.rows ();
+  int nc = matrix.cols ();
+
+  if (nr == 1 && nc == 1)
+    {
+      Complex c = matrix (0, 0);
+
+      if (imag (c) == 0.0)
+	retval = new octave_scalar (::real (c));
+      else
+	retval = new octave_complex (c);
+    }
+  else if (nr == 0 && nc == 0)
+    retval = new octave_matrix (Matrix ());
+  else if (matrix.all_elements_are_real ())
+    retval = new octave_matrix (::real (matrix));
+
+  return retval;
+}
 
 octave_value
 octave_complex_matrix::index (const octave_value_list& idx) const
@@ -87,6 +114,8 @@ octave_complex_matrix::index (const octave_value_list& idx) const
 
   return retval;
 }
+
+extern void assign (Array2<Complex>&, const Array2<Complex>&);
 
 void
 octave_complex_matrix::assign (const octave_value_list& idx,

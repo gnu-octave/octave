@@ -303,7 +303,7 @@ octave_value::~octave_value (void)
 void
 octave_value::maybe_mutate (void)
 {
-  octave_value *tmp = rep->try_narrow_conversion ();
+  octave_value *tmp = rep->try_narrowing_conversion ();
 
   if (tmp && tmp != rep)
     {

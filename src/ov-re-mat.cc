@@ -35,6 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "mappers.h"
 #include "oct-obj.h"
+#include "ops.h"
+#include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "pr-output.h"
 
@@ -53,6 +55,20 @@ octave_matrix::octave_matrix (const ColumnVector& v, int pcv)
 	    ? Matrix (v) : Matrix (v.transpose ())) { }
 
 #include <iostream.h>
+
+octave_value *
+octave_matrix::try_narrowing_conversion (void)
+{
+  octave_value *retval = 0;
+
+  int nr = matrix.rows ();
+  int nc = matrix.cols ();
+
+  if (nr == 1 && nc == 1)
+    retval = new octave_scalar (matrix (0, 0));
+
+  return retval;
+}
 
 octave_value
 octave_matrix::index (const octave_value_list& idx) const

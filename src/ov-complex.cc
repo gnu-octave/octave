@@ -31,13 +31,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-ieee.h"
 
 #include "oct-obj.h"
+#include "ops.h"
 #include "ov-complex.h"
+#include "ov-scalar.h"
 #include "gripes.h"
 #include "pr-output.h"
 
 int octave_complex::t_id = -1;
 
 const string octave_complex::t_name ("complex scalar");
+
+octave_value *
+octave_complex::try_narrowing_conversion (void)
+{
+  octave_value *retval = 0;
+
+  if (imag (scalar) == 0.0)
+    retval = new octave_scalar (::real (scalar));
+
+  return retval;
+}
 
 static inline bool
 valid_scalar_indices (const octave_value_list& args)

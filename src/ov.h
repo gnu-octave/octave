@@ -178,8 +178,8 @@ public:
 
   void maybe_mutate (void);
 
-  virtual octave_value *try_narrow_conversion (void)
-    { return rep->try_narrow_conversion (); }
+  virtual octave_value *try_narrowing_conversion (void)
+    { return rep->try_narrowing_conversion (); }
 
   virtual octave_value index (const octave_value_list& idx) const
     { return rep->index (idx); }

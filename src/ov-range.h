@@ -85,7 +85,9 @@ public:
   void operator delete (void *p, size_t size);
 #endif
 
-  numeric_conv_fcn numeric_conversion_function (void) const;
+  type_conv_fcn numeric_conversion_function (void) const;
+
+  octave_value *try_narrowing_conversion (void);
 
   idx_vector index_vector (void) const { return idx_vector (range); }
 

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ops.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
+#include "ov-scalar.h"
 #include "pr-output.h"
 
 int octave_range::t_id = -1;
@@ -49,10 +50,32 @@ default_numeric_conversion_function (const octave_value& a)
   return new octave_matrix (v.matrix_value ());
 }
 
-octave_value::numeric_conv_fcn
+octave_value::type_conv_fcn
 octave_range::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;
+}
+
+octave_value *
+octave_range::try_narrowing_conversion (void)
+{
+  octave_value *retval = 0;
+
+  switch (range.nelem ())
+    {
+    case 1:
+      retval = new octave_scalar (range.base ());
+      break;
+
+    case 0:
+      retval = new octave_matrix (Matrix ());
+      break;
+
+    default:
+      break;
+    }
+
+  return retval;
 }
 
 double

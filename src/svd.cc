@@ -35,15 +35,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "defun-dld.h"
 
 DEFUN_DLD ("svd", Fsvd, Ssvd, 2, 3,
-  "S = svd (X) or [U, S, V] = svd (X)\n\
+  "S = svd (X) or [U, S, V] = svd (X [, 0])\n\
 \n\
-compute the singular value decomposition of X")
+Compute the singular value decomposition of X.  Given a second input\n\
+argument, an `economy' sized factorization is computed that omits\n\
+unnecessary rows and columns of U and V")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2 || nargout == 2 || nargout > 3)
+  if (nargin < 2 || nargin > 3 || nargout == 2 || nargout > 3)
     {
       print_usage ("svd");
       return retval;
@@ -94,12 +96,14 @@ compute the singular value decomposition of X")
       break;
     }
 
+  SVD::type type = (nargin == 3) ? SVD::economy : SVD::std;
+
   switch (arg.const_type ())
     {
     case tree_constant_rep::scalar_constant:
     case tree_constant_rep::matrix_constant:
       {
-	SVD result (tmp);
+	SVD result (tmp, type);
 
 	DiagMatrix sigma = result.singular_values ();
 
@@ -120,7 +124,7 @@ compute the singular value decomposition of X")
     case tree_constant_rep::complex_scalar_constant:
     case tree_constant_rep::complex_matrix_constant:
       {
-	ComplexSVD result (ctmp);
+	ComplexSVD result (ctmp, type);
 
 	DiagMatrix sigma = result.singular_values ();
 

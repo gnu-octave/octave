@@ -38,9 +38,16 @@ class QR
 {
 public:
 
+  enum type
+    {
+      std,
+      raw,
+      economy,
+    };
+
   QR (void) {}
 
-  QR (const Matrix& A);
+  QR (const Matrix& A, type qr_type = QR::std);
 
   QR (const QR& a);
 
@@ -51,7 +58,7 @@ public:
 
   friend ostream&  operator << (ostream& os, const QR& a);
 
-private:
+protected:
 
   Matrix q;
   Matrix r;

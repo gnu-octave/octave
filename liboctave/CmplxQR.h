@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 class ostream;
 
 #include "CMatrix.h"
+#include "dbleQR.h"
 
 extern "C++" {
 
@@ -40,7 +41,7 @@ public:
 
   ComplexQR (void) {}
 
-  ComplexQR (const ComplexMatrix& A);
+  ComplexQR (const ComplexMatrix& A, QR::type qr_type = QR::std);
 
   ComplexQR (const ComplexQR& a);
 
@@ -51,7 +52,7 @@ public:
 
   friend ostream&  operator << (ostream& os, const ComplexQR& a);
 
-private:
+protected:
 
   ComplexMatrix q;
   ComplexMatrix r;

@@ -41,9 +41,12 @@ extern "C"
 
   int F77_FCN (dorgqr) (const int*, const int*, const int*, double*,
 			const int*, double*, double*, const int*, int*);
+
+  int F77_FCN (dgeqpf) (const int*, const int*, double*, const int*,
+			int*, double*, double*, int*);
 }
 
-QR::QR (const Matrix& a)
+QR::QR (const Matrix& a, QR::type qr_type)
 {
   int m = a.rows ();
   int n = a.cols ();
@@ -73,23 +76,47 @@ QR::QR (const Matrix& a)
 
   delete [] work;
 
-  r.resize (m, n, 0.0);
-  for (int j = 0; j < n; j++)
+  if (qr_type == QR::raw)
     {
-      int limit = j < min_mn-1 ? j : min_mn-1;
-      for (int i = 0; i <= limit; i++)
-	r.elem (i, j) = tmp_data[m*j+i];
+      for (int j = 0; j < min_mn; j++)
+	{
+	  int limit = j < min_mn - 1 ? j : min_mn - 1;
+	  for (int i = limit + 1; i < m; i++)
+	    tmp_data[m*j+i] *= tau[j];
+	}
     }
+  else
+    {
+      int m2;
+      if (qr_type == QR::economy && m > n)
+	{
+	  m2 = n;
+	  r.resize (n, n, 0.0);
+	}
+      else
+	{
+	  m2 = m;
+	  r.resize (m, n, 0.0);
+	}
 
-  lwork = 32*m;
-  work = new double[lwork];
+      for (int j = 0; j < n; j++)
+	{
+	  int limit = j < min_mn-1 ? j : min_mn-1;
+	  for (int i = 0; i <= limit; i++)
+	    r.elem (i, j) = tmp_data[m*j+i];
+	}
 
-  F77_FCN (dorgqr) (&m, &m, &min_mn, tmp_data, &m, tau, work, &lwork, &info);
+      lwork = 32*m;
+      work = new double[lwork];
 
-  q = Matrix (tmp_data, m, m);
+      F77_FCN (dorgqr) (&m, &m, &min_mn, tmp_data, &m, tau, work,
+			&lwork, &info);
 
-  delete [] tau;
-  delete [] work;
+      q = Matrix (tmp_data, m, m);
+
+      delete [] tau;
+      delete [] work;
+    }
 }
 
 /*

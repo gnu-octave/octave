@@ -28,19 +28,37 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "dbleQR.h"
 #include "CmplxQR.h"
 
+#include "dbleQRP.h"
+#include "CmplxQRP.h"
+
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
 #include "defun-dld.h"
 
 DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,
-  "[Q, R] = qr (X): form QR factorization of X")
+  "[Q, R] = qr (X):      form Q unitary and R upper triangular such\n\
+                       that Q * R = X\n\
+\n\
+[Q, R] = qr (X, 0):    form the economy decomposition such that if X is\n\
+                       if X is m by n then only the first n columns of Q\n\
+                       are computed.\n\
+\n\
+[Q, R, P] = qr (X):    form QRP factorization of X where\n\
+                       P is a permutation matrix such that\n\
+                       A * P = Q * R\n\
+\n\
+[Q, R, P] = qr (X, 0): form the economy decomposition with \n\
+                       permutation vector P such that Q * R = X (:, P)\n\
+\n\
+qr (X) alone returns the output of the LAPACK routine dgeqrf, such\n\
+that R = triu (qr (X))")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2 || nargout > 2)
+  if (nargin != 2 && nargin != 3 || nargout > 3)
     {
       print_usage ("qr");
       return retval;
@@ -48,10 +66,7 @@ DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,
 
   tree_constant tmp = args(1).make_numeric ();
     
-  int nr = tmp.rows ();
-  int nc = tmp.columns ();
-
-  if (nr == 0 || nc == 0)
+  if (tmp.rows () == 0 || tmp.columns () == 0)
     {
       int flag = user_pref.propagate_empty_matrices;
       if (flag != 0)
@@ -59,6 +74,7 @@ DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,
 	  if (flag < 0)
 	    gripe_empty_arg ("qr", 0);
 	  Matrix m;
+	  retval(2) = m;
 	  retval(1) = m;
 	  retval(0) = m;
 	}
@@ -68,36 +84,71 @@ DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,
       return retval;
     }
 
+  QR::type type = nargout == 1 ? QR::raw
+    : (nargin == 3 ? QR::economy : QR::std);
+
   switch (tmp.const_type ())
     {
     case tree_constant_rep::matrix_constant:
       {
 	Matrix m = tmp.matrix_value ();
-	QR fact (m);
-	retval(1) = fact.R ();
-	retval(0) = fact.Q ();
+	if (nargout < 3)
+	  {
+	    QR fact (m, type);
+	    retval(1) = fact.R ();
+	    retval(0) = fact.Q ();
+	  }
+	else
+	  {
+	    QRP fact (m, type);
+	    retval(2) = fact.P ();
+	    retval(1) = fact.R ();
+	    retval(0) = fact.Q ();
+	  }
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp.complex_matrix_value ();
-	ComplexQR fact (m);
-	retval(1) = fact.R ();
-	retval(0) = fact.Q ();
+	if (nargout < 3)
+	  {
+	    ComplexQR fact (m, type);
+	    retval(1) = fact.R ();
+	    retval(0) = fact.Q ();
+	  }
+	else
+	  {
+	    ComplexQRP fact (m, type);
+	    retval(2) = fact.P ();
+	    retval(1) = fact.R ();
+	    retval(0) = fact.Q ();
+	  }
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval(1) = d;
-	retval(0) = 1.0;
+	if (nargout == 1)
+	  retval(0) = d;
+	else
+	  {
+	    retval(2) = 1.0;
+	    retval(1) = d;
+	    retval(0) = 1.0;
+	  }
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval(1) = c;
-	retval(0) = 1.0;
+	if (nargout == 1)
+	  retval(0) = c;
+	else
+	  {
+	    retval(2) = 1.0;
+	    retval(1) = c;
+	    retval(0) = 1.0;
+	  }
       }
       break;
     default:

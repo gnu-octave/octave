@@ -413,6 +413,77 @@ tree_print_code::visit_if_command_list (tree_if_command_list& lst)
 }
 
 void
+tree_print_code::visit_switch_case (tree_switch_case& cs)
+{
+  indent ();
+
+  if (cs.is_default_case ())
+    os << "otherwise";
+  else
+    os << "case ";
+
+  tree_expression *label = cs.case_label ();
+
+  if (label)
+    label->accept (*this);
+
+  newline ();
+
+  increment_indent_level ();
+
+  tree_statement_list *list = cs.commands ();
+
+  if (list)
+    {
+      list->accept (*this);
+
+      decrement_indent_level ();
+    }
+}
+
+void
+tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
+{
+  Pix p = lst.first ();
+
+  while (p)
+    {
+      tree_switch_case *elt = lst (p);
+
+      if (elt)
+	elt->accept (*this);
+
+      lst.next (p);
+    }
+}
+
+void
+tree_print_code::visit_switch_command (tree_switch_command& cmd)
+{
+  indent ();
+
+  os << "switch ";
+
+  tree_expression *expr = cmd.switch_value ();
+
+  if (expr)
+    expr->accept (*this);
+
+  newline ();
+
+  increment_indent_level ();
+
+  tree_switch_case_list *list = cmd.case_list ();
+
+  if (list)
+    list->accept (*this);
+
+  indent ();
+
+  os << "endswitch";
+}
+
+void
 tree_print_code::visit_index_expression (tree_index_expression& expr)
 {
   indent ();

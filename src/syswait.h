@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #endif
 
-#if defined (NeXT) && ! defined (_POSIX_SOURCE))
+#if defined (NeXT) && ! defined (_POSIX_SOURCE)
 #define HAVE_SYS_WAIT_H
 #endif
 

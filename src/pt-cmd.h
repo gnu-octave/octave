@@ -34,6 +34,7 @@ class octave_value_list;
 class tree_statement_list;
 class tree_global_init_list;
 class tree_if_command_list;
+class tree_switch_case_list;
 class tree_expression;
 class tree_index_expression;
 class tree_identifier;
@@ -46,6 +47,7 @@ class tree_global_command;
 class tree_while_command;
 class tree_for_command;
 class tree_if_command;
+class tree_switch_command;
 class tree_try_catch_command;
 class tree_unwind_protect_command;
 class tree_no_op_command;
@@ -212,8 +214,6 @@ public:
 
   void eval (void);
 
-  void eval_error (void);
-
   tree_if_command_list *cmd_list (void) { return list; }
 
   void accept (tree_walker& tw);
@@ -222,6 +222,41 @@ private:
 
   // List of if commands (if, elseif, elseif, ... else, endif)
   tree_if_command_list *list;
+};
+
+// Switch.
+
+class
+tree_switch_command : public tree_command
+{
+public:
+
+  tree_switch_command (int l = -1, int c = -1)
+    : tree_command (l, c), expr (0), list (0) { }
+
+  tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
+		       int l = -1, int c = -1)
+    : tree_command (l, c), expr (e), list (lst) { }
+
+  ~tree_switch_command (void);
+
+  void eval (void);
+
+  void eval_error (void);
+
+  tree_expression *switch_value (void) { return expr; }
+
+  tree_switch_case_list *case_list (void) { return list; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // Value on which to switch.
+  tree_expression *expr;
+
+  // List of cases (case 1, case 2, ..., default)
+  tree_switch_case_list *list;
 };
 
 // Simple exception handling.

@@ -4,6 +4,7 @@ enum octave_kw_id
 {
   all_va_args_kw,
   break_kw,
+  case_kw,
   catch_kw,
   continue_kw,
   else_kw,
@@ -14,6 +15,7 @@ enum octave_kw_id
   endfor_kw,
   endfunction_kw,
   endif_kw,
+  endswitch_kw,
   endwhile_kw,
   for_kw,
   function_kw,
@@ -21,8 +23,10 @@ enum octave_kw_id
   gplot_kw,
   gsplot_kw,
   if_kw,
+  otherwise_kw,
   replot_kw,
   return_kw,
+  switch_kw,
   try_kw,
   unwind_protect_kw,
   unwind_protect_cleanup_kw,
@@ -34,6 +38,7 @@ struct octave_kw { char *name; int tok; octave_kw_id kw_id; };
 %%
 all_va_args, ALL_VA_ARGS, all_va_args_kw
 break, BREAK, break_kw
+case, CASE, case_kw
 catch, CATCH, catch_kw
 continue, CONTINUE, continue_kw
 else, ELSE, else_kw
@@ -44,6 +49,7 @@ end_unwind_protect, END, end_unwind_protect_kw
 endfor, END, endfor_kw
 endfunction, END, endfunction_kw
 endif, END, endif_kw
+endswitch, END, endswitch_kw
 endwhile, END, endwhile_kw
 for, FOR, for_kw
 function, FCN, function_kw
@@ -51,8 +57,10 @@ global, GLOBAL, global_kw
 gplot, PLOT, gplot_kw
 gsplot, PLOT, gsplot_kw
 if, IF, if_kw
+otherwise, OTHERWISE, otherwise_kw
 replot, PLOT, replot_kw
 return, FUNC_RET, return_kw
+switch, SWITCH, switch_kw
 try, TRY, try_kw
 unwind_protect, UNWIND, unwind_protect_kw
 unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw

@@ -529,6 +529,95 @@ tree_if_command_list::accept (tree_walker& tw)
   tw.visit_if_command_list (*this);
 }
 
+// Switch.
+
+tree_switch_case::~tree_switch_case (void)
+{
+  delete label;
+  delete list;
+}
+
+bool
+tree_switch_case::label_matches (const octave_value& val)
+{
+  bool retval = false;
+
+  octave_value label_value = label->eval (false);
+
+  if (! error_state)
+    {
+      if (label_value.is_defined ())
+	{
+	  octave_value tmp = do_binary_op (octave_value::eq,
+					   val, label_value);
+
+	  if (! error_state)
+	    {
+	      if (tmp.is_defined ())
+		retval = tmp.is_true ();
+	      else
+		eval_error ();
+	    }
+	  else
+	    eval_error ();
+	}
+      else
+	eval_error ();
+    }
+  else
+    eval_error ();
+
+  return retval;
+}
+
+int
+tree_switch_case::eval (const octave_value& val)
+{
+  int retval = 0;
+
+  if (is_default_case () || label_matches (val))
+    {
+      if (list)
+	list->eval (true);
+
+      retval = 1;
+    }
+
+  return retval;
+}
+
+void
+tree_switch_case::eval_error (void)
+{
+  ::error ("evaluating switch case label");
+}
+
+void
+tree_switch_case::accept (tree_walker& tw)
+{
+  tw.visit_switch_case (*this);
+}
+
+// List of switch cases.
+
+void
+tree_switch_case_list::eval (const octave_value& val)
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_switch_case *t = this->operator () (p);
+
+      if (t->eval (val) || error_state)
+	break;
+    }
+}
+
+void
+tree_switch_case_list::accept (tree_walker& tw)
+{
+  tw.visit_switch_case_list (*this);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

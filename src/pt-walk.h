@@ -84,6 +84,15 @@ public:
   visit_if_command_list (tree_if_command_list&) = 0;
 
   virtual void
+  visit_switch_case (tree_switch_case&) = 0;
+
+  virtual void
+  visit_switch_case_list (tree_switch_case_list&) = 0;
+
+  virtual void
+  visit_switch_command (tree_switch_command&) = 0;
+
+  virtual void
   visit_index_expression (tree_index_expression&) = 0;
 
   virtual void

@@ -47,6 +47,10 @@ class tree_return_list;
 class tree_va_return_list;
 class tree_global;
 class tree_global_init_list;
+class tree_if_clause;
+class tree_if_command_list;
+class tree_switch_case;
+class tree_switch_case_list;
 
 class tree_walker;
 
@@ -369,6 +373,70 @@ public:
     }
 
   void eval (void);
+
+  void accept (tree_walker& tw);
+};
+
+class
+tree_switch_case
+{
+public:
+
+  tree_switch_case (void) : label (0), list (0) { }
+
+  tree_switch_case (tree_statement_list *l)
+    : label (0), list (l) { }
+
+  tree_switch_case (tree_expression *e, tree_statement_list *l)
+    : label (e), list (l) { }
+
+  ~tree_switch_case (void);
+
+  bool is_default_case (void)
+    { return ! label; }
+
+  bool label_matches (const octave_value& val);
+
+  int eval (const octave_value& val);
+
+  void eval_error (void);
+
+  tree_expression *case_label (void) { return label; }
+
+  tree_statement_list *commands (void) { return list; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // The case label.
+  tree_expression *label;
+
+  // The list of statements to evaluate if the label matches.
+  tree_statement_list *list;
+};
+
+class
+tree_switch_case_list : public SLList<tree_switch_case *>
+{
+public:
+
+  tree_switch_case_list (void)
+    : SLList<tree_switch_case *> () { }
+
+  tree_switch_case_list (tree_switch_case *t)
+    : SLList<tree_switch_case *> () { append (t); }
+
+  ~tree_switch_case_list (void)
+    {
+      while (! empty ())
+	{
+	  tree_switch_case *t = remove_front ();
+	  delete t;
+	}
+    }
+
+  void eval (const octave_value& val);
 
   void accept (tree_walker& tw);
 };

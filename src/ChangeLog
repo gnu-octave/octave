@@ -1,5 +1,34 @@
 Fri Feb 28 01:49:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	Implement switch statement:
+
+	* parse.y (Vwarn_variable_switch_label): New static variable.
+	(warn_variable_switch_label): New function.
+	(symbols_of_parse): Provide warn_variable_switch_label as Octave
+	variable here.
+	(make_switch_case, finish_switch_command): New functions.
+	(maybe_warn_variable_switch_label): New function.
+	(end_error): Handle endswitch.
+	(switch_command, case_list, case_list1, switch_case, default_case):
+	New nonterminals.
+	(command): Add switch_command here.
+	* lex.l	(is_keyword): Handle switch, case, otherwise, and endswitch.
+	* octave_gperf: Recognize switch, case, otherwise, and endswitch.
+	* token.h (end_tok_type): New item, switch_end.
+	* pt-cmd.cc (tree_switch_command): New class.
+	* pt-misc.cc (tree_switch_case, tree_switch_case_list): New classes.
+	* pt-pr-code.cc (tree_print_code::visit_switch_case,
+	tree_print_code::visit_switch_case_list,
+	tree_print_code::visit_switch_command): New functions.
+ 	* pt-walk.h (tree_walker::visit_switch_case,
+	tree_walker::visit_switch_case_list,
+	tree_walker::visit_switch_command): New pure virtual declarations.
+	Implement new switch statement.
+	* SLList-misc.cc: Instantiate lists of pointers to
+	tree_switch_case objects too.
+
+	* lex.h, lex.l, parse.y: Delete all references to lexer_flags::iffing.
+
 	* syswait.h: Include sys/wait.h on NeXT systems, but don't use the
 	WIFEXTED, WEXITSTATUS, and WIFSIGNALLED macros defined there.
 	Also define waitpid in terms of wait4.  From Rex A. Dieter

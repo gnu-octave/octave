@@ -51,6 +51,7 @@ public:
       for_end,
       function_end,
       if_end,
+      switch_end,
       while_end,
       try_catch_end,
       unwind_protect_end,

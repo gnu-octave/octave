@@ -517,6 +517,50 @@ tree_if_command::accept (tree_walker& tw)
   tw.visit_if_command (*this);
 }
 
+// Switch.
+
+tree_switch_command::~tree_switch_command (void)
+{
+  delete expr;
+  delete list;
+}
+
+void
+tree_switch_command::eval (void)
+{
+  if (expr)
+    {
+      octave_value val = expr->eval (0);
+
+      if (! error_state)
+	{
+	  if (list)
+	    list->eval (val);
+
+	  if (error_state)
+	    eval_error ();
+	}
+      else
+	eval_error ();
+    }
+  else
+    ::error ("missing value in switch command near line %d, column %d",
+	     line (), column ());
+}
+
+void
+tree_switch_command::eval_error (void)
+{
+  ::error ("evaluating switch command near line %d, column %d",
+	   line (), column ());
+}
+
+void
+tree_switch_command::accept (tree_walker& tw)
+{
+  tw.visit_switch_command (*this);
+}
+
 // Simple exception handling.
 
 tree_try_catch_command::~tree_try_catch_command (void)

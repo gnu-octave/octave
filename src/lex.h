@@ -149,10 +149,6 @@ public:
   // Nonzero means we think we are looking at a set command.
   int doing_set;
 
-  // Nonzero means we're in the middle of defining a conditional
-  // expression.
-  int iffing;
-
   // Nonzero means we're looking at the range part of a plot command.
   int in_plot_range;
 

@@ -78,6 +78,12 @@ public:
 
   void visit_if_command_list (tree_if_command_list&);
 
+  void visit_switch_case (tree_switch_case&);
+
+  void visit_switch_case_list (tree_switch_case_list&);
+
+  void visit_switch_command (tree_switch_command&);
+
   void visit_index_expression (tree_index_expression&);
 
   void visit_indirect_ref (tree_indirect_ref&);

@@ -959,11 +959,13 @@ is_keyword (const string& s)
 	{
 	case all_va_args_kw:
 	case break_kw:
+	case case_kw:
 	case catch_kw:
 	case continue_kw:
 	case else_kw:
 	case elseif_kw:
 	case global_kw:
+	case otherwise_kw:
 	case return_kw:
 	case unwind_protect_cleanup_kw:
  	  break;
@@ -992,6 +994,10 @@ is_keyword (const string& s)
 	  yylval.tok_val = new token (token::if_end, l, c);
 	  break;
 
+	case endswitch_kw:
+	  yylval.tok_val = new token (token::switch_end, l, c);
+	  break;
+
 	case endwhile_kw:
 	  yylval.tok_val = new token (token::while_end, l, c);
 	  break;
@@ -1003,11 +1009,8 @@ is_keyword (const string& s)
 	  break;
 
 	case if_kw:
-	  promptflag--;
-	  lexer_flags.iffing++;
-	  break;
-
 	case try_kw:
+	case switch_kw:
 	case unwind_protect_kw:
 	  promptflag--;
 	  break;
@@ -1908,7 +1911,6 @@ lexical_feedback::init (void)
   plotting = 0;
 
   // Not initially inside a loop or if statement.
-  iffing = 0;
   looping = 0;
 
   // Not initially looking at indirect references.

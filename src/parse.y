@@ -72,6 +72,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 static bool Vwarn_assign_as_truth_value;
 
+// If TRUE, generate a warning for variable swich labels.
+static bool Vwarn_variable_switch_label;
+
 // If TRUE, generate a warning for the comma in things like
 //
 //   octave> global a, b = 2
@@ -118,6 +121,9 @@ static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
 // Maybe print a warning if an assignment expression is used as the
 // test in a logical expression.
 static void maybe_warn_assign_as_truth_value (tree_expression *expr);
+
+// Maybe print a warning about switch labels that aren't constants.
+static void maybe_warn_variable_switch_label (tree_expression *expr);
 
 // Create a plot command.
 static tree_plot_command *make_plot_command
@@ -196,6 +202,15 @@ static tree_if_command *finish_if_command
 static tree_if_clause *make_elseif_clause
 	 (tree_expression *expr, tree_statement_list *list);
 
+// Finish a switch command.
+static tree_switch_command *finish_switch_command
+	 (token *switch_tok, tree_expression *expr,
+	  tree_switch_case_list *list, token *end_tok);
+
+// Build a switch case.
+static tree_switch_case *make_switch_case
+	 (tree_expression *expr, tree_statement_list *list);
+
 // Build an assignment to a variable.
 static tree_expression *make_simple_assignment
 	 (tree_index_expression *var, token *eq_tok, tree_expression *expr);
@@ -271,6 +286,9 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
   tree_if_command *tree_if_command_type;
   tree_if_clause *tree_if_clause_type;
   tree_if_command_list *tree_if_command_list_type;
+  tree_switch_command *tree_switch_command_type;
+  tree_switch_case *tree_switch_case_type;
+  tree_switch_case_list *tree_switch_case_list_type;
   tree_global *tree_global_type;
   tree_global_init_list *tree_global_init_list_type;
   tree_global_command *tree_global_command_type;
@@ -300,6 +318,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> TEXT STYLE
 %token <tok_val> FOR WHILE
 %token <tok_val> IF ELSEIF ELSE
+%token <tok_val> SWITCH CASE OTHERWISE
 %token <tok_val> BREAK CONTINUE FUNC_RET
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
@@ -333,6 +352,9 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
+%type <tree_switch_command_type> switch_command
+%type <tree_switch_case_type> switch_case default_case
+%type <tree_switch_case_list_type> case_list1 case_list
 %type <tree_global_type> global_decl2
 %type <tree_global_init_list_type> global_decl1
 %type <tree_global_command_type> global_decl
@@ -618,11 +640,10 @@ command		: plot_command
 		  { $$ = $1; }
 		| global_decl
 		  { $$ = $1; }
+		| switch_command
+		  { $$ = $1; }
 		| if_command
-		  {
-		    lexer_flags.iffing--;
-		    $$ = $1;
-		  }
+		  { $$ = $1; }
 		| UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
 		  {
 		    if (! ($$ = make_unwind_command ($1, $3, $6, $7)))
@@ -697,6 +718,39 @@ elseif_clause	: ELSEIF opt_sep expression opt_sep opt_list
 
 else_clause	: ELSE opt_sep opt_list
 		  { $$ = new tree_if_clause ($3); }
+		;
+
+switch_command	: SWITCH expression opt_sep case_list END
+		  {
+		    if (! ($$ = finish_switch_command ($1, $2, $4, $5)))
+		      ABORT_PARSE;
+		  }
+		;
+
+case_list	: case_list1
+		  { $$ = $1; }
+		| case_list1 default_case
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }		
+		;
+
+case_list1	: switch_case
+		  { $$ = new tree_switch_case_list ($1); }
+		| case_list1 switch_case
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
+		;
+
+switch_case	: CASE opt_sep expression opt_sep list
+		  { $$ = make_switch_case ($3, $5); }
+		;
+
+default_case	: OTHERWISE opt_sep opt_list
+		  { $$ = new tree_switch_case ($3); }
 		;
 
 screwed_again	: // empty
@@ -1280,6 +1334,10 @@ check_end (token *tok, token::end_tok_type expected)
 	  end_error ("try", ettype, l, c);
 	  break;
 
+	case token::switch_end:
+	  end_error ("switch", ettype, l, c);
+	  break;
+
 	case token::unwind_protect_end:
 	  end_error ("unwind_protect", ettype, l, c);
 	  break;
@@ -1348,6 +1406,17 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
       && expr->is_in_parens () < 2)
     {
       warning ("suggest parenthesis around assignment used as truth value");
+    }
+}
+
+// Maybe print a warning about switch labels that aren't constants.
+
+static void
+maybe_warn_variable_switch_label (tree_expression *expr)
+{
+  if (Vwarn_variable_switch_label && ! expr->is_constant ())
+    {
+      warning ("variable switch label");
     }
 }
 
@@ -1975,6 +2044,35 @@ make_elseif_clause (tree_expression *expr, tree_statement_list *list)
   return new tree_if_clause (expr, list);
 }
 
+// Finish a switch command.
+
+static tree_switch_command *
+finish_switch_command (token *switch_tok, tree_expression *expr,
+		       tree_switch_case_list *list, token *end_tok)
+{
+  tree_switch_command *retval = 0;
+
+  if (! check_end (end_tok, token::switch_end))
+    {
+      int l = switch_tok->line ();
+      int c = switch_tok->column ();
+
+      retval = new tree_switch_command (expr, list, l, c);
+    }
+
+  return retval;
+}
+
+// Build a switch case.
+
+static tree_switch_case *
+make_switch_case (tree_expression *expr, tree_statement_list *list)
+{
+  maybe_warn_variable_switch_label (expr);
+
+  return new tree_switch_case (expr, list);
+}
+
 // Build an assignment to a variable.
 
 static tree_expression *
@@ -2274,6 +2372,15 @@ warn_missing_semicolon (void)
   return 0;
 }
 
+static int
+warn_variable_switch_label (void)
+{
+  Vwarn_variable_switch_label
+    = check_preference ("warn_variable_switch_label");
+
+  return 0;
+}
+
 void
 symbols_of_parse (void)
 {
@@ -2287,8 +2394,11 @@ symbols_of_parse (void)
     "produce warning if function name conflicts with file name");
 
   DEFVAR (warn_missing_semicolon, 0.0, 0, warn_missing_semicolon,
-    "produce a warning if a statement in a function file is not
+    "produce a warning if a statement in a function file is not\n\
 terminated with a semicolon");
+
+  DEFVAR (warn_variable_switch_label, 0.0, 0, warn_variable_switch_label,
+    "produce warning for variables used as switch labels");
 }
 
 /*

@@ -600,22 +600,27 @@ symbol_record::push_context (void)
 void
 symbol_record::pop_context (void)
 {
-  assert (! context.empty ());
+  // It is possible for context to be empty if new symbols have been
+  // inserted in the symbol table during recursive calls.  This can
+  // happen as a result of calls to eval() and feval().
 
-  if (is_variable ())
+  if (! context.empty ())
     {
-      symbol_def *old_def = pop_def ();
-      maybe_delete (old_def);
-    }
+      if (is_variable ())
+	{
+	  symbol_def *old_def = pop_def ();
+	  maybe_delete (old_def);
+	}
 
-  if (is_function ())
-    {
-      symbol_def *old_def = pop_def ();
-      maybe_delete (old_def);
-    }
+      if (is_function ())
+	{
+	  symbol_def *old_def = pop_def ();
+	  maybe_delete (old_def);
+	}
 
-  definition = context.pop ();
-  linked_to_global = global_link_context.pop ();
+      definition = context.pop ();
+      linked_to_global = global_link_context.pop ();
+    }
 }
 
 int

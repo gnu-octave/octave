@@ -841,7 +841,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
       {
 	int nc = columns ();
 	int new_nc = nc;
-	if (nc == 0 || rows () == 0)
+	if (nc == 0)
 	  new_nc = rhs_nc;
 
 	if (! indexed_assign_conforms (iv.capacity (), new_nc,
@@ -943,7 +943,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
       {
 	int nc = columns ();
 	int new_nc = nc;
-	if (nc == 0 || rows () == 0)
+	if (nc == 0)
 	  new_nc = rhs_nc;
 
 	if (! indexed_assign_conforms (ri.nelem (), new_nc, rhs_nr, rhs_nc))
@@ -1018,7 +1018,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 		       columns ());
 	int nr = rows ();
 	int new_nr = nr;
-	if (nr == 0 || columns () == 0)
+	if (nr == 0)
 	  new_nr = rhs_nr;
 
 	if (! indexed_assign_conforms (new_nr, jv.capacity (),
@@ -1041,7 +1041,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	Range rj = tmp_j.range_value ();
 	int nr = rows ();
 	int new_nr = nr;
-	if (nr == 0 || columns () == 0)
+	if (nr == 0)
 	  new_nr = rhs_nr;
 
 	if (! indexed_assign_conforms (new_nr, rj.nelem (), rhs_nr, rhs_nc))

@@ -79,7 +79,10 @@
 #endif
 
 #include <stdio.h>
+
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 #if defined(TIME_WITH_SYS_TIME)
 #include <sys/time.h>

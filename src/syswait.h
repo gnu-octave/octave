@@ -25,7 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // This mess suggested by the autoconf manual.
 
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 #if HAVE_SYS_WAIT_H
 #include <sys/wait.h>

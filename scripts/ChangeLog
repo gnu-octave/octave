@@ -1,5 +1,13 @@
 2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* plot/contour.m: Handle x and y as matrices too.
+
+2002-11-01  Joseph P. Skudlarek <jskud@jskud.com>
+
+	* plot/contour.m: Fix error and usage messages.
+
+2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* plot/contour.m: Correct orientation of plot.
 
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>

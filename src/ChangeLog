@@ -1,3 +1,8 @@
+2001-04-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l: If unexpected character is EOF, report EOF error instead
+	of invalid character error.
+
 2001-04-18  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* load-save.cc (read_mat5_binary_element): Cast arguments to the

@@ -669,7 +669,7 @@ print cryptic yet witty messages")
 	      if (help_from_list (output_buf, kw_help_list, *argv, 0))
 		continue;
 
-	      symbol_record *sym_rec = lookup_by_name (*argv);
+	      symbol_record *sym_rec = lookup_by_name (*argv, 0);
 
 	      if (sym_rec)
 		{
@@ -726,7 +726,7 @@ display the definition of each NAME that refers to a function")
 	  if (! *argv || ! **argv)
 	    continue;
 
-	  symbol_record *sym_rec = lookup_by_name (*argv);
+	  symbol_record *sym_rec = lookup_by_name (*argv, 0);
 
 	  if (sym_rec)
 	    {
@@ -820,7 +820,7 @@ file, print the full name of the file.")
 	  if (! *argv || ! **argv)
 	    continue;
 
-	  symbol_record *sym_rec = lookup_by_name (*argv);
+	  symbol_record *sym_rec = lookup_by_name (*argv, 0);
 
 	  if (sym_rec)
 	    {

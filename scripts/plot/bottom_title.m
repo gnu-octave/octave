@@ -38,7 +38,8 @@ function bottom_title (text)
   if (isstr (text))
     gset top_title;
     gset title;
-    eval (sprintf ("gset bottom_title \"%s\"", text));
+    eval (sprintf ("gset bottom_title \"%s\"",
+		   undo_string_escapes (undo_string_escapes (text))));
   else
     error ("bottom_title: text must be a string");
   endif

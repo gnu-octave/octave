@@ -34,8 +34,8 @@ function title (text)
   endif
 
   if (isstr (text))
-    command = sprintf ("gset title \"%s\"", text);
-    eval (command);
+    eval (sprintf ("gset title \"%s\"",
+		   undo_string_escapes (undo_string_escapes (text))));
   else
     error ("title: text must be a string");
   endif

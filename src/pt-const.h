@@ -255,10 +255,7 @@ public:
 // Is at least one of the dimensions of this constant zero?
 
   int is_empty (void) const
-    {
-      return ((! (is_magic_colon () || is_all_va_args () || is_unknown ()))
-	      && (rows () == 0 || columns () == 0));
-    }
+    { return rep->is_empty (); }
 
 // Are the dimensions of this constant zero by zero?
 
@@ -290,7 +287,11 @@ public:
 
   Octave_map map_value (void) const;
 
-  tree_constant lookup_map_element (SLList<char*>& list);
+  tree_constant lookup_map_element (const char *ref, int insert = 0,
+				    int silent = 0);
+
+  tree_constant lookup_map_element (SLList<char*>& list,
+				    int insert = 0, int silent = 0);
 
   ColumnVector vector_value (int force_string_conversion = 0,
 			     int force_vector_conversion = 0) const 

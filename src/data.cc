@@ -753,14 +753,11 @@ return nonzero if S is a structure with element NAME")
   if (nargin == 2)
     {
       retval = 0.0;
-      if (args(0).is_map ())
+      if (args(0).is_map () && args(1).is_string ())
 	{
-	  if (args(1).is_string ())
-	    {
-	      Octave_map m = args(0).map_value ();
-	      char *s = args(1).string_value ();
-	      retval = (double) (s && m.contains (s));
-	    }
+	  char *s = args(1).string_value ();
+	  tree_constant tmp = args(0).lookup_map_element (s, 0, 1);
+	  retval = (double) tmp.is_defined ();
 	}
     }
   else

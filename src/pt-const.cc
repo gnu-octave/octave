@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <config.h>
 #endif
 
+#include <string.h>
 #include <iostream.h>
 #include <strstream.h>
 
@@ -109,7 +110,40 @@ tree_constant::operator = (const tree_constant& a)
 }
 
 tree_constant
-tree_constant::lookup_map_element (SLList<char*>& list)
+tree_constant::lookup_map_element (const char *ref, int insert,
+				   int silent)
+{
+  tree_constant retval;
+
+  if (ref)
+    {
+      char *tmp = strsave (ref);
+
+      SLList<char *> list;
+
+      char *beg = tmp;
+      char *end = 0;
+      do
+	{
+	  end = strchr (beg, '.');
+	  if (end)
+	    *end = '\0';
+
+	  list.append (strsave (beg));
+	}
+      while (end && (beg = end + 1));
+
+      retval = lookup_map_element (list, insert, silent);
+
+      delete [] tmp;
+    }
+
+  return retval;
+}
+
+tree_constant
+tree_constant::lookup_map_element (SLList<char*>& list, int insert,
+				   int silent)
 {
   tree_constant retval;
 
@@ -122,7 +156,9 @@ tree_constant::lookup_map_element (SLList<char*>& list)
 
       list.next (p);
 
-      tree_constant tmp = tmp_rep->lookup_map_element (elt);
+      tree_constant tmp;
+
+      tmp = tmp_rep->lookup_map_element (elt, insert, silent);
 
       if (error_state)
 	break;

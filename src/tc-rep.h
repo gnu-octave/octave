@@ -176,6 +176,12 @@ private:
 
   int is_true (void) const;
 
+  int is_empty (void) const
+    {
+      return ((! (is_magic_colon () || is_all_va_args () || is_unknown ()))
+	      && (rows () == 0 || columns () == 0));
+    }
+
   double double_value (int force_string_conversion = 0) const;
   Matrix matrix_value (int force_string_conversion = 0) const;
   Complex complex_value (int force_string_conversion = 0) const;
@@ -184,7 +190,8 @@ private:
   Range range_value (void) const;
   Octave_map map_value (void) const;
 
-  tree_constant& lookup_map_element (const char *name, int insert = 0);
+  tree_constant& lookup_map_element (const char *name, int insert = 0,
+				     int silent = 0);
 
   ColumnVector vector_value (int force_string_conversion = 0,
 			     int force_vector_conversion = 0) const;

@@ -224,12 +224,20 @@ a function.")
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  char *name = strsave (args(0).string_value ());
 
   if (error_state)
     {
       error ("exist: expecting string argument");
+      delete [] name;
       return retval;
+    }
+
+  char *struct_elts = strchr (name, '.');
+  if (struct_elts)
+    {
+      *struct_elts = '\0';
+      struct_elts++;
     }
 
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
@@ -239,7 +247,22 @@ a function.")
   retval = 0.0;
 
   if (sr && sr->is_variable () && sr->is_defined ())
-    retval = 1.0;
+    {
+      retval = 1.0;
+      tree_fvc *def = sr->def ();
+      if (struct_elts)
+	{
+	  retval = 0.0;
+	  if (def->is_constant ())
+	    {
+	      tree_constant *tmp = (tree_constant *) def;
+	      tree_constant ult;
+	      ult = tmp->lookup_map_element (struct_elts, 0, 1);
+	      if (ult.is_defined ())
+		retval = 1.0;
+	    }
+	}
+    }
   else if (sr && sr->is_function ())
     retval = 2.0;
   else
@@ -257,6 +280,8 @@ a function.")
 	    retval = 2.0;
 	}
     }
+
+  delete [] name;
 
   return retval;
 }

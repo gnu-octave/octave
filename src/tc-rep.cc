@@ -1081,7 +1081,7 @@ TC_REP::map_value (void) const
 }
 
 tree_constant&
-TC_REP::lookup_map_element (const char *name, int insert)
+TC_REP::lookup_map_element (const char *name, int insert, int silent)
 {
   static tree_constant retval;
 
@@ -1093,10 +1093,10 @@ TC_REP::lookup_map_element (const char *name, int insert)
 	return a_map->contents (idx);
       else if (insert)
 	return (*a_map) [name];
-      else
+      else if (! silent)
 	error ("structure has no member `%s'", name);
     }
-  else
+  else if (! silent)
     error ("invalid structure access attempted");
 
   return retval;

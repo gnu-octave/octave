@@ -32,7 +32,7 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Compute range
 
-function y = range (x, varargin{:})
+function y = range (x, varargin)
 
   if (nargin != 1 && nargin != 2)
     usage ("range (x, dim)");

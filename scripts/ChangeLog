@@ -1,3 +1,7 @@
+2004-12-08  Heikki Junes  <Heikki.Junes@hut.fi>
+
+	* statistics/base/range.m: Fix varargin usage.
+
 2004-12-02  Pascal A. Dupuis  <Pascal.Dupuis@esat.kuleuven.ac.be>
 
 	* strings/deblank.m: Remove all trailing whitespace (check with

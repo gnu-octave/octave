@@ -1,3 +1,8 @@
+2000-06-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_PROG_GPERF): New macro.
+	* configure.in: Use it.  Print warning at end if gperf is missing.
+
 2000-04-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Try moving output file first.  But comment these

@@ -827,6 +827,18 @@ else
 fi
 ])
 dnl
+dnl Is gperf installed?
+dnl
+dnl OCTAVE_PROG_GPERF
+AC_DEFUN(OCTAVE_PROG_GPERF,
+[AC_CHECK_PROG(GPERF, gperf, gperf, [])
+if test -z "$GPERF"; then
+  warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
+  AC_MSG_WARN($warn_gperf)
+fi
+AC_SUBST(GPERF)
+])
+dnl
 dnl Find nm.
 dnl
 dnl OCTAVE_PROG_NM

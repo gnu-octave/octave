@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.326 $)
+AC_REVISION($Revision: 1.327 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -1099,6 +1099,7 @@ AC_SUBST(INSTALL_SCRIPT)
 
 OCTAVE_PROG_GNUPLOT
 OCTAVE_PROG_PAGER
+OCTAVE_PROG_GPERF
 
 EXE=
 case "$canonical_host_type" in
@@ -1250,6 +1251,11 @@ fi
 
 if test -n "$warn_termlibs"; then
   AC_MSG_WARN($warn_termlibs)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_gperf"; then
+  AC_MSG_WARN($warn_gperf)
   warn_msg_printed=true
 fi
 

@@ -44,26 +44,28 @@ then
   HAVE_FMT=true
 fi
 
-# BUGADDR="bug-octave@che.utexas.edu"
-BUGADDR="jwe@che.utexas.edu"
+ss_p=`echo $VERSION | grep "^ss-"`
+if test -n "$ss_p"
+then
+  BUGADDR="octave-maintainers@che.utexas.edu"
+else
+  BUGADDR="bug-octave@che.utexas.edu"
+fi
 
 SUBJECT="[50 character or so descriptive subject here (for reference)]"
 if test $# -gt 0
 then
   case "$1" in
     -s)
-      shift;
+      shift
       if test $# -gt 0
       then
         SUBJECT="$1"
+        shift
       else
         echo "usage: octave-bug [-s subject]"
         exit 1
       fi
-    ;;
-    *)
-      echo "usage: octave-bug [-s subject]"
-      exit 1
     ;;
   esac
 fi
@@ -72,30 +74,7 @@ cat > $TEMP << EOF
 To: $BUGADDR
 Subject: $SUBJECT
 
-Configuration (please do not edit this section):
------------------------------------------------
-
 Bug report for Octave $VERSION configured for $MACHINE
-
-uname output:     $UN
-Fortran compiler: $F77
-FFLAGS:           $FFLAGS
-C compiler:       $CC
-CFLAGS:           $CFLAGS
-C++ compiler:     $CXX
-CXXFLAGS:         $CXXFLAGS
-DEFS:
-
-EOF
-
-if $HAVE_FMT
-then
-  echo $DEFS | fmt | sed 's/^/  /' >> $TEMP
-else
-  echo $DEFS >> $TEMP
-fi
-
-cat >> $TEMP << EOF
 
 Description:
 -----------
@@ -116,7 +95,42 @@ Fix:
     fix the problem (if you don't have a fix for the problem, don't
     include this section, but please do submit your report anyway).
 
+
+
+Configuration (please do not edit this section):
+-----------------------------------------------
+
+uname output:     $UN
+Fortran compiler: $F77
+FFLAGS:           $FFLAGS
+C compiler:       $CC
+CFLAGS:           $CFLAGS
+C++ compiler:     $CXX
+CXXFLAGS:         $CXXFLAGS
+DEFS:
+
 EOF
+
+if $HAVE_FMT
+then
+  echo $DEFS | fmt | sed 's/^/  /' >> $TEMP
+else
+  echo $DEFS >> $TEMP
+fi
+
+if test $# -gt 0
+then
+  if test -f "$1"
+  then
+    cat >> $TEMP << EOF
+
+User-preferences (please do not edit this section):
+--------------------------------------------------
+
+EOF
+    cat $1 >> $TEMP
+  fi
+fi
 
 chmod u+w $TEMP
 cp $TEMP $TEMP.x

@@ -205,6 +205,20 @@ octave_tmp_file_name (void)
   return retval;
 }
 
+DEFUN ("octave_tmp_file_name", Foctave_tmp_file_name,
+       Soctave_tmp_file_name, 0, 1,
+ "octave_tmp_file_name ()")
+{
+  tree_constant retval;
+
+  if (args.length () == 0)
+    retval = octave_tmp_file_name ();
+  else
+    print_usage ("octave_tmp_file_name");
+
+  return retval;
+}
+
 char **
 pathstring_to_vector (char *pathstring)
 {
@@ -700,6 +714,83 @@ char *
 oct_file_in_path (const char *name)
 {
   return file_in_path (name, ".oct");
+}
+
+char *
+undo_string_escape (char c)
+{
+  static char retval[2];
+  retval[1] = '\0';
+
+  if (! c)
+    return 0;
+
+  switch (c)
+    {
+    case '\a':
+      return "\\a";
+
+    case '\b': // backspace
+      return "\\b";
+
+    case '\f': // formfeed
+      return "\\f";
+
+    case '\n': // newline
+      return "\\n";
+
+    case '\r': // carriage return
+      return "\\r";
+
+    case '\t': // horizontal tab
+      return "\\t";
+
+    case '\v': // vertical tab
+      return "\\v";
+
+    case '\\': // backslash
+      return "\\\\";
+
+    case '"': // double quote
+      return "\\\"";
+
+    default:
+      retval[0] = c;
+      return retval;
+    }
+}
+
+char *
+undo_string_escapes (char *s)
+{
+  ostrstream buf;
+
+  char *t;
+  while (t = undo_string_escape (*s++))
+    buf << t;
+  buf << ends;
+
+  return buf.str ();
+}
+
+DEFUN ("undo_string_escapes", Fundo_string_escapes,
+       Sundo_string_escapes, 1, 1,
+  "undo_string_escapes (STRING)")
+{
+  tree_constant retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_string ())
+    {
+      char *str = undo_string_escapes (args(0).string_value ());
+      retval = str;
+      delete [] str;
+    }
+  else
+    print_usage ("undo_string_escapaes");
+
+  return retval;
 }
 
 /*

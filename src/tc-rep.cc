@@ -1721,50 +1721,6 @@ TC_REP::print (void)
     }
 }
 
-static char *
-undo_string_escapes (char c)
-{
-  static char retval[2];
-  retval[1] = '\0';
-
-  if (! c)
-    return 0;
-
-  switch (c)
-    {
-    case '\a':
-      return "\\a";
-
-    case '\b': // backspace
-      return "\\b";
-
-    case '\f': // formfeed
-      return "\\f";
-
-    case '\n': // newline
-      return "\\n";
-
-    case '\r': // carriage return
-      return "\\r";
-
-    case '\t': // horizontal tab
-      return "\\t";
-
-    case '\v': // vertical tab
-      return "\\v";
-
-    case '\\': // backslash
-      return "\\\\";
-
-    case '"': // double quote
-      return "\\\"";
-
-    default:
-      retval[0] = c;
-      return retval;
-    }
-}
-
 void
 TC_REP::print_code (ostream& os)
 {
@@ -1805,7 +1761,7 @@ TC_REP::print_code (ostream& os)
       {
 	os << "\"";
 	char *s, *t = string;
-	while (s = undo_string_escapes (*t++))
+	while (s = undo_string_escape (*t++))
 	  os << s;
 	os << "\"";
       }

@@ -1,3 +1,19 @@
+2003-09-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (Fformat): Doc fix.
+	(current_output_max_field_width, current_output_precision):
+	New functions.
+	(float_format::float_format (int, int, int)): Use them to provide
+	default values for field width and precision.
+	(print_g): New static variable.
+	(set_real_format, set_real_matrix_format, set_complex_format) 
+	(set_complex_matrix_format, set_range_format): Handle print_g.
+	(pr_float, pr_complex): Don't scale if using print_g.
+	(set_format_style): Accept new "g" and "G" modifiers for short and
+	long formats and set print_g.
+	Set default precision and width for short to 5, 10.
+	Set default precision and width for long to 15, 20.
+
 2003-09-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* OPERATORS/op-m-cs.cc (complex_matrix_conv): Delete function.

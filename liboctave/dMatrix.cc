@@ -660,8 +660,8 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    info = -1;
 	  else if (calc_cond) 
 	    {
@@ -669,14 +669,14 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	      char job = '1';
 	      Array<int> iz (nc);
 	      int *piz = iz.fortran_vec ();
-	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
-					  rcond, pz, piz, info));
+	      F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in dgecon");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -1;
 	    }
 
@@ -691,7 +691,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 		(*current_liboctave_error_handler)
 		  ("unrecoverable error in dgetri");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -1;
 	    }
 	}
@@ -1113,11 +1113,11 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    {
-	    info = -1;
-	    retval = DET ();
+	      info = -1;
+	      retval = DET ();
 	    } 
 	  else 
 	    {
@@ -1130,15 +1130,15 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 		  Array<int> iz (nc);
 		  int *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
-					      rcond, pz, piz, info));
+		  F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
+					     rcond, pz, piz, info));
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler) 
 		      ("unrecoverable error in dgecon");
 		}
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		{
 		  info = -1;
 		  retval = DET ();
@@ -1154,12 +1154,12 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 		      while (fabs(d[0]) < 1.) 
 			{
 			  d[0] = 10. * d[0];
-			  d[1] = d[1] - 1.;
+			  d[1] = d[1] - 1.0;
 			}
 		      while (fabs(d[0]) >= 10.) 
 			{
 			  d[0] = 0.1 * d[0];
-			  d[1] = d[1] + 1.;
+			  d[1] = d[1] + 1.0;
 			}
 		    }
 		  retval = DET (d);
@@ -1229,8 +1229,8 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    {
 	      info = -2;
 
@@ -1245,14 +1245,14 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
-					  rcond, pz, piz, info));
+	      F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info));
 	      
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in dgecon");
 	      
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -2;
 
 	      volatile double rcond_plus_one = rcond + 1.0;
@@ -1376,8 +1376,8 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info > 0) 
+	  rcond = 0.0;
+	  if (info > 0) 
 	    {
 	      info = -2;
 
@@ -1392,14 +1392,14 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
-					  rcond, pz, piz, info));
+	      F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info));
 	      
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in dgecon");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -2;
 
 	      volatile double rcond_plus_one = rcond + 1.0;
@@ -2196,7 +2196,7 @@ Matrix::diag (int k) const
 	  for (int i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i+k);
 	}
-      else if ( k < 0)
+      else if (k < 0)
 	{
 	  for (int i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i-k, i);

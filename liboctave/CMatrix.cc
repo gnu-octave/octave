@@ -993,8 +993,8 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    info = -1;
 	  else if (calc_cond) 
 	    {
@@ -1002,14 +1002,14 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 	      char job = '1';
 	      Array<double> rz (2 * nc);
 	      double *prz = rz.fortran_vec ();
-	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
-					  rcond, pz, prz, info));
+	      F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
+					 rcond, pz, prz, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in zgecon");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -1;
 	    }
 
@@ -1024,7 +1024,7 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 		(*current_liboctave_error_handler)
 		  ("unrecoverable error in zgetri");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -1;
 	    }
 	}
@@ -1448,8 +1448,8 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    {
 	      info = -1;
 	      retval = ComplexDET ();
@@ -1465,15 +1465,15 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 		  Array<double> rz (2*nr);
 		  double *prz = rz.fortran_vec ();
 		  
-		  F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
-					      rcond, pz, prz, info));
+		  F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
+					     rcond, pz, prz, info));
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler) 
 		      ("unrecoverable error in zgecon");
 		}
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		{
 		  info = -1;
 		  retval = ComplexDET ();
@@ -1489,12 +1489,12 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 		      while (::abs(d[0]) < 1.) 
 			{
 			  d[0] = 10. * d[0];
-			  d[1] = d[1] - 1.;
+			  d[1] = d[1] - 1.0;
 			}
 		      while (::abs(d[0]) >= 10.) 
 			{
 			  d[0] = 0.1 * d[0];
-			  d[1] = d[1] + 1.;
+			  d[1] = d[1] + 1.0;
 			}
 		    }
 		  retval = ComplexDET (d);
@@ -1593,8 +1593,8 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    { 
 	      info = -2;
 
@@ -1609,14 +1609,14 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
-					  rcond, pz, prz, info));
+	      F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
+					 rcond, pz, prz, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in zgecon");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -2;
 
 	      volatile double rcond_plus_one = rcond + 1.0;
@@ -1742,8 +1742,8 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
       else
 	{
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.;
-	  if ( info != 0) 
+	  rcond = 0.0;
+	  if (info != 0) 
 	    { 
 	      info = -2;
 
@@ -1758,14 +1758,14 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
-					  rcond, pz, prz, info));
+	      F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
+					 rcond, pz, prz, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in zgecon");
 
-	      if ( info != 0) 
+	      if (info != 0) 
 		info = -2;
 
 	      volatile double rcond_plus_one = rcond + 1.0;
@@ -2679,7 +2679,7 @@ ComplexMatrix::diag (int k) const
 	  for (int i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i, i+k);
 	}
-      else if ( k < 0)
+      else if (k < 0)
 	{
 	  for (int i = 0; i < ndiag; i++)
 	    d.elem (i) = elem (i-k, i);

@@ -97,17 +97,33 @@ static bool compact_format = false;
 // TRUE means use an e format.
 static bool print_e = false;
 
+// TRUE means use a g format.
+static bool print_g = false;
+
 // TRUE means print E instead of e for exponent field.
 static bool print_big_e = false;
 
 class pr_formatted_float;
+
+static int
+current_output_max_field_width (void)
+{
+  return Voutput_max_field_width;
+}
+
+static int
+current_output_precision (void)
+{
+  return Voutput_precision;
+}
 
 class
 float_format
 {
 public:
 
-  float_format (int w = -1, int p = -1, int f = 0)
+  float_format (int w = current_output_max_field_width (),
+		int p = current_output_precision (), int f = 0)
     : fw (w), prec (p), fmt (f), up (0), sp (0) { }
 
   float_format (const float_format& ff)
@@ -309,18 +325,23 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (fw > Voutput_max_field_width || print_e))
+      && (fw > Voutput_max_field_width || print_e || print_g))
     {
-      int exp_field = 4;
-      if (digits > 100)
-	exp_field++;
+      if (print_g)
+	fmt = float_format ();
+      else
+	{
+	  int exp_field = 4;
+	  if (digits > 100)
+	    exp_field++;
 
-      fw = 2 + prec + exp_field;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+	  fw = 2 + prec + exp_field;
+	  if (inf_or_nan && fw < 3)
+	    fw = 3;
+	  fw += sign;
 
-      fmt = float_format (fw, prec - 1, std::ios::scientific);
+	  fmt = float_format (fw, prec - 1, std::ios::scientific);
+	}
 
       if (print_big_e)
 	fmt.uppercase ();
@@ -392,7 +413,7 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (Vfixed_point_format)
+  else if (Vfixed_point_format && ! print_g)
     {
       rd = prec;
       fw = rd + 2;
@@ -450,18 +471,24 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 
   if (! (bank_format || hex_format || bit_format)
       && (print_e
+	  || print_g
 	  || (! Vfixed_point_format && fw > Voutput_max_field_width)))
     {
-      int exp_field = 4;
-      if (x_max > 100 || x_min > 100)
-	exp_field++;
+      if (print_g)
+	fmt = float_format ();
+      else
+	{
+	  int exp_field = 4;
+	  if (x_max > 100 || x_min > 100)
+	    exp_field++;
 
-      fw = 2 + prec + exp_field;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
+	  fw = 2 + prec + exp_field;
+	  if (inf_or_nan && fw < 3)
+	    fw = 3;
+	  fw += sign;
 
-      fmt = float_format (fw, prec - 1, std::ios::scientific);
+	  fmt = float_format (fw, prec - 1, std::ios::scientific);
+	}
 
       if (print_big_e)
 	fmt.uppercase ();
@@ -595,19 +622,27 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (r_fw > Voutput_max_field_width || print_e))
+      && (r_fw > Voutput_max_field_width || print_e || print_g))
     {
-      int exp_field = 4;
-      if (x_max > 100 || x_min > 100)
-	exp_field++;
+      if (print_g)
+	{
+	  r_fmt = float_format ();
+	  i_fmt = float_format ();
+	}
+      else
+	{
+	  int exp_field = 4;
+	  if (x_max > 100 || x_min > 100)
+	    exp_field++;
 
-      i_fw = r_fw = 1 + prec + exp_field;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+	  i_fw = r_fw = 1 + prec + exp_field;
+	  if (inf_or_nan && i_fw < 3)
+	    i_fw = r_fw = 3;
+	  r_fw += sign;
 
-      r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
-      i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+	  r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
+	  i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+	}
 
       if (print_big_e)
 	{
@@ -715,7 +750,7 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       i_fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (Vfixed_point_format)
+  else if (Vfixed_point_format && ! print_g)
     {
       rd = prec;
       i_fw = r_fw = rd + 2;
@@ -773,19 +808,28 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 
   if (! (bank_format || hex_format || bit_format)
       && (print_e
+	  || print_g
 	  || (! Vfixed_point_format && r_fw > Voutput_max_field_width)))
     {
-      int exp_field = 4;
-      if (x_max > 100 || x_min > 100)
-	exp_field++;
+      if (print_g)
+	{
+	  r_fmt = float_format ();
+	  i_fmt = float_format ();
+	}
+      else
+	{
+	  int exp_field = 4;
+	  if (x_max > 100 || x_min > 100)
+	    exp_field++;
 
-      i_fw = r_fw = 1 + prec + exp_field;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
+	  i_fw = r_fw = 1 + prec + exp_field;
+	  if (inf_or_nan && i_fw < 3)
+	    i_fw = r_fw = 3;
+	  r_fw += sign;
 
-      r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
-      i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+	  r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
+	  i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+	}
 
       if (print_big_e)
 	{
@@ -895,7 +939,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       fw = sign + digits;
       rd = fw;
     }
-  else if (Vfixed_point_format)
+  else if (Vfixed_point_format && ! print_g)
     {
       rd = prec;
       fw = rd + 2 + sign;
@@ -938,15 +982,21 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
 
   if (! (bank_format || hex_format || bit_format)
       && (print_e
+	  || print_g
 	  || (! Vfixed_point_format && fw > Voutput_max_field_width)))
     {
-      int exp_field = 4;
-      if (x_max > 100 || x_min > 100)
-	exp_field++;
+      if (print_g)
+	fmt = float_format ();
+      else
+	{
+	  int exp_field = 4;
+	  if (x_max > 100 || x_min > 100)
+	    exp_field++;
 
-      fw = sign + 2 + prec + exp_field;
+	  fw = sign + 2 + prec + exp_field;
 
-      fmt = float_format (fw, prec - 1, std::ios::scientific);
+	  fmt = float_format (fw, prec - 1, std::ios::scientific);
+	}
 
       if (print_big_e)
 	fmt.uppercase ();
@@ -1163,7 +1213,7 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 static inline void
 pr_float (std::ostream& os, double d, int fw = 0, double scale = 1.0)
 {
-  if (Vfixed_point_format && scale != 1.0)
+  if (Vfixed_point_format && ! print_g && scale != 1.0)
     d /= scale;
 
   pr_any_float (curr_real_fmt, os, d, fw);
@@ -1179,7 +1229,8 @@ static void
 pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
 	    int i_fw = 0, double scale = 1.0)
 {
-  Complex tmp = (Vfixed_point_format && scale != 1.0) ? c / scale : c;
+  Complex tmp
+    = (Vfixed_point_format && ! print_g && scale != 1.0) ? c / scale : c;
 
   double r = tmp.real ();
 
@@ -1230,7 +1281,7 @@ print_empty_matrix (std::ostream& os, int nr, int nc, bool pr_as_read_syntax)
 static void
 pr_scale_header (std::ostream& os, double scale)
 {
-  if (Vfixed_point_format && scale != 1.0)
+  if (Vfixed_point_format && ! print_g && scale != 1.0)
     {
       os << "  "
 	 << std::setw (8) << std::setprecision (1)
@@ -1877,6 +1928,7 @@ init_format_state (void)
   bit_format = 0;
   print_e = false;
   print_big_e = false;
+  print_g = false;
 }
 
 static void
@@ -1912,6 +1964,17 @@ set_format_style (int argc, const string_vector& argv)
 		  print_e = true;
 		  print_big_e = true;
 		}
+	      else if (arg == "g")
+		{
+		  init_format_state ();
+		  print_g = true;
+		}
+	      else if (arg == "G")
+		{
+		  init_format_state ();
+		  print_g = true;
+		  print_big_e = true;
+		}
 	      else
 		{
 		  error ("format: unrecognized option `short %s'",
@@ -1922,7 +1985,7 @@ set_format_style (int argc, const string_vector& argv)
 	  else
 	    init_format_state ();
 
-	  set_output_prec_and_fw (3, 8);
+	  set_output_prec_and_fw (5, 10);
 	}
       else if (arg == "long")
 	{
@@ -1941,6 +2004,17 @@ set_format_style (int argc, const string_vector& argv)
 		  print_e = true;
 		  print_big_e = true;
 		}
+	      else if (arg == "g")
+		{
+		  init_format_state ();
+		  print_g = true;
+		}
+	      else if (arg == "G")
+		{
+		  init_format_state ();
+		  print_g = true;
+		  print_big_e = true;
+		}
 	      else
 		{
 		  error ("format: unrecognized option `long %s'",
@@ -1951,7 +2025,7 @@ set_format_style (int argc, const string_vector& argv)
 	  else
 	    init_format_state ();
 
-	  set_output_prec_and_fw (15, 24);
+	  set_output_prec_and_fw (15, 20);
 	}
       else if (arg == "hex")
 	{
@@ -2021,8 +2095,9 @@ table.\n\
 @table @code\n\
 @item short\n\
 Octave will try to print numbers with at\n\
-least 3 significant figures within a field that is a maximum of 8\n\
-characters wide.\n\
+least 5 significant figures within a field that is a maximum of 10\n\
+characters wide (not counting additional spacing that is added between\n\
+columns of a matrix).\n\
 \n\
 If Octave is unable to format a matrix so that columns line up on the\n\
 decimal point and all the numbers fit within the maximum field width,\n\
@@ -2030,7 +2105,8 @@ it switches to an @samp{e} format.\n\
 \n\
 @item long\n\
 Octave will try to print numbers with at least 15 significant figures\n\
-within a field that is a maximum of 24 characters wide.\n\
+within a field that is a maximum of 20 characters wide (not counting\n\
+additional spacing that is added between columns of a matrix).\n\
 \n\
 As will the @samp{short} format, Octave will switch to an @samp{e}\n\
 format if it is unable to format a matrix so that columns line up on the\n\
@@ -2040,14 +2116,52 @@ decimal point and all the numbers fit within the maximum field width.\n\
 @itemx short e\n\
 The same as @samp{format long} or @samp{format short} but always display\n\
 output with an @samp{e} format.  For example, with the @samp{short e}\n\
-format, pi is displayed as @code{3.14e+00}.\n\
+format, @code{pi} is displayed as @code{3.14e+00}.\n\
 \n\
 @item long E\n\
 @itemx short E\n\
 The same as @samp{format long e} or @samp{format short e} but always\n\
 display output with an uppercase @samp{E} format.  For example, with\n\
-the @samp{long E} format, pi is displayed as\n\
+the @samp{long E} format, @code{pi} is displayed as\n\
 @code{3.14159265358979E+00}.\n\
+@item long g\n\
+@itemx short g\n\
+Choose between normal @samp{long} (or @samp{short}) and and\n\
+@samp{long e} (or @samp{short e}) formats based on the magnitude\n\
+of the number.  For example, with the @samp{short g} format,\n\
+@code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
+\n\
+@example\n\
+@group\n\
+ans =\n\
+\n\
+      3.1416\n\
+      9.8696\n\
+      97.409\n\
+      9488.5\n\
+  9.0032e+07\n\
+  8.1058e+15\n\
+@end group\n\
+@end example\n\
+\n\
+@item long G\n\
+@itemx short G\n\
+The same as @samp{format long g} or @samp{format short g} but use an\n\
+uppercase @samp{E} format.  For example, with the @samp{short G} format,\n\
+@code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
+\n\
+@example\n\
+@group\n\
+ans =\n\
+\n\
+      3.1416\n\
+      9.8696\n\
+      97.409\n\
+      9488.5\n\
+  9.0032E+07\n\
+  8.1058E+15\n\
+@end group\n\
+@end example\n\
 \n\
 @item free\n\
 @itemx none\n\

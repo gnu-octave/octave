@@ -2158,11 +2158,12 @@ maybe_unput_comma (int spc_gobbled)
       if (postfix_un_op || bin_op || sep_op || dot_op)
 	return;
 
-      int index_op = (c1 == '(');
+      int index_op = (c1 == '(' || c1 == '{');
 
       if (index_op)
 	{
-	  // If there is no space before the '(', we don't insert a comma.
+	  // If there is no space before the indexing op, we don't
+	  // insert a comma.
 	  if (! spc_gobbled)
 	    return;
 

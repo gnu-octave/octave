@@ -1,5 +1,7 @@
 2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (maybe_unput_comma): Also handle '{' as an indexing op.
+
 	* DLD-FUNCTIONS/odessa.cc: New file.
 	* Makefile.in (DLD_XSRC): Add it to the list.
 

@@ -213,8 +213,29 @@ rand (SEED, N)        -- set seed")
 	}
       else if (tmp.is_matrix_type ())
 	{
+// XXX FIXME XXX -- this should probably use the function from data.cc.
+
+	  Matrix a = args(0).matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
 	  n = args(0).rows ();
 	  m = args(0).columns ();
+
+	  if (n == 1 && m == 2)
+	    {
+	      n = NINT (a.elem (0, 0));
+	      m = NINT (a.elem (0, 1));
+	    }
+	  else if (n == 2 && m == 1)
+	    {
+	      n = NINT (a.elem (0, 0));
+	      m = NINT (a.elem (1, 0));
+	    }
+	  else
+	    warning ("rand (A): use rand (size (A)) instead");
+
 	  goto gen_matrix;
 	}
       else

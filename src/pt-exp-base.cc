@@ -2659,12 +2659,12 @@ tree_function::mark_as_system_fcn_file (void)
       // function file is parsed, it probably doesn't matter that
       // much.
 
-      char *oct_lib = octave_lib_dir ();
-      int len = strlen (oct_lib);
-
       char *ff_name = fcn_file_in_path (file_name);
 
-      if (strncmp (oct_lib, ff_name, len) == 0)
+      char *system_dir = octave_fcn_file_dir ();
+      int len = strlen (system_dir);
+
+      if (strncmp (system_dir, ff_name, len) == 0)
 	system_fcn_file = 1;
 
       delete [] ff_name;

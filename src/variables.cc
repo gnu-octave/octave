@@ -377,6 +377,13 @@ octave_arch_lib_dir (void)
 }
 
 char *
+octave_fcn_file_dir (void)
+{
+  static char *retval = subst_octave_home (OCTAVE_FCNFILEDIR);
+  return retval;
+}
+
+char *
 octave_bin_dir (void)
 {
   static char *retval = subst_octave_home (OCTAVE_BINDIR);

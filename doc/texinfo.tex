@@ -1,7 +1,8 @@
-%% TeX macros to handle texinfo files
+%% TeX macros to handle Texinfo files.
+%% $Id: texinfo.tex,v 1.6 1997-03-01 02:54:43 jwe Exp $
 
 %  Copyright (C) 1985, 86, 88, 90, 91, 92, 93,
-%                94, 95, 1996 Free Software Foundation, Inc.
+%                94, 95, 96, 97 Free Software Foundation, Inc.
 
 %This texinfo.tex file is free software; you can redistribute it and/or
 %modify it under the terms of the GNU General Public License as
@@ -35,7 +36,7 @@
 
 % This automatically updates the version number based on RCS.
 \def\deftexinfoversion$#1: #2 ${\def\texinfoversion{#2}}
-\deftexinfoversion$Revision: 1.5 $
+\deftexinfoversion$Revision: 1.6 $
 \message{Loading texinfo package [Version \texinfoversion]:}
 
 % If in a .fmt file, print the version number
@@ -59,7 +60,6 @@
 \let\ptexrbrace=\}
 \let\ptexstar=\*
 \let\ptext=\t
-\let\ptextilde=\~
 
 % Be sure we're in horizontal mode when doing a tie, since we make space
 % equivalent to this in @example-like environments. Otherwise, a space
@@ -72,7 +72,6 @@
  \global\let\tiepenalty = \@M
  \gdef\tie{\leavevmode\penalty\tiepenalty\ }
 }
-\let\~ = \tie                  % And make it available as @~.
 
 
 \message{Basics,}
@@ -104,8 +103,8 @@
 \hyphenation{eshell}
 
 % Margin to add to right of even pages, to left of odd pages.
-\newdimen \bindingoffset  
-\newdimen \normaloffset   
+\newdimen \bindingoffset
+\newdimen \normaloffset
 \newdimen\pagewidth \newdimen\pageheight
 
 % Sometimes it is convenient to have everything in the transcript file
@@ -136,22 +135,39 @@
 %
 %---------------------End change-----------------------
 
+% Main output routine.
+\chardef\PAGE = 255
+\output = {\onepageout{\pagecontents\PAGE}}
+
+\newbox\headlinebox  \newbox\footlinebox
+
 % \onepageout takes a vbox as an argument.  Note that \pagecontents
 % does insertions, but you have to call it yourself.
-\chardef\PAGE=255  \output={\onepageout{\pagecontents\PAGE}}
 \def\onepageout#1{%
   \hoffset=\normaloffset
   \ifodd\pageno  \advance\hoffset by \bindingoffset
   \else \advance\hoffset by -\bindingoffset\fi
+  %
+  % Do this outside of the \shipout so @code etc. will be expanded in
+  % the headline as they should be, not taken literally (outputting ''code).
+  \setbox\headlinebox = \vbox{\let\hsize=\pagewidth \makeheadline}%
+  \setbox\footlinebox = \vbox{\let\hsize=\pagewidth \makefootline}%
+  %
   {%
-    \escapechar = `\\ % use backslash in output files.
-    \indexdummies
+    % Have to do this stuff outside the \shipout because we want it to
+    % take effect in \write's, yet the group defined by the \vbox ends
+    % before the \shipout runs.
+    %
+    \escapechar = `\\     % use backslash in output files.
+    \indexdummies         % don't expand commands in the output.
+    \normalturnoffactive  % \ in index entries must not stay \, e.g., if
+                   % the page break happens to be in the middle of an example.
     \shipout\vbox{%
-      {\let\hsize=\pagewidth \makeheadline}%
+      \unvbox\headlinebox
       \pagebody{#1}%
-      {\let\hsize=\pagewidth \makefootline}%
+      \unvbox\footlinebox
     }%
-  }%
+    }%
   \advancepageno
   \ifnum\outputpenalty>-20000 \else\dosupereject\fi
 }
@@ -850,7 +866,9 @@ where each line of input produces a line of output.}
 % didn't need it.  Make sure the catcode of space is correct to avoid
 % losing inside @example, for instance.
 %
-\def\set{\begingroup\catcode` =10 \parsearg\setxxx}
+\def\set{\begingroup\catcode` =10
+  \catcode`\-=12 \catcode`\_=12 % Allow - and _ in VAR.
+  \parsearg\setxxx}
 \def\setxxx#1{\setyyy#1 \endsetyyy}
 \def\setyyy#1 #2\endsetyyy{%
   \def\temp{#2}%
@@ -871,10 +889,16 @@ where each line of input produces a line of output.}
 
 % @value{foo} gets the text saved in variable foo.
 %
-\def\value#1{\expandafter
-                \ifx\csname SET#1\endcsname\relax
-                        {\{No value for ``#1''\}}
-                \else \csname SET#1\endcsname \fi}
+\def\value{\begingroup
+  \catcode`\-=12 \catcode`\_=12 % Allow - and _ in VAR.
+  \valuexxx}
+\def\valuexxx#1{%
+  \expandafter\ifx\csname SET#1\endcsname\relax
+    {\{No value for ``#1''\}}%
+  \else
+    \csname SET#1\endcsname
+  \fi
+\endgroup}
 
 % @ifset VAR ... @end ifset reads the `...' iff VAR has been defined
 % with @set.
@@ -1289,16 +1313,21 @@ where each line of input produces a line of output.}
 {
 \catcode`\-=\active
 \catcode`\_=\active
+\catcode`\|=\active
 \global\def\code{\begingroup \catcode`\-=\active \let-\codedash \catcode`\_=\active \let_\codeunder \codex}
 % The following is used by \doprintindex to insure that long function names
 % wrap around.  It is necessary for - and _ to be active before the index is
 % read from the file, as \entry parses the arguments long before \code is
 % ever called.  -- mycroft
-\global\def\indexbreaks{\catcode`\-=\active \let-\realdash \catcode`\_=\active \let_\realunder}
+% _ is always active; and it shouldn't be \let = to an _ that is a
+% subscript character anyway. Then, @cindex @samp{_} (for example)
+% fails.  --karl
+\global\def\indexbreaks{%
+  \catcode`\-=\active \let-\realdash
+}
 }
 
 \def\realdash{-}
-\def\realunder{_}
 \def\codedash{-\discretionary{}{}{}}
 \def\codeunder{\ifusingtt{\normalunderscore\discretionary{}{}{}}{\_}}
 \def\codex #1{\tclose{#1}\endgroup}
@@ -1318,7 +1347,7 @@ where each line of input produces a line of output.}
 % Computer Modern typewriter fonts have zero interword stretch (and
 % shrink), and it is reasonable to expect all typewriter fonts to have
 % this property, we can check that font parameter.
-% 
+%
 \def\ifmonospace{\ifdim\fontdimen3\font=0pt }
 
 % Typeset a dimension, e.g., `in' or `pt'.  The only reason for the
@@ -1879,7 +1908,7 @@ July\or August\or September\or October\or November\or December\fi
 
 % To make preamble:
 %
-% Either define widths of columns in terms of percent of \hsize: 
+% Either define widths of columns in terms of percent of \hsize:
 %   @multitable @columnfractions .25 .3 .45
 %   @item ...
 %
@@ -1897,13 +1926,13 @@ July\or August\or September\or October\or November\or December\fi
 % the preamble, break the line within one argument and it
 % will parse correctly, i.e.,
 %
-%     @multitable {Column 1 template} {Column 2 template} {Column 3 
+%     @multitable {Column 1 template} {Column 2 template} {Column 3
 %      template}
 % Not:
-%     @multitable {Column 1 template} {Column 2 template} 
+%     @multitable {Column 1 template} {Column 2 template}
 %      {Column 3 template}
 
-% Each new table line starts with @item, each subsequent new column 
+% Each new table line starts with @item, each subsequent new column
 % starts with @tab. Empty columns may be produced by supplying @tab's
 % with nothing between them for as many times as empty columns are needed,
 % ie, @tab@tab@tab will produce two empty columns.
@@ -1915,15 +1944,15 @@ July\or August\or September\or October\or November\or December\fi
 
 %   @multitable {Column 1 template} {Column 2 template} {Column 3 template}
 %   @item first col stuff @tab second col stuff @tab third col
-%   @item 
-%   first col stuff 
-%   @tab 
-%   second col stuff 
-%   @tab 
-%   third col 
-%   @item first col stuff @tab second col stuff 
+%   @item
+%   first col stuff
+%   @tab
+%   second col stuff
+%   @tab
+%   third col
+%   @item first col stuff @tab second col stuff
 %   @tab Many paragraphs of text may be used in any column.
-%     
+%
 %         They will wrap at the width determined by the template.
 %   @item@tab@tab This will be in third column.
 %   @end multitable
@@ -1937,7 +1966,7 @@ July\or August\or September\or October\or November\or December\fi
 %   0pt means it depends on current normal line spacing.
 
 %%%%
-% Dimensions 
+% Dimensions
 
 \newskip\multitableparskip
 \newskip\multitableparindent
@@ -2007,18 +2036,18 @@ July\or August\or September\or October\or November\or December\fi
  % To parse everything between @multitable and @item :
 \setuptable#1 \endsetuptable
  % Need to reset this to 0 after \setuptable.
-\global\colcount=0\relax% 
+\global\colcount=0\relax%
  %
  % This preamble sets up a generic column definition, which will
  % be used as many times as user calls for columns.
- % \vtop will set a single line and will also let text wrap and 
+ % \vtop will set a single line and will also let text wrap and
  % continue for many paragraphs if desired.
 \halign\bgroup&\global\advance\colcount by 1\relax%
 \multistrut\vtop{\hsize=\expandafter\csname col\the\colcount\endcsname
  % In order to keep entries from bumping into each other
  % we will add a \leftskip of \multitablecolspace to all columns after
  % the first one.
- %  If a template has been used, we will add \multitablecolspace 
+ %  If a template has been used, we will add \multitablecolspace
  % to the width of each template entry.
  %  If user has set preamble in terms of percent of \hsize
  % we will use that dimension as the width of the column, and
@@ -2030,19 +2059,31 @@ July\or August\or September\or October\or November\or December\fi
   \ifsetpercent
   \else
    % If user has <not> set preamble in terms of percent of \hsize
-   % we will advance \hsize by \multitablecolspace 
+   % we will advance \hsize by \multitablecolspace
   \advance\hsize by \multitablecolspace
   \fi
  % In either case we will make \leftskip=\multitablecolspace:
 \leftskip=\multitablecolspace
 \fi
-\noindent##\multistrut}\cr%
+ % Ignoring space at the beginning and end avoids an occasional spurious
+ % blank line, when TeX decides to break the line at the space before the
+ % box from the multistrut, so the strut ends up on a line by itself.
+ % For example:
+ % @multitable @columnfractions .11 .89
+ % @item @code{#}
+ % @tab Legal holiday which is valid in major parts of the whole country.
+ % Is automatically provided with highlighting sequences respectively marking
+ % characters.
+ \noindent\ignorespaces##\unskip\multistrut}\cr
  % \everycr will reset column counter, \colcount, at the end of
- % each line. Every column  entry will cause \colcount to advance by one. 
+ % each line. Every column  entry will cause \colcount to advance by one.
  % The table preamble
  % looks at the current \colcount to find the correct column width.
 \global\everycr{\noalign{%
-\filbreak%% keeps underfull box messages off when table breaks over pages.
+% \filbreak%% keeps underfull box messages off when table breaks over pages.
+% Maybe so, but it also creates really weird page breaks when the table
+% breaks over pages Wouldn't \vfil be better?  Wait until the problem
+% manifests itself, so it can be fixed for real --karl.
 \global\colcount=0\relax}}
 }
 
@@ -2054,7 +2095,7 @@ July\or August\or September\or October\or November\or December\fi
 %% to keep lines equally spaced
 \let\multistrut = \strut
 %% Test to see if parskip is larger than space between lines of
-%% table. If not, do nothing. 
+%% table. If not, do nothing.
 %%        If so, set to same dimension as multitablelinespace.
 \else
 \gdef\multistrut{\vrule height\multitablelinespace depth\dp0
@@ -2296,7 +2337,7 @@ width0pt\relax} \fi
       \indexdummies % Must do this here, since \bf, etc expand at this stage
       \escapechar=`\\
       {%
-        \let\folio=0 % We will expand all macros now EXCEPT \folio.
+        \let\folio=0% We will expand all macros now EXCEPT \folio.
         \def\rawbackslashxx{\indexbackslash}% \indexbackslash isn't defined now
         % so it will be output as is; and it will print as backslash.
         %
@@ -2570,7 +2611,7 @@ width0pt\relax} \fi
   \endgroup
   % Back to normal single-column typesetting, but take account of the
   % fact that we just accumulated some stuff on the output page.
-  \pagegoal=\vsize 
+  \pagegoal=\vsize
 }
 \def\balancecolumns{%
   % Called on the last page of the double column material.
@@ -3096,7 +3137,7 @@ width0pt\relax} \fi
 
 
 % Print any size section title.
-% 
+%
 % #1 is the section type (sec/subsec/subsubsec), #2 is the section
 % number (maybe empty), #3 the text.
 \def\sectionheading#1#2#3{%
@@ -3348,7 +3389,6 @@ width0pt\relax} \fi
 \escapechar=`\\
 %
 \let\,=\ptexcomma
-\let\~=\ptextilde
 \let\{=\ptexlbrace
 \let\}=\ptexrbrace
 \let\.=\ptexdot
@@ -3729,7 +3769,7 @@ width0pt\relax} \fi
 
 % This is used for \def{tp,vr}parsebody.  It could probably be used for
 % some of the others, too, with some judicious conditionals.
-% 
+%
 \def\parsebodycommon#1#2#3{%
   \begingroup\inENV %
   \medbreak %
@@ -3763,17 +3803,16 @@ width0pt\relax} \fi
 }
 
 % Fine, but then we have to eventually remove the \empty *and* the
-% braces (if any).  That's what this does, putting the result in \tptemp.
-% 
-\def\removeemptybraces\empty#1\relax{\def\tptemp{#1}}%
+% braces (if any).  That's what this does.
+%
+\def\removeemptybraces\empty#1\relax{#1}
 
 % After \spacesplit has done its work, this is called -- #1 is the final
 % thing to call, #2 the type name (which starts with \empty), and #3
 % (which might be empty) the arguments.
-% 
+%
 \def\parsetpheaderline#1#2#3{%
-  \removeemptybraces#2\relax
-  #1{\tptemp}{#3}%
+  #1{\removeemptybraces#2\relax}{#3}%
 }%
 
 \def\defopvarparsebody #1#2#3#4#5 {\begingroup\inENV %
@@ -4007,19 +4046,21 @@ width0pt\relax} \fi
 
 \def\deftypevar{\defvarparsebody\Edeftypevar\deftypevarx\deftypevarheader}
 
-% #1 is the data type.  #2 is the name.
+% #1 is the data type.  #2 is the name, perhaps followed by text that
+% is actually part of the data type, which should not be put into the index.
 \def\deftypevarheader #1#2{%
-\doind {vr}{\code{#2}}% Make entry in variables index
+\dovarind#2 \relax% Make entry in variables index
 \begingroup\defname {\defheaderxcond#1\relax$$$#2}{Variable}%
 \interlinepenalty=10000
 \endgraf\penalty 10000\vskip -\parskip\penalty 10000
 \endgroup}
+\def\dovarind#1 #2\relax{\doind{vr}{\code{#1}}}
 
 % @deftypevr {Global Flag} int enable
 
 \def\deftypevr{\defvrparsebody\Edeftypevr\deftypevrx\deftypevrheader}
 
-\def\deftypevrheader #1#2#3{\doind {vr}{\code{#3}}%
+\def\deftypevrheader #1#2#3{\dovarind#3 \relax%
 \begingroup\defname {\defheaderxcond#2\relax$$$#3}{#1}
 \interlinepenalty=10000
 \endgraf\penalty 10000\vskip -\parskip\penalty 10000
@@ -4142,7 +4183,7 @@ width0pt\relax} \fi
 
 % Use \turnoffactive so that punctuation chars such as underscore
 % work in node names.
-\def\dosetq #1#2{{\let\folio=0 \turnoffactive \auxhat%
+\def\dosetq #1#2{{\let\folio=0 \turnoffactive
 \edef\next{\write\auxfile{\internalsetq {#1}{#2}}}%
 \next}}
 
@@ -4211,84 +4252,101 @@ width0pt\relax} \fi
   #2% Output the suffix in any case.
 }
 
-% Read the last existing aux file, if any.  No error if none exists.
-
 % This is the macro invoked by entries in the aux file.
-\def\xrdef #1#2{
-{\catcode`\'=\other\expandafter \gdef \csname X#1\endcsname {#2}}}
+\def\xrdef #1#2{{%
+  \catcode`\'=\other
+  \expandafter\gdef\csname X#1\endcsname{#2}%
+}}
 
-\def\readauxfile{%
-\begingroup
-\catcode `\^^@=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\^^C=\other
-\catcode `\^^D=\other
-\catcode `\^^E=\other
-\catcode `\^^F=\other
-\catcode `\^^G=\other
-\catcode `\^^H=\other
-\catcode `\=\other
-\catcode `\^^L=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode `\=\other
-\catcode 26=\other
-\catcode `\^^[=\other
-\catcode `\^^\=\other
-\catcode `\^^]=\other
-\catcode `\^^^=\other
-\catcode `\^^_=\other
-\catcode `\@=\other
-\catcode `\^=\other
-\catcode `\~=\other
-\catcode `\[=\other
-\catcode `\]=\other
-\catcode`\"=\other
-\catcode`\_=\other
-\catcode`\|=\other
-\catcode`\<=\other
-\catcode`\>=\other
-\catcode `\$=\other
-\catcode `\#=\other
-\catcode `\&=\other
-% `\+ does not work, so use 43.
-\catcode 43=\other
-% Make the characters 128-255 be printing characters
-{%
-  \count 1=128
-  \def\loop{%
-    \catcode\count 1=\other
-    \advance\count 1 by 1
-    \ifnum \count 1<256 \loop \fi
+% Read the last existing aux file, if any.  No error if none exists.
+\def\readauxfile{\begingroup
+  \catcode`\^^@=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\^^C=\other
+  \catcode`\^^D=\other
+  \catcode`\^^E=\other
+  \catcode`\^^F=\other
+  \catcode`\^^G=\other
+  \catcode`\^^H=\other
+  \catcode`\=\other
+  \catcode`\^^L=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode`\=\other
+  \catcode26=\other
+  \catcode`\^^[=\other
+  \catcode`\^^\=\other
+  \catcode`\^^]=\other
+  \catcode`\^^^=\other
+  \catcode`\^^_=\other
+  \catcode`\@=\other
+  \catcode`\^=\other
+  % It was suggested to define this as 7, which would allow ^^e4 etc.
+  % in xref tags, i.e., node names.  But since ^^e4 notation isn't
+  % supported in the main text, it doesn't seem desirable.  Furthermore,
+  % that is not enough: for node names that actually contain a ^
+  % character, we would end up writing a line like this: 'xrdef {'hat
+  % b-title}{'hat b} and \xrdef does a \csname...\endcsname on the first
+  % argument, and \hat is not an expandable control sequence.  It could
+  % all be worked out, but why?  Either we support ^^ or we don't.
+  %
+  % The other change necessary for this was to define \auxhat:
+  % \def\auxhat{\def^{'hat }}% extra space so ok if followed by letter
+  % and then to call \auxhat in \setq.
+  %
+  \catcode`\~=\other
+  \catcode`\[=\other
+  \catcode`\]=\other
+  \catcode`\"=\other
+  \catcode`\_=\other
+  \catcode`\|=\other
+  \catcode`\<=\other
+  \catcode`\>=\other
+  \catcode`\$=\other
+  \catcode`\#=\other
+  \catcode`\&=\other
+  % `\+ does not work, so use 43.
+  \catcode43=\other
+  % Make the characters 128-255 be printing characters
+  {%
+    \count 1=128
+    \def\loop{%
+      \catcode\count 1=\other
+      \advance\count 1 by 1
+      \ifnum \count 1<256 \loop \fi
+    }%
   }%
-}%
-% the aux file uses ' as the escape.
-% Turn off \ as an escape so we do not lose on
-% entries which were dumped with control sequences in their names.
-% For example, 'xrdef {$\leq $-fun}{page ...} made by @defun ^^
-% Reference to such entries still does not work the way one would wish,
-% but at least they do not bomb out when the aux file is read in.
-\catcode `\{=1 \catcode `\}=2
-\catcode `\%=\other
-\catcode `\'=0
-\catcode`\^=7 % to make ^^e4 etc usable in xref tags 
-\catcode `\\=\other
-\openin 1 \jobname.aux
-\ifeof 1 \else \closein 1 \input \jobname.aux \global\havexrefstrue
-\global\warnedobstrue
-\fi
-% Open the new aux file.  Tex will close it automatically at exit.
-\openout \auxfile=\jobname.aux
+  % The aux file uses ' as the escape (for now).
+  % Turn off \ as an escape so we do not lose on
+  % entries which were dumped with control sequences in their names.
+  % For example, 'xrdef {$\leq $-fun}{page ...} made by @defun ^^
+  % Reference to such entries still does not work the way one would wish,
+  % but at least they do not bomb out when the aux file is read in.
+  \catcode`\{=1
+  \catcode`\}=2
+  \catcode`\%=\other
+  \catcode`\'=0
+  \catcode`\\=\other
+  %
+  \openin 1 \jobname.aux
+  \ifeof 1 \else
+    \closein 1
+    \input \jobname.aux
+    \global\havexrefstrue
+    \global\warnedobstrue
+  \fi
+  % Open the new aux file.  TeX will close it automatically at exit.
+  \openout\auxfile=\jobname.aux
 \endgroup}
 
 
@@ -4329,7 +4387,11 @@ width0pt\relax} \fi
 % Don't bother with the trickery in plain.tex to not require the
 % footnote text as a parameter.  Our footnotes don't need to be so general.
 %
-\long\gdef\footnotezzz#1{\insert\footins{%
+% Oh yes, they do; otherwise, @ifset and anything else that uses
+% \parseargline fail inside footnotes because the tokens are fixed when
+% the footnote is read.  --karl, 16nov96.
+%
+\long\gdef\footnotezzz{\insert\footins\bgroup
   % We want to typeset this text as a normal paragraph, even if the
   % footnote reference occurs in (for example) a display environment.
   % So reset some parameters.
@@ -4351,8 +4413,13 @@ width0pt\relax} \fi
   % expands into a box, it must come within the paragraph, lest it
   % provide a place where TeX can split the footnote.
   \footstrut
-  #1\strut}%
+  \futurelet\next\fo@t
 }
+\def\fo@t{\ifcat\bgroup\noexpand\next \let\next\f@@t
+  \else\let\next\f@t\fi \next}
+\def\f@@t{\bgroup\aftergroup\@foot\let\next}
+\def\f@t#1{#1\@foot}
+\def\@foot{\strut\egroup}
 
 }%end \catcode `\@=11
 
@@ -4584,7 +4651,6 @@ width0pt\relax} \fi
 \def~{{\tt \char '176}}
 \chardef\hat=`\^
 \catcode`\^=\active
-\def\auxhat{\def^{'hat}}
 \def^{{\tt \hat}}
 
 \catcode`\_=\active

@@ -119,8 +119,6 @@ public:
   friend RowVector map (d_d_Mapper f, const RowVector& a);
   void map (d_d_Mapper f);
 
-  RowVector linspace (double x1, double x2, int n);
-
   double min (void) const;
   double max (void) const;
 
@@ -141,6 +139,8 @@ private:
 
   RowVector (double *d, int l) : Array<double> (d, l) { }
 };
+
+RowVector linspace (double x1, double x2, int n);
 
 } // extern "C++"
 

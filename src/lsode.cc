@@ -51,9 +51,9 @@ lsode_user_function (const ColumnVector& x, double t)
   int nstates = x.capacity ();
 
 //  tree_constant name (lsode_fcn->name ());
-  Octave_object args (3);
-//  args(0) = name;
+  Octave_object args;
   args(2) = t;
+//  args(0) = name;
 
   if (nstates > 1)
     {

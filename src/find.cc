@@ -34,7 +34,8 @@ static Octave_object
 find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 		     const tree_constant& val, int nr, int nc, int nargout)
 {
-  Octave_object retval (nargout);
+  Octave_object retval;
+  retval.resize (nargout);
 
   switch (nargout)
     {

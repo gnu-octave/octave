@@ -53,9 +53,9 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   assert (nstates == xdot.capacity ());
 
 //  tree_constant name (dassl_fcn->name ());
-  Octave_object args (4);
-//  args(0) = name;
+  Octave_object args;
   args(3) = t;
+//  args(0) = name;
 
   if (nstates > 1)
     {

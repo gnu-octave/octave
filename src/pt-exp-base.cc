@@ -648,7 +648,7 @@ tree_builtin::eval (int print)
 
   if (fcn)
     {
-      Octave_object args (1);
+      Octave_object args;
       args(0) = tree_constant (my_name);
       Octave_object tmp = (*fcn) (args, 1);
       if (tmp.length () > 0)
@@ -1126,7 +1126,8 @@ tree_identifier::eval (int print)
 	  int nargout = maybe_do_ans_assign ? 0 : 1;
 
 	  int nargin = (ans->is_constant ()) ? 0 : 1;
-	  Octave_object tmp_args (nargin);
+	  Octave_object tmp_args;
+	  tmp_args.resize (nargin);
 	  Octave_object tmp = ans->eval (0, nargout, tmp_args);
 
 	  if (tmp.length () > 0)
@@ -1417,7 +1418,8 @@ tree_function::eval (int print)
   if (error_state || ! cmd_list)
     return retval;
 
-  Octave_object tmp_args (1);
+  Octave_object tmp_args;
+  tmp_args.resize (1);
   Octave_object tmp = eval (print, 1, tmp_args);
 
   if (! error_state && tmp.length () > 0)
@@ -2750,7 +2752,8 @@ tree_argument_list::convert_to_const_vector (void)
 {
   int len = length () + 1;
 
-  Octave_object args (len);
+  Octave_object args;
+  args.resize (len);
 
 // args[0] may eventually hold something useful, like the function
 // name.
@@ -2927,7 +2930,8 @@ tree_parameter_list::convert_to_const_vector (void)
 {
   int nout = length ();
 
-  Octave_object retval (nout);
+  Octave_object retval;
+  retval.resize (nout);
 
   int i = 0;
   

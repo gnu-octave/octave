@@ -47,7 +47,6 @@ class Octave_object : public Array<tree_constant>
 public:
 
   Octave_object (void) : Array<tree_constant> () { }
-  Octave_object (int n) : Array<tree_constant> (n) { }
   Octave_object (int n, const tree_constant& val)
     : Array<tree_constant> (n, val) { }
 
@@ -85,6 +84,21 @@ public:
   tree_constant operator () (int n) const;
 
 private:
+
+// This constructor is private with no definition to keep statements
+// like
+//
+//   Octave_object foo = 5;
+//   Octave_object foo = 5.0;
+//
+// from doing different things.  Instead, you have to use the
+// constructor
+//
+//   Octave_object (n, val);
+//
+// and supply a default value to create a vector-valued Octave_object.
+
+  Octave_object (int n) : Array<tree_constant> (n);
 
   void maybe_resize (int n);
 

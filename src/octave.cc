@@ -645,7 +645,8 @@ feval (const Octave_object& args, int nargout)
   if (fcn)
     {
       int nargin = args.length () - 1;
-      Octave_object tmp_args (nargin);
+      Octave_object tmp_args;
+      tmp_args.resize (nargin);
       for (int i = 0; i < nargin; i++)
 	tmp_args(i) = args(i+1);
       retval = fcn->eval (0, nargout, tmp_args);

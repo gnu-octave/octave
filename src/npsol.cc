@@ -66,9 +66,9 @@ npsol_objective_function (const ColumnVector& x)
     }
 
 //  tree_constant name = npsol_objective->name ();
-  Octave_object args (2);
-//  args(0) = name;
+  Octave_object args;
   args(1) = decision_vars;
+//  args(0) = name;
 
   static double retval;
   retval = 0.0;
@@ -143,9 +143,9 @@ npsol_constraint_function (const ColumnVector& x)
     }
 
 //  tree_constant name = npsol_constraints->name ();
-  Octave_object args (2);
-//  args(0) = name;
+  Octave_object args;
   args(1) = decision_vars;
+//  args(0) = name;
 
   if (npsol_constraints)
     {

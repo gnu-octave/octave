@@ -79,7 +79,8 @@ fsolve_user_function (const ColumnVector& x)
   int n = x.capacity ();
 
 //  tree_constant name = fsolve_fcn->name ();
-  Octave_object args (2);
+  Octave_object args;
+  args.resize (2);
 //  args(0) = name;
 
   if (n > 1)

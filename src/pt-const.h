@@ -269,7 +269,7 @@ public:
 
   Octave_object eval (int print, int nargout, const Octave_object& args)
     {
-      Octave_object retval (1);
+      Octave_object retval;
 
 // XXX FIXME XXX -- make it safe to call do_index() with
 // args.length () == 0

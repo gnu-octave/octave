@@ -50,9 +50,9 @@ quad_user_function (double x)
   double retval = 0.0;
 
 //  tree_constant name = quad_fcn->name ();
-  Octave_object args (2);
-//  args(0) = name;
+  Octave_object args;
   args(1) = x;
+//  args(0) = name;
 
   if (quad_fcn)
     {

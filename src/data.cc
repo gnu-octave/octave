@@ -35,6 +35,7 @@ Software Foundation, Inc.
 
 #include "tree-const.h"
 #include "user-prefs.h"
+#include "help.h"
 #include "utils.h"
 #include "error.h"
 #include "defun.h"

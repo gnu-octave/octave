@@ -733,7 +733,7 @@ lines."
 An abbrev before point is expanded if `abbrev-mode' is non-nil."
   (interactive)
   (if abbrev-mode (expand-abbrev))
-  (octave-indent-line)
+  (save-excursion (octave-indent-line))
   (newline)
   (octave-indent-line))
 
@@ -757,7 +757,8 @@ An abbrev before point is expanded if `abbrev-mode' is non-nil."
 	(have-if 0)
 	(have-func 0)
 	(have-uwp 0)
-	(have-tc 0))
+	(have-tc 0)
+	(bot (+ (octave-point 'bol) (current-indentation))))
     (save-excursion
       (beginning-of-line)
       (while (< (point) (octave-point 'eol))
@@ -791,7 +792,7 @@ An abbrev before point is expanded if `abbrev-mode' is non-nil."
 	  (progn
 	    (if (> xend 0)
 		(setq icol (- icol (* xend octave-stmt-indent)))
-	      (if (> icol 0)
+	      (if (> (point) bot)
 		  (setq icol (- icol octave-stmt-indent))))
 	    (cond
 	     ((and (> have-if 0) (looking-at "\\bendif\\b"))

@@ -517,6 +517,15 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
       int n = idx_i.freeze (lhs_nr, "row", pzo_flag, rre_flag);
       int m = idx_j.freeze (lhs_nc, "column", pzo_flag, rre_flag);
 
+      int idx_i_is_colon = idx_i.is_colon ();
+      int idx_j_is_colon = idx_j.is_colon ();
+
+      if (idx_i_is_colon)
+	n = rhs_nr;
+
+      if (idx_j_is_colon)
+	m = rhs_nc;
+
       if (idx_i && idx_j)
 	{
 	  if (rhs_nr == 0 && rhs_nc == 0)
@@ -527,8 +536,8 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	    {
 	      if (rre_flag)
 		{
-		  int max_row_idx = idx_i.max () + 1;
-		  int max_col_idx = idx_j.max () + 1;
+		  int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1;
+		  int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1;
 
 		  int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr;
 		  int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc;

@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-cmplx.h"
 
 #include "error.h"
-#include "pt-const.h"
 #include "xdiv.h"
 
 static inline int
@@ -87,11 +86,11 @@ mx_div_conform (int b_nc, int a_nc)
 //                  +---+----+
 
 // -*- 1 -*-
-tree_constant
+Matrix
 xdiv (const Matrix& a, const Matrix& b)
 {
   if (! mx_div_conform (b.columns (), a.columns ()))
-    return tree_constant ();
+    return Matrix ();
 
   Matrix atmp = a.transpose ();
   Matrix btmp = b.transpose ();
@@ -102,21 +101,21 @@ xdiv (const Matrix& a, const Matrix& b)
       double rcond = 0.0;
       Matrix result = btmp.solve (atmp, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result.transpose ());
+	return Matrix (result.transpose ());
     }
 
   int rank;
   Matrix result = btmp.lssolve (atmp, info, rank);
 
-  return tree_constant (result.transpose ());
+  return result.transpose ();
 }
 
 // -*- 2 -*-
-tree_constant
+ComplexMatrix
 xdiv (const Matrix& a, const ComplexMatrix& b)
 {
   if (! mx_div_conform (b.columns (), a.columns ()))
-    return tree_constant ();
+    return ComplexMatrix ();
 
   Matrix atmp = a.transpose ();
   ComplexMatrix btmp = b.hermitian ();
@@ -127,21 +126,21 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
       double rcond = 0.0;
       ComplexMatrix result = btmp.solve (atmp, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result.hermitian ());
+	return result.hermitian ();
     }
 
   int rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
-  return tree_constant (result.hermitian ());
+  return result.hermitian ();
 }
 
 // -*- 3 -*-
-tree_constant
+ComplexMatrix
 xdiv (const ComplexMatrix& a, const Matrix& b)
 {
   if (! mx_div_conform (b.columns (), a.columns ()))
-    return tree_constant ();
+    return ComplexMatrix ();
 
   ComplexMatrix atmp = a.hermitian ();
   Matrix btmp = b.transpose ();
@@ -152,21 +151,21 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
       double rcond = 0.0;
       ComplexMatrix result = btmp.solve (atmp, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result.hermitian ());
+	return result.hermitian ();
     }
 
   int rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
-  return tree_constant (result.hermitian ());
+  return result.hermitian ();
 }
 
 // -*- 4 -*-
-tree_constant
+ComplexMatrix
 xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   if (! mx_div_conform (b.columns (), a.columns ()))
-    return tree_constant ();
+    return ComplexMatrix ();
 
   ComplexMatrix atmp = a.hermitian ();
   ComplexMatrix btmp = b.hermitian ();
@@ -177,13 +176,13 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
       double rcond = 0.0;
       ComplexMatrix result = btmp.solve (atmp, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result.hermitian ());
+	return result.hermitian ();
     }
 
   int rank;
   ComplexMatrix result = btmp.lssolve (atmp, info, rank);
 
-  return tree_constant (result.hermitian ());
+  return result.hermitian ();
 }
 
 // Funny element by element division operations.
@@ -195,7 +194,7 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 //   complex_matrix | 2 |  4 |
 //                  +---+----+
 
-tree_constant
+Matrix
 x_el_div (double a, const Matrix& b)
 {
   int nr = b.rows ();
@@ -207,10 +206,10 @@ x_el_div (double a, const Matrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = a / b.elem (i, j);
 
-  return tree_constant (result);
+  return result;
 }
 
-tree_constant
+ComplexMatrix
 x_el_div (double a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
@@ -222,10 +221,10 @@ x_el_div (double a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = a / b.elem (i, j);
 
-  return tree_constant (result);
+  return result;
 }
 
-tree_constant
+ComplexMatrix
 x_el_div (const Complex a, const Matrix& b)
 {
   int nr = b.rows ();
@@ -237,10 +236,10 @@ x_el_div (const Complex a, const Matrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = a / b.elem (i, j);
 
-  return tree_constant (result);
+  return result;
 }
 
-tree_constant
+ComplexMatrix
 x_el_div (const Complex a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
@@ -252,7 +251,7 @@ x_el_div (const Complex a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = a / b.elem (i, j);
 
-  return tree_constant (result);
+  return result;
 }
 
 // Left division functions.
@@ -265,11 +264,11 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 //                  +---+----+
 
 // -*- 1 -*-
-tree_constant
+Matrix
 xleftdiv (const Matrix& a, const Matrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), b.rows ()))
-    return tree_constant ();
+    return Matrix ();
 
   int info;
   if (a.rows () == a.columns ())
@@ -277,21 +276,19 @@ xleftdiv (const Matrix& a, const Matrix& b)
       double rcond = 0.0;
       Matrix result = a.solve (b, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result);
+	return result;
     }
 
   int rank;
-  Matrix result = a.lssolve (b, info, rank);
-
-  return tree_constant (result);
+  return a.lssolve (b, info, rank);
 }
 
 // -*- 2 -*-
-tree_constant
+ComplexMatrix
 xleftdiv (const Matrix& a, const ComplexMatrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), b.rows ()))
-    return tree_constant ();
+    return ComplexMatrix ();
 
   int info;
   if (a.rows () == a.columns ())
@@ -299,21 +296,19 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
       double rcond = 0.0;
       ComplexMatrix result = a.solve (b, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result);
+	return result;
     }
 
   int rank;
-  ComplexMatrix result = a.lssolve (b, info, rank);
-
-  return tree_constant (result);
+  return a.lssolve (b, info, rank);
 }
 
 // -*- 3 -*-
-tree_constant
+ComplexMatrix
 xleftdiv (const ComplexMatrix& a, const Matrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), b.rows ()))
-    return tree_constant ();
+    return ComplexMatrix ();
 
   int info;
   if (a.rows () == a.columns ())
@@ -321,21 +316,19 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
       double rcond = 0.0;
       ComplexMatrix result = a.solve (b, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result);
+	return result;
     }
 
   int rank;
-  ComplexMatrix result = a.lssolve (b, info, rank);
-
-  return tree_constant (result);
+  return a.lssolve (b, info, rank);
 }
 
 // -*- 4 -*-
-tree_constant
+ComplexMatrix
 xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), b.rows ()))
-    return tree_constant ();
+    return ComplexMatrix ();
 
   int info;
   if (a.rows () == a.columns ())
@@ -343,13 +336,11 @@ xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
       double rcond = 0.0;
       ComplexMatrix result = a.solve (b, info, rcond);
       if (result_ok (info, rcond))
-	return tree_constant (result);
+	return result;
     }
 
   int rank;
-  ComplexMatrix result = a.lssolve (b, info, rank);
-
-  return tree_constant (result);
+  return a.lssolve (b, info, rank);
 }
 
 /*

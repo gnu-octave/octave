@@ -28,22 +28,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Matrix;
 class ComplexMatrix;
-class tree_constant;
 
-extern tree_constant xdiv (const Matrix& a, const Matrix& b);
-extern tree_constant xdiv (const Matrix& a, const ComplexMatrix& b);
-extern tree_constant xdiv (const ComplexMatrix& a, const Matrix& b);
-extern tree_constant xdiv (const ComplexMatrix& a, const ComplexMatrix& b);
+extern Matrix xdiv (const Matrix& a, const Matrix& b);
+extern ComplexMatrix xdiv (const Matrix& a, const ComplexMatrix& b);
+extern ComplexMatrix xdiv (const ComplexMatrix& a, const Matrix& b);
+extern ComplexMatrix xdiv (const ComplexMatrix& a, const ComplexMatrix& b);
 
-extern tree_constant x_el_div (double a, const Matrix& b);
-extern tree_constant x_el_div (double a, const ComplexMatrix& b);
-extern tree_constant x_el_div (const Complex a, const Matrix& b);
-extern tree_constant x_el_div (const Complex a, const ComplexMatrix& b);
+extern Matrix x_el_div (double a, const Matrix& b);
+extern ComplexMatrix x_el_div (double a, const ComplexMatrix& b);
+extern ComplexMatrix x_el_div (const Complex a, const Matrix& b);
+extern ComplexMatrix x_el_div (const Complex a, const ComplexMatrix& b);
 
-extern tree_constant xleftdiv (const Matrix& a, const Matrix& b);
-extern tree_constant xleftdiv (const Matrix& a, const ComplexMatrix& b);
-extern tree_constant xleftdiv (const ComplexMatrix& a, const Matrix& b);
-extern tree_constant xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b);
+extern Matrix xleftdiv (const Matrix& a, const Matrix& b);
+extern ComplexMatrix xleftdiv (const Matrix& a, const ComplexMatrix& b);
+extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const Matrix& b);
+extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b);
 
 #endif
 

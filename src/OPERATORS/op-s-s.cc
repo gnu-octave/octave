@@ -118,13 +118,6 @@ DEFBINOP (el_ldiv, scalar, scalar)
 DEFBINOP_OP (el_and, scalar, scalar, &&)
 DEFBINOP_OP (el_or, scalar, scalar, ||)
 
-DEFCONV (matrix_conv, scalar, matrix)
-{
-  CAST_CONV_ARG (const octave_scalar&);
-
-  return new octave_matrix (v.matrix_value ());
-}
-
 void
 install_s_s_ops (void)
 {
@@ -156,8 +149,6 @@ install_s_s_ops (void)
   INSTALL_BINOP (op_el_or, octave_scalar, octave_scalar, el_or);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_scalar, octave_matrix);
-
-  INSTALL_WIDENOP (octave_scalar, octave_matrix, matrix_conv);
 }
 
 /*

@@ -1,3 +1,29 @@
+2003-09-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* OPERATORS/op-m-cs.cc (complex_matrix_conv): Delete function.
+	(install_m_cs_ops): Don't install complex_matrix_conv here.
+
+	* OPERATORS/op-s-cs.cc (complex_matrix_conv): Delete function.
+	(install_s_cs_ops): Don't install complex_matrix_conv here.
+
+	* OPERATORS/op-s-s.cc (matrix_conv): Delete function.
+	(install_s_s_ops): Don't install matrix_conv here.
+
+	* OPERATORS/op-cs-s.cc (complex_matrix_conv): Delete function.
+	(install_cs_s_ops): Don't install complex_matrix_conv here.
+
+	* OPERATORS/op-cs-m.cc (complex_matrix_conv): Delete function.
+	(install_cs_m_ops): Don't install complex_matrix_conv here.
+
+	* OPERATORS/op-cs-cs.cc (complex_matrix_conv): Delete function.
+	(install_cs_cs_ops): Don't install complex_matrix_conv here.
+
+	* ov-typeinfo.cc (do_register_unary_op,
+	do_register_non_const_unary_op, do_register_binary_op,
+	do_register_assign_op, do_register_assignany_op,
+	do_register_pref_assign_conv, do_register_widening_op):
+	Print warning if installing a duplicate function.
+
 2003-09-10  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* data.cc, ov-base.cc, ov-base.h, ov.h, ov.cc, ov-re-mat.h,

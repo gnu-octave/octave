@@ -155,13 +155,6 @@ DEFBINOP (el_or, scalar, complex)
   return octave_value (v1.double_value () || (v2.complex_value () != 0.0));
 }
 
-DEFCONV (complex_matrix_conv, scalar, complex_matrix)
-{
-  CAST_CONV_ARG (const octave_scalar&);
-
-  return new octave_complex_matrix (v.complex_matrix_value ());
-}
-
 void
 install_s_cs_ops (void)
 {
@@ -185,8 +178,6 @@ install_s_cs_ops (void)
   INSTALL_BINOP (op_el_or, octave_scalar, octave_complex, el_or);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_complex, octave_complex_matrix);
-
-  INSTALL_WIDENOP (octave_scalar, octave_complex_matrix, complex_matrix_conv);
 }
 
 /*

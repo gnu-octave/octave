@@ -193,6 +193,15 @@ bool
 octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
 					     int t, unary_op_fcn f)
 {
+  if (lookup_unary_op (op, t))
+    {
+      std::string op_name = octave_value::unary_op_as_string (op);
+      std::string type_name = types(t);
+
+      warning ("duplicate unary operator `%s' for type `%s'",
+	       op_name.c_str (), type_name.c_str ());
+    }
+
   unary_ops.checkelem (static_cast<int> (op), t) = f;
 
   return false;
@@ -202,6 +211,15 @@ bool
 octave_value_typeinfo::do_register_non_const_unary_op
   (octave_value::unary_op op, int t, non_const_unary_op_fcn f)
 {
+  if (lookup_non_const_unary_op (op, t))
+    {
+      std::string op_name = octave_value::unary_op_as_string (op);
+      std::string type_name = types(t);
+
+      warning ("duplicate unary operator `%s' for type `%s'",
+	       op_name.c_str (), type_name.c_str ());
+    }
+
   non_const_unary_ops.checkelem (static_cast<int> (op), t) = f;
 
   return false;
@@ -212,6 +230,16 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
 					      int t1, int t2,
 					      binary_op_fcn f)
 {
+  if (lookup_binary_op (op, t1, t2))
+    {
+      std::string op_name = octave_value::binary_op_as_string (op);
+      std::string t1_name = types(t1);
+      std::string t2_name = types(t2);
+
+      warning ("duplicate binary operator `%s' for types `%s' and `%s'",
+	       op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
+    }
+
   binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
 
   return false;
@@ -222,6 +250,16 @@ octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
 					      int t_lhs, int t_rhs,
 					      assign_op_fcn f)
 {
+  if (lookup_assign_op (op, t_lhs, t_rhs))
+    {
+      std::string op_name = octave_value::assign_op_as_string (op);
+      std::string t_lhs_name = types(t_lhs);
+      std::string t_rhs_name = types(t_rhs);
+
+      warning ("duplicate assignment operator `%s' for types `%s' and `%s'",
+	       op_name.c_str (), t_lhs_name.c_str (), t_rhs_name.c_str ());
+    }
+
   assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs) = f;
 
   return false;
@@ -229,8 +267,17 @@ octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
 
 bool
 octave_value_typeinfo::do_register_assignany_op (octave_value::assign_op op,
-						  int t_lhs, assign_op_fcn f)
+						 int t_lhs, assign_op_fcn f)
 {
+  if (lookup_assignany_op (op, t_lhs))
+    {
+      std::string op_name = octave_value::assign_op_as_string (op);
+      std::string t_lhs_name = types(t_lhs);
+
+      warning ("duplicate assignment operator `%s' for types `%s'",
+	       op_name.c_str (), t_lhs_name.c_str ());
+    }
+
   assignany_ops.checkelem (static_cast<int> (op), t_lhs) = f;
 
   return false;
@@ -240,6 +287,15 @@ bool
 octave_value_typeinfo::do_register_pref_assign_conv (int t_lhs, int t_rhs,
 						     int t_result) 
 {
+  if (lookup_pref_assign_conv (t_lhs, t_rhs) >= 0)
+    {
+      std::string t_lhs_name = types(t_lhs);
+      std::string t_rhs_name = types(t_rhs);
+
+      warning ("overriding assignment conversion for types `%s' and `%s'",
+	       t_lhs_name.c_str (), t_rhs_name.c_str ());
+    }
+
   pref_assign_conv.checkelem (t_lhs, t_rhs) = t_result;
 
   return false;
@@ -249,6 +305,15 @@ bool
 octave_value_typeinfo::do_register_widening_op
   (int t, int t_result, type_conv_fcn f)
 {
+  if (lookup_widening_op (t, t_result))
+    {
+      std::string t_name = types(t);
+      std::string t_result_name = types(t_result);
+
+      warning ("overriding widening op for `%s' to `%s'",
+	       t_name.c_str (), t_result_name.c_str ());
+    }
+
   widening_ops.checkelem (t, t_result) = f;
 
   return false;

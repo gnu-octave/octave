@@ -269,7 +269,7 @@ execute_startup_files (void)
 static void
 verbose_usage (void)
 {
-  std::cout << OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
+  std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY "\n\
 \n\
 Usage: octave [options]\n\
 \n\
@@ -315,7 +315,7 @@ usage (void)
 static void
 print_version_and_exit (void)
 {
-  std::cout << OCTAVE_NAME_AND_VERSION << "\n";
+  std::cout << OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS "\n";
   exit (0);
 }
 

@@ -23,29 +23,45 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.1.35"
+#define OCTAVE_VERSION "2.1.36"
 
 #define OCTAVE_COPYRIGHT \
-  "Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001 John W. Eaton."
+  "Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 John W. Eaton."
 
 #define OCTAVE_NAME_AND_VERSION \
   "GNU Octave, version " OCTAVE_VERSION " (" OCTAVE_CANONICAL_HOST_TYPE ")"
 
+#define OCTAVE_COPYING_STATEMENT \
+  "This is free software; see the source code for copying conditions."
+
+#define OCTAVE_WARRANTY_STATEMENT \
+  "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTIBILITY or\n\
+FITNESS FOR A PARTICULAR PURPOSE."
+
+#define OCTAVE_BUGS_STATEMENT \
+  "Report bugs to <bug-octave@bevo.che.wisc.edu>."
+
 #define OCTAVE_NAME_VERSION_AND_COPYRIGHT \
-  OCTAVE_NAME_AND_VERSION ".\n" OCTAVE_COPYRIGHT "\n\
-This is free software with ABSOLUTELY NO WARRANTY."
+  OCTAVE_NAME_AND_VERSION ".\n" \
+  OCTAVE_COPYRIGHT
+
+#define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
+  OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n" \
+  OCTAVE_COPYING_STATEMENT "\n" \
+  OCTAVE_WARRANTY_STATEMENT
+
+#define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS(ARG) \
+  OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
+  ARG \
+  "\n\n" \
+  OCTAVE_BUGS_STATEMENT
+
+#define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
+  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS ("")
 
 #define OCTAVE_STARTUP_MESSAGE \
-  OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
-For details, type `warranty'.\n\
-\n\
-*** This is a development version of Octave.  Development releases\n\
-*** are provided for people who want to help test, debug, and improve\n\
-*** Octave.\n\
-***\n\
-*** If you want a stable, well-tested version of Octave, you should be\n\
-*** using one of the stable releases (when this development release\n\
-*** was made, the latest stable version was 2.0.16)."
+  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
+    ("  For details, type `warranty'.")
 
 #endif
 

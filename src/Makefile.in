@@ -100,7 +100,7 @@ TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc
 
 TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 
-INTTYPE_OP_XSRC := op-int-conv.cc op-double-conv.cc \
+INTTYPE_OP_XSRC := op-int-concat.cc op-int-conv.cc op-double-conv.cc \
 	op-i8-i8.cc op-i16-i16.cc op-i32-i32.cc op-i64-i64.cc \
 	op-ui8-ui8.cc op-ui16-ui16.cc op-ui32-ui32.cc op-ui64-ui64.cc
 

@@ -22,6 +22,42 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quit.h"
 
+#define OCTAVE_CONCAT_FN2(T1, T2) \
+  DEFNDCATOP_FN2 (T1 ## _ ## T2 ## _s_s, T1 ## _scalar, T2 ## _scalar, , T1 ## NDArray, T1 ## _array, T2 ## _array, concat) \
+  DEFNDCATOP_FN2 (T1 ## _ ## T2 ## _s_m, T1 ## _scalar, T2 ## _matrix, , T1 ## NDArray, T1 ## _array, T2 ## _array, concat) \
+  DEFNDCATOP_FN2 (T1 ## _ ## T2 ## _m_s, T1 ## _matrix, T2 ## _scalar, , T1 ## NDArray, T1 ## _array, T2 ## _array, concat) \
+  DEFNDCATOP_FN2 (T1 ## _ ## T2 ## _m_m, T1 ## _matrix, T2 ## _matrix, , T1 ## NDArray, T1 ## _array, T2 ## _array, concat)
+
+#define OCTAVE_INSTALL_CONCAT_FN2(T1, T2) \
+  INSTALL_CATOP (octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, T1 ## _ ## T2 ## _s_s) \
+  INSTALL_CATOP (octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, T1 ## _ ## T2 ## _s_m) \
+  INSTALL_CATOP (octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, T1 ## _ ## T2 ## _m_s) \
+  INSTALL_CATOP (octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, T1 ## _ ## T2 ## _m_m)
+
+#define OCTAVE_DOUBLE_INT_CONCAT_FN(TYPE) \
+  DEFNDCATOP_FN2 (double ## _ ## TYPE ## _s_s, scalar, TYPE ## _scalar, TYPE ## NDArray, , array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN2 (double ## _ ## TYPE ## _s_m, scalar, TYPE ## _matrix, TYPE ## NDArray, , array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN2 (double ## _ ## TYPE ## _m_s, matrix, TYPE ## _scalar, TYPE ## NDArray, , array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN2 (double ## _ ## TYPE ## _m_m, matrix, TYPE ## _matrix, TYPE ## NDArray, , array, TYPE ## _array, concat)
+
+#define OCTAVE_INSTALL_DOUBLE_INT_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_scalar, octave_ ## TYPE ## _scalar, double ## _ ## TYPE ## _s_s) \
+  INSTALL_CATOP (octave_scalar, octave_ ## TYPE ## _matrix, double ## _ ## TYPE ## _s_m) \
+  INSTALL_CATOP (octave_matrix, octave_ ## TYPE ## _scalar, double ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP (octave_matrix, octave_ ## TYPE ## _matrix, double ## _ ## TYPE ## _m_m)
+
+#define OCTAVE_INT_DOUBLE_CONCAT_FN(TYPE) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## double ## _s_s, TYPE ## _scalar, scalar, , TYPE ## NDArray, TYPE ## _array, array, concat) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## double ## _s_m, TYPE ## _scalar, matrix, , TYPE ## NDArray, TYPE ## _array, array, concat) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## double ## _m_s, TYPE ## _matrix, scalar, , TYPE ## NDArray, TYPE ## _array, array, concat) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## double ## _m_m, TYPE ## _matrix, matrix, , TYPE ## NDArray, TYPE ## _array, array, concat)
+
+#define OCTAVE_INSTALL_INT_DOUBLE_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_scalar, TYPE ## _ ## double ## _s_s) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_matrix, TYPE ## _ ## double ## _s_m) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_scalar, TYPE ## _ ## double ## _m_s) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_matrix, TYPE ## _ ## double ## _m_m)
+
 #define OCTAVE_CONCAT_FN(TYPE) \
   DEFNDCATOP_FN (TYPE ## _s_s, TYPE ## _scalar, TYPE ## _scalar, TYPE ## _array, TYPE ## _array, concat) \
   DEFNDCATOP_FN (TYPE ## _s_m, TYPE ## _scalar, TYPE ## _matrix, TYPE ## _array, TYPE ## _array, concat) \

@@ -1,3 +1,16 @@
+2004-11-09  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-int-concat.cc: New file for mixed integer/other
+	concatentation operators.
+	* Makefile.in (INTTYPE_OP_XSRC): Add it to the list.
+
+	* ops.h (DEFNDCATOP_FN2): New macro.
+
+	* OPERATORS/op-int.h (OCTAVE_CONCAT_FN2,
+	OCTAVE_INSTALL_CONCAT_FN2, OCTAVE_DOUBLE_INT_CONCAT_FN,
+	OCTAVE_INSTALL_DOUBLE_INT_CONCAT_FN, OCTAVE_INT_DOUBLE_CONCAT_FN,
+	OCTAVE_INSTALL_INT_DOUBLE_CONCAT_FN): New macros.
+
 2004-11-09  David Bateman  <dbateman@free.fr>
 
 	* Cell.cc (concat): Delete.

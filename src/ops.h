@@ -330,17 +330,27 @@ extern void install_ops (void);
 // XXX FIXME XXX -- in some cases, the constructor isn't necessary.
 
 #define DEFCATOP_FN(name, t1, t2, f) \
-  CATOPDECL (name, a1, a2)	     \
+  CATOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
     return octave_value (v1.t1 ## _value (). f (v2.t2 ## _value (), ra_idx)); \
   }
 
-#define DEFNDCATOP_FN(name, t1, t2, e1, e2, f)	\
-  CATOPDECL (name, a1, a2)			\
+#define DEFNDCATOP_FN(name, t1, t2, e1, e2, f) \
+  CATOPDECL (name, a1, a2) \
   { \
     CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
     return octave_value (v1.e1 ## _value (). f (v2.e2 ## _value (), ra_idx)); \
+  }
+
+// For compatibility, the second arg is always converted to the type
+// of the first.  Hmm.
+
+#define DEFNDCATOP_FN2(name, t1, t2, tc1, tc2, e1, e2, f) \
+  CATOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value (tc1 (v1.e1 ## _value ()) . f (tc2 (v2.e2 ## _value ()), ra_idx)); \
   }
 
 #define CATOP_NONCONFORMANT(msg) \

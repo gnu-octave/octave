@@ -149,9 +149,14 @@ class
 tree_parameter_list : public SLList<tree_identifier *>, public tree_print_code
 {
 public:
-  tree_parameter_list (void) : SLList<tree_identifier *> () { }
+  tree_parameter_list (void) : SLList<tree_identifier *> ()
+    { marked_for_varargs = 0; }
+
   tree_parameter_list (tree_identifier *t) : SLList<tree_identifier *> ()
-    { append (t); }
+    {
+      marked_for_varargs = 0;
+      append (t);
+    }
 
   ~tree_parameter_list (void)
     {

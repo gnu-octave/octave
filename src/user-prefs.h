@@ -55,6 +55,7 @@ struct user_preferences
   int warn_assign_as_truth_value;
   int warn_comma_in_global_decl;
   int warn_divide_by_zero;
+  int warn_missing_semicolon;
   int warn_function_name_clash;
   int whitespace_in_literal_matrix;
 
@@ -104,6 +105,7 @@ extern int warn_assign_as_truth_value (void);
 extern int warn_comma_in_global_decl (void);
 extern int warn_divide_by_zero (void);
 extern int warn_function_name_clash (void);
+extern int warn_missing_semicolon (void);
 extern int whitespace_in_literal_matrix (void);
 
 extern int set_output_max_field_width (void);

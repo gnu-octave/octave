@@ -687,7 +687,8 @@ reset_parser (void)
 
 // Can be reset by defining a function.
   current_input_column = 1;
-  input_line_number = current_command_number - 1;
+  if (! reading_script_file)
+    input_line_number = current_command_number - 1;
 
 // Only ask for input from stdin if we are expecting interactive
 // input.

@@ -135,12 +135,9 @@ equal (const octave_value& val, const octave_value& test)
   int t1 = val.type_id ();
   int t2 = test.type_id ();
 
-  binary_op_fcn f
-    = octave_value_typeinfo::lookup_binary_op (octave_value::op_eq, t1, t2);
-
   // If there is no op_eq for these types, we can't compare values.
 
-  if (f && val.rows () == test.rows () && val.columns () == test.columns ())
+  if (val.rows () == test.rows () && val.columns () == test.columns ())
     {
       octave_value tmp = do_binary_op (octave_value::op_eq, val, test);
 

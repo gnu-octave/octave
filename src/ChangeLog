@@ -1,3 +1,11 @@
+2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-select.cc (equal): Don't look up == op, just try it and see
+	whether it works.
+
+	* oct-stream.cc (printf_format_list::printf_format_list):
+	Handle empty format string.
+
 2002-12-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-mat.cc (class tm_row_const::tm_row_const_rep): Derive from

@@ -586,60 +586,72 @@ printf_format_list::printf_format_list (const std::string& s)
   bool have_more = true;
   bool empty_buf = true;
 
-  while (i < n)
+  if (n == 0)
     {
-      have_more = true;
+      printf_format_elt *elt
+	= new printf_format_elt ("", args, fw, prec, flags, type, modifier);
 
-      if (! buf)
-	{
-	  buf = new OSSTREAM ();
-	  empty_buf = true;
-	}
+      list(num_elts++) = elt;
 
-      switch (s[i])
-	{
-	case '%':
-	  {
-	    if (empty_buf)
-	      {
-		process_conversion (s, i, n, args, flags, fw, prec,
-				    type, modifier, num_elts);
-
-		have_more = (buf != 0);
-	      }
-	    else
-	      add_elt_to_list (args, flags, fw, prec, type, modifier,
-			       num_elts);
-	  }
-	  break;
-
-	default:
-	  {
-	    args = 0;
-	    flags = "";
-	    fw = 0;
-	    prec = 0;
-	    modifier = '\0';
-	    type = '\0';
-	    *buf << s[i++];
-	    empty_buf = false;
-	  }
-	  break;
-	}
-
-      if (nconv < 0)
-	{
-	  have_more = false;
-	  break;
-	}
+      list.resize (num_elts);
     }
+  else
+    {
+      while (i < n)
+	{
+	  have_more = true;
 
-  if (have_more)
-    add_elt_to_list (args, flags, fw, prec, type, modifier, num_elts);
+	  if (! buf)
+	    {
+	      buf = new OSSTREAM ();
+	      empty_buf = true;
+	    }
 
-  list.resize (num_elts);
+	  switch (s[i])
+	    {
+	    case '%':
+	      {
+		if (empty_buf)
+		  {
+		    process_conversion (s, i, n, args, flags, fw, prec,
+					type, modifier, num_elts);
 
-  delete buf;
+		    have_more = (buf != 0);
+		  }
+		else
+		  add_elt_to_list (args, flags, fw, prec, type, modifier,
+				   num_elts);
+	      }
+	      break;
+
+	    default:
+	      {
+		args = 0;
+		flags = "";
+		fw = 0;
+		prec = 0;
+		modifier = '\0';
+		type = '\0';
+		*buf << s[i++];
+		empty_buf = false;
+	      }
+	      break;
+	    }
+
+	  if (nconv < 0)
+	    {
+	      have_more = false;
+	      break;
+	    }
+	}
+
+      if (have_more)
+	add_elt_to_list (args, flags, fw, prec, type, modifier, num_elts);
+
+      list.resize (num_elts);
+
+      delete buf;
+    }
 }
 
 printf_format_list::~printf_format_list (void)

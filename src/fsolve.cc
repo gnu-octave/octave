@@ -46,8 +46,6 @@ static NLEqn_options fsolve_opts;
 int
 hybrd_info_to_fsolve_info (int info)
 {
-  cerr << "info: " << info << "\n";
-
   switch (info)
     {
     case -1:

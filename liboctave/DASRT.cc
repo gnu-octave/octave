@@ -196,7 +196,7 @@ DASRT::integrate (double tout)
 	    }
 	}
 
-      liw = 20 + n;
+      liw = 21 + n;
       lrw = 50 + 9*n + n*n + 3*ng;
 
       iwork.resize (liw);
@@ -282,7 +282,7 @@ DASRT::integrate (double tout)
       if (step_limit () >= 0)
 	{
 	  info(11) = 1;
-	  iwork(18) = step_limit ();
+	  iwork(20) = step_limit ();
 	}
       else
 	info(11) = 0;

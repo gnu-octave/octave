@@ -390,7 +390,7 @@ C                 the number of steps?
 C                 Yes - Set INFO(11) = 0
 C                  No - Set INFO(11) = 1,
 C                       and define the maximum number of steps
-C                       by setting IWORK(19)=MXSTEP
+C                       by setting IWORK(21)=MXSTEP
 C
 C   RTOL, ATOL -- You must assign relative (RTOL) and absolute (ATOL
 C               error tolerances to tell the code how accurately you
@@ -456,7 +456,7 @@ C  IWORK(*) --  Dimension this integer work array of length LIW in
 C               your calling program.
 C
 C  LIW -- Set it to the declared length of the IWORK array.
-C               you must have LIW .GE. 20+NEQ
+C               you must have LIW .GE. 21+NEQ
 C
 C  RPAR, IPAR -- These are parameter arrays, of real and integer
 C               type, respectively. You can use them for communication
@@ -877,7 +877,7 @@ C
 C     SET POINTERS INTO IWORK
       PARAMETER (LML=1, LMU=2, LMXORD=3, LMTYPE=4, LNST=11,
      *  LNRE=12, LNJE=13, LETF=14, LCTF=15, LNGE=16, LNPD=17,
-     *  LIRFND=18, LMXSTP=19, LIPVT=21, LJCALC=5, LPHASE=6, LK=7,
+     *  LIRFND=18, LMXSTP=21, LIPVT=22, LJCALC=5, LPHASE=6, LK=7,
      *  LKOLD=8, LNS=9, LNSTL=10, LIWM=1)
 C
 C     SET RELATIVE OFFSET INTO RWORK
@@ -935,7 +935,7 @@ C     COMPUTE MTYPE,LENPD,LENRW.CHECK ML AND MU.
          LENRW=50+(IWORK(LMXORD)+4)*NEQ+LENPD+3*NG
 C
 C     CHECK LENGTHS OF RWORK AND IWORK
-60    LENIW=20+NEQ
+60    LENIW=21+NEQ
       IWORK(LNPD)=LENPD
       IF(LRW.LT.LENRW)GO TO 704
       IF(LIW.LT.LENIW)GO TO 705

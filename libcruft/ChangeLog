@@ -1,3 +1,9 @@
+2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dasrt/ddasrt.f (DDASRT): Set LMXSTP to 21 and LIPVT to 22 to
+	avoid conflict with LLAST in DRCHECK.  Change docs for INFO(12)
+	and LIW.
+
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in, misc/Makefile.in: Handle DESTDIR.

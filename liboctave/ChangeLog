@@ -1,3 +1,8 @@
+2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASRT.cc (DASRT::integrate): Set liw to 21 + n, not 20 + n.
+	Store step limit in iwork(20), not iwork(18).
+
 2003-05-16  Paul Kienzle <pkienzle@users.sf.net>
 
 	* oct-rand.cc: Use liboctave's clock layer instead of the system clock.

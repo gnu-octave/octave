@@ -1,5 +1,7 @@
 2000-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* siglist.c: Include <signal.h>.
+
 	* lex.l (is_plot_keyword): Add minimum match length in call to
 	almost_match.
 

@@ -30,7 +30,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun-dld.h"
 #include "error.h"
+#include "gripes.h"
+#include "oct-map.h"
 #include "oct-obj.h"
+#include "pager.h"
+
+#if defined (HAVE_GLPK)
 
 extern "C" {
 #include <glpk.h>
@@ -113,14 +118,14 @@ int fperr; //-- Global error number
 
 
 int
-glpk_fault_hook (void *info, char *msg)
+glpk_fault_hook (void * /* info */, char *msg)
 {
   OCTERR << "*** SEVERE CRITICAL ERROR *** from GLPK !\n\n"<<msg<<" %s\n";
   longjmp (mark, -1);
 }
 
 int
-glpk_print_hook (void *info, char *msg)
+glpk_print_hook (void * /* info */, char *msg)
 {
   OCTERR << msg << "\n";
   return 1;
@@ -267,7 +272,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 	    error = lpx_integer (lp);
 	  }
 	else
-	  error=lpx_simplex(lp);
+	  error = lpx_simplex(lp);
       }
      break;
 
@@ -354,12 +359,16 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
    return error;
 }
 
-DEFUN_DLD (__glpk__, args, nlhs,
+#endif
+
+DEFUN_DLD (__glpk__, args, ,
   "__glpk__: internal interface for the GLPK library.\n\
 You should be using using glpk instead")
 {
   // The list of values to return.  See the declaration in oct-obj.h
   octave_value_list retval;
+
+#if defined (HAVE_GLPK)
 
   int nrhs = args.length ();
 
@@ -370,9 +379,9 @@ You should be using using glpk instead")
     }
 
   //-- 1st Input. Sense of optimization.
-  int sense;
+  volatile int sense;
   double SENSE = args(0).scalar_value ();
-  if (SENSE> = 0)
+  if (SENSE >= 0)
     sense = 1;
   else
     sense = -1;
@@ -393,7 +402,7 @@ You should be using using glpk instead")
   Array<int> cn (mrowsA*mrowsc+1);
   ColumnVector a (mrowsA*mrowsc+1, 0.0);
 
-  int nz = 0;
+  volatile int nz = 0;
   for (int i = 0; i < mrowsA; i++)
     {
       for (int j = 0; j < mrowsc; j++)
@@ -490,7 +499,7 @@ You should be using using glpk instead")
   charMatrix VTYPE (args(7).char_matrix_value ());
 
   Array<int> vartype (mrowsc);
-  int isMIP;
+  volatile int isMIP = 0;
   for (int i = 0; i < mrowsc ; i++)
     {
       if (VTYPE(i,0) == 'I')
@@ -499,9 +508,7 @@ You should be using using glpk instead")
 	  vartype(i) = LPX_IV;
 	}
       else
-	{
-	  vartype(i) = LPX_CV;
-	}
+	vartype(i) = LPX_CV;
     }
 
   //-- 9th Input. A structure containing the control parameters.
@@ -729,17 +736,16 @@ You should be using using glpk instead")
   ColumnVector mem (1);
 
   int jmpret = setjmp (mark);
+
   if (jmpret == 0)
-    {
-      int error = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
-			cn.fortran_vec (), a.fortran_vec (), b, ctype,
-			freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
-			ub, vartype.fortran_vec (), isMIP, lpsolver,
-			save_pb, xmin.fortran_vec (), fmin.fortran_vec (),
-			status.fortran_vec (), lambda.fortran_vec (),
-			redcosts.fortran_vec (), time.fortran_vec (),
-			mem.fortran_vec ());
-    }
+    glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
+	  cn.fortran_vec (), a.fortran_vec (), b, ctype,
+	  freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
+	  ub, vartype.fortran_vec (), isMIP, lpsolver,
+	  save_pb, xmin.fortran_vec (), fmin.fortran_vec (),
+	  status.fortran_vec (), lambda.fortran_vec (),
+	  redcosts.fortran_vec (), time.fortran_vec (),
+	  mem.fortran_vec ());
 
   Octave_map extra;
 
@@ -752,6 +758,12 @@ You should be using using glpk instead")
   retval(2) = octave_value(status);
   retval(1) = octave_value(fmin);
   retval(0) = octave_value(xmin);
+
+#else
+
+  gripe_not_supported ("glpk");
+
+#endif
 
   return retval;
 }

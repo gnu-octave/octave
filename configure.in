@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.468 $)
+AC_REVISION($Revision: 1.469 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -429,6 +429,30 @@ if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
   FFT_DIR=''
   AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
 fi
+
+# Checks for GLPK header and library.
+
+AC_ARG_WITH(glpk,
+  [  --without-glpk          don't use GLPK],
+  with_glpk=$withval, with_glpk=yes)
+
+glpk_lib=
+if test "$with_glpk" = yes; then
+  glpk_lib="glpk"
+elif test "$with_glpk" != no; then
+  glpk_lib="$with_glpk"
+fi
+
+GLPK_LIBS=
+if test -n "$glpk_lib"; then
+  AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [
+    AC_CHECK_HEADERS(glpk.h, [
+      GLPK_LIBS="-l$glpk_lib"
+      AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])])])
+fi
+AC_SUBST(GLPK_LIBS)
+
+# Checks for MPI header and library.
 
 WITH_MPI=true
 AC_ARG_WITH(mpi,
@@ -1528,6 +1552,7 @@ Octave is now configured for $canonical_host_type
   Fortran libraries:    $FLIBS
   BLAS libraries:       $BLAS_LIBS
   FFTW libraries:       $FFTW_LIBS
+  GLPK libraries:       $GLPK_LIBS
   UMFPACK libraries:    $UMFPACK_LIBS
   HDF5 libraries:       $HDF5_LIBS
   MPI libraries:        $MPI_LIBS

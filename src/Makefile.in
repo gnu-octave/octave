@@ -537,6 +537,18 @@ oct-gperf.h: octave.gperf
 	  $< | $(SED) 's,lookup\[,gperf_lookup[,' > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
+# How to make a .oct file from a .o file:
+
+ifeq ($(ENABLE_DYNAMIC_LINKING), true)
+  ifdef CXXPICFLAG
+    __glpk__.oct : pic/__glpk__.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
+  else
+    __glpk__.oct : __glpk__.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
+  endif
+endif
+
 check: all
 .PHONY: check
 

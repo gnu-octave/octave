@@ -1,5 +1,10 @@
 2005-03-22  John W. Eaton  <jwe@octave.org>
 
+	* Makeconf.in (GLPK_LIBS): Substitute value.
+	(do-subst-config-vals): Add to list of substitutions.
+
+	* configure.in: Check for glpk.
+
 	* emacs/octave-mod.el (octave-abbrev-table): Omit fifth and sixth
 	arguments from define-abbrev for compatibility with some older
 	versions of Emacs.

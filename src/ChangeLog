@@ -1,9 +1,17 @@
 2005-03-22  John W. Eaton  <jwe@octave.org>
-	
+
+	* Makefile.in: Add special rule for __glpk__.oct.
+
+	* toplev.cc (octave_config_info): Add GLPK_LIBS to the list.
+	* oct-conf.h.in (OCTAVE_CONF_GLPK_LIBS): Substitute here.
+
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__, glpk):
 	Adapt to Octave coding style.
 	(glpk): Move decls closer to first use.
 	(F__glpk__): Eliminate unnecessary loop seting inf values.
+	Ensure that isMIP is initialized.
+	Declare sense, nz, and isMIP volatile to avoid GCC warnings that
+	these variables might be might be clobbered by `longjmp' or `vfork'
 
 	* DLD-FUNCTIONS/__glpk__.cc: New file.
 

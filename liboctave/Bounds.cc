@@ -51,7 +51,6 @@ Bounds::set_bounds (const ColumnVector l, const ColumnVector u)
       return *this;
     }
 
-  nb = l.capacity ();
   lb = l;
   ub = u;
 
@@ -61,7 +60,7 @@ Bounds::set_bounds (const ColumnVector l, const ColumnVector u)
 Bounds&
 Bounds::set_lower_bounds (const ColumnVector l)
 {
-  if (nb != l.capacity ())
+  if (ub.capacity () != l.capacity ())
     {
       error ("inconsistent size for lower bounds");
       return *this;
@@ -75,7 +74,7 @@ Bounds::set_lower_bounds (const ColumnVector l)
 Bounds&
 Bounds::set_upper_bounds (const ColumnVector u)
 {
-  if (nb != u.capacity ())
+  if (lb.capacity () != u.capacity ())
     {
       error ("inconsistent size for upper bounds");
       return *this;

@@ -59,18 +59,6 @@ NLEqn::error (const char* msg)
   (*current_liboctave_error_handler) ("fatal NLEqn error: %s", msg);
 }
 
-void
-NLEqn::set_states (const ColumnVector& xvec)
-{
-  if (xvec.capacity () != n)
-    {
-      error ("dimension error");
-      return;
-    }
-
-  x = xvec;
-}
-
 // Other operations
 
 int
@@ -145,6 +133,8 @@ ColumnVector
 NLEqn::solve (int& info)
 {
   ColumnVector retval;
+
+  int n = x.capacity ();
 
   if (n == 0)
     {

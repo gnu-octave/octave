@@ -90,7 +90,7 @@ Array3<T>::resize (int r, int c, int p)
 
 template <class T>
 void
-Array3<T>::resize (int n, int m, int k, const T& val)
+Array3<T>::resize (int r, int c, int p, const T& val)
 {
   if (r < 0 || c < 0 || p < 0)
     {
@@ -108,6 +108,7 @@ Array3<T>::resize (int n, int m, int k, const T& val)
   int old_d1 = dim1 ();
   int old_d2 = dim2 ();
   int old_d3 = dim3 ();
+
   int old_len = length ();
 
   rep = new ArrayRep (r*c*p);
@@ -116,17 +117,15 @@ Array3<T>::resize (int n, int m, int k, const T& val)
   d2 = c;
   d3 = p;
 
-  if (old_data && old_len > 0)
-    {
-      int min_r = old_d1 < r ? old_d1 : r;
-      int min_c = old_d2 < c ? old_d2 : c;
-      int min_p = old_d3 < p ? old_d3 : p;
+  int min_r = old_d1 < r ? old_d1 : r;
+  int min_c = old_d2 < c ? old_d2 : c;
+  int min_p = old_d3 < p ? old_d3 : p;
 
-      for (int k = 0; k < min_p; k++)
-	for (int j = 0; j < min_c; j++)
-	  for (int i = 0; i < min_r; i++)
-	    xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
-    }
+  if (old_data && old_len > 0)
+    for (int k = 0; k < min_p; k++)
+      for (int j = 0; j < min_c; j++)
+	for (int i = 0; i < min_r; i++)
+	  xelem (i, j, k) = old_data[old_d1*(old_d2*k+j)+i];
 
   // If the copy constructor is expensive, this may win.  Otherwise,
   // it may make more sense to just copy the value everywhere when

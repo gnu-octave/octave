@@ -37,10 +37,8 @@ class ostream;
 #include "idx-vector.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
+#include "oct-sym.h"
 #include "str-vec.h"
-
-#include "error.h"
-#include "pt-exp.h"
 
 class Octave_map;
 class octave_value_list;
@@ -73,7 +71,7 @@ typedef octave_value (*assign_op_fcn)
 typedef octave_value * (*type_conv_fcn) (const octave_value&);
 
 class
-octave_value
+octave_value : public octave_symbol
 {
 public:
 
@@ -102,7 +100,24 @@ public:
     unknown_binary_op
   };
 
+  enum assign_op
+  {
+    asn_eq,
+    add_eq,
+    sub_eq,
+    mul_eq,
+    div_eq,
+    el_mul_eq,
+    el_div_eq,
+    el_and_eq,
+    el_or_eq,
+    num_assign_ops,
+    unknown_assign_op
+  };
+
   static string binary_op_as_string (binary_op);
+
+  static string assign_op_as_string (assign_op);
 
   enum magic_colon { magic_colon_t };
   enum all_va_args { all_va_args_t };
@@ -127,6 +142,7 @@ public:
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
+  octave_value (const octave_value_list& m);
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);
 
@@ -147,7 +163,7 @@ public:
 
   // This should only be called for derived types.
 
-  virtual octave_value *clone (void) { panic_impossible (); }
+  virtual octave_value *clone (void);
 
   void make_unique (void)
     {
@@ -192,7 +208,10 @@ public:
   virtual octave_value index (const octave_value_list& idx) const
     { return rep->index (idx); }
 
-  octave_value& assign (const octave_value_list& idx, const octave_value& rhs);
+  octave_value& assign (assign_op, const octave_value& rhs);
+
+  octave_value& assign (assign_op, const octave_value_list& idx,
+			const octave_value& rhs);
 
   virtual idx_vector index_vector (void) const
     { return rep->index_vector (); }
@@ -245,6 +264,9 @@ public:
 
   virtual bool is_map (void) const
     { return rep->is_map (); }
+
+  virtual bool is_list (void) const
+    { return rep->is_list (); }
 
   virtual bool is_magic_colon (void) const
     { return rep->is_magic_colon (); }
@@ -325,6 +347,8 @@ public:
     { return rep->range_value (); }
 
   virtual Octave_map map_value (void) const;
+
+  virtual octave_value_list list_value (void) const;
 
   virtual bool bool_value (void) const
     { return rep->bool_value (); }
@@ -409,13 +433,14 @@ private:
       int count;              // A reference count.
     };
 
-  bool convert_and_assign (const octave_value_list& idx,
+  bool convert_and_assign (assign_op, const octave_value_list& idx,
 			   const octave_value& rhs);
 
-  bool try_assignment_with_conversion (const octave_value_list& idx,
+  bool try_assignment_with_conversion (assign_op,
+				       const octave_value_list& idx,
 				       const octave_value& rhs);
 
-  bool try_assignment (const octave_value_list& idx,
+  bool try_assignment (assign_op, const octave_value_list& idx,
 		       const octave_value& rhs);
 };
 
@@ -472,10 +497,16 @@ extern bool Vwarn_divide_by_zero;
 // Indentation level for structures.
 extern int struct_indent;
 
-extern void symbols_of_value (void);
-
 extern void increment_struct_indent (void);
 extern void decrement_struct_indent (void);
+
+// Indentation level for lists.
+extern int list_indent;
+
+extern void increment_list_indent (void);
+extern void decrement_list_indent (void);
+
+extern void symbols_of_value (void);
 
 extern void install_types (void);
 

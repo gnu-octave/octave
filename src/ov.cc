@@ -42,11 +42,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-str-mat.h"
 #include "ov-range.h"
 #include "ov-struct.h"
+#include "ov-list.h"
 #include "ov-colon.h"
 #include "ov-va-args.h"
 #include "ov-typeinfo.h"
 
 #include "defun.h"
+#include "error.h"
 #include "gripes.h"
 #include "pager.h"
 #include "pr-output.h"
@@ -123,6 +125,23 @@ decrement_struct_indent (void)
 {
   struct_indent -= 2;
 }
+
+// Indentation level for lists.
+int list_indent = 0;
+
+void
+increment_list_indent (void)
+{
+  list_indent += 2;
+}
+
+void
+decrement_list_indent (void)
+{
+  list_indent -= 2;
+}
+
+// XXX FIXME XXX
 
 // Octave's value type.
 
@@ -207,6 +226,56 @@ octave_value::binary_op_as_string (binary_op op)
 
     case struct_ref:
       retval = ".";
+      break;
+
+    default:
+      retval = "<unknown>";
+    }
+
+  return retval;
+}
+
+string
+octave_value::assign_op_as_string (assign_op op)
+{
+  string retval;
+
+  switch (op)
+    {
+    case asn_eq:
+      retval = "=";
+      break;
+
+    case add_eq:
+      retval = "+=";
+      break;
+
+    case sub_eq:
+      retval = "-=";
+      break;
+
+    case mul_eq:
+      retval = "*=";
+      break;
+
+    case div_eq:
+      retval = "/=";
+      break;
+
+    case el_mul_eq:
+      retval = ".*=";
+      break;
+
+    case el_div_eq:
+      retval = "./=";
+      break;
+
+    case el_and_eq:
+      retval = "&=";
+      break;
+
+    case el_or_eq:
+      retval = "|=";
       break;
 
     default:
@@ -355,7 +424,13 @@ octave_value::octave_value (const Octave_map& m)
   : rep (new octave_struct (m))
 {
   rep->count = 1;
- }
+}
+
+octave_value::octave_value (const octave_value_list& l)
+  : rep (new octave_list (l))
+{
+  rep->count = 1;
+}
 
 octave_value::octave_value (octave_value::magic_colon)
   : rep (new octave_magic_colon ())
@@ -389,6 +464,12 @@ octave_value::~octave_value (void)
     }
 }
 
+octave_value *
+octave_value::clone (void)
+{
+  panic_impossible ();
+}
+
 void
 octave_value::maybe_mutate (void)
 {
@@ -412,15 +493,25 @@ gripe_no_conversion (const string& tn1, const string& tn2)
 }
 
 octave_value&
-octave_value::assign (const octave_value_list& idx, const octave_value& rhs)
+octave_value::assign (assign_op, const octave_value& rhs)
+{
+  // XXX FIXME XXX -- make this work for ops other than `='.
+
+  return operator = (rhs);
+}
+
+octave_value&
+octave_value::assign (octave_value::assign_op op,
+		      const octave_value_list& idx,
+		      const octave_value& rhs)
 {
   make_unique ();
 
-  bool assignment_ok = try_assignment (idx, rhs);
+  bool assignment_ok = try_assignment (op, idx, rhs);
 
   if (! (error_state || assignment_ok))
     {
-      assignment_ok = try_assignment_with_conversion (idx, rhs);
+      assignment_ok = try_assignment_with_conversion (op,idx, rhs);
 
       if (! (error_state || assignment_ok))
 	gripe_no_conversion (type_name (), rhs.type_name ());
@@ -436,6 +527,12 @@ Octave_map
 octave_value::map_value (void) const
 {
   return rep->map_value ();
+}
+
+octave_value_list
+octave_value::list_value (void) const
+{
+  return rep->list_value ();
 }
 
 ColumnVector
@@ -595,7 +692,8 @@ gripe_conversion_failed (const string& tn1, const string& tn2)
 }
 
 bool
-octave_value::convert_and_assign (const octave_value_list& idx,
+octave_value::convert_and_assign (octave_value::assign_op op,
+				  const octave_value_list& idx,
 				  const octave_value& rhs)
 {
   bool assignment_ok = false;
@@ -621,7 +719,7 @@ octave_value::convert_and_assign (const octave_value_list& idx,
 	      rep = tmp;
 	      rep->count = 1;
 
-	      assignment_ok = try_assignment (idx, rhs);
+	      assignment_ok = try_assignment (op, idx, rhs);
 
 	      if (! assignment_ok && old_rep)
 		{
@@ -646,10 +744,11 @@ octave_value::convert_and_assign (const octave_value_list& idx,
 }
 
 bool
-octave_value::try_assignment_with_conversion (const octave_value_list& idx,
+octave_value::try_assignment_with_conversion (octave_value::assign_op op,
+					      const octave_value_list& idx,
 					      const octave_value& rhs)
 {
-  bool assignment_ok = convert_and_assign (idx, rhs);
+  bool assignment_ok = convert_and_assign (op, idx, rhs);
 
   if (! (error_state || assignment_ok))
     {
@@ -673,10 +772,10 @@ octave_value::try_assignment_with_conversion (const octave_value_list& idx,
 
       if (cf_this || cf_rhs)
 	{
-	  assignment_ok = try_assignment (idx, tmp_rhs);
+	  assignment_ok = try_assignment (op, idx, tmp_rhs);
 
 	  if (! (error_state || assignment_ok))
-	    assignment_ok = convert_and_assign (idx, tmp_rhs);
+	    assignment_ok = convert_and_assign (op, idx, tmp_rhs);
 	}
 
       if (! assignment_ok && old_rep)
@@ -696,7 +795,8 @@ octave_value::try_assignment_with_conversion (const octave_value_list& idx,
 }
 
 bool
-octave_value::try_assignment (const octave_value_list& idx,
+octave_value::try_assignment (octave_value::assign_op op,
+			      const octave_value_list& idx,
 			      const octave_value& rhs)
 {
   bool retval = false;
@@ -704,7 +804,8 @@ octave_value::try_assignment (const octave_value_list& idx,
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 
-  assign_op_fcn f = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
+  assign_op_fcn f
+    = octave_value_typeinfo::lookup_assign_op (op, t_lhs, t_rhs);
 
   if (f)
     {
@@ -793,6 +894,7 @@ install_types (void)
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
   octave_struct::register_type ();
+  octave_list::register_type ();
   octave_all_va_args::register_type ();
   octave_magic_colon::register_type ();
 }

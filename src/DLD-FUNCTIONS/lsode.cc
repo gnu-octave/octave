@@ -454,8 +454,15 @@ set_lsode_option (const std::string& keyword, double val)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  if (list->d_set_fcn)
-	    (lsode_opts.*list->d_set_fcn) (val);
+	  if (list->da_set_fcn)
+	    {
+	      Array<double> tmp (1, val);
+	      (lsode_opts.*list->da_set_fcn) (tmp);
+	    }
+	  else if (list->d_set_fcn)
+	    {
+	      (lsode_opts.*list->d_set_fcn) (val);
+	    }
 	  else
 	    {
 	      if (xisnan (val))

@@ -109,6 +109,8 @@ public:
   Matrix inverse (int& info) const;
   Matrix inverse (int& info, double& rcond) const;
 
+  Matrix pseudo_inverse (double tol = 0.0);
+
   ComplexMatrix fourier (void) const;
   ComplexMatrix ifourier (void) const;
 

@@ -32,11 +32,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sys/types.h>
 #include <iostream.h>
 #include <stdio.h>
+#include <float.h>
 
 #include <Complex.h>
 
 #include "mx-base.h"
 #include "dbleDET.h"
+#include "dbleSVD.h"
 #include "mx-inlines.cc"
 #include "lo-error.h"
 #include "f77-uscore.h"
@@ -603,6 +605,43 @@ Matrix::inverse (int& info, double& rcond) const
   delete [] z;
 
   return Matrix (tmp_data, nr, nc);
+}
+
+Matrix
+Matrix::pseudo_inverse (double tol)
+{
+  SVD result (*this);
+
+  DiagMatrix S = result.singular_values ();
+  Matrix U = result.left_singular_matrix ();
+  Matrix V = result.right_singular_matrix ();
+
+  ColumnVector sigma = S.diag ();
+
+  int r = sigma.length () - 1;
+  int nr = rows ();
+  int nc = cols ();
+
+  if (tol <= 0.0)
+    {
+      if (nr > nc)
+	tol = nr * sigma.elem (0) * DBL_EPSILON;
+      else
+	tol = nc * sigma.elem (0) * DBL_EPSILON;
+    }
+
+  while (r >= 0 && sigma.elem (r) < tol)
+    r--;
+
+  if (r < 0)
+    return Matrix (nc, nr, 0.0);
+  else
+    {
+      Matrix Ur = U.extract (0, 0, nr-1, r);
+      DiagMatrix D = DiagMatrix (sigma.extract (0, r)) . inverse ();
+      Matrix Vr = V.extract (0, 0, nc-1, r);
+      return Vr * D * Ur.transpose ();
+    }
 }
 
 ComplexMatrix

@@ -134,6 +134,8 @@ public:
   ComplexMatrix inverse (int& info) const;
   ComplexMatrix inverse (int& info, double& rcond) const;
 
+  ComplexMatrix pseudo_inverse (double tol = 0.0);
+
   ComplexMatrix fourier (void) const;
   ComplexMatrix ifourier (void) const;
 

@@ -22,9 +22,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Parser for Octave.
 
-/*
- * C decarations.
- */
+// C decarations.
+
 %{
 #define YYDEBUG 1
 

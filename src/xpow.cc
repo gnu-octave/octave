@@ -53,23 +53,22 @@ any_element_is_negative (const Matrix& a)
   return 0;
 }
 
-/*
- * Safer pow functions.
- *
- *       op2 \ op1:   s   m   cs   cm
- *            +--   +---+---+----+----+
- *   scalar   |     | 1 | 5 |  7 | 11 |
- *                  +---+---+----+----+
- *   matrix         | 2 | E |  8 |  E |
- *                  +---+---+----+----+
- *   complex_scalar | 3 | 6 |  9 | 12 |
- *                  +---+---+----+----+
- *   complex_matrix | 4 | E | 10 |  E |
- *                  +---+---+----+----+
- *
- *   E -> error, trapped in arith-ops.cc.
- */
+// Safer pow functions.
+//
+//       op2 \ op1:   s   m   cs   cm
+//            +--   +---+---+----+----+
+//   scalar   |     | 1 | 5 |  7 | 11 |
+//                  +---+---+----+----+
+//   matrix         | 2 | E |  8 |  E |
+//                  +---+---+----+----+
+//   complex_scalar | 3 | 6 |  9 | 12 |
+//                  +---+---+----+----+
+//   complex_matrix | 4 | E | 10 |  E |
+//                  +---+---+----+----+
+//
+//   E -> error, trapped in arith-ops.cc.
 
+// -*- 1 -*-
 tree_constant
 xpow (double a, double b)
 {
@@ -82,6 +81,7 @@ xpow (double a, double b)
     return tree_constant (pow (a, b));
 }
 
+// -*- 2 -*-
 tree_constant
 xpow (double a, const Matrix& b)
 {
@@ -115,6 +115,7 @@ xpow (double a, const Matrix& b)
   return retval;
 }
 
+// -*- 3 -*-
 tree_constant
 xpow (double a, const Complex& b)
 {
@@ -124,6 +125,7 @@ xpow (double a, const Complex& b)
   return tree_constant (result);
 }
 
+// -*- 4 -*-
 tree_constant
 xpow (double a, const ComplexMatrix& b)
 {
@@ -157,6 +159,7 @@ xpow (double a, const ComplexMatrix& b)
   return retval;
 }
 
+// -*- 5 -*-
 tree_constant
 xpow (const Matrix& a, double b)
 {
@@ -217,6 +220,7 @@ xpow (const Matrix& a, double b)
   return retval;
 }
 
+// -*- 6 -*-
 tree_constant
 xpow (const Matrix& a, const Complex& b)
 {
@@ -243,6 +247,7 @@ xpow (const Matrix& a, const Complex& b)
   return tree_constant (result);
 }
 
+// -*- 7 -*-
 tree_constant
 xpow (const Complex& a, double b)
 {
@@ -251,6 +256,7 @@ xpow (const Complex& a, double b)
   return tree_constant (result);
 }
 
+// -*- 8 -*-
 tree_constant
 xpow (const Complex& a, const Matrix& b)
 {
@@ -286,6 +292,7 @@ xpow (const Complex& a, const Matrix& b)
   return retval;
 }
 
+// -*- 9 -*-
 tree_constant
 xpow (const Complex& a, const Complex& b)
 {
@@ -294,6 +301,7 @@ xpow (const Complex& a, const Complex& b)
   return tree_constant (result);
 }
 
+// -*- 10 -*-
 tree_constant
 xpow (const Complex& a, const ComplexMatrix& b)
 {
@@ -327,6 +335,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
   return retval;
 }
 
+// -*- 11 -*-
 tree_constant
 xpow (const ComplexMatrix& a, double b)
 {
@@ -387,6 +396,7 @@ xpow (const ComplexMatrix& a, double b)
   return retval;
 }
 
+// -*- 12 -*-
 tree_constant
 xpow (const ComplexMatrix& a, const Complex& b)
 {
@@ -413,23 +423,22 @@ xpow (const ComplexMatrix& a, const Complex& b)
   return tree_constant (result);
 }
 
-/*
- * Safer pow functions that work elementwise for matrices.
- *
- *       op2 \ op1:   s   m   cs   cm
- *            +--   +---+---+----+----+
- *   scalar   |     | * | 3 |  * |  9 |
- *                  +---+---+----+----+
- *   matrix         | 1 | 4 |  7 | 10 |
- *                  +---+---+----+----+
- *   complex_scalar | * | 5 |  * | 11 |
- *                  +---+---+----+----+
- *   complex_matrix | 2 | 6 |  8 | 12 |
- *                  +---+---+----+----+
- *
- *   * -> not needed.
- */
+// Safer pow functions that work elementwise for matrices.
+//
+//       op2 \ op1:   s   m   cs   cm
+//            +--   +---+---+----+----+
+//   scalar   |     | * | 3 |  * |  9 |
+//                  +---+---+----+----+
+//   matrix         | 1 | 4 |  7 | 10 |
+//                  +---+---+----+----+
+//   complex_scalar | * | 5 |  * | 11 |
+//                  +---+---+----+----+
+//   complex_matrix | 2 | 6 |  8 | 12 |
+//                  +---+---+----+----+
+//
+//   * -> not needed.
 
+// -*- 1 -*-
 tree_constant
 elem_xpow (double a, const Matrix& b)
 {
@@ -462,6 +471,7 @@ elem_xpow (double a, const Matrix& b)
   return retval;
 }
 
+// -*- 2 -*-
 tree_constant
 elem_xpow (double a, const ComplexMatrix& b)
 {
@@ -476,6 +486,7 @@ elem_xpow (double a, const ComplexMatrix& b)
   return tree_constant (result);
 }
 
+// -*- 3 -*-
 tree_constant
 elem_xpow (const Matrix& a, double b)
 {
@@ -509,6 +520,7 @@ elem_xpow (const Matrix& a, double b)
   return retval;
 }
 
+// -*- 4 -*-
 tree_constant
 elem_xpow (const Matrix& a, const Matrix& b)
 {
@@ -558,6 +570,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
     }
 }
 
+// -*- 5 -*-
 tree_constant
 elem_xpow (const Matrix& a, const Complex& b)
 {
@@ -572,6 +585,7 @@ elem_xpow (const Matrix& a, const Complex& b)
   return tree_constant (result);
 }
 
+// -*- 6 -*-
 tree_constant
 elem_xpow (const Matrix& a, const ComplexMatrix& b)
 {
@@ -588,6 +602,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   return tree_constant (result);
 }
 
+// -*- 7 -*-
 tree_constant
 elem_xpow (const Complex& a, const Matrix& b)
 {
@@ -602,6 +617,7 @@ elem_xpow (const Complex& a, const Matrix& b)
   return tree_constant (result);
 }
 
+// -*- 8 -*-
 tree_constant
 elem_xpow (const Complex& a, const ComplexMatrix& b)
 {
@@ -616,6 +632,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
   return tree_constant (result);
 }
 
+// -*- 9 -*-
 tree_constant
 elem_xpow (const ComplexMatrix& a, double b)
 {
@@ -630,6 +647,7 @@ elem_xpow (const ComplexMatrix& a, double b)
   return tree_constant (result);
 }
 
+// -*- 10 -*-
 tree_constant
 elem_xpow (const ComplexMatrix& a, const Matrix& b)
 {
@@ -646,6 +664,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   return tree_constant (result);
 }
 
+// -*- 11 -*-
 tree_constant
 elem_xpow (const ComplexMatrix& a, const Complex& b)
 {
@@ -660,6 +679,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
   return tree_constant (result);
 }
 
+// -*- 12 -*-
 tree_constant
 elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 {

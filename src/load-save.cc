@@ -2705,8 +2705,12 @@ save variables in a file")
       return retval;
     }
 
-  ostream stream;
-  ofstream file;
+// Not declaring these static causes trouble on some systems with
+// g++/libg++ iostream.  Hmm.
+
+  static ostream stream;
+  static ofstream file;
+
   if (strcmp (*argv, "-") == 0)
     {
 // XXX FIXME XXX -- should things intended for the screen end up in a 

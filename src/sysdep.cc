@@ -140,8 +140,6 @@ octave_ieee_init (void)
 #endif
 #endif
 
-
-
 #if defined (HAVE_QUIET_NAN)
   octave_NaN = (double) quiet_nan ();
 #else
@@ -167,7 +165,6 @@ octave_ieee_init (void)
 
 #endif
 }
-
 
 #if defined (EXCEPTION_IN_MATH)
 extern "C"
@@ -212,19 +209,18 @@ sysdep_init (void)
   octave_ieee_init ();
 }
 
-/*
- * Set terminal in raw mode.  From less-177.
- *
- * Change terminal to "raw mode", or restore to "normal" mode.
- * "Raw mode" means 
- *	1. An outstanding read will complete on receipt of a single keystroke.
- *	2. Input is not echoed.  
- *	3. On output, \n is mapped to \r\n.
- *	4. \t is NOT expanded into spaces.
- *	5. Signal-causing characters such as ctrl-C (interrupt),
- *	   etc. are NOT disabled.
- * It doesn't matter whether an input \n is mapped to \r, or vice versa.
- */
+// Set terminal in raw mode.  From less-177.
+//
+// Change terminal to "raw mode", or restore to "normal" mode.
+// "Raw mode" means 
+//	1. An outstanding read will complete on receipt of a single keystroke.
+//	2. Input is not echoed.  
+//	3. On output, \n is mapped to \r\n.
+//	4. \t is NOT expanded into spaces.
+//	5. Signal-causing characters such as ctrl-C (interrupt),
+//	   etc. are NOT disabled.
+// It doesn't matter whether an input \n is mapped to \r, or vice versa.
+
 void
 raw_mode (int on)
 {
@@ -360,9 +356,8 @@ LOSE! LOSE!
   curr_on = on;
 }
 
-/*
- * Read one character from the terminal.
- */
+// Read one character from the terminal.
+
 int
 kbhit (void)
 {

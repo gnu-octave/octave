@@ -221,15 +221,6 @@ private:
 
 // -------------------------------------------------------------------
 
-// These may not need to be member functions.
-
-  tree_constant diag (void) const;
-  tree_constant diag (const tree_constant& a) const;
-
-  tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
-
-// -------------------------------------------------------------------
-
 // We want to eliminate this.
 
   constant_type const_type (void) const { return type_tag; }

@@ -44,6 +44,10 @@ Software Foundation, Inc.
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
+#ifndef ABS
+#define ABS(x) (((x) < 0) ? (-x) : (x))
+#endif
+
 DEFUN ("all", Fall, Sall, 1, 1,
   "all (X): are all elements of X nonzero?")
 {
@@ -288,6 +292,251 @@ DEFUN ("cumsum", Fcumsum, Scumsum, 1, 1,
   return retval;
 }
 
+static tree_constant
+make_diag (const Matrix& v, int k)
+{
+  int nr = v.rows ();
+  int nc = v.columns ();
+  assert (nc == 1 || nr == 1);
+
+  tree_constant retval;
+
+  int roff = 0;
+  int coff = 0;
+  if (k > 0)
+    {
+      roff = 0;
+      coff = k;
+    }
+  else if (k < 0)
+    {
+      roff = -k;
+      coff = 0;
+    }
+
+  if (nr == 1)
+    {
+      int n = nc + ABS (k);
+      Matrix m (n, n, 0.0);
+      for (int i = 0; i < nc; i++)
+	m.elem (i+roff, i+coff) = v.elem (0, i);
+      retval = tree_constant (m);
+    }
+  else
+    {
+      int n = nr + ABS (k);
+      Matrix m (n, n, 0.0);
+      for (int i = 0; i < nr; i++)
+	m.elem (i+roff, i+coff) = v.elem (i, 0);
+      retval = tree_constant (m);
+    }
+
+  return retval;
+}
+
+static tree_constant
+make_diag (const ComplexMatrix& v, int k)
+{
+  int nr = v.rows ();
+  int nc = v.columns ();
+  assert (nc == 1 || nr == 1);
+
+  tree_constant retval;
+
+  int roff = 0;
+  int coff = 0;
+  if (k > 0)
+    {
+      roff = 0;
+      coff = k;
+    }
+  else if (k < 0)
+    {
+      roff = -k;
+      coff = 0;
+    }
+
+  if (nr == 1)
+    {
+      int n = nc + ABS (k);
+      ComplexMatrix m (n, n, 0.0);
+      for (int i = 0; i < nc; i++)
+	m.elem (i+roff, i+coff) = v.elem (0, i);
+      retval = tree_constant (m);
+    }
+  else
+    {
+      int n = nr + ABS (k);
+      ComplexMatrix m (n, n, 0.0);
+      for (int i = 0; i < nr; i++)
+	m.elem (i+roff, i+coff) = v.elem (i, 0);
+      retval = tree_constant (m);
+    }
+
+  return retval;
+}
+
+static tree_constant
+make_diag (const tree_constant& arg)
+{
+  tree_constant retval;
+
+  if (arg.is_real_type ())
+    {
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
+	{
+	  int nr = m.rows ();
+	  int nc = m.columns ();
+
+	  if (nr == 0 || nc == 0)
+	    retval = Matrix ();
+	  else if (nr == 1 || nc == 1)
+	    retval = make_diag (m, 0);
+	  else
+	    {
+	      ColumnVector v = m.diag ();
+	      if (v.capacity () > 0)
+		retval = v;
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("diag", arg);
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix cm = arg.complex_matrix_value ();
+
+      if (! error_state)
+	{
+	  int nr = cm.rows ();
+	  int nc = cm.columns ();
+
+	  if (nr == 0 || nc == 0)
+	    retval = Matrix ();
+	  else if (nr == 1 || nc == 1)
+	    retval = make_diag (cm, 0);
+	  else
+	    {
+	      ComplexColumnVector v = cm.diag ();
+	      if (v.capacity () > 0)
+		retval = v;
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("diag", arg);
+    }
+  else
+    gripe_wrong_type_arg ("diag", arg);
+
+  return retval;
+}
+
+static tree_constant
+make_diag (const tree_constant& a, const tree_constant& b)
+{
+  tree_constant retval;
+
+  double tmp = b.double_value ();
+
+  if (error_state)
+    {
+      error ("diag: invalid second argument");      
+      return retval;
+    }
+
+  int k = NINT (tmp);
+  int n = ABS (k) + 1;
+
+  if (a.is_real_type ())
+    {
+      if (a.is_scalar_type ())
+	{
+	  double d = a.double_value ();
+
+	  if (k == 0)
+	    retval = d;
+	  else if (k > 0)
+	    {
+	      Matrix m (n, n, 0.0);
+	      m.elem (0, k) = d;
+	      retval = m;
+	    }
+	  else if (k < 0)
+	    {
+	      Matrix m (n, n, 0.0);
+	      m.elem (-k, 0) = d;
+	      retval = m;
+	    }
+	}
+      else if (a.is_matrix_type ())
+	{
+	  Matrix m = a.matrix_value ();
+
+	  int nr = m.rows ();
+	  int nc = m.columns ();
+
+	  if (nr == 0 || nc == 0)
+	    retval = Matrix ();
+	  else if (nr == 1 || nc == 1)
+	    retval = make_diag (m, k);
+	  else
+	    {
+	      ColumnVector d = m.diag (k);
+	      retval = d;
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("diag", a);
+    }
+  else if (a.is_complex_type ())
+    {
+      if (a.is_scalar_type ())
+	{
+	  Complex c = a.complex_value ();
+
+	  if (k == 0)
+	    retval = c;
+	  else if (k > 0)
+	    {
+	      ComplexMatrix m (n, n, 0.0);
+	      m.elem (0, k) = c;
+	      retval = m;
+	    }
+	  else if (k < 0)
+	    {
+	      ComplexMatrix m (n, n, 0.0);
+	      m.elem (-k, 0) = c;
+	      retval = m;
+	    }
+	}
+      else if (a.is_matrix_type ())
+	{
+	  ComplexMatrix cm = a.complex_matrix_value ();
+
+	  int nr = cm.rows ();
+	  int nc = cm.columns ();
+
+	  if (nr == 0 || nc == 0)
+	    retval = Matrix ();
+	  else if (nr == 1 || nc == 1)
+	    retval = make_diag (cm, k);
+	  else
+	    {
+	      ComplexColumnVector d = cm.diag (k);
+	      retval = d;
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("diag", a);
+    }
+  else
+    gripe_wrong_type_arg ("diag", a);
+
+  return retval;
+}
+
 DEFUN ("diag", Fdiag, Sdiag, 2, 1,
   "diag (X [,k]): form/extract diagonals")
 {
@@ -296,9 +545,9 @@ DEFUN ("diag", Fdiag, Sdiag, 2, 1,
   int nargin = args.length ();
 
   if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).diag ();
+    retval = make_diag (args(0));
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
-    retval = args(0).diag (args(1));
+    retval = make_diag (args(0), args(1));
   else
     print_usage ("diag");
 

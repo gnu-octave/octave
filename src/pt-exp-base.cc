@@ -91,6 +91,30 @@ list_to_vector (tree *list, int& len)
 #endif
 
 static int
+any_element_less_than (const Matrix& a, double val)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      if (a.elem (i, j) < val)
+	return 1;
+  return 0;
+}
+
+static int
+any_element_greater_than (const Matrix& a, double val)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      if (a.elem (i, j) > val)
+	return 1;
+  return 0;
+}
+
+static int
 print_as_scalar (const tree_constant& val)
 {
   int nr = val.rows ();
@@ -2233,6 +2257,84 @@ tree_builtin::eval (int print)
   return retval;
 }
 
+static tree_constant
+apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
+{
+  tree_constant retval;
+
+  if (arg.is_real_type ())
+    {
+      if (arg.is_scalar_type ())
+	{
+	  double d = arg.double_value ();
+
+	  if (m_fcn.can_return_complex_for_real_arg
+	      && (d < m_fcn.lower_limit || d > m_fcn.upper_limit))
+	    {
+	      if (m_fcn.c_c_mapper)
+		retval = m_fcn.c_c_mapper (Complex (d));
+	      else
+		error ("%s: unable to handle real arguments", m_fcn.name);
+	    }
+	  else if (m_fcn.d_d_mapper)
+	    retval = m_fcn.d_d_mapper (d);
+	  else
+	    error ("%s: unable to handle real arguments", m_fcn.name);
+	}
+      else if (arg.is_matrix_type ())
+	{
+	  Matrix m = arg.matrix_value ();
+
+	  if (m_fcn.can_return_complex_for_real_arg
+	      && (any_element_less_than (m, m_fcn.lower_limit)
+		  || any_element_greater_than (m, m_fcn.upper_limit)))
+	    {
+	      if (m_fcn.c_c_mapper)
+		retval = map (m_fcn.c_c_mapper, ComplexMatrix (m));
+	      else
+		error ("%s: unable to handle real arguments", m_fcn.name);
+	    }
+	  else if (m_fcn.d_d_mapper)
+	    retval = map (m_fcn.d_d_mapper, m);
+	  else
+	    error ("%s: unable to handle real arguments", m_fcn.name);
+	}
+      else
+	gripe_wrong_type_arg ("mapper", arg);
+    }
+  else if (arg.is_complex_type ())
+    {
+      if (arg.is_scalar_type ())
+	{
+	  Complex c = arg.complex_value ();
+
+	  if (m_fcn.d_c_mapper)
+	    retval = m_fcn.d_c_mapper (c);
+	  else if (m_fcn.c_c_mapper)
+	    retval = m_fcn.c_c_mapper (c);
+	  else
+	    error ("%s: unable to handle complex arguments", m_fcn.name);
+	}
+      else if (arg.is_matrix_type ())
+	{
+	  ComplexMatrix cm = arg.complex_matrix_value ();
+
+	  if (m_fcn.d_c_mapper)
+	    retval = map (m_fcn.d_c_mapper, cm);
+	  else if (m_fcn.c_c_mapper)
+	    retval = map (m_fcn.c_c_mapper, cm);
+	  else
+	    error ("%s: unable to handle complex arguments", m_fcn.name);
+	}
+      else
+	gripe_wrong_type_arg ("mapper", arg);
+    }
+  else
+    gripe_wrong_type_arg ("mapper", arg);
+
+  return retval;
+}
+
 Octave_object
 tree_builtin::eval (int print, int nargout, const Octave_object& args)
 {
@@ -2258,7 +2360,7 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
 	::error ("%s: too many arguments", my_name);
       else if (nargin > 0 && args(0).is_defined ())
 	{
-	  tree_constant tmp = args(0).mapper (mapper_fcn, 0);
+	  tree_constant tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
 	  retval(0) = tmp;
 	}	
     }
@@ -2304,9 +2406,7 @@ tree_function::define_param_list (tree_parameter_list *t)
 
   if (param_list)
     {
-      int len = param_list->length ();
-      int va_only = param_list->varargs_only ();
-      num_named_args = va_only ? len - 1 : len;
+      num_named_args = param_list->length ();
       curr_va_arg_number = num_named_args;
     }
 
@@ -2369,10 +2469,10 @@ tree_function::octave_va_arg (void)
   tree_constant retval;
 
   if (curr_va_arg_number < num_args_passed)
-    retval = args_passed (++curr_va_arg_number);
+    retval = args_passed (curr_va_arg_number++);
   else
-    ::error ("error getting arg number %d -- only %d provided",
-	     curr_va_arg_number, num_args_passed-1);
+    ::error ("va_arg: error getting arg number %d -- only %d provided",
+	     curr_va_arg_number + 1, num_args_passed);
 
   return retval;
 }

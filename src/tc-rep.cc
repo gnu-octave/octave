@@ -49,32 +49,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tc-inlines.h"
 
-// And still some more handy helper functions.
-
-static int
-any_element_less_than (const Matrix& a, double val)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) < val)
-	return 1;
-  return 0;
-}
-
-static int
-any_element_greater_than (const Matrix& a, double val)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) > val)
-	return 1;
-  return 0;
-}
-
 static int
 any_element_is_complex (const ComplexMatrix& a)
 {
@@ -1190,23 +1164,34 @@ TC_REP::convert_to_str (void) const
     case complex_matrix_constant:
     case matrix_constant:
       {
-	ColumnVector v = vector_value ();
-	int len = v.length ();
-	if (len == 0)
-	  ::error ("can only convert vectors and scalars to strings");
+	if (rows () == 0 && columns () == 0)
+	  {
+	    char s = '\0';
+	    retval = tree_constant (&s);
+	  }
 	else
 	  {
-	    char *s = new char [len+1];
-	    s[len] = '\0';
-	    for (int i = 0; i < len; i++)
+	    ColumnVector v = vector_value ();
+	    int len = v.length ();
+	    if (len == 0)
 	      {
-		double d = v.elem (i);
-		int ival = NINT (d);
-// Warn about out of range conversions?
-		s[i] = (char) ival;
+		char s = '\0';
+		retval = tree_constant (&s);
 	      }
-	    retval = tree_constant (s);
-	    delete [] s;
+	    else
+	      {
+		char *s = new char [len+1];
+		s[len] = '\0';
+		for (int i = 0; i < len; i++)
+		  {
+		    double d = v.elem (i);
+		    int ival = NINT (d);
+// Warn about out of range conversions?
+		    s[i] = (char) ival;
+		  }
+		retval = tree_constant (s);
+		delete [] s;
+	      }
 	  }
       }
       break;
@@ -2122,394 +2107,6 @@ do_unary_op (tree_constant& a, tree_expression::type t)
     }
 
   return ans;
-}
-
-static tree_constant
-make_diag (const Matrix& v, int k)
-{
-  int nr = v.rows ();
-  int nc = v.columns ();
-  assert (nc == 1 || nr == 1);
-
-  tree_constant retval;
-
-  int roff = 0;
-  int coff = 0;
-  if (k > 0)
-    {
-      roff = 0;
-      coff = k;
-    }
-  else if (k < 0)
-    {
-      roff = -k;
-      coff = 0;
-    }
-
-  if (nr == 1)
-    {
-      int n = nc + ABS (k);
-      Matrix m (n, n, 0.0);
-      for (int i = 0; i < nc; i++)
-	m.elem (i+roff, i+coff) = v.elem (0, i);
-      retval = tree_constant (m);
-    }
-  else
-    {
-      int n = nr + ABS (k);
-      Matrix m (n, n, 0.0);
-      for (int i = 0; i < nr; i++)
-	m.elem (i+roff, i+coff) = v.elem (i, 0);
-      retval = tree_constant (m);
-    }
-
-  return retval;
-}
-
-static tree_constant
-make_diag (const ComplexMatrix& v, int k)
-{
-  int nr = v.rows ();
-  int nc = v.columns ();
-  assert (nc == 1 || nr == 1);
-
-  tree_constant retval;
-
-  int roff = 0;
-  int coff = 0;
-  if (k > 0)
-    {
-      roff = 0;
-      coff = k;
-    }
-  else if (k < 0)
-    {
-      roff = -k;
-      coff = 0;
-    }
-
-  if (nr == 1)
-    {
-      int n = nc + ABS (k);
-      ComplexMatrix m (n, n, 0.0);
-      for (int i = 0; i < nc; i++)
-	m.elem (i+roff, i+coff) = v.elem (0, i);
-      retval = tree_constant (m);
-    }
-  else
-    {
-      int n = nr + ABS (k);
-      ComplexMatrix m (n, n, 0.0);
-      for (int i = 0; i < nr; i++)
-	m.elem (i+roff, i+coff) = v.elem (i, 0);
-      retval = tree_constant (m);
-    }
-
-  return retval;
-}
-
-tree_constant
-TC_REP::diag (void) const
-{
-  if (type_tag == string_constant || type_tag == range_constant)
-    {
-      tree_constant tmp = make_numeric ();
-      return tmp.diag ();
-    }
-
-  tree_constant retval;
-
-  switch (type_tag)
-    {
-    case scalar_constant:
-      retval = tree_constant (scalar);
-      break;
-
-    case matrix_constant:
-      {
-	int nr = rows ();
-	int nc = columns ();
-	if (nr == 0 || nc == 0)
-	  {
-	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
-	  }
-	else if (nr == 1 || nc == 1)
-	  retval = make_diag (matrix_value (), 0);
-	else
-	  {
-	    ColumnVector v = matrix->diag ();
-	    if (v.capacity () > 0)
-	      retval = tree_constant (v);
-	  }
-      }
-      break;
-
-    case complex_scalar_constant:
-      retval = tree_constant (*complex_scalar);
-      break;
-
-    case complex_matrix_constant:
-      {
-	int nr = rows ();
-	int nc = columns ();
-	if (nr == 0 || nc == 0)
-	  {
-	    Matrix mtmp;
-	    retval = tree_constant (mtmp);
-	  }
-	else if (nr == 1 || nc == 1)
-	  retval = make_diag (complex_matrix_value (), 0);
-	else
-	  {
-	    ComplexColumnVector v = complex_matrix->diag ();
-	    if (v.capacity () > 0)
-	      retval = tree_constant (v);
-	  }
-      }
-      break;
-
-    case string_constant:
-    case range_constant:
-    case magic_colon:
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  return retval;
-}
-
-tree_constant
-TC_REP::diag (const tree_constant& a) const
-{
-  if (type_tag == string_constant || type_tag == range_constant)
-    {
-      tree_constant tmp = make_numeric ();
-      return tmp.diag (a);
-    }
-
-  tree_constant tmp_a = a.make_numeric ();
-
-  TC_REP::constant_type a_type = tmp_a.const_type ();
-
-  tree_constant retval;
-
-  switch (type_tag)
-    {
-    case scalar_constant:
-      if (a_type == scalar_constant)
-	{
-	  int k = NINT (tmp_a.double_value ());
-	  int n = ABS (k) + 1;
-	  if (k == 0)
-	    retval = tree_constant (scalar);
-	  else if (k > 0)
-	    {
-	      Matrix m (n, n, 0.0);
-	      m.elem (0, k) = scalar;
-	      retval = tree_constant (m);
-	    }
-	  else if (k < 0)
-	    {
-	      Matrix m (n, n, 0.0);
-	      m.elem (-k, 0) = scalar;
-	      retval = tree_constant (m);
-	    }
-	}
-      break;
-
-    case matrix_constant:
-      if (a_type == scalar_constant)
-	{
-	  int k = NINT (tmp_a.double_value ());
-	  int nr = rows ();
-	  int nc = columns ();
-	  if (nr == 0 || nc == 0)
-	    {
-	      Matrix mtmp;
-	      retval = tree_constant (mtmp);
-	    }
-	  else if (nr == 1 || nc == 1)
-	    retval = make_diag (matrix_value (), k);
-	  else
-	    {
-	      ColumnVector d = matrix->diag (k);
-	      retval = tree_constant (d);
-	    }
-	}
-      else
-	::error ("diag: invalid second argument");
-
-      break;
-
-    case complex_scalar_constant:
-      if (a_type == scalar_constant)
-	{
-	  int k = NINT (tmp_a.double_value ());
-	  int n = ABS (k) + 1;
-	  if (k == 0)
-	    retval = tree_constant (*complex_scalar);
-	  else if (k > 0)
-	    {
-	      ComplexMatrix m (n, n, 0.0);
-	      m.elem (0, k) = *complex_scalar;
-	      retval = tree_constant (m);
-	    }
-	  else if (k < 0)
-	    {
-	      ComplexMatrix m (n, n, 0.0);
-	      m.elem (-k, 0) = *complex_scalar;
-	      retval = tree_constant (m);
-	    }
-	}
-      break;
-
-    case complex_matrix_constant:
-      if (a_type == scalar_constant)
-	{
-	  int k = NINT (tmp_a.double_value ());
-	  int nr = rows ();
-	  int nc = columns ();
-	  if (nr == 0 || nc == 0)
-	    {
-	      Matrix mtmp;
-	      retval = tree_constant (mtmp);
-	    }
-	  else if (nr == 1 || nc == 1)
-	    retval = make_diag (complex_matrix_value (), k);
-	  else
-	    {
-	      ComplexColumnVector d = complex_matrix->diag (k);
-	      retval = tree_constant (d);
-	    }
-	}
-      else
-	::error ("diag: invalid second argument");
-
-      break;
-
-    case string_constant:
-    case range_constant:
-    case magic_colon:
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  return retval;
-}
-
-// XXX FIXME XXX -- this can probably be rewritten efficiently as a
-// nonmember function...
-
-tree_constant
-TC_REP::mapper (Mapper_fcn& m_fcn, int print) const
-{
-  tree_constant retval;
-
-  if (type_tag == string_constant || type_tag == range_constant)
-    {
-      tree_constant tmp = make_numeric ();
-      return tmp.mapper (m_fcn, print);
-    }
-
-  switch (type_tag)
-    {
-    case scalar_constant:
-      if (m_fcn.can_return_complex_for_real_arg
-	  && (scalar < m_fcn.lower_limit
-	      || scalar > m_fcn.upper_limit))
-	{
-	  if (m_fcn.c_c_mapper)
-	    {
-	      Complex c = m_fcn.c_c_mapper (Complex (scalar));
-	      retval = tree_constant (c);
-	    }
-	  else
-	    ::error ("%s: unable to handle real arguments", m_fcn.name);
-	}
-      else
-	{
-	  if (m_fcn.d_d_mapper)
-	    {
-	      double d = m_fcn.d_d_mapper (scalar);
-	      retval = tree_constant (d);
-	    }
-	  else
-	    ::error ("%s: unable to handle real arguments", m_fcn.name);
-	}
-      break;
-
-    case matrix_constant:
-      if (m_fcn.can_return_complex_for_real_arg
-	  && (any_element_less_than (*matrix, m_fcn.lower_limit)
-	      || any_element_greater_than (*matrix, m_fcn.upper_limit)))
-	{
-	  if (m_fcn.c_c_mapper)
-	    {
-	      ComplexMatrix cm = map (m_fcn.c_c_mapper,
-				      ComplexMatrix (*matrix));
-	      retval = tree_constant (cm);
-	    }
-	  else
-	    ::error ("%s: unable to handle real arguments", m_fcn.name);
-	}
-      else
-	{
-	  if (m_fcn.d_d_mapper)
-	    {
-	      Matrix m = map (m_fcn.d_d_mapper, *matrix);
-	      retval = tree_constant (m);
-	    }
-	  else
-	    ::error ("%s: unable to handle real arguments", m_fcn.name);
-	}
-      break;
-
-    case complex_scalar_constant:
-      if (m_fcn.d_c_mapper)
-	{
-	  double d;
-	  d = m_fcn.d_c_mapper (*complex_scalar);
-	  retval = tree_constant (d);
-	}
-      else if (m_fcn.c_c_mapper)
-	{
-	  Complex c;
-	  c = m_fcn.c_c_mapper (*complex_scalar);
-	  retval = tree_constant (c);
-	}
-      else
-	::error ("%s: unable to handle complex arguments", m_fcn.name);
-      break;
-
-    case complex_matrix_constant:
-      if (m_fcn.d_c_mapper)
-	{
-	  Matrix m;
-	  m = map (m_fcn.d_c_mapper, *complex_matrix);
-	  retval = tree_constant (m);
-	}
-      else if (m_fcn.c_c_mapper)
-	{
-	  ComplexMatrix cm;
-	  cm = map (m_fcn.c_c_mapper, *complex_matrix);
-	  retval = tree_constant (cm);
-	}
-      else
-	::error ("%s: unable to handle complex arguments", m_fcn.name);
-      break;
-
-    case string_constant:
-    case range_constant:
-    case magic_colon:
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  return retval;
 }
 
 /*

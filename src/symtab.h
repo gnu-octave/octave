@@ -34,7 +34,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class ostream;
 
-#define HASH_TABLE_SIZE 1024             /* Must be multiple of 2 */
+// Must be multiple of 2.
+#define HASH_TABLE_SIZE 1024
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
 
 class tree;
@@ -48,9 +49,8 @@ class symbol_record;
 class symbol_record_info;
 class symbol_table;
 
-/*
- * Variables or functions.
- */
+// Variables or functions.
+
 class symbol_def
 {
   friend class symbol_record;
@@ -116,9 +116,8 @@ private:
   symbol_def& operator = (const symbol_def& sd);
 };
 
-/*
- * Individual records in a symbol table.
- */
+// Individual records in a symbol table.
+
 class
 symbol_record
 {
@@ -207,9 +206,7 @@ private:
   symbol_record& operator = (const symbol_record& s);
 };
 
-/*
- * A structure for handling verbose information about a symbol_record.
- */
+// A structure for handling verbose information about a symbol_record.
 
 class
 symbol_record_info
@@ -270,9 +267,7 @@ private:
   int initialized;
 };
 
-/*
- * A symbol table.
- */
+// A symbol table.
 
 #define SYMTAB_LOCAL_SCOPE 1
 #define SYMTAB_GLOBAL_SCOPE 2

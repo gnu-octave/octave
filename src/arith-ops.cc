@@ -74,9 +74,8 @@ Matrix_bool_op
   Matrix_OR, 
 };
 
-/*
- * Check row and column dimensions for binary matrix operations.
- */
+// Check row and column dimensions for binary matrix operations.
+
 static inline int
 m_add_conform (const Matrix& a, const Matrix& b, int warn)
 {
@@ -197,23 +196,21 @@ m_mul_conform (const ComplexMatrix& a, const ComplexMatrix& b, int warn)
   return ok;
 }
 
-/*
- * Stupid binary comparison operations like the ones Matlab provides.
- * One for each type combination, in the order given here:
- *
- *       op2 \ op1:   s   m   cs   cm
- *            +--   +---+---+----+----+
- *   scalar   |     | * | 3 |  * |  9 |
- *                  +---+---+----+----+
- *   matrix         | 1 | 4 |  7 | 10 |
- *                  +---+---+----+----+
- *   complex_scalar | * | 5 |  * | 11 |
- *                  +---+---+----+----+
- *   complex_matrix | 2 | 6 |  8 | 12 |
- *                  +---+---+----+----+
- */
+// Stupid binary comparison operations like the ones Matlab provides.
+// One for each type combination, in the order given here:
+//
+//       op2 \ op1:   s   m   cs   cm
+//            +--   +---+---+----+----+
+//   scalar   |     | * | 3 |  * |  9 |
+//                  +---+---+----+----+
+//   matrix         | 1 | 4 |  7 | 10 |
+//                  +---+---+----+----+
+//   complex_scalar | * | 5 |  * | 11 |
+//                  +---+---+----+----+
+//   complex_matrix | 2 | 6 |  8 | 12 |
+//                  +---+---+----+----+
 
-/* 1 */
+// -*- 1 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, double s, const Matrix& a)
 {
@@ -268,7 +265,7 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, const Matrix& a)
   return t;
 }
 
-/* 2 */
+// -*- 2 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, double s, const ComplexMatrix& a)
 {
@@ -323,7 +320,7 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, const ComplexMatrix& a)
   return t;
 }
 
-/* 3 */
+// -*- 3 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, double s)
 {
@@ -378,7 +375,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, double s)
   return t;
 }
 
-/* 4 */
+// -*- 4 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Complex& s)
 {
@@ -433,7 +430,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Complex& s)
   return t;
 }
 
-/* 5 */
+// -*- 5 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Matrix& b)
 {
@@ -491,7 +488,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Matrix& b)
   return c;
 }
 
-/* 6 */
+// -*- 6 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const ComplexMatrix& b)
 {
@@ -548,7 +545,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const ComplexMatrix& b)
   return c;
 }
 
-/* 7 */
+// -*- 7 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const Matrix& a)
 {
@@ -603,7 +600,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const Matrix& a)
   return t;
 }
 
-/* 8 */
+// -*- 8 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const ComplexMatrix& a)
 {
@@ -658,7 +655,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const ComplexMatrix& a)
   return t;
 }
 
-/* 9 */
+// -*- 9 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, double s)
 {
@@ -713,7 +710,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, double s)
   return t;
 }
 
-/* 10 */
+// -*- 10 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Complex& s)
 {
@@ -768,7 +765,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Complex& s)
   return t;
 }
 
-/* 11 */
+// -*- 11 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Matrix& b)
 {
@@ -825,7 +822,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Matrix& b)
   return c;
 }
 
-/* 12 */
+// -*- 12 -*-
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
 		   const ComplexMatrix& b) 
@@ -884,15 +881,12 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
   return c;
 }
 
-/*
- * Unary operations.  One for each numeric data type:
- *
- *   scalar
- *   complex_scalar
- *   matrix
- *   complex_matrix
- *
- */
+// Unary operations.  One for each numeric data type:
+//
+//   scalar
+//   complex_scalar
+//   matrix
+//   complex_matrix
 
 tree_constant
 do_unary_op (double d, tree_expression::type t)
@@ -998,23 +992,21 @@ do_unary_op (const ComplexMatrix& a, tree_expression::type t)
   return tree_constant (result);
 }
 
-/*
- * Binary operations.  One for each type combination, in the order
- * given here:
- *
- *       op2 \ op1:   s   m   cs   cm
- *            +--   +---+---+----+----+
- *   scalar   |     | 1 | 5 | 9  | 13 |
- *                  +---+---+----+----+
- *   matrix         | 2 | 6 | 10 | 14 |
- *                  +---+---+----+----+
- *   complex_scalar | 3 | 7 | 11 | 15 |
- *                  +---+---+----+----+
- *   complex_matrix | 4 | 8 | 12 | 16 |
- *                  +---+---+----+----+
- */
+// Binary operations.  One for each type combination, in the order
+// given here:
+//
+//       op2 \ op1:   s   m   cs   cm
+//            +--   +---+---+----+----+
+//   scalar   |     | 1 | 5 | 9  | 13 |
+//                  +---+---+----+----+
+//   matrix         | 2 | 6 | 10 | 14 |
+//                  +---+---+----+----+
+//   complex_scalar | 3 | 7 | 11 | 15 |
+//                  +---+---+----+----+
+//   complex_matrix | 4 | 8 | 12 | 16 |
+//                  +---+---+----+----+
 
-/* 1 */
+// -*- 1 -*-
 tree_constant
 do_binary_op (double a, double b, tree_expression::type t)
 {
@@ -1083,7 +1075,7 @@ do_binary_op (double a, double b, tree_expression::type t)
   return tree_constant (result);
 }
 
-/* 2 */
+// -*- 2 -*-
 tree_constant
 do_binary_op (double a, const Matrix& b, tree_expression::type t)
 {
@@ -1154,7 +1146,7 @@ do_binary_op (double a, const Matrix& b, tree_expression::type t)
   return tree_constant (result);
 }
 
-/* 3 */
+// -*- 3 -*-
 tree_constant
 do_binary_op (double a, const Complex& b, tree_expression::type t)
 {
@@ -1245,7 +1237,7 @@ do_binary_op (double a, const Complex& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 4 */
+// -*- 4 -*-
 tree_constant
 do_binary_op (double a, const ComplexMatrix& b, tree_expression::type t)
 {
@@ -1336,7 +1328,7 @@ do_binary_op (double a, const ComplexMatrix& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 5 */
+// -*- 5 -*-
 tree_constant
 do_binary_op (const Matrix& a, double b, tree_expression::type t)
 {
@@ -1405,7 +1397,7 @@ do_binary_op (const Matrix& a, double b, tree_expression::type t)
   return tree_constant (result);
 }
 
-/* 6 */
+// -*- 6 -*-
 tree_constant
 do_binary_op (const Matrix& a, const Matrix& b, tree_expression::type t)
 {
@@ -1493,7 +1485,7 @@ do_binary_op (const Matrix& a, const Matrix& b, tree_expression::type t)
   return tree_constant (result);
 }
 
-/* 7 */
+// -*- 7 -*-
 tree_constant
 do_binary_op (const Matrix& a, const Complex& b, tree_expression::type t)
 {
@@ -1583,7 +1575,7 @@ do_binary_op (const Matrix& a, const Complex& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 8 */
+// -*- 8 -*-
 tree_constant
 do_binary_op (const Matrix& a, const ComplexMatrix& b, tree_expression::type t)
 {
@@ -1694,7 +1686,7 @@ do_binary_op (const Matrix& a, const ComplexMatrix& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 9 */
+// -*- 9 -*-
 tree_constant
 do_binary_op (const Complex& a, double b, tree_expression::type t)
 {
@@ -1785,7 +1777,7 @@ do_binary_op (const Complex& a, double b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 10 */
+// -*- 10 -*-
 tree_constant
 do_binary_op (const Complex& a, const Matrix& b, tree_expression::type t)
 {
@@ -1877,7 +1869,7 @@ do_binary_op (const Complex& a, const Matrix& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 11 */
+// -*- 11 -*-
 tree_constant
 do_binary_op (const Complex& a, const Complex& b, tree_expression::type t)
 {
@@ -1968,7 +1960,7 @@ do_binary_op (const Complex& a, const Complex& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 12 */
+// -*- 12 -*-
 tree_constant
 do_binary_op (const Complex& a, const ComplexMatrix& b,
 	      tree_expression::type t)
@@ -2061,7 +2053,7 @@ do_binary_op (const Complex& a, const ComplexMatrix& b,
     return tree_constant (complex_result);
 }
 
-/* 13 */
+// -*- 13 -*-
 tree_constant
 do_binary_op (const ComplexMatrix& a, double b, tree_expression::type t)
 {
@@ -2151,7 +2143,7 @@ do_binary_op (const ComplexMatrix& a, double b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 14 */
+// -*- 14 -*-
 tree_constant
 do_binary_op (const ComplexMatrix& a, const Matrix& b, tree_expression::type t)
 {
@@ -2262,7 +2254,7 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree_expression::type t)
     return tree_constant (complex_result);
 }
 
-/* 15 */
+// -*- 15 -*-
 tree_constant
 do_binary_op (const ComplexMatrix& a, const Complex& b,
 	      tree_expression::type t)
@@ -2353,7 +2345,7 @@ do_binary_op (const ComplexMatrix& a, const Complex& b,
     return tree_constant (complex_result);
 }
 
-/* 16 */
+// -*- 16 -*-
 tree_constant
 do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
 	      tree_expression::type t)

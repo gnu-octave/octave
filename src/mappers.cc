@@ -53,9 +53,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 extern int signgam;
 #endif
 
-/*
- * Double -> double mappers.
- */
+// Double -> double mappers.
 
 double
 arg (double x)
@@ -184,9 +182,7 @@ xlgamma (double x)
 #endif
 }
 
-/*
- * Complex -> double mappers.
- */
+// Complex -> double mappers.
 
 double
 xisnan (const Complex& x)
@@ -214,9 +210,7 @@ xisinf (const Complex& x)
   return (double) (! (int) xfinite (x));
 }
 
-/*
- * Complex -> complex mappers.
- */
+// Complex -> complex mappers.
 
 Complex
 acos (const Complex& x)

@@ -361,22 +361,10 @@ public:
 
 // -------------------------------------------------------------------
 
-// These may not need to be member functions.
-
-  tree_constant diag (void) const { return rep->diag (); }
-  tree_constant diag (const tree_constant& a) const { return rep->diag (a); }
-
-  tree_constant mapper (Mapper_fcn& m_fcn, int print) const
-    { return rep->mapper (m_fcn, print); }
-
-// -------------------------------------------------------------------
-
 // We want to eliminate this, or at least make it private.
 
   tree_constant_rep::constant_type const_type (void) const
     { return rep->const_type (); }
-
-// -------------------------------------------------------------------
 
 private:
 

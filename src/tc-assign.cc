@@ -34,11 +34,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tc-inlines.cc"
 
-/*
- * Top-level tree-constant function that handles assignments.  Only
- * decide if the left-hand side is currently a scalar or a matrix and
- * hand off to other functions to do the real work.
- */
+// Top-level tree-constant function that handles assignments.  Only
+// decide if the left-hand side is currently a scalar or a matrix and
+// hand off to other functions to do the real work.
+
 void
 tree_constant_rep::assign (tree_constant& rhs, tree_constant *args, int nargs)
 {
@@ -74,10 +73,9 @@ tree_constant_rep::assign (tree_constant& rhs, tree_constant *args, int nargs)
     }
 }
 
-/*
- * Assignments to scalars.  If resize_on_range_error is true,
- * this can convert the left-hand size to a matrix.
- */
+// Assignments to scalars.  If resize_on_range_error is true,
+// this can convert the left-hand size to a matrix.
+
 void
 tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 					 tree_constant *args, int nargs)
@@ -177,12 +175,11 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
     ::error ("index invalid or out of range for scalar type");
 }
 
-/*
- * Assignments to matrices (and vectors).
- *
- * For compatibility with Matlab, we allow assignment of an empty
- * matrix to an expression with empty indices to do nothing.
- */
+// Assignments to matrices (and vectors).
+//
+// For compatibility with Matlab, we allow assignment of an empty
+// matrix to an expression with empty indices to do nothing.
+
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant *args, int nargs)
@@ -251,9 +248,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/*
- * Matrix assignments indexed by a single value.
- */
+// Matrix assignments indexed by a single value.
+
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant& i_arg)
@@ -295,11 +291,10 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     ::error ("single index only valid for row or column vector");
 }
 
-/*
- * Fortran-style assignments.  Matrices are assumed to be stored in
- * column-major order and it is ok to use a single index for
- * multi-dimensional matrices.
- */
+// Fortran-style assignments.  Matrices are assumed to be stored in
+// column-major order and it is ok to use a single index for
+// multi-dimensional matrices.
+
 void
 tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 						    tree_constant& i_arg)
@@ -460,9 +455,8 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/*
- * Fortran-style assignment for vector index.
- */
+// Fortran-style assignment for vector index.
+
 void
 tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 						    idx_vector& i)
@@ -505,9 +499,8 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
     ::error ("number of rows and columns must match for indexed assignment");
 }
 
-/*
- * Fortran-style assignment for colon index.
- */
+// Fortran-style assignment for colon index.
+
 void
 tree_constant_rep::fortran_style_matrix_assignment
   (tree_constant& rhs, tree_constant_rep::constant_type mci)
@@ -553,11 +546,10 @@ tree_constant_rep::fortran_style_matrix_assignment
     }
 }
 
-/*
- * Assignments to vectors.  Hand off to other functions once we know
- * what kind of index we have.  For a colon, it is the same as
- * assignment to a matrix indexed by two colons.
- */
+// Assignments to vectors.  Hand off to other functions once we know
+// what kind of index we have.  For a colon, it is the same as
+// assignment to a matrix indexed by two colons.
+
 void
 tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
 {
@@ -636,9 +628,8 @@ tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
     }
 }
 
-/*
- * Check whether an indexed assignment to a vector is valid.
- */
+// Check whether an indexed assignment to a vector is valid.
+
 void
 tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
 					int ilen, const char *rm)
@@ -674,9 +665,8 @@ tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
     panic_impossible ();
 }
 
-/*
- * Assignment to a vector with an integer index.
- */
+// Assignment to a vector with an integer index.
+
 void
 tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
 {
@@ -732,9 +722,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
     }
 }
 
-/*
- * Assignment to a vector with a vector index.
- */
+// Assignment to a vector with a vector index.
+
 void
 tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
 {
@@ -837,9 +826,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
     panic_impossible ();
 }
 
-/*
- * Assignment to a vector with a range index.
- */
+// Assignment to a vector with a range index.
+
 void
 tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
 {
@@ -935,20 +923,19 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
     panic_impossible ();
 }
 
-/*
- * Matrix assignment indexed by two values.  This function determines
- * the type of the first arugment, checks as much as possible, and
- * then calls one of a set of functions to handle the specific cases:
- *
- *   M (integer, arg2) = RHS  (MA1)
- *   M (vector,  arg2) = RHS  (MA2)
- *   M (range,   arg2) = RHS  (MA3)
- *   M (colon,   arg2) = RHS  (MA4)
- *
- * Each of those functions determines the type of the second argument
- * and calls another function to handle the real work of doing the
- * assignment.
- */
+// Matrix assignment indexed by two values.  This function determines
+// the type of the first arugment, checks as much as possible, and
+// then calls one of a set of functions to handle the specific cases:
+//
+//   M (integer, arg2) = RHS  (MA1)
+//   M (vector,  arg2) = RHS  (MA2)
+//   M (range,   arg2) = RHS  (MA3)
+//   M (colon,   arg2) = RHS  (MA4)
+//
+// Each of those functions determines the type of the second argument
+// and calls another function to handle the real work of doing the
+// assignment.
+
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant& i_arg, 
@@ -1012,7 +999,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* MA1 */
+// -*- MA1 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 					 tree_constant& j_arg)
@@ -1150,7 +1137,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
     }
 }
 
-/* MA2 */
+// -*- MA2 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 					 tree_constant& j_arg)
@@ -1282,7 +1269,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
     }
 }
 
-/* MA3 */
+// -*- MA3 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 Range& ri, tree_constant& j_arg) 
@@ -1419,7 +1406,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* MA4 */
+// -*- MA4 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant_rep::constant_type i,
@@ -1584,25 +1571,23 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/*
- * Functions that actually handle assignment to a matrix using two
- * index values.
- *
- *                   idx2
- *            +---+---+----+----+
- *   idx1     | i | v |  r | c  |
- *   ---------+---+---+----+----+
- *   integer  | 1 | 5 |  9 | 13 |
- *   ---------+---+---+----+----+
- *   vector   | 2 | 6 | 10 | 14 |
- *   ---------+---+---+----+----+
- *   range    | 3 | 7 | 11 | 15 |
- *   ---------+---+---+----+----+
- *   colon    | 4 | 8 | 12 | 16 |
- *   ---------+---+---+----+----+
- */
+// Functions that actually handle assignment to a matrix using two
+// index values.
+//
+//                   idx2
+//            +---+---+----+----+
+//   idx1     | i | v |  r | c  |
+//   ---------+---+---+----+----+
+//   integer  | 1 | 5 |  9 | 13 |
+//   ---------+---+---+----+----+
+//   vector   | 2 | 6 | 10 | 14 |
+//   ---------+---+---+----+----+
+//   range    | 3 | 7 | 11 | 15 |
+//   ---------+---+---+----+----+
+//   colon    | 4 | 8 | 12 | 16 |
+//   ---------+---+---+----+----+
 
-/* 1 */
+// -*- 1 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, int j)
 {
@@ -1610,7 +1595,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, int j)
 		   rhs.is_real_type ());
 }
 
-/* 2 */
+// -*- 2 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 					 idx_vector& jv)
@@ -1622,7 +1607,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 		     rhs_cm.elem (0, j), rhs.is_real_type ());
 }
 
-/* 3 */
+// -*- 3 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, Range& rj)
 {
@@ -1640,7 +1625,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, Range& rj)
     }
 }
 
-/* 4 */
+// -*- 4 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 					 tree_constant_rep::constant_type mcj)
@@ -1670,7 +1655,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
     panic_impossible ();
 }
   
-/* 5 */
+// -*- 5 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 idx_vector& iv, int j)
@@ -1685,7 +1670,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* 6 */
+// -*- 6 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 idx_vector& iv, idx_vector& jv)
@@ -1704,7 +1689,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* 7 */
+// -*- 7 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 idx_vector& iv, Range& rj)
@@ -1727,7 +1712,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* 8 */
+// -*- 8 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 					 tree_constant_rep::constant_type mcj)
@@ -1756,7 +1741,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
     }
 }
 
-/* 9 */
+// -*- 9 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri, int j)
 {
@@ -1774,7 +1759,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri, int j)
     }
 }
 
-/* 10 */
+// -*- 10 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 					 idx_vector& jv)
@@ -1797,7 +1782,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
     }
 }
 
-/* 11 */
+// -*- 11 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 					 Range& rj)
@@ -1823,7 +1808,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
     }
 }
 
-/* 12 */
+// -*- 12 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 					 tree_constant_rep::constant_type mcj)
@@ -1854,7 +1839,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
     }
 }
 
-/* 13 */
+// -*- 13 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
@@ -1885,7 +1870,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     panic_impossible ();
 }
 
-/* 14 */
+// -*- 14 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
@@ -1915,7 +1900,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* 15 */
+// -*- 15 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
@@ -1949,7 +1934,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/* 16 */
+// -*- 16 -*-
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
@@ -2011,12 +1996,11 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     }
 }
 
-/*
- * Functions for deleting rows or columns of a matrix.  These are used
- * to handle statements like
- *
- *   M (i, j) = []
- */
+// Functions for deleting rows or columns of a matrix.  These are used
+// to handle statements like
+//
+//  M (i, j) = []
+
 void
 tree_constant_rep::delete_row (int idx)
 {

@@ -72,18 +72,16 @@ mx_div_conform (int b_nr, int b_nc, int a_nc, int warn = 1)
   return 1;
 }
 
-/*
- * Right division functions.
- *
- *       op2 / op1:   m   cm
- *            +--   +---+----+
- *   matrix         | 1 |  3 |
- *                  +---+----+
- *   complex_matrix | 2 |  4 |
- *                  +---+----+
- */
+// Right division functions.
+//
+//       op2 / op1:   m   cm
+//            +--   +---+----+
+//   matrix         | 1 |  3 |
+//                  +---+----+
+//   complex_matrix | 2 |  4 |
+//                  +---+----+
 
-/* 1 */
+// -*- 1 -*-
 tree_constant
 xdiv (const Matrix& a, const Matrix& b)
 {
@@ -108,7 +106,7 @@ xdiv (const Matrix& a, const Matrix& b)
   return tree_constant (result.transpose ());
 }
 
-/* 2 */
+// -*- 2 -*-
 tree_constant
 xdiv (const Matrix& a, const ComplexMatrix& b)
 {
@@ -133,7 +131,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
   return tree_constant (result.hermitian ());
 }
 
-/* 3 */
+// -*- 3 -*-
 tree_constant
 xdiv (const ComplexMatrix& a, const Matrix& b)
 {
@@ -158,7 +156,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
   return tree_constant (result.hermitian ());
 }
 
-/* 4 */
+// -*- 4 -*-
 tree_constant
 xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
@@ -183,16 +181,14 @@ xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
   return tree_constant (result.hermitian ());
 }
 
-/*
- * Funny element by element division operations.
- *
- *       op2 \ op1:   s   cs
- *            +--   +---+----+
- *   matrix         | 1 |  3 |
- *                  +---+----+
- *   complex_matrix | 2 |  4 |
- *                  +---+----+
- */
+// Funny element by element division operations.
+//
+//       op2 \ op1:   s   cs
+//            +--   +---+----+
+//   matrix         | 1 |  3 |
+//                  +---+----+
+//   complex_matrix | 2 |  4 |
+//                  +---+----+
 
 tree_constant
 x_el_div (double a, const Matrix& b)
@@ -254,18 +250,16 @@ x_el_div (const Complex a, const ComplexMatrix& b)
   return tree_constant (result);
 }
 
-/*
- * Left division functions.
- *
- *       op2 \ op1:   m   cm
- *            +--   +---+----+
- *   matrix         | 1 |  3 |
- *                  +---+----+
- *   complex_matrix | 2 |  4 |
- *                  +---+----+
- */
+// Left division functions.
+//
+//       op2 \ op1:   m   cm
+//            +--   +---+----+
+//   matrix         | 1 |  3 |
+//                  +---+----+
+//   complex_matrix | 2 |  4 |
+//                  +---+----+
 
-/* 1 */
+// -*- 1 -*-
 tree_constant
 xleftdiv (const Matrix& a, const Matrix& b)
 {
@@ -287,7 +281,7 @@ xleftdiv (const Matrix& a, const Matrix& b)
   return tree_constant (result);
 }
 
-/* 2 */
+// -*- 2 -*-
 tree_constant
 xleftdiv (const Matrix& a, const ComplexMatrix& b)
 {
@@ -309,7 +303,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
   return tree_constant (result);
 }
 
-/* 3 */
+// -*- 3 -*-
 tree_constant
 xleftdiv (const ComplexMatrix& a, const Matrix& b)
 {
@@ -331,7 +325,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
   return tree_constant (result);
 }
 
-/* 4 */
+// -*- 4 -*-
 tree_constant
 xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {

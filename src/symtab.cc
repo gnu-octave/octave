@@ -42,9 +42,8 @@ extern "C"
 #include "fnmatch.h"
 }
 
-/*
- * Variables and functions.
- */
+// Variables and functions.
+
 symbol_def::symbol_def (void)
 {
   init_state ();
@@ -212,9 +211,8 @@ maybe_delete (symbol_def *def)
   return count;
 }
 
-/*
- * Individual records in a symbol table.
- */
+// Individual records in a symbol table.
+
 symbol_record::symbol_record (void)
 {
   init_state ();
@@ -660,9 +658,7 @@ symbol_record::pop_def (void)
   return top;
 }
 
-/*
- * A structure for handling verbose information about a symbol_record.
- */
+// A structure for handling verbose information about a symbol_record.
 
 symbol_record_info::symbol_record_info (void)
 {
@@ -846,9 +842,7 @@ symbol_record_info::init_state (void)
   nm = 0;
 }
 
-/*
- * A symbol table.
- */
+// A symbol table.
 
 symbol_table::symbol_table (void)
 {

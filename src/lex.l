@@ -625,12 +625,11 @@ EXPON	([DdEe][+-]?{D}+)
 
 %%
 
-/*
- * GAG.
- *
- * If we're reading a matrix and the next character is '[', make sure
- * that we insert a comma ahead of it.
- */
+// GAG.
+//
+// If we're reading a matrix and the next character is '[', make sure
+// that we insert a comma ahead of it.
+
 void
 do_comma_insert_check (void)
 {
@@ -639,11 +638,10 @@ do_comma_insert_check (void)
   do_comma_insert = (braceflag && c == '[');
 }
 
-/*
- * Fix things up for errors or interrupts.  The parser is never called
- * recursively, so it is always safe to reinitialize its state before
- * doing any parsing.
- */
+// Fix things up for errors or interrupts.  The parser is never called
+// recursively, so it is always safe to reinitialize its state before
+// doing any parsing.
+
 void
 reset_parser (void)
 {
@@ -712,9 +710,8 @@ reset_parser (void)
     yyrestart (stdin);
 }
 
-/*
- * Replace backslash escapes in a string with the real values.
- */
+// Replace backslash escapes in a string with the real values.
+
 static void
 do_string_escapes (char *s)
 {
@@ -780,10 +777,9 @@ do_string_escapes (char *s)
   *p1 = '\0';
 }
 
-/*
- * If we read some newlines, we need figure out what column we're
- * really looking at.
- */
+// If we read some newlines, we need figure out what column we're
+// really looking at.
+
 static void
 fixup_column_count (char *s)
 {
@@ -797,9 +793,7 @@ fixup_column_count (char *s)
     }
 }
 
-/*
- * Include these so that we don't have to link to libfl.a.
- */
+// Include these so that we don't have to link to libfl.a.
 
 #ifdef yywrap
 #undef yywrap
@@ -810,10 +804,9 @@ yywrap (void)
   return 1;
 }
 
-/*
- * These are not needed with flex-2.4.6, but may be needed with
- * earlier 2.4.x versions.
- */
+// These are not needed with flex-2.4.6, but may be needed with
+// earlier 2.4.x versions.
+
 #if 0
 static void *
 yy_flex_alloc (int size)
@@ -834,64 +827,57 @@ yy_flex_free (void *ptr)
 }
 #endif
 
-/*
- * Tell us all what the current buffer is.
- */
+// Tell us all what the current buffer is.
+
 YY_BUFFER_STATE
 current_buffer (void)
 {
   return YY_CURRENT_BUFFER;
 }
 
-/*
- * Create a new buffer.
- */
+// Create a new buffer.
+
 YY_BUFFER_STATE
 create_buffer (FILE *f)
 {
   return yy_create_buffer (f, YY_BUF_SIZE);
 }
 
-/*
- * Start reading a new buffer.
- */
+// Start reading a new buffer.
+
 void
 switch_to_buffer (YY_BUFFER_STATE buf)
 {
   yy_switch_to_buffer (buf);
 }
 
-/*
- * Delete a buffer.
- */
+// Delete a buffer.
+
 void
 delete_buffer (YY_BUFFER_STATE buf)
 {
   yy_delete_buffer (buf);
 }
 
-/*
- * Restore a buffer (for unwind-prot).
- */
+// Restore a buffer (for unwind-prot).
+
 void
 restore_input_buffer (void *buf)
 {
   switch_to_buffer ((YY_BUFFER_STATE) buf);
 }
 
-/*
- * Delete a buffer (for unwind-prot).
- */
+// Delete a buffer (for unwind-prot).
+
 void
 delete_input_buffer (void *buf)
 {
   delete_buffer ((YY_BUFFER_STATE) buf);
 }
 
-/*
- * Check to see if a character string matches any of the possible line
- * styles for plots.
- */
+// Check to see if a character string matches any of the possible line
+// styles for plots.
+
 static char *
 plot_style_token (char *s)
 {
@@ -918,10 +904,9 @@ plot_style_token (char *s)
   return 0;
 }
 
-/*
- * Check to see if a character string matches any one of the plot
- * option keywords. 
- */
+// Check to see if a character string matches any one of the plot
+// option keywords. 
+
 static int
 is_plot_keyword (char *s)
 {
@@ -947,9 +932,8 @@ is_plot_keyword (char *s)
     }
 }
 
-/*
- * Handle keywords.  Could probably be more efficient...
- */
+// Handle keywords.  Could probably be more efficient...
+
 static int
 is_keyword (char *s)
 {
@@ -1118,19 +1102,17 @@ is_keyword (char *s)
   return 0;
 }
 
-/*
- * Try to find an identifier.  All binding to global or builtin
- * variables occurs when expressions are evaluated.
- */
+// Try to find an identifier.  All binding to global or builtin
+// variables occurs when expressions are evaluated.
+
 static symbol_record *
 lookup_identifier (char *name)
 {
   return curr_sym_tab->lookup (name, 1, 0);
 }
 
-/*
- * Grab the help text from an function file.
- */
+// Grab the help text from an function file.
+
 static void
 grab_help_text (void)
 {
@@ -1179,10 +1161,9 @@ grab_help_text (void)
   help_buf[len] =  '\0';
 }
 
-/*
- * Return 1 if the given character matches any character in the given
- * string.
- */
+// Return 1 if the given character matches any character in the given
+// string.
+
 static int
 match_any (char c, char *s)
 {
@@ -1195,22 +1176,20 @@ match_any (char c, char *s)
   return 0;
 }
 
-/*
- * Given information about the spacing surrounding an operator,
- * return 1 if it looks like it should be treated as a binary
- * operator.  For example,
- *
- *   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==> binary
- */
+// Given information about the spacing surrounding an operator,
+// return 1 if it looks like it should be treated as a binary
+// operator.  For example,
+//
+//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==> binary
+
 static int
 looks_like_bin_op (int spc_prev, int spc_next)
 {
   return ((spc_prev && spc_next) || ! spc_prev);
 }
 
-/*
- * Duh.
- */
+// Duh.
+
 static int
 next_char_is_space (void)
 {
@@ -1219,10 +1198,9 @@ next_char_is_space (void)
   return (c == ' ' || c == '\t');
 }
 
-/*
- * Try to determine if the next token should be treated as a postfix
- * unary operator.  This is ugly, but it seems to do the right thing.
- */
+// Try to determine if the next token should be treated as a postfix
+// unary operator.  This is ugly, but it seems to do the right thing.
+
 static int
 next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 {
@@ -1242,11 +1220,10 @@ next_token_is_postfix_unary_op (int spc_prev, char *yytext)
   return un_op;
 }
 
-/*
- * Try to determine if the next token should be treated as a binary
- * operator.  This is even uglier, but it also seems to do the right
- * thing.
- */
+// Try to determine if the next token should be treated as a binary
+// operator.  This is even uglier, but it also seems to do the right
+// thing.
+
 static int
 next_token_is_bin_op (int spc_prev, char *yytext)
 {
@@ -1334,9 +1311,8 @@ next_token_is_bin_op (int spc_prev, char *yytext)
   return bin_op;
 }
 
-/*
- * Used to delete trailing white space from tokens.
- */
+// Used to delete trailing white space from tokens.
+
 static char *
 strip_trailing_whitespace (char *s)
 {
@@ -1353,10 +1329,9 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
-/*
- * Figure out exactly what kind of token to return when we have seen
- * an identifier.  Handles keywords.
- */
+// Figure out exactly what kind of token to return when we have seen
+// an identifier.  Handles keywords.
+
 static int
 handle_identifier (char *tok, int next_tok_is_eq)
 {
@@ -1494,11 +1469,10 @@ handle_identifier (char *tok, int next_tok_is_eq)
   return NAME;
 }
 
-/*
- * Print a warning if a function file that defines a function has
- * anything other than comments and whitespace following the END token
- * that matches the FUNCTION statement.
- */
+// Print a warning if a function file that defines a function has
+// anything other than comments and whitespace following the END token
+// that matches the FUNCTION statement.
+
 void
 check_for_garbage_after_fcn_def (void)
 {
@@ -1542,7 +1516,9 @@ check_for_garbage_after_fcn_def (void)
   yyunput ('\n', yytext);
 }
 
-/* Maybe someday...
+/*
+
+Maybe someday...
 
 "+="		return ADD_EQ;
 "-="		return SUB_EQ;

@@ -52,7 +52,8 @@ template class SLList<string_vector>;
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      tree_argument_list *lst,
 					      int l, int c, char t)
-  : tree_expression (l, c), expr (e), args (), type (), arg_nm ()
+  : tree_expression (l, c), expr (e), args (), type (),
+    arg_nm (), dyn_field ()
 {
   append (lst, t);
 }
@@ -60,9 +61,19 @@ tree_index_expression::tree_index_expression (tree_expression *e,
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      const std::string& n,
 					      int l, int c)
-  : tree_expression (l, c), expr (e), args (), type (), arg_nm ()
+  : tree_expression (l, c), expr (e), args (), type (),
+    arg_nm (), dyn_field ()
 {
   append (n);
+}
+
+tree_index_expression::tree_index_expression (tree_expression *e,
+					      tree_expression *df,
+					      int l, int c)
+  : tree_expression (l, c), expr (e), args (), type (),
+    arg_nm (), dyn_field ()
+{
+  append (df);
 }
 
 void
@@ -71,6 +82,7 @@ tree_index_expression::append (tree_argument_list *lst, char t)
   args.append (lst);
   type.append (1, t);
   arg_nm.append (lst ? lst->get_arg_names () : string_vector ());
+  dyn_field.append (static_cast<tree_expression *> (0));
 }
 
 void
@@ -79,6 +91,16 @@ tree_index_expression::append (const std::string& n)
   args.append (static_cast<tree_argument_list *> (0));
   type.append (".");
   arg_nm.append (n);
+  dyn_field.append (static_cast<tree_expression *> (0));
+}
+
+void
+tree_index_expression::append (tree_expression *df)
+{
+  args.append (static_cast<tree_argument_list *> (0));
+  type.append (".");
+  arg_nm.append ("");
+  dyn_field.append (df);
 }
 
 tree_index_expression::~tree_index_expression (void)
@@ -98,11 +120,7 @@ tree_index_expression::~tree_index_expression (void)
 std::string
 tree_index_expression::name (void) const
 {
-  // ??? FIXME ???
-  std::string xname = expr->name ();
-
-  return (type[0] != '.' || xname == "<unknown>")
-    ? xname : xname + "." + arg_nm.front ()(0);
+  return expr->name ();
 }
 
 static Cell
@@ -152,6 +170,29 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm)
   return retval;
 }
 
+std::string
+tree_index_expression::get_struct_index (Pix p_arg_nm, Pix p_dyn_field) const
+{
+  std::string fn = arg_nm(p_arg_nm)(0);
+
+  if (fn.empty ())
+    {
+      tree_expression *df = dyn_field (p_dyn_field);
+
+      if (df)
+	{
+	  octave_value t = df->rvalue ();
+
+	  if (! error_state)
+	    fn = t.string_value ();
+	}
+      else
+	panic_impossible ();
+    }
+
+  return fn;
+}
+
 Octave_map
 tree_index_expression::make_arg_struct (void) const
 {
@@ -162,6 +203,7 @@ tree_index_expression::make_arg_struct (void) const
 
   Pix p_args = args.first ();
   Pix p_arg_nm = arg_nm.first ();
+  Pix p_dyn_field = dyn_field.first ();
 
   Octave_map m;
 
@@ -178,7 +220,7 @@ tree_index_expression::make_arg_struct (void) const
 	  break;
 
 	case '.':
-	  subs_list(i) = arg_nm(p_arg_nm)(0);
+	  subs_list(i) = get_struct_index (p_arg_nm, p_dyn_field);
 	  break;
 
 	default:
@@ -190,6 +232,7 @@ tree_index_expression::make_arg_struct (void) const
 
       args.next (p_args);
       arg_nm.next (p_arg_nm);
+      dyn_field.next (p_dyn_field);
     }
 
   m ["subs"] = subs_list;
@@ -216,6 +259,7 @@ tree_index_expression::rvalue (int nargout)
 
       Pix p_args = args.first ();
       Pix p_arg_nm = arg_nm.first ();
+      Pix p_dyn_field = dyn_field.first ();
 
       for (int i = 0; i < n; i++)
 	{
@@ -230,7 +274,7 @@ tree_index_expression::rvalue (int nargout)
 	      break;
 
 	    case '.':
-	      idx.append (arg_nm(p_arg_nm)(0));
+	      idx.append (get_struct_index (p_arg_nm, p_dyn_field));
 	      break;
 
 	    default:
@@ -242,6 +286,7 @@ tree_index_expression::rvalue (int nargout)
 
 	  args.next (p_args);
 	  arg_nm.next (p_arg_nm);
+	  dyn_field.next (p_dyn_field);
 	}
 
       if (! error_state)
@@ -275,6 +320,7 @@ tree_index_expression::lvalue (void)
 
   Pix p_args = args.first ();
   Pix p_arg_nm = arg_nm.first ();
+  Pix p_dyn_field = dyn_field.first ();
 
   for (int i = 0; i < n; i++)
     {
@@ -289,7 +335,7 @@ tree_index_expression::lvalue (void)
 	  break;
 
 	case '.':
-	  idx.append (arg_nm(p_arg_nm)(0));
+	  idx.append (get_struct_index (p_arg_nm, p_dyn_field));
 	  break;
 
 	default:
@@ -301,6 +347,7 @@ tree_index_expression::lvalue (void)
 
       args.next (p_args);
       arg_nm.next (p_arg_nm);
+      dyn_field.next (p_dyn_field);
     }
 
   if (! error_state)

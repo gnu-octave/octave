@@ -691,6 +691,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 "(" {
+    lexer_flags.looking_at_indirect_ref = false;
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
       lexer_flags.past_plot_range = true;
     nesting_level.paren ();

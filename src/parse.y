@@ -291,6 +291,10 @@ make_index_expression (tree_expression *expr,
 static tree_index_expression *
 make_indirect_ref (tree_expression *expr, const std::string&);
 
+// Make an indirect reference expression with dynamic field name.
+static tree_index_expression *
+make_indirect_ref (tree_expression *expr, tree_expression *field);
+
 // Make a declaration command.
 static tree_decl_command *
 make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
@@ -696,7 +700,7 @@ arg_list	: expression
 		  }
 		;
 
-parsing_indir	: // empty
+indirect_ref_op	: '.'
 		  { lexer_flags.looking_at_indirect_ref = true; }
 		;
 
@@ -718,8 +722,10 @@ postfix_expr	: primary_expr
 		  { $$ = make_postfix_op (QUOTE, $1, $2); }
 		| postfix_expr TRANSPOSE
 		  { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
-		| postfix_expr '.' parsing_indir STRUCT_ELT
-		  { $$ = make_indirect_ref ($1, $4->text ()); }
+		| postfix_expr indirect_ref_op STRUCT_ELT
+		  { $$ = make_indirect_ref ($1, $3->text ()); }
+		| postfix_expr indirect_ref_op '(' expression ')'
+		  { $$ = make_indirect_ref ($1, $4); }
 		;
 
 prefix_expr	: postfix_expr
@@ -2634,6 +2640,32 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
 
 static tree_index_expression *
 make_indirect_ref (tree_expression *expr, const std::string& elt)
+{
+  tree_index_expression *retval = 0;
+
+  int l = expr->line ();
+  int c = expr->column ();
+
+  if (expr->is_index_expression ())
+    {
+      tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+
+      tmp->append (elt);
+
+      retval = tmp;
+    }
+  else
+    retval = new tree_index_expression (expr, elt, l, c);
+
+  lexer_flags.looking_at_indirect_ref = false;
+
+  return retval;
+}
+
+// Make an indirect reference expression with dynamic field name.
+
+static tree_index_expression *
+make_indirect_ref (tree_expression *expr, tree_expression *elt)
 {
   tree_index_expression *retval = 0;
 

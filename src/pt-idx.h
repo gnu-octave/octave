@@ -54,11 +54,16 @@ public:
   tree_index_expression (tree_expression *e, const std::string& n,
 			 int l = -1, int c = -1);
 
+  tree_index_expression (tree_expression *e, tree_expression* df,
+			 int l = -1, int c = -1);
+
   ~tree_index_expression (void);
 
   void append (tree_argument_list *lst = 0, char t = '(');
 
   void append (const std::string& n);
+
+  void append (tree_expression *df);
 
   bool is_index_expression (void) const { return true; }
 
@@ -97,10 +102,16 @@ private:
   // The type of this index expression.
   std::string type;
 
-  // The names of the arguments.
+  // The names of the arguments.  Used for constant struct element
+  // references.
   SLList<string_vector> arg_nm;
 
-  Octave_map tree_index_expression::make_arg_struct (void) const;
+  // The list of dynamic field names, if any.
+  SLList<tree_expression *> dyn_field;
+
+  Octave_map make_arg_struct (void) const;
+
+  std::string get_struct_index (Pix p_arg_nm, Pix p_dyn_field) const;
 
   // No copying!
 

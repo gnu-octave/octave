@@ -1,3 +1,25 @@
+2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-idx.h (tree_index_expression::dyn_field): New data member.
+	* pt-idx.cc (tree_index_expression::tree_index_expression
+	(tree_expression*, tree_expression*, int, int)): New constructor.
+	(tree_index_expression::append (tree_expression*)): New function.
+	(tree_index_expression::get_struct_index): New function.
+	(tree_index_expression::make_arg_struct): Handle dynamic fields.
+	(tree_index_expression::rvalue): Likewise.
+	(tree_index_expression::lvalue): Likewise.
+
+	* parse.y (make_indirect_ref (tree_expression*, tree_expression*)):
+	New function.
+	(indirect_ref_op): New non-terminal.
+	(postfix_expr): Use it.
+	Recognize dynamic struct field references.
+	(parsing_indir): Delete unused non-terminal.
+
+	* lex.l ("("): Set lexer_flags.looking_at_indirect_ref to false here.
+
+	* pt-idx.cc (tree_index_expression::name): Simplify.
+
 2002-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-conf.h.in (OCTAVE_CONF_HAVE_DLOPEN_API,

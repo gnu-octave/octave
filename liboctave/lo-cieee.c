@@ -47,6 +47,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-ieee.h"
 
+#if defined (_AIX) && defined (__GNUG__)
+#undef finite
+#define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
+#endif
+
 #if defined (SCO)
 
 int
@@ -64,17 +69,37 @@ isinf (double x)
 #endif
 
 int
-lo_ieee_is_NA (double x)
+lo_ieee_isnan (double x)
 {
-  lo_ieee_double t;
-  t.value = x;
-  return (isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
+#if defined (HAVE_ISNAN)
+  return lo_ieee_isnan (x) ? ! lo_ieee_is_NA (x) : 0;
+#else
+  return 0;
+#endif
 }
 
 int
-lo_ieee_is_NaN_or_NA (double x)
+lo_ieee_finite (double x)
 {
-  return isnan (x);
+#if defined (HAVE_FINITE)
+  return finite (x) != 0 && ! lo_ieee_is_NaN_or_NA (x);
+#elif defined (HAVE_ISINF)
+  return (! isinf (x) && ! lo_ieee_is_NaN_or_NA (x));
+#else
+  return ! lo_ieee_is_NaN_or_NA (x);
+#endif
+}
+
+int
+lo_ieee_isinf (double x)
+{
+#if defined (HAVE_ISINF)
+  return isinf (x);
+#elif defined (HAVE_FINITE)
+  return (! (finite (x) || lo_ieee_is_NaN_or_NA (x)));
+#else
+  return 0;
+#endif
 }
 
 /*

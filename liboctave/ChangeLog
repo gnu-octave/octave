@@ -1,16 +1,16 @@
 2002-09-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lo-mappers.cc (xisnan, xfinite, xisinf): Simply forward to
+	lo_ieee_* functions.
 	* Makefile.in (LIBOCTAVE_C_SOURCES): Add lo-cieee.c to the list.
+	* lo-ieee.cc (lo_ieee_double): Rename from ieee_double.
+	(LO_IEEE_NA_HW, LO_IEEE_NA_LW): Rename from NA_HW and NA_LW.
 	* lo-cieee.c: New file.
-	(lo_ieee_is_NaN_or_NA): Move here from lo-ieee.cc.
-	(lo_ieee_is_NA): Likewise.
-	[SCO] (isinf, isnan): Likewise.
+	[SCO] (isinf, isnan): Move here from lo-ieee.cc.
 	* lo-ieee.h: Now all extern "C".
-	(LO_IEEE_NA_HW, LO_IEEE_NA_LW): Move here from lo-ieee.cc and
-	rename from NA_HW and NA_LW.
-	(lo_ieee_double): Move typedef here from lo-ieee.cc and rename
-	from ieee_double.
-	(lo_ieee_hw, lo_ieee_low): Provide decl.
+	(lo_ieee_isnan, lo_ieee_finite, lo_ieee_isinf): Move here from
+	lo-mappers.cc and rename from xisnan, xfinite, xisinf.
+
 	* lo-ieee.cc (lo_ieee_hw, lo_ieee_low): Rename from hw and lw.
 	Now extern.
 

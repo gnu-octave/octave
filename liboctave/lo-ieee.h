@@ -36,27 +36,19 @@ extern double octave_NaN;
 // Octave's idea of a missing value.
 extern double octave_NA;
 
-void octave_ieee_init (void);
+extern void octave_ieee_init (void);
 
-int lo_ieee_is_NA (double);
-int lo_ieee_is_NaN_or_NA (double);
+extern int lo_ieee_is_NA (double);
+extern int lo_ieee_is_NaN_or_NA (double);
 
 #if defined (SCO)
-int isnan (double);
-int isinf (double);
+extern int isnan (double);
+extern int isinf (double);
 #endif
 
-extern int lo_ieee_hw;
-extern int lo_ieee_lw;
-
-typedef union
-{
-  double value;
-  unsigned int word[2];
-} lo_ieee_double;
-
-#define LO_IEEE_NA_HW 0x7ff00000
-#define LO_IEEE_NA_LW 1954
+extern int lo_ieee_isnan (double x);
+extern int lo_ieee_finite (double x);
+extern int lo_ieee_isinf (double x);
 
 #ifdef	__cplusplus
 }

@@ -27,10 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cmath>
 
-#if defined (HAVE_IEEEFP_H)
-#include <ieeefp.h>
-#endif
-
 #if defined (HAVE_SUNMATH_H)
 #include <sunmath.h>
 #endif
@@ -43,11 +39,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-cmplx.h"
 
 #include "f77-fcn.h"
-
-#if defined (_AIX) && defined (__GNUG__)
-#undef finite
-#define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
-#endif
 
 #ifndef M_LOG10E
 #define M_LOG10E 0.43429448190325182765
@@ -76,11 +67,7 @@ fix (double x)
 double
 imag (double x)
 {
-#if defined (HAVE_ISNAN)
   return xisnan (x) ? octave_NaN : 0.0;
-#else
-  return 0.0;
-#endif
 }
 
 double
@@ -104,11 +91,7 @@ signum (double x)
   else if (x > 0.0)
     tmp = 1.0;
 
-#if defined (HAVE_ISNAN)
   return xisnan (x) ? octave_NaN : tmp;
-#else
-  return tmp;
-#endif
 }
 
 // double -> bool mappers.
@@ -116,35 +99,19 @@ signum (double x)
 bool
 xisnan (double x)
 {
-#if defined (HAVE_ISNAN)
-  return isnan (x) ? ! lo_ieee_is_NA (x) : false;
-#else
-  return false;
-#endif
+  return lo_ieee_isnan (x);
 }
 
 bool
 xfinite (double x)
 {
-#if defined (HAVE_FINITE)
-  return finite (x) != 0 && ! octave_is_NaN_or_NA (x);
-#elif defined (HAVE_ISINF)
-  return (! isinf (x) && ! octave_is_NaN_or_NA (x));
-#else
-  return ! octave_is_NaN_or_NA (x);
-#endif
+  return lo_ieee_finite (x);
 }
 
 bool
 xisinf (double x)
 {
-#if defined (HAVE_ISINF)
-  return isinf (x);
-#elif defined (HAVE_FINITE)
-  return (! (finite (x) || octave_is_NaN_or_NA (x)));
-#else
-  return false;
-#endif
+  return lo_ieee_isinf (x);
 }
 
 bool

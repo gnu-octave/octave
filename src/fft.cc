@@ -79,7 +79,10 @@ DEFUN_DLD_BUILTIN ("fft", Ffft, Sfft, 3, 1,
 
       if (! error_state)
 	{
-	  m.resize (n_points, m.columns (), 0.0);
+	  if (m.rows () == 1)
+	    m.resize (1, n_points, 0.0);
+	  else
+	    m.resize (n_points, m.columns (), 0.0);
 	  retval = m.fourier ();
 	}
     }
@@ -89,7 +92,10 @@ DEFUN_DLD_BUILTIN ("fft", Ffft, Sfft, 3, 1,
 
       if (! error_state)
 	{
-	  m.resize (n_points, m.columns (), 0.0);
+	  if (m.rows () == 1)
+	    m.resize (1, n_points, 0.0);
+	  else
+	    m.resize (n_points, m.columns (), 0.0);
 	  retval = m.fourier ();
 	}
     }

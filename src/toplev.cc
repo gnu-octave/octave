@@ -91,6 +91,12 @@ string Vhost_name;
 // User's home directory.
 string Vhome_directory;
 
+// Nonzero means we're breaking out of a loop or function body.
+extern int breaking;
+
+// Nonzero means we're returning from a function.
+extern int returning;
+
 // Nonzero means we are using readline.
 // (--no-line-editing)
 #if defined (USE_READLINE)
@@ -160,7 +166,29 @@ parse_and_execute (FILE *f, int print)
       if (retval == 0 && global_command)
 	{
 	  global_command->eval (print);
+
 	  delete global_command;
+
+	  global_command = 0;
+
+	  bool quit = (returning || breaking);
+
+	  if (returning)
+	    returning = 0;
+
+	  if (breaking)
+	    breaking--;
+
+	  if (error_state)
+	    {
+	      error ("near line %d of file `%s'", input_line_number,
+		     curr_fcn_file_full_name.c_str ());
+
+	      break;
+	    }
+
+	  if (quit)
+	    break;
 	}
     }
   while (retval == 0);
@@ -254,10 +282,34 @@ main_loop (void)
 
 	  delete global_command;
 
-	  if (octave_completion_matches_called)
-	    octave_completion_matches_called = false;	    
+	  global_command = 0;
+
+	  if (! (interactive || forced_interactive))
+	    {
+	      bool quit = (returning || breaking);
+
+	      if (returning)
+		returning = 0;
+
+	      if (breaking)
+		breaking--;
+
+	      if (quit)
+		break;
+	    }
+
+	  if (error_state)
+	    {
+	      if (! (interactive || forced_interactive))
+		break;
+	    }
 	  else
-	    current_command_number++;
+	    {
+	      if (octave_completion_matches_called)
+		octave_completion_matches_called = false;	    
+	      else
+		current_command_number++;
+	    }
 	}
     }
   while (retval == 0);

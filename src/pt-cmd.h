@@ -48,11 +48,14 @@ class tree_for_command;
 class tree_if_command;
 class tree_try_catch_command;
 class tree_unwind_protect_command;
+class tree_no_op_command;
 class tree_break_command;
 class tree_continue_command;
 class tree_return_command;
 
 class tree_walker;
+
+#include <string>
 
 #include "pt-base.h"
 
@@ -288,6 +291,29 @@ private:
 
   // The code to execute if an error occurs in the first block.
   tree_statement_list *catch_code;
+};
+
+// No-op.
+
+class
+tree_no_op_command : public tree_command
+{
+public:
+
+  tree_no_op_command (const string& cmd = "no_op", int l = -1, int c = -1)
+    : tree_command (l, c), orig_cmd (cmd) { }
+
+  ~tree_no_op_command (void) { }
+
+  void eval (void) { }
+
+  void accept (tree_walker& tw);
+
+  string original_command (void) { return orig_cmd; }
+
+private:
+
+  string orig_cmd;
 };
 
 // Break.

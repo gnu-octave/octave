@@ -1,3 +1,21 @@
+Thu Jan 23 10:00:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-pr-code.h, pt-pr-code.cc (tree_print_code::visit_no_op_command):
+	New function. 
+	* pt-cmd.h, pt-cmd.cc (tree_no_op_command): New class.
+	* parse.y (make_break_command, make_continue_command,
+	make_return_command): Where they don't really make sense, turn
+	these commands into no-ops.  Accept return and break if reading a
+	script file.
+	* toplev.cc (parse_and_execute): Handle return and break in script
+	files.  Quit executing commands if an error occurs when reading a
+	script file.  Set global_command to 0 after deleting it.
+	(main_loop): If not interactive or forced_interactive, handle
+	break and return, and quit executing commands if an error occurs.
+	Set global_command to 0 after deleting it.
+	* error.cc (Ferror): Doc fix.
+	* pt-walk.h (tree_walker): Add declaration for visit_no_op_command.
+
 Wed Jan 22 20:54:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (gnu_readline): If not using readline, flush

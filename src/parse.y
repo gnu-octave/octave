@@ -1869,15 +1869,13 @@ make_break_command (token *break_tok)
 {
   tree_command *retval = 0;
 
-  if (! (lexer_flags.looping || lexer_flags.defining_func))
-    yyerror ("break: only meaningful within a loop or function body");
-  else
-    {
-      int l = break_tok->line ();
-      int c = break_tok->column ();
+  int l = break_tok->line ();
+  int c = break_tok->column ();
 
-      retval = new tree_break_command (l, c);
-    }
+  if (lexer_flags.looping || lexer_flags.defining_func || reading_script_file)
+    retval = new tree_break_command (l, c);
+  else
+    retval = new tree_no_op_command ("break", l, c);
 
   return retval;
 }
@@ -1889,15 +1887,13 @@ make_continue_command (token *continue_tok)
 {
   tree_command *retval = 0;
 
-  if (! lexer_flags.looping)
-    yyerror ("continue: only meaningful within a `for' or `while' loop");
-  else
-    {
-      int l = continue_tok->line ();
-      int c = continue_tok->column ();
+  int l = continue_tok->line ();
+  int c = continue_tok->column ();
 
-      retval = new tree_continue_command (l, c);
-    }
+  if (lexer_flags.looping)
+    retval = new tree_continue_command (l, c);
+  else
+    retval = new tree_no_op_command ("continue", l, c);
 
   return retval;
 }
@@ -1909,15 +1905,13 @@ make_return_command (token *return_tok)
 {
   tree_command *retval = 0;
 
-  if (! lexer_flags.defining_func)
-    yyerror ("return: only meaningful within a function");
-  else
-    {
-      int l = return_tok->line ();
-      int c = return_tok->column ();
+  int l = return_tok->line ();
+  int c = return_tok->column ();
 
-      retval = new tree_return_command (l, c);
-    }
+  if (lexer_flags.defining_func || reading_script_file)
+    retval = new tree_return_command (l, c);
+  else
+    retval = new tree_no_op_command ("return", l, c);
 
   return retval;
 }

@@ -99,6 +99,9 @@ public:
   visit_multi_assignment_expression (tree_multi_assignment_expression&) = 0;
 
   virtual void
+  visit_no_op_command (tree_no_op_command&) = 0;
+
+  virtual void
   visit_oct_obj (tree_oct_obj&) = 0;
 
   virtual void

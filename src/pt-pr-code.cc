@@ -553,6 +553,14 @@ tree_print_code::visit_multi_assignment_expression
 }
 
 void
+tree_print_code::visit_no_op_command (tree_no_op_command& cmd)
+{
+  indent ();
+
+  os << cmd.original_command ();
+}
+
+void
 tree_print_code::visit_oct_obj (tree_oct_obj&)
 {
   ::error ("visit_oct_obj: internal error");

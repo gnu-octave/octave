@@ -686,6 +686,14 @@ tree_unwind_protect_command::accept (tree_walker& tw)
   tw.visit_unwind_protect_command (*this);
 }
 
+// No-op.
+
+void
+tree_no_op_command::accept (tree_walker& tw)
+{
+  tw.visit_no_op_command (*this);
+}
+
 // Break.
 
 void

@@ -1055,6 +1055,26 @@ builtin_isstr (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+builtin_kbhit (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+// XXX FIXME XXX -- add timeout and default value args?
+
+  if (interactive)
+    {
+      int c = kbhit ();
+      char *s = new char [2];
+      s[0] = c;
+      s[1] = '\0';
+      retval = new tree_constant [2];
+      retval [0] = tree_constant (s);
+    }
+
+  return retval;
+}
+
 /*
  * Maybe help in debugging.
  */
@@ -1281,6 +1301,8 @@ builtin_ones (const tree_constant *args, int nargin, int nargout)
 tree_constant *
 builtin_pause (const tree_constant *args, int nargin, int nargout)
 {
+  tree_constant *retval = NULL_TREE_CONST;
+
   if (! (nargin == 1 || nargin == 2))
     {
       print_usage ("pause");
@@ -1289,13 +1311,25 @@ builtin_pause (const tree_constant *args, int nargin, int nargout)
 
   if (interactive)
     {
-      if (nargin == 2)
-	sleep (NINT (args[1].double_value ()));
-      else if (kbhit () == EOF)
-	clean_up_and_exit (0);
+      switch (nargin)
+	{
+	case 2:
+	  {
+	    int delay = NINT (args[1].double_value ());
+	    if (delay > 0)
+	      {
+		sleep (delay);
+		break;
+	      }
+	  }
+	default:
+	  if (kbhit () == EOF)
+	    clean_up_and_exit (0);
+	  break;
+	}
     }
 
-  return NULL_TREE_CONST;
+  return retval;
 }
 
 /*

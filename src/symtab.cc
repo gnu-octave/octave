@@ -1,7 +1,7 @@
 // Symbol table classes.                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -179,9 +179,9 @@ symbol_def::document (const char *h)
 }
 
 int
-symbol_def::save (ostream& os, int mark_as_global)
+symbol_def::save (ostream& os, int mark_as_global, int precision)
 {
-  return definition->save (os, mark_as_global);
+  return definition->save (os, mark_as_global, precision);
 }
 
 int
@@ -526,7 +526,8 @@ symbol_record::document (const char *h)
 }
 
 int
-symbol_record::save (ostream& os, int mark_as_global = 0)
+symbol_record::save (ostream& os, int mark_as_global = 0,
+		     int precision = 17)
 {
   int status = -1;
 
@@ -543,7 +544,7 @@ symbol_record::save (ostream& os, int mark_as_global = 0)
   else if (is_defined ())
     {
       os << "# name: " << nm << "\n";
-      status = definition->save (os, mark_as_global);
+      status = definition->save (os, mark_as_global, precision);
     }
 
   return status;
@@ -961,7 +962,8 @@ symbol_table::clear (const char *nm, int clear_user_functions = 1)
 }
 
 int
-symbol_table::save (ostream& os, int mark_as_global = 0)
+symbol_table::save (ostream& os, int mark_as_global = 0,
+		    int precision = 17)
 {
   int status = 0;
   int count;
@@ -971,7 +973,7 @@ symbol_table::save (ostream& os, int mark_as_global = 0)
     {
       while (*ptr != (char *) NULL)
 	{
-	  if (save (os, *ptr, mark_as_global))
+	  if (save (os, *ptr, mark_as_global, precision))
 	    status++;
 	  delete [] *ptr++;
 	}
@@ -981,12 +983,13 @@ symbol_table::save (ostream& os, int mark_as_global = 0)
 }
 
 int
-symbol_table::save (ostream& os, const char *name, int mark_as_global = 0)
+symbol_table::save (ostream& os, const char *name,
+		    int mark_as_global = 0, int precision = 17)
 {
   int status = 0;
   symbol_record *sr = lookup (name, 0, 0);
   if (sr != (symbol_record *) NULL)
-    status = sr->save (os, mark_as_global);
+    status = sr->save (os, mark_as_global, precision);
   return status;
 }
 

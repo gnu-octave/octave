@@ -1274,7 +1274,7 @@ tree_constant_rep::eval (const tree_constant *args, int nargin, int nargout,
 }
 
 int
-tree_constant_rep::save (ostream& os, int mark_as_global)
+tree_constant_rep::save (ostream& os, int mark_as_global, int precision)
 {
   switch (type_tag)
     {
@@ -1293,6 +1293,9 @@ tree_constant_rep::save (ostream& os, int mark_as_global)
     default:
       break;
     }
+
+  long old_precision = os.precision ();
+  os.precision (precision);
 
   switch (type_tag)
     {
@@ -1335,6 +1338,9 @@ tree_constant_rep::save (ostream& os, int mark_as_global)
       panic_impossible ();
       break;
     }
+
+  os.precision (old_precision);
+
 // Really want to return 1 only if write is successful.
   return 1;
 }

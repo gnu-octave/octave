@@ -1,7 +1,7 @@
 // Symbol table classes.                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -87,7 +87,7 @@ public:
   char *help (void) const;
   void document (const char *h);
 
-  int save (ostream& os, int mark_as_global);
+  int save (ostream& os, int mark_as_global, int precision);
 
   enum TYPE
     {
@@ -164,7 +164,7 @@ public:
 
   void document (const char *h);
 
-  int save (ostream& os, int mark_as_global = 0);
+  int save (ostream& os, int mark_as_global = 0, int precision = 17);
 
   int clear (void);
 
@@ -293,8 +293,9 @@ public:
   void clear (int clear_user_functions = 1);
   int clear (const char *nm, int clear_user_functions = 1);
 
-  int save (ostream& os, int mark_as_global = 0);
-  int save (ostream& os, const char *name, int mark_as_global = 0);
+  int save (ostream& os, int mark_as_global = 0, int precision = 17);
+  int save (ostream& os, const char *name, int mark_as_global = 0,
+	    int precicion = 17);
 
   int size (void) const;
 

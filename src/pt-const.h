@@ -447,7 +447,7 @@ public:
   tree_constant do_matrix_index (constant_type i, const Range& j) const;
   tree_constant do_matrix_index (constant_type i, constant_type j) const;
 
-  int save (ostream& os, int mark_as_global);
+  int save (ostream& os, int mark_as_global, int precision);
   int save_three_d (ostream& os, int parametric);
   int load (istream& is);
   constant_type load (istream& is, constant_type t);
@@ -681,8 +681,8 @@ public:
       return *this;
     }
 
-  int save (ostream& os, int mark_as_global = 0)
-    { return rep->save (os, mark_as_global); }
+  int save (ostream& os, int mark_as_global = 0, int precision = 17)
+    { return rep->save (os, mark_as_global, precision); }
   int save_three_d (ostream& os, int parametric = 0)
     { return rep->save_three_d (os, parametric); }
 

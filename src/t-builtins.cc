@@ -894,7 +894,10 @@ builtin_save (int argc, char **argv)
 	  return retval;
 	}
       stream = file;
+
     }
+
+  int prec = user_pref.save_precision;
 
   if (argc == 1)
     {
@@ -905,7 +908,7 @@ builtin_save (int argc, char **argv)
 
       for (int i = 0; i < count; i++)
 	curr_sym_tab->save (stream, vars[i],
-			    is_globally_visible (vars[i]));
+			    is_globally_visible (vars[i]), prec);
 
       delete [] vars;
     }
@@ -924,7 +927,7 @@ builtin_save (int argc, char **argv)
 	  for (i = 0; i < count; i++)
 	    {
 	      if (fnmatch (*argv, lvars[i], __FNM_FLAGS) == 0
-		  && curr_sym_tab->save (stream, lvars[i]) != 0)
+		  && curr_sym_tab->save (stream, lvars[i], 0, prec) != 0)
 		saved_or_error++;
 	    }
 
@@ -934,7 +937,7 @@ builtin_save (int argc, char **argv)
 	  for (i = 0; i < count; i++)
 	    {
 	      if (fnmatch (*argv, bvars[i], __FNM_FLAGS) == 0
-		  && global_sym_tab->save (stream, bvars[i]) != 0)
+		  && global_sym_tab->save (stream, bvars[i], 0, prec) != 0)
 		saved_or_error++;
 	    }
 

@@ -1908,10 +1908,19 @@ ComplexMatrix::operator -= (const ComplexMatrix& a)
 
 // unary operations
 
-Matrix
+boolMatrix
 ComplexMatrix::operator ! (void) const
 {
-  return Matrix (not (data (), length ()), rows (), cols ());
+  int nr = rows ();
+  int nc = cols ();
+
+  boolMatrix b (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      b.elem (i, j) = elem (i, j) != 0.0;
+
+  return b;
 }
 
 // other operations

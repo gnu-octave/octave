@@ -171,7 +171,7 @@ public:
 
   // unary operations
 
-  Matrix operator ! (void) const;
+  boolMatrix operator ! (void) const;
 
   // column vector by row vector -> matrix operations
 

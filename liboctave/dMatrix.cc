@@ -1517,13 +1517,13 @@ Matrix::operator -= (const DiagMatrix& a)
 
 // unary operations
 
-Matrix
+boolMatrix
 Matrix::operator ! (void) const
 {
   int nr = rows ();
   int nc = cols ();
 
-  Matrix b (nr, nc);
+  boolMatrix b (nr, nc);
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)

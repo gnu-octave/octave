@@ -1,3 +1,8 @@
+Mon May 12 02:14:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::operator !): Return boolMatrix.
+	* dMatrix.cc (Matrix::operator !): Likewise
+
 Wed May  7 21:14:06 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-syscalls.h, oct-syscalls.cc: New files.

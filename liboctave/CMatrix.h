@@ -200,7 +200,7 @@ public:
 
   // unary operations
 
-  Matrix operator ! (void) const;
+  boolMatrix operator ! (void) const;
 
   // other operations
 

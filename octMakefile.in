@@ -18,8 +18,8 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	Makeconf.in NEWS PROJECTS README README.NLP SENDING-PATCHES \
 	THANKS f2c-compat.sh flibs.sh cxxlibs.sh configure configure.in \
 	config.guess config.sub float-type.c move-if-change octave.sh \
-	octave-mode.el install.sh doinstall.sh mkpath.c config.h.in \
-	acconfig.h MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
+	octave-bug.in octave-mode.el install.sh doinstall.sh mkpath.c \
+	config.h.in acconfig.h MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = bsd-math kpathsea
@@ -37,16 +37,29 @@ BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 # Subdirectories to run `make dist' in
 BINDISTSUBDIRS = doc scripts
 
-DIRS_TO_MAKE = $(fcnfiledir) $(octfiledir) $(archlibdir) \
+DIRS_TO_MAKE = $(bindir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
 
-all: mkpath
+all: mkpath octave-bug
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: all
 
 mkpath:
 	$(CC) $(ALL_CFLAGS) $(srcdir)/mkpath.c -o mkpath
+
+octave-bug: octave-bug.in
+	@(sed < $< > $@.tmp \
+	  -e "s;%VERSION%;${version};" \
+	  -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
+	  -e "s;%F77%;${F77};" \
+	  -e "s;%FFLAGS%;${FFLAGS};" \
+	  -e "s;%CC%;${CC};" \
+	  -e "s;%CFLAGS%;${BUG_CFLAGS};" \
+	  -e "s;%CXX%;${CXX};" \
+	  -e "s;%CXXFLAGS%;${BUG_CXXFLAGS};" \
+	  -e "s;%DEFS%;${UGLY_DEFS};")
+	@mv $@.tmp $@
 
 libcruft:
 	cd libcruft ; $(MAKE) all
@@ -104,6 +117,7 @@ install:
 	for dir in $(DIRS_TO_MAKE) ; do \
 	  if test -d $$dir ; then true ; else ./mkpath $$dir ; fi ; \
 	done
+	install -m 755 octave-bug $(bindir)/octave-bug
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: install
 

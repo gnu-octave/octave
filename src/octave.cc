@@ -213,16 +213,25 @@ initialize_globals (char *name)
 
   char *shell_path = getenv ("PATH");
   char *arch_dir = octave_arch_lib_dir ();
-  char *tmp = strconcat (shell_path, ":");
+  char *bin_dir = octave_bin_dir ();
 
-  shell_path = shell_path ? strconcat (tmp, arch_dir)
-    : strsave (arch_dir);
+  int len = strlen (arch_dir) + strlen (bin_dir) + 7;
 
-  delete [] tmp;
+  char *putenv_cmd = 0;
 
-  char *putenv_command = strconcat ("PATH=", shell_path);
+  if (shell_path)
+    {
+      len += strlen (shell_path) + 1;
+      putenv_cmd = new char [len];
+      sprintf (putenv_cmd, "PATH=%s:%s:%s", shell_path, arch_dir, bin_dir);
+    }
+  else
+    {
+      putenv_cmd = new char [len];
+      sprintf (putenv_cmd, "PATH=%s:%s", arch_dir, bin_dir);
+    }
 
-  putenv (putenv_command);
+  putenv (putenv_cmd);
 
   raw_prog_name = strsave (name);
   prog_name = strsave ("octave");

@@ -208,6 +208,7 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 	  -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
 	  -e "s;%OCTAVE_EXEC_PREFIX%;\"${exec_prefix}\";" \
 	  -e "s;%OCTAVE_DATADIR%;\"${datadir}\";" \
+	  -e "s;%OCTAVE_BINDIR%;\"${bindir}\";" \
 	  -e "s;%OCTAVE_LIBDIR%;\"${libdir}\";" \
 	  -e "s;%OCTAVE_INFODIR%;\"${infodir}\";" \
 	  -e "s;%OCTAVE_FCNFILEDIR%;\"${fcnfiledir}\";" \

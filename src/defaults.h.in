@@ -44,6 +44,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define OCTAVE_LIBDIR %OCTAVE_LIBDIR%
 #endif
 
+#ifndef OCTAVE_BINDIR
+#define OCTAVE_BINDIR %OCTAVE_BINDIR%
+#endif
+
 #ifndef OCTAVE_INFODIR
 #define OCTAVE_INFODIR %OCTAVE_INFODIR%
 #endif

@@ -348,6 +348,13 @@ octave_arch_lib_dir (void)
   return retval;
 }
 
+char *
+octave_bin_dir (void)
+{
+  static char *retval = subst_octave_home (OCTAVE_BINDIR);
+  return retval;
+}
+
 static char *
 default_pager (void)
 {

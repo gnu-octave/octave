@@ -22,19 +22,29 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 // Written by John C. Campbell <jcc@che.utexas.edu>.
+//
+// Thomas Baier <baier@ci.tuwien.ac.at> added the following functions:
+//
+//   popen    pclose    execute  sync_system  async_system
+//   waitpid  mkfifo   unlink
+
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
-#include <DLList.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <strstream.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 #include <ctype.h>
+
+#include <DLList.h>
 
 #include "dMatrix.h"
 
@@ -285,7 +295,7 @@ fclose_internal (const Octave_object& args)
 }
 
 DEFUN ("fclose", Ffclose, Sfclose, 1, 1,
-  "fclose (FILENAME or FILENUM): close a file")
+  "fclose (FILENAME or FILENUM):  close a file")
 {
   Octave_object retval;
 
@@ -1693,8 +1703,8 @@ DEFUN ("fread", Ffread, Sfread, 3, 2,
  SIZE      : size specification for the Data matrix\n\
  PRECISION : type of data to read, valid types are\n\
 \n\
-               'char',   'schar', 'short',  'int',  'long', 'float'\n\
-               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\
+             \"char\"   \"schar\" \"short\"  \"int\"  \"long\" \"float\"\n\
+             \"double\" \"uchar\" \"ushort\" \"uint\" \"ulong\"\n\
 \n\
  DATA      : matrix in which the data is stored\n\
  COUNT     : number of elements read")
@@ -1774,8 +1784,8 @@ DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
  DATA      : matrix of elements to be written\n\
  PRECISION : type of data to read, valid types are\n\
 \n\
-               'char',   'schar', 'short',  'int',  'long', 'float'\n\
-               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\
+             \"char\"   \"schar\" \"short\"  \"int\"  \"long\" \"float\"\n\
+             \"double\" \"uchar\" \"ushort\" \"uint\" \"ulong\"\n\
 \n\
  COUNT     : number of elements written")
 {
@@ -1879,6 +1889,495 @@ DEFUN ("ferror", Fferror, Sferror, 1, 1,
     print_usage ("ferror");
   else
     retval = ferror_internal (args, nargout);
+
+  return retval;
+}
+
+static Octave_object
+popen_internal (const Octave_object& args)
+{
+  Octave_object retval;
+
+  if (! args(0).is_string ())
+    {
+      error ("popen: file name must be a string");
+      return retval;
+    }
+
+  char *name = args(0).string_value ();
+
+  Pix p = return_valid_file (name);
+
+  if (p)
+    {
+      file_info file = file_list (p);
+
+      retval(0) = (double) file.number ();
+
+      return retval;
+    }
+
+  if (! args(1).is_string ())
+    {
+      error ("popen: file mode must be a string");
+      return retval;
+    }
+
+  char *mode = args(1).string_value ();
+
+  if (mode[1] || (mode[0] != 'w' && mode[0] != 'r'))
+    {
+      error ("popen: invalid mode, must be either \"r\" or \"w\".");
+      return retval;
+    }
+
+  struct stat buffer;
+  if (stat (name, &buffer) == 0 && (buffer.st_mode & S_IFDIR) == S_IFDIR)
+    {
+      error ("popen: can't open directory");
+      return retval;
+    }
+
+  FILE *file_ptr = popen (name, mode);
+
+  if (! file_ptr)
+    {
+      error ("popen: unable to start process `%s'", name);
+      return retval;
+    }
+
+  int number = file_list.length () + 1;
+
+  file_info file (number, name, file_ptr, mode);
+  file_list.append (file);
+
+  retval(0) = (double) number;
+
+  return retval;
+}
+
+DEFUN ("popen", Fpopen, Spopen, 2, 1,
+  "FILENUM = popen (FILENAME, MODE)\n\
+\n\
+  start a process and create a pipe.  Valid values for mode are:\n\
+\n\
+  \"r\" : connect stdout of process to pipe\n\
+  \"w\" : connect stdin of process to pipe")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    print_usage ("popen");
+  else
+    retval = popen_internal (args);
+
+  return retval;
+}
+
+static Octave_object
+pclose_internal (const Octave_object& args)
+{
+  Octave_object retval;
+
+  Pix p = return_valid_file (args(0));
+
+  if (! p)
+    return retval;
+
+  file_info file = file_list (p);
+
+  if (file.number () < 3)
+    {
+      warning ("pclose: can't close stdin, stdout, or stderr!");
+      return retval;
+    }
+
+  int success = pclose (file.fptr ());
+  file_list.del (p);
+
+  if (success == 0)
+    retval(0) = 1.0; // succeeded
+  else
+    {
+      error ("pclose: error on closing file");
+      retval(0) = 0.0; // failed
+    }
+
+  return retval;
+}
+
+DEFUN ("pclose", Fpclose, Spclose, 1, 1,
+  "pclose (FILENAME or FILENUM)\n\
+\n\
+  Close a pipe and terminate the associated process")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("pclose");
+  else
+    retval = pclose_internal (args);
+
+  return retval;
+}
+
+static Octave_object
+execute_internal (const Octave_object& args, int nargout)
+{
+  Octave_object retval (3, tree_constant (-1.0));
+
+  pid_t pid = 0;
+  int stdin_pipe[2];
+  int stdout_pipe[2];
+  FILE *stdin_file;
+  FILE *stdout_file;
+  int new_stdin;
+  int new_stdout;
+
+  if (! args(0).is_string ())
+    {
+      error ("execute: file name must be a string");
+      return retval;
+    }
+
+  char *name = args(0).string_value ();
+
+  if (pipe (stdin_pipe) || pipe (stdout_pipe)) 
+    {
+      error ("execute: pipe creation failed");
+      return retval;
+    }
+
+  pid = fork ();
+
+  if (pid < (pid_t) 0) 
+    {
+      error ("execute: fork failed - can't create child process");
+      return retval;
+    }
+
+  if (pid == (pid_t) 0) 
+    {
+      close (stdin_pipe[1]);
+      close (stdout_pipe[0]);
+
+      dup2 (stdin_pipe[0], STDIN_FILENO);
+      close (stdin_pipe[0]);
+    
+      dup2 (stdout_pipe[1], STDOUT_FILENO);
+      close (stdout_pipe[1]);
+
+      if (execlp (name, name, 0) == -1)
+	error ("execute: unable to start process `%s'", name);
+
+      exit (0);
+      return 0.0;
+    } 
+  else 
+    {
+      close (stdin_pipe[0]);
+      close (stdout_pipe[1]);
+
+      stdout_file = fdopen (stdout_pipe[0], "r");
+      stdin_file = fdopen (stdin_pipe[1], "w"); 
+
+      if (fcntl (fileno (stdout_file), F_SETFL, O_NONBLOCK) < 0) 
+	{
+	  error ("execute: error setting file mode");
+	  return retval;
+	}
+
+      new_stdin = file_list.length () + 1;
+      new_stdout = new_stdin + 1;
+
+      file_info new_stdin_file_ptr (new_stdin, name, stdin_file, "w");
+      file_info new_stdout_file_ptr (new_stdout, name, stdout_file, "r");
+
+      file_list.append (new_stdin_file_ptr);
+      file_list.append (new_stdout_file_ptr);
+    }
+  
+  retval(2) = (double) pid;
+  retval(1) = (double) new_stdout;
+  retval(0) = (double) new_stdin;
+
+  return retval;
+}
+
+DEFUN ("execute", Fexecute, Sexecute, 1, 3,
+  "[STDIN, STDOUT, PID] = execute (COMMAND)\n\
+\n\
+  Start a program and redirect its stdin to STDIN and its stdout to STDOUT")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("execute");
+  else
+    retval = execute_internal (args, nargout);
+
+  return retval;
+}
+
+static Octave_object
+sync_system_internal (const Octave_object& args)
+{
+  Octave_object retval (1, tree_constant (-1.0));
+
+  if (! args(0).is_string ())
+    {
+      error ("sync_system: file name must be a string");
+      return retval;
+    }
+
+  char *name = args(0).string_value ();
+
+  retval (0) = (double) system (name);
+  return retval;
+}
+
+DEFUN ("sync_system", Fsync_system, Ssync_system, 1, 1,
+  "RETCODE = sync_system (FILENAME)\n\
+\n\
+  Start a program and wait until it terminates")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("sync_system");
+  else
+    retval = sync_system_internal (args);
+
+  return retval;
+}
+
+static Octave_object
+async_system_internal (const Octave_object& args)
+{
+  Octave_object retval (1, tree_constant (-1.0));
+  pid_t pid;
+
+  if (! args(0).is_string ())
+    {
+      error ("async_system: file name must be a string");
+      return retval;
+    }
+
+  char *name = args(0).string_value ();
+
+  pid = fork ();
+
+  if (pid < 0) 
+    {
+      error ("async_system: fork failed -- can't create child process");
+      return retval;
+    }
+
+  if (pid == 0) 
+    {
+      system (name);
+      exit (0);
+      retval (0) = 0.0;
+      return retval;
+    } 
+  else
+    {
+      retval (0) = (double) pid;
+      return retval;
+    }
+}
+
+DEFUN ("async_system", Fasync_system, Sasync_system, 1, 1,
+  "PID = async_system (FILENAME)\n\
+\n\
+  Create a new process and start FILENAME")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("async_system");
+  else
+    retval = async_system_internal (args);
+
+  return retval;
+}
+
+static Octave_object
+waitpid_internal (const Octave_object& args)
+{
+  Octave_object retval (1, tree_constant (-1.0));
+
+  double pid_num = args(0).double_value ();
+  
+  if (! error_state)
+    {
+      if (D_NINT (pid_num) != pid_num)
+	error ("waitpid: PID must be an integer value");
+      else
+	{
+	  pid_t pid = (pid_t) pid_num;
+
+	  int options = 0;
+
+	  if (args.length () == 2)
+	    {
+	      double options_num = args(1).double_value ();
+
+	      if (! error_state)
+		{
+		  if (D_NINT (options_num) != options_num)
+		    error ("waitpid: PID must be an integer value");
+		  else
+		    {
+		      options = NINT (options_num);
+		      if (options < 0 || options > 3)
+			error ("waitpid: invalid OPTIONS value specified");
+		    }
+		}
+	    }
+
+	  if (! error_state)
+	    retval (0) = (double) waitpid (pid, 0, options);
+	}
+    }
+
+  return retval;
+}
+
+DEFUN ("waitpid", Fwaitpid, Swaitpid, 1, 1,
+  "STATUS = waitpid (PID, OPTIONS)\n\
+\n\
+  wait for process PID to terminate\n\
+\n\
+  PID can be:\n\
+\n\
+     -1 : wait for any child process\n\
+      0 : wait for any child process whose process group ID is equal to\n\
+          that of the Octave interpreter process.\n\
+    > 0 : wait for termination of the child process with ID PID.\n\
+\n\
+  OPTIONS is:\n\
+\n\
+     0 : wait until signal is received or a child process exits (this\n\
+         is the default if the OPTIONS argument is missing) \n\
+     1 : do not hang if status is not immediately available\n\
+     2 : report the status of any child processes that are\n\
+         stopped, and whose status has not yet been reported\n\
+         since they stopped\n\
+     3 : implies both 1 and 2\n\
+\n\
+  STATUS is:\n\
+\n\
+     -1 : if an error occured\n\
+    > 0 : the process ID of the child process that exited")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    retval = waitpid_internal (args);
+  else
+    print_usage ("waitpid");
+
+  return retval;
+}
+
+static Octave_object
+mkfifo_internal (const Octave_object& args)
+{
+  Octave_object retval (1, tree_constant (-1.0));
+
+  if (! args(0).is_string ())
+    {
+      error ("mkfifo: file name must be a string");
+      return retval;
+    }
+
+  char *name = args(0).string_value ();
+
+  if (! args(1).is_scalar_type ())
+    {
+      error ("mkfifo:  MODE must be an integer");
+      return retval;
+    }
+
+  long mode = (long) args(1).double_value ();
+
+  retval (0) = (double) mkfifo (name, mode);
+
+  return retval;
+}
+
+DEFUN ("mkfifo", Fmkfifo, Smkfifo, 2, 1,
+  "STATUS = mkfifo (NAME, MODE)\n\
+\n\
+  Create a FIFO special file named NAME with file mode MODE\n\
+\n\
+  STATUS is:\n\
+\n\
+    != 0 : if mkfifo failed\n\
+       0 : if the FIFO special file could be created")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    print_usage ("mkfifo");
+  else
+    retval = mkfifo_internal (args);
+
+  return retval;
+}
+
+static Octave_object
+unlink_internal (const Octave_object& args)
+{
+  Octave_object retval;
+
+  if (! args(0).is_string ())
+    {
+      error ("unlink: file name must be a string");
+      retval (0) = -1.0;
+      return retval;
+    }
+
+  char *name = args(0).string_value ();
+
+  retval (0) = (double) unlink (name);
+
+  return retval;
+}
+
+DEFUN ("unlink", Funlink, Sunlink, 1, 1,
+  "STATUS = unlink (NAME)\n\
+\n\
+  Delete the file NAME\n\
+\n\
+  STATUS is:\n\
+\n\
+    != 0 : if unlink failed\n\
+       0 : if the file could be successfully deleted")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("unlink");
+  else
+    retval = unlink_internal (args);
 
   return retval;
 }

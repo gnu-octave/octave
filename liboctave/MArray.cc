@@ -77,10 +77,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
     }
 
 #define DO_VS_OP2(OP) \
-  int l = length (); \
+  int l = a.length (); \
   if (l > 0) \
     { \
-      T *tmp = fortran_vec (); \
+      T *tmp = a.fortran_vec (); \
       for (int i = 0; i < l; i++) \
 	tmp[i] OP s; \
     }
@@ -88,10 +88,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DO_VV_OP2(OP) \
   do \
     { \
-      T *tmp = fortran_vec (); \
-      const T *rhs = a.data (); \
+      T *a_tmp = a.fortran_vec (); \
+      const T *b_tmp = b.data (); \
       for (int i = 0; i < l; i++) \
-	tmp[i] += rhs[i]; \
+	a_tmp[i] += b_tmp[i]; \
     } \
   while (0)
 
@@ -103,52 +103,52 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 template <class T>
 MArray<T>&
-MArray<T>::operator += (const T& s)
+operator += (MArray<T>& a, const T& s)
 {
   DO_VS_OP2 (+=)
-  return *this;
+  return a;
 }
 
 template <class T>
 MArray<T>&
-MArray<T>::operator -= (const T& s)
+operator -= (MArray<T>& a, const T& s)
 {
   DO_VS_OP2 (-=)
-  return *this;
+  return a;
 }
 
 // Element by element MArray by MArray ops.
 
 template <class T>
 MArray<T>&
-MArray<T>::operator += (const MArray<T>& a)
+operator += (MArray<T>& a, const MArray<T>& b)
 {
-  int l = length ();
+  int l = a.length ();
   if (l > 0)
     {
-      if (l != a.length ())
+      if (l != b.length ())
 	(*current_liboctave_error_handler) \
 	  ("nonconformant += array operation attempted"); \
       else
 	DO_VV_OP2 (+=);
     }
-  return *this;
+  return a;
 }
 
 template <class T>
 MArray<T>&
-MArray<T>::operator -= (const MArray<T>& a)
+operator -= (MArray<T>& a, const MArray<T>& b)
 {
-  int l = length ();
+  int l = a.length ();
   if (l > 0)
     {
-      if (l != a.length ())
+      if (l != b.length ())
 	(*current_liboctave_error_handler) \
 	  ("nonconformant -= array operation attempted"); \
       else
 	DO_VV_OP2 (-=);
     }
-  return *this;
+  return a;
 }
 
 // Element by element MArray by scalar ops.
@@ -234,29 +234,29 @@ MArray2<T>::MArray2 (const MDiagArray<T>& a)
 
 template <class T>
 MArray2<T>&
-MArray2<T>::operator += (const T& s)
+operator += (MArray2<T>& a, const T& s)
 {
   DO_VS_OP2 (+=)
-  return *this;
+  return a;
 }
 
 template <class T>
 MArray2<T>&
-MArray2<T>::operator -= (const T& s)
+operator -= (MArray2<T>& a, const T& s)
 {
   DO_VS_OP2 (-=)
-  return *this;
+  return a;
 }
 
 // Element by element MArray2 by MArray2 ops.
 
 template <class T>
 MArray2<T>&
-MArray2<T>::operator += (const MArray2<T>& a)
+operator += (MArray2<T>& a, const MArray2<T>& b)
 {
-  int r = rows ();
-  int c = cols ();
-  if (r != a.rows () || c != a.cols ())
+  int r = a.rows ();
+  int c = a.cols ();
+  if (r != b.rows () || c != b.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant += array operation attempted");
@@ -269,16 +269,16 @@ MArray2<T>::operator += (const MArray2<T>& a)
 	  DO_VV_OP2 (+=);
 	}
     }
-  return *this;
+  return a;
 }
 
 template <class T>
 MArray2<T>&
-MArray2<T>::operator -= (const MArray2<T>& a)
+operator -= (MArray2<T>& a, const MArray2<T>& b)
 {
-  int r = rows ();
-  int c = cols ();
-  if (r != a.rows () || c != a.cols ())
+  int r = a.rows ();
+  int c = a.cols ();
+  if (r != b.rows () || c != b.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant -= array operation attempted");
@@ -291,7 +291,7 @@ MArray2<T>::operator -= (const MArray2<T>& a)
 	  DO_VV_OP2 (-=);
 	}
     }
-  return *this;
+  return a;
 }
 
 // Element by element MArray2 by scalar ops.
@@ -371,18 +371,48 @@ operator - (const MArray2<T>& a)
 
 template <class T>
 MDiagArray<T>&
-MDiagArray<T>::operator += (const MDiagArray<T>& a)
+operator += (MDiagArray<T>& a, const MDiagArray<T>& b)
 {
-  // XXX FIXME XXX
-  return *this;
+  int r = a.rows ();
+  int c = a.cols ();
+  if (r != b.rows () || c != b.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant array " OP_STR " attempted");
+      return MArray2<T> ();
+    }
+  else
+    {
+      int l = a.length ();
+      T *a_tmp = a.fortran_vec ();
+      const T *b_tmp = b.data ();
+      for (int i = 0; i < l; i++)
+	a_tmp[i] += b_tmp[i];
+    }
+  return a;
 }
 
 template <class T>
 MDiagArray<T>&
-MDiagArray<T>::operator -= (const MDiagArray<T>& a)
+operator -= (MDiagArray<T>& a, const MDiagArray<T>& b)
 {
-  // XXX FIXME XXX
-  return *this;
+  int r = a.rows ();
+  int c = a.cols ();
+  if (r != b.rows () || c != b.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant array " OP_STR " attempted");
+      return MArray2<T> ();
+    }
+  else
+    {
+      int l = a.length ();
+      T *a_tmp = a.fortran_vec ();
+      const T *b_tmp = b.data ();
+      for (int i = 0; i < l; i++)
+	a_tmp[i] -= b_tmp[i];
+    }
+  return a;
 }
 
 // Element by element MDiagArray by scalar ops.

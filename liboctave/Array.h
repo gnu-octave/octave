@@ -148,6 +148,8 @@ public:
   Array2 (const Array2<T>& a);
   Array2 (const DiagArray<T>& a);
 
+  ~Array2 (void) { }
+
   Array2<T>& operator = (const Array2<T>& a);
 
   int dim1 (void) const;
@@ -191,6 +193,8 @@ public:
   Array3 (int n, int m, int k);
   Array3 (int n, int m, int k, const T& val);
   Array3 (const Array3<T>& a);
+
+  ~Array3 (void) { }
 
   Array3<T>& operator = (const Array3<T>& a);
 
@@ -302,6 +306,8 @@ public:
   DiagArray (int r, int c, const T& val);
   DiagArray (const Array<T>& a);
   DiagArray (const DiagArray<T>& a);
+
+  ~DiagArray (void) { }
 
   DiagArray<T>& operator = (const DiagArray<T>& a);
 

@@ -53,6 +53,8 @@ public:
   MArray (const Array<T>& a) : Array<T> (a) { }
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
+  ~MArray (void) { }
+
   MArray<T>& operator = (const MArray<T>& a)
     {
       Array<T>::operator = (a);
@@ -61,13 +63,13 @@ public:
 
 // Element by element MArray by scalar ops.
 
-  MArray<T>& operator += (const T& s);
-  MArray<T>& operator -= (const T& s);
+  friend MArray<T>& operator += (MArray<T>& a, const T& s);
+  friend MArray<T>& operator -= (MArray<T>& a, const T& s);
 
 // Element by element MArray by MArray ops.
 
-  MArray<T>& operator += (const MArray<T>& a);
-  MArray<T>& operator -= (const MArray<T>& a);
+  friend MArray<T>& operator += (MArray<T>& a, const MArray<T>& b);
+  friend MArray<T>& operator -= (MArray<T>& a, const MArray<T>& b);
 
 // Element by element MArray by scalar ops.
 
@@ -115,6 +117,8 @@ public:
   MArray2 (const MArray2<T>& a) : Array2<T> (a) { }
   MArray2 (const MDiagArray<T>& a);
 
+  ~MArray2 (void) { }
+
   MArray2<T>& operator = (const MArray2<T>& a)
     {
       Array2<T>::operator = (a);
@@ -123,13 +127,13 @@ public:
 
 // Element by element MArray2 by scalar ops.
 
-  MArray2<T>& operator += (const T& s);
-  MArray2<T>& operator -= (const T& s);
+  friend MArray2<T>& operator += (MArray2<T>& a, const T& s);
+  friend MArray2<T>& operator -= (MArray2<T>& a, const T& s);
 
 // Element by element MArray2 by MArray2 ops.
 
-  MArray2<T>& operator += (const MArray2<T>& a);
-  MArray2<T>& operator -= (const MArray2<T>& a);
+  friend MArray2<T>& operator += (MArray2<T>& a, const MArray2<T>& b);
+  friend MArray2<T>& operator -= (MArray2<T>& a, const MArray2<T>& b);
 
 // Element by element MArray2 by scalar ops.
 
@@ -178,6 +182,8 @@ public:
   MDiagArray (const MDiagArray<T>& a) : DiagArray<T> (a) { }
   MDiagArray (const MArray<T>& a) : DiagArray<T> (a) { }
 
+  ~MDiagArray (void) { }
+
   MDiagArray<T>& operator = (const MDiagArray<T>& a)
     {
       DiagArray<T>::operator = (a);
@@ -186,8 +192,8 @@ public:
 
 // Element by element MDiagArray by MDiagArray ops.
 
-  MDiagArray<T>& operator += (const MDiagArray<T>& a);
-  MDiagArray<T>& operator -= (const MDiagArray<T>& a);
+  friend MDiagArray<T>& operator += (MDiagArray<T>& a, const MDiagArray<T>& b);
+  friend MDiagArray<T>& operator -= (MDiagArray<T>& a, const MDiagArray<T>& b);
 
 // Element by element MDiagArray by scalar ops.
 

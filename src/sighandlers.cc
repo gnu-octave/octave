@@ -22,15 +22,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <sys/wait.h>
 #include <new.h>
 #include <signal.h>
+#include <iostream.h>
 
 #include "sighandlers.h"
 #include "octave.h"
@@ -71,6 +73,47 @@ generic_sig_handler (int i)
   return 0;
 #endif
 }
+
+// Handle SIGCHLD.  Should use waitpid and ignore stopped jobs.
+// Needs to restore state of plotter such that it will be restarted
+// again when needed.  Needs to close file descriptors corresponding
+// to processes started with execute().
+
+#if 0
+static RETSIGTYPE
+sigchld_handler (int i)
+{
+  int status;
+  pid_t pid = wait (&status);
+
+  if (pid < 0)
+    cerr << "wait error\n";
+  else
+    {
+      cerr << "sigchld caught, PID = " << pid << "; status: ";
+
+      int lo_byte = (status & 0xff);
+      int hi_byte = ((status >> 8) & 0xff);
+      if (lo_byte == 0177)
+	{
+	  cerr << "stopped with signal = " << hi_byte << "\n";
+	}
+      else if (lo_byte)
+	{
+	  int sig_num = (lo_byte & 0x7f);
+	  cerr << "stopped with signal = " << sig_num << "\n";
+	  if (lo_byte & 0200)
+	    cerr << "child dumped core\n";
+	}
+      else
+	{
+	  cerr << "exited with status = " << hi_byte << "\n";
+	}
+    }
+
+  signal (SIGCHLD, sigchld_handler);
+}
+#endif
 
 // Handle SIGINT by restarting the parser (see octave.cc).
 
@@ -137,6 +180,12 @@ install_signal_handlers (void)
 
 #ifdef SIGBUS
   signal (SIGBUS, generic_sig_handler);
+#endif
+
+#if 0
+#ifdef SIGCHLD
+  signal (SIGCHLD, sigchld_handler);
+#endif
 #endif
 
 #ifdef SIGEMT

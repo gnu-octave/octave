@@ -1,6 +1,12 @@
 Summary of changes since version 2.0.5:
 --------------------------------------
 
+  * tmpnam now takes two optional arguments, DIR, and PREFIX.  For
+    example, tmpnam ("/foo", "bar-") returns a file name like
+    "/foo/bar-10773baa".  If DIR is omitted or empty, the value of the
+    environment variable TMPDIR, or /tmp is used.  If PREFIX is 
+    omitted, "oct-" is used.
+
   * The built-in variable PWD has been removed.  If you need to get
     the value of the current working directory, use the pwd() function
     instead.

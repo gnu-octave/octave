@@ -40,7 +40,6 @@ Free Software Foundation, Inc.
 #include <config.h>
 #endif
 
-#include <cerrno>
 #include <cstdlib>
 
 #ifdef HAVE_UNISTD_H

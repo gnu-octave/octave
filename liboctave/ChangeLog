@@ -1,3 +1,14 @@
+Tue May  6 00:52:02 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.h, file-ops.cc (tempnam): Add DIR and PREFIX args.
+	Handle errors and missing functions consistently.
+
+	* oct-group.h, oct-group.cc: New files.
+
+	* oct-passwd.cc: Handle errors and missing functions consistently.
+
+	* str-vec.h, str-vec.cc (c_str_vec, delete_c_str_vec): New functions.
+
 Mon May  5 17:53:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc: (file_ops::tilde_expand): Use new octave_passwd class.

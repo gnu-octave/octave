@@ -303,7 +303,8 @@ extern tree_constant identity_matrix (const tree_constant& a);
 extern tree_constant identity_matrix (const tree_constant& a,
 				      const tree_constant& b);
 
-extern tree_constant find_nonzero_elem_idx (const tree_constant& a);
+extern Octave_object find_nonzero_elem_idx (const tree_constant& a,
+					    int nargout);
 
 extern Octave_object matrix_log (const tree_constant& a);
 extern Octave_object matrix_sqrt (const tree_constant& a);

@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SUBDIRS = base hinf obsolete sys
+SUBDIRS = base hinf obsolete system
 
 DISTSUBDIRS = $(SUBDIRS)
 

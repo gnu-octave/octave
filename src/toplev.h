@@ -1,4 +1,4 @@
-// octave.h                                              -*- C++ -*-
+// toplev.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -21,8 +21,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_octave_h)
-#define octave_octave_h 1
+#if !defined (octave_toplev_h)
+#define octave_toplev_h 1
 
 #include <cstdio>
 

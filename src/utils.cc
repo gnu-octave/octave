@@ -67,7 +67,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "mappers.h"
 #include "oct-obj.h"
 #include "octave-hist.h"
-#include "octave.h"
+#include "toplev.h"
 #include "pager.h"
 #include "pathsearch.h"
 #include "sysdir.h"

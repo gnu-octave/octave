@@ -46,7 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "input.h"
 #include "lex.h"
-#include "octave.h"
+#include "toplev.h"
 #include "parse.h"
 #include "symtab.h"
 #include "token.h"

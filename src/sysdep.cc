@@ -74,7 +74,7 @@ extern "C" void _rl_output_character_function ();
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
-#include "octave.h"
+#include "toplev.h"
 #include "sysdep.h"
 #include "tree-const.h"
 #include "utils.h"

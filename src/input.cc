@@ -97,7 +97,7 @@ gnu_readline (const char *s)
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "octave-hist.h"
-#include "octave.h"
+#include "toplev.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathlen.h"

@@ -54,7 +54,7 @@ Free Software Foundation, Inc.
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "octave.h"
+#include "toplev.h"
 #include "pager.h"
 #include "pathlen.h"
 #include "procstream.h"

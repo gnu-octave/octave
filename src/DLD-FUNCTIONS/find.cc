@@ -111,7 +111,14 @@ find_nonzero_elem_idx (const T& nda, int nargout)
 	}
     }
   else if (scalar_arg)
-    val.resize (dim_vector (0, 0));
+    {
+      idx.resize (0, 0);
+
+      i_idx.resize (0, 0);
+      j_idx.resize (0, 0);
+
+      val.resize (dim_vector (0, 0));
+    }
 
   switch (nargout)
     {

@@ -15,15 +15,21 @@ for i = 1:6
       mode = deblank (mode_list (k,:));
       [id, err] = fopen (nm, mode, arch);
       if (id < 0)
-      	status = 0; break;
+	printf ("open failed: %s (%s, %s): %s\n", nm, mode, arch, err);
+      	status = 0;
+	break;
+      else
+	fclose (id);
       endif
-      fclose (id);
       mode = strcat (mode, "b");
       [id, err] = fopen (nm, mode, arch);
       if (id < 0)
-      	status = 0; break;
+	printf ("open failed: %s (%s, %s): %s\n", nm, mode, arch, err);
+      	status = 0;
+	break;
+      else
+	fclose (id);
       endif
-      fclose (id);
     endfor
     if (status == 0)
       break;

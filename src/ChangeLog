@@ -1,3 +1,8 @@
+2002-08-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (fopen_mode_to_ios_mode): Default value is std::ios::in.
+	Return std::ios::openmode instead of int.
+
 2002-08-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/dasrt.cc (DASRT_ABORT1, DASRT_ABORT2):

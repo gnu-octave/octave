@@ -94,10 +94,10 @@ close_files (void)
   octave_stream_list::clear ();
 }
 
-static int
+static std::ios::openmode
 fopen_mode_to_ios_mode (const std::string& mode)
 {
-  int retval = 0;
+  std::ios::openmode retval = std::ios::in;
 
   if (! mode.empty ())
     {
@@ -124,9 +124,11 @@ fopen_mode_to_ios_mode (const std::string& mode)
       else if (mode == "r+b")
 	retval = std::ios::in | std::ios::out | std::ios::binary;
       else if (mode == "w+b")
-	retval = std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary; 
+	retval = (std::ios::in | std::ios::out | std::ios::trunc
+		  | std::ios::binary);
       else if (mode == "a+b")
-	retval = std::ios::in | std::ios::out | std::ios::app | std::ios::binary;
+	retval = (std::ios::in | std::ios::out | std::ios::app
+		  | std::ios::binary);
       else
 	::error ("invalid mode specified");
     }
@@ -310,7 +312,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 
   fid = -1;
 
-  int md = fopen_mode_to_ios_mode (mode);
+  std::ios::openmode md = fopen_mode_to_ios_mode (mode);
 
   if (! error_state)
     {
@@ -318,9 +320,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 	oct_mach_info::string_to_float_format (arch);
 
       if (! error_state)
-	retval = octave_fstream::create (name,
-	                                 static_cast<std::ios::openmode> (md), 
-					 flt_fmt);
+	retval = octave_fstream::create (name, md, flt_fmt);
     }
 
   return retval;

@@ -1910,6 +1910,62 @@ tree_constant_rep::convert_to_str (void)
   return retval;
 }
 
+void
+tree_constant_rep::convert_to_row_or_column_vector (void)
+{
+  assert (type_tag == matrix_constant || type_tag == complex_matrix_constant);
+
+  int nr = rows ();
+  int nc = columns ();
+
+  int len = nr * nc;
+
+  assert (len > 0);
+
+  int new_nr = 1;
+  int new_nc = 1;
+
+  if (user_pref.prefer_column_vectors)
+    new_nr = len;
+  else
+    new_nc = len;
+
+  if (type_tag == matrix_constant)
+    {
+      Matrix *m = new Matrix (new_nr, new_nc);
+
+      double *cop_out = matrix->fortran_vec ();
+
+      for (int i = 0; i < len; i++)
+	{
+	  if (new_nr == 1)
+	    m->elem (0, i) = *cop_out++;
+	  else
+	    m->elem (i, 0) = *cop_out++;
+	}
+
+      delete matrix;
+      matrix = m;
+    }
+  else
+    {
+      ComplexMatrix *cm = new ComplexMatrix (new_nr, new_nc);
+
+      Complex *cop_out = complex_matrix->fortran_vec ();
+
+      for (int i = 0; i < len; i++)
+	{
+	  if (new_nr == 1)
+	    cm->elem (0, i) = *cop_out++;
+	  else
+	    cm->elem (i, 0) = *cop_out++;
+	}
+
+      delete complex_matrix;
+      complex_matrix = cm;
+    }
+}
+
 int
 tree_constant_rep::is_true (void) const
 {

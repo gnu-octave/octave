@@ -465,6 +465,8 @@ public:
 
   tree_constant convert_to_str (void);
 
+  void convert_to_row_or_column_vector (void);
+
   int is_true (void) const;
 
   tree_constant cumprod (void) const;
@@ -722,6 +724,11 @@ public:
   tree_constant isstr (void) const { return rep->isstr (); }
 
   tree_constant convert_to_str (void) { return rep->convert_to_str (); }
+
+  void convert_to_row_or_column_vector (void)
+    {
+      rep->convert_to_row_or_column_vector ();
+    }
 
   int is_true (void) const { return rep->is_true (); }
 

@@ -86,9 +86,18 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 	  || type_tag == scalar_constant
 	  || type_tag == complex_scalar_constant);
 
-  if (rhs.is_scalar_type () && valid_scalar_indices (args, nargs))
+  if ((rhs.is_scalar_type () || rhs.is_zero_by_zero)
+      && valid_scalar_indices (args, nargs))
     {
-      if (type_tag == unknown_constant || type_tag == scalar_constant)
+      if (rhs.is_zero_by_zero ())
+	{
+	  if (type_tag == complex_scalar_constant)
+	    delete complex_scalar;
+
+	  matrix = new Matrix (0, 0);
+	  type_tag = matrix_constant;
+	}
+      else if (type_tag == unknown_constant || type_tag == scalar_constant)
 	{
 	  if (rhs.const_type () == scalar_constant)
 	    {
@@ -110,6 +119,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
 	{
 	  if (rhs.const_type () == scalar_constant)
 	    {
+	      delete complex_scalar;
 	      scalar = rhs.double_value ();
 	      type_tag = scalar_constant;
 	    }
@@ -269,6 +279,11 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  return;
 	}
 
+// We can't handle the case of assigning to a vector first, since even
+// then, the two operations are not equivalent.  For example, the
+// expression V(:) = M is handled differently depending on whether the
+// user specified do_fortran_indexing = "true".
+
       if (user_pref.do_fortran_indexing)
 	fortran_style_matrix_assignment (rhs, i_arg);
       else if (nr <= 1 || nc <= 1)
@@ -305,15 +320,37 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
     case scalar_constant:
       {
 	int i = NINT (tmp_i.double_value ());
-	if (index_check (i-1, "") < 0)
+	int idx = i - 1;
+
+	if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    if (idx < nr * nc)
+	      {
+		convert_to_row_or_column_vector ();
+
+		nr = rows ();
+		nc = columns ();
+
+		if (nr == 1)
+		  delete_column (idx);
+		else if (nc == 1)
+		  delete_row (idx);
+		else
+		  panic_impossible ();
+	      }
+	    return;
+	  }
+
+	if (index_check (idx, "") < 0)
 	  return;
+
 	if (nr <= 1 || nc <= 1)
 	  {
-	    maybe_resize (i-1);
+	    maybe_resize (idx);
 	    if (error_state)
 	      return;
 	  }
-	else if (range_max_check (i-1, nr * nc) < 0)
+	else if (range_max_check (idx, nr * nc) < 0)
 	  return;
 
 	nr = rows ();
@@ -337,6 +374,38 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 	idx_vector ii (mi, 1, "", len);  // Always do fortran indexing here...
 	if (! ii)
 	  return;
+
+	if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    ii.sort_uniq ();
+	    int num_to_delete = 0;
+	    for (int i = 0; i < ii.length (); i++)
+	      {
+		if (ii.elem (i) < len)
+		  num_to_delete++;
+		else
+		  break;
+	      }
+
+	    if (num_to_delete > 0)
+	      {
+		if (num_to_delete != ii.length ())
+		  ii.shorten (num_to_delete);
+
+		convert_to_row_or_column_vector ();
+
+		nr = rows ();
+		nc = columns ();
+
+		if (nr == 1)
+		  delete_columns (ii);
+		else if (nc == 1)
+		  delete_rows (ii);
+		else
+		  panic_impossible ();
+	      }
+	    return;
+	  }
 
 	if (nr <= 1 || nc <= 1)
 	  {
@@ -379,7 +448,11 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
       gripe_range_invalid ();
       break;
     case magic_colon:
-      fortran_style_matrix_assignment (rhs, magic_colon);
+// a(:) = [] is equivalent to a(:,:) = foo.
+      if (rhs_nr == 0 && rhs_nc == 0)
+	do_matrix_assignment (rhs, magic_colon, magic_colon);
+      else
+	fortran_style_matrix_assignment (rhs, magic_colon);
       break;
     default:
       panic_impossible ();
@@ -1993,10 +2066,15 @@ tree_constant_rep::delete_rows (idx_vector& iv)
   iv.sort_uniq ();
   int num_to_delete = iv.length ();
 
+  int nr = rows ();
+  int nc = columns ();
+
+// If deleting all rows of a column vector, make result 0x0.
+  if (nc == 1 && num_to_delete == nr)
+    nc = 0;
+
   if (type_tag == matrix_constant)
     {
-      int nr = matrix->rows ();
-      int nc = matrix->columns ();
       Matrix *new_matrix = new Matrix (nr-num_to_delete, nc);
       if (nr > num_to_delete)
 	{
@@ -2019,8 +2097,6 @@ tree_constant_rep::delete_rows (idx_vector& iv)
     }
   else if (type_tag == complex_matrix_constant)
     {
-      int nr = complex_matrix->rows ();
-      int nc = complex_matrix->columns ();
       ComplexMatrix *new_matrix = new ComplexMatrix (nr-num_to_delete, nc);
       if (nr > num_to_delete)
 	{
@@ -2051,6 +2127,13 @@ tree_constant_rep::delete_rows (Range& ri)
   ri.sort ();
   int num_to_delete = ri.nelem ();
 
+  int nr = rows ();
+  int nc = columns ();
+
+// If deleting all rows of a column vector, make result 0x0.
+  if (nc == 1 && num_to_delete == nr)
+    nc = 0;
+
   double ib = ri.base ();
   double iinc = ri.inc ();
 
@@ -2058,8 +2141,6 @@ tree_constant_rep::delete_rows (Range& ri)
 
   if (type_tag == matrix_constant)
     {
-      int nr = matrix->rows ();
-      int nc = matrix->columns ();
       Matrix *new_matrix = new Matrix (nr-num_to_delete, nc);
       if (nr > num_to_delete)
 	{
@@ -2085,8 +2166,6 @@ tree_constant_rep::delete_rows (Range& ri)
     }
   else if (type_tag == complex_matrix_constant)
     {
-      int nr = complex_matrix->rows ();
-      int nc = complex_matrix->columns ();
       ComplexMatrix *new_matrix = new ComplexMatrix (nr-num_to_delete, nc);
       if (nr > num_to_delete)
 	{
@@ -2163,10 +2242,15 @@ tree_constant_rep::delete_columns (idx_vector& jv)
   jv.sort_uniq ();
   int num_to_delete = jv.length ();
 
+  int nr = rows ();
+  int nc = columns ();
+
+// If deleting all columns of a row vector, make result 0x0.
+  if (nr == 1 && num_to_delete == nc)
+    nr = 0;
+
   if (type_tag == matrix_constant)
     {
-      int nr = matrix->rows ();
-      int nc = matrix->columns ();
       Matrix *new_matrix = new Matrix (nr, nc-num_to_delete);
       if (nc > num_to_delete)
 	{
@@ -2189,8 +2273,6 @@ tree_constant_rep::delete_columns (idx_vector& jv)
     }
   else if (type_tag == complex_matrix_constant)
     {
-      int nr = complex_matrix->rows ();
-      int nc = complex_matrix->columns ();
       ComplexMatrix *new_matrix = new ComplexMatrix (nr, nc-num_to_delete);
       if (nc > num_to_delete)
 	{
@@ -2221,6 +2303,13 @@ tree_constant_rep::delete_columns (Range& rj)
   rj.sort ();
   int num_to_delete = rj.nelem ();
 
+  int nr = rows ();
+  int nc = columns ();
+
+// If deleting all columns of a row vector, make result 0x0.
+  if (nr == 1 && num_to_delete == nc)
+    nr = 0;
+
   double jb = rj.base ();
   double jinc = rj.inc ();
 
@@ -2228,8 +2317,6 @@ tree_constant_rep::delete_columns (Range& rj)
 
   if (type_tag == matrix_constant)
     {
-      int nr = matrix->rows ();
-      int nc = matrix->columns ();
       Matrix *new_matrix = new Matrix (nr, nc-num_to_delete);
       if (nc > num_to_delete)
 	{
@@ -2255,8 +2342,6 @@ tree_constant_rep::delete_columns (Range& rj)
     }
   else if (type_tag == complex_matrix_constant)
     {
-      int nr = complex_matrix->rows ();
-      int nc = complex_matrix->columns ();
       ComplexMatrix *new_matrix = new ComplexMatrix (nr, nc-num_to_delete);
       if (nc > num_to_delete)
 	{

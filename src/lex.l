@@ -545,23 +545,17 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// Identifiers.  It matters if the next non-whitespace token is `=',
-// so match that here.
+// Identifiers.  Truncate the token at the first space or tab but
+// don't write directly on yytext.
 %}
 
 {IDENT}{S}* {
-
-// Truncate the token at the first space or tab but don't write
-// directly on yytext.
-
     static char *tok = 0;
     delete [] tok;
     tok = strip_trailing_whitespace (yytext);
-    return handle_identifier (tok, 0);
-  }
-
-{IDENT}/{S}*= {
-    return handle_identifier (yytext, 1);
+    int c = yyinput ();
+    unput (c);
+    return handle_identifier (tok, (c == '='));
   }
 
 %{

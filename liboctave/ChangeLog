@@ -1,3 +1,9 @@
+1999-11-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DiagArray2.cc (DiagArray2<T>::operator () (int, int)):
+	On errors, simply return `T ()'.
+	(DiagArray2<T>::checkelem (int, int)): Likewise.
+
 1999-11-02  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
 	* dMatrix.cc (Matrix::expm): Do balancing here instead of using

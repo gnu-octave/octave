@@ -1,10 +1,10 @@
       SUBROUTINE DTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      $                   LDVR, MM, M, WORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -43,7 +43,6 @@
 *  diagonal block is a complex conjugate pair of eigenvalues and
 *  eigenvectors; only one eigenvector of the pair is computed, namely
 *  the one corresponding to the eigenvalue with positive imaginary part.
-*
 *
 *  Arguments
 *  =========
@@ -87,6 +86,15 @@
 *          of Schur vectors returned by DHSEQR).
 *          On exit, if SIDE = 'L' or 'B', VL contains:
 *          if HOWMNY = 'A', the matrix Y of left eigenvectors of T;
+*                           VL has the same quasi-lower triangular form
+*                           as T'. If T(i,i) is a real eigenvalue, then
+*                           the i-th column VL(i) of VL  is its
+*                           corresponding eigenvector. If T(i:i+1,i:i+1)
+*                           is a 2-by-2 block whose eigenvalues are
+*                           complex-conjugate eigenvalues of T, then
+*                           VL(i)+sqrt(-1)*VL(i+1) is the complex
+*                           eigenvector corresponding to the eigenvalue
+*                           with positive real part.
 *          if HOWMNY = 'B', the matrix Q*Y;
 *          if HOWMNY = 'S', the left eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
@@ -107,6 +115,15 @@
 *          of Schur vectors returned by DHSEQR).
 *          On exit, if SIDE = 'R' or 'B', VR contains:
 *          if HOWMNY = 'A', the matrix X of right eigenvectors of T;
+*                           VR has the same quasi-upper triangular form
+*                           as T. If T(i,i) is a real eigenvalue, then
+*                           the i-th column VR(i) of VR  is its
+*                           corresponding eigenvector. If T(i:i+1,i:i+1)
+*                           is a 2-by-2 block whose eigenvalues are
+*                           complex-conjugate eigenvalues of T, then
+*                           VR(i)+sqrt(-1)*VR(i+1) is the complex
+*                           eigenvector corresponding to the eigenvalue
+*                           with positive real part.
 *          if HOWMNY = 'B', the matrix Q*X;
 *          if HOWMNY = 'S', the right eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
@@ -168,8 +185,7 @@
       EXTERNAL           LSAME, IDAMAX, DDOT, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DCOPY, DGEMV, DLABAD, DLALN2, DSCAL,
-     $                   XERBLA
+      EXTERNAL           DAXPY, DCOPY, DGEMV, DLALN2, DSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, SQRT
@@ -186,7 +202,7 @@
       LEFTV = LSAME( SIDE, 'L' ) .OR. BOTHV
 *
       ALLV = LSAME( HOWMNY, 'A' )
-      OVER = LSAME( HOWMNY, 'B' ) .OR. LSAME( HOWMNY, 'O' )
+      OVER = LSAME( HOWMNY, 'B' )
       SOMEV = LSAME( HOWMNY, 'S' )
 *
       INFO = 0

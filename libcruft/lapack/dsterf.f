@@ -1,9 +1,9 @@
       SUBROUTINE DSTERF( N, D, E, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -50,11 +50,11 @@
       PARAMETER          ( MAXIT = 30 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, ISCALE, JTOT, L, L1, LEND, LENDM1, LENDP1,
-     $                   LENDSV, LM1, LSV, M, MM1, NM1, NMAXIT
+      INTEGER            I, ISCALE, JTOT, L, L1, LEND, LENDSV, LSV, M,
+     $                   NMAXIT
       DOUBLE PRECISION   ALPHA, ANORM, BB, C, EPS, EPS2, GAMMA, OLDC,
      $                   OLDGAM, P, R, RT1, RT2, RTE, S, SAFMAX, SAFMIN,
-     $                   SIGMA, SSFMAX, SSFMIN, TST
+     $                   SIGMA, SSFMAX, SSFMIN
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH, DLANST, DLAPY2
@@ -102,25 +102,19 @@
 *     element is smaller.
 *
       L1 = 1
-      NM1 = N - 1
 *
    10 CONTINUE
       IF( L1.GT.N )
      $   GO TO 170
       IF( L1.GT.1 )
      $   E( L1-1 ) = ZERO
-      IF( L1.LE.NM1 ) THEN
-         DO 20 M = L1, NM1
-            TST = ABS( E( M ) )
-            IF( TST.EQ.ZERO )
-     $         GO TO 30
-            IF( TST.LE.( SQRT( ABS( D( M ) ) )*SQRT( ABS( D( M+
-     $          1 ) ) ) )*EPS ) THEN
-               E( M ) = ZERO
-               GO TO 30
-            END IF
-   20    CONTINUE
-      END IF
+      DO 20 M = L1, N - 1
+         IF( ABS( E( M ) ).LE.( SQRT( ABS( D( M ) ) )*SQRT( ABS( D( M+
+     $       1 ) ) ) )*EPS ) THEN
+            E( M ) = ZERO
+            GO TO 30
+         END IF
+   20 CONTINUE
       M = N
 *
    30 CONTINUE
@@ -169,14 +163,11 @@
 *
    50    CONTINUE
          IF( L.NE.LEND ) THEN
-            LENDM1 = LEND - 1
-            DO 60 M = L, LENDM1
-               TST = ABS( E( M ) )
-               IF( TST.LE.EPS2*ABS( D( M )*D( M+1 ) ) )
+            DO 60 M = L, LEND - 1
+               IF( ABS( E( M ) ).LE.EPS2*ABS( D( M )*D( M+1 ) ) )
      $            GO TO 70
    60       CONTINUE
          END IF
-*
          M = LEND
 *
    70    CONTINUE
@@ -219,8 +210,7 @@
 *
 *        Inner loop
 *
-         MM1 = M - 1
-         DO 80 I = MM1, L, -1
+         DO 80 I = M - 1, L, -1
             BB = E( I )
             R = P + BB
             IF( I.NE.M-1 )
@@ -260,15 +250,10 @@
 *        Look for small superdiagonal element.
 *
   100    CONTINUE
-         IF( L.NE.LEND ) THEN
-            LENDP1 = LEND + 1
-            DO 110 M = L, LENDP1, -1
-               TST = ABS( E( M-1 ) )
-               IF( TST.LE.EPS2*ABS( D( M )*D( M-1 ) ) )
-     $            GO TO 120
-  110       CONTINUE
-         END IF
-*
+         DO 110 M = L, LEND + 1, -1
+            IF( ABS( E( M-1 ) ).LE.EPS2*ABS( D( M )*D( M-1 ) ) )
+     $         GO TO 120
+  110    CONTINUE
          M = LEND
 *
   120    CONTINUE
@@ -311,8 +296,7 @@
 *
 *        Inner loop
 *
-         LM1 = L - 1
-         DO 130 I = M, LM1
+         DO 130 I = M, L - 1
             BB = E( I )
             R = P + BB
             IF( I.NE.M )
@@ -331,7 +315,7 @@
             END IF
   130    CONTINUE
 *
-         E( LM1 ) = S*P
+         E( L-1 ) = S*P
          D( L ) = SIGMA + GAMMA
          GO TO 100
 *
@@ -360,20 +344,20 @@
 *     Check for no convergence to an eigenvalue after a total
 *     of N*MAXIT iterations.
 *
-      IF( JTOT.EQ.NMAXIT ) THEN
-         DO 160 I = 1, N - 1
-            IF( E( I ).NE.ZERO )
-     $         INFO = INFO + 1
-  160    CONTINUE
-         RETURN
-      END IF
-      GO TO 10
+      IF( JTOT.LT.NMAXIT )
+     $   GO TO 10
+      DO 160 I = 1, N - 1
+         IF( E( I ).NE.ZERO )
+     $      INFO = INFO + 1
+  160 CONTINUE
+      GO TO 180
 *
 *     Sort eigenvalues in increasing order.
 *
   170 CONTINUE
       CALL DLASRT( 'I', N, D, INFO )
 *
+  180 CONTINUE
       RETURN
 *
 *     End of DSTERF

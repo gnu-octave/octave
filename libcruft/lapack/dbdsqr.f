@@ -1,10 +1,10 @@
       SUBROUTINE DBDSQR( UPLO, N, NCVT, NRU, NCC, D, E, VT, LDVT, U,
      $                   LDU, C, LDC, WORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -152,9 +152,9 @@
       PARAMETER          ( MAXITR = 6 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ROTATE
-      INTEGER            I, IDIR, IROT, ISUB, ITER, IUPLO, J, LL, LLL,
-     $                   M, MAXIT, NM1, NM12, NM13, OLDLL, OLDM
+      LOGICAL            LOWER, ROTATE
+      INTEGER            I, IDIR, ISUB, ITER, J, LL, LLL, M, MAXIT, NM1,
+     $                   NM12, NM13, OLDLL, OLDM
       DOUBLE PRECISION   ABSE, ABSS, COSL, COSR, CS, EPS, F, G, H, MU,
      $                   OLDCS, OLDSN, R, SHIFT, SIGMN, SIGMX, SINL,
      $                   SINR, SLL, SMAX, SMIN, SMINL, SMINLO, SMINOA,
@@ -177,12 +177,8 @@
 *     Test the input parameters.
 *
       INFO = 0
-      IUPLO = 0
-      IF( LSAME( UPLO, 'U' ) )
-     $   IUPLO = 1
-      IF( LSAME( UPLO, 'L' ) )
-     $   IUPLO = 2
-      IF( IUPLO.EQ.0 ) THEN
+      LOWER = LSAME( UPLO, 'L' )
+      IF( .NOT.LSAME( UPLO, 'U' ) .AND. .NOT.LOWER ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
@@ -208,7 +204,7 @@
       IF( N.EQ.0 )
      $   RETURN
       IF( N.EQ.1 )
-     $   GO TO 150
+     $   GO TO 160
 *
 *     ROTATE is true if any singular vectors desired, false otherwise
 *
@@ -224,6 +220,7 @@
       NM1 = N - 1
       NM12 = NM1 + NM1
       NM13 = NM12 + NM1
+      IDIR = 0
 *
 *     Get machine constants
 *
@@ -233,7 +230,7 @@
 *     If matrix lower bidiagonal, rotate to be upper bidiagonal
 *     by applying Givens rotations on the left
 *
-      IF( IUPLO.EQ.2 ) THEN
+      IF( LOWER ) THEN
          DO 10 I = 1, N - 1
             CALL DLARTG( D( I ), E( I ), CS, SN, R )
             D( I ) = R
@@ -262,10 +259,13 @@
 *
 *     Compute approximate maximum, minimum singular values
 *
-      SMAX = ABS( D( N ) )
-      DO 20 I = 1, N - 1
-         SMAX = MAX( SMAX, ABS( D( I ) ), ABS( E( I ) ) )
+      SMAX = ZERO
+      DO 20 I = 1, N
+         SMAX = MAX( SMAX, ABS( D( I ) ) )
    20 CONTINUE
+      DO 30 I = 1, N - 1
+         SMAX = MAX( SMAX, ABS( E( I ) ) )
+   30 CONTINUE
       SMINL = ZERO
       IF( TOL.GE.ZERO ) THEN
 *
@@ -273,15 +273,15 @@
 *
          SMINOA = ABS( D( 1 ) )
          IF( SMINOA.EQ.ZERO )
-     $      GO TO 40
+     $      GO TO 50
          MU = SMINOA
-         DO 30 I = 2, N
+         DO 40 I = 2, N
             MU = ABS( D( I ) )*( MU / ( MU+ABS( E( I-1 ) ) ) )
             SMINOA = MIN( SMINOA, MU )
             IF( SMINOA.EQ.ZERO )
-     $         GO TO 40
-   30    CONTINUE
+     $         GO TO 50
    40    CONTINUE
+   50    CONTINUE
          SMINOA = SMINOA / SQRT( DBLE( N ) )
          THRESH = MAX( TOL*SMINOA, MAXITR*N*N*UNFL )
       ELSE
@@ -306,14 +306,14 @@
 *
 *     Begin main iteration loop
 *
-   50 CONTINUE
+   60 CONTINUE
 *
 *     Check for convergence or exceeding iteration count
 *
       IF( M.LE.1 )
-     $   GO TO 150
+     $   GO TO 160
       IF( ITER.GT.MAXIT )
-     $   GO TO 190
+     $   GO TO 200
 *
 *     Find diagonal block of matrix to work on
 *
@@ -321,20 +321,20 @@
      $   D( M ) = ZERO
       SMAX = ABS( D( M ) )
       SMIN = SMAX
-      DO 60 LLL = 1, M
+      DO 70 LLL = 1, M - 1
          LL = M - LLL
-         IF( LL.EQ.0 )
-     $      GO TO 80
          ABSS = ABS( D( LL ) )
          ABSE = ABS( E( LL ) )
          IF( TOL.LT.ZERO .AND. ABSS.LE.THRESH )
      $      D( LL ) = ZERO
          IF( ABSE.LE.THRESH )
-     $      GO TO 70
+     $      GO TO 80
          SMIN = MIN( SMIN, ABSS )
          SMAX = MAX( SMAX, ABSS, ABSE )
-   60 CONTINUE
    70 CONTINUE
+      LL = 0
+      GO TO 90
+   80 CONTINUE
       E( LL ) = ZERO
 *
 *     Matrix splits since E(LL) = 0
@@ -344,9 +344,9 @@
 *        Convergence of bottom singular value, return to top of loop
 *
          M = M - 1
-         GO TO 50
+         GO TO 60
       END IF
-   80 CONTINUE
+   90 CONTINUE
       LL = LL + 1
 *
 *     E(LL) through E(M-1) are nonzero, E(LL-1) is zero
@@ -372,7 +372,7 @@
      $      CALL DROT( NCC, C( M-1, 1 ), LDC, C( M, 1 ), LDC, COSL,
      $                 SINL )
          M = M - 2
-         GO TO 50
+         GO TO 60
       END IF
 *
 *     If working on new submatrix, choose shift direction
@@ -402,7 +402,7 @@
          IF( ABS( E( M-1 ) ).LE.ABS( TOL )*ABS( D( M ) ) .OR.
      $       ( TOL.LT.ZERO .AND. ABS( E( M-1 ) ).LE.THRESH ) ) THEN
             E( M-1 ) = ZERO
-            GO TO 50
+            GO TO 60
          END IF
 *
          IF( TOL.GE.ZERO ) THEN
@@ -412,15 +412,15 @@
 *
             MU = ABS( D( LL ) )
             SMINL = MU
-            DO 90 LLL = LL, M - 1
+            DO 100 LLL = LL, M - 1
                IF( ABS( E( LLL ) ).LE.TOL*MU ) THEN
                   E( LLL ) = ZERO
-                  GO TO 50
+                  GO TO 60
                END IF
                SMINLO = SMINL
                MU = ABS( D( LLL+1 ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
                SMINL = MIN( SMINL, MU )
-   90       CONTINUE
+  100       CONTINUE
          END IF
 *
       ELSE
@@ -431,7 +431,7 @@
          IF( ABS( E( LL ) ).LE.ABS( TOL )*ABS( D( LL ) ) .OR.
      $       ( TOL.LT.ZERO .AND. ABS( E( LL ) ).LE.THRESH ) ) THEN
             E( LL ) = ZERO
-            GO TO 50
+            GO TO 60
          END IF
 *
          IF( TOL.GE.ZERO ) THEN
@@ -441,15 +441,15 @@
 *
             MU = ABS( D( M ) )
             SMINL = MU
-            DO 100 LLL = M - 1, LL, -1
+            DO 110 LLL = M - 1, LL, -1
                IF( ABS( E( LLL ) ).LE.TOL*MU ) THEN
                   E( LLL ) = ZERO
-                  GO TO 50
+                  GO TO 60
                END IF
                SMINLO = SMINL
                MU = ABS( D( LLL ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
                SMINL = MIN( SMINL, MU )
-  100       CONTINUE
+  110       CONTINUE
          END IF
       END IF
       OLDLL = LL
@@ -498,23 +498,16 @@
 *
             CS = ONE
             OLDCS = ONE
-            CALL DLARTG( D( LL )*CS, E( LL ), CS, SN, R )
-            CALL DLARTG( OLDCS*R, D( LL+1 )*SN, OLDCS, OLDSN, D( LL ) )
-            WORK( 1 ) = CS
-            WORK( 1+NM1 ) = SN
-            WORK( 1+NM12 ) = OLDCS
-            WORK( 1+NM13 ) = OLDSN
-            IROT = 1
-            DO 110 I = LL + 1, M - 1
+            DO 120 I = LL, M - 1
                CALL DLARTG( D( I )*CS, E( I ), CS, SN, R )
-               E( I-1 ) = OLDSN*R
+               IF( I.GT.LL )
+     $            E( I-1 ) = OLDSN*R
                CALL DLARTG( OLDCS*R, D( I+1 )*SN, OLDCS, OLDSN, D( I ) )
-               IROT = IROT + 1
-               WORK( IROT ) = CS
-               WORK( IROT+NM1 ) = SN
-               WORK( IROT+NM12 ) = OLDCS
-               WORK( IROT+NM13 ) = OLDSN
-  110       CONTINUE
+               WORK( I-LL+1 ) = CS
+               WORK( I-LL+1+NM1 ) = SN
+               WORK( I-LL+1+NM12 ) = OLDCS
+               WORK( I-LL+1+NM13 ) = OLDSN
+  120       CONTINUE
             H = D( M )*CS
             D( M ) = H*OLDCS
             E( M-1 ) = H*OLDSN
@@ -543,23 +536,16 @@
 *
             CS = ONE
             OLDCS = ONE
-            CALL DLARTG( D( M )*CS, E( M-1 ), CS, SN, R )
-            CALL DLARTG( OLDCS*R, D( M-1 )*SN, OLDCS, OLDSN, D( M ) )
-            WORK( M-LL ) = CS
-            WORK( M-LL+NM1 ) = -SN
-            WORK( M-LL+NM12 ) = OLDCS
-            WORK( M-LL+NM13 ) = -OLDSN
-            IROT = M - LL
-            DO 120 I = M - 1, LL + 1, -1
+            DO 130 I = M, LL + 1, -1
                CALL DLARTG( D( I )*CS, E( I-1 ), CS, SN, R )
-               E( I ) = OLDSN*R
+               IF( I.LT.M )
+     $            E( I ) = OLDSN*R
                CALL DLARTG( OLDCS*R, D( I-1 )*SN, OLDCS, OLDSN, D( I ) )
-               IROT = IROT - 1
-               WORK( IROT ) = CS
-               WORK( IROT+NM1 ) = -SN
-               WORK( IROT+NM12 ) = OLDCS
-               WORK( IROT+NM13 ) = -OLDSN
-  120       CONTINUE
+               WORK( I-LL ) = CS
+               WORK( I-LL+NM1 ) = -SN
+               WORK( I-LL+NM12 ) = OLDCS
+               WORK( I-LL+NM13 ) = -OLDSN
+  130       CONTINUE
             H = D( LL )*CS
             D( LL ) = H*OLDCS
             E( LL ) = H*OLDSN
@@ -593,25 +579,10 @@
             F = ( ABS( D( LL ) )-SHIFT )*
      $          ( SIGN( ONE, D( LL ) )+SHIFT / D( LL ) )
             G = E( LL )
-            CALL DLARTG( F, G, COSR, SINR, R )
-            F = COSR*D( LL ) + SINR*E( LL )
-            E( LL ) = COSR*E( LL ) - SINR*D( LL )
-            G = SINR*D( LL+1 )
-            D( LL+1 ) = COSR*D( LL+1 )
-            CALL DLARTG( F, G, COSL, SINL, R )
-            D( LL ) = R
-            F = COSL*E( LL ) + SINL*D( LL+1 )
-            D( LL+1 ) = COSL*D( LL+1 ) - SINL*E( LL )
-            G = SINL*E( LL+1 )
-            E( LL+1 ) = COSL*E( LL+1 )
-            WORK( 1 ) = COSR
-            WORK( 1+NM1 ) = SINR
-            WORK( 1+NM12 ) = COSL
-            WORK( 1+NM13 ) = SINL
-            IROT = 1
-            DO 130 I = LL + 1, M - 2
+            DO 140 I = LL, M - 1
                CALL DLARTG( F, G, COSR, SINR, R )
-               E( I-1 ) = R
+               IF( I.GT.LL )
+     $            E( I-1 ) = R
                F = COSR*D( I ) + SINR*E( I )
                E( I ) = COSR*E( I ) - SINR*D( I )
                G = SINR*D( I+1 )
@@ -620,29 +591,15 @@
                D( I ) = R
                F = COSL*E( I ) + SINL*D( I+1 )
                D( I+1 ) = COSL*D( I+1 ) - SINL*E( I )
-               G = SINL*E( I+1 )
-               E( I+1 ) = COSL*E( I+1 )
-               IROT = IROT + 1
-               WORK( IROT ) = COSR
-               WORK( IROT+NM1 ) = SINR
-               WORK( IROT+NM12 ) = COSL
-               WORK( IROT+NM13 ) = SINL
-  130       CONTINUE
-            CALL DLARTG( F, G, COSR, SINR, R )
-            E( M-2 ) = R
-            F = COSR*D( M-1 ) + SINR*E( M-1 )
-            E( M-1 ) = COSR*E( M-1 ) - SINR*D( M-1 )
-            G = SINR*D( M )
-            D( M ) = COSR*D( M )
-            CALL DLARTG( F, G, COSL, SINL, R )
-            D( M-1 ) = R
-            F = COSL*E( M-1 ) + SINL*D( M )
-            D( M ) = COSL*D( M ) - SINL*E( M-1 )
-            IROT = IROT + 1
-            WORK( IROT ) = COSR
-            WORK( IROT+NM1 ) = SINR
-            WORK( IROT+NM12 ) = COSL
-            WORK( IROT+NM13 ) = SINL
+               IF( I.LT.M-1 ) THEN
+                  G = SINL*E( I+1 )
+                  E( I+1 ) = COSL*E( I+1 )
+               END IF
+               WORK( I-LL+1 ) = COSR
+               WORK( I-LL+1+NM1 ) = SINR
+               WORK( I-LL+1+NM12 ) = COSL
+               WORK( I-LL+1+NM13 ) = SINL
+  140       CONTINUE
             E( M-1 ) = F
 *
 *           Update singular vectors
@@ -670,25 +627,10 @@
             F = ( ABS( D( M ) )-SHIFT )*( SIGN( ONE, D( M ) )+SHIFT /
      $          D( M ) )
             G = E( M-1 )
-            CALL DLARTG( F, G, COSR, SINR, R )
-            F = COSR*D( M ) + SINR*E( M-1 )
-            E( M-1 ) = COSR*E( M-1 ) - SINR*D( M )
-            G = SINR*D( M-1 )
-            D( M-1 ) = COSR*D( M-1 )
-            CALL DLARTG( F, G, COSL, SINL, R )
-            D( M ) = R
-            F = COSL*E( M-1 ) + SINL*D( M-1 )
-            D( M-1 ) = COSL*D( M-1 ) - SINL*E( M-1 )
-            G = SINL*E( M-2 )
-            E( M-2 ) = COSL*E( M-2 )
-            WORK( M-LL ) = COSR
-            WORK( M-LL+NM1 ) = -SINR
-            WORK( M-LL+NM12 ) = COSL
-            WORK( M-LL+NM13 ) = -SINL
-            IROT = M - LL
-            DO 140 I = M - 1, LL + 2, -1
+            DO 150 I = M, LL + 1, -1
                CALL DLARTG( F, G, COSR, SINR, R )
-               E( I ) = R
+               IF( I.LT.M )
+     $            E( I ) = R
                F = COSR*D( I ) + SINR*E( I-1 )
                E( I-1 ) = COSR*E( I-1 ) - SINR*D( I )
                G = SINR*D( I-1 )
@@ -697,29 +639,15 @@
                D( I ) = R
                F = COSL*E( I-1 ) + SINL*D( I-1 )
                D( I-1 ) = COSL*D( I-1 ) - SINL*E( I-1 )
-               G = SINL*E( I-2 )
-               E( I-2 ) = COSL*E( I-2 )
-               IROT = IROT - 1
-               WORK( IROT ) = COSR
-               WORK( IROT+NM1 ) = -SINR
-               WORK( IROT+NM12 ) = COSL
-               WORK( IROT+NM13 ) = -SINL
-  140       CONTINUE
-            CALL DLARTG( F, G, COSR, SINR, R )
-            E( LL+1 ) = R
-            F = COSR*D( LL+1 ) + SINR*E( LL )
-            E( LL ) = COSR*E( LL ) - SINR*D( LL+1 )
-            G = SINR*D( LL )
-            D( LL ) = COSR*D( LL )
-            CALL DLARTG( F, G, COSL, SINL, R )
-            D( LL+1 ) = R
-            F = COSL*E( LL ) + SINL*D( LL )
-            D( LL ) = COSL*D( LL ) - SINL*E( LL )
-            IROT = IROT - 1
-            WORK( IROT ) = COSR
-            WORK( IROT+NM1 ) = -SINR
-            WORK( IROT+NM12 ) = COSL
-            WORK( IROT+NM13 ) = -SINL
+               IF( I.GT.LL+1 ) THEN
+                  G = SINL*E( I-2 )
+                  E( I-2 ) = COSL*E( I-2 )
+               END IF
+               WORK( I-LL ) = COSR
+               WORK( I-LL+NM1 ) = -SINR
+               WORK( I-LL+NM12 ) = COSL
+               WORK( I-LL+NM13 ) = -SINL
+  150       CONTINUE
             E( LL ) = F
 *
 *           Test convergence
@@ -743,12 +671,12 @@
 *
 *     QR iteration finished, go back and check convergence
 *
-      GO TO 50
+      GO TO 60
 *
 *     All singular values converged, so make them positive
 *
-  150 CONTINUE
-      DO 160 I = 1, N
+  160 CONTINUE
+      DO 170 I = 1, N
          IF( D( I ).LT.ZERO ) THEN
             D( I ) = -D( I )
 *
@@ -757,23 +685,23 @@
             IF( NCVT.GT.0 )
      $         CALL DSCAL( NCVT, NEGONE, VT( I, 1 ), LDVT )
          END IF
-  160 CONTINUE
+  170 CONTINUE
 *
 *     Sort the singular values into decreasing order (insertion sort on
 *     singular values, but only one transposition per singular vector)
 *
-      DO 180 I = 1, N - 1
+      DO 190 I = 1, N - 1
 *
 *        Scan for smallest D(I)
 *
          ISUB = 1
          SMIN = D( 1 )
-         DO 170 J = 2, N + 1 - I
+         DO 180 J = 2, N + 1 - I
             IF( D( J ).LE.SMIN ) THEN
                ISUB = J
                SMIN = D( J )
             END IF
-  170    CONTINUE
+  180    CONTINUE
          IF( ISUB.NE.N+1-I ) THEN
 *
 *           Swap singular values and vectors
@@ -788,18 +716,18 @@
             IF( NCC.GT.0 )
      $         CALL DSWAP( NCC, C( ISUB, 1 ), LDC, C( N+1-I, 1 ), LDC )
          END IF
-  180 CONTINUE
-      GO TO 210
+  190 CONTINUE
+      GO TO 220
 *
 *     Maximum number of iterations exceeded, failure to converge
 *
-  190 CONTINUE
+  200 CONTINUE
       INFO = 0
-      DO 200 I = 1, N - 1
+      DO 210 I = 1, N - 1
          IF( E( I ).NE.ZERO )
      $      INFO = INFO + 1
-  200 CONTINUE
   210 CONTINUE
+  220 CONTINUE
       RETURN
 *
 *     End of DBDSQR

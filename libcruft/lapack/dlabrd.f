@@ -1,7 +1,7 @@
       SUBROUTINE DLABRD( M, N, NB, A, LDA, D, E, TAUQ, TAUP, X, LDX, Y,
      $                   LDY )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     February 29, 1992

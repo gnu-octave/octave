@@ -1,10 +1,10 @@
       SUBROUTINE ZTRSYL( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
      $                   LDC, SCALE, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANA, TRANB
@@ -102,11 +102,11 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       DOUBLE PRECISION   DLAMCH, ZLANGE
-      COMPLEX*16         ZDOTC, ZDOTU
-      EXTERNAL           LSAME, DLAMCH, ZLANGE, ZDOTC, ZDOTU
+      COMPLEX*16         ZDOTC, ZDOTU, ZLADIV
+      EXTERNAL           LSAME, DLAMCH, ZLANGE, ZDOTC, ZDOTU, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, XERBLA, ZDSCAL
+      EXTERNAL           XERBLA, ZDSCAL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN
@@ -196,7 +196,7 @@
                   IF( DB.GT.BIGNUM*DA11 )
      $               SCALOC = ONE / DB
                END IF
-               X11 = ( VEC*DCMPLX( SCALOC ) ) / A11
+               X11 = ZLADIV( VEC*DCMPLX( SCALOC ), A11 )
 *
                IF( SCALOC.NE.ONE ) THEN
                   DO 10 J = 1, N
@@ -244,7 +244,7 @@
      $               SCALOC = ONE / DB
                END IF
 *
-               X11 = ( VEC*DCMPLX( SCALOC ) ) / A11
+               X11 = ZLADIV( VEC*DCMPLX( SCALOC ), A11 )
 *
                IF( SCALOC.NE.ONE ) THEN
                   DO 40 J = 1, N
@@ -296,7 +296,7 @@
      $               SCALOC = ONE / DB
                END IF
 *
-               X11 = ( VEC*DCMPLX( SCALOC ) ) / A11
+               X11 = ZLADIV( VEC*DCMPLX( SCALOC ), A11 )
 *
                IF( SCALOC.NE.ONE ) THEN
                   DO 70 J = 1, N
@@ -346,7 +346,7 @@
      $               SCALOC = ONE / DB
                END IF
 *
-               X11 = ( VEC*DCMPLX( SCALOC ) ) / A11
+               X11 = ZLADIV( VEC*DCMPLX( SCALOC ), A11 )
 *
                IF( SCALOC.NE.ONE ) THEN
                   DO 100 J = 1, N

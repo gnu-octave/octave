@@ -1,10 +1,10 @@
       SUBROUTINE ZHEEV( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK,
      $                  INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -61,6 +61,11 @@
 *          For optimal efficiency, LWORK >= (NB+1)*N,
 *          where NB is the blocksize for ZHETRD returned by ILAENV.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  RWORK   (workspace) DOUBLE PRECISION array, dimension (max(1, 3*N-2))
 *
 *  INFO    (output) INTEGER
@@ -79,16 +84,17 @@
       PARAMETER          ( CONE = ( 1.0D0, 0.0D0 ) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            LOWER, WANTZ
+      LOGICAL            LOWER, LQUERY, WANTZ
       INTEGER            IINFO, IMAX, INDE, INDTAU, INDWRK, ISCALE,
-     $                   LLWORK, LOPT
+     $                   LLWORK, LOPT, LWKOPT, NB
       DOUBLE PRECISION   ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
      $                   SMLNUM
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
+      INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, ZLANHE
-      EXTERNAL           LSAME, DLAMCH, ZLANHE
+      EXTERNAL           LSAME, ILAENV, DLAMCH, ZLANHE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DSCAL, DSTERF, XERBLA, ZHETRD, ZLASCL, ZSTEQR,
@@ -103,6 +109,7 @@
 *
       WANTZ = LSAME( JOBZ, 'V' )
       LOWER = LSAME( UPLO, 'L' )
+      LQUERY = ( LWORK.EQ.-1 )
 *
       INFO = 0
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
@@ -113,12 +120,20 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -5
-      ELSE IF( LWORK.LT.MAX( 1, 2*N-1 ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, 2*N-1 ) .AND. .NOT.LQUERY ) THEN
          INFO = -8
+      END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         NB = ILAENV( 1, 'ZHETRD', UPLO, N, -1, -1, -1 )
+         LWKOPT = MAX( 1, ( NB+1 )*N )
+         WORK( 1 ) = LWKOPT
       END IF
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZHEEV ', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -196,7 +211,7 @@
 *
 *     Set WORK(1) to optimal complex workspace size.
 *
-      WORK( 1 ) = MAX( 2*N-1, LOPT )
+      WORK( 1 ) = LWKOPT
 *
       RETURN
 *

@@ -1,15 +1,15 @@
       SUBROUTINE DORGHR( N, ILO, IHI, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDA, LWORK, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   A( LDA, * ), TAU( * ), WORK( LWORK )
+      DOUBLE PRECISION   A( LDA, * ), TAU( * ), WORK( * )
 *     ..
 *
 *  Purpose
@@ -54,6 +54,11 @@
 *          For optimum performance LWORK >= (IHI-ILO)*NB, where NB is
 *          the optimal blocksize.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
@@ -65,10 +70,15 @@
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, IINFO, J, NH
+      LOGICAL            LQUERY
+      INTEGER            I, IINFO, J, LWKOPT, NB, NH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DORGQR, XERBLA
+*     ..
+*     .. External Functions ..
+      INTEGER            ILAENV
+      EXTERNAL           ILAENV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -78,6 +88,8 @@
 *     Test the input arguments
 *
       INFO = 0
+      NH = IHI - ILO
+      LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
          INFO = -1
       ELSE IF( ILO.LT.1 .OR. ILO.GT.MAX( 1, N ) ) THEN
@@ -86,11 +98,20 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -5
-      ELSE IF( LWORK.LT.MAX( 1, IHI-ILO ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, NH ) .AND. .NOT.LQUERY ) THEN
          INFO = -8
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         NB = ILAENV( 1, 'DORGQR', ' ', NH, NH, NH, -1 )
+         LWKOPT = MAX( 1, NH )*NB
+         WORK( 1 ) = LWKOPT
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DORGHR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -129,7 +150,6 @@
          A( J, J ) = ONE
    80 CONTINUE
 *
-      NH = IHI - ILO
       IF( NH.GT.0 ) THEN
 *
 *        Generate Q(ilo+1:ihi,ilo+1:ihi)
@@ -137,6 +157,7 @@
          CALL DORGQR( NH, NH, NH, A( ILO+1, ILO+1 ), LDA, TAU( ILO ),
      $                WORK, LWORK, IINFO )
       END IF
+      WORK( 1 ) = LWKOPT
       RETURN
 *
 *     End of DORGHR

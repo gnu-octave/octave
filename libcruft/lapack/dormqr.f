@@ -1,18 +1,17 @@
       SUBROUTINE DORMQR( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS
       INTEGER            INFO, K, LDA, LDC, LWORK, M, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   A( LDA, * ), C( LDC, * ), TAU( * ),
-     $                   WORK( LWORK )
+      DOUBLE PRECISION   A( LDA, * ), C( LDC, * ), TAU( * ), WORK( * )
 *     ..
 *
 *  Purpose
@@ -88,6 +87,11 @@
 *          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
 *          blocksize.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
@@ -99,9 +103,9 @@
       PARAMETER          ( NBMAX = 64, LDT = NBMAX+1 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            LEFT, NOTRAN
+      LOGICAL            LEFT, LQUERY, NOTRAN
       INTEGER            I, I1, I2, I3, IB, IC, IINFO, IWS, JC, LDWORK,
-     $                   MI, NB, NBMIN, NI, NQ, NW
+     $                   LWKOPT, MI, NB, NBMIN, NI, NQ, NW
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   T( LDT, NBMAX )
@@ -124,6 +128,7 @@
       INFO = 0
       LEFT = LSAME( SIDE, 'L' )
       NOTRAN = LSAME( TRANS, 'N' )
+      LQUERY = ( LWORK.EQ.-1 )
 *
 *     NQ is the order of Q and NW is the minimum dimension of WORK
 *
@@ -148,11 +153,25 @@
          INFO = -7
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -10
-      ELSE IF( LWORK.LT.MAX( 1, NW ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
          INFO = -12
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+*
+*        Determine the block size.  NB may be at most NBMAX, where NBMAX
+*        is used to define the local array T.
+*
+         NB = MIN( NBMAX, ILAENV( 1, 'DORMQR', SIDE // TRANS, M, N, K,
+     $        -1 ) )
+         LWKOPT = MAX( 1, NW )*NB
+         WORK( 1 ) = LWKOPT
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DORMQR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -163,11 +182,6 @@
          RETURN
       END IF
 *
-*     Determine the block size.  NB may be at most NBMAX, where NBMAX
-*     is used to define the local array T.
-*
-      NB = MIN( NBMAX, ILAENV( 1, 'DORMQR', SIDE // TRANS, M, N, K,
-     $     -1 ) )
       NBMIN = 2
       LDWORK = NW
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
@@ -239,7 +253,7 @@
      $                   WORK, LDWORK )
    10    CONTINUE
       END IF
-      WORK( 1 ) = IWS
+      WORK( 1 ) = LWKOPT
       RETURN
 *
 *     End of DORMQR

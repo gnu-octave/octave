@@ -1,16 +1,16 @@
       SUBROUTINE DORGTR( UPLO, N, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
       INTEGER            INFO, LDA, LWORK, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   A( LDA, * ), TAU( * ), WORK( LWORK )
+      DOUBLE PRECISION   A( LDA, * ), TAU( * ), WORK( * )
 *     ..
 *
 *  Purpose
@@ -56,6 +56,11 @@
 *          For optimum performance LWORK >= (N-1)*NB, where NB is
 *          the optimal blocksize.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value
@@ -67,12 +72,13 @@
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            UPPER
-      INTEGER            I, IINFO, J
+      LOGICAL            LQUERY, UPPER
+      INTEGER            I, IINFO, J, LWKOPT, NB
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      INTEGER            ILAENV
+      EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DORGQL, DORGQR, XERBLA
@@ -85,6 +91,7 @@
 *     Test the input arguments
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       UPPER = LSAME( UPLO, 'U' )
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
@@ -92,11 +99,24 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, N-1 ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, N-1 ) .AND. .NOT.LQUERY ) THEN
          INFO = -7
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         IF( UPPER ) THEN
+            NB = ILAENV( 1, 'DORGQL', ' ', N-1, N-1, N-1, -1 )
+         ELSE
+            NB = ILAENV( 1, 'DORGQR', ' ', N-1, N-1, N-1, -1 )
+         END IF
+         LWKOPT = MAX( 1, N-1 )*NB
+         WORK( 1 ) = LWKOPT
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DORGTR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -156,6 +176,7 @@
      $                   LWORK, IINFO )
          END IF
       END IF
+      WORK( 1 ) = LWKOPT
       RETURN
 *
 *     End of DORGTR

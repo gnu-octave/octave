@@ -800,8 +800,7 @@ DEFUN (is_matrix, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Usage} {} is_matrix (@var{a})\n\
 Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
-@end deftypefn\n\
-")
+@end deftypefn")
 {
   double retval = 0.0;
 

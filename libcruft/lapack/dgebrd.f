@@ -1,17 +1,17 @@
       SUBROUTINE DGEBRD( M, N, A, LDA, D, E, TAUQ, TAUP, WORK, LWORK,
      $                   INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N
 *     ..
 *     .. Array Arguments ..
       DOUBLE PRECISION   A( LDA, * ), D( * ), E( * ), TAUP( * ),
-     $                   TAUQ( * ), WORK( LWORK )
+     $                   TAUQ( * ), WORK( * )
 *     ..
 *
 *  Purpose
@@ -78,6 +78,11 @@
 *          For optimum performance LWORK >= (M+N)*NB, where NB
 *          is the optimal blocksize.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value.
@@ -136,15 +141,16 @@
       PARAMETER          ( ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, IINFO, J, LDWRKX, LDWRKY, MINMN, NB, NBMIN,
-     $                   NX
+      LOGICAL            LQUERY
+      INTEGER            I, IINFO, J, LDWRKX, LDWRKY, LWKOPT, MINMN, NB,
+     $                   NBMIN, NX
       DOUBLE PRECISION   WS
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DGEBD2, DGEMM, DLABRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN
+      INTRINSIC          DBLE, MAX, MIN
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -155,17 +161,23 @@
 *     Test the input parameters
 *
       INFO = 0
+      NB = MAX( 1, ILAENV( 1, 'DGEBRD', ' ', M, N, -1, -1 ) )
+      LWKOPT = ( M+N )*NB
+      WORK( 1 ) = DBLE( LWKOPT )
+      LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, M, N ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, M, N ) .AND. .NOT.LQUERY ) THEN
          INFO = -10
       END IF
       IF( INFO.LT.0 ) THEN
          CALL XERBLA( 'DGEBRD', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -181,15 +193,14 @@
       LDWRKX = M
       LDWRKY = N
 *
-*     Set the block size NB and the crossover point NX.
-*
-      NB = MAX( 1, ILAENV( 1, 'DGEBRD', ' ', M, N, -1, -1 ) )
-*
       IF( NB.GT.1 .AND. NB.LT.MINMN ) THEN
+*
+*        Set the crossover point NX.
+*
+         NX = MAX( NB, ILAENV( 3, 'DGEBRD', ' ', M, N, -1, -1 ) )
 *
 *        Determine when to switch from blocked to unblocked code.
 *
-         NX = MAX( NB, ILAENV( 3, 'DGEBRD', ' ', M, N, -1, -1 ) )
          IF( NX.LT.MINMN ) THEN
             WS = ( M+N )*NB
             IF( LWORK.LT.WS ) THEN

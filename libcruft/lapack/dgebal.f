@@ -1,9 +1,9 @@
       SUBROUTINE DGEBAL( JOB, N, A, LDA, ILO, IHI, SCALE, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -96,13 +96,16 @@
 *
 *  This subroutine is based on the EISPACK routine BALANC.
 *
+*  Modified by Tzu-Yi Chen, Computer Science Division, University of
+*    California at Berkeley, USA
+*
 *  =====================================================================
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
       DOUBLE PRECISION   SCLFAC
-      PARAMETER          ( SCLFAC = 1.0D+1 )
+      PARAMETER          ( SCLFAC = 0.8D+1 )
       DOUBLE PRECISION   FACTOR
       PARAMETER          ( FACTOR = 0.95D+0 )
 *     ..

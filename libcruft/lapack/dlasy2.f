@@ -1,7 +1,7 @@
       SUBROUTINE DLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
      $                   LDTR, B, LDB, SCALE, X, LDX, XNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     October 31, 1992

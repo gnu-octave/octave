@@ -1,9 +1,9 @@
       SUBROUTINE ZLAHRD( N, K, NB, A, LDA, TAU, T, LDT, Y, LDY )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LDT, LDY, N, NB
@@ -53,7 +53,7 @@
 *          The scalar factors of the elementary reflectors. See Further
 *          Details.
 *
-*  T       (output) COMPLEX*16 array, dimension (NB,NB)
+*  T       (output) COMPLEX*16 array, dimension (LDT,NB)
 *          The upper triangular matrix T.
 *
 *  LDT     (input) INTEGER

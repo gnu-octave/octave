@@ -1,6 +1,6 @@
       DOUBLE PRECISION FUNCTION DLANHS( NORM, N, A, LDA, WORK )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     October 31, 1992

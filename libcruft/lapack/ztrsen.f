@@ -1,10 +1,10 @@
       SUBROUTINE ZTRSEN( JOB, COMPQ, SELECT, N, T, LDT, Q, LDQ, W, M, S,
      $                   SEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, JOB
@@ -71,7 +71,7 @@
 *          The leading dimension of the array Q.
 *          LDQ >= 1; and if COMPQ = 'V', LDQ >= N.
 *
-*  W       (output) COMPLEX*16
+*  W       (output) COMPLEX*16 array, dimension (N)
 *          The reordered eigenvalues of T, in the same order as they
 *          appear on the diagonal of T.
 *
@@ -92,14 +92,20 @@
 *          M = 0 or N, SEP = norm(T).
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
-*  WORK    (workspace) COMPLEX*16 array, dimension (LWORK)
-*          If JOB = 'N', WORK is not referenced.
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*          If JOB = 'N', WORK is not referenced.  Otherwise,
+*          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
 *          If JOB = 'N', LWORK >= 1;
 *          if JOB = 'E', LWORK = M*(N-M);
 *          if JOB = 'V' or 'B', LWORK >= 2*M*(N-M).
+*
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -183,8 +189,8 @@
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            WANTBH, WANTQ, WANTS, WANTSP
-      INTEGER            IERR, K, KASE, KS, N1, N2, NN
+      LOGICAL            LQUERY, WANTBH, WANTQ, WANTS, WANTSP
+      INTEGER            IERR, K, KASE, KS, LWMIN, N1, N2, NN
       DOUBLE PRECISION   EST, RNORM, SCALE
 *     ..
 *     .. Local Arrays ..
@@ -223,6 +229,16 @@
       NN = N1*N2
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
+*
+      IF( WANTSP ) THEN
+         LWMIN = MAX( 1, 2*NN )
+      ELSE IF( LSAME( JOB, 'N' ) ) THEN
+         LWMIN = 1
+      ELSE IF( LSAME( JOB, 'E' ) ) THEN
+         LWMIN = MAX( 1, NN )
+      END IF
+*
       IF( .NOT.LSAME( JOB, 'N' ) .AND. .NOT.WANTS .AND. .NOT.WANTSP )
      $     THEN
          INFO = -1
@@ -234,12 +250,18 @@
          INFO = -6
       ELSE IF( LDQ.LT.1 .OR. ( WANTQ .AND. LDQ.LT.N ) ) THEN
          INFO = -8
-      ELSE IF( LWORK.LT.1 .OR. ( ( WANTS .AND. .NOT.WANTSP ) .AND.
-     $         LWORK.LT.NN ) .OR. ( WANTSP .AND. LWORK.LT.2*NN ) ) THEN
+      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
          INFO = -14
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         WORK( 1 ) = LWMIN
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZTRSEN', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -326,6 +348,9 @@
       DO 50 K = 1, N
          W( K ) = T( K, K )
    50 CONTINUE
+*
+      WORK( 1 ) = LWMIN
+*
       RETURN
 *
 *     End of ZTRSEN

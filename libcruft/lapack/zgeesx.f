@@ -2,10 +2,10 @@
      $                   VS, LDVS, RCONDE, RCONDV, WORK, LWORK, RWORK,
      $                   BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SENSE, SORT
@@ -158,8 +158,8 @@
       DOUBLE PRECISION   DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLASCL, XERBLA, ZCOPY, ZGEBAK, ZGEBAL,
-     $                   ZGEHRD, ZHSEQR, ZLACPY, ZLASCL, ZTRSEN, ZUNGHR
+      EXTERNAL           DLASCL, XERBLA, ZCOPY, ZGEBAK, ZGEBAL, ZGEHRD,
+     $                   ZHSEQR, ZLACPY, ZLASCL, ZTRSEN, ZUNGHR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -211,7 +211,7 @@
 *       in the code.)
 *
       MINWRK = 1
-      IF( INFO.EQ.0 .AND. LWORK.GE.1 ) THEN
+      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 ) ) THEN
          MAXWRK = N + N*ILAENV( 1, 'ZGEHRD', ' ', N, 1, N, 0 )
          MINWRK = MAX( 1, 2*N )
          IF( .NOT.WANTVS ) THEN

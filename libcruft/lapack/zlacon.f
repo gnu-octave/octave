@@ -1,9 +1,9 @@
       SUBROUTINE ZLACON( N, V, X, EST, KASE )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N
@@ -55,6 +55,8 @@
 *  a real or complex matrix, with applications to condition estimation",
 *  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988.
 *
+*  Last modified:  April, 1999
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -68,7 +70,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, ITER, J, JLAST, JUMP
-      DOUBLE PRECISION   ALTSGN, ESTOLD, SAFMIN, TEMP
+      DOUBLE PRECISION   ABSXI, ALTSGN, ESTOLD, SAFMIN, TEMP
 *     ..
 *     .. External Functions ..
       INTEGER            IZMAX1
@@ -79,7 +81,7 @@
       EXTERNAL           ZCOPY
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, DCMPLX
+      INTRINSIC          ABS, DBLE, DCMPLX, DIMAG
 *     ..
 *     .. Save statement ..
       SAVE
@@ -111,8 +113,10 @@
       EST = DZSUM1( N, X, 1 )
 *
       DO 30 I = 1, N
-         IF( ABS( X( I ) ).GT.SAFMIN ) THEN
-            X( I ) = X( I ) / DCMPLX( ABS( X( I ) ) )
+         ABSXI = ABS( X( I ) )
+         IF( ABSXI.GT.SAFMIN ) THEN
+            X( I ) = DCMPLX( DBLE( X( I ) ) / ABSXI,
+     $               DIMAG( X( I ) ) / ABSXI )
          ELSE
             X( I ) = CONE
          END IF
@@ -152,8 +156,10 @@
      $   GO TO 100
 *
       DO 80 I = 1, N
-         IF( ABS( X( I ) ).GT.SAFMIN ) THEN
-            X( I ) = X( I ) / DCMPLX( ABS( X( I ) ) )
+         ABSXI = ABS( X( I ) )
+         IF( ABSXI.GT.SAFMIN ) THEN
+            X( I ) = DCMPLX( DBLE( X( I ) ) / ABSXI,
+     $               DIMAG( X( I ) ) / ABSXI )
          ELSE
             X( I ) = CONE
          END IF
@@ -168,7 +174,7 @@
    90 CONTINUE
       JLAST = J
       J = IZMAX1( N, X, 1 )
-      IF( ( DBLE( X( JLAST ) ).NE.ABS( DBLE( X( J ) ) ) ) .AND.
+      IF( ( ABS( X( JLAST ) ).NE.ABS( X( J ) ) ) .AND.
      $    ( ITER.LT.ITMAX ) ) THEN
          ITER = ITER + 1
          GO TO 50

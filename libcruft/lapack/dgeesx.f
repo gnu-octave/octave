@@ -2,10 +2,10 @@
      $                   WR, WI, VS, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                   IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SENSE, SORT
@@ -140,8 +140,9 @@
 *          N+2*SDIM*(N-SDIM) <= N+N*N/2.
 *          For good performance, LWORK must generally be larger.
 *
-*  IWORK   (workspace) INTEGER array, dimension (LIWORK)
+*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
 *          Not referenced if SENSE = 'N' or 'E'.
+*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER
 *          The dimension of the array IWORK.
@@ -185,8 +186,8 @@
       DOUBLE PRECISION   DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLABAD,
-     $                   DLACPY, DLASCL, DORGHR, DSWAP, DTRSEN, XERBLA
+      EXTERNAL           DCOPY, DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLACPY,
+     $                   DLASCL, DORGHR, DSWAP, DTRSEN, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -260,6 +261,9 @@
       END IF
       IF( LWORK.LT.MINWRK ) THEN
          INFO = -16
+      END IF
+      IF( LIWORK.LT.1 ) THEN
+         INFO = -18
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGEESX', -INFO )
@@ -485,6 +489,12 @@
       END IF
 *
       WORK( 1 ) = MAXWRK
+      IF( WANTSV .OR. WANTSB ) THEN
+         IWORK( 1 ) = SDIM*( N-SDIM )
+      ELSE
+         IWORK( 1 ) = 1
+      END IF
+*
       RETURN
 *
 *     End of DGEESX

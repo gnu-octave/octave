@@ -1,10 +1,10 @@
       SUBROUTINE DHSEQR( JOB, COMPZ, N, ILO, IHI, H, LDH, WR, WI, Z,
      $                   LDZ, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPZ, JOB
@@ -93,10 +93,16 @@
 *          The leading dimension of the array Z.
 *          LDZ >= max(1,N) if COMPZ = 'I' or 'V'; LDZ >= 1 otherwise.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (N)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          This argument is currently redundant.
+*          The dimension of the array WORK.  LWORK >= max(1,N).
+*
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -117,7 +123,7 @@
       PARAMETER          ( NSMAX = 15, LDS = NSMAX )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            INITZ, WANTT, WANTZ
+      LOGICAL            INITZ, LQUERY, WANTT, WANTZ
       INTEGER            I, I1, I2, IERR, II, ITEMP, ITN, ITS, J, K, L,
      $                   MAXB, NH, NR, NS, NV
       DOUBLE PRECISION   ABSW, OVFL, SMLNUM, TAU, TEMP, TST1, ULP, UNFL
@@ -132,8 +138,8 @@
       EXTERNAL           LSAME, IDAMAX, ILAENV, DLAMCH, DLANHS, DLAPY2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGEMV, DLABAD, DLACPY, DLAHQR, DLARFG,
-     $                   DLARFX, DLASET, DSCAL, XERBLA
+      EXTERNAL           DCOPY, DGEMV, DLACPY, DLAHQR, DLARFG, DLARFX,
+     $                   DLASET, DSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
@@ -147,6 +153,8 @@
       WANTZ = INITZ .OR. LSAME( COMPZ, 'V' )
 *
       INFO = 0
+      WORK( 1 ) = MAX( 1, N )
+      LQUERY = ( LWORK.EQ.-1 )
       IF( .NOT.LSAME( JOB, 'E' ) .AND. .NOT.WANTT ) THEN
          INFO = -1
       ELSE IF( .NOT.LSAME( COMPZ, 'N' ) .AND. .NOT.WANTZ ) THEN
@@ -161,9 +169,13 @@
          INFO = -7
       ELSE IF( LDZ.LT.1 .OR. WANTZ .AND. LDZ.LT.MAX( 1, N ) ) THEN
          INFO = -11
+      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
+         INFO = -13
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DHSEQR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -447,6 +459,7 @@
       GO TO 50
 *
   170 CONTINUE
+      WORK( 1 ) = MAX( 1, N )
       RETURN
 *
 *     End of DHSEQR

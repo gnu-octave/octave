@@ -1,10 +1,10 @@
       SUBROUTINE DTGEVC( SIDE, HOWMNY, SELECT, N, A, LDA, B, LDB, VL,
      $                   LDVL, VR, LDVR, MM, M, WORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -112,7 +112,7 @@
 *          The leading dimension of array VL.
 *          LDVL >= max(1,N) if SIDE = 'L' or 'B'; LDVL >= 1 otherwise.
 *
-*  VR      (input/output) COMPLEX*16 array, dimension (LDVR,MM)
+*  VR      (input/output) DOUBLE PRECISION array, dimension (LDVR,MM)
 *          On entry, if SIDE = 'R' or 'B' and HOWMNY = 'B', VR must
 *          contain an N-by-N matrix Q (usually the orthogonal matrix Z
 *          of right Schur vectors returned by DHGEQZ).
@@ -235,7 +235,7 @@
       EXTERNAL           LSAME, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEMV, DLABAD, DLACPY, DLAG2, DLALN2, XERBLA
+      EXTERNAL           DGEMV, DLACPY, DLAG2, DLALN2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
@@ -275,6 +275,23 @@
          COMPR = .TRUE.
       ELSE
          ISIDE = -1
+      END IF
+*
+      INFO = 0
+      IF( ISIDE.LT.0 ) THEN
+         INFO = -1
+      ELSE IF( IHWMNY.LT.0 ) THEN
+         INFO = -2
+      ELSE IF( N.LT.0 ) THEN
+         INFO = -4
+      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+         INFO = -6
+      ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
+         INFO = -8
+      END IF
+      IF( INFO.NE.0 ) THEN
+         CALL XERBLA( 'DTGEVC', -INFO )
+         RETURN
       END IF
 *
 *     Count the number of eigenvectors to be computed
@@ -318,21 +335,10 @@
          END IF
    20 CONTINUE
 *
-      INFO = 0
-      IF( ISIDE.LT.0 ) THEN
-         INFO = -1
-      ELSE IF( IHWMNY.LT.0 ) THEN
-         INFO = -2
-      ELSE IF( N.LT.0 ) THEN
-         INFO = -4
-      ELSE IF( ILABAD ) THEN
+      IF( ILABAD ) THEN
          INFO = -5
-      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
-         INFO = -6
       ELSE IF( ILBBAD ) THEN
          INFO = -7
-      ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
-         INFO = -8
       ELSE IF( COMPL .AND. LDVL.LT.N .OR. LDVL.LT.1 ) THEN
          INFO = -10
       ELSE IF( COMPR .AND. LDVR.LT.N .OR. LDVR.LT.1 ) THEN

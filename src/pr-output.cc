@@ -1917,24 +1917,21 @@ this reason, you should be careful when setting\n\
 @code{fixed_point_format} to a nonzero value.\n\
 \n\
 The default value of @code{fixed_point_format} is 0.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (output_max_field_width, 10.0, output_max_field_width,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} output_max_field_width\n\
 This variable specifies the maximum width of a numeric output field.\n\
 The default value is 10.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (output_precision, 5.0, output_precision,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} output_precision\n\
 This variable specifies the minimum number of significant figures to\n\
 display for numeric output.  The default value is 5.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (print_empty_dimensions, 1.0, print_empty_dimensions,
     "-*- texinfo -*-\n\
@@ -1953,8 +1950,7 @@ will print\n\
 @example\n\
 ans = [](3x0)\n\
 @end example\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (split_long_rows, 1.0, split_long_rows,
     "-*- texinfo -*-\n\
@@ -1989,8 +1985,8 @@ ans =\n\
 \n\
 @noindent\n\
 The default value of @code{split_long_rows} is nonzero.\n\
-@end defvr\n\
-");
+@end defvr");
+
 }
 
 /*

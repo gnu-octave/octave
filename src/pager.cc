@@ -376,8 +376,7 @@ Record your session in the file named @var{file}.\n\
 @end table\n\
 \n\
 Without any arguments, @code{diary} toggles the current diary state.\n\
-@end deffn\n\
-")
+@end deffn")
 {
   octave_value_list retval;
 

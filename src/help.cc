@@ -843,8 +843,7 @@ GNU Info browser at this node in the on-line version of the manual.\n\
 \n\
 Once the GNU Info browser is running, help for using it is available\n\
 using the command @kbd{C-h}.\n\
-@end deffn\n\
-")
+@end deffn")
 {
   octave_value_list retval;
 
@@ -1194,8 +1193,7 @@ symbols_of_help (void)
 The variable @code{INFO_FILE} names the location of the Octave info file.\n\
 The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
 @var{octave-home} is the directory where all of Octave is installed.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (INFO_PROGRAM, Vinfo_prog, info_prog,
     "-*- texinfo -*-\n\
@@ -1203,8 +1201,7 @@ The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
 The variable @code{INFO_FILE} names the location of the Octave info file.\n\
 The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
 @var{octave-home} is the directory where all of Octave is installed.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (suppress_verbose_help_message, 0.0, suppress_verbose_help_message,
     "-*- texinfo -*-\n\
@@ -1212,8 +1209,8 @@ The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
 If the value of @code{suppress_verbose_help_message} is nonzero, Octave\n\
 will not add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
-@end defvr\n\
-");
+@end defvr");
+
 }
 
 /*

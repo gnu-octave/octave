@@ -1,9 +1,9 @@
       SUBROUTINE ZUNGL2( M, N, K, A, LDA, TAU, WORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDA, M, N
@@ -124,7 +124,7 @@
          END IF
          A( I, I ) = ONE - DCONJG( TAU( I ) )
 *
-*        Set A(1:i-1,i) to zero
+*        Set A(i,1:i-1) to zero
 *
          DO 30 L = 1, I - 1
             A( I, L ) = ZERO

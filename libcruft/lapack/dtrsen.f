@@ -1,10 +1,10 @@
       SUBROUTINE DTRSEN( JOB, COMPQ, SELECT, N, T, LDT, Q, LDQ, WR, WI,
      $                   M, S, SEP, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, JOB
@@ -112,13 +112,19 @@
 *          M = 0 or N, SEP = norm(T).
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
 *          If JOB = 'N', LWORK >= max(1,N);
 *          if JOB = 'E', LWORK >= M*(N-M);
 *          if JOB = 'V' or 'B', LWORK >= 2*M*(N-M).
+*
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
 *  IWORK   (workspace) INTEGER array, dimension (LIWORK)
 *          IF JOB = 'N' or 'E', IWORK is not referenced.
@@ -127,6 +133,11 @@
 *          The dimension of the array IWORK.
 *          If JOB = 'N' or 'E', LIWORK >= 1;
 *          if JOB = 'V' or 'B', LIWORK >= M*(N-M).
+*
+*          If LIWORK = -1, then a workspace query is assumed; the
+*          routine only calculates the optimal size of the IWORK array,
+*          returns this value as the first entry of the IWORK array, and
+*          no error message related to LIWORK is issued by XERBLA.
 *
 *  INFO    (output) INTEGER
 *          = 0: successful exit
@@ -216,8 +227,10 @@
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            PAIR, SWAP, WANTBH, WANTQ, WANTS, WANTSP
-      INTEGER            IERR, K, KASE, KK, KS, N1, N2, NN
+      LOGICAL            LQUERY, PAIR, SWAP, WANTBH, WANTQ, WANTS,
+     $                   WANTSP
+      INTEGER            IERR, K, KASE, KK, KS, LIWMIN, LWMIN, N1, N2,
+     $                   NN
       DOUBLE PRECISION   EST, RNORM, SCALE
 *     ..
 *     .. External Functions ..
@@ -241,6 +254,7 @@
       WANTQ = LSAME( COMPQ, 'V' )
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       IF( .NOT.LSAME( JOB, 'N' ) .AND. .NOT.WANTS .AND. .NOT.WANTSP )
      $     THEN
          INFO = -1
@@ -283,15 +297,33 @@
          N2 = N - M
          NN = N1*N2
 *
-         IF( LWORK.LT.1 .OR. ( ( WANTS .AND. .NOT.WANTSP ) .AND.
-     $       LWORK.LT.NN ) .OR. ( WANTSP .AND. LWORK.LT.2*NN ) ) THEN
+         IF( WANTSP ) THEN
+            LWMIN = MAX( 1, 2*NN )
+            LIWMIN = MAX( 1, NN )
+         ELSE IF( LSAME( JOB, 'N' ) ) THEN
+            LWMIN = MAX( 1, N )
+            LIWMIN = 1
+         ELSE IF( LSAME( JOB, 'E' ) ) THEN
+            LWMIN = MAX( 1, NN )
+            LIWMIN = 1
+         END IF
+*
+         IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
             INFO = -15
-         ELSE IF( LIWORK.LT.1 .OR. ( WANTSP .AND. LIWORK.LT.NN ) ) THEN
+         ELSE IF( LIWORK.LT.LIWMIN .AND. .NOT.LQUERY ) THEN
             INFO = -17
          END IF
       END IF
+*
+      IF( INFO.EQ.0 ) THEN
+         WORK( 1 ) = LWMIN
+         IWORK( 1 ) = LIWMIN
+      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DTRSEN', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -414,6 +446,10 @@
             WI( K+1 ) = -WI( K )
          END IF
    60 CONTINUE
+*
+      WORK( 1 ) = LWMIN
+      IWORK( 1 ) = LIWMIN
+*
       RETURN
 *
 *     End of DTRSEN

@@ -1,267 +1,424 @@
-      SUBROUTINE DLASQ2( M, Q, E, QQ, EE, EPS, TOL2, SMALL2, SUP, KEND,
-     $                   INFO )
+      SUBROUTINE DLASQ2( N, Z, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
-      INTEGER            INFO, KEND, M
-      DOUBLE PRECISION   EPS, SMALL2, SUP, TOL2
+      INTEGER            INFO, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   E( * ), EE( * ), Q( * ), QQ( * )
+      DOUBLE PRECISION   Z( * )
 *     ..
 *
-*     Purpose
-*     =======
+*  Purpose
+*  =======
 *
-*     DLASQ2 computes the singular values of a real N-by-N unreduced
-*     bidiagonal matrix with squared diagonal elements in Q and
-*     squared off-diagonal elements in E. The singular values are
-*     computed to relative accuracy TOL, barring over/underflow or
-*     denormalization.
+*  DLASQ2 computes all the eigenvalues of the symmetric positive
+*  definite tridiagonal matrix associated with the qd array Z to high
+*  relative accuracy are computed to high relative accuracy, in the
+*  absence of denormalization, underflow and overflow.
 *
-*     Arguments
-*     =========
+*  To see the relation of Z to the tridiagonal matrix, let L be a
+*  unit lower bidiagonal matrix with subdiagonals Z(2,4,6,,..) and
+*  let U be an upper bidiagonal matrix with 1's above and diagonal
+*  Z(1,3,5,,..). The tridiagonal is L*U or, if you prefer, the
+*  symmetric tridiagonal to which it is similar.
 *
-*  M       (input) INTEGER
-*          The number of rows and columns in the matrix. M >= 0.
+*  Note : DLASQ2 works only on machines which follow ieee-754
+*  floating-point standard in their handling of infinities and NaNs.
+*  Normal execution of DLASQ2 may create NaNs and infinities and hence
+*  may abort due to a floating point exception in environments which
+*  do not conform to the ieee standard.
 *
-*  Q       (output) DOUBLE PRECISION array, dimension (M)
-*          On normal exit, contains the squared singular values.
+*  Arguments
+*  =========
 *
-*  E       (workspace) DOUBLE PRECISION array, dimension (M)
+*  N     (input) INTEGER
+*        The number of rows and columns in the matrix. N >= 0.
 *
-*  QQ      (input/output) DOUBLE PRECISION array, dimension (M)
-*          On entry, QQ contains the squared diagonal elements of the
-*          bidiagonal matrix whose SVD is desired.
-*          On exit, QQ is overwritten.
+*  Z     (workspace) DOUBLE PRECISION array, dimension ( 4*N )
+*        On entry Z holds the qd array. On exit, entries 1 to N hold
+*        the eigenvalues in decreasing order, Z( 2*N+1 ) holds the
+*        trace, Z( 2*N+2 ) holds the sum of the eigenvalues, Z( 2*N+3 )
+*        holds the iteration count, Z( 2*N+4 ) holds NDIVS/NIN^2, and
+*        Z( 2*N+5 ) holds the percentage of shifts that failed.
 *
-*  EE      (input/output) DOUBLE PRECISION array, dimension (M)
-*          On entry, EE(1:N-1) contains the squared off-diagonal
-*          elements of the bidiagonal matrix whose SVD is desired.
-*          On exit, EE is overwritten.
+*  INFO  (output) INTEGER
+*        = 0: successful exit
+*        < 0: if the i-th argument is a scalar and had an illegal
+*             value, then INFO = -i, if the i-th argument is an
+*             array and the j-entry had an illegal value, then
+*             INFO = -(i*100+j)
+*        > 0: the algorithm failed
+*              = 1, a split was marked by a positive value in E
+*              = 2, current block of Z not diagonalized after 30*N
+*                   iterations (in inner while loop)
+*              = 3, termination criterion of outer while loop not met
+*                   (program created more than N unreduced blocks)
 *
-*  EPS     (input) DOUBLE PRECISION
-*          Machine epsilon.
-*
-*  TOL2    (input) DOUBLE PRECISION
-*          Desired relative accuracy of computed eigenvalues
-*          as defined in DLASQ1.
-*
-*  SMALL2  (input) DOUBLE PRECISION
-*          A threshold value as defined in DLASQ1.
-*
-*  SUP     (input/output) DOUBLE PRECISION
-*          Upper bound for the smallest eigenvalue.
-*
-*  KEND    (input/output) INTEGER
-*          Index where minimum d occurs.
-*
-*  INFO    (output) INTEGER
-*          = 0:  successful exit
-*          < 0:  if INFO = -i, the i-th argument had an illegal value
-*          > 0:  if INFO = i, the algorithm did not converge;  i
-*                specifies how many superdiagonals did not converge.
+*  Further Details
+*  ===============
+*  Local Variables: I0:N0 defines a current unreduced segment of Z.
+*  The shifts are accumulated in SIGMA. Iteration count is in ITER.
+*  Ping-pong is controlled by PP (alternates between 0 and 1).
 *
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO
-      PARAMETER          ( ZERO = 0.0D+0 )
-      DOUBLE PRECISION   FOUR, HALF
-      PARAMETER          ( FOUR = 4.0D+0, HALF = 0.5D+0 )
+      DOUBLE PRECISION   CBIAS
+      PARAMETER          ( CBIAS = 1.50D0 )
+      DOUBLE PRECISION   ZERO, HALF, ONE, TWO, FOUR, TEN, HNDRD
+      PARAMETER          ( ZERO = 0.0D0, HALF = 0.5D0, ONE = 1.0D0,
+     $                   TWO = 2.0D0, FOUR = 4.0D0, TEN = 10.0D0,
+     $                   HNDRD = 100.0D0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            ICONV, IPHASE, ISP, N, OFF, OFF1
-      DOUBLE PRECISION   QEMAX, SIGMA, XINF, XX, YY
+      INTEGER            I0, I4, IINFO, IPN4, ITER, IWHILA, IWHILB, K,
+     $                   N0, NBIG, NDIV, NFAIL, PP, SPLT
+      DOUBLE PRECISION   D, DESIG, DMIN, DMIN1, DMIN2, DN, DN1, DN2, E,
+     $                   EMAX, EMIN, EPS, EPS2, OLDEMN, QMAX, QMIN, S,
+     $                   SIGMA, T, TAU, TEMP, TRACE, ZMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLASQ3
+      EXTERNAL           DLASQ3, DLASQ5, DLASRT, XERBLA
+*     ..
+*     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH
+      EXTERNAL           DLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, NINT, SQRT
+      INTRINSIC          ABS, DBLE, MAX, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
-      N = M
 *
-*     Set the default maximum number of iterations
+*     Test the input arguments.
+*     (in case DLASQ2 is not called by DLASQ1)
 *
-      OFF = 0
-      OFF1 = OFF + 1
-      SIGMA = ZERO
-      XINF = ZERO
-      ICONV = 0
-      IPHASE = 2
+      INFO = 0
+      EPS = DLAMCH( 'Precision' )*TEN
+      EPS2 = EPS**2
 *
-*     Try deflation at the bottom
-*
-*     1x1 deflation
-*
-   10 CONTINUE
-      IF( N.LE.2 )
-     $   GO TO 20
-      IF( EE( N-1 ).LE.MAX( QQ( N ), XINF, SMALL2 )*TOL2 ) THEN
-         Q( N ) = QQ( N )
-         N = N - 1
-         IF( KEND.GT.N )
-     $      KEND = N
-         SUP = MIN( QQ( N ), QQ( N-1 ) )
-         GO TO 10
-      END IF
-*
-*     2x2 deflation
-*
-      IF( EE( N-2 ).LE.MAX( XINF, SMALL2,
-     $    ( QQ( N ) / ( QQ( N )+EE( N-1 )+QQ( N-1 ) ) )*QQ( N-1 ) )*
-     $    TOL2 ) THEN
-         QEMAX = MAX( QQ( N ), QQ( N-1 ), EE( N-1 ) )
-         IF( QEMAX.NE.ZERO ) THEN
-            IF( QEMAX.EQ.QQ( N-1 ) ) THEN
-               XX = HALF*( QQ( N )+QQ( N-1 )+EE( N-1 )+QEMAX*
-     $              SQRT( ( ( QQ( N )-QQ( N-1 )+EE( N-1 ) ) /
-     $              QEMAX )**2+FOUR*EE( N-1 ) / QEMAX ) )
-            ELSE IF( QEMAX.EQ.QQ( N ) ) THEN
-               XX = HALF*( QQ( N )+QQ( N-1 )+EE( N-1 )+QEMAX*
-     $              SQRT( ( ( QQ( N-1 )-QQ( N )+EE( N-1 ) ) /
-     $              QEMAX )**2+FOUR*EE( N-1 ) / QEMAX ) )
-            ELSE
-               XX = HALF*( QQ( N )+QQ( N-1 )+EE( N-1 )+QEMAX*
-     $              SQRT( ( ( QQ( N )-QQ( N-1 )+EE( N-1 ) ) /
-     $              QEMAX )**2+FOUR*QQ( N-1 ) / QEMAX ) )
-            END IF
-            YY = ( MAX( QQ( N ), QQ( N-1 ) ) / XX )*
-     $           MIN( QQ( N ), QQ( N-1 ) )
-         ELSE
-            XX = ZERO
-            YY = ZERO
-         END IF
-         Q( N-1 ) = XX
-         Q( N ) = YY
-         N = N - 2
-         IF( KEND.GT.N )
-     $      KEND = N
-         SUP = QQ( N )
-         GO TO 10
-      END IF
-*
-   20 CONTINUE
-      IF( N.EQ.0 ) THEN
-*
-*         The lower branch is finished
-*
-         IF( OFF.EQ.0 ) THEN
-*
-*         No upper branch; return to DLASQ1
-*
-            RETURN
-         ELSE
-*
-*         Going back to upper branch
-*
-            XINF = ZERO
-            IF( EE( OFF ).GT.ZERO ) THEN
-               ISP = NINT( EE( OFF ) )
-               IPHASE = 1
-            ELSE
-               ISP = -NINT( EE( OFF ) )
-               IPHASE = 2
-            END IF
-            SIGMA = E( OFF )
-            N = OFF - ISP + 1
-            OFF1 = ISP
-            OFF = OFF1 - 1
-            IF( N.LE.2 )
-     $         GO TO 20
-            IF( IPHASE.EQ.1 ) THEN
-               SUP = MIN( Q( N+OFF ), Q( N-1+OFF ), Q( N-2+OFF ) )
-            ELSE
-               SUP = MIN( QQ( N+OFF ), QQ( N-1+OFF ), QQ( N-2+OFF ) )
-            END IF
-            KEND = 0
-            ICONV = -3
-         END IF
+      IF( N.LT.0 ) THEN
+         INFO = -1
+         CALL XERBLA( 'DLASQ2', 1 )
+         RETURN
+      ELSE IF( N.EQ.0 ) THEN
+         RETURN
       ELSE IF( N.EQ.1 ) THEN
 *
-*     1x1 Solver
+*        1-by-1 case.
 *
-         IF( IPHASE.EQ.1 ) THEN
-            Q( OFF1 ) = Q( OFF1 ) + SIGMA
-         ELSE
-            Q( OFF1 ) = QQ( OFF1 ) + SIGMA
+         IF( Z( 1 ).LT.ZERO ) THEN
+            INFO = -201
+            CALL XERBLA( 'DLASQ2', 2 )
          END IF
-         N = 0
-         GO TO 20
-*
-*     2x2 Solver
-*
+         RETURN
       ELSE IF( N.EQ.2 ) THEN
-         IF( IPHASE.EQ.2 ) THEN
-            QEMAX = MAX( QQ( N+OFF ), QQ( N-1+OFF ), EE( N-1+OFF ) )
-            IF( QEMAX.NE.ZERO ) THEN
-               IF( QEMAX.EQ.QQ( N-1+OFF ) ) THEN
-                  XX = HALF*( QQ( N+OFF )+QQ( N-1+OFF )+EE( N-1+OFF )+
-     $                 QEMAX*SQRT( ( ( QQ( N+OFF )-QQ( N-1+OFF )+EE( N-
-     $                 1+OFF ) ) / QEMAX )**2+FOUR*EE( OFF+N-1 ) /
-     $                 QEMAX ) )
-               ELSE IF( QEMAX.EQ.QQ( N+OFF ) ) THEN
-                  XX = HALF*( QQ( N+OFF )+QQ( N-1+OFF )+EE( N-1+OFF )+
-     $                 QEMAX*SQRT( ( ( QQ( N-1+OFF )-QQ( N+OFF )+EE( N-
-     $                 1+OFF ) ) / QEMAX )**2+FOUR*EE( N-1+OFF ) /
-     $                 QEMAX ) )
-               ELSE
-                  XX = HALF*( QQ( N+OFF )+QQ( N-1+OFF )+EE( N-1+OFF )+
-     $                 QEMAX*SQRT( ( ( QQ( N+OFF )-QQ( N-1+OFF )+EE( N-
-     $                 1+OFF ) ) / QEMAX )**2+FOUR*QQ( N-1+OFF ) /
-     $                 QEMAX ) )
-               END IF
-               YY = ( MAX( QQ( N+OFF ), QQ( N-1+OFF ) ) / XX )*
-     $              MIN( QQ( N+OFF ), QQ( N-1+OFF ) )
-            ELSE
-               XX = ZERO
-               YY = ZERO
-            END IF
-         ELSE
-            QEMAX = MAX( Q( N+OFF ), Q( N-1+OFF ), E( N-1+OFF ) )
-            IF( QEMAX.NE.ZERO ) THEN
-               IF( QEMAX.EQ.Q( N-1+OFF ) ) THEN
-                  XX = HALF*( Q( N+OFF )+Q( N-1+OFF )+E( N-1+OFF )+
-     $                 QEMAX*SQRT( ( ( Q( N+OFF )-Q( N-1+OFF )+E( N-1+
-     $                 OFF ) ) / QEMAX )**2+FOUR*E( N-1+OFF ) /
-     $                 QEMAX ) )
-               ELSE IF( QEMAX.EQ.Q( N+OFF ) ) THEN
-                  XX = HALF*( Q( N+OFF )+Q( N-1+OFF )+E( N-1+OFF )+
-     $                 QEMAX*SQRT( ( ( Q( N-1+OFF )-Q( N+OFF )+E( N-1+
-     $                 OFF ) ) / QEMAX )**2+FOUR*E( N-1+OFF ) /
-     $                 QEMAX ) )
-               ELSE
-                  XX = HALF*( Q( N+OFF )+Q( N-1+OFF )+E( N-1+OFF )+
-     $                 QEMAX*SQRT( ( ( Q( N+OFF )-Q( N-1+OFF )+E( N-1+
-     $                 OFF ) ) / QEMAX )**2+FOUR*Q( N-1+OFF ) /
-     $                 QEMAX ) )
-               END IF
-               YY = ( MAX( Q( N+OFF ), Q( N-1+OFF ) ) / XX )*
-     $              MIN( Q( N+OFF ), Q( N-1+OFF ) )
-            ELSE
-               XX = ZERO
-               YY = ZERO
-            END IF
+*
+*        2-by-2 case.
+*
+         IF( Z( 2 ).LT.ZERO .OR. Z( 3 ).LT.ZERO ) THEN
+            INFO = -2
+            CALL XERBLA( 'DLASQ2', 2 )
+            RETURN
+         ELSE IF( Z( 3 ).GT.Z( 1 ) ) THEN
+            D = Z( 3 )
+            Z( 3 ) = Z( 1 )
+            Z( 1 ) = D
          END IF
-         Q( N-1+OFF ) = SIGMA + XX
-         Q( N+OFF ) = YY + SIGMA
-         N = 0
-         GO TO 20
-      END IF
-      CALL DLASQ3( N, Q( OFF1 ), E( OFF1 ), QQ( OFF1 ), EE( OFF1 ), SUP,
-     $             SIGMA, KEND, OFF, IPHASE, ICONV, EPS, TOL2, SMALL2 )
-      IF( SUP.LT.ZERO ) THEN
-         INFO = N + OFF
+         Z( 5 ) = Z( 1 ) + Z( 2 ) + Z( 3 )
+         IF( Z( 2 ).GT.Z( 3 )*EPS2 ) THEN
+            T = HALF*( ( Z( 1 )-Z( 3 ) )+Z( 2 ) )
+            S = Z( 3 )*( Z( 2 ) / T )
+            IF( S.LE.T ) THEN
+               S = Z( 3 )*( Z( 2 ) / ( T*( ONE+SQRT( ONE+S / T ) ) ) )
+            ELSE
+               S = Z( 3 )*( Z( 2 ) / ( T+SQRT( T )*SQRT( T+S ) ) )
+            END IF
+            T = Z( 1 ) + ( S+Z( 2 ) )
+            Z( 3 ) = Z( 3 )*( Z( 1 ) / T )
+            Z( 1 ) = T
+         END IF
+         Z( 2 ) = Z( 3 )
+         Z( 6 ) = Z( 2 ) + Z( 1 )
+         Z( 7 ) = ZERO
+         Z( 8 ) = ZERO
+         Z( 9 ) = ZERO
          RETURN
       END IF
-      OFF1 = OFF + 1
-      GO TO 20
+*
+*     Check for negative data and compute sums of q's and e's.
+*
+      Z( 2*N ) = ZERO
+      EMIN = Z( 2 )
+      QMAX = ZERO
+      D = ZERO
+      E = ZERO
+*
+      DO 10 K = 1, N
+         IF( Z( K ).LT.ZERO ) THEN
+            INFO = -( 200+K )
+            CALL XERBLA( 'DLASQ2', 2 )
+            RETURN
+         ELSE IF( Z( N+K ).LT.ZERO ) THEN
+            INFO = -( 200+N+K )
+            CALL XERBLA( 'DLASQ2', 2 )
+            RETURN
+         END IF
+         D = D + Z( K )
+         E = E + Z( N+K )
+         QMAX = MAX( QMAX, Z( K ) )
+   10 CONTINUE
+      ZMAX = QMAX
+      DO 20 K = 1, N - 1
+         EMIN = MIN( EMIN, Z( N+K ) )
+         ZMAX = MAX( ZMAX, Z( N+K ) )
+   20 CONTINUE
+*
+*     Check for diagonality.
+*
+      IF( E.EQ.ZERO ) THEN
+         CALL DLASRT( 'D', N, Z, IINFO )
+         Z( 2*N-1 ) = D
+         RETURN
+      END IF
+*
+      TRACE = D + E
+      I0 = 1
+      N0 = N
+*
+*     Check for zero data.
+*
+      IF( TRACE.EQ.ZERO ) THEN
+         Z( 2*N-1 ) = ZERO
+         RETURN
+      END IF
+*
+*     Rearrange data for locality: Z=(q1,qq1,e1,ee1,q2,qq2,e2,ee2,...).
+*
+      DO 30 K = 2*N, 2, -2
+         Z( 2*K ) = ZERO
+         Z( 2*K-1 ) = Z( K )
+         Z( 2*K-2 ) = ZERO
+         Z( 2*K-3 ) = Z( K-1 )
+   30 CONTINUE
+*
+*     Reverse the qd-array, if warranted.
+*
+      IF( CBIAS*Z( 4*I0-3 ).LT.Z( 4*N0-3 ) ) THEN
+         IPN4 = 4*( I0+N0 )
+         DO 40 I4 = 4*I0, 2*( I0+N0-1 ), 4
+            TEMP = Z( I4-3 )
+            Z( I4-3 ) = Z( IPN4-I4-3 )
+            Z( IPN4-I4-3 ) = TEMP
+            TEMP = Z( I4-1 )
+            Z( I4-1 ) = Z( IPN4-I4-5 )
+            Z( IPN4-I4-5 ) = TEMP
+   40    CONTINUE
+      END IF
+*
+*     Initial split checking via dqd and Li's test.
+*
+      PP = 0
+*
+      DO 80 K = 1, 2
+*
+         IF( EMIN.LE.EPS2*QMAX ) THEN
+*
+*           Li's reverse test.
+*
+            D = Z( 4*N0+PP-3 )
+            DO 50 I4 = 4*( N0-1 ) + PP, 4*I0 + PP, -4
+               IF( Z( I4-1 ).LE.EPS2*D ) THEN
+                  Z( I4-1 ) = -ZERO
+                  D = Z( I4-3 )
+               ELSE
+                  D = Z( I4-3 )*( D / ( D+Z( I4-1 ) ) )
+               END IF
+   50       CONTINUE
+*
+*           dqd maps Z to ZZ plus Li's test.
+*
+            EMIN = Z( 4*I0+PP+1 )
+            D = Z( 4*I0+PP-3 )
+            DO 60 I4 = 4*I0 + PP, 4*( N0-1 ) + PP, 4
+               IF( Z( I4-1 ).LE.EPS2*D ) THEN
+                  Z( I4-1 ) = -ZERO
+                  Z( I4-2*PP-2 ) = D
+                  Z( I4-2*PP ) = ZERO
+                  D = Z( I4+1 )
+                  EMIN = ZERO
+               ELSE
+                  Z( I4-2*PP-2 ) = D + Z( I4-1 )
+                  Z( I4-2*PP ) = Z( I4+1 )*( Z( I4-1 ) /
+     $                           Z( I4-2*PP-2 ) )
+                  D = Z( I4+1 )*( D / Z( I4-2*PP-2 ) )
+                  EMIN = MIN( EMIN, Z( I4-2*PP ) )
+               END IF
+   60       CONTINUE
+            Z( 4*N0-PP-2 ) = D
+         ELSE
+            TAU = ZERO
+            CALL DLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN,
+     $                   DN1, DN2 )
+*
+            EMIN = Z( 4*N0 )
+         END IF
+*
+*        Now find qmax.
+*
+         QMAX = Z( 4*I0-PP-2 )
+         DO 70 I4 = 4*I0 - PP + 2, 4*N0 - PP - 2, 4
+            QMAX = MAX( QMAX, Z( I4 ) )
+   70    CONTINUE
+*
+*        Prepare for the next iteration on K.
+*
+         PP = 1 - PP
+   80 CONTINUE
+*
+      ITER = 2
+      NFAIL = 0
+      NDIV = 2*( N0-I0 )
+*
+      DO 140 IWHILA = 1, N + 1
+         IF( N0.LT.1 )
+     $      GO TO 150
+*
+*        While array unfinished do
+*
+*        E(N0) holds the value of SIGMA when submatrix in I0:N0
+*        splits from the rest of the array, but is negated.
+*
+         DESIG = ZERO
+         IF( N0.EQ.N ) THEN
+            SIGMA = ZERO
+         ELSE
+            SIGMA = -Z( 4*N0-1 )
+         END IF
+         IF( SIGMA.LT.ZERO ) THEN
+            INFO = 1
+            RETURN
+         END IF
+*
+*        Find last unreduced submatrix's top index I0, find QMAX and
+*        EMIN. Find Gershgorin-type bound if Q's much greater than E's.
+*
+         EMAX = ZERO
+         EMIN = ABS( Z( 4*N0-5 ) )
+         QMIN = Z( 4*N0-3 )
+         QMAX = QMIN
+         DO 90 I4 = 4*N0, 8, -4
+            IF( Z( I4-5 ).LE.ZERO )
+     $         GO TO 100
+            IF( QMIN.GE.FOUR*EMAX ) THEN
+               QMIN = MIN( QMIN, Z( I4-3 ) )
+               EMAX = MAX( EMAX, Z( I4-5 ) )
+            END IF
+            QMAX = MAX( QMAX, Z( I4-7 )+Z( I4-5 ) )
+            EMIN = MIN( EMIN, Z( I4-5 ) )
+   90    CONTINUE
+         I4 = 4
+*
+  100    CONTINUE
+         I0 = I4 / 4
+*
+*        Store EMIN for passing to DLASQ3.
+*
+         Z( 4*N0-1 ) = EMIN
+*
+*        Put -(initial shift) into DMIN.
+*
+         DMIN = -MAX( ZERO, QMIN-TWO*SQRT( QMIN )*SQRT( EMAX ) )
+*
+*        Now I0:N0 is unreduced. PP = 0 for ping, PP = 1 for pong.
+*
+         PP = 0
+*
+         NBIG = 30*( N0-I0+1 )
+         DO 120 IWHILB = 1, NBIG
+            IF( I0.GT.N0 )
+     $         GO TO 130
+*
+*           While submatrix unfinished take a good dqds step.
+*
+            CALL DLASQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
+     $                   ITER, NDIV )
+*
+            PP = 1 - PP
+*
+*           When EMIN is very small check for splits.
+*
+            IF( PP.EQ.0 .AND. N0-I0.GE.3 ) THEN
+               IF( Z( 4*N0 ).LE.EPS2*QMAX .OR. Z( 4*N0-1 ).LE.EPS2*
+     $             SIGMA ) THEN
+                  SPLT = I0 - 1
+                  QMAX = Z( 4*I0-3 )
+                  EMIN = Z( 4*I0-1 )
+                  OLDEMN = Z( 4*I0 )
+                  DO 110 I4 = 4*I0, 4*( N0-3 ), 4
+                     IF( Z( I4 ).LE.EPS2*Z( I4-3 ) .OR. Z( I4-1 ).LE.
+     $                   EPS2*SIGMA ) THEN
+                        Z( I4-1 ) = -SIGMA
+                        SPLT = I4 / 4
+                        QMAX = ZERO
+                        EMIN = Z( I4+3 )
+                        OLDEMN = Z( I4+4 )
+                     ELSE
+                        QMAX = MAX( QMAX, Z( I4+1 ) )
+                        EMIN = MIN( EMIN, Z( I4-1 ) )
+                        OLDEMN = MIN( OLDEMN, Z( I4 ) )
+                     END IF
+  110             CONTINUE
+                  Z( 4*N0-1 ) = EMIN
+                  Z( 4*N0 ) = OLDEMN
+                  I0 = SPLT + 1
+               END IF
+            END IF
+*
+  120    CONTINUE
+*
+         INFO = 2
+         RETURN
+*
+*        end IWHILB
+*
+  130    CONTINUE
+*
+  140 CONTINUE
+*
+      INFO = 3
+      RETURN
+*
+*     end IWHILA
+*
+  150 CONTINUE
+*
+*     Move q's to the front.
+*
+      DO 160 K = 2, N
+         Z( K ) = Z( 4*K-3 )
+  160 CONTINUE
+*
+*     Sort and compute sum of eigenvalues.
+*
+      CALL DLASRT( 'D', N, Z, IINFO )
+*
+      E = ZERO
+      DO 170 K = N, 1, -1
+         E = E + Z( K )
+  170 CONTINUE
+*
+*     Store trace, sum(eigenvalues) and information on performance.
+*
+      Z( 2*N+1 ) = TRACE
+      Z( 2*N+2 ) = E
+      Z( 2*N+3 ) = DBLE( ITER )
+      Z( 2*N+4 ) = DBLE( NDIV ) / DBLE( N**2 )
+      Z( 2*N+5 ) = HNDRD*NFAIL / DBLE( ITER )
+      RETURN
 *
 *     End of DLASQ2
 *

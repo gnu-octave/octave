@@ -1,9 +1,9 @@
       INTEGER          FUNCTION IZMAX1( N, CX, INCX )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
@@ -51,7 +51,7 @@
 *     .. Statement Function definitions ..
 *
 *     NEXT LINE IS THE ONLY MODIFICATION.
-      CABS1( ZDUM ) = ABS( DBLE( ZDUM ) )
+      CABS1( ZDUM ) = ABS( ZDUM )
 *     ..
 *     .. Executable Statements ..
 *

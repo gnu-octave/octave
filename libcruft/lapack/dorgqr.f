@@ -1,15 +1,15 @@
       SUBROUTINE DORGQR( M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDA, LWORK, M, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   A( LDA, * ), TAU( * ), WORK( LWORK )
+      DOUBLE PRECISION   A( LDA, * ), TAU( * ), WORK( * )
 *     ..
 *
 *  Purpose
@@ -58,6 +58,11 @@
 *          For optimum performance LWORK >= N*NB, where NB is the
 *          optimal blocksize.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument has an illegal value
@@ -69,8 +74,9 @@
       PARAMETER          ( ZERO = 0.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, IB, IINFO, IWS, J, KI, KK, L, LDWORK, NB,
-     $                   NBMIN, NX
+      LOGICAL            LQUERY
+      INTEGER            I, IB, IINFO, IWS, J, KI, KK, L, LDWORK,
+     $                   LWKOPT, NB, NBMIN, NX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLARFB, DLARFT, DORG2R, XERBLA
@@ -87,6 +93,10 @@
 *     Test the input arguments
 *
       INFO = 0
+      NB = ILAENV( 1, 'DORGQR', ' ', M, N, K, -1 )
+      LWKOPT = MAX( 1, N )*NB
+      WORK( 1 ) = LWKOPT
+      LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
       ELSE IF( N.LT.0 .OR. N.GT.M ) THEN
@@ -95,11 +105,13 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -5
-      ELSE IF( LWORK.LT.MAX( 1, N ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
          INFO = -8
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DORGQR', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -110,9 +122,6 @@
          RETURN
       END IF
 *
-*     Determine the block size.
-*
-      NB = ILAENV( 1, 'DORGQR', ' ', M, N, K, -1 )
       NBMIN = 2
       NX = 0
       IWS = N

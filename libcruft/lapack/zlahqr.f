@@ -1,10 +1,10 @@
       SUBROUTINE ZLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILOZ,
      $                   IHIZ, Z, LDZ, INFO )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTT, WANTZ
@@ -89,14 +89,14 @@
       COMPLEX*16         ZERO, ONE
       PARAMETER          ( ZERO = ( 0.0D+0, 0.0D+0 ),
      $                   ONE = ( 1.0D+0, 0.0D+0 ) )
-      DOUBLE PRECISION   RZERO, RONE, HALF
-      PARAMETER          ( RZERO = 0.0D+0, RONE = 1.0D+0,
-     $                   HALF = 0.5D+0 )
+      DOUBLE PRECISION   RZERO, HALF
+      PARAMETER          ( RZERO = 0.0D+0, HALF = 0.5D+0 )
+      DOUBLE PRECISION   DAT1
+      PARAMETER          ( DAT1 = 0.75D+0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, I1, I2, ITN, ITS, J, K, L, M, NH, NZ
-      DOUBLE PRECISION   H10, H21, OVFL, RTEMP, S, SMLNUM, T2, TST1,
-     $                   ULP, UNFL
+      DOUBLE PRECISION   H10, H21, RTEMP, S, SMLNUM, T2, TST1, ULP
       COMPLEX*16         CDUM, H11, H11S, H22, SUM, T, T1, TEMP, U, V2,
      $                   X, Y
 *     ..
@@ -105,12 +105,12 @@
       COMPLEX*16         V( 2 )
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DLAPY2, ZLANHS
+      DOUBLE PRECISION   DLAMCH, ZLANHS
       COMPLEX*16         ZLADIV
-      EXTERNAL           DLAMCH, DLAPY2, ZLANHS, ZLADIV
+      EXTERNAL           DLAMCH, ZLANHS, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, ZCOPY, ZLARFG, ZSCAL
+      EXTERNAL           ZCOPY, ZLARFG, ZSCAL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCONJG, DIMAG, MAX, MIN, SQRT
@@ -140,11 +140,8 @@
 *     Set machine-dependent constants for the stopping criterion.
 *     If norm(H) <= sqrt(OVFL), overflow should not occur.
 *
-      UNFL = DLAMCH( 'Safe minimum' )
-      OVFL = RONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Precision' )
-      SMLNUM = UNFL*( NH / ULP )
+      SMLNUM = DLAMCH( 'Safe minimum' ) / ULP
 *
 *     I1 and I2 are the indices of the first row and last column of H
 *     to which transformations must be applied. If eigenvalues only are
@@ -213,8 +210,8 @@
 *
 *           Exceptional shift.
 *
-            T = ABS( DBLE( H( I, I-1 ) ) ) +
-     $          ABS( DBLE( H( I-1, I-2 ) ) )
+            S = DAT1*ABS( DBLE( H( I, I-1 ) ) )
+            T = S + H( I, I )
          ELSE
 *
 *           Wilkinson's shift.
@@ -232,7 +229,7 @@
 *
 *        Look for two consecutive small subdiagonal elements.
 *
-         DO 40 M = I - 1, L, -1
+         DO 40 M = I - 1, L + 1, -1
 *
 *           Determine the effect of starting the single-shift QR
 *           iteration at row M, and see if this would make H(M,M-1)
@@ -247,13 +244,20 @@
             H21 = H21 / S
             V( 1 ) = H11S
             V( 2 ) = H21
-            IF( M.EQ.L )
-     $         GO TO 50
             H10 = H( M, M-1 )
             TST1 = CABS1( H11S )*( CABS1( H11 )+CABS1( H22 ) )
             IF( ABS( H10*H21 ).LE.ULP*TST1 )
      $         GO TO 50
    40    CONTINUE
+         H11 = H( L, L )
+         H22 = H( L+1, L+1 )
+         H11S = H11 - T
+         H21 = H( L+1, L )
+         S = CABS1( H11S ) + ABS( H21 )
+         H11S = H11S / S
+         H21 = H21 / S
+         V( 1 ) = H11S
+         V( 2 ) = H21
    50    CONTINUE
 *
 *        Single-shift QR step
@@ -319,7 +323,7 @@
 *              real.
 *
                TEMP = ONE - T1
-               TEMP = TEMP / DLAPY2( DBLE( TEMP ), DIMAG( TEMP ) )
+               TEMP = TEMP / ABS( TEMP )
                H( M+1, M ) = H( M+1, M )*DCONJG( TEMP )
                IF( M+2.LE.I )
      $            H( M+2, M+1 ) = H( M+2, M+1 )*TEMP
@@ -341,7 +345,7 @@
 *
          TEMP = H( I, I-1 )
          IF( DIMAG( TEMP ).NE.RZERO ) THEN
-            RTEMP = DLAPY2( DBLE( TEMP ), DIMAG( TEMP ) )
+            RTEMP = ABS( TEMP )
             H( I, I-1 ) = RTEMP
             TEMP = TEMP / RTEMP
             IF( I2.GT.I )

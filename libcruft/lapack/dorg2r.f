@@ -1,6 +1,6 @@
       SUBROUTINE DORG2R( M, N, K, A, LDA, TAU, WORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     February 29, 1992

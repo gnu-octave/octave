@@ -1,3 +1,9 @@
+1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Update to Lapack version 3.0.
+	* lapack/ieeeck.f, lapack/dlasq2.f, lapack/dlasq3.f,
+	lapack/dlasq5.f, lapack/dlasq6.f: New files.
+
 1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/lo-error.cc (current_liboctave_warning_handler): Define	here.

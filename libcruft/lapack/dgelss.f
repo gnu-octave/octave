@@ -1,10 +1,10 @@
       SUBROUTINE DGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -86,6 +86,11 @@
 *          LWORK >= 3*min(M,N) + max( 2*min(M,N), max(M,N), NRHS )
 *          For good performance, LWORK should generally be larger.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value.
@@ -97,9 +102,10 @@
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
-      PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
 *     .. Local Scalars ..
+      LOGICAL            LQUERY
       INTEGER            BDSPAC, BL, CHUNK, I, IASCL, IBSCL, IE, IL,
      $                   ITAU, ITAUP, ITAUQ, IWORK, LDWORK, MAXMN,
      $                   MAXWRK, MINMN, MINWRK, MM, MNTHR
@@ -129,6 +135,7 @@
       MINMN = MIN( M, N )
       MAXMN = MAX( M, N )
       MNTHR = ILAENV( 6, 'DGELSS', ' ', M, N, NRHS, -1 )
+      LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
@@ -149,7 +156,7 @@
 *       following subroutine, as returned by ILAENV.)
 *
       MINWRK = 1
-      IF( INFO.EQ.0 .AND. LWORK.GE.1 ) THEN
+      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) ) THEN
          MAXWRK = 0
          MM = M
          IF( M.GE.N .AND. M.GE.MNTHR ) THEN
@@ -166,7 +173,7 @@
 *
 *           Path 1 - overdetermined or exactly determined
 *
-*           Compute workspace neede for DBDSQR
+*           Compute workspace needed for DBDSQR
 *
             BDSPAC = MAX( 1, 5*N-4 )
             MAXWRK = MAX( MAXWRK, 3*N+( MM+N )*
@@ -182,7 +189,7 @@
          END IF
          IF( N.GT.M ) THEN
 *
-*           Compute workspace neede for DBDSQR
+*           Compute workspace needed for DBDSQR
 *
             BDSPAC = MAX( 1, 5*M-4 )
             MINWRK = MAX( 3*M+NRHS, 3*M+N, BDSPAC )
@@ -225,10 +232,12 @@
       END IF
 *
       MINWRK = MAX( MINWRK, 1 )
-      IF( LWORK.LT.MINWRK )
+      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
      $   INFO = -12
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGELSS', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -385,9 +394,9 @@
             CHUNK = LWORK / N
             DO 20 I = 1, NRHS, CHUNK
                BL = MIN( NRHS-I+1, CHUNK )
-               CALL DGEMM( 'T', 'N', N, BL, N, ONE, A, LDA, B, LDB,
-     $                     ZERO, WORK, N )
-               CALL DLACPY( 'G', N, BL, WORK, N, B, LDB )
+               CALL DGEMM( 'T', 'N', N, BL, N, ONE, A, LDA, B( 1, I ),
+     $                     LDB, ZERO, WORK, N )
+               CALL DLACPY( 'G', N, BL, WORK, N, B( 1, I ), LDB )
    20       CONTINUE
          ELSE
             CALL DGEMV( 'T', N, N, ONE, A, LDA, B, 1, ZERO, WORK, 1 )
@@ -483,7 +492,8 @@
                BL = MIN( NRHS-I+1, CHUNK )
                CALL DGEMM( 'T', 'N', M, BL, M, ONE, WORK( IL ), LDWORK,
      $                     B( 1, I ), LDB, ZERO, WORK( IWORK ), N )
-               CALL DLACPY( 'G', M, BL, WORK( IWORK ), N, B, LDB )
+               CALL DLACPY( 'G', M, BL, WORK( IWORK ), N, B( 1, I ),
+     $                      LDB )
    40       CONTINUE
          ELSE
             CALL DGEMV( 'T', M, M, ONE, WORK( IL ), LDWORK, B( 1, 1 ),

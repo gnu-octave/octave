@@ -1,9 +1,9 @@
       SUBROUTINE DLASQ1( N, D, E, WORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -12,81 +12,78 @@
       DOUBLE PRECISION   D( * ), E( * ), WORK( * )
 *     ..
 *
-*     Purpose
-*     =======
+*  Purpose
+*  =======
 *
-*     DLASQ1 computes the singular values of a real N-by-N bidiagonal
-*     matrix with diagonal D and off-diagonal E. The singular values are
-*     computed to high relative accuracy, barring over/underflow or
-*     denormalization. The algorithm is described in
+*  DLASQ1 computes the singular values of a real N-by-N bidiagonal
+*  matrix with diagonal D and off-diagonal E. The singular values
+*  are computed to high relative accuracy, in the absence of
+*  denormalization, underflow and overflow. The algorithm was first
+*  presented in
 *
-*     "Accurate singular values and differential qd algorithms," by
-*     K. V. Fernando and B. N. Parlett,
-*     Numer. Math., Vol-67, No. 2, pp. 191-230,1994.
+*  "Accurate singular values and differential qd algorithms" by K. V.
+*  Fernando and B. N. Parlett, Numer. Math., Vol-67, No. 2, pp. 191-230,
+*  1994,
 *
-*     See also
-*     "Implementation of differential qd algorithms," by
-*     K. V. Fernando and B. N. Parlett, Technical Report,
-*     Department of Mathematics, University of California at Berkeley,
-*     1994 (Under preparation).
+*  and the present implementation is described in "An implementation of
+*  dqds", LAPACK technical report.
 *
-*     Arguments
-*     =========
+*  Note : DLASQ1 works only on machines which follow ieee-754
+*  floating-point standard in their handling of infinities and NaNs.
+*  Normal execution of DLASQ1 may create NaNs and infinities and hence
+*  may abort due to a floating point exception in environments which
+*  do not conform to the ieee standard.
 *
-*  N       (input) INTEGER
-*          The number of rows and columns in the matrix. N >= 0.
+*  Arguments
+*  =========
 *
-*  D       (input/output) DOUBLE PRECISION array, dimension (N)
-*          On entry, D contains the diagonal elements of the
-*          bidiagonal matrix whose SVD is desired. On normal exit,
-*          D contains the singular values in decreasing order.
+*  N     (input) INTEGER
+*        The number of rows and columns in the matrix. N >= 0.
 *
-*  E       (input/output) DOUBLE PRECISION array, dimension (N)
-*          On entry, elements E(1:N-1) contain the off-diagonal elements
-*          of the bidiagonal matrix whose SVD is desired.
-*          On exit, E is overwritten.
+*  D     (input/output) DOUBLE PRECISION array, dimension (N)
+*        On entry, D contains the diagonal elements of the
+*        bidiagonal matrix whose SVD is desired. On normal exit,
+*        D contains the singular values in decreasing order.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (2*N)
+*  E     (input/output) DOUBLE PRECISION array, dimension (N)
+*        On entry, elements E(1:N-1) contain the off-diagonal elements
+*        of the bidiagonal matrix whose SVD is desired.
+*        On exit, E is overwritten.
 *
-*  INFO    (output) INTEGER
-*          = 0:  successful exit
-*          < 0:  if INFO = -i, the i-th argument had an illegal value
-*          > 0:  if INFO = i, the algorithm did not converge;  i
-*                specifies how many superdiagonals did not converge.
+*  WORK  (workspace) DOUBLE PRECISION array, dimension (2*N)
+*
+*  INFO  (output) INTEGER
+*        = 0:  successful exit
+*        < 0:  if INFO = -i, the i-th argument had an illegal value
+*        > 0: the algorithm failed
+*              = 1, a split was marked by a positive value in E
+*              = 2, current block of Z not diagonalized after 30*N
+*                   iterations (in inner while loop)
+*              = 3, termination criterion of outer while loop not met
+*                   (program created more than N unreduced blocks)
 *
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   MEIGTH
-      PARAMETER          ( MEIGTH = -0.125D0 )
       DOUBLE PRECISION   ZERO
       PARAMETER          ( ZERO = 0.0D0 )
-      DOUBLE PRECISION   ONE
-      PARAMETER          ( ONE = 1.0D0 )
-      DOUBLE PRECISION   TEN
-      PARAMETER          ( TEN = 10.0D0 )
-      DOUBLE PRECISION   HUNDRD
-      PARAMETER          ( HUNDRD = 100.0D0 )
-      DOUBLE PRECISION   TWO56
-      PARAMETER          ( TWO56 = 256.0D0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            RESTRT
-      INTEGER            I, IERR, J, KE, KEND, M, NY
-      DOUBLE PRECISION   DM, DX, EPS, SCL, SFMIN, SIG1, SIG2, SIGMN,
-     $                   SIGMX, SMALL2, THRESH, TOL, TOL2, TOLMUL
+      INTEGER            I, IINFO
+      DOUBLE PRECISION   EPS, SCALE, SFMIN, SIGMN, SIGMX
+*     ..
+*     .. External Subroutines ..
+      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT, XERBLA
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
       EXTERNAL           DLAMCH
 *     ..
-*     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT, XERBLA
-*     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, MAX, MIN, SQRT
+      INTRINSIC          ABS, MAX, SQRT
 *     ..
 *     .. Executable Statements ..
+*
       INFO = 0
       IF( N.LT.0 ) THEN
          INFO = -2
@@ -104,117 +101,54 @@
          RETURN
       END IF
 *
-*     Estimate the largest singular value
+*     Estimate the largest singular value.
 *
       SIGMX = ZERO
       DO 10 I = 1, N - 1
+         D( I ) = ABS( D( I ) )
          SIGMX = MAX( SIGMX, ABS( E( I ) ) )
    10 CONTINUE
+      D( N ) = ABS( D( N ) )
 *
-*     Early return if sigmx is zero (matrix is already diagonal)
+*     Early return if SIGMX is zero (matrix is already diagonal).
 *
-      IF( SIGMX.EQ.ZERO )
-     $   GO TO 70
+      IF( SIGMX.EQ.ZERO ) THEN
+         CALL DLASRT( 'D', N, D, IINFO )
+         GO TO 50
+      END IF
 *
       DO 20 I = 1, N
-         D( I ) = ABS( D( I ) )
          SIGMX = MAX( SIGMX, D( I ) )
    20 CONTINUE
 *
-*     Get machine parameters
+*     Copy D and E into WORK (in the Z format) and scale (squaring the
+*     input data makes scaling by a power of the radix pointless).
 *
-      EPS = DLAMCH( 'EPSILON' )
-      SFMIN = DLAMCH( 'SAFE MINIMUM' )
+      EPS = DLAMCH( 'Precision' )
+      SFMIN = DLAMCH( 'Safe minimum' )
+      SCALE = SQRT( EPS / SFMIN )
+      CALL DCOPY( N, D, 1, WORK( 1 ), 2 )
+      CALL DCOPY( N-1, E, 1, WORK( 2 ), 2 )
+      CALL DLASCL( 'G', 0, 0, SIGMX, SCALE, 2*N-1, 1, WORK, 2*N-1,
+     $             IINFO )
 *
-*     Compute singular values to relative accuracy TOL
-*     It is assumed that tol**2 does not underflow.
+*     Compute the q's and e's.
 *
-      TOLMUL = MAX( TEN, MIN( HUNDRD, EPS**( -MEIGTH ) ) )
-      TOL = TOLMUL*EPS
-      TOL2 = TOL**2
-*
-      THRESH = SIGMX*SQRT( SFMIN )*TOL
-*
-*     Scale matrix so the square of the largest element is
-*     1 / ( 256 * SFMIN )
-*
-      SCL = SQRT( ONE / ( TWO56*SFMIN ) )
-      SMALL2 = ONE / ( TWO56*TOLMUL**2 )
-      CALL DCOPY( N, D, 1, WORK( 1 ), 1 )
-      CALL DCOPY( N-1, E, 1, WORK( N+1 ), 1 )
-      CALL DLASCL( 'G', 0, 0, SIGMX, SCL, N, 1, WORK( 1 ), N, IERR )
-      CALL DLASCL( 'G', 0, 0, SIGMX, SCL, N-1, 1, WORK( N+1 ), N-1,
-     $             IERR )
-*
-*     Square D and E (the input for the qd algorithm)
-*
-      DO 30 J = 1, 2*N - 1
-         WORK( J ) = WORK( J )**2
+      DO 30 I = 1, 2*N - 1
+         WORK( I ) = WORK( I )**2
    30 CONTINUE
+      WORK( 2*N ) = ZERO
 *
-*     Apply qd algorithm
+      CALL DLASQ2( N, WORK, INFO )
 *
-      M = 0
-      E( N ) = ZERO
-      DX = WORK( 1 )
-      DM = DX
-      KE = 0
-      RESTRT = .FALSE.
-      DO 60 I = 1, N
-         IF( ABS( E( I ) ).LE.THRESH .OR. WORK( N+I ).LE.TOL2*
-     $       ( DM / DBLE( I-M ) ) ) THEN
-            NY = I - M
-            IF( NY.EQ.1 ) THEN
-               GO TO 50
-            ELSE IF( NY.EQ.2 ) THEN
-               CALL DLAS2( D( M+1 ), E( M+1 ), D( M+2 ), SIG1, SIG2 )
-               D( M+1 ) = SIG1
-               D( M+2 ) = SIG2
-            ELSE
-               KEND = KE + 1 - M
-               CALL DLASQ2( NY, D( M+1 ), E( M+1 ), WORK( M+1 ),
-     $                      WORK( M+N+1 ), EPS, TOL2, SMALL2, DM, KEND,
-     $                      INFO )
+      IF( INFO.EQ.0 ) THEN
+         DO 40 I = 1, N
+            D( I ) = SQRT( WORK( I ) )
+   40    CONTINUE
+         CALL DLASCL( 'G', 0, 0, SCALE, SIGMX, N, 1, D, N, IINFO )
+      END IF
 *
-*                 Return, INFO = number of unconverged superdiagonals
-*
-               IF( INFO.NE.0 ) THEN
-                  INFO = INFO + I
-                  RETURN
-               END IF
-*
-*                 Undo scaling
-*
-               DO 40 J = M + 1, M + NY
-                  D( J ) = SQRT( D( J ) )
-   40          CONTINUE
-               CALL DLASCL( 'G', 0, 0, SCL, SIGMX, NY, 1, D( M+1 ), NY,
-     $                      IERR )
-            END IF
-   50       CONTINUE
-            M = I
-            IF( I.NE.N ) THEN
-               DX = WORK( I+1 )
-               DM = DX
-               KE = I
-               RESTRT = .TRUE.
-            END IF
-         END IF
-         IF( I.NE.N .AND. .NOT.RESTRT ) THEN
-            DX = WORK( I+1 )*( DX / ( DX+WORK( N+I ) ) )
-            IF( DM.GT.DX ) THEN
-               DM = DX
-               KE = I
-            END IF
-         END IF
-         RESTRT = .FALSE.
-   60 CONTINUE
-      KEND = KE + 1
-*
-*     Sort the singular values into decreasing order
-*
-   70 CONTINUE
-      CALL DLASRT( 'D', N, D, INFO )
+   50 CONTINUE
       RETURN
 *
 *     End of DLASQ1

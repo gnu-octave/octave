@@ -1,10 +1,10 @@
       SUBROUTINE DGEEV( JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR,
      $                  LDVR, WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -98,6 +98,11 @@
 *          if JOBVL = 'V' or JOBVR = 'V', LWORK >= 4*N.  For good
 *          performance, LWORK must generally be larger.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
 *          < 0:  if INFO = -i, the i-th argument had an illegal value.
@@ -113,7 +118,7 @@
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            SCALEA, WANTVL, WANTVR
+      LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR
       CHARACTER          SIDE
       INTEGER            HSWORK, I, IBAL, IERR, IHI, ILO, ITAU, IWRK, K,
      $                   MAXB, MAXWRK, MINWRK, NOUT
@@ -125,9 +130,8 @@
       DOUBLE PRECISION   DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLABAD, DLACPY,
-     $                   DLARTG, DLASCL, DORGHR, DROT, DSCAL, DTREVC,
-     $                   XERBLA
+      EXTERNAL           DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLACPY, DLARTG,
+     $                   DLASCL, DORGHR, DROT, DSCAL, DTREVC, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -144,6 +148,7 @@
 *     Test the input arguments
 *
       INFO = 0
+      LQUERY = ( LWORK.EQ.-1 )
       WANTVL = LSAME( JOBVL, 'V' )
       WANTVR = LSAME( JOBVR, 'V' )
       IF( ( .NOT.WANTVL ) .AND. ( .NOT.LSAME( JOBVL, 'N' ) ) ) THEN
@@ -193,11 +198,13 @@
          END IF
          WORK( 1 ) = MAXWRK
       END IF
-      IF( LWORK.LT.MINWRK ) THEN
+      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
          INFO = -13
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGEEV ', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *

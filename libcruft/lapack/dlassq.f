@@ -1,9 +1,9 @@
       SUBROUTINE DLASSQ( N, X, INCX, SCALE, SUMSQ )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
@@ -36,7 +36,7 @@
 *  N       (input) INTEGER
 *          The number of elements to be used from the vector X.
 *
-*  X       (input) DOUBLE PRECISION
+*  X       (input) DOUBLE PRECISION array, dimension (N)
 *          The vector for which a scaled sum of squares is computed.
 *             x( i )  = X( 1 + ( i - 1 )*INCX ), 1 <= i <= n.
 *

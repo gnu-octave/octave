@@ -671,8 +671,7 @@ functions.\n\
 @noindent\n\
 If invoked without any arguments, @code{echo} toggles the current echo\n\
 state.\n\
-@end deffn\n\
-")
+@end deffn")
 {
   octave_value_list retval;
 
@@ -747,8 +746,7 @@ This function is provided for the benefit of programs like Emacs which\n\
 might be controlling Octave and handling user input.  The current\n\
 command number is not incremented when this function is called.  This is\n\
 a feature, not a bug.\n\
-@end deftypefn\n\
-")
+@end deftypefn")
 {
   octave_value retval;
 
@@ -923,8 +921,7 @@ which will result in the prompt @samp{boris@@kremvax> } for the user\n\
 @samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two\n\
 backslashes are required to enter a backslash into a string.\n\
 @xref{Strings}.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (PS2, "> ", ps2,
     "-*- texinfo -*-\n\
@@ -934,18 +931,16 @@ expecting additional input to complete a command.  For example, when\n\
 defining a function over several lines, Octave will print the value of\n\
 @code{PS1} at the beginning of each line after the first.  The default\n\
 value of @code{PS2} is @code{\"> \"}.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (PS4, "+ ", ps4,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} PS4\n\
 If Octave is invoked with the @code{--echo-input} option, the value of\n\
 @code{PS4} is printed before each line of input that is echoed.  The\n\
-default value of @code{PS4} is @code{"+ "}.  @xref{Invoking Octave}, for\n\
+default value of @code{PS4} is @code{\"+ \"}.  @xref{Invoking Octave}, for\n\
 a description of @code{--echo-input}.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (completion_append_char, " ", completion_append_char,
     "-*- texinfo -*-\n\
@@ -953,8 +948,7 @@ a description of @code{--echo-input}.\n\
 The value of @code{completion_append_char} is used as the character to\n\
 append to successful command-line completion attempts.  The default\n\
 value is @code{\" \"} (a single space).\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF),
 	  echo_executing_commands,
@@ -979,8 +973,8 @@ equivalent to the command @kbd{echo on all}.\n\
 \n\
 The value of @code{echo_executing_commands} is set by the @kbd{echo}\n\
 command and the command line option @code{--echo-input}.\n\
-@end defvr\n\
-");
+@end defvr");
+
 }
 
 /*

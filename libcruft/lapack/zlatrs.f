@@ -1,7 +1,7 @@
       SUBROUTINE ZLATRS( UPLO, TRANS, DIAG, NORMIN, N, A, LDA, X, SCALE,
      $                   CNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     June 30, 1992
@@ -191,7 +191,7 @@
      $                   ZDOTU, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTRSV
+      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTRSV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN

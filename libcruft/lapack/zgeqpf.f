@@ -1,9 +1,9 @@
       SUBROUTINE ZGEQPF( M, N, A, LDA, JPVT, TAU, WORK, RWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -16,6 +16,8 @@
 *
 *  Purpose
 *  =======
+*
+*  This routine is deprecated and has been replaced by routine ZGEQP3.
 *
 *  ZGEQPF computes a QR factorization with column pivoting of a
 *  complex M-by-N matrix A: A*P = Q*R.
@@ -34,7 +36,7 @@
 *          On exit, the upper triangle of the array contains the
 *          min(M,N)-by-N upper triangular matrix R; the elements
 *          below the diagonal, together with the array TAU,
-*          represent the orthogonal matrix Q as a product of
+*          represent the unitary matrix Q as a product of
 *          min(m,n) elementary reflectors.
 *
 *  LDA     (input) INTEGER

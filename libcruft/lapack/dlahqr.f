@@ -1,10 +1,10 @@
       SUBROUTINE DLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      $                   ILOZ, IHIZ, Z, LDZ, INFO )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTT, WANTZ
@@ -90,19 +90,26 @@
 *               elements i+1:ihi of WR and WI contain those eigenvalues
 *               which have been successfully computed.
 *
+*  Further Details
+*  ===============
+*
+*  2-96 Based on modifications by
+*     David Day, Sandia National Laboratory, USA
+*
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO, ONE
-      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
+      DOUBLE PRECISION   ZERO, ONE, HALF
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, HALF = 0.5D0 )
       DOUBLE PRECISION   DAT1, DAT2
       PARAMETER          ( DAT1 = 0.75D+0, DAT2 = -0.4375D+0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, I1, I2, ITN, ITS, J, K, L, M, NH, NR, NZ
-      DOUBLE PRECISION   CS, H00, H10, H11, H12, H21, H22, H33, H33S,
-     $                   H43H34, H44, H44S, OVFL, S, SMLNUM, SN, SUM,
-     $                   T1, T2, T3, TST1, ULP, UNFL, V1, V2, V3
+      DOUBLE PRECISION   AVE, CS, DISC, H00, H10, H11, H12, H21, H22,
+     $                   H33, H33S, H43H34, H44, H44S, OVFL, S, SMLNUM,
+     $                   SN, SUM, T1, T2, T3, TST1, ULP, UNFL, V1, V2,
+     $                   V3
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   V( 3 ), WORK( 1 )
@@ -112,10 +119,10 @@
       EXTERNAL           DLAMCH, DLANHS
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLABAD, DLANV2, DLARFG, DROT
+      EXTERNAL           DCOPY, DLANV2, DLARFG, DROT
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN
+      INTRINSIC          ABS, MAX, MIN, SIGN, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -211,22 +218,40 @@
 *           Exceptional shift.
 *
             S = ABS( H( I, I-1 ) ) + ABS( H( I-1, I-2 ) )
-            H44 = DAT1*S
+            H44 = DAT1*S + H( I, I )
             H33 = H44
             H43H34 = DAT2*S*S
          ELSE
 *
-*           Prepare to use Wilkinson's double shift
+*           Prepare to use Francis' double shift
+*           (i.e. 2nd degree generalized Rayleigh quotient)
 *
             H44 = H( I, I )
             H33 = H( I-1, I-1 )
             H43H34 = H( I, I-1 )*H( I-1, I )
+            S = H( I-1, I-2 )*H( I-1, I-2 )
+            DISC = ( H33-H44 )*HALF
+            DISC = DISC*DISC + H43H34
+            IF( DISC.GT.ZERO ) THEN
+*
+*              Real roots: use Wilkinson's shift twice
+*
+               DISC = SQRT( DISC )
+               AVE = HALF*( H33+H44 )
+               IF( ABS( H33 )-ABS( H44 ).GT.ZERO ) THEN
+                  H33 = H33*H44 - H43H34
+                  H44 = H33 / ( SIGN( DISC, AVE )+AVE )
+               ELSE
+                  H44 = SIGN( DISC, AVE ) + AVE
+               END IF
+               H33 = H44
+               H43H34 = ZERO
+            END IF
          END IF
 *
 *        Look for two consecutive small subdiagonal elements.
 *
          DO 40 M = I - 2, L, -1
-*
 *           Determine the effect of starting the double-shift QR
 *           iteration at row M, and see if this would make H(M,M-1)
 *           negligible.

@@ -1,6 +1,6 @@
       SUBROUTINE DPOTF2( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK routine (version 1.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     February 29, 1992

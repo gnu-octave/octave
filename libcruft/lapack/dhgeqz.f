@@ -2,10 +2,10 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, WORK,
      $                   LWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB
@@ -179,6 +179,11 @@
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.  LWORK >= max(1,N).
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  INFO    (output) INTEGER
 *          = 0: successful exit
 *          < 0: if INFO = -i, the i-th argument had an illegal value
@@ -209,7 +214,8 @@
      $                   SAFETY = 1.0D+2 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ILAZR2, ILAZRO, ILPIVT, ILQ, ILSCHR, ILZ
+      LOGICAL            ILAZR2, ILAZRO, ILPIVT, ILQ, ILSCHR, ILZ,
+     $                   LQUERY
       INTEGER            ICOMPQ, ICOMPZ, IFIRST, IFRSTM, IITER, ILAST,
      $                   ILASTM, IN, ISCHUR, ISTART, J, JC, JCH, JITER,
      $                   JR, MAXIT
@@ -282,6 +288,8 @@
 *     Check Argument Values
 *
       INFO = 0
+      WORK( 1 ) = MAX( 1, N )
+      LQUERY = ( LWORK.EQ.-1 )
       IF( ISCHUR.EQ.0 ) THEN
          INFO = -1
       ELSE IF( ICOMPQ.EQ.0 ) THEN
@@ -302,11 +310,13 @@
          INFO = -15
       ELSE IF( LDZ.LT.1 .OR. ( ILZ .AND. LDZ.LT.N ) ) THEN
          INFO = -17
-      ELSE IF( LWORK.LT.MAX( 1, N ) ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
          INFO = -19
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DHGEQZ', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *

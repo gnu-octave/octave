@@ -1,10 +1,10 @@
       SUBROUTINE ZGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -87,6 +87,11 @@
 *          LWORK >=  2*min(M,N) + max(M,N,NRHS)
 *          For good performance, LWORK should generally be larger.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  RWORK   (workspace) DOUBLE PRECISION array, dimension (5*min(M,N)-1)
 *
 *  INFO    (output) INTEGER
@@ -100,12 +105,13 @@
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
-      PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
       COMPLEX*16         CZERO, CONE
-      PARAMETER          ( CZERO = ( 0.0D0, 0.0D0 ),
-     $                   CONE = ( 1.0D0, 0.0D0 ) )
+      PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ),
+     $                   CONE = ( 1.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
+      LOGICAL            LQUERY
       INTEGER            BL, CHUNK, I, IASCL, IBSCL, IE, IL, IRWORK,
      $                   ITAU, ITAUP, ITAUQ, IWORK, LDWORK, MAXMN,
      $                   MAXWRK, MINMN, MINWRK, MM, MNTHR
@@ -136,6 +142,7 @@
       MINMN = MIN( M, N )
       MAXMN = MAX( M, N )
       MNTHR = ILAENV( 6, 'ZGELSS', ' ', M, N, NRHS, -1 )
+      LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
@@ -157,7 +164,7 @@
 *       immediately following subroutine, as returned by ILAENV.)
 *
       MINWRK = 1
-      IF( INFO.EQ.0 .AND. LWORK.GE.1 ) THEN
+      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) ) THEN
          MAXWRK = 0
          MM = M
          IF( M.GE.N .AND. M.GE.MNTHR ) THEN
@@ -170,7 +177,7 @@
             MAXWRK = MAX( MAXWRK, N+N*ILAENV( 1, 'ZGEQRF', ' ', M, N,
      $               -1, -1 ) )
             MAXWRK = MAX( MAXWRK, N+NRHS*
-     $               ILAENV( 1, 'ZUNMQR', 'LT', M, NRHS, N, -1 ) )
+     $               ILAENV( 1, 'ZUNMQR', 'LC', M, NRHS, N, -1 ) )
          END IF
          IF( M.GE.N ) THEN
 *
@@ -209,7 +216,7 @@
                   MAXWRK = MAX( MAXWRK, M*M+2*M )
                END IF
                MAXWRK = MAX( MAXWRK, M+NRHS*
-     $                  ILAENV( 1, 'ZUNMLQ', 'LT', N, NRHS, M, -1 ) )
+     $                  ILAENV( 1, 'ZUNMLQ', 'LC', N, NRHS, M, -1 ) )
             ELSE
 *
 *              Path 2 - underdetermined
@@ -219,7 +226,7 @@
                MAXWRK = 2*M + ( N+M )*ILAENV( 1, 'ZGEBRD', ' ', M, N,
      $                  -1, -1 )
                MAXWRK = MAX( MAXWRK, 2*M+NRHS*
-     $                  ILAENV( 1, 'ZUNMBR', 'QLT', M, NRHS, M, -1 ) )
+     $                  ILAENV( 1, 'ZUNMBR', 'QLC', M, NRHS, M, -1 ) )
                MAXWRK = MAX( MAXWRK, 2*M+M*
      $                  ILAENV( 1, 'ZUNGBR', 'P', M, N, M, -1 ) )
                MAXWRK = MAX( MAXWRK, N*NRHS )
@@ -230,10 +237,12 @@
          WORK( 1 ) = MAXWRK
       END IF
 *
-      IF( LWORK.LT.MINWRK )
+      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
      $   INFO = -12
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGELSS', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *
@@ -398,9 +407,9 @@
             CHUNK = LWORK / N
             DO 20 I = 1, NRHS, CHUNK
                BL = MIN( NRHS-I+1, CHUNK )
-               CALL ZGEMM( 'C', 'N', N, BL, N, CONE, A, LDA, B, LDB,
-     $                     CZERO, WORK, N )
-               CALL ZLACPY( 'G', N, BL, WORK, N, B, LDB )
+               CALL ZGEMM( 'C', 'N', N, BL, N, CONE, A, LDA, B( 1, I ),
+     $                     LDB, CZERO, WORK, N )
+               CALL ZLACPY( 'G', N, BL, WORK, N, B( 1, I ), LDB )
    20       CONTINUE
          ELSE
             CALL ZGEMV( 'C', N, N, CONE, A, LDA, B, 1, CZERO, WORK, 1 )
@@ -504,7 +513,8 @@
                BL = MIN( NRHS-I+1, CHUNK )
                CALL ZGEMM( 'C', 'N', M, BL, M, CONE, WORK( IL ), LDWORK,
      $                     B( 1, I ), LDB, CZERO, WORK( IWORK ), N )
-               CALL ZLACPY( 'G', M, BL, WORK( IWORK ), N, B, LDB )
+               CALL ZLACPY( 'G', M, BL, WORK( IWORK ), N, B( 1, I ),
+     $                      LDB )
    40       CONTINUE
          ELSE
             CALL ZGEMV( 'C', M, M, CONE, WORK( IL ), LDWORK, B( 1, 1 ),

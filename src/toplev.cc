@@ -242,8 +242,7 @@ DEFUN (quit, args, nargout,
 Exit the current Octave session.  If the optional integer value\n\
 @var{status} is supplied, pass that value to the operating system as the\n\
 Octave's exit status.\n\
-@end deftypefn\n\
-")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -553,8 +552,7 @@ atexit (\"print_flops_at_exit\");\n\
 \n\
 @noindent\n\
 will print a message when Octave exits.\n\
-@end deftypefn\n\
-")
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -723,8 +721,7 @@ octave --no-line-editing --silent\n\
 \n\
 If you write an executable Octave script, @code{argv} will contain the\n\
 list of arguments passed to the script.  @pxref{Executable Octave Programs}.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFCONST (program_invocation_name,
 	    octave_env::get_program_invocation_name (),
@@ -745,8 +742,7 @@ If executing a script from the command line (e.g., @code{octave foo.m})\n\
 or using an executable Octave script, the program name is set to the\n\
 name of the script.  @xref{Executable Octave Programs} for an example of\n\
 how to create an executable Octave script.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFCONST (program_name, octave_env::get_program_name (),
     "-*- texinfo -*-\n\
@@ -766,8 +762,8 @@ If executing a script from the command line (e.g., @code{octave foo.m})\n\
 or using an executable Octave script, the program name is set to the\n\
 name of the script.  @xref{Executable Octave Programs} for an example of\n\
 how to create an executable Octave script.\n\
-@end defvr\n\
-");
+@end defvr");
+
 }
 
 /*

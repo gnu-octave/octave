@@ -1,10 +1,10 @@
       SUBROUTINE ZTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      $                   LDVR, MM, M, WORK, RWORK, INFO )
 *
-*  -- LAPACK routine (version 2.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -76,6 +76,9 @@
 *          Schur vectors returned by ZHSEQR).
 *          On exit, if SIDE = 'L' or 'B', VL contains:
 *          if HOWMNY = 'A', the matrix Y of left eigenvectors of T;
+*                           VL is lower triangular. The i-th column
+*                           VL(i) of VL is the eigenvector corresponding
+*                           to T(i,i).
 *          if HOWMNY = 'B', the matrix Q*Y;
 *          if HOWMNY = 'S', the left eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
@@ -93,6 +96,9 @@
 *          Schur vectors returned by ZHSEQR).
 *          On exit, if SIDE = 'R' or 'B', VR contains:
 *          if HOWMNY = 'A', the matrix X of right eigenvectors of T;
+*                           VR is upper triangular. The i-th column
+*                           VR(i) of VR is the eigenvector corresponding
+*                           to T(i,i).
 *          if HOWMNY = 'B', the matrix Q*X;
 *          if HOWMNY = 'S', the right eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
@@ -154,7 +160,7 @@
       EXTERNAL           LSAME, IZAMAX, DLAMCH, DZASUM
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, XERBLA, ZCOPY, ZDSCAL, ZGEMV, ZLATRS
+      EXTERNAL           XERBLA, ZCOPY, ZDSCAL, ZGEMV, ZLATRS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX
@@ -174,7 +180,7 @@
       LEFTV = LSAME( SIDE, 'L' ) .OR. BOTHV
 *
       ALLV = LSAME( HOWMNY, 'A' )
-      OVER = LSAME( HOWMNY, 'B' ) .OR. LSAME( HOWMNY, 'O' )
+      OVER = LSAME( HOWMNY, 'B' )
       SOMEV = LSAME( HOWMNY, 'S' )
 *
 *     Set M to the number of columns required to store the selected

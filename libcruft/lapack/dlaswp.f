@@ -1,9 +1,9 @@
       SUBROUTINE DLASWP( N, A, LDA, K1, K2, IPIV, INCX )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, K1, K2, LDA, N
@@ -50,45 +50,67 @@
 *          The increment between successive values of IPIV.  If IPIV
 *          is negative, the pivots are applied in reverse order.
 *
+*  Further Details
+*  ===============
+*
+*  Modified by
+*   R. C. Whaley, Computer Science Dept., Univ. of Tenn., Knoxville, USA
+*
 * =====================================================================
 *
 *     .. Local Scalars ..
-      INTEGER            I, IP, IX
-*     ..
-*     .. External Subroutines ..
-      EXTERNAL           DSWAP
+      INTEGER            I, I1, I2, INC, IP, IX, IX0, J, K, N32
+      DOUBLE PRECISION   TEMP
 *     ..
 *     .. Executable Statements ..
 *
 *     Interchange row I with row IPIV(I) for each of rows K1 through K2.
 *
-      IF( INCX.EQ.0 )
-     $   RETURN
       IF( INCX.GT.0 ) THEN
-         IX = K1
-      ELSE
-         IX = 1 + ( 1-K2 )*INCX
-      END IF
-      IF( INCX.EQ.1 ) THEN
-         DO 10 I = K1, K2
-            IP = IPIV( I )
-            IF( IP.NE.I )
-     $         CALL DSWAP( N, A( I, 1 ), LDA, A( IP, 1 ), LDA )
-   10    CONTINUE
-      ELSE IF( INCX.GT.1 ) THEN
-         DO 20 I = K1, K2
-            IP = IPIV( IX )
-            IF( IP.NE.I )
-     $         CALL DSWAP( N, A( I, 1 ), LDA, A( IP, 1 ), LDA )
-            IX = IX + INCX
-   20    CONTINUE
+         IX0 = K1
+         I1 = K1
+         I2 = K2
+         INC = 1
       ELSE IF( INCX.LT.0 ) THEN
-         DO 30 I = K2, K1, -1
-            IP = IPIV( IX )
-            IF( IP.NE.I )
-     $         CALL DSWAP( N, A( I, 1 ), LDA, A( IP, 1 ), LDA )
-            IX = IX + INCX
+         IX0 = 1 + ( 1-K2 )*INCX
+         I1 = K2
+         I2 = K1
+         INC = -1
+      ELSE
+         RETURN
+      END IF
+*
+      N32 = ( N / 32 )*32
+      IF( N32.NE.0 ) THEN
+         DO 30 J = 1, N32, 32
+            IX = IX0
+            DO 20 I = I1, I2, INC
+               IP = IPIV( IX )
+               IF( IP.NE.I ) THEN
+                  DO 10 K = J, J + 31
+                     TEMP = A( I, K )
+                     A( I, K ) = A( IP, K )
+                     A( IP, K ) = TEMP
+   10             CONTINUE
+               END IF
+               IX = IX + INCX
+   20       CONTINUE
    30    CONTINUE
+      END IF
+      IF( N32.NE.N ) THEN
+         N32 = N32 + 1
+         IX = IX0
+         DO 50 I = I1, I2, INC
+            IP = IPIV( IX )
+            IF( IP.NE.I ) THEN
+               DO 40 K = N32, N
+                  TEMP = A( I, K )
+                  A( I, K ) = A( IP, K )
+                  A( IP, K ) = TEMP
+   40          CONTINUE
+            END IF
+            IX = IX + INCX
+   50    CONTINUE
       END IF
 *
       RETURN

@@ -626,8 +626,8 @@ a = [1, [], 3, [], 5]\n\
 and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.\n\
 \n\
 The default value is @code{\"warn\"}.\n\
-@end defvr\n\
-");
+@end defvr");
+
   DEFVAR (implicit_num_to_str_ok, 0.0, implicit_num_to_str_ok,
     "make the result of things like `[97, 98, 99, \"123\"]' be a string");
 

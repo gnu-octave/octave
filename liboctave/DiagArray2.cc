@@ -89,9 +89,7 @@ DiagArray2<T>::checkelem (int r, int c) const
   if (r < 0 || c < 0 || r >= nr || c >= nc)
     {
       (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
+      return T ();
     }
   return (r == c) ? Array<T>::xelem (r) : T (0);
 }
@@ -103,9 +101,7 @@ DiagArray2<T>::operator () (int r, int c) const
   if (r < 0 || c < 0 || r >= nr || c >= nc)
     {
       (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
+      return T ();
     }
   return (r == c) ? Array<T>::xelem (r) : T (0);
 }

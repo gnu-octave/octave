@@ -1524,8 +1524,7 @@ symbols_of_ov (void)
 If the value of @code{propagate_empty_matrices} is nonzero,\n\
 functions like @code{inverse} and @code{svd} will return an empty matrix\n\
 if they are given one as an argument.  The default value is 1.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (resize_on_range_error, 1.0, resize_on_range_error,
     "enlarge matrices on assignment");

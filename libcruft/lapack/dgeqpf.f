@@ -1,6 +1,6 @@
       SUBROUTINE DGEQPF( M, N, A, LDA, JPVT, TAU, WORK, INFO )
 *
-*  -- LAPACK test routine (version 2.0) --
+*  -- LAPACK test routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
 *     March 31, 1993
@@ -15,6 +15,8 @@
 *
 *  Purpose
 *  =======
+*
+*  This routine is deprecated and has been replaced by routine DGEQP3.
 *
 *  DGEQPF computes a QR factorization with column pivoting of a
 *  real M-by-N matrix A: A*P = Q*R.

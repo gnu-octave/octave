@@ -14,7 +14,7 @@ SOURCES = *.f
 
 DISTFILES = Makefile.in $(SOURCES) $(SPECIAL)
 
-CRUFT_FSRC = $(wildcard $(srcdir)/*.f) \
+CRUFT_SRC = $(wildcard $(srcdir)/*.f) \
              $(wildcard $(srcdir)/*.c) \
              $(wildcard $(srcdir)/*.cc)
 CRUFT_BASE = $(basename $(notdir $(CRUFT_SRC)) )

@@ -567,8 +567,7 @@ only extracts commands 13 through 169.  Specifying a larger number for\n\
 the first command than the last command reverses the list of commands\n\
 before placing them in the buffer to be edited.  If both arguments are\n\
 omitted, the previous command in the history list is used.\n\
-@end deffn\n\
-")
+@end deffn")
 {
   octave_value_list retval;
 
@@ -611,8 +610,7 @@ and pasting commands if you are using the X Window System.\n\
 For example, to display the five most recent commands that you have\n\
 typed without displaying line numbers, use the command\n\
 @kbd{history -q 5}.\n\
-@end deffn\n\
-")
+@end deffn")
 {
   octave_value_list retval;
 
@@ -633,8 +631,7 @@ DEFUN_TEXT (run_history, args, ,
 @deffn {Command} run_history [first] [last]\n\
 Similar to @code{edit_history}, except that the editor is not invoked,\n\
 and the commands are simply executed as they appear in the history list.\n\
-@end deffn\n\
-")
+@end deffn")
 {
   octave_value_list retval;
 
@@ -709,8 +706,7 @@ symbols_of_oct_hist (void)
 This variable specifies the name of the file used to store command\n\
 history.  The default value is @code{\"~/.octave_hist\"}, but may be\n\
 overridden by the environment variable @code{OCTAVE_HISTFILE}.\n\
-@end defvr\n\
-");
+@end defvr");
 
   double tmp_hist_size = default_history_size ();
 
@@ -720,8 +716,7 @@ overridden by the environment variable @code{OCTAVE_HISTFILE}.\n\
 This variable specifies how many entries to store in the history file.\n\
 The default value is @code{1024}, but may be overridden by the\n\
 environment variable @code{OCTAVE_HISTSIZE}.\n\
-@end defvr\n\
-");
+@end defvr");
 
   DEFVAR (saving_history, 1.0, saving_history,
     "-*- texinfo -*-\n\
@@ -729,8 +724,8 @@ environment variable @code{OCTAVE_HISTSIZE}.\n\
 If the value of @code{saving_history} is nonzero, command entered\n\
 on the command line are saved in the file specified by the variable\n\
 @code{history_file}.\n\
-@end defvr\n\
-");
+@end defvr");
+
 }
 
 /*

@@ -1,10 +1,10 @@
       SUBROUTINE ZGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT
@@ -114,6 +114,11 @@
 *          LWORK >=  2*MIN(M,N)+MAX(M,N).
 *          For good performance, LWORK should generally be larger.
 *
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
+*
 *  RWORK   (workspace) DOUBLE PRECISION array, dimension
 *                                  (max(3*min(M,N),5*min(M,N)-4))
 *          On exit, if INFO > 0, RWORK(1:MIN(M,N)-1) contains the
@@ -140,8 +145,8 @@
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            WNTUA, WNTUAS, WNTUN, WNTUO, WNTUS, WNTVA,
-     $                   WNTVAS, WNTVN, WNTVO, WNTVS
+      LOGICAL            LQUERY, WNTUA, WNTUAS, WNTUN, WNTUO, WNTUS,
+     $                   WNTVA, WNTVAS, WNTVN, WNTVO, WNTVS
       INTEGER            BLK, CHUNK, I, IE, IERR, IR, IRWORK, ISCL,
      $                   ITAU, ITAUP, ITAUQ, IU, IWORK, LDWRKR, LDWRKU,
      $                   MAXWRK, MINMN, MINWRK, MNTHR, NCU, NCVT, NRU,
@@ -184,6 +189,7 @@
       WNTVO = LSAME( JOBVT, 'O' )
       WNTVN = LSAME( JOBVT, 'N' )
       MINWRK = 1
+      LQUERY = ( LWORK.EQ.-1 )
 *
       IF( .NOT.( WNTUA .OR. WNTUS .OR. WNTUO .OR. WNTUN ) ) THEN
          INFO = -1
@@ -211,7 +217,8 @@
 *       real workspace. NB refers to the optimal block size for the
 *       immediately following subroutine, as returned by ILAENV.)
 *
-      IF( INFO.EQ.0 .AND. LWORK.GE.1 .AND. M.GT.0 .AND. N.GT.0 ) THEN
+      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) .AND. M.GT.0 .AND.
+     $    N.GT.0 ) THEN
          IF( M.GE.N ) THEN
 *
 *           Space needed for ZBDSQR is BDSPAC = MAX( 3*N, 5*N-4 )
@@ -540,11 +547,13 @@
          WORK( 1 ) = MAXWRK
       END IF
 *
-      IF( LWORK.LT.MINWRK ) THEN
+      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
          INFO = -13
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGESVD', -INFO )
+         RETURN
+      ELSE IF( LQUERY ) THEN
          RETURN
       END IF
 *

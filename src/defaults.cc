@@ -464,6 +464,7 @@ the built-in constant DEFAULT_LOADPATH");
 @defvr\n\
 The version number of Octave, as a string.\n\
 @end defvr");
+
 }
 
 DEFUN (rehash, , ,

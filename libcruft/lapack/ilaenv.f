@@ -1,10 +1,10 @@
       INTEGER          FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
      $                 N4 )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
@@ -52,6 +52,11 @@
 *          = 7: the number of processors
 *          = 8: the crossover point for the multishift QR and QZ methods
 *               for nonsymmetric eigenvalue problems.
+*          = 9: maximum size of the subproblems at the bottom of the
+*               computation tree in the divide-and-conquer algorithm
+*               (used by xGELSD and xGESDD)
+*          =10: ieee NaN arithmetic can be trusted not to trap
+*          =11: infinity arithmetic can be trusted not to trap
 *
 *  NAME    (input) CHARACTER*(*)
 *          The name of the calling subroutine, in either upper case or
@@ -107,9 +112,14 @@
 *     .. Intrinsic Functions ..
       INTRINSIC          CHAR, ICHAR, INT, MIN, REAL
 *     ..
+*     .. External Functions ..
+      INTEGER            IEEECK
+      EXTERNAL           IEEECK
+*     ..
 *     .. Executable Statements ..
 *
-      GO TO ( 100, 100, 100, 400, 500, 600, 700, 800 ) ISPEC
+      GO TO ( 100, 100, 100, 400, 500, 600, 700, 800, 900, 1000,
+     $        1100 ) ISPEC
 *
 *     Invalid value for ISPEC
 *
@@ -238,7 +248,7 @@
                NB = 64
             END IF
          ELSE IF( SNAME .AND. C3.EQ.'TRD' ) THEN
-            NB = 1
+            NB = 32
          ELSE IF( SNAME .AND. C3.EQ.'GST' ) THEN
             NB = 64
          END IF
@@ -246,7 +256,7 @@
          IF( C3.EQ.'TRF' ) THEN
             NB = 64
          ELSE IF( C3.EQ.'TRD' ) THEN
-            NB = 1
+            NB = 32
          ELSE IF( C3.EQ.'GST' ) THEN
             NB = 64
          END IF
@@ -440,11 +450,11 @@
          END IF
       ELSE IF( C2.EQ.'SY' ) THEN
          IF( SNAME .AND. C3.EQ.'TRD' ) THEN
-            NX = 1
+            NX = 32
          END IF
       ELSE IF( CNAME .AND. C2.EQ.'HE' ) THEN
          IF( C3.EQ.'TRD' ) THEN
-            NX = 1
+            NX = 32
          END IF
       ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
          IF( C3( 1:1 ).EQ.'G' ) THEN
@@ -499,6 +509,37 @@
 *     ISPEC = 8:  crossover point for multishift (used by xHSEQR)
 *
       ILAENV = 50
+      RETURN
+*
+  900 CONTINUE
+*
+*     ISPEC = 9:  maximum size of the subproblems at the bottom of the
+*                 computation tree in the divide-and-conquer algorithm
+*                 (used by xGELSD and xGESDD)
+*
+      ILAENV = 25
+      RETURN
+*
+ 1000 CONTINUE
+*
+*     ISPEC = 10: ieee NaN arithmetic can be trusted not to trap
+*
+C     ILAENV = 0
+      ILAENV = 1
+      IF( ILAENV.EQ.1 ) THEN
+         ILAENV = IEEECK( 0, 0.0, 1.0 ) 
+      END IF
+      RETURN
+*
+ 1100 CONTINUE
+*
+*     ISPEC = 11: infinity arithmetic can be trusted not to trap
+*
+C     ILAENV = 0
+      ILAENV = 1
+      IF( ILAENV.EQ.1 ) THEN
+         ILAENV = IEEECK( 1, 0.0, 1.0 ) 
+      END IF
       RETURN
 *
 *     End of ILAENV

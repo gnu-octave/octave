@@ -1,9 +1,9 @@
       SUBROUTINE DLANV2( A, B, C, D, RT1R, RT1I, RT2R, RT2I, CS, SN )
 *
-*  -- LAPACK auxiliary routine (version 2.0) --
+*  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994 
+*     June 30, 1999
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   A, B, C, CS, D, RT1I, RT1R, RT2I, RT2R, SN
@@ -39,38 +39,45 @@
 *  RT2R    (output) DOUBLE PRECISION
 *  RT2I    (output) DOUBLE PRECISION
 *          The real and imaginary parts of the eigenvalues. If the
-*          eigenvalues are both real, abs(RT1R) >= abs(RT2R); if the
 *          eigenvalues are a complex conjugate pair, RT1I > 0.
 *
 *  CS      (output) DOUBLE PRECISION
 *  SN      (output) DOUBLE PRECISION
 *          Parameters of the rotation matrix.
 *
+*  Further Details
+*  ===============
+*
+*  Modified by V. Sima, Research Institute for Informatics, Bucharest,
+*  Romania, to reduce the risk of cancellation errors,
+*  when computing real eigenvalues, and to ensure, if possible, that
+*  abs(RT1R) >= abs(RT2R).
+*
 *  =====================================================================
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, HALF, ONE
       PARAMETER          ( ZERO = 0.0D+0, HALF = 0.5D+0, ONE = 1.0D+0 )
+      DOUBLE PRECISION   MULTPL
+      PARAMETER          ( MULTPL = 4.0D+0 )
 *     ..
 *     .. Local Scalars ..
-      DOUBLE PRECISION   AA, BB, CC, CS1, DD, P, SAB, SAC, SIGMA, SN1,
-     $                   TAU, TEMP
+      DOUBLE PRECISION   AA, BB, BCMAX, BCMIS, CC, CS1, DD, EPS, P, SAB,
+     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAPY2
-      EXTERNAL           DLAPY2
+      DOUBLE PRECISION   DLAMCH, DLAPY2
+      EXTERNAL           DLAMCH, DLAPY2
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, SIGN, SQRT
+      INTRINSIC          ABS, MAX, MIN, SIGN, SQRT
 *     ..
 *     .. Executable Statements ..
 *
-*     Initialize CS and SN
-*
-      CS = ONE
-      SN = ZERO
-*
+      EPS = DLAMCH( 'P' )
       IF( C.EQ.ZERO ) THEN
+         CS = ONE
+         SN = ZERO
          GO TO 10
 *
       ELSE IF( B.EQ.ZERO ) THEN
@@ -85,74 +92,98 @@
          B = -C
          C = ZERO
          GO TO 10
-      ELSE IF( (A-D).EQ.ZERO .AND. SIGN( ONE, B ).NE.
-     $   SIGN( ONE, C ) ) THEN
+      ELSE IF( ( A-D ).EQ.ZERO .AND. SIGN( ONE, B ).NE.SIGN( ONE, C ) )
+     $          THEN
+         CS = ONE
+         SN = ZERO
          GO TO 10
       ELSE
 *
-*        Make diagonal elements equal
-*
          TEMP = A - D
          P = HALF*TEMP
-         SIGMA = B + C
-         TAU = DLAPY2( SIGMA, TEMP )
-         CS1 = SQRT( HALF*( ONE+ABS( SIGMA ) / TAU ) )
-         SN1 = -( P / ( TAU*CS1 ) )*SIGN( ONE, SIGMA )
+         BCMAX = MAX( ABS( B ), ABS( C ) )
+         BCMIS = MIN( ABS( B ), ABS( C ) )*SIGN( ONE, B )*SIGN( ONE, C )
+         SCALE = MAX( ABS( P ), BCMAX )
+         Z = ( P / SCALE )*P + ( BCMAX / SCALE )*BCMIS
 *
-*        Compute [ AA  BB ] = [ A  B ] [ CS1 -SN1 ]
-*                [ CC  DD ]   [ C  D ] [ SN1  CS1 ]
+*        If Z is of the order of the machine accuracy, postpone the
+*        decision on the nature of eigenvalues
 *
-         AA = A*CS1 + B*SN1
-         BB = -A*SN1 + B*CS1
-         CC = C*CS1 + D*SN1
-         DD = -C*SN1 + D*CS1
+         IF( Z.GE.MULTPL*EPS ) THEN
 *
-*        Compute [ A  B ] = [ CS1  SN1 ] [ AA  BB ]
-*                [ C  D ]   [-SN1  CS1 ] [ CC  DD ]
+*           Real eigenvalues. Compute A and D.
 *
-         A = AA*CS1 + CC*SN1
-         B = BB*CS1 + DD*SN1
-         C = -AA*SN1 + CC*CS1
-         D = -BB*SN1 + DD*CS1
+            Z = P + SIGN( SQRT( SCALE )*SQRT( Z ), P )
+            A = D + Z
+            D = D - ( BCMAX / Z )*BCMIS
 *
-*        Accumulate transformation
+*           Compute B and the rotation matrix
 *
-         TEMP = CS*CS1 - SN*SN1
-         SN = CS*SN1 + SN*CS1
-         CS = TEMP
+            TAU = DLAPY2( C, Z )
+            CS = Z / TAU
+            SN = C / TAU
+            B = B - C
+            C = ZERO
+         ELSE
 *
-         TEMP = HALF*( A+D )
-         A = TEMP
-         D = TEMP
+*           Complex eigenvalues, or real (almost) equal eigenvalues.
+*           Make diagonal elements equal.
 *
-         IF( C.NE.ZERO ) THEN
-            IF( B.NE.ZERO ) THEN
-               IF( SIGN( ONE, B ).EQ.SIGN( ONE, C ) ) THEN
+            SIGMA = B + C
+            TAU = DLAPY2( SIGMA, TEMP )
+            CS = SQRT( HALF*( ONE+ABS( SIGMA ) / TAU ) )
+            SN = -( P / ( TAU*CS ) )*SIGN( ONE, SIGMA )
 *
-*                 Real eigenvalues: reduce to upper triangular form
+*           Compute [ AA  BB ] = [ A  B ] [ CS -SN ]
+*                   [ CC  DD ]   [ C  D ] [ SN  CS ]
 *
-                  SAB = SQRT( ABS( B ) )
-                  SAC = SQRT( ABS( C ) )
-                  P = SIGN( SAB*SAC, C )
-                  TAU = ONE / SQRT( ABS( B+C ) )
-                  A = TEMP + P
-                  D = TEMP - P
-                  B = B - C
+            AA = A*CS + B*SN
+            BB = -A*SN + B*CS
+            CC = C*CS + D*SN
+            DD = -C*SN + D*CS
+*
+*           Compute [ A  B ] = [ CS  SN ] [ AA  BB ]
+*                   [ C  D ]   [-SN  CS ] [ CC  DD ]
+*
+            A = AA*CS + CC*SN
+            B = BB*CS + DD*SN
+            C = -AA*SN + CC*CS
+            D = -BB*SN + DD*CS
+*
+            TEMP = HALF*( A+D )
+            A = TEMP
+            D = TEMP
+*
+            IF( C.NE.ZERO ) THEN
+               IF( B.NE.ZERO ) THEN
+                  IF( SIGN( ONE, B ).EQ.SIGN( ONE, C ) ) THEN
+*
+*                    Real eigenvalues: reduce to upper triangular form
+*
+                     SAB = SQRT( ABS( B ) )
+                     SAC = SQRT( ABS( C ) )
+                     P = SIGN( SAB*SAC, C )
+                     TAU = ONE / SQRT( ABS( B+C ) )
+                     A = TEMP + P
+                     D = TEMP - P
+                     B = B - C
+                     C = ZERO
+                     CS1 = SAB*TAU
+                     SN1 = SAC*TAU
+                     TEMP = CS*CS1 - SN*SN1
+                     SN = CS*SN1 + SN*CS1
+                     CS = TEMP
+                  END IF
+               ELSE
+                  B = -C
                   C = ZERO
-                  CS1 = SAB*TAU
-                  SN1 = SAC*TAU
-                  TEMP = CS*CS1 - SN*SN1
-                  SN = CS*SN1 + SN*CS1
-                  CS = TEMP
+                  TEMP = CS
+                  CS = -SN
+                  SN = TEMP
                END IF
-            ELSE
-               B = -C
-               C = ZERO
-               TEMP = CS
-               CS = -SN
-               SN = TEMP
             END IF
          END IF
+*
       END IF
 *
    10 CONTINUE

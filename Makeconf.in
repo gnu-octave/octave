@@ -96,7 +96,7 @@ CXXLIB_PATH = @CXXLIB_PATH@
 
 
 # A shell command to extract the version number from version.h.
-getversion = sed -e '/version_string/!d' -e 's/.*"\(.*\)".*/\1/' -e q
+getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
 
 # The version number.  TOPDIR is something like `.' or `..' or `../..'
 # and gets us back up to the top level of the source tree.

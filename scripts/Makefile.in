@@ -37,7 +37,7 @@ all:
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: all
 
-install: all
+install:
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: install
 

@@ -30,7 +30,7 @@ FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 all:
 .PHONY: all
 
-install: all
+install:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	if test -f $(fcnfiledir)/$(script_sub_dir)/octaverc ; then true ; \
 	else \

@@ -26,17 +26,18 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 DISTDIRS = bsd-math kpathsea
 
 # Subdirectories to run make in for the primary targets.
-SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src doc scripts 
+SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src \
+	scripts doc 
 
 # Subdirectories to run `make dist' in
-DISTSUBDIRS = libcruft liboctave info readline src doc scripts dld test
+DISTSUBDIRS = libcruft liboctave info readline src scripts dld test doc 
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 	BUGS PROJECTS octave-bug octave.sh octave-mode.el doinstall.sh \
 	mkinstalldirs
 
 # Subdirectories to run `make dist' in
-BINDISTSUBDIRS = doc scripts
+BINDISTSUBDIRS = scripts doc
 
 DIRS_TO_MAKE = $(bindir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \

@@ -37,7 +37,7 @@ all: octtopnm
 octtopnm: octtopnm.o
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) octtopnm.o -o octtopnm
 
-install: all
+install:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	for f in $(FCN_FILES_NO_DIR) ; do \
 	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \

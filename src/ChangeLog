@@ -1,3 +1,13 @@
+1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/fft.cc: Texinfoize doc string.
+	* DLD-FUNCTIONS/ifft.cc: Ditto.
+	* DLD-FUNCTIONS/fft2.cc: Ditto.
+	* DLD-FUNCTIONS/ifft2.cc: Ditto.
+	* DLD-FUNCTIONS/filter.cc: Ditto.
+
+	* Makefile.in (parse.cc): Expect 11 shift/reduce conflicts now.
+
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (Vwarn_assign_as_truth_value,	Vwarn_variable_switch_label):

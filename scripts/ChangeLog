@@ -1,3 +1,19 @@
+1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/base/mean: Texinfoize doc string.
+	* statistics/base/median: Ditto.
+	* statistics/base/std: Ditto.
+	* statistics/base/cov: Ditto.
+	* statistics/base/corrcoef: Ditto.
+	* statistics/base/kurtosis: Ditto.
+	* statistics/base/mahalanobis: Ditto.
+	* statistics/base/skewness: Ditto.
+	* signal/detrend.m: Ditto.
+	* signal/freqz.m: Ditto.
+	* signal/sinc.m: Ditto.
+	* signal/fftconv.m: Ditto.
+	* signal/fftfilt.m: Ditto.
+
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/pinv.m: Delete.

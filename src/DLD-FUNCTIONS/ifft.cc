@@ -35,7 +35,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // This function should be merged with Ffft.
 
 DEFUN_DLD (ifft, args, ,
-  "ifft (X [, N]): inverse fast fourier transform of a vector")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} ifft (@var{a}, @var{n})\n\
+Compute the inverse FFT of @var{a} using subroutines from @sc{Fftpack}.  If\n\
+@var{a} is a matrix, @code{fft} computes the inverse FFT for each column\n\
+of @var{a}.\n\
+\n\
+If called with two arguments, @var{n} is expected to be an integer\n\
+specifying the number of elements of @var{a} to use.  If @var{a} is a\n\
+matrix, @var{n} specifies the number of rows of @var{a} to use.  If\n\
+@var{n} is larger than the size of @var{a}, @var{a} is resized and\n\
+padded with zeros.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -17,13 +17,33 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: median (a)
-##
-## For vector arguments, return the median of the values.
-##
-## For matrix arguments, return a row vector containing the median for
-## each column.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} median (@var{x})
+## If @var{x} is a vector, compute the median value of the elements of
+## @var{x}.
+## @iftex
+## @tex
+## $$
+## {\rm median} (x) =
+##   \cases{x(\lceil N/2\rceil), & $N$ odd;\cr
+##           (x(N/2)+x(N/2+1))/2, & $N$ even.}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## @group
+##             x(ceil(N/2)),             N odd
+## median(x) = 
+##             (x(N/2) + x((N/2)+1))/2,  N even
+## @end group
+## @end example
+## @end ifinfo
+## If @var{x} is a matrix, compute the median value for each
+## column and return them in a row vector.
+## @end deftypefn
+
 ## See also: std, mean
 
 ## Author: jwe

@@ -17,13 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: corrcoef (x, y)
-##
-## The (i,j)-th entry of corrcoef (x, y) is the correlation between the
-## i-th variable in x and the j-th variable in y.
-## For matrices, each row is an observation and each column a variable;
-## vectors are always observations and may be row or column vectors.
-## corrcoef (x) is corrcoef (x, x).
+## -*- texinfo -*-
+## @deftypefn {Function File} {} corrcoef (@var{x}, @var{y})
+## If each row of @var{x} and @var{y} is an observation and each column is
+## a variable, the (@var{i},@var{j})-th entry of
+## @code{corrcoef (@var{x}, @var{y})} is the correlation between the
+## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
+## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})}.
+## @end deftypefn
 
 ## Author: Kurt Hornik <hornik@ci.tuwien.ac.at>
 ## Created: March 1993

@@ -437,7 +437,7 @@ bin-dist:
 # Special rules -- these files need special things to be defined.
 
 parse.cc : parse.y
-	@echo "expect 10 shift/reduce conflicts"
+	@echo "expect 11 shift/reduce conflicts"
 	$(YACC) $(YFLAGS) $<
 	@$(top_srcdir)/move-if-change y.tab.c $(@F)
 

@@ -17,12 +17,29 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: std (a)
-##
-## For vector arguments, std returns the standard deviation of the
-## values.  For matrix arguments, std returns a row vector containing
-## the standard deviation for each column.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} std (@var{x})
+## If @var{x} is a vector, compute the standard deviation of the elements
+## of @var{x}.
+## @iftex
+## @tex
+## $$
+## {\rm std} (x) = \sigma (x) = \sqrt{{\sum_{i=1}^N (x_i - \bar{x}) \over N - 1}}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## @group
+## std (x) = sqrt (sumsq (x - mean (x)) / (n - 1))
+## @end group
+## @end example
+## @end ifinfo
+## If @var{x} is a matrix, compute the standard deviation for
+## each column and return them in a row vector.
+## @end deftypefn
+
 ## See also: mean, median
 
 ## Author: jwe

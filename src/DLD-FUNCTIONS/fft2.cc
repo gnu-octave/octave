@@ -35,9 +35,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // This function should be merged with Fifft2.
 
 DEFUN_DLD (fft2, args, ,
-  "fft2 (X [, N] [, M])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})\n\
+Compute the two dimensional FFT of @var{a}.\n\
 \n\
-two dimensional fast fourier transform of a vector")
+The optional arguments @var{n} and @var{m} may be used specify the\n\
+number of rows and columns of @var{a} to use.  If either of these is\n\
+larger than the size of @var{a}, @var{a} is resized and padded with\n\
+zeros.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -17,25 +17,45 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Compute the frequency response of a filter.
-##
-## [h,w] = resp(b)
-##   returns the complex frequency response h of the FIR filter with
-##   coefficients b. The response is evaluated at 512 angular frequencies
-##   between 0 and pi.  w is a vector containing the 512 frequencies.
-##
-## [h,w] = resp(b,a)
-##   returns the complex frequency response of the rational IIR filter
-##   whose numerator has coefficients b and denominator coefficients a.
-##
-## [h,w] = resp(b,a,n)
-##   returns the response evaluated at n angular frequencies.  For fastest
-##   computation n should factor into a small number of small primes.
-##
-## [h,w] = freqz(b,a,n,"whole")
-##   evaluates the response at n frequencies between 0 and 2*pi.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
+## Return the complex frequency response @var{h} of the rational IIR filter
+## whose numerator and denominator coefficients are @var{b} and @var{a},
+## respectively.  The response is evaluated at @var{n} angular frequencies
+## between 0 and
+## @ifinfo
+##  2*pi.
+## @end ifinfo
+## @iftex
+## @tex
+##  $2\pi$.
+## @end tex
+## @end iftex
+## 
+## @noindent
+## The output value @var{w} is a vector of the frequencies.
+## 
+## If the fourth argument is omitted, the response is evaluated at
+## frequencies between 0 and
+## @ifinfo
+##  pi.
+## @end ifinfo
+## @iftex
+## @tex
+##  $\pi$.
+## @end tex
+## @end iftex
+## 
+## If @var{n} is omitted, a value of 512 is assumed.
+## 
+## If @var{a} is omitted, the denominator is assumed to be 1 (this
+## corresponds to a simple FIR filter).
+## 
+## For fastest computation, @var{n} should factor into a small number of
+## small primes.
+## @end deftypefn
 
-## Author: jwe
+## Author: jwe ???
 
 function [h, w] = freqz(b,...)
 

@@ -17,16 +17,27 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: skewness (x)
-##
-## If x is a vector of length N, return the skewness
-##
-##   skewness (x) = N^(-1) std(x)^(-3) SUM_i (x(i)-mean(x))^3
-##
-## of x.
-##
-## If x is a matrix, return a row vector containing the skewness for each
-## column.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} skewness (@var{x})
+## If @var{x} is a vector of length @var{N}, return the skewness
+## @iftex
+## @tex
+## $$
+## {\rm skewness} (x) = {1\over N \sigma(x)^3} \sum_{i=1}^N (x_i-\bar{x})^3
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## skewness (x) = N^(-1) std(x)^(-3) sum ((x - mean(x)).^3)
+## @end example
+## @end ifinfo
+## 
+## @noindent
+## of @var{x}.  If @var{x} is a matrix, return the row vector containing
+## the skewness of each column.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 29 July 1994

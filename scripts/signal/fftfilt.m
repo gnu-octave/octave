@@ -17,14 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  fftfilt (b, x [, N])
-##
-## y = fftfilt (b, x) filters x with the FIR filter b using the FFT.
-## y = fftfilt (b, x, N) uses the overlap-add method to filter x with
-## b using an N-point FFT.
-##
-## Reference:  Oppenheim & Schafer (1989).  Discrete-time Signal
-## Processing (Chapter 8).  Prentice-Hall.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
+## 
+## With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
+## @var{b} using the FFT.
+## 
+## Given the optional third argument, @var{n}, @code{fftfilt} uses the
+## overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 3 September 1994

@@ -17,11 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: mahalanobis (X, Y)
-##
-## Returns Mahalanobis' D-square distance between the multivariate
-## samples X and Y, which must have the same number of components
-## (columns), but may have a different number of observations (rows).
+## -*- texinfo -*-
+## @deftypefn {Function File} {} mahalanobis (@var{x}, @var{y})
+## Return the Mahalanobis' D-square distance between the multivariate
+## samples @var{x} and @var{y}, which must have the same number of
+## components (columns), but may have a different number of observations
+## (rows).
+## @end deftypefn
 
 ## Author: Friedrich Leisch <leisch@ci.tuwien.ac.at>
 ## Created: July 1993

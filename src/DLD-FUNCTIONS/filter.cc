@@ -152,22 +152,98 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x)
 }
 
 DEFUN_DLD (filter, args, nargout,
-  "usage: [y [, sf]] = filter (b, a, x [, si])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
+Return the solution to the following linear, time-invariant difference\n\
+equation:\n\
+@iftex\n\
+@tex\n\
+$$\n\
+\\sum_{k=0}^N a_{k+1} y_{n-k} = \\sum_{k=0}^M b_{k+1} x_{n-k}, \\qquad\n\
+ 1 \\le n \\le P\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
 \n\
-y = filter (b, a, x) returns the solution to the following linear,\n\
-time-invariant difference equation:\n\
+@smallexample\n\
+   N                   M\n\
+  SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n\
+  k=0                 k=0\n\
+@end smallexample\n\
+@end ifinfo\n\
 \n\
-  a[1] y[n] + ... + a[la] y[n-la+1] = b[1] x[n] + ... + b[lb] x[n-lb+1],\n\
-where la = length (a) and lb = length (b).\n\
+@noindent\n\
+where\n\
+@ifinfo\n\
+ N=length(a)-1 and M=length(b)-1.\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
+@end tex\n\
+@end iftex\n\
+An equivalent form of this equation is:\n\
+@iftex\n\
+@tex\n\
+$$\n\
+y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\
+ 1 \\le n \\le P\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
 \n\
-[y, sf] = filter (b, a, x, si) sets the initial state of the system, si,\n\
-and returns the final state, sf.  The state vector is a column vector\n\
-whose length is equal to the length of the longest coefficient vector\n\
-minus one.  If si is not set, the initial state vector is set to all\n\
+@smallexample\n\
+            N                   M\n\
+  y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
+           k=1                 k=0\n\
+@end smallexample\n\
+@end ifinfo\n\
+\n\
+@noindent\n\
+where\n\
+@ifinfo\n\
+ c = a/a(1) and d = b/a(1).\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+$c = a/a_1$ and $d = b/a_1$.\n\
+@end tex\n\
+@end iftex\n\
+\n\
+If the fourth argument @var{si} is provided, it is taken as the\n\
+initial state of the system and the final state is returned as\n\
+@var{sf}.  The state vector is a column vector whose length is\n\
+equal to the length of the longest coefficient vector minus one.\n\
+If @var{si} is not supplied, the initial state vector is set to all\n\
 zeros.\n\
 \n\
-The particular algorithm employed is known as a transposed Direct Form II\n\
-implementation.")
+In terms of the z-transform, y is the result of passing the discrete-\n\
+time signal x through a system characterized by the following rational\n\
+system function:\n\
+@iftex\n\
+@tex\n\
+$$\n\
+H(z) = {\\displaystyle\\sum_{k=0}^M d_{k+1} z^{-k}\n\
+        \\over 1 + \\displaystyle\\sum_{k+1}^N c_{k+1} z^{-k}}\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+\n\
+@example\n\
+             M\n\
+            SUM d(k+1) z^(-k)\n\
+            k=0\n\
+  H(z) = ----------------------\n\
+               N\n\
+          1 + SUM c(k+1) z(-k)\n\
+              k=1\n\
+@end example\n\
+@end ifinfo\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

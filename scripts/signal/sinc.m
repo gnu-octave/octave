@@ -17,11 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: sinc(x)
-##
-##        Returns sin(pi*x)/(pi*x).
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sinc (@var{x})
+## Return
+## @iftex
+## @tex
+## $ \sin (\pi x)/(\pi x)$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  sin(pi*x)/(pi*x).
+## @end ifinfo
+## @end deftypefn
 
-## Author: jwe
+## Author: jwe ???
 
 function result = sinc (x)
 

@@ -9,215 +9,22 @@ I hope that someday Octave will include more signal processing
 functions.  If you would like to help improve Octave in this area,
 please contact @email{bug-octave@@bevo.che.wisc.edu}.
 
-@deftypefn {Function File} {} detrend (@var{x}, @var{p})
-If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
-best fit of a polynomial of order @var{p} from the data @var{x}.
+@DOCSTRING(detrend)
 
-If @var{x} is a matrix, @code{detrend (@var{x}, @var{p})} does the same
-for each column in @var{x}.
+@DOCSTRING(fft)
 
-The second argument is optional.  If it is not specified, a value of 1
-is assumed.  This corresponds to removing a linear trend.
-@end deftypefn
+@DOCSTRING(ifft)
 
-@deftypefn {Function} {} fft (@var{a}, @var{n})
-Compute the FFT of @var{a} using subroutines from @sc{Fftpack}.  If @var{a}
-is a matrix, @code{fft} computes the FFT for each column of @var{a}.
+@DOCSTRING(fft2)
 
-If called with two arguments, @var{n} is expected to be an integer
-specifying the number of elements of @var{a} to use.  If @var{a} is a
-matrix, @var{n} specifies the number of rows of @var{a} to use.  If
-@var{n} is larger than the size of @var{a}, @var{a} is resized and
-padded with zeros.
-@end deftypefn
+@DOCSTRING(ifft2)
 
-@deftypefn {Loadable Function} {} ifft (@var{a}, @var{n})
-Compute the inverse FFT of @var{a} using subroutines from @sc{Fftpack}.  If
-@var{a} is a matrix, @code{fft} computes the inverse FFT for each column
-of @var{a}.
+@DOCSTRING(fftconv)
 
-If called with two arguments, @var{n} is expected to be an integer
-specifying the number of elements of @var{a} to use.  If @var{a} is a
-matrix, @var{n} specifies the number of rows of @var{a} to use.  If
-@var{n} is larger than the size of @var{a}, @var{a} is resized and
-padded with zeros.
-@end deftypefn
+@DOCSTRING(fftfilt)
 
-@deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})
-Compute the two dimensional FFT of @var{a}.
+@DOCSTRING(filter)
 
-The optional arguments @var{n} and @var{m} may be used specify the
-number of rows and columns of @var{a} to use.  If either of these is
-larger than the size of @var{a}, @var{a} is resized and padded with
-zeros.
-@end deftypefn
+@DOCSTRING(freqz)
 
-@deftypefn {Loadable Function} {} ifft2 (@var{a}, @var{n}, @var{m})
-Compute the two dimensional inverse FFT of @var{a}.
-
-The optional arguments @var{n} and @var{m} may be used specify the
-number of rows and columns of @var{a} to use.  If either of these is
-larger than the size of @var{a}, @var{a} is resized and padded with
-zeros.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} fftconv (@var{a}, @var{b}, @var{n})
-Return the convolution of the vectors @var{a} and @var{b}, as a vector
-with length equal to the @code{length (a) + length (b) - 1}.  If @var{a}
-and @var{b} are the coefficient vectors of two polynomials, the returned
-value is the coefficient vector of the product polynomial.
-
-The computation uses the FFT by calling the function @code{fftfilt}.  If
-the optional argument @var{n} is specified, an N-point FFT is used.
-@end deftypefn
-
-@deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
-
-With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
-@var{b} using the FFT.
-
-Given the optional third argument, @var{n}, @code{fftfilt} uses the
-overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
-@end deftypefn
-
-@deftypefn {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})
-Return the solution to the following linear, time-invariant difference
-equation:
-@iftex
-@tex
-$$
-\sum_{k=0}^N a_{k+1} y_{n-k} = \sum_{k=0}^M b_{k+1} x_{n-k}, \qquad
- 1 \le n \le P
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@smallexample
-   N                   M
-  SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)
-  k=0                 k=0
-@end smallexample
-@end ifinfo
-
-@noindent
-where
-@ifinfo
- N=length(a)-1 and M=length(b)-1.
-@end ifinfo
-@iftex
-@tex
- $a \in \Re^{N-1}$, $b \in \Re^{M-1}$, and $x \in \Re^P$.
-@end tex
-@end iftex
-An equivalent form of this equation is:
-@iftex
-@tex
-$$
-y_n = -\sum_{k=1}^N c_{k+1} y_{n-k} + \sum_{k=0}^M d_{k+1} x_{n-k}, \qquad
- 1 \le n \le P
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@smallexample
-            N                   M
-  y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)
-           k=1                 k=0
-@end smallexample
-@end ifinfo
-
-@noindent
-where
-@ifinfo
- c = a/a(1) and d = b/a(1).
-@end ifinfo
-@iftex
-@tex
-$c = a/a_1$ and $d = b/a_1$.
-@end tex
-@end iftex
-
-In terms of the z-transform, y is the result of passing the discrete-
-time signal x through a system characterized by the following rational
-system function:
-@iftex
-@tex
-$$
-H(z) = {\displaystyle\sum_{k=0}^M d_{k+1} z^{-k}
-        \over 1 + \displaystyle\sum_{k+1}^N c_{k+1} z^{-k}}
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-             M
-            SUM d(k+1) z^(-k)
-            k=0
-  H(z) = ----------------------
-               N
-          1 + SUM c(k+1) z(-k)
-              k=1
-@end example
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
-This is the same as the @code{filter} function described above, except
-that @var{si} is taken as the initial state of the system and the final
-state is returned as @var{sf}.  The state vector is a column vector
-whose length is equal to the length of the longest coefficient vector
-minus one.  If @var{si} is not set, the initial state vector is set to
-all zeros.
-@end deftypefn
-
-@deftypefn {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
-Return the complex frequency response @var{h} of the rational IIR filter
-whose numerator and denominator coefficients are @var{b} and @var{a},
-respectively.  The response is evaluated at @var{n} angular frequencies
-between 0 and
-@ifinfo
- 2*pi.
-@end ifinfo
-@iftex
-@tex
- $2\pi$.
-@end tex
-@end iftex
-
-@noindent
-The output value @var{w} is a vector of the frequencies.
-
-If the fourth argument is omitted, the response is evaluated at
-frequencies between 0 and
-@ifinfo
- pi.
-@end ifinfo
-@iftex
-@tex
- $\pi$.
-@end tex
-@end iftex
-
-If @var{n} is omitted, a value of 512 is assumed.
-
-If @var{a} is omitted, the denominator is assumed to be 1 (this
-corresponds to a simple FIR filter).
-
-For fastest computation, @var{n} should factor into a small number of
-small primes.
-@end deftypefn
-
-@deftypefn {Function File} {} sinc (@var{x})
-Return
-@iftex
-@tex
-$ \sin (\pi x)/(\pi x)$.
-@end tex
-@end iftex
-@ifinfo
- sin(pi*x)/(pi*x).
-@end ifinfo
-@end deftypefn
+@DOCSTRING(sinc)

@@ -14,18 +14,37 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  mean (x [, opt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} mean (@var{x}, @var{opt})
+## If @var{x} is a vector, compute the mean of the elements of @var{x}
+## @iftex
+## @tex
+## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## mean (x) = SUM_i x(i) / N
+## @end example
+## @end ifinfo
+## If @var{x} is a matrix, compute the mean for each column and return them
+## in a row vector.
 ##
-## For vector arguments, return the mean the values.
-## For matrix arguments, return a row vector containing the mean for
-## each column.
+## With the optional argument @var{opt}, the kind of mean computed can be
+## selected.  The following options are recognized:
 ##
-## With the optional argument opt, the kind of mean computed can be
-## selected.
-## If opt is "a", the (ordinary) arithmetic mean is computed.  This
-## is the default.
-## If opt is "g", the geometric mean is computed.
-## If opt is "h", the harmonic mean is computed.
+## @table @code
+## @item "a"
+## Compute the (ordinary) arithmetic mean.  This is the default.
+##
+## @item "g"
+## Computer the geometric mean.
+##
+## @item "h"
+## Compute the harmonic mean.
+## @end table
+## @end deftypefn
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compute arithmetic, geometric, and harmonic mean

@@ -17,16 +17,27 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: kurtosis (x)
-##
-## If x is a vector of length N, return the kurtosis
-##
-##   kurtosis(x) = N^(-1) std(x)^(-4) SUM_i (x(i)-mean(x))^4 - 3
-##
-## of x.
-##
-## If x is a matrix, return a row vector containing the kurtosis for each
-## column.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} kurtosis (@var{x})
+## If @var{x} is a vector of length @var{N}, return the kurtosis
+## @iftex
+## @tex
+## $$
+##  {\rm kurtosis} (x) = {1\over N \sigma(x)^4} \sum_{i=1}^N (x_i-\bar{x})^4 - 3
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## kurtosis (x) = N^(-1) std(x)^(-4) sum ((x - mean(x)).^4) - 3
+## @end example
+## @end ifinfo
+## 
+## @noindent
+## of @var{x}.  If @var{x} is a matrix, return the row vector containing
+## the kurtosis of each column.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 29 July 1994

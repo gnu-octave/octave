@@ -14,15 +14,16 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  detrend (x [, p])
-##
-## If x is a vector, detrend (x, p) removes the best fit of a
-## polynomial of order p from the data x.
-##
-## If x is a matrix, detrend (x, p) does the same for each column.
-##
-## If p is not specified, p = 1 is used, i.e., a linear trend is
-## removed.
+## @deftypefn {Function File} {} detrend (@var{x}, @var{p})
+## If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
+## best fit of a polynomial of order @var{p} from the data @var{x}.
+## 
+## If @var{x} is a matrix, @code{detrend (@var{x}, @var{p})} does the same
+## for each column in @var{x}.
+## 
+## The second argument is optional.  If it is not specified, a value of 1
+## is assumed.  This corresponds to removing a linear trend.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 11 October 1994

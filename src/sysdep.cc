@@ -630,11 +630,21 @@ Return 1 if your computer claims to conform to the IEEE standard for\n\
 floating point calculations.\n\
 @end deftypefn")
 {
-  oct_mach_info::float_format flt_fmt =
-    oct_mach_info::native_float_format ();
+  oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
 
   return octave_value (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
 		       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
+}
+
+DEFUN (native_float_format, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} native_float_format ()\n\
+Return the native floating point format as a string\n\
+@end deftypefn")
+{
+  oct_mach_info::float_format flt_fmt = oct_mach_info::native_float_format ();
+
+  return octave_value (oct_mach_info::float_format_as_string (flt_fmt));
 }
 
 DEFUN (tilde_expand, args, ,

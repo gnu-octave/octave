@@ -1,3 +1,9 @@
+2003-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (struct hdf5_callback_data): Provide constructor.
+	(hdf5_callback_data::name, hdf5_callback_data::doc): Now
+	std::string instead of char*.  Change all uses.
+
 2003-02-18  Roger Banks <rbanks@colsa.com>
 
 	* load-save.cc (read_ascii_data, read_ascii_data,

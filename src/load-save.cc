@@ -1319,14 +1319,50 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
   return retval;
 }
 
+// The following two subroutines create HDF5 representations of the way
+// we will store Octave complex and range types (pairs and triplets of
+// floating-point numbers, respectively).  NUM_TYPE is the HDF5 numeric
+// type to use for storage (e.g. H5T_NATIVE_DOUBLE to save as 'double').
+// Note that any necessary conversions are handled automatically by HDF5.
+
+static hid_t
+hdf5_make_complex_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 2);
+
+  H5Tinsert (type_id, "real", 0 * sizeof (double), num_type);
+  H5Tinsert (type_id, "imag", 1 * sizeof (double), num_type);
+
+  return type_id;
+}
+
+static hid_t
+hdf5_make_range_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 3);
+
+  H5Tinsert (type_id, "base", 0 * sizeof (double), num_type);
+  H5Tinsert (type_id, "limit", 1 * sizeof (double), num_type);
+  H5Tinsert (type_id, "increment", 2 * sizeof (double), num_type);
+
+  return type_id;
+}
+
 // Callback data structure for passing data to hdf5_read_next_data, below.
 
-struct hdf5_callback_data
+struct
+hdf5_callback_data
 {
+  hdf5_callback_data (void)
+    : name (), global (false), tc (), doc (),
+      complex_type (hdf5_make_complex_type (H5T_NATIVE_DOUBLE)),
+      range_type (hdf5_make_range_type (H5T_NATIVE_DOUBLE)),
+      import (false) { }
+
   // the following fields are set by hdf5_read_data on successful return:
 
   // the name of the variable
-  char *name;
+  std::string name;
 
   // whether it is global
   bool global;
@@ -1335,7 +1371,7 @@ struct hdf5_callback_data
   octave_value tc;
 
   // a documentation string (NULL if none)
-  char *doc;
+  std::string doc;
 
   // the following fields are input to hdf5_read_data:
 
@@ -1364,7 +1400,8 @@ static bool have_h5giterate_bug = false;
 static herr_t
 hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 {
-  hdf5_callback_data *d = (hdf5_callback_data *) dv;
+  hdf5_callback_data *d = static_cast <hdf5_callback_data *> (dv);
+
   H5G_stat_t info;
   herr_t retval = 0;
   bool ident_valid = valid_identifier (name);
@@ -1490,7 +1527,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 		retval = -1;  // error
 	      else
 		{
-		  char *s = new char [slen];
+		  OCTAVE_LOCAL_BUFFER (char, s, slen);
 		  // create datatype for (null-terminated) string
 		  // to read into:
 		  hid_t st_id = H5Tcopy (H5T_C_S1);
@@ -1498,7 +1535,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 		  if (H5Dread (data_id, st_id, H5S_ALL, H5S_ALL, 
 			       H5P_DEFAULT, (void *) s) < 0)
 		    {
-		      delete [] s;
 		      retval = -1;  // error
 		    }
 		  else
@@ -1690,8 +1726,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       bool is_list = hdf5_check_attr (subgroup_id, "OCTAVE_LIST");
 
       hdf5_callback_data dsub;
-      dsub.name = dsub.doc = 0;
-      dsub.global = 0;
+
       dsub.complex_type = d->complex_type;
       dsub.range_type = d->range_type;
       dsub.import = d->import;
@@ -1707,12 +1742,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	    lst.append (dsub.tc);
 	  else
 	    m [dsub.name] = dsub.tc;
-
-	  if (dsub.name)
-	    delete [] dsub.name;
-
-	  if (dsub.doc)
-	    delete [] dsub.doc;
 
 	  if (have_h5giterate_bug)
 	    current_item++;  // H5Giterate returned the last index processed
@@ -1752,54 +1781,22 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
       if (comment_length > 1)
 	{
-	  d->doc = new char[comment_length];
-	  H5Gget_comment (group_id, name, comment_length, d->doc);
+	  OCTAVE_LOCAL_BUFFER (char, tdoc, comment_length);
+	  H5Gget_comment (group_id, name, comment_length, tdoc);
+	  d->doc = tdoc;
 	}
       else if (strcmp (name, vname) != 0)
 	{
 	  // the name was changed by import; store the original name
 	  // as the documentation string:
-	  d->doc = new char [strlen (name) + 1];
-	  strcpy (d->doc, name);
+	  d->doc = name;
 	}
-      else
-	d->doc = 0;
 
       // copy name (actually, vname):
-      d->name = new char [strlen (vname) + 1];
-      strcpy (d->name, vname);
+      d->name = vname;
     }
 
   return retval;
-}
-
-// The following two subroutines create HDF5 representations of the way
-// we will store Octave complex and range types (pairs and triplets of
-// floating-point numbers, respectively).  NUM_TYPE is the HDF5 numeric
-// type to use for storage (e.g. H5T_NATIVE_DOUBLE to save as 'double').
-// Note that any necessary conversions are handled automatically by HDF5.
-
-static hid_t
-hdf5_make_complex_type (hid_t num_type)
-{
-  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 2);
-
-  H5Tinsert (type_id, "real", 0 * sizeof (double), num_type);
-  H5Tinsert (type_id, "imag", 1 * sizeof (double), num_type);
-
-  return type_id;
-}
-
-static hid_t
-hdf5_make_range_type (hid_t num_type)
-{
-  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 3);
-
-  H5Tinsert (type_id, "base", 0 * sizeof (double), num_type);
-  H5Tinsert (type_id, "limit", 1 * sizeof (double), num_type);
-  H5Tinsert (type_id, "increment", 2 * sizeof (double), num_type);
-
-  return type_id;
 }
 
 // Read the next Octave variable from the stream IS, which must really be
@@ -1821,11 +1818,6 @@ read_hdf5_data (std::istream& is,
   hdf5_ifstream& hs = (hdf5_ifstream&) is;
   hdf5_callback_data d;
 
-  d.name = 0;
-  d.global = 0;
-  d.doc = 0;
-  d.complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
-  d.range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
   d.import = import;
 
   // Versions of HDF5 prior to 1.2.2 had a bug in H5Giterate where it
@@ -1857,8 +1849,7 @@ read_hdf5_data (std::istream& is,
     {
       global = d.global;
       tc = d.tc;
-      if (d.doc)
-	doc = d.doc;
+      doc = d.doc;
     }
   else
     {
@@ -1870,7 +1861,7 @@ read_hdf5_data (std::istream& is,
   H5Tclose (d.complex_type);
   H5Tclose (d.range_type);
 
-  if (d.name)
+  if (! d.name.empty ())
     retval = d.name;
 
   return retval;

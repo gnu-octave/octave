@@ -1,4 +1,22 @@
-function [num,status,strarray] = str2double(s,cdelim,rdelim,ddelim)
+## Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
+
 ## STR2DOUBLE converts strings into numeric values
 ##  [NUM, STATUS,STRARRAY] = STR2DOUBLE(STR)
 ##
@@ -55,212 +73,203 @@ function [num,status,strarray] = str2double(s,cdelim,rdelim,ddelim)
 ## [1] David A. Wheeler, Secure Programming for Linux and Unix HOWTO.
 ##    http://en.tldp.org/HOWTO/Secure-Programs-HOWTO/
 
-## This program is free software; you can redistribute it and/or
-## modify it under the terms of the GNU General Public License
-## as published by the Free Software Foundation; either version 2
-## of the License, or (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
 
-##	$Revision: 1.11 $
-##	$Id: str2double.m,v 1.11 2004/06/23 20:52:32 schloegl Exp $
-##	Copyright (C) 2004 by Alois Schloegl <a.schloegl@ieee.org>	
-##      This function is part of Octave-Forge http://octave.sourceforge.net/
+  FLAG_OCTAVE = exist('OCTAVE_VERSION','builtin');
 
-FLAG_OCTAVE = exist('OCTAVE_VERSION','builtin');
+  ## digits, sign, exponent,NaN,Inf
+  ## valid_char = '0123456789eE+-.nNaAiIfF';
 
-## valid_char = '0123456789eE+-.nNaAiIfF';	% digits, sign, exponent,NaN,Inf
-valid_delim = char(sort([0,9:14,32:34,abs('()[]{},;:"|/')]));	% valid delimiter
-if nargin < 1,
-        error('missing input argument.')
-end
-if nargin < 2,
-        cdelim = char([9,32,abs(',')]);		% column delimiter
-else
-        % make unique cdelim
-        cdelim = char(sort(cdelim(:)));
-        tmp = [1;1+find(diff(abs(cdelim))>0)];
-        cdelim = cdelim(tmp)';
-end
-if nargin < 3,
-        rdelim = char([0,10,13,abs(';')]);	% row delimiter
-else
-        % make unique rdelim
-        rdelim = char(sort(rdelim(:)));
-        tmp = [1;1+find(diff(abs(rdelim))>0)];
-        rdelim = rdelim(tmp)';
-end
-if nargin<4,
-        ddelim = '.';
-elseif length(ddelim)~=1,
-        error('decimal delimiter must be exactly one character.');
-end
+  ## valid delimiters
+  valid_delim = char (sort ([0, 9:14, 32:34, abs("()[]{},;:\"|/")]));
 
-% check if RDELIM and CDELIM are distinct
-delim = sort(abs([cdelim,rdelim,ddelim]));
-tmp   = [1, 1 + find(diff(delim)>0)];
-delim = delim(tmp);
-%[length(delim),length(cdelim),length(rdelim)]
-if length(delim) < (length(cdelim)+length(rdelim))+1, % length(ddelim) must be one.
-        error('row, column and decimal delimiter are not distinct.');
-end
+  if (nargin < 1)
+    error ("missing input argument");
+  endif
 
-% check if delimiters are valid
-tmp  = sort(abs([cdelim,rdelim]));
-flag = zeros(size(tmp));
-k1 = 1;
-k2 = 1;
-while (k1 <= length(tmp)) & (k2 <= length(valid_delim)),
-        if tmp(k1) == valid_delim(k2),
-                flag(k1) = 1;
-                k1 = k1 + 1;
-        elseif tmp(k1) < valid_delim(k2),
-                k1 = k1 + 1;
-        elseif tmp(k1) > valid_delim(k2),
-                k2 = k2 + 1;
-        end
-end
-if ~all(flag),
-        error('Invalid delimiters!');
-end
+  if (nargin < 2)
+    ## column delimiter
+    cdelim = char ([9, 32, abs(",")]);
+  else
+    ## make unique cdelim
+    cdelim = char (sort (cdelim(:)));
+    tmp = [1; 1+find(diff(abs(cdelim))>0)];
+    cdelim = cdelim(tmp)';
+  endif
 
-####% various input parameters
-if isnumeric(s)
-	if all(s<256) & all(s>=0)
-    	        s = char(s);
+  if (nargin < 3)
+    ## row delimiter
+    rdelim = char ([0, 10, 13, abs(";")]);
+  else
+    ## make unique rdelim
+    rdelim = char (sort (rdelim(:)));
+    tmp = [1; 1+find(diff(abs(rdelim))>0)];
+    rdelim = rdelim(tmp)';
+  endif
+
+  if (nargin < 4)
+    ddelim = '.';
+  elseif (length (ddelim) != 1)
+    error ("decimal delimiter must be exactly one character");
+  endif
+
+  ## check if RDELIM and CDELIM are distinct
+
+  delim = sort (abs ([cdelim, rdelim, ddelim]));
+  tmp   = [1, 1+find(diff(delim)>0)];
+  delim = delim(tmp);
+  ## [length(delim),length(cdelim),length(rdelim)]
+  if (length (delim) < (length(cdelim) + length(rdelim))+1)
+    ## length (ddelim) must be one.
+    error ("row, column and decimal delimiter are not distinct");
+  endif
+
+  ## check if delimiters are valid
+  tmp  = sort (abs ([cdelim, rdelim]));
+  flag = zeros (size (tmp));
+  k1 = 1;
+  k2 = 1;
+  while (k1 <= length (tmp) && k2 <= length (valid_delim)),
+    if (tmp(k1) == valid_delim(k2))
+      flag(k1) = 1;
+      k1++;
+    elseif (tmp(k1) < valid_delim(k2))
+      k1++;
+    elseif (tmp(k1) > valid_delim(k2))
+      k2++;
+    endif
+  endwhile
+  if (! all (flag))
+    error ("invalid delimiters!");
+  endif
+
+  ## various input parameters
+
+  if (isnumeric (s))
+    if (all (s < 256) && all (s >= 0))
+      s = char (s);
+    else
+      error ("str2double: input variable must be a string");
+    endif
+  endif
+
+  if (isempty (s))
+    num = [];
+    status = 0;
+    return;
+  elseif (iscell (s))
+    strarray = s;
+  elseif (ischar (s) && all (size (s) > 1))
+    ## char array transformed into a string.
+    for k = 1:size (s, 1)
+      tmp = find (! isspace (s(k,:)));
+      strarray{k,1} = s(k,min(tmp):max(tmp));
+    endfor
+  elseif (ischar (s)),
+    num = [];
+    status = 0;
+    strarray = {};
+    ## add stop sign; makes sure last digit is not skipped
+    s(end+1) = rdelim(1);
+    RD = zeros (size (s));
+    for k = 1:length (rdelim),
+      RD = RD | (s == rdelim(k));
+    endfor
+    CD = RD;
+    for k = 1:length (cdelim),
+      CD = CD | (s==cdelim(k));
+    endfor
+
+    k1 = 1; # current row
+    k2 = 0; # current column
+    k3 = 0; # current element
+
+    sl = length (s);
+    ix = 1;
+    ## while (ix < sl) & any(abs(s(ix))==[rdelim,cdelim]),
+    while (ix < sl && CD(ix))
+      ix++
+    endwhile
+    ta = ix;
+    te = [];
+    while (ix <= sl)
+      if (ix == sl)
+        te = sl;
+      endif
+      ## if any(abs(s(ix))==[cdelim(1),rdelim(1)]),
+      if (CD(ix))
+        te = ix - 1;
+      endif
+      if (! isempty (te))
+        k2++;
+        k3++;
+        strarray{k1,k2} = s(ta:te);
+        ## strarray{k1,k2} = [ta,te];
+
+        flag = 0;
+        ## while any(abs(s(ix))==[cdelim(1),rdelim(1)]) & (ix < sl),
+        while (CD(ix) && ix < sl)
+          flag = flag | RD(ix);
+          ix++;
+        endwhile
+
+        if (flag)
+          k2 = 0;
+          k1++;
+        endif
+        ta = ix;
+        te = [];
+      endif
+      ix++;
+    endwhile
+  else
+    error ("str2double: invalid input argument");
+  endif
+
+  [nr, nc]= size (strarray);
+  status = zeros (nr, nc);
+  num = repmat (NaN, nr, nc);
+
+  for k1 = 1:nr
+    for k2 = 1:nc
+      t = strarray{k1,k2};
+      if (length (t) == 0)
+	## return error code
+	status(k1,k2) = -1;
+	num(k1,k2) = NaN;
+      else
+	## get mantisse
+	g = 0;
+	v = 1;
+	if (t(1) == "-")
+	  v = -1;
+	  l = min (2, length(t));
+	elseif (t(1) == "+")
+	  l = min (2, length (t));
 	else
-		error('STR2DOUBLE: input variable must be a string')
-	end
-end
+	  l = 1;
+	endif
 
-if isempty(s),
-        num = [];
-        status = 0;
-        return;
+	if (strcmpi (t(l:end), "inf"))
+	  num(k1,k2) = v*Inf;
+	elseif (strcmpi (t(l:end), "NaN"));
+	  num(k1,k2) = NaN;
+	else
+	  if (ddelim == ".")
+	    t(t==ddelim) = ".";
+	  endif
+	  [v,tmp2,c] = sscanf(char(t), "%f %s", "C");
+	  ## [v,c,em,ni] = sscanf(char(t),"%f %s");
+	  ## c = c * (ni>length(t));
+	  if (c == 1),
+	    num(k1,k2) = v;
+	  else
+	    num(k1,k2) = NaN;
+	    status(k1,k2) = -1;
+	  endif
+	endif
+      endif
+    endfor
+  endfor
 
-elseif iscell(s),
-        strarray = s;
-
-elseif ischar(s) & all(size(s)>1),	## char array transformed into a string.
-	for k = 1:size(s,1),
-                tmp = find(~isspace(s(k,:)));
-                strarray{k,1} = s(k,min(tmp):max(tmp));
-        end
-
-elseif ischar(s),
-        num = [];
-        status = 0;
-        strarray = {};
-
-        s(end+1) = rdelim(1);     % add stop sign; makes sure last digit is not skipped
-
-	RD = zeros(size(s));
-	for k = 1:length(rdelim),
-		RD = RD | (s==rdelim(k));
-	end
-	CD = RD;
-	for k = 1:length(cdelim),
-		CD = CD | (s==cdelim(k));
-	end
-
-        k1 = 1; % current row
-        k2 = 0; % current column
-        k3 = 0; % current element
-
-        sl = length(s);
-        ix = 1;
-        %while (ix < sl) & any(abs(s(ix))==[rdelim,cdelim]),
-        while (ix < sl) & CD(ix),
-                ix = ix + 1;
-        end
-        ta = ix; te = [];
-        while ix <= sl;
-                if (ix == sl),
-                        te = sl;
-                end
-                %if any(abs(s(ix))==[cdelim(1),rdelim(1)]),
-                if CD(ix),
-                        te = ix - 1;
-                end
-                if ~isempty(te),
-                        k2 = k2 + 1;
-                        k3 = k3 + 1;
-                        strarray{k1,k2} = s(ta:te);
-                        %strarray{k1,k2} = [ta,te];
-
-                        flag = 0;
-                        %while any(abs(s(ix))==[cdelim(1),rdelim(1)]) & (ix < sl),
-                        while CD(ix) & (ix < sl),
-                                flag = flag | RD(ix);
-                                ix = ix + 1;
-                        end
-
-                        if flag,
-                                k2 = 0;
-                                k1 = k1 + 1;
-                        end
-                        ta = ix;
-                        te = [];
-	        end
-                ix = ix + 1;
-        end
-else
-        error('STR2DOUBLE: invalid input argument');
-end
-
-[nr,nc]= size(strarray);
-status = zeros(nr,nc);
-num    = repmat(NaN,nr,nc);
-
-for k1 = 1:nr,
-for k2 = 1:nc,
-        t = strarray{k1,k2};
-        if (length(t)==0),
-		status(k1,k2) = -1;		## return error code
-                num(k1,k2) = NaN;
-        else
-                ## get mantisse
-                g = 0;
-                v = 1;
-                if t(1)=='-',
-                        v = -1;
-                        l = min(2,length(t));
-                elseif t(1)=='+',
-                        l = min(2,length(t));
-                else
-                        l = 1;
-                end
-
-                if strcmpi(t(l:end),'inf')
-                        num(k1,k2) = v*inf;
-
-                elseif strcmpi(t(l:end),'NaN');
-                        num(k1,k2) = NaN;
-
-                else
-			if ddelim=='.',
-				t(t==ddelim)='.';
-			end
-			if FLAG_OCTAVE,
-	    			[v,tmp2,c] = sscanf(char(t),'%f %s','C');
-	    		else
-				[v,c,em,ni] = sscanf(char(t),'%f %s');
-				c = c * (ni>length(t));
-			end
-			if (c==1),
-	            		num(k1,k2) = v;
-			else
-	            		num(k1,k2) = NaN;
-	            		status(k1,k2) = -1;
-			end			
-		end
-	end
-end
-end
+endfunction

@@ -5,12 +5,12 @@
 	Set file pointer to 0 after closing.
 	(c_file_ptr_buf::~c_file_ptr_buf): Call close after flushing.
 
-2000-07-05  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+2000-07-05  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* Makefile.in (BLAS_LIBS): Substitute here.
 	(octave): Use $(BLAS_LIBS) in the final link command.
 
-2000-06-30  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+2000-06-30  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* Makefile.in (octave): Link $(FLIBS) last.
 	* octave.cc (main): Force our own xerbla to be linked instead of
@@ -36,7 +36,7 @@
 	(Fsave): Handle LS_MAT5_BINARY case too.
 	(Fload): Handle LS_MAT5_BINARY case too.
 
-2000-06-29  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+2000-06-29  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	All of the following changes are protected by #ifdef HAVE_HDF5.
 

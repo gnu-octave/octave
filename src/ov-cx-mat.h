@@ -85,8 +85,6 @@ public:
 
   void assign (const octave_value_list& idx, const NDArray& rhs);
 
-  size_t byte_size (void) const { return numel () * sizeof (Complex); }
-
   bool is_complex_matrix (void) const { return true; }
 
   bool is_complex_type (void) const { return true; }

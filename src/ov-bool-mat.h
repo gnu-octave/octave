@@ -78,8 +78,6 @@ public:
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
 
-  size_t byte_size (void) const { return numel () * sizeof (bool); }
-
   bool is_bool_matrix (void) const { return true; }
 
   bool is_bool_type (void) const { return true; }

@@ -84,8 +84,6 @@ public:
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
 
-  size_t byte_size (void) const { return numel () * sizeof (double); }
-
   bool is_real_matrix (void) const { return true; }
 
   bool is_real_type (void) const { return true; }

@@ -336,7 +336,7 @@ AC_DEFUN(OCTAVE_CC_FLAG, [
     AC_LANG_PUSH(C)
     XCFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $1"
-    AC_TRY_LINK([], [],
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
       eval "octave_cv_cc_flag_$ac_safe=yes",
       eval "octave_cv_cc_flag_$ac_safe=no")
     CFLAGS="$XCFLAGS"
@@ -366,7 +366,7 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
     AC_LANG_PUSH(C++)
     XCXXFLAGS="$CXXFLAGS"
     CXXFLAGS="$CXXFLAGS $1"
-    AC_TRY_LINK([], [],
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
       eval "octave_cv_cxx_flag_$ac_safe=yes",
       eval "octave_cv_cxx_flag_$ac_safe=no")
     CXXFLAGS="$XCXXFLAGS"
@@ -396,7 +396,7 @@ AC_DEFUN(OCTAVE_F77_FLAG, [
     AC_LANG_PUSH(Fortran 77)
     XFFLAGS="$FFLAGS"
     FFLAGS="$FFLAGS $1"
-    AC_TRY_LINK([], [],
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
       eval "octave_cv_f77_flag_$ac_safe=yes",
       eval "octave_cv_f77_flag_$ac_safe=no")
     FFLAGS="$XFFLAGS"

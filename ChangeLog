@@ -1,5 +1,8 @@
 2005-03-02  John W. Eaton  <jwe@octave.org>
 
+	* aclocal.m4 (OCTAVE_CC_FLAG, OCTAVE_CXX_FLAG, OCTAVE_F77_FLAG):
+	Use AC_LINK_IFELSE instead of AC_TRY_LINK.
+
 	* configure.in (OCTAVE_LOCAL_BUFFER): Use < T > instead of <T>.
 	From Clinton Chee <chee@parallel.hpc.unsw.edu.au>.
 

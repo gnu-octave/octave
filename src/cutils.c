@@ -128,7 +128,7 @@ octave_snprintf (const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
 
-  retval = octave_vsnprintf (n, fmt, args);
+  retval = octave_vsnprintf (fmt, args);
 
   va_end (args);
 

@@ -30,8 +30,8 @@ function h = __axis_label__ (caller, text)
     usage ("__axis_label__ (caller, text)");
   elseif (nargin == 2)
     if (isstr (text))
-      eval (sprintf ("__gnuplot_set__ %s \"%s\"", caller,
-		     undo_string_escapes (undo_string_escapes (text))));
+      __gnuplot_raw__ (sprintf ("set %s \"%s\";\n", caller,
+				undo_string_escapes (text)));
       if (automatic_replot)
 	replot ();
       endif

@@ -41,13 +41,13 @@ function mesh (x, y, z)
   if (nargin == 1)
     z = x;
     if (ismatrix (z))
-      __gnuplot_set__ hidden3d;
-      __gnuplot_set__ data style lines;
-      __gnuplot_set__ surface;
-      __gnuplot_set__ nocontour;
+      __gnuplot_raw__ ("set hidden3d;\n");
+      __gnuplot_raw__ ("set data style lines;\n");
+      __gnuplot_raw__ ("set surface;\n");
+      __gnuplot_raw__ ("set nocontour;\n");
       __gnuplot_set__ noparametric;
-      __gnuplot_set__ nologscale;
-      __gnuplot_set__ view 60, 30, 1, 1
+      __gnuplot_raw__ ("set nologscale;\n");
+      __gnuplot_raw__ ("set view 60, 30, 1, ;\n");
       __gnuplot_splot__ (z');
     else
       error ("mesh: argument must be a matrix");
@@ -69,13 +69,13 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        __gnuplot_set__ hidden3d;
-        __gnuplot_set__ data style lines;
-        __gnuplot_set__ surface;
-        __gnuplot_set__ nocontour;
-        __gnuplot_set__ nologscale;
+        __gnuplot_raw__ ("set hidden3d;\n");
+        __gnuplot_raw__ ("set data style lines;\n");
+        __gnuplot_raw__ ("set surface;\n");
+        __gnuplot_raw__ ("set nocontour;\n");
+        __gnuplot_raw__ ("set nologscale;\n");
         __gnuplot_set__ parametric;
-        __gnuplot_set__ view 60, 30, 1, 1
+        __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
         __gnuplot_splot__ (zz);
         __gnuplot_set__ noparametric;
       else
@@ -97,13 +97,13 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        __gnuplot_set__ hidden3d;
-        __gnuplot_set__ data style lines;
-        __gnuplot_set__ surface;
-        __gnuplot_set__ nocontour;
-        __gnuplot_set__ nologscale;
+        __gnuplot_raw__ ("set hidden3d;\n")
+        __gnuplot_raw__ ("set data style lines;\n");
+        __gnuplot_raw__ ("set surface;\n");
+        __gnuplot_raw__ ("set nocontour;\n");
+        __gnuplot_raw__ ("set nologscale;\n");
         __gnuplot_set__ parametric;
-        __gnuplot_set__ view 60, 30, 1, 1
+        __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
         __gnuplot_splot__ (zz);
         __gnuplot_set__ noparametric;
       else

@@ -34,10 +34,10 @@ function top_title (text)
   endif
 
   if (isstr (text))
-    __gnuplot_set__ bottom_title;
-    __gnuplot_set__ title;
-    eval (sprintf ("__gnuplot_set__ top_title \"%s\"",
-		   undo_string_escapes (undo_string_escapes (text))));
+    __gnuplot_raw__ ("set bottom_title;\n")
+    __gnuplot_raw__ ("set title;\n")
+    __gnuplot_raw__ (sprintf ("set top_title \"%s\";\n",
+			      undo_string_escapes (text)));
     if (automatic_replot)
       replot ();
     endif

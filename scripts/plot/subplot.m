@@ -157,10 +157,10 @@ function subplot (rows, columns, index)
 
       gnuplot_command_replot = "cle;rep";
 
-      __gnuplot_set__ multiplot;
+      __gnuplot_raw__ ("set multiplot;\n");
 
-      eval (sprintf ("__gnuplot_set__ size %g, %g", __multiplot_xsize__,
-                     __multiplot_ysize__));
+      __gnuplot_raw__ (sprintf ("set size %g, %g;\n",
+				__multiplot_xsize__, __multiplot_ysize__));
     endif
 
     ## get the sub plot location
@@ -175,7 +175,7 @@ function subplot (rows, columns, index)
     xo = (xp - 1.0) * __multiplot_xsize__;
     yo = (rows - yp) * __multiplot_ysize__;
 
-    eval (sprintf ("__gnuplot_set__ origin %g, %g", xo, yo));
+    __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
   endif
 

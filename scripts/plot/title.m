@@ -34,8 +34,8 @@ function h = title (text)
   endif
 
   if (isstr (text))
-    eval (sprintf ("__gnuplot_set__ title \"%s\"",
-		   undo_string_escapes (undo_string_escapes (text))));
+    __gnuplot_raw__ (sprintf ("set title \"%s\";\n",
+			      undo_string_escapes (text)));
     if (automatic_replot)
       replot ();
     endif

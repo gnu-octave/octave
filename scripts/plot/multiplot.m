@@ -73,17 +73,17 @@ function multiplot (xn, yn)
       error ("multiplot: xn and yn have to be positive integers");
     endif
 
-    __gnuplot_set__ multiplot;
+    __gnuplot_raw__ ("set multiplot;\n");
 
     xsize = 1.0 ./ xn;
     ysize = 1.0 ./ yn;
 
-    eval (sprintf ("__gnuplot_set__ size %g, %g", xsize, ysize));
+    __gnuplot_raw__ (sprintf ("set size %g, %g;\n", xsize, ysize));
 
     xo = 0.0;
     yo = (yn - 1.0)*ysize;
 
-    eval (sprintf ("__gnuplot_set__ origin %g, %g", xo, yo));
+    __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
     __multiplot_mode__ = 1;
     __multiplot_xsize__ = xsize;

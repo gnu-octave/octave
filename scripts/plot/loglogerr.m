@@ -48,9 +48,9 @@ function loglogerr (varargin)
     usage ("loglogerr(...)");
   endif
 
-  __gnuplot_set__ logscale x;
-  __gnuplot_set__ logscale y;
-  __gnuplot_set__ nopolar;
+  __gnuplot_raw__ ("set logscale x;\n");
+  __gnuplot_raw__ ("set logscale y;\n");
+  __gnuplot_raw__ ("set nopolar;\n");
 
   __errcomm__ ("loglogerr", varargin{:});
 

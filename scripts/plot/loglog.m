@@ -35,9 +35,9 @@ function loglog (varargin)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  __gnuplot_set__ logscale x;
-  __gnuplot_set__ logscale y;
-  __gnuplot_set__ nopolar;
+  __gnuplot_raw__ ("set logscale x;\n");
+  __gnuplot_raw__ ("logscale y;\n");
+  __gnuplot_raw__ ("nopolar;\n");
 
   __plt__ ("loglog", varargin{:});
 

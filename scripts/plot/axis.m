@@ -129,7 +129,7 @@ function curr_axis = axis (ax, varargin)
 
   if (nargin == 0)
     if (nargout == 0)
-      __gnuplot_set__ autoscale;
+      __gnuplot_raw__ ("set autoscale;\n");
     else
       curr_axis = __current_axis__;
     endif
@@ -140,95 +140,95 @@ function curr_axis = axis (ax, varargin)
 
     ## 'matrix mode' to reverse the y-axis
     if (strcmp (ax, "ij"))
-      __gnuplot_set__ yrange [] reverse; 
+      __gnuplot_raw__ ("set yrange [] reverse;\n"); 
     elseif (strcmp (ax, "xy"))
-      __gnuplot_set__ yrange [] noreverse;
+      __gnuplot_raw__ ("set yrange [] noreverse;\n");
 
       ## aspect ratio
     elseif (strcmp (ax, "image"))
-      __gnuplot_set__ size ratio -1; 
-      __gnuplot_set__ autoscale; ## XXX FIXME XXX should be the same as "tight"
+      __gnuplot_raw__ ("set size ratio -1;\n"); 
+      __gnuplot_raw__ ("set autoscale;\n"); ## XXX FIXME XXX should be the same as "tight"
     elseif (strcmp (ax, "equal"))
-      __gnuplot_set__ size ratio -1;
+      __gnuplot_raw__ ("set size ratio -1;\n");
     elseif (strcmp (ax, "square"))
-      __gnuplot_set__ size ratio 1;
+      __gnuplot_raw__ ("set size ratio 1;\n");
     elseif (strcmp (ax, "normal"))
-      __gnuplot_set__ size noratio;
+      __gnuplot_raw__ ("set size noratio;\n");
 
 
       ## axis limits
     elseif (len >= 4 && strcmp (ax(1:4), "auto"))
       if (len > 4)
-      	eval (sprintf ("__gnuplot_set__ autoscale %s;", ax(5:len)));
+      	__gnuplot_raw__ (sprintf ("set autoscale %s;\n", ax(5:len)));
       else
-	__gnuplot_set__ autoscale;
+	__gnuplot_raw__ ("set autoscale;\n");
       endif
     elseif (strcmp (ax, "manual"))
       ## fixes the axis limits, like axis(axis) should;
-      __gnuplot_set__ xrange [] writeback;
-      __gnuplot_set__ yrange [] writeback;
-      __gnuplot_set__ zrange [] writeback;
+      __gnuplot_raw__ ("set xrange [] writeback;\n");
+      __gnuplot_raw__ ("set yrange [] writeback;\n");
+      __gnuplot_raw__ ("set zrange [] writeback;\n");
       ## XXX FIXME XXX if writeback were set in plot, no need to replot here.
       replot ();
-      __gnuplot_set__ noautoscale x;
-      __gnuplot_set__ noautoscale y;
-      __gnuplot_set__ noautoscale z;
+      __gnuplot_raw__ ("set noautoscale x;\n");
+      __gnuplot_raw__ ("set noautoscale y;\n");
+      __gnuplot_raw__ ("set noautoscale z;\n");
     elseif (strcmp (ax, "tight"))
       ## XXX FIXME XXX if tight, plot must set ranges to limits of the
       ## all the data on the current plot, even if from a previous call.
       ## Instead, just let gnuplot do as it likes.
-      __gnuplot_set__ autoscale;
+      __gnuplot_raw__ ("set autoscale;\n");
 
 
       ## tic marks
     elseif (strcmp (ax, "on"))
-      __gnuplot_set__ xtics;
-      __gnuplot_set__ ytics;
-      __gnuplot_set__ ztics;
-      __gnuplot_set__ format;
+      __gnuplot_raw__ ("set xtics;\n");
+      __gnuplot_raw__ ("set ytics;\n");
+      __gnuplot_raw__ ("set ztics;\n");
+      __gnuplot_raw__ ("set format;\n");
     elseif (strcmp (ax, "off"))
-      __gnuplot_set__ noxtics;
-      __gnuplot_set__ noytics;
-      __gnuplot_set__ noztics;
+      __gnuplot_raw__ ("set noxtics;\n");
+      __gnuplot_raw__ ("set noytics;\n");
+      __gnuplot_raw__ ("set noztics;\n");
     elseif (strcmp (ax, "tic"))
-      __gnuplot_set__ xtics;
-      __gnuplot_set__ ytics;
-      __gnuplot_set__ ztics;
+      __gnuplot_raw__ ("set xtics;\n");
+      __gnuplot_raw__ ("set ytics;\n");
+      __gnuplot_raw__ ("set ztics;\n");
     elseif (len > 3 && strcmp (ax(1:3), "tic"))
       if (any (ax == "x"))
-	__gnuplot_set__ xtics;
+	__gnuplot_raw__ ("set xtics;\n");
       else
-	__gnuplot_set__ noxtics;
+	__gnuplot_raw__ ("set noxtics;\n");
       endif
       if (any (ax == "y"))
-	__gnuplot_set__ ytics;
+	__gnuplot_raw__ ("set ytics;\n");
       else
-	__gnuplot_set__ noytics;
+	__gnuplot_raw__ ("set noytics;\n");
       endif
       if (any (ax == "z"))
-	__gnuplot_set__ ztics;
+	__gnuplot_raw__ ("set ztics;\n");
       else
-	__gnuplot_set__ noztics;
+	__gnuplot_raw__ ("set noztics;\n");
       endif
     elseif (strcmp (ax, "label"))
-      __gnuplot_set__ format;
+      __gnuplot_raw__ ("set format;\n");
     elseif (strcmp (ax, "nolabel"))
-      __gnuplot_set__ format "\\0";
+      __gnuplot_raw__ ("set format \"\\0\";\n");
     elseif (len > 5 && strcmp (ax(1:5), "label"))
       if (any (ax == "x"))
-	__gnuplot_set__ format x;
+	__gnuplot_raw__ ("set format x;\n");
       else
-	__gnuplot_set__ format x "\\0";
+	__gnuplot_raw__ ("set format x \"\\0\";\n");
       endif
       if (any (ax == "y"))
-	__gnuplot_set__ format y;
+	__gnuplot_raw__ ("set format y;\n");
       else
-	__gnuplot_set__ format y "\\0";
+	__gnuplot_raw__ ("set format y \"\\0\";\n");
       endif
       if (any (ax == "z"))
-	__gnuplot_set__ format z;
+	__gnuplot_raw__ ("set format z;\n");
       else
-	__gnuplot_set__ format z "\\0";
+	__gnuplot_raw__ ("set format z \"\\0\";\n");
       endif
 
     else
@@ -246,15 +246,15 @@ function curr_axis = axis (ax, varargin)
     __current_axis__ = reshape (ax, 1, len);
 
     if (len > 1)
-      eval (sprintf ("__gnuplot_set__ xrange [%g:%g];", ax(1), ax(2)));
+      __gnuplot_raw__ (sprintf ("set xrange [%g:%g];\n", ax(1), ax(2)));
     endif
 
     if (len > 3)
-      eval (sprintf ("__gnuplot_set__ yrange [%g:%g];", ax(3), ax(4)));
+      __gnuplot_raw__ (sprintf ("set yrange [%g:%g];\n", ax(3), ax(4)));
     endif
 
     if (len > 5)
-      eval (sprintf ("__gnuplot_set__ zrange [%g:%g];", ax(5), ax(6)));
+      __gnuplot_raw__ (sprintf ("set zrange [%g:%g];\n", ax(5), ax(6)));
     endif
 
   else

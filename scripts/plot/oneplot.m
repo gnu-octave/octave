@@ -31,9 +31,9 @@ function oneplot ()
   global __multiplot_mode__ = 0;
 
   if (__multiplot_mode__)
-    __gnuplot_set__ nomultiplot;
-    __gnuplot_set__ size 1, 1;
-    __gnuplot_set__ origin 0, 0;
+    __gnuplot_raw__ ("set nomultiplot;\n");
+    __gnuplot_raw__ ("set size 1, 1;\n");
+    __gnuplot_raw__ ("set origin 0, 0;\n");
     __multiplot_mode__ = 0;
     gnuplot_command_replot = "rep";
   endif

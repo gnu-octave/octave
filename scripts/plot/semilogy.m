@@ -35,9 +35,9 @@ function semilogy (varargin)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  __gnuplot_set__ nologscale x;
-  __gnuplot_set__ logscale y;
-  __gnuplot_set__ nopolar;
+  __gnuplot_raw__ ("set nologscale x;\n");
+  __gnuplot_raw__ ("set logscale y;\n");
+  __gnuplot_raw__ ("set nopolar;\n");
 
   __plt__ ("semilogy", varargin{:});
 

@@ -1,4 +1,24 @@
+2005-03-28  John W. Eaton  <jwe@octave.org>
+
+	* plot/contour.m, plot/mesh.m: Continue to use __gnuplot_raw__ for
+	setting {no,}parametric.
+	* plot/figure.m: Likewise, for setting terminal type.
+
+	*  __axis_label__.m:, plot/axis.m, plot/bottom_title.m,
+	plot/contour.m, plot/figure.m, plot/multiplot.m, plot/mplot.m,
+	plot/plot_border.m, plot/subplot.m, plot/subwindow.m,
+	plot/title.m, plot/top_title.m: Avoid eval.
+
 2005-03-28  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
+
+	* plot/__axis_label__.m, plot/axis.m, plot/bottom_title.m,
+	plot/contour.m, plot/errorbar.m, plot/figure.m, plot/grid.m,
+	plot/loglogerr.m, plot/loglog.m, plot/mesh.m, plot/mplot.m,
+	plot/multiplot.m, plot/oneplot.m, plot/plot_border.m, plot/plot.m,
+	plot/polar.m, plot/semilogxerr.m, plot/semilogx.m,
+	plot/semilogyerr.m, plot/semilogy.m, plot/shg.m, plot/subplot.m,
+	plot/subwindow.m, plot/title.m, plot/top_title.m:
+	Use __gnuplot_raw__ instad of __gnuplot_set__.
 
 	* plot/replot.m: Use __gnuplot_replot__, not __greplot__.
 

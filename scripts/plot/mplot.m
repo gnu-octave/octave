@@ -44,8 +44,8 @@ function mplot (varargin)
   global __multiplot_xi__;
   global __multiplot_yi__;
 
-  __gnuplot_set__ nologscale;
-  __gnuplot_set__ nopolar;
+  __gnuplot_raw__ ("set nologscale;\n");
+  __gnuplot_raw__ ("set nopolar;\n");
 
   __plt__ ("plot", varargin{:});
 
@@ -67,7 +67,7 @@ function mplot (varargin)
     xo = (__multiplot_xi__ - 1.0) * __multiplot_xsize__;
     yo = (__multiplot_yn__ - __multiplot_yi__) * __multiplot_ysize__;
 
-    eval (sprintf ("__gnuplot_set__ origin %g, %g", xo, yo));
+    __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
   endif
 

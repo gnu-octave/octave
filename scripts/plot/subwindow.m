@@ -71,7 +71,7 @@ function subwindow (xn, yn)
   xo = (xn - 1.0) * __multiplot_xsize__;
   yo = (__multiplot_yn__ - yn) * __multiplot_ysize__;
 
-  eval (sprintf ("__gnuplot_set__ origin %g, %g", xo, yo));
+  __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
   clearplot;
 

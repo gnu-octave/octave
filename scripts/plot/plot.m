@@ -175,8 +175,8 @@ function plot (varargin)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  __gnuplot_set__ nologscale;
-  __gnuplot_set__ nopolar;
+  __gnuplot_raw__ ("set nologscale;\n");
+  __gnuplot_raw__ ("set nopolar;\n");
 
   __plt__ ("plot", varargin{:});
 

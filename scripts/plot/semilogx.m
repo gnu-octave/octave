@@ -35,9 +35,9 @@ function semilogx (varargin)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  __gnuplot_set__ logscale x;
-  __gnuplot_set__ nologscale y;
-  __gnuplot_set__ nopolar;
+  __gnuplot_raw__ ("set logscale x;\n");
+  __gnuplot_raw__ ("set nologscale y;\n");
+  __gnuplot_raw__ ("set nopolar;\n");
 
   __plt__ ("semilogx", varargin{:});
 

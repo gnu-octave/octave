@@ -525,8 +525,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
 }
 
 static octave_value_list
-eval_string (const string& s, int print, int& parse_status,
-	     int nargout) 
+eval_string (const string& s, int print, int& parse_status, int nargout)
 {
   begin_unwind_frame ("eval_string");
 

@@ -128,6 +128,10 @@ extern bool is_globally_visible (const string&);
 extern tree_fvc *is_valid_function (const octave_value&, const string&,
 				    int warn = 0); 
 
+tree_fvc *extract_function (const octave_value& arg, const string& warn_for,
+			    const string& fname, const string& header,
+			    const string& trailer);
+
 extern string_vector make_name_list (void);
 
 extern void install_builtin_mapper (const builtin_mapper_function& mf);

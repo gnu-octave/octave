@@ -26,26 +26,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 
 class octave_value;
+class octave_value_list;
 class tree_function;
 class tree_statement_list;
 class charMatrix;
 
 #include <string>
 
-extern void clean_up_and_exit (int) GCC_ATTR_NORETURN;
+extern void
+clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
-extern void parse_and_execute (FILE *f, int print = 0);
+extern void
+parse_and_execute (FILE *f, int print = 0);
 
-extern void parse_and_execute (const string& s, int print = 0,
-			       int verbose = 0,
-			       const char *warn_for = 0);
+extern void
+parse_and_execute (const string& s, int print = 0, int verbose = 0,
+		   const char *warn_for = 0);
 
-extern octave_value eval_string (const string&, int print,
-				  int& parse_status);
+extern octave_value
+eval_string (const string&, int print, int& parse_status);
 
-extern int main_loop (void);
+extern int
+main_loop (void);
 
-extern void do_octave_atexit (void);
+extern void
+do_octave_atexit (void);
 
 // argv[0] for this program.
 extern string Vprogram_invocation_name;

@@ -272,6 +272,53 @@ is_valid_function (const octave_value& arg, const string& warn_for, int warn)
   return ans;
 }
 
+tree_fvc *
+extract_function (const octave_value& arg, const string& warn_for,
+		  const string& fname, const string& header,
+		  const string& trailer)
+{
+  tree_fvc *retval = 0;
+
+  retval = is_valid_function (arg, warn_for, 0);
+
+  if (! retval)
+    {
+      string s = arg.string_value ();
+
+      string cmd = header;
+      cmd.append (s);
+      cmd.append (trailer);
+
+      if (! error_state)
+	{
+	  int parse_status;
+
+	  eval_string (cmd, 0, parse_status);
+
+	  if (parse_status == 0)
+	    {
+	      retval = is_valid_function (fname, warn_for, 0);
+      
+	      if (! retval)
+		{
+		  error ("%s: `%s' is not valid as a function",
+			 warn_for.c_str (), fname.c_str ());
+		  return retval;
+		}
+	    }
+	  else
+	    error ("%s: `%s' is not valid as a function",
+		   warn_for.c_str (), fname.c_str ());
+	}
+      else
+	error ("%s: expecting first argument to be a string",
+	       warn_for.c_str ());
+    }
+
+  return retval;
+}
+
+
 DEFUN (is_global, args, ,
   "is_global (X): return 1 if the string X names a global variable\n\
 otherwise, return 0.")

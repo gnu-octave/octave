@@ -1,5 +1,8 @@
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (Array<T>::resize_and_fill): Allow number of dimensions
+	to change.  From Petter Risholm  <risholm@stud.ntnu.no>.
+
 	* oct-rand.cc, CColVector.cc, CMatrix.cc, CRowVector.cc,
 	CmplxAEPBAL.cc CmplxCHOL.cc, CmplxHESS.cc, CmplxLU.cc, CmplxQR.cc,
 	CmplxQRP.cc, CmplxSCHUR.cc, CmplxSVD.cc, CollocWt.cc, DASPK.cc,

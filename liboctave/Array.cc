@@ -700,18 +700,25 @@ Array<T>::resize_and_fill (const dim_vector& dims, const T& val)
 	}
     }
 
-  bool no_change = true;
+  bool same_size = true;
 
-  for (int i = 0; i < n; i++)
+  if (dimensions.length () != n)
     {
-      if (dims(i) != dimensions(i))
+      same_size = false;
+    }
+  else
+    {
+      for (int i = 0; i < n; i++)
 	{
-	  no_change = false;
-	  break;
+	  if (dims(i) != dimensions(i))
+	    {
+	      same_size = false;
+	      break;
+	    }
 	}
     }
 
-  if (no_change)
+  if (same_size)
     return;
 
   typename Array<T>::ArrayRep *old_rep = rep;

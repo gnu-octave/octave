@@ -352,7 +352,9 @@ warning (const char *fmt, ...)
 {
   if (Vwarning_option != "off")
     {
-      if (Vwarning_option == "backtrace" && ! warning_state)
+      if (curr_sym_tab != top_level_sym_tab
+	  && Vwarning_option == "backtrace"
+	  && ! warning_state)
 	pr_where ("warning");
 
       va_list args;

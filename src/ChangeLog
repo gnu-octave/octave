@@ -1,5 +1,10 @@
 2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in: Use $@-t instead of $@.t.
+	(doc-files): Use move-if-change when creating doc-files.
+
+	* error.cc (warning): Don't print warning backtrace at top level.
+
 	* ov-cell.cc (octave_cell::print_raw): Print empty dimensions too.
 	(octave_cell::print_name_tag): Don't print new line if cell is empty.
 

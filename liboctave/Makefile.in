@@ -380,8 +380,8 @@ bin-dist:
 
 $(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
-	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@.t
-	@$(top_srcdir)/move-if-change $@.t $@
+	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
+	@$(top_srcdir)/move-if-change $@-t $@
 
 # If missing, GNU make attempts to create them in the reverse of the
 # order in which they are listed here.  We rely on that fact to ensure

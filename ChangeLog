@@ -1,3 +1,7 @@
+2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in: Use $@-t instead of $@.tmp or $@.t.
+
 2002-07-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mk-opts.pl: New file.

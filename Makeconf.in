@@ -312,8 +312,8 @@ pic/%.o : %.cc
 	  sed \
               $(DEPEND_EXTRA_SED_PATTERN) \
 	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
-	      -e 's,$*\.o,pic/& & $@,g' > $@.tmp
-	@mv $@.tmp $@
+	      -e 's,$*\.o,pic/& & $@,g' > $@-t
+	@mv $@-t $@
 
 # And one for .c files.too:
 
@@ -324,8 +324,8 @@ pic/%.o : %.cc
 	  sed \
               $(DEPEND_EXTRA_SED_PATTERN) \
 	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
-	      -e 's,$*\.o,pic/& & $@,g' > $@.tmp
-	@mv $@.tmp $@
+	      -e 's,$*\.o,pic/& & $@,g' > $@-t
+	@mv $@-t $@
 
 define do-subdir-for-command
 echo making $@ in $d; cd $d; $(MAKE) $@; cd ..;
@@ -418,13 +418,13 @@ sed < $< \
   -e "s;%OCTAVE_CONF_YACC%;\"${YACC}\";" \
   -e "s;%OCTAVE_CONF_YFLAGS%;\"${YFLAGS}\";" \
   -e "s;%OCTAVE_CONF_config_opts%;\"${config_opts}\";" | \
-  sed  -e "s;%OCTAVE_CONF_DEFS%;\"${UGLY_DEFS}\";" > $@.tmp
-$(top_srcdir)/move-if-change $@.tmp $@
+  sed  -e "s;%OCTAVE_CONF_DEFS%;\"${UGLY_DEFS}\";" > $@-t
+$(top_srcdir)/move-if-change $@-t $@
 endef
 
 define do-subst-default-vals
 echo "making $@ from $<"
-sed < $< > $@.tmp \
+sed < $< > $@-t \
   -e "s;%OCTAVE_ARCHLIBDIR%;\"${archlibdir}\";" \
   -e "s;%OCTAVE_BINDIR%;\"${bindir}\";" \
   -e "s;%OCTAVE_CANONICAL_HOST_TYPE%;\"${canonical_host_type}\";" \
@@ -456,5 +456,5 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_OCTLIBDIR%;\"${octlibdir}\";" \
   -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
   -e "s;%OCTAVE_VERSION%;\"${version}\";"
-$(top_srcdir)/move-if-change $@.tmp $@
+$(top_srcdir)/move-if-change $@-t $@
 endef

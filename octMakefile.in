@@ -62,9 +62,11 @@ all: octave-bug mkoctfile $(SUBDIRS)
 
 octave-bug: octave-bug.in Makeconf octMakefile
 	@$(do-subst-config-vals)
+	chmod a+rx $@
 
 mkoctfile: mkoctfile.in Makeconf octMakefile
 	@$(do-subst-config-vals)
+	chmod a+rx $@
 
 $(SUBDIRS):
 	echo making all in $@

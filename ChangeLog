@@ -1,3 +1,8 @@
+Fri Nov  1 01:33:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (octave-bug, mkoctfile): After substituting
+	values, chmod a+rx.
+
 Thu Oct 31 13:50:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (DISTFILES): Add NEWS.[0-9].

@@ -540,6 +540,12 @@ Miscellaneous:
   * Implement some functions for interprocess communication:  bind,
     accept, connect, gethostbyname, etc.
 
+  * The installation process should also install octave.el.  This
+    needs to detect the appropriate Emacs binary to use to
+    byte-compile the .el file.  Following GNU Emacs philosophy,
+    installation would be into $(prefix)/share/emacs/site-lisp by
+    default, but it should be selectable.
+
   * The ability to transparently handle very large files:
 
     Juhana K Kouhia <kouhia@nic.funet.fi> wrote:

@@ -1,12 +1,13 @@
       SUBROUTINE DLASQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
-     $                   ITER, NDIV )
+     $                   ITER, NDIV, IEEE )
 *
 *  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     December 22, 1999
 *
 *     .. Scalar Arguments ..
+      LOGICAL            IEEE
       INTEGER            I0, ITER, N0, NDIV, NFAIL, PP
       DOUBLE PRECISION   DESIG, DMIN, QMAX, SIGMA
 *     ..
@@ -16,6 +17,7 @@
 *
 *  Purpose
 *  =======
+*
 *  DLASQ3 checks for deflation, computes a shift (TAU) and calls dqds.
 *  In case of failure it changes shifts, and tries again until output
 *  is positive.
@@ -30,7 +32,7 @@
 *         Last index.
 *
 *  Z      (input) DOUBLE PRECISION array, dimension ( 4*N )
-*         Z holds the qd array.
+*         Z holds the qd array. 
 *
 *  PP     (input) INTEGER
 *         PP=0 for ping, PP=1 for pong.
@@ -45,7 +47,7 @@
 *         Lower order part of SIGMA
 *
 *  QMAX   (input) DOUBLE PRECISION
-*         Maximum value of q.
+*         Maximum value of q.        
 *
 *  NFAIL  (output) INTEGER
 *         Number of times shift was too big.
@@ -59,61 +61,67 @@
 *  TTYPE  (output) INTEGER
 *         Shift type.
 *
+*  IEEE   (input) LOGICAL
+*         Flag for IEEE or non IEEE arithmetic (passed to DLASQ5).
+*
 *  =====================================================================
 *
 *     .. Parameters ..
       DOUBLE PRECISION   CBIAS
       PARAMETER          ( CBIAS = 1.50D0 )
-      DOUBLE PRECISION   ZERO, QURTR, HALF, ONE, TWO, TEN
+      DOUBLE PRECISION   ZERO, QURTR, HALF, ONE, TWO, HUNDRD
       PARAMETER          ( ZERO = 0.0D0, QURTR = 0.250D0, HALF = 0.5D0,
-     $                   ONE = 1.0D0, TWO = 2.0D0, TEN = 10.0D0 )
+     $                     ONE = 1.0D0, TWO = 2.0D0, HUNDRD = 100.0D0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            IPN4, J4, N0IN, NN, TTYPE
-      DOUBLE PRECISION   DMIN1, DMIN2, DN, DN1, DN2, EPS, EPS2, S,
-     $                   SFMIN, T, TAU, TEMP
+      DOUBLE PRECISION   DMIN1, DMIN2, DN, DN1, DN2, EPS, S, SAFMIN, T, 
+     $                   TAU, TEMP, TOL, TOL2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLASQ4, DLASQ5, DLASQ6
 *     ..
-*     .. External Functions ..
+*     .. External Function ..
       DOUBLE PRECISION   DLAMCH
       EXTERNAL           DLAMCH
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SQRT
+      INTRINSIC          ABS, MIN, SQRT
 *     ..
 *     .. Save statement ..
-      SAVE               TTYPE, DMIN1, DMIN2, DN, DN1, DN2, TAU
+      SAVE               TTYPE
+      SAVE               DMIN1, DMIN2, DN, DN1, DN2, TAU
 *     ..
-*     .. Data statements ..
+*     .. Data statement ..
       DATA               TTYPE / 0 /
-      DATA               DMIN1 / ZERO / , DMIN2 / ZERO / , DN / ZERO / ,
-     $                   DN1 / ZERO / , DN2 / ZERO / , TAU / ZERO /
+      DATA               DMIN1 / ZERO /, DMIN2 / ZERO /, DN / ZERO /,
+     $                   DN1 / ZERO /, DN2 / ZERO /, TAU / ZERO /
 *     ..
 *     .. Executable Statements ..
 *
       N0IN = N0
-      EPS = DLAMCH( 'Precision' )*TEN
-      SFMIN = DLAMCH( 'Safe minimum' )
-      EPS2 = EPS**2
+      EPS = DLAMCH( 'Precision' )
+      SAFMIN = DLAMCH( 'Safe minimum' )
+      TOL = EPS*HUNDRD
+      TOL2 = TOL**2
 *
-*     Check for deflation.
+*     Check for deflation. 
 *
    10 CONTINUE
 *
       IF( N0.LT.I0 )
      $   RETURN
-      IF( N0.EQ.I0 )
+      IF( N0.EQ.I0 ) 
      $   GO TO 20
       NN = 4*N0 + PP
-      IF( N0.EQ.( I0+1 ) )
+      IF( N0.EQ.( I0+1 ) ) 
      $   GO TO 40
 *
-*     Check whether E(N0-1) is negligible, 1-by-1 case.
+*     Check whether E(N0-1) is negligible, 1 eigenvalue.
 *
-      IF( Z( NN-5 ).GT.EPS2*( SIGMA+Z( NN-3 ) ) .AND. Z( NN-2*PP-4 ).GT.
-     $    EPS2*Z( NN-7 ) )GO TO 30
+      IF( Z( NN-5 ).GT.TOL2*( SIGMA+Z( NN-3 ) ) .AND.
+     $    Z( NN-2*PP-4 ).GT.TOL2*Z( NN-7 ) )
+     $   GO TO 30
 *
    20 CONTINUE
 *
@@ -121,12 +129,13 @@
       N0 = N0 - 1
       GO TO 10
 *
-*     Check  whether E(N0-2) is negligible, 2-by-2 case.
+*     Check  whether E(N0-2) is negligible, 2 eigenvalues.
 *
    30 CONTINUE
 *
-      IF( Z( NN-9 ).GT.EPS2*SIGMA .AND. Z( NN-2*PP-8 ).GT.EPS2*
-     $    Z( NN-11 ) )GO TO 50
+      IF( Z( NN-9 ).GT.TOL2*SIGMA .AND.
+     $    Z( NN-2*PP-8 ).GT.TOL2*Z( NN-11 ) )
+     $   GO TO 50
 *
    40 CONTINUE
 *
@@ -135,12 +144,12 @@
          Z( NN-3 ) = Z( NN-7 )
          Z( NN-7 ) = S
       END IF
-      IF( Z( NN-5 ).GT.Z( NN-3 )*EPS2 ) THEN
+      IF( Z( NN-5 ).GT.Z( NN-3 )*TOL2 ) THEN
          T = HALF*( ( Z( NN-7 )-Z( NN-3 ) )+Z( NN-5 ) )
          S = Z( NN-3 )*( Z( NN-5 ) / T )
          IF( S.LE.T ) THEN
-            S = Z( NN-3 )*( Z( NN-5 ) / ( T*( ONE+SQRT( ONE+S /
-     $          T ) ) ) )
+            S = Z( NN-3 )*( Z( NN-5 ) /
+     $          ( T*( ONE+SQRT( ONE+S / T ) ) ) )
          ELSE
             S = Z( NN-3 )*( Z( NN-5 ) / ( T+SQRT( T )*SQRT( T+S ) ) )
          END IF
@@ -180,9 +189,9 @@
             END IF
             DMIN2 = MIN( DMIN2, Z( 4*N0+PP-1 ) )
             Z( 4*N0+PP-1 ) = MIN( Z( 4*N0+PP-1 ), Z( 4*I0+PP-1 ),
-     $                       Z( 4*I0+PP+3 ) )
-            Z( 4*I0-PP ) = MIN( Z( 4*N0-PP ), Z( 4*I0-PP ),
-     $                     Z( 4*I0-PP+4 ) )
+     $                            Z( 4*I0+PP+3 ) )
+            Z( 4*N0-PP ) = MIN( Z( 4*N0-PP ), Z( 4*I0-PP ),
+     $                          Z( 4*I0-PP+4 ) )
             QMAX = MAX( QMAX, Z( 4*I0+PP-3 ), Z( 4*I0+PP+1 ) )
             DMIN = -ZERO
          END IF
@@ -190,9 +199,8 @@
 *
    70 CONTINUE
 *
-      IF( DMIN.LT.ZERO .OR. SFMIN*QMAX.LE.
-     $    MIN( Z( 4*N0+PP-1 ), Z( 4*N0+PP-9 ), DMIN2+Z( 4*N0-PP ) ) )
-     $     THEN
+      IF( DMIN.LT.ZERO .OR. SAFMIN*QMAX.LT.MIN( Z( 4*N0+PP-1 ),
+     $    Z( 4*N0+PP-9 ), DMIN2+Z( 4*N0-PP ) ) ) THEN
 *
 *        Choose a shift.
 *
@@ -203,25 +211,39 @@
 *
    80    CONTINUE
 *
-         CALL DLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN, DN1,
-     $                DN2 )
+         CALL DLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN,
+     $                DN1, DN2, IEEE )
 *
-         ITER = ITER + 1
          NDIV = NDIV + ( N0-I0+2 )
-*
-*        Check for NaN: "DMIN.NE.DMIN"
+         ITER = ITER + 1
 *
          IF( DMIN.NE.DMIN ) THEN
+*
+*           Check for NaN: "DMIN.NE.DMIN" 
+*
             Z( 4*N0+PP-1 ) = ZERO
-            TAU = ZERO
+            GO TO 70
+         ELSE IF( Z( 4*N0-PP ).LE.ZERO ) THEN
+*
+*           Possible unnecessary underflow in the e's.
+*           Call safe dqd.
+*
+            Z( 4*N0+PP-1 ) = ZERO
+            DMIN = ZERO
+            GO TO 70
+         ELSE IF( DMIN.EQ.ZERO .AND. TAU.EQ.ZERO ) THEN
+*
+*           Possible unnecessary underflow in the d's.
+*           Call safe dqd.
+*
+            Z( 4*N0+PP-1 ) = ZERO
             GO TO 70
          END IF
 *
 *        Check for convergence hidden by negative DN.
 *
-         IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND.
-     $       Z( 4*( N0-1 )-PP ).LT.EPS*( SIGMA+DN1 ) .AND. ABS( DN ).LT.
-     $       EPS*SIGMA ) THEN
+         IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND. Z( 4*( N0-1 )-PP ) 
+     $       .LT.TOL*( SIGMA+DN1 ) .AND. ABS( DN ).LT.TOL*SIGMA ) THEN
             Z( 4*( N0-1 )-PP+2 ) = ZERO
             DMIN = ABS( DMIN )
          END IF
@@ -235,16 +257,17 @@
 *           Failed twice. Play it safe.
 *
             IF( TTYPE.LT.-22 ) THEN
-               TAU = ZERO
-               GO TO 80
+               Z( 4*N0+PP-1 ) = ZERO
+               DMIN = ZERO
+               GO TO 70
             END IF
 *
             IF( DMIN1.GT.ZERO ) THEN
 *
 *              Late failure. Gives excellent shift.
 *
-               TAU = ( TAU+DMIN )*( ONE-TWO*EPS )
-               TTYPE = TTYPE - 11
+               TAU = ( TAU+DMIN )*( ONE-TWO*EPS ) 
+               TTYPE = TTYPE - 11 
             ELSE
 *
 *              Early failure. Divide by 4.
@@ -256,14 +279,14 @@
          END IF
       ELSE
          CALL DLASQ6( I0, N0, Z, PP, DMIN, DMIN1, DMIN2, DN, DN1, DN2 )
-         ITER = ITER + 1
          NDIV = NDIV + ( N0-I0 )
+         ITER = ITER + 1
          TAU = ZERO
       END IF
 *
       IF( TAU.LT.SIGMA ) THEN
          DESIG = DESIG + TAU
-         T = SIGMA + DESIG
+         T = SIGMA + DESIG 
          DESIG = DESIG - ( T-SIGMA )
       ELSE
          T = SIGMA + TAU

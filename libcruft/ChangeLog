@@ -1,3 +1,12 @@
+2000-02-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lapack/dbdsqr.f, lapack/dgeesv.f, lapack/dgelss.f,
+	lapack/dgesvd.f, lapack/dlasq1.f, lapack/dlasq2.f,
+	lapack/dlasq3.f, lapack/dlasq3.f, lapack/dlasq4.f,
+	lapack/dlasq5.f, lapack/dlasq6.f, lapack/zbdsqr.f,
+	lapack/zgelss.f, lapack/zgesvd.f, lapack/zhetd2.f:
+	Update from netlib.
+
 1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Update to Lapack version 3.0.

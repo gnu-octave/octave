@@ -71,6 +71,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
 #include <readline/tilde.h>
+
+extern void mode_string ();
 }
 
 // keeps a count of args sent to printf or scanf
@@ -2456,9 +2458,20 @@ mk_stat_map (struct stat& st)
 {
   Octave_map m;
 
+  unsigned mode = st.st_mode;
+  int mode_as_int = 1000 * ((mode & 7000) >> 9)
+    + 100 * ((mode & 0700) >> 6)
+      + 10 * ((mode & 0070) >> 3)
+	+ ((mode & 0007) >> 0);
+
+  char mode_as_string[11];
+  mode_string (mode, mode_as_string);
+  mode_as_string[10] = '\0';
+
   m["dev"] = (double) st.st_dev;
   m["ino"] = (double) st.st_ino;
-  m["mode"] = (double) st.st_mode;
+  m["mode"] = (double) mode_as_int;
+  m["modestr"] = mode_as_string;
   m["nlink"] = (double) st.st_nlink;
   m["uid"] = (double) st.st_uid;
   m["gid"] = (double) st.st_gid;
@@ -2519,6 +2532,41 @@ DEFUN ("stat", Fstat, Sstat, 1, 1,
 	  struct stat buf;
 
 	  if (stat (fname, &buf) < 0)
+	    retval = -1.0;
+	  else
+	    retval = tree_constant (mk_stat_map (buf));
+	}
+    }
+  else
+    print_usage ("stat");
+
+  return retval;
+}
+
+DEFUN ("lstat", Flstat, Slstat, 1, 1,
+  "lstat (NAME)\n\
+\n\
+  Like stat (NAME), but if NAME refers to a symbolic link, returns\n\
+  information about the link itself, not the file that it points to.")
+{
+  Octave_object retval;
+
+  if (args.length () == 1)
+    {
+      const char *name = args(0).string_value ();
+
+      static char *fname = 0;
+
+      if (fname)
+	free (fname);
+
+      fname = tilde_expand (name);
+
+      if (! error_state)
+	{
+	  struct stat buf;
+
+	  if (lstat (fname, &buf) < 0)
 	    retval = -1.0;
 	  else
 	    retval = tree_constant (mk_stat_map (buf));

@@ -77,19 +77,17 @@ fi
 
 AC_PROG_CC
 AC_GCC_TRADITIONAL
-
+AC_MINIX
+AC_ISC_POSIX
 AC_AIX
 AC_DYNIX_SEQ
-AC_ISC_POSIX
-AC_MINIX
-
 AC_ALLOCA
 AC_CONST
 
 # Do special things for gcc.
 
 case "$CC" in
-  gcc*)
+  gcc* | */gcc*)
     CFLAGS="-g -O -Wall"
     LDFLAGS="-g -O"
     gcc_version=`gcc -v 2>&1 | grep "^gcc version" | sed 's/^gcc version *//'`
@@ -103,6 +101,11 @@ EOF
     esac
     ;;
   *)
+    cat << EOF
+warning: found environment variable CC = \`$CC'.  If this is not a
+         derivative of GCC, you should probably consider using GCC
+         version 2.x instead.
+EOF
     CFLAGS="-g"
     LDFLAGS="-g"
     ;;
@@ -227,9 +230,23 @@ AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)dnl
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_STDC_HEADERS
-AC_HAVE_HEADERS(string.h)
+AC_HAVE_HEADERS(string.h varargs.h)
+AC_HAVE_HEADERS(sys/time.h sys/fcntl.h sys/ttold.h sys/ptem.h)
 AC_UNISTD_H
 AC_DIR_HEADER
+AC_HAVE_FUNCS(setvbuf getcwd bzero rindex vfprintf vsprintf)
+AC_STRUCT_TM
+AC_SETVBUF_REVERSED
+TERMLIBS=""
+for termlib in termcap terminfo curses termlib ; do
+  AC_HAVE_LIBRARY(${termlib}, [TERMLIBS="${TERMLIBS} -l${termlib}"])
+  case "${TERMLIBS}" in
+    *-l${termlib}*)
+      break
+    ;;
+  esac
+done
+AC_SUBST(TERMLIBS)
 
 # For now, don't define LEXLIB to be -lfl -- we don't use anything in
 # it, and it might not be installed.
@@ -401,8 +418,8 @@ define([tmpg], [libcruft/qpsol/Makefile libcruft/quadpack/Makefile])dnl
 define([tmph], [libcruft/ranlib/Makefile libcruft/villad/Makefile])dnl 
 define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph])dnl
 define([tmpA], [Makefile Makeconf libcruft/Makefile libcruft/Makerules])dnl
-define([tmpB], [liboctave/Makefile src/Makefile])dnl
-define([tmpC], [dld/Makefile readline/Makefile readline/doc/Makefile])dnl
+define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
+define([tmpC], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
 define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
 define([tmpE], [scripts/Makefile test/Makefile])dnl
 define([tmpF], [test/config/Makefile test/octave/Makefile])dnl

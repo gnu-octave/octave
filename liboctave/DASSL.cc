@@ -75,9 +75,6 @@ DAE::DAE (int size)
   n = size;
   t = 0.0;
 
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
-
   stop_time_set = 0;
   stop_time = 0.0;
 
@@ -104,9 +101,6 @@ DAE::DAE (Vector& state, double time, DAEFunc& f)
   t = time;
   x = state;
   xdot.resize (n, 0.0);
-
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -143,9 +137,6 @@ DAE::DAE (Vector& state, Vector& deriv, double time, DAEFunc& f)
   t = time;
   xdot = deriv;
   x = state;
-
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -279,6 +270,25 @@ DAE::integrate (double tout)
   else
     info [3] = 0;
 
+  double abs_tol = absolute_tolerance ();
+  double rel_tol = relative_tolerance ();
+
+  if (initial_step_size () >= 0.0)
+    {
+      rwork[2] = initial_step_size ();
+      info[7] = 1;
+    }
+  else
+    info[7] = 0;
+
+  if (maximum_step_size () >= 0.0)
+    {
+      rwork[2] = maximum_step_size ();
+      info[6] = 1;
+    }
+  else
+    info[6] = 0;
+
   double dummy;
   int idummy;
 
@@ -291,9 +301,8 @@ DAE::integrate (double tout)
  again:
 
   F77_FCN (ddassl) (ddassl_f, &n, &t, px, pxdot, &tout, info,
-		    &relative_tolerance, &absolute_tolerance, &idid,
-		    rwork, &lrw, iwork, &liw, &dummy, &idummy,
-		    ddassl_j);
+		    &rel_tol, &abs_tol, &idid, rwork, &lrw, iwork,
+		    &liw, &dummy, &idummy, ddassl_j);
 
   switch (idid)
     {
@@ -475,3 +484,10 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit)
 
   return retval;
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

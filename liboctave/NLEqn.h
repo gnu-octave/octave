@@ -31,7 +31,32 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define Vector ColumnVector
 #endif
 
-class NLEqn : public NLFunc
+class NLEqn_options
+{
+ public:
+
+  NLEqn_options (void);
+  NLEqn_options (const NLEqn_options& opt);
+
+  NLEqn_options& operator = (const NLEqn_options& opt);
+
+  ~NLEqn_options (void);
+
+  void init (void);
+  void copy (const NLEqn_options& opt);
+
+  void set_default_options (void);
+
+  void set_tolerance (double);
+
+  double tolerance (void);
+
+ private:
+
+  double x_tolerance;
+};
+
+class NLEqn : public NLFunc, public NLEqn_options
 {
  public:
 

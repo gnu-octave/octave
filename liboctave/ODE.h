@@ -29,7 +29,44 @@ class ostream;
 #include "Matrix.h"
 #include "ODEFunc.h"
 
-class ODE : public ODEFunc
+class ODE_options
+{
+ public:
+
+  ODE_options (void);
+  ODE_options (const ODE_options& opt);
+
+  ODE_options& operator = (const ODE_options& opt);
+
+  ~ODE_options (void);
+
+  void init (void);
+  void copy (const ODE_options& opt);
+
+  void set_default_options (void);
+
+  void set_absolute_tolerance (double);
+  void set_initial_step_size (double);
+  void set_maximum_step_size (double);
+  void set_minimum_step_size (double);
+  void set_relative_tolerance (double);
+
+  double absolute_tolerance (void);
+  double initial_step_size (void);
+  double maximum_step_size (void);
+  double minimum_step_size (void);
+  double relative_tolerance (void);
+
+ private:
+
+  double x_absolute_tolerance;
+  double x_initial_step_size;
+  double x_maximum_step_size;
+  double x_minimum_step_size;
+  double x_relative_tolerance;
+};
+
+class ODE : public ODEFunc, public ODE_options
 {
 public:
 
@@ -67,9 +104,6 @@ protected:
   int n;
   double t;
   ColumnVector x;
-
-  double absolute_tolerance;
-  double relative_tolerance;
 
   double stop_time;
   int stop_time_set;

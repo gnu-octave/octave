@@ -25,6 +25,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <strstream.h>
+
 #include "Quad.h"
 
 #include "tree-const.h"
@@ -33,6 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
+#include "pager.h"
 #include "f-quad.h"
 
 // Global pointer for user defined function required by quadrature functions.
@@ -51,6 +54,8 @@ builtin_quad_options_2 (const tree_constant *args, int nargin, int nargout)
   return quad_options (args, nargin, nargout);
 }
 #endif
+
+static Quad_options quad_opts;
 
 double
 quad_user_function (double x)
@@ -164,6 +169,7 @@ do_quad (const tree_constant *args, int nargin, int nargout)
       if (indefinite)
 	{
 	  IndefQuad iq (quad_user_function, bound, indef_type, abstol, reltol);
+	  iq.copy (quad_opts);
 	  val = iq.integrate (ier, nfun, abserr);
 	}
       else
@@ -171,11 +177,13 @@ do_quad (const tree_constant *args, int nargin, int nargout)
 	  if (have_sing)
 	    {
 	      DefQuad dq (quad_user_function, a, b, sing, abstol, reltol);
+	      dq.copy (quad_opts);
 	      val = dq.integrate (ier, nfun, abserr);
 	    }
 	  else
 	    {
 	      DefQuad dq (quad_user_function, a, b, abstol, reltol);
+	      dq.copy (quad_opts);
 	      val = dq.integrate (ier, nfun, abserr);
 	    }
 	}
@@ -195,13 +203,119 @@ do_quad (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+typedef void (Quad_options::*d_set_opt_mf) (double);
+typedef double (Quad_options::*d_get_opt_mf) (void);
+
+#define MAX_TOKENS 2
+
+struct QUAD_OPTIONS
+{
+  char *keyword;
+  char *kw_tok[MAX_TOKENS + 1];
+  int min_len[MAX_TOKENS + 1];
+  int min_toks_to_match;
+  d_set_opt_mf d_set_fcn;
+  d_get_opt_mf d_get_fcn;
+};
+
+static QUAD_OPTIONS quad_option_table[] =
+{
+  { "absolute tolerance",
+    { "absolute", "tolerance", NULL, },
+    { 1, 0, 0, }, 1,
+    Quad_options::set_absolute_tolerance,
+    Quad_options::absolute_tolerance, },
+
+  { "relative tolerance",
+    { "relative", "tolerance", NULL, },
+    { 1, 0, 0, }, 1,
+    Quad_options::set_relative_tolerance,
+    Quad_options::relative_tolerance, },
+
+  { NULL,
+    { NULL, NULL, NULL, },
+    { 0, 0, 0, }, 0,
+    NULL, NULL, },
+};
+
+static void
+print_quad_option_list (void)
+{
+  ostrstream output_buf;
+
+  print_usage ("quad_options", 1);
+
+  output_buf << "\n"
+	     << "Options for quad include:\n\n"
+	     << "  keyword                                  value\n"
+	     << "  -------                                  -----\n\n";
+
+  QUAD_OPTIONS *list = quad_option_table;
+
+  char *keyword;
+  while ((keyword = list->keyword) != (char *) NULL)
+    {
+      output_buf.form ("  %-40s ", keyword);
+
+      double val = (quad_opts.*list->d_get_fcn) ();
+      if (val < 0.0)
+	output_buf << "computed automatically";
+      else
+	output_buf << val;
+
+      output_buf << "\n";
+      list++;
+    }
+
+  output_buf << "\n" << ends;
+  maybe_page_output (output_buf);
+}
+
+static void
+do_quad_option (char *keyword, double val)
+{
+  QUAD_OPTIONS *list = quad_option_table;
+
+  while (list->keyword != (char *) NULL)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  (quad_opts.*list->d_set_fcn) (val);
+
+	  return;
+	}
+      list++;
+    }
+
+  warning ("quad_options: no match for `%s'", keyword);
+}
+
 tree_constant *
 quad_options (const tree_constant *args, int nargin, int nargout)
 {
-// Assumes that we have been given the correct number of arguments.
-
   tree_constant *retval = NULL_TREE_CONST;
-  error ("quad_options: not implemented yet");
+
+  if (nargin == 1)
+    {
+      print_quad_option_list ();
+    }
+  else if (nargin == 3)
+    {
+      if (args[1].is_string_type ())
+	{
+	  char *keyword = args[1].string_value ();
+	  double val = args[2].double_value ();
+	  do_quad_option (keyword, val);
+	}
+      else
+	print_usage ("quad_options");
+    }
+  else
+    {
+      print_usage ("quad_options");
+    }
+
   return retval;
 }
 

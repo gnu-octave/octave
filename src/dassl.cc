@@ -25,6 +25,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <strstream.h>
+
 #include "DAE.h"
 
 #include "tree-const.h"
@@ -32,6 +34,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
+#include "pager.h"
 #include "f-dassl.h"
 
 // Global pointer for user defined function required by dassl.
@@ -50,6 +53,8 @@ builtin_dassl_options_2 (const tree_constant *args, int nargin, int nargout)
   return dassl_options (args, nargin, nargout);
 }
 #endif
+
+static ODE_options dassl_opts;
 
 ColumnVector
 dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
@@ -153,6 +158,7 @@ dassl (const tree_constant *args, int nargin, int nargout)
 
   DAEFunc func (dassl_user_function);
   DAE dae (state, deriv, tzero, func);
+  dae.copy (dassl_opts);
 
   Matrix output;
   Matrix deriv_output;
@@ -168,13 +174,131 @@ dassl (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+typedef void (ODE_options::*d_set_opt_mf) (double);
+typedef double (ODE_options::*d_get_opt_mf) (void);
+
+#define MAX_TOKENS 3
+
+struct ODE_OPTIONS
+{
+  char *keyword;
+  char *kw_tok[MAX_TOKENS + 1];
+  int min_len[MAX_TOKENS + 1];
+  int min_toks_to_match;
+  d_set_opt_mf d_set_fcn;
+  d_get_opt_mf d_get_fcn;
+};
+
+static ODE_OPTIONS dassl_option_table[] =
+{
+  { "absolute tolerance",
+    { "absolute", "tolerance", NULL, NULL, },
+    { 1, 0, 0, 0, }, 1,
+    ODE_options::set_absolute_tolerance,
+    ODE_options::absolute_tolerance, },
+
+  { "initial step size",
+    { "initial", "step", "size", NULL, },
+    { 1, 0, 0, 0, }, 1,
+    ODE_options::set_initial_step_size,
+    ODE_options::initial_step_size, },
+
+  { "maximum step size",
+    { "maximum", "step", "size", NULL, },
+    { 2, 0, 0, 0, }, 1,
+    ODE_options::set_maximum_step_size,
+    ODE_options::maximum_step_size, },
+
+  { "relative tolerance",
+    { "relative", "tolerance", NULL, NULL, },
+    { 1, 0, 0, 0, }, 1,
+    ODE_options::set_relative_tolerance,
+    ODE_options::relative_tolerance, },
+
+  { NULL,
+    { NULL, NULL, NULL, NULL, },
+    { 0, 0, 0, 0, }, 0,
+    NULL, NULL, },
+};
+
+static void
+print_dassl_option_list (void)
+{
+  ostrstream output_buf;
+
+  print_usage ("dassl_options", 1);
+
+  output_buf << "\n"
+	     << "Options for dassl include:\n\n"
+	     << "  keyword                                  value\n"
+	     << "  -------                                  -----\n\n";
+
+  ODE_OPTIONS *list = dassl_option_table;
+
+  char *keyword;
+  while ((keyword = list->keyword) != (char *) NULL)
+    {
+      output_buf.form ("  %-40s ", keyword);
+
+      double val = (dassl_opts.*list->d_get_fcn) ();
+      if (val < 0.0)
+	output_buf << "computed automatically";
+      else
+	output_buf << val;
+
+      output_buf << "\n";
+      list++;
+    }
+
+  output_buf << "\n" << ends;
+  maybe_page_output (output_buf);
+}
+
+static void
+do_dassl_option (char *keyword, double val)
+{
+  ODE_OPTIONS *list = dassl_option_table;
+
+  while (list->keyword != (char *) NULL)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  (dassl_opts.*list->d_set_fcn) (val);
+
+	  return;
+	}
+      list++;
+    }
+
+  warning ("dassl_options: no match for `%s'", keyword);
+}
+
 tree_constant *
 dassl_options (const tree_constant *args, int nargin, int nargout)
 {
-// Assumes that we have been given the correct number of arguments.
-
   tree_constant *retval = NULL_TREE_CONST;
-  error ("dassl_options: not implemented yet");
+
+  if (nargin == 1)
+    {
+      print_dassl_option_list ();
+    }
+  else if (nargin == 3)
+    {
+      if (args[1].is_string_type ())
+	{
+	  char *keyword = args[1].string_value ();
+	  double val = args[2].double_value ();
+	  do_dassl_option (keyword, val);
+	}
+      else
+	print_usage ("dassl_options");
+    }
+  else
+    {
+      print_usage ("dassl_options");
+    }
+
   return retval;
 }
 

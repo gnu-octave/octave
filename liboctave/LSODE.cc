@@ -25,6 +25,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <math.h>
+#include <float.h>
+
 #include "ODE.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
@@ -47,9 +50,6 @@ ODE::ODE (void)
 {
   n = 0;
   t = 0.0;
-
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -81,9 +81,6 @@ ODE::ODE (int size)
 {
   n = size;
   t = 0.0;
-
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -117,9 +114,6 @@ ODE::ODE (const ColumnVector& state, double time, const ODEFunc& f)
   t = time;
   x = state;
 
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
-
   stop_time_set = 0;
   stop_time = 0.0;
 
@@ -129,7 +123,7 @@ ODE::ODE (const ColumnVector& state, double time, const ODEFunc& f)
   istate = 1;
   itol = 1;
   itask = 1;
-  iopt = 0;
+  iopt = 1;
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
@@ -224,15 +218,20 @@ ODE::integrate (double tout)
 
   if (stop_time_set)
     {
-      iopt = 1;
       itask = 4;
       rwork [0] = stop_time;
     }
   else
     {
-      iopt = 0;
       itask = 1;
     }
+
+  double abs_tol = absolute_tolerance ();
+  double rel_tol = relative_tolerance ();
+
+  rwork[4] = (initial_step_size () >= 0.0) ? initial_step_size () : 0.0;
+  rwork[5] = (maximum_step_size () >= 0.0) ? maximum_step_size () : 0.0;
+  rwork[6] = (minimum_step_size () >= 0.0) ? minimum_step_size () : 0.0;
 
   if (restart)
     {
@@ -243,9 +242,9 @@ ODE::integrate (double tout)
  again:
 
   (void) F77_FCN (lsode) (lsode_f, &n, xp, &t, &tout, &itol,
-			  &relative_tolerance, &absolute_tolerance,
-			  &itask, &istate, &iopt, rwork, &lrw, iwork,
-			  &liw, lsode_j, &method_flag);
+			  &rel_tol, &abs_tol, &itask, &istate, &iopt,
+			  rwork, &lrw, iwork, &liw, lsode_j,
+			  &method_flag);
 
   switch (istate)
     {
@@ -478,6 +477,116 @@ void
 ODE::clear_stop_time (void)
 {
   stop_time_set = 0;
+}
+
+ODE_options::ODE_options (void)
+{
+  init ();
+}
+
+ODE_options::ODE_options (const ODE_options& opt)
+{
+  copy (opt);
+}
+
+ODE_options&
+ODE_options::operator = (const ODE_options& opt)
+{
+  if (this != &opt)
+    copy (opt);
+
+  return *this;
+}
+
+ODE_options::~ODE_options (void)
+{
+}
+
+void
+ODE_options::init (void)
+{
+  double sqrt_eps = sqrt (DBL_EPSILON);
+  x_absolute_tolerance = sqrt_eps;
+  x_initial_step_size = -1.0;
+  x_maximum_step_size = -1.0;
+  x_minimum_step_size = 0.0;
+  x_relative_tolerance = sqrt_eps;
+}
+
+void
+ODE_options::copy (const ODE_options& opt)
+{
+  x_absolute_tolerance = opt.x_absolute_tolerance;
+  x_initial_step_size = opt.x_initial_step_size;
+  x_maximum_step_size = opt.x_maximum_step_size;
+  x_minimum_step_size = opt.x_minimum_step_size;
+  x_relative_tolerance = opt.x_relative_tolerance;
+}
+
+void
+ODE_options::set_default_options (void)
+{
+  init ();
+}
+
+void
+ODE_options::set_absolute_tolerance (double val)
+{
+  x_absolute_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+void
+ODE_options::set_initial_step_size (double val)
+{
+  x_initial_step_size = (val >= 0.0) ? val : -1.0;
+}
+
+void
+ODE_options::set_maximum_step_size (double val)
+{
+  x_maximum_step_size = (val >= 0.0) ? val : -1.0;
+}
+
+void
+ODE_options::set_minimum_step_size (double val)
+{
+  x_minimum_step_size = (val >= 0.0) ? val : 0.0;
+}
+
+void
+ODE_options::set_relative_tolerance (double val)
+{
+  x_relative_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+double
+ODE_options::absolute_tolerance (void)
+{
+  return x_absolute_tolerance;
+}
+
+double
+ODE_options::initial_step_size (void)
+{
+  return x_initial_step_size;
+}
+
+double
+ODE_options::maximum_step_size (void)
+{
+  return x_maximum_step_size;
+}
+
+double
+ODE_options::minimum_step_size (void)
+{
+  return x_minimum_step_size;
+}
+
+double
+ODE_options::relative_tolerance (void)
+{
+  return x_relative_tolerance;
 }
 
 /*

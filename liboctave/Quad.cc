@@ -25,6 +25,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <math.h>
+#include <float.h>
+
 #include "Quad.h"
 #include "f77-uscore.h"
 #include "sun-utils.h"
@@ -53,15 +56,11 @@ extern "C"
 
 Quad::Quad (integrand_fcn fcn)
 {
-  absolute_tolerance = 1.0e-6;
-  relative_tolerance = 1.0e-6;
   f = fcn;
 }
 
 Quad::Quad (integrand_fcn fcn, double abs, double rel)
 {
-  absolute_tolerance = abs;
-  relative_tolerance = rel;
   f = fcn;
 }
 
@@ -173,10 +172,12 @@ DefQuad::integrate (int& ier, int& neval, double& abserr)
   user_fcn = f;
   int last;
 
+  double abs_tol = absolute_tolerance ();
+  double rel_tol = relative_tolerance ();
+
   F77_FCN (dqagp) (user_function, &lower_limit, &upper_limit, &npts,
-		   points, &absolute_tolerance, &relative_tolerance,
-		   &result, &abserr, &neval, &ier, &leniw, &lenw,
-		   &last, iwork, work);
+		   points, &abs_tol, &rel_tol, &result, &abserr,
+		   &neval, &ier, &leniw, &lenw, &last, iwork, work);
 
   delete [] iwork;
   delete [] work;
@@ -239,14 +240,85 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
       break;
     }
 
-  F77_FCN (dqagi) (user_function, &bound, &inf, &absolute_tolerance,
-		   &relative_tolerance, &result, &abserr, &neval,
-		   &ier, &leniw, &lenw, &last, iwork, work);
+  double abs_tol = absolute_tolerance ();
+  double rel_tol = relative_tolerance ();
+
+  F77_FCN (dqagi) (user_function, &bound, &inf, &abs_tol, &rel_tol,
+		   &result, &abserr, &neval, &ier, &leniw, &lenw,
+		   &last, iwork, work);
 
   delete [] iwork;
   delete [] work;
 
   return result;
+}
+
+Quad_options::Quad_options (void)
+{
+  init ();
+}
+
+Quad_options::Quad_options (const Quad_options& opt)
+{
+  copy (opt);
+}
+
+Quad_options&
+Quad_options::operator = (const Quad_options& opt)
+{
+  if (this != &opt)
+    copy (opt);
+
+  return *this;
+}
+
+Quad_options::~Quad_options (void)
+{
+}
+
+void
+Quad_options::init (void)
+{
+  double sqrt_eps = sqrt (DBL_EPSILON);
+  x_absolute_tolerance = sqrt_eps;
+  x_relative_tolerance = sqrt_eps;
+}
+
+void
+Quad_options::copy (const Quad_options& opt)
+{
+  x_absolute_tolerance = opt.x_absolute_tolerance;
+  x_relative_tolerance = opt.x_relative_tolerance;
+}
+
+void
+Quad_options::set_default_options (void)
+{
+  init ();
+}
+
+void
+Quad_options::set_absolute_tolerance (double val)
+{
+  x_absolute_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+void
+Quad_options::set_relative_tolerance (double val)
+{
+  x_relative_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+double
+Quad_options::absolute_tolerance (void)
+{
+  return x_absolute_tolerance;
+}
+
+double
+Quad_options::relative_tolerance (void)
+{
+  return x_relative_tolerance;
 }
 
 /*

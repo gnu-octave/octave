@@ -335,11 +335,8 @@ builtin_dassl_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, dassl_options,
-		 retval = dassl_options (args, nargin, nargout);)
-  else
-    print_usage ("dassl_options");
+  DLD_BUILTIN (args, nargin, nargout, dassl_options,
+	       retval = dassl_options (args, nargin, nargout);)
 
   return retval;
 }
@@ -797,11 +794,8 @@ builtin_fsolve_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, fsolve_options,
-		 retval = fsolve_options (args, nargin, nargout);)
-  else
-    print_usage ("fsolve_options");
+  DLD_BUILTIN (args, nargin, nargout, fsolve_options,
+	       retval = fsolve_options (args, nargin, nargout);)
 
   return retval;
 }
@@ -1049,11 +1043,8 @@ builtin_lpsolve_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, lpsolve_options,
-		 retval = lpsolve_options (args, nargin, nargout);)
-  else
-    print_usage ("lpsolve_options");
+  DLD_BUILTIN (args, nargin, nargout, lpsolve_options,
+	       retval = lpsolve_options (args, nargin, nargout);)
 
   return retval;
 }
@@ -1080,11 +1071,8 @@ builtin_lsode_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, lsode_options,
-		 retval = lsode_options (args, nargin, nargout);)
-  else
-    print_usage ("lsode_options");
+  DLD_BUILTIN (args, nargin, nargout, lsode_options,
+	       retval = lsode_options (args, nargin, nargout);)
 
   return retval;
 }
@@ -1417,11 +1405,8 @@ builtin_quad_options (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
-    DLD_BUILTIN (args, nargin, nargout, quad_options,
-		 retval = quad_options (args, nargin, nargout);)
-  else
-    print_usage ("quad_options");
+  DLD_BUILTIN (args, nargin, nargout, quad_options,
+	       retval = quad_options (args, nargin, nargout);)
 
   return retval;
 }

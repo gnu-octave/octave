@@ -211,7 +211,7 @@ NLEqn::solve (int& info)
       return Vector ();
     }
 
-  double tol = sqrt (DBL_EPSILON);
+  double tol = tolerance ();
 
   double *fvec = new double [n];
   double *px = new double [n];
@@ -256,6 +256,60 @@ NLEqn::solve (int& info)
     }
 
   return retval;
+}
+
+NLEqn_options::NLEqn_options (void)
+{
+  init ();
+}
+
+NLEqn_options::NLEqn_options (const NLEqn_options& opt)
+{
+  copy (opt);
+}
+
+NLEqn_options&
+NLEqn_options::operator = (const NLEqn_options& opt)
+{
+  if (this != &opt)
+    copy (opt);
+
+  return *this;
+}
+
+NLEqn_options::~NLEqn_options (void)
+{
+}
+
+void
+NLEqn_options::init (void)
+{
+  double sqrt_eps = sqrt (DBL_EPSILON);
+  x_tolerance = sqrt_eps;
+}
+
+void
+NLEqn_options::copy (const NLEqn_options& opt)
+{
+  x_tolerance = opt.x_tolerance;
+}
+
+void
+NLEqn_options::set_default_options (void)
+{
+  init ();
+}
+
+void
+NLEqn_options::set_tolerance (double val)
+{
+  x_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+double
+NLEqn_options::tolerance (void)
+{
+  return x_tolerance;
 }
 
 /*

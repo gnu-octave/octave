@@ -26,6 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <math.h>
+#include <float.h>
 
 #ifndef QPSOL_MISSING
 
@@ -36,9 +37,11 @@ extern "C"
 {
   int F77_FCN (qpsol) (int*, int*, int*, int*, int*, int*, int*, int*,
 		       double*, double*, double*, double*, double*,
-		       double*, double*, int (*)(), int*, int*, int*,
-		       int*, double*, int*, int*, double*, double*,
-		       int*, int*, double*, int*);
+		       double*, double*,
+		       int (*)(int*, int*, int*, int*, double*,
+			       double*, double*),
+		       int*, int*, int*, int*, double*, int*, int*,
+		       double*, double*, int*, int*, double*, int*);
 
   int F77_FCN (dgemv) (const char*, const int*, const int*,
 		       const double*, const double*, const int*,
@@ -80,13 +83,13 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
   int i;
 
   int n = x.capacity ();
-
-  int itmax = 50 * n;
-  int msglvl = 0;
+ 
+  int itmax = (iteration_limit () < 0) ? 50 * n : iteration_limit ();
+  int msglvl = print_level ();
   int nclin = lc.size ();
   int nctotl = nclin + n;
 
-  double bigbnd = 1e30;
+  double bigbnd = infinite_bound ();
 
   double dummy;
   double *pa = &dummy;
@@ -125,10 +128,10 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
 
   double *pc = c.fortran_vec ();
 
-  double sqrt_eps = sqrt (DBL_EPSILON);
   double *featol = new double [nctotl];
+  double tmp = feasibility_tolerance ();
   for (i = 0; i < nctotl; i++)
-    featol[i] = sqrt_eps;
+    featol[i] = tmp;
 
   double *ph = H.fortran_vec ();
 
@@ -169,10 +172,99 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
   return x;
 }
 
-void
-QPSOL::set_default_options (void)
+QPSOL_options::QPSOL_options (void)
 {
-  iprint = 0;
+  init ();
+}
+
+QPSOL_options::QPSOL_options (const QPSOL_options& opt)
+{
+  copy (opt);
+}
+
+QPSOL_options&
+QPSOL_options::operator = (const QPSOL_options& opt)
+{
+  if (this != &opt)
+    copy (opt);
+
+  return *this;
+}
+
+QPSOL_options::~QPSOL_options (void)
+{
+}
+
+void
+QPSOL_options::init (void)
+{
+  x_feasibility_tolerance = sqrt (DBL_EPSILON);
+  x_infinite_bound = 1.0e+30;
+  x_iteration_limit = -1;
+  x_print_level = 0;
+}
+
+void
+QPSOL_options::copy (const QPSOL_options& opt)
+{
+  x_feasibility_tolerance = opt.x_feasibility_tolerance;
+  x_infinite_bound = opt.x_infinite_bound;
+  x_iteration_limit = opt.x_iteration_limit;
+  x_print_level = opt.x_print_level;
+}
+
+void
+QPSOL_options::set_default_options (void)
+{
+  init ();
+}
+
+void
+QPSOL_options::set_feasibility_tolerance (double val)
+{
+  x_feasibility_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+void
+QPSOL_options::set_infinite_bound (double val)
+{
+  x_infinite_bound = (val > 0.0) ? val : 1.0e+30;
+}
+
+void
+QPSOL_options::set_iteration_limit (int val)
+{
+  x_iteration_limit = (val > 0) ? val : -1;
+}
+
+void
+QPSOL_options::set_print_level (int val)
+{
+  x_print_level = (val >= 0) ? val : 0;
+}
+
+double
+QPSOL_options::feasibility_tolerance (void)
+{
+  return x_feasibility_tolerance;
+}
+
+double
+QPSOL_options::infinite_bound (void)
+{
+  return x_infinite_bound;
+}
+
+int
+QPSOL_options::iteration_limit (void)
+{
+  return x_iteration_limit;
+}
+
+int
+QPSOL_options::print_level (void)
+{
+  return x_print_level;
 }
 
 #endif /* QPSOL_MISSING */

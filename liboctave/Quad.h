@@ -43,7 +43,35 @@ typedef double (*integrand_fcn) (double x);
 // function, and the user wants us to quit.
 extern int quad_integration_error;
 
-class Quad
+class Quad_options
+{
+ public:
+
+  Quad_options (void);
+  Quad_options (const Quad_options& opt);
+
+  Quad_options& operator = (const Quad_options& opt);
+
+  ~Quad_options (void);
+
+  void init (void);
+  void copy (const Quad_options& opt);
+
+  void set_default_options (void);
+
+  void set_absolute_tolerance (double);
+  void set_relative_tolerance (double);
+
+  double absolute_tolerance (void);
+  double relative_tolerance (void);
+
+ private:
+
+  double x_absolute_tolerance;
+  double x_relative_tolerance;
+};
+
+class Quad : public Quad_options
 {
  public:
 
@@ -56,9 +84,6 @@ class Quad
   virtual double integrate (int& ier, int& neval, double& abserr) = 0;
 
  protected:
-
-  double absolute_tolerance;
-  double relative_tolerance;
 
   integrand_fcn f;
 };

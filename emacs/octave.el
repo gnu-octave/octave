@@ -5,7 +5,7 @@
 ;; Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
 ;; Maintainer: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-;; Version: 0.8.4
+;; Version: 0.8.5
 ;; Keywords: languages
 
 ;; This file is not yet a part of GNU Emacs.  It is part of Octave.
@@ -34,7 +34,7 @@
 
 ;;; Code:
 
-(defconst octave-version "0.8.4")
+(defconst octave-version "0.8.5")
 (defconst octave-help-address
   "Kurt.Hornik@ci.tuwien.ac.at"
   "Address for Octave mode bug reports")
@@ -50,6 +50,7 @@
     (define-key map " " 'octave-electric-space)
     (define-key map "\n" 'octave-reindent-then-newline-and-indent)
     (define-key map "\t" 'indent-according-to-mode)
+    (define-key map "\e;" 'octave-indent-for-comment)
     (define-key map "\e\n" 'octave-indent-new-comment-line)  
     (define-key map "\e\t" 'octave-complete-symbol)
     (define-key map "\M-\C-a"	'octave-beginning-of-defun)
@@ -101,7 +102,6 @@
 	      ["Mark Function"		octave-mark-defun t]
 	      ["Indent Function"	octave-indent-defun t]
 	      ["Insert Function"	octave-insert-defun t])
-	
 	"-"
 	(list "Debug"
 	      ["Send Current Line"	octave-send-line t]
@@ -159,6 +159,22 @@
     (define-abbrev octave-mode-abbrev-table "`w" "while ()" nil)
     (setq abbrevs-changed ac)))
 
+(defvar octave-comment-char ?#
+  "The character to start a comment.")
+(defvar octave-comment-column 32
+  "*Column to indent in-line comments to.")
+(defvar octave-comment-start
+  (concat (make-string 1 octave-comment-char) " ")
+  "String to insert to start a new in-line Octave comment.")
+(defvar octave-block-comment-start
+  (concat (make-string 2 octave-comment-char) " ")
+  "String to insert to start a new Octave comment on an empty line.")
+(defvar octave-comment-start-skip "\\s<+\\s-*"
+  "Regexp to match the start of an Octave comment plus everything up to
+its body.")
+(defvar octave-fill-column 72
+  "*Column beyond which automatic line-wrapping should happen.")
+
 (defvar octave-mode-syntax-table nil
   "Syntax table in use in Octave mode buffers.")
 (if octave-mode-syntax-table
@@ -182,21 +198,9 @@
   (modify-syntax-entry ?. "w"   octave-mode-syntax-table)
   ;; Not sure if we should do this ...
   (modify-syntax-entry ?_ "w"   octave-mode-syntax-table)
-  ;; Don't deal with `%' comments ...
-  ;; (modify-syntax-entry ?\% "<"  octave-mode-syntax-table)
-  (modify-syntax-entry ?\% "."  octave-mode-syntax-table)  
+  (modify-syntax-entry ?\% "."  octave-mode-syntax-table)
   (modify-syntax-entry ?\# "<"  octave-mode-syntax-table)
   (modify-syntax-entry ?\n ">"  octave-mode-syntax-table))
-
-(defvar octave-comment-start "# "
-  "*String to insert to start a new comment.")
-(defvar octave-comment-column 32
-  "*Column to indent in-line comments to.")
-(defvar octave-comment-start-skip "\\s<+\\s-*"
-  "Regexp to match the start of an Octave comment plus everything up to
-its body.")
-(defvar octave-fill-column 72
-  "*Column beyond which automatic line-wrapping should happen.")
 
 (defvar octave-begin-keywords
   '("for" "function" "if" "try" "unwind_protect" "while"))
@@ -404,9 +408,6 @@ octave-block-offset
 octave-comment-column
   Column to indent right-margin comments to.  Default is 32.
 
-octave-comment-start
-  String to insert to start a new comment.  Default is \"# \".
-
 octave-continuation-offset
   Extra indentation applied to Octave continuation lines.  Default is 4.
 
@@ -482,6 +483,10 @@ including a reproducible test case and send the message."
   (setq comment-start-skip octave-comment-start-skip)
   (make-local-variable 'comment-indent-function)
   (setq comment-indent-function 'octave-comment-indent)
+  (make-local-variable 'block-comment-start)
+  (setq block-comment-start octave-block-comment-start)
+  (make-local-variable 'block-comment-end)
+  (setq block-comment-end "")
 
   (make-local-variable 'parse-sexp-ignore-comments)
   (setq parse-sexp-ignore-comments t)
@@ -588,7 +593,7 @@ Any other key combination is executed normally."
 (defun octave-comment-region (beg end &optional arg)
   "Comment or uncomment each line in the region.  See `comment-region'."
   (interactive "r\nP")
-  (let ((comment-start (substring octave-comment-start 0 1)))
+  (let ((comment-start (char-to-string octave-comment-char)))
     (comment-region beg end arg)))
   
 (defun octave-uncomment-region (beg end &optional arg)
@@ -664,6 +669,15 @@ level."
       (skip-syntax-backward "\\s-")
       (max (if (bolp) 0 (+ (current-column)))
 	   comment-column))))
+
+(defun octave-indent-for-comment ()
+  "If there is no comment already on this line, create a code-level
+comment (started by two comment characters) if the line is empty, or an
+in-line comment (started by one comment character) otherwise.
+Point is left after the start of the comment which is properly aligned."
+  (interactive)
+  (indent-for-comment)
+  (indent-according-to-mode))
 
 (defun octave-indent-line (&optional arg)
   "Indent current line as Octave code.
@@ -945,7 +959,8 @@ Signal an error if the keywords are incompatible."
 		      (cdr (assoc bb-keyword octave-block-match-alist)))
 	      (progn
 		(message "Matches `%s %s'" bb-keyword bb-arg)
-		(sit-for 1))
+		(if (pos-visible-in-window-p)
+		    (sit-for blink-matching-delay)))
 	    (error "Block keywords `%s' and `%s' do not match"
 		   bb-keyword eb-keyword))))))
 
@@ -1245,8 +1260,7 @@ arguments and return values (to be entered without parens)."
 			  (concat " " vals " =")))
 			name
 			args))
-	(prefix (concat (substring octave-comment-start 0 1)
-			octave-comment-start)))
+	(prefix octave-block-comment-start))
     (if (not (bobp)) (newline))
     (insert "function" string)
     (indent-according-to-mode)
@@ -1388,7 +1402,7 @@ documentation for Octave."
 ;;; Inferior Octave mode
 (require 'comint)
 
-(defvar inferior-octave-buffer "*Octave Interaction*"
+(defvar inferior-octave-buffer "*Inferior Octave*"
   "*Name of buffer for running an inferior Octave process")
 
 (defvar inferior-octave-process nil)
@@ -1430,7 +1444,7 @@ mode, set this to '(\"-q\" \"--traditional\").")
   '(inferior-octave-complete comint-dynamic-complete-filename)  
   "List of functions called to perform completion.
 This variable is used to initialise `comint-dynamic-complete-functions'
-in the Octave interaction buffer.")
+in the Inferior Octave buffer.")
 
 (defvar inferior-octave-mode-hook nil
   "*Hook to be run when Inferior Octave mode is started.")
@@ -1750,8 +1764,8 @@ code line."
      'octave-auto-newline
      'octave-blink-matching-block
      'octave-block-offset
+     'octave-comment-char
      'octave-comment-column
-     'octave-comment-start     
      'octave-continuation-offset
      'octave-continuation-string
      'octave-fill-column

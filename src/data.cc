@@ -50,29 +50,43 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ABS(x) (((x) < 0) ? (-x) : (x))
 #endif
 
+#define ANY_ALL(FCN) \
+ \
+  octave_value_list retval; \
+ \
+  int nargin = args.length (); \
+ \
+  int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
+ \
+  if (! error_state) \
+    { \
+      if (dim <= 1 && dim >= -1) \
+	{ \
+	  if (nargin == 1 || nargin == 2) \
+	    retval = args(0).FCN (dim); \
+	  else \
+	    print_usage (#FCN); \
+	} \
+      else \
+	error (#FCN ": invalid dimension argument = %d", dim + 1); \
+    } \
+ \
+  return retval
+
 DEFUN (all, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} all (@var{x})\n\
+@deftypefn {Built-in Function} {} all (@var{x}, @var{dim})\n\
 The function @code{all} behaves like the function @code{any}, except\n\
 that it returns true only if all the elements of a vector, or all the\n\
-elements in a column of a matrix, are nonzero.\n\
+elements along dimension @var{dim} of a matrix, are nonzero.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).all ();
-  else
-    print_usage ("all");
-
-  return retval;
+  ANY_ALL (all);
 }
 
 DEFUN (any, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} any (@var{x})\n\
+@deftypefn {Built-in Function} {} any (@var{x}, @var{dim})\n\
 For a vector argument, return 1 if any element of the vector is\n\
 nonzero.\n\
 \n\
@@ -87,24 +101,18 @@ any (eye (2, 4))\n\
 @end group\n\
 @end example\n\
 \n\
-To see if any of the elements of a matrix are nonzero, you can use a\n\
-statement like\n\
+If the optional argument @var{dim} is supplied, work along dimension\n\
+@var{dim}.  For example,\n\
 \n\
 @example\n\
-any (any (a))\n\
+@group\n\
+any (eye (2, 4), 2)\n\
+     @result{} [ 1; 1 ]\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).any ();
-  else
-    print_usage ("any");
-
-  return retval;
+  ANY_ALL (any);
 }
 
 // These mapping functions may also be useful in other places, eh?

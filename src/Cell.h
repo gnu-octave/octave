@@ -59,10 +59,10 @@ public:
     : Array2<octave_value> (c) { }
 
   // XXX FIXME XXX
-  boolMatrix all (void) const { return boolMatrix (); }
+  boolMatrix all (int dim = 0) const { return boolMatrix (); }
 
   // XXX FIXME XXX
-  boolMatrix any (void) const { return boolMatrix (); }
+  boolMatrix any (int dim = 0) const { return boolMatrix (); }
 
   // XXX FIXME XXX
   bool is_true (void) const { return false; }

@@ -1876,128 +1876,31 @@ Matrix::too_large_for_float (void) const
   return false;
 }
 
-// XXX FIXME XXX Do these really belong here?  They should maybe be
-// cleaned up a bit, no?  What about corresponding functions for the
-// Vectors?
+// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// in a base class?
 
 boolMatrix
-Matrix::all (void) const
+Matrix::all (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  boolMatrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if (nr == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = true;
-	  for (int j = 0; j < nc; j++)
-	    {
-	      if (elem (0, j) == 0.0)
-		{
-		  retval.elem (0, 0) = false;
-		  break;
-		}
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = true;
-	  for (int i = 0; i < nr; i++)
-	    {
-	      if (elem (i, 0) == 0.0)
-		{
-		  retval.elem (0, 0) = false;
-		  break;
-		}
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = true;
-	      for (int i = 0; i < nr; i++)
-		{
-		  if (elem (i, j) == 0.0)
-		    {
-		      retval.elem (0, j) = false;
-		      break;
-		    }
-		}
-	    }
-	}
-    }
-  return retval;
+  MX_ALL_OP (dim);
 }
 
 boolMatrix
-Matrix::any (void) const
+Matrix::any (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  boolMatrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if (nr == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = false;
-	  for (int j = 0; j < nc; j++)
-	    {
-	      if (elem (0, j) != 0.0)
-		{
-		  retval.elem (0, 0) = true;
-		  break;
-		}
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = false;
-	  for (int i = 0; i < nr; i++)
-	    {
-	      if (elem (i, 0) != 0.0)
-		{
-		  retval.elem (0, 0) = true;
-		  break;
-		}
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = false;
-	      for (int i = 0; i < nr; i++)
-		{
-		  if (elem (i, j) != 0.0)
-		    {
-		      retval.elem (0, j) = true;
-		      break;
-		    }
-		}
-	    }
-	}
-    }
-  return retval;
+  MX_ANY_OP (dim);
 }
 
 Matrix
 Matrix::cumprod (int dim) const
 {
-  MX_CUMMULATIVE_OP (Matrix, double, *=);
+  MX_CUMULATIVE_OP (Matrix, double, *=);
 }
 
 Matrix
 Matrix::cumsum (int dim) const
 {
-  MX_CUMMULATIVE_OP (Matrix, double, +=);
+  MX_CUMULATIVE_OP (Matrix, double, +=);
 }
 
 Matrix

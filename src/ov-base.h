@@ -128,9 +128,9 @@ public:
 
   bool is_all_va_args (void) const { return false; }
 
-  octave_value all (void) const { return 0.0; }
+  octave_value all (int dim) const { return 0.0; }
 
-  octave_value any (void) const { return 0.0; }
+  octave_value any (int dim) const { return 0.0; }
 
   bool is_bool_type (void) const { return false; }
 

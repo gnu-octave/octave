@@ -71,8 +71,8 @@ public:
 
   charMatrix extract (int r1, int c1, int r2, int c2) const;
 
-  Matrix all (void) const;
-  Matrix any (void) const;
+  boolMatrix all (int dim = 0) const;
+  boolMatrix any (int dim = 0) const;
 
 #if 0
   // i/o

@@ -241,8 +241,8 @@ public:
   bool all_integers (double& max_val, double& min_val) const;
   bool too_large_for_float (void) const;
 
-  boolMatrix all (void) const;
-  boolMatrix any (void) const;
+  boolMatrix all (int dim = 0) const;
+  boolMatrix any (int dim = 0) const;
 
   ComplexMatrix cumprod (int dim = 0) const;
   ComplexMatrix cumsum (int dim = 0) const;

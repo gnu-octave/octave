@@ -229,7 +229,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
 // Avoid some code duplication.  Maybe we should use templates.
 
-#define MX_CUMMULATIVE_OP(RET_TYPE, ELT_TYPE, OP) \
+#define MX_CUMULATIVE_OP(RET_TYPE, ELT_TYPE, OP) \
  \
   int nr = rows (); \
   int nc = cols (); \
@@ -303,11 +303,17 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 	    } \
 	} \
     } \
-  else \
+  else if (nr == 0 && nc == 0) \
     { \
       retval.resize (1, 1); \
       retval.elem (0, 0) = MT_RESULT; \
     } \
+  else if (nr == 0 && (dim == 0 || dim == -1)) \
+    retval.resize (1, nc, MT_RESULT); \
+  else if (nc == 0 && dim == 1) \
+    retval.resize (nr, 1, MT_RESULT); \
+  else \
+    retval.resize (nr, nc); \
  \
   return retval
 
@@ -322,6 +328,31 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 			MX_REDUCTION_OP_ROW_EXPR (OP), \
 			MX_REDUCTION_OP_COL_EXPR (OP), \
 			INIT_VAL, MT_RESULT)
+
+#define MX_ANY_ALL_OP_ROW_CODE(TEST_OP, TEST_TRUE_VAL) \
+  if (elem (i, j) TEST_OP 0.0) \
+    { \
+      retval.elem (i, 0) = TEST_TRUE_VAL; \
+      break; \
+    }
+
+#define MX_ANY_ALL_OP_COL_CODE(TEST_OP, TEST_TRUE_VAL) \
+  if (elem (i, j) TEST_OP 0.0) \
+    { \
+      retval.elem (0, j) = TEST_TRUE_VAL; \
+      break; \
+    }
+
+#define MX_ANY_ALL_OP(DIM, INIT_VAL, TEST_OP, TEST_TRUE_VAL) \
+  MX_BASE_REDUCTION_OP (boolMatrix, \
+			MX_ANY_ALL_OP_ROW_CODE (TEST_OP, TEST_TRUE_VAL), \
+			MX_ANY_ALL_OP_COL_CODE (TEST_OP, TEST_TRUE_VAL), \
+			INIT_VAL, INIT_VAL)
+
+#define MX_ALL_OP(DIM) MX_ANY_ALL_OP (DIM, true, ==, false)
+
+#define MX_ANY_OP(DIM) MX_ANY_ALL_OP (DIM, false, !=, true)
+
 #endif
 
 /*

@@ -1,4 +1,18 @@
+2002-08-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (ANY_ALL): New macro.
+	(Fany, Fall): Replace guts with ANY_ALL.
+
 2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Fall, Fany): Handle optional DIM argument.
+
+	* ov.h (octave_value::any): New arg, dim.
+	(octave_value::all): Likewise.
+	* ov-base.h (octave_base_value::any): Likewise.
+	(octave_base_value::all): Likewise.
+	* ov-base-mat.h (octave_base_matrix::any): Likewise.
+	(octave_base_matrix::all): Likewise.
 
 	* Makefile.in: Use $@-t instead of $@.t.
 	(doc-files): Use move-if-change when creating doc-files.

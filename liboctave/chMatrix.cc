@@ -192,115 +192,19 @@ charMatrix::extract (int r1, int c1, int r2, int c2) const
   return result;
 }
 
-// XXX FIXME XXX -- these should probably return a boolMatrix type
-// instead, but that will have to wait for a future version...
+// XXX FIXME XXX Do these really belong here?  Maybe they should be
+// in a base class?
 
-Matrix
-charMatrix::all (void) const
+boolMatrix
+charMatrix::all (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  Matrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if (nr == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
-	  for (int j = 0; j < nc; j++)
-	    {
-	      if (elem (0, j) == 0)
-		{
-		  retval.elem (0, 0) = 0.0;
-		  break;
-		}
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
-	  for (int i = 0; i < nr; i++)
-	    {
-	      if (elem (i, 0) == 0)
-		{
-		  retval.elem (0, 0) = 0.0;
-		  break;
-		}
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = 1.0;
-	      for (int i = 0; i < nr; i++)
-		{
-		  if (elem (i, j) == 0)
-		    {
-		      retval.elem (0, j) = 0.0;
-		      break;
-		    }
-		}
-	    }
-	}
-    }
-  return retval;
+  MX_ALL_OP (dim);
 }
 
-Matrix
-charMatrix::any (void) const
+boolMatrix
+charMatrix::any (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  Matrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if (nr == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
-	  for (int j = 0; j < nc; j++)
-	    {
-	      if (elem (0, j) != 0)
-		{
-		  retval.elem (0, 0) = 1.0;
-		  break;
-		}
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
-	  for (int i = 0; i < nr; i++)
-	    {
-	      if (elem (i, 0) != 0)
-		{
-		  retval.elem (0, 0) = 1.0;
-		  break;
-		}
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = 0.0;
-	      for (int i = 0; i < nr; i++)
-		{
-		  if (elem (i, j) != 0)
-		    {
-		      retval.elem (0, j) = 1.0;
-		      break;
-		    }
-		}
-	    }
-	}
-    }
-  return retval;
+  MX_ANY_OP (dim);
 }
 
 /*

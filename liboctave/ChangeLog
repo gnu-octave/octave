@@ -1,4 +1,34 @@
+2002-08-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-inlines.cc (MX_ANY_ALL_OP_ROW_CODE, MX_ANY_ALL_OP_COL_CODE):
+	New macros.
+	(MX_ANY_ALL_OP): Define MX_ANY_ALL_OP using them and
+	MX_BASE_REDUCTION_OP.
+	(MX_CUMULATIVE_OP): Fix spelling.  Change all uses.
+
 2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* chMatrix.h, chMatrix.cc (charMatrix::any, charMatrix::all):
+	Return boolMatrix, not Matrix.
+
+	* mx-inlines.cc (MX_ANY_ALL_OP, MX_ALL_OP, MX_ANY_OP): New macros.
+	* dMatrix.cc (Matrix::any): Replace guts with MX_ANY_OP.
+	(Matrix::all): Replace guts with MX_ALL_OP.
+	* CMatrix.cc (ComplexMatrix::any): Replace guts with MX_ANY_OP.
+	(ComplexMatrix::all): Replace guts with MX_ALL_OP.
+	* boolMatrix.cc (boolMatrix::any): Replace guts with MX_ANY_OP.
+	(boolMatrix::all): Replace guts with MX_ALL_OP.
+	* chMatrix.cc (charMatrix::any): Replace guts with MX_ANY_OP.
+	(charMatrix::all): Replace guts with MX_ALL_OP.
+
+	* dMatrix.h (Matrix::any): New arg, dim.
+	(Matrix::all): Likewise.
+	* CMatrix.h (ComplexMatrix::any): Likewise.
+	(ComplexMatrix::all): Likewise.
+	* boolMatrix.h (boolMatrix::any): Likewise.
+	(boolMatrix::all): Likewise.
+	* chMatrix.h (charMatrix::any): Likewise.
+	(charMatrix::all): Likewise.
 
 	* Makefile.in: Use $@-t instead of $@.t.
 

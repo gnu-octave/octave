@@ -350,11 +350,11 @@ public:
 
   // Are any or all of the elements in this constant nonzero?
 
-  virtual octave_value all (void) const
-    { return rep->all (); }
+  virtual octave_value all (int dim = 0) const
+    { return rep->all (dim); }
 
-  virtual octave_value any (void) const
-    { return rep->any (); }
+  virtual octave_value any (int dim = 0) const
+    { return rep->any (dim); }
 
   // Other type stuff.
 

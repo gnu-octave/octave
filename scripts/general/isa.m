@@ -26,5 +26,5 @@
 ## Adapted-by: jwe
 
 function retval = isa (x, cname)
-  retval = strcmp (class (f), cname);
+  retval = strcmp (class (x), cname);
 endfunction

@@ -85,9 +85,9 @@ c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 static inline int
 seekdir_to_whence (std::ios::seekdir dir)
 {
-  return ((dir == ios::beg) ? SEEK_SET :
-	  (dir == ios::cur) ? SEEK_CUR :
-	  (dir == ios::end) ? SEEK_END :
+  return ((dir == std::ios::beg) ? SEEK_SET :
+	  (dir == std::ios::cur) ? SEEK_CUR :
+	  (dir == std::ios::end) ? SEEK_END :
 	  dir);
 }
 

@@ -58,16 +58,16 @@ public:
   std::streamsize xsgetn (char *, std::streamsize);
 
   std::streampos seekoff (std::streamoff, std::ios::seekdir,
-			  std::ios::openmode = ios::in | ios::out);
+			  std::ios::openmode = std::ios::in | std::ios::out);
   
   std::streampos seekpos (std::streampos,
-			  std::ios::openmode = ios::in | ios::out);
+			  std::ios::openmode = std::ios::in | std::ios::out);
 
   int sync (void);
 };
 
 class
-i_c_file_ptr_stream : public istream
+i_c_file_ptr_stream : public std::istream
 {
 private:
 
@@ -75,13 +75,14 @@ private:
 
 public:
 
-  i_c_file_ptr_stream (FILE* f_arg) : istream (), f (f_arg) { init (&f); }
+  i_c_file_ptr_stream (FILE* f_arg)
+    : std::istream (), f (f_arg) { init (&f); }
 
   c_file_ptr_buf *rdbuf (void) { return &f; }
 };
 
 class
-o_c_file_ptr_stream : public ostream
+o_c_file_ptr_stream : public std::ostream
 {
 private:
 
@@ -89,7 +90,8 @@ private:
 
 public:
 
-  o_c_file_ptr_stream (FILE* f_arg) : ostream (), f (f_arg) { init (&f); }
+  o_c_file_ptr_stream (FILE* f_arg)
+    : std::ostream (), f (f_arg) { init (&f); }
 
   c_file_ptr_buf *rdbuf (void) { return &f; }
 };

@@ -25,17 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern void install_ops (void);
 
-#define INSTALL_UNOP(op, t, f) \
-  octave_value_typeinfo::register_unary_op \
-    (octave_value::op, t::static_type_id (), f);
-
 #define INSTALL_BINOP(op, t1, t2, f) \
   octave_value_typeinfo::register_binary_op \
     (octave_value::op, t1::static_type_id (), t2::static_type_id (), f);
 
-#define INSTALL_ASSIGNOP(t1, t2, f) \
+#define INSTALL_ASSIGNOP(op, t1, t2, f) \
   octave_value_typeinfo::register_assign_op \
-    (t1::static_type_id (), t2::static_type_id (), f);
+    (octave_value::op, t1::static_type_id (), t2::static_type_id (), f);
 
 #define INSTALL_ASSIGNCONV(t1, t2, tr) \
   octave_value_typeinfo::register_pref_assign_conv \

@@ -33,6 +33,7 @@ class ostream;
 
 #include <string>
 
+class symbol_table;
 class tree_parameter_list;
 class tree_statement_list;
 class tree_va_return_list;
@@ -40,7 +41,6 @@ class tree_va_return_list;
 class tree_walker;
 
 #include "oct-obj.h"
-#include "symtab.h"
 #include "pt-fvc.h"
 
 // User defined functions.
@@ -108,7 +108,8 @@ public:
 
   octave_value eval (bool print = false);
 
-  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
+  octave_value_list eval (bool print, int nargout,
+			  const octave_value_list& args);
 
   void traceback_error (void);
 

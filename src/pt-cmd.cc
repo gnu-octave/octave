@@ -311,7 +311,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
       return;
     }
 
-  tmp.assign (rhs);
+  tmp.assign (octave_value::asn_eq, rhs);
 
   if (list)
     {

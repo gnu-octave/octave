@@ -124,7 +124,7 @@ tree_identifier::document (const string& s)
 }
 
 octave_value
-tree_identifier::assign (const octave_value& rhs)
+tree_identifier::assign (octave_value::assign_op op, const octave_value& rhs)
 {
   octave_value retval;
 
@@ -143,6 +143,8 @@ tree_identifier::assign (const octave_value& rhs)
 	  sym->clear ();
 	}
 
+      // XXX FIXME XXX -- make this work for ops other than `='.
+
       tree_constant *tmp = new tree_constant (rhs);
 
       if (sym->define (tmp))
@@ -155,7 +157,8 @@ tree_identifier::assign (const octave_value& rhs)
 }
 
 octave_value
-tree_identifier::assign (const octave_value_list& args,
+tree_identifier::assign (octave_value::assign_op op,
+			 const octave_value_list& args,
 			 const octave_value& rhs)
 {
   octave_value retval;
@@ -178,7 +181,7 @@ tree_identifier::assign (const octave_value_list& args,
       if (sym->is_variable () && sym->is_defined ())
 	{
 	  tree_constant *tmp = static_cast<tree_constant *> (sym->def ());
-	  retval = tmp->assign (args, rhs);
+	  retval = tmp->assign (op, args, rhs);
 	}
       else
 	{
@@ -192,7 +195,7 @@ tree_identifier::assign (const octave_value_list& args,
 	  else
 	    {
 	      tree_constant *tmp = new tree_constant ();
-	      retval = tmp->assign (args, rhs);
+	      retval = tmp->assign (op, args, rhs);
 	      if (retval.is_defined ())
 		sym->define (tmp);
 	    }
@@ -214,16 +217,11 @@ tree_identifier::increment (void)
   if (sym)
     {
       if (sym->is_read_only ())
-	{
-	  ::error ("can't redefined read-only variable `%s'",
-		   name ().c_str ());
-	}
+	::error ("can't redefined read-only variable `%s'", name ().c_str ());
+      else if (sym->is_defined () && sym->is_variable ())
+	reference () . increment ();
       else
-	{
-	  tree_fvc *tmp = sym->def ();
-	  if (tmp)
-	    tmp->increment ();
-	}
+	::error ("can only increment variables");
     }
 }
 
@@ -233,16 +231,11 @@ tree_identifier::decrement (void)
   if (sym)
     {
       if (sym->is_read_only ())
-	{
-	  ::error ("can't redefined read-only variable `%s'",
-		   name ().c_str ());
-	}
+	::error ("can't redefined read-only variable `%s'", name ().c_str ());
+      else if (sym->is_defined () && sym->is_variable ())
+	reference () . decrement ();
       else
-	{
-	  tree_fvc *tmp = sym->def ();
-	  if (tmp)
-	    tmp->decrement ();
-	}
+	::error ("can only decrement variables");
     }
 }
 

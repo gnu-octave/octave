@@ -218,7 +218,7 @@ install_cm_m_ops (void)
   INSTALL_BINOP (el_and, octave_complex_matrix, octave_matrix, el_and);
   INSTALL_BINOP (el_or, octave_complex_matrix, octave_matrix, el_or);
 
-  INSTALL_ASSIGNOP (octave_complex_matrix, octave_matrix, assign);
+  INSTALL_ASSIGNOP (asn_eq, octave_complex_matrix, octave_matrix, assign);
 }
 
 /*

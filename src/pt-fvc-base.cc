@@ -47,18 +47,6 @@ tree_fvc::name (void) const
   return retval;
 }
 
-void
-tree_fvc::increment (void)
-{
-  panic_impossible ();
-}
-
-void
-tree_fvc::decrement (void)
-{
-  panic_impossible ();
-}
-
 time_t
 tree_fvc::time_parsed (void)
 {

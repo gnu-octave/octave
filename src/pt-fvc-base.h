@@ -54,10 +54,6 @@ public:
 
   virtual string name (void) const;
 
-  virtual void increment (void);
-
-  virtual void decrement (void);
-
   virtual string fcn_file_name (void)
     { return string (); }
 

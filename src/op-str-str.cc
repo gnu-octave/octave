@@ -111,7 +111,7 @@ install_str_str_ops (void)
   INSTALL_BINOP (eq, octave_char_matrix_str, octave_char_matrix_str, eq);
   INSTALL_BINOP (ne, octave_char_matrix_str, octave_char_matrix_str, ne);
 
-  INSTALL_ASSIGNOP (octave_char_matrix_str, octave_char_matrix_str, assign);
+  INSTALL_ASSIGNOP (asn_eq, octave_char_matrix_str, octave_char_matrix_str, assign);
 }
 
 /*

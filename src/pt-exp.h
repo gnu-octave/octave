@@ -36,6 +36,10 @@ class tree_argument_list;
 
 class tree_walker;
 
+class octave_value;
+class octave_value_list;
+class octave_variable_reference;
+
 #include "pt-exp-base.h"
 
 // Prefix expressions.
@@ -179,34 +183,15 @@ tree_binary_expression : public tree_expression
 {
 public:
 
-  enum type
-    {
-      unknown,
-      add,
-      subtract,
-      multiply,
-      el_mul,
-      divide,
-      el_div,
-      leftdiv,
-      el_leftdiv,
-      power,
-      elem_pow,
-      cmp_lt,
-      cmp_le,
-      cmp_eq,
-      cmp_ge,
-      cmp_gt,
-      cmp_ne,
-      el_and,
-      el_or
-    };
-
-  tree_binary_expression (int l = -1, int c = -1, type t = unknown)
+  tree_binary_expression (int l = -1, int c = -1,
+			  octave_value::binary_op t
+			    = octave_value::unknown_binary_op)
     : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t) { }
 
   tree_binary_expression (tree_expression *a, tree_expression *b,
-			  int l = -1, int c = -1, type t = unknown)
+			  int l = -1, int c = -1,
+			  octave_value::binary_op t
+			    = octave_value::unknown_binary_op)
     : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t) { }
 
   ~tree_binary_expression (void)
@@ -235,7 +220,7 @@ protected:
 private:
 
   // The type of the expression.
-  type etype;
+  octave_value::binary_op etype;
 };
 
 // Boolean expressions.
@@ -252,7 +237,7 @@ public:
       bool_or
     };
 
-  tree_boolean_expression (int l = -1, int c = -1, type t)
+  tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (l, c), etype (t) { }
 
   tree_boolean_expression (tree_expression *a, tree_expression *b,
@@ -278,35 +263,28 @@ tree_simple_assignment_expression : public tree_expression
 {
 public:
 
-  tree_simple_assignment_expression (bool plhs = false,
-				     bool ans_assign = false,
-				     int l = -1, int c = -1)
-    : tree_expression (l, c)
-      { init (plhs, ans_assign); }
+  tree_simple_assignment_expression
+    (bool plhs = false, bool ans_assign = false, int l = -1, int c = -1,
+     octave_value::assign_op t = octave_value::asn_eq)
+    : tree_expression (l, c), lhs_idx_expr (0), lhs (0), index (0),
+      rhs (0), preserve (plhs), ans_ass (ans_assign), etype (t) { }
 
-  tree_simple_assignment_expression (tree_identifier *i,
-				     tree_expression *r,
-				     bool plhs = false,
-				     bool ans_assign = false,
-				     int l = -1, int c = -1);
+  tree_simple_assignment_expression
+    (tree_identifier *i, tree_expression *r, bool plhs = false,
+     bool ans_assign = false, int l = -1, int c = -1,
+     octave_value::assign_op t = octave_value::asn_eq);
 
-  tree_simple_assignment_expression (tree_indirect_ref *i,
-				     tree_expression *r,
-				     bool plhs = false,
-				     bool ans_assign = false,
-				     int l = -1, int c = -1)
-    : tree_expression (l, c)
-      {
-	init (plhs, ans_assign);
-	lhs = i;
-	rhs = r;
-      }
+  tree_simple_assignment_expression
+    (tree_indirect_ref *i, tree_expression *r, bool plhs = false,
+     bool ans_assign = false, int l = -1, int c = -1,
+     octave_value::assign_op t = octave_value::asn_eq)
+    : tree_expression (l, c), lhs_idx_expr (0), lhs (i), index (0),
+      rhs (r), preserve (plhs), ans_ass (ans_assign), etype (t) { }
 
-  tree_simple_assignment_expression (tree_index_expression *idx_expr,
-				     tree_expression *r,
-				     bool plhs = false,
-				     bool ans_assign = false,
-				     int l = -1, int c = -1);
+  tree_simple_assignment_expression
+    (tree_index_expression *idx_expr, tree_expression *r,
+     bool plhs = false, bool ans_assign = false, int l = -1, int c = -1,
+     octave_value::assign_op t = octave_value::asn_eq);
 
   ~tree_simple_assignment_expression (void);
 
@@ -324,6 +302,8 @@ public:
 
   void eval_error (void);
 
+  const char *oper (void) const;
+
   tree_indirect_ref *left_hand_side (void) { return lhs; }
 
   tree_argument_list *lhs_index (void) { return index; }
@@ -333,6 +313,13 @@ public:
   void accept (tree_walker& tw);
 
 private:
+
+  void do_assign (octave_variable_reference& ult,
+		  const octave_value_list& args,
+		  const octave_value& rhs_val);
+
+  void do_assign (octave_variable_reference& ult,
+		  const octave_value& rhs_val);
 
   // The left hand side of the assignment, as an index expression.  If
   // the assignment is constructed from an index expression, the index
@@ -355,16 +342,8 @@ private:
   // True if this is an assignment to the built-in variable ans.
   bool ans_ass;
 
-  void init (bool plhs, bool ans_assign)
-    {
-      etype = tree_expression::assignment;
-      lhs_idx_expr = 0;
-      lhs = 0;
-      index = 0;
-      rhs = 0;
-      preserve = plhs;
-      ans_ass = ans_assign;
-    }
+  // The type of the expression.
+  octave_value::assign_op etype;
 };
 
 // Colon expressions.

@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "utils.h"
+#include "variables.h"
 
 // Nonzero means we're returning from a function.
 extern int returning;
@@ -335,90 +336,9 @@ tree_binary_expression::eval (bool /* print */)
 	    eval_error ();
 	  else if (b.is_defined ())
 	    {
-	      octave_value::binary_op op = octave_value::unknown_binary_op;
+	      retval = ::do_binary_op (etype, a, b);
 
-	      switch (etype)
-		{
-		case add:
-		  op = octave_value::add;
-		  break;
-
-		case subtract:
-		  op = octave_value::sub;
-		  break;
-
-		case multiply:
-		  op = octave_value::mul;
-		  break;
-
-		case el_mul:
-		  op = octave_value::el_mul;
-		  break;
-
-		case divide:
-		  op = octave_value::div;
-		  break;
-
-		case el_div:
-		  op = octave_value::el_div;
-		  break;
-
-		case leftdiv:
-		  op = octave_value::ldiv;
-		  break;
-
-		case el_leftdiv:
-		  op = octave_value::el_ldiv;
-		  break;
-
-		case power:
-		  op = octave_value::pow;
-		  break;
-
-		case elem_pow:
-		  op = octave_value::el_pow;
-		  break;
-
-		case cmp_lt:
-		  op = octave_value::lt;
-		  break;
-
-		case cmp_le:
-		  op = octave_value::le;
-		  break;
-
-		case cmp_eq:
-		  op = octave_value::eq;
-		  break;
-
-		case cmp_ge:
-		  op = octave_value::ge;
-		  break;
-
-		case cmp_gt:
-		  op = octave_value::gt;
-		  break;
-
-		case cmp_ne:
-		  op = octave_value::ne;
-		  break;
-
-		case el_and:
-		  op = octave_value::el_and;
-		  break;
-
-		case el_or:
-		  op = octave_value::el_or;
-		  break;
-
-		default:
-		  ::error ("binary operator %d not implemented", etype);
-		  break;
-		}
-
-	      if (! error_state)
-		retval = ::do_binary_op (op, a, b);
-	      else
+	      if (error_state)
 		{
 		  retval = octave_value ();
 		  eval_error ();
@@ -439,86 +359,8 @@ tree_binary_expression::eval (bool /* print */)
 const char *
 tree_binary_expression::oper (void) const
 {
-  static const char *op;
-  switch (etype)
-    {
-    case add:
-      op = "+";
-      break;
-
-    case subtract:
-      op = "-";
-      break;
-
-    case multiply:
-      op = "*";
-      break;
-
-    case el_mul:
-      op = ".*";
-      break;
-
-    case divide:
-      op = "/";
-      break;
-
-    case el_div:
-      op = "./";
-      break;
-
-    case leftdiv:
-      op = "\\";
-      break;
-
-    case el_leftdiv:
-      op = ".\\";
-      break;
-
-    case power:
-      op = "^";
-      break;
-
-    case elem_pow:
-      op = ".^";
-      break;
-
-    case cmp_lt:
-      op = "<";
-      break;
-
-    case cmp_le:
-      op = "<=";
-      break;
-
-    case cmp_eq:
-      op = "==";
-      break;
-
-    case cmp_ge:
-      op = ">=";
-      break;
-
-    case cmp_gt:
-      op = ">";
-      break;
-
-    case cmp_ne:
-      op = "!=";
-      break;
-
-    case el_and:
-      op = "&";
-      break;
-
-    case el_or:
-      op = "|";
-      break;
-
-    default:
-      op = "<unknown>";
-      break;
-    }
-  return op;
+  // XXX FIXME XXX
+  return octave_value::binary_op_as_string (etype) . c_str ();
 }
 
 void
@@ -630,25 +472,17 @@ tree_boolean_expression::oper (void) const
 
 tree_simple_assignment_expression::tree_simple_assignment_expression
   (tree_identifier *i, tree_expression *r, bool plhs, bool ans_assign,
-   int l, int c)
-    : tree_expression (l, c)
-      {
-	init (plhs, ans_assign);
-	lhs = new tree_indirect_ref (i);
-	rhs = r;
-      }
+   int l, int c, octave_value::assign_op t)
+    : tree_expression (l, c), lhs_idx_expr (0),
+      lhs (new tree_indirect_ref (i)), index (0), rhs (r),
+      preserve (plhs), ans_ass (ans_assign), etype (t) { }
 
 tree_simple_assignment_expression::tree_simple_assignment_expression
   (tree_index_expression *idx_expr, tree_expression *r, bool plhs,
-   bool ans_assign, int l, int c)
-    : tree_expression (l, c)
-      {
-	init (plhs, ans_assign);
-	lhs_idx_expr = idx_expr; // cache this -- we may need to delete it.
-	lhs = idx_expr->ident ();
-	index = idx_expr->arg_list ();
-	rhs = r;
-      }
+   bool ans_assign, int l, int c, octave_value::assign_op t)
+    : tree_expression (l, c), lhs_idx_expr (idx_expr),
+      lhs (idx_expr->ident ()), index (idx_expr->arg_list ()), rhs (r),
+      preserve (plhs), ans_ass (ans_assign), etype (t) { }
 
 tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
 {
@@ -681,8 +515,6 @@ tree_simple_assignment_expression::left_hand_side_id (void)
 octave_value
 tree_simple_assignment_expression::eval (bool print)
 {
-  assert (etype == tree_expression::assignment);
-
   octave_value retval;
 
   octave_value lhs_val;
@@ -725,7 +557,7 @@ tree_simple_assignment_expression::eval (bool print)
 
 		      if (nargin > 0)
 			{
-			  ult.assign (args, rhs_val);
+			  ult.assign (etype, args, rhs_val);
 
 			  if (error_state)
 			    eval_error ();
@@ -742,7 +574,7 @@ tree_simple_assignment_expression::eval (bool print)
 		}
 	      else
 		{
-		  ult.assign (rhs_val);
+		  ult.assign (etype, rhs_val);
 
 		  lhs_val = ult.value ();
 
@@ -774,6 +606,12 @@ tree_simple_assignment_expression::eval_error (void)
 	::error ("evaluating assignment expression near line %d, column %d",
 		 l, c);
     }
+}
+
+const char *
+tree_simple_assignment_expression::oper (void) const
+{
+  return octave_value::assign_op_as_string (etype) . c_str ();
 }
 
 void

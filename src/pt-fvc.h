@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include <SLList.h>
 
 class symbol_record;
@@ -68,8 +70,12 @@ public:
 
   void document (const string& s);
 
-  octave_value assign (const octave_value& t);
-  octave_value assign (const octave_value_list& args, const octave_value& t);
+  octave_value assign (octave_value::assign_op op,
+		       const octave_value& t);
+
+  octave_value assign (octave_value::assign_op op,
+		       const octave_value_list& args,
+		       const octave_value& t);
 
   bool is_defined (void);
 

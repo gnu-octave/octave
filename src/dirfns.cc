@@ -38,15 +38,16 @@ Free Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <cerrno>
+#include <cstdio>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <errno.h>
-#include <stdio.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
 #include <strstream.h>
 #include <sys/param.h>
 

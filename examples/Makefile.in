@@ -35,11 +35,16 @@ tags:
 TAGS: $(SOURCES)
 	etags $(SOURCES)
 
+clean mostlyclean:
+.PHONY: clean mostlyclean
+
 distclean:
 	rm -f Makefile
+.PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS
+.PHONY: maintainer-clean
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/examples

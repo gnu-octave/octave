@@ -1,6 +1,7 @@
 Sat Oct 12 18:36:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (clean targets): Don't depend on clean.
+	Also make targets in examples subdirectory.
 
 Fri Aug 30 09:07:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

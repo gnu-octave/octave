@@ -21,6 +21,8 @@ dist:
 .PHONY: dist
 
 clean:
+.PHONY: clean
 
 distclean mostlyclean maintainer-clean:
 	rm -f Makefile
+.PHONY: distclean mostlyclean maintainer-clean

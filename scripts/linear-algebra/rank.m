@@ -17,17 +17,21 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: rank (a, tol)
-##
-## Return the rank of the matrix a.  The rank is taken to be the number
-## of singular values of a that are greater than tol.
-##
-## If the second argument is omitted, it is taken to be
-##
-##   tol =  max (size (a)) * sigma (1) * eps;
-##
-## where eps is machine precision and sigma is the largest singular
-## value of a.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} rank (@var{a}, @var{tol})
+## Compute the rank of @var{a}, using the singular value decomposition.
+## The rank is taken to be the number  of singular values of @var{a} that
+## are greater than the specified tolerance @var{tol}.  If the second
+## argument is omitted, it is taken to be
+## 
+## @example
+## tol = max (size (@var{a})) * sigma (1) * eps;
+## @end example
+## 
+## @noindent
+## where @code{eps} is machine precision and @code{sigma} is the largest
+## singular value of @var{a}.
+## @end deftypefn
 
 ## Author: jwe
 

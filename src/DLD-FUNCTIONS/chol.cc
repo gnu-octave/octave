@@ -34,7 +34,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (chol, args, nargout,
-  "[R, p] = chol (X): cholesky factorization")
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {} chol (@var{a})\n\
+@cindex Cholesky factorization\n\
+Compute the Cholesky factor, @var{r}, of the symmetric positive definite\n\
+matrix @var{a}, where\n\
+@iftex\n\
+@tex\n\
+$ R^T R = A $.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+\n\
+@example\n\
+r' * r = a.\n\
+@end example\n\
+@end ifinfo\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -429,10 +429,13 @@ Without any arguments, @code{diary} toggles the current diary state.\n\
 }
 
 DEFUN_TEXT (more, args, ,
-  "more on\n\
-more off\n\
-\n\
-Turn output pagination on or off.")
+  "-*- texinfo -*-\n\
+@deffn {Command} more\n\
+@deffnx {Command} more on\n\
+@deffnx {Command} more off\n\
+Turn output pagination on or off.  Without an argument, @code{more}\n\
+toggles the current state.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -523,13 +526,36 @@ void
 symbols_of_pager (void)
 {
   DEFVAR (PAGER, default_pager (), pager_binary,
-    "path to pager binary");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} PAGER\n\
+The default value is normally @code{\"less\"}, @code{\"more\"}, or\n\
+@code{\"pg\"}, depending on what programs are installed on your system.\n\
+@xref{Installation}.\n\
+\n\
+When running interactively, Octave sends any output intended for your\n\
+terminal that is more than one screen long to the program named by the\n\
+value of the variable @code{PAGER}.\n\
+@end defvr");
 
   DEFVAR (page_output_immediately, 0.0, page_output_immediately,
-    "if paging output, start sending it as soon as it is available");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} page_output_immediately\n\
+If the value of @code{page_output_immediately} is nonzero, Octave sends\n\
+output to the pager as soon as it is available.  Otherwise, Octave\n\
+buffers its output and waits until just before the prompt is printed to\n\
+flush it to the pager.  The default value is 0.\n\
+@end defvr");
 
   DEFVAR (page_screen_output, 1.0, page_screen_output,
-    "if possible, send output intended for the screen through the pager");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} page_screen_output\n\
+If the value of @code{page_screen_output} is nonzero, all output\n\
+intended for the screen that is longer than one page is sent through a\n\
+pager.  This allows you to view one screenful at a time.  Some pagers\n\
+(such as @code{less}---see @ref{Installation}) are also capable of moving\n\
+backward on the output.  The default value is 1.\n\
+@end defvr");
+
 }
 
 /*

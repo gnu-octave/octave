@@ -17,15 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: orth (A, tol)
-##        orth (A)
-##
-## Returns an orthonormal basis of the range of A.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} orth (@var{a}, @var{tol})
+## Return an orthonormal basis of the range space of @var{a}.
+## 
 ## The dimension of the range space is taken as the number of singular
-## values of A greater than tol; the default for tol is
-## max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
-## maximal singular value of A.
+## values of @var{a} greater than @var{tol}.  If the argument @var{tol} is
+## missing, it is computed as
+## 
+## @example
+## max (size (@var{a})) * max (svd (@var{a})) * eps
+## @end example
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 24 December 1993.

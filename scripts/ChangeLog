@@ -1,3 +1,17 @@
+1999-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/cond.m: Texinfoize doc string.
+	* linear-algebra/kron.m: Ditto.
+	* linear-algebra/norm.m: Ditto.
+	* linear-algebra/null.m: Ditto.
+	* linear-algebra/orth.m: Ditto.
+	* linear-algebra/rank.m: Ditto.
+	* linear-algebra/trace.m: Ditto.
+	* linear-algebra/qzhess.m: Ditto.
+	* miscellaneous/menu.m: Ditto.
+	* io/printf.m: Ditto.
+	* io/puts.m: Ditto.
+
 1999-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* special-matrix/hankel.m: Texinfoize doc string.

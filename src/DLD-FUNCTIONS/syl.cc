@@ -33,7 +33,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (syl, args, nargout,
-  "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0")
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{x} =} syl (@var{a}, @var{b}, @var{c})\n\
+Solve the Sylvester equation\n\
+@iftex\n\
+@tex\n\
+$$\n\
+ A X + X B + C = 0\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+\n\
+@example\n\
+A X + X B + C = 0\n\
+@end example\n\
+@end ifinfo\n\
+using standard @sc{Lapack} subroutines.  For example,\n\
+\n\
+@example\n\
+@group\n\
+syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
+     @result{} [ -0.50000, -0.66667; -0.66667, -0.50000 ]\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -1567,7 +1567,12 @@ value of @code{prefer_column_vectors}.\n\
 @end defvr");
 
   DEFVAR (print_answer_id_name, 1.0, print_answer_id_name,
-    "set output style to print `var_name = ...'");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} print_answer_id_name\n\
+If the value of @code{print_answer_id_name} is nonzero, variable\n\
+names are printed along with the result.  Otherwise, only the result\n\
+values are printed.  The default value is 1.\n\
+@end defvr");
 
   DEFVAR (propagate_empty_matrices, 1.0, propagate_empty_matrices,
     "-*- texinfo -*-\n\

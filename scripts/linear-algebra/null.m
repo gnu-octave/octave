@@ -17,15 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: null (A, tol)
-##        null (A)
-##
-## Returns an orthonormal basis of the null space of A.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} null (@var{a}, @var{tol})
+## Return an orthonormal basis of the null space of @var{a}.
+## 
 ## The dimension of the null space is taken as the number of singular
-## values of A not greater than tol;  the default for tol is
-## max (size (A)) * sigma_max (A) * eps, where sigma_max (A) is the
-## maximal singular value of A.
+## values of @var{a} not greater than @var{tol}.  If the argument @var{tol}
+## is missing, it is computed as
+## 
+## @example
+## max (size (@var{a})) * max (svd (@var{a})) * eps
+## @end example
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 24 December 1993.

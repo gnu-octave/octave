@@ -17,9 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: trace (x)
-##
-## Returns the trace (the sum of the diagonal elements) of x.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} trace (@var{a})
+## Compute the trace of @var{a}, @code{sum (diag (@var{a}))}.
+## @end deftypefn
 
 ## Author: jwe
 

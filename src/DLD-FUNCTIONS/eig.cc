@@ -33,7 +33,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (eig, args, nargout,
-  "eig (X) or [V, D] = eig (X): compute eigenvalues and eigenvectors of X")
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{lambda} =} eig (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})\n\
+The eigenvalues (and eigenvectors) of a matrix are computed in a several\n\
+step process which begins with a Hessenberg decomposition, followed by a\n\
+Schur decomposition, from which the eigenvalues are apparent.  The\n\
+eigenvectors, when desired, are computed by further manipulations of the\n\
+Schur decomposition.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -1,3 +1,35 @@
+1999-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* balance.cc (Fbalance): Texinfoize doc string.
+	* det.cc (Fdet): Ditto.
+	* eig.cc (Feig): Ditto.
+	* givens.cc (Fgivens): Ditto.
+	* inv.cc (Finv): Ditto.
+	* chol.cc (Fchol): Ditto.
+	* hess.cc (Fhess): Ditto.
+	* lu.cc (Flu): Ditto.
+	* qr.cc (Fqr): Ditto.
+	* schur.cc (Fschur): Ditto.
+	* svd.cc (Fsvd): Ditto.
+	* expm.cc (Fexpm): Ditto.
+	* log.cc (Flogm, Fsqrtm): Ditto.
+	* syl.cc (Fsyl): Ditto.
+	* pinv.cc (Fpinv): Ditto.
+	* qz.cc (Fqz): Ditto.
+	* sysdep.cc (Fkbhit): Ditto.
+	* input.cc (Fkeyboard, Finput): Ditto.
+	* variables.cc (ans): Ditto.
+	* pr-output.cc (Fdisp, Fformat): Ditto.
+	* ov.cc (Vprint_answer_id_name): Ditto.
+	* load-save.cc (Fload, Fsave, Vdefault_save_format,
+	Vsave_precision): Ditto.
+	* file-io.cc (Ffflush, Ffopen, Ffclose, Ffputs, Ffgetl, Ffgets,
+	Ffprintf, Fsprintf, Fscanf, Ffscanf, Fsscanf, Ffread, Ffwrite,
+	Ffseek, Fftell, Ffeof, Fferror, Ffreport, Ftmpnam, Vstdin_file,
+	Vstdout_file, Vstderr_file, SEEK_SET, SEEK_CUR, SEEK_END): Ditto.
+	* pager.cc (Vpager_binary, Vpage_output_immediately,
+	Vpage_screen_output, Fmore): Ditto.
+
 1999-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (Vtreat_neg_dim_as_zero): Texinfoize doc string.

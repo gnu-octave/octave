@@ -34,7 +34,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (hess, args, nargout,
-  "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition")
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{h} =} hess (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{a})\n\
+@cindex Hessenberg decomposition\n\
+Compute the Hessenberg decomposition of the matrix @var{a}.\n\
+\n\
+The Hessenberg decomposition is usually used as the first step in an\n\
+eigenvalue computation, but has other applications as well (see Golub,\n\
+Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979.  The\n\
+Hessenberg decomposition is\n\
+@iftex\n\
+@tex\n\
+$$\n\
+A = PHP^T\n\
+$$\n\
+where $P$ is a square unitary matrix ($P^HP = I$), and $H$\n\
+is upper Hessenberg ($H_{i,j} = 0, \\forall i \\ge j+1$).\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+@code{p * h * p' = a} where @code{p} is a square unitary matrix\n\
+(@code{p' * p = I}, using complex-conjugate transposition) and @code{h}\n\
+is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
+@end ifinfo\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -1689,16 +1689,51 @@ do_load (istream& stream, const string& orig_fname, bool force,
 }
 
 DEFUN_TEXT (load, args, nargout,
-  "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} load options file v1 v2 @dots{}\n\
+Load the named variables from the file @var{file}.  As with @code{save},\n\
+you may specify a list of variables and @code{load} will only extract\n\
+those variables with names that match.  For example, to restore the\n\
+variables saved in the file @file{data}, use the command\n\
 \n\
-Load variables from a file.\n\
+@example\n\
+load data\n\
+@end example\n\
 \n\
-If no argument is supplied to select a format, load tries to read the\n\
-named file as an Octave binary, then as a .mat file, and then as an\n\
-Octave text file.\n\
+Octave will refuse to overwrite existing variables unless you use the\n\
+option @samp{-force}.\n\
 \n\
-If the option -force is given, variables with the same names as those\n\
-found in the file will be replaced with the values read from the file.")
+If a variable that is not marked as global is loaded from a file when a\n\
+global symbol with the same name already exists, it is loaded in the\n\
+global symbol table.  Also, if a variable is marked as global in a file\n\
+and a local symbol exists, the local symbol is moved to the global\n\
+symbol table and given the value from the file.  Since it seems that\n\
+both of these cases are likely to be the result of some sort of error,\n\
+they will generate warnings.\n\
+\n\
+The @code{load} command can read data stored in Octave's text and\n\
+binary formats, and @sc{Matlab}'s binary format.  It will automatically\n\
+detect the type of file and do conversion from different floating point\n\
+formats (currently only IEEE big and little endian, though other formats\n\
+may added in the future).\n\
+\n\
+Valid options for @code{load} are listed in the following table.\n\
+\n\
+@table @code\n\
+@item -force\n\
+Force variables currently in memory to be overwritten by variables with\n\
+the same name found in the file.\n\
+\n\
+@item -ascii\n\
+Force Octave to assume the file is in Octave's text format.\n\
+\n\
+@item -binary\n\
+Force Octave to assume the file is in Octave's binary format.\n\
+\n\
+@item -mat-binary\n\
+Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
+@end table\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -2522,10 +2557,67 @@ save_user_variables (void)
 }
 
 DEFUN_TEXT (save, args, ,
-  "save [-append] [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
-     [-save-builtins] file [pattern ...]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} save options file v1 v2 @dots{}\n\
+Save the named variables @var{v1}, @var{v2}, @dots{} in the file\n\
+@var{file}.  The special filename @samp{-} can be used to write the\n\
+output to your terminal.  If no variable names are listed, Octave saves\n\
+all the variables in the current scope.  Valid options for the\n\
+@code{save} command are listed in the following table.  Options that\n\
+modify the output format override the format specified by the built-in\n\
+variable @code{default_save_format}.\n\
 \n\
-save variables in a file")
+@table @code\n\
+@item -ascii\n\
+Save the data in Octave's text data format.\n\
+\n\
+@item -binary\n\
+Save the data in Octave's binary data format.\n\
+\n\
+@item -float-binary\n\
+Save the data in Octave's binary data format but only using single\n\
+precision.  You should use this format only if you know that all the\n\
+values to be saved can be represented in single precision.\n\
+\n\
+@item -mat-binary\n\
+Save the data in @sc{Matlab}'s binary data format.\n\
+\n\
+@item -save-builtins\n\
+Force Octave to save the values of built-in variables too.  By default,\n\
+Octave does not save built-in variables.\n\
+@end table\n\
+\n\
+The list of variables to save may include wildcard patterns containing\n\
+the following special characters:\n\
+@table @code\n\
+@item ?\n\
+Match any single character.\n\
+\n\
+@item *\n\
+Match zero or more characters.\n\
+\n\
+@item [ @var{list} ]\n\
+Match the list of characters specified by @var{list}.  If the first\n\
+character is @code{!} or @code{^}, match all characters except those\n\
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
+match all lower and upper case alphabetic characters. \n\
+@end table\n\
+\n\
+Except when using the @sc{Matlab} binary data file format, saving global\n\
+variables also saves the global status of the variable, so that if it is\n\
+restored at a later time using @samp{load}, it will be restored as a\n\
+global variable.\n\
+\n\
+The command\n\
+\n\
+@example\n\
+save -binary data a b*\n\
+@end example\n\
+\n\
+@noindent\n\
+saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
+the file @file{data} in Octave's binary format.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -2750,14 +2842,29 @@ void
 symbols_of_load_save (void)
 {
   DEFVAR (crash_dumps_octave_core, 1.0, crash_dumps_octave_core,
-    "write octave-core file if Octave crashes or is killed by a signal");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} crash_dumps_octave_core\n\
+If this variable is set to a nonzero value, Octave tries to save all\n\
+current variables the the file \"octave-core\" if it crashes or receives a\n\
+hangup, terminate or similar signal.  The default value is 1.\n\
+@end defvr");
 
   DEFVAR (default_save_format, "ascii", default_save_format,
-    "default format for files created with save, may be one of\n\
-\"binary\", \"text\", or \"mat-binary\"");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} default_save_format\n\
+This variable specifies the default format for the @code{save} command.\n\
+It should have one of the following values: @code{\"ascii\"},\n\
+@code{\"binary\"}, @code{float-binary}, or @code{\"mat-binary\"}.  The\n\
+initial default save format is Octave's text format.\n\
+@end defvr");
 
   DEFVAR (save_precision, 15.0, save_precision,
-    "number of significant figures kept by the ASCII save command");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} save_precision\n\
+This variable specifies the number of digits to keep when saving data in\n\
+text format.  The default value is 17.\n\
+@end defvr");
+
 }
 
 /*

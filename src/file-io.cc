@@ -148,7 +148,12 @@ DEFUN (is_stream, args, ,
 }
 
 DEFUN (fclose, args, ,
-  "fclose (FILENUM): close a file")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fclose (@var{fid})\n\
+Closes the specified file.  If an error is encountered while trying to\n\
+close the file, an error message is printed and @code{fclose} returns\n\
+0.  Otherwise, it returns 1.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -164,7 +169,13 @@ DEFUN (fclose, args, ,
 }
 
 DEFUN (fflush, args, ,
-  "fflush (FILENUM): flush buffered data to output file")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fflush (@var{fid})\n\
+Flush output to @var{fid}.  This is useful for ensuring that all\n\
+pending output makes it to the screen before some other event occurs.\n\
+For example, it is always a good idea to flush the standard output\n\
+stream before calling @code{input}.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -197,9 +208,17 @@ DEFUN (fflush, args, ,
 }
 
 DEFUN (fgetl, args, ,
-  "[STRING, LENGTH] = fgetl (FILENUM [, LENGTH])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})\n\
+Read characters from a file, stopping after a newline, or EOF,\n\
+or @var{len} characters have been read.  The characters read, excluding\n\
+the possible trailing newline, are returned as a string.\n\
 \n\
-read a string from a file")
+If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
+character.\n\
+\n\
+If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -235,9 +254,17 @@ read a string from a file")
 }
 
 DEFUN (fgets, args, ,
-  "[STRING, LENGTH] = fgets (FILENUM [, LENGTH])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})\n\
+Read characters from a file, stopping after a newline, or EOF,\n\
+or @var{len} characters have been read.  The characters read, including\n\
+the possible trailing newline, are returned as a string.\n\
 \n\
-read a string from a file")
+If @var{len} is omitted, @code{fgets} reads until the next newline\n\
+character.\n\
+\n\
+If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -327,41 +354,94 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 }
 
 DEFUN (fopen, args, ,
-  "[FILENUM, ERRMSG] = fopen (FILENAME, MODE [, ARCH]): open a file\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})\n\
+@deftypefnx {Built-in Function} {@var{fid_list} =} fopen (\"all\")\n\
+@deftypefnx {Built-in Function} {@var{file} =} fopen (@var{fid})\n\
+The first form of the @code{fopen} function opens the named file with\n\
+the specified mode (read-write, read-only, etc.) and architecture\n\
+interpretation (IEEE big endian, IEEE little endian, etc.), and returns\n\
+an integer value that may be used to refer to the file later.  If an\n\
+error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the\n\
+corresponding system error message.  The @var{mode} is a one or two\n\
+character string that specifies whether the file is to be opened for\n\
+reading, writing, or both.\n\
 \n\
-  FILENAME is a string specifying the name of the file.\n\
+The second form of the @code{fopen} function returns a vector of file ids\n\
+corresponding to all the currently open files, excluding the\n\
+@code{stdin}, @code{stdout}, and @code{stderr} streams.\n\
 \n\
-  MODE is a string specifying whether the file should be opened for\n\
-  reading, writing, or both.  Valid values for MODE include:\n\
+The third form of the @code{fopen} function returns the name of a\n\
+currently open file given its file id.\n\
 \n\
-    r  : open text file for reading\n\
-    w  : open text file for writing; discard previous contents if any\n\
-    a  : append; open or create text file for writing at end of file\n\
-    r+ : open text file for update (i.e., reading and writing)\n\
-    w+ : create text file for update; discard previous contents if any\n\
-    a+ : append; open or create text file for update, writing at end\n\
+For example,\n\
 \n\
-  Update mode permits reading from and writing to the same file.\n\
+@example\n\
+myfile = fopen (\"splat.dat\", \"r\", \"ieee-le\");\n\
+@end example\n\
 \n\
-  If MODE is missing, a value of \"r\" is assumed.\n\
+@noindent\n\
+opens the file @file{splat.dat} for reading.  If necessary, binary\n\
+numeric values will be read assuming they are stored in IEEE format with\n\
+the least significant bit first, and then converted to the native\n\
+representation.\n\
 \n\
-  ARCH is a string specifying the default data format for the file.\n\
-  Valid values for ARCH are:\n\
+Opening a file that is already open simply opens it again and returns a\n\
+separate file id.  It is not an error to open a file several times,\n\
+though writing to the same file through several different file ids may\n\
+produce unexpected results.\n\
 \n\
-    native   --  the format of the current machine (this is the default)\n\
-    ieee-le  --  IEEE big endian\n\
-    ieee-be  --  IEEE little endian\n\
-    vaxd     --  VAX D floating format\n\
-    vaxg     --  VAX G floating format\n\
-    cray     --  Cray floating format\n\
+The possible values @samp{mode} may have are\n\
 \n\
-  however, conversions are currently only supported for ieee-be, and\n\
-  ieee-le formats.\n\
+@table @asis\n\
+@item @samp{r}\n\
+Open a file for reading.\n\
 \n\
+@item @samp{w}\n\
+Open a file for writing.  The previous contents are discared.\n\
 \n\
-  FILENUM is a number that can be used to refer to the open file.\n\
-  If fopen fails, FILENUM is set to -1 and ERRMSG contains a\n\
-  system-dependent error message")
+@item @samp{a}\n\
+Open or create a file for writing at the end of the file.\n\
+\n\
+@item @samp{r+}\n\
+Open an existing file for reading and writing.\n\
+\n\
+@item @samp{w+}\n\
+Open a file for reading or writing.  The previous contents are\n\
+discarded.\n\
+\n\
+@item @samp{a+}\n\
+Open or create a file for reading or writing at the end of the\n\
+file.\n\
+@end table\n\
+\n\
+The parameter @var{arch} is a string specifying the default data format\n\
+for the file.  Valid values for @var{arch} are:\n\
+\n\
+@table @asis\n\
+@samp{native}\n\
+The format of the current machine (this is the default).\n\
+\n\
+@samp{ieee-le}\n\
+IEEE big endian format.\n\
+\n\
+@samp{ieee-be}\n\
+IEEE little endian format.\n\
+\n\
+@samp{vaxd}\n\
+VAX D floating format.\n\
+\n\
+@samp{vaxg}\n\
+VAX G floating format.\n\
+\n\
+@samp{cray}\n\
+Cray floating format.\n\
+@end table\n\
+\n\
+@noindent\n\
+however, conversions are currently only supported for @samp{native}\n\
+@samp{ieee-be}, and @samp{ieee-le} formats.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -433,7 +513,24 @@ DEFUN (fopen, args, ,
 }
 
 DEFUN (freport, args, ,
-  "freport (): list open files and their status")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} freport ()\n\
+Print a list of which files have been opened, and whether they are open\n\
+for reading, writing, or both.  For example,\n\
+\n\
+@example\n\
+@group\n\
+freport ()\n\
+\n\
+     @print{}  number  mode  name\n\
+     @print{} \n\
+     @print{}       0     r  stdin\n\
+     @print{}       1     w  stdout\n\
+     @print{}       2     w  stderr\n\
+     @print{}       3     r  myfile\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -448,7 +545,12 @@ DEFUN (freport, args, ,
 }
 
 DEFUN (frewind, args, ,
-  "frewind (FILENUM): set file position at beginning of file")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} frewind (@var{fid})\n\
+Move the file pointer to the beginning of the file @var{fid}, returning\n\
+1 for success, and 0 if an error was encountered.  It is equivalent to\n\
+@code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -468,15 +570,16 @@ DEFUN (frewind, args, ,
 }
 
 DEFUN (fseek, args, ,
-  "fseek (FILENUM, OFFSET [, ORIGIN])\n\
-\n\
-set file position for reading or writing.\n\
-\n\
-ORIGIN may be one of:\n\
-\n\
-  SEEK_SET : offset is relative to the beginning of the file (default)\n\
-  SEEK_CUR : offset is relative to the current position\n\
-  SEEK_END : offset is relative to the end of the file")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})\n\
+Set the file pointer to any location within the file @var{fid}.  The\n\
+pointer is positioned @var{offset} characters from the @var{origin},\n\
+which may be one of the predefined variables @code{SEEK_CUR} (current\n\
+position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of\n\
+file). If @var{origin} is omitted, @code{SEEK_SET} is assumed.  The\n\
+offset must be zero, or a value returned by @code{ftell} (in which case\n\
+@var{origin} must be @code{SEEK_SET}.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -501,7 +604,11 @@ ORIGIN may be one of:\n\
 }
 
 DEFUN (ftell, args, ,
-  "POSITION = ftell (FILENUM): returns the current file position")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ftell (@var{fid})\n\
+Return the position of the file pointer as the number of characters\n\
+from the beginning of the file @var{fid}.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -521,7 +628,11 @@ DEFUN (ftell, args, ,
 }
 
 DEFUN (fprintf, args, ,
-  "fprintf (FILENUM, FORMAT, ...)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
+This function is just like @code{printf}, except that the output is\n\
+written to the stream @var{fid} instead of @code{stdout}.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -569,7 +680,10 @@ DEFUN (fprintf, args, ,
 }
 
 DEFUN (fputs, args, ,
-  "fputs (FILENUM, STRING)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})\n\
+Write a string to a file with no formatting.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -589,7 +703,14 @@ DEFUN (fputs, args, ,
 }
 
 DEFUN (sprintf, args, ,
-  "[s, errmsg, status] = sprintf (FORMAT, ...)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} sprintf (@var{template}, @dots{})\n\
+This is like @code{printf}, except that the output is returned as a\n\
+string.  Unlike the C library function, which requires you to provide a\n\
+suitably sized string as an argument, Octave's @code{sprintf} function\n\
+returns the string, automatically sized to hold all of the items\n\
+converted.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -638,27 +759,46 @@ DEFUN (sprintf, args, ,
 }
 
 DEFUN (fscanf, args, ,
-  "[A, COUNT] = fscanf (FILENUM, FORMAT [, SIZE])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } fscanf (@var{fid}, @var{template}, \"C\")\n\
+In the first form, read from @var{fid} according to @var{template},\n\
+returning the result in the matrix @var{val}.\n\
 \n\
-Read from FILENUM according to FORMAT, returning the result in the\n\
-matrix A.  SIZE is optional.  If present, it can be one of\n\
+The optional argument @var{size} specifies the amount of data to read\n\
+and may be one of\n\
 \n\
-       Inf : read as much as possible, returning a column vector\n\
-             (unless doing all character conversions, in which case a\n\
-             string is returned)\n\
-        NR : read up to NR elements, returning a column vector\n\
-  [NR, NC] : read up to NR x NC elements, returning a matrix with NR rows\n\
- [NR, Inf] : read as much as possible, returning a matrix with NR rows\n\
+@table @code\n\
+@item Inf\n\
+Read as much as possible, returning a column vector.\n\
 \n\
-If it is omitted, a value of Inf is assumed.\n\
+@item @var{nr}\n\
+Read up to @var{nr} elements, returning a column vector.\n\
 \n\
-The number of items successfully read is returned in COUNT.\n\
+@item [@var{nr}, Inf]\n\
+Read as much as possible, returning a matrix with @var{nr} rows.  If the\n\
+number of elements read is not an exact multiple of @var{nr}, the last\n\
+column is padded with zeros.\n\
 \n\
-[A, B, ...] = fscanf (FILENUM, FORMAT, \"C\")\n\
+@item [@var{nr}, @var{nc}]\n\
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with\n\
+@var{nr} rows.  If the number of elements read is not an exact multiple\n\
+of @var{nr}, the last column is padded with zeros.\n\
+@end table\n\
 \n\
-Read from FILENUM according to FORMAT, with each conversion specifier\n\
-in FORMAT corresponding to a single scalar return value.  This form is\n\
-more `C-like', and also compatible with previous versions of Octave")
+@noindent\n\
+If @var{size} is omitted, a value of @code{Inf} is assumed.\n\
+\n\
+A string is returned if @var{template} specifies only character\n\
+conversions.\n\
+\n\
+The number of items successfully read is returned in @var{count}.\n\
+\n\
+In the second form, read from @var{fid} according to @var{template},\n\
+with each conversion specifier in @var{template} corresponding to a\n\
+single scalar return value.  This form is more `C-like', and also\n\
+compatible with previous versions of Octave.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -720,30 +860,13 @@ more `C-like', and also compatible with previous versions of Octave")
 }
 
 DEFUN (sscanf, args, ,
-  "[A, COUNT, ERRMSG, INDEX] = sscanf (STRING, FORMAT, SIZE)\n\
-\n\
-Read from STRING according to FORMAT, returning the result in the\n\
-matrix A.  SIZE is optional.  If present, it can be one of\n\
-\n\
-       Inf : read as much as possible, returning a column vector\n\
-             (unless doing all character conversions, in which case a\n\
-             string is returned)\n\
-        NR : read up to NR elements, returning a column vector\n\
-  [NR, NC] : read up to NR x NC elements, returning a matrix with NR rows\n\
- [NR, Inf] : read as much as possible, returning a matrix with NR rows\n\
-\n\
-If it is omitted, a value of Inf is assumed.\n\
-\n\
-The number of items successfully read is returned in COUNT.  If an\n\
-error occurs, ERRMSG contains the text of the corresponding error\n\
-message.  INDEX contains the index of the next character to be read\n\
-from STRING\n\
-\n\
-[A, B, ...] = sscanf (STRING, FORMAT, \"C\")\n\
-\n\
-Read from STRING according to FORMAT, with each conversion specifier\n\
-in FORMAT corresponding to a single scalar return value.  This form is\n\
-more `C-like', and also compatible with previous versions of Octave")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } sscanf (@var{string}, @var{template}, \"C\")\n\
+This is like @code{fscanf}, except that the characters are taken from the\n\
+string @var{string} instead of from a stream.  Reaching the end of the\n\
+string is treated as an end-of-file condition.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -829,7 +952,14 @@ more `C-like', and also compatible with previous versions of Octave")
 }
 
 DEFUN (scanf, args, nargout,
-  "scanf (FORMAT) is equivalent to fscanf (stdin, FORMAT)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} scanf (@var{template}, @var{size})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } scanf (@var{template}, \"C\")\n\
+This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
+\n\
+It is currently not useful to call @code{scanf} in interactive\n\
+programs.\n\
+@end deftypefn")
 {
   int nargin = args.length ();
 
@@ -897,52 +1027,130 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 }
 
 DEFUN (fread, args, ,
-  "[DATA, COUNT] = fread (FILENUM [, SIZE] [, PRECISION] [, SKIP] [, ARCH])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})\n\
+Read binary data of type @var{precision} from the specified file ID\n\
+@var{fid}.\n\
 \n\
-Reads data in binary form of type PRECISION from a file.\n\
+The optional argument @var{size} specifies the amount of data to read\n\
+and may be one of\n\
 \n\
-  FILENUM   : file number from fopen\n\
+@table @code\n\
+@item Inf\n\
+Read as much as possible, returning a column vector.\n\
 \n\
-  SIZE      : size specification for the data matrix\n\
+@item @var{nr}\n\
+Read up to @var{nr} elements, returning a column vector.\n\
 \n\
-  PRECISION : string specifying type of data to read, valid types are\n\
+@item [@var{nr}, Inf]\n\
+Read as much as possible, returning a matrix with @var{nr} rows.  If the\n\
+number of elements read is not an exact multiple of @var{nr}, the last\n\
+column is padded with zeros.\n\
 \n\
-   char, char*1, integer*1, int8  --  character\n\
-   schar, signed char             --  signed character\n\
-   uchar, unsigned char           --  unsigned character (default)\n\
-   short                          --  short integer\n\
-   ushort, unsigned short         --  unsigned short integer\n\
-   int                            --  integer\n\
-   uint, unsigned int             --  unsigned integer\n\
-   long                           --  long integer\n\
-   ulong, unsigned long           --  unsigned long integer\n\
-   float, float32, real*4         --  single precision float\n\
-   double, float64, real*8        --  double precision float\n\
-   int16, integer*2               --  two byte integer\n\
-   uint16                         --  two byte unsigned integer\n\
-   int32, integer*4               --  four byte integer\n\
-   uint32                         --  four byte unsigned integer\n\
+@item [@var{nr}, @var{nc}]\n\
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with\n\
+@var{nr} rows.  If the number of elements read is not an exact multiple\n\
+of @var{nr}, the last column is padded with zeros.\n\
+@end table\n\
 \n\
-  SKIP      : number of bytes to skip after each element is read\n\
-              (default is 0)\n\
+@noindent\n\
+If @var{size} is omitted, a value of @code{Inf} is assumed.\n\
 \n\
-  ARCH      : string specifying the data format for the file.  Valid\n\
-              values are\n\
+The optional argument @var{precision} is a string specifying the type of\n\
+data to read and may be one of\n\
 \n\
-    native   --  the format of the current machine (default)\n\
-    ieee-be  --  IEEE big endian\n\
-    ieee-le  --  IEEE little endian\n\
-    vaxd     --  VAX D floating format\n\
-    vaxg     --  VAX G floating format\n\
-    cray     --  Cray floating format\n\
+@table @code\n\
+@item \"char\"\n\
+@itemx \"char*1\"\n\
+@itemx \"integer*1\"\n\
+@itemx \"int8\"\n\
+Single character.\n\
 \n\
-              however, conversions are currently only supported for\n\
-              ieee-be and ieee-le formats.\n\
+@item \"signed char\"\n\
+@itemx \"schar\"\n\
+Signed character.\n\
 \n\
+@item \"unsigned char\"\n\
+@itemx \"uchar\"\n\
+Unsigned character.\n\
 \n\
-  DATA      : matrix in which the data is stored\n\
+@item \"short\"\n\
+Short integer.\n\
 \n\
-  COUNT     : number of elements read")
+@item \"unsigned short\"\n\
+@itemx \"ushort\"\n\
+Unsigned short integer.\n\
+\n\
+@item \"int\"\n\
+Integer.\n\
+\n\
+@item \"unsigned int\"\n\
+@itemx \"uint\"\n\
+Unsigned integer.\n\
+\n\
+@item \"long\"\n\
+Long integer.\n\
+\n\
+@item \"unsigned long\"\n\
+@itemx \"ulong\"\n\
+Unsigned long integer.\n\
+\n\
+@item \"float\"\n\
+@itemx \"float32\"\n\
+@itemx \"real*4\"\n\
+Single precision float.\n\
+\n\
+@item \"double\"\n\
+@itemx \"float64\"\n\
+@itemx \"real*8\"\n\
+Double precision float.\n\
+\n\
+@item \"integer*2\"\n\
+@itemx \"int16\"\n\
+Two byte integer.\n\
+\n\
+@item \"integer*4\"\n\
+@itemx \"int32\"\n\
+Four byte integer.\n\
+@end table\n\
+\n\
+@noindent\n\
+The default precision is @code{\"uchar\"}.\n\
+\n\
+The optional argument @var{skip} specifies the number of bytes to skip\n\
+before each element is read.  If it is not specified, a value of 0 is\n\
+assumed.\n\
+\n\
+The optional argument @var{arch} is a string specifying the data format\n\
+for the file.  Valid values are\n\
+\n\
+@table @code\n\
+@item \"native\"\n\
+The format of the current machine.\n\
+\n\
+@item \"ieee-le\"\n\
+IEEE big endian.\n\
+\n\
+@item \"ieee-be\"\n\
+IEEE little endian.\n\
+\n\
+@item \"vaxd\"\n\
+VAX D floating format.\n\
+\n\
+@item \"vaxg\"\n\
+VAX G floating format.\n\
+\n\
+@item \"cray\"\n\
+Cray floating format.\n\
+@end table\n\
+\n\
+@noindent\n\
+Conversions are currently only supported for @code{\"ieee-be\"} and\n\
+@code{\"ieee-le\"} formats.\n\
+\n\
+The data read from the file is returned in @var{val}, and the number of\n\
+values read is returned in @code{count}\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1029,49 +1237,21 @@ do_fwrite (octave_stream& os, const octave_value& data,
 }
 
 DEFUN (fwrite, args, ,
-  "COUNT = fwrite (FILENUM, DATA [, PRECISION] [, SKIP] [, ARCH])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{count} =} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})\n\
+Write data in binary form of type @var{precision} to the specified file\n\
+ID @var{fid}, returning the number of values successfully written to the\n\
+file.\n\
 \n\
-  Writes data to a file in binary form of size PRECISION\n\
+The argument @var{data} is a matrix of values that are to be written to\n\
+the file.  The values are extracted in column-major order.\n\
 \n\
-  FILENUM   : file number from fopen\n\
+The remaining arguments @var{precision}, @var{skip}, and @var{arch} are\n\
+optional, and are interpreted as described for @code{fread}.\n\
 \n\
-  DATA      : matrix of elements to be written\n\
-\n\
-  PRECISION : string specifying type of data to write, valid types are\n\
-\n\
-   char, char*1, integer*1, int8  --  character\n\
-   schar, signed char             --  signed character\n\
-   uchar, unsigned char           --  unsigned character (default)\n\
-   short                          --  short integer\n\
-   ushort, unsigned short         --  unsigned short integer\n\
-   int                            --  integer\n\
-   uint, unsigned int             --  unsigned integer\n\
-   long                           --  long integer\n\
-   ulong, unsigned long           --  unsigned long integer\n\
-   float, float32, real*4         --  single precision float\n\
-   double, float64, real*8        --  double precision float\n\
-   int16, integer*2               --  two byte integer\n\
-   uint16                         --  two byte unsigned integer\n\
-   int32, integer*4               --  four byte integer\n\
-   uint32                         --  four byte unsigned integer\n\
-\n\
-  SKIP      : number of bytes to skip before each element is written\n\
-              (the default is 0)\n\
-\n\
-  ARCH      : string specifying the data format for the file.  Valid\n\
-              values are\n\
-\n\
-    native   --  the format of the current machine (default)\n\
-    ieee-le  --  IEEE big endian\n\
-    ieee-be  --  IEEE little endian\n\
-    vaxd     --  VAX D floating format\n\
-    vaxg     --  VAX G floating format\n\
-    cray     --  Cray floating format\n\
-\n\
-  however, conversions are currently only supported for ieee-be, and\n\
-  ieee-le formats.\n\
-\n\
-  COUNT     : number of elements written")
+The behavior of @code{fwrite} is undefined if the values in @var{data}\n\
+are too large to fit in the specified precision.\n\
+@end deftypefn")
 {
   octave_value retval = -1.0;
 
@@ -1106,10 +1286,13 @@ DEFUN (fwrite, args, ,
 }
 
 DEFUN (feof, args, ,
-  "ERROR = feof (FILENUM)\n\
-\n\
- Returns a non zero value for an end of file condition for the\n\
- file specified by FILENUM from fopen")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} feof (@var{fid})\n\
+Return 1 if an end-of-file condition has been encountered for a given\n\
+file and 0 otherwise.  Note that it will only return 1 if the end of the\n\
+file has already been encountered, not if the next read operation will\n\
+result in an end-of-file condition.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -1129,10 +1312,13 @@ DEFUN (feof, args, ,
 }
 
 DEFUN (ferror, args, ,
-  "ERROR = ferror (FILENUM, [\"clear\"])\n\
-\n\
- Returns a non zero value for an error condition on the\n\
- file specified by FILENUM from fopen")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ferror (@var{fid})\n\
+Return 1 if an error condition has been encountered for a given file\n\
+and 0 otherwise.  Note that it will only return 1 if an error has\n\
+already been encountered, not if the next operation will result in an\n\
+error condition.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1265,8 +1451,14 @@ use @code{fclose} for the same purpose.\n\
 }
 
 DEFUN (tmpnam, args, ,
- "tmpnam (DIR, PREFIX)\n\
-Return unique temporary file name.")
+ "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} tmpnam ()\n\
+Return a unique temporary file name as a string.\n\
+\n\
+Since the named file is not opened, by @code{tmpnam}, it\n\
+is possible (though relatively unlikely) that it will not be available\n\
+by the time your program attempts to open it.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -1371,22 +1563,54 @@ symbols_of_file_io (void)
   // this way for Matlab compatibility.
 
   DEFCONSTX ("SEEK_SET", SBV_SEEK_SET, -1.0,
-    "used with fseek to position file relative to the beginning");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} SEEK_SET\n\
+@defvrx {Built-in Variable} SEEK_CUR\n\
+@defvrx {Built-in Variable} SEEK_END\n\
+These variables may be used as the optional third argument for the\n\
+function @code{fseek}.\n\
+\n\
+@table @code\n\
+@item SEEK_SET\n\
+Position file relative to the beginning.\n\
+\n\
+@item SEEK_CUR\n\
+Position file relative to the current position.\n\
+\n\
+@item SEEK_END\n\
+used with fseek to position file relative to the end.\n\
+@end table\n\
+@end defvr");
 
   DEFCONSTX ("SEEK_CUR", SBV_SEEK_CUR, 0.0,
-    "used with fseek to position file relative to the current position");
+    "See SEEK_SET");
 
   DEFCONSTX ("SEEK_END", SBV_SEEK_END, 1.0,
-    "used with fseek to position file relative to the end");
+    "See SEEK_SET");
 
   DEFCONSTX ("stdin", SBV_stdin, stdin_file,
-    "file number of the standard input stream");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} stdin\n\
+The standard input stream (file id 0).  When Octave is used\n\
+interactively, this is filtered through the command line editing\n\
+functions.\n\
+@end defvr");
 
   DEFCONSTX ("stdout", SBV_stdout, stdout_file,
-    "file number of the standard output stream");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} stdout\n\
+The standard output stream (file id 1).  Data written to the\n\
+standard output is normally filtered through the pager.\n\
+@end defvr");
 
   DEFCONSTX ("stderr", SBV_stderr, stderr_file,
-    "file number of the standard error stream");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} stderr\n\
+The standard error stream (file id 2).  Even if paging is turned on,\n\
+the standard error is not sent to the pager.  It is useful for error\n\
+messages and prompts.\n\
+@end defvr");
+
 }
 
 /*

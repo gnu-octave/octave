@@ -17,18 +17,30 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: [aa, bb, q, z] = qzhess (a, b)
-##
-## Compute the qz decomposition of the matrix pencil (a - lambda b)
-##
-## result: (for Matlab compatibility):
-##
-##   aa = q*a*z and bb = q*b*z, with q, z orthogonal, and
-##   v = matrix of generalized eigenvectors.
-##
-## This ought to be done in a compiled program
-##
-## Algorithm taken from Golub and Van Loan, Matrix Computations, 2nd ed.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
+## Compute the Hessenberg-triangular decomposition of the matrix pencil
+## @code{(@var{a}, @var{b})}, returning
+## @code{@var{aa} = @var{q} * @var{a} * @var{z}}, 
+## @code{@var{bb} = @var{q} * @var{b} * @var{z}}, with @var{q} and @var{z}
+## orthogonal.  For example,
+## 
+## @example
+## @group
+## [aa, bb, q, z] = qzhess ([1, 2; 3, 4], [5, 6; 7, 8])
+##      @result{} aa = [ -3.02244, -4.41741;  0.92998,  0.69749 ]
+##      @result{} bb = [ -8.60233, -9.99730;  0.00000, -0.23250 ]
+##      @result{}  q = [ -0.58124, -0.81373; -0.81373,  0.58124 ]
+##      @result{}  z = [ 1, 0; 0, 1 ]
+## @end group
+## @end example
+## 
+## The Hessenberg-triangular decomposition is the first step in
+## Moler and Stewart's QZ decomposition algorithm.
+## 
+## Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
+## edition}.
+## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993

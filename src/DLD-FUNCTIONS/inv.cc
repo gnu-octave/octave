@@ -31,7 +31,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (inv, args, ,
-  "inv (X): inverse of a square matrix")
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {} inv (@var{a})\n\
+@deftypefnx {Loadable Function} {} inverse (@var{a})\n\
+Compute the inverse of the square matrix @var{a}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

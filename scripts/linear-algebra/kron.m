@@ -17,12 +17,25 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Usage: x = kron (a, b)
-##
-## Form the Kronecker product of two matrices, defined block by block
-## as
-##
-##   x = [a(i,j) b]
+## -*- texinfo -*-
+## @deftypefn {Function File} {} kron (@var{a}, @var{b})
+## Form the kronecker product of two matrices, defined block by block as
+## 
+## @example
+## x = [a(i, j) b]
+## @end example
+## 
+## For example,
+## 
+## @example
+## @group
+## kron (1:4, ones (3, 1))
+##      @result{}  1  2  3  4
+##          1  2  3  4
+##          1  2  3  4
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993

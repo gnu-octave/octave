@@ -1308,7 +1308,18 @@ void
 symbols_of_variables (void)
 {
   DEFVAR (ans, , 0,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} ans\n\
+This variable holds the most recently computed result that was not\n\
+explicitly assigned to a variable.  For example, after the expression\n\
+\n\
+@example\n\
+3^2 + 4^2\n\
+@end example\n\
+\n\
+@noindent\n\
+is evaluated, the value of @code{ans} is 25.\n\
+@end defvr");
 
   DEFVAR (ignore_function_time_stamp, "system", ignore_function_time_stamp,
     "-*- texinfo -*-\n\

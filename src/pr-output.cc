@@ -1649,7 +1649,20 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 }
 
 DEFUN (disp, args, ,
-  "disp (X): display value without name tag")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} disp (@var{x})\n\
+Display the value of @var{x}.  For example,\n\
+\n\
+@example\n\
+disp (\"The value of pi is:\"), disp (pi)\n\
+\n\
+     @print{} the value of pi is:\n\
+     @print{} 3.1416\n\
+@end example\n\
+\n\
+@noindent\n\
+Note that the output from @code{disp} always ends with a newline.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1808,9 +1821,93 @@ set_format_style (int argc, const string_vector& argv)
 }
 
 DEFUN_TEXT (format, args, ,
-  "format [style]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} format options\n\
+Control the format of the output produced by @code{disp} and Octave's\n\
+normal echoing mechanism.  Valid options are listed in the following\n\
+table.\n\
 \n\
-set output formatting style")
+@table @code\n\
+@item short\n\
+Octave will try to print numbers with at\n\
+least 3 significant figures within a field that is a maximum of 8\n\
+characters wide.\n\
+\n\
+If Octave is unable to format a matrix so that columns line up on the\n\
+decimal point and all the numbers fit within the maximum field width,\n\
+it switches to an @samp{e} format.\n\
+\n\
+@item long\n\
+Octave will try to print numbers with at least 15 significant figures\n\
+within a field that is a maximum of 24 characters wide.\n\
+\n\
+As will the @samp{short} format, Octave will switch to an @samp{e}\n\
+format if it is unable to format a matrix so that columns line up on the\n\
+decimal point and all the numbers fit within the maximum field width.\n\
+\n\
+@item long e\n\
+@itemx short e\n\
+The same as @samp{format long} or @samp{format short} but always display\n\
+output with an @samp{e} format.  For example, with the @samp{short e}\n\
+format, pi is displayed as @code{3.14e+00}.\n\
+\n\
+@item long E\n\
+@itemx short E\n\
+The same as @samp{format long e} or @samp{format short e} but always\n\
+display output with an uppercase @samp{E} format.  For example, with\n\
+the @samp{long E} format, pi is displayed as\n\
+@code{3.14159265358979E+00}.\n\
+\n\
+@item free\n\
+@itemx none\n\
+Print output in free format, without trying to line up columns of\n\
+matrices on the decimal point.  This also causes complex numbers to be\n\
+formatted like this @samp{(0.604194, 0.607088)} instead of like this\n\
+@samp{0.60419 + 0.60709i}.\n\
+\n\
+@item bank\n\
+Print in a fixed format with two places to the right of the decimal\n\
+point.\n\
+\n\
+@item +\n\
+Print a @samp{+} symbol for nonzero matrix elements and a space for zero\n\
+matrix elements.  This format can be very useful for examining the\n\
+structure of a large matrix.\n\
+\n\
+@item hex\n\
+Print the hexadecimal representation numbers as they are stored in\n\
+memory.  For example, on a workstation which stores 8 byte real values\n\
+in IEEE format with the least significant byte first, the value of\n\
+@code{pi} when printed in @code{hex} format is @code{400921fb54442d18}.\n\
+This format only works for numeric values.\n\
+\n\
+@item bit\n\
+Print the bit representation of numbers as stored in memory.\n\
+For example, the value of @code{pi} is\n\
+\n\
+@example\n\
+@group\n\
+01000000000010010010000111111011\n\
+01010100010001000010110100011000\n\
+@end group\n\
+@end example\n\
+\n\
+(shown here in two 32 bit sections for typesetting purposes) when\n\
+printed in bit format on a workstation which stores 8 byte real values\n\
+in IEEE format with the least significant byte first.  This format only\n\
+works for numeric types.\n\
+@end table\n\
+\n\
+By default, Octave will try to print numbers with at least 5 significant\n\
+figures within a field that is a maximum of 10 characters wide.\n\
+\n\
+If Octave is unable to format a matrix so that columns line up on the\n\
+decimal point and all the numbers fit within the maximum field width,\n\
+it switches to an @samp{e} format.\n\
+\n\
+If @code{format} is invoked without any options, the default format\n\
+state is restored.\n\
+@end deffn")
 {
   octave_value_list retval;
 

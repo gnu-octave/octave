@@ -32,14 +32,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFUN_DLD (pinv, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File } { } pinv (@var{X}, @var{tol})\n\
-Returns the pseudoinverse of X; singular values less than tol are ignored.\n\
+@deftypefn {Loadable Function} {} pinv (@var{x}, @var{tol})\n\
+Return the pseudoinverse of @var{x}.  Singular values less than\n\
+@var{tol} are ignored. \n\
 \n\
-If the second arguement is ommited , it is assummed that\n\
+If the second argument is omitted, it is assumed that\n\
+\n\
 @example\n\
-tol = max (size (X)) * sigma_max (X) * eps,\n\
+tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\
 @end example\n\
-where sigma_max(X) is the maximal singular value of X.\n\
+\n\
+@noindent\n\
+where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

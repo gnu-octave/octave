@@ -34,7 +34,38 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (lu, args, nargout,
-  "[L, U, P] = lu (A): LU factorization")
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})\n\
+@cindex LU decomposition\n\
+Compute the LU decomposition of @var{a}, using subroutines from\n\
+@sc{Lapack}.  The result is returned in a permuted form, according to\n\
+the optional return value @var{p}.  For example, given the matrix\n\
+@code{a = [1, 2; 3, 4]},\n\
+\n\
+@example\n\
+[l, u, p] = lu (a)\n\
+@end example\n\
+\n\
+@noindent\n\
+returns\n\
+\n\
+@example\n\
+l =\n\
+\n\
+  1.00000  0.00000\n\
+  0.33333  1.00000\n\
+\n\
+u =\n\
+\n\
+  3.00000  4.00000\n\
+  0.00000  0.66667\n\
+\n\
+p =\n\
+\n\
+  0  1\n\
+  1  0\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

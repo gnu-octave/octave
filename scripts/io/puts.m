@@ -17,10 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: puts (string)
-##
-## Write string to the standard output.
-##
+-*- texinfo -*-\n\
+## @deftypefn {Built-in Function} {} puts (@var{string})
+## Write a string to the standard output with no formatting.
+## @end deftypefn
+
 ## See also: fputs, printf, fprintf
 
 ## Author: jwe

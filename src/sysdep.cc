@@ -395,8 +395,21 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
   return retval;
 }
 
+// XXX FIXME XXX -- perhaps kbhit should also be able to print a prompt?
+
 DEFUN (kbhit, , ,
-  "kbhit: get a single character from the terminal")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} kbhit ()\n\
+Read a single keystroke from the keyboard.  For example,\n\
+\n\
+@example\n\
+x = kbhit ();\n\
+@end example\n\
+\n\
+@noindent\n\
+will set @var{x} to the next character typed at the keyboard as soon as\n\
+it is typed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -35,23 +35,118 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
+// [Q, R] = qr (X):      form Q unitary and R upper triangular such
+//                        that Q * R = X
+//
+// [Q, R] = qr (X, 0):    form the economy decomposition such that if X is
+//                        m by n then only the first n columns of Q are
+//                        computed.
+//
+// [Q, R, P] = qr (X):    form QRP factorization of X where
+//                        P is a permutation matrix such that
+//                        A * P = Q * R
+//
+// [Q, R, P] = qr (X, 0): form the economy decomposition with
+//                        permutation vector P such that Q * R = X (:, P)
+//
+// qr (X) alone returns the output of the LAPACK routine dgeqrf, such
+// that R = triu (qr (X))
+
 DEFUN_DLD (qr, args, nargout,
-  "[Q, R] = qr (X):      form Q unitary and R upper triangular such\n\
-                       that Q * R = X\n\
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
+@cindex QR factorization\n\
+Compute the QR factorization of @var{a}, using standard @sc{Lapack}\n\
+subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
-[Q, R] = qr (X, 0):    form the economy decomposition such that if X is\n\
-                       m by n then only the first n columns of Q are\n\
-                       computed.\n\
+@example\n\
+[q, r] = qr (a)\n\
+@end example\n\
 \n\
-[Q, R, P] = qr (X):    form QRP factorization of X where\n\
-                       P is a permutation matrix such that\n\
-                       A * P = Q * R\n\
+@noindent\n\
+returns\n\
 \n\
-[Q, R, P] = qr (X, 0): form the economy decomposition with \n\
-                       permutation vector P such that Q * R = X (:, P)\n\
+@example\n\
+q =\n\
 \n\
-qr (X) alone returns the output of the LAPACK routine dgeqrf, such\n\
-that R = triu (qr (X))")
+  -0.31623  -0.94868\n\
+  -0.94868   0.31623\n\
+\n\
+r =\n\
+\n\
+  -3.16228  -4.42719\n\
+   0.00000  -0.63246\n\
+@end example\n\
+\n\
+The @code{qr} factorization has applications in the solution of least\n\
+squares problems\n\
+@iftex\n\
+@tex\n\
+$$\n\
+\\min_x \\left\\Vert A x - b \\right\\Vert_2\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+\n\
+@example\n\
+@code{min norm(A x - b)}\n\
+@end example\n\
+\n\
+@end ifinfo\n\
+for overdetermined systems of equations (i.e.,\n\
+@iftex\n\
+@tex\n\
+$A$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+@code{a}\n\
+@end ifinfo\n\
+ is a tall, thin matrix).  The QR factorization is\n\
+@iftex\n\
+@tex\n\
+$QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+@code{q * r = a} where @code{q} is an orthogonal matrix and @code{r} is\n\
+upper triangular.\n\
+@end ifinfo\n\
+\n\
+The permuted QR factorization @code{[@var{q}, @var{r}, @var{p}] =\n\
+qr (@var{a})} forms the QR factorization such that the diagonal\n\
+entries of @code{r} are decreasing in magnitude order.  For example,\n\
+given the matrix @code{a = [1, 2; 3, 4]},\n\
+\n\
+@example\n\
+[q, r, pi] = qr(a)\n\
+@end example\n\
+\n\
+@noindent\n\
+returns\n\
+\n\
+@example\n\
+q = \n\
+\n\
+  -0.44721  -0.89443\n\
+  -0.89443   0.44721\n\
+\n\
+r =\n\
+\n\
+  -4.47214  -3.13050\n\
+   0.00000   0.44721\n\
+\n\
+p =\n\
+\n\
+   0  1\n\
+   1  0\n\
+@end example\n\
+\n\
+The permuted @code{qr} factorization @code{[q, r, p] = qr (a)}\n\
+factorization allows the construction of an orthogonal basis of\n\
+@code{span (a)}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

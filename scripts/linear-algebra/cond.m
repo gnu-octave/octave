@@ -17,12 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: cond (A)
-##
-## Return the condition number of A, computed using the singular values
-## of A.  If the maximum and minimum singular values of A are both zero,
-## cond returns Inf rather than NaN.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cond (@var{a})
+## Compute the (two-norm) condition number of a matrix. @code{cond (a)} is
+## defined as @code{norm (a) * norm (inv (a))}, and is computed via a
+## singular value decomposition.
+## @end deftypefn
+
 ## See also: norm, svd, rank
 
 ## Author: jwe

@@ -178,42 +178,63 @@ fout (const int& lsize, const double& alpha,
 }
 
 DEFUN_DLD (qz, args, nargout,
-"Usage:\n\
-
-  lambda = qz (A, B)                           form [1]\n\
-  [AA, BB, Q, Z {, V, W, lambda}] = qz (A, B)  form [2]\n\
-  [AA, BB, Z{, lambda}] = qz (A, B, opt)       form [3]\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{lambda} =} qz (@var{a}, @var{b})\n\
+Generalized eigenvalue problem @math{A x = s B x},\n\
+@var{QZ} decomposition.  Three ways to call:\n\
+@enumerate\n\
+@item @code{lambda = qz(A,B)}\n\
 \n\
-Generalized eigenvalue problem    A x = s B x \n\
+Computes the generalized eigenvalues @var{lambda} of @math{(A - sB)}.\n\
 \n\
-Form [1]: Computes the generalized eigenvalues lambda of (A - sB).\n\
+@item @code{[AA, BB, Q, Z @{, V, W, lambda@}] = qz (A, B)}\n\
 \n\
-Form [2]: Computes qz decomposition, generalized eigenvectors, and \n\
-          generalized eigenvalues of (A - sB)\n\
-          A V = B V diag (lambda)\n\
-          W' A = diag (lambda) W' B\n\
-          AA = Q'*A*Z, BB = Q'*B*Z  with Q, Z orthogonal (unitary)= I\n\
+Computes qz decomposition, generalized eigenvectors, and \n\
+        generalized eigenvalues of @math{(A - sB)}\n\
+@example\n\
+@group\n\
+        A V = B V diag(lambda)\n\
+        W' A = diag(lambda) W' B\n\
+        AA = Q'*A*Z, BB = Q'*B*Z  with Q, Z orthogonal (unitary)= I\n\
+@end group\n\
+@end example\n\
 \n\
-Form [3]: As in form [2], but allows ordering of generalized eigenpairs\n\
-          for (e.g.) solution of discrete time algebraic Riccati equations.\n\
-          Form 3 is not available for complex matrices and does not compute\n\
-          the generalized eigenvectors V, W, nor the orthogonal matrix Q.\n\
+@item @code{[AA,BB,Z@{,lambda@}] = qz(A,B,opt)}\n\
 \n\
-     opt: for ordering eigenvalues of the GEP pencil.  The leading  block\n\
-          of the revised pencil contains all eigenvalues that satisfy:\n\
+As in form [2], but allows ordering of generalized eigenpairs\n\
+        for (e.g.) solution of discrete time algebraic Riccati equations.\n\
+        Form 3 is not available for complex matrices and does not compute\n\
+        the generalized eigenvectors V, W, nor the orthogonal matrix Q.\n\
+@table @var\n\
+@item opt\n\
+ for ordering eigenvalues of the GEP pencil.  The leading  block\n\
+             of the revised pencil contains all eigenvalues that satisfy:\n\
+@table @code\n\
+@item \"N\"\n\
+ = unordered (default) \n\
 \n\
-          \"N\" = unordered (default) \n\
-          \"S\" = small: leading block has all |lambda| <=1 \n\
-          \"B\" = big: leading block has all |lambda >= 1 \n\
-          \"-\" = negative real part: leading  block has all eigenvalues\n\
+@item \"S\"\n\
+= small: leading block has all |lambda| <=1 \n\
+\n\
+@item \"B\"\n\
+ = big: leading block has all |lambda >= 1 \n\
+\n\
+@item \"-\"\n\
+ = negative real part: leading  block has all eigenvalues\n\
                   in the open left half-plant\n\
-          \"+\" = nonnegative real part:  leading block has all eigenvalues\n\
-                  in the closed right half-plane\n\
 \n\
-Note: Permutation balancing is performed, but not scaling (see balance)\n\
+@item \"+\"\n\
+ = nonnegative real part:  leading block has all eigenvalues\n\
+                  in the closed right half-plane\n\
+@end  table\n\
+@end table\n\
+@end enumerate\n\
+\n\
+Note: qz performs permutation balancing, but not scaling (see balance).\n\
       Order of output arguments was selected for compatibility with MATLAB\n\
 \n\
-See also: balance, dare, eig, schur")
+See also: balance, dare, eig, schur\n\
+@end deftypefn")
 {
   octave_value_list retval;
   int nargin = args.length ();

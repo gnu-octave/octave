@@ -31,12 +31,38 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 
 DEFUN_DLD (givens, args, nargout,
-  "G = givens (X, Y)\n\
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{G} =} givens (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
+@iftex\n\
+@tex\n\
+Return a $2\\times 2$ orthogonal matrix\n\
+$$\n\
+ G = \\left[\\matrix{c & s\\cr -s'& c\\cr}\\right]\n\
+$$\n\
+such that\n\
+$$\n\
+ G \\left[\\matrix{x\\cr y}\\right] = \\left[\\matrix{\\ast\\cr 0}\\right]\n\
+$$\n\
+with $x$ and $y$ scalars.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+Return a 2 by 2 orthogonal matrix\n\
+@code{@var{G} = [@var{c} @var{s}; -@var{s}' @var{c}]} such that\n\
+@code{@var{G} [@var{x}; @var{y}] = [*; 0]} with @var{x} and @var{y} scalars.\n\
+@end ifinfo\n\
 \n\
-compute orthogonal matrix G = [c s; -conj (s) c]\n\
-such that G [x; y] = [*; 0]  (x, y scalars)\n\
+For example,\n\
 \n\
-[c, s] = givens (x, y) returns the (c, s) values themselves.")
+@example\n\
+@group\n\
+givens (1, 1)\n\
+     @result{}   0.70711   0.70711\n\
+         -0.70711   0.70711\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

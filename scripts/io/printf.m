@@ -17,10 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: printf (fmt, ...)
-##
-## Formatted write to standard output.
-##
+## -*texinfo -*-
+## @deftypefn {Function File} {} printf (@var{template}, @dots{})
+## The @code{printf} function prints the optional arguments under the
+## control of the template string @var{template} to the stream
+## @code{stdout}.
+## @end deftypefn
+
 ## See also: fprintf sprintf
 
 ## Author: jwe

@@ -35,13 +35,86 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (svd, args, nargout,
-  "S = svd (X) or [U, S, V] = svd (X [, 0])\n\
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{s} =} svd (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})\n\
+@cindex singular value decomposition\n\
+Compute the singular value decomposition of @var{a}\n\
+@iftex\n\
+@tex\n\
+$$\n\
+ A = U\\Sigma V^H\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
 \n\
-Compute the singular value decomposition of X.  Given a second input\n\
-argument, an `economy' sized factorization is computed that omits\n\
-unnecessary rows and columns of U and V.\n\
+@example\n\
+a = u * sigma * v'\n\
+@end example\n\
+@end ifinfo\n\
 \n\
-X may not contain any Inf or NaN values.")
+The function @code{svd} normally returns the vector of singular values.\n\
+If asked for three return values, it computes\n\
+@iftex\n\
+@tex\n\
+$U$, $S$, and $V$.\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+U, S, and V.\n\
+@end ifinfo\n\
+For example,\n\
+\n\
+@example\n\
+svd (hilb (3))\n\
+@end example\n\
+\n\
+@noindent\n\
+returns\n\
+\n\
+@example\n\
+ans =\n\
+\n\
+  1.4083189\n\
+  0.1223271\n\
+  0.0026873\n\
+@end example\n\
+\n\
+@noindent\n\
+and\n\
+\n\
+@example\n\
+[u, s, v] = svd (hilb (3))\n\
+@end example\n\
+\n\
+@noindent\n\
+returns\n\
+\n\
+@example\n\
+u =\n\
+\n\
+  -0.82704   0.54745   0.12766\n\
+  -0.45986  -0.52829  -0.71375\n\
+  -0.32330  -0.64901   0.68867\n\
+\n\
+s =\n\
+\n\
+  1.40832  0.00000  0.00000\n\
+  0.00000  0.12233  0.00000\n\
+  0.00000  0.00000  0.00269\n\
+\n\
+v =\n\
+\n\
+  -0.82704   0.54745   0.12766\n\
+  -0.45986  -0.52829  -0.71375\n\
+  -0.32330  -0.64901   0.68867\n\
+@end example\n\
+\n\
+If given a second argument, @code{svd} returns an economy-sized\n\
+decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
+@var{v}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -62,23 +62,47 @@ extern "C"
 }
 
 DEFUN_DLD (balance, args, nargout,
-  "AA = balance (A [, OPT]) or [[DD,] AA] = balance (A [, OPT])\n\
+  "-*- texinfo -*-
+@deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb]} =} balance (@var{a}, @var{b}, @var{opt})\n\
 \n\
-generalized eigenvalue problem:\n\
+@code{[dd, aa] = balance (a)} returns @code{aa = dd \\ a * dd}.\n\
+@code{aa} is a matrix whose row and column norms are roughly equal in\n\
+magnitude, and @code{dd} = @code{p * d}, where @code{p} is a permutation\n\
+matrix and @code{d} is a diagonal matrix of powers of two.  This allows\n\
+the equilibration to be computed without roundoff.  Results of\n\
+eigenvalue calculation are typically improved by balancing first.\n\
 \n\
-  [cc, dd, aa, bb] = balance (a, b [, opt])\n\
+@code{[cc, dd, aa, bb] = balance (a, b)} returns @code{aa = cc*a*dd} and\n\
+@code{bb = cc*b*dd)}, where @code{aa} and @code{bb} have non-zero\n\
+elements of approximately the same magnitude and @code{cc} and @code{dd}\n\
+are permuted diagonal matrices as in @code{dd} for the algebraic\n\
+eigenvalue problem.\n\
 \n\
-where OPT is an optional single character argument as follows: \n\
+The eigenvalue balancing option @code{opt} is selected as follows:\n\
 \n\
-  N: no balancing; arguments copied, transformation(s) set to identity\n\
-  P: permute argument(s) to isolate eigenvalues where possible\n\
-  S: scale to improve accuracy of computed eigenvalues\n\
-  B: (default) permute and scale, in that order.  Rows/columns\n\
-     of a (and b) that are isolated by permutation are not scaled\n\
+@table @asis\n\
+@item @code{\"N\"}, @code{\"n\"}\n\
+No balancing; arguments copied, transformation(s) set to identity.\n\
 \n\
-[DD, AA] = balance (A, OPT) returns aa = inv(dd)*a*dd,\n\
+@item @code{\"P\"}, @code{\"p\"}\n\
+Permute argument(s) to isolate eigenvalues where possible.\n\
 \n\
-[CC, DD, AA, BB] = balance (A, B, OPT) returns AA (BB) = CC*A*DD (CC*B*DD)")
+@item @code{\"S\"}, @code{\"s\"}\n\
+Scale to improve accuracy of computed eigenvalues.\n\
+\n\
+@item @code{\"B\"}, @code{\"b\"}\n\
+Permute and scale, in that order. Rows/columns of a (and b)\n\
+that are isolated by permutation are not scaled.  This is the default\n\
+behavior.\n\
+@end table\n\
+\n\
+Algebraic eigenvalue balancing uses standard @sc{Lapack} routines.\n\
+\n\
+Generalized eigenvalue problem balancing uses Ward's algorithm\n\
+(SIAM Journal on Scientific and Statistical Computing, 1981).\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

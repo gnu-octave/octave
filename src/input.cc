@@ -589,10 +589,40 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 }
 
 DEFUN (input, args, nargout,
-  "input (PROMPT [, S])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} input (@var{prompt})\n\
+@deftypefnx {Built-in Function} {} input (@var{prompt}, \"s\")\n\
+Print a prompt and wait for user input.  For example,\n\
 \n\
-Prompt user for input.  If the second argument is present, return\n\
-value as a string.")
+@example\n\
+input (\"Pick a number, any number! \")\n\
+@end example\n\
+\n\
+@noindent\n\
+prints the prompt\n\
+\n\
+@example\n\
+Pick a number, any number!\n\
+@end example\n\
+\n\
+@noindent\n\
+and waits for the user to enter a value.  The string entered by the user\n\
+is evaluated as an expression, so it may be a literal constant, a\n\
+variable name, or any other valid expression.\n\
+\n\
+Currently, @code{input} only returns one value, regardless of the number\n\
+of values produced by the evaluation of the expression.\n\
+\n\
+If you are only interested in getting a literal string value, you can\n\
+call @code{input} with the character string @code{\"s\"} as the second\n\
+argument.  This tells Octave to return the string entered by the user\n\
+directly, without evaluating it first.\n\
+\n\
+Because there may be output waiting to be displayed by the pager, it is\n\
+a good idea to always call @code{fflush (stdout)} before calling\n\
+@code{input}.  This will ensure that all pending output is written to\n\
+the screen before your prompt.  @xref{Input and Output}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -613,9 +643,19 @@ restore_command_history (void *)
 }
 
 DEFUN (keyboard, args, ,
-  "keyboard (PROMPT)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} keyboard (@var{prompt})\n\
+This function is normally used for simple debugging.  When the\n\
+@code{keyboard} function is executed, Octave prints a prompt and waits\n\
+for user input.  The input strings are then evaluated and the results\n\
+are printed.  This makes it possible to examine the values of variables\n\
+within a function, and to assign new values to variables.  No value is\n\
+returned from the @code{keyboard} function, and it continues to prompt\n\
+for input until the user types @samp{quit}, or @samp{exit}.\n\
 \n\
-maybe help in debugging function files")
+If @code{keyboard} is invoked without any arguments, a default prompt of\n\
+@samp{debug> } is used.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

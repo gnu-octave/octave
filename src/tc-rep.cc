@@ -53,13 +53,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // TC_REP class.
 
 // Pointer to the blocks of memory we manage.
-static TC_REP *newlist;
+static TC_REP *newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int newlist_grow_size = 128;
-
-// Pointer to the last element of the last block allocated.
-static TC_REP *newlist_tail = 0;
 
 static int
 any_element_is_complex (const ComplexMatrix& a)
@@ -472,11 +469,6 @@ TC_REP::operator new (size_t size)
 	newlist[i].freeptr = &newlist[i+1];
 
       newlist[i].freeptr = 0;
-
-      if (newlist_tail)
-	newlist_tail->freeptr = newlist;
-
-      newlist_tail = &newlist[i];
     }
 
   TC_REP *tmp = newlist;

@@ -37,13 +37,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // tree_constant class.
 
 // Pointer to the blocks of memory we manage.
-static tree_constant *newlist;
+static tree_constant *newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int newlist_grow_size = 128;
-
-// Pointer to the last element of the last block allocated.
-static tree_constant *newlist_tail = 0;
 
 Octave_map
 tree_constant::map_value (void) const
@@ -79,11 +76,6 @@ tree_constant::operator new (size_t size)
 	newlist[i].freeptr = &newlist[i+1];
 
       newlist[i].freeptr = 0;
-
-      if (newlist_tail)
-	newlist_tail->freeptr = newlist;
-
-      newlist_tail = &newlist[i];
     }
 
   tree_constant *tmp = newlist;

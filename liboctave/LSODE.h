@@ -57,6 +57,7 @@ public:
       x_absolute_tolerance.resize (1);
       x_absolute_tolerance(0) = sqrt_eps;
       x_initial_step_size = -1.0;
+      x_integration_method = "stiff";
       x_maximum_step_size = -1.0;
       x_minimum_step_size = 0.0;
       x_relative_tolerance = sqrt_eps;
@@ -71,10 +72,10 @@ public:
     {
       x_absolute_tolerance = opt.x_absolute_tolerance;
       x_initial_step_size = opt.x_initial_step_size;
+      x_integration_method = opt.x_integration_method;
       x_maximum_step_size = opt.x_maximum_step_size;
       x_minimum_step_size = opt.x_minimum_step_size;
       x_relative_tolerance = opt.x_relative_tolerance;
-
       x_step_limit = opt.x_step_limit;
     }
 
@@ -91,6 +92,8 @@ public:
 
   void set_initial_step_size (double val)
     { x_initial_step_size = (val >= 0.0) ? val : -1.0; }
+
+  void set_integration_method (const std::string& val);
 
   void set_maximum_step_size (double val)
     { x_maximum_step_size = (val >= 0.0) ? val : -1.0; }
@@ -110,6 +113,9 @@ public:
   double initial_step_size (void) const
     { return x_initial_step_size; }
 
+  std::string integration_method (void) const
+    { return x_integration_method; }
+
   double maximum_step_size (void) const
     { return x_maximum_step_size; }
 
@@ -126,6 +132,7 @@ private:
 
   Array<double> x_absolute_tolerance;
   double x_initial_step_size;
+  std::string x_integration_method;
   double x_maximum_step_size;
   double x_minimum_step_size;
   double x_relative_tolerance;
@@ -165,10 +172,12 @@ private:
   int n;
   int integration_error;
   int restart;
+  int method_flag;
   Array<int> iwork;
   Array<double> rwork;
   int istate;
   int itask;
+  int iopt;
   int liw;
   int lrw;
   int sanity_checked;

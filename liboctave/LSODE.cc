@@ -37,6 +37,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
+void
+LSODE_options::set_integration_method (const std::string& val)
+{
+  if (val == "stiff" || val == "bdf")
+    x_integration_method = "stiff";
+  else if (val == "non-stiff" || val == "adams")
+    x_integration_method = "non-stiff";
+  else
+    (*current_liboctave_error_handler)
+      ("lsode_options: method must be \"stiff\", \"bdf\", \"non-stiff\", or \"adams\"");
+}
+
 typedef int (*lsode_fcn_ptr) (const int&, const double&, double*,
 			      double*, int&);
 
@@ -66,9 +78,7 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
 
   istate = 1;
   itask = 1;
-
-  liw = 20 + n;
-  lrw = 22 + n * (9 + n);
+  iopt = 0;
 
   sanity_checked = 0;
 }
@@ -86,9 +96,7 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
 
   istate = 1;
   itask = 1;
-
-  liw = 20 + n;
-  lrw = 22 + n * (9 + n);
+  iopt = 0;
 
   sanity_checked = 0;
 }
@@ -165,6 +173,24 @@ LSODE::do_integrate (double tout)
       istate = 1;
     }
 
+  if (integration_method () == "stiff")
+    {
+      if (jac)
+	method_flag = 21;
+      else
+	method_flag = 22;
+
+      liw = 20 + n;
+      lrw = 22 + n * (9 + n);
+    }
+  else
+    {
+      method_flag = 10;
+
+      liw = 20;
+      lrw = 22 + 16 * n;
+    }
+
   if (iwork.length () != liw)
     {
       iwork.resize (liw);
@@ -180,9 +206,6 @@ LSODE::do_integrate (double tout)
       for (int i = 4; i < 9; i++)
 	rwork.elem (i) = 0;
     }
-
-  int method_flag = jac ? 21 : 22;
-  int iopt = 0;
 
   integration_error = 0;
 

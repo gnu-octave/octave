@@ -9,6 +9,15 @@
 	(show_lsode_option_list): Likewise.
 	(Flsode_options): Likewise.
 
+	* DLD-FUNCTIONS/lsode.cc (LSODE_options::s_set_opt_mf,
+	LSODE_options::s_get_opt_mf): New typedefs.
+	(LSODE_OPTIONS::s_set_fcn, LSODE_OPTIONS::s_get_fcn): New fields.
+	(lsode_option_table): Fill them in.
+	(set_lsode_option (const std::string&)): New function.
+	(print_lsode_option_list): Handle string options.
+	(show_lsode_option_list): Likewise.
+	(Flsode_options): Likewise.
+
 2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* c-file-ptr-stream.h (c_file_ptr_buf::fclose): New function.

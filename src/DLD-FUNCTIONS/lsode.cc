@@ -298,9 +298,12 @@ discontinuity in the derivative.\n\
 typedef void (LSODE_options::*da_set_opt_mf) (const Array<double>&);
 typedef void (LSODE_options::*d_set_opt_mf) (double);
 typedef void (LSODE_options::*i_set_opt_mf) (int);
+typedef void (LSODE_options::*s_set_opt_mf) (const std::string&);
+
 typedef Array<double> (LSODE_options::*da_get_opt_mf) (void) const;
 typedef double (LSODE_options::*d_get_opt_mf) (void) const;
 typedef int (LSODE_options::*i_get_opt_mf) (void) const;
+typedef std::string (LSODE_options::*s_get_opt_mf) (void) const;
 
 #define MAX_TOKENS 3
 
@@ -313,9 +316,11 @@ struct LSODE_OPTIONS
   da_set_opt_mf da_set_fcn;
   d_set_opt_mf d_set_fcn;
   i_set_opt_mf i_set_fcn;
+  s_set_opt_mf s_set_fcn;
   da_get_opt_mf da_get_fcn;
   d_get_opt_mf d_get_fcn;
   i_get_opt_mf i_get_fcn;
+  s_get_opt_mf s_get_fcn;
 };
 
 static LSODE_OPTIONS lsode_option_table [] =
@@ -323,43 +328,50 @@ static LSODE_OPTIONS lsode_option_table [] =
   { "absolute tolerance",
     { "absolute", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    &LSODE_options::set_absolute_tolerance, 0, 0,
-    &LSODE_options::absolute_tolerance, 0, 0, },
+    &LSODE_options::set_absolute_tolerance, 0, 0, 0,
+    &LSODE_options::absolute_tolerance, 0, 0, 0, },
 
   { "initial step size",
     { "initial", "step", "size", 0, },
-    { 1, 0, 0, 0, }, 1,
-    0, &LSODE_options::set_initial_step_size, 0,
-    0, &LSODE_options::initial_step_size, 0, },
+    { 3, 0, 0, 0, }, 1,
+    0, &LSODE_options::set_initial_step_size, 0, 0,
+    0, &LSODE_options::initial_step_size, 0, 0, },
+
+  { "integration method",
+    { "integration", "method", 0, 0, },
+    { 3, 0, 0, 0, }, 1,
+    0, 0, 0, &LSODE_options::set_integration_method,
+    0, 0, 0, &LSODE_options::integration_method, },
 
   { "maximum step size",
     { "maximum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    0, &LSODE_options::set_maximum_step_size, 0,
-    0, &LSODE_options::maximum_step_size, 0, },
+    0, &LSODE_options::set_maximum_step_size, 0, 0,
+    0, &LSODE_options::maximum_step_size, 0, 0, },
 
   { "minimum step size",
     { "minimum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    0, &LSODE_options::set_minimum_step_size, 0,
-    0, &LSODE_options::minimum_step_size, 0, },
+    0, &LSODE_options::set_minimum_step_size, 0, 0,
+    0, &LSODE_options::minimum_step_size, 0, 0, },
 
   { "relative tolerance",
     { "relative", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    0, &LSODE_options::set_relative_tolerance, 0,
-    0, &LSODE_options::relative_tolerance, 0, },
+    0, &LSODE_options::set_relative_tolerance, 0, 0,
+    0, &LSODE_options::relative_tolerance, 0, 0, },
 
   { "step limit",
     { "step", "limit", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    0, 0, &LSODE_options::set_step_limit,
-    0, 0, &LSODE_options::step_limit, },
+    0, 0, &LSODE_options::set_step_limit, 0,
+    0, 0, &LSODE_options::step_limit, 0, },
 
   { 0,
     { 0, 0, 0, 0, },
     { 0, 0, 0, 0, }, 0,
-    0, 0, 0, 0, 0, 0, },
+    0, 0, 0, 0,
+    0, 0, 0, 0, },
 };
 
 static void
@@ -410,7 +422,7 @@ print_lsode_option_list (std::ostream& os)
 	  else
 	    os << val;
 	}
-      else
+      else if (list->i_get_fcn)
 	{
 	  int val = (lsode_opts.*list->i_get_fcn) ();
 	  if (val < 0)
@@ -418,6 +430,13 @@ print_lsode_option_list (std::ostream& os)
 	  else
 	    os << val;
 	}
+      else if (list->s_get_fcn)
+	{
+	  os << (lsode_opts.*list->s_get_fcn) ();
+	}
+      else
+	panic_impossible ();
+
       os << "\n";
       list++;
     }
@@ -478,6 +497,29 @@ set_lsode_option (const std::string& keyword, const Array<double>& val)
   warning ("lsode_options: no match for `%s'", keyword.c_str ());
 }
 
+static void
+set_lsode_option (const std::string& keyword, const std::string& val)
+{
+  LSODE_OPTIONS *list = lsode_option_table;
+
+  while (list->keyword != 0)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  if (list->s_set_fcn)
+	    (lsode_opts.*list->s_set_fcn) (val);
+	  else
+	    error ("lsode_options: no function to handle string option");
+
+	  return;
+	}
+      list++;
+    }
+
+  warning ("lsode_options: no match for `%s'", keyword.c_str ());
+}
+
 static octave_value_list
 show_lsode_option (const std::string& keyword)
 {
@@ -511,7 +553,7 @@ show_lsode_option (const std::string& keyword)
 	      else
 		retval = val;
 	    }
-	  else
+	  else if (list->i_get_fcn)
 	    {
 	      int val = (lsode_opts.*list->i_get_fcn) ();
 	      if (val < 0)
@@ -519,6 +561,12 @@ show_lsode_option (const std::string& keyword)
 	      else
 		retval = static_cast<double> (val);
 	    }
+	  else if (list->s_get_fcn)
+	    {
+	      retval = (lsode_opts.*list->s_get_fcn) ();
+	    }
+	  else
+	    panic_impossible ();
 
 	  return retval;
 	}
@@ -558,7 +606,14 @@ their current values are displayed.\n\
 	    retval = show_lsode_option (keyword);
 	  else
 	    {
-	      if (args(1).is_scalar_type ())
+	      if (args(1).is_string ())
+		{
+		  std::string val = args(1).string_value ();
+
+		  if (! error_state)
+		    set_lsode_option (keyword, val);
+		}
+	      else if (args(1).is_scalar_type ())
 		{
 		  double val = args(1).double_value ();
 

@@ -1,7 +1,8 @@
 2002-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* LSODE.cc (LSODE::do_integrate): Define method flag and iopt
-	here, not as class data members.	
+	* LSODE.cc (LSODE_options::x_integration_method): New data member.
+	(LSODE_options::set_integration_method,
+	LSODE_options::integration_method): New functions.
 
 	* LSODE.h (LSODE_options::x_absolute_tolerance): Now Array<double>.
 	Change all uses.

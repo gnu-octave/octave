@@ -44,7 +44,7 @@ function retval = null (A, tol)
 
   if (nargin == 1)
     tol = max (size (A)) * s (1) * eps;
-  else (nargin != 2)
+  elseif (nargin != 2)
     usage ("null (A [, tol])"); 
   endif
 

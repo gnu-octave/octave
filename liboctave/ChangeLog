@@ -1,7 +1,7 @@
 2000-10-31  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* Array2.cc (Array2<T>::transpose): Avoid copy for empty matrices
-	and vectors.
+	and vectors.  Use xelem for faster access to elements when copying.
 
 2000-10-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -1,7 +1,7 @@
 // kludge.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 19921994 John W. Eaton
 
 This file is part of Octave.
 
@@ -306,7 +306,7 @@ operator + (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
     }
 
   if (r == 0 || c == 0)
-    return KL_MAT_TYPE ();
+    return KL_MAT_TYPE (r, c);
 
   int l = a.length ();
   DO_VV_OP (+);

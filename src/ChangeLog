@@ -1,3 +1,8 @@
+2003-09-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat5_binary_element): Return early if the
+	miMATRIX element has length zero.
+
 2003-09-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cell.cc (octave_cell::subsasgn): Also attempt empty

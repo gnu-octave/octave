@@ -2600,6 +2600,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   TWO_BYTE_INT number;
   number = *(TWO_BYTE_INT *)"\x00\x01";
 
+  global = false;
+
   // MAT files always use IEEE floating point
   if ((number == 1) ^ swap)
     flt_fmt = oct_mach_info::ieee_big_endian;
@@ -2615,6 +2617,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       error ("load: invalid element type");
       goto early_read_error;
     }
+
+  if (element_length == 0)
+    {
+      tc = Matrix ();
+      return retval;
+    }
+
   pos = is.tellg ();
 
   // array flags subelement

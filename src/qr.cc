@@ -41,8 +41,8 @@ DEFUN_DLD (qr, args, nargout,
                        that Q * R = X\n\
 \n\
 [Q, R] = qr (X, 0):    form the economy decomposition such that if X is\n\
-                       if X is m by n then only the first n columns of Q\n\
-                       are computed.\n\
+                       m by n then only the first n columns of Q are\n\
+                       computed.\n\
 \n\
 [Q, R, P] = qr (X):    form QRP factorization of X where\n\
                        P is a permutation matrix such that\n\

@@ -1,3 +1,7 @@
+Wed Jan 29 08:25:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* qr.cc (qr): Doc fix.
+
 Tue Jan 28 10:48:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-inc): Create a relative symbolic link.

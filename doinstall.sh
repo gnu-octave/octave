@@ -118,7 +118,7 @@ localoctfilepath="$localoctfiledir//"
 fcnfilepath=".:$localoctfilepath:$localfcnfilepath:$octfiledir//:$fcnfiledir//"
 
 # Where Octave will search to find image files.
-imagedir="$fcnfiledir/imagelib"
+imagedir="$datadir/octave/$version/imagelib"
 imagepath=".:$imagedir//"
 
 cat << EOF
@@ -162,7 +162,7 @@ chmod 755 $bindir/octave-bug
 echo "installing function files in $fcnfiledir"
 ( cd scripts
   ../mkinstalldirs `find . -type d | sed -e 's,^\./,,' -e "s,^,$fcnfiledir/,"`
-  for f in `find . -name '*.m' -o name octaverc`
+  for f in `find . -name '*.m' -o -name octaverc`
   do
     cp $f $fcnfiledir/$f
     chmod 644 $fcnfiledir/$f
@@ -170,11 +170,11 @@ echo "installing function files in $fcnfiledir"
 
 echo "installing image files in $imagedir"
 ( cd scripts
-  ../mkinstalldirs `find . -type d | sed -e 's,^\./,,' -e "s,^,$imagedir/,"`
   for f in `find . -name '*.img'`
   do
-    cp $f $iamgedir/$f
-    chmod 644 $imagedir/$f
+    file=`basename $f`
+    cp $f $imagedir/$file
+    chmod 644 $imagedir/$file
   done )
 
 echo "installing info files in $infodir"

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.231 $)
+AC_REVISION($Revision: 1.232 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -821,11 +821,11 @@ for termlib in termcap terminfo ncurses curses termlib; do
 done
 AC_SUBST(TERMLIBS)
 
-if test "$ac_cv_lib_termcap" = yes \
-    || test "$ac_cv_lib_terminfo" = yes \
-    || test "$ac_cv_lib_ncurses" = yes \
-    || test "$ac_cv_lib_curses" = yes \
-    || test "$ac_cv_lib_termlib" = yes; then
+if test "$ac_cv_lib_termcap_tputs" = yes \
+    || test "$ac_cv_lib_terminfo_tputs" = yes \
+    || test "$ac_cv_lib_ncurses_tputs" = yes \
+    || test "$ac_cv_lib_curses_tputs" = yes \
+    || test "$ac_cv_lib_termlib_tputs" = yes; then
   true
 else
   AC_MSG_WARN([I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!])

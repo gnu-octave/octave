@@ -131,6 +131,7 @@ extern char *octave_bin_dir (void);
 extern char *default_path (void);
 extern char *default_info_file (void);
 extern char *default_editor (void);
+extern char *get_local_site_defaults (void);
 extern char *get_site_defaults (void);
 
 // Symbol table for symbols at the top level.

@@ -496,6 +496,14 @@ default_editor (void)
 }
 
 char *
+get_local_site_defaults (void)
+{
+  static char *startupdir = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
+  static char *sd = strconcat (startupdir, "/octaverc");
+  return sd;
+}
+
+char *
 get_site_defaults (void)
 {
   static char *startupdir = subst_octave_home (OCTAVE_STARTUPFILEDIR);

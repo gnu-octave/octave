@@ -1,3 +1,14 @@
+Sun Jan 26 22:07:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in: Make BUGS file directly from bugs.texi.
+	* interpreter/bugs.texi: Incorporate bugs1.texi directly.
+	* interpreter/bugs1.texi: Delete.
+
+	* interpreter/Makefile.in: Make INSTALL file directly from
+	install.texi.
+	* interpreter/install.texi: Incorporate install1.texi directly.
+	* interpreter/install1.texi: Delete.
+
 Sat Jan 25 22:32:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in, interpreter/Makefile.in, liboctave/Makefile.in,

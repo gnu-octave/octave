@@ -9,6 +9,21 @@
 @node Trouble, Command Line Editing, Installation, Top
 @appendix Known Causes of Trouble with Octave
 @end ifclear
+
+@ifset BUGSONLY
+@include conf.texi
+
+This file documents known bugs in Octave and describes where and how to
+report any bugs that you may find.
+
+Copyright (C) 1996 John W. Eaton.  You may copy, distribute, and
+modify it freely as long as you preserve this copyright notice and
+permission notice.
+
+@node Trouble, Trouble, Trouble, (dir)
+@chapter Known Causes of Trouble with Octave
+@end ifset
+
 @cindex bugs, known
 @cindex installation trouble
 @cindex known causes of trouble
@@ -464,3 +479,7 @@ help-octave-request@@bevo.che.wisc.edu
 
 @strong{Please do not} send requests to be added or removed from the the
 mailing list, or other administrative trivia to the list itself.
+
+@ifset BUGSONLY
+@bye
+@end ifset

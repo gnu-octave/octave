@@ -163,7 +163,7 @@ where y and x are vectors.")
 
   NLFunc foo_fcn (fsolve_user_function);
   NLEqn foo (x, foo_fcn);
-  foo.copy (fsolve_opts);
+  foo.set_options (fsolve_opts);
 
   int info;
   ColumnVector soln = foo.solve (info);

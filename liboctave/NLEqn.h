@@ -57,6 +57,9 @@ public:
 
   void set_default_options (void) { x_tolerance = ::sqrt (DBL_EPSILON); }
 
+  void set_options (const NLEqn_options& opt)
+    { x_tolerance = opt.x_tolerance; }
+
   void set_tolerance (double val)
     { x_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
 

@@ -124,7 +124,7 @@ private:
       { return (symbol_type & symbol_record::DLD_FUNCTION); }
 
     // XXX FIXME XXX
-    bool is_map_element (const string& /* elts */) const
+    bool is_map_element (const std::string& /* elts */) const
       { return false; }
 
     bool is_defined (void) const
@@ -139,16 +139,16 @@ private:
     int rows (void) const { return definition.rows (); }
     int columns (void) const { return definition.columns (); }
 
-    string type_name (void) const { return definition.type_name (); }
+    std::string type_name (void) const { return definition.type_name (); }
 
-    string type_as_string (void) const;
+    std::string type_as_string (void) const;
 
-    void type (ostream& os, const string& name, bool pr_type_info,
+    void type (std::ostream& os, const std::string& name, bool pr_type_info,
 	       bool quiet, bool pr_orig_txt);
 
-    string which (const string& name);
+    std::string which (const std::string& name);
 
-    void which (ostream& os, const string& name);
+    void which (std::ostream& os, const std::string& name);
 
     void define (const octave_value& val, unsigned int sym_type)
       {
@@ -164,9 +164,9 @@ private:
 
     octave_value& def (void) { return definition; }
 
-    string help (void) const { return help_string; }
+    std::string help (void) const { return help_string; }
 
-    void document (const string& h) { help_string = h; }
+    void document (const std::string& h) { help_string = h; }
 
     unsigned int type (void) { return symbol_type; }
 
@@ -188,7 +188,7 @@ private:
     unsigned int read_only : 1;
 
     // The doc string associated with this variable.
-    string help_string;
+    std::string help_string;
 
     // The value of this definition.  See ov.h and related files.
     octave_value definition;
@@ -219,20 +219,20 @@ public:
       nm (), chg_fcn (0), definition (new symbol_def ()),
       next_elem (0) { }
 
-  symbol_record (const string& n, symbol_record *nxt)
+  symbol_record (const std::string& n, symbol_record *nxt)
     : formal_param (0), linked_to_global (0), tagged_static (0),
       nm (n), chg_fcn (0), definition (new symbol_def ()),
       next_elem (nxt) { }
 
   ~symbol_record (void) { }
 
-  string name (void) const { return nm; }
+  std::string name (void) const { return nm; }
 
-  string help (void) const { return definition->help (); }
+  std::string help (void) const { return definition->help (); }
 
   octave_value& def (void) { return definition->def (); }
 
-  void rename (const string& new_name);
+  void rename (const std::string& new_name);
 
   bool is_function (void) const
     { return definition->is_function (); }
@@ -267,7 +267,7 @@ public:
   bool is_builtin_variable (void) const
     { return definition->is_builtin_variable (); }
 
-  bool is_map_element (const string& elts) const
+  bool is_map_element (const std::string& elts) const
     { return definition->is_map_element (elts); }
 
   unsigned int type (void) const { return definition->type (); }
@@ -294,7 +294,7 @@ public:
 
   bool define (octave_function *f, unsigned int sym_type);
 
-  void document (const string& h) { definition->document (h); }
+  void document (const std::string& h) { definition->document (h); }
 
   void clear (void);
 
@@ -315,17 +315,17 @@ public:
   int rows (void) const { return definition->rows (); }
   int columns (void) const { return definition->columns (); }
 
-  string type_name (void) const { return definition->type_name (); }
+  std::string type_name (void) const { return definition->type_name (); }
 
-  string type_as_string (void) const
+  std::string type_as_string (void) const
     { return definition->type_as_string (); }
 
-  void type (ostream& os, bool pr_type_info, bool quiet, bool pr_orig_txt)
+  void type (std::ostream& os, bool pr_type_info, bool quiet, bool pr_orig_txt)
     { definition->type (os, name (), pr_type_info, quiet, pr_orig_txt); }
 
-  string which (void) { return definition->which (name ()); }
+  std::string which (void) { return definition->which (name ()); }
 
-  void which (ostream& os) { definition->which (os, name ()); }
+  void which (std::ostream& os) { definition->which (os, name ()); }
 
   octave_value& variable_value (void);
   octave_lvalue variable_reference (void);
@@ -338,7 +338,7 @@ public:
 
   void pop_context (void);
 
-  void print_symbol_info_line (ostream& os);
+  void print_symbol_info_line (std::ostream& os);
 
   void dump_symbol_info (void);
 
@@ -348,7 +348,7 @@ private:
   unsigned int linked_to_global : 1;
   unsigned int tagged_static : 1;
 
-  string nm;
+  std::string nm;
   change_function chg_fcn;
   symbol_def *definition;
   symbol_record *next_elem;
@@ -410,13 +410,13 @@ public:
     delete [] table;
   }
 
-  symbol_record *lookup (const string& nm, bool insert = false,
+  symbol_record *lookup (const std::string& nm, bool insert = false,
 			 bool warn = false);
 
-  void rename (const string& old_name, const string& new_name);
+  void rename (const std::string& old_name, const std::string& new_name);
 
   void clear (bool clear_user_functions = true);
-  bool clear (const string& nm, bool clear_user_functions = true);
+  bool clear (const std::string& nm, bool clear_user_functions = true);
 
   int size (void) const;
 
@@ -433,10 +433,10 @@ public:
 
 
   int maybe_list (const char *header, const string_vector& argv,
-		  ostream& os, bool show_verbose,
+		  std::ostream& os, bool show_verbose,
 		  unsigned type, unsigned scope);
   
-  Array<symbol_record *> glob (const string& pat = string ("*"),
+  Array<symbol_record *> glob (const std::string& pat = std::string ("*"),
 			       unsigned int type = SYMTAB_ALL_TYPES,
 			       unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
@@ -452,7 +452,7 @@ private:
 
   symbol_record *table;
 
-  unsigned int hash (const string& s);
+  unsigned int hash (const std::string& s);
 
   // No copying!
 

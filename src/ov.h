@@ -141,11 +141,11 @@ public:
     unknown_assign_op
   };
 
-  static string unary_op_as_string (unary_op);
+  static std::string unary_op_as_string (unary_op);
 
-  static string binary_op_as_string (binary_op);
+  static std::string binary_op_as_string (binary_op);
 
-  static string assign_op_as_string (assign_op);
+  static std::string assign_op_as_string (assign_op);
 
   enum magic_colon { magic_colon_t };
   enum all_va_args { all_va_args_t };
@@ -166,7 +166,7 @@ public:
   octave_value (const boolMatrix& bm);
   octave_value (char c);
   octave_value (const char *s);
-  octave_value (const string& s);
+  octave_value (const std::string& s);
   octave_value (const string_vector& s);
   octave_value (const charMatrix& chm, bool is_string = false);
   octave_value (double base, double limit, double inc);
@@ -245,29 +245,29 @@ public:
 	       const octave_value& rhs);
 
   virtual void
-  assign_struct_elt (assign_op, const string& elt_nm,
+  assign_struct_elt (assign_op, const std::string& elt_nm,
 		     const octave_value& rhs);
 
   virtual void
-  assign_struct_elt (assign_op, const string& elt_nm,
+  assign_struct_elt (assign_op, const std::string& elt_nm,
 		     const octave_value_list& idx, const octave_value& rhs);
 
   virtual idx_vector index_vector (void) const
     { return rep->index_vector (); }
 
   virtual octave_value
-  do_struct_elt_index_op (const string& nm, bool silent = false)
+  do_struct_elt_index_op (const std::string& nm, bool silent = false)
     { return rep->do_struct_elt_index_op (nm, silent); }
 
   virtual octave_value
-  do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
+  do_struct_elt_index_op (const std::string& nm, const octave_value_list& idx,
 			  bool silent = false)
     { return rep->do_struct_elt_index_op (nm, idx, silent); }
 
-  octave_lvalue struct_elt_ref (const string& nm);
+  octave_lvalue struct_elt_ref (const std::string& nm);
 
   virtual octave_lvalue
-  struct_elt_ref (octave_value *parent, const string& nm);
+  struct_elt_ref (octave_value *parent, const std::string& nm);
 
   // Size.
 
@@ -423,7 +423,7 @@ public:
   virtual string_vector all_strings (void) const
     { return rep->all_strings (); }
 
-  virtual string string_value (void) const
+  virtual std::string string_value (void) const
     { return rep->string_value (); }
 
   virtual Range range_value (void) const
@@ -475,21 +475,21 @@ public:
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
 
-  virtual void print (ostream& os, bool pr_as_read_syntax = false) const
+  virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const
     { rep->print (os, pr_as_read_syntax); }
 
-  virtual void print_raw (ostream& os, bool pr_as_read_syntax = false) const
+  virtual void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
     { rep->print_raw (os, pr_as_read_syntax); }
 
-  virtual bool print_name_tag (ostream& os, const string& name) const
+  virtual bool print_name_tag (std::ostream& os, const std::string& name) const
     { return rep->print_name_tag (os, name); }
 
-  void print_with_name (ostream& os, const string& name,
+  void print_with_name (std::ostream& os, const std::string& name,
 			bool print_padding = true) const;
 
   virtual int type_id (void) const { return rep->type_id (); }
 
-  virtual string type_name (void) const { return rep->type_name (); }
+  virtual std::string type_name (void) const { return rep->type_name (); }
 
   // Unary and binary operations.
 
@@ -523,9 +523,9 @@ protected:
   int current_print_indent_level (void) const
     { return curr_print_indent_level; }
 
-  void newline (ostream& os) const;
+  void newline (std::ostream& os) const;
 
-  void indent (ostream& os) const;
+  void indent (std::ostream& os) const;
 
   void reset (void) const;
 
@@ -638,18 +638,18 @@ OV_BINOP_FN (struct_ref)
 #define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA \
   public: \
     int type_id (void) const { return t_id; } \
-    string type_name (void) const { return t_name; } \
+    std::string type_name (void) const { return t_name; } \
     static volatile int static_type_id (void) { return t_id; } \
     static void register_type (void) \
       { t_id = octave_value_typeinfo::register_type (t_name); } \
  \
   private: \
     static volatile int t_id; \
-    static const string t_name;
+    static const std::string t_name;
 
 #define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n) \
   volatile int t::t_id (-1); \
-  const string t::t_name (n)
+  const std::string t::t_name (n)
 
 // If TRUE, allow assignments like
 //

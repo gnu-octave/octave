@@ -102,7 +102,7 @@ public:
 
   ~plot_limits (void);
 
-  void print (int ndim, ostrstream& plot_buf);
+  void print (int ndim, std::ostrstream& plot_buf);
 
   plot_range *x_limits (void) { return x_range; }
   plot_range *y_limits (void) { return y_range; }
@@ -135,7 +135,7 @@ public:
 
   ~plot_range (void);
 
-  void print (ostrstream& plot_buf);
+  void print (std::ostrstream& plot_buf);
 
   tree_expression *lower_bound (void) { return lower; }
 
@@ -190,7 +190,7 @@ public:
 
   ColumnVector values (int ndim, int n_max = 0);
 
-  int print (int ndim, int n_max, ostrstream& plot_buf);
+  int print (int ndim, int n_max, std::ostrstream& plot_buf);
 
   int qualifier_count (void) { return qual_count; }
 
@@ -229,17 +229,17 @@ subplot_style
 {
 public:
 
-  subplot_style (const string& s = string (),
+  subplot_style (const std::string& s = std::string (),
 		 tree_expression *lt = 0, tree_expression *pt = 0)
     : sp_style (s), sp_linetype (lt), sp_pointtype (pt) { }
 
   ~subplot_style (void);
 
-  int print (ostrstream& plot_buf);
+  int print (std::ostrstream& plot_buf);
 
   bool columns_ok (int nc);
 
-  string style (void) { return sp_style; }
+  std::string style (void) { return sp_style; }
 
   tree_expression *linetype (void) { return sp_linetype; }
 
@@ -250,7 +250,7 @@ public:
 private:
 
   // The style we are using: `lines', `points', etc.
-  string sp_style;
+  std::string sp_style;
 
   // The number of the line type to use.
   tree_expression *sp_linetype;
@@ -270,21 +270,21 @@ subplot_axes
 {
 public:
 
-  subplot_axes (const string& s = string ())
+  subplot_axes (const std::string& s = std::string ())
     : sp_axes (s) { }
 
   ~subplot_axes (void) { }
 
-  int print (ostrstream& plot_buf);
+  int print (std::ostrstream& plot_buf);
 
-  string axes (void) { return sp_axes; }
+  std::string axes (void) { return sp_axes; }
 
   void accept (tree_walker& tw);
 
 private:
 
   // The axes we are using: `x1y1', `x1y2', etc.
-  string sp_axes;
+  std::string sp_axes;
 
   // No copying!
 
@@ -356,9 +356,9 @@ public:
 
   octave_value extract_plot_data (int ndim, octave_value& data);
 
-  int handle_plot_data (int ndim, ostrstream& plot_buf);
+  int handle_plot_data (int ndim, std::ostrstream& plot_buf);
 
-  int print (int ndim, ostrstream& plot_buf);
+  int print (int ndim, std::ostrstream& plot_buf);
 
   tree_expression *plot_data (void) { return sp_plot_data; }
 
@@ -409,7 +409,7 @@ public:
 
   ~subplot_list (void);
 
-  int print (int ndim, ostrstream& plot_buf);
+  int print (int ndim, std::ostrstream& plot_buf);
 
   void accept (tree_walker& tw);
 
@@ -422,16 +422,16 @@ private:
   subplot_list& operator = (const subplot_list&);
 };
 
-extern string save_in_tmp_file (octave_value& t, int ndim = 2,
+extern std::string save_in_tmp_file (octave_value& t, int ndim = 2,
 				bool parametric = false);
 
-extern void mark_for_deletion (const string&);
+extern void mark_for_deletion (const std::string&);
 
 extern void cleanup_tmp_files (void);
 
 extern void close_plot_stream (void);
 
-extern void do_external_plotter_cd (const string& newdir);
+extern void do_external_plotter_cd (const std::string& newdir);
 
 #endif
 

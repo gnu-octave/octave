@@ -41,7 +41,7 @@ DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct");
 
 octave_value
-octave_struct::do_struct_elt_index_op (const string& nm,
+octave_struct::do_struct_elt_index_op (const std::string& nm,
 				       const octave_value_list& idx,
 				       bool silent)
 {
@@ -49,7 +49,7 @@ octave_struct::do_struct_elt_index_op (const string& nm,
 }
 
 octave_value
-octave_struct::do_struct_elt_index_op (const string& nm, bool silent)
+octave_struct::do_struct_elt_index_op (const std::string& nm, bool silent)
 {
   octave_value retval;
 
@@ -64,19 +64,19 @@ octave_struct::do_struct_elt_index_op (const string& nm, bool silent)
 }
 
 octave_lvalue
-octave_struct::struct_elt_ref (octave_value *, const string& nm)
+octave_struct::struct_elt_ref (octave_value *, const std::string& nm)
 {
   return octave_lvalue (&map [nm]);
 }
 
 void
-octave_struct::print (ostream& os, bool) const
+octave_struct::print (std::ostream& os, bool) const
 {
   print_raw (os);
 }
 
 void
-octave_struct::print_raw (ostream& os, bool) const
+octave_struct::print_raw (std::ostream& os, bool) const
 {
   // XXX FIXME XXX -- would be nice to print the output in some
   // standard order.  Maybe all substructures first, maybe
@@ -96,7 +96,7 @@ octave_struct::print_raw (ostream& os, bool) const
 
       for (Pix p = map.first (); p; map.next (p))
 	{
-	  string key = map.key (p);
+	  std::string key = map.key (p);
 	  octave_value val = map.contents (p);
 
 	  val.print_with_name (os, key);
@@ -118,7 +118,7 @@ octave_struct::print_raw (ostream& os, bool) const
 }
 
 bool
-octave_struct::print_name_tag (ostream& os, const string& name) const
+octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
   os << name << " =";

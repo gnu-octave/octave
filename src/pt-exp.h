@@ -91,13 +91,13 @@ public:
   bool print_result (void) const
     { return print_flag; }
 
-  virtual string oper (void) const
+  virtual std::string oper (void) const
     { return "<unknown>"; }
 
-  virtual string name (void) const
+  virtual std::string name (void) const
     { return "<unknown>"; }
 
-  virtual string original_text (void) const;
+  virtual std::string original_text (void) const;
 
   tree_expression *mark_in_parens (void)
     {

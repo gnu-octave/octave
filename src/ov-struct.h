@@ -67,12 +67,12 @@ public:
   octave_value *clone (void) { return new octave_struct (*this); }
 
   octave_value
-  do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
+  do_struct_elt_index_op (const std::string& nm, const octave_value_list& idx,
 			  bool silent);
 
-  octave_value do_struct_elt_index_op (const string& nm, bool silent);
+  octave_value do_struct_elt_index_op (const std::string& nm, bool silent);
 
-  octave_lvalue struct_elt_ref (octave_value *parent, const string& nm);
+  octave_lvalue struct_elt_ref (octave_value *parent, const std::string& nm);
 
   bool is_defined (void) const { return true; }
 
@@ -82,11 +82,11 @@ public:
 
   Octave_map map_value (void) const { return map; }
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (ostream& os, const string& name) const;
+  bool print_name_tag (std::ostream& os, const std::string& name) const;
 
 private:
 

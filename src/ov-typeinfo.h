@@ -44,7 +44,7 @@ public:
 
   static bool instance_ok (void);
 
-  static int register_type (const string&);
+  static int register_type (const std::string&);
 
   static bool register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 
@@ -114,7 +114,7 @@ public:
 protected:
 
   octave_value_typeinfo (void)
-    : num_types (0), types (init_tab_sz, string ()),
+    : num_types (0), types (init_tab_sz, std::string ()),
       unary_ops (octave_value::num_unary_ops, init_tab_sz,
 		 (unary_op_fcn) 0),
       non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz,
@@ -136,7 +136,7 @@ private:
 
   int num_types;
 
-  Array<string> types;
+  Array<std::string> types;
 
   Array2<unary_op_fcn> unary_ops;
 
@@ -152,7 +152,7 @@ private:
 
   Array2<type_conv_fcn> widening_ops;
 
-  int do_register_type (const string&);
+  int do_register_type (const std::string&);
 
   bool do_register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 

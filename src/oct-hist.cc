@@ -76,7 +76,7 @@ Software Foundation, Inc.
 bool input_from_tmp_history_file = false;
 
 // Where history is saved.
-static string Vhistory_file;
+static std::string Vhistory_file;
 
 // The number of lines to keep in the history file.
 static int Vhistory_size;
@@ -92,7 +92,7 @@ default_history_size (void)
 {
   int size = 1024;
 
-  string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
+  std::string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
 
   if (! env_size.empty ())
     {
@@ -108,9 +108,9 @@ default_history_size (void)
 string
 default_history_file (void)
 {
-  string file;
+  std::string file;
 
-  string env_file = octave_env::getenv ("OCTAVE_HISTFILE");
+  std::string env_file = octave_env::getenv ("OCTAVE_HISTFILE");
 
   if (! env_file.empty ())
     {
@@ -125,7 +125,7 @@ default_history_file (void)
 
   if (file.empty ())
     {
-      string home_dir = octave_env::get_home_directory ();
+      std::string home_dir = octave_env::get_home_directory ();
 
       if (! home_dir.empty ())
 	{
@@ -153,14 +153,14 @@ do_history (int argc, const string_vector& argv)
   int i;
   for (i = 1; i < argc; i++)
     {
-      string option = argv[i];
+      std::string option = argv[i];
 
       if (option == "-r" || option == "-w" || option == "-a"
 	  || option == "-n")
 	{
 	  if (i < argc - 1)
 	    {
-	      string file = file_ops::tilde_expand (argv[i+1]);
+	      std::string file = file_ops::tilde_expand (argv[i+1]);
 	      command_history::set_file (file);
 	    }
 
@@ -283,7 +283,7 @@ edit_history_readline (fstream& stream)
 // your heart's content.
 
 static void
-edit_history_repl_hist (const string& command)
+edit_history_repl_hist (const std::string& command)
 {
   if (! command.empty ())
     {
@@ -295,11 +295,11 @@ edit_history_repl_hist (const string& command)
 	{
 	  int i = len - 1;
 
-	  string histent = command_history::get_entry (i);
+	  std::string histent = command_history::get_entry (i);
 
 	  if (! histent.empty ())
 	    {
-	      string cmd = command;
+	      std::string cmd = command;
 
 	      int cmd_len = cmd.length ();
 
@@ -314,11 +314,11 @@ edit_history_repl_hist (const string& command)
 }
 
 static void
-edit_history_add_hist (const string& line)
+edit_history_add_hist (const std::string& line)
 {
   if (! line.empty ())
     {
-      string tmp = line;
+      std::string tmp = line;
 
       int len = tmp.length ();
 	
@@ -334,7 +334,7 @@ static string
 mk_tmp_hist_file (int argc, const string_vector& argv,
 		  int insert_curr, const char *warn_for) 
 {
-  string retval;
+  std::string retval;
 
   string_vector hlist = command_history::list ();
 
@@ -403,7 +403,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       reverse = 1;
     }
 
-  string name = file_ops::tempnam ("", "oct-");
+  std::string name = file_ops::tempnam ("", "oct-");
 
   fstream file (name.c_str (), ios::out);
 
@@ -433,14 +433,14 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
 static void
 do_edit_history (int argc, const string_vector& argv)
 {
-  string name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
+  std::string name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
 
   if (name.empty ())
     return;
 
   // Call up our favorite editor on the file of commands.
 
-  string cmd = Veditor;
+  std::string cmd = Veditor;
   cmd.append (" ");
   cmd.append (name);
 
@@ -506,7 +506,7 @@ do_edit_history (int argc, const string_vector& argv)
 static void
 do_run_history (int argc, const string_vector& argv)
 {
-  string name = mk_tmp_hist_file (argc, argv, 1, "run_history");
+  std::string name = mk_tmp_hist_file (argc, argv, 1, "run_history");
 
   if (name.empty ())
     return;
@@ -671,7 +671,7 @@ history_file (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("history_file");
+  std::string s = builtin_string_variable ("history_file");
 
   if (s.empty ())
     {

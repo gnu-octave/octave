@@ -32,11 +32,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 class
-octave_pager_buf : public strstreambuf
+octave_pager_buf : public std::strstreambuf
 {
 public:
 
-  octave_pager_buf (int size = 0) : strstreambuf (size) { }
+  octave_pager_buf (int size = 0) : std::strstreambuf (size) { }
 
   void flush_current_contents_to_diary (void);
 
@@ -74,11 +74,11 @@ private:
 };
 
 class
-octave_diary_buf : public strstreambuf
+octave_diary_buf : public std::strstreambuf
 {
 public:
 
-  octave_diary_buf (int size = 0) : strstreambuf (size) { }
+  octave_diary_buf (int size = 0) : std::strstreambuf (size) { }
 
 protected:
 

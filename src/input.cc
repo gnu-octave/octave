@@ -68,13 +68,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 
 // Primary prompt string.
-static string Vps1;
+static std::string Vps1;
 
 // Secondary prompt string.
-static string Vps2;
+static std::string Vps2;
 
 // String printed before echoed input (enabled by --echo-input).
-string Vps4;
+std::string Vps4;
 
 // Echo commands as they are executed?
 //
@@ -92,7 +92,7 @@ octave_time Vlast_prompt_time;
 static char Vcompletion_append_char;
 
 // Global pointer for eval().
-string current_eval_string;
+std::string current_eval_string;
 
 // TRUE means get input from current_eval_string.
 bool get_input_from_eval_string = false;
@@ -101,10 +101,10 @@ bool get_input_from_eval_string = false;
 bool reading_fcn_file = false;
 
 // Simple name of function file we are reading.
-string curr_fcn_file_name;
+std::string curr_fcn_file_name;
 
 // Full name of file we are reading.
-string curr_fcn_file_full_name;
+std::string curr_fcn_file_full_name;
 
 // TRUE means we're parsing a script file.
 bool reading_script_file = false;
@@ -122,13 +122,13 @@ bool forced_interactive = false;
 int promptflag = 1;
 
 // The current line of input, from wherever.
-string current_input_line;
+std::string current_input_line;
 
 // TRUE after a call to completion_matches().
 bool octave_completion_matches_called = false;
 
 static void
-do_input_echo (const string& input_string)
+do_input_echo (const std::string& input_string)
 {
   int do_echo = reading_script_file ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
@@ -157,9 +157,9 @@ do_input_echo (const string& input_string)
 }
 
 string
-gnu_readline (const string& s, bool force_readline)
+gnu_readline (const std::string& s, bool force_readline)
 {
-  string retval;
+  std::string retval;
 
   if (line_editing || force_readline)
     {
@@ -194,16 +194,16 @@ gnu_readline (const string& s, bool force_readline)
 static string
 octave_gets (void)
 {
-  string retval;
+  std::string retval;
 
   Vlast_prompt_time.stamp ();
 
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file || reading_script_file)))
     {
-      string ps = (promptflag > 0) ? Vps1 : Vps2;
+      std::string ps = (promptflag > 0) ? Vps1 : Vps2;
 
-      string prompt = command_editor::decode_prompt_string (ps);
+      std::string prompt = command_editor::decode_prompt_string (ps);
 
       pipe_handler_error_count = 0;
 
@@ -244,7 +244,7 @@ octave_gets (void)
 static string
 get_user_input (void)
 {
-  string retval;
+  std::string retval;
 
   if (get_input_from_eval_string)
     {
@@ -271,7 +271,7 @@ octave_read (char *buf, unsigned max_size)
 {
   // XXX FIXME XXX -- is this a safe way to buffer the input?
 
-  static string input_buf;
+  static std::string input_buf;
   static const char *pos = 0;
   static size_t chars_left = 0;
 
@@ -338,7 +338,7 @@ octave_read (char *buf, unsigned max_size)
 // warning if the file doesn't exist.
 
 FILE *
-get_input_from_file (const string& name, int warn)
+get_input_from_file (const std::string& name, int warn)
 {
   FILE *instream = 0;
 
@@ -370,8 +370,8 @@ get_input_from_stdin (void)
 // XXX FIXME XXX -- make this generate file names when appropriate.
 
 static string_vector
-generate_possible_completions (const string& text, string& prefix,
-			       string& hint)
+generate_possible_completions (const std::string& text, std::string& prefix,
+			       std::string& hint)
 {
   string_vector names;
 
@@ -390,12 +390,12 @@ generate_possible_completions (const string& text, string& prefix,
 }
 
 static string
-generate_completion (const string& text, int state)
+generate_completion (const std::string& text, int state)
 {
-  string retval;
+  std::string retval;
 
-  static string prefix;
-  static string hint;
+  static std::string prefix;
+  static std::string hint;
 
   static size_t prefix_len = 0;
   static size_t hint_len = 0;
@@ -433,7 +433,7 @@ generate_completion (const string& text, int state)
     {
       while (list_index < name_list_len)
 	{
-	  string name = name_list[list_index];
+	  std::string name = name_list[list_index];
 
 	  list_index++;
 
@@ -472,7 +472,7 @@ initialize_command_input (void)
 }
 
 static bool
-match_sans_spaces (const string& standard, const string& test)
+match_sans_spaces (const std::string& standard, const std::string& test)
 {
   size_t beg = test.find_first_not_of (" \t");
 
@@ -502,7 +502,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
   if (nargin == 2)
     read_as_string++;
 
-  string prompt ("debug> ");
+  std::string prompt ("debug> ");
 
   if (nargin > 0)
    {
@@ -519,7 +519,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   flush_octave_stdout ();
 
-  string input_buf = gnu_readline (prompt.c_str (), true);
+  std::string input_buf = gnu_readline (prompt.c_str (), true);
 
   if (! input_buf.empty ())
     {
@@ -737,7 +737,7 @@ state.\n\
 
     case 2:
       {
-	string arg = argv[1];
+	std::string arg = argv[1];
 
 	if (arg == "on")
 	  bind_builtin_variable ("echo_executing_commands",
@@ -752,7 +752,7 @@ state.\n\
 
     case 3:
       {
-	string arg = argv[1];
+	std::string arg = argv[1];
 
 	if (arg == "on" && argv[2] == "all")
 	  {
@@ -793,7 +793,7 @@ a feature, not a bug.\n\
 
   if (nargin == 1)
     {
-      string hint = args(0).string_value ();
+      std::string hint = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -805,7 +805,7 @@ a feature, not a bug.\n\
 
 	  for (;;)
 	    {
-	      string cmd = generate_completion (hint, k);
+	      std::string cmd = generate_completion (hint, k);
 
 	      if (! cmd.empty ())
 		{
@@ -868,7 +868,7 @@ Read the readline library initialiazation file @var{file}.  If\n\
     command_editor::read_init_file ();
   else if (nargin == 1)
     {
-      string file = file_ops::tilde_expand (args(0).string_value ());
+      std::string file = file_ops::tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	command_editor::read_init_file (file);
@@ -879,7 +879,7 @@ Read the readline library initialiazation file @var{file}.  If\n\
   return retval;
 }
 
-static string hook_fcn;
+static std::string hook_fcn;
 static octave_value user_data;
 
 static void
@@ -917,7 +917,7 @@ and the user data are returned.\n\
     {
       octave_value tmp_user_data;
 
-      string tmp_hook_fcn;
+      std::string tmp_hook_fcn;
 
       if (nargin > 1)
 	tmp_user_data = args(1);
@@ -983,7 +983,7 @@ completion_append_char (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("completion_append_char");
+  std::string s = builtin_string_variable ("completion_append_char");
 
   switch (s.length ())
     {

@@ -222,7 +222,7 @@ x = computer ()\n\
   if (nargin != 0)
     warning ("computer: ignoring extra arguments");
 
-  string msg;
+  std::string msg;
 
   if (strcmp (CANONICAL_HOST_TYPE, "unknown") == 0)
     msg = "Hi Dave, I'm a HAL-9000";
@@ -312,7 +312,7 @@ cleanup_iprocstream (void *p)
 }
 
 static octave_value_list
-run_command_and_return_output (const string& cmd_str)
+run_command_and_return_output (const std::string& cmd_str)
 {
   octave_value_list retval;
 
@@ -324,7 +324,7 @@ run_command_and_return_output (const string& cmd_str)
 
       if (*cmd)
 	{
-	  ostrstream output_buf;
+	  std::ostrstream output_buf;
 
 	  // XXX FIXME XXX -- sometimes, the subprocess hasn't written
 	  // anything before we try to read from the procstream.  The
@@ -424,7 +424,7 @@ variable @code{status} to the integer @samp{2}.\n\
     {
       bool return_output = (nargout > 0 || nargin > 1);
 
-      string cmd_str = args(0).string_value ();
+      std::string cmd_str = args(0).string_value ();
 
       enum exec_type { sync, async };
 
@@ -434,7 +434,7 @@ variable @code{status} to the integer @samp{2}.\n\
 	{
 	  if (nargin > 2)
 	    {
-	      string type_str = args(2).string_value ();
+	      std::string type_str = args(2).string_value ();
 
 	      if (! error_state)
 		{
@@ -450,7 +450,7 @@ variable @code{status} to the integer @samp{2}.\n\
 	    }
 	}
       else
-	error ("system: expecting string as first argument");
+	error ("system: expecting std::string as first argument");
 
       if (! error_state)
 	{
@@ -500,7 +500,7 @@ DEFALIAS (shell_cmd, system);
 
 // XXX FIXME XXX -- this should really be static, but that causes
 // problems on some systems.
-SLStack<string> octave_atexit_functions;
+SLStack<std::string> octave_atexit_functions;
 
 void
 do_octave_atexit (void)
@@ -566,7 +566,7 @@ will print a message when Octave exits.\n\
   if (nargin == 1)
     {
 #if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
-      string arg = args(0).string_value ();
+      std::string arg = args(0).string_value ();
 
       if (! error_state)
 	octave_atexit_functions.push (arg);
@@ -654,7 +654,7 @@ specified option.\n\
 
   if (nargin == 1)
     {
-      string arg = args(0).string_value ();
+      std::string arg = args(0).string_value ();
 
       if (! error_state)
 	retval = octave_value (m [arg.c_str ()]);

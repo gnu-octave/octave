@@ -61,7 +61,7 @@ symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
 string
 SYMBOL_DEF::type_as_string (void) const
 {
-  string retval = "<unknown type>";
+  std::string retval = "<unknown type>";
 
   if (is_user_variable ())
     retval = "user-defined variable";
@@ -84,18 +84,18 @@ SYMBOL_DEF::type_as_string (void) const
 }
 
 void
-SYMBOL_DEF::type (ostream& os, const string& name, bool pr_type_info,
+SYMBOL_DEF::type (std::ostream& os, const std::string& name, bool pr_type_info,
 		  bool quiet, bool pr_orig_txt)
 {
   if (is_user_function ())
     {
       octave_function *defn = definition.function_value ();
 
-      string fn = defn ? defn->fcn_file_name () : string ();
+      std::string fn = defn ? defn->fcn_file_name () : std::string ();
 
       if (pr_orig_txt && ! fn.empty ())
 	{
-	  ifstream fs (fn.c_str (), ios::in);
+	  std::ifstream fs (fn.c_str (), ios::in);
 
 	  if (fs)
 	    {
@@ -138,9 +138,9 @@ SYMBOL_DEF::type (ostream& os, const string& name, bool pr_type_info,
 }
 
 string
-SYMBOL_DEF::which (const string& name)
+SYMBOL_DEF::which (const std::string& name)
 {
-  string retval;
+  std::string retval;
 
   if (is_user_function () || is_dld_function ())
     {
@@ -156,7 +156,7 @@ SYMBOL_DEF::which (const string& name)
 }
 
 void
-SYMBOL_DEF::which (ostream& os, const string& name)
+SYMBOL_DEF::which (std::ostream& os, const std::string& name)
 {
   os << name;
 
@@ -164,7 +164,7 @@ SYMBOL_DEF::which (ostream& os, const string& name)
     {
       octave_function *defn = definition.function_value ();
 
-      string fn = defn ? defn->fcn_file_name () : string ();
+      std::string fn = defn ? defn->fcn_file_name () : std::string ();
 
       if (! fn.empty ())
 	{
@@ -192,7 +192,7 @@ SYMBOL_DEF::dump_symbol_info (void)
 // probably be temporarily ignoring interrupts.
 
 void
-symbol_record::rename (const string& new_name)
+symbol_record::rename (const std::string& new_name)
 {
   if (! read_only_error ("rename"))
     nm = new_name;
@@ -445,7 +445,7 @@ symbol_record::pop_context (void)
 }
 
 void
-symbol_record::print_symbol_info_line (ostream& os)
+symbol_record::print_symbol_info_line (std::ostream& os)
 {
   os << (is_read_only () ? " r-" : " rw")
      << (is_eternal () ? "-" : "d")
@@ -541,7 +541,7 @@ symbol_record::replace_all_defs (symbol_def *sd)
 // A symbol table.
 
 symbol_record *
-symbol_table::lookup (const string& nm, bool insert, bool warn)
+symbol_table::lookup (const std::string& nm, bool insert, bool warn)
 {
   unsigned int index = hash (nm);
 
@@ -570,7 +570,7 @@ symbol_table::lookup (const string& nm, bool insert, bool warn)
 }
 
 void
-symbol_table::rename (const string& old_name, const string& new_name)
+symbol_table::rename (const std::string& old_name, const std::string& new_name)
 {
   unsigned int index = hash (old_name);
 
@@ -627,7 +627,7 @@ symbol_table::clear (bool clear_user_functions)
 }
 
 bool
-symbol_table::clear (const string& nm, bool clear_user_functions)
+symbol_table::clear (const std::string& nm, bool clear_user_functions)
 {
   unsigned int index = hash (nm);
 
@@ -669,7 +669,7 @@ symbol_table::size (void) const
 }
 
 static bool
-matches_patterns (const string& name, const string_vector& pats)
+matches_patterns (const std::string& name, const string_vector& pats)
 {
   int npats = pats.length ();
 
@@ -706,7 +706,7 @@ symbol_table::symbol_list (const string_vector& pats,
 
 	  unsigned int my_type = ptr->type ();
 
-	  string my_name = ptr->name ();
+	  std::string my_name = ptr->name ();
 
 	  if ((type & my_type) && (scope & my_scope)
 	      && matches_patterns (my_name, pats))
@@ -751,15 +751,15 @@ maybe_list_cmp_fcn (const void *a_arg, const void *b_arg)
   const symbol_record *a = *(X_CAST (const symbol_record **, a_arg));
   const symbol_record *b = *(X_CAST (const symbol_record **, b_arg));
 
-  string a_nm = a->name ();
-  string b_nm = b->name ();
+  std::string a_nm = a->name ();
+  std::string b_nm = b->name ();
 
   return a_nm.compare (b_nm);
 }
 
 int
 symbol_table::maybe_list (const char *header, const string_vector& argv,
-			  ostream& os, bool show_verbose,
+			  std::ostream& os, bool show_verbose,
 			  unsigned type, unsigned scope)
 {
   int status = 0;
@@ -802,7 +802,7 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 }
 
 Array<symbol_record *>
-symbol_table::glob (const string& pat, unsigned int type,
+symbol_table::glob (const std::string& pat, unsigned int type,
 		    unsigned int scope) const
 {
   int count = 0;
@@ -926,7 +926,7 @@ symbol_table::print_stats (void)
 // Chris Torek's fave hash function.
 
 unsigned int
-symbol_table::hash (const string& str)
+symbol_table::hash (const std::string& str)
 {
   unsigned int h = 0;
 

@@ -42,9 +42,9 @@ public:
   file_name_cache_elt (void)
     : timestamp (static_cast<time_t> (0)), fcn_file_names (),
       fcn_file_names_no_suffix ()
-  { update (string ()); }
+  { update (std::string ()); }
 
-  file_name_cache_elt (const string& dir_name)
+  file_name_cache_elt (const std::string& dir_name)
     : timestamp (static_cast<time_t> (0)), fcn_file_names (),
       fcn_file_names_no_suffix ()
   { update (dir_name); }
@@ -71,7 +71,7 @@ public:
 
   int length (void) { return fcn_file_names.length (); }
 
-  bool update (const string& dir_name);
+  bool update (const std::string& dir_name);
 
   // The time we last read this directory.
   octave_time timestamp;
@@ -91,23 +91,23 @@ protected:
 
   octave_fcn_file_name_cache (void)
     : cache (file_name_cache_elt ())
-  { update (string ()); }
+  { update (std::string ()); }
 
 public:
 
   ~octave_fcn_file_name_cache (void) { }
 
-  bool update (const string& path);
+  bool update (const std::string& path);
 
   static string_vector list (bool no_suffix = false)
-    { return list (string (), no_suffix); }
+    { return list (std::string (), no_suffix); }
 
-  static string_vector list (const string& path, bool no_suffix = false);
+  static string_vector list (const std::string& path, bool no_suffix = false);
 
   static string_vector list_no_suffix (void)
     { return list (true); }
 
-  static string_vector list_no_suffix (const string& path)
+  static string_vector list_no_suffix (const std::string& path)
     { return list (path, true); }
 
 private:
@@ -118,7 +118,7 @@ private:
   // and the corresponding cache elements.
   CHMap<file_name_cache_elt> cache;
 
-  string_vector do_list (const string& path, bool no_suffix);
+  string_vector do_list (const std::string& path, bool no_suffix);
 };
 
 #endif

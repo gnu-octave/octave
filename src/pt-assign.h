@@ -71,7 +71,7 @@ public:
 
   void eval_error (void);
 
-  string oper (void) const;
+  std::string oper (void) const;
 
   tree_expression *left_hand_side (void) { return lhs; }
 
@@ -139,7 +139,7 @@ public:
 
   void eval_error (void);
 
-  string oper (void) const;
+  std::string oper (void) const;
 
   tree_argument_list *left_hand_side (void) { return lhs; }
 

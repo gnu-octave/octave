@@ -44,7 +44,7 @@ octave_fcn_file_name_cache *octave_fcn_file_name_cache::instance = 0;
 // we don't delete any old ones.
 
 bool
-octave_fcn_file_name_cache::update (const string& path)
+octave_fcn_file_name_cache::update (const std::string& path)
 {
   bool something_changed = false;
 
@@ -56,7 +56,7 @@ octave_fcn_file_name_cache::update (const string& path)
 
   for (int i = 0; i < len; i++)
     {
-      string d = dirs[i];
+      std::string d = dirs[i];
 
       if (cache.contains (d))
 	{
@@ -74,7 +74,7 @@ octave_fcn_file_name_cache::update (const string& path)
 }
 
 string_vector
-octave_fcn_file_name_cache::list (const string& path, bool no_suffix)
+octave_fcn_file_name_cache::list (const std::string& path, bool no_suffix)
 {
   string_vector retval;
 
@@ -93,7 +93,7 @@ octave_fcn_file_name_cache::list (const string& path, bool no_suffix)
 // updated, then return the list of names in the cache.
 
 string_vector
-octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
+octave_fcn_file_name_cache::do_list (const std::string& path, bool no_suffix)
 {
   update (path);
 
@@ -121,7 +121,7 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
     {
       for (int i = 0; i < ndirs; i++)
 	{
-	  string d = dirs[i];
+	  std::string d = dirs[i];
 
 	  total_len += cache[d].length ();
 	}
@@ -133,7 +133,7 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
 
       for (int j = 0; j < ndirs; j++)
 	{
-	  string d = dirs[j];
+	  std::string d = dirs[j];
 
 	  file_name_cache_elt elt = cache[d];
 
@@ -153,7 +153,7 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
     }
   else if (ndirs == 1)
     {
-      string d = dirs[0];
+      std::string d = dirs[0];
 
       file_name_cache_elt elt = cache[d];
 
@@ -168,7 +168,7 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
 // TRUE if the cache element was out of date.
 
 bool
-file_name_cache_elt::update (const string& dir_name)
+file_name_cache_elt::update (const std::string& dir_name)
 {
   bool retval = false;
 
@@ -200,7 +200,7 @@ file_name_cache_elt::update (const string& dir_name)
 	      int i;
 	      for (i = 0; i < max_len; i++)
 		{
-		  string entry = tmp[i];
+		  std::string entry = tmp[i];
 
 		  int len = entry.length ();
 
@@ -218,8 +218,8 @@ file_name_cache_elt::update (const string& dir_name)
 		      fcn_file_names[k] = entry;
 
 		      fcn_file_names_no_suffix[k] = (entry[len-1] == 'm')
-			? string (entry, 0, len-2)
-			: string (entry, 0, len-4);
+			? std::string (entry, 0, len-2)
+			: std::string (entry, 0, len-4);
 
 		      k++;
 		    }

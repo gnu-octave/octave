@@ -48,14 +48,14 @@ octave_dld_function : public octave_builtin
 public:
 
   octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
-		       const string& nm = string (),
-		       const string& ds = string ());
+		       const std::string& nm = std::string (),
+		       const std::string& ds = std::string ());
 
   ~octave_dld_function (void);
 
   void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
 
-  string fcn_file_name (void) const;
+  std::string fcn_file_name (void) const;
 
   octave_time time_parsed (void) const;
 

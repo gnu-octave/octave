@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <iostream.h>
+#include <iostream>
 
 #include "LSODE.h"
 #include "lo-mappers.h"
@@ -360,7 +360,7 @@ static LSODE_OPTIONS lsode_option_table [] =
 };
 
 static void
-print_lsode_option_list (ostream& os)
+print_lsode_option_list (std::ostream& os)
 {
   print_usage ("lsode_options", 1);
 
@@ -399,7 +399,7 @@ print_lsode_option_list (ostream& os)
 }
 
 static void
-set_lsode_option (const string& keyword, double val)
+set_lsode_option (const std::string& keyword, double val)
 {
   LSODE_OPTIONS *list = lsode_option_table;
 
@@ -429,7 +429,7 @@ set_lsode_option (const string& keyword, double val)
 }
 
 static octave_value_list
-show_lsode_option (const string& keyword)
+show_lsode_option (const std::string& keyword)
 {
   octave_value retval;
 
@@ -488,7 +488,7 @@ their current values are displayed.\n\
     }
   else if (nargin == 1 || nargin == 2)
     {
-      string keyword = args(0).string_value ();
+      std::string keyword = args(0).string_value ();
 
       if (! error_state)
 	{

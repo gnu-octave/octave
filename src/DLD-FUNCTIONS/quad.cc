@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <iostream.h>
+#include <iostream>
 
 #include "Quad.h"
 #include "lo-mappers.h"
@@ -320,7 +320,7 @@ static QUAD_OPTIONS quad_option_table [] =
 };
 
 static void
-print_quad_option_list (ostream& os)
+print_quad_option_list (std::ostream& os)
 {
   print_usage ("quad_options", 1);
 
@@ -350,7 +350,7 @@ print_quad_option_list (ostream& os)
 }
 
 static void
-set_quad_option (const string& keyword, double val)
+set_quad_option (const std::string& keyword, double val)
 {
   QUAD_OPTIONS *list = quad_option_table;
 
@@ -370,7 +370,7 @@ set_quad_option (const string& keyword, double val)
 }
 
 static octave_value_list
-show_quad_option (const string& keyword)
+show_quad_option (const std::string& keyword)
 {
   octave_value retval;
 
@@ -412,7 +412,7 @@ their current values are displayed.\n\
     }
   else if (nargin == 1 || nargin == 2)
     {
-      string keyword = args(0).string_value ();
+      std::string keyword = args(0).string_value ();
 
       if (! error_state)
 	{

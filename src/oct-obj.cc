@@ -155,7 +155,7 @@ octave_value_list::all_strings_p (void) const
 }
 
 string_vector
-octave_value_list::make_argv (const string& fcn_name) const
+octave_value_list::make_argv (const std::string& fcn_name) const
 {
   string_vector argv;
 
@@ -167,7 +167,7 @@ octave_value_list::make_argv (const string& fcn_name) const
 
       for (int i = 0; i < len; i++)
 	{
-	  // An empty string ("") has zero columns and zero rows (a
+	  // An empty std::string ("") has zero columns and zero rows (a
 	  // change that was made for Matlab contemptibility.
 
 	  int n = elem(i).rows ();

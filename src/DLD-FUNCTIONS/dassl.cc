@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <iostream.h>
+#include <iostream>
 
 #include "DASSL.h"
 
@@ -300,7 +300,7 @@ static DASSL_OPTIONS dassl_option_table [] =
 };
 
 static void
-print_dassl_option_list (ostream& os)
+print_dassl_option_list (std::ostream& os)
 {
   print_usage ("dassl_options", 1);
 
@@ -330,7 +330,7 @@ print_dassl_option_list (ostream& os)
 }
 
 static void
-set_dassl_option (const string& keyword, double val)
+set_dassl_option (const std::string& keyword, double val)
 {
   DASSL_OPTIONS *list = dassl_option_table;
 
@@ -350,7 +350,7 @@ set_dassl_option (const string& keyword, double val)
 }
 
 static octave_value_list
-show_dassl_option (const string& keyword)
+show_dassl_option (const std::string& keyword)
 {
   octave_value retval;
 
@@ -398,7 +398,7 @@ their current values are displayed.\n\
     }
   else if (nargin == 1 || nargin == 2)
     {
-      string keyword = args(0).string_value ();
+      std::string keyword = args(0).string_value ();
 
       if (! error_state)
 	{

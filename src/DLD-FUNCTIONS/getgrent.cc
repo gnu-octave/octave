@@ -73,14 +73,14 @@ Once the end of the data has been reached, @code{getgrent} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = 0.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = mk_gr_map (octave_group::getgrent (msg));
       retval(1) = msg;
@@ -101,7 +101,7 @@ Return the first entry from the group database with the group ID\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = 0.0;
 
   int nargin = args.length ();
@@ -116,7 +116,7 @@ Return the first entry from the group database with the group ID\n\
 	    {
 	      gid_t gid = static_cast<gid_t> (dval);
 
-	      string msg;
+	      std::string msg;
 
 	      retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
 	      retval(1) = msg;
@@ -141,18 +141,18 @@ Return the first entry from the group database with the group name\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = 0.0;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      string s = args(0).string_value ();
+      std::string s = args(0).string_value ();
 
       if (! error_state)
 	{
-	  string msg;
+	  std::string msg;
 
 	  retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
 	  retval(1) = msg;
@@ -172,14 +172,14 @@ Return the internal pointer to the beginning of the group database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = static_cast<double> (octave_group::setgrent (msg));
       retval(1) = msg;
@@ -198,14 +198,14 @@ Close the group database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = static_cast<double> (octave_group::endgrent (msg));
       retval(1) = msg;

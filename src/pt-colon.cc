@@ -158,7 +158,7 @@ tree_colon_expression::rvalue (void)
 }
 
 void
-tree_colon_expression::eval_error (const string& s)
+tree_colon_expression::eval_error (const std::string& s)
 {
   if (error_state > 0)
     {

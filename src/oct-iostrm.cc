@@ -69,7 +69,7 @@ octave_istream::eof (void) const
 }
 
 octave_stream
-octave_istream::create (istream *arg, const string& nm)
+octave_istream::create (std::istream *arg, const std::string& nm)
 {
   return octave_stream (new octave_istream (arg, nm));
 }
@@ -83,7 +83,7 @@ octave_ostream::eof (void) const
 }
 
 octave_stream
-octave_ostream::create (ostream *arg, const string& nm)
+octave_ostream::create (std::ostream *arg, const std::string& nm)
 {
   return octave_stream (new octave_ostream (arg, nm));
 }

@@ -302,9 +302,9 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
       os << " = ";
     }
 
-  string fcn_name = fcn.function_name ();
+  std::string fcn_name = fcn.function_name ();
 
-  os << (fcn_name.empty () ? string ("(empty)") : fcn_name) << " ";
+  os << (fcn_name.empty () ? std::string ("(empty)") : fcn_name) << " ";
 
   tree_parameter_list *param_list = fcn.parameter_list ();
 
@@ -357,8 +357,8 @@ tree_print_code::visit_identifier (tree_identifier& id)
 
   print_parens (id, "(");
 
-  string nm = id.name ();
-  os << (nm.empty () ? string ("(empty)") : nm);
+  std::string nm = id.name ();
+  os << (nm.empty () ? std::string ("(empty)") : nm);
 
   print_parens (id, ")");
 }

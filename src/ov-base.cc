@@ -55,7 +55,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
 octave_value
 octave_base_value::do_index_op (const octave_value_list&)
 {
-  string nm = type_name ();
+  std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
   return octave_value ();
 }
@@ -63,7 +63,7 @@ octave_base_value::do_index_op (const octave_value_list&)
 octave_value_list
 octave_base_value::do_index_op (int, const octave_value_list&)
 {
-  string nm = type_name ();
+  std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
   return octave_value ();
 }
@@ -71,35 +71,35 @@ octave_base_value::do_index_op (int, const octave_value_list&)
 idx_vector
 octave_base_value::index_vector (void) const
 {
-  string nm = type_name ();
+  std::string nm = type_name ();
   error ("%s type invalid as index value", nm.c_str ());
   return idx_vector ();
 }
 
 octave_value
-octave_base_value::do_struct_elt_index_op (const string&,
+octave_base_value::do_struct_elt_index_op (const std::string&,
 					   const octave_value_list&,
 					   bool)
 {
-  string nm = type_name ();
+  std::string nm = type_name ();
   error ("can't perform indexed structure reference operations for %s type",
 	 nm.c_str ());
   return octave_value ();
 }
 
 octave_value
-octave_base_value::do_struct_elt_index_op (const string&, bool)
+octave_base_value::do_struct_elt_index_op (const std::string&, bool)
 {
-  string nm = type_name ();
+  std::string nm = type_name ();
   error ("can't perform structure reference operations for %s type",
 	 nm.c_str ());
   return octave_value ();
 }
 
 octave_lvalue
-octave_base_value::struct_elt_ref (octave_value *, const string&)
+octave_base_value::struct_elt_ref (octave_value *, const std::string&)
 {
-  string nm = type_name ();
+  std::string nm = type_name ();
   error ("can't perform structure reference operations for %s type",
 	 nm.c_str ());
   return octave_lvalue ();
@@ -122,19 +122,19 @@ octave_base_value::convert_to_row_or_column_vector (void)
 }
 
 void
-octave_base_value::print (ostream&, bool) const
+octave_base_value::print (std::ostream&, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::print ()", type_name ());
 }
 
 void
-octave_base_value::print_raw (ostream&, bool) const
+octave_base_value::print_raw (std::ostream&, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::print_raw ()", type_name ());
 }
 
 bool
-octave_base_value::print_name_tag (ostream& os, const string& name) const
+octave_base_value::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
   os << name << " =";
@@ -250,7 +250,7 @@ octave_base_value::all_strings (void) const
 string
 octave_base_value::string_value (void) const
 {
-  string retval;
+  std::string retval;
   gripe_wrong_type_arg ("octave_base_value::string_value()", type_name ());
   return retval;
 }

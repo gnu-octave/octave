@@ -63,7 +63,7 @@ static bool Vcrash_dumps_octave_core;
 
 // The default output format.  May be one of "binary", "text", or
 // "mat-binary".
-static string Vdefault_save_format;
+static std::string Vdefault_save_format;
 
 // The number of decimal digits to use when writing ascii data.
 static int Vsave_precision;
@@ -99,7 +99,7 @@ valid_identifier (const char *s)
 }
 
 static bool
-valid_identifier (const string& s)
+valid_identifier (const std::string& s)
 {
   return valid_identifier (s.c_str ());
 }
@@ -248,7 +248,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 // Skip white space and comments on stream IS.
 
 static void
-skip_comments (istream& is)
+skip_comments (std::istream& is)
 {
   char c = '\0';
   while (is.get (c))
@@ -277,7 +277,7 @@ skip_comments (istream& is)
 //  #[ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
 
 static char *
-extract_keyword (istream& is, const char *keyword)
+extract_keyword (std::istream& is, const char *keyword)
 {
   char *retval = 0;
 
@@ -286,7 +286,7 @@ extract_keyword (istream& is, const char *keyword)
     {
       if (c == '#')
 	{
-	  ostrstream buf;
+	  std::ostrstream buf;
 	
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -304,7 +304,7 @@ extract_keyword (istream& is, const char *keyword)
 
 	  if (match)
 	    {
-	      ostrstream value;
+	      std::ostrstream value;
 	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
 		; // Skip whitespace and the colon.
 
@@ -344,7 +344,7 @@ extract_keyword (istream& is, const char *keyword)
 //  [ \t]*keyword[ \t]*int-value.*\n
 
 static bool
-extract_keyword (istream& is, const char *keyword, int& value)
+extract_keyword (std::istream& is, const char *keyword, int& value)
 {
   bool status = false;
   value = 0;
@@ -354,7 +354,7 @@ extract_keyword (istream& is, const char *keyword, int& value)
     {
       if (c == '#')
 	{
-	  ostrstream buf;
+	  std::ostrstream buf;
 
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -468,7 +468,7 @@ extract_keyword (istream& is, const char *keyword, int& value)
 // arbitrary comments, etc.  Someone should fix that.
 
 static char *
-read_ascii_data (istream& is, const string& filename, bool& global,
+read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		 octave_value& tc, int count)
 {
   // Read name for this entry or break on EOF.
@@ -739,9 +739,9 @@ read_ascii_data (istream& is, const string& filename, bool& global,
 // FILENAME is used for error messages.
 
 static char *
-read_binary_data (istream& is, bool swap,
+read_binary_data (std::istream& is, bool swap,
 		  oct_mach_info::float_format fmt,
-		  const string& filename, bool& global,
+		  const std::string& filename, bool& global,
 		  octave_value& tc, char *&doc)
 {
   char tmp = 0;
@@ -946,9 +946,9 @@ read_binary_data (istream& is, bool swap,
 }
 
 static string
-get_mat_data_input_line (istream& is)
+get_mat_data_input_line (std::istream& is)
 {
-  string retval;
+  std::string retval;
 
   bool have_data = false;
 
@@ -986,7 +986,7 @@ get_mat_data_input_line (istream& is)
 }
 
 static void
-get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
+get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, int& nc)
 {
   streampos pos = is.tellg ();
 
@@ -997,7 +997,7 @@ get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
 
   while (is && ! error_state)
     {
-      string buf = get_mat_data_input_line (is);
+      std::string buf = get_mat_data_input_line (is);
 
       file_line_number++;
 
@@ -1051,12 +1051,12 @@ get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
 // This format provides no way to tag the data as global.
 
 static char *
-read_mat_ascii_data (istream& is, const string& filename,
+read_mat_ascii_data (std::istream& is, const std::string& filename,
 		     octave_value& tc)
 {
   char *name = 0;
 
-  string varname;
+  std::string varname;
 
   size_t pos = filename.rfind ('/');
 
@@ -1088,9 +1088,9 @@ read_mat_ascii_data (istream& is, const string& filename,
 	      double d;
 	      for (int i = 0; i < nr; i++)
 		{
-		  string buf = get_mat_data_input_line (is);
+		  std::string buf = get_mat_data_input_line (is);
 
-		  istrstream tmp_stream (buf.c_str ());
+		  std::istrstream tmp_stream (buf.c_str ());
 
 		  for (int j = 0; j < nc; j++)
 		    {
@@ -1138,7 +1138,7 @@ read_mat_ascii_data (istream& is, const string& filename,
 // numbers.
 
 static void
-read_mat_binary_data (istream& is, double *data, int precision,
+read_mat_binary_data (std::istream& is, double *data, int precision,
 		      int len, bool swap,
 		      oct_mach_info::float_format flt_fmt)
 {
@@ -1174,7 +1174,7 @@ read_mat_binary_data (istream& is, double *data, int precision,
 }
 
 static int
-read_mat_file_header (istream& is, bool& swap, FOUR_BYTE_INT& mopt, 
+read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt, 
 		      FOUR_BYTE_INT& nr, FOUR_BYTE_INT& nc,
 		      FOUR_BYTE_INT& imag, FOUR_BYTE_INT& len,
 		      int quiet = 0)
@@ -1323,7 +1323,7 @@ float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
 // This format provides no way to tag the data as global.
 
 static char *
-read_mat_binary_data (istream& is, const string& filename,
+read_mat_binary_data (std::istream& is, const std::string& filename,
 		      octave_value& tc)
 {
   // These are initialized here instead of closer to where they are
@@ -1447,7 +1447,7 @@ read_mat_binary_data (istream& is, const string& filename,
 
 static bool
 matches_patterns (const string_vector& patterns, int pat_idx,
-		  int num_pat, const string& name)
+		  int num_pat, const std::string& name)
 {
   for (int i = pat_idx; i < num_pat; i++)
     {
@@ -1460,7 +1460,7 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 }
 
 static int
-read_binary_file_header (istream& is, bool& swap,
+read_binary_file_header (std::istream& is, bool& swap,
 			 oct_mach_info::float_format& flt_fmt,
 			 bool quiet = false)
 {
@@ -1495,11 +1495,11 @@ read_binary_file_header (istream& is, bool& swap,
 }
 
 static load_save_format
-get_file_format (const string& fname, const string& orig_fname)
+get_file_format (const std::string& fname, const std::string& orig_fname)
 {
   load_save_format retval = LS_UNKNOWN;
 
-  ifstream file (fname.c_str ());
+  std::ifstream file (fname.c_str ());
 
   if (! file)
     {
@@ -1560,14 +1560,14 @@ get_file_format (const string& fname, const string& orig_fname)
 }
 
 static octave_value_list
-do_load (istream& stream, const string& orig_fname, bool force,
+do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
 	 bool list_only, bool swap, bool verbose, const string_vector& argv,
 	 int argv_idx, int argc, int nargout)
 {
   octave_value_list retval;
 
-  ostrstream output_buf;
+  std::ostrstream output_buf;
   int count = 0;
   for (;;)
     {
@@ -1790,7 +1790,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
       return retval;
     }
 
-  string orig_fname = argv[i];
+  std::string orig_fname = argv[i];
 
   oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
 
@@ -1816,7 +1816,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
     }
   else
     {
-      string fname = file_ops::tilde_expand (argv[i]);
+      std::string fname = file_ops::tilde_expand (argv[i]);
 
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
@@ -1829,7 +1829,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 	  if (format == LS_BINARY || format == LS_MAT_BINARY)
 	    mode |= ios::bin;
 
-	  ifstream file (fname.c_str (), mode);
+	  std::ifstream file (fname.c_str (), mode);
 
 	  if (file)
 	    {
@@ -1860,7 +1860,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 // Return TRUE if PATTERN has any special globbing chars in it.
 
 static bool
-glob_pattern_p (const string& pattern)
+glob_pattern_p (const std::string& pattern)
 {
   int open = 0;
 
@@ -1926,8 +1926,8 @@ get_save_type (double max_val, double min_val)
 // binary format described above for read_binary_data.
 
 static bool
-save_binary_data (ostream& os, const octave_value& tc,
-		  const string& name, const string& doc,
+save_binary_data (std::ostream& os, const octave_value& tc,
+		  const std::string& name, const std::string& doc,
 		  bool mark_as_global, bool save_as_floats) 
 {
   FOUR_BYTE_INT name_len = name.length ();
@@ -1956,7 +1956,7 @@ save_binary_data (ostream& os, const octave_value& tc,
 	{
 	  FOUR_BYTE_INT len = chm.cols ();
 	  os.write (&len, 4);
-	  string tstr = chm.row_as_string (i);
+	  std::string tstr = chm.row_as_string (i);
 	  const char *tmp = tstr.data ();
 	  os.write (tmp, len);
 	}
@@ -2063,8 +2063,8 @@ save_binary_data (ostream& os, const octave_value& tc,
 // in the MatLab binary format.
 
 static bool
-save_mat_binary_data (ostream& os, const octave_value& tc,
-		      const string& name) 
+save_mat_binary_data (std::ostream& os, const octave_value& tc,
+		      const std::string& name) 
 {
   FOUR_BYTE_INT mopt = 0;
 
@@ -2147,7 +2147,7 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
 }
 
 static void
-ascii_save_type (ostream& os, const char *type, bool mark_as_global)
+ascii_save_type (std::ostream& os, const char *type, bool mark_as_global)
 {
   if (mark_as_global)
     os << "# type: global ";
@@ -2243,8 +2243,8 @@ strip_infnan (const ComplexMatrix& m)
 // XXX FIXME XXX -- should probably write the help string here too.
 
 bool
-save_ascii_data (ostream& os, const octave_value& tc,
-		 const string& name, bool strip_nan_and_inf,
+save_ascii_data (std::ostream& os, const octave_value& tc,
+		 const std::string& name, bool strip_nan_and_inf,
 		 bool mark_as_global, int precision) 
 {
   bool success = true;
@@ -2268,7 +2268,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
 	{
 	  int len = chm.cols ();
 	  os << "# length: " << len << "\n";
-	  string tstr = chm.row_as_string (i);
+	  std::string tstr = chm.row_as_string (i);
 	  const char *tmp = tstr.data ();
 	  os.write (tmp, len);
 	  os << "\n";
@@ -2367,7 +2367,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
 // Save the info from sr on stream os in the format specified by fmt.
 
 static void
-do_save (ostream& os, symbol_record *sr, load_save_format fmt,
+do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
 	 int save_as_floats)
 {
   if (! sr->is_variable ())
@@ -2376,8 +2376,8 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
       return;
     }
 
-  string name = sr->name ();
-  string help = sr->help ();
+  std::string name = sr->name ();
+  std::string help = sr->help ();
   int global = sr->is_linked_to_global ();
 
   octave_value tc = sr->def ();
@@ -2410,7 +2410,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
 // builtin variables with names that match PATTERN.
 
 static int
-save_vars (ostream& os, const string& pattern, bool save_builtins,
+save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 	   load_save_format fmt, int save_as_floats)
 {
   Array<symbol_record *> vars = curr_sym_tab->glob
@@ -2452,7 +2452,7 @@ get_default_save_format (void)
 {
   load_save_format retval = LS_ASCII;
 
-  string fmt = Vdefault_save_format;
+  std::string fmt = Vdefault_save_format;
 
   if (fmt == "binary")
     retval = LS_BINARY;
@@ -2463,7 +2463,7 @@ get_default_save_format (void)
 }
 
 static void
-write_header (ostream& os, load_save_format format)
+write_header (std::ostream& os, load_save_format format)
 {
   switch (format)
     {
@@ -2484,7 +2484,7 @@ write_header (ostream& os, load_save_format format)
     case LS_ASCII:
       {
 	octave_gmtime now;
-	string time_string = now.asctime ();
+	std::string time_string = now.asctime ();
 	time_string = time_string.substr (0, time_string.length () - 1);
 
 	os << "# Created by Octave " OCTAVE_VERSION ", "
@@ -2504,7 +2504,7 @@ write_header (ostream& os, load_save_format format)
 
 static void
 save_vars (const string_vector& argv, int argv_idx, int argc,
-	   ostream& os, bool save_builtins, load_save_format fmt,
+	   std::ostream& os, bool save_builtins, load_save_format fmt,
 	   bool save_as_floats, bool write_header_info)
 {
   if (write_header_info)
@@ -2543,7 +2543,7 @@ save_user_variables (void)
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= ios::bin;
 
-      ofstream file (fname, mode);
+      std::ofstream file (fname, mode);
 
       if (file)
 	{
@@ -2702,7 +2702,7 @@ the file @file{data} in Octave's binary format.\n\
     }
   else
     {
-      string fname = file_ops::tilde_expand (argv[i]);
+      std::string fname = file_ops::tilde_expand (argv[i]);
 
       i++;
 
@@ -2712,7 +2712,7 @@ the file @file{data} in Octave's binary format.\n\
 
       mode |= append ? ios::ate : ios::trunc;
 
-      ofstream file (fname.c_str (), mode);
+      std::ofstream file (fname.c_str (), mode);
 
       if (file)
 	{
@@ -2739,7 +2739,7 @@ the file @file{data} in Octave's binary format.\n\
 // TRUE, assume a parametric 3-dimensional plot will be generated.
 
 bool
-save_three_d (ostream& os, const octave_value& tc, bool parametric)
+save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 {
   bool fail = false;
 
@@ -2806,7 +2806,7 @@ default_save_format (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("default_save_format");
+  std::string s = builtin_string_variable ("default_save_format");
 
   if (s.empty ())
     {

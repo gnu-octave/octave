@@ -39,7 +39,7 @@ Octave_map : public CHMap<octave_value>
  public:
   Octave_map (void) : CHMap<octave_value> (octave_value ()) { }
 
-  Octave_map (const string& key, const octave_value& value)
+  Octave_map (const std::string& key, const octave_value& value)
     : CHMap<octave_value> (octave_value ())
       {
 	CHMap<octave_value>::operator [] (key) = value;

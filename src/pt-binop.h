@@ -71,7 +71,7 @@ public:
 
   void eval_error (void);
 
-  string oper (void) const;
+  std::string oper (void) const;
 
   tree_expression *lhs (void) { return op_lhs; }
   tree_expression *rhs (void) { return op_rhs; }
@@ -126,7 +126,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  string oper (void) const;
+  std::string oper (void) const;
 
 private:
 

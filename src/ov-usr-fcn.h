@@ -78,7 +78,7 @@ public:
   void stash_symtab_ptr (symbol_record *sr)
     { symtab_entry = sr; }
 
-  string fcn_file_name (void) const
+  std::string fcn_file_name (void) const
     { return file_name; }
 
   octave_time time_parsed (void) const
@@ -105,9 +105,9 @@ public:
 
   void octave_vr_val (const octave_value& val);
 
-  void stash_function_name (const string& s);
+  void stash_function_name (const std::string& s);
 
-  string function_name (void)
+  std::string function_name (void)
     { return fcn_name; }
 
   void clear_args_passed (void)
@@ -145,10 +145,10 @@ private:
   symbol_table *sym_tab;
 
   // The name of the file we parsed
-  string file_name;
+  std::string file_name;
 
   // The name of the function.
-  string fcn_name;
+  std::string fcn_name;
 
   // The time the file was parsed.
   octave_time t_parsed;

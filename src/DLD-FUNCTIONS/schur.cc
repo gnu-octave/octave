@@ -255,7 +255,7 @@ $S$.\n\
 
   octave_value arg = args(0);
 
-  string ord;
+  std::string ord;
 
   if (nargin == 2)
     {

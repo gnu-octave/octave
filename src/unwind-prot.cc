@@ -62,7 +62,7 @@ public:
 
   saved_variable (int *p, int v);
 
-  saved_variable (string *p, const string& v);
+  saved_variable (std::string *p, const std::string& v);
 
   saved_variable (void **p, void *v);
 
@@ -86,7 +86,7 @@ private:
     {
       bool bool_value;
       int int_value;
-      const string *str_value;
+      const std::string *str_value;
       void *gen_ptr_value;
     };
 
@@ -119,11 +119,11 @@ saved_variable::saved_variable (int *p, int v)
   size = sizeof (int);  // Is this necessary?
 }
 
-saved_variable::saved_variable (string *p, const string& v)
+saved_variable::saved_variable (std::string *p, const std::string& v)
 {
   type_tag = string_type;
   gen_ptr = p;
-  str_value = new string (v);
+  str_value = new std::string (v);
   size = sizeof (string);  // Is this necessary?
 }
 
@@ -167,7 +167,7 @@ saved_variable::restore_value (void)
       break;
 
     case string_type:
-      (static_cast<string *> (gen_ptr)) -> assign (*str_value);
+      (static_cast<std::string *> (gen_ptr)) -> assign (*str_value);
       break;
 
     case generic_ptr:
@@ -217,14 +217,14 @@ unwind_protect::discard (void)
 }
 
 void
-unwind_protect::begin_frame (const string& tag)
+unwind_protect::begin_frame (const std::string& tag)
 {
   unwind_elem elem (tag);
   list.push (elem);
 }
 
 void
-unwind_protect::run_frame (const string& tag)
+unwind_protect::run_frame (const std::string& tag)
 {
   while (! list.empty ())
     {
@@ -241,7 +241,7 @@ unwind_protect::run_frame (const string& tag)
 }
 
 void
-unwind_protect::discard_frame (const string& tag)
+unwind_protect::discard_frame (const std::string& tag)
 {
   while (! list.empty ())
     {
@@ -287,7 +287,7 @@ unwind_protect::save_int (int *ptr, int value)
 }
 
 void
-unwind_protect::save_str (string *ptr, const string& value)
+unwind_protect::save_str (std::string *ptr, const std::string& value)
 {
   saved_variable *s = new saved_variable (ptr, value);
   add (saved_variable::restore, s);

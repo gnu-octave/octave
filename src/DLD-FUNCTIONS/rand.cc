@@ -165,7 +165,7 @@ do_rand (const octave_value_list& args, int nargin)
 
       if (tmp.is_string ())
 	{
-	  string s_arg = tmp.string_value ();
+	  std::string s_arg = tmp.string_value ();
 
 	  if (s_arg == "dist")
 	    {

@@ -28,7 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd-hist.h"
 
 extern int default_history_size (void);
-extern string default_history_file (void);
+extern std::string default_history_file (void);
 
 // TRUE means input is coming from temporary history file.
 extern bool input_from_tmp_history_file;

@@ -65,7 +65,7 @@ public:
   octave_char_matrix_str (const char *s)
     : octave_char_matrix (s) { }
 
-  octave_char_matrix_str (const string& s)
+  octave_char_matrix_str (const std::string& s)
     : octave_char_matrix (s) { }
 
   octave_char_matrix_str (const string_vector& s)
@@ -101,11 +101,11 @@ public:
 
   string_vector all_strings (void) const;
 
-  string string_value (void) const;
+  std::string string_value (void) const;
 
   bool print_as_scalar (void) const { return (rows () <= 1); }
 
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
 

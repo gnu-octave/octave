@@ -32,7 +32,7 @@ octave_base_stdiostream : public octave_base_stream
 {
 public:
 
-  octave_base_stdiostream (const string& n, FILE *f,
+  octave_base_stdiostream (const std::string& n, FILE *f,
 			   ios::openmode arg_md = ios::in|ios::out,
 			   oct_mach_info::float_format flt_fmt =
 			   oct_mach_info::native)
@@ -48,7 +48,7 @@ public:
 
   // The name of the file.
 
-  string name (void) const { return nm; }
+  std::string name (void) const { return nm; }
 
   virtual stdiobuf *rdbuf (void) const = 0;
 
@@ -58,7 +58,7 @@ public:
 
 protected:
 
-  string nm;
+  std::string nm;
 
   FILE *fp;
 
@@ -76,26 +76,26 @@ octave_istdiostream : public octave_base_stdiostream
 {
 public:
 
-  octave_istdiostream (const string& n, FILE *f = 0,
+  octave_istdiostream (const std::string& n, FILE *f = 0,
 		       ios::openmode arg_md = ios::in,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
-  create (const string& n, FILE *f = 0, ios::openmode arg_md = ios::in,
+  create (const std::string& n, FILE *f = 0, ios::openmode arg_md = ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
   bool eof (void) const { return is ? is->eof () : true; }
 
-  istream *input_stream (void) { return is; }
+  std::istream *input_stream (void) { return is; }
 
-  ostream *output_stream (void) { return 0; }
+  std::ostream *output_stream (void) { return 0; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
   stdiobuf *rdbuf (void) const
-    { return is ? (const_cast<istdiostream *> (is))->rdbuf () : 0; }
+    { return is ? (const_cast<std::istdiostream *> (is))->rdbuf () : 0; }
 
   bool bad (void) const { return is ? is->bad () : true; }
 
@@ -107,7 +107,7 @@ public:
 
 protected:
 
-  istdiostream *is;
+  std::istdiostream *is;
 
   ~octave_istdiostream (void);
 
@@ -125,26 +125,26 @@ octave_ostdiostream : public octave_base_stdiostream
 {
 public:
 
-  octave_ostdiostream (const string& n, FILE *f = 0,
+  octave_ostdiostream (const std::string& n, FILE *f = 0,
 		       ios::openmode arg_md = ios::out,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
-  create (const string& n, FILE *f = 0, ios::openmode arg_md = ios::out,
+  create (const std::string& n, FILE *f = 0, ios::openmode arg_md = ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
   bool eof (void) const { return os ? os->eof () : true; }
 
-  istream *input_stream (void) { return 0; }
+  std::istream *input_stream (void) { return 0; }
 
-  ostream *output_stream (void) { return os; }
+  std::ostream *output_stream (void) { return os; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
   stdiobuf *rdbuf (void) const
-    { return os ? (const_cast<ostdiostream *> (os))->rdbuf () : 0; }
+    { return os ? (const_cast<std::ostdiostream *> (os))->rdbuf () : 0; }
 
   bool bad (void) const { return os ? os->bad () : true; }
 
@@ -156,7 +156,7 @@ public:
 
 protected:
 
-  ostdiostream *os;
+  std::ostdiostream *os;
 
   ~octave_ostdiostream (void);
 

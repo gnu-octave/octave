@@ -124,7 +124,7 @@ bool Vresize_on_range_error;
 string
 octave_value::unary_op_as_string (unary_op op)
 {
-  string retval;
+  std::string retval;
 
   switch (op)
     {
@@ -162,7 +162,7 @@ octave_value::unary_op_as_string (unary_op op)
 string
 octave_value::binary_op_as_string (binary_op op)
 {
-  string retval;
+  std::string retval;
 
   switch (op)
     {
@@ -260,7 +260,7 @@ octave_value::binary_op_as_string (binary_op op)
 string
 octave_value::assign_op_as_string (assign_op op)
 {
-  string retval;
+  std::string retval;
 
   switch (op)
     {
@@ -432,7 +432,7 @@ octave_value::octave_value (const char *s)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const string& s)
+octave_value::octave_value (const std::string& s)
   : rep (new octave_char_matrix_str (s))
 {
   rep->count = 1;
@@ -556,22 +556,22 @@ octave_value::do_index_op (int nargout, const octave_value_list& idx)
 }
 
 static void
-gripe_no_conversion (const string& on, const string& tn1, const string& tn2)
+gripe_no_conversion (const std::string& on, const std::string& tn1, const std::string& tn2)
 {
   error ("operator %s: no conversion for assignment of `%s' to indexed `%s'",
 	 on.c_str (), tn2.c_str (), tn1.c_str ());
 }
 
 static void
-gripe_assign_failed (const string& on, const string& tn1, const string& tn2)
+gripe_assign_failed (const std::string& on, const std::string& tn1, const std::string& tn2)
 {
   error ("assignment failed for `%s %s %s'",
 	 tn1.c_str (), on.c_str (), tn2.c_str ());
 }
 
 static void
-gripe_assign_failed_or_no_method (const string& on, const string& tn1,
-				  const string& tn2)
+gripe_assign_failed_or_no_method (const std::string& on, const std::string& tn1,
+				  const std::string& tn2)
 {
   error ("assignment failed, or no method for `%s %s %s'",
 	 tn1.c_str (), on.c_str (), tn2.c_str ());
@@ -684,7 +684,7 @@ octave_value::assign (octave_value::assign_op op,
 }
 
 void
-octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
+octave_value::assign_struct_elt (assign_op op, const std::string& elt_nm,
 				 const octave_value& rhs)
 {
   make_unique ();
@@ -694,7 +694,7 @@ octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
 
 
 void
-octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
+octave_value::assign_struct_elt (assign_op op, const std::string& elt_nm,
 				 const octave_value_list& idx,
 				 const octave_value& rhs)
 {
@@ -704,13 +704,13 @@ octave_value::assign_struct_elt (assign_op op, const string& elt_nm,
 }
 
 octave_lvalue
-octave_value::struct_elt_ref (const string& nm)
+octave_value::struct_elt_ref (const std::string& nm)
 {
   return rep->struct_elt_ref (this, nm);
 }
 
 octave_lvalue
-octave_value::struct_elt_ref (octave_value *, const string&)
+octave_value::struct_elt_ref (octave_value *, const std::string&)
 {
   panic_impossible ();
 
@@ -775,7 +775,7 @@ octave_value::column_vector_value (bool force_string_conv,
     }
   else
     {
-      string tn = type_name ();
+      std::string tn = type_name ();
       gripe_invalid_conversion (tn.c_str (), "real column vector");
     }
 
@@ -804,7 +804,7 @@ octave_value::complex_column_vector_value (bool force_string_conv,
     }
   else
     {
-      string tn = type_name ();
+      std::string tn = type_name ();
       gripe_invalid_conversion (tn.c_str (), "complex column vector");
     }
 
@@ -833,7 +833,7 @@ octave_value::row_vector_value (bool force_string_conv,
     }
   else
     {
-      string tn = type_name ();
+      std::string tn = type_name ();
       gripe_invalid_conversion (tn.c_str (), "real row vector");
     }
 
@@ -862,7 +862,7 @@ octave_value::complex_row_vector_value (bool force_string_conv,
     }
   else
     {
-      string tn = type_name ();
+      std::string tn = type_name ();
       gripe_invalid_conversion (tn.c_str (), "complex row vector");
     }
 
@@ -908,7 +908,7 @@ octave_value::vector_value (bool force_string_conv,
     }
   else
     {
-      string tn = type_name ();
+      std::string tn = type_name ();
       gripe_invalid_conversion (tn.c_str (), "real vector");
     }
 
@@ -952,7 +952,7 @@ octave_value::complex_vector_value (bool force_string_conv,
     }
   else
     {
-      string tn = type_name ();
+      std::string tn = type_name ();
       gripe_invalid_conversion (tn.c_str (), "complex vector");
     }
 
@@ -960,7 +960,7 @@ octave_value::complex_vector_value (bool force_string_conv,
 }
 
 void
-octave_value::print_with_name (ostream& output_buf, const string& name,
+octave_value::print_with_name (std::ostream& output_buf, const std::string& name,
 			       bool print_padding) const
 {
   bool pad_after = print_name_tag (output_buf, name);
@@ -972,14 +972,14 @@ octave_value::print_with_name (ostream& output_buf, const string& name,
 }
 
 static void
-gripe_indexed_assignment (const string& tn1, const string& tn2)
+gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {
   error ("assignment of `%s' to indexed `%s' not implemented",
 	 tn2.c_str (), tn1.c_str ());
 }
 
 static void
-gripe_assign_conversion_failed (const string& tn1, const string& tn2)
+gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
 {
   error ("type conversion for assignment of `%s' to indexed `%s' failed",
 	 tn2.c_str (), tn1.c_str ());
@@ -1144,14 +1144,14 @@ octave_value::try_assignment (octave_value::assign_op op,
 }
 
 static void
-gripe_binary_op (const string& on, const string& tn1, const string& tn2)
+gripe_binary_op (const std::string& on, const std::string& tn1, const std::string& tn2)
 {
   error ("binary operator `%s' not implemented for `%s' by `%s' operations",
 	 on.c_str (), tn1.c_str (), tn2.c_str ());
 }
 
 static void
-gripe_binary_op_conv (const string& on)
+gripe_binary_op_conv (const std::string& on)
 {
   error ("type conversion failed for binary operator `%s'", on.c_str ());
 }
@@ -1233,14 +1233,14 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 }
 
 static void
-gripe_unary_op (const string& on, const string& tn)
+gripe_unary_op (const std::string& on, const std::string& tn)
 {
   error ("unary operator `%s' not implemented for `%s' operands",
 	 on.c_str (), tn.c_str ());
 }
 
 static void
-gripe_unary_op_conv (const string& on)
+gripe_unary_op_conv (const std::string& on)
 {
   error ("type conversion failed for unary operator `%s'", on.c_str ());
 }
@@ -1290,7 +1290,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 }
 
 static void
-gripe_unary_op_conversion_failed (const string& op, const string& tn)
+gripe_unary_op_conversion_failed (const std::string& op, const std::string& tn)
 {
   error ("operator %s: type conversion for `%s' failed",
 	 op.c_str (), tn.c_str ());
@@ -1361,7 +1361,7 @@ octave_value::do_non_const_unary_op (octave_value::unary_op op)
 }
 
 static void
-gripe_unary_op_failed_or_no_method (const string& on, const string& tn)
+gripe_unary_op_failed_or_no_method (const std::string& on, const std::string& tn)
 {
   error ("operator %s: no method, or unable to evaluate for %s operand",
 	 on.c_str (), tn.c_str ());
@@ -1395,7 +1395,7 @@ bool octave_value::beginning_of_line = true;
 // This doesn't need to be fast, but isn't there a better way?
 
 void
-octave_value::indent (ostream& os) const
+octave_value::indent (std::ostream& os) const
 {
   assert (curr_print_indent_level >= 0);
  
@@ -1414,7 +1414,7 @@ octave_value::indent (ostream& os) const
 // All print() functions should use this to print new lines.
 
 void
-octave_value::newline (ostream& os) const
+octave_value::newline (std::ostream& os) const
 {
   os << "\n";
 
@@ -1447,7 +1447,7 @@ octave_value::unary_op_to_assign_op (unary_op op)
 
     default:
       {
-	string on = unary_op_as_string (op);
+	std::string on = unary_op_as_string (op);
 	error ("operator %s: no assign operator found", on.c_str ());
       }
     }
@@ -1512,7 +1512,7 @@ octave_value::op_eq_to_binary_op (assign_op op)
 
     default:
       {
-	string on = assign_op_as_string (op);
+	std::string on = assign_op_as_string (op);
 	error ("operator %s: no binary operator found", on.c_str ());
       }
     }

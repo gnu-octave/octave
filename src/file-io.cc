@@ -95,7 +95,7 @@ close_files (void)
 }
 
 static int
-fopen_mode_to_ios_mode (const string& mode)
+fopen_mode_to_ios_mode (const std::string& mode)
 {
   int retval = 0;
 
@@ -241,7 +241,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 	  bool err = false;
 
-	  string tmp = os.getl (len_arg, err);
+	  std::string tmp = os.getl (len_arg, err);
 
 	  if (! err)
 	    {
@@ -287,7 +287,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 
 	  bool err = false;
 
-	  string tmp = os.gets (len_arg, err);
+	  std::string tmp = os.gets (len_arg, err);
 
 	  if (! err)
 	    {
@@ -303,8 +303,8 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 }
 
 static octave_stream
-do_stream_open (const string& name, const string& mode,
-		const string& arch, int& fid)
+do_stream_open (const std::string& name, const std::string& mode,
+		const std::string& arch, int& fid)
 {
   octave_stream retval;
 
@@ -332,15 +332,15 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 
   fid = -1;
 
-  string name = tc_name.string_value ();
+  std::string name = tc_name.string_value ();
 
   if (! error_state)
     {
-      string mode = tc_mode.string_value ();
+      std::string mode = tc_mode.string_value ();
 
       if (! error_state)
 	{
-	  string arch = tc_arch.string_value ();
+	  std::string arch = tc_arch.string_value ();
 
 	  if (! error_state)
 	    retval = do_stream_open (name, mode, arch, fid);
@@ -658,7 +658,7 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 	{
 	  if (args(fmt_n).is_string ())
 	    {
-	      string fmt = args(fmt_n).string_value ();
+	      std::string fmt = args(fmt_n).string_value ();
 
 	      octave_value_list tmp_args;
 
@@ -733,7 +733,7 @@ converted.\n\
 	{
 	  if (args(0).is_string ())
 	    {
-	      string fmt = args(0).string_value ();
+	      std::string fmt = args(0).string_value ();
 
 	      octave_value_list tmp_args;
 
@@ -816,7 +816,7 @@ conversions is returned in @var{count}\n\
 	{
 	  if (args(1).is_string ())
 	    {
-	      string fmt = args(1).string_value ();
+	      std::string fmt = args(1).string_value ();
 
 	      retval = os.oscanf (fmt);
 	    }
@@ -837,7 +837,7 @@ conversions is returned in @var{count}\n\
 	    {
 	      if (args(1).is_string ())
 		{
-		  string fmt = args(1).string_value ();
+		  std::string fmt = args(1).string_value ();
 
 		  int count = 0;
 
@@ -880,7 +880,7 @@ string is treated as an end-of-file condition.\n\
     {
       if (args(0).is_string ())
 	{
-	  string data = args(0).string_value ();
+	  std::string data = args(0).string_value ();
 
 	  octave_stream os = octave_istrstream::create (data);
 
@@ -888,7 +888,7 @@ string is treated as an end-of-file condition.\n\
 	    {
 	      if (args(1).is_string ())
 		{
-		  string fmt = args(1).string_value ();
+		  std::string fmt = args(1).string_value ();
 
 		  retval = os.oscanf (fmt);
 		}
@@ -912,7 +912,7 @@ string is treated as an end-of-file condition.\n\
 
 	  if (args(0).is_string ())
 	    {
-	      string data = args(0).string_value ();
+	      std::string data = args(0).string_value ();
 
 	      octave_stream os = octave_istrstream::create (data);
 
@@ -920,7 +920,7 @@ string is treated as an end-of-file condition.\n\
 		{
 		  if (args(1).is_string ())
 		    {
-		      string fmt = args(1).string_value ();
+		      std::string fmt = args(1).string_value ();
 
 		      int count = 0;
 
@@ -932,7 +932,7 @@ string is treated as an end-of-file condition.\n\
 		      // XXX FIXME XXX -- is this the right thing to do?
 		      // Extract error message first, because getting
 		      // position will clear it.
-		      string errmsg = os.error ();
+		      std::string errmsg = os.error ();
 
 		      retval(3) = static_cast<double> (os.tell () + 1);
 		      retval(2) = errmsg;
@@ -989,7 +989,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   if (! error_state)
     {
-      string prec = prec_arg.string_value ();
+      std::string prec = prec_arg.string_value ();
 
       if (! error_state)
 	{
@@ -1002,7 +1002,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
 	      if (! error_state)
 		{
-		  string arch = arch_arg.string_value ();
+		  std::string arch = arch_arg.string_value ();
 
 		  if (! error_state)
 		    {
@@ -1202,7 +1202,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
 {
   int retval = -1;
 
-  string prec = prec_arg.string_value ();
+  std::string prec = prec_arg.string_value ();
 
   if (! error_state)
     {
@@ -1215,7 +1215,7 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
 	  if (! error_state)
 	    {
-	      string arch = arch_arg.string_value ();
+	      std::string arch = arch_arg.string_value ();
 
 	      if (! error_state)
 		{
@@ -1338,7 +1338,7 @@ error condition.\n\
 
 	  if (nargin == 2)
 	    {
-	      string opt = args(1).string_value ();
+	      std::string opt = args(1).string_value ();
 
 	      if (! error_state)
 		clear = (opt == "clear");
@@ -1348,7 +1348,7 @@ error condition.\n\
 
 	  int error_number = 0;
 
-	  string error_message = os.error (clear, error_number);
+	  std::string error_message = os.error (clear, error_number);
 
 	  retval(1) = static_cast<double> (error_number);
 	  retval(0) = error_message;
@@ -1399,11 +1399,11 @@ endwhile\n\
 
   if (nargin == 2)
     {
-      string name = args(0).string_value ();
+      std::string name = args(0).string_value ();
 
       if (! error_state)
 	{
-	  string mode = args(1).string_value ();
+	  std::string mode = args(1).string_value ();
 
 	  if (! error_state)
 	    {
@@ -1470,8 +1470,8 @@ by the time your program attempts to open it.\n\
 
   if (len < 3)
     {
-      string dir = len > 0 ? args(0).string_value () : string ();
-      string pfx = len > 1 ? args(1).string_value () : string ("oct-");
+      std::string dir = len > 0 ? args(0).string_value () : std::string ();
+      std::string pfx = len > 1 ? args(1).string_value () : std::string ("oct-");
 
       if (! error_state)
 	retval = file_ops::tempnam (dir, pfx);

@@ -62,7 +62,7 @@ public:
 
   virtual bool is_system_fcn_file (void) { return false; }
 
-  virtual string fcn_file_name (void) const { return string (); }
+  virtual std::string fcn_file_name (void) const { return std::string (); }
 
   virtual void mark_fcn_file_up_to_date (const octave_time&) { }
 
@@ -72,9 +72,9 @@ public:
   virtual octave_time time_checked (void) const
     { return octave_time (static_cast<time_t> (0)); }
 
-  string name (void) const { return my_name; }
+  std::string name (void) const { return my_name; }
 
-  string doc_string (void) const { return doc; }
+  std::string doc_string (void) const { return doc; }
 
   virtual void unload (void) { }
 
@@ -82,14 +82,14 @@ public:
 
 protected:
 
-  octave_function (const string& nm, const string& ds)
+  octave_function (const std::string& nm, const std::string& ds)
     : my_name (nm), doc (ds) { }
 
   // The name of this function.
-  string my_name;
+  std::string my_name;
 
   // The help text for this function.
-  string doc;
+  std::string doc;
 
 private:
 

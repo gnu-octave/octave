@@ -115,10 +115,10 @@ tree_decl_command : public tree_command
 {
 public:
 
-  tree_decl_command (const string& n, int l = -1, int c = -1)
+  tree_decl_command (const std::string& n, int l = -1, int c = -1)
     : tree_command (l, c), cmd_name (n), initialized (false), init_list (0) { }
 
-  tree_decl_command (const string& n, tree_decl_init_list *t,
+  tree_decl_command (const std::string& n, tree_decl_init_list *t,
 		     int l = -1, int c = -1)
     : tree_command (l, c), cmd_name (n), initialized (false), init_list (t) { }
 
@@ -128,12 +128,12 @@ public:
 
   void accept (tree_walker& tw);
 
-  string name (void) { return cmd_name; }
+  std::string name (void) { return cmd_name; }
 
 protected:
 
   // The name of this command -- global, static, etc.
-  string cmd_name;
+  std::string cmd_name;
 
   // TRUE if this command has been evaluated.
   bool initialized;

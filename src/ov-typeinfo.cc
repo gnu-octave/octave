@@ -79,7 +79,7 @@ octave_value_typeinfo::instance_ok (void)
 }
 
 int
-octave_value_typeinfo::register_type (const string& name)
+octave_value_typeinfo::register_type (const std::string& name)
 {
   return (instance_ok ())
     ? instance->do_register_type (name) : -1;
@@ -145,7 +145,7 @@ octave_value_typeinfo::register_widening_op (int t, int t_result,
 }
 
 int
-octave_value_typeinfo::do_register_type (const string& name)
+octave_value_typeinfo::do_register_type (const std::string& name)
 {
   int i = 0;
 
@@ -159,7 +159,7 @@ octave_value_typeinfo::do_register_type (const string& name)
     {
       len *= 2;
 
-      types.resize (len, string ());
+      types.resize (len, std::string ());
 
       unary_ops.resize (static_cast<int> (octave_value::num_unary_ops),
 			len, static_cast<unary_op_fcn> (0));

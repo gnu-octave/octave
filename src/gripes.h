@@ -55,7 +55,7 @@ extern void
 gripe_user_returned_invalid (const char *name);
 
 extern void
-gripe_invalid_conversion (const string& from, const string& to);
+gripe_invalid_conversion (const std::string& from, const std::string& to);
 
 extern void
 gripe_invalid_value_specified (const char *name);
@@ -73,7 +73,7 @@ extern void
 gripe_data_conversion (const char *from, const char *to);
 
 extern void
-gripe_wrong_type_arg (const char *name, const string& s,
+gripe_wrong_type_arg (const char *name, const std::string& s,
 		      bool is_error = true);
 
 extern void

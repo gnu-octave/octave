@@ -34,35 +34,35 @@ class boolMatrix;
 class charMatrix;
 
 extern void
-octave_print_internal (ostream& os, double d,
+octave_print_internal (std::ostream& os, double d,
 		       bool pr_as_read_syntax = false);
 
 extern void
-octave_print_internal (ostream& os, const Matrix& m,
+octave_print_internal (std::ostream& os, const Matrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
 extern void
-octave_print_internal (ostream& os, const Complex& c,
+octave_print_internal (std::ostream& os, const Complex& c,
 		       bool pr_as_read_syntax = false);
 
 extern void
-octave_print_internal (ostream& os, const ComplexMatrix& cm,
+octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
 extern void
-octave_print_internal (ostream& os, const Range& r,
+octave_print_internal (std::ostream& os, const Range& r,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
 extern void
-octave_print_internal (ostream& os, const boolMatrix& m,
+octave_print_internal (std::ostream& os, const boolMatrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
 extern void
-octave_print_internal (ostream& os, const charMatrix& chm,
+octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);

@@ -43,7 +43,7 @@ public:
   unwind_elem (void)
     : ue_tag (), ue_fptr (0), ue_ptr (0) { }
 
-  unwind_elem (const string &t)
+  unwind_elem (const std::string &t)
     : ue_tag (t), ue_fptr (0), ue_ptr (0) { }
 
   unwind_elem (cleanup_func f, void *p)
@@ -63,7 +63,7 @@ public:
       return *this;
     }
 
-  string tag (void) { return ue_tag; }
+  std::string tag (void) { return ue_tag; }
 
   cleanup_func fptr (void) { return ue_fptr; }
 
@@ -71,7 +71,7 @@ public:
 
 private:
 
-  string ue_tag;
+  std::string ue_tag;
 
   cleanup_func ue_fptr;
 
@@ -89,11 +89,11 @@ public:
 
   static void discard (void);
 
-  static void begin_frame (const string& tag);
+  static void begin_frame (const std::string& tag);
 
-  static void run_frame (const string& tag);
+  static void run_frame (const std::string& tag);
 
-  static void discard_frame (const string& tag);
+  static void discard_frame (const std::string& tag);
 
   static void run_all (void);
 
@@ -105,7 +105,7 @@ public:
 
   static void save_int (int *ptr, int value);
 
-  static void save_str (string *ptr, const string& value);
+  static void save_str (std::string *ptr, const std::string& value);
 
   static void save_ptr (void **ptr, void *value);
 

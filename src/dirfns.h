@@ -27,12 +27,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-extern string polite_directory_format (const string&);
-extern string base_pathname (const string&);
-extern string make_absolute (const string&, const string&);
-extern string get_working_directory (const string&);
+extern std::string polite_directory_format (const std::string&);
+extern std::string base_pathname (const std::string&);
+extern std::string make_absolute (const std::string&, const std::string&);
+extern std::string get_working_directory (const std::string&);
 
-extern string Vcurrent_directory;
+extern std::string Vcurrent_directory;
 
 #endif
 

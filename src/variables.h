@@ -43,52 +43,52 @@ class string_vector;
 
 extern void initialize_symbol_tables (void);
 
-extern bool is_builtin_variable (const string&);
-extern bool is_text_function_name (const string&);
-extern bool is_mapper_function_name (const string&);
-extern bool is_builtin_function_name (const string&);
-extern bool is_globally_visible (const string&);
+extern bool is_builtin_variable (const std::string&);
+extern bool is_text_function_name (const std::string&);
+extern bool is_mapper_function_name (const std::string&);
+extern bool is_builtin_function_name (const std::string&);
+extern bool is_globally_visible (const std::string&);
 
 extern octave_function *
-is_valid_function (const octave_value&, const string& = string (),
+is_valid_function (const octave_value&, const std::string& = std::string (),
 		   bool warn = false); 
 
 extern octave_function *
-is_valid_function (const string&, const string& = string (),
+is_valid_function (const std::string&, const std::string& = std::string (),
 		   bool warn = false); 
 
 extern octave_function *
-extract_function (const octave_value& arg, const string& warn_for,
-		  const string& fname, const string& header,
-		  const string& trailer);
+extract_function (const octave_value& arg, const std::string& warn_for,
+		  const std::string& fname, const std::string& header,
+		  const std::string& trailer);
 
 extern string_vector
-get_struct_elts (const string& text);
+get_struct_elts (const std::string& text);
 
 extern string_vector
-generate_struct_completions (const string& text, string& prefix,
-			     string& hint);
+generate_struct_completions (const std::string& text, std::string& prefix,
+			     std::string& hint);
 
 extern bool
-looks_like_struct (const string& text);
+looks_like_struct (const std::string& text);
 
 extern bool lookup (symbol_record *s, bool exec_script = true);
 
 extern symbol_record *
-lookup_by_name (const string& nm, bool exec_script = true);
+lookup_by_name (const std::string& nm, bool exec_script = true);
 
-extern octave_value get_global_value (const string& nm);
+extern octave_value get_global_value (const std::string& nm);
 
-extern void set_global_value (const string& nm, const octave_value& val);
+extern void set_global_value (const std::string& nm, const octave_value& val);
 
-extern string builtin_string_variable (const string&);
-extern int builtin_real_scalar_variable (const string&, double&);
-extern octave_value builtin_any_variable (const string&);
+extern std::string builtin_string_variable (const std::string&);
+extern int builtin_real_scalar_variable (const std::string&, double&);
+extern octave_value builtin_any_variable (const std::string&);
 
 extern void link_to_global_variable (symbol_record *sr);
 extern void link_to_builtin_or_function (symbol_record *sr);
 
-extern void force_link_to_function (const string&);
+extern void force_link_to_function (const std::string&);
 
 extern void bind_ans (const octave_value& val, bool print);
 
@@ -97,15 +97,15 @@ extern void bind_global_error_variable (void);
 extern void clear_global_error_variable (void *);
 
 extern void
-bind_builtin_constant (const string&, const octave_value&,
+bind_builtin_constant (const std::string&, const octave_value&,
 		       bool protect = false, bool eternal = false,
-		       const string& help = string ());
+		       const std::string& help = std::string ());
 
 extern void
-bind_builtin_variable (const string&, const octave_value&,
+bind_builtin_variable (const std::string&, const octave_value&,
 		       bool protect = false, bool eternal = false,
 		       symbol_record::change_function f = 0,
-		       const string& help = string ());
+		       const std::string& help = std::string ());
 
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;

@@ -77,12 +77,12 @@ public:
   idx_vector index_vector (void) const;
 
   octave_value
-  do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
+  do_struct_elt_index_op (const std::string& nm, const octave_value_list& idx,
 			  bool silent);
 
-  octave_value do_struct_elt_index_op (const string& nm, bool silent);
+  octave_value do_struct_elt_index_op (const std::string& nm, bool silent);
 
-  octave_lvalue struct_elt_ref (octave_value *parent, const string& nm);
+  octave_lvalue struct_elt_ref (octave_value *parent, const std::string& nm);
 
   int rows (void) const { return -1; }
 
@@ -177,7 +177,7 @@ public:
 
   string_vector all_strings (void) const;
 
-  string string_value (void) const;
+  std::string string_value (void) const;
 
   Range range_value (void) const;
 
@@ -199,11 +199,11 @@ public:
 
   void convert_to_row_or_column_vector (void);
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (ostream& os, const string& name) const;
+  bool print_name_tag (std::ostream& os, const std::string& name) const;
 
 private:
 

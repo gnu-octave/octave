@@ -35,7 +35,7 @@ octave_base_strstream::seek (streamoff offset, ios::seek_dir origin)
 
   if (! bad ())
     {
-      streambuf *sb = rdbuf ();
+      std::streambuf *sb = rdbuf ();
 
       if (sb)
 	{
@@ -60,7 +60,7 @@ octave_base_strstream::tell (void) const
     {
       // XXX FIXME XXX -- shouldn't have to do this!
 
-      streambuf *sb = (const_cast<octave_base_strstream *>(this))->rdbuf ();
+      std::streambuf *sb = (const_cast<octave_base_strstream *>(this))->rdbuf ();
 
       if (sb)
 	{
@@ -82,7 +82,7 @@ octave_istrstream::create (const char *data, ios::openmode arg_md,
 }
 
 octave_stream
-octave_istrstream::create (const string& data, ios::openmode arg_md,
+octave_istrstream::create (const std::string& data, ios::openmode arg_md,
 			   oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));

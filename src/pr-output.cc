@@ -73,11 +73,11 @@ static bool Vprint_empty_dimensions;
 // smaller slices that fit on the screen.
 static bool Vsplit_long_rows;
 
-// Current format string for real numbers and the real part of complex
+// Current format std::string for real numbers and the real part of complex
 // numbers.
 static char *curr_real_fmt = 0;
 
-// Current format string for the imaginary part of complex numbers.
+// Current format std::string for the imaginary part of complex numbers.
 static char *curr_imag_fmt = 0;
 
 // TRUE means don't do any fancy formatting.
@@ -942,7 +942,7 @@ union equiv
   while (0)
 
 static void
-pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
+pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
 {
 #if defined (SCO)
   // Apparently on some SCO systems NaN == -0.0 is true.  Compiler bug?
@@ -1058,19 +1058,19 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 }
 
 static inline void
-pr_float (ostream& os, double d, int fw = 0)
+pr_float (std::ostream& os, double d, int fw = 0)
 {
   pr_any_float (curr_real_fmt, os, d, fw);
 }
 
 static inline void
-pr_imag_float (ostream& os, double d, int fw = 0)
+pr_imag_float (std::ostream& os, double d, int fw = 0)
 {
   pr_any_float (curr_imag_fmt, os, d, fw);
 }
 
 static void
-pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
+pr_complex (std::ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 {
   double r = c.real ();
   pr_float (os, r, r_fw);
@@ -1097,7 +1097,7 @@ pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 }
 
 static void
-print_empty_matrix (ostream& os, int nr, int nc, bool pr_as_read_syntax)
+print_empty_matrix (std::ostream& os, int nr, int nc, bool pr_as_read_syntax)
 {
   assert (nr == 0 || nc == 0);
 
@@ -1117,7 +1117,7 @@ print_empty_matrix (ostream& os, int nr, int nc, bool pr_as_read_syntax)
 }
 
 static void
-pr_scale_header (ostream& os, double scale)
+pr_scale_header (std::ostream& os, double scale)
 {
   if (Vfixed_point_format && scale != 1.0)
     {
@@ -1129,7 +1129,7 @@ pr_scale_header (ostream& os, double scale)
 }
 
 static void
-pr_col_num_header (ostream& os, int total_width, int max_width,
+pr_col_num_header (std::ostream& os, int total_width, int max_width,
 		   int lim, int col, int extra_indent)
 {
   if (total_width > max_width && Vsplit_long_rows)
@@ -1154,7 +1154,7 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
 }
 
 static inline void
-do_plus_format (ostream& os, double d)
+do_plus_format (std::ostream& os, double d)
 {
   if (d == 0.0)
     os << " ";
@@ -1165,7 +1165,7 @@ do_plus_format (ostream& os, double d)
 }
 
 void
-octave_print_internal (ostream& os, double d, bool pr_as_read_syntax)
+octave_print_internal (std::ostream& os, double d, bool pr_as_read_syntax)
 {
   if (plus_format)
     {
@@ -1182,7 +1182,7 @@ octave_print_internal (ostream& os, double d, bool pr_as_read_syntax)
 }
 
 void
-octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
+octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax,
 		       int extra_indent)
 {
   int nr = m.rows ();
@@ -1316,7 +1316,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 }
 
 static inline void
-do_plus_format (ostream& os, const Complex& c)
+do_plus_format (std::ostream& os, const Complex& c)
 {
   double rp = c.real ();
   double ip = c.imag ();
@@ -1335,7 +1335,7 @@ do_plus_format (ostream& os, const Complex& c)
 }
 
 void
-octave_print_internal (ostream& os, const Complex& c,
+octave_print_internal (std::ostream& os, const Complex& c,
 		       bool pr_as_read_syntax)
 {
   if (plus_format)
@@ -1353,7 +1353,7 @@ octave_print_internal (ostream& os, const Complex& c,
 }
 
 void
-octave_print_internal (ostream& os, const ComplexMatrix& cm,
+octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		       bool pr_as_read_syntax, int extra_indent)
 {
   int nr = cm.rows ();
@@ -1488,7 +1488,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 }
 
 void
-octave_print_internal (ostream& os, const Range& r,
+octave_print_internal (std::ostream& os, const Range& r,
 		       bool pr_as_read_syntax, int extra_indent)
 {
   double base = r.base ();
@@ -1594,7 +1594,7 @@ octave_print_internal (ostream& os, const Range& r,
 }
 
 void
-octave_print_internal (ostream& os, const boolMatrix& bm,
+octave_print_internal (std::ostream& os, const boolMatrix& bm,
 		       bool pr_as_read_syntax,
 		       int extra_indent)
 {
@@ -1603,7 +1603,7 @@ octave_print_internal (ostream& os, const boolMatrix& bm,
 }
 
 void
-octave_print_internal (ostream& os, const charMatrix& chm,
+octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax,
 		       int /* extra_indent XXX FIXME XXX */,
 		       bool pr_as_string)
@@ -1619,7 +1619,7 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 	{
 	  for (int i = 0; i < nstr; i++)
 	    {
-	      string row = chm.row_as_string (i);
+	      std::string row = chm.row_as_string (i);
 
 	      if (pr_as_read_syntax)
 		{
@@ -1701,7 +1701,7 @@ set_format_style (int argc, const string_vector& argv)
 
   if (--argc > 0)
     {
-      string arg = argv[idx++];
+      std::string arg = argv[idx++];
 
       if (arg == "short")
 	{

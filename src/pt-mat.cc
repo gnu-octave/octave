@@ -585,7 +585,7 @@ string_fill_char (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("string_fill_char");
+  std::string s = builtin_string_variable ("string_fill_char");
 
   switch (s.length ())
     {

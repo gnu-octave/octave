@@ -189,7 +189,7 @@ octave_char_matrix_str::string_value (void) const
 }
 
 void
-octave_char_matrix_str::print_raw (ostream& os, bool pr_as_read_syntax) const
+octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
 			 current_print_indent_level (), true);

@@ -101,7 +101,7 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
@@ -123,7 +123,7 @@ system-dependent error message.\n\
 
 	      if (i_old >= 0 && i_new >= 0)
 		{
-		  string msg;
+		  std::string msg;
 
 		  int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
@@ -162,14 +162,14 @@ error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
     {
-      string exec_file = args(0).string_value ();
+      std::string exec_file = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -202,7 +202,7 @@ error message.\n\
 
 	  if (! error_state)
 	    {
-	      string msg;
+	      std::string msg;
 
 	      int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
@@ -275,7 +275,7 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
@@ -293,7 +293,7 @@ system-dependent error message.\n\
 	    error ("fcntl: invalid file id");
 	  else
 	    {
-	      string msg;
+	      std::string msg;
 
 	      int status = octave_syscalls::fcntl (fid, req, arg, msg);
 
@@ -335,14 +335,14 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       pid_t pid = octave_syscalls::fork (msg);
 
@@ -363,14 +363,14 @@ Return the process group id of the current process.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = static_cast<double> (octave_syscalls::getpgrp (msg));
       retval(1) = msg;
@@ -499,7 +499,7 @@ See stat.\n\
 
   if (args.length () == 1)
     {
-      string fname = file_ops::tilde_expand (args(0).string_value ());
+      std::string fname = file_ops::tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	{
@@ -507,7 +507,7 @@ See stat.\n\
 
 	  if (fs)
 	    {
-	      retval(2) = string ();
+	      retval(2) = std::string ();
 	      retval(1) = 0.0;
 	      retval(0) = octave_value (mk_stat_map (fs));
 	    }
@@ -539,7 +539,7 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
@@ -548,13 +548,13 @@ system-dependent error message.\n\
     {
       if (args(0).is_string ())
 	{
-	  string name = args(0).string_value ();
+	  std::string name = args(0).string_value ();
 
 	  if (args(1).is_scalar_type ())
 	    {
 	      long mode = static_cast<long> (args(1).double_value ());
 
-	      string msg;
+	      std::string msg;
 
 	      int status = file_ops::mkfifo (name, mode, msg);
 
@@ -588,7 +588,7 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(2) = string ();
+  retval(2) = std::string ();
   retval(1) = -1.0;
   retval(0) = Matrix ();
 
@@ -598,7 +598,7 @@ system-dependent error message.\n\
     {
       int fid[2];
 
-      string msg;
+      std::string msg;
 
       int status = octave_syscalls::pipe (fid, msg);
 
@@ -609,8 +609,8 @@ system-dependent error message.\n\
 	  FILE *ifile = fdopen (fid[0], "r");
 	  FILE *ofile = fdopen (fid[1], "w");
 
-	  octave_stream is = octave_istdiostream::create (string (), ifile);
-	  octave_stream os = octave_ostdiostream::create (string (), ofile);
+	  octave_stream is = octave_istdiostream::create (std::string (), ifile);
+	  octave_stream os = octave_ostdiostream::create (std::string (), ofile);
 
 	  octave_value_list file_ids;
 
@@ -719,7 +719,7 @@ For example,\n\
 
   if (args.length () == 1)
     {
-      string fname = file_ops::tilde_expand (args(0).string_value ());
+      std::string fname = file_ops::tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	{
@@ -727,7 +727,7 @@ For example,\n\
 
 	  if (fs)
 	    {
-	      retval(2) = string ();
+	      retval(2) = std::string ();
 	      retval(1) = 0.0;
 	      retval(0) = octave_value (mk_stat_map (fs));
 	    }
@@ -757,7 +757,7 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
@@ -766,9 +766,9 @@ system-dependent error message.\n\
     {
       if (args(0).is_string ())
 	{
-	  string name = args(0).string_value ();
+	  std::string name = args(0).string_value ();
 
-	  string msg;
+	  std::string msg;
 
 	  int status = file_ops::unlink (name, msg);
 
@@ -827,7 +827,7 @@ message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
@@ -855,7 +855,7 @@ message.\n\
 
 	  if (! error_state)
 	    {
-	      string msg;
+	      std::string msg;
 
 	      pid_t status = octave_syscalls::waitpid (pid, options, msg);
 

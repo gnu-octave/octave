@@ -45,12 +45,12 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dld_function,
 
 octave_dld_function::octave_dld_function
   (octave_builtin::fcn ff, const octave_shlib& shl,
-   const string& nm, const string& ds)
+   const std::string& nm, const std::string& ds)
   : octave_builtin (ff, nm, ds), sh_lib (shl)
 {
   mark_fcn_file_up_to_date (time_parsed ());
 
-  string file_name = fcn_file_name ();
+  std::string file_name = fcn_file_name ();
 
   system_fcn_file
     = (! file_name.empty ()

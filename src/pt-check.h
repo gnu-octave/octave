@@ -129,7 +129,7 @@ private:
 
   bool do_lvalue_check;
 
-  void gripe (const string& msg, int line);
+  void gripe (const std::string& msg, int line);
 
   // No copying!
 

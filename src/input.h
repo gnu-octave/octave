@@ -32,11 +32,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-time.h"
 
 extern int octave_read (char *buf, unsigned max_size);
-extern FILE *get_input_from_file (const string& name, int warn = 1);
+extern FILE *get_input_from_file (const std::string& name, int warn = 1);
 extern FILE *get_input_from_stdin (void);
 
 // Global pointer for eval().
-extern string current_eval_string;
+extern std::string current_eval_string;
 
 // TRUE means get input from current_eval_string.
 extern bool get_input_from_eval_string;
@@ -45,10 +45,10 @@ extern bool get_input_from_eval_string;
 extern bool reading_fcn_file;
 
 // Simple name of function file we are reading.
-extern string curr_fcn_file_name;
+extern std::string curr_fcn_file_name;
 
 // Full name of file we are reading.
-extern string curr_fcn_file_full_name;
+extern std::string curr_fcn_file_full_name;
 
 // TRUE means we're parsing a script file.
 extern bool reading_script_file;
@@ -66,16 +66,16 @@ extern bool forced_interactive;
 extern int promptflag;
 
 // A line of input.
-extern string current_input_line;
+extern std::string current_input_line;
 
 // TRUE after a call to completion_matches().
 extern bool octave_completion_matches_called;
 
-extern string gnu_readline (const string& s, bool force_readline = false);
+extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 
 extern void initialize_command_input (void);
 
-extern string Vps4;
+extern std::string Vps4;
 
 enum echo_state
 {

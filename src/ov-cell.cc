@@ -72,7 +72,7 @@ octave_cell::do_index_op (const octave_value_list& idx)
 
     default:
       {
-	string n = type_name ();
+	std::string n = type_name ();
 
 	error ("invalid number of indices (%d) for %s value",
 	       len, n.c_str ());
@@ -109,13 +109,13 @@ octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
 }
 
 void
-octave_cell::print (ostream& os, bool) const
+octave_cell::print (std::ostream& os, bool) const
 {
   print_raw (os);
 }
 
 void
-octave_cell::print_raw (ostream& os, bool) const
+octave_cell::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_cell_print");
 
@@ -134,7 +134,7 @@ octave_cell::print_raw (ostream& os, bool) const
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
-	      ostrstream buf;
+	      std::ostrstream buf;
 	      buf << "[" << i+1 << "," << j+1 << "]" << ends;
 	      const char *nm = buf.str ();
 
@@ -161,7 +161,7 @@ octave_cell::print_raw (ostream& os, bool) const
 }
 
 bool
-octave_cell::print_name_tag (ostream& os, const string& name) const
+octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
   if (is_empty ())

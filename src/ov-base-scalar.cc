@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template <class ST>
 void
-octave_base_scalar<ST>::print (ostream& os, bool pr_as_read_syntax) const
+octave_base_scalar<ST>::print (std::ostream& os, bool pr_as_read_syntax) const
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -44,7 +44,7 @@ octave_base_scalar<ST>::print (ostream& os, bool pr_as_read_syntax) const
 
 template <class ST>
 void
-octave_base_scalar<ST>::print_raw (ostream& os, bool pr_as_read_syntax) const
+octave_base_scalar<ST>::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   indent (os);
   octave_print_internal (os, scalar, pr_as_read_syntax);
@@ -52,7 +52,7 @@ octave_base_scalar<ST>::print_raw (ostream& os, bool pr_as_read_syntax) const
 
 template <class ST>
 bool
-octave_base_scalar<ST>::print_name_tag (ostream& os, const string& name) const
+octave_base_scalar<ST>::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
   os << name << " = ";

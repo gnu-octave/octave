@@ -54,7 +54,7 @@ public:
 
   static void remove (octave_shlib& shl);
 
-  static void *search (const string& fcn_name, octave_shlib& shl,
+  static void *search (const std::string& fcn_name, octave_shlib& shl,
 		       octave_shlib::name_mangler mangler = 0);
 
 private:
@@ -67,7 +67,7 @@ private:
 
   void do_remove (octave_shlib& shl);
 
-  void *do_search (const string& fcn_name, octave_shlib& shl,
+  void *do_search (const std::string& fcn_name, octave_shlib& shl,
 		   octave_shlib::name_mangler mangler = 0);
 
   static octave_shlib_list *instance;
@@ -109,7 +109,7 @@ octave_shlib_list::do_remove (octave_shlib& shl)
 }
 
 void *
-octave_shlib_list::do_search (const string& fcn_name, octave_shlib& shl,
+octave_shlib_list::do_search (const std::string& fcn_name, octave_shlib& shl,
 			      octave_shlib::name_mangler mangler)
 {
   void *function = 0;
@@ -164,7 +164,7 @@ octave_shlib_list::remove (octave_shlib& shl)
 }
 
 void *
-octave_shlib_list::search (const string& fcn_name, octave_shlib& shl,
+octave_shlib_list::search (const std::string& fcn_name, octave_shlib& shl,
 			   octave_shlib::name_mangler mangler)
 {
   return (instance_ok ()) ? instance->do_search (fcn_name, shl, mangler) : 0;
@@ -193,7 +193,7 @@ octave_dynamic_loader::instance_ok (void)
 }
 
 static
-void clear_function (const string& fcn_name)
+void clear_function (const std::string& fcn_name)
 {
   if (Vwarn_reload_forces_clear)
     warning ("  %s", fcn_name.c_str ());
@@ -207,7 +207,7 @@ void clear_function (const string& fcn_name)
 }
 
 bool
-octave_dynamic_loader::do_load (const string& fcn_name)
+octave_dynamic_loader::do_load (const std::string& fcn_name)
 {
   bool retval = false;
 
@@ -239,7 +239,7 @@ octave_dynamic_loader::do_load (const string& fcn_name)
 
       if (! function)
 	{
-	  string oct_file_name = oct_file_in_path (fcn_name);
+	  std::string oct_file_name = oct_file_in_path (fcn_name);
 
 	  if (! oct_file_name.empty ())
 	    {
@@ -278,7 +278,7 @@ octave_dynamic_loader::do_load (const string& fcn_name)
 }
 
 bool
-octave_dynamic_loader::do_remove (const string& fcn_name, octave_shlib& shl)
+octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl)
 {
   bool retval = false;
 
@@ -297,24 +297,24 @@ octave_dynamic_loader::do_remove (const string& fcn_name, octave_shlib& shl)
 }
 
 bool
-octave_dynamic_loader::load (const string& fcn_name)
+octave_dynamic_loader::load (const std::string& fcn_name)
 {
   return (instance_ok ()) ? instance->do_load (fcn_name) : false;
 }
 
 bool
-octave_dynamic_loader::remove (const string& fcn_name, octave_shlib& shl)
+octave_dynamic_loader::remove (const std::string& fcn_name, octave_shlib& shl)
 {
   return (instance_ok ()) ? instance->do_remove (fcn_name, shl) : false;
 }
 
 string
-octave_dynamic_loader::mangle_name (const string& name)
+octave_dynamic_loader::mangle_name (const std::string& name)
 {
 #if defined (CXX_PREPENDS_UNDERSCORE)
-  string retval ("_FS");
+  std::string retval ("_FS");
 #else
-  string retval ("FS");
+  std::string retval ("FS");
 #endif
   retval.append (name);
   retval.append ("__FRC12octave_shlib");

@@ -48,7 +48,7 @@ extern int warning_state;
 extern bool buffer_error_messages;
 
 // The message buffer
-extern ostrstream *error_message_buffer;
+extern std::ostrstream *error_message_buffer;
 
 #endif
 

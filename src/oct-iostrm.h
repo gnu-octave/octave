@@ -32,7 +32,7 @@ octave_base_iostream : public octave_base_stream
 {
 public:
 
-  octave_base_iostream (const string& n = string (),
+  octave_base_iostream (const std::string& n = std::string (),
 			ios::openmode md = ios::in|ios::out,
 			oct_mach_info::float_format flt_fmt =
 			oct_mach_info::native)
@@ -52,7 +52,7 @@ public:
 
   // The name of the file.
 
-  string name (void) const { return nm; }
+  std::string name (void) const { return nm; }
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
 
 private:
 
-  string nm;
+  std::string nm;
 
   virtual const char *stream_type (void) const = 0;
 
@@ -78,20 +78,20 @@ octave_istream : public octave_base_iostream
 {
 public:
 
-  octave_istream (istream *arg = 0, const string& nm = string ())
+  octave_istream (std::istream *arg = 0, const std::string& nm = std::string ())
     : octave_base_iostream (nm, ios::in, oct_mach_info::native),
       is (arg) { }
 
   static octave_stream
-  create (istream *arg = 0, const string& nm = string ());
+  create (std::istream *arg = 0, const std::string& nm = std::string ());
 
   // Return non-zero if EOF has been reached on this stream.
 
   bool eof (void) const;
 
-  istream *input_stream (void) { return is; }
+  std::istream *input_stream (void) { return is; }
 
-  ostream *output_stream (void) { return 0; }
+  std::ostream *output_stream (void) { return 0; }
 
 protected:
 
@@ -99,7 +99,7 @@ protected:
 
 private:
 
-  istream *is;
+  std::istream *is;
 
   const char *stream_type (void) const { return "octave_istream"; }
 
@@ -115,20 +115,20 @@ octave_ostream : public octave_base_iostream
 {
 public:
 
-  octave_ostream (ostream *arg, const string& nm = string ())
+  octave_ostream (std::ostream *arg, const std::string& nm = std::string ())
     : octave_base_iostream (nm, ios::out, oct_mach_info::native),
       os (arg) { }
 
   static octave_stream
-  create (ostream *arg, const string& nm = string ());
+  create (std::ostream *arg, const std::string& nm = std::string ());
 
   // Return non-zero if EOF has been reached on this stream.
 
   bool eof (void) const;
 
-  istream *input_stream (void) { return 0; }
+  std::istream *input_stream (void) { return 0; }
 
-  ostream *output_stream (void) { return os; }
+  std::ostream *output_stream (void) { return os; }
 
 protected:
 
@@ -136,7 +136,7 @@ protected:
 
 private:
 
-  ostream *os;
+  std::ostream *os;
 
   const char *stream_type (void) const { return "octave_ostream"; }
 

@@ -199,7 +199,7 @@ tree_boolean_expression::rvalue (void)
 string
 tree_boolean_expression::oper (void) const
 {
-  string retval = "<unknown>";
+  std::string retval = "<unknown>";
 
   switch (etype)
     {

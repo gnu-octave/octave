@@ -38,9 +38,9 @@ public:
 
   virtual ~octave_dynamic_loader (void) { }
 
-  static bool load (const string& fcn_name);
+  static bool load (const std::string& fcn_name);
 
-  static bool remove (const string& fcn_name, octave_shlib& shl);
+  static bool remove (const std::string& fcn_name, octave_shlib& shl);
 
 private:
 
@@ -54,15 +54,15 @@ private:
 
   static bool instance_ok (void);
 
-  bool do_load (const string& fcn_name);
+  bool do_load (const std::string& fcn_name);
 
-  bool do_remove (const string& fcn_name, octave_shlib& shl);
+  bool do_remove (const std::string& fcn_name, octave_shlib& shl);
 
   static bool doing_load;
 
 protected:
 
-  static string mangle_name (const string& name);
+  static std::string mangle_name (const std::string& name);
 };
 
 #endif

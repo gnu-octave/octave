@@ -51,44 +51,44 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include <version.h>
 
-string Voctave_home;
+std::string Voctave_home;
 
-string Vbin_dir;
-string Vinfo_dir;
-string Vdata_dir;
-string Vlibexec_dir;
-string Varch_lib_dir;
-string Vlocal_arch_lib_dir;
-string Vfcn_file_dir;
+std::string Vbin_dir;
+std::string Vinfo_dir;
+std::string Vdata_dir;
+std::string Vlibexec_dir;
+std::string Varch_lib_dir;
+std::string Vlocal_arch_lib_dir;
+std::string Vfcn_file_dir;
 
 // The path that will be searched for programs that we execute.
 // (--exec-path path)
-string Vexec_path;
+std::string Vexec_path;
 
 // Load path specified on command line.
 // (--path path; -p path)
-static string Vload_path;
+static std::string Vload_path;
 
 // The default load path with OCTAVE_HOME appropriately substituted.
-static string Vdefault_load_path;
+static std::string Vdefault_load_path;
 
 // And the cached directory path corresponding to Vload_path.
 dir_path Vload_path_dir_path;
 
 // Name of the editor to be invoked by the edit_history command.
-string Veditor;
+std::string Veditor;
 
-string Vimagepath;
+std::string Vimagepath;
 
-string Vlocal_site_defaults_file;
-string Vsite_defaults_file;
+std::string Vlocal_site_defaults_file;
+std::string Vsite_defaults_file;
 
 static string
-subst_octave_home (const string& s)
+subst_octave_home (const std::string& s)
 {
-  string retval;
+  std::string retval;
 
-  string prefix = OCTAVE_PREFIX;
+  std::string prefix = OCTAVE_PREFIX;
 
   retval = s;
 
@@ -109,9 +109,9 @@ subst_octave_home (const string& s)
 static void
 set_octave_home (void)
 {
-  string oh = octave_env::getenv ("OCTAVE_HOME");
+  std::string oh = octave_env::getenv ("OCTAVE_HOME");
 
-  Voctave_home = oh.empty () ? string (OCTAVE_PREFIX) : oh;
+  Voctave_home = oh.empty () ? std::string (OCTAVE_PREFIX) : oh;
 }
 
 static void
@@ -159,20 +159,20 @@ set_default_bin_dir (void)
 static void
 set_default_exec_path (void)
 {
-  string octave_exec_path = octave_env::getenv ("OCTAVE_EXEC_PATH");
+  std::string octave_exec_path = octave_env::getenv ("OCTAVE_EXEC_PATH");
 
   if (octave_exec_path.empty ())
     {
-      string shell_path = octave_env::getenv ("PATH");
+      std::string shell_path = octave_env::getenv ("PATH");
 
       if (! shell_path.empty ())
 	{
-	  Vexec_path = string (":");
+	  Vexec_path = std::string (":");
 	  Vexec_path.append (shell_path);
 	}
     }
   else
-    Vexec_path = string (octave_exec_path);
+    Vexec_path = std::string (octave_exec_path);
 }
 
 static void
@@ -180,9 +180,9 @@ set_default_path (void)
 {
   Vdefault_load_path = subst_octave_home (OCTAVE_FCNFILEPATH);
 
-  string oct_path = octave_env::getenv ("OCTAVE_PATH");
+  std::string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path.empty () ? string (":") : oct_path;
+  Vload_path = oct_path.empty () ? std::string (":") : oct_path;
 
   Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
 }
@@ -190,9 +190,9 @@ set_default_path (void)
 static void
 set_default_info_file (void)
 {
-  string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
+  std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
 
-  string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
+  std::string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
 
   Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
 }
@@ -200,12 +200,12 @@ set_default_info_file (void)
 static void
 set_default_info_prog (void)
 {
-  string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
+  std::string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
 
   if (oct_info_prog.empty ())
     Vinfo_prog = "info";
   else
-    Vinfo_prog = string (oct_info_prog);
+    Vinfo_prog = std::string (oct_info_prog);
 }
 
 static void
@@ -213,7 +213,7 @@ set_default_editor (void)
 {
   Veditor = "emacs";
 
-  string env_editor = octave_env::getenv ("EDITOR");
+  std::string env_editor = octave_env::getenv ("EDITOR");
 
   if (! env_editor.empty ())
     Veditor = env_editor;
@@ -234,9 +234,9 @@ set_site_defaults_file (void)
 }
 
 string
-maybe_add_default_load_path (const string& pathstring)
+maybe_add_default_load_path (const std::string& pathstring)
 {
-  string retval;
+  std::string retval;
 
   if (! pathstring.empty ())
     {
@@ -306,7 +306,7 @@ editor (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("EDITOR");
+  std::string s = builtin_string_variable ("EDITOR");
 
   if (s.empty ())
     {
@@ -324,7 +324,7 @@ exec_path (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("EXEC_PATH");
+  std::string s = builtin_string_variable ("EXEC_PATH");
 
   if (s.empty ())
     {
@@ -335,10 +335,10 @@ exec_path (void)
     {
       Vexec_path = s;
 
-      string std_path = Vlocal_arch_lib_dir + string (SEPCHAR_STR)
-	+ Varch_lib_dir + string (SEPCHAR_STR) + Vbin_dir;
+      std::string std_path = Vlocal_arch_lib_dir + std::string (SEPCHAR_STR)
+	+ Varch_lib_dir + std::string (SEPCHAR_STR) + Vbin_dir;
 
-      string path;
+      std::string path;
 
       int eplen = Vexec_path.length ();
 
@@ -376,7 +376,7 @@ imagepath (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("IMAGEPATH");
+  std::string s = builtin_string_variable ("IMAGEPATH");
 
   if (s.empty ())
     {
@@ -394,7 +394,7 @@ loadpath (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("LOADPATH");
+  std::string s = builtin_string_variable ("LOADPATH");
 
   if (s.empty ())
     {

@@ -46,7 +46,7 @@ License as published by the Free Software Foundation.
 #include "Map.h"
 
 static unsigned int
-hash (const string& str)
+hash (const std::string& str)
 {
   unsigned h = 0;
   for (unsigned i = 0; i < str.length (); i++)
@@ -56,7 +56,7 @@ hash (const string& str)
 
 template <class C>
 Pix
-Map<C>::seek (const string& item) const
+Map<C>::seek (const std::string& item) const
 {
   Pix i = 0;
 
@@ -94,14 +94,14 @@ Map<C>::clear (void)
 
 template <class C>
 int
-Map<C>::contains (const string& item) const
+Map<C>::contains (const std::string& item) const
 {
   return seek (item) != 0;
 }
 
 template <class C>
 void
-Map<C>::error (const string& msg) const
+Map<C>::error (const std::string& msg) const
 {
   cerr << "Map: " << msg << "\n";
 }
@@ -154,7 +154,7 @@ CHMap<C>::CHMap (const CHMap& a) : Map<C> (a.def)
 
 template <class C>
 Pix
-CHMap<C>::seek (const string& key) const
+CHMap<C>::seek (const std::string& key) const
 {
   unsigned int h = hash (key) % size;
 
@@ -167,7 +167,7 @@ CHMap<C>::seek (const string& key) const
 
 template <class C>
 C&
-CHMap<C>::operator [] (const string& item)
+CHMap<C>::operator [] (const std::string& item)
 {
   unsigned int h = hash (item) % size;
 
@@ -184,7 +184,7 @@ CHMap<C>::operator [] (const string& item)
 
 template <class C>
 void
-CHMap<C>::del (const string& key)
+CHMap<C>::del (const std::string& key)
 {
   unsigned int h = hash (key) % size;
 

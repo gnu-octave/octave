@@ -39,7 +39,7 @@ public:
   octave_lvalue (octave_value *v = 0, symbol_record::change_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name (), index_set (false) { }
 
-  octave_lvalue (octave_value *v, const string& nm,
+  octave_lvalue (octave_value *v, const std::string& nm,
 		 symbol_record::change_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name (nm), index_set (false) { }
 
@@ -73,7 +73,7 @@ public:
 
   void assign (octave_value::assign_op, const octave_value&);
 
-  octave_lvalue struct_elt_ref (const string& nm)
+  octave_lvalue struct_elt_ref (const std::string& nm)
     {
       val->make_unique ();
       return val->struct_elt_ref (nm);
@@ -104,7 +104,7 @@ private:
 
   symbol_record::change_function chg_fcn;
 
-  string struct_elt_name;
+  std::string struct_elt_name;
 
   bool index_set;
 };

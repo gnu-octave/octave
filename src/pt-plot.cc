@@ -68,7 +68,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static bool Vautomatic_replot;
 
 // The name of the shell command to execute to start gnuplot.
-static string Vgnuplot_binary;
+static std::string Vgnuplot_binary;
 
 // TRUE if gnuplot appears to support multiple plot windows with X11.
 static bool Vgnuplot_has_frames;
@@ -92,7 +92,7 @@ static bool clear_before_plotting = true;
 //
 // XXX FIXME XXX -- this should really be static, but that causes
 // problems on some systems.
-SLStack <string> tmp_files;
+SLStack <std::string> tmp_files;
 
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
@@ -101,14 +101,14 @@ static oprocstream *plot_stream = 0;
 static pid_t plot_stream_pid = 0;
 
 // Gnuplot command strings that we use.
-static string Vgnuplot_command_plot;
-static string Vgnuplot_command_replot;
-static string Vgnuplot_command_splot;
-static string Vgnuplot_command_using;
-static string Vgnuplot_command_with;
-static string Vgnuplot_command_axes;
-static string Vgnuplot_command_title;
-static string Vgnuplot_command_end;
+static std::string Vgnuplot_command_plot;
+static std::string Vgnuplot_command_replot;
+static std::string Vgnuplot_command_splot;
+static std::string Vgnuplot_command_using;
+static std::string Vgnuplot_command_with;
+static std::string Vgnuplot_command_axes;
+static std::string Vgnuplot_command_title;
+static std::string Vgnuplot_command_end;
 
 static void
 plot_stream_death_handler (pid_t pid, int)
@@ -136,7 +136,7 @@ open_plot_stream (void)
 
       plot_line_count = 0;
 
-      string plot_prog = Vgnuplot_binary;
+      std::string plot_prog = Vgnuplot_binary;
 
       if (plot_prog.empty ())
 	plot_prog = "gnuplot";
@@ -245,7 +245,7 @@ tree_plot_command::eval (void)
 
   open_plot_stream ();
 
-  ostrstream plot_buf;
+  std::ostrstream plot_buf;
 
   switch (ndim)
     {
@@ -346,7 +346,7 @@ plot_limits::~plot_limits (void)
 }
 
 void
-plot_limits::print (int ndim, ostrstream& plot_buf)
+plot_limits::print (int ndim, std::ostrstream& plot_buf)
 {
   if (ndim  == 2 || ndim == 3)
     {
@@ -378,7 +378,7 @@ plot_range::~plot_range (void)
 }
 
 void
-plot_range::print (ostrstream& plot_buf)
+plot_range::print (std::ostrstream& plot_buf)
 {
   plot_buf << " [";
 
@@ -501,7 +501,7 @@ subplot_using::values (int ndim, int n_max)
 }
 
 int
-subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
+subplot_using::print (int ndim, int n_max, std::ostrstream& plot_buf)
 {
   int status = eval (ndim, n_max);
 
@@ -534,7 +534,7 @@ subplot_style::~subplot_style (void)
 }
 
 int
-subplot_style::print (ostrstream& plot_buf)
+subplot_style::print (std::ostrstream& plot_buf)
 {
   if (! sp_style.empty ())
     {
@@ -626,7 +626,7 @@ subplot_style::accept (tree_walker& tw)
 }
 
 int
-subplot_axes::print (ostrstream& plot_buf)
+subplot_axes::print (std::ostrstream& plot_buf)
 {
   if (! sp_axes.empty ())
     plot_buf << " " << Vgnuplot_command_axes << " " << sp_axes;
@@ -682,7 +682,7 @@ subplot::extract_plot_data (int ndim, octave_value& data)
 }
 
 int
-subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
+subplot::handle_plot_data (int ndim, std::ostrstream& plot_buf)
 {
   if (sp_plot_data)
     {
@@ -690,7 +690,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 
       if (! error_state && data.is_defined ())
 	{
-	  string file;
+	  std::string file;
 
 	  if (data.is_string ())
 	    {
@@ -702,7 +702,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 
 	      file = file_ops::tilde_expand (data.string_value ());
 
-	      ifstream ftmp (file.c_str ());
+	      std::ifstream ftmp (file.c_str ());
 
 	      if (ftmp)
 		{
@@ -769,7 +769,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 }
 
 int
-subplot::print (int ndim, ostrstream& plot_buf)
+subplot::print (int ndim, std::ostrstream& plot_buf)
 {
   int status = handle_plot_data (ndim, plot_buf);
 
@@ -827,7 +827,7 @@ subplot_list::~subplot_list (void)
 }
 
 int
-subplot_list::print (int ndim, ostrstream& plot_buf)
+subplot_list::print (int ndim, std::ostrstream& plot_buf)
 {
   int status = 0;
 
@@ -858,11 +858,11 @@ subplot_list::accept (tree_walker& tw)
 string
 save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 {
-  string name = file_ops::tempnam ("", "oct-");
+  std::string name = file_ops::tempnam ("", "oct-");
 
   if (! name.empty ())
     {
-      ofstream file (name.c_str ());
+      std::ofstream file (name.c_str ());
 
       if (file)
 	{
@@ -892,7 +892,7 @@ save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 }
 
 void
-mark_for_deletion (const string& file)
+mark_for_deletion (const std::string& file)
 {
   tmp_files.push (file);
 }
@@ -902,7 +902,7 @@ cleanup_tmp_files (void)
 {
   while (! tmp_files.empty ())
     {
-      string filename = tmp_files.pop ();
+      std::string filename = tmp_files.pop ();
       unlink (filename.c_str ());
     }
 }
@@ -923,11 +923,11 @@ close_plot_stream (void)
 }
 
 void
-do_external_plotter_cd (const string& newdir)
+do_external_plotter_cd (const std::string& newdir)
 {
   if (plot_stream && *plot_stream)
     {
-      ostrstream plot_buf;
+      std::ostrstream plot_buf;
       plot_buf << "cd \"" << newdir << "\"" << Vgnuplot_command_end << ends;
       char *message = plot_buf.str ();
       send_to_plot_stream (message);
@@ -1074,7 +1074,7 @@ Send @var{string} directly to gnuplot subprocess.\n\
 
   if (args.length () == 1 && args(0).is_string ())
     {
-      string cmd = args(0).string_value ();
+      std::string cmd = args(0).string_value ();
 
       if (! (plot_stream && *plot_stream))
 	open_plot_stream ();
@@ -1107,7 +1107,7 @@ Set plotting options for gnuplot\n\
   if (error_state)
     return retval;
 
-  ostrstream plot_buf;
+  std::ostrstream plot_buf;
 
   if (argc > 1)
     {
@@ -1118,7 +1118,7 @@ Set plotting options for gnuplot\n\
       else if (almost_match ("term", argv[1], 1))
 	{
 	  delete [] gnuplot_terminal_type;
-	  ostrstream buf;
+	  std::ostrstream buf;
 	  int i;
 	  for (i = 2; i < argc-1; i++)
 	    buf << argv[i] << " ";
@@ -1169,7 +1169,7 @@ Show plotting options.\n\
   if (error_state)
     return retval;
 
-  ostrstream plot_buf;
+  std::ostrstream plot_buf;
 
   int i;
   for (i = 0; i < argc-1; i++)
@@ -1204,11 +1204,11 @@ automatic_replot (void)
 }
 
 static int
-set_string_var (string& var, const char *nm)
+set_string_var (std::string& var, const char *nm)
 {
   int retval = 0;
 
-  string s = builtin_string_variable (nm);
+  std::string s = builtin_string_variable (nm);
 
   if (s.empty ())
     {

@@ -65,7 +65,7 @@ public:
   octave_char_matrix (const char *s)
     : octave_base_matrix<charMatrix> (s) { }
 
-  octave_char_matrix (const string& s)
+  octave_char_matrix (const std::string& s)
     : octave_base_matrix<charMatrix> (s) { }
 
   octave_char_matrix (const string_vector& s)

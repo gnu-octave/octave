@@ -116,7 +116,7 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
   // determine if it's AEP or GEP
   int AEPcase = nargin == 1 ? 1 : args(1).is_string ();
-  string bal_job;
+  std::string bal_job;
 
   // problem dimension
   int nn = args(0).rows ();

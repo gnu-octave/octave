@@ -54,7 +54,7 @@ int warning_state = 0;
 bool buffer_error_messages = false;
 
 // The message buffer
-ostrstream *error_message_buffer = 0;
+std::ostrstream *error_message_buffer = 0;
 
 // Warning messages are never buffered.
 // XXX FIXME XXX -- we should provide another way to turn them off...
@@ -64,7 +64,7 @@ vwarning (const char *name, const char *fmt, va_list args)
 {
   flush_octave_stdout ();
 
-  ostrstream output_buf;
+  std::ostrstream output_buf;
 
   if (name)
     {
@@ -86,7 +86,7 @@ verror (const char *name, const char *fmt, va_list args)
 
   bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
 
-  ostrstream output_buf;
+  std::ostrstream output_buf;
 
   if (to_beep_or_not_to_beep_p)
     output_buf << "\a";
@@ -240,7 +240,7 @@ handle_message (error_fun f, const char *msg, const octave_value_list& args)
 {
   octave_value_list retval;
 
-  string tstr;
+  std::string tstr;
 
   int nargin = args.length ();
 

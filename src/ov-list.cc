@@ -83,13 +83,13 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
 }
 
 void
-octave_list::print (ostream& os, bool) const
+octave_list::print (std::ostream& os, bool) const
 {
   print_raw (os);
 }
 
 void
-octave_list::print_raw (ostream& os, bool) const
+octave_list::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_list_print");
 
@@ -105,7 +105,7 @@ octave_list::print_raw (ostream& os, bool) const
 
       for (int i = 0; i < n; i++)
 	{
-	  ostrstream buf;
+	  std::ostrstream buf;
 	  buf << "[" << i+1 << "]" << ends;
 	  const char *nm = buf.str ();
 
@@ -130,7 +130,7 @@ octave_list::print_raw (ostream& os, bool) const
 }
 
 bool
-octave_list::print_name_tag (ostream& os, const string& name) const
+octave_list::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
   if (lst.length () == 0)

@@ -60,7 +60,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
-// quoted string, and the name of the structure has to be passed too.
+// quoted std::string, and the name of the structure has to be passed too.
 
 #define DEFCONSTX(name, sname, defn, doc) \
   DEFCONSTX_INTERNAL (name, sname, defn, doc)

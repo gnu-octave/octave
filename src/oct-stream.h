@@ -47,7 +47,7 @@ scanf_format_elt
 
   scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
 		    char typ = '\0', char mod = '\0',
-		    const string& ch_class = string ())
+		    const std::string& ch_class = std::string ())
     : text (txt), width (w), discard (d), type (typ), modifier (mod),
       char_class (ch_class) { }
 
@@ -58,7 +58,7 @@ scanf_format_elt
   bool discard;
   char type;
   char modifier;
-  string char_class;
+  std::string char_class;
 };
 
 class
@@ -66,7 +66,7 @@ scanf_format_list
 {
 public:
 
-  scanf_format_list (const string& fmt = string ());
+  scanf_format_list (const std::string& fmt = std::string ());
 
   ~scanf_format_list (void);
 
@@ -108,7 +108,7 @@ public:
 
 private:
 
-  // Number of conversions specified by this format string, or -1 if
+  // Number of conversions specified by this format std::string, or -1 if
   // invalid conversions have been found.
   int nconv;
 
@@ -119,16 +119,16 @@ private:
   Array<scanf_format_elt*> list;
 
   // Temporary buffer.
-  ostrstream *buf;
+  std::ostrstream *buf;
 
   void add_elt_to_list (int width, bool discard, char type, char modifier,
-			int& num_elts, const string& char_class = string ());
+			int& num_elts, const std::string& char_class = std::string ());
 
-  void process_conversion (const string& s, int& i, int n, int& width,
+  void process_conversion (const std::string& s, int& i, int n, int& width,
 			   bool& discard, char& type, char& modifier,
 			   int& num_elts);
 
-  int finish_conversion (const string& s, int& i, int n, int& width,
+  int finish_conversion (const std::string& s, int& i, int n, int& width,
 			 bool discard, char& type, char modifier,
 			 int& num_elts);
   // No copying!
@@ -158,7 +158,7 @@ printf_format_list
 {
 public:
 
-  printf_format_list (const string& fmt = string ());
+  printf_format_list (const std::string& fmt = std::string ());
 
   ~printf_format_list (void);
 
@@ -189,7 +189,7 @@ public:
 
 private:
 
-  // Number of conversions specified by this format string, or -1 if
+  // Number of conversions specified by this format std::string, or -1 if
   // invalid conversions have been found.
   int nconv;
 
@@ -200,15 +200,15 @@ private:
   Array<printf_format_elt*> list;
 
   // Temporary buffer.
-  ostrstream *buf;
+  std::ostrstream *buf;
 
   void add_elt_to_list (int args, char type, char modifier,
 			int& num_elts);
 
-  void process_conversion (const string& s, int& i, int n, int& args,
+  void process_conversion (const std::string& s, int& i, int n, int& args,
 			   char& modifier, char& type, int& num_elts);
 
-  void finish_conversion (const string& s, int& i, int args,
+  void finish_conversion (const std::string& s, int& i, int args,
 			  char modifier, char& type, int& num_elts);
 
   // No copying!
@@ -251,19 +251,19 @@ public:
 
   // The name of the file.
 
-  virtual string name (void) const = 0;
+  virtual std::string name (void) const = 0;
 
   // If the derived class provides this function and it returns a
   // pointer to a valid istream, scanf(), read(), getl(), and gets()
   // will automatically work for this stream.
 
-  virtual istream *input_stream (void) { return 0; }
+  virtual std::istream *input_stream (void) { return 0; }
 
   // If the derived class provides this function and it returns a
   // pointer to a valid ostream, flush(), write(), and printf() will
   // automatically work for this stream.
 
-  virtual ostream *output_stream (void) { return 0; }
+  virtual std::ostream *output_stream (void) { return 0; }
 
   // Return TRUE if this stream is open.
 
@@ -277,7 +277,7 @@ public:
 
   // Return current error message for this stream.
 
-  string error (bool clear, int& err_num);
+  std::string error (bool clear, int& err_num);
 
 protected:
 
@@ -287,7 +287,7 @@ protected:
 
   // Set current error state and set fail to TRUE.
 
-  void error (const string& msg);
+  void error (const std::string& msg);
 
   // Clear any error message and set fail to FALSE.
 
@@ -312,16 +312,16 @@ private:
   bool open_state;
 
   // Should contain error message if fail is TRUE.
-  string errmsg;
+  std::string errmsg;
 
   // Functions that are defined for all input streams (input streams
   // are those that define is).
 
-  string do_gets (int max_len, bool& err, bool strip_newline,
+  std::string do_gets (int max_len, bool& err, bool strip_newline,
 		  const char *fcn);
 
-  string getl (int max_len, bool& err);
-  string gets (int max_len, bool& err);
+  std::string getl (int max_len, bool& err);
+  std::string gets (int max_len, bool& err);
 
   octave_value do_read (int nr, int nc, oct_data_conv::data_type dt,
 			int skip, oct_mach_info::float_format flt_fmt,
@@ -340,11 +340,11 @@ private:
   octave_value do_scanf (scanf_format_list& fmt_list, int nr, int nc,
 			 bool one_elt_size_spec, int& count);
 
-  octave_value scanf (const string& fmt, const Matrix& size, int& count);
+  octave_value scanf (const std::string& fmt, const Matrix& size, int& count);
 
   bool do_oscanf (const scanf_format_elt *elt, octave_value&);
 
-  octave_value_list oscanf (const string& fmt);
+  octave_value_list oscanf (const std::string& fmt);
 
   // Functions that are defined for all output streams (output streams
   // are those that define os).
@@ -359,9 +359,9 @@ private:
 
   int do_printf (printf_format_list& fmt_list, const octave_value_list& args);
 
-  int printf (const string& fmt, const octave_value_list& args);
+  int printf (const std::string& fmt, const octave_value_list& args);
 
-  int puts (const string& s);
+  int puts (const std::string& s);
 
   // We can always do this in terms of seek(), so the derived class
   // only has to provide that.
@@ -392,11 +392,11 @@ public:
 
   int flush (void);
 
-  string getl (int max_len, bool& err);
-  string getl (const octave_value& max_len, bool& err);
+  std::string getl (int max_len, bool& err);
+  std::string getl (const octave_value& max_len, bool& err);
 
-  string gets (int max_len, bool& err);
-  string gets (const octave_value& max_len, bool& err);
+  std::string gets (int max_len, bool& err);
+  std::string gets (const octave_value& max_len, bool& err);
 
   int seek (streamoff offset, ios::seek_dir origin);
   int seek (const octave_value& offset, const octave_value& origin);
@@ -416,20 +416,20 @@ public:
   int write (const octave_value& data, oct_data_conv::data_type dt,
 	     int skip, oct_mach_info::float_format flt_fmt);
 
-  octave_value scanf (const string& fmt, const Matrix& size, int& count);
+  octave_value scanf (const std::string& fmt, const Matrix& size, int& count);
 
-  octave_value_list oscanf (const string& fmt);
+  octave_value_list oscanf (const std::string& fmt);
 
-  int printf (const string& fmt, const octave_value_list& args);
+  int printf (const std::string& fmt, const octave_value_list& args);
 
-  int puts (const string& s);
+  int puts (const std::string& s);
   int puts (const octave_value& s);
 
   bool eof (void) const;
 
-  string error (bool clear, int& err_num);
+  std::string error (bool clear, int& err_num);
 
-  string error (bool clear = false)
+  std::string error (bool clear = false)
     {
       int err_num;
       return error (clear, err_num);
@@ -443,17 +443,17 @@ public:
 
   operator bool () const { return ok (); }
 
-  string name (void) const;
+  std::string name (void) const;
 
   int mode (void) const;
 
   oct_mach_info::float_format float_format (void) const;
 
-  static string mode_as_string (int mode);
+  static std::string mode_as_string (int mode);
 
-  istream *input_stream (void) { return rep ? rep->input_stream () : 0; }
+  std::istream *input_stream (void) { return rep ? rep->input_stream () : 0; }
 
-  ostream *output_stream (void) { return rep ? rep->output_stream () : 0; }
+  std::ostream *output_stream (void) { return rep ? rep->output_stream () : 0; }
 
 private:
 
@@ -480,7 +480,7 @@ private:
       return retval;
     }
 
-  void error (const string& msg)
+  void error (const std::string& msg)
     {
       if (rep)
 	rep->error (msg);
@@ -502,20 +502,20 @@ public:
 
   static octave_value insert (const octave_stream& os);
 
-  static octave_stream lookup (int fid, const string& who = string ());
+  static octave_stream lookup (int fid, const std::string& who = std::string ());
   static octave_stream lookup (const octave_value& fid,
-			       const string& who = string ());
+			       const std::string& who = std::string ());
 
-  static int remove (int fid, const string& who = string ());
+  static int remove (int fid, const std::string& who = std::string ());
   static int remove (const octave_value& fid,
-		     const string& who = string ());
+		     const std::string& who = std::string ());
 
   static void clear (void);
 
   static string_vector get_info (int fid);
   static string_vector get_info (const octave_value& fid);
 
-  static string list_open_files (void);
+  static std::string list_open_files (void);
 
   static octave_value open_file_numbers (void);
 
@@ -531,19 +531,19 @@ private:
 
   octave_value do_insert (const octave_stream& os);
 
-  octave_stream do_lookup (int fid, const string& who = string ()) const;
+  octave_stream do_lookup (int fid, const std::string& who = std::string ()) const;
   octave_stream do_lookup (const octave_value& fid,
-			   const string& who = string ()) const;
+			   const std::string& who = std::string ()) const;
 
-  int do_remove (int fid, const string& who = string ());
-  int do_remove (const octave_value& fid, const string& who = string ());
+  int do_remove (int fid, const std::string& who = std::string ());
+  int do_remove (const octave_value& fid, const std::string& who = std::string ());
 
   void do_clear (void);
 
   string_vector do_get_info (int fid) const;
   string_vector do_get_info (const octave_value& fid) const;
 
-  string do_list_open_files (void) const;
+  std::string do_list_open_files (void) const;
 
   octave_value do_open_file_numbers (void) const;
 

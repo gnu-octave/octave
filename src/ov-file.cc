@@ -55,14 +55,14 @@ octave_file::numeric_conversion_function (void) const
 }
 
 void
-octave_file::print (ostream& os, bool) const
+octave_file::print (std::ostream& os, bool) const
 {
   print_raw (os);
   newline (os);
 }
 
 void
-octave_file::print_raw (ostream& os, bool) const
+octave_file::print_raw (std::ostream& os, bool) const
 {
   indent (os); os << "{"; newline (os);
 
@@ -70,11 +70,11 @@ octave_file::print_raw (ostream& os, bool) const
     {
       increment_indent_level ();
 
-      string name = stream.name ();
-      string mode = octave_stream::mode_as_string (stream.mode ());
-      string arch
+      std::string name = stream.name ();
+      std::string mode = octave_stream::mode_as_string (stream.mode ());
+      std::string arch
 	= oct_mach_info::float_format_as_string (stream.float_format ());
-      string status = stream.is_open () ? "open" : "closed";
+      std::string status = stream.is_open () ? "open" : "closed";
 
       indent (os); os << "id = " << number; newline (os);
       indent (os); os << "name = " << name; newline (os);
@@ -89,7 +89,7 @@ octave_file::print_raw (ostream& os, bool) const
 }
 
 bool
-octave_file::print_name_tag (ostream& os, const string& name) const
+octave_file::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
   os << name << " =";

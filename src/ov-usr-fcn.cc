@@ -74,7 +74,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 octave_user_function::octave_user_function
   (tree_parameter_list *pl, tree_parameter_list *rl,
    tree_statement_list *cl, symbol_table *st)
-  : octave_function (string (), string ()),
+  : octave_function (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
     sym_tab (st), file_name (), fcn_name (),
     t_parsed (static_cast<time_t> (0)),
@@ -136,7 +136,7 @@ octave_user_function::mark_as_system_fcn_file (void)
       // function file is parsed, it probably doesn't matter that
       // much.
 
-      string ff_name = fcn_file_in_path (file_name);
+      std::string ff_name = fcn_file_in_path (file_name);
 
       if (Vfcn_file_dir.compare (ff_name, 0, Vfcn_file_dir.length ()) == 0)
 	system_fcn_file = 1;
@@ -199,7 +199,7 @@ octave_user_function::octave_vr_val (const octave_value& val)
 }
 
 void
-octave_user_function::stash_function_name (const string& s)
+octave_user_function::stash_function_name (const std::string& s)
 {
   fcn_name = s;
 }

@@ -176,7 +176,7 @@ initialize_pathsearch (void)
   // This may seem odd, but doing it this way means that we don't have
   // to modify the kpathsea library...
 
-  string odb = octave_env::getenv ("OCTAVE_DB_PATH");
+  std::string odb = octave_env::getenv ("OCTAVE_DB_PATH");
 
   // For backward compatibility.
 
@@ -184,7 +184,7 @@ initialize_pathsearch (void)
     odb = octave_env::getenv ("OCTAVE_DB_DIR");
 
   if (odb.empty ())
-    odb = Vdata_dir + string ("/octave:") + Vlibexec_dir + string ("/octave");
+    odb = Vdata_dir + std::string ("/octave:") + Vlibexec_dir + std::string ("/octave");
 
   octave_env::putenv ("TEXMFDBS", odb);
 }
@@ -225,15 +225,15 @@ execute_startup_files (void)
 
       int home_rc_already_executed = 0;
 
-      string initfile = octave_env::getenv ("OCTAVE_INITFILE");
+      std::string initfile = octave_env::getenv ("OCTAVE_INITFILE");
 
       if (initfile.empty ())
 	initfile = ".octaverc";
 
-      string home_dir = octave_env::get_home_directory ();
+      std::string home_dir = octave_env::get_home_directory ();
 
-      string home_rc = home_dir + "/" + initfile;
-      string local_rc = string ("./") + initfile;
+      std::string home_rc = home_dir + "/" + initfile;
+      std::string local_rc = std::string ("./") + initfile;
 
       if (! home_dir.empty ())
 	{
@@ -531,7 +531,7 @@ main (int argc, char **argv)
 
 	  size_t pos = curr_fcn_file_name.rfind ('/');
 
-	  string tmp = (pos != NPOS)
+	  std::string tmp = (pos != NPOS)
 	    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
 
 	  bind_builtin_variable ("program_name", tmp);

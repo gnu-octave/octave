@@ -30,17 +30,17 @@ class string_vector;
 
 extern string_vector make_name_list (void);
 
-extern void display_help_text (ostream&, const string&);
+extern void display_help_text (std::ostream&, const std::string&);
 
-extern void additional_help_message (ostream&);
+extern void additional_help_message (std::ostream&);
 
 // Name of the info file specified on command line.
 // (--info-file file)
-extern string Vinfo_file;
+extern std::string Vinfo_file;
 
 // Name of the info reader we'd like to use.
 // (--info-program program)
-extern string Vinfo_prog;
+extern std::string Vinfo_prog;
 
 #endif
 

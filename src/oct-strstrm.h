@@ -48,9 +48,9 @@ public:
 
   // The name of the file.
 
-  string name (void) const { return string (); }
+  std::string name (void) const { return std::string (); }
 
-  virtual streambuf *rdbuf (void) = 0;
+  virtual std::streambuf *rdbuf (void) = 0;
 
   virtual bool bad (void) const = 0;
 
@@ -80,7 +80,7 @@ public:
 		     oct_mach_info::native)
     : octave_base_strstream (arg_md, flt_fmt), is (data) { }
 
-  octave_istrstream (const string& data,
+  octave_istrstream (const std::string& data,
 		     ios::openmode arg_md = ios::out,
 		     oct_mach_info::float_format flt_fmt =
 		     oct_mach_info::native)
@@ -91,18 +91,18 @@ public:
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   static octave_stream
-  create (const string& data, ios::openmode arg_md = ios::out,
+  create (const std::string& data, ios::openmode arg_md = ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
   bool eof (void) const { return is.eof (); }
 
-  istream *input_stream (void) { return &is; }
+  std::istream *input_stream (void) { return &is; }
 
-  ostream *output_stream (void) { return 0; }
+  std::ostream *output_stream (void) { return 0; }
 
-  streambuf *rdbuf (void) { return is ? is.rdbuf () : 0; }
+  std::streambuf *rdbuf (void) { return is ? is.rdbuf () : 0; }
 
   bool bad (void) const { return is.bad (); }
 
@@ -114,7 +114,7 @@ protected:
 
 private:
 
-  istrstream is;
+  std::istrstream is;
 
   // No copying!
 
@@ -141,20 +141,20 @@ public:
 
   bool eof (void) const { return os.eof (); }
 
-  istream *input_stream (void) { return 0; }
+  std::istream *input_stream (void) { return 0; }
 
-  ostream *output_stream (void) { return &os; }
+  std::ostream *output_stream (void) { return &os; }
 
-  string str (void)
+  std::string str (void)
     {
       os << ends;
       char *tmp = os.str ();
-      string retval = tmp;
+      std::string retval = tmp;
       delete [] tmp;
       return retval;
     }
 
-  streambuf *rdbuf (void) { return os ? os.rdbuf () : 0; }
+  std::streambuf *rdbuf (void) { return os ? os.rdbuf () : 0; }
 
   bool bad (void) const { return os.bad (); }
 
@@ -166,7 +166,7 @@ protected:
 
 private:
 
-  ostrstream os;
+  std::ostrstream os;
 
   // No copying!
 

@@ -369,7 +369,7 @@ Year (1970-).\n\
 
   if (args.length () == 2)
     {
-      string fmt = args(0).string_value ();
+      std::string fmt = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -407,11 +407,11 @@ the format @var{fmt}.\n\
 
   if (args.length () == 2)
     {
-      string str = args(0).string_value ();
+      std::string str = args(0).string_value ();
 
       if (! error_state)
 	{
-	  string fmt = args(1).string_value ();
+	  std::string fmt = args(1).string_value ();
 
 	  if (! error_state)
 	    {

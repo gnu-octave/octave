@@ -54,7 +54,7 @@ extern int input_line_number;
 extern int current_input_column;
 
 // Buffer for help text snagged from function files.
-extern string help_buf;
+extern std::string help_buf;
 
 // TRUE means we are using readline.
 extern bool line_editing;
@@ -81,25 +81,25 @@ extern void
 parse_and_execute (FILE *f);
 
 extern void
-parse_and_execute (const string& s, bool verbose = false,
+parse_and_execute (const std::string& s, bool verbose = false,
 		   const char *warn_for = 0);
 
-extern string get_help_from_file (const string& f);
+extern std::string get_help_from_file (const std::string& f);
 
 extern bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
 extern octave_value_list
-feval (const string& name, const octave_value_list& args, int nargout);
+feval (const std::string& name, const octave_value_list& args, int nargout);
 
 extern octave_value_list
 feval (const octave_value_list& args, int nargout);
 
 extern octave_value_list
-eval_string (const string&, bool silent, int& parse_status, int hargout);
+eval_string (const std::string&, bool silent, int& parse_status, int hargout);
 
 extern octave_value
-eval_string (const string&, bool silent, int& parse_status);
+eval_string (const std::string&, bool silent, int& parse_status);
 
 #endif
 

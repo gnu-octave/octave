@@ -59,25 +59,25 @@ public:
   int length (void) const { return count; }	// current number of items
   int empty (void) const { return count == 0; }
 
-  virtual int contains (const string& key) const;  // is key mapped?
+  virtual int contains (const std::string& key) const;  // is key mapped?
 
   virtual void clear (void);			// delete all items
 	      
-  virtual C& operator [] (const string& key) = 0;  // access contents by key
+  virtual C& operator [] (const std::string& key) = 0;  // access contents by key
 	      
-  virtual void del (const string& key) = 0;	// delete entry
+  virtual void del (const std::string& key) = 0;	// delete entry
 	      
   virtual Pix first (void) const = 0;		// Pix of first item or 0
   virtual void next (Pix& i) const = 0;		// advance to next or 0
-  virtual string key (Pix i) const = 0;		// access key at i
+  virtual std::string key (Pix i) const = 0;		// access key at i
   virtual C& contents (Pix i) const = 0;	// access contents at i
 
   virtual int owns (Pix i) const;		// is i a valid Pix  ?
-  virtual Pix seek (const string& key) const;	// Pix of key
+  virtual Pix seek (const std::string& key) const;	// Pix of key
 
   C& dflt (void) { return def; }		// access default val
 
-  void error (const string& msg) const;
+  void error (const std::string& msg) const;
 
   virtual int OK (void) const = 0;		// rep invariant
 };
@@ -86,12 +86,12 @@ template <class C>
 struct CHNode
 {
   CHNode *tl;
-  string hd;
+  std::string hd;
   C cont;
 
   CHNode (void) : tl (0), hd (), cont () { }
 
-  CHNode (const string& h, const C& c, CHNode *t = 0)
+  CHNode (const std::string& h, const C& c, CHNode *t = 0)
     : tl (t), hd (h), cont (c) { }
 
   ~CHNode (void) { }
@@ -119,14 +119,14 @@ public:
       delete tab;
     }
 
-  C& operator [] (const string& key);
+  C& operator [] (const std::string& key);
 
-  void del (const string& key);
+  void del (const std::string& key);
 
   Pix first (void) const;
   void next (Pix& i) const;
 
-  string key (Pix p) const
+  std::string key (Pix p) const
     {
       if (p == 0)
 	error ("null Pix");
@@ -142,9 +142,9 @@ public:
      return ((CHNode<C> *) p)->cont;
    }
 
-  Pix seek (const string& key) const;
+  Pix seek (const std::string& key) const;
 
-  int contains (const string& key) const
+  int contains (const std::string& key) const
     {
       return seek (key) != 0;
     }

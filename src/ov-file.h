@@ -76,11 +76,11 @@ public:
 
   bool is_stream (void) const { return true; }
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  bool print_name_tag (ostream& os, const string& name) const;
+  bool print_name_tag (std::ostream& os, const std::string& name) const;
 
 private:
 

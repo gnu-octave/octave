@@ -42,7 +42,7 @@ octave_allocator
 tree_constant::allocator (sizeof (tree_constant), 1024);
 
 void
-tree_constant::print (ostream& os, bool pr_as_read_syntax, bool pr_orig_text)
+tree_constant::print (std::ostream& os, bool pr_as_read_syntax, bool pr_orig_text)
 {
   if (pr_orig_text && ! orig_text.empty ())
     os << orig_text;
@@ -51,7 +51,7 @@ tree_constant::print (ostream& os, bool pr_as_read_syntax, bool pr_orig_text)
 }
 
 void
-tree_constant::print_raw (ostream& os, bool pr_as_read_syntax,
+tree_constant::print_raw (std::ostream& os, bool pr_as_read_syntax,
 			  bool pr_orig_text) 
 {
   if (pr_orig_text && ! orig_text.empty ())

@@ -44,7 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 string
 tree_identifier::name (void) const
 {
-  string retval;
+  std::string retval;
   if (sym)
     retval = sym->name ();
   return retval;
@@ -58,7 +58,7 @@ tree_identifier::define (octave_function *f, unsigned int sym_type)
 }
 
 void
-tree_identifier::document (const string& s)
+tree_identifier::document (const std::string& s)
 {
   if (sym)
     sym->document (s);

@@ -59,11 +59,11 @@ public:
   bool is_identifier (void) const
     { return true; }
 
-  string name (void) const;
+  std::string name (void) const;
 
   tree_identifier *define (octave_function *f, unsigned int sym_type);
 
-  void document (const string& s);
+  void document (const std::string& s);
 
   bool is_defined (void);
 

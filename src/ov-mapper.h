@@ -52,8 +52,8 @@ public:
   octave_mapper (ch_mapper ch, d_b_mapper db, c_b_mapper cb,
 		 d_d_mapper dd, d_c_mapper dc,
 		 c_c_mapper cc, double ll, double ul, int f,
-		 const string& nm = string (),
-		 const string& ds = string ())
+		 const std::string& nm = std::string (),
+		 const std::string& ds = std::string ())
     : octave_function (nm, ds), ch_map_fcn (ch),
       d_b_map_fcn (db), c_b_map_fcn (cb),
       d_d_map_fcn (dd), d_c_map_fcn (dc), c_c_map_fcn (cc),
@@ -94,7 +94,7 @@ private:
   //
   //   0  =>  this function returns a matrix of ones and zeros
   //   1  =>  this function returns a numeric matrix (any values)
-  //   2  =>  this function returns a string array
+  //   2  =>  this function returns a std::string array
   //
   // For other mappers, nonzero means that this function can return a
   // complex value for some real arguments.

@@ -66,7 +66,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // this function can be eliminated.
 
 static int
-octave_change_to_directory (const string& newdir)
+octave_change_to_directory (const std::string& newdir)
 {
   int cd_ok = octave_env::chdir (newdir);
 
@@ -107,7 +107,7 @@ directory is not changed.\n\
 
   if (argc > 1)
     {
-      string dirname = file_ops::tilde_expand (argv[1]);
+      std::string dirname = file_ops::tilde_expand (argv[1]);
 
       if (dirname.length () > 0
 	  && ! octave_change_to_directory (dirname))
@@ -117,7 +117,7 @@ directory is not changed.\n\
     }
   else
     {
-      string home_dir = octave_env::get_home_directory ();
+      std::string home_dir = octave_env::get_home_directory ();
 
       if (home_dir.empty () || ! octave_change_to_directory (home_dir))
 	return retval;
@@ -163,7 +163,7 @@ from system to system.\n\
   if (error_state)
     return retval;
 
-  ostrstream ls_buf;
+  std::ostrstream ls_buf;
 
   ls_buf << "ls -C ";
   for (int i = 1; i < argc; i++)
@@ -220,7 +220,7 @@ Return the current working directory.\n\
 {
   octave_value_list retval;
 
-  string directory = octave_env::getcwd ();
+  std::string directory = octave_env::getcwd ();
 
   if (directory.empty ())
     warning ("pwd: can't find working directory!");
@@ -248,13 +248,13 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(2) = string ();
+  retval(2) = std::string ();
   retval(1) = -1.0;
   retval(0) = Matrix ();
 
   if (args.length () == 1)
     {
-      string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("readdir", args(0));
@@ -295,18 +295,18 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   if (args.length () == 1)
     {
-      string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("mkdir", args(0));
       else
 	{
-	  string msg;
+	  std::string msg;
 
 	  int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
 					0777, msg);
@@ -335,18 +335,18 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   if (args.length () == 1)
     {
-      string dirname = args(0).string_value ();
+      std::string dirname = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("rmdir", args(0));
       else
 	{
-	  string msg;
+	  std::string msg;
 
 	  int status = file_ops::rmdir (file_ops::tilde_expand (dirname), msg);
 
@@ -374,24 +374,24 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   if (args.length () == 2)
     {
-      string from = args(0).string_value ();
+      std::string from = args(0).string_value ();
 
       if (error_state)
 	gripe_wrong_type_arg ("rename", args(0));
       else
 	{
-	  string to = args(1).string_value ();
+	  std::string to = args(1).string_value ();
 
 	  if (error_state)
 	    gripe_wrong_type_arg ("rename", args(1));
 	  else
 	    {
-	      string msg;
+	      std::string msg;
 
 	      int status = file_ops::rename (from, to, msg);
 

@@ -58,7 +58,7 @@ public:
 
   tree_expression *operand (void) { return op; }
 
-  string oper (void) const;
+  std::string oper (void) const;
 
 protected:
 

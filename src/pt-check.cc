@@ -622,7 +622,7 @@ tree_checker::visit_while_command (tree_while_command& cmd)
 }
 
 void
-tree_checker::gripe (const string& msg, int line)
+tree_checker::gripe (const std::string& msg, int line)
 {
   if (curr_fcn_file_name.empty ())
     error ("%s", msg.c_str ());

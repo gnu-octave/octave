@@ -31,13 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-fstrm.h"
 
 octave_stream
-octave_fstream::create (const string& nm_arg, ios::openmode md,
+octave_fstream::create (const std::string& nm_arg, ios::openmode md,
 			oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_fstream (nm_arg, md, flt_fmt));
 }
 
-octave_fstream::octave_fstream (const string& nm_arg,
+octave_fstream::octave_fstream (const std::string& nm_arg,
 				ios::openmode md = ios::in|ios::out,
 				oct_mach_info::float_format flt_fmt)
   : octave_base_stream (md, flt_fmt), nm (nm_arg)
@@ -98,10 +98,10 @@ octave_fstream::eof (void) const
   return fs.eof ();
 }
 
-istream *
+std::istream *
 octave_fstream::input_stream (void)
 {
-  istream *retval = 0;
+  std::istream *retval = 0;
 
   if (mode () & ios::in)
     retval = &fs;
@@ -109,10 +109,10 @@ octave_fstream::input_stream (void)
   return retval;
 }
 
-ostream *
+std::ostream *
 octave_fstream::output_stream (void)
 {
-  ostream *retval = 0;
+  std::ostream *retval = 0;
 
   if (mode () & ios::out)
     retval = &fs;

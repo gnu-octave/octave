@@ -50,7 +50,7 @@ string
 tree_indirect_ref::name (void) const
 {
   // ??? FIXME ???
-  string xname = expr->name ();
+  std::string xname = expr->name ();
 
   return (xname == "<unknown>") ? xname : xname + "." + nm;
 }
@@ -76,7 +76,7 @@ tree_indirect_ref::rvalue (int nargout)
 	    {
 	      // ??? FIXME ???
 
-	      string xname = name ();
+	      std::string xname = name ();
 
 	      if (xname == "<unknown>")
 		bind_ans (val, true);

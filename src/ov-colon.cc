@@ -37,14 +37,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon, "magic-colon");
 
 void
-octave_magic_colon::print (ostream& os, bool) const
+octave_magic_colon::print (std::ostream& os, bool) const
 {
   indent (os);
   print_raw (os);
 }
 
 void
-octave_magic_colon::print_raw (ostream& os, bool) const
+octave_magic_colon::print_raw (std::ostream& os, bool) const
 {
   os << ":";
 }

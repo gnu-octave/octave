@@ -72,7 +72,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  void eval_error (const string& s = string ());
+  void eval_error (const std::string& s = std::string ());
 
   tree_expression *base (void) { return op_base; }
 

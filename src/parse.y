@@ -101,7 +101,7 @@ int input_line_number = 0;
 int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
-string help_buf;
+std::string help_buf;
 
 // TRUE means we are using readline.
 // (--no-line-editing)
@@ -266,7 +266,7 @@ make_index_expression (tree_expression *expr, tree_argument_list *args);
 
 // Make an indirect reference expression.
 static tree_indirect_ref *
-make_indirect_ref (tree_expression *expr, const string&);
+make_indirect_ref (tree_expression *expr, const std::string&);
 
 // Make a declaration command.
 static tree_decl_command *
@@ -1405,7 +1405,7 @@ yyerror (const char *s)
 {
   int err_col = current_input_column - 1;
 
-  ostrstream output_buf;
+  std::ostrstream output_buf;
 
   if (reading_fcn_file || reading_script_file)
     output_buf << "parse error near line " << input_line_number
@@ -1626,7 +1626,7 @@ fold (tree_binary_expression *e)
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  ostrstream buf;
+	  std::ostrstream buf;
 
 	  tree_print_code tpc (buf);
 
@@ -1675,7 +1675,7 @@ fold (tree_unary_expression *e)
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  ostrstream buf;
+	  std::ostrstream buf;
 
 	  tree_print_code tpc (buf);
 
@@ -1733,7 +1733,7 @@ finish_colon_expression (tree_colon_expression *e)
 		{
 		  tree_constant *tc_retval = new tree_constant (tmp);
 
-		  ostrstream buf;
+		  std::ostrstream buf;
 
 		  tree_print_code tpc (buf);
 
@@ -2370,7 +2370,7 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body)
 static octave_user_function *
 frob_function (tree_identifier *id, octave_user_function *fcn)
 {
-  string id_name = id->name ();
+  std::string id_name = id->name ();
 
   // If input is coming from a file, issue a warning if the name of
   // the file does not match the name of the function stated in the
@@ -2404,7 +2404,7 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 
       if (Vwarn_future_time_stamp)
 	{
-	  string nm = fcn->fcn_file_name ();
+	  std::string nm = fcn->fcn_file_name ();
 
 	  file_stat fs (nm);
 
@@ -2490,7 +2490,7 @@ make_index_expression (tree_expression *expr, tree_argument_list *args)
 // Make an indirect reference expression.
 
 static tree_indirect_ref *
-make_indirect_ref (tree_expression *expr, const string& elt)
+make_indirect_ref (tree_expression *expr, const std::string& elt)
 {
   tree_indirect_ref *retval = 0;
 
@@ -2565,7 +2565,7 @@ finish_matrix (tree_matrix *m)
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  ostrstream buf;
+	  std::ostrstream buf;
 
 	  tree_print_code tpc (buf);
 
@@ -2710,7 +2710,7 @@ safe_fclose (void *f)
 }
 
 void
-parse_and_execute (const string& s, bool verbose, const char *warn_for)
+parse_and_execute (const std::string& s, bool verbose, const char *warn_for)
 {
   unwind_protect::begin_frame ("parse_and_execute_2");
 
@@ -2751,11 +2751,11 @@ parse_and_execute (const string& s, bool verbose, const char *warn_for)
 }
 
 static bool
-looks_like_octave_copyright (const string& s)
+looks_like_octave_copyright (const std::string& s)
 {
   bool retval = false;
 
-  string t = s.substr (0, 14);
+  std::string t = s.substr (0, 14);
 
   if (t == "Copyright (C) ")
     {
@@ -2793,7 +2793,7 @@ looks_like_octave_copyright (const string& s)
 static string
 gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
 {
-  string help_txt;
+  std::string help_txt;
 
   bool first_comments_seen = false;
   bool begin_comment = false;
@@ -2904,9 +2904,9 @@ gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
 }
 
 string
-get_help_from_file (const string& path)
+get_help_from_file (const std::string& path)
 {
-  string retval;
+  std::string retval;
 
   if (! path.empty ())
     {
@@ -2965,7 +2965,7 @@ clear_current_script_file_name (void *)
 }
 
 static bool
-parse_fcn_file (const string& ff, bool exec_script, bool force_script = false)
+parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = false)
 {
   unwind_protect::begin_frame ("parse_fcn_file");
 
@@ -3084,7 +3084,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 {
   bool script_file_executed = false;
 
-  string nm = sym_rec->name ();
+  std::string nm = sym_rec->name ();
 
   if (octave_dynamic_loader::load (nm))
     {
@@ -3092,7 +3092,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
     }
   else
     {
-      string ff = fcn_file_in_path (nm);
+      std::string ff = fcn_file_in_path (nm);
 
       // These are needed by yyparse.
 
@@ -3130,11 +3130,11 @@ be named @file{@var{file}.m}.\n\
 
   if (nargin == 1)
     {
-      string file_name = args(0).string_value ();
+      std::string file_name = args(0).string_value ();
 
       if (! error_state)
 	{
-	  string file_full_name = file_ops::tilde_expand (file_name);
+	  std::string file_full_name = file_ops::tilde_expand (file_name);
 
 	  unwind_protect::begin_frame ("Fsource");
 
@@ -3162,7 +3162,7 @@ be named @file{@var{file}.m}.\n\
 }
 
 octave_value_list
-feval (const string& name, const octave_value_list& args, int nargout)
+feval (const std::string& name, const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
@@ -3181,7 +3181,7 @@ feval (const octave_value_list& args, int nargout)
 
   if (args.length () > 0)
     {
-      string name = args(0).string_value ();
+      std::string name = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -3248,7 +3248,7 @@ by name, and use @code{feval} to call them.\n\
 }
 
 octave_value_list
-eval_string (const string& s, bool silent, int& parse_status, int nargout)
+eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 {
   unwind_protect::begin_frame ("eval_string");
 
@@ -3295,7 +3295,7 @@ eval_string (const string& s, bool silent, int& parse_status, int nargout)
 }
 
 octave_value
-eval_string (const string& s, bool silent, int& parse_status)
+eval_string (const std::string& s, bool silent, int& parse_status)
 {
   octave_value retval;
 
@@ -3311,11 +3311,11 @@ static octave_value_list
 eval_string (const octave_value& arg, bool silent, int& parse_status,
 	     int nargout)
 {
-  string s = arg.string_value ();
+  std::string s = arg.string_value ();
 
   if (error_state)
     {
-      error ("eval: expecting string argument");
+      error ("eval: expecting std::string argument");
       return -1.0;
     }
 

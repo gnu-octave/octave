@@ -171,20 +171,20 @@ static bool Vwarn_single_quote_string = false;
 
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
-static int is_plot_keyword (const string& s);
-static int is_keyword (const string& s);
-static string plot_style_token (const string& s);
-static symbol_record *lookup_identifier (const string& s);
+static int is_plot_keyword (const std::string& s);
+static int is_keyword (const std::string& s);
+static std::string plot_style_token (const std::string& s);
+static symbol_record *lookup_identifier (const std::string& s);
 static void grab_help_text (void);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
 static bool next_token_is_bin_op (bool spc_prev);
 static bool next_token_is_postfix_unary_op (bool spc_prev);
-static string strip_trailing_whitespace (char *s);
+static std::string strip_trailing_whitespace (char *s);
 static void handle_number (void);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_bracket (int spc_gobbled);
-static int handle_identifier (const string& tok, int spc_gobbled);
+static int handle_identifier (const std::string& tok, int spc_gobbled);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 static yum_yum eat_whitespace (void);
@@ -250,7 +250,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 <TEXT_FCN>[^ \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
-    string tok = strip_trailing_whitespace (yytext);
+    std::string tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, TEXT);
   }
 
@@ -488,7 +488,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {IDENT}{S}* {
-    string tok = strip_trailing_whitespace (yytext);
+    std::string tok = strip_trailing_whitespace (yytext);
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
@@ -851,9 +851,9 @@ delete_input_buffer (void *buf)
 // styles for plots.
 
 static string
-plot_style_token (const string& s)
+plot_style_token (const std::string& s)
 {
-  string retval;
+  std::string retval;
 
   static const char *plot_styles[] = 
     {
@@ -897,9 +897,9 @@ plot_style_token (const string& s)
 // tags for plots.
 
 static string
-plot_axes_token (const string& s)
+plot_axes_token (const std::string& s)
 {
-  string retval;
+  std::string retval;
 
   static char *plot_axes[] = 
     {
@@ -931,7 +931,7 @@ plot_axes_token (const string& s)
 // to abbreviate actual gnuplot keywords).
 
 static int
-is_plot_keyword (const string& s)
+is_plot_keyword (const std::string& s)
 {
   const char *t = s.c_str ();
   if (almost_match ("title", t))
@@ -966,13 +966,13 @@ is_plot_keyword (const string& s)
 // Handle keywords.
 
 static int
-is_keyword (const string& s)
+is_keyword (const std::string& s)
 {
   if (lexer_flags.plotting)
     {
       if (lexer_flags.in_plot_style)
 	{
-	  string sty = plot_style_token (s);
+	  std::string sty = plot_style_token (s);
 
 	  if (! sty.empty ())
 	    {
@@ -984,7 +984,7 @@ is_keyword (const string& s)
 	}
       else if (lexer_flags.in_plot_axes)
 	{
-	  string axes = plot_axes_token (s);
+	  std::string axes = plot_axes_token (s);
 
 	  if (! axes.empty ())
 	    {
@@ -1150,13 +1150,13 @@ is_keyword (const string& s)
 // variables occurs when expressions are evaluated.
 
 static symbol_record *
-lookup_identifier (const string& name)
+lookup_identifier (const std::string& name)
 {
   return curr_sym_tab->lookup (name, true);
 }
 
 static bool
-is_variable (const string& name)
+is_variable (const std::string& name)
 {
   symbol_record *sr = curr_sym_tab->lookup (name);
 
@@ -1164,7 +1164,7 @@ is_variable (const string& name)
 }
 
 static void
-force_local_variable (const string& name)
+force_local_variable (const std::string& name)
 {
   symbol_record *sr = curr_sym_tab->lookup (name, true);
 
@@ -1447,7 +1447,7 @@ next_token_is_bin_op (bool spc_prev)
 static string
 strip_trailing_whitespace (char *s)
 {
-  string retval = s;
+  std::string retval = s;
 
   size_t pos = retval.find_first_of (" \t");
 
@@ -1592,7 +1592,7 @@ handle_number (void)
 static bool
 have_continuation (bool trailing_comments_ok)
 {
-  ostrstream buf;
+  std::ostrstream buf;
 
   bool in_comment = false;
   int c;
@@ -1701,7 +1701,7 @@ eat_continuation (void)
 static int
 handle_string (char delim, int text_style)
 {
-  ostrstream buf;
+  std::ostrstream buf;
 
   int c;
   int escape_pending = 0;
@@ -1753,12 +1753,12 @@ handle_string (char delim, int text_style)
 		  unput (c);
 		  buf << ends;
 		  char *t = buf.str ();
-		  string s = do_string_escapes (t);
+		  std::string s = do_string_escapes (t);
 		  delete [] t;
 
 		  if (text_style && lexer_flags.doing_set)
 		    {
-		      s = string (1, delim) + s + string (1, delim);
+		      s = std::string (1, delim) + s + std::string (1, delim);
 		    }
 		  else
 		    {
@@ -1977,7 +1977,7 @@ maybe_unput_comma (int spc_gobbled)
 // an identifier.  Handles keywords.
 
 static int
-handle_identifier (const string& tok, int spc_gobbled)
+handle_identifier (const std::string& tok, int spc_gobbled)
 {
   // It is almost always an error for an identifier to be followed
   // directly by another identifier.  Special cases are handled
@@ -2233,7 +2233,7 @@ lexical_feedback::init (void)
 static void
 maybe_warn_separator_insert (char sep)
 {
-  string nm = curr_fcn_file_full_name;
+  std::string nm = curr_fcn_file_full_name;
 
   if (Vwarn_separator_insert)
     {
@@ -2249,7 +2249,7 @@ maybe_warn_separator_insert (char sep)
 static void
 gripe_single_quote_string (void)
 {
-  string nm = curr_fcn_file_full_name;
+  std::string nm = curr_fcn_file_full_name;
 
   if (Vwarn_single_quote_string)
     {
@@ -2283,7 +2283,7 @@ whitespace_in_literal_matrix (void)
 {
   int pref = 0;
 
-  string val = builtin_string_variable ("whitespace_in_literal_matrix");
+  std::string val = builtin_string_variable ("whitespace_in_literal_matrix");
 
   if (! val.empty ())
     {

@@ -37,7 +37,7 @@ gripe_not_supported (const char *fcn)
 void
 gripe_string_invalid (void)
 {
-  error ("string constant used in invalid context");
+  error ("std::string constant used in invalid context");
 }
 
 void
@@ -87,7 +87,7 @@ gripe_user_returned_invalid (const char *name)
 }
 
 void
-gripe_invalid_conversion (const string& from, const string& to)
+gripe_invalid_conversion (const std::string& from, const std::string& to)
 {
   error ("invalid conversion from %s to %s", from.c_str (), to.c_str ());
 }
@@ -123,7 +123,7 @@ gripe_data_conversion (const char *from, const char *to)
 }
 
 void
-gripe_wrong_type_arg (const char *name, const string& s, bool is_error)
+gripe_wrong_type_arg (const char *name, const std::string& s, bool is_error)
 {
   if (is_error)
     error ("%s: wrong type argument `%s'", name, s.c_str ());
@@ -135,7 +135,7 @@ void
 gripe_wrong_type_arg (const char *name, const octave_value& tc,
 		      bool is_error)
 {
-  string type = tc.type_name ();
+  std::string type = tc.type_name ();
 
   if (is_error)
     error ("%s: wrong type argument `%s'", name, type.c_str ());
@@ -146,14 +146,14 @@ gripe_wrong_type_arg (const char *name, const octave_value& tc,
 void
 gripe_wrong_type_arg_for_unary_op (const octave_value& op)
 {
-  string type = op.type_name ();
+  std::string type = op.type_name ();
   error ("invalid operand `%s' for unary operator", type.c_str ());
 }
 
 void
 gripe_wrong_type_arg_for_binary_op (const octave_value& op)
 {
-  string type = op.type_name ();
+  std::string type = op.type_name ();
   error ("invalid operand `%s' for binary operator", type.c_str ());
 }
 

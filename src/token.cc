@@ -43,15 +43,15 @@ token::token (int l, int c)
   type_tag = generic_token;
 }
 
-token::token (const string& s, int l, int c)
+token::token (const std::string& s, int l, int c)
 {
   line_num = l;
   column_num = c;
   type_tag = string_token;
-  str = new string (s);
+  str = new std::string (s);
 }
 
-token::token (double d, const string& s, int l, int c)
+token::token (double d, const std::string& s, int l, int c)
 {
   line_num = l;
   column_num = c;

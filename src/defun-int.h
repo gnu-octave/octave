@@ -33,34 +33,34 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_value;
 
-extern void print_usage (const string& nm, bool just_usage = false);
+extern void print_usage (const std::string& nm, bool just_usage = false);
 
-extern void check_version (const string& version, const string& fcn);
+extern void check_version (const std::string& version, const std::string& fcn);
 
 extern void
 install_builtin_mapper (octave_mapper *mf);
 
 extern void
-install_builtin_function (octave_builtin::fcn f, const string& name,
-			  const string& doc, bool is_text_fcn = false);
+install_builtin_function (octave_builtin::fcn f, const std::string& name,
+			  const std::string& doc, bool is_text_fcn = false);
 
 extern void
-install_builtin_variable (const string& n, const octave_value& v,
+install_builtin_variable (const std::string& n, const octave_value& v,
 			  bool p, bool e,
 			  symbol_record::change_function chg_fcn,
-			  const string& h);
+			  const std::string& h);
 
 extern void
-install_builtin_constant (const string& n, const octave_value& v,
-			  bool p, const string& h);
+install_builtin_constant (const std::string& n, const octave_value& v,
+			  bool p, const std::string& h);
 
 extern void
-install_dld_function (octave_dld_function::fcn f, const string& name,
+install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
-		      const string& doc, bool is_text_fcn = false);
+		      const std::string& doc, bool is_text_fcn = false);
 
 extern void
-alias_builtin (const string& alias, const string& name);
+alias_builtin (const std::string& alias, const std::string& name);
 
 #define DECLARE_FUN(name, args_name, nargout_name) \
   octave_value_list \
@@ -68,7 +68,7 @@ alias_builtin (const string& alias, const string& name);
 
 // Define the code that will be used to insert the new function into
 // the symbol table.  We look for this name instead of the actual
-// function so that we can easily install the doc string too.
+// function so that we can easily install the doc std::string too.
 
 typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 

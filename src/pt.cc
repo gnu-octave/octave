@@ -41,7 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 string
 tree::str_print_code (void)
 {
-  ostrstream buf;
+  std::ostrstream buf;
 
   tree_print_code tpc (buf);
 
@@ -51,7 +51,7 @@ tree::str_print_code (void)
 
   const char *s = buf.str ();
 
-  string retval = s;
+  std::string retval = s;
 
   delete [] s;
 

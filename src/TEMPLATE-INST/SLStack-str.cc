@@ -37,12 +37,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-template class SLNode<string>;
-template class SLList<string>;
+template class SLNode<std:string>;
+template class SLList<std:string>;
 
-template class Stack<string>;
+template class Stack<std:string>;
 
-template class SLStack<string>;
+template class SLStack<std:string>;
 
 /*
 ;;; Local Variables: ***

@@ -91,7 +91,7 @@ Polynomial Approximation}.\n\
 	      return retval;
 	    }
 
-	  string s = args(i).string_value ();
+	  std::string s = args(i).string_value ();
 
 	  if ((s.length () == 1 && (s[0] == 'R' || s[0] == 'r'))
 	      || s == "right")

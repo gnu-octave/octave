@@ -32,13 +32,13 @@ octave_fstream : public octave_base_stream
 {
 public:
 
-  octave_fstream (const string& nm_arg,
+  octave_fstream (const std::string& nm_arg,
 		  ios::openmode md = ios::in|ios::out,
 		  oct_mach_info::float_format flt_fmt =
 		  oct_mach_info::native);
 
   static octave_stream
-  create (const string& nm_arg, ios::openmode md = ios::in|ios::out,
+  create (const std::string& nm_arg, ios::openmode md = ios::in|ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Position a stream at OFFSET relative to ORIGIN.
@@ -55,11 +55,11 @@ public:
 
   // The name of the file.
 
-  string name (void) const { return nm; }
+  std::string name (void) const { return nm; }
 
-  istream *input_stream (void);
+  std::istream *input_stream (void);
 
-  ostream *output_stream (void);
+  std::ostream *output_stream (void);
 
 protected:
 
@@ -67,7 +67,7 @@ protected:
 
 private:
 
-  string nm;
+  std::string nm;
 
   fstream fs;
 

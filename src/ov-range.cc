@@ -178,21 +178,21 @@ octave_range::convert_to_str (void) const
 }
 
 void
-octave_range::print (ostream& os, bool pr_as_read_syntax) const
+octave_range::print (std::ostream& os, bool pr_as_read_syntax) const
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
 }
 
 void
-octave_range::print_raw (ostream& os, bool pr_as_read_syntax) const
+octave_range::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, range, pr_as_read_syntax,
 			 current_print_indent_level ());
 }
 
 bool
-octave_range::print_name_tag (ostream& os, const string& name) const
+octave_range::print_name_tag (std::ostream& os, const std::string& name) const
 {
   bool retval = false;
 

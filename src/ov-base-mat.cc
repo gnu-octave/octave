@@ -63,7 +63,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx)
 
     default:
       {
-	string n = type_name ();
+	std::string n = type_name ();
 
 	error ("invalid number of indices (%d) for %s value",
 	       len, n.c_str ());
@@ -111,7 +111,7 @@ octave_base_matrix<MT>::print_as_scalar (void) const
 
 template <class MT>
 void
-octave_base_matrix<MT>::print (ostream& os, bool pr_as_read_syntax) const
+octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax) const
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
@@ -119,7 +119,7 @@ octave_base_matrix<MT>::print (ostream& os, bool pr_as_read_syntax) const
 
 template <class MT>
 void
-octave_base_matrix<MT>::print_raw (ostream& os, bool pr_as_read_syntax) const
+octave_base_matrix<MT>::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
 			 current_print_indent_level ());
@@ -127,7 +127,7 @@ octave_base_matrix<MT>::print_raw (ostream& os, bool pr_as_read_syntax) const
 
 template <class MT>
 bool
-octave_base_matrix<MT>::print_name_tag (ostream& os, const string& name) const
+octave_base_matrix<MT>::print_name_tag (std::ostream& os, const std::string& name) const
 {
   bool retval = false;
 

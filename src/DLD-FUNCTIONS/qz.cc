@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "config.h"
 
 #include <cfloat>
-#include <iostream.h>
+#include <iostream>
 #include <iomanip.h>
 #include <math.h>
 #include <string.h>
@@ -259,7 +259,7 @@ See also: balance, dare, eig, schur\n\
 #endif
 
   // Determine ordering option
-  string ord_job;
+  std::string ord_job;
   static double safmin;
 
   if (nargin == 2)

@@ -37,14 +37,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_all_va_args, "va-arg");
 
 void
-octave_all_va_args::print (ostream& os, bool) const
+octave_all_va_args::print (std::ostream& os, bool) const
 {
   indent (os);
   print (os);
 }
 
 void
-octave_all_va_args::print_raw (ostream& os, bool) const
+octave_all_va_args::print_raw (std::ostream& os, bool) const
 {
   os << "all_va_args";
 }

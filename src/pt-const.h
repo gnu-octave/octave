@@ -67,10 +67,10 @@ public:
   void maybe_mutate (void)
     { val.maybe_mutate (); }
 
-  void print (ostream& os, bool pr_as_read_syntax = false,
+  void print (std::ostream& os, bool pr_as_read_syntax = false,
 	      bool pr_orig_txt = true);
 
-  void print_raw (ostream& os, bool pr_as_read_syntax = false,
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
 		  bool pr_orig_txt = true);
 
   bool rvalue_ok (void) const
@@ -86,10 +86,10 @@ public:
   // Store the original text corresponding to this constant for later
   // pretty printing.
 
-  void stash_original_text (const string& s)
+  void stash_original_text (const std::string& s)
     { orig_text = s; }
 
-  string original_text (void) const
+  std::string original_text (void) const
     { return orig_text; }
 
 private:
@@ -101,7 +101,7 @@ private:
   octave_value val;
 
   // The original text form of this constant.
-  string orig_text;
+  std::string orig_text;
 
   // No copying!
 

@@ -46,7 +46,7 @@ public:
   tree_indirect_ref (int l = -1, int c = -1)
     : tree_expression (l, c), expr (0), nm () { }
 
-  tree_indirect_ref (tree_expression *e, const string& n,
+  tree_indirect_ref (tree_expression *e, const std::string& n,
 		     int l = -1, int c = -1)
     : tree_expression (l, c), expr (e), nm (n) { }
 
@@ -55,7 +55,7 @@ public:
   bool is_indirect_ref (void) const
     { return true; }
 
-  string name (void) const;
+  std::string name (void) const;
 
   bool lvalue_ok (void) const
     { return true; }
@@ -69,7 +69,7 @@ public:
   tree_expression *expression (void)
     { return expr; }
 
-  string elt_name (void)
+  std::string elt_name (void)
     { return nm; }
 
   void accept (tree_walker& tw);
@@ -80,7 +80,7 @@ private:
   tree_expression *expr;
 
   // The sub-element name.
-  string nm;
+  std::string nm;
 
   void eval_error (void) const;
 

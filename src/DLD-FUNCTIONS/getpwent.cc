@@ -77,14 +77,14 @@ opening it if necessary. Once the end of the data has been reached,\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = 0.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = mk_pw_map (octave_passwd::getpwent (msg));
       retval(1) = msg;
@@ -105,7 +105,7 @@ database, @code{getpwuid} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = 0.0;
 
   int nargin = args.length ();
@@ -120,7 +120,7 @@ database, @code{getpwuid} returns 0.\n\
 	    {
 	      uid_t uid = static_cast<uid_t> (dval);
 
-	      string msg;
+	      std::string msg;
 
 	      retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
 	      retval(1) = msg;
@@ -145,18 +145,18 @@ database, @code{getpwname} returns 0.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = 0.0;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      string s = args(0).string_value ();
+      std::string s = args(0).string_value ();
 
       if (! error_state)
 	{
-	  string msg;
+	  std::string msg;
 
 	  retval(0) = mk_pw_map (octave_passwd::getpwnam (s.c_str (), msg));
 	  retval(1) = msg;
@@ -176,14 +176,14 @@ Return the internal pointer to the beginning of the password database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = static_cast<double> (octave_passwd::setpwent (msg));
       retval(1) = msg;
@@ -202,14 +202,14 @@ Close the password database.\n\
 {
   octave_value_list retval;
 
-  retval(1) = string ();
+  retval(1) = std::string ();
   retval(0) = -1.0;
 
   int nargin = args.length ();
 
   if (nargin == 0)
     {
-      string msg;
+      std::string msg;
 
       retval(0) = static_cast<double> (octave_passwd::endpwent (msg));
       retval(1) = msg;

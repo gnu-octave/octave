@@ -55,13 +55,13 @@ static oprocstream *external_pager = 0;
 static bool write_to_diary_file = false;
 
 // The name of the current diary file.
-static string diary_file;
+static std::string diary_file;
 
 // The diary file.
-static ofstream external_diary_file;
+static std::ofstream external_diary_file;
 
 // The shell command to run as the pager.
-static string Vpager_binary;
+static std::string Vpager_binary;
 
 // TRUE means that if output is going to the pager, it is sent as soon
 // as it is available.  Otherwise, it is buffered and only sent to the
@@ -129,7 +129,7 @@ do_sync (const char *msg, int len, bool bypass_pager)
 	{
 	  if (! external_pager)
 	    {
-	      string pgr = Vpager_binary;
+	      std::string pgr = Vpager_binary;
 
 	      if (! pgr.empty ())
 		{
@@ -278,7 +278,7 @@ octave_diary_buf::sync (void)
 
 octave_pager_stream *octave_pager_stream::instance = 0;
 
-octave_pager_stream::octave_pager_stream (void) : ostream (), pb (0)
+octave_pager_stream::octave_pager_stream (void) : std::ostream (), pb (0)
 {
   pb = new octave_pager_buf;
   rdbuf (pb);
@@ -309,7 +309,7 @@ octave_pager_stream::flush_current_contents_to_diary (void)
 
 octave_diary_stream *octave_diary_stream::instance = 0;
 
-octave_diary_stream::octave_diary_stream (void) : ostream (), db (0)
+octave_diary_stream::octave_diary_stream (void) : std::ostream (), db (0)
 {
   db = new octave_diary_buf;
   rdbuf (db);
@@ -429,7 +429,7 @@ Without any arguments, @code{diary} toggles the current diary state.\n\
 
     case 2:
       {
-	string arg = argv[1];
+	std::string arg = argv[1];
 
 	if (arg == "on")
 	  {
@@ -478,7 +478,7 @@ toggles the current state.\n\
 
   if (argc == 2)
     {
-      string arg = argv[1];
+      std::string arg = argv[1];
 
       if (arg == "on")
 	bind_builtin_variable ("page_screen_output", 1.0);
@@ -496,18 +496,18 @@ toggles the current state.\n\
 static string
 default_pager (void)
 {
-  string pager_binary = octave_env::getenv ("PAGER");
+  std::string pager_binary = octave_env::getenv ("PAGER");
 
 #ifdef DEFAULT_PAGER
   if (pager_binary.empty ())
     {
-      pager_binary = string (DEFAULT_PAGER);
+      pager_binary = std::string (DEFAULT_PAGER);
 
       if (pager_binary == "less")
 	{
 	  pager_binary.append (" -e");
 
-	  string lessflags = octave_env::getenv ("LESS");
+	  std::string lessflags = octave_env::getenv ("LESS");
 	  if (lessflags.empty ())
 	    pager_binary.append
 	      (" -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
@@ -523,7 +523,7 @@ pager_binary (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("PAGER");
+  std::string s = builtin_string_variable ("PAGER");
 
   if (s.empty ())
     {

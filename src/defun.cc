@@ -40,13 +40,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 
 void
-print_usage (const string& nm, bool just_usage)
+print_usage (const std::string& nm, bool just_usage)
 {
   symbol_record *sym_rec = global_sym_tab->lookup (nm);
 
   if (sym_rec)
     {
-      string h = sym_rec->help ();
+      std::string h = sym_rec->help ();
 
       if (h.length () > 0)
 	{
@@ -65,7 +65,7 @@ print_usage (const string& nm, bool just_usage)
 }
 
 void
-check_version (const string& version, const string& fcn)
+check_version (const std::string& version, const std::string& fcn)
 {
   if (version != OCTAVE_VERSION)
     warning ("incompatible version %s found in function `%s'",
@@ -90,8 +90,8 @@ install_builtin_mapper (octave_mapper *mf)
 }
 
 void
-install_builtin_function (octave_builtin::fcn f, const string& name,
-			  const string& doc, bool is_text_fcn)
+install_builtin_function (octave_builtin::fcn f, const std::string& name,
+			  const std::string& doc, bool is_text_fcn)
 {
   symbol_record *sym_rec = global_sym_tab->lookup (name, true);
 
@@ -108,25 +108,25 @@ install_builtin_function (octave_builtin::fcn f, const string& name,
 }
 
 void
-install_builtin_constant (const string& name, const octave_value& val,
-			  bool protect, const string& help)
+install_builtin_constant (const std::string& name, const octave_value& val,
+			  bool protect, const std::string& help)
 {
   bind_builtin_constant (name, val, protect, false, help);
 }
 
 void
-install_builtin_variable (const string& name, const octave_value& value,
+install_builtin_variable (const std::string& name, const octave_value& value,
 			  bool protect, bool eternal,
 			  symbol_record::change_function chg_fcn,
-			  const string& doc)
+			  const std::string& doc)
 {
   bind_builtin_variable (name, value, protect, eternal, chg_fcn, doc);
 }
 
 void
-install_dld_function (octave_dld_function::fcn f, const string& name,
+install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
-		      const string& doc, bool is_text_fcn)
+		      const std::string& doc, bool is_text_fcn)
 {
   symbol_record *sym_rec = global_sym_tab->lookup (name, true);
 
@@ -143,7 +143,7 @@ install_dld_function (octave_dld_function::fcn f, const string& name,
 }
 
 void
-alias_builtin (const string& alias, const string& name)
+alias_builtin (const std::string& alias, const std::string& name)
 {
   symbol_record *sr_name = global_sym_tab->lookup (name);
 

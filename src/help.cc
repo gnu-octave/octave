@@ -70,11 +70,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Name of the info file specified on command line.
 // (--info-file file)
-string Vinfo_file;
+std::string Vinfo_file;
 
 // Name of the info reader we'd like to use.
 // (--info-program program)
-string Vinfo_prog;
+std::string Vinfo_prog;
 
 // If TRUE, don't print additional help message in help and usage
 // functions.
@@ -387,7 +387,7 @@ make_name_list (void)
 }
 
 void
-additional_help_message (ostream& os)
+additional_help_message (std::ostream& os)
 {
   if (! Vsuppress_verbose_help_message)
     os << "\n\
@@ -404,7 +404,7 @@ help-octave@bevo.che.wisc.edu mailing list.\n";
 // symbol table stuff.
 
 static void
-display_names_from_help_list (ostream& os, help_list *list,
+display_names_from_help_list (std::ostream& os, help_list *list,
 			      const char *desc)
 {
   string_vector symbols = names (list);
@@ -420,8 +420,8 @@ display_names_from_help_list (ostream& os, help_list *list,
 }
 
 static void
-display_symtab_names (ostream& os, const string_vector& names,
-		      const string& desc)
+display_symtab_names (std::ostream& os, const string_vector& names,
+		      const std::string& desc)
 {
   if (! names.empty ())
     {
@@ -483,7 +483,7 @@ simple_help (void)
 
       if (! names.empty ())
 	{
-	  string dir
+	  std::string dir
 	    = octave_env::make_absolute (dirs[i], octave_env::getcwd ());
 
 	  octave_stdout << "\n*** function files in " << dir << ":\n\n";
@@ -496,7 +496,7 @@ simple_help (void)
 }
 
 static int
-try_info (const string& nm)
+try_info (const std::string& nm)
 {
   int status = 0;
 
@@ -505,11 +505,11 @@ try_info (const string& nm)
   delete [] cmd_str;
   cmd_str = 0;
 
-  ostrstream cmd_buf;
+  std::ostrstream cmd_buf;
 
   cmd_buf << Vinfo_prog << " --file " << Vinfo_file;
 
-  string directory_name = Vinfo_file;
+  std::string directory_name = Vinfo_file;
   size_t pos = directory_name.rfind ('/');
 
   if (pos != NPOS)
@@ -544,7 +544,7 @@ static void
 help_from_info (const string_vector& argv, int idx, int argc)
 {
   if (idx == argc)
-    try_info (string ());
+    try_info (std::string ());
   else
     {
       for (int i = idx; i < argc; i++)
@@ -570,11 +570,11 @@ help_from_info (const string_vector& argv, int idx, int argc)
 }
 
 static bool
-looks_like_texinfo (const string& msg, size_t& p1)
+looks_like_texinfo (const std::string& msg, size_t& p1)
 {
   p1 = msg.find ('\n');
 
-  string t = msg.substr (0, p1);
+  std::string t = msg.substr (0, p1);
 
   if (p1 == NPOS)
     p1 = 0;
@@ -585,7 +585,7 @@ looks_like_texinfo (const string& msg, size_t& p1)
 }
 
 void
-display_help_text (ostream& os, const string& msg)
+display_help_text (std::ostream& os, const std::string& msg)
 {
   // Look for "-*- texinfo -*-" in first line of help message.  If it
   // is present, use makeinfo to format the rest of the message before
@@ -596,7 +596,7 @@ display_help_text (ostream& os, const string& msg)
 
   if (looks_like_texinfo (msg, pos))
     {
-      string tmp_file_name = file_ops::tempnam ("", "");
+      std::string tmp_file_name = file_ops::tempnam ("", "");
 
       int cols = command_editor::terminal_cols ();
 
@@ -609,7 +609,7 @@ display_help_text (ostream& os, const string& msg)
       if (cols > 80)
 	cols = 72;
 
-      ostrstream buf;
+      std::ostrstream buf;
       buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | makeinfo"
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
@@ -641,7 +641,7 @@ display_help_text (ostream& os, const string& msg)
 
 	  filter.close ();
 
-	  ifstream tmp_file (tmp_file_name.c_str ());
+	  std::ifstream tmp_file (tmp_file_name.c_str ());
 
 	  int c;
 	  while ((c = tmp_file.get ()) != EOF)
@@ -659,8 +659,8 @@ display_help_text (ostream& os, const string& msg)
 }
 
 static bool
-help_from_list (ostream& os, const help_list *list,
-		const string& nm, int usage)
+help_from_list (std::ostream& os, const help_list *list,
+		const std::string& nm, int usage)
 {
   const char *name;
 
@@ -688,7 +688,7 @@ help_from_list (ostream& os, const help_list *list,
 }
 
 static bool
-help_from_symbol_table (ostream& os, const string& nm)
+help_from_symbol_table (std::ostream& os, const std::string& nm)
 {
   bool retval = false;
 
@@ -696,7 +696,7 @@ help_from_symbol_table (ostream& os, const string& nm)
 
   if (sym_rec && sym_rec->is_defined ())
     {
-      string h = sym_rec->help ();
+      std::string h = sym_rec->help ();
 
       if (h.length () > 0)
 	{
@@ -712,13 +712,13 @@ help_from_symbol_table (ostream& os, const string& nm)
 }
 
 static bool
-help_from_file (ostream& os, const string& nm)
+help_from_file (std::ostream& os, const std::string& nm)
 {
   bool retval = false;
 
-  string path = fcn_file_in_path (nm);
+  std::string path = fcn_file_in_path (nm);
 
-  string h = get_help_from_file (path);
+  std::string h = get_help_from_file (path);
 
   if (! h.empty ())
     {
@@ -800,7 +800,7 @@ using the command @kbd{C-h}.\n\
 }
 
 static void
-do_type (ostream& os, const string& name, bool pr_type_info,
+do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 	 bool quiet, bool pr_orig_txt)
 {
   symbol_record *sym_rec = lookup_by_name (name, 0);
@@ -809,11 +809,11 @@ do_type (ostream& os, const string& name, bool pr_type_info,
     sym_rec->type (os, pr_type_info, quiet, pr_orig_txt);
   else
     {
-      string ff = fcn_file_in_path (name);
+      std::string ff = fcn_file_in_path (name);
 
       if (! ff.empty ())
 	{
-	  ifstream fs (ff.c_str (), ios::in);
+	  std::ifstream fs (ff.c_str (), ios::in);
 
 	  if (fs)
 	    {
@@ -882,11 +882,11 @@ representation.  This problem may be fixed in a future release.\n\
 
 	  if (idx < argc)
 	    {
-	      ostrstream output_buf;
+	      std::ostrstream output_buf;
 
 	      for (int i = idx; i < argc; i++)
 		{
-		  string id = argv[i];
+		  std::string id = argv[i];
 
 		  if (nargout == 0)
 		    do_type (octave_stdout, id, true, quiet, pr_orig_txt);
@@ -921,9 +921,9 @@ representation.  This problem may be fixed in a future release.\n\
 }
 
 static string
-do_which (const string& name)
+do_which (const std::string& name)
 {
-  string retval;
+  std::string retval;
 
   symbol_record *sym_rec = lookup_by_name (name, 0);
 
@@ -931,7 +931,7 @@ do_which (const string& name)
     retval = sym_rec->which ();
   else
     {
-      string path = fcn_file_in_path (name);
+      std::string path = fcn_file_in_path (name);
 
       if (! path.empty ())
 	retval = path;
@@ -943,7 +943,7 @@ do_which (const string& name)
 }
 
 static void
-do_which (ostream& os, const string& name)
+do_which (std::ostream& os, const std::string& name)
 {
   symbol_record *sym_rec = lookup_by_name (name, 0);
 
@@ -951,7 +951,7 @@ do_which (ostream& os, const string& name)
     sym_rec->which (os);
   else
     {
-      string path = fcn_file_in_path (name);
+      std::string path = fcn_file_in_path (name);
 
       if (! path.empty ())
 	os << "which: `" << name << "' is the script file\n"
@@ -983,7 +983,7 @@ function file, the full name of the file is also displayed.\n\
 	{
 	  for (int i = 1; i < argc; i++)
 	    {
-	      string id = argv[i];
+	      std::string id = argv[i];
 
 	      if (nargout == 0)
 		do_which (octave_stdout, id);
@@ -1003,7 +1003,7 @@ info_file (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("INFO_FILE");
+  std::string s = builtin_string_variable ("INFO_FILE");
 
   if (s.empty ())
     {
@@ -1021,7 +1021,7 @@ info_prog (void)
 {
   int status = 0;
 
-  string s = builtin_string_variable ("INFO_PROGRAM");
+  std::string s = builtin_string_variable ("INFO_PROGRAM");
 
   if (s.empty ())
     {

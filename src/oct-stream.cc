@@ -152,7 +152,7 @@ get_size (const Matrix& size, int& nr, int& nc, bool& one_elt_size_spec,
     }
 }
 
-scanf_format_list::scanf_format_list (const string& s)
+scanf_format_list::scanf_format_list (const std::string& s)
   : nconv (0), curr_idx (0), list (16), buf (0)
 {
   int num_elts = 0;
@@ -173,7 +173,7 @@ scanf_format_list::scanf_format_list (const string& s)
       have_more = true;
 
       if (! buf)
-	buf = new ostrstream ();
+	buf = new std::ostrstream ();
 
       if (s[i] == '%')
 	{
@@ -244,7 +244,7 @@ scanf_format_list::~scanf_format_list (void)
 void
 scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 				    char modifier, int& num_elts,
-				    const string& char_class)
+				    const std::string& char_class)
 {
   if (buf)
     {
@@ -275,9 +275,9 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 }
 
 static string
-expand_char_class (const string& s)
+expand_char_class (const std::string& s)
 {
-  string retval;
+  std::string retval;
 
   size_t len = s.length ();
 
@@ -310,7 +310,7 @@ expand_char_class (const string& s)
 }
 
 void
-scanf_format_list::process_conversion (const string& s, int& i, int n,
+scanf_format_list::process_conversion (const std::string& s, int& i, int n,
 				       int& width, bool& discard, char& type,
 				       char& modifier, int& num_elts)
 {
@@ -412,13 +412,13 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 }
 
 int
-scanf_format_list::finish_conversion (const string& s, int& i, int n,
+scanf_format_list::finish_conversion (const std::string& s, int& i, int n,
 				      int& width, bool discard, char& type,
 				      char modifier, int& num_elts)
 {
   int retval = 0;
 
-  string char_class;
+  std::string char_class;
 
   if (s[i] == '%')
     *buf << s[i++];
@@ -572,7 +572,7 @@ scanf_format_list::all_numeric_conversions (void)
 
 // Ugh again.
 
-printf_format_list::printf_format_list (const string& s)
+printf_format_list::printf_format_list (const std::string& s)
   : nconv (0), curr_idx (0), list (16), buf (0)
 {
   int num_elts = 0;
@@ -592,7 +592,7 @@ printf_format_list::printf_format_list (const string& s)
       have_more = true;
 
       if (! buf)
-	buf = new ostrstream ();
+	buf = new std::ostrstream ();
 
       switch (s[i])
 	{
@@ -667,7 +667,7 @@ printf_format_list::add_elt_to_list (int args, char type, char modifier,
 }
 
 void
-printf_format_list::process_conversion (const string& s, int& i, int n,
+printf_format_list::process_conversion (const std::string& s, int& i, int n,
 					int& args, char& modifier,
 					char& type, int& num_elts)
 {
@@ -750,7 +750,7 @@ printf_format_list::process_conversion (const string& s, int& i, int n,
 }
 
 void
-printf_format_list::finish_conversion (const string& s, int& i,
+printf_format_list::finish_conversion (const std::string& s, int& i,
 				       int args, char modifier,
 				       char& type, int& num_elts)
 
@@ -839,8 +839,8 @@ octave_base_stream::file_number (void)
 
   int retval = -1;
 
-  istream *is = input_stream ();
-  ostream *os = output_stream ();
+  std::istream *is = input_stream ();
+  std::ostream *os = output_stream ();
 
   int i_fid = is ? ((filebuf *) (is->rdbuf ()))->fd () : -1;
   int o_fid = os ? ((filebuf *) (os->rdbuf ()))->fd () : -1;
@@ -859,7 +859,7 @@ octave_base_stream::file_number (void)
 }
 
 void
-octave_base_stream::error (const string& msg)
+octave_base_stream::error (const std::string& msg)
 {
   fail = true;
   errmsg = msg;
@@ -879,19 +879,19 @@ string
 octave_base_stream::do_gets (int max_len, bool& err,
 			     bool strip_newline, const char *fcn)
 {
-  string retval;
+  std::string retval;
 
   err = false;
 
-  istream *isp = input_stream ();
+  std::istream *isp = input_stream ();
 
   if (isp)
     {
-      istream& is = *isp;
+      std::istream& is = *isp;
 
       // XXX FIXME XXX -- this should probably be converted to use
       // sstream when that is available.
-      ostrstream buf;
+      std::ostrstream buf;
 
       int c = 0;
       int count = 0;
@@ -920,14 +920,14 @@ octave_base_stream::do_gets (int max_len, bool& err,
       if (is.fail ())
 	{
 	  err = true;
-	  string msg = fcn;
+	  std::string msg = fcn;
 	  msg.append (": read error");
 	  error (msg);
 	}
       else if (count == 0 && is.eof ())
 	{
 	  err = true;
-	  string msg = fcn;
+	  std::string msg = fcn;
 	  msg.append (": at end of file");
 	  error (msg);
 	}
@@ -969,11 +969,11 @@ octave_base_stream::read (const Matrix& size,
 
   count = 0;
 
-  istream *isp = input_stream ();
+  std::istream *isp = input_stream ();
 
   if (isp)
     {
-      istream& is = *isp;
+      std::istream& is = *isp;
 
       int nr = -1;
       int nc = -1;
@@ -1003,7 +1003,7 @@ octave_base_stream::read (const Matrix& size,
 
 template <class T>
 void
-do_scanf_conv (istream& is, const char *fmt, T valptr, Matrix& mval,
+do_scanf_conv (std::istream& is, const char *fmt, T valptr, Matrix& mval,
 	       double *data, int& idx, int& conv_count, int nr,
 	       int max_size, bool discard) 
 {
@@ -1032,25 +1032,25 @@ do_scanf_conv (istream& is, const char *fmt, T valptr, Matrix& mval,
 }
 
 template void
-do_scanf_conv (istream&, const char*, int*, Matrix&, double*, int&,
+do_scanf_conv (std::istream&, const char*, int*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 
 template void
-do_scanf_conv (istream&, const char*, long int*, Matrix&, double*, int&,
+do_scanf_conv (std::istream&, const char*, long int*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 
 template void
-do_scanf_conv (istream&, const char*, short int*, Matrix&, double*, int&,
+do_scanf_conv (std::istream&, const char*, short int*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 
 #if 0
 template void
-do_scanf_conv (istream&, const char*, float*, Matrix&, double*, int&,
+do_scanf_conv (std::istream&, const char*, float*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 #endif
 
 template void
-do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
+do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 
 #define DO_WHITESPACE_CONVERSION() \
@@ -1170,7 +1170,7 @@ do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
 	{ \
 	  ostrstream buf; \
  \
-	  string char_class = elt->char_class; \
+	  std::string char_class = elt->char_class; \
  \
 	  int c = EOF; \
  \
@@ -1260,7 +1260,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
       return Matrix (nr, nc, 0.0);
     }
 
-  istream *isp = input_stream ();
+  std::istream *isp = input_stream ();
 
   bool all_char_conv = fmt_list.all_character_conversions ();
 
@@ -1316,7 +1316,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
   if (isp)
     {
-      istream& is = *isp;
+      std::istream& is = *isp;
 
       const scanf_format_elt *elt = fmt_list.first ();
 
@@ -1554,11 +1554,11 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 
   count = 0;
 
-  istream *isp = input_stream ();
+  std::istream *isp = input_stream ();
 
   if (isp)
     {
-      istream& is = *isp;
+      std::istream& is = *isp;
 
       scanf_format_list fmt_list (fmt);
 
@@ -1631,11 +1631,11 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 {
   bool quit = false;
 
-  istream *isp = input_stream ();
+  std::istream *isp = input_stream ();
 
   if (isp)
     {
-      istream& is = *isp;
+      std::istream& is = *isp;
 
       ios::fmtflags flags = is.flags ();
 
@@ -1766,15 +1766,15 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 }
 
 octave_value_list
-octave_base_stream::oscanf (const string& fmt)
+octave_base_stream::oscanf (const std::string& fmt)
 {
   octave_value_list retval;
 
-  istream *isp = input_stream ();
+  std::istream *isp = input_stream ();
 
   if (isp)
     {
-      istream& is = *isp;
+      std::istream& is = *isp;
 
       scanf_format_list fmt_list (fmt);
 
@@ -1878,7 +1878,7 @@ octave_base_stream::flush (void)
 {
   int retval = -1;
 
-  ostream *os = output_stream ();
+  std::ostream *os = output_stream ();
 
   if (os)
     {
@@ -1900,11 +1900,11 @@ octave_base_stream::write (const octave_value& data,
 {
   int retval = -1;
 
-  ostream *osp = output_stream ();
+  std::ostream *osp = output_stream ();
 
   if (osp)
     {
-      ostream& os = *osp;
+      std::ostream& os = *osp;
 
       Matrix mval = data.matrix_value ();
 
@@ -1948,7 +1948,7 @@ public:
   int int_value (void);
 
   // Get the current value as a string and advance the internal pointer.
-  string string_value (void);
+  std::string string_value (void);
 
   operator bool () const { return (curr_state == ok); }
 
@@ -2072,7 +2072,7 @@ printf_value_cache::int_value (void)
 string
 printf_value_cache::string_value (void)
 {
-  string retval;
+  std::string retval;
 
   if (looking_at_string ())
     {
@@ -2095,7 +2095,7 @@ printf_value_cache::string_value (void)
 
 template <class T>
 void
-do_printf_conv (ostream& os, const char *fmt, int nsa, int sa_1,
+do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
 		int sa_2, bool have_arg, T arg)
 {
   switch (nsa)
@@ -2128,16 +2128,16 @@ do_printf_conv (ostream& os, const char *fmt, int nsa, int sa_1,
 }
 
 template void
-do_printf_conv (ostream&, const char*, int, int, int, bool, int);
+do_printf_conv (std::ostream&, const char*, int, int, int, bool, int);
 
 template void
-do_printf_conv (ostream&, const char*, int, int, int, bool, long);
+do_printf_conv (std::ostream&, const char*, int, int, int, bool, long);
 
 template void
-do_printf_conv (ostream&, const char*, int, int, int, bool, double);
+do_printf_conv (std::ostream&, const char*, int, int, int, bool, double);
 
 template void
-do_printf_conv (ostream&, const char*, int, int, int, bool, const char*);
+do_printf_conv (std::ostream&, const char*, int, int, int, bool, const char*);
 
 int
 octave_base_stream::do_printf (printf_format_list& fmt_list,
@@ -2145,11 +2145,11 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 {
   int retval = -1;
 
-  ostream *osp = output_stream ();
+  std::ostream *osp = output_stream ();
 
   if (osp)
     {
-      ostream& os = *osp;
+      std::ostream& os = *osp;
 
       const printf_format_elt *elt = fmt_list.first ();
 
@@ -2196,7 +2196,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		{
 		  if (elt->type == 's' && val_cache.looking_at_string ())
 		    {
-		      string val = val_cache.string_value ();
+		      std::string val = val_cache.string_value ();
 
 		      if (val_cache)
 			do_printf_conv (os, fmt, nsa, sa_1, sa_2, true,
@@ -2273,15 +2273,15 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 }
 
 int
-octave_base_stream::printf (const string& fmt, const octave_value_list& args)
+octave_base_stream::printf (const std::string& fmt, const octave_value_list& args)
 {
   int retval = -1;
 
-  ostream *osp = output_stream ();
+  std::ostream *osp = output_stream ();
 
   if (osp)
     {
-      ostream& os = *osp;
+      std::ostream& os = *osp;
 
       printf_format_list fmt_list (fmt);
 
@@ -2324,15 +2324,15 @@ octave_base_stream::printf (const string& fmt, const octave_value_list& args)
 }
 
 int
-octave_base_stream::puts (const string& s)
+octave_base_stream::puts (const std::string& s)
 {
   int retval = -1;
 
-  ostream *osp = output_stream ();
+  std::ostream *osp = output_stream ();
 
   if (osp)
     {
-      ostream& os = *osp;
+      std::ostream& os = *osp;
 
       os << s;
 
@@ -2374,7 +2374,7 @@ octave_base_stream::error (bool clear_err, int& err_num)
 {
   err_num = fail ? -1 : 0;
 
-  string tmp = errmsg;
+  std::string tmp = errmsg;
 
   if (clear_err)
     clear ();
@@ -2385,7 +2385,7 @@ octave_base_stream::error (bool clear_err, int& err_num)
 void
 octave_base_stream::invalid_operation (const char *op, const char *rw)
 {
-  string msg = op;
+  std::string msg = op;
   msg.append (": stream not open for ");
   msg.append (rw);
   error (msg);
@@ -2442,7 +2442,7 @@ octave_stream::flush (void)
 string
 octave_stream::getl (int max_len, bool& err)
 {
-  string retval;
+  std::string retval;
 
   if (stream_ok ("getl"))
     retval = rep->getl (max_len, err);
@@ -2453,7 +2453,7 @@ octave_stream::getl (int max_len, bool& err)
 string
 octave_stream::getl (const octave_value& tc_max_len, bool& err)
 {
-  string retval;
+  std::string retval;
 
   err = false;
 
@@ -2475,7 +2475,7 @@ octave_stream::getl (const octave_value& tc_max_len, bool& err)
 string
 octave_stream::gets (int max_len, bool& err)
 {
-  string retval;
+  std::string retval;
 
   if (stream_ok ("fgets"))
     retval = rep->gets (max_len, err);
@@ -2486,7 +2486,7 @@ octave_stream::gets (int max_len, bool& err)
 string
 octave_stream::gets (const octave_value& tc_max_len, bool& err)
 {
-  string retval;
+  std::string retval;
 
   err = false;
 
@@ -2532,7 +2532,7 @@ octave_stream::seek (const octave_value& tc_offset,
 
       if (tc_origin.is_string ())
 	{
-	  string xorigin = tc_origin.string_value ();
+	  std::string xorigin = tc_origin.string_value ();
 
 	  if (xorigin == "bof")
 	    origin = ios::beg;
@@ -2638,7 +2638,7 @@ octave_stream::write (const octave_value& data,
 }
 
 octave_value
-octave_stream::scanf (const string& fmt, const Matrix& size, int& count)
+octave_stream::scanf (const std::string& fmt, const Matrix& size, int& count)
 {
   octave_value retval;
 
@@ -2649,7 +2649,7 @@ octave_stream::scanf (const string& fmt, const Matrix& size, int& count)
 }
 
 octave_value_list
-octave_stream::oscanf (const string& fmt)
+octave_stream::oscanf (const std::string& fmt)
 {
   octave_value_list retval;
 
@@ -2660,7 +2660,7 @@ octave_stream::oscanf (const string& fmt)
 }
 
 int
-octave_stream::printf (const string& fmt, const octave_value_list& args)
+octave_stream::printf (const std::string& fmt, const octave_value_list& args)
 {
   int retval = -1;
 
@@ -2671,7 +2671,7 @@ octave_stream::printf (const string& fmt, const octave_value_list& args)
 }
 
 int
-octave_stream::puts (const string& s)
+octave_stream::puts (const std::string& s)
 {
   int retval = -1;
 
@@ -2690,7 +2690,7 @@ octave_stream::puts (const octave_value& tc_s)
 
   if (tc_s.is_string ())
     {
-      string s = tc_s.string_value ();      
+      std::string s = tc_s.string_value ();      
       retval = rep->puts (s);
     }
   else
@@ -2713,7 +2713,7 @@ octave_stream::eof (void) const
 string
 octave_stream::error (bool clear, int& err_num)
 {
-  string retval;
+  std::string retval;
 
   if (stream_ok ("ferror", false))
     retval = rep->error (clear, err_num);
@@ -2724,7 +2724,7 @@ octave_stream::error (bool clear, int& err_num)
 string
 octave_stream::name (void) const
 {
-  string retval;
+  std::string retval;
 
   if (stream_ok ("name"))
     retval = rep->name ();
@@ -2757,7 +2757,7 @@ octave_stream::float_format (void) const
 string
 octave_stream::mode_as_string (int mode)
 {
-  string retval = "???";
+  std::string retval = "???";
 
   switch (mode)
     {
@@ -2851,25 +2851,25 @@ octave_stream_list::insert (const octave_stream& os)
 }
 
 octave_stream
-octave_stream_list::lookup (int fid, const string& who)
+octave_stream_list::lookup (int fid, const std::string& who)
 {
   return (instance_ok ()) ? instance->do_lookup (fid, who) : octave_stream ();
 }
 
 octave_stream
-octave_stream_list::lookup (const octave_value& fid, const string& who)
+octave_stream_list::lookup (const octave_value& fid, const std::string& who)
 {
   return (instance_ok ()) ? instance->do_lookup (fid, who) : octave_stream ();
 }
 
 int
-octave_stream_list::remove (int fid, const string& who)
+octave_stream_list::remove (int fid, const std::string& who)
 {
   return (instance_ok ()) ? instance->do_remove (fid, who) : -1;
 }
 
 int
-octave_stream_list::remove (const octave_value& fid, const string& who)
+octave_stream_list::remove (const octave_value& fid, const std::string& who)
 {
   return (instance_ok ()) ? instance->do_remove (fid, who) : -1;
 }
@@ -2896,7 +2896,7 @@ octave_stream_list::get_info (const octave_value& fid)
 string
 octave_stream_list::list_open_files (void)
 {
-  return (instance_ok ()) ? instance->do_list_open_files () : string ();
+  return (instance_ok ()) ? instance->do_list_open_files () : std::string ();
 }
 
 octave_value
@@ -2950,7 +2950,7 @@ octave_stream_list::do_insert (const octave_stream& os)
 }
 
 static void
-gripe_invalid_file_id (int fid, const string& who)
+gripe_invalid_file_id (int fid, const std::string& who)
 {
   if (who.empty ())
     ::error ("invalid stream number = %d", fid);
@@ -2959,7 +2959,7 @@ gripe_invalid_file_id (int fid, const string& who)
 }
 
 octave_stream
-octave_stream_list::do_lookup (int fid, const string& who) const
+octave_stream_list::do_lookup (int fid, const std::string& who) const
 {
   octave_stream retval;
 
@@ -2973,7 +2973,7 @@ octave_stream_list::do_lookup (int fid, const string& who) const
 
 octave_stream
 octave_stream_list::do_lookup (const octave_value& fid,
-			       const string& who) const
+			       const std::string& who) const
 {
   octave_stream retval;
 
@@ -2986,7 +2986,7 @@ octave_stream_list::do_lookup (const octave_value& fid,
 }
 
 int
-octave_stream_list::do_remove (int fid, const string& who)
+octave_stream_list::do_remove (int fid, const std::string& who)
 {
   int retval = -1;
 
@@ -3012,7 +3012,7 @@ octave_stream_list::do_remove (int fid, const string& who)
 }
 
 int
-octave_stream_list::do_remove (const octave_value& fid, const string& who)
+octave_stream_list::do_remove (const octave_value& fid, const std::string& who)
 {
   int retval = -1;
 
@@ -3079,11 +3079,11 @@ octave_stream_list::do_get_info (const octave_value& fid) const
 string
 octave_stream_list::do_list_open_files (void) const
 {
-  string retval;
+  std::string retval;
 
   // XXX FIXME XXX -- this should probably be converted to use sstream
   // when that is available.
-  ostrstream buf;
+  std::ostrstream buf;
 
   buf << "\n"
       << "  number  mode  arch       name\n"
@@ -3095,12 +3095,12 @@ octave_stream_list::do_list_open_files (void) const
 
       if (os)
 	{
-	  string mode = octave_stream::mode_as_string (os.mode ());
+	  std::string mode = octave_stream::mode_as_string (os.mode ());
 
-	  string arch =
+	  std::string arch =
 	    oct_mach_info::float_format_as_string (os.float_format ());
 
-	  string name = os.name ();
+	  std::string name = os.name ();
 
 	  buf << "  "
 	      << setiosflags (ios::right)
@@ -3150,7 +3150,7 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
 
   if (fid.is_string ())
     {
-      string nm = fid.string_value ();
+      std::string nm = fid.string_value ();
 
       // stdin (cin), stdout (cout), and stderr (cerr) are unnamed.
 
@@ -3172,7 +3172,7 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
       int int_fid = convert_to_valid_int (fid, conv_err);
 
       if (conv_err)
-	::error ("file id must be a file object, string, or integer value");
+	::error ("file id must be a file object, std::string, or integer value");
       else
 	retval = int_fid;
     }

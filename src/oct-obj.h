@@ -82,7 +82,7 @@ public:
   octave_value_list (const char *s)
     : data (1, octave_value (s)) { }
 
-  octave_value_list (const string& s)
+  octave_value_list (const std::string& s)
     : data (1, octave_value (s)) { }
 
   octave_value_list (const string_vector& s)
@@ -140,7 +140,7 @@ public:
 
   bool all_strings_p (void) const;
 
-  string_vector make_argv (const string&) const;
+  string_vector make_argv (const std::string&) const;
 
   void stash_name_tags (const string_vector& nm) { names = nm; }
 

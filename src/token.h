@@ -65,8 +65,8 @@ public:
     };
 
   token (int l = -1, int c = -1);
-  token (const string& s, int l = -1, int c = -1);
-  token (double d, const string& s = string (), int l = -1, int c = -1);
+  token (const std::string& s, int l = -1, int c = -1);
+  token (double d, const std::string& s = std::string (), int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_record *s, int l = -1, int c = -1);
@@ -76,13 +76,13 @@ public:
   int line (void) { return line_num; }
   int column (void) { return column_num; }
 
-  string text (void);
+  std::string text (void);
   double number (void);
   end_tok_type ettype (void);
   plot_tok_type pttype (void);
   symbol_record *sym_rec (void);
 
-  string text_rep (void);
+  std::string text_rep (void);
 
 private:
   token (const token& tok);
@@ -93,13 +93,13 @@ private:
   token_type type_tag;
   union
     {
-      string *str;
+      std::string *str;
       double num;
       end_tok_type et;
       plot_tok_type pt;
       symbol_record *sr;
     };
-  string orig_text;
+  std::string orig_text;
 };
 
 #endif

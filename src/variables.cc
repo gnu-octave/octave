@@ -88,7 +88,7 @@ initialize_symbol_tables (void)
 // Is this variable a builtin?
 
 bool
-is_builtin_variable (const string& name)
+is_builtin_variable (const std::string& name)
 {
   symbol_record *sr = global_sym_tab->lookup (name);
   return (sr && sr->is_builtin_variable ());
@@ -97,7 +97,7 @@ is_builtin_variable (const string& name)
 // Is this a text-style function?
 
 bool
-is_text_function_name (const string& s)
+is_text_function_name (const std::string& s)
 {
   symbol_record *sr = global_sym_tab->lookup (s);
   return (sr && sr->is_text_function ());
@@ -106,7 +106,7 @@ is_text_function_name (const string& s)
 // Is this a built-in function?
 
 bool
-is_builtin_function_name (const string& s)
+is_builtin_function_name (const std::string& s)
 {
   symbol_record *sr = global_sym_tab->lookup (s);
   return (sr && sr->is_builtin_function ());
@@ -115,7 +115,7 @@ is_builtin_function_name (const string& s)
 // Is this a mapper function?
 
 bool
-is_mapper_function_name (const string& s)
+is_mapper_function_name (const std::string& s)
 {
   symbol_record *sr = global_sym_tab->lookup (s);
   return (sr && sr->is_mapper_function ());
@@ -124,7 +124,7 @@ is_mapper_function_name (const string& s)
 // Is this function globally in this scope?
 
 bool
-is_globally_visible (const string& name)
+is_globally_visible (const std::string& name)
 {
   symbol_record *sr = curr_sym_tab->lookup (name);
   return (sr && sr->is_linked_to_global ());
@@ -133,7 +133,7 @@ is_globally_visible (const string& name)
 // Is this octave_value a valid function?
 
 octave_function *
-is_valid_function (const string& fcn_name, const string& warn_for, bool warn)
+is_valid_function (const std::string& fcn_name, const std::string& warn_for, bool warn)
 {
   octave_function *ans = 0;
 
@@ -160,11 +160,11 @@ is_valid_function (const string& fcn_name, const string& warn_for, bool warn)
 }
 
 octave_function *
-is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
+is_valid_function (const octave_value& arg, const std::string& warn_for, bool warn)
 {
   octave_function *ans = 0;
 
-  string fcn_name;
+  std::string fcn_name;
 
   if (arg.is_string ())
     fcn_name = arg.string_value ();
@@ -178,9 +178,9 @@ is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
 }
 
 octave_function *
-extract_function (const octave_value& arg, const string& warn_for,
-		  const string& fname, const string& header,
-		  const string& trailer)
+extract_function (const octave_value& arg, const std::string& warn_for,
+		  const std::string& fname, const std::string& header,
+		  const std::string& trailer)
 {
   octave_function *retval = 0;
 
@@ -188,9 +188,9 @@ extract_function (const octave_value& arg, const string& warn_for,
 
   if (! retval)
     {
-      string s = arg.string_value ();
+      std::string s = arg.string_value ();
 
-      string cmd = header;
+      std::string cmd = header;
       cmd.append (s);
       cmd.append (trailer);
 
@@ -224,7 +224,7 @@ extract_function (const octave_value& arg, const string& warn_for,
 }
 
 string_vector
-get_struct_elts (const string& text)
+get_struct_elts (const std::string& text)
 {
   int n = 1;
 
@@ -261,13 +261,13 @@ get_struct_elts (const string& text)
 }
 
 string_vector
-generate_struct_completions (const string& text, string& prefix, string& hint)
+generate_struct_completions (const std::string& text, std::string& prefix, std::string& hint)
 {
   string_vector names;
 
   size_t pos = text.rfind ('.');
 
-  string id;
+  std::string id;
   string_vector elts;
 
   if (pos == NPOS)
@@ -324,13 +324,13 @@ generate_struct_completions (const string& text, string& prefix, string& hint)
 }
 
 bool
-looks_like_struct (const string& text)
+looks_like_struct (const std::string& text)
 {
   bool retval = true;
 
   string_vector elts = get_struct_elts (text);
 
-  string id = elts[0];
+  std::string id = elts[0];
 
   symbol_record *sr = curr_sym_tab->lookup (id);
 
@@ -391,11 +391,11 @@ is_global (\"x\")\n\
       return retval;
     }
 
-  string name = args(0).string_value ();
+  std::string name = args(0).string_value ();
 
   if (error_state)
     {
-      error ("is_global: expecting string argument");
+      error ("is_global: expecting std::string argument");
       return retval;
     }
 
@@ -430,16 +430,16 @@ other types of files, you should use some combination of the functions\n\
       return retval;
     }
 
-  string name = args(0).string_value ();
+  std::string name = args(0).string_value ();
 
   if (error_state)
     {
-      error ("exist: expecting string argument");
+      error ("exist: expecting std::string argument");
       return retval;
     }
 
-  string struct_elts;
-  string symbol_name = name;
+  std::string struct_elts;
+  std::string symbol_name = name;
 
   size_t pos = name.find ('.');
 
@@ -475,7 +475,7 @@ other types of files, you should use some combination of the functions\n\
     }
   else
     {
-      string path = fcn_file_in_path (name);
+      std::string path = fcn_file_in_path (name);
 
       if (path.length () > 0)
 	{
@@ -491,7 +491,7 @@ other types of files, you should use some combination of the functions\n\
 	    }
 	  else
 	    {
-	      string file_name = file_in_path (name, "");
+	      std::string file_name = file_in_path (name, "");
 
 	      if (! file_name.empty ())
 		{
@@ -523,7 +523,7 @@ symbol_out_of_date (symbol_record *sr)
 
       if (tmp)
 	{
-	  string ff = tmp->fcn_file_name ();
+	  std::string ff = tmp->fcn_file_name ();
 
 	  if (! (ff.empty ()
 		 || (Vignore_function_time_stamp
@@ -533,7 +533,7 @@ symbol_out_of_date (symbol_record *sr)
 		{
 		  time_t tp = tmp->time_parsed ();
 
-		  string fname;
+		  std::string fname;
 
 		  if (tmp->is_dld_function ())
 		    fname = ff;
@@ -587,7 +587,7 @@ lookup (symbol_record *sym_rec, bool exec_script)
 // current symbol table.
 
 symbol_record *
-lookup_by_name (const string& nm, bool exec_script)
+lookup_by_name (const std::string& nm, bool exec_script)
 {
   symbol_record *sym_rec = curr_sym_tab->lookup (nm, true);
 
@@ -597,7 +597,7 @@ lookup_by_name (const string& nm, bool exec_script)
 }
 
 octave_value
-get_global_value (const string& nm)
+get_global_value (const std::string& nm)
 {
   octave_value retval;
 
@@ -619,7 +619,7 @@ get_global_value (const string& nm)
 }
 
 void
-set_global_value (const string& nm, const octave_value& val)
+set_global_value (const std::string& nm, const octave_value& val)
 {
   symbol_record *sr = global_sym_tab->lookup (nm, true);
 
@@ -634,8 +634,8 @@ set_global_value (const string& nm, const octave_value& val)
 // Look for the given name in the global symbol table.  If it refers
 // to a string, return a new copy.  If not, return 0;
 
-string
-builtin_string_variable (const string& name)
+std::string
+builtin_string_variable (const std::string& name)
 {
   symbol_record *sr = global_sym_tab->lookup (name);
 
@@ -643,7 +643,7 @@ builtin_string_variable (const string& name)
 
   assert (sr);
 
-  string retval;
+  std::string retval;
 
   octave_value val = sr->def ();
 
@@ -658,7 +658,7 @@ builtin_string_variable (const string& name)
 // return 0.
 
 int
-builtin_real_scalar_variable (const string& name, double& d)
+builtin_real_scalar_variable (const std::string& name, double& d)
 {
   int status = 0;
   symbol_record *sr = global_sym_tab->lookup (name);
@@ -681,7 +681,7 @@ builtin_real_scalar_variable (const string& name, double& d)
 // Look for the given name in the global symbol table.
 
 octave_value
-builtin_any_variable (const string& name)
+builtin_any_variable (const std::string& name)
 {
   symbol_record *sr = global_sym_tab->lookup (name);
 
@@ -707,7 +707,7 @@ link_to_global_variable (symbol_record *sr)
 
       if (! error_state)
 	{
-	  string nm = sr->name ();
+	  std::string nm = sr->name ();
 
 	  symbol_record *gsr = global_sym_tab->lookup (nm, true);
 
@@ -756,7 +756,7 @@ link_to_builtin_or_function (symbol_record *sr)
 // given name defined in the global symbol table.
 
 void
-force_link_to_function (const string& id_name)
+force_link_to_function (const std::string& id_name)
 {
   symbol_record *gsr = global_sym_tab->lookup (id_name, true);
   if (gsr->is_function ())
@@ -779,11 +779,11 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
 
   if (nargin == 2)
     {
-      string name = args(0).string_value ();
+      std::string name = args(0).string_value ();
 
       if (! error_state)
 	{
-	  string help = args(1).string_value ();
+	  std::string help = args(1).string_value ();
 
 	  if (! error_state)
 	    {
@@ -820,7 +820,7 @@ do_who (int argc, const string_vector& argv)
   bool show_variables = false;
   bool show_verbose = false;
 
-  string my_name = argv[0];
+  std::string my_name = argv[0];
 
   int i;
   for (i = 1; i < argc; i++)
@@ -1014,13 +1014,13 @@ bind_ans (const octave_value& val, bool print)
 // functions needed?
 
 void
-bind_builtin_constant (const string& name, const octave_value& val,
-		       bool protect, bool eternal, const string& help)
+bind_builtin_constant (const std::string& name, const octave_value& val,
+		       bool protect, bool eternal, const std::string& help)
 {
   symbol_record *sym_rec = global_sym_tab->lookup (name, true);
   sym_rec->unprotect ();
 
-  string tmp_help = help.empty () ? sym_rec->help () : help;
+  std::string tmp_help = help.empty () ? sym_rec->help () : help;
 
   sym_rec->define_builtin_const (val);
 
@@ -1040,10 +1040,10 @@ bind_builtin_constant (const string& name, const octave_value& val,
 // functions needed?
 
 void
-bind_builtin_variable (const string& varname, const octave_value& val,
+bind_builtin_variable (const std::string& varname, const octave_value& val,
 		       bool protect, bool eternal,
 		       symbol_record::change_function chg_fcn,
-		       const string& help)
+		       const std::string& help)
 {
   symbol_record *sr = global_sym_tab->lookup (varname, true);
 
@@ -1179,7 +1179,7 @@ This command may not be used within a function body.\n\
 
       for (int k = idx; k < argc; k++)
 	{
-	  string patstr = argv[k];
+	  std::string patstr = argv[k];
 
 	  if (! patstr.empty ())
 	    {
@@ -1189,7 +1189,7 @@ This command may not be used within a function body.\n\
 
 	      for (int i = 0; i < lcount; i++)
 		{
-		  string nm = lvars[i];
+		  std::string nm = lvars[i];
 		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    curr_sym_tab->clear (nm);
@@ -1198,7 +1198,7 @@ This command may not be used within a function body.\n\
 	      int gcount = gvars.length ();
 	      for (int i = 0; i < gcount; i++)
 		{
-		  string nm = gvars[i];
+		  std::string nm = gvars[i];
 		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
@@ -1211,7 +1211,7 @@ This command may not be used within a function body.\n\
 	      int fcount = fcns.length ();
 	      for (int i = 0; i < fcount; i++)
 		{
-		  string nm = fcns[i];
+		  std::string nm = fcns[i];
 		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
@@ -1238,7 +1238,7 @@ Print raw symbol table statistices.\n\
 
   if (nargin == 1)
     {
-      string arg = args(0).string_value ();
+      std::string arg = args(0).string_value ();
 
       if (arg == "global")
 	global_sym_tab->print_stats ();
@@ -1265,7 +1265,7 @@ Print symbol table information for the symbol @var{name}.
 
   if (nargin == 1)
     {
-      string symbol_name = args(0).string_value ();
+      std::string symbol_name = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -1294,7 +1294,7 @@ ignore_function_time_stamp (void)
 {
   int pref = 0;
 
-  string val = builtin_string_variable ("ignore_function_time_stamp");
+  std::string val = builtin_string_variable ("ignore_function_time_stamp");
 
   if (! val.empty ())
     {

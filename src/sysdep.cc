@@ -351,7 +351,7 @@ returns a string containing the value of your path.\n\
 
   if (nargin == 1)
     {
-      string name = args(0).string_value ();
+      std::string name = args(0).string_value ();
 
       if (! error_state)
 	retval = octave_env::getenv (name);
@@ -374,11 +374,11 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   if (nargin == 2)
     {
-      string var = args(0).string_value (); 
+      std::string var = args(0).string_value (); 
 
       if (! error_state)
 	{
-	  string val = args(1).string_value (); 
+	  std::string val = args(1).string_value (); 
 
 	  if (! error_state)
 	    octave_env::putenv (var, val);

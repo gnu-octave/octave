@@ -56,7 +56,7 @@ public:
 
   virtual void accept (tree_walker& tw) = 0;
 
-  string str_print_code (void);
+  std::string str_print_code (void);
 
 private:
 

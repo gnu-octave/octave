@@ -28,7 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <iostream.h>
+#include <iostream>
 
 #include "mach-info.h"
 
@@ -50,11 +50,11 @@ DEFBINOP (lshift, file, matrix)
 
   if (oct_stream)
     {
-      ostream *osp = oct_stream.output_stream ();
+      std::ostream *osp = oct_stream.output_stream ();
 
       if (osp)
 	{
-	  ostream& os = *osp;
+	  std::ostream& os = *osp;
 
 	  v2.print_raw (os);
 	}

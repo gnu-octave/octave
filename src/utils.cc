@@ -95,7 +95,7 @@ jump_to_top_level (void)
 }
 
 int
-almost_match (const string& std, const string& s, int min_match_len,
+almost_match (const std::string& std, const std::string& s, int min_match_len,
 	      int case_sens)
 {
   int stdlen = std.length ();
@@ -111,7 +111,7 @@ almost_match (const string& std, const string& s, int min_match_len,
 // Ugh.
 
 int
-keyword_almost_match (const char * const *std, int *min_len, const string& s,
+keyword_almost_match (const char * const *std, int *min_len, const std::string& s,
 		      int min_toks_to_match, int max_toks)
 {
   int status = 0;
@@ -229,7 +229,7 @@ empty_arg (const char *name, int nr, int nc)
 // See if the given file is in the path.
 
 string
-search_path_for_file (const string& path, const string& name)
+search_path_for_file (const std::string& path, const std::string& name)
 {
   dir_path p (path);
 
@@ -290,7 +290,7 @@ file_in_path (LOADPATH, \"nargchk.m\")\n\
 
   if (argc == 3)
     {
-      string fname = search_path_for_file (argv[1], argv[2]);
+      std::string fname = search_path_for_file (argv[1], argv[2]);
 
       if (fname.empty ())
 	retval = Matrix ();
@@ -304,9 +304,9 @@ file_in_path (LOADPATH, \"nargchk.m\")\n\
 }
 
 string
-file_in_path (const string& name, const string& suffix)
+file_in_path (const std::string& name, const std::string& suffix)
 {
-  string nm = name;
+  std::string nm = name;
 
   if (! suffix.empty ())
     nm.append (suffix);
@@ -319,9 +319,9 @@ file_in_path (const string& name, const string& suffix)
 // full path to the file.
 
 string
-fcn_file_in_path (const string& name)
+fcn_file_in_path (const std::string& name)
 {
-  string retval;
+  std::string retval;
 
   int len = name.length ();
   
@@ -340,9 +340,9 @@ fcn_file_in_path (const string& name)
 // full path to the file.
 
 string
-oct_file_in_path (const string& name)
+oct_file_in_path (const std::string& name)
 {
-  string retval;
+  std::string retval;
 
   int len = name.length ();
   
@@ -361,9 +361,9 @@ oct_file_in_path (const string& name)
 // Replace backslash escapes in a string with the real values.
 
 string
-do_string_escapes (const string& s)
+do_string_escapes (const std::string& s)
 {
-  string retval;
+  std::string retval;
 
   size_t i = 0;
   size_t j = 0;
@@ -507,9 +507,9 @@ undo_string_escape (char c)
 }
 
 string
-undo_string_escapes (const string& s)
+undo_string_escapes (const std::string& s)
 {
-  string retval;
+  std::string retval;
 
   for (size_t i = 0; i < s.length (); i++)
     retval.append (undo_string_escape (s[i]));
@@ -563,7 +563,7 @@ representation.\n\
 }
 
 static void
-warn_old_style_preference (bool val, const string& sval)
+warn_old_style_preference (bool val, const std::string& sval)
 {
   warning
     ("preference of \"%s\" is obsolete -- use numeric value of %d instead",
@@ -578,11 +578,11 @@ warn_old_style_preference (bool val, const string& sval)
 //   return of -1 => ok, but give me warning (default).
 
 int
-check_preference (const string& var)
+check_preference (const std::string& var)
 {
   int pref = -1;
 
-  string val = builtin_string_variable (var);
+  std::string val = builtin_string_variable (var);
 
   if (val.empty ())
     {

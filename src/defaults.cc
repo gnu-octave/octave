@@ -345,8 +345,6 @@ exec_path (void)
 	  int prepend = (Vexec_path[0] == ':');
 	  int append = (eplen > 1 && Vexec_path[eplen-1] == ':');
 
-	  cerr << eplen << ", " << Vexec_path[eplen-1] << "\n";
-
 	  if (prepend)
 	    {
 	      if (append)
@@ -383,8 +381,6 @@ exec_path (void)
 	  putenv_cmd = new char [std_len+6];
 	  sprintf (putenv_cmd, "PATH=%s", std_path.c_str ());
 	}
-
-      cerr << putenv_cmd << "\n";
 
       putenv (putenv_cmd);
     }

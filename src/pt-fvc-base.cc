@@ -1,4 +1,3 @@
-// pt-fvc-base.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -94,6 +93,5 @@ tree_fvc::save (ostream&, bool, int)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

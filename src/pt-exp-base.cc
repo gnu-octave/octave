@@ -1,4 +1,3 @@
-// pt-exp-base.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -110,6 +109,5 @@ tree_expression::eval (bool /* print */)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// f-svd.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -140,6 +139,5 @@ X may not contain any Inf or NaN values.")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

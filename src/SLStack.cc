@@ -1,4 +1,3 @@
-// SLStack.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -116,6 +115,5 @@ SLStack<T>::clear (void)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// dirfns.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -38,6 +37,5 @@ extern string get_working_directory (const string&);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// sysdep.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -50,6 +49,5 @@ extern string oct_tilde_expand (const string&);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

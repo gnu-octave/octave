@@ -1,4 +1,3 @@
-// oct-hist.cc                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -577,6 +576,5 @@ run commands from the history list")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// SLStack-up.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -36,6 +35,5 @@ template class SLStack<unwind_elem>;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// input.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -75,6 +74,5 @@ char *gnu_readline (const char *s);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

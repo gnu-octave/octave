@@ -1,4 +1,3 @@
-// pager.cc                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -286,6 +285,5 @@ Turn output pagination on or off.")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

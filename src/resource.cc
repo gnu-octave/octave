@@ -1,4 +1,3 @@
-// resource.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -125,6 +124,5 @@ Return system resource statistics.")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// oct-obj.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -67,6 +66,5 @@ Octave_object::make_argv (const string& fcn_name) const
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

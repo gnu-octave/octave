@@ -1,4 +1,3 @@
-// error.cc                                             -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -276,6 +275,5 @@ See also: error, printf")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

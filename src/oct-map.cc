@@ -1,4 +1,3 @@
-// oct-map.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -52,6 +51,5 @@ Octave_map::make_name_list (void)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

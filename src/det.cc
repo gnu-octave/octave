@@ -1,4 +1,3 @@
-// f-det.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -127,6 +126,5 @@ DEFUN_DLD_BUILTIN (det, args, ,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

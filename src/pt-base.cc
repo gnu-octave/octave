@@ -1,4 +1,3 @@
-// pt-base.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -81,6 +80,5 @@ tree_print_code::print_code_reset (void)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// oct-map.h                                            -*- C -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -58,6 +57,5 @@ Octave_map : public CHMap<tree_constant>
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

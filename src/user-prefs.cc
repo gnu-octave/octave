@@ -1,4 +1,3 @@
-// user-prefs.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -1056,6 +1055,5 @@ sv_pwd (void)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// symtab.h                                             -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -335,6 +334,5 @@ extern int valid_identifier (const char *s);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// f-givens.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -119,6 +118,5 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

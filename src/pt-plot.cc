@@ -1,4 +1,3 @@
-// pt-plot.cc                                         -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -1155,6 +1154,5 @@ show plotting options")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// load-save.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -45,6 +44,5 @@ extern void save_user_variables (void);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

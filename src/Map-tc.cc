@@ -1,4 +1,3 @@
-// Map-tc.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -38,6 +37,5 @@ template static int CHptr_to_index (CHNode<tree_constant> *t);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

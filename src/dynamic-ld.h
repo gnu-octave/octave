@@ -1,4 +1,3 @@
-// dynamic-ld.h                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -37,6 +36,5 @@ extern void init_dynamic_linker (void);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// user-prefs.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -153,6 +152,5 @@ enum echo_state
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

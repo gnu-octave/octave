@@ -1,4 +1,3 @@
-// f-lu.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -138,6 +137,5 @@ DEFUN_DLD_BUILTIN (lu, args, nargout,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// pt-mvr-base.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -45,6 +44,5 @@ tree_multi_val_ret::eval (bool /* print */)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// pt-mvr.h                                      -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -157,6 +156,5 @@ tree_multi_assignment_expression : public tree_multi_val_ret
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

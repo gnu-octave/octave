@@ -1,4 +1,3 @@
-// pt-mvr.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -417,6 +416,5 @@ tree_multi_assignment_expression::print_code (ostream& os)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

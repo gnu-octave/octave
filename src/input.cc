@@ -1,4 +1,3 @@
-// input.cc                                             -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -1192,6 +1191,5 @@ Without any arguments, toggle the current echo state.")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

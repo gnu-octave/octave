@@ -1,4 +1,3 @@
-// f-sort.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -379,6 +378,5 @@ sort the columns of X, optionally return sort index")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

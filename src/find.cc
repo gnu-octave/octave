@@ -1,4 +1,3 @@
-// f-find.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -198,6 +197,5 @@ DEFUN_DLD_BUILTIN (find, args, nargout,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

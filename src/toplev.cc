@@ -1,4 +1,3 @@
-// toplev.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -716,6 +715,5 @@ __builtin_delete (void *ptr)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

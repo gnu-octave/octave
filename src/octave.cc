@@ -1,4 +1,3 @@
-// octave.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -601,6 +600,5 @@ main (int argc, char **argv)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

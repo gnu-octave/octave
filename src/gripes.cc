@@ -1,4 +1,3 @@
-// gripes.cc                                             -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -138,6 +137,5 @@ gripe_wrong_type_arg_for_binary_op (const tree_constant& op)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// SLStack-sym.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -41,6 +40,5 @@ template class SLStack<symbol_def *>;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

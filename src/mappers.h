@@ -1,4 +1,3 @@
-// mappers.h                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -78,6 +77,5 @@ extern void install_mapper_functions (void);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// f-pinv.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -94,6 +93,5 @@ Returns the pseudoinverse of X; singular values less than tol are ignored.")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

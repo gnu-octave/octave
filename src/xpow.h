@@ -1,4 +1,3 @@
-// xpow.h                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -68,6 +67,5 @@ extern tree_constant elem_xpow (const ComplexMatrix& a,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

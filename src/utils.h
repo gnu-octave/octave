@@ -1,4 +1,3 @@
-// utils.h                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -66,6 +65,5 @@ extern void oct_putenv (const char *, const char *);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

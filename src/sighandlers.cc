@@ -1,4 +1,3 @@
-// sighandlers.cc                                         -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -423,6 +422,5 @@ char *sys_siglist[NSIG + 1] =
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// Stack.cc                                             -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -41,6 +40,5 @@ Stack<T>::error (const char *msg)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// parse.h                                                 -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -57,6 +56,5 @@ extern string help_buf;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// arith-ops.cc                                         -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -2817,6 +2816,5 @@ do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

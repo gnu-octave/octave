@@ -1,4 +1,3 @@
-// arith-ops.h                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -95,6 +94,5 @@ extern tree_constant do_binary_op (const ComplexMatrix& a,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// lex.h                                                 -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -197,6 +196,5 @@ extern lexical_feedback lexer_flags;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

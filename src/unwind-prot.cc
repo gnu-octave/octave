@@ -1,4 +1,3 @@
-// unwind-prot.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -263,6 +262,5 @@ unwind_protect_ptr_internal (void **ptr, void *value)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

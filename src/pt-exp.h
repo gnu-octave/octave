@@ -1,4 +1,3 @@
-// pt-exp.h                                      -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -272,6 +271,5 @@ tree_colon_expression : public tree_expression
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

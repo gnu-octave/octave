@@ -1,4 +1,3 @@
-// xpow.cc                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -765,6 +764,5 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// load-save.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -2355,6 +2354,5 @@ save_three_d (ostream& os, const tree_constant& tc, int parametric)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

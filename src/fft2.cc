@@ -1,4 +1,3 @@
-// f-fft2.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -123,6 +122,5 @@ two dimensional fast fourier transform of a vector")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

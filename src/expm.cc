@@ -1,4 +1,3 @@
-// f-expm.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -94,6 +93,5 @@ DEFUN_DLD_BUILTIN (expm, args, ,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// help.h                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -53,6 +52,5 @@ extern int help_from_list (ostrstream& output_buf,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

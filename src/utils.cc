@@ -1,4 +1,3 @@
-// utils.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -578,6 +577,5 @@ oct_putenv (const char *var_name, const char *value)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

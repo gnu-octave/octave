@@ -1,4 +1,3 @@
-// variables.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -1958,6 +1957,5 @@ With -x, exclude the named variables")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

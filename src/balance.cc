@@ -1,4 +1,3 @@
-// f-balance.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -284,6 +283,5 @@ where OPT is an optional single character argument as follows: \n\
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

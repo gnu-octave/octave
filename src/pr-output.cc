@@ -1,4 +1,3 @@
-// pr-output.cc                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -1756,6 +1755,5 @@ set output formatting style")
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// pager.h                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -41,6 +40,5 @@ extern void maybe_write_to_diary_file (const string& s);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

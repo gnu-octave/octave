@@ -1,4 +1,3 @@
-// f-filter.cc						-*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -292,6 +291,5 @@ filter (MArray<Complex>&, MArray<Complex>&, MArray <Complex>&);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */  

@@ -1,4 +1,3 @@
-// f-ifft.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -117,6 +116,5 @@ DEFUN_DLD_BUILTIN (ifft, args, ,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

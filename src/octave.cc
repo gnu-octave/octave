@@ -373,22 +373,22 @@ execute_startup_files (void)
 static void
 verbose_usage (void)
 {
-  cout << "\n"
-       << OCTAVE_NAME_VERSION_AND_COPYRIGHT
-       << "\n\n"
-       << "  usage: " << usage_string
-       << "\n\n"
-       << "     V : enable verbose output in some cases\n"
-       << "     d : enter parser debugging mode\n"
-       << "     f : don't read ~/.octaverc or .octaverc at startup\n"
-       << "   h|? : print short help message and exit\n"
-       << "     i : force interactive behavior\n"
-       << "     q : don't print message at startup\n"
-       << "     v : print version number and exit\n"
-       << "     x : echo commands as they are executed\n"
-       << "\n"
-       << "  file : execute commands from named file\n"
-       << "\n";
+  cout << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\n\
+Usage: " << usage_string << "\n\
+\n\
+  -d, --debug             enter parser debugging mode\n\
+  -f, --ignore-init-file  don't read ~/.octaverc or .octaverc at startup\n\
+  -h, -?, --help          print short help message and exit\n\
+  -i, --interactive       force interactive behavior\n\
+  --info-file file        use top-level info file `file'\n\
+  -p path, --path path    set initial LOADPATH to `path'\n\
+  -q, --silent            don't print message at startup\n\
+  -V, --verbose           enable verbose output in some cases\n\
+  -v, --version           print version number and exit\n\
+  -x, --echo-commands     echo commands as they are executed\n\
+\n\
+  file                    execute commands from `file'\n\
+\n";
 
   exit (0);
 }

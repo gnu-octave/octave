@@ -1,3 +1,21 @@
+Tue Nov 19 15:13:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/commutation_matrix.m, linear-algebra/cross.m,
+	linear-algebra/duplication_matrix.m, linear-algebra/vec.m,
+	linear-algebra/vech.m: New files from Kurt Hornik.
+
+	* general/nextpow2.m, general/shift.m, general/diff.m,
+	general/common_size.m: New files from Kurt Hornik.
+
+	* miscellaneous/bincoeff.m, miscellaneous/xor.m:
+	New files from Kurt Hornik.
+
+	* signal/detrend.m: New file from Kurt Hornik.
+
+	* specfun/betai.m, specfun/gammai.m, specfun/erfinv.m,
+	specfun/pow2.m, specfun/log2.m:
+	New files and updates from Kurt Hornik.
+
 Fri Nov 15 18:13:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__plt__.m: Add explicit replot after last command is

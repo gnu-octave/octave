@@ -627,6 +627,17 @@ builtin_ls (int argc, char **argv)
 }
 
 /*
+ * Run previous commands from the history list.
+ */
+tree_constant
+builtin_run_history (int argc, char **argv)
+{
+  tree_constant retval;
+  do_run_history (argc, argv);
+  return retval;
+}
+
+/*
  * Write variables to an output stream.
  */
 tree_constant

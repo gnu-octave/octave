@@ -120,6 +120,8 @@ extern void install_builtin_variables (void);
 
 extern char *maybe_add_default_load_path (const char *p);
 
+extern void maximum_braindamage (void);
+
 extern char *octave_lib_dir (void);
 extern char *octave_arch_lib_dir (void);
 extern char *octave_bin_dir (void);

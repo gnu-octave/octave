@@ -1,3 +1,10 @@
+2002-11-09  Per Persson <persquare@mac.com>
+
+	* configure.in: Use $(TOPDIR)/src/octave, not $(bindir)/octave for
+	-bundle-loader argument.	
+
+	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE): Force result for OS X.
+
 2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Set FPICFLAG, Also set CXXPICFLAG, CPICFLAG,

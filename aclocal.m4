@@ -619,6 +619,11 @@ EOF
       *-*-cygwin* | *-*-mingw*)
         octave_cv_cxx_prepends_underscore=no
       ;;
+### XXX FIXME XXX -- Ignore test result on OS X.  Yes it prepends
+### underscore, but also messes with the name so test fails (incorrectly).
+      *-*-darwin6*)
+        octave_cv_cxx_prepends_underscore=yes
+      ;;
     esac
   ])
   AC_MSG_RESULT($octave_cv_cxx_prepends_underscore)

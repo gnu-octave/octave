@@ -1,3 +1,8 @@
+2002-11-09  Per Persson <persquare@mac.com>
+
+	* oct-shlib.cc (octave_dyld_shlib): New class.
+	(make_shlib): Instantiate octave_dyld_shlib.
+
 2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc, dMatrix.cc: Sprinkle with OCTAVE_QUIT.

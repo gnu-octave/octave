@@ -29,6 +29,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #endif
 
+#if defined (HAVE_DYLD_API)
+#include <Mach-O/dyld.h>
+#endif
+
 extern "C"
 {
 #if defined (HAVE_DLOPEN_API)
@@ -524,6 +528,137 @@ octave_w32_shlib::close (octave_shlib::close_hook cl_hook)
     }
 }
 
+#elif defined (HAVE_DYLD_API)
+
+class
+octave_dyld_shlib : public octave_base_shlib
+{
+public:
+
+  octave_dyld_shlib (void);
+
+  ~octave_dyld_shlib (void);
+
+  void open (const std::string& f, bool warn_future = false);
+
+  void *search (const std::string& name, name_mangler mangler = 0);
+
+  void close (octave_shlib::close_hook cl_hook = 0);
+
+  bool is_open (void) const {return (isOpen); }
+
+private:
+
+  // No copying!
+
+  octave_dyld_shlib (const octave_dyld_shlib&);
+
+  octave_dyld_shlib& operator = (const octave_dyld_shlib&);
+
+  bool isOpen;
+  NSObjectFileImage img;
+  NSModule handle;
+};
+
+octave_dyld_shlib::octave_dyld_shlib (void)
+  : octave_base_shlib (), isOpen (false), handle (0)
+{
+}
+
+octave_dyld_shlib::~octave_dyld_shlib (void)
+{
+  close ();
+}
+
+void
+octave_dyld_shlib::open (const std::string& f, bool warn_future)
+{
+  int returnCode;
+
+  if (! is_open ())
+    {
+      file = f;
+
+      returnCode = NSCreateObjectFileImageFromFile (file.c_str (), &img);
+
+      if (NSObjectFileImageSuccess == returnCode)
+	{
+	  handle = NSLinkModule (img, file.c_str (),
+				 (NSLINKMODULE_OPTION_RETURN_ON_ERROR
+				  | NSLINKMODULE_OPTION_PRIVATE));
+	  if (handle)
+	    {
+	      stamp_time (warn_future);
+	      isOpen = true;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("couldn't link module %s", file.c_str ());	
+	    }
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("got NSObjectFileImageReturnCode %d", returnCode);
+
+	  // XXX FIXME XXX -- should use NSLinkEditError () to get
+	  // more info on what went wrong.
+	}
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+	("bundle %s is already open", file.c_str ());
+    }
+}
+
+void *
+octave_dyld_shlib::search (const std::string& name,
+			   octave_shlib::name_mangler mangler)
+{
+  void *function = 0;
+
+  if (is_open ())
+    {
+      std::string sym_name = name;
+
+      if (mangler)
+	sym_name = mangler (name);
+
+      NSSymbol symbol = NSLookupSymbolInModule (handle, sym_name.c_str ());
+
+      if (symbol)
+	{
+	  function = NSAddressOfSymbol (symbol);
+	  add_to_fcn_names (name);
+	}
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("bundle %s is not open", file.c_str ());
+
+  return function;
+}
+
+void
+octave_dyld_shlib::close (octave_shlib::close_hook cl_hook)
+{
+  if (is_open ())
+    {
+      do_close_hook (cl_hook);
+
+      NSUnLinkModule (handle, NSUNLINKMODULE_OPTION_RESET_LAZY_REFERENCES);
+
+      handle = 0;
+
+      if (NSDestroyObjectFileImage (img))
+	isOpen = false;
+
+      tabula_rasa ();
+    }
+}
+
 #endif
 
 octave_shlib *
@@ -535,6 +670,8 @@ octave_shlib::make_shlib (void)
   return new octave_shl_load_shlib ();
 #elif defined (HAVE_LOADLIBRARY_API)
   return new octave_w32_shlib ();
+#elif defined (HAVE_DYLD_API)
+  return new octave_dyld_shlib ();
 #else
   return new octave_base_shlib ();
 #endif

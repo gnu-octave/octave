@@ -25,7 +25,8 @@ endif
 CWD = $(shell pwd)
 THISDIR = $(notdir $(CWD))
 
-all: stamp-picdir $(CRUFT_OBJ) $(SPECIAL_DEPEND) $(CRUFT_PICOBJ)
+all: stamp-picdir $(CRUFT_OBJ) $(CRUFT_PICOBJ) \
+	$(SPECIAL_DEPEND) $(SPECIAL_PICDEPEND)
 .PHONY: all
 
 stamp-picdir:

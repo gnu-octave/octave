@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <string>
+
 #include "pt-walk.h"
 
 // How to print the code that the parse trees represent.
@@ -36,7 +38,9 @@ tree_print_code : public tree_walker
 {
 public:
 
-  tree_print_code (ostream& os_arg) : os (os_arg) { }
+  tree_print_code (ostream& os_arg, const string& pfx = string (),
+		   bool pr_orig_txt = true)
+    : os (os_arg), prefix (pfx), print_original_text (pr_orig_txt) { }
 
   ~tree_print_code (void) { }
 
@@ -129,6 +133,10 @@ public:
 private:
 
   ostream& os;
+
+  string prefix;
+
+  bool print_original_text;
 
   static int curr_print_indent_level;
   static bool beginning_of_line;

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
+#include "input.h"
 #include "pager.h"
 #include "symtab.h"
 #include "toplev.h"
@@ -395,7 +396,7 @@ tree_function::traceback_error (void)
 void
 tree_function::print_code_function_header (void)
 {
-  tree_print_code tpc (octave_stdout);
+  tree_print_code tpc (octave_stdout, Vps4);
 
   tpc.visit_function_header (*this);
 }
@@ -403,7 +404,7 @@ tree_function::print_code_function_header (void)
 void
 tree_function::print_code_function_trailer (void)
 {
-  tree_print_code tpc (octave_stdout);
+  tree_print_code tpc (octave_stdout, Vps4);
 
   tpc.visit_function_trailer (*this);
 }

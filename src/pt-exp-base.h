@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <string>
+
 class octave_value;
 
 #include "pt-base.h"
@@ -59,9 +61,6 @@ public:
   virtual bool is_matrix_constant (void) const
     { return false; }
 
-  virtual bool is_range_constant (void) const
-    { return false; }
-
   virtual bool is_multi_val_ret_expression (void) const
     { return false; }
 
@@ -91,6 +90,8 @@ public:
   virtual octave_value eval (bool print) = 0;
 
   virtual char *oper (void) const { return "<unknown>"; }
+
+  virtual string original_text (void) const;
 
 protected:
 

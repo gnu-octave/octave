@@ -294,12 +294,7 @@ install-inc:
 	if [ "$$linkdir" = $(octincludedir) ] ; then \
 	  true ; \
 	else \
-	  if [ -d $$linkdir ] ; then \
-	    true ; \
-	  else \
-	    rm -f $$linkdir ; \
-	    $(LN_S) $(octincludedir) $$linkdir ; \
-	  fi ; \
+	  rm -f $$linkdir && $(LN_S) $(octincludedir) $$linkdir ; \
 	fi
 .PHONY: install-lib
 

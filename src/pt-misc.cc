@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
+#include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "toplev.h"
@@ -87,7 +88,7 @@ tree_statement::maybe_echo_code (bool in_function_body)
   if (in_function_body
       && (Vecho_executing_commands & ECHO_FUNCTIONS))
     {
-      tree_print_code tpc (octave_stdout);
+      tree_print_code tpc (octave_stdout, Vps4);
 
       accept (tpc);
     }

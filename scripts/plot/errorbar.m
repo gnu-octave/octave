@@ -120,8 +120,6 @@ function errorbar (varargin)
   gset nologscale y;
   gset nopolar;
 
-  length (varargin)
-
   __errcomm__ ("errorbar", varargin{:});
 
 endfunction

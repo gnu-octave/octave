@@ -34,10 +34,10 @@
 ## @item "."
 ## For dots plot style.
 ##
-## @item "@"
+## @item "@@"
 ## For points plot style.
 ##
-## @item "-@"
+## @item "-@@"
 ## For linespoints plot style.
 ##
 ## @item "^"
@@ -68,8 +68,8 @@
 ## With @code{n} in 1-6 (wraps at 8), plot color
 ##
 ## @item "nm"
-## With @code{m} in 1-6 (wraps at 6), point style (only valid for @code{"@"} or
-## @code{"-@"})
+## With @code{m} in 1-6 (wraps at 6), point style (only valid for @code{"@@"} or
+## @code{"-@@"})
 ##
 ## @item @var{c}
 ## Where @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},

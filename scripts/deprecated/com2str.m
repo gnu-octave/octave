@@ -65,7 +65,7 @@ function retval = com2str (zz, flg)
     ## strictly an imaginary number
     switch (flg)
       case(0)
-	retval = num2str (iz);
+	retval = [num2str(iz), "i"];
       case(1)
 	retval = [sgns(1+(iz<0)), " ", num2str(abs(iz)), "i"];
     endswitch

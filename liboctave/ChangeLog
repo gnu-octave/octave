@@ -1,3 +1,8 @@
+2004-06-03  David Bateman  <dbateman@free.fr>
+
+	* Array.cc (assignN): Allow magic colon for dimensions lvalue
+	greater than the existing number of dimensions in lvalue.
+
 2004-04-30  David Bateman  <dbateman@free.fr>
 
         * dim_vector.h (dim_vector::dim_vector_rep::dim_vector_rep):

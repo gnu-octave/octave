@@ -148,7 +148,13 @@ public:
   octave_value *clone (void) const { return new octave_fcn_handle (*this); }
   octave_value *empty_clone (void) const { return new octave_fcn_handle (); }
 
-  bool is_defined (void) const { return true; }
+  bool is_matrix_type (void) const { return false; }
+
+  bool is_numeric_type (void) const { return false; }
+
+  bool is_constant (void) const { return false; }
+
+  bool is_true (void) { return false; }
 
   bool is_function_handle (void) const { return true; }
 

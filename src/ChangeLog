@@ -1,3 +1,12 @@
+2004-06-03  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.h (octave_function_handle::is_matrix_type,
+	octave_function_handle::is_numeric_type,
+	octave_function_handle::is_constant,
+	octave_function_handle::is_true): New functions.
+	(octave_function_handle::is_defined): Delete (inherited version is
+	OK).
+
 2004-06-03  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/filter.cc: Fix for length(a)=1 && length(b)=2 case.

@@ -2944,8 +2944,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      // We didn't start out with all zero dimensions, so if
 	      // index is a colon, it refers to the current LHS
 	      // dimension.  Otherwise, it is OK to enlarge to a
-	      // dimension given by the largest index (but that index
-	      // needs to be a number, not a colon).
+	      // dimension given by the largest index, but if that 
+	      // index is a colon the new dimension is singleton.
 
 	      if (i < lhs_dims_len
 		  && (idx(i).is_colon () || idx(i).max () < lhs_dims(i)))
@@ -2953,17 +2953,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      else if (! idx(i).is_colon ())
 		new_dims(i) = idx(i).max () + 1;
 	      else
-		{
-		  // XXX FIXME XXX -- can we provide a more
-		  // informative message here?
-
-		  (*current_liboctave_error_handler)
-		    ("invalid array index for assignment");
-
-		  retval = 0;
-
-		  break;
-		}
+		new_dims(i) = 1;
 	    }
 	}
 

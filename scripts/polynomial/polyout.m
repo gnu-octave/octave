@@ -53,12 +53,8 @@ function y = polyout (c, x)
   if(n > 0)
     n1 = n+1;
 
-    if (imag (c(1)))
-      tmp = com2str(c(1))
-    else
-      tmp = num2str(c(1));
-    endif
 
+    tmp = coeff (c(1));
     for ii = 2:n
       if (real (c(ii)) < 0)
 	ns = " - ";
@@ -67,13 +63,7 @@ function y = polyout (c, x)
         ns = " + ";
       endif
 
-      if (imag (c(ii)))
-	nstr = sprintf ("(%s)", com2str (c(ii)));
-      else
-        nstr = num2str (c(ii));
-      endif
-
-      tmp = sprintf ("%s*%s^%d%s%s", tmp, x, n1-ii, ns, nstr);
+      tmp = sprintf ("%s*%s^%d%s%s", tmp, x, n1-ii, ns, coeff (c(ii)));
 
     endfor
   else
@@ -87,3 +77,15 @@ function y = polyout (c, x)
   endif
 
 endfunction
+
+function str = coeff(c)
+  if (imag (c))
+    if (real (c))
+      str = sprintf ("(%s)", com2str(c));
+    else
+      str = com2str(c);
+    endif
+  else
+    str = num2str(c);
+  endif
+

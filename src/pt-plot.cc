@@ -90,6 +90,9 @@ static SLStack <string> tmp_files;
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
 
+// ID of the plotter process.
+static pid_t plot_stream_pid = 0;
+
 // Use shortest possible abbreviations to minimize trouble caused by
 // gnuplot's fixed-length command line buffer.
 
@@ -126,8 +129,6 @@ plot_stream_death_handler (pid_t pid, int)
   warning ("please try your plot command(s) again");
 }
 
-static sig_handler *saved_sigint_handler = 0;
-
 static void
 open_plot_stream (void)
 {
@@ -153,11 +154,15 @@ open_plot_stream (void)
       // XXX FIXME XXX -- I'm not sure this is the right thing to do,
       // but without it, C-c at the octave prompt will kill gnuplot...
 
-      saved_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
+#if defined (HAVE_POSIX_SIGNALS)
+      sigset_t set, oset;
+      sigemptyset (&set);
+      sigaddset (&set, SIGCHLD);
+      sigaddset (&set, SIGINT);
+      sigprocmask (SIG_BLOCK, &set, &oset);
+#endif
 
       plot_stream = new oprocstream (plot_prog.c_str ());
-
-      octave_set_signal_handler (SIGINT, saved_sigint_handler);
 
       if (plot_stream)
 	{
@@ -170,12 +175,17 @@ open_plot_stream (void)
 	    }
 	  else
 	    {
-	      pid_t id = plot_stream->pid ();
-    	      octave_child_list::insert (id, plot_stream_death_handler);
+	      plot_stream_pid = plot_stream->pid ();
+    	      octave_child_list::insert (plot_stream_pid,
+					 plot_stream_death_handler);
 	    }
 	}
       else
 	error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());
+
+#if defined (HAVE_POSIX_SIGNALS)
+      sigprocmask (SIG_SETMASK, &oset, 0);
+#endif
     }
 
   if (! error_state && plot_stream && *plot_stream && ! initialized)
@@ -861,6 +871,8 @@ cleanup_tmp_files (void)
 void
 close_plot_stream (void)
 {
+  octave_child_list::remove (plot_stream_pid);
+
   if (plot_stream)
     {
       delete plot_stream;

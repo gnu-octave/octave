@@ -322,7 +322,7 @@ verbose_usage (void)
        << "     x : echo commands as they are executed\n"
        << "\n"
        << "  file : execute commands from named file\n"
-       << "\n";
+       << endl;
 
   exit (1);
 }

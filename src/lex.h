@@ -46,8 +46,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
   while (0)
 #endif
 
-#define DO_COMMA_INSERT_CHECK yyless (do_comma_insert_check ())
-
 #define TOK_RETURN(tok) \
   do \
     { \

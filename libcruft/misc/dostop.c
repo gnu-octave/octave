@@ -25,14 +25,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "config.h"
 #endif
 
+#ifdef OCTAVE_SOURCE
 extern void jump_to_top_level (void);
+#endif
 
 /* All the STOP statements in the Fortran routines have been replaced
    with a call to XSTOPX, defined in the file libcruft/misc/xstopx.f.
 
-   The XSTOPX function calls this function, which calls
-   jump_to_top_level(), and the user will end up at the top level
-   instead of the shell prompt. */
+   The XSTOPX function calls this function.  If OCTAVE_SOURCE is
+   defined, this function calls jump_to_top_level(), and the user will
+   end up at the top level instead of the shell prompt.  Otherwise, we
+   just stop. */
 
 volatile void
 #if defined (F77_APPEND_UNDERSCORE)
@@ -41,7 +44,11 @@ dostop_ (void)
 dostop (void)
 #endif
 {
+#ifdef OCTAVE_SOURCE
   jump_to_top_level ();
+#else
+  exit (1);
+#endif
 }
 
 /*

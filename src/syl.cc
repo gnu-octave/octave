@@ -124,7 +124,7 @@ ComplexMatrixLoad (tree_constant& arg)
 tree_constant *
 builtin_syl_2 (tree_constant *args, int nargin, int nargout)
 {
-  return svd (args, nargin, nargout);
+  return syl (args, nargin, nargout);
 }
 #endif
 

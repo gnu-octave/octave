@@ -1,5 +1,8 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (plot_axes_token): Declare plot_axes as const char *.
+	Declare tmp const char **.
+
 	* oct-procbuf.h: Include fstream, not streambuf.h.
 
 	* load-save.cc (Fsave): Call pubseekoff instead of seekoff.	

@@ -901,7 +901,7 @@ plot_axes_token (const std::string& s)
 {
   std::string retval;
 
-  static char *plot_axes[] = 
+  static const char *plot_axes[] = 
     {
       "x1y1",
       "x1y2",
@@ -910,7 +910,7 @@ plot_axes_token (const std::string& s)
       0,
     };
 
-  char **tmp = plot_axes;
+  const char **tmp = plot_axes;
   while (*tmp)
     {
       if (almost_match (*tmp, s.c_str ()))

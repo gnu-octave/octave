@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.130 $)
+AC_REVISION($Revision: 1.131 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -557,12 +557,13 @@ AC_SUBST(CXXLIB_PATH)
 ### Checks for header files.
 
 AC_HEADER_STDC
-AC_CHECK_HEADERS(assert.h float.h limits.h memory.h pwd.h stdlib.h)
-AC_CHECK_HEADERS(string.h varargs.h unistd.h floatingpoint.h)
-AC_CHECK_HEADERS(sys/param.h sys/utsname.h sys/time.h sys/fcntl.h)
-AC_CHECK_HEADERS(sys/select.h sys/resource.h)
 AC_HEADER_DIRENT
-AC_TIME_WITH_SYS_TIME
+AC_HEADER_TIME
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(assert.h float.h floatingpoint.h limits.h memory.h)
+AC_CHECK_HEADERS(pwd.h stdlib.h string.h unistd.h varargs.h)
+AC_CHECK_HEADERS(sys/fcntl.h sys/param.h sys/resource.h sys/select.h)
+AC_CHECK_HEADERS(sys/stat.h sys/time.h sys/utsname.h)
 
 ### Use sgtty on Ultrix so that using DEC Migrate to convert a Mips
 ### binary to an Alpha binary will work.  Also on Alpha/OSF to avoid
@@ -658,6 +659,9 @@ CFLAGS="$XCFLAGS"
 
 ### Checks for OS specific cruft.
 
+AC_STRUCT_ST_BLKSIZE
+AC_STRUCT_ST_BLOCKS
+AC_STRUCT_ST_RDEV
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_FUNC_SETVBUF_REVERSED

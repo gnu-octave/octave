@@ -58,6 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "mappers.h"
+#include "oct-map.h"
 #include "octave-hist.h"
 #include "pager.h"
 #include "statdefs.h"
@@ -66,6 +67,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tree-const.h"
 #include "utils.h"
 #include "variables.h"
+
+extern "C"
+{
+#include <readline/tilde.h>
+}
 
 // keeps a count of args sent to printf or scanf
 static int fmt_arg_count = 0;
@@ -2441,6 +2447,85 @@ DEFUN ("unlink", Funlink, Sunlink, 1, 1,
     print_usage ("unlink");
   else
     retval = unlink_internal (args);
+
+  return retval;
+}
+
+static Octave_map
+mk_stat_map (struct stat& st)
+{
+  Octave_map m;
+
+  m["dev"] = (double) st.st_dev;
+  m["ino"] = (double) st.st_ino;
+  m["mode"] = (double) st.st_mode;
+  m["nlink"] = (double) st.st_nlink;
+  m["uid"] = (double) st.st_uid;
+  m["gid"] = (double) st.st_gid;
+#if defined (HAVE_ST_RDEV)
+  m["rdev"] = (double) st.st_rdev;
+#endif
+  m["size"] = (double) st.st_size;
+  m["atime"] = (double) st.st_atime;
+  m["mtime"] = (double) st.st_mtime;
+  m["ctime"] = (double) st.st_ctime;
+#if defined (HAVE_ST_BLKSIZE)
+  m["blksize"] = (double) st.st_blksize;
+#endif
+#if defined (HAVE_ST_BLOCKS)
+  m["blocks"] = (double) st.st_blocks;
+#endif
+
+  return m;
+}
+
+DEFUN ("stat", Fstat, Sstat, 1, 1,
+  "stat (NAME)\n\
+\n\
+  Given the name of a file, return a structure with the following
+  elements:\n\
+\n\
+    dev     : id of device containing a directory entry for this file\n\
+    ino     : file number of the file\n\
+    mode    : file mode, as an integer\n\
+    nlink   : number of links\n\
+    uid     : user id of file's owner\n\
+    gid     : group id of file's group \n\
+    rdev    : id of device for block or character special files\n\
+    size    : size in bytes\n\
+    atime   : time of last access\n\
+    mtime   : time of last modification\n\
+    ctime   : time of last file status change\n\
+    blksize : size of blocks in the file\n\
+    blocks  : number of blocks allocated for file\n\
+\n\
+  If the file does not exist, -1 is returned.")
+{
+  Octave_object retval;
+
+  if (args.length () == 1)
+    {
+      const char *name = args(0).string_value ();
+
+      static char *fname = 0;
+
+      if (fname)
+	free (fname);
+
+      fname = tilde_expand (name);
+
+      if (! error_state)
+	{
+	  struct stat buf;
+
+	  if (stat (fname, &buf) < 0)
+	    retval = -1.0;
+	  else
+	    retval = tree_constant (mk_stat_map (buf));
+	}
+    }
+  else
+    print_usage ("stat");
 
   return retval;
 }

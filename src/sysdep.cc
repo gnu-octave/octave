@@ -36,6 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "octave.h"
+#include "help.h"
 #include "input.h"
 #include "utils.h"
 #include "oct-obj.h"

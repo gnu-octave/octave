@@ -44,6 +44,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "octave-hist.h"
 #include "tree-const.h"
 #include "error.h"
+#include "help.h"
 #include "utils.h"
 #include "pager.h"
 #include "defun.h"

@@ -24,6 +24,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_help_h)
 #define octave_help_h 1
 
+class ostrstream;
+
 typedef struct help_list
 {
   char *name;
@@ -33,6 +35,12 @@ typedef struct help_list
 extern char **names (help_list *l, int& count);
 extern help_list *operator_help (void);
 extern help_list *keyword_help (void);
+
+extern int help_from_list (ostrstream& output_buf,
+			   const help_list *list, const char *string,
+			   int usage);
+
+extern void print_usage (const char *s, int just_usage = 0);
 
 #endif
 

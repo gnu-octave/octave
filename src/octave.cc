@@ -56,6 +56,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "input.h"
 #include "pager.h"
 #include "lex.h"
+#include "help.h"
 #include "octave.h"
 #include "parse.h"
 #include "unwind-prot.h"

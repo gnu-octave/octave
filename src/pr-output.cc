@@ -42,6 +42,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "pr-output.h"
 #include "mappers.h"
 #include "pager.h"
+#include "help.h"
 #include "error.h"
 #include "utils.h"
 #include "defun.h"

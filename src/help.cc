@@ -292,9 +292,42 @@ keyword_help (void)
   return keywords;
 }
 
+void
+additional_help_message (ostrstream& output_buf)
+{
+  output_buf
+    << "\n"
+    << "Additional help for builtin functions, operators, and variables\n"
+    << "is available in the on-line version of the manual.\n"
+    << "\n"
+    << "Use the command `help -i <topic>' to search the manual index.\n";
+}
+
+void
+print_usage (const char *string, int just_usage)
+{
+  ostrstream output_buf;
+
+  symbol_record *sym_rec = global_sym_tab->lookup (string, 0, 0);
+  if (sym_rec)
+    {
+      char *h = sym_rec->help ();
+      if (h && *h)
+	{
+	  output_buf << "\n*** " << string << ":\n\n"
+	    << h << "\n";
+
+	  if (! just_usage)
+	    additional_help_message (output_buf);
+	  output_buf << ends;
+	  maybe_page_output (output_buf);
+	}
+    }
+}
+
 static void
-help_syms_list (ostrstream& output_buf, help_list *list,
-		const char *desc)
+display_names_from_help_list (ostrstream& output_buf, help_list *list,
+			      const char *desc)
 {
   int count = 0;
   char **symbols = names (list, count);
@@ -305,26 +338,51 @@ help_syms_list (ostrstream& output_buf, help_list *list,
 }
 
 static void
+display_symtab_names (ostrstream& output_buf, char **names,
+		      int count, const char *desc)
+{
+  output_buf << "\n*** " << desc << ":\n\n";
+  if (names && count > 0)
+    list_in_columns (output_buf, names);
+}
+
+static void
 simple_help (void)
 {
   ostrstream output_buf;
 
-  help_syms_list (output_buf, operator_help (), "operators");
+  display_names_from_help_list (output_buf, operator_help (),
+				"operators");
 
-  help_syms_list (output_buf, keyword_help (), "reserved words");
+  display_names_from_help_list (output_buf, keyword_help (),
+				"reserved words");
 
-  help_syms_list (output_buf, builtin_text_functions_help (),
-		  "text functions (these names are also reserved)");
+#ifdef LIST_SYMBOLS
+#undef LIST_SYMBOLS
+#endif
+#define LIST_SYMBOLS(type, msg) \
+  do \
+    { \
+      int count; \
+      char **names = global_sym_tab->list (count, 1, type); \
+      display_symtab_names (output_buf, names, count, msg); \
+      char **ptr = names; \
+      while (*ptr) \
+        delete [] *ptr++; \
+      delete [] names; \
+    } \
+  while (0)
 
-  help_syms_list (output_buf, builtin_mapper_functions_help (),
-		  "mapper functions");
+// XXX FIXME XXX -- is this distinction needed?
+  LIST_SYMBOLS (symbol_def::TEXT_FUNCTION,
+		"text functions (these names are also reserved)");
 
-  help_syms_list (output_buf, builtin_general_functions_help (),
-		  "general functions");
+  LIST_SYMBOLS (symbol_def::MAPPER_FUNCTION, "mapper functions");
 
-  help_syms_list (output_buf, builtin_variables_help (),
-		  "builtin variables");
-      
+  LIST_SYMBOLS (symbol_def::BUILTIN_FUNCTION, "general functions");
+
+  LIST_SYMBOLS (symbol_def::BUILTIN_VARIABLE, "builtin variables");
+
 // Also need to list variables and currently compiled functions from
 // the symbol table, if there are any.
 
@@ -414,6 +472,31 @@ try_info (const char *string, int force = 0)
     }
 
   return status;
+}
+
+int
+help_from_list (ostrstream& output_buf, const help_list *list,
+		const char *string, int usage)
+{
+  char *name;
+  while ((name = list->name) != 0)
+    {
+      if (strcmp (name, string) == 0)
+	{
+	  if (usage)
+	    output_buf << "\nusage: ";
+	  else
+	    {
+	      output_buf << "\n*** " << string << ":\n\n";
+	    }
+
+	  output_buf << list->help << "\n";
+
+	  return 1;
+	}
+      list++;
+    }
+  return 0;
 }
 
 DEFUN_TEXT ("help", Fhelp, Shelp, -1, 1,

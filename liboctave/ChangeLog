@@ -1,3 +1,7 @@
+2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (dist): Depend on stamp-prereq.
+
 2003-11-12  John Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mach-info.c (oct_mach_info::init_float_format) [CRAY]:

@@ -1,3 +1,8 @@
+2001-02-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (main_loop): Set retval to non-zero value if error
+	occurs when not interactive.
+
 2001-02-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (gobble_leading_white_space): Handle CRLF here too.

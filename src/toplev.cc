@@ -148,7 +148,11 @@ main_loop (void)
 	  if (error_state)
 	    {
 	      if (! (interactive || forced_interactive))
-		break;
+		{
+		  // We should exit with a non-zero status.
+		  retval = 1;
+		  break;
+		}
 	    }
 	  else
 	    {

@@ -72,7 +72,7 @@ extern int promptflag;
 // A line of input.
 extern std::string current_input_line;
 
-// TRUE after a call to completion_matches().
+// TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;
 
 extern std::string gnu_readline (const std::string& s, bool force_readline = false);

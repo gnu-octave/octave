@@ -124,7 +124,7 @@ int promptflag = 1;
 // The current line of input, from wherever.
 std::string current_input_line;
 
-// TRUE after a call to completion_matches().
+// TRUE after a call to completion_matches.
 bool octave_completion_matches_called = false;
 
 static void

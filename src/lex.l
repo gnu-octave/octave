@@ -1190,6 +1190,19 @@ next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 // thing.  Note that it is only necessary to check the spacing for `+'
 // and `-', since those are the only tokens that can appear as unary
 // ops too.
+//
+// Note that this never returns true for `.', even though it can be a
+// binary operator (the structure reference thing).  The only time
+// this appears to matter is for things like
+//
+//   [ a . b ]
+//
+// which probably doesn't occur that often, can be worked around by
+// eliminating the whitespace, putting the expression in parentheses,
+// or using `whitespace_in_literal_matrix = "ignored"', so I think it
+// is an acceptable change.  It would be quite a bit harder to `fix'
+// this.  (Well, maybe not.  the best fix would be to do away with the
+// specialness of whitespace inside of `[ ... ]').
 
 static int
 next_token_is_bin_op (int spc_prev, char *yytext)

@@ -32,17 +32,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 
 void
-ODES::initialize (const ColumnVector& xx, double t)
+ODES::initialize (const ColumnVector& xx, double tt)
 {
-  base_diff_eqn::initialize (xx, t);
+  base_diff_eqn::initialize (xx, tt);
   xdot = ColumnVector (xx.length (), 0.0);
 }
 
 void
-ODES::initialize (const ColumnVector& xx, double t,
+ODES::initialize (const ColumnVector& xx, double tt,
 		  const ColumnVector& xtheta)
 {
-  base_diff_eqn::initialize (xx, t);
+  base_diff_eqn::initialize (xx, tt);
   xdot = ColumnVector (xx.length (), 0.0);
   theta = xtheta;
 }

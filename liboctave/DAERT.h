@@ -35,12 +35,12 @@ public:
   DAERT (void)
     : base_diff_alg_eqn (), DAERTFunc () { }
 
-  DAERT (const ColumnVector& x, double t, DAERTFunc& f)
-    : base_diff_alg_eqn (x, t), DAERTFunc (f) { }
+  DAERT (const ColumnVector& xx, double tt, DAERTFunc& f)
+    : base_diff_alg_eqn (xx, tt), DAERTFunc (f) { }
 
-  DAERT (const ColumnVector& x, const ColumnVector& xdot, double t,
+  DAERT (const ColumnVector& xx, const ColumnVector& xxdot, double tt,
 	DAERTFunc& f)
-    : base_diff_alg_eqn (x, xdot, t), DAERTFunc (f) { }
+    : base_diff_alg_eqn (xx, xxdot, tt), DAERTFunc (f) { }
 
   DAERT (const DAERT& a)
     : base_diff_alg_eqn (a), DAERTFunc (a) { }
@@ -58,9 +58,10 @@ public:
 
   ~DAERT (void) { }
 
-  void initialize (const ColumnVector& x, const ColumnVector& xdot, double t)
+  void initialize (const ColumnVector& xx, const ColumnVector& xxdot,
+		   double tt)
     {
-      base_diff_alg_eqn::initialize (x, xdot, t);
+      base_diff_alg_eqn::initialize (xx, xxdot, tt);
     }
 };
 

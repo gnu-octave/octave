@@ -212,15 +212,15 @@ ODESSA::ODESSA (const ColumnVector& state, double time, ODESFunc& f)
   y.resize (n, 1, 0.0);
 }
 
-ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& theta,
+ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& xtheta,
 		const Matrix& sensitivity_guess, double time, ODESFunc& f)
-  : ODES (state, theta, time, f)
+  : ODES (state, xtheta, time, f)
 {
   initialized = false;
 
   neq.resize(2);
   n = state.length();
-  npar = theta.length();
+  npar = xtheta.length();
 
   neq(0) = n;
   neq(1) = npar;
@@ -230,12 +230,12 @@ ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& theta,
 
   for (int i = 0; i < npar; i++)
     {
-      par(i) = theta(i);
+      par(i) = xtheta(i);
     }
 
   sanity_checked = false;
 
-  npar = theta.length ();
+  npar = xtheta.length ();
 
   iopt.resize(4);
   itask = 1;

@@ -78,10 +78,10 @@ public:
 
   double time (void) const { return t; }
 
-  void set_stop_time (double t)
+  void set_stop_time (double tt)
     {
       stop_time_set = true;
-      stop_time = t;
+      stop_time = tt;
       force_restart ();
     }
 

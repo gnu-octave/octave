@@ -383,6 +383,36 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
   fi
 ])
 dnl
+dnl Check to see if Fortran compiler handles FLAG command line option.  If
+dnl two arguments are specified, execute the second arg as shell
+dnl commands.  Otherwise, add FLAG to FFLAGS if the compiler accepts
+dnl the flag.
+dnl
+dnl OCTAVE_F77_FLAG
+AC_DEFUN(OCTAVE_F77_FLAG, [
+  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  AC_MSG_CHECKING(whether ${F77-g77} accepts $1)
+  AC_CACHE_VAL(octave_cv_f77_flag_$ac_safe, [
+    AC_LANG_PUSH(Fortran 77)
+    XFFLAGS="$FFLAGS"
+    FFLAGS="$FFLAGS $1"
+    AC_TRY_LINK([], [],
+      eval "octave_cv_f77_flag_$ac_safe=yes",
+      eval "octave_cv_f77_flag_$ac_safe=no")
+    FFLAGS="$XFFLAGS"
+    AC_LANG_POP(Fortran 77)
+  ])
+  if eval "test \"`echo '$octave_cv_f77_flag_'$ac_safe`\" = yes"; then
+    AC_MSG_RESULT(yes)
+    ifelse([$2], , [
+      FFLAGS="$FFLAGS $1"
+      AC_MSG_RESULT([adding $1 to FFLAGS])], [$2])
+  else
+    AC_MSG_RESULT(no)
+    ifelse([$3], , , [$3])
+  fi
+])
+dnl
 dnl Check for flex
 dnl
 AC_DEFUN(OCTAVE_PROG_FLEX, [
@@ -458,7 +488,6 @@ case "$canonical_host_type" in
     gp_default=gnuplot
   ;;
 esac
-GNUPLOT_BINARY="$gp_default"
 GNUPLOT_HAS_FRAMES=1
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
@@ -483,6 +512,8 @@ else
   else
     warn_gnuplot="yes"
 
+    GNUPLOT_BINARY="$gp_default"
+
     ## If you change this text, be sure to also copy it to the set of
     ## warnings at the end of the script
 
@@ -496,6 +527,8 @@ else
     AC_MSG_WARN([gnuplot_binary = "/full/path/to/gnuplot/binary"])
     AC_MSG_WARN([])
     AC_MSG_WARN([at the Octave prompt.])
+    AC_MSG_WARN([])
+    AC_MSG_WARN([Setting default value to $GNUPLOT_BINARY])
   fi
 fi
 AC_DEFINE_UNQUOTED(GNUPLOT_BINARY, "$GNUPLOT_BINARY", [Name of gnuplot program.])

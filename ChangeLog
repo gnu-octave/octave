@@ -1,3 +1,12 @@
+2004-11-11  John W. Eaton  <jwe@octave.org>
+
+	* (OCTAVE_PROG_GNUPLOT): Don't set GNUPLOT_BINARY before calling
+	AC_CHECK_PROGS(GNUPLOT_BINARY, ...).
+
+	* configure.in: Use it to see if the C, C++, and Fortran compilers
+	accept -ffloat-store.
+	* aclocal.m4 (OCTAVE_F77_FLAG): New macro.
+
 2004-09-08  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (GXX_PICKY_FLAGS): Remove -fno-nonnull-objects.

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.456 $)
+AC_REVISION($Revision: 1.457 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -231,23 +231,36 @@ esac
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
-### On Intel systems with gcc, we may need to compile with -mieee-fp to
-### get full support for IEEE floating point.
+### On Intel systems with gcc, we may need to compile with -mieee-fp
+### and -ffloat-store to get full support for IEEE floating point.
 ###
 ### On Alpha/OSF systems, we need -mieee.
 
 ieee_fp_flag=
 case "$canonical_host_type" in
   i[[3456789]]86-*-*)
-    OCTAVE_CC_FLAG(-mieee-fp, [
-      ieee_fp_flag=-mieee-fp
-      XTRA_CFLAGS="$XTRA_CFLAGS -mieee-fp"
-      AC_MSG_RESULT([adding -mieee-fp to XTRA_CFLAGS])])
+    if test "$GCC" = yes; then
+      OCTAVE_CC_FLAG(-mieee-fp, [
+        ieee_fp_flag=-mieee-fp
+        XTRA_CFLAGS="$XTRA_CFLAGS -mieee-fp"
+        AC_MSG_RESULT([adding -mieee-fp to XTRA_CFLAGS])])
 
-    OCTAVE_CXX_FLAG(-mieee-fp, [
-      ieee_fp_flag=-mieee-fp
-      XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
-      AC_MSG_RESULT([adding -mieee-fp to XTRA_CXXFLAGS])])
+      OCTAVE_CC_FLAG(-ffloat-store, [
+	float_store_flag=-ffloat-store
+	XTRA_CFLAGS="$XTRA_CFLAGS -ffloat-store"
+	AC_MSG_RESULT([adding -ffloat-store to XTRA_CFLAGS])])
+    fi
+    if test "$GXX" = yes; then
+      OCTAVE_CXX_FLAG(-mieee-fp, [
+	ieee_fp_flag=-mieee-fp
+	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-fp"
+	AC_MSG_RESULT([adding -mieee-fp to XTRA_CXXFLAGS])])
+
+      OCTAVE_CXX_FLAG(-ffloat-store, [
+	float_store_flag=-ffloat-store
+	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ffloat-store"
+	AC_MSG_RESULT([adding -ffloat-store to XTRA_CXXFLAGS])])
+    fi
   ;;
   alpha*-*-*)
     if test "$GCC" = yes; then
@@ -255,17 +268,18 @@ case "$canonical_host_type" in
 	ieee_fp_flag=-mieee
 	XTRA_CFLAGS="$XTRA_CFLAGS -mieee"
 	AC_MSG_RESULT([adding -mieee to XTRA_CFLAGS])])
-
-      OCTAVE_CXX_FLAG(-mieee, [
-	ieee_fp_flag=-mieee
-	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee"
-	AC_MSG_RESULT([adding -mieee to XTRA_CXXFLAGS])])
     else
       OCTAVE_CC_FLAG(-ieee, [
 	ieee_fp_flag=-ieee
 	XTRA_CFLAGS="$XTRA_CFLAGS -ieee"
 	AC_MSG_RESULT([adding -ieee to XTRA_CFLAGS])])
-
+    fi
+    if test "$GXX" = yes; then
+      OCTAVE_CXX_FLAG(-mieee, [
+	ieee_fp_flag=-mieee
+	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee"
+	AC_MSG_RESULT([adding -mieee to XTRA_CXXFLAGS])])
+    else
       OCTAVE_CXX_FLAG(-ieee, [
 	ieee_fp_flag=-ieee
 	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ieee"
@@ -485,11 +499,18 @@ else
     AC_F77_DUMMY_MAIN
     AC_F77_WRAPPERS
     case "$canonical_host_type" in
+      i[[3456789]]86-*-*)
+        if test "$ac_cv_f77_compiler_gnu" = yes; then
+	  OCTAVE_F77_FLAG(-mieee-fp)
+	  OCTAVE_F77_FLAG(-ffloat-store)
+	fi
+      ;;
       alpha*-*-*)
         if test "$ac_cv_f77_compiler_gnu" = yes; then
-          FFLAGS="$ieee_fp_flag $FFLAGS"
+	  OCTAVE_F77_FLAG(-mieee)
 	else
-	  FFLAGS="-fpe1 $FFLAGS"
+	  OCTAVE_F77_FLAG(-ieee)
+	  OCTAVE_F77_FLAG(-fpe1)
 	fi
       ;;
       powerpc-apple-machten*)

@@ -278,7 +278,7 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body);
 
 // Do most of the work for defining a function.
 static octave_user_function *
-frob_function (tree_identifier *id, octave_user_function *fcn);
+frob_function (const std::string& fname, octave_user_function *fcn);
 
 // Finish defining a function.
 static octave_user_function *
@@ -1308,7 +1308,11 @@ fcn_name	: identifier local_symtab
 
 function2	: fcn_name function3
 		  {
-		    if (! ($$ = frob_function ($1, $2)))
+		    std::string fname = $1->name ();
+
+		    delete $1;
+
+		    if (! ($$ = frob_function (fname, $2)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -2584,16 +2588,14 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body)
 // Do most of the work for defining a function.
 
 static octave_user_function *
-frob_function (tree_identifier *id, octave_user_function *fcn)
+frob_function (const std::string& fname, octave_user_function *fcn)
 {
-  std::string id_name = id->name ();
+  std::string id_name = fname;
 
   // If input is coming from a file, issue a warning if the name of
   // the file does not match the name of the function stated in the
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
-
-  fcn->stash_function_name (id_name);
 
   if (reading_fcn_file)
     {
@@ -2604,17 +2606,11 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 	    warning ("function name `%s' does not agree with function\
  file name `%s'", id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
-	  fbi_sym_tab->rename (id_name, curr_fcn_file_name);
-
-	  if (error_state)
-	    return 0;
-
-	  id_name = id->name ();
+	  id_name = curr_fcn_file_name;
 	}
 
       octave_time now;
 
-      fcn->stash_function_name (id_name);
       fcn->stash_fcn_file_name (curr_fcn_file_full_name);
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
@@ -2637,9 +2633,11 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 	       id_name.c_str (), curr_fcn_file_full_name.c_str ());
     }
 
+  fcn->stash_function_name (id_name);
+
   top_level_sym_tab->clear (id_name);
 
-  symbol_record *sr = fbi_sym_tab->lookup (id_name);
+  symbol_record *sr = fbi_sym_tab->lookup (id_name, true);
 
   if (sr)
     {
@@ -2651,11 +2649,11 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
   else
     panic_impossible ();
 
-  id->define (fcn, symbol_record::USER_FUNCTION);
+  sr->define (fcn, symbol_record::USER_FUNCTION);
 
   if (! help_buf.empty ())
     {
-      id->document (help_buf.top ());
+      sr->document (help_buf.top ());
       help_buf.pop ();
     }
 

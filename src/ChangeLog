@@ -1,3 +1,11 @@
+2004-04-21  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (function2): Pass id name to frob_function.  Delete id.
+	(frob_function): Accept function name instead of identifier.
+	Don't try to rename symbol table entry.  Lookup symbol record for
+	function name here.  Insert name in symbol table if needed.
+	Operate on symbol record instead of identifier.
+
 2004-04-21  David Bateman  <dbateman@free.fr>
 
 	* DLD_FUNCTIONS/fft.cc(do_fft): Correctly initialize the variable dim

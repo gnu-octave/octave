@@ -74,29 +74,6 @@ DEFUN ("any", Fany, Sany, 2, 1,
   return retval;
 }
 
-DEFUN ("atan2", Fatan2, Satan2, 3, 1,
-  "atan2 (Y, X): atan (Y / X) in range -pi to pi")
-{
-  Octave_object retval;
-
-  if (args.length () != 3)
-    print_usage ("atan2");
-  else
-    {
-      double y = args(1).double_value ();
-
-      if (! error_state)
-	{
-	  double x = args(2).double_value ();
-
-	  if (! error_state)
-	    retval = atan2 (y, x);
-	}
-    }
-
-  return retval;
-}
-
 DEFUN ("cumprod", Fcumprod, Scumprod, 2, 1,
   "cumprod (X): cumulative products")
 {

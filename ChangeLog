@@ -1,3 +1,8 @@
+2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (dist): Make stamp-prereq in liboctave and src
+	before making the dist target for all the $(DISTSUBDIRS).
+
 2003-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: If we need alloca, then also include it in LIBGLOB.

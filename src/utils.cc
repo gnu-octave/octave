@@ -720,7 +720,17 @@ file_in_path (const char *name, const char *suffix)
 char *
 fcn_file_in_path (const char *name)
 {
-  return file_in_path (name, ".m");
+  if (name)
+    {
+      int len = strlen (name);
+
+      if (name [len - 2] == '.' && name [len - 1] == 'm')
+	return file_in_path (name, "");
+      else
+	return file_in_path (name, ".m");
+    }
+  else
+    return 0;
 }
 
 // See if there is an octave file in the path.  If so, return the
@@ -729,7 +739,18 @@ fcn_file_in_path (const char *name)
 char *
 oct_file_in_path (const char *name)
 {
-  return file_in_path (name, ".oct");
+  if (name)
+    {
+      int len = strlen (name);
+
+      if (name [len - 4] == '.' && name [len - 3] == 'o'
+	  && name [len - 2] == 'c' && name [len - 1] == 't')
+	return file_in_path (name, "");
+      else
+	return file_in_path (name, ".oct");
+    }
+  else
+    return 0;
 }
 
 char *

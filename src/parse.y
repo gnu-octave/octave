@@ -953,6 +953,8 @@ func_def2	: identifier safe local_symtab func_def3
 // file does not match the name of the function stated in the file.
 // Matlab doesn't provide a diagnostic (it ignores the stated name).
 
+		    $4->stash_function_name (id_name);
+
 		    if (reading_fcn_file)
 		      {
 			if (strcmp (curr_fcn_file_name, id_name) != 0)
@@ -969,6 +971,7 @@ func_def2	: identifier safe local_symtab func_def3
 			    id_name = $1->name ();
 			  }
 
+			$4->stash_function_name (id_name);
 			$4->stash_fcn_file_name ();
 			$4->stash_fcn_file_time (time (0));
 			$4->mark_as_system_fcn_file ();
@@ -983,8 +986,6 @@ func_def2	: identifier safe local_symtab func_def3
 		      }
 
 		    top_level_sym_tab->clear (id_name);
-
-		    $4->stash_function_name (id_name);
 
 		    $1->define ($4);
 		    $1->document (help_buf);

@@ -208,12 +208,15 @@ do_history (int argc, char **argv)
 		  }
 	      }
 	      break;
+
 	    case 'w':		// Write entire history.
 	      result = write_history (file);
 	      break;
+
 	    case 'r':		// Read entire file.
 	      result = read_history (file);
 	      break;
+
 	    case 'n':		// Read `new' history from file.
 // Read all of the lines in the file that we haven't already read.
 	      using_history ();

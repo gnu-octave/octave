@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include "tree-const.h"
 #include "gripes.h"
 #include "error.h"
 
@@ -84,6 +85,48 @@ void
 gripe_invalid_conversion (const char *from, const char *to)
 {
   error ("invalid conversion from %s to %s", from, to);
+}
+
+void
+gripe_2_or_3_dim_plot (void)
+{
+  error ("plot: can only plot in 2 or 3 dimensions");
+}
+
+void
+gripe_unrecognized_float_fmt (void)
+{
+  error ("unrecognized floating point format requested");
+}
+
+void
+gripe_unrecognized_data_fmt (const char *warn_for)
+{
+  error ("%s: unrecognized data format requested", warn_for);
+}
+
+void
+gripe_data_conversion (const char *from, const char *to)
+{
+  error ("unable to convert from %s to %s format", from, to);
+}
+
+void
+gripe_wrong_type_arg (const char *name, const tree_constant& tc)
+{
+  error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
+}
+
+void
+gripe_wrong_type_arg_for_unary_op (const tree_constant& op)
+{
+  error ("invalid operand `%s' for unary operator", op.type_as_string ());
+}
+
+void
+gripe_wrong_type_arg_for_binary_op (const tree_constant& op)
+{
+  error ("invalid operand `%s' for binary operator", op.type_as_string ());
 }
 
 /*

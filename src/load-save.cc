@@ -42,6 +42,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "symtab.h"
 #include "pager.h"
 #include "error.h"
+#include "gripes.h"
 #include "defun.h"
 #include "utils.h"
 #include "help.h"

@@ -219,6 +219,7 @@ redirect all input and screen output to a file.")
 	  }
       }
       break;
+
     default:
       print_usage ("diary");
       break;

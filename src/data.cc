@@ -38,6 +38,7 @@ Software Foundation, Inc.
 #include "help.h"
 #include "utils.h"
 #include "error.h"
+#include "gripes.h"
 #include "defun.h"
 
 #ifndef MIN
@@ -828,12 +829,15 @@ DEFUN ("ones", Fones, Sones, 2, 1,
     case 0:
       retval = 1.0;
       break;
+
     case 1:
       retval = fill_matrix (args(0), 1.0, "ones");
       break;
+
     case 2:
       retval = fill_matrix (args(0), args(1), 1.0, "ones");
       break;
+
     default:
       print_usage ("ones");
       break;
@@ -854,12 +858,15 @@ DEFUN ("zeros", Fzeros, Szeros, 2, 1,
     case 0:
       retval = 0.0;
       break;
+
     case 1:
       retval = fill_matrix (args(0), 0.0, "zeros");
       break;
+
     case 2:
       retval = fill_matrix (args(0), args(1), 0.0, "zeros");
       break;
+
     default:
       print_usage ("zeros");
       break;
@@ -922,12 +929,15 @@ DEFUN ("eye", Feye, Seye, 2, 1,
     case 0:
       retval = 1.0;
       break;
+
     case 1:
       retval = identity_matrix (args(0));
       break;
+
     case 2:
       retval = identity_matrix (args(0), args(1));
       break;
+
     default:
       print_usage ("eye");
       break;

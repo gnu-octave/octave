@@ -269,14 +269,18 @@ saved_variable::restore_value (void)
     case integer:
       *ptr_to_int = int_value;
       break;
+
     case generic_ptr:
       *ptr_to_gen_ptr = gen_ptr_value;
       break;
+
     case generic:
       memcpy (gen_ptr, gen_ptr_value, size);
       break;
+
     default:
       panic_impossible ();
+      break;
     }
 }
 

@@ -49,7 +49,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tc-inlines.h"
 
-// Top-level tree-constant function that handle assignments.  Only
+// Top-level tree-constant function that handles assignments.  Only
 // decide if the left-hand side is currently a scalar or a matrix and
 // hand off to other functions to do the real work.
 
@@ -63,8 +63,11 @@ TC_REP::assign (const tree_constant& rhs, const Octave_object& args)
 // vector since it will normally destroy the equally-spaced property
 // of the range elements.
 
-  if (type_tag == string_constant || type_tag == range_constant)
+  if (! is_numeric_type ())
     force_numeric ();
+
+  if (error_state)
+    return;
 
   switch (type_tag)
     {
@@ -79,14 +82,8 @@ TC_REP::assign (const tree_constant& rhs, const Octave_object& args)
       do_matrix_assignment (rhs_tmp, args);
       break;
 
-    case string_constant:
-      ::error ("invalid assignment to string type");
-      break;
-
-    case range_constant:
-    case magic_colon:
     default:
-      panic_impossible ();
+      ::error ("invalid assignment to %s", type_as_string ());
       break;
     }
 }
@@ -665,6 +662,7 @@ TC_REP::vector_assignment (const tree_constant& rhs,
 	do_matrix_assignment (rhs, magic_colon, magic_colon);
       }
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1189,6 +1187,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i,
 	do_matrix_assignment (rhs, i, magic_colon);
       }
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1325,6 +1324,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 	do_matrix_assignment (rhs, iv, magic_colon);
       }
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1466,6 +1466,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri,
 	do_matrix_assignment (rhs, ri, magic_colon);
       }
       break;
+
     default:
       panic_impossible ();
       break;

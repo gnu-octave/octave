@@ -1207,18 +1207,23 @@ end_error (char *type, token::end_tok_type ettype, int l, int c)
     case token::simple_end:
       error (fmt, type, "end", l, c);
       break;
+
     case token::for_end:
       error (fmt, type, "endfor", l, c);
       break;
+
     case token::function_end:
       error (fmt, type, "endfunction", l, c);
       break;
+
     case token::if_end:
       error (fmt, type, "endif", l, c);
       break;
+
     case token::while_end:
       error (fmt, type, "endwhile", l, c); 
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1243,15 +1248,19 @@ check_end (token *tok, token::end_tok_type expected)
 	case token::for_end:
 	  end_error ("for", ettype, l, c);
 	  break;
+
 	case token::function_end:
 	  end_error ("function", ettype, l, c);
 	  break;
+
 	case token::if_end:
 	  end_error ("if", ettype, l, c);
 	  break;
+
 	case token::while_end:
 	  end_error ("while", ettype, l, c);
 	  break;
+
 	default:
 	  panic_impossible ();
 	  break;
@@ -1328,63 +1337,83 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
     case POW:
       t = tree_expression::power;
       break;
+
     case EPOW:
       t = tree_expression::elem_pow;
       break;
+
     case '+':
       t = tree_expression::add;
       break;
+
     case '-':
       t = tree_expression::subtract;
       break;
+
     case '*':
       t = tree_expression::multiply;
       break;
+
     case '/':
       t = tree_expression::divide;
       break;
+
     case EMUL:
       t = tree_expression::el_mul;
       break;
+
     case EDIV:
       t = tree_expression::el_div;
       break;
+
     case LEFTDIV:
       t = tree_expression::leftdiv;
       break;
+
     case ELEFTDIV:
       t = tree_expression::el_leftdiv;
       break;
+
     case EXPR_LT:
       t = tree_expression::cmp_lt;
       break;
+
     case EXPR_LE:
       t = tree_expression::cmp_le;
       break;
+
     case EXPR_EQ:
       t = tree_expression::cmp_eq;
       break;
+
     case EXPR_GE:
       t = tree_expression::cmp_ge;
       break;
+
     case EXPR_GT:
       t = tree_expression::cmp_gt;
       break;
+
     case EXPR_NE:
       t = tree_expression::cmp_ne;
       break;
+
     case EXPR_AND_AND:
       t = tree_expression::and_and;
       break;
+
     case EXPR_OR_OR:
       t = tree_expression::or_or;
       break;
+
     case EXPR_AND:
       t = tree_expression::and;
       break;
+
     case EXPR_OR:
       t = tree_expression::or;
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1407,9 +1436,11 @@ make_prefix_op (int op, tree_identifier *op1, token *tok_val)
     case PLUS_PLUS:
       t = tree_expression::increment;
       break;
+
     case MINUS_MINUS:
       t = tree_expression::decrement;
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1432,9 +1463,11 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
     case PLUS_PLUS:
       t = tree_expression::increment;
       break;
+
     case MINUS_MINUS:
       t = tree_expression::decrement;
       break;
+
     default:
       panic_impossible ();
       break;
@@ -1457,15 +1490,19 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
     case QUOTE:
       t = tree_expression::hermitian;
       break;
+
     case TRANSPOSE:
       t = tree_expression::transpose;
       break;
+
     case EXPR_NOT:
       t = tree_expression::not;
       break;
+
     case '-':
       t = tree_expression::uminus;
       break;
+
     default:
       panic_impossible ();
       break;

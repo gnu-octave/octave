@@ -342,10 +342,6 @@ public:
  
   void print_code (ostream& os);
 
-// Complain about unknown types used as args.
-
-  friend void gripe_wrong_type_arg (const char *name, const tree_constant& tc);
-
   char *type_as_string (void) const
     { return rep->type_as_string (); }
 

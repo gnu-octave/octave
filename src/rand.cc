@@ -30,6 +30,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "f77-uscore.h"
 #include "error.h"
+#include "gripes.h"
 #include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
@@ -249,10 +250,12 @@ rand (SEED, N)        -- set seed")
 		F77_FCN (dgenunf) (&d_zero, &d_one, &val);
 		rand_mat.elem (i, j) = val;
 		break;
+
 	      case normal:
 		F77_FCN (dgennor) (&d_zero, &d_one, &val);
 		rand_mat.elem (i, j) = val;
 		break;
+
 	      default:
 		panic_impossible ();
 		break;

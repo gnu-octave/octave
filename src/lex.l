@@ -726,36 +726,46 @@ do_string_escapes (char *s)
 	    case 'a':
 	      *p1 = '\a';
 	      break;
+
 	    case 'b': // backspace
 	      *p1 = '\b';
 	      break;
+
 	    case 'f': // formfeed
 	      *p1 = '\f';
 	      break;
+
 	    case 'n': // newline
 	      *p1 = '\n';
 	      break;
+
 	    case 'r': // carriage return
 	      *p1 = '\r';
 	      break;
+
 	    case 't': // horizontal tab
 	      *p1 = '\t';
 	      break;
+
 	    case 'v': // vertical tab
 	      *p1 = '\v';
 	      break;
+
 	    case '\\': // backslash
 	      *p1 = '\\';
 	      break;
+
 	    case '\'': // quote
 	      *p1 = '\'';
 	      break;
+
 	    case '"': // double quote
 	      *p1 = '"';
 	      break;
+
 	    default:
-          warning ("unrecognized escape sequence `\\%c' -- converting to `%c'",
-		   *p2, *p2);
+	      warning ("unrecognized escape sequence `\\%c' --\
+ converting to `%c'", *p2, *p2);
 	      *p1 = *p2;
 	      break;
 	    }
@@ -1137,9 +1147,12 @@ grab_help_text (void)
 	    case '%':
 	    case '#':
 	      in_comment = 1;
+	      break;
+
 	    case ' ':
 	    case '\t':
 	      break;
+
 	    default:
 	      goto done;
 	    }
@@ -1235,8 +1248,12 @@ next_token_is_bin_op (int spc_prev, char *yytext)
 
   switch (c0)
     {
-    case '+':  case '-':  case '/':
-    case ':':  case '\\': case '^':
+    case '+':
+    case '-':
+    case '/':
+    case ':':
+    case '\\':
+    case '^':
       spc_next = (c1 == ' ' || c1 == '\t');
       break;
 
@@ -1275,7 +1292,9 @@ next_token_is_bin_op (int spc_prev, char *yytext)
 	spc_next = (c1 == ' ' || c1 == '\t');
       break;
 
-    case '~':  case '!':  case '=':
+    case '~':
+    case '!':
+    case '=':
       if (c1 == '=')
 	spc_next = next_char_is_space ();
       else
@@ -1492,14 +1511,17 @@ check_for_garbage_after_fcn_def (void)
 	case ';':
 	case ',':
 	  break;
+
 	case '\n':
 	  if (in_comment)
 	    in_comment = 0;
 	  break;
+
 	case '%':
 	case '#':
 	  in_comment = 1;
 	  break;
+
 	default:
 	  if (in_comment)
 	    break;

@@ -220,7 +220,8 @@ public:
   virtual int is_constant (void) const
     { return 0; }
 
-  virtual tree_constant assign (tree_constant& t, const Octave_object& args);
+  virtual tree_constant assign (const tree_constant& t,
+				const Octave_object& args);
 
   virtual char *name (void) const
     { panic_impossible (); return 0; }
@@ -279,11 +280,11 @@ public:
 
   void document (char *s);
 
-  tree_constant assign (tree_constant& t);
-  tree_constant assign (tree_constant& t, const Octave_object& args);
+  tree_constant assign (const tree_constant& t);
+  tree_constant assign (const tree_constant& t, const Octave_object& args);
 
-  tree_constant assign (SLList<char*> list, tree_constant& t);
-  tree_constant assign (SLList<char*> list, tree_constant& t,
+  tree_constant assign (SLList<char*> list, const tree_constant& t);
+  tree_constant assign (SLList<char*> list, const tree_constant& t,
 			const Octave_object& args); 
 
   int is_defined (void);
@@ -349,8 +350,8 @@ public:
 
   char *name (void);
 
-  tree_constant assign (tree_constant& t);
-  tree_constant assign (tree_constant& t, const Octave_object& args);
+  tree_constant assign (const tree_constant& t);
+  tree_constant assign (const tree_constant& t, const Octave_object& args);
 
   void mark_for_possible_ans_assign (void)
     { id->mark_for_possible_ans_assign (); }

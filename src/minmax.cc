@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -164,9 +165,11 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
     case 2:
       arg2 = args(1);
 // Fall through...
+
     case 1:
       arg1 = args(0);
       break;
+
     default:
       panic_impossible ();
       break;
@@ -339,9 +342,11 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
     case 2:
       arg2 = args(1);
 // Fall through...
+
     case 1:
       arg1 = args(0);
       break;
+
     default:
       panic_impossible ();
       break;

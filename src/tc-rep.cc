@@ -292,16 +292,7 @@ TC_REP::tree_constant_rep (double b, double l, double i)
 {
   range = new Range (b, l, i);
   int nel = range->nelem ();
-  if (nel < 0)
-    {
-      delete range;
-      type_tag = unknown_constant;
-      if (nel == -1)
-	::error ("number of elements in range exceeds INT_MAX");
-      else
-	::error ("invalid range");
-    }
-  else if (nel > 1)
+  if (nel > 1)
     type_tag = range_constant;
   else
     {
@@ -317,30 +308,43 @@ TC_REP::tree_constant_rep (double b, double l, double i)
 	  type_tag = matrix_constant;
 	}
       else
-	panic_impossible ();
+	{
+	  type_tag = unknown_constant;
+	  if (nel == -1)
+	    ::error ("number of elements in range exceeds INT_MAX");
+	  else
+	    ::error ("invalid range");
+	}
     }
   orig_text = 0;
 }
 
 TC_REP::tree_constant_rep (const Range& r)
 {
-  if (r.nelem () > 1)
+  int nel = r.nelem ();
+  if (nel > 1)
     {
       range = new Range (r);
       type_tag = range_constant;
     }
-  else if (r.nelem () == 1)
+  else if (nel == 1)
     {
       scalar = r.base ();
       type_tag = scalar_constant;
     }
-  else if (r.nelem () == 0)
+  else if (nel == 0)
     {
       matrix = new Matrix ();
       type_tag = matrix_constant;
     }
   else
-    panic_impossible ();
+    {
+      type_tag = unknown_constant;
+      if (nel == -1)
+	::error ("number of elements in range exceeds INT_MAX");
+      else
+	::error ("invalid range");
+    }
 
   orig_text = 0;
 }
@@ -398,10 +402,6 @@ TC_REP::tree_constant_rep (const tree_constant_rep& t)
 
     case magic_colon:
       break;
-
-    default:
-      panic_impossible ();
-      break;
     }
 
   orig_text = strsave (t.orig_text);
@@ -435,7 +435,9 @@ TC_REP::~tree_constant_rep (void)
       delete a_map;
       break;
 
-    default:
+    case unknown_constant:
+    case scalar_constant:
+    case magic_colon:
       break;
     }
 
@@ -488,13 +490,8 @@ TC_REP::rows (void) const
       ::error ("invalid use of colon operator");
       break;
 
-    case unknown_constant:
-    case map_constant:
-      retval = -1;
-      break;
-
     default:
-      panic_impossible ();
+      retval = -1;
       break;
     }
 
@@ -533,13 +530,8 @@ TC_REP::columns (void) const
       ::error ("invalid use of colon operator");
       break;
 
-    case unknown_constant:
-    case map_constant:
-      retval = -1;
-      break;
-
     default:
-      panic_impossible ();
+      retval = -1;
       break;
     }
 
@@ -549,13 +541,16 @@ TC_REP::columns (void) const
 tree_constant
 TC_REP::all (void) const
 {
-  if (type_tag == string_constant || type_tag == range_constant)
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (! is_numeric_type ())
     {
       tree_constant tmp = make_numeric ();
       return tmp.all ();
     }
-
-  tree_constant retval;
 
   switch (type_tag)
     {
@@ -587,11 +582,8 @@ TC_REP::all (void) const
       }
       break;
 
-    case string_constant:
-    case range_constant:
-    case magic_colon:
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg ("all", *this);
       break;
     }
 
@@ -601,13 +593,16 @@ TC_REP::all (void) const
 tree_constant
 TC_REP::any (void) const
 {
-  if (type_tag == string_constant || type_tag == range_constant)
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (! is_numeric_type ())
     {
       tree_constant tmp = make_numeric ();
       return tmp.any ();
     }
-
-  tree_constant retval;
 
   switch (type_tag)
     {
@@ -639,11 +634,8 @@ TC_REP::any (void) const
       }
       break;
 
-    case string_constant:
-    case range_constant:
-    case magic_colon:
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg ("any", *this);
       break;
     }
 
@@ -662,13 +654,16 @@ TC_REP::valid_as_scalar_index (void) const
 int
 TC_REP::is_true (void) const
 {
-  if (type_tag == string_constant || type_tag == range_constant)
+  int retval = 0;
+
+  if (error_state)
+    return retval;
+
+  if (! is_numeric_type ())
     {
       tree_constant tmp = make_numeric ();
       return tmp.is_true ();
     }
-
-  int retval;
 
   switch (type_tag)
     {
@@ -698,11 +693,8 @@ TC_REP::is_true (void) const
       }
       break;
 
-    case string_constant:
-    case range_constant:
-    case magic_colon:
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg (0, *this);
       break;
     }
 
@@ -1220,9 +1212,8 @@ TC_REP::convert_to_str (void) const
       retval = string;
       break;
 
-    case magic_colon:
     default:
-      panic_impossible ();
+      gripe_invalid_conversion (type_as_string (), "string");
       break;
     }
 
@@ -1354,9 +1345,8 @@ TC_REP::force_numeric (int force_str_conv)
       }
       break;
 
-    case magic_colon:
     default:
-      panic_impossible ();
+      gripe_invalid_conversion (type_as_string (), "numeric type");
       break;
     }
 }
@@ -1394,9 +1384,8 @@ TC_REP::make_numeric (int force_str_conv) const
       retval.force_numeric (force_str_conv);
       break;
 
-    case magic_colon:
     default:
-      panic_impossible ();
+      gripe_invalid_conversion (type_as_string (), "numeric value");
       break;
     }
 
@@ -1427,18 +1416,13 @@ TC_REP::bump_value (tree_expression::type etype)
 	  *complex_matrix = *complex_matrix + 1.0;
 	  break;
 
-	case string_constant:
-	  ::error ("string++ and ++string not implemented yet, ok?");
-	  break;
-
 	case range_constant:
 	  range->set_base (range->base () + 1.0);
 	  range->set_limit (range->limit () + 1.0);
 	  break;
 
-	case magic_colon:
 	default:
-	  panic_impossible ();
+	  gripe_wrong_type_arg ("operator ++", type_as_string ());
 	  break;
 	}
       break;
@@ -1454,18 +1438,13 @@ TC_REP::bump_value (tree_expression::type etype)
 	  *matrix = *matrix - 1.0;
 	  break;
 
-	case string_constant:
-	  ::error ("string-- and -- string not implemented yet, ok?");
-	  break;
-
 	case range_constant:
 	  range->set_base (range->base () - 1.0);
 	  range->set_limit (range->limit () - 1.0);
 	  break;
 
-	case magic_colon:
 	default:
-	  panic_impossible ();
+	  gripe_wrong_type_arg ("operator --", type_as_string ());
 	  break;
 	}
       break;
@@ -1490,7 +1469,7 @@ TC_REP::resize (int i, int j)
       break;
 
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg ("resize", type_as_string ());
       break;
     }
 }
@@ -1509,7 +1488,7 @@ TC_REP::resize (int i, int j, double val)
       break;
 
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg ("resize", type_as_string ());
       break;
     }
 }
@@ -1625,16 +1604,7 @@ TC_REP::maybe_mutate (void)
 	}
       break;
 
-    case scalar_constant:
-    case matrix_constant:
-    case string_constant:
-    case range_constant:
-    case map_constant:
-    case magic_colon:
-      break;
-
     default:
-      panic_impossible ();
       break;
     }
 
@@ -1740,8 +1710,8 @@ TC_REP::print (void)
 	  }
 	  break;
 
+	case unknown_constant:
 	case magic_colon:
-	default:
 	  panic_impossible ();
 	  break;
 	}
@@ -1849,10 +1819,21 @@ TC_REP::print_code (ostream& os)
       os << ":";
       break;
 
-    default:
+    case map_constant:
+    case unknown_constant:
       panic_impossible ();
       break;
     }
+}
+
+void
+TC_REP::gripe_wrong_type_arg (const char *name,
+			      const tree_constant_rep& tcr) const
+{
+  if (name)
+    ::error ("%s: wrong type argument `%s'", name, tcr.type_as_string ());
+  else
+    ::error ("wrong type argument `%s'", name, tcr.type_as_string ());
 }
 
 char *
@@ -1878,6 +1859,9 @@ TC_REP::type_as_string (void) const
     case range_constant:
       return "range";
 
+    case map_constant:
+      return "structure";
+
     default:
       return "<unknown type>";
     }
@@ -1886,7 +1870,7 @@ TC_REP::type_as_string (void) const
 tree_constant
 do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 {
-  tree_constant ans;
+  tree_constant retval;
 
   int first_empty = (a.rows () == 0 || a.columns () == 0);
   int second_empty = (b.rows () == 0 || b.columns () == 0);
@@ -1899,12 +1883,19 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
       else if (flag == 0)
 	{
 	  ::error ("invalid binary operation on empty matrix");
-	  return ans;
+	  return retval;
 	}
     }
 
   tree_constant tmp_a = a.make_numeric ();
+
+  if (error_state)
+    return retval;
+
   tree_constant tmp_b = b.make_numeric ();
+
+  if (error_state)
+    return retval;
 
   TC_REP::constant_type a_type = tmp_a.const_type ();
   TC_REP::constant_type b_type = tmp_b.const_type ();
@@ -1924,27 +1915,26 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	{
 	case TC_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
-	  ans = do_binary_op (d1, d2, t);
+	  retval = do_binary_op (d1, d2, t);
 	  break;
 
 	case TC_REP::matrix_constant:
 	  m2 = tmp_b.matrix_value ();
-	  ans = do_binary_op (d1, m2, t);
+	  retval = do_binary_op (d1, m2, t);
 	  break;
 
 	case TC_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
-	  ans = do_binary_op (d1, c2, t);
+	  retval = do_binary_op (d1, c2, t);
 	  break;
 
 	case TC_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
-	  ans = do_binary_op (d1, cm2, t);
+	  retval = do_binary_op (d1, cm2, t);
 	  break;
 
-	case TC_REP::magic_colon:
 	default:
-	  panic_impossible ();
+	  gripe_wrong_type_arg_for_binary_op (tmp_b);
 	  break;
 	}
       break;
@@ -1957,27 +1947,26 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	{
 	case TC_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
-	  ans = do_binary_op (m1, d2, t);
+	  retval = do_binary_op (m1, d2, t);
 	  break;
 
 	case TC_REP::matrix_constant:
 	  m2 = tmp_b.matrix_value ();
-	  ans = do_binary_op (m1, m2, t);
+	  retval = do_binary_op (m1, m2, t);
 	  break;
 
 	case TC_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
-	  ans = do_binary_op (m1, c2, t);
+	  retval = do_binary_op (m1, c2, t);
 	  break;
 
 	case TC_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
-	  ans = do_binary_op (m1, cm2, t);
+	  retval = do_binary_op (m1, cm2, t);
 	  break;
 
-	case TC_REP::magic_colon:
 	default:
-	  panic_impossible ();
+	  gripe_wrong_type_arg_for_binary_op (tmp_b);
 	  break;
 	}
       break;
@@ -1990,27 +1979,26 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	{
 	case TC_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
-	  ans = do_binary_op (c1, d2, t);
+	  retval = do_binary_op (c1, d2, t);
 	  break;
 
 	case TC_REP::matrix_constant:
 	  m2 = tmp_b.matrix_value ();
-	  ans = do_binary_op (c1, m2, t);
+	  retval = do_binary_op (c1, m2, t);
 	  break;
 
 	case TC_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
-	  ans = do_binary_op (c1, c2, t);
+	  retval = do_binary_op (c1, c2, t);
 	  break;
 
 	case TC_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
-	  ans = do_binary_op (c1, cm2, t);
+	  retval = do_binary_op (c1, cm2, t);
 	  break;
 
-	case TC_REP::magic_colon:
 	default:
-	  panic_impossible ();
+	  gripe_wrong_type_arg_for_binary_op (tmp_b);
 	  break;
 	}
       break;
@@ -2023,44 +2011,42 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	{
 	case TC_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
-	  ans = do_binary_op (cm1, d2, t);
+	  retval = do_binary_op (cm1, d2, t);
 	  break;
 
 	case TC_REP::matrix_constant:
 	  m2 = tmp_b.matrix_value ();
-	  ans = do_binary_op (cm1, m2, t);
+	  retval = do_binary_op (cm1, m2, t);
 	  break;
 
 	case TC_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
-	  ans = do_binary_op (cm1, c2, t);
+	  retval = do_binary_op (cm1, c2, t);
 	  break;
 
 	case TC_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
-	  ans = do_binary_op (cm1, cm2, t);
+	  retval = do_binary_op (cm1, cm2, t);
 	  break;
 
-	case TC_REP::magic_colon:
 	default:
-	  panic_impossible ();
+	  gripe_wrong_type_arg_for_binary_op (tmp_b);
 	  break;
 	}
       break;
 
-    case TC_REP::magic_colon:
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg_for_binary_op (tmp_a);
       break;
     }
 
-  return ans;
+  return retval;
 }
 
 tree_constant
 do_unary_op (tree_constant& a, tree_expression::type t)
 {
-  tree_constant ans;
+  tree_constant retval;
 
   if (a.rows () == 0 || a.columns () == 0)
     {
@@ -2070,43 +2056,45 @@ do_unary_op (tree_constant& a, tree_expression::type t)
       else if (flag == 0)
 	{
 	  ::error ("invalid unary operation on empty matrix");
-	  return ans;
+	  return retval;
 	}
     }
 
   tree_constant tmp_a = a.make_numeric ();
 
+  if (error_state)
+    return retval;
+
   switch (tmp_a.const_type ())
     {
     case TC_REP::scalar_constant:
-      ans = do_unary_op (tmp_a.double_value (), t);
+      retval = do_unary_op (tmp_a.double_value (), t);
       break;
 
     case TC_REP::matrix_constant:
       {
 	Matrix m = tmp_a.matrix_value ();
-	ans = do_unary_op (m, t);
+	retval = do_unary_op (m, t);
       }
       break;
 
     case TC_REP::complex_scalar_constant:
-      ans = do_unary_op (tmp_a.complex_value (), t);
+      retval = do_unary_op (tmp_a.complex_value (), t);
       break;
 
     case TC_REP::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp_a.complex_matrix_value ();
-	ans = do_unary_op (m, t);
+	retval = do_unary_op (m, t);
       }
       break;
 
-    case TC_REP::magic_colon:
     default:
-      panic_impossible ();
+      gripe_wrong_type_arg_for_unary_op (tmp_a);
       break;
     }
 
-  return ans;
+  return retval;
 }
 
 /*

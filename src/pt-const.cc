@@ -232,12 +232,6 @@ tree_constant::print_code (ostream& os)
     os << ")";
 }
 
-void
-gripe_wrong_type_arg (const char *name, const tree_constant& tc)
-{
-  error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
-}
-
 // Construct return vector of empty matrices.  Return empty matrices
 // and/or gripe when appropriate.
 

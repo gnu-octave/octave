@@ -46,6 +46,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "dynamic-ld.h"
 #include "help.h"
 #include "error.h"
+#include "gripes.h"
 #include "pager.h"
 #include "tree-base.h"
 #include "tree-expr.h"
@@ -456,6 +457,7 @@ tree_matrix::eval (int print)
 		  }
 	      }
 	      break;
+
 	    case md_down:
 	      {
 		if (cols_this_row != col_total)
@@ -469,6 +471,7 @@ tree_matrix::eval (int print)
 		cols_this_row = nc;
 	      }
 	      break;
+
 	    default:
 	      panic_impossible ();
 	      break;
@@ -519,10 +522,12 @@ tree_matrix::eval (int print)
 	    case md_right:
 	      put_col += prev_nc;
 	      break;
+
 	    case md_down:
 	      put_row += prev_nr;
 	      put_col = 0;
 	      break;
+
 	    default:
 	      panic_impossible ();
 	      break;
@@ -617,9 +622,11 @@ tree_matrix::print_code (ostream& os)
 	    case md_right:
 	      os << ", ";
 	      break;
+
 	    case md_down:
 	      os << "; ";
 	      break;
+
 	    default:
 	      break;
 	    }
@@ -644,7 +651,7 @@ tree_multi_val_ret::eval (int print)
 // A base class for objects that can be evaluated with argument lists.
 
 tree_constant
-tree_fvc::assign (tree_constant& t, const Octave_object& args)
+tree_fvc::assign (const tree_constant& t, const Octave_object& args)
 {
   panic_impossible ();
   return tree_constant ();
@@ -687,7 +694,7 @@ tree_identifier::document (char *s)
 }
 
 tree_constant
-tree_identifier::assign (tree_constant& rhs)
+tree_identifier::assign (const tree_constant& rhs)
 {
   tree_constant retval;
 
@@ -718,7 +725,7 @@ tree_identifier::assign (tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
+tree_identifier::assign (const tree_constant& rhs, const Octave_object& args)
 {
   tree_constant retval;
 
@@ -765,7 +772,7 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
 }
 
 tree_constant
-tree_identifier::assign (SLList<char*> list, tree_constant& rhs)
+tree_identifier::assign (SLList<char*> list, const tree_constant& rhs)
 {
   tree_constant retval;
 
@@ -797,7 +804,7 @@ tree_identifier::assign (SLList<char*> list, tree_constant& rhs)
 }
 
 tree_constant
-tree_identifier::assign (SLList<char*> list, tree_constant& rhs,
+tree_identifier::assign (SLList<char*> list, const tree_constant& rhs,
 			 const Octave_object& args)
 {
   tree_constant retval;
@@ -1092,7 +1099,7 @@ tree_indirect_ref::name (void)
 }
 
 tree_constant
-tree_indirect_ref::assign (tree_constant& t)
+tree_indirect_ref::assign (const tree_constant& t)
 {
   tree_constant retval;
 
@@ -1105,7 +1112,7 @@ tree_indirect_ref::assign (tree_constant& t)
 }
 
 tree_constant
-tree_indirect_ref::assign (tree_constant& t, const Octave_object& args)
+tree_indirect_ref::assign (const tree_constant& t, const Octave_object& args)
 {
   tree_constant retval;
 
@@ -1379,9 +1386,17 @@ tree_prefix_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::increment: op = "++";        break;
-    case tree_expression::decrement: op = "--";        break;
-    default:                         op = "<unknown>"; break;
+    case tree_expression::increment:
+      op = "++";
+      break;
+
+    case tree_expression::decrement:
+      op = "--";
+      break;
+
+    default:
+      op = "<unknown>";
+      break;
     }
   return op;
 }
@@ -1445,9 +1460,17 @@ tree_postfix_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::increment: op = "++";        break;
-    case tree_expression::decrement: op = "--";        break;
-    default:                         op = "<unknown>"; break;
+    case tree_expression::increment:
+      op = "++";
+      break;
+
+    case tree_expression::decrement:
+      op = "--";
+      break;
+
+    default:
+      op = "<unknown>";
+      break;
     }
   return op;
 }
@@ -1514,6 +1537,7 @@ tree_unary_expression::eval (int print)
 	    }
 	}
       break;
+
     default:
       ::error ("unary operator %d not implemented", etype);
       break;
@@ -1528,11 +1552,25 @@ tree_unary_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::not:        op = "!";         break;
-    case tree_expression::uminus:     op = "-";         break;
-    case tree_expression::hermitian:  op = "'";         break;
-    case tree_expression::transpose:  op = ".'";        break;
-    default:                          op = "<unknown>"; break;
+    case tree_expression::not:
+      op = "!";
+      break;
+
+    case tree_expression::uminus:
+      op = "-";
+      break;
+
+    case tree_expression::hermitian:
+      op = "'";
+      break;
+
+    case tree_expression::transpose:
+      op = ".'";
+      break;
+
+    default:
+      op = "<unknown>";
+      break;
     }
   return op;
 }
@@ -1565,12 +1603,14 @@ tree_unary_expression::print_code (ostream& os)
       if (op)
 	op->print_code (os);
       break;
+
     case tree_expression::hermitian:
     case tree_expression::transpose:
       if (op)
 	op->print_code (os);
       os << oper ();
       break;
+
     default:
       os << oper ();
       if (op)
@@ -1635,6 +1675,7 @@ tree_binary_expression::eval (int print)
 	    }
 	}
       break;
+
     case tree_expression::and_and:
     case tree_expression::or_or:
       {
@@ -1693,6 +1734,7 @@ tree_binary_expression::eval (int print)
 	retval = tree_constant ((double) result);
       }
       break;
+
     default:
       ::error ("binary operator %d not implemented", etype);
       break;
@@ -1707,27 +1749,89 @@ tree_binary_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::add:        op = "+";         break;
-    case tree_expression::subtract:   op = "-";         break;
-    case tree_expression::multiply:   op = "*";         break;
-    case tree_expression::el_mul:     op = ".*";        break;
-    case tree_expression::divide:     op = "/";         break;
-    case tree_expression::el_div:     op = "./";        break;
-    case tree_expression::leftdiv:    op = "\\";        break;
-    case tree_expression::el_leftdiv: op = ".\\";       break;
-    case tree_expression::power:      op = "^";         break;
-    case tree_expression::elem_pow:   op = ".^";        break;
-    case tree_expression::cmp_lt:     op = "<";         break;
-    case tree_expression::cmp_le:     op = "<=";        break;
-    case tree_expression::cmp_eq:     op = "==";        break;
-    case tree_expression::cmp_ge:     op = ">=";        break;
-    case tree_expression::cmp_gt:     op = ">";         break;
-    case tree_expression::cmp_ne:     op = "!=";        break;
-    case tree_expression::and_and:    op = "&&";        break;
-    case tree_expression::or_or:      op = "||";        break;
-    case tree_expression::and:        op = "&";         break;
-    case tree_expression::or:         op = "|";         break;
-    default:                          op = "<unknown>"; break;
+    case tree_expression::add:
+      op = "+";
+      break;
+
+    case tree_expression::subtract:
+      op = "-";
+      break;
+
+    case tree_expression::multiply:
+      op = "*";
+      break;
+
+    case tree_expression::el_mul:
+      op = ".*";
+      break;
+
+    case tree_expression::divide:
+      op = "/";
+      break;
+
+    case tree_expression::el_div:
+      op = "./";
+      break;
+
+    case tree_expression::leftdiv:
+      op = "\\";
+      break;
+
+    case tree_expression::el_leftdiv:
+      op = ".\\";
+      break;
+
+    case tree_expression::power:
+      op = "^";
+      break;
+
+    case tree_expression::elem_pow:
+      op = ".^";
+      break;
+
+    case tree_expression::cmp_lt:
+      op = "<";
+      break;
+
+    case tree_expression::cmp_le:
+      op = "<=";
+      break;
+
+    case tree_expression::cmp_eq:
+      op = "==";
+      break;
+
+    case tree_expression::cmp_ge:
+      op = ">=";
+      break;
+
+    case tree_expression::cmp_gt:
+      op = ">";
+      break;
+
+    case tree_expression::cmp_ne:
+      op = "!=";
+      break;
+
+    case tree_expression::and_and:
+      op = "&&";
+      break;
+
+    case tree_expression::or_or:
+      op = "||";
+      break;
+
+    case tree_expression::and:
+      op = "&";
+      break;
+
+    case tree_expression::or:
+      op = "|";
+      break;
+
+    default:
+      op = "<unknown>";
+      break;
     }
   return op;
 }

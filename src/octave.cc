@@ -455,33 +455,42 @@ main (int argc, char **argv)
 	case 'd':
 	  yydebug++;
 	  break;
+
 	case 'f':
 	  read_init_files = 0;
 	  break;
+
 	case 'h':
 	case '?':
 	  verbose_usage ();
 	  break;
+
 	case 'i':
 	  forced_interactive = 1;
 	  break;
+
 	case 'p':
 	  if (optarg)
 	    load_path = strsave (optarg);
 	  break;
+
 	case 'q':
 	  inhibit_startup_message = 1;
 	  break;
+
 	case 'x':
 	  echo_input = 1;
 	  break;
+
 	case 'v':
 	  print_version_and_exit ();
 	  break;
+
 	case INFO_FILE_OPTION:
 	  if (optarg)
 	    info_file = strsave (optarg);
 	  break;
+
 	default:
 	  usage ();
 	  break;

@@ -35,6 +35,13 @@ extern void gripe_square_matrix_required (const char *name);
 extern void gripe_user_supplied_eval (const char *name);
 extern void gripe_user_returned_invalid (const char *name);
 extern void gripe_invalid_conversion (const char *from, const char *to);
+extern void gripe_2_or_3_dim_plot (void);
+extern void gripe_unrecognized_float_fmt (void);
+extern void gripe_unrecognized_data_fmt (const char *warn_for);
+extern void gripe_data_conversion (const char *from, const char *to);
+extern void gripe_wrong_type_arg (const char *name, const tree_constant& tc);
+extern void gripe_wrong_type_arg_for_unary_op (const tree_constant& op);
+extern void gripe_wrong_type_arg_for_binary_op (const tree_constant& op);
 
 #endif
 

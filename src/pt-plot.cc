@@ -50,6 +50,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "load-save.h"
 #include "help.h"
 #include "error.h"
+#include "gripes.h"
 #include "utils.h"
 #include "defun.h"
 
@@ -209,6 +210,7 @@ tree_plot_command::eval (void)
       else
 	plot_buf << "replot";
       break;
+
     case 2:
       if (clear_before_plotting || plot_line_count == 0)
 	{
@@ -218,12 +220,14 @@ tree_plot_command::eval (void)
       else
 	plot_buf << "replot";
       break;
+
     case 3:
       {
 	plot_line_count = 0;
 	plot_buf << "splot";
       }
       break;
+
     default:
       gripe_2_or_3_dim_plot ();
       return;
@@ -282,12 +286,15 @@ tree_plot_command::print_code (ostream& os)
     case 1:
       os << "replot";
       break;
+
     case 2:
       os << "gplot";
       break;
+
     case 3:
       os << "gsplot";
       break;
+
     default:
       os << "<unkown plot command>";
       break;
@@ -687,9 +694,11 @@ subplot::print (int ndim, ostrstream& plot_buf)
 	    case 2:
 	      file = save_in_tmp_file (data, ndim);
 	      break;
+
 	    case 3:
 	      file = save_in_tmp_file (data, ndim, parametric_plot);
 	      break;
+
 	    default:
 	      gripe_2_or_3_dim_plot ();
 	      break;
@@ -817,9 +826,11 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 	    case 2:
 	      save_ascii_data (file, t);
 	      break;
+
 	    case 3:
 	      save_three_d (file, t, parametric);
 	      break;
+
 	    default:
 	      gripe_2_or_3_dim_plot ();
 	      break;
@@ -884,6 +895,7 @@ drawn.  With no argument, toggle the current state.")
     case 1:
       clear_before_plotting = ! clear_before_plotting;
       break;
+
     case 2:
       if (strcasecmp (argv[1], "on") == 0)
 	clear_before_plotting = 0;
@@ -892,6 +904,7 @@ drawn.  With no argument, toggle the current state.")
       else
 	print_usage ("hold");
       break;
+
     default:
       print_usage ("hold");
       break;

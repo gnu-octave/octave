@@ -51,6 +51,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Indexing functions.
 
+// This is the top-level indexing function.
+
 tree_constant
 TC_REP::do_index (const Octave_object& args)
 {
@@ -97,17 +99,16 @@ TC_REP::do_index (const Octave_object& args)
 //      retval = do_string_index (args);
       break;
 
-    case magic_colon:
-    case range_constant:
-// This isn\'t great, but it\'s easier than implementing a lot of
-// range indexing functions.
-      force_numeric ();
-      assert (type_tag != magic_colon && type_tag != range_constant);
-      retval = do_index (args);
-      break;
-
     default:
-      panic_impossible ();
+
+// This isn\'t great, but it\'s easier than implementing a lot of
+// other special indexing functions.
+
+      force_numeric ();
+
+      if (! error_state && is_numeric_type ())
+	retval = do_index (args);
+
       break;
     }
 
@@ -1424,8 +1425,8 @@ TC_REP::do_matrix_index (TC_REP::constant_type mci,
     case scalar_constant:
       retval = scalar;
       break;
-    case complex_matrix_constant:
 
+    case complex_matrix_constant:
       retval = *complex_matrix;
       break;
 

@@ -209,6 +209,9 @@ private:
 
   void print_code (ostream& os);
 
+  void gripe_wrong_type_arg (const char *name,
+			     const tree_constant_rep& tcr) const;
+
   char *type_as_string (void) const;
 
 // Binary and unary operations.

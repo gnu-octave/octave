@@ -558,9 +558,6 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 10,
   return retval;
 }
 
-// XXX FIXME XXX -- this should be smart, like the xputenv function in
-// the kpathsea library.
-
 DEFUN ("putenv", Fputenv, Sputenv, 10,
   "putenv (VAR, VALUE): define environment variable VAR=VALUE")
 {
@@ -577,15 +574,7 @@ DEFUN ("putenv", Fputenv, Sputenv, 10,
 	  const char *val = args(1).string_value (); 
 
 	  if (! error_state)
-	    {
-	      int buflen = strlen (var) + strlen (val) + 2;
-
-	      char *buf = new char [buflen];
-
-	      sprintf (buf, "%s=%s", var, val);
-
-	      putenv (buf);
-	    }
+	    oct_putenv (var, val);
 	  else
 	    error ("putenv: second argument should be a string");
 	}

@@ -197,20 +197,20 @@ initialize_globals (char *name)
   char *odb = getenv ("OCTAVE_DB_DIR");
 
   if (odb)
-    putenv (strconcat ("TEXMF=", odb));
+    oct_putenv ("TEXMF", odb);
   else
     {
       char *oh = getenv ("OCTAVE_HOME");
 
       if (oh)
 	{
-	  int len = strlen (oh) + 18;
-	  char *putenv_cmd = new char [len];
-	  sprintf (putenv_cmd, "TEXMF=%s/lib/octave", oh);
-	  putenv (putenv_cmd);
+	  int len = strlen (oh) + 12;
+	  char *putenv_val = new char [len];
+	  sprintf (putenv_val, "%s/lib/octave", oh);
+	  oct_putenv ("TEXMF", putenv_val);
 	}
       else  
-	putenv (strsave ("TEXMF=" OCTAVE_DATADIR "/octave"));
+	oct_putenv ("TEXMF", OCTAVE_DATADIR "/octave");
     }
 
   exec_path = default_exec_path ();

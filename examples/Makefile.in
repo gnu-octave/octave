@@ -18,7 +18,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = hello.cc
+SOURCES = hello.cc info-emacs-info info-emacs-octave-help
 
 DISTFILES = Makefile.in $(SOURCES)
 

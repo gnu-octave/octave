@@ -1,3 +1,50 @@
+Fri Sep 19 09:35:59 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* octave-inf.el (inferior-octave-startup-args):  Set to '("-i") to
+	force interactive behavior.
+
+Wed Sep 10 15:31:03 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* emacs/octave-mod.el (octave-auto-indent):  New variable.
+	(octave-electric-semi, octave-electric-space):  Use it.
+
+	* emacs/octave-mod.el (octave-maybe-insert-continuation-string):  New
+	function.
+	(octave-auto-fill):  No longer calls do-auto-fill.  Should now
+	avoid breaking lines after comment starts or before code line
+	continuation expressions.
+	(octave-fill-paragraph):  Move forward a line if octave-auto-fill
+	gave up.
+
+	* emacs/octave-mod.el (octave-before-magic-comment-p):  New function.
+	(octave-comment-indent):  Handle magic comments correctly.
+	(calculate-octave-indent):  Handle magic comments correctly.
+
+	* emacs/octave-inf.el (inferior-octave-prompt):  Include the `debug'
+	prompt issued by the Octave `keyboard' command.
+
+	* emacs/octave-mod.el (octave-abbrev-table):  Added abbrevs for switch,
+	case, otherwise, and endswitch.
+	(octave-begin-keywords):  Added switch.
+	(octave-else-keywords):  Added case and otherwise.
+	(octave-end-keywords):  Added endswitch.
+	(octave-block-match-alist):  Added an entry for switch syntax.
+	(calculate-octave-indent):  Added support for switch syntax.
+	(octave-block-end-offset):  New function.
+	(octave-comment-indent):  Fix a typo.
+
+	* emacs/octave-hlp.el:  Provide octave-hlp.
+
+	* emacs/octave-inf.el:  Provide octave-inf.
+
+Sun Sep  7 23:16:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in Don't use OCTAVE_SET_DEFAULT to set values for
+	bindir, datadir, exec_prefix, includedir, infodir, libdir,
+	libexecdir, mandir.
+	Don't use AC_PREFIX_DEFAULT, since we don't want to override the
+	default setting anyway.
+
 Tue Aug 26 13:30:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave-bug.in: CC bug report to user if $USER or $LOGNAME is set.

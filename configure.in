@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.284 $)
+AC_REVISION($Revision: 1.285 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -32,16 +32,6 @@ OCTAVE_HOST_TYPE
 
 ### some defaults
 
-AC_PREFIX_DEFAULT(/usr/local)
-AC_MSG_RESULT([defining prefix to be $prefix])
-OCTAVE_SET_DEFAULT(exec_prefix)
-OCTAVE_SET_DEFAULT(bindir)
-OCTAVE_SET_DEFAULT(datadir)
-OCTAVE_SET_DEFAULT(libdir)
-OCTAVE_SET_DEFAULT(libexecdir)
-OCTAVE_SET_DEFAULT(includedir)
-OCTAVE_SET_DEFAULT(mandir)
-OCTAVE_SET_DEFAULT(infodir)
 OCTAVE_SET_DEFAULT(man1dir, '$(mandir)/man1')
 OCTAVE_SET_DEFAULT(man1ext, '.1')
 OCTAVE_SET_DEFAULT(infofile, '$(infodir)/octave.info')

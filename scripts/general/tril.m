@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: triu (x, k)
+## usage: tril (x, k)
 ##
 ## Return the lower triangular part of x above the k-th diagonal.  If
 ## the second argument is omitted, k = 0 is assumed.

@@ -36,7 +36,7 @@ function q = polyderiv (p)
   endif
 
   if (! is_vector (p))
-    error ("argument must be a vector");
+    error ("polyderiv: argument must be a vector");
   endif
 
   lp = length (p);

@@ -46,7 +46,7 @@ function y = polyval (c, x)
   endif
 
   if (! (is_vector (c) || isempty (c)))
-    error ("poly: first argument must be a vector.");
+    error ("polyval: first argument must be a vector.");
   endif
 
   if (isempty (x))

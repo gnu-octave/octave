@@ -34,7 +34,7 @@ DISTFILES = $(CONF_DISTFILES) \
 DISTDIRS = glob kpathsea readline # plplot
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
+SUBDIRS = @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
 	kpathsea libcruft liboctave src scripts doc examples
 
 

@@ -42,16 +42,16 @@
 
 function y = polyvalm (c, x)
 
-  if(nargin != 2)
+  if (nargin != 2)
     usage ("polyvalm (c, x)");
   endif
 
   if (! (is_vector (c) || isempty (c)))
-    error("poly: first argument must be a vector.");
+    error ("polyvalm: first argument must be a vector.");
   endif
 
-  if(! is_square (x))
-    error("poly: second argument must be a square matrix.");
+  if (! is_square (x))
+    error("polyvalm: second argument must be a square matrix.");
   endif
 
   if (isempty (c))
@@ -61,6 +61,10 @@ function y = polyvalm (c, x)
 
   [v, d] = eig (x);
 
-  y = v * diag (polyval (c, diag (d))) * v';
+  if (is_symmetric (x))
+    y = v * diag (polyval (c, diag (d))) * v';
+  else
+    y = v * (diag (polyval (c, diag (d))) / v);
+  endif
 
 endfunction

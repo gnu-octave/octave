@@ -29,16 +29,20 @@ function z = cross (x, y)
     usage ("cross (x, y)");
   endif
 
-  if (! (is_vector (x) && length (x) == 3
-	 && is_vector (y) && length (y) == 3))
+  if (length (x) == 3 && length (y) == 3)
+
+    z = [x(2)*y(3) - x(3)*y(2); x(3)*y(1) - x(1)*y(3); x(1)*y(2) - x(2)*y(1)];
+
+    x_nr = rows (x);
+    y_nr = rows (y);
+
+    if ((x_nr == y_nr && x_nr == 1)
+ 	|| (x_nr != y_nr && ! prefer_column_vectors))
+      z = z';
+    endif
+
+  else
     error ("cross: both x and y must be 3-dimensional vectors");
   endif
-  
-  x = reshape (x, 3, 1);
-  y = reshape (y, 3, 1);
-  e = eye (3, 3);
-  for k = 1 : 3
-    z(k) = det ([x y e(:, k)]);
-  endfor
 
 endfunction

@@ -1,11 +1,11 @@
 @c Copyright (C) 1996, 1997 John W. Eaton
 @c Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/17.
-@c Last updated by KH on 1997/01/22.
+@c Last updated by KH on 1997/07/31.
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
 @node Emacs, Grammar, Installation, Top
-@appendix Using Emacs With Octave
+@appendix Emacs Octave Support
 
 The development of Octave code can greatly be facilitated using Emacs
 with Octave mode, a major mode for editing Octave files which can e.g.@:
@@ -21,37 +21,38 @@ useful in particular for debugging Octave code.
 Finally, you can convince Octave to use the Emacs info reader for
 @kbd{help -i}.
 
-All functionality is provided by the Emacs Lisp package @file{octave}.
-This chapter describes how to set up and use this package.
+All functionality is provided by the Emacs Lisp package EOS (for ``Emacs
+Octave Support'').  This chapter describes how to set up and use this
+package.
 
-Please contact @email{Kurt.Hornik@@ci.tuwien.ac.at} if you have any
-questions or suggestions on using Emacs with Octave.
+Please contact <Kurt.Hornik@@ci.tuwien.ac.at> if you have any questions
+or suggestions on using EOS.
 
 @menu
-* Installing the Emacs Octave Package::  
+* Installing EOS::              
 * Using Octave Mode::           
 * Running Octave From Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
 @end menu
 
-@node Installing the Emacs Octave Package, Using Octave Mode, Emacs, Emacs
-@appendixsec Installing the Emacs Octave Package
+@node Installing EOS, Using Octave Mode, Emacs, Emacs
+@appendixsec Installing EOS
 
-The Emacs package @file{octave} consists of @file{octave-mod.el},
+The Emacs package EOS consists of the three files @file{octave-mod.el},
 @file{octave-inf.el}, and @file{octave-hlp.el}.  These files, or better
 yet their byte-compiled versions, should be somewhere in your Emacs
 load-path.
 
 If you have GNU Emacs with a version number at least as high as 19.35,
-you are all set up, because the package is respectively will be part of
-GNU Emacs as of version 19.35.
+you are all set up, because EOS is respectively will be part of GNU
+Emacs as of version 19.35.
 
 Otherwise, copy the three files from the @file{emacs} subdirectory of
 the Octave distribution to a place where Emacs can find them (this
 depends on how your Emacs was installed).  Byte-compile them for speed
 if you want.
 
-@node Using Octave Mode, Running Octave From Within Emacs, Installing the Emacs Octave Package, Emacs
+@node Using Octave Mode, Running Octave From Within Emacs, Installing EOS, Emacs
 @appendixsec Using Octave Mode
 
 If you are lucky, your sysadmins have already arranged everything so
@@ -68,7 +69,7 @@ your @file{~/.emacs} file:
 @lisp
 (autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+      (cons '(\"\\\\.m$\" . octave-mode) auto-mode-alist))
 @end lisp
 
 @item
@@ -94,20 +95,20 @@ addition to the standard Emacs commands.
 @item C-h m
 Describe the features of Octave mode.
 
-@item @key{LFD}
+@item LFD
 Reindent the current Octave line, insert a newline and indent the new
 line (@code{octave-reindent-then-newline-and-indent}).  An abbrev before
 point is expanded if @code{abbrev-mode} is non-@code{nil}.
 
-@item @key{TAB}
+@item TAB
 Indents current Octave line based on its contents and on previous
 lines (@code{indent-according-to-mode}). 
 
 @item ;
 Insert an ``electric'' semicolon (@code{octave-electric-semi}).  If
-@code{octave-auto-newline} is non-@code{nil}, typing a @samp{;}
-automatically reindents the current line, inserts a newline and indents
-the new line.
+@code{octave-auto-indent} is non-@code{nil}, reindent the current line.
+If @code{octave-auto-newline} is non-@code{nil}, automagically insert a
+newline and indent the new line.
 
 @item `
 Start entering an abbreviation (@code{octave-abbrev-start}).  If Abbrev
@@ -115,11 +116,11 @@ mode is turned on, typing @kbd{`C-h} or @kbd{`?} lists all abbrevs.
 Any other key combination is executed normally.  Note that all Octave
 abbrevs start with a grave accent.
 
-@item M-@key{LFD}
+@item M-LFD
 Break line at point and insert continuation marker and alignment
 (@code{octave-split-line}).
 
-@item M-@key{TAB}
+@item M-TAB
 Perform completion on Octave symbol preceding point, comparing that
 symbol against Octave's reserved words and builtin variables
 (@code{octave-complete-symbol}). 
@@ -272,15 +273,18 @@ solution is
 @noindent
 (this works for all modes by adding to the startup hooks, without having
 to know the particular binding of @key{RET} in that mode!).  Similar
-considerations apply for using @kbd{M-@key{RET}} as @kbd{M-@key{LFD}}.
-As Barry A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the
-documentation for his @code{cc-mode}, ``This is a very common
-question. @code{:-)} If you want this to be the default behavior, don't
-lobby me, lobby RMS!''
+considerations apply for using @key{M-RET} as @key{M-LFD}.  As Barry
+A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the documentation for his
+@code{cc-mode}, ``This is a very common question. @code{:-)} If you want
+this to be the default behavior, don't lobby me, lobby RMS!''
 
 The following variables can be used to customize Octave mode.
 
 @table @code
+@item octave-auto-indent
+Non-@code{nil} means auto-indent the current line after a semicolon or
+space.  Default is @code{nil}.
+
 @item octave-auto-newline
 Non-@code{nil} means auto-insert a newline and indent after semicolons
 are typed.  The default value is @code{nil}.
@@ -457,9 +461,11 @@ when Octave is waiting for input, or done sending output.
 @node Using the Emacs Info Reader for Octave,  , Running Octave From Within Emacs, Emacs
 @appendixsec Using the Emacs Info Reader for Octave
 
-You can also have Octave's @kbd{help -i} command invoke the Emacs Info
-reader.  To do this, you'll need @file{gnuserv}, which can be retrieved
-from any GNU Emacs Lisp Code Directory archive, e.g.@:
+You can also set up the Emacs Info reader for dealing with the results
+of Octave's @samp{help -i}.  For this, the package @file{gnuserv} needs
+to be installed, which unfortunately still does not come with GNU Emacs
+(it does with XEmacs).  It can be retrieved from any GNU Emacs Lisp Code
+Directory archive, e.g.@:
 @url{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
 in the @file{packages} subdirectory.  The alpha version of an enhanced
 version of gnuserv is available at 
@@ -483,7 +489,7 @@ that the Emacs variable @code{octave-help-files} is set correctly).  In
 this case, set @code{INFO_PROGRAM} to @code{"info-emacs-octave-help"}.
 
 If you use Octave from within Emacs, these settings are best done in the
-startup file @file{~/.emacs-octave} (or the file pointed to by the Emacs
+@file{~/.emacs-octave} startup file (or the file pointed to by the Emacs
 variable @code{inferior-octave-startup-file}).
 
 @c Local Variables:

@@ -147,6 +147,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
 
+
  --- The Detailed Node Listing ---
 
 Preface
@@ -411,9 +412,9 @@ Binary Distributions
 * Installing Octave from a Binary Distribution::  
 * Creating a Binary Distribution::  
 
-Using Emacs With Octave
+Emacs Octave Support
 
-* Installing the Emacs Octave Package::  
+* Installing EOS::              
 * Using Octave Mode::           
 * Running Octave From Within Emacs::  
 * Using the Emacs Info Reader for Octave::  

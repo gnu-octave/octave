@@ -1,3 +1,21 @@
+Fri Sep 19 17:04:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/cross.m: Use direct formula instead of calling
+	det three times in a loop.  If both args are column (row) vectors,
+	return a column (row) vector.  If they don't match, pay attention
+	to the value of prefer_column_vectors.
+
+Thu Aug 28 15:31:20 1997  Rolf Fabian <fabian@olymp.Umwelt.TU-Cottbus.de>
+
+	* polynomial/polyvalm.m: Don't assume orthogonal eigenvectors for
+	nonsymmetric matrices.
+
+	* general/tril.m: Fix usage message.
+
+	* polynomial/polyvalm.m: Fix error messages.
+	* polynomial/polyderiv.m: Likewise.
+	* polynomial/polyval.m: Likewise.
+
 Wed Aug 13 14:14:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/blanks.m: Allow blanks(0) to return empty string.

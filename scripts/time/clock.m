@@ -28,11 +28,11 @@ function retval = clock ()
 
   retval = zeros (1, 6);
 
-  retval(1) = tm.tm_year + 1900;
-  retval(2) = tm.tm_mon + 1;
-  retval(3) = tm.tm_mday;
-  retval(4) = tm.tm_hour;
-  retval(5) = tm.tm_min;
-  retval(6) = tm.tm_sec + tm.tm_usec / 1e6;
+  retval(1) = tm.year + 1900;
+  retval(2) = tm.mon + 1;
+  retval(3) = tm.mday;
+  retval(4) = tm.hour;
+  retval(5) = tm.min;
+  retval(6) = tm.sec + tm.usec / 1e6;
 
 endfunction

@@ -36,29 +36,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Date and time functions.
 
 static Octave_map
-mk_tm_map (struct tm *tm, double fraction)
+mk_tm_map (struct tm& tm, double fraction)
 {
   Octave_map m;
 
-  m ["tm_usec"] = fraction * 1e6;
-  m ["tm_sec"] = (double) tm->tm_sec;
-  m ["tm_min"] = (double) tm->tm_min;
-  m ["tm_hour"] = (double) tm->tm_hour;
-  m ["tm_mday"] = (double) tm->tm_mday;
-  m ["tm_mon"] = (double) tm->tm_mon;
-  m ["tm_year"] = (double) tm->tm_year;
-  m ["tm_wday"] = (double) tm->tm_wday;
-  m ["tm_yday"] = (double) tm->tm_yday;
-  m ["tm_isdst"] = (double) tm->tm_isdst;
+  m ["usec"] = fraction * 1e6;
+  m ["sec"] = (double) tm.tm_sec;
+  m ["min"] = (double) tm.tm_min;
+  m ["hour"] = (double) tm.tm_hour;
+  m ["mday"] = (double) tm.tm_mday;
+  m ["mon"] = (double) tm.tm_mon;
+  m ["year"] = (double) tm.tm_year;
+  m ["wday"] = (double) tm.tm_wday;
+  m ["yday"] = (double) tm.tm_yday;
+  m ["isdst"] = (double) tm.tm_isdst;
 #if defined (HAVE_TM_ZONE)
-  m ["tm_zone"]  = tm->tm_zone;
+  m ["zone"]  = tm.tm_zone;
 #elif defined (HAVE_TZNAME)
-  if (tm->tm_isdst && tzname[1] && *tzname[1])
-    m ["tm_zone"] = tzname[1];
+  if (tm.tm_isdst && tzname[1] && *tzname[1])
+    m ["zone"] = tzname[1];
   else
-    m ["tm_zone"] = tzname[0];
+    m ["zone"] = tzname[0];
 #else
-  m ["tm_zone"] = zone_name (tm);
+  m ["zone"] = zone_name (tm);
 #endif
 
   return m;
@@ -69,18 +69,18 @@ extract_tm (Octave_map &m, double& fraction)
 {
   static struct tm tm;
 
-  fraction = (m ["tm_usec"] . double_value ()) / 1e6;
-  tm.tm_sec = NINT (m ["tm_sec"] . double_value ());
-  tm.tm_min = NINT (m ["tm_min"] . double_value ());
-  tm.tm_hour = NINT (m ["tm_hour"] . double_value ());
-  tm.tm_mday = NINT (m ["tm_mday"] . double_value ());
-  tm.tm_mon = NINT (m ["tm_mon"] . double_value ());
-  tm.tm_year = NINT (m ["tm_year"] . double_value ());
-  tm.tm_wday = NINT (m ["tm_wday"] . double_value ());
-  tm.tm_yday = NINT (m ["tm_yday"] . double_value ());
-  tm.tm_isdst = NINT (m ["tm_isdst"] . double_value ());
+  fraction = (m ["usec"] . double_value ()) / 1e6;
+  tm.tm_sec = NINT (m ["sec"] . double_value ());
+  tm.tm_min = NINT (m ["min"] . double_value ());
+  tm.tm_hour = NINT (m ["hour"] . double_value ());
+  tm.tm_mday = NINT (m ["mday"] . double_value ());
+  tm.tm_mon = NINT (m ["mon"] . double_value ());
+  tm.tm_year = NINT (m ["year"] . double_value ());
+  tm.tm_wday = NINT (m ["wday"] . double_value ());
+  tm.tm_yday = NINT (m ["yday"] . double_value ());
+  tm.tm_isdst = NINT (m ["isdst"] . double_value ());
 #ifdef HAVE_TMZONE
-  tm.tm_zone = (m ["tm_zone"] . string_value ());
+  tm.tm_zone = (m ["zone"] . string_value ());
 #endif
 
   return &tm;
@@ -152,17 +152,17 @@ DEFUN ("localtime", Flocaltime, Slocaltime, 1, 1,
   Given a value returned from time(), return a structure with\n\
   the following elements:\n\
 \n\
-    tm_usec  : microseconds after the second (0, 999999)\n\
-    tm_sec   : seconds after the minute (0, 61)\n\
-    tm_min   : minutes after the hour (0, 59)\n\
-    tm_hour  : hours since midnight (0, 23)\n\
-    tm_mday  : day of the month (1, 31)\n\
-    tm_mon   : months since January (0, 11)\n\
-    tm_year  : years since 1900\n\
-    tm_wday  : days since Sunday (0, 6)\n\
-    tm_yday  : days since January 1 (0, 365)\n\
-    tm_isdst : Daylight Savings Time flag\n\
-    tm_zone  : Time zone")
+    usec  : microseconds after the second (0, 999999)\n\
+    sec   : seconds after the minute (0, 61)\n\
+    min   : minutes after the hour (0, 59)\n\
+    hour  : hours since midnight (0, 23)\n\
+    mday  : day of the month (1, 31)\n\
+    mon   : months since January (0, 11)\n\
+    year  : years since 1900\n\
+    wday  : days since Sunday (0, 6)\n\
+    yday  : days since January 1 (0, 365)\n\
+    isdst : Daylight Savings Time flag\n\
+    zone  : Time zone")
 {
   Octave_object retval;
 

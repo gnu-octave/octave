@@ -78,7 +78,8 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
   int m = a.rows ();
   int n = a.cols ();
 
-  Complex *tmp_data = dup (a.data (), a.length ());
+  ComplexMatrix atmp = a;
+  Complex *tmp_data = atmp.fortran_vec ();
 
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;

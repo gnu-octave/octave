@@ -119,7 +119,15 @@ void
 tree_identifier::link_to_global (void)
 {
   if (sym)
-    link_to_global_variable (sym);
+    {
+      if (! sym->is_linked_to_global ())
+	{
+	  if (sym->is_defined () && sym->is_variable ())
+	    warning ("local variable value may have changed to match global");
+
+	  link_to_global_variable (sym);
+	}
+    }
 }
 
 void

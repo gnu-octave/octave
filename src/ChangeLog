@@ -1,3 +1,122 @@
+2002-07-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_table::clear (void)): Clear all records.
+	(symbol_table::clear (const std::string&)): Delete second arg.
+	Clear any symbol that matches, regardless of type.
+
+	* symtab.h (symbol_table::variable_name_list): New function.
+	(symbol_table::global_variable_name_list): Likewise.
+	(symbol_table::user_function_name_list): Likewise.
+
+	* symtab.h, symtab.cc (symbol_table::clear_variables): New function.
+	(symbol_table::clear_functions): Likewise.
+	(symbol_table::clear_globals): Likewise.
+	(symbol_table::clear_variable): New function.
+	(symbol_table::clear_function): Likewise.
+	(symbol_table::clear_global): Likewise.
+	(symbol_table::clear_variable_pattern): New function.
+	(symbol_table::clear_function_pattern): Likewise.
+	(symbol_table::clear_global_pattern): Likewise.
+
+	* variables.cc (name_matches_any_pattern): Rename from
+	var_matches_any_pattern.
+	(is_local_variable): New static inline function.
+	(maybe_warn_exclusive): Likewise.
+	(do_clear_all): Likewise.
+	(do_clear_functions): Likewise.
+	(do_clear_globals): Likewise.
+	(do_clear_variables): Likewise.
+	(do_clear_function): Likewise.
+	(do_clear_global): Likewise.
+	(do_clear_variable): Likewise.
+	(do_clear_symbol): Likewise.
+	(do_clear_function_pattern): Likewise.
+	(do_clear_global_pattern): Likewise.
+	(do_clear_variable_pattern): Likewise.
+	(do_clear_symbol_pattern): Likewise.
+	(do_clear_functions): Likewise.
+	(do_clear_functions): Likewise.
+	(do_clear_globals): Likewise.
+	(do_clear_variables): Likewise.
+	(do_clear_symbols): Likewise.
+	(do_matlab_compatible_clear): Likewise.
+	(CLEAR_OPTION_ERROR): New macro.
+	(Fclear): Rewrite for Matlab compatibility and to cope with new
+	symbol table semantics.
+
+2002-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_table::clear): Simply clear everything.
+	(symbol_table::clear_functions, symbol_table::clear_globals,
+	symbol_table::clear_all): New functions.
+
+	* symtab.h (symbol_record::symbol_def::next_elem): Delete.
+	(symbol_record::symbol_def::symbol_def): Delete intializer.
+
+	* symtab.h, symtab.cc (symbol_record::push_def): Delete.
+	(symbol_record::remove_top_def): Delete.
+	(symbol_record::replace_all_defs): Delete.
+	(symbol_record::hides_fcn): Delete.
+	(symbol_record::hides_builtin): Delete.
+
+	* symtab.h (symbol_table::~symbol_table): Call clear before
+	deleting the table.
+
+	* variables.cc (initialize_symbol_tables): Create fbi_sym_tab too.
+	(Fexist): Look in fbi_sym_tab, not global_sym_tab.
+
+	* parse.y (function_symtab): Rename from global_symtab.
+	Set curr_sym_tab to fbi_sym_tab, not global_sym_tab.
+	Change all uses of global_symtab to be function_symtab instead.
+	(frob_function): Rename and look for function name in fbi_sym_tab,
+	not global_sym_tab.
+	(parse_fcn_file): Clear function name from fbi_sym_tab, not
+	global_sym_tab.
+
+	* load-save.cc (save_vars): Look for built-in vars in fbi_sym_tab.
+	* symtab.cc (symbol_record::link_to_builtin_variable): Likewise.
+	* variables.cc (is_builtin_variable): Likewise.
+	(bind_ans): Likewise.
+	(bind_builtin_constant): Likewise.
+	(bind_builtin_variable): Likewise.
+	(builtin_string_variable): Likewise.
+	(builtin_real_scalar_variable): Likewise.
+	(builtin_any_variable): Likewise.
+	(is_text_function_name): Likewise, for functions.
+	(force_link_to_function): Likewise.
+	(is_builtin_function_name): Likewise.
+	(is_mapper_function_name): Likewise.
+	(is_valid_function): Likewise.
+	(Fclear): Likewise.
+	(F__print_symtab_info__): Likewise.
+	* defun.cc (print_usage): Likewise.
+	(install_builtin_mapper): Likewise.
+	(install_builtin_function): Likewise.
+	(install_dld_function): Likewise.
+	(Falias): Likewise.
+	* dynamic-ld.cc (clear_function): Likewise.
+	* variables.cc (do_who): Likewise, for built-ins and functions.
+	(link_to_builtin_or_function): Likewise.
+	* help.cc (LIST_SYMBOLS): Likewise.
+	(make_name_list): Handle fbi_sym_tab too.
+
+	* variables.cc (fbi_sym_tab): New symbol table.
+	* variables.h (fbi_sym_tab): Provide decl.
+
+2002-07-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.h (symbol_record::alias): Delete unused arg force.
+	Change all callers.
+
+	* variables.cc (link_to_global_variable): Give local variable
+	global value.
+
+	* pt-id.cc (tree_identifier::link_to_global): Warn about global
+	variables that have been defined before being declared global.
+	for a global variable to be used before it is declared global.
+	* pt-decl.cc (tree_global_command::do_init): Handle possible error
+	from tree_identifier::link_to_global.
+
 2002-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.cc (silent_functions, Vsilent_functions): Move here.

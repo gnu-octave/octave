@@ -347,6 +347,9 @@ make_name_list (void)
   string_vector key = names (keyword_help ());
   int key_len = key.length ();
 
+  string_vector fbi = fbi_sym_tab->name_list ();
+  int fbi_len = fbi.length ();
+
   string_vector glb = global_sym_tab->name_list ();
   int glb_len = glb.length ();
 
@@ -361,7 +364,7 @@ make_name_list (void)
   string_vector ffl = octave_fcn_file_name_cache::list_no_suffix ();
   int ffl_len = ffl.length ();
 
-  int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
+  int total_len = key_len + fbi_len + glb_len + top_len + lcl_len + ffl_len;
 
   string_vector list (total_len);
 
@@ -371,6 +374,9 @@ make_name_list (void)
   int i = 0;
   for (i = 0; i < key_len; i++)
     list[j++] = key[i];
+
+  for (i = 0; i < fbi_len; i++)
+    list[j++] = fbi[i];
 
   for (i = 0; i < glb_len; i++)
     list[j++] = glb[i];
@@ -438,7 +444,7 @@ display_symtab_names (std::ostream& os, const string_vector& names,
   do \
     { \
       string_vector names \
-	= global_sym_tab->name_list (string_vector (), true, type); \
+	= fbi_sym_tab->name_list (string_vector (), true, type); \
       display_symtab_names (octave_stdout, names, msg); \
     } \
   while (0)

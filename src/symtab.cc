@@ -202,19 +202,6 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
 {
   if (! (is_variable () && read_only_error ("redefine")))
     {
-      if (is_function () || is_constant ())
-	{
-	  if (Vvariables_can_hide_functions)
-	    {
-	      push_def (new symbol_def ());
-
-	      if (Vvariables_can_hide_functions < 0)
-		warning ("variable `%s' hides function", nm.c_str ());
-	    }
-	  else
-	    error ("variable `%s' hides function", nm.c_str ());
-	}
-
       if (definition->type () == symbol_record::BUILTIN_VARIABLE)
 	sym_type = symbol_record::BUILTIN_VARIABLE;
 
@@ -255,7 +242,9 @@ symbol_record::define (octave_function *f, unsigned int sym_type)
     {
       octave_value tmp (f);
 
-      replace_all_defs (new symbol_def (tmp, sym_type));
+      delete definition;
+
+      definition = new symbol_def (tmp, sym_type);
 
       retval = true;
     }
@@ -266,30 +255,27 @@ symbol_record::define (octave_function *f, unsigned int sym_type)
 void
 symbol_record::clear (void)
 {
-  if (linked_to_global)
+  if (! tagged_static)
     {
       if (--definition->count <= 0)
 	delete definition;
 
       definition = new symbol_def ();
-
-      linked_to_global = 0;
     }
-  else if (! tagged_static)
-    {
-      remove_top_def ();
 
-      if (! definition)
-	definition = new symbol_def ();
-    }
+  if (linked_to_global)
+    linked_to_global = 0;
 }
 
 void
-symbol_record::alias (symbol_record *s, bool /* force */)
+symbol_record::alias (symbol_record *s)
 {
   chg_fcn = s->chg_fcn;
 
-  replace_all_defs (s->definition);
+  if (--definition->count <= 0)
+    delete definition;
+
+  definition = (s->definition);
 
   definition->count++;
 }
@@ -329,38 +315,6 @@ symbol_record::mark_as_static (void)
     tagged_static = 1;
 }
 
-bool
-symbol_record::hides_fcn (void) const
-{
-  bool retval = false;
-
-  if (is_variable () && is_defined ())
-    {
-      symbol_def *hidden_def = definition->next_elem;
-
-      if (hidden_def && hidden_def->is_user_function ())
-	retval = true;
-    }
-
-  return retval;
-}
-
-bool
-symbol_record::hides_builtin (void) const
-{
-  bool retval = false;
-
-  if (is_variable () && is_defined ())
-    {
-      symbol_def *hidden_def = definition->next_elem;
-
-      if (hidden_def && hidden_def->is_builtin_function ())
-	retval = true;
-    }
-
-  return retval;
-}
-
 octave_value&
 symbol_record::variable_value (void)
 {
@@ -372,7 +326,7 @@ symbol_record::variable_value (void)
 inline void
 symbol_record::link_to_builtin_variable (void)
 {
-  symbol_record *tmp_sym = global_sym_tab->lookup (name ());
+  symbol_record *tmp_sym = fbi_sym_tab->lookup (name ());
 
   if (tmp_sym && tmp_sym->is_builtin_variable ())
     alias (tmp_sym);
@@ -437,7 +391,10 @@ symbol_record::pop_context (void)
 
   if (! context.empty ())
     {
-      replace_all_defs (context.pop ());
+      if (--definition->count <= 0)
+	delete definition;
+
+      definition = context.pop ();
 
       linked_to_global = global_link_context.pop ();
     }
@@ -448,9 +405,6 @@ symbol_record::print_symbol_info_line (std::ostream& os) const
 {
   os << (is_read_only () ? " r-" : " rw")
      << (is_eternal () ? "-" : "d")
-#if 0
-     << (hides_fcn () ? "f" : (hides_builtin () ? "F" : "-"))
-#endif
      << "  "
      << std::setiosflags (std::ios::left) << std::setw (24)
      << type_name () . c_str ();
@@ -500,42 +454,6 @@ symbol_record::read_only_error (const char *action)
     }
   else
     return false;
-}
-
-void
-symbol_record::push_def (symbol_def *sd)
-{
-  if (! sd)
-    return;
-
-  assert (definition == 0 || definition->next_elem == 0);
-
-  sd->next_elem = definition;
-
-  definition = sd;
-}
-
-void
-symbol_record::remove_top_def (void)
-{
-  symbol_def *top = definition;
-
-  definition = definition->next_elem;
-
-  if (--top->count <= 0)
-    delete top;
-}
-
-void
-symbol_record::replace_all_defs (symbol_def *sd)
-{
-  while (definition)
-    remove_top_def ();
-
-  if (! sd)
-    sd = new symbol_def ();
-
-  push_def (sd);
 }
 
 // A symbol table.
@@ -605,8 +523,11 @@ symbol_table::rename (const std::string& old_name, const std::string& new_name)
 	 new_name.c_str ());
 }
 
+// XXX FIXME XXX -- it would be nice to eliminate a lot of the
+// following duplicate code.
+
 void
-symbol_table::clear (bool clear_user_functions)
+symbol_table::clear (void)
 {
   for (unsigned int i = 0; i < table_size; i++)
     {
@@ -614,12 +535,60 @@ symbol_table::clear (bool clear_user_functions)
 
       while (ptr)
 	{
-	  if (ptr->is_user_variable ()
-	      || (clear_user_functions
-		  && (ptr->is_user_function () || ptr->is_dld_function ())))
-	    {
-	      ptr->clear ();
-	    }
+	  ptr->clear ();
+
+	  ptr = ptr->next ();
+	}
+    }
+}
+
+void
+symbol_table::clear_variables (void)
+{
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_user_variable ())
+	    ptr->clear ();
+
+	  ptr = ptr->next ();
+	}
+    }
+}
+
+// Really only clear functions that can be reloaded.
+
+void
+symbol_table::clear_functions (void)
+{
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_user_function () || ptr->is_dld_function ())
+	    ptr->clear ();
+
+	  ptr = ptr->next ();
+	}
+    }
+}
+
+void
+symbol_table::clear_globals (void)
+{
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_user_variable () && ptr->is_linked_to_global ())
+	    ptr->clear ();
 
 	  ptr = ptr->next ();
 	}
@@ -627,7 +596,7 @@ symbol_table::clear (bool clear_user_functions)
 }
 
 bool
-symbol_table::clear (const std::string& nm, bool clear_user_functions)
+symbol_table::clear (const std::string& nm)
 {
   unsigned int index = hash (nm);
 
@@ -635,10 +604,7 @@ symbol_table::clear (const std::string& nm, bool clear_user_functions)
 
   while (ptr)
     {
-      if (ptr->name () == nm
-	  && (ptr->is_user_variable ()
-	      || (clear_user_functions
-		  && (ptr->is_user_function () || ptr->is_dld_function ()))))
+      if (ptr->name () == nm)
 	{
 	  ptr->clear ();
 	  return true;
@@ -647,6 +613,163 @@ symbol_table::clear (const std::string& nm, bool clear_user_functions)
     }
 
   return false;
+}
+
+bool
+symbol_table::clear_variable (const std::string& nm)
+{
+  unsigned int index = hash (nm);
+
+  symbol_record *ptr = table[index].next ();
+
+  while (ptr)
+    {
+      if (ptr->name () == nm && ptr->is_user_variable ())
+	{
+	  ptr->clear ();
+	  return true;
+	}
+      ptr = ptr->next ();
+    }
+
+  return false;
+}
+
+bool
+symbol_table::clear_global (const std::string& nm)
+{
+  unsigned int index = hash (nm);
+
+  symbol_record *ptr = table[index].next ();
+
+  while (ptr)
+    {
+      if (ptr->name () == nm
+	  && ptr->is_user_variable ()
+	  && ptr->is_linked_to_global ())
+	{
+	  ptr->clear ();
+	  return true;
+	}
+      ptr = ptr->next ();
+    }
+
+  return false;
+}
+
+// Really only clear functions that can be reloaded.
+
+bool
+symbol_table::clear_function (const std::string& nm)
+{
+  unsigned int index = hash (nm);
+
+  symbol_record *ptr = table[index].next ();
+
+  while (ptr)
+    {
+      if (ptr->name () == nm
+	  && (ptr->is_user_function () || ptr->is_dld_function ()))
+	{
+	  ptr->clear ();
+	  return true;
+	}
+      ptr = ptr->next ();
+    }
+
+  return false;
+}
+
+bool
+symbol_table::clear_variable_pattern (const std::string& pat)
+{
+  bool retval = false;
+
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_user_variable ())
+	    {
+	      glob_match pattern (pat);
+
+	      if (pattern.match (ptr->name ()))
+		{
+		  ptr->clear ();
+
+		  retval = true;
+		}
+	    }
+
+	  ptr = ptr->next ();
+	}
+    }
+
+  return retval;
+}
+
+bool
+symbol_table::clear_global_pattern (const std::string& pat)
+{
+  bool retval = false;
+
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_user_variable () && ptr->is_linked_to_global ())
+	    {
+	      glob_match pattern (pat);
+
+	      if (pattern.match (ptr->name ()))
+		{
+		  ptr->clear ();
+
+		  retval = true;
+		}
+	    }
+
+	  ptr = ptr->next ();
+	}
+    }
+
+  return retval;
+}
+
+// Really only clear functions that can be reloaded.
+
+bool
+symbol_table::clear_function_pattern (const std::string& pat)
+{
+  bool retval = false;
+
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_user_function () || ptr->is_dld_function ())
+	    {
+	      glob_match pattern (pat);
+
+	      if (pattern.match (ptr->name ()))
+		{
+		  ptr->clear ();
+
+		  retval = true;
+		}
+	    }
+
+	  ptr = ptr->next ();
+	}
+    }
+
+  return retval;
 }
 
 int

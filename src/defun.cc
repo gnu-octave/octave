@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 print_usage (const std::string& nm, bool just_usage)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (nm);
+  symbol_record *sym_rec = fbi_sym_tab->lookup (nm);
 
   if (sym_rec)
     {
@@ -83,7 +83,7 @@ check_version (const std::string& version, const std::string& fcn)
 void
 install_builtin_mapper (octave_mapper *mf)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (mf->name (), true);
+  symbol_record *sym_rec = fbi_sym_tab->lookup (mf->name (), true);
 
   unsigned int t
     = symbol_record::BUILTIN_FUNCTION | symbol_record::MAPPER_FUNCTION;
@@ -99,7 +99,7 @@ void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
 			  const std::string& doc, bool is_text_fcn)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
+  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
 
   unsigned int t = symbol_record::BUILTIN_FUNCTION;
 
@@ -134,7 +134,7 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
 		      const std::string& doc, bool is_text_fcn)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
+  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
 
   unsigned int t = symbol_record::DLD_FUNCTION;
 
@@ -151,12 +151,12 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 void
 alias_builtin (const std::string& alias, const std::string& name)
 {
-  symbol_record *sr_name = global_sym_tab->lookup (name);
+  symbol_record *sr_name = fbi_sym_tab->lookup (name);
 
   if (! sr_name)
     panic ("can't alias to undefined name!");
 
-  symbol_record *sr_alias = global_sym_tab->lookup (alias, true);
+  symbol_record *sr_alias = fbi_sym_tab->lookup (alias, true);
 
   if (sr_alias)
     sr_alias->alias (sr_name);
@@ -187,7 +187,7 @@ DEFUN (alias, args, ,
 
 	  if (sr_name && sr_name->is_function ())
 	    {
-	      symbol_record *sr_alias = global_sym_tab->lookup (alias, true);
+	      symbol_record *sr_alias = fbi_sym_tab->lookup (alias, true);
 
 	      if (sr_alias)
 		sr_alias->alias (sr_name);

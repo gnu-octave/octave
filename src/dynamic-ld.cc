@@ -203,7 +203,7 @@ void clear_function (const std::string& fcn_name)
   if (curr_sym_tab != top_level_sym_tab)
     top_level_sym_tab->clear (fcn_name);
 
-  global_sym_tab->clear (fcn_name);
+  fbi_sym_tab->clear (fcn_name);
 }
 
 bool

@@ -115,6 +115,9 @@ extern symbol_table *curr_sym_tab;
 // Symbol table for global symbols.
 extern symbol_table *global_sym_tab;
 
+// Symbol table for functions and built-in symbols.
+extern symbol_table *fbi_sym_tab;
+
 #endif
 
 /*

@@ -4696,7 +4696,7 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
   if (! error_state && save_builtins)
     {
-      vars = global_sym_tab->glob
+      vars = fbi_sym_tab->glob
 	(pattern, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
 
       int count = vars.length ();

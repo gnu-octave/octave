@@ -67,6 +67,9 @@ symbol_table *curr_sym_tab = 0;
 // Symbol table for global symbols.
 symbol_table *global_sym_tab = 0;
 
+// Symbol table for functions and built-in symbols.
+symbol_table *fbi_sym_tab = 0;
+
 // Initialization.
 
 // Create the initial symbol tables and set the current scope at the
@@ -75,6 +78,9 @@ symbol_table *global_sym_tab = 0;
 void
 initialize_symbol_tables (void)
 {
+  if (! fbi_sym_tab)
+    fbi_sym_tab = new symbol_table (2048);
+
   if (! global_sym_tab)
     global_sym_tab = new symbol_table (2048);
 
@@ -91,7 +97,7 @@ initialize_symbol_tables (void)
 bool
 is_builtin_variable (const std::string& name)
 {
-  symbol_record *sr = global_sym_tab->lookup (name);
+  symbol_record *sr = fbi_sym_tab->lookup (name);
   return (sr && sr->is_builtin_variable ());
 }
 
@@ -100,7 +106,7 @@ is_builtin_variable (const std::string& name)
 bool
 is_text_function_name (const std::string& s)
 {
-  symbol_record *sr = global_sym_tab->lookup (s);
+  symbol_record *sr = fbi_sym_tab->lookup (s);
   return (sr && sr->is_text_function ());
 }
 
@@ -109,7 +115,7 @@ is_text_function_name (const std::string& s)
 bool
 is_builtin_function_name (const std::string& s)
 {
-  symbol_record *sr = global_sym_tab->lookup (s);
+  symbol_record *sr = fbi_sym_tab->lookup (s);
   return (sr && sr->is_builtin_function ());
 }
 
@@ -118,7 +124,7 @@ is_builtin_function_name (const std::string& s)
 bool
 is_mapper_function_name (const std::string& s)
 {
-  symbol_record *sr = global_sym_tab->lookup (s);
+  symbol_record *sr = fbi_sym_tab->lookup (s);
   return (sr && sr->is_mapper_function ());
 }
 
@@ -142,7 +148,7 @@ is_valid_function (const std::string& fcn_name, const std::string& warn_for, boo
 
   if (! fcn_name.empty ())
     {
-      sr = global_sym_tab->lookup (fcn_name, true);
+      sr = fbi_sym_tab->lookup (fcn_name, true);
 
       lookup (sr, false);
     }
@@ -372,7 +378,7 @@ other types of files, you should use some combination of the functions\n\
 @code{file_in_path} and @code{stat} instead.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval = 0.0;
 
   int nargin = args.length ();
 
@@ -401,29 +407,34 @@ other types of files, you should use some combination of the functions\n\
       symbol_name = name.substr (0, pos);
     }
 
+  // We shouldn't need to look in the global symbol table, since any
+  // name that is visible in the current scope will be in the local
+  // symbol table.
+
   symbol_record *sr = curr_sym_tab->lookup (symbol_name);
-  if (! (sr && (sr->is_defined ()
-		|| (curr_sym_tab != top_level_sym_tab))))
-    sr = global_sym_tab->lookup (symbol_name);
 
-  retval = 0.0;
+  if (! (sr && sr->is_defined ()))
+    sr = fbi_sym_tab->lookup (symbol_name);
 
-  if (sr && sr->is_variable () && sr->is_defined ())
+  if (sr && sr->is_defined ())
     {
-      if (struct_elts.empty () || sr->is_map_element (struct_elts))
-	retval = 1.0;
-    }
-  else if (sr && sr->is_builtin_function ())
-    {
-      retval = 5.0;
-    }
-  else if (sr && sr->is_builtin_constant ())
-    {
-      retval = 6.0;
-    }
-  else if (sr && sr->is_user_function ())
-    {
-      retval = 2.0;
+      if (sr->is_variable ())
+	{
+	  if (struct_elts.empty () || sr->is_map_element (struct_elts))
+	    retval = 1.0;
+	}
+      else if (sr->is_builtin_function ())
+	{
+	  retval = 5.0;
+	}
+      else if (sr->is_builtin_constant ())
+	{
+	  retval = 6.0;
+	}
+      else if (sr->is_user_function ())
+	{
+	  retval = 2.0;
+	}
     }
   else
     {
@@ -589,7 +600,7 @@ set_global_value (const std::string& nm, const octave_value& val)
 std::string
 builtin_string_variable (const std::string& name)
 {
-  symbol_record *sr = global_sym_tab->lookup (name);
+  symbol_record *sr = fbi_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
@@ -613,7 +624,7 @@ int
 builtin_real_scalar_variable (const std::string& name, double& d)
 {
   int status = 0;
-  symbol_record *sr = global_sym_tab->lookup (name);
+  symbol_record *sr = fbi_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
@@ -635,7 +646,7 @@ builtin_real_scalar_variable (const std::string& name, double& d)
 octave_value
 builtin_any_variable (const std::string& name)
 {
-  symbol_record *sr = global_sym_tab->lookup (name);
+  symbol_record *sr = fbi_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
@@ -663,17 +674,12 @@ link_to_global_variable (symbol_record *sr)
 
 	  symbol_record *gsr = global_sym_tab->lookup (nm, true);
 
-	  // There must be a better way to do this.   XXX FIXME XXX
-
-	  if (sr->is_variable ())
-	    gsr->define (sr->def ());
-
 	  // Make sure this symbol is a variable.
 
-	  if (! gsr->is_variable ())
+	  if (! gsr->is_user_variable ())
 	    gsr->define (octave_value ());
 
-	  sr->alias (gsr, 1);
+	  sr->alias (gsr);
 	}
     }
 }
@@ -689,7 +695,7 @@ link_to_global_variable (symbol_record *sr)
 void
 link_to_builtin_or_function (symbol_record *sr)
 {
-  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name ());
+  symbol_record *tmp_sym = fbi_sym_tab->lookup (sr->name ());
 
   if (tmp_sym
       && (tmp_sym->is_builtin_variable ()
@@ -710,12 +716,12 @@ link_to_builtin_or_function (symbol_record *sr)
 void
 force_link_to_function (const std::string& id_name)
 {
-  symbol_record *gsr = global_sym_tab->lookup (id_name, true);
-  if (gsr->is_function ())
+  symbol_record *fsr = fbi_sym_tab->lookup (id_name, true);
+  if (fsr->is_function ())
     {
       curr_sym_tab->clear (id_name);
       symbol_record *csr = curr_sym_tab->lookup (id_name, true);
-      csr->alias (gsr);
+      csr->alias (fsr);
     }
 }
 
@@ -825,22 +831,22 @@ do_who (int argc, const string_vector& argv)
 
   if (show_builtins)
     {
-      pad_after += global_sym_tab->maybe_list
+      pad_after += fbi_sym_tab->maybe_list
 	("*** built-in constants:", pats, octave_stdout,
 	 show_verbose, symbol_record::BUILTIN_CONSTANT, SYMTAB_ALL_SCOPES);
 
-      pad_after += global_sym_tab->maybe_list
+      pad_after += fbi_sym_tab->maybe_list
 	("*** built-in variables:", pats, octave_stdout,
 	 show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
 
-      pad_after += global_sym_tab->maybe_list
+      pad_after += fbi_sym_tab->maybe_list
 	("*** built-in functions:", pats, octave_stdout,
 	 show_verbose, symbol_record::BUILTIN_FUNCTION, SYMTAB_ALL_SCOPES);
     }
 
   if (show_functions)
     {
-      pad_after += global_sym_tab->maybe_list
+      pad_after += fbi_sym_tab->maybe_list
 	("*** currently compiled functions:", pats,
 	 octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
 	 SYMTAB_ALL_SCOPES);
@@ -948,7 +954,7 @@ See who.\n\
 void
 bind_ans (const octave_value& val, bool print)
 {
-  static symbol_record *sr = global_sym_tab->lookup ("ans", true);
+  static symbol_record *sr = fbi_sym_tab->lookup ("ans", true);
 
   if (val.is_defined ())
     {
@@ -969,7 +975,7 @@ void
 bind_builtin_constant (const std::string& name, const octave_value& val,
 		       bool protect, bool eternal, const std::string& help)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
+  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
   sym_rec->unprotect ();
 
   std::string tmp_help = help.empty () ? sym_rec->help () : help;
@@ -997,7 +1003,7 @@ bind_builtin_variable (const std::string& varname, const octave_value& val,
 		       symbol_record::change_function chg_fcn,
 		       const std::string& help)
 {
-  symbol_record *sr = global_sym_tab->lookup (varname, true);
+  symbol_record *sr = fbi_sym_tab->lookup (varname, true);
 
   // It is a programming error for a builtin symbol to be missing.
   // Besides, we just inserted it, so it must be there.
@@ -1027,8 +1033,8 @@ bind_builtin_variable (const std::string& varname, const octave_value& val,
 // Deleting names from the symbol tables.
 
 static inline bool
-var_matches_any_pattern (const std::string& nm,
-			 const string_vector& argv, int argc, int idx)
+name_matches_any_pattern (const std::string& nm,
+			  const string_vector& argv, int argc, int idx)
 {
   bool retval = false;
 
@@ -1050,6 +1056,309 @@ var_matches_any_pattern (const std::string& nm,
 
   return retval;
 }
+
+static inline bool
+is_local_variable (const std::string& nm)
+{
+  symbol_record *sr = curr_sym_tab->lookup (nm);
+
+  return (sr && sr->is_variable ());
+}
+
+static inline void
+maybe_warn_exclusive (bool exclusive)
+{
+  if (exclusive)
+    warning ("clear: ignoring --exclusive option");
+}
+
+static inline void
+do_clear_all (void)
+{
+  curr_sym_tab->clear ();
+  fbi_sym_tab->clear_functions ();
+  global_sym_tab->clear ();
+}
+
+static inline void
+do_clear_functions (void)
+{
+  curr_sym_tab->clear_functions ();
+  fbi_sym_tab->clear_functions ();
+}
+
+static inline void
+do_clear_globals (void)
+{
+  curr_sym_tab->clear_globals ();
+  global_sym_tab->clear ();
+}
+
+static inline void
+do_clear_variables (void)
+{
+  curr_sym_tab->clear ();
+}
+
+static inline bool
+do_clear_function (const std::string& nm)
+{
+  bool b1 = curr_sym_tab->clear_function (nm);
+
+  bool b2 = fbi_sym_tab->clear_function (nm);
+
+  return b1 || b2;
+}
+
+static inline bool
+do_clear_global (const std::string& nm)
+{
+  bool b1 = curr_sym_tab->clear_global (nm);
+
+  bool b2 = global_sym_tab->clear_variable (nm);
+
+  return b1 || b2;
+}
+
+static inline bool
+do_clear_variable (const std::string& nm)
+{
+  return curr_sym_tab->clear_variable (nm);
+}
+
+static inline bool
+do_clear_symbol (const std::string& nm)
+{
+  bool cleared = curr_sym_tab->clear_variable (nm);
+
+  if (! cleared)
+    cleared = do_clear_function (nm);
+
+  return cleared;
+}
+
+static inline bool
+do_clear_function_pattern (const std::string& pat)
+{
+  bool b1 = curr_sym_tab->clear_function_pattern (pat);
+
+  bool b2 = fbi_sym_tab->clear_function_pattern (pat);
+
+  return b1 || b2;
+}
+
+static inline bool
+do_clear_global_pattern (const std::string& pat)
+{
+  bool b1 = curr_sym_tab->clear_global_pattern (pat);
+
+  bool b2 = global_sym_tab->clear_variable_pattern (pat);
+
+  return b1 || b2;
+}
+
+static inline bool
+do_clear_variable_pattern (const std::string& pat)
+{
+  return curr_sym_tab->clear_variable_pattern (pat);
+}
+
+static inline bool
+do_clear_symbol_pattern (const std::string& pat)
+{
+  // XXX FIXME XXX -- if we have a variable v1 and a function v2 and
+  // someone says clear v*, we will clear the variable but not the
+  // function.  Is that really what should happen?  (I think it is
+  // what Matlab does.)
+
+  bool cleared = curr_sym_tab->clear_variable_pattern (pat);
+
+  if (! cleared)
+    cleared = do_clear_function_pattern (pat);
+
+  return cleared;
+}
+
+static inline void
+do_clear_functions (const string_vector& argv, int argc, int idx,
+		    bool exclusive = false)
+{
+  if (idx == argc)
+    do_clear_functions ();
+  else
+    {
+      if (exclusive)
+	{
+	  string_vector lfcns = curr_sym_tab->user_function_name_list ();
+
+	  int lcount = lfcns.length ();
+
+	  for (int i = 0; i < lcount; i++)
+	    {
+	      std::string nm = lfcns[i];
+
+	      if (! name_matches_any_pattern (nm, argv, argc, idx))
+		do_clear_function (nm);
+	    }
+
+	  string_vector fcns = fbi_sym_tab->user_function_name_list ();
+
+	  int fcount = fcns.length ();
+
+	  for (int i = 0; i < fcount; i++)
+	    {
+	      std::string nm = fcns[i];
+
+	      if (! name_matches_any_pattern (nm, argv, argc, idx))
+		do_clear_function (nm);
+	    }
+	}
+      else
+	{
+	  while (idx < argc)
+	    do_clear_function_pattern (argv[idx++]);
+	}
+    }
+}
+
+static inline void
+do_clear_globals (const string_vector& argv, int argc, int idx,
+		  bool exclusive = false)
+{
+  if (idx == argc)
+    do_clear_globals ();
+  else
+    {
+      if (exclusive)
+	{
+	  string_vector lvars = curr_sym_tab->global_variable_name_list ();
+
+	  int lcount = lvars.length ();
+
+	  for (int i = 0; i < lcount; i++)
+	    {
+	      std::string nm = lvars[i];
+
+	      if (! name_matches_any_pattern (nm, argv, argc, idx))
+		do_clear_global (nm);
+	    }
+
+	  string_vector gvars = global_sym_tab->global_variable_name_list ();
+
+	  int gcount = gvars.length ();
+
+	  for (int i = 0; i < gcount; i++)
+	    {
+	      std::string nm = gvars[i];
+
+	      if (! name_matches_any_pattern (nm, argv, argc, idx))
+		do_clear_global (nm);
+	    }
+	}
+      else
+	{
+	  while (idx < argc)
+	    do_clear_global_pattern (argv[idx++]);
+	}
+    }
+}
+
+static inline void
+do_clear_variables (const string_vector& argv, int argc, int idx,
+		    bool exclusive = false)
+{
+  if (idx == argc)
+    do_clear_variables ();
+  else
+    {
+      if (exclusive)
+	{
+	  string_vector lvars = curr_sym_tab->variable_name_list ();
+
+	  int lcount = lvars.length ();
+
+	  for (int i = 0; i < lcount; i++)
+	    {
+	      std::string nm = lvars[i];
+
+	      if (! name_matches_any_pattern (nm, argv, argc, idx))
+		do_clear_variable (nm);
+	    }
+	}
+      else
+	{
+	  while (idx < argc)
+	    do_clear_variable_pattern (argv[idx++]);
+	}
+    }
+}
+
+static inline void
+do_clear_symbols (const string_vector& argv, int argc, int idx,
+		  bool exclusive = false)
+{
+  if (idx == argc)
+    do_clear_variables ();
+  else
+    {
+      if (exclusive)
+	{
+	  // XXX FIXME XXX -- is this really what we want, or do we
+	  // somehow want to only clear the functions that are not
+	  // shadowed by local variables?  It seems that would be a
+	  // bit harder to do.
+
+	  do_clear_variables (argv, argc, idx, exclusive);
+	  do_clear_functions (argv, argc, idx, exclusive);
+	}
+      else
+	{
+	  while (idx < argc)
+	    do_clear_symbol_pattern (argv[idx++]);
+	}
+    }
+}
+
+static void
+do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
+{
+  // This is supposed to be mostly Matlab compatible.
+
+  for (; idx < argc; idx++)
+    {
+      if (argv[idx] == "all" && ! is_local_variable ("all"))
+	{
+	  do_clear_all ();
+	}
+      else if (argv[idx] == "functions" && ! is_local_variable ("functions"))
+	{
+	  do_clear_functions (argv, argc, ++idx);
+	}
+      else if (argv[idx] == "global" && ! is_local_variable ("global"))
+	{
+	  do_clear_globals (argv, argc, ++idx);
+	}
+      else if (argv[idx] == "variables" && ! is_local_variable ("variables"))
+	{
+	  do_clear_variables ();
+	}
+      else
+	{
+	  do_clear_symbol_pattern (argv[idx]);
+	}
+    }
+}
+
+#define CLEAR_OPTION_ERROR(cond) \
+  do \
+    { \
+      if (cond) \
+        { \
+          print_usage ("clear"); \
+          return retval; \
+        } \
+    } \
+  while (0)
 
 DEFUN_TEXT (clear, args, ,
   "-*- texinfo -*-\n\
@@ -1101,147 +1410,97 @@ This command may not be used within a function body.\n\
 
   string_vector argv = args.make_argv ("clear");
 
-  if (error_state)
-    return retval;
-
-  // Always clear the local table, but don't clear currently compiled
-  // functions unless we are at the top level.  (Allowing that to
-  // happen inside functions would result in pretty odd behavior...)
-
-  bool clear_user_functions = (curr_sym_tab == top_level_sym_tab);
-
-  if (argc == 1)
+  if (! error_state)
     {
-      curr_sym_tab->clear ();
-      global_sym_tab->clear (clear_user_functions);
-    }
-  else
-    {
-      int exclusive = 0;
-
-      int idx = 1;
-
-      if (argc > 1)
+      if (argc == 1)
 	{
-	  if (argv[idx] == "-x")
-	    {
-	      idx++;
-	      exclusive = 1;
-	    }
-	}
-
-      string_vector lvars;
-      string_vector gvars;
-      string_vector fcns;
-
-      if (argc > 0)
-	{
-	  string_vector tmp;
-
-	  lvars = curr_sym_tab->name_list
-	    (tmp, false, SYMTAB_VARIABLES, SYMTAB_LOCAL_SCOPE);
-
-	  gvars = curr_sym_tab->name_list
-	    (tmp, false, SYMTAB_VARIABLES, SYMTAB_GLOBAL_SCOPE);
-
-	  fcns = global_sym_tab->name_list
-	    (tmp, false,
-	     symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION,
-	     SYMTAB_ALL_SCOPES);
-	}
-
-      // XXX FIXME XXX -- this needs to be optimized to avoid the
-      // pattern matching code if the string doesn't contain any
-      // globbing patterns.
-
-      if (exclusive)
-	{
-	  int lcount = lvars.length ();
-
-	  for (int i = 0; i < lcount; i++)
-	    {
-	      std::string nm = lvars[i];
-
-	      if (! var_matches_any_pattern (nm, argv, argc, idx))
-		curr_sym_tab->clear (nm);
-	    }
-
-	  int gcount = gvars.length ();
-
-	  for (int i = 0; i < gcount; i++)
-	    {
-	      std::string nm = gvars[i];
-
-	      if (! var_matches_any_pattern (nm, argv, argc, idx))
-		{
-		  int count = curr_sym_tab->clear (nm);
-
-		  if (count > 0)
-		    global_sym_tab->clear (nm, clear_user_functions);
-		}
-	    }
-
-	  int fcount = fcns.length ();
-
-	  for (int i = 0; i < fcount; i++)
-	    {
-	      std::string nm = fcns[i];
-
-	      if (! var_matches_any_pattern (nm, argv, argc, idx))
-		{
-		  curr_sym_tab->clear (nm);
-
-		  global_sym_tab->clear (nm, clear_user_functions);
-		}
-	    }
+	  do_clear_variables ();
 	}
       else
 	{
-	  for (int k = idx; k < argc; k++)
+	  int idx = 0;
+
+	  bool clear_all = false;
+	  bool clear_functions = false;
+	  bool clear_globals = false;
+	  bool clear_variables = false;
+	  bool exclusive = false;
+	  bool have_dash_option = false;
+
+	  while (++idx < argc)
 	    {
-	      std::string patstr = argv[k];
-
-	      if (! patstr.empty ())
+	      if (argv[idx] == "--all" || argv[idx] == "-a")
 		{
-		  glob_match pattern (patstr);
+		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
 
-		  int lcount = lvars.length ();
+		  have_dash_option = true;
+		  clear_all = true;
+		}
+	      else if (argv[idx] == "--exclusive" || argv[idx] == "-x")
+		{
+		  have_dash_option = true;
+		  exclusive = true;
+		}
+	      else if (argv[idx] == "--functions" || argv[idx] == "-f")
+		{
+		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
 
-		  for (int i = 0; i < lcount; i++)
+		  have_dash_option = true;
+		  clear_functions = true;
+		}
+	      else if (argv[idx] == "--global" || argv[idx] == "-g")
+		{
+		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+		  have_dash_option = true;
+		  clear_globals = true;
+		}
+	      else if (argv[idx] == "--variables" || argv[idx] == "-v")
+		{
+		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+		  have_dash_option = true;
+		  clear_variables = true;
+		}
+	      else
+		break;
+	    }
+
+	  if (idx < argc)
+	    {
+	      if (! have_dash_option)
+		{
+		  do_matlab_compatible_clear (argv, argc, idx);
+		}
+	      else
+		{
+		  if (clear_all)
 		    {
-		      std::string nm = lvars[i];
+		      maybe_warn_exclusive (exclusive);
 
-		      if (pattern.match (nm))
-			curr_sym_tab->clear (nm);
+		      if (++idx < argc)
+			warning
+			  ("clear: ignoring extra arguments after --all");
+
+		      curr_sym_tab->clear ();
+		      fbi_sym_tab->clear_functions ();
+		      global_sym_tab->clear ();
 		    }
-
-		  int gcount = gvars.length ();
-
-		  for (int i = 0; i < gcount; i++)
+		  else if (clear_functions)
 		    {
-		      std::string nm = gvars[i];
-
-		      if (pattern.match (nm))
-			{
-			  int count = curr_sym_tab->clear (nm);
-
-			  if (count > 0)
-			    global_sym_tab->clear (nm, clear_user_functions);
-			}
+		      do_clear_functions (argv, argc, idx, exclusive);
 		    }
-
-		  int fcount = fcns.length ();
-
-		  for (int i = 0; i < fcount; i++)
+		  else if (clear_globals)
 		    {
-		      std::string nm = fcns[i];
-
-		      if (pattern.match (nm))
-			{
-			  curr_sym_tab->clear (nm);
-
-			  global_sym_tab->clear (nm, clear_user_functions);
-			}
+		      do_clear_globals (argv, argc, idx, exclusive);
+		    }
+		  else if (clear_variables)
+		    {
+		      do_clear_variables (argv, argc, idx, exclusive);
+		    }
+		  else
+		    {
+		      do_clear_symbols (argv, argc, idx, exclusive);
 		    }
 		}
 	    }
@@ -1265,17 +1524,19 @@ Print raw symbol table statistices.\n\
     {
       std::string arg = args(0).string_value ();
 
-      if (arg == "global")
+      if (arg == "fbi")
+	fbi_sym_tab->print_info (octave_stdout);
+      else if (arg == "global")
 	global_sym_tab->print_info (octave_stdout);
       else if (arg == "top-level")
 	top_level_sym_tab->print_info (octave_stdout);
       else
 	{
-	  symbol_record *gsr = global_sym_tab->lookup (arg, true);
+	  symbol_record *fsr = fbi_sym_tab->lookup (arg, true);
 
-	  if (gsr && gsr->is_user_function ())
+	  if (fsr && fsr->is_user_function ())
 	    {
-	      octave_value tmp = gsr->def ();
+	      octave_value tmp = fsr->def ();
 	      const octave_value& rep = tmp.get_rep ();
 	      
 	      const octave_user_function& fcn

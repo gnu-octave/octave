@@ -1070,8 +1070,8 @@ save_symtab	: // empty
 		  }
 		;
 		   
-global_symtab	: // empty
-		  { curr_sym_tab = global_sym_tab; }
+function_symtab	: // empty
+		  { curr_sym_tab = fbi_sym_tab; }
 		;
 
 local_symtab	: // empty
@@ -1187,14 +1187,14 @@ return_list1	: identifier
 		  }
 		;
 
-return_list_end	: global_symtab ']'
+return_list_end	: function_symtab ']'
 		;
 
 // ===================
 // Function definition
 // ===================
 
-function_beg	: save_symtab FCN stash_comment global_symtab
+function_beg	: save_symtab FCN stash_comment function_symtab
 		  { $$ = $3; }
 		;
 
@@ -1218,7 +1218,7 @@ function	: function_beg function2
 		  }
 		;
 
-function1	: global_symtab '=' function2
+function1	: function_symtab '=' function2
 		  { $$ = $3; }
 		;
 
@@ -2478,7 +2478,7 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 	    warning ("function name `%s' does not agree with function\
  file name `%s'", id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
-	  global_sym_tab->rename (id_name, curr_fcn_file_name);
+	  fbi_sym_tab->rename (id_name, curr_fcn_file_name);
 
 	  if (error_state)
 	    return 0;
@@ -2513,7 +2513,7 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 
   top_level_sym_tab->clear (id_name);
 
-  symbol_record *sr = global_sym_tab->lookup (id_name);
+  symbol_record *sr = fbi_sym_tab->lookup (id_name);
 
   if (sr)
     fcn->stash_symtab_ptr (sr);
@@ -3224,7 +3224,7 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	    {
 	      error ("parse error while reading function file %s",
 		     ff.c_str ());
-	      global_sym_tab->clear (curr_fcn_file_name);
+	      fbi_sym_tab->clear (curr_fcn_file_name);
 	    }
 	}
       else if (exec_script)

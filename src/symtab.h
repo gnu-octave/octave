@@ -79,7 +79,7 @@ private:
     symbol_def (const octave_value& val = octave_value (),
 		unsigned int sym_type = 0)
       : symbol_type (sym_type), eternal (0), read_only (0), help_string (),
-	definition (val), next_elem (0), count (1) { }
+	definition (val), count (1) { }
 
     ~symbol_def (void) { }
 
@@ -197,11 +197,6 @@ private:
     // The value of this definition.  See ov.h and related files.
     octave_value definition;
 
-    // Pointer to next definition in chain.  This is used so that
-    // variables can hide function definitions, and so that the function
-    // definitions can reappear if the variable is cleared.
-    symbol_def *next_elem;
-
     // Reference count.
     int count;
 
@@ -303,7 +298,7 @@ public:
 
   void clear (void);
 
-  void alias (symbol_record *s, bool force = false);
+  void alias (symbol_record *s);
 
   void mark_as_formal_parameter (void);
   bool is_formal_parameter (void) const { return formal_param; }
@@ -313,9 +308,6 @@ public:
 
   void mark_as_static (void);
   bool is_static (void) const { return tagged_static; }
-
-  bool hides_fcn (void) const;
-  bool hides_builtin (void) const;
 
   int rows (void) const { return definition->rows (); }
   int columns (void) const { return definition->columns (); }
@@ -366,12 +358,6 @@ private:
 
   bool read_only_error (const char *action);
 
-  void push_def (symbol_def *sd);
-
-  void remove_top_def (void);
-
-  void replace_all_defs (symbol_def *sd);
-
   void link_to_builtin_variable (void);
 
   // No copying!
@@ -407,22 +393,36 @@ public:
 
   symbol_table (unsigned int tab_size = 128)
     : table_size (tab_size), table (new symbol_record [table_size])
-  {
-    assert ((tab_size % 2) == 0);
-  }
+    {
+      assert ((tab_size % 2) == 0);
+    }
 
   ~symbol_table (void)
-  {
-    delete [] table;
-  }
+    {
+      clear ();
+      delete [] table;
+    }
 
   symbol_record *lookup (const std::string& nm, bool insert = false,
 			 bool warn = false);
 
   void rename (const std::string& old_name, const std::string& new_name);
 
-  void clear (bool clear_user_functions = true);
-  bool clear (const std::string& nm, bool clear_user_functions = true);
+  void clear (void);
+
+  void clear_variables (void);
+  void clear_functions (void);
+  void clear_globals (void);
+
+  bool clear (const std::string& nm);
+
+  bool clear_variable (const std::string& nm);
+  bool clear_function (const std::string& nm);
+  bool clear_global (const std::string& nm);
+
+  bool clear_variable_pattern (const std::string& pat);
+  bool clear_function_pattern (const std::string& pat);
+  bool clear_global_pattern (const std::string& pat);
 
   int size (void) const;
 
@@ -437,6 +437,28 @@ public:
 	     bool sort = false, unsigned int type = SYMTAB_ALL_TYPES,
 	     unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
+  string_vector
+  user_function_name_list (void) const
+    {
+      return name_list
+	(string_vector (), false,
+	 symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION,
+	 SYMTAB_ALL_SCOPES);
+    }
+
+  string_vector
+  global_variable_name_list (void) const
+    {
+      return name_list
+	(string_vector (), false, SYMTAB_VARIABLES, SYMTAB_GLOBAL_SCOPE);
+    }
+
+  string_vector
+  variable_name_list (void) const
+    {
+      return name_list
+	(string_vector (), false, SYMTAB_VARIABLES, SYMTAB_LOCAL_SCOPE);
+    }
 
   int maybe_list (const char *header, const string_vector& argv,
 		  std::ostream& os, bool show_verbose,

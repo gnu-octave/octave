@@ -102,20 +102,24 @@ tree_global_command::do_init (tree_decl_elt& elt)
     {
       id->link_to_global ();
 
-      octave_lvalue ult = id->lvalue ();
-
-      if (ult.is_undefined ())
+      if (! error_state)
 	{
-	  tree_expression *expr = elt.expression ();
+	  octave_lvalue ult = id->lvalue ();
 
-	  octave_value init_val;
+	  if (ult.is_undefined ())
+	    {
+	      tree_expression *expr = elt.expression ();
 
-	  if (expr)
-	    init_val = expr->rvalue ();
-	  else if (Vinitialize_global_variables)
-	    init_val = builtin_any_variable ("default_global_variable_value");
+	      octave_value init_val;
 
-	  ult.assign (octave_value::op_asn_eq, init_val);
+	      if (expr)
+		init_val = expr->rvalue ();
+	      else if (Vinitialize_global_variables)
+		init_val
+		  = builtin_any_variable ("default_global_variable_value");
+
+	      ult.assign (octave_value::op_asn_eq, init_val);
+	    }
 	}
     }
 }

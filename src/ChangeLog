@@ -1,5 +1,8 @@
 Thu Jun  5 01:42:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dynamic-ld.cc (octave_shl_load_dynamic_loader::resolve_reference): 
+	Call shl_findsym with type set to TYPE_UNDEFINED.
+
 	* Makefile.in (stamp-picdir): Delete.
 	(pic): New target.  Don't worry so much about creating pic
 	directory only when it is really needed.

@@ -159,7 +159,10 @@ octave_shl_load_dynamic_loader::resolve_reference (const string& name,
 
   if (handle)
     {
-      int status = shl_findsym (&handle, nm, TYPE_PROCEDURE, &retval);
+      // Don't use TYPE_PROCEDURE here.  The man page says that future
+      // versions of HP-UX may not support it.
+
+      int status = shl_findsym (&handle, nm, TYPE_UNDEFINED, &retval);
 
       if (status < 0)
 	{

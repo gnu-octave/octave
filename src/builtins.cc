@@ -686,6 +686,9 @@ static builtin_string_variables string_variables[] =
   { "SEEK_END", "??", NULL,
     "used with fseek to position file relative to the end", },
 
+  { "commas_in_literal_matrix", "", commas_in_literal_matrix,
+    "control auto-insertion of commas in literal matrices", },
+
   { "do_fortran_indexing", "false", do_fortran_indexing,
     "allow single indices for matrices", },
 

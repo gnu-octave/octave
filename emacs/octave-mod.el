@@ -296,10 +296,10 @@ parenthetical grouping.")
     (setq octave-mode-syntax-table table)))
 
 (defvar octave-auto-indent nil
-  "*Non-nil means automatically indent line after a semicolon or space.")
+  "*Non-nil means indent line after a semicolon or space in Octave mode.")
 
 (defvar octave-auto-newline nil
-  "*Non-nil means automatically newline after a semicolon in Octave mode.")
+  "*Non-nil means insert newline after a semicolon in Octave mode.")
 
 (defvar octave-blink-matching-block t
   "*Control the blinking of matching Octave block keywords.
@@ -582,6 +582,15 @@ the end keyword."
 		     t)
 		 (error nil))
 	       (< pos (point)))))))
+
+(defun octave-maybe-insert-continuation-string ()
+  (if (or (octave-in-comment-p)
+	  (save-excursion
+	    (beginning-of-line)
+	    (looking-at octave-continuation-regexp)))
+      nil
+    (delete-horizontal-space)
+    (insert (concat " " octave-continuation-string))))
 
 ;;; Comments
 (defun octave-comment-region (beg end &optional arg)
@@ -1041,19 +1050,65 @@ The function marked is the one containing point or following point."
 
 ;;; Filling
 (defun octave-auto-fill ()
-  "Perform auto-fill in Octave mode."
-  (if (> (current-column) (current-fill-column))
-      (if (octave-in-comment-p)
-	  (do-auto-fill)
-	(if (> (current-column) (current-fill-column))
-	    (let ((fill-column (- (current-fill-column)
-				  (length octave-continuation-string))))
-	      (do-auto-fill)
-	      (save-excursion
-		(forward-line -1)
-		(end-of-line)
-		(insert (concat " " octave-continuation-string)))
-	      (indent-according-to-mode))))))
+  "Perform auto-fill in Octave mode.
+Returns nil if no feasible place to break the line could be found, and t
+otherwise."
+  (let (fc give-up)
+    (if (or (null (setq fc (current-fill-column)))
+	    (save-excursion
+	      (beginning-of-line) 
+	      (and auto-fill-inhibit-regexp
+		   (looking-at auto-fill-inhibit-regexp))))
+	nil				; Can't do anything
+      (if (and (not (octave-in-comment-p))
+	       (> (current-column) fc))
+	  (setq fc (- fc (+ (length octave-continuation-string) 1))))
+      (while (and (not give-up) (> (current-column) fc))
+	(let* ((opoint (point))
+	       (fpoint
+		(save-excursion
+		  (move-to-column (+ fc 1))
+		  (skip-chars-backward "^ \t\n")
+		  ;; If we're at the beginning of the line, break after
+		  ;; the first word
+		  (if (bolp)
+		      (re-search-forward "[ \t]" opoint t))
+		  ;; If we're in a comment line, don't break after the
+		  ;; comment chars
+		  (if (save-excursion
+			(skip-syntax-backward " <")
+			(bolp))
+		      (re-search-forward "[ \t]" (octave-point 'eol)
+					 'move))
+		  ;; If we're not in a comment line and just ahead the
+		  ;; continuation string, don't break here.
+		  (if (and (not (octave-in-comment-p))
+			   (looking-at
+			    (concat "\\s-*"
+				    (regexp-quote
+				     octave-continuation-string)
+				    "\\s-*$")))
+		      (end-of-line))
+		  (skip-chars-backward " \t")
+		  (point))))
+	  (if (save-excursion
+		(goto-char fpoint)
+		(not (or (bolp) (eolp))))
+	      (let ((prev-column (current-column)))
+		(if (save-excursion
+		      (skip-chars-backward " \t")
+		      (= (point) fpoint))
+		    (progn
+		      (octave-maybe-insert-continuation-string)
+		      (indent-new-comment-line t))
+		  (save-excursion
+		    (goto-char fpoint)
+		    (octave-maybe-insert-continuation-string)
+		    (indent-new-comment-line t)))
+		(if (>= (current-column) prev-column)
+		    (setq give-up t)))
+	    (setq give-up t))))
+      (not give-up))))
 
 (defun octave-fill-paragraph (&optional arg)
  "Fill paragraph of Octave code, handling Octave comments."
@@ -1118,13 +1173,16 @@ The function marked is the one containing point or following point."
 		 (delete-region (match-beginning 0) (match-end 0))
 		 (fixup-whitespace)
 		 (move-to-column cfc))))
+	 ;; We might also try to combine continued code lines>  Perhaps
+	 ;; some other time ...
 	 (skip-chars-forward "^ \t\n")
 	 (delete-horizontal-space)
 	 (if (or (< (current-column) cfc)
 		 (and (= (current-column) cfc) (eolp)))
 	     (forward-line 1)
 	   (if (not (eolp)) (insert " "))
-	   (octave-auto-fill))))
+	   (or (octave-auto-fill)
+	       (forward-line 1)))))
      t)))
 
 
@@ -1199,8 +1257,9 @@ If Abbrev mode is on, expand abbrevs first."
 
 (defun octave-electric-semi ()
   "Insert a semicolon in Octave mode.
-Always reindent the line.  Insert a newline if `octave-auto-newline' is
-non-nil."
+Maybe expand abbrevs and blink matching block open keywords.
+Reindent the line of `octave-auto-indent' is non-nil.
+Insert a newline if `octave-auto-newline' is non-nil."
   (interactive)
   (if (not (octave-not-in-string-or-comment-p))
       (insert ";")
@@ -1215,7 +1274,8 @@ non-nil."
 
 (defun octave-electric-space ()
   "Insert a space in Octave mode.
-Maybe expand abbrevs and blink matching block open keywords."
+Maybe expand abbrevs and blink matching block open keywords.
+Reindent the line of `octave-auto-indent' is non-nil."
   (interactive)
   (setq last-command-char ? )
   (if (not (octave-not-in-string-or-comment-p))

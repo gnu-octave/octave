@@ -689,7 +689,7 @@ more `C-like', and also compatible with previous versions of Octave")
 	{
 	  octave_stream os = octave_stream_list::lookup (args(0), "fscanf");
 
-	  if (error_state)
+	  if (! error_state)
 	    {
 	      if (args(1).is_string ())
 		{

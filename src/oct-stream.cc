@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "error.h"
+#include "input.h"
 #include "oct-stream.h"
 #include "oct-obj.h"
 #include "utils.h"
@@ -1271,8 +1272,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		    is.clear (is.rdstate () & (~ios::failbit));
 
 		  // XXX FIXME XXX -- is this the right thing to do?
-		  // What about other streams?
-		  if (name () == "stdin")
+
+		  if (interactive && name () == "stdin")
 		    {
 		      is.clear ();
 
@@ -1351,8 +1352,8 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 		      error ("fscanf: read error");
 
 		    // XXX FIXME XXX -- is this the right thing to do?
-		    // What about other streams?
-		    if (name () == "stdin")
+
+		    if (interactive && name () == "stdin")
 		      {
 			is.clear ();
 
@@ -1534,8 +1535,8 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	  error ("fscanf: read error");
       
 	  // XXX FIXME XXX -- is this the right thing to do?
-	  // What about other streams?
-	  if (name () == "stdin")
+
+	  if (interactive && name () == "stdin")
 	    {
 	      is.clear ();
 
@@ -1586,12 +1587,8 @@ octave_base_stream::oscanf (const string& fmt)
 		    error ("fscanf: read error");
 
 		    // XXX FIXME XXX -- is this the right thing to do?
-		    // Maybe.  We should probably also arrange to
-		    // flush the pending input prior to printing a
-		    // prompt.  Or maybe just blow off scanf for stdin
-		    // like the MathWorks did. What about other streams?
 
-		    if (name () == "stdin")
+		    if (interactive && name () == "stdin")
 		      {
 			is.clear ();
 

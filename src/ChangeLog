@@ -1,5 +1,14 @@
 1999-11-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-iostrm.h (octave_istream::eof, octave_ostream::eof): Provide
+	implementation for these.
+
+	* oct-stream.cc (octave_base_stream::do_scanf):
+	The stdin stream is only special if we are interactive.
+	(octave_base_stream::scanf): Ditto.
+	(octave_base_stream::do_oscanf): Ditto.
+	(octave_base_stream::oscanf): Ditto.
+
 	* ov.h (octave_value::is_stream): New predicate.
 	* ov-file.h (octave_file::is_stream): Return true.
 	* file-io.cc (Fis_stream): New function.

@@ -60,10 +60,26 @@ octave_base_iostream::invalid_operation (void) const
   ::error ("%s: invalid operation", stream_type ());
 }
 
+// Return non-zero if EOF has been reached on this stream.
+
+bool
+octave_istream::eof (void) const
+{
+  return is && is->eof ();
+}
+
 octave_stream
 octave_istream::create (istream *arg, const string& nm)
 {
   return octave_stream (new octave_istream (arg, nm));
+}
+
+// Return non-zero if EOF has been reached on this stream.
+
+bool
+octave_ostream::eof (void) const
+{
+  return os && os->eof ();
 }
 
 octave_stream

@@ -88,6 +88,10 @@ public:
   static octave_stream
   create (istream *arg = 0, const string& nm = string ());
 
+  // Return non-zero if EOF has been reached on this stream.
+
+  bool eof (void) const;
+
   istream *input_stream (void) { return is; }
 
   ostream *output_stream (void) { return 0; }
@@ -120,6 +124,10 @@ public:
 
   static octave_stream
   create (ostream *arg, const string& nm = string ());
+
+  // Return non-zero if EOF has been reached on this stream.
+
+  bool eof (void) const;
 
   istream *input_stream (void) { return 0; }
 

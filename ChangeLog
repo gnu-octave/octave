@@ -1,5 +1,9 @@
 Tue Feb 18 00:33:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 2.0.3 released.
+
+	* octMakefile.in (binary-dist): Strip src/octave and info/info.
+
 	* examples/oregonator.m, examples/oregonator.cc: New files.
 	* examples/Makefile.in (SOURCES): Add them to the list.
 

@@ -1,3 +1,7 @@
+Tue Feb 18 03:21:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.3 released.
+
 Thu Feb 13 19:06:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* image/saveimage.m: Only clip image data that is actually out of

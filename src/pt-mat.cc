@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-misc.h"
 #include "pt-mvr.h"
 #include "pt-walk.h"
+#include "utils.h"
 
 // Are empty elements in a matrix list ok?  For example, is the empty
 // matrix in an expression like `[[], 1]' ok?  A positive value means

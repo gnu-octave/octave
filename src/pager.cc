@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "sighandlers.h"
 #include "unwind-prot.h"
+#include "utils.h"
 
 pid_t octave_pager_pid = -1;
 

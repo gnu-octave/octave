@@ -565,8 +565,14 @@ elem_xpow (const Matrix& a, double b)
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
+      
+	    // XXX FIXME XXX -- avoid apparent GNU libm bug by
+	    // converting A and B to complex instead of just A.
+
 	    Complex atmp (a (i, j));
-	    result (i, j) = pow (atmp, b);
+	    Complex btmp (b);
+
+	    result (i, j) = pow (atmp, btmp);
 	  }
 
       retval = result;
@@ -937,8 +943,14 @@ elem_xpow (const NDArray& a, double b)
       for (int i = 0; i < a.length (); i++)
 	{
 	  OCTAVE_QUIT;
-	  Complex atmp (a(i));
-	  result(i) = pow (atmp, b);
+
+	  // XXX FIXME XXX -- avoid apparent GNU libm bug by
+	  // converting A and B to complex instead of just A.
+
+	  Complex atmp (a (i));
+	  Complex btmp (b);
+
+	  result(i) = pow (atmp, btmp);
 	}
 
       retval = result;

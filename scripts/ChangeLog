@@ -1,3 +1,8 @@
+2004-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/figure.m: Also look for GNUTERM in the environment and use
+	that if it is set (for OS X).  From Per Persson <persquare@mac.com>.
+
 2004-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/base/__stepimp__.m: Only call clearplot if we will be

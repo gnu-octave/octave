@@ -39,12 +39,16 @@ function f = figure (n)
 
   if (nargin < 2)
     if (gnuplot_has_frames)
-      if (! isempty (getenv ("DISPLAY")))
+      gnuterm = getenv ("GNUTERM");
+      if (isempty (gnuterm) && ! isempty ("DISPLAY"))
+	gnuterm = "x11";
+      endif
+      if (! isempty (gnuterm))
         oneplot ();
         figure_list = union (figure_list, f);
-        eval (sprintf ("gset term x11 %d\n", f));
+        eval (sprintf ("gset term %s %d\n", gnuterm, f));
       else
-        error ("figure: requires X11 and valid DISPLAY");
+        error ("figure: requires GNUTERM (Aqua) or DISPLAY (X11)");
       endif
     else
       error ("figure: gnuplot doesn't appear to support this feature");

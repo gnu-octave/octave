@@ -1198,15 +1198,12 @@ match_any (char c, char *s)
  * return 1 if it looks like it should be treated as a binary
  * operator.  For example,
  *
- *   [ 1 + 2 ]  or  [ 1+2 ]  ==> binary
- *
- * The case of [ 1+ 2 ] should also be treated as a binary operator,
- * but it is handled by the caller.
+ *   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==> binary
  */
 static int
 looks_like_bin_op (int spc_prev, int spc_next)
 {
-  return ((spc_prev && spc_next) || ! (spc_prev || spc_next));
+  return ((spc_prev && spc_next) || ! spc_prev);
 }
 
 /*

@@ -53,13 +53,19 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
 int
 c_file_ptr_buf::overflow (int c)
 {
-  return (c != EOF) ? fputc (c, f) : fflush (f);
+  if (f)
+    return (c != EOF) ? fputc (c, f) : fflush (f);
+  else
+    return EOF;
 }
 
 int
 c_file_ptr_buf::underflow (void)
 {
-  return fgetc (f);
+  if (f)
+    return fgetc (f);
+  else
+    return EOF;
 }
 
 int
@@ -71,19 +77,25 @@ c_file_ptr_buf::uflow (void)
 int
 c_file_ptr_buf::pbackfail (int c)
 {
-  return (c != EOF) ? ungetc (c, f) : EOF;
+  return (c != EOF && f) ? ungetc (c, f) : EOF;
 }
 
 std::streamsize
 c_file_ptr_buf::xsputn (const char* s, std::streamsize n)
 {
-  return fwrite (s, 1, n, f);
+  if (f)
+    return fwrite (s, 1, n, f);
+  else
+    return 0;
 }
 
 std::streamsize
 c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 {
-  return fread (s, 1, n, f);
+  if (f)
+    return fread (s, 1, n, f);
+  else
+    return 0;
 }
 
 static inline int
@@ -101,9 +113,14 @@ c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 {
   // XXX FIXME XXX -- is this the right thing to do?
 
-  fseek (f, offset, seekdir_to_whence (dir));
+  if (f)
+    {
+      fseek (f, offset, seekdir_to_whence (dir));
 
-  return ftell (f);
+      return ftell (f);
+    }
+  else
+    return 0;
 }
 
 std::streampos
@@ -111,9 +128,14 @@ c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
   // XXX FIXME XXX -- is this the right thing to do?
 
-  fseek (f, offset, SEEK_SET);
+  if (f)
+    {
+      fseek (f, offset, SEEK_SET);
 
-  return ftell (f);
+      return ftell (f);
+    }
+  else
+    return 0;
 }
 
 int

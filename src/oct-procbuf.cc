@@ -99,7 +99,14 @@ octave_procbuf::open (const char *command, int mode)
 
       while (octave_procbuf_list)
 	{
-	  ::fclose (octave_procbuf_list->f);
+	  FILE *fp = octave_procbuf_list->f;
+
+	  if (fp)
+	    {
+	      ::fclose (fp);
+	      fp = 0;
+	    }
+
 	  octave_procbuf_list = octave_procbuf_list->next;
 	}
 
@@ -140,31 +147,36 @@ octave_procbuf::close (void)
 {
 #if defined (HAVE_SYS_WAIT_H)
 
-  pid_t wait_pid;
-
-  int status = -1;
-
-  for (octave_procbuf **ptr = &octave_procbuf_list;
-       *ptr != 0;
-       ptr = &(*ptr)->next)
+  if (f)
     {
-      if (*ptr == this)
-	{
-	  *ptr = (*ptr)->next;
-	  status = 0;
-	  break;
-	}
-    }
+      pid_t wait_pid;
 
-  if (status == 0 && ::fclose (f) == 0)
-    {
-      using namespace std;
+      int status = -1;
 
-      do
+      for (octave_procbuf **ptr = &octave_procbuf_list;
+	   *ptr != 0;
+	   ptr = &(*ptr)->next)
 	{
-	  wait_pid = ::waitpid (proc_pid, &wstatus, 0);
+	  if (*ptr == this)
+	    {
+	      *ptr = (*ptr)->next;
+	      status = 0;
+	      break;
+	    }
 	}
-      while (wait_pid == -1 && errno == EINTR);
+
+      if (status == 0 && ::fclose (f) == 0)
+	{
+	  using namespace std;
+
+	  do
+	    {
+	      wait_pid = ::waitpid (proc_pid, &wstatus, 0);
+	    }
+	  while (wait_pid == -1 && errno == EINTR);
+	}
+
+      f = 0;
     }
 
   open_p = false;

@@ -33,10 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class
 c_file_ptr_buf : public std::streambuf
 {
-protected:
-
-  FILE *f;
-
 public:
 
   FILE* stdiofile (void) const { return f; }
@@ -64,36 +60,44 @@ public:
 			  std::ios::openmode = std::ios::in | std::ios::out);
 
   int sync (void);
+
+protected:
+
+  FILE *f;
 };
 
 class
 i_c_file_ptr_stream : public std::istream
 {
-private:
-
-  c_file_ptr_buf f;
-
 public:
 
-  i_c_file_ptr_stream (FILE* f_arg)
-    : std::istream (), f (f_arg) { init (&f); }
+  i_c_file_ptr_stream (FILE* f)
+    : std::istream (), buf (new c_file_ptr_buf (f)) { init (buf); }
 
-  c_file_ptr_buf *rdbuf (void) { return &f; }
+  ~i_c_file_ptr_stream (void) { delete buf; buf = 0; }
+
+  c_file_ptr_buf *rdbuf (void) { return buf; }
+
+private:
+
+  c_file_ptr_buf *buf;
 };
 
 class
 o_c_file_ptr_stream : public std::ostream
 {
-private:
-
-  c_file_ptr_buf f;
-
 public:
 
-  o_c_file_ptr_stream (FILE* f_arg)
-    : std::ostream (), f (f_arg) { init (&f); }
+  o_c_file_ptr_stream (FILE* f)
+    : std::ostream (), buf (new c_file_ptr_buf (f)) { init (buf); }
 
-  c_file_ptr_buf *rdbuf (void) { return &f; }
+  ~o_c_file_ptr_stream (void) { delete buf; buf = 0; }
+
+  c_file_ptr_buf *rdbuf (void) { return buf; }
+
+private:
+
+  c_file_ptr_buf *buf;
 };
 
 #endif

@@ -122,15 +122,14 @@ my_friendly_exit (const char *sig_name, int sig_number)
       octave_set_signal_handler (SIGABRT, SIG_DFL);
 #endif
 
-      std::cerr << "error: attempted clean up apparently failed -- aborting...\n";
-
+      std::cerr << "panic: attempted clean up apparently failed -- aborting...\n";
       abort ();
     }
   else
     {
       been_there_done_that = true;
 
-      std::cerr << "error: " << sig_name << " -- stopping myself...\n";
+      std::cerr << "panic: " << sig_name << " -- stopping myself...\n";
 
       save_user_variables ();
 

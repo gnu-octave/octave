@@ -1,5 +1,8 @@
 2000-03-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sighandlers.cc (my_friendly_exit): Prefix failure messages with
+	panic instead of error.
+
 	* c-file-ptr-stream.cc (c_file_ptr_buf::~c_file_ptr_buf):
 	Avoid dereferencing NULL pointer.
 

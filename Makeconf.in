@@ -54,7 +54,9 @@ LN_S = @LN_S@
 
 RUNTEST = @RUNTEST@
 
-TEXI2DVI = $(top_srcdir)/texi2dvi
+MAKEINFO = makeinfo
+TEXI2DVI = texi2dvi
+TEXI2PDF = texi2pdf
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
 

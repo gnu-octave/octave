@@ -25,7 +25,8 @@ TEXINFO = array.texi bugs.texi cp-idx.texi dae.texi diffeq.texi \
 	liboctave.texi matvec.texi nleqn.texi nlfunc.texi ode.texi \
 	optim.texi preface.texi quad.texi range.texi
 
-FORMATTED = liboctave.dvi liboctave.ps liboctave.info liboctave*.html
+FORMATTED = liboctave.dvi liboctave.ps liboctave.pdf \
+	liboctave.info liboctave*.html
 
 DISTFILES = Makefile.in gpl.texi $(TEXINFO) $(FORMATTED)
 
@@ -38,11 +39,11 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: liboctave.info liboctave.dvi liboctave.ps liboctave_toc.html
+all: liboctave.info liboctave.dvi liboctave.ps liboctave.pdf liboctave_toc.html
 .PHONY: all
 
 liboctave.info: $(TEXINFO) ../conf.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/liboctave.texi
+	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $(srcdir)/liboctave.texi
 
 liboctave.dvi: $(TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
@@ -51,6 +52,11 @@ liboctave.dvi: $(TEXINFO) ../conf.texi
 
 liboctave.ps: liboctave.dvi
 	-dvips -o liboctave.ps liboctave.dvi
+
+liboctave.pdf: $(TEXINFO) ../conf.texi
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
+	  export TEXINPUTS; \
+	  $(TEXI2PDF) $(srcdir)/liboctave.texi
 
 # These option forms are supported by texi2html 1.65 and probably also
 # more recent versions.

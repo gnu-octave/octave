@@ -37,7 +37,7 @@ SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 
 TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO)
 
-FORMATTED = octave.dvi octave.ps \
+FORMATTED = octave.dvi octave.ps octave.pdf \
 	octave.info octave.info-[0-9]* \
 	octave.html octave_*.html
 
@@ -65,7 +65,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps octave_toc.html
+all: octave.info octave.dvi octave.ps octave.pdf octave_toc.html
 .PHONY: all
 
 $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
@@ -89,7 +89,7 @@ scripts-DOCSTRINGS:
 	@$(top_srcdir)/move-if-change $@.t $@
 
 octave.info: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. $<
+	-$(MAKEINFO) -I$(srcdir) -I$(srcdir)/.. $<
 
 octave.dvi: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
@@ -99,16 +99,21 @@ octave.dvi: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 octave.ps: octave.dvi
 	-dvips -o octave.ps octave.dvi
 
+octave.pdf: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
+	  export TEXINPUTS; \
+	  $(TEXI2PDF) $<
+
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
-	-makeinfo -D INSTALLONLY \
+	-$(MAKEINFO) -D INSTALLONLY \
 	  --no-validate --no-headers --no-split --output INSTALL \
 	  -I$(srcdir) -I$(srcdir)/.. $<
 	mv INSTALL ../../INSTALL.OCTAVE
 
 ../../BUGS: bugs.texi
 	rm -f BUGS
-	-makeinfo -D BUGSONLY \
+	-$(MAKEINFO) -D BUGSONLY \
 	  --no-validate --no-headers --no-split --output BUGS \
 	  -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS

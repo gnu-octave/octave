@@ -1,3 +1,15 @@
+2005-02-21  John W. Eaton  <jwe@octave.org>
+
+	* liboctave/Makefile.in (liboctave.pdf): New target and rule.
+	(FORMATTED): Add liboctave.pdf to the list.
+	(all): Also epend on liboctave.pdf.
+	Use $(MAKEINFO) instead of makeinfo in rules.
+
+	* interpreter/Makefile.in (octave.pdf): New target and rule.
+	(FORMATTED): Add octave.pdf to the list.
+	(all): Also depend on octave.pdf.
+	Use $(MAKEINFO) instead of makeinfo in rules.
+
 2005-02-08  Quentin Spencer  <qspencer@ieee.org>
 
 	* interpreter/plot.txi: Emphasize compatible plotting functions

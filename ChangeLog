@@ -1,3 +1,10 @@
+2005-02-21  John W. Eaton  <jwe@octave.org>
+
+	* texi2dvi: Delete our private version.
+
+	* Makeconf.in (MAKEINFO): Define.
+	(TEXI2DVI): Define as texi2dvi, not $(top_srcdir)/texi2dvi.
+
 2005-02-09  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for canonicalize_file_name and resolvepath.

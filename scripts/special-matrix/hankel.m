@@ -22,8 +22,8 @@
 ## Return the Hankel matrix constructed given the first column @var{c}, and
 ## (optionally) the last row @var{r}.  If the last element of @var{c} is
 ## not the same as the first element of @var{r}, the last element of
-## @var{c} is used.  If the second argument is omitted, the last row is
-## taken to be the same as the first column.
+## @var{c} is used.  If the second argument is omitted, it is assumed to
+## be a vector of zeros with the same size as @var{c}.
 ##
 ## A Hankel matrix formed from an m-vector @var{c}, and an n-vector
 ## @var{r}, has the elements
@@ -38,8 +38,8 @@
 ##
 ## @example
 ## @group
-## H (i, j) = c (i+j-1),  i+j-1 <= m;
-## H (i, j) = r (i+j-m),  otherwise
+## H(i,j) = c(i+j-1),  i+j-1 <= m;
+## H(i,j) = r(i+j-m),  otherwise
 ## @end group
 ## @end example
 ## @end ifinfo

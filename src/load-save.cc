@@ -1429,7 +1429,7 @@ found in the file will be replaced with the values read from the file.")
 
   if (i == argc)
     {
-      error ("load: you must specify a single file to read");
+      print_usage ("load");
       return retval;
     }
 
@@ -2229,7 +2229,7 @@ save variables in a file")
 	break;
     }
 
-  if (argc < 1)
+  if (i == argc)
     {
       print_usage ("save");
       return retval;

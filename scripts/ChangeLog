@@ -1,5 +1,7 @@
 2002-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* control/base/lsim.m: Use approximate test for step size change.
+
 	* signal/bartlett.m: Avoid row/column mismatch error.
 
 2002-11-12  Paul Kienzle <pkienzle@users.sf.net>

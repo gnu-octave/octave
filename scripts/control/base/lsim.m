@@ -73,10 +73,13 @@ function [y, x] = lsim (sys, u, t, x0)
   t(2)-t(1);
   u=u';
   n = max(size(t));
+
   for ii = 1:(n-1)
 
     ## check if step size changed
-    if (t(ii+1) - t(ii) != Ts)
+    ## XXX FIXME XXX -- this is probably not the best test, but it is
+    ## better than a test for exact equality.
+    if (abs (t(ii+1) - t(ii) - Ts) > 10 * eps)
       Ts = t(ii+1) - t(ii);
       ## [F,G] = c2d(a,b,Ts);
       dsys = c2d(sys, Ts);

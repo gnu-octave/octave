@@ -31,6 +31,47 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "DiagArray2.h"
 #include "MArray2.h"
 
+#if defined (LTGT)
+#undef LTGT
+#endif
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#define LTGT
+#else
+
+#define LTGT <>
+
+template <class T>
+class MDiagArray2;
+
+template <typename T> MDiagArray2<T>&
+operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b);
+
+template <typename T> MDiagArray2<T>&
+operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b);
+
+template <typename T> MDiagArray2<T> 
+operator * (const MDiagArray2<T>& a, const T& s);
+
+template <typename T> MDiagArray2<T> 
+operator / (const MDiagArray2<T>& a, const T& s);
+
+template <typename T> MDiagArray2<T> 
+operator * (const T& s, const MDiagArray2<T>& a);
+
+template <typename T> MDiagArray2<T>
+operator + (const MDiagArray2<T>& a, const MDiagArray2<T>& b); 
+
+template <typename T> MDiagArray2<T>
+operator - (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
+
+template <typename T> MDiagArray2<T>
+product (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
+
+template <typename T> MDiagArray2<T> 
+operator - (const MDiagArray2<T>& a);
+#endif
+
 // Two dimensional diagonal array with math ops.
 
 template <class T>
@@ -72,33 +113,35 @@ public:
   // element by element MDiagArray2 by MDiagArray2 ops
 
   friend MDiagArray2<T>&
-  operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b);
+  operator += LTGT (MDiagArray2<T>& a, const MDiagArray2<T>& b);
 
   friend MDiagArray2<T>&
-  operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b);
+  operator -= LTGT (MDiagArray2<T>& a, const MDiagArray2<T>& b);
 
   // element by element MDiagArray2 by scalar ops
 
-  friend MDiagArray2<T> operator * (const MDiagArray2<T>& a, const T& s);
-  friend MDiagArray2<T> operator / (const MDiagArray2<T>& a, const T& s);
+  friend MDiagArray2<T> operator * LTGT (const MDiagArray2<T>& a, const T& s);
+  friend MDiagArray2<T> operator / LTGT (const MDiagArray2<T>& a, const T& s);
 
   // element by element scalar by MDiagArray2 ops
 
-  friend MDiagArray2<T> operator * (const T& s, const MDiagArray2<T>& a);
+  friend MDiagArray2<T> operator * LTGT (const T& s, const MDiagArray2<T>& a);
 
   // element by element MDiagArray2 by MDiagArray2 ops
 
   friend MDiagArray2<T>
-  operator + (const MDiagArray2<T>& a, const MDiagArray2<T>& b); 
+  operator + LTGT (const MDiagArray2<T>& a, const MDiagArray2<T>& b); 
 
   friend MDiagArray2<T>
-  operator - (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
+  operator - LTGT (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
 
   friend MDiagArray2<T>
-  product (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
+  product LTGT (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
 
-  friend MDiagArray2<T> operator - (const MDiagArray2<T>& a);
+  friend MDiagArray2<T> operator - LTGT (const MDiagArray2<T>& a);
 };
+
+#undef LTGT
 
 #define INSTANTIATE_MDIAGARRAY_FRIENDS(T) \
   template MDiagArray2<T>& operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b); \

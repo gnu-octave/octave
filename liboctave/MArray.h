@@ -30,6 +30,71 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array.h"
 
+#if defined (LTGT)
+#undef LTGT
+#endif
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+#define LTGT
+#else
+
+#define LTGT <>
+
+template <class T> 
+class MArray;
+
+template <typename T> MArray<T>& 
+operator += (MArray<T>& a, const T& s);
+
+template <typename T> MArray<T>& 
+operator -= (MArray<T>& a, const T& s);
+
+template <typename T> MArray<T>& 
+operator += (MArray<T>& a, const MArray<T>& b);
+
+template <typename T> MArray<T>& 
+operator -= (MArray<T>& a, const MArray<T>& b);
+
+template <typename T> MArray<T> 
+operator + (const MArray<T>& a, const T& s);
+
+template <typename T> MArray<T> 
+operator - (const MArray<T>& a, const T& s);
+
+template <typename T> MArray<T> 
+operator * (const MArray<T>& a, const T& s);
+
+template <typename T> MArray<T> 
+operator / (const MArray<T>& a, const T& s);
+
+template <typename T> MArray<T> 
+operator + (const T& s, const MArray<T>& a);
+
+template <typename T> MArray<T> 
+operator - (const T& s, const MArray<T>& a);
+
+template <typename T> MArray<T> 
+operator * (const T& s, const MArray<T>& a);
+
+template <typename T> MArray<T> 
+operator / (const T& s, const MArray<T>& a);
+
+template <typename T> MArray<T> 
+operator + (const MArray<T>& a, const MArray<T>& b);
+
+template <typename T> MArray<T> 
+operator - (const MArray<T>& a, const MArray<T>& b);
+
+template <class T> MArray<T> 
+product (const MArray<T>& a, const MArray<T>& b);
+
+template <typename T> MArray<T> 
+quotient (const MArray<T>& a, const MArray<T>& b);
+
+template <typename T> MArray<T> 
+operator - (const MArray<T>& a);
+#endif
+
 // One dimensional array with math ops.
 
 template <class T>
@@ -57,43 +122,44 @@ public:
 
   // element by element MArray by scalar ops
 
-  friend MArray<T>& operator += (MArray<T>& a, const T& s);
-  friend MArray<T>& operator -= (MArray<T>& a, const T& s);
+  friend MArray<T>& operator += LTGT (MArray<T>& a, const T& s);
+  friend MArray<T>& operator -= LTGT (MArray<T>& a, const T& s);
 
   // element by element MArray by MArray ops
 
-  friend MArray<T>& operator += (MArray<T>& a, const MArray<T>& b);
-  friend MArray<T>& operator -= (MArray<T>& a, const MArray<T>& b);
+  friend MArray<T>& operator += LTGT (MArray<T>& a, const MArray<T>& b);
+  friend MArray<T>& operator -= LTGT (MArray<T>& a, const MArray<T>& b);
 
   // element by element MArray by scalar ops
 
-  friend MArray<T> operator + (const MArray<T>& a, const T& s);
-  friend MArray<T> operator - (const MArray<T>& a, const T& s);
-  friend MArray<T> operator * (const MArray<T>& a, const T& s);
-  friend MArray<T> operator / (const MArray<T>& a, const T& s);
+  friend MArray<T> operator + LTGT (const MArray<T>& a, const T& s);
+  friend MArray<T> operator - LTGT (const MArray<T>& a, const T& s);
+  friend MArray<T> operator * LTGT (const MArray<T>& a, const T& s);
+  friend MArray<T> operator / LTGT (const MArray<T>& a, const T& s);
 
   // element by element scalar by MArray ops
 
-  friend MArray<T> operator + (const T& s, const MArray<T>& a);
-  friend MArray<T> operator - (const T& s, const MArray<T>& a);
-  friend MArray<T> operator * (const T& s, const MArray<T>& a);
-  friend MArray<T> operator / (const T& s, const MArray<T>& a);
+  friend MArray<T> operator + LTGT (const T& s, const MArray<T>& a);
+  friend MArray<T> operator - LTGT (const T& s, const MArray<T>& a);
+  friend MArray<T> operator * LTGT (const T& s, const MArray<T>& a);
+  friend MArray<T> operator / LTGT (const T& s, const MArray<T>& a);
 
   // element by element MArray by MArray ops
 
-  friend MArray<T> operator + (const MArray<T>& a, const MArray<T>& b);
+  friend MArray<T> operator + LTGT (const MArray<T>& a, const MArray<T>& b);
 
-  friend MArray<T> operator - (const MArray<T>& a, const MArray<T>& b);
+  friend MArray<T> operator - LTGT (const MArray<T>& a, const MArray<T>& b);
 
-  friend MArray<T> product (const MArray<T>& a, const MArray<T>& b);
-  friend MArray<T> quotient (const MArray<T>& a, const MArray<T>& b);
+  friend MArray<T> product LTGT (const MArray<T>& a, const MArray<T>& b);
+  friend MArray<T> quotient LTGT (const MArray<T>& a, const MArray<T>& b);
 
-  friend MArray<T> operator - (const MArray<T>& a);
+  friend MArray<T> operator - LTGT (const MArray<T>& a);
 };
+
+#undef LTGT
 
 extern void
 gripe_nonconformant (const char *op, int op1_len, int op2_len);
-
 
 #define INSTANTIATE_MARRAY_FRIENDS(T) \
   template MArray<T>& operator += (MArray<T>& a, const T& s); \

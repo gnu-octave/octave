@@ -10,6 +10,9 @@
    internal array and matrix classes. */
 #undef BOUNDS_CHECKING
 
+/* Define if your compiler supports `<>' stuff for template friends. */
+#undef CXX_NEW_FRIEND_TEMPLATE_DECL
+
 /* Define if your math.h declares struct exception for matherr() */
 #undef EXCEPTION_IN_MATH
 

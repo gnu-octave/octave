@@ -148,6 +148,19 @@ Summary of changes for version 2.1.x:
     right-hand-side functions that define the set of differential
     equations with respect to the state vector X.
 
+  * Global variables are now initialized to the empty matrix, for
+    compatibility with Matlab.
+
+  * Explicit initialization of global variables only happens once.
+    For example, after the following statements are evaluated, g still
+    has the value 1.
+
+      global g = 1
+      global g = 2
+
+    This is useful for initializing global variables that are used to
+    maintain state information that is shared among several functions.
+
   * Structure elements completion on the command line actually works
     now.
 

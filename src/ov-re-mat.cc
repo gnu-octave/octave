@@ -110,7 +110,9 @@ octave_matrix::do_index_op (const octave_value_list& idx)
   return retval;
 }
 
+#if !defined (NO_EXTERN_TEMPLATE_DECLS)
 extern void assign (Array2<double>&, const Array2<double>&);
+#endif
 
 void
 octave_matrix::assign (const octave_value_list& idx, const Matrix& rhs)

@@ -26,7 +26,7 @@ CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in configure \
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
 	README README.Linux README.Windows ROADMAP SENDING-PATCHES \
-	THANKS INFO.PATCH move-if-change octave-sh octave-bug.in \
+	THANKS move-if-change octave-sh octave-bug.in \
 	install-octave mkinstalldirs mkoctfile.in texi2dvi \
 	ChangeLog ChangeLog.[0-9]
 

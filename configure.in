@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.286 $)
+AC_REVISION($Revision: 1.287 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -183,12 +183,17 @@ AC_PROG_CXXCPP
 
 ADD_CXX_WALL=false
 NO_IMPLICIT_TEMPLATES=
+
 gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
-  sed -e 's/^.*g.. version *//' -e 's/cygnus-//'`
+  sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
+
 case "$gxx_version" in
 changequote(,)dnl
-  2.[6789].* | 2.[123456789][0123456789].*)
+  1.* | 2.[0123456].* | 2.7.[01]*)
 changequote([,])dnl
+    AC_MSG_ERROR([g++ version $gxx_version will not work to compile Octave])
+  ;;
+  2.7.[23456789]* | 2.7.[123456789][0123456789]*)
     if test -z "$EXTERN_CXXFLAGS"; then
       ADD_CXX_WALL=true
     fi
@@ -196,25 +201,17 @@ changequote([,])dnl
     AC_MSG_RESULT([defining NO_IMPLICIT_TEMPLATES to be $NO_IMPLICIT_TEMPLATES])
   ;;
 changequote(,)dnl
-  1.* | 2.[012345].*)
+  2.[89].* | 2.[123456789][0123456789].*)
 changequote([,])dnl
-    AC_MSG_ERROR([g++ version $gxx_version will not work to compile Octave])
+    if test -z "$EXTERN_CXXFLAGS"; then
+      ADD_CXX_WALL=true
+    fi
+    NO_IMPLICIT_TEMPLATES="-fno-implicit-templates"
+    AC_MSG_RESULT([defining NO_IMPLICIT_TEMPLATES to be $NO_IMPLICIT_TEMPLATES])
   ;;
   *)
     warn_gxx_only="Octave has only been tested with g++, and I can't find it"
     AC_MSG_WARN($warn_gxx_only)
-  ;;
-esac
-
-HOST_CXXFLAGS=
-case "$gxx_version" in
-  2.6.*)
-    case "$canonical_host_type" in
-      rs6000-ibm-aix* | powerpc-ibm-aix*)
-        HOST_CXXFLAGS="-Wa,-u"
-        AC_MSG_RESULT([defining HOST_CXXFLAGS to be $HOST_CXXFLAGS])
-      ;;
-    esac
   ;;
 esac
 
@@ -226,6 +223,8 @@ AC_SUBST(CXX_VERSION)
 
 AC_SUBST(HOST_CXXFLAGS)
 AC_SUBST(NO_IMPLICIT_TEMPLATES)
+
+OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
 
 ### See which C compiler to use (we expect to find gcc).
 
@@ -239,7 +238,7 @@ AC_PROG_GCC_TRADITIONAL
 
 ADD_CC_WALL=false
 gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
-  sed -e 's/^.*g.. version *//' -e 's/cygnus-//'`
+  sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
 case "$gcc_version" in
   2.*)
     if test -z "$EXTERN_CFLAGS"; then

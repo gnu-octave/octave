@@ -132,9 +132,9 @@ public:
   octave_value hermitian (void) const
     { return octave_value (matrix.hermitian ()); }
 
-  void increment (void) { matrix += 1.0; }
+  void increment (void) { matrix += Complex (1.0); }
 
-  void decrement (void) { matrix -= 1.0; }
+  void decrement (void) { matrix -= Complex (1.0); }
 
   void print (ostream& os, bool pr_as_read_syntax = false) const;
 

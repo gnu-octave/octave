@@ -95,13 +95,14 @@ tree_global_command::do_init (tree_decl_elt& elt)
     {
       id->link_to_global ();
 
-      tree_expression *expr = elt.expression ();
+      octave_lvalue ult = id->lvalue ();
 
-      if (expr)
+      if (ult.is_undefined ())
 	{
-	  octave_value init_val = expr->rvalue ();
+	  tree_expression *expr = elt.expression ();
 
-	  octave_lvalue ult = id->lvalue ();
+	  octave_value init_val = expr
+	    ? expr->rvalue () : octave_value (Matrix ());
 
 	  ult.assign (octave_value::asn_eq, init_val);
 	}

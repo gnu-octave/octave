@@ -1,3 +1,13 @@
+Wed Nov 19 02:30:04 1997  Mumit Khan <khan@dhaka.xraylith.wisc.edu>
+
+	Changes to make support egcs snapshots that implement explicit
+	specification of template functions according to CD2.
+
+	* MArray.h: If NEED_TEMPLATE_FCN_SPECS is defined, add explicit
+	template function specs for template friends.
+	* MArray2.h: Likewise.
+	* MDiagArray2.h: Likewise.
+
 Thu Nov 13 21:57:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc (sumsq): Compute equivalent of sum (x .* conj (x))

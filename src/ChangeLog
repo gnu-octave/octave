@@ -1,3 +1,19 @@
+Wed Nov 19 02:05:40 1997  Mumit Khan <khan@dhaka.xraylith.wisc.edu>
+
+	* DLD-FUNCTIONS/filter.cc: Don't include extern template decls if
+	NO_EXTERN_TEMPLATE_DECLS is defined.
+	* ov-cx-mat.cc: Likewise.
+	* ov-re-mat.cc: Likewise.
+	* ov-str-mat.cc: Likewise.
+
+	* ov-cx-mat.h (octave_complex_matrix::decrement,
+	octave_complex_matrix):	Use explicit Complex constructor.
+
+Wed Nov 19 00:08:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-decl.cc (tree_global_command::do_init): Initialize global
+	values to `[]'.  Only perform explicit initialization once.
+
 Tue Nov 18 04:27:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pr-output.cc (Vfixed_point_format): New variable.

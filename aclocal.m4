@@ -565,3 +565,42 @@ if test $octave_cv_type_$1 = no; then
   AC_DEFINE($1, $3)
 fi
 ])
+dnl
+dnl Check to see if C++ compiler needs the new friend template declaration 
+dnl syntax. 
+dnl
+dnl OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
+AC_DEFUN(OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL, [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_MSG_CHECKING([for C++ support for new friend template declaration])
+  AC_CACHE_VAL(octave_cv_cxx_new_friend_template_decl, [
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    rm -f conftest.h
+    cat > conftest.h <<EOB
+       struct A {
+	 friend int operator== (const A&, const A&);
+	 A (int) { }
+       };
+
+       template <class T> int
+       operator== (const T&, const T&)
+       {
+	 return 0;
+       }
+EOB
+    AC_TRY_LINK([#include "conftest.h"], [
+        A a (1);
+        return a == A(1);
+      ], 
+      octave_cv_cxx_new_friend_template_decl=no,
+      octave_cv_cxx_new_friend_template_decl=yes,
+      octave_cv_cxx_new_friend_template_decl=yes
+    )
+    AC_LANG_RESTORE
+  ])
+  AC_MSG_RESULT($octave_cv_cxx_new_friend_template_decl)
+  if test $octave_cv_cxx_new_friend_template_decl = yes; then
+    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL)
+  fi
+])

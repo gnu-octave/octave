@@ -223,8 +223,8 @@ OP_DUP_FCN (0.0 ==, not, double, Complex)
 
 OP_DUP_FCN (, make_complex, Complex, double)
 
-OP_DUP_FCN (-, negate, double,  double)
-OP_DUP_FCN (-, negate, Complex, Complex)
+OP_DUP_FCN (-, change_sign, double,  double)
+OP_DUP_FCN (-, change_sign, Complex, Complex)
 
 OP_DUP_FCN (real, real_dup, double,  Complex)
 OP_DUP_FCN (imag, imag_dup, double,  Complex)

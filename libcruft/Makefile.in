@@ -30,8 +30,7 @@ CRUFT_DIRS = balgen blas dassl eispack fftpack lapack linpack \
 
 SUBDIRS = $(CRUFT_DIRS)
 
-DISTFILES = Makefile.in ChangeLog Makerules.in configure.in \
-	$(SOURCES) STOP.patch
+DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = libcruft.$(SHLEXT_VER)

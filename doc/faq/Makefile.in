@@ -22,7 +22,8 @@ SOURCES =
 
 TEXINFO := Octave-FAQ.texi
 
-FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ*.html
+FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf \
+	Octave-FAQ*.html
 
 DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
 
@@ -35,11 +36,11 @@ SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ_toc.html
+all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf Octave-FAQ_toc.html
 .PHONY: all
 
 Octave-FAQ.info: Octave-FAQ.texi
-	-makeinfo -I$(srcdir) $(srcdir)/Octave-FAQ.texi
+	-$(MAKEINFO) -I$(srcdir) $(srcdir)/Octave-FAQ.texi
 
 Octave-FAQ.dvi: Octave-FAQ.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
@@ -48,6 +49,11 @@ Octave-FAQ.dvi: Octave-FAQ.texi
 
 Octave-FAQ.ps: Octave-FAQ.dvi
 	-dvips -o Octave-FAQ.ps Octave-FAQ.dvi
+
+Octave-FAQ.pdf: Octave-FAQ.texi
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
+	  export TEXINPUTS; \
+	  $(TEXI2PDF) $(srcdir)/Octave-FAQ.texi
 
 # These option forms are supported by texi2html 1.65 and probably also
 # more recent versions.

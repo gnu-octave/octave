@@ -1,8 +1,18 @@
+2005-02-25  John W. Eaton  <jwe@octave.org>
+
+	* liboctave/Makefile.in (all): Also depend on Octave-FAQ.pdf.
+	Use $(MAKEINFO) instead of makeinfo in rules.
+
+2005-02-25  Rafael Laboissiere  <rafael@debian.org>
+
+	* liboctave/Makefile.in (Octave-FAQ.pdf): New target and rule.
+	(FORMATTED): Add Octave-FAQ.pdf to the list.
+
 2005-02-21  John W. Eaton  <jwe@octave.org>
 
 	* liboctave/Makefile.in (liboctave.pdf): New target and rule.
 	(FORMATTED): Add liboctave.pdf to the list.
-	(all): Also epend on liboctave.pdf.
+	(all): Also depend on liboctave.pdf.
 	Use $(MAKEINFO) instead of makeinfo in rules.
 
 	* interpreter/Makefile.in (octave.pdf): New target and rule.

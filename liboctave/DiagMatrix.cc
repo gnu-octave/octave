@@ -1,7 +1,7 @@
 // DiagMatrix manipulations.                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -533,6 +533,45 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
+DiagMatrix
+operator * (const DiagMatrix& a, const DiagMatrix& b)
+{
+  int nr_a = a.rows ();
+  int nc_a = a.cols ();
+  int nr_b = b.rows ();
+  int nc_b = b.cols ();
+  if (nc_a != nr_b)
+    {
+      (*current_liboctave_error_handler)
+        ("nonconformant matrix multiplication attempted");
+      return DiagMatrix ();
+    }
+
+  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
+    return DiagMatrix (nr_a, nc_a, 0.0);
+
+  DiagMatrix c (nr_a, nc_b);
+
+  int len = nr_a < nc_b ? nr_a : nc_b;
+
+  for (int i = 0; i < len; i++)
+    {
+      double a_element = a.elem (i, i);
+      double b_element = b.elem (i, i);
+
+      if (a_element == 0.0 || b_element == 0.0)
+        c.elem (i, i) = 0.0;
+      else if (a_element == 1.0)
+        c.elem (i, i) = b_element;
+      else if (b_element == 1.0)
+        c.elem (i, i) = a_element;
+      else
+        c.elem (i, i) = a_element * b_element;
+    }
+
+  return c;
+}
+
 ComplexDiagMatrix
 operator + (const DiagMatrix& m, const ComplexDiagMatrix& a)
 {
@@ -568,6 +607,45 @@ operator - (const DiagMatrix& m, const ComplexDiagMatrix& a)
 
   return ComplexDiagMatrix (subtract (m.data (), a.data (), m.length ()),
 			    nr, nc);
+}
+
+ComplexDiagMatrix
+operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
+{
+  int nr_a = a.rows ();
+  int nc_a = a.cols ();
+  int nr_b = b.rows ();
+  int nc_b = b.cols ();
+  if (nc_a != nr_b)
+    {
+      (*current_liboctave_error_handler)
+        ("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
+
+  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
+    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+
+  ComplexDiagMatrix c (nr_a, nc_b);
+
+  int len = nr_a < nc_b ? nr_a : nc_b;
+
+  for (int i = 0; i < len; i++)
+    {
+      double a_element = a.elem (i, i);
+      Complex b_element = b.elem (i, i);
+
+      if (a_element == 0.0 || b_element == 0.0)
+        c.elem (i, i) = 0.0;
+      else if (a_element == 1.0)
+        c.elem (i, i) = b_element;
+      else if (b_element == 1.0)
+        c.elem (i, i) = a_element;
+      else
+        c.elem (i, i) = a_element * b_element;
+    }
+
+  return c;
 }
 
 ComplexDiagMatrix
@@ -1568,6 +1646,45 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
 ComplexDiagMatrix
+operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
+{
+  int nr_a = a.rows ();
+  int nc_a = a.cols ();
+  int nr_b = b.rows ();
+  int nc_b = b.cols ();
+  if (nc_a != nr_b)
+    {
+      (*current_liboctave_error_handler)
+        ("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
+
+  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
+    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+
+  ComplexDiagMatrix c (nr_a, nc_b);
+
+  int len = nr_a < nc_b ? nr_a : nc_b;
+
+  for (int i = 0; i < len; i++)
+    {
+      Complex a_element = a.elem (i, i);
+      Complex b_element = b.elem (i, i);
+
+      if (a_element == 0.0 || b_element == 0.0)
+        c.elem (i, i) = 0.0;
+      else if (a_element == 1.0)
+        c.elem (i, i) = b_element;
+      else if (b_element == 1.0)
+        c.elem (i, i) = a_element;
+      else
+        c.elem (i, i) = a_element * b_element;
+    }
+
+  return c;
+}
+
+ComplexDiagMatrix
 operator + (const ComplexDiagMatrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
@@ -1602,6 +1719,45 @@ operator - (const ComplexDiagMatrix& m, const DiagMatrix& a)
 
   return ComplexDiagMatrix (subtract (m.data (), a.data (), m.length ()),
 			    nr, nc);
+}
+
+ComplexDiagMatrix
+operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
+{
+  int nr_a = a.rows ();
+  int nc_a = a.cols ();
+  int nr_b = b.rows ();
+  int nc_b = b.cols ();
+  if (nc_a != nr_b)
+    {
+      (*current_liboctave_error_handler)
+        ("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
+
+  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
+    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+
+  ComplexDiagMatrix c (nr_a, nc_b);
+
+  int len = nr_a < nc_b ? nr_a : nc_b;
+
+  for (int i = 0; i < len; i++)
+    {
+      Complex a_element = a.elem (i, i);
+      double b_element = b.elem (i, i);
+
+      if (a_element == 0.0 || b_element == 0.0)
+        c.elem (i, i) = 0.0;
+      else if (a_element == 1.0)
+        c.elem (i, i) = b_element;
+      else if (b_element == 1.0)
+        c.elem (i, i) = a_element;
+      else
+        c.elem (i, i) = a_element * b_element;
+    }
+
+  return c;
 }
 
 ComplexDiagMatrix

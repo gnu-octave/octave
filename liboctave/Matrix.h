@@ -396,6 +396,7 @@ public:
 // i/o
 
   friend ostream& operator << (ostream& os, const ColumnVector& a);
+  friend ostream& operator >> (ostream& is, ColumnVector& a);
 
 #define KLUDGE_VECTORS
 #define TYPE double
@@ -508,6 +509,7 @@ public:
 // i/o
 
   friend ostream& operator << (ostream& os, const RowVector& a);
+  friend ostream& operator >> (ostream& is, RowVector& a);
 
 #define KLUDGE_VECTORS
 #define TYPE double
@@ -618,9 +620,14 @@ public:
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
+  friend DiagMatrix operator * (const DiagMatrix& a,
+				const DiagMatrix& b);
+
   friend ComplexDiagMatrix operator + (const DiagMatrix& a,
 				       const ComplexDiagMatrix& b);
   friend ComplexDiagMatrix operator - (const DiagMatrix& a,
+				       const ComplexDiagMatrix& b);
+  friend ComplexDiagMatrix operator * (const DiagMatrix& a,
 				       const ComplexDiagMatrix& b);
 
   friend ComplexDiagMatrix product (const DiagMatrix& a,
@@ -1018,6 +1025,7 @@ public:
 // i/o
 
   friend ostream& operator << (ostream& os, const ComplexColumnVector& a);
+  friend ostream& operator >> (ostream& is, ComplexColumnVector& a);
 
 #define KLUDGE_VECTORS
 #define TYPE Complex
@@ -1144,6 +1152,7 @@ public:
 // i/o
 
   friend ostream& operator << (ostream& os, const ComplexRowVector& a);
+  friend ostream& operator >> (ostream& is, ComplexRowVector& a);
 
 #define KLUDGE_VECTORS
 #define TYPE Complex
@@ -1277,9 +1286,14 @@ public:
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
+  friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
+				       const ComplexDiagMatrix& b);
+
   friend ComplexDiagMatrix operator + (const ComplexDiagMatrix& a,
 				       const DiagMatrix& b);
   friend ComplexDiagMatrix operator - (const ComplexDiagMatrix& a,
+				       const DiagMatrix& b);
+  friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
 				       const DiagMatrix& b);
 
   friend ComplexDiagMatrix product (const ComplexDiagMatrix& a,

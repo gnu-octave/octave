@@ -55,8 +55,8 @@ extern "C"
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
 			     const int& N, const int& ILO,
-			     const int& IHI, double* LSCALE,
-			     double* RSCALE, int& M,	double* V,
+			     const int& IHI, const double* LSCALE,
+			     const double* RSCALE, int& M, double* V,
 			     const int& LDV, int& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);

@@ -73,8 +73,8 @@ extern "C"
   F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
 			     F77_CONST_CHAR_ARG_DECL,
 			     const int& N, const int& ILO,
-			     const int& IHI, double* LSCALE,
-			     double* RSCALE, int& M, double* V,
+			     const int& IHI, const double* LSCALE,
+			     const double* RSCALE, int& M, double* V,
 			     const int& LDV, int& INFO
 			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
@@ -471,9 +471,8 @@ See also: balance, dare, eig, schur\n\
       F77_XFCN (dggbak, DGGBAK,
 		(F77_CONST_CHAR_ARG2 (&bal_job, 1),
 		 F77_CONST_CHAR_ARG2 ("L", 1),
-		 nn, ilo, ihi, lscale.fortran_vec (),
-		 rscale.fortran_vec (), nn, QQ.fortran_vec (),
-		 nn, info
+		 nn, ilo, ihi, lscale.data (), rscale.data (),
+		 nn, QQ.fortran_vec (), nn, info
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
 
@@ -495,9 +494,8 @@ See also: balance, dare, eig, schur\n\
       F77_XFCN (dggbak, DGGBAK,
 		(F77_CONST_CHAR_ARG2 (&bal_job, 1),
 		 F77_CONST_CHAR_ARG2 ("R", 1),
-		 nn, ilo, ihi, lscale.fortran_vec (),
-		 rscale.fortran_vec (), nn, ZZ.fortran_vec (),
-		 nn, info
+		 nn, ilo, ihi, lscale.data (), rscale.data (),
+		 nn, ZZ.fortran_vec (), nn, info
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
 
@@ -662,8 +660,7 @@ See also: balance, dare, eig, schur\n\
 
 	  F77_XFCN (xdlange, XDLANGE,
 		    (F77_CONST_CHAR_ARG2 ("I", 1),
-		     nn, nn, aa.fortran_vec (), nn,
-		     work.fortran_vec (), inf_norm
+		     nn, nn, aa.data (), nn, work.fortran_vec (), inf_norm
 		     F77_CHAR_ARG_LEN (1)));
 
 	  double eps = DBL_EPSILON*inf_norm*nn;
@@ -758,6 +755,9 @@ See also: balance, dare, eig, schur\n\
 			}
 		    }
 #endif
+
+		  // XXX FIXME XXX -- probably should be using
+		  // fortran_vec instead of &aa(jj,jj) here.
 
 		  double scale1, scale2, wr1, wr2, wi;
 		  F77_XFCN (dlag2, DLAG2,

@@ -1,5 +1,9 @@
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/balance.cc: lscale and rscale args for dggbak are
+	const.  Use data() instead of fortran_vec where possible.
+	* DLD-FUNCTIONS/qz.cc: Likewise.
+
 	* data.cc (fill_matrix): Remove trailing singletons before
 	allocating the result matrix.
 

@@ -383,7 +383,7 @@ if $link; then
       exit 1
     fi
   else
-    LINK_DEPS="$LFLAGS $LIBOCTAVE $LIBCRUFT $LIBOCTINTERP $BLAS_LIBS $FFTW_LIBS $FLIBS"
+    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
     cmd="$DL_LD $DL_LDFLAGS -o $octfile $objfiles $ldflags $LINK_DEPS"
     $dbg $cmd
     eval $cmd

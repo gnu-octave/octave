@@ -54,7 +54,7 @@ idx_vector::idx_vector (const idx_vector& a)
       min_val = a.min_val;
     }
   else
-    data = (int *) 0;
+    data = 0;
 }
 
 static inline int
@@ -77,7 +77,7 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
   if (nr == 0 || nc == 0)
     {
       len = 0;
-      data = (int *) 0;
+      data =0;
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;
@@ -128,7 +128,7 @@ idx_vector::idx_vector (const Range& r)
     }
   else if (len == 0)
     {
-      data = (int *) 0;
+      data = 0;
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;
@@ -203,16 +203,7 @@ idx_vector::init_state (const char *rc, int z_len)
 
   if (one_zero && z_len == len)
     {
-      if (num_zeros == len)
-	{
-	  delete [] data;
-	  len = 0;
-	  data = (int *) 0;
-	  num_zeros = 0;
-	  num_ones = 0;
-	  one_zero = 0;
-	}
-      else if (num_ones != len || user_pref.prefer_zero_one_indexing)
+      if (num_ones != len || user_pref.prefer_zero_one_indexing)
 	convert_one_zero_to_idx ();
     }
   else if (min_val < 0)
@@ -246,6 +237,7 @@ idx_vector::convert_one_zero_to_idx (void)
       max_val = 0;
       min_val = 0;
       delete [] data;
+      data = 0;
     }
   else
     {

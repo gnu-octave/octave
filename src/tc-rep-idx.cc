@@ -556,7 +556,45 @@ TC_REP::fortran_style_matrix_index (const Matrix& mi) const
 
       int result_size = iv.length ();
 
-      if (nc == 1 || (nr != 1 && iv.one_zero_only ()))
+// XXX FIXME XXX -- there is way too much duplicate code here...
+
+      if (iv.one_zero_only ())
+	{
+	  if (iv.ones_count () == 0)
+	    {
+	      retval = Matrix ();
+	    }
+	  else
+	    {
+	      if (nr == 1)
+		{
+		  CRMATRIX (m, cm, 1, result_size);
+
+		  for (int i = 0; i < result_size; i++)
+		    {
+		      int idx = iv.elem (i);
+		      CRMATRIX_ASSIGN_ELEM (m, cm, 0, i, cop_out [idx],
+					    c_cop_out [idx], real_type);
+		    }
+
+		  ASSIGN_CRMATRIX_TO (retval, m, cm);
+		}
+	      else
+		{
+		  CRMATRIX (m, cm, result_size, 1);
+
+		  for (int i = 0; i < result_size; i++)
+		    {
+		      int idx = iv.elem (i);
+		      CRMATRIX_ASSIGN_ELEM (m, cm, i, 0, cop_out [idx],
+					    c_cop_out [idx], real_type);
+		    }
+
+		  ASSIGN_CRMATRIX_TO (retval, m, cm);
+		}
+	    }
+	}
+      else if (nc == 1)
 	{
 	  CRMATRIX (m, cm, result_size, 1);
 

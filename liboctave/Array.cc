@@ -848,6 +848,14 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 
   dim_vector dv_old = dimensions;
   
+  if (n > dv_old.length ())
+    {
+      dv_old.resize (n);
+  
+      for (int i = dv_old.length (); i < n; i++)
+	dv_old.elem (i) = 1;
+    }
+
   dimensions = dv;
 
   Array<int> ra_idx (dimensions.length (), 0);
@@ -2239,22 +2247,22 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       dim_vector dv_tmp = rhs.squeeze().dims ();
   
-      if (dv_tmp.length () > 2)
+      switch (dv_tmp.length ())
 	{
-	  (*current_liboctave_error_handler)
-	    ("Dimension mismatch");
-
-	  return 0;
-	}
-      
-      if (dv_tmp.length () == 1)
-	if (rhs_nr == 1)
-	  rhs_nc = dv_tmp.elem (0);
-
-      else if (dv_tmp.length () == 2)
-	{
+	case 1:
+	  if (rhs_nr == 1)
+	    rhs_nc = dv_tmp.elem (0);
+	  break;
+	  
+	case 2:
 	  rhs_nr = dv_tmp.elem (0);
 	  rhs_nc = dv_tmp.elem (1);
+	  break;
+
+	default:
+	  (*current_liboctave_error_handler)
+	    ("Array<T>::assign2: Dimension mismatch");
+	  return 0;	  
 	}
     }
 

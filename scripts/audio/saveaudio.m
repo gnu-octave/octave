@@ -19,21 +19,21 @@
 
 function saveaudio (name, X, ext, bit)
   
-# usage:  saveaudio (name, X, [, ext [, bit]])
-#
-# Saves a vector X of audio data in the file "name.ext".
-# The format of the audio file is determined by ext which has to be
-# written without an inital ".";  default value for ext is "lin". 
-#
-# Currently, the following audio formats are supported:
-# *) mu-law files with extension "mu", "au" or "snd"
-# *) linearly encoded files with extension "lin" or "raw"
-# If the data is saved linearly, the bit argument decides whether an
-# 8-bit (default) or a 16-bit format is used.
+  ## usage:  saveaudio (name, X, [, ext [, bit]])
+  ##
+  ## Saves a vector X of audio data in the file "name.ext".
+  ## The format of the audio file is determined by ext which has to be
+  ## written without an inital ".";  default value for ext is "lin". 
+  ##
+  ## Currently, the following audio formats are supported:
+  ## *) mu-law files with extension "mu", "au" or "snd"
+  ## *) linearly encoded files with extension "lin" or "raw"
+  ## If the data is saved linearly, the bit argument decides whether an
+  ## 8-bit (default) or a 16-bit format is used.
 
-# Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Sep 5, 1994
-# Last modified by AW on Oct 29, 1994
-# Copyright Dept of Probability Theory and Statistics TU Wien
+  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Sep 5, 1994
+  ## Last modified by AW on Oct 29, 1994
+  ## Copyright Dept of Probability Theory and Statistics TU Wien
 
   if (nargin < 2 || nargin > 4)
     usage ("saveaudio (X, name [, ext [, bit]])");

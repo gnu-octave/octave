@@ -1157,6 +1157,9 @@ end_error (char *type, token::end_tok_type ettype, int l, int c)
  * Note that an expression can't be just an identifier anymore -- it
  * must at least be an index expression (see the definition of the
  * non-terminal `variable' above).
+ *
+ * XXX FIXME XXX.  This isn't quite sufficient.  For example, try the
+ * command `x = 4, x' for `x' previously undefined.
  */
 tree *
 maybe_convert_to_ans_assign (tree *expr)

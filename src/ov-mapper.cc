@@ -287,6 +287,8 @@ octave_mapper::do_multi_index_op (int, const octave_value_list& args)
     {
       if (args(0).is_defined ())
 	{
+	  unwind_protect::begin_frame ("mapper_func_eval");
+
 	  unwind_protect_ptr (curr_function);
 	  unwind_protect_ptr (curr_caller_function);
 
@@ -295,7 +297,7 @@ octave_mapper::do_multi_index_op (int, const octave_value_list& args)
 
 	  retval = apply (args(0));
 
-	  unwind_protect::run ();
+	  unwind_protect::run_frame ("mapper_func_eval");
 	}
       else
 	::error ("%s: argument undefined", name().c_str ());

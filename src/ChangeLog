@@ -1,5 +1,9 @@
 2004-09-10  John W. Eaton  <jwe@octave.org>
 
+	* ov-builtin.cc (octave_builtin::do_multi_index_op): Use unwind
+	protect frame instead of a single unwind_protect::run.
+	* ov-mapper.cc (octave_mapper::do_multi_index_op): Likewise.
+
 	* data.cc (fill_matrix, identity_matrix):
 	Also allow logical data type.
 

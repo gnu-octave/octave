@@ -108,6 +108,8 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
     ::error ("invalid use of colon in function argument list");
   else
     {
+      unwind_protect::begin_frame ("builtin_func_eval");
+
       unwind_protect_ptr (curr_function);
       unwind_protect_ptr (curr_caller_function);
 
@@ -116,7 +118,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 
       retval = (*f) (args, nargout);
 
-      unwind_protect::run ();
+      unwind_protect::run_frame ("builtin_func_eval");
     }
 
   return retval;

@@ -337,7 +337,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   int nargin = args.length ();
 
-  unwind_protect::begin_frame ("func_eval");
+  unwind_protect::begin_frame ("user_func_eval");
 
   unwind_protect_int (call_depth);
   call_depth++;
@@ -345,7 +345,7 @@ octave_user_function::do_multi_index_op (int nargout,
   if (call_depth > Vmax_recursion_depth)
     {
       ::error ("max_recursion_limit exceeded");
-      unwind_protect::run_frame ("func_eval");
+      unwind_protect::run_frame ("user_func_eval");
       return retval;
     }
 
@@ -493,7 +493,7 @@ octave_user_function::do_multi_index_op (int nargout,
   }
 
  abort:
-  unwind_protect::run_frame ("func_eval");
+  unwind_protect::run_frame ("user_func_eval");
 
   return retval;
 }

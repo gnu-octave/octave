@@ -627,10 +627,10 @@ terminal_prep_terminal ()
   tcgetattr (tty, &original_termios);
   tcgetattr (tty, &ttybuff);
   ttybuff.c_iflag &= (~ISTRIP & ~INLCR & ~IGNCR & ~ICRNL & ~IXON);
-#if defined (NeXT)
-  ttybuff.c_oflag &= (~ONLCR);
-#else
+#if defined (OCRNL)
   ttybuff.c_oflag &= (~ONLCR & ~OCRNL);
+#else
+  ttybuff.c_oflag &= (~ONLCR);
 #endif
   ttybuff.c_lflag &= (~ICANON & ~ECHO);
 
@@ -650,10 +650,10 @@ terminal_prep_terminal ()
   ioctl (tty, TCGETA, &original_termio);
   ioctl (tty, TCGETA, &ttybuff);
   ttybuff.c_iflag &= (~ISTRIP & ~INLCR & ~IGNCR & ~ICRNL & ~IXON);
-#if defined (NeXT)
-  ttybuff.c_oflag &= (~ONLCR);
-#else
+#if defined (OCRNL)
   ttybuff.c_oflag &= (~ONLCR & ~OCRNL);
+#else
+  ttybuff.c_oflag &= (~ONLCR);
 #endif
   ttybuff.c_lflag &= (~ICANON & ~ECHO);
 

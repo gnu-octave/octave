@@ -1,3 +1,8 @@
+2005-03-21  John W. Eaton  <jwe@octave.org>
+
+	* octave-bug.in: Try harder to find default pager (use code
+	similar to that used for finding default editor).
+
 2005-03-17  Shan G. Smith  <shan@cybertrails.com>
 
 	* configure.in: Move check for -lumfpack to after check for blas.

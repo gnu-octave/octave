@@ -16,6 +16,7 @@ include $(TOPDIR)/Makeconf
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
 SCRIPTS = info-emacs-info info-emacs-octave-help

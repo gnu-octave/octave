@@ -119,12 +119,7 @@ goodCHptr (CHNode<C> *t)
   return (((X_CAST (unsigned, t)) & 1) == 0);
 }
 
-template <class C>
-void *
-index_to_CHptr (int i)
-{
-  return X_CAST (void *, (i << 1) + 1);
-}
+#define index_to_CHptr(i) (X_CAST (void *, (i << 1) + 1))
 
 template <class C>
 unsigned int

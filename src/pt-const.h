@@ -364,7 +364,9 @@ public:
 
 // -------------------------------------------------------------------
 
+#if defined (__GNUG__) && __GNUC_MINOR__ > 5
 private:
+#endif
 
 // Can we make these go away?
 

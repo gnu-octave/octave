@@ -25,6 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cfloat>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 
@@ -1669,7 +1670,13 @@ default_return_value");
 static void
 install_builtin_variables_4 (void)
 {
-  DEFCONST (e, exp (1.0), 0, 0,
+#if defined (M_E)
+  double e_val = M_E;
+#else
+  double e_val = exp (1.0);
+#endif
+
+  DEFCONST (e, e_val, 0, 0,
     "exp (1)");
 
   DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
@@ -1728,7 +1735,13 @@ install_builtin_variables_5 (void)
   DEFVAR (output_precision, 5.0, 0, set_output_precision,
     "number of significant figures to display for numeric output");
 
-  DEFCONST (pi, 4.0 * atan (1.0), 0, 0,
+#if defined (M_PI)
+  double pi_val = M_PI;
+#else
+  double pi_val = 4.0 * atan (1.0);
+#endif
+
+  DEFCONST (pi, pi_val, 0, 0,
     "ratio of the circumference of a circle to its diameter");
 
   DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,

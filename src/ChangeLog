@@ -1,5 +1,15 @@
 2002-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* main.c: New file.
+	* octave.h: New file.
+	* octave.cc (octave_main): Rename from main.
+	Include octave.h.
+	* Makefile.in (OBJECTS): Add octave.o, builtins.o, and ops.o to
+	the list.
+	(octave): Depend on and link main.o, not octave.o, builtins.o, and
+	ops.o (they are now in liboctinterp).
+	(DEP_5): Add main.c here.
+
 	* oct-conf.h.in: No need to substitute OCTAVE_CONF_OCTAVE_LITE.
 	* toplev.cc (octave_config_info): Likewise, don't include it in
 	struct.

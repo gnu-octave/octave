@@ -57,6 +57,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-io.h"
 #include "input.h"
 #include "lex.h"
+#include "octave.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "ops.h"
@@ -362,7 +363,7 @@ maximum_braindamage (void)
 // You guessed it.
 
 int
-main (int argc, char **argv)
+octave_main (int argc, char **argv)
 {
   octave_env::set_program_name (argv[0]);
 

@@ -148,7 +148,7 @@ OBJECTS_4 := $(notdir $(SOURCES))
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
 OBJECTS_2 := $(patsubst %.y, %.o, $(OBJECTS_3))
 OBJECTS_1 := $(patsubst %.c, %.o, $(OBJECTS_2))
-OBJECTS := $(patsubst %.cc, %.o, $(OBJECTS_1))
+OBJECTS := $(patsubst %.cc, %.o, $(OBJECTS_1)) octave.o builtins.o ops.o
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CXXPICFLAG
@@ -160,7 +160,7 @@ endif
 
 # Ugh.
 
-DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc ops.cc octave.cc
+DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc ops.cc octave.cc main.c
 DEP_4 := $(notdir $(DEP_5))
 DEP_3 := $(patsubst %.l, %.cc, $(DEP_4))
 DEP_2 := $(patsubst %.y, %.cc, $(DEP_3))
@@ -274,10 +274,10 @@ stamp-prereq: defaults.h oct-conf.h $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) stamp-oct-links \
-	octave.o builtins.o ops.o $(DLD_STATIC_OBJ)
+	main.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o $@ \
-	octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
+	main.o $(XERBLA) $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)

@@ -630,7 +630,12 @@ do_system (const string& cmd_str, bool return_output)
 	      
       char ch;
       while (cmd->get (ch))
-	output_buf.put (ch);
+	{
+	  if (return_output || user_pref.page_screen_output)
+	    output_buf.put (ch);
+	  else
+	    cout.put (ch);
+	}
 
       output_buf << ends;
 

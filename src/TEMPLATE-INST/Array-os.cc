@@ -31,11 +31,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-stream.h"
 
-template class Array<scanf_format_elt*>;
+INSTANTIATE_ARRAY (scanf_format_elt *);
 
-template class Array<printf_format_elt*>;
+INSTANTIATE_ARRAY (printf_format_elt *);
 
-template class Array<octave_stream>;
+INSTANTIATE_ARRAY (octave_stream);
 
 /*
 ;;; Local Variables: ***

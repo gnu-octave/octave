@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-template class Array<idx_vector>;
+INSTANTIATE_ARRAY (idx_vector);
 
 /*
 ;;; Local Variables: ***

@@ -29,13 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-template class Array<short>;
+INSTANTIATE_ARRAY_AND_ASSIGN (int);
 
-template int assign (Array<short>&, const Array<short>&);
-template int assign (Array<short>&, const Array<char>&);
-
-template int assign (Array<short>&, const Array<short>&, const short&);
-template int assign (Array<short>&, const Array<char>&, const short&);
+INSTANTIATE_ARRAY_ASSIGN (short, char);
 
 #include "Array2.h"
 

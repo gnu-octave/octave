@@ -543,6 +543,21 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   return assign (lhs, rhs, resize_fill_value (LT ()));
 }
 
+#define INSTANTIATE_ARRAY_ASSIGN(LT, RT) \
+  template int assign (Array<LT>&, const Array<RT>&, const LT&); \
+  template int assign1 (Array<LT>&, const Array<RT>&, const LT&); \
+  template int assign2 (Array<LT>&, const Array<RT>&, const LT&); \
+  template int assignN (Array<LT>&, const Array<RT>&, const LT&); \
+  template int assign (Array<LT>&, const Array<RT>&)
+
+#define INSTANTIATE_ARRAY(T) \
+  template class Array<T>; \
+  template T resize_fill_value (const T&)
+
+#define INSTANTIATE_ARRAY_AND_ASSIGN(T) \
+  INSTANTIATE_ARRAY (T); \
+  INSTANTIATE_ARRAY_ASSIGN (T, T)
+
 #endif
 
 /*

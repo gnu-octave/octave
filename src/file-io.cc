@@ -170,9 +170,8 @@ Return true if @var{x} is a stream object.  Otherwise, return false.\n\
 DEFUN (fclose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fclose (@var{fid})\n\
-Closes the specified file.  If an error is encountered while trying to\n\
-close the file, an error message is printed and @code{fclose} returns\n\
-0.  Otherwise, it returns 1.\n\
+Closes the specified file.  If successful, @code{fclose} returns 0,\n\
+otherwise, it returns -1.\n\
 @end deftypefn")
 {
   octave_value retval = -1;

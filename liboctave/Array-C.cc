@@ -31,19 +31,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-template class Array<Complex>;
+INSTANTIATE_ARRAY_AND_ASSIGN (Complex);
 
-template int assign (Array<Complex>&, const Array<Complex>&);
-template int assign (Array<Complex>&, const Array<double>&);
-template int assign (Array<Complex>&, const Array<int>&);
-template int assign (Array<Complex>&, const Array<short>&);
-template int assign (Array<Complex>&, const Array<char>&);
-
-template int assign (Array<Complex>&, const Array<Complex>&, const Complex&);
-template int assign (Array<Complex>&, const Array<double>&, const Complex&);
-template int assign (Array<Complex>&, const Array<int>&, const Complex&);
-template int assign (Array<Complex>&, const Array<short>&, const Complex&);
-template int assign (Array<Complex>&, const Array<char>&, const Complex&);
+INSTANTIATE_ARRAY_ASSIGN (Complex, double);
+INSTANTIATE_ARRAY_ASSIGN (Complex, int);
+INSTANTIATE_ARRAY_ASSIGN (Complex, short);
+INSTANTIATE_ARRAY_ASSIGN (Complex, char);
 
 #include "Array2.h"
 

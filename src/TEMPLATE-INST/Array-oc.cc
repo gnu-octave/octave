@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "sighandlers.h"
 
-template class Array<octave_child>;
+INSTANTIATE_ARRAY (octave_child);
 
 /*
 ;;; Local Variables: ***

@@ -62,7 +62,7 @@ extern "C"
 			       odessa_jac_ptr, int&);
 }
 
-template class Array<Matrix>;
+INSTANTIATE_ARRAY (Matrix);
 
 static ODESFunc::ODES_fsub user_fsub;
 static ODESFunc::ODES_bsub user_bsub;

@@ -1,5 +1,10 @@
 2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.h (INSTANTIATE_ARRAY_ASSIGN, INSTANTIATE_ARRAY_AND_ASSIGN,
+	INSTANTIATE_ARRAY): New macros.
+	* Array-C.cc, Array-b.cc, Array-ch.cc, Array-d.cc, Array-i.cc,
+	Array-idx-vec.cc, Array-s.cc, Array-str.cc, ODESSA.cc: Use them.
+
 	* Array.h (Array<T>::ipermute): New function.
 
 2003-11-11  Petter Risholm  <risholm@stud.ntnu.no>

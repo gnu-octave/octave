@@ -46,21 +46,21 @@ octave_value_typeinfo::instance (0);
 
 #include <Array.cc>
 
-template class Array<unary_op_fcn>;
+INSTANTIATE_ARRAY (unary_op_fcn);
 template class Array2<unary_op_fcn>;
 
-template class Array<non_const_unary_op_fcn>;
+INSTANTIATE_ARRAY (non_const_unary_op_fcn);
 template class Array2<non_const_unary_op_fcn>;
 
-template class Array<binary_op_fcn>;
+INSTANTIATE_ARRAY (binary_op_fcn);
 template class Array2<binary_op_fcn>;
 template class Array3<binary_op_fcn>;
 
-template class Array<assign_op_fcn>;
+INSTANTIATE_ARRAY (assign_op_fcn);
 template class Array2<assign_op_fcn>;
 template class Array3<assign_op_fcn>;
 
-template class Array<type_conv_fcn>;
+INSTANTIATE_ARRAY (type_conv_fcn);
 template class Array2<type_conv_fcn>;
 
 bool

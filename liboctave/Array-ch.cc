@@ -29,11 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-template class Array<char>;
-
-template int assign (Array<char>&, const Array<char>&);
-
-template int assign (Array<char>&, const Array<char>&, const char&);
+INSTANTIATE_ARRAY_AND_ASSIGN (char);
 
 #include "Array2.h"
 

@@ -1,5 +1,9 @@
 2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* TEMPLATE-INST/Array-tc.cc, TEMPLATE-INST/Array-c.cc,
+	TEMPLATE-INST/Array-os.cc, TEMPLATE-INST/Array-sym.cc,
+	ov-typeinfo.cc: Use new INSTANTIATE_ARRAY macro.
+
 	* data.cc (do_permute): New function.
 	(Fpermute, Fipermute): Use it.
 

@@ -47,14 +47,7 @@ resize_fill_value<octave_value> (const octave_value& x)
   return retval;
 }
 
-template class Array<octave_value>;
-
-
-template int assign (Array<octave_value>&, const Array<octave_value>&);
-
-template int assign (Array<octave_value>&,
-		     const Array<octave_value>&, const octave_value&);
-
+INSTANTIATE_ARRAY (octave_value);
 
 template class Array2<octave_value>;
 

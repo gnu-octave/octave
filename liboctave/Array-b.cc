@@ -29,11 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-template class Array<bool>;
-
-template int assign (Array<bool>&, const Array<bool>&);
-
-template int assign (Array<bool>&, const Array<bool>&, const bool&);
+INSTANTIATE_ARRAY_AND_ASSIGN (bool);
 
 #include "Array2.h"
 

@@ -1,5 +1,8 @@
 1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (oct-gperf.h): Ask for ANSI-C output from gperf
+	(requires gperf-2.7 or later).
+
 	* sighandlers.cc (sigwinch_handler): New function.
 	(install_signal_handlers): Install it.
 

@@ -1154,7 +1154,7 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, double* valptr)
     case 'f':
     case 'g':
       {
-	int c1;
+	int c1 = EOF;
 
 	while (is && (c1 = is.get ()) != EOF && isspace (c1))
 	  /* skip whitespace */;

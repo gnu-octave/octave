@@ -1,3 +1,7 @@
+2005-02-09  John W. Eaton  <jwe@octave.org>
+
+	* kpse.cc (kpse_tilde_expand): Simply return NAME if it is empty.
+
 2005-02-08  John W. Eaton  <jwe@octave.org>
 
 	* Array-util.cc (freeze): Improve error message.

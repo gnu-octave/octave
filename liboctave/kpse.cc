@@ -1150,10 +1150,8 @@ kpse_tilde_expand (const std::string& name)
 {
   std::string expansion;
 
-  assert (! name.empty ());
-
   /* If no leading tilde, do nothing.  */
-  if (name[0] != '~')
+  if (name.empty () || name[0] != '~')
     {
       expansion = name;
 

@@ -48,7 +48,7 @@ BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 # Subdirectories in which to run `make dist'.
 BINDISTSUBDIRS = emacs scripts doc
 
-DIRS_TO_MAKE = $(bindir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
+DIRS_TO_MAKE = $(bindir) $(libdir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
 

@@ -2532,7 +2532,7 @@ void
 tree_function::stash_fcn_file_name (void)
 {
   delete [] file_name;
-  file_name = fcn_name ? fcn_file_in_path (fcn_name) : 0
+  file_name = fcn_name ? fcn_file_in_path (fcn_name) : 0;
 }
 
 void

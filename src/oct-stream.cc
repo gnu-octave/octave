@@ -422,7 +422,7 @@ scanf_format_list::all_character_conversions (void)
 
 	  switch (elt->type)
 	    {
-	    case 'c': case 's': case 'p': case '%': case '[':
+	    case 'c': case 's': case '%': case '[':
 	      break;
 
 	    default:

@@ -1,3 +1,7 @@
+2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/deal.m: New function.
+
 2004-03-03  Stefan van der Walt  <stefan@sun.ac.za>
 
 	* plot/hist.m: Compute histogram correctly for n>=30.

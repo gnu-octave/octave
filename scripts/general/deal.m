@@ -1,0 +1,80 @@
+## Copyright (C) 1998 Ariel Tankus
+## 
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
+
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a})
+## @deftypefnx {Mapping Function} {[@var{r1}, @var{r2}, @dots{}, @var{rn}] =} deal (@var{a1}, @var{a2}, @dots{}, @var{an})
+##
+## Copy the input parameters into the corresponding output parameters.
+## If only one input parameter is supplied, its value is copied to each
+## of the outputs.
+##
+## For example,
+##
+## @example
+## [a, b, c] = deal (x, y, z);
+## @end example
+##
+## @noindent
+## is equivalent to
+##
+## @example
+## @group
+## a = x;
+## b = y;
+## c = z;
+## @end group
+## @end example
+##
+## @noindent
+## and
+##
+## @example
+## [a, b, c] = deal (x);
+## @end example
+##
+## @noindent
+## is equivalent to
+##
+## @example
+## a = b = c = x;
+## @end example
+## @end deftypefn
+
+## Author: Ariel Tankus
+## Author: Paul Kienzle and Etienne Grossman
+## Created: 13.11.98
+## Adapted-by: jwe
+
+function [varargout] = deal (varargin)
+
+  if (nargin == 0)
+    usage ("[a, b, c, d] = deal (x, y, z, a)");
+  elseif (nargin == 1)
+    v = varargin{1};
+    for i = 1:nargout
+      varargout{i} = v;
+    endfor
+  elseif (nargin == nargout)
+    varargout = varargin;
+  else
+    error ("deal: nargin > 1 and nargin != nargout");
+  endif
+
+endfunction

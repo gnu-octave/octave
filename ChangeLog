@@ -1,3 +1,8 @@
+2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION):
+	Add second test for OS X.
+
 2002-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): New macro.

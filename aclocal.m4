@@ -381,9 +381,21 @@ public:
   B (void) : A<int> () { }
 };
 EOB
-    AC_TRY_LINK([#include "conftest.h"], [
-      ], 
-      octave_cv_cxx_pragma_interface_implementation=yes,
+    AC_TRY_LINK([#include "conftest.h"], [], [
+      rm -f conftest.h
+      cat > conftest.h <<EOB
+#pragma interface
+class A
+{
+public:
+  virtual ~A (void) {}
+};
+EOB
+      AC_TRY_COMPILE([#pragma implementation
+#include "confdefs.h"], [],
+	octave_cv_cxx_pragma_interface_implementation=yes,
+      	octave_cv_cxx_pragma_interface_implementation=no
+	)],
       octave_cv_cxx_pragma_interface_implementation=no
     )
     AC_LANG_POP(C++)

@@ -858,6 +858,7 @@ An abbrev before point is expanded if `abbrev-mode' is non-nil."
   (if (and (not (octave-is-in-string-p (point))) octave-auto-newline)
       (progn
 	(insert ";")
+	(octave-indent-line)
 	(octave-indent-new-line))
     (insert ";")))
 

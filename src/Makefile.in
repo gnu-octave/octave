@@ -37,7 +37,7 @@ XALL_CXXFLAGS = $(subst -fexternal-templates, , $(ALL_CXXFLAGS))
 	@echo making $@ from $<
 	@$(CXXCPP) -c $(CPPFLAGS) $(XALL_CXXFLAGS) -DMAKE_BUILTINS $< \
 	  | $(srcdir)/mkdefs > $@.tmp
-	@if test "`wc $@.tmp | awk '{print $3}'`" -ne 0 ; then \
+	@if test `wc $@.tmp | sed 's%[^0-9]*\([0-9]*\).*%\1%'` -ne 0 ; then \
 	  mv $@.tmp $@ ; \
 	else \
 	  echo "error: $@ is empty!" 1>&2 ; \
@@ -157,7 +157,7 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f *.a *.o *.def builtins.cc
+	rm -f *.a *.o builtins.cc
 .PHONY: clean
 
 mostlyclean:
@@ -165,24 +165,24 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave .fname *.d
+	rm -f Makefile octave .fname *.d *.def
 .PHONY: distclean
 
 realclean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c \
-	lex.cc parse.cc defaults.h *.d
+	lex.cc parse.cc defaults.h *.d *.def
 .PHONY: realclean
 
 local-dist: parse.cc lex.cc
 	ln $(DISTFILES) ../`cat ../.fname`/src
-	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c \
-	lex.cc parse.cc defaults.h
+	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
+	rm -f lex.cc parse.cc defaults.h *.d *.def
 .PHONY: local-dist
 
 dist: parse.cc lex.cc
 	ln $(DISTFILES) ../`cat ../.fname`/src
-	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c \
-	lex.cc parse.cc defaults.h
+	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
+	rm -f lex.cc parse.cc defaults.h *.d *.def
 .PHONY: dist
 
 # Special rules -- these files need special things to be defined.

@@ -151,10 +151,6 @@ common_size (const dim_vector& a, const dim_vector& b)
 	retval(i) = a(i);
     }
 
-  std::cerr << a.str () << std::endl;
-  std::cerr << b.str () << std::endl;
-  std::cerr << retval.str () << std::endl;
-
   return retval;
 }
 
@@ -201,7 +197,7 @@ Octave_map::assign (const std::string& key, const Cell& rhs)
     map[key] = rhs;
   else
     {
-      if (dimensions () == rhs.dims ())
+      if (dims () == rhs.dims ())
 	map[key] = rhs;
       else
 	error ("invalid structure assignment");

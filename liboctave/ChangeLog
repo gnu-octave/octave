@@ -1,3 +1,8 @@
+2004-10-18  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign2): Save result of squeeze operation.
+	Squeeze if ndims is > 2, not if length of RHS vector is > 2.
+
 2004-10-11  David Bateman <dbateman@free.fr>
 
 	* oct-fftw.cc (class octave_fftw_planner): Add inplace[2] to

@@ -112,6 +112,10 @@ Array<T>::squeeze (void) const
 	    }
 	}
 
+      // XXX FIXME XXX -- it would be better if we did not have to do
+      // this, so we could share the data while still having different
+      // dimension vectors.
+
       retval.make_unique ();
 
       retval.dimensions = new_dimensions;
@@ -2540,16 +2544,22 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   int lhs_nr = lhs.rows ();
   int lhs_nc = lhs.cols ();
 
-  int rhs_nr = rhs.rows ();
-  int rhs_nc = rhs.cols ();
+  Array<RT> xrhs = rhs;
 
-  if (rhs.length () > 2)
+  int rhs_nr = xrhs.rows ();
+  int rhs_nc = xrhs.cols ();
+
+  if (xrhs.ndims () > 2)
     {
-      dim_vector dv_tmp = rhs.squeeze().dims ();
+      xrhs = xrhs.squeeze ();
+
+      dim_vector dv_tmp = xrhs.dims ();
 
       switch (dv_tmp.length ())
 	{
 	case 1:
+	  // XXX FIXME XXX -- this case should be unnecessary, because
+	  // squeeze should always return an object with 2 dimensions.
 	  if (rhs_nr == 1)
 	    rhs_nc = dv_tmp.elem (0);
 	  break;
@@ -2609,7 +2619,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		    {
 		      MAYBE_RESIZE_LHS;
 
-		      RT scalar = rhs.elem (0, 0);
+		      RT scalar = xrhs.elem (0, 0);
 
 		      for (int j = 0; j < m; j++)
 			{
@@ -2634,7 +2644,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			  for (int i = 0; i < n; i++)
 			    {
 			      int ii = idx_i.elem (i);
-			      lhs.elem (ii, jj) = rhs.elem (i, j);
+			      lhs.elem (ii, jj) = xrhs.elem (i, j);
 			    }
 			}
 		    }
@@ -2704,7 +2714,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			}
 		    }
 
-		  if (assign1 ((Array<LT>&) lhs, (Array<RT>&) rhs, rfv))
+		  if (assign1 (lhs, xrhs, rfv))
 		    {
 		      int len = lhs.length ();
 
@@ -2735,7 +2745,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		lhs.maybe_delete_elements (idx_i);
 	      else
 		{
-		  if (assign1 ((Array<LT>&) lhs, (Array<RT>&) rhs, rfv))
+		  if (assign1 (lhs, xrhs, rfv))
 		    lhs.dimensions = dim_vector (1, lhs.length ());
 		  else
 		    retval = 0;
@@ -2753,7 +2763,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		lhs.maybe_delete_elements (idx_i);
 	      else
 		{
-		  if (assign1 ((Array<LT>&) lhs, (Array<RT>&) rhs, rfv))
+		  if (assign1 (lhs, xrhs, rfv))
 		    lhs.dimensions = dim_vector (lhs.length (), 1);
 		  else
 		    retval = 0;
@@ -2794,7 +2804,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			  int ii = idx_i.elem (k++);
 			  int fr = ii % lhs_nr;
 			  int fc = (ii - fr) / lhs_nr;
-			  lhs.elem (fr, fc) = rhs.elem (i, j);
+			  lhs.elem (fr, fc) = xrhs.elem (i, j);
 			}
 		    }
 		}

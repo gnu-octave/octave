@@ -45,6 +45,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 c_file_ptr_buf::~c_file_ptr_buf (void)
 {
   flush ();
+
+  close ();
 }
 
 // XXX FIXME XXX -- I'm sure there is room for improvement here...
@@ -154,8 +156,15 @@ c_file_ptr_buf::flush (void)
 int
 c_file_ptr_buf::close (void)
 {
+  int retval = -1;
+
   if (f)
-    return fclose (f);
+    {
+      retval = fclose (f);
+      f = 0;
+    }
+
+  return retval;
 }
 
 void

@@ -98,7 +98,7 @@ AC_CHECK_FUNCS(setvbuf getcwd bzero bcopy rindex stricmp strnicmp strerror)
 AC_FUNC_SETVBUF_REVERSED
 
 TERMLIBS=""
-for termlib in termcap terminfo curses termlib ; do
+for termlib in termcap terminfo ncurses curses termlib ; do
   AC_CHECK_LIB(${termlib}, tputs, [TERMLIBS="${TERMLIBS} -l${termlib}"])
   case "${TERMLIBS}" in
     *-l${termlib}*)

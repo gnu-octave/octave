@@ -110,7 +110,7 @@ distclean::
 	rm -f *.a *.o Makefile Makerules so_locations
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
-maintainer-clean:: distclean
+maintainer-clean::
 	rm -f *.a *.o Makefile Makerules so_locations tags TAGS
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 

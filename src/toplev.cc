@@ -743,6 +743,16 @@ specified option.\n\
     {
       m.assign ("dld", octave_value (octave_supports_dynamic_linking));
 
+      oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+      m.assign ("float_format",
+		octave_value (oct_mach_info::float_format_as_string (ff)));
+
+      m.assign ("words_big_endian",
+		octave_value (oct_mach_info::words_big_endian ()));
+
+      m.assign ("words_little_endian",
+		octave_value (oct_mach_info::words_little_endian ()));
+
       int i = 0;
 
       while (true)

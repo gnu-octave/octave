@@ -1,3 +1,8 @@
+2004-01-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (octave_config_info): Add float_format,
+	words_big_endian, and words_little_endian to the struct.
+
 2004-01-14  David Bateman  <dbateman@free.fr>
 	
 	* ov-cell.cc (octave_cell::load_hdf5): Fix for HDF5 version 1.6

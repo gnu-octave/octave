@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.145 $)
+AC_REVISION($Revision: 1.146 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -100,10 +100,8 @@ AC_SUBST(imagepath)
 
 ### Path separator.
 
-SEPCHAR=":"
-AC_MSG_RESULT([defining SEPCHAR to be $SEPCHAR])
-AC_DEFINE(SEPCHAR, [']$SEPCHAR['])
-AC_DEFINE(SEPCHAR_STR, ["]$SEPCHAR["])
+AC_DEFINE(SEPCHAR, [':'])
+AC_DEFINE(SEPCHAR_STR, [":"])
 
 ### Allow the user to force us to use f2c.
 
@@ -168,7 +166,7 @@ AC_SUBST(PLPLOT_DIR)
 
 READLINE_DIR=readline
 USE_READLINE=true
-LIBREADLINE=../readline/libreadline.a
+LIBREADLINE=-lreadline
 AC_ARG_ENABLE(readline,
   [  --enable-readline       use readline library (default is yes)],
   [if test "$enableval" = no; then
@@ -277,116 +275,111 @@ case "$canonical_host_type" in
     LD_STATIC_FLAG=-static
   ;;
 esac
+if test -n "$LD_STATIC_FLAG"; then
+  AC_MSG_RESULT([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
+fi
+AC_SUBST(LD_STATIC_FLAG)
 
 ### Handle dynamic linking and shared library options.
-
-### Allow the user to experiment with dynamic linking using GNU dld.
-
-DLD_DIR=
-LIBDLD=
-LIBOCTDLD='liboctdld.a'
-LD_STATIC_FLAG=
-AC_ARG_ENABLE(dld,
-  [  --enable-dld            use DLD for dynamic linking (not all systems)],
-  [if test $enableval = no; then use_dld=false; else use_dld=true; fi],
-  use_dld=false)
-if $use_dld; then
-  DLD_DIR=dld
-  LIBDLD='../dld/libdld.a'
-  LD_STATIC_FLAG=-static
-  AC_DEFINE(WITH_DLD, 1)
-fi
-AC_SUBST(use_dld)
 
 ### Allow the user to experiment with dynamic linking using dlopen/dlsym.
 
 AC_ARG_ENABLE(dl,
   [  --enable-dl             use dlopen/dlsym for dynamic linking (not all systems)],
-  [if test $enableval = no; then use_dl=false; else use_dl=true; fi],
-  use_dl=false)
-AC_SUBST(use_dl)
+  [if test $enableval = no; then WITH_DL=false; else WITH_DL=true; fi],
+  WITH_DL=false)
+AC_SUBST(WITH_DL)
 
 ### Allow the user to experiment with dynamic linking using
 ### shl_load/shl_findsym (HP/UX only?).
 
 AC_ARG_ENABLE(shl,
   [  --enable-shl            use shl_load/shl_findsym for dynamic linking (HP only?)],
-  [if test $enableval = no; then use_shl=false; else use_shl=true; fi],
-  use_shl=false)
-AC_SUBST(use_shl)
+  [if test $enableval = no; then WITH_SHL=false; else WITH_SHL=true; fi],
+  WITH_SHL=false)
+AC_SUBST(WITH_SHL)
+
+if $WITH_DL || $WITH_SHL; then
+  AC_DEFINE(WITH_DYNAMIC_LINKING, 1)
+  WITH_DYNAMIC_LINKING=true
+else
+  WITH_DYNAMIC_LINKING=false
+fi
+AC_SUBST(WITH_DYNAMIC_LINKING)
 
 ### Enable creation of shared libraries.  Currently only works with
 ### gcc on some systems.
 
 AC_ARG_ENABLE(shared,
   [  --shared                create shared libraries (not all systems)],
-  [if test $enableval = no; then shared_libs=false; else shared_libs=true; fi],
-  shared_libs=false)
-AC_SUBST(shared_libs)
+  [if test $enableval = no; then SHARED_LIBS=false; else SHARED_LIBS=true; fi],
+  SHARED_LIBS=false)
+AC_SUBST(SHARED_LIBS)
 
-if $shared_libs; then
+if $SHARED_LIBS; then
   CPICFLAG=-fPIC
   CXXPICFLAG=-fPIC
   FPICFLAG=-fPIC
-  case "$cannonical_host_type" in
-    alpha-dec-osf* | rs6000-ibm-aix*)
+  SHLEXT=so
+  RLD_FLAG='-rpath $(libdir)'
+  case "$canonical_host_type" in
+    alpha-dec-osf*)
+      CPICFLAG=
+      CXXPICFLAG=
+      FPICFLAG=
+    ;;
+    rs6000-ibm-aix*)
       CPICFLAG=
       CXXPICFLAG=
       FPICFLAG=
     ;;
     hppa*-hp-hpux*)
       FPICFLAG=+Z
+      SHLEXT=sl
+      RLD_FLAG='-Xlinker +b -Xlinker $(libdir)'
     ;;
     *-sgi-*)
       FPICFLAG=-KPIC
     ;;
-    sparc-sun-sunos*)
+    sparc-sun-sunos4*)
       FPICFLAG=-PIC
+      RLD_FLAG='-L $(libdir)'
+    ;;
+    sparc-sun-sunos5*)
+      FPICFLAG=-PIC
+      RLD_FLAG='-Xlinker -R -Xlinker $(libdir)'
     ;;
   esac
 else
   FPICFLAG=
   CPICFLAG=
   CXXPICFLAG=
+  SHLEXT=
+  RLD_FLAG=
 fi
 AC_MSG_RESULT([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_RESULT([defining CPICFLAG to be $CPICFLAG])
 AC_MSG_RESULT([defining CXXPICFLAG to be $CXXPICFLAG])
+AC_MSG_RESULT([defining SHLEXT to be $SHLEXT])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
+AC_SUBST(SHLEXT)
+AC_SUBST(RLD_FLAG)
 
 ### Allow compilation of smaller kernel.  This only works if some form
 ### of dynamic linking is also supported and used.
 
 AC_ARG_ENABLE(lite-kernel,
   [  --enable-lite-kernel    compile smaller kernel (requires dynamic linking)],
-  [if test $enableval = no; then lite_kernel=false; else lite_kernel=true; fi],
-  lite_kernel=false)
-if $lite_kernel; then
-  LIBOCTDLD=
+  [if test $enableval = no; then OCTAVE_LITE=false; else OCTAVE_LITE=true; fi],
+  OCTAVE_LITE=false)
+if $OCTAVE_LITE; then
   AC_DEFINE(OCTAVE_LITE, 1)
 fi
-AC_SUBST(lite_kernel)
+AC_SUBST(OCTAVE_LITE)
 
-if test -n "$DLD_DIR"; then
-  AC_MSG_RESULT([defining DLD_DIR to be $DLD_DIR])
-fi
-if test -n "$LIBDLD"; then
-  AC_MSG_RESULT([defining LIBDLD to be $LIBDLD])
-fi
-if test -n "$LIBOCTDLD"; then
-  AC_MSG_RESULT([defining LIBOCTDLD to be $LIBOCTDLD])
-fi
-if test -n "$LD_STATIC_FLAG"; then
-  AC_MSG_RESULT([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
-fi
-AC_SUBST(DLD_DIR)
-AC_SUBST(LIBDLD)
-AC_SUBST(LIBOCTDLD)
-AC_SUBST(LD_STATIC_FLAG)
-
-### Special checks for odd OS specific things.
+### special checks for odd OS specific things.
 
 AC_ISC_POSIX
 AC_MINIX
@@ -497,19 +490,20 @@ else
   fi
 fi
 
-fortran_rules_frag=Makerules.f77
+f77_rules_frag=Makerules.f77
 if $have_fortran_compiler; then
-  cat << \EOF > $fortran_rules_frag
+changequote(,)dnl
+  cat << \EOF > $f77_rules_frag
 
 .c.f:
 
 .f.o:
-	if [ -z "$(FPICFLAG)" ] && [ -f pic ]; then \
-	  $(FC) -c $(FPICFLAG) $(ALL_FFLAGS) $< -o pic/$@; \
-	else true; fi
-	$(FC) -c $(ALL_FFLAGS) $<'
+	[ -z "$(FPICFLAG)" ] || \
+	  $(FC) -c $(FPICFLAG) $(ALL_FFLAGS) $< -o pic/$@
+	$(FC) -c $(ALL_FFLAGS) $<
 
 EOF
+changequote([,])dnl
 elif $have_f2c; then
   AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
   AC_MSG_RESULT([defining F77_APPEND_UNDERSCORE to be 1])
@@ -523,12 +517,13 @@ elif $have_f2c; then
   if test -z "$FLIBS"; then
     AC_MSG_WARN([I found f2c but not libf2c.a, or libF77.a and libI77.a])
   fi
-  cat << \EOF > $fortran_rules_frag
+  f77_rules_frag=Makerules.f77
+  cat << \EOF > $f77_rules_frag
 
 .c.f:
 	cat $< | $(F2C) $(F2CFLAGS) > $(@F)
 
-%.o : %.f
+.o.f
 
 EOF
 else
@@ -545,7 +540,7 @@ AC_SUBST(FUGLY)
 AC_SUBST(FLIBS)
 AC_SUBST(F2C)
 AC_SUBST(F2CFLAGS)
-AC_SUBST_FILE(fortran_rules_frag)
+AC_SUBST_FILE(f77_rules_frag)
 
 ### Extract libraries and directories from FLIBS and CXXLIBS.
 ###
@@ -656,12 +651,12 @@ if test "$ac_cv_func_dlopen" = yes \
     && test "$ac_cv_func_dlsym" = yes \
     && test "$ac_cv_func_dlerror" = yes \
     && test "$ac_cv_func_dlclose" = yes; then
-  use_dl=true
-elif $use_dl; then
+  WITH_DL=true
+elif $WITH_DL; then
   AC_MSG_ERROR([--enable-dl specified, but required functions are missing!])
 fi
 
-if $use_dl; then
+if $WITH_DL; then
   AC_DEFINE(WITH_DL, 1)
 fi
 
@@ -670,12 +665,12 @@ AC_CHECK_FUNCS(shl_load shl_findsym)
 
 if test "$ac_cv_func_shl_load" = yes \
     && test "$ac_cv_func_shl_findsym" = yes; then
-  use_shl=true
-elif $use_shl; then
+  WITH_SHL=true
+elif $WITH_SHL; then
   AC_MSG_ERROR([--enable-shl specified, but required functions are missing!])
 fi
 
-if $use_shl; then
+if $WITH_SHL; then
   AC_DEFINE(WITH_SHL, 1)
 fi
 
@@ -957,9 +952,8 @@ Octave is now configured for $canonical_host_type
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT_BINARY
 
-  Build shared libraries:                  $shared_libs
-  Minimal kernel option:                   $lite_kernel
-  Dynamic Linking (dld):                   $use_dld
-  Dynamic Linking (dlopen/dlsym):          $use_dl
-  Dynamic Linking (shl_load/shl_findsym):  $use_shl
+  Build shared libraries:                  $SHARED_LIBS
+  Minimal kernel option:                   $OCTAVE_LITE
+  Dynamic Linking (dlopen/dlsym):          $WITH_DL
+  Dynamic Linking (shl_load/shl_findsym):  $WITH_SHL
 ])

@@ -27,13 +27,15 @@ RUNTEST = @RUNTEST@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
 
-WITH_DL = @use_dl@
-WITH_DLD = @use_dld@
-WITH_SHL = @use_shl@
+WITH_DL = @WITH_DL@
+WITH_SHL = @WITH_SHL@
 
-OCTAVE_LITE = @lite_kernel@
+WITH_DYNAMIC_LINKING = @WITH_DYNAMIC_LINKING@
 
-SHARED_LIBS = @shared_libs@
+OCTAVE_LITE = @OCTAVE_LITE@
+
+SHARED_LIBS = @SHARED_LIBS@
+SHLEXT = @SHLEXT@
 
 # Fortran to C translator and associated flags.
 
@@ -93,6 +95,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LD_STATIC_FLAG = @LD_STATIC_FLAG@
 ALL_LDFLAGS = $(LIBFLAGS) $(GCC_IEEE_FP_FLAG) $(LD_STATIC_FLAG) $(LDFLAGS)
+
+RLD_FLAG = @RLD_FLAG@
 
 FLIBS = @FLIBS@
 FLIB_LIST = @FLIB_LIST@
@@ -200,7 +204,7 @@ target_host_type = @target_host_type@
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
-# Rules for making C source from Fortran source (if necessary).
+# Rules for making object files from Fortran source.
 #
 # If we are using f2c there will be a command for the `%.c : %.f'
 # pattern and no command for the `%.o : %.f' pattern, so that make
@@ -211,16 +215,18 @@ target_host_type = @target_host_type@
 # rule for making object from Fortran source files, so there should be
 # no pattern or command for that.
 
-@fortran_rules_frag@
+@f77_rules_frag@
 
 # How to make .o files:
 
 .c.o:
-	test -z "$(CPICFLAG)" -a -f pic || $(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o pic/$@ \
+	[ -z "$(CPICFLAG)" ] ||\
+	  $(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o pic/$@
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
 
 .cc.o:
-	test -z "$(CXXPICFLAG)" -a -f pic || $(CXX) -c $(CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o pic/$@ \
+	[ -z "$(CXXPICFLAG)" ] ||\
+	  $(CXX) -c $(CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o pic/$@
 	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $<
 
 # Here is a rule for generating dependencies for .cc files:

@@ -1356,50 +1356,22 @@ Matrix::expm (void) const
 
   double *p_m = m.fortran_vec ();
 
-  Array<double> scale(nc);
-  double *pscale = scale.fortran_vec ();
+  int info, ilo, ihi,ilos,ihis, ii, jj;
+  Array<double> dpermute(nc);
+  Array<double> dscale(nc);
+  double *dp;
 
-  int info, ilo, ihi;
+  char job = 'P';       // permutation first
+  dp = dpermute.fortran_vec();
+  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilo, ihi, dp, info, 1L, 1L));
 
-  // both scale and permute
-  char job = 'B';
-
-  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilo, ihi, pscale, info,
-			     1L, 1L));
+  job = 'S';       // then scaling
+  dp = dscale.fortran_vec();
+  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilos, ihis, dp, info, 1L, 1L));
 
   if (f77_exception_encountered)
     {
       (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
-      return retval;
-    }
-
-  // construct balancing matrices D, Dinv
-
-  Matrix dmat = Matrix (nc, nc, 0.0);
-  Matrix dinv = Matrix (nc, nc, 0.0);
-
-  for (int i = 0; i < nc; i++)
-    dmat(i,i) = dinv(i,i) = 1.0;
-
-  // dgebak, dside=R => dmat := D*dmat
-  char dside = 'R';
-  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
-			     dmat.fortran_vec(), nc, info, 1L, 1L));
-
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
-      return retval;
-    }
-
-  // dgebak, dside=L => dinv := dinv*D^{-1}
-  dside = 'L';
-  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
-			     dinv.fortran_vec(), nc, info, 1L, 1L));
-
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
       return retval;
     }
 
@@ -1472,8 +1444,43 @@ Matrix::expm (void) const
     }
   
   // Reverse preconditioning step 2: inverse balancing.
-  retval = dmat*retval*dinv;
-  
+  // apply inverse scaling to computed exponential
+  for(ii = 0; ii < nc ; ii++)
+    for(jj=0; jj < nc ; jj++)
+       retval(ii,jj) *= dscale(ii)/dscale(jj);
+
+  // construct balancing permutation vector
+  Array<int> ipermute(nc);
+  for(ii=0 ; ii < nc ; ii++) ipermute(ii) = ii;  // identity permutation
+
+  // leading permutations in forward order
+  for( ii = 0 ; ii < (ilo-1) ; ii++)
+  {
+    int swapidx = ( (int) dpermute(ii) ) -1;
+    int tmp = ipermute(ii);
+    ipermute(ii) = ipermute( swapidx );
+    ipermute(swapidx) = tmp;
+  }
+
+  // trailing permutations must be done in reverse order
+  for( ii = nc-1 ; ii >= ihi ; ii--)
+  {
+    int swapidx = ( (int) dpermute(ii) ) -1;
+    int tmp = ipermute(ii);
+    ipermute(ii) = ipermute( swapidx );
+    ipermute(swapidx) = tmp;
+  }
+
+  // construct inverse balancing permutation vector
+  Array<int> invpvec(nc);
+  for( ii = 0 ; ii < nc ; ii++)
+    invpvec(ipermute(ii)) = ii ;     // Thanks to R. A. Lippert for this method
+ 
+  Matrix tmpMat = retval;
+  for( ii = 0 ; ii < nc ; ii ++)
+    for( jj= 0 ; jj < nc ; jj++ )
+      retval(ii,jj) = tmpMat(invpvec(ii),invpvec(jj));
+
   // Reverse preconditioning step 1: fix trace normalization.
   
   if (trshift > 0.0)

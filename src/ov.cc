@@ -516,7 +516,7 @@ octave_value::print_with_name (ostream& output_buf, const string& name,
     {
       if (print_as_scalar ())
 	output_buf << name << " = ";
-      else if (print_as_structure ())
+      else if (is_map ())
 	{
 	  pad_after = true;
 	  output_buf << name << " =";

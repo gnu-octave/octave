@@ -509,6 +509,18 @@ Programming:
   * It is likely that there are still some memory leaks.  Hunt then down
     and plug them. 
 
+  * Better error messages for missing operators?
+
+  * Eliminate duplicate enums in pt-exp.cc, pt-const.cc, and ov.cc.
+
+  * Handle octave_print_internal() stuff at the liboctave level.  Then
+    the octave_value classes could just call on the print() methods
+    for the underlying classes.
+
+  * As much as possible, eliminate explicit checks for the types of
+    octave_value objects so that user-defined types will automatically
+    do the right thing in more cases.
+
   * Only include config.h in files that actually need it, instead of
     including it in every .cc file.  Unfortunately, this might not be
     so easy to figure out.

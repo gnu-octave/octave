@@ -102,13 +102,22 @@ pager_death_handler (pid_t pid, int status)
     {
       if (WIFEXITED (status) || WIFSIGNALLED (status))
 	{
-	  octave_pager_pid = -1;
+	  if (external_pager)
+	    clear_external_pager ();
 
 	  // Don't call error() here because we don't want to set
 	  // the error state.
 
-	  warning ("connection to external pager lost --");
-	  warning ("pending computations and output have been discarded");
+	  // XXX FIXME XXX -- something is wrong with the way that
+	  // we are cleaning up the pager in the event of a SIGCHLD.
+	  // If this message is printed with warning(), we eventually
+	  // crash.
+
+	  cout
+	    << "warning: connection to external pager (pid = "
+	    << pid << ") lost --" << endl
+	    << "warning: pending computations and output have been discarded"
+	    << endl;
 	}
     }
 }
@@ -209,11 +218,11 @@ octave_pager_buf::sync (void)
 			       && ! Vpage_output_immediately
 			       && ! more_than_a_screenful (buf)));
 
+      seekoff (0, ios::beg);
+
       do_sync (buf, bypass_pager);
 
       octave_diary << buf;
-
-      seekoff (0, ios::beg);
     }
 
   return 0;

@@ -60,6 +60,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+// We are likely to have a lot of tree_constants to allocate, so make
+// the grow_size large.
+octave_allocator tree_constant::allocator (sizeof (tree_constant), 1024);
+
 Octave_map
 tree_constant::map_value (void) const
 {

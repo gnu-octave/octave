@@ -140,10 +140,6 @@ generic_sig_handler (int sig)
 static RETSIGTYPE
 sigchld_handler (int /* sig */)
 {
-#ifdef MUST_REINSTALL_SIGHANDLERS
-  octave_set_signal_handler (SIGCHLD, sigchld_handler);
-#endif
-
   int n = octave_child_list::length ();
 
   for (int i = 0; i < n; i++)
@@ -163,12 +159,16 @@ sigchld_handler (int /* sig */)
 	      octave_child::dead_child_handler f = elt.handler;
 
 	      if (f)
-		(*f) (pid, status);
+		f (pid, status);
 
 	      break;
 	    }
 	}
     }
+
+#ifdef MUST_REINSTALL_SIGHANDLERS
+  octave_set_signal_handler (SIGCHLD, sigchld_handler);
+#endif
 
   SIGHANDLER_RETURN (0);
 }

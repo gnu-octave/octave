@@ -93,7 +93,7 @@ octave_struct::print (ostream& os, bool)
 
 	  if (val.print_as_scalar ())
 	    os << " ";
-	  else if (val.print_as_structure ())
+	  else if (val.is_map ())
 	    {
 	      if (p)
 		pad_after = true;

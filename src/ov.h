@@ -377,30 +377,14 @@ public:
 
   virtual string type_name (void) const { return rep->type_name (); }
 
-  virtual void convert_to_matrix_type (bool make_complex)
-    { rep->convert_to_matrix_type (make_complex); }
-
-  // Can we make these go away?
-
-  // These need better names, since a range really is a numeric type.
-
-  virtual void force_numeric (bool frc_str_conv = false)
-    { rep->force_numeric (frc_str_conv); }
-
-  octave_value make_numeric (bool) const
-    {
-      warning ("octave_value::make_numeric() is a no-op");
-      return *this;
-    }
-
-  bool print_as_scalar (void);
-
-  bool print_as_structure (void) { return is_map (); }
-
   // Binary and unary operations.
 
   friend octave_value do_binary_op (octave_value& a, octave_value& b,
 				    tree_expression::type t);
+
+  // Can we make these go away?
+
+  bool print_as_scalar (void);
 
 protected:
 

@@ -755,23 +755,23 @@ which they were registered with atexit()")
 {
   octave_value_list retval;
 
-#if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
   int nargin = args.length ();
 
   if (nargin == 1)
     {
+#if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
       string arg = args(0).string_value ();
 
       if (! error_state)
 	octave_atexit_functions.push (arg);
       else
 	error ("atexit: argument must be a string");
+#else
+      gripe_not_supported ("atexit");
+#endif
     }
   else
     print_usage ("atexit");
-#else
-  gripe_not_supported ("atexit");
-#endif
 
   return retval;
 }

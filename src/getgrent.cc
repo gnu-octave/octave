@@ -30,8 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
+#ifdef HAVE_GRP_H
+#include <grp.h>
 #endif
 
 #include "defun-dld.h"
@@ -43,24 +43,47 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-// Password file functions.  (Why not?)
+// Group file functions.  (Why not?)
 
 static octave_value
-mk_pw_map (struct passwd *pw)
+mk_gr_map (struct group *gr)
 {
   octave_value retval;
 
-  if (pw)
+  if (gr)
     {
       Octave_map m;
 
-      m ["name"] = pw->pw_name;
-      m ["passwd"] = pw->pw_passwd;
-      m ["uid"] = STATIC_CAST (double, pw->pw_uid);
-      m ["gid"] = STATIC_CAST (double, pw->pw_gid);
-      m ["gecos"] = pw->pw_gecos;
-      m ["dir"] = pw->pw_dir;
-      m ["shell"] = pw->pw_shell;
+      m ["name"] = gr->gr_name;
+      m ["passwd"] = gr->gr_passwd;
+      m ["gid"] = STATIC_CAST (double, gr->gr_gid);
+
+      if (gr->gr_mem)
+	{
+	  // XXX FIXME XXX -- maybe there should be a string_vector
+	  // constructor that takes a NULL terminated list of C
+	  // strings.
+
+	  char **tmp = gr->gr_mem;
+
+	  int k = 0;
+	  while (*tmp++)
+	    k++;
+
+	  if (k > 0)
+	    {
+	      tmp = gr->gr_mem;
+
+	      string_vector members (k);
+
+	      for (int i = 0; i < k; i++)
+		members[i] = tmp[i];
+
+	      m ["mem"] = members;
+	    }
+	  else
+	    m ["mem"] = "";
+	}
 
       retval = m;
     }
@@ -70,10 +93,10 @@ mk_pw_map (struct passwd *pw)
   return retval;
 }
 
-DEFUN_DLD (getpwent, args, ,
- "getpwent ()\n\
+DEFUN_DLD (getgrent, args, ,
+ "getgrent ()\n\
 \n\
-Read an entry from the password-file stream, opening it if necessary.")
+Read an entry from the group-file stream, opening it if necessary.")
 {
   octave_value retval;
 
@@ -81,22 +104,22 @@ Read an entry from the password-file stream, opening it if necessary.")
 
   if (nargin == 0)
     {
-#ifdef HAVE_GETPWENT
-      retval = mk_pw_map (getpwent ());
+#ifdef HAVE_GETGRENT
+      retval = mk_gr_map (getgrent ());
 #else
-      gripe_not_supported ("getpwent");
+      gripe_not_supported ("getgrent");
 #endif
     }
   else
-    print_usage ("getpwent");
+    print_usage ("getgrent");
 
   return retval;
 }
 
-DEFUN_DLD (getpwuid, args, ,
-  "getpwuid (UID)\n\
+DEFUN_DLD (getgrgid, args, ,
+  "getgrgid (GID)\n\
 \n\
-Search for a password entry with a matching user ID.")
+Search for a group entry with a matching group ID.")
 {
   octave_value retval;
 
@@ -104,34 +127,34 @@ Search for a password entry with a matching user ID.")
 
   if (nargin == 1)
     {
-#ifdef HAVE_GETPWUID
+#ifdef HAVE_GETGRGID
       double dval = args(0).double_value ();
 
       if (! error_state)
 	{
 	  if (D_NINT (dval) == dval)
 	    {
-	      uid_t uid = STATIC_CAST (uid_t, dval);
+	      gid_t gid = STATIC_CAST (gid_t, dval);
 
-	      retval = mk_pw_map (getpwuid (uid));
+	      retval = mk_gr_map (getgrgid (gid));
 	    }
 	  else
-	    error ("getpwuid: argument must be an integer");
+	    error ("getgrgid: argument must be an integer");
 	}
 #else
-      gripe_not_supported ("getpwuid");
+      gripe_not_supported ("getgrgid");
 #endif
     }
   else
-    print_usage ("getpwuid");
+    print_usage ("getgrgid");
 
   return retval;
 }
 
-DEFUN_DLD (getpwnam, args, ,
-  "getpwnam (NAME)\n\
+DEFUN_DLD (getgrnam, args, ,
+  "getgrnam (NAME)\n\
 \n\
-Search for password entry with a matching username.")
+Search for group entry with a matching group name.")
 {
   octave_value retval;
 
@@ -139,25 +162,25 @@ Search for password entry with a matching username.")
 
   if (nargin == 1)
     {
-#ifdef HAVE_GETPWNAM
+#ifdef HAVE_GETGRNAM
       string s = args(0).string_value ();
 
       if (! error_state)
-	retval = mk_pw_map (getpwnam (s.c_str ()));
+	retval = mk_gr_map (getgrnam (s.c_str ()));
 #else
-      gripe_not_supported ("getpwnam");
+      gripe_not_supported ("getgrnam");
 #endif
     }
   else
-    print_usage ("getpwnam");
+    print_usage ("getgrnam");
 
   return retval;
 }
 
-DEFUN_DLD (setpwent, args, ,
-  "setpwent ()\n\
+DEFUN_DLD (setgrent, args, ,
+  "setgrent ()\n\
 \n\
-Rewind the password-file stream.")
+Rewind the group-file stream.")
 {
   octave_value retval;
 
@@ -165,22 +188,22 @@ Rewind the password-file stream.")
 
   if (nargin == 0)
     {
-#ifdef HAVE_SETPWENT
-      setpwent ();
+#ifdef HAVE_SETGRENT
+      setgrent ();
 #else
-      gripe_not_supported ("setpwent");
+      gripe_not_supported ("setgrent");
 #endif
     }
   else
-    print_usage ("setpwent");
+    print_usage ("setgrent");
 
   return retval;
 }
 
-DEFUN_DLD (endpwent, args, ,
-  "endpwent ()\n\
+DEFUN_DLD (endgrent, args, ,
+  "endgrent ()\n\
 \n\
-Close the password-file stream.")
+Close the group-file stream.")
 {
   octave_value retval;
 
@@ -188,14 +211,14 @@ Close the password-file stream.")
 
   if (nargin == 0)
     {
-#ifdef HAVE_ENDPWENT
-      endpwent ();
+#ifdef HAVE_ENDGRENT
+      endgrent ();
 #else
-      gripe_not_supported ("endpwent");
+      gripe_not_supported ("endgrent");
 #endif
     }
   else
-    print_usage ("endpwent");
+    print_usage ("endgrent");
 
   return retval;
 }

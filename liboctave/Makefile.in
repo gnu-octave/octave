@@ -39,8 +39,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
 	Range.h base-de.h base-min.h byte-swap.h cmd-hist.h data-conv.h \
 	dir-ops.h file-ops.h f77-fcn.h getopt.h idx-vector.h lo-error.h \
-	lo-ieee.h lo-mappers.h lo-utils.h mach-info.h oct-cmplx.h \
-	oct-glob.h oct-math.h oct-term.h pathsearch.h \
+	lo-ieee.h lo-mappers.h lo-utils.h mach-info.h oct-alloc.h \
+	oct-cmplx.h oct-glob.h oct-math.h oct-term.h pathsearch.h \
 	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \
 	$(MATRIX_INC)
 
@@ -65,8 +65,9 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	data-conv.cc dir-ops.cc erf.c erfc.c f77-fcn.c file-ops.cc \
 	filemode.c gamma.c getopt.c getopt1.c idx-vector.cc lgamma.c \
 	lo-ieee.cc lo-mappers.cc lo-utils.cc mach-info.cc mkdir.c \
-	oct-glob.cc oct-term.cc pathsearch.cc prog-args.cc rename.c \
-	rmdir.c str-vec.cc sun-utils.cc tempname.c tempnam.c \
+	oct-alloc.cc oct-glob.cc oct-term.cc pathsearch.cc \
+	prog-args.cc rename.c rmdir.c str-vec.cc sun-utils.cc \
+	tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

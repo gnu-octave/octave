@@ -33,6 +33,7 @@ class ostream;
 
 #include "Range.h"
 #include "mx-base.h"
+#include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "pt-fvc.h"
@@ -156,10 +157,11 @@ public:
       return *this;
     }
 
-#if 0
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
+
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
   // Indexed assignment.
 
@@ -347,25 +349,14 @@ public:
 
 private:
 
+  // For custom memory management.
+  static octave_allocator allocator;
+
+  // The actual value that this constant refers to.
   octave_value val;
 
+  // The original text form of this constant.
   string orig_text;
-
-  void convert_to_matrix_type (bool make_complex)
-    { val.convert_to_matrix_type (make_complex); }
-
-  // Can we make these go away?
-
-  // These need better names, since a range really is a numeric type.
-
-  void force_numeric (bool frc_str_conv = false)
-    { val.force_numeric (frc_str_conv); }
-
-  octave_value make_numeric (bool frc_str_conv = false) const;
-
-  bool print_as_scalar (void) { return val.print_as_scalar (); }
-
-  bool print_as_structure (void) { return val.print_as_structure (); }
 };
 
 #endif

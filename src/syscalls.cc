@@ -90,11 +90,11 @@ DEFUN (dup2, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_DUP2)
   int nargin = args.length ();
 
   if (nargin == 2)
     {
+#if defined (HAVE_DUP2)
       double d_old = args(0).double_value ();
       double d_new = args(1).double_value ();
 
@@ -114,12 +114,12 @@ DEFUN (dup2, args, ,
 	  else
 	    error ("dup2: arguments must be integer values");
 	}
+#else
+      gripe_not_supported ("dup2");
+#endif
     }
   else
     print_usage ("dup2");
-#else
-  gripe_not_supported ("dup2");
-#endif
 
   return retval;
 }
@@ -129,11 +129,11 @@ DEFUN (exec, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_EXECVP)
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
     {
+#if defined (HAVE_EXECVP)
       string exec_file = args(0).string_value ();
 
       if (! error_state)
@@ -182,12 +182,12 @@ DEFUN (exec, args, ,
 	}
       else
 	error ("exec: first argument must be a string");
+#else
+      gripe_not_supported ("exec");
+#endif
     }
   else
     print_usage ("exec");
-#else
-  gripe_not_supported ("exec");
-#endif
 
   return retval;
 }
@@ -197,11 +197,11 @@ DEFUN (fcntl, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_FCNTL)
   int nargin = args.length ();
 
   if (nargin == 3)
     {
+#if defined (HAVE_FCNTL)
       double d_fid = args(0).double_value ();
       double d_req = args(1).double_value ();
       double d_arg = args(2).double_value ();
@@ -223,12 +223,12 @@ DEFUN (fcntl, args, ,
 	}
       else
 	error ("fcntl: file id must be an integer");
+#else
+      gripe_not_supported ("fcntl");
+#endif
     }
   else
     print_usage ("fcntl");
-#else
-  gripe_not_supported ("fcntl");
-#endif
 
   return retval;
 }
@@ -238,16 +238,18 @@ DEFUN (fork, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_FORK)
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = fork ();
+    {
+#if defined (HAVE_FORK)
+      retval = fork ();
+#else
+      gripe_not_supported ("fork");
+#endif
+    }
   else
     print_usage ("fork");
-#else
-  gripe_not_supported ("fork");
-#endif
 
   return retval;
 }
@@ -257,16 +259,18 @@ DEFUN (getpgrp, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_GETPGRP)
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = getpgrp ();
+    {
+#if defined (HAVE_GETPGRP)
+      retval = getpgrp ();
+#else
+      gripe_not_supported ("getpgrp");
+#endif
+    }
   else
     print_usage ("getpgrp");
-#else
-  gripe_not_supported ("getpgrp");
-#endif
 
   return retval;
 }
@@ -276,16 +280,18 @@ DEFUN (getpid, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_GETPID)
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = getpid ();
+    {
+#if defined (HAVE_GETPID)
+      retval = getpid ();
+#else
+      gripe_not_supported ("getpid");
+#endif
+    }
   else
     print_usage ("getpid");
-#else
-  gripe_not_supported ("getpid");
-#endif
 
   return retval;
 }
@@ -295,16 +301,60 @@ DEFUN (getppid, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_GETPPID)
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = getppid ();
+    {
+#if defined (HAVE_GETPPID)
+      retval = getppid ();
+#else
+      gripe_not_supported ("getppid");
+#endif
+    }
   else
     print_usage ("getppid");
+
+  return retval;
+}
+
+DEFUN (getegid, args, ,
+  "gid = getegid (): return the effective group id of the current process")
+{
+  double retval = -1.0;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+#if defined (HAVE_GETEGID)
+      retval = getegid ();
 #else
-  gripe_not_supported ("getppid");
+      gripe_not_supported ("getegid");
 #endif
+    }
+  else
+    print_usage ("getegid");
+
+  return retval;
+}
+
+DEFUN (getgid, args, ,
+  "gid = getgid (): return the real group id of the current process")
+{
+  double retval = -1.0;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+#if defined (HAVE_GETGID)
+      retval = getgid ();
+#else
+      gripe_not_supported ("getgid");
+#endif
+    }
+  else
+    print_usage ("getgid");
 
   return retval;
 }
@@ -314,16 +364,18 @@ DEFUN (geteuid, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_GETEUID)
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = geteuid ();
+    {
+#if defined (HAVE_GETEUID)
+      retval = geteuid ();
+#else
+      gripe_not_supported ("geteuid");
+#endif
+    }
   else
     print_usage ("geteuid");
-#else
-  gripe_not_supported ("geteuid");
-#endif
 
   return retval;
 }
@@ -333,16 +385,18 @@ DEFUN (getuid, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_GETUID)
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = getuid ();
+    {
+#if defined (HAVE_GETUID)
+      retval = getuid ();
+#else
+      gripe_not_supported ("getuid");
+#endif
+    }
   else
     print_usage ("getuid");
-#else
-  gripe_not_supported ("getuid");
-#endif
 
   return retval;
 }
@@ -428,11 +482,11 @@ DEFUN (pipe, args, ,
 {
   octave_value_list retval (2, octave_value (-1.0));
 
-#if defined (HAVE_PIPE)
   int nargin = args.length ();
 
   if (nargin == 0)
     {
+#if defined (HAVE_PIPE)
       int fid[2];
 
       if (pipe (fid) >= 0)
@@ -454,12 +508,12 @@ DEFUN (pipe, args, ,
           retval(0) = file_ids;
 	  retval(1) = 0.0;
 	}	  
+#else
+      gripe_not_supported ("pipe");
+#endif
     }
   else
     print_usage ("pipe");
-#else
-  gripe_not_supported ("pipe");
-#endif
 
   return retval;
 }
@@ -580,11 +634,11 @@ DEFUN (waitpid, args, ,
 {
   double retval = -1.0;
 
-#if defined (HAVE_WAITPID)
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
     {
+#if defined (HAVE_WAITPID)
       double pid_num = args(0).double_value ();
   
       if (! error_state)
@@ -618,12 +672,12 @@ DEFUN (waitpid, args, ,
 		retval = waitpid (pid, 0, options);
 	    }
 	}
+#else
+      gripe_not_supported ("waitpid");
+#endif
     }
   else
     print_usage ("waitpid");
-#else
-  gripe_not_supported ("waitpid");
-#endif
 
   return retval;
 }

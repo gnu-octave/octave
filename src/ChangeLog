@@ -1,5 +1,27 @@
 Wed Nov  6 12:32:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-const.h (tree_constant::allocator) New static member.
+	(tree_constant::operator new, tree_constant::operator delete):
+	Implement with custom allocator.
+
+	* syscalls.cc (Fgetgid, Fgetegid): New functions.
+
+	* sighandlers.cc (sigchld_handler): If necessary, reinstall
+	handler after call to waitpid().
+
+	* pager.cc (pager_death_handler): Don't use warning() to print
+	message.
+
+	* getgrent.cc: New file.
+	* Makefile.in (DLD_SRC): Add it.
+
+	* ov.cc (octave_value::print_with_name): Call is_map() instead of
+	print_as_structure().
+	* ov-struct.cc (octave_struct::print): Likewise.
+
+	* ov.h, ov.cc, pt-const.h: Delete force_numeric(), make_numeric(),
+	convert_to_matrix_type(), print_as_structure() member functions.
+
 	* variables.cc (is_function_file): Call gobble_leading_whitespace
 	here to strip all leading whitespace and comments.
 	(parse_fcn_file): If reading a function file, call

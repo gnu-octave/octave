@@ -16,6 +16,7 @@ and even start other programs from the Octave prompt.
 * Filesystem Utilities::        
 * Interacting with the OS::     
 * Password Database Functions::  
+* Group Database Functions::    
 * System Information::          
 * Other Functions::             
 @end menu
@@ -402,6 +403,22 @@ Return the process id of the current process.
 Return the process id of the parent process.
 @end deftypefn
 
+@deftypefn {Built-in Function} {} geteuid ()
+Return the effective user id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getuid ()
+Return the real user id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getegid ()
+Return the effective group id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getgid ()
+Return the real group id of the current process.
+@end deftypefn
+
 @deftypefn {Built-in Function} {} mkfifo       
 Create a FIFO special file.
 @end deftypefn
@@ -531,7 +548,7 @@ system's directory listing command, so the available options may vary
 from system to system.
 @end deffn
 
-@node Password Database Functions, System Information, Interacting with the OS, System Utilities
+@node Password Database Functions, Group Database Functions, Interacting with the OS, System Utilities
 @section Password Database Functions
 
 Octave's password database functions return information in a structure
@@ -585,7 +602,52 @@ Return the internal pointer to the beginning of the password database.
 Close the password database.
 @end deftypefn
 
-@node System Information, Other Functions, Password Database Functions, System Utilities
+@node Group Database Functions, System Information, Password Database Functions, System Utilities
+@section Group Database Functions
+
+Octave's group database functions return information in a structure
+with the following fields.
+
+@table @code
+@item name
+The user name.
+
+@item passwd
+The encrypted password, if available.
+
+@item gid
+The numeric group id.
+
+@item mem
+The members of the group.
+@end table
+
+@deftypefn {Loadable Function} {group_struct =} getgrent ()
+Return an entry from the group database, opening it if necessary.
+Once the end of the data has been reached, @code{getgrent} returns 0.
+@end deftypefn
+
+@deftypefn {Loadable Function} {group_struct =} getgrgid (@var{gid}).
+Return the first entry from the group database with the group ID
+@var{gid}.  If the group ID does not exist in the database,
+@code{getgrgid} returns 0.
+@end deftypefn
+
+@deftypefn {Loadable Function} {group_struct =} getgrnam (@var{name})
+Return the first entry from the group database with the group name
+@var{name}.  If the group name does not exist in the database,
+@code{getgrname} returns 0.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} setgrent ()
+Return the internal pointer to the beginning of the group database.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} endgrent ()
+Close the group database.
+@end deftypefn
+
+@node System Information, Other Functions, Group Database Functions, System Utilities
 @section System Information
 
 @deftypefn {Built-in Function} {} computer ()

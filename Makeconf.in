@@ -231,19 +231,21 @@ target_host_type = @target_host_type@
 
 # How to make .o files:
 
-.c.o:
-	[ -z "$(CPICFLAG)" ] ||\
-	  $(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o pic/$@
+%.o : %.c
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
 
-.cc.o:
-	[ -z "$(CXXPICFLAG)" ] ||\
-	  $(CXX) -c $(CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o pic/$@
+%.o : %.cc
 	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $<
+
+pic/%.o : %.c
+	$(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o $@
+
+pic/%.o : %.cc
+	$(CXX) -c $(CPPFLAGS) $(CXXPICFLAG) $(ALL_CXXFLAGS) $< -o $@
 
 # Here is a rule for generating dependencies for .cc files:
 
-%.d: %.cc
+%.d : %.cc
 	@echo making $@ from $<
 	@rm -f $@
 	@-if test "$(srcdir)" = "." ; then \
@@ -257,7 +259,7 @@ target_host_type = @target_host_type@
 
 # And one for .c files.too:
 
-%.d: %.c
+%.d : %.c
 	@echo making $@ from $<
 	@rm -f $@
 	@-if test "$(srcdir)" = "." ; then \

@@ -45,13 +45,13 @@ XALL_CXXFLAGS = $(subst -fno-implicit-templates, , $(XALL_CXXFLAGS_1))
 # How to make a .oct file from a .o file:
 
 ifdef CXXPICFLAG
-%.oct: pic/%.o
+%.oct : pic/%.o
 	$(CXX) -shared -o $@ $< \
 	  $(OCTAVE_LFLAGS) \
 	  $(OCTAVE_LIBS) \
 	  $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
 else
-%.oct: %.o
+%.oct : %.o
 	$(CXX) -shared -o $@ $< \
 	  $(OCTAVE_LFLAGS) \
 	  $(OCTAVE_LIBS) \

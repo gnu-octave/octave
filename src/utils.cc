@@ -59,27 +59,9 @@ LOSE! LOSE!
 #include <readline/tilde.h>
 }
 
-// This mess suggested by the autoconf manual.
-// unistd.h defines _POSIX_VERSION on POSIX.1 systems.
-#if defined (HAVE_DIRENT_H) || defined (_POSIX_VERSION)
-#include <dirent.h>
-#define NLENGTH(dirent) (strlen((dirent)->d_name))
-#else
-#define dirent direct
-#define NLENGTH(dirent) ((dirent)->d_namlen)
-#if defined (HAVE_SYS_NDIR_H)
-#include <sys/ndir.h>
-#endif
-#if defined (HAVE_SYS_DIR_H)
-#include <sys/dir.h>
-#endif
-#if defined (HAVE_NDIR_H)
-#include <ndir.h>
-#endif
-#endif
-
 #include "SLStack.h"
 
+#include "sysdir.h"
 #include "pathsearch.h"
 #include "procstream.h"
 #include "user-prefs.h"

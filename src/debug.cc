@@ -95,7 +95,7 @@ Line you would like the breakpoint to be set on\n\
 The rline returned is the real line that the breakpoint was set at.\n\
 \n\
 @end deftypefn\n\
-@seealso{dbclear, dbtatus, dbnext}")
+@seealso{dbclear, dbstatus, dbnext}")
 {
   octave_value retval;
 

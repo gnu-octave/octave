@@ -570,7 +570,7 @@ read_ascii_data (istream& is, const string& filename, int& global,
 			}
 		      else
 			{
-			  tmp [len] = '0';
+			  tmp [len] = '\0';
 			  if (len > max_len)
 			    {
 			      max_len = len;

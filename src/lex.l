@@ -23,8 +23,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 %x NEW_MATRIX
 %x HELP_FCN
 %s TEXT_FCN
-%s DQSTRING
-%s STRING
 %s MATRIX
 
 %{
@@ -34,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <strstream.h>
 #include <string.h>
 
 #include "input.h"
@@ -110,6 +109,7 @@ static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
 static void handle_number (char *yytext);
+static int handle_string (char delim);
 static int handle_close_brace (char *yytext);
 static int handle_identifier (char *s, int next_tok_is_eq);
 
@@ -242,68 +242,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	do_string_escapes (tok);
 	yylval.tok_val = new token (tok);
 	token_stack.push (yylval.tok_val);
-	current_input_column += yyleng;
-      }
-    return TEXT;
-  }
-
-%{
-// XXX FIXME XXX -- these need to be merged into a single function.
-%}
-
-<STRING>{QSTR}*[\n\'] {
-    if (braceflag)
-      BEGIN MATRIX;
-    else
-      BEGIN 0;
-
-    if (yytext[yyleng-1] == '\n')
-      {
-	error ("unterminated string constant");
-	current_input_column = 1;
-	return LEXICAL_ERROR;
-      }
-    else
-      {
-	static char *tok = 0;
-	delete [] tok;
-	tok = strsave (yytext);
-	tok[yyleng-1] = '\0';
-	do_string_escapes (tok);
-	yylval.tok_val = new token (tok);
-	token_stack.push (yylval.tok_val);
-	quote_is_transpose = 1;
-	cant_be_identifier = 1;
-	convert_spaces_to_comma = 1;
-	current_input_column += yyleng;
-      }
-    return TEXT;
-  }
-
-<DQSTRING>{DQSTR}*[\n\"] {
-    if (braceflag)
-      BEGIN MATRIX;
-    else
-      BEGIN 0;
-
-    if (yytext[yyleng-1] == '\n')
-      {
-	error ("unterminated string constant");
-	current_input_column = 1;
-	return LEXICAL_ERROR;
-      }
-    else
-      {
-	static char *tok = 0;
-	delete [] tok;
-	tok = strsave (yytext);
-	tok[yyleng-1] = '\0';
-	do_string_escapes (tok);
-	yylval.tok_val = new token (tok);
-	token_stack.push (yylval.tok_val);
-	quote_is_transpose = 1;
-	cant_be_identifier = 1;
-	convert_spaces_to_comma = 1;
 	current_input_column += yyleng;
       }
     return TEXT;
@@ -498,14 +436,17 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	return QUOTE;
       }
     else
-      BEGIN STRING;
+      return handle_string ('\'');
   }
 
 %{
 // Double quotes always begin strings.
 %}
 
-\"		{ BEGIN DQSTRING; }
+\" {
+    current_input_column++;
+    return handle_string ('"');
+}
 
 %{
 // The colon operator is handled differently if we are in the range
@@ -776,11 +717,6 @@ do_string_escapes (char *s)
 	      *p1 = *p2;
 	      break;
 	    }
-	}
-      else if (*p2 == '\'' && *(p2+1) == '\'')
-	{
-	  *p1 = '\'';
-	  p2++;
 	}
       else
 	{
@@ -1413,6 +1349,150 @@ handle_number (char *yytext)
   current_input_column += yyleng;
 
   do_comma_insert_check ();
+}
+
+// Match whitespace only, followed by a comment character or newline.
+// Once a comment character is found, discard all input until newline.
+// If non-whitespace characters are found before comment
+// characters, return 0.  Otherwise, return 1.
+
+static int
+have_continuation (void)
+{
+  ostrstream buf;
+
+  int in_comment = 0;
+  char c;
+  while ((c = yyinput ()) != EOF)
+    {
+      buf << (char) c;
+
+      switch (c)
+	{
+	case ' ':
+	case '\t':
+	  break;
+
+	case '%':
+	case '#':
+	  in_comment = 1;
+	  break;
+
+	case '\n':
+	  return 1;
+
+	default:
+	  if (in_comment)
+	    break;
+	  else
+	    {
+	      buf << ends;
+	      char *s = buf.str ();
+	      if (s)
+		{
+		  int len = strlen (s);
+		  while (len--)
+		    yyunput (s[len], yytext);
+		}
+	      delete [] s;
+	      return 0;
+	    }
+	}
+    }
+
+  yyunput (c, yytext);
+
+  return 0;
+}
+
+static int
+have_ellipsis_continuation (void)
+{
+  char c1 = yyinput ();
+  if (c1 == '.')
+    {
+      char c2 = yyinput ();
+      if (c2 == '.' && have_continuation ())
+	return 1;
+      else
+	{
+	  yyunput (c2, yytext);
+	  yyunput (c1, yytext);
+	}
+    }
+  else
+    yyunput (c1, yytext);
+
+  return 0;
+}
+
+static int
+handle_string (char delim)
+{
+  ostrstream buf;
+
+  int c;
+  int prev = 0;
+
+  while ((c = yyinput ()) != EOF)
+    {
+      current_input_column++;
+
+      if (c == '\\')
+	{
+	  if (have_continuation ())
+	    promptflag--;
+	  else
+	    buf << (char) c;
+	  goto next;
+	}
+      else if (c == '.')
+	{
+	  if (have_ellipsis_continuation ())
+	    promptflag--;
+	  else
+	    buf << (char) c;
+	  goto next;
+	}
+      else if (c == '\n')
+	{
+	  break;
+	}
+      else if (c == delim)
+	{
+	  if (prev == '\\')
+	    buf << (char) c;
+	  else
+	    {
+	      c = yyinput ();
+	      if (c == delim)
+		buf << (char) c;
+	      else
+		{
+		  yyunput (c, yytext);
+		  buf << ends;
+		  char *tok = buf.str ();
+		  do_string_escapes (tok);
+		  yylval.tok_val = new token (tok);
+		  delete [] tok;
+		  token_stack.push (yylval.tok_val);
+		  quote_is_transpose = 1;
+		  cant_be_identifier = 1;
+		  convert_spaces_to_comma = 1;
+		  return TEXT;
+		}
+	    }
+	}
+      else
+	{
+	  buf << (char) c;
+	}
+
+    next:
+      prev = c;
+    }
+
+  return LEXICAL_ERROR;
 }
 
 static int

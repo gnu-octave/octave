@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} range (@var{x})
-## @deftypefn {Function File} {} range (@var{x},@var{dim})
+## @deftypefnx {Function File} {} range (@var{x}, @var{dim})
 ## If @var{x} is a vector, return the range, i.e., the difference
 ## between the maximum and the minimum, of the input data.
 ##

@@ -25,7 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <oct-time.h>
+#include "oct-time.h"
 
 // This just provides a way to avoid infinite recursion when building
 // octave_shlib objects.

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.250 $)
+AC_REVISION($Revision: 1.251 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -583,7 +583,7 @@ else
 fi
 
 
-f77_rules_frag=Makerules.f77
+f77_rules_frag=Makefrag.f77
 if $have_fortran_compiler; then
 changequote(,)dnl
   cat << \EOF > $f77_rules_frag
@@ -634,7 +634,7 @@ EOF
   if test -z "$FLIBS"; then
     AC_MSG_WARN([I found f2c but not libf2c.a, or libF77.a and libI77.a])
   fi
-  f77_rules_frag=Makerules.f77
+  f77_rules_frag=Makefrag.f77
   cat << \EOF > $f77_rules_frag
 
 %.c : %.f
@@ -942,13 +942,40 @@ case "$RETSIGTYPE" in
 esac
 AC_SUBST(VOID_SIGHANDLER)
 
-AC_CHECK_FUNCS(getrusage times)
+### A system dependent kluge or two.
 
+AC_CHECK_FUNCS(getrusage times)
 case "$canonical_host_type" in
   *-*-cygwin32)
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1)
   ;;
 esac
+
+bsd_gcc_kluge_targets_frag=
+case "$canonical_host_type" in
+  *-*-386bsd* | *-*-openbsd* | *-*-netbsd* | *-*-freebsd*)
+    bsd_gcc_kluge_targets_frag=Makefrag.bsd
+    cat << \EOF > $bsd_gcc_kluge_targets_frag
+
+lex.o: lex.cc 
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
+
+pt-plot.o: pt-plot.cc
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
+
+symtab.o: symtab.cc
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
+
+toplev.o: toplev.cc
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
+
+unwind-prot.o: unwind-prot.cc 
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
+
+EOF
+  ;;
+esac
+AC_SUBST_FILE(bsd_gcc_kluge_targets_frag)
 
 ### Checks for other programs used for building, testing, installing,
 ### and running Octave.

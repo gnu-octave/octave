@@ -1,6 +1,8 @@
 Mon Jan 27 00:10:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Add check for usleep().
+	(bsd_gcc_kluge_targets_frag): New fragment.
+
 	* Makefile.in: Delete `internal' targets.
 	(static-binary-dist, dynamic-binary-dist): Special cases.
 

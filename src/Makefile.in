@@ -18,12 +18,12 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-XALL_CXXFLAGS_1 = $(subst -fexternal-templates, , $(ALL_CXXFLAGS))
-XALL_CXXFLAGS = $(subst -fno-implicit-templates, , $(XALL_CXXFLAGS_1))
+PT_FLAGS = -fexternal-templates -fno-implicit-templates
+CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
 %.df : %.cc
 	@echo making $@ from $<
-	@$(CXXCPP) -c $(CPPFLAGS) $(XALL_CXXFLAGS) -DMAKE_BUILTINS $< \
+	@$(CXXCPP) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_BUILTINS $< \
 	  | $(srcdir)/mkdefs > $@.t
 	@mv $@.t $@
 
@@ -244,6 +244,8 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 $(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
 
 $(MAKEDEPS): defaults.h oct-gperf.h oct-conf.h
+
+@bsd_gcc_kluge_targets_frag@
 
 check: all
 .PHONY: check

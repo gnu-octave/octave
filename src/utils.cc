@@ -73,7 +73,6 @@ LOSE! LOSE!
 #include "octave.h"
 #include "pager.h"
 #include "pathsearch.h"
-#include "procstream.h"
 #include "sysdir.h"
 #include "tree-const.h"
 #include "unwind-prot.h"

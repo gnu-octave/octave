@@ -155,19 +155,25 @@ send_to_plot_stream (const char *cmd)
 	return -1;
     }
 
-  int is_replot = (strncmp (cmd, "replot", 6) == 0);
-  int is_splot = (strncmp (cmd, "splot", 5) == 0);
-  int is_plot = (strncmp (cmd, "plot", 4) == 0);
+  int replot_len = strlen (GNUPLOT_COMMAND_REPLOT);
+  int splot_len = strlen (GNUPLOT_COMMAND_SPLOT);
+  int plot_len = strlen (GNUPLOT_COMMAND_PLOT);
+
+  int is_replot = (strncmp (cmd, GNUPLOT_COMMAND_REPLOT, replot_len) == 0);
+  int is_splot = (strncmp (cmd, GNUPLOT_COMMAND_SPLOT, splot_len) == 0);
+  int is_plot = (strncmp (cmd, GNUPLOT_COMMAND_PLOT, plot_len) == 0);
 
   if (plot_line_count == 0 && is_replot)
     error ("replot: no previous plot");
   else
     {
       plot_stream << cmd;
+
       if (! (is_replot || is_splot || is_plot)
 	  && plot_line_count > 0
 	  && user_pref.automatic_replot)
 	plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
+
       plot_stream.flush ();
       pipe_handler_error_count = 0;
     }
@@ -241,14 +247,17 @@ tree_plot_command::eval (void)
 	  plot_buf << GNUPLOT_COMMAND_PLOT;
 	}
       else
-	plot_buf << "replot";
+	plot_buf << GNUPLOT_COMMAND_REPLOT;
       break;
 
     case 3:
-      {
-	plot_line_count = 0;
-	plot_buf << GNUPLOT_COMMAND_SPLOT;
-      }
+      if (clear_before_plotting || plot_line_count == 0)
+	{
+	  plot_line_count = 0;
+	  plot_buf << GNUPLOT_COMMAND_SPLOT;
+	}
+      else
+	plot_buf << GNUPLOT_COMMAND_REPLOT;
       break;
 
     default:
@@ -1038,22 +1047,18 @@ close_plot_stream (void)
   plot_line_count = 0;
 }
 
-// This should maybe reset other things too?
-
-void
-reinitialize_gnuplot (void)
-{
-  send_to_plot_stream ("set title\n");
-  send_to_plot_stream ("set xlabel\n");
-  send_to_plot_stream ("set ylabel\n");
-}
-
 DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   "clearplot (): clear the plot window")
 {
   Octave_object retval;
   send_to_plot_stream ("clear\n");
-  reinitialize_gnuplot ();
+
+// This should maybe reset other things too?
+
+  send_to_plot_stream ("set title\n");
+  send_to_plot_stream ("set xlabel\n");
+  send_to_plot_stream ("set ylabel\n");
+
   return retval;
 }
 

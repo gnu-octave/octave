@@ -38,9 +38,7 @@ function retval = std (a)
     n = length (a);
     retval = sqrt (sumsq (a - mean (a)) / (n - 1));
   elseif (nr > 1 && nc > 0)
-    tmp = mean (a);
-    tmp = tmp (ones (nr, 1), :);
-    retval = sqrt (sumsq (a - tmp) / (nr - 1));
+    retval = sqrt (sumsq (a - ones (nr, 1) * mean (a)) / (nr - 1));
   else
     error ("std: invalid matrix argument");
   endif

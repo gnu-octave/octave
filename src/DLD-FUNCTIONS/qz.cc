@@ -604,9 +604,9 @@ See also: balance, dare, eig, schur\n\
 	      // checked the options at the top).
 	      panic_impossible ();
 	      break;
-      }
+	    }
 
-	  int ndim, fail, ind[nn];
+	  int ndim, fail;
 	  double inf_norm;
 
 	  F77_XFCN (xdlange, XDLANGE,
@@ -635,9 +635,12 @@ See also: balance, dare, eig, schur\n\
 	  std::cout << std::endl;
 #endif
 
+	  Array<int> ind (nn);
+
 	  F77_XFCN (dsubsp, DSUBSP,
 		    (nn, nn, aa.fortran_vec(), bb.fortran_vec(),
-		     ZZ.fortran_vec(), sort_test, eps, ndim, fail, ind));
+		     ZZ.fortran_vec(), sort_test, eps, ndim, fail,
+		     ind.fortran_vec ()));
 
 #ifdef DEBUG
 	  std::cout << "qz: back from dsubsp: aa=" << std::endl;

@@ -1,5 +1,8 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/qz.cc (Fqz): Use Array<int> class instead of
+	trying to create automatic int array with variable size.
+
 	* variables.cc (F__dump_symbol_info__): Fix continuation char.
 	* DLD-FUNCTIONS/besselj.cc (Fairy, Fbesselj): Likewise.
 	* DLD-FUNCTIONS/chol.cc (Fchol): Likewise.

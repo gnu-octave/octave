@@ -1,5 +1,13 @@
 2004-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (yywrap): Don't #undef this symbol.
+
+2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* pt-mat.cc: Make [,] concatenation work for N-d arrays.
+
+2004-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* data.cc (do_cat): Merge with Fcat.
 
 2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>

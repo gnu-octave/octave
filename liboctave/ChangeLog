@@ -1,3 +1,16 @@
+2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::insert (const Array<T>&, int, int)):
+	Make it work for N-d arrays.
+
+	* ArrayN.h (ArrayN<T>::insert (const ArrayN<T>& a, int, int)):
+	New function.
+
+	* CNDArray.cc (ComplexNDArray::insert (const NDArray&, int, int),
+	ComplexNDArray::insert (const ComplexNDArray&, int, int)):
+	New functions.
+	* CNDArray.h: Provide decls.
+
 2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (LINK_DEPS): Always define.

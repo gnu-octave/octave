@@ -89,6 +89,9 @@ public:
   ComplexNDArray sumsq (int dim = -1) const;
   bool cat (const ComplexNDArray& ra_arg, int dim, int add_dim);
 
+  ComplexNDArray& insert (const NDArray& a, int r, int c);
+  ComplexNDArray& insert (const ComplexNDArray& a, int r, int c);
+  
   NDArray abs (void) const;
 
   ComplexMatrix matrix_value (void) const;

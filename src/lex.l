@@ -955,9 +955,6 @@ fixup_column_count (char *s)
 
 // Include these so that we don't have to link to libfl.a.
 
-#ifdef yywrap
-#undef yywrap
-#endif
 int
 yywrap (void)
 {

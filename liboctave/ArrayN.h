@@ -96,6 +96,12 @@ public:
       return *this;
     }
 
+  ArrayN<T>& insert (const ArrayN<T>& a, int r, int c)
+  {
+    Array<T>::insert (a, r, c);
+    return *this;
+  }
+
   ArrayN<T> index (idx_vector& i, int resize_ok = 0,
 		   const T& rfv = resize_fill_value (T ())) const
     {

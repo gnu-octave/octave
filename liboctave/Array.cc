@@ -931,18 +931,47 @@ template <class T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, int r, int c)
 {
-  int a_rows = a.rows ();
-  int a_cols = a.cols ();
+  dim_vector a_dv = a.dims ();
 
-  if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
+  int n = a_dv.length ();
+
+  if (n == dimensions.length ())
     {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
+      Array<int> a_ra_idx (a_dv.length (), 0);
 
-  for (int j = 0; j < a_cols; j++)
-    for (int i = 0; i < a_rows; i++)
-      elem (r+i, c+j) = a.elem (i, j);
+      a_ra_idx.elem (0) = r;
+      a_ra_idx.elem (1) = c;
+
+      for (int i = 0; i < n; i++)
+	{
+	  if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
+	    {
+	      (*current_liboctave_error_handler)
+		("Array<T>::insert: range error for insert");
+	      return *this;
+	    }
+	}
+
+      a_ra_idx.elem (0) = 0;
+      a_ra_idx.elem (1) = 0;
+
+      int n_elt = a.numel ();
+
+      for (int i = 0; i < n_elt; i++)
+	{
+	  Array<int> ra_idx = a_ra_idx;
+
+	  ra_idx.elem (0) = a_ra_idx (0) + r;
+	  ra_idx.elem (1) = a_ra_idx (1) + c;
+
+	  elem (ra_idx) = a.elem (a_ra_idx);
+
+	  increment_index (a_ra_idx, a_dv);
+	}
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("Array<T>::insert: invalid indexing operation");
 
   return *this;
 }
@@ -966,6 +995,7 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 	      return *this;
 	    }
 	}
+
 
 #if 0
       // XXX FIXME XXX -- need to copy elements
@@ -2999,29 +3029,29 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 }
 
 template <class T>
-bool 
+bool
 cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, int dim, int add_dim)
 {
   bool retval = false;
-  
+
   dim_vector dv = ra_arg.dims ();
-  
+
   Array<int> ra_idx (dv.length (), 0);
-  
+
   for (int i = 0; i < ra_arg.length (); i++)
     {
       if (i != 0)
 	increment_index (ra_idx, dv);
-      
+
       Array<int> ra_idx2 = ra_idx;
-      
+
       if (dim >= ra_idx2.length ())
 	{
 	  ra_idx2.resize_and_fill (dim + 1, 0);
-	  
+
 	  retval = true;
 	}
-      
+
       ra_idx2(dim) = ra_idx2(dim) + add_dim;
 
       ra_cat(ra_idx2) = ra_arg(ra_idx);

@@ -65,12 +65,12 @@ private:
   public:
 
     tm_row_const_rep (void)
-      : count (1), nr (0), nc (0),
+      : count (1), dv (),
 	all_str (false), some_str (false), is_cmplx (false),
 	all_mt (true), ok (false) { }
 
     tm_row_const_rep (const tree_argument_list& row)
-      : count (1), nr (0), nc (0),
+      : count (1), dv (),
 	all_str (false), some_str (false), is_cmplx (false),
 	all_mt (true), ok (false)
     { init (row); }
@@ -79,8 +79,7 @@ private:
 
     int count;
 
-    int nr;
-    int nc;
+    dim_vector dv;
 
     bool all_str;
     bool some_str;
@@ -145,8 +144,13 @@ public:
       delete rep;
   }
 
-  int rows (void) { return rep->nr; }
-  int cols (void) { return rep->nc; }
+  int rows (void)
+  { return (rep->dv.length () > 0 ? rep->dv(0) : 0); }
+
+  int cols (void)
+  { return (rep->dv.length () > 1 ? rep->dv(1) : 0); }
+
+  dim_vector dims (void) { return rep->dv; }
 
   bool all_strings_p (void) const { return rep->all_str; }
   bool some_strings_p (void) const { return rep->some_str; }
@@ -174,7 +178,9 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   int this_elt_nr = val.rows ();
   int this_elt_nc = val.columns ();
 
-  if (this_elt_nr > 0 || this_elt_nc > 0)
+  dim_vector this_elt_dv = val.dims ();
+
+  if (!this_elt_dv.all_zero ())
     {
       all_mt = false;
 
@@ -182,16 +188,32 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 	{
 	  first_elem = false;
 
-	  nr = this_elt_nr;
-	}
-      else if (this_elt_nr != nr)
-	{
-	  eval_error ("number of rows must match",
-		      elt->line (), elt->column (), this_elt_nr, nr);
-	  return false;
-	}
+	  dv.resize (this_elt_dv.length ());
+	  for (int i = 2; i < dv.length (); i++)
+	    dv.elem (i) = this_elt_dv.elem (i);
 
-      nc += this_elt_nc;
+	  dv.elem (0) = this_elt_nr;
+
+	  dv.elem (1) = 0;
+	}
+      else
+	{
+	  if (this_elt_nr != dv (0))
+	    {
+	      eval_error ("number of rows must match",
+			  elt->line (), elt->column (), this_elt_nr, dv (0));
+	      return false;
+	    }
+	  for (int i = 2; i < this_elt_dv.length (); i++)
+	    {
+	      if (this_elt_dv (i) != dv (i))
+		{
+		  eval_error ("dimensions mismatch", elt->line (), elt->column (), this_elt_dv (i), dv (i));
+		  return false;
+		}
+	    }
+	}
+      dv.elem (1) = dv.elem (1) + this_elt_nc;
 
       append (val);
     }
@@ -289,15 +311,16 @@ tm_const : public octave_base_list<tm_row_const>
 public:
 
   tm_const (const tree_matrix& tm)
-    : nr (0), nc (0),
-      all_str (false), some_str (false), is_cmplx (false),
+    : dv (), all_str (false), some_str (false), is_cmplx (false),
       all_mt (true), ok (false)
       { init (tm); }
 
   ~tm_const (void) { }
 
-  int rows (void) const { return nr; }
-  int cols (void) const { return nc; }
+  int rows (void) const { return (dv.length () > 0 ? dv.elem (0) : 0); }
+  int cols (void) const { return (dv.length () > 1 ? dv.elem (1) : 0); }
+
+  dim_vector dims (void) const { return dv; }
 
   bool all_strings_p (void) const { return all_str; }
   bool some_strings_p (void) const { return some_str; }
@@ -308,8 +331,7 @@ public:
 
 private:
 
-  int nr;
-  int nc;
+  dim_vector dv;
 
   bool all_str;
   bool some_str;
@@ -374,7 +396,9 @@ tm_const::init (const tree_matrix& tm)
 	  int this_elt_nr = elt.rows ();
 	  int this_elt_nc = elt.cols ();
 
-	  if (this_elt_nr > 0 || this_elt_nc > 0)
+	  dim_vector this_elt_dv = elt.dims ();
+
+	  if (!this_elt_dv.all_zero ())
 	    {
 	      all_mt = false;
 
@@ -382,21 +406,44 @@ tm_const::init (const tree_matrix& tm)
 		{
 		  first_elem = false;
 
-		  nc = this_elt_nc;
+		  dv.resize (this_elt_dv.length ());
+		  for (int i = 2; i < dv.length (); i++)
+		    dv.elem (i) = this_elt_dv.elem (i);
+
+		  dv.elem (0) = 0;
+
+		  dv.elem (1) = this_elt_nc;
 		}
 	      else if (all_str)
 		{
-		  if (this_elt_nc > nc)
-		    nc = this_elt_nc;
+		  if (this_elt_nc > cols ())
+		    dv.elem (1) = this_elt_nc;
 		}
-	      else if (this_elt_nc != nc)
+	      else
 		{
-		  ::error ("number of columns must match (%d != %d)",
-			   this_elt_nc, nc);
-		  break;
-		}
+		  bool get_out = false;
 
-	      nr += this_elt_nr;
+		  for (int i = 1; i < this_elt_dv.length (); i++)
+		    {
+		      if (i == 1 && this_elt_nc != dv (1))
+			{
+			  ::error ("number of columns must match (%d != %d)",
+				   this_elt_nc, dv (1));
+			  get_out = true;
+			  break;
+			}
+		      else if (this_elt_dv (i) != dv (i))
+			{
+			  ::error ("dimensions mismatch (dim = %i, %d != %d)", i+1, this_elt_dv (i), dv (i));
+			  get_out = true;
+			  break;
+			}
+		    }
+
+		  if (get_out)
+		    break;
+		}
+	      dv.elem (0) = dv.elem (0) + this_elt_nr;
 	    }
 	  else if (Vwarn_empty_list_elements)
 	    warning ("empty matrix found in matrix list");
@@ -478,12 +525,11 @@ tree_matrix::rvalue (void)
 
   if (tmp)
     {
-      int nr = tmp.rows ();
-      int nc = tmp.cols ();
+      dim_vector dv = tmp.dims ();
 
-      Matrix m;
-      ComplexMatrix cm;
-      charMatrix chm;
+      NDArray nd;
+      ComplexNDArray cnd;
+      charNDArray chnd;
 
       // Now, extract the values from the individual elements and
       // insert them in the result matrix.
@@ -497,11 +543,11 @@ tree_matrix::rvalue (void)
       frc_str_conv = some_strings_p;
 
       if (all_strings_p)
-	chm.resize (nr, nc, Vstring_fill_char);
+	chnd.resize_and_fill (dv, Vstring_fill_char);
       else if (found_complex)
-	cm.resize (nr, nc, 0.0);
+	cnd.resize_and_fill (dv, 0.0);
       else
-	m.resize (nr, nc, 0.0);
+	nd.resize_and_fill (dv, 0.0);
 
       int put_row = 0;
 
@@ -518,51 +564,51 @@ tree_matrix::rvalue (void)
 	      if (found_complex)
 		{
 		  if (elt.is_real_scalar ())
-		    cm (put_row, put_col) = elt.double_value ();
+		    cnd (put_row, put_col) = elt.double_value ();
 		  else if (elt.is_real_matrix () || elt.is_range ())
-		    cm.insert (elt.matrix_value (), put_row, put_col);
+		    cnd.insert (elt.array_value (), put_row, put_col);
 		  else if (elt.is_complex_scalar ())
-		    cm (put_row, put_col) = elt.complex_value ();
+		    cnd (put_row, put_col) = elt.complex_value ();
 		  else
 		    {
-		      ComplexMatrix cm_elt = elt.complex_matrix_value ();
+		      ComplexNDArray cnd_elt = elt.complex_array_value ();
 
 		      if (error_state)
 			goto done;
 
-		      cm.insert (cm_elt, put_row, put_col);
+		      cnd.insert (cnd_elt, put_row, put_col);
 		    }
 		}
 	      else
 		{
 		  if (elt.is_real_scalar ())
-		    m (put_row, put_col) = elt.double_value ();
+		    nd (put_row, put_col) = elt.double_value ();
 		  else if (elt.is_string () && all_strings_p)
 		    {
-		      charMatrix chm_elt = elt.char_matrix_value ();
+		      charNDArray chnd_elt = elt.char_array_value ();
 
 		      if (error_state)
 			goto done;
 
-		      chm.insert (chm_elt, put_row, put_col);
+		      chnd.insert (chnd_elt, put_row, put_col);
 		    }
 		  else
 		    {
-		      Matrix m_elt = elt.matrix_value (frc_str_conv);
+		      NDArray nd_elt = elt.array_value (frc_str_conv);
 
 		      if (error_state)
 			goto done;
 
-		      m.insert (m_elt, put_row, put_col);
+		      nd.insert (nd_elt, put_row, put_col);
 		    }
 		}
 
-	      if (all_strings_p && chm.rows () > 0 && chm.cols () > 0)
-		retval = octave_value (chm, true);
+	      if (all_strings_p && chnd.rows () > 0 && chnd.cols () > 0)
+		retval = octave_value (chnd, true);
 	      else if (found_complex)
-		retval = cm;
+		retval = cnd;
 	      else
-		retval = m;
+		retval = nd;
 
 	      put_col += elt.columns ();
 	    }
@@ -580,7 +626,7 @@ done:
 	  if (all_strings_p)
 	    retval = "";
 	  else
-	    retval = Matrix ();
+	    retval = NDArray ();
 	}
       else if (frc_str_conv && ! retval.is_string ())
 	retval = retval.convert_to_str ();

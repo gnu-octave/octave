@@ -250,6 +250,63 @@ ComplexNDArray::abs (void) const
   return retval;
 }
 
+ComplexNDArray&
+ComplexNDArray::insert (const NDArray& a, int r, int c)
+{
+  dim_vector a_dv = a.dims ();
+  
+  int n = a_dv.length ();
+  
+  if (n == dimensions.length ())
+    {
+      Array<int> a_ra_idx (a_dv.length (), 0);
+      
+      a_ra_idx.elem (0) = r;
+      a_ra_idx.elem (1) = c;
+      
+      for (int i = 0; i < n; i++)
+	{
+	  if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
+	    {
+	      (*current_liboctave_error_handler)
+		("Array<T>::insert: range error for insert");
+	      return *this;
+	    }
+	}
+      
+      a_ra_idx.elem (0) = 0;
+      a_ra_idx.elem (1) = 0;
+      
+      int n_elt = a.numel ();
+      
+      // IS make_unique () NECCESSARY HERE??
+
+      for (int i = 0; i < n_elt; i++)
+	{
+	  Array<int> ra_idx = a_ra_idx;
+	  
+	  ra_idx.elem (0) = a_ra_idx (0) + r;
+	  ra_idx.elem (1) = a_ra_idx (1) + c;
+	  
+	  elem (ra_idx) = a.elem (a_ra_idx);
+
+	  increment_index (a_ra_idx, a_dv);
+	}
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("Array<T>::insert: invalid indexing operation");
+
+  return *this;
+}
+
+ComplexNDArray&
+ComplexNDArray::insert (const ComplexNDArray& a, int r, int c)
+{
+  Array<Complex>::insert (a, r, c);
+  return *this;
+}
+
 ComplexMatrix
 ComplexNDArray::matrix_value (void) const
 {

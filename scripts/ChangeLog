@@ -1,3 +1,72 @@
+2004-04-08  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/discrete_cdf.m,
+	statistics/distributions/discrete_inv.m,
+	statistics/distributions/discrete_pdf.m,
+	statistics/distributions/discrete_rnd.m,
+	statistics/distributions/exponential_cdf.m,
+	statistics/distributions/exponential_inv.m,
+	statistics/distributions/exponential_pdf.m,
+	statistics/distributions/exponential_rnd.m,
+	statistics/distributions/f_cdf.m,
+	statistics/distributions/f_inv.m,
+	statistics/distributions/f_pdf.m,
+	statistics/distributions/f_rnd.m,
+	statistics/distributions/geometric_cdf.m,
+	statistics/distributions/geometric_inv.m,
+	statistics/distributions/geometric_pdf.m,
+	statistics/distributions/geometric_rnd.m,
+	statistics/distributions/hypergeometric_rnd.m,
+	statistics/distributions/kolmogorov_smirnov_cdf.m,
+	statistics/distributions/laplace_cdf.m,
+	statistics/distributions/laplace_inv.m,
+	statistics/distributions/laplace_pdf.m,
+	statistics/distributions/laplace_rnd.m,
+	statistics/distributions/logistic_inv.m,
+	statistics/distributions/logistic_rnd.m,
+	statistics/distributions/lognormal_cdf.m,
+	statistics/distributions/lognormal_inv.m,
+	statistics/distributions/lognormal_pdf.m,
+	statistics/distributions/lognormal_rnd.m,
+	statistics/distributions/pascal_cdf.m,
+	statistics/distributions/pascal_inv.m,
+	statistics/distributions/pascal_pdf.m,
+	statistics/distributions/pascal_rnd.m,
+	statistics/distributions/poisson_cdf.m,
+	statistics/distributions/poisson_inv.m,
+	statistics/distributions/poisson_pdf.m,
+	statistics/distributions/poisson_rnd.m,
+	statistics/distributions/t_cdf.m,
+	statistics/distributions/t_inv.m,
+	statistics/distributions/t_pdf.m,
+	statistics/distributions/t_rnd.m,
+	statistics/distributions/weibull_cdf.m,
+	statistics/distributions/weibull_inv.m,
+	statistics/distributions/weibull_pdf.m,
+	statistics/distributions/weibull_rnd.m:
+	Allow N-d arrays.
+
+	* statistics/distributions/discrete_inv.m: Fix bug in indexing,
+	that results in NaN in places where it should not have had.
+
+	* statistics/distributions/discrete_rnd.m: New argument formats to
+	allow creating arbitrary matrices, compatiable with the other 
+	*_rnd.m functions. Maintain compatiablity with previous format.
+
+	* statistics/distributions/empirical_rnd.m: New argument formats
+	to allow creating arbitrary matrices, compatiable with the other
+	*_rnd.m functions. Maintain compatiablity with previous
+	format.  Allow N-d arrays.
+
+	* statistics/distributions/hypergeometric_cdf.m,
+	statistics/distributions/hypergeometric_inv.m,
+	statistics/distributions/hypergeometric_pdf.m,
+	statistics/distributions/wiener_rnd.m:
+	Error for non-scalar arguments.
+	
+	* statistics/distributions/pascal_rnd.m:
+	Correct for n = 1 bug, where all elements were equal.
+
 2004-04-06  David Bateman  <dbateman@free.fr>
 
 	* general/common_size.m, miscellaneous/bincoeff.m,

@@ -114,6 +114,7 @@ extern tree_constant *builtin_sscanf (tree_constant *, int, int);
 extern tree_constant *builtin_sum (tree_constant *, int, int);
 extern tree_constant *builtin_sumsq (tree_constant *, int, int);
 extern tree_constant *builtin_svd (tree_constant *, int, int);
+extern tree_constant *builtin_syl (tree_constant *, int, int);
 extern tree_constant *builtin_warranty (tree_constant *, int, int);
 extern tree_constant *builtin_zeros (tree_constant *, int, int);
 

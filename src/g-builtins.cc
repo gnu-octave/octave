@@ -68,6 +68,7 @@ Software Foundation, Inc.
 #include "f-rand.h"
 #include "f-schur.h"
 #include "f-svd.h"
+#include "f-syl.h"
 
 #include "procstream.h"
 #include "error.h"
@@ -1568,6 +1569,23 @@ builtin_svd (tree_constant *args, int nargin, int nargout)
 		 retval = svd (args, nargin, nargout);)
   else
     usage ("[U, S, V] = svd (A)\n               S = svd (A)");
+
+  return retval;
+}
+
+/*
+ * Sylvester equation solver.
+ */
+tree_constant *
+builtin_syl (tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if ((nargin == 4) && (nargout == 1))
+    DLD_BUILTIN (args, nargin, nargout, syl,
+		 retval = syl (args, nargin, nargout);)
+  else
+    usage ("X = syl (A,B,C)");
 
   return retval;
 }

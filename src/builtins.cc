@@ -509,6 +509,9 @@ at which the integrand is singular.\n\n", },
   { "svd", 2, 3, builtin_svd,
     "[U,S,V] = svd(X): return SVD of X\n", },
 
+  { "syl", 4, 1, builtin_syl,
+    "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0\n", },
+
   { "warranty", 1, 0, builtin_warranty,
     "describe copying conditions\n", },
 

@@ -21,7 +21,7 @@
 ##
 ## Return the Vandermonde matrix whose next to last column is c.
 ##
-## See also: hankel, hadamard, hilb, invhilb, toeplitz
+## See also: hankel, sylvester_matrix, hilb, invhilb, toeplitz
 
 ## Author: jwe
 

@@ -24,7 +24,7 @@
 ##
 ##  H (i, j) = 1 / (i + j - 1);
 ##
-## See also: hankel, vander, hadamard, invhilb, toeplitz
+## See also: hankel, vander, sylvester_matrix, invhilb, toeplitz
 
 ## Author: jwe
 

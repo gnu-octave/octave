@@ -26,7 +26,7 @@
 ## same as the first column.  If the first element of c is not the same
 ## as the first element of r, the first element of c is used.
 ##
-## See also: hankel, vander, hadamard, hilb, invhib
+## See also: hankel, vander, sylvester_matrix, hilb, invhib
 
 ## Author: jwe
 

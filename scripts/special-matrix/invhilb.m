@@ -22,7 +22,7 @@
 ## Return the inverse of a Hilbert matrix of order n.  This is slow but
 ## exact.  Compare with inv (hilb (n)).
 ##
-## See also: hankel, vander, hadamard, hilb, toeplitz
+## See also: hankel, vander, sylvester_matrix, hilb, toeplitz
 
 ## Author: jwe
 

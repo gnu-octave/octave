@@ -17,29 +17,29 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: hadamard (k)
+## usage: sylvester_matrix (k)
 ##
-## Return the Hadamard matrix of order n = 2^k.
+## Return the Sylvester matrix of order n = 2^k.
 ##
 ## See also: hankel, vander, hilb, invhilb, toeplitz
 
 ## Author: jwe
 
-function retval = hadamard (k)
+function retval = sylvester_matrix (k)
 
   if (nargin != 1)
-    usage ("hadamard (n)");
+    usage ("sylvester_matrix (n)");
   endif
 
   if (is_scalar (k))
     if (k < 1)
       retval = 1;
     else
-      tmp = hadamard (k-1);
+      tmp = sylvester_matrix (k-1);
       retval = [tmp, tmp; tmp, -tmp];
     endif
   else
-    error ("hadamard: expecting scalar argument");
+    error ("sylvester_matrix: expecting scalar argument");
   endif
 
 endfunction

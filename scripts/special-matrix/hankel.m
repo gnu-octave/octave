@@ -26,7 +26,7 @@
 ## anti-diagonal.  If the last element of c is not the same as the first
 ## element of r, the last element of c is used.
 ##
-## See also: vander, hadamard, hilb, invhilb, toeplitz
+## See also: vander, sylvester_matrix, hilb, invhilb, toeplitz
 
 ## Author: jwe
 

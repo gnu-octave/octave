@@ -41,7 +41,7 @@ Free Software Foundation, Inc.
 #include "syswait.h"
 #include "siglist.h"
 
-#include <Array.h>
+#include "base-list.h"
 
 // Signal handler return type.
 #ifndef RETSIGTYPE
@@ -96,6 +96,8 @@ extern sig_handler *octave_set_signal_handler (int, sig_handler *);
 
 extern void install_signal_handlers (void);
 
+extern void octave_signal_handler (void);
+
 extern octave_interrupt_handler octave_catch_interrupts (void);
 
 extern octave_interrupt_handler octave_ignore_interrupts (void);
@@ -111,21 +113,30 @@ class
 octave_child
 {
 public:
+  
+  // Do whatever to handle event for child with PID (might not
+  // actually be dead, could just be stopped).  Return true if
+  // the list element corresponding to PID should be removed from
+  // list.  This function should not call any functions that modify
+  // the octave_child_list.
 
-  typedef void (*dead_child_handler) (pid_t, int);
+  typedef bool (*child_event_handler) (pid_t, int);
 
-  octave_child (pid_t id = -1, dead_child_handler f = 0)
-    : pid (id), handler (f) { }
+  octave_child (pid_t id = -1, child_event_handler f = 0)
+    : pid (id), handler (f), have_status (0), status (0) { }
 
   octave_child (const octave_child& oc)
-    : pid (oc.pid), handler (oc.handler) { }
-
+    : pid (oc.pid), handler (oc.handler),
+      have_status (oc.have_status), status (oc.status) { }
+ 
   octave_child& operator = (const octave_child& oc)
     {
       if (&oc != this)
 	{
 	  pid = oc.pid;
 	  handler = oc.handler;
+	  have_status = oc.have_status;
+	  status = oc.status;
 	}
       return *this;
     }
@@ -135,8 +146,15 @@ public:
   // The process id of this child.
   pid_t pid;
 
-  // The function we call if this child dies.
-  dead_child_handler handler;
+  // The function we call if an event happens for this child.
+  child_event_handler handler;
+
+  // Nonzero if this child has stopped or terminated.
+  sig_atomic_t have_status;
+
+  // The status of this child; 0 if running, otherwise a status value
+  // from waitpid.
+  int status;
 };
 
 class
@@ -144,37 +162,36 @@ octave_child_list
 {
 protected:
 
-  octave_child_list (void) : list (0), curr_len (0) { }
+  octave_child_list (void) { }
+
+  class octave_child_list_rep : public octave_base_list<octave_child>
+  {
+  public:
+
+    void insert (pid_t pid, octave_child::child_event_handler f);
+
+    void reap (void);
+
+    bool wait (void);
+  };
 
 public:
 
-  ~octave_child_list (void);
+  ~octave_child_list (void) { }
 
-  static bool instance_ok (void);
+  static void insert (pid_t pid, octave_child::child_event_handler f);
 
-  static void insert (pid_t pid, octave_child::dead_child_handler f);
+  static void reap (void);
+
+  static bool wait (void);
 
   static void remove (pid_t pid);
 
-  static int length (void);
-
-  static octave_child& elem (int i);
-
 private:
 
-  Array<octave_child> list;
+  static bool instance_ok (void);
 
-  int curr_len;
-
-  static octave_child_list *instance;
-
-  void do_insert (pid_t pid, octave_child::dead_child_handler f);
-
-  void do_remove (pid_t pid);
-
-  int do_length (void) const;
-
-  octave_child& do_elem (int i);
+  static octave_child_list_rep *instance;
 };
 
 #endif

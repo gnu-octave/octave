@@ -44,8 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-static pid_t octave_pager_pid = -1;
-
 // Our actual connection to the external pager.
 static oprocstream *external_pager = 0;
 
@@ -70,11 +68,6 @@ static bool Vpage_output_immediately;
 // through the pager.
 static bool Vpage_screen_output;
 
-// Only one pager can be active at once, so having these at file
-// scope should be ok.
-static octave_interrupt_handler saved_interrupt_handler;
-static bool interrupt_handler_saved = false;
-
 static bool really_flush_to_pager = false;
 
 static bool flushing_output_to_pager = false;
@@ -82,35 +75,40 @@ static bool flushing_output_to_pager = false;
 static void
 clear_external_pager (void)
 {
-  octave_child_list::remove (octave_pager_pid);
-
-  octave_pager_pid = -1;
-
-  delete external_pager;
-  external_pager = 0;
-
-  if (interrupt_handler_saved)
+  if (external_pager)
     {
-      octave_set_interrupt_handler (saved_interrupt_handler);
-      interrupt_handler_saved = false;
+      octave_child_list::remove (external_pager->pid ());
+
+      delete external_pager;
+      external_pager = 0;
     }
 }
 
-static void
-pager_death_handler (pid_t pid, int status)
+static bool
+pager_event_handler (pid_t pid, int status)
 {
+  bool retval = false;
+
   if (pid > 0)
     {
       if (WIFEXITED (status) || WIFSIGNALLED (status))
 	{
-	  // Avoid warning() or error(), since that will put us back in
-	  // the pager, which would be bad news.
+	  // Avoid warning() since that will put us back in the pager,
+	  // which would be bad news.
 
-	  std::cerr << "warning: connection to external pager (pid = "
-	       << pid << ") lost --\n"
-	       << "warning: attempting to finish pending computations...\n";
+	  std::cerr << "warning: connection to external pager lost (pid = "
+		    << pid << ")" << std::endl;
+	  std::cerr << "warning: flushing pending output (please wait)"
+		    << std::endl;
+
+	  // Request removal of this PID from the list of child
+	  // processes.
+
+	  retval = true;
 	}
     }
+
+  return retval;
 }
 
 static void
@@ -131,47 +129,33 @@ do_sync (const char *msg, int len, bool bypass_pager)
 
 	      if (! pgr.empty ())
 		{
-		  saved_interrupt_handler = octave_ignore_interrupts ();
-		  interrupt_handler_saved = true;
-
 		  external_pager = new oprocstream (pgr.c_str ());
 
 		  if (external_pager)
-		    {
-		      octave_pager_pid = external_pager->pid ();
-
-		      octave_child_list::insert (octave_pager_pid,
-						 pager_death_handler);
-		    }
+		    octave_child_list::insert (external_pager->pid (),
+					       pager_event_handler);
 		}
 	    }
 
 	  if (external_pager)
 	    {
-	      if (octave_pager_pid > 0 && external_pager->good ())
+	      if (external_pager->good ())
 		{
 		  external_pager->write (msg, len);
 
-		  // These checks are needed if a signal handler
-		  // invoked since the last set of checks attempts
-		  // to flush output and then returns
+		  external_pager->flush ();
 
-		  if (octave_pager_pid > 0
-		      && external_pager
-		      && external_pager->good ())
-		    external_pager->flush ();
+#if defined (EPIPE)
+		  if (errno == EPIPE)
+		    external_pager->setstate (std::ios::failbit);
+#endif
 		}
 	      else
 		{
-		  // We had a pager, but it must have died.  Restore
-		  // the interrupt state so we can escape back to the
-		  // prompt if there are lots of computations pending.
-
-		  if (interrupt_handler_saved)
-		    {
-		      octave_set_interrupt_handler (saved_interrupt_handler);
-		      interrupt_handler_saved = false;
-		    }
+		  // XXX FIXME XXX -- omething is not right with the
+		  // pager.  If it died then we should receive a
+		  // signal for that.  If there is some other problem,
+		  // then what?
 		}
 	    }
 	  else
@@ -361,8 +345,7 @@ flush_octave_stdout (void)
 
       octave_stdout.flush ();
 
-      if (external_pager)
-	clear_external_pager ();
+      clear_external_pager ();
 
       unwind_protect::run_frame ("flush_octave_stdout");
     }

@@ -165,6 +165,8 @@ do_input_echo (const std::string& input_string)
 std::string
 gnu_readline (const std::string& s, bool force_readline)
 {
+  OCTAVE_QUIT;
+
   std::string retval;
 
   if (line_editing || force_readline)
@@ -204,6 +206,8 @@ gnu_readline (const std::string& s, bool force_readline)
 static std::string
 octave_gets (void)
 {
+  OCTAVE_QUIT;
+
   std::string retval;
 
   Vlast_prompt_time.stamp ();
@@ -254,6 +258,8 @@ octave_gets (void)
 static std::string
 get_user_input (void)
 {
+  OCTAVE_QUIT;
+
   std::string retval;
 
   if (get_input_from_eval_string)

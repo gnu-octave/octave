@@ -26,12 +26,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 
+#include <iostream>
 #include <new>
 
 #include "quit.h"
 
+void (*octave_signal_hook) (void) = 0;
 void (*octave_interrupt_hook) (void) = 0;
 void (*octave_bad_alloc_hook) (void) = 0;
+
+void
+octave_handle_signal (void)
+{
+  if (octave_signal_hook)
+    octave_signal_hook ();
+
+  if (octave_interrupt_state > 0)
+    {
+      octave_interrupt_state = -1;
+      octave_throw_interrupt_exception ();
+    }
+}
 
 void
 octave_throw_interrupt_exception (void)

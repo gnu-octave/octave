@@ -104,6 +104,7 @@ recover_from_exception (void)
   can_interrupt = true;
   octave_interrupt_immediately = 0;
   octave_interrupt_state = 0;
+  octave_signal_caught = 0;
   octave_allocation_error = 0;
   octave_restore_signal_mask ();
   octave_catch_interrupts ();
@@ -128,6 +129,7 @@ main_loop (const std::string& fun_to_call)
 
   can_interrupt = true;
 
+  octave_signal_hook = octave_signal_handler;
   octave_interrupt_hook = unwind_protect::run_all;
   octave_bad_alloc_hook = unwind_protect::run_all;
 

@@ -97,7 +97,7 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	symtab.h sysdep.h token.h toplev.h unwind-prot.h utils.h \
 	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
 
-TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc
+TI_XSRC := Array-os.cc Array-sym.cc Array-tc.cc
 
 TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 

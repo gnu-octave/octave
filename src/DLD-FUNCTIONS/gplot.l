@@ -257,9 +257,6 @@ static bool clear_before_plotting = true;
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
 
-// ID of the plotter process.
-static pid_t plot_stream_pid = 0;
-
 // Gnuplot command strings that we use.
 static std::string Vgnuplot_command_plot;
 static std::string Vgnuplot_command_replot;
@@ -309,13 +306,15 @@ save_in_tmp_file (const octave_value& t, int ndim = 2, bool parametric = false)
 }
 
 static void
-close_plot_stream (void)
+close_plot_stream (bool remove_from_child_list = true)
 {
-  octave_child_list::remove (plot_stream_pid);
-
   if (plot_stream)
     {
+      if (remove_from_child_list)
+	octave_child_list::remove (plot_stream->pid ());
+
       send_to_plot_stream ("\nquit\n");
+
       delete plot_stream;
       plot_stream = 0;
     }
@@ -323,13 +322,28 @@ close_plot_stream (void)
   plot_line_count = 0;
 }
 
-static void
-plot_stream_death_handler (pid_t pid, int)
+static bool
+plot_stream_event_handler (pid_t pid, int status)
 {
-  close_plot_stream ();
+  bool retval = false;
 
-  warning ("connection to external plotter (pid = %d) lost --", pid);
-  warning ("please try your plot command(s) again");
+  if (pid > 0)
+    {
+      if (WIFEXITED (status) || WIFSIGNALLED (status))
+	{
+	  close_plot_stream (false);
+
+	  warning ("connection to external plotter (pid = %d) lost --", pid);
+	  warning ("please try your plot command(s) again");
+
+	  // Request removal of this PID from the list of child
+	  // processes.
+
+	  retval = true;
+	}
+    }
+
+  return retval;
 }
 
 static void
@@ -381,11 +395,8 @@ open_plot_stream (void)
 	      error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());
 	    }
 	  else
-	    {
-	      plot_stream_pid = plot_stream->pid ();
-    	      octave_child_list::insert (plot_stream_pid,
-					 plot_stream_death_handler);
-	    }
+    	    octave_child_list::insert (plot_stream->pid (),
+				       plot_stream_event_handler);
 	}
       else
 	error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());

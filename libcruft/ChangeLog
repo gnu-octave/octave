@@ -1,3 +1,13 @@
+2005-02-10  John W. Eaton  <jwe@octave.org>
+
+	* misc/cquit.c (octave_signal_caught): New global variable.
+	* misc/quit.cc (occtave_handle_signal): New function.
+	(octave_signal_hook): New global pointer.
+	* misc/quit.h: Provide decls.
+	(OCTAVE_QUIT): Check octave_signal_caught, not
+	octave_interrupt_state, and call octave_handle_signal, not
+	octave_throw_interrupt_exception.
+	
 2005-02-08  John W. Eaton  <jwe@octave.org>
 
 	* misc/quit.h: Use C-style comments.

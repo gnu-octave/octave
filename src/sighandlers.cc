@@ -93,6 +93,42 @@ static bool Vsigterm_dumps_octave_core;
   do { } while (0)
 #endif
 
+// List of signals we have caught since last call to octave_signal_handler.
+static bool octave_signals_caught[NSIG];
+
+// Called from OCTAVE_QUIT to actually do something about the signals
+// we have caught.
+
+void
+octave_signal_handler (void)
+{
+  // The list of signals is relatively short, so we will just go
+  // linearly through the list.
+
+  for (int i = 0; i < NSIG; i++)
+    {
+      if (octave_signals_caught[i])
+	{
+	  octave_signals_caught[i] = false;
+
+	  switch (i)
+	    {
+	    case SIGCHLD:
+	      octave_child_list::reap ();
+	      break;
+
+	    case SIGFPE:
+	      std::cerr << "warning: floating point exception -- trying to return to prompt" << std::endl;
+	      break;
+
+	    case SIGPIPE:
+	      std::cerr << "warning: broken pipe -- some output may be lost" << std::endl;
+	      break;
+	    }
+	}
+    }
+}
+
 static void
 my_friendly_exit (const char *sig_name, int sig_number,
 		  bool save_vars = true)
@@ -181,30 +217,13 @@ sigchld_handler (int /* sig */)
 
   BLOCK_CHILD (set, oset);
 
-  int n = octave_child_list::length ();
-
-  for (int i = 0; i < n; i++)
+  if (octave_child_list::wait ())
     {
-      octave_child& elt = octave_child_list::elem (i);
+      // The status of some child changed.
 
-      pid_t pid = elt.pid;
+      octave_signal_caught = 1;
 
-      if (pid > 0)
-	{
-	  int status;
-
-	  if (waitpid (pid, &status, WNOHANG) > 0)
-	    {
-	      elt.pid = -1;
-
-	      octave_child::dead_child_handler f = elt.handler;
-
-	      if (f)
-		f (pid, status);
-
-	      break;
-	    }
-	}
+      octave_signals_caught[SIGCHLD] = true;
     }
 
   octave_set_interrupt_handler (saved_interrupt_handler);
@@ -232,13 +251,14 @@ sigfpe_handler (int /* sig */)
 
   MAYBE_REINSTALL_SIGHANDLER (SIGFPE, sigfpe_handler);
 
-  std::cerr << "error: floating point exception -- trying to return to prompt\n";
-
-  // XXX FIXME XXX -- will setting octave_interrupt_state really help
-  // here?
-
   if (can_interrupt && octave_interrupt_state >= 0)
-    octave_interrupt_state++;
+    {
+      octave_signal_caught = 1;
+
+      octave_signals_caught[SIGFPE] = true;
+
+      octave_interrupt_state++;
+    }
 
   SIGHANDLER_RETURN (0);
 }
@@ -341,6 +361,7 @@ sigint_handler (int sig)
 	  if (octave_interrupt_state < 0)
 	    octave_interrupt_state = 0;
 
+	  octave_signal_caught = 1;
 	  octave_interrupt_state++;
 
 	  if (interactive && octave_interrupt_state == 2)
@@ -362,15 +383,13 @@ sigpipe_handler (int /* sig */)
 
   MAYBE_REINSTALL_SIGHANDLER (SIGPIPE, sigpipe_handler);
 
-  if (pipe_handler_error_count++ == 0)
-    std::cerr << "warning: broken pipe\n";
+  octave_signal_caught = 1;
+
+  octave_signals_caught[SIGPIPE] = true;
 
   // Don't loop forever on account of this.
 
-  // XXX FIXME XXX -- will setting octave_interrupt_state really help
-  // here?
-
-  if (pipe_handler_error_count  > 100 && octave_interrupt_state >= 0)
+  if (pipe_handler_error_count++ > 100 && octave_interrupt_state >= 0)
     octave_interrupt_state++;
 
   SIGHANDLER_RETURN (0);
@@ -430,6 +449,9 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h)
 void
 install_signal_handlers (void)
 {
+  for (int i = 0; i < NSIG; i++)
+    octave_signals_caught[i] = false;
+
   octave_catch_interrupts ();
 
 #ifdef SIGABRT
@@ -702,13 +724,7 @@ make_sig_struct (void)
   return m;
 }
 
-octave_child_list *octave_child_list::instance = 0;
-
-// This needs to be here for linking on AIX, at least for some
-// versions of GCC, otherwise we fail with unresolved references to
-// the Array<octave_child> destructor.
-
-octave_child_list::~octave_child_list (void) { }
+octave_child_list::octave_child_list_rep *octave_child_list::instance = 0;
 
 bool
 octave_child_list::instance_ok (void)
@@ -716,7 +732,7 @@ octave_child_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_child_list ();
+    instance = new octave_child_list_rep ();
 
   if (! instance)
     {
@@ -729,104 +745,112 @@ octave_child_list::instance_ok (void)
 }
 
 void
-octave_child_list::insert (pid_t pid, octave_child::dead_child_handler f)
+octave_child_list::insert (pid_t pid, octave_child::child_event_handler f)
 {
   if (instance_ok ())
-    instance->do_insert (pid, f);
+    instance->insert (pid, f);
 }
+
+void
+octave_child_list::reap (void)
+{
+  if (instance_ok ())
+    instance->reap ();
+}
+
+bool
+octave_child_list::wait (void)
+{
+  return (instance_ok ()) ? instance->wait () : false;
+}
+
+class pid_equal
+{
+public:
+
+  pid_equal (pid_t v) : val (v) { }
+
+  bool operator () (const octave_child& oc) const { return oc.pid == val; }
+
+private:
+
+  pid_t val;
+};
 
 void
 octave_child_list::remove (pid_t pid)
 {
   if (instance_ok ())
-    instance->do_remove (pid);
+    instance->remove_if (pid_equal (pid));
 }
 
-int
-octave_child_list::length (void)
-{
-  return (instance_ok ()) ? instance->do_length () : 0;
-}
+#define OCL_REP octave_child_list::octave_child_list_rep
 
-octave_child&
-octave_child_list::elem (int i)
+void
+OCL_REP::insert (pid_t pid, octave_child::child_event_handler f)
 {
-  static octave_child foo;
-
-  return (instance_ok ()) ? instance->do_elem (i) : foo;
+  append (octave_child (pid, f));
 }
 
 void
-octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
-{
-  // Insert item in first open slot, increasing size of list if
-  // necessary.
-
-  bool enlarge = true;
-
-  for (int i = 0; i < curr_len; i++)
-    {
-      octave_child& tmp = list (i);
-
-      if (tmp.pid < 0)
-	{
-	  list (i) = octave_child (pid, f);
-	  enlarge = false;
-	  break;
-	}
-    }
-
-  if (enlarge)
-    {
-      int total_len = list.length ();
-
-      if (curr_len == total_len)
-	{
-	  if (total_len == 0)
-	    list.resize (16);
-	  else
-	    list.resize (total_len * 2);
-	}
-
-      list (curr_len) = octave_child (pid, f);
-      curr_len++;
-    }
-}
-
-void
-octave_child_list::do_remove (pid_t pid)
+OCL_REP::reap (void)
 {
   // Mark the record for PID invalid.
 
-  for (int i = 0; i < curr_len; i++)
+  for (iterator p = begin (); p != end (); p++)
     {
-      octave_child& tmp = list (i);
+      // The call to the octave_child::child_event_handler might
+      // invalidate the iterator (for example, by calling
+      // octave_child_list::remove), so we increment the iterator
+      // here.
 
-      if (tmp.pid == pid)
+      octave_child& oc = *p;
+
+      if (oc.have_status)
 	{
-	  tmp.pid = -1;
-	  break;
+	  oc.have_status = 0;
+
+	  octave_child::child_event_handler f = oc.handler;
+
+	  if (f && f (oc.pid, oc.status))
+	    oc.pid = -1;
 	}
     }
+
+  remove_if (pid_equal (-1));
 }
 
-int
-octave_child_list::do_length (void) const
+// Wait on our children and record any changes in their status.
+
+bool
+OCL_REP::wait (void)
 {
-  return curr_len;
-}
+  bool retval = false;
 
-octave_child&
-octave_child_list::do_elem (int i)
-{
-  static octave_child foo;
+  for (iterator p = begin (); p != end (); p++)
+    {
+      octave_child& oc = *p;
 
-  int n = do_length ();
+      pid_t pid = oc.pid;
 
-  if (i >= 0 && i < n)
-    return list (i);
-  else
-    return foo;
+      if (pid > 0)
+	{
+	  int status;
+
+	  if (waitpid (pid, &status, WNOHANG) > 0)
+	    {
+	      oc.have_status = 1;
+
+	      oc.status = status;
+
+	      retval = true;
+
+	      break;
+	    }
+	}
+    }
+
+  return retval;
 }
 
 static int

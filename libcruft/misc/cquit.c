@@ -87,6 +87,8 @@ sig_atomic_t octave_interrupt_state = 0;
 
 sig_atomic_t octave_allocation_error = 0;
 
+sig_atomic_t octave_signal_caught = 0;
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

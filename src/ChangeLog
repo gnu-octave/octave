@@ -1,3 +1,60 @@
+2005-02-11  John W. Eaton  <jwe@octave.org>
+
+	* sighandlers.cc (sigpipe_handler): Don't try to take action.
+	Set octave_signal_caught and octave_signals_caught here.
+	(sigchld_handler): Call octave_child_list::wait here.
+	Set octave_signal_caught and octave_signals_caught here.
+	(octave_signals_caught): New static file-scope variable.
+	(sigint_handler): Also set octave_signal_caught.
+
+	* sighandlers.cc (sigpipe_handler): 
+
+	* DLD-FUNCTIONS/gplot.l (plot_stream_event_handler): Rename from
+	plot_stream_death_handler.  Return true if plotter has exited.
+	Call close_plot_stream with false arg.
+	(plot_stream_pid): Delete static file-scope variable and all uses.
+	(close_plot_stream): New arg, remove_from_child_list, with default
+	value of true.  Only call octave_child_list::remove if
+	remove_from_child_list is true.
+
+	* pager.cc (octave_pager_pid, saved_interrupt_handler,
+	interrupt_handler_saved): Delete static file-scope variables and
+	all uses.
+	(clear_external_pager): Do nothing if external_pager is 0.
+	(pager_event_handler): Rename from pager_death_handler.
+	Improve warning message.  Return true if pager has exited.
+	(octave_pager_buf::do_sync): Check errno == EPIPE after write.
+	(flush_octave_stdout): No need to check external_pager before
+	calling clear_external_pager.
+
+	* toplev.cc (recover_from_exception): Set octave_signal_caught to zero.
+	(main_loop): Set octave_signal_hook to octave_signal_handler here.
+
+	* sighandlers.cc (octave_signal_handler): New function.
+	* sighanlders.h: Provide decl.
+
+	* sighandlers.cc (install_signal_handlers): Initialize
+	octave_signals_caught.
+
+	* sighandlers.h (octave_child::status, have_status): New data members.
+	(child_event_handler): Rename from dead_child_handler.
+	Change all uses.
+	(octave_child_list::reap, octave_child_list::wait): New functions.
+	(octave_child_list::length, octave_child_list::do_length,
+	octave_child_list::elem, octave_child_list::do_elem,
+	octave_child_list::list, octave_child_list::curr_len): Delete.
+
+	* sighandlers.h, sighandlers.cc
+	(octave_child_list::octave_child_list_rep): New class.
+
+	* src/input.cc (gnu_readline, octave_gets, get_user_input):
+	Call OCTAVE_QUIT before doing anything.
+
+	* base-list.h (octave_base_list<T>::remove_if): New function.
+
+	* TEMPLATE-INST/Array-oc.cc: Delete.
+	* Makefile.in (TI_XSRC): Remove from list.
+
 2005-02-10  Driss Ghaddab  <driss.ghaddab@free.fr>
 
 	* cutils.c (octave_usleep) [HAVE_POLL]: Fix typo.

@@ -77,6 +77,10 @@ extern sig_atomic_t octave_interrupt_state;
 
 extern sig_atomic_t octave_allocation_error;
 
+extern sig_atomic_t octave_signal_caught;
+
+extern void octave_handle_signal (void);
+
 extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
 
 extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
@@ -84,10 +88,10 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 #define OCTAVE_QUIT \
   do \
     { \
-      if (octave_interrupt_state > 0) \
+      if (octave_signal_caught) \
         { \
-          octave_interrupt_state = -1; \
-          octave_throw_interrupt_exception (); \
+          octave_signal_caught = 0; \
+          octave_handle_signal (); \
         } \
     } \
   while (0)
@@ -169,6 +173,7 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 /* These should only be declared for C++ code, and should also be
    outside of any extern "C" block.  */
 
+extern void (*octave_signal_hook) (void);
 extern void (*octave_interrupt_hook) (void);
 extern void (*octave_bad_alloc_hook) (void);
 

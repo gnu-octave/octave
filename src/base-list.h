@@ -40,6 +40,9 @@ public:
 
   iterator erase (iterator pos) { return lst.erase (pos); }
 
+  template <class P>
+  void remove_if (P pred) { lst.remove_if (pred); }
+
   void clear (void) { lst.clear (); }
 
   void append (const elt_type& s) { lst.push_back (s); }

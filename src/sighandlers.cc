@@ -158,7 +158,7 @@ sigchld_handler (int /* sig */)
 	  if (pid == octave_pager_pid)
 	    {
 	      error ("connection to external pager lost --");
-	      error ("pending computations have been discarded");
+	      error ("pending computations have been discarded\n");
 	    }
 	}
     }

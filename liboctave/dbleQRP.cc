@@ -40,6 +40,9 @@ extern "C"
 {
   int F77_FCN (dgeqpf) (const int*, const int*, double*, const int*,
 			int*, double*, double*, int*);
+
+  int F77_FCN (dorgqr) (const int*, const int*, const int*, double*,
+			const int*, double*, double*, const int*, int*);
 }
 
 // It would be best to share some of this code with QR class...

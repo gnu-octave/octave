@@ -40,6 +40,9 @@ extern "C"
 {
   int F77_FCN (zgeqpf) (const int*, const int*, Complex*, const int*,
 			int*, Complex*, Complex*, double*, int*);
+
+  int F77_FCN (zungqr) (const int*, const int*, const int*, Complex*,
+			const int*, Complex*, Complex*, const int*, int*);
 }
 
 // It would be best to share some of this code with ComplexQR class...

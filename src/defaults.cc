@@ -489,7 +489,7 @@ built-in variable @code{LOADPATH}.\n\
   
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, imagepath,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} IMAGEPATH
+@defvr {Built-in Variable} IMAGEPATH\n\
 A colon separated list of directories in which to search for image\n\
 files.\n\
 @end defvr");

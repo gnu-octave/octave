@@ -7,6 +7,7 @@
 	(DEFCONST_INTERNAL, DEFCONSTX_INTERNAL): Use it.
 
 	* data.cc (Fis_list): Fix continuation char.
+	* defaults.cc (IMAGEPATH): Likewise.
 
 	* Map.cc (CHptr_to_index, goodCHptr): Delete static decl.
 

@@ -1,6 +1,8 @@
 2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* deprecated/isstr.m: New function.
+	* miscellaneous/horzcat.m, miscellaneous/vartcat.m: New files.
+
+	* deprecated/isstr.m: New file.
 
 2003-10-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

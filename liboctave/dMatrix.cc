@@ -1556,6 +1556,21 @@ Matrix::map (d_d_Mapper f) const
   return b.apply (f);
 }
 
+boolMatrix
+Matrix::map (b_d_Mapper f) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  boolMatrix retval (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = f (elem(i,j));
+
+  return retval;
+}
+
 Matrix&
 Matrix::apply (d_d_Mapper f)
 {

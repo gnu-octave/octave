@@ -1928,14 +1928,29 @@ ComplexMatrix::map (c_c_Mapper f) const
 Matrix
 ComplexMatrix::map (d_c_Mapper f) const
 {
-  const Complex *d = data ();
+  int nr = rows ();
+  int nc = cols ();
 
-  Matrix retval (rows (), columns ());
+  Matrix retval (nr, nc);
 
-  double *r = retval.fortran_vec ();
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = f (elem(i,j));
 
-  for (int i = 0; i < length (); i++)
-    r[i] = f (d[i]);
+  return retval;
+}
+
+boolMatrix
+ComplexMatrix::map (b_c_Mapper f) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  boolMatrix retval (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = f (elem(i,j));
 
   return retval;
 }

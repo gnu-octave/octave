@@ -207,6 +207,7 @@ public:
 
   ComplexMatrix map (c_c_Mapper f) const;
   Matrix map (d_c_Mapper f) const;
+  boolMatrix map (b_c_Mapper f) const;
 
   ComplexMatrix& apply (c_c_Mapper f);
 

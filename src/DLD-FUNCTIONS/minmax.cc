@@ -27,19 +27,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cmath>
 
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "oct-obj.h"
-
-#ifndef MAX
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
-#ifndef MIN
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#endif
 
 // XXX FIXME XXX -- it would be nice to share code among the min/max
 // functions below.
@@ -54,10 +47,7 @@ min (double d, const Matrix& m)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double m_elem = m (i, j);
-	result (i, j) = MIN (d, m_elem);
-      }
+      result (i, j) = xmin (d, m (i, j));
 
   return result;
 }
@@ -72,10 +62,7 @@ min (const Matrix& m, double d)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double m_elem = m (i, j);
-	result (i, j) = MIN (m_elem, d);
-      }
+      result (i, j) = xmin (m (i, j), d);
 
   return result;
 }
@@ -88,19 +75,9 @@ min (const Complex& c, const ComplexMatrix& m)
 
   ComplexMatrix result (nr, nc);
 
-  double abs_c = abs (c);
-
   for (int j = 0; j < nc; j++)
-    {
-      for (int i = 0; i < nr; i++)
-	{
-	  double abs_m_elem = abs (m (i, j));
-	  if (abs_c < abs_m_elem)
-	    result (i, j) = c;
-	  else
-	    result (i, j) = m (i, j);
-	}
-    }
+    for (int i = 0; i < nr; i++)
+      result (i, j) = xmin (c, m (i, j));
 
   return result;
 }
@@ -113,17 +90,9 @@ min (const ComplexMatrix& m, const Complex& c)
 
   ComplexMatrix result (nr, nc);
 
-  double abs_c = abs (c);
-
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double abs_m_elem = abs (m (i, j));
-	if (abs_m_elem < abs_c)
-	  result (i, j) = m (i, j);
-	else
-	  result (i, j) = c;
-      }
+      result (i, j) = xmin (m (i, j), c);
 
   return result;
 }
@@ -143,11 +112,7 @@ min (const Matrix& a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double a_elem = a (i, j);
-	double b_elem = b (i, j);
-	result (i, j) = MIN (a_elem, b_elem);
-      }
+      result (i, j) = xmin (a (i, j), b (i, j));
 
   return result;
 }
@@ -178,26 +143,12 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
       if (columns_are_real_only)
 	{
 	  for (int i = 0; i < nr; i++)
-	    {
-	      double a_elem = real (a (i, j));
-	      double b_elem = real (b (i, j));
-	      if (a_elem < b_elem)
-		result (i, j) = a_elem;
-	      else
-		result (i, j) = b_elem;
-	    }
+	    result (i, j) = xmin (real (a (i, j)), real (b (i, j)));
 	}
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    {
-	      double abs_a_elem = abs (a (i, j));
-	      double abs_b_elem = abs (b (i, j));
-	      if (abs_a_elem < abs_b_elem)
-		result (i, j) = a (i, j);
-	      else
-		result (i, j) = b (i, j);
-	    }
+	    result (i, j) = xmin (a (i, j), b (i, j));
 	}
     }
 
@@ -214,10 +165,7 @@ max (double d, const Matrix& m)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double m_elem = m (i, j);
-	result (i, j) = MAX (d, m_elem);
-      }
+      result (i, j) = xmax (d, m (i, j));
 
   return result;
 }
@@ -232,10 +180,7 @@ max (const Matrix& m, double d)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double m_elem = m (i, j);
-	result (i, j) = MAX (m_elem, d);
-      }
+      result (i, j) = xmax (m (i, j), d);
 
   return result;
 }
@@ -248,17 +193,9 @@ max (const Complex& c, const ComplexMatrix& m)
 
   ComplexMatrix result (nr, nc);
 
-  double abs_c = abs (c);
-
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double abs_m_elem = abs (m (i, j));
-	if (abs_c > abs_m_elem)
-	  result (i, j) = c;
-	else
-	  result (i, j) = m (i, j);
-      }
+      result (i, j) = xmax (c, m (i, j));
 
   return result;
 }
@@ -271,17 +208,9 @@ max (const ComplexMatrix& m, const Complex& c)
 
   ComplexMatrix result (nr, nc);
 
-  double abs_c = abs (c);
-
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double abs_m_elem = abs (m (i, j));
-	if (abs_m_elem > abs_c)
-	  result (i, j) = m (i, j);
-	else
-	  result (i, j) = c;
-      }
+      result (i, j) = xmax (m (i, j), c);
 
   return result;
 }
@@ -301,11 +230,7 @@ max (const Matrix& a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      {
-	double a_elem = a (i, j);
-	double b_elem = b (i, j);
-	result (i, j) = MAX (a_elem, b_elem);
-      }
+      result (i, j) = xmax (a (i, j), b (i, j));
 
   return result;
 }
@@ -336,26 +261,12 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
       if (columns_are_real_only)
 	{
 	  for (int i = 0; i < nr; i++)
-	    {
-	      double a_elem = real (a (i, j));
-	      double b_elem = real (b (i, j));
-	      if (a_elem > b_elem)
-		result (i, j) = a_elem;
-	      else
-		result (i, j) = b_elem;
-	    }
+	    result (i, j) = xmax (real (a (i, j)), real (b (i, j)));
 	}
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    {
-	      double abs_a_elem = abs (a (i, j));
-	      double abs_b_elem = abs (b (i, j));
-	      if (abs_a_elem > abs_b_elem)
-		result (i, j) = a (i, j);
-	      else
-		result (i, j) = b (i, j);
-	    }
+	    result (i, j) = xmax (a (i, j), b (i, j));
 	}
     }
 

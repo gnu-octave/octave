@@ -49,7 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define M_PI 3.14159265358979323846
 #endif
 
-// Double -> double mappers.
+// double -> double mappers.
 
 double
 arg (double x)
@@ -136,17 +136,19 @@ xerfc (double x)
 #endif
 }
 
-double
+// double -> bool mappers.
+
+bool
 xisnan (double x)
 {
 #if defined (HAVE_ISNAN)
   return isnan (x) != 0;
 #else
-  return 0;
+  return false;
 #endif
 }
 
-double
+bool
 xfinite (double x)
 {
 #if defined (HAVE_FINITE)
@@ -154,11 +156,11 @@ xfinite (double x)
 #elif defined (HAVE_ISINF) && defined (HAVE_ISNAN)
   return (! isinf (x) && ! isnan (x));
 #else
-  return 1;
+  return true;
 #endif
 }
 
-double
+bool
 xisinf (double x)
 {
 #if defined (HAVE_ISINF)
@@ -166,35 +168,25 @@ xisinf (double x)
 #elif defined (HAVE_FINITE) && defined (HAVE_ISNAN)
   return (! (finite (x) || isnan (x)));
 #else
-  return 0;
+  return false;
 #endif
 }
 
-// Complex -> double mappers.
+// (double, double) -> double mappers.
 
 double
-xisnan (const Complex& x)
+xmin (double x, double y)
 {
-#if defined (HAVE_ISNAN)
-  return (isnan (real (x)) || isnan (imag (x)));
-#else
-  return 0;
-#endif
+  return x < y ? x : (xisnan (x) ? x : y);
 }
 
 double
-xfinite (const Complex& x)
+xmax (double x, double y)
 {
-  return (xfinite (real (x)) && xfinite (imag (x)));
+  return x > y ? x : (xisnan (x) ? x : y);
 }
 
-double
-xisinf (const Complex& x)
-{
-  return (xisinf (real (x)) || xisinf (imag (x)));
-}
-
-// Complex -> complex mappers.
+// complex -> complex mappers.
 
 Complex
 acos (const Complex& x)
@@ -284,6 +276,44 @@ Complex
 tanh (const Complex& x)
 {
   return sinh (x) / cosh (x);
+}
+
+// complex -> bool mappers.
+
+bool
+xisnan (const Complex& x)
+{
+#if defined (HAVE_ISNAN)
+  return (isnan (real (x)) || isnan (imag (x)));
+#else
+  return false;
+#endif
+}
+
+bool
+xfinite (const Complex& x)
+{
+  return (xfinite (real (x)) && xfinite (imag (x)));
+}
+
+bool
+xisinf (const Complex& x)
+{
+  return (xisinf (real (x)) || xisinf (imag (x)));
+}
+
+// (complex, complex) -> complex mappers.
+
+Complex
+xmin (const Complex& x, const Complex& y)
+{
+  return abs (x) < abs (y) ? x : (xisnan (x) ? x : y);
+}
+
+Complex
+xmax (const Complex& x, const Complex& y)
+{
+  return abs (x) > abs (y) ? x : (xisnan (x) ? x : y);
 }
 
 /*

@@ -34,13 +34,13 @@ extern double round (double x);
 extern double signum (double x);
 extern double xerf (double x);
 extern double xerfc (double x);
-extern double xisnan (double x);
-extern double xfinite (double x);
-extern double xisinf (double x);
 
-extern double xisnan (const Complex& x);
-extern double xfinite (const Complex& x);
-extern double xisinf (const Complex& x);
+extern bool xisnan (double x);
+extern bool xfinite (double x);
+extern bool xisinf (double x);
+
+extern double xmin (double x, double y);
+extern double xmax (double x, double y);
 
 extern Complex acos (const Complex& x);
 extern Complex acosh (const Complex& x);
@@ -56,6 +56,13 @@ extern Complex round (const Complex& x);
 extern Complex signum (const Complex& x);
 extern Complex tan (const Complex& x);
 extern Complex tanh (const Complex& x);
+
+extern bool xisnan (const Complex& x);
+extern bool xfinite (const Complex& x);
+extern bool xisinf (const Complex& x);
+
+extern Complex xmin (const Complex& x, const Complex& y);
+extern Complex xmax (const Complex& x, const Complex& y);
 
 #endif
 

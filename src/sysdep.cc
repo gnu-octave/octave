@@ -52,6 +52,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 LOSE! LOSE!
 #endif
 
+#if defined (HAVE_SYS_IOCTL_H)
+#include <sys/ioctl.h>
+#endif
+
 #if defined (HAVE_FLOATINGPOINT_H)
 #include <floatingpoint.h>
 #endif

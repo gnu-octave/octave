@@ -1154,15 +1154,23 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
     }
 }
 
+static inline void
+do_plus_format (ostream& os, double d)
+{
+  if (d == 0.0)
+    os << " ";
+  else if (d < 0.0)
+    os << "-";
+  else
+    os << "+";
+}
+
 void
 octave_print_internal (ostream& os, double d, bool pr_as_read_syntax)
 {
   if (plus_format)
     {
-      if (d == 0.0)
-	os << " ";
-      else
-	os << "+";
+      do_plus_format (os, d);
     }
   else
     {
@@ -1192,10 +1200,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 	      if (j == 0)
 		os << "  ";
 
-	      if (m (i, j) == 0.0)
-		os << " ";
-	      else
-		os << "+";
+	      do_plus_format (os, m (i, j));
 	    }
 
 	  if (i < nr - 1)
@@ -1311,16 +1316,32 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
     }
 }
 
+static inline void
+do_plus_format (ostream& os, const Complex& c)
+{
+  double rp = c.real ();
+  double ip = c.imag ();
+
+  if (rp == 0.0)
+    {
+      if (ip == 0.0)
+	os << " ";
+      else
+	os << "i";
+    }
+  else if (ip == 0.0)
+    do_plus_format (os, rp);
+  else
+    os << "c";
+}
+
 void
 octave_print_internal (ostream& os, const Complex& c,
 		       bool pr_as_read_syntax)
 {
   if (plus_format)
     {
-      if (c == 0.0)
-	os << " ";
-      else
-	os << "+";
+      do_plus_format (os, c);
     }
   else
     {
@@ -1350,10 +1371,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	      if (j == 0)
 		os << "  ";
 
-	      if (cm (i, j) == 0.0)
-		os << " ";
-	      else
-		os << "+";
+	      do_plus_format (os, cm (i, j));
 	    }
 
 	  if (i < nr - 1)

@@ -180,6 +180,7 @@ public:
   // other operations
 
   Matrix map (d_d_Mapper f) const;
+  boolMatrix map (b_d_Mapper f) const;
 
   Matrix& apply (d_d_Mapper f);
 

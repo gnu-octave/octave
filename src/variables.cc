@@ -801,26 +801,17 @@ Associate a cryptic message with a variable name.")
   return retval;
 }
 
-// XXX FIXME XXX -- this should take a list of regular expressions
-// naming the variables to look for.
-
 static octave_value_list
 do_who (int argc, const string_vector& argv)
 {
   octave_value_list retval;
 
   bool show_builtins = false;
-  bool show_functions = (curr_sym_tab == top_level_sym_tab);
-  bool show_variables = true;
+  bool show_functions = false;
+  bool show_variables = false;
   bool show_verbose = false;
 
   string my_name = argv[0];
-
-  if (argc > 1)
-    {
-      show_functions = false;
-      show_variables = false;
-    }
 
   int i;
   for (i = 1; i < argc; i++)
@@ -844,6 +835,15 @@ do_who (int argc, const string_vector& argv)
 		 argv[i].c_str ());
       else
 	break;
+    }
+
+  // If no options were specified to select the type of symbol to
+  // display, then set defaults.
+
+  if (! (show_builtins || show_functions || show_variables))
+    {
+      show_functions = (curr_sym_tab == top_level_sym_tab);
+      show_variables = true;
     }
 
   int npats = argc - i;

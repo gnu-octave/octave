@@ -78,6 +78,9 @@ class ostream;
 #ifndef MAPPER_FCN_TYPEDEFS
 #define MAPPER_FCN_TYPEDEFS 1
 
+typedef bool (*b_d_Mapper)(double);
+typedef bool (*b_c_Mapper)(const Complex&);
+
 typedef double (*d_d_Mapper)(double);
 typedef double (*d_c_Mapper)(const Complex&);
 typedef Complex (*c_c_Mapper)(const Complex&);

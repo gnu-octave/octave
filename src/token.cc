@@ -151,7 +151,7 @@ token::token (const token& tok)
 }
 
 token&
-operator = (const token& tok)
+token::operator = (const token& tok)
 {
   panic_impossible ();
 }

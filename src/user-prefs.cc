@@ -49,6 +49,7 @@ init_user_prefs (void)
   user_pref.define_all_return_values = 0;
   user_pref.do_fortran_indexing = 0;
   user_pref.empty_list_elements_ok = 0;
+  user_pref.gnuplot_has_multiplot = 0;
   user_pref.ignore_function_time_stamp = 0;
   user_pref.implicit_str_to_num_ok = 0;
   user_pref.ok_to_lose_imaginary_part = 0;
@@ -181,6 +182,18 @@ empty_list_elements_ok (void)
 {
   user_pref.empty_list_elements_ok =
     check_str_pref ("empty_list_elements_ok");
+
+  return 0;
+}
+
+
+// Does gnuplot appear to support multiplot?
+
+int
+gnuplot_has_multiplot (void)
+{
+  user_pref.gnuplot_has_multiplot =
+    check_str_pref ("gnuplot_has_multiplot");
 
   return 0;
 }

@@ -1672,6 +1672,16 @@ default_return_value");
 	  sv_gnuplot_binary,
     "path to gnuplot binary");
 
+#ifdef GNUPLOT_HAS_MULTIPLOT
+  double gnuplot_has_multiplot = "true";
+#else
+  double gnuplot_has_multiplot = "false";
+#endif
+
+  DEFVAR ("gnuplot_has_multiplot", SBV_gnuplot_has_multiplot,
+	  gnuplot_has_multiplot, 0, gnuplot_has_multiplot,
+    "true if gnuplot supports multiplot, false otherwise");
+
   DEFCONST ("i", SBV_i, Complex (0.0, 1.0), 1, 0,
     "sqrt (-1)");
 

@@ -31,6 +31,7 @@ struct user_preferences
   int define_all_return_values;
   int do_fortran_indexing;
   int empty_list_elements_ok;
+  int gnuplot_supports_multiplot;
   int ignore_function_time_stamp;
   int implicit_str_to_num_ok;
   int ok_to_lose_imaginary_part;
@@ -81,6 +82,7 @@ extern int beep_on_error (void);
 extern int define_all_return_values (void);
 extern int do_fortran_indexing (void);
 extern int empty_list_elements_ok (void);
+extern int gnuplot_supports_multiplot (void);
 extern int ignore_function_time_stamp (void);
 extern int implicit_str_to_num_ok (void);
 extern int ok_to_lose_imaginary_part (void);

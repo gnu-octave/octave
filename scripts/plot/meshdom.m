@@ -25,7 +25,7 @@
 ## See the file sombrero.m for an example of using mesh and meshdom.
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 

@@ -37,7 +37,7 @@
 ## are equivalent.
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+##           stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 

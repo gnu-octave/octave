@@ -26,7 +26,7 @@
 ##
 ## With no arguments, turns autoscaling on.
 ##
-## If your plot is already drawn, then you need to REPLOT before 
+## If your plot is already drawn, then you need to REPLOT before
 ## the new axis limits will take effect.
 
 ## Author: jwe

@@ -27,7 +27,7 @@
 ## Adapted-By: jwe
 
 function y = lin2mu (x)
-  
+
   if (nargin != 1)
     usage ("y = lin2mu (x)");
   endif
@@ -35,7 +35,7 @@ function y = lin2mu (x)
   if (! is_vector (x))
     error ("lin2mu: x must be a vector");
   endif
-  
+
   ## transform 8-bit format to 16-bit
   if (max (abs (x)) <= 128)
     x = 256 .* x;
@@ -45,7 +45,7 @@ function y = lin2mu (x)
   sig = sign(x) + (x == 0);
 
   ## take absolute value of x, but force it to be smaller than 32636;
-  ## add bias 
+  ## add bias
   x = min (abs (x), 32635 * ones (size (x))) + 132;
 
   ## find exponent and fraction of bineary representation

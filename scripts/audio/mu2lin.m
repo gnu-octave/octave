@@ -21,7 +21,7 @@
 ##
 ## If x is a vector of audio data with mu-law encoding, mu2lin (x)
 ## holds the same data with linear encoding.
-## The optional argument bit specifies whether the input data is 
+## The optional argument bit specifies whether the input data is
 ## 8 bit (default) or 16 bit.
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
@@ -29,7 +29,7 @@
 ## Adapted-By: jwe
 
 function y = mu2lin (x, bit)
-  
+
   if (nargin == 1)
     bit = 8;
   elseif (nargin == 2)
@@ -43,7 +43,7 @@ function y = mu2lin (x, bit)
   if (! is_vector (x))
     error ("mu2lin: x must be a vector");
   endif
-  
+
   exp_lut = [0; 132; 396; 924; 1980; 4092; 8316; 16764];
 
   ## invert x bitwise

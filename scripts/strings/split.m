@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -26,22 +26,22 @@
 ## Author: jwe
 
 function m = split (s, t)
-  
+
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 2)
     usage ("split (s, t)");
   endif
-  
+
   if (isstr (s) && isstr (t))
-  
+
   l_s = length (s);
   l_t = length (t);
-  
+
   if (l_s < l_t)
     error ("split: s must not be shorter than t");
   endif
-  
+
   if (l_t == 0)
     ind = 1 : (l_s + 1);
   else
@@ -70,7 +70,7 @@ function m = split (s, t)
   endfor
 
   m = eval (sprintf ("str2mat (%s);", cmd));
-  
+
 
   else
     error ("split:  both s and t must be strings");

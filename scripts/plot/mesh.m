@@ -25,8 +25,8 @@
 ## columns of z correspond to different x values and rows of z correspond
 ## to different y values.
 ##
-## See also: plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom, 
-##           contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+## See also: plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
+##           contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 
@@ -100,7 +100,7 @@ function mesh (x, y, z)
       endif
     else
       error ("mesh: x and y must be vectors and z must be a matrix");
-    endif    
+    endif
   else
     usage ("mesh (z)");
   endif

@@ -27,7 +27,7 @@
 ##
 ##   a: nxn
 ##   b: nxm
-##   c: nxn, symmetric positive semidefinite 
+##   c: nxn, symmetric positive semidefinite
 ##   r: mxm, invertible
 ##
 ## If c is not square, then the function attempts to use c'*c instead.
@@ -40,7 +40,7 @@
 ## Systems, Vol 5, no 2 (1992)  pp 165-194.
 ##
 ## opt is an option passed to the eigenvalue balancing routine default
-## is "B". 
+## is "B".
 ##
 ## See also: balance, are
 

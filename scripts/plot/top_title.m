@@ -22,7 +22,7 @@
 ## NOTE: this will work only with gnuplot installed with
 ##       multiplot patch
 ##
-## makes a title with text "text" at the top of the plot 
+## makes a title with text "text" at the top of the plot
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95

@@ -19,7 +19,7 @@
 
 ## Usage: [l, m, p, e] = dlqe (A, G, C, SigW, SigV {,Z})
 ##
-## Linear quadratic estimator (Kalman filter) design for the 
+## Linear quadratic estimator (Kalman filter) design for the
 ## discrete time system
 ##
 ##  x[k+1] = A x[k] + B u[k] + G w[k]
@@ -30,7 +30,7 @@
 ##
 ## Z (if specified) is cov(w,v); otherwise cov(w,v) = 0.
 ##
-## Observer structure is 
+## Observer structure is
 ##     z[k+1] = A z[k] + B u[k] + k(y[k] - C z[k] - D u[k]).
 ##
 ## Returns:

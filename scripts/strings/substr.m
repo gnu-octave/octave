@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -51,5 +51,5 @@ function t = substr (s, beg, len)
   else
     error ("substr: expecting string argument");
   endif
-  
+
 endfunction

@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = cot (z)
-  
+
   if (nargin != 1)
     usage ("cot (z)");
   endif
 
   w = 1 ./ tan(z);
-  
+
 endfunction

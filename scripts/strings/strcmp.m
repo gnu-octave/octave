@@ -23,11 +23,11 @@
 ##
 ## WARNING:  Unlike the C function of the same name, this function
 ## returns 1 for equal and zero for not equal.  Why?  To be compatible
-## with Matlab, of course. 
+## with Matlab, of course.
 ##
 ## Why doesn't this always return a scalar instead of vector with
 ## elements corresponding to the rows of the string array?  To be
-## compatible with Matlab, of course. 
+## compatible with Matlab, of course.
 
 ## Author: jwe
 

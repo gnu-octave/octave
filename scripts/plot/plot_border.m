@@ -23,7 +23,7 @@
 ##       multiplot patch
 ##
 ## Multiple arguments allowed to specify the sides on which the border
-## is shown. allowed strings: 
+## is shown. allowed strings:
 ##
 ## allowed input strings:
 ##
@@ -45,7 +45,7 @@ function plot_border (...)
   if (! gnuplot_has_multiplot)
     error ("plot_border: gnuplot does not appear to support this feature");
   endif
-    
+
   south = 0;
   west = 0;
   north = 0;

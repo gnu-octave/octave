@@ -56,7 +56,7 @@ function [h, w] = freqz(b,...)
   elseif (nargin == 4)
     a = va_arg();
     n = va_arg();
-    region = va_arg();     
+    region = va_arg();
   endif
 
   la = length(a);
@@ -80,7 +80,7 @@ function [h, w] = freqz(b,...)
       w = 2*pi*[0:(n-1)]/n;
     else
       w = pi*[0:(n-1)]/n;
-    endif    
+    endif
     h = polyval(postpad(b,k),exp(j*w)) ./ polyval(postpad(a,k),exp(j*w));
   endif
 

@@ -45,7 +45,7 @@ function [nn, xx] = hist (y, x)
   if (nargin < 1 || nargin > 2)
     usage ("[nn, xx] = hist (y, x)");
   endif
-    
+
   if (is_vector (y))
     max_val = max (y);
     min_val = min (y);

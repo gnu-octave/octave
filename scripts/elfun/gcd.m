@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## usage: gcd (a, ...)
-##  
+##
 ## [g [, v]] = gcd (a) returns the greatest common divisor g of the
 ## entries of the integer vector a, and an integer vector v such that
 ## g = v(1) * a(k) + ... + v(k) * a(k).
@@ -37,11 +37,11 @@ function [g, v] = gcd (a, ...)
       a = [a, (va_arg ())];
     endfor
   endif
-  
+
   if (round (a) != a)
     error ("gcd: all arguments must be integer");
   endif
-  
+
   g = abs (a(1));
   v = sign (a(1));
   for k = 1:(length (a) - 1)
@@ -55,6 +55,5 @@ function [g, v] = gcd (a, ...)
     g = x(1);
     v = [x(2) * v, x(3) * (sign (a(k+1)))];
   endfor
-    
+
 endfunction
-    

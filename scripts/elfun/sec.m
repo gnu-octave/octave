@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = sec (z)
-  
+
   if (nargin != 1)
     usage ("sec (z)");
   endif
-  
+
   w = 1 ./ cos(z);
-  
+
 endfunction

@@ -59,7 +59,7 @@ function [k, p, e] = lqr (a, b, q, r, zz)
   endif
 
   ## Check q.
-  
+
   if ((n1 = is_square (q)) == 0 || n1 != n)
     error ("lqr: q must be square and conformal with a");
   endif

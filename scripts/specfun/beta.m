@@ -27,7 +27,7 @@
 ## Adapted-By: jwe
 
 function retval = beta (a, b)
-  
+
   if (nargin != 2)
     usage ("beta (a, b)");
   endif

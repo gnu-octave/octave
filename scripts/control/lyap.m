@@ -24,14 +24,14 @@
 ##
 ##   a x + x b + c = 0
 ##
-## If only (a, b) are specified, then lyap returns the solution of the 
+## If only (a, b) are specified, then lyap returns the solution of the
 ## Lyapunov equation
 ##
 ##   a' x + x a + b = 0
 ##
 ## If b is not square, then lyap returns the solution of either
 ##
-##   a' x + x a + b' b = 0 	
+##   a' x + x a + b' b = 0
 ##
 ## or
 ##
@@ -66,7 +66,7 @@ function x = lyap (a, b, c)
 
 	b = b * b';
 	a = a';
-      else 
+      else
 
 	## Try to solve a'x + x a + b' b = 0.
 
@@ -85,7 +85,7 @@ function x = lyap (a, b, c)
     b = a;
     a = b';
 
-  else 
+  else
 
     ## Check dimensions.
 

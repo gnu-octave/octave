@@ -20,7 +20,7 @@
 ## usage: fftconv (a, b [, N])
 ##
 ## c = fftconv (a, b) returns the convolution of the vectors a and b,
-## a vector with length equal to length (a) + length (b) - 1.  
+## a vector with length equal to length (a) + length (b) - 1.
 ## If a and b are the coefficient vectors of two polynomials, c is
 ## the coefficient vector of the product polynomial.
 ##
@@ -36,7 +36,7 @@ function c = fftconv (a, b, N)
   if (nargin < 2 || nargin > 3)
     usage ("fftconv (b, x [, N])");
   endif
-  
+
   if (is_matrix (a) || is_matrix (b))
     error ("fftconv:  both a and b should be vectors");
   endif

@@ -77,7 +77,7 @@ function x = are (a, b, c, opt)
     ## use Boley-Golub (Syst. Contr. Letters, 1984) method, not the
     ##
     ##                     n-1
-    ## rank ([ B A*B ... A^   *B]) method 
+    ## rank ([ B A*B ... A^   *B]) method
 
     [d, h] = balance ([a, -b; -c, -a'], opt);
     [u, s] = schur (h, "A");

@@ -38,7 +38,7 @@
 ## Adapted-By: jwe
 
 function [BETA, v, R] = gls (Y, X, O)
-  
+
   if (nargin != 3)
     usage ("[BETA, v [, R]] = gls (Y, X, O)");
   endif
@@ -46,7 +46,7 @@ function [BETA, v, R] = gls (Y, X, O)
   [rx, cx] = size (X);
   [ry, cy] = size (Y);
   if (rx != ry)
-    error ("gls: incorrect matrix dimensions");  
+    error ("gls: incorrect matrix dimensions");
   endif
 
   O = O^(-1/2);

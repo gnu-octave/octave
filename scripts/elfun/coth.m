@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = coth (z)
-  
+
   if (nargin != 1)
     usage ("coth (z)");
   endif
 
   w = 1 ./ tanh(z);
-  
+
 endfunction

@@ -32,7 +32,7 @@ function retval = is_square (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);
-    if (nr == nc) 
+    if (nr == nc)
       retval = nr;
     else
       retval = 0;

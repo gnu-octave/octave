@@ -42,7 +42,7 @@
 ## formats are used, otherwise the full color formats are used.
 ##
 ## The conversion to PostScript is based on pbmtolps.c, which was
-## written by 
+## written by
 ##
 ##   George Phillips <phillips@cs.ubc.ca>
 ##   Department of Computer Science
@@ -58,7 +58,7 @@
 
 ## Rewritten by jwe to avoid using octoppm and pbm routines so that
 ## people who don't have the the pbm stuff installed can still use this
-## function. 
+## function.
 ##
 ## The conversion to PostScript is based on pnmtops.c, which is part of
 ## the portable bitmap utilties and bears this copyright notice:

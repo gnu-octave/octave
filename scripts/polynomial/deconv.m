@@ -21,7 +21,7 @@
 ##
 ## Deconvolve two vectors.
 ##
-## [b, r] = deconv (y, a) solves for b and r such that 
+## [b, r] = deconv (y, a) solves for b and r such that
 ##    y = conv(a,b) + r
 ##
 ## If y and a are polynomial coefficient vectors, b will contain the
@@ -29,7 +29,7 @@
 ## polynomial of lowest order.
 ##
 ## SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
-## polyinteg 
+## polyinteg
 
 ## Author: Tony Richardson <amr@mpl.ucsd.edu>
 ## Created: June 1994

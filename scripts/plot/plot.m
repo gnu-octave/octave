@@ -59,7 +59,7 @@
 ##     b will be plotted with points of type "*".
 ##
 ## See also: semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 

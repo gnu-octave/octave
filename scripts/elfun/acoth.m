@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## acoth (z):  compute the inverse hyperbolic cotangent for each element of z. 
+## acoth (z):  compute the inverse hyperbolic cotangent for each element of z.
 
 ## Author: jwe
 

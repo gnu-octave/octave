@@ -24,7 +24,7 @@
 ##
 ## If the final argument is omitted, n = 50 is assumed.
 ##
-## All three arguments must be scalars. 
+## All three arguments must be scalars.
 ##
 ## Note that if if x2 is pi, the points are between 10^x1 and pi, NOT
 ## 10^x1 and 10^pi.
@@ -46,7 +46,7 @@ function retval = logspace (x1, x2, n)
       npoints = fix (n);
     else
       error ("logspace: arguments must be scalars");
-    endif  
+    endif
   else
     usage ("logspace (x1, x2 [, n])");
   endif

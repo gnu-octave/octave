@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = csc (z)
-  
+
   if (nargin != 1)
     usage ("csc (z)");
   endif
 
   w = 1 ./ sin(z);
-  
+
 endfunction

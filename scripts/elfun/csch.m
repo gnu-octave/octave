@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = csch (z)
-  
+
   if (nargin != 1)
     usage ("csch (z)");
   endif
 
   w = 1 ./ sinh(z);
-  
+
 endfunction

@@ -24,7 +24,7 @@
 ## Author: jwe
 
 function y = betainc (x, a, b)
-  
+
   y = betai (a, b, x);
 
 endfunction

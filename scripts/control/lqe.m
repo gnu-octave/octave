@@ -19,7 +19,7 @@
 
 ## Usage: [k, p, e] = lqe (A, G, C, SigW, SigV {,Z})
 ##
-## Linear quadratic estimator (Kalman filter) design for the 
+## Linear quadratic estimator (Kalman filter) design for the
 ## continuous time system
 ##
 ##   dx/dt = A x + B u + G w

@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = log2 (z)
-  
+
 if (nargin != 1)
     usage ("log2 (z)");
   endif
 
   w = log(z) / log(2);
-  
+
 endfunction

@@ -26,7 +26,7 @@
 ## Adapted-By: jwe
 
 function setaudio (w_type, value)
-  
+
   if (nargin == 0)
     system ("mixer");
   elseif (nargin == 1)
@@ -36,5 +36,5 @@ function setaudio (w_type, value)
   else
     usage ("setaudio ([w_type [, value]])");
   endif
-  
+
 endfunction

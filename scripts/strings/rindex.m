@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -56,5 +56,5 @@ function n = rindex (s, t)
   else
     error ("rindex: expecting string arguments");
   endif
-  
+
 endfunction

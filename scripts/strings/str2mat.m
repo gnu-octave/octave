@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 ## Author: jwe
 
 function m = str2mat (...)
-  
+
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin == 0)
@@ -60,5 +60,5 @@ function m = str2mat (...)
       m (k, 1:tmp) = s;
     endif
   endfor
-  
+
 endfunction

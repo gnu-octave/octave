@@ -20,7 +20,7 @@
 ## usage: contour (z, n, x, y)
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 
@@ -76,7 +76,7 @@ function contour (z, n, x, y)
       endif
     else
       error ("mesh: x and y must be vectors and z must be a matrix");
-    endif    
+    endif
   else
     usage ("mesh (z, levels, x, y)");
   endif

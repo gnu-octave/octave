@@ -22,7 +22,7 @@
 ## NOTE: this will work only with gnuplot installed with
 ##       multiplot patch
 ##
-## makes a title with the given text at the bottom of the plot 
+## makes a title with the given text at the bottom of the plot
 ## rather than the top.
 ##
 
@@ -34,7 +34,7 @@ function bottom_title (text)
   if (! gnuplot_has_multiplot)
     error ("bottom_title: gnuplot does not appear to support this feature");
   endif
-    
+
   if (nargin != 1)
     usage ("bottom_title (text)");
   endif

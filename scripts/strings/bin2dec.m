@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 function y = bin2dec (x)
 
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
-  
+
   if (nargin != 1)
     usage ("bin2dec (x)");
   endif
@@ -39,5 +39,5 @@ function y = bin2dec (x)
   else
     error ("bin2dec: argument must be a string of zeros and ones");
   endif
-  
+
 endfunction

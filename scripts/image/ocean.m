@@ -36,7 +36,7 @@ function map = ocean (number)
   endif
 
   cutin = fix (number/3);
-  
+
   dr = (number - 1) / cutin;
 
   r = prepad ([0:dr:(number-1)], number)';

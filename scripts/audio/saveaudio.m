@@ -21,7 +21,7 @@
 ##
 ## Saves a vector X of audio data in the file "name.ext".
 ## The format of the audio file is determined by ext which has to be
-## written without an inital ".";  default value for ext is "lin". 
+## written without an inital ".";  default value for ext is "lin".
 ##
 ## Currently, the following audio formats are supported:
 ## *) mu-law files with extension "mu", "au" or "snd"
@@ -34,7 +34,7 @@
 ## Adapted-By: jwe
 
 function saveaudio (name, X, ext, bit)
-  
+
   if (nargin < 2 || nargin > 4)
     usage ("saveaudio (X, name [, ext [, bit]])");
   endif
@@ -61,7 +61,7 @@ function saveaudio (name, X, ext, bit)
 
   num = fopen ([name, ".", ext], "w");
 
-  if (strcmp (ext, "lin") || strcmp (ext, "raw")) 
+  if (strcmp (ext, "lin") || strcmp (ext, "raw"))
     if (bit == 8)
       ld = max (abs (X));
       if (ld > 127)   # convert 16 to 8 bit
@@ -86,5 +86,5 @@ function saveaudio (name, X, ext, bit)
   endif
 
   fclose (num);
-  
+
 endfunction

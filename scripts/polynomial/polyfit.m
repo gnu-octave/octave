@@ -20,7 +20,7 @@
 ## usage:  polyfit (x, y, n)
 ##
 ## Returns the coefficients of a polynomial p(x) of degree n that
-## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data 
+## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data
 ## in the least squares sense.
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -28,24 +28,24 @@
 ## Adapted-By: jwe
 
 function p = polyfit (x, y, n)
-  
- 
+
+
   if (nargin != 3)
     usage ("polyfit (x, y, n)");
   endif
-  
+
   if (! (is_vector (x) && is_vector (y) && size (x) == size (y)))
     error ("polyfit: x and y must be vectors of the same size");
   endif
-  
+
   if (! (is_scalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
     error ("polyfit: n must be a nonnegative integer");
   endif
-  
+
   l = length (x);
   x = reshape (x, l, 1);
   y = reshape (y, l, 1);
-  
+
   X = ones (l, 1);
 
   if (n > 0)

@@ -24,7 +24,7 @@
 ## If the argument is omitted, "on" is assumed.
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 

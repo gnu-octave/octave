@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: playaudio (name [, ext]) 
+## usage: playaudio (name [, ext])
 ##        playaudio (X)
 ##
 ## `playaudio ("name" [, "ext"])' plays the audio file "name.ext". The
@@ -25,9 +25,9 @@
 ## without the initial ".", is "lin".
 ## Currently, the following audio formats are suppored:
 ## *) linear encoding with extension "lin" or "raw", played using
-##    /dev/dsp 
+##    /dev/dsp
 ## *) mu-law encoding with extension "mu", "au" or "snd", played
-##    using /dev/audio 
+##    using /dev/audio
 ##
 ## `playaudio (X)' plays the audio data contained in the vector X.
 
@@ -36,12 +36,12 @@
 ## Adapted-By: jwe
 
 function playaudio (name, ext)
-  
+
   file = octave_tmp_file_name ();
 
   usage_msg = "playaudio (name [, ext])  or  playaudio (X)";
-  
-  if (nargin == 1 && is_vector (name) && ! isstr (name)) 
+
+  if (nargin == 1 && is_vector (name) && ! isstr (name))
     ## play a vector
     [nr, nc] = size (name);
     if (nc != 1)

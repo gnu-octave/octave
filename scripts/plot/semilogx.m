@@ -21,13 +21,13 @@
 ##        semilogx (x1, y1, x2, y2, ...)
 ##        semilogx (x, y, fmt)
 ##
-## Make a 2D plot of y versus x using a log scale for the x axis. 
+## Make a 2D plot of y versus x using a log scale for the x axis.
 ##
 ## See the help message for the plot command for a description of how
-## the arguments are interpreted. 
+## the arguments are interpreted.
 ##
 ## See also: plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-##           gplot, gsplot, replot, xlabel, ylabel, title 
+##           gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 

@@ -19,13 +19,13 @@
 
 ## usage:  X = loadaudio (name [, ext [, bit]])
 ##
-## Loads audio data from the file "name.ext" into the data vector X. 
+## Loads audio data from the file "name.ext" into the data vector X.
 ## Default value for the "ext" argument, which has to be written
 ## without the initial ".", is "lin".
 ## Currently, the following audio formats are supported:
 ## *) mu-law encoding with extension "mu", "au" or "snd"
 ## *) linear encoding with extension "lin" or "raw"
-## 
+##
 ## The `bit' argument can be either 8 (default) or 16.
 ## Depending on the value of bit, linearly encoded files are
 ## interpreted as being in 8 and 16 bit format, respectively, and
@@ -37,7 +37,7 @@
 ## Adapted-By: jwe
 
 function X = loadaudio (name, ext, bit)
-  
+
   if (nargin == 0 || nargin > 3)
     usage ("loadaudio (name [, ext [, bit]])");
   endif
@@ -76,7 +76,7 @@ function X = loadaudio (name, ext, bit)
   endif
 
   fclose (num);
-  
+
 endfunction
 
 

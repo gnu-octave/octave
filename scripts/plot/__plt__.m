@@ -65,7 +65,7 @@ function __plt__ (caller, ...)
 	    y_set = 0;
 	  else
 	    y = new;
-	    y_set = 1;          
+	    y_set = 1;
 	  endif
 	else
 	  x = new;

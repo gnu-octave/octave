@@ -20,7 +20,7 @@
 ## usage: title (text)
 ##
 ## Defines a title for a plot.  The title will appear the next time a
-## plot is displayed. 
+## plot is displayed.
 ##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel

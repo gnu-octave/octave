@@ -24,7 +24,7 @@
 ## The optional third argument specifies the line type.
 ##
 ## See also: plot, semilogx, semilogy, loglog, mesh, contour, bar,
-##           stairs, gplot, gsplot, replot, xlabel, ylabel, title 
+##           stairs, gplot, gsplot, replot, xlabel, ylabel, title
 
 ## Author: jwe
 

@@ -38,8 +38,8 @@ function subwindow (xn, yn)
 
   ## global variables to keep track of multiplot options
 
-  global multiplot_mode 
-  global multiplot_xsize multiplot_ysize 
+  global multiplot_mode
+  global multiplot_xsize multiplot_ysize
   global multiplot_xn multiplot_yn
 
   ## check calling argument count
@@ -58,7 +58,7 @@ function subwindow (xn, yn)
   yn = round (yn);
 
   ## switch to multiplot mode if not already in, and use the args as the
-  ## args to multiplot() 
+  ## args to multiplot()
 
   if (multiplot_mode != 1)
     multiplot (xn, yn);
@@ -75,5 +75,5 @@ function subwindow (xn, yn)
   yo = (multiplot_yn - yn)*multiplot_ysize;
 
   eval (sprintf ("set origin %g, %g", xo, yo));
-      
+
 endfunction

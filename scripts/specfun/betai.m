@@ -29,10 +29,10 @@
 ## Adapted-By: jwe
 
 function y = betai (a, b, x)
-  
+
   ## Computation is based on the series expansion
-  ##   betai(a, b, x) 
-  ##     = \frac{1}{B(a, b)} x^a 
+  ##   betai(a, b, x)
+  ##     = \frac{1}{B(a, b)} x^a
   ##         \sum_{k=0}^\infty \frac{(1-b)\cdots(k-b)}{a+k} \frac{x^k}{k!}
   ## for x <= 1/2.  For x > 1/2, betai(a, b, x) = 1 - betai(b, a, 1-x).
 
@@ -52,7 +52,7 @@ function y = betai (a, b, x)
   endif
 
   if (nr > 1 || nc > 1)
-    
+
     if (! (is_scalar (a) && is_scalar (b)))
       error ("betai: if x is not a scalar, a and b must be scalars");
     endif
@@ -76,18 +76,18 @@ function y = betai (a, b, x)
       tmp    = cumprod((1 - b./k) * x(ind)) ./ ((a + k) * ones(1, len));
       y(ind) = c * exp(a * log(x(ind))) .* (1/a + sum(tmp));
     endif
-    
+
     ind = find ((x > 1/2) & (x < 1));
     len = length(ind);
     if (len > 0)
       tmp    = cumprod ((1 - a./k) * (1 - x(ind))) ./ ((b + k) * ones(1, len));
       y(ind) = 1 - c * exp (b * log (1-x(ind))) .* (1/b + sum (tmp));
     endif
-  
+
     y = reshape (y, nr, nc);
-    
+
   else
-    
+
     [ra, ca] = size (a);
     [rb, cb] = size (b);
     if (! (ra == rb && ca == cb))
@@ -98,7 +98,7 @@ function y = betai (a, b, x)
     a = reshape (a, 1, n);
     b = reshape (b, 1, n);
     c = exp (lgamma (a+b) - lgamma (a) - lgamma (b));
-    
+
     if (x == 0)
       y   = zeros (1, n);
     elseif (x == 1)
@@ -115,9 +115,9 @@ function y = betai (a, b, x)
 	y   = 1 - c .* exp (b * log (1-x)) .* (1 ./ b + sum (tmp));
       endif
     endif
-  
+
     y = reshape (y, ra, ca);
-    
+
   endif
 
 endfunction

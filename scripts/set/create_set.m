@@ -52,6 +52,6 @@ function y = create_set(x)
     endwhile
     y = y(1:(yindex-1));
   endif
-  
+
 endfunction
-  
+

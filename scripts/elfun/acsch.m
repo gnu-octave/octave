@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = acsch (z)
-  
+
   if (nargin != 1)
     usage ("acsch (z)");
   endif
 
   w = asinh (1 ./ z);
-  
+
 endfunction

@@ -20,7 +20,7 @@
 ## Usage: x = kron (a, b)
 ##
 ## Form the Kronecker product of two matrices, defined block by block
-## as 
+## as
 ##
 ##   x = [a(i,j) b]
 

@@ -34,11 +34,11 @@ function l = lcm (a, ...)
       a = [a, (va_arg ())];
     endfor
   endif
-  
+
   if (round (a) != a)
     error ("lcm:  all arguments must be integer");
   endif
-  
+
   if (any (a) == 0)
     l = 0;
   else
@@ -48,6 +48,5 @@ function l = lcm (a, ...)
       l = l * a(k+1) / gcd (l, a(k+1));
     endfor
   endif
-    
+
 endfunction
-    

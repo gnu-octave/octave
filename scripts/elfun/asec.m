@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = asec (z)
-  
+
   if (nargin != 1)
     usage ("asec (z)");
   endif
 
   w = acos (1 ./ z);
-  
+
 endfunction

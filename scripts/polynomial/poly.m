@@ -19,7 +19,7 @@
 
 ## usage: poly (x)
 ##
-## If A is a square n-by-n matrix, poly (A) is the row vector of 
+## If A is a square n-by-n matrix, poly (A) is the row vector of
 ## the coefficients of det (z * eye(n) - A), the characteristic
 ## polynomial of A.
 ##
@@ -47,15 +47,15 @@ function y = poly (x)
   else
     usage ("poly (x), where x is a vector or a square matrix");
   endif
-  
+
   y = zeros (1, n+1);
   y(1) = 1;
   for j = 1:n;
     y(2:(j+1)) = y(2:(j+1)) - v(j) .* y(1:j);
   endfor
-  
+
   if (all (all (imag (x) == 0)))
     y = real (y);
   endif
-  
+
 endfunction

@@ -23,7 +23,7 @@
 ##
 ## If multiplot(0,0) then it will close multiplot mode and and if
 ## arguments are non-zero, then it will set up multiplot mode with
-## xn,yn subplots along x and y axes. 
+## xn,yn subplots along x and y axes.
 ##
 ## NOTE: this will work only with gnuplot installed with
 ##       multiplot patch
@@ -37,7 +37,7 @@ function multiplot (xn, yn)
   if (! gnuplot_has_multiplot)
     error ("multiplot: gnuplot does not appear to support this feature");
   endif
-    
+
   ## global variables to keep track of multiplot options
 
   global multiplot_mode

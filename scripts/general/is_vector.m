@@ -20,7 +20,7 @@
 ## usage: is_vector (x)
 ##
 ## Return 1 if the either the number of rows (columns) of x is 1 and
-## the number of columns (rows) is greater than one.  Otherwise, return 0. 
+## the number of columns (rows) is greater than one.  Otherwise, return 0.
 ##
 ## See also: size, rows, columns, length, is_scalar, is_matrix
 

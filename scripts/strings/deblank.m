@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -24,13 +24,13 @@
 ## Author: jwe
 
 function t = deblank (s)
-  
+
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("deblank (s)");
   endif
-  
+
   if (isstr (s))
 
     [nr, nc] = size (s);

@@ -27,14 +27,14 @@
 ## If a and b are polynomial coefficient vectors, conv returns the
 ## coefficients of the product polynomial.
 ##
-## SEE ALSO: deconv, poly, roots, residue, polyval, polyderiv, polyinteg 
+## SEE ALSO: deconv, poly, roots, residue, polyval, polyderiv, polyinteg
 
 ## Author: Tony Richardson <amr@mpl.ucsd.edu>
 ## Created: June 1994
 ## Adapted-By: jwe
 
 function y = conv (a, b)
-  
+
   if (nargin != 2)
     usage ("conv(a, b)");
   endif

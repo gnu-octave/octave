@@ -21,7 +21,7 @@
 ##
 ## Round x to the nearest integer and format as a string.
 ##
-## See also: sprintf, num2str 
+## See also: sprintf, num2str
 
 ## Author: jwe
 

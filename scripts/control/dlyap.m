@@ -20,7 +20,7 @@
 ## Usage: x = dlyap (a, b)
 ##
 ## Solve a x a' - x + b = 0 (discrete Lyapunov equation) for square
-## matrices a and b.  If b is not square, then the function attempts 
+## matrices a and b.  If b is not square, then the function attempts
 ## to solve either
 ##
 ##  a x a' - x + b b' = 0

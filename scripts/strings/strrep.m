@@ -1,5 +1,5 @@
 ## Copyright (C) 1995, 1996  Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -27,20 +27,20 @@
 ## Adapted-By: jwe
 
 function t = strrep (s, x, y)
-  
+
   if (nargin <> 3)
     usage ("strrep (s, x, y)");
   endif
-  
+
   if (! (isstr (s) && isstr (x) && isstr (y)))
     error ("strrep: all arguments must be strings");
   endif
-  
+
   if (length (x) > length (s) || isempty (x))
     t = s;
     return;
   endif
-  
+
   ind = findstr (s, x, 0);
   len = length (ind);
   if (len == 0)
@@ -61,5 +61,5 @@ function t = strrep (s, x, y)
     t = [t, tmp];
     t = setstr (t);
   endif
-  
+
 endfunction

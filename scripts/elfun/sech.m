@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = sech (z)
-  
+
 if (nargin != 1)
     usage ("sech (z)");
   endif
 
   w = 1 ./ cosh(z);
-  
+
 endfunction

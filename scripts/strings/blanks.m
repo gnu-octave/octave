@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -24,21 +24,21 @@
 ## Author: jwe
 
 function s = blanks (n)
-  
+
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("blanks (n)");
   endif
-  
+
   if (is_scalar (n) && n > 0 && n == round (n))
     s = setstr (ones (1, n) * toascii (" "));
   else
     error ("blanks: n must be a positive integer");
   endif
-  
+
 endfunction
-  
+
 
 
 

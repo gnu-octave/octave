@@ -64,8 +64,8 @@ function subplot (rows, columns, index)
 
   ## global variables to keep track of multiplot options
 
-  global multiplot_mode 
-  global multiplot_xsize multiplot_ysize 
+  global multiplot_mode
+  global multiplot_xsize multiplot_ysize
   global multiplot_xn multiplot_yn
   global multiplot_xi multiplot_yi
 

@@ -31,23 +31,23 @@ function r = roots (v)
   if (min (size (v)) > 1 || nargin != 1)
     usage ("roots (v), where v is a vector");
   endif
-  
+
   n = length (v);
-  v = reshape (v, 1, n);  
+  v = reshape (v, 1, n);
 
   ## If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ], we can remove the
-  ## leading k zeros and n - k - l roots of the polynomial are zero.  
+  ## leading k zeros and n - k - l roots of the polynomial are zero.
 
   f = find (v);
   m = max (size (f));
-  
+
   if (m > 0 && n > 1)
     v = v(f(1):f(m));
     l = max (size (v));
     if (l > 1)
       A = diag (ones (1, l-2), -1);
       A(1,:) = -v(2:l) ./ v(1);
-      r = eig (A);    
+      r = eig (A);
       if (f(m) < n)
         tmp = zeros (n - f(m), 1);
 	r = [r; tmp];
@@ -58,5 +58,5 @@ function r = roots (v)
   else
     r = [];
   endif
-  
+
 endfunction

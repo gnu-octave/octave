@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -20,7 +20,7 @@
 ## usage:  dec2hex (d)
 ##
 ## Returns the hex number corresponding to the decimal number d.  For
-## example, dec2hex (2748) returns "abc". 
+## example, dec2hex (2748) returns "abc".
 
 ## Author: jwe
 
@@ -31,7 +31,7 @@ function h = dec2hex (d)
   if (nargin != 1)
     usage ("dec2hex (d)");
   endif
-  
+
   [nr, nc] = size (d);
 
   len = nr * nc;

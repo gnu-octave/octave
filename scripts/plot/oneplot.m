@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: oneplot 
+## usage: oneplot
 ##
 ## NOTE: this will work only with gnuplot installed with
 ##       multiplot patch
@@ -34,7 +34,7 @@ function oneplot ()
   if (! gnuplot_has_multiplot)
     error ("oneplot: gnuplot does not appear to support this feature");
   endif
-    
+
   global multiplot_mode
 
   set nomultiplot;

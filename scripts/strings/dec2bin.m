@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 function y = dec2bin (x)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
-  
+
   if (nargin != 1)
     usage ("dec2bin (x)");
   endif
@@ -62,4 +62,4 @@ function y = dec2bin (x)
   end_unwind_protect
 
 endfunction
-    
+

@@ -44,7 +44,7 @@ function [X, map] = loadimage (filename)
   endif
 
   ## XXX FIXME XXX -- file is assumed to have variables X and map.
-  
+
   eval (['load ', file]);
 
 endfunction

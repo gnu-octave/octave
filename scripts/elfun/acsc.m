@@ -22,11 +22,11 @@
 ## Author: jwe
 
 function w = acsc (z)
-  
+
   if (nargin != 1)
     usage ("acsc (z)");
   endif
 
   w = asin (1 ./ z);
-  
+
 endfunction

@@ -21,7 +21,7 @@
 ##
 ## If x is symmetric, return the dimension of x, otherwise, return 0.
 ##
-## See also: size, rows, columns, length, is_matrix, is_scalar, 
+## See also: size, rows, columns, length, is_matrix, is_scalar,
 ## is_square, is_vector
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

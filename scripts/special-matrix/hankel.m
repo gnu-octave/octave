@@ -23,7 +23,7 @@
 ## c, and (optionally) the last row r.
 ##
 ## If the second argument is omitted, zeros are inserted below the main
-## anti-diagonal.  If the last element of c is not the same as the first 
+## anti-diagonal.  If the last element of c is not the same as the first
 ## element of r, the last element of c is used.
 ##
 ## See also: vander, hadamard, hilb, invhilb, toeplitz
@@ -45,7 +45,7 @@ function retval = hankel (c, r)
     error ("hankel: expecting vector arguments");
   endif
 
-  if (nargin == 1) 
+  if (nargin == 1)
     r (1) = c (length (c));
   endif
 

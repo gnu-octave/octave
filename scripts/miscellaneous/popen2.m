@@ -61,7 +61,7 @@ function [in, out, pid] = popen2 (command, args)
 
 	pid = fork ();
 
-	if (pid == 0) 
+	if (pid == 0)
 
 	  fclose (stdin_pipe (2));
 	  fclose (stdout_pipe (1));
@@ -89,7 +89,7 @@ function [in, out, pid] = popen2 (command, args)
 	    out = stdout_pipe (1);
 	  endif
 
-	elseif (pid < 0) 
+	elseif (pid < 0)
 	  error ("popen2: fork failed -- unable to create child process");
 	endif
       else

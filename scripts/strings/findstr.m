@@ -1,5 +1,5 @@
 ## Copyright (C) 1996 Kurt Hornik
-## 
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 ## If the optional argument OVERLAP is nonzero, the returned vector
 ## can include overlapping positions (this is the default).
 ##
-## For example, 
+## For example,
 ##
 ##   findstr ("abababa", "aba")     =>  [1, 3, 5]
 ##   findstr ("abababa", "aba", 0)  =>  [1, 5]

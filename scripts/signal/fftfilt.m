@@ -32,16 +32,16 @@
 
 function y = fftfilt (b, x, N)
 
-  ## If N is not specified explicitly, we do not use the overlap-add 
+  ## If N is not specified explicitly, we do not use the overlap-add
   ## method at all because loops are really slow.  Otherwise, we only
   ## ensure that the number of points in the FFT is the smallest power
   ## of two larger than N and length(b).  This could result in length
   ## one blocks, but if the user knows better ...
-  
+
   if (nargin < 2 || nargin > 3)
     usage (" fftfilt (b, x [, N])");
   endif
-  
+
   [r_x, c_x] = size (x);
   [r_b, c_b] = size (b);
   if (! (min ([r_x, c_x]) == 1 || min ([r_b, c_b]) == 1))
@@ -51,13 +51,13 @@ function y = fftfilt (b, x, N)
   l_b  = r_b * c_b;
 
   if ((l_x == 1) && (l_b == 1))
-    y = b * x;  
+    y = b * x;
     return;
   endif
-  
+
   x = reshape (x, 1, l_x);
   b = reshape (b, 1, l_b);
-  
+
   if (nargin == 2)
     ## Use FFT with the smallest power of 2 which is >= length (x) +
     ## length (b) - 1 as number of points ...
@@ -79,9 +79,9 @@ function y = fftfilt (b, x, N)
       tmp = ifft (fft (x(lo:hi), N) .* B);
       hi  = min (lo+N-1, l_x);
       y(lo:hi) = y(lo:hi) + tmp(1:(hi-lo+1));
-    endfor  
+    endfor
   endif
-    
+
   y = reshape (y(1:l_x), r_x, c_x);
 
   ## Final cleanups:  if both x and b are real respectively integer, y

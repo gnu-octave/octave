@@ -168,8 +168,8 @@ dist: dist-info-files
 	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name config.log \
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
 	  -o -name klibtool.config -o -name c-auto.h \) -print | xargs rm -rf
-	find `cat .fname`/readline `cat .fname`/kpathsea `cat .fname`/info \
-	  `cat .fname`/glob -name Makefile | xargs rm -f
+	find `cat .fname`/readline `cat .fname`/kpathsea `cat .fname`/glob \
+	  -name Makefile | xargs rm -f
 	find `cat .fname`/readline `cat .fname`/info `cat .fname`/glob \
 	  -name config.h | xargs rm -f
 	rm -f `cat .fname`/test/octave.test/*.m

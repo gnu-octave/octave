@@ -36,39 +36,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 bool
-glob_match::match (const string& s, match_type mt)
+glob_match::match (const string& s)
 {
   int npat = pat.length ();
 
   const char *str = s.c_str ();
 
-  if (mt == all)
-    {
-      for (int i = 0; i < npat; i++)
-	if (fnmatch (pat(i).c_str (), str, flags) == FNM_NOMATCH)
-	  return false;
-
+  for (int i = 0; i < npat; i++)
+    if (fnmatch (pat(i).c_str (), str, flags) != FNM_NOMATCH)
       return true;
-    }
-  else
-    {
-      for (int i = 0; i < npat; i++)
-	if (fnmatch (pat(i).c_str (), str, flags) != FNM_NOMATCH)
-	  return true;
 
-      return false;
-    }
+  return false;
 }
 
 Array<bool>
-glob_match::match (const string_vector& s, match_type mt)
+glob_match::match (const string_vector& s)
 {
   int n = s.length ();
 
   Array<bool> retval (n);
 
   for (int i = 0; i < n; i++)
-    retval(i) = match (s[i], mt);
+    retval(i) = match (s[i]);
 
   return retval;
 }

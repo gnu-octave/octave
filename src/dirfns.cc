@@ -588,9 +588,9 @@ otherwise prints an error message and returns -1.")
 DEFUN (glob, args, ,
   "glob (PATTERN)\n\
 \n\
-Given an array of strings in PATTERN, return the list of file names
-that any of them, or an empty string if no patterns match.  Tilde
-expansion is performed on each of the patterns before looking for
+Given an array of strings in PATTERN, return the list of file names\n\
+that any of them, or an empty string if no patterns match.  Tilde\n\
+expansion is performed on each of the patterns before looking for\n\
 matching file names.")
 {
   octave_value retval;
@@ -615,6 +615,44 @@ matching file names.")
     }
   else
     print_usage ("glob");
+
+  return retval;
+}
+
+DEFUN (fnmatch, args, ,
+  "fnmatch (PATTERN, STRING)\n\
+\n\
+Return 1 or zero for each element of STRING that matches any of the\n\
+elements of the string array PATTERN, using the rules of filename\n\
+pattern matching.")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      string_vector pat = args(0).all_strings ();
+      string_vector str = args(1).all_strings ();
+
+      if (error_state)
+	gripe_wrong_type_arg ("fnmatch", args(0));
+      else
+	{
+	  glob_match pattern (oct_tilde_expand (pat));
+
+	  Array<bool> tmp = pattern.match (str);
+
+	  int n = tmp.length ();
+
+	  ColumnVector result (n);
+
+	  for (int i = 0; i < n; i++)
+	    result(i) = tmp(i);
+
+	  retval = octave_value (result, true);
+	}
+    }
+  else
+    print_usage ("fnmatch");
 
   return retval;
 }

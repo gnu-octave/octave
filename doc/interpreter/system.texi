@@ -359,6 +359,12 @@ expansion is performed on each of the patterns before looking for
 matching file names.
 @end deftypefn
 
+@deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})
+Return 1 or zero for each element of @var{string} that matches any of
+the elements of the string array @var{pattern}, using the rules of
+filename pattern matching.
+@end deftypefn
+
 @node Interacting with the OS, Password Database Functions, Filesystem Utilities, System Utilities
 @section Interacting with the OS
 

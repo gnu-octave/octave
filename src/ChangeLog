@@ -1,5 +1,7 @@
 Sun Nov 10 16:58:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dirfns.cc (Ffnmatch): New function.
+
 	* octave.cc (intern_argv): Use new string_vector constructor.
 
 	* ov-str-mat.cc (octave_char_matrix_str::all_strings): Have

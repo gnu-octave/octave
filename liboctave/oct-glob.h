@@ -40,12 +40,6 @@ public:
       period = 4     // Leading `.' is matched only explicitly.
    };
 
-  enum match_type
-    {
-      any = 2,  // Match any pattern.
-      all = 2   // Must match all patterns.
-    };
-
   glob_match (const string& p = string (),
 	      unsigned int f = pathname|noescape|period)
     : pat (p), flags (f) { }
@@ -72,9 +66,9 @@ public:
 
   void set_pattern (const string_vector& p) { pat = p; }
 
-  bool match (const string&, match_type mt = any);
+  bool match (const string&);
 
-  Array<bool> match (const string_vector&, match_type mt = any);
+  Array<bool> match (const string_vector&);
 
   string_vector glob (void);
 

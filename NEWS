@@ -184,6 +184,8 @@ Summary of changes for version 2.0:
       umask    -- set permission mask for file creation
       stat     -- get information about a file
       lstat    -- get information about a symbolic link
+      glob     -- perform filename globbing
+      fnmatch  -- match strings with filename globbing patterns
       more     -- turn the pager on or off
       gammaln  -- alias for lgamma
 

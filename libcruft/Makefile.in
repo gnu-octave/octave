@@ -37,6 +37,8 @@ SUBDIRS = $(CRUFT_DIRS)
 
 DISTSUBDIRS = $(sort $(CRUFT_DIRS) blas fftpack lapack)
 
+CLEAN_SUBDIRS = $(DISTSUBDIRS)
+
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
 ifeq ($(SHARED_LIBS), true)
@@ -114,8 +116,11 @@ $(CRUFT_OBJ):
 check: all
 .PHONY: check
 
-install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+install install-strip uninstall:
 	@$(subdir-for-command)
+
+clean mostlyclean distclean maintainer-clean::
+	@$(foreach d, $(CLEAN_SUBDIRS), $(do-subdir-for-command))
 
 install::
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octlibdir)

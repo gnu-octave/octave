@@ -1,5 +1,9 @@
 2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (CLEAN_SUBDIRS): New variable.
+	(clean mostlyclean distclean maintainer-clean): Use it to ensure
+	cleaning in all subdirs, not just those we build in.
+
 	* Makerules.in (maintainer-clean, distclean): Don't use
 	dependencies on double colon rules.
 	(distclean): Also remove *.d, *.a, *.o, pic/*.o, pic, and stmp-pic.

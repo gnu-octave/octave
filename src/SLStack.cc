@@ -24,12 +24,15 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "SLList.h"
+#include "SLStack.h"
 
 template <class T>
-SLList<T>::~SLList (void)
+SLStack<T>::operator = (const SLStack<T>& s)
 {
-  clear();
+  if (this != &s)
+    p = s.p;
+
+  return *this;
 }
 
 /*

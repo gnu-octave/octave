@@ -20,7 +20,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Maybe this will work with 2.6.x and beyond?
+#if defined (__GNUG__)
+#pragma implementation
+#endif
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

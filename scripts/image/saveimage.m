@@ -1,4 +1,4 @@
-# Copyright (C) 1995 John W. Eaton
+# Copyright (C) 1996 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -112,7 +112,7 @@ function saveimage (filename, img, img_form, map)
 
 # Convert to another format if requested.
 
-  grey = all (map(:,1) == map(:,2) && map(:,1) == map (:,3))
+  grey = all (map(:,1) == map(:,2) && map(:,1) == map (:,3));
 
   pbm = pgm = ppm = 0;
 
@@ -197,7 +197,7 @@ function saveimage (filename, img, img_form, map)
       tmp(img_idx--) = tmap(img);
 
       map_idx = map_idx - map_nr;
-      tmap = map(map_idx,:);
+      tmap = map(map_idx);
       tmp(img_idx--) = tmap(img);
 
       map_idx = map_idx - map_nr;

@@ -490,7 +490,7 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
       reverse = 1;
     }
 
-  char *name = octave_tmp_file_name (0);
+  char *name = octave_tmp_file_name ();
 
   fstream file (name, ios::out);
 

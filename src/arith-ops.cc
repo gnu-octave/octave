@@ -40,10 +40,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// Allow divide by zero errors to be suppressed.
+static bool Vwarn_divide_by_zero;
+
 #define DIVIDE_BY_ZERO_ERROR \
   do \
     { \
-      if (user_pref.warn_divide_by_zero) \
+      if (Vwarn_divide_by_zero) \
         warning ("division by zero"); \
     } \
   while (0)
@@ -2811,6 +2814,21 @@ do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
     return octave_value (result);
   else
     return octave_value (complex_result);
+}
+
+static int
+warn_divide_by_zero (void)
+{
+  Vwarn_divide_by_zero = check_preference ("warn_divide_by_zero");
+
+  return 0;
+}
+
+void
+symbols_of_arith_ops (void)
+{
+  DEFVAR (warn_divide_by_zero, 1.0, 0, warn_divide_by_zero,
+    "If TRUE, warn about division by zero");
 }
 
 /*

@@ -89,6 +89,8 @@ extern octave_value do_binary_op (const ComplexMatrix& a,
 				   const ComplexMatrix& b,
 				   tree_expression::type t); 
 
+void symbols_of_arith_ops (void);
+
 #endif
 
 /*

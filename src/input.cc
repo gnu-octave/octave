@@ -734,17 +734,24 @@ initialize_readline (void)
 static int
 match_sans_spaces (const char *standard, const char *test)
 {
-  const char *tp = test;
+  char *tmp = strsave (test);
+
+  char *tp = tmp;
   while (*tp == ' ' || *tp == '\t')
     tp++;
 
-  const char *ep = test + strlen (test) - 1;
+  char *ep = test + strlen (test) - 1;
   while (*ep == ' ' || *ep == '\t')
     ep--;
 
-  int len = ep - tp + 1;
+  *(ep+1) = '\0';
 
-  return (strncmp (standard, tp, len) == 0);
+  int retval = strcmp (standard, tp) == 0;
+
+  delete [] tmp;
+
+  return retval;
+
 }
 
 // If the user simply hits return, this will produce an empty matrix.

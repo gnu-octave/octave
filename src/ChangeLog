@@ -1,3 +1,9 @@
+2002-11-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-map.h (Octave_map::rows, Octave_map::columns): New functions.
+	* ov-struct.h (octave_struct::rows, octave_struct::columns,
+	octave_struct::length): New functions.
+
 2002-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-conf.h.in (OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS): New macro.

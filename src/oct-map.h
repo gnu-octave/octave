@@ -86,7 +86,11 @@ Octave_map
 
   string_vector keys (void) const;
 
-  int array_length () const;
+  int rows (void) const { return 1; }
+
+  int columns (void) const { return array_length (); }
+
+  int array_length (void) const;
 
   Octave_map& assign (const idx_vector& idx, const Octave_map& rhs);
 

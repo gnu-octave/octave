@@ -749,6 +749,10 @@ check_dimensions (int& nr, int& nc, const char *warnfor)
 	{
 	  nr = (nr < 0) ? 0 : nr;
 	  nc = (nc < 0) ? 0 : nc;
+
+	  if (user_pref.treat_neg_dim_as_zero < 0)
+	    warning ("%s: converting negative dimension to zero",
+		     warnfor);
 	}
       else
 	error ("%s: can't create a matrix with negative dimensions",

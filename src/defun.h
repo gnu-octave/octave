@@ -86,15 +86,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
     install_builtin_function (&sname); \
   END_INSTALL_BUILTIN
 
-#define DEFALIAS_INTERNAL(alias, name)
-
 #else /* ! MAKE_BUILTINS */
 
 #define DEFUN_INTERNAL(name, fname, sname, nargin_max, nargout_max, \
 		       is_text_fcn, doc) \
   DECLARE_FUN(fname)
-
-#define DEFALIAS_INTERNAL(alias, name)
 
 #endif /* ! MAKE_BUILTINS */
 

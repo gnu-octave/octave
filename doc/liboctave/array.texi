@@ -9,95 +9,101 @@
 @node Constructors and Assignment,  , Arrays, Arrays
 @section Constructors and Assignment
 
-@deftypefn Constructor {} Array<T>::Array (void)
+@deftypefn Constructor {} Array<T> (void)
 Create an array with no elements.
 @end deftypefn
 
-@deftypefn Constructor {} Array<T>::Array (int @var{n} [, const T &@var{val}])
+@deftypefn Constructor {} Array<T> (int @var{n} [, const T &@var{val}])
 Create an array with @var{n} elements.  If the optional argument
 @var{val} is supplied, the elements are initialized to @var{val};
 otherwise, they are left uninitialized.  If @var{n} is less than zero,
 the current error handler is invoked (@pxref{Error Handling}).
 @end deftypefn
 
-@deftypefn Constructor {} Array<T>::Array (const Array<T> &@var{a})
+@deftypefn Constructor {} Array<T> (const Array<T> &@var{a})
 Create a copy of the @var{Array<T>} object @var{a}.  Memory for the
 @var{Array<T>} class is managed using a reference counting scheme, so
 the cost of this operation is independent of the size of the array.
 @end deftypefn
 
-@deftypefn Operator Array<T>& {Array<T>::operator =} (const Array<T> &@var{a})
+@deftypeop Assignment Array<T> Array<T>& {operator =} (const Array<T> &@var{a})
 Assignment operator.  Memory for the @var{Array<T>} class is managed
 using a reference counting scheme, so the cost of this operation is
 independent of the size of the array.
-@end deftypefn
+@end deftypeop
 
-@deftypefn Method int Array<T>::capacity (void) const
-@deftypefnx Method int Array<T>::length (void) const
+@deftypemethod Array<T> int capacity (void) const
+@deftypemethodx Array<T> int length (void) const
 Return the length of the array.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method T& Array<T>::elem (int @var{n})
-@deftypefnx Method T& Array<T>::checkelem (int @var{n})
-@deftypefnx Method T& {Array<T>::operator ()} (int @var{n})
+@deftypemethod Array<T> T& elem (int @var{n})
+@deftypemethodx Array<T> T& checkelem (int @var{n})
 If @var{n} is within the bounds of the array, return a reference to the
 element indexed by @var{n}; otherwise, the current error handler is
 invoked (@pxref{Error Handling}).
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method T Array<T>::elem (int @var{n}) const
-@deftypefnx Method T Array<T>::checkelem (int @var{n}) const
-@deftypefnx Method T Array<T>::operator () (int @var{n}) const
+@deftypeop Indexing Array<T> T& {operator ()} (int @var{n})
+@end deftypeop
+
+@deftypemethod Array<T> T elem (int @var{n}) const
+@deftypemethodx Array<T> T checkelem (int @var{n}) const
 If @var{n} is within the bounds of the array, return the value indexed
 by @var{n}; otherwise, call the current error handler.
 @xref{Error Handling}.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method T& Array<T>::xelem (int @var{n})
-@deftypefnx Method T Array<T>::xelem (int @var{n}) const
+@deftypeop Indexing Array<T> T {operator ()} (int @var{n}) const
+@end deftypeop
+
+@deftypemethod Array<T> T& xelem (int @var{n})
+@deftypemethodx Array<T> T xelem (int @var{n}) const
 Return a reference to, or the value of, the element indexed by @var{n}.
 These methods never perform bounds checking.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method void Array<T>::resize (int @var{n} [, const T &@var{val}])
+@deftypemethod Array<T> void resize {(int @var{n} [, const T &@var{val}])}
 Change the size of the array to be @var{n} elements.  All elements are
 unchanged, except that if @var{n} is greater than the current size and
 the optional argument @var{val} is provided, the additional elements are
 initialized to @var{val}; otherwise, any additional elements are left
 uninitialized.  In the current implementation, if @var{n} is less than
 the current size, the length is updated but no memory is released.
-@end deftypefn
+@end deftypemethod
 
-@deftypefn Method {const T*} Array<T>::data (void) const
-@end deftypefn
+@deftypemethod Array<T> {const T*} data (void) const
+@end deftypemethod
 
 @c Should this be public?
 @c
 @c T *fortran_vec (void)
 
-@deftypefn  {} {} Array2 (void)
-@deftypefnx  {} {} Array2 (int @var{n}, int @var{m})
-@deftypefnx  {} {} Array2 (int @var{n}, int @var{m}, const T &@var{val})
-@deftypefnx  {} {} Array2 (const Array2<T> &@var{a})
-@deftypefnx  {} {} Array2 (const DiagArray<T> &@var{a})
+@deftypefn Constructor {} Array2<T> Array2<T> Array2 (void)
+@deftypefnx Constructor {} Array2<T> (int @var{n}, int @var{m})
+@deftypefnx Constructor {} Array2<T> (int @var{n}, int @var{m}, const T &@var{val})
+@deftypefnx Constructor {} Array2<T> (const Array2<T> &@var{a})
+@deftypefnx Constructor {} Array2<T> (const DiagArray<T> &@var{a})
 @end deftypefn
 
-@deftypefn {} Array2<T>& {operator =} (const Array2<T> &@var{a})
-@end deftypefn
+@deftypeop Assignment Array2<T> Array2<T>& {operator =} (const Array2<T> &@var{a})
+@end deftypeop
 
-@deftypefn {} int dim1 (void) const
-@deftypefnx {} int rows (void) const
-@end deftypefn
+@deftypemethod Array2<T> int dim1 (void) const
+@deftypemethodx Array2<T> int rows (void) const
+@end deftypemethod
 
-@deftypefn {} int dim2 (void) const
-@deftypefnx {} int cols (void) const
-@deftypefnx {} int columns (void) const
-@end deftypefn
+@deftypemethod Array2<T> int dim2 (void) const
+@deftypemethodx Array2<T> int cols (void) const
+@deftypemethodx Array2<T> int columns (void) const
+@end deftypemethod
 
-@deftypefn {} T& elem (int @var{i}, int @var{j})
-@deftypefnx {} T& checkelem (int @var{i}, int @var{j})
-@deftypefnx {} T& {operator ()} (int @var{i}, int @var{j})
-@end deftypefn
+@deftypemethod Array2<T> T& elem (int @var{i}, int @var{j})
+@deftypemethodx Array2<T> T& checkelem (int @var{i}, int @var{j})
+@end deftypemethod
+
+@deftypeop Indexing Array2<T> T& {operator ()} (int @var{i}, int @var{j})
+@end deftypeop
 
 @c This needs to be fixed.
 @c
@@ -107,28 +113,30 @@ the current size, the length is updated but no memory is released.
 @c T checkelem (int i, int j) const
 @c T operator () (int i, int j) const
 
-@deftypefn {} void resize (int @var{n}, int @var{m})
-@deftypefnx {} void resize (int @var{n}, int @var{m}, const T &@var{val})
+@deftypemethod Array2<T> void resize (int @var{n}, int @var{m})
+@deftypemethodx Array2<T> void resize (int @var{n}, int @var{m}, const T &@var{val})
+@end deftypemethod
+
+@deftypefn Constructor {} Array3<T> (void)
+@deftypefnx Constructor {} Array3<T> (int @var{n}, int @var{m}, int @var{k})
+@deftypefnx Constructor {} Array3<T> (int @var{n}, int @var{m}, int @var{k}, const T &@var{val})
+@deftypefnx Constructor {} Array3<T> (const Array3<T> &@var{a})
 @end deftypefn
 
-@deftypefn {} Array3 (void)
-@deftypefnx {} Array3 (int @var{n}, int @var{m}, int @var{k})
-@deftypefnx {} Array3 (int @var{n}, int @var{m}, int @var{k}, const T &@var{val})
-@deftypefnx {} Array3 (const Array3<T> &@var{a})
-@end deftypefn
+@deftypeop Assignment Array3<T> Array3<T>& {operator =} (const Array3<T> &@var{a})
+@end deftypeop
 
-@deftypefn {} Array3<T>& {operator =} (const Array3<T> &@var{a})
-@end deftypefn
+@deftypemethod Array3<T> int dim1 (void) const
+@deftypemethodx Array3<T> int dim2 (void) const
+@deftypemethodx Array3<T> int dim3 (void) const
+@end deftypemethod
 
-@deftypefn {} int dim1 (void) const
-@deftypefnx {} int dim2 (void) const
-@deftypefnx {} int dim3 (void) const
-@end deftypefn
+@deftypemethod Array3<T> T& elem (int @var{i}, int @var{j}, int @var{k})
+@deftypemethodx Array3<T> T& checkelem (int @var{i}, int @var{j}, int @var{k})
+@end deftypemethod
 
-@deftypefn {} T& elem (int @var{i}, int @var{j}, int @var{k})
-@deftypefnx {} T& checkelem (int @var{i}, int @var{j}, int @var{k})
-@deftypefnx {} T& {operator ()} (int @var{i}, int @var{j}, int @var{k})
-@end deftypefn
+@deftypeop Indexing Array3<T> T& {operator ()} (int @var{i}, int @var{j}, int @var{k})
+@end deftypeop
 
 @c This needs to be fixed.
 @c
@@ -138,35 +146,37 @@ the current size, the length is updated but no memory is released.
 @c T checkelem (int i, int j, int k) const
 @c T operator () (int i, int j, int k) const
 
-@deftypefn {} void resize (int @var{n}, int @var{m}, int @var{k})
-@deftypefnx {} void resize (int @var{n}, int @var{m}, int @var{k}, const T &@var{val})
+@deftypemethod Array3<T> void resize (int @var{n}, int @var{m}, int @var{k})
+@deftypemethodx Array3<T> void resize (int @var{n}, int @var{m}, int @var{k}, const T &@var{val})
+@end deftypemethod
+
+@deftypefn Constructor {} DiagArray<T> (void)
+@deftypefnx Constructor {} DiagArray<T> (int @var{n})
+@deftypefnx Constructor {} DiagArray<T> (int @var{n}, const T &@var{val})
+@deftypefnx Constructor {} DiagArray<T> (int @var{r}, int @var{c})
+@deftypefnx Constructor {} DiagArray<T> (int @var{r}, int @var{c}, const T &@var{val})
+@deftypefnx Constructor {} DiagArray<T> (const Array<T> &@var{a})
+@deftypefnx Constructor {} DiagArray<T> (const DiagArray<T> &@var{a})
 @end deftypefn
 
-@deftypefn  {} {}DiagArray (void)
-@deftypefnx  {} {}DiagArray (int @var{n})
-@deftypefnx  {} {}DiagArray (int @var{n}, const T &@var{val})
-@deftypefnx  {} {}DiagArray (int @var{r}, int @var{c})
-@deftypefnx  {} {}DiagArray (int @var{r}, int @var{c}, const T &@var{val})
-@deftypefnx  {} {}DiagArray (const Array<T> &@var{a})
-@deftypefnx  {} {}DiagArray (const DiagArray<T> &@var{a})
-@end deftypefn
+@deftypeop {Assginment} DiagArray<T>& {operator =} (const DiagArray<T> &@var{a})
+@end deftypeop
 
-@deftypefn {} DiagArray<T>& {operator =} (const DiagArray<T> &@var{a})
-@end deftypefn
+@deftypemethod DiagArray<T> int dim1 (void) const
+@deftypemethodx DiagArray<T> int rows (void) const
+@end deftypemethod
 
-@deftypefn {} int dim1 (void) const
-@deftypefnx {} int rows (void) const
-@end deftypefn
+@deftypemethod DiagArray<T> int dim2 (void) const
+@deftypemethodx DiagArray<T> int cols (void) const
+@deftypemethodx DiagArray<T> int columns (void) const
+@end deftypemethod
 
-@deftypefn {} int dim2 (void) const
-@deftypefnx {} int cols (void) const
-@deftypefnx {} int columns (void) const
-@end deftypefn
+@deftypemethod DiagArray<T> T& elem (int @var{r}, int @var{c})
+@deftypemethodx DiagArray<T> T& checkelem (int @var{r}, int @var{c})
+@end deftypemethod
 
-@deftypefn {} T& elem (int @var{r}, int @var{c})
-@deftypefnx {} T& checkelem (int @var{r}, int @var{c})
-@deftypefnx {} T& {operator ()} (int @var{r}, int @var{c})
-@end deftypefn
+@deftypeop Indexing DiagArray<T> T& {operator ()} (int @var{r}, int @var{c})
+@end deftypeop
 
 @c This needs to be fixed.
 @c
@@ -176,6 +186,6 @@ the current size, the length is updated but no memory is released.
 @c T checkelem (int r, int c) const
 @c T operator () (int r, int c) const
 
-@deftypefn {} void resize (int @var{n}, int @var{m})
-@deftypefnx {} void resize (int @var{n}, int @var{m}, const T &@var{val})
-@end deftypefn
+@deftypemethod DiagArray<T> void resize (int @var{n}, int @var{m})
+@deftypemethodx DiagArray<T> void resize (int @var{n}, int @var{m}, const T &@var{val})
+@end deftypemethod

@@ -265,7 +265,6 @@ discontinuity in the derivative.\n\
 	}
 
       double tzero = out_times (0);
-      int nsteps = out_times.capacity ();
 
       ODEFunc func (lsode_user_function);
       if (lsode_jac)

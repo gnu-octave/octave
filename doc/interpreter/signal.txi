@@ -27,7 +27,11 @@ please contact @email{bug-octave@@bevo.che.wisc.edu}.
 
 @DOCSTRING(freqz)
 
+@DOCSTRING(freqz_plot)
+
 @DOCSTRING(sinc)
+
+@DOCSTRING(unwrap)
 
 @c XXX FIXME XXX -- someone needs to organize these...
 

@@ -171,6 +171,12 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(hex2dec)
 
+@DOCSTRING(dec2base)
+
+@DOCSTRING(base2dec)
+
+@DOCSTRING(strjust)
+
 @DOCSTRING(str2num)
 
 @DOCSTRING(toascii)

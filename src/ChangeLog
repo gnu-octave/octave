@@ -1,3 +1,7 @@
+2002-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Delete unused variable nsteps.
+
 2002-04-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (additional_help_message): Use www.octave.org, not

@@ -76,6 +76,21 @@ static sig_handler *saved_sigint_handler = 0;
 static int really_flush_to_pager = 0;
 
 static void
+clear_external_pager (void)
+{
+  octave_pager_pid = -1;
+
+  delete external_pager;
+  external_pager = 0;
+
+  if (saved_sigint_handler)
+    {
+      octave_set_signal_handler (SIGINT, saved_sigint_handler);
+      saved_sigint_handler = 0;
+    }
+}
+
+static void
 do_sync (const char *msg, bool bypass_pager)
 {
   if (! error_state)
@@ -104,24 +119,20 @@ do_sync (const char *msg, bool bypass_pager)
 
 	      if (external_pager)
 		{
-		  *external_pager << msg;
-
-		  if (external_pager->fail ())
+		  if (octave_pager_pid > 0 && external_pager->good ())
 		    {
-		      octave_pager_pid = -1;
+		      *external_pager << msg;
 
-		      delete external_pager;
-		      external_pager = 0;
+		      // These checks are needed if a signal handler
+		      // invoked since the last set of checks attempts
+		      // to flush output and then returns
 
-		      if (saved_sigint_handler)
-			{
-			  octave_set_signal_handler (SIGINT,
-						     saved_sigint_handler);
-			  saved_sigint_handler = 0;
-			}
+		      if (octave_pager_pid > 0
+			  && external_pager
+			  && external_pager->good ())
+			external_pager->flush ();
 		    }
-		  else
-		    external_pager->flush ();
+		  clear_external_pager ();
 		}
 	      else
 		cout << msg;
@@ -256,18 +267,7 @@ flush_octave_stdout (void)
   octave_stdout.flush ();
 
   if (external_pager)
-    {
-      octave_pager_pid = -1;
-
-      delete external_pager;
-      external_pager = 0;
-
-      if (saved_sigint_handler)
-	{
-	  octave_set_signal_handler (SIGINT, saved_sigint_handler);
-	  saved_sigint_handler = 0;
-	}
-    }
+    clear_external_pager ();
 
   run_unwind_frame ("flush_octave_stdout");
 }

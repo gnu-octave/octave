@@ -146,17 +146,26 @@ sigchld_handler (int /* sig */)
 
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
 
-  int status;
-  pid_t pid = wait (&status);
-
-  if (pid > 0)
+  if (octave_pager_pid > 0)
     {
-      if (WIFEXITED (status) || WIFSIGNALLED (status))
+      int status;
+      pid_t pid = waitpid (octave_pager_pid, &status, 0);
+
+      if (pid > 0)
 	{
-	  if (pid == octave_pager_pid)
+	  if (WIFEXITED (status) || WIFSIGNALLED (status))
 	    {
-	      error ("connection to external pager lost --");
-	      error ("pending computations have been discarded\n");
+	      octave_pager_pid = -1;
+
+	      // XXX FIXME XXX -- I'm not sure that this is the right
+	      // thing to do here, but it seems to work.
+
+	      // Don't call error() here because that tries to flush
+	      // pending output, which isn't going to do anything
+	      // anyway.
+
+	      cerr << "error: connection to external pager lost --\n";
+	      cerr << "error: pending computations and output have been discarded\n";
 	    }
 	}
     }

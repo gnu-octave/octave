@@ -38,7 +38,11 @@ enum mat5_data_type
     miRESERVE3,
     miINT64,			// 64 bit signed
     miUINT64,			// 64 bit unsigned
-    miMATRIX			// MATLAB array
+    miMATRIX,			// MATLAB array
+    miCOMPRESSED,		// Compressed data
+    miUTF8,			// Unicode UTF-8 Encoded Character Data
+    miUTF16,			// Unicode UTF-16 Encoded Character Data
+    miUTF32,			// Unicode UTF-32 Encoded Character Data
   };
 
 extern int
@@ -50,7 +54,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 extern bool
 save_mat5_binary_element (std::ostream& os,
 			  const octave_value& tc, const std::string& name,
-			  bool mark_as_global, bool save_as_floats);
+			  bool mark_as_global, bool mat7_format,
+			  bool save_as_floats, bool compressing = false);
 
 #endif
 

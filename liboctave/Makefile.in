@@ -20,7 +20,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 LINK_DEPS = \
   -L../libcruft -L../glob -L. $(RLD_FLAG) \
-  $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(LIBS) $(FLIBS)
+  $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(UMFPACK_LIBS) $(LIBREADLINE) \
+  $(LIBS) $(FLIBS)
 
 include $(srcdir)/COLAMD.files
 

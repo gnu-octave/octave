@@ -1,3 +1,52 @@
+2005-04-06  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: Link to UMFPACK_LIBS. Add zfstream.{cc,h} to build and 
+	dist files.
+
+	* zfstream.cc: New file for C++ binding for fstream like class for 
+	zlib.
+
+	* zfstream.h: Definition for fstream like C++ bindings to zlib.
+
+	* load-save.cc (static bool check_gzip_magic (const std::string&)): 
+	New function to look for GZIP magic 
+	(static load_save_format get_file_format (const istream &file)): New 
+	function split from old get_file_format but passed istream to allow
+	use with zlib istream.
+	(static load_save_format get_file_format (const std::string&, 
+	const std::string&, bool)): Modify the test uncompressed file first, 
+	then compressed version
+	(Fload) Allow -v6, -6, -v7 and -7 options. Split load code to allow
+	use of zlib.
+	(Fsave) Allow -zip, -z, -v6, -6, -v7 and -7 options. Split save code
+	to allow use of zlib.
+
+	* load-save.h: add LS_MAT7_BINARY to load_save_format enum
+
+	* ls-mat5.cc (read_mat5_binary_element): Test for miCOMPRESSED flag for
+	matlab v7 files, and decompress data in memory. Allow reading of matlab
+	logical variables either in mxDOUBLE_CLASS or mxUINT8_CLASS.
+	(int save_mat5_array_length(const double*, ...): New function to 
+	calculate number of bytes used to save NDArray.
+	(int save_mat5_array_length(const Complex*, ...): New function to 
+	calculate number of bytes used to save ComplexNDArray.
+	(int save_mat5_element_length): New function to find number of bytes 
+	needed to save data element.
+	(save_mat5_binary_element): New input arguments, mat7_format and
+	compressing, that define if we are in a matlab v7 format and where we 
+	are currently compressing the data element. If mat7_format use
+	miCOMPRESSED flag for matlab v7 files, and compress data in memory. 
+	Add capability to save logical variables as mxUINT8_CLASS. If v7 
+	format maximum variable length is 63 characters and not 31. Use the
+	save_mat5_element_length function to pre-calculate the number of bytes
+	taken by a variable rather than use a negative seek to correct after 
+	writing (zlib can't do negative seeking)
+
+	* ls-mat5.h: Add to miCOMPRESSED, miUTF8, miUTF16 and miUTF32 flags to 
+	the enum mat5_data_type.
+	(save_mat5_binary_element): Add args mat7_format and compressing to the
+	definition.
+
 2005-04-06  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-scm-scm.cc: Delete #pragma implementation.

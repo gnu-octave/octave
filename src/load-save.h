@@ -36,6 +36,7 @@ enum load_save_format
     LS_MAT_ASCII,
     LS_MAT_BINARY,
     LS_MAT5_BINARY,
+    LS_MAT7_BINARY,
 #ifdef HAVE_HDF5
     LS_HDF5,
 #endif /* HAVE_HDF5 */

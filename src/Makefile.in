@@ -96,7 +96,7 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	lex.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
 	oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
-	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h \
+	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h zfstream.h \
 	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h \
 	parse.h pr-output.h procstream.h sighandlers.h siglist.h \
 	sparse-xdiv.h sparse-xpow.h symtab.h sysdep.h \
@@ -169,7 +169,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
 	oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \
 	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stdstrm.cc \
-	oct-stream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
+	oct-stream.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strcasecmp.c \
 	strncase.c strfns.cc symtab.cc syscalls.cc sysdep.cc \
@@ -244,7 +244,7 @@ OCTINTERP_LINK_DEPS = \
 
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
-  -L. $(LIBOCTINTERP) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+  -L. $(LIBOCTINTERP) $(BLAS_LIBS) $(FFTW_LIBS) $(UMFPACK_LIBS) $(LIBS) $(FLIBS)
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
@@ -310,7 +310,7 @@ octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	main.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
-	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)
+	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(UMFPACK_LIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

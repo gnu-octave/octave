@@ -1,3 +1,7 @@
+2005-04-06  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in: Link to UMFPACK_LIBS.
+
 2005-04-05  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assignN): Avoid shadowed declaration in previous change.

@@ -15,6 +15,9 @@
 /* Define if you don't have atanh(). */
 #undef ATANH_MISSING
 
+/* Define if your math.h declares struct exception for matherr() */
+#undef EXCEPTION_IN_MATH
+
 /* Define if your Fortran compiler appends an underscore to external
    names. */ 
 #undef F77_APPEND_UNDERSCORE

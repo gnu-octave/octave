@@ -51,6 +51,10 @@ static octave_function *lsode_fcn;
 // Global pointer for optional user defined jacobian function used by lsode.
 static octave_function *lsode_jac;
 
+// Have we warned about imaginary values returned from user function?
+static bool warned_fcn_imaginary = false;
+static bool warned_jac_imaginary = false;
+
 // Is this a recursive call?
 static int call_depth = 0;
 
@@ -82,6 +86,12 @@ lsode_user_function (const ColumnVector& x, double t)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("lsode: ignoring imaginary part returned from user-supplied function");
+	      warned_fcn_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () == 0)
@@ -122,6 +132,12 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("lsode: ignoring imaginary part returned from user-supplied jacobian function");
+	      warned_jac_imaginary = true;
+	    }
+
 	  retval = tmp(0).matrix_value ();
 
 	  if (error_state || retval.length () == 0)
@@ -267,6 +283,9 @@ parameters for @code{lsode}.\n\
 @seealso{daspk, dassl, dasrt, odessa}")
 {
   octave_value_list retval;
+
+  warned_fcn_imaginary = false;
+  warned_jac_imaginary = false;
 
   unwind_protect::begin_frame ("Flsode");
 

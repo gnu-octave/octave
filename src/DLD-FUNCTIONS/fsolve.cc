@@ -46,8 +46,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by hybrd1.
 static octave_function *fsolve_fcn;
 
+// Global pointer for optional user defined jacobian function.
+static octave_function *fsolve_jac;
+
 // Have we warned about imaginary values returned from user function?
-static bool warned_imaginary = false;
+static bool warned_fcn_imaginary = false;
+static bool warned_jac_imaginary = false;
 
 // Is this a recursive call?
 static int call_depth = 0;
@@ -91,7 +95,7 @@ fsolve_user_function (const ColumnVector& x)
 {
   ColumnVector retval;
 
-  int n = x.capacity ();
+  int n = x.length ();
 
   octave_value_list args;
   args.resize (1);
@@ -117,13 +121,62 @@ fsolve_user_function (const ColumnVector& x)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  if (! warned_imaginary && tmp(0).is_complex_type ())
+	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
 	    {
 	      warning ("fsolve: ignoring imaginary part returned from user-supplied function");
-	      warned_imaginary = true;
+	      warned_fcn_imaginary = true;
 	    }
 
 	  retval = ColumnVector (tmp(0).vector_value ());
+
+	  if (error_state || retval.length () <= 0)
+	    gripe_user_supplied_eval ("fsolve");
+	}
+      else
+	gripe_user_supplied_eval ("fsolve");
+    }
+
+  return retval;
+}
+
+Matrix
+fsolve_user_jacobian (const ColumnVector& x)
+{
+  Matrix retval;
+
+  int n = x.length ();
+
+  octave_value_list args;
+  args.resize (1);
+
+  if (n > 1)
+    {
+      Matrix m (n, 1);
+      for (int i = 0; i < n; i++)
+	m (i, 0) = x (i);
+      octave_value vars (m);
+      args(0) = vars;
+    }
+  else
+    {
+      double d = x (0);
+      octave_value vars (d);
+      args(0) = vars;
+    }
+
+  if (fsolve_fcn)
+    {
+      octave_value_list tmp = fsolve_jac->do_multi_index_op (1, args);
+
+      if (tmp.length () > 0 && tmp(0).is_defined ())
+	{
+	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("fsolve: ignoring imaginary part returned from user-supplied jacobian function");
+	      warned_fcn_imaginary = true;
+	    }
+
+	  retval = tmp(0).matrix_value ();
 
 	  if (error_state || retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
@@ -172,7 +225,8 @@ parameters for @code{fsolve}.\n\
 {
   octave_value_list retval;
 
-  warned_imaginary = false;
+  warned_fcn_imaginary = false;
+  warned_jac_imaginary = false;
 
   unwind_protect::begin_frame ("Ffsolve");
 
@@ -186,10 +240,46 @@ parameters for @code{fsolve}.\n\
 
   if (nargin == 2 && nargout < 4)
     {
-      fsolve_fcn = extract_function (args(0), "fsolve", "__fsolve_fcn__",
-				    "function y = __fsolve_fcn__ (x) y = ",
-				    "; endfunction");
-      if (! fsolve_fcn)
+      fsolve_fcn = 0;
+      fsolve_jac = 0;
+
+      octave_value f_arg = args(0);
+
+      switch (f_arg.rows ())
+	{
+	case 1:
+	  fsolve_fcn = extract_function
+	    (f_arg, "fsolve", "__fsolve_fcn__",
+	     "function y = __fsolve_fcn__ (x) y = ",
+	     "; endfunction");
+	  break;
+
+	case 2:
+	  {
+	    string_vector tmp = f_arg.all_strings ();
+
+	    if (! error_state)
+	      {
+		fsolve_fcn = extract_function
+		  (tmp(0), "fsolve", "__fsolve_fcn__",
+		   "function y = __fsolve_fcn__ (x) y = ",
+		   "; endfunction");
+
+		if (fsolve_fcn)
+		  {
+		    fsolve_jac = extract_function
+		      (tmp(1), "fsolve", "__fsolve_jac__",
+		       "function jac = __fsolve_jac__ (x) jac = ",
+		       "; endfunction");
+
+		    if (! fsolve_jac)
+		      fsolve_fcn = 0;
+		  }
+	      }
+	  }
+	}
+
+      if (error_state || ! fsolve_fcn)
 	FSOLVE_ABORT ();
 
       ColumnVector x (args(1).vector_value ());
@@ -204,6 +294,9 @@ parameters for @code{fsolve}.\n\
 	warning ("fsolve: can't compute path output yet");
 
       NLFunc nleqn_fcn (fsolve_user_function);
+      if (fsolve_jac)
+	nleqn_fcn.set_jacobian_function (fsolve_user_jacobian);
+
       NLEqn nleqn (x, nleqn_fcn);
       nleqn.set_options (fsolve_opts);
 

@@ -51,6 +51,11 @@ static octave_function *odessa_f;
 static octave_function *odessa_j;
 static octave_function *odessa_b;
 
+// Have we warned about imaginary values returned from user function?
+static bool warned_fcn_imaginary = false;
+static bool warned_jac_imaginary = false;
+static bool warned_b_imaginary = false;
+
 // Is this a recursive call?
 static int call_depth = 0;
 
@@ -92,6 +97,12 @@ odessa_user_f (double t, const ColumnVector& x, const ColumnVector& theta)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("odessa: ignoring imaginary part returned from user-supplied function");
+	      warned_fcn_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () == 0)
@@ -143,6 +154,12 @@ odessa_user_mf (double t, const ColumnVector& x, const ColumnVector& theta,
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("odessa: ignoring imaginary part returned from user-supplied jacobian function");
+	      warned_jac_imaginary = true;
+	    }
+
 	  retval = tmp(0).matrix_value ();
 
 	  if (error_state || retval.length () == 0)
@@ -202,6 +219,12 @@ odessa_user_b (double t, const ColumnVector& x,
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_b_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("odessa: ignoring imaginary part returned from user-supplied inhomogeneity function");
+	      warned_b_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () == 0)
@@ -375,6 +398,10 @@ parameters for @code{lsode}.\n\
 @seealso{daspk, dassl, dasrt, lsode}")
 {
   octave_value_list retval;
+
+  warned_fcn_imaginary = false;
+  warned_jac_imaginary = false;
+  warned_b_imaginary = false;
 
   unwind_protect::begin_frame ("Fodessa");
 

@@ -1,6 +1,22 @@
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function): Print warning if
+	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function, fsolve_user_jacobian):
+	Print warning if user returns complex value.
+	* DLD-FUNCTIONS/quad.cc (quad_user_function): Likewise.
+	* DLD-FUNCTIONS/lsode.cc (lsode_user_function, lsode_user_jacobian):
+	Likewise.
+	* DLD-FUNCTIONS/dassl.cc (dassl_user_function, dassl_user_jacobian):
+	Likewise.
+	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_f, dasrt_user_cf, dasrt_user_j):
+	Likewise. 
+	* DLD-FUNCTIONS/daspk.cc (daspk_user_function, daspk_user_jacobian):
+	Likewise.
+
+	* DLD-FUNCTIONS/daspk.cc (daspk_user_jacobian): New function.
+	(Fdaspk): Handle extracting Jacobian from function argument.
+
+	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function): New function.
+	(Ffsolve): Handle extracting Jacobian from function argument.
 
 	* Makefile.in (%.oct): Depend on octave$(EXEEXT) so that octave
 	will be built before any .oct files.

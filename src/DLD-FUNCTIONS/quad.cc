@@ -51,6 +51,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by quadrature functions.
 static octave_function *quad_fcn;
 
+// Have we warned about imaginary values returned from user function?
+static bool warned_imaginary = false;
+
 // Is this a recursive call?
 static int call_depth = 0;
 
@@ -75,6 +78,12 @@ quad_user_function (double x)
 
       if (tmp.length () && tmp(0).is_defined ())
 	{
+	  if (! warned_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("quad: ignoring imaginary part returned from user-supplied function");
+	      warned_imaginary = true;
+	    }
+
 	  retval = tmp(0).double_value ();
 
 	  if (error_state)
@@ -155,6 +164,8 @@ parameters for @code{quad}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  warned_imaginary = false;
 
   unwind_protect::begin_frame ("Fquad");
 

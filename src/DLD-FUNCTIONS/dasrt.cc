@@ -48,6 +48,11 @@ static octave_function *dasrt_f;
 static octave_function *dasrt_j;
 static octave_function *dasrt_cf;
 
+// Have we warned about imaginary values returned from user function?
+static bool warned_fcn_imaginary = false;
+static bool warned_jac_imaginary = false;
+static bool warned_cf_imaginary = false;
+
 // Is this a recursive call?
 static int call_depth = 0;
 
@@ -91,6 +96,12 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xprime,
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("dasrt: ignoring imaginary part returned from user-supplied function");
+	      warned_fcn_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () == 0)
@@ -133,6 +144,12 @@ dasrt_user_cf (const ColumnVector& x, double t)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_cf_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("dasrt: ignoring imaginary part returned from user-supplied constraint function");
+	      warned_cf_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () == 0)
@@ -197,6 +214,12 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("dasrt: ignoring imaginary part returned from user-supplied jacobian function");
+	      warned_jac_imaginary = true;
+	    }
+
 	  retval = tmp(0).matrix_value ();
 
 	  if (error_state || retval.length () == 0)
@@ -365,6 +388,10 @@ parameters for @code{dasrt}.\n\
 @seealso{daspk, dasrt, lsode, odessa}")
 {
   octave_value_list retval;
+
+  warned_fcn_imaginary = false;
+  warned_jac_imaginary = false;
+  warned_cf_imaginary = false;
 
   unwind_protect::begin_frame ("Fdasrt");
 

@@ -49,6 +49,10 @@ static octave_function *dassl_fcn;
 // Global pointer for optional user defined jacobian function.
 static octave_function *dassl_jac;
 
+// Have we warned about imaginary values returned from user function?
+static bool warned_fcn_imaginary = false;
+static bool warned_jac_imaginary = false;
+
 // Is this a recursive call?
 static int call_depth = 0;
 
@@ -102,6 +106,12 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_fcn_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("dassl: ignoring imaginary part returned from user-supplied function");
+	      warned_fcn_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (tlen > 1)
@@ -169,6 +179,12 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
       int tlen = tmp.length ();
       if (tlen > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_jac_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("dassl: ignoring imaginary part returned from user-supplied jacobian function");
+	      warned_jac_imaginary = true;
+	    }
+
 	  retval = tmp(0).matrix_value ();
 
 	  if (error_state || retval.length () == 0)
@@ -301,6 +317,9 @@ parameters for @code{dassl}.\n\
 @seealso{daspk, dasrt, lsode, odessa}")
 {
   octave_value_list retval;
+
+  warned_fcn_imaginary = false;
+  warned_jac_imaginary = false;
 
   unwind_protect::begin_frame ("Fdassl");
 

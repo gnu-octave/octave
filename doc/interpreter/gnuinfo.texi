@@ -10,7 +10,7 @@
 @c This file documents the use of the standalone GNU Info program,
 @c versions 2.7 and later. 
 
-@node Using Info, Copying, Command Line Editing, Top
+@node Using Info
 @appendix Using Info
 
 @menu
@@ -44,7 +44,7 @@ info file) to be produced from a single source file.
 * Info Variables::	    How to change the default behavior of Info.
 @end menu
 
-@node Cursor Commands, Scrolling Commands, Using Info, Using Info
+@node Cursor Commands
 @appendixsec Moving the Cursor
 @cindex cursor, moving
 Many people find that reading screens of text page by page is made
@@ -135,7 +135,7 @@ center of the window.  With a numeric argument of @var{n}, @code{M-r}
 moves the cursor to the start of the @var{n}th line in the window.
 @end table
 
-@node Scrolling Commands, Node Commands, Cursor Commands, Using Info
+@node Scrolling Commands
 @appendixsec Moving Text Within a Window
 @cindex scrolling, in Info windows
 
@@ -201,7 +201,7 @@ in the rightmost column of the screen, and the remainder of the line is
 invisible.
 @end table
 
-@node Node Commands, Searching Commands, Scrolling Commands, Using Info
+@node Node Commands
 @appendixsec Selecting a New Node
 @cindex nodes, selection of in Info windows
 
@@ -351,7 +351,7 @@ This is similar to @samp{C-x C-b} followed by @samp{m}, but no window is
 created.
 @end table
 
-@node Searching Commands, Xref Commands, Node Commands, Using Info
+@node Searching Commands
 @appendixsec Searching an Info File
 @cindex searching
 
@@ -403,7 +403,7 @@ default search string.
 string is looked up while you are typing it, instead of waiting until
 the entire search string has been specified.
 
-@node Xref Commands, Window Commands, Searching Commands, Using Info
+@node Xref Commands
 @appendixsec Selecting Cross References
 
 We have already discussed the @samp{Next}, @samp{Prev}, and @samp{Up}
@@ -417,7 +417,7 @@ different node, perhaps in another info file.  Such pointers are called
 * Selecting Xrefs::             Commands for selecting menu or note items.
 @end menu
 
-@node Parts of an Xref, Selecting Xrefs, Xref Commands, Xref Commands
+@node Parts of an Xref
 @appendixsubsec Parts of an Xref
 
 Cross references have two major parts: the first part is called the
@@ -465,7 +465,7 @@ documentation:  @xref{xref, , Writing an Xref, texinfo, the Texinfo
 Manual}, for more information on creating your own texinfo cross
 references.
 
-@node Selecting Xrefs,  , Parts of an Xref, Xref Commands
+@node Selecting Xrefs
 @appendixsubsec Selecting Xrefs
 
 The following table lists the Info commands which operate on menu items.
@@ -532,7 +532,7 @@ reference in this node.
 Selects the menu item or note reference appearing on this line.
 @end table
 
-@node Window Commands, Printing Nodes, Xref Commands, Using Info
+@node Window Commands
 @appendixsec Manipulating Multiple Windows
 @cindex windows, manipulating
 
@@ -553,7 +553,7 @@ windows.
 * The Echo Area::               Used for displaying errors and reading input.
 @end menu
 
-@node The Mode Line, Basic Windows, Window Commands, Window Commands
+@node The Mode Line
 @appendixsubsec The Mode Line
 
 A @dfn{mode line} is a line of inverse video which appears at the bottom
@@ -593,7 +593,7 @@ showing possible completions:
 -----Info: *Completions*, 7 lines --All--------------------------------
 @end smallexample
 
-@node Basic Windows, The Echo Area, The Mode Line, Window Commands
+@node Basic Windows
 @appendixsubsec Window Commands
 
 It can be convenient to view more than one node at a time.  To allow
@@ -668,7 +668,7 @@ its contents.  The variable @code{automatic-tiling} can cause
 @xref{Info Variables, , @code{automatic-tiling}}.
 @end table
 
-@node The Echo Area,  , Basic Windows, Window Commands
+@node The Echo Area
 @appendixsubsec The Echo Area
 @cindex echo area
 
@@ -844,7 +844,7 @@ Scrolls the completions window, if that is visible, or the "other"
 window if not.
 @end table
 
-@node Printing Nodes, Other Info Commands, Window Commands, Using Info
+@node Printing Nodes
 @appendixsec Printing Out Nodes
 @cindex printing
 
@@ -863,7 +863,7 @@ environment variable @code{INFO_PRINT_COMMAND}.  If the variable doesn't
 exist, the node is simply piped to @code{lpr}.
 @end table
 
-@node Other Info Commands, Info Variables, Printing Nodes, Using Info
+@node Other Info Commands
 @appendixsec Miscellaneous Info Commands
 
 GNU Info contains several commands which self-document GNU Info:
@@ -989,7 +989,7 @@ associated with a node when the node is selected by setting the variable
 @xref{Info Variables, , @code{automatic-footnotes}}.
 @end table
 
-@node Info Variables,  , Other Info Commands, Using Info
+@node Info Variables
 @appendixsec Manipulating Variables
 
 GNU Info contains several @dfn{variables} whose values are looked at by various

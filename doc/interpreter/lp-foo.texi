@@ -1,6 +1,6 @@
 @c ------------------------------------------------------------------------
 
-@node Linear Programming, Quadratic Programming, Quadrature, Top
+@node Linear Programming
 @chapter Linear Programming
 @cindex LP
 @cindex linear programming

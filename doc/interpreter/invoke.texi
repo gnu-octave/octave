@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Invoking Octave, Expressions, Introduction, Top
+@node Invoking Octave, Basics, Introduction, Top
 @chapter Invoking Octave
 
 Normally, Octave is used interactively by running the program
@@ -13,7 +13,7 @@ You can also specify the name of a file on the command line, and Octave
 will read and execute the commands from the named file and then exit
 when it is finished.
 
-You can further control how Octave starts up by using the command-line
+You can further control how Octave starts by using the command-line
 options described in the next section, and Octave itself can remind you
 of the options available.  Type
 
@@ -35,6 +35,9 @@ to display all available options and briefly describe their use
 @cindex Octave command options
 @cindex command options
 @cindex options, Octave command
+
+Here is a complete list of all the command line options that Octave
+accepts.
 
 @table @code
 @item --debug
@@ -169,6 +172,10 @@ Print the program version number and exit.
 Execute commands from @var{file}.
 @end table
 
+Octave also includes several built-in variables that contain information
+about the command line, including the number of arguments and all of the
+options.
+
 @defvr {Built-in Variable} argv
 The command line arguments passed to Octave are available in this
 variable.  For example, if you invoked Octave using the command
@@ -180,6 +187,9 @@ octave --no-line-editing --silent
 @noindent
 @code{argv} would be a string vector with the elements
 @code{--no-line-editing} and @code{--silent}.
+
+If you write an executable Octave script, @var{argv} will contain the
+list of arguments passed to the script.  @pxref{Executable Octave Programs}.
 @end defvr
 
 @defvr {Built-in Variable} nargin
@@ -211,7 +221,7 @@ command line.
 @example
 printf ("%s", program_name);
 for i = 1:nargin
-  printf (" %s", i, argv(i,:));
+  printf (" %s", argv(i,:));
 endfor
 printf ("\n");
 @end example
@@ -269,5 +279,5 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @code{--verbose} option but without the
 @code{--silent} option.
 
-Startup files may contain any valid Octave commands, including multiple
-function definitions.
+Startup files may contain any valid Octave commands, including function
+definitions.

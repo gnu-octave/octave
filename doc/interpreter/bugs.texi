@@ -6,7 +6,7 @@
 @c in the Octave distribution, as well as in the Octave manual.
 
 @ifclear BUGSONLY
-@node Trouble, Command Line Editing, Installation, Top
+@node Trouble, Copying, Installation, Top
 @appendix Known Causes of Trouble with Octave
 @end ifclear
 
@@ -20,7 +20,7 @@ Copyright (C) 1996 John W. Eaton.  You may copy, distribute, and
 modify it freely as long as you preserve this copyright notice and
 permission notice.
 
-@node Trouble, Trouble, Trouble, (dir)
+@node Trouble,  , Trouble
 @chapter Known Causes of Trouble with Octave
 @end ifset
 

@@ -267,7 +267,7 @@ solution is
 (defun RET-behaves-as-LFD ()
   (let ((x (key-binding "\C-j")))
     (local-set-key "\C-m" x)))
-(add-hook 'octave-mode-hook 'return-behaves-as-LFD)
+(add-hook 'octave-mode-hook 'RET-behaves-as-LFD)
 @end lisp
 @noindent
 (this works for all modes by adding to the startup hooks, without having

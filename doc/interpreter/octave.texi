@@ -106,45 +106,41 @@ It corresponds to Octave version @value{VERSION}.
 * Preface::                     
 * Introduction::                A brief introduction to Octave.
 * Invoking Octave::             Command options supported by Octave.
+* Basics::                      
 * Expressions::                 Expressions.
 * Statements::                  Looping and program flow control.
 * Functions and Scripts::       
 * Built-in Variables::          Descriptions of all built-in variables.
+* Input and Output::            
+* Plotting::                    
+* Matrix Manipulation::         
+* Special Matrices::            
+* String Functions::            
 * Arithmetic::                  
 * Linear Algebra::              
-* Polynomial Manipulations::    
 * Nonlinear Equations::         
+* Quadrature::                  
 * Differential Equations::      
 * Optimization::                
-* Quadrature::                  
+* Statistics::                  
+* Sets::                        
+* Polynomial Manipulations::    
 * Control Theory::              
 * Signal Processing::           
-* Sets::                        
-* Statistics::                  
-* Plotting::                    
 * Image Processing::            
 * Audio Processing::            
-* Input and Output::            
-* Special Matrices::            
-* Matrix Manipulation::         
-* String Functions::            
 * System Utilities::            
-* Command History Functions::   
-* Help::                        
 * Programming Utilities::       
 * Amusements::                  
 * Emacs::                       
 * Installation::                How to configure, compile and install Octave.
 * Trouble::                     If you have trouble installing Octave.
-* Command Line Editing::        Command history and editing.
-* Using Info::                  
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Variable Index::              An item for each documented variable.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
-* Readline Index::              An index for readline commands.
-* Info Index::                  An index for info commands.
+
 
  --- The Detailed Node Listing ---
 
@@ -152,14 +148,35 @@ A Brief Introduction to Octave
 
 * Running Octave::              
 * Simple Examples::             
-* Comments::                    
-* Executable Octave Programs::  
-* Errors::                      
+* Conventions::                 
+
+Conventions
+
+* Fonts::                       
+* Evaluation Notation::         
+* Printing Notation::           
+* Error Messages::              
+* Format of Descriptions::      
+
+Format of Descriptions
+
+* A Sample Function Description::  
+* A Sample Command Description::  
+* A Sample Variable Description::  
 
 Invoking Octave
 
 * Command Line Options::        
 * Startup Files::               
+
+Basics
+
+* Comments::                    
+* Executable Octave Programs::  
+* Errors::                      
+* Help::                        
+* Command Line Editing::        
+* Command History Functions::   
 
 Expressions
 
@@ -230,44 +247,6 @@ Built-in Variables
 * Miscellaneous Built-in Variables::  
 * Summary of Preference Variables::  
 
-Arithmetic
-
-* Utility Functions::           
-* Complex Arithmetic::          
-* Trigonometry::                
-* Sums and Products::           
-* Special Functions::           
-* Mathematical Constants::      
-
-Linear Algebra
-
-* Basic Matrix Functions::      
-* Matrix Factorizations::       
-* Functions of a Matrix::       
-
-Differential Equations
-
-* Ordinary Differential Equations::  
-* Differential-Algebraic Equations::  
-
-Optimization
-
-* Quadratic Programming::       
-* Nonlinear Programming::       
-* Linear Least Squares::        
-
-Quadrature
-
-* Functions of one Variable::   
-* Orthogonal Collocation::      
-
-Plotting
-
-* Two-Dimensional Plotting::    
-* Three-Dimensional Plotting::  
-* Multiple Plots on One Page::  
-* Miscellaneous Plotting Functions::  
-
 Input and Output
 
 * Basic Input and Output::      
@@ -283,10 +262,11 @@ C-Style I/O Functions
 
 * Opening and Closing Files::   
 * Formatted Output::            
+* Output Conversion for Matrices::  
 * Output Conversion Syntax::    
 * Table of Output Conversions::  
 * Integer Conversions::         
-* Floating-Point Conversions::  
+* Floating-Point Conversions::  Other Output Conversions::    
 * Other Output Conversions::    
 * Formatted Input::             
 * Input Conversion Syntax::     
@@ -296,15 +276,61 @@ C-Style I/O Functions
 * Binary I/O::                  
 * Other I/O Functions::         
 
-Special Matrices
+Other I/O Functions
 
-* Special Utility Matrices::    
-* Famous Matrices::             
+* Miscellaneous Output Functions::  
+* Miscellaneous Input Functions::  
+* File Positioning Functions::  
+* File Status Functions::       
+* Subprocesses Communication::  
+
+Plotting
+
+* Two-Dimensional Plotting::    
+* Three-Dimensional Plotting::  
+* Multiple Plots on One Page::  
+* Miscellaneous Plotting Functions::  
 
 Matrix Manipulation
 
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
+
+Special Matrices
+
+* Special Utility Matrices::    
+* Famous Matrices::             
+
+Arithmetic
+
+* Utility Functions::           
+* Complex Arithmetic::          
+* Trigonometry::                
+* Sums and Products::           
+* Special Functions::           
+* Mathematical Constants::      
+
+Linear Algebra
+
+* Basic Matrix Functions::      
+* Matrix Factorizations::       
+* Functions of a Matrix::       
+
+Quadrature
+
+* Functions of one Variable::   
+* Orthogonal Collocation::      
+
+Differential Equations
+
+* Ordinary Differential Equations::  
+* Differential-Algebraic Equations::  
+
+Optimization
+
+* Quadratic Programming::       
+* Nonlinear Programming::       
+* Linear Least Squares::        
 
 System Utilities
 
@@ -354,105 +380,35 @@ Reporting Bugs
 * Where: Bug Lists.             Where to send your bug report.
 * Reporting: Bug Reporting.     How to report a bug effectively.
 * Patches: Sending Patches.     How to send a patch for Octave.
-
-Command Line Editing
-
-* Introduction and Notation::   Notation used in this text.
-* Readline Interaction::        The minimum set of commands for editing a line.
-* Readline Bare Essentials::    
-* Readline Movement Commands::  
-* Readline Killing Commands::   
-* Readline Arguments::          
-* Readline Init File::          Customizing Readline from a user's view.
-* Readline Init Syntax::        
-* Readline Vi Mode::            
-
-Readline Interaction
-
-* Readline Bare Essentials::    The least you need to know about Readline.
-* Readline Movement Commands::  Moving about the input line.
-* Readline Killing Commands::   How to delete text, and how to get it back!
-* Readline Arguments::          Giving numeric arguments to commands.
-
-Readline Init File
-
-* Readline Init Syntax::        Syntax for the commands in @file{~/.inputrc}.
-* Readline Vi Mode::            Switching to @code{vi} mode in Readline.
-
-Readline Init Syntax
-
-* Commands For Moving::         Moving about the line.
-* Commands For History::        Getting at previous lines.
-* Commands For Text::           Commands for changing text.
-* Commands For Killing::        Commands for killing and yanking.
-* Numeric Arguments::           Specifying numeric arguments, repeat counts.
-* Commands For Completion::     Getting Readline to do the typing for you.
-* Miscellaneous Commands::      Other miscellaneous commands.
-
-Using Info
-
-* Cursor Commands::             
-* Scrolling Commands::          
-* Node Commands::               
-* Searching Commands::          
-* Xref Commands::               
-* Window Commands::             
-* Printing Nodes::              
-* Other Info Commands::         
-* Info Variables::              
-
-Using Info
-
-* Cursor Commands::	    Commands which move the cursor within a node.
-* Scrolling Commands::	    Commands for moving the node around in a window.
-* Node Commands::	    Commands for selecting a new node.
-* Searching Commands::	    Commands for searching an info file.
-* Xref Commands::	    Commands for selecting cross references.
-* Window Commands::	    Commands which manipulate multiple windows.
-* Printing Nodes::	    How to print out the contents of a node.
-* Other Info Commands::     A few commands that defy categories.
-* Info Variables::	    How to change the default behavior of Info.
-
-Selecting Cross References
-
-* Parts of an Xref::            What a cross reference is made of.
-* Selecting Xrefs::             Commands for selecting menu or note items.
-
-Manipulating Multiple Windows
-
-* The Mode Line::               What appears in the mode line?
-* Basic Windows::               Manipulating windows in Info.
-* The Echo Area::               Used for displaying errors and reading input.
 @end menu
 
 @include preface.texi
 @include intro.texi
 @include invoke.texi
+@include basics.texi
 @include expr.texi
 @include stmt.texi
 @include func.texi
 @include var.texi
+@include io.texi
+@include plot.texi
+@include matrix.texi
+@include special.texi
+@include strings.texi
 @include arith.texi
 @include linalg.texi
-@include poly.texi
 @include nonlin.texi
+@include quad.texi
 @include diffeq.texi
 @include optim.texi
-@include quad.texi
+@include stats.texi
+@include set.texi
+@include poly.texi
 @include control.texi
 @include signal.texi
-@include set.texi
-@include stats.texi
-@include plot.texi
 @include image.texi
 @include audio.texi
-@include io.texi
-@include special.texi
-@include matrix.texi
-@include strings.texi
 @include system.texi
-@include history.texi
-@include help.texi
 @include program.texi
 @include amuse.texi
 
@@ -464,33 +420,12 @@ Manipulating Multiple Windows
 @include emacs.texi
 @include install.texi
 @include bugs.texi
-
-@c Make a separate index for all readline commands, functions, and
-@c concepts.
-@defindex rd
-@syncodeindex cp rd
-@syncodeindex fn rd
-@syncodeindex ky rd
-@syncodeindex vr rd
-
-@include rluser.texi
-
-@c Make a separate index for all Info commands, functions, and concepts.
-@defindex in
-@syncodeindex cp in
-@syncodeindex fn in
-@syncodeindex ky in
-@syncodeindex vr in
-
-@include gnuinfo.texi
 @include gpl.texi
 
 @include cp-idx.texi
 @include vr-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
-@include rd-idx.texi
-@include in-idx.texi
 
 @contents
 

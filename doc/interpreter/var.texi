@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Built-in Variables, Arithmetic, Functions and Scripts, Top
+@node Built-in Variables, Input and Output, Functions and Scripts, Top
 @chapter Built-in Variables
 @cindex variables
 @cindex built-in variables
@@ -45,95 +45,6 @@ Octave without having to remember and retype all the necessary commands.
 The version number of Octave, as a string.
 @end defvr
 
-@defvr {Built-in Variable} PS1
-The primary prompt string.  When executing interactively, Octave
-displays the primary prompt @code{PS1} when it is ready to read a
-command.  Octave allows the prompt to be customized by inserting a
-number of backslash-escaped special characters that are decoded as
-follows:
-
-@table @samp
-@item \t
-The time.
-@item \d
-The date.
-@item \n
-Begins a new line by printing the equivalent of a carriage return
-followed by a line feed.
-@item \s
-The name of the program (usually just @code{octave}).
-@item \w
-The current working directory.
-@item \W
-The basename of the current working directory.
-@item \u
-The username of the current user.
-@item \h
-The hostname.
-@item \H
-The hostname, up to the first `.'.
-@item \#
-The command number of this command, counting from when Octave starts.
-@item \!
-The history number of this command.  This differs from @samp{\#} by the
-number of commands in the history list when Octave starts.
-@item \$
-If the effective UID is 0, a #, otherwise a $.
-@item \nnn
-The character whose character code in octal is @samp{nnn}.
-@item \\
-A backslash.
-@end table
-
-The default value of @code{PS1} is @code{"\s:\#> "}.  To change it, use a
-command like
-
-@example
-octave:13> PS1 = "\\u@@\\H> "
-@end example
-
-@noindent
-which will result in the prompt @samp{boris@@kremvax> } for the user
-@samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two
-backslashes are required to enter a backslash into a string.
-@xref{String Constants}.
-@end defvr
-
-@defvr {Built-in Variable} PS2
-The secondary prompt string, which is printed when Octave is
-expecting additional input to complete a command.  For example, when
-defining a function over several lines, Octave will print the value of
-@code{PS1} at the beginning of each line after the first.  Octave allows
-@code{PS2} to be customized in the same way as @code{PS1}.  The default
-value of @code{PS2} is @code{"> "}.
-@end defvr
-
-@defvr {Built-in Variable} PS4
-If Octave is invoked with the @code{--echo-input} option, the value of
-@code{PS4} is printed before each line of input that is echoed.  Octave
-allows @code{PS4} to be customized in the same way as @code{PS1}.  The
-default value of @code{PS4} is @code{"+ "}.  @xref{Invoking Octave}, for
-a description of @code{--echo-input}.
-@end defvr
-
-@defvr {Built-in Variable} ans
-This variable holds the most recently computed result that was not
-explicitly assigned to a variable.  For example, after the expression
-
-@example
-3^2 + 4^2
-@end example
-
-@noindent
-is evaluated, the value of @code{ans} is @samp{25}.
-@end defvr
-
-@defvr {Built-in Variable} completion_append_char
-The value of @code{completion_append_char} is used as the character to
-append to successful command-line completion attempts.  The default
-value is @code{" "} (a single space).
-@end defvr
-
 @defvr {Built-in Variable} ok_to_lose_imaginary_part
 If the value of @code{ok_to_lose_imaginary_part} is nonzero,
 implicit conversions of complex numbers to real numbers are allowed (for
@@ -142,31 +53,11 @@ but a warning is printed.  Otherwise, an error message is printed and
 control is returned to the top level.  The default value is @code{"warn"}.
 @end defvr
 
-@defvr {Built-in Variable} print_answer_id_name
-If the value of @code{print_answer_id_name} is nonzero, variable
-names are printed along with the result.  Otherwise, only the result
-values are printed.  The default value is 1.
-@end defvr
-
 @defvr {Built-in Variable} propagate_empty_matrices
 If the value of @code{propagate_empty_matrices} is nonzero,
 functions like @code{inverse} and @code{svd} will return an empty matrix
 if they are given one as an argument.  The default value is 1.
 @xref{Empty Matrices}.
-@end defvr
-
-@defvr {Built-in Variable} treat_neg_dim_as_zero
-If the value of @code{treat_neg_dim_as_zero} is nonzero, expressions
-like
-
-@example
-eye (-1)
-@end example
-
-@noindent
-produce an empty matrix (i.e., row and column dimensions are zero).
-Otherwise, an error message is printed and control is returned to the
-top level.  The default value is 0.
 @end defvr
 
 @node Summary of Preference Variables,  , Miscellaneous Built-in Variables, Built-in Variables
@@ -179,55 +70,136 @@ for the Octave version number, and @code{SYS} stands for the type of
 system for which Octave was compiled (for example,
 @code{alpha-dec-osf3.2}).
 
-@smallexample
-EDITOR                  "vi"
-EXEC_PATH               ":$PATH"
-INFO_FILE               "OCT_HOME/info/octave.info"
-INFO_PROGRAM            "OCT_HOME/libexec/octave/VERSION/exec/SYS/info"
-LOADPATH                ".:OCT_HOME/lib/VERSION"
-PAGER                   "less", or "more"
-PS1                     "\s:\#> "
-PS2                     "> "
-PS4                     "+ "
-automatic_replot        0
+@table @code
+@item EDITOR
+Default value: @code{"vi"}.
 
-beep_on_error                 0
-completion_append_char        " "
-default_return_value          []
-do_fortran_indexing           0
-define_all_return_values      0
-empty_list_elements_ok        "warn"
-gnuplot_binary                "gnuplot"
-history_file                  "~/.octave_hist"
-history_size                  1024
-ignore_function_time_stamp    "system"
+@item EXEC_PATH
+Default value: @code{":$PATH"}.
 
-implicit_str_to_num_ok        0
-ok_to_lose_imaginary_part     "warn"
-output_max_field_width        10
-output_precision              5
-page_screen_output            1
-prefer_column_vectors         0
-prefer_zero_one_indexing      0
-print_answer_id_name          1
-print_empty_dimensions        1
-resize_on_range_error         1
+@item INFO_FILE
+Default value: @code{"OCT_HOME/info/octave.info"}.
 
-return_last_computed_value    0
-save_precision                17
-saving_history                1
-silent_functions              0
-split_long_rows               1
-struct_levels_to_print        2
-suppress_verbose_help_message 1
-treat_neg_dim_as_zero         0
-warn_assign_as_truth_value    1
-warn_comma_in_global_decl     1
+@item INFO_PROGRAM
+Default value: @code{"OCT_HOME/libexec/octave/VERSION/exec/SYS/info"}.
 
-warn_divide_by_zero           1
-warn_function_name_clash      1
-whitespace_in_literal_matrix  ""
-@end smallexample
+@item LOADPATH
+Default value: @code{".:OCT_HOME/lib/VERSION"}.
+
+@item PAGER
+Default value: @code{"less", or "more"}.
+
+@item PS1
+Default value: @code{"\s:\#> "}.
+
+@item PS2
+Default value: @code{"> "}.
+
+@item PS4
+Default value: @code{"+ "}.
+
+@item automatic_replot
+Default value: 0.
+
+@item beep_on_error
+Default value: 0.
+
+@item completion_append_char
+Default value: @code{" "}.
+
+@item default_return_value
+Default value: @code{[]}.
+
+@item do_fortran_indexing
+Default value: 0.
+
+@item define_all_return_values
+Default value: 0.
+
+@item empty_list_elements_ok
+Default value: @code{"warn"}.
+
+@item gnuplot_binary
+Default value: @code{"gnuplot"}.
+
+@item history_file
+Default value: @code{"~/.octave_hist"}.
+
+@item history_size
+Default value: 1024.
+
+@item ignore_function_time_stamp
+Default value: @code{"system"}.
+
+@item implicit_str_to_num_ok
+Default value: 0.
+
+@item ok_to_lose_imaginary_part
+Default value: @code{"warn"}.
+
+@item output_max_field_width
+Default value: 10.
+
+@item output_precision
+Default value: 5.
+
+@item page_screen_output
+Default value: 1.
+
+@item prefer_column_vectors
+Default value: 0.
+
+@item prefer_zero_one_indexing
+Default value: 0.
+
+@item print_answer_id_name
+Default value: 1.
+
+@item print_empty_dimensions
+Default value: 1.
+
+@item resize_on_range_error
+Default value: 1.
+
+@item return_last_computed_value
+Default value: 0.
+
+@item save_precision
+Default value: 17.
+
+@item saving_history
+Default value: 1.
+
+@item silent_functions
+Default value: 0.
+
+@item split_long_rows
+Default value: 1.
+
+@item struct_levels_to_print
+Default value: 2.
+
+@item suppress_verbose_help_message
+Default value: 1.
+
+@item treat_neg_dim_as_zero
+Default value: 0.
+
+@item warn_assign_as_truth_value
+Default value: 1.
+
+@item warn_comma_in_global_decl
+Default value: 1.
+
+@item warn_divide_by_zero
+Default value: 1.
+
+@item warn_function_name_clash
+Default value: 1.
+
+@item whitespace_in_literal_matrix
+Default value: @code{""}.
+@end table
 
 The following variables may be set from the environment or by a command
 line option.

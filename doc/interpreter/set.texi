@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Sets, Statistics, Signal Processing, Top
+@node Sets, Polynomial Manipulations, Statistics, Top
 @chapter Sets
 
 Octave has a limited set of functions for managing sets of data, where a

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Differential Equations, Optimization, Nonlinear Equations, Top
+@node Differential Equations, Optimization, Quadrature, Top
 @chapter Differential Equations
 
 Octave has two built-in functions for solving differential equations.

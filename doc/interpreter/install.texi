@@ -19,7 +19,7 @@ Octave is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation.
 
-@node Installation, Installation, Installation, (dir)
+@node Installation,  , Installation
 @chapter Installing Octave
 @end ifset
 

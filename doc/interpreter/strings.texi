@@ -4,7 +4,7 @@
 
 @cindex strings
 
-@node String Functions, System Utilities, Matrix Manipulation, Top
+@node String Functions, Arithmetic, Special Matrices, Top
 @chapter String Functions
 
 @deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
@@ -28,14 +28,10 @@ to the corresponding ASCII
 character.  For example,
 
 @example
+@group
 setstr ([97, 98, 99])
-@end example
-
-@noindent
-creates the string
-
-@example
-abc
+     @result{} "abc"
+@end group
 @end example
 @end deftypefn
 
@@ -79,11 +75,11 @@ returns the corresponding decimal number.  For example,
 
 @example
 bin2dec ("1110")
-    @result{} 14
+     @result{} 14
 @end example
 @end deftypefn
 
-@deftypefn {Function File} {} blanks (var{n})
+@deftypefn {Function File} {} blanks (@var{n})
 Returns a string of @var{n} blanks.
 @end deftypefn
 
@@ -97,7 +93,7 @@ a string of ones and zeros.  For example,
 
 @example
 dec2bin (14)
-  @result{} "1110"
+     @result{} "1110"
 @end example
 @end deftypefn
 
@@ -107,7 +103,7 @@ number as a string.  For example,
 
 @example
 dec2hex (2748)
-   @result{} "abc"
+     @result{} "abc"
 @end example
 @end deftypefn
 
@@ -119,9 +115,9 @@ can include overlapping positions (this is the default).  For example,
 
 @example
 findstr ("ababab", "a")
-   @result{} [1  3  5]
+     @result{} [1  3  5]
 findstr ("abababa", "aba", 0)
-   @result{} [1, 5]
+     @result{} [1, 5]
 @end example
 @end deftypefn
 
@@ -131,9 +127,9 @@ corresponding decimal number.  For example,
 
 @example
 hex2dec ("12B")
-   @result{} 299
+     @result{} 299
 hex2dec ("12b")
-   @result{} 299
+     @result{} 299
 @end example
 @end deftypefn
 
@@ -143,7 +139,7 @@ string @var{s}, or 0 if no occurence is found.  For example,
 
 @example
 index ("Teststring", "t")
-   @result{} 4
+     @result{} 4
 @end example
 
 @strong{Note:}  This function does not work for arrays of strings.
@@ -155,7 +151,7 @@ string @var{s}, or 0 if no occurence is found.  For example,
 
 @example
 rindex ("Teststring", "t")
-   @result{} 6
+     @result{} 6
 @end example
 
 @strong{Note:}  This function does not work for arrays of strings.
@@ -168,9 +164,9 @@ matrix).  For example,
 
 @example
 split ("Test string", "t")
-   @result{} Tes 
-       s  
-      ring
+     @result{} Tes 
+         s  
+        ring
 @end example
 @end deftypefn
 
@@ -199,7 +195,7 @@ with the string @var{y}.  For example,
 
 @example
 strrep ("This is a test string", "is", "&%$")
-   @result{} Th&%$ &%$ a test string
+     @result{} Th&%$ &%$ a test string
 @end example
 @end deftypefn
 
@@ -209,7 +205,7 @@ Returns the substring of @var{s} which starts at character number
 
 @example
 substr ("This is a test string", 6, 9)
-   @result{} is a test
+     @result{} is a test
 @end example
 
 @quotation
@@ -226,7 +222,7 @@ are left unchanged.  For example,
 
 @example
 tolower ("MiXeD cAsE 123")
-   @result{} "mixed case 123"
+     @result{} "mixed case 123"
 @end example
 @end deftypefn
 
@@ -238,7 +234,7 @@ are left unchanged.  For example,
 @example
 @group
 toupper ("MiXeD cAsE 123")
-   @result{} "MIXED CASE 123"
+     @result{} "MIXED CASE 123"
 @end group
 @end example
 @end deftypefn
@@ -249,7 +245,7 @@ Return ASCII representation of @var{s} in a matrix.  For example,
 @example
 @group
 toascii ("ASCII")
-   @result{} [ 65, 83, 67, 73, 73 ]
+     @result{} [ 65, 83, 67, 73, 73 ]
 @end group
 
 @end example
@@ -261,49 +257,52 @@ zeros and ones.  Elements that are nonzero indicate that the condition
 was true for the corresponding character in the string array.
 
 @deftypefn {Mapping Function} {} isalnum (@var{s})
-letter or a digit
+Returns true for characters that are letters or digits (@code{isalpha
+(@var{a})} or @code{isdigit (@var{})} is true).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isalpha (@var{s})
-letter
+Returns true for characters that are letters (@code{isupper (@var{a})}
+or @code{islower (@var{})} is true). 
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isascii (@var{s})
-ascii
+Returns true for characters that are ASCII (in the range 0 to 127 decimal).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} iscntrl (@var{s})
-control character
+Returns true for control characters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isdigit (@var{s})
-digit
+Returns true for characters that are decimal digits.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isgraph (@var{s})
-printable (but not space character)
+Returns true for printable characters (but not the space character).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} islower (@var{s})
-lower case
+Returns true for characters that are lower case letters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isprint (@var{s})
-printable (including space character)
+Returns true for printable characters (including the space character).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} ispunct (@var{s})
-punctuation
+Returns true for punctuation characters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isspace (@var{s})
-whitespace
+Returns true for whitespace characters (space, formfeed, newline,
+carriage return, tab, and vertical tab).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isupper (@var{s})
-upper case
+Returns true for upper case letters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isxdigit (@var{s})
-hexadecimal digit
+Returns true for characters that are hexadecimal digits.
 @end deftypefn

@@ -2,43 +2,50 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Input and Output, Special Matrices, Audio Processing, Top
+@node Input and Output, Plotting, Built-in Variables, Top
 @chapter Input and Output
 
 There are two distinct classes of input and output functions.  The first
 set are modeled after the functions available in @sc{Matlab}.  The
 second set are modeled after the standard I/O library used by the C
-programming language.  The C-style I/O functions offer more flexibility
-and control over the output, but are not quite as easy to use as the
-simpler @sc{Matlab}-style I/O functions.
+programming language and offer more flexibility and control over the
+output.
 
 When running interactively, Octave normally sends any output intended
 for your terminal that is more than one screen long to a paging program,
-such as @code{less} or @code{more}.  This avoids the problem of having
-a large volume of output stream by before you can read it.  With
-@code{less} (and some versions of @code{more}) it also allows you to
-scan forward and backward, and search for specific items.
+such as @code{less} or @code{more}.  This avoids the problem of having a
+large volume of output stream by before you can read it.  With
+@code{less} (and some versions of @code{more}) you can also scan forward
+and backward, and search for specific items.
 
-No output is displayed by the pager until just before Octave is ready to
-print the top level prompt, or read from the standard input (for
-example, by using the @code{fscanf} or @code{scanf} functions).  This
-means that there may be some delay before any output appears on your
-screen if you have asked Octave to perform a significant amount of work
-with a single command statement.  The function @code{fflush} may be used
-to force output to be sent to the pager immediately.  @xref{C-Style I/O
-Functions}.
+Normally, no output is displayed by the pager until just before Octave
+is ready to print the top level prompt, or read from the standard input
+(for example, by using the @code{fscanf} or @code{scanf} functions).
+This means that there may be some delay before any output appears on
+your screen if you have asked Octave to perform a significant amount of
+work with a single command statement.  The function @code{fflush} may be
+used to force output to be sent to the pager immediately.  @xref{C-Style
+I/O Functions}.
 
 You can select the program to run as the pager by setting the variable
 @code{PAGER}, and you can turn paging off by setting the value of the
 variable @code{page_screen_output} to 0.
 
 @deffn {Command} more
-Turn output pagination on or off.
+@deffnx {Command} more on
+@deffnx {Command} more off
+Turn output pagination on or off.  Without an argument, @code{more}
+toggles the current state.
 @end deffn
 
 @defvr {Built-in Variable} PAGER
-The default value is @code{"less"}, or, if @code{less} is not available
-on your system, @code{"more"}.  @xref{Installation}.
+The default value is normally @code{"less"}, @code{"more"}, or
+@code{"pg"}, depending on what programs are installed on your system.
+@xref{Installation}.
+
+When running interactively, Octave sends any output intended for your
+terminal that is more than one screen long to the program named by the
+value of the variable @code{PAGER}.
 @end defvr
 
 @defvr {Built-in Variable} page_screen_output
@@ -54,6 +61,13 @@ If the value of @code{page_output_immediately} is nonzero, Octave sends
 output to the pager as soon as it is available.  Otherwise, Octave
 buffers its output and waits until just before the prompt is printed to
 flush it to the pager.  The default value is 0.
+
+@c XXX FIXME XXX -- maybe this would be a good place to describe the
+@c following message:
+@c
+@c warning: connection to external pager (pid = 9334) lost --
+@c warning: pending computations and output may be lost
+@c warning: broken pipe
 @end defvr
 
 @menu
@@ -90,6 +104,18 @@ value of a variable without printing its name, use the function
 
 The @code{format} command offers some control over the way Octave prints
 values with @code{disp} and through the normal echoing mechanism.
+
+@defvr {Built-in Variable} ans
+This variable holds the most recently computed result that was not
+explicitly assigned to a variable.  For example, after the expression
+
+@example
+3^2 + 4^2
+@end example
+
+@noindent
+is evaluated, the value of @code{ans} is @samp{25}.
+@end defvr
 
 @deftypefn {Built-in Function} {} disp (@var{x})
 Display the value of @var{x}.  For example, the following expression
@@ -194,8 +220,19 @@ works for numeric types.
 @end table
 @end deffn
 
+@defvr {Built-in Variable} print_answer_id_name
+If the value of @code{print_answer_id_name} is nonzero, variable
+names are printed along with the result.  Otherwise, only the result
+values are printed.  The default value is 1.
+@end defvr
+
 @node Terminal Input, Simple File I/O, Terminal Output, Basic Input and Output
 @subsection Terminal Input
+
+Octave has two functions that make it easy to get input from the
+terminal.  The @code{input} function is normally used for managing an
+interactive dialog with a user, and the @code{keyboard} function is
+normally used for doing simple debugging.
 
 @deftypefn {Built-in Function} {} input (@var{prompt})
 @deftypefnx {Built-in Function} {} input (@var{prompt}, "s")
@@ -251,34 +288,36 @@ history and editing functions are available at the prompt.
 @subsection Simple File I/O
 
 The @code{save} and @code{load} commands allow data to be written to and
-read from disk files in various formats.
+read from disk files in various formats.  The default format of files
+written by the @code{save} command can be controlled using the built-in
+variables @code{default_save_format} and @code{save_precision}.
+
+Note that Octave can not save or load structure variables or any
+user-defined types.
 
 @deffn {Command} save options file v1 v2 @dots{}
 Save the named variables @var{v1}, @var{v2}, @dots{} in the file
 @var{file}.  The special filename @samp{-} can be used to write the
 output to your terminal.  If no variable names are listed, Octave saves
 all the variables in the current scope.  Valid options for the
-@code{save} command are listed in the following table.
+@code{save} command are listed in the following table.  Options that
+modify the output format override the format specified by the built-in
+variable @code{default_save_format}.
 
 @table @code
 @item -ascii
-Save the data in Octave's text data format.  Using this flag overrides
-the value of the built-in variable @code{default_save_format}.
+Save the data in Octave's text data format.
 
 @item -binary
-Save the data in Octave's binary data format.  Using this flag overrides
-the value of the built-in variable @code{default_save_format}.
+Save the data in Octave's binary data format.
 
 @item -float-binary
 Save the data in Octave's binary data format but only using single
-precision.  Using this flag overrides the value of the built-in variable
-@code{default_save_format}.  You should use this format only if you
-know that all the values to be saved can be represented in single
-precision.
+precision.  You should use this format only if you know that all the
+values to be saved can be represented in single precision.
 
 @item -mat-binary
-Save the data in @sc{Matlab}'s binary data format.  Using this flag overrides
-the value of the built-in variable @code{default_save_format}.
+Save the data in @sc{Matlab}'s binary data format.
 
 @item -save-builtins
 Force Octave to save the values of built-in variables too.  By default,
@@ -301,9 +340,10 @@ specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
 match all lower and upper case alphabetic characters. 
 @end table
 
-Saving global variables also saves the global status of the variable, so
-that if it is restored at a later time using @samp{load}, it will be
-restored as a global variable.
+Except when using hte @sc{Matlab} binary data file format, saving global
+variables also saves the global status of the variable, so that if it is
+restored at a later time using @samp{load}, it will be restored as a
+global variable.
 
 The command
 
@@ -383,39 +423,40 @@ functionality of the C programming language's standard I/O library.  The
 argument lists for some of the input functions are slightly different,
 however, because Octave has no way of passing arguments by reference.
 
-In the following, @var{file} refers either to an integer file number
-(as returned by @file{fopen}) or a file name.
+In the following, @var{file} refers to a file name and @code{fid} returs
+to an integer file number, as returned by @code{fopen}.
 
-There are three files that are always available:
+There are three files that are always available.  Although these files
+can be accessed using their corresponding numeric file ids, you should
+always use the symbolic names given in the table below, since it will
+make your programs easier to understand.
+
 
 @defvr {Built-in Variable} stdin
-The standard input stream (file number 0).  When Octave is used
+The standard input stream (file id 0).  When Octave is used
 interactively, this is filtered through the command line editing
 functions.
 @end defvr
 
 @defvr {Built-in Variable} stdout
-The standard output stream (file number 1).  Data written to the
+The standard output stream (file id 1).  Data written to the
 standard output is normally filtered through the pager.
 @end defvr
 
 @defvr {Built-in Variable} stderr
-The standard error stream (file number 2).  Even if paging is turned on,
+The standard error stream (file id 2).  Even if paging is turned on,
 the standard error is not sent to the pager.  It is useful for error
 messages and prompts.
 @end defvr
 
-You should always use the symbolic names given in the table above,
-rather than referring to these files by number, since it will make
-your programs clearer.
-
 @menu
 * Opening and Closing Files::   
 * Formatted Output::            
+* Output Conversion for Matrices::  
 * Output Conversion Syntax::    
 * Table of Output Conversions::  
 * Integer Conversions::         
-* Floating-Point Conversions::  
+* Floating-Point Conversions::  Other Output Conversions::    
 * Other Output Conversions::    
 * Formatted Input::             
 * Input Conversion Syntax::     
@@ -429,19 +470,41 @@ your programs clearer.
 @node Opening and Closing Files, Formatted Output, C-Style I/O Functions, C-Style I/O Functions
 @subsection Opening and Closing Files
 
-@deftypefn {Built-in Function} {fid =} fopen (@var{name}, @var{mode})
-Opens the named file with the specified mode.  Returns an integer value
-that may be used to refer to the file later.  The @var{mode} is a
-one or two character string that specifies whether the file is to be
-opened for reading, writing, or both.  For example,
+@deftypefn {Built-in Function} {[fid, msg] =} fopen (@var{name}, @var{mode}, @var{arch})
+@deftypefnx {Built-in Function} {fid_list =} fopen ("all")
+@deftypefnx {Built-in Function} {file =} fopen (@var{fid})
+The first form of the @code{fopen} function opens the named file with
+the specified mode (read-write, read-only, etc.) and architecture
+interpretation (IEEE big endian, IEEE little endian, etc.), and returns
+an integer value that may be used to refer to the file later.  If an
+error occurs, @var{fid} is set to -1 and @var{msg} contains the
+corresponding system error message.  The @var{mode} is a one or two
+character string that specifies whether the file is to be opened for
+reading, writing, or both.
+
+The second form of the @code{fopen} function returns a vector of file ids
+corresponding to all the currently open files, excluding the
+@code{stdin}, @code{stdout}, and @code{stderr} streams.
+
+The third form of the @code{fopen} function returns the name of a
+currently open file given its file id.
+
+For example,
 
 @example
-myfile = fopen ("splat.dat", "r");
+myfile = fopen ("splat.dat", "r", "ieee-le");
 @end example
 
 @noindent
-opens the file @file{splat.dat} for reading.  Opening a file that is
-already open has no effect.
+opens the file @file{splat.dat} for reading.  If necessary, binary
+numeric values will be read assuming they are stored in IEEE format with
+the least significant bit first, and then converted to the native
+representation.
+
+Opening a file that is already open simply opens it again and returns a
+separate file id.  It is not an error to open a file several times,
+though writing to the same file through several different file ids may
+produce unexpected results.
 
 The possible values @samp{mode} may have are
 
@@ -458,7 +521,7 @@ Open or create a file for writing at the end of the file.
 @item @samp{r+}
 Open an existing file for reading and writing.
 
-@item @samp{w+}
+item @samp{w+}
 Open a file for reading or writing.  The previous contents are
 discared.
 
@@ -466,6 +529,33 @@ discared.
 Open or create a file for reading or writing at the end of the
 file.
 @end table
+
+The parameter @var{arch} is a string specifying the default data format
+for the file.  Valid values for @var{arch} are:
+
+@table @asis
+@samp{native}
+The format of the current machine (this is the default).
+
+@samp{ieee-le}
+IEEE big endian format.
+
+@samp{ieee-be}
+IEEE little endian format.
+
+@samp{vaxd}
+VAX D floating format.
+
+@samp{vaxg}
+VAX G floating format.
+
+@samp{cray}
+Cray floating format.
+@end table
+
+@noindent
+however, conversions are currently only supported for @samp{native}
+@samp{ieee-be}, and @samp{ieee-le} formats.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} fclose (@var{fid})
@@ -474,13 +564,15 @@ close the file, an error message is printed and @code{fclose} returns
 0.  Otherwise, it returns 1.
 @end deftypefn
 
-@node Formatted Output, Output Conversion Syntax, Opening and Closing Files, C-Style I/O Functions
+@node Formatted Output, Output Conversion for Matrices, Opening and Closing Files, C-Style I/O Functions
 @subsection Formatted Output
 
 This section describes how to call @code{printf} and related functions.
 
 The following functions are available for formatted output.  They are
-modelled after the C language functions of the same name.
+modelled after the C language functions of the same name, but they
+interpret the format template differently in order to improve the
+performance of printing vector and matrix values.
 
 @deftypefn {Function File} {} printf (@var{template}, @dots{})
 The @code{printf} function prints the optional arguments under the
@@ -494,7 +586,7 @@ written to the stream @var{fid} instead of @code{stdout}.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} sprintf (@var{template}, @dots{})
-This is like @code{printf}, except that the output is written to a
+This is like @code{printf}, except that the output is returned as a
 string.  Unlike the C library function, which requires you to provide a
 suitably sized string as an argument, Octave's @code{sprintf} function
 returns the string, automatically sized to hold all of the items
@@ -554,7 +646,10 @@ The specific flags and modifiers that are permitted and their
 interpretation vary depending on the particular conversion.  They're all
 described in more detail in the following sections.
 
-@node Output Conversion Syntax, Table of Output Conversions, Formatted Output, C-Style I/O Functions
+@node Output Conversion for Matrices, Output Conversion Syntax, Formatted Output, C-Style I/O Functions
+@subsection Output Conversion for Matrices
+
+@node Output Conversion Syntax, Table of Output Conversions, Output Conversion for Matrices, C-Style I/O Functions
 @subsection Output Conversion Syntax
 
 This section provides details about the precise syntax of conversion
@@ -836,7 +931,7 @@ printf ("%3s%-6s", "no", "where");
 @end smallexample
 
 @noindent
-prints @samp{ nowhere }.
+prints @samp{ nowhere } (note the leading and trailing spaces).
 
 @node Formatted Input, Input Conversion Syntax, Other Output Conversions, C-Style I/O Functions
 @subsection Formatted Input
@@ -845,17 +940,20 @@ Here are the descriptions of the functions for performing formatted
 input.
 
 @deftypefn {Built-in Function} {} scanf (@var{template})
+@deftypefnx {Built-in Function} {} scanf (@var{template}, "C")
 The @code{scanf} function reads formatted input from the stream
 @code{stdin} under the control of the template string @var{template}.
 The resulting values are returned.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} fscanf (@var{fid}, @var{template})
+@deftypefnx {Built-in Function} {} fscanf (@var{fid}, @var{template}, "C")
 This function is just like @code{scanf}, except that the input is read
 from the stream @var{fid} instead of @code{stdin}.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} sscanf (@var{string}, @var{template})
+@deftypefnx {Built-in Function} {} sscanf (@var{string}, @var{template}, "C")
 This is like @code{scanf}, except that the characters are taken from the
 string @var{string} instead of from a stream.  Reaching the end of the
 string is treated as an end-of-file condition.
@@ -1061,9 +1159,9 @@ Octave has to C-style functions for reading and writing binary data.
 They are @code{fread} and @code{fwrite} and are patterned after the
 standard C functions with the same names.
 
-@deftypefn {Built-in Function} {} fread (@var{fid}, @var{size}, @var{precision})
+@deftypefn {Built-in Function} {} fread (@var{fid}, @var{size}, @var{precision}, @var{arch})
 This function reads data in binary form of type @var{precision} from the
-specified @var{fid}, which may be either a file name, or a file number
+specified @var{fid}, which may be either a file name, or a file id
 as returned from @code{fopen}.
 
 The argument @var{size} specifies the size of the matrix to return.  It
@@ -1084,9 +1182,9 @@ data read from the file, and @code{count}, which is the number of
 elements read.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision})
+@deftypefn {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{arch})
 This function writes data in binary form of type @var{precision} to the
-specified @var{fid}, which may be either a file name, or a file number
+specified @var{fid}, which may be either a file name, or a file id
 as returned from @code{fopen}.
 
 The argument @var{data} is a matrix of values that are to be written to
@@ -1107,13 +1205,16 @@ are too large to fit in the specified precision.
 @node Other I/O Functions,  , Binary I/O, C-Style I/O Functions
 @subsection Other I/O Functions
 
-@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
-Read @samp{len} characters from a file.
-@end deftypefn
+@menu
+* Miscellaneous Output Functions::  
+* Miscellaneous Input Functions::  
+* File Positioning Functions::  
+* File Status Functions::       
+* Subprocesses Communication::  
+@end menu
 
-@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
-Read @samp{len} characters from a file.
-@end deftypefn
+@node Miscellaneous Output Functions, Miscellaneous Input Functions, Other I/O Functions, Other I/O Functions
+@subsubsection Miscellaneous Output Functions
 
 @deftypefn {Built-in Function} {} fflush (@var{fid})
 Flush output to @var{fid}.  This is useful for ensuring that all
@@ -1121,6 +1222,56 @@ pending output makes it to the screen before some other event occurs.
 For example, it is always a good idea to flush the standard output
 stream before calling @code{input}.
 @end deftypefn
+
+@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})
+Write a string to a file with no formatting.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} puts (@var{string})
+Write a string to the standard output with no formatting.
+@end deftypefn
+
+@node Miscellaneous Input Functions, File Positioning Functions, Miscellaneous Output Functions, Other I/O Functions
+@subsubsection Miscellaneous Input Functions
+
+@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
+Read characters from a file, stopping at the first newline character
+that is encountered or after @var{len} characters have been read, and
+returning the characters as a string.  The newline is not included in
+the returned value.
+
+If @var{len} is omitted, @code{fgetl} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgetl} returns -1.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
+Read characters from a file, stopping at the first newline character
+that is encountered or after @var{len} characters have been read, and
+returning the characters as a string.  The newline is included in the
+returned value.
+
+If @var{len} is omitted, @code{fgets} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgets} returns -1.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} kbhit ()
+Read a single keystroke from the keyboard.  For example,
+
+@example
+x = kbhit ();
+@end example
+
+@noindent
+will set @var{x} to the next character typed at the keyboard, without
+requiring a carriage return to be typed.
+@end deftypefn
+
+@node File Positioning Functions, File Status Functions, Miscellaneous Input Functions, Other I/O Functions
+@subsubsection File Positioning Functions
 
 Three functions are available for setting and determining the position of
 the file pointer for a given file.
@@ -1164,6 +1315,9 @@ fourch = fgets (myfile, 4);
 fseek (myfile, marker, SEEK_SET);
 @end example
 
+@node File Status Functions, Subprocesses Communication, File Positioning Functions, Other I/O Functions
+@subsubsection File Status Functions
+
 @deftypefn {Built-in Function} {} feof (@var{fid})
 Returns 1 if an end-of-file condition has been encountered for a given
 file and 0 otherwise.  Note that it will only return 1 if the end of the
@@ -1178,18 +1332,6 @@ already been encountered, not if the next operation will result in an
 error condition.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} kbhit ()
-Read a single keystroke from the keyboard.  For example,
-
-@example
-x = kbhit ();
-@end example
-
-@noindent
-will set @var{x} to the next character typed at the keyboard, without
-requiring a carriage return to be typed.
-@end deftypefn
-
 @deftypefn {Built-in Function} {} freport ()
 Finally, it is often useful to know exactly which files have been
 opened, and whether they are open for reading, writing, or both.  The
@@ -1198,25 +1340,20 @@ example,
 
 @example
 @group
-octave:13> freport
+freport ()
 
- number  mode  name
-
-      0     r  stdin
-      1     w  stdout
-      2     w  stderr
-      3     r  myfile
+     @print{}  number  mode  name
+     @print{} 
+     @print{}       0     r  stdin
+     @print{}       1     w  stdout
+     @print{}       2     w  stderr
+     @print{}       3     r  myfile
 @end group
 @end example
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})
-Write a string to a file with no formatting.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} puts (@var{string})
-Write a string to the standard output with no formatting.
-@end deftypefn
+@node Subprocesses Communication,  , File Status Functions, Other I/O Functions
+@subsubsection Communication with Subprocesses
 
 @deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
 Start a subprocess with 2-way communication.

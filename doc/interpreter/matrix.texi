@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Matrix Manipulation, String Functions, Special Matrices, Top
+@node Matrix Manipulation, Special Matrices, Plotting, Top
 @chapter Matrix Manipulation
 
 There are a number of functions available for checking to see if the
@@ -85,9 +85,12 @@ errorcode is 1, and @var{y_i} is @var{x_i}.  For example,
 @example
 @group
 [errorcode, a, b] = common_size ([1 2; 3 4], 5)
+
      @result{} errorcode = 0
-     @result{} a = [1 2, 3 4]
-     @result{} b = [5 5; 5 5]
+
+     @result{} a = [ 1, 2; 3, 4 ]
+
+     @result{} b = [ 5, 5; 5, 5 ]
 @end group
 @end example
 
@@ -252,7 +255,9 @@ equivalent statements:
 @example
 @group
 rot90 ([1, 2; 3, 4], -1)
+@equiv{}
 rot90 ([1, 2; 3, 4], 3)
+@equiv{}
 rot90 ([1, 2; 3, 4], 7)
 @end group
 @end example

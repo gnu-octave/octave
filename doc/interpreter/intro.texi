@@ -6,8 +6,8 @@
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
-This manual documents how to run, install and port Octave, and how
-to report bugs.
+This manual documents how to run, install and port Octave, and how to
+report bugs.
 
 Octave is a high-level language, primarily intended for numerical
 computations.  It provides a convenient command line interface for
@@ -30,9 +30,7 @@ This document corresponds to Octave version @value{VERSION}.
 @menu
 * Running Octave::              
 * Simple Examples::             
-* Comments::                    
-* Executable Octave Programs::  
-* Errors::                      
+* Conventions::                 
 @end menu
 
 @node Running Octave, Simple Examples, Introduction, Introduction
@@ -53,17 +51,10 @@ Octave's prompt.
 @cindex quitting octave
 To exit Octave, type @samp{quit}, or @samp{exit} at the Octave prompt.
 
-@deftypefn {Built-in Function} {} exit (@var{status})
-@deftypefnx {Built-in Function} {} quit (@var{status})
-Exit the current Octave session.  If the optional integer value
-@var{status} is supplied, pass that value to the operating system as the
-Octave's exit status.
-@end deftypefn
-
 On systems that support job control, you can suspend Octave by sending
 it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
 
-@node Simple Examples, Comments, Running Octave, Introduction
+@node Simple Examples, Conventions, Running Octave, Introduction
 @section Simple Examples
 
 The following chapters describe all of Octave's features in detail, but
@@ -355,211 +346,261 @@ pager like @code{less} or @code{more}.  Type a carriage return to
 advance one line, a space character to advance one page, and @samp{q} to
 exit the pager.
 
-@unnumberedsubsubsec Help via Info
-
 The part of Octave's help facility that allows you to read the complete
-text of the printed manual from within Octave uses a program called
-Info.  When you invoke Info you will be put into a menu driven program
-that contains the entire Octave manual.  Help for using Info is provided
-in this manual in @ref{Using Info}.
+text of the printed manual from within Octave normally uses a separate
+program called Info.  When you invoke Info you will be put into a menu
+driven program that contains the entire Octave manual.  Help for using
+Info is provided in this manual in @ref{Help}.
 
-@node Comments, Executable Octave Programs, Simple Examples, Introduction
-@section Comments in Octave Programs
-@cindex @samp{#}
-@cindex @samp{%}
-@cindex comments
-@cindex use of comments
-@cindex documenting Octave programs
-@cindex programs, documenting
+@node Conventions,  , Simple Examples, Introduction
+@section Conventions
 
-A @dfn{comment} is some text that is included in a program for the sake
-of human readers, and that is not really part of the program.  Comments
-can explain what the program does, and how it works.  Nearly all
-programming languages have provisions for comments, because programs are
-typically hard to understand without them.
+This section explains the notational conventions that are used in this
+manual.  You may want to skip this section and refer back to it later.
 
-In the Octave language, a comment starts with either the sharp sign
-character, @samp{#}, or the percent symbol @samp{%} and continues to the
-end of the line.  The Octave interpreter ignores the rest of a
-line following a sharp sign or percent symbol.  For example, we could
-have put the following into the function @code{f}:
+@menu
+* Fonts::                       
+* Evaluation Notation::         
+* Printing Notation::           
+* Error Messages::              
+* Format of Descriptions::      
+@end menu
 
-@smallexample
-function xdot = f (x, t)
+@node Fonts, Evaluation Notation, Conventions, Conventions
+@subsection Fonts
+@cindex fonts
 
-# usage: f (x, t)
-#
-# This function defines the right-hand-side functions for a set of
-# nonlinear differential equations.
+Examples of Octave code appear in this font or form: @code{svd (a)}.
+Names that represent arguments or metasyntactic variables appear
+in this font or form: @var{first-number}.
 
-  r = 0.25
+@node Evaluation Notation, Printing Notation, Fonts, Conventions
+@subsection Evaluation Notation
+@cindex evaluation notation
+@cindex documentation notation
 
-  and so on...
-
-endfunction
-@end smallexample
-
-The @code{help} command (@pxref{Help}) is able to find the first block
-of comments in a function (even those that are composed directly on the
-command line).  This means that users of Octave can use the same
-commands to get help for built-in functions, and for functions that you
-have defined.  For example, after defining the function @code{f} above,
-the command
-
-@example
-help f
-@end example
-
-@noindent
-produces the output
-
-@smallexample
- usage: f (x, t)
-
- This function defines the right-hand-side functions for a set of
- nonlinear differential equations.
-@end smallexample
-
-Although it is possible to put comment lines into keyboard-composed
-throw-away Octave programs, it usually isn't very useful, because the
-purpose of a comment is to help you or another person understand the
-program at a later time.
-
-@node Executable Octave Programs, Errors, Comments, Introduction
-@section Executable Octave Programs
-@cindex executable scripts
-@cindex scripts, executable
-@cindex self contained programs
-@cindex program, self contained
-@cindex @samp{#!}
-
-Once you have learned Octave, you may want to write self-contained
-Octave scripts, using the @samp{#!} script mechanism.  You can do this
-on GNU systems and on many Unix systems @footnote{The @samp{#!}
-mechanism works on Unix systems derived from Berkeley Unix, System V
-Release 4, and some System V Release 3 systems.}
-
-For example, you could create a text file named @file{hello}, containing
-the following lines:
+In the examples in this manual, results from expressions that you
+evaluate are indicated with @samp{@result{}}.  For example,
 
 @example
 @group
-#! @value{OCTAVEHOME}/bin/octave -qf
+sqrt (2)
 
-# a sample Octave program
-printf ("Hello, world!\n");
+     @result{} 1.4142
 @end group
 @end example
 
 @noindent
-After making this file executable (with the @code{chmod} command), you
-can simply type:
+You can read this as ``@code{sqrt (2)} evaluates to 1.4142''.
 
-@example
-hello
-@end example
-
-@noindent
-at the shell, and the system will arrange to run Octave @footnote{The
-line beginning with @samp{#!} lists the full file name of an interpreter
-to be run, and an optional initial command line argument to pass to that
-interpreter.  The operating system then runs the interpreter with the
-given argument and the full argument list of the executed program.  The
-first argument in the list is the full file name of the Octave program.
-The rest of the argument list will either be options to Octave, or data
-files, or both.  The @code{-qf} option is usually specified in
-stand-alone Octave programs to prevent them from printing the normal
-startup message, and to keep them from behaving differently depending on
-the contents of a particular user's @file{~/.octaverc} file.
-@xref{Invoking Octave}.} as if you had typed:
-
-@example
-octave hello
-@end example
-
-@noindent
-Self-contained Octave scripts are useful when you want to write a
-program which users can invoke without knowing that the program is
-written in the Octave language.
-
-@node Errors,  , Executable Octave Programs, Introduction
-@section Errors
-
-There are two classes of errors that Octave produces when it encounters
-input that it is unable to understand, or when it is unable to perform
-an action.
-
-A @dfn{parse error} occurs if Octave cannot understand something you
-have typed.  For example, if you misspell a keyword,
-
-@example
-octave:13> functon y = f (x) y = x^2; endfunction
-@end example
-
-@noindent
-Octave will respond immediately with a message like this:
-
-@example
-parse error:
-
-  functon y = f (x) y = x^2; endfunction
-          ^
-@end example
-
-@noindent
-For most parse errors, Octave uses a caret (@samp{^}) to mark the point
-on the line where it was unable to make sense of your input.  In this
-case, Octave generated an error message because the keyword
-@code{function} was misspelled.  Instead of seeing @samp{function f},
-Octave saw two consecutive variable names, which is invalid in this
-context.  It marked the error at the @code{y} because the first name by
-itself was accepted as valid input.
-
-Another class of error message occurs occurs at evaluation time.  These
-errors are called @dfn{run-time errors}, or sometimes
-@dfn{evaluation errors} because they occur when your program is being
-@dfn{run}, or @dfn{evaluated}.  For example, if after correcting the
-mistake in the previous function definition, you type
-
-@example
-octave:13> f ()
-@end example
-
-@noindent
-Octave will respond with
+In some cases, matrix values that are returned by expressions are
+displayed like this
 
 @example
 @group
-error: `x' undefined near line 1 column 24
-error: evaluating expression near line 1, column 24
-error: evaluating assignment expression near line 1, column 22
-error: called from `f'
+[1, 2; 3, 4] == [1, 3; 2, 4]
+
+     @result{} [ 1, 0; 0, 1 ]
 @end group
 @end example
 
-This error message has several parts, and gives you quite a bit of
-information to help you locate the source of the error.  The messages
-are generated from the point of the innermost error, and provide a
-traceback of enclosing expressions and function calls.
-
-In the example above, the first line indicates that a variable named
-@samp{x} was found to be undefined near line 1 and column 24 of some
-function or expression.  For errors occurring within functions, lines
-from the beginning of the file containing the function definition.  For
-errors occurring at the top level, the line number indicates the input
-line number, which is usually displayed in the prompt string.
-
-The second and third lines in the example indicate that the error
-occurred within an assignment expression, and the last line of the error
-message indicates that the error occurred within the function @samp{f}.
-If the function @samp{f} had been called from another function, for
-example, @samp{g}, the list of errors would have ended with one more
-line:
+@noindent
+and in other cases, they are displayed like this
 
 @example
-error: called from `g'
+@group
+eye (3)
+
+     @result{}  1  0  0
+         0  1  0
+         0  0  1
+@end group
 @end example
 
-These lists of function calls usually make it fairly easy to trace the
-path your program took before the error occurred, and to correct the
-error before trying again.
+@noindent
+in order to clearly show the structure of the result.
+
+Sometimes to help describe one expression, another expression is
+shown that produces identical results.  The exact equivalence of
+expressions is indicated with @samp{@equiv{}}.  For example,
+
+@example
+@group
+rot90 ([1, 2; 3, 4], -1)
+@equiv{}
+rot90 ([1, 2; 3, 4], 3)
+@equiv{}
+rot90 ([1, 2; 3, 4], 7)
+@end group
+@end example
+
+@node Printing Notation, Error Messages, Evaluation Notation, Conventions
+@subsection Printing Notation
+@cindex printing notation
+
+Many of the examples in this manual print text when they are
+evaluated.  Examples in this manual indicate printed text with
+@samp{@print{}}.  The value that is returned by evaluating the
+expression (here @code{1}) is displayed with @samp{@result{}} and
+follows on a separate line.
+
+@example
+@group
+printf ("foo %s\n", "bar")
+
+     @print{} foo bar
+
+     @result{} 1
+@end group
+@end example
+
+@node Error Messages, Format of Descriptions, Printing Notation, Conventions
+@subsection Error Messages
+@cindex error message notation
+
+Some examples signal errors.  This normally displays an error message
+on your terminal.  Error messages are shown on a line starting with
+@samp{@error{}}.  Note that @samp{@error{}} itself does not appear on
+your terminal.
+
+@example
+struct_elements ([1, 2; 3, 4])
+@error{} struct_elements: wrong type argument `matrix'
+@end example
+
+@node Format of Descriptions,  , Error Messages, Conventions
+@subsection Format of Descriptions
+@cindex description format
+
+Functions, commands, and variables are described in this manual in a 
+uniform format.  The first line of a description contains the name of
+the item followed by its arguments, if any.
+@ifinfo
+The category---function, variable, or whatever---appears at the
+beginning of the line.
+@end ifinfo
+@iftex
+The category---function, variable, or whatever---is printed next to the
+right margin.
+@end iftex
+The description follows on succeeding lines, sometimes with examples.
+
+@menu
+* A Sample Function Description::  
+* A Sample Command Description::  
+* A Sample Variable Description::  
+@end menu
+
+@node A Sample Function Description, A Sample Command Description, Format of Descriptions, Format of Descriptions
+@subsubsection A Sample Function Description
+@cindex function descriptions
+
+In a function description, the name of the function being described
+appears first.  It is followed on the same line by a list of parameters.
+The names used for the parameters are also used in the body of the
+description.
+
+Here is a description of an imaginary function @code{foo}:
+
+@deftypefn {Function} {} foo (@var{x}, @var{y}, @dots{})
+The function @code{foo} subtracts @var{x} from @var{y}, then adds the
+remaining arguments to the result.  If @var{y} is not supplied, then the
+number 19 is used by default.
+
+@example
+@group
+foo (1, [3, 5], 3, 9)
+
+     @result{} [ 14, 16 ]
+
+foo (5)
+
+     @result{} 14
+@end group
+@end example
+
+More generally,
+
+@example
+@group
+foo (@var{w}, @var{x}, @var{y}, @dots{})
+@equiv{}
+@var{x} - @var{w} + @var{y} + @dots{}
+@end group
+@end example
+@end deftypefn
+
+Any parameter whose name contains the name of a type (e.g.,
+@var{integer}, @var{integer1} or @var{matrix}) is expected to be of that
+type.  Parameters named @var{object} may be of any type.  Parameters
+with other sorts of names (e.g., @var{new_file}) are discussed
+specifically in the description of the function.  In some sections,
+features common to parameters of several functions are described at the
+beginning.
+
+Functions in Octave may be defined in several different ways.  The
+catagory name for functions may include another name that indicates the
+way that the function is defined.  These additional tags include
+
+@table @asis
+@item Built-in Function
+The function described is written in a language like C++, C, or Fortran,
+and is part of the compiled Octave binary.
+
+@item Loadable Function
+The function described is written in a language like C++, C, or Fortran.
+On systems that support dynamic linking of user-supplied functions, it
+may be automatically linked while Octave is running, but only if it is
+needed.  @xref{Dynamically Linked Functions}.
+
+@item Function File
+The function described is defined using Octave commands stored in a text
+file.  @xref{Function Files}.
+@end table
+
+@node A Sample Command Description, A Sample Variable Description, A Sample Function Description, Format of Descriptions
+@subsubsection A Sample Function Description
+@cindex command descriptions
+
+Command descriptions have a format similar to function descriptions,
+except that the word `Function' is replaced by `Command.  Commands are
+functions that are called without surrounding their arguments in
+parentheses.  For example, here is the description for Octave's
+@code{cd} command:
+
+@deffn {Command} cd dir
+@deffnx {Command} chdir dir
+Change the current working directory to @var{dir}.  For example,
+
+@example
+cd ~/octave
+@end example
+
+@noindent
+Changes the current working directory to @file{~/octave}.  If the
+directory does not exist, an error message is printed and the working
+directory is not changed.
+@end deffn
+
+@node A Sample Variable Description,  , A Sample Command Description, Format of Descriptions
+@subsubsection A Sample Variable Description
+@cindex variable descriptions
+
+A @dfn{variable} is a name that can hold a value.  Although any variable
+can be set by the user, certain variables that exist specifically so 
+that users can change them are called @dfn{user options}.  Ordinary
+variables and user options are described using a format like that for
+functions except that there are no arguments.
+
+Here is a description of the imaginary user option
+@code{do_what_i_mean_not_what_i_say}.
+
+@defvr {User Option} do_what_i_mean_not_what_i_say
+If the value of this variable is nonzero, Octave will do what you
+actually wanted, even if you have typed a completely different and
+meaningless list of commands.
+@end defvr
+
+Other variable descriptions have the same format, but `User Option' is
+replaced by `Variable', for ordinary variables, or `Constant' for
+symbolic constants whose values cannot be changed.

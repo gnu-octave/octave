@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Plotting, Image Processing, Statistics, Top
+@node Plotting, Matrix Manipulation, Input and Output, Top
 @chapter Plotting
 
 All of Octave's plotting functions use @code{gnuplot} to handle the

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Optimization, Quadrature, Differential Equations, Top
+@node Optimization, Statistics, Differential Equations, Top
 @chapter Optimization
 
 @menu

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Programming Utilities, Amusements, Help, Top
+@node Programming Utilities, Amusements, System Utilities, Top
 @chapter Programming Utilities
 
 @menu
@@ -73,7 +73,7 @@ by name, and use @code{feval} to call them.
 @cindex Fordyce, A. P.
 @findex newtroot
 Here is a simple-minded function using @code{feval} that finds the root
-of a user-supplied function of one variable.
+of a user-supplied function of one variable using Newton's method.
 
 @example
 @group
@@ -201,7 +201,7 @@ Return 1 if @var{a} is an empty matrix (either the number of rows, or
 the number of columns, or both are zero).  Otherwise, return 0.
 @end deftypefn
 
-@deffn {Command} clear pattern @dots{}
+@deffn {Command} clear options pattern @dots{}
 Delete the names matching the given patterns from the symbol table.  The
 pattern may contain the following special characters:
 @table @code
@@ -395,7 +395,7 @@ ans = "@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m"
 @end example
 @end deftypefn
 
-@deftypefn {Built-in Function} completion_matches (@var{hint})
+@deftypefn {Built-in Function} {} completion_matches (@var{hint})
 Generate possible completions given @var{hint}.
 
 This function is provided for the benefit of programs like Emacs which
@@ -421,8 +421,7 @@ is possible (though relatively unlikely) that it will not be available
 by the time your program attempts to open it.
 @end deftypefn
 
-@deffn {Command} type name @dots{}
-@deffnx {Command} type [-q] name @dots{}
+@deffn {Command} type options name @dots{}
 Display the definition of each @var{name} that refers to a function.
 
 Normally also displays if each @var{name} is user-defined or builtin;
@@ -442,7 +441,7 @@ Display the type of each @var{name}.  If @var{name} is defined from a
 function file, the full name of the file is also displayed.
 @end deffn
 
-@deftypefn {Built-in Function} octave_config_info ()
+@deftypefn {Built-in Function} {} octave_config_info ()
 Return a structure containing configuration and installation
 information.
 @end deftypefn

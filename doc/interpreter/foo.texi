@@ -1,6 +1,0 @@
-\input texinfo
-@setfilename foo.info
-@settitle Foo
-@node A, B, C, D
-@chapter A
-@bye

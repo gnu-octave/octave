@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Polynomial Manipulations, Nonlinear Equations, Linear Algebra, Top
+@node Polynomial Manipulations, Control Theory, Sets, Top
 @chapter Polynomial Manipulations
 
 In Octave, a polynomial is represented by its coefficients (arranged
@@ -195,26 +195,22 @@ imaginary part of a pole to the real part is less than @var{tol}, the
 imaginary part is discarded.  If two poles are farther apart than
 @var{tol} they are distinct.  For example,
 
-Example:
-
 @example
+@group
  b = [1, 1, 1];
+
  a = [1, -5, 8, -4];
 
- [r, p, k, e] = residue (b, a)
-@end example
+ [r, p, k, e] = residue (b, a);
 
-@noindent
-returns
+     @result{} r = [-2, 7, 3]
 
-@example
-r = [-2, 7, 3]
+     @result{} p = [2, 2, 1]
 
-p = [2, 2, 1]
+     @result{} k = [](0x0)
 
-k = [](0x0)
-
-e = [1, 2, 1]
+     @result{} e = [1, 2, 1]
+@end group
 @end example
 
 @noindent

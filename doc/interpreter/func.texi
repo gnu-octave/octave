@@ -12,7 +12,7 @@
 Complicated Octave programs can often be simplified by defining
 functions.  Functions can be defined directly on the command line during
 interactive Octave sessions, or in external files, and can be called just
-like built-in ones. 
+like built-in functions.
 
 @menu
 * Defining Functions::          
@@ -218,8 +218,8 @@ possibilities and issue our own error message.
 @defvr {Automatic Variable} nargin
 When a function is called, this local variable is automatically
 initialized to the number of arguments passed to the function.  At the
-top level, it holds the number of command line arguments that were
-passed to Octave.
+top level, @code{nargin} holds the number of command line arguments that
+were passed to Octave.
 @end defvr
 
 @defvr {Automatic Variable} nargout
@@ -228,11 +228,22 @@ initialized to the number of arguments expected to be returned.  For
 example, 
 
 @example
-@group
-f ()           # nargout is 0
-[s, t] = f ()  # nargout is 2
-@end group
+f ()
 @end example
+
+@noindent
+will result in @code{nargout} being set to 0 inside the function
+@code{f} and
+
+@example
+[s, t] = f ()
+@end example
+
+@noindent
+will result in @code{nargout} being set to 2 inside the function
+@code{f}.
+
+At the top level, @code{nargout} is undefined.
 @end defvr
 
 @defvr {Built-in Variable} silent_functions
@@ -347,7 +358,8 @@ c = 2
 
 @noindent
 provided that the built-in variable @code{define_all_return_values} is
-nonzero.  @xref{Built-in Variables}.
+nonzero and the value of @code{default_return_value} is @samp{[]}.
+@xref{Built-in Variables}.
 
 @defvr {Built-in Variable} default_return_value
 The value given to otherwise unitialized return values if
@@ -371,6 +383,9 @@ Octave has a real mechanism for handling functions that take an
 unspecified number of arguments, so it is not necessary to place an
 upper bound on the number of optional arguments that a function can
 accept.
+
+@c XXX FIXME XXX -- should we add a note about why this feature is not
+@c compatible with Matlab 5?
 
 Here is an example of a function that uses the new syntax to print a
 header followed by an unspecified number of values:
@@ -405,35 +420,28 @@ when there are no more arguments available.
 
 Sometimes it is useful to be able to pass all unnamed arguments to
 another function.  The keyword @var{all_va_args} makes this very easy to
-do.  For example, given the functions
+do.  For example,
 
 @example
+@group
 function f (...)
   while (nargin--)
     disp (va_arg ())
   endwhile
 endfunction
+
 function g (...)
   f ("begin", all_va_args, "end")
 endfunction
-@end example
 
-@noindent
-the statement
-
-@example
 g (1, 2, 3)
-@end example
 
-@noindent
-prints
-
-@example
-begin
-1
-2
-3
-end
+     @print{} begin
+     @print{} 1
+     @print{} 2
+     @print{} 3
+     @print{} end
+@end group
 @end example
 
 @defvr {Keyword} all_va_args
@@ -453,15 +461,23 @@ Octave also has a real mechanism for handling functions that return an
 unspecified number of values, so it is no longer necessary to place an
 upper bound on the number of outputs that a function can produce.
 
-Here is an example of a function that uses the new syntax to produce
-@var{n} values:
+Here is an example of a function that uses a variable-length return list
+to produce @var{n} values:
 
 @example
-function [...] = foo (n, x)
+@group
+function [...] = f (n, x)
   for i = 1:n
     vr_val (i * x);
   endfor
 endfunction
+
+[dos, quatro] = f (2, 2)
+
+     @result{} dos = 2
+
+     @result{} quatro = 4
+@end group
 @end example
 
 As with variable argument lists, the ellipsis that marks the variable
@@ -520,10 +536,10 @@ without adding extra logic to avoid printing the message if the vector
 does contain a nonzero element.
 
 @defvr {Keyword} return
-When Octave encounters the keyword return, it returns control to be
-calling function immediately.  It is only valid within a function and
-will result in an error if used at the top level.  A @code{return}
-statement is assumed at the end of every function definition.
+When Octave encounters the keyword @code{return} inside a function or
+script, it returns control to be caller immediately.  At the top level,
+the return statement is ignored.  A @code{return} statement is assumed
+at the end of every function definition.
 @end defvr
 
 @defvr {Built-in Variable} return_last_computed_value
@@ -541,8 +557,9 @@ endfunction
 @end example
 
 @noindent
-will either return nothing, if @code{return_last_computed_value} is
-0, or 4, if it is nonzero.
+will either return nothing, if the value of
+@code{return_last_computed_value} is 0, or 4, if the value of
+@code{return_last_computed_value} is nonzero.
 @end defvr
 
 @node Function Files, Script Files, Returning From a Function, Functions and Scripts
@@ -596,6 +613,8 @@ ignore the time stamps for all function files.  Setting it to
 @code{"system"} gives the default behavior.  If you set it to anything
 else, Octave will check the time stamps on all function files.
 
+@c XXX FIXME XXX -- note about time stamps on files in NFS environments?
+
 @defvr {Built-in Variable} LOADPATH
 A colon separated list of directories in which to search for function
 files.  @xref{Functions and Scripts}.  The value of @code{LOADPATH}
@@ -638,10 +657,11 @@ need to recompiled.  The default value of
 @end defvr
 
 @defvr {Built-in Variable} warn_function_name_clash
-If the value of @code{warn_function_name_clash} is nonzero, a
-warning is issued when Octave finds that the name of a function defined
-in a function file differs from the name of the file.  If the value is
-0, the warning is omitted.  The default value is 1.
+If the value of @code{warn_function_name_clash} is nonzero, a warning is
+issued when Octave finds that the name of a function defined in a
+function file differs from the name of the file.  (If the names
+disagree, the name delcared inside the file is ignored.)  If the value
+is 0, the warning is omitted.  The default value is 1.
 @end defvr
 
 @node Script Files, Dynamically Linked Functions, Function Files, Functions and Scripts
@@ -760,57 +780,141 @@ case, it should not be too hard to make Octave's dynamic linking
 features work on other systems using system-specific dynamic linking
 facilities.
 
-Here is an example of how to write a C++ function that Octave can load.
+Here is an example of how to write a C++ function that Octave can load,
+with commentary.  The source for this function is distributed with
+Octave, in the file @file{examples/hello.cc}.
+
+To use this file, your version of Octave must support dynamic
+linking.  To find out if it does, type the command
 
 @example
-#include <iostream.h>
-
-#include "defun-dld.h"
-#include "tree-const.h"
-
-DEFUN_DLD ("hello", Fhello, Shello, -1, -1,
-  "hello (...)\n\
-\n\
-Print greeting followed by the values of all the arguments passed.\n\
-Returns all the arguments passed.")
-@{
-  Octave_object retval;
-  cerr << "Hello, world!\n";
-  int nargin = args.length ();
-  for (int i = 1; i < nargin; i++)
-    retval (nargin-i-1) = args(i).eval (1);
-  return retval;
-@}
+x = octave_config_info; x.DEFS
 @end example
 
-Octave's dynamic linking features currently have the following
-limitations.
+@noindent
+at the Octave prompt.  Support for dynamic linking is included if
+the output contains the string @code{-DWITH_DYNAMIC_LINKING=1}.
 
-@itemize @bullet
-@item
-Dynamic linking only works on systems that support the GNU dynamic
-linker, @code{dld}.
-@item
-Clearing dynamically linked functions doesn't work.
+To compile this file, type the command
 
-@item
-Configuring Octave with @code{--enable-lite-kernel} seems to mostly work
-to make nonessential built-in functions dynamically loaded, but there
-also seem to be some problems.  For example, fsolve seems to always
-return @code{info == 3}.  This is difficult to debug since @code{gdb}
-won't seem to allow breakpoints to be set inside dynamically loaded
-functions.
+@example
+mkoctfile hello.cc
+@end example
 
-@item
-Octave uses a lot of memory if the dynamically linked functions are
-compiled to include debugging symbols.  This appears to be a limitation
-with @code{dld}, and can be avoided by not using @code{-g} to compile
-functions that will be linked dynamically.
-@end itemize
+@noindent
+at the shell prompt.  The script @file{mkoctfile} should have been
+installed along with Octave.  Running it will create a file called
+@file{hello.oct} that can be loaded by Octave.  To test the
+@file{hello.oct} file, start Octave and type the command
 
-If you would like to volunteer to help improve Octave's ability to
-dynamically link externally compiled functions, please contact
-@code{bug-octave@@bevo.che.wisc.edu}.
+@example
+hello ("easy as", 1, 2, 3)
+@end example
+
+@noindent
+at the Octave prompt.  Octave should respond by printing
+
+@example
+Hello, world!
+easy as
+1
+2
+3
+ans = 3
+@end example
+
+Additional examples are available in the files in the src directory
+of the Octave distribution that use the macro @code{DEFUN_DLD_BUILTIN}.
+Currently, this includes the files
+
+@example
+@group
+balance.cc  fft.cc      hess.cc     lu.cc       schur.cc
+chol.cc     fft2.cc     ifft.cc     minmax.cc   sort.cc
+colloc.cc   filter.cc   ifft2.cc    pinv.cc     svd.cc
+dassl.cc    find.cc     inv.cc      qr.cc       syl.cc
+det.cc      fsolve.cc   log.cc      quad.cc
+eig.cc      fsqp.cc     lsode.cc    qzval.cc
+expm.cc     givens.cc   lu.cc       rand.cc
+@end group
+@end example
+
+The difference between @code{DEFUN_DLD} and @code{DEFUN_DLD_BUILTIN} is
+that @code{DEFUN_DLD_BUILTIN} can define a built-in function that is not
+dynamically loaded if the operating system does not support dynamic
+linking.  To define your own dynamically linked functions you should use
+@code{DEFUN_DLD}.
+
+@example
+@group
+#include <octave/config.h>
+
+#include <iostream.h>
+
+#include <octave/defun-dld.h>
+#include <octave/error.h>
+#include <octave/oct-obj.h>
+#include <octave/pager.h>
+#include <octave/symtab.h>
+#include <octave/variables.h>
+@end group
+@end example
+
+@code{DEFUN_DLD} and the macros that it depends on are defined in the
+files @file{defun-dld.h}, @file{defun.h}, and @file{defun-int.h}.
+
+Note that the third parameter (@code{nargout}) is not used, so it is
+omitted from the list of arguments to @code{DEFUN_DLD} in order to avoid
+the warning from gcc about an unused function parameter. 
+
+@example
+@group
+DEFUN_DLD (hello, args, ,
+  "[...] = hello (...)\n\
+\n\
+Print greeting followed by the values of all the arguments passed.\n\
+Returns all arguments in reverse order.")
+@{
+@end group
+@end example
+
+The list of values to return.  See the declaration in @file{oct-obj.h}.
+
+@example
+  octave_value_list retval;
+@end example
+
+This stream is normally connected to the pager.
+
+@example
+  octave_stdout << "Hello, world!\n";
+@end example
+
+The arguments to this function are available in @samp{args}.
+
+@example
+  int nargin = args.length ();
+@end example
+
+The @code{octave_value_list} class is a zero-based array of
+@code{octave_value} objects.  The declaration for the
+@code{octave_value} class is in the file @code{pt-const.h}.  The
+@code{print()} method will send its output to @code{octave_stdout}, so
+it will also end up going through the pager.
+
+@example
+@group
+  for (int i = 0; i < nargin; i++)
+    @{
+      octave_value tmp = args (i);
+      tmp.print ();
+      retval (nargin-i-1) = tmp;
+    @}
+
+  return retval;
+@}
+@end group
+@end example
 
 @node Organization of Functions,  , Dynamically Linked Functions, Functions and Scripts
 @section Organization of Functions Distributed with Octave
@@ -824,6 +928,9 @@ The following is a list of all the function file subdirectories, and the
 types of functions you will find there.
 
 @table @file
+@item audio
+Functions for playing and recording sounds.
+
 @item control
 Functions for design and simulation of automatic control systems.
 
@@ -837,6 +944,9 @@ and @code{triu}, as well as other basic functions, like
 
 @item image
 Image processing tools.  These functions require the X Window System.
+
+@item io
+Input-ouput functions.
 
 @item linear-algebra
 Functions for linear algebra.
@@ -870,4 +980,7 @@ Statistical functions.
 
 @item strings
 Miscellaneous string-handling functions.
+
+@item time
+Functions related to time keeping.
 @end table

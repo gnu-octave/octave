@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Control Theory, Signal Processing, Quadrature, Top
+@node Control Theory, Signal Processing, Polynomial Manipulations, Top
 @chapter Control Theory
 
 @deftypefn {Function File} {} abcddim (@var{a}, @var{b}, @var{c}, @var{d})

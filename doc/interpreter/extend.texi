@@ -6,7 +6,7 @@
 @chapter Adding New Functions
 @cindex Functions
 
-The following is not complete, but should help get you started and
+The following is not complete
 give you some idea about why things are they way they are.
 
 Here's what you need to do to add a new function (I'll use svd() as an

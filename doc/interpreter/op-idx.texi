@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Operator Index, Readline Index, Function Index, Top
+@node Operator Index, , Function Index, Top
 @unnumbered Operator Index
 
 @printindex op

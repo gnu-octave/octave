@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node System Utilities, Command History Functions, String Functions, Top
+@node System Utilities, Programming Utilities, Audio Processing, Top
 @chapter System Utilities
 
 This chapter describes the functions that are available to allow you to
@@ -30,7 +30,7 @@ epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
 1970.
 @end deftypefn
 
-Several of Octave's time functions a data structure for time that
+Several of Octave's time functions use a data structure for time that
 includes the following elements:
 
 @table @code
@@ -120,10 +120,10 @@ Tab character.
 Numeric modifiers (a nonstandard extension):
 
 @table @code
-@item -
+@item - (dash)
 Do not pad the field.
 
-@item _
+@item _ (underscore)
 Pad the field with spaces.
 @end table
 
@@ -256,21 +256,6 @@ ans = 20-Aug-93
 @end example
 @end deftypefn
 
-@deftypefn {Function File} {} tic ()
-@deftypefnx {Function File} {} toc ()
-These functions set and check a wall-clock timer.  For example,
-
-@example
-tic ();
-# many computations later...
-elapsed_time = toc ();
-@end example
-
-@noindent
-will set the variable @code{elapsed_time} to the number of seconds since
-the most recent call to the function @code{tic}.
-@end deftypefn
-
 @deftypefn {Function File} {} etime (@var{t1}, @var{t2})
 Return the difference (in seconds) between two time values returned from
 @code{clock}.  For example:
@@ -293,6 +278,9 @@ second and third outputs, which are the number of CPU seconds spent
 executing in user mode and the number of CPU seconds spent executing in
 system mode, respectively.  If your system does not have a way to report
 CPU time usage, @code{cputime} returns 0 for each of its output values.
+Note that because Octave used some CPU time to start, it is reasonable
+to check to see if @code{cputime} works by checking to see if the total
+CPU time used is nonzero.
 @end deftypefn
 
 @deftypefn {Function File} {} is_leap_year (@var{year})
@@ -304,6 +292,40 @@ For example,
 octave:13> is_leap_year (2000)
 ans = 1
 @end example
+@end deftypefn
+
+@deftypefn {Function File} {} tic ()
+@deftypefnx {Function File} {} toc ()
+These functions set and check a wall-clock timer.  For example,
+
+@example
+tic ();
+# many computations later...
+elapsed_time = toc ();
+@end example
+
+@noindent
+will set the variable @code{elapsed_time} to the number of seconds since
+the most recent call to the function @code{tic}.
+
+If you are more interested in the CPU time that your process used, you
+should use the @code{cputime} function instead.  The @code{tic} and
+@code{toc} functions report the actual wall clock time that elapsed
+between the calls.  This may include time spent processing other jobs or
+doing nothing at all.  For example,
+
+@example
+@group
+tic (); sleep (5); toc ()
+     @result{} 5
+t = cputime (); sleep (5); cputime () - t
+     @result{} 0
+@end group
+@end example
+
+@noindent
+(This example also illustrates that the CPU timer may have a fairly
+coarse resolution.)
 @end deftypefn
 
 @node Filesystem Utilities, Interacting with the OS, Timing Utilities, System Utilities
@@ -436,8 +458,41 @@ Return the real group id of the current process.
 Create a FIFO special file.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} waitpid      
-Check the status of or wait for subprocesses.
+@deftypefn {Built-in Function} {} waitpid (@var{pid}, @var{options})
+Wait for process @var{pid} to terminate.  The @var{pid} argument can be:
+
+@table @asis
+@item -1
+Wait for any child process.
+
+@item 0
+Wait for any child process whose process group ID is equal to that of
+the Octave interpreter process.
+
+@item > 0
+Wait for termination of the child process with ID @var{PID}.
+@end table
+
+The @var{options} argument can be:
+
+@table @asis
+@item 0
+Wait until signal is received or a child process exits (this is the
+default if the @var{options} argument is missing).
+
+@item 1
+Do not hang if status is not immediately available.
+
+@item 2
+Report the status of any child processes that are stopped, and whose
+status has not yet been reported since they stopped.
+
+@item 3
+Implies both 1 and 2.
+@end table
+
+If the return value is greater than 0, it is the process ID of the child
+process that exited.  If an error occurs, -1 is returned.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} atexit (@var{fcn})
@@ -551,8 +606,8 @@ time the current working directory is changed with the @samp{cd}
 command.
 @end defvr
 
-@deffn {Command} ls
-@deffnx {Command} dir
+@deffn {Command} ls options
+@deffnx {Command} dir options
 List directory contents.  For example,
 
 @example
@@ -774,4 +829,24 @@ pause (5);
 clc;
 @end group
 @end example
+@end deftypefn
+
+@deftypefn {Built-in Function} {} sleep (@var{seconds})
+Suspend the execution of the program.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} usleep (@var{microseconds})
+Suspend the execution of the program.
+@end deftypefn
+
+@c XXX FIXME XXX -- not really sure where these should go.
+
+@cindex exiting octave
+@cindex quitting octave
+
+@deftypefn {Built-in Function} {} exit (@var{status})
+@deftypefnx {Built-in Function} {} quit (@var{status})
+Exit the current Octave session.  If the optional integer value
+@var{status} is supplied, pass that value to the operating system as the
+Octave's exit status.
 @end deftypefn

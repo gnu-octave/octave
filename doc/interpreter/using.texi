@@ -9,7 +9,7 @@
 @cindex Octave language
 @cindex @code{octave} program
 
-@node Using this Manual, Introduction, Acknowledgements, Top
+@node Using this Manual
 @chapter Using the Manual
 
 The term Octave refers to a particular program, and to the language you

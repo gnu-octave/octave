@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Signal Processing, Sets, Control Theory, Top
+@node Signal Processing, Image Processing, Control Theory, Top
 @chapter Signal Processing
 
 I hope that someday Octave will include more signal processing

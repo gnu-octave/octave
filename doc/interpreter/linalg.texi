@@ -2,11 +2,11 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Linear Algebra, Polynomial Manipulations, Arithmetic, Top
+@node Linear Algebra, Nonlinear Equations, Arithmetic, Top
 @chapter Linear Algebra
 
 This chapter documents the linear algebra functions of Octave.
-Reference material for many of these options may be found in
+Reference material for many of these functions may be found in
 Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 1989, and in @cite{LAPACK Users' Guide}, SIAM, 1992.
 
@@ -148,7 +148,7 @@ max (size (a)) * max (svd (a)) * eps
 @end deftypefn
 
 @deftypefn {Function File} {} orth (@var{a}, @var{tol})
-Returns an orthonormal basis of the range of @var{a}.
+Returns an orthonormal basis of the range space of @var{a}.
 
 The dimension of the range space is taken as the number of singular
 values of @var{a} greater than @var{tol}.  If the argument @var{tol} is

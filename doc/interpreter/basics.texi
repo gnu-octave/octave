@@ -1,0 +1,530 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Basics, Expressions, Invoking Octave, Top
+@chapter Basics
+
+@menu
+* Comments::                    
+* Executable Octave Programs::  
+* Errors::                      
+* Help::                        
+* Command Line Editing::        
+* Command History Functions::   
+@end menu
+
+@node Comments, Executable Octave Programs, Basics, Basics
+@section Comments in Octave Programs
+@cindex @samp{#}
+@cindex @samp{%}
+@cindex comments
+@cindex use of comments
+@cindex documenting Octave programs
+@cindex programs
+
+A @dfn{comment} is some text that is included in a program for the sake
+of human readers, and that is not really part of the program.  Comments
+can explain what the program does, and how it works.  Nearly all
+programming languages have provisions for comments, because programs are
+typically hard to understand without them.
+
+In the Octave language, a comment starts with either the sharp sign
+character, @samp{#}, or the percent symbol @samp{%} and continues to the
+end of the line.  The Octave interpreter ignores the rest of a
+line following a sharp sign or percent symbol.  For example, we could
+have put the following into the function @code{f}:
+
+@smallexample
+function xdot = f (x, t)
+
+# usage: f (x, t)
+#
+# This function defines the right-hand-side functions for a set of
+# nonlinear differential equations.
+
+  r = 0.25
+
+  and so on...
+
+endfunction
+@end smallexample
+
+The @code{help} command (@pxref{Help}) is able to find the first block
+of comments in a function (even those that are composed directly on the
+command line).  This means that users of Octave can use the same
+commands to get help for built-in functions, and for functions that you
+have defined.  For example, after defining the function @code{f} above,
+the command
+
+@example
+help f
+@end example
+
+@noindent
+produces the output
+
+@smallexample
+ usage: f (x, t)
+
+ This function defines the right-hand-side functions for a set of
+ nonlinear differential equations.
+@end smallexample
+
+Although it is possible to put comment lines into keyboard-composed
+throw-away Octave programs, it usually isn't very useful, because the
+purpose of a comment is to help you or another person understand the
+program at a later time.
+
+@node Executable Octave Programs, Errors, Comments, Basics
+@section Executable Octave Programs
+@cindex executable scripts
+@cindex scripts
+@cindex self contained programs
+@cindex program, self contained
+@cindex @samp{#!}
+
+Once you have learned Octave, you may want to write self-contained
+Octave scripts, using the @samp{#!} script mechanism.  You can do this
+on GNU systems and on many Unix systems @footnote{The @samp{#!}
+mechanism works on Unix systems derived from Berkeley Unix, System V
+Release 4, and some System V Release 3 systems.}
+
+For example, you could create a text file named @file{hello}, containing
+the following lines:
+
+@example
+@group
+#! @value{OCTAVEHOME}/bin/octave -qf
+
+# a sample Octave program
+printf ("Hello, world!\n");
+@end group
+@end example
+
+@noindent
+After making this file executable (with the @code{chmod} command), you
+can simply type:
+
+@example
+hello
+@end example
+
+@noindent
+at the shell, and the system will arrange to run Octave as if you had
+typed:
+
+@example
+octave hello
+@end example
+
+The line beginning with @samp{#!} lists the full file name of an
+interpreter to be run, and an optional initial command line argument to
+pass to that interpreter.  The operating system then runs the
+interpreter with the given argument and the full argument list of the
+executed program.  The first argument in the list is the full file name
+of the Octave program. The rest of the argument list will either be
+options to Octave, or data files, or both.  The @code{-qf} option is
+usually specified in stand-alone Octave programs to prevent them from
+printing the normal startup message, and to keep them from behaving
+differently depending on the contents of a particular user's
+@file{~/.octaverc} file.  @xref{Invoking Octave}.  Note that some
+operating systems may place a limit on the number of characters that are
+recognized after @samp{#!}.
+
+Self-contained Octave scripts are useful when you want to write a
+program which users can invoke without knowing that the program is
+written in the Octave language.
+
+If you invoke an executable Octave script with command line arguments,
+the arguments are available in the built-in variable @var{argv}.
+@xref{Command Line Options}.  For example, the following program will
+reproduce the command line that is used to execute it.
+
+@example
+@group
+#! @value{OCTAVEHOME}/bin/octave -qf
+
+printf ("%s", program_name);
+for i = 1:nargin
+  printf (" %s", argv(i,:));
+endfor
+printf ("\n");
+@end group
+@end example
+
+@node Errors, Help, Executable Octave Programs, Basics
+@section Errors
+
+There are two classes of errors that Octave produces when it encounters
+input that it is unable to understand
+an action.
+
+A @dfn{parse error} occurs if Octave cannot understand something you
+have typed.  For example, if you misspell a keyword,
+
+@example
+octave:13> functon y = f (x) y = x^2; endfunction
+@end example
+
+@noindent
+Octave will respond immediately with a message like this:
+
+@example
+parse error:
+
+  functon y = f (x) y = x^2; endfunction
+          ^
+@end example
+
+@noindent
+For most parse errors, Octave uses a caret (@samp{^}) to mark the point
+on the line where it was unable to make sense of your input.  In this
+case, Octave generated an error message because the keyword
+@code{function} was misspelled.  Instead of seeing @samp{function f},
+Octave saw two consecutive variable names, which is invalid in this
+context.  It marked the error at the @code{y} because the first name by
+itself was accepted as valid input.
+
+Another class of error message occurs occurs at evaluation time.  These
+errors are called @dfn{run-time errors}, or sometimes
+@dfn{evaluation errors} because they occur when your program is being
+@dfn{run}, or @dfn{evaluated}.  For example, if after correcting the
+mistake in the previous function definition, you type
+
+@example
+octave:13> f ()
+@end example
+
+@noindent
+Octave will respond with
+
+@example
+@group
+error: `x' undefined near line 1 column 24
+error: evaluating expression near line 1, column 24
+error: evaluating assignment expression near line 1, column 22
+error: called from `f'
+@end group
+@end example
+
+This error message has several parts, and gives you quite a bit of
+information to help you locate the source of the error.  The messages
+are generated from the point of the innermost error, and provide a
+traceback of enclosing expressions and function calls.
+
+In the example above, the first line indicates that a variable named
+@samp{x} was found to be undefined near line 1 and column 24 of some
+function or expression.  For errors occurring within functions, lines
+from the beginning of the file containing the function definition.  For
+errors occurring at the top level, the line number indicates the input
+line number, which is usually displayed in the prompt string.
+
+The second and third lines in the example indicate that the error
+occurred within an assignment expression, and the last line of the error
+message indicates that the error occurred within the function @samp{f}.
+If the function @samp{f} had been called from another function, for
+example, @samp{g}, the list of errors would have ended with one more
+line:
+
+@example
+error: called from `g'
+@end example
+
+These lists of function calls usually make it fairly easy to trace the
+path your program took before the error occurred, and to correct the
+error before trying again.
+
+@node Help, Command Line Editing, Errors, Basics
+@section Help
+
+@deffn {Command} help
+Octave's @code{help} command can be used to print brief usage-style
+messages, or to display information directly from an on-line version of
+the printed manual, using the GNU Info browser.  If invoked without any
+arguments, @code{help} prints a list of all the available operators,
+functions, and built-in variables.  If the first argument is @code{-i},
+the @code{help} command searches the index of the on-line version of
+this manual for the given topics.
+
+For example, the command
+
+@example
+help help
+@end example
+
+@noindent
+prints a short message describing the @code{help} command, and
+
+@example
+help -i help
+@end example
+
+@noindent
+starts the GNU Info browser at this node in the on-line version of the
+manual.
+@end deffn
+
+The help command can give you information about operators, but not the
+comma and semicolons that are used as command separators.  To get help
+for those, you must type @code{help comma} or @code{help semicolon}.
+
+@defvr {Built-in Variable} INFO_FILE
+The variable @code{INFO_FILE} names the location of the Octave info file.
+The default value is @code{"@value{OCTAVEHOME}/info/octave.info"}.
+@end defvr
+
+@defvr {Built-in Variable} INFO_PROGRAM
+The variable @code{INFO_PROGRAM} names the info program to run.  Its
+initial value is
+@code{@value{OCTAVEHOME}/libexec/octave/VERSION/exec/ARCH/info}, but
+that value can be overridden by the environment variable
+@code{OCTAVE_INFO_PROGRAM}, or the command line argument
+@code{--info-program NAME}, or by setting the value of
+@code{INFO_PROGRAM} in a startup script.
+@end defvr
+
+@defvr {Built-in Variable} suppress_verbose_help_message
+If the value of @code{suppress_verbose_help_message} is nonzero, Octave
+will not add additional help information to the end of the output from
+the @code{help} command and usage messages for built-in commands.
+@end defvr
+
+@node Command Line Editing, Command History Functions, Help, Basics
+@section Command Line Editing
+
+@defvr {Built-in Variable} PS1
+The primary prompt string.  When executing interactively, Octave
+displays the primary prompt @code{PS1} when it is ready to read a
+command.  Octave allows the prompt to be customized by inserting a
+number of backslash-escaped special characters that are decoded as
+follows:
+
+@table @samp
+@item \t
+The time.
+@item \d
+The date.
+@item \n
+Begins a new line by printing the equivalent of a carriage return
+followed by a line feed.
+@item \s
+The name of the program (usually just @code{octave}).
+@item \w
+The current working directory.
+@item \W
+The basename of the current working directory.
+@item \u
+The username of the current user.
+@item \h
+The hostname.
+@item \H
+The hostname, up to the first `.'.
+@item \#
+The command number of this command, counting from when Octave starts.
+@item \!
+The history number of this command.  This differs from @samp{\#} by the
+number of commands in the history list when Octave starts.
+@item \$
+If the effective UID is 0, a #, otherwise a $.
+@item \nnn
+The character whose character code in octal is @samp{nnn}.
+@item \\
+A backslash.
+@end table
+
+The default value of @code{PS1} is @code{"\s:\#> "}.  To change it, use a
+command like
+
+@example
+octave:13> PS1 = "\\u@@\\H> "
+@end example
+
+@noindent
+which will result in the prompt @samp{boris@@kremvax> } for the user
+@samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two
+backslashes are required to enter a backslash into a string.
+@xref{String Constants}.
+@end defvr
+
+@defvr {Built-in Variable} PS2
+The secondary prompt string, which is printed when Octave is
+expecting additional input to complete a command.  For example, when
+defining a function over several lines, Octave will print the value of
+@code{PS1} at the beginning of each line after the first.  Octave allows
+@code{PS2} to be customized in the same way as @code{PS1}.  The default
+value of @code{PS2} is @code{"> "}.
+@end defvr
+
+@defvr {Built-in Variable} PS4
+If Octave is invoked with the @code{--echo-input} option, the value of
+@code{PS4} is printed before each line of input that is echoed.  Octave
+allows @code{PS4} to be customized in the same way as @code{PS1}.  The
+default value of @code{PS4} is @code{"+ "}.  @xref{Invoking Octave}, for
+a description of @code{--echo-input}.
+@end defvr
+
+@defvr {Built-in Variable} completion_append_char
+The value of @code{completion_append_char} is used as the character to
+append to successful command-line completion attempts.  The default
+value is @code{" "} (a single space).
+@end defvr
+
+@node Command History Functions,  , Command Line Editing, Basics
+@section Command History Functions
+
+Octave provides three functions for viewing, editing, and re-running
+chunks of commands from the history list.
+
+@deffn {Command} history options
+If invoked with no arguments, @code{history} displays a list of commands
+that you have executed.  Valid options are:
+
+@table @code
+@item -w file
+Write the current history to the named file.  If the name is omitted,
+use the default history file (normally @file{~/.octave_hist}).
+
+@item -r file
+Read the named file, replacing the current history list with its
+contents.  If the name is omitted, use the default history file
+(normally @file{~/.octave_hist}).
+
+@item N
+Only display the most recent @code{N} lines of history.
+
+@item -q
+Don't number the displayed lines of history.  This is useful for cutting
+and pasting commands if you are using the X Window System.
+@end table
+
+For example, to display the five most recent commands that you have
+typed without displaying line numbers, use the command
+@samp{history -q 5}.
+@end deffn
+
+@deffn {Command} edit_history options
+If invoked with no arguments, @code{edit_history} allows you to edit the
+history list using the editor named by the variable @code{EDITOR}.  The
+commands to be edited are first copied to a temporary file.  When you
+exit the editor, Octave executes the commands that remain in the file.
+It is often more convenient to use @code{edit_history} to define functions 
+rather than attempting to enter them directly on the command line.
+By default, the block of commands is executed as soon as you exit the
+editor.  To avoid executing any commands, simply delete all the lines
+from the buffer before exiting the editor.
+
+The @code{edit_history} command takes two optional arguments specifying
+the history numbers of first and last commands to edit.  For example,
+the command
+
+@example
+edit_history 13
+@end example
+
+@noindent
+extracts all the commands from the 13th through the last in the history
+list.  The command
+
+@example
+edit_history 13 169
+@end example
+
+@noindent
+only extracts commands 13 through 169.  Specifying a larger number for
+the first command than the last command reverses the list of commands
+before placing them in the buffer to be edited.  If both arguments are
+omitted, the previous command in the history list is used.
+@end deffn
+
+@defvr {Built-in Variable} EDITOR
+A string naming the editor to use with the @code{edit_history} command.
+If the environment variable @code{EDITOR} is set when Octave starts, its
+value is used as the default.  Otherwise, @code{EDITOR} is set to
+@code{"vi"}.
+@end defvr
+
+@deffn {Command} run_history
+Similar to @code{edit_history}, except that the editor is not invoked,
+and the commands are simply executed as they appear in the history list.
+@end deffn
+
+@defvr {Built-in Variable} history_file
+This variable specifies the name of the file used to store command
+history.  The default value is @code{"~/.octave_hist"}, but may be
+overridden by the environment variable @code{OCTAVE_HISTFILE}.
+@end defvr
+
+@defvr {Built-in Variable} history_size
+This variable specifies how many entries to store in the history file.
+The default value is @code{1024}, but may be overridden by the
+environment variable @code{OCTAVE_HISTSIZE}.
+@end defvr
+
+@defvr {Built-in Variable} saving_history
+If the value of @code{saving_history} is @code{"true"}, command entered
+on the command line are saved in the file specified by the variable
+@code{history_file}.
+@end defvr
+
+@deffn {Command} diary
+The @code{diary} command allows you to create a list of all commands
+@emph{and} the output they produce, mixed together just as you see them
+on your terminal.
+
+For example, the command
+
+@example
+diary on
+@end example
+
+@noindent
+tells Octave to start recording your session in a file called
+@file{diary} in your current working directory.  To give Octave the name
+of the file write to, use the a command like
+
+@example
+diary my-diary.txt
+@end example
+
+@noindent
+Then Octave will write all of your commands to the file
+@file{my-diary.txt}.
+
+To stop recording your session, use the command
+
+@example
+diary off
+@end example
+
+@noindent
+Without any arguments, @code{diary} toggles the current diary state.
+@end deffn
+
+@deffn {Command} echo options
+Control whether commands are displayed as they are executed.  Valid
+options are:
+
+@table @code
+@item on
+Enable echoing of commands as they are executed in script files.
+
+@item off
+Disable echoing of commands as they are executed in script files.
+
+@item on all
+Enable echoing of commands as they are executed in script files and
+functions.
+
+@item off all
+Disable echoing of commands as they are executed in script files and
+functions.
+@end table
+
+@noindent
+If invoked without any arguments, @code{echo} toggles the current echo
+state.
+@end deffn
+
+@defvr {Built-in Variable} echo_executing_commands
+@end defvr

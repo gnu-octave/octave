@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Arithmetic, Linear Algebra, Built-in Variables, Top
+@node Arithmetic, Linear Algebra, String Functions, Top
 @chapter Arithmetic
 
 Unless otherwise noted, all of the functions described in this chapter
@@ -30,9 +30,9 @@ Return the smallest integer not less than @var{x}.  If @var{x} is
 complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.
 @end deftypefn
 
-@deftypefn {Mapping Function} {} floor (@var{x})
-Return the largest integer not greater than @var{x}.  If @var{x} is
-complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
+@deftypefn {Mapping Function} {} exp (@var{x})
+Compute the exponential of @var{x}.  To compute the matrix exponential,
+see @ref{Linear Algebra}.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} fix (@var{x})
@@ -40,35 +40,9 @@ Truncate @var{x} toward zero.  If @var{x} is complex, return
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.
 @end deftypefn
 
-@deftypefn {Mapping Function} {} round (@var{x})
-Return the integer nearest to @var{x}.  If @var{x} is complex, return
-@code{round (real (@var{x})) + round (imag (@var{x})) * I}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} sign (@var{x})
-Compute the @dfn{signum} function, which is defined as
-@iftex
-@tex
-$$
-{\rm sign} (@var{x}) = \cases{1,&$x>0$;\cr 0,&$x=0$;\cr -1,&$x<0$.\cr}
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-           -1, x < 0;
-sign (x) =  0, x = 0;
-            1, x > 0.
-@end example
-@end ifinfo
-
-For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} exp (@var{x})
-Compute the exponential of @var{x}.  To compute the matrix exponential,
-see @ref{Linear Algebra}.
+@deftypefn {Mapping Function} {} floor (@var{x})
+Return the largest integer not greater than @var{x}.  If @var{x} is
+complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} gcd (@var{x}, @code{...})
@@ -115,6 +89,10 @@ Compute the natural logarithm of @var{x}.  To compute the matrix logarithm,
 see @ref{Linear Algebra}.
 @end deftypefn
 
+@deftypefn {Mapping Function} {} log10 (@var{x})
+Compute the base-10 logarithm of @var{x}.
+@end deftypefn
+
 @deftypefn {Mapping Function} {@var{y} =} log2 (@var{x})
 @deftypefnx {Mapping Function} {[@var{f}, @var{e}]} log2 (@var{x})
 Compute the base-2 logarithm of @var{x}.  With two outputs, returns
@@ -129,8 +107,37 @@ Compute the base-2 logarithm of @var{x}.  With two outputs, returns
 @end ifinfo
 @end deftypefn
 
-@deftypefn {Mapping Function} {} log10 (@var{x})
-Compute the base-10 logarithm of @var{x}.
+@deftypefn {Loadable Function} {} max (@var{x})
+For a vector argument, return the maximum value.  For a matrix argument,
+return the maximum value from each column, as a row vector.  Thus,
+
+@example
+max (max (@var{x}))
+@end example
+
+@noindent
+returns the largest element of @var{x}.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} min (@var{x})
+Like @code{max}, but return the minimum value.
+@end deftypefn
+
+@deftypefn {Function File} {} nextpow2 (@var{x})
+If @var{x} is a scalar, returns the first integer @var{n} such that
+@iftex
+@tex
+ $2^n \ge |x|$.
+@end tex
+@end iftex
+@ifinfo
+ 2^n >= abs (x).
+@end ifinfo
+
+If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} pow2 (@var{x})
@@ -155,44 +162,6 @@ for each element of @var{x}.  With two arguments, returns
 @end ifinfo
 @end deftypefn
 
-@deftypefn {Function File} {} nextpow2 (@var{x})
-If @var{x} is a scalar, returns the first integer @var{n} such that
-@iftex
-@tex
- $2^n \ge |x|$.
-@end tex
-@end iftex
-@ifinfo
- 2^n >= abs (x).
-@end ifinfo
-
-If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} sqrt (@var{x})
-Compute the square root of @var{x}.  To compute the matrix square root,
-see @ref{Linear Algebra}.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} max (@var{x})
-For a vector argument, return the maximum value.  For a matrix argument,
-return the maximum value from each column, as a row vector.  Thus,
-
-@example
-max (max (@var{x}))
-@end example
-
-@noindent
-returns the largest element of @var{x}.
-
-For complex arguments, the magnitude of the elements are used for
-comparison.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} min (@var{x})
-Like @code{max}, but return the minimum value.
-@end deftypefn
-
 @deftypefn {Mapping Function} {} rem (@var{x}, @var{y})
 Return the remainder of @code{@var{x} / @var{y}}, computed using the
 expression
@@ -203,6 +172,38 @@ x - y .* fix (x ./ y)
 
 An error message is printed if the dimensions of the arguments do not
 agree, or if either of the arguments is complex.
+@end deftypefn
+
+@deftypefn {Mapping Function} {} round (@var{x})
+Return the integer nearest to @var{x}.  If @var{x} is complex, return
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}.
+@end deftypefn
+
+@deftypefn {Mapping Function} {} sign (@var{x})
+Compute the @dfn{signum} function, which is defined as
+@iftex
+@tex
+$$
+{\rm sign} (@var{x}) = \cases{1,&$x>0$;\cr 0,&$x=0$;\cr -1,&$x<0$.\cr}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+           -1, x < 0;
+sign (x) =  0, x = 0;
+            1, x > 0.
+@end example
+@end ifinfo
+
+For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
+@end deftypefn
+
+@deftypefn {Mapping Function} {} sqrt (@var{x})
+Compute the square root of @var{x}.  If @var{x} is negative, a complex
+result is returned.  To compute the matrix square root, see
+@ref{Linear Algebra}.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
@@ -287,6 +288,7 @@ they work on an element by element basis.  For example,
 @example
 @group
 sin ([1, 2; 3, 4])
+
      @result{}  0.84147   0.90930
          0.14112  -0.75680
 @end group
@@ -328,6 +330,7 @@ Return the cumulative sum of each column of @var{x}.  For example,
 @example
 @group
 cumsum ([1, 2; 3, 4])
+
      @result{}  1  2
          4  6
 @end group
@@ -340,6 +343,7 @@ Return the cumulative product of each column of @var{x}.  For example,
 @example
 @group
 cumprod ([1, 2; 3, 4])
+
      @result{}  1  2
          3  8
 @end group

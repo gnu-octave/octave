@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Expressions, Statements, Invoking Octave, Top
+@node Expressions, Statements, Basics, Top
 @chapter Expressions
 @cindex expressions
 
@@ -58,8 +58,8 @@ may contain complex values.
 The simplest form of a numeric constant, a scalar, is a single number
 that can be an integer, a decimal fraction, a number in scientific
 (exponential) notation, or a complex number.  Note that all numeric
-values are represented within Octave in double-precision floating point
-format (complex constants are stored as pairs of double-precision
+constants are represented within Octave in double-precision floating
+point format (complex constants are stored as pairs of double-precision
 floating point values).  Here are some examples of real-valued numeric
 constants, which all have the same value:
 
@@ -297,19 +297,6 @@ error: number of rows must match near line 13, column 6
 (assuming that this expression was entered as the first thing on line
 13, of course).
 
-Commas and semicolons are not always required to separate matrix
-elements and rows.  The expression
-
-@example
-@group
-a = [ 1 2
-      3 4 ]
-@end group
-@end example
-
-@noindent
-is equivalent to the one above.
-
 Inside the square brackets that delimit a matrix expression, Octave
 looks at the surrounding context to determine whether spaces and newline
 characters should be converted into element and row separators, or
@@ -324,8 +311,8 @@ and
 
 @example
 @group
-octave:13> a = [ 1 2
-> 3 4 ]
+a = [ 1 2
+      3 4 ]
 @end group
 @end example
 
@@ -610,6 +597,10 @@ and the variable @samp{a} will be assigned the value @samp{[ 1 3 5 ]}.
 The default value is @code{"warn"}.
 @end defvr
 
+When Octave parses a matrix expression, it examines the elements of the
+list to determine whether they are all constants.  If they are, it
+replaces the list with a single matrix constant.
+
 @node Ranges, Variables, Matrices, Expressions
 @section Ranges
 @cindex range expressions
@@ -618,7 +609,7 @@ The default value is @code{"warn"}.
 @opindex :
 
 A @dfn{range} is a convenient way to write a row vector with evenly
-spaced elements.  A range constant is defined by the value of the first
+spaced elements.  A range expression is defined by the value of the first
 element in the range, an optional value for the increment between
 elements, and a maximum value which the elements of the range will not
 exceed.  The base, increment, and limit are separated by colons (the
@@ -643,7 +634,7 @@ defines the set of values @samp{[ 1 4 ]}.
 Although a range constant specifies a row vector, Octave does @emph{not}
 convert range constants to vectors unless it is necessary to do so.
 This allows you to write a constant like @samp{1 : 10000} without using
-up 80,000 bytes of storage on a typical 32-bit workstation.
+80,000 bytes of storage on a typical 32-bit workstation.
 
 Note that the upper (or lower, if the increment is negative) bound on
 the range is not always included in the set of values, and that ranges
@@ -652,6 +643,10 @@ Octave uses floating point arithmetic to compute the values in the
 range.  If it is important to include the endpoints of a range and the
 number of elements is known, you should use the @code{linspace} function
 instead (@pxref{Special Matrices}).
+
+When Octave parses a range expression, it examines the elements of the
+expression to determine whether they are all constants.  If they are, it
+replaces the range expression with a single range constant.
 
 @node Variables, Index Expressions, Ranges, Expressions
 @section Variables
@@ -867,18 +862,58 @@ like
 
 @example
 for i = 1:10
-  a (i) = i;
+  a (i) = sqrt (i);
 endfor
 @end example
 
 @noindent
 (for @samp{a} previously undefined) result in the variable @samp{a}
-being resized to be just large enough to hold the new value.  Otherwise
-uninitialized elements are set to zero.  If the value of
-@code{resize_on_range_error} is 0, an error message is
-printed and control is returned to the top level.  The default value is
-1.
+being resized to be just large enough to hold the new value.  New
+elements that have not been given a value are set to zero.  If the value
+of @code{resize_on_range_error} is 0, an error message is printed and
+control is returned to the top level.  The default value is 1.
 @end defvr
+
+Note that it is quite inefficient to create a vector using a loop like
+the one shown in the example above.  In this particular case, it would
+have been much more efficient to use the expression
+
+@example
+a = sqrt (1:10);
+@end example
+
+@noindent
+thus avoiding the loop entirely.  In cases where a loop is still
+required, or a number of values must be combined to form a larger
+matrix, it is generally much faster to set the size of the matrix first,
+and then insert elements using indexing commands.  For example, given a
+matrix @samp{a},
+
+@example
+@group
+[nr, nc] = size (a);
+x = zeros (nr, n * nc);
+for i = 1:n
+  x(:,(i-1)*n+1:i*n) = a;
+endfor
+@end group
+@end example
+
+@noindent
+is considerably faster than
+
+@example
+@group
+x = a;
+for i = 1:n-1
+  x = [x, a];
+endfor
+@end group
+@end example
+
+@noindent
+particularly for large matrices because Octave does not have to
+repeatedly resize the result.
 
 @node Data Structures, Calling Functions, Index Expressions, Expressions
 @section Data Structures
@@ -890,15 +925,19 @@ implementation uses an associative array with indices limited to
 strings, but the syntax is more like C-style structures.  Here are some
 examples of using data structures in Octave.
 
-Elements of structures can be of any value type.  For example, the list
-of statements
+Elements of structures can be of any value type.  For example, the three
+expressions
 
 @example
-octave:1> x.a = 1; x.b = [1, 2; 3, 4]; x.c = "string";
+@group
+x.a = 1
+x.b = [1, 2; 3, 4]
+x.c = "string"
+@end group
 @end example
 
 @noindent
-creates a structure with three elements.  To print the value of the
+create a structure with three elements.  To print the value of the
 structure, you can type its name, just as for any other variable:
 
 @example
@@ -1055,8 +1094,8 @@ It is also possible to cycle through all the elements of a structure in
 a loop, using a special form of the @code{for} statement
 (@pxref{The for Statement})
 
-The following functions and variableare available to
-give you information about structures.
+The following functions are available to give you information about
+structures.
 
 @deftypefn {Built-in Function} {} is_struct (@var{expr})
 Returns 1 if the value of the expression @var{expr} is a structure.
@@ -1213,7 +1252,7 @@ temporary result.
 With some restrictions@footnote{Some of Octave's function are
 implemented in terms of functions that cannot be called recursively.
 For example, the ODE solver @code{lsode} is ultimiately implemented in a
-Fortran subroutine which cannot be called recursively, so @code{lsode}
+Fortran subroutine that cannot be called recursively, so @code{lsode}
 should not be called either directly or indirectly from within the
 user-supplied function that @code{lsode} requires.  Doing so will result
 in undefined behavior.}, recursive function calls are allowed.  A
@@ -1298,22 +1337,35 @@ endfunction
 @end example
 
 Passing a global variable in a function parameter list will
-make a local copy and not modify the global value.  For example:
+make a local copy and not modify the global value.  For example, given
+the function
 
 @example
 @group
-octave:1> function f (x)
-> x = 3
-> endfunction
-octave:2> global x = 0
-octave:3> x              # This is the value of the global variable.
-x = 0
-octave:4> f (x)
-x = 3                    # The value of the local variable x is 3.
-octave:5> x              # But it was a *copy* so the global variable
-x = 0                    # remains unchanged.
+function f (x)
+  x = 0
+endfunction
 @end group
 @end example
+
+@noindent
+and the definition of @samp{x} as a global variable at the top level,
+
+@example
+global x = 13
+@end example
+
+@noindent
+the expression
+
+@example
+f (x)
+@end example
+
+@noindent
+will display the value of @samp{x} from inside the function as @samp{0},
+but the value of @samp{x} at the top level remains unchanged, because
+the function works with a @emph{copy} of its argument.
 
 @defvr {Built-in Variable} warn_comma_in_global_decl
 If the value of @code{warn_comma_in_global_decl} is nonzero, a
@@ -1424,8 +1476,8 @@ columns of both must agree.
 Element by element subtraction.  This operator is equivalent to @code{-}.
 
 @item @var{x} * @var{y}
-Matrix multiplication.  The number of columns of @samp{x} must agree
-with the number of rows of @samp{y}.
+Matrix multiplication.  The number of columns of @var{x} must agree
+with the number of rows of @var{y}.
 
 @item @var{x} .* @var{y}
 Element by element multiplication.  If both operands are matrices, the
@@ -1439,7 +1491,7 @@ Right division.  This is conceptually equivalent to the expression
 @end example
 
 @noindent
-but it is computed without forming the inverse of @samp{y'}.
+but it is computed without forming the inverse of @var{y'}.
 
 If the system is not square, or if the coefficient matrix is singular,
 a minimum norm solution is computed.
@@ -1455,14 +1507,14 @@ inverse (x) * y
 @end example
 
 @noindent
-but it is computed without forming the inverse of @samp{x}.
+but it is computed without forming the inverse of @var{x}.
 
 If the system is not square, or if the coefficient matrix is singular,
 a minimum norm solution is computed.
 
 @item @var{x} .\ @var{y}
-Element by element left division.  Each element of @samp{y} is divided
-by each corresponding element of @samp{x}.
+Element by element left division.  Each element of @var{y} is divided
+by each corresponding element of @var{x}.
 
 @item @var{x} ^ @var{y}
 @itemx @var{x} ** @var{y}
@@ -1558,28 +1610,23 @@ is issued when Octave encounters a division by zero.  If the value is
 
 @dfn{Comparison operators} compare numeric values for relationships
 such as equality.  They are written using
-@emph{relational operators}, which are a superset of those in C.
+@emph{relational operators}.
 
 All of Octave's comparison operators return a value of 1 if the
 comparison is true, or 0 if it is false.  For matrix values, they all
-work on an element-by-element basis.  For example, evaluating the
-expression
-
-@example
-[1, 2; 3, 4] == [1, 3; 2, 4]
-@end example
-
-@noindent
-returns the result
+work on an element-by-element basis.  For example,
 
 @example
 @group
-ans =
+[1, 2; 3, 4] == [1, 3; 2, 4]
 
-  1  0
-  0  1
+     @result{} [ 1, 0; 0, 1 ]
 @end group
 @end example
+
+If one operand is a scalar and the other is a matrix, the scalar is
+compared to each element of the matrix in turn, and the result is the
+same size as the matrix.
 
 @table @code
 @item @var{x} < @var{y}
@@ -1603,13 +1650,8 @@ True if @var{x} is greater than @var{y}.
 True if @var{x} is not equal to @var{y}.
 @end table
 
-For matrix and vector arguments, the above table should be read as
-``an element of the result matrix (vector) is true if the corresponding
-elements of the argument matrices (vectors) satisfy the specified
-condition''
-
-String comparisons should be performed with the @code{strcmp} function,
-not with the comparison operators listed above.
+String comparisons may also be performed with the @code{strcmp}
+function, not with the comparison operators listed above.
 @xref{String Functions}.
 
 @node Boolean Expressions, Assignment Ops, Comparison Ops, Expressions
@@ -1641,7 +1683,7 @@ not with the comparison operators listed above.
 @opindex !
 
 An @dfn{element-by-element boolean expression} is a combination of
-comparison expressions or matching expressions, using the boolean
+comparison expressions using the boolean
 operators ``or'' (@samp{|}), ``and'' (@samp{&}), and ``not'' (@samp{!}),
 along with parentheses to control nesting.  The truth of the boolean
 expression is computed by combining the truth values of the
@@ -1650,10 +1692,7 @@ considered to be false if it is zero, and true otherwise.
 
 Element-by-element boolean expressions can be used wherever comparison
 expressions can be used.  They can be used in @code{if} and @code{while}
-statements.  However, before being used in the condition of an @code{if}
-or @code{while} statement, an implicit conversion from a matrix value to
-a scalar value occurs using the equivalent of
-@code{all (all (@var{x}))}. That is, a value used as the condition in an
+statements.  However, if a matrix value used as the condition in an
 @code{if} or @code{while} statement is only true if @emph{all} of its
 elements are nonzero.
 
@@ -1728,20 +1767,20 @@ soon as the overall truth value can be determined.  Octave's
 @item @var{boolean1} && @var{boolean2}
 The expression @var{boolean1} is evaluated and converted to a scalar
 using the equivalent of the operation @code{all (all (@var{boolean1}))}.
-If it is false, the result of the expression is 0.  If it is true, the
-expression @var{boolean2} is evaluated and converted to a scalar 
-using the equivalent of the operation @code{all (all (@var{boolean1}))}.
-If it is true, the result of the expression is 1.  Otherwise, the result
-of the expression is 0.
+If it is false, the result of the overall expression is 0.  If it is
+true, the expression @var{boolean2} is evaluated and converted to a
+scalar using the equivalent of the operation @code{all (all
+(@var{boolean1}))}.  If it is true, the result of the overall expression
+is 1.  Otherwise, the result of the overall expression is 0.
 
 @item @var{boolean1} || @var{boolean2}
 The expression @var{boolean1} is evaluated and converted to a scalar
 using the equivalent of the operation @code{all (all (@var{boolean1}))}.
-If it is true, the result of the expression is 1.  If it is false, the
-expression @var{boolean2} is evaluated and converted to a scalar 
-using the equivalent of the operation @code{all (all (@var{boolean1}))}.
-If it is true, the result of the expression is 1.  Otherwise, the result
-of the expression is 0.
+If it is true, the result of the overall expression is 1.  If it is
+false, the expression @var{boolean2} is evaluated and converted to a
+scalar using the equivalent of the operation @code{all (all
+(@var{boolean1}))}.  If it is true, the result of the overall expression
+is 1.  Otherwise, the result of the overall expression is 0.
 @end table
 
 The fact that both operands may not be evaluated before determining the
@@ -1769,7 +1808,8 @@ function f (a, b, c)
 
 @noindent
 instead of having to use two @code{if} statements to avoid attempting to
-evaluate an argument that doesn't exist.
+evaluate an argument that doesn't exist.  For example, without hte
+short-circuit feature, it would be necessary to write
 
 @example
 @group
@@ -1799,6 +1839,7 @@ z = 1
 
 After this expression is executed, the variable @code{z} has the value 1.
 Whatever old value @code{z} had before the assignment is forgotten.
+The @samp{=} sign is called an @dfn{assignment operator}.
 
 Assignments can store string values also.  For example, the following
 expression would store the value @code{"this food is good"} in the
@@ -1814,10 +1855,6 @@ message = [ "this " , thing , " is " , predicate ]
 
 @noindent
 (This also illustrates concatenation of strings.)
-
-The @samp{=} sign is called an @dfn{assignment operator}.  It is the
-simplest assignment operator because the value of the right-hand
-operand is stored unchanged.
 
 @cindex side effect
 Most operators (addition, concatenation, and so on) have no effect
@@ -2016,7 +2053,7 @@ you too could make a mistake.  Explicit parentheses will help prevent
 any such mistake.
 
 When operators of equal precedence are used together, the leftmost
-operator groups first, except for the assignment, and exponentiation
+operator groups first, except for the assignment and exponentiation
 operators, which group in the opposite order.  Thus, the expression
 @code{a - b + c} groups as @code{(a - b) + c}, but the expression
 @code{a = b = c} groups as @code{a = (b = c)}.

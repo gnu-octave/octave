@@ -23,7 +23,7 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the above conditions for modified versions.
 @end ignore
 
-@node Using History Interactively, Installation, Command Line Editing, Top
+@node Using History Interactively
 @chapter Using History Interactively
 
 This chapter describes how to use the GNU History Library interactively,
@@ -36,7 +36,7 @@ from a user's standpoint.
 * History Interaction::         What it feels like using History as a user.
 @end menu
 
-@node History Interaction,  ,  , Using History Interactively
+@node History Interaction
 @section History Interaction
 @cindex expansion
 
@@ -59,7 +59,7 @@ surrounded by quotes are considered as one word.
 * Modifiers::                   Modifying the results of substitution.
 @end menu
 
-@node Event Designators, Word Designators,  , History Interaction
+@node Event Designators
 @subsection Event Designators
 @cindex event designators
 
@@ -89,7 +89,7 @@ Refer to the most recent command containing @var{string}.
 
 @end table
 
-@node Word Designators, Modifiers, Event Designators, History Interaction
+@node Word Designators
 @subsection Word Designators
 
 A @key{:} separates the event specification from the word designator.  It
@@ -124,7 +124,7 @@ The empty string is returned in that case.
 
 @end table
 
-@node Modifiers,  , Word Designators, History Interaction
+@node Modifiers
 @subsection Modifiers
 
 After the optional word designator, you can add a sequence of one or more

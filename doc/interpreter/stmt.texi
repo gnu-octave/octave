@@ -268,8 +268,8 @@ It repeatedly executes a statement as long as a condition is true.  As
 with the condition in an @code{if} statement, the condition in a
 @code{while} statement is considered true if its value is non-zero, and
 false if its value is zero.  If the value of the conditional expression
-in an @code{if} statement is a vector or a matrix, it is considered true
-only if @emph{all} of the elements are non-zero.
+in a @code{while} statement is a vector or a matrix, it is considered
+true only if @emph{all} of the elements are non-zero.
 
 Octave's @code{while} statement looks like this:
 
@@ -351,8 +351,8 @@ list.  @xref{Looping Over Structure Elements}, below.
 The assignment expression in the @code{for} statement works a bit
 differently than Octave's normal assignment statement.  Instead of
 assigning the complete result of the expression, it assigns each column
-of the expression to @var{var} in turn.  If @var{expression} is either
-a row vector or a scalar, the value of @var{var} will be a scalar each
+of the expression to @var{var} in turn.  If @var{expression} is a range,
+a row vector, or a scalar, the value of @var{var} will be a scalar each
 time the loop body is executed.  If @var{var} is a column vector or a
 matrix, @var{var} will be a column vector each time the loop body is
 executed.
@@ -414,25 +414,24 @@ no more elements. For example,
 
 @example
 @group
-octave:1> x.a = 1; x.b = [1, 2; 3, 4]; x.c = "string";
-octave:2> for [val, key] = x; key, val, endfor
-@end group
-@end example
+x.a = 1
+x.b = [1, 2; 3, 4]
+x.c = "string"
+for [val, key] = x
+  key
+  val
+endfor
 
-@noindent will print
-
-@example
-@group
-key = a
-val = 1
-key = b
-val =
-
-  1  2
-  3  4
-
-key = c
-val = string
+     @print{} key = a
+     @print{} val = 1
+     @print{} key = b
+     @print{} val =
+     @print{} 
+     @print{}   1  2
+     @print{}   3  4
+     @print{} 
+     @print{} key = c
+     @print{} val = string
 @end group
 @end example
 
@@ -670,29 +669,30 @@ the newline character.  For example, the statement
 
 @example
 @group
-x = long_variable_name ...     % comment one
-    + longer_variable_name \   % comment two
-    - 42                       % last comment
+x = long_variable_name ...     # comment one
+    + longer_variable_name \   # comment two
+    - 42                       # last comment
 @end group
 @end example
 
 @noindent
-is equivalent to the one shown above.
+is equivalent to the one shown above.  Inside string constants, the
+continuation marker must appear at the end of the line just before the
+newline character.
 
-In some cases, Octave will allow you to continue lines without having to
-specify continuation characters.  For example, it is possible to write
-statements like
+Input that occurs inside parentheses can be continued to the next line
+without having to use a continuation marker.  For example, it is
+possible to write statements like
 
 @example
 @group
-if (big_long_variable_name == other_long_variable_name
-    || not_so_short_variable_name > 4
-    && y > x)
-  some (code, here);
+if (fine_dining_destination == on_a_boat
+    || fine_dining_destination == on_a_train
+  suess (i, will, not, eat, them, sam, i, am, i,
+         will, not, eat, green, eggs, and, ham);
 endif
 @end group
 @end example
 
 @noindent
-without having to clutter up the if statement with continuation
-characters.
+without having to add to the clutter with continuation markers.

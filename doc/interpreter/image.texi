@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Image Processing, Audio Processing, Plotting, Top
+@node Image Processing, Audio Processing, Signal Processing, Top
 @chapter Image Processing
 
 To display images using these functions, you must be using Octave with

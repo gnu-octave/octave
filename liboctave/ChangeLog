@@ -1,5 +1,8 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dMatrix.cc (read_int, write_int): Avoid warnings about
+	unreachable code.
+
 	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): Define operator delete
 	to correspond to placement new operator.
 

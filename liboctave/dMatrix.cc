@@ -2290,13 +2290,12 @@ read_int (std::istream& is, bool swap_bytes, T& val)
 {
   is.read (X_CAST (char *, &val), sizeof (T));
 
-  if (swap_bytes)
-    {
-      switch (sizeof (T))
-	{
-	case 1:
-	  break;
+  int t = sizeof (T);
 
+  if (swap_bytes && t > 1)
+    {
+      switch (t)
+	{
 	case 2:
 	  swap_2_bytes (X_CAST (char *, &val));
 	  break;
@@ -2586,13 +2585,12 @@ template <class T>
 void
 write_int (std::ostream& os, bool swap_bytes, T val)
 {
-  if (swap_bytes)
-    {
-      switch (sizeof (T))
-	{
-	case 1:
-	  break;
+  int t = sizeof (T);
 
+  if (swap_bytes && t > 1)
+    {
+      switch (t)
+	{
 	case 2:
 	  swap_2_bytes (X_CAST (char *, &val));
 	  break;

@@ -1859,6 +1859,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	  else
 	    {
 	      dim_vector new_dims;
+
 	      new_dims.resize (n_dims);
 
 	      for (int i = 0; i < n_dims; i++)
@@ -1866,6 +1867,8 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 		  if ((dims ())(i) == 1)
 		    new_dims(i) = 1;
 		}
+
+	      new_dims.chop_trailing_singletons ();
 
 	      retval = Array<T> (new_dims);
 	    }
@@ -1884,6 +1887,8 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 		  if ((dims ())(i) == 1)
 		    new_dims(i) = 1;
 	        }
+
+	      new_dims.chop_trailing_singletons ();
 
 	      retval = Array<T> (tmp, new_dims);
 	    }
@@ -1916,6 +1921,8 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	      result_dims(0) = ntot;
 	      result_dims(1) = (ntot > 0 ? 1 : 0);
 	    }
+
+	  result_dims.chop_trailing_singletons ();
 
 	  retval.resize (result_dims);
 
@@ -2022,13 +2029,11 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
     {
       if (all_ok (ra_idx))
 	{
-	  if (any_orig_empty (ra_idx))
+	  if (any_orig_empty (ra_idx) || any_zero_len (frozen_lengths))
 	    {
+	      frozen_lengths.chop_trailing_singletons ();
+
 	      retval.resize (frozen_lengths);
-	    }
-	  else if (any_zero_len (frozen_lengths))
-	    {
-	      retval.resize (get_zero_len_size (frozen_lengths, dimensions));
 	    }
 	  else if (all_colon_equiv (ra_idx, dimensions) 
 		    && frozen_lengths.length () == n_dims)
@@ -2037,9 +2042,13 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 	    }
 	  else
 	    {
-	      retval.resize (frozen_lengths);
+	      dim_vector frozen_lengths_for_resize = frozen_lengths;
 
-	      int n = number_of_elements (frozen_lengths);
+	      frozen_lengths_for_resize.chop_trailing_singletons ();
+
+	      retval.resize (frozen_lengths_for_resize);
+
+	      int n = retval.length ();
 
 	      Array<int> result_idx (ra_idx.length (), 0);
 
@@ -2051,17 +2060,13 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 		{
 		  elt_idx = get_elt_idx (ra_idx, result_idx); 
 	
-		  int numelem_result = 
-		    get_scalar_idx (result_idx, frozen_lengths);
-
 		  int numelem_elt = get_scalar_idx (elt_idx, this_dims);
 
-		  if (numelem_result > length () || numelem_result < 0 
-		      || numelem_elt > length () || numelem_elt < 0)
+		  if (numelem_elt > length () || numelem_elt < 0)
 		    (*current_liboctave_error_handler)
-		      ("attempt to grow array along ambiguous dimension");
+		      ("invalid N-d array index");
 		  else
-		    retval.checkelem (numelem_result) = checkelem (numelem_elt);
+		    retval.elem (i) = elem (numelem_elt);
 		
 		  increment_index (result_idx, frozen_lengths);
 	

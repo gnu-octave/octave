@@ -311,15 +311,6 @@ any_zero_len (const dim_vector& frozen_lengths)
   return retval;
 }
 
-dim_vector
-get_zero_len_size (const dim_vector& /* frozen_lengths */,
-		   const dim_vector& /* dimensions */)
-{
-  dim_vector retval;
-  assert (0);
-  return retval;
-}
-
 bool
 all_colon_equiv (const Array<idx_vector>& ra_idx,
 		 const dim_vector& frozen_lengths)

@@ -111,6 +111,17 @@ protected:
       return dims[i];
     }
 
+    void chop_trailing_singletons (void)
+    {
+      for (int i = ndims - 1; i > 1; i--)
+	{
+	  if (dims[i] == 1)
+	    ndims--;
+	  else
+	    break;
+	}
+    }
+
   private:
 
     // No assignment!
@@ -200,7 +211,6 @@ public:
       }
   }
 
-
   std::string str (char sep = 'x') const
   {
     OSSTREAM buf;
@@ -286,6 +296,12 @@ public:
       retval *= elem (i);
 
     return retval;
+  }
+
+  void chop_trailing_singletons (void)
+  {
+    make_unique ();
+    rep->chop_trailing_singletons ();
   }
 };
 

@@ -41,7 +41,13 @@ DEFUNOP (transpose, matrix)
 {
   CAST_UNOP_ARG (const octave_char_matrix_str&);
 
-  return octave_value (v.char_matrix_value().transpose (), true);
+  if (v.ndims () > 2)
+    {
+      error ("transpose not defined for N-d objects");
+      return octave_value ();
+    }
+  else
+    return octave_value (v.char_matrix_value().transpose (), true);
 }
 
 // string by string ops.

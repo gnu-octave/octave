@@ -1,3 +1,11 @@
+2003-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* OPERATORS/op-cell.cc: Allow transpose for cell arrays.
+	* OPERATORS/op-m-m.cc, OPERATORS/op-cm-cm.cc,
+	OPERATORS/op-bm-bm.cc, OPERATORS/op-streamoff.cc,
+	OPERATORS/op-str-str.cc: Improve error message for attempt to
+	transpose N-d object.
+
 2003-11-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-arg-list.cc (F__end__): Handle N-d objects.

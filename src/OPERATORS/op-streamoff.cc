@@ -38,7 +38,13 @@ DEFUNOP (transpose, streamoff)
 {
   CAST_UNOP_ARG (const octave_streamoff&);
 
-  return octave_value (streamoff_array (v.streamoff_array_value().transpose ()));
+  if (v.ndims () > 2)
+    {
+      error ("transpose not defined for N-d objects");
+      return octave_value ();
+    }
+  else
+    return octave_value (streamoff_array (v.streamoff_array_value().transpose ()));
 }
 
 DEFNCUNOP_METHOD (incr, streamoff, increment)

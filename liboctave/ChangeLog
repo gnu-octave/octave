@@ -1,3 +1,18 @@
+2003-12-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-util.cc (get_zero_len_size): Delete.
+	* Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&)):
+	Handle zero-length result dimensions the same as empty original
+	indices.
+
+2003-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dim-vector.h (dim_vector::chop_trailing_singleton_dims,
+	dim_vector::dim_vector_rep::chop_trailing_singleton_dims):
+	New functions.
+	* Array.cc (ArrayN<T>::indexN): Use it.
+	(ArrayN<T>::index (Array<idx_vector>&, int, const T&)): Likewise.
+
 2003-11-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* boolNDArray.cc: Define BOOL ops.  Define mixed CMP ops.

@@ -87,10 +87,6 @@ function y = mean (x, opt1, opt2)
     usage ("mean (x, dim, opt) or mean (x, dim, opt)");
   endif
 
-  if (rows (x) == 1)
-    x = x.';
-  endif
-
   if (need_dim)
     t = find (size (x) != 1);
     if (isempty (t))

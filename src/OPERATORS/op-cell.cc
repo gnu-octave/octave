@@ -39,11 +39,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // cell ops.
 
+DEFUNOP (transpose, cell)
+{
+  CAST_UNOP_ARG (const octave_cell&);
+
+  if (v.ndims () > 2)
+    {
+      error ("transpose not defined for N-d objects");
+      return octave_value ();
+    }
+  else
+    return octave_value (Cell (v.cell_value().transpose ()));
+}
+
 DEFASSIGNANYOP_FN (assign, cell, assign);
 
 void
 install_cell_ops (void)
 {
+  INSTALL_UNOP (op_transpose, octave_cell, transpose);
+  INSTALL_UNOP (op_hermitian, octave_cell, transpose);
+
   INSTALL_ASSIGNANYOP (op_asn_eq, octave_cell, assign);
 }
 

@@ -80,19 +80,21 @@ of the reciprocal condition number if requested.\n\
       if (! error_state)
 	{
 	  int info;
-	  double rcond = 0.0;
+	  volatile double rcond = 0.0;
 
 
 	  if (nargout > 1)
 	    {
 	      DET det = m.determinant (info, rcond);
 	      retval(1) = rcond;
-	      retval(0) = (info == -1 ? 0.0 : det.value ());
+	      retval(0) = ((info == -1 || 1.0 + rcond == 1.0)
+			   ? 0.0 : det.value ());
 	    }
 	  else
 	    {
 	      DET det = m.determinant (info);
-	      retval(0) = (info == -1 ? 0.0 : det.value ());
+	      retval(0) = ((info == -1 || 1.0 + rcond == 1.0)
+			   ? 0.0 : det.value ());
 	    }
 	}
     }
@@ -103,18 +105,20 @@ of the reciprocal condition number if requested.\n\
       if (! error_state)
 	{
 	  int info;
-	  double rcond = 0.0;
+	  volatile double rcond = 0.0;
 
 	  if (nargout > 1)
 	    {
 	      ComplexDET det = m.determinant (info, rcond);
 	      retval(1) = rcond;
-	      retval(0) = (info == -1 ? Complex (0.0) : det.value ());
+	      retval(0) = ((info == -1 || 1.0 + rcond == 1.0)
+			   ? Complex (0.0) : det.value ());
 	    }
 	  else
 	    {
 	      ComplexDET det = m.determinant (info);
-	      retval(0) = (info == -1 ? Complex (0.0) : det.value ());
+	      retval(0) = ((info == -1 | 1.0 + rcond == 1.0)
+			   ? Complex (0.0) : det.value ());
 	    }
 	}
     }

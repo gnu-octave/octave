@@ -197,10 +197,12 @@ tree_expression::is_logically_true (const char *warn_for)
 	      t1 = 0.0;
 	      int flag = user_pref.propagate_empty_matrices;
 	      if (flag < 0)
-		warning ("%s: empty matrix used in conditional expression");
+		warning ("%s: empty matrix used in conditional expression",
+			 warn_for);
 	      else if (flag == 0)
 		{
-		  ::error ("%s: empty matrix used in conditional expression");
+		  ::error ("%s: empty matrix used in conditional expression",
+			   warn_for);
 		  return expr_value;
 		}
 	    }
@@ -221,13 +223,14 @@ tree_expression::is_logically_true (const char *warn_for)
 		panic_impossible ();
 	    }
 	  else
-	    ::error ("%s: invalid type in conditional expression");
+	    ::error ("%s: invalid type in conditional expression", warn_for);
 	}
       else
-	::error ("%s: undefined value used in conditional expression");
+	::error ("%s: undefined value used in conditional expression",
+		 warn_for);
     }
   else
-    ::error ("%s: error evaluating conditional expression");
+    ::error ("%s: error evaluating conditional expression", warn_for);
 
   return expr_value;
 }

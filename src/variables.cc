@@ -1830,7 +1830,7 @@ help and usage functions");
   DEFVAR ("warn_missing_semicolon", SBV_warn_missing_semicolon,
 	  0.0, 0, warn_missing_semicolon,
     "produce a warning if a statement in a script or function file is
-not terminated with a semicolon")
+not terminated with a semicolon");
 
   DEFVAR ("whitespace_in_literal_matrix",
 	  SBV_whitespace_in_literal_matrix, "", 0,

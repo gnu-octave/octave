@@ -88,6 +88,26 @@ public:
   void set_print_flag (int print)
     { print_flag = print; }
 
+  int is_command (void)
+    { return command != 0; }
+
+  int is_expression (void)
+    { return expression != 0; }
+
+  int line (void)
+    {
+      return command
+	? command->line ()
+	  : (expression ? expression->line () : -1);
+    }
+
+  int column (void)
+    {
+      return command
+	? command->column ()
+	  : (expression ? expression->column () : -1);
+    }
+
   void print_code (ostream& os);
 
 private:

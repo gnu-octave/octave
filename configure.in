@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.184 $)
+AC_REVISION($Revision: 1.185 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -342,6 +342,7 @@ AC_ARG_ENABLE(shared,
   SHARED_LIBS=false)
 AC_SUBST(SHARED_LIBS)
 
+DLFCN_DIR=
 if $SHARED_LIBS; then
   CPICFLAG=-fPIC
   CXXPICFLAG=-fPIC
@@ -355,10 +356,11 @@ if $SHARED_LIBS; then
       FPICFLAG=
       RLD_FLAG='-Xlinker -rpath -Xlinker $(libdir)'
     ;;
-    rs6000-ibm-aix*)
+    rs6000-ibm-aix* | powerpc-ibm-aix*)
       CPICFLAG=
       CXXPICFLAG=
       FPICFLAG=
+      DLFCN_DIR=dlfcn
     ;;
     hppa*-hp-hpux*)
       FPICFLAG=+Z
@@ -388,11 +390,13 @@ AC_MSG_RESULT([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_RESULT([defining CPICFLAG to be $CPICFLAG])
 AC_MSG_RESULT([defining CXXPICFLAG to be $CXXPICFLAG])
 AC_MSG_RESULT([defining SHLEXT to be $SHLEXT])
+AC_MSG_RESULT([defining DLFCN_DIR to be $DLFCN_DIR])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
 AC_SUBST(SHLEXT)
 AC_SUBST(RLD_FLAG)
+AC_SUBST(DLFCN_DIR)
 
 ### Allow compilation of smaller kernel.  This only works if some form
 ### of dynamic linking is also supported and used.
@@ -999,7 +1003,8 @@ export CC
 export CXX
 export F77
 
-AC_CONFIG_SUBDIRS(glob kpathsea scripts $INFO_DIR $PLPLOT_DIR $READLINE_DIR)
+AC_CONFIG_SUBDIRS(glob kpathsea scripts $INFO_DIR $PLPLOT_DIR
+		  $READLINE_DIR $DLFCN_DIR)
 
 ### Do the substitutions in all the Makefiles.
 

@@ -1,3 +1,8 @@
+2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-list.cc (octave_list::subsasgn): Call assign for Cell objects
+	here, not the base octave_value::assign.
+
 2004-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (yywrap): Don't #undef this symbol.

@@ -66,6 +66,9 @@ Octave_object::Octave_object (const ComplexColumnVector& v, int pcv)
 Octave_object::Octave_object (const char *s)
   : Array<tree_constant> (1, tree_constant (s)) { }
 
+Octave_object::Octave_object (const string& s)
+  : Array<tree_constant> (1, tree_constant (s)) { }
+
 Octave_object::Octave_object (double base, double limit, double inc)
   : Array<tree_constant> (1, tree_constant (base, limit, inc)) { }
 

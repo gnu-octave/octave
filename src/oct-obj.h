@@ -59,6 +59,7 @@ public:
   Octave_object (const ComplexColumnVector& v, int pcv = -1);
 
   Octave_object (const char *s);
+  Octave_object (const string& s);
 
   Octave_object (double base, double limit, double inc);
   Octave_object (const Range& r);

@@ -712,14 +712,20 @@ begin_obj_idx	: // empty
 postfix_expr	: primary_expr
 		  { $$ = $1; }
 		| postfix_expr '(' begin_obj_idx ')'
-		  { $$ = make_index_expression ($1, 0, '('); }
+		  {
+		    $$ = make_index_expression ($1, 0, '(');
+		    lexer_flags.looking_at_object_index = false;
+		  }
 		| postfix_expr '(' begin_obj_idx arg_list ')'
 		  {
 		    $$ = make_index_expression ($1, $4, '(');
 		    lexer_flags.looking_at_object_index = false;
 		  }
 		| postfix_expr '{' begin_obj_idx '}'
-		  { $$ = make_index_expression ($1, 0, '{'); }
+		  {
+		    $$ = make_index_expression ($1, 0, '{');
+		    lexer_flags.looking_at_object_index = false;
+		  }
 		| postfix_expr '{' begin_obj_idx arg_list '}'
 		  {
 		    $$ = make_index_expression ($1, $4, '{');

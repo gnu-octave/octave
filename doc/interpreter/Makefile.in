@@ -63,11 +63,10 @@ all: conf.texi octave.info octave.dvi octave.ps
 conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
 	$(srcdir)/../conf.texi.in
 	@echo "Making conf.texi from conf.texi.in..."
-	@(version_val=${version}; \
 	sed < $(srcdir)/../conf.texi.in > conf.texi.tmp \
-	-e "s;%OCTAVE_VERSION%;${version_val};" \
-	-e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
-	-e "s;%OCTAVE_HOME%;${prefix};")
+	  -e "s;%OCTAVE_VERSION%;${version};" \
+	  -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
+	  -e "s;%OCTAVE_HOME%;${prefix};"
 	@if test "$(srcdir)" = "." ; then \
 	  $(top_srcdir)/move-if-change conf.texi.tmp conf.texi; \
 	else \

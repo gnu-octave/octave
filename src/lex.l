@@ -1534,10 +1534,21 @@ handle_string (char delim, int text_style)
 
       if (c == '\\')
 	{
-	  if (! have_continuation ())
-	    buf << (char) c;
-
-	  escape_pending = ! escape_pending;
+	  if (escape_pending)
+	    {
+	      buf << (char) c;
+	      escape_pending = 0;
+	    }
+	  else
+	    {
+	      if (have_continuation ())
+		escape_pending = 0;
+	      else
+		{
+		  buf << (char) c;
+		  escape_pending = 1;
+		}
+	    }
 	  continue;
 	}
       else if (c == '.')
@@ -1547,6 +1558,7 @@ handle_string (char delim, int text_style)
 	}
       else if (c == '\n')
 	{
+	  error ("unterminated string constant");
 	  break;
 	}
       else if (c == delim)

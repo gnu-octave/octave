@@ -300,9 +300,15 @@ input		: input1
 		    YYABORT;
 		  }
 		| simple_list parse_error
-		  { ABORT_PARSE; }
+		  {
+		    parse_error ("parse error");
+		    ABORT_PARSE;
+		  }
 		| parse_error
-		  { ABORT_PARSE; }
+		  {
+		    parse_error ("parse error");
+		    ABORT_PARSE;
+		  }
 		;
 
 input1		: '\n'

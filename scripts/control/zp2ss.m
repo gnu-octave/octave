@@ -20,7 +20,7 @@
 ## @deftypefn {Function File } {[@var{A}, @var{B}, @var{C}, @var{D}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
 ## Conversion from zero / pole to state space.
 ## @strong{Inputs}
-## @table 
+## @table @var
 ## @item zer, pol
 ## vectors of (possibly) complex poles and zeros of a transfer
 ## function.  Complex values must come in conjugate pairs

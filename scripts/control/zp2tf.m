@@ -20,7 +20,7 @@
 ## @deftypefn {Function File } {[@var{num}, @var{den}] =} zp2tf (@var{zer}, @var{pol}, @var{k})
 ##  Converts zeros / poles to a transfer function.
 ## @strong{Inputs}
-## @table
+## @table @var
 ## @item zer, pol
 ## vectors of (possibly complex) poles and zeros of a transfer
 ## function.  Complex values should appear in conjugate pairs

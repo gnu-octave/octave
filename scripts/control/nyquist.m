@@ -24,7 +24,7 @@
 ## 
 ## Compute the frequency response of a system.
 ## @strong{Inputs} (pass as empty to get default values)
-## @table
+## @table @var
 ## @item sys
 ##        system data structure (must be either purely continuous or discrete;
 ##        see is_digital)

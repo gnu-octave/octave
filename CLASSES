@@ -110,14 +110,8 @@ numerical stuff:
     |   +-- LPsolve --> LPsolve_options
     |
     +-- QP 
-    |   ^
-    |   |
-    |   +-- QPSOL --> QPSOL_options
     |
     +-- NLP
-	^
-	|
-	+-- NPSOL --> NPSOL_options
 
 
   Quad

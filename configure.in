@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.277 $)
+AC_REVISION($Revision: 1.278 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -720,32 +720,6 @@ else
   AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
 
-### See if the optional nonlinear programming code is present.
-
-AC_MSG_CHECKING([for npsol])
-if test -f $srcdir/libcruft/npsol/npsol.f; then
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  AC_DEFINE(NPSOL_MISSING, 1)
-fi
-
-AC_MSG_CHECKING([for qpsol])
-if test -f $srcdir/libcruft/qpsol/qpsol.f; then
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  AC_DEFINE(QPSOL_MISSING, 1)
-fi
-
-AC_MSG_CHECKING([for fsqp])
-if test -f $srcdir/libcruft/fsqp/fsqpd.f; then
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-  AC_DEFINE(FSQP_MISSING, 1)
-fi
-
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
@@ -1212,13 +1186,11 @@ AC_OUTPUT(Makefile octMakefile Makeconf test/Makefile dlfcn/Makefile
   libcruft/Makefile libcruft/Makerules
   libcruft/blas/Makefile libcruft/balgen/Makefile
   libcruft/dassl/Makefile libcruft/eispack/Makefile
-  libcruft/fftpack/Makefile libcruft/fsqp/Makefile
-  libcruft/lapack/Makefile libcruft/linpack/Makefile
-  libcruft/minpack/Makefile libcruft/misc/Makefile
-  libcruft/npsol/Makefile libcruft/odepack/Makefile
-  libcruft/qpsol/Makefile libcruft/quadpack/Makefile
-  libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
-  libcruft/villad/Makefile)
+  libcruft/fftpack/Makefile libcruft/lapack/Makefile
+  libcruft/linpack/Makefile libcruft/minpack/Makefile
+  libcruft/misc/Makefile libcruft/odepack/Makefile
+  libcruft/quadpack/Makefile libcruft/ranlib/Makefile
+  libcruft/slatec-fn/Makefile libcruft/villad/Makefile)
 
 ### Print a summary so that important information isn't missed.
 

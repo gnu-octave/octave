@@ -51,17 +51,18 @@ LIBOBJS = @LIBOBJS@
 	    mv $@.tmp $@ ; \
 	fi
 
-INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in error.h \
-	f-balance.h f-colloc.h f-dassl.h f-det.h f-eig.h f-expm.h \
-	f-fft.h f-fsolve.h f-fsqp.h f-givens.h f-hess.h f-ifft.h \
-	f-inv.h f-lpsolve.h f-lsode.h f-lu.h f-npsol.h f-qpsol.h \
-	f-qr.h f-quad.h f-qzval.h f-rand.h f-schur.h f-svd.h \
-	f-syl.h file-io.h g-builtins.h gripes.h help.h \
-	idx-vector.h input.h lex.h mappers.h missing-math.h octave.h \
-	octave-hist.h pager.h parse.h pr-output.h procstream.h \
-	sighandlers.h statdefs.h symtab.h sysdep.h t-builtins.h \
-	tree-base.h tree-const.h tree.h unwind-prot.h user-prefs.h \
-	utils.h variables.h version.h xdiv.h xpow.h SLStack.h Stack.h
+INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in \
+	defaults.h error.h f-balance.h f-colloc.h f-dassl.h f-det.h \
+	f-eig.h f-expm.h f-fft.h f-fsolve.h f-fsqp.h f-givens.h \
+	f-hess.h f-ifft.h f-inv.h f-lpsolve.h f-lsode.h f-lu.h \
+	f-npsol.h f-qpsol.h f-qr.h f-quad.h f-qzval.h f-rand.h \
+	f-schur.h f-svd.h f-syl.h file-io.h g-builtins.h gripes.h \
+	help.h idx-vector.h input.h lex.h mappers.h missing-math.h \
+	octave.h octave-hist.h pager.h parse.h pr-output.h \
+	procstream.h sighandlers.h statdefs.h symtab.h sysdep.h \
+	t-builtins.h tree-base.h tree-const.h tree.h unwind-prot.h \
+	user-prefs.h utils.h variables.h version.h xdiv.h xpow.h \
+	SLStack.h Stack.h
 
 SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc error.cc \
 	f-colloc.cc f-balance.cc f-dassl.cc f-det.cc f-eig.cc \

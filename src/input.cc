@@ -704,6 +704,8 @@ generate_struct_completions (const char *text, char *& prefix,
   return names;
 }
 
+// XXX FIXME XXX -- make this generate file names when appropriate.
+
 static char **
 generate_possible_completions (const char *text, char *& prefix,
 			       char *& hint)
@@ -712,13 +714,10 @@ generate_possible_completions (const char *text, char *& prefix,
 
   prefix = 0;
 
-  if (text && *text && *text != '.')
-    {
-      if (strrchr (text, '.'))
-	names = generate_struct_completions (text, prefix, hint);
-      else
-	names = make_name_list ();
-    }
+  if (text && *text && *text != '.' && strrchr (text, '.'))
+    names = generate_struct_completions (text, prefix, hint);
+  else
+    names = make_name_list ();
 
   return names;
 }
@@ -847,7 +846,8 @@ command_generator (const char *text, int state)
 	      if (matches == 1 && looks_like_struct (buf))
 		rl_completion_append_character = '.';
 	      else
-		rl_completion_append_character = ' ';
+		rl_completion_append_character
+		  = user_pref.completion_append_char;
 
 	      return buf;
 	    }
@@ -911,7 +911,6 @@ static void
 operate_and_get_next (int count, int c)
 {
   int where;
-  extern int history_stifled, history_length, max_input_history;
 
   // Accept the current line.
 
@@ -921,7 +920,8 @@ operate_and_get_next (int count, int c)
 
   where = where_history ();
 
-  if (history_stifled && (history_length >= max_input_history))
+  if ((history_is_stifled () && (history_length >= max_input_history))
+      || (where >= history_length - 1))
     saved_history_line_to_use = where;
   else
     saved_history_line_to_use = where + 1;

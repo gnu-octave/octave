@@ -45,6 +45,16 @@ Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
+#if defined (HAVE_TERMIOS_H)
+#include <termios.h>
+#elif defined (HAVE_TERMIO_H)
+#include <termio.h>
+#elif defined (HAVE_SGTTY_H)
+#include <sgtty.h>
+#else
+LOSE! LOSE!
+#endif
+
 #include "defun.h"
 #include "error.h"
 #include "f77-uscore.h"
@@ -62,16 +72,6 @@ extern "C"
 
 extern char *term_clrpag;
 extern void _rl_output_character_function ();
-
-#if defined (HAVE_TERMIOS_H)
-#include <termios.h>
-#elif defined (HAVE_TERMIO_H)
-#include <termio.h>
-#elif defined (HAVE_SGTTY_H)
-#include <sgtty.h>
-#else
-LOSE! LOSE!
-#endif
 
 extern double F77_FCN (d1mach, D1MACH) (const int&);
 }

@@ -37,9 +37,9 @@ License as published by the Free Software Foundation.
 #if ! defined (octave_Map_h)
 #define octave_Map_h 1
 
-#include <Pix.h>
+#include <cstring>
 
-#include "utils.h"
+#include <Pix.h>
 
 template <class C>
 class Map
@@ -88,9 +88,11 @@ struct CHNode
 
   CHNode (void) : tl (0), hd (0) { }
 
-  CHNode (const char *h, const C& c, CHNode *t = 0)
-    : tl (t), cont (c)
-      { hd = strsave (h); }
+  CHNode (const char *h, const C& c, CHNode *t = 0) : tl (t), cont (c)
+    {
+      hd = h ? strcpy (new char [strlen (h) + 1], h) : 0;
+    }
+
 
   ~CHNode (void)
     { delete [] hd; }

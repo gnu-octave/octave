@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "tree-const.h"
 #include "user-prefs.h"
+#include "utils.h"
 
 // The following three variables could be made static members of the
 // tree_constant class.

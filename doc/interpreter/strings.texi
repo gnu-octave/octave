@@ -154,8 +154,8 @@ Return a string containing all the arguments concatenated.  For example,
 s = [ "ab"; "cde" ]
 strcat (s, s, s)
 
-     @result{}  "ab ab ab "
-         "cdecdecde"
+     @result{} "ab ab ab "
+        "cdecdecde"
 @end group
 @end example
 @end deftypefn
@@ -170,8 +170,8 @@ is @code{" "} (a single space).  For example,
 string_fill_char = "X";
 [ "these"; "are"; "strings" ]
      @result{} "theseXX"
-     @result{} "areXXXX"
-     @result{} "strings"
+        "areXXXX"
+        "strings"
 @end group
 @end example
 @end defvr
@@ -182,7 +182,7 @@ its rows.  Each string is padded with blanks in order to form a valid
 matrix.
 
 @strong{Note:}
-This function is modelled after @sc{MATLAB}.  In Octave, you can create
+This function is modelled after @sc{Matlab}.  In Octave, you can create
 a matrix of strings by @code{[@var{s_1}; @dots{}; @var{s_n}]} even if
 the strings are not all the same length.
 @end deftypefn

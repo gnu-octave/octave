@@ -363,7 +363,10 @@ manual.  You may want to skip this section and refer back to it later.
 
 Examples of Octave code appear in this font or form: @code{svd (a)}.
 Names that represent arguments or metasyntactic variables appear
-in this font or form: @var{first-number}.
+in this font or form: @var{first-number}.  Commands that you type
+sometimes appear in this font or form: @kbd{foo --bar --baz}.  Specific
+keys on your keyboard appear in this font or form: @key{ANY}.
+@cindex any key
 
 @node Evaluation Notation, Printing Notation, Fonts, Conventions
 @subsection Evaluation Notation

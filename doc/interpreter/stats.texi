@@ -34,7 +34,7 @@ If @var{x} is a vector, compute the median value of the elements of
 $$
 {\rm median} (x) =
   \cases{x(\lceil N/2\rceil), & $N$ odd;\cr
-          (x(N/2)+x((N/2)+1))/2, & $N$ even.}
+          (x(N/2)+x(N/2+1))/2, & $N$ even.}
 $$
 @end tex
 @end iftex
@@ -74,7 +74,7 @@ If @var{x} is a matrix, compute the standard deviation for
 each column and return them in a row vector.
 @end deftypefn
 
-@deftypefn {Function File} {} cov (@var{x} [, @var{y}])
+@deftypefn {Function File} {} cov (@var{x}, @var{y})
 If each row of @var{x} and @var{y} is an observation and each column is
 a variable, the (@var{i},@var{j})-th entry of
 @code{cov (@var{x}, @var{y})} is the covariance between the @var{i}-th
@@ -82,7 +82,7 @@ variable in @var{x} and the @var{j}-th variable in @var{y}.  If called
 with one argument, compute @code{cov (@var{x}, @var{x})}.
 @end deftypefn
 
-@deftypefn {Function File} {} corrcoef (@var{x} [, @var{y}])
+@deftypefn {Function File} {} corrcoef (@var{x}, @var{y})
 If each row of @var{x} and @var{y} is an observation and each column is
 a variable, the (@var{i},@var{j})-th entry of
 @code{corrcoef (@var{x}, @var{y})} is the correlation between the
@@ -122,7 +122,7 @@ If @var{x} is a vector of length @var{N}, return the skewness
 @iftex
 @tex
 $$
-{\rm skewness} (x) = {1\over N \sigma(x)^3} \sum_{i=1}^N (x_i)-\bar{x})^3
+{\rm skewness} (x) = {1\over N \sigma(x)^3} \sum_{i=1}^N (x_i-\bar{x})^3
 $$
 @end tex
 @end iftex

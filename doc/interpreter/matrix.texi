@@ -305,7 +305,7 @@ the elements of @var{x}.
 If @var{x} is a matrix, do the same for each column of @var{x}.
 @end deftypefn
 
-@deftypefn {Loadable Function} {[s, i] =} sort (@var{x})
+@deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})
 Returns a copy of @var{x} with the elements elements arranged in
 increasing order.  For matrices, @code{sort} orders the elements in each
 column.
@@ -365,7 +365,7 @@ a (i, :)
 
 @deftypefn {Function File} {} tril (@var{a}, @var{k})
 @deftypefnx {Function File} {} triu (@var{a}, @var{k})
-Return a new matrix form by extracting extract the lower (@code{tril})
+Return a new matrix formed by extracting extract the lower (@code{tril})
 or upper (@code{triu}) triangular part of the matrix @var{a}, and
 setting all other elements to zero.  The second argument is optional,
 and specifies how many diagonals above or below the main diagonal should

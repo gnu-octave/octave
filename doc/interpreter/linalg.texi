@@ -287,7 +287,7 @@ p =
 @end example
 @end deftypefn
 
-@deftypefn {Loadable Function} {[@var{q}, @var{r}] =} qr (@var{a})
+@deftypefn {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})
 @cindex QR factorization
 Compute the QR factorization of @var{a}, using standard @sc{Lapack}
 subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},
@@ -336,13 +336,21 @@ $A$
 @ifinfo
 @code{a}
 @end ifinfo
- is a tall, thin matrix).  The @code{qr} factorization is @code{q * r = a}
-where @code{q} is an orthogonal matrix and @code{r} is upper triangular.
+ is a tall, thin matrix).  The QR factorization is
+@iftex
+@tex
+$QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.
+@end tex
+@end iftex
+@ifinfo
+@code{q * r = a} where @code{q} is an orthogonal matrix and @code{r} is
+upper triangular.
+@end ifinfo
 
-The permuted @code{qr} factorization @code{[q, r, pi] = qr (a)} forms
-the @code{qr} factorization such that the diagonal entries of @code{r}
-are decreasing in magnitude order.  For example, given the matrix
-@code{a = [1, 2; 3, 4]},
+The permuted QR factorization @code{[@var{q}, @var{r}, @var{p}] =
+qr (@var{a})} forms the QR factorization such that the diagonal
+entries of @code{r} are decreasing in magnitude order.  For example,
+given the matrix @code{a = [1, 2; 3, 4]},
 
 @example
 [q, r, pi] = qr(a)
@@ -368,12 +376,12 @@ p =
    1  0
 @end example
 
-The permuted @code{qr} factorization @code{[q, r, pi] = qr (a)}
+The permuted @code{qr} factorization @code{[q, r, p] = qr (a)}
 factorization allows the construction of an orthogonal basis of
 @code{span (a)}.
 @end deftypefn
 
-@deftypefn {Loadable Function} {@var{s}} schur (@var{a})
+@deftypefn {Loadable Function} {@var{s} =} schur (@var{a})
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})
 @cindex Schur decomposition
 The Schur decomposition is used to compute eigenvalues of a

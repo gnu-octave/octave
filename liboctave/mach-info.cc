@@ -185,7 +185,7 @@ oct_mach_info::string_to_float_format (const string& s)
     retval = oct_mach_info::ieee_little_endian;
   else if (s == "vaxd" || s == "d")
     retval = oct_mach_info::vax_d;
-  else if (s == "vax_g" || s == "g")
+  else if (s == "vaxg" || s == "g")
     retval = oct_mach_info::vax_g;
   else if (s == "cray" || s == "c")
     retval = oct_mach_info::cray;

@@ -547,9 +547,9 @@ Open or create a file for writing at the end of the file.
 @item @samp{r+}
 Open an existing file for reading and writing.
 
-item @samp{w+}
+@item @samp{w+}
 Open a file for reading or writing.  The previous contents are
-discared.
+discarded.
 
 @item @samp{a+}
 Open or create a file for reading or writing at the end of the

@@ -1,3 +1,8 @@
+Wed Feb 26 15:46:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mach-info.cc (oct_mach_info::string_to_float_format):
+	Recognize "vaxg", not "vax_g".
+
 Fri Feb 21 16:07:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::maybe_delete_elements): Use correct

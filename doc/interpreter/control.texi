@@ -366,8 +366,8 @@ $AXA^T - X + B = 0$
 for square matrices @var{a}, @var{b}.  If @var{b} is not square, then the
 function attempts to solve either
 @iftex
-$AXA^T - X + B B^T = 0$ or $A^TXA - X + B^TB = 0$,
 @tex
+$AXA^T - X + B B^T = 0$ or $A^TXA - X + B^TB = 0$,
 @end tex
 @ifinfo
 @code{a x a' - x + b b' = 0} or @code{a' x a - x + b' b = 0},
@@ -393,7 +393,7 @@ matrix and checks rank.
 @deftypefn {Function File} {} is_observable (@var{a}, @var{c}, @var{tol})
 
 Return 1 if the pair (@var{a}, @var{c}) is observable.
-Otherwise, return0.
+Otherwise, return 0.
 
 The optional argument @var{tol} is a roundoff parameter.  If it is
 omitted, a value of @code{2*eps} is used.
@@ -533,8 +533,8 @@ The following values are returned:
 @item k
 The state feedback gain,
 @iftex
-$(A - B K)$
 @tex
+$(A - B K)$
 @end tex
 @end iftex
 @ifinfo

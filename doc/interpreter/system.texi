@@ -122,7 +122,7 @@ return a time structure corresponding to the local time zone.
 
 @example
 @group
-locatltime (time ())
+localtime (time ())
      @result{} @{
            usec = 0
            year = 97
@@ -141,8 +141,8 @@ locatltime (time ())
 @end deftypefn
 
 @deftypefn {Loadable Function} {} mktime (@var{tm_struct})
-Convert a time structure to the number of seconds since the epoch.  For
-example,
+Convert a time structure corresponding to the local time to the number
+of seconds since the epoch.  For example,
 
 @example
 @group
@@ -858,7 +858,7 @@ Otherwise, @var{err} is nonzero and @var{msg} contains a
 system-dependent error message.
 @end deftypefn
 
-@deftypefn {Built-in Function} {[fid, msg] =} dup2 (@var{old}, @var{new})
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})
 Duplicate a file descriptor.
 
 If successful, @var{fid} is greater than zero and contains the new file
@@ -1130,18 +1130,18 @@ The members of the group.
 In the descriptions of the following functions, this data structure is
 referred to as a @var{grp_struct}.
 
-@deftypefn {Loadable Function} {grp_struct =} getgrent ()
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrent ()
 Return an entry from the group database, opening it if necessary.
 Once the end of the data has been reached, @code{getgrent} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {grp_struct =} getgrgid (@var{gid}).
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrgid (@var{gid}).
 Return the first entry from the group database with the group ID
 @var{gid}.  If the group ID does not exist in the database,
 @code{getgrgid} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {grp_struct =} getgrnam (@var{name})
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrnam (@var{name})
 Return the first entry from the group database with the group name
 @var{name}.  If the group name does not exist in the database,
 @code{getgrname} returns 0.

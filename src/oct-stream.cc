@@ -999,7 +999,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 		    is.scan (fmt, &dummy);
 		  }
-		  break;
+		break;
 
 		case 'd': case 'i': case 'o': case 'u': case 'x':
 		  {
@@ -1008,7 +1008,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
 				   nr, max_size, discard);
 		  }
-		  break;
+		break;
 
 		case 'e': case 'f': case 'g':
 		  {
@@ -1017,7 +1017,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
 				   nr, max_size, discard);
 		  }
-		  break;
+		break;
 
 		case 'c':
 		  is.unsetf (ios::skipws);
@@ -1070,7 +1070,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 		    is.setf (flags);
 		  }
-		  break;
+		break;
 
 		case 'p': case '[':
 		  error ("fscanf: unsupported format specifier");
@@ -1087,20 +1087,12 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		}
 	      else if (! is)
 		{
-		  if (is.eof ())
+		  if (nr > 0)
 		    {
-		      if (nr > 0)
+		      if (count > nr)
 			{
-			  if (count > nr)
-			    {
-			      final_nr = nr;
-			      final_nc = (count - 1) / nr + 1;
-			    }
-			  else
-			    {
-			      final_nr = count;
-			      final_nc = 1;
-			    }
+			  final_nr = nr;
+			  final_nc = (count - 1) / nr + 1;
 			}
 		      else
 			{
@@ -1110,19 +1102,20 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		    }
 		  else
 		    {
-		      error ("fscanf: read error");
+		      final_nr = count;
+		      final_nc = 1;
+		    }
 
-		      // XXX FIXME XXX -- is this the right thing to do?
-		      // What about other streams?
-		      if (name () == "stdin")
-			{
-			  is.clear ();
+		  // XXX FIXME XXX -- is this the right thing to do?
+		  // What about other streams?
+		  if (name () == "stdin")
+		    {
+		      is.clear ();
 
-			  // Skip to end of line.
+		      // Skip to end of line.
 
-			  bool err;
-			  do_gets (-1, err, false, "fscanf");
-			}
+		      bool err;
+		      do_gets (-1, err, false, "fscanf");
 		    }
 
 		  break;

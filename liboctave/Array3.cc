@@ -58,7 +58,7 @@ Array3<T>::resize (int r, int c, int p)
   if (r == dim1 () && c == dim2 () && p == dim3 ())
     return;
 
-  typename Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
   int old_d1 = dim1 ();
@@ -68,10 +68,10 @@ Array3<T>::resize (int r, int c, int p)
 
   int ts = get_size (get_size (r, c), p);
 
-  rep = new typename Array<T>::ArrayRep (ts);
+  Array<T>::rep = new typename Array<T>::ArrayRep (ts);
 
-  d1 = r;
-  d2 = c;
+  Array2<T>::d1 = r;
+  Array2<T>::d2 = c;
   d3 = p;
 
   if (old_data && old_len > 0)
@@ -104,7 +104,7 @@ Array3<T>::resize (int r, int c, int p, const T& val)
   if (r == dim1 () && c == dim2 () && p == dim3 ())
     return;
 
-  typename Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
   int old_d1 = dim1 ();
@@ -115,10 +115,10 @@ Array3<T>::resize (int r, int c, int p, const T& val)
 
   int ts = get_size (get_size (r, c), p);
 
-  rep = new typename Array<T>::ArrayRep (ts);
+  Array<T>::rep = new typename Array<T>::ArrayRep (ts);
 
-  d1 = r;
-  d2 = c;
+  Array2<T>::d1 = r;
+  Array2<T>::d2 = c;
   d3 = p;
 
   int min_r = old_d1 < r ? old_d1 : r;

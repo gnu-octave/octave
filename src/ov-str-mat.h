@@ -90,11 +90,11 @@ public:
 
   bool is_string (void) const { return true; }
 
-  bool is_real_type (void) const { return Vimplicit_str_to_num_ok; }
+  bool is_real_type (void) const { return false; }
 
-  bool is_matrix_type (void) const { return Vimplicit_str_to_num_ok; }
+  bool is_matrix_type (void) const { return false; }
 
-  bool is_numeric_type (void) const { return Vimplicit_str_to_num_ok; }
+  bool is_numeric_type (void) const { return false; }
 
   bool valid_as_scalar_index (void) const;
 

@@ -134,13 +134,13 @@ DiagArray2<T>::resize (int r, int c)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  typename Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
   int old_len = length ();
 
   int new_len = r < c ? r : c;
 
-  rep = new typename Array<T>::ArrayRep (new_len);
+  Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
   nr = r;
   nc = c;
@@ -170,13 +170,13 @@ DiagArray2<T>::resize (int r, int c, const T& val)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  typename Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
   int old_len = length ();
 
   int new_len = r < c ? r : c;
 
-  rep = new typename Array<T>::ArrayRep (new_len);
+  Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
   nr = r;
   nc = c;

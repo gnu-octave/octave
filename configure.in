@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.409 $)
+AC_REVISION($Revision: 1.410 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -630,20 +630,24 @@ SHLEXT_VER='$(SHLEXT).$(version)'
 SHLLIB_VER='$(SHLLIB).$(version)'
 SHLBIN_VER='$(SHLBIN).$(version)'
 SHLLINKEXT=
-SH_LD="$CXX"
+SH_LD='$(CXX)'
 SH_LDFLAGS=-shared
 MKOCTFILE_SH_LDFLAGS='$(SH_LDFLAGS)'
 SONAME_FLAGS=
 RLD_FLAG=
 NO_OCT_FILE_STRIP=false
 INCLUDE_LINK_DEPS=false
-TEMPLATE_AR="$AR"
+TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
 library_path_var=LD_LIBRARY_PATH
 case "$canonical_host_type" in
-  *-*-386bsd* | *-*-openbsd* | *-*-netbsd* | *-*-freebsd*)
+  *-*-386bsd* | *-*-openbsd* | *-*-netbsd*)
     SH_LD=ld
     SH_LDFLAGS=-Bshareable
+  ;;
+  *-*-freebsd*)
+    SH_LD='$(CC)'
+    SH_LDFLAGS=-shared -Wl,-x
   ;;
   alpha*-dec-osf*)
     CPICFLAG=
@@ -738,7 +742,7 @@ case "$canonical_host_type" in
     if test "$GXX" = yes; then
       true
     else
-      TEMPLATE_AR="$CXX"
+      TEMPLATE_AR='$(CXX)'
       TEMPLATE_ARFLAGS="-xar -o"
     fi
   ;;

@@ -48,7 +48,7 @@ protected:
 
   Array3 (T *d, int n, int m, int k) : Array2<T> (d, n, get_size (m, k))
     {
-      d2 = m;
+      Array2<T>::d2 = m;
       d3 = k;
       set_max_indices (3);
     }
@@ -57,28 +57,28 @@ public:
 
   Array3 (void) : Array2<T> ()
     {
-      d2 = 0;
+      Array2<T>::d2 = 0;
       d3 = 0;
       set_max_indices (3);
     }
 
   Array3 (int n, int m, int k) : Array2<T> (n, get_size (m, k))
     {
-      d2 = m;
+      Array2<T>::d2 = m;
       d3 = k;
       set_max_indices (3);
     }
 
   Array3 (int n, int m, int k, const T& val) : Array2<T> (n, m*k, val)
     {
-      d2 = m;
+      Array2<T>::d2 = m;
       d3 = k;
       set_max_indices (3);
     }
 
   Array3 (const Array3<T>& a) : Array2<T> (a)
     {
-      d2 = a.d2;
+      Array2<T>::d2 = a.d2;
       d3 = a.d3;
       set_max_indices (3);
     }
@@ -87,11 +87,11 @@ public:
 
   Array3<T>& operator = (const Array3<T>& a)
     {
-      if (this != &a && rep != a.rep)
+      if (this != &a && Array<T>::rep != a.rep)
 	{
 	  Array<T>::operator = (a);
-	  d1 = a.d1;
-	  d2 = a.d2;
+	  Array2<T>::d1 = a.d1;
+	  Array2<T>::d2 = a.d2;
 	  d3 = a.d3;
 	}
 
@@ -102,8 +102,8 @@ public:
 
   // No checking of any kind, ever.
 
-  T& xelem (int i, int j, int k) { return Array2<T>::xelem (i, d2*k+j); }
-  T xelem (int i, int j, int k) const { return Array2<T>::xelem (i, d2*k+j); }
+  T& xelem (int i, int j, int k) { return Array2<T>::xelem (i, Array2<T>::d2*k+j); }
+  T xelem (int i, int j, int k) const { return Array2<T>::xelem (i, Array2<T>::d2*k+j); }
 
   // Note that the following element selection methods don't use
   // xelem() because they need to make use of the code in
@@ -111,16 +111,16 @@ public:
 
   T& checkelem (int i, int j, int k)
     {
-      if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+      if (i < 0 || j < 0 || k < 0 || i >= Array2<T>::d1 || j >= Array2<T>::d2 || k >= d3)
 	{
 	  (*current_liboctave_error_handler) ("range error in Array3");
 	  static T foo;
 	  return foo;
 	}
-      return Array2<T>::elem (i, d2*k+j);
+      return Array2<T>::elem (i, Array2<T>::d2*k+j);
     }
 
-  T& elem (int i, int j, int k) { return Array2<T>::elem (i, d2*k+j); }
+  T& elem (int i, int j, int k) { return Array2<T>::elem (i, Array2<T>::d2*k+j); }
 
 #if defined (BOUNDS_CHECKING)
   T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
@@ -130,15 +130,15 @@ public:
 
   T checkelem (int i, int j, int k) const
     {
-      if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+      if (i < 0 || j < 0 || k < 0 || i >= Array2<T>::d1 || j >= Array2<T>::d2 || k >= d3)
 	{
 	  (*current_liboctave_error_handler) ("range error in Array3");
 	  return T ();
 	}
-      return Array2<T>::elem (i, d1*k+j);
+      return Array2<T>::elem (i, Array2<T>::d1*k+j);
     }
 
-  T elem (int i, int j, int k) const { return Array2<T>::elem (i, d2*k+j); }
+  T elem (int i, int j, int k) const { return Array2<T>::elem (i, Array2<T>::d2*k+j); }
 
 #if defined (BOUNDS_CHECKING)
   T operator () (int i, int j, int k) const { return checkelem (i, j, k); }

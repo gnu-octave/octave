@@ -1,3 +1,15 @@
+2003-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-str-mat.h (octave_char_matrix_str::is_real_type, 
+	octave_char_matrix_str::is_matrix_type,
+	octave_char_matrix_str::is_numeric_type): Always return false.
+
+2003-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (<CCHAR>): If we are parsing a command, reset start state.
+	Use BEGIN (INITIAL) instead of BEGIN 0.  Use parens around start
+	state in BEGIN statements.
+
 2003-02-13  Paul Kienzle <pkienzle@users.sf.net>
 
 	* variables.cc (Fmlock, Fmunlock, Fmislocked): New functions.

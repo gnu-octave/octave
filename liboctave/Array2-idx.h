@@ -43,7 +43,7 @@ Array2<T>::value (void)
     }
   else if (n_idx == 1)
     {
-      return index (idx[0]);
+      return index (Array<T>::idx[0]);
     }
   else
     (*current_liboctave_error_handler)
@@ -98,7 +98,14 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
       int len = tmp.length ();
 
       if (len == 0)
-	retval = Array2<T> (idx_orig_rows, idx_orig_columns);
+	{
+	  if (idx_orig_rows == 0 || idx_orig_columns == 0)
+	    retval = Array2<T> (idx_orig_rows, idx_orig_columns);
+	  else if (nr == 1)
+	    retval = Array2<T> (1, 0);
+	  else
+	    retval = Array2<T> (0, 1);
+	}
       else
 	{
 	  if (idx_orig_rows == 1 || idx_orig_columns == 1)
@@ -283,10 +290,10 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_arg)
 		}
 	    }
 
-	  if (--rep->count <= 0)
-	    delete rep;
+	  if (--(Array<T>::rep)->count <= 0)
+	    delete Array<T>::rep;
 
-	  rep = new typename Array<T>::ArrayRep (new_data, new_n);
+	  Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_n);
 
 	  if (nr == 1)
 	    {
@@ -397,10 +404,10 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			    }
 			}
 
-		      if (--rep->count <= 0)
-			delete rep;
+		      if (--(Array<T>::rep)->count <= 0)
+			delete Array<T>::rep;
 
-		      rep = new typename Array<T>::ArrayRep (new_data, nr * new_nc);
+		      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, nr * new_nc);
 
 		      d2 = new_nc;
 
@@ -461,10 +468,10 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			    }
 			}
 
-		      if (--rep->count <= 0)
-			delete rep;
+		      if (--(Array<T>::rep)->count <= 0)
+			delete Array<T>::rep;
 
-		      rep = new typename Array<T>::ArrayRep (new_data, new_nr * nc);
+		      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_nr * nc);
 
 		      d1 = new_nr;
 

@@ -245,13 +245,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
 <NESTED_FUNCTION_END>. {
-    BEGIN NESTED_FUNCTION_BEGIN;
+    BEGIN (NESTED_FUNCTION_BEGIN);
     unput (yytext[0]);
     return ';';
   }
 
 <NESTED_FUNCTION_BEGIN>. {
-    BEGIN 0;
+    BEGIN (INITIAL);
     unput (yytext[0]);
     prep_for_nested_function ();
     return FCN;
@@ -264,7 +264,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <COMMAND_START>{NL} {
-    BEGIN 0;
+    BEGIN (INITIAL);
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
     lexer_flags.cant_be_identifier = false;
@@ -279,7 +279,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       }
     else
       {
-	BEGIN 0;
+	BEGIN (INITIAL);
 	if (strcmp (yytext, ",") == 0)
 	  TOK_RETURN (',');
 	else
@@ -455,7 +455,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     else
       {
 	lexer_flags.bracketflag++;
-	BEGIN MATRIX_START;
+	BEGIN (MATRIX_START);
 	return '[';
       }
   }
@@ -655,6 +655,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     maybe_gripe_matlab_incompatible_comment (yytext[0]);
 
+    if (YY_START == COMMAND_START)
+      BEGIN (INITIAL);
+
     if (nesting_level.none ())
       return '\n';
     else if (nesting_level.is_bracket ())
@@ -841,7 +844,7 @@ void
 reset_parser (void)
 {
   // Start off on the right foot.
-  BEGIN 0;
+  BEGIN (INITIAL);
 
   parser_end_of_input = false;
   end_tokens_expected = 0;
@@ -1268,7 +1271,7 @@ is_keyword (const std::string& s)
 		  {
 		    if (lexer_flags.parsing_nested_function)
 		      {
-			BEGIN NESTED_FUNCTION_END;
+			BEGIN (NESTED_FUNCTION_END);
 
 			yylval.tok_val = new token (token::function_end, l, c);
 			token_stack.push (yylval.tok_val);
@@ -2256,7 +2259,7 @@ handle_close_bracket (int spc_gobbled)
     }
 
   if (lexer_flags.bracketflag == 0)
-    BEGIN 0;
+    BEGIN (INITIAL);
 
   if (next_token_is_assign_op () && ! lexer_flags.looking_at_return_list)
     {
@@ -2489,7 +2492,7 @@ handle_identifier (void)
 	  if (tok == "gset")
 	    lexer_flags.doing_set = true;
 
-	  BEGIN COMMAND_START;
+	  BEGIN (COMMAND_START);
 	}
     }
 

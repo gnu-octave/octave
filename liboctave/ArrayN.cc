@@ -229,10 +229,10 @@ ArrayN<T>::resize (const Array<int>& dims)
   if (no_change)
     return;
 
-  typename Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
-  rep = new typename Array<T>::ArrayRep (get_size (dims));
+  Array<T>::rep = new typename Array<T>::ArrayRep (get_size (dims));
 
   Array<int> old_dimensions = dimensions;
 
@@ -284,12 +284,12 @@ ArrayN<T>::resize (const Array<int>& dims, const T& val)
   if (no_change)
     return;
 
-  typename Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
   int len = get_size (dims);
 
-  rep = new typename Array<T>::ArrayRep (len);
+  Array<T>::rep = new typename Array<T>::ArrayRep (len);
 
   Array<int> old_dimensions = dimensions;
 
@@ -300,7 +300,7 @@ ArrayN<T>::resize (const Array<int>& dims, const T& val)
   Array<int> ra_idx (dimensions.length (), 0);
 
   for (int i = 0; i < len; i++)
-    rep->elem (i) = val;
+    Array<T>::rep->elem (i) = val;
 
   for (int i = 0; i < old_len; i++)
     {

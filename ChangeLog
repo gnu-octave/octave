@@ -1,3 +1,12 @@
+2003-02-13  Arno Klaassen  <arno@scito.com>
+
+        * configure.in: Fix SH_LD and SH_LDFLAGS for -*-*-freebsd*.
+
+2003-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Use '$(CXX)', '$(AR)', not "$CXX" and "$AR" when
+	setting variables for building shared libraries.
+
 2003-02-13  Paul Kienzle <pkienzle@users.sf.net>
 
 	* examples/make_int.cc: Support for ISO standard compilers.

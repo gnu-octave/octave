@@ -71,9 +71,9 @@ public:
 
   operator MArray2<T> () const
     {
-      MArray2<T> retval (nr, nc,  T (0));
+      MArray2<T> retval (DiagArray2<T>::nr, DiagArray2<T>::nc,  T (0));
 
-      int len = nr < nc ? nr : nc;
+      int len = DiagArray2<T>::nr < DiagArray2<T>::nc ? DiagArray2<T>::nr : DiagArray2<T>::nc;
 
       for (int i = 0; i < len; i++)
 	retval.xelem (i, i) = xelem (i, i);

@@ -48,6 +48,7 @@ ArrayN : public Array<T>
 {
 protected:
 
+
   ArrayN (T *d, const Array<int>& dims) : Array<T> (d, get_size (dims))
     {
       dimensions = dims;
@@ -95,7 +96,7 @@ public:
 
   ArrayN<T>& operator = (const ArrayN<T>& a)
     {
-      if (this != &a && rep != a.rep)
+      if (this != &a && Array<T>::rep != a.rep)
 	{
 	  Array<T>::operator = (a);
 	  dimensions = a.dimensions;

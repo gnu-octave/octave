@@ -281,7 +281,7 @@ tree_for_command::eval (void)
 
       for (int i = 0; i < steps; i++)
 	{
-	  tree_constant *rhs;
+	  tree_constant *rhs = 0;
 
 	  if (nr == 1)
 	    {

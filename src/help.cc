@@ -671,7 +671,7 @@ print cryptic yet witty messages")
 
 	      symbol_record *sym_rec = lookup_by_name (*argv, 0);
 
-	      if (sym_rec)
+	      if (sym_rec && sym_rec->is_defined ())
 		{
 		  char *h = sym_rec->help ();
 		  if (h && *h)
@@ -680,6 +680,14 @@ print cryptic yet witty messages")
 		      output_buf << "\n" << h << "\n";
 		      continue;
 		    }
+		}
+
+	      char *h = get_help_from_file (*argv);
+	      if (h && *h)
+		{
+		  output_buf << "\n" << h << "\n";
+		  delete [] h;
+		  continue;
 		}
 
 	      output_buf << "\nhelp: sorry, `" << *argv

@@ -91,8 +91,7 @@ int input_line_number = 0;
 int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
-// Probably shouldn't be a fixed size...
-char help_buf [HELP_BUF_LENGTH];
+char *help_buf = 0;
 
 // Nonzero means we're working on a plot command.
 int plotting = 0;

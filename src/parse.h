@@ -73,10 +73,8 @@ extern int input_line_number;
 // The column of the current token.
 extern int current_input_column;
 
-#define HELP_BUF_LENGTH 8192
-
 // Buffer for help text snagged from function files.
-extern char help_buf [HELP_BUF_LENGTH];
+extern char *help_buf;
 
 // Nonzero means we're working on a plot command.
 extern int plotting;

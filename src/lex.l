@@ -641,6 +641,10 @@ reset_parser (void)
 // input.
   if (interactive && ! (reading_fcn_file || get_input_from_eval_string))
     yyrestart (stdin);
+
+// Delete the buffer for help text.
+  delete [] help_buf;
+  help_buf = 0;
 }
 
 // Replace backslash escapes in a string with the real values.
@@ -985,7 +989,6 @@ is_keyword (char *s)
 	  defining_func = 1;
 	  promptflag--;
 	  beginning_of_function = 1;
-	  help_buf[0] = '\0';
 	  if (! (reading_fcn_file || reading_script_file))
 	    input_line_number = 1;
 	  return FCN;
@@ -1090,52 +1093,55 @@ lookup_identifier (char *name)
 static void
 grab_help_text (void)
 {
-  int max_len = HELP_BUF_LENGTH - 1;
-
-  int in_comment = 1;
-  int len = 0;
-  int c = 0;
-
-  while ((c = yyinput ()) != EOF)
+  if (! help_buf)
     {
-      if (in_comment)
+      ostrstream buf;
+
+      int in_comment = 1;
+      int c = 0;
+
+      while ((c = yyinput ()) != EOF)
 	{
-	  help_buf[len++] = c;
-	  if (c == '\n')
-	    in_comment = 0;
-	}
-      else
-	{
-	  switch (c)
+	  if (in_comment)
 	    {
-	    case '%':
-	    case '#':
-	      in_comment = 1;
-	      break;
+	      buf << (char) c;
+	      if (c == '\n')
+		in_comment = 0;
+	    }
+	  else
+	    {
+	      switch (c)
+		{
+		case '%':
+		case '#':
+		  in_comment = 1;
+		  break;
 
-	    case ' ':
-	    case '\t':
-	      break;
+		case ' ':
+		case '\t':
+		  break;
 
-	    default:
-	      goto done;
+		default:
+		  goto done;
+		}
 	    }
 	}
 
-      if (len > max_len)
+    done:
+
+      if (c)
+	yyunput (c, yytext);
+
+      buf << ends;
+
+      help_buf = buf.str ();
+
+      if (! help_buf || ! *help_buf)
 	{
-	  warning ("grab_help_text: buffer overflow after caching %d chars",
-		   max_len);
-	  break;
+	  delete [] help_buf;
+	  help_buf = 0;
 	}
     }
-
- done:
-
-  if (c)
-    yyunput (c, yytext);
-
-  help_buf[len] =  '\0';
 }
 
 // Return 1 if the given character matches any character in the given

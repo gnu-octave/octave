@@ -498,9 +498,34 @@ symbol_out_of_date (symbol_record *sr)
   return 0;
 }
 
-static void
+static int
+looks_like_octave_copyright (char *s)
+{
+  if (s && strncmp (s, " Copyright (C) ", 15) == 0)
+    {
+      s = strchr (s, '\n');
+      if (s)
+	{
+	  s++;
+	  s = strchr (s, '\n');
+	  if (s)
+	    {
+	      s++;
+	      if (strncmp (s, " This file is part of Octave.", 29) == 0)
+		return 1;
+	    }
+	}
+    }
+  return 0;
+}
+
+static char *
 gobble_leading_white_space (FILE *ffile)
 {
+  ostrstream buf;
+
+  int first_comments_seen = 0;
+  int have_help_text = 0;
   int in_comment = 0;
   int c;
   while ((c = getc (ffile)) != EOF)
@@ -508,6 +533,12 @@ gobble_leading_white_space (FILE *ffile)
       current_input_column++;
       if (in_comment)
 	{
+	  if (! have_help_text)
+	    {
+	      first_comments_seen = 1;
+	      buf << (char) c;
+	    }
+
 	  if (c == '\n')
 	    {
 	      input_line_number++;
@@ -521,6 +552,8 @@ gobble_leading_white_space (FILE *ffile)
 	    {
 	    case ' ':
 	    case '\t':
+	      if (first_comments_seen)
+		have_help_text = 1;
 	      break;
 
 	    case '\n':
@@ -536,18 +569,29 @@ gobble_leading_white_space (FILE *ffile)
 	    default:
 	      current_input_column--;
 	      ungetc (c, ffile);
-	      return;
+	      goto done;
 	    }
 	}
     }
+
+ done:
+
+  buf << ends;
+  char *help_txt = buf.str ();
+
+  if (! help_txt || ! *help_txt || looks_like_octave_copyright (help_txt))
+    {
+      delete help_txt;
+      help_txt = 0;
+    }
+
+  return help_txt;
 }
 
 static int
 is_function_file (FILE *ffile)
 {
   int status = 0;
-
-  gobble_leading_white_space (ffile);
 
   long pos = ftell (ffile);
 
@@ -596,6 +640,8 @@ parse_fcn_file (int exec_script, char *ff)
 // Check to see if this file defines a function or is just a list of
 // commands.
 
+      char *tmp_help_txt = gobble_leading_white_space (ffile);
+
       if (is_function_file (ffile))
 	{
 	  unwind_protect_int (echo_input);
@@ -617,6 +663,9 @@ parse_fcn_file (int exec_script, char *ff)
 	  unwind_protect_ptr (curr_sym_tab);
 
 	  reset_parser ();
+
+	  delete [] help_buf;
+	  help_buf = tmp_help_txt;
 
 	  int status = yyparse ();
 
@@ -724,6 +773,23 @@ lookup_by_name (const char *nm, int exec_script)
   lookup (sym_rec, exec_script);
 
   return sym_rec;
+}
+
+char *
+get_help_from_file (const char *f)
+{
+  char *path = fcn_file_in_path (f);
+  if (path && *path)
+    {
+      FILE *fptr = fopen (path, "r");
+      if (fptr)
+	{
+	  char *help_txt = gobble_leading_white_space (fptr);
+	  fclose (fptr);
+	  return help_txt;
+	}
+    }
+  return 0;
 }
 
 // Variable values.

@@ -313,23 +313,24 @@ class
 tree_if_clause : public tree_print_code
 {
 public:
-  tree_if_clause (void)
+  tree_if_clause (void) : tree_print_code ()
     {
       expr = 0;
       list = 0;
     }
 
-  tree_if_clause (tree_statement_list *l)
-    {
-      expr = 0;
-      list = l;
-    }
+  tree_if_clause (tree_statement_list *l) : tree_print_code ()
+      {
+	expr = 0;
+	list = l;
+      }
 
   tree_if_clause (tree_expression *e, tree_statement_list *l)
-    {
-      expr = e;
-      list = l;
-    }
+    : tree_print_code ()
+      {
+	expr = e;
+	list = l;
+      }
 
   ~tree_if_clause (void)
     {
@@ -337,7 +338,10 @@ public:
       delete list;
     }
 
-  int is_else_clause (void);
+  int is_else_clause (void)
+    {
+      return ! expr;
+    }
 
   int eval (void);
 

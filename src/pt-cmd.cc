@@ -142,50 +142,12 @@ tree_while_command::eval (void)
   if (error_state)
     return;
 
+  if (! expr)
+    panic_impossible ();
+
   for (;;)
     {
-      int expr_value = 0;
-      if (! expr)
-	return;
-      tree_constant t1 = expr->eval (0);
-
-      if (error_state)
-	{
-	  eval_error ();
-	  return;
-	}
-
-      if (t1.rows () == 0 || t1.columns () == 0)
-	{
-	  int flag = user_pref.propagate_empty_matrices;
-	  if (flag < 0)
-	    warning ("while: empty matrix used in conditional");
-	  else if (flag == 0)
-	    {
-	      ::error ("empty matrix used in while condition near line\
- %d, column %d", line (), column ()); 
-	      return;
-	    }
-	  t1 = tree_constant (0.0);
-	}
-      else if (! t1.is_scalar_type ())
-	{
-	  tree_constant t2 = t1.all ();
-	  t1 = t2.all ();
-	}
-
-      if (t1.is_real_scalar ())
-	expr_value = (int) t1.double_value ();
-      else if (t1.is_complex_scalar ())
-	expr_value = t1.complex_value () != 0.0;
-      else
-	{
-	  ::error ("invalid type used in while condition near line %d,\
- column %d", line (), column ());
-	  return;
-	}
-
-      if (expr_value)
+      if (expr->is_logically_true ("while"))
 	{
 	  if (list)
 	    {

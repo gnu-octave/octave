@@ -510,57 +510,9 @@ tree_global_init_list::print_code (ostream& os)
 // If.
 
 int
-tree_if_clause::is_else_clause (void)
-{
-  return (! expr);
-}
-
-int
 tree_if_clause::eval (void)
 {
-  if (expr)
-    {
-      tree_constant t1 = expr->eval (0);
-
-      if (error_state || t1.is_undefined ())
-	return 0;
-
-      if (t1.rows () == 0 || t1.columns () == 0)
-	{
-	  int flag = user_pref.propagate_empty_matrices;
-	  if (flag < 0)
-	    warning ("if: empty matrix used in conditional");
-	  else if (flag == 0)
-	    {
-	      ::error ("if: empty matrix used in conditional");
-	      return 0;
-	    }
-	  t1 = tree_constant (0.0);
-	}
-      else if (! t1.is_scalar_type ())
-	{
-	  tree_constant t2 = t1.all ();
-	  t1 = t2.all ();
-	}
-
-      int expr_value = 0;
-
-      if (t1.is_real_scalar ())
-	expr_value = (int) t1.double_value ();
-      else if (t1.is_complex_scalar ())
-	expr_value = t1.complex_value () != 0.0;
-      else
-	error ("if: all (all (cond)) is not a scalar");
-
-      if (expr_value)
-	{
-	  if (list)
-	    list->eval (1);
-
-	  return 1;
-	}
-    }
-  else
+  if (is_else_clause () || expr->is_logically_true ("if"))
     {
       if (list)
 	list->eval (1);

@@ -138,6 +138,8 @@ public:
   virtual int is_prefix_expression (void) const
     { return 0; }
 
+  virtual int is_logically_true (const char *);
+
   virtual void mark_for_possible_ans_assign (void)
     { panic_impossible (); }
 

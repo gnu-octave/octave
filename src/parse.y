@@ -221,7 +221,9 @@ static tree_index_expression *make_index_expression
 %token <tok_val> END
 %token <tok_val> PLOT
 %token <tok_val> TEXT STYLE
-%token <tok_val> FOR WHILE IF ELSEIF ELSE BREAK CONTINUE FUNC_RET
+%token <tok_val> FOR WHILE
+%token <tok_val> IF ELSEIF ELSE
+%token <tok_val> BREAK CONTINUE FUNC_RET
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL

@@ -1,3 +1,28 @@
+Summary of changes for version 2.0.3:
+------------------------------------
+
+  * The manual has been completely revised and now corresponds much
+    more closely to the features of the current version.
+
+  * The return value for assignment expressions is now the RHS since
+    that is more consistent with the way other programming languages
+    work.  However, Octave still prints the entire LHS value so that
+
+      x = zeros (1, 2);
+      x(2) = 1
+
+    still prints
+
+      x =
+
+        0  1
+
+    but an assignment like
+
+      z = x(2) = 1
+
+    sets z to 1 (not [ 0, 1 ] as in previous versions of Octave).
+
 Summary of changes for version 2.0.2:
 ------------------------------------
 

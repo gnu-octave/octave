@@ -22,7 +22,7 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	acconfig.h MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = bsd-math dld kpathsea
+DISTDIRS = bsd-math kpathsea
 
 # Subdirectories to run make in for the primary targets.
 SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src doc scripts 

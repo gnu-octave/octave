@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.47 $)dnl
+AC_REVISION($Revision: 1.48 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -170,13 +170,11 @@ AC_SUBST(localoctfilepath)
 AC_SUBST(fcnfilepath)
 AC_SUBST(imagepath)
 dnl
-DYNAMIC_LD_OBJ=
 DLD_DIR=
 LIBDLD=
 LIBOCTDLD='../liboctdld.a'
 LD_STATIC_FLAG=
 if $use_dld; then
-  DYNAMIC_LD_OBJ='dynamic-ld.o'
   DLD_DIR=dld
   LIBDLD='../libdld.a'
 # don't link them in only if doing dynamic linking and small kernel
@@ -186,9 +184,6 @@ if $use_dld; then
   fi
   LD_STATIC_FLAG=-static
   AC_DEFINE(WITH_DLD, 1)dnl
-fi
-if test -n "$DYNAMIC_LD_OBJ"; then
-  AC_VERBOSE([defining DYNAMIC_LD_OBJ to be $DYNAMIC_LD_OBJ])
 fi
 if test -n "$DLD_DIR"; then
   AC_VERBOSE([defining DLD_DIR to be $DLD_DIR])
@@ -202,7 +197,6 @@ fi
 if test -n "$LD_STATIC_FLAG"; then
   AC_VERBOSE([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
 fi
-AC_SUBST(DYNAMIC_LD_OBJ)dnl
 AC_SUBST(DLD_DIR)dnl
 AC_SUBST(LIBDLD)dnl
 AC_SUBST(LIBOCTDLD)dnl
@@ -801,6 +795,7 @@ define([tmpSD], [scripts/miscellaneous/Makefile scripts/plot/Makefile])dnl
 define([tmpSE], [scripts/polynomial/Makefile scripts/set/Makefile])dnl
 define([tmpSF], [scripts/signal/Makefile scripts/special-matrix/Makefile])dnl
 define([tmpSG], [scripts/statistics/Makefile])dnl
-define([scriptdirs], [tmpSA tmpSB tmpSC tmpSD tmpSE tmpSF tmpSG])dnl
+define([tmpSH], [scripts/elfun/Makefile scripts/specfun/Makefile])dnl
+define([scriptdirs], [tmpSA tmpSB tmpSC tmpSD tmpSE tmpSF tmpSG tmpSH])dnl
 dnl
 AC_OUTPUT([srcdirs cruftdirs scriptdirs])dnl

@@ -101,15 +101,14 @@ DEF_FILES = $(patsubst %.cc, %.def, $(DEF_FILES_1))
 # XXX FIXME XXX -- Should these be generated automatically from the
 # list of source files?
 
-OBJECTS = arith-ops.o builtins.o data.o dirfns.o error.o \
+OBJECTS = arith-ops.o builtins.o data.o dirfns.o dynamic-ld.o error.o \
 	file-io.o fnmatch.o getopt.o getopt1.o gripes.o help.o \
 	idx-vector.o input.o lex.o load-save.o mappers.o octave.o \
 	octave-hist.o oct-obj.o pager.o parse.o pr-output.o \
 	procstream.o sighandlers.o strcasecmp.o strncase.o symtab.o \
 	sysdep.o tc-rep.o timefns.o token.o tree-base.o tree-cmd.o \
 	tree-const.o tree-expr.o tree-plot.o tree-misc.o unwind-prot.o \
-	user-prefs.o utils.o variables.o xdiv.o xpow.o SLStack.o \
-	@DYNAMIC_LD_OBJ@
+	user-prefs.o utils.o variables.o xdiv.o xpow.o SLStack.o
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave.a ../libcruft.a ../libinfo.a \
 	../libreadline.a ../libkpathsea.a @LIBDLD@
@@ -190,7 +189,7 @@ local-dist: parse.cc lex.cc
 dist: parse.cc lex.cc
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f lex.cc parse.cc defaults.h *.d *.def
+	rm -f lex.cc parse.cc defaults.h *.d *.def builtins.cc
 .PHONY: dist
 
 # Special rules -- these files need special things to be defined.

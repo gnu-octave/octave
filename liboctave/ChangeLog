@@ -1,5 +1,15 @@
 2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DASSL.cc (DASSL::do_integrate): Set liw to 21 + n, not 20 + n.
+	Handle step limit.
+	* DASSL-opts.in: New option for step limit.
+
+2003-06-16  Per Persson <persquare@mac.com>
+
+	* oct-shlib.cc: Include mach-o/dyld.h, not Mach-O/dyld.h.
+
+2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* DASRT.cc (DASRT::integrate): Set liw to 21 + n, not 20 + n.
 	Store step limit in iwork(20), not iwork(18).
 

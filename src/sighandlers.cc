@@ -285,10 +285,10 @@ sigint_handler (int)
 	    octave_debug_on_interrupt_state = false;
 	}
 
-      octave_interrupt_state = 1;
-
       if (octave_interrupt_immediately)
 	octave_jump_to_enclosing_context ();
+      else
+	octave_interrupt_state = 1;
     }
 
   SIGHANDLER_RETURN (0);

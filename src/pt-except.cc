@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "quit.h"
+
 #include "error.h"
 #include "oct-lvalue.h"
 #include "ov.h"
@@ -55,6 +57,9 @@ tree_try_catch_command::~tree_try_catch_command (void)
 static void
 do_catch_code (void *ptr)
 {
+  if (octave_interrupt_immediately)
+    return;
+
   tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
   unwind_protect::begin_frame ("do_catch_code");

@@ -120,3 +120,14 @@ regions  (default is not specified).
   INIT_VALUE = "-1.0"
   SET_EXPR = "(val >= 0.0) ? val : -1.0"
 END_OPTION
+
+OPTION
+  NAME = "step limit"
+  DOC_ITEM
+Maximum number of integration steps to attempt on a single call to the
+underlying Fortran code.
+  END_DOC_ITEM
+  TYPE = "int"
+  INIT_VALUE = "-1"
+  SET_EXPR = "(val >= 0) ? val : -1"
+END_OPTION

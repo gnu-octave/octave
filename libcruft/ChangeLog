@@ -1,5 +1,20 @@
 2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dasrt/ddasrt.f (DDASRT): Print correct message for invalid MXSTP.
+
+	* dassl/ddassl.f (DDASSL): Handle MXSTP as in DASRT.
+
+	* dassl/ddajac.f (DDAJAC): LIPVT is now 22.
+	* dassl/ddassl.f (DDASSL): Likewise.
+	* dassl/ddaslv.f (DDASLV): Likewise.
+
+	* misc/quit.h (octave_interrupt_hook, octave_bad_alloc_hook):
+	New function pointers.
+	* misc/quit.cc: Initialize them.
+	(octave_throw_interrupt_exception): If octave_interrupt_hook is
+	set, call it.
+	(octave_throw_bad_alloc): Likewise, for octave_bad_alloc_hook.
+
 	* dasrt/ddasrt.f (DDASRT): Set LMXSTP to 21 and LIPVT to 22 to
 	avoid conflict with LLAST in DRCHECK.  Change docs for INFO(12)
 	and LIW.

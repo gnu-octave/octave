@@ -435,7 +435,7 @@ C  IWORK(*) --  Dimension this integer work array of length LIW in
 C         your calling program.
 C
 C  LIW -- Set it to the declared length of the IWORK array.
-C               You must have LIW .GE. 20+NEQ
+C               You must have LIW .GE. 21+NEQ
 C
 C  RPAR, IPAR -- These are parameter arrays, of real and integer
 C         type, respectively.  You can use them for communication
@@ -942,7 +942,8 @@ C
 C     Declare local variables.
 C
       INTEGER  I, ITEMP, LALPHA, LBETA, LCJ, LCJOLD, LCTF, LDELTA,
-     *   LENIW, LENPD, LENRW, LE, LETF, LGAMMA, LH, LHMAX, LHOLD, LIPVT,
+     *   LENIW, LENPD, LENRW, LE, LETF, LGAMMA, LH, LHMAX, LHOLD,
+     *   LMXSTP, LIPVT,
      *   LJCALC, LK, LKOLD, LIWM, LML, LMTYPE, LMU, LMXORD, LNJE, LNPD,
      *   LNRE, LNS, LNST, LNSTL, LPD, LPHASE, LPHI, LPSI, LROUND, LS,
      *   LSIGMA, LTN, LTSTOP, LWM, LWT, MBAND, MSAVE, MXORD, NPD, NTEMP,
@@ -958,8 +959,8 @@ C       error messages.
 C
 C     SET POINTERS INTO IWORK
       PARAMETER (LML=1, LMU=2, LMXORD=3, LMTYPE=4, LNST=11,
-     *  LNRE=12, LNJE=13, LETF=14, LCTF=15, LNPD=16,
-     *  LIPVT=21, LJCALC=5, LPHASE=6, LK=7, LKOLD=8,
+     *  LNRE=12, LNJE=13, LETF=14, LCTF=15, LNPD=16, LMXSTP=21,
+     *  LIPVT=22, LJCALC=5, LPHASE=6, LK=7, LKOLD=8,
      *  LNS=9, LNSTL=10, LIWM=1)
 C
 C     SET RELATIVE OFFSET INTO RWORK
@@ -1016,7 +1017,7 @@ C     COMPUTE MTYPE,LENPD,LENRW.CHECK ML AND MU.
          LENRW=40+(IWORK(LMXORD)+4)*NEQ+LENPD
 C
 C     CHECK LENGTHS OF RWORK AND IWORK
-60    LENIW=20+NEQ
+60    LENIW=21+NEQ
       IWORK(LNPD)=LENPD
       IF(LRW.LT.LENRW)GO TO 704
       IF(LIW.LT.LENIW)GO TO 705
@@ -1029,6 +1030,13 @@ C     CHECK HMAX
          HMAX=RWORK(LHMAX)
          IF(HMAX.LE.0.0D0)GO TO 710
 70    CONTINUE
+C
+C     CHECK AND COMPUTE MAXIMUM STEPS
+      MXSTP=500
+      IF(INFO(12).EQ.0)GO TO 80
+        MXSTP=IWORK(LMXSTP)
+        IF(MXSTP.LT.0)GO TO 716
+80      IWORK(LMXSTP)=MXSTP
 C
 C     INITIALIZE COUNTERS
       IWORK(LNST)=0
@@ -1268,7 +1276,7 @@ C     CHECK FOR FAILURE TO COMPUTE INITIAL YPRIME
       IF (IDID .EQ. -12) GO TO 527
 C
 C     CHECK FOR TOO MANY STEPS
-      IF((IWORK(LNST)-IWORK(LNSTL)).LT.500)
+      IF((IWORK(LNST)-IWORK(LNSTL)).LT.IWORK(LMXSTP))
      *   GO TO 510
            IDID=-1
            GO TO 527
@@ -1572,6 +1580,11 @@ C
       CALL XERMSG ('SLATEC', 'DDASSL',
      *   'INFO(4)=1 AND TSTOP = ' // XERN3 // ' BEHIND T = ' // XERN4,
      *   15, 1)
+      GO TO 750
+C
+716   WRITE (XERN1, '(I8)') MXSTP
+      CALL XERMSG ('SLATEC', 'DDASSL',
+     *   'INFO(12)=1 AND MXSTP = ' // XERN1 // ' ILLEGAL.', 3, 1)
       GO TO 750
 C
 717   WRITE (XERN1, '(I8)') IWORK(LML)

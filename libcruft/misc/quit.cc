@@ -37,6 +37,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 octave_jmp_buf current_context;
 
+void (*octave_interrupt_hook) (void) = 0;
+void (*octave_bad_alloc_hook) (void) = 0;
+
 void
 octave_save_current_context (void *save_buf)
 {
@@ -96,12 +99,18 @@ sig_atomic_t octave_allocation_error = 0;
 void
 octave_throw_interrupt_exception (void)
 {
+  if (octave_interrupt_hook)
+    octave_interrupt_hook ();
+    
   throw octave_interrupt_exception ();
 }
 
 void
 octave_throw_bad_alloc (void)
 {
+  if (octave_bad_alloc_hook)
+    octave_bad_alloc_hook ();
+    
   throw std::bad_alloc ();
 }
 

@@ -98,7 +98,6 @@ octave_user_function *curr_parent_function = 0;
 static void
 recover_from_exception (void)
 {
-  unwind_protect::run_all ();
   can_interrupt = true;
   octave_interrupt_immediately = 0;
   octave_interrupt_state = 0;
@@ -125,6 +124,9 @@ main_loop (const std::string& fun_to_call)
     }
 
   can_interrupt = true;
+
+  octave_interrupt_hook = unwind_protect::run_all;
+  octave_bad_alloc_hook = unwind_protect::run_all;
 
   octave_catch_interrupts ();
 

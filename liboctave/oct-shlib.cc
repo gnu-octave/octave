@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #if defined (HAVE_DYLD_API)
-#include <Mach-O/dyld.h>
+#include <mach-o/dyld.h>
 #endif
 
 extern "C"

@@ -140,7 +140,7 @@ DASSL::do_integrate (double tout)
 
       int n = size ();
 
-      liw = 20 + n;
+      liw = 21 + n;
       lrw = 40 + 9*n + n*n;
 
       nn = n;
@@ -218,6 +218,14 @@ DASSL::do_integrate (double tout)
 	}
       else
 	info(7) = 0;
+
+      if (step_limit () >= 0)
+	{
+	  info(11) = 1;
+	  iwork(20) = step_limit ();
+	}
+      else
+	info(11) = 0;
 
       int maxord = maximum_order ();
       if (maxord >= 0)

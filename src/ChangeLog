@@ -1,3 +1,15 @@
+2003-06-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (main_loop): Set octave_interrupt_hook and
+	octave_bad_alloc_hook to unwind_protect::run_all here.
+	(recover_from_exception): Don't call unwind_protect::run_all here.
+
+	* pt-except.cc (do_catch_code): Return immediately if
+	octave_interrupt_immediately is nonzero.
+
+	* sighandlers.cc (sigint_handler): If jumping, don't set
+	octave_interrupt_state.
+
 2003-06-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (get_save_type): Avoid all save types other than

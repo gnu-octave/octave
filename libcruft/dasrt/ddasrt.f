@@ -387,8 +387,8 @@ C
 C        INFO(12) --Maximum number of steps.
 C          ****   Do you want to let DDASRT use the default limit for
 C                 the number of steps?
-C                 Yes - Set INFO(11) = 0
-C                  No - Set INFO(11) = 1,
+C                 Yes - Set INFO(12) = 0
+C                  No - Set INFO(12) = 1,
 C                       and define the maximum number of steps
 C                       by setting IWORK(21)=MXSTEP
 C
@@ -955,7 +955,7 @@ C     CHECK AND COMPUTE MAXIMUM STEPS
       MXSTP=500
       IF(INFO(12).EQ.0)GO TO 80
         MXSTP=IWORK(LMXSTP)
-        IF(MXSTP.LT.0)GO TO 703
+        IF(MXSTP.LT.0)GO TO 716
 80      IWORK(LMXSTP)=MXSTP
 C
 C     INITIALIZE COUNTERS

@@ -1,3 +1,11 @@
+2000-04-11  Joao Cardoso <jcardoso@inescn.pt>
+
+	* sysdep.cc (kbhit): New arg, wait.
+	(raw_mode): Ditto.
+	(Fkbhit): If given an arg, call kbhit with wait = false.
+
+	* DLD-FUNCTIONS/minmax.cc (Fmax, Fmin): Fix doc string.
+
 2000-04-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.cc (octave_dynamic_loader::do_load): Undo previous change.

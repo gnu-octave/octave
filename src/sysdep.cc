@@ -169,9 +169,9 @@ sysdep_init (void)
 // It doesn't matter whether an input \n is mapped to \r, or vice versa.
 
 void
-raw_mode (int on)
+raw_mode (bool on, bool wait)
 {
-  static int curr_on = 0;
+  static bool curr_on = false;
 
   int tty_fd = STDIN_FILENO;
   if (! isatty (tty_fd))
@@ -215,7 +215,10 @@ raw_mode (int on)
 #if defined (ONLRET)
 	s.c_oflag &= ~(ONLRET);
 #endif
-	s.c_cc[VMIN] = 1;
+	if (wait)
+	  s.c_cc[VMIN] = 1;
+	else
+	  s.c_cc[VMIN] = 0;		
 	s.c_cc[VTIME] = 0;
       }      
     else
@@ -257,7 +260,10 @@ raw_mode (int on)
 #if defined (ONLRET)
 	s.c_oflag &= ~(ONLRET);
 #endif
-	s.c_cc[VMIN] = 1;
+	if (wait)
+	  s.c_cc[VMIN] = 1;
+	else
+	  s.c_cc[VMIN] = 0;		
 	s.c_cc[VTIME] = 0;
       }      
     else
@@ -309,12 +315,14 @@ LOSE! LOSE!
 // Read one character from the terminal.
 
 int
-kbhit (void)
+kbhit (bool wait)
 {
   int c;
-  raw_mode (1);
+  raw_mode (1, wait);
   c = std::cin.get ();
-  raw_mode (0);
+  if (std::cin.fail())
+	  std::cin.clear ();
+  raw_mode (0, 1);
   return c;
 }
 
@@ -396,10 +404,11 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
 // XXX FIXME XXX -- perhaps kbhit should also be able to print a prompt?
 
-DEFUN (kbhit, , ,
+DEFUN (kbhit, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} kbhit ()\n\
-Read a single keystroke from the keyboard.  For example,\n\
+Read a single keystroke from the keyboard. If called with one\n\
+argument, don't wait for a keypress.  For example,\n\
 \n\
 @example\n\
 x = kbhit ();\n\
@@ -408,15 +417,34 @@ x = kbhit ();\n\
 @noindent\n\
 will set @var{x} to the next character typed at the keyboard as soon as\n\
 it is typed.\n\
+\n\
+@example\n\
+x = kbhit (1);\n\
+@end example\n\
+\n\
+@noindent\n\
+identical to the above example, but don't wait for a keypress,\n\
+returning the empty string if no key is available.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   // XXX FIXME XXX -- add timeout and default value args?
 
+  int nargin = args.length ();
+	
   if (interactive)
     {
-      int c = kbhit ();
+    	int c;
+
+	if (nargin == 1)
+	  c = kbhit (false);
+      	else
+	  c = kbhit (true);
+
+	if (c == -1)
+	  c = 0;
+
       char *s = new char [2];
       s[0] = c;
       s[1] = '\0';

@@ -85,7 +85,6 @@ Array<T>::operator = (const Array<T>& a)
     }
 
 #ifdef HEAVYWEIGHT_INDEXING
-  max_indices = 1;
   idx_count = 0;
   idx = 0;
 #endif

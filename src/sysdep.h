@@ -30,8 +30,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern void sysdep_init (void);
 
-extern void raw_mode (int);
-extern int kbhit (void);
+extern void raw_mode (bool, bool wait = true);
+
+extern int kbhit (bool wait = true);
 
 #endif
 

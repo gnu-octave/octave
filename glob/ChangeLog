@@ -1,0 +1,3 @@
+Sat Oct 12 00:17:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* glob/Makefile.in (clean targets): Don't depend on clean.

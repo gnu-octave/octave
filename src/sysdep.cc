@@ -364,7 +364,7 @@ kbhit (void)
 }
 
 char *
-octave_getcwd (const char *buf, int len)
+octave_getcwd (char *buf, int len)
 {
 #if defined (__EMX__)
   return _getcwd2 (buf, len);
@@ -374,7 +374,7 @@ octave_getcwd (const char *buf, int len)
 }
 
 int
-octave_chdir (const char *path)
+octave_chdir (char *path)
 {
 #if defined (__EMX__)
   int retval = -1;

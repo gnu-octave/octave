@@ -52,18 +52,23 @@ function A = compan (c)
     usage ("compan (vector)");
   endif
 
-  if(is_matrix (c))
+  if (! is_vector (c))
     error("compan: expecting a vector argument.");
   endif
 
   ## Ensure that c is a row vector.
 
-  if(rows(c) > 1)
+  if (rows (c) > 1)
     c = c.';
   endif
 
   n = length (c);
-  A = diag (ones (n-2, 1), -1);
-  A (1, :) = -c (2:n) /c (1);
+
+  if (n == 1)
+    A = [];
+  else
+    A = diag (ones (n-2, 1), -1);
+    A(1,:) = -c(2:n) / c(1);
+  endif
 
 endfunction

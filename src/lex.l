@@ -63,6 +63,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <y.tab.h>
 #include <oct-gperf.h>
 
+#if ! (defined (FLEX_SCANNER) \
+       && defined (YY_FLEX_MAJOR_VERSION) && YY_FLEX_MAJOR_VERSION >= 2 \
+       && defined (YY_FLEX_MINOR_VERSION) && YY_FLEX_MINOR_VERSION >= 5)
+#error lex.l requires flex version 2.5.4 or later
+#endif
+
 // Flags that need to be shared between the lexer and parser.
 lexical_feedback lexer_flags;
 

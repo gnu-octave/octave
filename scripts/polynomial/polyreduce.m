@@ -31,20 +31,32 @@
 
 function p = polyreduce (p)
 
-  index = find (p == 0);
+  if (nargin != 1)
+    usage ("polyreduce (p)");
+  endif
 
-  if (length (index) != 0)
+  if (! (is_vector (p) || isempty (p)))
+    error ("polyreduce: argument must be a vector");
+  endif
 
-    index = find (index == 1:length (index));
+  if (! isempty (p))
+
+    index = find (p == 0);
 
     if (length (index) != 0)
 
-      if (length (p) > 1)
-	p = p (index (length (index))+1:length (p));
-      endif
+      index = find (index == 1:length (index));
 
-      if (length (p) == 0)
-	p = 0;
+      if (length (index) != 0)
+
+      	if (length (p) > 1)
+	  p = p (index (length (index))+1:length (p));
+      	endif
+
+      	if (length (p) == 0)
+	  p = 0;
+      	endif
+
       endif
 
     endif

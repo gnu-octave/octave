@@ -38,7 +38,7 @@ function y = postpad (x, l, c)
     usage ("postpad (x, l) or postpad (x, l, c)");
   endif
 
-  if (is_matrix (x))
+  if (! is_vector (x))
     error ("first argument must be a vector");
   elseif (! is_scalar (l))
     error ("second argument must be a scaler");

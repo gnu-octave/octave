@@ -45,8 +45,13 @@ function y = polyval (c, x)
     usage ("polyval (c, x)");
   endif
 
-  if(is_matrix (c))
+  if (! (is_vector (c) || isempty (c)))
     error ("poly: first argument must be a vector.");
+  endif
+
+  if (isempty (x))
+    y = [];
+    return;
   endif
 
   if (length (c) == 0)

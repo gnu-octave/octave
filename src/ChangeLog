@@ -1,5 +1,8 @@
 Fri Feb 21 15:35:18 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l: Require flex 2.5 or later (we really want 2.5.4 or later,
+	but there seems to be no good way to check the patchlevel).
+
 	* oct-stream.cc (octave_base_stream::oscanf): Instead of returning
 	an error, just quit processing after a conversion fails.
 

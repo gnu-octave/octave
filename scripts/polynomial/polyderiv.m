@@ -35,7 +35,7 @@ function q = polyderiv (p)
     usage ("polyderiv (vector)");
   endif
 
-  if (is_matrix (p))
+  if (! is_vector (p))
     error ("argument must be a vector");
   endif
 

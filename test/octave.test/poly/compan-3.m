@@ -1,0 +1,1 @@
+isempty (compan (4))

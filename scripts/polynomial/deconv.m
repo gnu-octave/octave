@@ -41,7 +41,7 @@ function [b, r] = deconv (y, a)
     usage ("deconv (y, a)");
   endif
 
-  if (is_matrix (y) || is_matrix (a))
+  if (! (is_vector (y) && is_vector (a)))
     error("conv: both arguments must be vectors");
   endif
 

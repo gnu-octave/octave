@@ -39,7 +39,7 @@ function y = conv (a, b)
     usage ("conv(a, b)");
   endif
 
-  if (is_matrix (a) || is_matrix (b))
+  if (! (is_vector (a) && is_vector (b)))
     error("conv: both arguments must be vectors");
   endif
 

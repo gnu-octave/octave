@@ -46,7 +46,7 @@ function y = polyvalm (c, x)
     usage ("polyvalm (c, x)");
   endif
 
-  if (is_matrix (c))
+  if (! (is_vector (c) || isempty (c)))
     error("poly: first argument must be a vector.");
   endif
 
@@ -54,7 +54,12 @@ function y = polyvalm (c, x)
     error("poly: second argument must be a square matrix.");
   endif
 
-  [v, d] = eig(x);
+  if (isempty (c))
+    y = [];
+    return;
+  endif
+
+  [v, d] = eig (x);
 
   y = v * diag (polyval (c, diag (d))) * v';
 

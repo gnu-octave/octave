@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mean (@var{x}, @var{opt})
+## @deftypefn {Function File} {} mean (@var{x}, @var{dim}, @var{opt})
 ## If @var{x} is a vector, compute the mean of the elements of @var{x}
 ## @iftex
 ## @tex
@@ -47,45 +47,70 @@
 ## @item "h"
 ## Compute the harmonic mean.
 ## @end table
+##
+## If the optional argument @var{dim} is supplied, work along dimension
+## @var{dim}.
+##
+## Both @var{dim} and @var{opt} are optional.  If both are supplied,
+## either may appear first.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Compute arithmetic, geometric, and harmonic mean
 
-function y = mean (x, opt)
+function y = mean (x, opt1, opt2)
 
-  if ((nargin < 1) || (nargin > 2))
-    usage ("mean (x, opt])");
-  endif
+  need_dim = 0;
 
-  if isempty (x)
-    error ("mean: x must not be empty");
+  if (nargin == 1)
+    opt = "a";
+    need_dim = 1;
+  elseif (nargin == 2)
+    if (isstr (opt1))
+      opt = opt1;
+      need_dim = 1;
+    else
+      dim = opt1
+      opt = "a";
+    endif
+  elseif (nargin == 3)
+    if (isstr (opt1))
+      opt = opt1;
+      dim = opt2;
+    elseif (isstr (opt2))
+      opt = opt2;
+      dim = opt1;
+    else
+      usage ("mean: expecting opt to be a string");
+    endif
+  else
+    usage ("mean (x, dim, opt) or mean (x, dim, opt)");
   endif
 
   if (rows (x) == 1)
     x = x.';
   endif
 
-  if (nargin == 1)
-    opt = "a";
+  if (need_dim)
+    t = find (size (x) != 1);
+    if (isempty (t))
+      dim = 1;
+    else
+      dim = t(1);
+    endif
   endif
 
-  [r, c] = size (x);
+  sz = size (x);
+  n = sz (dim);
 
   if (strcmp (opt, "a"))
-    y = sum (x) / r;
+    y = sum (x, dim) / n;
   elseif (strcmp (opt, "g"))
-    y = NaN * ones (1, c);
-    i = find (all (x > 0));
-    if any (i)
-      y(i) = exp (sum (log (x(:, i))) / r);
-    endif
+    x(x <= 0) = NaN;
+    y = exp (sum (log (x), dim) / n);
   elseif (strcmp (opt, "h"))
-    y = NaN * ones (1, c);
-    i = find (all (x != 0));
-    if any (i)
-      y(i) = r ./ sum (1 ./ x(:, i));
-    endif
+    x(x == 0) = NaN;
+    y = n ./ sum (1 ./ x, dim);
   else
     error ("mean: option `%s' not recognized", opt);
   endif

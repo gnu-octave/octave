@@ -48,7 +48,6 @@ extern "C"
 }
 
 // XXX FIXME XXX
-extern tree_constant* empty_tree (int , char*);
 extern ComplexMatrix ComplexMatrixLoad (tree_constant&);
 
 #ifdef WITH_DLD
@@ -68,7 +67,7 @@ qzvalue (tree_constant *args, int nargin, int nargout)
   tree_constant argb = args[2].make_numeric();
 
   if (arga.is_empty () || argb.is_empty ())
-    retval = empty_tree (nargout, "qzvalue");
+    retval = vector_of_empties (nargout, "qzvalue");
   else
     {
 

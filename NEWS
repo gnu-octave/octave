@@ -5,7 +5,10 @@ Summary of changes for version 2.0.4:
     variable names.  They still cannot be used as formal parameters
     for functions, or as the names of structure variables.  Failed
     assignments leave them undefined (you can recover the orginal
-    definition as a function using clear).
+    function definition using clear).
+
+  * Is is now possible to invoke commands like ls, save, and cd as
+    normal functions (for example, load ("foo", "x", "y", "z")).
 
 Summary of changes for version 2.0.3:
 ------------------------------------

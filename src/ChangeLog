@@ -1,3 +1,11 @@
+2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cutils.c (octave_raw_vsnprintf): New function.
+	* utils.cc (octave_snprintf): Move here from cutils.c.
+	(octave_Vsnprintf): Likewise.  Allow octave_raw_vsnprintf to be
+	interrupted.
+	* utils.h (octave_vsnprintf, octave_snprintf): No longer extern "C".
+
 2003-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-loop.cc (tree_complex_for_command::eval): Fix typo.

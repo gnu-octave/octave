@@ -87,7 +87,28 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
     } \
   while (0)
 
+/* Normally, you just want to use
+
+     BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+     ... some code that calls a "foreign" function ...
+     END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+   but sometimes it is useful to do something like
+
+     BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;
+     ... custom code here, normally ending in a call to
+         octave_throw_interrupt_exception ...
+     BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2;
+
+   so that you can perform extra clean up operations before throwing
+   the interrupt exception.  */
+
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
+  octave_throw_interrupt_exception (); \
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
+
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1 \
   do \
     { \
       octave_jmp_buf saved_context; \
@@ -96,8 +117,9 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
  \
       if (octave_set_current_context) \
 	{ \
-	  octave_restore_current_context ((char *) saved_context); \
-	  octave_throw_interrupt_exception (); \
+	  octave_restore_current_context ((char *) saved_context)
+
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2 \
 	} \
       else \
 	{ \

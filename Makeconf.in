@@ -282,7 +282,7 @@ imagepath = @imagepath@
 canonical_host_type = @canonical_host_type@
 
 # The -I flags to use for the mkoctfile script.
-ifeq ($(includedir,/usr/include)
+ifeq ($(includedir),/usr/include)
  MKOCTFILE_INCFLAGS = \
     -I$(octincludedir) -I$(octincludedir)/octave
 else

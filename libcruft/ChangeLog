@@ -1,3 +1,8 @@
+2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/quit.h (BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1,
+	BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2): New macros.
+
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* odessa/odessa_rscom.f (ODESSA_RSCOM): Fix apparent typo (LODE2

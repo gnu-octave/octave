@@ -119,80 +119,10 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
   return strncasecmp (s1, s2, n);
 }
 
-/* XXX FIXME XXX -- we really need a configure test for this.  */
-
-#if defined __GNUC__ && __GNUC__ >= 3
-#define HAVE_C99_VSNPRINTF 1
-#endif
-
-/* We manage storage.  User should not free it, and its contents are
-   only valid until next call to vsnprintf.  */
-
-char *
-octave_vsnprintf (const char *fmt, va_list args)
+int
+octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args)
 {
-  static size_t size = 100;
-
-  static char *buf = 0;
-
-  int nchars;
-
-  if (! buf)
-    buf = malloc (size);
-
-  if (! buf)
-    return 0;
-
-#if defined (HAVE_C99_VSNPRINTF)
-
-  nchars = vsnprintf (buf, size, fmt, args);
-
-  if (nchars >= size)
-    {
-      size = nchars + 1;
-      buf = realloc (buf, size);
-
-      if (buf)
-	vsnprintf (buf, size, fmt, args);
-    }
-
-#else
-
-  while (1)
-    {
-      nchars = vsnprintf (buf, size, fmt, args);
-
-      if (nchars > -1)
-       return buf;
-      else
-       {
-         size *= 2;
-
-         buf = realloc (buf, size);
-
-         if (! buf)
-           return 0;
-       }
-    }
-
-#endif
-
-  return buf;
-}
-
-char *
-octave_snprintf (const char *fmt, ...)
-{
-  char *retval = 0;
-
-  va_list args;
-  va_start (args, fmt);
-
-  retval = octave_vsnprintf (fmt, args);
-
-  va_end (args);
-
-  return retval;
+  return vsnprintf (buf, n, fmt, args);
 }
 
 /*

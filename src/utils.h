@@ -79,6 +79,10 @@ octave_format (std::ostream& os, const char *fmt, ...);
 extern int
 octave_vformat (std::ostream& os, const char *fmt, va_list args);
 
+extern char *octave_vsnprintf (const char *fmt, va_list args);
+
+extern char *octave_snprintf (const char *fmt, ...);
+
 extern void octave_sleep (double seconds);
 
 extern "C" void octave_sleep (unsigned int seconds);
@@ -89,9 +93,8 @@ extern "C" int octave_strcasecmp (const char *s1, const char *s2);
 
 extern "C" int octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
-extern "C" char *octave_snprintf (const char *fmt, ...);
-
-extern "C" char *octave_vsnprintf (const char *fmt, va_list args);
+extern "C" int octave_raw_vsnprintf (char *buf, size_t n, const char *fmt,
+				     va_list args);
 
 #endif
 

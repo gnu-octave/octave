@@ -44,6 +44,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <setjmp.h>
 
+#include "quit.h"
+
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -858,7 +860,13 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   std::streambuf *sb = os.rdbuf ();
 
   if (sb)
-    retval = sb->vform (fmt, args);
+    {
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      retval = sb->vform (fmt, args);
+
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+    }
 
 #else
 
@@ -872,6 +880,115 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
     }
 
 #endif
+
+  return retval;
+}
+
+/* XXX FIXME XXX -- we really need a configure test for this.  */
+
+#if defined __GNUC__ && __GNUC__ >= 3
+#define HAVE_C99_VSNPRINTF 1
+#endif
+
+// We manage storage.  User should not free it, and its contents are
+// only valid until next call to vsnprintf.
+
+// Interrupts might happen if someone makes a call with something that
+// will require a very large buffer.  If we are interrupted in that
+// case, we should make the buffer size smaller for the next call.
+
+#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF \
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
+  delete [] buf; \
+  buf = 0; \
+  size = initial_size; \
+  octave_throw_interrupt_exception (); \
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
+
+char *
+octave_vsnprintf (const char *fmt, va_list args)
+{
+  static const size_t initial_size = 100;
+
+  static size_t size = initial_size;
+
+  static char *buf = 0;
+
+  size_t nchars;
+
+  if (! buf)
+    buf = new char [size];
+
+  if (! buf)
+    return 0;
+
+#if defined (HAVE_C99_VSNPRINTF)
+
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
+
+  nchars = octave_raw_vsnprintf (buf, size, fmt, args);
+
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+  if (nchars >= size)
+    {
+      size = nchars + 1;
+
+      delete [] buf;
+
+      buf = new char [size];
+
+      if (buf)
+	{
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
+
+	  vsnprintf (buf, size, fmt, args);
+
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	}
+    }
+
+#else
+
+  while (1)
+    {
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
+
+      nchars = octave_raw_vsnprintf (buf, size, fmt, args);
+
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      if (nchars > -1)
+       return buf;
+      else
+       {
+	 delete [] buf;
+
+         size *= 2;
+
+	 buf = new char [size];
+
+         if (! buf)
+           return 0;
+       }
+    }
+
+#endif
+
+  return buf;
+}
+
+char *
+octave_snprintf (const char *fmt, ...)
+{
+  char *retval = 0;
+
+  va_list args;
+  va_start (args, fmt);
+
+  retval = octave_vsnprintf (fmt, args);
+
+  va_end (args);
 
   return retval;
 }

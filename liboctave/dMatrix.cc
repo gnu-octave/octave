@@ -1359,17 +1359,16 @@ Matrix::expm (void) const
   int info, ilo, ihi, ilos, ihis;
   Array<double> dpermute (nc);
   Array<double> dscale (nc);
-  double *dp;
 
   // permutation first
   char job = 'P';
-  dp = dpermute.fortran_vec();
-  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilo, ihi, dp, info, 1L, 1L));
+  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilo, ihi,
+			     dpermute.fortran_vec (), info, 1L, 1L));
 
   // then scaling
   job = 'S';
-  dp = dscale.fortran_vec();
-  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilos, ihis, dp, info, 1L, 1L));
+  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilos, ihis,
+			     dscale.fortran_vec (), info, 1L, 1L));
 
   if (f77_exception_encountered)
     {

@@ -1614,7 +1614,7 @@ ComplexMatrix::expm (void) const
   // Permute first
   char job = 'P';
   F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilo, ihi,
-            dpermute.fortran_vec(), info, 1L, 1L));
+            dpermute.fortran_vec (), info, 1L, 1L));
 
   if (f77_exception_encountered)
     {
@@ -1625,7 +1625,7 @@ ComplexMatrix::expm (void) const
   // then scale
   job = 'S';
   F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilos, ihis,
-            dscale.fortran_vec(), info, 1L, 1L));
+            dscale.fortran_vec (), info, 1L, 1L));
 
   if (f77_exception_encountered)
     {

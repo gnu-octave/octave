@@ -31,8 +31,67 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-obj.h"
 
-int
-octave_value_list::all_strings (void) const
+octave_value_list&
+octave_value_list::prepend (const octave_value& val)
+{
+  int n = length ();
+
+  resize (n + 1);
+
+  while (n > 0)
+    {
+      elem (n) = elem (n - 1);
+      n--;
+    }
+
+  elem (0) = val;
+  
+  return *this;
+}
+
+octave_value_list&
+octave_value_list::append (const octave_value& val)
+{
+  int n = length ();
+
+  resize (n + 1);
+
+  elem (n) = val;
+
+  return *this;
+}
+
+octave_value_list&
+octave_value_list::append (const octave_value_list& lst)
+{
+  int len = length ();
+  int lst_len = lst.length ();
+
+  resize (len + lst_len);
+
+  for (int i = 0; i < lst_len; i++)
+    elem (len + i) = lst (i);
+
+  return *this;
+}
+
+octave_value_list&
+octave_value_list::reverse (void)
+{
+  int n = length ();
+
+  for (int i = 0; i < n / 2; i++)
+    {
+      octave_value tmp = elem (i);
+      elem (i) = elem (n - i - 1);
+      elem (n - i - 1) = tmp;
+    }
+
+  return *this;
+}
+
+bool
+octave_value_list::all_strings_p (void) const
 {
   int n = length ();
 
@@ -48,7 +107,7 @@ octave_value_list::make_argv (const string& fcn_name) const
 {
   string_vector argv;
 
-  if (all_strings ())
+  if (all_strings_p ())
     {
       int n = length ();
       argv.resize (n+1);

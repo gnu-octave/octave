@@ -35,124 +35,135 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 
 class
-octave_value_list : public Array<octave_value>
+octave_value_list
 {
 public:
 
   octave_value_list (void)
-    : Array<octave_value> () { }
+    : data () { }
 
   octave_value_list (int n, const octave_value& val)
-    : Array<octave_value> (n, val) { }
+    : data (n, val) { }
 
   octave_value_list (const octave_value& tc)
-    : Array<octave_value> (1, tc) { }
+    : data (1, tc) { }
 
   octave_value_list (double d)
-    : Array<octave_value> (1, octave_value (d)) { }
+    : data (1, octave_value (d)) { }
 
   octave_value_list (const Matrix& m)
-    : Array<octave_value> (1, octave_value (m)) { }
+    : data (1, octave_value (m)) { }
 
   octave_value_list (const DiagMatrix& d)
-    : Array<octave_value> (1, octave_value (d)) { }
+    : data (1, octave_value (d)) { }
 
   octave_value_list (const RowVector& v, int pcv)
-    : Array<octave_value> (1, octave_value (v, pcv)) { }
+    : data (1, octave_value (v, pcv)) { }
 
   octave_value_list (const ColumnVector& v, int pcv)
-    : Array<octave_value> (1, octave_value (v, pcv)) { }
+    : data (1, octave_value (v, pcv)) { }
 
   octave_value_list (const Complex& c)
-    : Array<octave_value> (1, octave_value (c)) { }
+    : data (1, octave_value (c)) { }
 
   octave_value_list (const ComplexMatrix& m)
-    : Array<octave_value> (1, octave_value (m)) { }
+    : data (1, octave_value (m)) { }
 
   octave_value_list (const ComplexDiagMatrix& d)
-    : Array<octave_value> (1, octave_value (d)) { }
+    : data (1, octave_value (d)) { }
 
   octave_value_list (const ComplexRowVector& v, int pcv)
-    : Array<octave_value> (1, octave_value (v, pcv)) { }
+    : data (1, octave_value (v, pcv)) { }
 
   octave_value_list (const ComplexColumnVector& v, int pcv)
-    : Array<octave_value> (1, octave_value (v, pcv)) { }
+    : data (1, octave_value (v, pcv)) { }
 
   octave_value_list (const char *s)
-    : Array<octave_value> (1, octave_value (s)) { }
+    : data (1, octave_value (s)) { }
 
   octave_value_list (const string& s)
-    : Array<octave_value> (1, octave_value (s)) { }
+    : data (1, octave_value (s)) { }
 
   octave_value_list (const string_vector& s)
-    : Array<octave_value> (1, octave_value (s)) { }
+    : data (1, octave_value (s)) { }
 
   octave_value_list (double base, double limit, double inc)
-    : Array<octave_value> (1, octave_value (base, limit, inc)) { }
+    : data (1, octave_value (base, limit, inc)) { }
 
   octave_value_list (const Range& r)
-    : Array<octave_value> (1, octave_value (r)) { }
+    : data (1, octave_value (r)) { }
 
   octave_value_list (const octave_value_list& obj)
-    : Array<octave_value> (obj) { }
+    : data (obj.data) { }
 
   octave_value_list& operator = (const octave_value_list& obj)
     {
       if (this != &obj)
-	Array<octave_value>::operator = (obj);
+	data = obj.data;
 
       return *this;
     }
 
-// Assignment will resize on range errors.
+  // Assignment will resize on range errors.
 
   octave_value& operator () (int n) { return elem (n); }
 
   octave_value operator () (int n) const { return elem (n); }
 
-  int all_strings (void) const;
+  int length (void) const { return data.length (); }
+
+  void resize (int n) { data.resize (n); }
+
+  void resize (int n, const octave_value& val) { data.resize (n, val); }
+
+  octave_value_list& prepend (const octave_value& val);
+
+  octave_value_list& append (const octave_value& val);
+
+  octave_value_list& append (const octave_value_list& lst);
+
+  octave_value_list& reverse (void);
+
+  bool all_strings_p (void) const;
 
   string_vector make_argv (const string&) const;
 
 private:
 
-// This constructor is private with no definition to keep statements
-// like
-//
-//   octave_value_list foo = 5;
-//   octave_value_list foo = 5.0;
-//
-// from doing different things.  Instead, you have to use the
-// constructor
-//
-//   octave_value_list (n, val);
-//
-// and supply a default value to create a vector-valued octave_value_list.
+  Array<octave_value> data;
+
+  // This constructor is private with no definition to keep statements
+  // like
+  //
+  //   octave_value_list foo = 5;
+  //   octave_value_list foo = 5.0;
+  //
+  // from doing different things.  Instead, you have to use the
+  // constructor
+  //
+  //   octave_value_list (n, val);
+  //
+  // and supply a default value to create a vector-valued
+  // octave_value_list.
 
   octave_value_list (int n);
 
   void maybe_resize (int n)
     {
       if (n >= length ())
-	resize (n + 1, Matrix ());
+	data.resize (n + 1, Matrix ());
     }
 
   octave_value& elem (int n)
     {
       maybe_resize (n);
-      return Array<octave_value>::elem (n);
+      return data.elem (n);
     }
-
-  octave_value& checkelem (int n);
-
-  octave_value& xelem (int n);
 
   octave_value elem (int n) const
     {
-      return Array<octave_value>::operator () (n);
+      return data.elem (n);
     }
-
-  octave_value checkelem (int n) const;
 };
 
 #endif

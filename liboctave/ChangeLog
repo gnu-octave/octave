@@ -1,3 +1,9 @@
+2001-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.h, lo-mappers.cc (log10 (const Complex&),
+	tanh (const Complex&)): Declare and define if not 
+	CXX_ISO_COMPLIANT_LIBRARY.
+
 2001-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-mappers.h (tanh (const Complex&)): Only declare if not

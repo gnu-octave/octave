@@ -48,15 +48,18 @@ extern Complex asin (const Complex& x);
 extern Complex asinh (const Complex& x);
 extern Complex atan (const Complex& x);
 extern Complex atanh (const Complex& x);
+
+#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
+extern Complex log10 (const Complex& x);
+extern Complex tan (const Complex& x);
+extern Complex tanh (const Complex& x);
+#endif
+
 extern Complex ceil (const Complex& x);
 extern Complex fix (const Complex& x);
 extern Complex floor (const Complex& x);
 extern Complex round (const Complex& x);
 extern Complex signum (const Complex& x);
-
-#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
-extern Complex tanh (const Complex& x);
-#endif
 
 extern bool xisnan (const Complex& x);
 extern bool xfinite (const Complex& x);

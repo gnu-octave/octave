@@ -238,6 +238,28 @@ atanh (const Complex& x)
   return log ((1.0 + x) / (1.0 - x)) / 2.0;
 }
 
+#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
+
+Complex
+log10 (const Complex& x)
+{
+  return M_LOG10E * log (x);
+}
+
+Complex
+tan (const Complex& x)
+{
+  return sin (x) / cos (x);
+}
+
+Complex
+tanh (const Complex& x)
+{
+  return sinh (x) / cosh (x);
+}
+
+#endif
+
 Complex
 ceil (const Complex& x)
 {
@@ -267,16 +289,6 @@ signum (const Complex& x)
 {
   return x / abs (x);
 }
-
-#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
-
-Complex
-tanh (const Complex& x)
-{
-  return sinh (x) / cosh (x);
-}
-
-#endif
 
 // complex -> bool mappers.
 

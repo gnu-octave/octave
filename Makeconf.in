@@ -55,6 +55,8 @@ ALL_FFLAGS = $(FUGLY) $(FFLAGS)
 
 # cc and associated flags.
 
+DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
+
 # Clean up INCFLAGS a bit if we are not compiling in a separate
 # directory.
 ifeq ($(srcdir),.)
@@ -70,7 +72,7 @@ else
 	-I$(TOPDIR)/glob -I$(top_srcdir) -I$(top_srcdir)/liboctave \
 	-I$(top_srcdir)/src -I$(top_srcdir)/glob
 endif
-INCFLAGS = $(TMP_IF_1) $(TMP_IF_2)
+INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS)
 
 LIBFLAGS = -L$(TOPDIR)
 

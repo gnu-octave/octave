@@ -150,10 +150,10 @@ DEF_FILES_1 := $(patsubst %.l, %.def, $(DEF_FILES_2))
 DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 
 OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
-	-L../kpathsea -L../glob -L. $(RLD_FLAG)
+	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
 
 OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
-	@LIBPLPLOT@ -lreadline -lkpathsea -lglob
+	@LIBPLPLOT@ -lreadline -lkpathsea -lglob @LIBDLFCN@
 
 LIBS_TO_INSTALL = liboctinterp.a libtinst.a \
 	liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)

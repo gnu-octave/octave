@@ -110,6 +110,8 @@ Quad : public Quad_options
   Quad (integrand_fcn fcn, double abs, double rel)
     : Quad_options (abs, rel), f (fcn) { }
 
+  ~Quad (void) { }
+
   virtual double integrate (void)
     {
       int ier, neval;
@@ -172,6 +174,8 @@ DefQuad : public Quad
     : Quad (fcn, abs, rel), lower_limit (ll), upper_limit (ul),
       singularities (sing) { }
 
+  ~DefQuad (void) { }
+
   double integrate (int& ier, int& neval, double& abserr);
 
  private:
@@ -201,6 +205,8 @@ IndefQuad : public Quad
 
   IndefQuad (integrand_fcn fcn, double abs, double rel)
     : Quad (fcn, abs, rel), bound (0.0), type (bound_to_inf) { }
+
+  ~IndefQuad (void) { }
 
   double integrate (int& ier, int& neval, double& abserr);
 

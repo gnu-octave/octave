@@ -1,3 +1,7 @@
+Thu Oct 24 19:40:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Quad.h (Quad): Define virtual destructor.
+
 Tue Oct 15 11:34:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc (ComplexMatrix::all_elements_are_real): new function.

@@ -2,6 +2,10 @@
 
 	* LSODE.cc (LSODE::error_message): Also return current T on
 	failures when that makes sense.
+	* DASSL.cc (DASSL::error_message): Likewise.
+	* DASRT.cc (DASRT::error_message): Likewise.
+	* DASPK.cc (DASPK::error_message): Likewise.
+	* ODESSA.cc (ODESSA:error_message): Likewise.
 
 	* Makefile.in (liboct-pathsearch.$(SHLEXT_VER)): Link to
 	$(LIBKPATHSEA) here.

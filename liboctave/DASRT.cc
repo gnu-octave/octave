@@ -28,8 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <iostream.h>
-#include <fstream.h>
+#include <strstream.h>
 
 #include <cstdlib>
 #include <cfloat>
@@ -581,6 +580,12 @@ DASRT::error_message (void) const
 {
   std::string retval;
 
+  std::ostrstream buf;
+  buf << t << ends;
+  const char *t = buf.str ();
+  std::string t_curr = t;
+  delete [] t;
+
   switch (istate)
     {
     case 1:
@@ -600,7 +605,8 @@ DASRT::error_message (void) const
       break;
 
     case -1:
-      retval = "a large amount of work has been expended";
+      retval = std::string ("a large amount of work has been expended (t =")
+	+ t_curr + ")";
       break;
 
     case -2:
@@ -608,32 +614,39 @@ DASRT::error_message (void) const
       break;
 
     case -3:
-      retval = "error weight became zero during problem.\
-  (solution component i vanished, and atol or atol(i) == 0)";
+      retval = std::string ("error weight became zero during problem. (t = ")
+	+ t_curr
+	+ "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -6:
-      retval = "repeated error test failures on the last attempted step";
+      retval = std::string ("repeated error test failures on the last attempted step (t = ")
+	+ t_curr + ")";
       break;
 
     case -7:
-      retval = "the corrector could not converge";
+      retval = std::string ("the corrector could not converge (t = ")
+	+ t_curr + ")";
       break;
 
     case -8:
-      retval = "the matrix of partial derivatives is singular";
+      retval = std::string ("the matrix of partial derivatives is singular (t = ")
+	+ t_curr + ")";
       break;
 
     case -9:
-      retval = "the corrector could not converge (repeated test failures)";
+      retval = std::string ("the corrector could not converge (t = ")
+	+ t_curr + "; repeated test failures)";
       break;
 
     case -10:
-      retval = "corrector could not converge because IRES was -1";
+      retval = std::string ("corrector could not converge because IRES was -1 (t = ")
+	+ t_curr + ")";
       break;
 
     case -11:
-      retval = "return requested in user-supplied function";
+      retval = std::string ("return requested in user-supplied function (t = ")
+	+ t_curr + ")";
       break;
 
     case -12:

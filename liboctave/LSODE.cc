@@ -31,7 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cmath>
 
-#include <iostream>
 #include <strstream>
 
 #include "LSODE.h"
@@ -302,7 +301,7 @@ LSODE::error_message (void) const
   std::ostrstream buf;
   buf << t << ends;
   const char *t = buf.str ();
-  std::string curr_t = t;
+  std::string t_curr = t;
   delete [] t;
 
   switch (istate)
@@ -321,7 +320,7 @@ LSODE::error_message (void) const
 	  
     case -1:
       retval = std::string ("excess work on this call (t = ")
-	+ curr_t + "; perhaps wrong integration method)";
+	+ t_curr + "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -334,24 +333,24 @@ LSODE::error_message (void) const
 
     case -4:
       retval = std::string ("repeated error test failures (t = ")
-	+ curr_t + "check all inputs)";
+	+ t_curr + "check all inputs)";
       break;
 
     case -5:
       retval = std::string ("repeated convergence failures (t = ")
-	+ curr_t
+	+ t_curr
 	+ "perhaps bad jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
       retval = std::string ("error weight became zero during problem. (t = ")
-	+ curr_t
+	+ t_curr
 	+ "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:
       retval = "return requested in user-supplied function (t = "
-	+ curr_t + ")";
+	+ t_curr + ")";
       break;
 
     default:

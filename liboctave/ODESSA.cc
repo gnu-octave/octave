@@ -28,11 +28,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <iostream.h>
-
 #include <cstdlib>
 #include <cfloat>
 #include <cmath>
+
+#include <strstream>
 
 // For instantiating the Array<Matrix> object.
 #include "Array.h"
@@ -457,6 +457,12 @@ ODESSA::error_message (void) const
 {
   std::string retval;
 
+  std::ostrstream buf;
+  buf << t << ends;
+  const char *t = buf.str ();
+  std::string t_curr = t;
+  delete [] t;
+
   switch (istate)
     {
     case 1:
@@ -472,7 +478,8 @@ ODESSA::error_message (void) const
       break;
           
     case -1:
-      retval = "excess work on this call (perhaps wrong integration method)";
+      retval = std::string ("excess work on this call (t = ")
+	+ t_curr + "; perhaps wrong integration method)";
       break;
 
     case -2:
@@ -484,21 +491,25 @@ ODESSA::error_message (void) const
       break;
 
     case -4:
-      retval = "repeated error test failures (check all inputs)";
+      retval = std::string ("repeated error test failures (t = ")
+	+ t_curr + "check all inputs)";
       break;
 
     case -5:
-      retval = "repeated convergence failures (perhaps bad jacobian\
- supplied or wrong choice of integration method or tolerances)";
+      retval = std::string ("repeated convergence failures (t = ")
+	+ t_curr
+	+ "perhaps bad jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:
-      retval = "Error weight became zero during problem.\
-  (solution component i vanished, and atol or atol(i) == 0)";
+      retval = std::string ("error weight became zero during problem. (t = ")
+	+ t_curr
+	+ "; solution component i vanished, and atol or atol(i) == 0)";
       break;
 
     case -13:
-      retval = "return requested in user-supplied function";
+      retval = "return requested in user-supplied function (t = "
+	+ t_curr + ")";
       break;
 
     default:

@@ -56,6 +56,9 @@ enum floating_point_format
 // The floating point format on this system.
 extern floating_point_format native_float_format;
 
+// Nonzero if the machine we are running on is big-endian.
+extern int octave_words_bigendian;
+
 #endif
 
 /*

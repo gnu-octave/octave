@@ -229,7 +229,7 @@ install: all install-bin install-lib install-oct
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave
-	$(INSTALL) octave $(bindir)/octave-$(version)
+	$(INSTALL_PROGRAM) octave $(bindir)/octave-$(version)
 	$(LN_S) $(bindir)/octave-$(version) $(bindir)/octave
 .PHONY: install-bin
 

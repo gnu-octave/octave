@@ -554,7 +554,7 @@ looks_like_octave_copyright (const string& s)
 	      t = s.substr (pos, 29);
 
 	      if (t == " This file is part of Octave."
-		  || t == " This program is free software")
+		  || t == " This program is free softwar")
 		return 1;
 	    }
 	}

@@ -322,7 +322,9 @@ verbose_usage (void)
        << "     x : echo commands as they are executed\n"
        << "\n"
        << "  file : execute commands from named file\n"
-       << endl;
+       << "\n";
+
+  cout.flush ();
 
   exit (1);
 }

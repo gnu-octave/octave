@@ -239,7 +239,7 @@ octave_char_matrix_str::print_name_tag (ostream& os, const string& name) const
 
   indent (os);
 
-  if (rows () == 1)
+  if (rows () <= 1)
     os << name << " = ";
   else
     {

@@ -30,9 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
+#include "oct-passwd.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -46,7 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Password file functions.  (Why not?)
 
 static octave_value
-mk_pw_map (struct passwd *pw)
+mk_pw_map (const octave_passwd& pw)
 {
   octave_value retval;
 
@@ -54,13 +52,13 @@ mk_pw_map (struct passwd *pw)
     {
       Octave_map m;
 
-      m ["name"] = pw->pw_name;
-      m ["passwd"] = pw->pw_passwd;
-      m ["uid"] = static_cast<double> (pw->pw_uid);
-      m ["gid"] = static_cast<double> (pw->pw_gid);
-      m ["gecos"] = pw->pw_gecos;
-      m ["dir"] = pw->pw_dir;
-      m ["shell"] = pw->pw_shell;
+      m ["name"] = pw.name ();
+      m ["passwd"] = pw.passwd ();
+      m ["uid"] = static_cast<double> (pw.uid ());
+      m ["gid"] = static_cast<double> (pw.gid ());
+      m ["gecos"] = pw.gecos ();
+      m ["dir"] = pw.dir ();
+      m ["shell"] = pw.shell ();
 
       retval = m;
     }
@@ -80,13 +78,7 @@ Read an entry from the password-file stream, opening it if necessary.")
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#ifdef HAVE_GETPWENT
-      retval = mk_pw_map (getpwent ());
-#else
-      gripe_not_supported ("getpwent");
-#endif
-    }
+    retval = mk_pw_map (octave_passwd::getpwent ());
   else
     print_usage ("getpwent");
 
@@ -104,7 +96,6 @@ Search for a password entry with a matching user ID.")
 
   if (nargin == 1)
     {
-#ifdef HAVE_GETPWUID
       double dval = args(0).double_value ();
 
       if (! error_state)
@@ -113,14 +104,11 @@ Search for a password entry with a matching user ID.")
 	    {
 	      uid_t uid = static_cast<uid_t> (dval);
 
-	      retval = mk_pw_map (getpwuid (uid));
+	      retval = mk_pw_map (octave_passwd::getpwuid (uid));
 	    }
 	  else
 	    error ("getpwuid: argument must be an integer");
 	}
-#else
-      gripe_not_supported ("getpwuid");
-#endif
     }
   else
     print_usage ("getpwuid");
@@ -139,14 +127,10 @@ Search for password entry with a matching username.")
 
   if (nargin == 1)
     {
-#ifdef HAVE_GETPWNAM
       string s = args(0).string_value ();
 
       if (! error_state)
-	retval = mk_pw_map (getpwnam (s.c_str ()));
-#else
-      gripe_not_supported ("getpwnam");
-#endif
+	retval = mk_pw_map (octave_passwd::getpwnam (s.c_str ()));
     }
   else
     print_usage ("getpwnam");
@@ -164,13 +148,7 @@ Rewind the password-file stream.")
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#ifdef HAVE_SETPWENT
-      setpwent ();
-#else
-      gripe_not_supported ("setpwent");
-#endif
-    }
+    octave_passwd::setpwent ();
   else
     print_usage ("setpwent");
 
@@ -187,13 +165,7 @@ Close the password-file stream.")
   int nargin = args.length ();
 
   if (nargin == 0)
-    {
-#ifdef HAVE_ENDPWENT
-      endpwent ();
-#else
-      gripe_not_supported ("endpwent");
-#endif
-    }
+    octave_passwd::endpwent ();
   else
     print_usage ("endpwent");
 

@@ -1,5 +1,7 @@
 Mon May  5 00:54:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/getpwent.cc: Use new octave_passwd class.
+
 	* ov-str-mat.cc (octave_char_matrix_str::print_name_tag): Print
 	empty strings on one line.
 

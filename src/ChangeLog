@@ -1,5 +1,8 @@
 Mon Dec  9 12:03:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (install-bin): Use $(EXE) suffix so install will
+	find the right file on cygwin32 systems.
+
 	* ov.h: Declare proper form of do_binary_op as friend to
 	octave_value class.
 

@@ -1,3 +1,8 @@
+Mon Dec  9 14:20:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install): Use $(EXE) suffix so that install will
+	find the right file on cygwin32 systems.
+
 Mon Dec  2 13:48:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for gethostname in libsocket.a, for SCO.

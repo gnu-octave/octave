@@ -11,6 +11,8 @@ SHELL = /bin/sh
 
 #### Start of system configuration section. ####
 
+EXE = @EXE@
+
 LEX = @LEX@
 LFLAGS = @LFLAGS@
 LEXLIB = @LEXLIB@

@@ -253,8 +253,8 @@ mk-oct-links: mk-oct-links.in
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave
-	$(INSTALL_PROGRAM) octave $(bindir)/octave-$(version)
-	$(LN_S) $(bindir)/octave-$(version) $(bindir)/octave
+	$(INSTALL_PROGRAM) octave$(EXE) $(bindir)/octave-$(version)$(EXE)
+	$(LN_S) $(bindir)/octave-$(version)$(EXE) $(bindir)/octave$(EXE)
 .PHONY: install-bin
 
 install-oct: mk-oct-links
@@ -297,7 +297,7 @@ install-inc:
 .PHONY: install-lib
 
 uninstall:
-	rm -f $(bindir)/octave
+	rm -f $(bindir)/octave$(EXE)
 	for f in $(LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
 	for f in $(SH_LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \

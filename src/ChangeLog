@@ -1,5 +1,9 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (Fis_list): Fix continuation char.
+
+	* Map.cc (CHptr_to_index, goodCHptr): Delete static decl.
+
 	* ov.h (unary_op, binary_op, assign_op): Prepend `op_' to elts.
 	Change all usses
 

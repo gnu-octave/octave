@@ -113,7 +113,7 @@ Map<C>::error (const std::string& msg) const
 // table entry.  Not terrible, but not wonderful either.
 
 template <class C>
-static int
+int
 goodCHptr (CHNode<C> *t)
 {
   return (((X_CAST (unsigned, t)) & 1) == 0);
@@ -126,7 +126,7 @@ index_to_CHptr (int i)
 }
 
 template <class C>
-static unsigned int
+unsigned int
 CHptr_to_index (CHNode<C> *t)
 {
   return (X_CAST (unsigned, t)) >> 1;

@@ -881,7 +881,7 @@ Return nonzero if @var{x} is a numeric object.\n\
 }
 
 DEFUN (is_list, args, ,
-  "-*- texinfo -*-\n
+  "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_list (@var{x})\n\
 Return nonzero if @var{x} is a list.\n\
 @end deftypefn")

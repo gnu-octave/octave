@@ -237,7 +237,7 @@ KPATHSEA_CC = $(LIBTOOL) compile "$(CC)"
 .c.lo:
 	$(KPATHSEA_CC) $< $(ALL_CFLAGS)
 
-default all: kpsewhich kpsestat access readlink $(library).info manfiles
+default all: $(kpathsea)
 
 kpsewhich: $(kpathsea) kpsewhich.o
 	$(kpathsea_link) kpsewhich.o $(LOADLIBES)

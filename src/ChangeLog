@@ -1,3 +1,24 @@
+2000-03-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-fstrm.cc (octave_fstream::do_close): New function.
+	* oct-stdstrm.cc (octave_istdiostream::do_close): Ditto.
+	(octave_ostdiostream::do_close): Ditto.
+	* c-file-ptr-stream.cc (c_file_ptr_buf::close): Ditto.
+	(i_c_file_ptr_stream::close): Ditto.
+	(o_c_file_ptr_stream::close): Ditto.
+	* oct-prcstrm.cc (octave_iprocstream::do_close): Ditto.
+	(octave_oprocstream::do_close): Ditto.
+	(octave_iprocstram::~octave_iprocstram): Call do_close here.
+	(octave_iprocstram::~octave_oprocstram): Likewise.
+
+	* oct-stream.h (octave_base_stream::do_close): New virtual function.
+	(octave_base_stream::close): If stream is open, call do_close.
+
+	* c-file-ptr-stream.cc (c_file_ptr_buf::flush): New function.
+	(c_file_ptr_buf::~c_file_ptr_buf): Use it.
+	(c_file_ptr_buf::overflow): Ditto.
+	(c_file_ptr_buf::sync): Ditto.
+
 2000-03-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-procbuf.cc (octave_procbuf::open): Make output streams line

@@ -25,6 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-stdstrm.h"
 
+// XXX FIXME XXX -- why don't these classes use iprocstream and
+// oprocstream, which in turn use the octave_procbuf class?
+
 class
 octave_iprocstream : public octave_istdiostream
 {
@@ -38,6 +41,8 @@ public:
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+
+  void do_close (void);
 
 protected:
 
@@ -65,6 +70,8 @@ public:
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+
+  void do_close (void);
 
 protected:
 

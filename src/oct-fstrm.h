@@ -54,6 +54,8 @@ public:
 
   bool eof (void) const;
 
+  void do_close (void);
+
   // The name of the file.
 
   std::string name (void) const { return nm; }

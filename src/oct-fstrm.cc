@@ -102,6 +102,12 @@ octave_fstream::eof (void) const
   return fs.eof ();
 }
 
+void
+octave_fstream::do_close (void)
+{
+  fs.close ();
+}
+
 std::istream *
 octave_fstream::input_stream (void)
 {

@@ -51,6 +51,12 @@ octave_iprocstream::octave_iprocstream (const std::string& n,
 
 octave_iprocstream::~octave_iprocstream (void)
 {
+  do_close ();
+}
+
+void
+octave_iprocstream::do_close (void)
+{
   if (fp)
     {
       pclose (fp);
@@ -80,6 +86,12 @@ octave_oprocstream::octave_oprocstream (const std::string& n,
 }
 
 octave_oprocstream::~octave_oprocstream (void)
+{
+  do_close ();
+}
+
+void
+octave_oprocstream::do_close (void)
 {
   if (fp)
     {

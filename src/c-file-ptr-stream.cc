@@ -44,8 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 c_file_ptr_buf::~c_file_ptr_buf (void)
 {
-  if (f)
-    fflush (f);
+  flush ();
 }
 
 // XXX FIXME XXX -- I'm sure there is room for improvement here...
@@ -54,7 +53,7 @@ int
 c_file_ptr_buf::overflow (int c)
 {
   if (f)
-    return (c != EOF) ? fputc (c, f) : fflush (f);
+    return (c != EOF) ? fputc (c, f) : flush ();
   else
     return EOF;
 }
@@ -141,7 +140,36 @@ c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 int
 c_file_ptr_buf::sync (void)
 {
+  flush ();
+
   return 0;
+}
+
+int
+c_file_ptr_buf::flush (void)
+{
+  return f ? fflush (f) : EOF;
+}
+
+int
+c_file_ptr_buf::close (void)
+{
+  if (f)
+    return fclose (f);
+}
+
+void
+i_c_file_ptr_stream::close (void)
+{
+  if (buf)
+    buf->close ();
+}
+
+void
+o_c_file_ptr_stream::close (void)
+{
+  if (buf)
+    buf->close ();
 }
 
 /*

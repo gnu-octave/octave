@@ -33,8 +33,8 @@ function y = postpad (x, l, c)
     usage ("postpad (x, l) or postpad (x, l, c)");
   endif
 
-  if (! is_vector (x))
-    error ("first argument must be a vector");
+  if (! is_matrix (x))
+    error ("first argument must be a vector or matrix");
   elseif (! is_scalar (l))
     error ("second argument must be a scaler");
   endif
@@ -43,17 +43,18 @@ function y = postpad (x, l, c)
     error ("second argument must be non-negative");
   endif
 
-  lx = length (x);
-
-  if (lx >= l)
-    y = x(1:l);
-  else
-    if (rows (x) > 1)
-      tmp = c * ones (l-lx, 1);
-      y = [x; tmp];
+  [nr, nc] = size (x);
+  if (nr == 1)
+    if (nc >= l)
+      y = x(1:l);
     else
-      tmp = c * ones (1, l-lx);
-      y = [x, tmp];
+      y = [x, c*ones(1,l-nc)];
+    endif
+  else
+    if (nr >= l)
+      y = x(1:l,:);
+    else
+      y = [x ; c*ones(l-nr,nc)];
     endif
   endif
 

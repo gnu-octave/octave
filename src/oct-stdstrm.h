@@ -94,7 +94,8 @@ public:
   std::ostream *output_stream (void) { return 0; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
-  c_file_ptr_buf *rdbuf (void) const { return is ? is->rdbuf () : 0; }
+  c_file_ptr_buf *rdbuf (void) const
+    { return is ? (const_cast<i_c_file_ptr_stream *> (is))->rdbuf () : 0; }
 
   bool bad (void) const { return is ? is->bad () : true; }
 
@@ -103,6 +104,8 @@ public:
       if (is)
 	is->clear ();
     }
+
+  void do_close (void);
 
 protected:
 
@@ -153,6 +156,8 @@ public:
       if (os)
 	os->clear ();
     }
+
+  void do_close (void);
 
 protected:
 

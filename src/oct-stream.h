@@ -364,7 +364,16 @@ public:
 
   bool is_open (void) const { return open_state; }
 
-  void close (void) { open_state = false; }
+  virtual void do_close (void) { }
+
+  void close (void)
+    {
+      if (is_open ())
+	{
+	  open_state = false;
+	  do_close ();
+	}
+    }
 
   int file_number (void);
 

@@ -27,6 +27,8 @@
 ##
 ## If @code{length (@var{x}) > @var{l}}, elements from the beginning (end) of
 ## @var{x} are removed until a vector of length @var{l} is obtained.
+##
+## If @var{x} is a matrix, elements are prepended or removed from each row.
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -40,8 +42,8 @@ function y = prepad (x, l, c)
     usage ("prepad (x, l) or prepad (x, l, c)");
   endif
 
-  if (! is_vector (x))
-    error ("first argument must be a vector");
+  if (! is_matrix (x))
+    error ("first argument must be a vector or matrix");
   elseif (! is_scalar (l))
     error ("second argument must be a scaler");
   endif
@@ -50,17 +52,18 @@ function y = prepad (x, l, c)
     error ("second argument must be non-negative");
   endif
 
-  lx = length (x);
-
-  if (lx >= l)
-    y = x(lx-l+1:lx);
-  else
-    if (rows (x) > 1)
-      tmp = c * ones (l-lx, 1);
-      y = [tmp; x];
+  [nr, nc] = size (x);
+  if (nr == 1)
+    if (nc >= l)
+      y = x(nc-l+1:nc);
     else
-      tmp = c * ones (1, l-lx);
-      y = [tmp, x];
+      y = [c*ones(1,l-nc), x];
+    endif
+  else
+    if (nr >= l)
+      y = x(nr-l+1:nr,:);
+    else
+      y = [c*ones(l-nr,nc); x];
     endif
   endif
 

@@ -61,6 +61,10 @@ public:
 
   int sync (void);
 
+  int flush (void);
+
+  int close (void);
+
 protected:
 
   FILE *f;
@@ -78,6 +82,8 @@ public:
 
   c_file_ptr_buf *rdbuf (void) { return buf; }
 
+  void close (void);
+
 private:
 
   c_file_ptr_buf *buf;
@@ -94,6 +100,8 @@ public:
   ~o_c_file_ptr_stream (void) { delete buf; buf = 0; }
 
   c_file_ptr_buf *rdbuf (void) { return buf; }
+
+  void close (void);
 
 private:
 

@@ -105,6 +105,13 @@ octave_istdiostream::~octave_istdiostream (void)
   delete is;
 }
 
+void
+octave_istdiostream::do_close (void)
+{
+  if (is)
+    is->close ();
+}
+
 octave_stream
 octave_ostdiostream::create (const std::string& n, FILE *f,
 			     std::ios::openmode arg_md,
@@ -125,6 +132,13 @@ octave_ostdiostream::octave_ostdiostream (const std::string& n, FILE *f,
 octave_ostdiostream::~octave_ostdiostream (void)
 {
   delete os;
+}
+
+void
+octave_ostdiostream::do_close (void)
+{
+  if (os)
+    os->close ();
 }
 
 /*

@@ -285,7 +285,7 @@ scalar.\n\
 \n\
 If @var{fcn} is a two-element string array, the first element names\n\
 the function @math{f} described above, and the second element names\n\
-a function to compute the modified Jacobian
+a function to compute the modified Jacobian\n\
 \n\
 @tex\n\
 $$\n\
@@ -324,7 +324,7 @@ If the value of any of the constraint functions changes sign, @sc{Dasrt}\n\
 will attempt to stop the integration at the point of the sign change.\n\
 \n\
 If the name of the constraint function is omitted, @code{dasrt} solves\n\
-the saem problem as @code{daspk} or @code{dassl}.
+the saem problem as @code{daspk} or @code{dassl}.\n\
 \n\
 Note that because of numerical errors in the constraint functions\n\
 due to roundoff and integration error, @sc{Dasrt} may return false\n\

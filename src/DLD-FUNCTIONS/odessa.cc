@@ -322,7 +322,7 @@ The @var{fcn} argument may also be an array of strings\n\
 \n\
 in which the first element names the function @math{f} described\n\
 above, the second element names a function to compute the Jacobian\n\
-of @math{f}, and the third element names a function to compute the\n
+of @math{f}, and the third element names a function to compute the\n\
 inhomogeneity matrix.\n\
 \n\
 The Jacobian function must have the form\n\

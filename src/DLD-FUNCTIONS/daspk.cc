@@ -182,7 +182,7 @@ scalar.\n\
 \n\
 If @var{fcn} is a two-element string array, the first element names\n\
 the function @math{f} described above, and the second element names\n\
-a function to compute the modified Jacobian
+a function to compute the modified Jacobian\n\
 \n\
 @tex\n\
 $$\n\

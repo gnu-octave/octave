@@ -172,7 +172,7 @@ $$ x(t_0) = x_0 $$\n\
 @example\n\
 dx\n\
 -- = f(x, t)\n\
-dt
+dt\n\
 @end example\n\
 \n\
 with\n\

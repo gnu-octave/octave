@@ -252,7 +252,11 @@ conf-dist:
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(CONF_DISTFILES) `cat .fname`
-	for dir in $(CONF_DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) dist; cd ..; done
+	for dir in $(CONF_DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) conf-dist; cd ..; done
+	tar chf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+	gzip --best `cat .fname`.tar
+	rm -f .fname
 .PHONY: conf-dist
 
 dist-tar: links-for-dist

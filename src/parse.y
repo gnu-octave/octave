@@ -43,6 +43,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "input.h"
 #include "utils.h"
 #include "tree.h"
+#include "tree-plot.h"
+#include "tree-const.h"
 #include "symtab.h"
 #include "builtins.h"
 #include "octave.h"

@@ -27,7 +27,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "Stack.h"
 
 template <class T>
-class SLStack : public Stack<T>
+class
+SLStack : public Stack<T>
 {
  private:
   SLList<T> p;

@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
+#include "tree-plot.h"
 
 extern "C"
 {

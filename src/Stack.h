@@ -25,7 +25,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 template <class T>
-class Stack
+class
+Stack
 {
  public:
   inline Stack (void) { }

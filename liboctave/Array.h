@@ -52,31 +52,41 @@ class ArrayRep
   friend class Array3<T>;
   friend class DiagArray<T>;
 
+private:
+
+  int count;
+  int len;
+  T *data;
+
 protected:
 
-  ArrayRep (T *d, int l);
+  ArrayRep (T *d, int l)
+    {
+      len = l;
+      data = d;
+    }
 
 public:
 
-  ArrayRep (void);
+  ArrayRep (void)
+    {
+      len = 0;
+      data = 0;
+    }
+
   ArrayRep (int n);
+
   ArrayRep (const ArrayRep<T>& a);
 
   ~ArrayRep (void);
 
-  int length (void) const;
+  int length (void) const { return len; }
 
   T& elem (int n);
 
   T elem (int n) const;
 
   void resize (int n);
-
-private:
-
-  T *data;
-  int len;
-  int count;
 };
 
 // One dimensional array class.  Handles the reference counting for
@@ -89,30 +99,62 @@ protected:
 
   ArrayRep<T> *rep;
 
-  Array (T *d, int l);
+  Array (T *d, int l)
+    {
+      rep = new ArrayRep<T> (d, l);
+      rep->count = 1;
+    }
 
 public:
 
-  Array (void);
-  Array (int n);
+  Array (void)
+    {
+      rep = new ArrayRep<T>;
+      rep->count = 1;
+    }
+
+  Array (int n)
+    {
+      rep = new ArrayRep<T> (n);
+      rep->count = 1;
+    }
+
   Array (int n, const T& val);
 
-  Array (const Array<T>& a);
+  Array (const Array<T>& a)
+    {
+      rep = a.rep;
+      rep->count++;
+    }
 
-  ~Array (void);
+  ~Array (void)
+    {
+      if (--rep->count <= 0)
+	delete rep;
+    }
 
   Array<T>& operator = (const Array<T>& a);
 
-  int capacity (void) const;
-  int length (void) const;
+  int capacity (void) const { return rep->length (); }
+  int length (void) const { return rep->length (); }
 
-  T& elem (int n);
+  T& elem (int n)
+    {
+      if (rep->count > 1)
+	{
+	  --rep->count;
+	  rep = new ArrayRep<T> (*rep);
+	  rep->count = 1;
+	}
+      return rep->elem (n);
+    }
+
   T& checkelem (int n);
-  T& operator () (int n);
+  T& operator () (int n) { return checkelem (n); }
 
   // No checking.
 
-  T& xelem (int n);
+  T& xelem (int n) { return rep->elem (n); }
 
   T elem (int n) const;
   T checkelem (int n) const;
@@ -121,7 +163,7 @@ public:
   void resize (int n);
   void resize (int n, const T& val);
 
-  const T *data (void) const;
+  const T *data (void) const { return rep->data; }
 
   T *fortran_vec (void);
 };
@@ -136,34 +178,72 @@ protected:
   int d1;
   int d2;
 
-  Array2 (T *d, int n, int m);
+  Array2 (T *d, int n, int m) : Array<T> (d, n*m)
+    {
+      d1 = n;
+      d2 = m;
+    }
 
 public:
 
-  Array2 (void);
-  Array2 (int n, int m);
-  Array2 (int n, int m, const T& val);
-  Array2 (const Array2<T>& a);
-  Array2 (const DiagArray<T>& a);
+  Array2 (void) : Array<T> ()
+    {
+      d1 = 0;
+      d2 = 0;
+    }
+
+  Array2 (int n, int m) : Array<T> (n*m)
+    {
+      d1 = n;
+      d2 = m;
+    }
+
+  Array2 (int n, int m, const T& val) : Array<T> (n*m, val)
+    {
+      d1 = n;
+      d2 = m;
+    }
+
+  Array2 (const Array2<T>& a) : Array<T> (a)
+    {
+      d1 = a.d1;
+      d2 = a.d2;
+    }
+
+  Array2 (const DiagArray<T>& a)  : Array<T> (a.rows () * a.cols (), T (0))
+    {
+      for (int i = 0; i < a.length (); i++)
+	elem (i, i) = a.elem (i, i);
+    }
 
   ~Array2 (void) { }
 
-  Array2<T>& operator = (const Array2<T>& a);
+  Array2<T>& operator = (const Array2<T>& a)
+    {
+      if (this != &a)
+	{
+	  Array<T>::operator = (a);
+	  d1 = a.d1;
+	  d2 = a.d2;
+	}
 
-  int dim1 (void) const;
-  int dim2 (void) const;
+      return *this;
+    }
 
-  int rows (void) const;
-  int cols (void) const;
-  int columns (void) const;
+  int dim1 (void) const { return d1; }
+  int dim2 (void) const { return d2; }
 
-  T& elem (int i, int j);
+  int rows (void) const { return d1; }
+  int cols (void) const { return d2; }
+  int columns (void) const { return d2; }
+
+  T& elem (int i, int j) { return Array<T>::elem (d1*j+i); }
   T& checkelem (int i, int j);
-  T& operator () (int i, int j);
+  T& operator () (int i, int j) { return checkelem (i, j); }
 
   // No checking.
 
-  T& xelem (int i, int j);
+  T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
 
   T elem (int i, int j) const;
   T checkelem (int i, int j) const;
@@ -182,28 +262,62 @@ protected:
 
   int d3;
 
-  Array3 (T *d, int n, int m, int k);
+  Array3 (T *d, int n, int m, int k) : Array2<T> (d, n, m*k)
+    {
+      d2 = m;
+      d3 = k;
+    }
 
 public:
 
-  Array3 (void);
-  Array3 (int n, int m, int k);
-  Array3 (int n, int m, int k, const T& val);
-  Array3 (const Array3<T>& a);
+  Array3 (void) : Array2<T> ()
+    {
+      d2 = 0;
+      d3 = 0;
+    }
+
+  Array3 (int n, int m, int k) : Array2<T> (n, m*k)
+    {
+      d2 = m;
+      d3 = k;
+    }
+
+  Array3 (int n, int m, int k, const T& val) : Array2<T> (n, m*k, val)
+    {
+      d2 = m;
+      d3 = k;
+    }
+
+  Array3 (const Array3<T>& a) : Array2<T> (a)
+    {
+      d2 = a.d2;
+      d3 = a.d3;
+    }
 
   ~Array3 (void) { }
 
-  Array3<T>& operator = (const Array3<T>& a);
+  Array3<T>& operator = (const Array3<T>& a)
+    {
+      if (this != &a)
+	{
+	  Array<T>::operator = (a);
+	  d1 = a.d1;
+	  d2 = a.d2;
+	  d3 = a.d3;
+	}
 
-  int dim3 (void) const;
+      return *this;
+    }
 
-  T& elem (int i, int j, int k);
+  int dim3 (void) const { return d3; }
+
+  T& elem (int i, int j, int k) { return Array2<T>::elem (i, d2*k+j); }
   T& checkelem (int i, int j, int k);
-  T& operator () (int i, int j, int k);
+  T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
 
   // No checking.
 
-  T& xelem (int i, int j, int k);
+  T& xelem (int i, int j, int k) { return Array2<T>::xelem (i, d2*k+j); }
 
   T elem (int i, int j, int k) const;
   T checkelem (int i, int j, int k) const;
@@ -291,28 +405,75 @@ protected:
   int nr;
   int nc;
 
-  DiagArray (T *d, int r, int c);
+  DiagArray (T *d, int r, int c) : Array<T> (d, r < c ? r : c)
+    {
+      nr = r;
+      nc = c;
+    }
 
 public:
 
-  DiagArray (void);
-  DiagArray (int n);
-  DiagArray (int n, const T& val);
-  DiagArray (int r, int c);
-  DiagArray (int r, int c, const T& val);
-  DiagArray (const Array<T>& a);
-  DiagArray (const DiagArray<T>& a);
+  DiagArray (void) : Array<T> ()
+    {
+      nr = 0;
+      nc = 0;
+    }
+
+  DiagArray (int n) : Array<T> (n)
+{
+  nr = n;
+  nc = n;
+}
+
+  DiagArray (int n, const T& val) : Array<T> (n, val)
+{
+  nr = n;
+  nc = n;
+}
+
+  DiagArray (int r, int c) : Array<T> (r < c ? r : c)
+{
+  nr = r;
+  nc = c;
+}
+
+  DiagArray (int r, int c, const T& val) : Array<T> (r < c ? r : c, val)
+{
+  nr = r;
+  nc = c;
+}
+
+  DiagArray (const Array<T>& a) : Array<T> (a)
+{
+  nr = nc = a.length ();
+}
+
+  DiagArray (const DiagArray<T>& a) : Array<T> (a)
+{
+  nr = a.nr;
+  nc = a.nc;
+}
 
   ~DiagArray (void) { }
 
-  DiagArray<T>& operator = (const DiagArray<T>& a);
+  DiagArray<T>& operator = (const DiagArray<T>& a)
+{
+  if (this != &a)
+    {
+      Array<T>::operator = (a);
+      nr = a.nr;
+      nc = a.nc;
+    }
 
-  int dim1 (void) const;
-  int dim2 (void) const;
+  return *this;
+}
 
-  int rows (void) const;
-  int cols (void) const;
-  int columns (void) const;
+  int dim1 (void) const { return nr; }
+  int dim2 (void) const { return nc; }
+
+  int rows (void) const { return nr; }
+  int cols (void) const { return nc; }
+  int columns (void) const { return nc; }
 
 #if 0
   inline Proxy elem (int r, int c)

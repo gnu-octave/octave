@@ -33,57 +33,192 @@ class ostream;
 #include "dMatrix.h"
 #include "dColVector.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class CollocWt
 {
 public:
 
-  CollocWt (void);
-  CollocWt (int ncol, int include_left, int include_right);
-  CollocWt (int ncol, int include_left, int include_right, double left,
-	    double right);
-  CollocWt (int ncol, double alpha, double beta, int include_left,
-	    int include_right);  
-  CollocWt (int ncol, double alpha, double beta, int include_left,
-	    int include_right, double left, double right);
+  CollocWt::CollocWt (void)
+    {
+      n = 0;
+      inc_left = 0;
+      inc_right = 0;
+      lb = 0.0;
+      rb = 1.0;
 
-  CollocWt (const CollocWt&);
+      Alpha = 0.0;
+      Beta = 0.0;
 
-  CollocWt& operator = (const CollocWt&);
+      initialized = 0;
+    }
 
-  CollocWt& resize (int ncol);
+  CollocWt::CollocWt (int nc, int il, int ir)
+    {
+      n = nc;
+      inc_left = il;
+      inc_right = ir;
+      lb = 0.0;
+      rb = 1.0;
 
-  CollocWt& add_left (void);
-  CollocWt& delete_left (void);
+      Alpha = 0.0;
+      Beta = 0.0;
+
+      initialized = 0;
+    }
+
+  CollocWt::CollocWt (int nc, int il, int ir, double l, double r)
+    {
+      n = nc;
+      inc_left = il;
+      inc_right = ir;
+      lb = l;
+      rb = r;
+
+      Alpha = 0.0;
+      Beta = 0.0;
+
+      initialized = 0;
+    }
+
+  CollocWt::CollocWt (int nc, double a, double b, int il, int ir)
+    {
+      n = nc;
+      inc_left = il;
+      inc_right = ir;
+      lb = 0.0;
+      rb = 1.0;
+
+      Alpha = a;
+      Beta = b;
+
+      initialized = 0;
+    }
+
+  CollocWt::CollocWt (int nc, double a, double b, int il, int ir,
+		      double l, double r)  
+    {
+      n = nc;
+      inc_left = il;
+      inc_right = ir;
+      lb = l;
+      rb = r;
+
+      Alpha = a;
+      Beta = b;
+
+      initialized = 0;
+    }
+
+  CollocWt::CollocWt (const CollocWt& a)
+    {
+      n = a.n;
+      inc_left = a.inc_left;
+      inc_right = a.inc_right;
+      lb = a.lb;
+      rb = a.rb;
+      r = a.r;
+      q = a.q;
+      A = a.A;
+      B = a.B;
+
+      nt = n + inc_left + inc_right;
+
+      initialized = a.initialized;
+    }
+
+  CollocWt&
+  CollocWt::operator = (const CollocWt& a)
+    {
+      n = a.n;
+      inc_left = a.inc_left;
+      inc_right = a.inc_right;
+      lb = a.lb;
+      rb = a.rb;
+      r = a.r;
+      q = a.q;
+      A = a.A;
+      B = a.B;
+
+      nt = a.nt;
+
+      initialized = a.initialized;
+
+      return *this;
+    }
+
+  CollocWt& resize (int ncol)
+    {
+      n = ncol;
+      initialized = 0;
+      return *this;
+    }
+
+  CollocWt& add_left (void)
+    {
+      inc_left = 1;
+      initialized = 0;
+      return *this;
+    }
+
+  CollocWt& delete_left (void)
+    {
+      inc_left = 0;
+      initialized = 0;
+      return *this;
+    }
+
   CollocWt& set_left (double val);
 
-  CollocWt& add_right (void);
-  CollocWt& delete_right (void);
+  CollocWt& add_right (void)
+    {
+      inc_right = 1;
+      initialized = 0;
+      return *this;
+    }
+
+  CollocWt& delete_right (void)
+    {
+      inc_right = 0;
+      initialized = 0;
+      return *this;
+    }
+
   CollocWt& set_right (double val);
 
-  CollocWt& set_alpha (double val);
-  CollocWt& set_beta (double val);
+  CollocWt& set_alpha (double val)
+    {
+      Alpha = val;
+      initialized = 0;
+      return *this;
+    }
 
-  int ncol (void) const;
-  int left_included (void) const;
-  int right_included (void) const;
+  CollocWt& set_beta (double val)
+    {
+      Beta = val;
+      initialized = 0;
+      return *this;
+    }
 
-  double left (void) const;
-  double right (void) const;
-  double width (void) const;
+  int ncol (void) const { return n; }
 
-  double alpha (void) const;
-  double beta (void) const;
+  int left_included (void) const { return inc_left; }
+  int right_included (void) const { return inc_right; }
 
-  Vector roots (void);
-  Vector quad (void);
-  Vector quad_weights (void);
+  double left (void) const { return lb; }
+  double right (void) const { return rb; }
 
-  Matrix first (void);
-  Matrix second (void);
+  double width (void) const { return rb - lb; }
+
+  double alpha (void) const { return Alpha; }
+  double beta (void) const { return Beta; }
+
+  ColumnVector roots (void) { if (!initialized) init (); return r; }
+  ColumnVector quad (void) { if (!initialized) init (); return q; }
+
+  ColumnVector quad_weights (void) { return quad (); }
+
+  Matrix first (void) { if (!initialized) init (); return A; }
+
+  Matrix second (void) { if (!initialized) init (); return B; }
 
   friend ostream& operator << (ostream&, const CollocWt&);
 
@@ -101,8 +236,8 @@ protected:
   double Alpha;
   double Beta;
 
-  Vector r;
-  Vector q;
+  ColumnVector r;
+  ColumnVector q;
 
   Matrix A;
   Matrix B;
@@ -113,35 +248,6 @@ protected:
 
   void error (const char *msg);
 };
-
-inline int
-CollocWt::ncol (void) const 
-{
-  return n;
-}
-
-inline int CollocWt::left_included (void) const { return inc_left; }
-inline int CollocWt::right_included (void) const { return inc_right; }
-inline double CollocWt::left (void) const { return lb; }
-inline double CollocWt::right (void) const { return rb; }
-inline double CollocWt::width (void) const { return rb - lb; }
-inline double CollocWt::alpha (void) const { return Alpha; }
-inline double CollocWt::beta (void) const { return Beta; }
-
-inline Vector CollocWt::roots (void)
-  { if (!initialized) init (); return r; }
-
-inline Vector CollocWt::quad (void)
-  { if (!initialized) init (); return q; }
-
-inline Vector CollocWt::quad_weights (void)
-  { return quad (); }
-
-inline Matrix CollocWt::first (void)
-  { if (!initialized) init (); return A; }
-
-inline Matrix CollocWt::second (void)
-  { if (!initialized) init (); return B; }
 
 #endif
 

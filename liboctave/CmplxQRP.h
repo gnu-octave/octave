@@ -36,15 +36,21 @@ class ComplexQRP : public ComplexQR
 {
 public:
 
-  ComplexQRP (void) {}
+  ComplexQRP (void) { }
 
   ComplexQRP (const ComplexMatrix& A, QR::type qr_type = QR::std);
 
-  ComplexQRP (const ComplexQRP& a);
+  ComplexQRP (const ComplexQRP& a) : ComplexQR (a) { p = a.p; }
 
-  ComplexQRP& operator = (const ComplexQRP& a);
+  ComplexQRP& operator = (const ComplexQRP& a)
+    {
+      ComplexQR::operator = (a);
+      p = a.p;
 
-  Matrix P (void) const;
+      return *this;
+    }
+
+  Matrix P (void) const { return p; }
 
   friend ostream&  operator << (ostream& os, const ComplexQRP& a);
 
@@ -52,23 +58,6 @@ private:
 
   Matrix p;
 };
-
-inline ComplexQRP::ComplexQRP (const ComplexQRP& a) : ComplexQR (a)
-{
-  p = a.p;
-}
-
-inline ComplexQRP& ComplexQRP::operator = (const ComplexQRP& a)
-{
-  ComplexQR::operator = (a);
-  p = a.p;
-  return *this;
-}
-
-inline Matrix ComplexQRP::P (void) const
-{
-  return p;
-}
 
 #endif
 

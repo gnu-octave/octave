@@ -43,16 +43,27 @@ public:
       economy,
     };
 
-  QR (void) {}
+  QR (void) { }
 
   QR (const Matrix& A, type qr_type = QR::std);
 
-  QR (const QR& a);
+  QR (const QR& a)
+    {
+      q = a.q;
+      r = a.r;
+    }
 
-  QR& operator = (const QR& a);
+  QR& operator = (const QR& a)
+    {
+      q = a.q;
+      r = a.r;
 
-  Matrix Q (void) const;
-  Matrix R (void) const;
+      return *this;
+    }
+
+  Matrix Q (void) const { return q; }
+
+  Matrix R (void) const { return r; }
 
   friend ostream&  operator << (ostream& os, const QR& a);
 
@@ -61,29 +72,6 @@ protected:
   Matrix q;
   Matrix r;
 };
-
-inline QR::QR (const QR& a)
-{
-  q = a.q;
-  r = a.r;
-}
-
-inline QR& QR::operator = (const QR& a)
-{
-  q = a.q;
-  r = a.r;
-  return *this;
-}
-
-inline Matrix QR::Q (void) const
-{
-  return q;
-}
-
-inline Matrix QR::R (void) const
-{
-  return r;
-}
 
 #endif
 

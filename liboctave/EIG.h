@@ -41,20 +41,31 @@ friend class ComplexMatrix;
 
 public:
 
-  EIG (void) {}
+  EIG (void) { }
 
-  EIG (const Matrix& a);
-  EIG (const Matrix& a, int& info);
+  EIG (const Matrix& a) { init (a); }
+  EIG (const Matrix& a, int& info) { info = init (a); }
 
-  EIG (const ComplexMatrix& a);
-  EIG (const ComplexMatrix& a, int& info);
+  EIG (const ComplexMatrix& a) { init (a); }
+  EIG (const ComplexMatrix& a, int& info) { info = init (a); }
 
-  EIG (const EIG& a);
+  EIG (const EIG& a)
+    {
+      lambda = a.lambda;
+      v = a.v;
+    }
 
-  EIG& operator = (const EIG& a);
+  EIG& operator = (const EIG& a)
+    {
+      lambda = a.lambda;
+      v = a.v;
 
-  ComplexColumnVector eigenvalues (void) const;
-  ComplexMatrix eigenvectors (void) const;
+      return *this;
+    }
+
+  ComplexColumnVector eigenvalues (void) const { return lambda; }
+
+  ComplexMatrix eigenvectors (void) const { return v; }
 
   friend ostream&  operator << (ostream& os, const EIG& a);
 
@@ -66,49 +77,6 @@ private:
   ComplexColumnVector lambda;
   ComplexMatrix v;
 };
-
-inline EIG::EIG (const Matrix& a)
-{
-  init (a);
-}
-
-inline EIG::EIG (const Matrix& a, int& info)
-{
-  info = init (a);
-}
-
-inline EIG::EIG (const ComplexMatrix& a)
-{
-  init (a);
-}
-
-inline EIG::EIG (const ComplexMatrix& a, int& info)
-{
-  info = init (a);
-}
-
-inline EIG::EIG (const EIG& a)
-{
-  lambda = a.lambda;
-  v = a.v;
-}
-
-inline EIG& EIG::operator = (const EIG& a)
-{
-  lambda = a.lambda;
-  v = a.v;
-  return *this;
-}
-
-inline ComplexColumnVector EIG::eigenvalues (void) const
-{
-  return lambda;
-}
-
-inline ComplexMatrix EIG::eigenvectors (void) const
-{
-  return v;
-}
 
 #endif
 

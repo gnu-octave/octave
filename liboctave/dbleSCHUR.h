@@ -38,17 +38,32 @@ friend class Matrix;
 
 public:
 
-  SCHUR (void) {}
+  SCHUR (void) { }
 
-  SCHUR (const Matrix& a, const char *ord);
-  SCHUR (const Matrix& a, const char *ord, int& info);
+  SCHUR (const Matrix& a, const char *ord) { init (a, ord); }
 
-  SCHUR (const SCHUR& a);
+  SCHUR (const Matrix& a, const char *ord, int& info)
+    {
+      info = init (a, ord);
+    }
 
-  SCHUR& operator = (const SCHUR& a);
+  SCHUR (const SCHUR& a)
+    {
+      schur_mat = a.schur_mat;
+      unitary_mat = a.unitary_mat;
+    }
 
-  Matrix schur_matrix (void) const;
-  Matrix unitary_matrix (void) const;
+  SCHUR& operator = (const SCHUR& a)
+    {
+      schur_mat = a.schur_mat;
+      unitary_mat = a.unitary_mat;
+
+      return *this;
+    }
+
+  Matrix schur_matrix (void) const { return schur_mat; }
+
+  Matrix unitary_matrix (void) const { return unitary_mat; }
 
   friend ostream& operator << (ostream& os, const SCHUR& a);
 
@@ -59,41 +74,6 @@ private:
   Matrix schur_mat;
   Matrix unitary_mat;
 };
-
-inline SCHUR::SCHUR (const Matrix& a, const char *ord)
-{
-  init (a, ord);
-}
-
-inline SCHUR::SCHUR (const Matrix& a, const char *ord, int& info) 
-{
-  info = init (a, ord);
-}
-
-inline SCHUR::SCHUR (const SCHUR& a)
-{
-  schur_mat = a.schur_mat;
-  unitary_mat = a.unitary_mat;
-}
-
-inline SCHUR&
-SCHUR::operator = (const SCHUR& a)
-{
-  schur_mat = a.schur_mat;
-  unitary_mat = a.unitary_mat;
-  
-  return *this;
-}
-
-inline Matrix SCHUR::schur_matrix (void) const
-{
-  return schur_mat;
-}
-
-inline Matrix SCHUR::unitary_matrix (void) const
-{
-  return unitary_mat;
-}
 
 #endif
 

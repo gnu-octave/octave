@@ -35,15 +35,42 @@ class Matrix;
 class Range
 {
  public:
-  Range (void);
-  Range (const Range& r);
-  Range (double b, double l);
-  Range (double b, double l, double i);
+  Range (void)
+    {
+      rng_base = -1;
+      rng_limit = -1;
+      rng_inc = -1;
+      rng_nelem = -1;
+    }
 
-  double base (void) const;
-  double limit (void) const;
-  double inc (void) const;
-  int nelem (void) const;
+  Range (const Range& r)
+    {
+      rng_base = r.rng_base;
+      rng_limit = r.rng_limit;
+      rng_inc = r.rng_inc;
+      rng_nelem = r.rng_nelem;
+    }
+
+  Range (double b, double l)
+    {
+      rng_base = b;
+      rng_limit = l;
+      rng_inc = 1;
+      rng_nelem = nelem_internal ();
+    }
+
+  Range (double b, double l, double i)
+    {
+      rng_base = b;
+      rng_limit = l;
+      rng_inc = i;
+      rng_nelem = nelem_internal ();
+    }
+
+  double base (void) const { return rng_base;  }
+  double limit (void) const { return rng_limit; }
+  double inc (void) const { return rng_inc;   }
+  int nelem (void) const { return rng_nelem; }
 
   Matrix matrix_value (void) const;
 
@@ -52,9 +79,10 @@ class Range
 
   void sort (void);
 
-  void set_base (double b);
-  void set_limit (double l);
-  void set_inc (double i);
+  void set_base (double b) { rng_base = b;  }
+  void set_limit (double l) { rng_limit = l; }
+  void set_inc (double i) { rng_inc = i;   }
+
 
   friend ostream& operator << (ostream& os, const Range& r);
   friend istream& operator >> (istream& is, Range& r);
@@ -69,51 +97,6 @@ class Range
 
   int nelem_internal (void) const;
 };
-
-inline
-Range::Range (void)
-{
-  rng_base = -1;
-  rng_limit = -1;
-  rng_inc = -1;
-  rng_nelem = -1;
-}
-
-inline
-Range::Range (const Range& r)
-{
-  rng_base = r.rng_base;
-  rng_limit = r.rng_limit;
-  rng_inc = r.rng_inc;
-  rng_nelem = r.rng_nelem;
-}
-
-inline
-Range::Range (double b, double l)
-{
-  rng_base = b;
-  rng_limit = l;
-  rng_inc = 1;
-  rng_nelem = nelem_internal ();
-}
-
-inline
-Range::Range (double b, double l, double i)
-{
-  rng_base = b;
-  rng_limit = l;
-  rng_inc = i;
-  rng_nelem = nelem_internal ();
-}
-
-inline double Range::base (void) const { return rng_base;  }
-inline double Range::limit (void) const { return rng_limit; }
-inline double Range::inc (void) const { return rng_inc;   }
-inline int Range::nelem (void) const { return rng_nelem; }
-
-inline void Range::set_base (double b) { rng_base = b;  }
-inline void Range::set_limit (double l) { rng_limit = l; }
-inline void Range::set_inc (double i) { rng_inc = i;   }
 
 #endif
 

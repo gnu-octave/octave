@@ -38,15 +38,31 @@ friend class Matrix;
 
 public:
 
-  AEPBALANCE (void) {}
+  AEPBALANCE (void) { }
 
-  AEPBALANCE (const Matrix& a, const char *balance_job);
+  AEPBALANCE (const Matrix& a,const char * balance_job)
+    {
+      init (a, balance_job); 
+    }
 
-  AEPBALANCE (const AEPBALANCE& a);
+  AEPBALANCE (const AEPBALANCE& a)
+    {
+      balanced_mat = a.balanced_mat;
+      balancing_mat = a.balancing_mat;
+    }
 
-  AEPBALANCE& operator = (const AEPBALANCE& a);
-  Matrix balanced_matrix (void) const;
-  Matrix balancing_matrix (void) const;
+  AEPBALANCE& operator = (const AEPBALANCE& a)
+    {
+      balanced_mat = a.balanced_mat;
+      balancing_mat = a.balancing_mat;
+
+      return *this;
+    }
+
+  Matrix balanced_matrix (void) const { return balanced_mat; }
+
+  Matrix balancing_matrix (void) const { return balancing_mat; }
+
   friend ostream& operator << (ostream& os, const AEPBALANCE& a);
 
 private:
@@ -56,36 +72,6 @@ private:
   Matrix balanced_mat;
   Matrix balancing_mat;
 };
-
-inline AEPBALANCE::AEPBALANCE (const Matrix& a,const char * balance_job) 
-{
-  init (a, balance_job); 
-}
-
-inline AEPBALANCE::AEPBALANCE (const AEPBALANCE& a)
-{
-  balanced_mat = a.balanced_mat;
-  balancing_mat = a.balancing_mat;
-}
-
-inline AEPBALANCE&
-AEPBALANCE::operator = (const AEPBALANCE& a)
-{
-  balanced_mat = a.balanced_mat;
-  balancing_mat = a.balancing_mat;
-
-  return *this;
-}
-
-inline Matrix AEPBALANCE::balanced_matrix (void) const
-{
-  return balanced_mat;
-}
-
-inline Matrix AEPBALANCE::balancing_matrix (void) const
-{
-  return balancing_mat;
-}
 
 #endif
 

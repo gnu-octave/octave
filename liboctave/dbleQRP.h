@@ -36,15 +36,21 @@ class QRP : public QR
 {
 public:
 
-  QRP (void) {}
+  QRP (void) { }
 
   QRP (const Matrix& A, QR::type qr_type = QR::std);
 
-  QRP (const QRP& a);
+  QRP (const QRP& a) : QR (a) { p = a.p; }
 
-  QRP& operator = (const QRP& a);
+  QRP& operator = (const QRP& a)
+    {
+      QR::operator = (a);
+      p = a.p;
 
-  Matrix P (void) const;
+      return *this;
+    }
+
+  Matrix P (void) const { return p; }
 
   friend ostream&  operator << (ostream& os, const QRP& a);
 
@@ -52,23 +58,6 @@ private:
 
   Matrix p;
 };
-
-inline QRP::QRP (const QRP& a) : QR (a)
-{
-  p = a.p;
-}
-
-inline QRP& QRP::operator = (const QRP& a)
-{
-  QR::operator = (a);
-  p = a.p;
-  return *this;
-}
-
-inline Matrix QRP::P (void) const
-{
-  return p;
-}
 
 #endif
 

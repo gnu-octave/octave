@@ -75,8 +75,8 @@ qphess (const int& n, const int& nrowh, const int&,
   return 0;
 }
 
-Vector
-QPSOL::minimize (double& objf, int& inform, Vector& lambda)
+ColumnVector
+QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 {
   int n = x.capacity ();
  

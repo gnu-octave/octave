@@ -40,19 +40,40 @@ friend class ComplexMatrix;
 
 public:
 
-  ComplexSVD (void) {}
+  ComplexSVD (void) { }
 
-  ComplexSVD (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
-  ComplexSVD (const ComplexMatrix& a, int& info,
-	      SVD::type svd_type = SVD::std); 
 
-  ComplexSVD (const ComplexSVD& a);
+  ComplexSVD (const ComplexMatrix& a, SVD::type svd_type) 
+    {
+      init (a, svd_type);
+    }
 
-  ComplexSVD& operator = (const ComplexSVD& a);
+  ComplexSVD (const ComplexMatrix& a, int& info, SVD::type svd_type)
+    {
+      info = init (a, svd_type);
+    }
 
-  DiagMatrix singular_values (void) const;
-  ComplexMatrix left_singular_matrix (void) const;
-  ComplexMatrix right_singular_matrix (void) const;
+  ComplexSVD (const ComplexSVD& a)
+    {
+      sigma = a.sigma;
+      left_sm = a.left_sm;
+      right_sm = a.right_sm;
+    }
+
+  ComplexSVD& operator = (const ComplexSVD& a)
+    {
+      sigma = a.sigma;
+      left_sm = a.left_sm;
+      right_sm = a.right_sm;
+
+      return *this;
+    }
+
+  DiagMatrix singular_values (void) const { return sigma; }
+
+  ComplexMatrix left_singular_matrix (void) const { return left_sm; }
+
+  ComplexMatrix right_singular_matrix (void) const { return right_sm; }
 
   friend ostream&  operator << (ostream& os, const ComplexSVD& a);
 
@@ -64,49 +85,6 @@ private:
   ComplexMatrix left_sm;
   ComplexMatrix right_sm;
 };
-
-inline ComplexSVD::ComplexSVD (const ComplexMatrix& a, SVD::type svd_type) 
-{
-  init (a, svd_type);
-}
-
-inline ComplexSVD::ComplexSVD (const ComplexMatrix& a, int& info,
-			       SVD::type svd_type)
-{
-  info = init (a, svd_type);
-} 
-
-inline ComplexSVD::ComplexSVD (const ComplexSVD& a)
-{
-  sigma = a.sigma;
-  left_sm = a.left_sm;
-  right_sm = a.right_sm;
-}
-
-inline ComplexSVD&
-ComplexSVD::operator = (const ComplexSVD& a)
-{
-  sigma = a.sigma;
-  left_sm = a.left_sm;
-  right_sm = a.right_sm;
-
-  return *this;
-}
-
-inline DiagMatrix ComplexSVD::singular_values (void) const
-{
-  return sigma;
-}
-
-inline ComplexMatrix ComplexSVD::left_singular_matrix (void) const
-{
-  return left_sm;
-}
-
-inline ComplexMatrix ComplexSVD::right_singular_matrix (void) const
-{
-  return right_sm;
-}
 
 #endif
 

@@ -38,15 +38,23 @@ friend class Matrix;
 
 public:
 
-  CHOL (void) {}
+  CHOL (void) { }
 
-  CHOL (const Matrix& a);
-  CHOL (const Matrix& a, int& info);
+  CHOL (const Matrix& a) { init (a); }
 
-  CHOL (const CHOL& a);
+  CHOL (const Matrix& a, int& info) { info = init (a); }
 
-  CHOL& operator = (const CHOL& a);
-  Matrix chol_matrix (void) const;
+  CHOL (const CHOL& a) { chol_mat = a.chol_mat; }
+
+  CHOL& operator = (const CHOL& a)
+    {
+      chol_mat = a.chol_mat;
+
+      return *this;
+    }
+
+  Matrix chol_matrix (void) const { return chol_mat; }
+
   friend ostream& operator << (ostream& os, const CHOL& a);
 
 private:
@@ -55,34 +63,6 @@ private:
 
   Matrix chol_mat;
 };
-
-inline CHOL::CHOL (const Matrix& a)
-{
-  init (a);
-}
-
-inline CHOL::CHOL (const Matrix& a, int& info)
-{
-  info = init (a);
-}
-
-inline CHOL::CHOL (const CHOL& a)
-{
-  chol_mat = a.chol_mat;
-}
-
-inline CHOL&
-CHOL::operator = (const CHOL& a)
-{
-  chol_mat = a.chol_mat;
-
-  return *this;
-}
-
-inline Matrix CHOL::chol_matrix (void) const
-{
-  return chol_mat;
-}
 
 #endif
 

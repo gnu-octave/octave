@@ -31,10 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Matrix;
 class ColumnVector;
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 #if !defined (octave_DAEFunc_typedefs)
 #define octave_DAEFunc_typedefs 1
 
@@ -50,32 +46,63 @@ public:
       Matrix *dfdx;
     };
 
-  typedef Vector (*DAERHSFunc) (const Vector& x,
-				const Vector& xdot, double); 
+  typedef ColumnVector (*DAERHSFunc) (const ColumnVector& x,
+				      const ColumnVector& xdot, double); 
 
-  typedef DAEJac (*DAEJacFunc) (const Vector& x,
-				const Vector& xdot, double);
+  typedef DAEJac (*DAEJacFunc) (const ColumnVector& x,
+				const ColumnVector& xdot, double);
 
-  DAEFunc (void);
-  DAEFunc (DAERHSFunc f);
-  DAEFunc (DAERHSFunc f, DAEJacFunc j);
+  DAEFunc (void)
+    {
+      fun = 0;
+      jac = 0;
+    }
 
-  DAEFunc (const DAEFunc& a);
+  DAEFunc (DAERHSFunc f)
+    {
+      fun = f;
+      jac = 0;
+    }
 
-  DAEFunc& operator = (const DAEFunc& a);
+  DAEFunc (DAERHSFunc f, DAEJacFunc j)
+    {
+      fun = f;
+      jac = j;
+    }
 
-  DAERHSFunc function (void) const;
+  DAEFunc (const DAEFunc& a)
+    {
+      fun = a.fun;
+      jac = a.jac;
+    }
 
-  DAEFunc& set_function (DAERHSFunc f);
+  DAEFunc& operator = (const DAEFunc& a)
+    {
+      fun = a.fun;
+      jac = a.jac;
 
-  DAEJacFunc jacobian_function (void) const;
+      return *this;
+    }
 
-  DAEFunc& set_jacobian_function (DAEJacFunc f);
+  DAERHSFunc function (void) const { return fun; }
+
+  DAEFunc& set_function (DAERHSFunc f)
+    {
+      fun = f;
+      return *this;
+    }
+
+  DAEJacFunc jacobian_function (void) const { return jac; }
+
+  DAEFunc& set_jacobian_function (DAEJacFunc j)
+    {
+      jac = j;
+      return *this;
+    }
 
 protected:
 
   DAERHSFunc fun;
-
   DAEJacFunc jac;
 };
 

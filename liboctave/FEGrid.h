@@ -32,10 +32,6 @@ class ostream;
 
 #include "dColVector.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class FEGrid
 {
 private:
@@ -47,8 +43,8 @@ private:
 
 public:
 
-  FEGrid (void) {}
-  FEGrid (const Vector& elbnds) { elem = elbnds; check_grid (); }
+  FEGrid (void) { }
+  FEGrid (const ColumnVector& elbnds) : elem (elbnds) { check_grid (); }
   FEGrid (int nel, double width);
   FEGrid (int nel, double left, double right);
 
@@ -57,16 +53,15 @@ public:
   double left (void) const { return elem.elem (0); }
   double right (void) const { return elem.elem (elem.capacity () - 1); }
 
-  int in_bounds (double x) const
-    { return (x >= left () && x <= right ()); }
+  int in_bounds (double x) const { return (x >= left () && x <= right ()); }
 
-  Vector element_boundaries (void) const { return elem; }
+  ColumnVector element_boundaries (void) const { return elem; }
 
   friend ostream& operator << (ostream&, const FEGrid&);
 
 protected:
 
-  Vector elem;
+  ColumnVector elem;
 };
 
 #endif

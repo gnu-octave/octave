@@ -76,54 +76,47 @@ class QPSOL : public QP, public QPSOL_options
 {
  public:
 
-  QPSOL (void) : QP ()
-    { }
+  QPSOL (void) : QP () { }
 
-  QPSOL (const Vector& x, const Matrix& H) : QP (x, H)
-    { }
+  QPSOL (const ColumnVector& x, const Matrix& H) : QP (x, H) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const Vector& c) : QP (x, H, c)
-    { }
+  QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c)
+    : QP (x, H, c) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const Bounds& b) : QP (x, H, b)
-    { }
+  QPSOL (const ColumnVector& x, const Matrix& H, const Bounds& b)
+    : QP (x, H, b) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const LinConst& lc) : QP (x, H, lc)
-    { }
+  QPSOL (const ColumnVector& x, const Matrix& H, const LinConst& lc)
+    : QP (x, H, lc) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const Vector& c, const Bounds& b)
-    : QP (x, H, c, b) { }
+  QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
+	 const Bounds& b) : QP (x, H, c, b) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const Vector& c, const LinConst& lc)
-    : QP (x, H, c, lc) { }
+  QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
+	 const LinConst& lc) : QP (x, H, c, lc) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const Bounds& b, const LinConst& lc)
+  QPSOL (const ColumnVector& x, const Matrix& H, const Bounds& b,
+	 const LinConst& lc)
     : QP (x, H, b, lc) { }
 
-  QPSOL (const Vector& x, const Matrix& H, const Vector& c, const Bounds& b,
-      const LinConst& lc)
-    : QP (x, H, c, b, lc) { }
+  QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
+	 const Bounds& b, const LinConst& lc) : QP (x, H, c, b, lc) { }
 
-  QPSOL (const QPSOL& a);
+  QPSOL (const QPSOL& a) : QP (a.x, a.H, a.c, a.bnds, a.lc) { }
 
-  QPSOL& operator = (const QPSOL& a);
+  QPSOL& operator = (const QPSOL& a)
+    {
+      x = a.x;
+      H = a.H;
+      c = a.c;
+      bnds = a.bnds;
+      lc = a.lc;
 
-  Vector minimize (double& objf, int& inform, Vector& lambda);
+      return *this;
+    }
+
+  ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
 };
-
-inline QPSOL::QPSOL (const QPSOL& a) : QP (a.x, a.H, a.c, a.bnds, a.lc)
-  { }
-
-inline QPSOL&
-QPSOL::operator = (const QPSOL& a)
-{
-  x = a.x;
-  H = a.H;
-  c = a.c;
-  bnds = a.bnds;
-  lc = a.lc;
-  return *this;
-}
 
 #endif
 #endif

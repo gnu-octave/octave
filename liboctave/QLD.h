@@ -44,56 +44,53 @@ class QLD : public QP
   QLD (void) : QP ()
     { set_default_options (); }
 
-  QLD (const Vector& x, const Matrix& H) : QP (x, H)
+  QLD (const ColumnVector& x, const Matrix& H) : QP (x, H)
     { set_default_options (); }
 
-  QLD (const Vector& x, const Matrix& H, const Vector& c) : QP (x, H, c)
+  QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c)
+    : QP (x, H, c) { set_default_options (); }
+
+  QLD (const ColumnVector& x, const Matrix& H, const Bounds& b) : QP (x, H, b)
     { set_default_options (); }
 
-  QLD (const Vector& x, const Matrix& H, const Bounds& b) : QP (x, H, b)
+  QLD (const ColumnVector& x, const Matrix& H, const LinConst& lc)
+    : QP (x, H, lc)
+      { set_default_options (); }
+
+  QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
+       const Bounds& b) : QP (x, H, c, b) { set_default_options (); }
+
+  QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
+       const LinConst& lc) : QP (x, H, c, lc) { set_default_options (); }
+
+  QLD (const ColumnVector& x, const Matrix& H, const Bounds& b,
+       const LinConst& lc) : QP (x, H, b, lc) { set_default_options (); }
+
+  QLD (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
+       const Bounds& b, const LinConst& lc) : QP (x, H, c, b, lc)
+   { set_default_options (); }
+
+  QLD (const QLD& a) : QP (a.x, a.H, a.c, a.bnds, a.lc)
     { set_default_options (); }
 
-  QLD (const Vector& x, const Matrix& H, const LinConst& lc) : QP (x, H, lc)
-    { set_default_options (); }
+  QLD& operator = (const QLD& a)
+    {
+      x = a.x;
+      H = a.H;
+      c = a.c;
+      bnds = a.bnds;
+      lc = a.lc;
+      iprint = a.iprint;
 
-  QLD (const Vector& x, const Matrix& H, const Vector& c, const Bounds& b)
-    : QP (x, H, c, b) { set_default_options (); }
+      return *this;
+    }
 
-  QLD (const Vector& x, const Matrix& H, const Vector& c, const LinConst& lc)
-    : QP (x, H, c, lc) { set_default_options (); }
-
-  QLD (const Vector& x, const Matrix& H, const Bounds& b, const LinConst& lc)
-    : QP (x, H, b, lc) { set_default_options (); }
-
-  QLD (const Vector& x, const Matrix& H, const Vector& c, const Bounds& b,
-      const LinConst& lc)
-    : QP (x, H, c, b, lc) { set_default_options (); }
-
-  QLD (const QLD& a);
-
-  QLD& operator = (const QLD& a);
-
-  Vector minimize (double& objf, int& inform);
+  ColumnVector minimize (double& objf, int& inform);
 
 private:
   void set_default_options (void);
   int iprint;
 };
-
-inline QLD::QLD (const QLD& a) : QP (a.x, a.H, a.c, a.bnds, a.lc)
-  { set_default_options (); }
-
-inline QLD&
-QLD::operator = (const QLD& a)
-{
-  x = a.x;
-  H = a.H;
-  c = a.c;
-  bnds = a.bnds;
-  lc = a.lc;
-  iprint = a.iprint;
-  return *this;
-}
 
 #endif
 

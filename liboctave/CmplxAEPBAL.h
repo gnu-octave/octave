@@ -38,12 +38,30 @@ friend class ComplexMatrix;
 
 public:
 
-  ComplexAEPBALANCE (void) {}
-  ComplexAEPBALANCE (const ComplexMatrix& a, const char *balance_job);
-  ComplexAEPBALANCE (const ComplexAEPBALANCE& a);
-  ComplexAEPBALANCE& operator = (const ComplexAEPBALANCE& a);
-  ComplexMatrix balanced_matrix (void) const;
-  ComplexMatrix balancing_matrix (void) const;
+  ComplexAEPBALANCE (void) { }
+
+  ComplexAEPBALANCE (const ComplexMatrix& a, const char * balance_job)
+    {
+      init (a, balance_job); 
+    }
+
+  ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
+    {
+      balanced_mat = a.balanced_mat;
+      balancing_mat = a.balancing_mat;
+    }
+
+  ComplexAEPBALANCE& operator = (const ComplexAEPBALANCE& a)
+    {
+      balanced_mat = a.balanced_mat;
+      balancing_mat = a.balancing_mat;
+
+      return *this;
+    }
+
+  ComplexMatrix balanced_matrix (void) const { return balanced_mat; }
+
+  ComplexMatrix balancing_matrix (void) const { return balancing_mat; }
 
   friend ostream& operator << (ostream& os, const ComplexAEPBALANCE& a);
 
@@ -54,37 +72,6 @@ private:
   ComplexMatrix balanced_mat;
   ComplexMatrix balancing_mat;
 };
-
-inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a,
-					     const char * balance_job)
-{
-  init (a, balance_job); 
-}
-
-inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
-{
-  balanced_mat = a.balanced_mat;
-  balancing_mat = a.balancing_mat;
-}
-
-inline ComplexAEPBALANCE&
-ComplexAEPBALANCE::operator = (const ComplexAEPBALANCE& a)
-{
-  balanced_mat = a.balanced_mat;
-  balancing_mat = a.balancing_mat;
-
-  return *this;
-}
-
-inline ComplexMatrix ComplexAEPBALANCE::balanced_matrix (void) const
-{
-  return balanced_mat;
-}
-
-inline ComplexMatrix ComplexAEPBALANCE::balancing_matrix (void) const
-{
-  return balancing_mat;
-}
 
 #endif
 

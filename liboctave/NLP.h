@@ -29,104 +29,67 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Bounds.h"
 #include "LinConst.h"
 #include "NLConst.h"
+#include "base-min.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
-class NLP
+class NLP : public base_minimizer
 {
  public:
 
-  NLP (void);
+  NLP (void) : base_minimizer () { }
 
-  NLP (const Vector& x, const Objective& phi);
+  NLP (const ColumnVector& x, const Objective& obj)
+    : base_minimizer (x), phi (obj) { }
 
-  NLP (const Vector& x, const Objective& phi, const Bounds& b);
+  NLP (const ColumnVector& x, const Objective& obj, const Bounds& b)
+    : base_minimizer (x), phi (obj), bnds (b) { }
 
-  NLP (const Vector& x, const Objective& phi, const Bounds& b, const
-       LinConst& lc);
+  NLP (const ColumnVector& x, const Objective& obj, const Bounds& b,
+       const LinConst& l)
+    : base_minimizer (x), phi (obj), bnds (b), lc (l) { }
 
-  NLP (const Vector& x, const Objective& phi, const Bounds& b, const
-       LinConst& lc, const NLConst& nlc);
+  NLP (const ColumnVector& x, const Objective& obj, const Bounds& b,
+       const LinConst& l, const NLConst& nl)
+    : base_minimizer (x), phi (obj), bnds (b), lc (l), nlc (nl) { }
 
-  NLP (const Vector& x, const Objective& phi, const LinConst& lc); 
+  NLP (const ColumnVector& x, const Objective& obj, const LinConst& l)
+    : base_minimizer (x), phi (obj), lc (l) { }
 
-  NLP (const Vector& x, const Objective& phi, const LinConst& lc,
-       const NLConst& nlc);
+  NLP (const ColumnVector& x, const Objective& obj, const LinConst& l,
+       const NLConst& nl)
+    : base_minimizer (x), phi (obj), lc (l), nlc (nl) { }
 
-  NLP (const Vector& x, const Objective& phi, const NLConst& nlc); 
+  NLP (const ColumnVector& x, const Objective& obj, const NLConst& nl)
+    : base_minimizer (x), phi (obj), nlc (nl) { }
 
-  NLP (const Vector& x, const Objective& phi, const Bounds& b, const
-       NLConst& nlc);
+  NLP (const ColumnVector& x, const Objective& obj, const Bounds& b,
+       const NLConst& nl)
+    : base_minimizer (x), phi (obj), bnds (b), nlc (nl) { }
 
-  ~NLP (void);
+  NLP& operator = (const NLP& a)
+    {
+      if (this != &a)
+	{
+	  x = a.x;
+	  phi = a.phi;  
+	  bnds = a.bnds;
+	  lc = a.lc;
+	  nlc = a.nlc;
+	}
 
-  NLP& operator = (const NLP& a);
+      return *this;
+    }
 
-  int size (void) const;
+  virtual ~NLP (void) { }
+
+  int size (void) const { return x.capacity (); }
 
  protected:
 
-  Vector x;
   Objective phi;  
   Bounds bnds;
   LinConst lc;
   NLConst nlc;
 };
-
-inline NLP::NLP (void) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj)
-  : x (xx), phi (obj) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const Bounds& b)
-  : x (xx), phi (obj), bnds (b) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const Bounds& b,
-		 const LinConst& l) 
-  : x (xx), phi (obj), bnds (b), lc (l) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const Bounds& b,
-		 const LinConst& l, const NLConst& nl) 
-  : x (xx), phi (obj), bnds (b), lc (l), nlc (nl) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const LinConst& l)
-  : x (xx), phi (obj), lc (l) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const LinConst& l,
-		 const NLConst& nl) 
-  : x (xx), phi (obj), lc (l), nlc (nl) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const NLConst& nl)
-  : x (xx), phi (obj), nlc (nl) {}
-
-inline NLP::NLP (const Vector& xx, const Objective& obj, const Bounds& b,
-		 const NLConst& nl) 
-  : x (xx), phi (obj), bnds (b), nlc (nl) {}
-
-inline NLP::~NLP (void) { }
-
-inline NLP&
-NLP::operator = (const NLP& a)
-{
-  if (this != &a)
-    {
-      x = a.x;
-      phi = a.phi;  
-      bnds = a.bnds;
-      lc = a.lc;
-      nlc = a.nlc;
-    }
-
-  return *this;
-}
-
-inline int
-NLP::size (void) const
-{
-  return x.capacity ();
-}
 
 #endif
 

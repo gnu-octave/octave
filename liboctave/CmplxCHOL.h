@@ -38,12 +38,31 @@ friend class ComplexMatrix;
 
 public:
 
-  ComplexCHOL (void) {}
-  ComplexCHOL (const ComplexMatrix& a);
-  ComplexCHOL (const ComplexMatrix& a, int& info);
-  ComplexCHOL (const ComplexCHOL& a);
-  ComplexCHOL& operator = (const ComplexCHOL& a);
-  ComplexMatrix chol_matrix (void) const;
+  ComplexCHOL (void) { }
+
+  ComplexCHOL::ComplexCHOL (const ComplexMatrix& a) { init (a); }
+
+  ComplexCHOL::ComplexCHOL (const ComplexMatrix& a, int& info)
+    {
+      info = init (a);
+    }
+
+  ComplexCHOL::ComplexCHOL (const ComplexCHOL& a)
+    {
+      chol_mat = a.chol_mat;
+    }
+
+  ComplexCHOL& ComplexCHOL::operator = (const ComplexCHOL& a)
+    {
+      chol_mat = a.chol_mat;
+
+      return *this;
+    }
+
+  ComplexMatrix ComplexCHOL::chol_matrix (void) const
+    {
+      return chol_mat;
+    }
 
   friend ostream& operator << (ostream& os, const ComplexCHOL& a);
 
@@ -53,34 +72,6 @@ private:
 
   ComplexMatrix chol_mat;
 };
-
-inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a)
-{
-  init (a);
-}
-
-inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a, int& info)
-{
-  info = init (a);
-}
-
-inline ComplexCHOL::ComplexCHOL (const ComplexCHOL& a)
-{
-  chol_mat = a.chol_mat;
-}
-
-inline ComplexCHOL&
-ComplexCHOL::operator = (const ComplexCHOL& a)
-{
-  chol_mat = a.chol_mat;
-
-  return *this;
-}
-
-inline ComplexMatrix ComplexCHOL::chol_matrix (void) const
-{
-  return chol_mat;
-}
 
 #endif
 

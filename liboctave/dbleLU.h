@@ -38,17 +38,31 @@ friend class Matrix;
 
 public:
 
-  LU (void) {}
+  LU (void) { }
 
   LU (const Matrix& a);
 
-  LU (const LU& a);
+  LU (const LU& a)
+    {
+      l = a.l;
+      u = a.u;
+      p = a.p;
+    }
 
-  LU& operator = (const LU& a);
+  LU& operator = (const LU& a)
+    {
+      l = a.l;
+      u = a.u;
+      p = a.p;
 
-  Matrix L (void) const;
-  Matrix U (void) const;
-  Matrix P (void) const;
+      return *this;
+    }
+
+  Matrix L (void) const { return l; }
+
+  Matrix U (void) const { return u; }
+
+  Matrix P (void) const { return p; }
 
   friend ostream&  operator << (ostream& os, const LU& a);
 
@@ -58,36 +72,6 @@ private:
   Matrix u;
   Matrix p;
 };
-
-inline LU::LU (const LU& a)
-{
-  l = a.l;
-  u = a.u;
-  p = a.p;
-}
-
-inline LU& LU::operator = (const LU& a)
-{
-  l = a.l;
-  u = a.u;
-  p = a.p;
-  return *this;
-}
-
-inline Matrix LU::L (void) const
-{
-  return l;
-}
-
-inline Matrix LU::U (void) const
-{
-  return u;
-}
-
-inline Matrix LU::P (void) const
-{
-  return p;
-}
 
 #endif
 

@@ -31,29 +31,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "Bounds.h"
 #include "LinConst.h"
+#include "base-min.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
-class LP
+class LP : public base_minimizer
 {
  public:
 
-  LP (void);
-  LP (const Vector& c);
-  LP (const Vector& c, const Bounds& b);
-  LP (const Vector& c, const Bounds& b, const LinConst& lc);
-  LP (const Vector& c,                  const LinConst& lc);
+  LP (void) : base_minimizer () { }
 
-  virtual Vector minimize (void);
-  virtual Vector minimize (double& objf);
-  virtual Vector minimize (double& objf, int& inform);
-  virtual Vector minimize (double& objf, int& inform, Vector& lambda) = 0;
+  LP (const ColumnVector& c_arg)
+    : base_minimizer (), c (c_arg) { }
+
+  LP (const ColumnVector& c_arg, const Bounds& b)
+    : base_minimizer (), c (c_arg), bnds (b) { }
+
+  LP (const ColumnVector& c_arg, const Bounds& b, const LinConst& l)
+    : base_minimizer (), c (c_arg), bnds (b), lc (l) { }
+
+  LP (const ColumnVector& c_arg, const LinConst& l)
+    : base_minimizer (), c (c_arg), lc (l) { }
 
  protected:
 
-  Vector c;
+  ColumnVector c;
   Bounds bnds;
   LinConst lc;
 };

@@ -36,49 +36,43 @@ friend class Matrix;
 
 public:
 
-  DET (void);
+  DET (void) { }
 
-  DET (const DET& a);
+  DET (const DET& a)
+    {
+      det[0] = a.det[0];
+      det[1] = a.det[1];
+    }
 
-  DET& operator = (const DET& a);
+  DET& operator = (const DET& a)
+    {
+      det[0] = a.det[0];
+      det[1] = a.det[1];
+
+      return *this;
+    }
 
   int value_will_overflow (void) const;
   int value_will_underflow (void) const;
+
   double coefficient (void) const;
+
   int exponent (void) const;
+
   double value (void) const;
 
   friend ostream&  operator << (ostream& os, const DET& a);
 
 private:
 
-  DET (const double *d);
+  DET (const double *d)
+    {
+      det[0] = d[0];
+      det[1] = d[1];
+    }
 
   double det [2];
 };
-
-inline DET::DET (void)
-{
-}
-
-inline DET::DET (const DET& a)
-{
-  det[0] = a.det[0];
-  det[1] = a.det[1];
-}
-
-inline DET& DET::operator = (const DET& a)
-{
-  det[0] = a.det[0];
-  det[1] = a.det[1];
-  return *this;
-}
-
-inline DET::DET (const double *d)
-{
-  det[0] = d[0];
-  det[1] = d[1];
-}
 
 #endif
 

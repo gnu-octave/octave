@@ -33,20 +33,29 @@ class ColumnVector;
 #include "Bounds.h"
 #include "NLFunc.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class NLConst : public Bounds, public NLFunc
 {
 public:
 
-  NLConst (void);
-  NLConst (int n);
-  NLConst (const Vector& lb, const NLFunc f, const Vector& ub);
-  NLConst (const NLConst& a);
+  NLConst (void) : Bounds (), NLFunc () { }
 
-  NLConst& operator = (const NLConst& a);
+  NLConst (int n) : Bounds (n), NLFunc () { }
+
+  NLConst (const ColumnVector& lb, const NLFunc f, const ColumnVector& ub)
+    : Bounds (lb, ub), NLFunc (f) { }
+
+  NLConst (const NLConst& a) : Bounds (a.lb, a.ub), NLFunc (a.fun, a.jac) { }
+
+  NLConst& operator = (const NLConst& a)
+    {
+      nb = a.nb;
+      lb = a.lb;
+      fun = a.fun;
+      jac = a.jac;
+      ub = a.ub;
+
+      return *this;
+    }
 
 private:
 

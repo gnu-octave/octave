@@ -42,20 +42,6 @@ Bounds::error (const char* msg)
   (*current_liboctave_error_handler) ("fatal bounds error: ", msg);
 }
 
-Bounds::Bounds (void)
-{
-  nb = 0;
-}
-
-Bounds::Bounds (int n)
-{
-  nb = n;
-  lb.resize (nb);
-  ub.resize (nb);
-  lb.fill (0.0);
-  ub.fill (0.0);
-}
-
 Bounds::Bounds (const ColumnVector l, const ColumnVector u)
 {
   if (l.capacity () != u.capacity ())
@@ -67,81 +53,6 @@ Bounds::Bounds (const ColumnVector l, const ColumnVector u)
   nb = l.capacity ();
   lb = l;
   ub = u;
-}
-
-Bounds::Bounds (const Bounds& a)
-{
-  nb = a.size ();
-  lb = a.lower_bounds ();
-  ub = a.upper_bounds ();
-}
-
-Bounds&
-Bounds::operator = (const Bounds& a)
-{
-  nb = a.size ();
-  lb = a.lower_bounds ();
-  ub = a.upper_bounds ();
-
-  return *this;
-}
-
-Bounds&
-Bounds::resize (int n)
-{
-  nb = n;
-  lb.resize (nb);
-  ub.resize (nb);
-
-  return *this;
-}
-
-double
-Bounds::lower_bound (int index) const
-{
-  return lb.elem (index);
-}
-
-double
-Bounds::upper_bound (int index) const
-{
-  return ub.elem (index);
-}
-
-ColumnVector
-Bounds::lower_bounds (void) const
-{
-  return lb;
-}
-
-ColumnVector
-Bounds::upper_bounds (void) const
-{
-  return ub;
-}
-
-int
-Bounds::size (void) const
-{
-  return nb;
-}
-
-Bounds&
-Bounds::set_bound (int index, double low, double high)
-{
-  lb.elem (index) = low;
-  ub.elem (index) = high;
-
-  return *this;
-}
-
-Bounds&
-Bounds::set_bounds (double low, double high)
-{
-  lb.fill (low);
-  ub.fill (high);
-
-  return *this;
 }
 
 Bounds&
@@ -156,38 +67,6 @@ Bounds::set_bounds (const ColumnVector l, const ColumnVector u)
   nb = l.capacity ();
   lb = l;
   ub = u;
-
-  return *this;
-}
-
-Bounds&
-Bounds::set_lower_bound (int index, double low)
-{
-  lb.elem (index) = low;
-
-  return *this;
-}
-
-Bounds&
-Bounds::set_upper_bound (int index, double high)
-{
-  ub.elem (index) = high;
-
-  return *this;
-}
-
-Bounds&
-Bounds::set_lower_bounds (double low)
-{
-  lb.fill (low);
-
-  return *this;
-}
-
-Bounds&
-Bounds::set_upper_bounds (double high)
-{
-  ub.fill (high);
 
   return *this;
 }

@@ -73,7 +73,7 @@ int
 npsol_objfun (int& mode, const int& n, double *xx, double *objf,
 	      double *objgrd, int *)
 {
-  Vector tmp_x (n);
+  ColumnVector tmp_x (n);
 
   npsol_objective_error = 0;
 
@@ -99,7 +99,7 @@ npsol_objfun (int& mode, const int& n, double *xx, double *objf,
 
   if ((mode == 1 || mode == 2) && user_grad)
     {
-      Vector tmp_grad (n);
+      ColumnVector tmp_grad (n);
 
       tmp_grad = (*user_grad) (tmp_x);
 
@@ -120,8 +120,8 @@ npsol_confun (int& mode, const int& ncnln, const int& n,
 	      const int& nrowj, int *, double *xx, double *cons,
 	      double *cjac, int *)
 {
-  Vector tmp_x (n);
-  Vector tmp_c (ncnln);
+  ColumnVector tmp_x (n);
+  ColumnVector tmp_c (ncnln);
 
   for (int i = 0; i < n; i++)
     tmp_x.elem (i) = xx[i];
@@ -159,32 +159,8 @@ npsol_confun (int& mode, const int& ncnln, const int& n,
   return 0;
 }
 
-Vector
-NPSOL::minimize (void)
-{
-  double objf;
-  int inform;
-  Vector lambda;
-  return minimize (objf, inform, lambda);
-}
-
-Vector
-NPSOL::minimize (double& objf)
-{
-  int inform;
-  Vector lambda;
-  return minimize (objf, inform, lambda);
-}
-
-Vector
-NPSOL::minimize (double& objf, int& inform)
-{
-  Vector lambda;
-  return minimize (objf, inform, lambda);
-}
-
-Vector
-NPSOL::minimize (double& objf, int& inform, Vector& lambda)
+ColumnVector
+NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 {
   // Dimensions of various things.
 
@@ -330,34 +306,6 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   // See how it went.
 
   return x;
-}
-
-Vector
-NPSOL::minimize (const Vector& xnew)
-{
-  x = xnew;
-  return minimize ();
-}
-
-Vector
-NPSOL::minimize (const Vector& xnew, double& objf)
-{
-  x = xnew;
-  return minimize (objf);
-}
-
-Vector
-NPSOL::minimize (const Vector& xnew, double& objf, int& inform)
-{
-  x = xnew;
-  return minimize (objf, inform);
-}
-
-Vector
-NPSOL::minimize (const Vector& xnew, double& objf, int& inform, Vector& lambda)
-{
-  x = xnew;
-  return minimize (objf, inform, lambda);
 }
 
 NPSOL&

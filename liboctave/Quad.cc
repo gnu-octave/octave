@@ -60,40 +60,6 @@ extern "C"
 			      const int&, int&, int*, double*); 
 }
 
-Quad::Quad (integrand_fcn fcn)
-{
-  f = fcn;
-}
-
-Quad::Quad (integrand_fcn fcn, double abs, double rel)
-  : Quad_options (abs, rel)
-{
-  f = fcn;
-}
-
-double
-Quad::integrate (void)
-{
-  int ier, neval;
-  double abserr;
-  return integrate (ier, neval, abserr);
-}
-
-double
-Quad::integrate (int& ier)
-{
-  int neval;
-  double abserr;
-  return integrate (ier, neval, abserr);
-}
-
-double
-Quad::integrate (int& ier, int& neval)
-{
-  double abserr;
-  return integrate (ier, neval, abserr);
-}
-
 static double
 user_function (double *x, int& ierr)
 {
@@ -111,59 +77,6 @@ user_function (double *x, int& ierr)
     ierr = -1;
 
   return retval;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn) : Quad (fcn)
-{
-  lower_limit = 0.0;
-  upper_limit = 1.0;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn, double ll, double ul)
-  : Quad (fcn) 
-{
-  lower_limit = ll;
-  upper_limit = ul;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn, double ll, double ul,
-		  double abs, double rel) : Quad (fcn, abs, rel)
-{
-  lower_limit = ll;
-  upper_limit = ul;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn, double ll, double ul,
-		  const Vector& sing) : Quad (fcn)
-{
-  lower_limit = ll;
-  upper_limit = ul;
-  singularities = sing;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn, const Vector& sing,
-		  double abs, double rel) : Quad (fcn, abs, rel)
-{
-  lower_limit = 0.0;
-  upper_limit = 1.0;
-  singularities = sing;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn, const Vector& sing)
-  : Quad (fcn)
-{
-  lower_limit = 0.0;
-  upper_limit = 1.0;
-  singularities = sing;
-}
-
-DefQuad::DefQuad (integrand_fcn fcn, double ll, double ul,
-		  const Vector& sing, double abs, double rel)
-  : Quad (fcn, abs, rel)
-{
-  lower_limit = ll;
-  upper_limit = ul;
-  singularities = sing;
 }
 
 double
@@ -191,33 +104,6 @@ DefQuad::integrate (int& ier, int& neval, double& abserr)
   delete [] work;
 
   return result;
-}
-
-IndefQuad::IndefQuad (integrand_fcn fcn) : Quad (fcn)
-{
-  bound = 0.0;
-  type = bound_to_inf;
-}
-
-IndefQuad::IndefQuad (integrand_fcn fcn, double b, IntegralType t)
-  : Quad (fcn)
-{
-  bound = b;
-  type = t;
-}
-
-IndefQuad::IndefQuad (integrand_fcn fcn, double b, IntegralType t,
-		      double abs, double rel) : Quad (fcn, abs, rel)
-{
-  bound = b;
-  type = t;
-}
-
-IndefQuad::IndefQuad (integrand_fcn fcn, double abs, double rel)
-  : Quad (fcn, abs, rel)
-{
-  bound = 0.0;
-  type = bound_to_inf;
 }
 
 double
@@ -262,80 +148,6 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
   delete [] work;
 
   return result;
-}
-
-Quad_options::Quad_options (void)
-{
-  init ();
-}
-
-Quad_options::Quad_options (double abs, double rel)
-{
-  x_absolute_tolerance = abs;
-  x_relative_tolerance = rel;
-}
-
-Quad_options::Quad_options (const Quad_options& opt)
-{
-  copy (opt);
-}
-
-Quad_options&
-Quad_options::operator = (const Quad_options& opt)
-{
-  if (this != &opt)
-    copy (opt);
-
-  return *this;
-}
-
-Quad_options::~Quad_options (void)
-{
-}
-
-void
-Quad_options::init (void)
-{
-  double sqrt_eps = sqrt (DBL_EPSILON);
-  x_absolute_tolerance = sqrt_eps;
-  x_relative_tolerance = sqrt_eps;
-}
-
-void
-Quad_options::copy (const Quad_options& opt)
-{
-  x_absolute_tolerance = opt.x_absolute_tolerance;
-  x_relative_tolerance = opt.x_relative_tolerance;
-}
-
-void
-Quad_options::set_default_options (void)
-{
-  init ();
-}
-
-void
-Quad_options::set_absolute_tolerance (double val)
-{
-  x_absolute_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
-}
-
-void
-Quad_options::set_relative_tolerance (double val)
-{
-  x_relative_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
-}
-
-double
-Quad_options::absolute_tolerance (void)
-{
-  return x_absolute_tolerance;
-}
-
-double
-Quad_options::relative_tolerance (void)
-{
-  return x_relative_tolerance;
 }
 
 /*

@@ -45,7 +45,7 @@ class LinConst : public Bounds
 {
 public:
 
-  LinConst (void) : Bounds () {}
+  LinConst (void) : Bounds () { }
   LinConst (int nc, int n) : Bounds (nc), A (nb, n) {}
 
   LinConst (int eq, int ineq, int n)

@@ -39,17 +39,30 @@ friend class ComplexMatrix;
 
 public:
 
-  ComplexLU (void) {}
+  ComplexLU (void) { }
 
   ComplexLU (const ComplexMatrix& a);
 
-  ComplexLU (const ComplexLU& a);
+  ComplexLU (const ComplexLU& a)
+    {
+      l = a.l;
+      u = a.u;
+      p = a.p;
+    }
 
-  ComplexLU& operator = (const ComplexLU& a);
+  ComplexLU& operator = (const ComplexLU& a)
+    {
+      l = a.l;
+      u = a.u;
+      p = a.p;
 
-  ComplexMatrix L (void) const;
-  ComplexMatrix U (void) const;
-  Matrix P (void) const;
+      return *this;
+    }
+
+  ComplexMatrix L (void) const { return l; }
+  ComplexMatrix U (void) const { return u; }
+
+  Matrix P (void) const { return p; }
 
   friend ostream&  operator << (ostream& os, const ComplexLU& a);
 
@@ -59,36 +72,6 @@ private:
   ComplexMatrix u;
   Matrix p;
 };
-
-inline ComplexLU::ComplexLU (const ComplexLU& a)
-{
-  l = a.l;
-  u = a.u;
-  p = a.p;
-}
-
-inline ComplexLU& ComplexLU::operator = (const ComplexLU& a)
-{
-  l = a.l;
-  u = a.u;
-  p = a.p;
-  return *this;
-}
-
-inline ComplexMatrix ComplexLU::L (void) const
-{
-  return l;
-}
-
-inline ComplexMatrix ComplexLU::U (void) const
-{
-  return u;
-}
-
-inline Matrix ComplexLU::P (void) const
-{
-  return p;
-}
 
 #endif
 

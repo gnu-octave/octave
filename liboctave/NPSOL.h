@@ -33,10 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "NLP.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class NPSOL_options
 {
  public:
@@ -134,47 +130,33 @@ class NPSOL : public NLP, public NPSOL_options
 
   NPSOL (void) : NLP () { }
 
-  NPSOL (const Vector& x, const Objective& phi) : NLP (x, phi) { }
+  NPSOL (const ColumnVector& x, const Objective& phi) : NLP (x, phi) { }
 
-  NPSOL (const Vector& x, const Objective& phi,
-	 const Bounds& b) : NLP (x, phi, b)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi,
+	 const Bounds& b) : NLP (x, phi, b) { }
 
-  NPSOL (const Vector& x, const Objective& phi, const Bounds& b,
-	 const LinConst& lc) : NLP (x, phi, b, lc)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b,
+	 const LinConst& lc) : NLP (x, phi, b, lc) { }
 
-  NPSOL (const Vector& x, const Objective& phi, const Bounds& b,
-	 const LinConst& lc, const NLConst& nlc) : NLP (x, phi, b, lc, nlc)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b,
+	 const LinConst& lc, const NLConst& nlc)
+    : NLP (x, phi, b, lc, nlc) { }
 
-  NPSOL (const Vector& x, const Objective& phi,
-	 const LinConst& lc) : NLP (x, phi, lc)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi,
+	 const LinConst& lc) : NLP (x, phi, lc) { }
 
-  NPSOL (const Vector& x, const Objective& phi, const LinConst& lc,
-	 const NLConst& nlc) : NLP (x, phi, lc, nlc)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi, const LinConst& lc,
+	 const NLConst& nlc) : NLP (x, phi, lc, nlc) { }
 
-  NPSOL (const Vector& x, const Objective& phi,
-	 const NLConst& nlc) : NLP (x, phi, nlc)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi,
+	 const NLConst& nlc) : NLP (x, phi, nlc) { }
 
-  NPSOL (const Vector& x, const Objective& phi, const Bounds& b,
-	 const NLConst& nlc) : NLP (x, phi, b, nlc)
-    { }
+  NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b,
+	 const NLConst& nlc) : NLP (x, phi, b, nlc) { }
 
-  NPSOL (const NPSOL& a);
+  NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc) { }
 
-  Vector minimize (void);
-  Vector minimize (double& objf);
-  Vector minimize (double& objf, int& inform);
-  Vector minimize (double& objf, int& inform, Vector& lambda);
-
-  Vector minimize (const Vector& x);
-  Vector minimize (const Vector& x, double& objf);
-  Vector minimize (const Vector& x, double& objf, int& inform);
-  Vector minimize (const Vector& x, double& objf, int& inform, Vector& lambda);
+  ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
 
   NPSOL& option (char *s);
 
@@ -186,9 +168,6 @@ class NPSOL : public NLP, public NPSOL_options
 // Nonzero means an error occurred in the calculation of the objective
 // function, and the user wants us to quit.
 extern int npsol_objective_error;
-
-inline NPSOL::NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc)
-  { }
 
 #endif
 #endif

@@ -32,48 +32,63 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "Bounds.h"
 #include "LinConst.h"
+#include "base-min.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
-class QP
+class QP : public base_minimizer
 {
  public:
 
-  QP (void);
-  QP (const Vector& x, const Matrix& H);
-  QP (const Vector& x, const Matrix& H, const Vector& c);
-  QP (const Vector& x, const Matrix& H, const Bounds& b);
-  QP (const Vector& x, const Matrix& H, const LinConst& lc);
-  QP (const Vector& x, const Matrix& H, const Vector& c, const Bounds& b);
-  QP (const Vector& x, const Matrix& H, const Vector& c, const LinConst& lc);
-  QP (const Vector& x, const Matrix& H, const Bounds& b, const LinConst& lc);
-  QP (const Vector& x, const Matrix& H, const Vector& c, const Bounds& b,
-      const LinConst& lc);
+  QP (void) : base_minimizer () { }
 
-  virtual Vector minimize (void);
-  virtual Vector minimize (double& objf);
-  virtual Vector minimize (double& objf, int& inform);
-  virtual Vector minimize (double& objf, int& inform, Vector& lambda) = 0;
+  QP (const ColumnVector& x, const Matrix& H_arg)
+    : base_minimizer (x), H (H_arg)
+      { make_h_symmetric (); }
 
-  virtual Vector minimize (const Vector& x);
-  virtual Vector minimize (const Vector& x, double& objf);
-  virtual Vector minimize (const Vector& x, double& objf, int& inform);
-  virtual Vector minimize (const Vector& x, double& objf, int& inform,
-			   Vector& lambda);
+  QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg)
+    : base_minimizer (x), H (H_arg), c (c_arg)
+      { make_h_symmetric (); }
+
+  QP (const ColumnVector& x, const Matrix& H_arg, const Bounds& b)
+    : base_minimizer (x), H (H_arg), bnds (b)
+      { make_h_symmetric (); }
+
+  QP (const ColumnVector& x, const Matrix& H_arg, const LinConst& l)
+    : base_minimizer (x), H (H_arg), lc (l)
+      { make_h_symmetric (); }
+
+  QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
+      const Bounds& b)
+    : base_minimizer (x), H (H_arg), c (c_arg), bnds (b)
+      { make_h_symmetric (); }
+
+  QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
+      const LinConst& l)
+    : base_minimizer (x), H (H_arg), c (c_arg), lc (l)
+      { make_h_symmetric (); }
+
+  QP (const ColumnVector& x, const Matrix& H_arg, const Bounds& b,
+      const LinConst& l)
+    : base_minimizer (x), H (H_arg), bnds (b), lc (l)
+      { make_h_symmetric (); }
+
+  QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
+      const Bounds& b, const LinConst& l)
+    : base_minimizer (x), H (H_arg), c (c_arg), bnds (b), lc (l)
+      { make_h_symmetric (); }
+
+  virtual ~QP (void) { }
 
  protected:
 
-  Vector x;
+  ColumnVector x;
   Matrix H;  
-  Vector c;
+  ColumnVector c;
   Bounds bnds;
   LinConst lc;
 
  private:
 
-  Matrix make_h_symmetric (void);
+  Matrix make_h_symmetric (void) { return 0.5 * (H + H.transpose ()); }
 };
 
 #endif

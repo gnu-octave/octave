@@ -38,17 +38,40 @@ friend class Matrix;
 
 public:
 
-  GEPBALANCE (void) {}
+  GEPBALANCE (void) { }
 
   GEPBALANCE (const Matrix& a, const Matrix &, const char *balance_job);
 
-  GEPBALANCE (const GEPBALANCE& a);
 
-  GEPBALANCE& operator = (const GEPBALANCE& a);
-  Matrix balanced_a_matrix (void) const;
-  Matrix balanced_b_matrix (void) const;
-  Matrix left_balancing_matrix (void) const;
-  Matrix right_balancing_matrix (void) const;
+  GEPBALANCE (const Matrix& a, const Matrix& b, const char * balance_job)
+    {
+      init (a, b, balance_job); 
+    }
+
+  GEPBALANCE (const GEPBALANCE& a)
+    {
+      balanced_a_mat = a.balanced_a_mat;
+      balanced_b_mat = a.balanced_b_mat;
+      left_balancing_mat = a.left_balancing_mat;
+      right_balancing_mat = a.right_balancing_mat;
+    }
+
+  GEPBALANCE& operator = (const GEPBALANCE& a)
+    {
+      balanced_a_mat = a.balanced_a_mat;
+      balanced_b_mat = a.balanced_b_mat;
+      left_balancing_mat = a.left_balancing_mat;
+      right_balancing_mat = a.right_balancing_mat;
+
+      return *this;
+    }
+
+  Matrix balanced_a_matrix (void) const { return balanced_a_mat; }
+  Matrix balanced_b_matrix (void) const { return balanced_b_mat; }
+
+  Matrix left_balancing_matrix (void) const { return left_balancing_mat; }
+  Matrix right_balancing_matrix (void) const { return right_balancing_mat; }
+
   friend ostream& operator << (ostream& os, const GEPBALANCE& a);
 
 private:
@@ -60,51 +83,6 @@ private:
   Matrix left_balancing_mat;
   Matrix right_balancing_mat;
 };
-
-inline GEPBALANCE::GEPBALANCE (const Matrix& a, const Matrix& b, 
-			       const char * balance_job) 
-{
-  init (a, b, balance_job); 
-}
-
-inline GEPBALANCE::GEPBALANCE (const GEPBALANCE& a)
-{
-  balanced_a_mat = a.balanced_a_mat;
-  balanced_b_mat = a.balanced_b_mat;
-  left_balancing_mat = a.left_balancing_mat;
-  right_balancing_mat = a.right_balancing_mat;
-}
-
-inline GEPBALANCE&
-GEPBALANCE::operator = (const GEPBALANCE& a)
-{
-  balanced_a_mat = a.balanced_a_mat;
-  balanced_b_mat = a.balanced_b_mat;
-  left_balancing_mat = a.left_balancing_mat;
-  right_balancing_mat = a.right_balancing_mat;
-
-  return *this;
-}
-
-inline Matrix GEPBALANCE::balanced_a_matrix (void) const 
-{
-  return balanced_a_mat;
-}
-
-inline Matrix GEPBALANCE::balanced_b_matrix (void) const 
-{
-  return balanced_b_mat;
-}
-
-inline Matrix GEPBALANCE::left_balancing_matrix (void) const 
-{
-  return left_balancing_mat;
-}
-
-inline Matrix GEPBALANCE::right_balancing_matrix (void) const 
-{
-  return right_balancing_mat;
-}
 
 #endif
 

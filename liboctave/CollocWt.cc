@@ -54,138 +54,6 @@ CollocWt::error (const char* msg)
   (*current_liboctave_error_handler) ("fatal CollocWt error: %s", msg);
 }
 
-CollocWt::CollocWt (void)
-{
-  n = 0;
-  inc_left = 0;
-  inc_right = 0;
-  lb = 0.0;
-  rb = 1.0;
-
-  Alpha = 0.0;
-  Beta = 0.0;
-
-  initialized = 0;
-}
-
-CollocWt::CollocWt (int nc, int il, int ir)
-{
-  n = nc;
-  inc_left = il;
-  inc_right = ir;
-  lb = 0.0;
-  rb = 1.0;
-
-  Alpha = 0.0;
-  Beta = 0.0;
-
-  initialized = 0;
-}
-
-CollocWt::CollocWt (int nc, int ir, int il, double l, double r)
-{
-  n = nc;
-  inc_left = il;
-  inc_right = ir;
-  lb = l;
-  rb = r;
-
-  Alpha = 0.0;
-  Beta = 0.0;
-
-  initialized = 0;
-}
-
-CollocWt::CollocWt (int nc, double a, double b, int il, int ir)
-{
-  n = nc;
-  inc_left = il;
-  inc_right = ir;
-  lb = 0.0;
-  rb = 1.0;
-
-  Alpha = a;
-  Beta = b;
-
-  initialized = 0;
-}
-
-CollocWt::CollocWt (int nc, double a, double b, int ir, int il,
-		    double l, double r)  
-{
-  n = nc;
-  inc_left = il;
-  inc_right = ir;
-  lb = l;
-  rb = r;
-
-  Alpha = a;
-  Beta = b;
-
-  initialized = 0;
-}
-
-CollocWt::CollocWt (const CollocWt& a)
-{
-  n = a.n;
-  inc_left = a.inc_left;
-  inc_right = a.inc_right;
-  lb = a.lb;
-  rb = a.rb;
-  r = a.r;
-  q = a.q;
-  A = a.A;
-  B = a.B;
-
-  nt = n + inc_left + inc_right;
-
-  initialized = a.initialized;
-}
-
-CollocWt&
-CollocWt::operator = (const CollocWt& a)
-{
-  n = a.n;
-  inc_left = a.inc_left;
-  inc_right = a.inc_right;
-  lb = a.lb;
-  rb = a.rb;
-  r = a.r;
-  q = a.q;
-  A = a.A;
-  B = a.B;
-
-  nt = a.nt;
-
-  initialized = a.initialized;
-
-  return *this;
-}
-
-CollocWt&
-CollocWt::resize (int ncol)
-{
-  n = ncol;
-  initialized = 0;
-  return *this;
-}
-
-CollocWt&
-CollocWt::add_left (void)
-{
-  inc_left = 1;
-  initialized = 0;
-  return *this;
-}
-
-CollocWt&
-CollocWt::delete_left (void)
-{
-  inc_left = 0;
-  initialized = 0;
-  return *this;
-}
-
 CollocWt&
 CollocWt::set_left (double val)
 {
@@ -201,22 +69,6 @@ CollocWt::set_left (double val)
 }
 
 CollocWt&
-CollocWt::add_right (void)
-{
-  inc_right = 1;
-  initialized = 0;
-  return *this;
-}
-
-CollocWt&
-CollocWt::delete_right (void)
-{
-  inc_right = 0;
-  initialized = 0;
-  return *this;
-}
-
-CollocWt&
 CollocWt::set_right (double val)
 {
   if (val <= lb)
@@ -226,22 +78,6 @@ CollocWt::set_right (double val)
     }
 
   rb = val;
-  initialized = 0;
-  return *this;
-}
-
-CollocWt&
-CollocWt::set_alpha (double val)
-{
-  Alpha = val;
-  initialized = 0;
-  return *this;
-}
-
-CollocWt&
-CollocWt::set_beta (double val)
-{
-  Beta = val;
   initialized = 0;
   return *this;
 }

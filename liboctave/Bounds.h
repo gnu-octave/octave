@@ -32,51 +32,98 @@ class ostream;
 
 #include "dColVector.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class Bounds
 {
 public:
 
-  Bounds (void);
-  Bounds (int n);
-  Bounds (const Vector lb, const Vector ub);
-  Bounds (const Bounds& a);
+  Bounds (void) { nb = 0; }
 
-  Bounds& operator = (const Bounds& a);
+  Bounds (int n) : lb (nb, 0.0), ub (nb, 0.0) { nb = n; }
 
-  Bounds& resize (int n);
+  Bounds (const ColumnVector lb, const ColumnVector ub);
 
-  double lower_bound (int index) const;
-  double upper_bound (int index) const;
+  Bounds (const Bounds& a)
+    {
+      nb = a.size ();
+      lb = a.lower_bounds ();
+      ub = a.upper_bounds ();
+    }
 
-  Vector lower_bounds (void) const;
-  Vector upper_bounds (void) const;
+  Bounds& operator = (const Bounds& a)
+    {
+      nb = a.size ();
+      lb = a.lower_bounds ();
+      ub = a.upper_bounds ();
 
-  int size (void) const;
+      return *this;
+    }
 
-  Bounds& set_bound (int index, double low, double high);
+  Bounds& resize (int n)
+    {
+      nb = n;
+      lb.resize (nb);
+      ub.resize (nb);
 
-  Bounds& set_bounds (double low, double high);
-  Bounds& set_bounds (const Vector lb, const Vector ub);
+      return *this;
+    }
 
-  Bounds& set_lower_bound (int index, double low);
-  Bounds& set_upper_bound (int index, double high);
+  double lower_bound (int index) const { return lb.elem (index); }
+  double upper_bound (int index) const { return ub.elem (index); }
 
-  Bounds& set_lower_bounds (double low);
-  Bounds& set_upper_bounds (double high);
+  ColumnVector lower_bounds (void) const { return lb; }
+  ColumnVector upper_bounds (void) const { return ub; }
 
-  Bounds& set_lower_bounds (const Vector lb);
-  Bounds& set_upper_bounds (const Vector ub);
+  int size (void) const { return nb; }
+
+  Bounds& set_bound (int index, double low, double high)
+    {
+      lb.elem (index) = low;
+      ub.elem (index) = high;
+      return *this;
+    }
+
+  Bounds& set_bounds (double low, double high)
+    {
+      lb.fill (low);
+      ub.fill (high);
+      return *this;
+    }
+
+  Bounds& set_bounds (const ColumnVector lb, const ColumnVector ub);
+
+  Bounds& set_lower_bound (int index, double low)
+    {
+      lb.elem (index) = low;
+      return *this;
+    }
+
+  Bounds& set_upper_bound (int index, double high)
+    {
+      ub.elem (index) = high;
+      return *this;
+    }
+
+  Bounds& set_lower_bounds (double low)
+    {
+      lb.fill (low);
+      return *this;
+    }
+
+  Bounds& set_upper_bounds (double high)
+    {
+      ub.fill (high);
+      return *this;
+    }
+
+  Bounds& set_lower_bounds (const ColumnVector lb);
+  Bounds& set_upper_bounds (const ColumnVector ub);
 
   friend ostream& operator << (ostream& os, const Bounds& b);
 
 protected:
 
-  Vector lb;
-  Vector ub;
+  ColumnVector lb;
+  ColumnVector ub;
 
   int nb;
 

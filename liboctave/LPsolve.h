@@ -32,10 +32,6 @@ class ColumnVector;
 
 #include "LP.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class LPsolve : public LP
 {
  public:
@@ -43,19 +39,19 @@ class LPsolve : public LP
   LPsolve (void) : LP ()
     { set_default_options (); }
 
-  LPsolve (const Vector& c) : LP (c)
+  LPsolve (const ColumnVector& c) : LP (c)
     { set_default_options (); }
 
-  LPsolve (const Vector& c, const Bounds& b) : LP (c, b)
+  LPsolve (const ColumnVector& c, const Bounds& b) : LP (c, b)
     { set_default_options (); }
 
-  LPsolve (const Vector& c, const Bounds& b, const LinConst& lc)
+  LPsolve (const ColumnVector& c, const Bounds& b, const LinConst& lc)
     : LP (c, b, lc) { set_default_options (); }
 
-  LPsolve (const Vector& c, const LinConst& lc) : LP (c, lc)
+  LPsolve (const ColumnVector& c, const LinConst& lc) : LP (c, lc)
     { set_default_options (); }
 
-  virtual Vector minimize (double& objf, int& inform, Vector& lambda);
+  ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
 
  private:
 

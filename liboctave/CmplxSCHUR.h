@@ -38,17 +38,41 @@ friend class ComplexMatrix;
 
 public:
 
-  ComplexSCHUR (void) {}
+  ComplexSCHUR (void) { }
 
-  ComplexSCHUR (const ComplexMatrix& a, const char *ord);
-  ComplexSCHUR (const ComplexMatrix& a, const char *ord, int& info);
+  ComplexSCHUR (const ComplexMatrix& a, const char *ord)
+    {
+      init (a,ord);
+    }
 
-  ComplexSCHUR (const ComplexSCHUR& a);
+  ComplexSCHUR (const ComplexMatrix& a, const char *ord, int& info)
+    {
+      info = init (a,ord);
+    }
 
-  ComplexSCHUR& operator = (const ComplexSCHUR& a);
+  ComplexSCHUR (const ComplexSCHUR& a)
+    {
+      schur_mat = a.schur_mat;
+      unitary_mat = a.unitary_mat;
+    }
 
-  ComplexMatrix schur_matrix (void) const;
-  ComplexMatrix unitary_matrix (void) const;
+  ComplexSCHUR& operator = (const ComplexSCHUR& a)
+    {
+      schur_mat = a.schur_mat;
+      unitary_mat = a.unitary_mat;
+
+      return *this;
+    }
+
+  ComplexMatrix schur_matrix (void) const
+    {
+      return schur_mat;
+    }
+
+  ComplexMatrix unitary_matrix (void) const
+    {
+      return unitary_mat;
+    }
 
   friend ostream& operator << (ostream& os, const ComplexSCHUR& a);
 
@@ -59,42 +83,6 @@ private:
   ComplexMatrix schur_mat;
   ComplexMatrix unitary_mat;
 };
-
-inline ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& a, const char *ord) 
-{
-  init (a,ord);
-}
-
-inline ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& a, const char *ord,
-				   int& info)
-{
-  info = init (a,ord);
-}
-
-inline ComplexSCHUR::ComplexSCHUR (const ComplexSCHUR& a)
-{
-  schur_mat = a.schur_mat;
-  unitary_mat = a.unitary_mat;
-}
-
-inline ComplexSCHUR&
-ComplexSCHUR::operator = (const ComplexSCHUR& a)
-{
-  schur_mat = a.schur_mat;
-  unitary_mat = a.unitary_mat;
-
-  return *this;
-}
-
-inline ComplexMatrix ComplexSCHUR::schur_matrix (void) const
-{
-  return schur_mat;
-}
-
-inline ComplexMatrix ComplexSCHUR::unitary_matrix (void) const
-{
-  return unitary_mat;
-}
 
 #endif
 

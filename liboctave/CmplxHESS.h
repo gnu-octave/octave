@@ -38,13 +38,32 @@ friend class ComplexMatrix;
 
 public:
 
-  ComplexHESS (void) {}
-  ComplexHESS (const ComplexMatrix& a);
-  ComplexHESS (const ComplexMatrix& a, int& info);
-  ComplexHESS (const ComplexHESS& a);
-  ComplexHESS& operator = (const ComplexHESS& a);
-  ComplexMatrix hess_matrix (void) const;
-  ComplexMatrix unitary_hess_matrix (void) const;
+  ComplexHESS (void) { }
+
+  ComplexHESS (const ComplexMatrix& a) { init (a); }
+
+  ComplexHESS (const ComplexMatrix& a, int& info) { info = init (a); }
+
+  ComplexHESS (const ComplexHESS& a)
+    {
+      hess_mat = a.hess_mat;
+      unitary_hess_mat = a.unitary_hess_mat;
+    }
+
+  ComplexHESS& operator = (const ComplexHESS& a)
+    {
+      hess_mat = a.hess_mat;
+      unitary_hess_mat = a.unitary_hess_mat;
+
+      return *this;
+    }
+
+  ComplexMatrix hess_matrix (void) const { return hess_mat; }
+
+  ComplexMatrix unitary_hess_matrix (void) const
+    {
+      return unitary_hess_mat;
+    }
 
   friend ostream& operator << (ostream& os, const ComplexHESS& a);
 
@@ -55,41 +74,6 @@ private:
   ComplexMatrix hess_mat;
   ComplexMatrix unitary_hess_mat;
 };
-
-inline ComplexHESS::ComplexHESS (const ComplexMatrix& a)
-{
-  init (a);
-}
-
-inline ComplexHESS::ComplexHESS (const ComplexMatrix& a, int& info)
-{
-  info = init (a);
-}
-
-inline ComplexHESS::ComplexHESS (const ComplexHESS& a)
-{
-  hess_mat = a.hess_mat;
-  unitary_hess_mat = a.unitary_hess_mat;
-}
-
-inline ComplexHESS&
-ComplexHESS::operator = (const ComplexHESS& a)
-{
-  hess_mat = a.hess_mat;
-  unitary_hess_mat = a.unitary_hess_mat;
-
-  return *this;
-}
-
-inline ComplexMatrix ComplexHESS::hess_matrix (void) const
-{
-  return hess_mat;
-}
-
-inline ComplexMatrix ComplexHESS::unitary_hess_matrix (void) const
-{
-  return unitary_hess_mat;
-}
 
 #endif
 

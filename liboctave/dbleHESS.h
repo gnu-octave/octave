@@ -38,16 +38,33 @@ friend class Matrix;
 
 public:
 
-  HESS (void) {}
+  HESS (void) { }
 
   HESS (const Matrix& a);
   HESS (const Matrix&a, int& info);
 
-  HESS (const HESS& a);
+  HESS (const Matrix& a) { init (a); }
 
-  HESS& operator = (const HESS& a);
-  Matrix hess_matrix (void) const;
-  Matrix unitary_hess_matrix (void) const;
+  HESS (const Matrix& a, int& info) { info = init (a); }
+
+  HESS (const HESS& a)
+    {
+      hess_mat = a.hess_mat;
+      unitary_hess_mat = a.unitary_hess_mat;
+    }
+
+  HESS& operator = (const HESS& a)
+    {
+      hess_mat = a.hess_mat;
+      unitary_hess_mat = a.unitary_hess_mat;
+
+      return *this;
+    }
+
+  Matrix hess_matrix (void) const { return hess_mat; }
+
+  Matrix unitary_hess_matrix (void) const { return unitary_hess_mat; }
+
   friend ostream& operator << (ostream& os, const HESS& a);
 
 private:
@@ -57,41 +74,6 @@ private:
   Matrix hess_mat;
   Matrix unitary_hess_mat;
 };
-
-inline HESS::HESS (const Matrix& a)
-{
-  init (a);
-}
-
-inline HESS::HESS (const Matrix& a, int& info)
-{
-  info = init (a);
-}
-
-inline HESS::HESS (const HESS& a)
-{
-  hess_mat = a.hess_mat;
-  unitary_hess_mat = a.unitary_hess_mat;
-}
-
-inline HESS&
-HESS::operator = (const HESS& a)
-{
-  hess_mat = a.hess_mat;
-  unitary_hess_mat = a.unitary_hess_mat;
-
-  return *this;
-}
-
-inline Matrix HESS::hess_matrix (void) const
-{
-  return hess_mat;
-}
-
-inline Matrix HESS::unitary_hess_matrix (void) const
-{
-  return unitary_hess_mat;
-}
 
 #endif
 

@@ -45,71 +45,48 @@ public:
       economy,
     };
 
-  SVD (void) {}
+  SVD (void) { }
 
-  SVD (const Matrix& a, SVD::type svd_type = SVD::std);
-  SVD (const Matrix& a, int& info, SVD::type svd_type = SVD::std);
 
-  SVD (const SVD& a);
+  SVD (const Matrix& a, type svd_type) { init (a, svd_type); }
 
-  SVD& operator = (const SVD& a);
+  SVD (const Matrix& a, int& info, type svd_type)
+    {
+      info = init (a, svd_type);
+    }
 
-  DiagMatrix singular_values (void) const;
-  Matrix left_singular_matrix (void) const;
-  Matrix right_singular_matrix (void) const;
+  SVD (const SVD& a)
+    {
+      sigma = a.sigma;
+      left_sm = a.left_sm;
+      right_sm = a.right_sm;
+    }
+
+  SVD& operator = (const SVD& a)
+    {
+      sigma = a.sigma;
+      left_sm = a.left_sm;
+      right_sm = a.right_sm;
+
+      return *this;
+    }
+
+  DiagMatrix singular_values (void) const { return sigma; }
+
+  Matrix left_singular_matrix (void) const { return left_sm; }
+
+  Matrix right_singular_matrix (void) const { return right_sm; }
 
   friend ostream&  operator << (ostream& os, const SVD& a);
 
 private:
 
-  int init (const Matrix& a, SVD::type svd_type = SVD::std);
+  int init (const Matrix& a, type svd_type = std);
 
   DiagMatrix sigma;
   Matrix left_sm;
   Matrix right_sm;
 };
-
-inline SVD::SVD (const Matrix& a, SVD::type svd_type)
-{
-  init (a, svd_type);
-}
-
-inline SVD::SVD (const Matrix& a, int& info, SVD::type svd_type)
-{
-  info = init (a, svd_type);
-}
-
-inline SVD::SVD (const SVD& a)
-{
-  sigma = a.sigma;
-  left_sm = a.left_sm;
-  right_sm = a.right_sm;
-}
-
-inline SVD&
-SVD::operator = (const SVD& a)
-{
-  sigma = a.sigma;
-  left_sm = a.left_sm;
-  right_sm = a.right_sm;
-
-  return *this;
-}
-
-inline DiagMatrix SVD::singular_values (void) const
-{
-  return sigma;
-}
-
-inline Matrix SVD::left_singular_matrix (void) const
-{
-  return left_sm;
-}
-
-inline Matrix SVD::right_singular_matrix (void) const
-{
-  return right_sm;
-}
 
 #endif
 

@@ -38,49 +38,43 @@ class ComplexDET
 
 public:
 
-  ComplexDET (void);
+  ComplexDET (void) { }
 
-  ComplexDET (const ComplexDET& a);
+  ComplexDET (const ComplexDET& a)
+    {
+      det[0] = a.det[0];
+      det[1] = a.det[1];
+    }
 
-  ComplexDET& operator = (const ComplexDET& a);
+  ComplexDET& operator = (const ComplexDET& a)
+    {
+      det[0] = a.det[0];
+      det[1] = a.det[1];
+
+      return *this;
+    }
 
   int value_will_overflow (void) const;
   int value_will_underflow (void) const;
+
   Complex coefficient (void) const;
+
   int exponent (void) const;
+
   Complex value (void) const;
 
   friend ostream&  operator << (ostream& os, const ComplexDET& a);
 
 private:
 
-  ComplexDET (const Complex *d);
+  ComplexDET (const Complex *d)
+    {
+      det[0] = d[0];
+      det[1] = d[1];
+    }
 
   Complex det [2];
 };
-
-inline ComplexDET::ComplexDET (void)
-{
-}
-
-inline ComplexDET::ComplexDET (const ComplexDET& a)
-{
-  det[0] = a.det[0];
-  det[1] = a.det[1];
-}
-
-inline ComplexDET& ComplexDET::operator = (const ComplexDET& a)
-{
-  det[0] = a.det[0];
-  det[1] = a.det[1];
-  return *this;
-}
-
-inline ComplexDET::ComplexDET (const Complex *d)
-{
-  det[0] = d[0];
-  det[1] = d[1];
-}
 
 #endif
 

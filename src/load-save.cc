@@ -1726,7 +1726,7 @@ save_binary_data (ostream& os, const octave_value& tc,
       os.write (&tmp, 1);
       FOUR_BYTE_INT nr = tc.rows ();
       os.write (&nr, 4);
-      charMatrix chm = tc.all_strings ();
+      charMatrix chm = tc.char_matrix_value ();
       for (int i = 0; i < nr; i++)
 	{
 	  FOUR_BYTE_INT len = chm.cols ();
@@ -2039,7 +2039,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
   else if (tc.is_string ())
     {
       ascii_save_type (os, "string array", mark_as_global);
-      charMatrix chm = tc.all_strings ();
+      charMatrix chm = tc.char_matrix_value ();
       int elements = chm.rows ();
       os << "# elements: " << elements << "\n";
       for (int i = 0; i < elements; i++)

@@ -1,3 +1,8 @@
+2002-05-02  Cai Jianming <caijianming@yahoo.co.uk>
+
+	* OPERATORS/op-bm-b.cc: New file.x
+	* Makefile.in (OP_XSRC): Add it to the list.
+
 2002-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (print_version_and_exit): Use

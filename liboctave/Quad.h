@@ -1,7 +1,7 @@
 // Quad.h                                           -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,25 +46,28 @@ typedef double (*integrand_fcn) (double x);
 // function, and the user wants us to quit.
 extern int quad_integration_error;
 
-class Quad_options
+class
+Quad_options
 {
  public:
 
   Quad_options (void) { init (); }
 
+  // XXX FIXME XXX -- check for invalid values?
   Quad_options (double abs, double rel)
-    {
-      x_absolute_tolerance = abs;
-      x_relative_tolerance = rel;
-    }
+    : x_absolute_tolerance (abs), x_relative_tolerance (rel) { }
 
-  Quad_options (const Quad_options& opt) { copy (opt); }
+  Quad_options (const Quad_options& opt)
+    : x_absolute_tolerance (opt.x_absolute_tolerance),
+      x_relative_tolerance (opt.x_relative_tolerance) { }
 
   Quad_options& operator = (const Quad_options& opt)
     {
       if (this != &opt)
-	copy (opt);
-
+	{
+	  x_absolute_tolerance = opt.x_absolute_tolerance;
+	  x_relative_tolerance = opt.x_relative_tolerance;
+	}
       return *this;
     }
 
@@ -72,28 +75,17 @@ class Quad_options
 
   void init (void)
     {
-      double sqrt_eps = sqrt (DBL_EPSILON);
+      double sqrt_eps = ::sqrt (DBL_EPSILON);
+
       x_absolute_tolerance = sqrt_eps;
       x_relative_tolerance = sqrt_eps;
     }
 
-  void copy (const Quad_options& opt)
-    {
-      x_absolute_tolerance = opt.x_absolute_tolerance;
-      x_relative_tolerance = opt.x_relative_tolerance;
-    }
-
   void set_default_options (void) { init (); }
 
-  void set_absolute_tolerance (double val)
-    {
-      x_absolute_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
-    }
-
-  void set_relative_tolerance (double val)
-    {
-      x_relative_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
-    }
+  // XXX FIXME XXX -- check for invalid values?
+  void set_absolute_tolerance (double val) { x_absolute_tolerance = val; }
+  void set_relative_tolerance (double val) { x_relative_tolerance = val; }
 
   double absolute_tolerance (void) { return x_absolute_tolerance; }
   double relative_tolerance (void) { return x_relative_tolerance; }
@@ -104,13 +96,16 @@ class Quad_options
   double x_relative_tolerance;
 };
 
-class Quad : public Quad_options
+class
+Quad : public Quad_options
 {
  public:
 
-  Quad (integrand_fcn fcn) { f = fcn; }
+  Quad (integrand_fcn fcn)
+    : Quad_options (), f (fcn) { }
+
   Quad (integrand_fcn fcn, double abs, double rel)
-    : Quad_options (abs, rel) { f = fcn; }
+    : Quad_options (abs, rel), f (fcn) { }
 
   virtual double integrate (void)
     {
@@ -139,59 +134,40 @@ class Quad : public Quad_options
   integrand_fcn f;
 };
 
-class DefQuad : public Quad
+class
+DefQuad : public Quad
 {
  public:
 
-  DefQuad (integrand_fcn fcn) : Quad (fcn)
-    {
-      lower_limit = 0.0;
-      upper_limit = 1.0;
-    }
+  DefQuad (integrand_fcn fcn)
+    : Quad (fcn), lower_limit (0.0), upper_limit (1.0), singularities () { }
 
-  DefQuad (integrand_fcn fcn, double ll, double ul) : Quad (fcn) 
-    {
-      lower_limit = ll;
-      upper_limit = ul;
-    }
+  DefQuad (integrand_fcn fcn, double ll, double ul)
+    : Quad (fcn), lower_limit (ll), upper_limit (ul), singularities () { }
 
   DefQuad (integrand_fcn fcn, double ll, double ul, double abs,
-	   double rel) : Quad (fcn, abs, rel)
-    {
-      lower_limit = ll;
-      upper_limit = ul;
-    }
+	   double rel)
+    : Quad (fcn, abs, rel), lower_limit (ll), upper_limit (ul),
+      singularities () { }
 
   DefQuad (integrand_fcn fcn, double ll, double ul,
-	   const ColumnVector& sing) : Quad (fcn)
-    {
-      lower_limit = ll;
-      upper_limit = ul;
-      singularities = sing;
-    }
+	   const ColumnVector& sing)
+    : Quad (fcn), lower_limit (ll), upper_limit (ul),
+      singularities (sing) { }
 
   DefQuad (integrand_fcn fcn, const ColumnVector& sing, double abs,
-	   double rel) : Quad (fcn, abs, rel)
-    {
-      lower_limit = 0.0;
-      upper_limit = 1.0;
-      singularities = sing;
-    }
+	   double rel)
+    : Quad (fcn, abs, rel), lower_limit (0.0), upper_limit (1.0),
+      singularities (sing) { }
 
-  DefQuad (integrand_fcn fcn, const ColumnVector& sing) : Quad (fcn)
-    {
-      lower_limit = 0.0;
-      upper_limit = 1.0;
-      singularities = sing;
-    }
+  DefQuad (integrand_fcn fcn, const ColumnVector& sing)
+    : Quad (fcn), lower_limit (0.0), upper_limit (1.0),
+      singularities (sing) { }
 
   DefQuad (integrand_fcn fcn, double ll, double ul, const ColumnVector& sing,
-	   double abs, double rel) : Quad (fcn, abs, rel)
-    {
-      lower_limit = ll;
-      upper_limit = ul;
-      singularities = sing;
-    }
+	   double abs, double rel)
+    : Quad (fcn, abs, rel), lower_limit (ll), upper_limit (ul),
+      singularities (sing) { }
 
   double integrate (int& ier, int& neval, double& abserr);
 
@@ -203,44 +179,33 @@ class DefQuad : public Quad
   ColumnVector singularities;
 };
 
-class IndefQuad : public Quad
+class
+IndefQuad : public Quad
 {
  public:
 
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
-  IndefQuad (integrand_fcn fcn) : Quad (fcn)
-    {
-      bound = 0.0;
-      type = bound_to_inf;
-    }
+  IndefQuad (integrand_fcn fcn)
+    : Quad (fcn), bound (0.0), type (bound_to_inf) { }
 
-  IndefQuad (integrand_fcn fcn, double b, IntegralType t) : Quad (fcn)
-    {
-      bound = b;
-      type = t;
-    }
+  IndefQuad (integrand_fcn fcn, double b, IntegralType t)
+    : Quad (fcn), bound (b), type (t) { }
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t, double abs,
-	     double rel) : Quad (fcn, abs, rel)
-    {
-      bound = b;
-      type = t;
-    }
+	     double rel)
+    : Quad (fcn, abs, rel), bound (b), type (t) { }
 
-  IndefQuad (integrand_fcn fcn, double abs, double rel) : Quad (fcn, abs, rel)
-    {
-      bound = 0.0;
-      type = bound_to_inf;
-    }
+  IndefQuad (integrand_fcn fcn, double abs, double rel)
+    : Quad (fcn, abs, rel), bound (0.0), type (bound_to_inf) { }
 
   double integrate (int& ier, int& neval, double& abserr);
 
  private:
 
-  int integration_error;
   double bound;
   IntegralType type;
+  int integration_error;
 };
 
 #endif

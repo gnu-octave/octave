@@ -1,5 +1,7 @@
 Tue Jun  3 16:47:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (symbol_out_of_date): Make it work again.
+
 	* parse.y (parse_and_execute): Move here from toplev.cc
 	(default_eval_print_flag): Likewise.
 	(safe_fclose): Likewise.

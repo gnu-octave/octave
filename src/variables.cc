@@ -489,25 +489,24 @@ symbol_out_of_date (symbol_record *sr)
     {
       octave_value ans = sr->def ();
 
-      if (! Vignore_function_time_stamp && ans.is_defined ())
+      octave_function *tmp = ans.function_value (true);
+
+      if (tmp)
 	{
-	  octave_function *tmp = ans.function_value (true);
+	  string ff = tmp->fcn_file_name ();
 
-	  if (tmp && tmp->is_system_fcn_file ())
+	  if (! (ff.empty ()
+		 || (Vignore_function_time_stamp
+		     && tmp->is_system_fcn_file ())))
 	    {
-	      string ff = tmp->fcn_file_name ();
+	      time_t tp = tmp->time_parsed ();
 
-	      if (! ff.empty ())
-		{
-		  time_t tp = tmp->time_parsed ();
+	      string fname = fcn_file_in_path (ff);
 
-		  string fname = fcn_file_in_path (ff);
+	      int status = file_stat::is_newer (fname, tp);
 
-		  int status = file_stat::is_newer (fname, tp);
-
-		  if (status > 0)
-		    retval = true;
-		}
+	      if (status > 0)
+		retval = true;
 	    }
 	}
     }

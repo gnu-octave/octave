@@ -84,6 +84,8 @@ octave_complex_matrix::try_narrowing_conversion (void)
       else if (cm.all_elements_are_real ())
 	retval = new octave_matrix (::real (cm));
     }
+  else if (matrix.all_elements_are_real ())
+    retval = new octave_matrix (::real (matrix));
 
   return retval;
 }

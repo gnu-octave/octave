@@ -1,3 +1,13 @@
+2004-08-02  John W. Eaton  <jwe@octave.org>
+
+	* ov-cx-mat.cc (try_narrowing_conversion): Also allow complex to
+	real conversion for N-d arrays.
+
+2004-07-30  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (<COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}*):
+	Also recognize \r as a word list separator.
+
 2004-07-27  John W. Eaton  <jwe@octave.org>
 
 	* bitfcns.cc (DO_BITSHIFT): Pass mask to bitshift.

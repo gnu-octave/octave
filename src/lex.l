@@ -337,7 +337,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     COUNT_TOK_AND_RETURN (handle_string (yytext[0], true));
   }
 
-<COMMAND_START>[^#% \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
+<COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
     std::string tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, STRING);
   }

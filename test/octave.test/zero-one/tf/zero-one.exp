@@ -1,187 +1,186 @@
 ## Tests with:
 ##
-## prefer_zero_one_indexing == "true"
 ## prefer_column_vectors    == "true"
 ## do_fortran_indexing      == "false"
 
 ## scalar tests
 
-set test zero-one-ttf-s-1
+set test zero-one-tf-s-1
 set prog_output "error:.*"
 do_test s-1.m
 
-set test zero-one-ttf-s-2
+set test zero-one-tf-s-2
 set prog_output "ans = *1"
 do_test s-2.m
 
-set test zero-one-ttf-s-3
+set test zero-one-tf-s-3
 set prog_output "ans = *1"
 do_test s-3.m
 
-set test zero-one-ttf-s-4
+set test zero-one-tf-s-4
 set prog_output "ans = *1"
 do_test s-4.m
 
 ## vector tests
 
-set test zero-one-ttf-v-1
+set test zero-one-tf-v-1
 set prog_output "ans = *1"
 do_test v-1.m
 
-set test zero-one-ttf-v-2
+set test zero-one-tf-v-2
 set prog_output "ans = *1"
 do_test v-2.m
 
-set test zero-one-ttf-v-3
+set test zero-one-tf-v-3
 set prog_output "ans = *1"
 do_test v-3.m
 
-set test zero-one-ttf-v-4
+set test zero-one-tf-v-4
 set prog_output "ans = *1"
 do_test v-4.m
 
 ## matrix tests
 
-set test zero-one-ttf-m-1
+set test zero-one-tf-m-1
 set prog_output "error:.*"
 do_test m-1.m
 
-set test zero-one-ttf-m-2
+set test zero-one-tf-m-2
 set prog_output "error:.*"
 do_test m-2.m
 
-set test zero-one-ttf-m-3
+set test zero-one-tf-m-3
 set prog_output "error:.*"
 do_test m-3.m
 
-set test zero-one-ttf-m-4
+set test zero-one-tf-m-4
 set prog_output "ans = *1"
 do_test m-4.m
 
-set test zero-one-ttf-m-5
+set test zero-one-tf-m-5
 set prog_output "ans = *1"
 do_test m-5.m
 
-set test zero-one-ttf-m-6
+set test zero-one-tf-m-6
 set prog_output "ans = *1"
 do_test m-6.m
 
-set test zero-one-ttf-m-7
+set test zero-one-tf-m-7
 set prog_output "ans = *1"
 do_test m-7.m
 
-set test zero-one-ttf-m-8
+set test zero-one-tf-m-8
 set prog_output "ans = *1"
 do_test m-8.m
 
-set test zero-one-ttf-m-9
+set test zero-one-tf-m-9
 set prog_output "ans = *1"
 do_test m-9.m
 
-set test zero-one-ttf-m-10
+set test zero-one-tf-m-10
 set prog_output "ans = *1"
 do_test m-10.m
 
-set test zero-one-ttf-m-11
+set test zero-one-tf-m-11
 set prog_output "ans = *1"
 do_test m-11.m
 
-set test zero-one-ttf-m-12
+set test zero-one-tf-m-12
 set prog_output "ans = *1"
 do_test m-12.m
 
-set test zero-one-ttf-m-13
+set test zero-one-tf-m-13
 set prog_output "ans = *1"
 do_test m-13.m
 
-set test zero-one-ttf-m-14
+set test zero-one-tf-m-14
 set prog_output "ans = *1"
 do_test m-14.m
 
-set test zero-one-ttf-m-15
+set test zero-one-tf-m-15
 set prog_output "ans = *1"
 do_test m-15.m
 
-set test zero-one-ttf-m-16
+set test zero-one-tf-m-16
 set prog_output "ans = *1"
 do_test m-16.m
 
-set test zero-one-ttf-m-17
+set test zero-one-tf-m-17
 set prog_output "ans = *1"
 do_test m-17.m
 
-set test zero-one-ttf-m-18
+set test zero-one-tf-m-18
 set prog_output "ans = *1"
 do_test m-18.m
 
-set test zero-one-ttf-m-19
+set test zero-one-tf-m-19
 set prog_output "ans = *1"
 do_test m-19.m
 
-set test zero-one-ttf-m-20
+set test zero-one-tf-m-20
 set prog_output "ans = *1"
 do_test m-20.m
 
-set test zero-one-ttf-m-21
+set test zero-one-tf-m-21
 set prog_output "ans = *1"
 do_test m-21.m
 
-set test zero-one-ttf-m-22
+set test zero-one-tf-m-22
 set prog_output "ans = *1"
 do_test m-22.m
 
-set test zero-one-ttf-m-23
+set test zero-one-tf-m-23
 set prog_output "ans = *1"
 do_test m-23.m
 
-set test zero-one-ttf-m-24
+set test zero-one-tf-m-24
 set prog_output "ans = *1"
 do_test m-24.m
 
-set test zero-one-ttf-m-25
+set test zero-one-tf-m-25
 set prog_output "ans = *1"
 do_test m-25.m
 
-set test zero-one-ttf-m-26
+set test zero-one-tf-m-26
 set prog_output "ans = *1"
 do_test m-26.m
 
-set test zero-one-ttf-m-27
+set test zero-one-tf-m-27
 set prog_output "ans = *1"
 do_test m-27.m
 
-set test zero-one-ttf-m-28
+set test zero-one-tf-m-28
 set prog_output "ans = *1"
 do_test m-28.m
 
-set test zero-one-ttf-m-29
+set test zero-one-tf-m-29
 set prog_output "ans = *1"
 do_test m-29.m
 
-set test zero-one-ttf-m-30
+set test zero-one-tf-m-30
 set prog_output "ans = *1"
 do_test m-30.m
 
-set test zero-one-ttf-m-31
+set test zero-one-tf-m-31
 set prog_output "ans = *1"
 do_test m-31.m
 
-set test zero-one-ttf-m-32
+set test zero-one-tf-m-32
 set prog_output "ans = *1"
 do_test m-32.m
 
-set test zero-one-ttf-m-33
+set test zero-one-tf-m-33
 set prog_output "ans = *1"
 do_test m-33.m
 
-set test zero-one-ttf-m-34
+set test zero-one-tf-m-34
 set prog_output "ans = *1"
 do_test m-34.m
 
-set test zero-one-ttf-m-35
+set test zero-one-tf-m-35
 set prog_output "ans = *1"
 do_test m-35.m
 
-set test zero-one-ttf-m-36
+set test zero-one-tf-m-36
 set prog_output "ans = *1"
 do_test m-36.m

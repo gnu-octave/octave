@@ -96,7 +96,7 @@ function fmt = plot_opt (caller, opt)
 # First get next char.
 
     if (max (size (opt)) > 1)
-      [char, opt] = sscanf (opt, "%c %s");
+      [char, opt] = sscanf (opt, "%c %s", "C");
     else
       char = opt;
       more_opts = 0;

@@ -56,6 +56,8 @@ extern void octave_save_signal_mask (void);
 
 extern void octave_restore_signal_mask (void);
 
+// extern void ignore_sigchld (void);
+
 // This is taken directly from Emacs 19:
 
 #ifndef SYS_SIGLIST_DECLARED
@@ -115,6 +117,8 @@ public:
 
   static void insert (pid_t pid, octave_child::dead_child_handler f);
 
+  static void remove (pid_t pid);
+
   static int length (void) { return instance ? instance->curr_len : 0; }
 
   static octave_child& elem (int i)
@@ -141,6 +145,8 @@ private:
   static octave_child_list *instance;
 
   void do_insert (pid_t pid, octave_child::dead_child_handler f);
+
+  void do_remove (pid_t pid);
 };
 
 #endif

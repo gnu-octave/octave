@@ -32,6 +32,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdio.h>
 #include <iostream.h>
 
+#include "SLList.h"
+
 #include "variables.h"
 #include "mappers.h"
 #include "error.h"
@@ -49,6 +51,7 @@ class symbol_table;
 class tree_matrix;
 class tree_builtin;
 class tree_identifier;
+class tree_indirect_ref;
 class tree_function;
 class tree_expression;
 class tree_prefix_expression;
@@ -120,6 +123,9 @@ public:
     { return 0; }
 
   virtual int is_identifier (void) const
+    { return 0; }
+
+  virtual int is_indirect_ref (void) const
     { return 0; }
 
   virtual int is_index_expression (void) const
@@ -222,6 +228,8 @@ public:
   virtual void bump_value (tree_expression::type)
     { panic_impossible (); }
 
+  virtual tree_constant lookup_map_element (SLList<char*>& list);
+
   virtual int max_expected_args (void)
     { panic_impossible (); return 0; }
   
@@ -274,17 +282,17 @@ public:
   tree_constant assign (tree_constant& t);
   tree_constant assign (tree_constant& t, const Octave_object& args);
 
+  tree_constant assign (SLList<char*> list, tree_constant& t);
+  tree_constant assign (SLList<char*> list, tree_constant& t,
+			const Octave_object& args); 
+
   int is_defined (void);
 
   void bump_value (tree_expression::type);
 
-  tree_fvc *do_lookup (int& script_file_executed);
+  tree_fvc *do_lookup (int& script_file_executed, int exec_script = 1);
 
-  void link_to_global (void)
-    {
-      if (sym)
-	::link_to_global_variable (sym);
-    }
+  void link_to_global (void);
 
   void mark_as_formal_parameter (void);
 
@@ -304,12 +312,57 @@ private:
   int maybe_do_ans_assign;
 };
 
+// Indirect references to values (structure references).
+
+class
+tree_indirect_ref : public tree_fvc
+{
+public:
+  tree_indirect_ref (int l = -1, int c = -1) : tree_fvc (l, c)
+    { id = 0; }
+
+  tree_indirect_ref (tree_identifier *i, int l = -1, int c = -1)
+    : tree_fvc (l, c)
+      { id = i; }
+
+  ~tree_indirect_ref (void);
+
+  tree_indirect_ref *chain (const char *s);
+
+  int is_indirect_ref (void) const
+    { return 1; }
+
+  int is_identifier_only (void) const
+    { return (id && refs.empty ()); }
+
+  tree_identifier *ident (void)
+    { return id; }
+
+  char *name (void);
+
+  tree_constant assign (tree_constant& t);
+  tree_constant assign (tree_constant& t, const Octave_object& args);
+
+  void mark_for_possible_ans_assign (void)
+    { id->mark_for_possible_ans_assign (); }
+
+  tree_constant eval (int print);
+
+  Octave_object eval (int print, int nargout, const Octave_object& args);
+
+  void print_code (ostream& os);
+
+private:
+  tree_identifier *id;
+  SLList<char*> refs;
+};
+
 // Index expressions.
 
 class
 tree_index_expression : public tree_multi_val_ret
 {
- public:
+public:
   tree_index_expression (int l = -1, int c = -1) : tree_multi_val_ret (l, c)
     {
       id = 0;
@@ -319,11 +372,26 @@ tree_index_expression : public tree_multi_val_ret
   tree_index_expression (tree_identifier *i, int l = -1, int c = -1)
     : tree_multi_val_ret (l, c)
       {
-	id = i;
+	id = new tree_indirect_ref (i);
 	list = 0;
       }
 
   tree_index_expression (tree_identifier *i, tree_argument_list *lst,
+			 int l = -1, int c = -1)
+    : tree_multi_val_ret (l, c)
+      {
+	id = new tree_indirect_ref (i);
+	list = lst;
+      }
+
+  tree_index_expression (tree_indirect_ref *i, int l = -1, int c = -1)
+    : tree_multi_val_ret (l, c)
+      {
+	id = i;
+	list = 0;
+      }
+
+  tree_index_expression (tree_indirect_ref *i, tree_argument_list *lst,
 			 int l = -1, int c = -1)
     : tree_multi_val_ret (l, c)
       {
@@ -336,8 +404,11 @@ tree_index_expression : public tree_multi_val_ret
   int is_index_expression (void) const
     { return 1; }
 
-  tree_identifier *ident (void)
+  tree_indirect_ref *ident (void)
     { return id; }
+
+  char *name (void)
+    { return id->name (); }
 
   tree_argument_list *arg_list (void)
     { return list; }
@@ -357,7 +428,7 @@ tree_index_expression : public tree_multi_val_ret
   void print_code (ostream& os);
 
  private:
-  tree_identifier *id;
+  tree_indirect_ref *id;
   tree_argument_list *list;
 };
 
@@ -515,7 +586,7 @@ tree_binary_expression : public tree_expression
 class
 tree_simple_assignment_expression : public tree_expression
 {
- public:
+private:
   void init (int plhs, int ans_assign)
     {
       etype = tree_expression::assignment;
@@ -526,12 +597,24 @@ tree_simple_assignment_expression : public tree_expression
       ans_ass = ans_assign;
     }
 
+ public:
   tree_simple_assignment_expression (int plhs = 0, int ans_assign = 0,
 				     int l = -1, int c = -1)
     : tree_expression (l, c)
       { init (plhs, ans_assign); }
 
   tree_simple_assignment_expression (tree_identifier *i,
+				     tree_expression *r,
+				     int plhs = 0, int ans_assign = 0,
+				     int l = -1, int c = -1)
+    : tree_expression (l, c)
+      {
+	init (plhs, ans_assign);
+	lhs = new tree_indirect_ref (i);
+	rhs = r;
+      }
+
+  tree_simple_assignment_expression (tree_indirect_ref *i,
 				     tree_expression *r,
 				     int plhs = 0, int ans_assign = 0,
 				     int l = -1, int c = -1)
@@ -556,8 +639,11 @@ tree_simple_assignment_expression : public tree_expression
 
   ~tree_simple_assignment_expression (void);
 
-  tree_identifier *left_hand_side (void)
-    { return lhs; }
+  int left_hand_side_is_identifier_only (void)
+    { return lhs->is_identifier_only (); }
+
+  tree_identifier *left_hand_side_id (void)
+    { return lhs->ident (); }
 
   int is_ans_assign (void)
     { return ans_ass; }
@@ -572,7 +658,7 @@ tree_simple_assignment_expression : public tree_expression
   void print_code (ostream& os);
 
  private:
-  tree_identifier *lhs;
+  tree_indirect_ref *lhs;
   tree_argument_list *index;
   tree_expression *rhs;
   int preserve;
@@ -715,7 +801,7 @@ private:
 class
 tree_function : public tree_fvc
 {
-public:
+private:
   void init (void)
     {
       call_depth = 0;
@@ -733,6 +819,7 @@ public:
       vr_list = 0;
     }
 
+public:
   tree_function (int l = -1, int c = -1) : tree_fvc (l, c)
     { init (); }
 

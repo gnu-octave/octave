@@ -353,6 +353,9 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
 	int i = NINT (tmp_i.double_value ());
 	int idx = i - 1;
 
+	if (index_check (idx, "") < 0)
+	  return;
+
 	if (rhs_nr == 0 && rhs_nc == 0)
 	  {
 	    if (idx < nr * nc)
@@ -371,9 +374,6 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
 	      }
 	    return;
 	  }
-
-	if (index_check (idx, "") < 0)
-	  return;
 
 	if (nr <= 1 || nc <= 1)
 	  {

@@ -2,7 +2,7 @@ function [k, p, e] = dlqr (a, b, q, r, zz)
 
 # Usage: [k, p, e] = dlqr (A, B, Q, R {,Z})
 #
-# Linear quadratic regulator design for the continuous time system
+# Linear quadratic regulator design for the discrete time system
 #
 #   x[k+1] = A x[k] + B u[k]
 #

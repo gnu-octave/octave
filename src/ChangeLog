@@ -7,8 +7,7 @@
 	break out of parse-execute loop.
 	(parse_fcn_file): Likewise.
 	(eval_string): Likewise.
-	* toplev.cc (main_loop): Likewise.
-	
+	* toplev.cc (main_loop): Likewise.	
 
 	* parse.y (input): Call YYACCEPT for END_OF_INPUT.
 	Return no-op command for bare newline.

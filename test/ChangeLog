@@ -1,3 +1,8 @@
+2002-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/linalg/qr-7.m: New test.
+	From Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>.
+	
 2001-04-24  Christoph Spiel <cspiel@hammersmith-consulting.com>
 
 	* Makefile.in (check): Allow user to specify which .exp file to run.

@@ -31,138 +31,481 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "tree-const.h"
 
-static void
-mx_sort (Matrix& m, Matrix& idx, int return_idx)
+// This is algorithm 5.2.4L from Knuth, Volume 3.
+
+// XXX FIXME XXX -- there is way too much duplicated code here given
+// that the sort algorithms are all the same, and only the type of the
+// data and the comparison changes...
+
+static Octave_object
+mx_sort (const Matrix& m)
 {
+  Octave_object retval;
+
   int nr = m.rows ();
   int nc = m.columns ();
-  idx.resize (nr, nc);
-  int i, j;
 
-  if (return_idx)
-    {
-      for (j = 0; j < nc; j++)
-	for (i = 0; i < nr; i++)
-	  idx.elem (i, j) = i+1;
-    }
+  Matrix ms (nr, nc);
+  Matrix idx (nr, nc);
 
-  for (j = 0; j < nc; j++)
+  if (nr > 0 && nc > 0)
     {
-      for (int gap = nr/2; gap > 0; gap /= 2)
-	for (i = gap; i < nr; i++)
-	  for (int k = i - gap;
-	       k >= 0 && m.elem (k, j) > m.elem (k+gap, j);
-	       k -= gap)
+      for (int j = 0; j < nc; j++)
+	{
+	  Array<int> l (nr+2);
+
+	  l (0) = 1;
+	  for (int i = 1; i < nr - 1; i++)
+	    l (i) = -(i+2);
+	  l (nr-1) = 0;
+	  l (nr) = 0;
+	  l (nr+1) = 2;
+
+	  while (1)
 	    {
-	      double tmp = m.elem (k, j);
-	      m.elem (k, j) = m.elem (k+gap, j);
-	      m.elem (k+gap, j) = tmp;
+	      int s = 0;
+	      int t = nr + 1;
+	      int p = l (s);
+	      int q = l (t);
 
-	      if (return_idx)
+	      if (q == 0)
+		break;
+
+	      while (1)
 		{
-		  double tmp = idx.elem (k, j);
-		  idx.elem (k, j) = idx.elem (k+gap, j);
-		  idx.elem (k+gap, j) = tmp;
+		  if (m (p-1, j) > m (q-1, j))
+		    {
+		      l (s) = (l (s) < 0)
+			? ((q < 0) ? q : -q)
+			  : ((q >= 0) ? q : -q);
+		      s = q;
+		      q = l (q);
+		      if (q <= 0)
+			{
+			  l (s) = p;
+			  s = t;
+			  do
+			    {
+			      t = p;
+			      p = l (p);
+			    }
+			  while (p > 0);
+			  p = -p;
+			  q = -q;
+			  if (q == 0)
+			    {
+			      l (s) = (l (s) < 0)
+				? ((p < 0) ? p : -p)
+				  : ((p >= 0) ? p : -p);
+			      l (t) = 0;
+			      break;
+			    }
+			}
+		    }
+		  else
+		    {
+		      l (s) = (l (s) < 0)
+			? ((p < 0) ? p : -p)
+			  : ((p >= 0) ? p : -p);
+		      s = p;
+		      p = l (p);
+		      if (p <= 0)
+			{
+			  l (s) = q;
+			  s = t;
+			  do
+			    {
+			      t = q;
+			      q = l (q);
+			    }
+			  while (q > 0);
+			  p = -p;
+			  q = -q;
+			  if (q == 0)
+			    {
+			      l (s) = (l (s) < 0)
+				? ((p < 0) ? p : -p)
+				  : ((p >= 0) ? p : -p);
+			      l (t) = 0;
+			      break;
+			    }		      
+			}
+		    }
 		}
 	    }
-    }
-}
 
-static void
-mx_sort (RowVector& v, RowVector& idx, int return_idx)
-{
-  int n = v.capacity ();
-  idx.resize (n);
-  int i;
-
-  if (return_idx)
-    for (i = 0; i < n; i++)
-      idx.elem (i) = i+1;
-
-  for (int gap = n/2; gap > 0; gap /= 2)
-    for (i = gap; i < n; i++)
-      for (int k = i - gap;
-	   k >= 0 && v.elem (k) > v.elem (k+gap);
-	   k -= gap)
-	{
-	  double tmp = v.elem (k);
-	  v.elem (k) = v.elem (k+gap);
-	  v.elem (k+gap) = tmp;
-
-	  if (return_idx)
+	  int k = l (0);
+	  idx (0, j) = k;
+	  ms (0, j) = m (k-1, j);
+	  for (int i = 1; i < nr; i++)
 	    {
-	      double tmp = idx.elem (k);
-	      idx.elem (k) = idx.elem (k+gap);
-	      idx.elem (k+gap) = tmp;
+	      k = l ((int) idx (i-1, j));
+	      idx (i, j) = k;
+	      ms (i, j) = m (k-1, j);
 	    }
 	}
+    }
+
+  retval (1) = idx;
+  retval (0) = ms;
+
+  return retval;
 }
 
-static void
-mx_sort (ComplexMatrix& cm, Matrix& idx, int return_idx)
+static Octave_object
+mx_sort (const RowVector& v)
 {
+  Octave_object retval;
+
+  int n = v.capacity ();
+
+  RowVector vs (n);
+  RowVector idx (n);
+
+  if (n > 0)
+    {
+      Array<int> l (n+2);
+
+      l (0) = 1;
+      for (int i = 1; i < n - 1; i++)
+	l (i) = -(i+2);
+      l (n-1) = 0;
+      l (n) = 0;
+      l (n+1) = 2;
+
+      while (1)
+	{
+	  int s = 0;
+	  int t = n + 1;
+	  int p = l (s);
+	  int q = l (t);
+
+	  if (q == 0)
+	    break;
+
+	  while (1)
+	    {
+	      if (v (p-1) > v (q-1))
+		{
+		  l (s) = (l (s) < 0)
+		    ? ((q < 0) ? q : -q)
+		      : ((q >= 0) ? q : -q);
+		  s = q;
+		  q = l (q);
+		  if (q <= 0)
+		    {
+		      l (s) = p;
+		      s = t;
+		      do
+			{
+			  t = p;
+			  p = l (p);
+			}
+		      while (p > 0);
+		      p = -p;
+		      q = -q;
+		      if (q == 0)
+			{
+			  l (s) = (l (s) < 0)
+			    ? ((p < 0) ? p : -p)
+			      : ((p >= 0) ? p : -p);
+			  l (t) = 0;
+			  break;
+			}
+		    }
+		}
+	      else
+		{
+		  l (s) = (l (s) < 0)
+		    ? ((p < 0) ? p : -p)
+		      : ((p >= 0) ? p : -p);
+		  s = p;
+		  p = l (p);
+		  if (p <= 0)
+		    {
+		      l (s) = q;
+		      s = t;
+		      do
+			{
+			  t = q;
+			  q = l (q);
+			}
+		      while (q > 0);
+		      p = -p;
+		      q = -q;
+		      if (q == 0)
+			{
+			  l (s) = (l (s) < 0)
+			    ? ((p < 0) ? p : -p)
+			      : ((p >= 0) ? p : -p);
+			  l (t) = 0;
+			  break;
+			}		      
+		    }
+		}
+	    }
+	}
+
+      int k = l (0);
+      idx (0) = k;
+      vs (0) = v (k-1);
+      for (int i = 1; i < n; i++)
+	{
+	  k = l ((int) idx (i-1));
+	  idx (i) = k;
+	  vs (i) = v (k-1);
+	}
+    }
+
+  retval (1) = tree_constant (idx, 0);
+  retval (0) = tree_constant (vs, 0);
+
+  return retval;
+}
+
+static Octave_object
+mx_sort (const ComplexMatrix& cm)
+{
+  Octave_object retval;
+
   int nr = cm.rows ();
   int nc = cm.columns ();
-  idx.resize (nr, nc);
-  int i, j;
 
-  if (return_idx)
-    {
-      for (j = 0; j < nc; j++)
-	for (i = 0; i < nr; i++)
-	  idx.elem (i, j) = i+1;
-    }
+  ComplexMatrix cms (nr, nc);
+  Matrix idx (nr, nc);
 
-  for (j = 0; j < nc; j++)
+  if (nr > 0 && nc > 0)
     {
-      for (int gap = nr/2; gap > 0; gap /= 2)
-	for (i = gap; i < nr; i++)
-	  for (int k = i - gap;
-	       k >= 0 && abs (cm.elem (k, j)) > abs (cm.elem (k+gap, j));
-	       k -= gap)
+      for (int j = 0; j < nc; j++)
+	{
+	  Array<int> l (nr+2);
+
+	  l (0) = 1;
+	  for (int i = 1; i < nr - 1; i++)
+	    l (i) = -(i+2);
+	  l (nr-1) = 0;
+	  l (nr) = 0;
+	  l (nr+1) = 2;
+
+	  int all_elts_real = 1;
+	  for (int i = 0; i < nr; i++)
+	    if (imag (cm (i, j)) != 0.0)
+	      {
+		all_elts_real = 0;
+		break;
+	      }
+
+	  while (1)
 	    {
-	      Complex ctmp = cm.elem (k, j);
-	      cm.elem (k, j) = cm.elem (k+gap, j);
-	      cm.elem (k+gap, j) = ctmp;
+	      int s = 0;
+	      int t = nr + 1;
+	      int p = l (s);
+	      int q = l (t);
 
-	      if (return_idx)
+	      if (q == 0)
+		break;
+
+	      while (1)
 		{
-		  double tmp = idx.elem (k, j);
-		  idx.elem (k, j) = idx.elem (k+gap, j);
-		  idx.elem (k+gap, j) = tmp;
+		  if ((all_elts_real
+		       && real (cm (p-1, j)) > real (cm (q-1, j)))
+		      || abs (cm (p-1, j)) > abs (cm (q-1, j)))
+		    {
+		      l (s) = (l (s) < 0)
+			? ((q < 0) ? q : -q)
+			  : ((q >= 0) ? q : -q);
+		      s = q;
+		      q = l (q);
+		      if (q <= 0)
+			{
+			  l (s) = p;
+			  s = t;
+			  do
+			    {
+			      t = p;
+			      p = l (p);
+			    }
+			  while (p > 0);
+			  p = -p;
+			  q = -q;
+			  if (q == 0)
+			    {
+			      l (s) = (l (s) < 0)
+				? ((p < 0) ? p : -p)
+				  : ((p >= 0) ? p : -p);
+			      l (t) = 0;
+			      break;
+			    }
+			}
+		    }
+		  else
+		    {
+		      l (s) = (l (s) < 0)
+			? ((p < 0) ? p : -p)
+			  : ((p >= 0) ? p : -p);
+		      s = p;
+		      p = l (p);
+		      if (p <= 0)
+			{
+			  l (s) = q;
+			  s = t;
+			  do
+			    {
+			      t = q;
+			      q = l (q);
+			    }
+			  while (q > 0);
+			  p = -p;
+			  q = -q;
+			  if (q == 0)
+			    {
+			      l (s) = (l (s) < 0)
+				? ((p < 0) ? p : -p)
+				  : ((p >= 0) ? p : -p);
+			      l (t) = 0;
+			      break;
+			    }		      
+			}
+		    }
 		}
 	    }
-    }
-}
 
-static void
-mx_sort (ComplexRowVector& cv, RowVector& idx, int return_idx)
-{
-  int n = cv.capacity ();
-  idx.resize (n);
-  int i;
-
-  if (return_idx)
-    for (i = 0; i < n; i++)
-      idx.elem (i) = i+1;
-
-  for (int gap = n/2; gap > 0; gap /= 2)
-    for (i = gap; i < n; i++)
-      for (int k = i - gap;
-	   k >= 0 && abs (cv.elem (k)) > abs (cv.elem (k+gap));
-	   k -= gap)
-	{
-	  Complex tmp = cv.elem (k);
-	  cv.elem (k) = cv.elem (k+gap);
-	  cv.elem (k+gap) = tmp;
-
-	  if (return_idx)
+	  int k = l (0);
+	  idx (0, j) = k;
+	  cms (0, j) = cm (k-1, j);
+	  for (int i = 1; i < nr; i++)
 	    {
-	      double tmp = idx.elem (k);
-	      idx.elem (k) = idx.elem (k+gap);
-	      idx.elem (k+gap) = tmp;
+	      k = l ((int) idx (i-1, j));
+	      idx (i, j) = k;
+	      cms (i, j) = cm (k-1, j);
 	    }
 	}
+    }
+
+  retval (1) = idx;
+  retval (0) = cms;
+
+  return retval;
+}
+
+static Octave_object
+mx_sort (ComplexRowVector& cv)
+{
+  Octave_object retval;
+
+  int n = cv.capacity ();
+
+  ComplexRowVector cvs (n);
+  RowVector idx (n);
+
+  if (n > 0)
+    {
+      Array<int> l (n+2);
+
+      l (0) = 1;
+      for (int i = 1; i < n - 1; i++)
+	l (i) = -(i+2);
+      l (n-1) = 0;
+      l (n) = 0;
+      l (n+1) = 2;
+
+      int all_elts_real = 1;
+      for (int i = 0; i < n; i++)
+	if (imag (cv (i)) != 0.0)
+	  {
+	    all_elts_real = 0;
+	    break;
+	  }
+
+      while (1)
+	{
+	  int s = 0;
+	  int t = n + 1;
+	  int p = l (s);
+	  int q = l (t);
+
+	  if (q == 0)
+	    break;
+
+	  while (1)
+	    {
+	      if ((all_elts_real && real (cv (p-1)) > real (cv (q-1)))
+		  || abs (cv (p-1)) > abs (cv (q-1)))
+		{
+		  l (s) = (l (s) < 0)
+		    ? ((q < 0) ? q : -q)
+		      : ((q >= 0) ? q : -q);
+		  s = q;
+		  q = l (q);
+		  if (q <= 0)
+		    {
+		      l (s) = p;
+		      s = t;
+		      do
+			{
+			  t = p;
+			  p = l (p);
+			}
+		      while (p > 0);
+		      p = -p;
+		      q = -q;
+		      if (q == 0)
+			{
+			  l (s) = (l (s) < 0)
+			    ? ((p < 0) ? p : -p)
+			      : ((p >= 0) ? p : -p);
+			  l (t) = 0;
+			  break;
+			}
+		    }
+		}
+	      else
+		{
+		  l (s) = (l (s) < 0)
+		    ? ((p < 0) ? p : -p)
+		      : ((p >= 0) ? p : -p);
+		  s = p;
+		  p = l (p);
+		  if (p <= 0)
+		    {
+		      l (s) = q;
+		      s = t;
+		      do
+			{
+			  t = q;
+			  q = l (q);
+			}
+		      while (q > 0);
+		      p = -p;
+		      q = -q;
+		      if (q == 0)
+			{
+			  l (s) = (l (s) < 0)
+			    ? ((p < 0) ? p : -p)
+			      : ((p >= 0) ? p : -p);
+			  l (t) = 0;
+			  break;
+			}		      
+		    }
+		}
+	    }
+	}
+
+      int k = l (0);
+      idx (0) = k;
+      cvs (0) = cv (k-1);
+      for (int i = 1; i < n; i++)
+	{
+	  k = l ((int) idx (i-1));
+	  idx (i) = k;
+	  cvs (i) = cv (k-1);
+	}
+    }
+
+  retval (1) = tree_constant (idx, 0);
+  retval (0) = tree_constant (cvs, 0);
+
+  return retval;
 }
 
 DEFUN_DLD_BUILTIN ("sort", Fsort, Ssort, 2, 2,
@@ -200,24 +543,11 @@ sort the columns of X, optionally return sort index")
 	      RowVector v (nc);
 	      for (int i = 0; i < nc; i++)
 		v.elem (i) = m.elem (0, i);
-	      RowVector idx;
-	      mx_sort (v, idx, return_idx);
 
-	      retval(0) = tree_constant (v, 0);
-	      if (return_idx)
-		retval(1) = tree_constant (idx, 0);
+	      retval = mx_sort (v);
 	    }
 	  else
-	    {
-	      // Sorts m in place, optionally computes index Matrix.
-
-	      Matrix idx;
-	      mx_sort (m, idx, return_idx);
-
-	      retval(0) = m;
-	      if (return_idx)
-		retval(1) = idx;
-	    }
+	    retval = mx_sort (m);
 	}
     }
   else if (arg.is_complex_type ())
@@ -232,30 +562,15 @@ sort the columns of X, optionally return sort index")
 	      ComplexRowVector cv (nc);
 	      for (int i = 0; i < nc; i++)
 		cv.elem (i) = cm.elem (0, i);
-	      RowVector idx;
-	      mx_sort (cv, idx, return_idx);
 
-	      retval(0) = tree_constant (cv, 0);
-	      if (return_idx)
-		retval(1) = tree_constant (idx, 0);
+	      retval = mx_sort (cv);
 	    }
 	  else
-	    {
-	      // Sorts cm in place, optionally computes index Matrix.
-
-	      Matrix idx;
-	      mx_sort (cm, idx, return_idx);
-
-	      retval(0) = cm;
-	      if (return_idx)
-		retval(1) = idx;
-	    }
+	    retval = mx_sort (cm);
 	}
     }
   else
-    {
-      gripe_wrong_type_arg ("sort", arg);
-    }
+    gripe_wrong_type_arg ("sort", arg);
 
   return retval;
 }

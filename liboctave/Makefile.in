@@ -34,7 +34,7 @@ INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
 
 TEMPLATE_SRC = Array.cc MArray.cc
 
-TI_SRC = Array-C.cc Array-d.cc MArray-C.cc MArray-d.cc
+TI_SRC = Array-C.cc Array-i.cc Array-d.cc MArray-C.cc MArray-d.cc
 
 MATRIX_SRC = CColVector.cc CDiagMatrix.cc CMatrix.cc CRowVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc CmplxLU.cc \

@@ -1,3 +1,8 @@
+2004-03-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::index2): Allow result to be N-d if indexing
+	a scalar or vector with an N-d array.
+
 2004-03-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::index2): If scalar or vector is indexed by

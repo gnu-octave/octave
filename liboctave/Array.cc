@@ -1971,6 +1971,8 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
   int orig_len = nr * nc;
 
+  dim_vector idx_orig_dims = idx_arg.orig_dimensions ();
+
   int idx_orig_rows = idx_arg.orig_rows ();
   int idx_orig_columns = idx_arg.orig_columns ();
 
@@ -1992,7 +1994,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
       if (len == 0 && idx_arg.one_zero_only ())
 	retval = Array<T> (tmp, dim_vector (0, 0));
       else
-	retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
+	retval = Array<T> (tmp, idx_orig_dims);
     }
   else if (nr == 1 || nc == 1)
     {
@@ -2013,7 +2015,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	    retval = Array<T> (tmp, dim_vector (len, 1));
 	}
       else
-	retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
+	retval = Array<T> (tmp, idx_orig_dims);
     }
   else
     {

@@ -120,7 +120,9 @@ integrand is singular.")
       return retval;
     }
 
-  quad_fcn = is_valid_function (args(0), "quad", 1);
+  quad_fcn = extract_function (args(0), "quad", "__quad_fcn__",
+			       "function y = __quad_fcn__ (x) y = ",
+			       "; endfunction");
   if (! quad_fcn)
     return retval;
 
@@ -337,7 +339,7 @@ set_quad_option (const string& keyword, double val)
 static octave_value_list
 show_quad_option (const string& keyword)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   QUAD_OPTIONS *list = quad_option_table;
 

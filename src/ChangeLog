@@ -1,3 +1,19 @@
+Fri Mar  7 00:56:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dassl.cc (show_dassl_option): For values that are determined
+	automatically, return a string instead of a magic value (-1.0).
+	* fsolve.cc (show_fsolve_option): Likewise.
+	* lsode.cc (show_lsode_option): Likewise.
+	* npsol.cc (show_npsol_option): Likewise.
+	* qpsol.cc (show_qpsol_option): Likewise.
+
+	* variables.cc (extract_function): New function.
+	* dassl.cc (Fdassl): Use it instead of is_valid_function.
+	* fsolve.cc (Ffsolve): Likewise.
+	* npsol.cc (Fnpsol): Likewise.
+	* qpsol.cc (Fqpsol): Likewise.
+	* quad.cc (Fquad): Likewise.
+
 Thu Mar  6 20:07:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.cc (my_friendly_exit, octave_new_handler,

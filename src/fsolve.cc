@@ -143,7 +143,9 @@ where y and x are vectors.")
       return retval;
     }
 
-  fsolve_fcn = is_valid_function (args(0), "fsolve", 1);
+  fsolve_fcn = extract_function (args(0), "fsolve", "__fsolve_fcn__",
+				"function y = __fsolve_fcn__ (x) y = ",
+				"; endfunction");
   if (! fsolve_fcn)
     return retval;
 
@@ -261,7 +263,7 @@ set_fsolve_option (const string& keyword, double val)
 static octave_value_list
 show_fsolve_option (const string& keyword)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   NLEQN_OPTIONS *list = fsolve_option_table;
 
@@ -270,7 +272,13 @@ show_fsolve_option (const string& keyword)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  return (fsolve_opts.*list->d_get_fcn) ();
+	  double val = (fsolve_opts.*list->d_get_fcn) ();
+	  if (val < 0.0)
+	    retval = "computed automatically";
+	  else
+	    retval = val;
+
+	  return retval;
 	}
       list++;
     }

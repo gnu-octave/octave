@@ -386,7 +386,7 @@ set_qpsol_option (const string& keyword, double val)
 static octave_value_list
 show_qpsol_option (const string& keyword)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   QPSOL_OPTIONS *list = qpsol_option_table;
 
@@ -396,9 +396,23 @@ show_qpsol_option (const string& keyword)
 				list->min_toks_to_match, MAX_TOKENS))
 	{
 	  if (list->d_get_fcn)
-	    return (qpsol_opts.*list->d_get_fcn) ();
+	    {
+	      double val = (qpsol_opts.*list->d_get_fcn) ();
+	      if (val < 0.0)
+		retval = "computed automatically";
+	      else
+		retval = val;
+	    }
 	  else
-	    return (double) (qpsol_opts.*list->i_get_fcn) ();
+	    {
+	      int val = (qpsol_opts.*list->i_get_fcn) ();
+	      if (val < 0)
+		retval = "depends on problem size";
+	      else
+		retval = val;
+	    }
+
+	  return retval;
 	}
       list++;
     }

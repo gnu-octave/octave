@@ -305,7 +305,11 @@ Handle all of the following:
       return retval;
     }
 
-  npsol_objective = is_valid_function (args(1), "npsol", 1);
+  npsol_objective = extract_function
+    (args(1), "npsol", "__npsol_obj__",
+     "function phi = __npsol_obj__ (x) phi = ",
+     "; endfunction");
+
   if (! npsol_objective)
     return retval;
 
@@ -362,7 +366,10 @@ Handle all of the following:
 
   npsol_constraints = 0;
   if (nargin == 5 || nargin == 7 || nargin == 8 || nargin == 10)
-    npsol_constraints = is_valid_function (args(nargin-2), "npsol", 0);
+    npsol_constraints = extract_function
+      (args(nargin-2), "npsol", "__npsol_constr__",
+       "function y = __npsol_constr__ (x) y = ",
+       "; endfunction");
 
   if (nargin == 7 || nargin == 5)
     {
@@ -745,7 +752,7 @@ set_npsol_option (const string& keyword, double val)
 static octave_value_list
 show_npsol_option (const string& keyword)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   NPSOL_OPTIONS *list = npsol_option_table;
 
@@ -755,9 +762,23 @@ show_npsol_option (const string& keyword)
 				list->min_toks_to_match, MAX_TOKENS))
 	{
 	  if (list->d_get_fcn)
-	    return (npsol_opts.*list->d_get_fcn) ();
+	    {
+	      double val = (npsol_opts.*list->d_get_fcn) ();
+	      if (val < 0.0)
+		retval = "computed automatically";
+	      else
+		retval = val;
+	    }
 	  else
-	    return (double) (npsol_opts.*list->i_get_fcn) ();
+	    {
+	      int val = (npsol_opts.*list->i_get_fcn) ();
+	      if (val < 0)
+		retval = "depends on problem size";
+	      else
+		retval = val;
+	    }
+
+	  return retval;
 	}
       list++;
     }

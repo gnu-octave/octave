@@ -58,7 +58,7 @@ lsode_user_function (const ColumnVector& x, double t)
   if (nstates > 1)
     {
       Matrix m (nstates, 1);
-      for (int i = 0; i < nstates; i++)
+     for (int i = 0; i < nstates; i++)
 	m (i, 0) = x (i);
       octave_value state (m);
       args(0) = state;
@@ -114,7 +114,11 @@ where xdot and x are vectors and t is a scalar.\n")
       return retval;
     }
 
-  lsode_fcn = is_valid_function (args(0), "lsode", 1);
+  lsode_fcn = extract_function
+    (args(0), "lsode", "__lsode_fcn__",
+     "function xdot = __lsode_fcn__ (x, t) xdot = ",
+     "; endfunction");
+
   if (! lsode_fcn)
     return retval;
 
@@ -280,7 +284,7 @@ set_lsode_option (const string& keyword, double val)
 static octave_value_list
 show_lsode_option (const string& keyword)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   LSODE_OPTIONS *list = lsode_option_table;
 
@@ -289,7 +293,13 @@ show_lsode_option (const string& keyword)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  return (lsode_opts.*list->d_get_fcn) ();
+	  double val = (lsode_opts.*list->d_get_fcn) ();
+	  if (val < 0.0)
+	    retval = "computed automatically";
+	  else
+	    retval = val;
+
+	  return retval;
 	}
       list++;
     }

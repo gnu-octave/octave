@@ -126,7 +126,11 @@ where x, xdot, and res are vectors, and t is a scalar.")
       return retval;
     }
 
-  dassl_fcn = is_valid_function (args(0), "dassl", 1);
+  dassl_fcn = extract_function
+    (args(0), "dassl", "__dassl_fcn__",
+     "function res = __dassl_fcn__ (x, xdot, t) res = ",
+     "; endfunction");
+
   if (! dassl_fcn)
     return retval;
 
@@ -300,7 +304,7 @@ set_dassl_option (const string& keyword, double val)
 static octave_value_list
 show_dassl_option (const string& keyword)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   DASSL_OPTIONS *list = dassl_option_table;
 
@@ -309,7 +313,13 @@ show_dassl_option (const string& keyword)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  return (dassl_opts.*list->d_get_fcn) ();
+	  double val = (dassl_opts.*list->d_get_fcn) ();
+	  if (val < 0.0)
+	    retval = "computed automatically";
+	  else
+	    retval = val;
+
+	  return retval;
 	}
       list++;
     }

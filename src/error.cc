@@ -41,7 +41,8 @@ int error_state;
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
-  cerr << name << ": ";
+  if (name)
+    cerr << name << ": ";
   cerr.vform (fmt, args);
   cerr << endl;
 

@@ -1,6 +1,8 @@
 2001-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (MAIN_TEXINFO): Look in $(srcdir).
+	(octave_toc.html): Use -expandinfo and -split_chapter, not
+	-expand info and -split chapter.
 
 2001-03-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

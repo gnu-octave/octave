@@ -34,7 +34,7 @@ CRUFT_DIRS = amos @BLAS_DIR@ blas-xtra dassl @FFT_DIR@ @LAPACK_DIR@ \
 
 SUBDIRS = $(CRUFT_DIRS)
 
-DISTSUBDIRS = $(sort $(CRUFT_DIRS) blas lapack)
+DISTSUBDIRS = $(sort $(CRUFT_DIRS) blas fftpack lapack)
 
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 

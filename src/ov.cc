@@ -128,27 +128,27 @@ octave_value::unary_op_as_string (unary_op op)
 
   switch (op)
     {
-    case not:
+    case op_not:
       retval = "!";
       break;
 
-    case uminus:
+    case op_uminus:
       retval = "-";
       break;
 
-    case transpose:
+    case op_transpose:
       retval = ".'";
       break;
 
-    case hermitian:
+    case op_hermitian:
       retval = "'";
       break;
 
-    case incr:
+    case op_incr:
       retval = "++";
       break;
 
-    case decr:
+    case op_decr:
       retval = "--";
       break;
 
@@ -166,87 +166,87 @@ octave_value::binary_op_as_string (binary_op op)
 
   switch (op)
     {
-    case add:
+    case op_add:
       retval = "+";
       break;
 
-    case sub:
+    case op_sub:
       retval = "-";
       break;
 
-    case mul:
+    case op_mul:
       retval = "*";
       break;
 
-    case div:
+    case op_div:
       retval = "/";
       break;
 
-    case pow:
+    case op_pow:
       retval = "^";
       break;
 
-    case ldiv:
+    case op_ldiv:
       retval = "\\";
       break;
 
-    case lshift:
+    case op_lshift:
       retval = "<<";
       break;
 
-    case rshift:
+    case op_rshift:
       retval = ">>";
       break;
 
-    case lt:
+    case op_lt:
       retval = "<";
       break;
 
-    case le:
+    case op_le:
       retval = "<=";
       break;
 
-    case eq:
+    case op_eq:
       retval = "==";
       break;
 
-    case ge:
+    case op_ge:
       retval = ">=";
       break;
 
-    case gt:
+    case op_gt:
       retval = ">";
       break;
 
-    case ne:
+    case op_ne:
       retval = "!=";
       break;
 
-    case el_mul:
+    case op_el_mul:
       retval = ".*";
       break;
 
-    case el_div:
+    case op_el_div:
       retval = "./";
       break;
 
-    case el_pow:
+    case op_el_pow:
       retval = ".^";
       break;
 
-    case el_ldiv:
+    case op_el_ldiv:
       retval = ".\\";
       break;
 
-    case el_and:
+    case op_el_and:
       retval = "&";
       break;
 
-    case el_or:
+    case op_el_or:
       retval = "|";
       break;
 
-    case struct_ref:
+    case op_struct_ref:
       retval = ".";
       break;
 
@@ -264,55 +264,55 @@ octave_value::assign_op_as_string (assign_op op)
 
   switch (op)
     {
-    case asn_eq:
+    case op_asn_eq:
       retval = "=";
       break;
 
-    case add_eq:
+    case op_add_eq:
       retval = "+=";
       break;
 
-    case sub_eq:
+    case op_sub_eq:
       retval = "-=";
       break;
 
-    case mul_eq:
+    case op_mul_eq:
       retval = "*=";
       break;
 
-    case div_eq:
+    case op_div_eq:
       retval = "/=";
       break;
 
-    case ldiv_eq:
+    case op_ldiv_eq:
       retval = "\\=";
       break;
 
-    case lshift_eq:
+    case op_lshift_eq:
       retval = "<<=";
       break;
 
-    case rshift_eq:
+    case op_rshift_eq:
       retval = ">>=";
       break;
 
-    case el_mul_eq:
+    case op_el_mul_eq:
       retval = ".*=";
       break;
 
-    case el_div_eq:
+    case op_el_div_eq:
       retval = "./=";
       break;
 
-    case el_ldiv_eq:
+    case op_el_ldiv_eq:
       retval = ".\\=";
       break;
 
-    case el_and_eq:
+    case op_el_and_eq:
       retval = "&=";
       break;
 
-    case el_or_eq:
+    case op_el_or_eq:
       retval = "|=";
       break;
 
@@ -580,7 +580,7 @@ gripe_assign_failed_or_no_method (const std::string& on, const std::string& tn1,
 void
 octave_value::assign (assign_op op, const octave_value& rhs)
 {
-  if (op == asn_eq)
+  if (op == op_asn_eq)
     operator = (rhs);
   else
     {
@@ -611,11 +611,11 @@ octave_value::simple_assign (octave_value::assign_op orig_op,
 {
   make_unique ();
 
-  bool assignment_ok = try_assignment (asn_eq, idx, rhs);
+  bool assignment_ok = try_assignment (op_asn_eq, idx, rhs);
 
   if (! (error_state || assignment_ok))
     {
-      assignment_ok = try_assignment_with_conversion (asn_eq, idx, rhs);
+      assignment_ok = try_assignment_with_conversion (op_asn_eq, idx, rhs);
 
       if (! (error_state || assignment_ok))
 	gripe_no_conversion (assign_op_as_string (orig_op),
@@ -630,7 +630,7 @@ octave_value::assign (octave_value::assign_op op,
 {
   if (Vresize_on_range_error || is_defined ())
     {
-      if (op == asn_eq)
+      if (op == op_asn_eq)
 	simple_assign (op, idx, rhs);
       else
 	{
@@ -1437,12 +1437,12 @@ octave_value::unary_op_to_assign_op (unary_op op)
 
   switch (op)
     {
-    case incr:
-      binop = add_eq;
+    case op_incr:
+      binop = op_add_eq;
       break;
 
-    case decr:
-      binop = sub_eq;
+    case op_decr:
+      binop = op_sub_eq;
       break;
 
     default:
@@ -1462,52 +1462,52 @@ octave_value::op_eq_to_binary_op (assign_op op)
 
   switch (op)
     {
-    case add_eq:
-      binop = add;
+    case op_add_eq:
+      binop = op_add;
       break;
 
-    case sub_eq:
-      binop = sub;
+    case op_sub_eq:
+      binop = op_sub;
       break;
 
-    case mul_eq:
-      binop = mul;
+    case op_mul_eq:
+      binop = op_mul;
       break;
 
-    case div_eq:
-      binop = div;
+    case op_div_eq:
+      binop = op_div;
       break;
 
-    case ldiv_eq:
-      binop = ldiv;
+    case op_ldiv_eq:
+      binop = op_ldiv;
       break;
 
-    case lshift_eq:
-      binop = lshift;
+    case op_lshift_eq:
+      binop = op_lshift;
       break;
 
-    case rshift_eq:
-      binop = rshift;
+    case op_rshift_eq:
+      binop = op_rshift;
       break;
 
-    case el_mul_eq:
-      binop = el_mul;
+    case op_el_mul_eq:
+      binop = op_el_mul;
       break;
 
-    case el_div_eq:
-      binop = el_div;
+    case op_el_div_eq:
+      binop = op_el_div;
       break;
 
-    case el_ldiv_eq:
-      binop = el_ldiv;
+    case op_el_ldiv_eq:
+      binop = op_el_ldiv;
       break;
 
-    case el_and_eq:
-      binop = el_and;
+    case op_el_and_eq:
+      binop = op_el_and;
       break;
 
-    case el_or_eq:
-      binop = el_or;
+    case op_el_or_eq:
+      binop = op_el_or;
       break;
 
     default:

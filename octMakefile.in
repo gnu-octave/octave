@@ -27,7 +27,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
 	README README.Linux README.Windows ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
-	install-octave mkinstalldirs mkoctfile.in texi2dvi \
+	install-octave.in mkinstalldirs mkoctfile.in texi2dvi \
 	ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
@@ -141,7 +141,7 @@ maintainer-clean distclean::
 	rm -f configure config.h.in octMakefile octave-bug Makefile \
 	Makeconf config.cache config.h config.log config.status \
 	Makerules.f77 mk-oct-links mkoctfile BUGS INSTALL.OCTAVE \
-	Makefrag.f77
+	Makefrag.f77 install-octave
 
 # Rules for making a source distribution.
 

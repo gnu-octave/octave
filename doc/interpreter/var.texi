@@ -154,6 +154,24 @@ not interpreted as a statement separator.
 The default value of @code{warn_comma_in_global_decl} is nonzero.
 @end defvr
 
+@defvr default_global_variable_value
+if @code{initialize_global_variables} is nonzero, the value of
+@code{default_glbaol_variable_value} is used as the initial value of
+global variables that are not explicitly initialized.  for example,
+
+@example
+@group
+initialize_global_variables = 1;
+default_global_variable_value = 13;
+global foo;
+foo
+     @result{} 13
+@end group
+@end example
+
+the variable @code{default_global_variable_value} is initially undefined.
+@end defvr
+
 @deftypefn {Built-in Function} {} is_global (@var{name})
 Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For
 example,

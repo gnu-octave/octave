@@ -393,27 +393,26 @@ make_name_list (void)
   return list;
 }
 
-#if defined (USE_GNU_INFO)
-
 void
 additional_help_message (ostream& os)
 {
+#if defined (USE_GNU_INFO)
+
   if (! Vsuppress_verbose_help_message)
     os << "\n\
 Additional help for builtin functions, operators, and variables\n\
-is available in the on-line version of the manual.\n\
-\n\
-Use the command `help -i <topic>' to search the manual index.\n";
-}
-
-#else
-
-void
-additional_help_message (ostream&)
-{
-}
+is available in the on-line version of the manual.  Use the command\n\
+`help -i <topic>' to search the manual index.\n";
 
 #endif
+
+  if (! Vsuppress_verbose_help_message)
+    os << "\n\
+Help and information about Octave is also available on the WWW\n\
+at http://www.che.wisc.edu/octave/octave.html and via the\n\
+help-octave@bevo.che.wisc.edu mailing list.\n";
+
+}
 
 // XXX FIXME XXX -- this needs a major overhaul to cope with new
 // symbol table stuff.
@@ -531,6 +530,10 @@ display_symtab_names (ostream& os, const string_vector& names,
 static void
 simple_help (void)
 {
+  octave_stdout << "Help is available for the topics listed below.\n";
+
+  additional_help_message (octave_stdout);
+
   display_names_from_help_list (octave_stdout, operator_help (),
 				"operators");
 
@@ -573,8 +576,6 @@ simple_help (void)
 	  names.list_in_columns (octave_stdout);
 	}
     }
-
-  additional_help_message (octave_stdout);
 }
 
 #if defined (USE_GNU_INFO)

@@ -1,3 +1,13 @@
+Fri Feb 27 12:25:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (additional_help_message): Fix www address.
+
+Tue Feb 24 00:42:59 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (simple_help): Put additional help message first.
+  	(additional_help_message): Add information about web site and
+	mailing list.
+
 Fri Feb 20 00:41:06 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-plot.cc (GPLOT_CMD_REPLOT): Clear before replot.

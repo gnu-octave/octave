@@ -1,3 +1,23 @@
+Mon Mar  2 00:02:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* install-octave.in: New file.
+	* configure.in: Create install-octave.
+	* octMakefile.in (distclean, maintainer-clean): Delete install-octave.
+	(DISTFILES): Distribute install-octave.in, not install-octave.
+
+Sun Mar  1 23:15:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Fix typo in test for glob and fnmatch headers.
+
+Fri Feb 27 15:43:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Fix support for dlopen on SCO systems.
+
+Mon Feb 23 13:06:11 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (ieee_fp_flag): Use -mieee-with-inexact on Alphas.
+	Use octave_cv_f77_is_g77, not just f77_is_g77.
+
 Fri Feb 20 00:38:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in, Makeconf.in: Try to set things up to use the

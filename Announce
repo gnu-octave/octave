@@ -1,99 +1,33 @@
-Subject: ANNOUNCE: Octave Version 2.0.10 released
+Subject: ANNOUNCE: Octave Version 2.0.11 released
 
-Octave version 2.0.10 is now available for ftp from ftp.che.wisc.edu
-in the directory /pub/octave.  Diffs from the previous have not been
-made because they would be quite large.
+Octave version 2.0.11 is now available for ftp from ftp.che.wisc.edu
+in the directory /pub/octave along with diffs from the previous
+version.
 
-  -rw-r--r--   1 jwe  3621268 Feb  6 16:59 octave-2.0.10.tar.gz
+  -rw-r--r--   1 jwe  3625698 Feb 24 17:06 octave-2.0.11.tar.gz
+  -rw-r--r--   1 jwe    40874 Feb 24 17:07 octave-2.0.10-2.0.11.patch.gz
 
 Most bugs reported since the release of version 2.0 have been fixed.
 
-This is mostly a bug-fixing release, but to keep things interesting,
-there are some new features:
+This is mostly a bug-fixing release, but there is an important
+user-visible change:
 
-  * The built-in variable `PWD' has been removed.  If you need to get
-    the value of the current working directory, use the pwd() function
-    instead.
+  * There are two new built-in variables that control how global
+    variables are initialized.  If `initialize_global_variables' is
+    nonzero, global variables are initialized to the value of the
+    variable `default_global_variable_value'.  The default value of
+    `initialize_global_variables' is 0 (1 if you use --traditional)
+    and `default_global_variable_value' is undefined (the empty matrix
+    if you use --traditional).  The default settings are compatible
+    with versions of Octave before 2.0.10.
 
-  * For compatibility with Matlab, Octave's lyap function now solves
-
-      A*X + X*A' + C = 0
-
-    instead of
-
-      A'*X + X*A + C = 0
-
-    To try to avoid confusion for people who are used to the way
-    Octave behaved in previous versions, a warning is printed the
-    first time lyap is called in a given session.  To completely
-    disable the warning, simply add
-
-      global __disable_lyap_interface_change_warning__;
-
-    to your ~/.octaverc file.  The warning will eventually disappear
-    for good in some future version of Octave.
-
-  * New built-in functions for computing Bessel functions:
-    besseli, besselj, besselk, and bessely.
-
-  * The gammai and betai functions are now implemented as built-in
-    functions rather than function files.
-
-  * The new built-in variable `implicit_num_to_str_ok' controls
-    whether Octave converts expressions like `[97, 98, 99, "123"]' to
-    strings.  The default value is 0 unless you use --traditional.
-
-  * The new built-in variable `fixed_point_format' controls whether
-    Octave uses a scaled fixed-point format for displaying matrices.
-    The default value is 0 unless you use --traditional.
-
-  * The function sumsq now computes sum (x .* conj (x)) for complex values.
-
-  * Dynamically linked functions can be cleared.
-
-  * If a .oct file has a time stamp more recent than the time that it
-    was loaded, it is automatically reloaded.  Reloading a .oct file
-    may cause several functions to be cleared automatically.  By
-    default, a warning is printed that lists the names of the
-    functions that will be cleared.  You can suppress the message by
-    setting the new built-in variable `warn_reload_forces_clear' to 0.
-
-  * Global variables are now initialized to the empty matrix, for
-    compatibility with Matlab.
-
-  * Explicit initialization of global variables only happens once.
-    For example, after the following statements are evaluated, g still
-    has the value 1.
-
-      global g = 1
-      global g = 2
-
-    This is useful for initializing global variables that are used to
-    maintain state information that is shared among several functions.
-
-  * The new built-in variable max_recursion_depth allows you to
-    prevent Octave from attempting infinite recursion.  The default
-    value is 256.
-
-  * Octave now uses readline version 2.1 and kpathsea 3.0.
-
-  * The libreadline and libkpathsea libraries are no longer installed.
-
-  * The libcruft, liboctave, and liboctinterp libraries are now
-    installed in $libdir/octave instead of just $libdir.
-
-  * It's no longer necessary to have libg++, but you do need to have
-    the GNU implementation of libstdc++.  If you are using gcc 2.7.2,
-    libstdc++ is distributed as part of libg++ 2.7.2.  For later
-    versions, libstdc++ is distributed separately.  For egcs,
-    libstdc++ is included with the compiler distribution.
 
 Octave is a high-level interactive language primarily intended for
 numerical computations.  It is mostly compatible with MATLAB.
 
 Additional information is available on the WWW at
 
-  http://www.che.wisc.edu/octave
+  http://www.che.wisc.edu/octave/octave.html
 
 -- 
 John W. Eaton

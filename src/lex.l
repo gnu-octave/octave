@@ -109,6 +109,7 @@ static int match_any (char c, char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
+static void handle_number (char *yytext);
 static int handle_close_brace (char *yytext);
 static int handle_identifier (char *s, int next_tok_is_eq);
 
@@ -404,19 +405,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 {NUMBER}{Im} {
-    double value;
-    int nread = sscanf (yytext, "%lf", &value);
-    assert (nread == 1);
-    quote_is_transpose = 1;
-    cant_be_identifier = 1;
-    convert_spaces_to_comma = 1;
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
-    yylval.tok_val = new token (value, yytext, input_line_number,
-				current_input_column);
-    token_stack.push (yylval.tok_val);
-    current_input_column += yyleng;
-    do_comma_insert_check ();
+    handle_number (yytext);
     return IMAG_NUM;
   }
 
@@ -427,19 +416,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 {D}+/\.[\*/\\^'] |
 {NUMBER} {
-    double value;
-    int nread = sscanf (yytext, "%lf", &value);
-    assert (nread == 1);
-    quote_is_transpose = 1;
-    cant_be_identifier = 1;
-    convert_spaces_to_comma = 1;
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
-    yylval.tok_val = new token (value, yytext, input_line_number,
-				current_input_column);
-    token_stack.push (yylval.tok_val);
-    current_input_column += yyleng;
-    do_comma_insert_check ();
+    handle_number (yytext);
     return NUM;
   }
 
@@ -1411,6 +1388,31 @@ strip_trailing_whitespace (char *s)
     *t = '\0';
 
   return retval;
+}
+
+static void
+handle_number (char *yytext)
+{
+  double value;
+  int nread = sscanf (yytext, "%lf", &value);
+
+  assert (nread == 1);
+
+  quote_is_transpose = 1;
+  cant_be_identifier = 1;
+  convert_spaces_to_comma = 1;
+
+  if (plotting && ! in_plot_range)
+    past_plot_range = 1;
+
+  yylval.tok_val = new token (value, yytext, input_line_number,
+			      current_input_column);
+
+  token_stack.push (yylval.tok_val);
+
+  current_input_column += yyleng;
+
+  do_comma_insert_check ();
 }
 
 static int

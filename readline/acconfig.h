@@ -17,7 +17,7 @@
 /* Definitions pulled in from aclocal.m4. */
 #undef VOID_SIGHANDLER
 
-#undef TIOCGWINSZ_IN_SYS_IOCTL
+#undef GWINSZ_IN_SYS_IOCTL
 
 #undef TIOCSTAT_IN_SYS_IOCTL
 

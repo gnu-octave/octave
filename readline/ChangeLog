@@ -1,3 +1,8 @@
+2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* acconfig.h: Use #undef GWINSZ_IN_SYS_IOCTL, not
+	TIOCGWINSZ_IN_SYS_IOCTL to match AC_DEFINE in aclocal.m4.
+
 1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* terminal.c (rl_resize_terminal): Import from readline 4.0.

@@ -12,6 +12,8 @@
 /* Definitions pulled in from aclocal.m4. */
 #undef VOID_SIGHANDLER
 
+#undef GWINSZ_IN_SYS_IOCTL
+
 #undef TIOCSTAT_IN_SYS_IOCTL
 
 #undef HAVE_GETPW_DECLS

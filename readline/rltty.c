@@ -154,11 +154,7 @@ set_winsize (tty)
   struct winsize w;
 
   if (ioctl (tty, TIOCGWINSZ, &w) == 0)
-    {
-      fprintf (stderr, "setting window size: %d x %d\n", w.ws_row, w.ws_col);
-
-      (void) ioctl (tty, TIOCSWINSZ, &w);
-    }
+    (void) ioctl (tty, TIOCSWINSZ, &w);
 }
 #else /* SHELL || !TIOCGWINSZ */
 #  define set_winsize(tty)
@@ -536,8 +532,6 @@ rl_prep_terminal (meta_flag)
   block_sigint ();
 
   tty = fileno (rl_instream);
-
-  fprintf (stderr, "rl_prep_terminal\n");
 
   if (get_tty_settings (tty, &tio) < 0)
     {

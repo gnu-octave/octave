@@ -39,6 +39,9 @@ extern void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 // Current error state.
 extern int error_state;
 
+// Current warning state.
+extern int warning_state;
+
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.

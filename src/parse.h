@@ -69,6 +69,11 @@ extern bool input_from_startup_file;
 // the command line.
 extern bool input_from_command_line_file;
 
+// TRUE means that we are in the process of evaluating a function
+// body.  The parser might be called in that case if we are looking at
+// an eval() statement.
+extern bool evaluating_function_body;
+
 // TRUE means warn about function files that have time stamps in the future.
 extern bool Vwarn_future_time_stamp;
 

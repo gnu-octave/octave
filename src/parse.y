@@ -117,6 +117,11 @@ bool input_from_startup_file = false;
 // the command line.
 bool input_from_command_line_file = true;
 
+// TRUE means that we are in the process of evaluating a function
+// body.  The parser might be called in that case if we are looking at
+// an eval() statement.
+bool evaluating_function_body = false;
+
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
@@ -1617,7 +1622,7 @@ fold (tree_binary_expression *e)
     {
       octave_value tmp = e->rvalue ();
 
-      if (! error_state)
+      if (! (error_state || warning_state))
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
@@ -1666,7 +1671,7 @@ fold (tree_unary_expression *e)
     {
       octave_value tmp = e->rvalue ();
 
-      if (! error_state)
+      if (! (error_state || warning_state))
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
@@ -1724,7 +1729,7 @@ finish_colon_expression (tree_colon_expression *e)
 	    {
 	      octave_value tmp = e->rvalue ();
 
-	      if (! error_state)
+	      if (! (error_state || warning_state))
 		{
 		  tree_constant *tc_retval = new tree_constant (tmp);
 
@@ -2143,7 +2148,8 @@ make_break_command (token *break_tok)
   int l = break_tok->line ();
   int c = break_tok->column ();
 
-  if (lexer_flags.looping || lexer_flags.defining_func || reading_script_file)
+  if (lexer_flags.looping || lexer_flags.defining_func
+      || reading_script_file || evaluating_function_body)
     retval = new tree_break_command (l, c);
   else
     retval = new tree_no_op_command ("break", l, c);
@@ -2179,7 +2185,8 @@ make_return_command (token *return_tok)
   int l = return_tok->line ();
   int c = return_tok->column ();
 
-  if (lexer_flags.defining_func || reading_script_file)
+  if (lexer_flags.defining_func || reading_script_file
+      || evaluating_function_body)
     retval = new tree_return_command (l, c);
   else
     retval = new tree_no_op_command ("return", l, c);
@@ -2554,7 +2561,7 @@ finish_matrix (tree_matrix *m)
     {
       octave_value tmp = m->rvalue ();
 
-      if (! error_state)
+      if (! (error_state || warning_state))
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 

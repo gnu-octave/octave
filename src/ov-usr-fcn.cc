@@ -47,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "parse.h"
 #include "variables.h"
 
 // If TRUE, variables returned from functions have default values even
@@ -377,6 +378,9 @@ octave_user_function::do_index_op (int nargout, const octave_value_list& args)
       print_code_function_header ();
 
     // Evaluate the commands that make up the function.
+
+    unwind_protect_bool (evaluating_function_body);
+    evaluating_function_body = true;
 
     octave_value_list tmp = cmd_list->eval ();
 

@@ -46,6 +46,9 @@ static bool Vbeep_on_error;
 // Current error state.
 int error_state = 0;
 
+// Current warning state.
+int warning_state = 0;
+
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
@@ -171,6 +174,7 @@ warning (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
+  warning_state = 1;
   verror ("warning", fmt, args);
   va_end (args);
 }

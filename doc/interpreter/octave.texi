@@ -161,6 +161,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 
 
 
+
 @detailmenu
  --- The Detailed Node Listing ---
 
@@ -284,6 +285,7 @@ Statements
 * The if Statement::            
 * The switch Statement::        
 * The while Statement::         
+* The do-until Statement::      
 * The for Statement::           
 * The break Statement::         
 * The continue Statement::      
@@ -391,6 +393,7 @@ Optimization
 Statistics
 
 * Basic Statistical Functions::  
+* Tests::                       
 * Models::                      
 * Distributions::               
 

@@ -35,6 +35,7 @@ The list of statements contained between keywords like @code{if} or
 * The if Statement::            
 * The switch Statement::        
 * The while Statement::         
+* The do-until Statement::      
 * The for Statement::           
 * The break Statement::         
 * The continue Statement::      
@@ -293,7 +294,7 @@ using a jump table.
 
 @DOCSTRING(warn_variable_switch_label)
 
-@node The while Statement, The for Statement, The switch Statement, Statements
+@node The while Statement, The do-until Statement, The switch Statement, Statements
 @section The @code{while} Statement
 @cindex @code{while} statement
 @cindex @code{endwhile} statement
@@ -365,7 +366,57 @@ simple.
 @xref{The if Statement}, for a description of the variable
 @code{warn_assign_as_truth_value}.
 
-@node The for Statement, The break Statement, The while Statement, Statements
+@node The do-until Statement, The for Statement, The while Statement, Statements
+@section The @code{do-until} Statement
+@cindex @code{do-until} statement
+
+The @code{do-until} statement is similar to the @code{while} statement,
+except that it repeatedly executes a statement until a condition becomes
+true, and the test of the condition is at the end of the loop, so the
+body of the loop is always executed at least once.  As with the
+condition in an @code{if} statement, the condition in a @code{do-until}
+statement is considered true if its value is non-zero, and false if its
+value is zero.  If the value of the conditional expression in a
+@code{do-until} statement is a vector or a matrix, it is considered 
+true only if @emph{all} of the elements are non-zero.
+
+Octave's @code{do-until} statement looks like this:
+
+@example
+@group
+do
+  @var{body}
+until (@var{condition})
+@end group
+@end example
+
+@noindent
+Here @var{body} is a statement or list of statements that we call the
+@dfn{body} of the loop, and @var{condition} is an expression that
+controls how long the loop keeps running.
+
+This example creates a variable @code{fib} that contains the first ten
+elements of the Fibonacci sequence.
+
+@example
+@group
+fib = ones (1, 10);
+i = 2;
+do
+  i++;
+  fib (i) = fib (i-1) + fib (i-2);
+until (i == 10)
+@end group
+@end example
+
+A newline is not required between the @code{do} keyword and the
+body; but using one makes the program clearer unless the body is very
+simple.
+
+@xref{The if Statement}, for a description of the variable
+@code{warn_assign_as_truth_value}.
+
+@node The for Statement, The break Statement, The do-until Statement, Statements
 @section The @code{for} Statement
 @cindex @code{for} statement
 @cindex @code{endfor} statement

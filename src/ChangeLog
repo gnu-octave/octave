@@ -1,3 +1,15 @@
+2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (evaluating_function_body): New global flag.
+	* ov-usr-fcn.cc (octave_user_function::do_index_op):
+	Protect and set it here.
+	* parse.y (make_break_command, make_return_command): Check it here.
+
+	* error.cc (warning_state): New global flag.
+	(warning): Set it here.
+	* lex.l (reset_parser): Clear it here.
+	* parse.y (fold): Check it here.
+
 2000-01-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-walk.h (tree_walker::visit_do_until_command): New pure virtual.

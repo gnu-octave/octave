@@ -523,9 +523,12 @@ Matrix::inverse (int& info, double& rcond, int force) const
   F77_FCN (dgeco, DGECO) (tmp_data, nr, nc, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
-  if (rcond_plus_one == 1.0 && ! force)
+
+  if (rcond_plus_one == 1.0)
+    info = -1;
+
+  if (info == -1 && ! force)
     {
-      info = -1;
       copy (tmp_data, data (), len);  // Restore matrix contents.
     }
   else

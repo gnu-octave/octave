@@ -478,6 +478,7 @@ skips past all empty and comment lines."
   (interactive)
   (beginning-of-line)
   (while (and (not (= (forward-line -1) 0))
+	      (not (bobp))
 	      (or (looking-at octave-comment-line-start-skip)
 		  (looking-at "[ \t]*$")))))
 

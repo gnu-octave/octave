@@ -383,8 +383,8 @@ if test -z "$EXPECT" ; then
 fi
 AC_SUBST(RUNTEST)dnl
 
-define([tmpa], [libcruft/blas/Makefile libcruft/dassl/Makefile])dnl
-define([tmpb], [libcruft/fftpack/Makefile])dnl
+define([tmpa], [libcruft/blas/Makefile libcruft/balgen/Makefile])dnl
+define([tmpb], [libcruft/dassl/Makefile libcruft/fftpack/Makefile])dnl
 define([tmpc], [libcruft/fsqp/Makefile libcruft/lapack/Makefile])dnl
 define([tmpd], [libcruft/linpack/Makefile libcruft/minpack/Makefile])dnl
 define([tmpe], [libcruft/misc/Makefile libcruft/npsol/Makefile])dnl

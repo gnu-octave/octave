@@ -1,3 +1,29 @@
+2002-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASRT.cc, DASRT.h, Array.cc, ArrayN.h, Array.h, Array2.cc,
+	Array2.h, Array3.cc, Array3.h, Bounds.cc, Bounds.h, CRowVector.h,
+	CDiagMatrix.cc, CDiagMatrix.h, CMatrix.cc, CMatrix.h,
+	CRowVector.cc, CColVector.h, ChangeLog, CmplxAEPBAL.cc,
+	CmplxAEPBAL.h, CmplxCHOL.cc, CmplxCHOL.h, CmplxDET.cc, CmplxDET.h,
+	CmplxHESS.cc, CmplxHESS.h, CmplxLU.cc, CmplxLU.h, CmplxQR.cc,
+	CmplxQR.h, CmplxQRP.cc, ArrayN.cc, CmplxQRP.h, CmplxSCHUR.cc,
+	CmplxSCHUR.h, CmplxSVD.cc, CmplxSVD.h, CollocWt.cc, dMatrix.cc,
+	CollocWt.h, EIG.h, DASSL.cc, FEGrid.h, DASSL.h, DiagArray2.cc,
+	DiagArray2.h, EIG.cc, FEGrid.cc, LSODE.cc, LPsolve.cc, LPsolve.h,
+	LSODE.h, LinConst.cc, LinConst.h, MArray.h, MArray.cc, MArray2.cc,
+	MArray2.h, MDiagArray2.cc, MDiagArray2.h, Range.cc, NLConst.h,
+	NLEqn.cc, Range.h, NLEqn.h, Quad.cc, dbleQR.h, Quad.h, base-lu.cc,
+	base-lu.h, boolMatrix.cc, boolMatrix.h, dColVector.cc,
+	dColVector.h, dDiagMatrix.cc, dDiagMatrix.h, dMatrix.h,
+	dRowVector.cc, dRowVector.h, dbleAEPBAL.cc, dbleAEPBAL.h,
+	dbleCHOL.cc, dbleCHOL.h, dbleDET.cc, dbleDET.h, dbleHESS.cc,
+	dbleHESS.h, dbleLU.cc, dbleLU.h, dbleQR.cc, dbleQRP.cc, dbleQRP.h,
+	dbleSCHUR.cc, dbleSCHUR.h, dbleSVD.cc, dbleSVD.h, idx-vector.cc,
+	idx-vector.h, oct-alloc.cc, CColVector.cc, DASPK.h, DASPK.cc,
+	ODESSA.h, ODES.h, ODESSA.cc, ODES.cc, chMatrix.h, chMatrix.cc:
+	Use "defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)" instead of 
+	"! defined (NO_PRAGMA_INTERFACE_IMPLEMENTATION)".
+
 2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-shlib.cc (octave_dlopen_shlib::open): Use RTLD_GLOBAL too.

@@ -33,7 +33,7 @@ License as published by the Free Software Foundation.
 
 */
 
-#if defined (__GNUG__) && ! defined (NO_PRAGMA_INTERFACE_IMPLEMENTATION)
+#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
 #pragma implementation
 #endif
 

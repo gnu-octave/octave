@@ -173,6 +173,21 @@ dist: links-for-dist
 	rm -rf `cat .fname` .fname
 .PHONY: dist
 
+doc-dist:
+	echo octave-$(version) > .fname
+	echo octave-doc-$(version).tar > .tarfname
+	rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln README.doc COPYING `cat .fname`
+	mkdir `cat .fname`/doc; cd doc; $(MAKE) doc-dist
+	tar chf `cat .tarfname` `cat .fname`
+	rm -rf `cat .fname`
+	tar xf `cat .tarfname`
+	chmod -R a+rwX `cat .fname`
+	tar cf `cat .tarfname` `cat .fname`
+	rm -rf `cat .fname` .fname
+.PHONY: doc-dist
+
 dist-z:
 	echo octave-$(version).tar > .fname
 	gzip --best `cat .fname`

@@ -20,18 +20,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include <cctype>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cctype>
-
-// Someday, I hope that standard template library stuff will just
-// work.  Until then...
-#include "Map.h"
 
 static const char doc_delim = '';
 
+// If this fails to compile and link for you, delete the following
+// define to use old non-standard GNU libg++ Map class.
+
+#define USE_STL
+
+#if defined (USE_STL)
+
+#include <map>
+
+static map<std::string, std::string> help_text
+  = map<std::string, std::string> ();
+
+#else
+
+#include "Map.h"
+
 static CHMap<std::string> help_text = CHMap<std::string> (std::string ());
+
+#endif
 
 static void
 fatal (const std::string& msg)
@@ -91,7 +105,11 @@ process_doc_file (const std::string& fname)
 	    {
 	      std::string doc_string = extract_docstring (infile);
 
+#if defined (USE_STL)
+	      if (help_text.find (symbol_name) != help_text.end ())
+#else
 	      if (help_text.contains (symbol_name))
+#endif
 		std::cerr << "ignoring duplicate entry for "
 			  << symbol_name << "\n";
 	      else

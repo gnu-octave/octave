@@ -276,7 +276,7 @@ static void
 clear_symbol_table (void *table)
 {
   symbol_table *tmp = static_cast<symbol_table *> (table);
-  tmp->clear_variables ();
+  tmp->clear ();
 }
 
 static void

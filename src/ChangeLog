@@ -74,8 +74,6 @@
 	* parse.y (postfix_expr): Reset	lexer_flags.looking_at_object_index
 	in () and {} cases too.
 
-	* ov-usr-fcn.cc (clear_symbol_table): Clear variables only.
-
 2002-12-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-arg-list.cc (indexed_object, indexed_position):

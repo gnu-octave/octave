@@ -201,7 +201,6 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
   int nlub_len = nlub.capacity ();
   ColumnVector c = (*g) (x);
   int c_len = c.capacity ();
-  int ok = 
 
   int ok = 1;
   if (warn)
@@ -218,7 +217,7 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 	  message (warn_for,
 		   "nonlinear constraints have inconsistent dimensions");
 	}
-
+    }
   return ok;
 }
 

@@ -49,6 +49,10 @@ extern bool get_input_from_eval_string;
 // current_eval_string yet.
 extern bool input_from_eval_string_pending;
 
+// TRUE means that input is coming from a file that was named on
+// the command line.
+extern bool input_from_command_line_file;
+
 // TRUE means we're parsing a function file.
 extern bool reading_fcn_file;
 

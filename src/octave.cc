@@ -108,8 +108,8 @@ static bool verbose_flag = false;
 
 // Usage message
 static const char *usage_string = 
-  "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
-       [--funcall FUNC] [--help] [--info-file file] [--info-program prog]\n\
+  "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
+       [--exec-path path] [--help] [--info-file file] [--info-program prog]\n\
        [--interactive] [--no-history] [--no-init-file] [--no-line-editing]\n\
        [--no-site-file] [-p path] [--path path] [--silent] [--traditional]\n\
        [--verbose] [--version] [file]";
@@ -119,27 +119,30 @@ static const char *usage_string =
 // to prevent getopt from permuting arguments!
 static const char *short_opts = "+?HVdfhip:qvx";
 
-// The name of the optional initial function to call at startup.
-// (--funcall FUNC)
-static std::string fun_to_call;
+// The code to evaluate at startup (--eval CODE)
+static std::string code_to_eval;
+
+// If TRUE, don't exit after evaluating code given by --eval option.
+static bool persist = false;
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
-#define EXEC_PATH_OPTION 1
-#define FUNCALL_OPTION 2
+#define EVAL_OPTION 1
+#define EXEC_PATH_OPTION 2
 #define INFO_FILE_OPTION 3
 #define INFO_PROG_OPTION 4
 #define NO_INIT_FILE_OPTION 5
 #define NO_LINE_EDITING_OPTION 6
 #define NO_SITE_FILE_OPTION 7
-#define TRADITIONAL_OPTION 8
+#define PERSIST_OPTION 8
+#define TRADITIONAL_OPTION 9
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
     { "braindead",        prog_args::no_arg,       0, TRADITIONAL_OPTION },
     { "echo-commands",    prog_args::no_arg,       0, 'x' },
+    { "eval",             prog_args::required_arg, 0, EVAL_OPTION },
     { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
-    { "funcall",          prog_args::required_arg,  0, FUNCALL_OPTION },
     { "help",             prog_args::no_arg,       0, 'h' },
     { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
     { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
@@ -150,6 +153,7 @@ long_options long_opts[] =
     { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
     { "norc",             prog_args::no_arg,       0, 'f' },
     { "path",             prog_args::required_arg, 0, 'p' },
+    { "persist",          prog_args::no_arg,       0, PERSIST_OPTION },
     { "quiet",            prog_args::no_arg,       0, 'q' },
     { "silent",           prog_args::no_arg,       0, 'q' },
     { "traditional",      prog_args::no_arg,       0, TRADITIONAL_OPTION },
@@ -210,9 +214,6 @@ static void
 execute_startup_files (void)
 {
   unwind_protect::begin_frame ("execute_startup_files");
-
-  // XXX FIXME XXX -- need to make it possible to set this in startup
-  // files.
 
   unwind_protect_bool (input_from_startup_file);
 
@@ -291,6 +292,68 @@ execute_startup_files (void)
   unwind_protect::run_frame ("execute_startup_files");
 }
 
+static int
+execute_eval_option_code (const std::string& code)
+{
+  unwind_protect::begin_frame ("execute_eval_option_code");
+
+  unwind_protect_bool (interactive);
+
+  interactive = false;
+
+  int parse_status = 0;
+
+  eval_string (code, false, parse_status, 0);
+
+  unwind_protect::run_frame ("execute_eval_option_code");
+
+  return parse_status;
+}
+
+static void
+restore_program_name (void *)
+{
+  bind_builtin_variable ("program_invocation_name",
+			 octave_env::get_program_invocation_name ());
+
+  bind_builtin_variable ("program_name", octave_env::get_program_name ());
+}
+
+static void
+execute_command_line_file (const std::string& fname)
+{
+  unwind_protect::begin_frame ("execute_command_line_file");
+
+  unwind_protect_bool (interactive);
+  unwind_protect_bool (reading_script_file);
+  unwind_protect_bool (input_from_command_line_file);
+
+  unwind_protect_str (curr_fcn_file_name);
+  unwind_protect_str (curr_fcn_file_full_name);
+
+  unwind_protect::add (restore_program_name, 0);
+
+  interactive = false;
+  reading_script_file = true;
+  input_from_command_line_file = true;
+
+  curr_fcn_file_name = fname;
+  curr_fcn_file_full_name = curr_fcn_file_name;
+
+  bind_builtin_variable ("program_invocation_name", curr_fcn_file_name);
+
+  size_t pos = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars);
+  
+  std::string tmp = (pos != NPOS)
+    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
+
+  bind_builtin_variable ("program_name", tmp);
+
+  parse_and_execute (fname, false, "octave");
+ 
+  unwind_protect::run_frame ("execute_command_line_file");
+}
+
 // Usage message with extra help.
 
 static void
@@ -305,7 +368,7 @@ Options:\n\
   --debug, -d             Enter parser debugging mode.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
-  --funcall FUNC          Call Octave function FUNC with no arguments.\n\
+  --eval CODE             Evaluate CODE and exit when done unless --persist.\n\
   --help, -h, -?          Print short help message and exit.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
@@ -316,6 +379,7 @@ Options:\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
   --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Set initial LOADPATH to PATH.\n\
+  --persist               Go interactive after --eval or reading from FILE.\n\
   --silent, -q            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\
   --verbose, -V           Enable verbose output in some cases.\n\
@@ -360,6 +424,8 @@ initialize_error_handlers ()
 static void
 maximum_braindamage (void)
 {
+  persist = true;
+
   bind_builtin_variable ("PS1", ">> ");
   bind_builtin_variable ("PS2", "");
   bind_builtin_variable ("beep_on_error", true);
@@ -469,14 +535,14 @@ octave_main (int argc, char **argv, int embedded)
 	  print_version_and_exit ();
 	  break;
 
+	case EVAL_OPTION:
+	  if (args.optarg ())
+	    code_to_eval = args.optarg ();
+	  break;
+
 	case EXEC_PATH_OPTION:
 	  if (args.optarg ())
 	    bind_builtin_variable ("EXEC_PATH", args.optarg ());
-	  break;
-
-	case FUNCALL_OPTION:
-	  if (args.optarg ())
-	    fun_to_call = args.optarg ();
 	  break;
 
 	case INFO_FILE_OPTION:
@@ -503,6 +569,10 @@ octave_main (int argc, char **argv, int embedded)
 
 	case TRADITIONAL_OPTION:
 	  traditional = true;
+	  break;
+
+	case PERSIST_OPTION:
+	  persist = true;
 	  break;
 
 	default:
@@ -541,9 +611,14 @@ octave_main (int argc, char **argv, int embedded)
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;
 
-  // Avoid counting commands executed from startup files.
+  // Is input coming from a terminal?  If so, we are probably
+  // interactive.
 
-  command_editor::reset_current_command_number (1);
+  interactive = (! embedded
+		 && isatty (fileno (stdin)) && isatty (fileno (stdout)));
+
+  if (! interactive)
+    line_editing = false;
 
   // If there is an extra argument, see if it names a file to read.
   // Additional arguments are taken as command line options for the
@@ -553,52 +628,40 @@ octave_main (int argc, char **argv, int embedded)
 
   int remaining_args = argc - last_arg_idx;
 
-  if (remaining_args > 0)
+  if (! code_to_eval.empty ())
     {
-      reading_script_file = true;
-
-      curr_fcn_file_name = argv[last_arg_idx];
-      curr_fcn_file_full_name = curr_fcn_file_name;
-
-      FILE *infile = get_input_from_file (curr_fcn_file_name);
-
-      if (infile)
-	{
-	  input_from_command_line_file = true;
-
-	  bind_builtin_variable ("program_invocation_name",
-				 curr_fcn_file_name);
-
-	  size_t pos
-	    = curr_fcn_file_name.find_last_of (file_ops::dir_sep_chars);
-
-	  std::string tmp = (pos != NPOS)
-	    ? curr_fcn_file_name.substr (pos+1) : curr_fcn_file_name;
-
-	  bind_builtin_variable ("program_name", tmp);
-
-	  intern_argv (remaining_args, argv+last_arg_idx);
-
-	  command_editor::blink_matching_paren (false);
-
-	  switch_to_buffer (create_buffer (infile));
-	}
-      else
-	clean_up_and_exit (1);
-    }
-  else
-    {
-      // Is input coming from a terminal?  If so, we are probably
-      // interactive.
-
-      interactive = (! embedded
-		     && isatty (fileno (stdin)) && isatty (fileno (stdout)));
+      // We probably want all the args for an --eval option.
 
       intern_argv (argc, argv);
 
-      if (! embedded)
-	switch_to_buffer (create_buffer (get_input_from_stdin ()));
+      int parse_status = execute_eval_option_code (code_to_eval);
+
+      if (! (persist && remaining_args > 0))
+	return (parse_status || error_state ? 1 : 0);
     }
+
+  if (remaining_args > 0)
+    {
+      // If we are running an executable script (#! /bin/octave) then
+      // we should only see the args passed to the script.
+
+      intern_argv (remaining_args, argv+last_arg_idx);
+
+      execute_command_line_file (argv[last_arg_idx]);
+
+      if (! persist)
+	return (error_state ? 1 : 0);
+    }
+
+  // Avoid counting commands executed from startup files.
+
+  command_editor::reset_current_command_number (1);
+
+  // Now argv should have the full set of args.
+  intern_argv (argc, argv);
+
+  if (! embedded)
+    switch_to_buffer (create_buffer (get_input_from_stdin ()));
 
   // Force input to be echoed if not really interactive, but the user
   // has forced interactive behavior.
@@ -612,13 +675,10 @@ octave_main (int argc, char **argv, int embedded)
       bind_builtin_variable ("echo_executing_commands", ECHO_CMD_LINE);
     }
 
-  if (! interactive)
-    line_editing = false;
-
   if (embedded)
     return 1;
 
-  int retval = main_loop (fun_to_call);
+  int retval = main_loop ();
 
   if (retval == 1 && ! error_state)
     retval = 0;

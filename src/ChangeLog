@@ -1,5 +1,34 @@
 2005-03-03  John W. Eaton  <jwe@octave.org>
 
+	* input.cc (input_from_command_line_file): Move definition here.
+	* parse.y: From here.
+	* input.h (input_from_command_line_file): Move decl here.
+	* parse.h: From here.
+
+	* input.cc (octave_gets):
+	Don't save history if input is from command line file.
+
+	* parse.y (parse_and_execute, parse_fcn_file, eval_string):
+	Don't alter value of input_from_command_line_file here.
+	(input_from_command_line_file): Default value is false.
+	(eval_string): Turn off line editing here.
+
+	* toplev.cc, toplev.h (main_loop): Delete fun_to_call arg and all uses.
+
+	* octave.cc (fun_to_call): Delete static variable.
+	(persist, code_to_eval): New static variables.
+	(long_opts): Delete --funcall, add --eval and --persist.
+	(usage_string, verbose_usage, octave_main): Likewise.
+	(FUNCALL_OPTION): Delete.
+	(EVAL_OPTION, PERSIST_OPTION): New macros.
+	(maximum_braindamage): Set persist to true.
+	(execute_eval_option_code): New function.
+	(restore_program_name): New function.
+	(execute_command_line_file): New function.
+	(octave_main): Call execute_eval_option code and
+	execute_command_line file.  If persist, go interactive even after
+	evaluating --eval code and/or command-line file.
+
 	* ov-bool-sparse.h, ov-bool-sparse.cc
 	(octave_sparse_bool_matrix::sparse_matrix_value,
 	octave_sparse_bool_matrix::sparse_complex_matrix_value):

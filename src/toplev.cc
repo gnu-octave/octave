@@ -111,7 +111,7 @@ recover_from_exception (void)
 }
 
 int
-main_loop (const std::string& fun_to_call)
+main_loop (void)
 {
   octave_save_signal_mask ();
 
@@ -136,9 +136,6 @@ main_loop (const std::string& fun_to_call)
   octave_catch_interrupts ();
 
   octave_initialized = true;
-
-  if (! fun_to_call.empty ())
-    feval (fun_to_call);
 
   // The big loop.
 

@@ -130,10 +130,6 @@ bool reading_startup_message_printed = false;
 // TRUE means input is coming from startup file.
 bool input_from_startup_file = false;
 
-// TRUE means that input is coming from a file that was named on
-// the command line.
-bool input_from_command_line_file = true;
-
 // TRUE means that we are in the process of evaluating a function
 // body.  The parser might be called in that case if we are looking at
 // an eval() statement.
@@ -2854,12 +2850,10 @@ parse_and_execute (FILE *f)
   switch_to_buffer (new_buf);
 
   unwind_protect_bool (line_editing);
-  unwind_protect_bool (input_from_command_line_file);
   unwind_protect_bool (get_input_from_eval_string);
   unwind_protect_bool (parser_end_of_input);
 
   line_editing = false;
-  input_from_command_line_file = false;
   get_input_from_eval_string = false;
   parser_end_of_input = false;
 
@@ -3253,14 +3247,12 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  unwind_protect_int (Vecho_executing_commands);
 	  unwind_protect_bool (Vsaving_history);
 	  unwind_protect_bool (reading_fcn_file);
-	  unwind_protect_bool (input_from_command_line_file);
 	  unwind_protect_bool (get_input_from_eval_string);
 	  unwind_protect_bool (parser_end_of_input);
 
 	  Vecho_executing_commands = ECHO_OFF;
 	  Vsaving_history = false;
 	  reading_fcn_file = true;
-	  input_from_command_line_file = false;
 	  get_input_from_eval_string = false;
 	  parser_end_of_input = false;
 
@@ -3575,14 +3567,15 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   unwind_protect_bool (get_input_from_eval_string);
   unwind_protect_bool (input_from_eval_string_pending);
-  unwind_protect_bool (input_from_command_line_file);
   unwind_protect_bool (parser_end_of_input);
+  unwind_protect_bool (line_editing);
   unwind_protect_str (current_eval_string);
 
   get_input_from_eval_string = true;
   input_from_eval_string_pending = true;
-  input_from_command_line_file = false;
   parser_end_of_input = false;
+  line_editing = false;
+
   current_eval_string = s;
 
   unwind_protect_ptr (global_command);

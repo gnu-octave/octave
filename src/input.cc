@@ -103,6 +103,10 @@ bool get_input_from_eval_string = false;
 // current_eval_string yet.
 bool input_from_eval_string_pending = false;
 
+// TRUE means that input is coming from a file that was named on
+// the command line.
+bool input_from_command_line_file = false;
+
 // TRUE means we're parsing a function file.
 bool reading_fcn_file = false;
 
@@ -234,7 +238,7 @@ octave_gets (void)
 
   if (! current_input_line.empty ())
     {
-      if (! input_from_startup_file)
+      if (! (input_from_startup_file || input_from_command_line_file))
 	command_history::add (current_input_line);
 
       if (! (reading_fcn_file || reading_script_file))

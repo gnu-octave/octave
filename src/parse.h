@@ -66,10 +66,6 @@ extern bool reading_startup_message_printed;
 // TRUE means input is coming from startup file.
 extern bool input_from_startup_file;
 
-// TRUE means that input is coming from a file that was named on
-// the command line.
-extern bool input_from_command_line_file;
-
 // TRUE means that we are in the process of evaluating a function
 // body.  The parser might be called in that case if we are looking at
 // an eval() statement.

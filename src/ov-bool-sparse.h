@@ -117,7 +117,7 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
-  SparseBoolMatrix sparse_bool_matrix_value (void) const
+  SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
     { return matrix; }
 
   octave_value convert_to_str_internal (bool pad, bool force) const;

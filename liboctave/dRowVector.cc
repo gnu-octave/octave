@@ -442,6 +442,24 @@ RowVector::map (d_d_Mapper f)
     elem (i) = f (elem (i));
 }
 
+RowVector
+linspace (double x1, double x2, int n)
+{
+  RowVector retval;
+
+  if (n > 0)
+    {
+      retval.resize (n);
+      double delta = (x2 - x1) / (n - 1);
+      retval.elem (0) = x1;
+      for (int i = 1; i < n-1; i++)
+	retval.elem (i) = x1 + i * delta;
+      retval.elem (n-1) = x2;
+    }
+
+  return retval;
+}
+
 double
 RowVector::min (void) const
 {

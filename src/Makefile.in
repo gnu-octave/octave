@@ -261,7 +261,7 @@ stamp-oct-links: $(OCT_FILES)
 	fi
 	touch stamp-oct-links
 
-stamp-prereq: defaults.h oct-conf.h $(OPT_HANDLERS)
+stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)

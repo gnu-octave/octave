@@ -1,7 +1,7 @@
 2004-04-06  David Bateman  <dbateman@free.fr>
 
   	* DLD_FUNCTIONS/sort.cc: Use the new template sort class, adapt for
-	NDArrays, and allow optional dim argument.
+	N-d arrays, and allow optional dim argument.
 
 	* DLD_FUNCTIONS/fftn.cc: Save result of transpose operation.
 	Check for failure of transpose.
@@ -36,7 +36,7 @@
 	* DLD-FUNCTIONS/besselj.cc, DLD-FUNCTIONS/betainc.cc,
 	DLD-FUNCTIONS/gammainc.cc, DLD-FUNCTIONS/minmax.cc,
 	DLD-FUNCTIONS/filter.cc:
-	Convert for NDArray, better Matlab compatibility.
+	Convert for N-d array, better Matlab compatibility.
 
 	* load-save.cc (Fload): Better handling of non existent files.
 	

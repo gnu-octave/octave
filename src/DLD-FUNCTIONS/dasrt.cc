@@ -215,14 +215,14 @@ DEFUN_DLD (dasrt, args, nargout,
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{t_out}, @var{istat}, @var{msg}] =} dasrt (@var{fcn} [, @var{g}], @var{x_0}, @var{xdot_0}, @var{t} [, @var{t_crit}])\n\
 Solve the set of differential-algebraic equations\n\
 @tex\n\
-$$ 0 = f (\\dot{x}, x, t) $$\n\
+$$ 0 = f (x, \\dot{x}, t) $$\n\
 with\n\
 $$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
 @end tex\n\
 @ifinfo\n\
 \n\
 @example\n\
-0 = f (xdot, x, t)\n\
+0 = f (x, xdot, t)\n\
 @end example\n\
 \n\
 with\n\
@@ -301,7 +301,7 @@ If the value of any of the constraint functions changes sign, @sc{Dasrt}\n\
 will attempt to stop the integration at the point of the sign change.\n\
 \n\
 If the name of the constraint function is omitted, @code{dasrt} solves\n\
-the saem problem as @code{daspk} or @code{dassl}.\n\
+the same problem as @code{daspk} or @code{dassl}.\n\
 \n\
 Note that because of numerical errors in the constraint functions\n\
 due to roundoff and integration error, @sc{Dasrt} may return false\n\

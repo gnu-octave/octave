@@ -12,7 +12,7 @@
 
 	* lo-specfun.cc (besselj, bessely, besseli, besselk, besselh1, 
 	besselh2, airy, biry, betainc, gammainc, do_bessel):
-	New NDArray versions.
+	New N-d array versions.
 	(SN_BESSEL, NS_BESSEL, NN_BESSEL): New macros.
 	* lo-specfun.h (besselj, bessely, besseli, besselk, besselh1, 
 	besselh2, airy, biry, betainc, gammainc): Provide decls.

@@ -1,23 +1,24 @@
 2004-04-06  David Bateman  <dbateman@free.fr>
 
-	* statistics/base/var.m: Update for NDArrays.  Allow dimension arg.
+	* statistics/base/var.m: Update for N-d arrays.  Allow dimension arg.
+	* statistics/base/median.m: Likewise.
 
 2004-04-02  David Bateman  <dbateman@free.fr>
 
 	* statistics/base/std.m: Allow optional args for type and dim.
 	* statistics/base/center.m, statistics/base/meansq.m,
 	statistics/base/moment.m, statistics/base/range.m:
-	Update for NDArrays.
+	Update for N-d arrays.
 	* signal/fftshift.m: Fix dimensioning error.
 	
 	* statistics/base/std.m: Use repmat not ones(nr,1)*mean to allow
-	NDArrays.
+	N-d arrays.
 	
-	* general/mod.m, general/mod.m: Allow NDArrays with one scalar arg.
+	* general/mod.m, general/mod.m: Allow N-d arrays with one scalar arg.
 
-	* signal/fftshift.m: Update for NDArrays, allow optional dim arg.
+	* signal/fftshift.m: Update for N-d arrays, allow optional dim arg.
 	
-	* specfun/erfinv.m, general/repmat.m: Update for NDArrays.
+	* specfun/erfinv.m, general/repmat.m: Update for N-d arrays.
 	
 	* control/base/bode.m, control/base/lqg.m, control/system/ss2sys.m,
 	control/system/cellidx.m, control/system/dmr2d.m control/system/ss.m,

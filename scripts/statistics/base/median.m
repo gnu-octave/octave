@@ -47,29 +47,45 @@
 
 ## Author: jwe
 
-function retval = median (a)
+function retval = median (a, dim)
 
-  if (nargin != 1)
-    usage ("median (a)");
+  if (nargin != 1 && nargin != 2)
+    usage ("median (a, dim)");
+  endif
+  if (nargin < 2)
+    dim = min (find (size (a) > 1));
+    if (isempty (dim))
+      dim = 1;
+    endif
   endif
 
-  [nr, nc] = size (a);
-  s = sort (a);
-  if (nr == 1 && nc > 0)
-    if (rem (nc, 2) == 0)
-      i = nc/2;
-      retval = (s (i) + s (i+1)) / 2;
+  sz = size (a);
+  s = sort (a, dim);
+  if (numel (a) > 1)
+    if (numel (a) == sz(dim))
+      if (rem (sz(dim), 2) == 0)
+	i = sz(dim) / 2;
+	retval = (s(i) + s(i+1)) / 2;
+      else
+	i = ceil (sz(dim) /2);
+	retval = s(i);
+      endif
     else
-      i = ceil (nc/2);
-      retval = s (i);
-    endif
-  elseif (nr > 0 && nc > 0)
-    if (rem (nr, 2) == 0)
-      i = nr/2;
-      retval = (s (i,:) + s (i+1,:)) / 2;
-    else
-      i = ceil (nr/2);
-      retval = s (i,:);
+      idx = cell ();
+      nd = length (sz);
+      for i = 1:nd
+	idx{i} = 1:sz(i);
+      endfor
+      if (rem (sz(dim), 2) == 0)
+	i = sz(dim) / 2;
+	idx{dim} = i;
+	retval = s(idx{:});
+	idx{dim} = i+1;
+	retval = (retval + s(idx{:})) / 2;
+      else
+	idx{dim} = ceil (sz(dim) / 2);
+	retval = s(idx{:});
+      endif
     endif
   else
     error ("median: invalid matrix argument");

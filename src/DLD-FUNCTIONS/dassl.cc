@@ -179,7 +179,7 @@ DEFUN_DLD (dassl, args, nargout,
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}, @var{istate}, @var{msg}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t}, @var{t_crit})\n\
 Solve the set of differential-algebraic equations\n\
 @tex\n\
-$$ 0 = f (\\dot{x}, x, t) $$\n\
+$$ 0 = f (x, \\dot{x}, t) $$\n\
 with\n\
 $$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
 @end tex\n\

@@ -1,3 +1,11 @@
+2001-01-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc, help.cc, load-save.cc, pr-output.cc, utils.cc:
+	Add std:: namespace qualifier as needed.
+
+	* mx-inlines.cc: Rename all functions with mx_inline_ prefix.
+	Change all uses to match.
+
 2001-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-cutils.c: Don't delcare strptime.

@@ -1828,7 +1828,7 @@ returns the formatted output in a string.\n\
 
       if (! error_state)
 	{
-	  ostream *osp = os.output_stream ();
+	  std::ostream *osp = os.output_stream ();
 
 	  if (osp)
 	    args(1).print (*osp);

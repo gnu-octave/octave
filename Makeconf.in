@@ -301,7 +301,8 @@ pic/%.o : %.cc
 	@echo making $@ from $<
 	@rm -f $@
 	@$(CXX) -M $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	  sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp
+	  sed -e 's,^[^:]*/\(.*\.o\):,\1:,' \
+	      -e 's,$*\.o,pic/& & $@,g' > $@.tmp
 	@mv $@.tmp $@
 
 # And one for .c files.too:
@@ -310,7 +311,8 @@ pic/%.o : %.cc
 	@echo making $@ from $<
 	@rm -f $@
 	@$(CC) -M $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	  sed -e 's,$*\.o,pic/& & $@,g' > $@.tmp
+	  sed -e 's,^[^:]*/\(.*\.o\):,\1:,' \
+	      -e 's,$*\.o,pic/& & $@,g' > $@.tmp
 	@mv $@.tmp $@
 
 define do-subdir-for-command

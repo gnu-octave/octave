@@ -36,10 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       r[i] = v[i] OP s; \
   }
 
-VS_OP_FCN (add,      +)
-VS_OP_FCN (subtract, -)
-VS_OP_FCN (multiply, *)
-VS_OP_FCN (divide,   /)
+VS_OP_FCN (mx_inline_add,      +)
+VS_OP_FCN (mx_inline_subtract, -)
+VS_OP_FCN (mx_inline_multiply, *)
+VS_OP_FCN (mx_inline_divide,   /)
 
 #define VS_OP(F, OP, R, V, S) \
   static inline R * \
@@ -55,10 +55,10 @@ VS_OP_FCN (divide,   /)
   }
 
 #define VS_OPS(R, V, S) \
-  VS_OP (add,      +, R, V, S) \
-  VS_OP (subtract, -, R, V, S) \
-  VS_OP (multiply, *, R, V, S) \
-  VS_OP (divide,   /, R, V, S)
+  VS_OP (mx_inline_add,      +, R, V, S) \
+  VS_OP (mx_inline_subtract, -, R, V, S) \
+  VS_OP (mx_inline_multiply, *, R, V, S) \
+  VS_OP (mx_inline_divide,   /, R, V, S)
 
 VS_OPS (double,  double,  double)
 VS_OPS (Complex, double,  Complex)
@@ -74,10 +74,10 @@ VS_OPS (Complex, Complex, Complex)
       r[i] = s OP v[i]; \
   } \
 
-SV_OP_FCN (add,      +)
-SV_OP_FCN (subtract, -)
-SV_OP_FCN (multiply, *)
-SV_OP_FCN (divide,   /)
+SV_OP_FCN (mx_inline_add,      +)
+SV_OP_FCN (mx_inline_subtract, -)
+SV_OP_FCN (mx_inline_multiply, *)
+SV_OP_FCN (mx_inline_divide,   /)
 
 #define SV_OP(F, OP, R, S, V) \
   static inline R * \
@@ -93,10 +93,10 @@ SV_OP_FCN (divide,   /)
   }
 
 #define SV_OPS(R, S, V) \
-  SV_OP (add,      +, R, S, V) \
-  SV_OP (subtract, -, R, S, V) \
-  SV_OP (multiply, *, R, S, V) \
-  SV_OP (divide,   /, R, S, V)
+  SV_OP (mx_inline_add,      +, R, S, V) \
+  SV_OP (mx_inline_subtract, -, R, S, V) \
+  SV_OP (mx_inline_multiply, *, R, S, V) \
+  SV_OP (mx_inline_divide,   /, R, S, V)
 
 SV_OPS (double,  double,  double)
 SV_OPS (Complex, double,  Complex)
@@ -112,10 +112,10 @@ SV_OPS (Complex, Complex, Complex)
       r[i] = v1[i] OP v2[i]; \
   } \
 
-VV_OP_FCN (add,      +)
-VV_OP_FCN (subtract, -)
-VV_OP_FCN (multiply, *)
-VV_OP_FCN (divide,   /)
+VV_OP_FCN (mx_inline_add,      +)
+VV_OP_FCN (mx_inline_subtract, -)
+VV_OP_FCN (mx_inline_multiply, *)
+VV_OP_FCN (mx_inline_divide,   /)
 
 #define VV_OP(F, OP, R, T1, T2) \
   static inline R * \
@@ -131,10 +131,10 @@ VV_OP_FCN (divide,   /)
   }
 
 #define VV_OPS(R, T1, T2) \
-  VV_OP (add,      +, R, T1, T2) \
-  VV_OP (subtract, -, R, T1, T2) \
-  VV_OP (multiply, *, R, T1, T2) \
-  VV_OP (divide,   /, R, T1, T2)
+  VV_OP (mx_inline_add,      +, R, T1, T2) \
+  VV_OP (mx_inline_subtract, -, R, T1, T2) \
+  VV_OP (mx_inline_multiply, *, R, T1, T2) \
+  VV_OP (mx_inline_divide,   /, R, T1, T2)
 
 VV_OPS (double,  double,  double)
 VV_OPS (Complex, double,  Complex)
@@ -151,11 +151,11 @@ VV_OPS (Complex, Complex, Complex)
   }
 
 #define VS_OP2S(V, S) \
-  VS_OP2 (add2,      +=, V, S) \
-  VS_OP2 (subtract2, -=, V, S) \
-  VS_OP2 (multiply2, *=, V, S) \
-  VS_OP2 (divide2,   /=, V, S) \
-  VS_OP2 (copy,       =, V, S)
+  VS_OP2 (mx_inline_add2,      +=, V, S) \
+  VS_OP2 (mx_inline_subtract2, -=, V, S) \
+  VS_OP2 (mx_inline_multiply2, *=, V, S) \
+  VS_OP2 (mx_inline_divide2,   /=, V, S) \
+  VS_OP2 (mx_inline_copy,       =, V, S)
 
 VS_OP2S (double,  double)
 VS_OP2S (Complex, double)
@@ -171,11 +171,11 @@ VS_OP2S (Complex, Complex)
   }
 
 #define VV_OP2S(T1, T2) \
-  VV_OP2 (add2,      +=, T1, T2) \
-  VV_OP2 (subtract2, -=, T1, T2) \
-  VV_OP2 (multiply2, *=, T1, T2) \
-  VV_OP2 (divide2,   /=, T1, T2) \
-  VV_OP2 (copy,       =, T1, T2)
+  VV_OP2 (mx_inline_add2,      +=, T1, T2) \
+  VV_OP2 (mx_inline_subtract2, -=, T1, T2) \
+  VV_OP2 (mx_inline_multiply2, *=, T1, T2) \
+  VV_OP2 (mx_inline_divide2,   /=, T1, T2) \
+  VV_OP2 (mx_inline_copy,       =, T1, T2)
 
 VV_OP2S (double,  double)
 VV_OP2S (Complex, double)
@@ -183,7 +183,7 @@ VV_OP2S (Complex, Complex)
 
 #define OP_EQ_FCN(T1, T2) \
   static inline bool \
-  equal (const T1 *x, const T2 *y, size_t n) \
+  mx_inline_equal (const T1 *x, const T2 *y, size_t n) \
   { \
     for (size_t i = 0; i < n; i++) \
       if (x[i] != y[i]) \
@@ -210,22 +210,22 @@ OP_EQ_FCN (Complex, Complex)
     return r; \
   }
 
-OP_DUP_FCN (, dup, double,  double)
-OP_DUP_FCN (, dup, Complex, Complex)
+OP_DUP_FCN (, mx_inline_dup, double,  double)
+OP_DUP_FCN (, mx_inline_dup, Complex, Complex)
 
 // These should really return a bool *.  Also, they should probably be
 // in with a collection of other element-by-element boolean ops.
-OP_DUP_FCN (0.0 ==, xnot, double, double)
-OP_DUP_FCN (0.0 ==, xnot, double, Complex)
+OP_DUP_FCN (0.0 ==, mx_inline_not, double, double)
+OP_DUP_FCN (0.0 ==, mx_inline_not, double, Complex)
 
-OP_DUP_FCN (, make_complex, Complex, double)
+OP_DUP_FCN (, mx_inline_make_complex, Complex, double)
 
-OP_DUP_FCN (-, change_sign, double,  double)
-OP_DUP_FCN (-, change_sign, Complex, Complex)
+OP_DUP_FCN (-, mx_inline_change_sign, double,  double)
+OP_DUP_FCN (-, mx_inline_change_sign, Complex, Complex)
 
-OP_DUP_FCN (real, real_dup, double,  Complex)
-OP_DUP_FCN (imag, imag_dup, double,  Complex)
-OP_DUP_FCN (conj, conj_dup, Complex, Complex)
+OP_DUP_FCN (real, mx_inline_real_dup, double,  Complex)
+OP_DUP_FCN (imag, mx_inline_imag_dup, double,  Complex)
+OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
 #endif
 

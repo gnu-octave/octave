@@ -639,7 +639,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 		 << "See also: \\args\\.\n"
                  << "@end macro\n";
 
-	  filter << msg.substr (pos+1) << endl;
+	  filter << msg.substr (pos+1) << std::endl;
 
 	  int status = filter.close ();
 

@@ -931,3 +931,40 @@ EOF
     AC_DEFINE(CXX_PREPENDS_UNDERSCORE)
   fi
 ])
+dnl
+dnl See if the C++ library is ISO compliant.
+dnl FIXME: This is obviously very simplistic, and trivially fooled.
+dnl
+dnl OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
+AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_MSG_CHECKING([if C++ library is ISO compliant])
+  AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    rm -f conftest.h
+    for inc in algorithm bitset cassert cctype cerrno cfloat ciso646 \
+	climits clocale cmath complex csetjmp csignal cstdarg cstddef \
+	cstdio cstdlib cstring ctime cwchar cwctype deque exception \
+	fstream functional iomanip ios iosfwd iostream istream iterator \
+	limits list locale map memory new numeric ostream queue set \
+	sstream stack stdexcept streambuf string strstream typeinfo \
+	utility valarray vector; do
+      echo "#include <$inc>" >> conftest.h
+    done
+    AC_TRY_LINK([#include "conftest.h"], [
+        std::bitset<50> flags;
+        flags.set();
+        int digits = std::numeric_limits<unsigned long>::digits;
+        digits = 0;
+      ],
+      octave_cv_cxx_iso_compliant_library=yes,
+      octave_cv_cxx_iso_compliant_library=no
+    )
+    AC_LANG_RESTORE
+  ])
+  AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)
+  if test $octave_cv_cxx_iso_compliant_library = yes; then
+    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY)
+  fi
+])

@@ -194,7 +194,7 @@ ComplexMatrix::operator == (const ComplexMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return equal (data (), a.data (), length ());
+  return mx_inline_equal (data (), a.data (), length ());
 }
 
 bool
@@ -742,8 +742,8 @@ conj (const ComplexMatrix& a)
   int a_len = a.length ();
   ComplexMatrix retval;
   if (a_len > 0)
-    retval = ComplexMatrix (conj_dup (a.data (), a_len), a.rows (),
-			    a.cols ());
+    retval = ComplexMatrix (mx_inline_conj_dup (a.data (), a_len),
+			    a.rows (), a.cols ());
   return retval;
 }
 
@@ -2023,7 +2023,7 @@ ComplexMatrix::operator += (const Matrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  add2 (d, a.data (), length ());
+  mx_inline_add2 (d, a.data (), length ());
   return *this;
 }
 
@@ -2047,7 +2047,7 @@ ComplexMatrix::operator -= (const Matrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  subtract2 (d, a.data (), length ());
+  mx_inline_subtract2 (d, a.data (), length ());
   return *this;
 }
 

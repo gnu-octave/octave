@@ -44,7 +44,7 @@ boolMatrix::operator == (const boolMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return equal (data (), a.data (), length ());
+  return mx_inline_equal (data (), a.data (), length ());
 }
 
 bool

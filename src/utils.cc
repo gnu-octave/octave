@@ -720,11 +720,11 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 #if defined (__GNUG__)
 
-  ostrstream buf;
+  std::ostrstream buf;
 
   buf.vform (fmt, args);
 
-  buf << ends;
+  buf << std::ends;
 
   char *s = buf.str ();
 

@@ -51,7 +51,7 @@ ComplexDiagMatrix::operator == (const ComplexDiagMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return equal (data (), a.data (), length ());
+  return mx_inline_equal (data (), a.data (), length ());
 }
 
 bool
@@ -237,13 +237,15 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a, int beg)
 ComplexDiagMatrix
 ComplexDiagMatrix::hermitian (void) const
 {
-  return ComplexDiagMatrix (conj_dup (data (), length ()), cols (), rows ());
+  return ComplexDiagMatrix (mx_inline_conj_dup (data (), length ()),
+			    cols (), rows ());
 }
 
 ComplexDiagMatrix
 ComplexDiagMatrix::transpose (void) const
 {
-  return ComplexDiagMatrix (dup (data (), length ()), cols (), rows ());
+  return ComplexDiagMatrix (mx_inline_dup (data (), length ()),
+			    cols (), rows ());
 }
 
 ComplexDiagMatrix
@@ -252,7 +254,7 @@ conj (const ComplexDiagMatrix& a)
   ComplexDiagMatrix retval;
   int a_len = a.length ();
   if (a_len > 0)
-    retval = ComplexDiagMatrix (conj_dup (a.data (), a_len),
+    retval = ComplexDiagMatrix (mx_inline_conj_dup (a.data (), a_len),
 				a.rows (), a.cols ());
   return retval;
 }
@@ -414,7 +416,7 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  add2 (d, a.data (), length ());
+  mx_inline_add2 (d, a.data (), length ());
   return *this;
 }
 

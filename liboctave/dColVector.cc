@@ -56,7 +56,7 @@ ColumnVector::operator == (const ColumnVector& a) const
   int len = length ();
   if (len != a.length ())
     return 0;
-  return equal (data (), a.data (), len);
+  return mx_inline_equal (data (), a.data (), len);
 }
 
 bool
@@ -132,7 +132,7 @@ real (const ComplexColumnVector& a)
   int a_len = a.length ();
   ColumnVector retval;
   if (a_len > 0)
-    retval = ColumnVector (real_dup (a.data (), a_len), a_len);
+    retval = ColumnVector (mx_inline_real_dup (a.data (), a_len), a_len);
   return retval;
 }
 
@@ -142,7 +142,7 @@ imag (const ComplexColumnVector& a)
   int a_len = a.length ();
   ColumnVector retval;
   if (a_len > 0)
-    retval = ColumnVector (imag_dup (a.data (), a_len), a_len);
+    retval = ColumnVector (mx_inline_imag_dup (a.data (), a_len), a_len);
   return retval;
 }
 

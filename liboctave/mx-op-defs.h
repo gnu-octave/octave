@@ -165,10 +165,10 @@ class boolMatrix;
   }
 
 #define MS_BIN_OPS(R, M, S) \
-  MS_BIN_OP (R, operator +, M, S, add) \
-  MS_BIN_OP (R, operator -, M, S, subtract) \
-  MS_BIN_OP (R, operator *, M, S, multiply) \
-  MS_BIN_OP (R, operator /, M, S, divide)
+  MS_BIN_OP (R, operator +, M, S, mx_inline_add) \
+  MS_BIN_OP (R, operator -, M, S, mx_inline_subtract) \
+  MS_BIN_OP (R, operator *, M, S, mx_inline_multiply) \
+  MS_BIN_OP (R, operator /, M, S, mx_inline_divide)
 
 #define MS_CMP_OP_DECLS(M, S) \
   CMP_OP_DECL (mx_el_lt, M, S); \
@@ -267,10 +267,10 @@ class boolMatrix;
   }
 
 #define SM_BIN_OPS(R, S, M) \
-  SM_BIN_OP (R, operator +, S, M, add) \
-  SM_BIN_OP (R, operator -, S, M, subtract) \
-  SM_BIN_OP (R, operator *, S, M, multiply) \
-  SM_BIN_OP (R, operator /, S, M, divide)
+  SM_BIN_OP (R, operator +, S, M, mx_inline_add) \
+  SM_BIN_OP (R, operator -, S, M, mx_inline_subtract) \
+  SM_BIN_OP (R, operator *, S, M, mx_inline_multiply) \
+  SM_BIN_OP (R, operator /, S, M, mx_inline_divide)
 
 #define SM_CMP_OP_DECLS(S, M) \
   CMP_OP_DECL (mx_el_lt, S, M); \
@@ -379,10 +379,10 @@ class boolMatrix;
   }
 
 #define MM_BIN_OPS(R, M1, M2) \
-  MM_BIN_OP (R, operator +, M1, M2, add) \
-  MM_BIN_OP (R, operator -, M1, M2, subtract) \
-  MM_BIN_OP (R, product,    M1, M2, multiply) \
-  MM_BIN_OP (R, quotient,   M1, M2, divide)
+  MM_BIN_OP (R, operator +, M1, M2, mx_inline_add) \
+  MM_BIN_OP (R, operator -, M1, M2, mx_inline_subtract) \
+  MM_BIN_OP (R, product,    M1, M2, mx_inline_multiply) \
+  MM_BIN_OP (R, quotient,   M1, M2, mx_inline_divide)
 
 #define MM_CMP_OP_DECLS(M1, M2) \
   CMP_OP_DECL (mx_el_lt, M1, M2); \
@@ -748,9 +748,9 @@ operator * (const DM& dm, const M& m) \
   }
 
 #define DMDM_BIN_OPS(R, DM1, DM2) \
-  DMDM_BIN_OP (R, operator +, DM1, DM2, add) \
-  DMDM_BIN_OP (R, operator -, DM1, DM2, subtract) \
-  DMDM_BIN_OP (R, product,    DM1, DM2, multiply)
+  DMDM_BIN_OP (R, operator +, DM1, DM2, mx_inline_add) \
+  DMDM_BIN_OP (R, operator -, DM1, DM2, mx_inline_subtract) \
+  DMDM_BIN_OP (R, product,    DM1, DM2, mx_inline_multiply)
 
 #define DMDM_OP_DECLS(R, DM1, DM2) \
   DMDM_BIN_OP_DECLS (R, DM1, DM2)

@@ -2772,7 +2772,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap,
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
 
 static bool
-matches_patterns (const std::string_vector& patterns, int pat_idx,
+matches_patterns (const string_vector& patterns, int pat_idx,
 		  int num_pat, const std::string& name)
 {
   for (int i = pat_idx; i < num_pat; i++)
@@ -4081,7 +4081,7 @@ save_mat5_binary_element (std::ostream& os,
   FOUR_BYTE_INT junk=0;
   FOUR_BYTE_INT nr;
   FOUR_BYTE_INT nc;
-  streampos fixup, contin;
+  std::streampos fixup, contin;
 
   // element type and length
   fixup = os.tellp ();
@@ -4231,7 +4231,7 @@ save_mat5_binary_element (std::ostream& os,
 	for (i = m.first (); i; m.next (i))
 	  {
 	    // write the name of each element
-	    string tstr = m.key (i);
+	    std::string tstr = m.key (i);
 	    memset (buf, 0, 32);
 	    strncpy (buf, tstr.c_str (), 31); // only 31 char names permitted
 	    os.write (buf, 32);
@@ -4609,7 +4609,7 @@ save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 {
   bool infnan_warned = true;
 
-  save_ascii_data (os, t, name, infnan_warned, true, false, 0);
+  return save_ascii_data (os, t, name, infnan_warned, true, false, 0);
 }
 
 // Save the info from sr on stream os in the format specified by fmt.
@@ -4810,7 +4810,7 @@ write_header (std::ostream& os, load_save_format format)
 }
 
 static void
-save_vars (const std::string_vector& argv, int argv_idx, int argc,
+save_vars (const string_vector& argv, int argv_idx, int argc,
 	   std::ostream& os, bool save_builtins, load_save_format fmt,
 	   bool save_as_floats, bool write_header_info)
 {
@@ -5123,7 +5123,8 @@ the file @file{data} in Octave's binary format.\n\
 	  if (file)
 	    {
 	      bool write_header_info
-		= ( (file.rdbuf ())->seekoff (0, std::ios::cur) == 0);
+		= ((file.rdbuf ())->seekoff (0, std::ios::cur)
+		   == static_cast<std::streampos> (0));
 	      
 	      save_vars (argv, i, argc, file, save_builtins, format,
 			 save_as_floats, write_header_info);
@@ -5226,7 +5227,7 @@ default_save_format (void)
   return status;
 }
 
-static string
+static std::string
 default_save_header_format (void)
 {
   return

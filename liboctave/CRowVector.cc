@@ -63,7 +63,7 @@ ComplexRowVector::operator == (const ComplexRowVector& a) const
   int len = length ();
   if (len != a.length ())
     return 0;
-  return equal (data (), a.data (), len);
+  return mx_inline_equal (data (), a.data (), len);
 }
 
 bool
@@ -188,7 +188,7 @@ ComplexColumnVector
 ComplexRowVector::hermitian (void) const
 {
   int len = length ();
-  return ComplexColumnVector (conj_dup (data (), len), len);
+  return ComplexColumnVector (mx_inline_conj_dup (data (), len), len);
 }
 
 ComplexColumnVector
@@ -203,7 +203,7 @@ conj (const ComplexRowVector& a)
   int a_len = a.length ();
   ComplexRowVector retval;
   if (a_len > 0)
-    retval = ComplexRowVector (conj_dup (a.data (), a_len), a_len);
+    retval = ComplexRowVector (mx_inline_conj_dup (a.data (), a_len), a_len);
   return retval;
 }
 
@@ -244,7 +244,7 @@ ComplexRowVector::operator += (const RowVector& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  add2 (d, a.data (), len);
+  mx_inline_add2 (d, a.data (), len);
   return *this;
 }
 
@@ -266,7 +266,7 @@ ComplexRowVector::operator -= (const RowVector& a)
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
 
-  subtract2 (d, a.data (), len);
+  mx_inline_subtract2 (d, a.data (), len);
   return *this;
 }
 

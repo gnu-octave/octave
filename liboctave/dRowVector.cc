@@ -59,7 +59,7 @@ RowVector::operator == (const RowVector& a) const
   int len = length ();
   if (len != a.length ())
     return 0;
-  return equal (data (), a.data (), len);
+  return mx_inline_equal (data (), a.data (), len);
 }
 
 bool
@@ -135,7 +135,7 @@ real (const ComplexRowVector& a)
   int a_len = a.length ();
   RowVector retval;
   if (a_len > 0)
-    retval = RowVector (real_dup (a.data (), a_len), a_len);
+    retval = RowVector (mx_inline_real_dup (a.data (), a_len), a_len);
   return retval;
 }
 
@@ -145,7 +145,7 @@ imag (const ComplexRowVector& a)
   int a_len = a.length ();
   RowVector retval;
   if (a_len > 0)
-    retval = RowVector (imag_dup (a.data (), a_len), a_len);
+    retval = RowVector (mx_inline_imag_dup (a.data (), a_len), a_len);
   return retval;
 }
 

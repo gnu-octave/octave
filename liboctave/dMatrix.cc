@@ -158,7 +158,7 @@ Matrix::operator == (const Matrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return false;
 
-  return equal (data (), a.data (), length ());
+  return mx_inline_equal (data (), a.data (), length ());
 }
 
 bool
@@ -431,7 +431,8 @@ real (const ComplexMatrix& a)
   int a_len = a.length ();
   Matrix retval;
   if (a_len > 0)
-    retval = Matrix (real_dup (a.data (), a_len), a.rows (), a.cols ());
+    retval = Matrix (mx_inline_real_dup (a.data (), a_len),
+		     a.rows (), a.cols ());
   return retval;
 }
 
@@ -441,7 +442,8 @@ imag (const ComplexMatrix& a)
   int a_len = a.length ();
   Matrix retval;
   if (a_len > 0)
-    retval = Matrix (imag_dup (a.data (), a_len), a.rows (), a.cols ());
+    retval = Matrix (mx_inline_imag_dup (a.data (), a_len),
+		     a.rows (), a.cols ());
   return retval;
 }
 

@@ -1274,7 +1274,7 @@ tree_print_code::print_comment_elt (const octave_comment_elt& elt)
 
   bool prev_char_was_newline = false;
 
-  string comment = elt.text ();
+  std::string comment = elt.text ();
 
   size_t len = comment.length ();
 

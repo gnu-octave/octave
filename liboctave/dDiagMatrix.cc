@@ -44,7 +44,7 @@ DiagMatrix::operator == (const DiagMatrix& a) const
   if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return equal (data (), a.data (), length ());
+  return mx_inline_equal (data (), a.data (), length ());
 }
 
 bool
@@ -143,7 +143,7 @@ DiagMatrix::fill (const RowVector& a, int beg)
 DiagMatrix
 DiagMatrix::transpose (void) const
 {
-  return DiagMatrix (dup (data (), length ()), cols (), rows ());
+  return DiagMatrix (mx_inline_dup (data (), length ()), cols (), rows ());
 }
 
 DiagMatrix
@@ -152,7 +152,7 @@ real (const ComplexDiagMatrix& a)
   DiagMatrix retval;
   int a_len = a.length ();
   if (a_len > 0)
-    retval = DiagMatrix (real_dup (a.data (), a_len), a.rows (),
+    retval = DiagMatrix (mx_inline_real_dup (a.data (), a_len), a.rows (),
 			 a.cols ());
   return retval;
 }
@@ -163,7 +163,7 @@ imag (const ComplexDiagMatrix& a)
   DiagMatrix retval;
   int a_len = a.length ();
   if (a_len > 0)
-    retval = DiagMatrix (imag_dup (a.data (), a_len), a.rows (),
+    retval = DiagMatrix (mx_inline_imag_dup (a.data (), a_len), a.rows (),
 			 a.cols ());
   return retval;
 }

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.337 $)
+AC_REVISION($Revision: 1.338 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -199,6 +199,7 @@ fi
 AC_SUBST(CXX_VERSION)
 
 OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
+OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
 
 ### See which C compiler to use (we expect to find gcc).
 

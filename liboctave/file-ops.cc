@@ -205,7 +205,7 @@ file_ops::readlink (const std::string& path, std::string& result,
   else
     {
       buf[status] = '\0';
-      result = string (buf);
+      result = std::string (buf);
       status = 0;
     }
 #else

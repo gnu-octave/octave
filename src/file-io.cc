@@ -1,7 +1,7 @@
 // file-io.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -812,7 +812,7 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 	}
       else
 	  {
-	    error ("%s: illegal file specifier", type);
+	    error ("%s: invalid file specifier", type);
 	    return retval;
 	  }
 
@@ -1093,7 +1093,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 	}
       else
 	{
-	  error ("%s: illegal file specifier", type);
+	  error ("%s: invalid file specifier", type);
 	  return retval;
 	}
 

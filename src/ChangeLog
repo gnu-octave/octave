@@ -1,5 +1,11 @@
 Thu Feb 13 03:02:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (map_d_m, map_m_d, map_m_m): Rename from map.
+	(Fatan2): Use new function names.
+
+	* pt-fvc.cc (apply_mapper_fcn): Use member function map() instead
+	of friend function.
+
 	* gripes.cc (gripe_wrong_type_arg (const char*, const string&)):
 	New function.
 

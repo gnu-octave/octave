@@ -99,7 +99,7 @@ DEFUN (any, args, ,
 typedef double (*d_dd_fcn) (double, double);
 
 static Matrix
-map (d_dd_fcn f, double x, const Matrix& y)
+map_d_m (d_dd_fcn f, double x, const Matrix& y)
 {
   int nr = y.rows ();
   int nc = y.columns ();
@@ -114,7 +114,7 @@ map (d_dd_fcn f, double x, const Matrix& y)
 }
 
 static Matrix
-map (d_dd_fcn f, const Matrix& x, double y)
+map_m_d (d_dd_fcn f, const Matrix& x, double y)
 {
   int nr = x.rows ();
   int nc = x.columns ();
@@ -129,7 +129,7 @@ map (d_dd_fcn f, const Matrix& x, double y)
 }
 
 static Matrix
-map (d_dd_fcn f, const Matrix& x, const Matrix& y)
+map_m_m (d_dd_fcn f, const Matrix& x, const Matrix& y)
 {
   int x_nr = x.rows ();
   int x_nc = x.columns ();
@@ -198,7 +198,7 @@ DEFUN (atan2, args, ,
 	      Matrix x = arg_x.matrix_value ();
 
 	      if (! error_state)
-		retval = map (atan2, y, x);
+		retval = map_d_m (atan2, y, x);
 	    }
 	}
       else if (x_is_scalar)
@@ -210,7 +210,7 @@ DEFUN (atan2, args, ,
 	      double x = arg_x.double_value ();
 
 	      if (! error_state)
-		retval = map (atan2, y, x);
+		retval = map_m_d (atan2, y, x);
 	    }
 	}
       else if (y_nr == x_nr && y_nc == x_nc)
@@ -222,7 +222,7 @@ DEFUN (atan2, args, ,
 	      Matrix x = arg_x.matrix_value ();
 
 	      if (! error_state)
-		retval = map (atan2, y, x);
+		retval = map_m_m (atan2, y, x);
 	    }
 	}
       else

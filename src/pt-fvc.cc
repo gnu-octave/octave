@@ -708,13 +708,16 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 		      || any_element_greater_than (m, m_fcn.upper_limit)))
 		{
 		  if (m_fcn.c_c_mapper)
-		    retval = map (m_fcn.c_c_mapper, ComplexMatrix (m));
+		    {
+		      ComplexMatrix cm (m);
+		      retval = cm.map (m_fcn.c_c_mapper);
+		    }
 		  else
 		    error ("%s: unable to handle real arguments",
 			   m_fcn.name.c_str ());
 		}
 	      else if (m_fcn.d_d_mapper)
-		retval = map (m_fcn.d_d_mapper, m);
+		retval = m.map (m_fcn.d_d_mapper);
 	      else
 		error ("%s: unable to handle real arguments",
 		       m_fcn.name.c_str ());
@@ -742,9 +745,9 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 		return retval;
 
 	      if (m_fcn.d_c_mapper)
-		retval = map (m_fcn.d_c_mapper, cm);
+		retval = cm.map (m_fcn.d_c_mapper);
 	      else if (m_fcn.c_c_mapper)
-		retval = map (m_fcn.c_c_mapper, cm);
+		retval = cm.map (m_fcn.c_c_mapper);
 	      else
 		error ("%s: unable to handle complex arguments",
 		       m_fcn.name.c_str ());

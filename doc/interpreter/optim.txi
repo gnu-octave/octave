@@ -6,6 +6,7 @@
 @chapter Optimization
 
 @menu
+* Linear Programming::       
 * Quadratic Programming::       
 * Nonlinear Programming::       
 * Linear Least Squares::        
@@ -18,6 +19,9 @@
 @cindex LP
 @cindex QP
 @cindex NLP
+
+@node Linear Programming
+@section Linear Programming
 
 @node Quadratic Programming
 @section Quadratic Programming

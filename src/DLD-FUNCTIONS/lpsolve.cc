@@ -30,9 +30,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-obj.h"
 
-DEFUN_DLD (lp_solve, , ,
+DEFUN_DLD (lpsolve, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} lp_solve ()\n\
+@deftypefn {Loadable Function} {} lpsolve ()\n\
 Not implemented yet...\n\
 @end deftypefn")
 {
@@ -45,20 +45,20 @@ Not implemented yet...\n\
   retval(1) = m;
   retval(0) = m;
 
-  error ("lp_solve: not implemented yet");
+  error ("lpsolve: not implemented yet");
 
   return retval;
 }
 
-DEFUN_DLD (lp_solve_options, , ,
+DEFUN_DLD (lpsolve_options, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} lp_solve_options ()\n\
+@deftypefn {Loadable Function} {} lpsolve_options ()\n\
 Not implemented yet...\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
-  error ("lp_solve_options: not implemented yet");
+  error ("lpsolve_options: not implemented yet");
 
   return retval;
 }

@@ -3737,7 +3737,7 @@ DEFUN (evalin, args, nargout,
 @deftypefn {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
 Like @code{eval}, except that the expressions are evaluated in the\n\
 context @var{context}, which may be either @code{\"caller\"} or\n\
-@code{\"base\"}.
+@code{\"base\"}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -1,3 +1,12 @@
+2002-12-30  Paul Kienzle <pkienzle@users.sf.net>
+
+	* parse.y: Fix typo in doc string.
+
+2002-12-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/lpsolve.cc (Flpsolve): Rename from Flp_solve.
+	(Flpsolve_options): Rename ffrom Flp_solve_options.
+
 2002-12-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (Fevalin): New function.

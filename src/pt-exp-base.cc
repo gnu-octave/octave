@@ -1027,7 +1027,8 @@ tree_indirect_ref::~tree_indirect_ref (void)
       delete [] t;
     }
 
-  delete id;
+  if (! preserve_ident)
+    delete id;
 }
 
 tree_indirect_ref *

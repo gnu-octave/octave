@@ -319,11 +319,17 @@ tree_indirect_ref : public tree_fvc
 {
 public:
   tree_indirect_ref (int l = -1, int c = -1) : tree_fvc (l, c)
-    { id = 0; }
+    {
+      id = 0;
+      preserve_ident = 0;
+    }
 
   tree_indirect_ref (tree_identifier *i, int l = -1, int c = -1)
     : tree_fvc (l, c)
-      { id = i; }
+      {
+	id = i;
+	preserve_ident = 0;
+      }
 
   ~tree_indirect_ref (void);
 
@@ -337,6 +343,9 @@ public:
 
   tree_identifier *ident (void)
     { return id; }
+
+  void preserve_identifier (void)
+    { preserve_ident = 1; }
 
   char *name (void);
 
@@ -355,6 +364,7 @@ public:
 private:
   tree_identifier *id;
   SLList<char*> refs;
+  int preserve_ident;
 };
 
 // Index expressions.

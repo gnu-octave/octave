@@ -290,7 +290,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 		    }
 		}
 	    }
-	  else if (arg1.is_complex_matrix () || arg2.is_complex_type ())
+	  else if (arg1.is_complex_type () || arg2.is_complex_type ())
 	    {
 	      ComplexMatrix m1 = arg1.complex_matrix_value ();
 
@@ -362,7 +362,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	{
           retval(0) = arg1.complex_value ();
 	}
-      else if (arg1.is_real_matrix ())
+      else if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
 	  if (m.rows () == 1)
@@ -370,7 +370,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	  else
 	    retval(0) = tree_constant (m.column_max (), 0);
 	}
-      else if (arg1.is_complex_matrix ())
+      else if (arg1.is_complex_type ())
 	{
 	  ComplexMatrix m = arg1.complex_matrix_value ();
 	  if (m.rows () == 1)
@@ -396,7 +396,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	  retval(1) = 1;
 	  retval(0) = arg1.complex_value ();
 	}
-      else if (arg1.is_real_matrix ())
+      else if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
 	  if (m.rows () == 1)
@@ -410,7 +410,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	      retval(0) = tree_constant (m.column_max (), 0);
 	    }
 	}
-      else if (arg1.is_complex_matrix ())
+      else if (arg1.is_complex_type ())
 	{
 	  ComplexMatrix m = arg1.complex_matrix_value ();
 	  if (m.rows () == 1)
@@ -455,13 +455,13 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 		result = b_elem;
 	      retval(0) = result;
 	    }
-	  else if (arg1.is_real_matrix ())
+	  else if (arg1.is_real_type ())
 	    {
 	      Matrix result;
 	      result = max (arg1.matrix_value (), arg2.matrix_value ());
 	      retval(0) = result;
 	    }
-	  else if (arg1.is_complex_matrix ())
+	  else if (arg1.is_complex_type ())
 	    {
 	      ComplexMatrix result;
 	      result = max (arg1.complex_matrix_value (),

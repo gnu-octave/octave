@@ -94,7 +94,7 @@ DEFUN_DLD_BUILTIN ("det", Fdet, Sdet, 2, 1,
 	  retval = d;
 	}
     }
-  else if (arg.is_complex_matrix ())
+  else if (arg.is_complex_type ())
     {
       ComplexMatrix m = arg.complex_matrix_value ();
 

@@ -96,7 +96,7 @@ characters:\n\
       return retval;
     }
 
-  if (arg.is_real_matrix ())
+  if (arg.is_real_type ())
     {
       Matrix tmp = arg.matrix_value ();
 
@@ -115,7 +115,7 @@ characters:\n\
 	    }
 	}
     }
-  else if (arg.is_complex_matrix ())
+  else if (arg.is_complex_type ())
     {
       ComplexMatrix ctmp = arg.complex_matrix_value ();
 

@@ -96,7 +96,7 @@ DEFUN_DLD_BUILTIN ("lu", Flu, Slu, 2, 3,
 	    }
 	}
     }
-  else if (arg.is_complex_matrix ())
+  else if (arg.is_complex_type ())
     {
       ComplexMatrix m = arg.complex_matrix_value ();
 

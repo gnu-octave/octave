@@ -71,6 +71,8 @@ function [in, out, pid] = popen2 (command, args)
 
         if (pid == 0)
 
+	  ## In the child.
+
           fclose (nth (stdin_pipe, 2));
           fclose (nth (stdout_pipe, 1));
 
@@ -86,6 +88,8 @@ function [in, out, pid] = popen2 (command, args)
           endif
 
         elseif (pid)
+
+	  ## In the parent.
 
           fclose (nth (stdin_pipe, 1));
           fclose (nth (stdout_pipe, 2));

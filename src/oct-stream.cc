@@ -1029,14 +1029,11 @@ template <class T>
 std::istream&
 octave_scan (std::istream& is, const scanf_format_elt& fmt, T valptr)
 {
-  is >> std::ios::skipws;
+  // Someone else will have to fix this code.  I refuse to waste my
+  // time working on it when a reasonable alternative like
+  // istream::scan exists in the GNU iostream library.  --jwe
 
-  if (fmt.width > 0)
-    is >> width (elt.width);
-
-  is >> valptr;
-
-  return is;
+  error ("formatted input only works when Octave is compiled with G++");
 }
 
 template std::istream&

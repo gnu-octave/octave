@@ -7,7 +7,7 @@
 
 I hope that someday Octave will include more signal processing
 functions.  If you would like to help improve Octave in this area,
-please contact @email{bug-octave@@bevo.che.wisc.edu}.
+please contact @email{bug@@octave.org}.
 
 @DOCSTRING(detrend)
 

@@ -7,7 +7,7 @@
 
 I hope that someday Octave will include more statistics functions.  If
 you would like to help improve Octave in this area, please contact
-@email{bug-octave@@bevo.che.wisc.edu}.
+@email{bug@@octave.org}.
 
 @menu
 * Basic Statistical Functions::  

@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //   sync_system   (now merged with system)
 //   async_system  (now merged with system)
 
-// Completely rewritten by John W. Eaton <jwe@bevo.che.wisc.edu>,
+// Completely rewritten by John W. Eaton <jwe@bevo.che.wics.edu>,
 // April 1996.
 
 #ifdef HAVE_CONFIG_H

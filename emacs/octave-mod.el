@@ -436,7 +436,7 @@ can also be stored in files, and it can be used in a batch mode (which
 is why you need this mode!).
 
 The latest released version of Octave is always available via anonymous
-ftp from bevo.che.wisc.edu in the directory `/pub/octave'.  Complete
+ftp from ftp.octave.org in the directory `/pub/octave'.  Complete
 source and binaries for several popular systems are available.
 
 Type \\[list-abbrevs] to display the built-in abbrevs for Octave keywords.

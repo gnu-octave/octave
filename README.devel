@@ -1,22 +1,22 @@
-This directory contains development releases of Octave.
+This directory contains development snapshots of Octave.
 
 If you want a stable, well-tested version of Octave, you should be
 looking at ftp://ftp.che.wisc.edu/pub/octave.
 
-Development releases are provided for people who want to help test,
+Development snapshots are provided for people who want to help test,
 debug, and improve Octave.  Very little testing is done before making
-the development releases and they may even be made when Octave is in
-an inconsistent state.  It is possible that you will encounter a
-very obvious bug, such as failure to compile on *any* machine.  It is
-likely that such bugs will be fixed by the next development release,
+the development snapshots and they may even be made when Octave is in
+an inconsistent state.  It is possible that you will encounter a very
+obvious bug, such as failure to compile on *any* machine.  It is
+likely that such bugs will be fixed by the next development snapshot,
 so it really isn't necessary to report them unless they persist over
-more than one release.
+more than one snapshot.
 
-Please DO report other bugs in the development releases as soon as you
-find them by sending a message to octave-maintainers@bevo.che.wisc.edu.
+Please DO report other bugs in the development snapshots as soon as you
+find them by sending a message to maintainers@octave.org.
 
 If you have a fix for a bug, or an enhancement to submit, send your
-patch to octave-maintainers@bevo.che.wisc.edu.  Here are some simple
+patch to maintainers@octave.org.  Here are some simple
 guidelines for submitting patches:
 
   o Use "context diffs" for patches.  A typical command for
@@ -33,10 +33,6 @@ guidelines for submitting patches:
     existing Octave ChangeLog for examples of what a ChangeLog entry
     should look like.
 
-If you would like to be notified when new development releases are
-available, subscribe to the octave-testers mailing list by sending a
-request to octave-testers-REQUEST@bevo.che.wisc.edu
-
 
 Thanks,
 
@@ -45,4 +41,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Thu Jun  5 02:35:02 1997
+Fri Oct  1 13:04:00 2004

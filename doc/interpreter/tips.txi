@@ -37,7 +37,7 @@ prefix.  This helps avoid name conflicts.
 If you write a function that you think ought to be added to Octave under
 a certain name, such as @code{fiddle_matrix}, don't call it by that name
 in your program.  Call it @code{mylib_fiddle_matrix} in your program,
-and send mail to @email{bug-octave@@bevo.che.wisc.edu} suggesting that it
+and send mail to @email{maintainers@@octave.org} suggesting that it
 be added to Octave.  If and when it is, the name can be changed easily
 enough.
 

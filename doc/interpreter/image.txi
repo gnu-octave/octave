@@ -15,7 +15,7 @@ matrix containing the image data, and a matrix containing the
 colormap).  Contributions of robust, well-written functions to read
 other image formats are welcome.  If you can provide them, or would like
 to improve Octave's image processing capabilities in other ways, please
-contact @email{bug-octave@@bevo.che.wisc.edu}.
+contact @email{bug@@octave.org}.
 
 @DOCSTRING(colormap)
 

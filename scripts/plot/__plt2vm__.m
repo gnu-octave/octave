@@ -70,6 +70,7 @@ function __plt2vm__ (x, y, fmt)
         k++;
       endif
     endfor
+    cmd
     eval (cmd);
   else
     error ("__plt2vm__: arguments must be a matrices");

@@ -73,9 +73,9 @@ How to get the snapshots
 
 The current plan is to provide a full snapshot every week or so.  For
 now, diffs from previous versions will not be available.  The files
-will be available via anonymous ftp from bevo.che.wisc.edu, in the
+will be available via anonymous ftp from ftp.octave.org, in the
 directory /private/octave in the form of a tar files compressed with
-GNU gzip.  You can ftp gzip from bevo.che.wisc.edu in the directory
+GNU gzip.  You can ftp gzip from ftp.octave.org in the directory
 /pub/gnu.
 
 Even though the snapshots are available in a public place, we ask that
@@ -105,28 +105,10 @@ and what tests do exist for a feature are not exhaustive.  New tests
 are welcomed.
 
 
-Getting help, Octave discussions, etc.
---------------------------------------
-
-Mail sent to octave-testers@bevo.che.wisc.edu goes to everyone on the
-list of octave testers, which should include everyone getting the
-Octave snapshots.  It is appropriate whenever you wish your mail to be
-seen by all the testers.  This would include announcements of any
-kind, notices of intent to implement a specific enhancement (to
-coordinate with other people on the list), etc.  Before sending
-something to octave-testers, ask yourself if what you are about to
-send would be something you would care to see show up in your mailbox
-if it was sent by someone else.
-
-Do *not* send any questions about the snapshots or patches specific to
-the snapshots to bug-octave@bevo.wisc.che.edu.  Nobody there will have
-any idea what you are talking about and it will just cause confusion.
-
-
 Bug reports
 -----------
 
-Send bug reports to octave-maintainers@bevo.che.wisc.edu.
+Send bug reports to maintainers@octave.org.
 
 Note that since no testing is done on the snapshots, and snapshots may
 even be made when Octave is in an inconsistent state, it may not be
@@ -149,8 +131,8 @@ FORMAT FOR PATCHES
 ------------------
 
 If you have a fix for a bug, or an enhancement to submit, send your
-patch to octave-maintainers@bevo.che.wisc.edu.  Here are some simple
-guidelines for submitting patches:
+patch to maintainers@octave.org.  Here are some simple guidelines for
+submitting patches:
 
     o	Use "context diffs" for patches.  A typical command for
 	generating context diffs is "diff -rc octave-old octave-new".

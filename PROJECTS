@@ -3,14 +3,14 @@
 Octave PROJECTS                                          -*- text -*-
 ===============
 
-Check with bug-octave@bevo.che.wisc.edu for a possibly more current
-copy.  Also, if you start working steadily on a project, please let
-bug-octave@bevo.che.wisc.edu know.  We might have information that
-could help you; we'd also like to send you the GNU coding standards.
+Check with maintainers@octave.org for a possibly more current copy.
+Also, if you start working steadily on a project, please let
+maintainers@octave.org know.  We might have information that could
+help you; we'd also like to send you the GNU coding standards.
 
 This list is not exclusive -- there are many other things that might
 be good projects, but it might instead be something we already have,
-so check with bug-octave@bevo.che.wisc.edu before you start.
+so check with maintainers@octave.org before you start.
 
 ---------
 Numerical:

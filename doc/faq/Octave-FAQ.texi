@@ -26,11 +26,11 @@ This is a list of frequently asked questions (FAQ) for Octave users.
 Some information in this FAQ was written for earlier versions of
 Octave and may now be obsolete.
 
-I'm looking for new questions (@emph{with} answers), better answers,
-or both.  Please send suggestions to bug-octave@@bevo.che.wisc.edu.
-If you have general questions about Octave, or need help for something
-that is not covered by the Octave manual or the FAQ, please use the
-help-octave@@bevo.che.wisc.edu mailing list.
+I'm looking for new questions (@emph{with} answers), better answers, or
+both.  Please send suggestions to bug@@octave.org.  If you have general
+questions about Octave, or need help for something that is not covered
+by the Octave manual or the FAQ, please use the help@@octave.org mailing
+list.
 
 This FAQ is intended to supplement, not replace, the Octave manual.
 Before posting a question to the help-octave mailing list, you should
@@ -466,7 +466,7 @@ distributed under the terms of the GNU GPL.
 The Octave manual is intended to be a complete reference for Octave, but
 it is not a finished document.  If you have problems using it, or find
 that some topic is not adequately explained, indexed, or
-cross-referenced, please send a bug report to bug-octave@@bevo.che.wisc.edu.
+cross-referenced, please send a bug report to bug@@octave.org.
 
 Because the Octave manual is written using Texinfo, the complete text of
 the Octave manual is also available on line using the GNU Info system
@@ -529,7 +529,7 @@ unpack the distribution, be sure to look at the files @file{README} and
 
 Binaries for several popular systems are also available.  If you would
 like help out by making binaries available for other systems, please
-contact bug-octave@@bevo.che.wisc.edu.
+contact bug@@octave.org.
 
 A list of user-visible changes since the last release is available in
 the file @file{NEWS}.  The file @file{ChangeLog} in the source
@@ -551,7 +551,7 @@ Octave currently runs on Unix-like systems, OS/2, and Windows NT/95
 (using the Cygwin tools from Red Hat).  It should be possible
 to make Octave work on other systems as well.  If you are interested in
 porting Octave to other systems, please contact
-bug-octave@@bevo.che.wisc.edu.
+bug@@octave.org.
 
 @node latest versions
 @section What is the latest version of Octave
@@ -609,7 +609,7 @@ Currently, Octave can only be compiled with the GNU C++ compiler.  It
 would be nice to make it possible to compile Octave with other C++
 compilers, but the maintainers do not have sufficient time to devote to
 this.  If you are interested in working to make Octave portable to other
-compilers, please contact bug-octave@@bevo.che.wisc.edu.
+compilers, please contact bug@@octave.org.
 
 @node Common problems
 @chapter Common problems
@@ -641,7 +641,7 @@ function files is installed this way.
 The mailing list
 
 @example
-help-octave@@bevo.che.wisc.edu
+help@@octave.org
 @end example
 
 @noindent
@@ -654,8 +654,8 @@ to the list, please send a short note to
 
 @example
 @group
-help-octave-request@@bevo.che.wisc.edu
-            ^^^^^^^
+help-request@@octave.org
+     ^^^^^^^
 @end group
 @end example
 
@@ -693,11 +693,10 @@ exit the editor, Octave will mail the bug report for you.
 @cindex Mailing lists, bug-octave
 
 If for some reason you cannot use Octave's @code{bug_report} function,
-mail your bug report to "bug-octave@@bevo.che.wisc.edu".  Your message
-needs to include enough information to allow the maintainers of Octave
-to fix the bug.  Please read the section on bugs and bug reports in the
-Octave manual for a list of things that should be included in every bug
-report.
+mail your bug report to "bug@@octave.org".  Your message needs to
+include enough information to allow the maintainers of Octave to fix the
+bug.  Please read the section on bugs and bug reports in the Octave
+manual for a list of things that should be included in every bug report.
 
 @node MATLAB compatibility
 @chapter Porting programs from @sc{Matlab} to Octave
@@ -760,7 +759,7 @@ The Octave plotting functions are mostly compatible with the ones from
 The third category of differences is (hopefully) shrinking.  If you find
 a difference between Octave behavior and @sc{Matlab}, then you should send a
 description of this difference (with code illustrating the difference,
-if possible) to bug-octave@@bevo.che.wisc.edu.
+if possible) to bug@@octave.org.
 
 An archive of old postings to the Octave mailing lists is maintained
 on ftp.che.wisc.edu in the directory @file{/pub/octave/MAILING-LISTS}.

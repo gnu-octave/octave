@@ -206,9 +206,9 @@ The @code{switch} statement was introduced in Octave 2.0.5.  It should
 be considered experimental, and details of the implementation may change
 slightly in future versions of Octave.  If you have comments or would
 like to share your experiences in trying to use this new command in real
-programs, please send them to
-@email{octave-maintainers@@bevo.che.wisc.edu}.  (But if you think you've
-found a bug, please report it to @email{bug-octave@@bevo.che.wisc.edu}.
+programs, please send them to @email{maintainers@@octave.org}.  (But if
+you think you've found a bug, please report it to
+@email{bug@@octave.org}.
 
 The general form of the @code{switch} statement is
 

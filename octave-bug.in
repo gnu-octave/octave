@@ -99,7 +99,7 @@ fi
 
 ss_p=`echo $VERSION | grep "^ss-"`
 if test -n "$ss_p"; then
-  BUGADDR="octave-maintainers@bevo.che.wisc.edu"
+  BUGADDR="maintainers@octave.org"
 else
   pretest_p=`echo $VERSION \
     | $SED 's,.*\.\([0-9]*\).*,\1,' \
@@ -107,9 +107,9 @@ else
     | grep '[0-9]'`
 
   if test -n "$pretest_p" && test "$pretest_p" -ge 90; then
-    BUGADDR="octave-maintainers@bevo.che.wisc.edu"
+    BUGADDR="maintainers@octave.org"
   else
-    BUGADDR="bug-octave@bevo.che.wisc.edu"
+    BUGADDR="bug@octave.org"
   fi
 fi
 

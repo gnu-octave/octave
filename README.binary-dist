@@ -9,8 +9,8 @@ current collection of binary distributions here.
 Please understand, however, that there is only a limited amount of
 time available to devote to making binaries, so binaries may not be
 immediately available for some platforms.  (Please contact
-bug-octave@bevo.che.wisc.edu if you are interested in helping make
-binary distributions available for your system.)
+bug@octave.org if you are interested in helping make binary
+distributions available for your system.)
 
 Also, binary distributions are limited to static binaries that do not
 support dynamic linking.  For earlier versions of Octave, I tried
@@ -26,4 +26,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Tue Feb 18 15:03:57 1997
+Fri Oct  1 13:04:16 2004

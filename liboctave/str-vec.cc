@@ -186,7 +186,7 @@ string_vector::list_in_columns (std::ostream& os) const
   nc = total_names / nr + (total_names % nr != 0);
 
   int count;
-  for (int row = 0; nr < nr; row++)
+  for (int row = 0; row < nr; row++)
     {
       count = row;
       int pos = 0;

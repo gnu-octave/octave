@@ -1,5 +1,7 @@
 2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* str-vec.cc (list_in_columns): Fix previous change.
+
 	* dim-vector.h (dim_vector::num_ones): New function.
 	* Array.cc (maybe_delete_elements): Use it instead of
 	num_ones (const Array<int>&).

@@ -41,6 +41,7 @@ Software Foundation, Inc.
 #include <float.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 
 #include "tree-const.h"

@@ -53,11 +53,12 @@ public:
 
   void init (void)
     {
-      x_absolute_tolerance = sqrt (DBL_EPSILON);
+      double sqrt_eps = ::sqrt (DBL_EPSILON);
+      x_absolute_tolerance = sqrt_eps;
       x_initial_step_size = -1.0;
       x_maximum_step_size = -1.0;
       x_minimum_step_size = 0.0;
-      x_relative_tolerance = sqrt (DBL_EPSILON);
+      x_relative_tolerance = sqrt_eps;
     }
 
   void copy (const DASSL_options& opt)

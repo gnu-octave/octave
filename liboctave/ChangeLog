@@ -1,3 +1,14 @@
+2002-05-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASSL.h (DASSL_options::init): Undo previous change.
+	(DASSL_options::set_absolute_tolerance): Likewise.
+	* LSODE.h (LSODE_options::init): Likewise.
+	(LSODE_options::set_absolute_tolerance): Likewise.
+
+	* DASPK.h (DASPK_options::init): Use default absolute tolerance of
+	sqrt(eps), not eps^2.
+	DASPK_options::set_absolute_tolerance): Likewise.
+
 2002-05-17  Mumit Khan <khan@nanotech.wisc.edu>
 
 	* Array.h (Array<T>::resize_fill_value): Return default initialized

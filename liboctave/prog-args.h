@@ -38,6 +38,14 @@ prog_args
 {
 public:
 
+  // These values must match the corresponding defines in getopt.h.
+  enum option_argument
+    {
+      no_arg = 0,
+      required_arg = 1,
+      optional_arg = 2
+    };
+
   prog_args (int argc, char *const *argv, const char *s_opts, const
 	     long_options* l_opts = 0)
     : xargc (argc), xargv (argv), short_opts (s_opts), long_opts (l_opts)

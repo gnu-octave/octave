@@ -132,22 +132,22 @@ static const char *short_opts = "+?Vdfhip:qvx";
 #define TRADITIONAL_OPTION 5
 long_options long_opts[] =
   {
-    { "debug",            no_argument,       0, 'd' },
-    { "echo-commands",    no_argument,       0, 'x' },
-    { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
-    { "help",             no_argument,       0, 'h' },
-    { "ignore-init-file", no_argument,       0, 'f' },
-    { "info-file",        required_argument, 0, INFO_FILE_OPTION },
-    { "info-program",     required_argument, 0, INFO_PROG_OPTION },
-    { "interactive",      no_argument,       0, 'i' },
-    { "no-line-editing",  no_argument,       0, NO_LINE_EDITING_OPTION },
-    { "norc",             no_argument,       0, 'f' },
-    { "path",             required_argument, 0, 'p' },
-    { "quiet",            no_argument,       0, 'q' },
-    { "silent",           no_argument,       0, 'q' },
-    { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
-    { "verbose",          no_argument,       0, 'V' },
-    { "version",          no_argument,       0, 'v' },
+    { "debug",            prog_args::no_arg,       0, 'd' },
+    { "echo-commands",    prog_args::no_arg,       0, 'x' },
+    { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
+    { "help",             prog_args::no_arg,       0, 'h' },
+    { "ignore-init-file", prog_args::no_arg,       0, 'f' },
+    { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
+    { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
+    { "interactive",      prog_args::no_arg,       0, 'i' },
+    { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
+    { "norc",             prog_args::no_arg,       0, 'f' },
+    { "path",             prog_args::required_arg, 0, 'p' },
+    { "quiet",            prog_args::no_arg,       0, 'q' },
+    { "silent",           prog_args::no_arg,       0, 'q' },
+    { "traditional",      prog_args::no_arg,       0, TRADITIONAL_OPTION },
+    { "verbose",          prog_args::no_arg,       0, 'V' },
+    { "version",          prog_args::no_arg,       0, 'v' },
     { 0,                  0,                 0, 0 }
   };
 

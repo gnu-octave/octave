@@ -1,3 +1,8 @@
+2003-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: If user doesn't specify --enable-rpath, then
+	default is to enable it.
+
 2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (GNUPLOT_HAS_FRAMES): Eliminate variable.

@@ -1,3 +1,9 @@
+Thu Nov 21 12:30:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-str-mat.h (octave_char_matrix_str): Provide transpose and
+	hermitian operators.
+	* ov-ch-mat.h (octave_char_matrix): Likewise.
+
 Wed Nov 20 00:35:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.h (struct octave_interrupt_handler): Provide

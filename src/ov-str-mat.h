@@ -102,6 +102,12 @@ public:
 
   string string_value (void) const;
 
+  octave_value transpose (void) const
+    { return octave_value (matrix.transpose (), true); }
+
+  octave_value hermitian (void) const
+    { return octave_value (matrix.transpose (), true); }
+
   void print (ostream& os, bool pr_as_read_syntax = false);
 
   int type_id (void) const { return t_id; }

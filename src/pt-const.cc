@@ -261,7 +261,7 @@ octave_value::lookup_map_element (const string& ref, bool insert,
 	  end = ref.find ('.', beg);
 
 	  string tmp = (end == NPOS)
-	    ? ref.substr (beg) : ref.substr (beg, end - 1);
+	    ? ref.substr (beg) : ref.substr (beg, end - beg);
 
 	  list.append (tmp);
 	}

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.242 $)
+AC_REVISION($Revision: 1.243 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -400,7 +400,11 @@ changequote([,])dnl
     DLFCN_DIR=dlfcn
   ;;
   hppa*-hp-hpux*)
-    FPICFLAG=+Z
+    if $use_g77; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=+Z
+    fi
     SHLEXT=sl
     RLD_FLAG='-Xlinker +b -Xlinker $(libdir)'
   ;;
@@ -876,7 +880,7 @@ AC_FUNC_CLOSEDIR_VOID
 OCTAVE_STRUCT_GR_PASSWD
 
 TERMLIBS=""
-for termlib in termcap terminfo ncurses curses termlib; do
+for termlib in ncurses curses termcap terminfo termlib; do
   AC_CHECK_LIB(${termlib}, tputs, [TERMLIBS="${TERMLIBS} -l${termlib}"])
   case "${TERMLIBS}" in
     *-l${termlib}*)

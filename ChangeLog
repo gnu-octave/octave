@@ -1,4 +1,14 @@
+Fri Dec 13 22:37:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (TERMLIBS): Look for termcap and terminfo after
+	ncurses and curses.
+
 Thu Dec 12 02:27:08 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (ALL_LDFLAGS): Add CPICFLAG here since gcc needs it
+	on some systems.
+
+	* configure.in (FPICFLAGS): Set to -fPIC if using g77 on HP/UX.
 
 	* Makefile.in, octMakefile.in: Delete all doc-dist, local-dist,
 	and split-dist targets.  Likewise for all other Makefiles in the

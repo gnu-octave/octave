@@ -1,3 +1,9 @@
+2002-04-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (additional_help_message): Use www.octave.org, not
+	www.che.wisc.edu/octave/octave.html.
+	* octave.cc (verbose_usage): Likewise.
+
 2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/daspk.cc: New file.

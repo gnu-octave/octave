@@ -296,9 +296,9 @@ Options:\n\
   FILE                    Execute commands from FILE.\n\
 \n\
 Additional information about Octave is available via the WWW at\n\
-http://www.che.wisc.edu/octave/octave.html.\n\
+http://www.octave.org.\n\
 \n\
-Please report bugs to the mailing list `bug-octave@bevo.che.wisc.edu'.\n";
+Please report bugs to the bug-octave@bevo.che.wisc.edu mailing list.\n";
 
   exit (0);
 }

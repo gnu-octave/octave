@@ -397,8 +397,8 @@ is available in the on-line version of the manual.  Use the command\n\
 `help -i <topic>' to search the manual index.\n\
 \n\
 Help and information about Octave is also available on the WWW\n\
-at http://www.che.wisc.edu/octave/octave.html and via the\n\
-help-octave@bevo.che.wisc.edu mailing list.\n";
+at http://www.octave.org and via the help-octave@bevo.che.wisc.edu\n\
+mailing list.\n"; 
 }
 
 // XXX FIXME XXX -- this needs a major overhaul to cope with new

@@ -100,25 +100,25 @@ AC_DEFUN(OCTAVE_FLIBS,
 [AC_MSG_CHECKING([for Fortran libraries])
 AC_REQUIRE([OCTAVE_HOST_TYPE])
 AC_CACHE_VAL(octave_cv_flibs,
-[changequote(, )dnl
+[[
 echo "      END" > conftest.f
 foutput=`${F77-f77} -v -o conftest conftest.f 2>&1`
-dnl
-dnl The easiest thing to do for xlf output is to replace all the commas
-dnl with spaces.  Try to only do that if the output is really from xlf,
-dnl since doing that causes problems on other systems.
-dnl
+
+### The easiest thing to do for xlf output is to replace all the commas
+### with spaces.  Try to only do that if the output is really from xlf,
+### since doing that causes problems on other systems.
+
 xlf_p=`echo $foutput | grep xlfentry`
 if test -n "$xlf_p"; then
   foutput=`echo $foutput | sed 's/,/ /g'`
 fi
-dnl
+
 ld_run_path=`echo $foutput | \
   sed -n -e 's/^.*LD_RUN_PATH *= *\([^ ]*\).*/\1/p'`
-dnl
-dnl We are only supposed to find this on Solaris systems...
-dnl Uh, the run path should be absolute, shouldn't it?
-dnl
+
+### We are only supposed to find this on Solaris systems...
+### Uh, the run path should be absolute, shouldn't it?
+
 case "$ld_run_path" in
   /*)
     if test "$ac_cv_prog_gcc" = yes; then
@@ -131,22 +131,22 @@ case "$ld_run_path" in
     ld_run_path=
   ;;
 esac
-dnl
+
 flibs=
 lflags=
-dnl
-dnl If want_arg is set, we know we want the arg to be added to the list,
-dnl so we don't have to examine it.
-dnl
+
+### If want_arg is set, we know we want the arg to be added to the list,
+### so we don't have to examine it.
+
 want_arg=
-dnl
+
 for arg in $foutput; do
   old_want_arg=$want_arg
   want_arg=
-dnl
-dnl None of the options that take arguments expect the argument to
-dnl start with a -, so pretend we didn't see anything special.
-dnl
+
+### None of the options that take arguments expect the argument to
+### start with a -, so pretend we didn't see anything special.
+
   if test -n "$old_want_arg"; then
     case "$arg" in
       -*)
@@ -243,11 +243,11 @@ dnl
       arg="-u $arg"
     ;;
     -Y)
-dnl
-dnl Should probably try to ensure unique directory options here too.
-dnl This probably only applies to Solaris systems, and then will only
-dnl work with gcc...
-dnl
+
+### Should probably try to ensure unique directory options here too.
+### This probably only applies to Solaris systems, and then will only
+### work with gcc...
+
       arg=`echo $arg | sed -e 's%^P,%%'`
       SAVE_IFS=$IFS
       IFS=:
@@ -259,7 +259,6 @@ dnl
       arg="$list"
     ;;
   esac
-dnl
   if test -n "$arg"; then
     flibs="$flibs $arg"
   fi
@@ -269,7 +268,7 @@ if test -n "$ld_run_path"; then
 else
   flibs_result="$flibs"
 fi
-changequote([, ])dnl
+]
 octave_cv_flibs="$flibs_result"])
 FLIBS="$octave_cv_flibs"
 AC_MSG_RESULT([$FLIBS])])

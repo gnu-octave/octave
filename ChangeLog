@@ -1,3 +1,12 @@
+2001-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Quote the call to AC_CHECK_FUNC inside the
+	AC_CHECK_LIB macro when checking for lapack.  For autoconf 2.50
+
+	* aclocal.m4: Changes for autoconf 2.50:
+	Convert dnl comments inside AC_DEFUN to ###.
+	(OCTAVE_FLIBS): Use [] quoting instead of changequote.
+
 2001-05-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in: Remove remaining references to readline.

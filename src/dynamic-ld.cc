@@ -281,7 +281,7 @@ octave_dld_tc2_unlink_by_symbol (const char *name, int hard)
   int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
 
   if (status != 0)
-    dld_perror ("octave_dld_tc2_unlink_by_symbol");
+    error ("octave_dld_tc2_unlink_by_symbol: %s", dld_strerror (0));
 
   delete [] mangled_fcn_name;
 }
@@ -292,7 +292,7 @@ octave_dld_tc2_unlink_by_file (const char *name, int hard)
   int status = dld_unlink_by_file (name, hard);
 
   if (status != 0)
-    dld_perror ("octave_dld_tc2_unlink_by_file");
+    error ("octave_dld_tc2_unlink_by_file: %s", dld_strerror (0));
 }
 
 #endif

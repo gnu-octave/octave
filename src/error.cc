@@ -44,6 +44,8 @@ int suppress_octave_error_messages = 0;
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
+  flush_output_to_pager ();
+
   if (name)
     cerr << name << ": ";
   cerr.vform (fmt, args);
@@ -102,8 +104,6 @@ error (const char *fmt, ...)
 
   if (suppress_octave_error_messages)
     return;
-
-  flush_output_to_pager ();
 
   va_list args;
   va_start (args, fmt);

@@ -452,13 +452,14 @@ looks_like_octave_copyright (const string& s)
 // Eat whitespace and comments from FFILE, returning the text of the
 // comments read if it doesn't look like a copyright notice.  If
 // IN_PARTS, consider each block of comments separately; otherwise,
-// grab them all at once.
+// grab them all at once.  If UPDATE_POS is TRUE, line and column
+// number information is updated.
 
 // XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
 // code!
 
 static string
-gobble_leading_white_space (FILE *ffile, bool in_parts)
+gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
 {
   string help_txt;
 
@@ -470,7 +471,8 @@ gobble_leading_white_space (FILE *ffile, bool in_parts)
 
   while ((c = getc (ffile)) != EOF)
     {
-      current_input_column++;
+      if (update_pos)
+	current_input_column++;
 
       if (begin_comment)
 	{
@@ -490,15 +492,19 @@ gobble_leading_white_space (FILE *ffile, bool in_parts)
 
 	  if (c == '\n')
 	    {
-	      input_line_number++;
-	      current_input_column = 0;
+	      if (update_pos)
+		{
+		  input_line_number++;
+		  current_input_column = 0;
+		}
 	      in_comment = false;
 
 	      if (in_parts)
 		{
 		  if ((c = getc (ffile)) != EOF)
 		    {
-		      current_input_column--;
+		      if (update_pos)
+			current_input_column--;
 		      ungetc (c, ffile);
 		      if (c == '\n')
 			break;
@@ -521,8 +527,11 @@ gobble_leading_white_space (FILE *ffile, bool in_parts)
 	    case '\n':
 	      if (first_comments_seen)
 		have_help_text = true;
-	      input_line_number++;
-	      current_input_column = 0;
+	      if (update_pos)
+		{
+		  input_line_number++;
+		  current_input_column = 0;
+		}
 	      continue;
 
 	    case '%':
@@ -532,7 +541,8 @@ gobble_leading_white_space (FILE *ffile, bool in_parts)
 	      break;
 
 	    default:
-	      current_input_column--;
+	      if (update_pos)
+		current_input_column--;
 	      ungetc (c, ffile);
 	      goto done;
 	    }
@@ -547,7 +557,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts)
 	help_txt.resize (0);
 
       if (in_parts && help_txt.empty ())
-	help_txt = gobble_leading_white_space (ffile, in_parts);
+	help_txt = gobble_leading_white_space (ffile, in_parts, update_pos);
     }
 
   return help_txt;
@@ -560,7 +570,7 @@ is_function_file (FILE *ffile)
 
   long pos = ftell (ffile);
 
-  gobble_leading_white_space (ffile, false);
+  gobble_leading_white_space (ffile, false, false);
 
   char buf [10];
   fgets (buf, 10, ffile);
@@ -642,10 +652,10 @@ parse_fcn_file (int exec_script, const string& ff)
 
 	  reset_parser ();
 
-	  help_buf = gobble_leading_white_space (ffile, true);
+	  help_buf = gobble_leading_white_space (ffile, true, true);
 
 	  // XXX FIXME XXX -- this should not be necessary.
-	  gobble_leading_white_space (ffile, false);
+	  gobble_leading_white_space (ffile, false, true);
 
 	  int status = yyparse ();
 
@@ -777,7 +787,7 @@ get_help_from_file (const string& path)
 
       if (fptr)
 	{
-	  retval = gobble_leading_white_space (fptr, true);
+	  retval = gobble_leading_white_space (fptr, true, true);
 	  fclose (fptr);
 	}
     }

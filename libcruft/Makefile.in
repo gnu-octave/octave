@@ -87,7 +87,7 @@ install::
 	$(RANLIB) $(libdir)/libcruft.a
 	if $(SHARED_LIBS); then \
 	  rm -f $(libdir)/libcruft.$(SHLEXT); \
-	  $(INSTALL_DATA) libcruft.$(SHLEXT) $(libdir)/libcruft.$(SHLEXT); \
+	  $(INSTALL_PROGRAM) libcruft.$(SHLEXT) $(libdir)/libcruft.$(SHLEXT); \
 	fi
 
 uninstall::

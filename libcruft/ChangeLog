@@ -1,3 +1,8 @@
+Fri Nov  8 09:55:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install): Use $(INSTALL_PROGRAM) for installing
+	shared library.
+
 Thu Nov  7 12:43:17 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Add -lm when building shared library.

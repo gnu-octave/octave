@@ -1,4 +1,11 @@
+Fri Nov  8 09:54:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-oct): Use $(INSTALL_PROGRAM) for .oct files.
+
 Thu Nov  7 07:59:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (gobble_leading_white_space): New arg, update_pos.
+	* (is_function_file): Don't update file position information here.
 
 	* Version 1.91.
 

@@ -274,7 +274,7 @@ install-oct:
 	  $(top_srcdir)/mkinstalldirs $(octfiledir) ; \
 	  chmod a+rx mk-oct-links ; \
 	  for f in $(OCT_FILES); do \
-	    $(INSTALL_DATA) $$f $(octfiledir)/$$f; \
+	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
 	  done ; \
 	  ./mk-oct-links $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)) ; \
 	fi

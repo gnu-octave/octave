@@ -92,28 +92,32 @@ extern int rl_blink_matching_paren;
 // The command-line options.
 static string_vector octave_argv;
 
-// Nonzero means we read ~/.octaverc and ./.octaverc.
-// (--norc; --ignore-init-file; -f)
-static int read_init_files = 1;
+// TRUE means we read ~/.octaverc and ./.octaverc.
+// (--norc; --no-init-file; -f)
+static bool read_init_files = true;
+
+// TRUE means we read the site-wide octaverc files.
+// (--norc; --no-site-file; -f)
+bool bool read_site_files = true;
 
 // Nonzero means we don't print the usual startup message.
 // (--quiet; --silent; -q)
-static int inhibit_startup_message = 0;
+static bool inhibit_startup_message = false;
 
 // Nonzero means we turn on compatibility options.
 // (--traditional)
-static int traditional = 0;
+static bool traditional = false;
 
 // If nonzero, print verbose info in some cases.
 // (--verbose; -V)
-static int verbose_flag = 0;
+static bool verbose_flag = false;
 
 // Usage message
 static const char *usage_string = 
   "octave [-?Vdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
-       [--help] [--ignore-init-file] [--info-file file] [--info-program prog]\n\
-       [--interactive] [--no-line-editing] [-p path] [--path path] [--silent]\n\
-       [--traditional] [--verbose] [--version] [file]";
+       [--help] [--info-file file] [--info-program prog] [--interactive]\n\
+       [--no-init-file] [--no-line-editing] [--no-site-file] [-p path]\n\
+       [--path path] [--silent] [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -133,11 +137,12 @@ long_options long_opts[] =
     { "echo-commands",    prog_args::no_arg,       0, 'x' },
     { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
     { "help",             prog_args::no_arg,       0, 'h' },
-    { "ignore-init-file", prog_args::no_arg,       0, 'f' },
     { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
     { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
     { "interactive",      prog_args::no_arg,       0, 'i' },
+    { "no-init-file",     prog_args::no_arg,       0, NO_INIT_FILE_OPTION },
     { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
+    { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
     { "norc",             prog_args::no_arg,       0, 'f' },
     { "path",             prog_args::required_arg, 0, 'p' },
     { "quiet",            prog_args::no_arg,       0, 'q' },
@@ -248,40 +253,48 @@ execute_startup_files (void)
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
 
-  // Execute commands from the site-wide configuration file.  First
-  // from the file $(prefix)/lib/octave/site/m/octaverc (if it exists),
-  // then from the file $(prefix)/lib/octave/$(version)/m/octaverc (if
-  // it exists).
-
-  parse_and_execute (Vlocal_site_defaults_file, 0, verbose);
-
-  parse_and_execute (Vsite_defaults_file, 0, verbose);
-
-  // Try to execute commands from $HOME/.octaverc and ./.octaverc.
-
-  int home_rc_already_executed = 0;
-  string home_rc;
-  if (! Vhome_directory.empty ())
+  if (read_site_files)
     {
-      home_rc = Vhome_directory;
-      home_rc.append ("/.octaverc");
-      parse_and_execute (home_rc, 0, verbose);
+      // Execute commands from the site-wide configuration file.
+      // First from the file $(prefix)/lib/octave/site/m/octaverc
+      // (if it exists), then from the file
+      // $(prefix)/lib/octave/$(version)/m/octaverc (if it exists).
 
-      // Names alone are not enough.
+      parse_and_execute (Vlocal_site_defaults_file, 0, verbose);
 
-      file_stat fs_home_rc (home_rc);
-
-      if (fs_home_rc)
-	{
-	  file_stat fs_dot_rc ("./.octaverc");
-
-	  if (fs_dot_rc && fs_home_rc.ino () == fs_dot_rc.ino ())
-	    home_rc_already_executed = 1;
-	}
+      parse_and_execute (Vsite_defaults_file, 0, verbose);
     }
 
-  if (! home_rc_already_executed)
-    parse_and_execute ("./.octaverc", 0, verbose);
+  if (read_init_files)
+    {
+      // Try to execute commands from $HOME/.octaverc and
+      // ./.octaverc.
+
+      int home_rc_already_executed = 0;
+      string home_rc;
+
+      if (! Vhome_directory.empty ())
+	{
+	  home_rc = Vhome_directory;
+	  home_rc.append ("/.octaverc");
+	  parse_and_execute (home_rc, 0, verbose);
+
+	  // Names alone are not enough.
+
+	  file_stat fs_home_rc (home_rc);
+
+	  if (fs_home_rc)
+	    {
+	      file_stat fs_dot_rc ("./.octaverc");
+
+	      if (fs_dot_rc && fs_home_rc.ino () == fs_dot_rc.ino ())
+		home_rc_already_executed = 1;
+	    }
+	}
+
+      if (! home_rc_already_executed)
+	parse_and_execute ("./.octaverc", 0, verbose);
+    }
 
   run_unwind_frame ("execute_startup_files");
 }
@@ -301,11 +314,13 @@ Options:\n\
   -x, --echo-commands     Echo commands as they are executed.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
   -h, -?, --help          Print short help message and exit.\n\
-  -f, --ignore-init-file  Don't read any initialization files.\n\
+  -f, --norc              Don't read any initialization files.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   -i, --interactive       Force interactive behavior.\n\
+  --no-init-file          Don't read the ~/.octaverc or .octaverc files\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
+  --no-site-file          Don't read the site-wide octaverc file\n\
   -p PATH, --path PATH    Set initial LOADPATH to PATH.\n\
   -q, --silent            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\
@@ -399,7 +414,7 @@ main (int argc, char **argv)
       switch (optc)
 	{
 	case 'V':
-	  verbose_flag++;
+	  verbose_flag = true;
 	  break;
 
 	case 'd':
@@ -407,7 +422,8 @@ main (int argc, char **argv)
 	  break;
 
 	case 'f':
-	  read_init_files = 0;
+	  read_init_files = false;
+	  read_site_files = false;
 	  break;
 
 	case 'h':
@@ -425,7 +441,7 @@ main (int argc, char **argv)
 	  break;
 
 	case 'q':
-	  inhibit_startup_message = 1;
+	  inhibit_startup_message = true;
 	  break;
 
 	case 'x':
@@ -454,12 +470,20 @@ main (int argc, char **argv)
 	    bind_builtin_variable ("INFO_PROGRAM", args.optarg ());
 	  break;
 
+	case NO_INIT_FILE_OPTION:
+	  read_init_files = false;
+	  break;
+
 	case NO_LINE_EDITING_OPTION:
-	  using_readline = 0;
+	  using_readline = false;
+	  break;
+
+	case NO_SITE_FILE_OPTION:
+	  read_site_files = 0;
 	  break;
 
 	case TRADITIONAL_OPTION:
-	  traditional = 1;
+	  traditional = true;
 	  break;
 
 	default:
@@ -491,8 +515,7 @@ main (int argc, char **argv)
   if (traditional)
     maximum_braindamage ();
 
-  if (read_init_files)
-    execute_startup_files ();
+  execute_startup_files ();
 
   octave_command_history.read ();
 

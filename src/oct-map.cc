@@ -38,6 +38,33 @@ Octave_map::contents (const std::string& k) const
   return p != end () ? p->second : Cell ();
 }
 
+int
+Octave_map::intfield (const std::string& k, int def_val) const
+{
+  int retval = def_val;
+
+  Cell c = contents (k);
+
+  if (! c.is_empty ())
+    retval = c(0).int_value ();
+
+  return retval;
+}
+
+std::string
+Octave_map::stringfield (const std::string& k,
+			 const std::string& def_val) const
+{
+  std::string retval = def_val;
+
+  Cell c = contents (k);
+
+  if (! c.is_empty ())
+    retval = c(0).string_value ();
+
+  return retval;
+}
+
 string_vector
 Octave_map::keys (void) const
 {

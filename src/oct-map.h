@@ -95,6 +95,11 @@ Octave_map
   Cell contents (const_iterator p) const
     { return contents (key(p)); }
 
+  int intfield (const std::string& k, int def_val = 0) const;
+
+  std::string stringfield (const std::string& k,
+			   const std::string& def_val = std::string ()) const;
+
   const_iterator seek (const std::string& k) const { return map.find (k); }
 
   bool contains (const std::string& k) const

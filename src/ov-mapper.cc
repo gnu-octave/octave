@@ -246,7 +246,11 @@ octave_mapper::subsref (const std::string& type,
   switch (type[0])
     {
     case '(':
-      retval = do_multi_index_op (nargout, idx.front ());
+      {
+	int tmp_nargout = (type.length () > 1 && nargout == 0) ? 1 : nargout;
+
+	retval = do_multi_index_op (tmp_nargout, idx.front ());
+      }
       break;
 
     case '{':
@@ -261,14 +265,14 @@ octave_mapper::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  return retval;
-
   // XXX FIXME XXX -- perhaps there should be an
   // octave_value_list::next_subsref member function?  See also
   // and octave_builtin::subsref.
 
   if (idx.size () > 1)
     retval = retval(0).next_subsref (nargout, type, idx);
+
+  return retval;
 }
 
 octave_value_list

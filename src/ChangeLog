@@ -1,3 +1,18 @@
+2005-02-22  John W. Eaton  <jwe@octave.org>
+
+	* ov-mapper.cc (octave_mapper::subsref): Return retval after
+	calling next_subsref.
+
+	* ov-mapper.cc (octave_builtin::subsref): If nargout is 0 and we
+	have additional indexing to perform, set it to 1 before calling
+	do_multi_index_op.
+
+	* oct-map.cc (Octave_map::intfield, Octave_map::stringfield):
+	New functions.
+	* oct-map.h: Provide decls.
+	* DLD-FUNCTIONS/time.cc (extract_tm): Use intfield and stringfield
+	to access map elements.
+
 2005-02-21  John W. Eaton  <jwe@octave.org>
 
 	* ov-builtin.cc (octave_builtin::subsref): If nargout is 0 and we

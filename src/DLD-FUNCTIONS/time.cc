@@ -60,17 +60,17 @@ extract_tm (Octave_map &m)
 {
   octave_base_tm tm;
 
-  tm.usec (m.contents ("usec")(0) . int_value ());
-  tm.sec (m.contents ("sec")(0) . int_value ());
-  tm.min (m.contents ("min")(0) . int_value ());
-  tm.hour (m.contents ("hour")(0) . int_value ());
-  tm.mday (m.contents ("mday")(0) . int_value ());
-  tm.mon (m.contents ("mon")(0) . int_value ());
-  tm.year (m.contents ("year")(0) . int_value ());
-  tm.wday (m.contents ("wday")(0) . int_value ());
-  tm.yday (m.contents ("yday")(0) . int_value ());
-  tm.isdst (m.contents ("isdst")(0) . int_value ());
-  tm.zone (m.contents ("zone")(0) . string_value ());
+  tm.usec (m.intfield ("usec"));
+  tm.sec (m.intfield ("sec"));
+  tm.min (m.intfield ("min"));
+  tm.hour (m.intfield ("hour"));
+  tm.mday (m.intfield ("mday"));
+  tm.mon (m.intfield ("mon"));
+  tm.year (m.intfield ("year"));
+  tm.wday (m.intfield ("wday"));
+  tm.yday (m.intfield ("yday"));
+  tm.isdst (m.intfield ("isdst"));
+  tm.zone (m.stringfield ("zone"));
 
   return tm;
 }

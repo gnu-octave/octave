@@ -541,6 +541,8 @@ do_octave_atexit (void)
 
       octave_atexit_functions.pop ();
 
+      reset_error_handler ();
+
       feval (fcn, octave_value_list (), 0);
 
       flush_octave_stdout ();

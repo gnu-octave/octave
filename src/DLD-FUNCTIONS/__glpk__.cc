@@ -378,26 +378,18 @@ You should be using using glpk instead")
       return retval;
     }
 
-  //-- 1st Input. Sense of optimization.
-  volatile int sense;
-  double SENSE = args(0).scalar_value ();
-  if (SENSE >= 0)
-    sense = 1;
-  else
-    sense = -1;
-
-  //-- 2nd Input. A column array containing the objective function
+  //-- 1nd Input. A column array containing the objective function
   //--            coefficients.
-  int mrowsc = args(1).rows();
+  int mrowsc = args(0).rows();
 
-  Matrix C (args(1).matrix_value ());
+  Matrix C (args(0).matrix_value ());
   double *c = C.fortran_vec ();
 
-  //-- 3rd Input. A matrix containing the constraints coefficients.
+  //-- 2nd Input. A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
   // if(!mxIsSparse(A_IN)){
-  int mrowsA = args(2).rows();
-  Matrix A (args(2).matrix_value ()); // get the matrix
+  int mrowsA = args(1).rows();
+  Matrix A (args(1).matrix_value ()); // get the matrix
   Array<int> rn (mrowsA*mrowsc+1);
   Array<int> cn (mrowsA*mrowsc+1);
   ColumnVector a (mrowsA*mrowsc+1, 0.0);
@@ -449,19 +441,14 @@ You should be using using glpk instead")
 //	    }
 //	  }
 
-  //-- 4th Input. A column array containing the right-hand side value
+  //-- 3rd Input. A column array containing the right-hand side value
   //	           for each constraint in the constraint matrix.
-  Matrix B (args(3).matrix_value ());
+  Matrix B (args(2).matrix_value ());
   double *b = B.fortran_vec ();
 
-  //-- 5th Input. A column array containing the sense of each constraint
-  //--            in the constraint matrix.
-  charMatrix CTYPE (args(4).char_matrix_value ());
-  char *ctype = CTYPE.fortran_vec ();
-
-  //-- 6th Input. An array of length mrowsc containing the lower
+  //-- 4th Input. An array of length mrowsc containing the lower
   //--            bound on each of the variables.
-  Matrix LB (args(5).matrix_value ());
+  Matrix LB (args(3).matrix_value ());
   double *lb = LB.fortran_vec ();
 
   //-- LB argument, default: Free
@@ -477,9 +464,9 @@ You should be using using glpk instead")
 	 freeLB(i) = 0;
      }
 
-  //-- 7th Input. An array of at least length numcols containing the upper
+  //-- 5th Input. An array of at least length numcols containing the upper
   //--            bound on each of the variables.
-  Matrix UB (args(6).matrix_value ());
+  Matrix UB (args(4).matrix_value ());
 
   double *ub = UB.fortran_vec ();
 
@@ -495,8 +482,13 @@ You should be using using glpk instead")
 	freeUB(i) = 0;
     }
 
-  //-- 8th Input. A column array containing the types of the variables.
-  charMatrix VTYPE (args(7).char_matrix_value ());
+  //-- 6th Input. A column array containing the sense of each constraint
+  //--            in the constraint matrix.
+  charMatrix CTYPE (args(5).char_matrix_value ());
+  char *ctype = CTYPE.fortran_vec ();
+
+  //-- 7th Input. A column array containing the types of the variables.
+  charMatrix VTYPE (args(6).char_matrix_value ());
 
   Array<int> vartype (mrowsc);
   volatile int isMIP = 0;
@@ -510,6 +502,14 @@ You should be using using glpk instead")
       else
 	vartype(i) = LPX_CV;
     }
+
+  //-- 8th Input. Sense of optimization.
+  volatile int sense;
+  double SENSE = args(7).scalar_value ();
+  if (SENSE >= 0)
+    sense = 1;
+  else
+    sense = -1;
 
   //-- 9th Input. A structure containing the control parameters.
   Octave_map PARAM = args(8).map_value ();
@@ -645,6 +645,28 @@ You should be using using glpk instead")
       lpxIntParam[16] = static_cast<int> (numtmp);
     }
 
+  //-- LPsolver option
+  volatile int lpsolver = 1;
+  if (PARAM.contains ("lpsolver"))
+    {
+      octave_value tmp = PARAM.contents (PARAM.seek ("lpsolver"))(0);
+      double numtmp = tmp.scalar_value ();
+      if (numtmp != 1 && numtmp != 2)
+	{
+	  OCTOUT << "'lpsolver' parameter must be only:\n\t1 - simplex method,\n\t2 - interior point method\n";
+	  return retval;
+	}
+      lpsolver = static_cast<int> (numtmp);
+    }
+
+  //-- Save option
+  volatile int save_pb = 0;
+  if (PARAM.contains ("save"))
+    {
+      octave_value tmp = PARAM.contents (PARAM.seek ("save"))(0);
+      save_pb = (tmp.scalar_value () != 0);
+    }
+
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   //-- Real parameters
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -715,16 +737,6 @@ You should be using using glpk instead")
       octave_value tmp = PARAM.contents (PARAM.seek ("tolobj"))(0);
       lpxRealParam[9] = tmp.scalar_value ();
     }
-
-  //-- 10th Input. If the problem is a LP problem you may select which solver
-  //--      use: RSM (Revised Simplex Method) or IPM (Interior Point Method).
-  //--      If the problem is a MIP problem this field will be ignored.
-  octave_value tmp = args(9).scalar_value ();
-  int lpsolver = static_cast<int> (tmp.scalar_value ());
-
-  //-- 11th Input. Saves a copy of the problem if SAVE<>0.
-  tmp = args(10).scalar_value();
-  int save_pb = (tmp.scalar_value() != 0);
 
   //-- Assign pointers to the output parameters
   ColumnVector xmin (mrowsc);

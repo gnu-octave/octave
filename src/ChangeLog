@@ -1,3 +1,12 @@
+2005-03-23  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Accept lpsolver and
+	save_pb in param arg instead of as separate args.
+	Arg list now matches new interface for glpk.m.
+
+	* toplev.cc (do_octave_atexit): Call reset_error_handler before
+	each call to feval.
+
 2005-03-22  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Add special rule for __glpk__.oct.

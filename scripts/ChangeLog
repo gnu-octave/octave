@@ -1,4 +1,13 @@
+2005-03-23  John W. Eaton  <jwe@octave.org>
+
+	* optimization/glpk.m: Simplify interface.  By default, solve
+	standard LP min C'*x s.t. A*x = b, x >= 0.
+	* optimization/glpkmex.m: New file.
+
 2005-03-22  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_CONFIG_FILES): Add optimization/Makefile to the
+	list.
 
 	* optimization/glpk.m: Adapt to Octave coding style.
 	No need for varargout or varargin.

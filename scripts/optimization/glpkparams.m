@@ -70,6 +70,16 @@
 %              problem using the built-in LP presolver. Otherwise the LP
 %               presolver is not used.
 %
+% lpsolver     type: int, default: 1
+%              Select which solver to use:
+%                 1 revised simplex method
+%                 2 interior point method
+%              If the problem is a MIP problem this flag will be ignored.
+%
+% save         type: int, default 0
+%              If this parameter is nonzero, save a copy of the problem
+%              problem in CPLEX LP format to the file "outpb.lp".  There
+%              is currently no way to change the name of the output file.
 %
 % -----------------------
 % 2 Real parameters

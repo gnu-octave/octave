@@ -9,7 +9,8 @@ ctype=['U','U']';
 lb=[0;0]; ub=[];
 vartype=['I';'I'];
 param.msglev=1;
-[xmin,fmin,status,extra]=glpk(s,c,a,b,ctype,lb,ub,vartype,param)
+[xmin,fmin,status,extra]=glpk(c,a,b,lb,ub,ctype,vartype,s,param)
+[xmin,fmin,status,extra]=glpkmex(s,c,a,b,ctype,lb,ub,vartype,param)
 pause;
 
 disp('3rd problem');
@@ -22,4 +23,5 @@ b=[4 12 18]';
 ctype=['S','S','S']';
 lb=[0,0,0,0,0]'; ub=[];
 vartype=['C','C','C','C','C']';
-[xmin,fmin,status,extra]=glpk(s,c,a,b,ctype,lb,ub,vartype)
+[xmin,fmin,status,extra]=glpk(c,a,b,lb,ub,ctype,vartype,s)
+[xmin,fmin,status,extra]=glpkmex(s,c,a,b,ctype,lb,ub,vartype)

@@ -520,7 +520,7 @@ LOSE! LOSE!
 #endif
 
     default:
-      panic_impossible ();
+      gripe_unrecognized_float_fmt ();
       break;
     }
 }
@@ -620,7 +620,7 @@ LOSE! LOSE!
 #endif
 
     default:
-      panic_impossible ();
+      gripe_unrecognized_float_fmt ();
       break;
     }
 }
@@ -720,7 +720,7 @@ write_doubles (ostream& os, const double *data, save_type type, int len)
       break;
 
     default:
-      panic_impossible ();
+      error ("unrecognized data format requested");
       break;
     }
 }
@@ -954,7 +954,7 @@ install_loaded_variable (int force, char *name, const tree_constant& tc,
 	    }
 	}
       else
-	panic_impossible ();
+	error ("load: unable to load data for unknown symbol type");
     }
   else
     {
@@ -1000,7 +1000,7 @@ install_loaded_variable (int force, char *name, const tree_constant& tc,
 	    }
 	}
       else
-	panic_impossible ();
+	error ("load: unable to load data for unknown symbol type");
     }
 
   if (sr)
@@ -1453,7 +1453,7 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	  goto data_read_error;
 	double dtmp;
 	read_doubles (is, &dtmp, (save_type) tmp, 1, swap, fmt);
-	if (! is)
+	if (error_state || ! is)
 	  goto data_read_error;
 	tc = dtmp;
       }
@@ -1476,7 +1476,7 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	double *re = m.fortran_vec ();
 	int len = nr * nc;
 	read_doubles (is, re, (save_type) tmp, len, swap, fmt);
-	if (! is)
+	if (error_state || ! is)
 	  goto data_read_error;
 	tc = m;
       }
@@ -1488,7 +1488,7 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	  goto data_read_error;
 	Complex ctmp;
 	read_doubles (is, (double *) &ctmp, (save_type) tmp, 2, swap, fmt);
-	if (! is)
+	if (error_state || ! is)
 	  goto data_read_error;
 	tc = ctmp;
       }
@@ -1512,7 +1512,7 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	int len = nr * nc;
 	read_doubles (is, (double *) im, (save_type) tmp, 2*len,
 		      swap, fmt);
-	if (! is)
+	if (error_state || ! is)
 	  goto data_read_error;
 	tc = m;
       }
@@ -2565,7 +2565,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
       break;
 
     default:
-      panic_impossible ();
+      error ("save: unrecognized data format requested");
       break;
     }
 }

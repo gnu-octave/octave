@@ -1,3 +1,8 @@
+2004-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/base/__stepimp__.m: Only call clearplot if we will be
+	doing multiple plots in the same gnuplot frame.
+
 2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/system/__sysconcat__.m, control/system/__tfl__.m,

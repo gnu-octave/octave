@@ -223,7 +223,6 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       gset nologscale
       gset autoscale
       gset nokey
-      clearplot();
       if (IMPULSE)
 	gm = zeros(NOUT, 1);
 	tt = "impulse";
@@ -234,6 +233,9 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       endif
       ncols = floor(sqrt(NOUT));
       nrows = ceil(NOUT / ncols);
+      if (ncols > 1 || nrows > 1)
+	clearplot();
+      endif
       for i = 1:NOUT
 	subplot(nrows, ncols, i);
 	title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...

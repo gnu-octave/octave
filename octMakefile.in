@@ -63,7 +63,7 @@ BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS) @READLINE_DIR@ @GLOB_DIR@ kpathsea
 
-DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
+DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(octfiledir) $(archlibdir) $(localarchlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}'`
@@ -111,7 +111,7 @@ install install-strip ::
 	rm -f $(bindir)/mkoctfile
 	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile-$(version)
 	cd $(bindir); $(LN_S) mkoctfile-$(version) mkoctfile
-	$(INSTALL_DATA) config.h $(octincludedir)/config.h
+	$(INSTALL_DATA) config.h $(octincludedir)/octave/config.h
 	$(mk-includedir-link)
 
 maintainer-clean::

@@ -187,6 +187,9 @@ if [ -n "$ccfiles" ]; then
   done
 fi
 
+$dbg "rm -f $octfile"
+rm -f $octfile
+
 # Link all the object files.
 
 $dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags

@@ -1,3 +1,11 @@
+2004-09-08  David Bateman  <dbateman@free.fr>
+
+	* ov-fcn-inline.cc (octave_fcn_inline::save_ascii,
+	octave_fcn_inline::load_ascii, octave_fcn_inline::save_binary,
+	octave_fcn_inline::load_binary, octave_fcn_inline::save_hdf5,
+	octave_fcn_inline::load_hdf5): New functions. 
+	* ov-fcn-inline.h: Provide decls.
+
 2004-09-08  John W. Eaton  <jwe@octave.org>
 
 	* ov.h: Add octave_array_type_traits specialization for

@@ -27,6 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <assert.h>
 
+#include "error.h"
 #include "token.h"
 #include "utils.h"
 #include "symtab.h"
@@ -54,7 +55,7 @@ token::token (double d, char *s, int l, int c)
   column_num = c;
   type_tag = double_token;
   num = d;
-  orig_text = strsave (s);
+  orig_text = 0; // strsave (s);
 }
 
 token::token (end_tok_type t, int l, int c)
@@ -142,6 +143,17 @@ char *
 token::text_rep (void)
 {
   return orig_text;
+}
+
+token::token (const token& tok)
+{
+  panic_impossible ();
+}
+
+token&
+operator = (const token& tok)
+{
+  panic_impossible ();
 }
 
 /*

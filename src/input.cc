@@ -460,7 +460,6 @@ do_input_echo (const char *input_string)
     }
 }
 
-
 // Use GNU readline to get an input line and store it in the history
 // list.
 
@@ -638,6 +637,8 @@ generate_struct_completions (const char *text, char *& prefix,
 {
   char **names = 0;
 
+  assert (text);
+
   char *id = strsave (text);
   char *ptr = strchr (id, '.');
   *ptr = '\0';
@@ -653,6 +654,7 @@ generate_struct_completions (const char *text, char *& prefix,
   ptr = strrchr (prefix, '.');
   *ptr = '\0';
 
+  delete [] hint;
   hint = strsave (ptr + 1);
 
   symbol_record *sr = curr_sym_tab->lookup (id, 0, 0);
@@ -703,15 +705,9 @@ generate_possible_completions (const char *text, char *& prefix,
   if (text && *text && *text != '.')
     {
       if (strrchr (text, '.'))
-	{
-	  names = generate_struct_completions (text, prefix, hint);
-	}
+	names = generate_struct_completions (text, prefix, hint);
       else
-	{
-	  hint = strsave (text);
-
-	  names = make_name_list ();
-	}
+	names = make_name_list ();
     }
 
   return names;
@@ -721,6 +717,8 @@ static int
 looks_like_struct (const char *nm)
 {
   int retval = 0;
+
+  assert (nm);
 
   char *id = strsave (nm);
   char *elts = 0;
@@ -795,17 +793,16 @@ command_generator (const char *text, int state)
       prefix = 0;
 
       delete [] hint;
-      prefix = 0;
+      hint = strsave (text);
 
       name_list = generate_possible_completions (text, prefix, hint);
 
       prefix_len = 0;
       if (prefix)
-	prefix_len = strlen (prefix) + 1;
+	prefix_len = strlen (prefix);
 	
-      hint_len = 0;
-      if (hint)
-	hint_len = strlen (hint);
+      assert (hint);
+      hint_len = strlen (hint);
 
       matches = 0;
       if (name_list)
@@ -825,8 +822,8 @@ command_generator (const char *text, int state)
 	  list_index++;
 	  if (strncmp (name, hint, hint_len) == 0)
 	    {
-	      int len = 3 + prefix_len + strlen (name);
-	      char *buf = xmalloc (len);
+	      int len = 2 + prefix_len + strlen (name);
+	      char *buf = (char *) xmalloc (len);
 
 	      if (prefix)
 		{

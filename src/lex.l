@@ -186,9 +186,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 <HELP_FCN>[^ \t\n]*{S}*	|
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
-    static char *tok = 0;
-    delete [] tok;
-    tok = strip_trailing_whitespace (yytext);
+    char *tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, TEXT);
   }
 
@@ -403,9 +401,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 {IDENT}{S}* {
-    static char *tok = 0;
-    delete [] tok;
-    tok = strip_trailing_whitespace (yytext);
+    char *tok = strip_trailing_whitespace (yytext);
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');

@@ -773,17 +773,14 @@ display the definition of each NAME that refers to a function")
 
 	  char *id = strsave (*argv);
 	  char *elts = 0;
-	  char *ptr = strchr (id, '.');
-	  if (ptr)
+	  if (id[strlen (id) - 1] != '.')
 	    {
-	      *ptr = '\0';
-
-	      elts = ptr + 1;
-	      ptr = strrchr (elts, '.');
+	      char *ptr = strchr (id, '.');
 	      if (ptr)
-		*ptr = '\0';
-	      else
-		elts = 0;
+		{
+		  *ptr = '\0';
+		  elts = ptr + 1;
+		}
 	    }
 
 	  symbol_record *sym_rec = lookup_by_name (id, 0);
@@ -811,7 +808,7 @@ display the definition of each NAME that refers to a function")
 		{
 		  tree_fvc *defn = sym_rec->def ();
 
-		  assert (defn->is_constant ());
+		  assert (defn && defn->is_constant ());
 
 		  tree_constant *tmp = (tree_constant *) defn;
 
@@ -820,23 +817,34 @@ display the definition of each NAME that refers to a function")
 		    {
 		      if (elts && *elts)
 			{
-			  tree_constant ult;
-			  ult = tmp->lookup_map_element (elts, 0, 1);
+			  tree_constant ult =
+			    tmp->lookup_map_element (elts, 0, 1);
 
 			  if (! ult.is_defined ())
 			    var_ok = 0;			    
 			}
 		    }
-		  
+
 		  if (nargout == 0 && ! quiet)
 		    {
-		      output_buf << *argv;
-		      if (sym_rec->is_user_variable ())
-			output_buf << " is a user-defined variable\n";
+		      if (var_ok)
+			{
+			  output_buf << *argv;
+			  if (sym_rec->is_user_variable ())
+			    output_buf << " is a user-defined variable\n";
+			  else
+			    output_buf << " is a built-in variable\n";
+			}
 		      else
-			output_buf << " is a built-in variable\n";
+			{
+			  if (elts && *elts)
+			    output_buf << "type: structure `" << id
+			      << "' has no member `" << elts << "'\n";
+			  else
+			    output_buf << "type: `" << id
+			      << "' has unknown type!";
+			}
 		    }
-
 		  if (! tmp->is_map ())
 		    {
 		      tmp->print_code (output_buf);
@@ -862,7 +870,7 @@ display the definition of each NAME that refers to a function")
 	{
 	  char *s = output_buf.str ();
 	  retval = s;
-	  delete s;
+	  delete [] s;
 	}
     }
   else

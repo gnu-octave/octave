@@ -70,6 +70,7 @@ extern "C"
 #include "procstream.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
+#include "pathsearch.h"
 #include "builtins.h"
 #include "version.h"
 #include "file-io.h"
@@ -261,6 +262,8 @@ initialize_globals (char *name)
 
   raw_prog_name = strsave (name);
   prog_name = strsave ("octave");
+
+  kpse_set_progname (name);
 
   load_path = default_path ();
 

@@ -78,6 +78,9 @@ public:
   char *text_rep (void);
 
 private:
+  token (const token& tok);
+  token& operator = (const token& tok);
+
   int line_num;
   int column_num;
   token_type type_tag;

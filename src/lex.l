@@ -121,8 +121,8 @@ static void handle_number (char *yytext);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_brace (int spc_gobbled);
 static int handle_identifier (char *tok, int spc_gobbled);
-static int have_continuation (void);
-static int have_ellipsis_continuation (void);
+static int have_continuation (int trailing_comments_ok = 1);
+static int have_ellipsis_continuation (int trailing_comments_ok = 1);
 static int eat_whitespace (void);
 static int eat_continuation (void);
 
@@ -1460,7 +1460,7 @@ handle_number (char *yytext)
 // characters, return 0.  Otherwise, return 1.
 
 static int
-have_continuation (void)
+have_continuation (int trailing_comments_ok)
 {
   ostrstream buf;
 
@@ -1478,7 +1478,10 @@ have_continuation (void)
 
 	case '%':
 	case '#':
-	  in_comment = 1;
+	  if (trailing_comments_ok)
+	    in_comment = 1;
+	  else
+	    goto cleanup;
 	  break;
 
 	case '\n':
@@ -1487,26 +1490,25 @@ have_continuation (void)
 	  return 1;
 
 	default:
-	  if (in_comment)
-	    break;
-	  else
-	    {
-	      buf << ends;
-	      char *s = buf.str ();
-	      if (s)
-		{
-		  int len = strlen (s);
-		  while (len--)
-		    yyunput (s[len], yytext);
-		}
-	      delete [] s;
-	      return 0;
-	    }
+	  if (! in_comment)
+	    goto cleanup;
+	  break;
 	}
     }
 
   yyunput (c, yytext);
+  return 0;
 
+ cleanup:
+  buf << ends;
+  char *s = buf.str ();
+  if (s)
+    {
+      int len = strlen (s);
+      while (len--)
+	yyunput (s[len], yytext);
+    }
+  delete [] s;
   return 0;
 }
 
@@ -1515,13 +1517,13 @@ have_continuation (void)
 // line character.
 
 static int
-have_ellipsis_continuation (void)
+have_ellipsis_continuation (int trailing_comments_ok)
 {
   char c1 = yyinput ();
   if (c1 == '.')
     {
       char c2 = yyinput ();
-      if (c2 == '.' && have_continuation ())
+      if (c2 == '.' && have_continuation (trailing_comments_ok))
 	return 1;
       else
 	{
@@ -1575,7 +1577,7 @@ handle_string (char delim, int text_style)
 	    }
 	  else
 	    {
-	      if (have_continuation ())
+	      if (have_continuation (0))
 		escape_pending = 0;
 	      else
 		{
@@ -1587,7 +1589,7 @@ handle_string (char delim, int text_style)
 	}
       else if (c == '.')
 	{
-	  if (! have_ellipsis_continuation ())
+	  if (! have_ellipsis_continuation (0))
 	    buf << (char) c;
 	}
       else if (c == '\n')

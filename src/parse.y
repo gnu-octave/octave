@@ -300,15 +300,9 @@ input		: input1
 		    YYABORT;
 		  }
 		| simple_list parse_error
-		  {
-		    yyerror ("parse error");
-		    ABORT_PARSE;
-		  }
+		  { ABORT_PARSE; }
 		| parse_error
-		  {
-		    yyerror ("parse error");
-		    ABORT_PARSE;
-		  }
+		  { ABORT_PARSE; }
 		;
 
 input1		: '\n'
@@ -322,6 +316,7 @@ input1		: '\n'
 		;
 
 parse_error	: LEXICAL_ERROR
+		  { yyerror ("parse error"); }
 		| error
 		;
 

@@ -35,10 +35,9 @@ FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]*
 DISTFILES = Makefile.in dir octave.1 $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
-  BINDISTFILES = $(srcdir)/octave.1 $(srcdir)/octave.info \
-	$(wildcard $(srcdir)/octave.info-[0-9]*)
+  BINDISTFILES = $(addprefix $(srcdir)/, octave.1 $(FORMATTED))
 else
-  BINDISTFILES = $(srcdir)/octave.1 octave.info octave.info-[0-9]*
+  BINDISTFILES = $(srcdir)/octave.1 $(FORMATTED)
 endif
 
 # Look for version.h to get version information.

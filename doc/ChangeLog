@@ -1,3 +1,10 @@
+Wed Jul  2 16:41:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* refcard/Makefile.in: Remove .tex files from binary distributions.
+
+	* interpreter/Makefile.in: Add DVI and Postscript files to binary
+	distributions.
+
 Fri Apr 18 02:51:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* faq/Octave-FAQ.texi: Rename from faq/FAQ.texi.

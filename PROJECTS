@@ -492,6 +492,8 @@ Configuration and Installation:
 
   * Should --enable-lite-kernel imply --enable-shared?
 
+  * Should --enable-dl imply --enable-shared?
+
   * Make it possible to configure without readline.
 
   * Makefile changes:
@@ -504,6 +506,8 @@ Configuration and Installation:
     shared libraries are stripped.
 
   * Make installation of the static libraries optional.
+
+  * Create a docs-only distribution?
 
 ------------------------------
 Documentation and On-Line Help:

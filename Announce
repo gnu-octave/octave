@@ -1,22 +1,24 @@
-Subject: ANNOUNCE: Octave Version 2.0.8 released
+Subject: ANNOUNCE: Octave Version 2.0.9 released
 
-Octave version 2.0.8 is now available for ftp from ftp.che.wisc.edu
+Octave version 2.0.9 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
-  -rw-r--r--   1 jwe  3369407 Jun 23 15:44 octave-2.0.8.tar.gz
-  -rw-r--r--   1 jwe    41993 Jun 23 14:47 octave-2.0.7-2.0.8.patch.gz
+  -rw-r--r--   1 jwe  3371863 Jul  9 20:54 octave-2.0.9.tar.gz
+  -rw-r--r--   1 jwe    10971 Jul  9 20:54 octave-2.0.8-2.0.9.patch.gz
 
 Most bugs reported since the release of version 2.0 have been fixed.
 
-This is a bug-fixing release.  There are only a few new features:
+This is a bug-fixing release, but there is one new user-visible
+feature:
 
-  * If the argument to eig() is symmetric, Octave uses the specialized
-    Lapack subroutine for symmetric matrices for a significant
-    increase in performance.
+  * It is now possible to specify a label for lines in the plot key
+    when using the plot function.  For example,
 
-  * It is now possible to use the mkoctfile script to create .oct
-    files from multiple source and object files.
+      plot (x, y, "-*;sin(x);")
+
+    plots y vs. x using the linespoints style and sets the title of
+    the line in the key to be `sin(x)'.
 
 Octave is a high-level interactive language primarily intended for
 numerical computations.  It is mostly compatible with MATLAB.

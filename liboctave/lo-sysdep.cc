@@ -47,22 +47,30 @@ Software Foundation, Inc.
 #include <sys/utsname.h>
 #endif
 
+#include "lo-error.h"
 #include "pathlen.h"
 
 string
 octave_getcwd (void)
 {
   string retval;
+
   char buf[MAXPATHLEN];
 
+  char *tmp = 0;
+
 #if defined (__EMX__)
-  char *tmp = _getcwd2 (buf, MAXPATHLEN);
-#else
-  char *tmp = getcwd (buf, MAXPATHLEN);
+  tmp = _getcwd2 (buf, MAXPATHLEN);
+#elif defined (HAVE_GETWD)
+  tmp = getwd (buf);
+#elif defined (HAVE_GETCWD)
+  tmp = getcwd (buf, MAXPATHLEN);
 #endif
 
   if (tmp)
     retval = tmp;
+  else
+    (*current_liboctave_error_handler) ("unable to find current directory");
 
   return retval;
 }

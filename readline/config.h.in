@@ -1,14 +1,44 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
+/* Define if you have the strcoll function and it is properly defined.  */
+#undef HAVE_STRCOLL
+
 /* Define as the return type of signal handlers (int or void).  */
 #undef RETSIGTYPE
 
 /* Define if the `S_IS*' macros in <sys/stat.h> do not work properly.  */
 #undef STAT_MACROS_BROKEN
 
+/* Definitions pulled in from aclocal.m4. */
 #undef VOID_SIGHANDLER
 
-/* Define if you have the lstat function. */
+#undef TIOCSTAT_IN_SYS_IOCTL
+
+#undef HAVE_GETPW_DECLS
+
+#undef FIONREAD_IN_SYS_IOCTL
+
+#undef HAVE_BSD_SIGNALS
+
+#undef HAVE_LSTAT
+
+#undef HAVE_POSIX_SIGNALS
+
+#undef HAVE_POSIX_SIGSETJMP
+
+#undef HAVE_USG_SIGHOLD
+
+#undef MUST_REINSTALL_SIGHANDLERS
+
+#undef SPEED_T_IN_SYS_TYPES
+
+#undef STRCOLL_BROKEN
+
+#undef STRUCT_DIRENT_HAS_D_FILENO
+
+#undef STRUCT_DIRENT_HAS_D_INO
+
+/* Define if you have the lstat function.  */
 #undef HAVE_LSTAT
 
 /* Define if you have the putenv function.  */
@@ -20,25 +50,26 @@
 /* Define if you have the setenv function.  */
 #undef HAVE_SETENV
 
+/* Define if you have the setlocale function.  */
+#undef HAVE_SETLOCALE
+
 /* Define if you have the strcasecmp function.  */
 #undef HAVE_STRCASECMP
-
-/* Define if you have the setlocale function. */
-#undef HAVE_SETLOCALE
 
 /* Define if you have the tcgetattr function.  */
 #undef HAVE_TCGETATTR
 
-/* Define if you have the strcoll function.  */
-#undef HAVE_STRCOLL
-
-#undef STRCOLL_BROKEN
-
 /* Define if you have the <dirent.h> header file.  */
 #undef HAVE_DIRENT_H
 
+/* Define if you have the <locale.h> header file.  */
+#undef HAVE_LOCALE_H
+
 /* Define if you have the <ndir.h> header file.  */
 #undef HAVE_NDIR_H
+
+/* Define if you have the <stdarg.h> header file.  */
+#undef HAVE_STDARG_H
 
 /* Define if you have the <stdlib.h> header file.  */
 #undef HAVE_STDLIB_H
@@ -81,58 +112,3 @@
 
 /* Define if you have the <varargs.h> header file.  */
 #undef HAVE_VARARGS_H
-
-/* Define if you have the <stdarg.h> header file.  */
-#undef HAVE_STDARG_H
-
-#undef HAVE_LOCALE_H
-
-/* Definitions pulled in from aclocal.m4. */
-#undef VOID_SIGHANDLER
-
-#undef GWINSZ_IN_SYS_IOCTL
-
-#undef TIOCSTAT_IN_SYS_IOCTL
-
-#undef FIONREAD_IN_SYS_IOCTL
-
-#undef SPEED_T_IN_SYS_TYPES
-
-#undef HAVE_GETPW_DECLS
-
-#undef STRUCT_DIRENT_HAS_D_INO
-
-#undef STRUCT_DIRENT_HAS_D_FILENO
-
-#undef HAVE_BSD_SIGNALS
-
-#undef HAVE_POSIX_SIGNALS
-
-#undef HAVE_USG_SIGHOLD
-
-#undef MUST_REINSTALL_SIGHANDLERS
-
-#undef HAVE_POSIX_SIGSETJMP
-
-/* config.h.bot */
-/* modify settings or make new ones based on what autoconf tells us. */
-
-/* Ultrix botches type-ahead when switching from canonical to
-   non-canonical mode, at least through version 4.3 */
-#if !defined (HAVE_TERMIOS_H) || !defined (HAVE_TCGETATTR) || defined (ultrix)
-#  define TERMIOS_MISSING
-#endif
-
-#if defined (STRCOLL_BROKEN)
-#  undef HAVE_STRCOLL
-#endif
-
-#if defined (__STDC__) && defined (HAVE_STDARG_H)
-#  define PREFER_STDARG
-#  define USE_VARARGS
-#else
-#  if defined (HAVE_VARARGS_H)
-#    define PREFER_VARARGS
-#    define USE_VARARGS
-#  endif
-#endif

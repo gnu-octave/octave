@@ -23,6 +23,28 @@
 
 #undef HAVE_GETPW_DECLS
 
+#undef FIONREAD_IN_SYS_IOCTL
+
+#undef HAVE_BSD_SIGNALS
+
+#undef HAVE_LSTAT
+
+#undef HAVE_POSIX_SIGNALS
+
+#undef HAVE_POSIX_SIGSETJMP
+
+#undef HAVE_USG_SIGHOLD
+
+#undef MUST_REINSTALL_SIGHANDLERS
+
+#undef SPEED_T_IN_SYS_TYPES
+
+#undef STRCOLL_BROKEN
+
+#undef STRUCT_DIRENT_HAS_D_FILENO
+
+#undef STRUCT_DIRENT_HAS_D_INO
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:

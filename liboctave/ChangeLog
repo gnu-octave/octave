@@ -1,4 +1,12 @@
+Wed Jul  9 19:40:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-sysdep.cc (octave_getcwd): If getwd is available, use it.
+	Call error handler if we can't find the current directory.
+
 Mon Jul  7 21:14:41 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (xisnan (double)): Return only 1 or 0.
+	(xfinite (double)): Ditto.
 
 	* dbleQR.cc (QR::init): Don't forget to initialize Q when type is raw.
 	* CmplxQR.cc (ComplexQR::init): Ditto.

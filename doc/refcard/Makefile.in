@@ -26,7 +26,11 @@ FORMATTED := refcard-a4.dvi refcard-a4.ps \
 
 DISTFILES := Makefile.in $(TEX) $(FORMATTED)
 
-BINDISTFILES = $(addprefix $(srcdir)/, $(TEX) $(FORMATTED))
+ifeq ($(wildcard refcard-letter.ps), )
+  BINDISTFILES = $(addprefix $(srcdir)/, $(FORMATTED))
+else
+  BINDISTFILES = $(FORMATTED)
+endif
 
 all: $(FORMATTED)
 

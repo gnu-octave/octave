@@ -247,9 +247,10 @@ The command @kbd{whos} is equivalent to @kbd{who -long}.
 @end deffn
 
 @deftypefn {Built-in Function} {} exist (@var{name})
-Return 1 if the name exists as a variable, and 2 if the name (after
-appending @samp{.m}) is a function file in the path.  Otherwise, return
-0.
+Return 1 if the name exists as a variable, 2 if the name (after
+appending @samp{.m}) is a function file in the path, 3 if the name is a
+@samp{.oct} file in the path, or 5 if the name is a built-in function.
+Otherwise, return 0.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} document (@var{symbol}, @var{text})

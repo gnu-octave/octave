@@ -61,7 +61,7 @@ function [p, yf] = polyfit (x, y, n)
 
   X = (x * ones (1, n+1)) .^ (ones (l, 1) * (0 : n));
 
-  p = (X' * X) \ (X' * y);
+  p = flipud ((X' * X) \ (X' * y));
 
   if (! prefer_column_vectors)
     p = p';

@@ -108,6 +108,17 @@ dnl
 for arg in $foutput; do
   old_want_arg=$want_arg
   want_arg=
+dnl
+dnl None of the options that take arguments expect the argument to
+dnl start with a -, so pretend we didn't see anything special.
+dnl
+  if test -n "$old_want_arg"; then
+    case "$arg" in
+      -*)
+	old_want_arg=
+      ;;
+    esac
+  fi
   case "$old_want_arg" in
     '')
       case $arg in
@@ -178,6 +189,7 @@ for arg in $foutput; do
 	;;
 	-u)
 	  want_arg=$arg
+	  arg=
 	;;
 	-Y)
 	  want_arg=$arg
@@ -190,6 +202,9 @@ for arg in $foutput; do
     ;;
     -[lLR])
       arg="$old_want_arg $arg"
+    ;;
+    -u)
+      arg="-u $arg"
     ;;
     -Y)
 dnl

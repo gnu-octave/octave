@@ -295,6 +295,9 @@ parenthetical grouping.")
     (modify-syntax-entry ?\n ">"  table)
     (setq octave-mode-syntax-table table)))
 
+(defvar octave-auto-indent nil
+  "*Non-nil means automatically indent line after a semicolon or space.")
+
 (defvar octave-auto-newline nil
   "*Non-nil means automatically newline after a semicolon in Octave mode.")
 
@@ -400,6 +403,10 @@ Keybindings
 
 Variables you can use to customize Octave mode
 ==============================================
+
+octave-auto-indent
+  Non-nil means indent current line after a semicolon or space.
+  Default is nil.
 
 octave-auto-newline
   Non-nil means auto-insert a newline and indent after a semicolon.
@@ -1193,7 +1200,8 @@ non-nil."
     (if abbrev-mode (expand-abbrev))
     (if octave-blink-matching-block
 	(octave-blink-matching-block-open))
-    (indent-according-to-mode)    
+    (if octave-auto-indent
+	(indent-according-to-mode))
     (insert ";")
     (if octave-auto-newline
 	(newline-and-indent))))
@@ -1210,9 +1218,10 @@ Maybe expand abbrevs and blink matching block open keywords."
     (if abbrev-mode (expand-abbrev))
     (if octave-blink-matching-block
 	(octave-blink-matching-block-open))
-    (if (save-excursion
-	  (skip-syntax-backward " ")
-	  (not (bolp)))
+    (if (and octave-auto-indent
+	     (save-excursion
+	       (skip-syntax-backward " ")
+	       (not (bolp))))
 	(indent-according-to-mode))
     (self-insert-command 1)))
 
@@ -1394,6 +1403,7 @@ code line."
     octave-maintainer-address
     (concat "Emacs version " emacs-version)
     (list
+     'octave-auto-indent
      'octave-auto-newline
      'octave-blink-matching-block
      'octave-block-offset

@@ -1,3 +1,11 @@
+Thu Jul 10 18:26:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* acconfig.h: Add #undefs for FIONREAD_IN_SYS_IOCTL,
+	HAVE_BSD_SIGNALS, HAVE_LSTAT, HAVE_POSIX_SIGNALS,
+	HAVE_POSIX_SIGSETJMP, HAVE_USG_SIGHOLD,
+	MUST_REINSTALL_SIGHANDLERS, SPEED_T_IN_SYS_TYPES, STRCOLL_BROKEN,
+	STRUCT_DIRENT_HAS_D_FILENO, and STRUCT_DIRENT_HAS_D_INO.
+
 Thu May 22 16:00:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* history.h, readline.h [__cplusplus]: Add extern "C" declarations.

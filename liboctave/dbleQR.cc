@@ -97,7 +97,10 @@ QR::init (const Matrix& a, QR::type qr_type)
 		A_fact.elem (i, j) *= tau.elem (j);
 	    }
 
-	  q = A_fact;
+	  r = A_fact;
+
+	  if (m > n)
+	    r.resize (m, n);
 	}
       else
 	{

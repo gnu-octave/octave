@@ -87,7 +87,7 @@ that R = triu (qr (X))")
 	    case 1:
 	      {
 		QR fact (m, type);
-		retval(0) = fact.Q ();
+		retval(0) = fact.R ();
 	      }
 	      break;
 
@@ -122,7 +122,7 @@ that R = triu (qr (X))")
 	    case 1:
 	      {
 		ComplexQR fact (m, type);
-		retval(0) = fact.Q ();
+		retval(0) = fact.R ();
 	      }
 	      break;
 

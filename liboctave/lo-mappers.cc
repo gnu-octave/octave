@@ -150,7 +150,7 @@ double
 xisnan (double x)
 {
 #if defined (HAVE_ISNAN)
-  return isnan (x);
+  return isnan (x) != 0;
 #else
   return 0;
 #endif
@@ -160,7 +160,7 @@ double
 xfinite (double x)
 {
 #if defined (HAVE_FINITE)
-  return finite (x);
+  return finite (x) != 0;
 #elif defined (HAVE_ISINF) && defined (HAVE_ISNAN)
   return (! isinf (x) && ! isnan (x));
 #else

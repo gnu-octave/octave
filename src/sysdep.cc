@@ -134,6 +134,14 @@ NeXT_init (void)
 }
 #endif
 
+#if defined (__EMX__)
+OS2_init (void)
+{
+  _control87 ((EM_INVALID | EM_DENORMAL | EM_ZERODIVIDE | EM_OVERFLOW
+	       | EM_UNDERFLOW | EM_INEXACT), MCW_EM);
+}
+#endif
+
 #if defined (SCO)
 static void
 SCO_init (void)
@@ -178,6 +186,8 @@ sysdep_init (void)
   BSD_init ();
 #elif defined NeXT
   NeXT_init ();
+#elif defined __EMX__
+  OS2_init ();
 #elif defined (SCO)
   SCO_init ();
 #endif

@@ -1,3 +1,10 @@
+Tue Nov 19 23:07:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f77-fcn.c, f77-fcn.h: Move to libcruft/misc directory.
+
+	* Makefile.in (INCLUDES): Delete f77-fcn.h.
+	(SOURCES): Delete f77-fcn.c.
+
 Fri Nov 15 13:47:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-ieee.h: [SCO]: Declare isinf and isnan.

@@ -1,5 +1,8 @@
 Tue Nov 19 12:01:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sysdep.cc (OS2_init): New function.
+	[__EMX__] (sysdep_init): Call it.
+
 	* lex.l (plot_style_token): Add new plot styles for gnuplot 3.6.
 	* pt-plot.cc (subplot_style::columns_ok): Rename from
 	subplot_style::errorbars. Recognize more styles and do a better

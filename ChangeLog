@@ -1,3 +1,7 @@
+Tue Nov 19 23:10:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (INCFLAGS): Add libcruft/misc directory.
+
 Thu Nov 14 00:07:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave.el (octave-text-functions): Change set and show to

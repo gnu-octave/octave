@@ -1,7 +1,7 @@
 // mappers.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1995 John W. Eaton
 
 This file is part of Octave.
 
@@ -30,6 +30,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <Complex.h>
 
 #include "missing-math.h"
+#include "f77-uscore.h"
 #include "variables.h"
 #include "mappers.h"
 #include "error.h"
@@ -40,6 +41,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #undef finite
 #define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
 #endif
+
+extern "C"
+{
+  double F77_FCN (dgamma) (double*);
+  int F77_FCN (dlgams) (double*, double*, double*);
+}
 
 #ifndef M_LOG10E
 #define M_LOG10E 0.43429448190325182765
@@ -152,12 +159,7 @@ xfinite (double x)
 double
 xgamma (double x)
 {
-#if defined (HAVE_LGAMMA)
-  double y = lgamma (x);
-  return signgam * exp (y);
-#else
-  error ("gamma(x) not available on this system");
-#endif
+  return F77_FCN (dgamma) (&x);
 }
 
 double
@@ -175,11 +177,12 @@ xisinf (double x)
 double
 xlgamma (double x)
 {
-#if defined (HAVE_LGAMMA)
-  return lgamma (x);
-#else
-  error ("lgamma (x) not available on this system");
-#endif
+  double result;
+  double sgngam;
+
+  F77_FCN (dlgams) (&x, &result, &sgngam);
+
+  return result;
 }
 
 // Complex -> double mappers.

@@ -243,6 +243,9 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      {
 			idx++;
 			new_nc--;
+
+			if (idx == num_to_delete)
+			  break;
 		      }
 
 		  if (new_nc > 0)
@@ -253,7 +256,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      idx = 0;
 		      for (int j = 0; j < nc; j++)
 			{
-			  if (j == idx_j.elem (idx))
+			  if (idx < num_to_delete && j == idx_j.elem (idx))
 			    idx++;
 			  else
 			    {
@@ -302,6 +305,9 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      {
 			idx++;
 			new_nr--;
+
+			if (idx == num_to_delete)
+			  break;
 		      }
 
 		  if (new_nr > 0)
@@ -312,7 +318,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 		      idx = 0;
 		      for (int i = 0; i < nr; i++)
 			{
-			  if (i == idx_i.elem (idx))
+			  if (idx < num_to_delete && i == idx_i.elem (idx))
 			    idx++;
 			  else
 			    {

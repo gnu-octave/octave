@@ -1,3 +1,9 @@
+Tue Apr 29 04:39:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>::maybe_delete_elements): Prevent
+	out-of-bounds indexing of the index array.
+	* Array-idx.h (Array<T>::maybe_delete_elements): Likewise.
+
 Fri Mar 28 15:37:09 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.h (x_step_limit): New field.

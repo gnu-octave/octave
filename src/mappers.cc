@@ -303,7 +303,18 @@ see @ref{Linear Algebra}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (finite, 0, xfinite, xfinite, 0, 0, 0, 0.0, 0.0, 0,
-    "finite (X): return 1 for finite elements of X");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} finite (@var{x})\n\
+Return 1 for elements of @var{x} that are NaN values and zero\n\
+otherwise. For example,\n\
+\n\
+@example\n\
+@group\n\
+finite ([13, Inf, NaN])\n\
+     @result{} [ 1, 0, 0 ]\n\
+@end group\n\
+@end example\n\
+@end deftypefn");
 
   DEFUN_MAPPER (fix, 0, 0, 0, fix, 0, fix, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -385,7 +396,18 @@ Return 1 for characters that are decimal digits.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (isinf, 0, xisinf, xisinf, 0, 0, 0, 0.0, 0.0, 0,
-    "isinf (X): return 1 for elements of X infinite");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isinf (@var{x})\n\
+Return 1 for elements of @var{x} that are infinite and zero\n\
+otherwise. For example,\n\
+\n\
+@example\n\
+@group\n\
+isinf ([13, Inf, NaN])\n\
+     @result{} [ 0, 1, 0 ]\n\
+@end group\n\
+@end example\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isgraph, xisgraph, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -400,7 +422,18 @@ Return 1 for characters that are lower case letters.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (isnan, 0, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0,
-    "isnan (X): return 1 where elements of X are NaNs");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} isnan (@var{x})\n\
+Return 1 for elements of @var{x} that are NaN values and zero\n\
+otherwise. For example,\n\
+\n\
+@example\n\
+@group\n\
+isnan ([13, Inf, NaN])\n\
+     @result{} [ 0, 0, 1 ]\n\
+@end group\n\
+@end example\n\
+@end deftypefn");
 
   DEFUN_MAPPER (isprint, xisprint, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\

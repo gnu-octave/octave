@@ -17,11 +17,50 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: tril (x, k)
-##
-## Return the lower triangular part of x above the k-th diagonal.  If
-## the second argument is omitted, k = 0 is assumed.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} tril (@var{a}, @var{k})
+## @deftypefnx {Function File} {} triu (@var{a}, @var{k})
+## Return a new matrix formed by extracting extract the lower (@code{tril})
+## or upper (@code{triu}) triangular part of the matrix @var{a}, and
+## setting all other elements to zero.  The second argument is optional,
+## and specifies how many diagonals above or below the main diagonal should
+## also be set to zero.
+## 
+## The default value of @var{k} is zero, so that @code{triu} and
+## @code{tril} normally include the main diagonal as part of the result
+## matrix.
+## 
+## If the value of @var{k} is negative, additional elements above (for
+## @code{tril}) or below (for @code{triu}) the main diagonal are also
+## selected.
+## 
+## The absolute value of @var{k} must not be greater than the number of
+## sub- or super-diagonals.
+## 
+## For example,
+## 
+## @example
+## @group
+## tril (ones (3), -1)
+##      @result{}  0  0  0
+##          1  0  0
+##          1  1  0
+## @end group
+## @end example
+## 
+## @noindent
+## and
+## 
+## @example
+## @group
+## tril (ones (3), 1)
+##      @result{}  1  1  0
+##          1  1  1
+##          1  1  1
+## @end group
+## @end example
+## @end deftypefn
+
 ## See also: triu, diag
 
 ## Author: jwe

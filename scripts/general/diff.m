@@ -14,14 +14,26 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  diff (x [, k])
-##
-## If x is a vector of length n, diff (x) is the vector of first
-## differences x(2) - x(1), ..., x(n) - x(n-1).
-##
-## If x is a matrix, diff (x) is the matrix of column differences.
-## diff (x, k), where k is a nonnegative integer, returns the k-th
+## -*- texinfo -*-
+## @deftypefn {Function File} {} diff (@var{x}, @var{k})
+## If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the
+## vector of first differences
+## @iftex
+## @tex
+##  $x_2 - x_1, \ldots{}, x_n - x_{n-1}$.
+## @end tex
+## @end iftex
+## @ifinfo
+##  @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).
+## @end ifinfo
+## 
+## If @var{x} is a matrix, @code{diff (@var{x})} is the matrix of column
 ## differences.
+## 
+## The second argument is optional.  If supplied, @code{diff (@var{x},
+## @var{k})}, where @var{k} is a nonnegative integer, returns the
+## @var{k}-th differences.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 2 February 1995

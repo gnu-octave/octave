@@ -17,10 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: fliplr (x)
-##
-## Return x with the columns swapped.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} fliplr (@var{x})
+## Return a copy of @var{x} with the order of the columns reversed.  For
+## example, 
+## 
+## @example
+## @group
+## fliplr ([1, 2; 3, 4])
+##      @result{}  2  1
+##          4  3
+## @end group
+## @end example
+## @end deftypefn
+
 ## See also: flipu, rot90
 
 ## Author: jwe

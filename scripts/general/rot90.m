@@ -17,12 +17,37 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: rot90 (x, k)
-##
-## Rotate the matrix x counterclockwise k*90 degrees.
-##
-## If the second argument is omitted, k is taken to be 1.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} rot90 (@var{x}, @var{n})
+## Return a copy of @var{x} with the elements rotated counterclockwise in
+## 90-degree increments.  The second argument is optional, and specifies
+## how many 90-degree rotations are to be applied (the default value is 1).
+## Negative values of @var{n} rotate the matrix in a clockwise direction.
+## For example,
+## 
+## @example
+## @group
+## rot90 ([1, 2; 3, 4], -1)
+##      @result{}  3  1
+##          4  2
+## @end group
+## @end example
+## 
+## @noindent
+## rotates the given matrix clockwise by 90 degrees.  The following are all
+## equivalent statements:
+## 
+## @example
+## @group
+## rot90 ([1, 2; 3, 4], -1)
+## @equiv{}
+## rot90 ([1, 2; 3, 4], 3)
+## @equiv{}
+## rot90 ([1, 2; 3, 4], 7)
+## @end group
+## @end example
+## @end deftypefn
+
 ## See also: flipud, fliplr
 
 ## Author: jwe

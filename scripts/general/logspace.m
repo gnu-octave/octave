@@ -17,22 +17,49 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: logspace (x1, x2, n)
-##
-## Return a vector of n logarithmically equally spaced points between
-## 10^x1 and 10^x2 inclusive.
-##
-## If the final argument is omitted, n = 50 is assumed.
-##
-## All three arguments must be scalars.
-##
-## Note that if if x2 is pi, the points are between 10^x1 and pi, NOT
-## 10^x1 and 10^pi.
-##
-## Yes, this is pretty stupid, because you could achieve the same
-## result with logspace (x1, log10 (pi)), but Matlab does this, and
-## claims that is useful for signal processing applications.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
+## Similar to @code{linspace} except that the values are logarithmically
+## spaced from
+## @iftex
+## @tex
+## $10^{base}$ to $10^{limit}$.
+## @end tex
+## @end iftex
+## @ifinfo
+## 10^base to 10^limit.
+## @end ifinfo
+## 
+## If @var{limit} is equal to
+## @iftex
+## @tex
+## $\pi$,
+## @end tex
+## @end iftex
+## @ifinfo
+## pi,
+## @end ifinfo
+## the points are between
+## @iftex
+## @tex
+## $10^{base}$ and $\pi$,
+## @end tex
+## @end iftex
+## @ifinfo
+## 10^base and pi,
+## @end ifinfo
+## @emph{not}
+## @iftex
+## @tex
+## $10^{base}$ and $10^{\pi}$,
+## @end tex
+## @end iftex
+## @ifinfo
+## 10^base and 10^pi,
+## @end ifinfo
+## in order to  be compatible with the corresponding @sc{Matlab} function.
+## @end deftypefn
+
 ## See also: linspace
 
 ## Author: jwe

@@ -331,15 +331,30 @@ do_rand (const octave_value_list& args, int nargin)
 }
 
 DEFUN_DLD (rand, args, nargout,
-  "rand              -- generate a random value from a uniform distribution\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} rand (@var{x})\n\
+@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
+@deftypefnx {Loadable Function} {} rand (@code{\"seed\"}, @var{x})\n\
+Return a matrix with random elements uniformly distributed on the\n\
+interval (0, 1).  The arguments are handled the same as the arguments\n\
+for @code{eye}.  In\n\
+addition, you can set the seed for the random number generator using the\n\
+form\n\
 \n\
-rand (N)          -- generate N x N matrix\n\
-rand (size (A))   -- generate matrix the size of A\n\
-rand (N, M)       -- generate N x M matrix\n\
-rand (\"seed\")     -- get current seed\n\
-rand (\"seed\", N)  -- set seed\n\
+@example\n\
+rand (\"seed\", @var{x})\n\
+@end example\n\
 \n\
-See also: randn")
+@noindent\n\
+where @var{x} is a scalar value.  If called as\n\
+\n\
+@example\n\
+rand (\"seed\")\n\
+@end example\n\
+\n\
+@noindent\n\
+@code{rand} returns the current value of the seed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -365,15 +380,29 @@ reset_rand_generator (void *)
 }
 
 DEFUN_DLD (randn, args, nargout,
-  "randn              -- generate a random value from a normal distribution\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} randn (@var{x})\n\
+@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
+@deftypefnx {Loadable Function} {} randn (@code{\"seed\"}, @var{x})\n\
+Return a matrix with normally distributed random elements.  The\n\
+arguments are handled the same as the arguments for @code{eye}.  In\n\
+addition, you can set the seed for the random number generator using the\n\
+form\n\
 \n\
-randn (N)          -- generate N x N matrix\n\
-randn (size (A))   -- generate matrix the size of A\n\
-randn (N, M)       -- generate N x M matrix\n\
-randn (\"seed\")     -- get current seed\n\
-randn (\"seed\", N)  -- set seed\n\
+@example\n\
+randn (\"seed\", @var{x})\n\
+@end example\n\
 \n\
-See also: rand")
+@noindent\n\
+where @var{x} is a scalar value.  If called as\n\
+\n\
+@example\n\
+randn (\"seed\")\n\
+@end example\n\
+\n\
+@noindent\n\
+@code{randn} returns the current value of the seed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

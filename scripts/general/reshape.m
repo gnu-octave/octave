@@ -17,11 +17,39 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: reshape (a, m, n)
-##
-## Form an m x n matrix from the elements of a (taken in Fortran's
-## column major ordering).
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} reshape (@var{a}, @var{m}, @var{n})
+## Return a matrix with @var{m} rows and @var{n} columns whose elements are
+## taken from the matrix @var{a}.  To decide how to order the elements,
+## Octave pretends that the elements of a matrix are stored in column-major
+## order (like Fortran arrays are stored).
+## 
+## For example,
+## 
+## @example
+## @group
+## reshape ([1, 2, 3, 4], 2, 2)
+##      @result{}  1  3
+##          2  4
+## @end group
+## @end example
+## 
+## If the variable @code{do_fortran_indexing} is nonzero, the
+## @code{reshape} function is equivalent to
+## 
+## @example
+## @group
+## retval = zeros (m, n);
+## retval (:) = a;
+## @end group
+## @end example
+## 
+## @noindent
+## but it is somewhat less cryptic to use @code{reshape} instead of the
+## colon operator.  Note that the total number of elements in the original
+## matrix must match the total number of elements in the new matrix.
+## @end deftypefn
+
 ## See also: `:', do_fortran_indexing
 
 ## Author: jwe

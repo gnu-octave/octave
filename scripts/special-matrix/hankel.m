@@ -17,15 +17,34 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: hankel (c, r)
-##
-## Return the Hankel matrix constructed given the first column
-## c, and (optionally) the last row r.
-##
-## If the second argument is omitted, zeros are inserted below the main
-## anti-diagonal.  If the last element of c is not the same as the first
-## element of r, the last element of c is used.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hankel (@var{c}, @var{r})
+## Return the Hankel matrix constructed given the first column @var{c}, and
+## (optionally) the last row @var{r}.  If the last element of @var{c} is
+## not the same as the first element of @var{r}, the last element of
+## @var{c} is used.  If the second argument is omitted, the last row is
+## taken to be the same as the first column.
+## 
+## A Hankel matrix formed from an m-vector @var{c}, and an n-vector
+## @var{r}, has the elements
+## @iftex
+## @tex
+## $$
+## H (i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## @group
+## H (i, j) = c (i+j-1),  i+j-1 <= m;
+## H (i, j) = r (i+j-m),  otherwise
+## @end group
+## @end example
+## @end ifinfo
+## @end deftypefn
+
 ## See also: vander, sylvester_matrix, hilb, invhilb, toeplitz
 
 ## Author: jwe

@@ -27,34 +27,9 @@ whether any or all of the elements of a matrix satisfy some condition.
 The @code{find} function is also useful in determining which elements of
 a matrix meet a specified condition.
 
-@deftypefn {Built-in Function} {} any (@var{x})
-For a vector argument, return 1 if any element of the vector is
-nonzero.
+@DOCSTRING(any)
 
-For a matrix argument, return a row vector of ones and
-zeros with each element indicating whether any of the elements of the
-corresponding column of the matrix are nonzero.  For example,
-
-@example
-@group
-any (eye (2, 4))
-     @result{} [ 1, 1, 0, 0 ]
-@end group
-@end example
-
-To see if any of the elements of a matrix are nonzero, you can use a
-statement like
-
-@example
-any (any (a))
-@end example
-@end deftypefn
-
-@deftypefn {Built-in Function} {} all (@var{x})
-The function @code{all} behaves like the function @code{any}, except
-that it returns true only if all the elements of a vector, or all the
-elements in a column of a matrix, are nonzero.
-@end deftypefn
+@DOCSTRING(all)
 
 Since the comparison operators (@pxref{Comparison Ops}) return matrices
 of ones and zeros, it is easy to test a matrix for many things, not just
@@ -75,250 +50,32 @@ Note that in conditional contexts (like the test clause of @code{if} and
 @code{while} statements) Octave treats the test as if you had typed
 @code{all (all (condition))}.
 
-@deftypefn {Function File} {[@var{err}, @var{y1}, ...] =} common_size (@var{x1}, ...)
-Determine if all input arguments are either scalar or of common
-size.  If so, @var{err} is zero, and @var{yi} is a matrix of the
-common size with all entries equal to @var{xi} if this is a scalar or
-@var{xi} otherwise.  If the inputs cannot be brought to a common size,
-errorcode is 1, and @var{yi} is @var{xi}.  For example,
+@DOCSTRING(common_size)
 
-@example
-@group
-[errorcode, a, b] = common_size ([1 2; 3 4], 5)
-     @result{} errorcode = 0
-     @result{} a = [ 1, 2; 3, 4 ]
-     @result{} b = [ 5, 5; 5, 5 ]
-@end group
-@end example
+@DOCSTRING(diff)
 
-@noindent
-This is useful for implementing functions where arguments can either
-be scalars or of common size.
-@end deftypefn
+@DOCSTRING(isinf)
 
-@deftypefn {Function File} {} diff (@var{x}, @var{k})
-If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the
-vector of first differences
-@iftex
-@tex
- $x_2 - x_1, \ldots{}, x_n - x_{n-1}$.
-@end tex
-@end iftex
-@ifinfo
- @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).
-@end ifinfo
+@DOCSTRING(isnan)
 
-If @var{x} is a matrix, @code{diff (@var{x})} is the matrix of column
-differences.
+@DOCSTRING(finite)
 
-The second argument is optional.  If supplied, @code{diff (@var{x},
-@var{k})}, where @var{k} is a nonnegative integer, returns the
-@var{k}-th differences.
-@end deftypefn
-
-@deftypefn {Mapping Function} {} isinf (@var{x})
-Return 1 for elements of @var{x} that are infinite and zero
-otherwise. For example,
-
-@example
-@group
-isinf ([13, Inf, NaN])
-     @result{} [ 0, 1, 0 ]
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Mapping Function} {} isnan (@var{x})
-Return 1 for elements of @var{x} that are NaN values and zero
-otherwise. For example,
-
-@example
-@group
-isnan ([13, Inf, NaN])
-     @result{} [ 0, 0, 1 ]
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Mapping Function} {} finite (@var{x})
-Return 1 for elements of @var{x} that are NaN values and zero
-otherwise. For example,
-
-@example
-@group
-finite ([13, Inf, NaN])
-     @result{} [ 1, 0, 0 ]
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Loadable Function} {} find (@var{x})
-Return a vector of indices of nonzero elements of a matrix.  To obtain a
-single index for each matrix element, Octave pretends that the columns
-of a matrix form one long vector (like Fortran arrays are stored).  For
-example,
-
-@example
-@group
-find (eye (2))
-     @result{} [ 1; 4 ]
-@end group
-@end example
-
-If two outputs are requested, @code{find} returns the row and column
-indices of nonzero elements of a matrix.  For example,
-
-@example
-@group
-[i, j] = find (2 * eye (2))
-     @result{} i = [ 1; 2 ]
-     @result{} j = [ 1; 2 ]
-@end group
-@end example
-
-If three outputs are requested, @code{find} also returns a vector
-containing the nonzero values.  For example,
-
-@example
-@group
-[i, j, v] = find (3 * eye (2))
-     @result{} i = [ 1; 2 ]
-     @result{} j = [ 1; 2 ]
-     @result{} v = [ 3; 3 ]
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(find)
         
 @node Rearranging Matrices, Special Utility Matrices, Finding Elements and Checking Conditions, Matrix Manipulation
 @section Rearranging Matrices
 
-@deftypefn {Function File} {} fliplr (@var{x})
-Return a copy of @var{x} with the order of the columns reversed.  For
-example, 
+@DOCSTRING(fliplr)
 
-@example
-@group
-fliplr ([1, 2; 3, 4])
-     @result{}  2  1
-         4  3
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(flipud)
 
-@deftypefn {Function File} {} flipud (@var{x})
-Return a copy of @var{x} with the order of the rows reversed.  For
-example,
+@DOCSTRING(rot90)
 
-@example
-@group
-flipud ([1, 2; 3, 4])
-     @result{}  3  4
-         1  2
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(reshape)
 
-@deftypefn {Function File} {} rot90 (@var{x}, @var{n})
-Return a copy of @var{x} with the elements rotated counterclockwise in
-90-degree increments.  The second argument is optional, and specifies
-how many 90-degree rotations are to be applied (the default value is 1).
-Negative values of @var{n} rotate the matrix in a clockwise direction.
-For example,
+@DOCSTRING(shift)
 
-@example
-@group
-rot90 ([1, 2; 3, 4], -1)
-     @result{}  3  1
-         4  2
-@end group
-@end example
-
-@noindent
-rotates the given matrix clockwise by 90 degrees.  The following are all
-equivalent statements:
-
-@example
-@group
-rot90 ([1, 2; 3, 4], -1)
-@equiv{}
-rot90 ([1, 2; 3, 4], 3)
-@equiv{}
-rot90 ([1, 2; 3, 4], 7)
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} reshape (@var{a}, @var{m}, @var{n})
-Return a matrix with @var{m} rows and @var{n} columns whose elements are
-taken from the matrix @var{a}.  To decide how to order the elements,
-Octave pretends that the elements of a matrix are stored in column-major
-order (like Fortran arrays are stored).
-
-For example,
-
-@example
-@group
-reshape ([1, 2, 3, 4], 2, 2)
-     @result{}  1  3
-         2  4
-@end group
-@end example
-
-If the variable @code{do_fortran_indexing} is nonzero, the
-@code{reshape} function is equivalent to
-
-@example
-@group
-retval = zeros (m, n);
-retval (:) = a;
-@end group
-@end example
-
-@noindent
-but it is somewhat less cryptic to use @code{reshape} instead of the
-colon operator.  Note that the total number of elements in the original
-matrix must match the total number of elements in the new matrix.
-@end deftypefn
-
-@deftypefn {Function File} {} shift (@var{x}, @var{b})
-If @var{x} is a vector, perform a circular shift of length @var{b} of
-the elements of @var{x}.
-
-If @var{x} is a matrix, do the same for each column of @var{x}.
-@end deftypefn
-
-@deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})
-Return a copy of @var{x} with the elements elements arranged in
-increasing order.  For matrices, @code{sort} orders the elements in each
-column.
-
-For example,
-
-@example
-@group
-sort ([1, 2; 2, 3; 3, 1])
-     @result{}  1  1
-         2  2
-         3  3
-@end group
-@end example
-
-The @code{sort} function may also be used to produce a matrix
-containing the original row indices of the elements in the sorted
-matrix.  For example,
-
-@example
-@group
-[s, i] = sort ([1, 2; 2, 3; 3, 1])
-     @result{} s = 1  1
-            2  2
-            3  3
-     @result{} i = 1  3
-            2  1
-            3  2
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(sort)
 
 Since the @code{sort} function does not allow sort keys to be specified,
 it can't be used to order the rows of a matrix according to the values
@@ -341,162 +98,24 @@ a (i, :)
 @end group
 @end example
 
-@deftypefn {Function File} {} tril (@var{a}, @var{k})
-@deftypefnx {Function File} {} triu (@var{a}, @var{k})
-Return a new matrix formed by extracting extract the lower (@code{tril})
-or upper (@code{triu}) triangular part of the matrix @var{a}, and
-setting all other elements to zero.  The second argument is optional,
-and specifies how many diagonals above or below the main diagonal should
-also be set to zero.
+@DOCSTRING(tril)
 
-The default value of @var{k} is zero, so that @code{triu} and
-@code{tril} normally include the main diagonal as part of the result
-matrix.
+@DOCSTRING(vec)
 
-If the value of @var{k} is negative, additional elements above (for
-@code{tril}) or below (for @code{triu}) the main diagonal are also
-selected.
-
-The absolute value of @var{k} must not be greater than the number of
-sub- or super-diagonals.
-
-For example,
-
-@example
-@group
-tril (ones (3), -1)
-     @result{}  0  0  0
-         1  0  0
-         1  1  0
-@end group
-@end example
-
-@noindent
-and
-
-@example
-@group
-tril (ones (3), 1)
-     @result{}  1  1  0
-         1  1  1
-         1  1  1
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} vec (@var{x})
-Return the vector obtained by stacking the columns of the matrix @var{x}
-one above the other.
-@end deftypefn
-
-@deftypefn {Function File} {} vech (@var{x})
-Return the vector obtained by eliminating all supradiagonal elements of
-the square matrix @var{x} and stacking the result one column above the
-other.
-@end deftypefn
+@DOCSTRING(vech)
 
 @node Special Utility Matrices, Famous Matrices, Rearranging Matrices, Matrix Manipulation
 @section Special Utility Matrices
 
-@deftypefn {Built-in Function} {} eye (@var{x})
-@deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})
-Return an identity matrix.  If invoked with a single scalar argument,
-@code{eye} returns a square matrix with the dimension specified.  If you
-supply two scalar arguments, @code{eye} takes them to be the number of
-rows and columns.  If given a vector with two elements, @code{eye} uses
-the values of the elements as the number of rows and columns,
-respectively.  For example,
+@DOCSTRING(eye)
 
-@example
-@group
-eye (3)
-     @result{}  1  0  0
-         0  1  0
-         0  0  1
-@end group
-@end example
+@DOCSTRING(ones)
 
-The following expressions all produce the same result:
+@DOCSTRING(zeros)
 
-@example
-@group
-eye (2)
-@equiv{}
-eye (2, 2)
-@equiv{}
-eye (size ([1, 2; 3, 4])
-@end group
-@end example
+@DOCSTRING(rand)
 
-For compatibility with @sc{Matlab}, calling @code{eye} with no arguments
-is equivalent to calling it with an argument of 1.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} ones (@var{x})
-@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})
-Return a matrix whose elements are all 1.  The arguments are handled
-the same as the arguments for @code{eye}.
-
-If you need to create a matrix whose values are all the same, you should
-use an expression like
-
-@example
-val_matrix = val * ones (n, m)
-@end example
-@end deftypefn
-
-@deftypefn {Built-in Function} {} zeros (@var{x})
-@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})
-Return a matrix whose elements are all 0.  The arguments are handled
-the same as the arguments for @code{eye}.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} rand (@var{x})
-@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})
-@deftypefnx {Loadable Function} {} rand (@code{"seed"}, @var{x})
-Return a matrix with random elements uniformly distributed on the
-interval (0, 1).  The arguments are handled the same as the arguments
-for @code{eye}.  In
-addition, you can set the seed for the random number generator using the
-form
-
-@example
-rand ("seed", @var{x})
-@end example
-
-@noindent
-where @var{x} is a scalar value.  If called as
-
-@example
-rand ("seed")
-@end example
-
-@noindent
-@code{rand} returns the current value of the seed.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} randn (@var{x})
-@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})
-@deftypefnx {Loadable Function} {} randn (@code{"seed"}, @var{x})
-Return a matrix with normally distributed random elements.  The
-arguments are handled the same as the arguments for @code{eye}.  In
-addition, you can set the seed for the random number generator using the
-form
-
-@example
-randn ("seed", @var{x})
-@end example
-
-@noindent
-where @var{x} is a scalar value.  If called as
-
-@example
-randn ("seed")
-@end example
-
-@noindent
-@code{randn} returns the current value of the seed.
-@end deftypefn
+@DOCSTRING(randn)
 
 The @code{rand} and @code{randn} functions use separate generators.
 This ensures that
@@ -544,23 +163,7 @@ compiled by Barry W. Brown and James Lovato of the Department of
 Biomathematics at The University of Texas, M.D. Anderson Cancer Center,
 Houston, TX 77030.
 
-@deftypefn {Built-in Function} {} diag (@var{v}, @var{k})
-Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The
-second argument is optional.  If it is positive, the vector is placed on
-the @var{k}-th super-diagonal.  If it is negative, it is placed on the
-@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the
-vector is placed on the main diagonal.  For example,
-
-@example
-@group
-diag ([1, 2, 3], 1)
-     @result{}  0  1  0  0
-         0  0  2  0
-         0  0  0  3
-         0  0  0  0
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(diag)
 
 @c XXX FIXME XXX -- is this really worth documenting?
 @c
@@ -580,213 +183,25 @@ The functions @code{linspace} and @code{logspace} make it very easy to
 create vectors with evenly or logarithmically spaced elements.
 @xref{Ranges}.
 
-@deftypefn {Function File} {} linspace (@var{base}, @var{limit}, @var{n})
-Return a row vector with @var{n} linearly spaced elements between
-@var{base} and @var{limit}.  The number of elements, @var{n}, must be
-greater than 1.  The @var{base} and @var{limit} are always included in
-the range.  If @var{base} is greater than @var{limit}, the elements are
-stored in decreasing order.  If the number of points is not specified, a
-value of 100 is used.
+@DOCSTRING(linspace)
 
-The @code{linspace} function always returns a row vector, regardless of
-the value of @code{prefer_column_vectors}.
-@end deftypefn
+@DOCSTRING(logspace)
 
-@deftypefn {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
-Similar to @code{linspace} except that the values are logarithmically
-spaced from
-@iftex
-@tex
-$10^{base}$ to $10^{limit}$.
-@end tex
-@end iftex
-@ifinfo
-10^base to 10^limit.
-@end ifinfo
-
-If @var{limit} is equal to
-@iftex
-@tex
-$\pi$,
-@end tex
-@end iftex
-@ifinfo
-pi,
-@end ifinfo
-the points are between
-@iftex
-@tex
-$10^{base}$ and $\pi$,
-@end tex
-@end iftex
-@ifinfo
-10^base and pi,
-@end ifinfo
-@emph{not}
-@iftex
-@tex
-$10^{base}$ and $10^{\pi}$,
-@end tex
-@end iftex
-@ifinfo
-10^base and 10^pi,
-@end ifinfo
-in order to  be compatible with the corresponding @sc{Matlab} function.
-@end deftypefn
-
-@defvr {Built-in Variable} treat_neg_dim_as_zero
-If the value of @code{treat_neg_dim_as_zero} is nonzero, expressions
-like
-
-@example
-eye (-1)
-@end example
-
-@noindent
-produce an empty matrix (i.e., row and column dimensions are zero).
-Otherwise, an error message is printed and control is returned to the
-top level.  The default value is 0.
-@end defvr
+@DOCSTRING(treat_neg_dim_as_zero)
 
 @node Famous Matrices,  , Special Utility Matrices, Matrix Manipulation
 @section Famous Matrices
 
 The following functions return famous matrix forms.
 
-@deftypefn {Function File} {} hankel (@var{c}, @var{r})
-Return the Hankel matrix constructed given the first column @var{c}, and
-(optionally) the last row @var{r}.  If the last element of @var{c} is
-not the same as the first element of @var{r}, the last element of
-@var{c} is used.  If the second argument is omitted, the last row is
-taken to be the same as the first column.
+@DOCSTRING(hankel)
 
-A Hankel matrix formed from an m-vector @var{c}, and an n-vector
-@var{r}, has the elements
-@iftex
-@tex
-$$
-H (i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
-$$
-@end tex
-@end iftex
-@ifinfo
+@DOCSTRING(hilb)
 
-@example
-@group
-H (i, j) = c (i+j-1),  i+j-1 <= m;
-H (i, j) = r (i+j-m),  otherwise
-@end group
-@end example
-@end ifinfo
-@end deftypefn
+@DOCSTRING(invhilb)
 
-@deftypefn {Function File} {} hilb (@var{n})
-Return the Hilbert matrix of order @var{n}.  The
-@iftex
-@tex
-$i,\,j$
-@end tex
-@end iftex
-@ifinfo
-i, j
-@end ifinfo
-element of a Hilbert matrix is defined as
-@iftex
-@tex
-$$
-H (i, j) = {1 \over (i + j - 1)}
-$$
-@end tex
-@end iftex
-@ifinfo
+@DOCSTRING(sylvester_matrix)
 
-@example
-H (i, j) = 1 / (i + j - 1)
-@end example
-@end ifinfo
-@end deftypefn
+@DOCSTRING(toeplitz)
 
-@deftypefn {Function File} {} invhilb (@var{n})
-Return the inverse of a Hilbert matrix of order @var{n}.  This is exact.
-Compare with the numerical calculation of @code{inverse (hilb (n))},
-which suffers from the ill-conditioning of the Hilbert matrix, and the
-finite precision of your computer's floating point arithmetic.
-@end deftypefn
-
-@deftypefn {Function File} {} sylvester_matrix (@var{k})
-Return the Sylvester matrix of order
-@iftex
-@tex
-$n = 2^k$.
-@end tex
-@end iftex
-@ifinfo
-n = 2^k.
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Function File} {} toeplitz (@var{c}, @var{r})
-Return the Toeplitz matrix constructed given the first column @var{c},
-and (optionally) the first row @var{r}.  If the first element of @var{c}
-is not the same as the first element of @var{r}, the first element of
-@var{c} is used.  If the second argument is omitted, the first row is
-taken to be the same as the first column.
-
-A square Toeplitz matrix has the form
-@iftex
-@tex
-$$
-\left[\matrix{c_0    & r_1     & r_2      & \ldots & r_n\cr
-              c_1    & c_0     & r_1      &        & c_{n-1}\cr
-              c_2    & c_1     & c_0      &        & c_{n-2}\cr
-              \vdots &         &          &        & \vdots\cr
-              c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right].
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-@group
-c(0)  r(1)   r(2)  ...  r(n)
-c(1)  c(0)   r(1)      r(n-1)
-c(2)  c(1)   c(0)      r(n-2)
- .                       .
- .                       .
- .                       .
-
-c(n) c(n-1) c(n-2) ...  c(0)
-@end group
-@end example
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Function File} {} vander (@var{c})
-Return the Vandermonde matrix whose next to last column is @var{c}.
-
-A Vandermonde matrix has the form
-@iftex
-@tex
-$$
-\left[\matrix{c_0^n  & \ldots & c_0^2  & c_0    & 1\cr
-              c_1^n  & \ldots & c_1^2  & c_1    & 1\cr
-              \vdots &        & \vdots & \vdots & \vdots\cr
-              c_n^n  & \ldots & c_n^2  & c_n    & 1}\right].
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-@group
-c(0)^n ... c(0)^2  c(0)  1
-c(1)^n ... c(1)^2  c(1)  1
- .           .      .    .
- .           .      .    .
- .           .      .    .
-                 
-c(n)^n ... c(n)^2  c(n)  1
-@end group
-@end example
-@end ifinfo
-@end deftypefn
+@DOCSTRING(vander)

@@ -17,15 +17,43 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: toeplitz (c, r)
-##
-## Return the Toeplitz matrix constructed given the first column
-## c, and (optionally) the first row r.
-##
-## If the second argument is omitted, the first row is taken to be the
-## same as the first column.  If the first element of c is not the same
-## as the first element of r, the first element of c is used.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} toeplitz (@var{c}, @var{r})
+## Return the Toeplitz matrix constructed given the first column @var{c},
+## and (optionally) the first row @var{r}.  If the first element of @var{c}
+## is not the same as the first element of @var{r}, the first element of
+## @var{c} is used.  If the second argument is omitted, the first row is
+## taken to be the same as the first column.
+## 
+## A square Toeplitz matrix has the form
+## @iftex
+## @tex
+## $$
+## \left[\matrix{c_0    & r_1     & r_2      & \ldots & r_n\cr
+##               c_1    & c_0     & r_1      &        & c_{n-1}\cr
+##               c_2    & c_1     & c_0      &        & c_{n-2}\cr
+##               \vdots &         &          &        & \vdots\cr
+##               c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right].
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## @group
+## c(0)  r(1)   r(2)  ...  r(n)
+## c(1)  c(0)   r(1)      r(n-1)
+## c(2)  c(1)   c(0)      r(n-2)
+##  .                       .
+##  .                       .
+##  .                       .
+## 
+## c(n) c(n-1) c(n-2) ...  c(0)
+## @end group
+## @end example
+## @end ifinfo
+## @end deftypefn
+
 ## See also: hankel, vander, sylvester_matrix, hilb, invhib
 
 ## Author: jwe

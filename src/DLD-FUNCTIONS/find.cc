@@ -157,7 +157,43 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 }
 
 DEFUN_DLD (find, args, nargout,
-  "find (X) or [I, J, V] = find (X): Return indices of nonzero elements")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} find (@var{x})\n\
+Return a vector of indices of nonzero elements of a matrix.  To obtain a\n\
+single index for each matrix element, Octave pretends that the columns\n\
+of a matrix form one long vector (like Fortran arrays are stored).  For\n\
+example,\n\
+\n\
+@example\n\
+@group\n\
+find (eye (2))\n\
+     @result{} [ 1; 4 ]\n\
+@end group\n\
+@end example\n\
+\n\
+If two outputs are requested, @code{find} returns the row and column\n\
+indices of nonzero elements of a matrix.  For example,\n\
+\n\
+@example\n\
+@group\n\
+[i, j] = find (2 * eye (2))\n\
+     @result{} i = [ 1; 2 ]\n\
+     @result{} j = [ 1; 2 ]\n\
+@end group\n\
+@end example\n\
+\n\
+If three outputs are requested, @code{find} also returns a vector\n\
+containing the nonzero values.  For example,\n\
+\n\
+@example\n\
+@group\n\
+[i, j, v] = find (3 * eye (2))\n\
+     @result{} i = [ 1; 2 ]\n\
+     @result{} j = [ 1; 2 ]\n\
+     @result{} v = [ 3; 3 ]\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

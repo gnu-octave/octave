@@ -14,11 +14,12 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  vec (x)
-##
-## Returns vec (x), the vector obtained by stacking the columns of x
+## -*- texinfo -*-
+## @deftypefn {Function File} {} vec (@var{x})
+## Return the vector obtained by stacking the columns of the matrix @var{x}
 ## one above the other.
-## 
+## @end deftypefn
+
 ## See Magnus and Neudecker (1988), Matrix differential calculus with
 ## applications in statistics and econometrics.
 

@@ -17,10 +17,19 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: sylvester_matrix (k)
-##
-## Return the Sylvester matrix of order n = 2^k.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sylvester_matrix (@var{k})
+## Return the Sylvester matrix of order
+## @iftex
+## @tex
+## $n = 2^k$.
+## @end tex
+## @end iftex
+## @ifinfo
+## n = 2^k.
+## @end ifinfo
+## @end deftypefn
+
 ## See also: hankel, vander, hilb, invhilb, toeplitz
 
 ## Author: jwe

@@ -1,3 +1,12 @@
+1999-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (Vtreat_neg_dim_as_zero): Texinfoize doc string.
+	* DLD-FUNCTIONS/find.cc (Ffind): Ditto.
+	* DLD-FUNCTIONS/rand.cc (Frand, Frandn): Ditto.
+	* DLD-FUNCTIONS/sort.cc (Fsort): Ditto.
+	* mappers.cc (Fisinf, Fisnan, Ffinite): Ditto.
+	* data.cc (Fall, Fany, Fdiag, Fones, Fzeros, Feye, Flinspace): Ditto.
+
 1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/fft.cc (Ffft): Texinfoize doc string.

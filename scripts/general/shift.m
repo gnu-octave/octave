@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage: y = shift (x, b)
-##
-## If x is a vector, perform a circular shift of length b of the
-## elements of x.
-##
-## If x is a matrix, do the same for each column of x.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} shift (@var{x}, @var{b})
+## If @var{x} is a vector, perform a circular shift of length @var{b} of
+## the elements of @var{x}.
+## 
+## If @var{x} is a matrix, do the same for each column of @var{x}.
+## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 14 September 1994

@@ -17,10 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: flipud (x)
-##
-## Return x with the rows swapped.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} flipud (@var{x})
+## Return a copy of @var{x} with the order of the rows reversed.  For
+## example,
+## 
+## @example
+## @group
+## flipud ([1, 2; 3, 4])
+##      @result{}  3  4
+##          1  2
+## @end group
+## @end example
+## @end deftypefn
+
 ## See also: fliplr, rot90
 
 ## Author: jwe

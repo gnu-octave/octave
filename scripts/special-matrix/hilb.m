@@ -17,13 +17,33 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: hilb (n)
-##
-## Return the Hilbert matrix of order n.  The i, j element of a Hilbert
-## matrix is defined as
-##
-##  H (i, j) = 1 / (i + j - 1);
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} hilb (@var{n})
+## Return the Hilbert matrix of order @var{n}.  The
+## @iftex
+## @tex
+## $i,\,j$
+## @end tex
+## @end iftex
+## @ifinfo
+## i, j
+## @end ifinfo
+## element of a Hilbert matrix is defined as
+## @iftex
+## @tex
+## $$
+## H (i, j) = {1 \over (i + j - 1)}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## H (i, j) = 1 / (i + j - 1)
+## @end example
+## @end ifinfo
+## @end deftypefn
+
 ## See also: hankel, vander, sylvester_matrix, invhilb, toeplitz
 
 ## Author: jwe

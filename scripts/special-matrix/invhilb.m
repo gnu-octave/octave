@@ -17,11 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: invhilb (n)
-##
-## Return the inverse of a Hilbert matrix of order n.  This is slow but
-## exact.  Compare with inv (hilb (n)).
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} invhilb (@var{n})
+## Return the inverse of a Hilbert matrix of order @var{n}.  This is exact.
+## Compare with the numerical calculation of @code{inverse (hilb (n))},
+## which suffers from the ill-conditioning of the Hilbert matrix, and the
+## finite precision of your computer's floating point arithmetic.
+## @end deftypefn
+
 ## See also: hankel, vander, sylvester_matrix, hilb, toeplitz
 
 ## Author: jwe

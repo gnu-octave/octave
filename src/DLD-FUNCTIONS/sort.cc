@@ -308,9 +308,39 @@ mx_sort (ComplexRowVector& cv)
 }
 
 DEFUN_DLD (sort, args, nargout,
-  "[S, I] = sort (X)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
+Return a copy of @var{x} with the elements elements arranged in\n\
+increasing order.  For matrices, @code{sort} orders the elements in each\n\
+column.\n\
 \n\
-sort the columns of X, optionally return sort index")
+For example,\n\
+\n\
+@example\n\
+@group\n\
+sort ([1, 2; 2, 3; 3, 1])\n\
+     @result{}  1  1\n\
+         2  2\n\
+         3  3\n\
+@end group\n\
+@end example\n\
+\n\
+The @code{sort} function may also be used to produce a matrix\n\
+containing the original row indices of the elements in the sorted\n\
+matrix.  For example,\n\
+\n\
+@example\n\
+@group\n\
+[s, i] = sort ([1, 2; 2, 3; 3, 1])\n\
+     @result{} s = 1  1\n\
+            2  2\n\
+            3  3\n\
+     @result{} i = 1  3\n\
+            2  1\n\
+            3  2\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -17,10 +17,37 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: vander (c)
-##
-## Return the Vandermonde matrix whose next to last column is c.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} vander (@var{c})
+## Return the Vandermonde matrix whose next to last column is @var{c}.
+## 
+## A Vandermonde matrix has the form
+## @iftex
+## @tex
+## $$
+## \left[\matrix{c_0^n  & \ldots & c_0^2  & c_0    & 1\cr
+##               c_1^n  & \ldots & c_1^2  & c_1    & 1\cr
+##               \vdots &        & \vdots & \vdots & \vdots\cr
+##               c_n^n  & \ldots & c_n^2  & c_n    & 1}\right].
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## @group
+## c(0)^n ... c(0)^2  c(0)  1
+## c(1)^n ... c(1)^2  c(1)  1
+##  .           .      .    .
+##  .           .      .    .
+##  .           .      .    .
+##                  
+## c(n)^n ... c(n)^2  c(n)  1
+## @end group
+## @end example
+## @end ifinfo
+## @end deftypefn
+
 ## See also: hankel, sylvester_matrix, hilb, invhilb, toeplitz
 
 ## Author: jwe

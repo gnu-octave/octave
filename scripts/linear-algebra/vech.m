@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage: vech (x)
-##
-## For square x, returns the vector vech (x) which is obtained from x
-## by eliminating all supradiagonal elements and stacking the result
-## one column above the other.
-## 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} vech (@var{x})
+## Return the vector obtained by eliminating all supradiagonal elements of
+## the square matrix @var{x} and stacking the result one column above the
+## other.
+## @end deftypefn
+
 ## See Magnus and Neudecker (1988), Matrix differential calculus with
 ## applications in statistics and econometrics.
 

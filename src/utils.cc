@@ -680,7 +680,20 @@ void
 symbols_of_utils (void)
 {
   DEFVAR (treat_neg_dim_as_zero, 0.0, treat_neg_dim_as_zero,
-    "convert negative dimensions to zero");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} treat_neg_dim_as_zero\n\
+If the value of @code{treat_neg_dim_as_zero} is nonzero, expressions\n\
+like\n\
+\n\
+@example\n\
+eye (-1)\n\
+@end example\n\
+\n\
+@noindent\n\
+produce an empty matrix (i.e., row and column dimensions are zero).\n\
+Otherwise, an error message is printed and control is returned to the\n\
+top level.  The default value is 0.\n\
+@end defvr");
 
 }
 

@@ -50,7 +50,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 DEFUN (all, args, ,
-  "all (X): are all elements of X nonzero?")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} all (@var{x})\n\
+The function @code{all} behaves like the function @code{any}, except\n\
+that it returns true only if all the elements of a vector, or all the\n\
+elements in a column of a matrix, are nonzero.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -65,7 +70,29 @@ DEFUN (all, args, ,
 }
 
 DEFUN (any, args, ,
-  "any (X): are any elements of X nonzero?")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} any (@var{x})\n\
+For a vector argument, return 1 if any element of the vector is\n\
+nonzero.\n\
+\n\
+For a matrix argument, return a row vector of ones and\n\
+zeros with each element indicating whether any of the elements of the\n\
+corresponding column of the matrix are nonzero.  For example,\n\
+\n\
+@example\n\
+@group\n\
+any (eye (2, 4))\n\
+     @result{} [ 1, 1, 0, 0 ]\n\
+@end group\n\
+@end example\n\
+\n\
+To see if any of the elements of a matrix are nonzero, you can use a\n\
+statement like\n\
+\n\
+@example\n\
+any (any (a))\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -494,7 +521,24 @@ make_diag (const octave_value& a, const octave_value& b)
 }
 
 DEFUN (diag, args, ,
-  "diag (X [,k]): form/extract diagonals")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} diag (@var{v}, @var{k})\n\
+Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
+second argument is optional.  If it is positive, the vector is placed on\n\
+the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
+@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the\n\
+vector is placed on the main diagonal.  For example,\n\
+\n\
+@example\n\
+@group\n\
+diag ([1, 2, 3], 1)\n\
+     @result{}  0  1  0  0\n\
+         0  0  2  0\n\
+         0  0  0  3\n\
+         0  0  0  0\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -933,13 +977,30 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 }
 
 DEFUN (ones, args, ,
-  "ones (N), ones (N, M), ones (X): create a matrix of all ones")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ones (@var{x})\n\
+@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
+Return a matrix whose elements are all 1.  The arguments are handled\n\
+the same as the arguments for @code{eye}.\n\
+\n\
+If you need to create a matrix whose values are all the same, you should\n\
+use an expression like\n\
+\n\
+@example\n\
+val_matrix = val * ones (n, m)\n\
+@end example\n\
+@end deftypefn")
 {
   return fill_matrix (args, 1.0, "ones");
 }
 
 DEFUN (zeros, args, ,
-  "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} zeros (@var{x})\n\
+@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
+Return a matrix whose elements are all 0.  The arguments are handled\n\
+the same as the arguments for @code{eye}.\n\
+@end deftypefn")
 {
   return fill_matrix (args, 0.0, "zeros");
 }
@@ -960,7 +1021,40 @@ identity_matrix (int nr, int nc)
 }
 
 DEFUN (eye, args, ,
-  "eye (N), eye (N, M), eye (X): create an identity matrix")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} eye (@var{x})\n\
+@deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})\n\
+Return an identity matrix.  If invoked with a single scalar argument,\n\
+@code{eye} returns a square matrix with the dimension specified.  If you\n\
+supply two scalar arguments, @code{eye} takes them to be the number of\n\
+rows and columns.  If given a vector with two elements, @code{eye} uses\n\
+the values of the elements as the number of rows and columns,\n\
+respectively.  For example,\n\
+\n\
+@example\n\
+@group\n\
+eye (3)\n\
+     @result{}  1  0  0\n\
+         0  1  0\n\
+         0  0  1\n\
+@end group\n\
+@end example\n\
+\n\
+The following expressions all produce the same result:\n\
+\n\
+@example\n\
+@group\n\
+eye (2)\n\
+@equiv{}\n\
+eye (2, 2)\n\
+@equiv{}\n\
+eye (size ([1, 2; 3, 4])\n\
+@end group\n\
+@end example\n\
+\n\
+For compatibility with @sc{Matlab}, calling @code{eye} with no arguments\n\
+is equivalent to calling it with an argument of 1.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -1001,16 +1095,18 @@ DEFUN (eye, args, ,
 }
 
 DEFUN (linspace, args, ,
-  "usage: linspace (x1, x2, n)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
+Return a row vector with @var{n} linearly spaced elements between\n\
+@var{base} and @var{limit}.  The number of elements, @var{n}, must be\n\
+greater than 1.  The @var{base} and @var{limit} are always included in\n\
+the range.  If @var{base} is greater than @var{limit}, the elements are\n\
+stored in decreasing order.  If the number of points is not specified, a\n\
+value of 100 is used.\n\
 \n\
-Return a vector of n equally spaced points between x1 and x2\n\
-inclusive.\n\
-\n\
-If the final argument is omitted, n = 100 is assumed.\n\
-\n\
-All three arguments must be scalars.\n\
-\n\
-See also: logspace")
+The @code{linspace} function always returns a row vector, regardless of\n\
+the value of @code{prefer_column_vectors}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

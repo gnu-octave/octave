@@ -1,3 +1,24 @@
+1999-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* special-matrix/hankel.m: Texinfoize doc string.
+	* special-matrix/hilb.m: Ditto.
+	* special-matrix/invhilb.m: Ditto.
+	* special-matrix/sylvester_matrix.m: Ditto.
+	* special-matrix/toeplitz.m: Ditto.
+	* special-matrix/vander.m: Ditto.
+	* linear-algebra/vec.m: Ditto.
+	* linear-algebra/vech.m: Ditto.
+	* general/common_size.m: Ditto.
+	* general/diff.m: Ditto.
+	* general/fliplr.m: Ditto.
+	* general/flipud.m: Ditto.
+	* general/rot90.m: Ditto.
+	* general/reshape.m: Ditto.
+	* general/shift.m: Ditto.
+	* general/tril.m: Ditto.
+	* general/triu.m: Ditto.
+	* general/logspace.m: Ditto.
+
 1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/base/mean: Texinfoize doc string.

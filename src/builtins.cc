@@ -53,99 +53,99 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 static builtin_mapper_functions mapper_functions[] =
 {
-  { "abs", 2, 1, 0, fabs, abs, NULL,
+  { "abs", 0, 0.0, 0.0, fabs, abs, NULL,
     "abs (X): compute abs (X) for each element of X", },
 
-  { "acos", 2, 1, 0, acos, NULL, acos,
+  { "acos", 1, -1.0, 1.0, acos, NULL, acos,
     "acos (X): compute acos (X) for each element of X", },
 
-  { "acosh", 2, 1, 0, acosh, NULL, acosh,
+  { "acosh", 1, 1.0, DBL_MAX, acosh, NULL, acosh,
     "acosh (X): compute acosh (X) for each element of X", },
 
-  { "angle", 2, 1, 0, arg, arg, NULL,
+  { "angle", 0, 0.0, 0.0, arg, arg, NULL,
     "angle (X): compute arg (X) for each element of X", },
 
-  { "arg", 2, 1, 0, arg, arg, NULL,
+  { "arg", 0, 0.0, 0.0, arg, arg, NULL,
     "arg (X): compute arg (X) for each element of X", },
 
-  { "asin", 2, 1, 0, asin, NULL, asin,
+  { "asin", 1, -1.0, 1.0, asin, NULL, asin,
     "asin (X): compute asin (X) for each element of X", },
 
-  { "asinh", 2, 1, 0, asinh, NULL, asinh,
+  { "asinh", 0, 0.0, 0.0, asinh, NULL, asinh,
     "asinh (X): compute asinh (X) for each element of X", },
 
-  { "atan", 2, 1, 0, atan, NULL, atan,
+  { "atan", 0, 0.0, 0.0, atan, NULL, atan,
     "atan (X): compute atan (X) for each element of X", },
 
-  { "atanh", 2, 1, 0, atanh, NULL, atanh,
+  { "atanh", 1, -1.0, 1.0, atanh, NULL, atanh,
     "atanh (X): compute atanh (X) for each element of X", },
 
-  { "ceil", 2, 1, 0, ceil, NULL, ceil,
+  { "ceil", 0, 0.0, 0.0, ceil, NULL, ceil,
     "ceil (X): round elements of X toward +Inf", },
 
-  { "conj", 2, 1, 0, conj, NULL, conj,
+  { "conj", 0, 0.0, 0.0, conj, NULL, conj,
     "conj (X): compute complex conjugate for each element of X", },
 
-  { "cos", 2, 1, 0, cos, NULL, cos,
+  { "cos", 0, 0.0, 0.0, cos, NULL, cos,
     "cos (X): compute cos (X) for each element of X", },
 
-  { "cosh", 2, 1, 0, cosh, NULL, cosh,
+  { "cosh", 0, 0.0, 0.0, cosh, NULL, cosh,
     "cosh (X): compute cosh (X) for each element of X", },
 
-  { "exp", 2, 1, 0, exp, NULL, exp,
+  { "exp", 0, 0.0, 0.0, exp, NULL, exp,
     "exp (X): compute exp (X) for each element of X", },
 
-  { "finite", 2, 1, 0, xfinite, xfinite, NULL,
+  { "finite", 0, 0.0, 0.0, xfinite, xfinite, NULL,
     "finite (X): return 1 for finite elements of X", },
 
-  { "fix", 2, 1, 0, fix, NULL, fix,
+  { "fix", 0, 0.0, 0.0, fix, NULL, fix,
     "fix (X): round elements of X toward zero", },
 
-  { "floor", 2, 1, 0, floor, NULL, floor,
+  { "floor", 0, 0.0, 0.0, floor, NULL, floor,
     "floor (X): round elements of X toward -Inf", },
 
-  { "isinf", 2, 1, 0, xisinf, xisinf, NULL,
+  { "isinf", 0, 0.0, 0.0, xisinf, xisinf, NULL,
     "isinf (X): return 1 for elements of X infinite", },
 
-  { "imag", 2, 1, 0, imag, imag, NULL,
+  { "imag", 0, 0.0, 0.0, imag, imag, NULL,
     "imag (X): return imaginary part for each elements of X", },
 
 #ifdef HAVE_ISNAN
-  { "isnan", 2, 1, 0, xisnan, xisnan, NULL,
+  { "isnan", 0, 0.0, 0.0, xisnan, xisnan, NULL,
     "isnan (X): return 1 where elements of X are NaNs", },
 #endif
 
-  { "log", 2, 1, 1, log, NULL, log,
+  { "log", 1, 0.0, DBL_MAX, log, NULL, log,
     "log (X): compute log (X) for each element of X", },
 
-  { "log10", 2, 1, 1, log10, NULL, log10,
+  { "log10", 1, 0.0, DBL_MAX, log10, NULL, log10,
     "log10 (X): compute log10 (X) for each element of X", },
 
-  { "real", 2, 1, 0, real, real, NULL,
+  { "real", 0, 0.0, 0.0, real, real, NULL,
     "real (X): return real part for each element of X", },
 
-  { "round", 2, 1, 0, round, NULL, round,
+  { "round", 0, 0.0, 0.0, round, NULL, round,
     "round (X): round elements of X to nearest integer", },
 
-  { "sign", 2, 1, 0, signum, NULL, signum,
+  { "sign", 0, 0.0, 0.0, signum, NULL, signum,
     "sign (X): apply signum function to elements of X", },
 
-  { "sin", 2, 1, 0, sin, NULL, sin,
+  { "sin", 0, 0.0, 0.0, sin, NULL, sin,
     "sin (X): compute sin (X) for each element of X", },
 
-  { "sinh", 2, 1, 0, sinh, NULL, sinh,
+  { "sinh", 0, 0.0, 0.0, sinh, NULL, sinh,
     "sinh (X): compute sinh (X) for each element of X", },
 
-  { "sqrt", 2, 1, 1, sqrt, NULL, sqrt,
+  { "sqrt", 1, 0.0, DBL_MAX, sqrt, NULL, sqrt,
     "sqrt (X): compute sqrt (X) for each element of X", },
 
-  { "tan", 2, 1, 0, tan, NULL, tan,
+  { "tan", 0, 0.0, 0.0, tan, NULL, tan,
     "tan (X): compute tan (X) for each element of X", },
 
-  { "tanh", 2, 1, 0, tanh, NULL, tanh,
+  { "tanh", 0, 0.0, 0.0, tanh, NULL, tanh,
     "tanh (X): compute tanh (X) for each element of X", },
 
-  { NULL, -1, -1, -1, NULL, NULL, NULL, NULL, },
+  { NULL, -1, 0.0, 0.0, NULL, NULL, NULL, NULL, },
 };
 
 static builtin_text_functions text_functions[] =

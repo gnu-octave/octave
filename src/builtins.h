@@ -37,9 +37,19 @@ typedef Complex (*c_c_Mapper)(const Complex&);
 
 #endif
 
+// If can_return_complex_for_real_arg is 1, lower_limit and
+// upper_limit specify the range of values for which a real arg
+// returns a real value.  Outside that range, we have to convert args
+// to complex, and call the complex valued function.
+//
+// If can_return_complex_for_real_arg is 0, lower_limit and
+// upper_limit are ignored.
+
 struct Mapper_fcn
 {
-  int neg_arg_complex;
+  int can_return_complex_for_real_arg;
+  double lower_limit;
+  double upper_limit;
   d_d_Mapper d_d_mapper;
   d_c_Mapper d_c_mapper;
   c_c_Mapper c_c_mapper;
@@ -48,9 +58,9 @@ struct Mapper_fcn
 struct builtin_mapper_functions
 {
   char *name;
-  int nargin_max;
-  int nargout_max;
-  int neg_arg_complex;
+  int can_return_complex_for_real_arg;
+  double lower_limit;
+  double upper_limit;
   d_d_Mapper d_d_mapper;
   d_c_Mapper d_c_mapper;
   c_c_Mapper c_c_mapper;

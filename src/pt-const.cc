@@ -45,13 +45,25 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // A couple of handy helper functions.
 
 static int
-any_element_is_negative (const Matrix& a)
+any_element_less_than (const Matrix& a, double val)
 {
   int nr = a.rows ();
   int nc = a.columns ();
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) < 0.0)
+      if (a.elem (i, j) < val)
+	return 1;
+  return 0;
+}
+
+static int
+any_element_greater_than (const Matrix& a, double val)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      if (a.elem (i, j) > val)
 	return 1;
   return 0;
 }
@@ -2348,7 +2360,9 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
   switch (type_tag)
     {
     case scalar_constant:
-      if (m_fcn.neg_arg_complex && scalar < 0.0)
+      if (m_fcn.can_return_complex_for_real_arg
+	  && (scalar < m_fcn.lower_limit
+	      || scalar > m_fcn.upper_limit))
 	{
 	  if (m_fcn.c_c_mapper != NULL)
 	    {
@@ -2370,7 +2384,9 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	}
       break;
     case matrix_constant:
-      if (m_fcn.neg_arg_complex && any_element_is_negative (*matrix))
+      if (m_fcn.can_return_complex_for_real_arg
+	  && (any_element_less_than (*matrix, m_fcn.lower_limit)
+	      || any_element_greater_than (*matrix, m_fcn.upper_limit)))
 	{
 	  if (m_fcn.c_c_mapper != NULL)
 	    {

@@ -32,17 +32,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "systime.h"
 #include "defun.h"
 
+#ifdef HAVE_SYS_RESOURCE_H
+extern "C"
+{
 #include <sys/resource.h>
+}
+#endif
 
 #ifndef RUSAGE_SELF
 #define RUSAGE_SELF 0
-#endif
-
-#if defined (HAVE_GETRUSAGE)
-extern "C"
-{
-  int getrusage ();
-}
 #endif
 
 

@@ -1053,11 +1053,18 @@ DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   Octave_object retval;
   send_to_plot_stream ("clear\n");
 
-// This should maybe reset other things too?
+// XXX FIXME XXX -- instead of just clearing these things, it would be
+// nice if we could reset things to a user-specified default state.
 
   send_to_plot_stream ("set title\n");
   send_to_plot_stream ("set xlabel\n");
   send_to_plot_stream ("set ylabel\n");
+  send_to_plot_stream ("set nogrid\n");
+
+// This makes a simple `replot' not work after a `clearplot' command
+// has been issued.
+
+  plot_line_count = 0;
 
   return retval;
 }

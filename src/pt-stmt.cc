@@ -172,11 +172,11 @@ tree_statement_list::eval (bool silent, int nargout)
 	  if (error_state)
 	    break;
 
-	  if (tree_break_expression::breaking
-	      || tree_continue_expression::continuing)
+	  if (tree_break_command::breaking
+	      || tree_continue_command::continuing)
 	    break;
 
-	  if (tree_return_expression::returning)
+	  if (tree_return_command::returning)
 	    break;
 	}
       else

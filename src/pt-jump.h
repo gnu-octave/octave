@@ -29,25 +29,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class tree_walker;
 
-#include "pt-exp.h"
+#include "pt-cmd.h"
 
 // Break.
 
 class
-tree_break_expression : public tree_expression
+tree_break_command : public tree_command
 {
 public:
 
-  tree_break_expression (int l = -1, int c = -1)
-    : tree_expression (l, c) { }
+  tree_break_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
 
-  ~tree_break_expression (void) { }
+  ~tree_break_command (void) { }
 
-  bool rvalue_ok (void) { return true; }
-
-  octave_value rvalue (void);
-
-  octave_value_list rvalue (int nargout) { return rvalue (); }
+  void eval (void);
 
   void accept (tree_walker& tw);
 
@@ -57,28 +53,24 @@ private:
 
   // No copying!
 
-  tree_break_expression (const tree_break_expression&);
+  tree_break_command (const tree_break_command&);
 
-  tree_break_expression& operator = (const tree_break_expression&);
+  tree_break_command& operator = (const tree_break_command&);
 };
 
 // Continue.
 
 class
-tree_continue_expression : public tree_expression
+tree_continue_command : public tree_command
 {
 public:
 
-  tree_continue_expression (int l = -1, int c = -1)
-    : tree_expression (l, c) { }
+  tree_continue_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
 
-  ~tree_continue_expression (void) { }
+  ~tree_continue_command (void) { }
 
-  bool rvalue_ok (void) { return true; }
-
-  octave_value rvalue (void);
-
-  octave_value_list rvalue (int nargout) { return rvalue (); }
+  void eval (void);
 
   void accept (tree_walker& tw);
 
@@ -88,28 +80,24 @@ private:
 
   // No copying!
 
-  tree_continue_expression (const tree_continue_expression&);
+  tree_continue_command (const tree_continue_command&);
 
-  tree_continue_expression& operator = (const tree_continue_expression&);
+  tree_continue_command& operator = (const tree_continue_command&);
 };
 
 // Return.
 
 class
-tree_return_expression : public tree_expression
+tree_return_command : public tree_command
 {
 public:
 
-  tree_return_expression (int l = -1, int c = -1)
-    : tree_expression (l, c) { }
+  tree_return_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
 
-  ~tree_return_expression (void) { }
+  ~tree_return_command (void) { }
 
-  bool rvalue_ok (void) { return true; }
-
-  octave_value rvalue (void);
-
-  octave_value_list rvalue (int nargout) { return rvalue (); }
+  void eval (void);
 
   void accept (tree_walker& tw);
 
@@ -119,9 +107,9 @@ private:
 
   // No copying!
 
-  tree_return_expression (const tree_return_expression&);
+  tree_return_command (const tree_return_command&);
 
-  tree_return_expression& operator = (const tree_return_expression&);
+  tree_return_command& operator = (const tree_return_command&);
 };
 
 #endif

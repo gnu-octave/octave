@@ -152,14 +152,14 @@ main_loop (void)
 
 		  if (! (interactive || forced_interactive))
 		    {
-		      bool quit = (tree_return_expression::returning
-				   || tree_break_expression::breaking);
+		      bool quit = (tree_return_command::returning
+				   || tree_break_command::breaking);
 
-		      if (tree_return_expression::returning)
-			tree_return_expression::returning = 0;
+		      if (tree_return_command::returning)
+			tree_return_command::returning = 0;
 
-		      if (tree_break_expression::breaking)
-			tree_break_expression::breaking--;
+		      if (tree_break_command::breaking)
+			tree_break_command::breaking--;
 
 		      if (quit)
 			break;

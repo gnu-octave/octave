@@ -106,6 +106,12 @@ private:
     bool is_user_variable (void) const
       { return (symbol_type & symbol_record::USER_VARIABLE); }
 
+    void mark_as_text_function (void)
+      { symbol_type |= symbol_record::TEXT_FUNCTION; }
+
+    void unmark_text_function (void)
+      { symbol_type &= ~symbol_record::TEXT_FUNCTION; }
+
     bool is_text_function (void) const
       { return (symbol_type & symbol_record::TEXT_FUNCTION); }
 
@@ -236,6 +242,12 @@ public:
 
   bool is_function (void) const
     { return definition->is_function (); }
+
+  void mark_as_text_function (void)
+    { definition->mark_as_text_function (); }
+
+  void unmark_text_function (void)
+    { definition->unmark_text_function (); }
 
   bool is_text_function (void) const
     { return definition->is_text_function (); }

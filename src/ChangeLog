@@ -1,4 +1,29 @@
+2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-jump.h, pt-jump.cc: Undo previous changes.
+	* parse.y: Undo previous changes for brea, continue, and return.
+
+2002-11-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-stmt.cc (tree_statement::eval): Allow the lookup to execute
+	script files.  If script file has been executed, don't bother to
+	call expr->rvalue ().
+
 2002-11-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (OCTINTERP_LINK_DEPS): Include $(FLIBS) in
+	OCTINTERP_LINK_DEPS.
+
+	* variables.cc (text_function_set): New static data.
+	(mark_as_text_function, unmark_text_function,
+	is_marked_as_text_function, Fmark_as_text_function,
+	Funmark_text_function): New functions.
+	(is_text_function_name): Handle functions marked as text functions
+	in special list, not just those marked in the symbol record.
+	* symtab.h (symbol_record::mark_as_text_function,
+	symbol_record::unmark_text_function,
+	symbol_record::symbol_def::mark_as_text_function,
+	symbol_record::symbol_def::unmark_text_function): New functions.
 
 	* oct-map.h (Octave_map::rows, Octave_map::columns): New functions.
 	* ov-struct.h (octave_struct::rows, octave_struct::columns,

@@ -1,3 +1,13 @@
+2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Dont't set SONAME_FLAGS for alpha alpha*-dec-osf*
+	systems.
+
+2002-11-29  Paul Kienzle <pkienzle@users.sf.net>
+
+	* mkoctfile.in: Include "$incflags $def" in commands to generate
+	dependecies.
+
 2002-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (do-subst-config-vals): Substitute OCTAVE_BINDIR.

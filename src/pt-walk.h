@@ -25,9 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class tree_argument_list;
 class tree_binary_expression;
-class tree_break_expression;
+class tree_break_command;
 class tree_colon_expression;
-class tree_continue_expression;
+class tree_continue_command;
 class tree_decl_command;
 class tree_decl_elt;
 class tree_decl_init_list;
@@ -53,7 +53,7 @@ class plot_limits;
 class plot_range;
 class tree_postfix_expression;
 class tree_prefix_expression;
-class tree_return_expression;
+class tree_return_command;
 class tree_return_list;
 class tree_simple_assignment;
 class tree_statement;
@@ -80,13 +80,13 @@ public:
   visit_binary_expression (tree_binary_expression&) = 0;
 
   virtual void
-  visit_break_expression (tree_break_expression&) = 0;
+  visit_break_command (tree_break_command&) = 0;
 
   virtual void
   visit_colon_expression (tree_colon_expression&) = 0;
 
   virtual void
-  visit_continue_expression (tree_continue_expression&) = 0;
+  visit_continue_command (tree_continue_command&) = 0;
 
   virtual void
   visit_decl_command (tree_decl_command&) = 0;
@@ -164,7 +164,7 @@ public:
   visit_prefix_expression (tree_prefix_expression&) = 0;
 
   virtual void
-  visit_return_expression (tree_return_expression&) = 0;
+  visit_return_command (tree_return_command&) = 0;
 
   virtual void
   visit_return_list (tree_return_list&) = 0;

@@ -140,7 +140,7 @@ tree_breakpoint::visit_binary_expression (tree_binary_expression& expr)
 }
 
 void 
-tree_breakpoint::visit_break_expression (tree_break_expression& cmd)
+tree_breakpoint::visit_break_command (tree_break_command& cmd)
 {
   if (found)
     return;
@@ -175,7 +175,7 @@ tree_breakpoint::visit_colon_expression (tree_colon_expression& expr)
 }
 
 void 
-tree_breakpoint::visit_continue_expression (tree_continue_expression& cmd)
+tree_breakpoint::visit_continue_command (tree_continue_command& cmd)
 {
   if (found)
     return;
@@ -514,7 +514,7 @@ tree_breakpoint::visit_prefix_expression (tree_prefix_expression& expr)
 }
 
 void 
-tree_breakpoint::visit_return_expression (tree_return_expression& cmd)
+tree_breakpoint::visit_return_command (tree_return_command& cmd)
 {
   if (found)
     return;

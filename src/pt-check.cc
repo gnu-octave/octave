@@ -67,7 +67,7 @@ tree_checker::visit_binary_expression (tree_binary_expression& expr)
 }
 
 void
-tree_checker::visit_break_expression (tree_break_expression&)
+tree_checker::visit_break_command (tree_break_command&)
 {
 }
 
@@ -91,7 +91,7 @@ tree_checker::visit_colon_expression (tree_colon_expression& expr)
 }
 
 void
-tree_checker::visit_continue_expression (tree_continue_expression&)
+tree_checker::visit_continue_command (tree_continue_command&)
 {
 }
 
@@ -391,7 +391,7 @@ tree_checker::visit_prefix_expression (tree_prefix_expression& expr)
 }
 
 void
-tree_checker::visit_return_expression (tree_return_expression&)
+tree_checker::visit_return_command (tree_return_command&)
 {
 }
 

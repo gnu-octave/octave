@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.396 $)
+AC_REVISION($Revision: 1.397 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -647,7 +647,6 @@ case "$canonical_host_type" in
     CXXPICFLAG=
     FPICFLAG=
     SH_LDFLAGS="-shared -Xlinker -expect_unresolved -Xlinker '*'"
-    SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
     RLD_FLAG='-Xlinker -rpath -Xlinker $(octlibdir)'
   ;;
   *-*-darwin*)

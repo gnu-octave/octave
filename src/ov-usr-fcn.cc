@@ -466,11 +466,11 @@ octave_user_function::do_multi_index_op (int nargout,
     if (echo_commands)
       print_code_function_trailer ();
 
-    if (tree_return_expression::returning)
-      tree_return_expression::returning = 0;
+    if (tree_return_command::returning)
+      tree_return_command::returning = 0;
 
-    if (tree_break_expression::breaking)
-      tree_break_expression::breaking--;
+    if (tree_break_command::breaking)
+      tree_break_command::breaking--;
 
     if (error_state)
       {

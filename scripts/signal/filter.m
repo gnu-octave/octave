@@ -5,15 +5,15 @@ function [y, w] = filter(b,a,x,w)
 # time-invariant difference equation:
 # 
 #    N                   M
-#   sum a(k+1) y(n-k) + sum b(k+1) x(n-k) = 0  for 1<=n<=length(x)
+#   sum a(k+1) y(n-k) = sum b(k+1) x(n-k)            for 1<=n<=length(x)
 #   k=0                 k=0
 # 
 # where N=length(a)-1 and M=length(b)-1. An equivalent form of this
 # equation is:
 # 
-#           N                   M
-#   y(n) = sum c(k+1) y(n-k) + sum d(k+1) x(n-k)  for 1<=n<=length(x)
-#          k=1                 k=0				     
+#             N                   M
+#   y(n) = - sum c(k+1) y(n-k) + sum d(k+1) x(n-k)   for 1<=n<=length(x)
+#            k=1                 k=0				     
 # 				  
 # where c = a/a(1) and d = b/a(1).
 # 
@@ -26,7 +26,7 @@ function [y, w] = filter(b,a,x,w)
 #             k=0	       
 #   H(z) = ----------------------
 #                N
-#           1 + sum c(k+1) z(-k)
+#           1 + sum c(k+1) z^(-k)
 #               k=1
 # 
 # [y, sf] = filter(b,a,x,si) sets the initial state of the system, si,

@@ -541,6 +541,8 @@ information.")
 
   Octave_map m;
 
+  // XXX FIXME XXX -- should we perform OCTAVE_HOME substitution on these?
+
   m ["default_pager"] = DEFAULT_PAGER;
   m ["prefix"] = OCTAVE_PREFIX;
   m ["exec_prefix"] = OCTAVE_EXEC_PREFIX;
@@ -646,15 +648,15 @@ __builtin_delete (void *ptr)
 void
 symbols_of_toplev (void)
 {
-  DEFCONST (argv, , 0, 0,
+  DEFCONST (argv, ,
     "the command line arguments this program was invoked with");
 
   DEFCONST (program_invocation_name,
-	    octave_env::get_program_invocation_name (), 0, 0,
+	    octave_env::get_program_invocation_name (),
     "the full name of the current program or script, including the\n\
 directory specification");
 
-  DEFCONST (program_name, octave_env::get_program_name (), 0, 0,
+  DEFCONST (program_name, octave_env::get_program_name (),
     "the name of the current program or script");
 }
 

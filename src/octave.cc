@@ -170,22 +170,17 @@ initialize_pathsearch (void)
   // This may seem odd, but doing it this way means that we don't have
   // to modify the kpathsea library...
 
-  string odb = octave_env::getenv ("OCTAVE_DB_DIR");
+  string odb = octave_env::getenv ("OCTAVE_DB_PATH");
+
+  // For backward compatibility.
 
   if (odb.empty ())
-    {
-      string oh = octave_env::getenv ("OCTAVE_HOME");
+    odb = octave_env::getenv ("OCTAVE_DB_DIR");
 
-      if (oh.empty ())
-	octave_env::putenv ("TEXMF", OCTAVE_DATADIR "/octave");
-      else  
-	{
-	  oh.append ("/lib/octave");
-	  octave_env::putenv ("TEXMF", oh);
-	}
-    }
-  else
-    octave_env::putenv ("TEXMF", odb);
+  if (odb.empty ())
+    odb = Vdata_dir + string ("/octave:") + Vlibexec_dir + string ("/octave");
+
+  octave_env::putenv ("TEXMFDBS", odb);
 }
 
 // Initialize by reading startup files.

@@ -160,10 +160,11 @@ bindir = @bindir@
 # and ${localfcnfiledir} are subdirectories of this.
 datadir = @datadir@
 
-# Where to install and expect libraries like libcruft.a, liboctave.a,
-# and libreadline.a and other architecture-dependent data.  The
-# directory ${archlibdir} is a subdirectory of this.  
 libdir = @libdir@
+
+# Where to install and expect libraries like libcruft.a, liboctave.a,
+# and other architecture-dependent data.
+octlibdir = @octlibdir@
 
 # Where to install and expect executable programs to be run by Octave
 # rather than directly by users.
@@ -326,7 +327,7 @@ sed < $< \
   -e "s;%LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%LEXLIB%;\"${LEXLIB}\";" \
   -e "s;%LIBDLFCN%;\"${LIBDLFCN}\";" \
-  -e "s;%LIBFLAGS%;\"-L${libdir}\";" \
+  -e "s;%LIBFLAGS%;\"-L${octlibdir}\";" \
   -e "s;%LIBPLPLOT%;\"${LIBPLPLOT}\";" \
   -e "s;%LIBS%;\"${LIBS}\";" \
   -e "s;%RLD_FLAG%;\"${RLD_FLAG}\";" \
@@ -349,6 +350,7 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_ARCHLIBDIR%;\"${archlibdir}\";" \
   -e "s;%OCTAVE_BINDIR%;\"${bindir}\";" \
   -e "s;%OCTAVE_DATADIR%;\"${datadir}\";" \
+  -e "s;%OCTAVE_LIBEXECDIR%;\"${libexecdir}\";" \
   -e "s;%OCTAVE_EXEC_PREFIX%;\"${exec_prefix}\";" \
   -e "s;%OCTAVE_FCNFILEDIR%;\"${fcnfiledir}\";" \
   -e "s;%OCTAVE_FCNFILEPATH%;\"${fcnfilepath}\";" \
@@ -356,6 +358,7 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_INFODIR%;\"${infodir}\";" \
   -e "s;%OCTAVE_INFOFILE%;\"${infofile}\";" \
   -e "s;%OCTAVE_LIBDIR%;\"${libdir}\";" \
+  -e "s;%OCTAVE_OCTLIBDIR%;\"${octlibdir}\";" \
   -e "s;%OCTAVE_LOCALARCHLIBDIR%;\"${localarchlibdir}\";" \
   -e "s;%OCTAVE_LOCALFCNFILEDIR%;\"${localfcnfiledir}\";" \
   -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
@@ -380,5 +383,22 @@ else \
   cd $(includedir); \
   rm -f octave; \
   $(LN_S) $$src octave; \
+fi
+endef
+
+# Make a relative symbolic link from $libdir/octave to $octlibdir. 
+
+# XXX FIXME XXX -- this assumes that $octlibdir is a subdirectory
+# of $libdir.
+
+define mk-libdir-link
+src=`echo $(octlibdir) | sed 's|^$(libdir)/*||'` ; \
+echo $$src ; \
+if [ "$$src" = "octave" ] ; then \
+  true ; \
+else \
+  cd $(libdir) ; \
+  rm -f octave ; \
+  $(LN_S) $$src octave ; \
 fi
 endef

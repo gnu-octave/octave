@@ -42,8 +42,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_DATADIR %OCTAVE_DATADIR%
 #endif
 
+#ifndef OCTAVE_LIBEXECDIR
+#define OCTAVE_LIBEXECDIR %OCTAVE_LIBEXECDIR%
+#endif
+
 #ifndef OCTAVE_LIBDIR
 #define OCTAVE_LIBDIR %OCTAVE_LIBDIR%
+#endif
+
+#ifndef OCTAVE_OCTLIBDIR
+#define OCTAVE_OCTLIBDIR %OCTAVE_OCTLIBDIR%
 #endif
 
 #ifndef OCTAVE_BINDIR
@@ -109,8 +117,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern string Voctave_home;
 
 extern string Vbin_dir;
-extern string Vlib_dir;
 extern string Vinfo_dir;
+extern string Vdata_dir;
+extern string Vlibexec_dir;
 extern string Varch_lib_dir;
 extern string Vlocal_arch_lib_dir;
 extern string Vfcn_file_dir;

@@ -49,7 +49,7 @@ function bug_report ()
       endif
     endif
 
-    cmd = strcat (OCTAVE_HOME, "/bin/octave-bug");
+    cmd = "octave-bug";
 
     if (length (subject) > 0)
       cmd = sprintf ("%s -s \"%s\"", cmd, subject);

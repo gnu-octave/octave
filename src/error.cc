@@ -326,7 +326,7 @@ symbols_of_error (void)
   DEFVAR (beep_on_error, 0.0, 0, beep_on_error,
     "if true, beep before printing error messages");
 
-  DEFCONST (error_text, "", 0, 0,
+  DEFCONST (error_text, "",
     "the text of error messages that would have been printed in the\n\
 body of the most recent unwind_protect statement or the TRY part of\n\
 the most recent eval() command.  Outside of unwind_protect and\n\

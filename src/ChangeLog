@@ -1,3 +1,39 @@
+Tue Feb  3 00:24:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (exec_path): Append Vbin_dir to std_path.
+
+	* octave.cc (initialize_pathsearch): Set TEXMFDBS, not TEXMF.
+	Look for OCTAVE_DB_PATH in environment.
+	Simplify using Vdata_dir and Vlibexec_dir.
+
+	* defaults.h.in (Vdata_dir, Vlibexecdir): Declare new vars.
+	defaults.cc: Define them.
+	(set_default_data_dir, set_default_libexecdir): New functions.
+	(install_defaults): Call them.
+
+	* defaults.h.in (OCTAVE_LIBEXECDIR): Define.
+
+Mon Feb  2 02:43:16 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install, uninstall): Use $(octlibdir), not $(libdir).
+	Use mk-libdir-link.
+
+	* defaults.h.in (OCTAVE_OCTLIBDIR): Substitute value.
+	(Vlib_dir): Delete declaration.
+	* defaults.cc (Vlib_dir): Delete.
+	(set_default_lib_dir): Delete.
+	(install_defaults): Don't call set_default_lib_dir.
+	(set_default_info_prog): If oct_info_prog is empty, set default to
+	"info" -- we expect it to be somewhere in the user's path.
+
+	* defun.h (DEFCONST, DEFCONSTX): Eliminate inst_as_fcn and chg_fcn
+	args.  Always pass true for inst_as_fcn and 0 for chg_fcn to
+	DEFVAR when creating built-in values like `e' or `stderr' that can
+	be redefined.  Change all uses.
+
+	* help.cc (Ftype): Handle script files too.
+	(Fwhich): Likewise.
+
 Sat Jan 31 00:00:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-ch-mat.cc (octave_char_matrix::is_true): Make it work.

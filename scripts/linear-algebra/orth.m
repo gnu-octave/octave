@@ -33,30 +33,36 @@
 
 function retval = orth (A, tol)
 
-  [U, S, V] = svd (A);
+  if (nargin == 1 || nargin == 2)
 
-  [rows, cols] = size (A);
+    [U, S, V] = svd (A);
 
-  [S_nr, S_nc] = size (S);
+    [rows, cols] = size (A);
 
-  if (S_nr == 1 || S_nc == 1)
-    s = S(1);
+    [S_nr, S_nc] = size (S);
+
+    if (S_nr == 1 || S_nc == 1)
+      s = S(1);
+    else
+      s = diag (S);
+    endif
+
+    if (nargin == 1)
+      tol = max (size (A)) * s (1) * eps;
+    endif
+
+    rank = sum (s > tol);
+
+    if (rank > 0)
+      retval = -U (:, 1:rank);
+    else
+      retval = zeros (rows, 0);
+    endif
+
   else
-    s = diag (S);
-  endif
 
-  if (nargin == 1)
-    tol = max (size (A)) * s (1) * eps;
-  elseif (nargin != 2)
-    usage ("orth (A [, tol])");
-  endif
+    usage ("orth (a [, tol]");
 
-  rank = sum (s > tol);
-
-  if (rank > 0)
-    retval = -U (:, 1:rank);
-  else
-    retval = zeros (rows, 0);
   endif
 
 endfunction

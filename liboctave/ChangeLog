@@ -1,3 +1,15 @@
+Mon Feb  2 01:42:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install, uninstall): Use $(octlibdir), not $(libdir).
+	Use $(mk-libdir-link).
+
+	* file-stat.cc (file_stat::update_internal): Use stat and lstat,
+	not SAFE_STAT and SAFE_LSTAT.
+	(lstat): New function, defined if HAVE_LSTAT is not defined.
+	* safe-xstat.hin, safe-xstat.cin: Delete.
+	* Makefile.in: Delete rules for safe-stat.h, safe-stat.c,
+	safe-lstat.h, and safe-lstat.cc.
+
 Fri Jan 30 23:48:43 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* chMatrix.cc (charMatrix::all, charMatrix::any): New functions.

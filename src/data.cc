@@ -1115,16 +1115,16 @@ treat_neg_dim_as_zero (void)
 void
 symbols_of_data (void)
 {
-  DEFCONST (I, Complex (0.0, 1.0), 0, 0,
+  DEFCONST (I, Complex (0.0, 1.0),
     "sqrt (-1)");
 
-  DEFCONST (Inf, octave_Inf, 0, 0,
+  DEFCONST (Inf, octave_Inf,
     "infinity");
 
-  DEFCONST (J, Complex (0.0, 1.0), 0, 0,
+  DEFCONST (J, Complex (0.0, 1.0),
     "sqrt (-1)");
 
-  DEFCONST (NaN, octave_NaN, 0, 0,
+  DEFCONST (NaN, octave_NaN,
     "not a number");
 
 #if defined (M_E)
@@ -1133,22 +1133,22 @@ symbols_of_data (void)
   double e_val = exp (1.0);
 #endif
 
-  DEFCONST (e, e_val, 0, 0,
+  DEFCONST (e, e_val,
     "exp (1)");
 
-  DEFCONST (eps, DBL_EPSILON, 0, 0,
+  DEFCONST (eps, DBL_EPSILON,
     "machine precision");
 
-  DEFCONST (i, Complex (0.0, 1.0), 1, 0,
+  DEFCONST (i, Complex (0.0, 1.0),
     "sqrt (-1)");
 
-  DEFCONST (inf, octave_Inf, 0, 0,
+  DEFCONST (inf, octave_Inf,
     "infinity");
 
-  DEFCONST (j, Complex (0.0, 1.0), 1, 0,
+  DEFCONST (j, Complex (0.0, 1.0),
     "sqrt (-1)");
 
-  DEFCONST (nan, octave_NaN, 0, 0,
+  DEFCONST (nan, octave_NaN,
     "not a number");
 
 #if defined (M_PI)
@@ -1157,13 +1157,13 @@ symbols_of_data (void)
   double pi_val = 4.0 * atan (1.0);
 #endif
 
-  DEFCONST (pi, pi_val, 0, 0,
+  DEFCONST (pi, pi_val,
     "ratio of the circumference of a circle to its diameter");
 
-  DEFCONST (realmax, DBL_MAX, 0, 0,
+  DEFCONST (realmax, DBL_MAX,
     "realmax (): return largest representable floating point number");
 
-  DEFCONST (realmin, DBL_MIN, 0, 0,
+  DEFCONST (realmin, DBL_MIN,
     "realmin (): return smallest representable floating point number");
 
   DEFVAR (treat_neg_dim_as_zero, 0.0, 0, treat_neg_dim_as_zero,

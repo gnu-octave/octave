@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.295 $)
+AC_REVISION($Revision: 1.296 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -39,6 +39,7 @@ OCTAVE_SET_DEFAULT(octincludedir, '$(includedir)/octave-$(version)/octave')
 OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
 OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localfcnfilepath, '$(localfcnfiledir)//')
+OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
 OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localarchlibdir,

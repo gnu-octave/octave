@@ -1,3 +1,14 @@
+Tue Feb  3 00:24:01 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-vals): Substitute $(libexecdir) too.
+
+Mon Feb  2 22:42:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Define octlibdir.
+	* Makeconf.in: Substitute value.
+	(do-subst-config-vals): Set LIBDIR to $(octlibdir).
+	(do-subst-default-vals): Substitute OCTLIBDIR too.
+
 Sat Jan 31 19:29:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* acconfig.h: Add #undefs for HAVE_GAMMA and HAVE_LGAMMA to avoid

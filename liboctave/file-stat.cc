@@ -37,10 +37,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-stat.h"
 #include "statdefs.h"
 
-// These must come after <sys/types.h> and <sys/stat.h>.
-
-#include <safe-lstat.h>
-#include <safe-stat.h>
+#if !defined (HAVE_LSTAT)
+static inline int
+lstat (const char *name, struct stat *buf)
+{
+  return stat (name, buf);
+}
+#endif
 
 // XXX FIXME XXX -- the is_* and mode_as_string functions are only valid
 // for initialized objects.  If called for an object that is not
@@ -155,8 +158,7 @@ file_stat::update_internal (bool force)
 
       struct stat buf;
 
-      int status = follow_links
-	? SAFE_STAT (cname, &buf) : SAFE_LSTAT (cname, &buf);
+      int status = follow_links ? stat (cname, &buf) : lstat (cname, &buf);
 
       if (status < 0)
 	{

@@ -1380,22 +1380,22 @@ symbols_of_file_io (void)
   // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
   // this way for Matlab compatibility.
 
-  DEFCONST (SEEK_SET, -1.0, 0, 0,
+  DEFCONST (SEEK_SET, -1.0,
     "used with fseek to position file relative to the beginning");
 
-  DEFCONST (SEEK_CUR, 0.0, 0, 0,
+  DEFCONST (SEEK_CUR, 0.0,
     "used with fseek to position file relative to the current position");
 
-  DEFCONST (SEEK_END, 1.0, 0, 0,
+  DEFCONST (SEEK_END, 1.0,
     "used with fseek to position file relative to the end");
 
-  DEFCONSTX ("stdin", SBV_stdin, stdin_file, 0, 0,
+  DEFCONSTX ("stdin", SBV_stdin, stdin_file,
     "file number of the standard input stream");
 
-  DEFCONSTX ("stdout", SBV_stdout, stdout_file, 0, 0,
+  DEFCONSTX ("stdout", SBV_stdout, stdout_file,
     "file number of the standard output stream");
 
-  DEFCONSTX ("stderr", SBV_stderr, stderr_file, 0, 0,
+  DEFCONSTX ("stderr", SBV_stderr, stderr_file,
     "file number of the standard error stream");
 }
 

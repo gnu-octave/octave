@@ -93,8 +93,7 @@ EXTRAS := mx-inlines.cc
 
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
-DISTFILES := Makefile.in ChangeLog safe-xstat.cin safe-xstat.hin \
-	$(SOURCES) $(INCLUDES) $(EXTRAS)
+DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = liboctave.$(SHLEXT_VER)
@@ -117,11 +116,8 @@ endif
 
 LIBOCTAVE_DEPEND := $(patsubst %, liboctave.$(LIBEXT)(%), $(OBJECTS))
 
-all: stamp-prereq libraries
+all: libraries
 .PHONY: all
-
-stamp-prereq: pic safe-stat.h safe-lstat.h
-	touch stamp-prereq
 
 pic:
 	@if [ -d pic ]; then \
@@ -157,31 +153,7 @@ liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
 liboctave.$(SHLEXT_VER): $(PICOBJ)
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
-extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'
-extract_lstat = sed 's/@l@/l/g; s/@L@/L/g; s/	*@LSTAT_ONLY@//'
-
-safe-lstat.c: safe-xstat.cin
-	@echo "making $@ from $<"
-	@$(extract_lstat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-lstat.h: safe-xstat.hin
-	@echo "making $@ from $<"
-	@$(extract_lstat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-stat.c: safe-xstat.cin
-	@echo "making $@ from $<"
-	@$(extract_stat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-stat.h: safe-xstat.hin
-	@echo "making $@ from $<"
-	@$(extract_stat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-stat.o: safe-stat.h
-safe-lstat.o: safe-lstat.h safe-stat.h
+$(PICOBJ): pic
 
 check: all
 .PHONY: check
@@ -194,20 +166,22 @@ install-strip:
 .PHONY: install-strip
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(libdir)
+	$(top_srcdir)/mkinstalldirs $(octlibdir)
 	if $(STATIC_LIBS); then \
-	  rm -f $(libdir)/liboctave.$(LIBEXT); \
-	  $(INSTALL_DATA) liboctave.$(LIBEXT) $(libdir)/liboctave.$(LIBEXT); \
-	  $(RANLIB) $(libdir)/liboctave.$(LIBEXT); \
+	  rm -f $(octlibdir)/liboctave.$(LIBEXT); \
+	  $(INSTALL_DATA) liboctave.$(LIBEXT) \
+	    $(octlibdir)/liboctave.$(LIBEXT); \
+	  $(RANLIB) $(octlibdir)/liboctave.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(libdir)/liboctave.$(SHLEXT_VER); \
+	  rm -f $(octlibdir)/liboctave.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
-	    liboctave.$(SHLEXT_VER) $(libdir)/liboctave.$(SHLEXT_VER); \
-	  cd $(libdir); \
+	    liboctave.$(SHLEXT_VER) $(octlibdir)/liboctave.$(SHLEXT_VER); \
+	  cd $(octlibdir); \
 	  rm -f liboctave.$(SHLEXT); \
 	  $(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT); \
 	fi
+	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
@@ -220,9 +194,9 @@ install-inc:
 .PHONY: install-inc
 
 uninstall:
-	rm -f $(libdir)/liboctave.$(LIBEXT)
-	rm -f $(libdir)/liboctave.$(SHLEXT)
-	rm -f $(libdir)/liboctave.$(SHLEXT_VER)
+	rm -f $(octlibdir)/liboctave.$(LIBEXT)
+	rm -f $(octlibdir)/liboctave.$(SHLEXT)
+	rm -f $(octlibdir)/liboctave.$(SHLEXT_VER)
 	for f in $(INCLUDES); do rm -f $(octincludedir)/$$f; done
 .PHONY: uninstall
 
@@ -233,7 +207,8 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f safe-stat.h safe-lstat.h *.$(LIBEXT) *.o *.d pic/*.o
+	rm -f *.$(LIBEXT) *.o *.d pic/*.o
+	-rmdir pic
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
@@ -241,8 +216,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations stamp-prereq
-	-rmdir pic
+	rm -f Makefile so_locations
 .PHONY: distclean
 
 maintainer-clean: distclean
@@ -262,11 +236,6 @@ bin-dist:
 	fi
 .PHONY: bin-dist
 
-# If missing, GNU make attempts to create them in the reverse of the
-# order in which they are listed here.  We rely on that fact to ensure
-# that the safe-stat.h and safe-lstat.h files are created before trying
-# to create the .d files.  Hmm.  I wonder if we can count on that...
-
 ifndef omit_deps
--include $(MAKEDEPS) stamp-prereq
+-include $(MAKEDEPS)
 endif

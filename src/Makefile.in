@@ -196,7 +196,7 @@ stamp-oct-links: $(OCT_FILES)
 	fi
 	touch stamp-oct-links
 
-stamp-prereq: pic defaults.h oct-conf.h
+stamp-prereq: defaults.h oct-conf.h
 	touch stamp-prereq
 
 octave: octave.o builtins.o ops.o $(DLD_STATIC_OBJ) libraries
@@ -239,6 +239,8 @@ liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
 
 liboctinterp.$(SHLEXT_VER): $(PICOBJ)
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+
+$(PICOBJ): pic
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@
@@ -290,21 +292,22 @@ install-oct:
 .PHONY: install-oct
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(libdir)
+	$(top_srcdir)/mkinstalldirs $(octlibdir)
 	if $(STATIC_LIBS); then \
-	  rm -f $(libdir)/liboctinterp.$(LIBEXT); \
+	  rm -f $(octlibdir)/liboctinterp.$(LIBEXT); \
 	  $(INSTALL_DATA) liboctinterp.$(LIBEXT) \
-	    $(libdir)/liboctinterp.$(LIBEXT); \
-	  $(RANLIB) $(libdir)/liboctinterp.$(LIBEXT); \
+	    $(octlibdir)/liboctinterp.$(LIBEXT); \
+	  $(RANLIB) $(octlibdir)/liboctinterp.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(libdir)/liboctinterp.$(SHLEXT_VER); \
-	  $(INSTALL_PROGRAM) \
-	    liboctinterp.$(SHLEXT_VER) $(libdir)/liboctinterp.$(SHLEXT_VER); \
-	  cd $(libdir); \
+	  rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER); \
+	  $(INSTALL_PROGRAM) liboctinterp.$(SHLEXT_VER) \
+	    $(octlibdir)/liboctinterp.$(SHLEXT_VER); \
+	  cd $(octlibdir); \
 	  rm -f liboctinterp.$(SHLEXT); \
 	  $(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT); \
 	fi
+	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
@@ -326,9 +329,9 @@ install-inc:
 
 uninstall:
 	rm -f $(bindir)/octave$(EXE)
-	rm -f $(libdir)/liboctinterp.$(LIBEXT)
-	rm -f $(libdir)/liboctinterp.$(SHLEXT)
-	rm -f $(libdir)/liboctinterp.$(SHLEXT_VER)
+	rm -f $(octlibdir)/liboctinterp.$(LIBEXT)
+	rm -f $(octlibdir)/liboctinterp.$(SHLEXT)
+	rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER)
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
 	  rm -f $(octincludedir)/$$f; \
 	done
@@ -343,23 +346,23 @@ TAGS: $(SOURCES) $(DLD_SRC)
 clean:
 	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
+	-rmdir pic
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean:
 	rm -f *.o pic/*.o
+	-rmdir pic
 .PHONY: mostlyclean
 
 distclean: clean
 	rm -f Makefile octave .fname so_locations
 	rm -f stamp-prereq
-	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
 	rm -f oct-gperf.h stamp-prereq
-	-rmdir pic
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h

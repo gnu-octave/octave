@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 1996, 1997, 1998 John W. Eaton
 
 This file is part of Octave.
 
@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_VERSION "2.1.4"
 
 #define OCTAVE_COPYRIGHT \
-  "Copyright (C) 1996, 1997 John W. Eaton."
+  "Copyright (C) 1996, 1997, 1998 John W. Eaton."
 
 #define OCTAVE_NAME_AND_VERSION \
   "Octave, version " OCTAVE_VERSION " (" TARGET_HOST_TYPE ")"

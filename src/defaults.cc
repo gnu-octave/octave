@@ -53,8 +53,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 string Voctave_home;
 
 string Vbin_dir;
-string Vlib_dir;
 string Vinfo_dir;
+string Vdata_dir;
+string Vlibexec_dir;
 string Varch_lib_dir;
 string Vlocal_arch_lib_dir;
 string Vfcn_file_dir;
@@ -113,6 +114,18 @@ set_default_info_dir (void)
 }
 
 static void
+set_default_data_dir (void)
+{
+  Vdata_dir = subst_octave_home (OCTAVE_DATADIR);
+}
+
+static void
+set_default_libexec_dir (void)
+{
+  Vlibexec_dir = subst_octave_home (OCTAVE_LIBEXECDIR);
+}
+
+static void
 set_default_arch_lib_dir (void)
 {
   Varch_lib_dir = subst_octave_home (OCTAVE_ARCHLIBDIR);
@@ -134,12 +147,6 @@ static void
 set_default_bin_dir (void)
 {
   Vbin_dir = subst_octave_home (OCTAVE_BINDIR);
-}
-
-static void
-set_default_lib_dir (void)
-{
-  Vlib_dir = subst_octave_home (OCTAVE_LIBDIR);
 }
 
 static void
@@ -192,10 +199,7 @@ set_default_info_prog (void)
   string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
 
   if (oct_info_prog.empty ())
-    {
-      Vinfo_prog = Varch_lib_dir;
-      Vinfo_prog.append ("/info");
-    }
+    Vinfo_prog = "info";
   else
     Vinfo_prog = string (oct_info_prog);
 }
@@ -258,6 +262,10 @@ install_defaults (void)
 
   set_default_info_dir ();
 
+  set_default_data_dir ();
+
+  set_default_libexec_dir ();
+
   set_default_arch_lib_dir ();
 
   set_default_local_arch_lib_dir ();
@@ -265,8 +273,6 @@ install_defaults (void)
   set_default_fcn_file_dir ();
 
   set_default_bin_dir ();
-
-  set_default_lib_dir ();
 
   set_default_exec_path ();
 
@@ -317,9 +323,8 @@ exec_path (void)
     {
       Vexec_path = s;
 
-      string std_path = Vlocal_arch_lib_dir;
-      std_path.append (SEPCHAR_STR);
-      std_path.append (Varch_lib_dir);
+      string std_path = Vlocal_arch_lib_dir + string (SEPCHAR_STR)
+	+ Varch_lib_dir + string (SEPCHAR_STR) + Vbin_dir;
 
       string path;
 
@@ -405,10 +410,10 @@ symbols_of_defaults (void)
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0, imagepath,
     "colon separated list of directories to search for image files");
 
-  DEFCONST (OCTAVE_HOME, Voctave_home, 0, 0,
+  DEFCONST (OCTAVE_HOME, Voctave_home,
     "top-level Octave installation directory");
 
-  DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
+  DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
     "Octave version");
 }
 

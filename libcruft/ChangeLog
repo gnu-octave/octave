@@ -1,5 +1,8 @@
 Sun Feb  1 12:39:10 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (install, uninstall): Use $(octlibdir), not $(libdir).
+	Use $(mk-libdir-link).
+
 	* quadpack/dqagi.f, quadpack/dqagie.f, quadpack/dqagp.f,
 	quadpack/dqagpe.f, quadpack/dqk15i.f, quadpack/dqk21.f:
 	Make user-supplied code a subroutine instead of a function.

@@ -653,18 +653,6 @@ top level.  The default value is 0.
 
 The following functions return famous matrix forms.
 
-@deftypefn {Function File} {} hadamard (@var{k})
-Return the Hadamard matrix of order
-@iftex
-@tex
-$n = 2^k$.
-@end tex
-@end iftex
-@ifinfo
-n = 2^k.
-@end ifinfo
-@end deftypefn
-
 @deftypefn {Function File} {} hankel (@var{c}, @var{r})
 Return the Hankel matrix constructed given the first column @var{c}, and
 (optionally) the last row @var{r}.  If the last element of @var{c} is
@@ -723,6 +711,18 @@ Return the inverse of a Hilbert matrix of order @var{n}.  This is exact.
 Compare with the numerical calculation of @code{inverse (hilb (n))},
 which suffers from the ill-conditioning of the Hilbert matrix, and the
 finite precision of your computer's floating point arithmetic.
+@end deftypefn
+
+@deftypefn {Function File} {} sylvester_matrix (@var{k})
+Return the Sylvester matrix of order
+@iftex
+@tex
+$n = 2^k$.
+@end tex
+@end iftex
+@ifinfo
+n = 2^k.
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Function File} {} toeplitz (@var{c}, @var{r})

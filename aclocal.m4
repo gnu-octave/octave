@@ -83,6 +83,8 @@ else
   f77_output=`$F77 -v 2>&1 | grep "GNU F77"`
   if test -n "$f77_output"; then
     octave_cv_f77_is_g77=yes
+  else
+    octave_cv_f77_is_g77=no
   fi
 fi])
 ])

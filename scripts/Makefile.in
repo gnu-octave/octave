@@ -50,10 +50,11 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 install install-strip::
-	ls -LR $(datadir)/octave $(libexecdir)/octave > $(datadir)/octave/ls-R
+	ls -LR $(datadir)/octave > $(datadir)/octave/ls-R
+	ls -LR $(libexecdir)/octave > $(libexecdir)/octave/ls-R
 
 uninstall::
-	rm -f $(datadir)/octave/ls-R
+	rm -f $(datadir)/octave/ls-R $(libexecdir)/octave/ls-R
 
 tags TAGS:: $(SOURCES)
 	$(SUBDIR_FOR_COMMAND)

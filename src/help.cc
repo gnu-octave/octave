@@ -453,7 +453,7 @@ print_symbol_type (ostream& os, symbol_record *sym_rec,
 
 	  if (print)
 	    os << name
-	       << " is the function defined from:\n"
+	       << " is the function defined from: "
 	       << ff << "\n";
 	  else
 	    retval = ff;
@@ -724,7 +724,7 @@ builtin_help (int argc, const string_vector& argv)
 
       if (! h.empty ())
 	{
-	  octave_stdout << argv[i] << " is the file:\n"
+	  octave_stdout << argv[i] << " is the file: "
 	    << path << "\n\n" << h << "\n";
 
 	  continue;
@@ -831,7 +831,7 @@ display the definition of each NAME that refers to a function")
 
 	  symbol_record *sym_rec = lookup_by_name (id, 0);
 
-	  if (sym_rec)
+	  if (sym_rec && sym_rec->is_defined ())
 	    {
 	      if (sym_rec->is_user_function ())
 		{
@@ -851,7 +851,7 @@ display the definition of each NAME that refers to a function")
 			{
 			  if (nargout == 0 && ! quiet)
 			    output_buf << argv[i]
-				       << " is the function defined from:\n"
+				       << " is the function defined from: "
 				       << ff << "\n\n";
 
 			  char ch;
@@ -927,7 +927,31 @@ display the definition of each NAME that refers to a function")
 		output_buf << "type: `" << argv[i] << "' has unknown type!\n";
 	    }
 	  else
-	    output_buf << "type: `" << argv[i] << "' undefined\n";
+	    {
+	      string ff = fcn_file_in_path (argv[i]);
+
+	      if (! ff.empty ())
+		{
+		  ifstream fs (ff.c_str (), ios::in);
+
+		  if (fs)
+		    {
+		      if (nargout == 0 && ! quiet)
+			output_buf << argv[i] << " is the script file: "
+				   << ff << "\n\n";
+
+		      char ch;
+
+		      while (fs.get (ch))
+			output_buf << ch;
+		    }
+		  else
+		    output_buf << "unable to open `" << ff
+			       << "' for reading!\n";
+		}
+	      else
+		output_buf << "type: `" << argv[i] << "' undefined\n";
+	    }
 	}
 
       output_buf << ends;
@@ -971,7 +995,7 @@ file, print the full name of the file.")
 	{
 	  symbol_record *sym_rec = lookup_by_name (argv[i], 0);
 
-	  if (sym_rec)
+	  if (sym_rec && sym_rec->is_defined ())
 	    {
 	      int print = (nargout == 0);
 
@@ -982,10 +1006,25 @@ file, print the full name of the file.")
 	    }
 	  else
 	    {
-	      if (nargout == 0)
-		octave_stdout << "which: `" << argv[i] << "' is undefined\n";
+	      string path = fcn_file_in_path (argv[i]);
+
+	      if (! path.empty ())
+		{
+		  if (nargout == 0)
+		    octave_stdout << "which: `" << argv[i]
+				  << "' is the script file: "
+				  << path << "\n";
+		  else
+		    retval(i) = path;
+		}
 	      else
-		retval(i) = "undefined";
+		{
+		  if (nargout == 0)
+		    octave_stdout << "which: `" << argv[i]
+				  << "' is undefined\n";
+		  else
+		    retval(i) = "undefined";
+		}
 	    }
 	}
     }

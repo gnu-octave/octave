@@ -106,6 +106,10 @@ Numerical:
     other faster method.d  Possibly just switch to this method if the
     dataset is larger than some value.
 
+  * Make QR more memory efficient for large matrices when not all the
+    columns of Q are required (apparently this is not handled by the
+    lapack code yet).
+
   * Consider making the behavior of the / and \ operators for
     non-square systems compatible with Matlab.
 

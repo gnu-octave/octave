@@ -1,3 +1,14 @@
+Tue Feb  3 00:18:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* special-matrix/sylvester_matrix.m: Rename from hadamard.m
+
+	* miscellaneous/bug_report.m: Don't try to get smart with
+	OCTAVE_HOME.  Assume octave-bug can be found in EXEC_PATH.
+
+	* Makefile.in (install): Create separate ls-R files for
+	$(datadir) and $(libexecdir).
+	(uninstall): Remove both ls-R files.
+
 Sat Jan 31 01:09:32 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* signal/fftshift.m: New file.

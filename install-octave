@@ -76,19 +76,20 @@ bindir="$exec_prefix/bin"
 # and ${localfcnfiledir} are subdirectories of this.
 datadir="$prefix/share"
 
-# Where to install and expect libraries like libcruft.a, liboctave.a,
-# and libreadline.a, executable files to be run by Octave rather than
-# directly by users, and other architecture-dependent data.
-# ${archlibdir} is a subdirectory of this. 
 libdir="$exec_prefix/lib"
+
+# Where to install and expect libraries like libcruft.a and liboctave.a.
+octlibdir="$libdir/octave-$version"
 
 # Where to install and expect executable programs to be run by Octave
 # rather than directly by users.
 libexecdir="$exec_prefix/libexec"
 
-# Where to install Octave's include files.  The default is
-# ${prefix}/include/octave
 includedir="$prefix/include"
+
+# Where to install Octave's include files.  The default is
+# ${prefix}/include/octave-$version
+octincludedir=$includedir/octave-$version
 
 # Where to install Octave's man pages, and what extension they should
 # have.  The default is ${prefix}/man/man1
@@ -159,7 +160,9 @@ $prefix:
             bindir: `echo $bindir | sed "s,^$prefix/,,"`
            datadir: `echo $datadir | sed "s,^$prefix/,,"`
             libdir: `echo $libdir | sed "s,^$prefix/,,"`
+         octlibdir: `echo $octlibdir | sed "s,^$prefix/,,"`
         includedir: `echo $includedir | sed "s,^$prefix/,,"`
+     octincludedir: `echo $octincludedir | sed "s,^$prefix/,,"`
             mandir: `echo $mandir | sed "s,^$prefix/,,"`
            infodir: `echo $infodir | sed "s,^$prefix/,,"`
         fcnfiledir: `echo $fcnfiledir | sed "s,^$prefix/,,"`
@@ -184,8 +187,9 @@ case "$ans" in
   ;;
 esac
 
-DIRS_TO_MAKE="$bindir $datadir $libdir $libexecdir $includedir $mandir \
-  $infodir $fcnfiledir $localfcnfiledir $archlibdir $localarchlibdir \
+DIRS_TO_MAKE="$bindir $datadir $libdir $octlibdir $libexecdir \
+  $includedir $octincludedir $mandir $infodir $fcnfiledir \
+  $localfcnfiledir $archlibdir $localarchlibdir \
   $octfiledir $localoctfiledir $imagedir"
 
 ./mkinstalldirs $DIRS_TO_MAKE
@@ -197,7 +201,7 @@ then
   chmod 755 $bindir/octave
 else
   echo "installing octave-sh as $bindir/octave"
-  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$libdir|" octave-sh \
+  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$octlibdir|" octave-sh \
     > $bindir/octave
   chmod 755 $bindir/octave
 
@@ -210,13 +214,17 @@ echo "installing octave-bug as $bindir/octave-bug"
 cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug
 
+echo "installing info as $archlibdir/info"
+cp info/info $archlibdir/info
+chmod 755 $archlibdir/info
+
 if test -f LIBRARIES; then
-  echo "installing shared libraries in $libdir"
+  echo "installing shared libraries in $octlibdir"
   for f in `cat LIBRARIES`
   do
     file=`basename $f`
-    cp $f $libdir/$file
-    chmod 644 $libdir/$file
+    cp $f $octlibdir/$file
+    chmod 644 $octlibdir/$file
   done
 fi
 
@@ -260,7 +268,10 @@ done
 cd $distdir
 
 echo "creating ls-R file in $datadir/octave"
-ls -LR $datadir/octave $libexecdir/octave > $datadir/octave/ls-R
+ls -LR $datadir/octave > $datadir/octave/ls-R
+
+echo "creating ls-R file in $libexecdir/octave"
+ls -LR $libexecdir/octave > $libexecdir/octave/ls-R
 
 echo "installing info files in $infodir"
 for f in doc/interpreter/octave.info*

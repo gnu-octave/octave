@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   defn is the initial value for the variable.
 //
-//   ins_as_fcn is a flag that says whether to install the variable as
+//   inst_as_fcn is a flag that says whether to install the variable as
 //     if it were a function (allowing the name to also be used as a
 //     variable by users, but recover its original definition if cleared).
 //
@@ -53,27 +53,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //   doc is the simple help text for this variable.
 
 #define DEFVAR(name, defn, inst_as_fcn, chg_fcn, doc) \
-  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, 0, chg_fcn, doc)
+  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, false, chg_fcn, doc)
 
-// Define a builtin-constant, and a corresponding variable that can be
-// redefined.  This is just the same as DEFVAR, except that it defines
-// `name' as a variable, and `__name__' as a constant that cannot be
-// redefined.
+// Define a builtin-constant `__name__', and a corresponding variable
+// `name' that can be redefined.  (The variable is actually installed
+// in the symbol table as a function, so that it doesn't work like a
+// global variable when redefined.)
 
-#define DEFCONST(name, defn, inst_as_fcn, chg_fcn, doc) \
-  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, false, \
-		   chg_fcn, doc); \
+#define DEFCONST(name, defn, doc) \
+  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, true, false, 0, doc); \
   DEFVAR_INTERNAL ("__" ## #name ## "__", XSBV_ ## name, defn, false, \
-		   true, chg_fcn, doc)
+		   true, 0, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the name of the structure has to be passed too.
 
-#define DEFCONSTX(name, sname, defn, inst_as_fcn, chg_fcn, doc) \
-  DEFVAR_INTERNAL (name, sname, defn, inst_as_fcn, false, chg_fcn, doc); \
+#define DEFCONSTX(name, sname, defn, doc) \
+  DEFVAR_INTERNAL (name, sname, defn, true, false, 0, doc); \
   DEFVAR_INTERNAL ("__" ## name ## "__", X ## sname, defn, false, true, \
-		   chg_fcn, doc)
+		   0, doc)
 
 // Define a builtin function.
 //

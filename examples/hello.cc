@@ -3,14 +3,11 @@
 // To use this file, your version of Octave must support dynamic
 // linking.  To find out if it does, type the command
 //
-//   octave_config_info
+//   x = octave_config_info; x.DEFS
 //
 // at the Octave prompt.  Support for dynamic linking is included if
-// the output contains either of the lines
+// the output contains the string -DWITH_DYNAMIC_LINKING=1.
 //
-//   Dynamic Linking (dlopen/dlsym):          yes
-//   Dynamic Linking (shl_load/shl_findsym):  yes
-
 // To compile this file, type the command
 //
 //   mkoctfile hello.cc

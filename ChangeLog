@@ -3,6 +3,7 @@
 	* configure.in (AC_AIX): Move before AC_MINIX and AC_ISC_POSIX.
 	(AH_BOTTOM): Move contents of acconfig.h here.
 	* acconfig.h: Delete.
+	* octMakefile.in (CONF_DISTFILES): Delete acconfig.h from the list.
 
 2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -1,6 +1,7 @@
 2002-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* skip-autoheader: New file, for autogen.sh.
+	* Makefile.in (DISTFILES): Add it to the list.
 
 2002-04-29  Paul Kienzle <pkienzle@users.sf.net>
 

@@ -42,24 +42,35 @@ extern "C"
 }
 
 int
-SVD::init (const Matrix& a)
+SVD::init (const Matrix& a, SVD::type svd_type)
 {
   int info;
 
   int m = a.rows ();
   int n = a.cols ();
 
-  char jobu = 'A';
-  char jobv = 'A';
-
   double *tmp_data = dup (a.data (), a.length ());
 
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
 
-  double *u = new double[m*m];
+  char jobu = 'A';
+  char jobv = 'A';
+
+  int ncol_u = m;
+  int nrow_vt = n;
+  int nrow_s = m;
+  int ncol_s = n;
+
+  if (svd_type == SVD::economy)
+    {
+      jobu = jobv = 'S';
+      ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
+    }
+
+  double *u = new double[m * ncol_u];
   double *s_vec  = new double[min_mn];
-  double *vt = new double[n*n];
+  double *vt = new double[nrow_vt * n];
 
   int tmp1 = 3*min_mn + max_mn;
   int tmp2 = 5*min_mn - 4;
@@ -67,12 +78,12 @@ SVD::init (const Matrix& a)
   double *work = new double[lwork];
 
   F77_FCN (dgesvd) (&jobu, &jobv, &m, &n, tmp_data, &m, s_vec, u, &m,
-		    vt, &n, work, &lwork, &info, 1L, 1L);
+		    vt, &nrow_vt, work, &lwork, &info, 1L, 1L);
 
-  left_sm = Matrix (u, m, m);
-  sigma = DiagMatrix (s_vec, m, n);
-  Matrix vt_m (vt, n, n);
-  right_sm = Matrix (vt_m.transpose ());
+  left_sm = Matrix (u, m, ncol_u);
+  sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
+  Matrix vt_m (vt, nrow_vt, n);
+  right_sm = vt_m.transpose ();
 
   delete [] tmp_data;
   delete [] work;

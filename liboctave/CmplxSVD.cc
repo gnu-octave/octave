@@ -42,24 +42,35 @@ extern "C"
 }
 
 int
-ComplexSVD::init (const ComplexMatrix& a)
+ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 {
   int info;
 
   int m = a.rows ();
   int n = a.cols ();
 
-  char jobu = 'A';
-  char jobv = 'A';
-
   Complex *tmp_data = dup (a.data (), a.length ());
 
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
 
-  Complex *u = new Complex[m*m];
+  char jobu = 'A';
+  char jobv = 'A';
+
+  int ncol_u = m;
+  int nrow_vt = n;
+  int nrow_s = m;
+  int ncol_s = n;
+
+  if (svd_type == SVD::economy)
+    {
+      jobu = jobv = 'S';
+      ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
+    }
+
+  Complex *u = new Complex[m * ncol_u];
   double *s_vec  = new double[min_mn];
-  Complex *vt = new Complex[n*n];
+  Complex *vt = new Complex[nrow_vt * n];
 
   int lwork = 2*min_mn + max_mn;
   Complex *work = new Complex[lwork];
@@ -68,12 +79,12 @@ ComplexSVD::init (const ComplexMatrix& a)
   double *rwork = new double[lrwork];
 
   F77_FCN (zgesvd) (&jobu, &jobv, &m, &n, tmp_data, &m, s_vec, u, &m,
-		    vt, &n, work, &lwork, rwork, &info, 1L, 1L);
+		    vt, &nrow_vt, work, &lwork, rwork, &info, 1L, 1L);
 
-  left_sm = ComplexMatrix (u, m, m);
-  sigma = DiagMatrix (s_vec, m, n);
-  ComplexMatrix vt_m (vt, n, n);
-  right_sm = ComplexMatrix (vt_m.hermitian ());
+  left_sm = ComplexMatrix (u, m, ncol_u);
+  sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
+  ComplexMatrix vt_m (vt, nrow_vt, n);
+  right_sm = vt_m.hermitian ();
 
   delete [] tmp_data;
   delete [] work;

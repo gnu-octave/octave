@@ -32,6 +32,7 @@ class ostream;
 
 #include "dDiagMatrix.h"
 #include "CMatrix.h"
+#include "dbleSVD.h"
 
 extern "C++" {
 
@@ -43,8 +44,9 @@ public:
 
   ComplexSVD (void) {}
 
-  ComplexSVD (const ComplexMatrix& a);
-  ComplexSVD (const ComplexMatrix& a, int& info);
+  ComplexSVD (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
+  ComplexSVD (const ComplexMatrix& a, int& info,
+	      SVD::type svd_type = SVD::std); 
 
   ComplexSVD (const ComplexSVD& a);
 
@@ -58,21 +60,22 @@ public:
 
 private:
 
-  int init (const ComplexMatrix& a);
+  int init (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
 
   DiagMatrix sigma;
   ComplexMatrix left_sm;
   ComplexMatrix right_sm;
 };
 
-inline ComplexSVD::ComplexSVD (const ComplexMatrix& a)
+inline ComplexSVD::ComplexSVD (const ComplexMatrix& a, SVD::type svd_type) 
 {
-  init (a);
+  init (a, svd_type);
 }
 
-inline ComplexSVD::ComplexSVD (const ComplexMatrix& a, int& info)
+inline ComplexSVD::ComplexSVD (const ComplexMatrix& a, int& info,
+			       SVD::type svd_type)
 {
-  info = init (a);
+  info = init (a, svd_type);
 } 
 
 inline ComplexSVD::ComplexSVD (const ComplexSVD& a)

@@ -41,10 +41,16 @@ friend class Matrix;
 
 public:
 
+  enum type
+    {
+      std,
+      economy,
+    };
+
   SVD (void) {}
 
-  SVD (const Matrix& a);
-  SVD (const Matrix& a, int& info);
+  SVD (const Matrix& a, SVD::type svd_type = SVD::std);
+  SVD (const Matrix& a, int& info, SVD::type svd_type = SVD::std);
 
   SVD (const SVD& a);
 
@@ -58,21 +64,21 @@ public:
 
 private:
 
-  int init (const Matrix& a);
+  int init (const Matrix& a, SVD::type svd_type = SVD::std);
 
   DiagMatrix sigma;
   Matrix left_sm;
   Matrix right_sm;
 };
 
-inline SVD::SVD (const Matrix& a)
+inline SVD::SVD (const Matrix& a, SVD::type svd_type)
 {
-  init (a);
+  init (a, svd_type);
 }
 
-inline SVD::SVD (const Matrix& a, int& info)
+inline SVD::SVD (const Matrix& a, int& info, SVD::type svd_type)
 {
-  info = init (a);
+  info = init (a, svd_type);
 }
 
 inline SVD::SVD (const SVD& a)

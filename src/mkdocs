@@ -1,0 +1,12 @@
+#!/bin/sh
+
+sed -n -e '/^BEGIN_DOC_STRING/{
+  : loop
+  N
+  /END_DOC_STRING/b done
+  b loop
+  : done
+  s/BEGIN_DOC_STRING//
+  s/END_DOC_STRING//
+  p
+}'

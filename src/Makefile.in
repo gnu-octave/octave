@@ -27,6 +27,12 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 	  | $(srcdir)/mkdefs > $@.t
 	@mv $@.t $@
 
+%.dc : %.cc
+	@echo making $@ from $<
+	@$(CXXCPP) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_DOC $< \
+	  | $(srcdir)/mkdocs > $@.t
+	@mv $@.t $@
+
 # How to make a .oct file from a .o file:
 
 ifeq ($(OCTAVE_LITE), true)
@@ -175,6 +181,8 @@ VAR_2 := $(patsubst %.y, %, $(VAR_3))
 VAR_1 := $(patsubst %.l, %, $(VAR_2))
 VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
 
+DOC_FILES := $(sort $(DEF_FILES) $(patsubst %, %.df, $(VAR_FILES)))
+
 OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
   -L$(TOPDIR)/src $(RLD_FLAG)
 
@@ -195,7 +203,7 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: stamp-prereq libraries stamp-oct-links octave
+all: stamp-prereq libraries stamp-oct-links octave DOCSTRINGS
 .PHONY: all
 
 stamp-oct-links: $(OCT_FILES)
@@ -259,6 +267,17 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo $(VAR_FILES) > var-files
 	@$(srcdir)/mkbuiltins def-files var-files > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
+
+DOCSTRINGS: gendoc
+	./gendoc > $@.t
+	mv $@.t $@
+
+gendoc.cc: $(DOC_FILES) mkgendoc
+	@echo making $@
+	@echo DOC_FILES = $(DOC_FILES)
+	@echo $(DOC_FILES) > doc-files
+	@$(srcdir)/mkgendoc doc-files > $@-t
+	@$(top_srcdir)/move-if-change $@-t $@
 
 ops.cc: $(OP_SRC) mkops
 	@echo making $@ from $(OP_SRC)

@@ -41,6 +41,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "cmd-edit.h"
+#include "file-ops.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -57,6 +59,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
+#include "procstream.h"
 #include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
@@ -400,14 +403,11 @@ additional_help_message (ostream& os)
     os << "\n\
 Additional help for built-in functions, operators, and variables\n\
 is available in the on-line version of the manual.  Use the command\n\
-`help -i <topic>' to search the manual index.\n";
-
-  if (! Vsuppress_verbose_help_message)
-    os << "\n\
+`help -i <topic>' to search the manual index.\n\
+\n\
 Help and information about Octave is also available on the WWW\n\
 at http://www.che.wisc.edu/octave/octave.html and via the\n\
 help-octave@bevo.che.wisc.edu mailing list.\n";
-
 }
 
 // XXX FIXME XXX -- this needs a major overhaul to cope with new
@@ -647,21 +647,96 @@ help_from_info (const string_vector& argv, int idx, int argc)
 
 	  if (status)
 	    {
-	      if (status < 0)
-		{
-		  message ("help", "sorry, `%s' is not indexed in the manual",
-			   argv[i].c_str ());
-		  sleep (2);
-		}
-	      else
+	      if (status == 127)
 		{
 		  error ("help: unable to find info");
 		  error ("help: you need info 2.18 or later (texinfo 3.12)");
 		  break;
 		}
+	      else
+		{
+		  message ("help", "sorry, `%s' is not indexed in the manual",
+			   argv[i].c_str ());
+		}
 	    }
 	}
     }
+}
+
+static bool
+looks_like_texinfo (const string& msg, size_t& p1)
+{
+  p1 = msg.find ('\n');
+
+  string t = msg.substr (0, p1);
+
+  if (p1 == NPOS)
+    p1 = 0;
+
+  size_t p2 = t.find ("-*- texinfo -*-");
+
+  return (p2 != NPOS);
+}
+
+static void
+display_help_text (ostream& os, const string& msg)
+{
+  // Look for "-*- texinfo -*-" in first line of help message.  If it
+  // is present, use makeinfo to format the rest of the message before
+  // sending it to the output stream.  Otherwise, just print the
+  // message.
+
+  size_t pos;
+
+  if (looks_like_texinfo (msg, pos))
+    {
+      string tmp_file_name = file_ops::tempnam ("", "");
+
+      int cols = command_editor::terminal_cols ();
+
+      if (cols > 16)
+	cols--;
+
+      if (cols > 64)
+	cols -= 7;
+
+      if (cols > 80)
+	cols = 72;
+
+      ostrstream buf;
+      buf << "sed 's/^[#%]+ *//'"
+	  << " | makeinfo --fill-column " << cols
+	  << " --no-warn --no-validate --no-headers --force > "
+	  << tmp_file_name
+	  << ends;
+
+      char *cmd = buf.str ();
+
+      oprocstream filter (cmd);
+
+      delete [] cmd;
+
+      if (filter)
+	{
+	  filter << msg.substr (pos+1);
+
+	  filter.close ();
+
+	  ifstream tmp_file (tmp_file_name.c_str ());
+
+	  int c;
+	  while ((c = tmp_file.get ()) != EOF)
+	    os << (char) c;
+
+	  tmp_file.close ();
+
+	  file_ops::unlink (tmp_file_name);
+	}
+      else
+	os << msg;
+    }
+  else
+    os << msg;
 }
 
 static bool
@@ -681,7 +756,9 @@ help_from_list (ostream& os, const help_list *list,
 	      os << "\n*** " << nm << ":\n\n";
 	    }
 
-	  os << list->help << "\n";
+	  display_help_text (os, list->help);
+
+	  os << "\n";
 
 	  return true;
 	}
@@ -714,7 +791,9 @@ builtin_help (int argc, const string_vector& argv)
 	  if (h.length () > 0)
 	    {
 	      print_symbol_type (octave_stdout, sym_rec, argv[i], 1);
-	      octave_stdout << "\n" << h << "\n";
+	      octave_stdout << "\n";
+	      display_help_text (octave_stdout, h);
+	      octave_stdout << "\n";
 	      continue;
 	    }
 	}
@@ -726,8 +805,9 @@ builtin_help (int argc, const string_vector& argv)
       if (! h.empty ())
 	{
 	  octave_stdout << argv[i] << " is the file: "
-	    << path << "\n\n" << h << "\n";
-
+	    << path << "\n\n";
+	  display_help_text (octave_stdout, h);
+	  octave_stdout << "\n";
 	  continue;
 	}
 

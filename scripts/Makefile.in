@@ -36,13 +36,18 @@ BINDISTSUBDIRS = $(SUBDIRS)
 FCN_FILES = # $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
-all: $(SUBDIRS)
+all: $(SUBDIRS) DOCSTRINGS
 .PHONY: all
 
 $(SUBDIRS):
 	echo making all in $@
 	cd $@; $(MAKE) all
 .PHONY: $(SUBDIRS)
+
+DOCSTRINGS: gethelp mkdoc
+	$(srcdir)/mkdoc $(srcdir) > $@.t
+	@$(top_srcdir)/move-if-change $@.t $@
+.PHONY: DOCSTRINGS
 
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)

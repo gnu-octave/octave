@@ -1,0 +1,74 @@
+#! /bin/sh
+
+if test $# -ne 1; then
+  echo "usage: mkgendoc f1" 1>&2
+  exit 1
+fi
+
+DOC_FILES=`cat $1`
+
+if test -z "$DOC_FILES"; then
+  echo "mkgendoc: DOC_FILES is empty!" 1>&2
+  exit 1
+fi
+
+cat << \EOF
+// DO NOT EDIT!  Generated automatically by mkbuiltins.
+
+#include <iostream.h>
+#include <string>
+
+#define XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+  print_doc_string (#name, doc);
+
+#define XDEFALIAS_INTERNAL(alias, name)
+
+#define XDEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
+  print_doc_string (#name, doc);
+
+#define XDEFCONST_INTERNAL(name, sname, defn, protect, doc) \
+  print_doc_string (#name, doc);
+
+#define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
+			       d_c_map, c_c_map, lo, hi, \
+			       can_ret_cmplx_for_real, doc) \
+  print_doc_string (#name, doc);
+
+static void
+print_doc_string (const string& name, const string& doc)
+{
+  cout << "" << name << "\n";
+  cout << doc << "\n";
+}
+
+EOF
+
+for file in $DOC_FILES; do
+  fcn=`echo $file | sed 's,^\./,,; s/\.df//; s/-/_/g'`
+  echo "static void"
+  echo "print_${fcn}_doc_strings (void)"
+  echo "{"
+  cat $file
+  echo "}"
+  echo ""
+done
+
+cat << \EOF
+
+int
+main (void)
+{
+EOF
+
+for file in $DOC_FILES; do
+  fcn=`echo $file | sed 's,^\./,,; s/\.df//; s/-/_/g'`
+  echo "  print_${fcn}_doc_strings ();"
+done
+
+cat << \EOF
+
+  return 0;
+}
+EOF
+
+exit 0

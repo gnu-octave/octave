@@ -1,3 +1,9 @@
+1999-10-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (help_from_info): Print `unable to find info' message if
+	try_info returns 127; otherwise, print `not indexed' message.
+	Don't sleep after printing `not indexed' message.
+
 1999-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (fold (tree_unary_expression *)): New function.

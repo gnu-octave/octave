@@ -40,15 +40,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // and the second is for the definition of the function.
 
 #if defined (MAKE_BUILTINS)
+
 #if ! (defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING))
+
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
   DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
+
 #endif
+
 #else
+
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name); \
   DEFINE_FUN_INSTALLER_FUN (name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
+
 #endif
 
 #endif

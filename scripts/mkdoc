@@ -1,0 +1,9 @@
+#! /bin/sh
+
+if test $# != 1; then
+  d=.
+else
+  d=$1
+fi
+
+find $d -name '*.m' | sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < &," | /bin/sh

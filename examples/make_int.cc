@@ -35,7 +35,7 @@ class ostream;
 #include <octave/defun-dld.h>
 #include <octave/error.h>
 #include <octave/gripes.h>
-#include <octave/mappers.h>
+#include <octave/lo-mappers.h>
 #include <octave/oct-obj.h>
 #include <octave/ops.h>
 #include <octave/ov-base.h>

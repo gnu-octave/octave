@@ -174,66 +174,155 @@ DEFUN_DLD (mktime, args, ,
 }
 
 DEFUN_DLD (strftime, args, ,
-  "strftime (FMT, TMSTRUCT)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} strftime (@var{tm_struct})\n\
+Format a time structure in a flexible way using @samp{%} substitutions\n\
+similar to those in @code{printf}.  Except where noted, substituted\n\
+fields have a fixed size; numeric fields are padded if necessary.\n\
+Padding is with zeros by default; for fields that display a single\n\
+number, padding can be changed or inhibited by following the @samp{%}\n\
+with one of the modifiers described below.  Unknown field specifiers are\n\
+copied as normal characters.  All other characters are copied to the\n\
+output without change.  For example,\n\
 \n\
-Performs `%' substitutions similar to those in printf.  Except where\n\
-noted, substituted fields have a fixed size; numeric fields are\n\
-padded if necessary.  Padding is with zeros by default; for fields\n\
-that display a single number, padding can be changed or inhibited by\n\
-following the `%' with one of the modifiers described below.\n\
-Unknown field specifiers are copied as normal characters.  All other\n\
-characters are copied to the output without change.\n\
+@example\n\
+@group\n\
+strftime (\"%r (%Z) %A %e %B %Y\", localtime (time ())\n\
+     @result{} \"01:15:06 AM (CST) Monday 17 February 1997\"\n\
+@end group\n\
+@end example\n\
 \n\
-Supports a superset of the ANSI C field specifiers.\n\
+Octave's @code{strftime} function supports a superset of the ANSI C\n\
+field specifiers.\n\
 \n\
+@noindent\n\
 Literal character fields:\n\
 \n\
-  %	%\n\
-  n	newline\n\
-  t	tab\n\
+@table @code\n\
+@item %\n\
+% character.\n\
 \n\
+@item n\n\
+Newline character.\n\
+\n\
+@item t\n\
+Tab character.\n\
+@end table\n\
+\n\
+@noindent\n\
 Numeric modifiers (a nonstandard extension):\n\
 \n\
-  -	do not pad the field\n\
-  _	pad the field with spaces\n\
+@table @code\n\
+@item - (dash)\n\
+Do not pad the field.\n\
 \n\
+@item _ (underscore)\n\
+Pad the field with spaces.\n\
+@end table\n\
+\n\
+@noindent\n\
 Time fields:\n\
 \n\
-  %H  hour (00..23)\n\
-  %I  hour (01..12)\n\
-  %k  hour ( 0..23)\n\
-  %l  hour ( 1..12)\n\
-  %M  minute (00..59)\n\
-  %p  locale's AM or PM\n\
-  %r  time, 12-hour (hh:mm:ss [AP]M)\n\
-  %R  time, 24-hour (hh:mm)\n\
-  %s  time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension)\n\
-  %S  second (00..61)\n\
-  %T  time, 24-hour (hh:mm:ss)\n\
-  %X  locale's time representation (%H:%M:%S)\n\
-  %Z  time zone (EDT), or nothing if no time zone is determinable\n\
-  %z  offset from GMT\n\
+@table @code\n\
+@item %H\n\
+Hour (00-23).\n\
 \n\
+@item %I\n\
+Hour (01-12).\n\
+\n\
+@item %k\n\
+Hour (0-23).\n\
+\n\
+@item %l\n\
+Hour (1-12).\n\
+\n\
+@item %M\n\
+Minute (00-59).\n\
+\n\
+@item %p\n\
+Locale's AM or PM.\n\
+\n\
+@item %r\n\
+Time, 12-hour (hh:mm:ss [AP]M).\n\
+\n\
+@item %R\n\
+Time, 24-hour (hh:mm).\n\
+\n\
+@item %s\n\
+Time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension).\n\
+\n\
+@item %S\n\
+Second (00-61).\n\
+\n\
+@item %T\n\
+Time, 24-hour (hh:mm:ss).\n\
+\n\
+@item %X\n\
+Locale's time representation (%H:%M:%S).\n\
+\n\
+@item %Z\n\
+Time zone (EDT), or nothing if no time zone is determinable.\n\
+@end table\n\
+\n\
+@noindent\n\
 Date fields:\n\
 \n\
-  %a  locale's abbreviated weekday name (Sun..Sat)\n\
-  %A  locale's full weekday name, variable length (Sunday..Saturday)\n\
-  %b  locale's abbreviated month name (Jan..Dec)\n\
-  %B  locale's full month name, variable length (January..December)\n\
-  %c  locale's date and time (Sat Nov 04 12:02:33 EST 1989)\n\
-  %C  century (00..99)\n\
-  %d  day of month (01..31)\n\
-  %e  day of month ( 1..31)\n\
-  %D  date (mm/dd/yy)\n\
-  %h  same as %b\n\
-  %j  day of year (001..366)\n\
-  %m  month (01..12)\n\
-  %U  week number of year with Sunday as first day of week (00..53)\n\
-  %w  day of week (0..6)\n\
-  %W  week number of year with Monday as first day of week (00..53)\n\
-  %x  locale's date representation (mm/dd/yy)\n\
-  %y  last two digits of year (00..99)\n\
-  %Y  year (1970...)")
+@table @code\n\
+@item %a\n\
+Locale's abbreviated weekday name (Sun-Sat).\n\
+\n\
+@item %A\n\
+Locale's full weekday name, variable length (Sunday-Saturday).\n\
+\n\
+@item %b\n\
+Locale's abbreviated month name (Jan-Dec).\n\
+\n\
+@item %B\n\
+Locale's full month name, variable length (January-December).\n\
+\n\
+@item %c\n\
+Locale's date and time (Sat Nov 04 12:02:33 EST 1989).\n\
+\n\
+@item %C\n\
+Century (00-99).\n\
+\n\
+@item %d\n\
+Day of month (01-31).\n\
+\n\
+@item %e\n\
+Day of month ( 1-31).\n\
+\n\
+@item %D\n\
+Date (mm/dd/yy).\n\
+\n\
+@item %h\n\
+Same as %b.\n\
+\n\
+@item %j\n\
+Day of year (001-366).\n\
+\n\
+@item %m\n\
+Month (01-12).\n\
+\n\
+@item %U\n\
+Week number of year with Sunday as first day of week (00-53).\n\
+\n\
+@item %w\n\
+Day of week (0-6).\n\
+\n\
+@item %W\n\
+Week number of year with Monday as first day of week (00-53).\n\
+\n\
+@item %x\n\
+Locale's date representation (mm/dd/yy).\n\
+\n\
+@item %y\n\
+Last two digits of year (00-99).\n\
+\n\
+@item %Y\n\
+Year (1970-).\n\
+@end table\n\
+@end deftypefn\n")
 {
   octave_value_list retval;
 

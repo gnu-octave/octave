@@ -17,7 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: ctime (TIME)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} ctime (@var{t})
+## Convert a value returned from @code{time} (or any other nonnegative
+## integer), to the local time and return a string of the same form as
+## @code{asctime}.  The function @code{ctime (time)} is equivalent to
+## @code{asctime (localtime (time))}.  For example,
+## 
+## @example
+## @group
+## ctime (time ())
+##      @result{} "Mon Feb 17 01:15:06 1997"
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

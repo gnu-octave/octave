@@ -1,0 +1,2 @@
+c = rand ();
+isnan (c)

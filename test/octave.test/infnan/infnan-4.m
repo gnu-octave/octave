@@ -1,0 +1,2 @@
+b = NaN;
+finite (b)

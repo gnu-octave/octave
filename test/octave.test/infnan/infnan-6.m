@@ -1,0 +1,2 @@
+b = NaN;
+isnan (b)

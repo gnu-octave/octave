@@ -1,0 +1,2 @@
+c = rand ();
+finite (c)

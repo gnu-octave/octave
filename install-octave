@@ -214,32 +214,37 @@ echo "installing info as $archlibdir/info"
 cp info/info $archlibdir/info
 chmod 755 $archlibdir/info
 
-echo "installing shared libraries in $libdir"
-for f in `cat LIBRARIES`
-do
-  file=`basename $f`
-  cp $f $libdir/$file
-  chmod 644 $libdir/$file
-done
-
-echo "installing .oct files in $octfiledir"
-cd src
-for f in `find . -name '*.oct' -print`
-do
-  file=`basename $f`
-  cp $f $octfiledir/$file
-  chmod 755 $octfiledir/$file
-done
-if test -f links-to-make; then
-  cat links-to-make | while read src dest
+if test -f LIBRARIES; then
+  echo "installing shared libraries in $libdir"
+  for f in `cat LIBRARIES`
   do
-    if test -n "$src" && test -n "$dest"; then
-      cd $octfiledir
-      ln $src $dest
-    fi
+    file=`basename $f`
+    cp $f $libdir/$file
+    chmod 644 $libdir/$file
   done
 fi
-cd $distdir
+
+oct_files=`find . -name '*.oct' -print`
+if test -n "$oct_files"; then
+  echo "installing .oct files in $octfiledir"
+  cd src
+  for f in $oct_files
+  do
+    file=`basename $f`
+    cp $f $octfiledir/$file
+    chmod 755 $octfiledir/$file
+  done
+  if test -f links-to-make; then
+    cat links-to-make | while read src dest
+    do
+      if test -n "$src" && test -n "$dest"; then
+	cd $octfiledir
+	ln $src $dest
+      fi
+    done
+  fi
+  cd $distdir
+fi
 
 echo "installing .m files in $fcnfiledir"
 cd scripts

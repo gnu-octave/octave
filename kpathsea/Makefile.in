@@ -220,7 +220,9 @@ bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
 	  ln $(BINDISTFILES) ../`cat ../.fname`/kpathsea ; \
 	fi
-	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+	if [ -n "$(BINDISTLIBS)" ]; then \
+	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES ; \
+	fi
 .PHONY: bin-dist
 
 ac_include ../make/config.make

@@ -1,3 +1,8 @@
+Fri Feb 14 16:22:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (bin-dist): Don't write empty strings to LIBRARIES.
+	(bin-dist) (bin-dist): Don't write empty strings to LIBRARIES.
+
 Thu Feb 13 13:50:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (stamp-history, stamp-readline): Use $(SH_LD)

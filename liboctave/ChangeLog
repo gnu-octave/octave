@@ -1,3 +1,7 @@
+Fri Feb 14 16:23:47 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (bin-dist): Don't write empty strings to LIBRARIES.
+
 Thu Feb 13 14:35:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (stamp-prereq): Depend on stamp-picdir.

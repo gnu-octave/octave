@@ -1,5 +1,8 @@
 Fri Feb 14 14:07:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* install-octave: Don't fail if LIBRARIES file is missing.
+	Don't try to install .oct files if there aren't any.
+
 	* octMakefile.in (bin-dist-type): Delete target.
 	(binary-dist): Don't depend on bin-dist-type.
 	Don't delete config.status or config.h here.

@@ -233,7 +233,9 @@ bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
 	  ln $(BINDISTFILES) ../`cat ../.fname`/liboctave ; \
 	fi
-	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+	if [ -n "$(BINDISTLIBS)" ]; then \
+	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES ; \
+	fi
 .PHONY: bin-dist
 
 # If missing, GNU make attempts to create them in the reverse of the

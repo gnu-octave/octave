@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.146 $)
+AC_REVISION($Revision: 1.147 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -642,6 +642,8 @@ AC_CHECK_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror atexit)
 AC_CHECK_FUNCS(on_exit tempnam memmove putenv getrusage)
 AC_CHECK_FUNCS(mkdir rmdir rename umask)
 AC_CHECK_FUNCS(sigaction sigprocmask sigpending sigsuspend)
+
+OCTAVE_SMART_PUTENV
 
 AC_CHECK_LIB(dl, dlopen)
 AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)

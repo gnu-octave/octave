@@ -339,12 +339,13 @@ AC_MSG_RESULT([$octave_cv_f2c_f77_compat])])
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.
-
-# Some BSD putenv's, e.g., FreeBSD, do malloc/free's on the environment.
-# This test program is due to Mike Hibler <mike@cs.utah.edu>.
-# We don't actually need to run this if we don't have putenv, but it
-# doesn't hurt.
-AC_MSG_CHECKING(whether putenv uses malloc)
+dnl
+dnl Some BSD putenv's, e.g., FreeBSD, do malloc/free's on the environment.
+dnl This test program is due to Mike Hibler <mike@cs.utah.edu>.
+dnl We don't actually need to run this if we don't have putenv, but it
+dnl doesn't hurt.
+AC_DEFUN(OCTAVE_SMART_PUTENV,
+[AC_MSG_CHECKING(whether putenv uses malloc)
 AC_CACHE_VAL(octave_cv_func_putenv_malloc,
 [AC_TRY_RUN([
 #define VAR	"YOW_VAR"
@@ -400,4 +401,4 @@ main ()
 AC_MSG_RESULT($octave_cv_func_putenv_malloc)
 if test $octave_cv_func_putenv_malloc = yes; then
   AC_DEFINE(SMART_PUTENV)
-fi
+fi])

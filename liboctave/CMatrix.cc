@@ -2062,23 +2062,23 @@ ComplexMatrix::too_large_for_float (void) const
   return false;
 }
 
-Matrix
+boolMatrix
 ComplexMatrix::all (void) const
 {
   int nr = rows ();
   int nc = cols ();
-  Matrix retval;
+  boolMatrix retval;
   if (nr > 0 && nc > 0)
     {
       if (nr == 1)
 	{
 	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
+	  retval.elem (0, 0) = true;
 	  for (int j = 0; j < nc; j++)
 	    {
 	      if (elem (0, j) == 0.0)
 		{
-		  retval.elem (0, 0) = 0.0;
+		  retval.elem (0, 0) = false;
 		  break;
 		}
 	    }
@@ -2086,12 +2086,12 @@ ComplexMatrix::all (void) const
       else if (nc == 1)
 	{
 	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
+	  retval.elem (0, 0) = true;
 	  for (int i = 0; i < nr; i++)
 	    {
 	      if (elem (i, 0) == 0.0)
 		{
-		  retval.elem (0, 0) = 0.0;
+		  retval.elem (0, 0) = false;
 		  break;
 		}
 	    }
@@ -2101,12 +2101,12 @@ ComplexMatrix::all (void) const
 	  retval.resize (1, nc);
 	  for (int j = 0; j < nc; j++)
 	    {
-	      retval.elem (0, j) = 1.0;
+	      retval.elem (0, j) = true;
 	      for (int i = 0; i < nr; i++)
 		{
 		  if (elem (i, j) == 0.0)
 		    {
-		      retval.elem (0, j) = 0.0;
+		      retval.elem (0, j) = false;
 		      break;
 		    }
 		}
@@ -2116,23 +2116,23 @@ ComplexMatrix::all (void) const
   return retval;
 }
 
-Matrix
+boolMatrix
 ComplexMatrix::any (void) const
 {
   int nr = rows ();
   int nc = cols ();
-  Matrix retval;
+  boolMatrix retval;
   if (nr > 0 && nc > 0)
     {
       if (nr == 1)
 	{
 	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
+	  retval.elem (0, 0) = false;
 	  for (int j = 0; j < nc; j++)
 	    {
 	      if (elem (0, j) != 0.0)
 		{
-		  retval.elem (0, 0) = 1.0;
+		  retval.elem (0, 0) = true;
 		  break;
 		}
 	    }
@@ -2140,12 +2140,12 @@ ComplexMatrix::any (void) const
       else if (nc == 1)
 	{
 	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
+	  retval.elem (0, 0) = false;
 	  for (int i = 0; i < nr; i++)
 	    {
 	      if (elem (i, 0) != 0.0)
 		{
-		  retval.elem (0, 0) = 1.0;
+		  retval.elem (0, 0) = true;
 		  break;
 		}
 	    }
@@ -2155,12 +2155,12 @@ ComplexMatrix::any (void) const
 	  retval.resize (1, nc);
 	  for (int j = 0; j < nc; j++)
 	    {
-	      retval.elem (0, j) = 0.0;
+	      retval.elem (0, j) = false;
 	      for (int i = 0; i < nr; i++)
 		{
 		  if (elem (i, j) != 0.0)
 		    {
-		      retval.elem (0, j) = 1.0;
+		      retval.elem (0, j) = true;
 		      break;
 		    }
 		}

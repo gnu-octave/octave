@@ -57,6 +57,9 @@ public:
 
   boolMatrix transpose (void) const;
 
+  boolMatrix all (void) const;
+  boolMatrix any (void) const;
+
 #if 0
   // i/o
 

@@ -47,10 +47,10 @@ function bug_report ()
       fclose (prefs);
     endif
 
-    cmd = "octave-bug";
+    cmd = strcat (OCTAVE_HOME, "/bin/octave-bug");
 
     if (length (subject) > 0)
-      cmd = sprintf ("%s/bin/%s -s \"%s\"", __OCTAVE_HOME__, cmd, subject);
+      cmd = sprintf ("%s -s \"%s\"", cmd, subject);
     endif
 
     if (! isempty (prefs))

@@ -213,8 +213,8 @@ public:
   bool all_integers (double& max_val, double& min_val) const;
   bool too_large_for_float (void) const;
 
-  Matrix all (void) const;
-  Matrix any (void) const;
+  boolMatrix all (void) const;
+  boolMatrix any (void) const;
 
   ComplexMatrix cumprod (void) const;
   ComplexMatrix cumsum (void) const;

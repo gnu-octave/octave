@@ -1,5 +1,10 @@
 Tue Mar 25 17:37:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* boolMatrix.cc (boolMatrix::all, boolMatrix::any): New functions.
+
+	* dMatrix.cc (Matrix::all, Matrix::any): Return boolMatrix.
+	* CMatrix.cc (ComplexMatrix::all, ComplexMatrix::any): Likewise.
+
 	* idx-vector.h (idx_vector::idx_vector_rep::freeze,
 	idx_vector::freeze): Delete prefer_zero_one arg.
 	* Array-idx.h, Array2-idx.h: Change all callers.

@@ -1,5 +1,9 @@
 Tue Mar 25 17:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-bool-mat.cc (octave_bool_matrix::is_true): Write guts.
+
+	* ov-bool-mat.h (octave_bool_matrix): Implement all() and any().
+
 	* defaults.cc (symbols_of_defaults): DEFCONST OCTAVE_HOME.
 
 	* toplev.cc (octave_config_info): Delete use of CXXLIBS.

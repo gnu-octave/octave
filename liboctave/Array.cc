@@ -1792,14 +1792,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
   int orig_len = number_of_elements (dims ());
 
-  Array<int> idx_orig_dimsXXX = ra_idx.orig_dimensions (); 
-
-  dim_vector idx_orig_dims;
-
-  idx_orig_dims.resize (idx_orig_dimsXXX.length ());
-
-  for (int i = 0; i < idx_orig_dimsXXX.length (); i++)
-    idx_orig_dims(i) = idx_orig_dimsXXX(i);
+  dim_vector idx_orig_dims = ra_idx.orig_dimensions (); 
 
   if (ra_idx.is_colon ())
     {

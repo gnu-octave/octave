@@ -1,5 +1,16 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* idx-vector.h (idx_vector::orig_empty): Check orig_dims for
+	zeros, not orig_rows or orig_columns.
+	(idx_vector::idx_vector_rep::orig_rows): Define using orig_dims.
+	(idx_vector::idx_vector_rep::orig_columns): Likewise.
+
+	* idx-vector.cc (idx_vector::idx_vector_rep::orig_nr,
+	(idx_vector::idx_vector_rep::orig_nc): Delete.
+
+	* idx-vector.cc (idx_vector::idx_vector_rep):
+	Use initialization lists for constructors.
+
 	* Array.cc (Array<T>::indexN): Correctly handle single colon index.
 	Omit special case for ra_idx.capacity () == 1.
 	Always allow single index for matrix args with optional warning.

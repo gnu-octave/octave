@@ -44,31 +44,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define IDX_VEC_REP idx_vector::idx_vector_rep
 
 IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
+  : data (0), len (a.len), num_zeros (a.num_zeros), num_ones (a.num_ones),
+    max_val (a.max_val), min_val (a.min_val),
+    frozen_at_z_len (a.frozen_at_z_len), frozen_len (a.frozen_len),
+    colon (a.colon), one_zero (a.one_zero), initialized (a.initialized),
+    frozen (a.frozen), colon_equiv_checked (a.colon_equiv_checked),
+    colon_equiv (a.colon_equiv), orig_dims (a.orig_dims)
 {
-  data = 0;
-  initialized = a.initialized;
-  frozen = a.frozen;
-  colon_equiv_checked = a.colon_equiv_checked;
-  colon_equiv = a.colon_equiv;
-
-  colon = a.colon;
-
-  orig_nr = a.orig_nr;
-  orig_nc = a.orig_nc;
-
-  len = a.len;
   if (len > 0)
     {
       data = new int [len];
       for (int i = 0; i < len; i++)
 	data[i] = a.data[i];
-
-      num_zeros = a.num_zeros;
-      num_ones = a.num_ones;
-      one_zero = a.one_zero;
-
-      max_val = a.max_val;
-      min_val = a.min_val;
     }
 }
 
@@ -106,26 +93,13 @@ idx_is_inf_or_nan (double x)
 }
 
 IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
+  : data (0), len (v.length ()), num_zeros (0), num_ones (0), max_val (0),
+    min_val (0), count (1), frozen_at_z_len (0), frozen_len (0),
+    colon (0), one_zero (0), initialized (0), frozen (0),
+    colon_equiv_checked (0), colon_equiv (0), orig_dims (len, 1)
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 0;
-
-  len = v.length ();
-
-  orig_nr = len;
-  orig_nc = 1;
-
   if (len == 0)
     {
-      num_zeros = 0;
-      num_ones = 0;
-      max_val = 0;
-      min_val = 0;
       initialized = 1;
       return;
     }
@@ -148,26 +122,14 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
 }
 
 IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
+  : data (0), len (nda.length ()), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (0), one_zero (0), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (nda.dims ())
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 0;
-
-  orig_nr = nda.rows ();
-  orig_nc = nda.cols ();
-
-  len = nda.length ();
-
   if (len == 0)
     {
-      num_zeros = 0;
-      num_ones = 0;
-      max_val = 0;
-      min_val = 0;
       initialized = 1;
       return;
     }
@@ -191,20 +153,12 @@ IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
 }
 
 IDX_VEC_REP::idx_vector_rep (const Range& r)
+  : data (0), len (r.nelem ()), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (0), one_zero (0), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (1, len)
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 0;
-
-  len = r.nelem ();
-
-  orig_nr = 1;
-  orig_nc = len;
-
   if (len < 0)
     {
       (*current_liboctave_error_handler) ("invalid range used as index");
@@ -212,10 +166,6 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
     }
   else if (len == 0)
     {
-      num_zeros = 0;
-      num_ones = 0;
-      max_val = 0;
-      min_val = 0;
       initialized = 1;
       return;
     }
@@ -239,20 +189,12 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
 }
 
 IDX_VEC_REP::idx_vector_rep (double d)
+  : data (0), len (1), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (0), one_zero (0), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (1, 1)
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 0;
-
-  len = 1;
-
-  orig_nr = 1;
-  orig_nc = 1;
-
   if (idx_is_inf_or_nan (d))
     return;
   else
@@ -266,20 +208,12 @@ IDX_VEC_REP::idx_vector_rep (double d)
 }
 
 IDX_VEC_REP::idx_vector_rep (int i)
+  : data (0), len (1), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (0), one_zero (0), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (1, 1)
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 0;
-
-  len = 1;
-
-  orig_nr = 1;
-  orig_nc = 1;
-
   data = new int [len];
 
   data[0] = tree_to_mat_idx (i);
@@ -288,38 +222,24 @@ IDX_VEC_REP::idx_vector_rep (int i)
 }
 
 IDX_VEC_REP::idx_vector_rep (char c)
+  : data (0), len (0), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (1), one_zero (0), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (0, 0)
 {
   assert (c == ':');
-
-  colon = 1;
-  len = 0;
-  num_zeros = 0;
-  num_ones = 0;
-  one_zero = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  data = 0;
 
   init_state ();
 }
 
 IDX_VEC_REP::idx_vector_rep (bool b)
+  : data (0), len (1), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (0), one_zero (1), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (1, 1)
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 1;
-
-  len = 1;
-
-  orig_nr = 1;
-  orig_nc = 1;
-
   data = new int [len];
 
   data[0] = tree_to_mat_idx (b);
@@ -328,27 +248,14 @@ IDX_VEC_REP::idx_vector_rep (bool b)
 }
 
 IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
+  : data (0), len (bnda.length ()), num_zeros (0), num_ones (0),
+    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+    frozen_len (0), colon (0), one_zero (1), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0),
+    orig_dims (bnda.dims ())
 {
-  data = 0;
-  initialized = 0;
-  frozen = 0;
-  colon_equiv_checked = 0;
-  colon_equiv = 0;
-  colon = 0;
-  one_zero = 1;
-
-  orig_nr = bnda.rows ();
-  orig_nc = bnda.cols ();
-
-  len = bnda.length ();
-
   if (len == 0)
     {
-      num_zeros = 0;
-      num_ones = 0;
-      one_zero = 0;
-      max_val = 0;
-      min_val = 0;
       initialized = 1;
       return;
     }
@@ -369,16 +276,6 @@ IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
 {
   if (this != &a)
     {
-      initialized = a.initialized;
-      frozen = a.frozen;
-      colon_equiv_checked = a.colon_equiv_checked;
-      colon_equiv = a.colon_equiv;
-
-      colon = a.colon;
-
-      orig_nr = a.orig_nr;
-      orig_nc = a.orig_nc;
-
       delete [] data;
       len = a.len;
       data = new int [len];
@@ -387,11 +284,19 @@ IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
 
       num_zeros = a.num_zeros;
       num_ones = a.num_ones;
-      one_zero = a.one_zero;
-
       max_val = a.max_val;
       min_val = a.min_val;
+      frozen_at_z_len = a.frozen_at_z_len;
+      frozen_len = a.frozen_len;
+      colon = a.colon;
+      one_zero = a.one_zero;
+      initialized = a.initialized;
+      frozen = a.frozen;
+      colon_equiv_checked = a.colon_equiv_checked;
+      colon_equiv = a.colon_equiv;
+      orig_dims = a.orig_dims;
     }
+
   return *this;
 }
 

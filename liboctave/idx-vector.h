@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
-#include "Array.h"
+#include "dim-vector.h"
 
 class ColumnVector;
 class boolNDArray;
@@ -47,20 +47,10 @@ private:
   public:
 
     idx_vector_rep (void)
-      {
-	colon = 0;
-	len = 0;
-	num_zeros = 0;
-	num_ones = 0;
-	one_zero = 0;
-	orig_nr = 0;
-	orig_nc = 0;
-	initialized = 0;
-	frozen = 0;
-	colon_equiv_checked = 0;
-	colon_equiv = 0;
-	data = 0;
-      }
+      : data (0), len (0), num_zeros (0), num_ones (0), max_val (0),
+	min_val (0), count (1), frozen_at_z_len (0), frozen_len (0),
+	colon (0), one_zero (0), initialized (0), frozen (0),
+	colon_equiv_checked (0), colon_equiv (0), orig_dims () { }
 
     idx_vector_rep (const ColumnVector& v);
 
@@ -106,10 +96,10 @@ private:
 
     void sort (bool uniq);
 
-    int orig_rows (void) const { return orig_nr; }
-    int orig_columns (void) const { return orig_nc; }
+    int orig_rows (void) const { return orig_dims(0); }
+    int orig_columns (void) const { return orig_dims(1); }
 
-    Array<int> orig_dimensions (void) const { return orig_dims; }
+    dim_vector orig_dimensions (void) const { return orig_dims; }
 
     // other stuff
 
@@ -128,18 +118,10 @@ private:
     int max_val;
     int min_val;
 
-    // XXX FIXME XXX -- with the introduction of orig_dims, these two
-    // variables are not neccessary.  orig_dims(0) and orig_dims(1)
-    // should replace them in the code.
-
-    int orig_nr;
-    int orig_nc;
-
-    Array<int> orig_dims;
- 
     int count;
     int frozen_at_z_len;
     int frozen_len;
+
     unsigned int colon : 1;
     unsigned int one_zero : 1;
     unsigned int initialized : 1;
@@ -147,6 +129,8 @@ private:
     unsigned int colon_equiv_checked : 1;
     unsigned int colon_equiv : 1;
 
+    dim_vector orig_dims;
+ 
     void init_state (void);
 
     void maybe_convert_one_zero_to_idx (int z_len);
@@ -258,18 +242,15 @@ public:
   int orig_rows (void) const { return rep->orig_rows (); }
   int orig_columns (void) const { return rep->orig_columns (); }
 
-  Array<int> orig_dimensions (void) const { return rep->orig_dimensions (); }
+  dim_vector orig_dimensions (void) const { return rep->orig_dimensions (); }
 
   int orig_empty (void) const
-    {
-      return (! is_colon ()
-	      && (orig_rows () == 0 || orig_columns () == 0));
-    }
+    { return (! is_colon () && orig_dimensions().any_zero ()); }
 
-// Unsafe.  Avoid at all cost.
+  // Unsafe.  Avoid at all cost.
   void shorten (int n) { rep->shorten (n); }
 
-// i/o
+  // i/o
 
   int freeze (int z_len, const char *tag, bool resize_ok = false,
 	      bool warn_resize = false)

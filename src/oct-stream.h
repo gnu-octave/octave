@@ -492,6 +492,8 @@ public:
 
   static octave_value open_file_numbers (void);
 
+  static int get_file_number (const octave_value& fid);
+
 private:
 
   Array<octave_stream*> list;
@@ -517,7 +519,7 @@ private:
 
   octave_value do_open_file_numbers (void) const;
 
-  int get_file_number (const octave_value& fid) const;
+  int do_get_file_number (const octave_value& fid) const;
 };
 
 #endif

@@ -168,12 +168,25 @@ DEFUN (fflush, args, ,
 
   if (nargin == 1)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      // XXX FIXME XXX -- any way to avoid special case for stdout?
 
-      if (os)
-	retval = (double) os->flush ();
+      int fid = octave_stream_list::get_file_number (args (0));
+
+      if (fid == 1)
+	{
+	  flush_octave_stdout ();
+
+	  retval = 0.0;
+	}
       else
-	gripe_invalid_file_id ("fflush");
+	{
+	  octave_stream *os = octave_stream_list::lookup (fid);
+
+	  if (os)
+	    retval = (double) os->flush ();
+	  else
+	    gripe_invalid_file_id ("fflush");
+	}
     }
   else
     print_usage ("fflush");

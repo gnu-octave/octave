@@ -2685,7 +2685,7 @@ octave_stream_list::open_file_numbers (void)
 }
 
 int
-octave_stream_list::get_file_number (const octave_value& fid) const
+octave_stream_list::do_get_file_number (const octave_value& fid) const
 {
   int retval = -1;
 
@@ -2717,6 +2717,17 @@ octave_stream_list::get_file_number (const octave_value& fid) const
       else
 	retval = int_fid;
     }
+
+  return retval;
+}
+
+int
+octave_stream_list::get_file_number (const octave_value& fid)
+{
+  int retval = -1;
+
+  if (instance)
+    retval = instance->do_get_file_number (fid);
 
   return retval;
 }

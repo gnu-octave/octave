@@ -1527,7 +1527,7 @@ If the value of @code{implicit_str_to_num_ok} is nonzero, implicit\n\
 conversions of strings to their numeric ASCII equivalents are allowed.\n\
 Otherwise, an error message is printed and control is returned to the\n\
 top level.  The default value is 0.\n\
-@end defvr")
+@end defvr");
 
   DEFVAR (ok_to_lose_imaginary_part, "warn", ok_to_lose_imaginary_part,
     "silently convert from complex to real by dropping imaginary part");
@@ -1554,7 +1554,7 @@ if they are given one as an argument.  The default value is 1.\n\
 @defvr {Built-in Variable} struct_levels_to_print\n\
 You can tell Octave how many structure levels to display by setting the\n\
 built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
-@end defvr")
+@end defvr");
 
   DEFVAR (warn_divide_by_zero, 1.0, warn_divide_by_zero,
     "if TRUE, warn about division by zero");

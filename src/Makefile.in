@@ -291,6 +291,9 @@ gendoc.cc: $(DOC_FILES) mkgendoc
 	@$(srcdir)/mkgendoc doc-files > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
 
+gendoc: gendoc.cc
+	$(CXX) -o $@ $^
+
 ops.cc: $(OP_SRC) mkops
 	@echo making $@ from $(OP_SRC)
 	@$(srcdir)/mkops $(OP_SRC) > $@.t

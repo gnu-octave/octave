@@ -642,9 +642,9 @@ example,\n\
 @group\n\
 [ \"f\", 111, 111 ]\n\
      @result{} \"foo\"\n\
-@end group\n\ 
+@end group\n\
 @end example\n\
-@end defvr")
+@end defvr");
 
   DEFVAR (string_fill_char, " ", string_fill_char,
     "-*- texinfo -*-\n\
@@ -662,7 +662,7 @@ string_fill_char = \"X\";\n\
         \"strings\"\n\
 @end group\n\
 @end example\n\
-@end defvr")
+@end defvr");
 
 }
 

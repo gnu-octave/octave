@@ -1,5 +1,7 @@
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (gendoc.o): Don't optimize when creating gendoc.
+
 	* pt-decl.cc (Vdefault_global_variable_value): Texinofize doc string.
 	* variables.cc (Fclear, Fdocument, Fexist, Fis_global, Fwho): Ditto.
 	* help.cc (Ftype, Fwhich): Ditto.

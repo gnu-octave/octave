@@ -38,8 +38,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <climits>
 #include <cerrno>
+#include <climits>
+#include <cstdio>
 
 #include <iostream>
 #include <vector>
@@ -337,8 +338,15 @@ do_stream_open (const std::string& name, const std::string& mode,
       oct_mach_info::float_format flt_fmt =
 	oct_mach_info::string_to_float_format (arch);
 
-      if (! error_state)
-	retval = octave_fstream::create (name, md, flt_fmt);
+      FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
+
+      if (fptr)
+	{	
+	  if (! error_state)
+	    retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+	}
+      else
+	error ("fopen: failed to open file %s", name.c_str ());
     }
 
   return retval;
@@ -638,7 +646,7 @@ Return the position of the file pointer as the number of characters\n\
 from the beginning of the file @var{fid}.\n\
 @end deftypefn")
 {
-  octave_value retval = streamoff_array (dim_vector (1, 1), -1);
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -647,7 +655,7 @@ from the beginning of the file @var{fid}.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "ftell");
 
       if (! error_state)
-	retval = streamoff_array (dim_vector (1, 1), os.tell ());
+	retval = os.tell ();
     }
   else
     print_usage ("ftell");

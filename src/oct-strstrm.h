@@ -41,11 +41,11 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (std::streamoff offset, std::ios::seekdir origin);
+  int seek (long offset, int origin);
 
   // Return current stream position.
 
-  std::streamoff tell (void) const;
+  long tell (void);
 
   // The name of the file.
 

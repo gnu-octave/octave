@@ -334,11 +334,11 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  virtual int seek (std::streamoff offset, std::ios::seekdir origin) = 0;
+  virtual int seek (long offset, int origin) = 0;
 
   // Return current stream position.
 
-  virtual std::streamoff tell (void) const = 0;
+  virtual long tell (void) = 0;
 
   // Return TRUE if EOF has been reached on this stream.
 
@@ -502,10 +502,10 @@ public:
   std::string gets (const octave_value& max_len, bool& err,
 		    const std::string& who /* = "gets" */);
 
-  int seek (std::streamoff offset, std::ios::seekdir origin);
+  int seek (long offset, int origin);
   int seek (const octave_value& offset, const octave_value& origin);
 
-  std::streamoff tell (void) const;
+  long tell (void);
 
   int rewind (void);
 

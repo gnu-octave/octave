@@ -2692,7 +2692,7 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err,
 }
 
 int
-octave_stream::seek (std::streamoff offset, std::ios::seekdir origin)
+octave_stream::seek (long offset, int origin)
 {
   int retval = -1;
 
@@ -2708,24 +2708,24 @@ octave_stream::seek (const octave_value& tc_offset,
 {
   int retval = -1;
 
-  std::streamoff xoffset = tc_offset.streamoff_value ();
+  long xoffset = tc_offset.long_value (true);
 
   if (! error_state)
     {
       int conv_err = 0;
 
-      std::ios::seekdir origin = std::ios::beg;
+      int origin = SEEK_SET;
 
       if (tc_origin.is_string ())
 	{
 	  std::string xorigin = tc_origin.string_value ();
 
 	  if (xorigin == "bof")
-	    origin = std::ios::beg;
+	    origin = SEEK_SET;
 	  else if (xorigin == "cof")
-	    origin = std::ios::cur;
+	    origin = SEEK_CUR;
 	  else if (xorigin == "eof")
-	    origin = std::ios::end;
+	    origin = SEEK_END;
 	  else
 	    conv_err = -1;
 	}
@@ -2736,11 +2736,11 @@ octave_stream::seek (const octave_value& tc_offset,
 	  if (! conv_err)
 	    {
 	      if (xorigin == -1)
-		origin = std::ios::beg;
+		origin = SEEK_SET;
 	      else if (xorigin == 0)
-		origin = std::ios::cur;
+		origin = SEEK_CUR;
 	      else if (xorigin == 1)
-		origin = std::ios::end;
+		origin = SEEK_END;
 	      else
 		conv_err = -1;
 	    }
@@ -2757,10 +2757,10 @@ octave_stream::seek (const octave_value& tc_offset,
   return retval;
 }
 
-std::streamoff
-octave_stream::tell (void) const
+long
+octave_stream::tell (void)
 {
-  std::streamoff retval = -1;
+  long retval = -1;
 
   if (stream_ok ("tell"))
     retval = rep->tell ();

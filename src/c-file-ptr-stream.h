@@ -43,7 +43,7 @@ public:
 
   typedef int (*close_fcn) (FILE *);
 
-  FILE* stdiofile (void) const { return f; }
+  FILE* stdiofile (void) { return f; }
 
   c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = fclose)
     : std::streambuf (), f (f_arg), cf (cf_arg)
@@ -77,6 +77,11 @@ public:
 
   int file_number () const { return f ? fileno (f) : -1; }
 
+  int seek (long offset, int origin)
+    { return f ? fseek (f, offset, origin) : -1; }
+
+  long tell (void) { return f ? ftell (f) : -1; }
+
   static int fclose (FILE *f) { return ::fclose (f); }
 
 protected:
@@ -105,6 +110,11 @@ public:
 
   void close (void) { if (buf) buf->close (); }
 
+  int seek (long offset, int origin)
+    { return buf ? buf->seek (offset, origin) : -1; }
+
+  long tell (void) { return buf ? buf->tell () : -1; }
+
 private:
 
   c_file_ptr_buf *buf;
@@ -125,6 +135,11 @@ public:
 
   void close (void) { if (buf) buf->close (); }
 
+  int seek (long offset, int origin)
+    { return buf ? buf->seek (offset, origin) : -1; }
+
+  long tell (void) { return buf ? buf->tell () : -1; }
+
 private:
 
   c_file_ptr_buf *buf;
@@ -144,6 +159,11 @@ public:
   c_file_ptr_buf *rdbuf (void) { return buf; }
 
   void close (void) { if (buf) buf->close (); }
+
+  int seek (long offset, int origin)
+    { return buf ? buf->seek (offset, origin) : -1; }
+
+  long tell (void) { return buf ? buf->tell () : -1; }
 
 private:
 

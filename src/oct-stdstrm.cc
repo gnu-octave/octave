@@ -31,45 +31,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_stdiostream::seek (std::streamoff offset, std::ios::seekdir origin)
+octave_stdiostream::seek (long offset, int origin)
 {
   int retval = -1;
 
-  if (! bad ())
-    {
-      c_file_ptr_buf *sb = rdbuf ();
-
-      if (sb)
-	{
-	  clear ();
-
-	  sb->pubseekoff (offset, origin);
-	  retval = bad () ? -1 : 0;
-	}
-    }
+  if (s)
+    retval = s->seek (offset, origin);
 
   return retval;
 }
 
 // Return current stream position.
 
-std::streamoff
-octave_stdiostream::tell (void) const
+long
+octave_stdiostream::tell (void)
 {
-  std::streamoff retval = -1;
+  long retval = -1;
 
-  if (! bad ())
-    {
-      c_file_ptr_buf *sb = rdbuf ();
-
-      if (sb)
-	{
-	  retval = std::streamoff (sb->pubseekoff (0, std::ios::cur));
-
-	  if (bad ())
-	    retval = -1;
-	}
-    }
+  if (s)
+    retval = s->tell ();
 
   return retval;
 }

@@ -29,49 +29,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_strstream::seek (std::streamoff offset, std::ios::seekdir origin)
+octave_base_strstream::seek (long offset, int origin)
 {
-  int retval = -1;
-
-  if (! bad ())
-    {
-      std::streambuf *sb = rdbuf ();
-
-      if (sb)
-	{
-	  clear ();
-
-	  sb->pubseekoff (offset, origin);
-	  retval = bad () ? -1 : 0;
-	}
-    }
-
-  return retval;
+  error ("fseek: invalid operation");
+  return -1;
 }
 
 // Return current stream position.
 
-std::streamoff
-octave_base_strstream::tell (void) const
+long
+octave_base_strstream::tell (void)
 {
-  std::streamoff retval = -1;
-
-  if (! bad ())
-    {
-      // XXX FIXME XXX -- shouldn't have to do this!
-
-      std::streambuf *sb = (const_cast<octave_base_strstream *>(this))->rdbuf ();
-
-      if (sb)
-	{
-	  retval = std::streamoff (sb->pubseekoff (0, std::ios::cur));
-
-	  if (bad ())
-	    retval = -1;
-	}
-    }
-
-  return retval;
+  error ("ftell: invalid operation");
+  return -1;
 }
 
 octave_stream

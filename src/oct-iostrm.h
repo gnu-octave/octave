@@ -40,11 +40,11 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (std::streamoff offset, std::ios::seekdir origin);
+  int seek (long offset, int origin);
 
   // Return current stream position.
 
-  std::streamoff tell (void) const;
+  long tell (void);
 
   // Return non-zero if EOF has been reached on this stream.
 

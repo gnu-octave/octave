@@ -66,41 +66,19 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_fstream::seek (std::streamoff offset, std::ios::seekdir origin)
+octave_fstream::seek (long, int)
 {
-  int retval = -1;
-
-  if (! fs.bad ())
-    {
-      fs.clear ();
-
-      std::filebuf *fb = fs.rdbuf ();
-
-      if (fb)
-	{
-	  fb->pubseekoff (offset, origin);
-	  retval = fs.bad () ? -1 : 0;
-	}
-    }
-
-  return retval;
+  error ("fseek: invalid_operation");
+  return -1;
 }
 
 // Return current stream position.
 
-std::streamoff
-octave_fstream::tell (void) const
+long
+octave_fstream::tell (void)
 {
-  std::streamoff retval = -1;
-
-  if (fs)
-    {
-      std::filebuf *fb = fs.rdbuf ();
-
-      retval = std::streamoff (fb->pubseekoff (0, std::ios::cur));
-    }
-
-  return retval;
+  error ("ftell: invalid_operation");
+  return -1;
 }
 
 // Return non-zero if EOF has been reached on this stream.

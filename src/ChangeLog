@@ -1,3 +1,28 @@
+2004-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (Fftell): Return long integer instead of streamoff_array.
+	(do_stream_open): Create octave_stdiostream instead of octave_fstream.
+
+	* oct-fstrm.cc (octave_fstream::seek, octave_fstream::tell):
+	Always fail.  Signatures now match C library functionsb.
+	* oct-iostrm.cc (octave_base_iostream::seek,
+	octave_base_iostream::tell): Likewise.
+	* oct-strstrm.cc (octave_base_strstream::seek,
+	octave_base_strstream::tell): Likewise.
+
+	* oct-stream.cc (octave_stream::seek, octave_stream::tell):
+	Signatures now match C-library functions.
+
+	* oct-stdstrm.cc (octave_stdiostream::seek, octave_stdiostream::tell):
+	Call io_c_file_ptr_stream::seek and tell.  Signatures now match
+	C-library functions.
+
+	* c-file-ptr-stream.h (c_file_ptr_buf::seek, c_file_ptr_buf::tell): 
+	New functions.
+	(i_c_file_ptr_stream::seek, i_c_file_ptr_stream::tell): Likewise.
+	(o_c_file_ptr_stream::seek, o_c_file_ptr_stream::tell): Likewise.
+	(io_c_file_ptr_stream::seek, io_c_file_ptr_stream::tell): Likewise.
+
 2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.55.

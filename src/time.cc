@@ -92,8 +92,8 @@ extract_tm (Octave_map &m, double& fraction)
 DEFUN_DLD (time, , ,
   "time ()\n\
 \n\
-  Return current time.  On Unix systems, this is the number of\n\
-  seconds since the epoch.")
+Return current time.  On Unix systems, this is the number of\n\
+seconds since the epoch.")
 {
   time_t now;
   double fraction = 0.0;
@@ -124,9 +124,9 @@ DEFUN_DLD (time, , ,
 DEFUN_DLD (gmtime, args, ,
   "gmtime (TIME)\n\
 \n\
-  Given a value returned from time(), return a structure like that\n\
-  returned from localtime() but with values corresponding to\n\
-  Coordinated Universal Time (UTC).")
+Given a value returned from time(), return a structure like that\n\
+returned from localtime() but with values corresponding to\n\
+Coordinated Universal Time (UTC).")
 {
   octave_value_list retval;
 
@@ -152,20 +152,20 @@ DEFUN_DLD (gmtime, args, ,
 DEFUN_DLD (localtime, args, ,
   "localtime (TIME)\n\
 \n\
-  Given a value returned from time(), return a structure with\n\
-  the following elements:\n\
+Given a value returned from time(), return a structure with\n\
+the following elements:\n\
 \n\
-    usec  : microseconds after the second (0, 999999)\n\
-    sec   : seconds after the minute (0, 61)\n\
-    min   : minutes after the hour (0, 59)\n\
-    hour  : hours since midnight (0, 23)\n\
-    mday  : day of the month (1, 31)\n\
-    mon   : months since January (0, 11)\n\
-    year  : years since 1900\n\
-    wday  : days since Sunday (0, 6)\n\
-    yday  : days since January 1 (0, 365)\n\
-    isdst : Daylight Savings Time flag\n\
-    zone  : Time zone")
+  usec  : microseconds after the second (0, 999999)\n\
+  sec   : seconds after the minute (0, 61)\n\
+  min   : minutes after the hour (0, 59)\n\
+  hour  : hours since midnight (0, 23)\n\
+  mday  : day of the month (1, 31)\n\
+  mon   : months since January (0, 11)\n\
+  year  : years since 1900\n\
+  wday  : days since Sunday (0, 6)\n\
+  yday  : days since January 1 (0, 365)\n\
+  isdst : Daylight Savings Time flag\n\
+  zone  : Time zone")
 {
   octave_value_list retval;
 
@@ -213,63 +213,63 @@ DEFUN_DLD (mktime, args, ,
 DEFUN_DLD (strftime, args, ,
   "strftime (FMT, TMSTRUCT)\n\
 \n\
-  Performs `%' substitutions similar to those in printf.  Except where\n\
-  noted, substituted fields have a fixed size; numeric fields are\n\
-  padded if necessary.  Padding is with zeros by default; for fields\n\
-  that display a single number, padding can be changed or inhibited by\n\
-  following the `%' with one of the modifiers described below.\n\
-  Unknown field specifiers are copied as normal characters.  All other\n\
-  characters are copied to the output without change.\n\
+Performs `%' substitutions similar to those in printf.  Except where\n\
+noted, substituted fields have a fixed size; numeric fields are\n\
+padded if necessary.  Padding is with zeros by default; for fields\n\
+that display a single number, padding can be changed or inhibited by\n\
+following the `%' with one of the modifiers described below.\n\
+Unknown field specifiers are copied as normal characters.  All other\n\
+characters are copied to the output without change.\n\
 \n\
-  Supports a superset of the ANSI C field specifiers.\n\
+Supports a superset of the ANSI C field specifiers.\n\
 \n\
-  Literal character fields:\n\
+Literal character fields:\n\
 \n\
-    %	%\n\
-    n	newline\n\
-    t	tab\n\
+  %	%\n\
+  n	newline\n\
+  t	tab\n\
 \n\
-  Numeric modifiers (a nonstandard extension):\n\
+Numeric modifiers (a nonstandard extension):\n\
 \n\
-    -	do not pad the field\n\
-    _	pad the field with spaces\n\
+  -	do not pad the field\n\
+  _	pad the field with spaces\n\
 \n\
-  Time fields:\n\
+Time fields:\n\
 \n\
-    %H	hour (00..23)\n\
-    %I	hour (01..12)\n\
-    %k	hour ( 0..23)\n\
-    %l	hour ( 1..12)\n\
-    %M	minute (00..59)\n\
-    %p	locale's AM or PM\n\
-    %r	time, 12-hour (hh:mm:ss [AP]M)\n\
-    %R	time, 24-hour (hh:mm)\n\
-    %s	time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension)\n\
-    %S	second (00..61)\n\
-    %T	time, 24-hour (hh:mm:ss)\n\
-    %X	locale's time representation (%H:%M:%S)\n\
-    %Z	time zone (EDT), or nothing if no time zone is determinable\n\
+  %H  hour (00..23)\n\
+  %I  hour (01..12)\n\
+  %k  hour ( 0..23)\n\
+  %l  hour ( 1..12)\n\
+  %M  minute (00..59)\n\
+  %p  locale's AM or PM\n\
+  %r  time, 12-hour (hh:mm:ss [AP]M)\n\
+  %R  time, 24-hour (hh:mm)\n\
+  %s  time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension)\n\
+  %S  second (00..61)\n\
+  %T  time, 24-hour (hh:mm:ss)\n\
+  %X  locale's time representation (%H:%M:%S)\n\
+  %Z  time zone (EDT), or nothing if no time zone is determinable\n\
 \n\
-  Date fields:\n\
+Date fields:\n\
 \n\
-    %a	locale's abbreviated weekday name (Sun..Sat)\n\
-    %A	locale's full weekday name, variable length (Sunday..Saturday)\n\
-    %b	locale's abbreviated month name (Jan..Dec)\n\
-    %B	locale's full month name, variable length (January..December)\n\
-    %c	locale's date and time (Sat Nov 04 12:02:33 EST 1989)\n\
-    %C	century (00..99)\n\
-    %d	day of month (01..31)\n\
-    %e	day of month ( 1..31)\n\
-    %D	date (mm/dd/yy)\n\
-    %h	same as %b\n\
-    %j	day of year (001..366)\n\
-    %m	month (01..12)\n\
-    %U	week number of year with Sunday as first day of week (00..53)\n\
-    %w	day of week (0..6)\n\
-    %W	week number of year with Monday as first day of week (00..53)\n\
-    %x	locale's date representation (mm/dd/yy)\n\
-    %y	last two digits of year (00..99)\n\
-    %Y	year (1970...)")
+  %a  locale's abbreviated weekday name (Sun..Sat)\n\
+  %A  locale's full weekday name, variable length (Sunday..Saturday)\n\
+  %b  locale's abbreviated month name (Jan..Dec)\n\
+  %B  locale's full month name, variable length (January..December)\n\
+  %c  locale's date and time (Sat Nov 04 12:02:33 EST 1989)\n\
+  %C  century (00..99)\n\
+  %d  day of month (01..31)\n\
+  %e  day of month ( 1..31)\n\
+  %D  date (mm/dd/yy)\n\
+  %h  same as %b\n\
+  %j  day of year (001..366)\n\
+  %m  month (01..12)\n\
+  %U  week number of year with Sunday as first day of week (00..53)\n\
+  %w  day of week (0..6)\n\
+  %W  week number of year with Monday as first day of week (00..53)\n\
+  %x  locale's date representation (mm/dd/yy)\n\
+  %y  last two digits of year (00..99)\n\
+  %Y  year (1970...)")
 {
   octave_value_list retval;
 

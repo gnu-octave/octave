@@ -82,7 +82,7 @@ gripe_not_implemented (const char *nm)
 DEFUN_DLD (getpwent, , ,
  "getpwent ()\n\
 \n\
-  Read an entry from the password-file stream, opening it if necessary.")
+Read an entry from the password-file stream, opening it if necessary.")
 {
   octave_value retval;
 
@@ -98,7 +98,7 @@ DEFUN_DLD (getpwent, , ,
 DEFUN_DLD (getpwuid, args, ,
   "getpwuid (UID)\n\
 \n\
-  Search for a password entry with a matching user ID.")
+Search for a password entry with a matching user ID.")
 {
   octave_value retval;
 
@@ -133,7 +133,7 @@ DEFUN_DLD (getpwuid, args, ,
 DEFUN_DLD (getpwnam, args, ,
   "getpwnam (NAME)\n\
 \n\
-  Search for password entry with a matching username.")
+Search for password entry with a matching username.")
 {
   octave_value retval;
 
@@ -159,7 +159,7 @@ DEFUN_DLD (getpwnam, args, ,
 DEFUN_DLD (setpwent, , ,
   "setpwent ()\n\
 \n\
-  Rewind the password-file stream.")
+Rewind the password-file stream.")
 {
   octave_value retval;
 
@@ -175,7 +175,7 @@ DEFUN_DLD (setpwent, , ,
 DEFUN_DLD (endpwent, , ,
   "endpwent ()\n\
 \n\
-  Close the password-file stream.")
+Close the password-file stream.")
 {
   octave_value retval;
 

@@ -317,6 +317,14 @@ Summary of changes for version 2.0:
       tilde_expand        -- perform tilde expansion on string
       completion_matches  -- perform command completion on string
 
+  * Functions for getting info from the password database on Unix systems:
+
+      getpwent  -- read entry from password-file stream, opening if necessary
+      getpwuid  -- search for password entry with matching user ID
+      getpwnam  -- search for password entry with matching username
+      setpwent  -- rewind the password-file stream
+      endpwent  -- close the password-file stream
+
   * The New function octave_config_info returns a structure containing
     information about how Octave was configured and compiled.
 

@@ -208,9 +208,9 @@ DASSL::do_integrate (double tout)
   integration_error = 0;
 
   if (DAEFunc::jacobian_function ())
-    iwork.elem (4) = 1;
+    info.elem (4) = 1;
   else
-    iwork.elem (4) = 0;
+    info.elem (4) = 0;
 
   double *px    = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
@@ -237,8 +237,8 @@ DASSL::do_integrate (double tout)
   
   if (stop_time_set)
     {
-      info.elem (3) = 1;
       rwork.elem (0) = stop_time;
+      info.elem (3) = 1;
     }
   else
     info.elem (3) = 0;
@@ -256,7 +256,7 @@ DASSL::do_integrate (double tout)
 
   if (maximum_step_size () >= 0.0)
     {
-      rwork.elem (2) = maximum_step_size ();
+      rwork.elem (1) = maximum_step_size ();
       info.elem (6) = 1;
     }
   else

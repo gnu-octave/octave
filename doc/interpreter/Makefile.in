@@ -40,7 +40,8 @@ TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO)
 
 FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
 
-DISTFILES = Makefile.in dir octave.1 $(SOURCES) $(TEXINFO) $(FORMATTED)
+DISTFILES = Makefile.in dir munge-texi.cc octave.1 \
+  $(SOURCES) $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
   BINDISTFILES = $(addprefix $(srcdir)/, octave.1 $(FORMATTED))

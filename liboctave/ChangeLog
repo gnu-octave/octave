@@ -1,3 +1,9 @@
+1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASSL.cc (DASSL::do_integrate (double)): If we have a function
+	to evaluate the Jacobian, set info(4), not iwork(4).
+	Set rwork(1) to the maximum step size, not rwork(2).
+
 1999-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc: Include <climits>.

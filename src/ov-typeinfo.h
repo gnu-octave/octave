@@ -44,7 +44,8 @@ public:
 
   static bool instance_ok (void);
 
-  static int register_type (const std::string&, const std::string&);
+  static int register_type (const std::string&, const std::string&,
+			    const octave_value&);
 
   static bool register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 
@@ -63,6 +64,12 @@ public:
   static bool register_pref_assign_conv (int, int, int);
 
   static bool register_widening_op (int, int, type_conv_fcn);
+
+  static octave_value
+  lookup_type (const std::string& nm)
+  {
+    return instance->do_lookup_type (nm);
+  }
 
   static unary_op_fcn
   lookup_unary_op (octave_value::unary_op op, int t)
@@ -138,6 +145,8 @@ private:
 
   Array<std::string> types;
 
+  Array<octave_value> vals;
+
   Array2<unary_op_fcn> unary_ops;
 
   Array2<non_const_unary_op_fcn> non_const_unary_ops;
@@ -152,7 +161,8 @@ private:
 
   Array2<type_conv_fcn> widening_ops;
 
-  int do_register_type (const std::string&, const std::string&);
+  int do_register_type (const std::string&, const std::string&,
+			const octave_value&);
 
   bool do_register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 
@@ -171,6 +181,8 @@ private:
   bool do_register_pref_assign_conv (int, int, int);
 
   bool do_register_widening_op (int, int, type_conv_fcn);
+
+  octave_value do_lookup_type (const std::string& nm);
 
   unary_op_fcn do_lookup_unary_op (octave_value::unary_op, int);
 

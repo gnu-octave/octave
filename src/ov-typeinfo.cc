@@ -82,10 +82,11 @@ octave_value_typeinfo::instance_ok (void)
 
 int
 octave_value_typeinfo::register_type (const std::string& t_name,
-				      const std::string& c_name)
+				      const std::string& c_name,
+				      const octave_value& val)
 {
   return (instance_ok ())
-    ? instance->do_register_type (t_name, c_name) : -1;
+    ? instance->do_register_type (t_name, c_name, val) : -1;
 }
 
 bool
@@ -149,7 +150,8 @@ octave_value_typeinfo::register_widening_op (int t, int t_result,
 
 int
 octave_value_typeinfo::do_register_type (const std::string& t_name,
-					 const std::string& c_name)
+					 const std::string& c_name,
+					 const octave_value& val)
 {
   int i = 0;
 
@@ -164,6 +166,8 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
       len *= 2;
 
       types.resize (len, std::string ());
+
+      vals.resize (len, octave_value ());
 
       unary_ops.resize (static_cast<int> (octave_value::num_unary_ops),
 			len, static_cast<unary_op_fcn> (0));
@@ -187,6 +191,8 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
     }
 
   types (i) = t_name;
+
+  vals (i) = val;
 
   num_types++;
 
@@ -321,6 +327,23 @@ octave_value_typeinfo::do_register_widening_op
   widening_ops.checkelem (t, t_result) = f;
 
   return false;
+}
+
+octave_value
+octave_value_typeinfo::do_lookup_type (const std::string& nm)
+{
+  octave_value retval;
+
+  for (int i = 0; i < num_types; i++)
+    {
+      if (nm == types(i))
+	{
+	  retval = vals(i);
+	  break;
+	}
+    }
+
+  return retval;
 }
 
 unary_op_fcn

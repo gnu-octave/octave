@@ -41,9 +41,9 @@ user_preferences user_pref;
 // Check the value of a string variable to see if it it's ok to do
 // something.
 //
+//   return of  1 => always ok.
+//   return of  0 => never ok.
 //   return of -1 => ok, but give me warning (default).
-//   return of  0 => always ok.
-//   return of  1 => never ok.
 
 static int
 check_str_pref (char *var)

@@ -525,7 +525,7 @@ empty_arg (const char *name, int nr, int nc)
 	  gripe_empty_arg (name, 0);
 	  is_empty = 1;
 	}
-      else if (is_empty > 0)
+      else if (flag == 0)
 	{
 	  gripe_empty_arg (name, 1);
 	  is_empty = -1;

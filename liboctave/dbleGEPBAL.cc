@@ -70,7 +70,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   int n = a_nc;
 
-// Parameters for balance call.
+  // Parameters for balance call.
 
   int info;
   int ilo;
@@ -79,27 +79,27 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
   double *cperm = new double [n];
   Matrix wk (n, 6, 0.0);
 
-// Back out the permutations:
-//
-// cscale contains the exponents of the column scaling factors in its 
-// ilo through ihi locations and the reducing column permutations in 
-// its first ilo-1 and its ihi+1 through n locations.
-//
-// cperm contains the column permutations applied in grading the a and b 
-// submatrices in its ilo through ihi locations.
-//
-// wk contains the exponents of the row scaling factors in its ilo 
-// through ihi locations, the reducing row permutations in its first 
-// ilo-1 and its ihi+1 through n locations, and the row permutations
-// applied in grading the a and b submatrices in its n+ilo through 
-// n+ihi locations.
+  // Back out the permutations:
+  //
+  // cscale contains the exponents of the column scaling factors in its 
+  // ilo through ihi locations and the reducing column permutations in 
+  // its first ilo-1 and its ihi+1 through n locations.
+  //
+  // cperm contains the column permutations applied in grading the a and b 
+  // submatrices in its ilo through ihi locations.
+  //
+  // wk contains the exponents of the row scaling factors in its ilo 
+  // through ihi locations, the reducing row permutations in its first 
+  // ilo-1 and its ihi+1 through n locations, and the row permutations
+  // applied in grading the a and b submatrices in its n+ilo through 
+  // n+ihi locations.
   
-// Copy matrices into local structure.
+  // Copy matrices into local structure.
 
   balanced_a_mat = a;
   balanced_b_mat = b;
 
-// Initialize balancing matrices to identity.
+  // Initialize balancing matrices to identity.
 
   left_balancing_mat = Matrix (n, n, 0.0);
   for (int i = 0; i < n; i++)
@@ -107,7 +107,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   right_balancing_mat = left_balancing_mat;
 
-// Check for permutation option.
+  // Check for permutation option.
 
   if (*balance_job == 'P' || *balance_job == 'B')
     {
@@ -117,14 +117,13 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
     }
   else
     {
-
-// Set up for scaling later.
+      // Set up for scaling later.
 
       ilo = 1;
       ihi = n;
     }
 
-// Check for scaling option.
+  // Check for scaling option.
 
   if ((*balance_job == 'S' || *balance_job == 'B') && ilo != ihi)
     {
@@ -134,8 +133,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
     }
   else
     {
-
-// Set scaling data to 0's.
+      // Set scaling data to 0's.
 
       for (int tmp = ilo-1; tmp < ihi; tmp++)
 	{
@@ -144,7 +142,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 	}
     }
 
-// Scaleg returns exponents, not values, so...
+  // Scaleg returns exponents, not values, so...
 
   for (int tmp = ilo-1; tmp < ihi; tmp++)
     {
@@ -152,21 +150,22 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
       wk.elem (tmp, 0) = pow (2.0, -wk.elem (tmp, 0));
     }
 
-// Column permutations/scaling.
+  // Column permutations/scaling.
 
   F77_FCN (dgebak, DGEBAK) (balance_job, "R", n, ilo, ihi, cscale, n, 
 			    right_balancing_mat.fortran_vec (), n,
 			    info, 1L, 1L);
     
-// Row permutations/scaling.
+  // Row permutations/scaling.
 
   F77_FCN (dgebak, DGEBAK) (balance_job, "L", n, ilo, ihi,
 			    wk.fortran_vec (), n,
 			    left_balancing_mat.fortran_vec (), n,
 			    info, 1L, 1L);
 
-// XXX FIXME XXX --- these four lines need to be added and debugged.
-// GEPBALANCE::init will work without them, though, so here they are.
+  // XXX FIXME XXX --- these four lines need to be added and
+  // debugged.  GEPBALANCE::init will work without them, though, so
+  // here they are.
 
 #if 0
   if ((*balance_job == 'P' || *balance_job == 'B') && ilo != ihi)
@@ -177,7 +176,8 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
     }
 #endif
 
-// Transpose for aa = cc*a*dd convention...
+  // Transpose for aa = cc*a*dd convention...
+
   left_balancing_mat = left_balancing_mat.transpose ();
 
   delete [] cscale;

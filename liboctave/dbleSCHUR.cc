@@ -93,7 +93,7 @@ SCHUR::init (const Matrix& a, const char *ord)
   double *q = new double [n*n];
   double *work = new double [lwork];
 
-// These are not referenced for the non-ordered Schur routine.
+  // These are not referenced for the non-ordered Schur routine.
 
   int *iwork = 0;
   int *bwork = 0;

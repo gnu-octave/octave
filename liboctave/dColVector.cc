@@ -49,9 +49,7 @@ extern "C"
 			      long);
 }
 
-/*
- * Column Vector class.
- */
+// Column Vector class.
 
 int
 ColumnVector::operator == (const ColumnVector& a) const

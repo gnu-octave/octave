@@ -87,7 +87,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 
   double *rwork = new double [n];
 
-// bwork is not referenced for non-ordered Schur.
+  // bwork is not referenced for non-ordered Schur.
 
   int *bwork = 0;
   if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')

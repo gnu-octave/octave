@@ -33,9 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array.h"
 
-/*
- * The real representation of all arrays.
- */
+// The real representation of all arrays.
 
 template <class T>
 ArrayRep<T>::ArrayRep (T *d, int l)
@@ -96,10 +94,8 @@ ArrayRep<T>::elem (int n) const
   return data[n];
 }
 
-/*
- * One dimensional array class.  Handles the reference counting for
- * all the derived classes.
- */
+// One dimensional array class.  Handles the reference counting for
+// all the derived classes.
 
 template <class T>
 Array<T>::Array (T *d, int l)
@@ -331,9 +327,7 @@ Array<T>::fortran_vec (void)
   return rep->data;
 }
 
-/*
- * Two dimensional array class.
- */
+// Two dimensional array class.
 
 template <class T>
 Array2<T>::Array2 (T *d, int n, int m) : Array<T> (d, n*m)
@@ -588,9 +582,7 @@ Array2<T>::resize (int r, int c, const T& val)
     delete old_rep;
 }
 
-/*
- * Three dimensional array class.
- */
+// Three dimensional array class.
 
 template <class T>
 Array3<T>::Array3 (T *d, int n, int m, int k) : Array2<T> (d, n, m*k)
@@ -726,19 +718,17 @@ template <class T>
 void
 Array3<T>::resize (int n, int m, int k)
 {
-  assert (0); /* XXX FIXME XXX */
+  assert (0); // XXX FIXME XXX
 }
 
 template <class T>
 void
 Array3<T>::resize (int n, int m, int k, const T& val)
 {
-  assert (0); /* XXX FIXME XXX */
+  assert (0); // XXX FIXME XXX
 }
 
-/*
- * A two-dimensional array with diagonal elements only.
- */
+// A two-dimensional array with diagonal elements only.
 
 template <class T>
 DiagArray<T>::DiagArray (T *d, int r, int c) : Array<T> (d, r < c ? r : c)

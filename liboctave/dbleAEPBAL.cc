@@ -56,14 +56,14 @@ AEPBALANCE::init (const Matrix& a, const char *balance_job)
 
   int n = a_nc;
 
-// Parameters for balance call.
+  // Parameters for balance call.
 
   int info;
   int ilo;
   int ihi;
   double *scale = new double [n];
 
-// Copy matrix into local structure.
+  // Copy matrix into local structure.
 
   balanced_mat = a;
 
@@ -71,7 +71,7 @@ AEPBALANCE::init (const Matrix& a, const char *balance_job)
 			    balanced_mat.fortran_vec (), n, ilo, ihi,
 			    scale, info, 1L, 1L);
 
-// Initialize balancing matrix to identity.
+  // Initialize balancing matrix to identity.
 
   balancing_mat = Matrix (n, n, 0.0);
   for (int i = 0; i < n; i++)

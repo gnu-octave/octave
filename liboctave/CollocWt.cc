@@ -249,7 +249,7 @@ CollocWt::set_beta (double val)
 void
 CollocWt::init (void)
 {
-// Check for possible errors.
+  // Check for possible errors.
 
   double wid = rb - lb;
   if (wid <= 0.0)
@@ -279,14 +279,14 @@ CollocWt::init (void)
 
   double *pr = r.fortran_vec ();
 
-// Compute roots.
+  // Compute roots.
 
   F77_FCN (jcobi, JCOBI) (nt, n, inc_left, inc_right, Alpha, Beta,
 			  dif1, dif2, dif3, pr);
 
   int id;
 
-// First derivative weights.
+  // First derivative weights.
 
   id = 1;
   for (int i = 1; i <= nt; i++)
@@ -298,7 +298,7 @@ CollocWt::init (void)
 	A (i-1, j) = vect[j];
     }
 
-// Second derivative weights.
+  // Second derivative weights.
 
   id = 2;
   for (int i = 1; i <= nt; i++)
@@ -310,7 +310,7 @@ CollocWt::init (void)
 	B (i-1, j) = vect[j];
     }
 
-// Gaussian quadrature weights.
+  // Gaussian quadrature weights.
 
   id = 3;
   double *pq = q.fortran_vec ();

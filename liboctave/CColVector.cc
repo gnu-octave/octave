@@ -49,9 +49,7 @@ extern "C"
 			      long);
 }
 
-/*
- * Complex Column Vector class
- */
+// Complex Column Vector class
 
 ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
    : MArray<Complex> (a.length ())

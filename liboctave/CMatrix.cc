@@ -67,10 +67,10 @@ extern "C"
 				const int&, double*, double&, int&,
 				Complex*, const int&, double*, int&);
 
-// Note that the original complex fft routines were not written for
-// double complex arguments.  They have been modified by adding an
-// implicit double precision (a-h,o-z) statement at the beginning of
-// each subroutine.
+  // Note that the original complex fft routines were not written for
+  // double complex arguments.  They have been modified by adding an
+  // implicit double precision (a-h,o-z) statement at the beginning of
+  // each subroutine.
 
   int F77_FCN (cffti, CFFTI) (const int&, Complex*);
 
@@ -79,9 +79,7 @@ extern "C"
   int F77_FCN (cfftb, CFFTB) (const int&, Complex*, Complex*);
 }
 
-/*
- * Complex Matrix class
- */
+// Complex Matrix class
 
 ComplexMatrix::ComplexMatrix (const Matrix& a)
   : MArray2<Complex> (a.rows (), a.cols ())

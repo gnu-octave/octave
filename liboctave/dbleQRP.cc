@@ -79,16 +79,16 @@ QRP::QRP (const Matrix& a, QR::type qr_type)
 
   int *jpvt = new int[n];
 
-// Clear Pivot vector (code to enforce a certain permutation would go
-// here...)
+  // Clear Pivot vector (code to enforce a certain permutation would
+  // go here...)
 
   for (int i = 0; i < n; i++)
     jpvt[i] = 0;
 
   F77_FCN (dgeqpf, DGEQPF) (m, n, tmp_data, m, jpvt, tau, work, info);
 
-// Form Permutation matrix (if economy is requested, return the
-// indices only!)
+  // Form Permutation matrix (if economy is requested, return the
+  // indices only!)
 
   if (qr_type == QR::economy && m > n)
     {

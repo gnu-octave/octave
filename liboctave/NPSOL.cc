@@ -186,7 +186,7 @@ NPSOL::minimize (double& objf, int& inform)
 Vector
 NPSOL::minimize (double& objf, int& inform, Vector& lambda)
 {
-// Dimensions of various things.
+  // Dimensions of various things.
 
   int n     = x.capacity ();
   int nclin = lc.size ();
@@ -195,15 +195,15 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   int nrowj = 1 > ncnln ? 1 : ncnln;
   int nrowr = n;
 
-// Informative stuff.
+  // Informative stuff.
 
   int iter;
   int *istate = new int [n+nclin+ncnln];
 
-// User defined function stuff is defined above in the functions
-// npsol_confun() and npsol_objfun();
+  // User defined function stuff is defined above in the functions
+  // npsol_confun() and npsol_objfun();
 
-// Constraint stuff.
+  // Constraint stuff.
 
   double dummy;
   double *pclin = &dummy;
@@ -255,22 +255,22 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
       cjac = new double [nrowj*n];
     }
 
-// Objective stuff.
+  // Objective stuff.
 
   double *objgrd = new double [n];
 
-// Other stuff.
+  // Other stuff.
 
   double *r = new double [n*n];
 
   lambda.resize (n+nclin+ncnln);
   double *pclambda = lambda.fortran_vec ();
 
-// Decision variable stuff.
+  // Decision variable stuff.
 
   double *px = x.fortran_vec ();
 
-// Workspace parameters.
+  // Workspace parameters.
 
   int lenw;
   int leniw = 3 * n + nclin + 2 * ncnln;
@@ -316,7 +316,7 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
 	break;
     }
 
-// Clean up.
+  // Clean up.
 
   delete [] istate;
   delete [] clow;
@@ -328,7 +328,7 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   delete [] iw;
   delete [] w;
 
-// See how it went.
+  // See how it went.
 
   return x;
 }
@@ -449,10 +449,8 @@ NPSOL_options::set_default_options (void)
   init ();
 }
 
-/*
- * Passing invalid values to the set_* functions will result in
- * setting the default option.
- */
+// Passing invalid values to the set_* functions will result in
+// setting the default option.
 
 void
 NPSOL_options::set_central_difference_interval (double val)
@@ -769,7 +767,7 @@ NPSOL_options::set_option (const char *key, double opt)
   delete [] command;
 }
 
-#endif /* NPSOL_MISSING */
+#endif
 
 /*
 ;;; Local Variables: ***

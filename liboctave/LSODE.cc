@@ -160,11 +160,10 @@ lsode_f (const int& neq, const double& time, double *state,
 {
   ColumnVector tmp_deriv (neq);
 
-  /*
-   * NOTE: this won't work if LSODE passes copies of the state vector.
-   *       In that case we have to create a temporary vector object
-   *       and copy.
-   */
+  // NOTE: this won't work if LSODE passes copies of the state vector.
+  //       In that case we have to create a temporary vector object
+  //       and copy.
+
   tmp_deriv = (*user_fun) (*tmp_x, time);
 
   if (tmp_deriv.length () == 0)
@@ -184,11 +183,10 @@ lsode_j (const int& neq, const double& time, double *state,
 {
   Matrix tmp_jac (neq, neq);
 
-  /*
-   * NOTE: this won't work if LSODE passes copies of the state vector.
-   *       In that case we have to create a temporary vector object
-   *       and copy.
-   */
+  // NOTE: this won't work if LSODE passes copies of the state vector.
+  //       In that case we have to create a temporary vector object
+  //       and copy.
+
   tmp_jac = (*user_jac) (*tmp_x, time);
 
   for (int j = 0; j < neq; j++)
@@ -210,15 +208,15 @@ ODE::integrate (double tout)
 
   double *xp = x.fortran_vec ();
 
-// NOTE: this won't work if LSODE passes copies of the state vector.
-//       In that case we have to create a temporary vector object
-//       and copy.
+  // NOTE: this won't work if LSODE passes copies of the state vector.
+  //       In that case we have to create a temporary vector object
+  //       and copy.
 
   tmp_x = &x;
   user_fun = fun;
   user_jac = jac;
 
-// Try 5000 steps before giving up.
+  // Try 5000 steps before giving up.
 
   iwork[5] = 5000;
   int working_too_hard = 0;
@@ -255,17 +253,18 @@ ODE::integrate (double tout)
   switch (istate)
     {
     case -13: // Return requested in user-supplied function.
-    case -6: // error weight became zero during problem. (solution
-	     // component i vanished, and atol or atol(i) = 0.)
-    case -5: // repeated convergence failures (perhaps bad jacobian
-	     // supplied or wrong choice of mf or tolerances).
-    case -4: // repeated error test failures (check all inputs).
-    case -3: // illegal input detected (see printed message).
-    case -2: // excess accuracy requested (tolerances too small).
+    case -6:  // error weight became zero during problem. (solution
+	      // component i vanished, and atol or atol(i) = 0.)
+    case -5:  // repeated convergence failures (perhaps bad jacobian
+	      // supplied or wrong choice of mf or tolerances).
+    case -4:  // repeated error test failures (check all inputs).
+    case -3:  // illegal input detected (see printed message).
+    case -2:  // excess accuracy requested (tolerances too small).
       integration_error = 1;
       return ColumnVector ();
       break;
-    case -1: // excess work done on this call (perhaps wrong mf).
+
+    case -1:  // excess work done on this call (perhaps wrong mf).
       working_too_hard++;
       if (working_too_hard > 20)
 	{
@@ -281,8 +280,10 @@ ODE::integrate (double tout)
 	  goto again;
 	}
       break;
-    case 2: // lsode was successful
+
+    case 2:  // lsode was successful
       break;
+
     default:
       // Error?
       break;

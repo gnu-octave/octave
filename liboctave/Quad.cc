@@ -236,12 +236,15 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
     case bound_to_inf:
       inf = 1;
       break;
+
     case neg_inf_to_bound:
       inf = -1;
       break;
+
     case doubly_infinite:
       inf = 2;
       break;
+
     default:
       assert (0);
       break;

@@ -37,9 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-inlines.cc"
 #include "lo-error.h"
 
-/*
- * Diagonal Matrix class.
- */
+// Diagonal Matrix class.
 
 int
 DiagMatrix::operator == (const DiagMatrix& a) const
@@ -446,6 +444,7 @@ ostream&
 operator << (ostream& os, const DiagMatrix& a)
 {
 //  int field_width = os.precision () + 7;
+
   for (int i = 0; i < a.rows (); i++)
     {
       for (int j = 0; j < a.cols (); j++)

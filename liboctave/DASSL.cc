@@ -232,7 +232,7 @@ ddassl_j (const double& time, double *state UNUSED,
   Vector tmp_state (nn);
   Vector tmp_deriv (nn);
 
-// XXX FIXME XXX
+  // XXX FIXME XXX
 
   Matrix tmp_dfdxdot (nn, nn);
   Matrix tmp_dfdx (nn, nn);
@@ -319,13 +319,16 @@ DAE::integrate (double tout)
 	    // intermediate-output mode. The code has not yet reached
 	    // TOUT.
       break;
+
     case 2: // The integration to TSTOP was successfully completed
 	    // (T=TSTOP) by stepping exactly to TSTOP.
       break;
+
     case 3: // The integration to TOUT was successfully completed
 	    // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
 	    // interpolation.  YPRIME(*) is obtained by interpolation.
       break;
+
     case -1: // A large amount of work has been expended.  (About 500 steps).
     case -2: // The error tolerances are too stringent.
     case -3: // The local error test cannot be satisfied because you
@@ -348,6 +351,7 @@ DAE::integrate (double tout)
 	      // recover. A message is printed explaining the trouble
 	      // and control is returned to the calling program. For
 	      // example, this occurs when invalid input is detected.
+
     default:
       integration_error = 1;
       break;

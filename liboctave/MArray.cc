@@ -99,9 +99,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   while (0)
 
-/*
- * One dimensional array with math ops.
- */
+// One dimensional array with math ops.
 
 // Element by element MArray by scalar ops.
 
@@ -222,9 +220,7 @@ operator - (const MArray<T>& a)
   return MArray<T> (result, l);
 }
 
-/*
- * Two dimensional array with math ops.
- */
+// Two dimensional array with math ops.
 
 template <class T>
 MArray2<T>::MArray2 (const MDiagArray<T>& a)
@@ -367,9 +363,7 @@ operator - (const MArray2<T>& a)
   return MArray2<T> (result, a.rows (), a.cols ());
 }
 
-/*
- * Two dimensional diagonal array with math ops.
- */
+// Two dimensional diagonal array with math ops.
 
 // Element by element MDiagArray by MDiagArray ops.
 

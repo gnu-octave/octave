@@ -266,7 +266,7 @@ QPSOL_options::print_level (void)
   return x_print_level;
 }
 
-#endif /* QPSOL_MISSING */
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -76,9 +76,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef KLUDGE_VECTORS
 
-/*
- * Like type operations for vectors.
- */
+// Like type operations for vectors.
 
 // Element by element vector by scalar ops.
 
@@ -147,9 +145,7 @@ operator - (const KL_VEC_TYPE& a)
 
 #ifdef KLUDGE_MATRICES
 
-/*
- * Like type operations for matrices
- */
+// Like type operations for matrices.
 
 // Element by element matrix by scalar ops.
 
@@ -220,9 +216,7 @@ operator - (const KL_MAT_TYPE& a)
 
 #ifdef KLUDGE_DIAG_MATRICES
 
-/*
- * Like type operations for diagonal matrices.
- */
+// Like type operations for diagonal matrices.
 
 // Element by element MDiagArray by scalar ops.
 

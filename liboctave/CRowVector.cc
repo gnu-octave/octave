@@ -49,9 +49,7 @@ extern "C"
 			      long);
 }
 
-/*
- * Complex Row Vector class
- */
+// Complex Row Vector class
 
 ComplexRowVector::ComplexRowVector (const RowVector& a)
   : MArray<Complex> (a.length ())
@@ -438,7 +436,7 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
   if (len == 0 || a.cols () == 0)
     return ComplexRowVector (0);
 
-// Transpose A to form A'*x == (x'*A)'
+  // Transpose A to form A'*x == (x'*A)'
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();

@@ -69,10 +69,10 @@ extern "C"
 				const int&, double*, double&, int&,
 				double*, const int&, int&);
 
-// Note that the original complex fft routines were not written for
-// double complex arguments.  They have been modified by adding an
-// implicit double precision (a-h,o-z) statement at the beginning of
-// each subroutine.
+  // Note that the original complex fft routines were not written for
+  // double complex arguments.  They have been modified by adding an
+  // implicit double precision (a-h,o-z) statement at the beginning of
+  // each subroutine.
 
   int F77_FCN (cffti, CFFTI) (const int&, Complex*);
 
@@ -81,9 +81,7 @@ extern "C"
   int F77_FCN (cfftb, CFFTB) (const int&, Complex*, Complex*);
 }
 
-/*
- * Matrix class.
- */
+// Matrix class.
 
 Matrix::Matrix (const DiagMatrix& a)
   : MArray2<double> (a.rows (), a.cols (), 0.0)
@@ -2154,6 +2152,7 @@ ostream&
 operator << (ostream& os, const Matrix& a)
 {
 //  int field_width = os.precision () + 7;
+
   for (int i = 0; i < a.rows (); i++)
     {
       for (int j = 0; j < a.cols (); j++)
@@ -2188,13 +2187,12 @@ operator >> (istream& is, Matrix& a)
   return is;
 }
 
-/*
- * Read an array of data froma file in binary format.
- */
+// Read an array of data froma file in binary format.
+
 int
 Matrix::read (FILE *fptr, char *type)
 {
-// Allocate buffer pointers.
+  // Allocate buffer pointers.
 
   union
     {
@@ -2212,7 +2210,7 @@ Matrix::read (FILE *fptr, char *type)
     }
   buf;
 
-// Convert data to double.
+  // Convert data to double.
 
   if (! type)
     {
@@ -2266,13 +2264,12 @@ Matrix::read (FILE *fptr, char *type)
   return count;
 }
 
-/*
- * Write the data array to a file in binary format.
- */
+// Write the data array to a file in binary format.
+
 int
 Matrix::write (FILE *fptr, char *type)
 {
-// Allocate buffer pointers.
+  // Allocate buffer pointers.
 
   union
     {
@@ -2294,7 +2291,7 @@ Matrix::write (FILE *fptr, char *type)
 
   double *d = fortran_vec ();
 
-// Convert from double to correct size.
+  // Convert from double to correct size.
 
   if (! type)
     {

@@ -61,8 +61,8 @@ ComplexCHOL::init (const ComplexMatrix& a)
 
    chol_mat = ComplexMatrix (h, n, n);
 
-// If someone thinks of a more graceful way of doing this (or faster for
-// that matter :-)), please let me know!
+  // If someone thinks of a more graceful way of doing this (or faster
+  // for that matter :-)), please let me know!
 
   if (n > 1)
     for (int j = 0; j < a_nc; j++)

@@ -52,9 +52,7 @@ extern "C"
 			       const double*, const int&);
 }
 
-/*
- * Row Vector class.
- */
+// Row Vector class.
 
 int
 RowVector::operator == (const RowVector& a) const
@@ -226,7 +224,7 @@ operator * (const RowVector& v, const Matrix& a)
   if (len == 0 || a.cols () == 0)
     return RowVector (0);
 
-// Transpose A to form A'*x == (x'*A)'
+  // Transpose A to form A'*x == (x'*A)'
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -304,6 +302,7 @@ ostream&
 operator << (ostream& os, const RowVector& a)
 {
 //  int field_width = os.precision () + 7;
+
   for (int i = 0; i < a.length (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;

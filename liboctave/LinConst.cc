@@ -45,7 +45,7 @@ LinConst::error (const char* msg)
 LinConst::LinConst (const Matrix& a_eq, const Vector& b_eq,
 		    const Matrix& a_ineq, const Vector& b_ineq)
 {
-// Need some checks here.
+  // Need some checks here.
 
   int nc_eq = b_eq.capacity ();
   int nc_ineq = b_ineq.capacity ();

@@ -135,9 +135,6 @@ operator >> (istream& is, Range& a)
   return is;
 }
 
-int
-Range::nelem_internal (void) const
-{
 // Find an approximate number of intervals, then do the best we can to
 // find the number of intervals that we would get if we had done
 // something like
@@ -151,7 +148,10 @@ Range::nelem_internal (void) const
 // The number of elements in the range is one greater than the number
 // of intervals.
 
-// We can't have more than INT_MAX elements in the range.
+int
+Range::nelem_internal (void) const
+{
+  // We can't have more than INT_MAX elements in the range.
 
   double d_n_intervals = (rng_limit - rng_base) / rng_inc;
   int max_intervals = INT_MAX - 1;
@@ -166,13 +166,13 @@ Range::nelem_internal (void) const
 
   if (rng_limit > rng_base && rng_inc > 0)
     {
-// Our approximation may have been too big.
+      // Our approximation may have been too big.
 
       while (rng_base + n_intervals * rng_inc > rng_limit && n_intervals > 0)
 	n_intervals--;
 
-// Now that we are close, get the actual number.  Try to avoid
-// problems with extended precision registers.
+      // Now that we are close, get the actual number.  Try to avoid
+      // problems with extended precision registers.
 
       for (;;)
 	{
@@ -186,13 +186,13 @@ Range::nelem_internal (void) const
     }
   else if (rng_limit < rng_base && rng_inc < 0)
     {
-// Our approximation may have been too big.
+      // Our approximation may have been too big.
 
       while (rng_base + n_intervals * rng_inc < rng_limit && n_intervals > 0)
 	n_intervals--;
 
-// Now that we are close, get the actual number.  Try to avoid
-// problems with extended precision registers.
+      // Now that we are close, get the actual number.  Try to avoid
+      // problems with extended precision registers.
 
       for (;;)
 	{

@@ -25,11 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <assert.h>
 
-/*
- * I think that this is really only needed if linking to Fortran
- * compiled libraries on a Sun.  It should never be called.
- * There should probably be a sysdep.cc file, eh?
- */
+// I think that this is really only needed if linking to Fortran
+// compiled libraries on a Sun.  It should never be called.
+// There should probably be a sysdep.cc file, eh?
 
 extern "C"
 {

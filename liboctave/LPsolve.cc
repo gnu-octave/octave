@@ -41,7 +41,7 @@ LPsolve::minimize (double& objf, int& inform, Vector& lambda)
 void
 LPsolve::set_default_options (void)
 {
-// Maybe this isn't needed?
+  // Maybe this isn't needed?
 }
 
 /*

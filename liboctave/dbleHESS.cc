@@ -95,14 +95,14 @@ HESS::init (const Matrix& a)
   F77_FCN (dgebak, DGEBAK) (jobbal, side, n, ilo, ihi, scale, n, z, n,
 			    info, 1L, 1L);
 
-// We need to clear out all of the area below the sub-diagonal which was used
-// to store the unitary matrix.
+  // We need to clear out all of the area below the sub-diagonal which
+  // was used to store the unitary matrix.
 
   hess_mat = Matrix (h, n, n);
   unitary_hess_mat = Matrix (z, n, n);
 
-// If someone thinks of a more graceful way of doing this (or faster for 
-// that matter :-)), please let me know! 
+  // If someone thinks of a more graceful way of doing this (or faster
+  // for that matter :-)), please let me know! 
 
   if (n > 2)
     for (int j = 0; j < a_nc; j++)

@@ -37,9 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-inlines.cc"
 #include "lo-error.h"
 
-/*
- * Complex Diagonal Matrix class
- */
+// Complex Diagonal Matrix class
 
 ComplexDiagMatrix::ComplexDiagMatrix (const RowVector& a)
   : MDiagArray<Complex> (a.length ())

@@ -83,8 +83,8 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
   double *rwork = new double[2*n];
   int *jpvt = new int[n];
 
-// Clear Pivot vector (code to enforce a certain permutation would go
-// here...)
+  // Clear Pivot vector (code to enforce a certain permutation would
+  // go here...)
 
   for (int i = 0; i < n; i++)
     jpvt[i] = 0;      
@@ -92,8 +92,8 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
   F77_FCN (zgeqpf, ZGEQPF) (m, n, tmp_data, m, jpvt, tau, work, rwork,
 			    info);
 
-// Form Permutation matrix (if economy is requested, return the
-// indices only!)
+  // Form Permutation matrix (if economy is requested, return the
+  // indices only!)
 
   if (qr_type == QR::economy && m > n)
     {

@@ -1049,7 +1049,7 @@ Matrix::operator * (const ColumnVector& a) const
   F77_FCN (dgemv) (&trans, &nr, &nc, &alpha, data, &ld, a.data,
 		   &i_one, &beta, y, &i_one, 1L); 
 
-  return ColumnVector (y, a.len);
+  return ColumnVector (y, nr);
 }
 
 ComplexColumnVector
@@ -3320,7 +3320,7 @@ ComplexMatrix::operator * (const ComplexColumnVector& a) const
   F77_FCN (zgemv) (&trans, &nr, &nc, &alpha, data, &ld, a.data,
 		   &i_one, &beta, y, &i_one, 1L); 
 
-  return ComplexColumnVector (y, a.len);
+  return ComplexColumnVector (y, nr);
 }
 
 // matrix by diagonal matrix -> matrix operations

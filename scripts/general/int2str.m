@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -24,9 +24,11 @@ function retval = int2str (x)
 #
 # See also: sprintf, num2str 
 
+# XXX FIXME XXX -- this will fail for very large values.
+
   if (nargin == 1)
     if (rows (x) == 1 && columns (x) == 1)
-      retval = sprintf ("%f\n", round (x));
+      retval = sprintf ("%d", round (x));
     else
       error ("int2str: expecting scalar argument");
     endif

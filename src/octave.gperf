@@ -7,6 +7,7 @@ enum octave_kw_id
   case_kw,
   catch_kw,
   continue_kw,
+  do_kw,
   else_kw,
   elseif_kw,
   end_kw,
@@ -31,6 +32,7 @@ enum octave_kw_id
   static_kw,
   switch_kw,
   try_kw,
+  until_kw,
   unwind_protect_kw,
   unwind_protect_cleanup_kw,
   while_kw
@@ -44,6 +46,7 @@ break, BREAK, break_kw
 case, CASE, case_kw
 catch, CATCH, catch_kw
 continue, CONTINUE, continue_kw
+do, DO, do_kw
 else, ELSE, else_kw
 elseif, ELSEIF, elseif_kw
 end, END, end_kw
@@ -66,6 +69,7 @@ return, FUNC_RET, return_kw
 static, STATIC, static_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw
+until, UNTIL, until_kw
 unwind_protect, UNWIND, unwind_protect_kw
 unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
 while, WHILE, while_kw

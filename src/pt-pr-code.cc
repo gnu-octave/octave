@@ -1101,6 +1101,66 @@ tree_print_code::visit_while_command (tree_while_command& cmd)
   os << "endwhile";
 }
 
+void
+tree_print_code::visit_do_while_command (tree_do_while_command& cmd)
+{
+  indent ();
+
+  os << "do";
+
+  newline ();
+
+  tree_statement_list *list = cmd.body ();
+
+  if (list)
+    {
+      increment_indent_level ();
+      list->accept (*this);
+      decrement_indent_level ();
+    }
+
+  indent ();
+
+  os << "while";
+
+  tree_expression *expr = cmd.condition ();
+
+  if (expr)
+    expr->accept (*this);
+
+  newline ();
+}
+
+void
+tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
+{
+  indent ();
+
+  os << "do";
+
+  newline ();
+
+  tree_statement_list *list = cmd.body ();
+
+  if (list)
+    {
+      increment_indent_level ();
+      list->accept (*this);
+      decrement_indent_level ();
+    }
+
+  indent ();
+
+  os << "until";
+
+  tree_expression *expr = cmd.condition ();
+
+  if (expr)
+    expr->accept (*this);
+
+  newline ();
+}
+
 // Current indentation.
 int tree_print_code::curr_print_indent_level = 0;
 

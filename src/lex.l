@@ -1020,6 +1020,7 @@ is_keyword (const string& s)
 	case otherwise_kw:
 	case return_kw:
 	case static_kw:
+	case until_kw:
 	case unwind_protect_cleanup_kw:
  	  break;
 
@@ -1055,6 +1056,7 @@ is_keyword (const string& s)
 	  yylval.tok_val = new token (token::while_end, l, c);
 	  break;
 
+	case do_kw:
 	case for_kw:
 	case while_kw:
 	  promptflag--;

@@ -138,6 +138,10 @@ public:
 
   void visit_while_command (tree_while_command&);
 
+  void visit_do_while_command (tree_do_while_command&);
+
+  void visit_do_until_command (tree_do_until_command&);
+
 private:
 
   ostream& os;

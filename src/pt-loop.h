@@ -67,7 +67,7 @@ public:
 
   void accept (tree_walker& tw);
 
-private:
+protected:
 
   // Expression to test.
   tree_expression *expr;
@@ -75,11 +75,81 @@ private:
   // List of commands to execute.
   tree_statement_list *list;
 
+private:
+
   // No copying!
 
   tree_while_command (const tree_while_command&);
 
   tree_while_command& operator = (const tree_while_command&);
+};
+
+// Do-While.
+
+class
+tree_do_while_command : public tree_while_command
+{
+public:
+
+  tree_do_while_command (int l = -1, int c = -1)
+    : tree_while_command (l, c) { }
+
+  tree_do_while_command (tree_expression *e, int l = -1, int c = -1)
+    : tree_while_command (e, l, c) { }
+
+  tree_do_while_command (tree_expression *e, tree_statement_list *lst,
+		      int l = -1, int c = -1)
+    : tree_while_command (e, lst, l, c) { }
+
+  ~tree_do_while_command (void) { }
+
+  void eval (void);
+
+  void eval_error (void);
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_do_while_command (const tree_do_while_command&);
+
+  tree_do_while_command& operator = (const tree_do_while_command&);
+};
+
+// Do-Until.
+
+class
+tree_do_until_command : public tree_while_command
+{
+public:
+
+  tree_do_until_command (int l = -1, int c = -1)
+    : tree_while_command (l, c) { }
+
+  tree_do_until_command (tree_expression *e, int l = -1, int c = -1)
+    : tree_while_command (e, l, c) { }
+
+  tree_do_until_command (tree_expression *e, tree_statement_list *lst,
+		      int l = -1, int c = -1)
+    : tree_while_command (e, lst, l, c) { }
+
+  ~tree_do_until_command (void) { }
+
+  void eval (void);
+
+  void eval_error (void);
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_do_until_command (const tree_do_until_command&);
+
+  tree_do_until_command& operator = (const tree_do_until_command&);
 };
 
 // For.

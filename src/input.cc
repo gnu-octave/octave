@@ -483,7 +483,7 @@ match_sans_spaces (const string& standard, const string& test)
 
       size_t len = end == NPOS ? NPOS : end - beg + 1;
 
-      return test.compare (standard, beg, len) == 0;
+      return (test.substr (beg, len) == standard);
     }
 
   return false;

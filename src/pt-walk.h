@@ -67,6 +67,8 @@ class subplot_using;
 class tree_try_catch_command;
 class tree_unwind_protect_command;
 class tree_while_command;
+class tree_do_until_command;
+class tree_do_while_command;
 
 class
 tree_walker
@@ -204,6 +206,12 @@ public:
 
   virtual void
   visit_while_command (tree_while_command&) = 0;
+
+  virtual void
+  visit_do_while_command (tree_do_while_command&) = 0;
+
+  virtual void
+  visit_do_until_command (tree_do_until_command&) = 0;
 
 protected:
 

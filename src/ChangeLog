@@ -1,3 +1,23 @@
+2000-01-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-walk.h (tree_walker::visit_do_while_command): New pure virtual.
+	(tree_walker::visit_do_until_command): Ditto.
+	* pt-pr-code.cc (tree_print_code::visit_do_while_command):
+	New function.
+	(tree_print_code::visit_do_until_command): Ditto.
+	* pt-loop.h (tree_do_while_command): New class.
+	(tree_do_until_command): Ditto.
+	(tree_while_command::expr, tree_while_command::list):
+	Now protected instead of private.
+	* parse.y (make_do_while_command): New function.
+	(make_do_until_command): Ditto.
+	(loop_command): Recognize do-while and do-until statements.
+	(DO, UNTIL): New tokens.
+	* Makefile.in (parse.cc): Expect 13 shift/reduce conflicts.
+
+	* input.cc (match_sans_spaces): Require non-blank part of test
+	string to match standard string exactly.
+
 2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.h (scanf_format_elt::char_class): New struct elt.

@@ -55,6 +55,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
 
+#ifdef HAVE_FFTW
+#include "oct-fftw.h"
+#endif
+
 // Fortran functions we call.
 
 extern "C"
@@ -954,6 +958,102 @@ ComplexMatrix::pseudo_inverse (double tol)
   return retval;
 }
 
+#ifdef HAVE_FFTW
+
+ComplexMatrix
+ComplexMatrix::fourier (void) const
+{
+  size_t nr = rows ();
+  size_t nc = cols ();
+
+  ComplexMatrix retval (nr, nc);
+
+  size_t npts, nsamples;
+
+  if (nr == 1 || nc == 1)
+    {
+      npts = nr > nc ? nr : nc;
+      nsamples = 1;
+    }
+  else
+    {
+      npts = nr;
+      nsamples = nc;
+    }
+
+  const Complex *in (data ());
+  Complex *out (retval.fortran_vec ());
+
+  for (size_t i = 0; i < nsamples; i++)
+    {
+      octave_fftw::fft (&in[npts * i], &out[npts * i], npts);
+    }
+
+  return retval;
+}
+
+ComplexMatrix
+ComplexMatrix::ifourier (void) const
+{
+  size_t nr = rows ();
+  size_t nc = cols ();
+
+  ComplexMatrix retval (nr, nc);
+
+  size_t npts, nsamples;
+
+  if (nr == 1 || nc == 1)
+    {
+      npts = nr > nc ? nr : nc;
+      nsamples = 1;
+    }
+  else
+    {
+      npts = nr;
+      nsamples = nc;
+    }
+
+  const Complex *in (data ());
+  Complex *out (retval.fortran_vec ());
+
+  for (size_t i = 0; i < nsamples; i++)
+    {
+      octave_fftw::ifft (&in[npts * i], &out[npts * i], npts);
+    }
+
+  return retval;
+}
+
+ComplexMatrix
+ComplexMatrix::fourier2d (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  ComplexMatrix retval (*this);
+  // Note the order of passing the rows and columns to account for
+  // column-major storage.
+  octave_fftw::fft2d (retval.fortran_vec (), nc, nr);
+
+  return retval;
+}
+
+ComplexMatrix
+ComplexMatrix::ifourier2d (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  ComplexMatrix retval (*this);
+  // Note the order of passing the rows and columns to account for
+  // column-major storage.
+  octave_fftw::ifft2d (retval.fortran_vec (), nc, nr);
+
+  return retval;
+}
+
+#else
+
 ComplexMatrix
 ComplexMatrix::fourier (void) const
 {
@@ -1153,6 +1253,8 @@ ComplexMatrix::ifourier2d (void) const
 
   return retval;
 }
+
+#endif
 
 ComplexDET
 ComplexMatrix::determinant (void) const

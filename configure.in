@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.346 $)
+AC_REVISION($Revision: 1.347 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -350,6 +350,38 @@ if test -n "$hdf5_lib"; then
         LIBS="$HDF5_LIBS $LIBS"
         AC_DEFINE(HAVE_HDF5)])])])
 fi
+
+# Checks for FFTW header and library.
+
+# subdirectories of libcruft to build if they aren't found on the system:
+FFT_DIR="fftpack"
+AC_SUBST(FFT_DIR)
+
+# Installed fftw library, if any.
+FFTW_LIBS=''
+AC_SUBST(FFTW_LIBS)
+
+AC_ARG_WITH(fftw, 
+  [  --with-fftw             use installed fftw instead of included fftpack],
+  with_fftw=yes, with_fftw=yes)
+
+if test "$with_fftw" = "yes"; then
+  AC_CHECK_HEADERS(dfftw.h fftw.h)
+  if test "$ac_cv_header_dfftw_h" = yes \
+      || test "$ac_cv_header_fftw_h" = yes; then
+    AC_CHECK_LIB(dfftw, fftw_create_plan, FFTW_LIBS="-ldfftw",
+      [AC_CHECK_LIB(fftw, fftw_create_plan, FFTW_LIBS="-lfftw", with_fftw=no)])
+  else
+    with_fftw=no
+  fi
+fi
+
+if test "$with_fftw" = yes; then
+  FFT_DIR=''
+  AC_DEFINE(HAVE_FFTW)
+fi
+
+# ----------------------------------------------------------------------
 
 ### We need these before trying to find libf2c.
 
@@ -1346,6 +1378,7 @@ Octave is now configured for $canonical_host_type
   Fortran compiler:     $FORT
   Fortran libraries:    $FLIBS
   BLAS libraries:       $BLAS_LIBS
+  FFTW libraries:       $FFTW_LIBS
   HDF5 libraries:       $HDF5_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER

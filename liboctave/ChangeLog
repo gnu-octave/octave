@@ -1,3 +1,12 @@
+2001-05-02  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* oct-fftw.h, oct-fftw.cc: New files.
+	* Makefile.in (INCLUDES, SOURCES): Add new files.
+	* CMatrix.cc (ComplexMatrix::{fourier, ifourier, fourier2d, 
+	ifourier2d}): Use fftw if available.
+	* dMatrix.cc (Matrix::{fourier, ifourier, fourier2d, ifourier2d}): 
+	Likewise.
+
 2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-lib): Don't use mk-libdir-link.

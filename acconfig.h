@@ -58,6 +58,9 @@
 /* Define if you have BSD style signals. */
 #undef HAVE_BSD_SIGNALS
 
+/* Define if you have FFTW installed. */
+#undef HAVE_FFTW
+
 /* Define if you have POSIX style signals. */
 #undef HAVE_POSIX_SIGNALS
 

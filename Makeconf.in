@@ -153,6 +153,7 @@ LIBOCTAVE = @LIBOCTAVE@
 LIBCRUFT = @LIBCRUFT@
 
 BLAS_LIBS = @BLAS_LIBS@
+FFTW_LIBS = @FFTW_LIBS@
 LIBS = @LIBS@
 
 # The arguments passed to configure.

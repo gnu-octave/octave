@@ -135,8 +135,8 @@ TC_REP::do_scalar_index (const Octave_object& args) const
     }
   else
     {
-      int rows = 0;
-      int cols = 0;
+      int rows = -1;
+      int cols = -1;
 
       int nargin = args.length ();
 
@@ -212,16 +212,23 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 	    else
 	      break;
 
-// If only one index, cols will not be set.
+// If only one index, cols will not be set, so we set it.
+// If single index is [], rows will be zero, and we should set cols to
+// zero too.
 
-	    if (cols == 0)
+	    if (cols < 0)
 	      {
-		if (user_pref.prefer_column_vectors)
-		  cols = 1;
+		if (rows == 0)
+		  cols = 0;
 		else
 		  {
-		    cols = rows;
-		    rows = 1;
+		    if (user_pref.prefer_column_vectors)
+		      cols = 1;
+		    else
+		      {
+			cols = rows;
+			rows = 1;
+		      }
 		  }
 	      }
 

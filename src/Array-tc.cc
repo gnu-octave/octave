@@ -28,6 +28,21 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 
+extern template class ArrayRep<int>;
+extern template class Array<int>;
+extern template class Array2<int>;
+extern template class DiagArray<int>;
+
+extern template class ArrayRep<double>;
+extern template class Array<double>;
+extern template class Array2<double>;
+extern template class DiagArray<double>;
+
+extern template class ArrayRep<Complex>;
+extern template class Array<Complex>;
+extern template class Array2<Complex>;
+extern template class DiagArray<Complex>;
+
 template class ArrayRep<tree_constant>;
 template class Array<tree_constant>;
 

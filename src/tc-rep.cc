@@ -652,6 +652,16 @@ TC_REP::valid_as_scalar_index (void) const
 }
 
 int
+TC_REP::valid_as_zero_index (void) const
+{
+  return ((type_tag == scalar_constant  && NINT (scalar) == 0)
+	  || (type_tag == matrix_constant
+	      && matrix->rows () == 0 && matrix->columns () == 0)
+	  || (type_tag == range_constant
+	      && range->nelem () == 1 && NINT (range->base ()) == 0));
+}
+
+int
 TC_REP::is_true (void) const
 {
   int retval = 0;

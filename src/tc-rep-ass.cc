@@ -104,10 +104,9 @@ TC_REP::do_scalar_assignment (const tree_constant& rhs,
 
   int nargin = args.length ();
 
-  if ((rhs.is_scalar_type () || rhs.is_zero_by_zero ())
-      && valid_scalar_indices (args))
+  if (rhs.is_zero_by_zero ())
     {
-      if (rhs.is_zero_by_zero ())
+      if (valid_scalar_indices (args))
 	{
 	  if (type_tag == complex_scalar_constant)
 	    delete complex_scalar;
@@ -115,7 +114,15 @@ TC_REP::do_scalar_assignment (const tree_constant& rhs,
 	  matrix = new Matrix (0, 0);
 	  type_tag = matrix_constant;
 	}
-      else if (type_tag == unknown_constant || type_tag == scalar_constant)
+      else if (! valid_zero_index (args))
+	{
+	  ::error ("invalid assigment of empty matrix to scalar");
+	  return;
+	}
+    }
+  else if (rhs.is_scalar_type () && valid_scalar_indices (args))
+    {
+      if (type_tag == unknown_constant || type_tag == scalar_constant)
 	{
 	  if (rhs.const_type () == scalar_constant)
 	    {

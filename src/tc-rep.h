@@ -174,6 +174,7 @@ private:
     }
 
   int valid_as_scalar_index (void) const;
+  int valid_as_zero_index (void) const;
 
   int is_true (void) const;
 

@@ -241,6 +241,11 @@ public:
   int valid_as_scalar_index (void) const
     { return rep->valid_as_scalar_index (); }
 
+// Is this constant valid as a zero scalar index?
+
+  int valid_as_zero_index (void) const
+    { return rep->valid_as_zero_index (); }
+
 // Does this constant correspond to a truth value?
 
   int is_true (void) const { return rep->is_true (); }

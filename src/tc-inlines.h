@@ -293,6 +293,18 @@ valid_scalar_indices (const Octave_object& args)
 	      && args(0).valid_as_scalar_index ()));
 }
 
+static inline int
+valid_zero_index (const Octave_object& args)
+{
+  int nargin = args.length ();
+
+  return ((nargin == 2
+	   && args(1).valid_as_zero_index ()
+	   && args(0).valid_as_zero_index ())
+	  || (nargin == 1
+	      && args(0).valid_as_zero_index ()));
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

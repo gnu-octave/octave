@@ -28,6 +28,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "symtab.h"
 
+extern template class SLNode<unsigned>;
+extern template class SLList<unsigned>;
+extern template class Stack<unsigned>;
+extern template class SLStack<unsigned>;
+
 template class SLNode<symbol_def *>;
 template class SLList<symbol_def *>;
 template class Stack<symbol_def *>;

@@ -31,9 +31,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-stream.h"
 
-INSTANTIATE_ARRAY (scanf_format_elt *);
+typedef scanf_format_elt* scanf_format_elt_ptr;
+typedef printf_format_elt* printf_format_elt_ptr;
 
-INSTANTIATE_ARRAY (printf_format_elt *);
+INSTANTIATE_ARRAY (scanf_format_elt_ptr);
+
+INSTANTIATE_ARRAY (printf_format_elt_ptr);
 
 INSTANTIATE_ARRAY (octave_stream);
 

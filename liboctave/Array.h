@@ -164,15 +164,14 @@ public:
   int capacity (void) const { return rep->length (); }
   int length (void) const { return rep->length (); }
 
+  // No checking, even for multiple references, ever.
+
+  T& xelem (int n) { return rep->elem (n); }
+  T xelem (int n) const { return rep->elem (n); }
+
   // XXX FIXME XXX -- would be nice to fix this so that we don't
   // unnecessarily force a copy, but that is not so easy, and I see no
   // clean way to do it.
-
-  T& elem (int n)
-    {
-      make_unique ();
-      return rep->elem (n);
-    }
 
   T& Array<T>::checkelem (int n)
     {
@@ -183,35 +182,39 @@ public:
 	  return foo;
 	}
       else
-	return elem (n);
+	{
+	  make_unique ();
+	  return xelem (n);
+	}
     }
 
-#if defined (NO_BOUNDS_CHECKING)
-  T& operator () (int n) { return elem (n); }
+#if defined (BOUNDS_CHECKING)
+  T& elem (int n) { return checkelem (n); }
 #else
-  T& operator () (int n) { return checkelem (n); }
+  T& elem (int n)
+    {
+      make_unique ();
+      return xelem ();
+    }
 #endif
 
-  T Array<T>::elem (int n) const { return rep->elem (n); }
+  T& operator () (int n) { return elem (n); }
 
   T Array<T>::checkelem (int n) const
     {
       if (n < 0 || n >= rep->length ())
 	return range_error ();
       else
-	return elem (n);
+	return xelem (n);
     }
 
-#if defined (NO_BOUNDS_CHECKING)
-  T Array<T>::operator () (int n) const { return elem (n); }
+#if defined (BOUNDS_CHECKING)
+  T Array<T>::elem (int n) const { return checkelem (n); }
 #else
-  T Array<T>::operator () (int n) const { return checkelem (n); }
+  T Array<T>::elem (int n) const { return xelem (n); }
 #endif
 
-  // No checking, even for multiple references, ever.
-
-  T& xelem (int n) { return rep->elem (n); }
-  T xelem (int n) const { return rep->elem (n); }
+  T Array<T>::operator () (int n) const { return elem (n); }
 
   void resize (int n);
   void resize (int n, const T& val);

@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.194 $)
+AC_REVISION($Revision: 1.195 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -183,6 +183,18 @@ fi
 AC_SUBST(LIBREADLINE)
 AC_SUBST(READLINE_DIR)
 
+### By default, Octave's internal array and matrix classes do bounds
+### checking on element references.  This slows some operations down a
+### bit, so give the user the option of disabling it.
+
+BOUNDS_CHECKING=true
+AC_ARG_ENABLE(bounds-check,
+  [  --enable-bounds-check   for internal array classes (default is yes)],
+  [if test "$enableval" = no; then BOUNDS_CHECKING=false; fi], [])
+if $BOUNDS_CHECKING; then
+  AC_DEFINE(BOUNDS_CHECKING, 1)
+fi
+
 ### See which C++ compiler to use (we expect to find g++).
 
 EXTERN_CXXFLAGS="$CXXFLAGS"
@@ -327,7 +339,7 @@ AC_ARG_ENABLE(dl,
 ### shl_load/shl_findsym (HP/UX only?).
 
 AC_ARG_ENABLE(shl,
-  [  --enable-shl            use shl_load/shl_findsym for dynamic linking (HP only?)],
+  [  --enable-shl            use shl_load/shl_findsym for dynamic linking (HP only)],
   [if test $enableval = no; then WITH_SHL=no;
    elif test $enableval = yes; then WITH_SHL=yes;
    else WITH_SHL=maybe; fi],
@@ -1058,6 +1070,7 @@ Octave is now configured for $canonical_host_type
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT_BINARY
 
+  Do internal array bounds checking:       $BOUNDS_CHECKING
   Build shared libraries:                  $SHARED_LIBS
   Minimal kernel option:                   $OCTAVE_LITE
   Dynamic Linking (dlopen/dlsym):          $WITH_DL

@@ -1,3 +1,18 @@
+Tue Jan 20 16:30:00 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::expm): Skip trace normalization step if the
+	trace is negative. 
+	* CMatrix.cc (ComplexMatrix::expm): Skip trace normalization if
+	the real part of the trace is negative.
+
+Mon Jan 19 16:01:59 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::expm): Call xdlange instead of dlange.
+	* CMatrix.cc (ComplexMatrix::expm): Call xzlange instead of zlange.
+
+	* Array2-idx.h (assign): Allow operations like a = 1; a(2:3) = [1;2]
+	to succeed.
+
 Thu Dec 18 14:53:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.cc (IDX_VEC_REP::sort): Don't do anything unless len > 1.

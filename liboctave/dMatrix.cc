@@ -95,9 +95,9 @@ extern "C"
 				const double*, const int&, double&,
 				int&, long, long);
 
-  double F77_FCN (dlange, DLANGE) (const char*, const int&,
-				   const int&, const double*,
-				   const int&, double*); 
+  int F77_FCN (xdlange, XDLANGE) (const char*, const int&,
+				  const int&, const double*,
+				  const int&, double*, double&); 
 
   int F77_FCN (qzhes, QZHES) (const int&, const int&, double*,
 			      double*, const long&, double*);
@@ -1334,18 +1334,22 @@ Matrix::expm (void) const
 
   int nc = columns ();
 
-  // trace shift value
-  double trshift = 0;
+  // Preconditioning step 1: trace normalization to reduce dynamic
+  // range of poles, but avoid making stable eigenvalues unstable.
 
-  // Preconditioning step 1: trace normalization.
+  // trace shift value
+  double trshift = 0.0;
 
   for (int i = 0; i < nc; i++)
     trshift += m.elem (i, i);
 
   trshift /= nc;
 
-  for (int i = 0; i < nc; i++)
-    m.elem (i, i) -= trshift;
+  if (trshift > 0.0)
+    {
+      for (int i = 0; i < nc; i++)
+	m.elem (i, i) -= trshift;
+    }
 
   // Preconditioning step 2: balancing.
 
@@ -1356,9 +1360,10 @@ Matrix::expm (void) const
   // Preconditioning step 3: scaling.
 
   ColumnVector work(nc);
-  double inf_norm
-    = F77_FCN (dlange, DLANGE) ("I", nc, nc, m.fortran_vec (),nc,
-				work.fortran_vec ());
+  double inf_norm;
+
+  F77_FCN (xdlange, XDLANGE) ("I", nc, nc, m.fortran_vec (), nc,
+			      work.fortran_vec (), inf_norm);
 
   int sqpow = (int) (inf_norm > 0.0
 		     ? (1.0 + log (inf_norm) / log (2.0))
@@ -1396,7 +1401,7 @@ Matrix::expm (void) const
   // Zero power.
 
   dpp = -dpp;
-  for(int j = 0; j < nc; j++)
+  for (int j = 0; j < nc; j++)
     {
       npp.elem (j, j) += 1.0;
       dpp.elem (j, j) += 1.0;
@@ -1424,7 +1429,10 @@ Matrix::expm (void) const
 
   // Reverse preconditioning step 1: fix trace normalization.
 
-  return retval * exp (trshift);
+  if (trshift > 0.0)
+    retval = exp (trshift) * retval;
+
+  return retval;
 }
 
 Matrix&

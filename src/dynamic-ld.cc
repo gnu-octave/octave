@@ -210,7 +210,7 @@ octave_dynamic_loader::make_dynamic_loader (void)
 #if defined (WITH_DL)
   instance = new octave_dlopen_dynamic_loader ();
 #elif defined (WITH_SHL)
-  instance = new octave_sh_load_dynamic_loader ();
+  instance = new octave_shl_load_dynamic_loader ();
 #else
   instance = new octave_dynamic_loader ();
 #endif

@@ -113,7 +113,7 @@ pr_max_internal (const Matrix& m)
   int nr = m.rows ();
   int nc = m.columns ();
 
-  double result = DBL_MIN;
+  double result = -DBL_MAX;
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)

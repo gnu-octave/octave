@@ -1,3 +1,12 @@
+Sun Jan 25 02:19:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (BASH_REINSTALL_SIGHANDLERS, BASH_FUNC_STRCOLL):
+	Provide defaults for cross compiling.
+
+Fri Jan 16 21:02:58 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install, uninstall): For Octave, do nothing.
+
 Tue Jan 13 14:59:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* readline.h (rl_dispatching): Add missing extern in declaration.

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.293 $)
+AC_REVISION($Revision: 1.294 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -40,13 +40,13 @@ OCTAVE_SET_DEFAULT(fcnfiledir, '$(datadir)/octave/$(version)/m')
 OCTAVE_SET_DEFAULT(localfcnfiledir, '$(datadir)/octave/site/m')
 OCTAVE_SET_DEFAULT(localfcnfilepath, '$(localfcnfiledir)//')
 OCTAVE_SET_DEFAULT(archlibdir,
-  '$(libexecdir)/octave/$(version)/exec/$(target_host_type)')
+  '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localarchlibdir,
-  '$(libexecdir)/octave/site/exec/$(target_host_type)')
+  '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(octfiledir,
-  '$(libexecdir)/octave/$(version)/oct/$(target_host_type)')
+  '$(libexecdir)/octave/$(version)/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localoctfiledir,
-  '$(libexecdir)/octave/site/oct/$(target_host_type)')
+  '$(libexecdir)/octave/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localoctfilepath, '$(localoctfiledir)//')
 OCTAVE_SET_DEFAULT(fcnfilepath,
   '.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir)//:$(fcnfiledir)//')
@@ -287,8 +287,11 @@ changequote([,])dnl
   ;;
 esac
 
-### Octave doesn't use exceptions yet, so disable them for somewhat
-### faster and smaller code.
+### Octave doesn't use run-time type identification or exceptions yet,
+### so disable them for somewhat faster and smaller code.
+
+OCTAVE_CXX_FLAG(-fno-rtti,
+  [XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-rtti"])
 
 OCTAVE_CXX_FLAG(-fno-exceptions,
   [XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-exceptions"])
@@ -315,15 +318,7 @@ AC_SUBST(LD_STATIC_FLAG)
 
 ### We need these before trying to find libf2c.
 
-if test -z "$AR"; then
-  AR=ar
-fi
-AC_SUBST(AR)
-
-if test -z "$ARFLAGS"; then
-  ARFLAGS="rc"
-fi
-AC_SUBST(ARFLAGS)
+OCTAVE_PROG_AR
 
 AC_PROG_RANLIB
 
@@ -379,8 +374,6 @@ fi
 have_fortran_compiler=false
 have_f2c=false
 
-f77_is_g77=false
-
 if $use_f2c; then
   have_f2c=true
 else
@@ -391,20 +384,12 @@ else
     if test "$octave_cv_f2c_f77_compat" = no; then
       F77=
     else
-      if $use_g77; then
-	f77_is_g77=true
-      else
-        f77_output=`$F77 -v 2>&1 | grep "GNU F77"`
-        if test -n "$f77_output"; then
-	  f77_is_g77=true
-        fi
-      fi
       if test -z "$FFLAGS"; then
         FFLAGS="-O"
       fi
       case "$canonical_host_type" in
         alpha*-*-*)
-          if $f77_is_g77 || test -z "$ieee_fp_flag" ; then
+          if test "$f77_is_g77" = yes || test -z "$ieee_fp_flag" ; then
             true
 	  else
 	    FFLAGS="-fpe1 $FFLAGS"
@@ -494,15 +479,7 @@ else
   AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
 
-FORTRAN_MAIN_FLAG=
-case "$canonical_host_type" in
-  *-linux-*)
-    FORTRAN_MAIN_FLAG="-u MAIN__"
-  ;;
-esac
-if test -n "$FORTRAN_MAIN_FLAG"; then
-  AC_MSG_RESULT([defining FORTRAN_MAIN_FLAG to be $FORTRAN_MAIN_FLAG])
-fi
+OCTAVE_F77_MAIN_FLAG
 
 FC=$F77
 AC_SUBST(FC)
@@ -511,7 +488,6 @@ AC_SUBST(FFLAGS)
 AC_SUBST(FLIBS)
 AC_SUBST(F2C)
 AC_SUBST(F2CFLAGS)
-AC_SUBST(FORTRAN_MAIN_FLAG)
 AC_SUBST_FILE(f77_rules_frag)
 
 ### Handle dynamic linking and shared library options.
@@ -600,7 +576,7 @@ changequote([,])dnl
     DLFCN_DIR=dlfcn
   ;;
   hppa*-hp-hpux*)
-    if $f77_is_g77; then
+    if test "$f77_is_g77" = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=+Z
@@ -616,7 +592,7 @@ changequote([,])dnl
     RLD_FLAG='-L$(libdir)'
   ;;
   sparc-sun-sunos4*)
-    if $f77_is_g77; then
+    if test "$f77_is_g77" = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=-PIC
@@ -626,7 +602,7 @@ changequote([,])dnl
     RLD_FLAG='-L$(libdir)'
   ;;
   sparc-sun-solaris2*)
-    if $f77_is_g77; then
+    if test "$f77_is_g77" = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=-PIC
@@ -694,9 +670,9 @@ AC_SUBST(SPECIAL_MATH_LIB)
 ### How big are ints and how are they oriented?  These could probably
 ### be eliminated in favor of run-time checks.
 
-AC_CHECK_SIZEOF(short)
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(short, 2)
+AC_CHECK_SIZEOF(int, 4)
+AC_CHECK_SIZEOF(long, 4)
 
 ### Does the C compiler handle alloca() and const correctly?
 
@@ -897,7 +873,19 @@ esac
 
 ### Check for nonstandard but common math functions that we need.
 
-AC_CHECK_FUNCS(acosh asinh atanh erf erfc gamma lgamma)
+AC_CHECK_FUNCS(acosh asinh atanh erf erfc)
+
+case "$canonical_host_type" in
+  *-*-cygwin32)
+    AC_MSG_RESULT(assuming gamma works)
+    AC_DEFINE(HAVE_GAMMA, 1)
+    AC_MSG_RESULT(assuming lgamma works)
+    AC_DEFINE(HAVE_LGAMMA, 1)
+  ;;
+  *)
+    AC_CHECK_FUNCS(gamma lgamma)
+  ;;
+esac
 
 ### Checks for OS specific cruft.
 
@@ -1049,16 +1037,14 @@ esac
 
 AC_PROG_LN_S
 
-AC_CHECK_PROG(RUNTEST, runtest, runtest, [])
-if test -z "$RUNTEST"; then
-  warn_runtest="I didn't find runtest -- install DejaGNU if you want to run \`make check'"
-  AC_MSG_WARN($warn_runtest)
-fi
-AC_SUBST(RUNTEST)
+OCTAVE_PROG_RUNTEST
 
 AC_PROG_INSTALL
 INSTALL_SCRIPT='${INSTALL}'
 AC_SUBST(INSTALL_SCRIPT)
+
+OCTAVE_PROG_GNUPLOT
+OCTAVE_PROG_PAGER
 
 EXE=
 case "$canonical_host_type" in
@@ -1067,54 +1053,6 @@ case "$canonical_host_type" in
   ;;
 esac
 AC_SUBST(EXE)
-
-AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])
-if test -n "$GNUPLOT_BINARY"; then
-  AC_MSG_CHECKING([to see if your gnuplot supports multiplot])
-  if test -z "`echo 'set term unknown; set multiplot' | \
-    $GNUPLOT_BINARY 2>&1`"; then
-    AC_MSG_RESULT([yes])
-    AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1)
-  else
-    AC_MSG_RESULT([no])
-  fi
-  AC_MSG_CHECKING([to see if your gnuplot supports multiple plot windows])
-  if test -z "`echo 'set term x11 2' | $GNUPLOT_BINARY 2>&1`"; then
-    AC_MSG_RESULT([yes])
-    AC_DEFINE(GNUPLOT_HAS_FRAMES, 1)
-  else
-    AC_MSG_RESULT([no])
-  fi
-else
-  warn_gnuplot="yes"
-
-  ## If you change this text, be sure to also copy it to the set of
-  ## warnings at the end of the script
-
-  AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
-  AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
-  AC_MSG_WARN([plotting commands without it.])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([If gnuplot is installed but it isn't in your path, you can])
-  AC_MSG_WARN([tell Octave where to find it by typing the command])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([gnuplot_binary = "/full/path/to/gnuplot/binary"])
-  AC_MSG_WARN([])
-  AC_MSG_WARN([at the Octave prompt.])
-fi
-
-octave_possible_pagers="less more page pg"
-case "$canonical_host_type" in
-  *-*-cygwin32)
-    octave_possible_pagers="$octave_possible_pagers more.com"
-  ;;
-esac
-
-AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
-if test -z "$DEFAULT_PAGER"; then
-  warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
-  AC_MSG_WARN($warn_less)
-fi
 
 ### Even though we include config.h, we need to have the preprocessor
 ### defines available in a variable for the octave-bug script.  Use

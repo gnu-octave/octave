@@ -100,9 +100,9 @@ extern "C"
 				const Complex*, const int&, double&,
 				int&, long, long);
 
-  double F77_FCN (zlange, ZLANGE) (const char*, const int&,
-				   const int&, const Complex*,
-				   const int&, double*); 
+  int F77_FCN (xzlange, XZLANGE) (const char*, const int&,
+				  const int&, const Complex*,
+				  const int&, double*, double&); 
 }
 
 static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
@@ -1586,15 +1586,19 @@ ComplexMatrix::expm (void) const
 
   int nc = columns ();
 
+  // Preconditioning step 1: trace normalization to reduce dynamic
+  // range of poles, but avoid making stable eigenvalues unstable.
+
   // trace shift value
   Complex trshift = 0.0;
-
-  // Preconditioning step 1: trace normalization.
 
   for (int i = 0; i < nc; i++)
     trshift += m.elem (i, i);
 
   trshift /= nc;
+
+  if (trshift.real () < 0.0)
+    trshift = trshift.imag ();
 
   for (int i = 0; i < nc; i++)
     m.elem (i, i) -= trshift;
@@ -1608,9 +1612,10 @@ ComplexMatrix::expm (void) const
   // Preconditioning step 3: scaling.
 
   ColumnVector work (nc);
-  double inf_norm
-    = F77_FCN (zlange, ZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
-				work.fortran_vec ());
+  double inf_norm;
+
+  F77_FCN (xzlange, XZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
+			      work.fortran_vec (), inf_norm);
 
   int sqpow = (inf_norm > 0.0
 	       ? static_cast<int> (1.0 + log (inf_norm) / log (2.0)) : 0);
@@ -1677,7 +1682,7 @@ ComplexMatrix::expm (void) const
 
   // Reverse preconditioning step 1: fix trace normalization.
 
-  return retval * exp (trshift);
+  return exp (trshift) * retval;
 }
 
 // column vector by row vector -> matrix operations

@@ -1,3 +1,15 @@
+Thu Jan 22 13:45:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc (make_dynamic_loader): Fix typo.
+
+Tue Jan 20 17:02:19 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fexist): If local symbol is undefined, check
+	global table.
+
+	* pr-output.cc (pr_max_internal): Initial value for result is
+	-DBL_MAX, not DBL_MIN.
+
 Thu Jan  8 11:54:33 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* xpow.cc (elem_xpow): If second arg of pow is complex, make sure

@@ -36,6 +36,8 @@ Numerical:
   * Fix CollocWt to handle Laguerre polynomials.  Make it easy to
     extend it to other polynomial types.
 
+  * Make filter faster (perhaps by calling BLAS functions).
+
   * Add optional arguments to colloc so that it's not restricted to
     Legendre polynomials.
 
@@ -569,6 +571,8 @@ Documentation and On-Line Help:
 
   * Should info/terminal.c include definitions for PC, BC, UP, and
     ospeed on all systems?
+
+  * Clean up help stuff.
 
   * Demo files.
 

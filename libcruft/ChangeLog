@@ -1,3 +1,7 @@
+Mon Jan 19 23:11:21 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lapack/xdlange.f, lapack/xzlange.f: New files.
+
 Mon Dec  1 00:51:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dassl/xerhlt.f, dassl/xermsg.f, dassl/xerprn.f, dassl/xgetua.f,

@@ -1,3 +1,23 @@
+Sun Jan 25 01:59:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_F2C_F77_COMPAT): Require OCTAVE_PROG_G77.
+	Handle cross compiling with g77.
+	(OCTAVE_REINSTALL_SIGHANDLERS): Provide defaults for cross compiling.
+
+	* aclocal.m4 (OCTAVE_PROG_AR, OCTAVE_PROG_G77, OCTAVE_PROG_PAGER,
+	OCTAVE_PROG_GNUPLOT, OCTAVE_PROG_RUNTEST, OCTAVE_F77_MAIN_FLAG):
+	New macros.
+	* configure.in: Use them in place of in-line code.
+	
+Sat Jan 24 00:33:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_HOST_TYPE): Don't set target_host_type.
+	* configure.in: Use canonical_host_type in place of target_host_type.
+
+Fri Jan 23 02:47:57 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Also check for -fno-rtti.
+
 Thu Jan 15 23:12:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.guess, config.sub: Update to new version from the FSF.

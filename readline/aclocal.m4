@@ -672,8 +672,16 @@ main()
 	exit(nsigint != 2);
 }
 ], bash_cv_must_reinstall_sighandlers=no, bash_cv_must_reinstall_sighandlers=yes,
-AC_MSG_ERROR(cannot check signal handling if cross compiling))])
-AC_MSG_RESULT($bash_cv_must_reinstall_sighandlers)
+if test "$bash_cv_signal_vintage" = svr3; then
+  bash_cv_must_reinstall_sighandlers=yes
+else
+  bash_cv_must_reinstall_sighandlers=no
+fi)])
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$bash_cv_must_reinstall_sighandlers assumed for cross compilation])
+else
+  AC_MSG_RESULT($bash_cv_must_reinstall_sighandlers)
+fi
 if test $bash_cv_must_reinstall_sighandlers = yes; then
 AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
 fi
@@ -833,9 +841,13 @@ siglongjmp(xx, 10);
 exit(1);
 #endif
 }],bash_cv_func_sigsetjmp=present, bash_cv_func_sigsetjmp=missing,
-   AC_MSG_ERROR(cannot check for sigsetjmp/siglongjmp if cross-compiling))
+   bash_cv_func_sigsetjmp=present)
 ])
-AC_MSG_RESULT($bash_cv_func_sigsetjmp)
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$bash_cv_func_sigsetjmp=present assumed for cross compiling])
+else
+  AC_MSG_RESULT($bash_cv_func_sigsetjmp)
+fi
 if test $bash_cv_func_sigsetjmp = present; then
 AC_DEFINE(HAVE_POSIX_SIGSETJMP)
 fi
@@ -1087,9 +1099,13 @@ char    *v[];
 	exit (r1 > 0 && r2 > 0);
 }
 ], bash_cv_func_strcoll_broken=yes, bash_cv_func_strcoll_broken=no,
-   AC_MSG_ERROR(cannot check strcoll if cross compiling))
+   bash_cv_func_strcoll_broken=no)
 ])
-AC_MSG_RESULT($bash_cv_func_strcoll_broken)
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$bash_cv_func_strcoll_broken assumed for cross compiling])
+else
+  AC_MSG_RESULT($bash_cv_func_strcoll_broken)
+fi
 if test $bash_cv_func_strcoll_broken = yes; then
 AC_DEFINE(STRCOLL_BROKEN)
 fi

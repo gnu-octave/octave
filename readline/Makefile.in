@@ -185,27 +185,31 @@ documentation: force
 
 force:
 
-install: installdirs libreadline.a
-	for f in ${INSTALLED_HEADERS}; do \
-		$(INSTALL_DATA) $(srcdir)/$$f $(includedir)/readline ; \
-	done
-	-$(MV) $(libdir)/libreadline.a $(libdir)/libreadline.old
-	$(INSTALL_DATA) libreadline.a $(libdir)/libreadline.a
-	-test -n "$(RANLIB)" && -$(RANLIB) -t $(libdir)/libreadline.a
-	-( if test -d doc ; then \
-		cd doc && \
-		${MAKE} ${MFLAGS} infodir=$(infodir) INSTALL_DATA=$(INSTALL_DATA) $@; \
-	  fi )
+install:
+
+#install: installdirs libreadline.a
+#	for f in ${INSTALLED_HEADERS}; do \
+#		$(INSTALL_DATA) $(srcdir)/$$f $(includedir)/readline ; \
+#	done
+#	-$(MV) $(libdir)/libreadline.a $(libdir)/libreadline.old
+#	$(INSTALL_DATA) libreadline.a $(libdir)/libreadline.a
+#	-test -n "$(RANLIB)" && -$(RANLIB) -t $(libdir)/libreadline.a
+#	-( if test -d doc ; then \
+#		cd doc && \
+#		${MAKE} ${MFLAGS} infodir=$(infodir) INSTALL_DATA=$(INSTALL_DATA) $@; \
+#	  fi )
 
 installdirs: $(srcdir)/support/mkdirs
 	-$(SHELL) $(srcdir)/support/mkdirs $(includedir) \
 		$(includedir)/readline $(libdir) $(infodir) $(man3dir)
 
 uninstall:
-	-test -n "$(includedir)" && cd $(includedir)/readline && \
-		${RM} ${INSTALLED_HEADERS}
-	-test -n "$(libdir)" && cd $(libdir) && \
-		${RM} libreadline.a libreadline.old $(SHARED_LIBS)
+
+#uninstall:
+#	-test -n "$(includedir)" && cd $(includedir)/readline && \
+#		${RM} ${INSTALLED_HEADERS}
+#	-test -n "$(libdir)" && cd $(libdir) && \
+#		${RM} libreadline.a libreadline.old $(SHARED_LIBS)
 
 TAGS:	force
 	$(ETAGS) $(CSOURCES) $(HSOURCES)

@@ -496,10 +496,12 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			  int idx_nc = idx.orig_columns ();
 
 			  // lhs_is_empty now means that lhs was
-			  // *originally* empty.
+			  // *originally* empty, and lhs_len is the
+			  // *original* length of the lhs.
 
 			  if (liboctave_dfi_flag
-			      || (idx_nr == 1 && idx_nc == 1))
+			      || (idx_nr == 1 && idx_nc == 1)
+			      || (rhs_nr == 1 && rhs_nc == 1 && lhs_len == 1))
 			    {
 			      if (liboctave_pcv_flag)
 				{
@@ -517,12 +519,14 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			      lhs.d1 = rhs.d1;
 			      lhs.d2 = rhs.d2;
 			    }
-			  else if (idx_nr == 1 && rhs_nr == 1)
+			  else if (rhs_nr == 1
+				   && (idx_nr == 1 || lhs_len == 1))
 			    {
 			      lhs.d1 = 1;
 			      lhs.d2 = lhs.length ();
 			    }
-			  else if (idx_nc == 1 && rhs_nc == 1)
+			  else if (rhs_nc == 1
+				   && (idx_nc == 1 || lhs_len == 1))
 			    {
 			      lhs.d1 = lhs.length ();
 			      lhs.d2 = 1;

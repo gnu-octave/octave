@@ -54,9 +54,20 @@ Here is a list of current problems (and workarounds, where available).
   PostScript, but it would be much nicer if it could open a separate
   window and draw pretty graphs there.
 
+* If Octave takes a long time to find function files, you may have to
+  modify your LOADPATH to avoid device names specified using the
+  `//DEV/sudir' syntax.  To map the D: drive (for example) to
+  /D_DRIVE, do the following:
 
-If you know of solutions for any of these problems, please contact
-bug-octave@bevo.che.wisc.edu.
+    cd /
+    mkdir /D_DRIVE
+    mount d: /D_DRIVE
+
+  Then you can set your LOADPATH to include /D_DRIVE/subdir instead of
+  //d/subdir.
+
+If you know of solutions for any of the problems mentioned above,
+please contact bug-octave@bevo.che.wisc.edu.
 
 More information about the GNU-WIN32 project is available via the WWW
 at http://www.cygnus.com/gnu-win32.
@@ -66,4 +77,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Wed Jan  8 23:15:59 1997
+Thu Jan 15 23:35:03 1998

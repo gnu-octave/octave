@@ -29,13 +29,12 @@ AC_DEFUN(OCTAVE_HOST_TYPE,
 if test -z "$host"; then
   host=unknown
 fi
-target_host_type=$host
 canonical_host_type=$host
 if test "$host" = unknown; then
   AC_MSG_WARN([configuring Octave for unknown system type
 ])
 fi
-AC_SUBST(target_host_type)])
+AC_SUBST(canonical_host_type)])
 dnl
 dnl Set default value for a variable and substitute it.
 dnl
@@ -58,6 +57,35 @@ AC_DEFUN(OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS,
     fi
   fi
 fi])
+dnl
+dnl Check for ar.
+dnl
+AC_DEFUN(OCTAVE_PROG_AR,
+[if test -z "$AR"; then
+  AR=ar
+fi
+AC_SUBST(AR)
+
+if test -z "$ARFLAGS"; then
+  ARFLAGS="rc"
+fi
+AC_SUBST(ARFLAGS)
+])
+dnl
+dnl See if $F77 is the GNU Fortran compiler
+dnl
+AC_DEFUN(OCTAVE_PROG_G77,
+[AC_CACHE_CHECK([whether ${F77-f77} is the GNU Fortran compiler],
+octave_cv_f77_is_g77,
+[if $use_g77; then
+  octave_cv_f77_is_g77=yes
+else
+  f77_output=`$F77 -v 2>&1 | grep "GNU F77"`
+  if test -n "$f77_output"; then
+    octave_cv_f77_is_g77=yes
+  fi
+fi])
+])
 dnl
 dnl See what libraries are used by the Fortran compiler.
 dnl
@@ -239,6 +267,21 @@ octave_cv_flibs="$flibs_result"])
 FLIBS="$octave_cv_flibs"
 AC_MSG_RESULT([$FLIBS])])
 dnl
+dnl This is apparently needed on some Linux systems.
+dnl
+AC_DEFUN(OCTAVE_F77_MAIN_FLAG,
+[FORTRAN_MAIN_FLAG=
+case "$canonical_host_type" in
+  *-linux-*)
+    FORTRAN_MAIN_FLAG="-u MAIN__"
+  ;;
+esac
+if test -n "$FORTRAN_MAIN_FLAG"; then
+  AC_MSG_RESULT([defining FORTRAN_MAIN_FLAG to be $FORTRAN_MAIN_FLAG])
+fi
+AC_SUBST(FORTRAN_MAIN_FLAG)
+])
+dnl
 dnl See if the Fortran compiler uses uppercase external names.
 dnl
 dnl OCTAVE_F77_UPPERCASE_NAMES()
@@ -297,13 +340,21 @@ dnl expected.
 dnl
 dnl OCTAVE_F2C_F77_COMPAT()
 AC_DEFUN(OCTAVE_F2C_F77_COMPAT,
-[AC_REQUIRE([OCTAVE_FLIBS])
+[AC_REQUIRE([OCTAVE_PROG_G77])
+AC_REQUIRE([OCTAVE_FLIBS])
 AC_REQUIRE([OCTAVE_F77_APPEND_UNDERSCORE])
-AC_MSG_CHECKING([$F77/f2c compatibility])
-AC_CACHE_VAL(octave_cv_f2c_f77_compat,
-[trap 'rm -f ftest* ctest* core; exit 1' 1 3 15
-octave_cv_f2c_f77_compat=no
-cat > ftest.f <<EOF
+if test "$cross_compiling" = yes; then
+  octave_cv_f2c_f77_compat=yes
+  if test "$octave_cv_f77_is_g77" = yes; then
+    AC_MSG_RESULT([assuming ${F77-f77} cross compiler is f2c compatible])
+  else
+    AC_MSG_WARN([assuming ${F77-f77} cross compiler is f2c compatible])
+  fi
+else
+  AC_CACHE_CHECK([$F77/f2c compatibility], octave_cv_f2c_f77_compat,
+  [trap 'rm -f ftest* ctest* core; exit 1' 1 3 15
+  octave_cv_f2c_f77_compat=no
+  cat > ftest.f <<EOF
       INTEGER FUNCTION FORSUB (C, D)
       CHARACTER *(*) C
       INTEGER L
@@ -314,10 +365,9 @@ cat > ftest.f <<EOF
       RETURN
       END
 EOF
-${F77-f77} -c ftest.f 1>&AC_FD_CC 2>&AC_FD_CC
-dnl
-changequote(, )
-cat > ctest.c <<EOF
+  ${F77-f77} -c ftest.f 1>&AC_FD_CC 2>&AC_FD_CC
+  changequote(, )
+  cat > ctest.c <<EOF
 #include "confdefs.h"
 static char s[14];
 int main ()
@@ -338,19 +388,19 @@ int MAIN_ () { return 0; }
 int MAIN__ () { return 0; }
 #endif
 EOF
-changequote([, ])
-dnl
-if ${CC-cc} -c ctest.c 1>&AC_FD_CC 2>&AC_FD_CC; then
-  if ${CC-cc} -o ctest ctest.o ftest.o $FLIBS -lm 1>&AC_FD_CC 2>&AC_FD_CC; then
-    ctest_output=`./ctest 2>&1`
-    status=$?
-    if test $status -eq 0 && test "$ctest_output" = "FOO-I-HITHERE 10"; then
-      octave_cv_f2c_f77_compat=yes
+  changequote([, ])
+  if ${CC-cc} -c ctest.c 1>&AC_FD_CC 2>&AC_FD_CC; then
+    if ${CC-cc} -o ctest ctest.o ftest.o $FLIBS -lm 1>&AC_FD_CC 2>&AC_FD_CC; then
+      ctest_output=`./ctest 2>&1`
+      status=$?
+      if test $status -eq 0 && test "$ctest_output" = "FOO-I-HITHERE 10"; then
+	octave_cv_f2c_f77_compat=yes
+      fi
     fi
-  fi
-fi])
+  fi])
+fi
 rm -f ftest* ctest* core
-AC_MSG_RESULT([$octave_cv_f2c_f77_compat])])
+])
 dnl
 dnl See if struct group has a gr_passwd field.
 dnl
@@ -534,10 +584,18 @@ main()
   exit(nsigint != 2);
 }
 ], octave_cv_must_reinstall_sighandlers=no, octave_cv_must_reinstall_sighandlers=yes,
-AC_MSG_ERROR(cannot check signal handling if cross compiling))])
-AC_MSG_RESULT($octave_cv_must_reinstall_sighandlers)
+if test "$octave_cv_signal_vintage" = svr3; then
+  octave_cv_must_reinstall_sighandlers=yes
+else
+  octave_cv_must_reinstall_sighandlers=no
+fi)])
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$octave_cv_must_reinstall_sighandlers assumed for cross compilation])
+else
+  AC_MSG_RESULT($octave_cv_must_reinstall_sighandlers)
+fi
 if test "$octave_cv_must_reinstall_sighandlers" = yes; then
-AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
+  AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
 fi
 ])
 dnl
@@ -594,7 +652,6 @@ EOB
         return a == A(1);
       ], 
       octave_cv_cxx_new_friend_template_decl=no,
-      octave_cv_cxx_new_friend_template_decl=yes,
       octave_cv_cxx_new_friend_template_decl=yes
     )
     AC_LANG_RESTORE
@@ -657,4 +714,93 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
     AC_MSG_RESULT(no)
     ifelse([$3], , , [$3])
   fi
+])
+dnl
+dnl What pager should we use?
+dnl
+AC_DEFUN(OCTAVE_PROG_PAGER,
+[if test "$cross_compiling" = yes; then
+  DEFAULT_PAGER=less
+  AC_MSG_RESULT(assuming $DEFAULT_PAGER exists on $canonical_host_type host)
+  AC_SUBST(DEFAULT_PAGER)
+else
+  octave_possible_pagers="less more page pg"
+  case "$canonical_host_type" in
+    *-*-cygwin32)
+      octave_possible_pagers="$octave_possible_pagers more.com"
+    ;;
+  esac
+
+  AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
+  if test -z "$DEFAULT_PAGER"; then
+    warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
+    AC_MSG_WARN($warn_less)
+  fi
+fi
+])
+dnl
+dnl Does gnuplot exist?  Is it a recent version?
+dnl
+AC_DEFUN(OCTAVE_PROG_GNUPLOT,
+[if test "$cross_compiling" = yes; then
+  GNUPLOT_BINARY=gnuplot
+  AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
+  AC_SUBST(DEFAULT_PAGER)
+  AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiplot mode)
+  AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1)
+  AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiple frams)
+  AC_DEFINE(GNUPLOT_HAS_FRAMES, 1)
+else
+  AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])
+  if test -n "$GNUPLOT_BINARY"; then
+    AC_MSG_CHECKING([to see if your gnuplot supports multiplot])
+    if test -z "`echo 'set term unknown; set multiplot' | \
+      $GNUPLOT_BINARY 2>&1`"; then
+      AC_MSG_RESULT([yes])
+      AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1)
+    else
+      AC_MSG_RESULT([no])
+    fi
+    AC_MSG_CHECKING([to see if your gnuplot supports multiple plot windows])
+    if test -z "`echo 'set term x11 2' | $GNUPLOT_BINARY 2>&1`"; then
+      AC_MSG_RESULT([yes])
+      AC_DEFINE(GNUPLOT_HAS_FRAMES, 1)
+    else
+      AC_MSG_RESULT([no])
+    fi
+  else
+    warn_gnuplot="yes"
+
+    ## If you change this text, be sure to also copy it to the set of
+    ## warnings at the end of the script
+
+    AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
+    AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
+    AC_MSG_WARN([plotting commands without it.])
+    AC_MSG_WARN([])
+    AC_MSG_WARN([If gnuplot is installed but it isn't in your path, you can])
+    AC_MSG_WARN([tell Octave where to find it by typing the command])
+    AC_MSG_WARN([])
+    AC_MSG_WARN([gnuplot_binary = "/full/path/to/gnuplot/binary"])
+    AC_MSG_WARN([])
+    AC_MSG_WARN([at the Octave prompt.])
+  fi
+fi
+])
+dnl
+dnl Is DejaGNU installed?
+dnl
+AC_DEFUN(OCTAVE_PROG_RUNTEST,
+[if test "$cross_compiling" = yes; then
+  RUNTEST=runtest
+  AC_MSG_RESULT(assuming $RUNTEST exists on $canonical_host_type host)
+  AC_SUBST(RUNTEST)
+else
+  AC_CHECK_PROG(RUNTEST, runtest, runtest, [])
+  if test -z "$RUNTEST"; then
+    warn_runtest="I didn't find runtest -- install DejaGNU if you want to run \`make check'"
+    AC_MSG_WARN($warn_runtest)
+  fi
+  AC_SUBST(RUNTEST)
+fi
 ])

@@ -450,7 +450,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %} 
 
 {CCHAR} {
-    if (nesting_level.empty () && beginning_of_function)
+    if (! help_buf && beginning_of_function && nesting_level.empty ())
       {
 	grab_help_text ();
 	beginning_of_function = 0;
@@ -1093,59 +1093,60 @@ lookup_identifier (char *name)
   return curr_sym_tab->lookup (name, 1, 0);
 }
 
-// Grab the help text from an function file.
+// Grab the help text from an function file.  Always overwrites the
+// current contents of help_buf.
 
 static void
 grab_help_text (void)
 {
-  if (! help_buf)
+  delete [] help_buf;
+  help_buf = 0;
+
+  ostrstream buf;
+
+  int in_comment = 1;
+  int c = 0;
+
+  while ((c = yyinput ()) != EOF)
     {
-      ostrstream buf;
-
-      int in_comment = 1;
-      int c = 0;
-
-      while ((c = yyinput ()) != EOF)
+      if (in_comment)
 	{
-	  if (in_comment)
+	  buf << (char) c;
+	  if (c == '\n')
+	    in_comment = 0;
+	}
+      else
+	{
+	  switch (c)
 	    {
-	      buf << (char) c;
-	      if (c == '\n')
-		in_comment = 0;
-	    }
-	  else
-	    {
-	      switch (c)
-		{
-		case '%':
-		case '#':
-		  in_comment = 1;
-		  break;
+	    case '%':
+	    case '#':
+	      in_comment = 1;
+	      break;
 
-		case ' ':
-		case '\t':
-		  break;
+	    case ' ':
+	    case '\t':
+	      break;
 
-		default:
-		  goto done;
-		}
+	    default:
+	      goto done;
 	    }
 	}
+    }
 
-    done:
+ done:
 
-      if (c)
-	yyunput (c, yytext);
+  if (c)
+    yyunput (c, yytext);
 
-      buf << ends;
+  buf << ends;
 
-      help_buf = buf.str ();
+  help_buf = buf.str ();
 
-      if (! help_buf || ! *help_buf)
-	{
-	  delete [] help_buf;
-	  help_buf = 0;
-	}
+  if (! help_buf || ! *help_buf)
+    {
+      delete [] help_buf;
+      help_buf = 0;
     }
 }
 

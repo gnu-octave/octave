@@ -39,6 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-uint16.h"
 #include "ov-uint32.h"
 #include "ov-uint64.h"
+#include "ov-bool.h"
+#include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
@@ -66,6 +68,9 @@ DEFDBLCONVFN (uint16_scalar_to_double_matrix, uint16_scalar, uint16_array)
 DEFDBLCONVFN (uint32_scalar_to_double_matrix, uint32_scalar, uint32_array)
 DEFDBLCONVFN (uint64_scalar_to_double_matrix, uint64_scalar, uint64_array)
 
+DEFDBLCONVFN (bool_matrix_to_double_matrix, bool_matrix, bool_array)
+DEFDBLCONVFN (bool_scalar_to_double_matrix, bool, bool_array)
+
 DEFDBLCONVFN (double_scalar_to_double_matrix, scalar, array)
 
 void
@@ -91,6 +96,9 @@ install_double_conv_ops (void)
   INSTALL_CONVOP (octave_uint32_scalar, octave_matrix, uint32_scalar_to_double_matrix);
   INSTALL_CONVOP (octave_uint64_scalar, octave_matrix, uint64_scalar_to_double_matrix);
 
+  INSTALL_CONVOP (octave_bool_matrix, octave_matrix, bool_matrix_to_double_matrix);
+  INSTALL_CONVOP (octave_bool, octave_matrix, bool_scalar_to_double_matrix);
+
   INSTALL_CONVOP (octave_scalar, octave_matrix, double_scalar_to_double_matrix);
 }
 
@@ -98,4 +106,4 @@ install_double_conv_ops (void)
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***
-*/
+p*/

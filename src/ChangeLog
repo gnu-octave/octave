@@ -1,5 +1,10 @@
 2004-09-15  John W. Eaton  <jwe@octave.org>
 
+	* OPERATORS/op-int-conv.cc: Define and install bool to int
+	conversions.
+	* OPERATORS/op-double-conv.cc: Define and install bool to double
+	conversions.
+
 	* ov.cc (octave_value::assign): Handle subsref for containers.
 	* oct-lvalue.cc (octave_lvale::value): Likewise.
 

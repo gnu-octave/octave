@@ -40,6 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 #include "ov-range.h"
+#include "ov-bool.h"
+#include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
@@ -66,6 +68,26 @@ DEFCONVFN (matrix_to_uint8, matrix, uint8)
 DEFCONVFN (matrix_to_uint16, matrix, uint16)
 DEFCONVFN (matrix_to_uint32, matrix, uint32)
 DEFCONVFN (matrix_to_uint64, matrix, uint64)
+
+DEFCONVFN (bool_to_int8, bool, int8)
+DEFCONVFN (bool_to_int16, bool, int16)
+DEFCONVFN (bool_to_int32, bool, int32)
+DEFCONVFN (bool_to_int64, bool, int64)
+
+DEFCONVFN (bool_to_uint8, bool, uint8)
+DEFCONVFN (bool_to_uint16, bool, uint16)
+DEFCONVFN (bool_to_uint32, bool, uint32)
+DEFCONVFN (bool_to_uint64, bool, uint64)
+
+DEFCONVFN (bool_matrix_to_int8, bool_matrix, int8)
+DEFCONVFN (bool_matrix_to_int16, bool_matrix, int16)
+DEFCONVFN (bool_matrix_to_int32, bool_matrix, int32)
+DEFCONVFN (bool_matrix_to_int64, bool_matrix, int64)
+
+DEFCONVFN (bool_matrix_to_uint8, bool_matrix, uint8)
+DEFCONVFN (bool_matrix_to_uint16, bool_matrix, uint16)
+DEFCONVFN (bool_matrix_to_uint32, bool_matrix, uint32)
+DEFCONVFN (bool_matrix_to_uint64, bool_matrix, uint64)
 
 DEFCONVFN (range_to_int8, range, int8)
 DEFCONVFN (range_to_int16, range, int16)
@@ -145,6 +167,8 @@ install_int_conv_ops (void)
 {
   INSTALL_CONVOPS (scalar)
   INSTALL_CONVOPS (matrix)
+  INSTALL_CONVOPS (bool)
+  INSTALL_CONVOPS (bool_matrix)
   INSTALL_CONVOPS (range)
 
   INSTALL_INT_CONV_FUNCTIONS (int8)

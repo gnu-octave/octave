@@ -359,7 +359,7 @@ octave_base_value::bool_matrix_value (void) const
 }
 
 boolNDArray
-octave_base_value::bool_array_value (bool) const
+octave_base_value::bool_array_value (void) const
 {
   boolNDArray retval;
   gripe_wrong_type_arg ("octave_base_value::bool_array_value()",

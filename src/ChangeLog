@@ -1,5 +1,10 @@
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-base.cc (octave_base_value::bool_array_value):
+	Function takes no args.
+	* ov-base.h: Likewise, for decl.
+	* ov-bool-mat.h (boolNDArray::bool_array_value): Likewise.
+
 	* ov-fcn.cc, ov-fcn.h (octave_value::clone,
 	octave_value::empty_clone): Return type is octave_value*, not
 	octave_function*.

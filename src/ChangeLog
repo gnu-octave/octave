@@ -1,5 +1,8 @@
 Tue Oct 29 15:54:27 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (install-oct): Don't do anything if $(OCT_FILES) is
+	empty.
+
 	* ov-range.cc (octave_range::index): New Function.
 	(octave_range::all, octave_range::any, octave_range::is_true):
 	Make these functions work.

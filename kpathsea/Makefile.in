@@ -35,7 +35,7 @@ xstat.o xstrdup.o $(malloc)
 
 LIBS_TO_INSTALL = libkpathsea.a
 
-SH_LIBS_TO_INSTALL = libkpathsea.so
+SH_LIBS_TO_INSTALL = libkpathsea.$(SHLEXT)
 
 default all: stamp-picdir kpsewhich MakeTeXPK kpathsea.info stamp-shared
 

@@ -1,3 +1,7 @@
+Tue Oct 29 17:27:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (SH_LIBS_TO_INSTALL): Use .$(SHLEXT), not .so.
+
 Thu Oct 24 21:31:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.guess: Update to same version as used in Octave.

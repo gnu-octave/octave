@@ -823,49 +823,52 @@ symbol_exist (const std::string& name, const std::string& type)
 	}
     }
 
-  if (! retval)
+  if (! (type == "var" || type == "builtin"))
     {
-      string_vector names (2);
-
-      names(0) = name + ".oct";
-      names(1) = name + ".m";
-
-      std::string file_name = Vload_path_dir_path.find_first_of (names);
-
-      size_t len = file_name.length ();
-
-      if (! file_name.empty ())
+      if (! retval)
 	{
-	  if (type == "any" || type == "file")
+	  string_vector names (2);
+
+	  names(0) = name + ".oct";
+	  names(1) = name + ".m";
+
+	  std::string file_name = Vload_path_dir_path.find_first_of (names);
+
+	  size_t len = file_name.length ();
+
+	  if (! file_name.empty ())
 	    {
-	      if (file_name.substr (len-4) == ".oct")
-		retval = 3;
-	      else
-		retval = 2;
+	      if (type == "any" || type == "file")
+		{
+		  if (file_name.substr (len-4) == ".oct")
+		    retval = 3;
+		  else
+		    retval = 2;
+		}
 	    }
 	}
-    }
 
-  if (! retval)
-    {
-      std::string file_name = file_in_path (name, "");
-
-      if (file_name.empty ())
-	file_name = name;
-
-      file_stat fs (file_name);
-
-      if (fs)
+      if (! retval)
 	{
-	  if ((type == "any" || type == "file")
-	      && fs.is_reg ())
+	  std::string file_name = file_in_path (name, "");
+
+	  if (file_name.empty ())
+	    file_name = name;
+
+	  file_stat fs (file_name);
+
+	  if (fs)
 	    {
-	      retval = 2;
-	    }
-	  else if ((type == "any" || type == "dir")
-		   && fs.is_dir ())
-	    {
-	      retval = 7;
+	      if ((type == "any" || type == "file")
+		  && fs.is_reg ())
+		{
+		  retval = 2;
+		}
+	      else if ((type == "any" || type == "dir")
+		       && fs.is_dir ())
+		{
+		  retval = 7;
+		}
 	    }
 	}
     }

@@ -1,3 +1,9 @@
+2005-02-10  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_exist): Don't search path if explicitly
+	asked for a variable or builtin.  From David Bateman
+	<dbateman@free.fr>.
+
 2005-02-09  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (same_file): New static function.

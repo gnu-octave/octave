@@ -258,7 +258,11 @@ public:
       can_hide_function (n != "__end__"), nm (n), chg_fcn (0),
       definition (new symbol_def ()), next_elem (nxt) { }
 
-  ~symbol_record (void) { }
+  ~symbol_record (void)
+    {
+      if (--definition->count <= 0)
+	delete definition;
+    }
 
   std::string name (void) const { return nm; }
 
@@ -467,11 +471,7 @@ public:
 	}
     }
 
-  ~symbol_table (void)
-    {
-      clear ();
-      delete [] table;
-    }
+  ~symbol_table (void);
 
   symbol_record *lookup (const std::string& nm, bool insert = false,
 			 bool warn = false);

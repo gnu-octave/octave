@@ -1,3 +1,17 @@
+2004-09-21  David Bateman  <dbateman@free.fr>
+
+	* data.cc (Freshape): Allow a single empty dimension argument
+	to flag unknown dimension and calculate its value from the
+	other dimensions.
+
+2004-09-21  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h (symbol_record::~symbol_record): Delete definition if
+	count goes to zero.
+	* symtab.cc (symbol_table::~symbol_table): Move here from symtab.h.
+	Call delete on each symbol record in the table instead of just
+	clearing them.
+
 2004-09-17 David Bateman <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sort.cc (ascending_compare, descending_compare):

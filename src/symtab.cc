@@ -700,6 +700,25 @@ symbol_record::read_only_error (const char *action)
 
 // A symbol table.
 
+symbol_table::~symbol_table (void)
+{
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  symbol_record *tmp = ptr;
+
+	  ptr = ptr->next ();
+
+	  delete tmp;
+	}
+    }
+
+  delete [] table;
+}
+
 symbol_record *
 symbol_table::lookup (const std::string& nm, bool insert, bool warn)
 {

@@ -1646,6 +1646,9 @@ reshape ([1, 2, 3, 4], 2, 2)\n\
 @noindent\n\
 Note that the total number of elements in the original\n\
 matrix must match the total number of elements in the new matrix.\n\
+\n\
+A single dimension of the return matrix can be unknown and is flagged\n\
+by an empty argument.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1659,13 +1662,47 @@ matrix must match the total number of elements in the new matrix.\n\
   else if (nargin > 2)
     {
       new_size.resize (nargin-1);
-
+      int empty_dim = -1;
+      
       for (int i = 1; i < nargin; i++)
 	{
-	  new_size(i-1) = args(i).int_value ();
+	  if (args(i).is_empty ())
+	    if (empty_dim > 0)
+	      {
+		error ("reshape: only a single dimension can be unknown");
+		break;
+	      }
+	    else
+	      {
+		empty_dim = i;
+		new_size(i-1) = 1;
+	      }
+	  else
+	    {
+	      new_size(i-1) = args(i).int_value ();
 
-	  if (error_state)
-	    break;
+	      if (error_state)
+		break;
+	    }
+	}
+
+      if (! error_state && (empty_dim > 0))
+	{
+	  int nel = 1;
+	  for (int i = 0; i < nargin - 1; i++)
+	    nel *= new_size(i);
+
+	  if (nel == 0)
+	    new_size(empty_dim-1) = 0;
+	  else
+	    {
+	      int size_empty_dim = args(0).numel () / nel;
+	      
+	      if (args(0).numel () != size_empty_dim * nel)
+		error ("reshape: size is not divisble by the product of known dimensions (= %d)", nel);
+	      else
+		new_size(empty_dim-1) = size_empty_dim;
+	    }
 	}
     }
   else

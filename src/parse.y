@@ -1175,6 +1175,7 @@ param_list_beg	: '('
 		        symtab_context.push (curr_sym_tab);
 
 			tmp_local_sym_tab = new symbol_table ();
+
 			curr_sym_tab = tmp_local_sym_tab;
 
 			lexer_flags.looking_at_function_handle--;
@@ -2034,8 +2035,8 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   body->mark_as_function_body ();
 
-  octave_user_function *fcn
-    = new octave_user_function (param_list, ret_list, body, curr_sym_tab);
+  octave_value fcn (new octave_user_function (param_list, ret_list,
+					      body, curr_sym_tab));
 
   if (symtab_context.empty ())
     panic_impossible ();

@@ -1,3 +1,9 @@
+2003-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_base_stream::do_printf): Handle values
+	outside the range of integers in int conversions for
+	compatibilitiy wtih Matlab.
+
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (get_mat_data_input_line): Handle lines with CR

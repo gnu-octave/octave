@@ -2299,23 +2299,34 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		  if (val_cache)
 		    {
 		      if ((xisnan (val) || xisinf (val)
-			   && (elt->type == 'd'
-			       || elt->type == 'i'
-			       || elt->type == 'c'
-			       || elt->type == 'o'
-			       || elt->type == 'x'
-			       || elt->type == 'X'
-			       || elt->type == 'u')))
+			   || val > INT_MAX || val < INT_MIN)
+			  && (elt->type == 'd'
+			      || elt->type == 'i'
+			      || elt->type == 'c'
+			      || elt->type == 'o'
+			      || elt->type == 'x'
+			      || elt->type == 'X'
+			      || elt->type == 'u'))
 			{
 			  std::string tfmt = fmt;
 
-			  tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
+			  if (xisnan (val) || xisinf (val))
+			    {
+			      tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
 
-			  const char *tval = xisinf (val)
-			    ? (val < 0 ? "-Inf" : "Inf") : "NaN";
+			      const char *tval = xisinf (val)
+				? (val < 0 ? "-Inf" : "Inf") : "NaN";
 
-			  retval += do_printf_conv (os, tfmt.c_str (),
-						    nsa, sa_1, sa_2, tval);
+			      retval += do_printf_conv (os, tfmt.c_str (),
+							nsa, sa_1, sa_2, tval);
+			    }
+			  else
+			    {
+			      tfmt.replace (tfmt.rfind (elt->type), 1, ".f");
+
+			      retval += do_printf_conv (os, tfmt.c_str (),
+							nsa, sa_1, sa_2, val);
+			    }
 			}
 		      else
 			{

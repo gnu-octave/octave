@@ -31,39 +31,57 @@
 
 function retval = int2str (x)
 
-  ## XXX FIXME XXX -- this will fail for very large values.
-
   if (nargin == 1)
     x = round (x);
-    t = abs (x(:));
-    t = t(t != 0);
-    if (isempty (t))
-      ## All zeros.
-      fmt = "%3d";
+    nc = columns (x);
+    if (nc > 1)
+      ifmt = get_fmt (x(:,1), 0);
+      rfmt = get_fmt (x(:,2:end), 2);
+      fmt = strcat (ifmt, repmat (rfmt, 1, nc-1), "\n")
     else
-      ## Maybe have some zeros.
-      nan_inf = isinf (t) | isnan (t);
-      if (any (nan_inf))
-	min_fw = 5;
-      else
-	min_fw = 3;
-      endif
-      t = t(! nan_inf);
-      if (isempty (t))
-	## Only zeros, Inf, and NaN.
-	fmt = "%5d";
-      else
-	## Could have anything.
-	fw = max (floor (max (log10 (t) + 3)), min_fw);
-	fmt = sprintf ("%%%dd", fw);
-      endif
+      fmt = strcat (get_fmt (x, 0), "\n");
     endif
-    fmt = strcat (repmat (fmt, 1, columns (x)), "\n");
     tmp = sprintf (fmt, round (x.'));
-    tmp(length (tmp)) = "";
+    tmp(end) = "";
     retval = split (tmp, "\n");
   else
     usage ("int2str (x)");
+  endif
+
+endfunction
+
+function fmt = get_fmt (x, sep)
+
+  t = x(:);
+  t = t(t != 0);
+  if (isempty (t))
+    ## All zeros.
+    fmt = sprintf ("%%%dd", 1 + sep);
+  else
+    ## Maybe have some zeros.
+    nan_inf = isinf (t) | isnan (t);
+    if (any (nan_inf))
+      if (any (t(nan_inf) < 0))
+	min_fw = 4 + sep;
+      else
+	min_fw = 3 + sep;
+      endif
+    else
+      min_fw = 1 + sep;
+    endif
+    t = t(! nan_inf);
+    if (isempty (t))
+      ## Only zeros, Inf, and NaN.
+      fmt = sprintf ("%%%dd", min_fw);
+    else
+      ## Could have anything.
+      tfw = floor (log10 (abs (t))) + 1 + sep;
+      fw = max (tfw)
+      if (any (t(tfw == fw) < 0))
+	fw++;
+      endif
+      fmt = sprintf ("%%%dd", max (fw, min_fw));
+    endif
   endif
 
 endfunction

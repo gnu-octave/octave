@@ -1,7 +1,7 @@
 // ODEFunc.h                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,34 +35,24 @@ public:
   typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
   ODEFunc (void)
-    {
-      fun = 0;
-      jac = 0;
-    }
+    : fun (0), jac (0) { }
 
   ODEFunc (ODERHSFunc f)
-    {
-      fun = f;
-      jac = 0;
-    }
+    : fun (f), jac (0) { }
 
   ODEFunc (ODERHSFunc f, ODEJacFunc j)
-    {
-      fun = f;
-      jac = j;
-    }
+    : fun (f), jac (j) { }
 
   ODEFunc (const ODEFunc& a)
-    {
-      fun = a.function ();
-      jac = a.jacobian_function ();
-    }
+    : fun (a.fun), jac (a.jac) { }
 
   ODEFunc& operator = (const ODEFunc& a)
     {
-      fun = a.function ();
-      jac = a.jacobian_function ();
-
+      if (this != &a)
+	{
+	  fun = a.fun;
+	  jac = a.jac;
+	}
       return *this;
     }
 

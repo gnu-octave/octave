@@ -27,9 +27,9 @@ MATRIX_INC := Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
 	dbleCHOL.h dbleDET.h dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h \
 	dbleQRP.h dbleSCHUR.h dbleSVD.h
 
-INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
-	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
-	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
+INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
+	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
+	NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
 	Range.h base-de.h base-min.h cmd-hist.h dir-ops.h file-ops.h \
 	f77-uscore.h getopt.h idx-vector.h lo-error.h oct-cmplx.h \
 	oct-glob.h oct-math.h oct-term.h pathsearch.h prog-args.h \
@@ -50,13 +50,13 @@ MATRIX_SRC := Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc dbleQR.cc \
 	dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
-SOURCES := Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
-	LPsolve.cc NLEqn.cc NPSOL.cc ODE.cc QPSOL.cc Quad.cc Range.cc \
-	acosh.c asinh.c atanh.c cmd-hist.cc dir-ops.cc erf.c erfc.c \
-	file-ops.cc filemode.c gamma.c getopt.c getopt1.c idx-vector.cc \
-	lo-error.cc lgamma.c mkdir.c oct-glob.cc oct-term.cc \
-	pathsearch.cc prog-args.cc rename.c rmdir.c str-vec.cc \
-	sun-utils.cc tempname.c tempnam.c \
+SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
+	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc NPSOL.cc QPSOL.cc \
+	Quad.cc Range.cc acosh.c asinh.c atanh.c cmd-hist.cc \
+	dir-ops.cc erf.c erfc.c file-ops.cc filemode.c gamma.c \
+	getopt.c getopt1.c idx-vector.cc lo-error.cc lgamma.c \
+	mkdir.c oct-glob.cc oct-term.cc pathsearch.cc prog-args.cc \
+	rename.c rmdir.c str-vec.cc sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

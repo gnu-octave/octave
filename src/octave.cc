@@ -243,7 +243,8 @@ execute_startup_files (void)
       std::string home_dir = octave_env::get_home_directory ();
 
       std::string home_rc = home_dir + OCTAVE_DIR_SEP_STR + initfile;
-      std::string local_rc = octave_env::getcwd () + initfile;
+      std::string local_rc
+	= octave_env::getcwd () + OCTAVE_DIR_SEP_STR + initfile;
 
       if (! home_dir.empty ())
 	{

@@ -52,13 +52,15 @@ public:
 
   octave_mapper (ch_mapper ch, d_b_mapper db, c_b_mapper cb,
 		 d_d_mapper dd, d_c_mapper dc,
-		 c_c_mapper cc, double ll, double ul, int f,
+		 c_c_mapper cc, double ll, double ul,
+		 int cmf, bool crcfr,
 		 const std::string& nm = std::string (),
 		 const std::string& ds = std::string ())
     : octave_function (nm, ds), ch_map_fcn (ch),
       d_b_map_fcn (db), c_b_map_fcn (cb),
       d_d_map_fcn (dd), d_c_map_fcn (dc), c_c_map_fcn (cc),
-      lower_limit (ll), upper_limit (ul), flag (f) { }
+      lower_limit (ll), upper_limit (ul), ch_map_flag (cmf),
+      can_ret_cmplx_for_real (crcfr) { }
 
   ~octave_mapper (void) { }
 
@@ -96,16 +98,19 @@ private:
   double lower_limit;
   double upper_limit;
 
-  // For ch_map_fcn, flag has the following meanings:
+  // ch_map_flag has the following meanings:
   //
   //   0  =>  this function returns a matrix of ones and zeros
   //   1  =>  this function returns a numeric matrix (any values)
   //   2  =>  this function returns a std::string array
-  //
-  // For other mappers, nonzero means that this function can return a
-  // complex value for some real arguments.
 
-  int flag;
+  int ch_map_flag;
+
+  // can_ret_cmplx_for_real is a flag that says whether this function
+  // can create a complex number given a real-valued  argument
+  // (e.g., sqrt (-1)).
+
+  bool can_ret_cmplx_for_real;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

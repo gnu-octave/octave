@@ -1,4 +1,28 @@
+2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-re-mat.cc (octave_matrix::convert_to_str): Warn for out of
+	range conversions.  For negative values, set to 0.
+	* ov-scalar.cc (octave_scalar:convert_to_str): Likewise.
+
+	* mappers.cc (xabs): New static function.
+	(install_mapper_functions): Use it for abs for character matrices.
+	Handle ch_map_flag separately from can_ret_cmplx_for_real in
+	all uses of DEFUN_MAPPER.
+	* defun.h (DEFUN_MAPPER): Handle ch_map_flag separately from
+	can_ret_cmplx_for_real.
+	* defun-int.h (DEFUN_MAPPER_INTERNAL): Likewise.
+	* mkbuiltins: Likewise.
+	* mkgendoc: Likewise.
+	* ov-mapper.cc (octave_mapper::apply): Use ch_map_flag and
+	can_ret_cmplx_for_real instead of flag.
+	* ov-mapper.h (octave_mapper::ch_map_flag): Rename from flag.
+	(octave_mapper::can_ret_cmplx_for_real): New data member.
+	(octave_mapper::octave_mapper): Handle it here.
+
 2002-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (execute_startup_files): Don't forget directory
+	separator for local initfile.
 
 	* move-if-change: Delete.
 	* Makefile.in (DISTFILES): Delete it from the list.

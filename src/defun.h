@@ -126,16 +126,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //   hi is the upper bound of the range for which real arguments can
 //     become complex.  (e.g., hi == 0 for sqrt).
 //
+//   ch_map_flag has the following meanings for the ch_map function:
+//
+//     0  =>  this function returns a matrix of ones and zeros
+//     1  =>  this function returns a numeric matrix (any values)
+//     2  =>  this function returns a std::string array
+//
 //   can_ret_cmplx_for_real is a flag that says whether this function
 //     can create a complex number given a real-valued  argument
 //     (e.g., sqrt (-1)).
 //
 //   doc is the simple help text for the function.
 
-#define DEFUN_MAPPER(name, ch_map, d_b_map, c_b_map, d_d_map, d_c_map, \
-		     c_c_map, lo, hi, can_ret_cmplx_for_real, doc) \
-  DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, d_c_map, \
-			c_c_map, lo, hi, can_ret_cmplx_for_real, doc)
+#define DEFUN_MAPPER(name, ch_map, d_b_map, c_b_map, d_d_map, \
+		     d_c_map, c_c_map, lo, hi, ch_map_flag, \
+		     can_ret_cmplx_for_real, doc) \
+  DEFUN_MAPPER_INTERNAL (name, ch_map, d_b_map, c_b_map, d_d_map, \
+			 d_c_map, c_c_map, lo, hi, ch_map_flag, \
+			 can_ret_cmplx_for_real, doc)
 
 // Make alias another name for the existing function name.  This macro
 // must be used in the same file where name is defined, after the

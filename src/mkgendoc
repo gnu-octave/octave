@@ -38,7 +38,7 @@ cat << \EOF
 
 #define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
 			       d_c_map, c_c_map, lo, hi, \
-			       can_ret_cmplx_for_real, doc) \
+			       ch_map_flag, can_ret_cmplx_for_real, doc) \
   print_doc_string (#name, doc);
 
 static void

@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <climits>
+
 #include <iostream>
 
 #include "lo-ieee.h"
@@ -45,6 +47,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "pr-output.h"
 #include "variables.h"
+
+#if ! defined (UCHAR_MAX)
+#define UCHAR_MAX 255
+#endif
 
 template class octave_base_matrix<Matrix>;
 
@@ -125,6 +131,8 @@ octave_matrix::convert_to_str (void) const
       else
 	{
 	  charMatrix chm (nr, nc);
+	  
+	  bool warned = false;
 
 	  for (int j = 0; j < nc; j++)
 	    {
@@ -139,11 +147,23 @@ octave_matrix::convert_to_str (void) const
 		    }
 		  else
 		    {
-		      // XXX FIXME XXX -- warn about out of range
-		      // conversions?
-
 		      int ival = NINT (d);
-		      chm (i, j) = (char) ival;
+
+		      if (ival < 0 || ival > UCHAR_MAX)
+			{
+			  // XXX FIXME XXX -- is there something
+			  // better we could do?
+
+			  ival = 0;
+
+			  if (! warned)
+			    {
+			      ::warning ("range error for conversion to character value");
+			      warned = true;
+			    }
+			}
+
+		      chm (i, j) = static_cast<char> (ival);
 		    }
 		}
 	    }

@@ -39,6 +39,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // whether the is* functions are actually functions or just macros.
 
 static int
+xabs (int c)
+{
+  return static_cast<unsigned char> (c);
+}
+
+static int
 xisalnum (int c)
 {
   return isalnum (c);
@@ -113,7 +119,7 @@ xisxdigit (int c)
 static int
 xtoascii (int c)
 {
-  return toascii (c);
+  return toascii ((int) ((unsigned char) c));
 }
 
 static int
@@ -155,7 +161,7 @@ xreal (const Complex& x)
 void
 install_mapper_functions (void)
 {
-  DEFUN_MAPPER (abs, 0, 0, 0, std::fabs, abs, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (abs, xabs, 0, 0, std::fabs, abs, 0, 0.0, 0.0, 1, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} abs (@var{z})\n\
 Compute the magnitude of @var{z}, defined as\n\
@@ -178,25 +184,25 @@ abs (3 + 4i)\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (acos, 0, 0, 0, std::acos, 0, acos, -1.0, 1.0, 1,
+  DEFUN_MAPPER (acos, 0, 0, 0, std::acos, 0, acos, -1.0, 1.0, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acos (@var{x})\n\
 Compute the inverse cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (acosh, 0, 0, 0, acosh, 0, acosh, 1.0, DBL_MAX, 1,
+  DEFUN_MAPPER (acosh, 0, 0, 0, acosh, 0, acosh, 1.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acosh (@var{x})\n\
 Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (angle, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (angle, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} angle (@var{z})\n\
 See arg.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (arg, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (arg, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} arg (@var{z})\n\
 @deftypefnx {Mapping Function} {} angle (@var{z})\n\
@@ -223,38 +229,38 @@ arg (3 + 4i)\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (asin, 0, 0, 0, std::asin, 0, asin, -1.0, 1.0, 1,
+  DEFUN_MAPPER (asin, 0, 0, 0, std::asin, 0, asin, -1.0, 1.0, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asin (@var{x})\n\
 Compute the inverse sine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (asinh, 0, 0, 0, asinh, 0, asinh, 0.0, 0.0, 0,
+  DEFUN_MAPPER (asinh, 0, 0, 0, asinh, 0, asinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asinh (@var{x})\n\
 Ompute the inverse hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (atan, 0, 0, 0, std::atan, 0, atan, 0.0, 0.0, 0,
+  DEFUN_MAPPER (atan, 0, 0, 0, std::atan, 0, atan, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan (@var{x})\n\
 Compute the inverse tangent of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (atanh, 0, 0, 0, atanh, 0, atanh, -1.0, 1.0, 1,
+  DEFUN_MAPPER (atanh, 0, 0, 0, atanh, 0, atanh, -1.0, 1.0, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atanh (@var{x})\n\
 Compute the inverse hyperbolic tanget of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (ceil, 0, 0, 0, std::ceil, 0, ceil, 0.0, 0.0, 0,
+  DEFUN_MAPPER (ceil, 0, 0, 0, std::ceil, 0, ceil, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\
 Return the smallest integer not less than @var{x}.  If @var{x} is\n\
 complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (conj, 0, 0, 0, xconj, 0, xconj, 0.0, 0.0, 0,
+  DEFUN_MAPPER (conj, 0, 0, 0, xconj, 0, xconj, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} conj (@var{z})\n\
 Return the complex conjugate of @var{z}, defined as\n\
@@ -269,19 +275,19 @@ $\\bar{z} = x - iy$.\n\
 @end deftypefn\n\
 @seealso{real and imag}");
 
-  DEFUN_MAPPER (cos, 0, 0, 0, std::cos, 0, cos, 0.0, 0.0, 0,
+  DEFUN_MAPPER (cos, 0, 0, 0, std::cos, 0, cos, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cos (@var{x})\n\
 Compute the cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (cosh, 0, 0, 0, std::cosh, 0, cosh, 0.0, 0.0, 0,
+  DEFUN_MAPPER (cosh, 0, 0, 0, std::cosh, 0, cosh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cosh (@var{x})\n\
 Compute the hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (erf, 0, 0, 0, erf, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (erf, 0, 0, 0, erf, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erf (@var{z})\n\
 Computes the error function,\n\
@@ -305,7 +311,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 @end deftypefn\n\
 @seealso{erfc and erfinv}");
 
-  DEFUN_MAPPER (erfc, 0, 0, 0, erfc, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (erfc, 0, 0, 0, erfc, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
 Computes the complementary error function,\n\
@@ -321,14 +327,14 @@ $1 - {\\rm erf} (z)$.\n\
 \n\
 @seealso{erf and erfinv}");
 
-  DEFUN_MAPPER (exp, 0, 0, 0, std::exp, 0, exp, 0.0, 0.0, 0,
+  DEFUN_MAPPER (exp, 0, 0, 0, std::exp, 0, exp, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
 Compute the exponential of @var{x}.  To compute the matrix exponential,\n\
 see @ref{Linear Algebra}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (finite, 0, xfinite, xfinite, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (finite, 0, xfinite, xfinite, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} finite (@var{x})\n\
 Return 1 for elements of @var{x} that are finite values and zero\n\
@@ -342,21 +348,21 @@ finite ([13, Inf, NaN])\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (fix, 0, 0, 0, fix, 0, fix, 0.0, 0.0, 0,
+  DEFUN_MAPPER (fix, 0, 0, 0, fix, 0, fix, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fix (@var{x})\n\
 Truncate @var{x} toward zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (floor, 0, 0, 0, std::floor, 0, floor, 0.0, 0.0, 0,
+  DEFUN_MAPPER (floor, 0, 0, 0, std::floor, 0, floor, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} floor (@var{x})\n\
 Return the largest integer not greater than @var{x}.  If @var{x} is\n\
 complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (gamma, 0, 0, 0, xgamma, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (gamma, 0, 0, 0, xgamma, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gamma (@var{z})\n\
 Computes the Gamma function,\n\
@@ -381,7 +387,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 \n\
 @seealso{gammai and lgamma}");
 
-  DEFUN_MAPPER (imag, 0, 0, 0, imag, ximag, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (imag, 0, 0, 0, imag, ximag, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} imag (@var{z})\n\
 Return the imaginary part of @var{z} as a real number.\n\
@@ -389,39 +395,39 @@ Return the imaginary part of @var{z} as a real number.\n\
 \n\
 @seealso{real and conj}");
 
-  DEFUN_MAPPER (isalnum, xisalnum, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isalnum, xisalnum, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalnum (@var{s})\n\
 Return 1 for characters that are letters or digits (@code{isalpha\n\
 (@var{a})} or @code{isdigit (@var{a})} is true).\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isalpha, xisalpha, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isalpha, xisalpha, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalpha (@var{s})\n\
 Return true for characters that are letters (@code{isupper (@var{a})}\n\
 or @code{islower (@var{})} is true).\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isascii, xisascii, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isascii, xisascii, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isascii (@var{s})\n\
 Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (iscntrl, xiscntrl, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (iscntrl, xiscntrl, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} iscntrl (@var{s})\n\
 Return 1 for control characters.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isdigit, xisdigit, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isdigit, xisdigit, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isdigit (@var{s})\n\
 Return 1 for characters that are decimal digits.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isinf, 0, xisinf, xisinf, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isinf, 0, xisinf, xisinf, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return 1 for elements of @var{x} that are infinite and zero\n\
@@ -435,19 +441,19 @@ isinf ([13, Inf, NA, NaN])\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isgraph, xisgraph, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isgraph, xisgraph, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isgraph (@var{s})\n\
 Return 1 for printable characters (but not the space character).\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (islower, xislower, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (islower, xislower, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} islower (@var{s})\n\
 Return 1 for characters that are lower case letters.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isna, 0, octave_is_NA, octave_is_NA, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isna, 0, octave_is_NA, octave_is_NA, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
 Return 1 for elements of @var{x} that are NA (missing) values and zero\n\
@@ -462,7 +468,7 @@ is_NA ([13, Inf, NA, NaN])\n\
 @end deftypefn");
 
   DEFUN_MAPPER (is_nan_or_na, 0, octave_is_NaN_or_NA,
-		octave_is_NaN_or_NA, 0, 0, 0, 0.0, 0.0, 0,
+		octave_is_NaN_or_NA, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} is_nan_or_na (@var{x})\n\
 Return 1 for elements of @var{x} that are NaN or NA (missing) values\n\
@@ -476,7 +482,7 @@ is_NAN_or_NA ([13, Inf, NA, NaN])\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isnan, 0, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isnan, 0, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
 Return 1 for elements of @var{x} that are NaN values and zero\n\
@@ -490,38 +496,38 @@ isnan ([13, Inf, NA, NaN])\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isprint, xisprint, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isprint, xisprint, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isprint (@var{s})\n\
 Return 1 for printable characters (including the space character).\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (ispunct, xispunct, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (ispunct, xispunct, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ispunct (@var{s})\n\
 Return 1 for punctuation characters.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isspace, xisspace, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isspace, xisspace, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isspace (@var{s})\n\
 Return 1 for whitespace characters (space, formfeed, newline,\n\
 carriage return, tab, and vertical tab).\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isupper, xisupper, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isupper, xisupper, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isupper (@var{s})\n\
 Return 1 for upper case letters.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isxdigit, xisxdigit, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isxdigit, xisxdigit, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isxdigit (@var{s})\n\
 Return 1 for characters that are hexadecimal digits.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (lgamma, 0, 0, 0, xlgamma, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (lgamma, 0, 0, 0, xlgamma, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} lgamma (@var{a}, @var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{a}, @var{x})\n\
@@ -529,7 +535,7 @@ Return the natural logarithm of the gamma function.\n\
 @end deftypefn\n\
 @seealso{gamma and gammai}");
 
-  DEFUN_MAPPER (log, 0, 0, 0, std::log, 0, log, 0.0, DBL_MAX, 1,
+  DEFUN_MAPPER (log, 0, 0, 0, std::log, 0, log, 0.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm for each element of @var{x}.  To compute the\n\
@@ -537,21 +543,21 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 @end deftypefn\n\
 @seealso{log2, log10, logspace, and exp}");
 
-  DEFUN_MAPPER (log10, 0, 0, 0, std::log10, 0, log10, 0.0, DBL_MAX, 1,
+  DEFUN_MAPPER (log10, 0, 0, 0, std::log10, 0, log10, 0.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm for each element of @var{x}.\n\
 @end deftypefn\n\
 @seealso{log, log2, logspace, and exp}");
 
-  DEFUN_MAPPER (real, 0, 0, 0, real, xreal, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (real, 0, 0, 0, real, xreal, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
 Return the real part of @var{z}.\n\
 @end deftypefn\n\
 @seealso{imag and conj}");
 
-  DEFUN_MAPPER (round, 0, 0, 0, round, 0, round, 0.0, 0.0, 0,
+  DEFUN_MAPPER (round, 0, 0, 0, round, 0, round, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
@@ -559,7 +565,7 @@ Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 @end deftypefn\n\
 @seealso{rem}");
 
-  DEFUN_MAPPER (sign, 0, 0, 0, signum, 0, signum, 0.0, 0.0, 0,
+  DEFUN_MAPPER (sign, 0, 0, 0, signum, 0, signum, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sign (@var{x})\n\
 Compute the @dfn{signum} function, which is defined as\n\
@@ -582,19 +588,19 @@ sign (x) =  0, x = 0;\n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sin, 0, 0, 0, std::sin, 0, sin, 0.0, 0.0, 0,
+  DEFUN_MAPPER (sin, 0, 0, 0, std::sin, 0, sin, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
 Compute the sin of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sinh, 0, 0, 0, std::sinh, 0, sinh, 0.0, 0.0, 0,
+  DEFUN_MAPPER (sinh, 0, 0, 0, std::sinh, 0, sinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
 Compute the inverse hyperbolic sin of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sqrt, 0, 0, 0, std::sqrt, 0, sqrt, 0.0, DBL_MAX, 1,
+  DEFUN_MAPPER (sqrt, 0, 0, 0, std::sqrt, 0, sqrt, 0.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
 Compute the square root of @var{x}.  If @var{x} is negative, a complex\n\
@@ -602,19 +608,19 @@ result is returned.  To compute the matrix square root, see\n\
 @ref{Linear Algebra}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tan, 0, 0, 0, std::tan, 0, tan, 0.0, 0.0, 0,
+  DEFUN_MAPPER (tan, 0, 0, 0, std::tan, 0, tan, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
 Compute tanget of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tanh, 0, 0, 0, std::tanh, 0, tanh, 0.0, 0.0, 0,
+  DEFUN_MAPPER (tanh, 0, 0, 0, std::tanh, 0, tanh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tanh (@var{x})\n\
 Compute hyperbolic tangent of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (toascii, xtoascii, 0, 0, 0, 0, 0, 0.0, 0.0, 1,
+  DEFUN_MAPPER (toascii, xtoascii, 0, 0, 0, 0, 0, 0.0, 0.0, 1, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} toascii (@var{s})\n\
 Return ASCII representation of @var{s} in a matrix.  For example,\n\
@@ -628,7 +634,7 @@ toascii (\"ASCII\")\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tolower, xtolower, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
+  DEFUN_MAPPER (tolower, xtolower, 0, 0, 0, 0, 0, 0.0, 0.0, 2, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tolower (@var{s})\n\
 Return a copy of the string @var{s}, with each upper-case character\n\
@@ -641,7 +647,7 @@ tolower (\"MiXeD cAsE 123\")\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (toupper, xtoupper, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
+  DEFUN_MAPPER (toupper, xtoupper, 0, 0, 0, 0, 0, 0.0, 0.0, 2, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} toupper (@var{s})\n\
 Return a copy of the string @var{s}, with each  lower-case character\n\

@@ -85,9 +85,18 @@ octave_scalar::convert_to_str (void) const
     ::error ("invalid conversion from NaN to character");
   else
     {
-      // XXX FIXME XXX -- warn about out of range conversions?
-      
-      retval = octave_value (std::string (1, char (NINT (scalar))));
+      int ival = NINT (scalar);
+
+      if (ival < 0 || ival > UCHAR_MAX)
+	{
+	  // XXX FIXME XXX -- is there something better we could do?
+
+	  ival = 0;
+
+	  ::warning ("range error for conversion to character value");
+	}
+
+      retval = octave_value (std::string (1, static_cast<char> (ival)));
     }
 
   return retval;

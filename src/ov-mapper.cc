@@ -117,7 +117,7 @@ octave_mapper::apply (const octave_value& arg) const
 
 	  if (! error_state)
 	    {
-	      switch (flag)
+	      switch (ch_map_flag)
 		{
 		case 0:
 		  MAPPER_LOOP_1 (boolMatrix, ch_map_fcn, chm, bool);
@@ -147,7 +147,7 @@ octave_mapper::apply (const octave_value& arg) const
 	    {
 	      double d = arg.double_value ();
 
-	      if (flag && (d < lower_limit || d > upper_limit))
+	      if (can_ret_cmplx_for_real && (d < lower_limit || d > upper_limit))
 		{
 		  if (c_c_map_fcn)
 		    retval = c_c_map_fcn (Complex (d));
@@ -170,7 +170,7 @@ octave_mapper::apply (const octave_value& arg) const
 	      if (error_state)
 		return retval;
 
-	      if (flag
+	      if (can_ret_cmplx_for_real
 		  && (any_element_less_than (m, lower_limit)
 		      || any_element_greater_than (m, upper_limit)))
 		{

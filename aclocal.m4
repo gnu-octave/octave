@@ -438,7 +438,7 @@ AC_TRY_COMPILE([#include <string>],
 [size_t foo = NPOS],
 octave_cv_string_npos=yes, octave_cv_string_npos=no)])
 if test $octave_cv_string_npos = no; then
-  AC_DEFINE(NPOS, string::npos)
+  AC_DEFINE(NPOS, std::string::npos)
 fi
 AC_LANG_RESTORE
 ])

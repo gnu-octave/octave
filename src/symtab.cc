@@ -239,7 +239,7 @@ symbol_record::define_builtin_const (const octave_value& v)
 
   if (! read_only_error ("redefine"))
     {
-      replace_all_defs (new symbol_def (v, symbol_record::BUILTIN_CONSTANT));
+      definition->define (v, symbol_record::BUILTIN_CONSTANT);
 
       retval = true;
     }

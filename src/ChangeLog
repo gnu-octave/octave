@@ -1,3 +1,11 @@
+2001-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (define_builtin_const): Don't call replace_all_defs
+	here.
+
+	* error.cc (error_message_buffer): Now static.
+	* error.h (error_message_buffer): Delete extern declaration.
+
 2001-03-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/besselj.cc (besselh): Use K arg.

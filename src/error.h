@@ -47,9 +47,6 @@ extern int warning_state;
 // the `unwind_protect' statement.
 extern bool buffer_error_messages;
 
-// The message buffer
-extern std::ostrstream *error_message_buffer;
-
 #endif
 
 /*

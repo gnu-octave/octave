@@ -68,8 +68,8 @@ int warning_state = 0;
 // the `unwind_protect' statement.
 bool buffer_error_messages = false;
 
-// The message buffer
-std::ostrstream *error_message_buffer = 0;
+// The message buffer.
+static std::ostrstream *error_message_buffer = 0;
 
 // Warning messages are never buffered.
 // XXX FIXME XXX -- we should provide another way to turn them off...
@@ -535,7 +535,7 @@ bind_global_error_variable (void)
 
       char *error_text = error_message_buffer->str ();
 
-      bind_builtin_constant ("__error_text__", error_text, true);
+      bind_builtin_variable ("__error_text__", error_text, true);
 
       delete [] error_text;
 
@@ -544,16 +544,17 @@ bind_global_error_variable (void)
       error_message_buffer = 0;
     }
   else
-    bind_builtin_constant ("__error_text__", "", true);
+    bind_builtin_variable ("__error_text__", "", true);
 }
 
 void
 clear_global_error_variable (void *)
 {
   delete error_message_buffer;
+
   error_message_buffer = 0;
 
-  bind_builtin_constant ("__error_text__", "", true);
+  bind_builtin_variable ("__error_text__", "", true);
 }
 
 static int

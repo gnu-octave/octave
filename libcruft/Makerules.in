@@ -49,8 +49,8 @@ all: pic $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
 	@true
 
 $(LIBCRUFT): $(LIBCRUFT_DEPS)
-	$(AR) $(ARFLAGS) $(LIBCRUFT) $(LIBCRUFT_OBJS)
-	$(RANLIB) $(LIBCRUFT)
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
 
 # This is necessary, otherwise we won't have any .o files left when it
 # comes time to insert them in the archive.

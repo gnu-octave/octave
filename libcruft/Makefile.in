@@ -80,7 +80,7 @@ libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
 	$(LN_S) $< $@
 
 libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $*
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 $(CRUFT_OBJ):
 

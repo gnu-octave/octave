@@ -147,7 +147,7 @@ endif
 .PHONY: libraries
 
 liboctave.$(LIBEXT): $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $*
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
@@ -155,7 +155,7 @@ liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
 	$(LN_S) $< $@
 
 liboctave.$(SHLEXT_VER): $(PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $*
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'
 extract_lstat = sed 's/@l@/l/g; s/@L@/L/g; s/	*@LSTAT_ONLY@//'

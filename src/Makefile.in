@@ -230,7 +230,7 @@ endif
 .PHONY: libraries
 
 liboctinterp.$(LIBEXT): $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $*
+	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
@@ -238,7 +238,7 @@ liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
 	$(LN_S) $< $@
 
 liboctinterp.$(SHLEXT_VER): $(PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $*
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@

@@ -392,6 +392,7 @@ protected:
   // Set current error state and set fail to TRUE.
 
   void error (const std::string& msg);
+  void error (const std::string& who, const std::string& msg);
 
   // Clear any error message and set fail to FALSE.
 
@@ -422,10 +423,10 @@ private:
   // are those that define is).
 
   std::string do_gets (int max_len, bool& err, bool strip_newline,
-		  const char *fcn);
+		       const std::string& who /* = "gets" */);
 
-  std::string getl (int max_len, bool& err);
-  std::string gets (int max_len, bool& err);
+  std::string getl (int max_len, bool& err, const std::string& who /* = "getl" */);
+  std::string gets (int max_len, bool& err, const std::string& who /* = "gets" */);
 
   octave_value do_read (int nr, int nc, oct_data_conv::data_type dt,
 			int skip, oct_mach_info::float_format flt_fmt,
@@ -435,20 +436,18 @@ private:
 		     int skip, oct_mach_info::float_format flt_fmt,
 		     int& count);
 
-  octave_value do_char_scanf (scanf_format_list& fmt_list,
-			      int nr, int nc, int& count);
-
-  octave_value do_real_scanf (scanf_format_list& fmt_list,
-			      int nr, int nc, int& count);
-
   octave_value do_scanf (scanf_format_list& fmt_list, int nr, int nc,
-			 bool one_elt_size_spec, int& count);
+			 bool one_elt_size_spec, int& count,
+			 const std::string& who /* = "scanf" */);
 
-  octave_value scanf (const std::string& fmt, const Array<double>& size, int& count);
+  octave_value scanf (const std::string& fmt, const Array<double>& size,
+		      int& count, const std::string& who /* = "scanf" */);
 
-  bool do_oscanf (const scanf_format_elt *elt, octave_value&);
+  bool do_oscanf (const scanf_format_elt *elt, octave_value&,
+		  const std::string& who /* = "scanf" */);
 
-  octave_value_list oscanf (const std::string& fmt);
+  octave_value_list oscanf (const std::string& fmt,
+			    const std::string& who /* = "scanf" */);
 
   // Functions that are defined for all output streams (output streams
   // are those that define os).
@@ -458,18 +457,20 @@ private:
   int write (const octave_value& data, oct_data_conv::data_type dt,
 	     int skip, oct_mach_info::float_format flt_fmt);
 
-  int do_printf (printf_format_list& fmt_list, const octave_value_list& args);
+  int do_printf (printf_format_list& fmt_list, const octave_value_list& args,
+		 const std::string& who /* = "printf" */);
 
-  int printf (const std::string& fmt, const octave_value_list& args);
+  int printf (const std::string& fmt, const octave_value_list& args,
+	      const std::string& who /* = "printf" */);
 
-  int puts (const std::string& s);
+  int puts (const std::string& s, const std::string& who /* = "puts" */);
 
   // We can always do this in terms of seek(), so the derived class
   // only has to provide that.
 
   int rewind (void);
 
-  void invalid_operation (const char *op, const char *rw);
+  void invalid_operation (const std::string& who, const char *rw);
 
   // No copying!
 
@@ -493,11 +494,13 @@ public:
 
   int flush (void);
 
-  std::string getl (int max_len, bool& err);
-  std::string getl (const octave_value& max_len, bool& err);
+  std::string getl (int max_len, bool& err, const std::string& who /* = "getl" */);
+  std::string getl (const octave_value& max_len, bool& err,
+		    const std::string& who /* = "getl" */);
 
-  std::string gets (int max_len, bool& err);
-  std::string gets (const octave_value& max_len, bool& err);
+  std::string gets (int max_len, bool& err, const std::string& who /* = "gets" */);
+  std::string gets (const octave_value& max_len, bool& err,
+		    const std::string& who /* = "gets" */);
 
   int seek (std::streamoff offset, std::ios::seekdir origin);
   int seek (const octave_value& offset, const octave_value& origin);
@@ -517,14 +520,17 @@ public:
   int write (const octave_value& data, oct_data_conv::data_type dt,
 	     int skip, oct_mach_info::float_format flt_fmt);
 
-  octave_value scanf (const std::string& fmt, const Array<double>& size, int& count);
+  octave_value scanf (const std::string& fmt, const Array<double>& size,
+		      int& count, const std::string& who /* = "scanf" */);
 
-  octave_value_list oscanf (const std::string& fmt);
+  octave_value_list oscanf (const std::string& fmt,
+			    const std::string& who /* = "scanf" */);
 
-  int printf (const std::string& fmt, const octave_value_list& args);
+  int printf (const std::string& fmt, const octave_value_list& args,
+	      const std::string& who /* = "printf" */);
 
-  int puts (const std::string& s);
-  int puts (const octave_value& s);
+  int puts (const std::string& s, const std::string& who /* = "puts" */);
+  int puts (const octave_value& s, const std::string& who /* = "puts" */);
 
   bool eof (void) const;
 
@@ -561,9 +567,9 @@ private:
   // The actual representation of this stream.
   octave_base_stream *rep;
 
-  void invalid_stream_error (const char *op) const;
+  void invalid_stream_error (const std::string& who) const;
 
-  bool stream_ok (const char *op, bool clear = true) const
+  bool stream_ok (const std::string& who, bool clear = true) const
     {
       bool retval = true;
 
@@ -575,7 +581,7 @@ private:
       else
 	{
 	  retval = false;
-	  invalid_stream_error (op);
+	  invalid_stream_error (who);
 	}
 
       return retval;
@@ -603,9 +609,11 @@ public:
 
   static octave_value insert (const octave_stream& os);
 
-  static octave_stream lookup (int fid, const std::string& who = std::string ());
-  static octave_stream lookup (const octave_value& fid,
-			       const std::string& who = std::string ());
+  static octave_stream
+  lookup (int fid, const std::string& who = std::string ());
+
+  static octave_stream
+  lookup (const octave_value& fid, const std::string& who = std::string ());
 
   static int remove (int fid, const std::string& who = std::string ());
   static int remove (const octave_value& fid,

@@ -81,7 +81,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 }
 
 static int
-get_size (double d, const char *warn_for)
+get_size (double d, const std::string& who)
 {
   int retval = -1;
 
@@ -93,20 +93,20 @@ get_size (double d, const char *warn_for)
 	    retval = NINT (d);
 	  else
 	    ::error ("%s: negative value invalid as size specification",
-		     warn_for);
+		     who.c_str ());
 	}
       else
 	retval = -1;
     }
   else
-    ::error ("%s: NaN is invalid as size specification", warn_for);
+    ::error ("%s: NaN is invalid as size specification", who.c_str ());
 
   return retval;
 }
 
 static void
 get_size (const Array<double>& size, int& nr, int& nc, bool& one_elt_size_spec,
-	  const char *warn_for)
+	  const std::string& who)
 {
   nr = -1;
   nc = -1;
@@ -133,17 +133,17 @@ get_size (const Array<double>& size, int& nr, int& nc, bool& one_elt_size_spec,
       if (! xisinf (dnr))
 	dnc = size (1);
       else
-	::error ("%s: invalid size specification", warn_for);
+	::error ("%s: invalid size specification", who.c_str ());
     }
   else
-    ::error ("%s: invalid size specification", warn_for);
+    ::error ("%s: invalid size specification", who.c_str ());
 
   if (! error_state)
     {
-      nr = get_size (dnr, warn_for);
+      nr = get_size (dnr, who);
 
       if (! error_state && dnc >= 0.0)
-	nc = get_size (dnc, warn_for);
+	nc = get_size (dnc, who);
     }
 }
 
@@ -926,6 +926,13 @@ octave_base_stream::error (const std::string& msg)
 }
 
 void
+octave_base_stream::error (const std::string& who, const std::string& msg)
+{
+  fail = true;
+  errmsg = who + msg;
+}
+
+void
 octave_base_stream::clear (void)
 {
   fail = false;
@@ -937,7 +944,7 @@ octave_base_stream::clear (void)
 
 std::string
 octave_base_stream::do_gets (int max_len, bool& err,
-			     bool strip_newline, const char *fcn)
+			     bool strip_newline, const std::string& who)
 {
   std::string retval;
 
@@ -984,33 +991,32 @@ octave_base_stream::do_gets (int max_len, bool& err,
       else
 	{
 	  err = true;
-	  std::string msg = fcn;
+
 	  if (is.eof () && char_count == 0)
-	    msg.append (": at end of file");
+	    error (who, "at end of file");
 	  else
-	    msg.append (": read error");
-	  error (msg);
+	    error (who, "read error");
 	}
     }
   else
     {
       err = true;
-      invalid_operation (fcn, "reading");
+      invalid_operation (who, "reading");
     }
 
   return retval;
 }
 
 std::string
-octave_base_stream::getl (int max_len, bool& err)
+octave_base_stream::getl (int max_len, bool& err, const std::string& who)
 {
-  return do_gets (max_len, err, true, "fgetl");
+  return do_gets (max_len, err, true, who);
 }
 
 std::string
-octave_base_stream::gets (int max_len, bool& err)
+octave_base_stream::gets (int max_len, bool& err, const std::string& who)
 {
-  return do_gets (max_len, err, false, "fgets");
+  return do_gets (max_len, err, false, who);
 }
 
 octave_value
@@ -1373,7 +1379,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 			      int nr, int nc, bool one_elt_size_spec,
-			      int& conversion_count)
+			      int& conversion_count, const std::string& who)
 {
   conversion_count = 0;
 
@@ -1636,11 +1642,11 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  break;
 
 		case 'p':
-		  error ("fscanf: unsupported format specifier");
+		  error ("%s: unsupported format specifier", who.c_str ());
 		  break;
 
 		default:
-		  error ("fscanf: internal format error");
+		  error ("%s: internal format error", who.c_str ());
 		  break;
 		}
 
@@ -1702,7 +1708,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      // Skip to end of line.
 
 		      bool err;
-		      do_gets (-1, err, false, "fscanf");
+		      do_gets (-1, err, false, who);
 		    }
 
 		  break;
@@ -1710,7 +1716,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 	    }
 	  else
 	    {
-	      error ("fscanf: internal format error");
+	      error ("%s: internal format error", who.c_str ());
 	      break;
 	    }
 
@@ -1733,7 +1739,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 octave_value
 octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
-			   int& conversion_count)
+			   int& conversion_count, const std::string& who)
 {
   octave_value retval = Matrix ();
 
@@ -1746,7 +1752,7 @@ octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
       scanf_format_list fmt_list (fmt);
 
       if (fmt_list.num_conversions () == -1)
-	::error ("fscanf: invalid format specified");
+	::error ("%s: invalid format specified", who.c_str ());
       else
 	{
 	int nr = -1;
@@ -1754,22 +1760,22 @@ octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
 
 	bool one_elt_size_spec;
 
-	get_size (size, nr, nc, one_elt_size_spec, "fscanf");
+	get_size (size, nr, nc, one_elt_size_spec, who);
 
 	if (! error_state)
 	  retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec,
-			     conversion_count);
+			     conversion_count, who);
 	}
     }
   else
-    invalid_operation ("fscanf", "reading");
+    invalid_operation (who, "reading");
 
   return retval;
 }
 
 bool
 octave_base_stream::do_oscanf (const scanf_format_elt *elt,
-			       octave_value& retval)
+			       octave_value& retval, const std::string& who)
 {
   bool quit = false;
 
@@ -1888,18 +1894,18 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      break;
 
 	    case 'p':
-	      error ("fscanf: unsupported format specifier");
+	      error ("%s: unsupported format specifier", who.c_str ());
 	      break;
 
 	    default:
-	      error ("fscanf: internal format error");
+	      error ("%s: internal format error", who.c_str ());
 	      break;
 	    }
 	}
 
       if (ok () && is.fail ())
 	{
-	  error ("fscanf: read error");
+	  error ("%s: read error", who.c_str ());
 
 	  // XXX FIXME XXX -- is this the right thing to do?
 
@@ -1908,7 +1914,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      // Skip to end of line.
 
 	      bool err;
-	      do_gets (-1, err, false, "fscanf");
+	      do_gets (-1, err, false, who);
 	    }
 	}
     }
@@ -1917,7 +1923,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 }
 
 octave_value_list
-octave_base_stream::oscanf (const std::string& fmt)
+octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
 {
   octave_value_list retval;
 
@@ -1932,7 +1938,7 @@ octave_base_stream::oscanf (const std::string& fmt)
       int nconv = fmt_list.num_conversions ();
 
       if (nconv == -1)
-	::error ("fscanf: invalid format specified");
+	::error ("%s: invalid format specified", who.c_str ());
       else
 	{
 	  is.clear ();
@@ -1951,7 +1957,7 @@ octave_base_stream::oscanf (const std::string& fmt)
 	    {
 	      octave_value tmp;
 
-	      quit = do_oscanf (elt, tmp);
+	      quit = do_oscanf (elt, tmp, who);
 
 	      if (quit)
 		break;
@@ -1978,13 +1984,13 @@ octave_base_stream::oscanf (const std::string& fmt)
 
 		  elt = fmt_list.next ();
 
-		  do_oscanf (elt, tmp);
+		  do_oscanf (elt, tmp, who);
 		}
 	    }
 	}
     }
   else
-    invalid_operation ("fscanf", "reading");
+    invalid_operation (who, "reading");
 
   return retval;
 }
@@ -2213,7 +2219,7 @@ printf_value_cache::string_value (void)
 template <class T>
 int
 do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
-		int sa_2, T arg)
+		int sa_2, T arg, const std::string& who)
 {
   int retval = 0;
 
@@ -2232,7 +2238,7 @@ do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
       break;
 
     default:
-      ::error ("fprintf: internal error handling format");
+      ::error ("%s: internal error handling format", who.c_str ());
       break;
     }
 
@@ -2240,26 +2246,33 @@ do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
 }
 
 template int
-do_printf_conv (std::ostream&, const char*, int, int, int, int);
-							   
-template int						   
-do_printf_conv (std::ostream&, const char*, int, int, int, long);
-							   
+do_printf_conv (std::ostream&, const char*, int, int, int, int,
+		const std::string&);
+
 template int
-do_printf_conv (std::ostream&, const char*, int, int, int, unsigned int);
-							   
-template int						   
-do_printf_conv (std::ostream&, const char*, int, int, int, unsigned long);
-							   
-template int						   
-do_printf_conv (std::ostream&, const char*, int, int, int, double);
-							   
-template int						   
-do_printf_conv (std::ostream&, const char*, int, int, int, const char*);
+do_printf_conv (std::ostream&, const char*, int, int, int, long,
+		const std::string&);
+
+template int
+do_printf_conv (std::ostream&, const char*, int, int, int, unsigned int,
+		const std::string&);
+
+template int
+do_printf_conv (std::ostream&, const char*, int, int, int, unsigned long,
+		const std::string&);
+
+template int
+do_printf_conv (std::ostream&, const char*, int, int, int, double,
+		const std::string&);
+
+template int
+do_printf_conv (std::ostream&, const char*, int, int, int, const char*,
+		const std::string&);
 
 int
 octave_base_stream::do_printf (printf_format_list& fmt_list,
-			       const octave_value_list& args)
+			       const octave_value_list& args,
+			       const std::string& who)
 {
   int retval = 0;
 
@@ -2324,7 +2337,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
 		  if (val_cache)
 		    retval += do_printf_conv (os, fmt, nsa, sa_1,
-					      sa_2, val.c_str ());
+					      sa_2, val.c_str (), who);
 		  else
 		    break;
 		}
@@ -2354,14 +2367,16 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 				? (val < 0 ? "-Inf" : "Inf") : "NaN";
 
 			      retval += do_printf_conv (os, tfmt.c_str (),
-							nsa, sa_1, sa_2, tval);
+							nsa, sa_1, sa_2,
+							tval, who);
 			    }
 			  else
 			    {
 			      tfmt.replace (tfmt.rfind (elt->type), 1, ".f");
 
 			      retval += do_printf_conv (os, tfmt.c_str (),
-							nsa, sa_1, sa_2, val);
+							nsa, sa_1, sa_2,
+							val, who);
 			    }
 			}
 		      else
@@ -2373,11 +2388,11 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 				if (elt->modifier == 'l')
 				  retval += do_printf_conv
 				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<long int> (val));
+				     static_cast<long int> (val), who);
 				else
 				  retval += do_printf_conv
 				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<int> (val));
+				     static_cast<int> (val), who);
 			      }
 			      break;
 
@@ -2386,11 +2401,12 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 				if (elt->modifier == 'l')
 				  retval += do_printf_conv
 				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<unsigned long int> (val));
+				     static_cast<unsigned long int> (val),
+				     who);
 				else
 				  retval += do_printf_conv
 				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<unsigned int> (val));
+				     static_cast<unsigned int> (val), who);
 			      }
 			      break;
 
@@ -2398,11 +2414,12 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			    case 'g': case 'G':
 			      retval
 				+= do_printf_conv (os, fmt, nsa, sa_1, sa_2,
-						   val);
+						   val, who);
 			      break;
 
 			    default:
-			      error ("fprintf: invalid format specifier");
+			      error ("%s: invalid format specifier",
+				     who.c_str ());
 			      return -1;
 			      break;
 			    }
@@ -2414,13 +2431,13 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
 	      if (! os)
 		{
-		  error ("fprintf: write error");
+		  error ("%s: write error", who.c_str ());
 		  break;
 		}
 	    }
 	  else
 	    {
-	      ::error ("fprintf: internal error handling format");
+	      ::error ("%s: internal error handling format", who.c_str ());
 	      retval = -1;
 	      break;
 	    }
@@ -2432,29 +2449,30 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 	}	      
     }
   else
-    invalid_operation ("fprintf", "writing");
+    invalid_operation (who, "writing");
 
   return retval;
 }
 
 int
 octave_base_stream::printf (const std::string& fmt,
-			    const octave_value_list& args)
+			    const octave_value_list& args,
+			    const std::string& who)
 {
   int retval = 0;
 
   printf_format_list fmt_list (fmt);
 
   if (fmt_list.num_conversions () == -1)
-    ::error ("fprintf: invalid format specified");
+    ::error ("%s: invalid format specified", who.c_str ());
   else
-    retval = do_printf (fmt_list, args);
+    retval = do_printf (fmt_list, args, who);
 
   return retval;
 }
 
 int
-octave_base_stream::puts (const std::string& s)
+octave_base_stream::puts (const std::string& s, const std::string& who)
 {
   int retval = -1;
 
@@ -2480,13 +2498,13 @@ octave_base_stream::puts (const std::string& s)
 	  if (os)
 	    retval = 0;
 	  else
-	    error ("fputs: write error");
+	    error ("%s: write error", who.c_str ());
 	}
       else
-	error ("fputs: write error");
+	error ("%s: write error", who.c_str ());
     }
   else
-    invalid_operation ("fputs", "writing");
+    invalid_operation (who, "writing");
 
   return retval;
 }
@@ -2513,12 +2531,11 @@ octave_base_stream::error (bool clear_err, int& err_num)
 }
 
 void
-octave_base_stream::invalid_operation (const char *op, const char *rw)
+octave_base_stream::invalid_operation (const std::string& who, const char *rw)
 {
-  std::string msg = op;
-  msg.append (": stream not open for ");
-  msg.append (rw);
-  error (msg);
+  // Note that this is not ::error () !
+
+  error (who + ": stream not open for " + rw);
 }
 
 octave_stream::octave_stream (octave_base_stream *bs)
@@ -2570,18 +2587,19 @@ octave_stream::flush (void)
 }
 
 std::string
-octave_stream::getl (int max_len, bool& err)
+octave_stream::getl (int max_len, bool& err, const std::string& who)
 {
   std::string retval;
 
-  if (stream_ok ("getl"))
-    retval = rep->getl (max_len, err);
+  if (stream_ok (who))
+    retval = rep->getl (max_len, err, who);
 
   return retval;
 }
 
 std::string
-octave_stream::getl (const octave_value& tc_max_len, bool& err)
+octave_stream::getl (const octave_value& tc_max_len, bool& err,
+		     const std::string& who)
 {
   std::string retval;
 
@@ -2594,27 +2612,28 @@ octave_stream::getl (const octave_value& tc_max_len, bool& err)
   if (conv_err || max_len < 0)
     {
       err = true;
-      ::error ("fgetl: invalid maximum length specified");
+      ::error ("%s: invalid maximum length specified", who.c_str ());
     }
   else
-    retval = getl (max_len, err);
+    retval = getl (max_len, err, who);
 
   return retval;
 }
 
 std::string
-octave_stream::gets (int max_len, bool& err)
+octave_stream::gets (int max_len, bool& err, const std::string& who)
 {
   std::string retval;
 
-  if (stream_ok ("fgets"))
-    retval = rep->gets (max_len, err);
+  if (stream_ok (who))
+    retval = rep->gets (max_len, err, who);
 
   return retval;
 }
 
 std::string
-octave_stream::gets (const octave_value& tc_max_len, bool& err)
+octave_stream::gets (const octave_value& tc_max_len, bool& err,
+		     const std::string& who)
 {
   std::string retval;
 
@@ -2627,10 +2646,10 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err)
   if (conv_err || max_len < 0)
     {
       err = true;
-      ::error ("fgets: invalid maximum length specified");
+      ::error ("%s: invalid maximum length specified", who.c_str ());
     }
   else
-    retval = gets (max_len, err);
+    retval = gets (max_len, err, who);
 
   return retval;
 }
@@ -2769,45 +2788,46 @@ octave_stream::write (const octave_value& data,
 
 octave_value
 octave_stream::scanf (const std::string& fmt, const Array<double>& size,
-		      int& count)
+		      int& count, const std::string& who)
 {
   octave_value retval;
 
-  if (stream_ok ("fscanf"))
-    retval = rep->scanf (fmt, size, count);
+  if (stream_ok (who))
+    retval = rep->scanf (fmt, size, count, who);
 
   return retval;
 }
 
 octave_value_list
-octave_stream::oscanf (const std::string& fmt)
+octave_stream::oscanf (const std::string& fmt, const std::string& who)
 {
   octave_value_list retval;
 
-  if (stream_ok ("fscanf"))
-    retval = rep->oscanf (fmt);
+  if (stream_ok (who))
+    retval = rep->oscanf (fmt, who);
 
   return retval;
 }
 
 int
-octave_stream::printf (const std::string& fmt, const octave_value_list& args)
+octave_stream::printf (const std::string& fmt, const octave_value_list& args,
+		       const std::string& who)
 {
   int retval = -1;
 
-  if (stream_ok ("fprintf"))
-    retval = rep->printf (fmt, args);
+  if (stream_ok (who))
+    retval = rep->printf (fmt, args, who);
 
   return retval;
 }
 
 int
-octave_stream::puts (const std::string& s)
+octave_stream::puts (const std::string& s, const std::string& who)
 {
   int retval = -1;
 
-  if (stream_ok ("fputs"))
-    retval = rep->puts (s);
+  if (stream_ok (who))
+    retval = rep->puts (s, who);
 
   return retval;
 }
@@ -2815,17 +2835,21 @@ octave_stream::puts (const std::string& s)
 // XXX FIXME XXX -- maybe this should work for string arrays too.
 
 int
-octave_stream::puts (const octave_value& tc_s)
+octave_stream::puts (const octave_value& tc_s, const std::string& who)
 {
   int retval = -1;
 
   if (tc_s.is_string ())
     {
       std::string s = tc_s.string_value ();      
-      retval = rep->puts (s);
+      retval = rep->puts (s, who);
     }
   else
-    error ("fputs: argument must be a string");
+    {
+      // Note that this is not ::error () !
+
+      error (who + ": argument must be a string");
+    }
 
   return retval;
 }
@@ -2924,9 +2948,9 @@ octave_stream::mode_as_string (int mode)
 }
 
 void
-octave_stream::invalid_stream_error (const char *op) const
+octave_stream::invalid_stream_error (const std::string& who) const
 {
-  ::error ("%s: attempt to use invalid I/O stream", op);
+  ::error ("%s: attempt to use invalid I/O stream", who.c_str ());
 }
 
 octave_stream_list *octave_stream_list::instance = 0;

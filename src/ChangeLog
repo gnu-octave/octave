@@ -1,5 +1,26 @@
 2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (get_size, octave_base_stream::error,
+	octave_base_stream::do_gets, octave_base_stream::getl,
+	octave_base_stream::gets, octave_base_stream::do_scanf,
+	octave_base_stream::scanf, octave_base_stream::do_oscanf,
+	octave_base_stream::oscanf, do_printf_conv,
+	octave_base_stream::do_printf, octave_base_stream::printf,
+	octave_base_stream::puts, octave_base_stream::invalid_operation,
+	octave_stream::getl, octave_stream::gets, octave_stream::scanf,
+	octave_stream::oscanf, octave_stream::printf, octave_stream::puts,
+	octave_stream::invalid_stream_error): Handle name of calling
+	function for error messages as a std::string object.  Change all
+	callers.
+
+	* file-io.cc (Fprintf, Fputs): New functions, so we can get
+	function prefixes on error messages right.
+	(Ffgetl, Ffgets, Ffprintf, Fsprintf, Fputs, Ffscanf, Fsscanf):
+	Pass name of calling function to octave_stream method.
+
+	* oct-stream.h (octave_base_stream::do_char_scanf,
+	octave_base_stream::do_real_scanf): Delete unused decls.
+
 	* load-save.cc (read_mat5_binary_element): Correctly read struct
 	arrays.
 

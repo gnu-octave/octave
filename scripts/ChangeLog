@@ -1,5 +1,7 @@
 2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* io/printf.m, io/puts.m: Delete.
+
 	* miscellaneous/dump_prefs.m: Delete define_all_return_values and
 	default_return_value from the list.
 	Add warn_undefined_return_values to the list.

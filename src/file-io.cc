@@ -73,18 +73,21 @@ static octave_value stdin_file;
 static octave_value stdout_file;
 static octave_value stderr_file;
 
+static octave_stream stdin_stream;
+static octave_stream stdout_stream;
+static octave_stream stderr_stream;
+
 void
 initialize_file_io (void)
 {
-  octave_stream stdin_stream = octave_istream::create (&std::cin, "stdin");
+  stdin_stream = octave_istream::create (&std::cin, "stdin");
 
   // This uses octave_stdout (see pager.h), not std::cout so that Octave's
   // standard output stream will pass through the pager.
 
-  octave_stream stdout_stream
-    = octave_ostream::create (&octave_stdout, "stdout");
+  stdout_stream = octave_ostream::create (&octave_stdout, "stdout");
 
-  octave_stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
+  stderr_stream = octave_ostream::create (&std::cerr, "stderr");
 
   stdin_file = octave_stream_list::insert (stdin_stream);
   stdout_file = octave_stream_list::insert (stdout_stream);
@@ -227,6 +230,8 @@ character.\n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 @end deftypefn")
 {
+  static std::string who = "fgetl";
+
   octave_value_list retval;
 
   retval(1) = 0;
@@ -236,7 +241,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      octave_stream os = octave_stream_list::lookup (args(0), "fgetl");
+      octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
 	{
@@ -245,7 +250,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 	  bool err = false;
 
-	  std::string tmp = os.getl (len_arg, err);
+	  std::string tmp = os.getl (len_arg, err, who);
 
 	  if (! err)
 	    {
@@ -255,7 +260,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 	}
     }
   else
-    print_usage ("fgetl");
+    print_usage (who);
 
   return retval;
 }
@@ -273,6 +278,8 @@ character.\n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 @end deftypefn")
 {
+  static std::string who = "fgets";
+
   octave_value_list retval;
 
   retval(1) = 0.0;
@@ -282,7 +289,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      octave_stream os = octave_stream_list::lookup (args(0), "fgets");
+      octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
 	{
@@ -291,7 +298,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 
 	  bool err = false;
 
-	  std::string tmp = os.gets (len_arg, err);
+	  std::string tmp = os.gets (len_arg, err, who);
 
 	  if (! err)
 	    {
@@ -301,7 +308,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 	}
     }
   else
-    print_usage ("fgets");
+    print_usage (who);
 
   return retval;
 }
@@ -641,7 +648,10 @@ This function is just like @code{printf}, except that the output is\n\
 written to the stream @var{fid} instead of @code{stdout}.\n\
 @end deftypefn")
 {
+  static std::string who = "fprintf";
+
   octave_value retval = -1;
+
   bool return_char_count = true;
 
   int nargin = args.length ();
@@ -653,7 +663,7 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 
       if (args(0).is_string ()) 
 	{
-	  os = octave_stream_list::lookup (1, "fprintf");
+	  os = octave_stream_list::lookup (1, who);
 
 	  // For compatibility with Matlab, which does not return the
 	  // character count when behaving like printf (no file id
@@ -664,11 +674,13 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
       else
 	{
 	  fmt_n = 1;
-	  os = octave_stream_list::lookup (args(0), "fprintf");
+	  os = octave_stream_list::lookup (args(0), who);
 	}
 
       if (! error_state)
 	{
+	  std::string who;
+
 	  if (args(fmt_n).is_string ())
 	    {
 	      std::string fmt = args(fmt_n).string_value ();
@@ -683,19 +695,60 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 		    tmp_args(i-fmt_n-1) = args(i);
 		}
 
-	      retval = os.printf (fmt, tmp_args);
+	      retval = os.printf (fmt, tmp_args, who);
 	    }
 	  else
-	    ::error ("fprintf: format must be a string");
+	    ::error ("%s: format must be a string", who.c_str ());
 	}
     }
   else
-    print_usage ("fprintf");
+    print_usage (who);
 
   if (return_char_count)
     return retval;
   else
     return octave_value();
+}
+
+DEFUN (printf, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} printf (@var{fid}, @var{template}, @dots{})\n\
+Print optional arguments under the control of the template string\n\
+@var{template} to the stream @code{stdout}.\n\
+@end deftypefn\n\
+@seealso{fprintf and sprintf}")
+{
+  static std::string who = "printf";
+
+  octave_value retval = -1;
+
+  int nargin = args.length ();
+
+  if (nargin > 0)
+    {
+      if (args(0).is_string ())
+	{
+	  std::string fmt = args(0).string_value ();
+
+	  octave_value_list tmp_args;
+
+	  if (nargin > 1)
+	    {
+	      tmp_args.resize (nargin-1, octave_value ());
+
+	      for (int i = 1; i < nargin; i++)
+		tmp_args(i-1) = args(i);
+	    }
+
+	  retval = stdout_stream.printf (fmt, tmp_args, who);
+	}
+      else
+	::error ("%s: format must be a string", who.c_str ());
+    }
+  else
+    print_usage (who);
+
+  return retval;
 }
 
 DEFUN (fputs, args, ,
@@ -704,19 +757,39 @@ DEFUN (fputs, args, ,
 Write a string to a file with no formatting.\n\
 @end deftypefn")
 {
+  static std::string who = "fputs";
+
   octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 2)
     {
-      octave_stream os = octave_stream_list::lookup (args(0), "fputs");
+      octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
-	retval = os.puts (args(1));
+	retval = os.puts (args(1), who);
     }
   else
-    print_usage ("fputs");
+    print_usage (who);
+
+  return retval;
+}
+
+DEFUN (puts, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} puts (@var{string})\n\
+Write a string to the standard output with no formatting.\n\
+@end deftypefn")
+{
+  static std::string who = "puts";
+
+  octave_value retval = -1;
+
+  if (args.length () == 1)
+    retval = stdout_stream.puts (args(0), who);
+  else
+    print_usage (who);
 
   return retval;
 }
@@ -731,6 +804,8 @@ returns the string, automatically sized to hold all of the items\n\
 converted.\n\
 @end deftypefn")
 {
+  static std::string who = "sprintf";
+
   octave_value_list retval;
 
   int nargin = args.length ();
@@ -761,18 +836,18 @@ converted.\n\
 		    tmp_args(i-1) = args(i);
 		}
 
-	      retval(2) = os.printf (fmt, tmp_args);
+	      retval(2) = os.printf (fmt, tmp_args, who);
 	      retval(1) = os.error ();
 	      retval(0) = ostr->str ();
 	    }
 	  else
-	    ::error ("sprintf: format must be a string");
+	    ::error ("%s: format must be a string", who.c_str ());
 	}
       else
-	::error ("sprintf: unable to create output buffer");
+	::error ("%s: unable to create output buffer", who.c_str ());
     }
   else
-    print_usage ("sprintf");
+    print_usage (who);
 
   return retval;
 }
@@ -820,13 +895,15 @@ compatible with previous versions of Octave.  The number of successful\n\
 conversions is returned in @var{count}\n\
 @end deftypefn")
 {
+  static std::string who = "fscanf";
+
   octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 3 && args(2).is_string ())
     {
-      octave_stream os = octave_stream_list::lookup (args(0), "fscanf");
+      octave_stream os = octave_stream_list::lookup (args(0), who);
 
       if (! error_state)
 	{
@@ -834,10 +911,10 @@ conversions is returned in @var{count}\n\
 	    {
 	      std::string fmt = args(1).string_value ();
 
-	      retval = os.oscanf (fmt);
+	      retval = os.oscanf (fmt, who);
 	    }
 	  else
-	    ::error ("fscanf: format must be a string");
+	    ::error ("%s: format must be a string", who.c_str ());
 	}
     }
   else
@@ -847,7 +924,7 @@ conversions is returned in @var{count}\n\
 
       if (nargin == 2 || nargin == 3)
 	{
-	  octave_stream os = octave_stream_list::lookup (args(0), "fscanf");
+	  octave_stream os = octave_stream_list::lookup (args(0), who);
 
 	  if (! error_state)
 	    {
@@ -863,18 +940,18 @@ conversions is returned in @var{count}\n\
 
 		  if (! error_state)
 		    {
-		      octave_value tmp = os.scanf (fmt, size, count);
+		      octave_value tmp = os.scanf (fmt, size, count, who);
 
 		      retval(1) = count;
 		      retval(0) = tmp;
 		    }
 		}
 	      else
-		::error ("fscanf: format must be a string");
+		::error ("%s: format must be a string", who.c_str ());
 	    }
 	}
       else
-	print_usage ("fscanf");
+	print_usage (who);
     }
 
   return retval;
@@ -889,6 +966,8 @@ string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.\n\
 @end deftypefn")
 {
+  static std::string who = "sscanf";
+
   octave_value_list retval;
 
   int nargin = args.length ();
@@ -907,16 +986,17 @@ string is treated as an end-of-file condition.\n\
 		{
 		  std::string fmt = args(1).string_value ();
 
-		  retval = os.oscanf (fmt);
+		  retval = os.oscanf (fmt, who);
 		}
 	      else
-		::error ("sscanf: format must be a string");
+		::error ("%s: format must be a string", who.c_str ());
 	    }
 	  else
-	    ::error ("sscanf: unable to create temporary input buffer");
+	    ::error ("%s: unable to create temporary input buffer",
+		     who.c_str ());
 	}
       else
-	::error ("sscanf: first argument must be a string");
+	::error ("%s: first argument must be a string", who.c_str ());
     }
   else
     {
@@ -945,7 +1025,7 @@ string is treated as an end-of-file condition.\n\
 			? args(2).vector_value ()
 			: Array<double> (1, lo_ieee_inf_value ());
 
-		      octave_value tmp = os.scanf (fmt, size, count);
+		      octave_value tmp = os.scanf (fmt, size, count, who);
 
 		      // XXX FIXME XXX -- is this the right thing to do?
 		      // Extract error message first, because getting
@@ -958,16 +1038,17 @@ string is treated as an end-of-file condition.\n\
 		      retval(0) = tmp;
 		    }
 		  else
-		    ::error ("sscanf: format must be a string");
+		    ::error ("%s: format must be a string", who.c_str ());
 		}
 	      else
-		::error ("sscanf: unable to create temporary input buffer");
+		::error ("%s: unable to create temporary input buffer",
+			 who.c_str  ());
 	    }
 	  else
-	    ::error ("sscanf: first argument must be a string");
+	    ::error ("%s: first argument must be a string", who.c_str ());
 	}
       else
-	print_usage ("sscanf");
+	print_usage (who);
     }
 
   return retval;

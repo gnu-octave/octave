@@ -578,7 +578,21 @@ DEFUN (sprintf, args, ,
 }
 
 DEFUN (fscanf, args, ,
-  "[A, B, C, ...] = fscanf (FILENUM, FORMAT, SIZE)")
+  "[A, COUNT] = fscanf (FILENUM, FORMAT [, SIZE])\n\
+\n\
+Read from FILENUM according to FORMAT, returning the result in the\n\
+matrix A.  SIZE is optional.  If present, it can be one of\n\
+\n\
+       Inf : read as much as possible, returning a column vector\n\
+             (unless doing all character conversions, in which case a\n\
+             string is returned)\n\
+        NR : read as much as possible, returning a matrix with NR rows\n\
+  [NR, NC] : read up to NR x NC elements, returning a matrix with NR rows\n\
+ [NR, Inf] : same as NR\n\
+\n\
+If it is omitted, a value of Inf is assumed.\n\
+\n\
+The number of items successfully read is returned in COUNT")
 {
   octave_value_list retval;
 
@@ -623,7 +637,24 @@ DEFUN (fscanf, args, ,
 }
 
 DEFUN (sscanf, args, ,
-  "[A, COUNT, ERRMSG, INDEX] = sscanf (STRING, FORMAT, SIZE)")
+  "[A, COUNT, ERRMSG, INDEX] = sscanf (STRING, FORMAT, SIZE)\n\
+\n\
+Read from FILENUM according to FORMAT, returning the result in the\n\
+matrix A.  SIZE is optional.  If present, it can be one of\n\
+\n\
+       Inf : read as much as possible, returning a column vector\n\
+             (unless doing all character conversions, in which case a\n\
+             string is returned)\n\
+        NR : read as much as possible, returning a matrix with NR rows\n\
+  [NR, NC] : read up to NR x NC elements, returning a matrix with NR rows\n\
+ [NR, Inf] : same as NR\n\
+\n\
+If it is omitted, a value of Inf is assumed.\n\
+\n\
+The number of items successfully read is returned in COUNT.  If an\n\
+error occurs, ERRMSG contains the text of the corresponding error\n\
+message.  INDEX contains the index of the next character to be read\n\
+from STRING")
 {
   octave_value_list retval;
 

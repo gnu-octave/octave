@@ -1,4 +1,9 @@
-Sat Mar  1 01:17:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.5 released.
+
+	* octave.cc: If WITH_KPATHSEARCH is defined, don't define
+	program_invocation_name or program_invocation_short_name.
 
 	* strftime.c: Update to current version from FSF.
 	* time.cc (Fstrftime): Call strftime with buf = 0 to get buffer

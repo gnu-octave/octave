@@ -195,7 +195,7 @@ the second must be a string.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} struct_elements (@var{struct})
-Return a list of strings naming the elements of the structure @{struct}.
-It is an error to call @code{struct_elements} with an argument that is
-not a structure.
+Return a list of strings naming the elements of the structure
+@var{struct}.  It is an error to call @code{struct_elements} with an
+argument that is not a structure.
 @end deftypefn

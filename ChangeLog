@@ -1,4 +1,15 @@
+Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.5 released.
+
+	* config.h.bot: Unconditionally define WITH_KPATHSEARCH.
+
 Fri Feb 28 01:56:52 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-end-keywords): Add endswitch.
+	(octave-end-keywords): Add otherwise and case.
+	(octave-else-keywords): Add switch.
+	(octave-abbrev-table): Add abbrevs for all of them.
 
 	* configure.in (f77_rules_frag): Set default value to /dev/null
 	and redfine as needed.

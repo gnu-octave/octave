@@ -83,7 +83,7 @@ extern "C" int on_exit ();
 #endif
 
 // Don't redefine the variables if glibc already has.
-#if defined (HAVE_PROGRAM_INVOCATION_NAME)
+#if defined (HAVE_PROGRAM_INVOCATION_NAME) || defined (WITH_KPATHSEARCH)
 extern char *program_invocation_name;
 extern char *program_invocation_short_name;
 #else

@@ -14,3 +14,5 @@
 #define REINTERPRET_CAST(T, E) (T) (E)
 
 #define HEAVYWEIGHT_INDEXING 1
+
+#define WITH_KPATHSEARCH 1

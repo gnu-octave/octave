@@ -6,9 +6,9 @@
 # Patterned after the bashbug script from bash 1.14.
 #
 # John W. Eaton
-# jwe@che.utexas.edu
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
 # Department of Chemical Engineering
-# The University of Texas at Austin
 
 # Configuration:  these variables are filled in at configuration time.
 
@@ -51,9 +51,9 @@ fi
 ss_p=`echo $VERSION | grep "^ss-"`
 if test -n "$ss_p"
 then
-  BUGADDR="octave-maintainers@che.utexas.edu"
+  BUGADDR="octave-maintainers@bevo.che.wisc.edu"
 else
-  BUGADDR="bug-octave@che.utexas.edu"
+  BUGADDR="bug-octave@bevo.che.wisc.edu"
 fi
 
 SUBJECT="[50 character or so descriptive subject here (for reference)]"

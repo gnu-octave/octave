@@ -29,7 +29,7 @@ MATRIX_INC = Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
 
 INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
 	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
-	NPSOL.h ODE.h ODEFunc.h Objective.h QLD.h QP.h QPSOL.h \
+	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h \
 	Quad.h Range.h base-min.h f77-uscore.h idx-vector.h \
 	lo-error.h oct-cmplx.h sun-utils.h \
 	$(MATRIX_INC)
@@ -48,7 +48,7 @@ MATRIX_SRC = Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
 SOURCES = Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
-	LPsolve.cc NLEqn.cc NPSOL.cc ODE.cc QLD.cc QPSOL.cc Quad.cc \
+	LPsolve.cc NLEqn.cc NPSOL.cc ODE.cc QPSOL.cc Quad.cc \
 	Range.cc idx-vector.cc lo-error.cc sun-utils.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \

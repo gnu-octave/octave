@@ -134,6 +134,7 @@ function curr_axis = axis (ax, varargin)
 
   elseif (isstr (ax))
     ax = tolower (ax);
+    len = length (ax);
 
     ## 'matrix mode' to reverse the y-axis
     if (strcmp (ax, "ij"))
@@ -154,9 +155,9 @@ function curr_axis = axis (ax, varargin)
 
 
       ## axis limits
-    elseif (length (ax) >= 4 && strcmp (ax (1:4), "auto"))
-      if length (ax) > 4
-      	eval (["gset autoscale ", ax (5 : length (ax)), ";"]);
+    elseif (len >= 4 && strcmp (ax(1:4), "auto"))
+      if (len > 4)
+      	eval (sprintf ("gset autoscale %s;", ax(5:len)));
       else
 	gset autoscale;
       endif
@@ -191,18 +192,18 @@ function curr_axis = axis (ax, varargin)
       gset xtics;
       gset ytics;
       gset ztics;
-    elseif (length (ax) > 3 && strcmp (ax (1:3), "tic"))
-      if any (ax == "x")
+    elseif (len > 3 && strcmp (ax(1:3), "tic"))
+      if (any (ax == "x"))
 	gset xtics;
       else
 	gset noxtics;
       endif
-      if any (ax == "y")
+      if (any (ax == "y"))
 	gset ytics;
       else
 	gset noytics;
       endif
-      if any (ax == "z")
+      if (any (ax == "z"))
 	gset ztics;
       else
 	gset noztics;
@@ -211,18 +212,18 @@ function curr_axis = axis (ax, varargin)
       gset format;
     elseif (strcmp (ax, "nolabel"))
       gset format "\\0";
-    elseif (length (ax) > 5 && strcmp (ax (1:5), "label"))
-      if any (ax == "x")
+    elseif (len > 5 && strcmp (ax(1:5), "label"))
+      if (any (ax == "x"))
 	gset format x;
       else
 	gset format x "\\0";
       endif
-      if any (ax == "y")
+      if (any (ax == "y"))
 	gset format y;
       else
 	gset format y "\\0";
       endif
-      if any (ax == "z")
+      if (any (ax == "z"))
 	gset format z;
       else
 	gset format z "\\0";
@@ -243,15 +244,15 @@ function curr_axis = axis (ax, varargin)
     __current_axis__ = reshape (ax, 1, len);
 
     if (len > 1)
-      eval (sprintf ("gset xrange [%g:%g];", ax (1), ax (2)));
+      eval (sprintf ("gset xrange [%g:%g];", ax(1), ax(2)));
     endif
 
     if (len > 3)
-      eval (sprintf ("gset yrange [%g:%g];", ax (3), ax (4)));
+      eval (sprintf ("gset yrange [%g:%g];", ax(3), ax(4)));
     endif
 
     if (len > 5)
-      eval (sprintf ("gset zrange [%g:%g];", ax (5), ax (6)));
+      eval (sprintf ("gset zrange [%g:%g];", ax(5), ax(6)));
     endif
 
   else

@@ -79,7 +79,7 @@ function freqz_plot(w,h)
       axis ("autoy");
       xlabel ("Frequency");
       axis ([ w(1), w(n) ]);
-      plot (w, phase/(2*pi), ";Phase (radians/2pi);");
+      plot (w, phase*360/(2*pi), ";Phase (degrees);");
       
     unwind_protect_cleanup
 

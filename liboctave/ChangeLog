@@ -1,3 +1,8 @@
+2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASSL.cc (DASSL::integrate): Declare do_restart and save_output
+	as bool, not int.
+
 2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (assign (Array2<LT>& lhs, const Array2<RT>& rhs)): 

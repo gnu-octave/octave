@@ -10,6 +10,8 @@ set -e
 # Default values for these variables are filled in when Octave is
 # compiled. 
 
+: ${SED=%OCTAVE_CONF_SED%}
+
 : ${CPPFLAGS=%OCTAVE_CONF_CPPFLAGS%}
 : ${INCFLAGS=%OCTAVE_CONF_MKOCTFILE_INCFLAGS%}
 : ${F2C=%OCTAVE_CONF_F2C%}
@@ -230,7 +232,7 @@ else
   if [ -n "$outputfile" ]; then
     octfile="$outputfile"
   else
-    octfile=`echo $octfile | sed 's,\.[^.]*$,,'`.oct
+    octfile=`echo $octfile | $SED 's,\.[^.]*$,,'`.oct
   fi
 fi
 
@@ -239,12 +241,12 @@ fi
 if $depend; then
   if [ -n "$cfiles" ]; then
     for f in $cfiles; do
-      b=`echo $f | sed 's,\.c$,,'`
+      b=`echo $f | $SED 's,\.c$,,'`
       d=$b.d
       cmd="rm -f $d"
       $dbg $cmd
       eval $cmd
-      cmd="$CC $DEPEND_FLAGS $CPPFLAGS $ALL_CFLAGS $f | sed $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
+      cmd="$CC $DEPEND_FLAGS $CPPFLAGS $ALL_CFLAGS $f | $SED $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
       $dbg $cmd
       eval $cmd
     done
@@ -254,20 +256,20 @@ if $depend; then
     for f in $ccfiles; do
       case $f in
         *.cc)
-          b=`echo $f | sed 's,\.cc$,,'`
+          b=`echo $f | $SED 's,\.cc$,,'`
         ;;
         *.C)
-          b=`echo $f | sed 's,\.C$,,'`
+          b=`echo $f | $SED 's,\.C$,,'`
         ;;
         *.cpp)
-          b=`echo $f | sed 's,\.cpp$,,'`
+          b=`echo $f | $SED 's,\.cpp$,,'`
         ;;
       esac
       d=$b.d
       cmd="rm -f $d"
       $dbg $cmd
       eval $cmd
-      cmd="$CXX $DEPEND_FLAGS $CPPFLAGS $ALL_CXXFLAGS $f | sed $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
+      cmd="$CXX $DEPEND_FLAGS $CPPFLAGS $ALL_CXXFLAGS $f | $SED $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
       $dbg $cmd
       eval $cmd
     done
@@ -283,10 +285,10 @@ if [ -n "$f77files" ]; then
   for f in $f77files; do
     case $f in
       *.f)
-        b=`echo $f | sed 's,\.f$,,'`
+        b=`echo $f | $SED 's,\.f$,,'`
       ;;
       *.F)
-        b=`echo $f | sed 's,\.F$,,'`
+        b=`echo $f | $SED 's,\.F$,,'`
       ;;
     esac
     if [ -n "$F77" ]; then
@@ -310,7 +312,7 @@ fi
 if [ -n "$cfiles" ]; then
   for f in $cfiles; do
     if [ -n  "$CC" ]; then
-      b=`echo $f | sed 's,\.c$,,'`
+      b=`echo $f | $SED 's,\.c$,,'`
       o=$b.o
       objfiles="$objfiles $o"
       cmd="$CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $incflags $defs $f -o $o"
@@ -327,13 +329,13 @@ if [ -n "$ccfiles" ]; then
     if [ -n "$CXX" ]; then
       case $f in
 	*.cc)
-	  b=`echo $f | sed 's,\.cc$,,'`
+	  b=`echo $f | $SED 's,\.cc$,,'`
 	;;
 	*.C)
-	  b=`echo $f | sed 's,\.C$,,'`
+	  b=`echo $f | $SED 's,\.C$,,'`
 	;;
 	*.cpp)
-	  b=`echo $f | sed 's,\.cpp$,,'`
+	  b=`echo $f | $SED 's,\.cpp$,,'`
 	;;
       esac
       o=$b.o

@@ -32,7 +32,7 @@ SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
 %.spell : %.texi
 	rm -f $@
-	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
+	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
 all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ_toc.html

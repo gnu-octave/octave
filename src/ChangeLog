@@ -1,3 +1,12 @@
+2002-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cutils.c (octave_sleep): Handle Windows, which may not have
+	sleep, but should have Sleep.
+
+	* oct-conf.h.in (OCTAVE_CONF_SED): Add an entry for SED.
+	* toplev.cc (octave_config_info): Likewise.
+	* Makefile.in (oct-gperf.h): Use $(SED), not sed.
+
 2002-09-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc (fopen_mode_to_ios_mode): Set ios::ate instead of

@@ -56,7 +56,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 
 %.spell : %.texi
 	rm -f $@
-	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
+	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
 all: octave.info octave.dvi octave.ps octave_toc.html

@@ -1,3 +1,15 @@
+2002-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_PROG_SED): New macro, adapted from autoconf
+	patches mailing list archive, written by Robert Boehne
+	<rboehne@ricardo-us.com>.
+	* configure.in: Use it.
+	* Makeconf.in: Substitute SED, use $(SED), not sed.
+	(do-subst-conffig-vals): Substitute it here too.
+	* mkoctfile.in: And here.  Use $SED, not sed.
+	* octave-bug.in: Likewise.
+	* install-octave.in: Likewise.
+
 2002-09-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't define mkdir here.

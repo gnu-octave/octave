@@ -74,7 +74,11 @@ do_octave_usleep (unsigned int useconds)
 void
 octave_sleep (unsigned int seconds)
 {
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+  Sleep (1000 * seconds);
+#else
   sleep (seconds);
+#endif
 }
 
 void

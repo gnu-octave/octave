@@ -1,3 +1,9 @@
+2002-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (%.spell): Use $(SED), not sed.
+	* liboctave/Makefile.in (%.spell): Likewise.
+	* faq/Makefile.in (%.spell): Likewise.
+
 2001-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (octave_toc.html): Use -expand info and

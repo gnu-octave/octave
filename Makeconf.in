@@ -9,8 +9,10 @@
  
 SHELL = /bin/sh
 
+SED = @SED@
+
 # A shell command to extract the version number from version.h.
-getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
+getversion = $(SED) -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
 
 # Look for version.h to get version information.
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
@@ -309,7 +311,7 @@ pic/%.o : %.cc
 	@echo making $@ from $<
 	@rm -f $@
 	@$(CXX) $(DEPEND_FLAGS) $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	  sed \
+	  $(SED) \
               $(DEPEND_EXTRA_SED_PATTERN) \
 	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
 	      -e 's,$*\.o,pic/& & $*.df $@,g' > $@-t
@@ -321,7 +323,7 @@ pic/%.o : %.cc
 	@echo making $@ from $<
 	@rm -f $@
 	@$(CC) $(DEPEND_FLAGS) $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	  sed \
+	  $(SED) \
               $(DEPEND_EXTRA_SED_PATTERN) \
 	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
 	      -e 's,$*\.o,pic/& & $@,g' > $@-t
@@ -341,7 +343,7 @@ endef
 
 define do-subst-config-vals
 echo "making $@ from $<"
-sed < $< \
+$(SED) < $< \
   -e "s;%OCTAVE_CONF_ALL_CFLAGS%;\"${ALL_CFLAGS}\";" \
   -e "s;%OCTAVE_CONF_ALL_CXXFLAGS%;\"${ALL_CXXFLAGS}\";" \
   -e "s;%OCTAVE_CONF_ALL_FFLAGS%;\"${ALL_FFLAGS}\";" \
@@ -401,6 +403,7 @@ sed < $< \
   -e "s;%OCTAVE_CONF_RDYNAMIC_FLAG%;\"${RDYNAMIC_FLAG}\";" \
   -e "s;%OCTAVE_CONF_RLD_FLAG%;\"${RLD_FLAG}\";" \
   -e "s;%OCTAVE_CONF_RUNTEST%;\"${RUNTEST}\";" \
+  -e "s;%OCTAVE_CONF_SED%;\"${SED}\";" \
   -e "s;%OCTAVE_CONF_SHARED_LIBS%;\"${SHARED_LIBS}\";" \
   -e "s;%OCTAVE_CONF_SHLEXT%;\"${SHLEXT}\";" \
   -e "s;%OCTAVE_CONF_SHLEXT_VER%;\"${SHLEXT_VER}\";" \
@@ -418,13 +421,13 @@ sed < $< \
   -e "s;%OCTAVE_CONF_YACC%;\"${YACC}\";" \
   -e "s;%OCTAVE_CONF_YFLAGS%;\"${YFLAGS}\";" \
   -e "s;%OCTAVE_CONF_config_opts%;\"${config_opts}\";" | \
-  sed  -e "s;%OCTAVE_CONF_DEFS%;\"${UGLY_DEFS}\";" > $@-t
+  $(SED)  -e "s;%OCTAVE_CONF_DEFS%;\"${UGLY_DEFS}\";" > $@-t
 $(top_srcdir)/move-if-change $@-t $@
 endef
 
 define do-subst-default-vals
 echo "making $@ from $<"
-sed < $< > $@-t \
+$(SED) < $< > $@-t \
   -e "s;%OCTAVE_ARCHLIBDIR%;\"${archlibdir}\";" \
   -e "s;%OCTAVE_BINDIR%;\"${bindir}\";" \
   -e "s;%OCTAVE_CANONICAL_HOST_TYPE%;\"${canonical_host_type}\";" \

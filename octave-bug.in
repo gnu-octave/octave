@@ -15,6 +15,7 @@
 
 config_opts=%OCTAVE_CONF_config_opts%
 VERSION=%OCTAVE_CONF_VERSION%
+SED=%OCTAVE_CONF_SED%
 MACHINE=%OCTAVE_CONF_CANONICAL_HOST_TYPE%
 F77=%OCTAVE_CONF_F77%
 FFLAGS=%OCTAVE_CONF_FFLAGS%
@@ -83,7 +84,7 @@ fi
 
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
   # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
-  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+  if (echo -n testing; echo 1,2,3) | $SED s/-n/xn/ | grep xn >/dev/null; then
     echo_n=
     echo_c='
 '
@@ -101,7 +102,7 @@ if test -n "$ss_p"; then
   BUGADDR="octave-maintainers@bevo.che.wisc.edu"
 else
   pretest_p=`echo $VERSION \
-    | sed 's,.*\.\([0-9]*\).*,\1,' \
+    | $SED 's,.*\.\([0-9]*\).*,\1,' \
     | grep -v '\.' \
     | grep '[0-9]'`
 
@@ -191,12 +192,13 @@ LEXLIB:           $LEXLIB
 LIBPLPLOT:        $LIBPLPLOT
 LIBDLFCN:         $LIBDLFCN
 LIBGLOB:          $LIBGLOB
+SED:              $SED
 DEFS:
 
 EOF
 
 if $HAVE_FMT; then
-  echo $DEFS | fmt | sed 's/^/  /' >> $TEMP
+  echo $DEFS | fmt | $SED 's/^/  /' >> $TEMP
 else
   echo $DEFS >> $TEMP
 fi
@@ -260,8 +262,8 @@ if test $status -eq 0; then
 # Try to extract the recipient address, in case the To: line in the
 # message template has been changed.  Also get cc: lines.
 
-    TO_ADDR=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^[Tt][Oo]://p'`
-    CC_ADDR=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^[Cc][Cc]://p'`
+    TO_ADDR=`$SED -e '/^--------[ \t]*$/q' $TEMP | $SED -n -e 's/^[Tt][Oo]://p'`
+    CC_ADDR=`$SED -e '/^--------[ \t]*$/q' $TEMP | $SED -n -e 's/^[Cc][Cc]://p'`
 
     if test -z "$TO_ADDR"; then
       echo "no valid \`To:' field found in header -- using $BUGADDR instead"
@@ -271,7 +273,7 @@ if test $status -eq 0; then
 
     BUGADDR="$BUGADDR $CC_ADDR"
 
-    TMP_SUB=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^Subject://p'`
+    TMP_SUB=`$SED -e '/^--------[ \t]*$/q' $TEMP | $SED -n -e 's/^Subject://p'`
 
     if test -n "$TMP_SUB"; then
       SUBJECT="$TMP_SUB"

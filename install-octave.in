@@ -11,6 +11,8 @@
 
 set -e
 
+SED=@SED@
+
 # get version
 version=`cat VERSION 2> /dev/null`
 
@@ -46,7 +48,7 @@ fi
 
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
   # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
-  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+  if (echo -n testing; echo 1,2,3) | $SED s/-n/xn/ | grep xn >/dev/null; then
     echo_n=
     echo_c='
 '
@@ -176,21 +178,21 @@ cat << EOF
 Installing octave in the following subdirectories of
 $prefix:
 
-            bindir: `echo $bindir | sed "s,^$prefix/,,"`
-           datadir: `echo $datadir | sed "s,^$prefix/,,"`
-            libdir: `echo $libdir | sed "s,^$prefix/,,"`
-         octlibdir: `echo $octlibdir | sed "s,^$prefix/,,"`
-        includedir: `echo $includedir | sed "s,^$prefix/,,"`
-     octincludedir: `echo $octincludedir | sed "s,^$prefix/,,"`
-            mandir: `echo $mandir | sed "s,^$prefix/,,"`
-           infodir: `echo $infodir | sed "s,^$prefix/,,"`
-        fcnfiledir: `echo $fcnfiledir | sed "s,^$prefix/,,"`
-   localfcnfiledir: `echo $localfcnfiledir | sed "s,^$prefix/,,"`
-        archlibdir: `echo $archlibdir | sed "s,^$prefix/,,"`
-   localarchlibdir: `echo $localarchlibdir | sed "s,^$prefix/,,"`
-        octfiledir: `echo $octfiledir | sed "s,^$prefix/,,"`
-   localoctfiledir: `echo $localoctfiledir | sed "s,^$prefix/,,"`
-          imagedir: `echo $imagedir | sed "s,^$prefix/,,"`
+            bindir: `echo $bindir | $SED "s,^$prefix/,,"`
+           datadir: `echo $datadir | $SED "s,^$prefix/,,"`
+            libdir: `echo $libdir | $SED "s,^$prefix/,,"`
+         octlibdir: `echo $octlibdir | $SED "s,^$prefix/,,"`
+        includedir: `echo $includedir | $SED "s,^$prefix/,,"`
+     octincludedir: `echo $octincludedir | $SED "s,^$prefix/,,"`
+            mandir: `echo $mandir | $SED "s,^$prefix/,,"`
+           infodir: `echo $infodir | $SED "s,^$prefix/,,"`
+        fcnfiledir: `echo $fcnfiledir | $SED "s,^$prefix/,,"`
+   localfcnfiledir: `echo $localfcnfiledir | $SED "s,^$prefix/,,"`
+        archlibdir: `echo $archlibdir | $SED "s,^$prefix/,,"`
+   localarchlibdir: `echo $localarchlibdir | $SED "s,^$prefix/,,"`
+        octfiledir: `echo $octfiledir | $SED "s,^$prefix/,,"`
+   localoctfiledir: `echo $localoctfiledir | $SED "s,^$prefix/,,"`
+          imagedir: `echo $imagedir | $SED "s,^$prefix/,,"`
 
 EOF
 
@@ -295,7 +297,7 @@ then
   chmod 755 $bindir/octave
 else
   echo "installing octave-sh as $bindir/octave"
-  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$octlibdir|" octave-sh \
+  $SED "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$octlibdir|" octave-sh \
     > $bindir/octave
   chmod 755 $bindir/octave
 

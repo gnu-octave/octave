@@ -84,6 +84,10 @@ extern char help_buf [HELP_BUF_LENGTH];
 // Nonzero means we're working on a plot command.
 extern int plotting;
 
+// Nonzero means we've seen something that means we must be past the
+// range part of a plot command.
+extern int past_plot_range;
+
 // Nonzero means we're looking at the range part of a plot command.
 extern int in_plot_range;
 

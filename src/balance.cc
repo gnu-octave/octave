@@ -236,6 +236,7 @@ balance (const Octave_object& args, int nargin, int nargout)
 
 	    switch (nargout)
 	      {
+	      case 0:
 	      case 1:
 		warning ("balance: should use two output arguments");
 		retval(0) = tree_constant (caa);
@@ -251,7 +252,7 @@ balance (const Octave_object& args, int nargin, int nargout)
 		retval(3) = tree_constant (cbb);
 		break;
 	      default:
-		error ("balance: illegal number of output arguments");
+		error ("balance: invalid number of output arguments");
 		break;
 	      }
 	  }
@@ -259,6 +260,11 @@ balance (const Octave_object& args, int nargin, int nargout)
 	  {
 	    switch (nargout)
 	      {
+	      case 0:
+	      case 1:
+		warning ("balance: should use two output arguments");
+		retval(0) = tree_constant (result.balanced_a_matrix ());
+		break;
 	      case 2:
 		retval(0) = tree_constant (result.balanced_a_matrix ());
 		retval(1) = tree_constant (result.balanced_b_matrix ());
@@ -270,7 +276,7 @@ balance (const Octave_object& args, int nargin, int nargout)
 		retval(3) = tree_constant (result.balanced_b_matrix ());
 		break;
 	      default:
-		error ("balance: illegal number of output arguments");
+		error ("balance: invalid number of output arguments");
 		break;
 	      }
 	  }

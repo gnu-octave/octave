@@ -111,7 +111,8 @@ givens (const Octave_object& args, int nargin, int nargout)
 
 	  switch (nargout)
 	    {
-	    case 1:		// output a matrix
+	    case 0:		// output a matrix
+	    case 1:
 	      {
 		ComplexMatrix g (2, 2);
 		g.elem (0, 0) = cc;
@@ -129,7 +130,7 @@ givens (const Octave_object& args, int nargin, int nargout)
 	      break;
 
 	    default:  
-	      error ("givens: illegal number of output arguments");
+	      error ("givens: invalid number of output arguments");
 	      break;
 	    }
 	}
@@ -141,7 +142,8 @@ givens (const Octave_object& args, int nargin, int nargout)
 
 	  switch (nargout)
 	    {
-	    case 1:		// output a matrix
+	    case 0:		// output a matrix
+	    case 1:
 	      {
 		Matrix g (2, 2);
 		g.elem (0, 0) = cc;
@@ -159,7 +161,7 @@ givens (const Octave_object& args, int nargin, int nargout)
 	      break;
    
 	    default:
-	      error ("givens: illegal number of output arguments");
+	      error ("givens: invalid number of output arguments");
 	      break;
 	    }
 	}

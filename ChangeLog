@@ -1,3 +1,8 @@
+2000-04-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Try moving output file first.  But comment these
+	lines and let people who have trouble enable them.
+
 2000-04-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Remove output file before linking.

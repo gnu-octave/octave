@@ -187,8 +187,16 @@ if [ -n "$ccfiles" ]; then
   done
 fi
 
-$dbg "rm -f $octfile"
-rm -f $octfile
+## Uncomment the following group of lines if you get `Text file busy'
+## errors from ld.  This may happen if the .oct file is currently
+## running while you are trying to recompile it.  We try moving first,
+## since on somee systems (HP-UX, maybe others) it is possible to
+## rename running programs but not remove them.
+
+## $dbg "mv $octfile $octfile.bak"
+## mv $octfile $octfile.bak"
+## $dbg "rm -f $octfile.bak"
+## rm -f $octfile.bak
 
 # Link all the object files.
 

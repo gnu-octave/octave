@@ -566,7 +566,7 @@ Matrix::inverse (int& info) const
 }
 
 Matrix
-Matrix::inverse (int& info, double& rcond) const
+Matrix::inverse (int& info, volatile double& rcond) const
 {
   int nr = rows ();
   int nc = cols ();
@@ -685,7 +685,7 @@ Matrix::determinant (int& info) const
 }
 
 DET
-Matrix::determinant (int& info, double& rcond) const
+Matrix::determinant (int& info, volatile double& rcond) const
 {
   DET retval;
 
@@ -746,7 +746,7 @@ Matrix::solve (const Matrix& b, int& info) const
 }
 
 Matrix
-Matrix::solve (const Matrix& b, int& info, double& rcond) const
+Matrix::solve (const Matrix& b, int& info, volatile double& rcond) const
 {
   Matrix retval;
 
@@ -827,7 +827,7 @@ Matrix::solve (const ColumnVector& b, int& info) const
 }
 
 ColumnVector
-Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
+Matrix::solve (const ColumnVector& b, int& info, volatile double& rcond) const
 {
   ColumnVector retval;
 

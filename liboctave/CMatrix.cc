@@ -905,7 +905,8 @@ ComplexMatrix
 ComplexMatrix::inverse (void) const
 {
   int info;
-  double rcond; return inverse (info, rcond);
+  double rcond;
+  return inverse (info, rcond);
 }
 
 ComplexMatrix
@@ -916,7 +917,7 @@ ComplexMatrix::inverse (int& info) const
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (int& info, double& rcond) const
+ComplexMatrix::inverse (int& info, volatile double& rcond) const
 {
   int nr = rows ();
   int nc = cols ();
@@ -1035,7 +1036,7 @@ ComplexMatrix::determinant (int& info) const
 }
 
 ComplexDET
-ComplexMatrix::determinant (int& info, double& rcond) const
+ComplexMatrix::determinant (int& info, volatile double& rcond) const
 {
   ComplexDET retval;
 
@@ -1117,7 +1118,8 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info) const
   return solve (b, info, rcond);
 }
 ComplexMatrix
-ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
+ComplexMatrix::solve (const ComplexMatrix& b, int& info,
+		      volatile double& rcond) const
 {
   ComplexMatrix retval;
 
@@ -1180,7 +1182,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info) const
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
-		      double& rcond) const
+		      volatile double& rcond) const
 {
   ComplexColumnVector retval;
 

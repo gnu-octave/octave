@@ -120,11 +120,9 @@ octave_ieee_init (void)
 
 #if defined (HAVE_INFINITY)
   octave_Inf = (double) infinity ();
-#else
-#ifdef linux
+#elif defined (linux)
   octave_Inf = HUGE_VAL;
-#else
-#ifdef __alpha__
+#elif defined (__alpha__)
   extern unsigned int DINFINITY[2];
   octave_Inf =  (*((double *) (DINFINITY)));
 #else
@@ -138,22 +136,16 @@ octave_ieee_init (void)
       tmp = octave_Inf;
     }
 #endif
-#endif
-#endif
 
 #if defined (HAVE_QUIET_NAN)
   octave_NaN = (double) quiet_nan ();
-#else
-#ifdef linux
+#elif defined (linux)
   octave_NaN = NAN;
-#else
-#ifdef __alpha__
+#elif defined (__alpha__)
   extern unsigned int DQNAN[2];
   octave_NaN = (*((double *) (DQNAN)));
 #else
   octave_NaN = octave_Inf / octave_Inf;
-#endif
-#endif
 #endif
 
 #else
@@ -198,7 +190,7 @@ matherr (struct exception *x)
 void
 sysdep_init (void)
 {
-#if defined (HAVE_FPSETMASK)
+#if defined (HAVE_FPSETMASK) && defined (HAVE_FLOATINGPOINT_H)
 #if defined (__386BSD__) || defined (__FreeBSD__)
 // Disable trapping on common exceptions.
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));

@@ -115,10 +115,21 @@ static int handle_identifier (char *s, int next_tok_is_eq);
 
 D	[0-9]
 S	[ \t]
-N	[\n]
-SN	[ \t\n]
+NL	[\n]
+SNL	[ \t\n]
 EL	(\.\.\.)
+BS	(\\)
+CONT	({EL}|{BS})
 Im	[iIjJ]
+CCHAR	[#%]
+COMMENT	({CCHAR}.*{NL})
+SNLCMT	({SNL}|{COMMENT})
+NOTEQ	((~=)|(!=)|(<>))
+POW	((\*\*)|(\^))
+EPOW	(\.{POW})
+PLUS	((\+)|(\.\+))
+MINUS	((\-)|(\.\-))
+NOT	((\~)|(\!))
 QQ	(\'\')
 ECHAR	(\\.)
 QSTR	([^\n\'\\]*({QQ}|{ECHAR})*)
@@ -127,161 +138,162 @@ IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 %%
 
-<NEW_MATRIX>[^ \t\n]	{
-			  yyless (0);
-			  BEGIN MATRIX;
-			}
+<NEW_MATRIX>[^ \t\n#%] {
+    yyless (0);
+    BEGIN MATRIX;
+  }
 
-<NEW_MATRIX>{SN}*	{
-			  fixup_column_count (yytext);
-			  BEGIN MATRIX;
-			}
+<NEW_MATRIX>{SNLCMT}* {
+    fixup_column_count (yytext);
+    BEGIN MATRIX;
+  }
 
-<HELP_FCN>\n		|
-<TEXT_FCN>\n		{
-		          BEGIN 0;
-			  current_input_column = 1;
-			  quote_is_transpose = 0;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  return '\n';
-			}
+<HELP_FCN>{NL} |
+<TEXT_FCN>{NL} {
+    BEGIN 0;
+    current_input_column = 1;
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
+    return '\n';
+  }
 
-<TEXT_FCN>[\;\,]	{
-			  if (doing_set && strcmp (yytext, ",") == 0)
-			    {
-			      yylval.tok_val = new token (yytext);
-			      token_stack.push (yylval.tok_val);
-			      TOK_RETURN (TEXT);
-			    }
-			  else
-			    {
-			      BEGIN 0;
-			      if (strcmp (yytext, ",") == 0)
-				TOK_RETURN (',');
-			      else
-				TOK_RETURN (';');
-			    }
-		        }
+<TEXT_FCN>[\;\,] {
+    if (doing_set && strcmp (yytext, ",") == 0)
+      {
+	yylval.tok_val = new token (yytext);
+	token_stack.push (yylval.tok_val);
+	TOK_RETURN (TEXT);
+      }
+    else
+      {
+	BEGIN 0;
+	if (strcmp (yytext, ",") == 0)
+	  TOK_RETURN (',');
+	else
+	  TOK_RETURN (';');
+      }
+  }
 
-<TEXT_FCN>{S}*		{ current_input_column += yyleng; }
+<TEXT_FCN>{S}* {
+    current_input_column += yyleng;
+  }
 
-<HELP_FCN>[^ \t\n]*{S}*	    |
+<HELP_FCN>[^ \t\n]*{S}*	|
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
-			      static char *tok = 0;
-			      delete [] tok;
-			      tok = strip_trailing_whitespace (yytext);
-			      yylval.tok_val = new token (tok);
-			      token_stack.push (yylval.tok_val);
-			      TOK_RETURN (TEXT);
-			    }
+    static char *tok = 0;
+    delete [] tok;
+    tok = strip_trailing_whitespace (yytext);
+    yylval.tok_val = new token (tok);
+    token_stack.push (yylval.tok_val);
+    TOK_RETURN (TEXT);
+  }
 
 <TEXT_FCN>\'{QSTR}*[\n\'] {
-			  if (yytext[yyleng-1] == '\n')
-			    {
-			      error ("unterminated string constant");
-			      current_input_column = 1;
-			      return LEXICAL_ERROR;
-			    }
-			  else
-			    {
-			      static char *tok = 0;
-			      delete [] tok;
-			      int off1 = doing_set ? 0 : 1;
-			      int off2 = doing_set ? 0 : 2;
-			      tok = strsave (&yytext[off1]);
-			      tok[yyleng-off2] = '\0';
-			      do_string_escapes (tok);
-			      yylval.tok_val = new token (tok);
-			      token_stack.push (yylval.tok_val);
-			      current_input_column += yyleng;
-			    }
-			  return TEXT;
-			}
+    if (yytext[yyleng-1] == '\n')
+      {
+	error ("unterminated string constant");
+	current_input_column = 1;
+	return LEXICAL_ERROR;
+      }
+    else
+      {
+	static char *tok = 0;
+	delete [] tok;
+	int off1 = doing_set ? 0 : 1;
+	int off2 = doing_set ? 0 : 2;
+	tok = strsave (&yytext[off1]);
+	tok[yyleng-off2] = '\0';
+	do_string_escapes (tok);
+	yylval.tok_val = new token (tok);
+	token_stack.push (yylval.tok_val);
+	current_input_column += yyleng;
+      }
+    return TEXT;
+  }
 
 <TEXT_FCN>\"{DQSTR}*[\n\"] {
-			  if (yytext[yyleng-1] == '\n')
-			    {
-			      error ("unterminated string constant");
-			      current_input_column = 1;
-			      return LEXICAL_ERROR;
-			    }
-			  else
-			    {
-			      static char *tok = 0;
-			      delete [] tok;
-			      int off1 = doing_set ? 0 : 1;
-			      int off2 = doing_set ? 0 : 2;
-			      tok = strsave (&yytext[off1]);
-			      tok[yyleng-off2] = '\0';
-			      do_string_escapes (tok);
-			      yylval.tok_val = new token (tok);
-			      token_stack.push (yylval.tok_val);
-			      current_input_column += yyleng;
-			    }
-			  return TEXT;
-			}
+    if (yytext[yyleng-1] == '\n')
+      {
+	error ("unterminated string constant");
+	current_input_column = 1;
+	return LEXICAL_ERROR;
+      }
+    else
+      {
+	static char *tok = 0;
+	delete [] tok;
+	int off1 = doing_set ? 0 : 1;
+	int off2 = doing_set ? 0 : 2;
+	tok = strsave (&yytext[off1]);
+	tok[yyleng-off2] = '\0';
+	do_string_escapes (tok);
+	yylval.tok_val = new token (tok);
+	token_stack.push (yylval.tok_val);
+	current_input_column += yyleng;
+      }
+    return TEXT;
+  }
 
-<STRING>{QSTR}*[\n\']	{
-			  if (braceflag)
-			    BEGIN MATRIX;
-			  else
-			    BEGIN 0;
+<STRING>{QSTR}*[\n\'] {
+    if (braceflag)
+      BEGIN MATRIX;
+    else
+      BEGIN 0;
 
-			  if (yytext[yyleng-1] == '\n')
-			    {
-			      error ("unterminated string constant");
-			      current_input_column = 1;
-			      return LEXICAL_ERROR;
-			    }
-			  else
-			    {
-			      static char *tok = 0;
-			      delete [] tok;
-			      tok = strsave (yytext);
-			      tok[yyleng-1] = '\0';
-			      do_string_escapes (tok);
-			      yylval.tok_val = new token (tok);
-			      token_stack.push (yylval.tok_val);
-			      quote_is_transpose = 1;
-			      cant_be_identifier = 1;
-			      convert_spaces_to_comma = 1;
-			      current_input_column += yyleng;
-			    }
-			  return TEXT;
-			}
-
+    if (yytext[yyleng-1] == '\n')
+      {
+	error ("unterminated string constant");
+	current_input_column = 1;
+	return LEXICAL_ERROR;
+      }
+    else
+      {
+	static char *tok = 0;
+	delete [] tok;
+	tok = strsave (yytext);
+	tok[yyleng-1] = '\0';
+	do_string_escapes (tok);
+	yylval.tok_val = new token (tok);
+	token_stack.push (yylval.tok_val);
+	quote_is_transpose = 1;
+	cant_be_identifier = 1;
+	convert_spaces_to_comma = 1;
+	current_input_column += yyleng;
+      }
+    return TEXT;
+  }
 
 <DQSTRING>{DQSTR}*[\n\"] {
-			  if (braceflag)
-			    BEGIN MATRIX;
-			  else
-			    BEGIN 0;
+    if (braceflag)
+      BEGIN MATRIX;
+    else
+      BEGIN 0;
 
-			  if (yytext[yyleng-1] == '\n')
-			    {
-			      error ("unterminated string constant");
-			      current_input_column = 1;
-			      return LEXICAL_ERROR;
-			    }
-			  else
-			    {
-			      static char *tok = 0;
-			      delete [] tok;
-			      tok = strsave (yytext);
-			      tok[yyleng-1] = '\0';
-			      do_string_escapes (tok);
-			      yylval.tok_val = new token (tok);
-			      token_stack.push (yylval.tok_val);
-			      quote_is_transpose = 1;
-			      cant_be_identifier = 1;
-			      convert_spaces_to_comma = 1;
-			      current_input_column += yyleng;
-			    }
-			  return TEXT;
-			}
+    if (yytext[yyleng-1] == '\n')
+      {
+	error ("unterminated string constant");
+	current_input_column = 1;
+	return LEXICAL_ERROR;
+      }
+    else
+      {
+	static char *tok = 0;
+	delete [] tok;
+	tok = strsave (yytext);
+	tok[yyleng-1] = '\0';
+	do_string_escapes (tok);
+	yylval.tok_val = new token (tok);
+	token_stack.push (yylval.tok_val);
+	quote_is_transpose = 1;
+	cant_be_identifier = 1;
+	convert_spaces_to_comma = 1;
+	current_input_column += yyleng;
+      }
+    return TEXT;
+  }
 
-<MATRIX>{SN}*\]{S}*/==	{
+<MATRIX>{SNL}*\]{S}*/== {
 
 // For this and the next two rules, we're looking at ']', and we
 // need to know if the next token is '='.
@@ -296,350 +308,353 @@ EXPON	([DdEe][+-]?{D}+)
 // different for the expression on the left hand side of the equals
 // operator.
 
-			  if (! in_brace_or_paren.empty ())
-			    {
-			      in_brace_or_paren.pop ();
-			      braceflag--;
-			    }
+    if (! in_brace_or_paren.empty ())
+      {
+	in_brace_or_paren.pop ();
+	braceflag--;
+      }
 
-			  if (braceflag == 0)
-			    {
-			      if (! defining_func)
-				promptflag++;
-			      BEGIN 0;
-			    }
-			  fixup_column_count (yytext);
-			  quote_is_transpose = 0;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  return ']';
-			}
+    if (braceflag == 0)
+      {
+	if (! defining_func)
+	  promptflag++;
+	BEGIN 0;
+      }
+    fixup_column_count (yytext);
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
+    return ']';
+  }
 
-<MATRIX>{SN}*\]{S}*/=	{
-			  if (! in_brace_or_paren.empty ())
-			    {
-			      in_brace_or_paren.pop ();
-			      braceflag--;
-			    }
+<MATRIX>{SNL}*\]{S}*/= {
+    if (! in_brace_or_paren.empty ())
+      {
+	in_brace_or_paren.pop ();
+	braceflag--;
+      }
 
-			  if (braceflag == 0)
-			    {
-			      BEGIN 0;
-			      if (! defining_func)
-				promptflag++;
-			    }
-			  fixup_column_count (yytext);
-			  quote_is_transpose = 0;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  if (maybe_screwed_again)
-			    return SCREW_TWO;
-			  else
-			    return ']';
-			}
+    if (braceflag == 0)
+      {
+	BEGIN 0;
+	if (! defining_func)
+	  promptflag++;
+      }
+    fixup_column_count (yytext);
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
+    if (maybe_screwed_again)
+      return SCREW_TWO;
+    else
+      return ']';
+  }
 
-<MATRIX>{SN}*\]{S}*	{
-			  fixup_column_count (yytext);
+<MATRIX>{SNL}*\]{S}* {
+    fixup_column_count (yytext);
 
 // It's a pain in the ass to decide whether to insert a comma after
 // seeing a ']' character...
 
-			  if (! in_brace_or_paren.empty ())
-			    {
-			      in_brace_or_paren.pop ();
-			      braceflag--;
-			    }
+    if (! in_brace_or_paren.empty ())
+      {
+	in_brace_or_paren.pop ();
+	braceflag--;
+      }
 
-			  if (braceflag == 0)
-			    {
-			      if (! defining_func)
-				promptflag++;
-			      BEGIN 0;
-			    }
-			  else if (user_pref.commas_in_literal_matrix != 2)
-			    {
-			      int c0 = yytext[yyleng-1];
-			      int spc_prev = (c0 == ' ' || c0 == '\t');
-			      int bin_op = next_token_is_bin_op (spc_prev,
-								 yytext);
-			      int postfix_un_op
-				= next_token_is_postfix_unary_op (spc_prev,
-								  yytext);
+    if (braceflag == 0)
+      {
+	if (! defining_func)
+	  promptflag++;
+	BEGIN 0;
+      }
+    else if (user_pref.commas_in_literal_matrix != 2)
+      {
+	int c0 = yytext[yyleng-1];
+	int spc_prev = (c0 == ' ' || c0 == '\t');
+	int bin_op = next_token_is_bin_op (spc_prev, yytext);
+	int postfix_un_op = next_token_is_postfix_unary_op (spc_prev, yytext);
 
-			      int c1 = yyinput ();
-			      unput (c1);
-			      int other_op = match_any (c1, ",;\n]");
+	int c1 = yyinput ();
+	unput (c1);
+	int other_op = match_any (c1, ",;\n]");
 
-			      if (! (postfix_un_op
-				     || bin_op
-				     || other_op
-				     || in_brace_or_paren.empty ())
-				  && in_brace_or_paren.top ()
-				  && convert_spaces_to_comma)
-				{
-				  unput (',');
-				  return ']';
-				}
-			    }
+	if (! (postfix_un_op || bin_op || other_op
+	       || in_brace_or_paren.empty ())
+	    && in_brace_or_paren.top ()
+	    && convert_spaces_to_comma)
+	  {
+	    unput (',');
+	    return ']';
+	  }
+      }
 
-			  quote_is_transpose = 1;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  return ']';
-			}
+    quote_is_transpose = 1;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
+    return ']';
+  }
 
-<MATRIX>{S}*\,{S}*	{ TOK_RETURN (','); }
+<MATRIX>{S}*\,{S}* {
+    TOK_RETURN (',');
+  }
 
-<MATRIX>{S}+		{
+<MATRIX>{S}+ {
 
 // If commas are required, just eat the spaces.
 
-			  if (user_pref.commas_in_literal_matrix != 2)
-			    {
-			      int bin_op = next_token_is_bin_op (1, yytext);
-			      int postfix_un_op
-				= next_token_is_postfix_unary_op (1, yytext);
+    if (user_pref.commas_in_literal_matrix != 2)
+      {
+	int bin_op = next_token_is_bin_op (1, yytext);
+	int postfix_un_op = next_token_is_postfix_unary_op (1, yytext);
 
-			      if (! (postfix_un_op
-				     || bin_op
-				     || in_brace_or_paren.empty ())
-				  && in_brace_or_paren.top ()
-				  && convert_spaces_to_comma)
-				TOK_RETURN (',');
-			    }
-			}
+	if (! (postfix_un_op || bin_op || in_brace_or_paren.empty ())
+	    && in_brace_or_paren.top ()
+	    && convert_spaces_to_comma)
+	  TOK_RETURN (',');
+      }
+  }
 
-<MATRIX>{SN}*\;{SN}*	|
-<MATRIX>{N}{SN}*	{
-			  fixup_column_count (yytext);
-			  quote_is_transpose = 0;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  return ';';
-			}
+<MATRIX>{SNLCMT}*[\n;]{SNLCMT}* {
+    fixup_column_count (yytext);
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
+    return ';';
+  }
 
-\]			{
-			  if (! in_brace_or_paren.empty ())
-			    in_brace_or_paren.pop ();
+\] {
+    if (! in_brace_or_paren.empty ())
+      in_brace_or_paren.pop ();
 
-			  if (plotting && ! past_plot_range)
-			    {
-			      in_plot_range = 0;
-			      TOK_RETURN (CLOSE_BRACE);
-			    }
-			  else
-			    TOK_RETURN (']');
-			}
+    if (plotting && ! past_plot_range)
+      {
+	in_plot_range = 0;
+	TOK_RETURN (CLOSE_BRACE);
+      }
+    else
+      TOK_RETURN (']');
+  }
 
-{D}+\.?{D}*{EXPON}?{Im}	|
-\.{D}+{EXPON}?{Im}	{
-			  double value;
-			  int nread = sscanf (yytext, "%lf", &value);
-			  assert (nread == 1);
-			  quote_is_transpose = 1;
-			  cant_be_identifier = 1;
-			  convert_spaces_to_comma = 1;
-			  if (plotting && ! in_plot_range)
-			    past_plot_range = 1;
-			  yylval.tok_val = new token (value, yytext,
-						      input_line_number,
-						      current_input_column);
-			  token_stack.push (yylval.tok_val);
-			  current_input_column += yyleng;
-			  do_comma_insert_check ();
-			  return IMAG_NUM;
-			}
+{D}+\.?{D}*{EXPON}?{Im} |
+\.{D}+{EXPON}?{Im} {
+    double value;
+    int nread = sscanf (yytext, "%lf", &value);
+    assert (nread == 1);
+    quote_is_transpose = 1;
+    cant_be_identifier = 1;
+    convert_spaces_to_comma = 1;
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    yylval.tok_val = new token (value, yytext, input_line_number,
+				current_input_column);
+    token_stack.push (yylval.tok_val);
+    current_input_column += yyleng;
+    do_comma_insert_check ();
+    return IMAG_NUM;
+  }
 
-{D}+/\.[\*/\\^']	|
-{D}+\.?{D}*{EXPON}?	|
-\.{D}+{EXPON}?		|
-			{
-			  double value;
-			  int nread = sscanf (yytext, "%lf", &value);
-			  assert (nread == 1);
-			  quote_is_transpose = 1;
-			  cant_be_identifier = 1;
-			  convert_spaces_to_comma = 1;
-			  if (plotting && ! in_plot_range)
-			    past_plot_range = 1;
-			  yylval.tok_val = new token (value, yytext,
-						      input_line_number,
-						      current_input_column);
-			  token_stack.push (yylval.tok_val);
-			  current_input_column += yyleng;
-			  do_comma_insert_check ();
-			  return NUM;
-			}
+{D}+/\.[\*/\\^'] |
+{D}+\.?{D}*{EXPON}? |
+\.{D}+{EXPON}? {
+    double value;
+    int nread = sscanf (yytext, "%lf", &value);
+    assert (nread == 1);
+    quote_is_transpose = 1;
+    cant_be_identifier = 1;
+    convert_spaces_to_comma = 1;
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    yylval.tok_val = new token (value, yytext, input_line_number,
+				current_input_column);
+    token_stack.push (yylval.tok_val);
+    current_input_column += yyleng;
+    do_comma_insert_check ();
+    return NUM;
+  }
 
-\[{S}*		{
-		  in_brace_or_paren.push (1);
-		  if (plotting && ! past_plot_range)
-		    {
-		      in_plot_range = 1;
-		      TOK_RETURN (OPEN_BRACE);
-		    }
-		  else
-		    {
-		      mlnm.push (1);
-		      braceflag++;
-		      promptflag--;
-		      BEGIN NEW_MATRIX;
-		      TOK_RETURN ('[');
-		    }
-		}
+\[{S}* {
+    in_brace_or_paren.push (1);
+    if (plotting && ! past_plot_range)
+      {
+	in_plot_range = 1;
+	TOK_RETURN (OPEN_BRACE);
+      }
+    else
+      {
+	mlnm.push (1);
+	braceflag++;
+	promptflag--;
+	BEGIN NEW_MATRIX;
+	TOK_RETURN ('[');
+      }
+  }
 
-{S}*		{ current_input_column += yyleng; }
+{S}* {
+    current_input_column += yyleng;
+  }
 
-{EL}{S}*\n	{ promptflag--; current_input_column = 1; }
-{EL}		{ return ELLIPSIS; }
+{CONT}{S}*{NL} |
+{CONT}{S}*{COMMENT} {
+    promptflag--;
+    current_input_column = 1;
+  }
 
-<<EOF>>		TOK_RETURN (END_OF_INPUT);
+{EL} {
+    return ELLIPSIS;
+  }
 
-{IDENT}{S}*	{
+<<EOF>> {
+    TOK_RETURN (END_OF_INPUT);
+  }
+
+{IDENT}{S}* {
 
 // Truncate the token at the first space or tab but don't write
 // directly on yytext.
 
-		  static char *tok = 0;
-		  delete [] tok;
-		  tok = strip_trailing_whitespace (yytext);
-		  return handle_identifier (tok, 0);
-		}
+    static char *tok = 0;
+    delete [] tok;
+    tok = strip_trailing_whitespace (yytext);
+    return handle_identifier (tok, 0);
+  }
 
-{IDENT}/{S}*=	{ return handle_identifier (yytext, 1); }
+{IDENT}/{S}*= {
+    return handle_identifier (yytext, 1);
+  }
 
-"\n"		{
-		  quote_is_transpose = 0;
-		  cant_be_identifier = 0;
-		  current_input_column = 1;
-		  convert_spaces_to_comma = 1;
-		  return '\n';
-		}
+{NL} {
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    current_input_column = 1;
+    convert_spaces_to_comma = 1;
+    return '\n';
+  }
 
-"'"		{
-		  current_input_column++;
-		  convert_spaces_to_comma = 1;
+"'" {
+    current_input_column++;
+    convert_spaces_to_comma = 1;
 
-		  if (quote_is_transpose)
-		    {
-		      do_comma_insert_check ();
-		      return QUOTE;
-		    }
-		  else
-		    BEGIN STRING;
-		}
+    if (quote_is_transpose)
+      {
+	do_comma_insert_check ();
+	return QUOTE;
+      }
+    else
+      BEGIN STRING;
+  }
 
-":"		{
-		  if (plotting && (in_plot_range || in_plot_using))
-		    BIN_OP_RETURN (COLON, 1);
-		  else
-		    BIN_OP_RETURN (':', 0);
-		}
+":" {
+    if (plotting && (in_plot_range || in_plot_using))
+      BIN_OP_RETURN (COLON, 1);
+    else
+      BIN_OP_RETURN (':', 0);
+  }
 
-\%		|
-\#		{
-		  if (in_brace_or_paren.empty () && beginning_of_function)
-		    {
-		      grab_help_text ();
-		      beginning_of_function = 0;
-		    }
-		  else
-		    {
-		      int c;
-		      while ((c = yyinput ()) != EOF && c != '\n')
-			; // Eat comment.
-		    }
+{CCHAR} {
+    if (in_brace_or_paren.empty () && beginning_of_function)
+      {
+	grab_help_text ();
+	beginning_of_function = 0;
+      }
+    else
+      {
+	int c;
+	while ((c = yyinput ()) != EOF && c != '\n')
+	  ; // Eat comment.
+      }
 
-		  current_input_column = 1;
-
-		  if (! braceflag || beginning_of_function)
-		    return '\n';
-		}
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    current_input_column = 1;
+    convert_spaces_to_comma = 1;
+    return '\n';
+  }
 
 \"		{ BEGIN DQSTRING; }
 ".*"		{ BIN_OP_RETURN (EMUL, 0); }
 "./"		{ BIN_OP_RETURN (EDIV, 0); }
 ".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
-".**"		|
-".^"		{ BIN_OP_RETURN (EPOW, 0); }
+{EPOW}		{ BIN_OP_RETURN (EPOW, 0); }
 ".'"		{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, 1); }
 "++"		{ do_comma_insert_check (); BIN_OP_RETURN (PLUS_PLUS, 1); }
 "--"		{ do_comma_insert_check (); BIN_OP_RETURN (MINUS_MINUS, 1); }
 "<="		{ BIN_OP_RETURN (EXPR_LE, 0); }
 "=="		{ BIN_OP_RETURN (EXPR_EQ, 0); }
-"~="		|
-"!="		|
-"<>"		{ BIN_OP_RETURN (EXPR_NE, 0); }
+{NOTEQ}		{ BIN_OP_RETURN (EXPR_NE, 0); }
 ">="		{ BIN_OP_RETURN (EXPR_GE, 0); }
-"||"		{
-#ifdef SHORT_CIRCUIT_LOGICALS
-		  BIN_OP_RETURN (EXPR_OR_OR, 0);
-#else
-		  BIN_OP_RETURN (EXPR_OR, 0);
-#endif
-		}
-"&&"		{
-#ifdef SHORT_CIRCUIT_LOGICALS
-		  BIN_OP_RETURN (EXPR_AND_AND, 0);
-#else
-		  BIN_OP_RETURN (EXPR_AND, 0);
-#endif
-		}
 "|"		{ BIN_OP_RETURN (EXPR_OR, 0); }
 "&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
-"!"		|
-"~"		{
-		  if (plotting && ! in_plot_range)
-		    past_plot_range = 1;
-		  BIN_OP_RETURN (EXPR_NOT, 0);
-		}
 "<"		{ BIN_OP_RETURN (EXPR_LT, 0); }
 ">"		{ BIN_OP_RETURN (EXPR_GT, 0); }
-"+"		|
-".+"		{ 
-		  if (plotting && ! in_plot_range)
-		    past_plot_range = 1;
-		  BIN_OP_RETURN ('+', 0);
-		}
-"-"		|
-".-"		{ 
-		  if (plotting && ! in_plot_range)
-		    past_plot_range = 1;
-		  BIN_OP_RETURN ('-', 0);
-		}
 "*"		{ BIN_OP_RETURN ('*', 0); }
 "/"		{ BIN_OP_RETURN ('/', 0); }
 "\\"		{ BIN_OP_RETURN (LEFTDIV, 0); }
 ";"		{ BIN_OP_RETURN (';', 1); }
 ","		{ BIN_OP_RETURN (',', 1); }
-"**"		|
-"^"		{ BIN_OP_RETURN (POW, 0); }
+{POW}		{ BIN_OP_RETURN (POW, 0); }
 "="		{ BIN_OP_RETURN ('=', 1); }
-"("		{
-		  if (plotting && ! in_plot_range)
-		    past_plot_range = 1;
-		  in_brace_or_paren.push (0);
-		  TOK_RETURN ('(');
-		}
-")"		{
-		  if (! in_brace_or_paren.empty ())
-		    in_brace_or_paren.pop ();
-		  do_comma_insert_check ();
-		  current_input_column++;
-		  cant_be_identifier = 1;
-		  quote_is_transpose = 1;
-		  convert_spaces_to_comma = (! in_brace_or_paren.empty ()
-					     && in_brace_or_paren.top ());
-		  return ')';
-		}
 
-.		{
+"||" {
+#ifdef SHORT_CIRCUIT_LOGICALS
+    BIN_OP_RETURN (EXPR_OR_OR, 0);
+#else
+    BIN_OP_RETURN (EXPR_OR, 0);
+#endif
+  }
+
+"&&" {
+#ifdef SHORT_CIRCUIT_LOGICALS
+    BIN_OP_RETURN (EXPR_AND_AND, 0);
+#else
+    BIN_OP_RETURN (EXPR_AND, 0);
+#endif
+  }
+
+{NOT} {
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    BIN_OP_RETURN (EXPR_NOT, 0);
+  }
+
+{PLUS} { 
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    BIN_OP_RETURN ('+', 0);
+  }
+
+{MINUS} { 
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    BIN_OP_RETURN ('-', 0);
+  }
+
+"(" {
+    if (plotting && ! in_plot_range)
+      past_plot_range = 1;
+    in_brace_or_paren.push (0);
+    TOK_RETURN ('(');
+  }
+
+")" {
+    if (! in_brace_or_paren.empty ())
+      in_brace_or_paren.pop ();
+    do_comma_insert_check ();
+    current_input_column++;
+    cant_be_identifier = 1;
+    quote_is_transpose = 1;
+    convert_spaces_to_comma = (! in_brace_or_paren.empty ()
+			       && in_brace_or_paren.top ());
+    return ')';
+  }
+
+. {
 
 // We return everything else as single character tokens, which should
 // eventually result in a parse error.
 
-		  TOK_RETURN (yytext[0]);
-		}
+    TOK_RETURN (yytext[0]);
+  }
 
 %%
 

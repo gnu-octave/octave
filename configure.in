@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.240 $)
+AC_REVISION($Revision: 1.242 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -143,6 +143,7 @@ fi
 case "$canonical_host_type" in
   *-*-cygwin32)
     USE_GNU_INFO=false
+  ;;
   *)
     USE_GNU_INFO=true
   ;;
@@ -1018,7 +1019,7 @@ case "$canonical_host_type" in
     EXE=.exe
   ;;
 esac
-AC_SUBST(EXE);
+AC_SUBST(EXE)
 
 AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])
 if test -n "$GNUPLOT_BINARY"; then

@@ -117,6 +117,10 @@ OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
 	../libcruft/libcruft.a @LIBREADLINE@ @LIBPLPLOT@ \
 	../kpathsea/kpathsea.a @LIBDLD@
 
+TERMLIBS = @TERMLIBS@
+
+LIBS = @LIBS@
+
 DISTFILES = Makefile.in mkdefs mkbuiltins octave.gperf parse.cc \
 	lex.cc y.tab.h safe-xstat.cin safe-xstat.hin \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
@@ -128,7 +132,7 @@ octave: $(OBJECTS) $(DLD_OBJ) $(OCTAVE_LIBS) liboctdld.a
 	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_LDFLAGS) -o octave \
 	$(OBJECTS) \
 	$(OCTAVE_LIBS) \
-	$(FLIBS) $(LEXLIB) -ltermcap -lm -lg++
+	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
 
 liboctdld.a: $(DLD_OBJ)
 	$(AR) $(ARFLAGS) liboctdld.a $(DLD_OBJ)

@@ -604,3 +604,57 @@ EOB
     AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL)
   fi
 ])
+dnl
+dnl Check to see if C compiler handles FLAG command line option and
+dnl add it to CFLAGS if it does.
+dnl
+dnl OCTAVE_CC_FLAG
+AC_DEFUN(OCTAVE_CC_FLAG, [
+  ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
+  AC_MSG_CHECKING(whether ${CC-cc} accepts $1)
+  AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
+    AC_LANG_SAVE
+    AC_LANG_C
+    XCFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS $1"
+    AC_TRY_LINK([], [],
+      eval "octave_cv_cc_flag_$ac_safe=yes",
+      eval "octave_cv_cc_flag_$ac_safe=no")
+    CFLAGS="$XCFLAGS"
+    AC_LANG_RESTORE
+  ])
+  if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
+    AC_MSG_RESULT(yes)
+    ifelse([$2], , [CFLAGS="$CFLAGS $1"], [$2])
+  else
+    AC_MSG_RESULT(no)
+    ifelse([$3], , , [$3])
+  fi
+])
+dnl
+dnl Check to see if C++ compiler handles FLAG command line option and
+dnl add it to CXXFLAGS if it does.
+dnl
+dnl OCTAVE_CXX_FLAG
+AC_DEFUN(OCTAVE_CXX_FLAG, [
+  ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
+  AC_MSG_CHECKING(whether ${CXX-c++} accepts $1)
+  AC_CACHE_VAL(octave_cv_cxx_flag_$ac_safe, [
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    XCXXFLAGS="$CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS $1"
+    AC_TRY_LINK([], [],
+      eval "octave_cv_cxx_flag_$ac_safe=yes",
+      eval "octave_cv_cxx_flag_$ac_safe=no")
+    CXXFLAGS="$XCXXFLAGS"
+    AC_LANG_RESTORE
+  ])
+  if eval "test \"`echo '$octave_cv_cxx_flag_'$ac_safe`\" = yes"; then
+    AC_MSG_RESULT(yes)
+    ifelse([$2], , [CXXFLAGS="$CXXFLAGS $1"], [$2])
+  else
+    AC_MSG_RESULT(no)
+    ifelse([$3], , , [$3])
+  fi
+])

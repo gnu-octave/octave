@@ -1,7 +1,19 @@
+Thu Jan 15 23:12:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_CC_FLAG, OCTAVE_CXX_FLAG): New macros.
+	* configure.in: Use them to find out if the C and C++ compilers
+	support -mieee-fp, -mieee, -fno-implicit-templates, and
+	-fno-exceptions instead of relying on version information.  Add
+	found flags to XTRA_CFLAGS and XTRA_CXXFLAGS instead of using
+	GCC_IEEE_FP_FLAG and NO_IMPLICIT_TEMPLATES.
+	Delete unused variable HOST_CXXFLAGS.
+	* Makeconf.in: Use XTRA_CFLAGS and XTRA_CXXFLAGS instead of
+	GCC_IEEE_FP_FLAG and NO_IMPLICIT_TEMPLATES.
+	Delete unused variable HOST_CXXFLAGS.
+
 Thu Dec 11 09:43:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* config.h.bot: Define DYNAMIC_CAST and REINTERPRET_CAST using new
-	style for casts.  Define CONST_CAST and STATIC_CAST too.
+	* config.h.bot: Define CONST_CAST and STATIC_CAST too.
 
 	* configure.in (SH_LD): Set default to $CXX, not $CC.
 

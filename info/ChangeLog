@@ -1,3 +1,8 @@
+Wed Jan 15 14:52:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (LIBOBJS): Allow substitution.
+	(SRCS): Add memcpy.c, memmove.c, and strdup.c to the list.
+
 Mon Jan  6 19:14:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* terminal.c (terminal_prep_terminal): Only delete OCRNL from

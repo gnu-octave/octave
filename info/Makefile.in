@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.35 1996-12-12 08:26:56 jwe Exp $
+# $Id: Makefile.in,v 1.36 1997-01-15 21:18:57 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -46,6 +46,8 @@ TERMLIBS = @TERMLIBS@
 LIBS = $(TERMLIBS) @LIBS@
 LOADLIBES = $(LIBS)
 
+LIBOBJS = @LIBOBJS@
+
 SHELL = /bin/sh
 
 CFLAGS = @CFLAGS@
@@ -71,7 +73,8 @@ SRCS =	dir.c		display.c	echo_area.c	filesys.c \
 	signals.c	terminal.c	tilde.c		window.c \
 	xmalloc.c	indices.c	makedoc.c	nodemenu.c \
 	footnotes.c	dribble.c	variables.c	gc.c man.c \
-	clib.c		getopt.c	getopt1.c	bzero.c
+	clib.c		getopt.c	getopt1.c	bzero.c \
+	memcpy.c	memmove.c	strdup.c
 
 HDRS =	display.h	doc.h		echo_area.h	filesys.h \
 	general.h	getopt.h	info-utils.h	info.h \

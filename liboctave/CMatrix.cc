@@ -35,7 +35,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <sys/types.h> // XXX FIXME XXX
 
+#include "CmplxAEPBAL.h"
 #include "CmplxDET.h"
+#include "CmplxSCHUR.h"
 #include "CmplxSVD.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
@@ -78,6 +80,20 @@ extern "C"
   int F77_FCN (cfftf, CFFTF) (const int&, Complex*, Complex*);
 
   int F77_FCN (cfftb, CFFTB) (const int&, Complex*, Complex*);
+
+  int F77_FCN (zlartg, ZLARTG) (const Complex&, const Complex&,
+				double&, Complex&, Complex&);
+
+  int F77_FCN (ztrsyl, ZTRSYL) (const char*, const char*, const int&,
+				const int&, const int&,
+				const Complex*, const int&,
+				const Complex*, const int&, 
+				const Complex*, const int&, double&,
+				int&, long, long);
+
+  double F77_FCN (zlange, ZLANGE) (const char*, const int&,
+				   const int&, const Complex*,
+				   const int&, double*); 
 }
 
 // Complex Matrix class
@@ -1383,6 +1399,124 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
   delete [] rwork;
 
   return retval;
+}
+
+// Constants for matrix exponential calculation.
+
+static double padec [] =
+{
+  5.0000000000000000e-1,
+  1.1666666666666667e-1,
+  1.6666666666666667e-2,
+  1.6025641025641026e-3,
+  1.0683760683760684e-4,
+  4.8562548562548563e-6,
+  1.3875013875013875e-7,
+  1.9270852604185938e-9,
+};
+
+ComplexMatrix
+ComplexMatrix::expm (void) const
+{
+  ComplexMatrix retval;
+
+  ComplexMatrix m = *this;
+
+  int nc = columns ();
+
+  // trace shift value
+  Complex trshift = 0.0;
+
+  // Preconditioning step 1: trace normalization.
+
+  for (int i = 0; i < nc; i++)
+    trshift += m.elem (i, i);
+
+  trshift /= nc;
+
+  for (int i = 0; i < nc; i++)
+    m.elem (i, i) -= trshift;
+
+  // Preconditioning step 2: eigenvalue balancing.
+
+  ComplexAEPBALANCE mbal (m, "B");
+  m = mbal.balanced_matrix ();
+  ComplexMatrix d = mbal.balancing_matrix ();
+
+  // Preconditioning step 3: scaling.
+
+  ColumnVector work (nc);
+  double inf_norm
+    = F77_FCN (zlange, ZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
+				work.fortran_vec ());
+
+  int sqpow = (int) (inf_norm > 0.0
+		     ? (1.0 + log (inf_norm) / log (2.0))
+		     : 0.0);
+
+  // Check whether we need to square at all.
+
+  if (sqpow < 0)
+    sqpow = 0;
+
+  if (sqpow > 0)
+    {
+      double scale_factor = 1.0;
+      for (int i = 0; i < sqpow; i++)
+	scale_factor *= 2.0;
+
+      m = m / scale_factor;
+    }
+
+  // npp, dpp: pade' approx polynomial matrices.
+
+  ComplexMatrix npp (nc, nc, 0.0);
+  ComplexMatrix dpp = npp;
+
+  // Now powers a^8 ... a^1.
+
+  int minus_one_j = -1;
+  for (int j = 7; j >= 0; j--)
+    {
+      npp = m * npp + m * padec[j];
+      dpp = m * dpp + m * (minus_one_j * padec[j]);
+      minus_one_j *= -1;
+    }
+
+  // Zero power.
+
+  dpp = -dpp;
+  for (int j = 0; j < nc; j++)
+    {
+      npp.elem (j, j) += 1.0;
+      dpp.elem (j, j) += 1.0;
+    }
+
+  // Compute pade approximation = inverse (dpp) * npp.
+
+  retval = dpp.solve (npp);
+	
+  // Reverse preconditioning step 3: repeated squaring.
+
+  while (sqpow)
+    {
+      retval = retval * retval;
+      sqpow--;
+    }
+
+  // Reverse preconditioning step 2: inverse balancing.
+  // XXX FIXME XXX -- should probably do this with Lapack calls
+  // instead of a complete matrix inversion.
+
+  retval = retval.transpose ();
+  d = d.transpose ();
+  retval = retval * d;
+  retval = d.solve (retval);
+  retval = retval.transpose ();
+
+  // Reverse preconditioning step 1: fix trace normalization.
+
+  return retval * exp (trshift);
 }
 
 // column vector by row vector -> matrix operations
@@ -3370,6 +3504,70 @@ operator >> (istream& is, ComplexMatrix& a)
     }
 
   return is;
+}
+
+ComplexMatrix
+Givens (const Complex& x, const Complex& y)
+{
+  double cc;
+  Complex cs, temp_r;
+ 
+  F77_FCN (zlartg, ZLARTG) (x, y, cc, cs, temp_r);
+
+  ComplexMatrix g (2, 2);
+
+  g.elem (0, 0) = cc;
+  g.elem (1, 1) = cc;
+  g.elem (0, 1) = cs;
+  g.elem (1, 0) = -conj (cs);
+
+  return g;
+}
+
+ComplexMatrix
+Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
+	   const ComplexMatrix& c)
+{
+  ComplexMatrix retval;
+
+  // XXX FIXME XXX -- need to check that a, b, and c are all the same
+  // size.
+
+  // Compute Schur decompositions
+
+  ComplexSCHUR as (a, "U");
+  ComplexSCHUR bs (b, "U");
+  
+  // Transform c to new coordinates.
+
+  ComplexMatrix ua = as.unitary_matrix ();
+  ComplexMatrix sch_a = as.schur_matrix ();
+
+  ComplexMatrix ub = bs.unitary_matrix ();
+  ComplexMatrix sch_b = bs.schur_matrix ();
+  
+  ComplexMatrix cx = ua.hermitian () * c * ub;
+
+  // Solve the sylvester equation, back-transform, and return the
+  // solution.
+
+  int a_nr = a.rows ();
+  int b_nr = b.rows ();
+
+  double scale;
+  int info;
+  
+  F77_FCN (ztrsyl, ZTRSYL) ("N", "N", 1, a_nr, b_nr,
+			    sch_a.fortran_vec (), a_nr,
+			    sch_b.fortran_vec (), b_nr,
+			    cx.fortran_vec (), a_nr, scale,
+			    info, 1L, 1L);
+
+  // XXX FIXME XXX -- check info?
+
+  retval = -ua * cx * ub.hermitian ();
+
+  return retval;
 }
 
 /*

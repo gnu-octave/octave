@@ -27,29 +27,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "CmplxAEPBAL.h"
-#include "dbleAEPBAL.h"
-#include "f77-uscore.h"
-#include "oct-math.h"
-
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
 #include "utils.h"
-
-extern "C"
-{
-  double F77_FCN (dlange, DLANGE) (const char*, const int&,
-				   const int&, const double*,
-				   const int&, double*); 
-
-  double F77_FCN (zlange, ZLANGE) (const char*, const int&,
-				   const int&, const Complex*,
-				   const int&, double*); 
-}
 
 DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, FSexpm, 10,
   "expm (X): matrix exponential, e^A")
@@ -65,20 +48,6 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, FSexpm, 10,
     }
 
   tree_constant arg = args(0);
-
-  // Constants for matrix exponential calculation.
-
-  static double padec [] =
-    {
-      5.0000000000000000e-1,
-      1.1666666666666667e-1,
-      1.6666666666666667e-2,
-      1.6025641025641026e-3,
-      1.0683760683760684e-4,
-      4.8562548562548563e-6,
-      1.3875013875013875e-7,
-      1.9270852604185938e-9,
-    };
 
   int nr = arg.rows ();
   int nc = arg.columns ();
@@ -96,109 +65,14 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, FSexpm, 10,
       return retval;
     }
 
-  char* balance_job = "B";	// variables for balancing
-
   if (arg.is_real_type ())
     {
-      // Compute the exponential.
-
       Matrix m = arg.matrix_value ();
 
       if (error_state)
 	return retval;
-
-      double trshift = 0;		// trace shift value
-
-      // Preconditioning step 1: trace normalization.
-
-      for (int i = 0; i < nc; i++)
-	trshift += m.elem (i, i);
-
-      trshift /= nc;
-
-      for (int i = 0; i < nc; i++)
-	m.elem (i, i) -= trshift;
-
-      // Preconditioning step 2: balancing.
-
-      AEPBALANCE mbal (m, balance_job);
-      m = mbal.balanced_matrix ();
-      Matrix d = mbal.balancing_matrix ();
-
-      // Preconditioning step 3: scaling.
-
-      ColumnVector work(nc);
-      double inf_norm
-	= F77_FCN (dlange, DLANGE) ("I", nc, nc, m.fortran_vec (),nc,
-				    work.fortran_vec ());
-
-      int sqpow = (int) (inf_norm > 0.0
-			 ? (1.0 + log (inf_norm) / log (2.0))
-			 : 0.0);
-
-      // Check whether we need to square at all.
-
-      if (sqpow < 0)
-	sqpow = 0;
-
-      if (sqpow > 0)
-	{
-	  double scale_factor = 1.0;
-	  for (int i = 0; i < sqpow; i++)
-	    scale_factor *= 2.0;
-
-	  m = m / scale_factor;
-	}
-
-      // npp, dpp: pade' approx polynomial matrices.
-
-      Matrix npp (nc, nc, 0.0);
-      Matrix dpp = npp;
-
-      // Now powers a^8 ... a^1.
-
-      int minus_one_j = -1;
-      for (int j = 7; j >= 0; j--)
-	{
-	  npp = m * npp + m * padec[j];
-	  dpp = m * dpp + m * (minus_one_j * padec[j]);
-	  minus_one_j *= -1;
-	}
-
-      // Zero power.
-
-      dpp = -dpp;
-      for(int j = 0; j < nc; j++)
-	{
-	  npp.elem (j, j) += 1.0;
-	  dpp.elem (j, j) += 1.0;
-	}
-
-      // Compute pade approximation = inverse (dpp) * npp.
-
-      Matrix result = dpp.solve (npp);
-
-      // Reverse preconditioning step 3: repeated squaring.
-
-      while (sqpow)
-	{
-	  result = result * result;
-	  sqpow--;
-	}
-
-      // Reverse preconditioning step 2: inverse balancing.
-
-      result = result.transpose();
-      d = d.transpose ();
-      result = result * d;
-      result = d.solve (result);
-      result = result.transpose ();
-
-      // Reverse preconditioning step 1: fix trace normalization.
-
-      result = result * exp (trshift);
-
-      retval = result;
+      else
+	retval = m.expm ();
     }
   else if (arg.is_complex_type ())
     {
@@ -206,101 +80,8 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, FSexpm, 10,
 
       if (error_state)
 	return retval;
-
-      Complex trshift = 0.0;		// trace shift value
-
-      // Preconditioning step 1: trace normalization.
-
-      for (int i = 0; i < nc; i++)
-	trshift += m.elem (i, i);
-
-      trshift /= nc;
-
-      for (int i = 0; i < nc; i++)
-	m.elem (i, i) -= trshift;
-
-      // Preconditioning step 2: eigenvalue balancing.
-
-      ComplexAEPBALANCE mbal (m, balance_job);
-      m = mbal.balanced_matrix ();
-      ComplexMatrix d = mbal.balancing_matrix ();
-
-      // Preconditioning step 3: scaling.
-
-      ColumnVector work (nc);
-      double inf_norm
-	= F77_FCN (zlange, ZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
-				    work.fortran_vec ());
-
-      int sqpow = (int) (inf_norm > 0.0
-			 ? (1.0 + log (inf_norm) / log (2.0))
-			 : 0.0);
-
-      // Check whether we need to square at all.
-
-      if (sqpow < 0)
-	sqpow = 0;
-
-      if (sqpow > 0)
-	{
-	  double scale_factor = 1.0;
-	  for (int i = 0; i < sqpow; i++)
-	    scale_factor *= 2.0;
-
-	  m = m / scale_factor;
-	}
-
-      // npp, dpp: pade' approx polynomial matrices.
-
-      ComplexMatrix npp (nc, nc, 0.0);
-      ComplexMatrix dpp = npp;
-
-      // Now powers a^8 ... a^1.
-
-      int minus_one_j = -1;
-      for (int j = 7; j >= 0; j--)
-	{
-	  npp = m * npp + m * padec[j];
-	  dpp = m * dpp + m * (minus_one_j * padec[j]);
-	  minus_one_j *= -1;
-	}
-
-      // Zero power.
-
-      dpp = -dpp;
-      for (int j = 0; j < nc; j++)
-	{
-	  npp.elem (j, j) += 1.0;
-	  dpp.elem (j, j) += 1.0;
-	}
-
-      // Compute pade approximation = inverse (dpp) * npp.
-
-      ComplexMatrix result = dpp.solve (npp);
-	
-      // Reverse preconditioning step 3: repeated squaring.
-
-      while (sqpow)
-	{
-	  result = result * result;
-	  sqpow--;
-	}
-
-      // Reverse preconditioning step 2: inverse balancing.
-      // XXX FIXME XXX -- should probably do this with Lapack calls
-      // instead of a complete matrix inversion.
-
-      result = result.transpose ();
-      d = d.transpose ();
-      result = result * d;
-      result = d.solve (result);
-      result = result.transpose ();
-
-      // Reverse preconditioning step 1: fix trace normalization.
-
-      result = result * exp (trshift);
-
-      retval = result;
+      else
+	retval = m.expm ();
     }
   else
     {

@@ -157,6 +157,8 @@ public:
   ComplexColumnVector lssolve (const ComplexColumnVector& b, int& info,
 			       int& rank) const;
 
+  Matrix expm (void) const;
+
   Matrix& operator += (const Matrix& a);
   Matrix& operator -= (const Matrix& a);
 
@@ -239,6 +241,10 @@ private:
 
   Matrix (double *d, int r, int c) : MArray2<double> (d, r, c) { }
 };
+
+Matrix Givens (double, double);
+
+Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 
 #endif
 

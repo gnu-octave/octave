@@ -37,7 +37,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <sys/types.h>  // XXX FIXME XXX
 
+#include "dbleAEPBAL.h"
 #include "dbleDET.h"
+#include "dbleSCHUR.h"
 #include "dbleSVD.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
@@ -81,6 +83,19 @@ extern "C"
   int F77_FCN (cfftf, CFFTF) (const int&, Complex*, Complex*);
 
   int F77_FCN (cfftb, CFFTB) (const int&, Complex*, Complex*);
+
+  int F77_FCN (dlartg, DLARTG) (const double&, const double&, double&,
+				double&, double&);
+
+  int F77_FCN (dtrsyl, DTRSYL) (const char*, const char*, const int&,
+				const int&, const int&, const double*,
+				const int&, const double*, const int&,
+				const double*, const int&, double&,
+				int&, long, long);
+
+  double F77_FCN (dlange, DLANGE) (const char*, const int&,
+				   const int&, const double*,
+				   const int&, double*); 
 }
 
 // Matrix class.
@@ -1156,6 +1171,122 @@ Matrix::lssolve (const ComplexColumnVector& b, int& info, int& rank) const
 {
   ComplexMatrix tmp (*this);
   return tmp.lssolve (b, info, rank);
+}
+
+// Constants for matrix exponential calculation.
+
+static double padec [] =
+{
+  5.0000000000000000e-1,
+  1.1666666666666667e-1,
+  1.6666666666666667e-2,
+  1.6025641025641026e-3,
+  1.0683760683760684e-4,
+  4.8562548562548563e-6,
+  1.3875013875013875e-7,
+  1.9270852604185938e-9,
+};
+
+Matrix
+Matrix::expm (void) const
+{
+  Matrix retval;
+
+  Matrix m = *this;
+
+  int nc = columns ();
+
+  // trace shift value
+  double trshift = 0;
+
+  // Preconditioning step 1: trace normalization.
+
+  for (int i = 0; i < nc; i++)
+    trshift += m.elem (i, i);
+
+  trshift /= nc;
+
+  for (int i = 0; i < nc; i++)
+    m.elem (i, i) -= trshift;
+
+  // Preconditioning step 2: balancing.
+
+  AEPBALANCE mbal (m, "B");
+  m = mbal.balanced_matrix ();
+  Matrix d = mbal.balancing_matrix ();
+
+  // Preconditioning step 3: scaling.
+
+  ColumnVector work(nc);
+  double inf_norm
+    = F77_FCN (dlange, DLANGE) ("I", nc, nc, m.fortran_vec (),nc,
+				work.fortran_vec ());
+
+  int sqpow = (int) (inf_norm > 0.0
+		     ? (1.0 + log (inf_norm) / log (2.0))
+		     : 0.0);
+
+  // Check whether we need to square at all.
+
+  if (sqpow < 0)
+    sqpow = 0;
+
+  if (sqpow > 0)
+    {
+      double scale_factor = 1.0;
+      for (int i = 0; i < sqpow; i++)
+	scale_factor *= 2.0;
+
+      m = m / scale_factor;
+    }
+
+  // npp, dpp: pade' approx polynomial matrices.
+
+  Matrix npp (nc, nc, 0.0);
+  Matrix dpp = npp;
+
+  // Now powers a^8 ... a^1.
+
+  int minus_one_j = -1;
+  for (int j = 7; j >= 0; j--)
+    {
+      npp = m * npp + m * padec[j];
+      dpp = m * dpp + m * (minus_one_j * padec[j]);
+      minus_one_j *= -1;
+    }
+
+  // Zero power.
+
+  dpp = -dpp;
+  for(int j = 0; j < nc; j++)
+    {
+      npp.elem (j, j) += 1.0;
+      dpp.elem (j, j) += 1.0;
+    }
+
+  // Compute pade approximation = inverse (dpp) * npp.
+
+  retval = dpp.solve (npp);
+
+  // Reverse preconditioning step 3: repeated squaring.
+
+  while (sqpow)
+    {
+      retval = retval * retval;
+      sqpow--;
+    }
+
+  // Reverse preconditioning step 2: inverse balancing.
+
+  retval = retval.transpose();
+  d = d.transpose ();
+  retval = retval * d;
+  retval = d.solve (retval);
+  retval = retval.transpose ();
+
+  // Reverse preconditioning step 1: fix trace normalization.
+
+  return retval * exp (trshift);
 }
 
 Matrix&
@@ -2355,6 +2486,69 @@ Matrix::write (FILE *fptr, const char *type)
     }
 
   return count;
+}
+
+Matrix
+Givens (double x, double y)
+{
+  double cc, s, temp_r;
+
+  F77_FCN (dlartg, DLARTG) (x, y, cc, s, temp_r);
+
+  Matrix g (2, 2);
+
+  g.elem (0, 0) = cc;
+  g.elem (1, 1) = cc;
+  g.elem (0, 1) = s;
+  g.elem (1, 0) = -s;
+
+  return g;
+}
+
+Matrix
+Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
+{
+  Matrix retval;
+
+  // XXX FIXME XXX -- need to check that a, b, and c are all the same
+  // size.
+
+  // Compute Schur decompositions.
+
+  SCHUR as (a, "U");
+  SCHUR bs (b, "U");
+  
+  // Transform c to new coordinates.
+
+  Matrix ua = as.unitary_matrix ();
+  Matrix sch_a = as.schur_matrix ();
+
+  Matrix ub = bs.unitary_matrix ();
+  Matrix sch_b = bs.schur_matrix ();
+  
+  Matrix cx = ua.transpose () * c * ub;
+  
+  // Solve the sylvester equation, back-transform, and return the
+  // solution.
+
+  int a_nr = a.rows ();
+  int b_nr = b.rows ();
+
+  double scale;
+  int info;
+
+  F77_FCN (dtrsyl, DTRSYL) ("N", "N", 1, a_nr, b_nr,
+			    sch_a.fortran_vec (), a_nr, 
+			    sch_b.fortran_vec (), b_nr,
+			    cx.fortran_vec (), a_nr, scale,
+			    info, 1L, 1L);
+
+
+  // XXX FIXME XXX -- check info?
+  
+  retval = -ua*cx*ub.transpose ();
+
+  return retval;
 }
 
 /*

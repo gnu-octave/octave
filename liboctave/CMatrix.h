@@ -161,6 +161,8 @@ public:
   ComplexColumnVector lssolve (const ComplexColumnVector& b, int& info,
 			       int& rank) const;
 
+  ComplexMatrix expm (void) const;
+
   // column vector by row vector -> matrix operations
 
   friend ComplexMatrix operator * (const ColumnVector& a,
@@ -347,6 +349,11 @@ private:
 
   ComplexMatrix (Complex *d, int r, int c) : MArray2<Complex> (d, r, c) { }
 };
+
+ComplexMatrix Givens (const Complex&, const Complex&);
+
+ComplexMatrix Sylvester (const ComplexMatrix&, const ComplexMatrix&,
+			 const ComplexMatrix&);
 
 #endif
 

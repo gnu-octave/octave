@@ -27,33 +27,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "CmplxSCHUR.h"
-#include "dbleSCHUR.h"
-#include "f77-uscore.h"
-
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
 #include "utils.h"
-
-extern "C"
-{
-  int F77_FCN (dtrsyl, DTRSYL) (const char*, const char*, const int&,
-				const int&, const int&, const double*,
-				const int&, const double*, const int&,
-				const double*, const int&, double&,
-				int&, long, long);
- 
-  int F77_FCN (ztrsyl, ZTRSYL) (const char*, const char*, const int&,
-				const int&, const int&,
-				const Complex*, const int&,
-				const Complex*, const int&, 
-				const Complex*, const int&, double&,
-				int&, long, long);
-}
 
 DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, FSsyl, 11,
   "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0")
@@ -126,35 +105,7 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, FSsyl, 11,
 	if (error_state)
 	  return retval;
 
-	// Compute Schur decompositions
-
-	ComplexSCHUR as (ca, "U");
-	ComplexSCHUR bs (cb, "U");
-  
-	// Transform cc to new coordinates.
-
-	ComplexMatrix ua = as.unitary_matrix ();
-	ComplexMatrix sch_a = as.schur_matrix ();
-	ComplexMatrix ub = bs.unitary_matrix ();
-	ComplexMatrix sch_b = bs.schur_matrix ();
-  
-	ComplexMatrix cx = ua.hermitian () * cc * ub;
-  
-	// Solve the sylvester equation, back-transform, and return
-	// the solution.
-  
-	double scale;
-	int info;
-  
-	F77_FCN (ztrsyl, ZTRSYL) ("N", "N", 1, a_nr, b_nr,
-				  sch_a.fortran_vec (), a_nr,
-				  sch_b.fortran_vec (), b_nr,
-				  cx.fortran_vec (), a_nr, scale,
-				  info, 1L, 1L);
-
-	cx = -ua * cx * ub.hermitian ();
-  
-	retval = cx;
+	retval = Sylvester (ca, cb, cc);
       }
     else
       {
@@ -175,38 +126,7 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, FSsyl, 11,
 	if (error_state)
 	  return retval;
 
-	// Compute Schur decompositions.
-
-	SCHUR as (ca, "U");
-	SCHUR bs (cb, "U");
-  
-	// Transform cc to new coordinates.
-
-	Matrix ua = as.unitary_matrix ();
-	Matrix sch_a = as.schur_matrix ();
-	Matrix ub = bs.unitary_matrix ();
-	Matrix sch_b = bs.schur_matrix ();
-  
-	Matrix cx = ua.transpose () * cc * ub;
-  
-	// Solve the sylvester equation, back-transform, and return
-	// the solution.
-  
-	double scale;
-	int info;
-
-	F77_FCN (dtrsyl, DTRSYL) ("N", "N", 1, a_nr, b_nr,
-				  sch_a.fortran_vec (), a_nr, 
-				  sch_b.fortran_vec (), b_nr,
-				  cx.fortran_vec (), a_nr, scale,
-				  info, 1L, 1L);
-
-	if (info)
-	  error ("syl: trouble in dtrsyl info = %d", info);
-  
-	cx = -ua*cx*ub.transpose ();
-  
-	retval = cx;
+	retval = Sylvester (ca, cb, cc);
       }
 
   return retval;

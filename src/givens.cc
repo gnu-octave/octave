@@ -21,29 +21,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by A. S. Hodel <scotte@eng.auburn.edu>
+// Originally written by A. S. Hodel <scotte@eng.auburn.edu>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include "f77-uscore.h"
-
 #include "defun-dld.h"
 #include "error.h"
-#include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
-
-extern "C"
-{
-  int F77_FCN (dlartg, DLARTG) (const double&, const double&, double&,
-				double&, double&);
-
-  int F77_FCN (zlartg, ZLARTG) (const Complex&, const Complex&,
-				double&, Complex&, Complex&);
-}
 
 DEFUN_DLD_BUILTIN ("givens", Fgivens, Sgivens, FSgivens, 11,
   "G = givens (X, Y)\n\
@@ -62,120 +49,67 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
       print_usage ("givens");
       return retval;
     }
-
-  tree_constant arg_a = args(0);
-  tree_constant arg_b = args(1);
-
-  if (! arg_a.is_scalar_type () && arg_b.is_scalar_type ())
-    {
-      error("givens: requires two scalar arguments");
-      return retval;
-    }
-
-  Complex cx, cy;
-  double x, y;
-
-  if (arg_a.is_complex_type ())
-    {
-      cx = arg_a.complex_value ();
-
-      if (error_state)
-	return retval;
-    }
-  else 
-    {
-      x = arg_a.double_value ();
-
-      if (error_state)
-	return retval;
-
-      // Convert to complex just in case...
-
-      cx = x;
-    }
-
-  if (arg_b.is_complex_type ())
-    {
-      cy = arg_b.complex_value ();
-
-      if (error_state)
-	return retval;
-    }
   else
     {
-      y = arg_b.double_value ();
-
-      if (error_state)
-	return retval;
-
-      // Convert to complex just in case...
-
-      cy = y;
-    }
-
-  // Now compute the rotation.
-
-  double cc;
-  if (arg_a.is_complex_type () || arg_b.is_complex_type ())
-    {
-      Complex cs, temp_r;
- 
-      F77_FCN (zlartg, ZLARTG) (cx, cy, cc, cs, temp_r);
-
-      switch (nargout)
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
 	{
-	case 0:
-	case 1:
-	  {
-	    ComplexMatrix g (2, 2);
-	    g.elem (0, 0) = cc;
-	    g.elem (1, 1) = cc;
-	    g.elem (0, 1) = cs;
-	    g.elem (1, 0) = -conj (cs);
+	  Complex cx = args(0).complex_value ();
+	  Complex cy = args(1).complex_value ();
 
-	    retval(0) = g;
-	  }
-	  break;
+	  if (! error_state)
+	    {
+	      ComplexMatrix result = Givens (cx, cy);
+
+	      if (! error_state)
+		{
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      retval(0) = result;
+		      break;
    
-	case 2:
-	  retval(0) = cc;
-	  retval(1) = cs;
-	  break;
+		    case 2:
+		      retval(1) = result (0, 1);
+		      retval(0) = result (0, 0);
+		      break;
 
-	default:  
-	  error ("givens: invalid number of output arguments");
-	  break;
+		    default:
+		      error ("givens: invalid number of output arguments");
+		      break;
+		    }
+		}
+	    }
 	}
-    }
-  else
-    {
-      double s, temp_r;
-
-      F77_FCN (dlartg, DLARTG) (x, y, cc, s, temp_r);
-
-      switch (nargout)
+      else
 	{
-	case 0:
-	case 1:
-	  {
-	    Matrix g (2, 2);
-	    g.elem (0, 0) = cc;
-	    g.elem (1, 1) = cc;
-	    g.elem (0, 1) = s;
-	    g.elem (1, 0) = -s;
+	  double x = args(0).double_value ();
+	  double y = args(1).double_value ();
 
-	    retval(0) = g;
-	  }
-	  break;
+	  if (! error_state)
+	    {
+	      Matrix result = Givens (x, y);
+
+	      if (! error_state)
+		{
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      retval(0) = result;
+		      break;
    
-	case 2:
-	  retval(0) = cc;
-	  retval(1) = s;
-	  break;
-   
-	default:
-	  error ("givens: invalid number of output arguments");
-	  break;
+		    case 2:
+		      retval(1) = result (0, 1);
+		      retval(0) = result (0, 0);
+		      break;
+
+		    default:
+		      error ("givens: invalid number of output arguments");
+		      break;
+		    }
+		}
+	    }
 	}
     }
 

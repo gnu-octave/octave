@@ -596,7 +596,7 @@ identifier_exists (char *name)
   if (sr == (symbol_record *) NULL)
     sr = global_sym_tab->lookup (name, 0, 0);
 
-  if (sr != (symbol_record *) NULL && sr->is_variable ())
+  if (sr != (symbol_record *) NULL && sr->is_variable () && sr->is_defined ())
     return 1;
   else if (sr != (symbol_record *) NULL && sr->is_function ())
     return 2;

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
+#include "load-save.h"
 #include "octave.h"
 #include "sighandlers.h"
 #include "syswait.h"
@@ -52,6 +53,9 @@ static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {
   error ("%s -- stopping myself...", sig_name);
+
+  save_user_variables ();
+
   clean_up_and_exit (sig_number);
 }
 
@@ -114,6 +118,31 @@ sigchld_handler (int i)
     }
 
   signal (SIGCHLD, sigchld_handler);
+}
+#endif
+
+#if defined (__alpha__)
+static RETSIGTYPE
+sigfpe_handler (int i)
+{
+  // Can this ever cause trouble on systems that don't forget signal
+  // handlers when they are invoked?
+
+  signal (SIGFPE, sigfpe_handler);
+
+  error ("floating point exception -- trying to continue");
+
+  if (can_interrupt)
+    {
+      jump_to_top_level ();
+      panic_impossible ();
+    }
+
+#if RETSIGTYPE == void
+  return;
+#else
+  return 0;
+#endif
 }
 #endif
 
@@ -196,7 +225,11 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGFPE
+#if defined (__alpha__)
+  signal (SIGFPE, sigfpe_handler);
+#else
   signal (SIGFPE, generic_sig_handler);
+#endif
 #endif
 
 #ifdef SIGHUP

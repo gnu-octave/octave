@@ -31,6 +31,7 @@ class ostream;
 
 class octave_value_list;
 
+class tree_argument_list;
 class tree_statement_list;
 class tree_decl_init_list;
 class tree_if_command_list;
@@ -46,7 +47,8 @@ class tree_decl_command;
 class tree_global_command;
 class tree_static_command;
 class tree_while_command;
-class tree_for_command;
+class tree_simple_for_command;
+class tree_complex_for_command;
 class tree_if_command;
 class tree_switch_command;
 class tree_try_catch_command;
@@ -187,30 +189,24 @@ private:
 // For.
 
 class
-tree_for_command : public tree_command
+tree_simple_for_command : public tree_command
 {
 public:
 
-  tree_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), id (0), id_list (0), expr (0), list (0) { }
+  tree_simple_for_command (int l = -1, int c = -1)
+    : tree_command (l, c), lhs (0), expr (0), list (0) { }
 
-  tree_for_command (tree_index_expression *ident, tree_expression *e,
-		    tree_statement_list *lst, int l = -1, int c = -1)
-    : tree_command (l, c), id (ident), id_list (0), expr (e),
-      list (lst) { }
+  tree_simple_for_command (tree_expression *le, tree_expression *re,
+			   tree_statement_list *lst, int l = -1, int c = -1)
+    : tree_command (l, c), lhs (le), expr (re), list (lst) { }
 
-  tree_for_command (tree_return_list *ident, tree_expression *e,
-		    tree_statement_list *lst, int l = -1, int c = -1)
-    : tree_command (l, c), id (0), id_list (ident), expr (e),
-      list (lst) { }
-
-  ~tree_for_command (void);
+  ~tree_simple_for_command (void);
 
   void eval (void);
 
   void eval_error (void);
 
-  tree_index_expression *ident (void) { return id; }
+  tree_expression *left_hand_side (void) { return lhs; }
 
   tree_expression *control_expr (void) { return expr; }
 
@@ -220,11 +216,8 @@ public:
 
 private:
 
-  // Identifier to modify.
-  tree_index_expression *id;
-
-  // List of identifiers to modify.
-  tree_return_list *id_list;
+  // Expression to modify.
+  tree_expression *lhs;
 
   // Expression to evaluate.
   tree_expression *expr;
@@ -232,14 +225,52 @@ private:
   // List of commands to execute.
   tree_statement_list *list;
 
-  void do_for_loop_once (tree_return_list *lst,
-			 const octave_value_list& rhs, bool& quit);
-
-  void do_for_loop_once (tree_index_expression *idx_expr,
+  void do_for_loop_once (octave_variable_reference &ult,
 			 const octave_value& rhs, bool& quit);
+};
 
-  void do_for_loop_once (tree_identifier *ident,
-			 octave_value& rhs, bool& quit);
+class
+tree_complex_for_command : public tree_command
+{
+public:
+
+  tree_complex_for_command (int l = -1, int c = -1)
+    : tree_command (l, c), lhs (0), expr (0), list (0) { }
+
+  tree_complex_for_command (tree_argument_list *le, tree_expression *re,
+			    tree_statement_list *lst, int l = -1, int c = -1)
+    : tree_command (l, c), lhs (le), expr (re), list (lst) { }
+
+  ~tree_complex_for_command (void);
+
+  void eval (void);
+
+  void eval_error (void);
+
+  tree_argument_list *left_hand_side (void) { return lhs; }
+
+  tree_expression *control_expr (void) { return expr; }
+
+  tree_statement_list *body (void) { return list; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // Expression to modify.
+  tree_argument_list *lhs;
+
+  // Expression to evaluate.
+  tree_expression *expr;
+
+  // List of commands to execute.
+  tree_statement_list *list;
+
+  void do_for_loop_once (octave_variable_reference &val_ref,
+			 octave_variable_reference &key_ref,
+			 const octave_value& val,
+			 const octave_value& key,
+			 bool& quit);
 };
 
 // If.

@@ -51,7 +51,6 @@ int returning = 0;
 #include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-misc.h"
-#include "pt-mvr.h"
 #include "pt-walk.h"
 #include "unwind-prot.h"
 #include "variables.h"
@@ -65,7 +64,7 @@ quit_loop_now (void)
   if (continuing)
     continuing--;
 
-  bool quit = (returning || breaking || continuing);
+  bool quit = (error_state || returning || breaking || continuing);
 
   if (breaking)
     breaking--;
@@ -94,23 +93,18 @@ do_global_init (tree_decl_elt& elt, bool skip_initializer)
   tree_identifier *id = elt.ident ();
 
   if (id)
-    id->link_to_global ();
-  else
     {
-      tree_simple_assignment_expression *expr = elt.assign_expr ();
+      id->link_to_global ();
+
+      tree_expression *expr = elt.expression ();
 
       if (expr)
 	{
-	  if (expr->left_hand_side_is_identifier_only ()
-	      && (id = expr->left_hand_side_id ()))
-	    {
-	      id->link_to_global ();
+	  octave_value init_val = expr->rvalue ();
 
-	      if (! (skip_initializer || error_state))
-		expr->eval ();
-	    }
-	  else
-	    error ("global: unable to make structure elements global");
+	  octave_variable_reference ult = id->lvalue ();
+
+	  ult.assign (octave_value::asn_eq, init_val);
 	}
     }
 }
@@ -138,23 +132,18 @@ do_static_init (tree_decl_elt& elt, bool)
   tree_identifier *id = elt.ident ();
 
   if (id)
-    id->mark_as_static ();
-  else
     {
-      tree_simple_assignment_expression *expr = elt.assign_expr ();
+      id->mark_as_static ();
+
+      tree_expression *expr = elt.expression ();
 
       if (expr)
 	{
-	  if (expr->left_hand_side_is_identifier_only ()
-	      && (id = expr->left_hand_side_id ()))
-	    {
-	      id->mark_as_static ();
+	  octave_value init_val = expr->rvalue ();
 
-	      if (! error_state)
-		expr->eval ();
-	    }
-	  else
-	    error ("global: unable to make structure elements global");
+	  octave_variable_reference ult = id->lvalue ();
+
+	  ult.assign (octave_value::asn_eq, init_val);
 	}
     }
 }
@@ -232,325 +221,158 @@ tree_while_command::accept (tree_walker& tw)
 
 // For.
 
-tree_for_command::~tree_for_command (void)
+tree_simple_for_command::~tree_simple_for_command (void)
 {
-  delete id;
-  delete id_list;
   delete expr;
   delete list;
 }
 
 inline void
-tree_for_command::do_for_loop_once (tree_return_list *lst,
-				    const octave_value_list& rhs, bool& quit)
+tree_simple_for_command::do_for_loop_once (octave_variable_reference& ult,
+					   const octave_value& rhs,
+					   bool& quit)
 {
   quit = false;
 
-  tree_oct_obj *tmp = new tree_oct_obj (rhs);
-  tree_multi_assignment_expression tmp_ass (lst, tmp, 1);
-  tmp_ass.eval ();
-
-  if (error_state)
-    {
-      eval_error ();
-      return;
-    }
-
-  if (list)
-    {
-      list->eval ();
-
-      if (error_state)
-	{
-	  eval_error ();
-	  quit = true;
-	  return;
-	}
-    }
-
-  quit = quit_loop_now ();
-}
-
-inline void
-tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
-				    const octave_value& rhs, bool& quit)
-{
-  quit = false;
-
-  octave_value *tmp = new octave_value (rhs);
-  tree_simple_assignment_expression tmp_ass (idx_expr, tmp, true);
-  tmp_ass.eval ();
-
-  if (error_state)
-    {
-      eval_error ();
-      return;
-    }
-
-  if (list)
-    {
-      list->eval ();
-
-      if (error_state)
-	{
-	  eval_error ();
-	  quit = true;
-	  return;
-	}
-    }
-
-  quit = quit_loop_now ();
-}
-
-inline void
-tree_for_command::do_for_loop_once (tree_identifier *ident,
-				    octave_value& rhs, bool& quit)
-{
-  quit = false;
-
-  ident->reference () . assign (octave_value::asn_eq, rhs);
+  ult.assign (octave_value::asn_eq, rhs);
 
   if (! error_state)
     {
       if (list)
-	list->eval ();
-
-      if (error_state)
 	{
-	  eval_error ();
-	  quit = true;
+	  list->eval ();
+
+	  if (error_state)
+	    eval_error ();
 	}
-      else
-	quit = quit_loop_now ();
     }
   else
     eval_error ();
 
-  return;
+  quit = quit_loop_now ();
 }
 
-#define DO_LOOP(val) \
+#define DO_LOOP(arg) \
   do \
     { \
-      if (ident) \
-	for (int i = 0; i < steps; i++) \
-	  { \
-	    octave_value rhs (val); \
-	    bool quit = false; \
-	    do_for_loop_once (ident, rhs, quit); \
-	    if (quit) \
-	      break; \
-	  } \
-      else if (id_list) \
-	for (int i = 0; i < steps; i++) \
-	  { \
-	    octave_value_list rhs (val); \
-	    bool quit = false; \
-	    do_for_loop_once (id_list, rhs, quit); \
-	    if (quit) \
-	      break; \
-	  } \
-      else \
-	for (int i = 0; i < steps; i++) \
-	  { \
-	    octave_value rhs (val); \
-	    bool quit = false; \
-	    do_for_loop_once (tmp_id, rhs, quit); \
-	    if (quit) \
-	      break; \
-	  } \
+      for (int i = 0; i < steps; i++) \
+	{ \
+	  octave_value val (arg); \
+ \
+	  bool quit = false; \
+ \
+	  do_for_loop_once (ult, val, quit); \
+ \
+	  if (quit) \
+	    break; \
+	} \
     } \
   while (0)
 
 void
-tree_for_command::eval (void)
+tree_simple_for_command::eval (void)
 {
-  if (error_state || ! expr)
+  if (error_state)
     return;
 
-  octave_value tmp_expr = expr->eval ();
+  octave_value rhs = expr->rvalue ();
 
-  if (error_state || tmp_expr.is_undefined ())
+  if (error_state || rhs.is_undefined ())
     {
       eval_error ();
       return;
     }
 
-  tree_index_expression *tmp_id = id;
-  if (id_list && id_list->length () == 1)
-    tmp_id = id_list->front ();
+  octave_variable_reference ult = lhs->lvalue ();
 
-  tree_identifier *ident = 0;
-  if (tmp_id && ! tmp_id->arg_list ())
+  if (error_state)
     {
-      tree_indirect_ref *idr = tmp_id->ident ();
-      if (idr->is_identifier_only ())
-	ident = idr->ident ();
-    }
-
-  if (id_list && ! ident && ! tmp_expr.is_map ())
-    {
-      error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+      eval_error ();
       return;
     }
 
-  if (tmp_expr.is_scalar_type ())
+  if (rhs.is_scalar_type ())
     {
       bool quit = false;
-      if (ident)
-	do_for_loop_once (ident, tmp_expr, quit);
-      else if (id_list)
-	{
-	  octave_value_list rhs (tmp_expr);
-	  do_for_loop_once (id_list, rhs, quit);
-	}
-      else
-	do_for_loop_once (tmp_id, tmp_expr, quit);
+
+      do_for_loop_once (ult, rhs, quit);
     }
-  else if (tmp_expr.is_matrix_type ())
+  else if (rhs.is_matrix_type ())
     {
       Matrix m_tmp;
       ComplexMatrix cm_tmp;
+
       int nr;
       int steps;
-      if (tmp_expr.is_real_matrix ())
+
+      if (rhs.is_real_matrix ())
 	{
-	  m_tmp = tmp_expr.matrix_value ();
+	  m_tmp = rhs.matrix_value ();
 	  nr = m_tmp.rows ();
 	  steps = m_tmp.columns ();
 	}
       else
 	{
-	  cm_tmp = tmp_expr.complex_matrix_value ();
+	  cm_tmp = rhs.complex_matrix_value ();
 	  nr = cm_tmp.rows ();
 	  steps = cm_tmp.columns ();
 	}
 
-      if (tmp_expr.is_real_matrix ())
+      if (rhs.is_real_matrix ())
 	{
 	  if (nr == 1)
-	    DO_LOOP(m_tmp (0, i));
+	    DO_LOOP (m_tmp (0, i));
 	  else
-	    DO_LOOP(m_tmp.extract (0, i, nr-1, i));
+	    DO_LOOP (m_tmp.extract (0, i, nr-1, i));
 	}
       else
 	{
 	  if (nr == 1)
-	    DO_LOOP(cm_tmp (0, i));
+	    DO_LOOP (cm_tmp (0, i));
 	  else
-	    DO_LOOP(cm_tmp.extract (0, i, nr-1, i));
+	    DO_LOOP (cm_tmp.extract (0, i, nr-1, i));
 	}
     }
-  else if (tmp_expr.is_string ())
+  else if (rhs.is_string ())
     {
       gripe_string_invalid ();
     }
-  else if (tmp_expr.is_range ())
+  else if (rhs.is_range ())
     {
-      Range rng = tmp_expr.range_value ();
+      Range rng = rhs.range_value ();
 
       int steps = rng.nelem ();
       double b = rng.base ();
       double increment = rng.inc ();
 
-      if (ident)
+      for (int i = 0; i < steps; i++)
 	{
-	  for (int i = 0; i < steps; i++)
-	    {
-	      double tmp_val = b + i * increment;
+	  double tmp_val = b + i * increment;
 
-	      octave_value rhs (tmp_val);
+	  octave_value val (tmp_val);
 
-	      bool quit = false;
-	      do_for_loop_once (ident, rhs, quit);
+	  bool quit = false;
 
-	      if (quit)
-		break;
-	    }
-	}
-      else if (id_list)
-	{
-	  for (int i = 0; i < steps; i++)
-	    {
-	      double tmp_val = b + i * increment;
+	  do_for_loop_once (ult, val, quit);
 
-	      octave_value_list rhs (tmp_val);
-
-	      bool quit = false;
-	      do_for_loop_once (id_list, rhs, quit);
-
-	      if (quit)
-		break;
-	    }
-	}
-      else
-	{
-	  for (int i = 0; i < steps; i++)
-	    {
-	      double tmp_val = b + i * increment;
-
-	      octave_value rhs (tmp_val);
-
-	      bool quit = false;
-	      do_for_loop_once (tmp_id, rhs, quit);
-
-	      if (quit)
-		break;
-	    }
+	  if (quit)
+	    break;
 	}
     }
-  else if (tmp_expr.is_map ())
+  else if (rhs.is_map ())
     {
-      if (ident)
+      Octave_map tmp_val (rhs.map_value ());
+
+      for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
 	{
-	  Octave_map tmp_val (tmp_expr.map_value ());
+	  octave_value val = tmp_val.contents (p);
 
-	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
-	    {
-	      octave_value rhs (tmp_val.contents (p));
+	  bool quit = false;
 
-	      bool quit = false;
-	      do_for_loop_once (ident, rhs, quit);
+	  do_for_loop_once (ult, val, quit);
 
-	      if (quit)
-		break;
-	    }
-	}
-      else if (id_list)
-	{
-	  // Cycle through structure elements.  First element of
-	  // id_list is set to value and the second is set to the name
-	  // of the structure element.
-
-	  Octave_map tmp_val (tmp_expr.map_value ());
-
-	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
-	    {
-	      octave_value_list tmp;
-	      tmp (1) = tmp_val.key (p);
-	      tmp (0) = tmp_val.contents (p);
-
-	      bool quit = false;
-	      do_for_loop_once (id_list, tmp, quit);
-
-	      if (quit)
-		break;
-	    }
-	}
-      else
-	{
-	  Octave_map tmp_val (tmp_expr.map_value ());
-
-	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
-	    {
-	      octave_value rhs = tmp_val.contents (p);
-
-	      bool quit = false;
-	      do_for_loop_once (tmp_id, rhs, quit);
-
-	      if (quit)
-		break;
-	    }
+	  if (quit)
+	    break;
 	}
     }
   else
@@ -561,7 +383,7 @@ tree_for_command::eval (void)
 }
 
 void
-tree_for_command::eval_error (void)
+tree_simple_for_command::eval_error (void)
 {
   if (error_state > 0)
     ::error ("evaluating for command near line %d, column %d",
@@ -569,9 +391,104 @@ tree_for_command::eval_error (void)
 }
 
 void
-tree_for_command::accept (tree_walker& tw)
+tree_simple_for_command::accept (tree_walker& tw)
 {
-  tw.visit_for_command (*this);
+  tw.visit_simple_for_command (*this);
+}
+
+tree_complex_for_command::~tree_complex_for_command (void)
+{
+  delete expr;
+  delete list;
+}
+
+void
+tree_complex_for_command::do_for_loop_once (octave_variable_reference &val_ref,
+					    octave_variable_reference &key_ref,
+					    const octave_value& val,
+					    const octave_value& key,
+					    bool& quit)
+{
+  quit = false;
+
+  val_ref.assign (octave_value::asn_eq, val);
+  key_ref.assign (octave_value::asn_eq, key);
+
+  if (! error_state)
+    {
+      if (list)
+	{
+	  list->eval ();
+
+	  if (error_state)
+	    eval_error ();
+	}
+    }
+  else
+    eval_error ();
+
+  quit = quit_loop_now ();
+}
+
+void
+tree_complex_for_command::eval (void)
+{
+  if (error_state)
+    return;
+
+  octave_value rhs = expr->rvalue ();
+
+  if (error_state || rhs.is_undefined ())
+    {
+      eval_error ();
+      return;
+    }
+
+  if (rhs.is_map ())
+    {
+      // Cycle through structure elements.  First element of id_list
+      // is set to value and the second is set to the name of the
+      // structure element.
+
+      Pix p = lhs->first ();
+      tree_expression *elt = lhs->operator () (p);
+      octave_variable_reference val_ref = elt->lvalue ();
+
+      lhs->next (p);
+      elt = lhs->operator () (p);
+      octave_variable_reference key_ref = elt->lvalue ();
+
+      Octave_map tmp_val (rhs.map_value ());
+
+      for (p = tmp_val.first (); p != 0; tmp_val.next (p))
+	{
+	  octave_value key = tmp_val.key (p);
+	  octave_value val = tmp_val.contents (p);
+
+	  bool quit = false;
+
+	  do_for_loop_once (key_ref, val_ref, key, val, quit);
+
+	  if (quit)
+	    break;
+	}
+    }
+  else
+    error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+}
+
+void
+tree_complex_for_command::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating for command near line %d, column %d",
+	     line (), column ());
+}
+
+void
+tree_complex_for_command::accept (tree_walker& tw)
+{
+  tw.visit_complex_for_command (*this);
 }
 
 // If.
@@ -611,7 +528,7 @@ tree_switch_command::eval (void)
 {
   if (expr)
     {
-      octave_value val = expr->eval ();
+      octave_value val = expr->rvalue ();
 
       if (! error_state)
 	{

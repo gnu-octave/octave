@@ -62,7 +62,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
@@ -94,9 +93,6 @@ int line_editing = 1;
 
 // Nonzero means we printed messages about reading startup files.
 int reading_startup_message_printed = 0;
-
-// Command number, counting from the beginning of this session.
-int current_command_number = 1;
 
 // Nonzero means we are exiting via the builtin exit or quit functions.
 int quitting_gracefully = 0;
@@ -289,7 +285,7 @@ main_loop (void)
 	      if (octave_completion_matches_called)
 		octave_completion_matches_called = false;	    
 	      else
-		current_command_number++;
+		command_editor::increment_current_command_number ();
 	    }
 	}
     }
@@ -472,7 +468,7 @@ feval (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  octave_symbol *fcn = is_valid_function (args(0), "feval", 1);
+  octave_function *fcn = is_valid_function (args(0), "feval", 1);
 
   if (fcn)
     {
@@ -492,7 +488,7 @@ feval (const octave_value_list& args, int nargout)
 
       tmp_args.stash_name_tags (tmp_arg_names);
 
-      retval = fcn->eval (nargout, tmp_args);
+      retval = fcn->do_index_op (nargout, tmp_args);
     }
 
   return retval;

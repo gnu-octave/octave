@@ -35,7 +35,7 @@ class octave_value_list;
 class octave_value;
 class tree_command;
 class tree_expression;
-class tree_simple_assignment_expression;
+class tree_simple_assignment;
 class tree_index_expression;
 class tree_identifier;
 class symbol_record;
@@ -95,8 +95,6 @@ public:
 
   tree_command *command (void) { return cmd; }
 
-  octave_value eval (bool silent, bool in_function_body);
-
   octave_value_list eval (bool silent, int nargout, bool in_function_body);
 
   tree_expression *expression (void) { return expr; }
@@ -141,9 +139,7 @@ public:
 
   void mark_as_function_body (void) { function_body = true; }
 
-  octave_value eval (bool silent = false);
-
-  octave_value_list eval (bool silent, int nargout);
+  octave_value_list eval (bool silent = false, int nargout = 0);
 
   void accept (tree_walker& tw);
 
@@ -168,6 +164,8 @@ public:
     : SLList<tree_expression *> () { append (t); }
 
   ~tree_argument_list (void);
+
+  bool all_elements_are_constant (void) const;
 
   octave_value_list convert_to_const_vector (void);
 
@@ -260,14 +258,8 @@ public:
 
   typedef void (*eval_fcn) (tree_decl_elt &, bool);
 
-  tree_decl_elt (void)
-    : id (0), ass_expr (0) { }
-
-  tree_decl_elt (tree_identifier *i)
-    : id (i), ass_expr (0) { }
-
-  tree_decl_elt (tree_simple_assignment_expression *ass)
-    : id (0), ass_expr (ass) { }
+  tree_decl_elt (tree_identifier *i = 0, tree_expression *e = 0)
+    : id (i), expr (e) { }
 
   ~tree_decl_elt (void);
 
@@ -275,20 +267,17 @@ public:
 
   tree_identifier *ident (void) { return id; }
 
-  tree_simple_assignment_expression *assign_expr (void) { return ass_expr; }
+  tree_expression *expression (void) { return expr; }
 
   void accept (tree_walker& tw);
 
 private:
 
-  // Only one of id or ass_expr can be valid at once.
-
   // An identifier to tag with the declared property.
   tree_identifier *id;
 
-  // An assignemnt expression.  Valid only if the left hand side of
-  // the assignment is a simple identifier.
-  tree_simple_assignment_expression *ass_expr;
+  // An initializer expression (may be zero);
+  tree_expression *expr;
 };
 
 class

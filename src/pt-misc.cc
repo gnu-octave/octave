@@ -44,8 +44,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "input.h"
 #include "oct-obj.h"
-#include "oct-usr-fcn.h"
 #include "oct-var-ref.h"
+#include "ov-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
 #include "pt-cmd.h"
@@ -54,7 +54,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-misc.h"
-#include "pt-mvr.h"
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "toplev.h"
@@ -106,32 +105,12 @@ tree_statement::maybe_echo_code (bool in_function_body)
     }
 }
 
-octave_value
-tree_statement::eval (bool silent, bool in_function_body)
-{
-  octave_value retval;
-
-  bool pf = silent ? false : print_flag;
-
-  if (cmd || expr)
-    {
-      maybe_echo_code (in_function_body);
-
-      if (cmd)
-	cmd->eval ();
-      else
-	retval = expr->eval (pf);
-    }
-
-  return retval;
-}
-
 octave_value_list
 tree_statement::eval (bool silent, int nargout, bool in_function_body)
 {
-  bool pf = silent ? false : print_flag;
-
   octave_value_list retval;
+
+  bool pf = silent ? false : print_flag;
 
   if (cmd || expr)
     {
@@ -141,16 +120,33 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 	cmd->eval ();
       else
 	{
-	  if (expr->is_multi_val_ret_expression ())
+	  expr->set_print_flag (pf);
+
+	  // XXX FIXME XXX -- maybe all of this should be packaged in
+	  // one virtual function that returns a flag saying whether
+	  // or not the expression will take care of binding ans and
+	  // printing the result.
+
+	  bool do_bind_ans = false;
+
+	  if (expr->is_identifier ())
 	    {
-	      octave_value_list args;
+	      bool script_file_executed = false;
 
-	      tree_multi_val_ret *t = static_cast<tree_multi_val_ret *> (expr);
+	      tree_identifier *id = static_cast<tree_identifier *> (expr);
 
-	      retval = t->eval (pf, nargout, args);
+	      id->do_lookup (script_file_executed, false);
+
+	      do_bind_ans = id->is_function ();
 	    }
 	  else
-	    retval = expr->eval (pf);
+	    do_bind_ans = (! (expr->is_indirect_ref ()
+			      || expr->is_assignment_expression ()));
+
+	  retval = expr->rvalue (nargout);
+
+	  if (do_bind_ans && ! (error_state || retval.empty ()))
+	    bind_ans (retval(0), pf);
 	}
     }
 
@@ -163,10 +159,10 @@ tree_statement::accept (tree_walker& tw)
   tw.visit_statement (*this);
 }
 
-octave_value
-tree_statement_list::eval (bool silent)
+octave_value_list
+tree_statement_list::eval (bool silent, int nargout)
 {
-  octave_value retval;
+  octave_value_list retval;
 
   if (error_state)
     return retval;
@@ -175,39 +171,12 @@ tree_statement_list::eval (bool silent)
     {
       tree_statement *elt = this->operator () (p);
 
-      bool silent_flag =
-	silent ? true : (function_body ? Vsilent_functions : false);
-
-      retval = elt->eval (silent_flag, function_body);
-
-      if (error_state)
-	break;
-
-      if (breaking || continuing)
-	break;
-
-      if (returning)
-	break;
-    }
-
-  return retval;
-}
-
-octave_value_list
-tree_statement_list::eval (bool no_print, int nargout)
-{
-  octave_value_list retval;
-
-  if (error_state)
-    return retval;
-
-  if (nargout > 1)
-    {
-      for (Pix p = first (); p != 0; next (p))
+      if (elt)
 	{
-	  tree_statement *elt = this->operator () (p);
+	  bool silent_flag =
+	    silent ? true : (function_body ? Vsilent_functions : false);
 
-	  retval = elt->eval (no_print, nargout, function_body);
+	  retval = elt->eval (silent_flag, nargout, function_body);
 
 	  if (error_state)
 	    break;
@@ -218,9 +187,9 @@ tree_statement_list::eval (bool no_print, int nargout)
 	  if (returning)
 	    break;
 	}
+      else
+	error ("invalid statement found in statement list!");
     }
-  else
-    retval = eval (no_print);
 
   return retval;
 }
@@ -240,6 +209,20 @@ tree_argument_list::~tree_argument_list (void)
     }
 }
 
+bool
+tree_argument_list::all_elements_are_constant (void) const
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_expression *elt = this->operator () (p);
+
+      if (! elt->is_constant ())
+	return false;
+    }
+
+  return true;
+}
+
 octave_value_list
 tree_argument_list::convert_to_const_vector (void)
 {
@@ -257,9 +240,11 @@ tree_argument_list::convert_to_const_vector (void)
   for (int k = 0; k < len; k++)
     {
       tree_expression *elt = this->operator () (p);
+
       if (elt)
 	{
-	  octave_value tmp = elt->eval ();
+	  octave_value tmp = elt->rvalue ();
+
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k);
@@ -368,7 +353,11 @@ tree_parameter_list::initialize_undefined_elements (octave_value& val)
       tree_identifier *elt = this->operator () (p);
 
       if (! elt->is_defined ())
-	elt->reference () . assign (octave_value::asn_eq, val);
+	{
+	  octave_variable_reference tmp = elt->lvalue ();
+
+	  tmp.assign (octave_value::asn_eq, val);
+	}
     }
 }
 
@@ -388,7 +377,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
     {
       tree_identifier *elt = this->operator () (p);
 
-      octave_variable_reference ref = elt->reference ();
+      octave_variable_reference ref = elt->lvalue ();
 
       if (i < nargin)
 	{
@@ -425,7 +414,7 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
       tree_identifier *elt = this->operator () (p);
 
       if (elt->is_defined ())
-	retval(i) = elt->eval ();
+	retval(i) = elt->rvalue ();
 
       i++;
     }
@@ -489,7 +478,7 @@ tree_return_list::accept (tree_walker& tw)
 tree_decl_elt::~tree_decl_elt (void)
 {
   delete id;
-  delete ass_expr;
+  delete expr;
 }
 
 void
@@ -579,7 +568,7 @@ tree_switch_case::label_matches (const octave_value& val)
 {
   bool retval = false;
 
-  octave_value label_value = label->eval ();
+  octave_value label_value = label->rvalue ();
 
   if (! error_state)
     {

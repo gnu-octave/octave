@@ -117,7 +117,7 @@ tree_indirect_ref::eval_error (void) const
 {
   if (error_state > 0)
     ::error ("evaluating structure reference operator near line %d, column %d",
-	     oper () . c_str (), line (), column ());
+	     line (), column ());
 }
 
 /*

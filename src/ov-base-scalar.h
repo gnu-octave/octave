@@ -80,6 +80,8 @@ public:
 
   int length (void) const { return 1; }
 
+  int ndims (void) const { return 2; }
+
   bool is_constant (void) const { return true; }
 
   bool is_defined (void) const { return true; }

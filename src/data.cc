@@ -688,6 +688,29 @@ odd definition is used for compatibility with Matlab).\n\
   return retval;
 }
 
+DEFUN (ndims, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ndims (@var{a})\n\
+Returns the number of dimensions of array @var{a}.\n\
+For any array, the result will always be larger than or equal to 2.\n\
+Trailing singleton dimensions are not counted.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      int n_dims = args(0).ndims ();
+
+      if (! error_state)
+	retval = n_dims;
+    }
+  else
+    print_usage ("ndims");
+
+  return retval;
+}
+
 DEFUN (size, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} size (@var{a}, @var{n})\n\

@@ -1,3 +1,14 @@
+2003-10-27  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* ov.h (octave_value::ndims): New function.
+	* ov-base.h (octave_base_value::ndims): Likewise.
+	* ov-base-scalar.h (octave_base_scalar<T>::ndims): Likewise.
+	* ov-base-mat.cc (octave_base_matrix<MT>::ndims): New function.
+	(octave_base_matrix<MT>::length): Move here from ov-base-mat.h.
+	Make it work for N-d arrays.
+	* ov-base-mat.h (octave_base_matrix<MT>::ndims): Provide decl.
+	* data.cc (Fndims): New built-in function.
+
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/qz.cc:

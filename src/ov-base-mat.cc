@@ -187,6 +187,45 @@ octave_base_matrix<MT>::is_true (void) const
 }
 
 template <class MT>
+int
+octave_base_matrix<MT>::length (void) const
+{
+  int retval = 0;
+
+  dim_vector dv = dims();
+      
+  for (int i = 0; i < dv.length (); i++)
+    if (dv(i) > retval)
+      retval = dv(i);
+
+  return retval;
+}
+
+template <class MT>
+int
+octave_base_matrix<MT>::ndims (void) const
+{
+  dim_vector dv = dims ();
+
+  int n_dims = dv.length ();
+     
+   // Remove trailing singleton dimensions
+   for (int i = n_dims; i > 2; i--)
+     {
+       if (dv(i-1) == 1)
+	 n_dims--;
+       else
+	 break;
+     }
+   
+   // The result is always >= 2
+   if (n_dims < 2)
+     n_dims = 2;
+
+   return n_dims;
+}
+
+template <class MT>
 bool
 octave_base_matrix<MT>::print_as_scalar (void) const
 {

@@ -102,6 +102,8 @@ public:
 
   int length (void) const { return -1; }
 
+  int ndims (void) const { return -1; }
+
   bool is_defined (void) const { return false; }
 
   bool is_cell (void) const { return false; }

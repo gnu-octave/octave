@@ -328,6 +328,9 @@ public:
   virtual int length (void) const
     { return rep->length (); }
 
+  virtual int ndims (void) const
+    { return rep->ndims (); }
+
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().

@@ -95,17 +95,11 @@ public:
 
   dim_vector dims (void) const { return matrix.dims (); }
 
-  // XXX FIXME XXX 
-  int length (void) const
-    {
-      int r = rows ();
-      int c = columns ();
-
-      return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
-    }
-
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
+
+  int length (void) const;
+  int ndims (void) const;
 
   bool is_matrix_type (void) const { return true; }
 

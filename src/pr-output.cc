@@ -738,9 +738,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
 
   int inf_or_nan = any_element_is_inf_or_nan (cm);
 
-  int int_or_inf_or_nan
-    = (all_elements_are_int_or_inf_or_nan (rp)
-       && all_elements_are_int_or_inf_or_nan (ip)) : 0;
+  int int_or_inf_or_nan = (all_elements_are_int_or_inf_or_nan (rp)
+			   && all_elements_are_int_or_inf_or_nan (ip));
 
   Matrix r_m_abs = abs (rp);
   double r_max_abs = pr_max_internal (r_m_abs);

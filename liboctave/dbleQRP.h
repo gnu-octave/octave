@@ -38,7 +38,7 @@ public:
 
   QRP (void) : QR (), p () { }
 
-  QRP (const Matrix& A, QR::type qr_type = QR::std);
+  QRP (const Matrix&, QR::type = QR::std);
 
   QRP (const QRP& a) : QR (a), p (a.p) { }
 
@@ -55,9 +55,11 @@ public:
 
   ~QRP (void) { }
 
+  void init (const Matrix&, QR::type = QR::std);
+
   Matrix P (void) const { return p; }
 
-  friend ostream&  operator << (ostream& os, const QRP& a);
+  friend ostream&  operator << (ostream&, const QRP&);
 
 protected:
 

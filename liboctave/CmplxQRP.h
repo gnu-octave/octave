@@ -38,7 +38,7 @@ public:
 
   ComplexQRP (void) : ComplexQR (), p () { }
 
-  ComplexQRP (const ComplexMatrix& A, QR::type qr_type = QR::std);
+  ComplexQRP (const ComplexMatrix&, QR::type = QR::std);
 
   ComplexQRP (const ComplexQRP& a) : ComplexQR (a), p (a.p) { }
 
@@ -54,9 +54,11 @@ public:
 
   ~ComplexQRP (void) { }
 
+  void init (const ComplexMatrix&, QR::type = QR::std);
+
   Matrix P (void) const { return p; }
 
-  friend ostream&  operator << (ostream& os, const ComplexQRP& a);
+  friend ostream&  operator << (ostream&, const ComplexQRP&);
 
 private:
 

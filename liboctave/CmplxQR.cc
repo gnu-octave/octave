@@ -45,6 +45,13 @@ extern "C"
 }
 
 ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
+  : q (), r ()
+{
+  init (a, qr_type);
+}
+
+void
+ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 {
   int m = a.rows ();
   int n = a.cols ();

@@ -45,6 +45,13 @@ extern "C"
 }
 
 QR::QR (const Matrix& a, QR::type qr_type)
+  : q (), r ()
+{
+  init (a, qr_type);
+}
+
+void
+QR::init (const Matrix& a, QR::type qr_type)
 {
   int m = a.rows ();
   int n = a.cols ();

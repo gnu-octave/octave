@@ -49,6 +49,13 @@ extern "C"
 // It would be best to share some of this code with ComplexQR class...
 
 ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
+  : ComplexQR (), p ()
+{
+  init (a, qr_type);
+}
+
+void
+ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
 {
   assert (qr_type != QR::raw);
 
@@ -62,24 +69,18 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
       return;
     }
 
-  int min_mn = m < n ? m : n;
-  Array<Complex> tau (min_mn);
+  Array<Complex> tau (m < n ? m : n);
   Complex *ptau = tau.fortran_vec ();
 
-  int lwork = n;
+  int lwork = 3*n > 32*m ? 3*n : 32*m;
   Array<Complex> work (lwork);
   Complex *pwork = work.fortran_vec ();
 
   int info = 0;
 
-  ComplexMatrix A_fact;
+  ComplexMatrix A_fact = a;
   if (m > n)
-    {
-      A_fact.resize (m, m);
-      A_fact.insert (a, 0, 0);
-    }
-  else
-    A_fact = a;
+    A_fact.resize (m, m, 0.0);
 
   Complex *tmp_data = A_fact.fortran_vec ();
 
@@ -101,7 +102,7 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
       // Form Permutation matrix (if economy is requested, return the
       // indices only!)
 
-      if (qr_type == QR::economy && m > n)
+      if (qr_type == QR::economy)
 	{
 	  p.resize (1, n, 0.0);
 	  for (int j = 0; j < n; j++)
@@ -114,18 +115,12 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
 	    p.elem (jpvt.elem (j) - 1, j) = 1.0;
 	}
 
-      volatile int n2;
-
       if (qr_type == QR::economy && m > n)
-	{
-	  n2 = n;
-	  r.resize (n, n, 0.0);
-	}
+	r.resize (n, n, 0.0);
       else
-	{
-	  n2 = m;
-	  r.resize (m, n, 0.0);
-	}
+	r.resize (m, n, 0.0);
+
+      int min_mn = m < n ? m : n;
 
       for (int j = 0; j < n; j++)
 	{
@@ -134,11 +129,11 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
 	    r.elem (i, j) = A_fact.elem (i, j);
 	}
 
-      lwork = 32*m;
-      work.resize (lwork);
-      Complex *pwork = work.fortran_vec ();
+      int n2 = m;
+      if (qr_type == QR::economy)
+	n2 = min_mn;
 
-      F77_XFCN (zungqr, ZUNGQR, (m, m, min_mn, tmp_data, m, ptau,
+      F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
 				 pwork, lwork, info));
 
       if (f77_exception_encountered)

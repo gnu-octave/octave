@@ -45,7 +45,7 @@ public:
 
   QR (void) : q (), r () { }
 
-  QR (const Matrix& A, type qr_type = QR::std);
+  QR (const Matrix&, QR::type = QR::std);
 
   QR (const QR& a) : q (a.q), r (a.r) { }
 
@@ -61,11 +61,13 @@ public:
 
   ~QR (void) { }
 
+  void init (const Matrix&, QR::type);
+
   Matrix Q (void) const { return q; }
 
   Matrix R (void) const { return r; }
 
-  friend ostream&  operator << (ostream& os, const QR& a);
+  friend ostream&  operator << (ostream&, const QR&);
 
 protected:
 

@@ -62,4 +62,3 @@ function y = dec2bin (x)
   end_unwind_protect
 
 endfunction
-

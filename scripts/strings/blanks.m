@@ -38,7 +38,3 @@ function s = blanks (n)
   endif
 
 endfunction
-
-
-
-

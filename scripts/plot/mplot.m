@@ -86,6 +86,3 @@ function mplot (...)
   endif
 
 endfunction
-
-
-

@@ -54,4 +54,3 @@ function y = create_set(x)
   endif
 
 endfunction
-

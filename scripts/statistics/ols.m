@@ -68,4 +68,3 @@ function [BETA, SIGMA, R] = ols (Y, X)
   SIGMA = R' * R / (nr - r);
 
 endfunction
-

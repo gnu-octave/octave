@@ -35,4 +35,3 @@ function retval = beta (a, b)
   retval = exp (lgamma (a) + lgamma (b) - lgamma (a+b));
 
 endfunction
-

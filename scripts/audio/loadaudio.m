@@ -78,6 +78,3 @@ function X = loadaudio (name, ext, bit)
   fclose (num);
 
 endfunction
-
-
-

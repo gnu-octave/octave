@@ -5,7 +5,7 @@ TeX directory structure
 distribution.  It conforms to both the GNU coding standards and the TeX
 directory structure (TDS) standard.  For rationale and further
 explanation, please see those documents.  The GNU standard is available
-as `ftp://prep.ai.mit.edu/pub/gnu/standards/standards.texi' and
+as `ftp://ftp.gnu.org/pub/gnu/standards/standards.texi' and
 mirrors.  The TDS document is available from `CTAN:/tex-archive/tds'
 (*note unixtex.ftp::.).
 

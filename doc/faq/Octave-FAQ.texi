@@ -494,7 +494,7 @@ For more information about ordering from the FSF, contact
 gnu@@gnu.org, phone (617) 542-5942 or anonymous ftp the file
 @file{/pub/gnu/GNUinfo/ORDERS} from ftp.gnu.org.
 
-@cindex FSF, contact <gnu@@prep.ai.mit.edu>
+@cindex FSF, contact <gnu@@gnu.org>
 @cindex GNUware, anonymous FTP sites
 
 If you are on the Internet, you can copy the latest distribution

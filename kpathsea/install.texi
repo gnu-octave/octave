@@ -748,7 +748,7 @@ add a line (you choose where) to the file @file{dir} in your
 of the Texinfo source files (@file{kpathsea/kpathsea.texi},
 @file{dvipsk/dvips.texi}, and @file{web2c/doc/web2c.texi}).
 If you have a recent version of the GNU Texinfo distribution installed
-(@url{ftp://prep.ai.mit.edu/pub/gnu/texinfo-3.9.tar.gz} or later), this
+(@url{ftp://ftp.gnu.org/pub/gnu/texinfo/texinfo-3.9.tar.gz} or later), this
 should happen automatically.
 
 On the offchance that this is your first Info installation, the

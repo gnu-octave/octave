@@ -16,7 +16,7 @@ This section describes the default installation hierarchy of the
 distribution.  It conforms to both the GNU coding standards and the
 @TeX{} directory structure (TDS) standard.  For rationale and further
 explanation, please see those documents.  The GNU standard is available
-as @url{ftp://prep.ai.mit.edu/pub/gnu/standards/standards.texi} and
+as @url{ftp://ftp.gnu.org/pub/gnu/standards/standards.texi} and
 mirrors.  The TDS document is available from
 @file{@var{CTAN:}/tex-archive/tds} (@pxref{unixtex.ftp}).
 

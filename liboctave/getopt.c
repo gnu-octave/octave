@@ -1,6 +1,6 @@
 /* Getopt for GNU.
    NOTE: getopt is now part of the C library, so if you don't know what
-   "Keep this file name-space clean" means, talk to roland@gnu.ai.mit.edu
+   "Keep this file name-space clean" means, talk to roland@gnu.org
    before changing it!
 
    Copyright (C) 1987, 88, 89, 90, 91, 92, 1993

@@ -777,7 +777,7 @@ should add a line (you choose where) to the file `dir' in your
 the Texinfo source files (`kpathsea/kpathsea.texi',
 `dvipsk/dvips.texi', and `web2c/doc/web2c.texi').  If you have a recent
 version of the GNU Texinfo distribution installed
-(`ftp://prep.ai.mit.edu/pub/gnu/texinfo-3.9.tar.gz' or later), this
+(`ftp://ftp.gnu.org/pub/gnu/texinfo/texinfo-3.9.tar.gz' or later), this
 should happen automatically.
 
   On the offchance that this is your first Info installation, the `dir'
@@ -1124,7 +1124,7 @@ TeX directory structure
 distribution.  It conforms to both the GNU coding standards and the TeX
 directory structure (TDS) standard.  For rationale and further
 explanation, please see those documents.  The GNU standard is available
-as `ftp://prep.ai.mit.edu/pub/gnu/standards/standards.texi' and
+as `ftp://ftp.gnu.org/pub/gnu/standards/standards.texi' and
 mirrors.  The TDS document is available from `CTAN:/tex-archive/tds'
 (*note unixtex.ftp::.).
 
@@ -1343,7 +1343,7 @@ CD-ROM distribution
    * The Free Software Foundation's `Source Code CD-ROM' contains the
      minimal TeX source distribution described in the previous section
      (i.e., enough to print GNU documentation); email
-     <gnu@prep.ai.mit.edu>.
+     <gnu@gnu.org>.
 
    * The Gateway! CD-ROM set contains a runnable NetBSD/Amiga
      distribution and sources; see
@@ -1496,7 +1496,7 @@ investigation, your report should include the following:
      files are helpful, but the DVI file is necessary, because that's
      the actual program input.
 
-     GNU `shar', available from `ftp://prep.ai.mit.edu/pub/gnu' is a
+     GNU `shar', available from `ftp://gnu.org/pub/gnu/shar' is a
      convenient way of packaging multiple (possibly binary) files for
      electronic mail.  If you feel your input files are too big to send
      by email, you can ftp them to `ftp://ftp.tug.org/incoming' (that
@@ -1511,7 +1511,7 @@ investigation, your report should include the following:
    * If the bug involved is an actual crash (i.e., core dump), it is
      easy and useful to include a stack trace from a debugger (I
      recommend the GNU debugger GDB, available from
-     `ftp://prep.ai.mit.edu/pub/gnu').  If the cause is apparent (a
+     `ftp://gnu/org/pub/gnu/gdb').  If the cause is apparent (a
      `NULL' value being dereferenced, for example), please send the
      details along.  If the program involved is TeX or Metafont, and
      the crash is happening at apparently-sound code, however, the bug
@@ -1899,7 +1899,7 @@ find a workaround that avoids the quoting bug, I'd be most grateful.
 problematic code.)
 
   It should work to run `bash configure', instead of using `/bin/sh'.
-You can get Bash from `ftp://prep.ai.mit.edu/pub/gnu' and mirrors.
+You can get Bash from `ftp://gnu/org/pub/gnu/bash' and mirrors.
 
   Another possible cause (reported for NeXT) is a bug in the `sed'
 command.  In that case the error may look like this:
@@ -3356,7 +3356,7 @@ library.)
 different systems.  You will almost certainly want to use Autoconf for
 configuring your software if you use Kpathsea; I strongly recommend
 using Autoconf regardless.  It is available from
-`ftp://prep.ai.mit.edu/pub/gnu/'.
+`ftp://ftp.gnu.org/pub/gnu/autoconf'.
 
 
 File: kpathsea.info,  Node: Program-specific files,  Next: Programming with config files,  Prev: Calling sequence,  Up: Programming

@@ -28,7 +28,7 @@ The latest released version of Octave is always available via
 anonymous ftp from ftp.che.wisc.edu in the directory /pub/octave.
 Complete source and binaries for several popular systems are
 available.  Source distributions of Octave are also available from
-prep.ai.mit.edu in the directory /pub/gnu, as well as many mirror
+ftp.gnu.org in the directory /pub/gnu, as well as many mirror
 sites around the world.
 
 Installation and Bugs
@@ -84,7 +84,7 @@ should be possible to install it on any machine that runs GCC/G++.  It
 may also be possible to install it using other implementations of
 these tools, but it will most certainly require much more work.  Do
 yourself a favor and get the GNU development tools, either via
-anonymous ftp from prep.ai.mit.edu or by writing the Free Software
+anonymous ftp from ftp.gnu.org or by writing the Free Software
 Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 The underlying numerical solvers are currently standard Fortran ones

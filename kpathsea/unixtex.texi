@@ -192,7 +192,7 @@ information about @TeX{} CD's in general.  Both are in German.
 The Free Software Foundation's @cite{Source Code CD-ROM} contains the
 minimal @TeX{} source distribution described in the previous section
 (i.e., enough to print GNU documentation); email
-@email{gnu@@prep.ai.mit.edu}.
+@email{gnu@@gnu.org}.
 
 @item
 The Gateway@! CD-ROM set contains a runnable NetBSD/Amiga distribution

@@ -2085,7 +2085,7 @@ The @file{c-*.h} header files can also help your program adapt to many
 different systems.  You will almost certainly want to use Autoconf for
 configuring your software if you use Kpathsea; I strongly recommend
 using Autoconf regardless.  It is available from
-@url{ftp://prep.ai.mit.edu/pub/gnu/}.
+@url{ftp://ftp.gnu.org/pub/gnu/autoconf}.
 
 
 @node Program-specific files

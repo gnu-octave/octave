@@ -101,7 +101,7 @@ helpful, but the DVI file is necessary, because that's the actual
 program input.
 
 @cindex shar@r{, recommended}
-GNU @code{shar}, available from @url{ftp://prep.ai.mit.edu/pub/gnu} is
+GNU @code{shar}, available from @url{ftp://ftp.gnu.org/pub/gnu/shar} is
 a convenient way of packaging multiple (possibly binary) files for
 electronic mail.  If you feel your input files are too big to send by
 email, you can ftp them to @url{ftp://ftp.tug.org/incoming} (that
@@ -125,7 +125,7 @@ me to understand.  Please also include a @file{ChangeLog} entry.
 @pindex gdb@r{, recommended}
 If the bug involved is an actual crash (i.e., core dump), it is easy and
 useful to include a stack trace from a debugger (I recommend the GNU
-debugger GDB, available from @url{ftp://prep.ai.mit.edu/pub/gnu}).  If
+debugger GDB, available from @url{ftp://ftp.gnu.org/pub/gnu/gdb}).  If
 the cause is apparent (a @code{NULL} value being dereferenced, for
 example), please send the details along.  If the program involved is
 @TeX{} or Metafont, and the crash is happening at apparently-sound code,
@@ -609,7 +609,7 @@ to get to the problematic code.)
 
 It should work to run @code{bash configure}, instead of using
 @code{/bin/sh}. You can get Bash from
-@url{ftp://prep.ai.mit.edu/pub/gnu} and mirrors.
+@url{ftp://ftp.gnu.org/pub/gnu/bash} and mirrors.
 
 Another possible cause (reported for NeXT) is a bug in the @code{sed}
 command.  In that case the error may look like this:

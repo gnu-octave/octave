@@ -89,7 +89,7 @@ Reporting Bugs
 
 Bug reports for Readline should be sent to:
 
-        bug-readline@prep.ai.mit.edu
+        bug-readline@gnu.org
 
 When reporting a bug, please include the following information:
 
@@ -102,9 +102,9 @@ When reporting a bug, please include the following information:
         * a fix for the bug if you have one!
 
 If you would like to contact the Readline maintainer directly, send mail
-to bash-maintainers@prep.ai.mit.edu.
+to bash-maintainers@gnu.org.
 
-Since Readline is developed along with bash, the bug-bash@prep.ai.mit.edu
+Since Readline is developed along with bash, the bug-bash@gnu.org
 mailing list (mirrored to the Usenet newsgroup gnu.bash.bug) often contains
 Readline bug reports and fixes.
 

@@ -81,7 +81,7 @@ investigation, your report should include the following:
      files are helpful, but the DVI file is necessary, because that's
      the actual program input.
 
-     GNU `shar', available from `ftp://prep.ai.mit.edu/pub/gnu' is a
+     GNU `shar', available from `ftp://ftp.gnu.org/pub/gnu/shar' is a
      convenient way of packaging multiple (possibly binary) files for
      electronic mail.  If you feel your input files are too big to send
      by email, you can ftp them to `ftp://ftp.tug.org/incoming' (that
@@ -96,7 +96,7 @@ investigation, your report should include the following:
    * If the bug involved is an actual crash (i.e., core dump), it is
      easy and useful to include a stack trace from a debugger (I
      recommend the GNU debugger GDB, available from
-     `ftp://prep.ai.mit.edu/pub/gnu').  If the cause is apparent (a
+     `ftp://ftp.gnu.org/pub/gnu/gdb').  If the cause is apparent (a
      `NULL' value being dereferenced, for example), please send the
      details along.  If the program involved is TeX or Metafont, and
      the crash is happening at apparently-sound code, however, the bug
@@ -444,7 +444,7 @@ find a workaround that avoids the quoting bug, I'd be most grateful.
 problematic code.)
 
   It should work to run `bash configure', instead of using `/bin/sh'.
-You can get Bash from `ftp://prep.ai.mit.edu/pub/gnu' and mirrors.
+You can get Bash from `ftp://ftp.gnu.org/pub/gnu/bash' and mirrors.
 
   Another possible cause (reported for NeXT) is a bug in the `sed'
 command.  In that case the error may look like this:

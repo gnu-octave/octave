@@ -85,7 +85,7 @@ John Campbell @email{jcc@@bevo.che.wisc.edu} wrote most of the file and
 C-style input and output functions.
 
 @item
-Brian Fox @email{bfox@@gnu.ai.mit.edu} wrote the @code{readline} library
+Brian Fox @email{bfox@@gnu.org} wrote the @code{readline} library
 used for command history editing, and the portion of this manual that
 documents it.
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 # mkinstalldirs --- make directory hierarchy (now mktexdir).
-# Author: Noah Friedman <friedman@prep.ai.mit.edu>, created: 1993-05-16.
+# Author: Noah Friedman <friedman@gnu.org>, created: 1993-05-16.
 # Public domain.
 # 
 # Modified for sticky directory creation, --help, --version.

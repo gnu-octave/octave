@@ -3,7 +3,7 @@
 
 # Copyright (C) 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
 
-# $Id: texi2dvi,v 1.1 1997-05-22 20:59:04 jwe Exp $
+# $Id: texi2dvi,v 1.2 1999-10-13 21:59:16 jwe Exp $
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 
 # Commentary:
 
-# Author: Noah Friedman <friedman@prep.ai.mit.edu>
+# Author: Noah Friedman <friedman@gnu.org>
 
-# Please send bug reports, etc. to bug-texinfo@prep.ai.mit.edu
+# Please send bug reports, etc. to bug-texinfo@gnu.org.
 # If possible, please send a copy of the output of the script called with
 # the `--debug' option when making a bug report.
 
@@ -47,7 +47,7 @@
 progname=`echo "$0" | sed -e 's/[^\/]*\///g'`
 
 # This string is expanded by rcs automatically when this file is checked out.
-rcs_revision='$Revision: 1.1 $'
+rcs_revision='$Revision: 1.2 $'
 version=`set - $rcs_revision; echo $2`
 
 # To prevent hairy quoting and escaping later.

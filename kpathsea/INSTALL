@@ -521,7 +521,7 @@ should add a line (you choose where) to the file `dir' in your
 the Texinfo source files (`kpathsea/kpathsea.texi',
 `dvipsk/dvips.texi', and `web2c/doc/web2c.texi').  If you have a recent
 version of the GNU Texinfo distribution installed
-(`ftp://prep.ai.mit.edu/pub/gnu/texinfo-3.9.tar.gz' or later), this
+(`ftp://ftp.gnu.org/pub/gnu/texinfo/texinfo-3.9.tar.gz' or later), this
 should happen automatically.
 
   On the offchance that this is your first Info installation, the `dir'

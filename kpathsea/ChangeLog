@@ -1,3 +1,8 @@
+2002-09-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xstat.c: Delete forward decl for lstat.  It apparently causes
+	trouble on some systems with gcc 3.x.
+
 2002-04-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.guess, config.sub: Update from FSF sources.

@@ -34,11 +34,9 @@ xstat P1C(const_string, path)
 
 
 /* If we don't have symbolic links, lstat is the same as stat, and
-   a #define is made in the include file.  We declare lstat to avoid an
-   implicit declaration warning for development; sigh.  */
+   a #define is made in the include file.  */
 
 #ifdef S_ISLNK
-extern int lstat ();
 struct stat
 xlstat P1C(const_string, path)
 {

@@ -300,7 +300,17 @@ Return the real part of @var{z}.
 @node Trigonometry, Sums and Products, Complex Arithmetic, Arithmetic
 @section Trigonometry
 
-Octave provides the following trigonometric functions:
+Octave provides the following trigonometric functions.  Angles are
+specified in radians.  To convert from degrees to radians multipy by
+@iftex
+@tex
+$\pi/180$
+@end tex
+@end iftex
+@ifinfo
+@code{pi/180}
+@end ifinfo
+ (e.g. @code{sin (30 * pi/180)} returns the sine of 30 degrees).
 
 @deftypefn {Mapping Function} {} sin (@var{z})
 @deftypefnx {Mapping Function} {} cos (@var{z})

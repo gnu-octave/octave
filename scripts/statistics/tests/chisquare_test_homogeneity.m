@@ -46,7 +46,7 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
     error ("chisquare_test_homogeneity:  c must be increasing");
   endif
   
-  c     = [reshape (c, 1, df), Inf];
+  c     = [(reshape (c, 1, df)), Inf];
   l_x   = length (x);
   x     = reshape (x, l_x, 1);
   n_x   = sum (x * ones (1, df+1) < ones (l_x, 1) * c);

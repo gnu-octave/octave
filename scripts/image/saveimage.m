@@ -162,7 +162,7 @@ function saveimage (filename, img, img_form, map)
       for i = 1:img_nr
 	idx = (i-1)*img_nc+1:i*img_nc;
       	if (n_long > 0)
-	  img_row = [map(img(idx)); zeros (8-n_long, 1)];
+	  img_row = [map(img(idx)); (zeros (8-n_long, 1))];
 	else
       	  img_row = map(img(idx));
 	endif

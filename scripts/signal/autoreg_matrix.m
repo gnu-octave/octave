@@ -38,7 +38,7 @@ function X = autoreg_matrix (y, k)
   y = reshape (y, T, 1);
   X = ones (T, k+1);
   for j = 1 : k;
-    X(:, j+1) = [zeros (j, 1); y(1:T-j)];
+    X(:, j+1) = [(zeros (j, 1)); y(1:T-j)];
   endfor
   
 endfunction

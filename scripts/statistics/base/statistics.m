@@ -36,9 +36,13 @@ function S = statistics (X)
       X = reshape (X, length (X), 1);
     endif
     for k=1:columns(X)
-      S(:,k) = [min (X(:,k)); empirical_inv ([0.25;0.5;0.75], X(:,k));
-	 	max (X(:,k)); mean (X(:,k)); std (X(:,k));
-		skewness (X(:,k)); kurtosis (X(:,k))];
+      S(:,k) = [(min (X(:,k)));
+		(empirical_inv ([0.25;0.5;0.75], X(:,k)));
+	 	(max (X(:,k)));
+		(mean (X(:,k)));
+		(std (X(:,k)));
+		(skewness (X(:,k)));
+		(kurtosis (X(:,k)))];
     endfor 
   else
     error ("statistics:  invalid argument");

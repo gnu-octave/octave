@@ -52,7 +52,7 @@ function [pval, z] = u_test (x, y, alt)
 
   n_x  = length (x);
   n_y  = length (y);
-  r    = ranks ([reshape (x, 1, n_x), reshape (y, 1, n_y)]);
+  r    = ranks ([(reshape (x, 1, n_x)), (reshape (y, 1, n_y))]);
   z    = (sum (r(1 : n_x)) - n_x * (n_x + n_y + 1) / 2) ...
            / sqrt (n_x * n_y * (n_x + n_y + 1) / 12);  
 

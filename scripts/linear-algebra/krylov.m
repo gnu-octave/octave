@@ -1,4 +1,4 @@
-# Copyright (C) 1993, 1998, 1999 A. Scottedward Hodel
+# Copyright (C) 1993, 1998, 1999 Auburn University.  All rights reserved.
 #
 # This file is part of Octave.
 #
@@ -19,7 +19,7 @@
 function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
   # function [U,H,nu] = krylov(A,V,k{,eps1,pflg});
   # construct orthogonal basis U of block Krylov subspace;
-  # 	[V AV A^2*V ... A^(k+1)*V];
+  #  [V AV A^2*V ... A^(k+1)*V];
   # method used: householder reflections to guard against loss of
   # orthogonality
   # eps1: threshhold for 0 (default: 1e-12)
@@ -30,14 +30,16 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
   #
   # outputs:
   #   Uret: orthogonal basis of block krylov subspace
-  #   H: Hessenberg matrix; if V is a vector then A U = U H 
+  #   H: Hessenberg matrix; if V is a vector then A U = U H
   #      otherwise H is meaningless
   # nu: dimension of span of krylov subspace (based on eps1)
-  # if B is a vector and k > m-1, krylov returns H = the Hessenberg 
+  # if B is a vector and k > m-1, krylov returns H = the Hessenberg
   # decompostion of A.
   #
-  # Reference: Hodel and Misra, "Partial Pivoting in the Computation of 
-  #     Krylov Subspaces", In preparation.
+  # Reference: Hodel and Misra, "Partial Pivoting in the Computation of
+  #     Krylov Subspaces", to be submitted to Linear Algebra and its
+  #     Applications
+  # written by A. Scottedward Hodel a.s.hodel@eng.auburn.edu
 
   defeps = 1e-12;
   if(nargin < 3 | nargin > 5)
@@ -49,11 +51,11 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
     eps1 = defeps;    # default tolerance parameter
   endif
   if(isempty(eps1)) eps1 = defeps; endif
-  
+
   na = is_square(A);
   if( !na ) error("A(%d x %d) must be square",rows(A),columns(A)); endif
- 
-  [m,kb] = size(V); 
+
+  [m,kb] = size(V);
   if(m != na);
     error("A(%d x %d), V(%d x %d): argument dimensions do not match", ...
       na,na,m,kb)
@@ -64,7 +66,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
   endif
 
   Vnrm = norm(V,Inf);
-  
+
   # check for trivial solution
   if(Vnrm == 0)
     Uret = []; nu = 0;  return;
@@ -77,7 +79,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
   pivot_vec = 1:na;
 
   iter = 0;
-  alpha = [];  
+  alpha = [];
   nh = 0;
   while (length(alpha) < na) & (columns(V) > 0) & (iter < k)
     iter++;
@@ -86,7 +88,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
     jj = 1;
     while(jj <= columns(V) & length(alpha) < na)
       nu = length(alpha)+1;   # index of next Householder reflection
-     
+
       short_pv = pivot_vec(nu:na);
       q = V(:,jj);
       short_q = q(short_pv);
@@ -94,8 +96,8 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
       if(norm(short_q) < eps1)
         # insignificant column; delete
         nv = columns(V);
-        if(jj != nv) 
-          [V(:,jj),V(:,nv)] = swap(V(:,jj),V(:,nv)); 
+        if(jj != nv)
+          [V(:,jj),V(:,nv)] = swap(V(:,jj),V(:,nv));
           # FIX ME: H columns should be swapped too.  Not done since
           # Block Hessenberg structure is lost anyway.
         endif
@@ -110,7 +112,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
 	  maxv = max(asq);
           maxidx = find(asq == maxv);
           pivot_idx = short_pv(maxidx(1));
-           
+
           # see if need to change the pivot list
           if(pivot_idx != pivot_vec(nu))
             swapidx = maxidx(1) + (nu-1);
@@ -118,7 +120,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
               swap(pivot_vec(nu),pivot_vec(swapidx));
           endif
         endif
-        
+
         # isolate portion of vector for reflection
         idx = pivot_vec(nu:na);
         jdx = pivot_vec(1:nu);
@@ -139,13 +141,24 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
       endif
     endwhile
 
+    # check for oversize V (due to full rank)
+    if( ( columns(V) > na ) & ( length(alpha) == na ) )
+      # trim to size
+      V = V(:,1:na);
+    elseif( columns(V) > na )
+      krylov_V = V
+      krylov_na = na
+      krylov_length_alpha = length(alpha)
+      error("This case should never happen; submit bug report.");
+    endif
+
     if(columns(V) > 0)
       # construct next Q and multiply
       Q = zeros(size(V));
       for kk=1:columns(Q)
         Q(pivot_vec(nu-columns(Q)+kk),kk) = 1;
       endfor
-      
+
       # apply Householder reflections
       for ii = nu:-1:1
         idx = pivot_vec(ii:na);
@@ -178,7 +191,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
     U(idx(1),i) = 1;
     U(idx,i:j1) = U(idx,i:j1)-av*hv*(hv'*U(idx,i:j1));
   endfor
-  
+
   nu = length(alpha);
   Uret = U;
   if( max(max( abs(Uret(zidx,:)) )) > 0)

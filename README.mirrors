@@ -2,12 +2,13 @@ If you have trouble transferring Octave from this site, you might try
 one of those listed below.  They mirror the /pub/octave directory on
 ftp.che.wisc.edu.
 
-  site				directory
-  ----				---------
-  ftp.eos.hokudai.ac.jp		/pub/GNU/misc/octave
-  ftp.math.uni-hamburg.de	/pub/soft/math/octave
-  ftp.task.gda.pl		/pub/software/octave
+  site                          directory
+  ----                          ---------
+  ftp.eos.hokudai.ac.jp         /pub/GNU/misc/octave
+  ftp.math.uni-hamburg.de       /pub/soft/math/octave
+  ftp.task.gda.pl               /pub/software/octave
   ftp.u-aizu.ac.jp              /pub/SciEng/numanal/Octave
+  mirror.aarnet.edu.au          /pub/octave
 
 The latest Octave sources may also be found on the official Free
 Software Foundation ftp site, ftp://prep.ai.mit.edu/pub/gnu, which is
@@ -21,4 +22,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Fri Aug 22 15:49:17 1997
+Thu Sep 23 15:44:27 1999

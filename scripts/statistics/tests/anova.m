@@ -64,7 +64,7 @@ function [pval, f, df_b, df_w] = anova (y, g)
     if (k == 1)
       error ("anova:  there should be at least 2 groups");
     else
-      group_label = s ([1, reshape (i, 1, k-1) + 1]);
+      group_label = s ([1, (reshape (i, 1, k-1) + 1)]);
     endif
     for i = 1 : k;
       v = y (find (g == group_label (i)));

@@ -67,7 +67,7 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
     e   = y - X * b;
   else
     [b, v_b, e] = ols (y, X);
-    a   = [v_b, zeros (1,p)]';
+    a   = [v_b, (zeros (1, p))]';
     if (nargin < 5)
       gamma = 0.1;
       if (nargin < 4)

@@ -1,3 +1,15 @@
+Mon Sep 20 11:02:29 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-inf.el, emacs/octave-mod.el: Update to match FSF
+	sources plus code that will make it work if Emacs doesn't have the
+	customize code.
+
+Tue Sep 14 07:57:06 1999  Kurt Hornik <hornik@ci.tuwien.ac.at>
+
+	* emacs/octave-inf.el (inferior-octave-startup): Always pass "-i"
+	and "--no-line-editing" to Octave subprocess.
+ 	(inferior-octave-startup-args): Default to nil.
+
 Mon Sep  6 10:50:10 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave-inf.el (inferior-octave-startup-args):

@@ -86,8 +86,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
   elseif strcmp (alt, "<")
     pval = cdf;
   else
-    error (["t_test_regression:  ", ...
-	    sprintf ("the value %s for alt is not possible", alt)]);
+    error ("t_test_regression: the value `%s' for alt is not possible", alt);
   endif
   
   if (nargout == 0)

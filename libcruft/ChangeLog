@@ -1,3 +1,7 @@
+1999-10-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dassl/dpotrf.f, dassl/dpotf2.f: Move to lapack subdirectory.
+
 Fri Mar 26 01:19:04 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makerules.in (all): Don't try to use a special rule for making

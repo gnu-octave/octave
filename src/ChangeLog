@@ -1,3 +1,8 @@
+Thu Sep 23 19:49:36 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (Fsystem): For async case, use execl instead of
+	system, avoiding the need to exit after executing the subprocess.
+
 Thu Sep  9 17:09:23 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (get_size): Allow zero values.

@@ -1,3 +1,26 @@
+Wed Sep 22 22:12:03 1999 A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+
+	* linear-algebra/krylov.m: Correctly handle case of V having full
+	rank when V has more columns than rows.
+
+Mon Sep 20 23:04:57 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/linspace.m, linear-algebra/pinv.m: Delete.
+
+	* statistics/tests/manova.m: Avoid problems if
+	whitespace_in_literal_matrix is set to "traditional".
+	* statistics/tests/t_test_regression.m: Likewise.
+	* statistics/tests/u_test.m: Likewise.
+	* statistics/tests/chisquare_test_homogeneity.m: Likewise.
+	* statistics/tests/anova.m: Likewise.
+	* statistics/tests/kruskal_wallis_test.m: Likewise.
+	* statistics/base/statistics.m: Likewise.
+	* image/saveimage.m: Likewise.
+	* signal/arch_fit.m: Likewise.
+	* signal/autoreg_matrix.m: Likewise.
+	* signal/triangle_lw.m: Likewise.
+	* strings/dec2hex.m: Likewise.
+
 Thu Sep  9 19:31:58 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* image/saveimage.m: Initialize scale.

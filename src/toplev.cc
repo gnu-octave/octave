@@ -425,9 +425,12 @@ or\n\
 		error ("system: fork failed -- can't create child process");
 	      else if (pid == 0)
 		{
-		  system (cmd_str.c_str ());
-		  exit (0);
-		  retval(0) = 0.0;
+		  // XXX FIXME XXX -- should probably replace this
+		  // call with something portable.
+
+		  execl ("/bin/sh", "sh", "-c", cmd_str.c_str (), 0);
+
+		  panic_impossible ();
 		}
 	      else
 		retval(0) = static_cast<double> (pid);

@@ -61,7 +61,7 @@ function manova (Y, g)
   if (k == 1)
     error ("manova:  there should be at least 2 groups");
   else
-    group_label = s ([1, reshape (i, 1, k - 1) + 1]);
+    group_label = s ([1, (reshape (i, 1, k - 1) + 1)]);
   endif
 
   Y = Y - ones (n, 1) * mean (Y);

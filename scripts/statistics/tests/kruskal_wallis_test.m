@@ -48,7 +48,7 @@ function [pval, k, df] = kruskal_wallis_test (...)
     endif
     l = length (x);
     n = [n, l];
-    p = [p, reshape (x, 1, l)];
+    p = [p, (reshape (x, 1, l))];
   endfor
   
   r = ranks (p);

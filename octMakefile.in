@@ -24,8 +24,8 @@ CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in configure \
 	acconfig.h config.h.bot install-sh
 
 DISTFILES = $(CONF_DISTFILES) \
-	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
-	README README.Linux README.Windows README.MachTen ROADMAP \
+	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
+	PROJECTS README README.Linux README.Windows README.MachTen ROADMAP \
 	SENDING-PATCHES THANKS move-if-change octave-sh octave-bug.in \
 	install-octave.in mkinstalldirs mkoctfile.in texi2dvi \
 	ChangeLog ChangeLog.[0-9]

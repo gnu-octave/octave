@@ -19,12 +19,12 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_SLStack_h)
 #define _SLStack_h 1
 
-#include "SLList.h"
-#include "Stack.h"
-
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
 #pragma interface
 #endif
+
+#include "SLList.h"
+#include "Stack.h"
 
 template <class T>
 class SLStack : public Stack<T>

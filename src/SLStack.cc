@@ -26,7 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma implementation "SLStack.h"
+#pragma implementation
 #endif
 
 #include "SLStack.h"

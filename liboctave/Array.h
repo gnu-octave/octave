@@ -236,9 +236,10 @@ private:
   {
   public:
 
-    Proxy (DiagArray<T> *ref, int r, int c) : object (ref), i (r), j (c) { }
+    inline Proxy (DiagArray<T> *ref, int r, int c)
+      : object (ref), i (r), j (c) { } 
 
-    const Proxy& operator = (const T& val) const
+    inline const Proxy& operator = (const T& val) const
     {
       if (i == j)
 	{
@@ -252,7 +253,7 @@ private:
       return *this;
     }
 
-    operator T () const
+    inline operator T () const
     {
       if (object)
 	return object->get (i);

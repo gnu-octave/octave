@@ -90,7 +90,7 @@ public:
 
   bool is_string (void) const { return true; }
 
-  bool is_real_type (void) const { return true; }
+  bool is_real_type (void) const { return Vimplicit_str_to_num_ok; }
 
   bool is_matrix_type (void) const { return Vimplicit_str_to_num_ok; }
 

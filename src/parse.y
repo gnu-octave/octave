@@ -1281,6 +1281,10 @@ end_error (char *type, token::end_tok_type ettype, int l, int c)
       error (fmt, type, "endwhile", l, c); 
       break;
 
+    case token::unwind_protect_end:
+      error (fmt, type, "end_unwind_protect", l, c); 
+      break;
+
     default:
       panic_impossible ();
       break;

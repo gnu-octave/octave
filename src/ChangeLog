@@ -1,5 +1,11 @@
 2003-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.51.
+	(OCTAVE_API_VERSION): Now api-v2.
+
+	* version.h (OCTAVE_BUGS_STATEMENT): Also tell people to look at
+	http://www.octave.org/bugs.html.
+
 	* oct-map.cc (Octave_map::assign): Use resize, not resize and fill.
 	* ov-typeinfo.cc (octave_value_typeinfo::do_register_type): Likewise.
 
@@ -10,9 +16,6 @@
 	* Makefile.in (stamp-liboctave-prereq): New target.
 	($(DEF_FILES), $(MAKEDEPS)): Depend on it.	
 	(distclean): Remove it.
-
-	* version.h (OCTAVE_VERSION): Now 2.1.51.
-	(OCTAVE_API_VERSION): Now api-v2.
 
 	* parse.y (cancel_obj_idx): New rule.
 	(postfix_expr, prefix_expr): Use begin_obj_idx after every

@@ -114,8 +114,8 @@ function subplot (rows, columns, index)
 # switching to single plot ?
 
     set nomultiplot;
-    set size 1,1
-    set origin 0,0
+    set size 1, 1;
+    set origin 0, 0;
 
     multiplot_xn = 1;
     multiplot_yn = 1;

@@ -65,8 +65,8 @@ function multiplot (xn, yn)
   if (xn == 0 && yn == 0)
 
     set nomultiplot;
-    set size 1,1
-    set origin 0,0
+    set size 1, 1;
+    set origin 0, 0;
 
     multiplot_mode = 0;
     multiplot_xsize = 1;

@@ -35,8 +35,8 @@ function bottom_title (text)
   endif
 
   if (isstr (text))
-    set top_title
-    set title
+    set top_title;
+    set title;
     eval (sprintf ("set bottom_title \"%s\"", text));
   else
     error ("bottom_title: text must be a string");

@@ -55,7 +55,7 @@ function subwindow (xn, yn)
 # args to multiplot() 
 
   if (multiplot_mode != 1)
-    multiplot (xn, yn)
+    multiplot (xn, yn);
     return;
   endif
 

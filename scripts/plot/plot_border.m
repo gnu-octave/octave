@@ -85,7 +85,7 @@ function plot_border (...)
   endwhile
 
   if (none)
-    set noborder
+    set noborder;
   else
     if (all)
       border = 15;

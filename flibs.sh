@@ -31,6 +31,22 @@ do
   then
     want_arg=
     case $arg in
+      /*.a)
+        exists=false
+        for f in $lflags
+        do
+          if test x$arg = x$f
+          then
+            exists=true
+          fi
+        done
+	if $exists
+	then
+	  arg=
+        else
+          lflags="$lflags $arg"
+	fi
+      ;;
       -[lL]*)
         exists=false
         for f in $lflags

@@ -1,3 +1,12 @@
+2003-10-24  Stefan Monnier  <monnier@iro.umontreal.ca>
+
+	* emacs/octave-mod.el (octave-comment-start): Simplify.
+	(octave-point): Remove.
+	(octave-in-comment-p, octave-in-string-p)
+	(octave-not-in-string-or-comment-p, calculate-octave-indent)
+	(octave-blink-matching-block-open, octave-auto-fill):
+	Use line-(beginning|end)-position instead.
+
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave-inf.el (inferior-octave-prompt): Don't bother

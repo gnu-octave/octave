@@ -1,10 +1,14 @@
 function zr = tzero (a, b, c, d, bal)
 
+# Usage: zr = tzero (a, b, c, d, bal)
+#
 # Compute the transmission zeros of a, b, c, d.
 #
 # bal = balancing option (see balance); default is "B".
 #
 # Needs to incorporate mvzero algorithm to isolate finite zeros.
+
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993
 
   if (nargin == 4)
     bal = "B";

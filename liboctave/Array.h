@@ -28,9 +28,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#define HEAVYWEIGHT_INDEXING 1
+
 #include <cassert>
 
 #include "lo-error.h"
+
+class idx_vector;
 
 // Classes we declare.
 
@@ -39,6 +43,12 @@ template <class T> class Array;
 template <class T> class Array2;
 template <class T> class Array3;
 template <class T> class DiagArray;
+
+#ifdef HEAVYWEIGHT_INDEXING
+#define SET_MAX_INDICES(n) set_max_indices (n)
+#else
+#define SET_MAX_INDICES(n)
+#endif
 
 // The real representation of all arrays.
 
@@ -54,24 +64,42 @@ class ArrayRep
 
 private:
 
+  T *data;
   int count;
   int len;
-  T *data;
+
+#ifdef HEAVYWEIGHT_INDEXING
+  idx_vector *idx;
+  int max_indices;
+  int idx_count;
+#endif
 
 protected:
 
   ArrayRep (T *d, int l)
     {
-      len = l;
       data = d;
+      len = l;
+
+#ifdef HEAVYWEIGHT_INDEXING
+      idx = 0;
+      max_indices = 0;
+      idx_count = 0;
+#endif
     }
 
 public:
 
   ArrayRep (void)
     {
-      len = 0;
       data = 0;
+      len = 0;
+
+#ifdef HEAVYWEIGHT_INDEXING
+      idx = 0;
+      max_indices = 0;
+      idx_count = 0;
+#endif
     }
 
   ArrayRep (int n);
@@ -86,7 +114,17 @@ public:
 
   T elem (int n) const;
 
-  void resize (int n);
+#ifdef HEAVYWEIGHT_INDEXING
+  void set_max_indices (int mi) { max_indices = mi; }
+
+  void clear_index (void);
+
+  void set_index (const idx_vector& i);
+
+  int index_count (void) const { return idx_count; }
+
+  idx_vector *get_idx (void) const { return idx; }
+#endif
 };
 
 // One dimensional array class.  Handles the reference counting for
@@ -103,20 +141,23 @@ protected:
     {
       rep = new ArrayRep<T> (d, l);
       rep->count = 1;
+      set_max_indices (1);
     }
 
 public:
 
   Array (void)
     {
-      rep = new ArrayRep<T>;
+      rep = new ArrayRep<T> ();
       rep->count = 1;
+      set_max_indices (1);
     }
 
   Array (int n)
     {
       rep = new ArrayRep<T> (n);
       rep->count = 1;
+      set_max_indices (1);
     }
 
   Array (int n, const T& val);
@@ -166,7 +207,26 @@ public:
   const T *data (void) const { return rep->data; }
 
   T *fortran_vec (void);
+
+#ifdef HEAVYWEIGHT_INDEXING
+  void set_max_indices (int mi) { rep->set_max_indices (mi); }
+
+  void clear_index (void) { rep->clear_index (); }
+
+  void set_index (const idx_vector& i) { rep->set_index (i); }
+
+  int index_count (void) const { return rep->index_count (); }
+
+  idx_vector *get_idx (void) const { return rep->get_idx (); }
+
+  void maybe_delete_elements (idx_vector& i);
+
+  Array<T> value (void);
+#endif
 };
+
+template <class LT, class RT>
+int assign (Array<LT>& lhs, const Array<RT>& rhs);
 
 // Two dimensional array class.
 
@@ -175,45 +235,63 @@ class Array2 : public Array<T>
 {
 protected:
 
-  int d1;
-  int d2;
-
   Array2 (T *d, int n, int m) : Array<T> (d, n*m)
     {
       d1 = n;
       d2 = m;
+      set_max_indices (2);
     }
 
 public:
+
+  // These really need to be protected (and they will be in the
+  // future, so don't depend on them being here!), but they can't be
+  // until template friends work correctly in g++.
+
+  int d1;
+  int d2;
 
   Array2 (void) : Array<T> ()
     {
       d1 = 0;
       d2 = 0;
+      set_max_indices (2);
     }
 
   Array2 (int n, int m) : Array<T> (n*m)
     {
       d1 = n;
       d2 = m;
+      set_max_indices (2);
     }
 
   Array2 (int n, int m, const T& val) : Array<T> (n*m, val)
     {
       d1 = n;
       d2 = m;
+      set_max_indices (2);
     }
 
   Array2 (const Array2<T>& a) : Array<T> (a)
     {
       d1 = a.d1;
       d2 = a.d2;
+      set_max_indices (2);
     }
 
-  Array2 (const DiagArray<T>& a)  : Array<T> (a.rows () * a.cols (), T (0))
+  Array2 (const Array<T>& a, int n, int m) : Array<T> (a)
+    {
+      d1 = n;
+      d2 = m;
+      set_max_indices (2);
+    }
+
+  Array2 (const DiagArray<T>& a) : Array<T> (a.rows () * a.cols (), T (0))
     {
       for (int i = 0; i < a.length (); i++)
 	elem (i, i) = a.elem (i, i);
+
+      set_max_indices (2);
     }
 
   ~Array2 (void) { }
@@ -251,7 +329,16 @@ public:
 
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
+
+#ifdef HEAVYWEIGHT_INDEXING
+  void maybe_delete_elements (idx_vector& i, idx_vector& j);
+
+  Array2<T> value (void);
+#endif
 };
+
+template <class LT, class RT>
+int assign (Array2<LT>& lhs, const Array2<RT>& rhs);
 
 // Three dimensional array class.
 
@@ -266,6 +353,7 @@ protected:
     {
       d2 = m;
       d3 = k;
+      set_max_indices (3);
     }
 
 public:
@@ -274,24 +362,28 @@ public:
     {
       d2 = 0;
       d3 = 0;
+      set_max_indices (3);
     }
 
   Array3 (int n, int m, int k) : Array2<T> (n, m*k)
     {
       d2 = m;
       d3 = k;
+      set_max_indices (3);
     }
 
   Array3 (int n, int m, int k, const T& val) : Array2<T> (n, m*k, val)
     {
       d2 = m;
       d3 = k;
+      set_max_indices (3);
     }
 
   Array3 (const Array3<T>& a) : Array2<T> (a)
     {
       d2 = a.d2;
       d3 = a.d3;
+      set_max_indices (3);
     }
 
   ~Array3 (void) { }
@@ -325,7 +417,16 @@ public:
 
   void resize (int n, int m, int k);
   void resize (int n, int m, int k, const T& val);
+
+#ifdef HEAVYWEIGHT_INDEXING
+  void maybe_delete_elements (idx_vector& i, idx_vector& j, idx_vector& k);
+
+  Array3<T> value (void);
+#endif
 };
+
+template <class LT, class RT>
+int assign (Array3<LT>& lhs, const Array3<RT>& rhs);
 
 // A two-dimensional array with diagonal elements only.
 //
@@ -344,8 +445,8 @@ template <class T>
 class DiagArray : public Array<T>
 {
 private:
-  inline T get (int i) { return Array<T>::elem (i); }
-  inline void set (const T& val, int i) { Array<T>::elem (i) = val; }
+  T get (int i) { return Array<T>::elem (i); }
+  void set (const T& val, int i) { Array<T>::elem (i) = val; }
 
 #if 0
 #if ! (defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6)
@@ -353,33 +454,32 @@ private:
   {
   public:
 
-    inline Proxy (DiagArray<T> *ref, int r, int c)
+    Proxy (DiagArray<T> *ref, int r, int c)
       : i (r), j (c), object (ref) { } 
 
-    inline const Proxy& operator = (const T& val) const
-    {
-      if (i == j)
-	{
-	  if (object)
-	    object->set (val, i);
-	}
-      else
-	(*current_liboctave_error_handler)
-	  ("assignment to off-diagonal element attempted for diagonal array");
+    const Proxy& operator = (const T& val) const
+      {
+	if (i == j)
+	  {
+	    if (object)
+	      object->set (val, i);
+	  }
+	else
+	  (*current_liboctave_error_handler) ("invalid assignment to off-diagonal in diagonal array");
 
-      return *this;
-    }
+	return *this;
+      }
 
-    inline operator T () const
-    {
-      if (object && i == j)
-	return object->get (i);
-      else
-	{
-	  static T foo (0);
-	  return foo;
-	}
-    }
+    operator T () const
+      {
+	if (object && i == j)
+	  return object->get (i);
+	else
+	  {
+	    static T foo (0);
+	    return foo;
+	  }
+      }
 
   private:
 
@@ -387,7 +487,7 @@ private:
     // taking the address of a Proxy.  Maybe it should be implemented
     // by means of a companion function in the DiagArray class.
 
-    inline T *operator& () const { assert (0); return (T *) 0; }
+    T *operator& () const { assert (0); return (T *) 0; }
 
     int i;
     int j;
@@ -409,6 +509,7 @@ protected:
     {
       nr = r;
       nc = c;
+      set_max_indices (2);
     }
 
 public:
@@ -417,56 +518,63 @@ public:
     {
       nr = 0;
       nc = 0;
+      set_max_indices (2);
     }
 
   DiagArray (int n) : Array<T> (n)
-{
-  nr = n;
-  nc = n;
-}
+    {
+      nr = n;
+      nc = n;
+      set_max_indices (2);
+    }
 
   DiagArray (int n, const T& val) : Array<T> (n, val)
-{
-  nr = n;
-  nc = n;
-}
+    {
+      nr = n;
+      nc = n;
+      set_max_indices (2);
+    }
 
   DiagArray (int r, int c) : Array<T> (r < c ? r : c)
-{
-  nr = r;
-  nc = c;
-}
+    {
+      nr = r;
+      nc = c;
+      set_max_indices (2);
+    }
 
   DiagArray (int r, int c, const T& val) : Array<T> (r < c ? r : c, val)
-{
-  nr = r;
-  nc = c;
-}
+    {
+      nr = r;
+      nc = c;
+      set_max_indices (2);
+    }
 
   DiagArray (const Array<T>& a) : Array<T> (a)
-{
-  nr = nc = a.length ();
-}
+    {
+      nr = nc = a.length ();
+      set_max_indices (2);
+    }
 
   DiagArray (const DiagArray<T>& a) : Array<T> (a)
-{
-  nr = a.nr;
-  nc = a.nc;
-}
+    {
+      nr = a.nr;
+      nc = a.nc;
+      set_max_indices (2);
+    }
 
   ~DiagArray (void) { }
 
   DiagArray<T>& operator = (const DiagArray<T>& a)
-{
-  if (this != &a)
     {
-      Array<T>::operator = (a);
-      nr = a.nr;
-      nc = a.nc;
-    }
+      if (this != &a)
+	{
+	  Array<T>::operator = (a);
+	  nr = a.nr;
+	  nc = a.nc;
+	}
 
-  return *this;
-}
+      return *this;
+    }
 
   int dim1 (void) const { return nr; }
   int dim2 (void) const { return nc; }
@@ -476,31 +584,31 @@ public:
   int columns (void) const { return nc; }
 
 #if 0
-  inline Proxy elem (int r, int c)
-  {
-    return Proxy (this, r, c);
-  }
-
-  inline Proxy checkelem (int r, int c)
-  {
-    if (r < 0 || c < 0 || r >= nr || c >= nc)
-      {
-	(*current_liboctave_error_handler) ("range error");
-	return Proxy (0, r, c);
-      }
-    else
+  Proxy elem (int r, int c)
+    {
       return Proxy (this, r, c);
-  }
+    }
 
-  inline Proxy operator () (int r, int c)
-  {
-    if (r < 0 || c < 0 || r >= nr || c >= nc)
-      {
-	(*current_liboctave_error_handler) ("range error");
-	return Proxy (0, r, c);
-      }
-    else
-      return Proxy (this, r, c);
+  Proxy checkelem (int r, int c)
+    {
+      if (r < 0 || c < 0 || r >= nr || c >= nc)
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  return Proxy (0, r, c);
+	}
+      else
+	return Proxy (this, r, c);
+    }
+
+  Proxy operator () (int r, int c)
+    {
+      if (r < 0 || c < 0 || r >= nr || c >= nc)
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  return Proxy (0, r, c);
+	}
+      else
+	return Proxy (this, r, c);
   }
 #else
   T& elem (int r, int c);
@@ -518,6 +626,8 @@ public:
 
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
+
+  void maybe_delete_elements (idx_vector& i, idx_vector& j);
 };
 
 #endif

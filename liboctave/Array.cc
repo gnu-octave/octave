@@ -31,7 +31,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cassert>
 
+#include <iostream.h>
+
 #include "Array.h"
+
+#if defined (HEAVYWEIGHT_INDEXING)
+#include "idx-vector.h"
+#include "Array-idx.h"
+#endif
+
+#include "lo-error.h"
 
 // The real representation of all arrays.
 
@@ -40,6 +49,12 @@ ArrayRep<T>::ArrayRep (int n)
 {
   len = n;
   data = new T [len];
+
+#ifdef HEAVYWEIGHT_INDEXING
+  idx = 0;
+  max_indices = 0;
+  idx_count = 0;
+#endif
 }
 
 template <class T>
@@ -47,16 +62,30 @@ ArrayRep<T>::ArrayRep (const ArrayRep<T>& a)
 {
   len = a.len;
   count = a.count;
+
   data = new T [len];
   for (int i = 0; i < len; i++)
     data[i] = a.data[i];
+
+#ifdef HEAVYWEIGHT_INDEXING
+  max_indices = a.max_indices;
+  idx_count = a.idx_count;
+  if (a.idx)
+    {
+      idx_vector *idx = new idx_vector [max_indices];
+      for (int i = 0; i < max_indices; i++)
+	idx[i] = a.idx[i];
+    }
+  else
+    idx = 0;
+#endif
 }
 
 template <class T>
 ArrayRep<T>::~ArrayRep (void)
 {
   delete [] data;
-  data = (T *) 0;
+  delete [] idx;
 }
 
 template <class T>
@@ -97,7 +126,6 @@ Array<T>::operator = (const Array<T>& a)
       rep = a.rep;
       rep->count++;
     }
-
   return *this;
 }
 
@@ -148,8 +176,7 @@ Array<T>::resize (int n)
 {
   if (n < 0)
     {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimension");
+      (*current_liboctave_error_handler) ("can't resize to negative dimension");
       return;
     }
 
@@ -162,6 +189,8 @@ Array<T>::resize (int n)
 
   rep = new ArrayRep<T> (n);
   rep->count = 1;
+
+  SET_MAX_INDICES (1);
 
   if (old_data && old_len > 0)
     {
@@ -181,8 +210,7 @@ Array<T>::resize (int n, const T& val)
 {
   if (n < 0)
     {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimension");
+      (*current_liboctave_error_handler) ("can't resize to negative dimension");
       return;
     }
 
@@ -195,6 +223,8 @@ Array<T>::resize (int n, const T& val)
 
   rep = new ArrayRep<T> (n);
   rep->count = 1;
+
+  SET_MAX_INDICES (1);
 
   int min_len = old_len < n ? old_len : n;
 
@@ -280,8 +310,7 @@ Array2<T>::resize (int r, int c)
 {
   if (r < 0 || c < 0)
     {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimension");
+      (*current_liboctave_error_handler) ("can't resize to negative dimension");
       return;
     }
 
@@ -290,12 +319,15 @@ Array2<T>::resize (int r, int c)
 
   ArrayRep<T> *old_rep = rep;
   const T *old_data = data ();
+
   int old_d1 = dim1 ();
   int old_d2 = dim2 ();
   int old_len = length ();
 
   rep = new ArrayRep<T> (r*c);
   rep->count = 1;
+
+  SET_MAX_INDICES (2);
 
   d1 = r;
   d2 = c;
@@ -320,8 +352,7 @@ Array2<T>::resize (int r, int c, const T& val)
 {
   if (r < 0 || c < 0)
     {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimension");
+      (*current_liboctave_error_handler) ("can't resize to negative dimension");
       return;
     }
 
@@ -336,6 +367,8 @@ Array2<T>::resize (int r, int c, const T& val)
 
   rep = new ArrayRep<T> (r*c);
   rep->count = 1;
+
+  SET_MAX_INDICES (2);
 
   d1 = r;
   d2 = c;
@@ -513,8 +546,7 @@ DiagArray<T>::resize (int r, int c)
 {
   if (r < 0 || c < 0)
     {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimensions");
+      (*current_liboctave_error_handler) ("can't resize to negative dimensions");
       return;
     }
 
@@ -529,6 +561,8 @@ DiagArray<T>::resize (int r, int c)
 
   rep = new ArrayRep<T> (new_len);
   rep->count = 1;
+
+  SET_MAX_INDICES (2);
 
   nr = r;
   nc = c;
@@ -551,8 +585,7 @@ DiagArray<T>::resize (int r, int c, const T& val)
 {
   if (r < 0 || c < 0)
     {
-      (*current_liboctave_error_handler)
-	("can't resize to negative dimensions");
+      (*current_liboctave_error_handler) ("can't resize to negative dimensions");
       return;
     }
 
@@ -567,6 +600,8 @@ DiagArray<T>::resize (int r, int c, const T& val)
 
   rep = new ArrayRep<T> (new_len);
   rep->count = 1;
+
+  SET_MAX_INDICES (2);
 
   nr = r;
   nc = c;

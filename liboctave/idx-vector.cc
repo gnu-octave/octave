@@ -34,17 +34,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "Range.h"
+#include "dColVector.h"
 #include "dMatrix.h"
 
-#include "error.h"
 #include "idx-vector.h"
-#include "user-prefs.h"
-#include "utils.h"
+#include "lo-error.h"
 
-idx_vector::idx_vector (const idx_vector& a)
+#define IDX_VEC_REP idx_vector::idx_vector_rep
+
+IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
 {
   data = 0;
   initialized = a.initialized;
+  frozen = a.frozen;
+  colon_equiv_checked = a.colon_equiv_checked;
+  colon_equiv = a.colon_equiv;
+
+  colon = a.colon;
+
+  orig_nr = a.orig_nr;
+  orig_nc = a.orig_nc;
 
   len = a.len;
   if (len > 0)
@@ -71,65 +80,93 @@ tree_to_mat_idx (double x)
     return ((int) (x - 0.5) - 1);
 }
 
-idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
-			const char *rc, int z_len)
+IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
 {
   data = 0;
   initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
 
-  int nr = m.rows ();
-  int nc = m.columns ();
+  int len = v.length ();
 
-  if (nr == 0 || nc == 0)
+  orig_nr = len;
+  orig_nc = 1;
+
+  if (len == 0)
     {
-      len = 0;
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;
+      max_val = 0;
+      min_val = 0;
       initialized = 1;
       return;
     }
-  else if (nr > 1 && nc > 1 && do_ftn_idx)
-    {
-      const double *cop_out = m.data ();
-      len = nr * nc;
-      data = new int [len];
-      for (int i = 0; i < len; i++)
-	data[i] = tree_to_mat_idx (*cop_out++);
-    }
-  else if (nr == 1 && nc > 0)
-    {
-      len = nc;
-      data = new int [len];
-      for (int i = 0; i < len; i++)
-	data[i] = tree_to_mat_idx (m.elem (0, i)); 
-    }  
-  else if (nc == 1 && nr > 0)
-    {
-      len = nr;
-      data = new int [len];
-      for (int i = 0; i < len; i++)
-	data[i] = tree_to_mat_idx (m.elem (i, 0));
-    }
   else
     {
-      ::error ("invalid matrix used as index");
-      return;
+      data = new int [len];
+      for (int i = 0; i < len; i++)
+	data[i] = tree_to_mat_idx (v.elem (i));
     }
 
-  init_state (rc, z_len);
+  init_state ();
 }
 
-idx_vector::idx_vector (const Range& r)
+IDX_VEC_REP::idx_vector_rep (const Matrix& m)
 {
   data = 0;
   initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
+
+  orig_nr = m.rows ();
+  orig_nc = m.columns ();
+
+  len = orig_nr * orig_nc;
+
+  if (len == 0)
+    {
+      num_zeros = 0;
+      num_ones = 0;
+      one_zero = 0;
+      max_val = 0;
+      min_val = 0;
+      initialized = 1;
+      return;
+    }
+  else
+    {
+      int k = 0;
+      data = new int [len];
+      for (int j = 0; j < orig_nc; j++)
+	for (int i = 0; i < orig_nr; i++)
+	  data[k++] = tree_to_mat_idx (m.elem (i, j));
+    }
+
+  init_state ();
+}
+
+IDX_VEC_REP::idx_vector_rep (const Range& r)
+{
+  data = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
 
   len = r.nelem ();
 
+  orig_nr = 1;
+  orig_nc = len;
+
   if (len < 0)
     {
-      ::error ("invalid range used as index");
+      (*current_liboctave_error_handler) ("invalid range used as index");
       return;
     }
   else if (len == 0)
@@ -137,6 +174,8 @@ idx_vector::idx_vector (const Range& r)
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;
+      max_val = 0;
+      min_val = 0;
       initialized = 1;
       return;
     }
@@ -155,12 +194,38 @@ idx_vector::idx_vector (const Range& r)
   init_state ();
 }
 
-idx_vector&
-idx_vector::operator = (const idx_vector& a)
+IDX_VEC_REP::idx_vector_rep (char c)
+{
+  assert (c == ':');
+
+  colon = 1;
+  len = 0;
+  num_zeros = 0;
+  num_ones = 0;
+  one_zero = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  data = 0;
+
+  init_state ();
+}
+
+IDX_VEC_REP&
+IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
 {
   if (this != &a)
     {
       initialized = a.initialized;
+      frozen = a.frozen;
+      colon_equiv_checked = a.colon_equiv_checked;
+      colon_equiv = a.colon_equiv;
+
+      colon = a.colon;
+
+      orig_nr = a.orig_nr;
+      orig_nc = a.orig_nc;
 
       delete [] data;
       len = a.len;
@@ -179,90 +244,33 @@ idx_vector::operator = (const idx_vector& a)
 }
 
 void
-idx_vector::init_state (const char *rc, int z_len)
+IDX_VEC_REP::init_state (void)
 {
-  one_zero = 1;
   num_zeros = 0;
   num_ones = 0;
 
-  min_val = max_val = data[0];
-
-  int i = 0;
-  do
+  if (colon)
     {
-      if (data[i] == -1)
-	num_zeros++;
-      else if (data[i] == 0)
-	num_ones++;
-
-      if (one_zero && data[i] != -1 && data[i] != 0)
-	one_zero = 0;
-
-      if (data[i] > max_val)
-	max_val = data[i];
-
-      if (data[i] < min_val)
-	min_val = data[i];
-    }
-  while (++i < len);
-
-  if (one_zero && z_len == len)
-    {
-      if (num_ones != len || user_pref.prefer_zero_one_indexing)
-	convert_one_zero_to_idx ();
-    }
-  else if (min_val < 0)
-    {
-      ::error ("%s index %d out of range", rc, min_val+1);
-      initialized = 0;
-      return;
-    }
-#if 0
-  // Checking max index against size won't work right here unless we
-  // also look at resize on range error, and we have to do that later
-  // on anyway.
-
-  else if (max_val >= z_len)
-    {
-      ::error ("%s index %d out of range", rc, max_val+1);
-      initialized = 0;
-      return;
-    }
-#endif
-
-  initialized = 1;
-}
-
-void
-idx_vector::convert_one_zero_to_idx (void)
-{
-  if (num_ones == 0)
-    {
-      len = 0;
-      max_val = 0;
-      min_val = 0;
-      delete [] data;
-      data = 0;
+      one_zero = 0;
+      min_val = max_val = 0;
     }
   else
     {
-      assert (num_ones + num_zeros == len);
-
-      int *new_data = new int [num_ones];
-      int count = 0;
-      for (int i = 0; i < len; i++)
-	if (data[i] == 0)
-	  new_data[count++] = i;
-
-      delete [] data;
-      len = num_ones;
-      data = new_data;
+      one_zero = 1;
 
       min_val = max_val = data[0];
 
       int i = 0;
       do
 	{
+	  if (data[i] == -1)
+	    num_zeros++;
+	  else if (data[i] == 0)
+	    num_ones++;
+
+	  if (one_zero && data[i] != -1 && data[i] != 0)
+	    one_zero = 0;
+
 	  if (data[i] > max_val)
 	    max_val = data[i];
 
@@ -271,14 +279,60 @@ idx_vector::convert_one_zero_to_idx (void)
 	}
       while (++i < len);
     }
+
+  initialized = 1;
+}
+
+void
+IDX_VEC_REP::maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one)
+{
+  if (one_zero && z_len == len
+      && (num_ones != len || prefer_zero_one))
+    {
+      if (num_ones == 0)
+	{
+	  len = 0;
+	  max_val = 0;
+	  min_val = 0;
+	  delete [] data;
+	  data = 0;
+	}
+      else
+	{
+	  assert (num_ones + num_zeros == len);
+
+	  int *new_data = new int [num_ones];
+	  int count = 0;
+	  for (int i = 0; i < len; i++)
+	    if (data[i] == 0)
+	      new_data[count++] = i;
+
+	  delete [] data;
+	  len = num_ones;
+	  data = new_data;
+
+	  min_val = max_val = data[0];
+
+	  int i = 0;
+	  do
+	    {
+	      if (data[i] > max_val)
+		max_val = data[i];
+
+	      if (data[i] < min_val)
+		min_val = data[i];
+	    }
+	  while (++i < len);
+	}
+    }
 }
 
 int
-idx_vector::checkelem (int n) const
+IDX_VEC_REP::checkelem (int n) const
 {
   if (n < 0 || n >= len)
     {
-      ::error ("idx-vector: index out of range");
+      (*current_liboctave_error_handler) ("idx-vector: index out of range");
       return 0;
     }
 
@@ -291,52 +345,147 @@ intcmp (int *i, int *j)
   return (*i - *j);
 }
 
-void
-idx_vector::sort (void)
+static inline void
+sort_data (int *d, int len)
 {
-  qsort ((void *) data, len, sizeof (int),
-	 (int (*)(const void*, const void*)) intcmp); 
+  qsort ((void *) d, len, sizeof (int),
+	 (int (*)(const void*, const void*)) intcmp);
 }
 
-void
-idx_vector::sort_uniq (void)
+static inline int
+make_uniq (int *d, int len)
 {
-  if (len > 0)
+  int k = 0;
+  for (int i = 1; i < len; i++)
     {
-      sort ();
-
-      int *new_data = new int [len];
-      new_data[0] = data[0];
-      int k = 0;
-      for (int i = 1; i < len; i++)
+      if (d[i] != d[k])
 	{
-	  if (data[i] != new_data[k])
-	    {
-	      k++;
-	      new_data[k] = data[i];
-	    }
+	  k++;
+	  d[k] = d[i];
 	}
-      delete [] data;
-      len = k+1;
-      data = new_data;
     }
+  return k+1;
+}
+
+static inline int *
+copy_data (const int *d, int len)
+{
+  int *new_data = new int [len];
+
+  for (int i = 0; i < len; i++)
+    new_data[i] = d[i];
+
+  return new_data;
+}
+
+int
+IDX_VEC_REP::is_colon_equiv (int n, int sort)
+{
+  if (! colon_equiv_checked)
+    {
+      if (colon)
+	{
+	  colon_equiv = 1;
+	}
+      else if (len > 0)
+	{
+	  int *tmp_data = copy_data (data, len);
+
+	  if (sort)
+	    sort_data (tmp_data, len);
+
+	  int tmp_len = make_uniq (tmp_data, len);
+
+	  colon_equiv = ((tmp_len == 0 && n == 0)
+			 || (tmp_len == n
+			     && tmp_data[0] == 0
+			     && tmp_data[tmp_len-1] == tmp_len - 1));
+
+	  delete [] tmp_data;
+	}
+      else
+	colon_equiv = 0;
+
+      colon_equiv_checked = 1;
+    }
+
+  return colon_equiv;
 }
 
 void
-idx_vector::shorten (int n)
+IDX_VEC_REP::shorten (int n)
 {
   if (n > 0 && n <= len)
     len = n;
   else
-    panic_impossible ();
+    (*current_liboctave_error_handler)
+      ("idx_vector::shorten: internal error!");
 }
 
 ostream&
-operator << (ostream& os, const idx_vector& a)
+IDX_VEC_REP::print (ostream& os) const
 {
-  for (int i = 0; i < a.len; i++)
-    os << a.data[i] << "\n";
+  for (int i = 0; i < len; i++)
+    os << data[i] << "\n";
   return os;
+}
+
+int
+IDX_VEC_REP::freeze (int z_len, const char *tag,
+		     int prefer_zero_one, int resize_ok)
+{
+  if (frozen)
+    {
+      assert (frozen_at_z_len == z_len);
+      return frozen_len;
+    }
+
+  frozen_len = -1;
+
+  if (colon)
+    frozen_len = z_len;
+  else
+    {
+      if (len == 0)
+	frozen_len = 0;
+      else
+	{
+	  maybe_convert_one_zero_to_idx (z_len, prefer_zero_one);
+
+	  int max_val = max ();
+	  int min_val = min ();
+
+	  if (min_val < 0)
+	    {
+	      if (tag)
+		(*current_liboctave_error_handler)
+		  ("invalid %s index = %d", tag, min_val+1);
+	      else
+		(*current_liboctave_error_handler)
+		  ("invalid index = %d", min_val+1);
+
+	      initialized = 0;
+	    }
+	  else if (! resize_ok && max_val >= z_len)
+	    {
+	      if (tag)
+		(*current_liboctave_error_handler)
+		  ("invalid %s index = %d", tag, max_val+1);
+	      else
+		(*current_liboctave_error_handler)
+		  ("invalid index = %d", max_val+1);
+
+	      initialized = 0;
+	    }
+	  else
+	    frozen_len = length (z_len);
+	}
+    }
+
+  frozen = 1;
+  frozen_at_z_len = z_len;
+
+  return frozen_len;
 }
 
 /*

@@ -31,6 +31,10 @@ template class Array<double>;
 template class Array2<double>;
 template class DiagArray<double>;
 
+template void assign (Array<double>&, const Array<double>&);
+
+template void assign (Array2<double>&, const Array2<double>&);
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

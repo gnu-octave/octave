@@ -29,78 +29,207 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 class ostream;
+class ColumnVector;
 class Matrix;
 class Range;
 
 class
 idx_vector
 {
+private:
+
+  struct
+  idx_vector_rep
+    {
+      idx_vector_rep::idx_vector_rep (void)
+	{
+	  colon = 0;
+	  len = 0;
+	  num_zeros = 0;
+	  num_ones = 0;
+	  one_zero = 0;
+	  orig_nr = 0;
+	  orig_nc = 0;
+	  initialized = 0;
+	  frozen = 0;
+	  colon_equiv_checked = 0;
+	  colon_equiv = 0;
+	  data = 0;
+	}
+
+      idx_vector_rep (const ColumnVector& v);
+
+      idx_vector_rep (const Matrix& m);
+
+      idx_vector_rep (const Range& r);
+
+      idx_vector_rep (char c);
+
+      idx_vector_rep (const idx_vector_rep& a);
+
+      idx_vector_rep::~idx_vector_rep (void) { delete [] data; }
+
+      idx_vector_rep& operator = (const idx_vector_rep& a);
+
+      int ok (void) { return initialized; }
+
+      int capacity (void) const { return len; }
+      int length (int colon_len) const { return colon ? colon_len : len; }
+
+      int elem (int n) const { return colon ? n : data[n]; }
+
+      int checkelem (int n) const;
+      int operator () (int n) const { return checkelem (n); }
+	  
+      int max (void) const { return max_val; }
+      int min (void) const { return min_val; }
+	  
+      int one_zero_only (void) const { return one_zero; }
+      int zeros_count (void) const { return num_zeros; }
+      int ones_count (void) const { return num_ones; }
+
+      int is_colon (void) const { return colon; }
+      int is_colon_equiv (int n, int sort);
+
+      int orig_rows (void) const { return orig_nr; }
+      int orig_columns (void) const { return orig_nc; }
+
+      // other stuff
+
+      void shorten (int n); // Unsafe.  Avoid at all cost.
+
+      int freeze (int z_len, const char *tag, int prefer_zero_one,
+		  int resize_ok);
+
+      // i/o
+
+      ostream& print (ostream& os) const;
+
+      int *data;
+      int len;
+      int num_zeros;
+      int num_ones;
+      int max_val;
+      int min_val;
+      int orig_nr;
+      int orig_nc;
+      int count;
+      int frozen_at_z_len;
+      int frozen_len;
+      unsigned int colon : 1;
+      unsigned int one_zero : 1;
+      unsigned int initialized : 1;
+      unsigned int frozen : 1;
+      unsigned int colon_equiv_checked : 1;
+      unsigned int colon_equiv : 1;
+
+      void init_state (void);
+
+      void maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one);
+    };
+
 public:
 
   idx_vector::idx_vector (void)
     {
-      len = 0;
-      num_zeros = 0;
-      num_ones = 0;
-      one_zero = 0;
-      initialized = 0;
-      data = 0;
+      rep = new idx_vector_rep ();
+      rep->count = 1;
     }
 
-  idx_vector (const idx_vector& a);
-
-  idx_vector (const Matrix& m, int do_ftn_idx,
-	      const char *rc = 0, int z_len = 0);
-
-  idx_vector (const Range& r);
-
-  idx_vector::~idx_vector (void) { delete [] data; }
-
-  idx_vector& operator = (const idx_vector& a);
-
-  idx_vector::operator void * () const
+  idx_vector (const ColumnVector& v)
     {
-      return initialized ? (void *) 1 : (void *) 0;
+      rep = new idx_vector_rep (v);
+      rep->count = 1;
     }
 
-  int idx_vector::capacity (void) const { return len; }
-  int idx_vector::length (void) const { return len; }
+  idx_vector (const Matrix& m)
+    {
+      rep = new idx_vector_rep (m);
+      rep->count = 1;
+    }
 
-  int idx_vector::elem (int n) const { return data[n]; }
-  int idx_vector::checkelem (int n) const;
-  int idx_vector::operator () (int n) const { return checkelem (n); }
+  idx_vector (const Range& r)
+    {
+      rep = new idx_vector_rep (r);
+      rep->count = 1;
+    }
 
-  int idx_vector::max (void) const { return max_val; }
-  int idx_vector::min (void) const { return min_val; }
+  idx_vector (char c)
+    {
+      rep = new idx_vector_rep (c);
+      rep->count = 1;
+    }
 
-  int idx_vector::one_zero_only (void) const { return one_zero; }
-  int idx_vector::zeros_count (void) const { return num_zeros; }
-  int idx_vector::ones_count (void) const { return num_ones; }
+  idx_vector (const idx_vector& a)
+    {
+      rep = a.rep;
+      rep->count++;
+    }
 
-// other stuff
+  idx_vector::~idx_vector (void)
+    {
+      if (--rep->count <= 0)
+	delete rep;
+    }
 
-  void sort (void);
-  void sort_uniq (void);
+  idx_vector& operator = (const idx_vector& a)
+    {
+      if (this != &a)
+	{
+	  if (--rep->count <= 0)
+	    delete rep;
 
-  void shorten (int n); // Unsafe.  Avoid at all cost.
+	  rep = a.rep;
+	  rep->count++;
+	}
+      return *this;
+    }
+
+  idx_vector::operator void * () const { return (void *) rep->ok (); }
+
+  int idx_vector::capacity (void) const { return rep->capacity (); }
+  int idx_vector::length (int cl) const { return rep->length (cl); }
+
+  int idx_vector::elem (int n) const { return rep->elem (n); }
+  int idx_vector::checkelem (int n) const { return rep->checkelem (n); }
+  int idx_vector::operator () (int n) const { return rep->operator () (n); }
+
+  int idx_vector::max (void) const { return rep->max (); }
+  int idx_vector::min (void) const { return rep->min (); }
+
+  int idx_vector::one_zero_only (void) const { return rep->one_zero_only (); }
+  int idx_vector::zeros_count (void) const { return rep->zeros_count (); }
+  int idx_vector::ones_count (void) const { return rep->ones_count (); }
+
+  int is_colon (void) const { return rep->is_colon (); }
+  int is_colon_equiv (int n, int sort = 0) const
+    { return rep->is_colon_equiv (n, sort); }
+
+  int orig_rows (void) const { return rep->orig_rows (); }
+  int orig_columns (void) const { return rep->orig_columns (); }
+
+// Unsafe.  Avoid at all cost.
+  void shorten (int n) { rep->shorten (n); }
 
 // i/o
 
-  friend ostream& operator << (ostream& os, const idx_vector& a);
+  int freeze (int z_len, const char *tag, int prefer_zero_one = 0,
+	      int resize_ok = 0)
+    { return rep->freeze (z_len, tag, prefer_zero_one, resize_ok); }
+
+  ostream& print (ostream& os) const { return rep->print (os); }
+
+  friend ostream& operator << (ostream& os, const idx_vector& a)
+    { return a.print (os); }
+
+  void maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one = 0)
+    { rep->maybe_convert_one_zero_to_idx (z_len, prefer_zero_one); }
 
 private:
 
-  int *data;
-  int len;
-  int num_zeros;
-  int num_ones;
-  int max_val;
-  int min_val;
-  unsigned int one_zero : 1;
-  unsigned int initialized : 1;
+  idx_vector_rep *rep;
 
-  void init_state (const char *rc = 0, int z_len = 0);
-  void convert_one_zero_to_idx (void);
+  void init_state (void) { rep->init_state (); }
 };
 
 #endif

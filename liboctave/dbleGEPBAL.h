@@ -40,9 +40,6 @@ public:
 
   GEPBALANCE (void) { }
 
-  GEPBALANCE (const Matrix& a, const Matrix &, const char *balance_job);
-
-
   GEPBALANCE (const Matrix& a, const Matrix& b, const char * balance_job)
     {
       init (a, b, balance_job); 

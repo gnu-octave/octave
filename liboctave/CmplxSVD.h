@@ -43,12 +43,13 @@ public:
   ComplexSVD (void) { }
 
 
-  ComplexSVD (const ComplexMatrix& a, SVD::type svd_type) 
+  ComplexSVD (const ComplexMatrix& a, SVD::type svd_type = SVD::std)
     {
       init (a, svd_type);
     }
 
-  ComplexSVD (const ComplexMatrix& a, int& info, SVD::type svd_type)
+  ComplexSVD (const ComplexMatrix& a, int& info,
+	      SVD::type svd_type = SVD::std)
     {
       info = init (a, svd_type);
     }

@@ -40,9 +40,6 @@ public:
 
   HESS (void) { }
 
-  HESS (const Matrix& a);
-  HESS (const Matrix&a, int& info);
-
   HESS (const Matrix& a) { init (a); }
 
   HESS (const Matrix& a, int& info) { info = init (a); }

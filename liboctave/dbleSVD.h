@@ -48,9 +48,9 @@ public:
   SVD (void) { }
 
 
-  SVD (const Matrix& a, type svd_type) { init (a, svd_type); }
+  SVD (const Matrix& a, type svd_type = SVD::std) { init (a, svd_type); }
 
-  SVD (const Matrix& a, int& info, type svd_type)
+  SVD (const Matrix& a, int& info, type svd_type = SVD::std)
     {
       info = init (a, svd_type);
     }

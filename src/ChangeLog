@@ -1,3 +1,8 @@
+1999-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun.cc (print_usage): Use display_help_text instead of sending
+	help message directly to octave_stdout.
+
 1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defun-dld.h (INSTALL_DLD_FCNS, INSTALL_DLD_FCN): Delete definitions.

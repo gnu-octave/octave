@@ -51,8 +51,11 @@ print_usage (const string& nm, bool just_usage)
 
       if (h.length () > 0)
 	{
-	  octave_stdout << "\n*** " << nm << ":\n\n"
-	    << h << "\n";
+	  octave_stdout << "\n*** " << nm << ":\n\n";
+
+	  display_help_text (octave_stdout, h);
+
+	  octave_stdout << "\n";
 
 	  if (! just_usage)
 	    additional_help_message (octave_stdout);

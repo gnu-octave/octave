@@ -31,6 +31,8 @@ class string_vector;
 
 extern string_vector make_name_list (void);
 
+extern void display_help_text (ostream&, const string&);
+
 extern void additional_help_message (ostream&);
 
 // Name of the info file specified on command line.

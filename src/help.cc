@@ -679,7 +679,7 @@ looks_like_texinfo (const string& msg, size_t& p1)
   return (p2 != NPOS);
 }
 
-static void
+void
 display_help_text (ostream& os, const string& msg)
 {
   // Look for "-*- texinfo -*-" in first line of help message.  If it

@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include "Matrix.h"
+#include "f77-uscore.h"
 
 #include "tree-const.h"
 #include "user-prefs.h"

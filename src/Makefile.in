@@ -61,14 +61,14 @@ INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
 	file-io.h fnmatch.h getopt.h gripes.h help.h input.h lex.h \
 	load-save.h mappers.h missing-math.h oct-gperf.h octave.h \
-	octave-hist.h oct-map.h oct-obj.h oct-str.h pager.h parse.h \
+	octave-hist.h oct-map.h oct-obj.h pager.h parse.h \
 	pathlen.h pathsearch.h pr-output.h procstream.h sighandlers.h \
 	statdefs.h symtab.h sysdep.h sysdir.h systime.h syswait.h \
 	token.h tree-base.h tree-cmd.h tree-const.h tree-expr.h \
 	tree-misc.h tree-plot.h unwind-prot.h user-prefs.h utils.h \
 	variables.h version.h xdiv.h xpow.h Map.h SLStack.h Stack.h 
 
-TI_SRC := Array-string.cc Array-tc.cc Map-tc.cc DLList-fi.cc \
+TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
 	SLStack-i.cc SLStack-pc.cc SLStack-sym.cc SLStack-tok.cc \
 	SLStack-tm.cc SLStack-ue.cc SLStack-ui.cc
@@ -79,7 +79,7 @@ SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	dynamic-ld.cc erf.c erfc.c error.cc file-info.cc file-io.cc \
 	filemode.c fnmatch.c getopt.c getopt1.c gripes.cc help.cc \
 	input.cc lex.l load-save.cc mappers.cc mkdir.c octave.cc \
-	octave-hist.cc oct-map.cc oct-obj.cc oct-str.cc pager.cc \
+	octave-hist.cc oct-map.cc oct-obj.cc pager.cc \
 	parse.y pr-output.cc procstream.cc rename.c resource.cc \
 	rmdir.c sighandlers.cc strcasecmp.c strncase.c strfns.cc \
 	strftime.c symtab.cc sysdep.cc tempname.c timefns.cc \

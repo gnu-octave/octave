@@ -1,3 +1,7 @@
+2001-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* OPERATORS/op-s-s.cc (el_or, el_and): Return bool value.
+
 2001-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-binop.cc (tree_boolean_expression::rvalue):

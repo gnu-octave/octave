@@ -114,23 +114,8 @@ DEFBINOP (el_ldiv, scalar, scalar)
   return octave_value (v2.double_value () / d);
 }
 
-DEFBINOP (el_and, scalar, scalar)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  double result = v1.double_value () && v2.double_value ();
-
-  return octave_value (result);
-}
-
-DEFBINOP (el_or, scalar, scalar)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
-
-  double result = v1.double_value () || v2.double_value ();
-
-  return octave_value (result);
-}
+DEFBINOP_OP (el_and, scalar, scalar, &&)
+DEFBINOP_OP (el_or, scalar, scalar, ||)
 
 DEFCONV (matrix_conv, scalar, matrix)
 {

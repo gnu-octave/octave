@@ -14,7 +14,7 @@ VPATH = @srcdir@
 
 SPECIAL_SRC := machar.c f77-extern.cc f77-fcn.c lo-error.c quit.cc
 
-DEP_1 := $(patsubst %.c, %.d, $(SPECIAL))
+DEP_1 := $(patsubst %.c, %.d, $(SPECIAL_SRC))
 MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 
 SPECIAL_INCLUDE := f77-fcn.h lo-error.h quit.h

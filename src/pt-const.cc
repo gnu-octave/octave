@@ -2608,38 +2608,52 @@ do_unary_op (octave_value& a, tree_expression::type t)
 	}
     }
 
-  octave_value tmp_a = a.make_numeric ();
+  // XXX FIXME XXX -- it is very unlikely that this is the correct
+  // place for this special case...
 
-  if (error_state)
-    return retval;
-
-  switch (tmp_a.const_type ())
+  if (a.const_type () == OCT_VAL_REP::char_matrix_constant_str
+      && t == tree_expression::transpose)
     {
-    case OCT_VAL_REP::scalar_constant:
-      retval = do_unary_op (tmp_a.double_value (), t);
-      break;
+      charMatrix chm = a.all_strings ();
 
-    case OCT_VAL_REP::matrix_constant:
-      {
-	Matrix m = tmp_a.matrix_value ();
-	retval = do_unary_op (m, t);
-      }
-      break;
+      if (! error_state)
+	retval = octave_value (chm.transpose (), true);
+    }
+  else
+    {
+      octave_value tmp_a = a.make_numeric ();
 
-    case OCT_VAL_REP::complex_scalar_constant:
-      retval = do_unary_op (tmp_a.complex_value (), t);
-      break;
+      if (error_state)
+	return retval;
 
-    case OCT_VAL_REP::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp_a.complex_matrix_value ();
-	retval = do_unary_op (m, t);
-      }
-      break;
+      switch (tmp_a.const_type ())
+	{
+	case OCT_VAL_REP::scalar_constant:
+	  retval = do_unary_op (tmp_a.double_value (), t);
+	  break;
 
-    default:
-      gripe_wrong_type_arg_for_unary_op (tmp_a);
-      break;
+	case OCT_VAL_REP::matrix_constant:
+	  {
+	    Matrix m = tmp_a.matrix_value ();
+	    retval = do_unary_op (m, t);
+	  }
+	  break;
+
+	case OCT_VAL_REP::complex_scalar_constant:
+	  retval = do_unary_op (tmp_a.complex_value (), t);
+	  break;
+
+	case OCT_VAL_REP::complex_matrix_constant:
+	  {
+	    ComplexMatrix m = tmp_a.complex_matrix_value ();
+	    retval = do_unary_op (m, t);
+	  }
+	  break;
+
+	default:
+	  gripe_wrong_type_arg_for_unary_op (tmp_a);
+	  break;
+	}
     }
 
   return retval;

@@ -112,6 +112,9 @@ char *editor = 0;
 // If nonzero, don't do fancy line editing.
 int no_line_editing = 0;
 
+// If nonzero, print verbose info in some cases.
+int verbose_flag = 0;
+
 // Command number, counting from the beginning of this session.
 int current_command_number = 1;
 
@@ -157,13 +160,13 @@ static int inhibit_startup_message = 0;
 
 // Usage message
 static const char *usage_string = 
-  "octave [-?dfhiqvx] [-p path] [--debug] [--help] [--interactive]\n\
-         [--info-file file] [--norc] [--path path] [--quiet] [--version]\n\
-         [--echo-commands] [file]";
+  "octave [-?Vdfhiqvx] [-p path] [--debug] [--help] [--interactive]\n\
+         [--info-file file] [--norc] [--path path] [--quiet] [--verbose]\n\
+         [--version] [--echo-commands] [file]";
 
 // This is here so that it\'s more likely that the usage message and
 // the real set of options will agree.
-static const char *short_opts = "?dfhip:qvx";
+static const char *short_opts = "?Vdfhip:qvx";
 
 // Long options.
 #define INFO_FILE_OPTION 1
@@ -178,6 +181,7 @@ static struct option long_opts[] =
     { "path", 1, 0, 'p' },
     { "quiet", 0, 0, 'q' },
     { "silent", 0, 0, 'q' },
+    { "verbose", 0, 0, 'V' },
     { "version", 0, 0, 'v' },
     { "echo-commands", 0, 0, 'x' },
     { 0, 0, 0, 0 }
@@ -291,7 +295,7 @@ parse_and_execute (char *s, int print, int verbose)
 
       if (verbose)
 	{
-	  cout << "Reading commands from " << s << " ... ";
+	  cout << "reading commands from " << s << " ... ";
 	  reading_startup_message_printed = 1;
 	  cout.flush ();
 	}
@@ -315,7 +319,7 @@ execute_startup_files (void)
   unwind_protect_int (input_from_startup_file);
   input_from_startup_file = 1;
 
-  int verbose = ! inhibit_startup_message;
+  int verbose = (verbose_flag && ! inhibit_startup_message);
 
 // Execute commands from the site-wide configuration file.
 
@@ -452,6 +456,10 @@ main (int argc, char **argv)
     {
       switch (optc)
 	{
+	case 'V':
+	  verbose_flag++;
+	  break;
+
 	case 'd':
 	  yydebug++;
 	  break;

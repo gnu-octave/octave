@@ -57,4 +57,8 @@ function bug_report ()
 
   system (sprintf ("%s > /dev/tty", cmd));
 
+  if (! isempty (prefs))
+    system (sprintf ("rm -f %s", prefs));
+  endif
+
 endfunction

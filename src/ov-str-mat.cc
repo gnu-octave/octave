@@ -512,7 +512,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = d (rank-i-1);
  
-  space_hid = H5Screate_simple (rank, hdims, (hsize_t *)0);
+  space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0)
     return false;
 
@@ -530,7 +530,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
     s[i] = m(i);
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
-		     H5P_DEFAULT, (void*) s) >= 0;
+		     H5P_DEFAULT, s) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -580,14 +580,14 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
       else
 	{
 	  dv.resize (rank);
-	  for (int i = 0, j = rank - 1; i < (int)rank; i++, j--)
+	  for (hsize_t i = 0, j = rank - 1; i < rank; i++, j--)
 	    dv(j) = hdims[i];
 	}
 
       charNDArray m (dv);
       char *str = m.fortran_vec ();
       if (H5Dread (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
-		   H5P_DEFAULT, (void *) str) >= 0) 
+		   H5P_DEFAULT, str) >= 0) 
 	{
 	  retval = true;
 	  matrix = m;

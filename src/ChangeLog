@@ -1,3 +1,24 @@
+2004-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-bool.cc (octave_bool::load_hdf5, octave_bool::save_hdf5):
+	Avoid unnecessary casts.
+	* ov-bool-mat.cc (octave_bool_matrix::load_hdf5,
+	octave_bool_matrix::save_hdf5): Likewise.
+	* ov-cell.cc (octave_cell::load_hdf5, octave_cell::save_hdf5):
+	Likewise.
+	* ov-complex.cc (octave_complex::load_hdf5,
+	octave_complex::save_hdf5): Likewise.
+	* ov-cx-mat.cc (octave_complex_matrix::load_hdf5,
+	octave_complex_matrix::save_hdf5): Likewise.
+	* ov-range.cc (octave_range::load_hdf5, octave_range::save_hdf5):
+	Likewise.
+	* ov-re-mat.cc (octave_matrix::load_hdf5, octave_matrix::save_hdf5):
+	Likewise.
+	* ov-scalar.cc (octave_scalar::load_hdf5, octave_scalar::save_hdf5):
+	Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::load_hdf5,
+	octave_char_matrix_str::save_hdf5): Likewise.
+
 2004-03-03 David Bateman <dbateman@free.fr>
 
 	* ov-cell.cc (octave_cell::save_hdf5, octave_cell::load_hdf5):

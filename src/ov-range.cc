@@ -383,7 +383,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   hid_t space_hid = -1, type_hid = -1, data_hid = -1;
   bool retval = true;
 
-  space_hid = H5Screate_simple (0, dimens, (hsize_t*) 0);
+  space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
 
   type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
@@ -408,7 +408,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   range_vals[2] = r.inc ();
 
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-		     (void*) range_vals) >= 0;
+		     range_vals) >= 0;
 
   H5Dclose (data_hid);
   H5Tclose (type_hid);
@@ -446,7 +446,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
 
   double rangevals[3];
   if (H5Dread (data_hid, range_type, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-	       (void *) rangevals) >= 0)
+	       rangevals) >= 0)
     {
       retval = true;
       Range r (rangevals[0], rangevals[1], rangevals[2]);

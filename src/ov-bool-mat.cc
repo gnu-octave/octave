@@ -359,7 +359,7 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
   for (int i = 0; i < rank; i++)
     hdims[i] = d (rank-i-1);
 
-  space_hid = H5Screate_simple (rank, hdims, (hsize_t*) 0);
+  space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0) return false;
 
   data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_HBOOL, space_hid, 
@@ -378,7 +378,7 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
     htmp[i] = mtmp[i];
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
-		     H5P_DEFAULT, (void*) htmp) >= 0;
+		     H5P_DEFAULT, htmp) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -423,14 +423,14 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
   else
     {
       dv.resize (rank);
-      for (int i = 0, j = rank - 1; i < (int)rank; i++, j--)
+      for (hsize_t i = 0, j = rank - 1; i < rank; i++, j--)
 	dv(j) = hdims[i];
     }
 
   int nel = dv.numel ();
   hbool_t htmp[nel];
   if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, (void *) htmp) >= 0) 
+	       H5P_DEFAULT, htmp) >= 0) 
     {
       retval = true;
 

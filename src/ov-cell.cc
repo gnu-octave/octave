@@ -687,19 +687,24 @@ octave_cell::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
   dim_vector dv = dims ();
-  hsize_t rank = dv.length(); 
+  hsize_t rank = dv.length (); 
   hid_t space_hid = -1, data_hid = -1, size_hid = -1;
 
   data_hid = H5Gcreate (loc_id, name, 0);
-  if (data_hid < 0) return false;
+
+  if (data_hid < 0)
+    return false;
 
   // Have to save cell array shape, since can't have a 
   // dataset of groups....
-  space_hid = H5Screate_simple (1, &rank, (hsize_t*) 0);
+
+  space_hid = H5Screate_simple (1, &rank, 0);
+
   if (space_hid < 0) 
     {
       H5Gclose (data_hid);
@@ -709,8 +714,8 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   OCTAVE_LOCAL_BUFFER (int, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
-  for (int i = 0; i < (int)rank; i++)
-    hdims[i] = dv (rank-i-1);
+  for (int i = 0; i < rank; i++)
+    hdims[i] = dv(rank-i-1);
 
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_INT, space_hid, 
 			H5P_DEFAULT);
@@ -722,17 +727,19 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     }
 
   if (! H5Dwrite (size_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL,
-		  H5P_DEFAULT, (void*) hdims) < 0)
+		  H5P_DEFAULT, hdims) < 0)
     {
       H5Dclose (size_hid);
       H5Sclose (space_hid);
       H5Gclose (data_hid);
       return false;
     }
+
   H5Dclose (size_hid);
   H5Sclose (space_hid);
 
-  // recursively add each element of the cell to this group
+  // Recursively add each element of the cell to this group.
+
   Cell tmp = cell_value ();
   
   for (int i = 0; i < dv.numel (); i++)
@@ -749,6 +756,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     }
 
   H5Gclose (data_hid);
+
   return true;
 }
 
@@ -774,33 +782,40 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
   OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
+
   H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
 
-  // Octave uses column-major, while HDF5 uses row-major ordering
+  // Octave uses column-major, while HDF5 uses row-major ordering.
+
   dim_vector dv;
   dv.resize (hdims[0]);
+
   OCTAVE_LOCAL_BUFFER (int, tmp, hdims[0]);
   
   if (H5Dread (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, (void *) tmp) < 0)
+	       H5P_DEFAULT, tmp) < 0)
     {
       H5Dclose(data_hid);
       H5Gclose(group_id);
       return false;
     }
+
   H5Dclose (data_hid);
   H5Gclose (group_id);
 
-  for (int i = 0, j = hdims[0] - 1; i < (int)hdims[0]; i++, j--)
+  for (hsize_t i = 0, j = hdims[0] - 1; i < hdims[0]; i++, j--)
     dv(j) = tmp[i];
 
   hdf5_callback_data dsub;
 
   herr_t retval2 = -1;
+
   Cell m (dv);
+
   int current_item = 0;
+
   if (have_h5giterate_bug)
-    current_item = 1;   // Skip dims items in group
+    current_item = 1;   // Skip dims items in group.
 
 #ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;
@@ -825,7 +840,7 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
       m.elem (i) = ov;
 
       if (have_h5giterate_bug)
-	current_item++;  // H5Giterate returned the last index processed
+	current_item++;  // H5Giterate returned the last index processed.
 
     }
 
@@ -837,6 +852,7 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
   
   return retval;
 }
+
 #endif
 
 DEFUN (iscell, args, ,

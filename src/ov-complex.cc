@@ -244,7 +244,7 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
   hid_t space_hid = -1, type_hid = -1, data_hid = -1;
   bool retval = true;
 
-  space_hid = H5Screate_simple (0, dimens, (hsize_t*) 0);
+  space_hid = H5Screate_simple (0, dimens, 0);
   if (space_hid < 0) return false;
 
   type_hid = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
@@ -264,7 +264,7 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
 
   Complex tmp = complex_value ();
   retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
-		     (void*) X_CAST (double*, &tmp)) >= 0;
+		     &tmp) >= 0;
 
   H5Dclose (data_hid);
   H5Tclose (type_hid);
@@ -303,7 +303,7 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name,
   // complex scalar:
   Complex ctmp;
   if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-	       (void *) X_CAST (double *, &ctmp)) >= 0)
+	       &ctmp) >= 0)
     {
       retval = true;
       scalar = ctmp;

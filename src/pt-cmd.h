@@ -26,12 +26,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 
+class Octave_object;
+
 class tree_statement_list;
 class tree_global_init_list;
 class tree_if_command_list;
 class tree_expression;
 class tree_index_expression;
 class tree_identifier;
+class tree_return_list;
 class tree_constant;
 class symbol_record;
 
@@ -128,6 +131,7 @@ public:
   tree_for_command (int l = -1, int c = -1) : tree_command (l, c)
     {
       id = 0;
+      id_list = 0;
       expr = 0;
       list = 0;
     }
@@ -137,6 +141,17 @@ public:
     : tree_command (l, c)
       {
 	id = ident;
+	id_list = 0;
+	expr = e;
+	list = lst;
+      }
+
+  tree_for_command (tree_return_list *ident, tree_expression *e,
+		    tree_statement_list *lst, int l = -1, int c = -1)
+    : tree_command (l, c)
+      {
+	id = 0;
+	id_list = ident;
 	expr = e;
 	list = lst;
       }
@@ -150,12 +165,17 @@ public:
   void print_code (ostream& os);
 
 private:
+  void do_for_loop_once (tree_return_list *lst,
+			 const Octave_object& rhs, int& quit);
+
+  void do_for_loop_once (tree_index_expression *idx_expr,
+			 const tree_constant& rhs, int& quit);
+
   void do_for_loop_once (tree_identifier *ident,
 			 tree_constant& rhs, int& quit);
 
-  void do_for_loop_once (tree_constant& rhs, int& quit);
-
   tree_index_expression *id;	// Identifier to modify.
+  tree_return_list *id_list;	// List of identifiers to modify.
   tree_expression *expr;	// Expression to evaluate.
   tree_statement_list *list;	// List of commands to execute.
 };

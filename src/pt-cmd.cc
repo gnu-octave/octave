@@ -39,6 +39,7 @@ int returning = 0;
 
 #include "user-prefs.h"
 #include "variables.h"
+#include "oct-map.h"
 #include "symtab.h"
 #include "error.h"
 #include "gripes.h"
@@ -53,7 +54,7 @@ int returning = 0;
 static inline int
 quit_loop_now (void)
 {
-// Maybe handle `continue N' someday...
+  // Maybe handle `continue N' someday...
 
   if (continuing)
     continuing--;
@@ -81,8 +82,9 @@ list_to_vector (tree *list, int& len)
 
   tree **args = new tree * [len];
 
-// args[0] may eventually hold something useful, like the function
-// name.
+  // args[0] may eventually hold something useful, like the function
+  // name.
+
   tree *tmp_list = list;
   for (int k = 1; k < len; k++)
     {
@@ -236,17 +238,49 @@ tree_while_command::print_code (ostream& os)
 tree_for_command::~tree_for_command (void)
 {
   delete id;
+  delete id_list;
   delete expr;
   delete list;
 }
 
 inline void
-tree_for_command::do_for_loop_once (tree_constant& rhs, int& quit)
+tree_for_command::do_for_loop_once (tree_return_list *lst,
+				    const Octave_object& rhs, int& quit)
+{
+  quit = 0;
+
+  tree_oct_obj *tmp = new tree_oct_obj (rhs);
+  tree_multi_assignment_expression tmp_ass (lst, tmp, 1);
+  tmp_ass.eval (0);
+
+  if (error_state)
+    {
+      eval_error ();
+      return;
+    }
+
+  if (list)
+    {
+      list->eval (1);
+      if (error_state)
+	{
+	  eval_error ();
+	  quit = 1;
+	  return;
+	}
+    }
+
+  quit = quit_loop_now ();
+}
+
+inline void
+tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
+				    const tree_constant& rhs, int& quit)
 {
   quit = 0;
 
   tree_constant *tmp = new tree_constant (rhs);
-  tree_simple_assignment_expression tmp_ass (id, tmp, 1);
+  tree_simple_assignment_expression tmp_ass (idx_expr, tmp, 1);
   tmp_ass.eval (0);
 
   if (error_state)
@@ -309,12 +343,21 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 	    if (quit) \
 	      break; \
 	  } \
+      else if (id_list) \
+	for (int i = 0; i < steps; i++) \
+	  { \
+	    Octave_object rhs (val); \
+	    int quit = 0; \
+	    do_for_loop_once (id_list, rhs, quit); \
+	    if (quit) \
+	      break; \
+	  } \
       else \
 	for (int i = 0; i < steps; i++) \
 	  { \
 	    tree_constant rhs (val); \
 	    int quit = 0; \
-	    do_for_loop_once (rhs, quit); \
+	    do_for_loop_once (tmp_id, rhs, quit); \
 	    if (quit) \
 	      break; \
 	  } \
@@ -335,12 +378,22 @@ tree_for_command::eval (void)
       return;
     }
 
+  tree_index_expression *tmp_id = id;
+  if (id_list && id_list->length () == 1)
+    tmp_id = id_list->front ();
+
   tree_identifier *ident = 0;
-  if (! id->arg_list ())
+  if (tmp_id && ! tmp_id->arg_list ())
     {
-      tree_indirect_ref *idr = id->ident ();
+      tree_indirect_ref *idr = tmp_id->ident ();
       if (idr->is_identifier_only ())
 	ident = idr->ident ();
+    }
+
+  if (id_list && ! ident && ! tmp_expr->is_map ())
+    {
+      error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+      return;
     }
 
   if (tmp_expr.is_scalar_type ())
@@ -348,8 +401,13 @@ tree_for_command::eval (void)
       int quit = 0;
       if (ident)
 	do_for_loop_once (ident, tmp_expr, quit);
+      else if (id_list)
+	{
+	  Octave_object rhs (tmp_expr);
+	  do_for_loop_once (id_list, rhs, quit);
+	}
       else
-	do_for_loop_once (tmp_expr, quit);
+	do_for_loop_once (tmp_id, tmp_expr, quit);
     }
   else if (tmp_expr.is_matrix_type ())
     {
@@ -412,6 +470,21 @@ tree_for_command::eval (void)
 		break;
 	    }
 	}
+      else if (id_list)
+	{
+	  for (int i = 0; i < steps; i++)
+	    {
+	      double tmp_val = b + i * increment;
+
+	      Octave_object rhs (tmp_val);
+
+	      int quit = 0;
+	      do_for_loop_once (id_list, rhs, quit);
+
+	      if (quit)
+		break;
+	    }
+	}
       else
 	{
 	  for (int i = 0; i < steps; i++)
@@ -421,7 +494,61 @@ tree_for_command::eval (void)
 	      tree_constant rhs (tmp_val);
 
 	      int quit = 0;
-	      do_for_loop_once (rhs, quit);
+	      do_for_loop_once (tmp_id, rhs, quit);
+
+	      if (quit)
+		break;
+	    }
+	}
+    }
+  else if (tmp_expr.is_map ())
+    {
+      if (ident)
+	{
+	  Octave_map tmp_val (tmp_expr.map_value ());
+
+	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
+	    {
+	      tree_constant rhs (tmp_val.contents (p));
+
+	      int quit;
+	      do_for_loop_once (ident, rhs, quit);
+
+	      if (quit)
+		break;
+	    }
+	}
+      else if (id_list)
+	{
+	  // Cycle through structure elements.  First element of
+	  // id_list is set to value and the second is set to the name
+	  // of the structure element.
+
+	  Octave_map tmp_val (tmp_expr.map_value ());
+
+	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
+	    {
+	      Octave_object tmp;
+	      tmp (1) = tmp_val.key (p);
+	      tmp (0) = tmp_val.contents (p);
+
+	      int quit;
+	      do_for_loop_once (id_list, tmp, quit);
+
+	      if (quit)
+		break;
+	    }
+	}
+      else
+	{
+	  Octave_map tmp_val (tmp_expr.map_value ());
+
+	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
+	    {
+	      tree_constant rhs = tmp_val.contents (p);
+
+	      int quit;
+	      do_for_loop_once (tmp_id, rhs, quit);
 
 	      if (quit)
 		break;
@@ -518,9 +645,10 @@ do_unwind_protect_cleanup_code (void *ptr)
 {
   tree_statement_list *list = (tree_statement_list *) ptr;
 
-// We want to run the cleanup code without error_state being set, but
-// we need to restore its value, so that any errors encountered in
-// the first part of the unwind_protect are not completely ignored.
+  // We want to run the cleanup code without error_state being set,
+  // but we need to restore its value, so that any errors encountered
+  // in the first part of the unwind_protect are not completely
+  // ignored.
 
   unwind_protect_int (error_state);
 
@@ -529,9 +657,9 @@ do_unwind_protect_cleanup_code (void *ptr)
   if (list)
     list->eval (1);
 
-// We don't want to ignore errors that occur in the cleanup code, so
-// if an error is encountered there, leave error_state alone.
-// Otherwise, set it back to what it was before.
+  // We don't want to ignore errors that occur in the cleanup code, so
+  // if an error is encountered there, leave error_state alone.
+  // Otherwise, set it back to what it was before.
 
   if (error_state)
     discard_unwind_protect ();

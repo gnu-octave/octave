@@ -84,9 +84,11 @@ public:
   Matrix stack (const RowVector& a) const;
   Matrix stack (const ColumnVector& a) const;
   Matrix stack (const DiagMatrix& a) const;
+#endif
 
-  Matrix transpose (void) const;
+  charMatrix transpose (void) const;
 
+#if 0
   friend Matrix real (const ComplexMatrix& a);
   friend Matrix imag (const ComplexMatrix& a);
 

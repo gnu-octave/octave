@@ -126,6 +126,21 @@ charMatrix::row_as_string (int r) const
   return retval;
 }
 
+charMatrix
+charMatrix::transpose (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+  charMatrix result (nc, nr);
+  if (length () > 0)
+    {
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  result.elem (j, i) = elem (i, j);
+    }
+  return result;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

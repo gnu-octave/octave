@@ -117,6 +117,12 @@ charMatrix::row_as_string (int r) const
   for (int i = 0; i < nc; i++)
     retval[i] = elem (r, i);
 
+  while (--nc >= 0)
+    if (retval[nc])
+      break;
+
+  retval.resize (nc+1);
+
   return retval;
 }
 

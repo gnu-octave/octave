@@ -87,6 +87,10 @@ static bool Vcrash_dumps_octave_core;
 // "mat-binary", or "hdf5".
 static std::string Vdefault_save_format;
 
+// The output format for octave-core files.  May be one of "binary",
+// "text", "mat-binary", or "hdf5".
+static std::string Voctave_core_format;
+
 // The format string for the comment line at the top of text-format
 // save files.  Passed to strftime.  Should begin with `#' and contain
 // no newline characters.
@@ -910,11 +914,10 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 }
 
 static load_save_format
-get_default_save_format (void)
+get_save_format (const std::string& fmt,
+		 load_save_format fallback_format = LS_ASCII)
 {
-  load_save_format retval = LS_ASCII;
-
-  std::string fmt = Vdefault_save_format;
+  load_save_format retval = fallback_format;
 
   if (fmt == "binary")
     retval = LS_BINARY;
@@ -1046,7 +1049,8 @@ save_user_variables (void)
 
       message (0, "attempting to save variables to `%s'...", fname);
 
-      load_save_format format = get_default_save_format ();
+      load_save_format format
+	= get_save_format (Voctave_core_format, LS_BINARY);
 
       std::ios::openmode mode = std::ios::out|std::ios::trunc;
       if (format == LS_BINARY ||
@@ -1186,7 +1190,7 @@ the file @file{data} in Octave's binary format.\n\
 
   bool save_as_floats = false;
 
-  load_save_format format = get_default_save_format ();
+  load_save_format format = get_save_format (Vdefault_save_format);
 
   bool append = false;
 
@@ -1369,6 +1373,24 @@ default_save_format (void)
   return status;
 }
 
+static int
+octave_core_format (void)
+{
+  int status = 0;
+
+  std::string s = builtin_string_variable ("octave_core_format");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("octave_core_format");
+      status = -1;
+    }
+  else
+    Voctave_core_format = s;
+
+  return status;
+}
+
 static std::string
 default_save_header_format (void)
 {
@@ -1417,6 +1439,18 @@ This variable specifies the default format for the @code{save} command.\n\
 It should have one of the following values: @code{\"ascii\"},\n\
 @code{\"binary\"}, @code{float-binary}, or @code{\"mat-binary\"}.  The\n\
 initial default save format is Octave's text format.\n\
+@seealso{octave_core_format}\n\
+@end defvr");
+
+  DEFVAR (octave_core_format, "binary", octave_core_format,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} octave_core_format\n\
+If Octave aborts, it attempts to save the contents of the top-level\n\
+workspace in a file using this format.  The value of\n\
+@code{octave_core_format} should have one of the following values:\n\
+@code{\"ascii\"}, @code{\"binary\"}, @code{float-binary}, or\n\
+@code{\"mat-binary\"}.  The default value is Octave's binary format.\n\
+@seealso{default_save_format}\n\
 @end defvr");
 
   DEFVAR (save_header_format_string, default_save_header_format (),

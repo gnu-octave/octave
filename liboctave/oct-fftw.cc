@@ -110,8 +110,8 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
-  char in_align = (reinterpret_cast<long> (in)) & 0xF;
-  char out_align = (reinterpret_cast<long> (out)) & 0xF;
+  char in_align = (reinterpret_cast<ptrdiff_t> (in)) & 0xF;
+  char out_align = (reinterpret_cast<ptrdiff_t> (out)) & 0xF;
 
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
@@ -164,8 +164,8 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
 {
   fftw_plan *cur_plan_p = &rplan;
   bool create_new_plan = false;
-  char in_align = (reinterpret_cast<long> (in)) & 0xF;
-  char out_align = (reinterpret_cast<long> (out)) & 0xF;
+  char in_align = (reinterpret_cast<ptrdiff_t> (in)) & 0xF;
+  char out_align = (reinterpret_cast<ptrdiff_t> (out)) & 0xF;
 
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
       || rh != howmany || rialign != in_align || roalign != out_align)

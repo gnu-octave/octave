@@ -1,5 +1,14 @@
 2004-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc (Voctave_core_format): New static_variable.
+	(octave_core_format): New function.
+	(symbols_of_load_save): Add DEFVAR for octave_core_format.
+	(get_save_format): Rename from get_default_save_format.
+	Pass name of format as arg.  New optional arg, default_format.
+	Change all uses.
+	(save_user_variables): Use pass Voctave_core_format to
+	get_save_format here.  Pass LS_BINARY as default_format.
+
 	* sighandlers.cc (my_friendly_exit): New optional arg, save_vars.
 	Only call save_user_variables if save_vars is true.
 	(sigint_handler): If interactive, offer to abort and save

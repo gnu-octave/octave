@@ -274,7 +274,20 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 }
 
 DEFUN_DLD (min, args, nargout,
-  "min (X): minimum value(s) of a vector (matrix)")
+  "-*- texinfo -*-\n\
+For a vector argument, return the minimum value.  For a matrix\n\
+argument, return the minimum value from each column, as a row\n\
+vector.  Thus,\n\
+\n\
+@example\n\
+min (min (@var{x}))\n\
+@end example\n\
+\n\
+@noindent\n\
+returns the smallest element of @var{x}.\n\
+\n\
+For complex arguments, the magnitude of the elements are used for\n\
+comparison.")
 {
   octave_value_list retval;
 
@@ -488,7 +501,20 @@ DEFUN_DLD (min, args, nargout,
 }
 
 DEFUN_DLD (max, args, nargout,
-  "max (X): maximum value(s) of a vector (matrix)")
+  "-*- texinfo -*-\n\
+For a vector argument, return the maximum value.  For a matrix\n\
+argument, return the maximum value from each column, as a row\n\
+vector.  Thus,\n\
+\n\
+@example\n\
+max (max (@var{x}))\n\
+@end example\n\
+\n\
+@noindent\n\
+returns the largest element of @var{x}.\n\
+\n\
+For complex arguments, the magnitude of the elements are used for\n\
+comparison.")
 {
   octave_value_list retval;
 

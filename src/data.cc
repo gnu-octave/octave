@@ -1332,7 +1332,10 @@ is approximately\n\
 @end defvr");
 
   DEFCONST (false, false,
-    "logical false value");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} false\n\
+Logical false value.\n\
+@end defvr");
 
   DEFCONST (i, Complex (0.0, 1.0),
     IMAGINARY_DOC_STRING);
@@ -1392,7 +1395,10 @@ floating point arithmetic, @code{realmin} is approximately\n\
 @end defvr");
 
   DEFCONST (true, true,
-    "logical true value");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} true\n\
+Logical true value.\n\
+@end defvr");
 
 }
 

@@ -422,13 +422,15 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
  \
       if (len > 0) \
 	{ \
+	  double nan_val = lo_ieee_nan_value (); \
+ \
 	  RowVector idx (len); \
  \
 	  for (int i = 0; i < len; i++) \
 	    { \
 	      int tmp = index.elem (i) + 1; \
 	      idx.elem (i) = (tmp <= 0) \
-		? octave_NaN : static_cast<double> (tmp); \
+		? nan_val : static_cast<double> (tmp); \
 	    } \
  \
 	  retval(1) = idx; \

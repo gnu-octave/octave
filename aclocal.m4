@@ -601,6 +601,15 @@ EOF
       cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
     fi
     AC_LANG_POP(C++)
+### XXX FIXME XXX -- Ignore test result for cygwin.  Yes it prepends
+### underscore, but dlsym dnl seems to add it automatically.  The
+### correct test is to build the shared library then try to grab the
+### symbol from it with and without underscore.
+    case "$canonical_host_type" in
+      *-*-cygwin*)
+        octave_cv_cxx_prepends_underscore=no
+      ;;
+    esac
   ])
   AC_MSG_RESULT($octave_cv_cxx_prepends_underscore)
   if test $octave_cv_cxx_prepends_underscore = yes; then
@@ -652,6 +661,7 @@ dnl
 dnl OCTAVE_ENABLE_READLINE
 AC_DEFUN(OCTAVE_ENABLE_READLINE, [
   USE_READLINE=true
+  LIBREADLINE=
   AC_ARG_ENABLE(readline,
     [  --enable-readline       use readline library (default is yes)],
     [if test "$enableval" = no; then
@@ -660,13 +670,15 @@ AC_DEFUN(OCTAVE_ENABLE_READLINE, [
      fi])
   if $USE_READLINE; then
     AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [
-      LIBS="-lreadline $LIBS"
+      LIBREADLINE="-lreadline"
+      LIBS="$LIBREADLINE $LIBS"
       AC_DEFINE(USE_READLINE, 1, [Define to use the readline library.])
     ], [
       AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
     ])
   fi
+  AC_SUBST(LIBREADLINE)
 ])
 dnl
 dnl Determine the C++ compiler ABI. It sets the macro CXX_ABI to the

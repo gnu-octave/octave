@@ -129,7 +129,7 @@ octave_range::do_index_op (const octave_value_list& idx, int resize_ok)
 double
 octave_range::double_value (bool) const
 {
-  double retval = octave_NaN;
+  double retval = lo_ieee_nan_value ();
 
   int nel = range.nelem ();
 
@@ -190,7 +190,9 @@ octave_range::is_true (void) const
 Complex
 octave_range::complex_value (bool) const
 {
-  Complex retval (octave_NaN, octave_NaN);
+  double tmp = lo_ieee_nan_value ();
+
+  Complex retval (tmp, tmp);
 
   int nel = range.nelem ();
 

@@ -48,18 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-ieee.h"
 #include "mach-info.h"
 
-// Octave's idea of infinity.
-double octave_Inf;
-
-// Octave's idea of not a number.
-double octave_NaN;
-
-// Octave's idea of a missing value.
-double octave_NA;
-
-int lo_ieee_hw;
-int lo_ieee_lw;
-
 void
 octave_ieee_init (void)
 {

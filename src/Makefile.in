@@ -32,12 +32,13 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 ifeq ($(OCTAVE_LITE), true)
   ifdef CXXPICFLAG
     %.oct : pic/%.o
-	  $(SH_LD) $(SH_LDFLAGS) -o $@ $<
+	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
   else
     %.oct : %.o
-	  $(SH_LD) $(SH_LDFLAGS) -o $@ $<
+	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
   endif
 endif
+
 
 OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc ODESSA-opts.cc Quad-opts.cc
@@ -194,12 +195,18 @@ DOC_FILES := $(sort $(DEF_FILES) $(patsubst %, %.df, $(VAR_FILES)))
 OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
   -L$(TOPDIR)/src $(RLD_FLAG)
 
-OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(LIBOCT_READLINE) \
-  $(LIBOCT_PATHSEARCH) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
+  $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
   $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 
 ifneq ($SHARED_LIBS), true)
 OCTAVE_LIBS += $(LIBKPATHSEA)
+endif
+
+ifeq ($(INCLUDE_LINK_DEPS),true)
+  OCTINTERP_LINK_DEPS = -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT)
+  OCT_LINK_DEPS = \
+    -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) -L. $(LIBOCTINTERP)
 endif
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
@@ -224,9 +231,9 @@ XERBLA = ../libcruft/blas-xtra/xerbla.o
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
+    LIBRARIES = liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT_VER)
   else
-    LIBRARIES = liboctinterp.$(SHLEXT)
+    LIBRARIES = liboctinterp.$(SHLEXT_VER)
     XERBLA = ../libcruft/blas-xtra/pic/xerbla.o
   endif
 else
@@ -247,13 +254,13 @@ liboctinterp.$(LIBEXT): $(OBJECTS)
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
+liboctinterp.$(SHLEXT_VER): liboctinterp.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-liboctinterp.$(SHLEXT_VER): $(PICOBJ)
+liboctinterp.$(SHLEXT): $(PICOBJ)
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
 stamp-oct-links: $(OCT_FILES)
 	if [ -n "$(OCT_FILES)" ]; then \
@@ -368,11 +375,17 @@ install-lib:
 	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER); \
-	  $(INSTALL_PROGRAM) liboctinterp.$(SHLEXT_VER) \
-	    $(octlibdir)/liboctinterp.$(SHLEXT_VER); \
-	  cd $(octlibdir); \
-	  rm -f liboctinterp.$(SHLEXT); \
-	  $(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT); \
+	  $(INSTALL_PROGRAM) liboctinterp.$(SHLLIB) \
+	    $(octlibdir)/liboctinterp.$(SHLLIB_VER); \
+	  rm -f $(octlibdir)/liboctinterp.$(SHLLIB); \
+	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(octlibdir)/liboctinterp.$(SHLLIB); \
+	  if  test x$(SHLBIN) != x ; then \
+	      rm -f $(bindir)/liboctinterp.$(SHLBIN_VER); \
+	      $(INSTALL_PROGRAM) \
+	        liboctinterp.$(SHLBIN) $(bindir)/octinterp.$(SHLBIN_VER); \
+	      rm -f $(bindir)/liboctinterp.$(SHLBIN); \
+	      $(LN_S) liboctinterp.$(SHLBIN_VER) $(bindir)/liboctinterp.$(SHLBIN); \
+	  fi; \
 	fi
 .PHONY: install-lib
 
@@ -395,8 +408,12 @@ install-inc:
 uninstall:
 	rm -f $(bindir)/octave$(EXEEXT)
 	rm -f $(octlibdir)/liboctinterp.$(LIBEXT)
-	rm -f $(octlibdir)/liboctinterp.$(SHLEXT)
-	rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER)
+	rm -f $(octlibdir)/liboctinterp.$(SHLLIB)
+	rm -f $(octlibdir)/liboctinterp.$(SHLLIB_VER)
+	if test x$(SHLBIN) != x ; then \
+	  rm -f $(bindir)/liboctinterp.$(SHLBIN); \
+	  rm -f $(bindir)/liboctinterp.$(SHLBIN_VER); \
+	fi
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
 	  rm -f $(octincludedir)/octave/$$f; \
 	done

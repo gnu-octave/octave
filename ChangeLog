@@ -1,3 +1,39 @@
+2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (TERMLIBS): Substitute here.
+
+	* configure.in: Define OCTAVE_USE_WINDOWS_API if 
+	defined (__WIN32__) && ! defined (__CYGWIN__), not if
+	defined (__WIN32__) || ! defined (__CYGWIN__).
+	Also call AC_SUBST for TERMLIBS.
+
+2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+
+	* configure.in: Use correct SHLEXT and PICFLAG for Cygwin.
+	* configure.in: Cygwin must link against -loctave.dll, etc.
+
+	* configure.in: Define INCLUDE_LINK_DEPS because Cygwin needs DLLs
+	to be linked against their dependencies.
+	* Makeconf.in: Ditto.
+
+	* configure.in: Define SHLLIB and SHLBIN because Cygwin doesn't
+	link against shared libs but instead against -lxxx.dll.  LIB and
+	BIN are the link and load forms respectively of the library.
+	* Makeconf.in: Ditto, and define the corresponding XXX_VER.
+
+	* configure.in: Remove LIBOCT_READLINE and LIBOCT_PATHSEARCH
+	because they are merged into LIBOCTAVE to avoid circular
+	dependencies.
+	* Makeconf.in: Ditto.
+	* mkoctfile.in: Ditto.
+
+	* aclocal.m4 (OCTAVE_ENABLE_READLINE): Define LIBREADLINE because
+	Cygwin requires liboctave to be linked against -lreadline so
+	including it in LIBS isn't sufficient.
+	* mkoctfile.in: Substitute and use LIBREADLINE here.
+
+	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE): Force no for cygwin.
+
 2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AH_BOTTOM): Maybe define OCTAVE_USE_WINDOWS_API

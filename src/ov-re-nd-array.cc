@@ -113,7 +113,7 @@ octave_matrix::valid_as_scalar_index (void) const
 double
 octave_matrix::double_value (bool) const
 {
-  double retval = octave_NaN;
+  double retval = lo_ieee_nan_value ();
 
   // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
   if ((rows () == 1 && columns () == 1)
@@ -128,7 +128,9 @@ octave_matrix::double_value (bool) const
 Complex
 octave_matrix::complex_value (bool) const
 {
-  Complex retval (octave_NaN, octave_NaN);
+  double tmp = lo_ieee_nan_value ();
+
+  Complex retval (tmp, tmp);
 
   if ((rows () == 1 && columns () == 1)
       || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))

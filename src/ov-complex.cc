@@ -90,7 +90,7 @@ octave_complex::do_index_op (const octave_value_list& idx, int resize_ok)
 double
 octave_complex::double_value (bool force_conversion) const
 {
-  double retval = octave_NaN;
+  double retval = lo_ieee_nan_value ();
 
   int flag = force_conversion;
 

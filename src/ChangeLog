@@ -1,3 +1,31 @@
+2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	*  DLD-FUNCTIONS/minmax.cc, DLD-FUNCTIONS/getrusage.cc, data.cc,
+	file-io.cc, ov-base.cc, ov-bool-mat.cc, ov-ch-mat.cc,
+	ov-complex.cc, ov-cx-mat.cc, ov-range.cc, ov-re-mat.cc,
+	ov-re-nd-array.cc: Change all uses of octave_Inf, octave_NA, and
+	octave_NaN to be calls to lo_ieee_Inf_value, lo_ieee_NA_value, and
+	lo_ieee_NaN_value instead of using the constants directly to avoid
+	linking problem with Cygwin.
+
+	* Makefile.in (install): No need to use cd to create links.
+
+2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in: Merge liboctave with liboct-readline and
+	liboct-pathsearch.
+	Use link dependencies for shared libs if INCLUDE_LINK_DEPS.
+	(LIBRARIES): If doing shared libs, include versioned library in	list.
+	(liboctinterp.$(SHLEXT), liboctinterp.$(SHLEXT_VER)): Reverse
+	actions -- build unversioned library, symbolic link adds version
+	info.
+	(install, uninstall): Handle link and load forms of the library
+	separately.
+
+	* toplev.cc (octave_config_info): Remove LIBOCT_READLINE and
+	LIBOCT_PATHSEARCH, add LIBREADLINE.
+	* oct-conf.h.in: Likewise.
+
 2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (handle_identifier): Don't enter token in local symbol

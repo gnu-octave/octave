@@ -44,6 +44,11 @@ ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = libcruft.$(SHLEXT_VER)
 endif
 
+# include BLAS and FFTW just in case some of libcruft depends on them
+ifeq ($(INCLUDE_LINK_DEPS),true)
+  LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
+endif
+
 all: libraries
 .PHONY: all
 
@@ -75,9 +80,9 @@ endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = libcruft.$(LIBEXT) libcruft.$(SHLEXT)
+    LIBRARIES = libcruft.$(LIBEXT) libcruft.$(SHLEXT_VER)
   else
-    LIBRARIES = libcruft.$(SHLEXT)
+    LIBRARIES = libcruft.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
@@ -96,13 +101,13 @@ libcruft.$(LIBEXT): $(CRUFT_OBJ)
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
+libcruft.$(SHLEXT_VER): libcruft.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)
+libcruft.$(SHLEXT): $(CRUFT_PICOBJ)
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS)
 
 $(CRUFT_OBJ):
 
@@ -121,12 +126,18 @@ install::
 	  $(RANLIB) $(octlibdir)/libcruft.$(LIBEXT) ; \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/libcruft.$(SHLEXT_VER); \
+	  rm -f $(octlibdir)/libcruft.$(SHLLIB_VER); \
 	  $(INSTALL_PROGRAM) \
-	    libcruft.$(SHLEXT_VER) $(octlibdir)/libcruft.$(SHLEXT_VER); \
-	  cd $(octlibdir); \
-	  rm -f libcruft.$(SHLEXT); \
-	  $(LN_S) libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT); \
+	    libcruft.$(SHLLIB) $(octlibdir)/libcruft.$(SHLLIB_VER); \
+	  rm -f $(octlibdir)/libcruft.$(SHLLIB); \
+	  $(LN_S) libcruft.$(SHLLIB_VER) $(octlibdir)/libcruft.$(SHLLIB); \
+	  if  test x$(SHLBIN) != x ; then \
+	    rm -f $(bindir)/libcruft.$(SHLBIN_VER); \
+	    $(INSTALL_PROGRAM) \
+	      libcruft.$(SHLBIN) $(bindir)/libcruft.$(SHLBIN_VER); \
+	    rm -f $(bindir)/libcruft.$(SHLBIN); \
+	    $(LN_S) libcruft.$(SHLBIN_VER) $(bindir)/libcruft.$(SHLBIN); \
+	  fi; \
 	fi
 
 install-strip::
@@ -134,8 +145,12 @@ install-strip::
 
 uninstall::
 	rm -f $(octlibdir)/libcruft.$(LIBEXT)
-	rm -f $(octlibdir)/libcruft.$(SHLEXT)
-	rm -f $(octlibdir)/libcruft.$(SHLEXT_VER)
+	rm -f $(octlibdir)/libcruft.$(SHLLIB)
+	rm -f $(octlibdir)/libcruft.$(SHLLIB_VER)
+	if test x$(SHLBIN) != x; then \
+	  rm -f $(bindir)/libcruft.$(SHLBIN); \
+	  rm -f $(bindir)/libcruft.$(SHLBIN_VER); \
+	fi
 
 tags TAGS:: $(SOURCES)
 	$(SUBDIR_FOR_COMMAND)

@@ -52,6 +52,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
 #endif
 
+/* Octave's idea of infinity.  */
+double octave_Inf;
+
+/* Octave's idea of a missing value.  */
+double octave_NA;
+
+/* Octave's idea of not a number.  */
+double octave_NaN;
+
+int lo_ieee_hw;
+int lo_ieee_lw;
+
 #if defined (SCO)
 
 int
@@ -114,6 +126,24 @@ int
 lo_ieee_is_NaN_or_NA (double x)
 {
   return lo_ieee_isnan (x);
+}
+
+double
+lo_ieee_inf_value (void)
+{
+  return octave_Inf;
+}
+
+double
+lo_ieee_na_value (void)
+{
+  return octave_NA;
+}
+
+double
+lo_ieee_nan_value (void)
+{
+  return octave_NaN;
 }
 
 /*

@@ -18,10 +18,13 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-LIBOCTAVE_LFLAGS = -L../libcruft -L../readline -L../kpathsea \
-	-L../glob -L. $(RLD_FLAG)
+LIBOCTAVE_LFLAGS = -L../libcruft -L../kpathsea -L../glob -L. $(RLD_FLAG)
 
-LIBOCTAVE_LIBS = -lcruft -lreadline -lkpathsea -lglob
+ifeq ($(INCLUDE_LINK_DEPS), true)
+  LINK_DEPS = \
+    $(LIBOCTAVE_LFLAGS) \
+    $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(TERMLIBS) -lglob
+endif
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h Array-flags.h \
 	Array-idx.h Array2-idx.h Array3-idx.h ArrayN-idx.h MArray-defs.h \
@@ -149,25 +152,17 @@ MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
 LIBOCTAVE_OBJECTS := \
 	$(LIBOCTAVE_CXX_SOURCES:.cc=.o) \
-	$(LIBOCTAVE_C_SOURCES:.c=.o)
-
-LIBOCT_READLINE_OBJECTS := \
+	$(LIBOCTAVE_C_SOURCES:.c=.o) \
 	$(LIBOCT_READLINE_CXX_SOURCES:.cc=.o) \
-	$(LIBOCT_READLINE_C_SOURCES:.c=.o)
-
-LIBOCT_PATHSEARCH_OBJECTS := \
+	$(LIBOCT_READLINE_C_SOURCES:.c=.o) \
 	$(LIBOCT_PATHSEARCH_CXX_SOURCES:.cc=.o) \
 	$(LIBOCT_PATHSEARCH_C_SOURCES:.c=.o)
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CXXPICFLAG
     LIBOCTAVE_PICOBJ := $(addprefix pic/, $(LIBOCTAVE_OBJECTS))
-    LIBOCT_READLINE_PICOBJ := $(addprefix pic/, $(LIBOCT_READLINE_OBJECTS))
-    LIBOCT_PATHSEARCH_PICOBJ := $(addprefix pic/, $(LIBOCT_PATHSEARCH_OBJECTS))
   else
     LIBOCTAVE_PICOBJ := $(LIBOCTAVE_OBJECTS)
-    LIBOCT_READLINE_PICOBJ := $(LIBOCT_READLINE_OBJECTS)
-    LIBOCT_PATHSEARCH_PICOBJ := $(LIBOCT_PATHSEARCH_OBJECTS)
   endif
 endif
 
@@ -199,23 +194,17 @@ ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
     libraries: \
 	stamp-prereq \
-	liboctave.$(LIBEXT) liboctave.$(SHLEXT) \
-	liboct-readline.$(LIBEXT) liboct-readline.$(SHLEXT) \
-	liboct-pathsearch.$(LIBEXT) liboct-pathsearch.$(SHLEXT)
+	liboctave.$(LIBEXT) liboctave.$(SHLEXT_VER)
   else
     libraries: \
 	stamp-prereq \
-	liboctave.$(SHLEXT) \
-	liboct-readline.$(SHLEXT) \
-	liboct-pathsearch.$(SHLEXT)
+	liboctave.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
     libraries: \
 	stamp-prereq \
-	liboctave.$(LIBEXT) \
-	liboct-readline.$(LIBEXT) \
-	liboct-pathsearch.$(LIBEXT)
+	liboctave.$(LIBEXT)
   else
     libraries: stamp-prereq
   endif
@@ -227,45 +216,15 @@ liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
+liboctave.$(SHLEXT_VER): liboctave.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-liboctave.$(SHLEXT_VER): $(LIBOCTAVE_PICOBJ)
+liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS) $(LIBKPATHSEA)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
-
-liboct-readline.$(LIBEXT): $(LIBOCT_READLINE_OBJECTS)
-	rm -f $@
-	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
-	$(RANLIB) $@
-
-liboct-readline.$(SHLEXT): liboct-readline.$(SHLEXT_VER)
-	rm -f $@
-	$(LN_S) $< $@
-
-liboct-readline.$(SHLEXT_VER): $(LIBOCT_READLINE_PICOBJ)
-	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
-
-$(LIBOCT_READLINE_PICOBJ): stmp-pic
-
-liboct-pathsearch.$(LIBEXT): $(LIBOCT_PATHSEARCH_OBJECTS)
-	rm -f $@
-	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
-	$(RANLIB) $@
-
-liboct-pathsearch.$(SHLEXT): liboct-pathsearch.$(SHLEXT_VER)
-	rm -f $@
-	$(LN_S) $< $@
-
-liboct-pathsearch.$(SHLEXT_VER): $(LIBOCT_PATHSEARCH_PICOBJ)
-	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LIBKPATHSEA)
-
-$(LIBOCT_PATHSEARCH_PICOBJ): stmp-pic
 
 check: all
 .PHONY: check
@@ -284,40 +243,20 @@ install-lib:
 	  $(INSTALL_DATA) liboctave.$(LIBEXT) \
 	    $(octlibdir)/liboctave.$(LIBEXT); \
 	  $(RANLIB) $(octlibdir)/liboctave.$(LIBEXT); \
-	    \
-	  rm -f $(octlibdir)/liboct-readline.$(LIBEXT); \
-	  $(INSTALL_DATA) liboct-readline.$(LIBEXT) \
-	    $(octlibdir)/liboct-readline.$(LIBEXT); \
-	  $(RANLIB) $(octlibdir)/liboct-readline.$(LIBEXT); \
-	    \
-	  rm -f $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
-	  $(INSTALL_DATA) liboct-pathsearch.$(LIBEXT) \
-	    $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
-	  $(RANLIB) $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/liboctave.$(SHLEXT_VER); \
+	  rm -f $(octlibdir)/liboctave.$(SHLLIB_VER); \
 	  $(INSTALL_PROGRAM) \
-	    liboctave.$(SHLEXT_VER) $(octlibdir)/liboctave.$(SHLEXT_VER); \
-	  ( cd $(octlibdir); \
-	    rm -f liboctave.$(SHLEXT); \
-	    $(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT); ); \
-	  rm -f $(octlibdir)/liboct-readline.$(SHLEXT_VER); \
-	  $(INSTALL_PROGRAM) \
-	    liboct-readline.$(SHLEXT_VER) \
-	    $(octlibdir)/liboct-readline.$(SHLEXT_VER); \
-	  ( cd $(octlibdir); \
-	    rm -f liboct-readline.$(SHLEXT); \
-	    $(LN_S) \
-	      liboct-readline.$(SHLEXT_VER) liboct-readline.$(SHLEXT); ); \
-	  rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER); \
-	  $(INSTALL_PROGRAM) \
-	    liboct-pathsearch.$(SHLEXT_VER) \
-	    $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER); \
-	  ( cd $(octlibdir); \
-	    rm -f liboct-pathsearch.$(SHLEXT); \
-	    $(LN_S) \
-	      liboct-pathsearch.$(SHLEXT_VER) liboct-pathsearch.$(SHLEXT); ); \
+	    liboctave.$(SHLLIB) $(octlibdir)/liboctave.$(SHLLIB_VER); \
+	  rm -f $(octlibdir)/liboctave.$(SHLLIB); \
+	  $(LN_S) liboctave.$(SHLLIB_VER) $(octlibdir)/liboctave.$(SHLLIB); \
+	  if  test x$(SHLBIN) != x ; then \
+	    rm -f $(bindir)/liboctave.$(SHLBIN_VER); \
+	    $(INSTALL_PROGRAM) \
+	      liboctave.$(SHLBIN) $(bindir)/liboctave.$(SHLBIN_VER); \
+	    rm -f $(bindir)/liboctave.$(SHLBIN); \
+	    $(LN_S) liboctave.$(SHLBIN_VER) $(bindir)/liboctave.$(SHLBIN); \
+	  fi; \
 	fi
 .PHONY: install-lib
 
@@ -331,14 +270,12 @@ install-inc:
 
 uninstall:
 	rm -f $(octlibdir)/liboctave.$(LIBEXT)
-	rm -f $(octlibdir)/liboctave.$(SHLEXT)
-	rm -f $(octlibdir)/liboctave.$(SHLEXT_VER)
-	rm -f $(octlibdir)/liboct-readline.$(LIBEXT)
-	rm -f $(octlibdir)/liboct-readline.$(SHLEXT)
-	rm -f $(octlibdir)/liboct-readline.$(SHLEXT_VER)
-	rm -f $(octlibdir)/liboct-pathsearch.$(LIBEXT)
-	rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT)
-	rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER)
+	rm -f $(octlibdir)/liboctave.$(SHLLIB)
+	rm -f $(octlibdir)/liboctave.$(SHLLIB_VER)
+	if test x$(SHLBIN) != x; then \
+	  rm -f $(bindir)/liboctave.$(SHLBIN); \
+	  rm -f $(bindir)/liboctave.$(SHLBIN_VER); \
+	fi
 	for f in $(INCLUDES); do rm -f $(octincludedir)/octave/$$f; done
 .PHONY: uninstall
 

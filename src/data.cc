@@ -1187,19 +1187,19 @@ find NaN values, you must use the @code{isnan} function.\n\
   DEFCONST (I, Complex (0.0, 1.0),
     IMAGINARY_DOC_STRING);
 
-  DEFCONST (Inf, octave_Inf,
+  DEFCONST (Inf, lo_ieee_inf_value (),
     INFINITY_DOC_STRING);
 
   DEFCONST (J, Complex (0.0, 1.0),
     IMAGINARY_DOC_STRING);
 
-  DEFCONST (NA, octave_NA,
+  DEFCONST (NA, lo_ieee_na_value (),
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} NA\n\
 Missing value.\n\
 @end defvr");
 
-  DEFCONST (NaN, octave_NaN,
+  DEFCONST (NaN, lo_ieee_nan_value (),
     NAN_DOC_STRING);
 
 #if defined (M_E)
@@ -1258,13 +1258,13 @@ Logical false value.\n\
   DEFCONST (i, Complex (0.0, 1.0),
     IMAGINARY_DOC_STRING);
 
-  DEFCONST (inf, octave_Inf,
+  DEFCONST (inf, lo_ieee_inf_value (),
     INFINITY_DOC_STRING);
 
   DEFCONST (j, Complex (0.0, 1.0),
     IMAGINARY_DOC_STRING);
 
-  DEFCONST (nan, octave_NaN,
+  DEFCONST (nan, lo_ieee_nan_value (),
     NAN_DOC_STRING);
 
 #if defined (M_PI)

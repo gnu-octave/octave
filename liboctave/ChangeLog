@@ -1,3 +1,24 @@
+2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-cieee.c: Move everything but lo_ieee_init here.
+	(lo_ieee_Inf_value, lo_ieee_NA_value, lo_ieee_NaN_value):
+	New functions.
+
+	* Makefile.in (install): No need to use cd to create links.
+	(LINK_DEPS): Include $(LIBOCTAVE_LFLAGS) before list of libraries.
+	Include $(TERMLIBS) in list.
+
+2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in: Merge liboctave with liboct-readline and
+	liboct-pathsearch.
+	Use link dependencies for shared libs if INCLUDE_LINK_DEPS.
+	(libraries): Depend on versioned library.
+	(liboctave.$(SHLEXT), liboctave.$(SHLEXT_VER)): Reverse actions --
+	build unversioned library, symbolic link adds version info.
+	(install, uninstall): Handle link and load forms of the library
+	separately.
+
 2002-10-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc: Use OCTAVE_USE_WINDOWS_API instead of __WIN32__ and

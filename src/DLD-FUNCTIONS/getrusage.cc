@@ -202,20 +202,22 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 
 #endif
 
-  m ["maxrss"] = octave_NaN;
-  m ["ixrss"] = octave_NaN;
-  m ["idrss"] = octave_NaN;
-  m ["isrss"] = octave_NaN;
-  m ["minflt"] = octave_NaN;
-  m ["majflt"] = octave_NaN;
-  m ["nswap"] = octave_NaN;
-  m ["inblock"] = octave_NaN;
-  m ["oublock"] = octave_NaN;
-  m ["msgsnd"] = octave_NaN;
-  m ["msgrcv"] = octave_NaN;
-  m ["nsignals"] = octave_NaN;
-  m ["nvcsw"] = octave_NaN;
-  m ["nivcsw"] = octave_NaN;
+  double tmp = lo_ieee_nan_value ();
+
+  m ["maxrss"] = tmp;
+  m ["ixrss"] = tmp;
+  m ["idrss"] = tmp;
+  m ["isrss"] = tmp;
+  m ["minflt"] = tmp;
+  m ["majflt"] = tmp;
+  m ["nswap"] = tmp;
+  m ["inblock"] = tmp;
+  m ["oublock"] = tmp;
+  m ["msgsnd"] = tmp;
+  m ["msgrcv"] = tmp;
+  m ["nsignals"] = tmp;
+  m ["nvcsw"] = tmp;
+  m ["nivcsw"] = tmp;
 
 #endif
 

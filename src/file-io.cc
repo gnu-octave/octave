@@ -856,7 +856,8 @@ conversions is returned in @var{count}\n\
 		  int count = 0;
 
 		  Array<double> size = (nargin == 3)
-		    ? args(2).vector_value () : Array<double> (1, octave_Inf);
+		    ? args(2).vector_value ()
+		    : Array<double> (1, lo_ieee_inf_value ());
 
 		  if (! error_state)
 		    {
@@ -940,7 +941,7 @@ string is treated as an end-of-file condition.\n\
 
 		      Array<double> size = (nargin == 3)
 			? args(2).vector_value ()
-			: Array<double> (1, octave_Inf);
+			: Array<double> (1, lo_ieee_inf_value ());
 
 		      octave_value tmp = os.scanf (fmt, size, count);
 
@@ -1185,7 +1186,7 @@ values read is returned in @code{count}\n\
       if (! error_state)
 	{
 	  octave_value size = (nargin > 1)
-	    ? args(1) : octave_value (octave_Inf);
+	    ? args(1) : octave_value (lo_ieee_inf_value ());
 
 	  octave_value prec = (nargin > 2)
 	    ? args(2) : octave_value ("uchar");

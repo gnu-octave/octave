@@ -213,7 +213,7 @@ octave_base_value::nint_value (bool frc_str_conv) const
 double
 octave_base_value::double_value (bool) const
 {
-  double retval = octave_NaN;
+  double retval = lo_ieee_nan_value ();
   gripe_wrong_type_arg ("octave_base_value::double_value ()", type_name ());
   return retval;
 }
@@ -237,7 +237,8 @@ octave_base_value::matrix_value (bool) const
 Complex
 octave_base_value::complex_value (bool) const
 {
-  Complex retval (octave_NaN, octave_NaN);
+  double tmp = lo_ieee_nan_value ();
+  Complex retval (tmp, tmp);
   gripe_wrong_type_arg ("octave_base_value::complex_value()", type_name ());
   return retval;
 }

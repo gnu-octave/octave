@@ -1,3 +1,17 @@
+2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install): No need to use cd to create links.
+
+2002-10-14  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in: Use link dependencies for shared libs if
+	INCLUDE_LINK_DEPS.
+	(LIBRARIES): If doing shared libs, include versioned library in	list.
+	(libcruft.$(SHLEXT), libcruft.$(SHLEXT_VER)): Reverse actions --
+	build unversioned library, symbolic link adds version info.
+	(install, uninstall): Handle link and load forms of the library
+	separately.
+
 2002-09-30  Paul Kienzle <pkienzle@users.sf.net>
 
 	* slatec-fn/xdacosh.f: Mark external functions as external.

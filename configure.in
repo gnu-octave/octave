@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.375 $)
+AC_REVISION($Revision: 1.376 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -621,25 +621,6 @@ else
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
 
-if $SHARED_LIBS; then
-  LIBOCTINTERP=-loctinterp
-  LIBOCTAVE=-loctave
-  LIBOCT_READLINE=-loct-readline
-  LIBOCT_PATHSEARCH=-loct-pathsearch
-  LIBCRUFT=-lcruft
-else
-  LIBOCTINTERP='$(TOPDIR)/src/liboctinterp.$(LIBEXT)'
-  LIBOCTAVE='$(TOPDIR)/liboctave/liboctave.$(LIBEXT)'
-  LIBOCT_READLINE='$(TOPDIR)/liboctave/liboct-readline.$(LIBEXT)'
-  LIBOCT_PATHSEARCH='$(TOPDIR)/liboctave/liboct-pathsearch.$(LIBEXT)'
-  LIBCRUFT='$(TOPDIR)/libcruft/libcruft.$(LIBEXT)'
-fi
-AC_SUBST(LIBOCTINTERP)
-AC_SUBST(LIBOCTAVE)
-AC_SUBST(LIBOCT_READLINE)
-AC_SUBST(LIBOCT_PATHSEARCH)
-AC_SUBST(LIBCRUFT)
-
 use_rpath=true
 AC_ARG_ENABLE(rpath,
   [  --enable-rpath          add -rpath to link command for shared libraries],
@@ -650,10 +631,14 @@ CPICFLAG=-fPIC
 CXXPICFLAG=-fPIC
 FPICFLAG=-fPIC
 SHLEXT=so
+SHLLINKEXT=
+SHLBIN=
+SHLLIB=$SHLEXT
 SH_LD="$CXX"
 SH_LDFLAGS=-shared
 SONAME_FLAGS=
 RLD_FLAG=
+INCLUDE_LINK_DEPS=false
 TEMPLATE_AR="$AR"
 TEMPLATE_ARFLAGS="$ARFLAGS"
 case "$canonical_host_type" in
@@ -671,6 +656,18 @@ case "$canonical_host_type" in
   ;;
   *-*-darwin*)
     SH_LDFLAGS='-bundle -bundle_loader $(bindir)/octave'
+  ;;
+  *-*-cygwin*)
+    CXXPICFLAG=
+    CPICFLAG=
+    FPICFLAG=
+    SHLEXT=dll
+    SHLLIB=dll.a
+    SHLBIN=dll
+    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import"
+    SHLLINKEXT=.dll
+    SONAME_FLAGS='-Wl,--out-implib=$@.a'
+    INCLUDE_LINK_DEPS=true
   ;;
   *-*-linux* | *-*-gnu*)
     SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
@@ -759,10 +756,13 @@ AC_MSG_RESULT([defining SONAME_FLAGS to be $SONAME_FLAGS])
 AC_MSG_RESULT([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_RESULT([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_RESULT([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
+AC_MSG_RESULT([defining INCLUDE_LINK_DEPS to be $INCLUDE_LINK_DEPS])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
 AC_SUBST(SHLEXT)
+AC_SUBST(SHLLIB)
+AC_SUBST(SHLBIN)
 AC_SUBST(DLFCN_DIR)
 AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)
@@ -770,6 +770,20 @@ AC_SUBST(SONAME_FLAGS)
 AC_SUBST(RLD_FLAG)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
+AC_SUBST(INCLUDE_LINK_DEPS)
+
+if $SHARED_LIBS; then
+  LIBOCTINTERP=-loctinterp$SHLLINKEXT
+  LIBOCTAVE=-loctave$SHLLINKEXT
+  LIBCRUFT=-lcruft$SHLLINKEXT
+else
+  LIBOCTINTERP='$(TOPDIR)/src/liboctinterp.$(LIBEXT)'
+  LIBOCTAVE='$(TOPDIR)/liboctave/liboctave.$(LIBEXT)'
+  LIBCRUFT='$(TOPDIR)/libcruft/libcruft.$(LIBEXT)'
+fi
+AC_SUBST(LIBOCTINTERP)
+AC_SUBST(LIBOCTAVE)
+AC_SUBST(LIBCRUFT)
 
 ### Allow compilation of smaller kernel.  This only works if some form
 ### of dynamic linking is also supported and used.
@@ -1067,6 +1081,7 @@ for termlib in ncurses curses termcap terminfo termlib; do
   case "${TERMLIBS}" in
     *-l${termlib}*)
       LIBS="$TERMLIBS $LIBS"
+      AC_SUBST(TERMLIBS)
       octave_found_termlib=yes
       break
     ;;
@@ -1299,7 +1314,7 @@ typedef int sigset_t;
 #endif
 
 /* Define if we expect to have <windows.h>, Sleep, etc. */
-#if defined (__WIN32__) || ! defined (__CYGWIN__)
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
 #define OCTAVE_USE_WINDOWS_API 1
 #endif
 ])

@@ -1,3 +1,8 @@
+2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (do_stream_open): Don't call ::error if stream can't
+	be created.  Don't call ::fopen if arch is invalid.	
+
 2004-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc (Fftell): Return long integer instead of streamoff_array.

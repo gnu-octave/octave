@@ -338,15 +338,21 @@ do_stream_open (const std::string& name, const std::string& mode,
       oct_mach_info::float_format flt_fmt =
 	oct_mach_info::string_to_float_format (arch);
 
-      FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
+      if (! error_state)
+	{
+	  FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
 
-      if (fptr)
-	{	
-	  if (! error_state)
-	    retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+	  if (fptr)
+	    {
+	      retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+
+	      // XXX FIXME XXX -- it would now be possible for the
+	      // file id returned by fopen to correspond directly to
+	      // the underlying system file id (::fileno (fptr)).
+	      // Doing that would require some changes to the
+	      // octave_stream_list class.
+	    }
 	}
-      else
-	error ("fopen: failed to open file %s", name.c_str ());
     }
 
   return retval;

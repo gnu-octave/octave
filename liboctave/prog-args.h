@@ -1,0 +1,84 @@
+// prog-args.h                                              -*- C++ -*-
+/*
+
+Copyright (C) 1996 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+#if !defined (octave_prog_args_h)
+#define octave_prog_args_h 1
+
+struct
+long_options
+{
+  const char *name;
+  int has_arg;
+  int *flag;
+  int val;
+};
+
+class
+prog_args
+{
+public:
+
+  prog_args (int argc, char *const *argv, const char *s_opts, const
+	     long_options* l_opts = 0)
+    : xargc (argc), xargv (argv), short_opts (s_opts), long_opts (l_opts)
+      {
+	init ();
+      }
+
+  ~prog_args (void) { }
+
+  int getopt (void);
+
+  const char *optarg (void);
+
+  int optind (void);
+
+private:
+
+  // Number of args.
+  int xargc;
+
+  // Program args.
+  char *const *xargv;
+
+  // Single character options.
+  const char *short_opts;
+
+  // Long options.
+  const long_options *long_opts;
+
+  void init (void);
+
+  prog_args (const prog_args&);
+
+  prog_args& operator = (const prog_args&);
+};
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

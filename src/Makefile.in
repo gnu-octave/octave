@@ -62,9 +62,6 @@ ifeq ($(WITH_DYNAMIC_LINKING), true)
   else
     DLD_PICOBJ := $(DLD_OBJ)
   endif
-  ifeq ($(WITH_DYNAMIC_LINKING), false)
-    DLD_STATIC_OBJ := $(DLD_OBJ)
-  endif
 else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif

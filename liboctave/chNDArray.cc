@@ -74,7 +74,7 @@ charNDArray::matrix_value (void) const
 
     default:
       (*current_liboctave_error_handler)
-	("invalid converstion of charNDArray to charMatrix");
+	("invalid conversion of charNDArray to charMatrix");
       break;
     }
 

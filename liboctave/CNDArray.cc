@@ -327,7 +327,7 @@ ComplexNDArray::matrix_value (void) const
 
     default:
       (*current_liboctave_error_handler)
-	("invalid converstion of ComplexNDArray to ComplexMatrix");
+	("invalid conversion of ComplexNDArray to ComplexMatrix");
       break;
     }
 

@@ -81,7 +81,7 @@ boolNDArray::matrix_value (void) const
 
     default:
       (*current_liboctave_error_handler)
-	("invalid converstion of boolNDArray to boolMatrix");
+	("invalid conversion of boolNDArray to boolMatrix");
       break;
     }
 

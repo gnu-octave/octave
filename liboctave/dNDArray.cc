@@ -271,7 +271,7 @@ NDArray::matrix_value (void) const
 
     default:
       (*current_liboctave_error_handler)
-	("invalid converstion of NDArray to Matrix");
+	("invalid conversion of NDArray to Matrix");
       break;
     }
 

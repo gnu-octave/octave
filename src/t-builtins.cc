@@ -31,6 +31,10 @@ The function list_in_columns was adapted from a similar function from
 GNU ls, print_many_per_line, copyright (C) 1985, 1988, 1990, 1991 Free
 Software Foundation, Inc.
 
+The function glob_pattern_p was taken from the file glob.c distributed
+with GNU Bash, the Bourne Again SHell, copyright (C) 1985, 1988, 1989
+Free Software Foundation, Inc.
+
 */
 
 #ifdef HAVE_CONFIG_H
@@ -51,7 +55,6 @@ Software Foundation, Inc.
 #include <time.h>
 #include <errno.h>
 #include <signal.h>
-#include <String.h>
 
 #include "procstream.h"
 
@@ -71,6 +74,11 @@ Software Foundation, Inc.
 #include "defaults.h"
 #include "tree.h"
 #include "help.h"
+
+extern "C"
+{
+#include "fnmatch.h"
+}
 
 // May need replacement for this on some machines.
 extern "C"
@@ -278,21 +286,17 @@ builtin_clear (int argc, char **argv)
 	  argv++;
 	  if (*argv != (char *) NULL)
 	    {
-	      Regex rx (*argv);
-
 	      int i;
 	      for (i = 0; i < lcount; i++)
 		{
-		  String nm (lvars[i]);
-		  if (nm.matches (rx))
+		  if (fnmatch (*argv, lvars[i], __FNM_FLAGS) == 0)
 		    curr_sym_tab->clear (lvars[i]);
 		}
 
 	      int count;
 	      for (i = 0; i < gcount; i++)
 		{
-		  String nm (gvars[i]);
-		  if (nm.matches (rx))
+		  if (fnmatch (*argv, gvars[i], __FNM_FLAGS) == 0)
 		    {
 		      count = curr_sym_tab->clear (gvars[i]);
 		      if (count > 0)
@@ -302,8 +306,7 @@ builtin_clear (int argc, char **argv)
 
 	      for (i = 0; i < fcount; i++)
 		{
-		  String nm (fcns[i]);
-		  if (nm.matches (rx))
+		  if (fnmatch (*argv, fcns[i], __FNM_FLAGS) == 0)
 		    {
 		      count = curr_sym_tab->clear (fcns[i]);
 		      if (count > 0)
@@ -813,6 +816,45 @@ builtin_run_history (int argc, char **argv)
 }
 
 /*
+ * Return nonzero if PATTERN has any special globbing chars in it.
+ */
+static int
+glob_pattern_p (char *pattern)
+{
+  char *p = pattern;
+  char c;
+  int open = 0;
+
+  while ((c = *p++) != '\0')
+    {
+      switch (c)
+	{
+	case '?':
+	case '*':
+	  return 1;
+
+	case '[':	// Only accept an open brace if there is a close
+	  open++;	// brace to match it.  Bracket expressions must be
+	  continue;	// complete, according to Posix.2
+
+	case ']':
+	  if (open)
+	    return 1;
+	  continue;
+	  
+	case '\\':
+	  if (*p++ == '\0')
+	    return 0;
+
+	default:
+	  continue;
+	}
+    }
+
+  return 0;
+}
+
+/*
  * Write variables to an output stream.
  */
 tree_constant
@@ -836,6 +878,11 @@ builtin_save (int argc, char **argv)
 // XXX FIXME XXX -- things intended for the screen should end up in a
 // tree_constant (string)?
       stream = cout;
+    }
+  else if (argc == 1 && glob_pattern_p (*argv)) // Guard against things
+    {						// like `save a*',
+      print_usage ("save");			// which are probably
+      return retval;				// mistakes...
     }
   else
     {
@@ -871,14 +918,12 @@ builtin_save (int argc, char **argv)
 	  int count;
 	  char **lvars = curr_sym_tab->list (count, 0,
 					     symbol_def::USER_VARIABLE);
-	  Regex rx (*argv);
 
 	  int saved_or_error = 0;
 	  int i;
 	  for (i = 0; i < count; i++)
 	    {
-	      String nm (lvars[i]);
-	      if (nm.matches (rx)
+	      if (fnmatch (*argv, lvars[i], __FNM_FLAGS) == 0
 		  && curr_sym_tab->save (stream, lvars[i]) != 0)
 		saved_or_error++;
 	    }
@@ -888,8 +933,7 @@ builtin_save (int argc, char **argv)
 
 	  for (i = 0; i < count; i++)
 	    {
-	      String nm (bvars[i]);
-	      if (nm.matches (rx)
+	      if (fnmatch (*argv, bvars[i], __FNM_FLAGS) == 0
 		  && global_sym_tab->save (stream, bvars[i]) != 0)
 		saved_or_error++;
 	    }

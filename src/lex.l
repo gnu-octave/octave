@@ -1405,7 +1405,7 @@ next_token_is_bin_op (bool spc_prev)
 
 	    unput (c2);
 	  }
-	else if (! isdigit (c1) && c1 != ' ' && c1 != '\t')
+	else if (! isdigit (c1) && c1 != ' ' && c1 != '\t' && c1 != '.')
 	  {
 	    bin_op = true;
 	  }

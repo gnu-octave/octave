@@ -72,7 +72,6 @@ LOSE! LOSE!
 
 #include "defun.h"
 #include "error.h"
-#include "help.h"
 #include "input.h"
 #include "oct-obj.h"
 #include "ov.h"

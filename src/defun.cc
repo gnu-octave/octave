@@ -24,12 +24,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "defun-int.h"
+#include "error.h"
+#include "help.h"
 #include "ov.h"
 #include "ov-builtin.h"
 #include "ov-mapper.h"
+#include "pager.h"
 #include "symtab.h"
 #include "variables.h"
+
+void
+print_usage (const string& nm, bool just_usage)
+{
+  symbol_record *sym_rec = global_sym_tab->lookup (nm);
+
+  if (sym_rec)
+    {
+      string h = sym_rec->help ();
+
+      if (h.length () > 0)
+	{
+	  octave_stdout << "\n*** " << nm << ":\n\n"
+	    << h << "\n";
+
+	  if (! just_usage)
+	    additional_help_message (octave_stdout);
+	}
+    }
+  else
+    warning ("no usage message found for `%s'", nm.c_str ());
+}
 
 // Install variables and functions in the symbol tables.
 

@@ -53,7 +53,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun.h"
 #include "error.h"
-#include "help.h"
 #include "lo-ieee.h"
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"

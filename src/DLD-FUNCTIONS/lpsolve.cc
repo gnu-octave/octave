@@ -28,7 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun-dld.h"
 #include "error.h"
-#include "help.h"
 #include "oct-obj.h"
 
 DEFUN_DLD (lp_solve, , ,

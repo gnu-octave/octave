@@ -46,7 +46,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "help.h"
 #include "load-save.h"
 #include "oct-obj.h"
 #include "pager.h"

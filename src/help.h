@@ -38,14 +38,10 @@ struct help_list
 };
 
 extern string_vector names (help_list *l, int& count);
-extern help_list *operator_help (void);
+
 extern help_list *keyword_help (void);
 
-extern void print_usage (const string& nm, int just_usage = 0);
-
-extern int help_from_list (ostrstream& output_buf,
-			   const help_list *list, const string& nm,
-			   int usage);
+extern void additional_help_message (ostream&);
 
 // Name of the info file specified on command line.
 // (--info-file file)

@@ -68,7 +68,6 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "dirfns.h"
 #include "error.h"
 #include "gripes.h"
-#include "help.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "oct-obj.h"

@@ -315,7 +315,7 @@ names (help_list *lst, int& count)
   return retval;
 }
 
-help_list *
+static help_list *
 operator_help (void)
 {
   return operators;
@@ -328,7 +328,8 @@ keyword_help (void)
 }
 
 #if defined (USE_GNU_INFO)
-static void
+
+void
 additional_help_message (ostream& os)
 {
   if (! Vsuppress_verbose_help_message)
@@ -338,33 +339,15 @@ is available in the on-line version of the manual.\n\
 \n\
 Use the command `help -i <topic>' to search the manual index.\n";
 }
+
 #else
-static void
+
+void
 additional_help_message (ostream&)
 {
 }
+
 #endif
-
-void
-print_usage (const string& nm, int just_usage)
-{
-  symbol_record *sym_rec = global_sym_tab->lookup (nm);
-  if (sym_rec)
-    {
-      string h = sym_rec->help ();
-
-      if (h.length () > 0)
-	{
-	  octave_stdout << "\n*** " << nm << ":\n\n"
-	    << h << "\n";
-
-	  if (! just_usage)
-	    additional_help_message (octave_stdout);
-	}
-    }
-  else
-    warning ("no usage message found for `%s'", nm.c_str ());
-}
 
 // XXX FIXME XXX -- this needs a major overhaul to cope with new
 // symbol table stuff.
@@ -467,15 +450,6 @@ display_symtab_names (ostream& os, const string_vector& names,
     }
 }
 
-static void
-simple_help (void)
-{
-  display_names_from_help_list (octave_stdout, operator_help (),
-				"operators");
-
-  display_names_from_help_list (octave_stdout, keyword_help (),
-				"reserved words");
-
 #ifdef LIST_SYMBOLS
 #undef LIST_SYMBOLS
 #endif
@@ -487,6 +461,15 @@ simple_help (void)
       display_symtab_names (octave_stdout, names, count, msg); \
     } \
   while (0)
+
+static void
+simple_help (void)
+{
+  display_names_from_help_list (octave_stdout, operator_help (),
+				"operators");
+
+  display_names_from_help_list (octave_stdout, keyword_help (),
+				"reserved words");
 
   // XXX FIXME XXX -- is this distinction needed?
 
@@ -529,6 +512,7 @@ simple_help (void)
 }
 
 #if defined (USE_GNU_INFO)
+
 static int
 try_info (const string& nm)
 {
@@ -589,8 +573,7 @@ help_from_info (const string_vector& argv, int idx, int argc)
 	    {
 	      if (status < 0)
 		{
-		  message ("help",
-			   "sorry, `%s' is not indexed in the manual",
+		  message ("help", "sorry, `%s' is not indexed in the manual",
 			   argv[i].c_str ());
 		  sleep (2);
 		}
@@ -603,19 +586,23 @@ help_from_info (const string_vector& argv, int idx, int argc)
 	}
     }
 }
+
 #else
+
 static void
 help_from_info (const string_vector&, int, int)
 {
-  message (0, "sorry, help -i is not available in this version of Octave");
+  message ("help", "Info help is not available in this version of Octave");
 }
+
 #endif
 
-int
+static bool
 help_from_list (ostream& os, const help_list *list,
 		const string& nm, int usage)
 {
   const char *name;
+
   while ((name = list->name) != 0)
     {
       if (strcmp (name, nm.c_str ()) == 0)
@@ -629,11 +616,12 @@ help_from_list (ostream& os, const help_list *list,
 
 	  os << list->help << "\n";
 
-	  return 1;
+	  return true;
 	}
       list++;
     }
-  return 0;
+
+  return false;
 }
 
 static void
@@ -684,16 +672,15 @@ builtin_help (int argc, const string_vector& argv)
 }
 
 #if defined (USE_GNU_INFO)
-DEFUN_TEXT (help, args, ,
-  "help [-i] [topic ...]\n\
-\n\
-print cryptic yet witty messages")
+#define HELP_DOC_STRING \
+  "help [-i] [topic ...]\n\nprint cryptic yet witty messages"
 #else
-DEFUN_TEXT (help, args, ,
-  "help [topic ...]\n\
-\n\
-print cryptic yet witty messages")
+#define HELP_DOC_STRING \
+  "help [topic ...]\n\nprint cryptic yet witty messages"
 #endif
+
+DEFUN_TEXT (help, args, ,
+  HELP_DOC_STRING)
 {
   octave_value_list retval;
 
@@ -705,19 +692,13 @@ print cryptic yet witty messages")
     return retval;
 
   if (argc == 1)
-    {
-      simple_help ();
-    }
+    simple_help ();
   else
     {
       if (argv[1] == "-i")
-	{
-	  help_from_info (argv, 2, argc);
-	}
+	help_from_info (argv, 2, argc);
       else
-	{
-	  builtin_help (argc, argv);
-	}
+	builtin_help (argc, argv);
     }
 
   return retval;
@@ -857,6 +838,7 @@ display the definition of each NAME that refers to a function")
 			  if (var_ok)
 			    {
 			      output_buf << argv[i];
+
 			      if (sym_rec->is_user_variable ())
 				output_buf << " is a user-defined variable\n";
 			      else
@@ -926,6 +908,7 @@ file, print the full name of the file.")
 	  if (sym_rec)
 	    {
 	      int print = (nargout == 0);
+
 	      string tmp = print_symbol_type (octave_stdout, sym_rec,
 					      argv[i], print);
 	      if (! print)
@@ -944,15 +927,6 @@ file, print the full name of the file.")
     print_usage ("which");
 
   return retval;
-}
-
-static int
-suppress_verbose_help_message (void)
-{
-  Vsuppress_verbose_help_message
-    = check_preference ("suppress_verbose_help_message");
-
-  return 0;
 }
 
 static int
@@ -989,6 +963,15 @@ info_prog (void)
     Vinfo_prog = s;
 
   return status;
+}
+
+static int
+suppress_verbose_help_message (void)
+{
+  Vsuppress_verbose_help_message
+    = check_preference ("suppress_verbose_help_message");
+
+  return 0;
 }
 
 void

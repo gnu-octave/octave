@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_value;
 
+extern void print_usage (const string& nm, bool just_usage = false);
+
 // XXX FIXME XXX -- change to use actual pointer types instead of void*
 // when things are not changing as rapidly.
 

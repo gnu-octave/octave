@@ -35,7 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun-dld.h"
 #include "error.h"
 #include "oct-obj.h"
-#include "help.h"
 
 extern MArray<double>
 filter (MArray<double>&, MArray<double>&, MArray<double>&);

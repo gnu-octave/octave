@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iomanip>
 #include <strstream>
+#include <string>
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -274,7 +275,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
     }
 }
 
-static string
+static std::string
 expand_char_class (const std::string& s)
 {
   std::string retval;

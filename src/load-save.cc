@@ -2746,17 +2746,39 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
+	int n_fields = len/field_name_length;
+
+	len = PAD (len);
+
 	OCTAVE_LOCAL_BUFFER (char, elname, len);
 
 	if (! is.read (elname, len))
 	  goto data_read_error;
 
-	// fields subelements
-	for (i = 0; i < len/field_name_length; i++)
+	int n;
+	if (nr == 1)
+	  n = nc;
+	else if (nc == 1)
+	  n = nr;
+	else
 	  {
-	    octave_value fieldtc;
-	    read_mat5_binary_element (is, filename, swap, global, fieldtc);
-	    m[elname + i*field_name_length] = fieldtc;
+	    error ("load: can only handle one-dimensional structure arrays");
+	    goto data_read_error;
+	  }
+
+	octave_value_list field_elts (n, Matrix ());
+
+	// fields subelements
+	for (i = 0; i < n_fields; i++)
+	  {
+	    for (int j = 0; j < n; j++)
+	      {
+		octave_value fieldtc;
+		read_mat5_binary_element (is, filename, swap, global, fieldtc);
+		field_elts(j) = fieldtc;
+	      }
+
+	    m.assign (elname + i*field_name_length, field_elts);
 	  }
 
 	tc = m;
@@ -2837,6 +2859,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     }
 
   is.seekg (pos + static_cast<std::streamoff> (element_length));
+
+  if (is.eof ())
+    is.clear ();
 
   return retval;
 
@@ -4238,15 +4263,8 @@ save_mat5_binary_element (std::ostream& os,
   os.write ((char *)&junk, 4);
   
   // dimensions array subelement
-  if (tc.is_map ())
-    {
-      nr = nc = 1;
-    }
-  else
-    {
-      nr = tc.rows ();
-      nc = tc.columns ();
-    }
+  nr = tc.rows ();
+  nc = tc.columns ();
 
   write_mat5_tag (os, miINT32, 8);
   os.write ((char *)&nr, 4);
@@ -4344,17 +4362,21 @@ save_mat5_binary_element (std::ostream& os,
 	    os.write (buf, 32);
 	  }
 
+	int len = m.array_length ();
+
 	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the data of each element
-	    // XXX FIXME XXX -- if the length of the structure array is
-	    // 1, should we really create a list object?
-	    bool retval2
-	      = save_mat5_binary_element (os, octave_value (m.contents (i)),
-					  "", mark_as_global, save_as_floats);
+	    octave_value_list elts = m.contents (i);
 
-	    if (! retval2)
-	      goto error_cleanup;
+	    for (int j = 0; j < len; j++)
+	      {
+		bool retval2 = save_mat5_binary_element (os, elts(j), "",
+							 mark_as_global,
+							 save_as_floats);
+		if (! retval2)
+		  goto error_cleanup;
+	      }
 	  }
       }
     }

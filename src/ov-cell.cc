@@ -130,6 +130,8 @@ octave_cell::subsasgn (const std::string& type,
 
 		next_idx.erase (next_idx.begin ());
 
+		tmp.make_unique ();
+
 		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
 	      }
 	  }
@@ -142,17 +144,22 @@ octave_cell::subsasgn (const std::string& type,
 	    if (! tmp.is_defined ())
 	      tmp = octave_value::empty_conv (type.substr (1), rhs);
 
-	    Cell tcell = tmp.cell_value ();
-
-	    if (! error_state && tcell.length () == 1)
+	    if (! error_state)
 	      {
-		tmp = tcell(0,0);
+		Cell tcell = tmp.cell_value ();
 
-		std::list<octave_value_list> next_idx (idx);
+		if (! error_state && tcell.length () == 1)
+		  {
+		    tmp = tcell(0,0);
 
-		next_idx.erase (next_idx.begin ());
+		    std::list<octave_value_list> next_idx (idx);
 
-		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+		    next_idx.erase (next_idx.begin ());
+
+		    tmp.make_unique ();
+
+		    t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+		  }
 	      }
 	  }
 	  break;

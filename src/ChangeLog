@@ -1,4 +1,12 @@
+2003-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat5_binary_element): Handle structure arrays.
+	(save_mat5_binary_element): Likewise.
+
 2003-03-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (octave_cell::subsasgn): Use make_unique in
+	appropriate places to preserve copy on write semantics.
 
 	* oct-conf.h.in: Substitute OCTAVE_CONF_KPATHSEA_INCFLAGS.
 

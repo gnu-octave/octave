@@ -1,3 +1,7 @@
+2003-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xpow.cc (xpow (double, double)): Avoid apparent GNU libm bug.
+
 2003-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* symtab.cc (symbol_record::print_symbol_info_line):

@@ -70,8 +70,13 @@ xpow (double a, double b)
 {
   if (a < 0.0 && static_cast<int> (b) != b)
     {
+      // XXX FIXME XXX -- avoid apparent GNU libm bug by converting
+      // A and B to complex instead of just A.
+
       Complex atmp (a);
-      return pow (atmp, b);
+      Complex btmp (b);
+
+      return pow (atmp, btmp);
     }
   else
     return pow (a, b);

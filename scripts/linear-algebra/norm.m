@@ -29,6 +29,7 @@ function retval = norm (x, p)
 #       1          1-norm, the largest column sum of x
 #       2          largest singular value of x
 #      Inf         infinity norm, the largest row sum of x
+#     "inf"        same as Inf
 #     "fro"        Frobenius norm of x, sqrt (sum (diag (x' * x)))
 #
 # If x is a vector or a scalar:
@@ -60,6 +61,8 @@ function retval = norm (x, p)
       if (isstr (p))
         if (strcmp (p, "fro"))
           retval = sqrt (sum (diag (x' * x)));
+        elseif (strcmp (p, "inf"))
+          retval = max (abs (x));
         else
           error ("norm: unrecognized norm");
         endif

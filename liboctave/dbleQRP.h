@@ -37,7 +37,7 @@ QRP : public QR
 {
 public:
 
-  QRP (void) : QR (), p (), jpvt (0) { }
+  QRP (void) : QR (), p () { }
 
   QRP (const Matrix& A, QR::type qr_type = QR::std);
 
@@ -54,7 +54,7 @@ public:
       return *this;
     }
 
-  ~QRP (void) { delete [] jpvt; }
+  ~QRP (void) { }
 
   Matrix P (void) const { return p; }
 
@@ -63,8 +63,6 @@ public:
 protected:
 
   Matrix p;
-
-  int *jpvt;
 };
 
 #endif

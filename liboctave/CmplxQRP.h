@@ -37,7 +37,7 @@ ComplexQRP : public ComplexQR
 {
 public:
 
-  ComplexQRP (void) : ComplexQR (), p (), jpvt (0), rwork (0) { }
+  ComplexQRP (void) : ComplexQR (), p () { }
 
   ComplexQRP (const ComplexMatrix& A, QR::type qr_type = QR::std);
 
@@ -53,11 +53,7 @@ public:
       return *this;
     }
 
-  ~ComplexQRP (void)
-    {
-      delete [] jpvt;
-      delete [] rwork;
-    }
+  ~ComplexQRP (void) { }
 
   Matrix P (void) const { return p; }
 
@@ -66,9 +62,6 @@ public:
 private:
 
   Matrix p;
-
-  int *jpvt;
-  double *rwork;
 };
 
 #endif

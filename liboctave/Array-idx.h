@@ -63,6 +63,19 @@ Array<T>::value (void)
   idx_vector *tmp = get_idx ();
   idx_vector idx = tmp[0];
 
+  retval = index (idx);
+
+  clear_index ();
+
+  return retval;
+}
+
+template <class T>
+Array<T>
+Array<T>::index (idx_vector& idx) const
+{
+  Array<T> retval;
+
   int len = length ();
 
   int n = idx.freeze (len, "vector", liboctave_pzo_flag);
@@ -94,9 +107,8 @@ Array<T>::value (void)
 	    }
 	}
     }
-  // idx_vector::freeze() printed an error message for us.
 
-  clear_index ();
+  // idx_vector::freeze() printed an error message for us.
 
   return retval;
 }

@@ -177,7 +177,6 @@ octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
 	$(OCTAVE_LIBS) \
 	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
 
-
 stamp-picdir:
 	if [ -n "$(CPICFLAG)" ]; then \
 	  if [ -d pic ]; then true; else mkdir pic ; fi ; \

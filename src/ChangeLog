@@ -1,3 +1,32 @@
+Thu Apr 17 13:12:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (ABORT_PARSE): Handle forced_interactive the same as
+	interactive.
+
+Mon Apr 14 01:46:50 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (octave_read): Don't forget to free input buffer if it
+	exists and has zero length.
+	(gnu_readline): Free buf if fgets returns 0.
+
+Wed Apr  9 00:03:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time.cc (mk_tm_map): Only set zone field if HAVE_TM_ZONE or
+	HAVE_TZNAME are defined.
+
+Tue Apr  8 12:39:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time.cc (extract_tm): Set tm.tm_zone if HAVE_TM_ZONE is defined,
+	not if HAVE_TMZONE is defined.
+
+	* Makefile.in (%.oct : %.o): Use $(SH_LD), not $(CXX).
+
+Wed Apr  2 21:32:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc, dynamic-ld.h (init_dynamic_linker): Delete
+	function and declaration.
+	* octave.cc (main): Don't call it.
+
 Mon Mar 31 00:37:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-base-exp.h (tree_expression::eval): Give arg a default value.

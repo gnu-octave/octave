@@ -251,7 +251,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
     { \
       global_command = 0; \
       yyerrok; \
-      if (interactive) \
+      if (interactive || forced_interactive) \
 	YYACCEPT; \
       else \
 	YYABORT; \

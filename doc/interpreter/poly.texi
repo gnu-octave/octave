@@ -20,24 +20,17 @@ of length
 @ifinfo
  @var{N+1}
 @end ifinfo
- corresponds to the following
+ corresponds to the following polynomial of order
 @iftex
 @tex
- $N^{th}$
-@end tex
-@end iftex
-@ifinfo
- @var{N}-th
-@end ifinfo
- order polynomial
-@iftex
-@tex
+ $N$
 $$
  p (x) = c_1 x^N + ... + c_N x + c_{N+1}.
 $$
 @end tex
 @end iftex
 @ifinfo
+ @var{N}
 
 @example
 p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
@@ -164,6 +157,7 @@ The argument @var{x} must be a square matrix.
 If @var{b} and @var{a} are vectors of polynomial coefficients, then
 residue calculates the partial fraction expansion corresponding to the
 ratio of the two polynomials.
+@cindex partial fraction expansion
 
 The function @code{residue} returns @var{r}, @var{p}, @var{k}, and
 @var{e}, where the vector @var{r} contains the residue terms, @var{p}

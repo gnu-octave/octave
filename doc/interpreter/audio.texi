@@ -30,19 +30,16 @@ files holding data in mu-law encoding end in @file{au}, @file{mu}, or
 
 @deftypefn {Function File} {} lin2mu (@var{x})
 If the vector @var{x} represents mono audio data in 8- or 16-bit
-linear encoding, @code{lin2mu (@var{x})} is the correspoding mu-law
+linear encoding, @code{lin2mu (@var{x})} is the corresponding mu-law
 encoding.
 @end deftypefn
 
 @deftypefn {Function File} {} mu2lin (@var{x}, @var{bps})
 If the vector @var{x} represents mono audio data in mu-law encoding,
-@code{mu2lin (@var{x} [, @var{bps}])} converts it to linear encoding.
-The optional argument @var{bps} specifies whether the input data uses
-8 bit per sample (default) or 16 bit.
+@code{mu2lin} converts it to linear encoding.  The optional argument
+@var{bps} specifies whether the input data uses 8 bit per sample
+(default) or 16 bit.
 @end deftypefn
-
-@c XXX FIXME XXX -- ext and bps are optional, but we need to note the
-@c default values here too.
 
 @deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
 Loads audio data from the file @file{@var{name}.@var{ext}} into the
@@ -69,20 +66,20 @@ The following functions for audio I/O require special A/D hardware and
 operating system support.  It is assumed that audio data in linear
 encoding can be played and recorded by reading from and writing to
 @file{/dev/dsp}, and that similarly @file{/dev/audio} is used for mu-law
-encoding.  This definitely works on Linux systems, and should also work
-on Suns.  If your hardware is accessed differently, please contact
-Andreas Weingessel <Andreas.Weingessel@@ci.tuwien.ac.at>.
+encoding.  These file names are system-dependent.  Improvements so that
+these functions will work without modification on a wide variety of
+hardware are welcome.
 
 @deftypefn {Function File} {} playaudio (@var{name}, @var{ext})
 @deftypefnx {Function File} {} playaudio (@var{x})
-Plays the audio file @file{@var{name}.@var{ext}} or in the vector
-@var{x}.
+Plays the audio file @file{@var{name}.@var{ext}} or the audio data
+stored in the vector @var{x}.
 @end deftypefn
 
 @deftypefn {Function File} {} record (@var{sec}, @var{sampling_rate})
 Records @var{sec} seconds of audio input into the vector @var{x}.  The
 default value for @var{sampling_rate} is 8000 samples per second, or
-8kHz.  The program waits until the user types @kbd{RET} and then
+8kHz.  The program waits until the user types @key{RET} and then
 immediately starts to record.
 @end deftypefn
 

@@ -47,7 +47,7 @@ xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
 
 version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
 
-SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
+SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 
 %.spell : %.texi
 	rm -f $@

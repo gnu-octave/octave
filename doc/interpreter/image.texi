@@ -11,6 +11,13 @@ the X Window System, and you must have either @code{xloadimage} or
 manipulate images, however, so some of these functions may be useful
 even if you are not able to view the results.
 
+Loading images only works with Octave's image format (a file with a
+matrix containing the image data, and a matrix containing the
+colormap).  Contributions of robust, well-written functions to read
+other image formats are welcome.  If you can provide them, or would like
+to improve Octave's image processing capabilities in other ways, please
+contact @email{bug-octave@@bevo.che.wisc.edu}.
+
 @deftypefn {Function File} {} colormap (@var{map})
 @deftypefnx {Function File} {} colormap ("default")
 Set the current colormap.

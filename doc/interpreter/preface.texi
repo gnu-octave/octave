@@ -48,13 +48,13 @@ Octave more useful by writing and contributing additional functions for
 it, and by reporting any problems you may have.
 
 @menu
-* Acknowlegements::             
+* Acknowledgements::             
 * How You Can Contribute to Octave::  
 * Distribution::                
 @end menu
 
-@node Acknowlegements, How You Can Contribute to Octave, Preface, Preface
-@unnumberedsec Acknowlegements
+@node Acknowledgements, How You Can Contribute to Octave, Preface, Preface
+@unnumberedsec Acknowledgements
 @cindex acknowledgements
 
 Many people have already contributed to Octave's development.  In
@@ -66,95 +66,96 @@ of Octave or helped out in various other ways.
 
 @itemize @bullet
 @item
-Thomas Baier (baier@@ci.tuwien.ac.at) wrote the original versions of
-@code{popen}, @code{pclose}, @code{execute}, @code{sync_system}, and
+Thomas Baier @email{baier@@ci.tuwien.ac.at} wrote the original versions
+of @code{popen}, @code{pclose}, @code{execute}, @code{sync_system}, and
 @code{async_system}.
 
 @item
-Karl Berry (karl@@cs.umb.edu) wrote the @code{kpathsea} library that
-allows Octave to recursively search directory paths for function and
-script files.
+Karl Berry @email{karl@@cs.umb.edu} wrote the @code{kpathsea} library
+that allows Octave to recursively search directory paths for function
+and script files.
 
 @item
-Georg Beyerle (gbeyerle@@awi-potsdam.de) contributed code to save values
-in @sc{Matlab}'s @file{.mat}-file format, and has provided many useful bug
-reports and suggestions.
+Georg Beyerle @email{gbeyerle@@awi-potsdam.de} contributed code to save
+values in @sc{Matlab}'s @file{.mat}-file format, and has provided many
+useful bug reports and suggestions.
 
 @item
-John Campbell (jcc@@bevo.che.wisc.edu) wrote most of the file and
+John Campbell @email{jcc@@bevo.che.wisc.edu} wrote most of the file and
 C-style input and output functions.
 
 @item
-Brian Fox (bfox@@gnu.ai.mit.edu) wrote the @code{readline} library used
-for command history editing, and the portion of this manual that
+Brian Fox @email{bfox@@gnu.ai.mit.edu} wrote the @code{readline} library
+used for command history editing, and the portion of this manual that
 documents it.
 
 @item
-Klaus Gebhardt <gebhardt@@crunch.ikp.physik.th-darmstadt.de> ported
-Octave to OS/2 and worked with Michel Juillard <juillard@@msh-paris.fr>
-on the port to DOS.
+Klaus Gebhardt @email{gebhardt@@crunch.ikp.physik.th-darmstadt.de}
+ported Octave to OS/2 and worked with Michel Juillard
+@email{juillard@@msh-paris.fr} on the port to DOS.
 
 @item
-A. Scottedward Hodel (scotte@@eng.auburn.edu) contributed a number
+A. Scottedward Hodel @email{A.S.Hodel@@eng.auburn.edu} contributed a number
 of functions including @code{expm}, @code{qzval}, @code{qzhess},
 @code{syl}, @code{lyap}, and @code{balance}.
 
 @item
-Kurt Hornik (Kurt.Hornik@@ci.tuwien.ac.at) provided the @code{corrcoef},
-@code{cov}, @code{fftconv}, @code{fftfilt}, @code{gcd}, @code{lcd},
-@code{kurtosis}, @code{null}, @code{orth}, @code{poly}, @code{polyfit},
-@code{roots}, and @code{skewness} functions, supplied documentation for
-these and numerous other functions, rewrote the Emacs mode for editing 
-Octave code and provided its documentation, and has helped tremendously
-with testing.  He has also been a constant source of new ideas for
-improving Octave.
+Kurt Hornik @email{Kurt.Hornik@@ci.tuwien.ac.at} provided the
+@code{corrcoef}, @code{cov}, @code{fftconv}, @code{fftfilt}, @code{gcd},
+@code{lcd}, @code{kurtosis}, @code{null}, @code{orth}, @code{poly},
+@code{polyfit}, @code{roots}, and @code{skewness} functions, supplied
+documentation for these and numerous other functions, rewrote the Emacs
+mode for editing Octave code and provided its documentation, and has
+helped tremendously with testing.  He has also been a constant source of
+new ideas for improving Octave.
 
 @item
-Phil Johnson (johnsonp@@nicco.sscnet.ucla.edu) has helped to make Linux
-releases available.
+Phil Johnson @email{johnsonp@@nicco.sscnet.ucla.edu} has helped to make
+Linux releases available.
 
 @item
-Michel Juillard <juillard@@msh-paris.fr> ported Octave to DOS systems.
+Michel Juillard @email{juillard@@msh-paris.fr} ported Octave to DOS
+systems.
 
 @item
-Friedrich Leisch (leisch@@ci.tuwien.ac.at) provided the
+Friedrich Leisch @email{leisch@@ci.tuwien.ac.at} provided the
 @code{mahalanobis} function.
 
 @item
-Ken Neighbors (wkn@@leland.stanford.edu) has provided many useful bug
-reports and comments on @sc{Matlab} compatibility.
+Ken Neighbors @email{wkn@@leland.stanford.edu} has provided many useful
+bug reports and comments on @sc{Matlab} compatibility.
 
 @item
-Rick Niles (niles@@axp745.gsfc.nasa.gov) rewrote Octave's plotting
+Rick Niles @email{niles@@axp745.gsfc.nasa.gov} rewrote Octave's plotting
 functions to add line styles and the ability to specify an unlimited
-number of lines in a single call.  He also continues to track down
-odd incompatibilities and bugs.
+number of lines in a single call.  He also continues to track down odd
+incompatibilities and bugs.
 
 @item
-Mark Odegard (meo@@sugarland.unocal.com) provided the initial
+Mark Odegard @email{meo@@sugarland.unocal.com} provided the initial
 implementation of @code{fread}, @code{fwrite}, @code{feof}, and
 @code{ferror}.
 
 @item
-Tony Richardson (tony@@guts.biomed.uakron.edu) wrote Octave's image
-processing functions as well as most of the original polynomial
+Tony Richardson @email{tony@@guts.biomed.uakron.edu} wrote Octave's
+image processing functions as well as most of the original polynomial
 functions.
 
 @item
-R. Bruce Tenison (Bruce.Tenison@@eng.auburn.edu) wrote the @code{hess} and
-@code{schur} functions.
+R. Bruce Tenison @email{Bruce.Tenison@@eng.auburn.edu} wrote the
+@code{hess} and @code{schur} functions.
 
 @item
-Teresa Twaroch (twaroch@@ci.tuwien.ac.at) provided the functions
+Teresa Twaroch @email{twaroch@@ci.tuwien.ac.at} provided the functions
 @code{gls} and @code{ols}.
 
 @item
-Andreas Weingessel (Andreas.Weingessel@@ci.tuwien.ac.at) wrote the
+Andreas Weingessel @email{Andreas.Weingessel@@ci.tuwien.ac.at} wrote the
 audio functions @code{lin2mu}, @code{loadaudio}, @code{mu2lin},
 @code{playaudio}, @code{record}, @code{saveaudio}, and @code{setaudio}.
 
 @item
-Fook Fah Yap (ffy@@eng.cam.ac.uk) provided the @code{fft} and
+Fook Fah Yap @email{ffy@@eng.cam.ac.uk} provided the @code{fft} and
 @code{ifft} functions and valuable bug reports for early versions.
 @end itemize
 
@@ -200,7 +201,7 @@ Richard Stallman, for writing GNU.
 This project would not have been possible without the GNU software used
 in and used to produce Octave.
 
-@node How You Can Contribute to Octave, Distribution, Acknowlegements, Preface
+@node How You Can Contribute to Octave, Distribution, Acknowledgements, Preface
 @unnumberedsec How You Can Contribute to Octave
 @cindex contributing to Octave
 @cindex funding Octave development

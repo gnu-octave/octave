@@ -24,8 +24,8 @@ Finally, you can convince Octave to use the Emacs info reader for
 All functionality is provided by the Emacs Lisp package @file{octave}.
 This chapter describes how to set up and use this package.
 
-Please contact <Kurt.Hornik@@ci.tuwien.ac.at> if you have any questions
-or suggestions on using Emacs with Octave.
+Please contact @email{Kurt.Hornik@@ci.tuwien.ac.at} if you have any
+questions or suggestions on using Emacs with Octave.
 
 @menu
 * Installing the Emacs Octave Package::  

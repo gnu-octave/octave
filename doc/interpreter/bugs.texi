@@ -235,15 +235,11 @@ information.  When you exit the editor, Octave will mail the bug report
 for you.
 
 If for some reason you cannot use Octave's @code{bug_report} function,
-send bug reports for Octave to:
-
-@example
-bug-octave@@bevo.che.wisc.edu
-@end example
+send bug reports for Octave to @email{bug-octave@@bevo.che.wisc.edu}.
 
 @strong{Do not send bug reports to @samp{help-octave}}.  Most users of
 Octave do not want to receive bug reports.  Those that do have asked to
-be on @samp{bug-octave}.
+be on the mailing list.
 
 As a last resort, send bug reports on paper to:
 
@@ -360,7 +356,7 @@ of the expected output, and why the actual output is incorrect.
 If you wish to suggest changes to the Octave source, send them as
 context diffs.  If you even discuss something in the Octave source,
 refer to it by context, not by line number, because the line numbers in
-the development sources probalby won't match those in your sources.
+the development sources probably won't match those in your sources.
 @end itemize
 
 Here are some things that are not necessary:
@@ -462,20 +458,15 @@ the change, send us the header line.
 @appendixsec How To Get Help with Octave
 @cindex help, where to find
 
-If you need help installing, using or changing Octave, the mailing list
-
-@example
-help-octave@@bevo.che.wisc.edu
-@end example
-
-exists for the discussion of Octave matters related to using,
-installing, and porting Octave.  If you would like to join the
-discussion, please send a short note to
-
-@example
-help-octave-request@@bevo.che.wisc.edu
-            ^^^^^^^
-@end example
+The mailing list @email{help-octave@@bevo.che.wisc.edu} exists for the
+discussion of matters related to using and installing Octave.  If would
+like to join the discussion, please send a short note to
+@email{help-octave@strong{-request}@@bevo.che.wisc.edu}.
 
 @strong{Please do not} send requests to be added or removed from the the
 mailing list, or other administrative trivia to the list itself.
+
+If you think you have found a bug in the installation procedure,
+however, you should send a complete bug report for the problem to
+@email{bug-octave@@bevo.che.wisc.edu}.  @xref{Bug Reporting} for
+information that will help you to submit a useful report.

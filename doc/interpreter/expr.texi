@@ -85,7 +85,7 @@ a ([1, 0], :)
 @end example
 
 @noindent
-selects the first row of the matrix @samp{a}.
+selects the first row of the matrix @code{a}.
 
 This operation can be useful for selecting elements of a matrix based on
 some condition, since the comparison operators return matrices of ones
@@ -127,9 +127,9 @@ a ([1, 1, 1, 1])
 @end example
 
 @noindent
-results in the matrix @samp{[ 1  2  3  4 ]}.  If the value of
+results in the matrix @code{[ 1, 2, 3, 4 ]}.  If the value of
 @code{prefer_zero_one_indexing} set to 0, the result would be
-the matrix @samp{[ 1 1 1 1 ]}.
+the matrix @code{[ 1, 1, 1, 1 ]}.
 
 In the first case, Octave is selecting each element corresponding to a
 @samp{1} in the index vector.  In the second, Octave is selecting the
@@ -166,7 +166,7 @@ a ([1, 1], [1, 1, 1])
 create a 2 by 3 matrix with all elements equal to 13.
 
 This is an obscure notation and should be avoided.  It is better to
-use the function @samp{ones} to generate a matrix of the appropriate
+use the function @code{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
 
@@ -180,7 +180,7 @@ endfor
 @end example
 
 @noindent
-(for @samp{a} previously  undefined) produce column vectors.  Otherwise, row
+(for @code{a} previously  undefined) produce column vectors.  Otherwise, row
 vectors are preferred.  The default value is 0.
 
 If a variable is already defined to be a vector (a matrix with a single
@@ -199,7 +199,7 @@ endfor
 @end example
 
 @noindent
-(for @samp{a} previously undefined) result in the variable @samp{a}
+(for @code{a} previously undefined) result in the variable @code{a}
 being resized to be just large enough to hold the new value.  New
 elements that have not been given a value are set to zero.  If the value
 of @code{resize_on_range_error} is 0, an error message is printed and
@@ -219,7 +219,7 @@ thus avoiding the loop entirely.  In cases where a loop is still
 required, or a number of values must be combined to form a larger
 matrix, it is generally much faster to set the size of the matrix first,
 and then insert elements using indexing commands.  For example, given a
-matrix @samp{a},
+matrix @code{a},
 
 @example
 @group
@@ -303,8 +303,8 @@ For example, the following statement
 @end example
 
 @noindent
-computes the singular value decomposition of the matrix @samp{a} and
-assigns the three result matrices to @samp{u}, @samp{s}, and @samp{v}.
+computes the singular value decomposition of the matrix @code{a} and
+assigns the three result matrices to @code{u}, @code{s}, and @code{v}.
 
 The left side of a multiple assignment expression is itself a list of
 expressions, and is allowed to be a list of variable names or index
@@ -385,7 +385,7 @@ temporary result.
 
 With some restrictions@footnote{Some of Octave's function are
 implemented in terms of functions that cannot be called recursively.
-For example, the ODE solver @code{lsode} is ultimiately implemented in a
+For example, the ODE solver @code{lsode} is ultimately implemented in a
 Fortran subroutine that cannot be called recursively, so @code{lsode}
 should not be called either directly or indirectly from within the
 user-supplied function that @code{lsode} requires.  Doing so will result
@@ -612,7 +612,8 @@ work on an element-by-element basis.  For example,
 @group
 [1, 2; 3, 4] == [1, 3; 2, 4]
 
-     @result{} [ 1, 0; 0, 1 ]
+     @result{}  1  0
+         0  1
 @end group
 @end example
 
@@ -800,13 +801,13 @@ is possible write
 @group
 function f (a, b, c)
   if (nargin > 2 && isstr (c))
-    ...
+    @dots{}
 @end group
 @end example
 
 @noindent
 instead of having to use two @code{if} statements to avoid attempting to
-evaluate an argument that doesn't exist.  For example, without hte
+evaluate an argument that doesn't exist.  For example, without the
 short-circuit feature, it would be necessary to write
 
 @example
@@ -814,9 +815,24 @@ short-circuit feature, it would be necessary to write
 function f (a, b, c)
   if (nargin > 2)
     if (isstr (c))
-      ...
+      @dots{}
 @end group
 @end example
+
+Writing
+
+@example
+@group
+function f (a, b, c)
+  if (nargin > 2 & isstr (c))
+    @dots{}
+@end group
+@end example
+
+@noindent
+would result in an error if @code{f} were called with one or two
+arguments because Octave would be forced to try to evaluate both of the
+operands for the operator @samp{&}.
 
 @node Assignment Ops, Increment Ops, Boolean Expressions, Expressions
 @section Assignment Expressions
@@ -889,6 +905,19 @@ foo = bar
 @noindent
 When the second assignment gives @code{foo} a string value, the fact that
 it previously had a numeric value is forgotten.
+
+Assignment of a scalar to an indexed matrix sets all of the elements
+that are referenced by the indices to the scalar value.  For example, if
+@code{a} is a matrix with at least two columns,
+
+@example
+@group
+a(:, 2) = 5
+@end group
+@end example
+
+@noindent
+sets all the elements in the second column of @code{a} to 5.
 
 Assigning an empty matrix @samp{[]} works in most cases to allow you to
 delete rows or columns of matrices and vectors.  @xref{Empty Matrices}.

@@ -196,7 +196,7 @@ been passed to the function.  For example, we might rewrite the
 function retval = avg (v)
   retval = 0;
   if (nargin != 1)
-    error ("usage: avg (vector)");
+    usage ("avg (vector)");
   endif
   if (is_vector (v))
     retval = sum (v) / length (v);
@@ -362,7 +362,7 @@ At the top level, @code{nargout} is undefined.
 @end defvr
 
 @defvr {Built-in Variable} default_return_value
-The value given to otherwise unitialized return values if
+The value given to otherwise uninitialized return values if
 @code{define_all_return_values} is nonzero.  The default value is
 @code{[]}.
 @end defvr
@@ -422,7 +422,7 @@ arguments.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} va_arg ()
-Return the value of the next available argument and moves the internal
+Return the value of the next available argument and move the internal
 pointer to the next argument.  It is an error to call @code{va_arg()}
 when there are no more arguments available.
 @end deftypefn
@@ -608,12 +608,14 @@ definition without having to restart your Octave session.  Checking the
 time stamp every time a function is used is rather inefficient, but it
 has to be done to ensure that the correct function definition is used.
 
-Octave assumes that function files in the
-@file{@value{OCTAVEHOME}/share/octave/@value{VERSION}/m} directory tree
-will not change, so it doesn't have to check their time stamps every
-time the functions defined in those files are used.  This is normally a
-very good assumption and provides a significant improvement in
-performance for the function files that are distributed with Octave.
+To avoid degrading performance unnecessarily by checking the time stamps
+on functions that are not likely to change, Octave assumes that function
+files in the directory tree
+@file{@value{OCTAVEHOME}/share/octave/@value{VERSION}/m} will not
+change, so it doesn't have to check their time stamps every time the
+functions defined in those files are used.  This is normally a very good
+assumption and provides a significant improvement in performance for the
+function files that are distributed with Octave.
 
 If you know that your own function files will not change while you are
 running Octave, you can improve performance by setting the variable
@@ -655,7 +657,7 @@ This variable can be used to prevent Octave from making the system call
 @code{stat} each time it looks up functions defined in function files.
 If @code{ignore_function_time_stamp} to @code{"system"}, Octave will not
 automatically recompile function files in subdirectories of
-@code{@value{OCTAVEHOME}/lib/@value{VERSION}} if they have changed since
+@file{@value{OCTAVEHOME}/lib/@value{VERSION}} if they have changed since
 they were last compiled, but will recompile other function files in the
 @code{LOADPATH} if they change.  If set to @code{"all"}, Octave will not
 recompile any function files unless their definitions are removed with
@@ -669,7 +671,7 @@ need to recompiled.  The default value of
 If the value of @code{warn_function_name_clash} is nonzero, a warning is
 issued when Octave finds that the name of a function defined in a
 function file differs from the name of the file.  (If the names
-disagree, the name delcared inside the file is ignored.)  If the value
+disagree, the name declared inside the file is ignored.)  If the value
 is 0, the warning is omitted.  The default value is 1.
 @end defvr
 
@@ -723,7 +725,7 @@ Octave will compile the function and try to execute it, printing a
 message warning about any non-whitespace characters that appear after
 the function definition.
 
-Note that Octave does not try to lookup the definition of any identifier
+Note that Octave does not try to look up the definition of any identifier
 until it needs to evaluate it.  This means that Octave will compile the
 following statements if they appear in a script file, or are typed at
 the command line,
@@ -743,7 +745,7 @@ endfunction
 
 @noindent
 even though the function @code{do_something} is not defined before it is
-referenced in the function @code{foo}.  This is not an error because the
+referenced in the function @code{foo}.  This is not an error because
 Octave does not need to resolve all symbols that are referenced by a
 function until the function is actually evaluated.
 
@@ -770,71 +772,188 @@ also be resolved, and requiring that would be too restrictive (the
 string might come from user input, or depend on things that are not
 known until the function is evaluated).
 
+Although Octave normally executes commands from script files that have
+the name @file{@var{file}.m}, you can use the function @code{source} to
+execute commands from any file.
+
 @deftypefn {Built-in Function} {} source (@var{file})
 Parse and execute the contents of @var{file}.  This is equivalent to
 executing commands from a script file, but without requiring the file to
-be named @var{file}.m.
+be named @file{@var{file}.m}.
 @end deftypefn
 
 @node Dynamically Linked Functions, Organization of Functions, Script Files, Functions and Scripts
 @section Dynamically Linked Functions
+@cindex dynamic linking
 
 On some systems, Octave can dynamically load and execute functions
-written in C++ or other compiled languages.  This currently only works
-on systems that have a working version of the GNU dynamic linker,
-@code{dld}. Unfortunately, @code{dld} does not work on very many
-systems, but someone is working on making @code{dld} use the GNU Binary
-File Descriptor library, @code{BFD}, so that may soon change.  In any
-case, it should not be too hard to make Octave's dynamic linking
-features work on other systems using system-specific dynamic linking
-facilities.
+written in C++.  Octave can only directly call functions written in C++,
+but you can also load functions written in other languages
+by calling them from a simple wrapper function written in C++.
 
 Here is an example of how to write a C++ function that Octave can load,
 with commentary.  The source for this function is included in the source
-distributions of Octave, in the file @file{examples/hello.cc}.
+distributions of Octave, in the file @file{examples/oregonator.cc}.  It
+defines the same set of differential equations that are used in the
+example problem of @ref{Ordinary Differential Equations}.  By running
+that example and this one, we can compare the execution times to see
+what sort of increase in speed you can expect by using dynamically
+linked functions.
 
-To use this file, your version of Octave must support dynamic
-linking.  To find out if it does, type the command
+The function defined in @file{oregonator.cc} contains just 8 statements,
+and is not much different than the code defined in the corresponding
+M-file (also distributed with Octave in the file
+@file{examples/oregonator.m}).
+
+Here is the complete text of @file{oregonator.cc}:
+
+just
 
 @example
-x = octave_config_info; x.DEFS
+@group
+#include <octave/oct.h>
+
+DEFUN_DLD (oregonator, args, ,
+  "The `oregonator'.")
+@{
+  ColumnVector dx (3);
+
+  ColumnVector x = args(0).vector_value ();
+
+  dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0)
+                   - 8.375e-06*pow (x(0), 2));
+
+  dx(1) = (x(2) - x(0)*x(1) - x(1)) / 77.27;
+
+  dx(2) = 0.161*(x(0) - x(2));
+
+  return octave_value (dx);
+@}
+@end group
+@end example
+
+The first line of the file,
+
+@example
+#include <octave/oct.h>
 @end example
 
 @noindent
-at the Octave prompt.  Support for dynamic linking is included if
-the output contains the string @code{-DWITH_DYNAMIC_LINKING=1}.
+includes declarations for all of Octave's internal functions that you
+will need.  If you need other functions from the standard C++ or C
+libraries, you can include the necessary headers here.
 
-To compile this file, type the command
-
+The next two lines
 @example
-mkoctfile hello.cc
+@group
+DEFUN_DLD (oregonator, args, ,
+  "The `oregonator'.")
+@end group
 @end example
 
 @noindent
-at the shell prompt.  The script @file{mkoctfile} should have been
-installed along with Octave.  Running it will create a file called
-@file{hello.oct} that can be loaded by Octave.  To test the
-@file{hello.oct} file, start Octave and type the command
+declares the function.  The macro @code{DEFUN_DLD} and the macros that
+it depends on are defined in the files @file{defun-dld.h},
+@file{defun.h}, and @file{defun-int.h} (these files are included in the
+header file @file{octave/oct.h}).
+
+Note that the third parameter to @code{DEFUN_DLD} (@code{nargout}) is
+not used, so it is omitted from the list of arguments to in order to
+avoid  the warning from gcc about an unused function parameter.
+
+@noindent
+simply declares an object to store the right hand sides of the
+differential equation, and
+
+The statement
 
 @example
-hello ("easy as", 1, 2, 3)
+ColumnVector x = args(0).vector_value ();
+@end example
+
+@noindent
+extracts a column vector from the input arguments.  The variable
+@code{args} is passed to functions defined with @code{DEFUN_DLD} as an
+@code{octave_value_list} object, which includes methods for getting the
+length of the list and extracting individual elements.
+
+In this example, we don't check for errors, but that is not difficult.
+All of the Octave's built-in functions do some form of checking on their
+arguments, so you can check the source code for those functions for
+examples of various strategies for verifying that the correct number and
+types of arguments have been supplied.
+
+The next statements
+
+@example
+@group
+ColumnVector dx (3);
+
+dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0)
+                 - 8.375e-06*pow (x(0), 2));
+
+dx(1) = (x(2) - x(0)*x(1) - x(1)) / 77.27;
+
+dx(2) = 0.161*(x(0) - x(2));
+@end group
+@end example
+
+@noindent
+define the right hand side of the differential equation.  Finally, we
+can return @code{dx}:
+
+@example
+return octave_value (dx);
+@end example
+
+@noindent
+The actual return type is @code{octave_value_list}, but it is only
+necessary to convert the return type to an @code{octave_value} because
+there is a default constructor that can automatically create an object
+of that type from an @code{octave_value} object, so we can just use that
+instead.
+
+To use this file, your version of Octave must support dynamic linking.
+To find out if it does, type the command
+@kbd{octave_config_info ("dld")} at the Octave prompt.  Support for
+dynamic linking is included if this command returns 1.
+
+To compile the example file, type the command @kbd{mkoctfile
+oregonator.cc} at the shell prompt.  The script @code{mkoctfile} should
+have been installed along with Octave.  Running it will create a file
+called @file{oregonator.oct} that can be loaded by Octave.  To test the
+@file{oregonator.oct} file, start Octave and type the command
+
+@example
+oregonator ([1, 2, 3], 0)
 @end example
 
 @noindent
 at the Octave prompt.  Octave should respond by printing
 
 @example
-Hello, world!
-easy as
-1
-2
-3
-ans = 3
+@group
+ans =
+
+   77.269353
+   -0.012942
+   -0.322000
+@end group
 @end example
 
-Additional examples are available in the files in the src directory
-of the Octave distribution that use the macro @code{DEFUN_DLD_BUILTIN}.
-Currently, this includes the files
+You can now use the @file{oregonator.oct} file just as you would the
+@code{oregonator.m} file to solve the set of differential equations.
+
+On a 133 MHz Pentium running Linux, Octave can solve the problem shown
+in @ref{Ordinary Differential Equations} in about 1.4 second using the
+dynamically linked function, compared to about 19 seconds using the
+M-file.  Similar decreases in execution time can be expected for other
+functions, particularly those that rely on functions like @code{lsode}
+that require user-supplied functions.
+
+Additional examples are available in the files in the @file{src}
+directory of the Octave distribution.  Currently, this includes the
+files
 
 @example
 @group
@@ -848,82 +967,17 @@ expm.cc     givens.cc   lu.cc       rand.cc
 @end group
 @end example
 
-The difference between @code{DEFUN_DLD} and @code{DEFUN_DLD_BUILTIN} is
-that @code{DEFUN_DLD_BUILTIN} can define a built-in function that is not
+@noindent
+These files use the macro @code{DEFUN_DLD_BUILTIN} instead of
+@code{DEFUN_DLD}.  The difference between these two macros is just that
+@code{DEFUN_DLD_BUILTIN} can define a built-in function that is not
 dynamically loaded if the operating system does not support dynamic
 linking.  To define your own dynamically linked functions you should use
 @code{DEFUN_DLD}.
 
-@example
-@group
-#include <octave/config.h>
-
-#include <iostream.h>
-
-#include <octave/defun-dld.h>
-#include <octave/error.h>
-#include <octave/oct-obj.h>
-#include <octave/pager.h>
-#include <octave/symtab.h>
-#include <octave/variables.h>
-@end group
-@end example
-
-@code{DEFUN_DLD} and the macros that it depends on are defined in the
-files @file{defun-dld.h}, @file{defun.h}, and @file{defun-int.h}.
-
-Note that the third parameter (@code{nargout}) is not used, so it is
-omitted from the list of arguments to @code{DEFUN_DLD} in order to avoid
-the warning from gcc about an unused function parameter. 
-
-@example
-@group
-DEFUN_DLD (hello, args, ,
-  "[...] = hello (...)\n\
-\n\
-Print greeting followed by the values of all the arguments passed.\n\
-Returns all arguments in reverse order.")
-@{
-@end group
-@end example
-
-The list of values to return.  See the declaration in @file{oct-obj.h}.
-
-@example
-  octave_value_list retval;
-@end example
-
-This stream is normally connected to the pager.
-
-@example
-  octave_stdout << "Hello, world!\n";
-@end example
-
-The arguments to this function are available in @samp{args}.
-
-@example
-  int nargin = args.length ();
-@end example
-
-The @code{octave_value_list} class is a zero-based array of
-@code{octave_value} objects.  The declaration for the
-@code{octave_value} class is in the file @code{pt-const.h}.  The
-@code{print} method will send its output to @code{octave_stdout}, so
-it will also end up going through the pager.
-
-@example
-@group
-  for (int i = 0; i < nargin; i++)
-    @{
-      octave_value tmp = args (i);
-      tmp.print ();
-      retval (nargin-i-1) = tmp;
-    @}
-
-  return retval;
-@}
-@end group
-@end example
+There is currently no detailed description of all the functions that you
+can call in a built-in function.  For the time being, you will have to
+read the source code for Octave.
 
 @node Organization of Functions,  , Dynamically Linked Functions, Functions and Scripts
 @section Organization of Functions Distributed with Octave

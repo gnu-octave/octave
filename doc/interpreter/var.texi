@@ -87,15 +87,15 @@ order to access it.  For example,
 @group
 global x
 function f ()
-x = 1;
+  x = 1;
 endfunction
 f ()
 @end group
 @end example
 
 @noindent
-does @emph{not} set the value of the global variable @samp{x} to 1.  In
-order to change the value of the global variable @samp{x}, you must also
+does @emph{not} set the value of the global variable @code{x} to 1.  In
+order to change the value of the global variable @code{x}, you must also
 declare it to be global within the function body, like this
 
 @example
@@ -120,7 +120,7 @@ endfunction
 @end example
 
 @noindent
-and the definition of @samp{x} as a global variable at the top level,
+and the definition of @code{x} as a global variable at the top level,
 
 @example
 global x = 13
@@ -134,8 +134,8 @@ f (x)
 @end example
 
 @noindent
-will display the value of @samp{x} from inside the function as @samp{0},
-but the value of @samp{x} at the top level remains unchanged, because
+will display the value of @code{x} from inside the function as 0,
+but the value of @code{x} at the top level remains unchanged, because
 the function works with a @emph{copy} of its argument.
 
 @defvr {Built-in Variable} warn_comma_in_global_decl
@@ -147,8 +147,8 @@ global a = 1, b
 @end example
 
 @noindent
-which makes the variables @samp{a} and @samp{b} global and assigns the
-value 1 to the variable @samp{a}, because in this context, the comma is
+which makes the variables @code{a} and @code{b} global and assigns the
+value 1 to the variable @code{a}, because in this context, the comma is
 not interpreted as a statement separator.
 
 The default value of @code{warn_comma_in_global_decl} is nonzero.
@@ -202,9 +202,9 @@ variables (local and global) are cleared from the symbol table.  If
 @code{clear} is called with at least one argument, only the visible
 names matching the arguments are cleared.  For example, suppose you have
 defined a function @code{foo}, and then hidden it by performing the
-assignment @code{foo = 2}.  Executing the command @samp{clear foo} once
+assignment @code{foo = 2}.  Executing the command @kbd{clear foo} once
 will clear the variable definition and restore the definition of
-@code{foo} as a function.  Executing @samp{clear foo} a second time will
+@code{foo} as a function.  Executing @kbd{clear foo} a second time will
 clear the function definition.
 
 This command may not be used within a function body.
@@ -243,7 +243,7 @@ above.  If no patterns are supplied, all symbols from the given category
 are listed.  By default, only user defined functions and variables
 visible in the local scope are displayed.
 
-The command @code{whos} is equivalent to @code{who -long}.
+The command @kbd{whos} is equivalent to @kbd{who -long}.
 @end deffn
 
 @deftypefn {Built-in Function} {} exist (@var{name})

@@ -99,7 +99,7 @@ Compute the base-2 logarithm of @var{x}.  With two outputs, returns
 @var{f} and @var{e} such that
 @iftex
 @tex
- $1/2 <= |f| < 1$ and $x = f * 2^e$.
+ $1/2 <= |f| < 1$ and $x = f \cdot 2^e$.
 @end tex
 @end iftex
 @ifinfo
@@ -154,7 +154,7 @@ With one argument, computes
 for each element of @var{x}.  With two arguments, returns
 @iftex
 @tex
- $f 2^e$.
+ $f \cdot 2^e$.
 @end tex
 @end iftex
 @ifinfo
@@ -209,8 +209,8 @@ result is returned.  To compute the matrix square root, see
 @deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
 Return the `exclusive or' of the entries of @var{x} and @var{y}.
 For boolean expressions @var{x} and @var{y},
-@code{xor (@var{x}, @var{y})} is true if and only if either @var{x} or
-@var{y} is true.
+@code{xor (@var{x}, @var{y})} is true if and only if @var{x} or @var{y}
+is true, but not if both @var{x} and @var{y} are true.
 @end deftypefn
 
 @node Complex Arithmetic, Trigonometry, Utility Functions, Arithmetic
@@ -218,23 +218,79 @@ For boolean expressions @var{x} and @var{y},
 
 The following functions are available for working with complex
 numbers.  Each expects a single argument.  Given a matrix they work on
-an element by element basis.
+an element by element basis.  In the descriptions of the following
+functions,
+@iftex
+@tex
+$z$ is the complex number $x + iy$, where $i$ is defined as
+$\sqrt{-1}$.
+@end tex
+@end iftex
+@ifinfo
+@var{z} is the complex number @var{x} + @var{i}@var{y}, where @var{i} is
+defined as @code{sqrt (-1)}.
+@end ifinfo
 
 @deftypefn {Mapping Function} {} abs (@var{z})
-Compute the magnitude of @var{z}.
+Compute the magnitude of @var{z}, defined as
+@iftex
+@tex
+$|z| = \sqrt{x^2 + y^2}$.
+@end tex
+@end iftex
+@ifinfo
+|@var{z}| = @code{sqrt (x^2 + y^2)}.
+@end ifinfo
+
+For example,
+
+@example
+@group
+abs (3 + 4i)
+     @result{} 5
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Mapping Function} {} arg (@var{z})
 @deftypefnx {Mapping Function} {} angle (@var{z})
-Compute the argument of @var{z}.
+Compute the argument of @var{z}, defined as
+@iftex
+@tex
+$\theta = \tan^{-1}(y/x)$.
+@end tex
+@end iftex
+@ifinfo
+@var{theta} = @code{atan (@var{y}/@var{x})}.
+@end ifinfo
+
+@noindent
+in radians. 
+
+For example,
+
+@example
+@group
+arg (3 + 4i)
+     @result{} 0.92730
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Mapping Function} {} conj (@var{z})
-Return the complex conjugate of @var{z}.
+Return the complex conjugate of @var{z}, defined as
+@iftex
+@tex
+$\bar{z} = x - iy$.
+@end tex
+@end iftex
+@ifinfo
+@code{conj (@var{z})} = @var{x} - @var{i}@var{y}.
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Mapping Function} {} imag (@var{z})
-Return the imaginary part of @var{z}.
+Return the imaginary part of @var{z} as a real number.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} real (@var{z})
@@ -402,7 +458,35 @@ compatible dimensions.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
-Returns the binomial coefficient of @var{n} and @var{k}.
+Returns the binomial coefficient of @var{n} and @var{k}, defined as
+@iftex
+@tex
+$$
+ {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@group
+ /   \
+ | n |    n (n-1) (n-2) ... (n-k+1)
+ |   |  = -------------------------
+ | k |               k!
+ \   /
+@end group
+@end example
+@end ifinfo
+
+For example,
+
+@example
+@group
+bincoeff (5, 2)
+     @result{} 10
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Mapping Function} {} erf (@var{z})
@@ -427,11 +511,19 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt
 @end deftypefn
 
 @deftypefn {Mapping Function} {} erfc (@var{z})
-Computes the complementary error function, @code{1 - erf (@var{z})}.
+Computes the complementary error function,
+@iftex
+@tex
+$1 - {\rm erf} (z)$.
+@end tex
+@end iftex
+@ifinfo
+@code{1 - erf (@var{z})}.
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Mapping Function} {} erfinv (@var{z})
-Computes the inverse of the error function.
+Computes the inverse of the error function,
 @end deftypefn
 
 @deftypefn {Mapping Function} {} gamma (@var{z})
@@ -460,7 +552,7 @@ Computes the incomplete gamma function,
 @iftex
 @tex
 $$
- \gamma (a, x) = {\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
+ \gamma (a, x) = {\displaystyle\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
 $$
 @end tex
 @end iftex
@@ -489,14 +581,21 @@ Returns the natural logarithm of the gamma function.
 
 @deftypefn {Function File} {} cross (@var{x}, @var{y})
 Computes the vector cross product of the two 3-dimensional vectors
-@var{x} and @var{y}.
+@var{x} and @var{y}.  For example,
+
+@example
+@group
+cross ([1,1,0], [0,1,1])
+     @result{} [ 1; -1; 1 ]
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
 Returns the commutation matrix
 @iftex
- $K_{m,n}$
 @tex
+ $K_{m,n}$
 @end tex
 @end iftex
 @ifinfo
@@ -514,7 +613,7 @@ Returns the commutation matrix
  matrix such that
 @iftex
 @tex
- $K_{m,n} * {\rm vec} (A) = {\rm vec} (A^T)$
+ $K_{m,n} \cdot {\rm vec} (A) = {\rm vec} (A^T)$
 @end tex
 @end iftex
 @ifinfo
@@ -580,13 +679,13 @@ Returns the duplication matrix
 @end tex
 @end iftex
 @ifinfo
- @var{D}_@var{n} * vech (@var{A}) = vec (@var{A})
+ @var{D}_@var{n} \cdot vech (@var{A}) = vec (@var{A})
 @end ifinfo
  for all symmetric
 @iftex
 @tex
-@end tex
  $n \times n$
+@end tex
 @end iftex
 @ifinfo
  @var{n} by @var{n}
@@ -636,24 +735,16 @@ that results in a floating point overflow.
 
 @defvr {Built-in Variable} NaN
 @defvrx {Built-in Variable} nan
-Not a number.  This is the result of an operation like @samp{0/0}, or
-@samp{Inf - Inf}, or any operation with a NaN.
-@end defvr
-
-@defvr {Built-in Variable} eps
-The machine precision.  More precisely, @code{eps} is the largest
-relative spacing between any two adjacent numbers in the machine's
-floating point system.  This number is obviously system-dependent.  On
-machines that support 64 bit IEEE floating point arithmetic, @code{eps}
-is approximately
-@ifinfo
- 2.2204e-16.
-@end ifinfo
+Not a number.  This is the result of an operation like
 @iftex
 @tex
- $2.2204\times10^{-16}$.
+$0/0$, or $\infty - \infty$,
 @end tex
 @end iftex
+@ifinfo
+0/0, or @samp{Inf - Inf},
+@end ifinfo
+or any operation with a NaN.
 @end defvr
 
 @defvr {Built-in Variable} pi
@@ -680,6 +771,22 @@ The base of natural logarithms.  The constant
 @ifinfo
  @code{log} (@var{e}) = 1.
 @end ifinfo
+@end defvr
+
+@defvr {Built-in Variable} eps
+The machine precision.  More precisely, @code{eps} is the largest
+relative spacing between any two adjacent numbers in the machine's
+floating point system.  This number is obviously system-dependent.  On
+machines that support 64 bit IEEE floating point arithmetic, @code{eps}
+is approximately
+@ifinfo
+ 2.2204e-16.
+@end ifinfo
+@iftex
+@tex
+ $2.2204\times10^{-16}$.
+@end tex
+@end iftex
 @end defvr
 
 @defvr {Built-in Variable} realmax

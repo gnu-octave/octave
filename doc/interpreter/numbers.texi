@@ -90,13 +90,13 @@ a = [1, 2; 3, 4]
 
 @noindent
 results in the matrix
-
 @iftex
 @tex
 $$ a = \left[ \matrix{ 1 & 2 \cr 3 & 4 } \right] $$
 @end tex
 @end iftex
 @ifinfo
+
 @example
 @group
 
@@ -185,7 +185,7 @@ scalar 0, but in the expression
 
 @noindent
 the @samp{-} is treated as a unary operator and the result is the
-vector @code{[ 1 -1 ]}.
+vector @code{[ 1, -1 ]}.
 
 Given @code{a = 1}, the expression
 
@@ -195,7 +195,7 @@ Given @code{a = 1}, the expression
 
 @noindent
 results in the single quote character @samp{'} being treated as a
-transpose operator and the result is the vector @code{[ 1 1 ]}, but the
+transpose operator and the result is the vector @code{[ 1, 1 ]}, but the
 expression
 
 @example
@@ -225,7 +225,7 @@ by setting the built-in variable @code{whitespace_in_literal_matrix} to
 @defvr {Built-in Variable} whitespace_in_literal_matrix
 This variable allows some control over how Octave decides to convert
 spaces to commas and semicolons in matrix expressions like
-@samp{[m (1)]} or
+@code{[m (1)]} or
 
 @example
 [ 1, 2,
@@ -234,8 +234,8 @@ spaces to commas and semicolons in matrix expressions like
 
 If the value of @code{whitespace_in_literal_matrix} is @code{"ignore"},
 Octave will never insert a comma or a semicolon in a literal matrix
-list.  For example, the expression @samp{[1 2]} will result in an error
-instead of being treated the same as @samp{[1, 2]}, and the expression
+list.  For example, the expression @code{[1 2]} will result in an error
+instead of being treated the same as @code{[1, 2]}, and the expression
 
 @example
 [ 1, 2,
@@ -243,7 +243,7 @@ instead of being treated the same as @samp{[1, 2]}, and the expression
 @end example
 
 @noindent
-will result in the vector [1 2 3 4] instead of a matrix.
+will result in the vector @code{[ 1, 2, 3, 4 ]} instead of a matrix.
 
 If the value of @code{whitespace_in_literal_matrix} is @code{"traditional"},
 Octave will convert spaces to a comma between identifiers and @samp{(}.  For
@@ -369,7 +369,24 @@ matrices are handled as described by Carl de Boor in @cite{An Empty
 Exercise}, SIGNUM, Volume 25, pages 2--6, 1990 and C. N. Nett and W. M.
 Haddad, in @cite{A System-Theoretic Appropriate Realization of the Empty
 Matrix Concept}, IEEE Transactions on Automatic Control, Volume 38,
-Number 5, May 1993.  Briefly, given a scalar @code{s}, and an @var{m} by
+Number 5, May 1993.
+@iftex
+@tex
+Briefly, given a scalar $s$, an $m\times n$ matrix $M_{m\times n}$,
+and an $m\times n$ empty matrix $[\,]_{m\times n}$ (with either one or
+both dimensions equal to zero), the following are true:
+$$
+\eqalign{%
+s \cdot [\,]_{m\times n} = [\,]_{m\times n} \cdot s &= [\,]_{m\times n}\cr
+[\,]_{m\times n} + [\,]_{m\times n} &= [\,]_{m\times n}\cr
+[\,]_{0\times m} \cdot  M_{m\times n} &= [\,]_{0\times n}\cr
+M_{m\times n} \cdot [\,]_{n\times 0} &= [\,]_{m\times 0}\cr
+[\,]_{m\times 0} \cdot [\,]_{0\times n} &=  0_{m\times n}}
+$$
+@end tex
+@end iftex
+@ifinfo
+Briefly, given a scalar @var{s}, an @var{m} by
 @var{n} matrix @code{M(mxn)}, and an @var{m} by @var{n} empty matrix
 @code{[](mxn)} (with either one or both dimensions equal to zero), the
 following are true:
@@ -387,21 +404,11 @@ s * [](mxn) = [](mxn) * s = [](mxn)
     [](mx0) * [](0xn) =  0(mxn)
 @end group
 @end example
+@end ifinfo
 
 By default, dimensions of the empty matrix are printed along with the
-empty matrix symbol, @samp{[]}.  For example:
-
-@example
-@group
-octave:13> zeros (3, 0)
-ans = 
-
-[](3x0)
-@end group
-@end example
-
-The built-in variable @code{print_empty_dimensions} controls this
-behavior.
+empty matrix symbol, @samp{[]}.  The built-in variable
+@code{print_empty_dimensions} controls this behavior.
 
 @defvr {Built-in Variable} print_empty_dimensions
 If the value of @code{print_empty_dimensions} is nonzero, the
@@ -416,9 +423,7 @@ zeros (3, 0)
 will print
 
 @example
-ans =
-
-[](3x0)
+ans = [](3x0)
 @end example
 @end defvr
 
@@ -443,7 +448,7 @@ a = [1, [], 3, [], 5]
 @end example
 
 @noindent
-and the variable @samp{a} will be assigned the value @samp{[ 1 3 5 ]}.
+and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.
 
 The default value is @code{"warn"}.
 @end defvr
@@ -479,14 +484,14 @@ For example, the range
 @end example
 
 @noindent
-defines the set of values @samp{[ 1 2 3 4 5 ]}, and the range
+defines the set of values @samp{[ 1, 2, 3, 4, 5 ]}, and the range
 
 @example
 1 : 3 : 5
 @end example
 
 @noindent
-defines the set of values @samp{[ 1 4 ]}.
+defines the set of values @samp{[ 1, 4 ]}.
 
 Although a range constant specifies a row vector, Octave does @emph{not}
 convert range constants to vectors unless it is necessary to do so.

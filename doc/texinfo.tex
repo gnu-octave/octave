@@ -1,5 +1,5 @@
 %% TeX macros to handle Texinfo files.
-%% $Id: texinfo.tex,v 1.3 1997-02-13 18:33:50 jwe Exp $
+%% $Id: texinfo.tex,v 1.4 1997-02-18 09:08:50 jwe Exp $
 
 %  Copyright (C) 1985, 86, 88, 90, 91, 92, 93,
 %                94, 95, 96, 97 Free Software Foundation, Inc.
@@ -36,7 +36,7 @@
 
 % This automatically updates the version number based on RCS.
 \def\deftexinfoversion$#1: #2 ${\def\texinfoversion{#2}}
-\deftexinfoversion$Revision: 1.3 $
+\deftexinfoversion$Revision: 1.4 $
 \message{Loading texinfo package [Version \texinfoversion]:}
 
 % If in a .fmt file, print the version number
@@ -951,8 +951,7 @@ where each line of input produces a line of output.}
     % At the `@end #1', redefine \E#1 to be its previous value.
     \def\nece{E#1}{\let\nece{E#1} = \nece{prevE#1}}%
   }%
-  \temp
-}
+  \temp}
 
 % We need to expand lots of \csname's, but we don't want to expand the
 % control sequences after we've constructed them.
@@ -3393,9 +3392,9 @@ width0pt\relax} \fi
 \let\}=\ptexrbrace
 \let\.=\ptexdot
 \let\*=\ptexstar
-\let\dots=\ptexdots
-\def\endldots{\mathinner{\ldots\ldots\ldots\ldots}}
-\def\enddots{\relax\ifmmode\endldots\else$\mathsurround=0pt \endldots\,$\fi}
+\let\dots=\ptexdots%
+\def\endldots{\mathinner{\ldots\ldots\ldots\ldots}}%
+\def\enddots{\relax\ifmmode\endldots\else$\mathsurround=0pt \endldots\,$\fi}%
 \def\@{@}%
 \let\bullet=\ptexbullet
 \let\b=\ptexb \let\c=\ptexc \let\i=\ptexi \let\t=\ptext

@@ -14,14 +14,10 @@ returns a row vector containing unique values, sorted in ascending
 order.  For example,
 
 @example
+@group
 create_set ([ 1, 2; 3, 4; 4, 2 ])
-@end example
-
-@noindent
-returns the vector
-
-@example
-[ 1, 2, 3, 4 ]
+     @result{} [ 1, 2, 3, 4 ]
+@end group
 @end example
 @end deftypefn
 
@@ -30,19 +26,23 @@ Return the set of elements that are in either of the sets @var{x} and
 @var{y}.  For example,
 
 @example
+@group
 union ([ 1, 2, 3 ], [ 2, 3, 5 ])
-@end example
-
-@noindent
-returns the vector
-
-@example
-[ 1, 2, 5 ]
+     @result{} [ 1, 2, 5 ]
+@end group
 @end example
 @end deftypefn
 
 @deftypefn {Function File} {} intersection (@var{x}, @var{y})
 Return the set of elements that are in both sets @var{x} and @var{y}.
+For example,
+
+@example
+@group
+intersection ([ 1, 2, 3 ], [ 2, 3, 5 ])
+     @result{} [ 2, 3 ]
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Function File} {} complement (@var{x}, @var{y})
@@ -50,9 +50,9 @@ Returns the elements of set @var{y} that are not in set @var{x}.  For
 example,
 
 @example
+@group
 complement ([ 1, 2, 3 ], [ 2, 3, 5 ])
+     @result{} 5
+@end group
 @end example
-
-@noindent
-returns the value @samp{5}.
 @end deftypefn

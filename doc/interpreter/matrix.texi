@@ -77,12 +77,12 @@ Note that in conditional contexts (like the test clause of @code{if} and
 @code{while} statements) Octave treats the test as if you had typed
 @code{all (all (condition))}.
 
-@deftypefn {Function File} {[@var{errorcode}, @var{y_1}, ...] =} common_size (@var{x_1}, ...)
+@deftypefn {Function File} {[@var{err}, @var{y1}, ...] =} common_size (@var{x1}, ...)
 Determine if all input arguments are either scalar or of common
-size.  If so, errorcode is zero, and @var{y_i} is a matrix of the
-common size with all entries equal to @var{x_i} if this is a scalar or
-@var{x_i} otherwise.  If the inputs cannot be brought to a common size,
-errorcode is 1, and @var{y_i} is @var{x_i}.  For example,
+size.  If so, @var{err} is zero, and @var{yi} is a matrix of the
+common size with all entries equal to @var{xi} if this is a scalar or
+@var{xi} otherwise.  If the inputs cannot be brought to a common size,
+errorcode is 1, and @var{yi} is @var{xi}.  For example,
 
 @example
 @group
@@ -411,18 +411,12 @@ tril (ones (3), 1)
 @deftypefn {Function File} {} vec (@var{x})
 For a matrix @var{x}, returns the vector obtained by stacking the
 columns of @var{x} one above the other.
-
-See Magnus and Neudecker (1988), Matrix differential calculus with
-applications in statistics and econometrics.
 @end deftypefn
 
 @deftypefn {Function File} {} vech (@var{x})
 For a square matrix @var{x}, returns the vector obtained from @var{x}
 by eliminating all supradiagonal elements and stacking the result
 one column above the other.
-
-See Magnus and Neudecker (1988), Matrix differential calculus with
-applications in statistics and econometrics.
 @end deftypefn
 
 @node Special Utility Matrices, Famous Matrices, Rearranging Matrices, Matrix Manipulation
@@ -435,7 +429,7 @@ Returns an identity matrix.  If invoked with a single scalar argument,
 supply two scalar arguments, @code{eye} takes them to be the number of
 rows and columns.  If given a vector with two elements, @code{eye} uses
 the values of the elements as the number of rows and columns,
-respecively.  For example,
+respectively.  For example,
 
 @example
 @group
@@ -492,7 +486,7 @@ addition, you can set the seed for the random number generator using the
 form
 
 @example
-randn ("seed", @var{x})
+rand ("seed", @var{x})
 @end example
 
 @noindent
@@ -569,10 +563,11 @@ specific value.
 If it is invoked without arguments, @code{rand} and @code{randn} return a
 single element of a random sequence.
 
-The @code{rand} and @code{randn} functions use Fortran code from RANLIB,
-a library of fortran routines for random number generation, compiled by
-Barry W. Brown and James Lovato of the Department of Biomathematics at
-The University of Texas, M.D. Anderson Cancer Center, Houston, TX 77030.
+The @code{rand} and @code{randn} functions use Fortran code from
+@sc{Ranlib}, a library of fortran routines for random number generation,
+compiled by Barry W. Brown and James Lovato of the Department of
+Biomathematics at The University of Texas, M.D. Anderson Cancer Center,
+Houston, TX 77030.
 
 @deftypefn {Built-in Function} {} diag (@var{v}, @var{k})
 Returns a diagonal matrix with vector @var{v} on diagonal @var{k}.  The
@@ -612,11 +607,12 @@ create vectors with evenly or logarithmically spaced elements.
 @xref{Ranges}.
 
 @deftypefn {Function File} {} linspace (@var{base}, @var{limit}, @var{n})
-creates a row vector with @var{n} (@var{n} greater than 1) linearly
-spaced elements between @var{base} and @var{limit}.  The @var{base} and
-@var{limit} are always included in the range.  If @var{base} is greater
-than @var{limit}, the elements are stored in decreasing order.  If the
-number of points is not specified, a value of 100 is used.
+Return a row vector with @var{n} linearly spaced elements between
+@var{base} and @var{limit}.  The number of elements, @var{n}, must be
+greater than 1.  The @var{base} and @var{limit} are always included in
+the range.  If @var{base} is greater than @var{limit}, the elements are
+stored in decreasing order.  If the number of points is not specified, a
+value of 100 is used.
 
 The @code{linspace} function always returns a row vector, regardless of
 the value of @code{prefer_column_vectors}.
@@ -684,7 +680,15 @@ top level.  The default value is 0.
 The following functions return famous matrix forms.
 
 @deftypefn {Function File} {} hadamard (@var{k})
-Return the Hadamard matrix of order n = 2^k.
+Return the Hadamard matrix of order
+@iftex
+@tex
+$n = 2^k$.
+@end tex
+@end iftex
+@ifinfo
+n = 2^k.
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Function File} {} hankel (@var{c}, @var{r})

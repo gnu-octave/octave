@@ -100,8 +100,8 @@ expression.  For example, the following expression will display the
 value of pi
 
 @example
-octave:13> pi
-pi = 3.1416
+pi
+     @print{} pi = 3.1416
 @end example
 
 This works well as long as it is acceptable to have the name of the
@@ -121,22 +121,17 @@ explicitly assigned to a variable.  For example, after the expression
 @end example
 
 @noindent
-is evaluated, the value of @code{ans} is @samp{25}.
+is evaluated, the value of @code{ans} is 25.
 @end defvr
 
 @deftypefn {Built-in Function} {} disp (@var{x})
-Display the value of @var{x}.  For example, the following expression
+Display the value of @var{x}.  For example,
 
 @example
 disp ("The value of pi is:"), disp (pi)
-@end example
 
-@noindent
-will print
-
-@example
-The value of pi is:
-3.1416
+     @print{} the value of pi is:
+     @print{} 3.1416
 @end example
 
 @noindent
@@ -170,21 +165,14 @@ decimal point and all the numbers fit within the maximum field width.
 @itemx short e
 The same as @samp{format long} or @samp{format short} but always display
 output with an @samp{e} format.  For example, with the @samp{short e}
-format, pi is displayed as
-
-@example
- 3.14e+00
-@end example
+format, pi is displayed as @code{3.14e+00}.
 
 @item long E
 @itemx short E
 The same as @samp{format long e} or @samp{format short e} but always
 display output with an uppercase @samp{E} format.  For example, with
 the @samp{long E} format, pi is displayed as
-
-@example
- 3.14159265358979E+00
-@end example
+@code{3.14159265358979E+00}.
 
 @item free
 @itemx none
@@ -375,7 +363,7 @@ specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
 match all lower and upper case alphabetic characters. 
 @end table
 
-Except when using hte @sc{Matlab} binary data file format, saving global
+Except when using the @sc{Matlab} binary data file format, saving global
 variables also saves the global status of the variable, so that if it is
 restored at a later time using @samp{load}, it will be restored as a
 global variable.
@@ -406,10 +394,10 @@ text format.  The default value is 17.
 @end defvr
 
 @deffn {Command} load options file v1 v2 @dots{}
-To restore the values from a file, use the @code{load} command.  As with
-@code{save}, you may specify a list of variables and @code{load} will
-only extract those variables with names that match.  For example, to
-restore the variables saved in the file @file{data}, use the command
+Load the named variables from the file @var{file}.  As with @code{save},
+you may specify a list of variables and @code{load} will only extract
+those variables with names that match.  For example, to restore the
+variables saved in the file @file{data}, use the command
 
 @example
 load data
@@ -458,7 +446,7 @@ functionality of the C programming language's standard I/O library.  The
 argument lists for some of the input functions are slightly different,
 however, because Octave has no way of passing arguments by reference.
 
-In the following, @var{file} refers to a file name and @code{fid} returs
+In the following, @var{file} refers to a file name and @code{fid} refers
 to an integer file number, as returned by @code{fopen}.
 
 There are three files that are always available.  Although these files
@@ -508,14 +496,14 @@ messages and prompts.
 @node Opening and Closing Files, Simple Output, C-Style I/O Functions, C-Style I/O Functions
 @subsection Opening and Closing Files
 
-@deftypefn {Built-in Function} {[fid, msg] =} fopen (@var{name}, @var{mode}, @var{arch})
-@deftypefnx {Built-in Function} {fid_list =} fopen ("all")
-@deftypefnx {Built-in Function} {file =} fopen (@var{fid})
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} fopen (@var{name}, @var{mode}, @var{arch})
+@deftypefnx {Built-in Function} {@var{fid_list} =} fopen ("all")
+@deftypefnx {Built-in Function} {@var{file} =} fopen (@var{fid})
 The first form of the @code{fopen} function opens the named file with
 the specified mode (read-write, read-only, etc.) and architecture
 interpretation (IEEE big endian, IEEE little endian, etc.), and returns
 an integer value that may be used to refer to the file later.  If an
-error occurs, @var{fid} is set to -1 and @var{msg} contains the
+error occurs, @var{fid} is set to @minus{}1 and @var{msg} contains the
 corresponding system error message.  The @var{mode} is a one or two
 character string that specifies whether the file is to be opened for
 reading, writing, or both.
@@ -625,7 +613,7 @@ the returned value.
 If @var{len} is omitted, @code{fgetl} reads until the next newline
 character.
 
-If there are no more characters to read, @code{fgetl} returns -1.
+If there are no more characters to read, @code{fgetl} returns @minus{}1.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
@@ -637,7 +625,7 @@ returned value.
 If @var{len} is omitted, @code{fgets} reads until the next newline
 character.
 
-If there are no more characters to read, @code{fgets} returns -1.
+If there are no more characters to read, @code{fgets} returns @minus{}1.
 @end deftypefn
 
 @node Formatted Output, Output Conversion for Matrices, Line-Oriented Input, C-Style I/O Functions
@@ -1043,27 +1031,62 @@ prints @samp{ nowhere } (note the leading and trailing spaces).
 @node Formatted Input, Input Conversion Syntax, Other Output Conversions, C-Style I/O Functions
 @subsection Formatted Input
 
-Here are the descriptions of the functions for performing formatted
-input.
+Octave provides the @code{scanf}, @code{fscanf}, and @code{sscanf}
+functions to read formatted input.  There are two forms of each of these
+functions.  One can be used to extract vectors of data from a file, and
+the other is more `C-like'.
 
-@deftypefn {Built-in Function} {} scanf (@var{template})
-@deftypefnx {Built-in Function} {} scanf (@var{template}, "C")
-The @code{scanf} function reads formatted input from the stream
-@code{stdin} under the control of the template string @var{template}.
-The resulting values are returned.
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{size})
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } fscanf (@var{fid}, @var{template}, "C")
+In the first form, read from @var{fid} according to @var{template},
+returning the result in the matrix @var{val}.
+
+The optional argument @var{size} specifies the amount of data to read
+and may be one of
+
+@table @code
+@item Inf
+Read as much as possible, returning a column vector.
+
+@item @var{nr}
+@itemx [@var{nr}, Inf]
+Read as much as possible, returning a matrix with @var{nr} rows.  If the
+number of elements read is not an exact multiple of @var{nr}, the last
+column is padded with zeros.
+
+@item [@var{nr}, @var{nc}]
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with
+@var{nr} rows.  If the number of elements read is not an exact multiple
+of @var{nr}, the last column is padded with zeros.
+@end table
+
+@noindent
+If @var{size} is omitted, a value of @code{Inf} is assumed.
+
+A string is returned if @var{template} specifies only character
+conversions.
+
+The number of items successfully read is returned in @var{count}.
+
+In the second form, read from @var{fid} according to @var{template},
+with each conversion specifier in @var{template} corresponding to a
+single scalar return value.  This form is more `C-like', and also
+compatible with previous versions of Octave.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fscanf (@var{fid}, @var{template})
-@deftypefnx {Built-in Function} {} fscanf (@var{fid}, @var{template}, "C")
-This function is just like @code{scanf}, except that the input is read
-from the stream @var{fid} instead of @code{stdin}.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} sscanf (@var{string}, @var{template})
-@deftypefnx {Built-in Function} {} sscanf (@var{string}, @var{template}, "C")
-This is like @code{scanf}, except that the characters are taken from the
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } sscanf (@var{string}, @var{template}, "C")
+This is like @code{fscanf}, except that the characters are taken from the
 string @var{string} instead of from a stream.  Reaching the end of the
 string is treated as an end-of-file condition.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} scanf (@var{template}, @var{size})
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } scanf (@var{template}, "C")
+This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.
+
+It is currently not useful to call @code{scanf} in interactive
+programs.
 @end deftypefn
 
 Calls to @code{scanf} are superficially similar to calls to
@@ -1262,48 +1285,144 @@ reading the same input with the conversion @samp{%10s} produces
 @node Binary I/O, Temporary Files, String Input Conversions, C-Style I/O Functions
 @subsection Binary I/O
 
-Octave has to C-style functions for reading and writing binary data.
-They are @code{fread} and @code{fwrite} and are patterned after the
-standard C functions with the same names.
+Octave can read and write binary data using the functions @code{fread}
+and @code{fwrite}, which are patterned after the standard C functions
+with the same names.  The are able to automatically swap the byte order
+of integer data and convert among ths supported floating point formats
+as the data are read.
 
-@deftypefn {Built-in Function} {} fread (@var{fid}, @var{size}, @var{precision}, @var{arch})
-This function reads data in binary form of type @var{precision} from the
-specified @var{fid}, which may be either a file name, or a file id
-as returned from @code{fopen}.
+@deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fread (@var{fid}, @var{size}, @var{precision}, @var{skip}, @var{arch})
+Read binary data of type @var{precision} from the specified file ID
+@var{fid}.
 
-The argument @var{size} specifies the size of the matrix to return.  It
-may be a scalar or a two-element vector.  If it is a scalar,
-@code{fread} returns a column vector of the specified length.  If it is
-a two-element vector, it specifies the number of rows and columns of the
-result matrix, and @code{fread} fills the elements of the matrix in
-column-major order.
+The optional argument @var{size} specifies the amount of data to read
+and may be one of
 
-The argument @var{precision} is a string specifying the type of data to
-read and may be one of @code{"char"}, @code{"schar"}, @code{"short"},
-@code{"int"}, @code{"long"}, @code{"float"}, @code{"double"},
-@code{"uchar"}, @code{"ushort"}, @code{"uint"}, or @code{"ulong"}.  The
-default precision is @code{"uchar"}.
+@table @code
+@item Inf
+Read as much as possible, returning a column vector.
 
-The @code{fread} function returns two values, @code{data}, which is the
-data read from the file, and @code{count}, which is the number of
-elements read.
+@item @var{nr}
+@itemx [@var{nr}, Inf]
+Read as much as possible, returning a matrix with @var{nr} rows.  If the
+number of elements read is not an exact multiple of @var{nr}, the last
+column is padded with zeros.
+
+@item [@var{nr}, @var{nc}]
+Read up to @code{@var{nr} * @var{nc}} elements, returning a matrix with
+@var{nr} rows.  If the number of elements read is not an exact multiple
+of @var{nr}, the last column is padded with zeros.
+@end table
+
+@noindent
+If @var{size} is omitted, a value of @code{Inf} is assumed.
+
+The optional argument @var{precision} is a string specifying the type of
+data to read and may be one of
+
+@table @code
+@item "char"
+@itemx "char*1"
+@itemx "integer*1"
+@itemx "int8"
+Single character.
+
+@item "signed char"
+@itemx "schar"
+Signed character.
+
+@item "unsigned char"
+@itemx "uchar"
+Unsigned character.
+
+@item "short"
+Short integer.
+
+@item "unsigned short"
+@itemx "ushort"
+Unsigned short integer.
+
+@item "int"
+Integer.
+
+@item "unsigned int"
+@itemx "uint"
+Unsigned integer.
+
+@item "long"
+Long integer.
+
+@item "unsigned long"
+@itemx "ulong"
+Unsigned long integer.
+
+@item "float"
+@itemx "float32"
+@itemx "real*4"
+Single precision float.
+
+@item "double"
+@itemx "float64"
+@itemx "real*8"
+Double precision float.
+
+@item "integer*2"
+@itemx "int16"
+Two byte integer.
+
+@item "integer*4"
+@itemx "int32"
+Four byte integer.
+@end table
+
+@noindent
+The default precision is @code{"uchar"}.
+
+The optional argument @var{skip} specifies the number of bytes to skip
+before each element is read.  If it is not specified, a value of 0 is
+assumed.
+
+The optional argument @var{arch} is a string specifying the data format
+for the file.  Valid values are
+
+@table @code
+@item "native"
+The format of the current machine.
+
+@item "ieee-le"
+IEEE big endian.
+
+@item "ieee-be"
+IEEE little endian.
+
+@item "vaxd"
+VAX D floating format.
+
+@item "vaxg"
+VAX G floating format.
+
+@item "cray"
+Cray floating format.
+@end table
+
+@noindent
+Conversions are currently only supported for @code{"ieee-be"} and
+@code{"ieee-le"} formats.
+
+The data read from the file is returned in @var{val}, and the number of
+values read is returned in @code{count}
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision}, @var{arch})
-This function writes data in binary form of type @var{precision} to the
-specified @var{fid}, which may be either a file name, or a file id
-as returned from @code{fopen}.
+@deftypefn {Built-in Function} {@var{count} =} fwrite (@var{fid}, @var{data}, @var{precision}, @var{skip}, @var{arch})
+Write data in binary form of type @var{precision} to the specified file
+ID @var{fid}, returning the number of values successfully written to the
+file.
 
 The argument @var{data} is a matrix of values that are to be written to
 the file.  The values are extracted in column-major order.
 
-The argument @var{precision} is a string specifying the type of data to
-read and may be one of @code{"char"}, @code{"schar"}, @code{"short"},
-@code{"int"}, @code{"long"}, @code{"float"}, @code{"double"},
-@code{"uchar"}, @code{"ushort"}, @code{"uint"}, or @code{"ulong"}.  The
-default precision is @code{"uchar"}.
-
-The @code{fwrite} function returns the number of elements written.
+The remaining arguments @var{precision}, @var{skip}, and @var{arch} are
+optional, and are interpreted as described for @code{fread}.
 
 The behavior of @code{fwrite} is undefined if the values in @var{data}
 are too large to fit in the specified precision.
@@ -1366,14 +1485,14 @@ Return the position of the file pointer as the number of characters
 from the beginning of the file @var{fid}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fseek (@var{fid}, offset, origin)
+@deftypefn {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})
 Set the file pointer to any location within the file @var{fid}.  The
-pointer is positioned @code{offset} characters from the @code{origin},
+pointer is positioned @var{offset} characters from the @var{origin},
 which may be one of the predefined variables @code{SEEK_CUR} (current
 position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of
-file). If @code{origin} is omitted, @code{SEEK_SET} is assumed.  The
+file). If @var{origin} is omitted, @code{SEEK_SET} is assumed.  The
 offset must be zero, or a value returned by @code{ftell} (in which case
-@code{origin} must be @code{SEEK_SET}.
+@var{origin} must be @code{SEEK_SET}.
 @end deftypefn
 
 @defvr {Built-in Variable} SEEK_SET
@@ -1390,7 +1509,7 @@ Move the file pointer to the beginning of the file @var{fid}, returning
 @end deftypefn
 
 The following example stores the current file position in the variable
-@samp{marker}, moves the pointer to the beginning of the file, reads
+@code{marker}, moves the pointer to the beginning of the file, reads
 four characters, and then returns to the original position.
 
 @example

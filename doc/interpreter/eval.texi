@@ -23,28 +23,27 @@ evaluated in the current context, so any results remain available after
 @code{eval} returns.  For example,
 
 @example
-octave:13> a
-error: `a' undefined
-octave:14> eval ("a = 13")
-a = 13
-ans = 13
-octave:15> a
-a = 13
+@group
+eval ("a = 13")
+
+     @print{} a = 13
+
+     @result{} 13
+@end group
 @end example
 
-In this case, two values are printed:  one for the expression that was
-evaluated, and one for the value returned from @code{eval}.  Just as
-with any other expression, you can turn printing off by ending the
-expression in a semicolon.  For example,
+In this case, the value of the evaluated expression is printed and it is
+also returned returned from @code{eval}.  Just as with any other
+expression, you can turn printing off by ending the expression in a
+semicolon.  For example,
 
 @example
-octave:13> a
-error: `a' undefined
-octave:14> eval ("a = 13;")
-ans = 13
-octave:15> a
-a = 13
+eval ("a = 13;")
+     @result{} 13
 @end example
+
+In this example, the variable @code{a} has been given the value 13, but
+the value of the expression is not printed.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} feval (@var{name}, @dots{})
@@ -52,8 +51,8 @@ Evaluate the function named @var{name}.  Any arguments after the first
 are passed on to the named function.  For example,
 
 @example
-octave:12> feval ("acos", -1)
-ans = 3.1416
+feval ("acos", -1)
+     @result{} 3.1416
 @end example
 
 @noindent

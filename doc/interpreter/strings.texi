@@ -42,15 +42,16 @@ would end the string, you must use @samp{\"} to represent a single
 double-quote character as a part of the string.  The backslash character
 itself is another character that cannot be included normally.  You must
 write @samp{\\} to put one backslash in the string.  Thus, the string
-whose contents are the two characters @samp{"\} must be written
-@code{"\"\\"}.
+whose contents are the two characters @samp{"\} may be written
+@code{"\"\\"} or @code{'"\\'}.  Similarly, the string whose contents are
+the two characters @samp{'\} may be written @code{'\'\\'} or @code{"'\\"}.
 
 Another use of backslash is to represent unprintable characters
 such as newline.  While there is nothing to stop you from writing most
 of these characters directly in a string constant, they may look ugly.
 
 Here is a table of all the escape sequences used in Octave.  They are
-the same as those used in the C programming langauge.
+the same as those used in the C programming language.
 
 @table @code
 @item \\
@@ -108,8 +109,8 @@ For example, the expression
 @end example
 
 @noindent
-produces the string whose contents are @samp{foobarbaz}.  The next
-section explains more about how to create matrices.
+produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric
+Data Types} for more information about creating matrices.
 
 @menu
 * Creating Strings::            
@@ -146,20 +147,33 @@ setstr ([97, 98, 99])
 @end deftypefn
 
 @deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
-Return a string containing all the arguments contatenated.  For example,
+Return a string containing all the arguments concatenated.  For example,
 
 @example
 @group
 s = [ "ab"; "cde" ]
 strcat (s, s, s)
 
-     @result{}  ab ab ab
-         cdecdecde
+     @result{}  "ab ab ab "
+         "cdecdecde"
 @end group
 @end example
 @end deftypefn
 
 @defvr {Built-in Variable} string_fill_char
+The value of this variable is used to pad all strings in a string matrix
+to the same length.  It should be a single character.  The default value
+is @code{" "} (a single space).  For example,
+
+@example
+@group
+string_fill_char = "X";
+[ "these"; "are"; "strings" ]
+     @result{} "theseXX"
+     @result{} "areXXXX"
+     @result{} "strings"
+@end group
+@end example
 @end defvr
 
 @deftypefn {Function File} {} str2mat (@var{s_1}, @dots{}, @var{s_n})
@@ -167,11 +181,10 @@ Returns a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
 its rows.  Each string is padded with blanks in order to form a valid
 matrix.
 
-@quotation
 @strong{Note:}
 This function is modelled after @sc{MATLAB}.  In Octave, you can create
-a matrix of strings by @kbd{[@var{s_1}; @dots{}; @var{s_n}]}.
-@end quotation
+a matrix of strings by @code{[@var{s_1}; @dots{}; @var{s_n}]} even if
+the strings are not all the same length.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} isstr (@var{a})
@@ -187,21 +200,21 @@ Removes the trailing blanks from the string @var{s}.
 
 @deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
 Returns the vector of all positions in the longer of the two strings
-@var{s} and @var{t} where an occurence of the shorter of the two starts.
+@var{s} and @var{t} where an occurrence of the shorter of the two starts.
 If the optional argument @var{overlap} is nonzero, the returned vector
 can include overlapping positions (this is the default).  For example,
 
 @example
 findstr ("ababab", "a")
-     @result{} [1  3  5]
+     @result{} [ 1, 3, 5 ]
 findstr ("abababa", "aba", 0)
-     @result{} [1, 5]
+     @result{} [ 1, 5 ]
 @end example
 @end deftypefn
 
 @deftypefn {Function File} {} index (@var{s}, @var{t})
-Returns the position of the first occurence of the string @var{t} in the
-string @var{s}, or 0 if no occurence is found.  For example,
+Returns the position of the first occurrence of the string @var{t} in the
+string @var{s}, or 0 if no occurrence is found.  For example,
 
 @example
 index ("Teststring", "t")
@@ -212,8 +225,8 @@ index ("Teststring", "t")
 @end deftypefn
 
 @deftypefn {Function File} {} rindex (@var{s}, @var{t})
-Returns the position of the last occurence of the string @var{t} in the
-string @var{s}, or 0 if no occurence is found.  For example,
+Returns the position of the last occurrence of the string @var{t} in the
+string @var{s}, or 0 if no occurrence is found.  For example,
 
 @example
 rindex ("Teststring", "t")
@@ -230,27 +243,27 @@ matrix).  For example,
 
 @example
 split ("Test string", "t")
-     @result{} Tes 
-         s  
-        ring
+     @result{} "Tes "
+        " s  "
+        "ring"
 @end example
 @end deftypefn
 
 @deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
 Compares two strings, returning 1 if they are the same, and 0 otherwise.
 
-@strong{Note: For compatibility with @sc{Matlab}, Octave's strcmp
+@strong{Note:}  For compatibility with @sc{Matlab}, Octave's strcmp
 function returns 1 if the strings are equal, and 0 otherwise.  This is
-just the opposite of the corresponding C library function.}
+just the opposite of the corresponding C library function.
 @end deftypefn
 
 @deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
-Replaces all occurences of the substring @var{x} of the string @var{s}
+Replaces all occurrences of the substring @var{x} of the string @var{s}
 with the string @var{y}.  For example,
 
 @example
 strrep ("This is a test string", "is", "&%$")
-     @result{} Th&%$ &%$ a test string
+     @result{} "Th&%$ &%$ a test string"
 @end example
 @end deftypefn
 
@@ -260,13 +273,13 @@ Returns the substring of @var{s} which starts at character number
 
 @example
 substr ("This is a test string", 6, 9)
-     @result{} is a test
+     @result{} "is a test"
 @end example
 
 @quotation
 @strong{Note:}
 This function is patterned after AWK.  You can get the same result by
-@kbd{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
+@code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
 @end quotation
 @end deftypefn
 
@@ -391,10 +404,18 @@ top level.  The default value is 0.
 @node Character Class Functions,  , String Conversions, Strings
 @section Character Class Functions
 
-Octave also provides the following C-type character class test
-functions.  They all operate on string arrays and return matrices of
-zeros and ones.  Elements that are nonzero indicate that the condition
-was true for the corresponding character in the string array.
+Octave also provides the following character class test functions
+patterned after the functions in the standard C library.  They all
+operate on string arrays and return matrices of zeros and ones.
+Elements that are nonzero indicate that the condition was true for the
+corresponding character in the string array.  For example,
+
+@example
+@group
+isalpha ("!Q@@WERT^Y&")
+     @result{} [ 0, 1, 0, 1, 1, 1, 1, 0, 1, 0 ]
+@end group
+@end example
 
 @deftypefn {Mapping Function} {} isalnum (@var{s})
 Returns true for characters that are letters or digits (@code{isalpha

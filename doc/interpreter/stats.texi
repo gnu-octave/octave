@@ -7,7 +7,7 @@
 
 I hope that someday Octave will include more statistics functions.  If
 you would like to help improve Octave in this area, please contact
-@code{bug-octave@@bevo.che.wisc.edu}.
+@email{bug-octave@@bevo.che.wisc.edu}.
 
 @deftypefn {Function File} {} mean (@var{x})
 If @var{x} is a vector, compute the mean of the elements of @var{x}

@@ -37,7 +37,7 @@ This document corresponds to Octave version @value{VERSION}.
 @section Running Octave
 
 On most systems, the way to invoke Octave is with the shell command
-@samp{octave}.  Octave displays an initial message and then a prompt
+@kbd{octave}.  Octave displays an initial message and then a prompt
 indicating it is ready to accept input.  You can begin typing Octave
 commands immediately afterward.
 
@@ -49,7 +49,7 @@ prompt.
 
 @cindex exiting octave
 @cindex quitting octave
-To exit Octave, type @samp{quit}, or @samp{exit} at the Octave prompt.
+To exit Octave, type @kbd{quit}, or @kbd{exit} at the Octave prompt.
 
 On systems that support job control, you can suspend Octave by sending
 it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
@@ -90,7 +90,7 @@ value between zero and one.
 
 To display the value of any variable, simply type the name of the
 variable.  For example, to display the value stored in the matrix
-@samp{b}, type the command
+@code{b}, type the command
 
 @example
 octave:3> b
@@ -99,14 +99,14 @@ octave:3> b
 @unnumberedsubsec Matrix Arithmetic
 
 Octave has a convenient operator notation for performing matrix
-arithmetic.  For example, to multiply the matrix @var{a} by a scalar
+arithmetic.  For example, to multiply the matrix @code{a} by a scalar
 value, type the command
 
 @example
 octave:4> 2 * a
 @end example
 
-To multiply the two matrices @var{a} and @var{b}, type the command
+To multiply the two matrices @code{a} and @code{b}, type the command
 
 @example
 octave:5> a * b
@@ -115,11 +115,11 @@ octave:5> a * b
 To form the matrix product
 @iftex
 @tex
- $a^Ta$,
+$@code{a}^T@code{a}$,
 @end tex
 @end iftex
 @ifinfo
- @code{transpose (a) * a},
+@code{transpose (a) * a},
 @end ifinfo
 type the command
 
@@ -129,15 +129,7 @@ octave:6> a' * a
 
 @unnumberedsubsec Solving Linear Equations
 
-To solve the set of linear equations
-@iftex
-@tex
- ${\bf Ax} = {\bf b}$,
-@end tex
-@end iftex
-@ifinfo
-@code{Ax = b},
-@end ifinfo
+To solve the set of linear equations @code{a@var{x} = b},
 use the left division operator, @samp{\}:
 
 @example
@@ -148,11 +140,11 @@ octave:7> a \ b
 This is conceptually equivalent to
 @iftex
 @tex
- ${\bf A}^{-1}{\bf b}$,
+$@code{a}^{-1}@code{b}$,
 @end tex
 @end iftex
 @ifinfo
-inv (A) * b,
+@code{inv (a) * b},
 @end ifinfo
 but avoids computing the inverse of a matrix directly.
 
@@ -166,7 +158,7 @@ equations of the form
 @iftex
 @tex
 $$
- {dx \over dt} = f(x,t), \qquad {\rm with} x(t=t_0) = x_0
+ {dx \over dt} = f(x,t), \qquad x(t=t_0) = x_0
 $$
 @end tex
 @end iftex
@@ -247,7 +239,7 @@ x = lsode ("f", x0, t);
 @end example
 
 @noindent
-The function @samp{lsode} uses the Livermore Solver for Ordinary
+The function @code{lsode} uses the Livermore Solver for Ordinary
 Differential Equations, described in A. C. Hindmarsh, @cite{ODEPACK, a
 Systematized Collection of ODE Solvers}, in: Scientific Computing, R. S.
 Stepleman et al. (Eds.), North-Holland, Amsterdam, 1983, pages 55--64.
@@ -267,7 +259,7 @@ supports some other graphics commands, you will need to tell Octave what
 kind of terminal you have.  Type the command
 
 @example
-set term
+gset term
 @end example
 
 @noindent
@@ -281,15 +273,15 @@ this
 
 @example
 @group
-set term postscript
-set output "foo.ps"
+gset term postscript
+gset output "foo.ps"
 replot
 @end group
 @end example
 
 @noindent
 This will work for other types of output devices as well.  Octave's
-@samp{set} command is really just piped to the @code{gnuplot}
+@code{gset} command is really just piped to the @code{gnuplot}
 subprocess, so that once you have a plot on the screen that you like,
 you should be able to do something like this to create an output file
 suitable for your graphics printer.
@@ -298,8 +290,8 @@ Or, you can eliminate the intermediate file by using commands like this
 
 @example
 @group
-set term postscript
-set output "|lpr -Pname_of_your_graphics_printer"
+gset term postscript
+gset output "|lpr -Pname_of_your_graphics_printer"
 replot
 @end group
 @end example
@@ -342,9 +334,8 @@ help plot
 will display the help text for the @code{plot} function.
 
 Octave sends output that is too long to fit on one screen through a
-pager like @code{less} or @code{more}.  Type a carriage return to
-advance one line, a space character to advance one page, and @samp{q} to
-exit the pager.
+pager like @code{less} or @code{more}.  Type a @key{RET} to advance one
+line, a @key{SPC} to advance one page, and @key{q} to exit the pager.
 
 The part of Octave's help facility that allows you to read the complete
 text of the printed manual from within Octave normally uses a separate
@@ -560,6 +551,11 @@ needed.  @xref{Dynamically Linked Functions}.
 @cindex function file
 The function described is defined using Octave commands stored in a text
 file.  @xref{Function Files}.
+
+@item Mapping Function
+@cindex mapping function
+The function described works element-by-element for matrix and vector
+arguments.
 @end table
 
 @node A Sample Command Description, A Sample Variable Description, A Sample Function Description, Format of Descriptions
@@ -592,7 +588,7 @@ options}).  Ordinary variables and built-in variables are described
 using a format like that for functions except that there are no
 arguments.
 
-Here is a description of the imaginary built-in variable
+Here is a description of the imaginary variable
 @code{do_what_i_mean_not_what_i_say}.
 
 @defvr {Built-in Variable} do_what_i_mean_not_what_i_say

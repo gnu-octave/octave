@@ -69,7 +69,7 @@ modified versions.
 @title Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 3 for Octave version @value{VERSION}
-@subtitle October 1996
+@subtitle February 1997
 @author John W. Eaton
 @page
 @vskip 0pt plus 1filll
@@ -151,7 +151,7 @@ It corresponds to Octave version @value{VERSION}.
 
 Preface
 
-* Acknowlegements::             
+* Acknowledgements::             
 * How You Can Contribute to Octave::  
 * Distribution::                
 
@@ -320,9 +320,10 @@ C-Style I/O Functions
 Plotting
 
 * Two-Dimensional Plotting::    
+* Specialized Two-Dimensional Plots::  
 * Three-Dimensional Plotting::  
+* Plot Annotations::            
 * Multiple Plots on One Page::  
-* Miscellaneous Plotting Functions::  
 
 Matrix Manipulation
 

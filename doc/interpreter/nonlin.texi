@@ -23,7 +23,7 @@ F (x) = 0
 @end ifinfo
 
 @noindent
-using the function @code{fsolve}, which is based on the MINPACK
+using the function @code{fsolve}, which is based on the @sc{Minpack}
 subroutine @code{hybrd}.
 
 @deftypefn {Loadable Function} {[@var{x}, @var{info}] =} fsolve (@var{fcn}, @var{x0})
@@ -63,10 +63,8 @@ function.  For example:
 
 @example
 function y = f (x)
-
   y(1) = -2*x(1)^2 + 3*x(1)*x(2)   + 4*sin(x(2)) - 6;
   y(2) =  3*x(1)^2 - 2*x(1)*x(2)^2 + 3*cos(x(1)) + 4;
-
 endfunction
 @end example
 
@@ -96,12 +94,10 @@ The function @code{perror} may be used to print English messages
 corresponding to the numeric error codes.  For example,
 
 @example
+@group
 perror ("fsolve", 1)
+     @print{} solution converged to requested tolerance
+@end group
 @end example
 
-@noindent
-prints
 
-@example
-solution converged to requested tolerance
-@end example

@@ -7,7 +7,7 @@
 
 I hope that someday Octave will include more signal processing
 functions.  If you would like to help improve Octave in this area,
-please contact @code{bug-octave@@bevo.che.wisc.edu}.
+please contact @email{bug-octave@@bevo.che.wisc.edu}.
 
 @deftypefn {Function File} {} detrend (@var{x}, @var{p})
 If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
@@ -21,7 +21,7 @@ is assumed.  This corresponds to removing a linear trend.
 @end deftypefn
 
 @deftypefn {Function} {} fft (@var{a}, @var{n})
-Compute the FFT of @var{a} using subroutines from FFTPACK.  If @var{a}
+Compute the FFT of @var{a} using subroutines from @sc{Fftpack}.  If @var{a}
 is a matrix, @code{fft} computes the FFT for each column of @var{a}.
 
 If called with two arguments, @var{n} is expected to be an integer
@@ -32,7 +32,7 @@ padded with zeros.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} ifft (@var{a}, @var{n})
-Compute the inverse FFT of @var{a} using subroutines from FFTPACK.  If
+Compute the inverse FFT of @var{a} using subroutines from @sc{Fftpack}.  If
 @var{a} is a matrix, @code{fft} computes the inverse FFT for each column
 of @var{a}.
 
@@ -146,7 +146,8 @@ system function:
 @iftex
 @tex
 $$
-H(z) = {\sum_{k=0}^M d_{k+1} z^{-k} \over 1 + \sum_{k+1}^N c_{k+1} z^{-k}}
+H(z) = {\displaystyle\sum_{k=0}^M d_{k+1} z^{-k}
+        \over 1 + \displaystyle\sum_{k+1}^N c_{k+1} z^{-k}}
 $$
 @end tex
 @end iftex
@@ -211,7 +212,7 @@ small primes.
 @end deftypefn
 
 @deftypefn {Function File} {} sinc (@var{x})
-Returns
+Return
 @iftex
 @tex
 $ \sin (\pi x)/(\pi x)$.

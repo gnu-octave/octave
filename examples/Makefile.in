@@ -21,7 +21,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SCRIPTS = info-emacs-info info-emacs-octave-help
 
-SOURCES = hello.cc make_int.cc
+SOURCES = hello.cc oregonator.m oregonator.cc make_int.cc
 
 DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS)
 

@@ -1,3 +1,7 @@
+Tue Feb 18 00:27:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (octave_config_info): Handle option argument.
+
 Fri Feb 14 16:23:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (octave_base_stream::do_scanf): Don't forget to

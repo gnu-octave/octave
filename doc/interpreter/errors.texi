@@ -5,6 +5,11 @@
 @node Error Handling, Input and Output, Functions and Scripts, Top
 @chapter Error Handling
 
+Octave includes several functions for printing error and warning
+messages.  When you write functions that need to take special action
+when they encounter abnormal conditions, you should print the error
+messages using the functions described in this chapter.
+
 @deftypefn {Built-in Function} {} error (@var{template}, @dots{})
 The @code{error} function formats the optional arguments under the
 control of the template string @var{template} using the same rules as
@@ -65,7 +70,7 @@ been printed in the body of the most recent @code{unwind_protect} or
 @code{try} statement or the @var{try} part of the most recent call to
 the @code{eval} function.  Outside of the @code{unwind_protect} and
 @code{try} statements or the @code{eval} function, or if no error has
-ocurred within them, the value of @code{error_text} is guaranteed to be
+occurred within them, the value of @code{error_text} is guaranteed to be
 the empty string.
 
 Note that the message does not include the first @samp{error: } prefix,
@@ -83,7 +88,11 @@ default value is 0.
 @end defvr
 
 @deftypefn {Built-in Function} {} warning (@var{msg})
-Print the message @var{msg} prefixed by the string @samp{warning: }.
+Print a warning message @var{msg} prefixed by the string @samp{warning: }.  
+After printing the warning message, Octave will continue to execute
+commands.  You should use this function should when you want to notify
+the user of an unusual condition, but only when it makes sense for your
+program to go on.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} usage (@var{msg})
@@ -94,6 +103,23 @@ aborting from functions.
 
 After @code{usage} is evaluated, Octave will print a traceback of all
 the function calls leading to the usage message.
+
+You should use this function for reporting problems errors that result
+from an improper call to a function, such as calling a function with an
+incorrect number of arguments, or with arguments of the wrong type.  For
+example, most functions distributed with Octave begin with code like
+this
+
+@example
+@group
+if (nargin != 2)
+  usage ("foo (a, b)");
+endif
+@end group
+@end example
+
+@noindent
+to check for the proper number of arguments.
 @end deftypefn
 
 The following pair of functions are of limited usefulness, and may be

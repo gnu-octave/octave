@@ -23,9 +23,10 @@
 @section Quadratic Programming
 
 @deftypefn {Loadable Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qpsol (@var{x}, @var{H}, @var{c}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub})
-Solve quadratic programs using Gill and Murray's QPSOL.  Because QPSOL
-is not freely redistributable, this function is only available if you
-have obtained your own copy of QPSOL.  @xref{Installation}.
+Solve quadratic programs using Gill and Murray's @sc{Qpsol}.  Because
+@sc{Qpsol} is not freely redistributable, this function is only
+available if you have obtained your own copy of @sc{Qpsol}.
+@xref{Installation}.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} qpsol_options (@var{opt}, @var{val})
@@ -55,9 +56,10 @@ Sorry, this hasn't been implemented yet.
 @end ignore
 
 @deftypefn {Loadable Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} npsol (@var{x}, @var{phi}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub}, @var{lb}, @var{g}, @var{ub})
-Solve nonlinear programs using Gill and Murray's NPSOL.  Because NPSOL
-is not freely redistributable, this function is only available if you
-have obtained your own copy of NPSOL.  @xref{Installation}.
+Solve nonlinear programs using Gill and Murray's @sc{Npsol}.  Because
+@sc{Npsol} is not freely redistributable, this function is only
+available if you have obtained your own copy of @sc{Npsol}.
+@xref{Installation}.
 
 The second argument is a string containing the name of the objective
 function to call.  The objective function must be of the form
@@ -83,7 +85,6 @@ their current values are displayed.
 
 @deftypefn {Function File} {[@var{beta}, @var{v}, @var{r}] =} gls (@var{y}, @var{x}, @var{o})
 Generalized least squares estimation for the multivariate model
-
 @iftex
 @tex
 $y = x b + e$
@@ -130,7 +131,6 @@ The matrix of GLS residuals, @code{@var{r} = @var{y} - @var{x} *
 
 @deftypefn {Function File} {[@var{beta}, @var{sigma}, @var{r}] =} ols (@var{y}, @var{x})
 Ordinary least squares estimation for the multivariate model
-
 @iftex
 @tex
 $y = x b + e$
@@ -151,11 +151,9 @@ $b$ is a $k \times p$ matrix, and $e$ is a $t \times p$ matrix.
 @end tex
 @end iftex
 @ifinfo
-@example
 @var{y} is a @var{t} by @var{p} matrix, @var{X} is a @var{t} by @var{k}
 matrix, @var{B} is a @var{k} by @var{p} matrix, and @var{e} is a @var{t}
 by @var{p} matrix.
-@end example
 @end ifinfo
 
 Each row of @var{y} and @var{x} is an observation and each column a

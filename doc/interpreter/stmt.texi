@@ -127,7 +127,7 @@ tested in turn, and if one is found to be true, its corresponding
 @var{body} is executed.  If none of the conditions are true and the
 @code{else} clause is present, its body is executed.  Only one
 @code{else} clause may appear, and it must be the last part of the
-satement.
+statement.
 
 In the following example, if the first condition is true (that is, the
 value of @code{x} is divisible by 2), then the first @code{printf}
@@ -293,8 +293,8 @@ is still true, @var{body} is executed again.  This process repeats until
 @var{condition} is no longer true.  If @var{condition} is initially
 false, the body of the loop is never executed.
 
-This example creates a variable @code{fib} that contains the elements of
-the Fibonacci sequence.
+This example creates a variable @code{fib} that contains the first ten
+elements of the Fibonacci sequence.
 
 @example
 @group
@@ -371,7 +371,7 @@ endfor
 @end example
 
 @noindent
-This code works by first evaluating the expression @samp{3:10}, to
+This code works by first evaluating the expression @code{3:10}, to
 produce a range of values from 3 to 10 inclusive.  Then the variable
 @code{i} is assigned the first element of the range and the body of the
 loop is executed once.  When the end of the loop body is reached, the

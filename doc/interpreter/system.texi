@@ -74,34 +74,96 @@ referred to as a @var{tm_struct}.
 @deftypefn {Loadable Function} {} time ()
 Return the current time as the number of seconds since the epoch.  The
 epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
-1970.
+1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the
+value returned by @code{time} was 856163706.
 @end deftypefn
 
 @deftypefn {Function File} {} ctime (@var{t})
 Convert a value returned from @code{time} (or any other nonnegative
 integer), to the local time and return a string of the same form as
 @code{asctime}.  The function @code{ctime (time)} is equivalent to
-@code{asctime (localtime (time))}.
+@code{asctime (localtime (time))}.  For example,
+
+@example
+@group
+ctime (time ())
+     @result{} "Mon Feb 17 01:15:06 1997"
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Loadable Function} {} gmtime (@var{t})
 Given a value returned from time (or any nonnegative integer),
-return a time structure corresponding to CUT.
+return a time structure corresponding to CUT.  For example,
+
+@example
+@group
+gmtime (time ())
+     @result{} @{
+           usec = 0
+           year = 97
+           mon = 1
+           mday = 17
+           sec = 6
+           zone = CST
+           min = 15
+           wday = 1
+           hour = 7
+           isdst = 0
+           yday = 47
+         @}
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Loadable Function} {} localtime (@var{t})
 Given a value returned from time (or any nonnegative integer),
 return a time structure corresponding to the local time zone.
+
+@example
+@group
+locatltime (time ())
+     @result{} @{
+           usec = 0
+           year = 97
+           mon = 1
+           mday = 17
+           sec = 6
+           zone = CST
+           min = 15
+           wday = 1
+           hour = 1
+           isdst = 0
+           yday = 47
+         @}
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Loadable Function} {} mktime (@var{tm_struct})
-Convert a time structure to the number of seconds since the epoch.
+Convert a time structure to the number of seconds since the epoch.  For
+example,
+
+@example
+@group
+mktime (localtime (time ())
+     @result{} 856163706
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Function File} {} asctime (@var{tm_struct})
 Convert a time structure to a string using the following five-field
-format: Thu Mar 28 08:40:14 1996.  The function @code{ctime (time)} is
-equivalent to @code{asctime (localtime (time))}.
+format: Thu Mar 28 08:40:14 1996.  For example,
+
+@example
+@group
+asctime (localtime (time ())
+     @result{} "Mon Feb 17 01:15:06 1997\n"
+@end group
+@end example
+
+This is equivalent to @code{ctime (time ())}.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} strftime (@var{tm_struct})
@@ -112,7 +174,14 @@ Padding is with zeros by default; for fields that display a single
 number, padding can be changed or inhibited by following the @samp{%}
 with one of the modifiers described below.  Unknown field specifiers are
 copied as normal characters.  All other characters are copied to the
-output without change.
+output without change.  For example,
+
+@example
+@group
+strftime ("%r (%Z) %A %e %B %Y", localtime (time ())
+     @result{} "01:15:06 AM (CST) Monday 17 February 1997"
+@end group
+@end example
 
 Octave's @code{strftime} function supports a superset of the ANSI C
 field specifiers.
@@ -256,10 +325,10 @@ Return a vector containing the current year, month (1-12), day (1-31),
 hour (0-23), minute (0-59) and second (0-61).  For example,
 
 @example
-octave:13> clock
-ans =
-
-  1993     8    20     4    56     1
+@group
+clock ()
+     @result{} [ 1993, 8, 20, 4, 56, 1 ]
+@end group
 @end example
 
 The function clock is more accurate on systems that have the
@@ -271,8 +340,10 @@ Returns the date as a character string in the form DD-MMM-YY.  For
 example,
 
 @example
-octave:13> date
-ans = 20-Aug-93
+@group
+date ()
+     @result{} "20-Aug-93"
+@end group
 @end example
 @end deftypefn
 
@@ -309,8 +380,10 @@ arguments are provided, @code{is_leap_year} will use the current year.
 For example,
 
 @example
-octave:13> is_leap_year (2000)
-ans = 1
+@group
+is_leap_year (2000)
+     @result{} 1
+@end group
 @end example
 @end deftypefn
 
@@ -365,11 +438,14 @@ clc;
 @end deftypefn
 
 @deftypefn {Built-in Function} {} sleep (@var{seconds})
-Suspend the execution of the program.
+Suspend the execution of the program for the given number of seconds.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} usleep (@var{microseconds})
-Suspend the execution of the program.
+Suspend the execution of the program for the given number of
+microseconds.  On systems where it is not possible to sleep for periods
+of time less than one second, @code{usleep} will pause the execution for
+@code{round (@var{microseconds} / 1e6)} seconds.
 @end deftypefn
 
 @node Filesystem Utilities, Controlling Subprocesses, Timing Utilities, System Utilities
@@ -436,8 +512,8 @@ Set the permission mask for file creation.  The parameter @var{mask} is
 interpreted as an octal number.
 @end deftypefn
 
-@deftypefn {Built-in Function} {[info, err, msg] =} stat (@var{file})
-@deftypefnx {Built-in Function} {[info, err, msg] =} lstat (@var{file})
+@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})
+@deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})
 Return a structure @var{s} containing the following information about
 @var{file}.
 
@@ -488,7 +564,7 @@ Number of blocks allocated for file.
 
 If the call is successful @var{err} is 0 and @var{msg} is an empty
 string.  If the file does not exist, or some other error occurs, @var{s}
-is an empty matrix, @var{err} is -1, and @var{msg} contains the
+is an empty matrix, @var{err} is @minus{}1, and @var{msg} contains the
 corresponding system error message.
 
 If @var{file} is a symbolic link, @code{stat} will return information
@@ -530,13 +606,30 @@ For example,
 Given an array of strings in @var{pattern}, return the list of file
 names that any of them, or an empty string if no patterns match.  Tilde
 expansion is performed on each of the patterns before looking for
-matching file names.
+matching file names.  For example,
+
+@example
+@group
+glob ("/vm*")
+     @result{} "/vmlinuz"
+@end group
+@end example
+
+Note that multiple values are returned in a string matrix with the fill
+character set to ASCII NUL.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})
 Return 1 or zero for each element of @var{string} that matches any of
 the elements of the string array @var{pattern}, using the rules of
-filename pattern matching.
+filename pattern matching.  For example,
+
+@example
+@group
+fnmatch ("a*b", ["ab"; "axyzb"; "xyzab"])
+     @result{} [ 1; 1; 0 ]
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})
@@ -549,13 +642,28 @@ If the file cannot be found in the path, an empty matrix is returned.
 For example,
 
 @example
-octave:13> file_in_path (LOADPATH, "nargchk.m")
-ans = "@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m"
+file_in_path (LOADPATH, "nargchk.m")
+     @result{} "@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m"
 @end example
 @end deftypefn
 
 @deftypefn {Built-in Function} {} tilde_expand (@var{string})
-Performs tilde expansion on @var{string}.
+Performs tilde expansion on @var{string}.  If @var{string} begins with a
+tilde character, (@samp{~}), all of the characters preceding the first
+slash (or all characters, if there is no slash) are treated as a
+possible user name, and the tilde and the following characters up to the
+slash are replaced by the home directory of the named user.  If the
+tilde is followed immediately by a slash, the tilde is replaced by the
+home directory of the user running Octave.  For example,
+
+@example
+@group
+tilde_expand ("~joeuser/bin")
+     @result{} "/home/joeuser/bin"
+tilde_expand ("~/bin")
+     @result{} "/home/jwe/bin"
+@end group
+@end example
 @end deftypefn
 
 @node Controlling Subprocesses, Process ID Information, Filesystem Utilities, System Utilities
@@ -574,7 +682,7 @@ higher-level functions.
 @deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})
 Execute a shell command specified by @var{string}.  The second argument is optional.
 If @var{type} is @code{"async"}, the process is started in the
-background and the process id of the child proces is returned
+background and the process id of the child process is returned
 immediately.  Otherwise, the process is started, and Octave waits until
 it exits.  If @var{type} argument is omitted, a value of @code{"sync"}
 is assumed.
@@ -612,15 +720,67 @@ variable @code{status} to the integer @samp{2}.
 @end deftypefn
 
 @deftypefn {Built-in Function} {fid =} popen (@var{command}, @var{mode})
-Open a pipe to a subprocess.
+Start a process and create a pipe.  The name of the command to run is
+given by @var{command}.  The file identifier corresponding to the input
+or output stream of the process is returned in @var{fid}.  The argument
+@var{mode} may be
+
+@table @code
+@item "r"
+The pipe will be connected to the standard output of the process, and
+open for reading.
+
+@item "w"
+The pipe will be connected to the standard input of the process, and
+open for writing.
+@end table
+
+For example,
+
+@example
+@group
+fid = popen ("ls -ltr / | tail -3", "r");
+while (isstr (s = fgets (fid)))
+  fputs (stdout, s);
+endwhile
+     @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc
+     @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib
+     @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Built-in Function} {} pclose (@var{fid})
-Close a pipe from a subprocess.
+Close a file identifier that was opened by @code{popen}.  You may also
+use @code{fclose} for the same purpose.
 @end deftypefn
 
 @deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
-Start a subprocess with 2-way communication.
+Start a subprocess with two-way communication.  The name of the process
+is given by @var{command}, and @var{args} is an array of strings
+containing options for the command.  The file identifiers for the input
+and output streams of the subprocess are returned in @var{in} and
+@var{out}.  If execution of the command is successful, @var{pid}
+contains the process ID of the subprocess.  Otherwise, @var{pid} is
+@minus{}1.
+
+For example,
+
+@example
+@group
+[in, out, pid] = popen2 ("sort", "-nr");
+fputs (in, "these\nare\nsome\nstrings\n");
+fclose (in);
+while (isstr (s = fgets (out)))
+  fputs (stdout, s);
+endwhile
+fclose (out);
+     @print{} are
+     @print{} some
+     @print{} strings
+     @print{} these
+@end group
+@end example
 @end deftypefn
 
 @defvr {Built-in Variable} EXEC_PATH
@@ -633,9 +793,10 @@ argument @code{--exec-path PATH}, or by setting the value of
 begins (ends) with a colon, the directories
 
 @example
+@group
 OCTAVE_HOME/libexec/octave/site/exec/ARCH
 OCTAVE_HOME/libexec/octave/VERSION/exec/ARCH
-OCTAVE_HOME/bin
+@end group
 @end example
 
 @noindent
@@ -709,7 +870,7 @@ system-dependent error message.
 Wait for process @var{pid} to terminate.  The @var{pid} argument can be:
 
 @table @asis
-@item -1
+@item @minus{}1
 Wait for any child process.
 
 @item 0
@@ -828,7 +989,7 @@ Return the real group id of the current process.
 @end deftypefn
 
 @node Environment Variables, Current Working Directory, Process ID Information, System Utilities
-@section Environemnt Variables
+@section Environment Variables
 
 @deftypefn {Built-in Function} {} getenv (@var{var})
 Returns the value of the environment variable @var{var}.  For example,
@@ -877,10 +1038,10 @@ command.
 List directory contents.  For example,
 
 @example
-octave:13> ls -l
-total 12
--rw-r--r--   1 jwe      users        4488 Aug 19 04:02 foo.m
--rw-r--r--   1 jwe      users        1315 Aug 17 23:14 bar.m
+ls -l
+     @print{} total 12
+     @print{} -rw-r--r--   1 jwe  users  4488 Aug 19 04:02 foo.m
+     @print{} -rw-r--r--   1 jwe  users  1315 Aug 17 23:14 bar.m
 @end example
 
 The @code{dir} and @code{ls} commands are implemented by calling your
@@ -917,19 +1078,22 @@ The home directory.
 The initial shell.
 @end table
 
-@deftypefn {Loadable Function} {} getpwent ()
+In the descriptions of the following functions, this data structure is
+referred to as a @var{pw_struct}.
+
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwent ()
 Return a structure containing an entry from the password database,
 opening it if necessary. Once the end of the data has been reached,
 @code{getpwent} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} getpwuid (@var{uid}).
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwuid (@var{uid}).
 Return a structure containing the first entry from the password database
 with the user ID @var{uid}.  If the user ID does not exist in the
 database, @code{getpwuid} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} getpwnam (@var{name})
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwnam (@var{name})
 Return a structure containing the first entry from the password database
 with the user name @var{name}.  If the user name does not exist in the
 database, @code{getpwname} returns 0.
@@ -963,18 +1127,21 @@ The numeric group id.
 The members of the group.
 @end table
 
-@deftypefn {Loadable Function} {group_struct =} getgrent ()
+In the descriptions of the following functions, this data structure is
+referred to as a @var{grp_struct}.
+
+@deftypefn {Loadable Function} {grp_struct =} getgrent ()
 Return an entry from the group database, opening it if necessary.
 Once the end of the data has been reached, @code{getgrent} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {group_struct =} getgrgid (@var{gid}).
+@deftypefn {Loadable Function} {grp_struct =} getgrgid (@var{gid}).
 Return the first entry from the group database with the group ID
 @var{gid}.  If the group ID does not exist in the database,
 @code{getgrgid} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {group_struct =} getgrnam (@var{name})
+@deftypefn {Loadable Function} {grp_struct =} getgrnam (@var{name})
 Return the first entry from the group database with the group name
 @var{name}.  If the group name does not exist in the database,
 @code{getgrname} returns 0.
@@ -992,12 +1159,19 @@ Close the group database.
 @section System Information
 
 @deftypefn {Built-in Function} {} computer ()
-Returns a string of the form @var{cpu}-@var{vendor}-@var{os} that
-identifies the kind of computer Octave is running on.  For example,
+Print or return a string of the form @var{cpu}-@var{vendor}-@var{os}
+that identifies the kind of computer Octave is running on.  If invoked
+with an output argument, the value is returned instead of printed.  For
+example,
 
 @example
-octave:13> computer
-sparc-sun-sunos4.1.2
+@group
+computer ()
+     @print{} i586-pc-linux-gnu
+
+x = computer ()
+     @result{} x = "i586-pc-linux-gnu"
+@end group
 @end example
 @end deftypefn
 

@@ -54,7 +54,6 @@ their current values are displayed.
 @end deftypefn
 
 Here is an example of using @code{quad} to integrate the function
-
 @iftex
 @tex
 $$
@@ -64,6 +63,7 @@ from $x = 0$ to $x = 3$.
 @end tex
 @end iftex
 @ifinfo
+
 @example
   @var{f}(@var{x}) = @var{x} * sin (1/@var{x}) * sqrt (abs (1 - @var{x}))
 @end example
@@ -87,7 +87,8 @@ endfunction
 
 Note the use of the `dot' forms of the operators.  This is not necessary
 for the call to @code{quad}, but it makes it much easier to generate a
-set of points for plotting.
+set of points for plotting (because it makes it possible to call the
+function with a vector argument to produce a vector result).
 
 Then we simply call quad:
 
@@ -106,9 +107,8 @@ Then we simply call quad:
 @end example
 
 Although @code{quad} returns a nonzero value for @var{ier}, the result
-is reasonably accurate (to understand what is happening, examine what
-happens to the result if you move the lower bound to 0.1, then 0.01,
-then 0.001, etc.).
+is reasonably accurate (to see why, examine what happens to the result
+if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
 @node Orthogonal Collocation,  , Functions of One Variable, Quadrature
 @section Orthogonal Collocation
@@ -119,3 +119,46 @@ collocation using the subroutines given in J. Villadsen and
 M. L. Michelsen, @cite{Solution of Differential Equation Models by
 Polynomial Approximation}.
 @end deftypefn
+
+Here is an example of using @code{colloc} to generate weight matrices
+for solving the second order differential equation
+@iftex
+@tex
+$u^\prime - \alpha u^{\prime\prime} = 0$ with the boundary conditions
+$u(0) = 0$ and $u(1) = 1$.
+@end tex
+@end iftex
+@ifinfo
+@var{u}' - @var{alpha} * @var{u}'' = 0 with the boundary conditions
+@var{u}(0) = 0 and @var{u}(1) = 1.
+@end ifinfo
+
+First, we can generate the weight matrices for @var{n} points (including
+the endpoints of the interval), and incorporate the boundary conditions
+in the right hand side (for a specific value of
+@iftex
+@tex
+$\alpha$).
+@end tex
+@end iftex
+@ifinfo
+@var{alpha}).
+@end ifinfo
+
+@example
+@group
+n = 7;
+alpha = 0.1;
+[r, a, b] = colloc (n-2, "left", "right");
+at = a(2:n-1,2:n-1);
+bt = b(2:n-1,2:n-1);
+rhs = alpha * b(2:n-1,n) - a(2:n-1,n);
+@end group
+@end example
+
+Then the solution at the roots @var{r} is
+
+@example
+u = [ 0; (at - alpha * bt) \ rhs; 1]
+     @result{} [ 0.00; 0.004; 0.01 0.00; 0.12; 0.62; 1.00 ]
+@end example

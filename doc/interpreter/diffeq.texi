@@ -38,9 +38,9 @@ dt
 @end ifinfo
 
 @noindent
-using Hindmarsh's ODE solver LSODE.
+using Hindmarsh's ODE solver @sc{Lsode}.
 
-@deftypefn {Lodable Function} {} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})
+@deftypefn {Loadable Function} {} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})
 Return a matrix of @var{x} as a function of @var{t}, given the initial
 state of the system @var{x0}.  Each row in the result matrix corresponds
 to one of the elements in the vector @var{t}.  The first element of
@@ -107,7 +107,7 @@ t = [0, logspace (-1, log10(303), 150), \
 @end group
 @end example
 
-@deftypefn {Lodable Function} {} lsode_options (@var{opt}, @var{val})
+@deftypefn {Loadable Function} {} lsode_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
 parameters for the function @code{lsode}.  Given one argument,
 @code{lsode_options} returns the value of the corresponding option.  If
@@ -137,8 +137,11 @@ $$
 @end example
 @end ifinfo
 
+@noindent
+using Petzold's DAE solver @sc{Dassl}.
+
 @deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})
-Return a matrix of states and their first derivaties with respect to
+Return a matrix of states and their first derivatives with respect to
 @var{t}.  Each row in the result matrices correspond to one of the
 elements in the vector @var{t}.  The first element of @var{t}
 corresponds to the initial state @var{x0} and derivative @var{xdot0}, so
@@ -163,7 +166,7 @@ specifies a vector of output times at which the solution is desired,
 including the time corresponding to the initial condition.
 
 The set of initial states and derivatives are not strictly required to
-be consistent.  In practice, however, DASSL is not very good at
+be consistent.  In practice, however, @sc{Dassl} is not very good at
 determining a consistent set for you, so it is best if you ensure that
 the initial values result in the function evaluating to zero.
 
@@ -183,4 +186,4 @@ their current values are displayed.
 
 See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989) for
-more information about the implementation of DASSL.
+more information about the implementation of @sc{Dassl}.

@@ -70,9 +70,8 @@ Echo commands as they are executed.
 @cindex @code{--exec-path @var{path}}
 Specify the path to search for programs to run.  The value of @var{path}
 specified on the command line will override any value of
-@samp{OCTAVE_EXEC_PATH} found in the environment, but not any 
-@samp{EXEC_PATH = "path"} commands found in the system or user startup
-files.
+@code{OCTAVE_EXEC_PATH} found in the environment, but not any commands
+in the system or user startup files that set @code{EXEC_PATH}.
 
 @item --help
 @itemx -h
@@ -86,23 +85,24 @@ Print short help message and exit.
 @cindex @code{--info-file @var{filename}}
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
-@samp{OCTAVE_INFO_FILE} found in the environment, but not any
-@samp{INFO_FILE = "filename"} commands found in the system or user
-startup files.
+@code{OCTAVE_INFO_FILE} found in the environment, but not any commands
+in the system or user startup files that set @samp{INFO_FILE}.
 
 @item --info-program @var{program}
 @cindex @code{--info-program @var{program}}
 Specify the name of the info program to use.  The value of @var{program}
 specified on the command line will override any value of
-@samp{OCTAVE_INFO_PROGRAM} found in the environment, but not any
-@samp{INFO_PROGRAM = "program"} commands found in the system or user
-startup files.
+@code{OCTAVE_INFO_PROGRAM} found in the environment, but not any
+commands in the system or user startup files that set
+@code{INFO_PROGRAM}.
 
 @item --interactive
 @itemx -i
 @cindex @code{--interactive}
 @cindex @code{-i}
-Force interactive behavior.
+Force interactive behavior.  This can be useful for running Octave via a
+remote shell command or inside an Emacs shell buffer.  For another way
+to run Octave within Emacs, see @ref{Emacs}.
 
 @item --no-init-file
 @cindex @code{--no-init-file}
@@ -130,9 +130,8 @@ and @code{--no-site-file}.
 @cindex @code{-p @var{path}}
 Specify the path to search for function files.  The value of @var{path}
 specified on the command line will override any value of
-@samp{OCTAVE_PATH} found in the environment, but not any
-@samp{LOADPATH = "path"} commands found in the system or user startup
-files.
+@code{OCTAVE_PATH} found in the environment, but not any commands in the
+system or user startup files that set @code{LOADPATH}.
 
 @item --silent
 @itemx --quiet
@@ -140,7 +139,7 @@ files.
 @cindex @code{--silent}
 @cindex @code{--quiet}
 @cindex @code{-q}
-Don't print message at startup.
+Don't print the usual greeting and version message at startup.
 
 @item --traditional
 @itemx --braindead
@@ -307,7 +306,20 @@ Octave's exit status.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} atexit (@var{fcn})
-Register function to be called when Octave exits.
+Register function to be called when Octave exits.  For example,
+
+@example
+@group
+function print_flops_at_exit ()
+  printf ("\n%s\n", system ("fortune"));
+  fflush (stdout);
+endfunction
+atexit ("print_flops_at_exit");
+@end group
+@end example
+
+@noindent
+will print a message when Octave exits.
 @end deftypefn
 
 @node Getting Help, Command Line Editing, Quitting Octave, Getting Started
@@ -336,7 +348,7 @@ For example, the command @kbd{help help} prints a short message
 describing the @code{help} command, and @kbd{help -i help} starts the
 GNU Info browser at this node in the on-line version of the manual.
 
-Once the GNU Info browser is runnig, help for using it is available
+Once the GNU Info browser is running, help for using it is available
 using the command @kbd{C-h}.
 @end deffn
 
@@ -373,7 +385,7 @@ the @code{help} command and usage messages for built-in commands.
 Octave uses the GNU readline library to provide an extensive set of
 command-line editing and history features.  Only the most common
 features are described in this manual.  Please see The GNU Readline
-Library for more information.
+Library manual for more information.
 
 To insert printing characters (letters, digits, symbols, etc.), simply
 type the character.  Octave will insert the character at the cursor and
@@ -556,13 +568,13 @@ of the word.
 @subsection Letting Readline Type For You
 @cindex command completion
 
-The following commands allow Octave to complete commands and file names
-for you.
+The following commands allow Octave to complete command and variable
+names for you.
 
 @table @kbd
 @item TAB
 Attempt to do completion on the text before the cursor.  Octave can
-complete commands and variables.
+complete the names of commands and variables.
 
 @item M-?
 List the possible completions of the text before the cursor.
@@ -658,7 +670,7 @@ and pasting commands if you are using the X Window System.
 
 For example, to display the five most recent commands that you have
 typed without displaying line numbers, use the command
-@samp{history -q 5}.
+@kbd{history -q 5}.
 @end deffn
 
 @deffn {Command} edit_history options
@@ -903,8 +915,7 @@ command and the command line option @code{--echo-input}.
 @cindex messages, error
 
 There are two classes of errors that Octave produces when it encounters
-input that it is unable to understand
-an action.
+input that it is unable to understand.
 
 A @dfn{parse error} occurs if Octave cannot understand something you
 have typed.  For example, if you misspell a keyword,
@@ -968,9 +979,9 @@ line number, which is usually displayed in the prompt string.
 
 The second and third lines in the example indicate that the error
 occurred within an assignment expression, and the last line of the error
-message indicates that the error occurred within the function @samp{f}.
-If the function @samp{f} had been called from another function, for
-example, @samp{g}, the list of errors would have ended with one more
+message indicates that the error occurred within the function @code{f}.
+If the function @code{f} had been called from another function, for
+example, @code{g}, the list of errors would have ended with one more
 line:
 
 @example

@@ -5,20 +5,28 @@
 @node Control Theory, Signal Processing, Polynomial Manipulations, Top
 @chapter Control Theory
 
-@deftypefn {Function File} {} abcddim (@var{a}, @var{b}, @var{c}, @var{d})
+Most of the functions described in this chapter were contributed by
+A. Scottedward Hodel @email{A.S.Hodel@@eng.auburn.edu} and R. Bruce Tenison
+@email{Bruce.Tenison@@eng.auburn.edu}.  They have also written a larger
+collection of functions for solving linear control problems.  It is
+currently being updated for Octave version 2, with snapshots of the
+sources available from @url{ftp://ftp.eng.auburn.edu/pub/hodel}.
+
+@deftypefn {Function File} {[@var{n}, @var{m}, @var{p}] =} abcddim (@var{a}, @var{b}, @var{c}, @var{d})
 Check for compatibility of the dimensions of the matrices defining
-the linear system [A, B, C, D] corresponding to
+the linear system
 @iftex
 @tex
+$[A, B, C, D]$ corresponding to
 $$
- {dx\over dt} = A x + B u
-$$
-$$
- y = C x + D u
+\eqalign{
+ {dx\over dt} &= A x + B u\cr
+            y &= C x + D u}
 $$
 @end tex
 @end iftex
 @ifinfo
+[A, B, C, D] corresponding to
 
 @example
 dx/dt = a x + b u
@@ -29,33 +37,54 @@ y = c x + d u
 or a similar discrete-time system.
 
 If the matrices are compatibly dimensioned, then @code{abcddim} returns
-@var{n} = number of system states, @var{m} = number of system inputs,
-and @var{p} = number of system outputs.  Otherwise @code{abcddim}
-returns @var{n} = @var{m} = @var{p} = @minus{}1.
+
+@table @var
+@item n
+The number of system states.
+
+@item m
+The number of system inputs.
+
+@item p
+The number of system outputs.
+@end table
+
+Otherwise @code{abcddim} returns @var{n} = @var{m} = @var{p} = @minus{}1.
 @end deftypefn
 
 @deftypefn {Function File} {} are (@var{a}, @var{b}, @var{c}, @var{opt})
 
-Returns the solution, @var{x}, of the algebraic Riccati equation
+Return the solution, @var{x}, of the algebraic Riccati equation
+@iftex
+@tex
+$$
+A^TX + XA - XBX + C = 0
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
-a' x + x a - x b x + c = 0
+a' * x + x * a - x * b * x + c = 0
 @end example
+@end ifinfo
 
 @noindent
-for identically dimensioned square matrices @var{a}, @var{b}, @var{c}.
-If @var{b} (@var{c}) is not square, then the function attempts to use
-@code{@var{b}*@var{b}'} (@code{@var{c}'*@var{c}}) instead.
+for identically dimensioned square matrices @var{a}, @var{b}, and
+@var{c}.  If @var{b} is not square, @code{are} attempts to use
+@code{@var{b}*@var{b}'} instead.  If @var{c} is not square, @code{are}
+attempts to use @code{@var{c}'*@var{c}}) instead.
 
-Solution method: apply Laub's Schur method (IEEE Transactions on
-Automatic Control, 1979) to the appropriate Hamiltonian matrix.
+To form the solution, Laub's Schur method (IEEE Transactions on
+Automatic Control, 1979) is applied to the appropriate Hamiltonian
+matrix.
 
-@var{opt} is an option passed to the eigenvalue balancing routine.
-Default is @code{"B"}.
+The optional argument @var{opt} is passed to the eigenvalue balancing
+routine.  If it is omitted, a value of @code{"B"} is assumed.
 @end deftypefn
 
 @deftypefn {Function File} {} c2d (@var{a}, @var{b}, @var{t})
-Converts the continuous time system described by:
+Convert the continuous time system described by:
 @iftex
 @tex
 $$
@@ -92,39 +121,56 @@ sample time @var{t}.
 
 @deftypefn {Function File} {} dare (@var{a}, @var{b}, @var{c}, @var{r}, @var{opt})
 
-Returns the solution, @var{x} of the discrete-time algebraic Riccati
+Return the solution, @var{x} of the discrete-time algebraic Riccati
 equation
+@iftex
+@tex
+$$
+A^TXA - X + A^TXB (R + B^TXB)^{-1} B^TXA + C = 0
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
 a' x a - x + a' x b (r + b' x b)^(-1) b' x a + c = 0
 @end example
+@end ifinfo
 
 @noindent
 for matrices with dimensions:
 
-@example
-@var{a}: @var{n} by @var{n}
-@var{b}: @var{n} by @var{m}
-@var{c}: @var{n} by @var{n}, symmetric positive semidefinite
-@var{r}: @var{m} by @var{m}, symmetric positive definite (invertible)
-@end example
+@table @var
+@item a
+@var{n} by @var{n}.
+
+@item b
+@var{n} by @var{m}.
+
+@item c
+@var{n} by @var{n}, symmetric positive semidefinite.
+
+@item r
+@var{m} by @var{m}, symmetric positive definite (invertible).
+@end table
 
 If @var{c} is not square, then the function attempts to use
 @code{@var{c}'*@var{c}} instead.
 
-Solution method: Laub's Schur method (IEEE Transactions on Automatic
-Control, 1979) is applied to the appropriate symplectic matrix.
+To form the solution, Laub's Schur method (IEEE Transactions on
+Automatic Control, 1979) is applied to the appropriate symplectic
+matrix.
 
-See also: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
+See also Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
 Algebraic Riccati Equations}, Mathematics of Control, Signals and 
 Systems, Volume 5, Number 2 (1992).
 
-@var{opt} is an option passed to the eigenvalue balancing routine.
-The default is @code{"B"}.
+The optional argument @var{opt} is passed to the eigenvalue balancing
+routine.  If it is omitted, a value of @code{"B"} is assumed.
 @end deftypefn
 
 @deftypefn {Function File} {} dgram (@var{a}, @var{b})
-Returns the discrete controllability and observability gramian for the
+Return the discrete controllability or observability gramian for the
 discrete time system described by
 @iftex
 @tex
@@ -144,14 +190,14 @@ x[k+1] = A x[k] + B u[k]
 @end example
 @end ifinfo
 
-@code{dgram (@var{a}, @var{b})} returns the discrete controllability
-gramian and @code{dgram (@var{a}', @var{c}')} returns the observability
-gramian.
+For example, @code{dgram (@var{a}, @var{b})} returns the discrete
+controllability gramian and @code{dgram (@var{a}', @var{c}')} returns
+the observability gramian.
 @end deftypefn
 
-@deftypefn {Function File} {} dlqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv} [, @var{z}])
-Linear quadratic estimator (Kalman filter) design for the discrete time
-system
+@deftypefn {Function File} {[@var{l}, @var{m}, @var{p}, @var{e}] =} dlqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+Construct the linear quadratic estimator (Kalman filter) for the
+discrete time system
 @iftex
 @tex
 $$
@@ -193,19 +239,42 @@ z[k+1] = A z[k] + B u[k] + k(y[k] - C z[k] - D u[k])
 @end ifinfo
 
 @noindent
-Returns:
+The following values are returned:
 
-@var{l} is the observer gain, @code{(A - A L C)} is stable.
+@table @var
+@item l
+The observer gain, 
+@iftex
+@tex
+$(A - ALC)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{a}@var{l}@var{c}).
+@end ifinfo
+is stable.
 
-@var{m} is the Ricatti equation solution.
+@item m
+The Riccati equation solution.
 
-@var{p} is the estimate error covariance after the measurement update.
+@item p
+The estimate error covariance after the measurement update.
 
-@var{e} are the closed loop poles of @code{(A - A L C)}.
+@item e
+The closed loop poles of
+@iftex
+@tex
+$(A - ALC)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{a}@var{l}@var{c}).
+@end ifinfo
+@end table
 @end deftypefn
 
-@deftypefn {Function File} {} dlqr (@var{a}, @var{b}, @var{q}, @var{r} [, @var{z}])
-Linear quadratic regulator design for the discrete time system
+@deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} dlqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+Construct the linear quadratic regulator for the discrete time system
 @iftex
 @tex
 $$
@@ -221,51 +290,88 @@ x[k+1] = A x[k] + B u[k]
 
 @end ifinfo
 to minimize the cost functional
+@iftex
+@tex
+$$
+ J = \sum x^T Q x + u^T R u
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
-J = Sum [ x' Q x + u' R u ],              Z omitted
+J = Sum (x' Q x + u' R u)
 @end example
+@end ifinfo
 
 @noindent
-or
+@var{z} omitted or
+@iftex
+@tex
+$$
+ J = \sum x^T Q x + u^T R u + 2 x^T Z u
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
-J = Sum [ x' Q x + u' R u +2 x' Z u ],    Z included
+J = Sum (x' Q x + u' R u + 2 x' Z u)
 @end example
 
-@noindent
-Returns:
+@end ifinfo
+@var{z} included.
 
-@var{k} is the state feedback gain, @code{(A - B K)} is stable.
+The following values are returned:
 
-@var{p} is the solution of algebraic Riccati equation.
+@table @var
+@item k
+The state feedback gain,
+@iftex
+@tex
+$(A - B K)$
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{b}@var{k})
+@end ifinfo
+is stable.
 
-@var{e} are the closed loop poles of @var{(A - B K)}.
+@item p
+The solution of algebraic Riccati equation.
+
+@item e
+The closed loop poles of
+@iftex
+@tex
+$(A - B K)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{b}@var{k}).
+@end ifinfo
+@end table
 @end deftypefn
 
 @deftypefn {Function File} {} dlyap (@var{a}, @var{b})
 Solve the discrete-time Lyapunov equation
-
-@example
-a x a' - x + b = 0
-@end example
-
-@noindent
+@iftex
+@tex
+$AXA^T - X + B = 0$
+@end tex
+@end iftex
+@ifinfo
+@code{a x a' - x + b = 0}
+@end ifinfo
 for square matrices @var{a}, @var{b}.  If @var{b} is not square, then the
 function attempts to solve either
-
-@example
-a x a' - x + b b' = 0
-@end example
-
-@noindent
-or
-
-@example
-a' x a - x + b' b = 0
-@end example
-
-@noindent
+@iftex
+$AXA^T - X + B B^T = 0$ or $A^TXA - X + B^TB = 0$,
+@tex
+@end tex
+@ifinfo
+@code{a x a' - x + b b' = 0} or @code{a' x a - x + b' b = 0},
+@end ifinfo
 whichever is appropriate.
 
 Uses Schur decomposition method as in Kitagawa, International Journal of
@@ -274,47 +380,28 @@ Hammarling, IMA Journal of Numerical Analysis, (1982).
 @end deftypefn
 
 @deftypefn {Function File} {} is_controllable (@var{a}, @var{b}, @var{tol})
+Return 1 if the pair (@var{a}, @var{b}) is controllable.  Otherwise,
+return 0.
 
-If the pair (a, b) is controllable, then return value 1.
-Otherwise, returns a value of 0.
+The optional argument @var{tol} is a roundoff parameter.  If it is
+omitted, a value of @code{2*eps} is used.
 
-@var{tol} is a roundoff parameter, set to @code{2*eps} if omitted.
-
-Currently just constructs the controllability matrix and checks rank.
-A better method is as follows (Boley and Golub, Systems and Control
-Letters, 1984):  Controllability is determined by applying Arnoldi
-iteration with complete re-orthogonalization to obtain an orthogonal
-basis of the Krylov subspace
-@iftex
-@tex
-$$
- {\rm span} \left(\left[b~ab~\ldots~a^{n-1}b\right]\right)
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-                      n-1
- span ([b, a*b, ..., a^   *b]).
-@end example
-@end ifinfo
+Currently, @code{is_controllable} just constructs the controllability
+matrix and checks rank.
 @end deftypefn
 
 @deftypefn {Function File} {} is_observable (@var{a}, @var{c}, @var{tol})
 
-Returns 1 if the pair @code{(a, c)} is observable.
-Otherwise, returns a value of 0.
+Return 1 if the pair (@var{a}, @var{c}) is observable.
+Otherwise, return0.
+
+The optional argument @var{tol} is a roundoff parameter.  If it is
+omitted, a value of @code{2*eps} is used.
 @end deftypefn
 
-@deftypefn {Function File} {} lqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
-
-@example
-[k, p, e] = lqe (a, g, c, sigw, sigv, z)
-@end example
-
-Linear quadratic estimator (Kalman filter) design for the continuous
-time system
+@deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} lqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+Construct the linear quadratic estimator (Kalman filter) for the
+continuous time system
 @iftex
 @tex
 $$
@@ -336,7 +423,7 @@ y = c x + d u
 @end example
 
 @end ifinfo
-where @var{w}, @var{v} are zero-mean gaussian noise processes with
+where @var{w} and @var{v} are zero-mean gaussian noise processes with
 respective intensities
 
 @example
@@ -344,25 +431,45 @@ sigw = cov (w, w)
 sigv = cov (v, v)
 @end example
 
-@noindent
-@var{z} (if specified) is the cross-covariance
-@code{cov (@var{w}, @var{v})}; the default value is
-@code{cov (@var{w}, @var{v}) = 0}. 
+The optional argument @var{z} is the cross-covariance
+@code{cov (@var{w}, @var{v})}.  If it is omitted,
+@code{cov (@var{w}, @var{v}) = 0} is assumed.
 
 Observer structure is @code{dz/dt = A z + B u + k (y - C z - D u)}
 
-returns:
+The following values are returned:
 
-@var{k} is observer gain:  @code{(A - K C)} is stable.
+@table @var
+@item k
+The observer gain,
+@iftex
+@tex
+$(A - K C)$
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{k}@var{c})
+@end ifinfo
+is stable.
 
-@var{p} is solution of algebraic Riccati equation.
+@item p
+The solution of algebraic Riccati equation.
 
-@var{e} is the vector of closed loop poles of @code{(A - K C)}.
+@item e
+The vector of closed loop poles of
+@iftex
+@tex
+$(A - K C)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{k}@var{c}).
+@end ifinfo
+@end table
 @end deftypefn
 
-@deftypefn {Function File} {} lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
-@deftypefnx {Function File} {[@var{k}, @var{p}, @var{e}] =} lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
-Linear quadratic regulator design for the continuous time system
+@deftypefn {Function File} {[@var{k}, @var{p}, @var{e}] =} lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+construct the linear quadratic regulator for the continuous time system
 @iftex
 @tex
 $$
@@ -383,7 +490,7 @@ to minimize the cost functional
 @iftex
 @tex
 $$
- J = \int_0^\infty x' Q x + u' R u
+ J = \int_0^\infty x^T Q x + u^T R u
 $$
 @end tex
 @end iftex
@@ -403,7 +510,7 @@ $$
 @iftex
 @tex
 $$
- J = \int_0^\infty x' Q x + u' R u + 2 x' Z u
+ J = \int_0^\infty x^T Q x + u^T R u + 2 x^T Z u
 $$
 @end tex
 @end iftex
@@ -418,62 +525,121 @@ $$
 @end example
 
 @end ifinfo
-@var{z} included
+@var{z} included.
 
-@noindent
-Returns:
+The following values are returned:
 
-@var{k} is state feedback gain:  @code{(A - B K)} is stable.
+@table @var
+@item k
+The state feedback gain,
+@iftex
+$(A - B K)$
+@tex
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{b}@var{k})
+@end ifinfo
+is stable.
 
-@var{p} is the stabilizing solution of appropriate algebraic Riccati
-equation.
+@item p
+The stabilizing solution of appropriate algebraic Riccati equation.
 
-@var{e} is the vector of the closed loop poles of @code{(A - B K)}.
+@item e
+The vector of the closed loop poles of
+@iftex
+@tex
+$(A - B K)$.
+@end tex
+@end iftex
+@ifinfo
+(@var{a} - @var{b}@var{k}).
+@end ifinfo
+@end table
 @end deftypefn
 
 @deftypefn {Function File} {} lyap (@var{a}, @var{b}, @var{c})
 Solve the Lyapunov (or Sylvester) equation via the Bartels-Stewart
 algorithm (Communications of the ACM, 1972).
 
-If @code{(a, b, c)} are specified, then @code{lyap} returns the solution
-of the  Sylvester equation
+If @var{a}, @var{b}, and @var{c} are specified, then @code{lyap} returns
+the solution of the  Sylvester equation
+@iftex
+@tex
+$$
+ A X + X B + C = 0
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
 a x + x b + c = 0
 @end example
+@end ifinfo
 
 If only @code{(a, b)} are specified, then @code{lyap} returns the
 solution of the Lyapunov equation
+@iftex
+@tex
+$$
+ A^T X + X A + B = 0
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
 a' x + x a + b = 0
 @end example
+@end ifinfo
 
 If @var{b} is not square, then @code{lyap} returns the solution of either
+@iftex
+@tex
+$$
+ A^T X + X A + B^T B = 0
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
 a' x + x a + b' b = 0
 @end example
+@end ifinfo
 
 @noindent
 or
+@iftex
+@tex
+$$
+ A X + X A^T + B B^T = 0
+$$
+@end tex
+@end iftex
+@ifinfo
 
 @example
 a x + x a' + b b' = 0
 @end example
+@end ifinfo
 
 @noindent
 whichever is appropriate.
-
-Solves by using the Bartels-Stewart algorithm (1972).
 @end deftypefn
 
-@deftypefn {Function File} {} tzero (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
-Compute the transmission zeros of [A, B, C, D].
+@deftypefn {Function File} {} tzero (@var{a}, @var{b}, @var{c}, @var{d}, @var{opt})
+Compute the transmission zeros of
+@iftex
+@tex
+$[A, B, C, D]$.
+@end tex
+@end iftex
+@ifinfo
+[A, B, C, D].
+@end ifinfo
 
-@var{bal} = balancing option (see balance); default is @code{"B"}.
-
-Needs to incorporate @code{mvzero} algorithm to isolate finite zeros;
-see Hodel, @cite{Computation of System Zeros with Balancing}, Linear
-Algebra and its Applications, July 1993.
+The optional argument @var{opt} is passed to the eigenvalue balancing
+routine.  If it is omitted, a value of @code{"B"} is assumed.
 @end deftypefn

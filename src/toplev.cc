@@ -846,15 +846,32 @@ which they were registered with atexit()")
   return retval;
 }
 
-DEFUN (octave_config_info, , ,
-  "return a structure containing configuration information")
+DEFUN (octave_config_info, args, ,
+  "octave_config_info (OPTION)\n\
+\n\
+If OPTION is a string, return the configuration information for the\n\
+specified option.\n\
+\n\
+With no arguments, return a structure containing configuration\n\
+information.")
 {
+  octave_value retval;
+
+#if defined (WITH_DYNAMIC_LINKING)
+#if defined (WITH_DL) || defined (WITH_SHL)
+  bool octave_supports_dynamic_linking = true;
+#else
+  bool octave_supports_dynamic_linking = false;
+#endif
+#endif
+
   Octave_map m;
 
   m ["default_pager"] = DEFAULT_PAGER;
   m ["prefix"] = OCTAVE_PREFIX;
   m ["exec_prefix"] = OCTAVE_EXEC_PREFIX;
   m ["datadir"] = OCTAVE_DATADIR;
+  m ["dld"] = (double) octave_supports_dynamic_linking;
   m ["libdir"] = OCTAVE_LIBDIR;
   m ["bindir"] = OCTAVE_BINDIR;
   m ["infodir"] = OCTAVE_INFODIR;
@@ -896,7 +913,21 @@ DEFUN (octave_config_info, , ,
   m ["LIBDLFCN"] = LIBDLFCN;
   m ["DEFS"] = DEFS;
 
-  return octave_value (m);
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      string arg = args(0).string_value ();
+
+      if (! error_state)
+	retval = octave_value (m [arg.c_str ()]);
+    }
+  else if (nargin == 0)
+    retval = octave_value (m);
+  else
+    print_usage ("octave_config_info");
+
+  return retval;
 }
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)

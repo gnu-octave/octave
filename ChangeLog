@@ -1,3 +1,8 @@
+Tue Feb 18 00:33:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* examples/oregonator.m, examples/oregonator.cc: New files.
+	* examples/Makefile.in (SOURCES): Add them to the list.
+
 Fri Feb 14 14:07:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* install-octave: Don't fail if LIBRARIES file is missing.

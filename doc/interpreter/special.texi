@@ -24,7 +24,7 @@ Returns an identity matrix.  If invoked with a single scalar argument,
 supply two scalar arguments, @code{eye} takes them to be the number of
 rows and columns.  If given a vector with two elements, @code{eye} uses
 the values of the elements as the number of rows and columns,
-respecively.  For example,
+respectively.  For example,
 
 @example
 @group

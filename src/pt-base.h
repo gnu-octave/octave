@@ -77,6 +77,8 @@ public:
       cmp_ge,
       cmp_gt,
       cmp_ne,
+      and_and,
+      or_or,
       and,
       or,
       not,

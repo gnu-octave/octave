@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 %s MATRIX
 
 %{
+#define SHORT_CIRCUIT_LOGICALS 1
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -543,8 +544,20 @@ EXPON	([DdEe][+-]?{D}+)
 "!="		{ BIN_OP_RETURN (EXPR_NE, 0); }
 "<>"		{ BIN_OP_RETURN (EXPR_NE, 0); }
 ">="		{ BIN_OP_RETURN (EXPR_GE, 0); }
-"||"		{ BIN_OP_RETURN (EXPR_OR, 0); }
-"&&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
+"||"		{
+#ifdef SHORT_CIRCUIT_LOGICALS
+		  BIN_OP_RETURN (EXPR_OR_OR, 0);
+#else
+		  BIN_OP_RETURN (EXPR_OR, 0);
+#endif
+		}
+"&&"		{
+#ifdef SHORT_CIRCUIT_LOGICALS
+		  BIN_OP_RETURN (EXPR_AND_AND, 0);
+#else
+		  BIN_OP_RETURN (EXPR_AND, 0);
+#endif
+		}
 "|"		{ BIN_OP_RETURN (EXPR_OR, 0); }
 "&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
 "!"		{

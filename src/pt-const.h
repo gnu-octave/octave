@@ -465,6 +465,8 @@ public:
 
   tree_constant convert_to_str (void);
 
+  int is_true (void) const;
+
   tree_constant cumprod (void) const;
   tree_constant cumsum (void) const;
   tree_constant prod (void) const;
@@ -720,6 +722,8 @@ public:
   tree_constant isstr (void) const { return rep->isstr (); }
 
   tree_constant convert_to_str (void) { return rep->convert_to_str (); }
+
+  int is_true (void) const { return rep->is_true (); }
 
   tree_constant cumprod (void) const { return rep->cumprod (); }
   tree_constant cumsum (void) const { return rep->cumsum (); }

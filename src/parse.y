@@ -165,6 +165,7 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 
 // Tokens with line and column information.
 %token <tok_val> '=' ':' '-' '+' '*' '/'
+%token <tok_val> EXPR_AND_AND EXPR_OR_OR
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV QUOTE TRANSPOSE
@@ -210,6 +211,7 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 // Precedence and associativity.
 %left ';' ',' '\n'
 %right '='
+%left EXPR_AND_AND EXPR_OR_OR
 %left EXPR_AND EXPR_OR
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %left ':'
@@ -751,6 +753,12 @@ simple_expr	: simple_expr1
 		| simple_expr EXPR_NE simple_expr
 		  { $$ = new tree_binary_expression
 		      ($1, $3, tree::cmp_ne, $2->line (), $2->column ()); }
+		| simple_expr EXPR_AND_AND simple_expr
+		  { $$ = new tree_binary_expression
+		      ($1, $3, tree::and_and, $2->line (), $2->column ()); }
+		| simple_expr EXPR_OR_OR simple_expr
+		  { $$ = new tree_binary_expression
+		      ($1, $3, tree::or_or, $2->line (), $2->column ()); }
 		| simple_expr EXPR_AND simple_expr
 		  { $$ = new tree_binary_expression
 		      ($1, $3, tree::and, $2->line (), $2->column ()); }

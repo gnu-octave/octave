@@ -56,9 +56,6 @@ extern int reading_script_file;
 // If we are reading from an M-file, this is it.
 extern FILE *ff_instream;
 
-// Nonzero means we are using readline.
-extern int using_readline;
-
 // Nonzero means this is an interactive shell.
 extern int interactive;
 

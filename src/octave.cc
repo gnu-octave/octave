@@ -111,8 +111,8 @@ static int traditional = 0;
 static const char *usage_string = 
   "octave [-?Vdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
        [--help] [--ignore-init-file] [--info-file file] [--info-program prog]\n\
-       [--interactive] [-p path] [--path path] [--silent] [--traditional]\n\
-       [--verbose] [--version] [file]";
+       [--interactive] [--no-line-editing] [-p path] [--path path] [--silent]\n\
+       [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -124,17 +124,19 @@ static const char *short_opts = "+?Vdfhip:qvx";
 #define EXEC_PATH_OPTION 1
 #define INFO_FILE_OPTION 2
 #define INFO_PROG_OPTION 3
-#define TRADITIONAL_OPTION 4
+#define NO_LINE_EDITING_OPTION 4
+#define TRADITIONAL_OPTION 5
 long_options long_opts[] =
   {
     { "debug",            no_argument,       0, 'd' },
     { "echo-commands",    no_argument,       0, 'x' },
     { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
     { "help",             no_argument,       0, 'h' },
-    { "interactive",      no_argument,       0, 'i' },
+    { "ignore-init-file", no_argument,       0, 'f' },
     { "info-file",        required_argument, 0, INFO_FILE_OPTION },
     { "info-program",     required_argument, 0, INFO_PROG_OPTION },
-    { "ignore-init-file", no_argument,       0, 'f' },
+    { "interactive",      no_argument,       0, 'i' },
+    { "no-line-editing",  no_argument,       0, NO_LINE_EDITING_OPTION },
     { "norc",             no_argument,       0, 'f' },
     { "path",             required_argument, 0, 'p' },
     { "quiet",            no_argument,       0, 'q' },
@@ -320,6 +322,7 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   -i, --interactive       Force interactive behavior.\n\
+  --no-line-editing       Don't use readline for command-line editing\n\
   -p PATH, --path PATH    Set initial LOADPATH to PATH.\n\
   -q, --silent            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\
@@ -458,6 +461,10 @@ main (int argc, char **argv)
 	case INFO_PROG_OPTION:
 	  if (args.optarg ())
 	    info_prog = string (args.optarg ());
+	  break;
+
+	case NO_LINE_EDITING_OPTION:
+	  using_readline = 0;
 	  break;
 
 	case TRADITIONAL_OPTION:

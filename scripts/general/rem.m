@@ -33,12 +33,10 @@
 
 ## Author: jwe
 
-function retval = rem (x, y)
-
-  usage_msg = "rem (x, y)";
+function r = rem (x, y)
 
   if (nargin != 2)
-    usage (usage_msg);
+    usage ("rem (x, y)");
   endif
 
   if (any (size (x) != size (y)) && ! (is_scalar (x) || is_scalar (y)))
@@ -52,10 +50,6 @@ function retval = rem (x, y)
     error ("rem: complex arguments are not allowed");
   endif
 
-  if (nargin == 2)
-    retval = x - y .* fix (x ./ y);
-  else
-    error (usage_msg);
-  endif
+  r = x - y .* fix (x ./ y);
 
 endfunction

@@ -1,3 +1,8 @@
+2000-01-07  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* mappers.cc (Fconj, Ferf, Ferfc, Fgamma, Fimag, Flgamma, Flog10,
+	Freal, Fround): Add @seealso{...} to doc strings.
+
 2000-01-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (do_scanf): Do the right thing again for character

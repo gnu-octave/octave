@@ -239,8 +239,7 @@ $\\bar{z} = x - iy$.\n\
 @code{conj (@var{z})} = @var{x} - @var{i}@var{y}.\n\
 @end ifinfo\n\
 @end deftypefn\n\
-\n\
-See also: real, imag");
+@seealso{real and imag}");
 
   DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, cos, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -276,8 +275,7 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 @end smallexample\n\
 @end ifinfo\n\
 @end deftypefn\n\
-
-See also: erfc, erfinv");
+@seealso{erfc and erfinv}");
 
   DEFUN_MAPPER (erfc, 0, 0, 0, xerfc, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -293,7 +291,7 @@ $1 - {\\rm erf} (z)$.\n\
 @end ifinfo\n\
 @end deftypefn\n\
 \n\
-See also: erf, erfinv");
+@seealso{erf and erfinv}");
 
   DEFUN_MAPPER (exp, 0, 0, 0, exp, 0, exp, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -353,7 +351,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 @end ifinfo\n\
 @end deftypefn\n\
 \n\
-See also: gammai, lgamma");
+@seealso{gammai and lgamma}");
 
   DEFUN_MAPPER (imag, 0, 0, 0, imag, imag, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -361,7 +359,7 @@ See also: gammai, lgamma");
 Return the imaginary part of @var{z} as a real number.\n\
 @end deftypefn\n\
 \n\
-See also: real, conj");
+@seealso{real and conj}");
 
   DEFUN_MAPPER (isalnum, xisalnum, 0, 0, 0, 0, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -472,8 +470,7 @@ Return 1 for characters that are hexadecimal digits.\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{a}, @var{x})\n\
 Return the natural logarithm of the gamma function.\n\
 @end deftypefn\n\
-\n\
-See also: gamma, gammai");
+@seealso{gamma and gammai}");
 
   DEFUN_MAPPER (log, 0, 0, 0, log, 0, log, 0.0, DBL_MAX, 1,
     "-*- texinfo -*-\n\
@@ -481,24 +478,21 @@ See also: gamma, gammai");
 Compute the natural logarithm for each element of @var{x}.  To compute the\n\
 matrix logarithm, see @ref{Linear Algebra}.\n\
 @end deftypefn\n\
-\n\
-See also: log2, log10, logspace, exp");
+@seealso{log2, log10, logspace, and exp}");
 
   DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, log10, 0.0, DBL_MAX, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm for each element of @var{x}.\n\
 @end deftypefn\n\
-\n\
-See also: log, log2, logspace, exp");
+@seealso{log, log2, logspace, and exp}");
 
   DEFUN_MAPPER (real, 0, 0, 0, real, real, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
 Return the real part of @var{z}.\n\
 @end deftypefn\n\
-\n\
-See also: imag, conj");
+@seealso{imag and conj}");
 
   DEFUN_MAPPER (round, 0, 0, 0, round, 0, round, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
@@ -506,8 +500,7 @@ See also: imag, conj");
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 @code{round (real (@var{x})) + round (imag (@var{x})) * I}.\n\
 @end deftypefn\n\
-\n\
-See also: rem");
+@seealso{rem}");
 
   DEFUN_MAPPER (sign, 0, 0, 0, signum, 0, signum, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\

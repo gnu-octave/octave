@@ -78,7 +78,7 @@ ALL_LDFLAGS = $(LIBFLAGS) $(GCC_IEEE_FP_FLAG) $(LDFLAGS)
 FLIBS = @FLIBS@
 
 # A shell command to extract the version number from version.h.
-getversion = sed -e '/version_string/!d' -e 's/[^0-9.]*\([0-9.]*\).*/\1/' -e q 
+getversion = sed -e '/version_string/!d' -e 's/.*"\(.*\)".*/\1/' -e q
 
 # The version number.  TOPDIR is something like `.' or `..' or `../..'
 # and gets us back up to the top level of the source tree.

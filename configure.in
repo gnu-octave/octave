@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.335 $)
+AC_REVISION($Revision: 1.336 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -1178,38 +1178,9 @@ AC_SUBST_FILE(bsd_gcc_kluge_targets_frag)
 
 ### Checks for other programs used for building, testing, installing,
 ### and running Octave.
-###
-### For now, don't define LEXLIB to be -lfl -- we don't use anything in
-### it, and it might not be installed.
-###
-### Also make sure that we generate an interactive scanner if we are
-### using flex.
 
-AC_PROG_LEX
-case "$LEX" in
-  flex*)
-    LFLAGS="-t -I"
-    AC_MSG_RESULT([defining LFLAGS to be $LFLAGS])
-    LEXLIB=
-  ;;
-  *)
-    LFLAGS="-t"
-    AC_MSG_RESULT([defining LFLAGS to be $LFLAGS])
-    warn_flex="I didn't find flex, but it's only a problem if you need to reconstruct lex.cc"
-    AC_MSG_WARN($warn_flex)
-  ;;
-esac
-AC_SUBST(LFLAGS)
-
-AC_PROG_YACC
-case "$YACC" in
-  bison*)
-  ;;
-  *)
-    warn_bison="I didn't find bison, but it's only a problem if you need to reconstruct parse.cc"
-    AC_MSG_WARN($warn_bison)
-  ;;
-esac
+OCTAVE_PROG_FLEX
+OCTAVE_PROG_BISON
 
 AC_PROG_LN_S
 

@@ -1,3 +1,13 @@
+2000-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* missing: New file, modified from the missing script provided by
+	automake (never create files, just exit with failure status).
+	* aclocal.m4 (OCTAVE_PROG_BISON, OCTAVE_PROG_FLEX, OCTAVE_PROG_GPERF): 
+	Use $(top_srcdir)/missing as replacement script.
+
+	* aclocal.m4 (OCTAVE_PROG_FLEX, OCTAVE_PROG_BISON): New macros.
+	* configure.in: Use them.
+
 2000-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* autogen.sh: Don't run configure.

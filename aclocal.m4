@@ -737,6 +737,45 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
   fi
 ])
 dnl
+dnl Check for flex
+dnl
+AC_DEFUN(OCTAVE_PROG_FLEX, [
+### For now, don't define LEXLIB to be -lfl -- we don't use anything in
+### it, and it might not be installed.
+###
+### Also make sure that we generate an interactive scanner if we are
+### using flex.
+  AC_PROG_LEX
+  case "$LEX" in
+    flex*)
+      LFLAGS="-t -I"
+      AC_MSG_RESULT([defining LFLAGS to be $LFLAGS])
+      LEXLIB=
+    ;;
+    *)
+      LEX='$(top_srcdir)/missing flex'
+      warn_flex="I didn't find flex, but it's only a problem if you need to reconstruct lex.cc"
+      AC_MSG_WARN($warn_flex)
+    ;;
+  esac
+  AC_SUBST(LFLAGS)
+])
+dnl
+dnl Check for bison
+dnl
+AC_DEFUN(OCTAVE_PROG_BISON, [
+  AC_PROG_YACC
+  case "$YACC" in
+    bison*)
+    ;;
+    *)
+      YACC='$(top_srcdir)/missing bison'
+      warn_bison="I didn't find bison, but it's only a problem if you need to reconstruct parse.cc"
+      AC_MSG_WARN($warn_bison)
+    ;;
+  esac
+])
+dnl
 dnl What pager should we use?
 dnl
 AC_DEFUN(OCTAVE_PROG_PAGER,
@@ -833,6 +872,7 @@ dnl OCTAVE_PROG_GPERF
 AC_DEFUN(OCTAVE_PROG_GPERF,
 [AC_CHECK_PROG(GPERF, gperf, gperf, [])
 if test -z "$GPERF"; then
+  GPERF='$(top_srcdir)/missing gperf'
   warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
   AC_MSG_WARN($warn_gperf)
 fi

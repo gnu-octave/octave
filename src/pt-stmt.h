@@ -91,6 +91,12 @@ private:
 
   // Print result of eval for this command?
   bool print_flag;
+
+  // No copying!
+
+  tree_statement (const tree_statement&);
+
+  tree_statement& operator = (const tree_statement&);
 };
 
 // A list of statements to evaluate.
@@ -125,6 +131,12 @@ private:
 
   // Does this list of statements make up the body of a function?
   bool function_body;
+
+  // No copying!
+
+  tree_statement_list (const tree_statement_list&);
+
+  tree_statement_list& operator = (const tree_statement_list&);
 };
 
 #endif

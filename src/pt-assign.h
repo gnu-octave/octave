@@ -101,6 +101,13 @@ private:
 
   // The type of the expression.
   octave_value::assign_op etype;
+
+  // No copying!
+
+  tree_simple_assignment_expression (const tree_simple_assignment_expression&);
+
+  tree_simple_assignment_expression&
+  operator = (const tree_simple_assignment_expression&);
 };
 
 // Multi-valued assignment expressions.
@@ -142,6 +149,13 @@ private:
   bool preserve;
   tree_argument_list *lhs;
   tree_expression *rhs;
+
+  // No copying!
+
+  tree_multi_assignment_expression (const tree_multi_assignment_expression&);
+
+  tree_multi_assignment_expression&
+  operator = (const tree_multi_assignment_expression&);
 };
 
 #endif

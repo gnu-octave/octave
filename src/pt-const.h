@@ -116,6 +116,12 @@ private:
 
   // The original text form of this constant.
   string orig_text;
+
+  // No copying!
+
+  tree_constant (const tree_constant&);
+
+  tree_constant& operator = (const tree_constant&);
 };
 
 #endif

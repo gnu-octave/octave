@@ -93,6 +93,12 @@ private:
 
   // The symbol record that this identifier references.
   symbol_record *sym;
+
+  // No copying!
+
+  tree_identifier (const tree_identifier&);
+
+  tree_identifier& operator = (const tree_identifier&);
 };
 
 #endif

@@ -82,6 +82,12 @@ private:
   // The list of plots for this plot command.  For example, the
   // command "plot sin(x), cos(x)" has two subplot commands.
   subplot_list *plot_list;
+
+  // No copying!
+
+  tree_plot_command (const tree_plot_command&);
+
+  tree_plot_command& operator = (const tree_plot_command&);
 };
 
 class
@@ -110,6 +116,12 @@ private:
   plot_range *x_range;
   plot_range *y_range;
   plot_range *z_range;
+
+  // No copying!
+
+  plot_limits (const plot_limits&);
+
+  plot_limits& operator = (const plot_limits&);
 };
 
 class
@@ -136,6 +148,12 @@ private:
   // is specified, the range to display is determined from the data.
   tree_expression *lower;
   tree_expression *upper;
+
+  // No copying!
+
+  plot_range (const plot_range&);
+
+  plot_range& operator = (const plot_range&);
 };
 
 class
@@ -197,6 +215,12 @@ private:
 
   // A vector to hold using qualifiers.
   tree_expression *x[4];
+
+  // No copying!
+
+  subplot_using (const subplot_using&);
+
+  subplot_using& operator = (const subplot_using&);
 };
 
 class
@@ -232,6 +256,12 @@ private:
 
   // The number of the point type to use.
   tree_expression *sp_pointtype;
+
+  // No copying!
+
+  subplot_style (const subplot_style&);
+
+  subplot_style& operator = (const subplot_style&);
 };
 
 class
@@ -284,6 +314,12 @@ private:
 
   // The `style' option
   subplot_style *sp_style_clause;
+
+  // No copying!
+
+  subplot (const subplot&);
+
+  subplot& operator = (const subplot&);
 };
 
 class
@@ -302,6 +338,14 @@ public:
   int print (int ndim, ostrstream& plot_buf);
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  subplot_list (const subplot_list&);
+
+  subplot_list& operator = (const subplot_list&);
 };
 
 extern string save_in_tmp_file (octave_value& t, int ndim = 2,

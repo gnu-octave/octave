@@ -84,6 +84,12 @@ private:
   string nm;
 
   void eval_error (void) const;
+
+  // No copying!
+
+  tree_indirect_ref (const tree_indirect_ref&);
+
+  tree_indirect_ref& operator = (const tree_indirect_ref&);
 };
 
 #endif

@@ -72,6 +72,12 @@ private:
 
   // The list of statements to evaluate if expr is true.
   tree_statement_list *list;
+
+  // No copying!
+
+  tree_if_clause (const tree_if_clause&);
+
+  tree_if_clause& operator = (const tree_if_clause&);
 };
 
 class
@@ -97,6 +103,14 @@ public:
   void eval (void);
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_if_command_list (const tree_if_command_list&);
+
+  tree_if_command_list& operator = (const tree_if_command_list&);
 };
 
 class
@@ -122,6 +136,12 @@ private:
 
   // List of if commands (if, elseif, elseif, ... else, endif)
   tree_if_command_list *list;
+
+  // No copying!
+
+  tree_if_command (const tree_if_command&);
+
+  tree_if_command& operator = (const tree_if_command&);
 };
 
 // Switch.
@@ -164,6 +184,12 @@ private:
 
   // The list of statements to evaluate if the label matches.
   tree_statement_list *list;
+
+  // No copying!
+
+  tree_switch_case (const tree_switch_case&);
+
+  tree_switch_case& operator = (const tree_switch_case&);
 };
 
 class
@@ -189,6 +215,14 @@ public:
   void eval (const octave_value& val);
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_switch_case_list (const tree_switch_case_list&);
+
+  tree_switch_case_list& operator = (const tree_switch_case_list&);
 };
 
 class
@@ -222,6 +256,12 @@ private:
 
   // List of cases (case 1, case 2, ..., default)
   tree_switch_case_list *list;
+
+  // No copying!
+
+  tree_switch_command (const tree_switch_command&);
+
+  tree_switch_command& operator = (const tree_switch_command&);
 };
 
 #endif

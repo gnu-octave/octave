@@ -82,6 +82,12 @@ private:
   tree_expression *op_base;
   tree_expression *op_limit;
   tree_expression *op_increment;
+
+  // No copying!
+
+  tree_colon_expression (const tree_colon_expression&);
+
+  tree_colon_expression& operator = (const tree_colon_expression&);
 };
 
 #endif

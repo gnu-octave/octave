@@ -66,6 +66,14 @@ public:
   octave_value_list rvalue (int nargout);
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_matrix (const tree_matrix&);
+
+  tree_matrix& operator = (const tree_matrix&);
 };
 
 #endif

@@ -88,6 +88,12 @@ private:
 
   // The type of the expression.
   octave_value::binary_op etype;
+
+  // No copying!
+
+  tree_binary_expression (const tree_binary_expression&);
+
+  tree_binary_expression& operator = (const tree_binary_expression&);
 };
 
 // Boolean expressions.
@@ -126,6 +132,12 @@ private:
 
   // The type of the expression.
   type etype;
+
+  // No copying!
+
+  tree_boolean_expression (const tree_boolean_expression&);
+
+  tree_boolean_expression& operator = (const tree_boolean_expression&);
 };
 
 #endif

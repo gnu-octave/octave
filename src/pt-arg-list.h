@@ -60,6 +60,14 @@ public:
   string_vector get_arg_names (void) const;
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_argument_list (const tree_argument_list&);
+
+  tree_argument_list& operator = (const tree_argument_list&);
 };
 
 #endif

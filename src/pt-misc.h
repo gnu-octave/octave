@@ -82,6 +82,12 @@ public:
 private:
 
   int marked_for_varargs;
+
+  // No copying!
+
+  tree_parameter_list (const tree_parameter_list&);
+
+  tree_parameter_list& operator = (const tree_parameter_list&);
 };
 
 // Return lists.  Used to hold the right hand sides of multiple
@@ -101,6 +107,14 @@ public:
   ~tree_return_list (void);
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_return_list (const tree_return_list&);
+
+  tree_return_list& operator = (const tree_return_list&);
 };
 
 class
@@ -111,6 +125,14 @@ public:
   tree_va_return_list (void) : SLList<octave_value> () { }
 
   ~tree_va_return_list (void) { }
+
+private:
+
+  // No copying!
+
+  tree_va_return_list (const tree_va_return_list&);
+
+  tree_va_return_list& operator = (const tree_va_return_list&);
 };
 
 #endif

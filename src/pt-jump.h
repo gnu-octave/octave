@@ -48,6 +48,14 @@ public:
   void accept (tree_walker& tw);
 
   static int breaking;
+
+private:
+
+  // No copying!
+
+  tree_break_command (const tree_break_command&);
+
+  tree_break_command& operator = (const tree_break_command&);
 };
 
 // Continue.
@@ -67,6 +75,14 @@ public:
   void accept (tree_walker& tw);
 
   static int continuing;
+
+private:
+
+  // No copying!
+
+  tree_continue_command (const tree_continue_command&);
+
+  tree_continue_command& operator = (const tree_continue_command&);
 };
 
 // Return.
@@ -86,6 +102,14 @@ public:
   void accept (tree_walker& tw);
 
   static int returning;
+
+private:
+
+  // No copying!
+
+  tree_return_command (const tree_return_command&);
+
+  tree_return_command& operator = (const tree_return_command&);
 };
 
 #endif

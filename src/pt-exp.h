@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class octave_value;
 class octave_lvalue;
 
-#include "pt-base.h"
+#include "pt.h"
 
 // A base class for expressions.
 
@@ -133,6 +133,14 @@ protected:
 
   // Print result of rvalue for this expression?
   bool print_flag;
+
+private:
+
+  // No copying!
+
+  tree_expression (const tree_expression&);
+
+  tree_expression& operator = (const tree_expression&);
 };
 
 #endif

@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class tree_walker;
 
-#include "pt-base.h"
+#include "pt.h"
 
 // A base class for commands.
 
@@ -46,6 +46,14 @@ public:
   virtual ~tree_command (void) { }
 
   virtual void eval (void) = 0;
+
+private:
+
+  // No copying!
+
+  tree_command (const tree_command&);
+
+  tree_command& operator = (const tree_command&);
 };
 
 // No-op.
@@ -69,6 +77,12 @@ public:
 private:
 
   string orig_cmd;
+
+  // No copying!
+
+  tree_no_op_command (const tree_no_op_command&);
+
+  tree_no_op_command& operator = (const tree_no_op_command&);
 };
 
 #endif

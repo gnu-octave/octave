@@ -81,6 +81,12 @@ private:
   tree_argument_list *list;
 
   string_vector arg_nm;
+
+  // No copying!
+
+  tree_index_expression (const tree_index_expression&);
+
+  tree_index_expression& operator = (const tree_index_expression&);
 };
 
 #endif

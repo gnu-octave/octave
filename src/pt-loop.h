@@ -74,6 +74,12 @@ private:
 
   // List of commands to execute.
   tree_statement_list *list;
+
+  // No copying!
+
+  tree_while_command (const tree_while_command&);
+
+  tree_while_command& operator = (const tree_while_command&);
 };
 
 // For.
@@ -117,6 +123,12 @@ private:
 
   void do_for_loop_once (octave_lvalue &ult, const octave_value& rhs,
 			 bool& quit);
+
+  // No copying!
+
+  tree_simple_for_command (const tree_simple_for_command&);
+
+  tree_simple_for_command& operator = (const tree_simple_for_command&);
 };
 
 class
@@ -159,6 +171,12 @@ private:
   void do_for_loop_once (octave_lvalue &val_ref, octave_lvalue &key_ref,
 			 const octave_value& val, const octave_value& key,
 			 bool& quit);
+
+  // No copying!
+
+  tree_complex_for_command (const tree_complex_for_command&);
+
+  tree_complex_for_command& operator = (const tree_complex_for_command&);
 };
 
 #endif

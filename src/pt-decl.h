@@ -67,6 +67,12 @@ private:
 
   // An initializer expression (may be zero);
   tree_expression *expr;
+
+  // No copying!
+
+  tree_decl_elt (const tree_decl_elt&);
+
+  tree_decl_elt& operator = (const tree_decl_elt&);
 };
 
 class
@@ -92,6 +98,14 @@ public:
   void eval (tree_decl_elt::eval_fcn, bool);
 
   void accept (tree_walker& tw);
+
+private:
+
+  // No copying!
+
+  tree_decl_init_list (const tree_decl_init_list&);
+
+  tree_decl_init_list& operator = (const tree_decl_init_list&);
 };
 
 // Base class for declaration commands -- global, static, etc.
@@ -126,6 +140,14 @@ protected:
 
   // The list of variables or initializers in this declaration command.
   tree_decl_init_list *init_list;
+
+private:
+
+  // No copying!
+
+  tree_decl_command (const tree_decl_command&);
+
+  tree_decl_command& operator = (const tree_decl_command&);
 };
 
 // Global.
@@ -144,6 +166,14 @@ public:
   ~tree_global_command (void) { }
 
   void eval (void);
+
+private:
+
+  // No copying!
+
+  tree_global_command (const tree_global_command&);
+
+  tree_global_command& operator = (const tree_global_command&);
 };
 
 // Static.
@@ -162,6 +192,14 @@ public:
   ~tree_static_command (void) { }
 
   void eval (void);
+
+private:
+
+  // No copying!
+
+  tree_static_command (const tree_static_command&);
+
+  tree_static_command& operator = (const tree_static_command&);
 };
 
 #endif

@@ -58,6 +58,12 @@ protected:
 
   // The operand for the expression.
   tree_expression *op;
+
+  // No copying!
+
+  tree_unary_expression (const tree_unary_expression&);
+
+  tree_unary_expression& operator = (const tree_unary_expression&);
 };
 
 // Prefix expressions.
@@ -102,6 +108,12 @@ private:
 
   // The type of the expression.
   type etype;
+
+  // No copying!
+
+  tree_prefix_expression (const tree_prefix_expression&);
+
+  tree_prefix_expression& operator = (const tree_prefix_expression&);
 };
 
 // Postfix expressions.
@@ -146,6 +158,12 @@ private:
 
   // The type of the expression.
   type etype;
+
+  // No copying!
+
+  tree_postfix_expression (const tree_postfix_expression&);
+
+  tree_postfix_expression& operator = (const tree_postfix_expression&);
 };
 
 #endif

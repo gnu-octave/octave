@@ -64,6 +64,12 @@ private:
 
   // The code to execute if an error occurs in the first block.
   tree_statement_list *catch_code;
+
+  // No copying!
+
+  tree_try_catch_command (const tree_try_catch_command&);
+
+  tree_try_catch_command& operator = (const tree_try_catch_command&);
 };
 
 // Simple exception handling.
@@ -99,6 +105,12 @@ private:
   // The body of code to execute no matter what happens in the first
   // body of code.
   tree_statement_list *cleanup_code;
+
+  // No copying!
+
+  tree_unwind_protect_command (const tree_unwind_protect_command&);
+
+  tree_unwind_protect_command& operator = (const tree_unwind_protect_command&);
 };
 
 #endif

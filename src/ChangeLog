@@ -1,3 +1,7 @@
+2003-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc: Include <memory> for auto_ptr.
+
 2003-04-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (octave_config_info): Delete LIBKPATHSEA from struct.

@@ -1,3 +1,10 @@
+2002-11-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cutils.c: Be sure to always return buf.
+
+	Undo previous vnprintf changes.  The portable snprintf I found
+	does not handle floating point conversions...
+	
 2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (liboctinterp.$(LIBEXT)): Include $(XERBLA) here.

@@ -43,6 +43,9 @@
 /* Define if your system's struct group has a gr_passwd field. */
 #undef HAVE_GR_PASSWD
 
+/* Define if you have (and are using) the HDF5 library and headers. */
+#undef HAVE_HDF5
+
 /* Define if you have isinf(). */
 #undef HAVE_ISINF
 

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.327 $)
+AC_REVISION($Revision: 1.328 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -319,6 +319,18 @@ case "$canonical_host_type" in
     AC_CHECK_LIB(m, sin)
   ;;
 esac
+
+# ----------------------------------------------------------------------
+# Check for HDF5 library
+AC_ARG_WITH(hdf5, [  --without-hdf5          don't use HDF5 output], ok=$withval, ok=yes)
+if test "$ok" = "yes"; then
+	AC_CHECK_LIB(z, deflate)
+	AC_CHECK_LIB(hdf5, H5Pcreate, [
+		AC_CHECK_HEADERS(hdf5.h, [LIBS="-lhdf5 $LIBS"
+			                  AC_DEFINE(HAVE_HDF5)])])
+fi
+
+# ----------------------------------------------------------------------
 
 ### We need these before trying to find libf2c.
 

@@ -1,3 +1,30 @@
+2000-06-29  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+
+	All of the following changes are protected by #ifdef HAVE_HDF5.
+
+	* load-save.cc (load_save_format): New value, LS_HDF5.
+	(make_valid_identifier): New function.
+	(class hdf5_fstreambase, class hdf5_ifstream, class hdf5_ofstream):
+	New classes for reading and writing hdf5 data.
+	(hdf5_types_compatible): New function.
+	(hdf5_import_multidim): New function.
+	(hdf5_check_attr): New function.
+	(hdf5_read_next_data): New function.
+	(hdf5_make_complex_type): New function.
+	(hdf5_make_range_type): New function.
+	(read_hdf5_data): New function.
+	(get_file_format): Handle HDF5 format.
+	(do_load): Handle LS_HDF5 case.
+	(Fload): Handle HDF5 format.
+	(hdf5_add_attr): New function.
+	(save_type_to_hdf5): New function.
+	(add_hdf5_data): New function.
+	(do_save): Handle HDF5 format.
+	(get_default_save_format): Handle LS_HDF5 case.
+	(write_header): Handle LS_HDF5 case.
+	(save_user_variables): Handle HDF5 format.
+	(Fsave): Handle HDF5 format.
+
 2000-06-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (display_help_text): If writing to filter fails, send

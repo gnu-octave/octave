@@ -20,6 +20,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+// Written by John W. Eaton.
+// HDF5 support by Steven G. Johnson.
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -33,6 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <strstream>
 #include <string>
+
+#ifdef HAVE_HDF5
+#include <hdf5.h>
+#endif
 
 #include "byte-swap.h"
 #include "data-conv.h"
@@ -49,6 +56,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "load-save.h"
 #include "oct-obj.h"
+#include "oct-map.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "symtab.h"
@@ -61,8 +69,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Write octave-core file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core;
 
-// The default output format.  May be one of "binary", "text", or
-// "mat-binary".
+// The default output format.  May be one of "binary", "text",
+// "mat-binary", or "hdf5".
 static std::string Vdefault_save_format;
 
 // The number of decimal digits to use when writing ascii data.
@@ -80,6 +88,9 @@ enum load_save_format
     LS_BINARY,
     LS_MAT_ASCII,
     LS_MAT_BINARY,
+#ifdef HAVE_HDF5
+    LS_HDF5,
+#endif /* HAVE_HDF5 */
     LS_UNKNOWN
   };
 
@@ -103,6 +114,21 @@ valid_identifier (const std::string& s)
 {
   return valid_identifier (s.c_str ());
 }
+
+#ifdef HAVE_HDF5
+// this is only used for HDF5 import
+// try to convert s into a valid identifier, replacing invalid chars with "_":
+static void
+make_valid_identifier (char *s)
+{
+  if (s)
+    {
+      for (; *s; ++s)
+	if (! (isalnum (*s) || *s == '_'))
+	  *s = '_';
+    }
+}
+#endif /* HAVE_HDF5 */
 
 // XXX FIXME XXX -- shouldn't this be implemented in terms of other
 // functions that are already available?
@@ -329,7 +355,7 @@ extract_keyword (std::istream& is, const char *keyword)
 	  char *ptr = retval + len - 1;
 	  while (*ptr == ' ' || *ptr == '\t')
 	    ptr--;
-	  *(ptr+1) = '\0';
+	  * (ptr+1) = '\0';
 	}
     }
 
@@ -649,7 +675,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	}
       else if (strncmp (ptr, "range", 5) == 0)
 	{
-	  // # base, limit, range comment added by save().
+	  // # base, limit, range comment added by save ().
 
 	  skip_comments (is);
 	  Range tmp;
@@ -952,6 +978,814 @@ read_binary_data (std::istream& is, bool swap,
 
   return name;
 }
+
+// HDF5 input/output
+
+#ifdef HAVE_HDF5
+
+// Define this to 1 if/when HDF5 supports automatic conversion between
+// integer and floating-point binary data:
+#define HAVE_HDF5_INT2FLOAT_CONVERSIONS 0
+
+// first, we need to define our own dummy stream subclass, since
+// HDF5 needs to do its own file i/o
+
+// hdf5_fstreambase is used for both input and output streams, modeled
+// on the fstreambase class in <fstream.h>
+
+class hdf5_fstreambase : virtual public std::ios
+{
+public:
+
+  // HDF5 uses an "id" to refer to an open file
+  hid_t file_id;
+
+  // keep track of current item index in the file
+  int current_item;
+
+  hdf5_fstreambase () { file_id = -1; }
+
+  hdf5_fstreambase (const char *name, int mode, int prot = 0)
+    {
+      if (mode == std::ios::in)
+	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
+      else if (mode == std::ios::out)
+	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+
+      if (file_id < 0)
+	set (std::ios::badbit);
+
+      current_item = 0;
+    }
+
+  void close ()
+    { 
+      if (file_id >= 0)
+	{
+	  if (H5Fclose (file_id) < 0)
+	    set (std::ios::badbit);
+	  file_id = -1;
+	}
+    }
+
+  void open (const char *name, int mode, int prot = 0)
+    {
+      clear ();
+
+      if (mode == std::ios::in)
+	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
+      else if (mode == std::ios::out)
+	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+
+      if (file_id < 0)
+	set (std::ios::badbit);
+
+      current_item = 0;
+    }
+};
+
+// input and output streams, subclassing istream and ostream
+// so that we can pass them for stream parameters in the functions below.
+
+class hdf5_ifstream : public hdf5_fstreambase, public std::istream
+{
+public:
+
+  hdf5_ifstream () : hdf5_fstreambase () { }
+
+  hdf5_ifstream (const char *name, int mode = std::ios::in, int prot = 0)
+    : hdf5_fstreambase (name, mode, prot) { }
+
+  void open (const char *name, int mode = std::ios::in, int prot = 0)
+    { hdf5_fstreambase::open (name, mode, prot); }
+};
+
+class hdf5_ofstream : public hdf5_fstreambase, public std::ostream
+{
+public:
+
+  hdf5_ofstream () : hdf5_fstreambase () { }
+
+  hdf5_ofstream (const char *name, int mode = std::ios::out, int prot = 0)
+    : hdf5_fstreambase (name, mode, prot) { }
+
+  void open (const char *name, int mode = std::ios::out, int prot = 0)
+    { hdf5_fstreambase::open (name, mode, prot); }
+};
+
+// Given two compound types t1 and t2, determine whether they 
+// are compatible for reading/writing.  This function only
+// works for non-nested types composed of simple elements (ints, floats...),
+// which is all we need it for
+
+bool
+hdf5_types_compatible (hid_t t1, hid_t t2)
+{
+  int n;
+  if ((n = H5Tget_nmembers (t1)) != H5Tget_nmembers (t2))
+    return false;
+
+  for (int i = 0; i < n; ++i)
+    {
+      hid_t mt1 = H5Tget_member_type (t1, i);
+      hid_t mt2 = H5Tget_member_type (t2, i);
+
+      if (H5Tget_class (mt1) != H5Tget_class (mt2))
+	return false;
+
+      H5Tclose (mt2);
+      H5Tclose (mt1);
+    }
+
+  return true;
+}
+
+// Import a multidimensional (rank >= 3) dataset whose id is data_id, into tc.
+// This works by calling itself recursively, building up lists of lists
+//  of lists ... of 2d matrices.  rank and dims are the rank and dimensions
+//  of the dataset.  type_id is the datatype to read into.  If it is
+//  H5T_NATIVE_DOUBLE, we are reading a real matrix.  Otherwise, type_id
+//  is assumed to be a complex type for reading a complex matrix.
+//
+//  Upon entry, we should have curdim = rank - 1, start = an array
+//  of length rank = all zeros, and count = an array of length rank =
+//  all ones except for the first two dimensions which equal the corresponding
+//  entries in dims[]. 
+//
+//  Note that we process the dimensions in reverse order, reflecting
+//  the fact that Octave is uses column-major (Fortran-order) data while
+//  HDF5 is row-major.  This means that the HDF5 file is read
+//  non-contiguously, but on the other hand means that for a 3d array
+//  we get a list of xy-plane slices, which seems nice.  We could change
+//  this behavior without much trouble; what is the best thing to do?
+//
+//  Returns a positive value upon success.
+
+static herr_t
+hdf5_import_multidim (hid_t data_id, hid_t space_id, hsize_t rank,
+		      const hsize_t *dims, hsize_t curdim,
+		      hssize_t *start, const hsize_t *count,
+		      hid_t type_id, octave_value &tc)
+{
+  herr_t retval = 1;
+
+  if (rank < 3 || curdim < 1 || curdim >= rank)
+    return -1;
+
+  if (curdim == 1)
+    {
+      // import 2d dataset for 1st 2 dims directly as a matrix
+      int nr, nc;    // rows and columns
+      nc = dims[0];  // octave uses column-major & HDF5 uses row-major
+      nr = dims[1];
+
+      hid_t mem_space_id = H5Screate_simple (2, dims, NULL);
+
+      if (mem_space_id < 0)
+	return -1;
+
+      if (H5Sselect_all (mem_space_id) < 0)
+	return -1;
+    
+      if (H5Sselect_hyperslab (space_id, H5S_SELECT_SET,
+			       start, NULL, count, NULL) < 0)
+	{
+	  H5Sclose (mem_space_id);
+	  return -1;
+	}
+    
+      if (type_id == H5T_NATIVE_DOUBLE)
+	{
+	  // real matrix
+	  Matrix m (nr, nc);
+	  double *re = m.fortran_vec ();
+	  if (H5Dread (data_id, type_id, mem_space_id, space_id,
+		       H5P_DEFAULT, (void *) re) < 0)
+	    retval = -1;  // error
+	  else
+	    tc = m;
+	}
+      else
+	{
+	  // assume that we are using complex numbers
+	  // complex matrix
+	  ComplexMatrix m (nr, nc);
+	  Complex *reim = m.fortran_vec ();
+	  if (H5Dread (data_id, type_id, mem_space_id, space_id,
+		       H5P_DEFAULT, (void *) X_CAST (double *, reim)) < 0)
+	    retval = -1;  // error
+	  else
+	    tc = m;
+	}
+    
+      H5Sclose (mem_space_id);
+
+    }
+  else
+    {
+      octave_value_list lst;
+
+      for (hsize_t i = 0; i < dims[curdim]; ++i)
+	{
+	  octave_value slice;
+	  start[curdim] = i;
+	  retval = hdf5_import_multidim (data_id, space_id, rank,
+					 dims, curdim-1, start, count,
+					 type_id, slice);
+	  if (retval < 0)
+	    break;
+	  lst.append (slice);
+	}
+
+      if (retval > 0)
+	tc = lst;
+    }
+
+  return retval;
+}
+
+// Return true if loc_id has the attribute named attr_name, and false
+// otherwise.
+
+bool
+hdf5_check_attr (hid_t loc_id, const char *attr_name)
+{
+  bool retval = false;
+
+  // we have to pull some shenanigans here to make sure
+  // HDF5 doesn't print out all sorts of error messages if we
+  // call H5Aopen for a non-existing attribute
+
+  H5E_auto_t err_func;
+  void *err_func_data;
+
+  // turn off error reporting temporarily, but save the error
+  // reporting function:
+
+  H5Eget_auto (&err_func, &err_func_data);
+  H5Eset_auto (NULL, NULL);
+
+  hid_t attr_id = H5Aopen_name(loc_id, attr_name);
+
+  if (attr_id >= 0)
+    {
+      // successful
+      retval = 1;
+      H5Aclose (attr_id);
+    }
+
+  // restore error reporting:
+  H5Eset_auto (err_func, err_func_data);
+
+  return retval;
+}
+
+// Callback data structure for passing data to hdf5_read_next_data, below.
+
+struct hdf5_callback_data
+{
+  // the following fields are set by hdf5_read_data on successful return:
+
+  // the name of the variable
+  char *name;
+
+  // whether it is global
+  bool global;
+
+  // the value of the variable, in Octave form
+  octave_value tc;
+
+  // a documentation string (NULL if none)
+  char *doc;
+
+  // the following fields are input to hdf5_read_data:
+
+  // HDF5 rep's of complex and range type
+  hid_t complex_type, range_type;
+
+  // whether to try extra hard to import "foreign" data
+  bool import;
+};
+
+// This function is designed to be passed to H5Giterate, which calls it
+// on each data item in an HDF5 file.  For the item whose name is NAME in
+// the group GROUP_ID, this function sets dv->tc to an Octave representation
+// of that item.  (dv must be a pointer to hdf5_callback_data.)  (It also
+// sets the other fields of dv).
+//
+// It returns 1 on success (in which case H5Giterate stops and returns),
+// -1 on error, and 0 to tell H5Giterate to continue on to the next item
+// (e.g. if NAME was a data type we don't recognize).
+
+static herr_t
+hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
+{
+  hdf5_callback_data *d = (hdf5_callback_data *) dv;
+  H5G_stat_t info;
+  herr_t retval = 0;
+  bool ident_valid = valid_identifier (name);
+  char *vname;
+
+  vname = new char[strlen (name) + 1];
+
+  strcpy (vname, name);
+
+  if (!ident_valid && d->import)
+    {
+      // fix the identifier, replacing invalid chars with underscores
+      make_valid_identifier (vname);
+
+      // check again (in case vname was null, empty, or some such thing):
+      ident_valid = valid_identifier (vname); 
+    }
+
+  H5Gget_objinfo (group_id, name, 1, &info);
+
+  if (info.type == H5G_DATASET && ident_valid)
+    {
+      retval = 1;
+
+      hid_t data_id = H5Dopen (group_id, name);
+
+      if (data_id < 0)
+	{
+	  retval = data_id;
+
+	  goto done;
+	}
+
+      hid_t type_id = H5Dget_type (data_id);
+
+      hid_t type_class_id = H5Tget_class (type_id);
+
+#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+      if (type_class_id == H5T_INTEGER || type_class_id == H5T_FLOAT)
+	{
+#else
+      // hdf5 doesn't (yet) support automatic float/integer conversions
+      if (type_class_id == H5T_FLOAT)
+	{
+#endif
+	  // read real matrix or scalar variable
+
+	  hid_t space_id = H5Dget_space (data_id);
+
+	  hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+	  if (rank == 0)
+	    {
+	      // real scalar:
+	      double dtmp;
+	      if (H5Dread (data_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
+			   H5P_DEFAULT, (void *) &dtmp) < 0)
+		retval = -1;  // error
+	      else
+		d->tc = dtmp;
+	    }
+	  else if (rank > 0 && rank <= 2)
+	    {
+	      // real matrix
+	      hsize_t *dims = new hsize_t[rank];
+	      hsize_t *maxdims = new hsize_t[rank];
+
+	      H5Sget_simple_extent_dims (space_id, dims, maxdims);
+
+	      int nr, nc;  // rows and columns
+	      // octave uses column-major & HDF5 uses row-major
+	      nc = dims[0];
+	      nr = rank > 1 ? dims[1] : 1;
+
+	      delete [] dims;
+	      delete [] maxdims;
+
+	      Matrix m (nr, nc);
+	      double *re = m.fortran_vec ();
+	      if (H5Dread (data_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
+			   H5P_DEFAULT, (void *) re) < 0)
+		retval = -1;  // error
+	      else
+		d->tc = m;
+	    }
+	  else if (rank >= 3 && d->import)
+	    {
+	      hsize_t *dims = new hsize_t[rank];
+	      hsize_t *maxdims = new hsize_t[rank];
+
+	      H5Sget_simple_extent_dims (space_id, dims, maxdims);
+
+	      hssize_t *start = new hssize_t[rank];
+	      hsize_t *count = new hsize_t[rank];
+
+	      for (hsize_t i = 0; i < rank; ++i)
+		{
+		  start[i] = 0;
+		  count[i] = 1;
+		}
+	      count[0] = dims[0];
+	      count[1] = dims[1];
+	      retval = hdf5_import_multidim (data_id, space_id,
+					     rank, dims, rank-1,
+					     start, count,
+					     H5T_NATIVE_DOUBLE, d->tc);
+
+	      delete [] count;
+	      delete [] start;
+	      delete [] dims;
+	      delete [] maxdims;
+	    }
+	  else
+	    {
+	      warning ("load: can't read %d-dim. hdf5 dataset %s",
+		       rank, name);
+	      retval = 0;  // skip; we can't read 3+ dimensional datasets
+	    }
+
+	  H5Sclose (space_id);
+	}
+      else if (type_class_id == H5T_STRING)
+	{
+	  // read string variable
+	  hid_t space_id = H5Dget_space (data_id);
+	  hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+	  if (rank == 0)
+	    {
+	      // a single string:
+	      int slen = H5Tget_size (type_id);
+	      if (slen < 0)
+		retval = -1;  // error
+	      else
+		{
+		  char *s = new char [slen];
+		  // create datatype for (null-terminated) string
+		  // to read into:
+		  hid_t st_id = H5Tcopy (H5T_C_S1);
+		  H5Tset_size (st_id, slen);
+		  if (H5Dread (data_id, st_id, H5S_ALL, H5S_ALL, 
+			       H5P_DEFAULT, (void *) s) < 0)
+		    {
+		      delete [] s;
+		      retval = -1;  // error
+		    }
+		  else
+		    d->tc = s;
+
+		  H5Tclose (st_id);
+		}
+	    }
+	  else if (rank == 1)
+	    {
+	      // string vector
+	      hsize_t elements, maxdim;
+	      H5Sget_simple_extent_dims (space_id, &elements, &maxdim);
+	      int slen = H5Tget_size (type_id);
+	      if (slen < 0)
+		retval = -1;  // error
+	      else
+		{
+		  // hdf5 string arrays store strings of all the
+		  // same physical length (I think), which is
+		  // slightly wasteful, but oh well.
+
+		  char *s = new char [elements * slen];
+		  // create datatype for (null-terminated) string
+		  // to read into:
+		  hid_t st_id = H5Tcopy (H5T_C_S1);
+		  H5Tset_size (st_id, slen);
+
+		  if (H5Dread (data_id, st_id, H5S_ALL, H5S_ALL, 
+			       H5P_DEFAULT, (void *) s) < 0)
+		    retval = -1;  // error
+		  else
+		    {
+		      charMatrix chm (elements, slen - 1);
+		      for (hsize_t i = 0; i < elements; ++i)
+			{
+			  chm.insert (s + i*slen, i, 0);
+			}
+		      d->tc = octave_value (chm, true);
+		    }
+
+		  delete [] s;
+
+		  H5Tclose (st_id);
+		}
+	    }
+	  else
+	    {
+	      warning ("load: can't read %d-dim. hdf5 string vector %s",
+		       rank, name); 
+	      // skip; we can't read higher-dimensional string vectors
+	      retval = 0;
+	    }
+	}
+      else if (type_class_id == H5T_COMPOUND)
+	{
+	  // check for complex or range data:
+
+	  if (hdf5_types_compatible (type_id, d->complex_type))
+	    {
+	      // read complex matrix or scalar variable
+
+	      hid_t space_id = H5Dget_space (data_id);
+	      hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+	      if (rank == 0)
+		{
+		  // complex scalar:
+		  Complex ctmp;
+		  if (H5Dread (data_id, d->complex_type, H5S_ALL,
+			       H5S_ALL, H5P_DEFAULT,
+			       (void *) X_CAST (double *, &ctmp)) < 0)
+		    retval = -1;  // error
+		  else
+		    d->tc = ctmp;
+		}
+	      else if (rank > 0 && rank <= 2)
+		{
+		  // complex matrix
+		  hsize_t *dims = new hsize_t[rank];
+		  hsize_t *maxdims = new hsize_t[rank];
+		  H5Sget_simple_extent_dims (space_id, dims, maxdims);
+		  int nr, nc;  // rows and columns
+		  // octave uses column-major & HDF5 uses row-major
+		  nc = dims[0];
+		  nr = rank > 1 ? dims[1] : 1;
+		  delete [] dims;
+		  delete [] maxdims;
+		  ComplexMatrix m (nr, nc);
+		  Complex *reim = m.fortran_vec ();
+		  if (H5Dread (data_id, d->complex_type, H5S_ALL,
+			       H5S_ALL, H5P_DEFAULT,
+			       (void *) X_CAST (double *, reim)) < 0)
+		    retval = -1;  // error
+		  else
+		    d->tc = m;
+		}
+	      else if (rank >= 3 && d->import)
+		{
+		  hsize_t *dims = new hsize_t[rank]
+		    hsize_t *maxdims = new hsize_t[rank];
+		  H5Sget_simple_extent_dims (space_id, dims, maxdims);
+		  hssize_t *start = new hssize_t[rank];
+		  hsize_t *count = new hsize_t[rank];
+		  for (hsize_t i = 0; i < rank; ++i)
+		    {
+		      start[i] = 0;
+		      count[i] = 1;
+		    }
+		  count[0] = dims[0];
+		  count[1] = dims[1];
+		  retval = hdf5_import_multidim (data_id, space_id,
+						 rank, dims, rank-1,
+						 start, count,
+						 d->complex_type,
+						 d->tc);
+
+		  delete [] count;
+		  delete [] start;
+		  delete [] dims;
+		  delete [] maxdims;
+		}
+	      else
+		{
+		  warning ("load: can't read %d-dim. hdf5 dataset %s",
+			   rank, name);
+		  // skip; we can't read 3+ dimensional datasets
+		  retval = 0;
+		}
+	      H5Sclose (space_id);
+	    }
+	  else if (hdf5_types_compatible (type_id, d->range_type))
+	    {
+	      // read range variable:
+	      hid_t space_id = H5Dget_space (data_id);
+	      hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+	      if (rank == 0)
+		{
+		  double rangevals[3];
+		  if (H5Dread (data_id, d->range_type, H5S_ALL, H5S_ALL, 
+			       H5P_DEFAULT, (void *) rangevals) < 0)
+		    retval = -1;  // error
+		  else
+		    {
+		      Range r (rangevals[0], rangevals[1], rangevals[2]);
+		      d->tc = r;
+		    }
+		}
+	      else
+		{
+		  warning ("load: can't read range array `%s' in hdf5 file",
+			   name);
+		  // skip; we can't read arrays of range variables
+		  retval = 0;
+		}
+
+	      H5Sclose (space_id);
+	    }
+	  else
+	    {
+	      warning ("load: can't read `%s' (unknown compound datatype)",
+		       name);
+	      retval = 0; // unknown datatype; skip.
+	    }
+	}
+      else
+	{
+	  warning ("load: can't read `%s' (unknown datatype)", name);
+	  retval = 0; // unknown datatype; skip
+	}
+
+      H5Tclose (type_id);
+
+      // check for OCTAVE_GLOBAL attribute:
+      d->global = hdf5_check_attr(data_id, "OCTAVE_GLOBAL");
+
+      H5Dclose (data_id);
+    }
+  else if (info.type == H5G_GROUP && ident_valid)
+    {
+      // read in group as a list or a structure
+      retval = 1;
+
+      hid_t subgroup_id = H5Gopen (group_id, name);
+
+      if (subgroup_id < 0)
+	{
+	  retval = subgroup_id;
+	  goto done;
+	}
+
+      // an HDF5 group is treated as an octave structure by
+      // default (since that preserves name information), and an
+      // octave list otherwise.
+
+      bool is_list = hdf5_check_attr(subgroup_id, "OCTAVE_LIST");
+
+      hdf5_callback_data dsub;
+      dsub.name = dsub.doc = (char*) NULL;
+      dsub.global = 0;
+      dsub.complex_type = d->complex_type;
+      dsub.range_type = d->range_type;
+      dsub.import = d->import;
+
+      herr_t retval2;
+      octave_value_list lst;
+      Octave_map m;
+      int current_item = 0;
+      while ((retval2 = H5Giterate (group_id, name, &current_item,
+				    hdf5_read_next_data, &dsub)) > 0)
+	{
+	  if (is_list)
+	    lst.append (dsub.tc);
+	  else
+	    m [dsub.name] = dsub.tc;
+
+	  if (dsub.name)
+	    delete [] dsub.name;
+
+	  if (dsub.doc)
+	    delete [] dsub.doc;
+
+	  current_item++;  // H5Giterate returned the last index processed
+	}
+
+      if (retval2 < 0)
+	retval = retval2;
+      else
+	{
+	  d->global = hdf5_check_attr(group_id, "OCTAVE_GLOBAL");
+
+	  if (is_list)
+	    d->tc = lst;
+	  else
+	    d->tc = m;
+	}
+
+      H5Gclose (subgroup_id);
+    }
+  else if (! ident_valid)
+    {
+      // should we attempt to handle invalid identifiers by converting
+      // bad characters to '_', say?
+      warning ("load: skipping invalid identifier `%s' in hdf5 file",
+	       name);
+    }
+
+ done:
+
+  if (retval < 0)
+    error ("load: error while reading hdf5 item %s", name);
+
+  if (retval > 0)
+    {
+      // get documentation string, if any:
+      int comment_length = H5Gget_comment (group_id, name, 0, NULL);
+
+      if (comment_length > 1)
+	{
+	  d->doc = new char[comment_length];
+	  H5Gget_comment (group_id, name, comment_length, d->doc);
+	}
+      else if (strcmp (name, vname) != 0)
+	{
+	  // the name was changed by import; store the original name
+	  // as the documentation string:
+	  d->doc = new char [strlen (name) + 1];
+	  strcpy (d->doc, name);
+	}
+      else
+	d->doc = (char *) NULL;
+
+      // copy name (actually, vname):
+      d->name = new char [strlen (vname) + 1];
+      strcpy (d->name, vname);
+    }
+
+  delete [] vname;
+
+  return retval;
+}
+
+// The following two subroutines create HDF5 representations of the way
+// we will store Octave complex and range types (pairs and triplets of
+// floating-point numbers, respectively).  NUM_TYPE is the HDF5 numeric
+// type to use for storage (e.g. H5T_NATIVE_DOUBLE to save as 'double').
+// Note that any necessary conversions are handled automatically by HDF5.
+
+static hid_t
+hdf5_make_complex_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 2);
+
+  H5Tinsert (type_id, "real", 0 * sizeof (double), num_type);
+  H5Tinsert (type_id, "imag", 1 * sizeof (double), num_type);
+
+  return type_id;
+}
+
+static hid_t
+hdf5_make_range_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 3);
+
+  H5Tinsert (type_id, "base", 0 * sizeof (double), num_type);
+  H5Tinsert (type_id, "limit", 1 * sizeof (double), num_type);
+  H5Tinsert (type_id, "increment", 2 * sizeof (double), num_type);
+
+  return type_id;
+}
+
+// Read the next Octave variable from the stream IS, which must really be
+// an hdf5_ifstream.  Return the variable value in tc, its doc string
+// in doc, and whether it is global in global.  The return value is
+// the name of the variable, or NULL if none were found or there was
+// and error.  If import is true, we try extra hard to import "foreign"
+// datasets (not created by Octave), although we usually do a reasonable
+// job anyway.  (c.f. load -import documentation.)
+static char *
+read_hdf5_data (std::istream& is,
+		const std::string& filename, bool& global,
+		octave_value& tc, char *&doc, bool import)
+{
+  hdf5_ifstream& hs = (hdf5_ifstream&) is;
+  hdf5_callback_data d;
+
+  d.name = (char *) NULL;
+  d.global = 0;
+  d.doc = (char *) NULL;
+  d.complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
+  d.range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
+  d.import = import;
+
+  herr_t retval = H5Giterate (hs.file_id, "/", &hs.current_item,
+			      hdf5_read_next_data, &d);
+
+  // H5Giterate sets current_item to the last item processed; we want
+  // the index of the next item (for the next call to read_hdf5_data)
+  hs.current_item++;
+
+  if (retval > 0)
+    {
+      global = d.global;
+      tc = d.tc;
+      doc = d.doc;
+    }
+  else
+    {
+      // an error occurred (retval < 0) or there are no more datasets 
+      // print an error message if retval < 0?
+      // hdf5_read_next_data already printed one, probably.
+    }
+
+  H5Tclose (d.complex_type);
+  H5Tclose (d.range_type);
+
+  return d.name;
+}
+
+#endif /* HAVE_HDF5 */
 
 static std::string
 get_mat_data_input_line (std::istream& is)
@@ -1454,7 +2288,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
 
 static bool
-matches_patterns (const string_vector& patterns, int pat_idx,
+matches_patterns (const std::string_vector& patterns, int pat_idx,
 		  int num_pat, const std::string& name)
 {
   for (int i = pat_idx; i < num_pat; i++)
@@ -1507,6 +2341,12 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 {
   load_save_format retval = LS_UNKNOWN;
 
+#ifdef HAVE_HDF5
+ // check this before we open the file
+  if (H5Fis_hdf5 (fname.c_str ()) > 0)
+    return LS_HDF5;
+#endif /* HAVE_HDF5 */
+
   std::ifstream file (fname.c_str ());
 
   if (! file)
@@ -1549,7 +2389,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 	      // Try reading the file as numbers only, determining the
 	      // number of rows and columns from the data.  We don't
 	      // even bother to check to see if the first item in the
-	      // file is a number, so that get_complete_line() can
+	      // file is a number, so that get_complete_line () can
 	      // skip any comments that might appear at the top of the
 	      // file.
 
@@ -1570,8 +2410,8 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 static octave_value_list
 do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
-	 bool list_only, bool swap, bool verbose, const string_vector& argv,
-	 int argv_idx, int argc, int nargout)
+	 bool list_only, bool swap, bool verbose, bool import,
+	 const string_vector& argv, int argv_idx, int argc, int nargout)
 {
   octave_value_list retval;
 
@@ -1604,6 +2444,13 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	  name = read_mat_binary_data (stream, orig_fname, tc);
 	  break;
 
+#ifdef HAVE_HDF5
+	case LS_HDF5:
+	  name = read_hdf5_data (stream, orig_fname,
+				 global, tc, doc, import);
+	  break;
+#endif /* HAVE_HDF5 */
+
 	default:
 	  gripe_unrecognized_data_fmt ("load");
 	  break;
@@ -1622,7 +2469,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	    {
 	      if (format == LS_MAT_ASCII && argv_idx < argc)
 		warning ("load: loaded ASCII file `%s' -- ignoring extra args",
-			 orig_fname.c_str());
+			 orig_fname.c_str ());
 
 	      if (format == LS_MAT_ASCII
 		  || argv_idx == argc
@@ -1695,6 +2542,19 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
   return retval;
 }
 
+// HDF5 load/save documentation is included in the Octave manual
+// regardless, but if HDF5 is not linked in we also include a
+// sentence noting this, so the user understands that the features
+// aren't available.  Define a macro for this sentence:
+
+#ifdef HAVE_HDF5
+#define HAVE_HDF5_HELP_STRING ""
+#else /* ! HAVE_HDF5 */
+#define HAVE_HDF5_HELP_STRING "\n\
+HDF5 load and save are not available, as this Octave executable was\n\
+not linked with the HDF5 library."
+#endif /* ! HAVE HDF5 */
+
 DEFUN_TEXT (load, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} load options file v1 v2 @dots{}\n\
@@ -1739,6 +2599,26 @@ Force Octave to assume the file is in Octave's binary format.\n\
 \n\
 @item -mat-binary\n\
 Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
+\n\
+@item -hdf5\n\
+Force Octave to assume the file is in HDF5 format.\n\
+(HDF5 is a free, portable binary format developed by the National\n\
+Center for Supercomputing Applications at the University of Illinois.)\n\
+Note that Octave can read HDF5 files not created by itself, but may\n\
+skip some datasets in formats that it cannot support.  In particular,\n\
+it will skip datasets of data types that it does not recognize, with\n\
+dimensionality > 2, or with names that aren't valid Octave identifiers\n\
+See, however, the @samp{-import} option to ameliorate this somewhat.\n"
+
+HAVE_HDF5_HELP_STRING
+
+"\n\
+@item -import\n\
+Make a stronger attempt to import foreign datasets.  Currently, this means\n\
+that for HDF5 files, invalid characters in names are converted to @samp{_},\n\
+and datasets with dimensionality > 2 are imported as lists of matrices (or\n\
+lists of lists of matrices, or ...).\n\
+\n\
 @end table\n\
 @end deffn")
 {
@@ -1760,6 +2640,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
   bool force = false;
   bool list_only = false;
   bool verbose = false;
+  bool import = false;
 
   int i;
   for (i = 1; i < argc; i++)
@@ -1788,6 +2669,19 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 	{
 	  format = LS_MAT_BINARY;
 	}
+      else if (argv[i] == "-hdf5" || argv[i] == "-h")
+	{
+#ifdef HAVE_HDF5
+	  format = LS_HDF5;
+#else /* ! HAVE_HDF5 */
+	  error ("load: octave executable was not linked with HDF5 library");
+	  return retval;
+#endif /* ! HAVE_HDF5 */
+	}
+      else if (argv[i] == "-import" || argv[i] == "-i")
+	{
+	  import = true;
+	}
       else
 	break;
     }
@@ -1808,6 +2702,11 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
     {
       i++;
 
+#ifdef HAVE_HDF5
+      if (format == LS_HDF5)
+	error ("load: cannot read HDF5 format from stdin");
+      else
+#endif /* HAVE_HDF5 */
       if (format != LS_UNKNOWN)
 	{
 	  // XXX FIXME XXX -- if we have already seen EOF on a
@@ -1816,7 +2715,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 	  // can't fix this using std::cin only.
 
 	  retval = do_load (std::cin, orig_fname, force, format, flt_fmt,
-			    list_only, swap, verbose, argv, i, argc,
+			    list_only, swap, verbose, import, argv, i, argc,
 			    nargout);
 	}
       else
@@ -1829,6 +2728,29 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
 
+#ifdef HAVE_HDF5
+      if (format == LS_HDF5)
+	{
+	  i++;
+
+	  hdf5_ifstream hdf5_file (fname.c_str ());
+
+	  if (hdf5_file.file_id >= 0)
+	    {
+	      retval = do_load (hdf5_file, orig_fname, force, format,
+				flt_fmt, list_only, swap, verbose,
+				import, argv, i, argc, nargout);
+
+	      hdf5_file.close ();
+	    }
+	  else
+	    error ("load: couldn't open input file `%s'",
+		   orig_fname.c_str ());
+	}
+      else
+#endif /* HAVE_HDF5 */
+	// don't insert any statements here; the "else" above has to
+	// go with the "if" below!!!!!
       if (format != LS_UNKNOWN)
 	{
 	  i++;
@@ -1851,9 +2773,8 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 		}
 
 	      retval = do_load (file, orig_fname, force, format,
-				flt_fmt, list_only, swap, verbose,
+				flt_fmt, list_only, swap, verbose, import,
 				argv, i, argc, nargout);
-
 	      file.close ();
 	    }
 	  else
@@ -2066,6 +2987,401 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 
   return os;
 }
+
+#ifdef HAVE_HDF5
+
+// Add an attribute named attr_name to loc_id (a simple scalar
+// attribute with value 1).  Return value is >= 0 on success.
+static herr_t
+hdf5_add_attr (hid_t loc_id, const char *attr_name)
+{
+  herr_t retval = 0;
+
+  hid_t as_id = H5Screate (H5S_SCALAR);
+
+  if (as_id >= 0)
+    {
+      hid_t a_id = H5Acreate (loc_id, attr_name,
+			      H5T_NATIVE_UCHAR, as_id, H5P_DEFAULT);
+
+      if (a_id >= 0)
+	{
+	  unsigned char attr_val = 1;
+
+	  retval = H5Awrite (a_id, H5T_NATIVE_UCHAR, (void*) &attr_val);
+
+	  H5Aclose (a_id);
+	}
+      else
+	retval = a_id;
+
+      H5Sclose (as_id);
+    }
+  else
+    retval = as_id;
+
+  return retval;
+}
+
+
+// save_type_to_hdf5 is not currently used, since hdf5 doesn't yet support
+// automatic float<->integer conversions:
+
+#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+
+// return the HDF5 type id corresponding to the Octave save_type
+
+static hid_t
+save_type_to_hdf5 (save_type st)
+{
+  switch (st)
+    {
+    case LS_U_CHAR:
+      return H5T_NATIVE_UCHAR;
+
+    case LS_U_SHORT:
+      return H5T_NATIVE_USHORT;
+
+    case LS_U_INT:
+      return H5T_NATIVE_UINT;
+
+    case LS_CHAR:
+      return H5T_NATIVE_CHAR;
+
+    case LS_SHORT:
+      return H5T_NATIVE_SHORT;
+
+    case LS_INT:
+      return H5T_NATIVE_INT;
+
+    case LS_FLOAT:
+      return H5T_NATIVE_FLOAT;
+
+    case LS_DOUBLE:
+    default:
+      return H5T_NATIVE_DOUBLE;
+    }
+}
+#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
+
+// Add the data from TC to the HDF5 location loc_id, which could
+// be either a file or a group within a file.  Return true if
+// successful.  This function calls itself recursively for lists
+// (stored as HDF5 groups).
+
+static bool
+add_hdf5_data (hid_t loc_id, const octave_value& tc,
+	       const std::string& name, const std::string& doc,
+	       bool mark_as_global, bool save_as_floats)
+{
+  hsize_t dims[3];
+  hid_t type_id = -1, space_id = -1, data_id = -1;
+  bool data_is_group = 0;
+  bool retval = 0;
+
+  if (tc.is_string ())
+    {
+      int nr = tc.rows ();
+      charMatrix chm = tc.char_matrix_value ();
+      int nc = chm.cols ();
+
+      // create datatype for (null-terminated) string to write from:
+      type_id = H5Tcopy (H5T_C_S1); H5Tset_size (type_id, nc + 1);
+      if (type_id < 0)
+	goto error_cleanup;
+
+      dims[0] = nr;
+      space_id = H5Screate_simple (nr > 0 ? 1 : 0, dims, (hsize_t*) NULL);
+      if (space_id < 0)
+	goto error_cleanup;
+
+      data_id = H5Dcreate (loc_id, name.c_str (), 
+			   type_id, space_id, H5P_DEFAULT);
+      if (data_id < 0)
+	goto error_cleanup;
+
+      char *s = new char [nr * (nc + 1)];
+
+      for (int i = 0; i < nr; ++i)
+	{
+	  std::string tstr = chm.row_as_string (i);
+	  strcpy (s + i * (nc+1), tstr.c_str ());
+	}
+
+      if (H5Dwrite (data_id, type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		    (void*) s) < 0) {
+	delete [] s;
+	goto error_cleanup;
+      }
+
+      delete [] s;
+    }
+  else if (tc.is_range ())
+    {
+      space_id = H5Screate_simple (0, dims, (hsize_t*) NULL);
+      if (space_id < 0)
+	goto error_cleanup;
+
+      type_id = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
+      if (type_id < 0)
+	goto error_cleanup;
+
+      data_id = H5Dcreate (loc_id, name.c_str (), 
+			   type_id, space_id, H5P_DEFAULT);
+      if (data_id < 0)
+	goto error_cleanup;
+    
+      Range r = tc.range_value ();
+      double range_vals[3];
+      range_vals[0] = r.base ();
+      range_vals[1] = r.limit ();
+      range_vals[2] = r.inc ();
+
+      if (H5Dwrite (data_id, type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		    (void*) range_vals) < 0)
+	goto error_cleanup;
+    }
+  else if (tc.is_real_scalar ())
+    {
+      space_id = H5Screate_simple (0, dims, (hsize_t*) NULL);
+      if (space_id < 0) goto error_cleanup;
+
+      data_id = H5Dcreate (loc_id, name.c_str (), 
+			   H5T_NATIVE_DOUBLE, space_id, H5P_DEFAULT);
+      if (data_id < 0)
+	goto error_cleanup;
+
+      double tmp = tc.double_value ();
+      if (H5Dwrite (data_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+		    H5P_DEFAULT, (void*) &tmp) < 0)
+	goto error_cleanup;
+    }
+  else if (tc.is_real_matrix ())
+    {
+      Matrix m = tc.matrix_value ();
+      dims[1] = m.rows ();    // Octave uses column-major, while
+      dims[0] = m.columns (); // HDF5 uses row-major ordering
+
+      space_id = H5Screate_simple (dims[1] > 1 ?2:1, dims, (hsize_t*) NULL);
+      if (space_id < 0)
+	goto error_cleanup;
+
+      hid_t save_type_id = H5T_NATIVE_DOUBLE;
+
+      if (save_as_floats)
+	{
+	  if (m.too_large_for_float ())
+	    {
+	      warning ("save: some values too large to save as floats --");
+	      warning ("save: saving as doubles instead");
+	    }
+	  else
+	    save_type_id = H5T_NATIVE_FLOAT;
+	}
+#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+      // hdf5 currently doesn't support float/integer conversions
+      else
+	{
+	  double max_val, min_val;
+
+	  if (m.all_integers (max_val, min_val))
+	    save_type_id
+	      = save_type_to_hdf5 (get_save_type (max_val, min_val));
+	}
+#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
+
+      data_id = H5Dcreate (loc_id, name.c_str (), 
+			   save_type_id, space_id, H5P_DEFAULT);
+      if (data_id < 0)
+	goto error_cleanup;
+    
+      double *mtmp = m.fortran_vec ();
+      if (H5Dwrite (data_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+		    H5P_DEFAULT, (void*) mtmp) < 0)
+	goto error_cleanup;
+    }
+  else if (tc.is_complex_scalar ())
+    {
+      space_id = H5Screate_simple (0, dims, (hsize_t*) NULL);
+      if (space_id < 0)
+	goto error_cleanup;
+
+      type_id = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
+      if (type_id < 0)
+	goto error_cleanup;
+
+      data_id = H5Dcreate (loc_id, name.c_str (), 
+			   type_id, space_id, H5P_DEFAULT);
+      if (data_id < 0)
+	goto error_cleanup;
+
+      Complex tmp = tc.complex_value ();
+      if (H5Dwrite (data_id, type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		    (void*) X_CAST (double*, &tmp)) < 0)
+	goto error_cleanup;
+    }
+  else if (tc.is_complex_matrix ())
+    {
+      ComplexMatrix m = tc.complex_matrix_value ();
+
+      dims[1] = m.rows ();    // Octave uses column-major, while
+      dims[0] = m.columns (); // HDF5 uses row-major ordering
+
+      space_id = H5Screate_simple (dims[1] > 1 ?2:1, dims, (hsize_t*) NULL);
+      if (space_id < 0)
+	goto error_cleanup;
+
+      hid_t save_type_id = H5T_NATIVE_DOUBLE;
+
+      if (save_as_floats)
+	{
+	  if (m.too_large_for_float ())
+	    {
+	      warning ("save: some values too large to save as floats --");
+	      warning ("save: saving as doubles instead");
+	    }
+	  else
+	    save_type_id = H5T_NATIVE_FLOAT;
+	}
+#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+      // hdf5 currently doesn't support float/integer conversions
+      else
+	{
+	  double max_val, min_val;
+
+	  if (m.all_integers (max_val, min_val))
+	    save_type_id
+	      = save_type_to_hdf5 (get_save_type (max_val, min_val));
+	}
+#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
+
+      type_id = hdf5_make_complex_type (save_type_id);
+      if (type_id < 0) goto error_cleanup;
+
+      data_id = H5Dcreate (loc_id, name.c_str (), 
+			   type_id, space_id, H5P_DEFAULT);
+      if (data_id < 0)
+	goto error_cleanup;
+    
+      hid_t complex_type_id = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
+      if (complex_type_id < 0)
+	goto error_cleanup;
+
+      Complex *mtmp = m.fortran_vec ();
+      if (H5Dwrite (data_id, complex_type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		    (void*) X_CAST (double *, mtmp)) < 0)
+	{
+	  H5Tclose (complex_type_id);
+	  goto error_cleanup;
+	}
+
+      H5Tclose (complex_type_id);
+    }
+  else if (tc.is_list ())
+    {
+      data_id = H5Gcreate (loc_id, name.c_str (), 0);
+      if (data_id < 0)
+	goto error_cleanup;
+
+      data_is_group = 1;
+
+      // recursively add each element of the list to this group
+      octave_value_list lst = tc.list_value ();
+
+      for (int i = 0; i < lst.length (); ++i)
+	{
+	  // should we use lst.name_tags () to label the elements?
+	  char s[20];
+	  sprintf (s, "%d", i);
+	  bool retval2 = add_hdf5_data (data_id, lst (i), s, "",
+					false, save_as_floats);
+	  if (! retval2)
+	    goto error_cleanup;
+	}
+
+      // mark with an attribute "OCTAVE_LIST" with value 1
+      // to distinguish from structures (also stored as HDF5 groups):
+      if (hdf5_add_attr(data_id, "OCTAVE_LIST") < 0)
+	goto error_cleanup;
+    }
+  else if (tc.is_map ())
+    {
+      // an Octave structure
+      data_id = H5Gcreate (loc_id, name.c_str (), 0);
+      if (data_id < 0)
+	goto error_cleanup;
+
+      data_is_group = 1;
+
+      // recursively add each element of the structure to this group
+      Octave_map m = tc.map_value ();
+      Pix i = m.first ();
+      while (i)
+	{
+	  bool retval2 = add_hdf5_data (data_id, 
+					m.contents (i), m.key (i), "",
+					false, save_as_floats);
+	  if (! retval2)
+	    goto error_cleanup;
+
+	  // advance i to next element, or 0
+	  m.next (i);
+	}
+    }
+  else
+    {
+      gripe_wrong_type_arg ("save", tc, false);
+      goto error_cleanup;
+    }
+
+  // attach doc string as comment:
+  if (doc.length () > 0
+      && H5Gset_comment (loc_id, name.c_str (), doc.c_str ()) < 0)
+    goto error_cleanup;
+
+  retval = 1;
+
+  // if it's global, add an attribute "OCTAVE_GLOBAL" with value 1
+  if (mark_as_global)
+    retval = hdf5_add_attr(data_id, "OCTAVE_GLOBAL") >= 0;
+
+ error_cleanup:
+
+  if (! retval)
+    error ("save: error while writing `%s' to hdf5 file", name.c_str ());
+
+  if (data_id >= 0)
+    {
+      if (data_is_group)
+	H5Gclose (data_id);
+      else
+	H5Dclose (data_id);
+    }
+
+  if (space_id >= 0)
+    H5Sclose (space_id);
+
+  if (type_id >= 0)
+    H5Tclose (type_id);
+
+  return retval;
+}
+
+// Write data from TC in HDF5 (binary) format to the stream OS,
+// which must be an hdf5_ofstream, returning true on success.
+
+static bool
+save_hdf5_data (std::ostream& os, const octave_value& tc,
+		const std::string& name, const std::string& doc,
+		bool mark_as_global, bool save_as_floats)
+{
+  hdf5_ofstream& hs = (hdf5_ofstream&) os;
+
+  return add_hdf5_data (hs.file_id, tc, name, doc,
+			mark_as_global, save_as_floats);
+}
+
+#endif /* HAVE_HDF5 */
 
 // Save the data from TC along with the corresponding NAME on stream OS 
 // in the MatLab binary format.
@@ -2407,6 +3723,12 @@ do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
       save_mat_binary_data (os, tc, name);
       break;
 
+#ifdef HAVE_HDF5
+    case LS_HDF5:
+      save_hdf5_data (os, tc, name, help, global, save_as_floats);
+      break;
+#endif /* HAVE_HDF5 */
+
     default:
       gripe_unrecognized_data_fmt ("save");
       break;
@@ -2428,7 +3750,7 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
   for (int i = 0; i < saved; i++)
     {
-      do_save (os, vars(i), fmt, save_as_floats);
+      do_save (os, vars (i), fmt, save_as_floats);
 
       if (error_state)
 	break;
@@ -2445,7 +3767,7 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
       for (int i = 0; i < count; i++)
 	{
-	  do_save (os, vars(i), fmt, save_as_floats);
+	  do_save (os, vars (i), fmt, save_as_floats);
 
 	  if (error_state)
 	    break;
@@ -2466,6 +3788,10 @@ get_default_save_format (void)
     retval = LS_BINARY;
   else if (fmt == "mat-binary" || fmt =="mat_binary")
     retval = LS_MAT_BINARY;
+#ifdef HAVE_HDF5
+  else if (fmt == "hdf5")
+    retval = LS_HDF5;
+#endif /* HAVE_HDF5 */
       
   return retval;
 }
@@ -2489,19 +3815,43 @@ write_header (std::ostream& os, load_save_format format)
       }
     break;
 
+#ifdef HAVE_HDF5
+    case LS_HDF5:
+#endif /* HAVE_HDF5 */
     case LS_ASCII:
       {
 	octave_gmtime now;
 	std::string time_string = now.asctime ();
 	time_string = time_string.substr (0, time_string.length () - 1);
-
-	os << "# Created by Octave " OCTAVE_VERSION ", "
+	std::ostream *s = &os;
+#ifdef HAVE_HDF5
+	// for HDF5, write data to a string instead of to os,
+	// and then save the string as the HDF5 file's "comment" field.
+	std::ostrstream ss;
+	if (format == LS_HDF5)
+	  s = &ss;
+#endif /* HAVE_HDF5 */
+	
+	*s << "# Created by Octave " OCTAVE_VERSION ", "
 	   << time_string
 	   << " <"
 	   << octave_env::get_user_name ()
 	   << "@"
 	   << octave_env::get_host_name ()
-	   << ">" << "\n";
+	   << ">";
+	
+#ifdef HAVE_HDF5
+	if (format != LS_HDF5)  // don't append newline for HDF5
+#endif /* HAVE_HDF5 */
+	  *s << "\n";
+
+#ifdef HAVE_HDF5
+	if (format == LS_HDF5)
+	  {
+	    hdf5_ofstream& hs = (hdf5_ofstream&) os;
+	    H5Gset_comment (hs.file_id, "/", ss.str ());
+	  }
+#endif /* HAVE_HDF5 */
       }
     break;
 
@@ -2511,7 +3861,7 @@ write_header (std::ostream& os, load_save_format format)
 }
 
 static void
-save_vars (const string_vector& argv, int argv_idx, int argc,
+save_vars (const std::string_vector& argv, int argv_idx, int argc,
 	   std::ostream& os, bool save_builtins, load_save_format fmt,
 	   bool save_as_floats, bool write_header_info)
 {
@@ -2551,15 +3901,40 @@ save_user_variables (void)
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= std::ios::binary;
 
-      std::ofstream file (fname, mode);
-
-      if (file)
+#ifdef HAVE_HDF5
+      if (format == LS_HDF5)
 	{
-	  save_vars (string_vector (), 0, 0, file, false, format, false, true);
-	  message (0, "save to `%s' complete", fname);
+	  hdf5_ofstream file (fname);
+
+	  if (file.file_id >= 0)
+	    {
+	      save_vars (string_vector (), 0, 0, file,
+			 false, format, false, true);
+
+	      message (0, "save to `%s' complete", fname);
+
+	      file.close ();
+	    }
+	  else
+	    warning ("unable to open `%s' for writing...", fname);
 	}
       else
-	warning ("unable to open `%s' for writing...", fname);
+#endif /* HAVE_HDF5 */
+	// don't insert any commands here!  The open brace below must
+	// go with the else above!
+	{
+	  std::ofstream file (fname, mode);
+	  
+	  if (file)
+	    {
+	      save_vars (string_vector (), 0, 0, file,
+			 false, format, false, true);
+	      message (0, "save to `%s' complete", fname);
+	      file.close ();
+	    }
+	  else
+	    warning ("unable to open `%s' for writing...", fname);
+	}
     }
 }
 
@@ -2588,6 +3963,19 @@ values to be saved can be represented in single precision.\n\
 \n\
 @item -mat-binary\n\
 Save the data in @sc{Matlab}'s binary data format.\n\
+\n\
+@item -hdf5\n\
+Save the data in HDF5 format.\n\
+(HDF5 is a free, portable binary format developed by the National\n\
+Center for Supercomputing Applications at the University of Illinois.)\n"
+
+HAVE_HDF5_HELP_STRING
+
+"\n\
+@item -float-hdf5\n\
+Save the data in HDF5 format but only using single precision.\n\
+You should use this format only if you know that all the\n\
+values to be saved can be represented in single precision.\n\
 \n\
 @item -save-builtins\n\
 Force Octave to save the values of built-in variables too.  By default,\n\
@@ -2661,6 +4049,15 @@ the file @file{data} in Octave's binary format.\n\
 	{
 	  format = LS_BINARY;
 	}
+      else if (argv[i] == "-hdf5" || argv[i] == "-h")
+	{
+#ifdef HAVE_HDF5
+	  format = LS_HDF5;
+#else /* ! HAVE_HDF5 */
+	  error ("save: octave executable was not linked with HDF5 library");
+	  return retval;
+#endif /* ! HAVE_HDF5 */
+	}
       else if (argv[i] == "-mat-binary" || argv[i] == "-m")
 	{
 	  format = LS_MAT_BINARY;
@@ -2669,6 +4066,16 @@ the file @file{data} in Octave's binary format.\n\
 	{
 	  format = LS_BINARY;
 	  save_as_floats = true;
+	}
+      else if (argv[i] == "-float-hdf5")
+	{
+#ifdef HAVE_HDF5
+	  format = LS_HDF5;
+	  save_as_floats = true;
+#else /* ! HAVE_HDF5 */
+	  error ("save: octave executable was not linked with HDF5 library");
+	  return retval;
+#endif /* ! HAVE_HDF5 */
 	}
       else if (argv[i] == "-save-builtins")
 	{
@@ -2694,11 +4101,20 @@ the file @file{data} in Octave's binary format.\n\
     {
       i++;
 
-      // XXX FIXME XXX -- should things intended for the screen end up
-      // in a octave_value (string)?
-
-      save_vars (argv, i, argc, octave_stdout, save_builtins, format,
-		 save_as_floats, true);
+#ifdef HAVE_HDF5
+      if (format == LS_HDF5)
+        error ("load: cannot write HDF5 format to stdout");
+      else
+#endif /* HAVE_HDF5 */
+	// don't insert any commands here!  the brace below must go
+	// with the "else" above!
+	{
+	  // XXX FIXME XXX -- should things intended for the screen end up
+	  // in a octave_value (string)?
+	  
+	  save_vars (argv, i, argc, octave_stdout, save_builtins, format,
+		     save_as_floats, true);
+	}
     }
 
   // Guard against things like `save a*', which are probably mistakes...
@@ -2720,20 +4136,43 @@ the file @file{data} in Octave's binary format.\n\
 
       mode |= append ? std::ios::ate : std::ios::trunc;
 
-      std::ofstream file (fname.c_str (), mode);
-
-      if (file)
+#ifdef HAVE_HDF5
+      if (format == LS_HDF5)
 	{
-	  bool write_header_info
-	    = ((file.rdbuf ())->pubseekoff (0, std::ios::cur) == 0);
+	  hdf5_ofstream hdf5_file (fname.c_str ());
 
-	  save_vars (argv, i, argc, file, save_builtins, format,
-		     save_as_floats, write_header_info);
+	  if (hdf5_file.file_id >= 0) {
+	    save_vars (argv, i, argc, hdf5_file, save_builtins, format,
+		       save_as_floats, true);
+
+	    hdf5_file.close ();
+	  }
+	else
+	  {
+	    error ("save: couldn't open output file `%s'", fname.c_str ());
+	    return retval;
+	  }
 	}
       else
+#endif /* HAVE_HDF5 */
+	// don't insert any statements here!  The brace below must go
+	// with the "else" above!
 	{
-	  error ("save: couldn't open output file `%s'", fname.c_str ());
-	  return retval;
+	  std::ofstream file (fname.c_str (), mode);
+	  
+	  if (file)
+	    {
+	      bool write_header_info
+		= ( (file.rdbuf ())->seekoff (0, std::ios::cur) == 0);
+	      
+	      save_vars (argv, i, argc, file, save_builtins, format,
+			 save_as_floats, write_header_info);
+	    }
+	  else
+	    {
+	      error ("save: couldn't open output file `%s'", fname.c_str ());
+	      return retval;
+	    }
 	}
     }
 

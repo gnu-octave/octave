@@ -817,7 +817,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
         error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
-  check_dimensions (dim, warn_for); // May set error_state.
+  if (! error_state)
+    check_dimensions (dim, warn_for); // May set error_state.
 }
 
 
@@ -848,7 +849,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
 	error ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
-  check_dimensions (nr, nc, warn_for); // May set error_state.
+  if (! error_state)
+    check_dimensions (nr, nc, warn_for); // May set error_state.
 }
 
 void

@@ -1,5 +1,8 @@
 2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ODESSA.cc (ODESSA::ODESSA): Initialize "initialized" data member
+	in all constructors.
+
 	* Makefile.in (liboctave.$(SHLEXT)): Include $(LIBKPATHSEA) here.
 	(LINK_DEPS): Not here.
 

@@ -171,6 +171,8 @@ odessa_b (int* neq, const double& t, double *state,
 
 ODESSA::ODESSA (void) : ODES (), ODESSA_options ()
 {
+  initialized = false;
+
   neq.resize(2);
   n = size ();
 
@@ -190,6 +192,8 @@ ODESSA::ODESSA (void) : ODES (), ODESSA_options ()
 ODESSA::ODESSA (const ColumnVector& state, double time, ODESFunc& f)
   : ODES (state, time, f), ODESSA_options ()
 {
+  initialized = false;
+
   neq.resize(2);
   n = size ();
 
@@ -246,6 +250,7 @@ void
 ODESSA::integrate (double tout)
 {
   ODESSA_result retval;
+
   if (! initialized)
     {
       

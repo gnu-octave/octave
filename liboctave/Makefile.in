@@ -38,7 +38,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
 	NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
 	Range.h base-de.h base-min.h byte-swap.h cmd-hist.h data-conv.h \
-	dir-ops.h file-ops.h getopt.h idx-vector.h lo-error.h \
+	dir-ops.h file-ops.h getopt.h idx-vector.h \
 	lo-ieee.h lo-mappers.h lo-utils.h mach-info.h oct-alloc.h \
 	oct-cmplx.h oct-glob.h oct-math.h oct-term.h pathsearch.h \
 	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \

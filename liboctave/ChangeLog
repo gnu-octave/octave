@@ -1,3 +1,10 @@
+Wed Nov 20 01:00:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (INCLUDES): Delete lo-error.h.
+	* lo-error.h: Delete (moved to libcruft/misc).
+
+	* Version 1.93.
+
 Tue Nov 19 23:07:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-glob.cc (glob_match::match): Don't expect our flag values to

@@ -1,4 +1,3 @@
-//lo-error.cc                                             -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -25,9 +24,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "lo-error.h"
 
@@ -70,7 +69,7 @@ liboctave_fatal (const char *fmt, ...)
 
 /*
 ;;; Local Variables: ***
-;;; mode: C++ ***
+;;; mode: C ***
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -13,7 +13,7 @@ top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
 SPECIAL := machar.c d1mach-tst.for dostop.c f77-extern.cc \
-	f77-fcn.c f77-fcn.h lo-error.cc
+	f77-fcn.c f77-fcn.h lo-error.c lo-error.h
 
 SPECIAL_DEPEND := d1mach.o machar.o dostop.o f77-extern.o \
 	f77-fcn.o lo-error.o
@@ -41,6 +41,7 @@ include ../Makerules
 install::
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
 	$(INSTALL_DATA) $(srcdir)/f77-fcn.h $(octincludedir)/f77-fcn.h
+	$(INSTALL_DATA) $(srcdir)/lo-error.h $(octincludedir)/lo-error.h
 
 uninstall::
 	rm -f $(octincludedir)/f77-fcn.h

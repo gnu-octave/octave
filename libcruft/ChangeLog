@@ -1,3 +1,15 @@
+Wed Nov 20 01:00:43 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (install): Also install lo-error.h.
+
+	* Makefile.in (MISC_OBJ): Add misc/f77-fcn.o.
+
+	* misc/lo-error.h: New file, moved here from liboctave.
+	* misc/lo-error.c: Rename from lo-error.cc.  Make this a C-file
+	instead of C++.
+
+	* Version 1.93.
+
 Tue Nov 19 23:04:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in: Add variables for installing things.

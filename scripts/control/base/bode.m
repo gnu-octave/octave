@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
+## Copyright (C) 1996, 1998, 2000 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -61,8 +61,13 @@
 ## @end enumerate
 ## @item out_idx
 ## @itemx in_idx
-## the indices of the output(s) and input(s) to be used in
-## the frequency response; see @code{sysprune}.
+##
+## The names or indices of outputs and inputs to be used in the frequency
+## response.  See @code{sysprune}.
+##
+## @example
+## bode(sys,[],"y_3",list("u_1","u_4");
+## @end example
 ## @end table
 ## @strong{Outputs}
 ## @table @var
@@ -126,7 +131,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     error ("bode: invalid value of plot_style specified");
   endif
 
-  [f, w] = __bodquist__ (sys, w, outputs, inputs, "bode");
+  [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "bode");
 
   [stname,inname,outname] = sysgetsignals(sys);
   systsam = sysgettsam(sys);

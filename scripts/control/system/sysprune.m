@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
+## Copyright (C) 1996, 1998, 2000 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -26,9 +26,16 @@
 ## system data structure
 ## @item out_idx
 ## @itemx in_idx
-## list of connections indices; the new
-## system has outputs y(out_idx(ii)) and inputs u(in_idx(ii)).
+##
+## Indices or signal names of the outputs and inputs to be kept in the returned
+## system; remaining connections are "pruned" off.
 ## May select as [] (empty matrix) to specify all outputs/inputs.
+##
+## @example
+## retsys = sysprune(Asys,[1:3,4],"u_1");
+## retsys = sysprune(Asys,list("tx","ty","tz"), 4);
+## @end example
+##
 ## @end table
 ##
 ## @strong{Outputs}
@@ -61,6 +68,14 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   if(isempty(output_idx)) output_idx = 1:pp; endif
   if(isempty(input_idx)) input_idx = 1:mm; endif
   if(isempty(state_idx)) state_idx = 1:(nn+nz); endif
+
+  ## check for signal names
+  if(is_signal_list(output_idx) | isstr(output_idx))
+    output_idx = sysidx(sys,"out",output_idx);
+  endif
+  if(is_signal_list(input_idx) | isstr(input_idx))
+    input_idx = sysidx(sys,"in",input_idx);
+  endif
 
   ## check dimensions
   if( !(is_vector(output_idx) | isempty(output_idx) )  )

@@ -119,7 +119,7 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
 
   ## signal to __bodquist__ who's calling
 
-  [f, w] = __bodquist__ (sys, w, outputs, inputs, "nyquist");
+  [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "nyquist");
 
   ## Get the real and imaginary part of f.
   realp = real(f);

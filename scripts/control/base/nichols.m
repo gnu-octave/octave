@@ -37,8 +37,8 @@
 ##          (3) A "smoothing" routine is used to ensure that the plot phase does
 ##              not change excessively from point to point and that singular
 ##              points (e.g., crossovers from +/- 180) are accurately shown.
-##   outputs, inputs: the indices of the output(s) and input(s) to be used in
-##     the frequency response; see sysprune.
+##   outputs, inputs: the names or indices of the output(s) and input(s) 
+##     to be used in the frequency response; see sysprune.
 ## outputs:
 ##    mag, phase: the magnitude and phase of the frequency response
 ##       G(jw) or G(exp(jwT)) at the selected frequency values.
@@ -67,7 +67,7 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
     inputs = [];
   endif
 
-  [f, w] = __bodquist__ (sys, w, outputs, inputs, "nichols");
+  [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "nichols");
 
   [stname,inname,outname] = sysgetsignals(sys);
   systsam = sysgettsam(sys);

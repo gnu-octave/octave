@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{f}, @var{w}] =} __bodquist__ (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {[@var{f}, @var{w}, @var{rsys} =} __bodquist__ (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 ## used internally by bode, nyquist; compute system frequency response.
 ##
 ## @strong{Inputs}
@@ -27,11 +27,11 @@
 ## @item w
 ## range of frequencies; empty if user wants default
 ## @item out_idx
-## list of outputs; empty if user wants all
+## vector output indices or list of output signal names; empty if user wants all
 ## @item in_idx
-## list of inputs; empty if user wants all
+## vector of input indices of list of input signal names; empty if user wants all
 ## @item rname
-## name of routine that called __bodquist__ ("bode" or "nyquist")
+## name of routine that called __bodquist__ ("bode", "nyquist", or "nichols")
 ## @end table
 ## @strong{Outputs}
 ## @table @var
@@ -39,18 +39,19 @@
 ## list of frequencies
 ## @item f
 ## frequency response of sys; @math{f(ii) = f(omega(ii))}
+## @item rsys
+## system with selected inputs and outputs
 ## @end table
-## @strong{Note} __bodquist__ could easily be incorporated into a Nichols
-## plot function; this is in a "to do" list.
 ##
-## Both bode and nyquist share the same introduction, so the common parts are
+## @code{bode}, @code{nichols}, and @code{nyquist} share the same 
+## introduction, so the common parts are
 ## in __bodquist__.  It contains the part that finds the number of arguments,
 ## determines whether or not the system is SISO, and computes the frequency
 ## response.  Only the way the response is plotted is different between the
-## two functions.
+## these functions.
 ## @end deftypefn
 
-function [f, w] = __bodquist__ (sys, w, outputs, inputs, rname)
+function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
 
   ## check number of input arguments given
   if (nargin != 5)
@@ -73,7 +74,12 @@ function [f, w] = __bodquist__ (sys, w, outputs, inputs, rname)
     if (isempty(inputs))
       inputs = 1:mm;                    # use all inputs
       warning([rname,": outputs specified but not inputs"]);
+    elseif(is_signal_list(inputs) | isstr(inputs))
+      inputs = sysidx(sys,"in",inputs);
     endif
+    if(is_signal_list(outputs) | isstr(outputs))
+      outputs = sysidx(sys,"out",outputs);
+    end
     sys = sysprune(sys,outputs,inputs);
     [nn,nz,mm,pp ] = sysdimensions(sys);
   endif
@@ -153,5 +159,8 @@ function [f, w] = __bodquist__ (sys, w, outputs, inputs, rname)
   w_idx = complement(w_dup,1:length(w));
   w = w(w_idx);
   f = f(w_idx);
+
+  ## set rsys to pruned system
+  rsys = sys;
 
 endfunction

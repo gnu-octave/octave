@@ -65,16 +65,16 @@ octave_ieee_init (void)
 // Some version of gcc on some old version of Linux used to crash when
 // trying to make Inf and NaN.
 
-#if defined (HAVE_INFINITY)
-  octave_Inf = infinity ();
-#elif defined (linux)
-  octave_Inf = HUGE_VAL;
+#if defined (SCO)
+  double tmp = 1.0;
+  octave_Inf = 1.0 / (tmp - tmp);
 #elif defined (__alpha__)
   extern unsigned int DINFINITY[2];
   octave_Inf =  (*((double *) (DINFINITY)));
-#elif defined (SCO)
-  double tmp = 1.0;
-  octave_Inf = 1.0 / (tmp - tmp);
+#elif defined (HAVE_INFINITY)
+  octave_Inf = infinity ();
+#elif defined (linux)
+  octave_Inf = HUGE_VAL;
 #else
   double tmp = 1e+10;
   octave_Inf = tmp;
@@ -91,13 +91,13 @@ octave_ieee_init (void)
 
 #if defined (HAVE_ISNAN)
 
-#if defined (HAVE_QUIET_NAN)
-  octave_NaN = quiet_nan (0L);
-#elif defined (linux)
+#if defined (linux)
   octave_NaN = NAN;
 #elif defined (__alpha__)
   extern unsigned int DQNAN[2];
   octave_NaN = (*((double *) (DQNAN)));
+#elif defined (HAVE_QUIET_NAN)
+  octave_NaN = quiet_nan (0L);
 #else
   octave_NaN = octave_Inf / octave_Inf;
 #endif

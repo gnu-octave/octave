@@ -1,3 +1,8 @@
+2004-09-24  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign2, assignN): If index is empty, allow RHS to be
+	any empty matrix, not just [].
+
 2004-09-23  John W. Eaton  <jwe@octave.org>
 
 	* mx-ops: Include scalar zero value in type definitions.

@@ -2642,7 +2642,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      else if (n == 0 && m == 0)
 		{
 		  if (! ((rhs_nr == 1 && rhs_nc == 1)
-			 || (rhs_nr == 0 && rhs_nc == 0)))
+			 || (rhs_nr == 0 || rhs_nc == 0)))
 		    {
 		      (*current_liboctave_error_handler)
 		("A([], []) = X: X must be an empty matrix or a scalar");
@@ -2780,7 +2780,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      else if (len == 0)
 		{
 		  if (! ((rhs_nr == 1 && rhs_nc == 1)
-			 || (rhs_nr == 0 && rhs_nc == 0)))
+			 || (rhs_nr == 0 || rhs_nc == 0)))
 		    (*current_liboctave_error_handler)
 		      ("A([]) = X: X must be an empty matrix or scalar");
 		}
@@ -2873,7 +2873,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  if (len == 0)
 	    {
-	      if (! (rhs_dims.all_ones () || rhs_dims.all_zero ()))
+	      if (! (rhs_dims.all_ones () || rhs_dims.any_zero ()))
 		{
 		  (*current_liboctave_error_handler)
 		    ("A([]) = X: X must be an empty matrix or scalar");

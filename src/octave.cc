@@ -345,7 +345,7 @@ verbose_usage (void)
        << "  file : execute commands from named file\n"
        << "\n";
 
-  exit (1);
+  exit (0);
 }
 
 // Terse usage messsage.
@@ -353,7 +353,7 @@ verbose_usage (void)
 static void
 usage (void)
 {
-  cout << "usage: " << usage_string << "\n";
+  cerr << "usage: " << usage_string << "\n";
   exit (1);
 }
 

@@ -46,6 +46,8 @@ class Range
   double min (void) const;
   double max (void) const;
 
+  void sort (void);
+
   void set_base (double b);
   void set_limit (double l);
   void set_inc (double i);
@@ -56,39 +58,58 @@ class Range
   void print_range (void);
 
  private:
-  double _base;
-  double _limit;
-  double _inc;
-  int _nelem;
+  double rng_base;
+  double rng_limit;
+  double rng_inc;
+  int rng_nelem;
 
   int nelem_internal (void) const;
 };
 
-inline Range::Range (void)
-  { _base = -1; _limit = -1; _inc = -1; _nelem = -1; }
+inline
+Range::Range (void)
+{
+  rng_base = -1;
+  rng_limit = -1;
+  rng_inc = -1;
+  rng_nelem = -1;
+}
 
-inline Range::Range (const Range& r)
-  { _base = r._base; _limit = r._limit; _inc = r._inc; _nelem = r._nelem; }
+inline
+Range::Range (const Range& r)
+{
+  rng_base = r.rng_base;
+  rng_limit = r.rng_limit;
+  rng_inc = r.rng_inc;
+  rng_nelem = r.rng_nelem;
+}
 
-inline Range::Range (double b, double l)
-  { _base = b; _limit = l; _inc = 1; _nelem = nelem_internal (); }
+inline
+Range::Range (double b, double l)
+{
+  rng_base = b;
+  rng_limit = l;
+  rng_inc = 1;
+  rng_nelem = nelem_internal ();
+}
 
-inline Range::Range (double b, double l, double i)
-  { _base = b; _limit = l; _inc = i; _nelem = nelem_internal (); }
+inline
+Range::Range (double b, double l, double i)
+{
+  rng_base = b;
+  rng_limit = l;
+  rng_inc = i;
+  rng_nelem = nelem_internal ();
+}
 
-inline double Range::base (void) const { return _base;  }
-inline double Range::limit (void) const { return _limit; }
-inline double Range::inc (void) const { return _inc;   }
-inline int Range::nelem (void) const { return _nelem; }
+inline double Range::base (void) const { return rng_base;  }
+inline double Range::limit (void) const { return rng_limit; }
+inline double Range::inc (void) const { return rng_inc;   }
+inline int Range::nelem (void) const { return rng_nelem; }
 
-inline void Range::set_base (double b) { _base = b;  }
-inline void Range::set_limit (double l) { _limit = l; }
-inline void Range::set_inc (double i) { _inc = i;   }
-
-// NOTE: max and min only return useful values if nelem > 0.
-
-inline double Range::min (void) const { return _inc > 0 ? _base : _limit; }
-inline double Range::max (void) const { return _inc > 0 ? _limit : _base; }
+inline void Range::set_base (double b) { rng_base = b;  }
+inline void Range::set_limit (double l) { rng_limit = l; }
+inline void Range::set_inc (double i) { rng_inc = i;   }
 
 #endif
 

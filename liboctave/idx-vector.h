@@ -69,6 +69,8 @@ public:
   int zeros_count (void) const;
   int ones_count (void) const;
 
+  void sort (void);
+
 // i/o
 
   friend ostream& operator << (ostream& os, const idx_vector& a);

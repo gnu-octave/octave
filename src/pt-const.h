@@ -390,6 +390,14 @@ public:
   void do_matrix_assignment (tree_constant& rhs, constant_type i,
 			     constant_type j);
 
+  void delete_row (int);
+  void delete_rows (idx_vector& i);
+  void delete_rows (Range& i);
+
+  void delete_column (int);
+  void delete_columns (idx_vector& j);
+  void delete_columns (Range& j);
+
   void bump_value (tree::expression_type);
 
   void eval (int print);
@@ -698,7 +706,16 @@ public:
   int rows (void) const { return rep->rows (); }
   int columns (void) const { return rep->columns (); }
 
-  int is_empty (void) const { return (rows () == 0 || columns () == 0); }
+  int is_empty (void) const
+    {
+      return (rep->type_tag != tree_constant_rep::magic_colon
+	      && rep->type_tag != tree_constant_rep::unknown_constant
+	      && (rows () == 0 || columns () == 0));
+    }
+
+  int is_zero_by_zero (void) const
+    { return (rows () == 0 && columns () == 0); } 
+
 
   tree_constant all (void) const { return rep->all (); }
   tree_constant any (void) const { return rep->any (); }

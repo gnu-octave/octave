@@ -29,13 +29,55 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "Range.h"
 
+// NOTE: max and min only return useful values if nelem > 0.
+
+double
+Range::min (void) const
+{
+  double retval = 0.0;
+  if (rng_nelem > 0)
+    {
+      if (rng_inc > 0)
+	retval = rng_base;
+      else
+	retval = rng_base + (rng_nelem - 1) * rng_inc;
+    }
+  return retval;
+}
+
+double
+Range::max (void) const
+{
+  double retval = 0.0;
+  if (rng_nelem > 0)
+    {
+      if (rng_inc > 0)
+	retval = rng_base + (rng_nelem - 1) * rng_inc;
+      else
+	retval = rng_base;
+    }
+  return retval;
+}
+
+void
+Range::sort (void)
+{
+  if (rng_base > rng_limit && rng_inc < 0.0)
+    {
+      double tmp = rng_base;
+      rng_base = min ();
+      rng_limit = tmp;
+      rng_inc = -rng_inc;
+    }
+}
+
 void
 Range::print_range (void)
 {
-  cerr << "Range: _base = " << _base
-       << " _limit " << _limit
-       << " _inc " << _inc
-       << " _nelem " << _nelem << "\n";
+  cerr << "Range: rng_base = " << rng_base
+       << " rng_limit " << rng_limit
+       << " rng_inc " << rng_inc
+       << " rng_nelem " << rng_nelem << "\n";
 }
 
 ostream&
@@ -56,14 +98,14 @@ operator << (ostream& os, const Range& a)
 istream&
 operator >> (istream& is, Range& a)
 {
-  is >> a._base;
+  is >> a.rng_base;
   if (is)
     {
-      is >> a._limit;
+      is >> a.rng_limit;
       if (is)
 	{
-	  is >> a._inc;
-	  a._nelem = a.nelem_internal ();
+	  is >> a.rng_inc;
+	  a.rng_nelem = a.nelem_internal ();
 	}
     }
 
@@ -83,37 +125,37 @@ Range::nelem_internal (void) const
 //
 // (for limit > base && inc > 0)
 
-  double ntry = (_limit - _base) / _inc;
+  double ntry = (rng_limit - rng_base) / rng_inc;
   double max_val = (double) INT_MAX;
 
   if (ntry > max_val)
     return -1;
 
-  if (_limit > _base && _inc > 0)
+  if (rng_limit > rng_base && rng_inc > 0)
     {
 // Our approximation may have been too big.
 
-      while (_base + ntry * _inc > _limit && ntry > 0)
+      while (rng_base + ntry * rng_inc > rng_limit && ntry > 0)
 	ntry = ntry - 1;
 
 // Now that we are close, get the actual number.
 
-      while (_base + ntry * _inc <= _limit && ntry <= max_val)
+      while (rng_base + ntry * rng_inc <= rng_limit && ntry <= max_val)
 	ntry = ntry + 1;
     }
-  else if (_limit < _base && _inc < 0)
+  else if (rng_limit < rng_base && rng_inc < 0)
     {
 // Our approximation may have been too big.
 
-      while (_base + ntry * _inc < _limit && ntry > 0)
+      while (rng_base + ntry * rng_inc < rng_limit && ntry > 0)
 	ntry = ntry - 1;
 
 // Now that we are close, get the actual number.
 
-      while (_base + ntry * _inc >= _limit && ntry <= max_val)
+      while (rng_base + ntry * rng_inc >= rng_limit && ntry <= max_val)
 	ntry = ntry + 1;
     }
-  else if (_limit == _base)
+  else if (rng_limit == rng_base)
     ntry = 1;
   else
     ntry = 0;

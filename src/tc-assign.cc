@@ -188,7 +188,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
       if (args == NULL_TREE_CONST)
 	error ("matrix index is null");
       else if (args[1].is_undefined ())
-	error ("matrix index is a null expression");
+	error ("matrix index is undefined");
+      else if (args[1].is_empty ())
+	error ("matrix index is an empty matrix");
       else
 	do_matrix_assignment (rhs, args[1]);
       break;
@@ -196,9 +198,13 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
       if (args == NULL_TREE_CONST)
 	error ("matrix indices are null");
       else if (args[1].is_undefined ())
-	error ("first matrix index is a null expression");
+	error ("first matrix index is undefined");
       else if (args[2].is_undefined ())
-	error ("second matrix index is a null expression");
+	error ("second matrix index is undefined");
+      else if (args[1].is_empty ())
+	error ("first matrix index is an empty matrix");
+      else if (args[2].is_empty ())
+	error ("second matrix index is an empty matrix");
       else
 	do_matrix_assignment (rhs, args[1], args[2]);
       break;
@@ -426,120 +432,190 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
   int rhs_nr = rhs.rows ();
   int rhs_nc = rhs.columns ();
 
-  if (! indexed_assign_conforms (1, 1, rhs_nr, rhs_nc))
+  if (indexed_assign_conforms (1, 1, rhs_nr, rhs_nc))
+    {
+      maybe_resize (i);
+      if (error_state)
+	return;
+
+      int nr = rows ();
+      int nc = columns ();
+
+      if (nr == 1)
+	{
+	  REP_ELEM_ASSIGN (0, i, rhs.double_value (), rhs.complex_value (),
+			   rhs.is_real_type ());
+	}
+      else if (nc == 1)
+	{
+	  REP_ELEM_ASSIGN (i, 0, rhs.double_value (), rhs.complex_value (),
+			   rhs.is_real_type ());
+	}
+      else
+	panic_impossible ();
+    }
+  else if (rhs_nr == 0 && rhs_nc == 0)
+    {
+      int nr = rows ();
+      int nc = columns ();
+
+      int len = nr > nc ? nr : nc;
+
+      if (i < 0 || i >= len)
+	{
+	  error ("A(int) = []: index out of range");
+	  return;
+	}
+
+      if (nr == 1)
+	delete_column (i);
+      else if (nc == 1)
+	delete_row (i);
+      else
+	panic_impossible ();
+    }
+  else
     {
       error ("for A(int) = X: X must be a scalar");
       return;
     }
-
-  maybe_resize (i);
-  if (error_state)
-    return;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  if (nr == 1)
-    {
-      REP_ELEM_ASSIGN (0, i, rhs.double_value (), rhs.complex_value (),
-		       rhs.is_real_type ());
-    }
-  else if (nc == 1)
-    {
-      REP_ELEM_ASSIGN (i, 0, rhs.double_value (), rhs.complex_value (),
-		       rhs.is_real_type ());
-    }
-  else
-    panic_impossible ();
 }
 
 void
 tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
 {
-  REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
-
-  int ilen = iv.capacity ();
-  check_vector_assign (rhs_nr, rhs_nc, ilen, "matrix");
-  if (error_state)
-    return;
-
-  force_orient f_orient = no_orient;
-  if (rhs_nr == 1 && rhs_nc != 1)
-    f_orient = row_orient;
-  else if (rhs_nc == 1 && rhs_nr != 1)
-    f_orient = column_orient;
-
-  maybe_resize (iv.max (), f_orient);
-  if (error_state)
-    return;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  if (nr == 1)
+  if (rhs.is_zero_by_zero ())
     {
-      for (int i = 0; i < iv.capacity (); i++)
-	REP_ELEM_ASSIGN (0, iv.elem (i), rhs_m.elem (0, i),
-			 rhs_cm.elem (0, i), rhs.is_real_type ());
-    }
-  else if (nc == 1)
-    {
-      for (int i = 0; i < iv.capacity (); i++)
-	REP_ELEM_ASSIGN (iv.elem (i), 0, rhs_m.elem (i, 0),
-			 rhs_cm.elem (i, 0), rhs.is_real_type ());
+      int nr = rows ();
+      int nc = columns ();
+
+      int len = nr > nc ? nr : nc;
+
+      if (iv.max () >= len)
+	{
+	  error ("A(matrix) = []: index out of range");
+	  return;
+	}
+
+      if (nr == 1)
+	delete_columns (iv);
+      else if (nc == 1)
+	delete_rows (iv);
+      else
+	panic_impossible ();
     }
   else
-    panic_impossible ();
+    {
+      REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
+      int ilen = iv.capacity ();
+      check_vector_assign (rhs_nr, rhs_nc, ilen, "matrix");
+      if (error_state)
+	return;
+
+      force_orient f_orient = no_orient;
+      if (rhs_nr == 1 && rhs_nc != 1)
+	f_orient = row_orient;
+      else if (rhs_nc == 1 && rhs_nr != 1)
+	f_orient = column_orient;
+
+      maybe_resize (iv.max (), f_orient);
+      if (error_state)
+	return;
+
+      int nr = rows ();
+      int nc = columns ();
+
+      if (nr == 1)
+	{
+	  for (int i = 0; i < iv.capacity (); i++)
+	    REP_ELEM_ASSIGN (0, iv.elem (i), rhs_m.elem (0, i),
+			     rhs_cm.elem (0, i), rhs.is_real_type ());
+	}
+      else if (nc == 1)
+	{
+	  for (int i = 0; i < iv.capacity (); i++)
+	    REP_ELEM_ASSIGN (iv.elem (i), 0, rhs_m.elem (i, 0),
+			     rhs_cm.elem (i, 0), rhs.is_real_type ());
+	}
+      else
+	panic_impossible ();
+    }
 }
 
 void
 tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri, int imax)
 {
-  REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
-
-  int ilen = ri.nelem ();
-  check_vector_assign (rhs_nr, rhs_nc, ilen, "range");
-  if (error_state)
-    return;
-
-  force_orient f_orient = no_orient;
-  if (rhs_nr == 1 && rhs_nc != 1)
-    f_orient = row_orient;
-  else if (rhs_nc == 1 && rhs_nr != 1)
-    f_orient = column_orient;
-
-  maybe_resize (imax, f_orient);
-  if (error_state)
-    return;
-
-  int nr = rows ();
-  int nc = columns ();
-
-  double b = ri.base ();
-  double increment = ri.inc ();
-
-  if (nr == 1)
+  if (rhs.is_zero_by_zero ())
     {
-      for (int i = 0; i < ri.nelem (); i++)
+      int nr = rows ();
+      int nc = columns ();
+
+      int len = nr > nc ? nr : nc;
+
+      int b = tree_to_mat_idx (ri.min ());
+      int l = tree_to_mat_idx (ri.max ());
+      if (b < 0 || l >= len)
 	{
-	  double tmp = b + i * increment;
-	  int col = tree_to_mat_idx (tmp);
-	  REP_ELEM_ASSIGN (0, col, rhs_m.elem (0, i), rhs_cm.elem (0, i),
-			   rhs.is_real_type ());
+	  error ("A(range) = []: index out of range");
+	  return;
 	}
-    }
-  else if (nc == 1)
-    {
-      for (int i = 0; i < ri.nelem (); i++)
-	{
-	  double tmp = b + i * increment;
-	  int row = tree_to_mat_idx (tmp);
-	  REP_ELEM_ASSIGN (row, 0, rhs_m.elem (i, 0), rhs_cm.elem (i, 0),
-			   rhs.is_real_type ());
-	}
+
+      if (nr == 1)
+	delete_columns (ri);
+      else if (nc == 1)
+	delete_rows (ri);
+      else
+	panic_impossible ();
     }
   else
-    panic_impossible ();
+    {
+      REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
+      int ilen = ri.nelem ();
+      check_vector_assign (rhs_nr, rhs_nc, ilen, "range");
+      if (error_state)
+	return;
+
+      force_orient f_orient = no_orient;
+      if (rhs_nr == 1 && rhs_nc != 1)
+	f_orient = row_orient;
+      else if (rhs_nc == 1 && rhs_nr != 1)
+	f_orient = column_orient;
+
+      maybe_resize (imax, f_orient);
+      if (error_state)
+	return;
+
+      int nr = rows ();
+      int nc = columns ();
+
+      double b = ri.base ();
+      double increment = ri.inc ();
+
+      if (nr == 1)
+	{
+	  for (int i = 0; i < ri.nelem (); i++)
+	    {
+	      double tmp = b + i * increment;
+	      int col = tree_to_mat_idx (tmp);
+	      REP_ELEM_ASSIGN (0, col, rhs_m.elem (0, i), rhs_cm.elem (0, i),
+			       rhs.is_real_type ());
+	    }
+	}
+      else if (nc == 1)
+	{
+	  for (int i = 0; i < ri.nelem (); i++)
+	    {
+	      double tmp = b + i * increment;
+	      int row = tree_to_mat_idx (tmp);
+	      REP_ELEM_ASSIGN (row, 0, rhs_m.elem (i, 0), rhs_cm.elem (i, 0),
+			       rhs.is_real_type ());
+	    }
+	}
+      else
+	panic_impossible ();
+    }
 }
 
 void
@@ -775,7 +851,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
     case magic_colon:
       {
 	int nc = columns ();
-	if (nc == 0 && rows () == 0 && rhs_nr == 1)
+	int nr = rows ();
+	if (nc == 0 && nr == 0 && rhs_nr == 1)
 	  {
 	    if (rhs.is_complex_type ())
 	      {
@@ -796,6 +873,14 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	    maybe_resize (i, nc-1);
 	    if (error_state)
 	      return;
+	  }
+	else if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    if (i < 0 || i >= nr)
+	      {
+		error ("A(int,:) = []: row index out of range");
+		return;
+	      }
 	  }
 	else
 	  {
@@ -908,17 +993,28 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	if (nc == 0)
 	  new_nc = rhs_nc;
 
-	if (! indexed_assign_conforms (iv.capacity (), new_nc,
+	if (indexed_assign_conforms (iv.capacity (), new_nc,
 				       rhs_nr, rhs_nc))
+	  {
+	    maybe_resize (iv.max (), new_nc-1);
+	    if (error_state)
+	      return;
+	  }
+	else if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    if (iv.max () >= rows ())
+	      {
+		error ("A(matrix,:) = []: row index out of range");
+		return;
+	      }
+	  }
+	else
 	  {
 	    error ("A(matrix,:) = X: the number of rows in X must\
  match the number of elements in matrix, and the number of columns in\
  X must match the number of columns in A");
 	    return;
 	  }
-	maybe_resize (iv.max (), new_nc-1);
-	if (error_state)
-	  return;
 
 	do_matrix_assignment (rhs, iv, magic_colon);
       }
@@ -1025,16 +1121,29 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (nc == 0)
 	  new_nc = rhs_nc;
 
-	if (! indexed_assign_conforms (ri.nelem (), new_nc, rhs_nr, rhs_nc))
+	if (indexed_assign_conforms (ri.nelem (), new_nc, rhs_nr, rhs_nc))
+	  {
+	    maybe_resize (imax, new_nc-1);
+	    if (error_state)
+	      return;
+	  }
+	else if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    int b = tree_to_mat_idx (ri.min ());
+	    int l = tree_to_mat_idx (ri.max ());
+	    if (b < 0 || l >= rows ())
+	      {
+		error ("A(range,:) = []: row index out of range");
+		return;
+	      }
+	  }
+	else
 	  {
 	    error ("A(range,:) = X: the number of rows in X must match\
  the number of elements in range, and the number of columns in X must\
  match the number of columns in A");  
 	    return;
 	  }
-	maybe_resize (imax, new_nc-1);
-	if (error_state)
-	  return;
 
 	do_matrix_assignment (rhs, ri, magic_colon);
       }
@@ -1066,7 +1175,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (index_check (j, "column") < 0)
 	  return;
 	int nr = rows ();
-	if (nr == 0 && columns () == 0 && rhs_nc == 1)
+	int nc = columns ();
+	if (nr == 0 && nc == 0 && rhs_nc == 1)
 	  {
 	    if (rhs.is_complex_type ())
 	      {
@@ -1087,6 +1197,14 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    maybe_resize (nr-1, j);
 	    if (error_state)
 	      return;
+	  }
+	else if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    if (j < 0 || j >= nc)
+	      {
+		error ("A(:,int) = []: column index out of range");
+		return;
+	      }
 	  }
 	else
 	  {
@@ -1115,14 +1233,25 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (! indexed_assign_conforms (new_nr, jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
+	    maybe_resize (new_nr-1, jv.max ());
+	    if (error_state)
+	      return;
+	  }
+	else if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    if (jv.max () >= columns ())
+	      {
+		error ("A(:,matrix) = []: column index out of range");
+		return;
+	      }
+	  }
+	else
+	  {
 	    error ("A(:,matrix) = X: the number of rows in X must\
  match the number of rows in A, and the number of columns in X must\
  match the number of elements in matrix");   
 	    return;
 	  }
-	maybe_resize (new_nr-1, jv.max ());
-	if (error_state)
-	  return;
 
 	do_matrix_assignment (rhs, magic_colon, jv);
       }
@@ -1138,7 +1267,33 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (nr == 0)
 	  new_nr = rhs_nr;
 
-	if (! indexed_assign_conforms (new_nr, rj.nelem (), rhs_nr, rhs_nc))
+	if (indexed_assign_conforms (new_nr, rj.nelem (), rhs_nr, rhs_nc))
+	  {
+	    if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
+	      {
+		do_matrix_assignment (rhs, magic_colon, 1);
+	      }
+	    else
+	      {
+		int jmax;
+		if (index_check (rj, jmax, "column") < 0)
+		  return;
+		maybe_resize (new_nr-1, jmax);
+		if (error_state)
+		  return;
+	      }
+	  }
+	else if (rhs_nr == 0 && rhs_nc == 0)
+	  {
+	    int b = tree_to_mat_idx (rj.min ());
+	    int l = tree_to_mat_idx (rj.max ());
+	    if (b < 0 || l >= columns ())
+	      {
+		error ("A(:,range) = []: column index out of range");
+		return;
+	      }
+	  }
+	else
 	  {
 	    error ("A(:,range) = X: the number of rows in X must match\
  the number of rows in A, and the number of columns in X must match\
@@ -1146,21 +1301,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    return;
 	  }
 
-	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
-	  {
-	    do_matrix_assignment (rhs, magic_colon, 1);
-	  }
-	else
-	  {
-	    int jmax;
-	    if (index_check (rj, jmax, "column") < 0)
-	      return;
-	    maybe_resize (new_nr-1, jmax);
-	    if (error_state)
-	      return;
-
-	    do_matrix_assignment (rhs, magic_colon, rj);
-	  }
+	do_matrix_assignment (rhs, magic_colon, rj);
       }
       break;
     case magic_colon:
@@ -1215,7 +1356,11 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 
   int nc = columns ();
 
-  if (rhs.is_matrix_type ())
+  if (rhs.is_zero_by_zero ())
+    {
+      delete_row (i);
+    }
+  else if (rhs.is_matrix_type ())
     {
       REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -1292,17 +1437,24 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 {
   assert (mcj == magic_colon);
 
-  REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
-
-  int nc = columns ();
-
-  for (int j = 0; j < nc; j++)
+  if (rhs.is_zero_by_zero ())
     {
-      for (int i = 0; i < iv.capacity (); i++)
+      delete_rows (iv);
+    }
+  else
+    {
+      REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
+      int nc = columns ();
+
+      for (int j = 0; j < nc; j++)
 	{
-	  int row = iv.elem (i);
-	  REP_ELEM_ASSIGN (row, j, rhs_m.elem (i, j),
-			   rhs_cm.elem (i, j), rhs.is_real_type ());
+	  for (int i = 0; i < iv.capacity (); i++)
+	    {
+	      int row = iv.elem (i);
+	      REP_ELEM_ASSIGN (row, j, rhs_m.elem (i, j),
+			       rhs_cm.elem (i, j), rhs.is_real_type ());
+	    }
 	}
     }
 }
@@ -1377,20 +1529,27 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 {
   assert (mcj == magic_colon);
 
-  REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
-
-  double ib = ri.base ();
-  double iinc = ri.inc ();
-
-  int nc = columns ();
-
-  for (int i = 0; i < ri.nelem (); i++)
+  if (rhs.is_zero_by_zero ())
     {
-      double itmp = ib + i * iinc;
-      int row = tree_to_mat_idx (itmp);
-      for (int j = 0; j < nc; j++)
-	REP_ELEM_ASSIGN (row, j, rhs_m.elem (i, j),
-			 rhs_cm.elem (i, j), rhs.is_real_type ());
+      delete_rows (ri);
+    }
+  else
+    {
+      REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
+      double ib = ri.base ();
+      double iinc = ri.inc ();
+
+      int nc = columns ();
+
+      for (int i = 0; i < ri.nelem (); i++)
+	{
+	  double itmp = ib + i * iinc;
+	  int row = tree_to_mat_idx (itmp);
+	  for (int j = 0; j < nc; j++)
+	    REP_ELEM_ASSIGN (row, j, rhs_m.elem (i, j),
+			     rhs_cm.elem (i, j), rhs.is_real_type ());
+	}
     }
 }
 
@@ -1403,7 +1562,11 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
   int nr = rows ();
 
-  if (rhs.is_matrix_type ())
+  if (rhs.is_zero_by_zero ())
+    {
+      delete_column (j);
+    }
+  else if (rhs.is_matrix_type ())
     {
       REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -1427,17 +1590,24 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 {
   assert (mci == magic_colon);
 
-  REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
-
-  int nr = rows ();
-
-  for (int i = 0; i < nr; i++)
+  if (rhs.is_zero_by_zero ())
     {
-      for (int j = 0; j < jv.capacity (); j++)
+      delete_columns (jv);
+    }
+  else
+    {
+      REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
+      int nr = rows ();
+
+      for (int i = 0; i < nr; i++)
 	{
-	  int col = jv.elem (j);
-	  REP_ELEM_ASSIGN (i, col, rhs_m.elem (i, j),
-			   rhs_cm.elem (i, j), rhs.is_real_type ());
+	  for (int j = 0; j < jv.capacity (); j++)
+	    {
+	      int col = jv.elem (j);
+	      REP_ELEM_ASSIGN (i, col, rhs_m.elem (i, j),
+			       rhs_cm.elem (i, j), rhs.is_real_type ());
+	    }
 	}
     }
 }
@@ -1449,21 +1619,28 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 {
   assert (mci == magic_colon);
 
-  REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
-
-  int nr = rows ();
-
-  double jb = rj.base ();
-  double jinc = rj.inc ();
-
-  for (int j = 0; j < rj.nelem (); j++)
+  if (rhs.is_zero_by_zero ())
     {
-      double jtmp = jb + j * jinc;
-      int col = tree_to_mat_idx (jtmp);
-      for (int i = 0; i < nr; i++)
+      delete_columns (rj);
+    }
+  else
+    {
+      REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
+
+      int nr = rows ();
+
+      double jb = rj.base ();
+      double jinc = rj.inc ();
+
+      for (int j = 0; j < rj.nelem (); j++)
 	{
-	  REP_ELEM_ASSIGN (i, col, rhs_m.elem (i, j),
-			   rhs_cm.elem (i, j), rhs.is_real_type ());
+	  double jtmp = jb + j * jinc;
+	  int col = tree_to_mat_idx (jtmp);
+	  for (int i = 0; i < nr; i++)
+	    {
+	      REP_ELEM_ASSIGN (i, col, rhs_m.elem (i, j),
+			       rhs_cm.elem (i, j), rhs.is_real_type ());
+	    }
 	}
     }
 }
@@ -1527,6 +1704,346 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
       panic_impossible ();
       break;
     }
+}
+
+void
+tree_constant_rep::delete_row (int idx)
+{
+  if (type_tag == matrix_constant)
+    {
+      int nr = matrix->rows ();
+      int nc = matrix->columns ();
+      Matrix *new_matrix = new Matrix (nr-1, nc);
+      int ii = 0;
+      for (int i = 0; i < nr; i++)
+	{
+	  if (i != idx)
+	    {
+	      for (int j = 0; j < nc; j++)
+		new_matrix->elem (ii, j) = matrix->elem (i, j);
+	      ii++;
+	    }
+	}
+      delete matrix;
+      matrix = new_matrix;
+    }
+  else if (type_tag == complex_matrix_constant)
+    {
+      int nr = complex_matrix->rows ();
+      int nc = complex_matrix->columns ();
+      ComplexMatrix *new_matrix = new ComplexMatrix (nr-1, nc);
+      int ii = 0;
+      for (int i = 0; i < nr; i++)
+	{
+	  if (i != idx)
+	    {
+	      for (int j = 0; j < nc; j++)
+		new_matrix->elem (ii, j) = complex_matrix->elem (i, j);
+	      ii++;
+	    }
+	}
+      delete complex_matrix;
+      complex_matrix = new_matrix;
+    }
+  else
+    panic_impossible ();
+}
+
+void
+tree_constant_rep::delete_rows (idx_vector& iv)
+{
+  iv.sort ();
+  int num_to_delete = iv.length ();
+
+  if (type_tag == matrix_constant)
+    {
+      int nr = matrix->rows ();
+      int nc = matrix->columns ();
+      Matrix *new_matrix = new Matrix (nr-num_to_delete, nc);
+      if (nr > num_to_delete)
+	{
+	  int ii = 0;
+	  int idx = 0;
+	  for (int i = 0; i < nr; i++)
+	    {
+	      if (i == iv.elem (idx))
+		idx++;
+	      else
+		{
+		  for (int j = 0; j < nc; j++)
+		    new_matrix->elem (ii, j) = matrix->elem (i, j);
+		  ii++;
+		}
+	    }
+	}
+      delete matrix;
+      matrix = new_matrix;
+    }
+  else if (type_tag == complex_matrix_constant)
+    {
+      int nr = complex_matrix->rows ();
+      int nc = complex_matrix->columns ();
+      ComplexMatrix *new_matrix = new ComplexMatrix (nr-num_to_delete, nc);
+      if (nr > num_to_delete)
+	{
+	  int ii = 0;
+	  int idx = 0;
+	  for (int i = 0; i < nr; i++)
+	    {
+	      if (i == iv.elem (idx))
+		idx++;
+	      else
+		{
+		  for (int j = 0; j < nc; j++)
+		    new_matrix->elem (ii, j) = complex_matrix->elem (i, j);
+		  ii++;
+		}
+	    }
+	}
+      delete complex_matrix;
+      complex_matrix = new_matrix;
+    }
+  else
+    panic_impossible ();
+}
+
+void
+tree_constant_rep::delete_rows (Range& ri)
+{
+  ri.sort ();
+  int num_to_delete = ri.nelem ();
+
+  double ib = ri.base ();
+  double iinc = ri.inc ();
+
+  int max_idx = tree_to_mat_idx (ri.max ());
+
+  if (type_tag == matrix_constant)
+    {
+      int nr = matrix->rows ();
+      int nc = matrix->columns ();
+      Matrix *new_matrix = new Matrix (nr-num_to_delete, nc);
+      if (nr > num_to_delete)
+	{
+	  int ii = 0;
+	  int idx = 0;
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double itmp = ib + idx * iinc;
+	      int row = tree_to_mat_idx (itmp);
+
+	      if (i == row && row <= max_idx)
+		idx++;
+	      else
+		{
+		  for (int j = 0; j < nc; j++)
+		    new_matrix->elem (ii, j) = matrix->elem (i, j);
+		  ii++;
+		}
+	    }
+	}
+      delete matrix;
+      matrix = new_matrix;
+    }
+  else if (type_tag == complex_matrix_constant)
+    {
+      int nr = complex_matrix->rows ();
+      int nc = complex_matrix->columns ();
+      ComplexMatrix *new_matrix = new ComplexMatrix (nr-num_to_delete, nc);
+      if (nr > num_to_delete)
+	{
+	  int ii = 0;
+	  int idx = 0;
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double itmp = ib + idx * iinc;
+	      int row = tree_to_mat_idx (itmp);
+
+	      if (i == row && row <= max_idx)
+		idx++;
+	      else
+		{
+		  for (int j = 0; j < nc; j++)
+		    new_matrix->elem (ii, j) = complex_matrix->elem (i, j);
+		  ii++;
+		}
+	    }
+	}
+      delete complex_matrix;
+      complex_matrix = new_matrix;
+    }
+  else
+    panic_impossible ();
+}
+
+void
+tree_constant_rep::delete_column (int idx)
+{
+  if (type_tag == matrix_constant)
+    {
+      int nr = matrix->rows ();
+      int nc = matrix->columns ();
+      Matrix *new_matrix = new Matrix (nr, nc-1);
+      int jj = 0;
+      for (int j = 0; j < nc; j++)
+	{
+	  if (j != idx)
+	    {
+	      for (int i = 0; i < nr; i++)
+		new_matrix->elem (i, jj) = matrix->elem (i, j);
+	      jj++;
+	    }
+	}
+      delete matrix;
+      matrix = new_matrix;
+    }
+  else if (type_tag == complex_matrix_constant)
+    {
+      int nr = complex_matrix->rows ();
+      int nc = complex_matrix->columns ();
+      ComplexMatrix *new_matrix = new ComplexMatrix (nr, nc-1);
+      int jj = 0;
+      for (int j = 0; j < nc; j++)
+	{
+	  if (j != idx)
+	    {
+	      for (int i = 0; i < nr; i++)
+		new_matrix->elem (i, jj) = complex_matrix->elem (i, j);
+	      jj++;
+	    }
+	}
+      delete complex_matrix;
+      complex_matrix = new_matrix;
+    }
+  else
+    panic_impossible ();
+}
+
+void
+tree_constant_rep::delete_columns (idx_vector& jv)
+{
+  jv.sort ();
+  int num_to_delete = jv.length ();
+
+  if (type_tag == matrix_constant)
+    {
+      int nr = matrix->rows ();
+      int nc = matrix->columns ();
+      Matrix *new_matrix = new Matrix (nr, nc-num_to_delete);
+      if (nc > num_to_delete)
+	{
+	  int jj = 0;
+	  int idx = 0;
+	  for (int j = 0; j < nc; j++)
+	    {
+	      if (j == jv.elem (idx))
+		idx++;
+	      else
+		{
+		  for (int i = 0; i < nr; i++)
+		    new_matrix->elem (i, jj) = matrix->elem (i, j);
+		  jj++;
+		}
+	    }
+	}
+      delete matrix;
+      matrix = new_matrix;
+    }
+  else if (type_tag == complex_matrix_constant)
+    {
+      int nr = complex_matrix->rows ();
+      int nc = complex_matrix->columns ();
+      ComplexMatrix *new_matrix = new ComplexMatrix (nr, nc-num_to_delete);
+      if (nc > num_to_delete)
+	{
+	  int jj = 0;
+	  int idx = 0;
+	  for (int j = 0; j < nc; j++)
+	    {
+	      if (j == jv.elem (idx))
+		idx++;
+	      else
+		{
+		  for (int i = 0; i < nr; i++)
+		    new_matrix->elem (i, jj) = complex_matrix->elem (i, j);
+		  jj++;
+		}
+	    }
+	}
+      delete complex_matrix;
+      complex_matrix = new_matrix;
+    }
+  else
+    panic_impossible ();
+}
+
+void
+tree_constant_rep::delete_columns (Range& rj)
+{
+  rj.sort ();
+  int num_to_delete = rj.nelem ();
+
+  double jb = rj.base ();
+  double jinc = rj.inc ();
+
+  int max_idx = tree_to_mat_idx (rj.max ());
+
+  if (type_tag == matrix_constant)
+    {
+      int nr = matrix->rows ();
+      int nc = matrix->columns ();
+      Matrix *new_matrix = new Matrix (nr, nc-num_to_delete);
+      if (nc > num_to_delete)
+	{
+	  int jj = 0;
+	  int idx = 0;
+	  for (int j = 0; j < nc; j++)
+	    {
+	      double jtmp = jb + idx * jinc;
+	      int col = tree_to_mat_idx (jtmp);
+
+	      if (j == col && col <= max_idx)
+		idx++;
+	      else
+		{
+		  for (int i = 0; i < nr; i++)
+		    new_matrix->elem (i, jj) = matrix->elem (i, j);
+		  jj++;
+		}
+	    }
+	}
+      delete matrix;
+      matrix = new_matrix;
+    }
+  else if (type_tag == complex_matrix_constant)
+    {
+      int nr = complex_matrix->rows ();
+      int nc = complex_matrix->columns ();
+      ComplexMatrix *new_matrix = new ComplexMatrix (nr, nc-num_to_delete);
+      if (nc > num_to_delete)
+	{
+	  int jj = 0;
+	  int idx = 0;
+	  for (int j = 0; j < nc; j++)
+	    {
+	      double jtmp = jb + idx * jinc;
+	      int col = tree_to_mat_idx (jtmp);
+
+	      if (j == col && col <= max_idx)
+		idx++;
+	      else
+		{
+		  for (int i = 0; i < nr; i++)
+		    new_matrix->elem (i, jj) = complex_matrix->elem (i, j);
+		  jj++;
+		}
+	    }
+	}
+      delete complex_matrix;
+      complex_matrix = new_matrix;
+    }
+  else
+    panic_impossible ();
 }
 
 /*

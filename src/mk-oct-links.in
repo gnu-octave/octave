@@ -1,0 +1,27 @@
+#! /bin/sh
+
+# Create additional links to .oct files that define more than one
+# function.
+
+# The first arg is taken as the directory where the .oct files are
+# installed.  The remaining arguments should be the list of source
+# files that were used to create the .oct files.
+
+links_dir=$1
+shift
+
+for f in "$@"; do
+  base=`basename $f | sed 's/\.cc$//'`
+  fcns=`grep -h '^ *DEFUN_DLD' $f |\
+        sed -e 's/DEFUN_DLD_BUILTIN *( *"//' -e 's/".*$//' |\
+        sort -u`
+  if [ -n "$fcns" ]; then
+    for n in $fcns; do
+      if [ "$n" = "$base" ]; then
+        true
+      else
+        ( cd $links_dir; ln $base.oct $n.oct )
+      fi
+    done
+  fi
+done

@@ -46,7 +46,7 @@ function t = dezero (s)
       s = reshape (s, 1, len);
 
       ## need to remove zeros first, then call deblank
-      s = 1*s;
+      s = toascii (s);
       t = deblank(setstr(s(find(s != 0) )));
     endif
 

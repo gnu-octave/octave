@@ -1,5 +1,8 @@
 1999-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* control/dezero.m: Use toascii to convert string to ASCII value
+	instead of multiplying it by 1.
+
 	* control/zp2sys.m: Don't save and restore implicit_str_to_num_ok.
 	* control/zpout.m: Ditto.
 	* control/tfout.m: Ditto.

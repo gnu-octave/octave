@@ -342,15 +342,12 @@ do_stream_open (const std::string& name, const std::string& mode,
 	{
 	  FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
 
-	  if (fptr)
-	    {
-	      retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+	  retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
 
-	      // XXX FIXME XXX -- it would now be possible for the
-	      // file id returned by fopen to correspond directly to
-	      // the underlying system file id (::fileno (fptr)).
-	      // Doing that would require some changes to the
-	      // octave_stream_list class.
+	  if (! fptr)
+	    {
+	      using namespace std;
+	      retval.error (::strerror (errno));
 	    }
 	}
     }

@@ -542,6 +542,16 @@ public:
       return error (clear, err_num);
     }
 
+  // Set the error message and state.
+
+  void error (const std::string& msg)
+    {
+      if (rep)
+	rep->error (msg);
+    }
+
+  void error (const char *msg) { error (std::string (msg)); }
+
   int file_number (void) { return rep ? rep->file_number () : -1; }
 
   bool is_valid (void) const { return (rep != 0); }
@@ -585,12 +595,6 @@ private:
 	}
 
       return retval;
-    }
-
-  void error (const std::string& msg)
-    {
-      if (rep)
-	rep->error (msg);
     }
 };
 

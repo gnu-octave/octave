@@ -1,7 +1,10 @@
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc (do_stream_open): Don't call ::error if stream can't
-	be created.  Don't call ::fopen if arch is invalid.	
+	be created.  Don't call ::fopen if arch is invalid.  Set error
+	state for stream if fopen fails.
+	* oct-stream.h (octave_stream::error (const char *)): New function.
+	(octave_stream::error (const std::string&)): Now public.
 
 2004-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

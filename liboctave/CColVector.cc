@@ -78,7 +78,7 @@ ComplexColumnVector&
 ComplexColumnVector::insert (const ColumnVector& a, int r)
 {
   int a_len = a.length ();
-  if (r < 0 || r + a_len - 1 > length ())
+  if (r < 0 || r + a_len > length ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
@@ -94,7 +94,7 @@ ComplexColumnVector&
 ComplexColumnVector::insert (const ComplexColumnVector& a, int r)
 {
   int a_len = a.length ();
-  if (r < 0 || r + a_len - 1 > length ())
+  if (r < 0 || r + a_len > length ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;

@@ -72,7 +72,7 @@ RowVector&
 RowVector::insert (const RowVector& a, int c)
 {
   int a_len = a.length ();
-  if (c < 0 || c + a_len - 1 > length ())
+  if (c < 0 || c + a_len > length ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;

@@ -1,5 +1,7 @@
 2005-02-18  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (oct-gperf.h): Remove -E from list of gperf options.
+
 	* data.cc (do_permute): Use zero-based indexing for permutation
 	vector that is passed to octave_value::permute method.
 	Allow permutation vector longer	than number of dimenensions of

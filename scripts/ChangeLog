@@ -1,3 +1,9 @@
+2004-06-03  David Bateman  <dbateman@free.fr>
+
+	* general/shiftdim.m: New function based on JWE code snippet.
+
+	* general/circdim.m: New function.
+
 2004-05-06  David Bateman  <dbateman@free.fr>
 
 	* general/issquare.m: Fail if ndim(x) > 2.

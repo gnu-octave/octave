@@ -1301,7 +1301,10 @@ octave_value::print_with_name (std::ostream& output_buf,
 {
   if (! (evaluating_function_body && Vsilent_functions))
     {
-      bool pad_after = print_name_tag (output_buf, name);
+      bool pad_after = false;
+
+      if (Vprint_answer_id_name)
+	pad_after = print_name_tag (output_buf, name);
 
       print (output_buf);
 

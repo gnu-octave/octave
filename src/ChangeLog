@@ -1,9 +1,12 @@
 2004-05-07  John W. Eaton  <jwe@octave.org>
 
+	* ov.cc (octave_value::print_with_name): Only print name tag if
+	Vprint_answer_id_name is true.
+
 	* octave.cc (intern_argv): Insert __nargin__ in top_level_sym_tab
 	instead of making it a builtin variable.  Mark it static.
-	* ov-usr-fcn.cc (install_automatic_vars): Mark local automatic
-	variables static.
+	* ov-usr-fcn.cc (octave_user_function::install_automatic_vars):
+	Mark local automatic variables static.
 
 2004-04-30  John W. Eaton  <jwe@octave.org>
 

@@ -91,6 +91,10 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(reshape)
 
+@DOCSTRING(circshift)
+
+@DOCSTRING(shiftdim)
+
 @DOCSTRING(shift)
 
 @DOCSTRING(sort)

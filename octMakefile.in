@@ -152,8 +152,7 @@ dist: dist-info-files
 	find `cat .fname` \( \( -name RCS -a -type d \) \
 	  -o \( -name OLD -a -type d \) -o -name "=*" \
 	  -o -name '*~' -o -name '#*#' -o -name config.log \
-	  -o -name config.status -o -name Makefile \
-	  -o -name c-auto.h \) -print | xargs rm -rf
+	  -o -name config.status -o -name c-auto.h \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
 	rm -rf `cat .fname`/test/octave.test/npsol
 	rm -rf `cat .fname`/test/octave.test/qpsol

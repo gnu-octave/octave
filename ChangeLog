@@ -4,6 +4,7 @@ Fri Feb 14 14:07:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	(binary-dist): Don't depend on bin-dist-type.
 	Don't delete config.status or config.h here.
 	(BINDISTFILES): Include config.status and config.h here.
+	(dist): Don't delete Makefile here.
 
 	* Makefile.in (config-check): New target.
 	(all): Depend on config-check.

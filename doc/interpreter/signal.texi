@@ -9,8 +9,7 @@ I hope that someday Octave will include more signal processing
 functions.  If you would like to help improve Octave in this area,
 please contact @code{bug-octave@@bevo.che.wisc.edu}.
 
-@ftable @code
-@item fft (@var{a} [, @var{n}])
+@deftypefn {Function} {} fft (@var{a} [, @var{n}])
 Compute the FFT of @var{a} using subroutines from FFTPACK.  If @var{a}
 is a matrix, @code{fft} computes the FFT for each column of @var{a}.
 
@@ -19,16 +18,39 @@ specifying the number of elements of @var{a} to use.  If @var{a} is a
 matrix, @var{n} specifies the number of rows of @var{a} to use.  If
 @var{n} is larger than the size of @var{a}, @var{a} is resized and
 padded with zeros.
+@end deftypefn
 
-@item fft2 (@var{a} [, @var{n} [, @var{m}]])
+@deftypefn {Built-in Function} {} ifft (@var{a} [, @var{n}])
+Compute the inverse FFT of @var{a} using subroutines from FFTPACK.  If
+@var{a} is a matrix, @code{fft} computes the inverse FFT for each column
+of @var{a}.
+
+If called with two arguments, @var{n} is expected to be an integer
+specifying the number of elements of @var{a} to use.  If @var{a} is a
+matrix, @var{n} specifies the number of rows of @var{a} to use.  If
+@var{n} is larger than the size of @var{a}, @var{a} is resized and
+padded with zeros.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fft2 (@var{a} [, @var{n} [, @var{m}]])
 Compute the two dimensional FFT of @var{a}.
 
 The optional arguments @var{n} and @var{m} may be used specify the
 number of rows and columns of @var{a} to use.  If either of these is
 larger than the size of @var{a}, @var{a} is resized and padded with
 zeros.
+@end deftypefn
 
-@item fftconv (@var{a}, @var{b}, @var{N})
+@deftypefn {Built-in Function} {} ifft2 (@var{a} [, @var{n} [, @var{m}]])
+Compute the two dimensional inverse FFT of @var{a}.
+
+The optional arguments @var{n} and @var{m} may be used specify the
+number of rows and columns of @var{a} to use.  If either of these is
+larger than the size of @var{a}, @var{a} is resized and padded with
+zeros.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fftconv (@var{a}, @var{b}, @var{N})
 This function returns the convolution of the vectors @var{a} and
 @var{b}, a vector with length equal to the @code{length (a) + length (b)
 - 1}.  If @var{a} and @var{b} are the coefficient vectors of two
@@ -37,16 +59,18 @@ polynomial.
 
 The computation uses the FFT by calling the function @code{fftfilt}.  If
 the optional argument @var{N} is specified, an N-point FFT is used.
+@end deftypefn
 
-@item fftfilt (@var{b}, @var{x}, @var{N})
+@deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{N})
 
 With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
 @var{b} using the FFT.
 
 Given the optional third argument, @var{N}, @code{fftfilt} uses the
 overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
+@end deftypefn
 
-@item filter (@var{b}, @var{a}, @var{x})
+@deftypefn {Built-in Function} {y =} filter (@var{b}, @var{a}, @var{x})
 This function returns the solution to the following linear,
 time-invariant difference equation:
 @iftex
@@ -127,21 +151,18 @@ $$
               k=1
 @end example
 @end ifinfo
+@end deftypefn
 
-When called as
+@deftypefn {Built-in Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})
+This is the same as the @code{filter} function described above, except
+that @var{si} is taken as the initial state of the system and the final
+state is returned as @var{sf}.  The state vector is a column vector
+whose length is equal to the length of the longest coefficient vector
+minus one.  If @var{si} is not set, the initial state vector is set to
+all zeros.
+@end deftypefn
 
-@example
-[y, sf] = filter (b, a, x, si)
-@end example
-
-@noindent
-@code{filter} uses the argument @var{si} as the initial state of the
-system and and returns the final state in @var{sf}.  The state vector is
-a column vector whose length is equal to the length of the longest
-coefficient vector minus one.  If @var{si} is not set, the initial state
-vector is set to all zeros.
-
-@item freqz
+@deftypefn {Function File} {} freqz
 Compute the frequency response of a filter.
 
 @code{[@var{h}, @var{w}] = freqz (@var{b})} returns the complex frequency
@@ -179,27 +200,9 @@ evaluates the response at n frequencies between 0 and
  $2\pi$.
 @end tex
 @end iftex
+@end deftypefn
 
-@item ifft (@var{a} [, @var{n}])
-Compute the inverse FFT of @var{a} using subroutines from FFTPACK.  If
-@var{a} is a matrix, @code{fft} computes the inverse FFT for each column
-of @var{a}.
-
-If called with two arguments, @var{n} is expected to be an integer
-specifying the number of elements of @var{a} to use.  If @var{a} is a
-matrix, @var{n} specifies the number of rows of @var{a} to use.  If
-@var{n} is larger than the size of @var{a}, @var{a} is resized and
-padded with zeros.
-
-@item ifft2 (@var{a} [, @var{n} [, @var{m}]])
-Compute the two dimensional inverse FFT of @var{a}.
-
-The optional arguments @var{n} and @var{m} may be used specify the
-number of rows and columns of @var{a} to use.  If either of these is
-larger than the size of @var{a}, @var{a} is resized and padded with
-zeros.
-
-@item sinc (@var{x})
+@deftypefn {Function File} {} sinc (@var{x})
 Returns
 @iftex
 @tex
@@ -209,5 +212,4 @@ $ \sin (\pi x)/(\pi x)$.
 @ifinfo
  sin(pi*x)/(pi*x).
 @end ifinfo
-
-@end ftable
+@end deftypefn

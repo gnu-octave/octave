@@ -5,17 +5,12 @@
 @node Command History Functions, Help, System Utilities, Top
 @chapter Command History Functions
 
-@findex edit_history
-@findex run_history
-@findex history
-
 Octave provides three functions for viewing, editing, and re-running
 chunks of commands from the history list.
 
-The function @code{history} displays a list of commands that you have
-executed.  It also allows you to write the current history to a file for
-safe keeping, and to replace the history list with the commands stored
-in a named file.  Valid arguments are:
+@deffn {Command} history options
+If invoked with no arguments, @code{history} displays a list of commands
+that you have executed.  Valid options are:
 
 @table @code
 @item -w file
@@ -38,11 +33,14 @@ and pasting commands if you are using the X Window System.
 For example, to display the five most recent commands that you have
 typed without displaying line numbers, use the command
 @samp{history -q 5}.
+@end deffn
 
-The function @code{edit_history} allows you to edit a block of commands
-from the history list using the editor named by the environment
-variable @code{EDITOR}, or the default editor (normally @code{vi}).  It
-is often more convenient to use @code{edit_history} to define functions
+@deffn {Command} edit_history options
+If invoked with no arguments, @code{edit_history} allows you to edit the
+history list using the editor named by the variable @code{EDITOR}.  The
+commands to be edited are first copied to a temporary file.  When you
+exit the editor, Octave executes the commands that remain in the file.
+It is often more convenient to use @code{edit_history} to define functions 
 rather than attempting to enter them directly on the command line.
 By default, the block of commands is executed as soon as you exit the
 editor.  To avoid executing any commands, simply delete all the lines
@@ -69,13 +67,39 @@ only extracts commands 13 through 169.  Specifying a larger number for
 the first command than the last command reverses the list of commands
 before placing them in the buffer to be edited.  If both arguments are
 omitted, the previous command in the history list is used.
+@end deffn
 
-The command @code{run_history} is like @code{edit_history}, except that
-the editor is not invoked, and the commands are simply executed as they
-appear in the history list.
+@defvr {Built-in Variable} EDITOR
+A string naming the editor to use with the @code{edit_history} command.
+If the environment variable @code{EDITOR} is set when Octave starts, its
+value is used as the default.  Otherwise, @code{EDITOR} is set to
+@code{"vi"}.
+@end defvr
 
-@findex diary
+@deffn {Command} run_history
+Similar to @code{edit_history}, except that the editor is not invoked,
+and the commands are simply executed as they appear in the history list.
+@end deffn
 
+@defvr {Built-in Variable} history_file
+This variable specifies the name of the file used to store command
+history.  The default value is @code{"~/.octave_hist"}, but may be
+overridden by the environment variable @code{OCTAVE_HISTFILE}.
+@end defvr
+
+@defvr {Built-in Variable} history_size
+This variable specifies how many entries to store in the history file.
+The default value is @code{1024}, but may be overridden by the
+environment variable @code{OCTAVE_HISTSIZE}.
+@end defvr
+
+@defvr {Built-in Variable} saving_history
+If the value of @code{saving_history} is @code{"true"}, command entered
+on the command line are saved in the file specified by the variable
+@code{history_file}.
+@end defvr
+
+@deffn {Command} diary
 The @code{diary} command allows you to create a list of all commands
 @emph{and} the output they produce, mixed together just as you see them
 on your terminal.
@@ -107,3 +131,32 @@ diary off
 
 @noindent
 Without any arguments, @code{diary} toggles the current diary state.
+@end deffn
+
+@deffn {Command} echo options
+Control whether commands are displayed as they are executed.  Valid
+options are:
+
+@table @code
+@item on
+Enable echoing of commands as they are executed in script files.
+
+@item off
+Disable echoing of commands as they are executed in script files.
+
+@item on all
+Enable echoing of commands as they are executed in script files and
+functions.
+
+@item off all
+Disable echoing of commands as they are executed in script files and
+functions.
+@end table
+
+@noindent
+If invoked without any arguments, @code{echo} toggles the current echo
+state.
+@end deffn
+
+@defvr {Built-in Variable} echo_executing_commands
+@end defvr

@@ -1,5 +1,12 @@
 Wed Oct 30 01:06:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-range.cc (octave_range::convert_to_str): New function.
+
+	* ov-str-mat.h (octave_char_matrix_str::char_matrix_value):
+	Delete function.  Already handled by octave_char_matrix class.	
+
+	* ov-ch-mat.h (octave_char_matrix::convert_to_str): New function.
+
 	* pager.cc (Fmore): Set page_screen_output to 1.0 or 0.0, not
 	"true" or "false".
 

@@ -13,18 +13,17 @@
 @node Evaluating Strings as Commands, Miscellaneous Utilities, Programming Utilities, Programming Utilities
 @section Evaluating Strings as Commands
 
-@findex eval
-
 It is often useful to evaluate a string as if it were an Octave program,
 or use a string as the name of a function to call.  These functions are
 necessary in order to evaluate commands that are not known until run
 time, or to write functions that will need to call user-supplied
 functions.
 
-The function @code{eval (@var{command})} parses @var{command} and
-evaluates it as if it were an Octave program, returning the last value
-computed.  The @var{command} is evaluated in the current context, so any
-results remain available after @code{eval} returns.  For example,
+@deftypefn {Built-in Function} {} eval (@var{command})
+Parse the string @var{command} and evaluate it as if it were an Octave
+program, returning the last value computed.  The @var{command} is
+evaluated in the current context, so any results remain available after
+@code{eval} returns.  For example,
 
 @example
 octave:13> a
@@ -49,12 +48,11 @@ ans = 13
 octave:15> a
 a = 13
 @end example
+@end deftypefn
 
-@findex feval
-
-The function @code{feval (@var{name}, ...)} can be used to evaluate
-the function named @var{name}.  Any arguments after the first are passed
-on to the named function.  For example,
+@deftypefn {Built-in Function} {} feval (@var{name}, @dots{})
+Evaluate the function named @var{name}.  Any arguments after the first
+are passed on to the named function.  For example,
 
 @example
 octave:12> feval ("acos", -1)
@@ -70,13 +68,12 @@ have a way to declare a pointer to a function (like C) or to declare a
 special kind of variable that can be used to hold the name of a function
 (like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions
 by name, and use @code{feval} to call them.
-
-For example, here is a
-simple-minded function for finding the root of a function of one
-variable:
+@end deftypefn
 
 @cindex Fordyce, A. P.
 @findex newtroot
+Here is a simple-minded function using @code{feval} that finds the root
+of a user-supplied function of one variable.
 
 @example
 @group
@@ -121,18 +118,20 @@ The following functions allow you to determine the size of a variable or
 expression, find out whether a variable exists, print error messages, or
 delete variable names from the symbol table.
 
-@ftable @code
-@item columns (@var{a})
+@deftypefn {Function File} {} columns (@var{a})
 Return the number of columns of @var{a}.
+@end deftypefn
 
-@item rows (@var{a})
+@deftypefn {Function File} {} rows (@var{a})
 Return the number of rows of @var{a}.
+@end deftypefn
 
-@item length (@var{a})
+@deftypefn {Function File} {} length (@var{a})
 Return the number of rows of @var{a} or the number of columns of
 @var{a}, whichever is larger.
+@end deftypefn
 
-@item size (@var{a} [, @var{n}])
+@deftypefn {Function File} {} size (@var{a}, @var{n})
 Return the number rows and columns of @var{a}.
 
 With one input argument and one output argument, the result is returned
@@ -164,36 +163,45 @@ ans = 2
 
 @noindent
 returns the number of columns in the given matrix.
+@end deftypefn
 
-@item is_global (@var{a})
+@deftypefn {Built-in Function} {} is_global (@var{a})
 Return 1 if @var{a} is globally visible.  Otherwise, return 0.
+@end deftypefn
 
-@item is_matrix (@var{a})
+@deftypefn {Function File} {} is_matrix (@var{a})
 Return 1 if @var{a} is a matrix.  Otherwise, return 0.
+@end deftypefn
 
-@item is_vector (@var{a})
+@deftypefn {Function File} {} is_vector (@var{a})
 Return 1 if @var{a} is a vector.  Otherwise, return 0.
+@end deftypefn
 
-@item is_scalar (@var{a})
+@deftypefn {Function File} {} is_scalar (@var{a})
 Return 1 if @var{a} is a scalar.  Otherwise, return 0.
+@end deftypefn
 
-@item is_square (@var{x})
+@deftypefn {Function File} {} is_square (@var{x})
 If @var{x} is a square matrix, then return the dimension of @var{x}.
 Otherwise, return 0.
+@end deftypefn
 
-@item is_symmetric (@var{x}, @var{tol})
+@deftypefn {Function File} {} is_symmetric (@var{x}, @var{tol})
 If @var{x} is symmetric within the tolerance specified by @var{tol}, 
 then return the dimension of @var{x}.  Otherwise, return 0.  If
 @var{tol} is omitted, use a tolerance equal to the machine precision.
+@end deftypefn
 
-@item isstr (@var{a})
+@deftypefn {Built-in Function} {} isstr (@var{a})
 Return 1 if @var{a} is a string.  Otherwise, return 0.
+@end deftypefn
 
-@item isempty (@var{a})
+@deftypefn {Function File} {} isempty (@var{a})
 Return 1 if @var{a} is an empty matrix (either the number of rows, or
 the number of columns, or both are zero).  Otherwise, return 0.
+@end deftypefn
 
-@item clear @var{pattern} ...
+@deffn {Command} clear pattern @dots{}
 Delete the names matching the given patterns from the symbol table.  The
 pattern may contain the following special characters:
 @table @code
@@ -231,8 +239,10 @@ will clear the variable definition and restore the definition of
 clear the function definition.
 
 This command may not be used within a function body.
+@end deffn
 
-@item who @var{options} @var{pattern} ...
+@deffn {Command} who options pattern @dots{}
+@deffnx {Command} whos options pattern @dots{}
 List currently defined symbols matching the given patterns.  The
 following are valid options.  They may be shortened to one character but
 may not be combined.
@@ -264,16 +274,16 @@ above.  If no patterns are supplied, all symbols from the given category
 are listed.  By default, only user defined functions and variables
 visible in the local scope are displayed.
 
-@findex whos
-
 The command @code{whos} is equivalent to @code{who -long}.
+@end deffn
 
-@item exist (@var{name})
+@deftypefn {Built-in Function} {} exist (@var{name})
 Return 1 if the name exists as a variable, and 2 if the name (after
 appending @samp{.m}) is a function file in the path.  Otherwise, return
 0.
+@end deftypefn
 
-@item error (@var{msg})
+@deftypefn {Built-in Function} {} error (@var{msg})
 Print the message @var{msg}, prefixed by the string @samp{error: }, and
 set Octave's internal error state such that control will return to the
 top level without evaluating any more commands.  This is useful for
@@ -310,11 +320,22 @@ function h () nargin == 1 || error ("nargin != 1\n"); end
 f ()
 error: nargin != 1
 @end example
+@end deftypefn
 
-@item warning (@var{msg})
+@defvr {Built-in Variable} error_text
+@end defvr
+
+@defvr {Built-in Variable} beep_on_error
+If the value of @code{beep_on_error} is nonzero, Octave will try
+to ring your terminal's bell before printing an error message.  The
+default value is 0.
+@end defvr
+
+@deftypefn {Built-in Function} {} warning (@var{msg})
 Print the message @var{msg} prefixed by the string @samp{warning: }.
+@end deftypefn
 
-@item usage (@var{msg})
+@deftypefn {Built-in Function} {} usage (@var{msg})
 Print the message @var{msg}, prefixed by the string @samp{usage: }, and
 set Octave's internal error state such that control will return to the
 top level without evaluating any more commands.  This is useful for
@@ -322,25 +343,29 @@ aborting from functions.
 
 After @code{usage} is evaluated, Octave will print a traceback of all
 the function calls leading to the usage message.
+@end deftypefn
 
-@item perror (@var{name}, @var{num})
+@deftypefn {Function File} {} perror (@var{name}, @var{num})
 Print the error message for function @var{name} corresponding to the
 error number @var{num}.  This function is intended to be used to print
 useful error messages for those functions that return numeric error
 codes.
+@end deftypefn
 
-@item menu (@var{title}, @var{opt1}, @dots{})
+@deftypefn {Function File} {} menu (@var{title}, @var{opt1}, @dots{})
 Print a title string followed by a series of options.  Each option will
 be printed along with a number.  The return value is the number of the
 option selected by the user.  This function is useful for interactive
 programs.  There is no limit to the number of options that may be passed
 in, but it may be confusing to present more than will fit easily on one
 screen.
+@end deftypefn
 
-@item document @var{symbol} @var{text}
+@deftypefn {Built-in Function} {} document (@var{symbol}, @var{text})
 Set the documentation string for @var{symbol} to @var{text}.
+@end deftypefn
 
-@item file_in_path (@var{path}, @var{file})
+@deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})
 Return the absolute name name of @var{file} if it can be found in
 @var{path}.  The value of @var{path} should be a colon-separated list of
 directories in the format described for the built-in variable
@@ -353,24 +378,36 @@ For example,
 octave:13> file_in_path (LOADPATH, "nargchk.m")
 ans = /usr/local/lib/octave/1.1.0/m/general/nargchk.m
 @end example
+@end deftypefn
 
-@item nargchk (@var{nargin_min}, @var{nargin_max}, @var{n})
+@deftypefn {Built-in Function} completion_matches (@var{hint})
+Generate possible completions given @var{hint}.
+
+This function is provided for the benefit of programs like Emacs which
+might be controlling Octave and handling user input.  The current
+command number is not incremented when this function is called.  This is
+a feature, not a bug.
+@end deftypefn
+
+@deftypefn {Function File} {} nargchk (@var{nargin_min}, @var{nargin_max}, @var{n})
 If @var{n} is in the range @var{nargin_min} through @var{nargin_max}
 inclusive, return the empty matrix.  Otherwise, return a message
 indicating whether @var{n} is too large or too small.
 
 This is useful for checking to see that the number of arguments supplied
 to a function is within an acceptable range.
+@end deftypefn
 
-@item octave_tmp_file_name
+@deftypefn {Built-in Function} {} octave_tmp_file_name ()
 Return a unique temporary file name.
 
 Since the named file is not opened, by @code{octave_tmp_file_name}, it
 is possible (though relatively unlikely) that it will not be available
 by the time your program attempts to open it.
+@end deftypefn
 
-@item type @var{name} ...
-@item type [-q] @var{name} ...
+@deffn {Command} type name @dots{}
+@deffnx {Command} type [-q] name @dots{}
 Display the definition of each @var{name} that refers to a function.
 
 Normally also displays if each @var{name} is user-defined or builtin;
@@ -383,8 +420,14 @@ recreate the program text.
 Comments are not displayed because Octave's parser currently discards
 them as it converts the text of a function file to its internal
 representation.  This problem may be fixed in a future release.
+@end deffn
 
-@item which @var{name} ...
+@deffn {Command} which name @dots{}
 Display the type of each @var{name}.  If @var{name} is defined from a
 function file, the full name of the file is also displayed.
-@end ftable
+@end deffn
+
+@deftypefn {Built-in Function} octave_config_info ()
+Return a structure containing configuration and installation
+information.
+@end deftypefn

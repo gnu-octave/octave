@@ -16,6 +16,7 @@ END-INFO-DIR-ENTRY
 @c Settings for printing on 8-1/2 by 11 inch paper:
 @c -----------------------------------------------
 
+@c @ignore
 @setchapternewpage odd
 @iftex
 @tex
@@ -25,16 +26,19 @@ END-INFO-DIR-ENTRY
 \global\parskip 5pt plus 1pt
 @end tex
 @end iftex
+@c @end ignore
 
 @c Settings for small book format:
 @c ------------------------------
-@c
-@c @smallbook
-@c @setchapternewpage odd
-@c @finalout
-@c @iftex
-@c @cropmarks
-@c @end iftex
+
+@ignore
+@smallbook
+@setchapternewpage odd
+@finalout
+@iftex
+@cropmarks
+@end iftex
+@end ignore
 
 @defindex op
 
@@ -42,7 +46,7 @@ END-INFO-DIR-ENTRY
 @c This file doesn't include a chapter, so it must not be included
 @c if you want to run the Emacs function texinfo-multiple-files-update.
 
-@include conf.texi
+@c @include conf.texi
 
 @settitle Octave
 
@@ -74,14 +78,14 @@ modified versions.
 @titlepage
 @title{Octave}
 @subtitle{A high-level interactive language for numerical computations}
-@subtitle{Edition 1.1 for Octave version @value{VERSION}}
-@subtitle{January 1995}
+@subtitle{Edition 2 for Octave version @value{VERSION}}
+@subtitle{October 1996}
 @author{John W. Eaton}
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996 John W. Eaton.
 
-This is the first edition of the Octave documentation,
+This is the second edition of the Octave documentation,
 and is consistent with version @value{VERSION} of Octave.
 
 Permission is granted to make and distribute verbatim copies of
@@ -108,7 +112,6 @@ It corresponds to Octave version @value{VERSION}.
 
 @menu
 * Preface::                     
-* Copying::                     
 * Introduction::                A brief introduction to Octave.
 * Invoking Octave::             Command options supported by Octave.
 * Expressions::                 Expressions.
@@ -143,6 +146,7 @@ It corresponds to Octave version @value{VERSION}.
 * Trouble::                     If you have trouble installing Octave.
 * Command Line Editing::        Command history and editing.
 * Using Info::                  
+* Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Variable Index::              An item for each documented variable.
 * Function Index::              An item for each documented function.
@@ -156,8 +160,8 @@ A Brief Introduction to Octave
 
 * Running Octave::              
 * Simple Examples::             
-* Executable Octave Programs::  
 * Comments::                    
+* Executable Octave Programs::  
 * Errors::                      
 
 Invoking Octave
@@ -213,6 +217,10 @@ Statements
 * The try Statement::           
 * Continuation Lines::          
 
+The @code{for} Statement
+
+* Looping Over Structure Elements::  
+
 Functions and Script Files
 
 * Defining Functions::          
@@ -227,9 +235,7 @@ Functions and Script Files
 
 Built-in Variables
 
-* Predefined Constants::        
-* User Preferences::            
-* Other Built-in Variables::    
+* Miscellaneous Built-in Variables
 * Summary of Preference Variables::  
 
 Arithmetic
@@ -239,6 +245,7 @@ Arithmetic
 * Trigonometry::                
 * Sums and Products::           
 * Special Functions::           
+* Mathematical Constants::      
 
 Linear Algebra
 
@@ -272,6 +279,12 @@ Input and Output
 
 * Basic Input and Output::      
 * C-Style I/O Functions::       
+
+Basic Input and Output
+
+* Terminal Output::             
+* Terminal Input::              
+* Simple File I/O::             
 
 C-Style I/O Functions
 
@@ -317,7 +330,8 @@ Using Emacs With Octave
 
 * Setting Up Octave Mode::      
 * Using Octave Mode::           
-* GIM::                         
+* Running Octave From Within Emacs::  
+* Using the Emacs Info Reader for Octave::  
 
 Installing Octave
 
@@ -417,7 +431,6 @@ Manipulating Multiple Windows
 @end menu
 
 @include preface.texi
-@include gpl.texi
 @include intro.texi
 @include invoke.texi
 @include expr.texi
@@ -475,6 +488,7 @@ Manipulating Multiple Windows
 @syncodeindex vr in
 
 @include gnuinfo.texi
+@include gpl.texi
 
 @include cp-idx.texi
 @include vr-idx.texi

@@ -171,15 +171,22 @@ octave_range::complex_value (bool) const
 octave_value
 octave_range::transpose (void) const
 {
-  Matrix tmp (matrix_value ());
+  Matrix tmp (range.matrix_value ());
   return tmp.transpose ();
 }
 
 octave_value
 octave_range::hermitian (void) const
 {
-  Matrix tmp (matrix_value ());
+  Matrix tmp (range.matrix_value ());
   return tmp.transpose ();
+}
+
+octave_value
+octave_range::convert_to_str (void) const
+{
+  octave_value tmp (range.matrix_value ());
+  return tmp.convert_to_str ();
 }
 
 void

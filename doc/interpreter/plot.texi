@@ -5,9 +5,6 @@
 @node Plotting, Image Processing, Statistics, Top
 @chapter Plotting
 
-@findex gplot
-@findex gsplot
-
 All of Octave's plotting functions use @code{gnuplot} to handle the
 actual graphics.  There are two low-level functions, @code{gplot} and
 @code{gsplot}, that behave almost exactly like the corresponding
@@ -26,16 +23,11 @@ low-level plotting functions.
 @node Two-Dimensional Plotting, Three-Dimensional Plotting, Plotting, Plotting
 @section Two-Dimensional Plotting
 
-The syntax for Octave's two-dimensional plotting function,
-@code{gplot}, is
+@deffn {Command} gplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
+Generate a 2-dimensional plot.
 
-@example
-gplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
-@end example
-
-@noindent
-where the @var{ranges}, @var{using}, @var{title}, and @var{style}
-arguments are optional, and the @var{using}, @var{title} and @var{style}
+The @var{ranges}, @var{using}, @var{title}, and @var{style} arguments
+are optional, and the @var{using}, @var{title} and @var{style}
 qualifiers may appear in any order after the expression.  You may plot
 multiple expressions with a single command by separating them with
 commas.  Each expression may have its own set of qualifiers.
@@ -105,11 +97,11 @@ should be taken as the values to plot.
 In this example, the ranges have been explicitly specified to be a bit
 larger than the actual range of the data so that the curves do not touch
 the border of the plot.
+@end deffn
 
-@findex set
-@findex show
-@findex replot
-
+@deffn {Command} set options
+@deffnx {Command} show options
+@deffnx {Command} replot options
 In addition to the basic plotting commands, the whole range of
 @code{set} and @code{show} commands from @code{gnuplot} are available,
 as is @code{replot}.
@@ -142,13 +134,14 @@ hardcopy output devices because even when you are adding additional
 lines with a replot command, gnuplot always redraws the entire plot, and
 you probably don't want to have a completely new plot generated every
 time something as minor as an axis label changes.
+@end deffn
 
-@vindex automatic_replot
-
-Since this may not matter as much on faster terminals, you can tell
-Octave to redisplay the plot each time anything about it changes by
-setting the value of the builtin variable @code{automatic_replot} to the
-value @code{"true"}.
+@defvr {Built-in Variable} automatic_replot
+You can tell Octave to redisplay the plot each time anything about it
+changes by setting the value of the builtin variable
+@code{automatic_replot} to a nonzero value.  Since this is fairly
+inefficient, the default value is 0.
+@end defvr
 
 Note that NaN values in the plot data are automatically omitted, and
 Inf values are converted to a very large value before calling gnuplot.
@@ -164,8 +157,7 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 @cindex plotting
 @cindex graphics
 
-@ftable @code
-@item plot (@var{args})
+@deftypefn {Function File} {} plot (@var{args})
 This function produces two-dimensional plots.  Many different
 combinations of arguments are possible.  The simplest form is
 
@@ -300,8 +292,9 @@ plot (b, "*")
 
 This command will plot the data in @var{b} will be plotted with points
 displayed as @code{*}.
+@end deftypefn
 
-@item hold
+@deftypefn {Function File} {} hold @var{args}
 Tell Octave to `hold' the current data on the plot when executing
 subsequent plotting commands.  This allows you to execute a series of
 plot commands and have all the lines end up on the same figure.  The
@@ -315,49 +308,50 @@ hold on
 @noindent
 turns the hold state on.  An argument of @code{off} turns the hold state
 off, and @code{hold} with no arguments toggles the current hold state.
+@end deftypefn
 
-@item ishold
+@deftypefn {Function File} {} ishold
 Returns 1 if the next line will be added to the current plot, or 0 if
 the plot device will be cleared before drawing the next line.
+@end deftypefn
 
-@item loglog (@var{args})
+@deftypefn {Function File} {} loglog (@var{args})
 Make a two-dimensional plot using log scales for both axes.  See the
 description of @code{plot} above for a description of the arguments that
 @code{loglog} will accept.
+@end deftypefn
 
-@item semilogx (@var{args})
+@deftypefn {Function File} {} semilogx (@var{args})
 Make a two-dimensional plot using a log scale for the @var{x} axis.  See
 the description of @code{plot} above for a description of the arguments
 that @code{semilogx} will accept.
+@end deftypefn
 
-@item semilogy (@var{args})
+@deftypefn {Function File} {} semilogy (@var{args})
 Make a two-dimensional plot using a log scale for the @var{y} axis.  See
 the description of @code{plot} above for a description of the arguments
 that @code{semilogy} will accept.
+@end deftypefn
 
-@item contour (@var{z}, @var{n}, @var{x}, @var{y})
+@deftypefn {Function File} {} contour (@var{z}, @var{n}, @var{x}, @var{y})
 Make a contour plot of the three-dimensional surface described by
 @var{z}.  Someone needs to improve @code{gnuplot}'s contour routines
 before this will be very useful.
+@end deftypefn
 
-@item polar (@var{theta}, @var{rho})
+@deftypefn {Function File} {} polar (@var{theta}, @var{rho})
 Make a two-dimensional plot given polar the coordinates @var{theta} and
 @var{rho}.
-@end ftable
+@end deftypefn
 
 @node Three-Dimensional Plotting, Miscellaneous Plotting Functions, Two-Dimensional Plotting, Plotting
 @section Three-Dimensional Plotting
 
-The syntax for Octave's three-dimensional plotting function,
-@code{gsplot}, is
+@deffn {Command} gsplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
+Generate a 3-dimensional plot.
 
-@example
-gsplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
-@end example
-
-@noindent
-where the @var{ranges}, @var{using}, @var{title}, and @var{style}
-arguments are optional, and the @var{using}, @var{title} and @var{style}
+The @var{ranges}, @var{using}, @var{title}, and @var{style} arguments
+are optional, and the @var{using}, @var{title} and @var{style}
 qualifiers may appear in any order after the expression.  You may plot
 multiple expressions with a single command by separating them with
 commas.  Each expression may have its own set of qualifiers.
@@ -423,28 +417,49 @@ $$
 
 @noindent
 but not @code{rand (5, 30)}.
+@end deffn
 
 The @sc{Matlab}-style three-dimensional plotting commands are:
 
-@ftable @code
-@item mesh (@var{x}, @var{y}, @var{z})
+@deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
 Plot a mesh given matrices @code{x}, and @var{y} from @code{meshdom} and
 a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 the mesh.
+@end deftypefn
 
-@item meshdom (@var{x}, @var{y})
+@deftypefn {Function File} {} meshdom (@var{x}, @var{y})
 Given vectors of @var{x} and @var{y} coordinates, return two matrices
 corresponding to the @var{x} and @var{y} coordinates of the mesh.
 
 See the file @file{sombrero.m} for an example of using @code{mesh} and
 @code{meshdom}.
-@end ftable
+@end deftypefn
+
+@defvr {Built-in Variable} gnuplot_binary
+The name of the program invoked by the plot command.  The default value
+is @code{"gnuplot"}.  @xref{Installation}.
+@end defvr
+
+@defvr {Built-in Variable} gnuplot_has_frames
+If the value of this variable is nonzero, Octave assumes that your copy
+of gnuplot has support for multiple frames that is included in recent
+3.6beta releases.  It's initial value is determined by configure, but it
+can be changed in your startup script or at the command line in case
+configure got it wrong, or if you upgrade your gnuplot installation.
+@end defvr
+
+@defvr {Built-in Variable} gnuplot_has_multiplot
+If the value of this variable is nonzero, Octave assumes that your copy
+of gnuplot has the multiplot support that is included in recent
+3.6beta releases.  It's initial value is determined by configure, but it
+can be changed in your startup script or at the command line in case
+configure got it wrong, or if you upgrade your gnuplot installation.
+@end defvr
 
 @node Miscellaneous Plotting Functions,  , Three-Dimensional Plotting, Plotting
 @section Miscellaneous Plotting Functions
 
-@ftable @code
-@item bar (@var{x}, @var{y})
+@deftypefn {Function File} {} bar (@var{x}, @var{y})
 Given two vectors of x-y data, @code{bar} produces a bar graph.
 
 If only one argument is given, it is taken as a vector of y-values
@@ -467,11 +482,13 @@ plot (xb, yb);
 
 @noindent
 are equivalent.
+@end deftypefn
 
-@item grid
+@deftypefn {Function File} {} grid
 For two-dimensional plotting, force the display of a grid on the plot.
+@end deftypefn
 
-@item stairs (@var{x}, @var{y})
+@deftypefn {Function File} {} stairs (@var{x}, @var{y})
 Given two vectors of x-y data, bar produces a `stairstep' plot.
 
 If only one argument is given, it is taken as a vector of y-values
@@ -494,23 +511,27 @@ plot (xs, ys);
 
 @noindent
 are equivalent.
+@end deftypefn
 
-@item title (@var{string})
+@deftypefn {Function File} {} title (@var{string})
 Specify a title for the plot.  If you already have a plot displayed, use
 the command @code{replot} to redisplay it with the new title.
+@end deftypefn
 
-@item xlabel (@var{string})
-@itemx ylabel (@var{string})
+@deftypefn {Function File} {} xlabel (@var{string})
+@deftypefnx {Function File} {} ylabel (@var{string})
 Specify x and y axis labels for the plot.  If you already have a plot
 displayed, use the command @code{replot} to redisplay it with the new
 labels.
+@end deftypefn
 
-@item sombrero (@var{n})
+@deftypefn {Function File} {} sombrero (@var{n})
 Display a classic three-dimensional mesh plot.  The parameter @var{n}
 allows you to increase the resolution.
+@end deftypefn
 
-@item clearplot
-@itemx clg
+@deftypefn {Function File} {} clearplot
+@deftypefnx {Function File} {} clg
 Clear the plot window and any titles or axis labels.  The name
 @code{clg} is aliased to @code{clearplot} for compatibility with @sc{Matlab}.
 
@@ -518,12 +539,14 @@ The commands @samp{gplot clear}, @samp{gsplot clear}, and @samp{replot
 clear} are equivalent to @samp{clearplot}.  (Previously, commands like
 @samp{gplot clear} would evaluate @samp{clear} as an ordinary expression
 and clear all the visible variables.)
+@end deftypefn
 
-@item closeplot
+@deftypefn {Function File} {} closeplot
 Close stream to the @code{gnuplot} subprocess.  If you are using X11,
 this will close the plot window.
+@end deftypefn
 
-@item purge_tmp_files
+@deftypefn {Function File} {} purge_tmp_files
 Delete the temporary files created by the plotting commands.
 
 Octave creates temporary data files for @code{gnuplot} and then sends
@@ -533,8 +556,9 @@ want to clean up in the middle of a session.
 
 A future version of Octave will eliminate the need to use temporary
 files to hold the plot data.
+@end deftypefn
 
-@item axis (@var{limits})
+@deftypefn {Function File} {} axis (@var{limits})
 Sets the axis limits for plots.
 
 The argument @var{limits} should be a 2, 4, or 6 element vector.  The
@@ -547,9 +571,10 @@ With no arguments, @code{axis} turns autoscaling on.
 If your plot is already drawn, then you need to use @code{replot} before
 the new axis limits will take effect.  You can get this to happen
 automatically by setting the built-in variable @code{automatic_replot}
-to @code{"true"}.  @xref{User Preferences}.
+to a nonzero value.
+@end deftypefn
 
-@item hist (@var{y}, @var{x})
+@deftypefn {Function File} {} hist (@var{y}, @var{x})
 Produce histogram counts or plots.
 
 With one vector input argument, plot a histogram of the values with
@@ -566,4 +591,4 @@ Extreme values are lumped in the first and last bins.
 
 With two output arguments, produce the values @var{nn} and @var{xx} such
 that @code{bar (@var{xx}, @var{nn})} will plot the histogram.
-@end ftable
+@end deftypefn

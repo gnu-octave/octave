@@ -67,14 +67,6 @@ files.
 @cindex @code{-?}
 Print short help message and exit.
 
-@item --ignore-init-file
-@itemx --norc
-@itemx -f
-@cindex @code{--ignore-init-file}
-@cindex @code{--norc}
-@cindex @code{-f}
-Don't read any of the system or user initialization files at startup.
-
 @item --info-file @var{filename}
 @cindex @code{--info-file @var{filename}}
 Specify the name of the info file to use.  The value of @var{filename}
@@ -97,9 +89,25 @@ startup files.
 @cindex @code{-i}
 Force interactive behavior.
 
+@item --no-init-file
+@cindex @code{--no-init-file}
+Don't read the @file{~/.octaverc} or @file{.octaverc} files.
+
 @item --no-line-editing
 @cindex @code{--no-line-editing}
 Disable command-line editing and history.
+
+@item --no-site-file
+@cindex @code{--no-site-file}
+Don't read the site-wide @file{octaverc} file.
+
+@item --norc
+@itemx -f
+@cindex @code{--norc}
+@cindex @code{-f}
+Don't read any of the system or user initialization files at startup.
+This is equivalent to using both of the options @code{--no-init-file}
+and @code{--no-site-file}.
 
 @item --path @var{path}
 @itemx -p @var{path}
@@ -120,9 +128,11 @@ files.
 Don't print message at startup.
 
 @item --traditional
+@itemx --braindead
 @cindex @code{--traditional}
+@cindex @code{--braindead}
 Set initial values for user-preference variables to the following
-values for compatibility with Matlab.
+values for compatibility with @sc{Matlab}.
 
 @example
 PS1                           = ">> "
@@ -159,6 +169,56 @@ Print the program version number and exit.
 Execute commands from @var{file}.
 @end table
 
+@defvr {Built-in Variable} argv
+The command line arguments passed to Octave are available in this
+variable.  For example, if you invoked Octave using the command
+
+@example
+octave --no-line-editing --silent
+@end example
+
+@noindent
+@code{argv} would be a string vector with the elements
+@code{--no-line-editing} and @code{--silent}.
+@end defvr
+
+@defvr {Built-in Variable} nargin
+At the top level, this variable is defined as the number of command line
+arguments that were passed to Octave.
+@end defvr
+
+@defvr {Built-in Variable} program_invocation_name
+@defvrx {Built-in Variable} program_name
+When Octave starts, the value of @code{program_invocation_name} is
+automatically set to the name that was typed at the shell prompt to run
+Octave, and the value of @code{program_name} is automatically set to the
+final component of @code{program_invocation_name}.  For example, if you
+typed @file{/usr/local/bin/octave} to start Octave,
+@code{program_invocation_name} would have the value
+@file{/usr/local/bin/octave}, and @code{program_name} would have the
+value @code{octave}.
+
+If executing a script from the command line (e.g., @code{octave foo.m}
+or using an executable Octave script, the program name is set to the
+name of the script.  @xref{Executable Octave Programs} for an example of
+how to create an executable Octave script.
+@end defvr
+
+Here is an example of using these variables to reproduce Octave's
+command line.
+
+@example
+printf ("%s", program_name);
+for i = 1:nargin
+  printf (" %s", i, argv(i,:));
+endfor
+printf ("\n");
+@end example
+
+@noindent
+@xref{Index Expressions} for an explanation of how to properly index
+arrays of strings and substrings in Octave.
+
 @node Startup Files,  , Command Line Options, Invoking Octave
 @section Startup Files
 @cindex initialization
@@ -186,18 +246,18 @@ Octave environment.
 @item .octaverc
 @cindex @code{.octaverc}
 This file can be used to make changes to the default Octave environment
-for a particular project.  Octave searches for this file after it reads
-@file{~/.octaverc}, so any use of the @code{cd} command in the
-@file{~/.octaverc} file will affect the directory that Octave searches
-for the file @file{.octaverc}.
+for a particular project.  Octave searches for this file in the current
+directory after it reads @file{~/.octaverc}.  Any use of the @code{cd}
+command in the @file{~/.octaverc} file will affect the directory that
+Octave searches for the file @file{.octaverc}.
 
 If you start Octave in your home directory, commands from from the file
 @file{~/.octaverc} will only be executed once.
 @end table
 
-A message will be displayed as each of these files is read if you invoke
-Octave with the @code{--verbose} option but without the @code{--silent}
-option.
+A message will be displayed as each of the startup files is read if you
+invoke Octave with the @code{--verbose} option but without the
+@code{--silent} option.
 
 Startup files may contain any valid Octave commands, including multiple
 function definitions.

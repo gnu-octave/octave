@@ -11,8 +11,7 @@ the X Window System, and you must have either @code{xloadimage} or
 manipulate images, however, so some of these functions may be useful
 even if you are not able to view the results.
 
-@ftable @code
-@item colormap
+@deftypefn {Function File} {} colormap
 Set the current colormap.
 
 @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
@@ -24,15 +23,18 @@ should be between 0 and 1 inclusive.  The new colormap is returned.
 colormap with 64 entries).  The default colormap is returned.
 
 With no arguments, @code{colormap} returns the current color map.
+@end deftypefn
 
-@item gray (@var{n})
+@deftypefn {Function File} {} gray (@var{n})
 Create a gray colormap with values from 0 to @var{n}.  The argument
 @var{n} should be a scalar.  If it is omitted, 64 is assumed.
+@end deftypefn
 
-@item gray2ind
+@deftypefn {Function File} {} gray2ind
 Convert a gray scale intensity image to an Octave indexed image.
+@end deftypefn
 
-@item image
+@deftypefn {Function File} {} image
 Display an Octave image matrix.
 
 @code{image (@var{x})} displays a matrix as a color image.  The elements
@@ -41,8 +43,9 @@ between 1 and the length of the colormap.
 
 @code{image (@var{x}, @var{zoom})} changes the zoom factor.  The default
 value is 4.
+@end deftypefn
 
-@item imagesc
+@deftypefn {Function File} {} imagesc
 Scale and display a matrix as an image.
 
 @code{imagesc (@var{x})} displays a scaled version of the matrix
@@ -51,8 +54,9 @@ current colormap.  The scaled matrix is returned.
 
 @code{imagesc (@var{x}, @var{zoom})} sets the magnification, the default
 value is 4.
+@end deftypefn
 
-@item imshow
+@deftypefn {Function File} {} imshow
 Display images.
 
 @code{imshow (@var{x})} displays an indexed image using the current
@@ -64,8 +68,9 @@ specified colormap.
 @code{imshow (@var{i}, @var{n})} displays a gray scale intensity image.
 
 @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
+@end deftypefn
 
-@item ind2gray
+@deftypefn {Function File} {} ind2gray
 Convert an Octave indexed image to a gray scale intensity image.
 
 @code{@var{y} = ind2gray (@var{x})} converts an indexed image to a gray
@@ -74,8 +79,9 @@ intensities.  The intensity values lie between 0 and 1 inclusive.
 
 @code{@var{y} = ind2gray (@var{x}, @var{map})} uses the specified
 colormap instead of the current one in the conversion process.
+@end deftypefn
 
-@item ind2rgb
+@deftypefn {Function File} {} ind2rgb
 Convert an indexed image to red, green, and blue color components.
 
 @code{[@var{r}, @var{g}, @var{b}] = ind2rgb (@var{x})} uses the current
@@ -83,27 +89,34 @@ colormap for the conversion.
 
 @code{[@var{r}, @var{g}, @var{b}] = ind2rgb (@var{x}, @var{map})} uses
 the specified colormap.
+@end deftypefn
 
-@item loadimage
+@deftypefn {Function File} {} loadimage
 Load an image file.
 
 @code{[@var{x}, @var{map}] = loadimage (@var{file})} loads an image and
 it's associated color map from the specified @var{file}.  The image must
 be stored in Octave's image format.
+@end deftypefn
 
-@c @item rgb2ntsc
-@c @item ntsc2rgb
+@c @deftypefn {Function File} {} rgb2ntsc
+@c @end deftypefn
 
-@item ocean (@var{n})
+@c @c @deftypefn {Function File} {} ntsc2rgb
+@c @end deftypefn
+
+@deftypefn {Function File} {} ocean (@var{n})
 Create color colormap.  The argument @var{n} should be a scalar.  If it
 is omitted, 64 is assumed.
+@end deftypefn
 
-@item rgb2ind
+@deftypefn {Function File} {} rgb2ind
 Convert and RGB image to an Octave indexed image.
 
 @code{[@var{x}, @var{map}] = rgb2ind (@var{r}, @var{g}, @var{b})}
+@end deftypefn
 
-@item saveimage
+@deftypefn {Function File} {} saveimage
 Save a matrix to disk in image format.
 
 @code{saveimage (@var{file}, @var{x})} saves matrix @var{x} to @var{file}
@@ -128,4 +141,9 @@ black and white, the bitmap ppm and PostScript formats are used.  If the
 image is a gray scale image (the entries within each row of the colormap
 are equal) the gray scale ppm and PostScript image formats are used,
 otherwise the full color formats are used.
-@end ftable
+@end deftypefn
+
+@defvr {Built-in Variable} IMAGEPATH			
+A colon separated list of directories in which to search for image
+files.
+@end defvr

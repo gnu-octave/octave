@@ -28,24 +28,25 @@ encoding have one of the extensions @file{lin} or @file{raw}, and that
 files holding data in mu-law encoding end in @file{au}, @file{mu}, or
 @file{snd}.
 
-The basic functions are as follows.
-
-@ftable @code
-@item lin2mu
+@deftypefn {Function File} {} lin2mu (@var{x})
 If the vector @var{x} represents mono audio data in 8- or 16-bit
-linear encoding, @kbd{lin2mu (@var{x})} is the correspoding mu-law
+linear encoding, @code{lin2mu (@var{x})} is the correspoding mu-law
 encoding.
+@end deftypefn
 
-@item mu2lin
+@deftypefn {Function File} {} mu2lin (@var{x}, @var{bps})
 If the vector @var{x} represents mono audio data in mu-law encoding,
 @code{mu2lin (@var{x} [, @var{bps}])} converts it to linear encoding.
 The optional argument @var{bps} specifies whether the input data uses
 8 bit per sample (default) or 16 bit.
+@end deftypefn
 
-@item loadaudio
-@kbd{@var{x} = loadaudio (@var{name} [, @var{ext} [, @var{bps}]])} loads
-audio data from the file @file{@var{name}.@var{ext}} into the vector
-@var{x}.  
+@c XXX FIXME XXX -- ext and bps are optional, but we need to note the
+@c default values here too.
+
+@deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
+Loads audio data from the file @file{@var{name}.@var{ext}} into the
+vector @var{x}.  
 
 The extension @var{ext} determines how the data in the audio file is
 interpreted;  the extensions @file{lin} (default) and @file{raw}
@@ -54,14 +55,15 @@ to mu-law encoding.
 
 The argument @var{bps} can be either 8 (default) or 16, and specifies
 the number of bits per sample used in the audio file.
+@end deftypefn
 
-@item saveaudio
-@kbd{saveaudio (@var{name}, @var{x}, [, @var{ext} [, @var{bps}]])} saves
-a vector @var{x} of audio data to the file @file{@var{name}.@var{ext}}.
-The optional parameters @var{ext} and @var{bps} determine the encoding
-and the number of bits per sample used in the audio file (see
-@code{loadaudio});  defaults are @file{lin} and 8, respectively.
-@end ftable
+@deftypefn {Function File} {} saveaudio (@var{name}, @var{x}, @var{ext}, @var{bps})
+Saves a vector @var{x} of audio data to the file
+@file{@var{name}.@var{ext}}.  The optional parameters @var{ext} and
+@var{bps} determine the encoding and the number of bits per sample used
+in the audio file (see @code{loadaudio});  defaults are @file{lin} and
+8, respectively.
+@end deftypefn
 
 The following functions for audio I/O require special A/D hardware and
 operating system support.  It is assumed that audio data in linear
@@ -71,38 +73,29 @@ encoding.  This definitely works on Linux systems, and should also work
 on Suns.  If your hardware is accessed differently, please contact
 Andreas Weingessel <Andreas.Weingessel@@ci.tuwien.ac.at>.
 
-@ftable @code
-@item playaudio
-@kbd{playaudio (@var{name} [, @var{ext}])} plays the audio file
-@file{@var{name}.@var{ext}}.
+@deftypefn {Function File} {} playaudio (@var{name}, @var{ext})
+@deftypefnx {Function File} {} playaudio (@var{x})
+Plays the audio file @file{@var{name}.@var{ext}} or in the vector
+@var{x}.
+@end deftypefn
 
-@kbd{playaudio (@var{x})} plays the audio data contained in the vector
-@var{x}. 
+@deftypefn {Function File} {} record (@var{sec}, @var{sampling_rate})
+Records @var{sec} seconds of audio input into the vector @var{x}.  The
+default value for @var{sampling_rate} is 8000 samples per second, or
+8kHz.  The program waits until the @key{ENTER} key is hit, and then
+immediately starts to record.
+@end deftypefn
 
-@item record
-@kbd{@var{x} = record (@var{sec} [, @var{sampling_rate}])} records
-@var{sec} seconds of audio input into the vector @var{x}.  The default
-value for @var{sampling_rate} is 8000 samples per second, or 8kHz.  The
-program waits until the @key{ENTER} key is hit, and then immediately
-starts to record.
-
-@item setaudio
-@kbd{setaudio ([@var{type}])} displays the current value of the
-@var{type} property of your mixer hardware.
-
-@kbd{setaudio ([@var{type} [, @var{value}]])} sets the @var{type}
-property to @var{value}.
+@deftypefn {Function File} {} setaudio (@var{type})
+@deftypefnx {Function File} {} setaudio (@var{type}, @var{value})
+Set or display various properties of your mixer hardware.
 
 For example, if @code{vol} corresponds to the volume property, you can
 set it to 50 (percent) by @code{setaudio ("vol", 50)}.
 
 This is an simple experimental program to control the audio hardware
 settings.  It assumes that there is a @code{mixer} program which can be
-used as @kbd{mixer @var{type} @var{value}}, and simply executes
-@kbd{system ("mixer @var{type} @var{value}")}.  Future releases might
+used as @code{mixer @var{type} @var{value}}, and simply executes
+@code{system ("mixer @var{type} @var{value}")}.  Future releases might
 get rid of this assumption by using the @code{fcntl} interface.
-@end ftable
-
-@c Local Variables:
-@c TeX-command-default: "Texinfo"
-@c End:
+@end deftypefn

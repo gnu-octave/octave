@@ -19,19 +19,42 @@ a large volume of output stream by before you can read it.  With
 @code{less} (and some versions of @code{more}) it also allows you to
 scan forward and backward, and search for specific items.
 
-@findex fflush
 No output is displayed by the pager until just before Octave is ready to
-print the top level prompt, or read from the standard input using the
-@code{fscanf} or @code{scanf} functions.  This means that there may be
-some delay before any output appears on your screen if you have asked
-Octave to perform a significant amount of work with a single command
-statement.  The function @code{fflush} may be used to force output to be
-sent to the pager immediately.  @xref{C-Style I/O Functions}.
+print the top level prompt, or read from the standard input (for
+example, by using the @code{fscanf} or @code{scanf} functions).  This
+means that there may be some delay before any output appears on your
+screen if you have asked Octave to perform a significant amount of work
+with a single command statement.  The function @code{fflush} may be used
+to force output to be sent to the pager immediately.  @xref{C-Style I/O
+Functions}.
 
 You can select the program to run as the pager by setting the variable
 @code{PAGER}, and you can turn paging off by setting the value of the
-variable @code{page_screen_output} to the string @samp{"false"}.
-@xref{User Preferences}.
+variable @code{page_screen_output} to 0.
+
+@deffn {Command} more
+Turn output pagination on or off.
+@end deffn
+
+@defvr {Built-in Variable} PAGER
+The default value is @code{"less"}, or, if @code{less} is not available
+on your system, @code{"more"}.  @xref{Installation}.
+@end defvr
+
+@defvr {Built-in Variable} page_screen_output
+If the value of @code{page_screen_output} is nonzero, all output
+intended for the screen that is longer than one page is sent through a
+pager.  This allows you to view one screenful at a time.  Some pagers
+(such as @code{less}---see @ref{Installation}) are also capable of moving
+backward on the output.  The default value is 1.
+@end defvr
+
+@defvr {Built-in Variable} page_output_immediately
+If the value of @code{page_output_immediately} is nonzero, Octave sends
+output to the pager as soon as it is available.  Otherwise, Octave
+buffers its output and waits until just before the prompt is printed to
+flush it to the pager.  The default value is 0.
+@end defvr
 
 @menu
 * Basic Input and Output::      
@@ -40,6 +63,15 @@ variable @code{page_screen_output} to the string @samp{"false"}.
 
 @node Basic Input and Output, C-Style I/O Functions, Input and Output, Input and Output
 @section Basic Input and Output
+
+@menu
+* Terminal Output::             
+* Terminal Input::              
+* Simple File I/O::             
+@end menu
+
+@node Terminal Output, Terminal Input, Basic Input and Output, Basic Input and Output
+@subsection Terminal Output
 
 Since Octave normally prints the value of an expression as soon as it
 has been evaluated, the simplest of all I/O functions is a simple
@@ -54,9 +86,13 @@ pi = 3.1416
 This works well as long as it is acceptable to have the name of the
 variable (or @samp{ans}) printed along with the value.  To print the
 value of a variable without printing its name, use the function
-@code{disp}.  For example, the following expression
+@code{disp}.
 
-@findex disp
+The @code{format} command offers some control over the way Octave prints
+values with @code{disp} and through the normal echoing mechanism.
+
+@deftypefn {Built-in Function} {} disp (@var{x})
+Display the value of @var{x}.  For example, the following expression
 
 @example
 disp ("The value of pi is:"), disp (pi)
@@ -72,26 +108,12 @@ The value of pi is:
 
 @noindent
 Note that the output from @code{disp} always ends with a newline.
+@end deftypefn
 
-A simple way to control the output format is with the @code{format}
-statement.  For example, to print more digits for pi you can use the
-command
-
-@example
-format long
-@end example
-
-@noindent
-Then the expression above will print
-
-@example
-The value of pi is:
-3.14159265358979
-@end example
-
-@findex format
-
-Here is a summary of the options for @code{format}:
+@deffn {Command} format options
+Control the format of the output produced by @code{disp} and Octave's
+normal echoing mechanism.  Valid options are listed in the following
+table.
 
 @table @code
 @item short
@@ -157,15 +179,27 @@ This format only works for numeric values.
 @item bit
 Print the bit representation of numbers as stored in memory.
 For example, the value of @code{pi} is
-@code{0100000000001001001000011111101101010100010001000010110100011000}
-when printed in bit format on a workstation which stores 8 byte real
-values in IEEE format with the least significant byte first.
-This format only works for numeric types.
-@end table
 
-The @code{input} function may be used for prompting the user for a
-value and storing the result in a variable.  For example,
-@findex input
+@example
+@group
+01000000000010010010000111111011
+01010100010001000010110100011000
+@end group
+@end example
+
+(shown here in two 32 bit sections for typesetting purposes) when
+printed in bit format on a workstation which stores 8 byte real values
+in IEEE format with the least significant byte first.  This format only
+works for numeric types.
+@end table
+@end deffn
+
+@node Terminal Input, Simple File I/O, Terminal Output, Basic Input and Output
+@subsection Terminal Input
+
+@deftypefn {Built-in Function} {} input (@var{prompt})
+@deftypefnx {Built-in Function} {} input (@var{prompt}, "s")
+Print a prompt and wait for user input.  For example,
 
 @example
 input ("Pick a number, any number! ")
@@ -187,7 +221,7 @@ Currently, @code{input} only returns one value, regardless of the number
 of values produced by the evaluation of the expression.
 
 If you are only interested in getting a literal string value, you can
-call @code{input} with the character string @samp{s} as the second
+call @code{input} with the character string @code{"s"} as the second
 argument.  This tells Octave to return the string entered by the user
 directly, without evaluating it first.
 
@@ -195,64 +229,38 @@ Because there may be output waiting to be displayed by the pager, it is
 a good idea to always call @code{fflush (stdout)} before calling
 @code{input}.  This will ensure that all pending output is written to
 the screen before your prompt.  @xref{C-Style I/O Functions}.
+@end deftypefn
 
-@findex keyboard
-
-The second input function, @code{keyboard}, is normally used for simple
-debugging.  Using @code{keyboard}, it is possible to examine the values
-of variables within a function, and to assign newassign new variables
-Like @code{input}, it prompts the user for input, but no value is
-returned, and it continues to prompt for input until the user types
-@samp{quit}, or @samp{exit}.
+@deftypefn {Built-in Function} {} keyboard (@var{prompt})
+This function is normally used for simple debugging.  When the
+@code{keyboard} function is executed, Octave prints a prompt and waits
+for user input.  The input strings are then evaluated and the results
+are printed.  This makes it possible to examine the values of variables
+within a function, and to assign new values to variables.  No value is
+returned from the @code{keyboard} function, and it continues to prompt
+for input until the user types @samp{quit}, or @samp{exit}.
 
 If @code{keyboard} is invoked without any arguments, a default prompt of
 @samp{debug> } is used.
+@end deftypefn
 
-For both of these functions, the normal command line history and editing
-functions are available at the prompt.
+For both @code{input} and @code{keyboard}, the normal command line
+history and editing functions are available at the prompt.
 
-@findex save
-To save variables in a file, use the @code{save} command.  For example,
-the command
+@node Simple File I/O,  , Terminal Input, Basic Input and Output
+@subsection Simple File I/O
 
-@example
-save data a b c
-@end example
+The @code{save} and @code{load} commands allow data to be written to and
+read from disk files in various formats.
 
-@noindent
-saves the variables @samp{a}, @samp{b}, and @samp{c} in the file
-@file{data}.
+@deffn {Command} save options file v1 v2 @dots{}
+Save the named variables @var{v1}, @var{v2}, @dots{} in the file
+@var{file}.  The special filename @samp{-} can be used to write the
+output to your terminal.  If no variable names are listed, Octave saves
+all the variables in the current scope.  Valid options for the
+@code{save} command are listed in the following table.
 
-@vindex default_save_format
-The @var{save} command can read files in Octave's text and binary
-formats as well as @sc{Matlab}'s binary format.  You can specify the default
-format with the built-in variable @var{default_save_format} using one of
-the following values: @code{"binary"} or @code{"mat-binary"}.  The
-initial default save format is Octave's text format.
-
-@vindex save_precision
-You can use the built-in variable @code{save_precision} to specify the
-number of digits to keep when saving data in text format.
-
-The list of variables to save may include wildcard patterns containing
-the following special characters:
 @table @code
-@item ?
-Match any single character.
-
-@item *
-Match zero or more characters.
-
-@item [ @var{list} ]
-Match the list of characters specified by @var{list}.  If the first
-character is @code{!} or @code{^}, match all characters except those
-specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
-match all lower and upper case alphabetic characters. 
-@end table
-
-The following options may be specified for @code{save}.
-
-@ftable @code
 @item -ascii
 Save the data in Octave's text data format.  Using this flag overrides
 the value of the built-in variable @code{default_save_format}.
@@ -275,16 +283,58 @@ the value of the built-in variable @code{default_save_format}.
 @item -save-builtins
 Force Octave to save the values of built-in variables too.  By default,
 Octave does not save built-in variables.
-@end ftable
+@end table
 
-@findex load
+The list of variables to save may include wildcard patterns containing
+the following special characters:
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lower and upper case alphabetic characters. 
+@end table
+
 Saving global variables also saves the global status of the variable, so
 that if it is restored at a later time using @samp{load}, it will be
 restored as a global variable.
 
-To restore the values from a file, use the @code{load} command.  For
-example, to restore the variables saved in the file @file{data}, use the
-command
+The command
+
+@example
+save -binary data a b*
+@end example
+
+@noindent
+saves the variable @samp{a} and all variables beginning with @samp{b} to
+the file @file{data} in Octave's binary format.
+@end deffn
+
+There are two variables that modify the behavior of @code{save}.
+
+@defvr {Built-in Variable} default_save_format
+This variable specifies the default format for the @code{save} command.
+It should have one of the following values: @code{"ascii"},
+@code{"binary"}, @code{float-binary}, or @code{"mat-binary"}.  The
+initial default save format is Octave's text format.
+@end defvr
+
+@defvr {Built-in Variable} save_precision
+This variable specifies the number of digits to keep when saving data in
+text format.  The default value is 17.
+@end defvr
+
+@deffn {Command} load options file v1 v2 @dots{}
+To restore the values from a file, use the @code{load} command.  As with
+@code{save}, you may specify a list of variables and @code{load} will
+only extract those variables with names that match.  For example, to
+restore the variables saved in the file @file{data}, use the command
 
 @example
 load data
@@ -301,18 +351,15 @@ symbol table and given the value from the file.  Since it seems that
 both of these cases are likely to be the result of some sort of error,
 they will generate warnings.
 
-As with @code{save}, you may specify a list of variables and @code{load}
-will only extract those variables with names that match.
-
 The @code{load} command can read data stored in Octave's text and
 binary formats, and @sc{Matlab}'s binary format.  It will automatically
 detect the type of file and do conversion from different floating point
 formats (currently only IEEE big and little endian, though other formats
 may added in the future).
 
-The following options may be specified for @code{load}.
+Valid options for @code{load} are listed in the following table.
 
-@ftable @code
+@table @code
 @item -force
 Force variables currently in memory to be overwritten by variables with
 the same name found in the file.
@@ -325,36 +372,38 @@ Force Octave to assume the file is in Octave's binary format.
 
 @item -mat-binary
 Force Octave to assume the file is in @sc{Matlab}'s binary format.
-@end ftable
+@end table
+@end deffn
 
 @node C-Style I/O Functions,  , Basic Input and Output, Input and Output
 @section C-Style I/O Functions
 
-The C-style input and output functions provide most of the functionality
-of the C programming language's standard I/O library.  The argument
-lists for some of the input functions are slightly different, however,
-because Octave has no way of passing arguments by reference.
+Octave's C-style input and output functions provide most of the
+functionality of the C programming language's standard I/O library.  The
+argument lists for some of the input functions are slightly different,
+however, because Octave has no way of passing arguments by reference.
 
 In the following, @var{file} refers either to an integer file number
 (as returned by @file{fopen}) or a file name.
 
 There are three files that are always available:
 
-@table @code
-@item stdin
+@defvr {Built-in Variable} stdin
 The standard input stream (file number 0).  When Octave is used
 interactively, this is filtered through the command line editing
 functions.
+@end defvr
 
-@item stdout
+@defvr {Built-in Variable} stdout
 The standard output stream (file number 1).  Data written to the
 standard output is normally filtered through the pager.
+@end defvr
 
-@item stderr
+@defvr {Built-in Variable} stderr
 The standard error stream (file number 2).  Even if paging is turned on,
 the standard error is not sent to the pager.  It is useful for error
 messages and prompts.
-@end table
+@end defvr
 
 You should always use the symbolic names given in the table above,
 rather than referring to these files by number, since it will make
@@ -380,13 +429,11 @@ your programs clearer.
 @node Opening and Closing Files, Formatted Output, C-Style I/O Functions, C-Style I/O Functions
 @subsection Opening and Closing Files
 
-@findex fopen
-To open a file, use the function @code{fopen (name, mode)}.  It returns
-an integer value that may be used to refer to the file later.  The
-second argument is a one or two character string that specifies whether
-the file is to be opened for reading, writing, or both.
-
-For example,
+@deftypefn {Built-in Function} {fid =} fopen (@var{name}, @var{mode})
+Opens the named file with the specified mode.  Returns an integer value
+that may be used to refer to the file later.  The @var{mode} is a
+one or two character string that specifies whether the file is to be
+opened for reading, writing, or both.  For example,
 
 @example
 myfile = fopen ("splat.dat", "r");
@@ -395,12 +442,6 @@ myfile = fopen ("splat.dat", "r");
 @noindent
 opens the file @file{splat.dat} for reading.  Opening a file that is
 already open has no effect.
-
-@c XXX FIXME XXX -- There still seem to be some minor bugs with fopen.
-@c You should probably get an error if you try to reopen a file with a
-@c different mode.  You should probably get a warning if the file is
-@c already open, etc.
-
 
 The possible values @samp{mode} may have are
 
@@ -425,12 +466,13 @@ discared.
 Open or create a file for reading or writing at the end of the
 file.
 @end table
+@end deftypefn
 
-@findex fclose
-To close a file once you are finished with it, use the function
-@code{fclose (@var{file})}.  If an error is encountered while trying to close
-the file, an error message is printed and @code{fclose} returns 0.
-Otherwise, it returns 1.
+@deftypefn {Built-in Function} {} fclose (@var{fid})
+Closes the specified file.  If an error is encountered while trying to
+close the file, an error message is printed and @code{fclose} returns
+0.  Otherwise, it returns 1.
+@end deftypefn
 
 @node Formatted Output, Output Conversion Syntax, Opening and Closing Files, C-Style I/O Functions
 @subsection Formatted Output
@@ -440,23 +482,24 @@ This section describes how to call @code{printf} and related functions.
 The following functions are available for formatted output.  They are
 modelled after the C language functions of the same name.
 
-@ftable @code
-@item printf (@var{template}, ...)
+@deftypefn {Function File} {} printf (@var{template}, @dots{})
 The @code{printf} function prints the optional arguments under the
 control of the template string @var{template} to the stream
 @code{stdout}.
+@end deftypefn
 
-@item fprintf (@var{file}, @var{template}, ...)
+@deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})
 This function is just like @code{printf}, except that the output is
-written to the stream @var{file} instead of @code{stdout}.
+written to the stream @var{fid} instead of @code{stdout}.
+@end deftypefn
 
-@item sprintf (@var{template}, ...)
+@deftypefn {Built-in Function} {} sprintf (@var{template}, @dots{})
 This is like @code{printf}, except that the output is written to a
 string.  Unlike the C library function, which requires you to provide a
 suitably sized string as an argument, Octave's @code{sprintf} function
 returns the string, automatically sized to hold all of the items
 converted.
-@end ftable
+@end deftypefn
 
 The @code{printf} function can be used to print any number of arguments.
 The template string argument you supply in a call provides
@@ -801,21 +844,22 @@ prints @samp{ nowhere }.
 Here are the descriptions of the functions for performing formatted
 input.
 
-@ftable @code
-@item scanf (@var{template})
+@deftypefn {Built-in Function} {} scanf (@var{template})
 The @code{scanf} function reads formatted input from the stream
 @code{stdin} under the control of the template string @var{template}.
 The resulting values are returned.
+@end deftypefn
 
-@item fscanf (@var{file}, @var{template})
+@deftypefn {Built-in Function} {} fscanf (@var{fid}, @var{template})
 This function is just like @code{scanf}, except that the input is read
-from the stream @var{file} instead of @code{stdin}.
+from the stream @var{fid} instead of @code{stdin}.
+@end deftypefn
 
-@item sscanf (@var{string}, @var{template})
+@deftypefn {Built-in Function} {} sscanf (@var{string}, @var{template})
 This is like @code{scanf}, except that the characters are taken from the
 string @var{string} instead of from a stream.  Reaching the end of the
 string is treated as an end-of-file condition.
-@end ftable
+@end deftypefn
 
 Calls to @code{scanf} are superficially similar to calls to
 @code{printf} in that arbitrary arguments are read under the control of
@@ -1017,10 +1061,9 @@ Octave has to C-style functions for reading and writing binary data.
 They are @code{fread} and @code{fwrite} and are patterned after the
 standard C functions with the same names.
 
-@ftable @code
-@item fread (@var{file}, @var{size}, @var{precision})
+@deftypefn {Built-in Function} {} fread (@var{fid}, @var{size}, @var{precision})
 This function reads data in binary form of type @var{precision} from the
-specified @var{file}, which may be either a file name, or a file number
+specified @var{fid}, which may be either a file name, or a file number
 as returned from @code{fopen}.
 
 The argument @var{size} specifies the size of the matrix to return.  It
@@ -1039,10 +1082,11 @@ default precision is @code{"uchar"}.
 The @code{fread} function returns two values, @code{data}, which is the
 data read from the file, and @code{count}, which is the number of
 elements read.
+@end deftypefn
 
-@item fwrite (@var{file}, @var{data}, @var{precision})
+@deftypefn {Built-in Function} {} fwrite (@var{fid}, @var{data}, @var{precision})
 This function writes data in binary form of type @var{precision} to the
-specified @var{file}, which may be either a file name, or a file number
+specified @var{fid}, which may be either a file name, or a file number
 as returned from @code{fopen}.
 
 The argument @var{data} is a matrix of values that are to be written to
@@ -1058,44 +1102,56 @@ The @code{fwrite} function returns the number of elements written.
 
 The behavior of @code{fwrite} is undefined if the values in @var{data}
 are too large to fit in the specified precision.
-@end ftable
+@end deftypefn
 
 @node Other I/O Functions,  , Binary I/O, C-Style I/O Functions
 @subsection Other I/O Functions
 
-@findex fgets
-@example
-fgets (@var{file}, len)
-@end example
+@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
 Read @samp{len} characters from a file.
+@end deftypefn
 
-To flush output to a stream, use the function @code{fflush (@var{file})}.
-This is useful for ensuring that all pending output makes it to the
-screen before some other event occurs.  For example, it is always a good
-idea to flush the standard output stream before calling @code{input}.
+@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
+Read @samp{len} characters from a file.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fflush (@var{fid})
+Flush output to @var{fid}.  This is useful for ensuring that all
+pending output makes it to the screen before some other event occurs.
+For example, it is always a good idea to flush the standard output
+stream before calling @code{input}.
+@end deftypefn
 
 Three functions are available for setting and determining the position of
 the file pointer for a given file.
 
-@findex ftell
-The position of the file pointer (as the number of characters from the
-beginning of the file) can be obtained using the the function
-@code{ftell (@var{file})}.
+@deftypefn {Built-in Function} {} ftell (@var{fid})
+Return the position of the file pointer as the number of characters
+from the beginning of the file @var{fid}.
+@end deftypefn
 
-@findex fseek
-To set the file pointer to any location within the file, use the
-function @code{fseek (@var{file}, offset, origin)}.  The pointer is placed
-@code{offset} characters from the @code{origin}, which may be one of the
-predefined variables @code{SEEK_CUR} (current position), @code{SEEK_SET}
-(beginning), or @code{SEEK_END} (end of file). If @code{origin} is
-omitted, @code{SEEK_SET} is assumed.  The offset must be zero, or a
-value returned by @code{ftell} (in which case @code{origin} must be
-@code{SEEK_SET}.  @xref{Predefined Constants}.
+@deftypefn {Built-in Function} {} fseek (@var{fid}, offset, origin)
+Set the file pointer to any location within the file @var{fid}.  The
+pointer is positioned @code{offset} characters from the @code{origin},
+which may be one of the predefined variables @code{SEEK_CUR} (current
+position), @code{SEEK_SET} (beginning), or @code{SEEK_END} (end of
+file). If @code{origin} is omitted, @code{SEEK_SET} is assumed.  The
+offset must be zero, or a value returned by @code{ftell} (in which case
+@code{origin} must be @code{SEEK_SET}.
+@end deftypefn
 
-@findex frewind
-The function @code{frewind (@var{file})} moves the file pointer to the
-beginning of a file, returning 1 for success, and 0 if an error was
-encountered.  It is equivalent to @code{fseek (@var{file}, 0, SEEK_SET)}.
+@defvr {Built-in Variable} SEEK_SET
+@defvrx {Built-in Variable} SEEK_CUR
+@defvrx {Built-in Variable} SEEK_END
+These variables may be used as the optional third argument for the
+function @code{fseek}.
+@end defvr
+
+@deftypefn {Built-in Function} {} frewind (@var{fid})
+Move the file pointer to the beginning of the file @var{fid}, returning
+1 for success, and 0 if an error was encountered.  It is equivalent to
+@code{fseek (@var{fid}, 0, SEEK_SET)}.
+@end deftypefn
 
 The following example stores the current file position in the variable
 @samp{marker}, moves the pointer to the beginning of the file, reads
@@ -1108,22 +1164,22 @@ fourch = fgets (myfile, 4);
 fseek (myfile, marker, SEEK_SET);
 @end example
 
-@findex feof
-The function @code{feof (@var{file})} allows you to find out if an
-end-of-file condition has been encountered for a given file.  Note that
-it will only return 1 if the end of the file has already been
-encountered, not if the next read operation will result in an
-end-of-file condition.
+@deftypefn {Built-in Function} {} feof (@var{fid})
+Returns 1 if an end-of-file condition has been encountered for a given
+file and 0 otherwise.  Note that it will only return 1 if the end of the
+file has already been encountered, not if the next read operation will
+result in an end-of-file condition.
+@end deftypefn
 
-@findex ferror
-Similarly, the function @code{ferror (@var{file})} allows you to find
-out if an error condition has been encountered for a given file.  Note
-that it will only return 1 if an error has already been encountered, not
-if the next operation will result in an error condition.
+@deftypefn {Built-in Function} {} ferror (@var{fid})
+Returns 1 if an error condition has been encountered for a given file
+and 0 otherwise.  Note that it will only return 1 if an error has
+already been encountered, not if the next operation will result in an
+error condition.
+@end deftypefn
 
-@findex kbhit
-The function @code{kbhit} may be usd to read a single keystroke from the
-keyboard.  For example,
+@deftypefn {Built-in Function} {} kbhit ()
+Read a single keystroke from the keyboard.  For example,
 
 @example
 x = kbhit ();
@@ -1132,8 +1188,9 @@ x = kbhit ();
 @noindent
 will set @var{x} to the next character typed at the keyboard, without
 requiring a carriage return to be typed.
+@end deftypefn
 
-@findex freport
+@deftypefn {Built-in Function} {} freport ()
 Finally, it is often useful to know exactly which files have been
 opened, and whether they are open for reading, writing, or both.  The
 command @code{freport} prints this information for all open files.  For
@@ -1151,3 +1208,25 @@ octave:13> freport
       3     r  myfile
 @end group
 @end example
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})
+Write a string to a file with no formatting.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} puts (@var{string})
+Write a string to the standard output with no formatting.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
+Start a subprocess with 2-way communication.
+@end deftypefn
+
+@deftypefn {Built-in Function} {fid =} popen (@var{command}, @var{mode})
+Open a pipe to a subprocess.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} pclose (@var{fid})
+Close a pipe from a subprocess.
+@end deftypefn
+

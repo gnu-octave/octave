@@ -139,6 +139,8 @@ public:
 
   octave_value hermitian (void) const;
 
+  octave_value convert_to_str (void) const;
+
   void print (ostream& os);
 
   int type_id (void) const { return t_id; }

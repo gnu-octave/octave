@@ -10,7 +10,7 @@
 @c This file documents the use of the standalone GNU Info program,
 @c versions 2.7 and later. 
 
-@node Using Info, Concept Index, Command Line Editing, Top
+@node Using Info, Copying, Command Line Editing, Top
 @appendix Using Info
 
 @menu

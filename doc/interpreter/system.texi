@@ -22,11 +22,11 @@ and even start other programs from the Octave prompt.
 @node Timing Utilities, Filesystem Utilities, System Utilities, System Utilities
 @section Timing Utilities
 
-@findex time
-
-The function @code{time} returns the current time as the number of
-seconds since the epoch.  The epoch is referenced to 00:00:00 CUT
-(Coordinated Universal Time) 1 Jan 1970.
+@deftypefn {Built-in Function} {} time ()
+Return the current time as the number of seconds since the epoch.  The
+epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
+1970.
+@end deftypefn
 
 Several of Octave's time functions a data structure for time that
 includes the following elements:
@@ -67,31 +67,35 @@ Daylight Savings Time flag.
 Time zone.
 @end table
 
-@findex localtime
-@findex gmtime
+@deftypefn {Built-in Function} {} mktime (@var{time_struct})
+Convert a time structure to the number of seconds since the epoch.
+@end deftypefn
 
-Given a value returned from time (or any nonnegative integer) the
-function @code{localtime} returns a time structure corresponding to the
-local time zone, and @code{gmtime} returns a time structure
-corresponding to CUT.
+@deftypefn {Built-in Function} {} localtime (@var{t})
+Given a value returned from time (or any nonnegative integer),
+return a time structure corresponding to the local time zone.
+@end deftypefn
 
-@findex asctime
-@findex ctime
+@deftypefn {Built-in Function} {} gmtime (@var{t})
+Given a value returned from time (or any nonnegative integer),
+return a time structure corresponding to CUT.
+@end deftypefn
 
-The function @code{asctime} formats a time structure the following
-five-field format: Thu Mar 28 08:40:14 1996.  The function
-@code{ctime (time)} is equivalent to @code{asctime (localtime (time))}.
+@deftypefn {Function File} {} asctime (@var{time_struct})
+Convert a time structure to a string using the following five-field
+format: Thu Mar 28 08:40:14 1996.  The function @code{ctime (time)} is
+equivalent to @code{asctime (localtime (time))}.
+@end deftypefn
 
-@findex strftime
-
-The function @code{strftime} can be used to format a time structure in a
-very flexible way using @samp{%} substitutions similar to those in printf.
-Except where noted, substituted fields have a fixed size; numeric fields
-are padded if necessary.  Padding is with zeros by default; for fields
-that display a single number, padding can be changed or inhibited by
-following the @samp{%} with one of the modifiers described below.  Unknown
-field specifiers are copied as normal characters.  All other characters
-are copied to the output without change.
+@deftypefn {Built-in Function} {} strftime (@var{time_struct})
+Format a time structure in a flexible way using @samp{%} substitutions
+similar to those in @code{printf}.  Except where noted, substituted
+fields have a fixed size; numeric fields are padded if necessary.
+Padding is with zeros by default; for fields that display a single
+number, padding can be changed or inhibited by following the @samp{%}
+with one of the modifiers described below.  Unknown field specifiers are
+copied as normal characters.  All other characters are copied to the
+output without change.
 
 Octave's @code{strftime} function supports a superset of the ANSI C
 field specifiers.
@@ -223,12 +227,11 @@ Last two digits of year (00-99).
 @item %Y
 Year (1970-).
 @end table
+@end deftypefn
 
-@findex clock
-
-The function @code{clock} returns a vector containing the current year,
-month (1-12), day (1-31), hour (0-23), minute (0-59) and second (0-61).
-For example,
+@deftypefn {Function File} {} clock ()
+Return a vector containing the current year, month (1-12), day (1-31),
+hour (0-23), minute (0-59) and second (0-61).  For example,
 
 @example
 octave:13> clock
@@ -239,24 +242,21 @@ ans =
 
 The function clock is more accurate on systems that have the
 @code{gettimeofday} function.
+@end deftypefn
 
-@findex date
-
-To get the date as a character string in the form DD-MMM-YY, use
-the command @code{date}.  For example,
+@deftypefn {Function File} {} date ()
+Returns the date as a character string in the form DD-MMM-YY.  For
+example,
 
 @example
 octave:13> date
 ans = 20-Aug-93
 @end example
+@end deftypefn
 
-@findex tic
-@findex toc
-@findex etime
-
-Octave also has functions for computing time intervals and CPU time
-used.  The functions @code{tic} and @code{toc} can be used to set and
-check a wall-clock timer.  For example,
+@deftypefn {Function File} {} tic ()
+@deftypefnx {Function File} {} toc ()
+These functions set and check a wall-clock timer.  For example,
 
 @example
 tic ();
@@ -267,10 +267,11 @@ elapsed_time = toc ();
 @noindent
 will set the variable @code{elapsed_time} to the number of seconds since
 the most recent call to the function @code{tic}.
+@end deftypefn
 
-The function @code{etime} provides another way to get elapsed wall-clock
-time by returning the difference (in seconds) between two time values
-returned from @code{clock}.  For example:
+@deftypefn {Function File} {} etime (@var{t1}, @var{t2})
+Return the difference (in seconds) between two time values returned from
+@code{clock}.  For example:
 
 @example
 t0 = clock ();
@@ -281,38 +282,27 @@ elapsed_time = etime (clock (), t0);
 @noindent
 will set the variable @code{elapsed_time} to the number of seconds since
 the variable @code{t0} was set.
+@end deftypefn
 
-@findex cputime
-
-The function @code{cputime} allows you to obtain information about the
-amount of CPU time your Octave session is using.  For example,
-
-@example
-[total, user, system] = cputime ();
-@end example
-
-@noindent
-returns the CPU time used by your Octave session.  The first output is
+@deftypefn {Built-in Function} {[@var{total}, @var{user}, @var{system}] =} cputime ();
+Return the CPU time used by your Octave session.  The first output is
 the total time spent executing your process and is equal to the sum of
 second and third outputs, which are the number of CPU seconds spent
 executing in user mode and the number of CPU seconds spent executing in
 system mode, respectively.  If your system does not have a way to report
 CPU time usage, @code{cputime} returns 0 for each of its output values.
+@end deftypefn
 
-@findex is_leap_year
-
-Finally, Octave's function @code{is_leap_year} returns 1 if the given
-year is a leap year and 0 otherwise.  If no arguments are provided,
-@code{is_leap_year} will use the current year.  For example,
+@deftypefn {Function File} {} is_leap_year (@var{year})
+Return 1 if the given year is a leap year and 0 otherwise.  If no
+arguments are provided, @code{is_leap_year} will use the current year.
+For example,
 
 @example
 octave:13> is_leap_year (2000)
 ans = 1
 @end example
-
-@noindent
-Contrary to what many people who post misinformation to Usenet
-apparently believe, Octave knows that the year 2000 will be a leap year.
+@end deftypefn
 
 @node Filesystem Utilities, Interacting with the OS, Timing Utilities, System Utilities
 @section Filesystem Utilities
@@ -321,77 +311,134 @@ Octave includes the following functions for renaming and deleting files,
 creating, deleting, and reading directories, and for getting information
 about the status of files.
 
-@ftable @code
-@item rename (@var{from}, @var{to})
+@deftypefn {Built-in Function} {} rename (@var{from}, @var{to})
 Rename a file.
+@end deftypefn
 
-@item unlink (@var{file})
+@deftypefn {Built-in Function} {} unlink (@var{file})
 Delete a file.
+@end deftypefn
 
-@item readdir (@var{dir})
+@deftypefn {Built-in Function} {} readdir (@var{dir})
 Returns names of files in the directory @var{dir} as an array of
 strings.
+@end deftypefn
 
-@item mkdir (@var{dir})
+@deftypefn {Built-in Function} {} mkdir (@var{dir})
 Create a directory
+@end deftypefn
 
-@item rmdir (@var{dir})
+@deftypefn {Built-in Function} {} rmdir (@var{dir})
 Remove a directory.
+@end deftypefn
 
-@item umask (@var{mask})
-Set permission mask for file creation.
 @c XXX FIXME XXX -- this needs to be explained, but I don't feel up to
 @c it just now...
 
-@item stat (@var{file})
+@deftypefn {Built-in Function} {} umask (@var{mask})
+Set permission mask for file creation.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} stat (@var{file})
 Get information about a file.  If @var{file} is a symbolic link,
 @code{stat} returns information about the file that the symbolic link
 references.
+@end deftypefn
 
-@item lstat (@var{file})
+@deftypefn {Built-in Function} {} lstat (@var{file})
 Get information about a symbolic link.  If @var{file} is not a symbolic
 link, @code{lstat} is equivalent to @code{stat}.
-@end ftable
+@end deftypefn
 
 @node Interacting with the OS, System Information, Filesystem Utilities, System Utilities
 @section Interacting with the OS
 
-@findex shell_cmd
-@findex system
+@deftypefn {Built-in Function} {} fork ()
+Create a copy of the current process.
+@end deftypefn
 
-You can execute any shell command using the function
-@code{system (@var{cmd}, @var{flag})}.  The second argument is optional.
-If it is present, the output of the command is returned by
-@code{system} as a string.  If it is not supplied, any output from
-the command is printed, with the standard output filtered through the
-pager.  For example,
+@deftypefn {Built-in Function} {} exec (@var{file}, @var{args})
+Replace current process with a new process.
+@end deftypefn
 
-@c XXX FIXME XXX -- perhaps there should be another possible value for
-@c the second argument, to indicate that the command is to be run
-@c interactively, with the standard input and output connected to
-@c /dev/tty.
+@deftypefn {Built-in Function} {fid =} dup2 (@var{old}, @var{new})
+Duplicate a file descriptor.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{file_ids}, @var{status}] =} pipe ()
+Create an interprocess channel.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fcntl (@var{fid}, @var{request}, @var{argument})
+Control open file descriptors.
+
+@vtable @code
+@item F_DUPFD
+@item F_GETFD
+@item F_GETFL
+@item F_SETFD
+@item F_SETFL
+@item O_APPEND
+@item O_CREAT
+@item O_EXCL
+@item O_NONBLOCK
+@item O_RDONLY
+@item O_RDWR
+@item O_TRUNC
+@item O_WRONLY
+@end vtable
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getpgrp ()
+Return the process group id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getpid ()
+Return the process id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getppid ()
+Return the process id of the parent process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} mkfifo       
+Create a FIFO special file.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} waitpid      
+Check the status of or wait for subprocesses.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} atexit (@var{fcn})
+Register function to be called when Octave exits.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})
+Execute a shell command specified by @var{string}.  The second argument is optional.
+If @var{type} is @code{"async"}, the process is started in the
+background and the process id of the child proces is returned
+immediately.  Otherwise, the process is started, and Octave waits until
+it exits.  If @var{type} argument is omitted, a value of @code{"sync"}
+is assumed.
+
+If two input arguments are given (the actual value of
+@var{return_output} is irrelevant) and the subprocess is started
+synchronously, or if @var{system} is called with one input argument and
+one or more output arguments, the output from the command is returned.
+Otherwise, if the subprocess is executed synchronously, it's output is
+sent to the standard output.  To send the output of a command executed
+with @var{system} through the pager, use a command like
 
 @example
-users = system ("finger", 1)
+disp (system (cmd, 1));
 @end example
 
 @noindent
-places the output of the command @code{finger} in the variable
-@code{users}.
-
-If you want to execute a shell command and have it behave as if it were
-typed directly from the shell prompt, you may need to specify extra
-arguments for the command.  For example, to get @code{bash} to behave as
-an interactive shell, you can type
+or
 
 @example
-system ("bash -i >/dev/tty");
+printf ("%s\n", system (cmd, 1));
 @end example
-
-The first argument, @samp{-i}, tells @code{bash} to behave as an
-interactive shell, and the redirection of the standard output stream
-prevents any output produced by @code{bash} from being sent back to
-Octave, where it would be buffered until Octave displays another prompt.
 
 The @code{system} function can return two values.  The first is any
 output from the command that was written to the standard output stream,
@@ -404,14 +451,24 @@ and the second is the output status of the command.  For example,
 @noindent
 will set the variable @code{output} to the string @samp{foo}, and the
 variable @code{status} to the integer @samp{2}.
+@end deftypefn
 
-The name @code{shell_cmd} exists for compatibility with earlier versions
-of Octave.
+@defvr {Built-in Variable} EXEC_PATH
+The variable @code{EXEC_PATH} is a colon separated list of directories
+to search when executing subprograms.  Its initial value is taken from
+the environment variable @code{OCTAVE_EXEC_PATH} (if it exists) or
+@code{PATH}, but that value can be overridden by the the command line
+argument @code{--exec-path PATH}, or by setting the value of
+@code{EXEC_PATH} in a startup script.  If the value of @code{EXEC_PATH}
+begins (ends) with a colon, the directories
+@code{OCTAVE_HOME/libexec/octave/VERSION/exec/ARCH} and
+@code{OCTAVE_HOME/bin} are prepended (appended) to @code{EXEC_PATH} (if
+you don't specify a value for @code{EXEC_PATH} explicitly, these special
+directories are prepended to your shell path).
+@end defvr
 
-@findex getenv
-
-You can find the values of environment variables using the function
-@code{getenv}.  For example,
+@deftypefn {Built-in Function} {} getenv (@var{var})
+Returns the value of the environment variable @var{var}.  For example,
 
 @example
 getenv ("PATH")
@@ -419,22 +476,20 @@ getenv ("PATH")
 
 @noindent
 returns a string containing the value of your path.
+@end deftypefn
 
-@findex putenv
+@deftypefn {Built-in Function} {} putenv (@var{var}, @var{value})
+Set the value of the environment variable @var{var} to @var{value}.
+@end deftypefn
 
-The function @code{putenv (@var{var}, @var{value})} sets the value of
-the environment variable @var{var} to @var{value}.
+@deftypefn {Built-in Function} {} clc ()
+@deftypefnx {Built-in Function} {} home ()
+Clear the terminal screen and move the cursor to the upper left corner.
+@end deftypefn
 
-@findex clc
-@findex home
-
-The functions @code{clc}, and @code{home} clear your
-terminal screen and move the cursor to the upper left corner.
-
-@findex cd
-
-You can change the current working directory using the @code{cd}
-command.  Tilde expansion is performed on the path.  For example,
+@deffn {Command} cd dir
+@deffnx {Command} chdir dir
+Change the current working directory to @var{dir}.  For example,
 
 @example
 cd ~/octave
@@ -444,20 +499,21 @@ cd ~/octave
 Changes the current working directory to @file{~/octave}.  If the
 directory does not exist, an error message is printed and the working
 directory is not changed.
+@end deffn
 
-@findex chdir
+@deftypefn {Built-in Function} {} pwd ()
+Returns the current working directory.
+@end deftypefn
 
-The name @code{chdir} is an alias for @code{cd}.
+@defvr {Built-in Variable} PWD
+The current working directory.  The value of @code{PWD} is updated each
+time the current working directory is changed with the @samp{cd}
+command.
+@end defvr
 
-@findex pwd
-
-The command @code{pwd} prints the current working directory.
-
-@findex dir
-@findex ls
-
-The functions @code{dir} and @code{ls} list directory contents.  For
-example,
+@deffn {Command} ls
+@deffnx {Command} dir
+List directory contents.  For example,
 
 @example
 octave:13> ls -l
@@ -469,39 +525,38 @@ total 12
 The @code{dir} and @code{ls} commands are implemented by calling your
 system's directory listing command, so the available options may vary
 from system to system.
+@end deffn
 
 @node System Information, Other Functions, Interacting with the OS, System Utilities
 @section System Information
 
-@findex computer
-
-If possible, @code{computer} prints a string of the form
-@var{cpu}-@var{vendor}-@var{os} that identifies the kind of computer
-Octave is running on.  For example,
+@deftypefn {Built-in Function} {} computer ()
+Returns a string of the form @var{cpu}-@var{vendor}-@var{os} that
+identifies the kind of computer Octave is running on.  For example,
 
 @example
 octave:13> computer
 sparc-sun-sunos4.1.2
 @end example
+@end deftypefn
 
-@findex isieee
+@deftypefn {Built-in Function} {} isieee ()
+Return 1 if your computer claims to conform to the IEEE standard for
+floating point calculations.
+@end deftypefn
 
-The function @code{isieee} returns 1 if your computer claims to conform
-to the IEEE standard for floating point calculations.
+@deftypefn {Built-in Function} {} version ()
+Returns Octave's version number as a string.  This is also the value of
+the built-in variable @code{OCTAVE_VERSION}.  @xref{Built-in Variables}.
+@end deftypefn
 
-@findex version
-The function @code{version} returns Octave's version number as a string.
-This is also the value of the built-in variable @code{OCTAVE_VERSION}.
-@xref{Built-in Variables}.
-
-@findex getrusage
-
-The function @code{getrusage} returns a structure containing a number of
-statistics about the current Octave process.  Not all fields are
-available on all systems.  If it is not possible to get CPU time
-statistics, the CPU time slots are set to zero.  Other missing data are
-replaced by NaN.  Here is a list of all the possible fields that can be
-present in the structure returned by @code{getrusage}:
+@deftypefn {Built-in Function} {} getrusage ()
+Return a structure containing a number of statistics about the current
+Octave process.  Not all fields are available on all systems.  If it is
+not possible to get CPU time statistics, the CPU time slots are set to
+zero.  Other missing data are replaced by NaN.  Here is a list of all
+the possible fields that can be present in the structure returned by
+@code{getrusage}:
 
 @table @code
 @item 
@@ -555,23 +610,29 @@ elements @code{sec} (seconds) @code{usec} (microseconds).
 A structure containing the user CPU time used.  The structure has the
 elements @code{sec} (seconds) @code{usec} (microseconds).
 @end table
+@end deftypefn
 
 @node Other Functions,  , System Information, System Utilities
 @section Other Functions
 
-@findex tilde_expand
+@c XXX FIXME XXX -- need to define tilde expansion.
+ 
+@deftypefn {Built-in Function} {} tilde_expand (@var{string})
+Performs tilde expansion on @var{string}.
+@end deftypefn
 
-The function @code{tilde_expand (@var{string})} performs tilde expansion
-on @var{string}.
-
-@findex pause
-
-The function @code{pause} allows you to suspend the execution of a
-program.  If invoked without any arguments, Octave waits until you type
-a character.  With a numeric argument, it pauses for the given number of
-seconds.  For example, the following statement prints a message and then
-waits 5 seconds before clearing the screen.
+@deftypefn {Built-in Function} {} pause (@var{seconds})
+Suspend the execution of the program.  If invoked without any arguments,
+Octave waits until you type a character.  With a numeric argument, it
+pauses for the given number of seconds.  For example, the following
+statement prints a message and then waits 5 seconds before clearing the
+screen.
 
 @example
-fprintf (stderr, "wait please...\n"), pause (5), clc
+@group
+fprintf (stderr, "wait please...\n");
+pause (5);
+clc;
+@end group
 @end example
+@end deftypefn

@@ -6,22 +6,24 @@
 @node Amusements, Emacs, Programming Utilities, Top
 @chapter Amusements
 
-@findex texas_lotto
 @cindex lottery numbers
 @cindex numbers, lottery
+@deftypefn {Function File} {} texas_lotto ()
 Octave cannot promise that you will actually win the lotto, but it can
 pick your numbers for you.  The function @code{texas_lotto} will select
 six numbers between 1 and 50.
+@end deftypefn
 
-@findex list_primes
 @cindex prime numbers
 @cindex numbers, prime
-The function @code{list_primes (@var{n})} uses a brute-force algorithm to
-compute the first @var{n} primes.
+@deftypefn {Function File} {} list_primes (@var{n})
+Computes the first @var{n} primes using a brute-force algorithm.
+@end deftypefn
 
 @findex casesen
 @findex flops
 @findex exit
 @findex quit
+@findex warranty
 Other amusing functions include @code{casesen}, @code{flops},
-@code{sombrero}, @code{exit}, and @code{quit}.
+@code{sombrero}, @code{exit}, @code{quit}, and @code{warranty}.

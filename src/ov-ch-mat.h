@@ -111,6 +111,9 @@ public:
 
   charMatrix char_matrix_value (bool = false) const { return matrix; }
 
+  octave_value convert_to_str (void) const
+    { return octave_value (matrix); }
+
   void print (ostream& os);
 
   int type_id (void) const { return t_id; }

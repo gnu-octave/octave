@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Preface, Copying, Top, Top
+@node Preface, Introduction, Top, Top
 @unnumbered Preface
 @cindex acknowledgements
 @cindex contributors
@@ -81,6 +81,10 @@ for command history editing, and the portion of this manual that
 documents it.
 
 @item
+Klaus Gebhardt <gebhardt@@crunch.ikp.physik.th-darmstadt.de> ported
+Octave to OS/2.
+
+@item
 A. Scottedward Hodel (scotte@@eng.auburn.edu) contributed a number
 of functions including @code{expm}, @code{qzval}, @code{qzhess},
 @code{syl}, @code{lyap}, and @code{balance}.
@@ -94,10 +98,14 @@ these and numerous other functions, rewrote the Emacs mode for editing
 Octave code and provided its documentation, and has helped tremendously
 with testing.  He has also been a constant source of new ideas for
 improving Octave.
- 
+
 @item
 Phil Johnson (johnsonp@@nicco.sscnet.ucla.edu) has helped to make Linux
 releases available.
+
+@item
+Michel Juillard <juillard@@msh-paris.fr> ported Octave to DOS and OS/2
+systems.
 
 @item
 Friedrich Leisch (leisch@@ci.tuwien.ac.at) provided the
@@ -182,7 +190,8 @@ Richard Stallman, for writing GNU.
 
 Portions of this document have been adapted from the @code{gawk},
 @code{readline}, @code{gcc}, and C library manuals, published by the Free
-Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Software Foundation, 59 Temple Place---Suite 330, Boston, MA
+02111--1307, USA.
 
 This project would not have been possible without the GNU software used
 in and used to produce Octave.

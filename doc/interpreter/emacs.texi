@@ -4,7 +4,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Emacs
+@node Emacs, Installation, Amusements, Top
 @chapter Using Emacs With Octave
 
 The development of Octave code can greatly be facilitated using Emacs

@@ -7,29 +7,24 @@
 @node String Functions, System Utilities, Matrix Manipulation, Top
 @chapter String Functions
 
-Octave currently has a limited ability to work with strings.
-
-@findex strcmp
-
-The function @code{strcmp (@var{s1}, @var{s2})} compares two strings,
-returning 1 if they are the same, and 0 otherwise.
+@deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
+Compares two strings, returning 1 if they are the same, and 0 otherwise.
 
 @strong{Note: For compatibility with @sc{Matlab}, Octave's strcmp
 function returns 1 if the strings are equal, and 0 otherwise.  This is
 just the opposite of the corresponding C library function.}
+@end deftypefn
 
-@findex int2str
-@findex num2str
+@deftypefn {Function File} {} int2str (@var{n})
+@deftypefnx {Function File} {} num2str (@var{x})
+Convert a number to a string.  These functions are not very flexible,
+but are provided for compatibility with @sc{Matlab}.  For better control
+over the results, use @code{sprintf} (@pxref{Formatted Output}).
+@end deftypefn
 
-The functions @code{int2str} and @code{num2str} convert a numeric
-argument to a string.  These functions are not very flexible, but are
-provided for compatibility with @sc{Matlab}.  For better control over
-the results, use @code{sprintf} (@pxref{Formatted Output}).
-
-@findex setstr
-
-The function @code{setstr} can be used to convert a vector to a string.
-Each element of the vector is converted to the corresponding ASCII
+@deftypefn {Built-in Function} {} setstr (@var{x})
+Convert a matrix to a string.  Each element of the matrix is converted
+to the corresponding ASCII 
 character.  For example,
 
 @example
@@ -42,12 +37,18 @@ creates the string
 @example
 abc
 @end example
+@end deftypefn
 
-@findex undo_string_escapes
+@defvr {Built-in Variable} implicit_str_to_num_ok
+If the value of @code{implicit_str_to_num_ok} is nonzero, implicit
+conversions of strings to their numeric ASCII equivalents are allowed.
+Otherwise, an error message is printed and control is returned to the
+top level.  The default value is 0.
+@end defvr
 
-The function @code{undo_string_escapes (@var{string})} converts special
-characters in strings back to their escaped forms.  For example, the
-expression
+@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})
+Converts special characters in strings back to their escaped forms.  For
+example, the expression
 
 @example
 bell = "\a";
@@ -70,202 +71,235 @@ ans = \a
 replaces the unprintable alert character with its printable
 representation.  @xref{String Constants}, for a description of string
 escapes.
+@end deftypefn
 
-Here is a list of some other string functions.
+@deftypefn {Function File} {} bin2dec (@var{s})
+Given a binary number represented as a string of zeros and ones,
+returns the corresponding decimal number.  For example,
 
-@ftable @code
-@item bin2dec
-Given a binary number @var{x} represented as a 0/1-string,
-@code{bin2dec (@var{x})} returns the decimal number represented by
-@var{x}.  
 @example
 bin2dec ("1110")
-   @result{} 14
+    @result{} 14
 @end example
+@end deftypefn
 
-@item blanks
-@code{blanks (@var{n})} returns a string of @var{n} blanks.
+@deftypefn {Function File} {} blanks (var{n})
+Returns a string of @var{n} blanks.
+@end deftypefn
 
-@item deblank
-@code{deblank (@var{s})} removes the trailing blanks from the string
-@var{s}. 
+@deftypefn {Function File} {} deblank (@var{s})
+Removes the trailing blanks from the string @var{s}. 
+@end deftypefn
 
-@item dec2bin
-If @var{x} is a nonnegative integer, @kbd{bin2dec (@var{x})} returns the
-binary number corresponding to @var{x}.
+@deftypefn {Function File} {} dec2bin (@var{n})
+Given a nonnegative integer, returns the corresponding binary number as
+a string of ones and zeros.  For example, 
 
-For example, 
 @example
 dec2bin (14)
   @result{} "1110"
 @end example
+@end deftypefn
 
-@item dec2hex
-If @var{x} is a nonnegative integer, @kbd{dec2hex (@var{x})} returns the
-hex number corresponding to @var{x}.
+@deftypefn {Function File} {} dec2hex (@var{n})
+Given a nonnegative integer, returns the corresponding hexadecimal
+number as a string.  For example,
 
-For example,
 @example
 dec2hex (2748)
    @result{} "abc"
 @end example
+@end deftypefn
 
-@item findstr
-@kbd{findstr (@var{s}, @var{t} [,@var{overlap}])} returns the vector of
-all positions in the longer of the two strings @var{s} and @var{t} where
-an occurence of the shorter of the two starts.
-
+@deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
+Returns the vector of all positions in the longer of the two strings
+@var{s} and @var{t} where an occurence of the shorter of the two starts.
 If the optional argument @var{overlap} is nonzero, the returned vector
-can include overlapping positions (this is the default).
+can include overlapping positions (this is the default).  For example,
 
-For example,
 @example
 findstr ("ababab", "a")
    @result{} [1  3  5]
 findstr ("abababa", "aba", 0)
    @result{} [1, 5]
 @end example
+@end deftypefn
 
-@item hex2dec
-For a hex number @var{x} represented as a hex string, @kbd{hex2dec
-(@var{x})} returns the decimal number corresponding to @var{x}.
+@deftypefn {Function File} {} hex2dec (@var{s})
+Given a hexadecimal number represented as a string, returns the
+corresponding decimal number.  For example,
 
-For example,
 @example
 hex2dec ("12B")
    @result{} 299
 hex2dec ("12b")
    @result{} 299
 @end example
+@end deftypefn
 
-@item index
-@kbd{index (@var{s}, @var{t})} returns the position of the first
-occurence of the string @var{t} in the string @var{s}, or 0 if no
-occurence is found.
+@deftypefn {Function File} {} index (@var{s}, @var{t})
+Returns the position of the first occurence of the string @var{t} in the
+string @var{s}, or 0 if no occurence is found.  For example,
 
-For example,
 @example
 index ("Teststring", "t")
    @result{} 4
 @end example
 
 @strong{Note:}  This function does not work for arrays of strings.
+@end deftypefn
 
-@item rindex
-@kbd{rindex (@var{s}, @var{t})} returns the position of the last
-occurence of the string @var{t} in the string @var{s}, or 0 if no
-occurence is found.
+@deftypefn {Function File} {} rindex (@var{s}, @var{t})
+Returns the position of the last occurence of the string @var{t} in the
+string @var{s}, or 0 if no occurence is found.  For example,
 
-For example,
 @example
 rindex ("Teststring", "t")
    @result{} 6
 @end example
 
 @strong{Note:}  This function does not work for arrays of strings.
+@end deftypefn
 
-@item split
-@kbd{@var{m} = split (@var{s}, @var{t})} divides the string @var{s} into
-pieces separated by @var{t}, and stores the pieces as the rows of @var{m}
-(padded with blanks to form a valid matrix). 
+@deftypefn {Function File} {} split (@var{s}, @var{t})
+Divides the string @var{s} into pieces separated by @var{t}, returning
+the result in a string array (padded with blanks to form a valid
+matrix).  For example,
 
-For example,
 @example
 split ("Test string", "t")
    @result{} Tes 
        s  
       ring
 @end example
+@end deftypefn
 
-@item str2mat
-@kbd{str2mat (@var{s_1}, @dots{}, @var{s_n})} returns a matrix
-containing the strings @var{s_1}, @dots{}, @var{s_n} as its rows.
-Each string is padded with blanks in order to form a valid matrix.
+@deftypefn {Function File} {} str2mat (@var{s_1}, @dots{}, @var{s_n})
+Returns a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
+its rows.  Each string is padded with blanks in order to form a valid
+matrix.
 
 @quotation
 @strong{Note:}
 This function is modelled after @sc{MATLAB}.  In Octave, you can create
 a matrix of strings by @kbd{[@var{s_1}; @dots{}; @var{s_n}]}.
 @end quotation
+@end deftypefn
 
-@item strrep
-@kbd{strrep (@var{s}, @var{x}, @var{y})} replaces all occurences of the
-substring @var{x} of the string @var{s} with the string @var{y}.
+@defvr {Built-in Variable} string_fill_char
+@end defvr
 
-For example,
+@deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
+Replaces all occurences of the substring @var{x} of the string @var{s}
+with the string @var{y}.  For example,
+
 @example
 strrep ("This is a test string", "is", "&%$")
    @result{} Th&%$ &%$ a test string
 @end example
+@end deftypefn
 
-@item substr
-@kbd{substr (@var{s}, @var{beg}, @var{len})} returns the substring of
-@var{s} which starts at character number @var{beg} and is @var{len}
-characters long.
+@deftypefn {Function File} {} substr (@var{s}, @var{beg}, @var{len})
+Returns the substring of @var{s} which starts at character number
+@var{beg} and is @var{len} characters long.  For example,
+
+@example
+substr ("This is a test string", 6, 9)
+   @result{} is a test
+@end example
 
 @quotation
 @strong{Note:}
 This function is patterned after AWK.  You can get the same result by
 @kbd{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
 @end quotation
+@end deftypefn
 
-For example,
-@example
-substr ("This is a test string", 6, 9)
-   @result{} is a test
-@end example
+@deftypefn {Function File} {} tolower (@var{s})
+Return a copy of the string @var{s}, with each upper-case character
+replaced by the corresponding lower-case one; nonalphabetic characters
+are left unchanged.  For example,
 
-@item tolower
-@kbd{tolower (@var{s})} returns a copy of the string @var{s}, with each
-upper-case character replaced by the corresponding lower-case one;
-nonalphabetic characters are left unchanged.
-
-For example,
 @example
 tolower ("MiXeD cAsE 123")
    @result{} "mixed case 123"
 @end example
+@end deftypefn
 
-@item toupper
-@kbd{toupper (@var{s})} returns a copy of the string @var{s}, with each 
-lower-case character replaced by the corresponding upper-case one;
-nonalphabetic characters are left unchanged.
+@deftypefn {Function File} {} toupper (@var{s})
+Returns a copy of the string @var{s}, with each  lower-case character
+replaced by the corresponding upper-case one; nonalphabetic characters
+are left unchanged.  For example,
 
-For example,
 @example
+@group
 toupper ("MiXeD cAsE 123")
    @result{} "MIXED CASE 123"
+@end group
 @end example
-@end ftable
+@end deftypefn
+
+@deftypefn {Function File} {} toascii (@var{s})
+Return ASCII representation of @var{s} in a matrix.  For example,
+
+@example
+@group
+toascii ("ASCII")
+   @result{} [ 65, 83, 67, 73, 73 ]
+@end group
+
+@end example
+@end deftypefn
 
 Octave also provides the following C-type character class test
 functions.  They all operate on string arrays and return matrices of
 zeros and ones.  Elements that are nonzero indicate that the condition
 was true for the corresponding character in the string array.
 
-@ftable @code
-@item isalnum
+@deftypefn {Mapping Function} {} isalnum (@var{s})
 letter or a digit
-@item isalpha   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isalpha (@var{s})
 letter
-@item isascii   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isascii (@var{s})
 ascii
-@item iscntrl   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} iscntrl (@var{s})
 control character
-@item isdigit   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isdigit (@var{s})
 digit
-@item isgraph   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isgraph (@var{s})
 printable (but not space character)
-@item islower   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} islower (@var{s})
 lower case
-@item isprint   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isprint (@var{s})
 printable (including space character)
-@item ispunct   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} ispunct (@var{s})
 punctuation
-@item isspace   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isspace (@var{s})
 whitespace
-@item isupper   
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isupper (@var{s})
 upper case
-@item isxdigit  
+@end deftypefn
+
+@deftypefn {Mapping Function} {} isxdigit (@var{s})
 hexadecimal digit
-@end ftable
+@end deftypefn

@@ -8,20 +8,51 @@
 Octave has a limited set of functions for managing sets of data, where a
 set is defined as a collection unique elements.
 
-@findex create_set
+@deftypefn {Function File} {} create_set (@var{x})
 Given a matrix or vector of values, the function @code{create_set}
 returns a row vector containing unique values, sorted in ascending
-order.  For example, @samp{create_set ([1, 2; 3, 4; 4, 2])} returns
-the vector @samp{[1, 2, 3, 4]}.
+order.  For example,
 
-@findex union
-@findex intersection
-The functions @code{union} and @code{intersection} take two sets as
-arguments and return the union and interection, respectively.  For
-example, @samp{union ([1, 2, 3], [2, 3, 5])} returns the vector
-@samp{[1, 2, 5]}.
+@example
+create_set ([ 1, 2; 3, 4; 4, 2 ])
+@end example
 
-@findex complement
-The function @code{complement (@var{a}, @var{b})} returns the elements
-of set @var{b} that are not in set @var{a}.  For example,
-@samp{complement ([1, 2, 3], [2, 3, 5])} returns the value @samp{5}.
+@noindent
+returns the vector
+
+@example
+[ 1, 2, 3, 4 ]
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} union (@var{x}, @var{y})
+Return the set of elements that are in either of the sets @var{x} and
+@var{y}.  For example,
+
+@example
+union ([ 1, 2, 3 ], [ 2, 3, 5 ])
+@end example
+
+@noindent
+returns the vector
+
+@example
+[ 1, 2, 5 ]
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} intersection (@var{x}, @var{y})
+Return the set of elements that are in both sets @var{x} and @var{y}.
+@end deftypefn
+
+@deftypefn {Function File} {} complement (@var{x}, @var{y})
+Returns the elements of set @var{y} that are not in set @var{x}.  For
+example,
+
+@example
+complement ([ 1, 2, 3 ], [ 2, 3, 5 ])
+@end example
+
+@noindent
+returns the value @samp{5}.
+@end deftypefn

@@ -102,8 +102,6 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-  charMatrix char_matrix_value (bool = false) const { return matrix; }
-
   charMatrix all_strings (void) const;
 
   string string_value (void) const;

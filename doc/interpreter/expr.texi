@@ -64,17 +64,21 @@ floating point values).  Here are some examples of real-valued numeric
 constants, which all have the same value:
 
 @example
+@group
 105
 1.05e+2
 1050e-1
+@end group
 @end example
 
 To specify complex constants, you can write an expression of the form
 
 @example
+@group
 3 + 4i
 3.0 + 4.0i
 0.3e1 + 40e-1i
+@end group
 @end example
 
 all of which are equivalent.  The letter @samp{i} in the previous example
@@ -93,12 +97,14 @@ constant, a space must not appear between the number and the @samp{i}.
 If it does, Octave will print an error message, like this:
 
 @example
+@group
 octave:13> 3 + 4 i
 
 parse error:
 
   3 + 4 i
         ^
+@end group
 @end example
 
 You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
@@ -117,8 +123,10 @@ either double-quote or single-quote marks.  For example, both of the
 following expressions
 
 @example
+@group
 "parrot"
 'parrot'
+@end group
 @end example
 
 @noindent
@@ -232,28 +240,28 @@ a = [1, 2; 3, 4]
 @noindent
 results in the matrix
 
+@iftex
+@tex
+$$ a = \left[ \matrix{ 1 & 2 \cr 3 & 4 } \right] $$
+@end tex
+@end iftex
+@ifinfo
 @example
-a =
+@group
 
-  1  2
-  3  4
+        /      \
+        | 1  2 |
+  a  =  |      |
+        | 3  4 |
+        \      /
+
+@end group
 @end example
-
-The commas which separate the elements on a row may be omitted, and the
-semicolon that marks the beginning of a new row may be replaced by one
-or more new lines.  The expression
-
-@example
-a = [ 1 2
-      3 4 ]
-@end example
-
-@noindent
-is equivalent to the one above.
+@end ifinfo
 
 Elements of a matrix may be arbitrary expressions, provided that the
-dimensions all agree.  For example, given the above matrix, the
-expression
+dimensions all make sense when combining the various pieces.  For
+example, given the above matrix, the expression
 
 @example
 [ a, a ]
@@ -263,34 +271,62 @@ expression
 produces the matrix
 
 @example
+@group
 ans =
 
   1  2  1  2
   3  4  3  4
+@end group
 @end example
 
 @noindent
 but the expression
 
 @example
-[ a 1 ]
+[ a, 1 ]
 @end example
 
 @noindent
 produces the error
 
-@c XXX FIXME XXX -- this error should eventually have line and column
-@c information associated with it.
 @example
-error: number of rows must match
+error: number of rows must match near line 13, column 6
 @end example
 
+@noindent
+(assuming that this expression was entered as the first thing on line
+13, of course).
+
+Commas and semicolons are not always required to separate matrix
+elements and rows.  The expression
+
+@example
+@group
+a = [ 1 2
+      3 4 ]
+@end group
+@end example
+
+@noindent
+is equivalent to the one above.
+
 Inside the square brackets that delimit a matrix expression, Octave
-looks at the surrounding context to determine whether spaces should be
-converted into element separators, or simply ignored, so commands like
+looks at the surrounding context to determine whether spaces and newline
+characters should be converted into element and row separators, or
+simply ignored, so commands like
 
 @example
 [ linspace (1, 2) ]
+@end example
+
+@noindent
+and
+
+@example
+@group
+octave:13> a = [ 1 2
+> 3 4 ]
+@end group
 @end example
 
 @noindent
@@ -346,7 +382,142 @@ valid expression
 For clarity, it is probably best to always use commas and semicolons to
 separate matrix elements and rows.  It is possible to enforce this style
 by setting the built-in variable @code{whitespace_in_literal_matrix} to
-@code{"ignore"}.  @xref{Built-in Variables}.
+@code{"ignore"}.
+
+@defvr {Built-in Variable} whitespace_in_literal_matrix
+This variable allows some control over how Octave decides to convert
+spaces to commas and semicolons in matrix expressions like
+@samp{[m (1)]} or
+
+@example
+[ 1, 2,
+  3, 4 ]
+@end example
+
+If the value of @code{whitespace_in_literal_matrix} is @code{"ignore"},
+Octave will never insert a comma or a semicolon in a literal matrix
+list.  For example, the expression @samp{[1 2]} will result in an error
+instead of being treated the same as @samp{[1, 2]}, and the expression
+
+@example
+[ 1, 2,
+  3, 4 ]
+@end example
+
+@noindent
+will result in the vector [1 2 3 4] instead of a matrix.
+
+If the value of @code{whitespace_in_literal_matrix} is @code{"traditional"},
+Octave will convert spaces to a comma between identifiers and @samp{(}.  For
+example, given the matrix
+
+@example
+m = [3 2]
+@end example
+
+@noindent
+the expression
+
+@example
+[m (1)]
+@end example
+
+@noindent
+will be parsed as
+
+@example
+[m, (1)]
+@end example
+
+@noindent
+and will result in
+
+@example
+[3 2 1]
+@end example
+
+@noindent
+and the expression
+
+@example
+[ 1, 2,
+  3, 4 ]
+@end example
+
+@noindent
+will result in a matrix because the newline character is converted to a
+semicolon (row separator) even though there is a comma at the end of the
+first line (trailing commas or semicolons are ignored).  This is
+apparently how @sc{Matlab} behaves.
+
+Any other value for @code{whitespace_in_literal_matrix} results in behavior
+that is the same as traditional, except that Octave does not
+convert spaces to a comma between identifiers and @samp{(}.  For
+example, the expression
+
+@example
+[m (1)]
+@end example
+
+will produce @samp{3}.  This is the way Octave has always behaved.
+@end defvr
+
+When you type a matrix or the name of a variable whose value is a
+matrix, Octave responds by printing the matrix in with neatly aligned
+rows and columns.  If the rows of the matrix are too large to fit on the
+screen, Octave splits the matrix and displays a header before each
+section to indicate which columns are being displayed.
+
+@noindent
+You can use the following variables to control the format of the output.
+
+@defvr {Built-in Variable} output_max_field_width
+This variable specifies the maximum width of a numeric output field.
+The default value is 10.
+@end defvr
+
+@defvr {Built-in Variable} output_precision
+This variable specifies the minimum number of significant figures to
+display for numeric output.  The default value is 5.
+@end defvr
+
+It is possible to achieve a wide range of output styles by using
+different values of @code{output_precision} and
+@code{output_max_field_width}.  Reasonable combinations can be set using
+the @code{format} function.  @xref{Basic Input and Output}.
+
+@defvr {Built-in Variable} split_long_rows
+For large matrices, Octave may not be able to display all the columns of
+a given row on one line of your screen.  This can result in missing
+information or output that is nearly impossible to decipher, depending
+on whether your terminal truncates or wraps long lines.
+
+If the value of @code{split_long_rows} is nonzero, Octave will display
+the matrix in a series of smaller pieces, each of which can fit within
+the limits of your terminal width.  Each set of rows is labeled so that
+you can easily see which columns are currently being displayed.
+For example:
+
+@smallexample
+@group
+octave:13> rand (2,10)
+ans =
+
+ Columns 1 through 6:
+
+  0.75883  0.93290  0.40064  0.43818  0.94958  0.16467
+  0.75697  0.51942  0.40031  0.61784  0.92309  0.40201
+
+ Columns 7 through 10:
+
+  0.90174  0.11854  0.72313  0.73326
+  0.44672  0.94303  0.56564  0.82150
+@end group
+@end smallexample
+
+@noindent
+The default value of @code{split_long_rows} is nonzero.
+@end defvr
 
 @menu
 * Empty Matrices::              
@@ -366,33 +537,78 @@ Number 5, May 1993.  Briefly, given a scalar @code{s}, and an @var{m} by
 following are true:
 
 @example
+@group
 s * [](mxn) = [](mxn) * s = [](mxn)
 
     [](mxn) + [](mxn) = [](mxn)
 
-    [](0xm) * M(mxn) = [](0xn)
+    [](0xm) *  M(mxn) = [](0xn)
 
-    M(mxn) * [](nx0) = [](mx0)
+     M(mxn) * [](nx0) = [](mx0)
 
-    [](mx0) * [](0xn) = 0(mxn)
+    [](mx0) * [](0xn) =  0(mxn)
+@end group
 @end example
 
-By default, dimensions of the empty matrix are now printed along
-with the empty matrix symbol, @samp{[]}.  For example:
+By default, dimensions of the empty matrix are printed along with the
+empty matrix symbol, @samp{[]}.  For example:
 
 @example
+@group
 octave:13> zeros (3, 0)
 ans = 
 
 [](3x0)
+@end group
 @end example
 
 The built-in variable @code{print_empty_dimensions} controls this
-behavior (@pxref{User Preferences}).
+behavior.
+
+@defvr {Built-in Variable} print_empty_dimensions
+If the value of @code{print_empty_dimensions} is nonzero, the
+dimensions of empty matrices are printed along with the empty matrix
+symbol, @samp{[]}.  For example, the expression
+
+@example
+zeros (3, 0)
+@end example
+
+@noindent
+will print
+
+@example
+ans =
+
+[](3x0)
+@end example
+@end defvr
 
 Empty matrices may also be used in assignment statements as a convenient
 way to delete rows or columns of matrices.
 @xref{Assignment Ops, ,Assignment Expressions}.
+
+Octave will normally issue a warning if it finds an empty matrix in the
+list of elements that make up another matrix.  You can use the variable
+@code{empty_list_elements_ok} to suppress the warning or to treat it as
+an error.
+
+@defvr {Built-in Variable} empty_list_elements_ok
+This variable controls whether Octave ignores empty matrices in a matrix
+list.
+
+For example, if the value of @code{empty_list_elements_ok} is
+nonzero, Octave will ignore the empty matrices in the expression
+
+@example
+a = [1, [], 3, [], 5]
+@end example
+
+@noindent
+and the variable @samp{a} will be assigned the value @samp{[ 1 3 5 ]}.
+
+The default value is @code{"warn"}.
+@end defvr
 
 @node Ranges, Variables, Matrices, Expressions
 @section Ranges
@@ -415,16 +631,14 @@ For example, the range
 @end example
 
 @noindent
-defines the set of values @samp{[ 1 2 3 4 5 ]} (the increment has been
-omitted, so it is taken as 1), and the range
+defines the set of values @samp{[ 1 2 3 4 5 ]}, and the range
 
 @example
 1 : 3 : 5
 @end example
 
 @noindent
-defines the set of values @samp{[ 1 4 ]}.  In this case, the base value
-is 1, the increment is 3, and the limit is 5.
+defines the set of values @samp{[ 1 4 ]}.
 
 Although a range constant specifies a row vector, Octave does @emph{not}
 convert range constants to vectors unless it is necessary to do so.
@@ -455,13 +669,20 @@ about 30 characters.  The following are all valid variable names
 @cindex getting a good job
 @cindex flying high and fast
 @example
+@group
 x
 x15
 __foo_bar_baz__
 fucnrdthsucngtagdjb
+@end group
 @end example
 
 @noindent
+However, names like @code{__foo_bar_baz__} that begin and end with two
+underscores are understood to be reserved for internal use by Octave.
+You should not use them in code you write, except to access Octave's
+documented internal variables and built-in symbolic constants.
+
 Case is significant in variable names.  The symbols @code{a} and
 @code{A} are distinct variables.
 
@@ -478,9 +699,10 @@ built-in symbols are constants and may not be changed.  Others can be
 used and assigned just like all other variables, but their values are
 also used or changed automatically by Octave.
 
-Variables in Octave can be assigned either numeric or string values.
-Variables may not be used before they have been given a value.  Doing so
-results in an error.
+Variables in Octave do not have fixed types, so it is possible to first
+store a numeric value in a variable and then to later use the same name
+to hold a string value in the same program.  Variables may not be used
+before they have been given a value.  Doing so results in an error.
 
 @node Index Expressions, Data Structures, Variables, Expressions
 @section Index Expressions
@@ -493,8 +715,15 @@ Indices may be scalars, vectors, ranges, or the special operator
 
 Vectors are indexed using a single expression.  Matrices require two
 indices unless the value of the built-in variable
-@code{do_fortran_indexing} is @code{"true"}, in which case a matrix may
-also be indexed by a single expression (@pxref{User Preferences}).
+@code{do_fortran_indexing} is nonzero, in which case matrices may
+also be indexed by a single expression.
+
+@defvr {Built-in Variable} do_fortran_indexing
+If the value of @code{do_fortran_indexing} is nonzero, Octave allows 
+you to select elements of a two-dimensional matrix using a single index
+by treating the matrix as a single vector created from the columns of
+the matrix.  The default value is 0. 
+@end defvr
 
 Given the matrix
 
@@ -506,9 +735,11 @@ a = [1, 2; 3, 4]
 all of the following expressions are equivalent
 
 @example
+@group
 a (1, [1, 2])
 a (1, 1:2)
 a (1, :)
+@end group
 @end example
 
 @noindent
@@ -520,8 +751,10 @@ result is a new matrix whose elements correspond to the elements of the
 index vector that are equal to one.  For example,
 
 @example
+@group
 a = [1, 2; 3, 4];
 a ([1, 0], :)
+@end group
 @end example
 
 @noindent
@@ -531,28 +764,62 @@ This operation can be useful for selecting elements of a matrix based on
 some condition, since the comparison operators return matrices of ones
 and zeros.
 
-Unfortunately, this special zero-one form of indexing leads to a
-conflict with the standard indexing operation.  For example, should the
-following statements
+This special zero-one form of indexing leads to a conflict with the
+standard indexing operation.  For example, should the following
+statements
 
 @example
+@group
 a = [1, 2; 3, 4];
 a ([1, 1], :)
+@end group
 @end example
 
 @noindent
 return the original matrix, or the matrix formed by selecting the first
 row twice?  Although this conflict is not likely to arise very often in
 practice, you may select the behavior you prefer by setting the built-in
-variable @code{prefer_zero_one_indexing} (@pxref{User Preferences}).
+variable @code{prefer_zero_one_indexing}.
+
+@defvr {Built-in Variable} prefer_zero_one_indexing
+If the value of @code{prefer_zero_one_indexing} is nonzero, Octave
+will perform zero-one style indexing when there is a conflict with the
+normal indexing rules.  @xref{Index Expressions}.  For example, given a
+matrix
+
+@example
+a = [1, 2, 3, 4]
+@end example
+
+@noindent
+with @code{prefer_zero_one_indexing} is set to nonzero, the
+expression
+
+@example
+a ([1, 1, 1, 1])
+@end example
+
+@noindent
+results in the matrix @samp{[ 1  2  3  4 ]}.  If the value of
+@code{prefer_zero_one_indexing} set to 0, the result would be
+the matrix @samp{[ 1 1 1 1 ]}.
+
+In the first case, Octave is selecting each element corresponding to a
+@samp{1} in the index vector.  In the second, Octave is selecting the
+first element multiple times.
+
+The default value for @code{prefer_zero_one_indexing} is 0.
+@end defvr
 
 Finally, indexing a scalar with a vector of ones can be used to create a
 vector the same size as the the index vector, with each element equal to
 the value of the original scalar.  For example, the following statements
 
 @example
+@group
 a = 13;
 a ([1, 1, 1, 1])
+@end group
 @end example
 
 @noindent
@@ -562,8 +829,10 @@ Similarly, indexing a scalar with two vectors of ones can be used to
 create a matrix.  For example the following statements
 
 @example
+@group
 a = 13;
 a ([1, 1], [1, 1, 1])
+@end group
 @end example
 
 @noindent
@@ -574,46 +843,100 @@ use the function @samp{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Matrices}.
 
+@defvr {Built-in Variable} prefer_column_vectors
+If @code{prefer_column_vectors} is nonzero, operations like
+
+@example
+for i = 1:10
+  a (i) = i;
+endfor
+@end example
+
+@noindent
+(for @samp{a} previously  undefined) produce column vectors.  Otherwise, row
+vectors are preferred.  The default value is 0.
+
+If a variable is already defined to be a vector (a matrix with a single
+row or column), the original orientation is respected, regardless of the
+value of @code{prefer_column_vectors}.
+@end defvr
+
+@defvr {Built-in Variable} resize_on_range_error
+If the value of @code{resize_on_range_error} is nonzero, expressions
+like
+
+@example
+for i = 1:10
+  a (i) = i;
+endfor
+@end example
+
+@noindent
+(for @samp{a} previously undefined) result in the variable @samp{a}
+being resized to be just large enough to hold the new value.  Otherwise
+uninitialized elements are set to zero.  If the value of
+@code{resize_on_range_error} is 0, an error message is
+printed and control is returned to the top level.  The default value is
+1.
+@end defvr
+
 @node Data Structures, Calling Functions, Index Expressions, Expressions
 @section Data Structures
 @cindex structures
 @cindex data structures
 
-Octave includes a limited amount of support for organizing data in
-structures.  The current implementation uses an associative array
-with indices limited to strings, but the syntax is more like C-style
-structures.  Here are some examples of using data structures in Octave.
+Octave includes support for organizing data in structures.  The current
+implementation uses an associative array with indices limited to
+strings, but the syntax is more like C-style structures.  Here are some
+examples of using data structures in Octave.
 
-Elements of structures can be of any value type.
+Elements of structures can be of any value type.  For example, the list
+of statements
 
 @example
 octave:1> x.a = 1; x.b = [1, 2; 3, 4]; x.c = "string";
-octave:2> x.a
-x.a = 1
-octave:3> x.b
-x.b =
-
-  1  2
-  3  4
-
-octave:4> x.c
-x.c = string
 @end example
+
+@noindent
+creates a structure with three elements.  To print the value of the
+structure, you can type its name, just as for any other variable:
+
+@example
+@group
+octave:2> x
+x =
+@{
+  a = 1
+  b =
+
+    1  2
+    3  4
+
+  c = string
+@}
+@end group
+@end example
+
+@noindent
+Note that Octave may print the elements in any order.
 
 Structures may be copied.
 
 @example
+@group
 octave:1> y = x
 y =
+@{
+  a = 1
+  b =
 
-<structure: a b c>
+    1  2
+    3  4
+
+  c = string
+@}
+@end group
 @end example
-
-Note that when the value of a structure is printed, Octave only displays
-the names of the elements.  This prevents long and confusing output from
-large deeply nested structures, but makes it more difficult to view the
-values of simple structures, so this behavior may change in a future
-version of Octave.
 
 Since structures are themselves values, structure elements may reference
 other structures.  The following statements change the value of the
@@ -621,26 +944,65 @@ element @code{b} of the structure @code{x} to be a data structure
 containing the single element @code{d}, which has a value of 3.
 
 @example
+@group
 octave:1> x.b.d = 3
 x.b.d = 3
 octave:2> x.b
-x.b =
+ans =
+@{
+  d = 3
+@}
+octave:3> x
+x =
+@{
+  a = 1
+  b =
+  @{
+    d = 3
+  @}
 
-<structure: d>
-
-octave:3> x.b.d
-x.b.d = 3
+  c = string
+@}
+@end group
 @end example
+
+Note that when Octave prints the value of a structure that contains
+other structures, only a few levels are displayed.  For example,
+
+@example
+@group
+octave:1> a.b.c.d.e = 1;
+octave:2> a
+a =
+@{
+  b =
+  @{
+    c = <structure>
+  @}
+@}
+@end group
+@end example
+
+@noindent
+This prevents long and confusing output from large deeply nested
+structures.
+
+@defvr {Built-in Variable} struct_levels_to_print
+You can tell Octave how many structure levels to display by setting the
+built-in variable @code{struct_levels_to_print}.  The default value is 2.
+@end defvr
 
 Functions can return structures.  For example, the following function
 separates the real and complex parts of a matrix and stores them in two
 elements of the same structure variable.
 
 @example
+@group
 octave:1> function y = f (x)
 > y.re = real (x);
 > y.im = imag (x);
 > endfunction
+@end group
 @end example
 
 When called with a complex-valued argument, @code{f} returns the data
@@ -648,31 +1010,29 @@ structure containing the real and imaginary parts of the original
 function argument.
 
 @example
-octave:1> f (rand (3) + rand (3) * I);
+@group
+octave:2> f (rand (3) + rand (3) * I);
 ans =
+@{
+  im =
 
-<structure: im re>
+    0.26475  0.14828
+    0.18436  0.83669
 
-octave:3> ans.im
-ans.im =
+  re =
 
-  0.093411  0.229690  0.627585
-  0.415128  0.221706  0.850341
-  0.894990  0.343265  0.384018
-
-octave:4> ans.re
-ans.re =
-
-  0.56234  0.14797  0.26416
-  0.72120  0.62691  0.20910
-  0.89211  0.25175  0.21081
+    0.040239  0.242160
+    0.238081  0.402523
+@}
+@end group
 @end example
 
 Function return lists can include structure elements, and they may be
-indexed like any other variable.
+indexed like any other variable.  For example,
 
 @example
-octave:1> [x.u, x.s(2:3,2:3), x.v] = svd ([1, 2; 3, 4])
+@group
+octave:1> [ x.u, x.s(2:3,2:3), x.v ] = svd ([1, 2; 3, 4])
 x.u =
 
   -0.40455  -0.91451
@@ -688,27 +1048,31 @@ x.v =
 
   -0.57605   0.81742
   -0.81742  -0.57605
-
-octave:8> x
-x =
-
-<structure: s u v>
+@end group
 @end example
 
-@findex is_struct
+It is also possible to cycle through all the elements of a structure in
+a loop, using a special form of the @code{for} statement
+(@pxref{The for Statement})
 
-You can also use the function @code{is_struct} to determine whether a
-given value is a data structure.  For example
+The following functions and variableare available to
+give you information about structures.
 
-@example
-is_struct (x)
-@end example
+@deftypefn {Built-in Function} {} is_struct (@var{expr})
+Returns 1 if the value of the expression @var{expr} is a structure.
+@end deftypefn
 
-@noindent
-returns 1 if the value of the variable @var{x} is a data structure.
+@deftypefn {Built-in Function} {} struct_contains (@var{expr}, @var{name})
+This function returns 1 if the expression @var{expr} is a structure and it
+includes an element named @var{name}.  The first argument must be a
+structure and the second must be a string.
+@end deftypefn
 
-This feature should be considered experimental, but you should expect it
-to work.  Suggestions for ways to improve it are welcome.
+@deftypefn {Built-in Function} {} struct_elements (@var{expr})
+If the expression @var{expr} is a structure, this function returns a
+list of strings naming the elements of the structure.  It is an error to
+call @code{struct_elements} with an argument that is not a structure.
+@end deftypefn
 
 @node Calling Functions, Global Variables, Data Structures, Expressions
 @section Calling Functions
@@ -733,9 +1097,11 @@ include them anyway, to clearly indicate that a function call was
 intended.  Here are some examples:
 
 @example
+@group
 sqrt (x^2 + y^2)      # @r{One argument}
 ones (n, m)           # @r{Two arguments}
 rand ()               # @r{No arguments}
+@end group
 @end example
 
 Each function expects a particular number of arguments.  For example, the
@@ -789,11 +1155,13 @@ calling function.  It can only change the local copy within the function
 body.  For example, the function
 
 @example
+@group
 function f (x, n)
   while (n-- > 0)
     disp (x);
   endwhile
 endfunction
+@end group
 @end example
 
 @noindent
@@ -809,8 +1177,10 @@ the called function does not know this: it only knows what value the
 argument had.  For example, given a function called as
 
 @example
+@group
 foo = "bar";
 fcn (foo)
+@end group
 @end example
 
 @noindent
@@ -818,18 +1188,43 @@ you should not think of the argument as being ``the variable
 @code{foo}.''  Instead, think of the argument as the string value,
 @code{"bar"}.
 
+Even though Octave uses pass-by-value semantics for function arguments,
+values are not copied unnecessarily.  For example,
+
+@example
+@group
+x = rand (1000);
+f (x);
+@end group
+@end example
+
+@noindent
+does not actually force two 1000 by 1000 element matrices to exist
+@emph{unless} the function @code{f} modifies the value of its
+argument.  Then Octave must create a copy to avoid changing the
+value outside the scope of the function @code{f}, or attempting (and
+probably failing!) to modify the value of a constant or the value of a
+temporary result.
+
 @node Recursion,  , Call by Value, Calling Functions
 @subsection Recursion
 @cindex factorial function
 
-Recursive function calls are allowed.  A @dfn{recursive function} is one
-which calls itself, either directly or indirectly.  For example, here is
-an inefficient@footnote{It would be much better to use @code{prod
-(1:n)}, or @code{gamma (n+1)} instead, after first checking to ensure
-that the value @code{n} is actually a positive integer.} way to compute 
-the factorial of a given integer:
+With some restrictions@footnote{Some of Octave's function are
+implemented in terms of functions that cannot be called recursively.
+For example, the ODE solver @code{lsode} is ultimiately implemented in a
+Fortran subroutine which cannot be called recursively, so @code{lsode}
+should not be called either directly or indirectly from within the
+user-supplied function that @code{lsode} requires.  Doing so will result
+in undefined behavior.}, recursive function calls are allowed.  A
+@dfn{recursive function} is one which calls itself, either directly or
+indirectly.  For example, here is an inefficient@footnote{It would be
+much better to use @code{prod (1:n)}, or @code{gamma (n+1)} instead,
+after first checking to ensure that the value @code{n} is actually a
+positive integer.} way to compute the factorial of a given integer:
 
 @example
+@group
 function retval = fact (n)
   if (n > 0)
     retval = n * fact (n-1);
@@ -837,6 +1232,7 @@ function retval = fact (n)
     retval = 1;
   endif
 endfunction
+@end group
 @end example
 
 This function is recursive because it calls itself directly.  It
@@ -854,6 +1250,7 @@ of Octave by allowing users to specify a maximum allowable recursion
 depth.
 
 @cindex global variables
+@cindex @code{global} statement
 @cindex variables, global
 
 @node Global Variables, Keywords, Calling Functions, Expressions
@@ -866,20 +1263,24 @@ A variable may be declared global using a @code{global} declaration
 statement.  The following statements are all global declarations.
 
 @example
+@group
 global a
 global b = 2
 global c = 3, d, e = 5
+@end group
 @end example
 
 It is necessary declare a variable as global within a function body in
 order to access it.  For example,
 
 @example
+@group
 global x
 function f ()
 x = 1;
 endfunction
 f ()
+@end group
 @end example
 
 @noindent
@@ -888,16 +1289,19 @@ order to change the value of the global variable @samp{x}, you must also
 declare it to be global within the function body, like this
 
 @example
+@group
 function f ()
   global x;
   x = 1;
 endfunction
+@end group
 @end example
 
 Passing a global variable in a function parameter list will
 make a local copy and not modify the global value.  For example:
 
 @example
+@group
 octave:1> function f (x)
 > x = 3
 > endfunction
@@ -908,7 +1312,24 @@ octave:4> f (x)
 x = 3                    # The value of the local variable x is 3.
 octave:5> x              # But it was a *copy* so the global variable
 x = 0                    # remains unchanged.
+@end group
 @end example
+
+@defvr {Built-in Variable} warn_comma_in_global_decl
+If the value of @code{warn_comma_in_global_decl} is nonzero, a
+warning is issued for statements like
+
+@example
+global a = 1, b
+@end example
+
+@noindent
+which makes the variables @samp{a} and @samp{b} global and assigns the
+value 1 to the variable @samp{a}, because in this context, the comma is
+not interpreted as a statement separator.
+
+The default value of @code{warn_comma_in_global_decl} is nonzero.
+@end defvr
 
 @node Keywords, Arithmetic Ops, Global Variables, Expressions
 @section Keywords
@@ -918,21 +1339,34 @@ The following identifiers are keywords, and may not be used as variable
 or function names:
 
 @example
-break       endfor         function    return
-continue    endfunction    global      while
-else        endif          gplot    
-elseif      endwhile       gsplot   
-end         for            if       
+@group
+all_va_args             endwhile
+break                   for
+catch                   function
+continue                global
+else                    gplot
+elseif                  gsplot
+end                     if
+end_try_catch           return
+end_unwind_protect      try
+endfor                  unwind_protect
+endfunction             unwind_protect_cleanup
+endif                   while
+@end group
 @end example
 
-The following command-like functions are also keywords, and may not be
+The following command-like functions are also reserved, and may not be
 used as variable or function names:
 
 @example
-casesen   document       history       set
-cd        edit_history   load          show
-clear     help           ls            who
-dir       format         run_history   save
+@group
+casesen       echo          load          show
+cd            edit_history  ls            type
+chdir         format        more          which
+clear         help          run_history   who
+diary         history       save          whos
+dir           hold          set
+@end group
 @end example
 
 @node Arithmetic Ops, Comparison Ops, Keywords, Expressions
@@ -1095,6 +1529,12 @@ lexer, which usually prefers to break the input into tokens by
 preferring the longest possible match at any given point, it is more
 useful in this case.
 
+@defvr {Built-in Variable} warn_divide_by_zero
+If the value of @code{warn_divide_by_zero} is nonzero, a warning
+is issued when Octave encounters a division by zero.  If the value is
+0, the warning is omitted.  The default value is 1.
+@end defvr
+
 @node Comparison Ops, Boolean Expressions, Arithmetic Ops, Expressions
 @section Comparison Operators
 @cindex comparison expressions
@@ -1133,10 +1573,12 @@ expression
 returns the result
 
 @example
+@group
 ans =
 
   1  0
   0  1
+@end group
 @end example
 
 @table @code
@@ -1168,7 +1610,7 @@ condition''
 
 String comparisons should be performed with the @code{strcmp} function,
 not with the comparison operators listed above.
-@xref{Calling Functions}.
+@xref{String Functions}.
 
 @node Boolean Expressions, Assignment Ops, Comparison Ops, Expressions
 @section Boolean Expressions
@@ -1198,7 +1640,7 @@ not with the comparison operators listed above.
 @opindex ~
 @opindex !
 
-An element-by-element @dfn{boolean expression} is a combination of
+An @dfn{element-by-element boolean expression} is a combination of
 comparison expressions or matching expressions, using the boolean
 operators ``or'' (@samp{|}), ``and'' (@samp{&}), and ``not'' (@samp{!}),
 along with parentheses to control nesting.  The truth of the boolean
@@ -1318,9 +1760,11 @@ This can be used to write somewhat more concise code.  For example, it
 is possible write
 
 @example
+@group
 function f (a, b, c)
   if (nargin > 2 && isstr (c))
     ...
+@end group
 @end example
 
 @noindent
@@ -1328,10 +1772,12 @@ instead of having to use two @code{if} statements to avoid attempting to
 evaluate an argument that doesn't exist.
 
 @example
+@group
 function f (a, b, c)
   if (nargin > 2)
     if (isstr (c))
       ...
+@end group
 @end example
 
 @node Assignment Ops, Increment Ops, Boolean Expressions, Expressions
@@ -1359,9 +1805,11 @@ expression would store the value @code{"this food is good"} in the
 variable @code{message}:
 
 @example
+@group
 thing = "food"
 predicate = "good"
 message = [ "this " , thing , " is " , predicate ]
+@end group
 @end example
 
 @noindent
@@ -1395,10 +1843,12 @@ to hold at the moment.  In the following program fragment, the variable
 @code{foo} has a numeric value at first, and a string value later on:
 
 @example
+@group
 octave:13> foo = 1
 foo = 1
 octave:13> foo = "bar"
 foo = bar
+@end group
 @end example
 
 @noindent
@@ -1447,10 +1897,12 @@ a valid expression
 that is exactly equivalent to
 
 @example
+@group
 [u, s, v] = svd (a)
 a = u
 b = s
 c = v
+@end group
 @end example
 
 In expressions like this, the number of values in each part of the
@@ -1472,9 +1924,11 @@ variable @samp{d} is left unchanged, and the expression
 is equivalent to 
 
 @example
+@group
 [u, s, v] = svd (a)
 a = u
 b = s
+@end group
 @end example
 
 You can use an assignment anywhere an expression is called for.  For

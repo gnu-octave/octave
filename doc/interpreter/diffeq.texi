@@ -20,7 +20,6 @@ Both are based on reliable ODE solvers written in Fortran.
 @node Ordinary Differential Equations, Differential-Algebraic Equations, Differential Equations, Differential Equations
 @section Ordinary Differential Equations
 
-@findex lsode
 The function @code{lsode} can be used Solve ODEs of the form
 @iftex
 @tex
@@ -41,10 +40,7 @@ dt
 @noindent
 using Hindmarsh's ODE solver LSODE.
 
-@example
-lsode (@var{fcn}, @var{x0}, @var{t_out}, @var{t_crit})
-@end example
-
+@deftypefn {Built-in Function} {} lsode (@var{fcn}, @var{x0}, @var{t_out}, @var{t_crit})
 The first argument is the name of the function to call to
 compute the vector of right hand sides.  It must have the form
 
@@ -63,10 +59,6 @@ The fourth argument is optional, and may be used to specify a set of
 times that the ODE solver should not integrate past.  It is useful for
 avoiding difficulties with singularities and points where there is a
 discontinuity in the derivative.
-
-@findex lsode_options
-Tolerances and other options for @code{lsode} may be specified using the
-function @code{lsode_options}.
 
 Here is an example of solving a set of two differential equations using
 @code{lsode}.  The function
@@ -104,6 +96,15 @@ the command
 @example
 plot (t, x)
 @end example
+@end deftypefn
+
+@deftypefn {Built-in Function} {} lsode_options (@var{opt}, @var{val})
+When called with two arguments, this function allows you set options
+parameters for the function @code{lsode}.  Given one argument,
+@code{lsode_options} returns the value of the corresponding option.  If
+no arguments are supplied, the names of all the available options and
+their current values are displayed.
+@end deftypefn
 
 See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
 Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
@@ -112,7 +113,6 @@ more information about this family of ODE solvers.
 @node Differential-Algebraic Equations,  , Ordinary Differential Equations, Differential Equations
 @section Differential-Algebraic Equations
 
-@findex dassl
 The function @code{dassl} can be used Solve DAEs of the form
 @iftex
 @tex
@@ -128,10 +128,7 @@ $$
 @end example
 @end ifinfo
 
-@example
-dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t_out}, @var{t_crit})
-@end example
-
+@deftypefn {Built-in Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t_out}, @var{t_crit})
 The first argument is the name of the function to call to
 compute the vector of residuals.  It must have the form
 
@@ -157,10 +154,15 @@ The fifth argument is optional, and may be used to specify a set of
 times that the DAE solver should not integrate past.  It is useful for
 avoiding difficulties with singularities and points where there is a
 discontinuity in the derivative.
+@end deftypefn
 
-@findex dassl_options
-Tolerances and other options for @code{dassl} may be specified using the
-function @code{dassl_options}.
+@deftypefn {Built-in Function} {} dassl_options (@var{opt}, @var{val})
+When called with two arguments, this function allows you set options
+parameters for the function @code{lsode}.  Given one argument,
+@code{dassl_options} returns the value of the corresponding option.  If
+no arguments are supplied, the names of all the available options and
+their current values are displayed.
+@end deftypefn
 
 See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989) for

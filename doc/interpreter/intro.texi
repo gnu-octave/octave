@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Introduction, Invoking Octave, Copying, Top
+@node Introduction, Invoking Octave, Preface, Top
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
@@ -15,6 +15,11 @@ solving linear and nonlinear problems numerically, and for performing
 other numerical experiments.  It may also be used as a batch-oriented
 language.
 
+Octave is also freely redistributable software.  You may redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation.  The GPL is included in this
+manual in @ref{Copying}.
+
 This document corresponds to Octave version @value{VERSION}.
 
 @c XXX FIXME XXX -- add explanation about how and why Octave was written.
@@ -25,8 +30,8 @@ This document corresponds to Octave version @value{VERSION}.
 @menu
 * Running Octave::              
 * Simple Examples::             
-* Executable Octave Programs::  
 * Comments::                    
+* Executable Octave Programs::  
 * Errors::                      
 @end menu
 
@@ -44,17 +49,21 @@ its name from the fact that you type it by holding down the @kbd{CTRL}
 key and then pressing @kbd{c}.  Doing this will normally return you to
 Octave's prompt.
 
-To exit Octave, type @samp{quit}, or @samp{exit} at the Octave prompt.
-
 @cindex exiting octave
 @cindex quitting octave
-@findex exit
-@findex quit
+To exit Octave, type @samp{quit}, or @samp{exit} at the Octave prompt.
+
+@deftypefn {Built-in Function} {} exit (@var{status})
+@deftypefnx {Built-in Function} {} quit (@var{status})
+Exit the current Octave session.  If the optional integer value
+@var{status} is supplied, pass that value to the operating system as the
+Octave's exit status.
+@end deftypefn
 
 On systems that support job control, you can suspend Octave by sending
 it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
 
-@node Simple Examples, Executable Octave Programs, Running Octave, Introduction
+@node Simple Examples, Comments, Running Octave, Introduction
 @section Simple Examples
 
 The following chapters describe all of Octave's features in detail, but
@@ -99,7 +108,7 @@ octave:3> b
 @unnumberedsubsec Matrix Arithmetic
 
 Octave has a convenient operator notation for performing matrix
-arithmetic.  For example, to multiply the matrix @code{a} by a scalar
+arithmetic.  For example, to multiply the matrix @var{a} by a scalar
 value, type the command
 
 @example
@@ -173,9 +182,11 @@ $$
 @ifinfo
 
 @example
+@group
 dx
 -- = f (x, t)
 dt
+@end group
 @end example
 
 @noindent
@@ -205,6 +216,7 @@ function, Octave responds with a different prompt, to indicate that it
 is waiting for you to complete your input.
 
 @example
+@group
 octave:8> function xdot = f (x, t) 
 >
 >  r = 0.25;
@@ -218,6 +230,7 @@ octave:8> function xdot = f (x, t)
 >  xdot(2) = c*a*x(1)*x(2)/(1 + b*x(1)) - d*x(2);
 >
 > endfunction
+@end group
 @end example
 
 @noindent
@@ -350,62 +363,7 @@ Info.  When you invoke Info you will be put into a menu driven program
 that contains the entire Octave manual.  Help for using Info is provided
 in this manual in @ref{Using Info}.
 
-@node Executable Octave Programs, Comments, Simple Examples, Introduction
-@section Executable Octave Programs
-@cindex executable scripts
-@cindex scripts, executable
-@cindex self contained programs
-@cindex program, self contained
-@cindex @samp{#!}
-
-Once you have learned Octave, you may want to write self-contained
-Octave scripts, using the @samp{#!} script mechanism.  You can do this
-on many Unix systems @footnote{The @samp{#!} mechanism works on Unix
-systems derived from Berkeley Unix, System V Release 4, and some System
-V Release 3 systems.} (and someday on GNU).
-
-For example, you could create a text file named @file{hello}, containing
-the following lines:
-
-@example
-#! /usr/local/bin/octave -qf
-
-# a sample Octave program
-printf ("Hello, world!\n");
-@end example
-
-@noindent
-After making this file executable (with the @code{chmod} command), you
-can simply type:
-
-@example
-hello
-@end example
-
-@noindent
-at the shell, and the system will arrange to run Octave @footnote{The
-line beginning with @samp{#!} lists the full file name of an interpreter
-to be run, and an optional initial command line argument to pass to that
-interpreter.  The operating system then runs the interpreter with the
-given argument and the full argument list of the executed program.  The
-first argument in the list is the full file name of the Octave program.
-The rest of the argument list will either be options to Octave, or data
-files, or both.  The @code{-qf} option is usually specified in
-stand-alone Octave programs to prevent them from printing the normal
-startup message, and to keep them from behaving differently depending on
-the contents of a particular user's @file{~/.octaverc} file.
-@xref{Invoking Octave}.} as if you had typed:
-
-@example
-octave hello
-@end example
-
-@noindent
-Self-contained Octave scripts are useful when you want to write a
-program which users can invoke without knowing that the program is
-written in the Octave language.
-
-@node Comments, Errors, Executable Octave Programs, Introduction
+@node Comments, Executable Octave Programs, Simple Examples, Introduction
 @section Comments in Octave Programs
 @cindex @samp{#}
 @cindex @samp{%}
@@ -467,7 +425,64 @@ throw-away Octave programs, it usually isn't very useful, because the
 purpose of a comment is to help you or another person understand the
 program at a later time.
 
-@node Errors,  , Comments, Introduction
+@node Executable Octave Programs, Errors, Comments, Introduction
+@section Executable Octave Programs
+@cindex executable scripts
+@cindex scripts, executable
+@cindex self contained programs
+@cindex program, self contained
+@cindex @samp{#!}
+
+Once you have learned Octave, you may want to write self-contained
+Octave scripts, using the @samp{#!} script mechanism.  You can do this
+on GNU systems and on many Unix systems @footnote{The @samp{#!}
+mechanism works on Unix systems derived from Berkeley Unix, System V
+Release 4, and some System V Release 3 systems.}
+
+For example, you could create a text file named @file{hello}, containing
+the following lines:
+
+@example
+@group
+#! @value{OCTAVEHOME}/bin/octave -qf
+
+# a sample Octave program
+printf ("Hello, world!\n");
+@end group
+@end example
+
+@noindent
+After making this file executable (with the @code{chmod} command), you
+can simply type:
+
+@example
+hello
+@end example
+
+@noindent
+at the shell, and the system will arrange to run Octave @footnote{The
+line beginning with @samp{#!} lists the full file name of an interpreter
+to be run, and an optional initial command line argument to pass to that
+interpreter.  The operating system then runs the interpreter with the
+given argument and the full argument list of the executed program.  The
+first argument in the list is the full file name of the Octave program.
+The rest of the argument list will either be options to Octave, or data
+files, or both.  The @code{-qf} option is usually specified in
+stand-alone Octave programs to prevent them from printing the normal
+startup message, and to keep them from behaving differently depending on
+the contents of a particular user's @file{~/.octaverc} file.
+@xref{Invoking Octave}.} as if you had typed:
+
+@example
+octave hello
+@end example
+
+@noindent
+Self-contained Octave scripts are useful when you want to write a
+program which users can invoke without knowing that the program is
+written in the Octave language.
+
+@node Errors,  , Executable Octave Programs, Introduction
 @section Errors
 
 There are two classes of errors that Octave produces when it encounters
@@ -514,30 +529,32 @@ octave:13> f ()
 Octave will respond with
 
 @example
+@group
 error: `x' undefined near line 1 column 24
 error: evaluating expression near line 1, column 24
 error: evaluating assignment expression near line 1, column 22
 error: called from `f'
+@end group
 @end example
 
 This error message has several parts, and gives you quite a bit of
 information to help you locate the source of the error.  The messages
 are generated from the point of the innermost error, and provide a
-traceback of enclosing expression and function calls.
+traceback of enclosing expressions and function calls.
 
 In the example above, the first line indicates that a variable named
 @samp{x} was found to be undefined near line 1 and column 24 of some
 function or expression.  For errors occurring within functions, lines
-are numbered beginning with the line containing the @samp{function}
-keyword.  For errors occurring at the top level, the line number
-indicates the input line number, which is usually displayed in the
-prompt string.
+from the beginning of the file containing the function definition.  For
+errors occurring at the top level, the line number indicates the input
+line number, which is usually displayed in the prompt string.
 
 The second and third lines in the example indicate that the error
 occurred within an assignment expression, and the last line of the error
 message indicates that the error occurred within the function @samp{f}.
-If the function @samp{f} had been called from another function, say
-@samp{g}, the list of errors would have ended with one more line:
+If the function @samp{f} had been called from another function, for
+example, @samp{g}, the list of errors would have ended with one more
+line:
 
 @example
 error: called from `g'

@@ -19,15 +19,9 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 @node Basic Matrix Functions, Matrix Factorizations, Linear Algebra, Linear Algebra
 @section Basic Matrix Functions
 
-@ftable @code
-@item balance
-
-@example
-aa = balance (a, opt)
-[dd, aa] =  balance(a, opt)
-[dd, aa] = balance (a, opt)
-[cc, dd, aa, bb] = balance (a, b, opt)
-@end example
+@deftypefn {Built-in Function} {@var{aa} =} balance (@var{a}, @var{opt})
+@deftypefnx {Built-in Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})
+@deftypefnx {Built-in Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb]} =} balance (@var{a}, @var{b}, @var{opt})
 
 @code{[dd, aa] = balance (a)} returns @code{aa = dd \ a * dd}.
 @code{aa} is a matrix whose row/column norms are roughly equal in
@@ -64,22 +58,20 @@ Algebraic eigenvalue balancing uses standard LAPACK routines.
 
 Generalized eigenvalue problem balancing uses Ward's algorithm
 (SIAM Journal on Scientific and Statistical Computing, 1981).
+@end deftypefn
 
-@item cond (@var{a})
+@deftypefn {} {} cond (@var{a})
 Compute the (two-norm) condition number of a matrix. @code{cond (a)} is
 defined as @code{norm (a) * norm (inv (a))}, and is computed via a
 singular value decomposition.
+@end deftypefn
 
-@item det (@var{a})
+@deftypefn {Built-in Function} {} det (@var{a})
 Compute the determinant of @var{a} using LINPACK.
+@end deftypefn
 
-@item eig
-
-@example
-            = eig (a)
-[v, lambda] = eig (a)
-@end example
-
+@deftypefn {Built-in Function} {@var{lambda} =} eig (@var{a})
+@deftypefnx {Built-in Function} {[@var{v}, @var{lambda}] =} eig (@var{a})
 The eigenvalues (and eigenvectors) of a matrix are computed in a several
 step process which begins with a Hessenberg decomposition (see
 @code{hess}), followed by a Schur decomposition (see @code{schur}), from
@@ -87,14 +79,10 @@ which the eigenvalues are apparent.  The eigenvectors, when desired, are
 computed by further manipulations of the Schur decomposition.
 
 See also: @code{hess}, @code{schur}.
+@end deftypefn
 
-@item givens
-
-@example
-[c, s] = givens (x, y)
-G = givens (x, y)
-@end example
-
+@deftypefn {Built-in Function} {@var{G} =} givens (@var{x}, @var{y})
+@deftypefnx {Built-in Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})
 @code{G = givens(x, y)} returns a
 @iftex
 @tex
@@ -106,12 +94,14 @@ $2\times 2$
 @end ifinfo
 orthogonal matrix @code{G = [c s; -s' c]} such that
 @code{G [x; y] = [*; 0]}  (x, y scalars)
+@end deftypefn
 
-@item inv (@var{a})
-@itemx inverse (@var{a})
+@deftypefn {Built-in Function} {} inv (@var{a})
+@deftypefnx {Built-in Function} {} inverse (@var{a})
 Compute the inverse of the square matrix @var{a}.
+@end deftypefn
 
-@item norm (@var{a}, @var{p})
+@deftypefn {Function File} {} norm (@var{a}, @var{p})
 Compute the p-norm of the matrix @var{a}.  If the second argument is
 missing, @code{p = 2} is assumed.
 
@@ -143,8 +133,9 @@ If @var{a} is a vector or a scalar:
 @item other
 p-norm of @var{a}, @code{(sum (abs (a) .^ p)) ^ (1/p)}.
 @end table
+@end deftypefn
 
-@item null (@var{a}, @var{tol})
+@deftypefn {Function File} {} null (@var{a}, @var{tol})
 Returns an orthonormal basis of the null space of @var{a}.
 
 The dimension of the null space is taken as the number of singular
@@ -154,8 +145,9 @@ is missing, it is computed as
 @example
 max (size (a)) * max (svd (a)) * eps
 @end example
+@end deftypefn
 
-@item orth (@var{a}, @var{tol})
+@deftypefn {Function File} {} orth (@var{a}, @var{tol})
 Returns an orthonormal basis of the range of @var{a}.
 
 The dimension of the range space is taken as the number of singular
@@ -165,8 +157,9 @@ missing, it is computed as
 @example
 max (size (a)) * max (svd (a)) * eps
 @end example
+@end deftypefn
 
-@item pinv (@var{X}, @var{tol})
+@deftypefn {Function File} {} pinv (@var{X}, @var{tol})
 Returns the pseudoinverse of @var{X}.  Singular values less than
 @var{tol} are ignored. 
 
@@ -178,31 +171,31 @@ tol = max (size (X)) * sigma_max (X) * eps,
 
 @noindent
 where @code{sigma_max (@var{X})} is the maximal singular value of @var{X}.
+@end deftypefn
 
-@item rank (@var{a}, @var{tol})
+@deftypefn {Function File} {} rank (@var{a}, @var{tol})
 Compute the rank of @var{a}, using the singular value decomposition.
 The rank is taken to be the number  of singular values of @var{a} that
 are greater than the specified tolerance @var{tol}.  If the second
 argument is omitted, it is taken to be
 
 @example
-tol =  max (size (a)) * sigma (1) * eps;
+tol = max (size (a)) * sigma (1) * eps;
 @end example
 
 @noindent
 where @code{eps} is machine precision and @code{sigma} is the largest
 singular value of @code{a}.
+@end deftypefn
 
-@item trace (@var{a})
+@deftypefn {Function File} {} trace (@var{a})
 Compute the trace of @var{a}, @code{sum (diag (a))}.
-
-@end ftable
+@end deftypefn
 
 @node Matrix Factorizations, Functions of a Matrix, Basic Matrix Functions, Linear Algebra
 @section Matrix Factorizations
 
-@ftable @code
-@item chol (@var{a})
+@deftypefn {Built-in Function} {} chol (@var{a})
 Compute the Cholesky factor, @var{r}, of the symmetric positive definite
 matrix @var{a}, where
 @iftex
@@ -216,14 +209,11 @@ $ R^T R = A $.
 r' * r = a.
 @end example
 @end ifinfo
+@end deftypefn
 
-@item hess (@var{a})
+@deftypefn {Built-in Function} {@var{h} =} hess (@var{a})
+@deftypefnx {Built-in Function} {[@var{p}, @var{h}] =} hess (@var{a})
 Compute the Hessenberg decomposition of the matrix @var{a}.
-
-@example
-     h = hess (a)
-[p, h] = hess (a)
-@end example
 
 The Hessenberg decomposition is usually used as the first step in an
 eigenvalue computation, but has other applications as well (see Golub,
@@ -232,8 +222,9 @@ Hessenberg decomposition is @code{p * h * p' = a} where @code{p} is a
 square unitary matrix (@code{p' * p = I}, using complex-conjugate
 transposition) and @code{h} is upper Hessenberg
 (@code{i >= j+1 => h (i, j) = 0}).
+@end deftypefn
 
-@item lu (@var{a})
+@deftypefn {Built-in Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})
 Compute the LU decomposition of @var{a}, using subroutines from
 LAPACK.  The result is returned in a permuted form, according to
 the optional return value @var{p}.  For example, given the matrix
@@ -262,8 +253,9 @@ p =
   0  1
   1  0
 @end example
+@end deftypefn
 
-@item qr (@var{a})
+@deftypefn {Built-in Function} {[@var{q}, @var{r}] =} qr (@var{a})
 Compute the QR factorization of @var{a}, using standard LAPACK
 subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},
 
@@ -346,14 +338,10 @@ p =
 The permuted @code{qr} factorization @code{[q, r, pi] = qr (a)}
 factorization allows the construction of an orthogonal basis of
 @code{span (a)}.
+@end deftypefn
 
-@item schur
-
-@example
-[u, s] = schur (a, opt)   opt = "a", "d", or "u"
-     s = schur (a)
-@end example
-
+@deftypefn {Built-in Function} {@var{s}} schur (@var{a})
+@deftypefnx {Built-in Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})
 The Schur decomposition is used to compute eigenvalues of a
 square matrix, and has applications in the solution of algebraic
 Riccati equations in control (see @code{are} and @code{dare}).
@@ -556,8 +544,10 @@ $S$.
 @ifinfo
 @code{s}.
 @end ifinfo
+@end deftypefn
 
-@item svd (@var{a})
+@deftypefn {Built-in Function} {@var{s} =} svd (@var{a})
+@deftypefnx {Built-in Function} {[@var{u}, @var{s}, @var{v}] =} svd (@var{a})
 Compute the singular value decomposition of @var{a}
 @iftex
 @tex
@@ -633,18 +623,12 @@ v =
 If given a second argument, @code{svd} returns an economy-sized
 decomposition, eliminating the unnecessary rows or columns of @var{u} or
 @var{v}.
-@end ftable
+@end deftypefn
 
 @node Functions of a Matrix,  , Matrix Factorizations, Linear Algebra
 @section Functions of a Matrix
 
-@ftable @code
-@item expm
-
-@example
-expm (a)
-@end example
-
+@deftypefn {Built-in Function} {} expm (@var{a})
 Returns the exponential of a matrix, defined as the
 infinite Taylor series
 @iftex
@@ -728,26 +712,29 @@ $D_q(a)$
 @code{Dq(a)}
 @end ifinfo
 is ill-conditioned.
+@end deftypefn
 
-@item logm (@var{a})
+@deftypefn {Built-in Function} {} logm (@var{a})
 Compute the matrix logarithm of the square matrix @var{a}.  Note that
 this is currently implemented in terms of an eigenvalue expansion and
 needs to be improved to be more robust.
+@end deftypefn
 
-@item sqrtm (@var{a})
+@deftypefn {Built-in Function} {} sqrtm (@var{a})
 Compute the matrix square root of the square matrix @var{a}.  Note that
 this is currently implemented in terms of an eigenvalue expansion and
 needs to be improved to be more robust.
+@end deftypefn
 
-@item kron (@var{a}, @var{b})
-
+@deftypefn {Function File} {} kron (@var{a}, @var{b})
 Form the kronecker product of two matrices, defined block by block as
 
 @example
 x = [a(i, j) b]
 @end example
+@end deftypefn
 
-@item qzhess (@var{a}, @var{b})
+@deftypefn {Function File} {} qzhess (@var{a}, @var{b})
 Compute the Hessenberg-triangular decomposition of the matrix pencil
 @code{(a, b)}.  This function returns @code{aa = q * a * z},
 @code{bb = q * b * z}, @code{q}, @code{z} orthogonal.  For example,
@@ -762,11 +749,13 @@ will be included in a later release of Octave.)
 
 Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
 edition}.
+@end deftypefn
 
-@item qzval (@var{a}, @var{b})
+@deftypefn {Built-in Function} {} qzval (@var{a}, @var{b})
 Compute generalized eigenvalues.
+@end deftypefn
 
-@item syl (@var{a}, @var{b}, @var{c})
+@deftypefn {Built-in Function} {} syl (@var{a}, @var{b}, @var{c})
 Solve the Sylvester equation
 @iftex
 @tex
@@ -783,4 +772,4 @@ A X + X B + C = 0
 
 @end ifinfo
 using standard LAPACK subroutines.
-@end ftable
+@end deftypefn

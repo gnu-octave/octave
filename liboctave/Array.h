@@ -38,7 +38,6 @@ class idx_vector;
 
 // Classes we declare.
 
-template <class T> class ArrayRep;
 template <class T> class Array;
 template <class T> class Array2;
 template <class T> class Array3;
@@ -46,50 +45,6 @@ template <class T> class Array3;
 #ifndef NO_DIAG_ARRAY
 template <class T> class DiagArray;
 #endif
-
-// The real representation of all arrays.
-
-template <class T>
-class ArrayRep
-{
-  // Rethink resize()?
-
-  friend class Array<T>;
-  friend class Array2<T>;
-  friend class Array3<T>;
-
-#ifndef NO_DIAG_ARRAY
-  friend class DiagArray<T>;
-#endif
-
-private:
-
-  T *data;
-  int len;
-  int count;
-
-  ArrayRep<T>& operator = (const ArrayRep<T>& a);  
-
-protected:
-
-  ArrayRep (T *d, int l) : data (d), len (l), count (1) { }
-
-public:
-
-  ArrayRep (void) : data (0), len (0), count (1) { }
-
-  ArrayRep (int n);
-
-  ArrayRep (const ArrayRep<T>& a);
-
-  ~ArrayRep (void);
-
-  int length (void) const { return len; }
-
-  T& elem (int n);
-
-  T elem (int n) const;
-};
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -99,6 +54,40 @@ class Array
 {
 private:
 
+// The real representation of all arrays.
+
+  class ArrayRep
+  {
+  public:
+
+    T *data;
+    int len;
+    int count;
+
+    ArrayRep& operator = (const ArrayRep& a);
+
+    ArrayRep (T *d, int l) : data (d), len (l), count (1) { }
+
+    ArrayRep (void) : data (0), len (0), count (1) { }
+
+    ArrayRep (int n) : data (new T [n]), len (n), count (1) { }
+
+    ArrayRep (const ArrayRep& a)
+      : data (new T [a.len]), len (a.len), count (1)
+	{
+	  for (int i = 0; i < len; i++)
+	    data[i] = a.data[i];
+	}
+
+    ~ArrayRep (void) { delete [] data; }
+
+    int length (void) const { return len; }
+
+    T& elem (int n) { return data[n]; }
+
+    T elem (int n) const { return data[n]; }
+  };
+
 #ifdef HEAVYWEIGHT_INDEXING
   idx_vector *idx;
   int max_indices;
@@ -107,11 +96,11 @@ private:
 
 protected:
 
-  ArrayRep<T> *rep;
+  ArrayRep *rep;
 
   Array (T *d, int l)
     {
-      rep = new ArrayRep<T> (d, l);
+      rep = new ArrayRep (d, l);
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -124,7 +113,7 @@ public:
 
   Array (void)
     {
-      rep = new ArrayRep<T> ();
+      rep = new ArrayRep ();
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -135,7 +124,7 @@ public:
 
   Array (int n)
     {
-      rep = new ArrayRep<T> (n);
+      rep = new ArrayRep (n);
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -170,7 +159,7 @@ public:
       if (rep->count > 1)
 	{
 	  --rep->count;
-	  rep = new ArrayRep<T> (*rep);
+	  rep = new ArrayRep (*rep);
 	}
       return rep->elem (n);
     }

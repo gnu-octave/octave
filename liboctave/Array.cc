@@ -42,54 +42,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 
-// The real representation of all arrays.
-
-template <class T>
-ArrayRep<T>::ArrayRep (int n)
-{
-  len = n;
-  count = 1;
-  data = new T [len];
-}
-
-template <class T>
-ArrayRep<T>::ArrayRep (const ArrayRep<T>& a)
-{
-  len = a.len;
-  count = 1;
-
-  data = new T [len];
-  for (int i = 0; i < len; i++)
-    data[i] = a.data[i];
-}
-
-template <class T>
-ArrayRep<T>::~ArrayRep (void)
-{
-  delete [] data;
-}
-
-template <class T>
-T&
-ArrayRep<T>::elem (int n)
-{
-  return data[n];
-}
-
-template <class T>
-T
-ArrayRep<T>::elem (int n) const
-{
-  return data[n];
-}
-
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
 
 template <class T>
 Array<T>::Array (int n, const T& val)
 {
-  rep = new ArrayRep<T> (n);
+  rep = new ArrayRep (n);
 
   for (int i = 0; i < n; i++)
     rep->data[i] = val;
@@ -188,11 +147,11 @@ Array<T>::resize (int n)
   if (n == length ())
     return;
 
-  ArrayRep<T> *old_rep = rep;
+  ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_len = length ();
 
-  rep = new ArrayRep<T> (n);
+  rep = new ArrayRep (n);
 
   if (old_data && old_len > 0)
     {
@@ -219,11 +178,11 @@ Array<T>::resize (int n, const T& val)
   if (n == length ())
     return;
 
-  ArrayRep<T> *old_rep = rep;
+  ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_len = length ();
 
-  rep = new ArrayRep<T> (n);
+  rep = new ArrayRep (n);
 
   int min_len = old_len < n ? old_len : n;
 
@@ -247,7 +206,7 @@ Array<T>::fortran_vec (void)
   if (rep->count > 1)
     {
       --rep->count;
-      rep = new ArrayRep<T> (*rep);
+      rep = new ArrayRep (*rep);
     }
   return rep->data;
 }
@@ -315,14 +274,14 @@ Array2<T>::resize (int r, int c)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  ArrayRep<T> *old_rep = rep;
+  ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
   int old_d1 = dim1 ();
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new ArrayRep<T> (r*c);
+  rep = new ArrayRep (r*c);
 
   d1 = r;
   d2 = c;
@@ -354,13 +313,13 @@ Array2<T>::resize (int r, int c, const T& val)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  ArrayRep<T> *old_rep = rep;
+  ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_d1 = dim1 ();
   int old_d2 = dim2 ();
   int old_len = length ();
 
-  rep = new ArrayRep<T> (r*c);
+  rep = new ArrayRep (r*c);
 
   d1 = r;
   d2 = c;
@@ -566,13 +525,13 @@ DiagArray<T>::resize (int r, int c)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  ArrayRep<T> *old_rep = rep;
+  ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_len = length ();
 
   int new_len = r < c ? r : c;
 
-  rep = new ArrayRep<T> (new_len);
+  rep = new ArrayRep (new_len);
 
   nr = r;
   nc = c;
@@ -602,13 +561,13 @@ DiagArray<T>::resize (int r, int c, const T& val)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  ArrayRep<T> *old_rep = rep;
+  ArrayRep *old_rep = rep;
   const T *old_data = data ();
   int old_len = length ();
 
   int new_len = r < c ? r : c;
 
-  rep = new ArrayRep<T> (new_len);
+  rep = new ArrayRep (new_len);
 
   nr = r;
   nc = c;

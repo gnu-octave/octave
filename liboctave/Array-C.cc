@@ -28,7 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-cmplx.h"
 
-template class ArrayRep<Complex>;
 template class Array<Complex>;
 template class Array2<Complex>;
 template class DiagArray<Complex>;

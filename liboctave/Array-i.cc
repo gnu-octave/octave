@@ -28,7 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-template class ArrayRep<int>;
 template class Array<int>;
 template class Array2<int>;
 

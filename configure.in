@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.137 $)
+AC_REVISION($Revision: 1.138 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -477,13 +477,13 @@ elif $have_f2c; then
   AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
   AC_MSG_RESULT([defining F77_APPEND_UNDERSCORE to be 1])
   AC_CHECK_LIB(f2c, main, FLIBS=-lf2c, [])
-  if test -z "$FLIBS" ; then
+  if test -z "$FLIBS"; then
     AC_CHECK_LIB(F77, main, FLIBS=-lF77, [])
-    if test -n "$FLIBS" ; then
+    if test -n "$FLIBS"; then
       AC_CHECK_LIB(I77, main, FLIBS="$FLIBS -lI77", [])
     fi
   fi
-  if test -z "$FLIBS" ; then
+  if test -z "$FLIBS"; then
     AC_MSG_WARN([I found f2c but not libf2c.a, or libF77.a and libI77.a])
   fi
   DOT_C_FROM_DOT_F_CMD='	cat $< | $(F2C) $(F2CFLAGS) > $(@F)'
@@ -655,7 +655,7 @@ AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_CLOSEDIR_VOID
 
 TERMLIBS=""
-for termlib in termcap terminfo curses termlib ; do
+for termlib in termcap terminfo curses termlib; do
   AC_CHECK_LIB(${termlib}, main, [TERMLIBS="${TERMLIBS} -l${termlib}"])
   case "${TERMLIBS}" in
     *-l${termlib}*)
@@ -731,11 +731,21 @@ case "$YACC" in
   ;;
 esac
 
+if test -z "$AR"; then
+  AR=ar
+fi
+AC_SUBST(AR)
+
+if test -z "$ARFLAGS"; then
+  ARFLAGS="rc"
+fi
+AC_SUBST(ARFLAGS)
+
 AC_PROG_RANLIB
 
 AC_CHECK_PROG(RUNTEST, runtest, runtest, [])
 AC_CHECK_PROG(EXPECT, expect, expect, [])
-if test -z "$EXPECT" ; then
+if test -z "$EXPECT"; then
   RUNTEST=
 fi
 AC_SUBST(RUNTEST)

@@ -1897,6 +1897,9 @@ octave_base_stream::oscanf (const std::string& fmt)
 	      if (ok () && len > nconv)
 		{
 		  octave_value tmp;
+
+		  elt = fmt_list.next ();
+
 		  do_oscanf (elt, tmp);
 		}
 	    }

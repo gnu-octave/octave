@@ -24,11 +24,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#if 0
+
 // The following definitions are commented out because they cause
 // trouble on some systems.  What is really needed is a feature test
 // in the configure script.
-
-#if 0
 
 // I am told that without _BSD_SOURCE, tm_zone won't be declared on
 // some systems.  Defining _XOPEN_SOURCE provides the declaration for

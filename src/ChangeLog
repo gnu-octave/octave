@@ -1,3 +1,8 @@
+2000-07-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_base_stream::oscanf): Advance to next
+	format element before attempting to pick up any trailing stuff.
+
 2000-07-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (next_token_is_bin_op): Don't recognize `..' as a binary op.

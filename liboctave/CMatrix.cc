@@ -1529,7 +1529,7 @@ ComplexMatrix::operator += (const DiagMatrix& a)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix += operation attempted");
-      return ComplexMatrix ();
+      return *this;
     }
 
   for (int i = 0; i < a.length (); i++)
@@ -1547,7 +1547,7 @@ ComplexMatrix::operator -= (const DiagMatrix& a)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix -= operation attempted");
-      return ComplexMatrix ();
+      return *this;
     }
 
   for (int i = 0; i < a.length (); i++)
@@ -1565,7 +1565,7 @@ ComplexMatrix::operator += (const ComplexDiagMatrix& a)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix += operation attempted");
-      return ComplexMatrix ();
+      return *this;
     }
 
   for (int i = 0; i < a.length (); i++)
@@ -1583,7 +1583,7 @@ ComplexMatrix::operator -= (const ComplexDiagMatrix& a)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix -= operation attempted");
-      return ComplexMatrix ();
+      return *this;
     }
 
   for (int i = 0; i < a.length (); i++)

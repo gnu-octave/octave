@@ -1,3 +1,8 @@
+2001-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/minmax.cc (EMPTY_RETURN_CHECK): For empty matrix
+	args, make Octave's min	and max behave like Matlab.
+
 2001-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* OPERATORS/op-s-s.cc (el_or, el_and): Return bool value.

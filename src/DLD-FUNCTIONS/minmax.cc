@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define EMPTY_RETURN_CHECK(T) \
   if (nr == 0 || nc == 0) \
-    return T (0, 0)
+    return T (nr, nc);
 
 static Matrix
 min (double d, const Matrix& m)

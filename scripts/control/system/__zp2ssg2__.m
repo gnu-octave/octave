@@ -39,7 +39,7 @@ function [poly, rvals] = __zp2ssg2__ (rvals)
     ## roundoff)
     err = abs(rvals(cidx) - r1');
     minerr = min(err);
-    c2i = find(err == minerr);
+    c2i = min(find(err == minerr));
     r2i = cidx(c2i);
     r2 = rvals(r2i);
     cidx = complement(r2i,cidx);

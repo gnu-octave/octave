@@ -1,3 +1,9 @@
+2001-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Allow for using f2c when setting functions to look
+	for in the BLAS and Lapack libraries.
+	From Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+
 2001-02-10  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* test/octave.test/string/dec2hex-1.m: Don't assume hex format

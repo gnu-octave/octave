@@ -139,8 +139,8 @@ static yum_yum eat_continuation (void);
 
 D	[0-9]
 S	[ \t]
-NL	[\n]
-SNL	[ \t\n]
+NL	((\n)|(\r\n))
+SNL	({S}|{NL})
 EL	(\.\.\.)
 BS	(\\)
 CONT	({EL}|{BS})
@@ -576,7 +576,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // eventually result in a parse error.
 %}
 
-.		{ TOK_RETURN (yytext[0]); }
+. {
+    error ("invalid character `%s' on input", undo_string_escape (yytext[0]));
+    TOK_RETURN (yytext[0]);
+}
 
 %%
 

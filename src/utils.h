@@ -56,6 +56,8 @@ extern string_vector get_fcn_file_names (int = 0);
 
 extern int empty_arg (const char *name, int nr, int nc);
 
+extern const char *undo_string_escape (char c);
+
 extern string undo_string_escapes (const string& s);
 
 extern void oct_putenv (const char *, const char *);

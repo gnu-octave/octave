@@ -119,8 +119,8 @@ eq (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex&, const octave_matrix&);
 
-  SC_MX_BOOL_OP (Complex, s, v1.complex_value (), \
-		 Matrix, m, v2.matrix_value (), \
+  SC_MX_BOOL_OP (Complex, s, v1.complex_value (),
+		 Matrix, m, v2.matrix_value (),
 		 s == m (i, j), 0.0);
 }
 
@@ -145,8 +145,8 @@ ne (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_complex&, const octave_matrix&);
 
-  SC_MX_BOOL_OP (Complex, s, v1.complex_value (), \
-		 Matrix, m, v2.matrix_value (), \
+  SC_MX_BOOL_OP (Complex, s, v1.complex_value (),
+		 Matrix, m, v2.matrix_value (),
 		 s != m (i, j), 1.0);
 }
 

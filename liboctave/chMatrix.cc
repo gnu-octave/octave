@@ -46,17 +46,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // charMatrix class.
 
 charMatrix::charMatrix (const char *s)
-  : MArray2<char> ((s ? 1 : 0), (s ? strlen (s) : 0))
+  : MArray2<char> ()
 {
-  int nc = cols ();
+  int nc = s ? strlen (s) : 0;
+  int nr = s && nc > 0 ? 1 : 0;
+
+  resize (nr, nc);
+
   for (int i = 0; i < nc; i++)
     elem (0, i) = s[i];
 }
 
 charMatrix::charMatrix (const string& s)
-  : MArray2<char> (1, s.length ())
+  : MArray2<char> ()
 {
-  int nc = cols ();
+  int nc = s.length ();
+  int nr = nc > 0 ? 1 : 0;
+
+  resize (nr, nc);
+
   for (int i = 0; i < nc; i++)
     elem (0, i) = s[i];
 }
@@ -65,6 +73,7 @@ charMatrix::charMatrix (const string_vector& s)
   : MArray2<char> (s.length (), s.max_length (), 0)
 {
   int nr = rows ();
+
   for (int i = 0; i < nr; i++)
     {
       int nc = s[i].length ();
@@ -117,15 +126,21 @@ charMatrix::insert (const charMatrix& a, int r, int c)
 string
 charMatrix::row_as_string (int r, bool strip_ws = false) const 
 {
-  if (r < 0 || r >= rows ())
-    {
-      (*current_liboctave_error_handler) ("range error for row_as_string");
-      return 0;
-    }
+  string retval;
 
+  int nr = rows ();
   int nc = cols ();
 
-  string retval (nc, '\0');
+  if (r == 0 && nr == 0 && nc == 0)
+    return retval;
+
+  if (r < 0 || r >= nr)
+    {
+      (*current_liboctave_error_handler) ("range error for row_as_string");
+      return retval;
+    }
+
+  retval.resize (nc, '\0');
 
   for (int i = 0; i < nc; i++)
     retval[i] = elem (r, i);

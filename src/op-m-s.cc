@@ -187,8 +187,8 @@ el_and (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_scalar&);
 
-  MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
-                 double, s, v2.double_value (), \
+  MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (),
+                 double, s, v2.double_value (),
 		 m (i, j) && s, Matrix ());
 }
 
@@ -197,8 +197,8 @@ el_or (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_scalar&);
 
-  MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (), \
-                 double, s, v2.double_value (), \
+  MX_SC_BOOL_OP (Matrix, m, v1.matrix_value (),
+                 double, s, v2.double_value (),
 		 m (i, j) || s, Matrix ());
 }
 

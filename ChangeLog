@@ -1,7 +1,10 @@
 Mon Jan 20 11:16:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mkoctfile.in (ALL_CXXFLAGS): Delete reference to -lg++.
+
 	* configure.in (RLD_FLAG): For sparc-sun-sunos4*, remove space
 	between -L and $(libdir).
+	(FPICFLAG): If using g77, set it to -fPIC.
 
 Sun Jan 19 15:57:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

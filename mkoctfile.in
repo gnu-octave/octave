@@ -53,4 +53,4 @@ $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $srcfile -o $objfile
 
 echo "making $octfile from $objfile"
 
-$CXX -shared -o $octfile $objfile $LIBFLAGS $RLD_FLAG $OCTAVE_LIBS $FLIBS $LEXLIB $TERMLIBS $LIBS -lg++
+$CXX -shared -o $octfile $objfile $LIBFLAGS $RLD_FLAG $OCTAVE_LIBS $FLIBS $LEXLIB $TERMLIBS $LIBS

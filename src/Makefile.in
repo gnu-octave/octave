@@ -35,13 +35,13 @@ ifeq ($(OCTAVE_LITE), true)
 	  $(CXX) -shared -o $@ $< \
 	    $(OCTAVE_LFLAGS) \
 	    $(OCTAVE_LIBS) \
-	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
   else
     %.oct : %.o
 	  $(CXX) -shared -o $@ $< \
 	    $(OCTAVE_LFLAGS) \
 	    $(OCTAVE_LIBS) \
-	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
   endif
 endif
 
@@ -182,7 +182,7 @@ octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
 	octave.o builtins.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
-	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
 
 stamp-picdir:
 	if [ "$(SHARED_LIBS)" = true ] || [ "$(OCTAVE_LITE)" = true ]; then \
@@ -213,7 +213,7 @@ stamp-interp: $(PICOBJ)
 	  $(CXX) -shared -o liboctinterp.$(SHLEXT) $(PICOBJ) \
 	    $(OCTAVE_LFLAGS) \
 	    -loctave -lcruft -ltinst -lreadline -lkpathsea \
-	    $(SH_TERMLIBS) $(SH_LIBS) -lg++ ; \
+	    $(SH_TERMLIBS) $(SH_LIBS) ; \
 	else \
 	  true ; \
 	fi
@@ -224,7 +224,7 @@ stamp-tinst: $(TI_PICOBJ)
 	  $(CXX) -shared -o libtinst.$(SHLEXT) $(TI_PICOBJ) \
 	    $(OCTAVE_LFLAGS) \
 	    -loctinterp -loctave -lcruft -lreadline -lkpathsea \
-	    $(SH_TERMLIBS) $(SH_LIBS) -lg++ ; \
+	    $(SH_TERMLIBS) $(SH_LIBS) ; \
 	else \
 	  true ; \
 	fi

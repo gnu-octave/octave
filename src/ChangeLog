@@ -1,5 +1,11 @@
 Mon Jan 20 11:11:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ops.h (MX_MX_BOOL_OP): Correctly handle case of one or both
+	arguments being empty.  Change all callers.
+
+	* oct-stream.cc (printf_value_cache::looking_at_string):
+	Handle empty strings correctly now that they are 0x0.
+
 	* file-io.cc: Don't include "syswait.h" here.
 
 Sun Jan 19 22:38:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

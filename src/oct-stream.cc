@@ -1584,7 +1584,14 @@ printf_value_cache::looking_at_string (void)
     {
       octave_value tmp_val = values (idx);
 
-      retval = tmp_val.is_string () && tmp_val.rows () == 1;
+      // An empty string has zero rows and zero columns.
+
+      if (tmp_val.is_string ())
+	{
+	  int nr = tmp_val.rows ();
+
+	  retval = (nr == 1 || (nr == 0 && tmp_val.columns () == 0));
+	}
     }
 
   return retval;

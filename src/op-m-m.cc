@@ -86,17 +86,18 @@ ldiv (const octave_value& a1, const octave_value& a2)
   return xleftdiv (v1.matrix_value (), v2.matrix_value ());
 }
 
-#define BOOL_OP(OP, EMPTY_RESULT) \
+#define BOOL_OP(OP, ONE_EMPTY_RESULT, TWO_EMPTY_RESULT) \
   MX_MX_BOOL_OP (Matrix, m1, v1.matrix_value (), \
 		 Matrix, m2, v2.matrix_value (), \
-		 m1 (i, j) OP m2 (i, j), #OP, EMPTY_RESULT)
+		 m1 (i, j) OP m2 (i, j), #OP, \
+		 ONE_EMPTY_RESULT, TWO_EMPTY_RESULT)
 
 static octave_value
 lt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  BOOL_OP (<, Matrix ());
+  BOOL_OP (<, Matrix (), Matrix ());
 }
 
 static octave_value
@@ -104,7 +105,7 @@ le (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  BOOL_OP (<=, Matrix ());
+  BOOL_OP (<=, Matrix (), Matrix ());
 }
 
 static octave_value
@@ -112,7 +113,7 @@ eq (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  BOOL_OP (==, 1.0);
+  BOOL_OP (==, 0.0, 1.0);
 }
 
 static octave_value
@@ -120,7 +121,7 @@ ge (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  BOOL_OP (>=, Matrix ());
+  BOOL_OP (>=, Matrix (), Matrix ());
 }
 
 static octave_value
@@ -128,7 +129,7 @@ gt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  BOOL_OP (>, Matrix ());
+  BOOL_OP (>, Matrix (), Matrix ());
 }
 
 static octave_value
@@ -136,7 +137,7 @@ ne (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  BOOL_OP (!=, 0.0);
+  BOOL_OP (!=, 1.0, 0.0);
 }
 
 static octave_value
@@ -176,9 +177,10 @@ el_and (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  MX_MX_BOOL_OP (Matrix, m1, v1.matrix_value (), \
-		 Matrix, m2, v2.matrix_value (), \
-		 m1 (i, j) && m2 (i, j), "&", Matrix ());
+  MX_MX_BOOL_OP (Matrix, m1, v1.matrix_value (),
+		 Matrix, m2, v2.matrix_value (),
+		 m1 (i, j) && m2 (i, j), "&",
+		 Matrix (), Matrix ());
 }
 
 static octave_value
@@ -186,9 +188,10 @@ el_or (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  MX_MX_BOOL_OP (Matrix, m1, v1.matrix_value (), \
-		 Matrix, m2, v2.matrix_value (), \
-		 m1 (i, j) || m2 (i, j), "|", Matrix ());
+  MX_MX_BOOL_OP (Matrix, m1, v1.matrix_value (),
+		 Matrix, m2, v2.matrix_value (),
+		 m1 (i, j) || m2 (i, j), "|",
+		 Matrix (), Matrix ());
 }
 
 static octave_value

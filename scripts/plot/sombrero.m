@@ -22,7 +22,7 @@
 ## Draw a `sombrero' in three dimensions using n grid lines.  The
 ## function plotted is
 ##
-##   z = sin (x^2 + y^2) / (x^2 + y^2);
+##   z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
 
 ## Author: jwe
 

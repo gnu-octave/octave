@@ -83,7 +83,7 @@ extern void install_ops (void);
   while (0)
 
 #define MX_MX_BOOL_OP(m1t, m1n, get_m1, m2t, m2n, get_m2, test, op, \
-		      empty_result) \
+		      one_empty_result, two_empty_result) \
   do \
     { \
       BOOL_OP1 (m1t, m1n, get_m1, m2t, m2n, get_m2) \
@@ -91,15 +91,27 @@ extern void install_ops (void);
       int m1_nc = m1n.cols (); \
       int m2_nr = m2n.rows (); \
       int m2_nc = m2n.cols (); \
-      if (m1_nr != m2_nr || m1_nc != m2_nc) \
+      if (m1_nr == m2_nr && m1_nc == m2_nc) \
 	{ \
-	  gripe_nonconformant ("operator " op, m1_nr, m1_nc, m2_nr, m2_nc); \
-	  return Matrix (); \
+	  if (m1_nr == 0 && m1_nc == 0) \
+	    return two_empty_result; \
+	  else \
+	    { \
+	      BOOL_OP2 (m1n) \
+	      BOOL_OP3 (test) \
+	    } \
 	} \
-      if (m1_nr == 0 || m1_nc == 0) \
-	return empty_result; \
-      BOOL_OP2 (m1n) \
-      BOOL_OP3 (test) \
+      else \
+	{ \
+	  if ((m1_nr == 0 && m1_nc == 0) || (m2_nr == 0 && m2_nc == 0)) \
+	    return one_empty_result; \
+	  else \
+	    { \
+	      gripe_nonconformant ("operator " op, m1_nr, m1_nc, \
+				   m2_nr, m2_nc); \
+	      return Matrix (); \
+	    } \
+	} \
     } \
   while (0)
 

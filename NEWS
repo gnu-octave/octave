@@ -1,3 +1,8 @@
+Summary of changes for version 2.0.3:
+------------------------------------
+
+  * size ("") is now [0, 0].
+
 Summary of changes for version 2.0:
 ----------------------------------
 

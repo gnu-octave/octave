@@ -47,7 +47,7 @@ C
       IF (.NOT. (g.LT.0.OR.g.GT.numg)) GO TO 10
       WRITE (*,*) ' Generator number out of range in SETCGN:',
      +  ' Legal range is 1 to ',numg,' -- ABORT!'
-      CALL XSTOPX (' Generator number out of range in SETCGN')
+      STOP ' Generator number out of range in SETCGN'
 
    10 curntg = g
       RETURN

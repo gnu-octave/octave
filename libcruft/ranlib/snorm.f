@@ -23,11 +23,29 @@ C     SUNIF.  The argument IR thus goes away.                          C
 C                                                                      C
 C**********************************************************************C
 C
-      DIMENSION a(32),d(31),t(31),h(31)
 C
 C     THE DEFINITIONS OF THE CONSTANTS A(K), D(K), T(K) AND
 C     H(K) ARE ACCORDING TO THE ABOVEMENTIONED ARTICLE
 C
+C     .. Local Scalars ..
+      REAL aa,s,tt,u,ustar,w,y
+      INTEGER i
+C     ..
+C     .. Local Arrays ..
+      REAL a(32),d(31),h(31),t(31)
+C     ..
+C     .. External Functions ..
+      REAL ranf
+      EXTERNAL ranf
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC float,int
+C     ..
+C     .. Save statement ..
+C     JJV added a Save statement for arrays initialized in Data statmts
+      SAVE a,d,t,h
+C     ..
+C     .. Data statements ..
       DATA a/0.0,.3917609E-1,.7841241E-1,.1177699,.1573107,.1970991,
      +     .2372021,.2776904,.3186394,.3601299,.4022501,.4450965,
      +     .4887764,.5334097,.5791322,.6260990,.6744898,.7245144,
@@ -53,6 +71,8 @@ C
      +     .5953130E-1,.6308489E-1,.6737503E-1,.7264544E-1,.7926471E-1,
      +     .8781922E-1,.9930398E-1,.1155599,.1404344,.1836142,.2790016,
      +     .7010474/
+C     ..
+C     .. Executable Statements ..
 C
    10 u = ranf()
       s = 0.0

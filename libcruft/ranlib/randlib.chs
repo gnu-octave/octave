@@ -1,4 +1,4 @@
-                    SUMMARY OF ROUTINES IN RANLIB
+                    SUMMARY OF ROUTINES IN RANDLIB
 
 0. Base Level Routines to Set and Obtain Values of Seeds
 
@@ -91,6 +91,18 @@ C
 C**********************************************************************
 C**********************************************************************
 C
+C     SUBROUTINE GENMUL( N, P, NCAT, IX )
+C              GENerate MULtinomial random deviate
+C     REAL P(*)
+C     INTEGER N, NCAT, IX(*)
+C
+C     Generates deviates from a Multinomial distribution with NCAT
+C     categories.  P specifies the probability of an event in each
+C     category. The generated deviates are placed in IX.
+C
+C**********************************************************************
+C**********************************************************************
+C
 C     REAL FUNCTION GENNCH( DF, XNONC )
 C           Generate random value of Noncentral CHIsquare variable
 C     REAL DF, XNONC
@@ -150,6 +162,18 @@ C
 C**********************************************************************
 C**********************************************************************
 C
+C     INTEGER FUNCTION IGNNBN( N, P )
+C               GENerate Negative BiNomial random deviate
+C     INTEGER N
+C     REAL P
+C
+C     Returns a single random deviate from a negative binomial
+C     distribution with number of events N and whose
+C     probability of an event in each trial is P.
+C
+C**********************************************************************
+C**********************************************************************
+C
 C     INTEGER FUNCTION IGNPOI( AV )
 C                    GENerate POIsson random deviate
 C     REAL AV
@@ -190,15 +214,17 @@ C
 C**********************************************************************
 C**********************************************************************
 C
-C     SUBROUTINE SETGMN( MEANV, COVM, P, PARM)
+C     SUBROUTINE SETGMN( MEANV, COVM, LDCOVM, P, PARM)
 C            SET Generate Multivariate Normal random deviate
-C     INTEGER P
-C     REAL MEANV(P), COVM(P,P), PARM(P*(P+3)/2 + 1)
+C     INTEGER LDCOVM, P
+C     REAL MEANV(P), COVM(LDCOVM,P), PARM(P*(P+3)/2 + 1)
 C
 C     P is the length of normal vectors to be generated, MEANV
-C     is the vector of their means and COVM is their variance
-C     covariance matrix.  Places information necessary to generate
-C     the deviates in PARM.
+C     is the vector of their means and COVM(1:P,1:P) is their variance
+C     covariance matrix.  LDCOVM is the leading actual dimension of
+C     COVM, which this routine needs to know although only the
+C     (1:P,1:P) slice of COVM is used.
+C     Places information necessary to generate the deviates in PARM.
 C
 C**********************************************************************
 
@@ -334,3 +360,9 @@ C
 C     All generators are initialized to NOT generate antithetic values.
 C
 C**********************************************************************
+
+
+
+
+
+

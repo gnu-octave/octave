@@ -1,4 +1,7 @@
-      REAL FUNCTION covar(x,y,n)
+C     JJV changed name to ONECOV to avoid confusion with array COVAR
+C     JJV this was also changed in the body of the function
+C      REAL FUNCTION covar(x,y,n)
+      REAL FUNCTION onecov(x,y,n)
 C     .. Scalar Arguments ..
       INTEGER n
 C     ..
@@ -18,21 +21,33 @@ C     ..
 C     .. Executable Statements ..
       CALL stat(x,n,avx,varx,xmin,xmax)
       CALL stat(y,n,avy,vary,xmin,xmax)
-      covar = 0.0
+C      covar = 0.0
+      onecov = 0.0
       DO 10,i = 1,n
-          covar = covar + (x(i)-avx)* (y(i)-avy)
-   10 CONTINUE
-      covar = covar/real(n-1)
+C      covar = covar + (x(i)-avx)* (y(i)-avy)
+         onecov = onecov + (x(i)-avx)* (y(i)-avy)
+ 10   CONTINUE
+C      covar = covar/real(n-1)
+      onecov = onecov/real(n-1)
       RETURN
-
+      
       END
-      SUBROUTINE prcomp(p,mean,xcovar,answer)
 
-      INTEGER p,maxp
+C     JJV Added argument LDXCOV (leading dimension of XCOVAR) to be
+C     JJV consistent with the program TSTGMN, see comments below.
+C     JJV This change necessitated changes in the declarations.
+C      SUBROUTINE prcomp(p,mean,xcovar,answer)
+      SUBROUTINE prcomp(p,mean,xcovar,ldxcov,answer)
+
+C      INTEGER p,maxp
+      INTEGER p,maxp,ldxcov
       PARAMETER (maxp=10)
-      REAL mean(p),xcovar(p,p),rcovar(maxp,maxp)
+C      REAL mean(p),xcovar(p,p),rcovar(maxp,maxp)
+      REAL mean(p),xcovar(ldxcov,p),rcovar(maxp,maxp)
       REAL answer(1000,maxp)
-      REAL rmean(maxp),rvar(maxp)
+C     JJV added ONECOV because of name change to function COVAR
+C      REAL rmean(maxp),rvar(maxp)
+      REAL rmean(maxp),rvar(maxp),onecov
       INTEGER maxobs
       PARAMETER (maxobs=1000)
 
@@ -46,7 +61,9 @@ C     .. Executable Statements ..
       DO 30,i = 1,p
           DO 20,j = 1,i - 1
               WRITE (*,*) ' I = ',i,' J = ',j
-              rcovar(i,j) = covar(answer(1,i),answer(1,j),maxobs)
+C     JJV changed COVAR to match new name
+C              rcovar(i,j) = covar(answer(1,i),answer(1,j),maxobs)
+              rcovar(i,j) = onecov(answer(1,i),answer(1,j),maxobs)
               WRITE (*,*) ' Covariance ',xcovar(i,j),' Generated ',
      +          rcovar(i,j)
    20     CONTINUE
@@ -54,14 +71,21 @@ C     .. Executable Statements ..
       RETURN
 
       END
-      SUBROUTINE setcov(p,var,corr,covar)
+
+C     JJV added LDCOV (leading dimension of COVAR) to be
+C     JJV consistent with the program TSTGMN, see comments below.
+C     JJV This change necessitated changes in the declarations.
+C      SUBROUTINE setcov(p,var,corr,covar)
+      SUBROUTINE setcov(p,var,corr,covar,ldcov)
 C     Set covariance matrix from variance and common correlation
 C     .. Scalar Arguments ..
       REAL corr
-      INTEGER p
+C      INTEGER p
+      INTEGER p,ldcov
 C     ..
 C     .. Array Arguments ..
-      REAL covar(p,p),var(p)
+C      REAL covar(p,p),var(p)
+      REAL covar(ldcov,p),var(p)
 C     ..
 C     .. Local Scalars ..
       INTEGER i,j
@@ -83,6 +107,7 @@ C     .. Executable Statements ..
       RETURN
 
       END
+
       SUBROUTINE stat(x,n,av,var,xmin,xmax)
 C     .. Scalar Arguments ..
       REAL av,var,xmax,xmin
@@ -116,15 +141,24 @@ C     .. Executable Statements ..
       RETURN
 
       END
+
       PROGRAM tstgmn
 C     Test Generation of Multivariate Normal Data
+C     JJV SETGMN was: SUBROUTINE setgmn(meanv,covm,p,parm)
+C     JJV         is: SUBROUTINE setgmn(meanv,covm,ldcovm,p,parm)
+C     JJV So the covariance matrices have been changed to 2-dim'l
+C     JJV matrices, and the additional argument has been added to
+C     JJV the subroutine call.  Additional changes have been made
+C     JJV to reflect this.  (in declarations, the matrix copy routine,
+C     JJV and in subroutine calls.)
 C     .. Parameters ..
       INTEGER maxp
       PARAMETER (maxp=10)
       INTEGER maxobs
       PARAMETER (maxobs=1000)
-      INTEGER p2
-      PARAMETER (p2=maxp*maxp)
+C     JJV this parameter is no longer needed
+C      INTEGER p2
+C      PARAMETER (p2=maxp*maxp)
 C     ..
 C     .. Local Scalars ..
       REAL corr
@@ -132,8 +166,10 @@ C     .. Local Scalars ..
       CHARACTER phrase*100
 C     ..
 C     .. Local Arrays ..
-      REAL answer(1000,maxp),ccovar(p2),covar(p2),mean(maxp),param(500),
-     +     temp(maxp),var(maxp),work(maxp)
+C      REAL answer(1000,maxp),ccovar(p2),covar(p2),mean(maxp),param(500),
+C     +     temp(maxp),var(maxp),work(maxp)
+      REAL answer(1000,maxp),ccovar(maxp,maxp),covar(maxp,maxp),
+     +     mean(maxp),param(500),temp(maxp),var(maxp),work(maxp)
 C     ..
 C     .. External Subroutines ..
       EXTERNAL genmn,phrtsd,prcomp,setall,setcov,setgmn
@@ -158,25 +194,33 @@ C     .. Executable Statements ..
       READ (*,*) (var(i),i=1,p)
       WRITE (*,*) 'Enter correlation of all variables'
       READ (*,*) corr
-      CALL setcov(p,var,corr,covar)
+C      CALL setcov(p,var,corr,covar)
+      CALL setcov(p,var,corr,covar,maxp)
       WRITE (*,*) ' Enter phrase to initialize rn generator'
       READ (*,'(a)') phrase
       CALL phrtsd(phrase,is1,is2)
       CALL setall(is1,is2)
-      DO 20,i = 1,p2
-          ccovar(i) = covar(i)
-   20 CONTINUE
+C      DO 20,i = 1,p2
+C          ccovar(i) = covar(i)
+C 20   CONTINUE
+      DO 25,i = 1,maxp
+         DO 20,j = 1,maxp
+            ccovar(i,j) = covar(i,j)
+ 20      CONTINUE
+ 25   CONTINUE
 C
 C     Generate Variables
 C
-      CALL setgmn(mean,ccovar,p,param)
+C      CALL setgmn(mean,ccovar,p,param)
+      CALL setgmn(mean,ccovar,maxp,p,param)
       DO 40,iobs = 1,maxobs
           CALL genmn(param,work,temp)
           DO 30,j = 1,p
               answer(iobs,j) = work(j)
    30     CONTINUE
    40 CONTINUE
-      CALL prcomp(p,mean,covar,answer)
+C      CALL prcomp(p,mean,covar,answer)
+      CALL prcomp(p,mean,covar,maxp,answer)
 C
 C     Print Comparison of Generated and Reconstructed Values
 C

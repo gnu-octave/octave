@@ -45,31 +45,52 @@ C     .. Local Scalars ..
       LOGICAL qcond
 C     ..
 C     .. External Functions ..
-      REAL genchi,gennch
-      EXTERNAL genchi,gennch
+C     JJV changed the code to call SGAMMA and SNORM directly
+C      REAL genchi,gennch
+C      EXTERNAL genchi,gennch
+      REAL sgamma,snorm
+      EXTERNAL sgamma,snorm
 C     ..
 C     .. Executable Statements ..
-      qcond = dfn .LE. 1.0 .OR. dfd .LE. 0.0 .OR. xnonc .LT. 0.0
+C     JJV changed the argument checker to allow DFN = 1.0
+C     JJV in the same way as GENNCH was changed.
+      qcond = dfn .LT. 1.0 .OR. dfd .LE. 0.0 .OR. xnonc .LT. 0.0
       IF (.NOT. (qcond)) GO TO 10
-      WRITE (*,*) 'In GENNF - Either (1) Numerator DF <= 1.0 or'
-      WRITE (*,*) '(2) Denominator DF < 0.0 or '
+      WRITE (*,*) 'In GENNF - Either (1) Numerator DF < 1.0 or'
+      WRITE (*,*) '(2) Denominator DF <= 0.0 or '
       WRITE (*,*) '(3) Noncentrality parameter < 0.0'
       WRITE (*,*) 'DFN value: ',dfn,'DFD value: ',dfd,'XNONC value: ',
      +  xnonc
-      CALL XSTOPX
-     + ('Degrees of freedom or noncent param our of range in GENNF')
+      STOP 'Degrees of freedom or noncent param out of range in GENNF'
 
-   10 xnum = gennch(dfn,xnonc)/dfn
 C      GENNF = ( GENNCH( DFN, XNONC ) / DFN ) / ( GENCHI( DFD ) / DFD )
-      xden = genchi(dfd)/dfd
-      IF (.NOT. (xden.LE. (1.2E-38*xnum))) GO TO 20
-      WRITE (*,*) ' GENNF - generated numbers would cause overflow'
-      WRITE (*,*) ' Numerator ',xnum,' Denominator ',xden
-      WRITE (*,*) ' GENNF returning 1.0E38'
-      gennf = 1.0E38
+C     JJV changed this to call SGAMMA and SNORM directly
+C     xnum = gennch(dfn,xnonc)/dfn
+ 10   IF (dfn.GE.1.000001) GO TO 20
+C     JJV case dfn = 1.0 - here I am treating dfn as exactly 1.0
+      xnum = (snorm() + sqrt(xnonc))**2
       GO TO 30
 
-   20 gennf = xnum/xden
-   30 RETURN
+C     JJV case dfn > 1.0
+ 20   xnum = (2.0*sgamma((dfn-1.0)/2.0) + (snorm()+sqrt(xnonc))**2)/dfn
+
+C     xden = genchi(dfd)/dfd
+ 30   xden = 2.0*sgamma(dfd/2.0)/dfd
+      
+C     JJV changed constant so that it will not underflow at compile time
+C     JJV while not slowing generator by using double precision or logs.
+C      IF (.NOT. (xden.LE. (1.0E-38*xnum))) GO TO 40
+      IF (.NOT. (xden.LE. (1.0E-37*xnum))) GO TO 40
+      WRITE (*,*) ' GENNF - generated numbers would cause overflow'
+      WRITE (*,*) ' Numerator ',xnum,' Denominator ',xden
+C     JJV next 2 lines changed to maintain truncation of large deviates.
+C      WRITE (*,*) ' GENNF returning 1.0E38'
+C      gennf = 1.0E38
+      WRITE (*,*) ' GENNF returning 1.0E37'
+      gennf = 1.0E37
+      GO TO 50
+
+   40 gennf = xnum/xden
+   50 RETURN
 
       END

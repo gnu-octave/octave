@@ -9,7 +9,7 @@
 
 
 
-                                     RANLIB
+                                     RANDLIB
 
             Library of Fortran Routines for Random Number Generation
 
@@ -93,9 +93,11 @@ C
 C                                                                        
 C     A --> First parameter of the beta distribution                     
 C                         REAL A                                         
+C                         (A >= 1.0E-37)
 C                                                                        
 C     B --> Second parameter of the beta distribution                    
 C                         REAL B                                         
+C                         (B >= 1.0E-37)
 C                                                                        
 C                                                                        
 C                              Method                                    
@@ -154,6 +156,7 @@ C
 C     AV --> The mean of the exponential distribution from which         
 C            a random deviate is to be generated.                        
 C                              REAL AV                                   
+C                              (AV >= 0)
 C                                                                        
 C     GENEXP <-- The random deviate.                                     
 C                              REAL GENEXP                               
@@ -222,10 +225,10 @@ C                              Arguments
 C                                                                        
 C                                                                        
 C     A --> Location parameter of Gamma distribution                     
-C                              REAL A                                    
+C                              REAL A ( A > 0 )
 C                                                                        
 C     R --> Shape parameter of Gamma distribution                        
-C                              REAL R                                    
+C                              REAL R ( R > 0 )
 C                                                                        
 C                                                                        
 C                              Method                                    
@@ -242,7 +245,7 @@ C               Modified Rejection Technique.
 C               Comm. ACM, 25,1 (Jan. 1982), 47 - 54.                    
 C     Algorithm GD                                                       
 C                                                                        
-C               (Case 0.0 <= R <= 1.0)                                   
+C               (Case 0.0 < R < 1.0)                                   
 C               Ahrens, J.H. and Dieter, U.                              
 C               Computer Methods for Sampling from Gamma,                
 C               Beta, Poisson and Binomial Distributions.                
@@ -286,6 +289,47 @@ C
 C     3) Generate trans(A)*E + MEANV ~ N(MEANV,COVM)                    
 C                                                                       
 C********************************************************************** 
+C**********************************************************************
+C
+C            SUBROUTINE GENMUL( N, P, NCAT, IX )
+C     GENerate an observation from the MULtinomial distribution
+C
+C
+C                              Arguments
+C
+C
+C     N --> Number of events that will be classified into one of
+C           the categories 1..NCAT
+C                         INTEGER N
+C	                  (N >= 0)
+C
+C     P --> Vector of probabilities.  P(i) is the probability that
+C           an event will be classified into category i.  Thus, P(i)
+C           must be [0,1]. Only the first NCAT-1 P(i) must be defined
+C           since P(NCAT) is 1.0 minus the sum of the first
+C           NCAT-1 P(i).
+C                         REAL P(NCAT-1)
+C
+C     NCAT --> Number of categories.  Length of P and IX.
+C                         INTEGER NCAT
+C	                  (NCAT > 1)
+C
+C     IX <-- Observation from multinomial distribution.  All IX(i)
+C            will be nonnegative and their sum will be N.
+C                         INTEGER IX(NCAT)
+C
+C
+C                              Method
+C
+C
+C     Algorithm from page 559 of
+C
+C     Devroye, Luc
+C
+C     Non-Uniform Random Variate Generation.  Springer-Verlag,
+C     New York, 1986.
+C
+C**********************************************************************
 C**********************************************************************  
 C                                                                        
 C     REAL FUNCTION GENNCH( DF, XNONC )                                  
@@ -295,7 +339,7 @@ C
 C                              Function                                  
 C                                                                        
 C                                                                        
-                                                                         
+C                                                                         
 C     Generates random deviate  from the  distribution  of a  noncentral 
 C     chisquare with DF degrees  of freedom and noncentrality  parameter 
 C     XNONC.                                                             
@@ -305,7 +349,7 @@ C                              Arguments
 C                                                                        
 C                                                                        
 C     DF --> Degrees of freedom of the chisquare                         
-C            (Must be > 1.0)                                             
+C            (Must be >= 1.0)                                             
 C                         REAL DF                                        
 C                                                                        
 C     XNONC --> Noncentrality parameter of the chisquare                 
@@ -380,6 +424,7 @@ C                              REAL AV
 C                                                                        
 C     SD --> Standard deviation of the normal distribution.              
 C                              REAL SD                                   
+C                              (SD >= 0)
 C                                                                        
 C     GENNOR <-- Generated normal deviate.                               
 C                              REAL GENNOR                               
@@ -501,11 +546,13 @@ C
 C     N  --> The number of trials in the binomial distribution           
 C            from which a random deviate is to be generated.             
 C                              INTEGER N                                 
+C                              (N >= 0)
 C                                                                        
 C     P  --> The probability of an event in each trial of the            
 C            binomial distribution from which a random deviate           
 C            is to be generated.                                         
 C                              REAL P                                    
+C                              (0.0 <= P <= 1.0)
 C                                                                        
 C     IGNBIN <-- A random deviate yielding the number of events          
 C                from N independent trials, each of which has            
@@ -533,6 +580,44 @@ C         Communications of the ACM, 31, 2
 C         (February, 1988) 216.                                          
 C                                                                        
 C**********************************************************************  
+C**********************************************************************
+C
+C     INTEGER FUNCTION IGNNBN( N, P )
+C
+C                GENerate Negative BiNomial random deviate
+C
+C
+C                              Function
+C
+C
+C     Generates a single random deviate from a negative binomial
+C     distribution.
+C
+C
+C                              Arguments
+C
+C
+C     N  --> Required number of events.
+C                              INTEGER N
+C                              (N > 0)
+C
+C     P  --> The probability of an event during a Bernoulli trial.
+C                              REAL P
+C                              (0.0 < P < 1.0)
+C
+C
+C
+C                              Method
+C
+C
+C     Algorithm from page 480 of
+C
+C     Devroye, Luc
+C
+C     Non-Uniform Random Variate Generation.  Springer-Verlag,
+C     New York, 1986.
+C
+C**********************************************************************
 C**********************************************************************  
 C                                                                        
 C     INTEGER FUNCTION IGNLGI()                                          
@@ -551,7 +636,7 @@ C
 C**********************************************************************  
 C**********************************************************************  
 C                                                                        
-C     INTEGER FUNCTION IGNPOI( AV )                                      
+C     INTEGER FUNCTION IGNPOI( MU )                                      
 C                                                                        
 C                    GENerate POIsson random deviate                     
 C                                                                        
@@ -560,18 +645,19 @@ C                              Function
 C                                                                        
 C                                                                        
 C     Generates a single random deviate from a Poisson                   
-C     distribution with mean AV.                                         
+C     distribution with mean MU.                                         
 C                                                                        
 C                                                                        
 C                              Arguments                                 
 C                                                                        
 C                                                                        
-C     AV --> The mean of the Poisson distribution from which             
+C     MU --> The mean of the Poisson distribution from which             
 C            a random deviate is to be generated.                        
-C                              REAL AV                                   
+C                              REAL MU                                   
+C                            (MU >= 0.0)
 C                                                                        
-C     GENEXP <-- The random deviate.                                     
-C                              REAL GENEXP                               
+C     IGNPOI <-- The random deviate.                                     
+C                              REAL IGNPOI (non-negative)
 C                                                                        
 C                                                                        
 C                              Method                                    
@@ -805,42 +891,47 @@ C     G --> Number of the current random number generator (1..32)
 C                    INTEGER G                                           
 C                                                                        
 C**********************************************************************  
-C********************************************************************** 
-C                                                                       
-C     SUBROUTINE SETGMN( MEANV, COVM, P, PARM)                          
-C            SET Generate Multivariate Normal random deviate            
-C                                                                       
-C                                                                       
-C                              Function                                 
-C                                                                       
-C                                                                       
-C      Places P, MEANV, and the Cholesky factoriztion of COVM           
-C      in GENMN.                                                        
-C                                                                       
-C                                                                       
-C                              Arguments                                
-C                                                                       
-C                                                                       
-C     MEANV --> Mean vector of multivariate normal distribution.        
-C                                        REAL MEANV(P)                  
-C                                                                       
-C     COVM   <--> (Input) Covariance   matrix    of  the  multivariate  
-C                 normal distribution                                   
-C                 (Output) Destroyed on output                          
-C                                        REAL COVM(P,P)                 
-C                                                                       
-C     P     --> Dimension of the normal, or length of MEANV.            
-C                                        INTEGER P                      
-C                                                                       
-C     PARM <-- Array of parameters needed to generate multivariate norma
-C                deviates (P, MEANV and Cholesky decomposition of       
-C                COVM).                                                 
-C                1 : 1                - P                               
-C                2 : P + 1            - MEANV                           
-C                P+2 : P*(P+3)/2 + 1  - Cholesky decomposition of COVM  
-C                                             REAL PARM(P*(P+3)/2 + 1)  
-C                                                                       
-C********************************************************************** 
+C**********************************************************************
+C
+C     SUBROUTINE SETGMN( MEANV, COVM, LDCOVM, P, PARM)
+C            SET Generate Multivariate Normal random deviate
+C
+C
+C                              Function
+C
+C
+C      Places P, MEANV, and the Cholesky factoriztion of COVM
+C      in PARM for GENMN.
+C
+C
+C                              Arguments
+C
+C
+C     MEANV --> Mean vector of multivariate normal distribution.
+C                                        REAL MEANV(P)
+C
+C     COVM   <--> (Input) Covariance   matrix    of  the  multivariate
+C                 normal distribution.  This routine uses only the
+C                 (1:P,1:P) slice of COVM, but needs to know LDCOVM.
+C
+C                 (Output) Destroyed on output
+C                                        REAL COVM(LDCOVM,P)
+C
+C     LDCOVM --> Leading actual dimension of COVM.
+C                                        INTEGER LDCOVM
+C
+C     P     --> Dimension of the normal, or length of MEANV.
+C                                        INTEGER P
+C
+C     PARM <-- Array of parameters needed to generate multivariate
+C                normal deviates (P, MEANV and Cholesky decomposition
+C                of COVM).
+C                1 : 1                - P
+C                2 : P + 1            - MEANV
+C                P+2 : P*(P+3)/2 + 1  - Cholesky decomposition of COVM
+C                                             REAL PARM(P*(P+3)/2 + 1)
+C
+C**********************************************************************
 C**********************************************************************  
 C                                                                        
 C     SUBROUTINE SETSD(ISEED1,ISEED2)                                    

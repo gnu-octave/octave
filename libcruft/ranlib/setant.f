@@ -65,8 +65,7 @@ C     Abort unless random number generator initialized
       IF (qrgnin()) GO TO 10
       WRITE (*,*) ' SETANT called before random number generator ',
      +  ' initialized -- abort!'
-      CALL XSTOPX
-     + (' SETANT called before random number generator initialized')
+      STOP ' SETANT called before random number generator initialized'
 
    10 CALL getcgn(g)
       qanti(g) = qvalue

@@ -18,16 +18,18 @@ C
 C
 C     A --> First parameter of the beta distribution
 C                         REAL A
+C     JJV                 (A > 1.0E-37)
 C
 C     B --> Second parameter of the beta distribution
 C                         REAL B
+C     JJV                 (B > 1.0E-37)
 C
 C
 C                              Method
 C
 C
 C     R. C. H. Cheng
-C     Generating Beta Variatew with Nonintegral Shape Parameters
+C     Generating Beta Variates with Nonintegral Shape Parameters
 C     Communications of the ACM, 21:317-322  (1978)
 C     (Algorithms BB and BC)
 C
@@ -35,10 +37,15 @@ C**********************************************************************
 C     .. Parameters ..
 C     Close to the largest number that can be exponentiated
       REAL expmax
-      PARAMETER (expmax=89.0)
+C     JJV changed this - 89 was too high, and LOG(1.0E38) = 87.49823
+      PARAMETER (expmax=87.49823)
 C     Close to the largest representable single precision number
       REAL infnty
       PARAMETER (infnty=1.0E38)
+C     JJV added the parameter minlog
+C     Close to the smallest number of which a LOG can be taken.
+      REAL minlog
+      PARAMETER (minlog=1.0E-37)
 C     ..
 C     .. Scalar Arguments ..
       REAL aa,bb
@@ -56,18 +63,21 @@ C     .. Intrinsic Functions ..
       INTRINSIC exp,log,max,min,sqrt
 C     ..
 C     .. Save statement ..
-      SAVE olda,oldb,alpha,beta,gamma,k1,k2
+C     JJV added a,b
+      SAVE olda,oldb,alpha,beta,gamma,k1,k2,a,b
 C     ..
 C     .. Data statements ..
-      DATA olda,oldb/-1,-1/
+C     JJV changed these to ridiculous values
+      DATA olda,oldb/-1.0E37,-1.0E37/
 C     ..
 C     .. Executable Statements ..
       qsame = (olda.EQ.aa) .AND. (oldb.EQ.bb)
       IF (qsame) GO TO 20
-      IF (.NOT. (aa.LE.0.0.OR.bb.LE.0.0)) GO TO 10
-      WRITE (*,*) ' AA or BB <= 0 in GENBET - Abort!'
+C     JJV added small minimum for small log problem in calc of W
+      IF (.NOT. (aa.LT.minlog.OR.bb.LT.minlog)) GO TO 10
+      WRITE (*,*) ' AA or BB < ',minlog,' in GENBET - Abort!'
       WRITE (*,*) ' AA: ',aa,' BB ',bb
-      CALL XSTOPX (' AA or BB <= 0 in GENBET - Abort!')
+      STOP ' AA or BB too small in GENBET - Abort!'
 
    10 olda = aa
       oldb = bb
@@ -92,11 +102,16 @@ C     Step 1
 C
       u2 = ranf()
       v = beta*log(u1/ (1.0-u1))
-      IF (.NOT. (v.GT.expmax)) GO TO 50
-      w = infnty
+C     JJV altered this
+      IF (v.GT.expmax) GO TO 55
+C     JJV added checker to see if a*exp(v) will overflow
+C     JJV 50 _was_ w = a*exp(v); also note here a > 1.0
+   50 w = exp(v)
+      IF (w.GT.infnty/a) GO TO 55
+      w = a*w
       GO TO 60
+ 55   w = infnty
 
-   50 w = a*exp(v)
    60 z = u1**2*u2
       r = gamma*v - 1.3862944
       s = a + r - w
@@ -112,6 +127,13 @@ C
 C
 C     Step 4
 C
+C     JJV added checker to see if log(alpha/(b+w)) will 
+C     JJV overflow.  If so, we count the log as -INF, and
+C     JJV consequently evaluate conditional as true, i.e.
+C     JJV the algorithm rejects the trial and starts over
+C     JJV May not need this here since ALPHA > 2.0
+      IF (alpha/(b+w).LT.minlog) GO TO 40
+
       IF ((r+alpha*log(alpha/ (b+w))).LT.t) GO TO 40
 C
 C     Step 5
@@ -157,12 +179,28 @@ C
   130 z = u1**2*u2
       IF (.NOT. (z.LE.0.25)) GO TO 160
       v = beta*log(u1/ (1.0-u1))
-      IF (.NOT. (v.GT.expmax)) GO TO 140
-      w = infnty
-      GO TO 150
 
-  140 w = a*exp(v)
-  150 GO TO 200
+C     JJV instead of checking v > expmax at top, I will check
+C     JJV if a < 1, then check the appropriate values
+
+      IF (a.GT.1.0) GO TO 135
+C     JJV A < 1 so it can help out if EXP(V) would overflow
+      IF (v.GT.expmax) GO TO 132
+      w = a*exp(v)
+      GO TO 200
+ 132  w = v + log(a)
+      IF (w.GT.expmax) GO TO 140
+      w = exp(w)
+      GO TO 200
+
+C     JJV in this case A > 1
+ 135  IF (v.GT.expmax) GO TO 140
+      w = exp(v)
+      IF (w.GT.infnty/a) GO TO 140
+      w = a*w
+      GO TO 200
+ 140  w = infnty
+      GO TO 200
 
   160 IF (z.GE.k2) GO TO 120
 C
@@ -172,12 +210,31 @@ C
 C     Step 5
 C
   170 v = beta*log(u1/ (1.0-u1))
-      IF (.NOT. (v.GT.expmax)) GO TO 180
-      w = infnty
+
+C     JJV same kind of checking as above
+      IF (a.GT.1.0) GO TO 175
+C     JJV A < 1 so it can help out if EXP(V) would overflow
+      IF (v.GT.expmax) GO TO 172
+      w = a*exp(v)
+      GO TO 190
+ 172  w = v + log(a)
+      IF (w.GT.expmax) GO TO 180
+      w = exp(w)
       GO TO 190
 
-  180 w = a*exp(v)
-  190 IF ((alpha* (log(alpha/ (b+w))+v)-1.3862944).LT.log(z)) GO TO 120
+C     JJV in this case A > 1
+ 175  IF (v.GT.expmax) GO TO 180
+      w = exp(v)
+      IF (w.GT.infnty/a) GO TO 180
+      w = a*w
+      GO TO 190
+
+  180 w = infnty
+
+C     JJV here we also check to see if log overlows; if so, we treat it
+C     JJV as -INF, which means condition is true, i.e. restart
+  190 IF (alpha/(b+w).LT.minlog) GO TO 120
+      IF ((alpha* (log(alpha/ (b+w))+v)-1.3862944).LT.log(z)) GO TO 120
 C
 C     Step 6
 C

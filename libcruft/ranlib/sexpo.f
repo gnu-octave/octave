@@ -23,14 +23,32 @@ C     SUNIF.  The argument IR thus goes away.                          C
 C                                                                      C
 C**********************************************************************C
 C
-      DIMENSION q(8)
-      EQUIVALENCE (q(1),q1)
 C
 C     Q(N) = SUM(ALOG(2.0)**K/K!)    K=1,..,N ,      THE HIGHEST N
 C     (HERE 8) IS DETERMINED BY Q(N)=1.0 WITHIN STANDARD PRECISION
 C
+C     JJV added a Save statement for q (in Data statement)
+C     .. Local Scalars ..
+      REAL a,q1,u,umin,ustar
+      INTEGER i
+C     ..
+C     .. Local Arrays ..
+      REAL q(8)
+C     ..
+C     .. External Functions ..
+      REAL ranf
+      EXTERNAL ranf
+C     ..
+C     .. Equivalences ..
+      EQUIVALENCE (q(1),q1)
+C     ..
+C     .. Save statement ..
+      SAVE q
+C     ..
+C     .. Data statements ..
       DATA q/.6931472,.9333737,.9888778,.9984959,.9998293,.9999833,
      +     .9999986,.9999999/
+C     ..
 C
    10 a = 0.0
       u = ranf()
@@ -38,7 +56,10 @@ C
 
    20 a = a + q1
    30 u = u + u
-      IF (u.LE.1.0) GO TO 20
+C     JJV changed the following to reflect the true algorithm and
+C     JJV prevent unpredictable behavior if U is initially 0.5.
+C      IF (u.LE.1.0) GO TO 20
+      IF (u.LT.1.0) GO TO 20
    40 u = u - 1.0
       IF (u.GT.q1) GO TO 60
    50 sexpo = a + u

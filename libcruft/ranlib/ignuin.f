@@ -68,8 +68,6 @@ C      ABORT-PROGRAM
       ignuin = low
       RETURN
 
-      GO TO 70
-
 C     Number to be generated should be in range 0..RANGE
 C     Set MAXNOW so that the number of integers in 0..MAXNOW is an
 C     integral multiple of the number in 0..RANGE
@@ -77,14 +75,10 @@ C     integral multiple of the number in 0..RANGE
    30 ranp1 = range + 1
       maxnow = (maxnum/ranp1)*ranp1
    40 ign = ignlgi() - 1
-      IF (.NOT. (ign.LE.maxnow)) GO TO 50
+      IF (.NOT. (ign.LE.maxnow)) GO TO 40
       ignuin = low + mod(ign,ranp1)
       RETURN
 
-   50 GO TO 40
-
-   60 CONTINUE
-   70 CONTINUE
    80 IF (.NOT. (err.EQ.1)) GO TO 90
       WRITE (*,*) err1
       GO TO 100
@@ -94,10 +88,7 @@ C     TO ABORT-PROGRAM
   100 WRITE (*,*) ' LOW: ',low,' HIGH: ',high
       WRITE (*,*) ' Abort on Fatal ERROR'
       IF (.NOT. (err.EQ.1)) GO TO 110
-      CALL XSTOPX ('LOW > HIGH in IGNUIN')
-      IGNUIN = 0
-
-      GO TO 120
+      STOP 'LOW > HIGH in IGNUIN'
 
   110 STOP ' ( HIGH - LOW ) > 2,147,483,561 in IGNUIN'
 

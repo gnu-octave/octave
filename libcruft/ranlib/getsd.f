@@ -1,7 +1,7 @@
       SUBROUTINE getsd(iseed1,iseed2)
 C**********************************************************************
 C
-C     SUBROUTINE GETSD(ISEED1,ISEED2)
+C     SUBROUTINE GETSD(G,ISEED1,ISEED2)
 C               GET SeeD
 C
 C     Returns the value of two integer seeds of the current generator
@@ -62,8 +62,7 @@ C     Abort unless random number generator initialized
       IF (qrgnin()) GO TO 10
       WRITE (*,*) ' GETSD called before random number generator ',
      +  ' initialized -- abort!'
-      CALL XSTOPX
-     + (' GETSD called before random number generator initialized')
+      STOP ' GETSD called before random number generator initialized'
 
    10 CALL getcgn(g)
       iseed1 = cg1(g)

@@ -1,7 +1,13 @@
-      SUBROUTINE setgmn(meanv,covm,p,parm)
+      SUBROUTINE setgmn(meanv,covm,ldcovm,p,parm)
+C      SUBROUTINE setgmn(meanv,covm,p,parm)
+C     JJV changed this routine to take leading dimension of COVM
+C     JJV argument and pass it to SPOFA, making it easier to use
+C     JJV if the COVM which is used is contained in a larger matrix
+C     JJV and to make the routine more consistent with LINPACK.
+C     JJV Changes are in comments, declarations, and the call to SPOFA.
 C**********************************************************************
 C
-C     SUBROUTINE SETGMN( MEANV, COVM, P, PARM)
+C     SUBROUTINE SETGMN( MEANV, COVM, LDCOVM, P, PARM)
 C            SET Generate Multivariate Normal random deviate
 C
 C
@@ -9,7 +15,7 @@ C                              Function
 C
 C
 C      Places P, MEANV, and the Cholesky factoriztion of COVM
-C      in GENMN.
+C      in PARM for GENMN.
 C
 C
 C                              Arguments
@@ -19,16 +25,21 @@ C     MEANV --> Mean vector of multivariate normal distribution.
 C                                        REAL MEANV(P)
 C
 C     COVM   <--> (Input) Covariance   matrix    of  the  multivariate
-C                 normal distribution
+C                 normal distribution.  This routine uses only the
+C                 (1:P,1:P) slice of COVM, but needs to know LDCOVM.
+C
 C                 (Output) Destroyed on output
-C                                        REAL COVM(P,P)
+C                                        REAL COVM(LDCOVM,P)
+C
+C     LDCOVM --> Leading actual dimension of COVM.
+C                                        INTEGER LDCOVM
 C
 C     P     --> Dimension of the normal, or length of MEANV.
 C                                        INTEGER P
 C
-C     PARM <-- Array of parameters needed to generate multivariate norma
-C                deviates (P, MEANV and Cholesky decomposition of
-C                COVM).
+C     PARM <-- Array of parameters needed to generate multivariate
+C                normal deviates (P, MEANV and Cholesky decomposition
+C                of COVM).
 C                1 : 1                - P
 C                2 : P + 1            - MEANV
 C                P+2 : P*(P+3)/2 + 1  - Cholesky decomposition of COVM
@@ -36,10 +47,12 @@ C                                             REAL PARM(P*(P+3)/2 + 1)
 C
 C**********************************************************************
 C     .. Scalar Arguments ..
-      INTEGER p
+C      INTEGER p
+      INTEGER p, ldcovm
 C     ..
 C     .. Array Arguments ..
-      REAL covm(p,p),meanv(p),parm(p* (p+3)/2+1)
+C      REAL covm(p,p),meanv(p),parm(p* (p+3)/2+1)
+      REAL covm(ldcovm,p),meanv(p),parm(p* (p+3)/2+1)
 C     ..
 C     .. Local Scalars ..
       INTEGER i,icount,info,j
@@ -55,7 +68,7 @@ C
       IF (.NOT. (p.LE.0)) GO TO 10
       WRITE (*,*) 'P nonpositive in SETGMN'
       WRITE (*,*) 'Value of P: ',p
-      CALL XSTOPX ('P nonpositive in SETGMN')
+      STOP 'P nonpositive in SETGMN'
 
    10 parm(1) = p
 C
@@ -67,10 +80,11 @@ C
 C
 C      Cholesky decomposition to find A s.t. trans(A)*(A) = COVM
 C
-      CALL spofa(covm,p,p,info)
+C      CALL spofa(covm,p,p,info)
+      CALL spofa(covm,ldcovm,p,info)
       IF (.NOT. (info.NE.0)) GO TO 30
       WRITE (*,*) ' COVM not positive definite in SETGMN'
-      CALL XSTOPX (' COVM not positive definite in SETGMN')
+      STOP ' COVM not positive definite in SETGMN'
 
    30 icount = p + 1
 C

@@ -50,19 +50,41 @@ C     COEFFICIENTS Q(K) - FOR Q0 = SUM(Q(K)*A**(-K))
 C     COEFFICIENTS A(K) - FOR Q = Q0+(T*T/2)*SUM(A(K)*V**K)
 C     COEFFICIENTS E(K) - FOR EXP(Q)-1 = SUM(E(K)*Q**K)
 C
+C     .. Scalar Arguments ..
+      REAL a
+C     ..
+C     .. Local Scalars .. (JJV added B0 to fix rare and subtle bug)
+      REAL a1,a2,a3,a4,a5,a6,a7,aa,aaa,b,b0,c,d,e,e1,e2,e3,e4,e5,p,q,q0,
+     +     q1,q2,q3,q4,q5,q6,q7,r,s,s2,si,sqrt32,t,u,v,w,x
+C     ..
+C     .. External Functions ..
+      REAL ranf,sexpo,snorm
+      EXTERNAL ranf,sexpo,snorm
+C     ..
+C     .. Intrinsic Functions ..
+      INTRINSIC abs,alog,exp,sign,sqrt
+C     ..
+C     .. Save statement ..
+C     JJV added Save statement for vars in Data satatements
+      SAVE aa,aaa,s2,s,d,q0,b,si,c,q1,q2,q3,q4,q5,q6,q7,a1,a2,a3,a4,a5,
+     +     a6,a7,e1,e2,e3,e4,e5,sqrt32
+C     ..
+C     .. Data statements ..
+C
+C     PREVIOUS A PRE-SET TO ZERO - AA IS A', AAA IS A"
+C     SQRT32 IS THE SQUAREROOT OF 32 = 5.656854249492380
+C
       DATA q1,q2,q3,q4,q5,q6,q7/.04166669,.02083148,.00801191,.00144121,
      +     -.00007388,.00024511,.00024240/
       DATA a1,a2,a3,a4,a5,a6,a7/.3333333,-.2500030,.2000062,-.1662921,
      +     .1423657,-.1367177,.1233795/
       DATA e1,e2,e3,e4,e5/1.,.4999897,.1668290,.0407753,.0102930/
-C
-C     PREVIOUS A PRE-SET TO ZERO - AA IS A', AAA IS A"
-C     SQRT32 IS THE SQUAREROOT OF 32 = 5.656854249492380
-C
       DATA aa/0.0/,aaa/0.0/,sqrt32/5.656854/
+C     ..
+C     .. Executable Statements ..
 C
       IF (a.EQ.aa) GO TO 10
-      IF (a.LT.1.0) GO TO 120
+      IF (a.LT.1.0) GO TO 130
 C
 C     STEP  1:  RECALCULATIONS OF S2,S,D IF A HAS CHANGED
 C
@@ -115,9 +137,9 @@ C
 C
 C               CASE 1:  A .LE. 3.686
 C
-   30 b = .463 + s - .178*s2
+   30 b = .463 + s + .178*s2
       si = 1.235
-      c = .195/s - .079 + .016*s
+      c = .195/s - .079 + .16*s
 C
 C     STEP  5:  NO QUOTIENT TEST IF X NOT POSITIVE
 C
@@ -147,45 +169,67 @@ C
 C
 C     STEP  9:  REJECTION IF T .LT. TAU(1) = -.71874483771719
 C
-      IF (t.LT. (-.7187449)) GO TO 70
+   80 IF (t.LT. (-.7187449)) GO TO 70
 C
 C     STEP 10:  CALCULATION OF V AND QUOTIENT Q
 C
       v = t/ (s+s)
-      IF (abs(v).LE.0.25) GO TO 80
+      IF (abs(v).LE.0.25) GO TO 90
       q = q0 - s*t + 0.25*t*t + (s2+s2)*alog(1.0+v)
-      GO TO 90
+      GO TO 100
 
-   80 q = q0 + 0.5*t*t* ((((((a7*v+a6)*v+a5)*v+a4)*v+a3)*v+a2)*v+a1)*v
+   90 q = q0 + 0.5*t*t* ((((((a7*v+a6)*v+a5)*v+a4)*v+a3)*v+a2)*v+a1)*v
 C
 C     STEP 11:  HAT ACCEPTANCE (H) (IF Q NOT POSITIVE GO TO STEP 8)
 C
-   90 IF (q.LE.0.0) GO TO 70
-      IF (q.LE.0.5) GO TO 100
-      w = exp(q) - 1.0
-      GO TO 110
+  100 IF (q.LE.0.0) GO TO 70
+      IF (q.LE.0.5) GO TO 110
+C
+C     JJV modified the code through line 125 to handle large Q case
+C
+      IF (q.LT.15.0) GO TO 105
+C
+C     JJV Here Q is large enough that Q = log(exp(Q) - 1.0) (for real Q)
+C     JJV so reformulate test at 120 in terms of one EXP, if not too big
+C     JJV 87.49823 is close to the largest real which can be
+C     JJV exponentiated (87.49823 = log(1.0E38))
+C
+      IF ((q+e-0.5*t*t).GT.87.49823) GO TO 125
+      IF (c*abs(u).GT.exp(q+e-0.5*t*t)) GO TO 70
+      GO TO 125
 
-  100 w = ((((e5*q+e4)*q+e3)*q+e2)*q+e1)*q
+ 105  w = exp(q) - 1.0
+      GO TO 120
+
+  110 w = ((((e5*q+e4)*q+e3)*q+e2)*q+e1)*q
 C
 C               IF T IS REJECTED, SAMPLE AGAIN AT STEP 8
 C
-  110 IF (c*abs(u).GT.w*exp(e-0.5*t*t)) GO TO 70
-      x = s + 0.5*t
+  120 IF (c*abs(u).GT.w*exp(e-0.5*t*t)) GO TO 70
+ 125  x = s + 0.5*t
       sgamma = x*x
       RETURN
 C
 C     ALTERNATE METHOD FOR PARAMETERS A BELOW 1  (.3678794=EXP(-1.))
 C
-  120 aa = 0.0
-      b = 1.0 + .3678794*a
-  130 p = b*ranf()
-      IF (p.GE.1.0) GO TO 140
+C     JJV changed B to B0 (which was added to declarations for this)
+C     JJV in 130 to END to fix rare and subtle bug.
+C     JJV Line: '130 aa = 0.0' was removed (unnecessary, wasteful).
+C     JJV Reasons: the state of AA only serves to tell the A .GE. 1.0
+C     JJV case if certain A-dependant constants need to be recalculated.
+C     JJV The A .LT. 1.0 case (here) no longer changes any of these, and
+C     JJV the recalculation of B (which used to change with an
+C     JJV A .LT. 1.0 call) is governed by the state of AAA anyway.
+C
+ 130  b0 = 1.0 + .3678794*a
+  140 p = b0*ranf()
+      IF (p.GE.1.0) GO TO 150
       sgamma = exp(alog(p)/a)
-      IF (sexpo().LT.sgamma) GO TO 130
+      IF (sexpo().LT.sgamma) GO TO 140
       RETURN
 
-  140 sgamma = -alog((b-p)/a)
-      IF (sexpo().LT. (1.0-a)*alog(sgamma)) GO TO 130
+  150 sgamma = -alog((b0-p)/a)
+      IF (sexpo().LT. (1.0-a)*alog(sgamma)) GO TO 140
       RETURN
 
       END

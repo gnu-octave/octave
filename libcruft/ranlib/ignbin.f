@@ -1,7 +1,7 @@
       INTEGER FUNCTION ignbin(n,pp)
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNBIN( N, P )
+C     INTEGER FUNCTION IGNBIN( N, PP )
 C
 C                    GENerate BINomial random deviate
 C
@@ -20,11 +20,13 @@ C
 C     N  --> The number of trials in the binomial distribution
 C            from which a random deviate is to be generated.
 C                              INTEGER N
+C     JJV                      (N >= 0)
 C
-C     P  --> The probability of an event in each trial of the
+C     PP --> The probability of an event in each trial of the
 C            binomial distribution from which a random deviate
 C            is to be generated.
-C                              REAL P
+C                              REAL PP
+C     JJV                      (0.0 <= pp <= 1.0)
 C
 C     IGNBIN <-- A random deviate yielding the number of events
 C                from N independent trials, each of which has
@@ -162,9 +164,16 @@ C     .. External Functions ..
 C     ..
 C     .. Intrinsic Functions ..
       INTRINSIC abs,alog,amin1,iabs,int,sqrt
+C     JJV ..
+C     JJV .. Save statement ..
+      SAVE p,q,m,fm,xnp,xnpq,p1,xm,xl,xr,c,xll,xlr,p2,p3,p4,qn,r,g,
+     +     psave,nsave
+C     JJV I am including the variables in data statements
 C     ..
 C     .. Data statements ..
-      DATA psave,nsave/-1.,-1/
+C     JJV made these ridiculous starting values - the hope is that
+C     JJV no one will call this the first time with them as args
+      DATA psave,nsave/-1.0E37,-214748365/
 C     ..
 C     .. Executable Statements ..
       IF (pp.NE.psave) GO TO 10
@@ -173,10 +182,18 @@ C     .. Executable Statements ..
 C
 C*****SETUP, PERFORM ONLY WHEN PARAMETERS CHANGE
 C
-   10 psave = pp
+
+C     JJV added the argument checker - involved only renaming 10
+C     JJV and 20 to the checkers and adding checkers
+C     JJV Only remaining problem - if called initially with the
+C     JJV initial values of psave and nsave, it will hang
+ 10   IF (pp.LT.0.0) STOP 'PP < 0.0 in IGNBIN - ABORT!'
+      IF (pp.GT.1.0) STOP 'PP > 1.0 in IGNBIN - ABORT!'
+      psave = pp
       p = amin1(psave,1.-psave)
       q = 1. - p
-   20 xnp = n*p
+ 20   IF (n.LT.0) STOP 'N < 0 in IGNBIN - ABORT!'
+      xnp = n*p
       nsave = n
       IF (xnp.LT.30.) GO TO 140
       ffm = xnp + p

@@ -1,7 +1,7 @@
       INTEGER FUNCTION ignpoi(mu)
 C**********************************************************************
 C
-C     INTEGER FUNCTION IGNPOI( AV )
+C     INTEGER FUNCTION IGNPOI( MU )
 C
 C                    GENerate POIsson random deviate
 C
@@ -10,18 +10,19 @@ C                              Function
 C
 C
 C     Generates a single random deviate from a Poisson
-C     distribution with mean AV.
+C     distribution with mean MU.
 C
 C
 C                              Arguments
 C
 C
-C     AV --> The mean of the Poisson distribution from which
+C     MU --> The mean of the Poisson distribution from which
 C            a random deviate is to be generated.
-C                              REAL AV
+C                              REAL MU
+C     JJV                    (MU >= 0.0)
 C
-C     GENEXP <-- The random deviate.
-C                              REAL GENEXP
+C     IGNPOI <-- The random deviate.
+C                              INTEGER IGNPOI (non-negative)
 C
 C
 C                              Method
@@ -68,7 +69,7 @@ C     OUTPUT: IGNPOI=SAMPLE FROM THE POISSON-(MU)-DISTRIBUTION
 C
 C
 C
-C     MUPREV=PREVIOUS MU, MUOLD=MU AT LAST EXECUTION OF STEP P OR B.
+C     MUPREV=PREVIOUS MU, MUOLD=MU AT LAST EXECUTION OF STEP P OR CASE B
 C     TABLES: COEFFICIENTS A0-A7 FOR STEP F. FACTORIALS FACT
 C     COEFFICIENTS A(K) - FOR PX = FK*V*V*SUM(A(K)*V**K)-DEL
 C
@@ -82,7 +83,8 @@ C     ..
 C     .. Local Scalars ..
       REAL a0,a1,a2,a3,a4,a5,a6,a7,b1,b2,c,c0,c1,c2,c3,d,del,difmuk,e,
      +     fk,fx,fy,g,muold,muprev,omega,p,p0,px,py,q,s,t,u,v,x,xx
-      INTEGER j,k,kflag,l,m
+C     JJV I added a variable 'll' here - it is the 'l' for CASE A
+      INTEGER j,k,kflag,l,ll,m
 C     ..
 C     .. Local Arrays ..
       REAL fact(10),pp(35)
@@ -94,27 +96,40 @@ C     ..
 C     .. Intrinsic Functions ..
       INTRINSIC abs,alog,exp,float,ifix,max0,min0,sign,sqrt
 C     ..
+C     JJV added this for case: mu unchanged
+C     .. Save statement ..
+      SAVE s, d, l, ll, omega, c3, c2, c1, c0, c, m, p, q, p0,
+     +     a0, a1, a2, a3, a4, a5, a6, a7, fact, muprev, muold
+C     ..
+C     JJV end addition - I am including vars in Data statements
 C     .. Data statements ..
-      DATA muprev,muold/0.,0./
+C     JJV changed initial values of MUPREV and MUOLD to -1.0E37
+C     JJV if no one calls IGNPOI with MU = -1.0E37 the first time,
+C     JJV the code shouldn't break
+      DATA muprev,muold/-1.0E37,-1.0E37/
       DATA a0,a1,a2,a3,a4,a5,a6,a7/-.5,.3333333,-.2500068,.2000118,
      +     -.1661269,.1421878,-.1384794,.1250060/
       DATA fact/1.,1.,2.,6.,24.,120.,720.,5040.,40320.,362880./
 C     ..
 C     .. Executable Statements ..
+
       IF (mu.EQ.muprev) GO TO 10
       IF (mu.LT.10.0) GO TO 120
 C
-C     C A S E  A. (RECALCULATION OF S,D,L IF MU HAS CHANGED)
+C     C A S E  A. (RECALCULATION OF S,D,LL IF MU HAS CHANGED)
 C
+C     JJV This is the case where I changed 'l' to 'll'
+C     JJV Here 'll' is set once and used in a comparison once
+
       muprev = mu
       s = sqrt(mu)
       d = 6.0*mu*mu
 C
 C             THE POISSON PROBABILITIES PK EXCEED THE DISCRETE NORMAL
-C             PROBABILITIES FK WHENEVER K >= M(MU). L=IFIX(MU-1.1484)
+C             PROBABILITIES FK WHENEVER K >= M(MU). LL=IFIX(MU-1.1484)
 C             IS AN UPPER BOUND TO M(MU) FOR ALL MU >= 10 .
 C
-      l = ifix(mu-1.1484)
+      ll = ifix(mu-1.1484)
 C
 C     STEP N. NORMAL SAMPLE - SNORM(IR) FOR STANDARD NORMAL DEVIATE
 C
@@ -124,7 +139,7 @@ C
 C
 C     STEP I. IMMEDIATE ACCEPTANCE IF IGNPOI IS LARGE ENOUGH
 C
-      IF (ignpoi.GE.l) RETURN
+      IF (ignpoi.GE.ll) RETURN
 C
 C     STEP S. SQUEEZE ACCEPTANCE - SUNIF(IR) FOR (0,1)-SAMPLE U
 C
@@ -214,9 +229,16 @@ C
 C
 C     C A S E  B. (START NEW TABLE AND CALCULATE P0 IF NECESSARY)
 C
-  120 muprev = 0.0
+C     JJV changed MUPREV assignment from 0.0 to initial value
+  120 muprev = -1.0E37
       IF (mu.EQ.muold) GO TO 130
-      muold = mu
+C     JJV added argument checker here
+      IF (mu.GE.0.0) GO TO 125
+      WRITE (*,*) 'MU < 0 in IGNPOI - ABORT'
+      WRITE (*,*) 'Value of MU: ',mu
+      STOP 'MU < 0 in IGNPOI - ABORT'
+C     JJV added line label here
+ 125  muold = mu
       m = max0(1,ifix(mu))
       l = 0
       p = exp(-mu)

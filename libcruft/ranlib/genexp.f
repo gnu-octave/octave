@@ -1,4 +1,5 @@
       REAL FUNCTION genexp(av)
+
 C**********************************************************************
 C
 C     REAL FUNCTION GENEXP( AV )
@@ -19,6 +20,7 @@ C
 C     AV --> The mean of the exponential distribution from which
 C            a random deviate is to be generated.
 C                              REAL AV
+C     JJV                      (AV >= 0)
 C
 C     GENEXP <-- The random deviate.
 C                              REAL GENEXP
@@ -46,7 +48,13 @@ C     .. External Functions ..
       EXTERNAL sexpo
 C     ..
 C     .. Executable Statements ..
-      genexp = sexpo()*av
+C     JJV added check to ensure AV >= 0.0 
+      IF (av.GE.0.0) GO TO 10
+      WRITE (*,*) 'AV < 0.0 in GENEXP - ABORT'
+      WRITE (*,*) 'Value of AV: ',av
+      STOP 'AV < 0.0 in GENEXP - ABORT'
+
+ 10   genexp = sexpo()*av
       RETURN
 
       END

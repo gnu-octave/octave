@@ -21,6 +21,7 @@ C                              REAL AV
 C
 C     SD --> Standard deviation of the normal distribution.
 C                              REAL SD
+C     JJV                      (SD >= 0)
 C
 C     GENNOR <-- Generated normal deviate.
 C                              REAL GENNOR
@@ -48,7 +49,13 @@ C     .. External Functions ..
       EXTERNAL snorm
 C     ..
 C     .. Executable Statements ..
-      gennor = sd*snorm() + av
+C     JJV added check to ensure SD >= 0.0 
+      IF (sd.GE.0.0) GO TO 10
+      WRITE (*,*) 'SD < 0.0 in GENNOR - ABORT'
+      WRITE (*,*) 'Value of SD: ',sd
+      STOP 'SD < 0.0 in GENNOR - ABORT'
+
+ 10   gennor = sd*snorm() + av
       RETURN
 
       END

@@ -38,7 +38,7 @@ function result = sinc (x)
 
   i = (x != 0);
 
-  if (any (i))
+  if (any (i(:)))
     t = pi * x(i);
     result(i) = sin (t) ./ t;
   endif

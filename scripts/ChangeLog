@@ -1,3 +1,7 @@
+2004-03-02  Paul Kienzle <pkienzle@users.sf.net>
+
+	* signal/sinc.m: Use i(:) instead of i when checking for any nonzeros.
+
 2004-03-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/horzcat.m: Delete.

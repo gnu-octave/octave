@@ -1,3 +1,7 @@
+Mon Dec  2 00:26:41 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-idx.h (assign): Only resize if assignment conforms.
+
 Wed Nov 20 01:00:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (INCLUDES): Delete lo-error.h.

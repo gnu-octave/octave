@@ -193,7 +193,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 
   if (n != 0)
     {
-      if (liboctave_rre_flag)
+      if (liboctave_rre_flag && (rhs_len == n || rhs_len == 1))
 	{
 	  int max_idx = idx.max () + 1;
 	  if (max_idx > lhs_len)

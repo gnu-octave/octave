@@ -1470,6 +1470,12 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
       if (n_idx < lhs_dims.length ())
 	{
+	  // Collapse dimensions beyond last index.
+
+	  if (liboctave_wfi_flag && ! (ra_idx(n_idx-1).is_colon ()))
+	    (*current_liboctave_warning_handler)
+	      ("fewer indices than dimensions for N-d array");
+
 	  for (int i = n_idx; i < lhs_dims.length (); i++)
 	    lhs_dims(n_idx-1) *= lhs_dims(i);
 
@@ -1888,7 +1894,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	}
       else
 	{
-	  if (vector_equivalent(idx_orig_dims))
+	  if (vector_equivalent (idx_orig_dims))
 	    {
 	      // Array<int> index (n_dims, len);
 	      dim_vector new_dims;
@@ -2554,81 +2560,21 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 {
   int retval = 1;
 
-  int n_idx = lhs.index_count ();
-
-  dim_vector lhs_dims = lhs.dims ();
   dim_vector rhs_dims = rhs.dims ();
+
+  int rhs_dims_len = rhs_dims.length ();
+
+  bool rhs_is_scalar = is_scalar (rhs_dims);
+
+  int n_idx = lhs.index_count ();
 
   idx_vector *idx_vex = lhs.get_idx ();
 
   Array<idx_vector> idx = conv_to_array (idx_vex, n_idx);
 
-  // This needs to be defined before MAYBE_RESIZE_ND_DIMS.
-
-  int rhs_dims_len = rhs_dims.length ();
-
-  bool rhs_is_empty = rhs_dims_len == 0 ? true : any_zero_len (rhs_dims);
-
-  // Maybe expand to more dimensions.
-
-  int lhs_dims_len = lhs_dims.length ();
-
-  if (! rhs_is_empty && n_idx >= lhs_dims_len)
-    {
-      dim_vector new_dims;
-      new_dims.resize (n_idx);
-
-      for (int i = 0; i < n_idx; i++)
-	{
-	  int tmp = (i < rhs_dims.length () && idx(i).is_colon ())
-	    ? rhs_dims(i) : idx(i).max () + 1;
-
-	  new_dims(i)
-	    = ((lhs_dims_len == 0 || i >= lhs_dims_len || tmp > lhs_dims(i))
-	       ? tmp : lhs_dims(i));
-	}
-
-      lhs.resize_and_fill (new_dims, rfv);
-      lhs_dims = lhs.dims ();
-      lhs_dims_len = lhs_dims.length ();
-    }
-
-  Array<int> idx_is_colon (n_idx, 0);
-  Array<int> idx_is_colon_equiv (n_idx, 0);
-
-  for (int i = 0; i < n_idx; i++)
-    {
-      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
-
-      idx_is_colon(i) = idx(i).is_colon ();
-    }
-
-  int resize_ok = 1;
-
-  dim_vector frozen_len;
-
-  if (n_idx == lhs_dims_len)
-    frozen_len = freeze (idx, lhs_dims, resize_ok);
-
-  bool rhs_is_scalar = is_scalar (rhs_dims);
-
-  bool idx_is_empty = any_zero_len (frozen_len);
-
   if (rhs_dims_len == 2 && rhs_dims(0) == 0 && rhs_dims(1) == 0)
     {
       lhs.maybe_delete_elements (idx, rfv);
-    }
-  else if (idx_is_empty)
-    {
-      // Assignment to matrix with at least one empty index.
-
-      if (! rhs_is_empty || ! rhs_is_scalar)
-	{
-	  (*current_liboctave_error_handler)
-	    ("A([], []) = X: X must be an empty matrix or a scalar");
-
-	  retval = 0;
-	}
     }
   else if (n_idx == 1)
     {
@@ -2639,11 +2585,11 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		|| (iidx.one_zero_only ()
 		    && iidx.orig_dimensions () == lhs.dims ())))
 	(*current_liboctave_warning_handler)
-	  ("single index used for n-d array");
+	  ("single index used for N-d array");
 
       int lhs_len = lhs.length ();
 
-      int len = iidx.freeze (lhs_len, "n-d arrray");
+      int len = iidx.freeze (lhs_len, "N-d arrray");
 
       if (iidx)
 	{
@@ -2690,61 +2636,95 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     }
   else
     {
-      dim_vector orig_lhs_dims = lhs_dims;
+      // Maybe expand to more dimensions.
 
-      if (n_idx < lhs_dims_len)
+      dim_vector lhs_dims = lhs.dims ();
+
+      int lhs_dims_len = lhs_dims.length ();
+
+      dim_vector final_lhs_dims = lhs_dims;
+
+      bool rhs_is_empty = rhs_dims_len == 0 ? true : any_zero_len (rhs_dims);
+
+      Array<int> idx_is_colon (n_idx, 0);
+      Array<int> idx_is_colon_equiv (n_idx, 0);
+
+      dim_vector frozen_len;
+
+      if (! rhs_is_empty)
 	{
-	  // First, reshape.
+	  int orig_lhs_dims_len = lhs_dims_len;
 
-	  for (int i = n_idx; i < lhs_dims_len; i++)
-	    lhs_dims(n_idx-1) *= lhs_dims(i);
+	  if (n_idx < lhs_dims_len)
+	    {
+	      // Collapse dimensions beyond last index.
 
-	  lhs_dims.resize (n_idx);
+	      if (liboctave_wfi_flag && ! (idx(n_idx-1).is_colon ()))
+		(*current_liboctave_warning_handler)
+		  ("fewer indices than dimensions for N-d array");
 
-	  lhs.resize (lhs_dims);
+	      for (int i = n_idx; i < lhs_dims_len; i++)
+		lhs_dims(n_idx-1) *= lhs_dims(i);
 
+	      lhs_dims.resize (n_idx);
+
+	      lhs.resize (lhs_dims);
+
+	      lhs_dims = lhs.dims ();
+
+	      lhs_dims_len = lhs_dims.length ();
+	    }
+
+	  // Resize.
+
+	  dim_vector new_dims;
+	  new_dims.resize (n_idx);
+
+	  for (int i = 0; i < n_idx; i++)
+	    {
+	      int tmp = (i < rhs_dims.length () && idx(i).is_colon ())
+		? rhs_dims(i) : idx(i).max () + 1;
+
+	      new_dims(i)
+		= ((lhs_dims_len == 0 || i >= lhs_dims_len || tmp > lhs_dims(i))
+		   ? tmp : lhs_dims(i));
+	    }
+
+	  if (n_idx < orig_lhs_dims_len && new_dims(n_idx-1) != lhs_dims(n_idx-1))
+	    {
+	      // We reshaped and the last dimension changed.  This has to
+	      // be an error, because we don't know how to undo that
+	      // later...
+
+	      (*current_liboctave_error_handler)
+		("array index %d (= %d) for assignment requires invalid resizing operation",
+		 n_idx, new_dims(n_idx-1));
+
+	      retval = 0;
+	      goto done;
+	    }
+
+	  if (n_idx > orig_lhs_dims_len)
+	    final_lhs_dims = new_dims;
+	  else
+	    {
+	      for (int i = 0; i < n_idx-1; i++)
+		final_lhs_dims(i) = new_dims(i);
+	    }
+
+	  lhs.resize_and_fill (new_dims, rfv);
 	  lhs_dims = lhs.dims ();
-
 	  lhs_dims_len = lhs_dims.length ();
-
-	  // Now, check to make sure that all indices are within
-	  // bounds (we can only resize if we have at least as many
-	  // indices as dimensions).
-
-	  for (int i = 0; i < n_idx; i++)
-	    {
-	      if (! idx(i).is_colon ())
-		{
-		  int max_idx = idx(i).max () + 1;
-
-		  if (max_idx > lhs_dims(i))
-		    {
-		      (*current_liboctave_error_handler)
-			("array index %d (= %d) for assignment requires invalid resizing operation",
-			 i+1, max_idx);
-
-		      retval = 0;
-		      goto done;
-		    }
-		}
-	    }
-
-	  // We didn't freeze yet.
-	  frozen_len = freeze (idx, lhs_dims, resize_ok);
-
-	  // Now that we have frozen, we can update these.
-
-	  // XXX FIXME XXX -- do we need to do all, or just the last
-	  // index which corresponds to the last dimension, which was
-	  // the only one modified?
-
-	  for (int i = 0; i < n_idx; i++)
-	    {
-	      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
-
-	      idx_is_colon(i) = idx(i).is_colon ();
-	    }
 	}
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
+
+	  idx_is_colon(i) = idx(i).is_colon ();
+	}
+
+      frozen_len = freeze (idx, lhs_dims, true);
 
       if (rhs_is_scalar)
 	{
@@ -2817,7 +2797,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
     done:
 
-      lhs.resize (orig_lhs_dims);
+      lhs.resize (final_lhs_dims);
     }
 
   lhs.chop_trailing_singletons ();

@@ -1,11 +1,15 @@
 2004-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Array.cc (Array<T>::assignN): Move body of MAYBE_RESIZE_ND_DIMS
-	here since it is only used once.  Correctly resize for expressions
-	like x(:,:,2) = ones(3,3) when LHS is not yet defined.	
-	Simplify loop for array assignment.
+	* Array.cc (Array<T>::assignN): Simplify loop for array	assignment.
+	Move body of MAYBE_RESIZE_ND_DIMS here since it is only used once.  
+	Eliminate special case for empty index.
+	Correctly resize for expressions like x(:,:,2) = ones(3,3) when
+	LHS is not yet defined.
 	Error for resizing if number of indices is less than number of LHS
 	dimensions.
+
+	* Array.cc (Array<T>::maybe_delete_elements): Maybe warn about
+	Fortran-style indexing.
 
 2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -2,9 +2,9 @@ function retval = testqr (q, r, a, p)
   tol = 512*eps;
   retval = 0;
   if (nargin == 3)
-    n1 = norm (q*r-a)
-    n2 = norm (q'*q-eye(columns(q)))
-    retval = (n1 < tol && n2 < tol)
+    n1 = norm (q*r-a);
+    n2 = norm (q'*q-eye(columns(q)));
+    retval = (n1 < tol && n2 < tol);
   else
     n1 = norm (q'*q-eye(columns(q)))
     retval = (n1 < tol);

@@ -281,13 +281,13 @@ octave_read (char *buf, unsigned max_size)
 {
   // XXX FIXME XXX -- is this a safe way to buffer the input?
 
+  static const char * const eol = "\n";
   static std::string input_buf;
   static const char *pos = 0;
   static size_t chars_left = 0;
 
   int status = 0;
-
-  if (input_buf.empty ())
+  if (chars_left == 0)
     {
       pos = 0;
 
@@ -300,42 +300,38 @@ octave_read (char *buf, unsigned max_size)
 
   if (chars_left > 0)
     {
-      buf[0] = '\0';
-
-      size_t len = max_size > 2 ? max_size - 2 : 0;
-
+      size_t len = max_size > chars_left ? chars_left : max_size;
       assert (len > 0);
 
-      strncpy (buf, pos, len);
+      memcpy (buf, pos, len);
 
-      if (chars_left > len)
+      chars_left -= len;
+      pos += len;
+
+      // Make sure input ends with a new line character.
+      if (chars_left == 0 && buf[len-1] != '\n')
 	{
-	  chars_left -= len;
-
-	  pos += len;
-
-	  buf[len] = '\0';
-
-	  status = len;
+	  if (len < max_size) 
+	    {
+	      // There is enough room to plug the newline character in
+	      // the buffer.
+	      buf[len++] = '\n';
+	    }
+	  else
+	    {
+	      // There isn't enough room to plug the newline character
+	      // in the buffer so make sure it is returned on the next
+	      // octave_read call.
+	      pos = eol;
+	      chars_left = 1;
+	    }
 	}
-      else
-	{
-	  input_buf = "";
 
-	  len = chars_left;
+      status = len;
 
-	  if (buf[len-1] != '\n')
-	    buf[len++] = '\n';
-
-	  buf[len] = '\0';
-
-	  status = len;
-	}
     }
   else if (chars_left == 0)
     {
-      input_buf = "";
-
       status = 0;
     }
   else    

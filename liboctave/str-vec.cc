@@ -20,6 +20,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+/*
+
+The function string_vector::list_in_columns was adapted from a similar
+function distributed in the GNU file utilities, copyright (C) 85, 88,
+90, 91, 95, 1996 Free Software Foundation, Inc.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -82,7 +90,7 @@ string_vector::delete_c_str_vec (const char * const *v)
   delete [] v;
 }
 
-// Format a list in neat columns.  Mostly stolen from GNU ls.
+// Format a list in neat columns.
 
 ostream&
 string_vector::list_in_columns (ostream& os) const

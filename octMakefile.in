@@ -60,8 +60,10 @@ octave-bug: octave-bug.in
 	  -e "s;%F2CFLAGS%;${F2CFLAGS};" \
 	  -e "s;%FLIBS%;${FLIBS};" \
 	  -e "s;%CC%;${CC};" \
+	  -e "s;%CC_VERSION%;${CC_VERSION};" \
 	  -e "s;%CFLAGS%;${BUG_CFLAGS};" \
 	  -e "s;%CXX%;${CXX};" \
+	  -e "s;%CXX_VERSION%;${CXX_VERSION};" \
 	  -e "s;%CXXFLAGS%;${BUG_CXXFLAGS};" \
 	  -e "s;%LDFLAGS%;${LDFLAGS};" \
 	  -e "s;%DEFS%;${UGLY_DEFS};")

@@ -1,5 +1,16 @@
 Thu Apr 23 15:08:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.c (kpse_bug_address): Change address as requested.
+
+	* Makefile.in: Do acincludes by hand.
+	* common.ac: Require autoconf 2.12, not 2.12.1.
+	Include acklibtool.m4, not ../akclibtool.m4.
+	Include withenable.ac, not ../kpathsea/withenable.ac.
+	* acklibtool.m4, config.guess, config.sub, install-sh, klibtool,
+	klibtool.config: Files for `standalone' distribution'.
+	* make: Directory for `standalone' distribution'.
+	* withenable.ac: Don't use AC_MAINTAINER_MODE.
+
 	* pathsearch.c: Avoid memory leak.
 
 Mon Mar 16 19:25:15 1998  Olaf Weber  <olaf@infovore.xs4all.nl>

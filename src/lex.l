@@ -53,7 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "token.h"
 #include "pt-base.h"
 #include "pt-cmd.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-exp.h"
 #include "pt-mat.h"
 #include "pt-misc.h"

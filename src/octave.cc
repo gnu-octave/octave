@@ -57,6 +57,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
+#include "ops.h"
 #include "toplev.h"
 #include "parse.h"
 #include "pathsearch.h"
@@ -64,7 +65,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "prog-args.h"
 #include "sighandlers.h"
 #include "sysdep.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
 #include "unwind-prot.h"
@@ -307,7 +308,7 @@ execute_startup_files (void)
 static void
 verbose_usage (void)
 {
-  cout << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
+  cout << OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
 \n\
 Usage: octave [options]\n\
 \n\
@@ -331,7 +332,11 @@ Options:\n\
   -v, --version           Print version number and exit.\n\
 \n\
   FILE                    Execute commands from FILE.\n\
-\n";
+\n\
+Additional information about Octave is available via the WWW at\n\
+http://www.che.wisc.edu/octave.\n\
+\n\
+Please report bugs to the mailing list `bug-octave@bevo.che.wisc.edu'.\n";
 
   exit (0);
 }
@@ -405,7 +410,11 @@ main (int argc, char **argv)
 
   initialize_file_io ();
 
-  initialize_symbol_tables ();  
+  initialize_symbol_tables ();
+
+  install_types ();
+
+  install_ops ();
 
   install_builtins ();
 

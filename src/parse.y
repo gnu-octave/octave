@@ -122,10 +122,14 @@ static tree_plot_command *make_plot_command
 static tree_expression *finish_colon_expression (tree_colon_expression *e);
 
 // Build a constant.
-static octave_value *make_constant (int op, token *tok_val);
+static tree_constant *make_constant (int op, token *tok_val);
 
 // Build a binary expression.
 static tree_expression *make_binary_op
+	 (int op, tree_expression *op1,	token *tok_val, tree_expression *op2);
+
+// Build a boolean expression.
+static tree_expression *make_boolean_op
 	 (int op, tree_expression *op1,	token *tok_val, tree_expression *op2);
 
 // Build a prefix expression.
@@ -246,7 +250,7 @@ static void maybe_warn_missing_semi (tree_statement_list *);
   tree_matrix *tree_matrix_type;
   tree_matrix_row *tree_matrix_row_type;
   tree_expression *tree_expression_type;
-  octave_value *octave_value_type;
+  tree_constant *tree_constant_type;
   tree_identifier *tree_identifier_type;
   tree_indirect_ref *tree_indirect_ref_type;
   tree_function *tree_function_type;
@@ -798,9 +802,9 @@ simple_expr1	: NUM
 		| matrix
 		  { $$ = $1; }
 		| '[' ']'
-		  { $$ = new octave_value (Matrix ()); }
+		  { $$ = new tree_constant (Matrix ()); }
 		| '[' ';' ']'
-		  { $$ = new octave_value (Matrix ()); }
+		  { $$ = new tree_constant (Matrix ()); }
 		| colon_expr
 		  { $$ = finish_colon_expression ($1); }
 		| PLUS_PLUS identifier %prec UNARY
@@ -864,14 +868,14 @@ simple_expr1	: NUM
 		  { $$ = make_binary_op (EXPR_GT, $1, $2, $3); }
 		| simple_expr EXPR_NE simple_expr
 		  { $$ = make_binary_op (EXPR_NE, $1, $2, $3); }
-		| simple_expr EXPR_AND_AND simple_expr
-		  { $$ = make_binary_op (EXPR_AND_AND, $1, $2, $3); }
-		| simple_expr EXPR_OR_OR simple_expr
-		  { $$ = make_binary_op (EXPR_OR_OR, $1, $2, $3); }
 		| simple_expr EXPR_AND simple_expr
 		  { $$ = make_binary_op (EXPR_AND, $1, $2, $3); }
 		| simple_expr EXPR_OR simple_expr
 		  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
+		| simple_expr EXPR_AND_AND simple_expr
+		  { $$ = make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+		| simple_expr EXPR_OR_OR simple_expr
+		  { $$ = make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
 		;
 
 colon_expr	: simple_expr ':' simple_expr
@@ -895,12 +899,12 @@ word_list_cmd	: identifier word_list
 
 word_list	: TEXT
 		  {
-		    octave_value *tmp = make_constant (TEXT, $1);
+		    tree_constant *tmp = make_constant (TEXT, $1);
 		    $$ = new tree_argument_list (tmp);
 		  }
 		| word_list TEXT
 		  {
-		    octave_value *tmp = make_constant (TEXT, $2);
+		    tree_constant *tmp = make_constant (TEXT, $2);
 		    $1->append (tmp);
 		    $$ = $1;
 		  }
@@ -1020,7 +1024,7 @@ indirect_ref1	: identifier
 		  }
 		| indirect_ref1 '.'
 		    { lexer_flags.looking_at_indirect_ref = 1; } TEXT_ID
-		  { $$ = $1->chain ($4->text ()); }
+		  { $$ = new tree_indirect_ref ($1, $4->text ()); }
 		;
 
 variable	: indirect_ref
@@ -1095,25 +1099,22 @@ identifier	: NAME
 
 arg_list	: ':'
 		  {
-		    octave_value *colon;
-		    octave_value::magic_colon t;
-		    colon = new octave_value (t);
+		    tree_constant *colon =
+		      new tree_constant (tree_constant::magic_colon_t);
 		    $$ = new tree_argument_list (colon);
 		  }
 		| expression
 		  { $$ = new tree_argument_list ($1); }
 		| ALL_VA_ARGS
 		  {
-		    octave_value *all_va_args;
-		    octave_value::all_va_args t;
-		    all_va_args = new octave_value (t);
+		    tree_constant *all_va_args =
+		      new tree_constant (tree_constant::all_va_args_t);
 		    $$ = new tree_argument_list (all_va_args);
 		  }
 		| arg_list ',' ':'
 		  {
-		    octave_value *colon;
-		    octave_value::magic_colon t;
-		    colon = new octave_value (t);
+		    tree_constant *colon =
+		      new tree_constant (tree_constant::magic_colon_t);
 		    $1->append (colon);
 		    $$ = $1;
 		  }
@@ -1124,9 +1125,8 @@ arg_list	: ':'
 		  }
 		| arg_list ',' ALL_VA_ARGS
 		  {
-		    octave_value *all_va_args;
-		    octave_value::all_va_args t;
-		    all_va_args = new octave_value (t);
+		    tree_constant *all_va_args =
+		      new tree_constant (tree_constant::all_va_args_t);
 		    $1->append (all_va_args);
 		    $$ = $1;
 		  }
@@ -1308,12 +1308,12 @@ check_end (token *tok, token::end_tok_type expected)
 // Try to figure out early if an expression should become an
 // assignment to the built-in variable ans.
 //
-// Need to make sure that the expression isn't already an identifier
+// Need to make sure that the expression is not already an identifier
 // that has a name, or an assignment expression.
 //
-// Note that an expression can't be just an identifier now -- it
+// Note that an expression can not be just an identifier now -- it
 // must at least be an index expression (see the definition of the
-// non-terminal `variable' above).
+// non-terminal variable above).
 
 static tree_expression *
 maybe_convert_to_ans_assign (tree_expression *expr)
@@ -1400,7 +1400,7 @@ finish_colon_expression (tree_colon_expression *e)
       delete e;
 
       if (! error_state)
-	retval = new octave_value (tmp);
+	retval = new tree_constant (tmp);
     }
   else
     retval = e;
@@ -1410,31 +1410,31 @@ finish_colon_expression (tree_colon_expression *e)
 
 // Make a constant.
 
-static octave_value *
+static tree_constant *
 make_constant (int op, token *tok_val)
 {
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  octave_value *retval;
+  tree_constant *retval;
 
   switch (op)
     {
     case NUM:
-      retval = new octave_value (tok_val->number (), l, c);
+      retval = new tree_constant (tok_val->number (), l, c);
       retval->stash_original_text (tok_val->text_rep ());
       break;
 
     case IMAG_NUM:
       {
 	Complex C (0.0, tok_val->number ());
-	retval = new octave_value (C, l, c);
+	retval = new tree_constant (C, l, c);
 	retval->stash_original_text (tok_val->text_rep ());
       }
       break;
 
     case TEXT:
-      retval = new octave_value (tok_val->text (), l, c);
+      retval = new tree_constant (tok_val->text (), l, c);
       break;
 
     default:
@@ -1451,90 +1451,82 @@ static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
 		tree_expression *op2)
 {
-  tree_expression *retval;
+  tree_expression *retval = 0;
 
-  tree_expression::type t;
+  tree_binary_expression::type t;
 
   switch (op)
     {
     case POW:
-      t = tree_expression::power;
+      t = tree_binary_expression::power;
       break;
 
     case EPOW:
-      t = tree_expression::elem_pow;
+      t = tree_binary_expression::elem_pow;
       break;
 
     case '+':
-      t = tree_expression::add;
+      t = tree_binary_expression::add;
       break;
 
     case '-':
-      t = tree_expression::subtract;
+      t = tree_binary_expression::subtract;
       break;
 
     case '*':
-      t = tree_expression::multiply;
+      t = tree_binary_expression::multiply;
       break;
 
     case '/':
-      t = tree_expression::divide;
+      t = tree_binary_expression::divide;
       break;
 
     case EMUL:
-      t = tree_expression::el_mul;
+      t = tree_binary_expression::el_mul;
       break;
 
     case EDIV:
-      t = tree_expression::el_div;
+      t = tree_binary_expression::el_div;
       break;
 
     case LEFTDIV:
-      t = tree_expression::leftdiv;
+      t = tree_binary_expression::leftdiv;
       break;
 
     case ELEFTDIV:
-      t = tree_expression::el_leftdiv;
+      t = tree_binary_expression::el_leftdiv;
       break;
 
     case EXPR_LT:
-      t = tree_expression::cmp_lt;
+      t = tree_binary_expression::cmp_lt;
       break;
 
     case EXPR_LE:
-      t = tree_expression::cmp_le;
+      t = tree_binary_expression::cmp_le;
       break;
 
     case EXPR_EQ:
-      t = tree_expression::cmp_eq;
+      t = tree_binary_expression::cmp_eq;
       break;
 
     case EXPR_GE:
-      t = tree_expression::cmp_ge;
+      t = tree_binary_expression::cmp_ge;
       break;
 
     case EXPR_GT:
-      t = tree_expression::cmp_gt;
+      t = tree_binary_expression::cmp_gt;
       break;
 
     case EXPR_NE:
-      t = tree_expression::cmp_ne;
-      break;
-
-    case EXPR_AND_AND:
-      t = tree_expression::and_and;
-      break;
-
-    case EXPR_OR_OR:
-      t = tree_expression::or_or;
+      t = tree_binary_expression::cmp_ne;
       break;
 
     case EXPR_AND:
-      t = tree_expression::and;
+      t = tree_binary_expression::and;
       break;
 
     case EXPR_OR:
-      t = tree_expression::or;
+      t = tree_binary_expression::or;
       break;
 
     default:
@@ -1545,7 +1537,7 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  retval = new tree_binary_expression (op1, op2, t, l, c);
+  retval = new tree_binary_expression (op1, op2, l, c, t);
 
   if (op1->is_constant () && op2->is_constant ())
     {
@@ -1555,7 +1547,51 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
       retval = 0;
 
       if (! error_state)
-	retval = new octave_value (tmp);
+	retval = new tree_constant (tmp);
+    }
+
+  return retval;
+}
+
+// Build a boolean expression.
+
+static tree_expression *
+make_boolean_op (int op, tree_expression *op1, token *tok_val,
+		 tree_expression *op2)
+{
+  tree_expression *retval = 0;
+
+  tree_boolean_expression::type t;
+
+  switch (op)
+    {
+    case EXPR_AND_AND:
+      t = tree_boolean_expression::and;
+      break;
+
+    case EXPR_OR_OR:
+      t = tree_boolean_expression::or;
+      break;
+
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  retval = new tree_boolean_expression (op1, op2, l, c, t);
+
+  if (op1->is_constant () && op2->is_constant ())
+    {
+      octave_value tmp = retval->eval (0);
+
+      delete retval;
+      retval = 0;
+
+      if (! error_state)
+	retval = new tree_constant (tmp);
     }
 
   return retval;
@@ -1566,15 +1602,16 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 static tree_expression *
 make_prefix_op (int op, tree_identifier *op1, token *tok_val)
 {
-  tree_expression::type t;
+  tree_prefix_expression::type t;
+
   switch (op)
     {
     case PLUS_PLUS:
-      t = tree_expression::increment;
+      t = tree_prefix_expression::increment;
       break;
 
     case MINUS_MINUS:
-      t = tree_expression::decrement;
+      t = tree_prefix_expression::decrement;
       break;
 
     default:
@@ -1585,7 +1622,7 @@ make_prefix_op (int op, tree_identifier *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  return new tree_prefix_expression (op1, t, l, c);
+  return new tree_prefix_expression (op1, l, c, t);
 }
 
 // Build a postfix expression.
@@ -1593,15 +1630,16 @@ make_prefix_op (int op, tree_identifier *op1, token *tok_val)
 static tree_expression *
 make_postfix_op (int op, tree_identifier *op1, token *tok_val)
 {
-  tree_expression::type t;
+  tree_postfix_expression::type t;
+
   switch (op)
     {
     case PLUS_PLUS:
-      t = tree_expression::increment;
+      t = tree_postfix_expression::increment;
       break;
 
     case MINUS_MINUS:
-      t = tree_expression::decrement;
+      t = tree_postfix_expression::decrement;
       break;
 
     default:
@@ -1612,7 +1650,7 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  return new tree_postfix_expression (op1, t, l, c);
+  return new tree_postfix_expression (op1, l, c, t);
 }
 
 // Build a unary expression.
@@ -1620,26 +1658,26 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
 static tree_expression *
 make_unary_op (int op, tree_expression *op1, token *tok_val)
 {
-  tree_expression *retval;
+  tree_expression *retval = 0;
 
-  tree_expression::type t;
+  tree_unary_expression::type t;
 
   switch (op)
     {
     case QUOTE:
-      t = tree_expression::hermitian;
+      t = tree_unary_expression::hermitian;
       break;
 
     case TRANSPOSE:
-      t = tree_expression::transpose;
+      t = tree_unary_expression::transpose;
       break;
 
     case EXPR_NOT:
-      t = tree_expression::not;
+      t = tree_unary_expression::not;
       break;
 
     case '-':
-      t = tree_expression::uminus;
+      t = tree_unary_expression::uminus;
       break;
 
     default:
@@ -1650,7 +1688,7 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  retval = new tree_unary_expression (op1, t, l, c);
+  retval = new tree_unary_expression (op1, l, c, t);
 
   if (op1->is_constant ())
     {
@@ -1660,7 +1698,7 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
       retval = 0;
 
       if (! error_state)
-	retval = new octave_value (tmp);
+	retval = new tree_constant (tmp);
     }
 
   return retval;
@@ -2072,7 +2110,7 @@ finish_matrix (tree_matrix *m)
       delete m;
 
       if (! error_state)
-	retval = new octave_value (tmp);
+	retval = new tree_constant (tmp);
     }
   else
     retval = m;

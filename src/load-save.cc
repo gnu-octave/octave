@@ -1564,8 +1564,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 		}
 	      else if (rank >= 3 && d->import)
 		{
-		  hsize_t *dims = new hsize_t[rank]
-		    hsize_t *maxdims = new hsize_t[rank];
+		  hsize_t *dims = new hsize_t[rank];
+		  hsize_t *maxdims = new hsize_t[rank];
 		  H5Sget_simple_extent_dims (space_id, dims, maxdims);
 		  hssize_t *start = new hssize_t[rank];
 		  hsize_t *count = new hsize_t[rank];

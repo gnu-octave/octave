@@ -93,8 +93,14 @@ install::
 	$(INSTALL) octave-bug $(bindir)/octave-bug
 
 maintainer-clean::
-	@echo "This command is intended for maintainers to use;"
-	@echo "it deletes files that may require special tools to rebuild."
+	@echo ""
+	@echo "************************************************************"
+	@echo "*                                                          *"
+	@echo "* This command is intended for maintainers to use; it      *"
+	@echo "* deletes files that may require special tools to rebuild. *"
+	@echo "*                                                          *"
+	@echo "************************************************************"
+	@echo ""
 
 install uninstall tags TAGS clean mostlyclean distclean maintainer-clean::
 	$(SUBDIR_FOR_COMMAND)

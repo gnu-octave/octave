@@ -1,5 +1,5 @@
 dnl Autoconf support for Klibtool.
-dnl $Id: acklibtool.m4,v 1.6 2003-01-04 19:30:09 jwe Exp $
+dnl $Id: acklibtool.m4,v 1.7 2003-01-04 20:07:21 jwe Exp $
 dnl
 dnl
 dnl Find the script, check for subprogs, etc.
@@ -22,27 +22,25 @@ fi
 #
 ## Argument parsing: we support --enable-shared and --enable-static.
 AC_ARG_ENABLE(shared,
-[  --enable-shared              build shared libraries [default=no]],,
-  [if test "$enableval" = no; then enable_shared=no;
-   else enable_shared=yes; fi],
-  enable_shared=no)
+[  --enable-shared              build shared libraries [default=no]],
+  [if test "$enableval" = no; then BUILD_SHARED_LIBS=no;
+   else BUILD_SHARED_LIBS=yes; fi],
+  BUILD_SHARED_LIBS=no)
 #
 AC_ARG_ENABLE(static,
-[  --enable-static              build static libraries [default=yes]],,
-  [if test "$enableval" = no; then enable_static=no;
-   else enable_static=yes; fi],
-  enable_static=yes)
-#
-# If they explicitly --enable-static, make that the link type.
-# More commonly, they will just --enable-shared; make that the link type.
-# If they --disable-static, implicitly --enable-shared.
-# In any case, prepend to any existing LIBTOOL_OBJTYPES.
-# If they really want to build both and link statically,
-# then they set LIBTOOL_OBJTYPES to SHARED and --enable-static.
-test "$enable_static" = yes && LIBTOOL_OBJTYPES=STATIC:$LIBTOOL_OBJTYPES
-(test "$enable_shared" = yes \
- || test "$enable_static" = no) \
-&& LIBTOOL_OBJTYPES=SHARED:$LIBTOOL_OBJTYPES
+[  --enable-static              build static libraries [default=yes]],
+  [if test "$enableval" = no; then BUILD_STATIC_LIBS=no;
+   else BUILD_STATIC_LIBS=yes; fi],
+  BUILD_STATIC_LIBS=yes)
+##
+## For Octave, only build the kinds of objects we ask for.
+##
+if test "$BUILD_STATIC_LIBS" = yes; then
+    LIBTOOL_OBJTYPES=STATIC:$LIBTOOL_OBJTYPES
+fi
+if test "$BUILD_SHARED_LIBS" = yes; then
+    LIBTOOL_OBJTYPES=SHARED:$LIBTOOL_OBJTYPES
+fi
 # Don't bother to remove the trailing :, it'll be ignored.
 #
 ## Finally: Run the klibtool configure command.

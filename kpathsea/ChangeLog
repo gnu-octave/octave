@@ -1,6 +1,9 @@
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in ($(kpathsea)): Build object files only.
+
 	* acklibtool.m4: Enable shared/static lib options again.
+	Build only the type of objects we ask for (default is static).
 
 2002-12-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

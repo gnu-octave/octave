@@ -252,9 +252,13 @@ access: access.o
 readlink: readlink.o
 	$(link_command) readlink.o
 
+## For Octave, just make the object files.
+
 $(kpathsea): $(objects) klibtool.version
-	$(LIBTOOL) archive $(AR) $(ARFLAGS) $@ $(objects)
-	$(INSTALL_LIBTOOL_LIBS) . lib$(library).la
+
+##$(kpathsea): $(objects) klibtool.version
+##	$(LIBTOOL) archive $(AR) $(ARFLAGS) $@ $(objects)
+##	$(INSTALL_LIBTOOL_LIBS) . lib$(library).la
 
 # All the objects depend on the klibtool configuration file.
 $(objects): klibtool.config

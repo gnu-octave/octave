@@ -99,7 +99,7 @@ OBJECTS = arith-ops.o builtins.o error.o file-io.o g-builtins.o \
 
 OCTAVE_LIBS = ../liboctave.a ../libcruft.a ../libreadline.a @LIBDLD@
 
-DISTFILES = Makefile.in parse.cc lex.cc y.tab.h \
+DISTFILES = Makefile.in move-if-change parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(SOURCES)
 
 all: defaults.h octave

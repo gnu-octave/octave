@@ -15,8 +15,8 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} [@var{t}, @var{l_x}] = table (@var{x})
-## @deftypefnx {Function File} {} [@var{t}, @var{l_x}, @var{l_y}] = table (@var{x}, @var{y})
+## @deftypefn {Function File} {[@var{t}, @var{l_x}] =} table (@var{x})
+## @deftypefnx {Function File} {[@var{t}, @var{l_x}, @var{l_y}] =} table (@var{x}, @var{y})
 ## Create a contingency table @var{t} from data vectors.  The @var{l}
 ## vectors are the corresponding levels.
 ##

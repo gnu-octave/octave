@@ -142,7 +142,7 @@ dist: parse.cc lex.cc
 
 # Special rules -- these files need special things to be defined.
 
-defaults.h: ../Makeconf defaults.h.in
+defaults.h: ../Makeconf Makefile defaults.h.in
 	@echo "Making defaults.h from defaults.h.in..."
 	@(sed < $(srcdir)/defaults.h.in > defaults.h.tmp \
 	-e 's;%DEFAULT_PAGER%;\"${DEFAULT_PAGER}\";' \

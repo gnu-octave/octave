@@ -57,6 +57,8 @@ private:
     {
       private:
 
+      friend class tree_constant;
+
 	enum constant_type
 	  {
 	    unknown_constant,

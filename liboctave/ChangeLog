@@ -1,3 +1,8 @@
+2004-09-23  David Bateman  <dbateman@free.fr>
+
+	* oct-inttypes.h (OCTAVE_INT_DOUBLE_CMP_OP, OCTAVE_DOUBLE_INT_CMP_OP):
+	New macros.  Use them to define mixed intX-double and double-intX ops.
+
 2004-09-22  Federico Zenith  <zenith@chemeng.ntnu.no>
 
 	* DASPK-opts.in, DASRT-opts.in, ODESSA-opts.in:

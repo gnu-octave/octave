@@ -462,6 +462,38 @@ OCTAVE_DOUBLE_INT_BIN_OP(-)
 OCTAVE_DOUBLE_INT_BIN_OP(*)
 OCTAVE_DOUBLE_INT_BIN_OP(/)
 
+#define OCTAVE_INT_DOUBLE_CMP_OP(OP) \
+  template <class T> \
+  bool \
+  operator OP (const octave_int<T>& x, const double& y) \
+  { \
+    double tx = static_cast<double> (x.value ()); \
+    return tx OP y.value (); \
+  }
+
+OCTAVE_INT_DOUBLE_CMP_OP (<)
+OCTAVE_INT_DOUBLE_CMP_OP (<=)
+OCTAVE_INT_DOUBLE_CMP_OP (>=)
+OCTAVE_INT_DOUBLE_CMP_OP (>)
+OCTAVE_INT_DOUBLE_CMP_OP (==)
+OCTAVE_INT_DOUBLE_CMP_OP (!=)
+
+#define OCTAVE_DOUBLE_INT_CMP_OP(OP) \
+  template <class T> \
+  bool \
+  operator OP (const double& x, const octave_int<T>& y) \
+  { \
+    double ty = static_cast<double> (y.value ()); \
+    return y.value () OP ty; \
+  }
+
+OCTAVE_DOUBLE_INT_CMP_OP (<)
+OCTAVE_DOUBLE_INT_CMP_OP (<=)
+OCTAVE_DOUBLE_INT_CMP_OP (>=)
+OCTAVE_DOUBLE_INT_CMP_OP (>)
+OCTAVE_DOUBLE_INT_CMP_OP (==)
+OCTAVE_DOUBLE_INT_CMP_OP (!=)
+
 #define OCTAVE_INT_BITCMP_OP(OP) \
  \
   template <class T> \

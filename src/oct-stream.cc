@@ -2124,6 +2124,10 @@ printf_value_cache::double_value (void)
 	{
 	  val_idx++;
 	  data = 0;
+
+	  if (n_elts == 0 && exhausted ())
+	    curr_state = conversion_error;
+
 	  continue;
 	}
     }

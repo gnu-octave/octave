@@ -2835,7 +2835,7 @@ octave_stream::mode_as_string (int mode)
     retval = "r+";
   else if (in_mode == std::ios::in | std::ios::out | std::ios::trunc)
     retval = "w+";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::app)
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::ate)
     retval = "a+";
   else if (in_mode == std::ios::in | std::ios::binary)
     retval = "rb";
@@ -2849,7 +2849,7 @@ octave_stream::mode_as_string (int mode)
   else if (in_mode == std::ios::in | std::ios::out | std::ios::trunc 
            | std::ios::binary)
     retval = "w+b";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::app
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::ate
            | std::ios::binary)
     retval = "a+b";
 

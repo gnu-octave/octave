@@ -1,3 +1,10 @@
+2002-09-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (fopen_mode_to_ios_mode): Set ios::ate instead of
+	ios::app for "a+" mode.
+	* oct-stream.cc (octave_stream::mode_as_string): Recognize
+	ios::ate, not ios::app as "a+" mode.
+
 2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
 
 	* sysdep.cc: Include conio.h if it exists.

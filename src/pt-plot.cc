@@ -43,6 +43,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "tree-const.h"
 #include "tree-plot.h"
+#include "help.h"
 #include "error.h"
 #include "utils.h"
 #include "tree.h"

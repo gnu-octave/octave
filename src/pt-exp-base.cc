@@ -42,6 +42,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "variables.h"
 #include "user-prefs.h"
+#include "help.h"
 #include "error.h"
 #include "pager.h"
 #include "tree.h"

@@ -73,13 +73,6 @@ static bool Vprint_empty_dimensions;
 // smaller slices that fit on the screen.
 static bool Vsplit_long_rows;
 
-// Current format std::string for real numbers and the real part of complex
-// numbers.
-static char *curr_real_fmt = 0;
-
-// Current format std::string for the imaginary part of complex numbers.
-static char *curr_imag_fmt = 0;
-
 // TRUE means don't do any fancy formatting.
 static bool free_format = false;
 
@@ -90,7 +83,7 @@ static bool plus_format = false;
 static bool bank_format = false;
 
 // TRUE means print data in hexadecimal format.
-static bool hex_format = false;
+static int hex_format = 0;
 
 // TRUE means print data in binary-bit-pattern format.
 static int bit_format = 0;
@@ -104,7 +97,107 @@ static bool print_e = false;
 // TRUE means print E instead of e for exponent field.
 static bool print_big_e = false;
 
-// XXX FIXME XXX -- these should probably be somewhere else.
+class pr_formatted_float;
+
+class
+float_format
+{
+public:
+
+  float_format (int w = 0, int p = 0, int f = 0)
+    : fw (w), prec (p), fmt (f), up (0), sp (0) { }
+
+  float_format (const float_format& ff)
+    : fw (ff.fw), prec (ff.prec), fmt (ff.fmt), up (ff.up), sp (ff.sp) { }
+
+  float_format& operator = (const float_format& ff)
+    {
+      if (&ff != this)
+	{
+	  fw = ff.fw;
+	  prec = ff.prec;
+	  fmt = ff.fmt;
+	  up = ff.up;
+	  sp = ff.sp;
+	}
+
+      return *this;
+    }
+
+  ~float_format (void) { }
+
+  float_format& scientific (void) { fmt = std::ios::scientific; return *this; }
+  float_format& fixed (void) { fmt = std::ios::fixed; return *this; }
+  float_format& general (void) { fmt = 0; return *this; }
+
+  float_format& uppercase (void) { up = std::ios::uppercase; return *this; }
+  float_format& lowercase (void) { up = 0; return *this; }
+
+  float_format& precision (int p) { prec = p; return *this; }
+
+  float_format& width (int w) { fw = w; return *this; }
+
+  float_format& trailing_zeros (bool tz = true)
+    { sp = tz ? std::ios::showpoint : 0; return *this; }
+
+  friend std::ostream& operator << (std::ostream& os,
+				    const pr_formatted_float& pff);
+
+private:
+
+  // Field width.  Zero means as wide as necessary.
+  int fw;
+
+  // Precision.
+  int prec;
+
+  // Format.
+  int fmt;
+
+  // E or e.
+  int up;
+
+  // Show trailing zeros.
+  int sp;
+};
+
+class
+pr_formatted_float
+{
+public:
+
+  const float_format& f;
+
+  double val;
+
+  pr_formatted_float (const float_format& f_arg, double val_arg)
+    : f (f_arg), val (val_arg) { }
+};
+
+std::ostream&
+operator << (std::ostream& os, const pr_formatted_float& pff)
+{
+  if (pff.f.fw > 0)
+    os << std::setw (pff.f.fw);
+
+  if (pff.f.prec > 0)
+    os << std::setprecision (pff.f.prec);
+
+  std::ios::fmtflags oflags = os.flags (pff.f.fmt | pff.f.up | pff.f.sp);
+
+  os << pff.val;
+
+  os.flags (oflags);
+
+  return os;
+}
+
+// Current format for real numbers and the real part of complex
+// numbers.
+static float_format *curr_real_fmt = 0;
+
+// Current format for the imaginary part of complex numbers.
+static float_format *curr_imag_fmt = 0;
 
 static double
 pr_max_internal (const Matrix& m)
@@ -117,13 +210,14 @@ pr_max_internal (const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double val = m (i, j);
+	double val = m(i,j);
 	if (xisinf (val) || xisnan (val))
 	  continue;
 
 	if (val > result)
 	  result = val;
       }
+
   return result;
 }
 
@@ -138,13 +232,14 @@ pr_min_internal (const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double val = m (i, j);
+	double val = m(i,j);
 	if (xisinf (val) || xisnan (val))
 	  continue;
 
 	if (val < result)
 	  result = val;
       }
+
   return result;
 }
 
@@ -155,7 +250,7 @@ static void
 set_real_format (bool sign, int digits, bool inf_or_nan, bool nan_or_int,
 		 int &fw)
 {
-  static char fmt_buf[128];
+  static float_format fmt;
 
   int prec = Voutput_precision;
 
@@ -220,17 +315,15 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool nan_or_int,
 	fw = 3;
       fw += sign;
 
+      fmt = float_format (fw, prec - 1, std::ios::scientific);
+
       if (print_big_e)
-	sprintf (fmt_buf, "%%%d.%dE", fw, prec - 1);
-      else
-	sprintf (fmt_buf, "%%%d.%de", fw, prec - 1);
+	fmt.uppercase ();
     }
   else
-    {
-      sprintf (fmt_buf, "%%%d.%df", fw, rd);
-    }
+    fmt = float_format (fw, rd, std::ios::fixed);
 
-  curr_real_fmt = &fmt_buf[0];
+  curr_real_fmt = &fmt;
 }
 
 static void
@@ -267,7 +360,7 @@ static void
 set_real_matrix_format (bool sign, int x_max, int x_min,
 			bool inf_or_nan, int int_or_inf_or_nan, int& fw)
 {
-  static char fmt_buf[128];
+  static float_format fmt;
 
   int prec = Voutput_precision;
 
@@ -361,17 +454,15 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 	fw = 3;
       fw += sign;
 
+      fmt = float_format (fw, prec - 1, std::ios::scientific);
+
       if (print_big_e)
-	sprintf (fmt_buf, "%%%d.%dE", fw, prec - 1);
-      else
-	sprintf (fmt_buf, "%%%d.%de", fw, prec - 1);
+	fmt.uppercase ();
     }
   else
-    {
-      sprintf (fmt_buf, "%%%d.%df", fw, rd);
-    }
+    fmt = float_format (fw, rd, std::ios::fixed);
 
-  curr_real_fmt = &fmt_buf[0];
+  curr_real_fmt = &fmt;
 }
 
 static void
@@ -417,8 +508,8 @@ static void
 set_complex_format (bool sign, int x_max, int x_min, int r_x,
 		    bool inf_or_nan, int int_only, int& r_fw, int& i_fw)
 {
-  static char r_fmt_buf[128];
-  static char i_fmt_buf[128];
+  static float_format r_fmt;
+  static float_format i_fmt;
 
   int prec = Voutput_precision;
 
@@ -506,25 +597,23 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
 	i_fw = r_fw = 3;
       r_fw += sign;
 
+      r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
+      i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+
       if (print_big_e)
 	{
-	  sprintf (r_fmt_buf, "%%%d.%dE", r_fw, prec - 1);
-	  sprintf (i_fmt_buf, "%%%d.%dE", i_fw, prec - 1);
-	}
-      else
-	{
-	  sprintf (r_fmt_buf, "%%%d.%de", r_fw, prec - 1);
-	  sprintf (i_fmt_buf, "%%%d.%de", i_fw, prec - 1);
+	  r_fmt.uppercase ();
+	  i_fmt.uppercase ();
 	}
     }
   else
     {
-      sprintf (r_fmt_buf, "%%%d.%df", r_fw, rd);
-      sprintf (i_fmt_buf, "%%%d.%df", i_fw, rd);
+      r_fmt = float_format (r_fw, rd, std::ios::fixed);
+      i_fmt = float_format (i_fw, rd, std::ios::fixed);
     }
 
-  curr_real_fmt = &r_fmt_buf[0];
-  curr_imag_fmt = &i_fmt_buf[0];
+  curr_real_fmt = &r_fmt;
+  curr_imag_fmt = &i_fmt;
 }
 
 static void
@@ -583,8 +672,8 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 			   int r_x_max, int r_x_min, bool inf_or_nan,
 			   int int_or_inf_or_nan, int& r_fw, int& i_fw)
 {
-  static char r_fmt_buf[128];
-  static char i_fmt_buf[128];
+  static float_format r_fmt;
+  static float_format i_fmt;
 
   int prec = Voutput_precision;
 
@@ -681,25 +770,23 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 	i_fw = r_fw = 3;
       r_fw += sign;
 
+      r_fmt = float_format (r_fw, prec - 1, std::ios::scientific);
+      i_fmt = float_format (i_fw, prec - 1, std::ios::scientific);
+
       if (print_big_e)
 	{
-	  sprintf (r_fmt_buf, "%%%d.%dE", r_fw, prec - 1);
-	  sprintf (i_fmt_buf, "%%%d.%dE", i_fw, prec - 1);
-	}
-      else
-	{
-	  sprintf (r_fmt_buf, "%%%d.%de", r_fw, prec - 1);
-	  sprintf (i_fmt_buf, "%%%d.%de", i_fw, prec - 1);
+	  r_fmt.uppercase ();
+	  i_fmt.uppercase ();
 	}
     }
   else
     {
-      sprintf (r_fmt_buf, "%%%d.%df", r_fw, rd);
-      sprintf (i_fmt_buf, "%%%d.%df", i_fw, rd);
+      r_fmt = float_format (r_fw, rd, std::ios::fixed);
+      i_fmt = float_format (i_fw, rd, std::ios::fixed);
     }
 
-  curr_real_fmt = &r_fmt_buf[0];
-  curr_imag_fmt = &i_fmt_buf[0];
+  curr_real_fmt = &r_fmt;
+  curr_imag_fmt = &i_fmt;
 }
 
 static void
@@ -759,10 +846,9 @@ set_format (const ComplexMatrix& cm)
 }
 
 static void
-set_range_format (bool sign, int x_max, int x_min, int all_ints,
-		  int& fw)
+set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
 {
-  static char fmt_buf[128];
+  static float_format fmt;
 
   int prec = Voutput_precision;
 
@@ -841,17 +927,15 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints,
 
       fw = sign + 2 + prec + exp_field;
 
+      fmt = float_format (fw, prec - 1, std::ios::scientific);
+
       if (print_big_e)
-	sprintf (fmt_buf, "%%%d.%dE", fw, prec - 1);
-      else
-	sprintf (fmt_buf, "%%%d.%de", fw, prec - 1);
+	fmt.uppercase ();
     }
   else
-    {
-      sprintf (fmt_buf, "%%%d.%df", fw, rd);
-    }
+    fmt = float_format (fw, rd, std::ios::fixed);
 
-  curr_real_fmt = &fmt_buf[0];
+  curr_real_fmt = &fmt;
 }
 
 static void
@@ -942,7 +1026,7 @@ union equiv
   while (0)
 
 static void
-pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
+pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 {
 #if defined (SCO)
   // Apparently on some SCO systems NaN == -0.0 is true.  Compiler bug?
@@ -975,8 +1059,8 @@ pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
 
 	  char ofill = os.fill ('0');
 
-	  std::ios::fmtflags oflags = os.setf (std::ios::right);
-	  os.setf (std::ios::hex, std::ios::basefield);
+	  std::ios::fmtflags oflags
+	    = os.flags (std::ios::right | std::ios::hex);
 
 	  if (hex_format > 1
 	      || flt_fmt == oct_mach_info::ieee_big_endian
@@ -1051,15 +1135,18 @@ pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
 	    os << "NaN";
 	}
       else
-	os.form (fmt, d);
+	os << pr_formatted_float (*fmt, d);
     }
   else
     os << d;
 }
 
 static inline void
-pr_float (std::ostream& os, double d, int fw = 0)
+pr_float (std::ostream& os, double d, int fw = 0, double scale = 1.0)
 {
+  if (Vfixed_point_format && scale != 1.0)
+    d /= scale;
+
   pr_any_float (curr_real_fmt, os, d, fw);
 }
 
@@ -1070,13 +1157,18 @@ pr_imag_float (std::ostream& os, double d, int fw = 0)
 }
 
 static void
-pr_complex (std::ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
+pr_complex (std::ostream& os, const Complex& c, int r_fw = 0,
+	    int i_fw = 0, double scale = 1.0)
 {
-  double r = c.real ();
+  Complex tmp = (Vfixed_point_format && scale != 1.0) ? c / scale : c;
+
+  double r = tmp.real ();
+
   pr_float (os, r, r_fw);
+
   if (! bank_format)
     {
-      double i = c.imag ();
+      double i = tmp.imag ();
       if (! (hex_format || bit_format) && i < 0)
 	{
 	  os << " - ";
@@ -1159,7 +1251,7 @@ pr_col_num_header (std::ostream& os, int total_width, int max_width,
 }
 
 static inline void
-do_plus_format (std::ostream& os, double d)
+pr_plus_format (std::ostream& os, double d)
 {
   if (d == 0.0)
     os << " ";
@@ -1174,7 +1266,7 @@ octave_print_internal (std::ostream& os, double d, bool pr_as_read_syntax)
 {
   if (plus_format)
     {
-      do_plus_format (os, d);
+      pr_plus_format (os, d);
     }
   else
     {
@@ -1187,8 +1279,8 @@ octave_print_internal (std::ostream& os, double d, bool pr_as_read_syntax)
 }
 
 void
-octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax,
-		       int extra_indent)
+octave_print_internal (std::ostream& os, const Matrix& m,
+		       bool pr_as_read_syntax, int extra_indent)
 {
   int nr = m.rows ();
   int nc = m.columns ();
@@ -1204,7 +1296,7 @@ octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax
 	      if (j == 0)
 		os << "  ";
 
-	      do_plus_format (os, m (i, j));
+	      pr_plus_format (os, m(i,j));
 	    }
 
 	  if (i < nr - 1)
@@ -1270,7 +1362,7 @@ octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax
 			    os << "  ";
 			}
 
-		      pr_float (os, m (i, j));
+		      pr_float (os, m(i,j));
 		    }
 
 		  col += inc;
@@ -1306,10 +1398,7 @@ octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax
 		    {
 		      os << "  ";
 
-		      double tmp = (Vfixed_point_format && scale != 1.0)
-			? m(i,j) / scale : m(i,j);
-
-		      pr_float (os, tmp, fw);
+		      pr_float (os, m(i,j), fw, scale);
 		    }
 
 		  if (i < nr - 1)
@@ -1321,7 +1410,7 @@ octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax
 }
 
 static inline void
-do_plus_format (std::ostream& os, const Complex& c)
+pr_plus_format (std::ostream& os, const Complex& c)
 {
   double rp = c.real ();
   double ip = c.imag ();
@@ -1334,7 +1423,7 @@ do_plus_format (std::ostream& os, const Complex& c)
 	os << "i";
     }
   else if (ip == 0.0)
-    do_plus_format (os, rp);
+    pr_plus_format (os, rp);
   else
     os << "c";
 }
@@ -1345,7 +1434,7 @@ octave_print_internal (std::ostream& os, const Complex& c,
 {
   if (plus_format)
     {
-      do_plus_format (os, c);
+      pr_plus_format (os, c);
     }
   else
     {
@@ -1375,7 +1464,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 	      if (j == 0)
 		os << "  ";
 
-	      do_plus_format (os, cm (i, j));
+	      pr_plus_format (os, cm(i,j));
 	    }
 
 	  if (i < nr - 1)
@@ -1442,7 +1531,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 			    os << "  ";
 			}
 
-		      pr_complex (os, cm (i, j));
+		      pr_complex (os, cm(i,j));
 		    }
 
 		  col += inc;
@@ -1478,10 +1567,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		    {
 		      os << "  ";
 
-		      Complex tmp = (Vfixed_point_format && scale != 1.0)
-			? cm(i,j) / scale : cm(i,j);
-
-		      pr_complex (os, tmp, r_fw, i_fw);
+		      pr_complex (os, cm(i,j), r_fw, i_fw, scale);
 		    }
 
 		  if (i < nr - 1) 
@@ -1583,10 +1669,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 
 		  os << "  ";
 
-		  if (Vfixed_point_format && scale != 1.0)
-		    val /= scale;
-
-		  pr_float (os, val, fw);
+		  pr_float (os, val, fw, scale);
 		}
 
 	      col += inc;
@@ -1686,7 +1769,7 @@ init_format_state (void)
   free_format = false;
   plus_format = false;
   bank_format = false;
-  hex_format = false;
+  hex_format = 0;
   bit_format = 0;
   print_e = false;
   print_big_e = false;
@@ -1769,7 +1852,7 @@ set_format_style (int argc, const string_vector& argv)
       else if (arg == "hex")
 	{
 	  init_format_state ();
-	  hex_format = true;
+	  hex_format = 1;
 	}
       else if (arg == "native-hex")
 	{

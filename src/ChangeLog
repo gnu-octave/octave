@@ -1,3 +1,12 @@
+2000-03-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (pr_plus_format): Rename from do_plus_format.
+	Change all callers.
+	(pr_float, pr_complex): New arg, scale.  Handle scaling here.
+	(float_format): New class for managing details of formatting
+	floats.  Use it instead of character string formats and the
+	nonstandard form() function from the GNU iostream library.
+
 2000-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (clean): Also delete gendoc.

@@ -60,7 +60,7 @@ get_user_function (std::string str = "")
       if (ptr && ptr->is_user_function ())
 	{
 	  octave_value tmp = ptr->def ();
-	  dbg_fcn = static_cast<octave_user_function *> (tmp.function_value ());
+	  dbg_fcn = dynamic_cast<octave_user_function *> (tmp.function_value ());
 	}
       else
 	{
@@ -69,7 +69,7 @@ get_user_function (std::string str = "")
 	  if (ptr && ptr->is_user_function ())
 	    {
 	      octave_value tmp = ptr->def ();
-	      dbg_fcn = static_cast<octave_user_function *> (tmp.function_value ());
+	      dbg_fcn = dynamic_cast<octave_user_function *> (tmp.function_value ());
 	    }
 	}
     }

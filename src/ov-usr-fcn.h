@@ -81,27 +81,21 @@ public:
       mark_fcn_file_up_to_date (t);
     }
 
-  void stash_symtab_ptr (symbol_record *sr)
-    { symtab_entry = sr; }
+  void stash_symtab_ptr (symbol_record *sr) { symtab_entry = sr; }
 
-  std::string fcn_file_name (void) const
-    { return file_name; }
+  std::string fcn_file_name (void) const { return file_name; }
 
-  octave_time time_parsed (void) const
-    { return t_parsed; }
+  octave_time time_parsed (void) const { return t_parsed; }
 
-  octave_time time_checked (void) const
-    { return t_checked; }
+  octave_time time_checked (void) const { return t_checked; }
 
   void mark_as_system_fcn_file (void);
 
-  bool is_system_fcn_file (void) const
-    { return system_fcn_file; }
+  bool is_system_fcn_file (void) const { return system_fcn_file; }
 
   bool takes_varargs (void) const;
 
-  void octave_va_start (void)
-    { curr_va_arg_number = num_named_args; }
+  void octave_va_start (void) { curr_va_arg_number = num_named_args; }
 
   octave_value octave_va_arg (void);
 
@@ -117,8 +111,7 @@ public:
 
   void stash_function_name (const std::string& s);
 
-  std::string function_name (void)
-    { return fcn_name; }
+  std::string function_name (void) const { return fcn_name; }
 
   void mark_as_nested_function (void) { nested_function = true; }
 
@@ -157,7 +150,7 @@ public:
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
 
-  void traceback_error (void);
+  void traceback_error (void) const;
 
   tree_parameter_list *parameter_list (void) { return param_list; }
 

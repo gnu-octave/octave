@@ -484,7 +484,7 @@ public:
 
   virtual octave_function *function_value (bool silent = false);
 
-  virtual octave_fcn_handle fcn_handle_value (bool silent = false);
+  virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
 
   virtual octave_value_list list_value (void) const;
 

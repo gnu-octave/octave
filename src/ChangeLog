@@ -1,6 +1,15 @@
 2003-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* debug.cc (get_user_function): Use dynamic_cast, not static_cast.
+
+	* ov-usr-fcn.cc (octave_user_function::traceback_error): Now const.
+
 	* ov.cc (octave_value (const octave_fcn_handle&)): New constructor.
+	(octave_value::fcn_handle_value): New virtual function.
+	* ov-base.cc (octave_value::fcn_handle_value): Provide default.
+	* ov-usr-fcn.cc (octave_user_function::stash_fcn_file_name): New
+	arg, nm.  Change all callers.
+	* ov-fcn.h (octave_function::is_nested_function): New virtual function.
 	* parse.y (get_feval_args): New function.
 	(feval (octave_function *, const octave_value_list&, int)): Likewise.
 	(feval (const octave_value_list&, int)): Allow the first arg to be

@@ -516,7 +516,7 @@ octave_user_function::do_multi_index_op (int nargout,
 }
 
 void
-octave_user_function::traceback_error (void)
+octave_user_function::traceback_error (void) const
 {
   if (error_state >= 0)
     error_state = -1;

@@ -43,8 +43,7 @@ octave_fcn_handle : public octave_base_value
 {
 public:
 
-  octave_fcn_handle (octave_function *f = 0,
-		     const std::string& n = std::string ())
+  octave_fcn_handle (octave_function *f, const std::string& n)
     : fcn (f), nm (n) { }
 
   octave_fcn_handle (const octave_fcn_handle& fh)
@@ -67,7 +66,7 @@ public:
 
   octave_function *function_value (bool) { return fcn; }
 
-  octave_fcn_handle fcn_handle_value (bool) { return *this; }
+  octave_fcn_handle *fcn_handle_value (bool) { return this; }
 
   bool print_as_scalar (void) const { return true; }
 

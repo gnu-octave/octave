@@ -403,10 +403,10 @@ octave_base_value::function_value (bool silent)
   return retval;
 }
 
-octave_fcn_handle
+octave_fcn_handle *
 octave_base_value::fcn_handle_value (bool silent)
 {
-  octave_fcn_handle retval;
+  octave_fcn_handle *retval = 0;
 
   if (! silent)
     gripe_wrong_type_arg ("octave_base_value::fcn_handle_value()",

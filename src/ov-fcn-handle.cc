@@ -85,17 +85,17 @@ Return a struct containing information about the function handle\n\
 
   if (args.length () == 1)
     {
-      octave_fcn_handle fh = args(0).fcn_handle_value ();
+      octave_fcn_handle *fh = args(0).fcn_handle_value ();
 
       if (! error_state)
 	{
-	  octave_function *fcn = fh.function_value (true);
+	  octave_function *fcn = fh ? fh->function_value (true) : 0;
 
 	  if (fcn)
 	    {
 	      Octave_map m;
 
-	      m ["function"](0) = fh.name ();
+	      m ["function"](0) = fh->name ();
 
 	      if (fcn->is_nested_function ())
 		m ["type"](0) = "subfunction";
@@ -134,12 +134,12 @@ the function handle @var{fcn_handle}.\n\
 
   if (args.length () == 1)
     {
-      octave_fcn_handle fh = args(0).fcn_handle_value ();
+      octave_fcn_handle *fh = args(0).fcn_handle_value ();
 
-      if (! error_state)
-	retval = fh.name ();
+      if (! error_state && fh)
+	retval = fh->name ();
       else
-	error ("func2str: expecting function handle as first argument");
+	error ("func2str: expecting valid function handle as first argument");
     }
   else
     print_usage ("func2str");

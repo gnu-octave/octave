@@ -215,7 +215,7 @@ symbol_record::hides_fcn (void) const
     {
       symbol_def *hidden_def = definition->next_elem;
 
-      if (hidden_def && hidden_def->is_builtin_function ())
+      if (hidden_def && hidden_def->is_user_function ())
 	retval = true;
     }
 
@@ -231,7 +231,7 @@ symbol_record::hides_builtin (void) const
     {
       symbol_def *hidden_def = definition->next_elem;
 
-      if (hidden_def && hidden_def->is_user_function ())
+      if (hidden_def && hidden_def->is_builtin_function ())
 	retval = true;
     }
 
@@ -408,6 +408,9 @@ symbol_record::replace_all_defs (symbol_def *sd)
   while (definition)
     remove_top_def ();
 
+  if (! sd)
+    sd = new symbol_def ();
+
   push_def (sd);
 }
 
@@ -488,7 +491,8 @@ symbol_table::clear (bool clear_user_functions)
       while (ptr)
 	{
 	  if (ptr->is_user_variable ()
-	      || (clear_user_functions && ptr->is_user_function ()))
+	      || (clear_user_functions
+		  && (ptr->is_user_function () || ptr->is_dld_function ())))
 	    {
 	      ptr->clear ();
 	    }
@@ -509,7 +513,8 @@ symbol_table::clear (const string& nm, bool clear_user_functions)
     {
       if (ptr->name () == nm
 	  && (ptr->is_user_variable ()
-	      || (clear_user_functions && ptr->is_user_function ())))
+	      || (clear_user_functions
+		  && (ptr->is_user_function () || ptr->is_dld_function ()))))
 	{
 	  ptr->clear ();
 	  return true;

@@ -91,6 +91,10 @@ bool Vwarn_future_time_stamp;
 // should only produce output using explicit printing statements.
 static bool Vwarn_missing_semicolon;
 
+// TRUE means we print a warning if reloading a .oct file forces other
+// functions to be cleared.
+static bool Vwarn_reload_forces_clear;
+
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
 
@@ -2996,7 +3000,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 
   string nm = sym_rec->name ();
 
-  if (octave_dynamic_loader::load_fcn_from_dot_oct_file (nm))
+  if (octave_dynamic_loader::load (nm))
     {
       force_link_to_function (nm);
     }
@@ -3293,6 +3297,14 @@ warn_missing_semicolon (void)
 }
 
 static int
+warn_reload_forces_clear (void)
+{
+  Vwarn_reload_forces_clear = check_preference ("warn_reload_forces_clear");
+
+  return 0;
+}
+
+static int
 warn_variable_switch_label (void)
 {
   Vwarn_variable_switch_label
@@ -3320,6 +3332,9 @@ results of commands executed by eval() that do not end with semicolons.");
   DEFVAR (warn_missing_semicolon, 0.0, warn_missing_semicolon,
     "produce a warning if a statement in a function file is not\n\
 terminated with a semicolon");
+
+  DEFVAR (warn_reload_forces_clear, 1.0, warn_reload_forces_clear,
+    "warn if reloading a .oct file forces other functions to be cleared");
 
   DEFVAR (warn_variable_switch_label, 0.0, warn_variable_switch_label,
     "produce warning for variables used as switch labels");

@@ -220,12 +220,6 @@ Close the password database.\n\
   return retval;
 }
 
-INSTALL_DLD_FCNS (INSTALL_DLD_FCN (getpwent);
-		  INSTALL_DLD_FCN (getpwuid);
-		  INSTALL_DLD_FCN (getpwnam);
-		  INSTALL_DLD_FCN (setpwent);
-		  INSTALL_DLD_FCN (endpwent);)
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -25,7 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-class octave_builtin;
+#include "oct-shlib.h"
 
 class
 octave_dynamic_loader
@@ -36,11 +36,11 @@ protected:
 
 public:
 
-  typedef bool (*builtin_fcn_installer) (void);
-
   virtual ~octave_dynamic_loader (void) { }
 
-  static bool load_fcn_from_dot_oct_file (const string& fcn_name);
+  static bool load (const string& fcn_name);
+
+  static bool remove (const string& fcn_name, octave_shlib& shl);
 
 private:
 
@@ -54,14 +54,15 @@ private:
 
   static bool instance_ok (void);
 
-  static void make_dynamic_loader (void);
+  bool do_load (const string& fcn_name);
+
+  bool do_remove (const string& fcn_name, octave_shlib& shl);
+
+  static bool doing_load;
 
 protected:
 
-  virtual builtin_fcn_installer
-  resolve_reference (const string& mangled_name, const string& oct_file);
-
-  string mangle_name (const string& name);
+  static string mangle_name (const string& name);
 };
 
 #endif

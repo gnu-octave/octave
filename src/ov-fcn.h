@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "oct-time.h"
+#include "str-vec.h"
 
 #include "oct-alloc.h"
 #include "ov-base.h"
@@ -57,6 +58,8 @@ public:
 
   bool is_function (void) const { return true; }
 
+  virtual bool is_dynamically_loaded_function (void) const { return false; }
+
   virtual bool is_system_fcn_file (void) { return false; }
 
   virtual string fcn_file_name (void) const { return string (); }
@@ -73,6 +76,8 @@ public:
 
   string doc_string (void) const { return doc; }
 
+  virtual void unload (void) { }
+
   virtual void accept (tree_walker&) { }
 
 protected:
@@ -80,15 +85,15 @@ protected:
   octave_function (const string& nm, const string& ds)
     : my_name (nm), doc (ds) { }
 
-private:
-
-  octave_function (void);
-
   // The name of this function.
   string my_name;
 
   // The help text for this function.
   string doc;
+
+private:
+
+  octave_function (void);
 
   DECLARE_OCTAVE_ALLOCATOR
 };

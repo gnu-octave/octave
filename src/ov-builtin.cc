@@ -46,7 +46,7 @@ any_arg_is_magic_colon (const octave_value_list& args)
 
   for (int i = 0; i < nargin; i++)
     if (args(i).is_magic_colon ())
-	return true;
+      return true;
 
   return false;
 }

@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "ov-builtin.h"
+#include "ov-dld-fcn.h"
 #include "ov-mapper.h"
 #include "symtab.h"
 #include "version.h"
@@ -54,28 +55,31 @@ install_builtin_constant (const string& n, const octave_value& v,
 			  bool p, const string& h);
 
 extern void
+install_dld_function (octave_dld_function::fcn f, const string& name,
+		      const octave_shlib& shl,
+		      const string& doc, bool is_text_fcn = false);
+
+extern void
 alias_builtin (const string& alias, const string& name);
-
-// Define the code that will be used to insert the new function into
-// the symbol table.
-
-#define DEFINE_FUN_INSTALLER_FUN(name, doc) \
-  bool \
-  FS ## name (void) \
-  { \
-    static bool installed = false; \
-    if (! installed) \
-      { \
-	check_version (OCTAVE_VERSION, #name); \
-	install_builtin_function (F ## name, #name, doc); \
-	installed = true; \
-      } \
-    return installed; \
-  }
 
 #define DECLARE_FUN(name, args_name, nargout_name) \
   octave_value_list \
   F ## name (const octave_value_list& args_name, int nargout_name)
+
+// Define the code that will be used to insert the new function into
+// the symbol table.  We look for this name instead of the actual
+// function so that we can easily install the doc string too.
+
+typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
+
+#define DEFINE_FUN_INSTALLER_FUN(name, doc) \
+  bool \
+  FS ## name (const octave_shlib& shl) \
+  { \
+    check_version (OCTAVE_VERSION, #name); \
+    install_dld_function (F ## name, #name, shl, doc); \
+    return error_state ? false : true; \
+  }
 
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.df files that are eventually used to

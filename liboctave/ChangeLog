@@ -1,3 +1,8 @@
+1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-shlib.cc, oct-shlib.h: New files.
+	* Makefile.in (INCLUDES, SOURCES): Add them to the lists.
+
 1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CRowVector.cc (linspace): Allow npoints == 1 if x1 == x2.

@@ -259,9 +259,6 @@ DEFUN_DLD (sqrtm, args, ,
   return retval;
 }
 
-INSTALL_DLD_FCNS (INSTALL_DLD_FCN (logm);
-		  INSTALL_DLD_FCN (sqrtm);)
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -26,11 +26,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include <iostream.h>
+
 #include "defun-int.h"
+#include "dynamic-ld.h"
 #include "error.h"
 #include "help.h"
 #include "ov.h"
 #include "ov-builtin.h"
+#include "ov-dld-fcn.h"
 #include "ov-mapper.h"
 #include "pager.h"
 #include "symtab.h"
@@ -115,6 +119,25 @@ install_builtin_variable (const string& name, const octave_value& value,
 			  const string& doc)
 {
   bind_builtin_variable (name, value, protect, eternal, chg_fcn, doc);
+}
+
+void
+install_dld_function (octave_dld_function::fcn f, const string& name,
+		      const octave_shlib& shl,
+		      const string& doc, bool is_text_fcn)
+{
+  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
+
+  unsigned int t = symbol_record::DLD_FUNCTION;
+
+  if (is_text_fcn)
+    t |= symbol_record::TEXT_FUNCTION;
+
+  sym_rec->unprotect ();
+  sym_rec->define (new octave_dld_function (f, shl, name, doc), t);
+  sym_rec->document (doc);
+  sym_rec->make_eternal ();
+  sym_rec->protect ();
 }
 
 void

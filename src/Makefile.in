@@ -74,7 +74,8 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-list.h \
 	ov-struct.h ov-scalar.h ov-range.h ov-complex.h ov-va-args.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
-	ov-fcn.h ov-builtin.h ov-mapper.h ov-usr-fcn.h ov-typeinfo.h
+	ov-fcn.h ov-builtin.h ov-dld-fcn.h ov-mapper.h ov-usr-fcn.h \
+	ov-typeinfo.h
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
 	pt-check.h pt-cmd.h pt-colon.h pt-const.h pt-decl.h \
@@ -82,7 +83,7 @@ PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
 	pt-jump.h pt-loop.h pt-mat.h pt-misc.h pt-plot.h \
 	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h
 
-INCLUDES := BaseSLList.h Map.h Pix.h SLList.h SLStack.h Stack.h \
+INCLUDES := BaseSLList.h DLList.h Map.h Pix.h SLList.h SLStack.h Stack.h \
 	defun-dld.h defun-int.h defun.h dirfns.h dynamic-ld.h error.h \
 	file-io.h fn-cache.h gripes.h help.h input.h lex.h load-save.h \
 	oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
@@ -114,7 +115,8 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-list.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc ov-scalar.cc \
 	ov-complex.cc ov-str-mat.cc ov-struct.cc ov-va-args.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc ov-fcn.cc \
-	ov-builtin.cc ov-mapper.cc ov-usr-fcn.cc ov-typeinfo.cc
+	ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc ov-usr-fcn.cc \
+	ov-typeinfo.cc
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-check.cc \
 	pt-cmd.cc pt-colon.cc pt-const.cc pt-decl.cc pt-except.cc \
@@ -122,7 +124,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-check.cc \
 	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
 	pt-select.cc pt-stmt.cc pt-unop.cc
 
-DIST_SRC := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
+DIST_SRC := BaseSLList.cc DLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	cutils.c data.cc defaults.cc defun.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fn-cache.cc gripes.cc help.cc input.cc \
 	lex.l load-save.cc mappers.cc matherr.c oct-fstrm.cc \
@@ -172,7 +174,7 @@ DEF_2 := $(patsubst %.y, %.df, $(DEF_3))
 DEF_1 := $(patsubst %.l, %.df, $(DEF_2))
 DEF_FILES := $(patsubst %.cc, %.df, $(DEF_1))
 
-DEFVAR_PATTERN = "^[ \t]*DEF(VAR|CONST)[ \t]*\\("
+DEFVAR_PATTERN = "^[ \t]*DEF(VAR|CONS(T|TX))[ \t]*\\("
 
 VAR_5 := $(SOURCES) $(DLD_SRC)
 VAR_4 := $(addprefix $(srcdir)/, $(VAR_5))

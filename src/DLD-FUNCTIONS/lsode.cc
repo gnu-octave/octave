@@ -492,9 +492,6 @@ to the shortest match.")
   return retval;
 }
 
-INSTALL_DLD_FCNS (INSTALL_DLD_FCN (lsode);
-		  INSTALL_DLD_FCN (lsode_options);)
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

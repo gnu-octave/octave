@@ -377,6 +377,12 @@ public:
   virtual bool is_function (void) const
     { return rep->is_function (); }
 
+  virtual bool is_builtin_function (void) const
+    { return rep->is_builtin_function (); }
+
+  virtual bool is_dld_function (void) const
+    { return rep->is_dld_function (); }
+
   // Values.
 
   octave_value eval (void) { return *this; }

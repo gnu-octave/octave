@@ -1,4 +1,71 @@
+1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun-dld.h (INSTALL_DLD_FCNS, INSTALL_DLD_FCN): Delete definitions.
+	* DLD-FUNCTIONS/dassl.cc: Don't use INSTALL_DLD_FCN or
+	INSTALL_DLD_FCNS macros.  They are not necessary with the new code
+	in dynamic-ld.cc.
+	* DLD-FUNCTIONS/lsode.cc: Ditto.
+	* DLD-FUNCTIONS/fsolve.cc: Ditto.
+	* DLD-FUNCTIONS/quad.cc: Ditto.
+	* DLD-FUNCTIONS/time.cc: Ditto.
+	* DLD-FUNCTIONS/besselj.cc: Ditto.
+	* DLD-FUNCTIONS/getgrent.cc: Ditto.
+	* DLD-FUNCTIONS/getpwent.cc: Ditto.
+	* DLD-FUNCTIONS/inv.cc: Ditto.
+	* DLD-FUNCTIONS/log.cc: Ditto.
+	* DLD-FUNCTIONS/minmax.cc: Ditto.
+	* DLD-FUNCTIONS/rand.cc: Ditto.
+
+	* dynamic-ld.cc, dynamic-ld.h: Major rewrite to allow reloading of
+	dynamically linked functions.
+
+	* symtab.cc (symbol_record::replace_all_defs): Don't allow top
+	definition to be NULL.
+	(symbol_table::clear): Allow dynamically linked functions to be
+	cleared.
+
+	* symtab.h (TYPE): New enum value, DLD_FUCTION.
+	(symbol_type): Now 8 bits wide.
+	(SYMTAB_ALL_TYPES): Include DLD_FUNCTION.
+	(symbol_record::symbol_def::is_function): Also recognize dld functions.
+	(symbol_record::symbol_def::is_dld_function): New function.
+	(symbol_record::is_dld_function): Ditto.
+
+	* defun.cc (install_dld_function): New function.
+	* defun-int.h: Provide declaration here.
+	(octave_dld_fcn_installer): New typedef.
+	(DEFINE_FUN_INSTALLER_FUN): Installer function now takes an
+	oct_shlib object as an arg.  Allow installation of a function to
+	happen more than once.
+
+	* octave.cc (initialize_error_handlers): Call
+	set_liboctave_warning_handler here too.
+
+	* ov-builtin.h (is_builtin_function): Return true.
+	Data member is now protected, not private.
+
+	* ov-fcn.h (is_dynamically_loaded_function): New predicate.
+	(unload): New function.
+	Data members are now protected, not private.
+
+	* ov.h (is_builtin_function, is_dld_function): New predicates.
+	* ov-base.h (is_builtin_function, is_dld_function): Ditto.
+
+	* parse.y (Vwarn_reload_forces_clear): New static flag.
+	(warn_reload_forces_clear): New function.
+	(symbols_of_parse): DEFVAR warn_reload_forces_clear.
+
+	* variables.cc (Fclear): Look for dld functions too.
+
+	* ov-dld-fcn.cc, src/ov-dld-fcn.h: New files.
+	* Makefile.in (OV_INCLUDES, OV_SRC): Add them to the lists.
+
+	* Makefile.in (DEFVAR_PATTERN): Also match DEFCONSTX.
+
 1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLList.h, DLList.cc: New files.
+	* Makefile.in (INCLUDES, DIST_SRC): Add them to the lists.
 
 	* DLD-FUNCTIONS/lsode.cc (Flsode): Be sure to call
 	unwind_protect::run_frame before returning.

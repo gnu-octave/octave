@@ -53,18 +53,19 @@ symbol_record
 public:
 
   // If you add or delete an entry here, you'll also need to change
-  // the with parameter in the declaration for symbol_type below...
+  // the width parameter in the declaration for symbol_type below...
 
   enum TYPE
     {
       UNKNOWN = 0,
       USER_FUNCTION = 1,
       USER_VARIABLE = 2,
-      BUILTIN_FUNCTION = 4,
-      TEXT_FUNCTION = 8,
-      MAPPER_FUNCTION = 16,
-      BUILTIN_VARIABLE = 32,
-      BUILTIN_CONSTANT = 64
+      DLD_FUNCTION = 4,
+      BUILTIN_FUNCTION = 8,
+      TEXT_FUNCTION = 16,
+      MAPPER_FUNCTION = 32,
+      BUILTIN_VARIABLE = 64,
+      BUILTIN_CONSTANT = 128
     };
 
 private:
@@ -94,6 +95,7 @@ private:
     bool is_function (void) const
       {
 	return (symbol_type & symbol_record::USER_FUNCTION
+		|| symbol_type & symbol_record::DLD_FUNCTION
 		|| symbol_type & symbol_record::BUILTIN_FUNCTION);
       }
 
@@ -117,6 +119,9 @@ private:
 
     bool is_builtin_function (void) const
       { return (symbol_type & symbol_record::BUILTIN_FUNCTION); }
+
+    bool is_dld_function (void) const
+      { return (symbol_type & symbol_record::DLD_FUNCTION); }
 
     // XXX FIXME XXX
     bool is_map_element (const string& /* elts */) const
@@ -165,7 +170,7 @@ private:
     static octave_allocator allocator;
 
     // The type of this symbol (see the enum above).
-    unsigned int symbol_type : 7;
+    unsigned int symbol_type : 8;
 
     // Nonzero means this variable cannot be cleared.
     unsigned int eternal : 1;
@@ -234,6 +239,9 @@ public:
 
   bool is_builtin_function (void) const
     { return definition->is_builtin_function (); }
+
+  bool is_dld_function (void) const
+    { return definition->is_dld_function (); }
 
   bool is_constant (void) const
     { return definition->is_constant (); }
@@ -357,6 +365,7 @@ private:
 
 #define SYMTAB_ALL_TYPES (symbol_record::USER_FUNCTION \
 			  | symbol_record::USER_VARIABLE \
+			  | symbol_record::DLD_FUNCTION \
 			  | symbol_record::BUILTIN_FUNCTION \
 			  | symbol_record::TEXT_FUNCTION \
 			  | symbol_record::MAPPER_FUNCTION \

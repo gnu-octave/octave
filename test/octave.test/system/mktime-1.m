@@ -1,2 +1,2 @@
 t = time ();
-mktime (localtime (t)) == t
+fix (mktime (localtime (t))) == fix (t)

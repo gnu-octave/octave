@@ -52,7 +52,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <defaults.h>
 #include "defun.h"
-#include "dynamic-ld.h"
 #include "error.h"
 #include "file-io.h"
 #include "input.h"
@@ -319,6 +318,7 @@ static void
 initialize_error_handlers ()
 {
   set_liboctave_error_handler (error);
+  set_liboctave_warning_handler (warning);
 }
 
 // What happens on --traditional.

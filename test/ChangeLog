@@ -1,3 +1,7 @@
+1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/system/mktime-1.m (t): Compare whole seconds only.
+
 Fri Dec  4 20:55:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/system/clock-1.m: Use standard format specifiers %d

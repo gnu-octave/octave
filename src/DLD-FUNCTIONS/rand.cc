@@ -408,9 +408,6 @@ See also: rand")
   return retval;
 }
 
-INSTALL_DLD_FCNS (INSTALL_DLD_FCN (rand);
-		  INSTALL_DLD_FCN (randn);)
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

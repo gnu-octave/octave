@@ -396,12 +396,6 @@ Year (1970-).\n\
   return retval;
 }
 
-INSTALL_DLD_FCNS (INSTALL_DLD_FCN (time);
-		  INSTALL_DLD_FCN (gmtime);
-		  INSTALL_DLD_FCN (localtime);
-		  INSTALL_DLD_FCN (mktime);
-		  INSTALL_DLD_FCN (strftime);)
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

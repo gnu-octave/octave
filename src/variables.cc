@@ -520,7 +520,12 @@ symbol_out_of_date (symbol_record *sr)
 		{
 		  time_t tp = tmp->time_parsed ();
 
-		  string fname = fcn_file_in_path (ff);
+		  string fname;
+
+		  if (tmp->is_dld_function ())
+		    fname = ff;
+		  else
+		    fname = fcn_file_in_path (ff);
 
 		  tmp->mark_fcn_file_up_to_date (octave_time ());
 
@@ -1082,17 +1087,16 @@ With -x, exclude the named variables")
 	{
 	  string_vector tmp;
 
-	  lvars = curr_sym_tab->name_list (lcount, tmp, false,
-					   SYMTAB_VARIABLES,
-					   SYMTAB_LOCAL_SCOPE);
+	  lvars = curr_sym_tab->name_list
+	    (lcount, tmp, false, SYMTAB_VARIABLES, SYMTAB_LOCAL_SCOPE);
 
-	  gvars = curr_sym_tab->name_list (gcount, tmp, false,
-					   SYMTAB_VARIABLES,
-					   SYMTAB_GLOBAL_SCOPE);
+	  gvars = curr_sym_tab->name_list
+	    (gcount, tmp, false, SYMTAB_VARIABLES, SYMTAB_GLOBAL_SCOPE);
 
-	  fcns = global_sym_tab->name_list (fcount, tmp, false,
-					    symbol_record::USER_FUNCTION,
-					    SYMTAB_ALL_SCOPES);
+	  fcns = global_sym_tab->name_list
+	    (fcount, tmp, false,
+	     symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION,
+	     SYMTAB_ALL_SCOPES);
 	}
 
       // XXX FIXME XXX -- this needs to be optimized to avoid the

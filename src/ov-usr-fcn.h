@@ -67,8 +67,7 @@ public:
 
   void stash_fcn_file_name (void);
 
-  void mark_fcn_file_up_to_date (const octave_time& t)
-    { t_checked = t; }
+  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
 
   void stash_fcn_file_time (const octave_time& t)
     {

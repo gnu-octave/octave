@@ -150,6 +150,10 @@ public:
 
   bool is_function (void) const { return false; }
 
+  bool is_builtin_function (void) const { return false; }
+
+  bool is_dld_function (void) const { return false; }
+
   int int_value (bool = false, bool = false) const;
 
   int nint_value (bool = false) const;

@@ -391,9 +391,6 @@ to the shortest match.")
   return retval;
 }
 
-INSTALL_DLD_FCNS (INSTALL_DLD_FCN (dassl);
-		  INSTALL_DLD_FCN (dassl_options);)
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

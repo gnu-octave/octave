@@ -1,3 +1,10 @@
+1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/lo-error.cc (current_liboctave_warning_handler): Define	here.
+	(set_liboctave_warning_handler): New function.
+	(liboctave_warning): Ditto.
+	* misc/lo-error.h: Provide declararations for them here.
+
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (dist): Use `$(MAKE) -C dir' instead of `cd dir;

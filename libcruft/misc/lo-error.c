@@ -34,7 +34,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
    symbol errors when creating shared versions of libcruft. */
 
 /* Pointer to the current error handling function. */
-liboctave_error_handler current_liboctave_error_handler = liboctave_fatal;
+liboctave_error_handler current_liboctave_error_handler
+  = liboctave_fatal;
+
+/* Pointer to the current warning handler. */
+liboctave_warning_handler current_liboctave_warning_handler
+  = liboctave_warning; 
 
 static void
 verror (const char *name, const char *fmt, va_list args)
@@ -57,6 +62,15 @@ set_liboctave_error_handler (liboctave_error_handler f)
 }
 
 void
+set_liboctave_warning_handler (liboctave_warning_handler f)
+{
+  if (f)
+    current_liboctave_warning_handler = f;
+  else
+    current_liboctave_warning_handler = liboctave_warning;
+}
+
+void
 liboctave_fatal (const char *fmt, ...)
 {
   va_list args;
@@ -65,6 +79,15 @@ liboctave_fatal (const char *fmt, ...)
   va_end (args);
 
   exit (1);
+}
+
+void
+liboctave_warning (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  verror ("warning", fmt, args);
+  va_end (args);
 }
 
 /*

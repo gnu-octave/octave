@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
+#include "tree-const.h"
 #include "tree-plot.h"
 
 extern "C"
@@ -139,7 +140,7 @@ tree_plot_command::eval (int print)
     return retval;
 
   tree_subplot_list *ptr = plot_list;
-  for ( ; ptr != NULL_TREE ; ptr = ptr->next_elem ())
+  for ( ; ptr != (tree_subplot_list *) NULL; ptr = ptr->next_elem ())
     {
       plot_line_count++;
 
@@ -178,18 +179,18 @@ tree_plot_command::eval (int print)
 
 tree_subplot_list::tree_subplot_list (void)
 {
-  plot_data = NULL_TREE;
+  plot_data = (tree_expression *) NULL;
   using = (tree_subplot_using *) NULL;
-  title = NULL_TREE;
+  title = (tree_expression *) NULL;
   style = (tree_subplot_style *) NULL;
   next = (tree_subplot_list *) NULL;
 }
 
-tree_subplot_list::tree_subplot_list (tree *data)
+tree_subplot_list::tree_subplot_list (tree_expression *data)
 {
   plot_data = data;
   using = (tree_subplot_using *) NULL;
-  title = NULL_TREE;
+  title = (tree_expression *) NULL;
   style = (tree_subplot_style *) NULL;
   next = (tree_subplot_list *) NULL;
 }
@@ -203,10 +204,11 @@ tree_subplot_list::tree_subplot_list (tree_subplot_list *t)
   next = t->next;
 }
 
-tree_subplot_list::tree_subplot_list (tree_subplot_using *u, tree *t,
+tree_subplot_list::tree_subplot_list (tree_subplot_using *u,
+				      tree_expression *t,
 				      tree_subplot_style *s)
 {
-  plot_data = NULL_TREE;
+  plot_data = (tree_expression *) NULL;
   using = u;
   title = t;
   style = s;
@@ -223,7 +225,7 @@ tree_subplot_list::~tree_subplot_list (void)
 }
 
 tree_subplot_list *
-tree_subplot_list::set_data (tree *data)
+tree_subplot_list::set_data (tree_expression *data)
 {
   plot_data = data;
   return this;
@@ -270,7 +272,7 @@ int
 tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 {
   int nc = 0;
-  if (plot_data != NULL_TREE)
+  if (plot_data != (tree_expression *) NULL)
     {
       tree_constant data = plot_data->eval (0);
       if (! error_state && data.is_defined ())
@@ -333,7 +335,7 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 	return -1;
     }
 
-  if (title != NULL_TREE)
+  if (title != (tree_expression *) NULL)
     {
       tree_constant tmp = title->eval (0);
       if (! error_state && tmp.is_string_type ())
@@ -424,11 +426,11 @@ tree_plot_limits::print (int ndim, ostrstream& plot_buf)
 
 tree_plot_range::tree_plot_range (void)
 {
-  lower = NULL_TREE;
-  upper = NULL_TREE;
+  lower = (tree_expression *) NULL;
+  upper = (tree_expression *) NULL;
 }
 
-tree_plot_range::tree_plot_range (tree *l, tree *u)
+tree_plot_range::tree_plot_range (tree_expression *l, tree_expression *u)
 {
   lower = l;
   upper = u;
@@ -452,7 +454,7 @@ tree_plot_range::print (ostrstream& plot_buf)
 {
   plot_buf << " [";
 
-  if (lower != NULL_TREE)
+  if (lower != (tree_expression *) NULL)
     {
       tree_constant lower_val = lower->eval (0);
       if (error_state)
@@ -469,7 +471,7 @@ tree_plot_range::print (ostrstream& plot_buf)
 
   plot_buf << ":";
 
-  if (upper != NULL_TREE)
+  if (upper != (tree_expression *) NULL)
     {
       tree_constant upper_val = upper->eval (0);
       if (error_state)
@@ -490,20 +492,20 @@ tree_plot_range::print (ostrstream& plot_buf)
 tree_subplot_using::tree_subplot_using (void)
 {
   qualifier_count = 0;
-  x[0] = NULL_TREE;
-  x[1] = NULL_TREE;
-  x[2] = NULL_TREE;
-  x[3] = NULL_TREE;
-  scanf_fmt = NULL_TREE;
+  x[0] = (tree_expression *) NULL;
+  x[1] = (tree_expression *) NULL;
+  x[2] = (tree_expression *) NULL;
+  x[3] = (tree_expression *) NULL;
+  scanf_fmt = (tree_expression *) NULL;
 }
 
-tree_subplot_using::tree_subplot_using (tree *fmt)
+tree_subplot_using::tree_subplot_using (tree_expression *fmt)
 {
   qualifier_count = 0;
-  x[0] = NULL_TREE;
-  x[1] = NULL_TREE;
-  x[2] = NULL_TREE;
-  x[3] = NULL_TREE;
+  x[0] = (tree_expression *) NULL;
+  x[1] = (tree_expression *) NULL;
+  x[2] = (tree_expression *) NULL;
+  x[3] = (tree_expression *) NULL;
   scanf_fmt = fmt;
 }
 
@@ -513,14 +515,14 @@ tree_subplot_using::~tree_subplot_using (void)
 }
 
 tree_subplot_using *
-tree_subplot_using::set_format (tree *fmt)
+tree_subplot_using::set_format (tree_expression *fmt)
 {
   scanf_fmt = fmt;
   return this;
 }
 
 tree_subplot_using *
-tree_subplot_using::add_qualifier (tree *t)
+tree_subplot_using::add_qualifier (tree_expression *t)
 {
   if (qualifier_count < 4)
     x[qualifier_count] = t;
@@ -546,7 +548,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 
   for (int i = 0; i < qualifier_count; i++)
     {
-      if (x[i] != NULL_TREE)
+      if (x[i] != (tree_expression *) NULL)
 	{
 	  tree_constant tmp = x[i]->eval (0);
 	  if (error_state)
@@ -581,7 +583,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 	return -1;
     }
 
-  if (scanf_fmt != NULL_TREE)
+  if (scanf_fmt != (tree_expression *) NULL)
     warning ("ignoring scanf format in plot command");
 
   return 0;
@@ -590,25 +592,26 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 tree_subplot_style::tree_subplot_style (void)
 {
   style = (char *) NULL;
-  linetype = NULL_TREE;
-  pointtype = NULL_TREE;
+  linetype = (tree_expression *) NULL;
+  pointtype = (tree_expression *) NULL;
 }
 
 tree_subplot_style::tree_subplot_style (char *s)
 {
   style = strsave (s);
-  linetype = NULL_TREE;
-  pointtype = NULL_TREE;
+  linetype = (tree_expression *) NULL;
+  pointtype = (tree_expression *) NULL;
 }
 
-tree_subplot_style::tree_subplot_style (char *s, tree *lt)
+tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt)
 {
   style = strsave (s);
   linetype = lt;
-  pointtype = NULL_TREE;
+  pointtype = (tree_expression *) NULL;
 }
 
-tree_subplot_style::tree_subplot_style (char *s, tree *lt, tree *pt)
+tree_subplot_style::tree_subplot_style (char *s, tree_expression *lt,
+					tree_expression *pt)
 {
   style = strsave (s);
   linetype = lt;
@@ -636,7 +639,7 @@ tree_subplot_style::print (ostrstream& plot_buf)
     {
       plot_buf << " with " << style;
 
-      if (linetype != NULL_TREE)
+      if (linetype != (tree_expression *) NULL)
 	{
 	  tree_constant tmp = linetype->eval (0);
 	  if (! error_state && tmp.is_defined ())
@@ -651,7 +654,7 @@ tree_subplot_style::print (ostrstream& plot_buf)
 	    }
 	}
 
-      if (pointtype != NULL_TREE)
+      if (pointtype != (tree_expression *) NULL)
 	{
 	  tree_constant tmp = pointtype->eval (0);
 	  if (! error_state && tmp.is_defined ())

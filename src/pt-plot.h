@@ -39,7 +39,6 @@ class tree_plot_command;
 class ostream;
 
 #include "tree-base.h"
-#include "tree.h"
 
 class
 tree_plot_command : public tree_command
@@ -64,13 +63,14 @@ tree_subplot_list : public tree
 {
  public:
   tree_subplot_list (void);
-  tree_subplot_list (tree *data);
+  tree_subplot_list (tree_expression *data);
   tree_subplot_list (tree_subplot_list *t);
-  tree_subplot_list (tree_subplot_using *u, tree *t, tree_subplot_style *s);
+  tree_subplot_list (tree_subplot_using *u, tree_expression *t,
+		     tree_subplot_style *s);
 
   ~tree_subplot_list (void);
 
-  tree_subplot_list *set_data (tree *data);
+  tree_subplot_list *set_data (tree_expression *data);
 
   tree_subplot_list *chain (tree_subplot_list *t);
 
@@ -84,9 +84,9 @@ tree_subplot_list : public tree
   int print (int ndim, ostrstream& plot_buf);
 
  private:
-  tree *plot_data;
+  tree_expression *plot_data;
   tree_subplot_using *using;
-  tree *title;
+  tree_expression *title;
   tree_subplot_style *style;
   tree_subplot_list *next;
 };
@@ -118,7 +118,7 @@ tree_plot_range : public tree
 {
  public:
   tree_plot_range (void);
-  tree_plot_range (tree *l, tree *u);
+  tree_plot_range (tree_expression *l, tree_expression *u);
 
   ~tree_plot_range (void);
 
@@ -127,8 +127,8 @@ tree_plot_range : public tree
   void print (ostrstream& plot_buf);
 
  private:
-  tree *lower;
-  tree *upper;
+  tree_expression *lower;
+  tree_expression *upper;
 };
 
 class
@@ -136,13 +136,13 @@ tree_subplot_using : public tree
 {
  public:
   tree_subplot_using (void);
-  tree_subplot_using (tree *fmt);
+  tree_subplot_using (tree_expression *fmt);
 
   ~tree_subplot_using (void);
 
-  tree_subplot_using *set_format (tree *fmt);
+  tree_subplot_using *set_format (tree_expression *fmt);
 
-  tree_subplot_using *add_qualifier (tree *t);
+  tree_subplot_using *add_qualifier (tree_expression *t);
 
   tree_constant eval (int print);
 
@@ -150,8 +150,8 @@ tree_subplot_using : public tree
 
  private:
   int qualifier_count;
-  tree *x[4];
-  tree *scanf_fmt;
+  tree_expression *x[4];
+  tree_expression *scanf_fmt;
 };
 
 class
@@ -160,8 +160,8 @@ tree_subplot_style : public tree
  public:
   tree_subplot_style (void);
   tree_subplot_style (char *s);
-  tree_subplot_style (char *s, tree *lt);
-  tree_subplot_style (char *s, tree *lt, tree *pt);
+  tree_subplot_style (char *s, tree_expression *lt);
+  tree_subplot_style (char *s, tree_expression *lt, tree_expression *pt);
 
   ~tree_subplot_style (void);
 
@@ -171,8 +171,8 @@ tree_subplot_style : public tree
 
  private:
   char *style;
-  tree *linetype;
-  tree *pointtype;
+  tree_expression *linetype;
+  tree_expression *pointtype;
 };
 
 #endif

@@ -239,7 +239,7 @@ execute_startup_files (void)
       delete [] rc;
     }
 
-  if (strcmp (the_current_working_dirctory, home_directory) != 0)
+  if (strcmp (the_current_working_directory, home_directory) != 0)
     parse_and_execute ("./.octaverc", 0);
 }
 

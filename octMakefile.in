@@ -35,7 +35,7 @@ DISTFILES = $(CONF_DISTFILES) \
 DISTDIRS = # plplot
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ @GLOB_DIR@ \
+SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ \
 	libcruft liboctave scripts doc examples
 
 ALL_SUBDIRS = $(SUBDIRS) src
@@ -62,7 +62,7 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
 
 # Subdirectories in which to run clean targets.
-CLEANSUBDIRS = $(DISTSUBDIRS) @GLOB_DIR@
+CLEANSUBDIRS = $(DISTSUBDIRS)
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(octfiledir) $(archlibdir) $(localarchlibdir) $(localverarchlibdir) \

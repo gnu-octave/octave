@@ -1,3 +1,8 @@
+2005-03-01  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (SUBDIRS, CLEANSUBDIRS):
+	Remove @GLOB_DIR@ from the list.
+
 2005-02-28  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (DISTDIRS): Remove glob from the list.

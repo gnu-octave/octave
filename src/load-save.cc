@@ -2968,7 +2968,7 @@ save variables in a file")
     }
   else
     {
-      stati cchar *fname = 0;
+      static char *fname = 0;
 
       if (fname)
 	free (fname);

@@ -515,10 +515,9 @@ warn_function_name_clash (void)
 }
 
 
-// Generate warning if a statement in a function or script file is not
-// terminated with a semicolon.  Useful for checking scripts and
-// functions that should only produce output using explicit printing
-// statements.
+// Generate warning if a statement in a function is not terminated
+// with a semicolon.  Useful for checking functions that should only
+// produce output using explicit printing statements.
 
 int
 warn_missing_semicolon (void)

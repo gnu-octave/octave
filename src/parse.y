@@ -157,6 +157,9 @@ static tree_expression *make_multi_val_ret
 static tree_index_expression *make_index_expression
 	 (tree_indirect_ref *indir, tree_argument_list *args);
 
+// Maybe print a warning.  Duh.
+static void maybe_warn_missing_semi (tree_statement_list *);
+
 #define ABORT_PARSE \
   do \
     { \
@@ -329,14 +332,21 @@ simple_list	: semi_comma
 		| comma_semi
 		  { $$ = 0; }
 		| simple_list1
-		  { $$ = $1; }
+		  {
+		    maybe_warn_missing_semi ($1);
+		    $$ = $1;
+		  }
+		| simple_list1 comma_semi
+		  {
+		    maybe_warn_missing_semi ($1);
+		    $$ = $1;
+		  }
 		| simple_list1 semi_comma
 		  {
 		    tree_statement *tmp = $1->rear ();
 		    tmp->set_print_flag (0);
+		    $$ = $1;
 		  }
-		| simple_list1 comma_semi
-		  { $$ = $1; }
 		;
 
 simple_list1	: statement
@@ -350,9 +360,14 @@ simple_list1	: statement
 		    tree_statement *tmp = $1->rear ();
 		    tmp->set_print_flag (0);
 		    $1->append ($3);
+		    $$ = $1;
 		  }
 		| simple_list1 comma_semi statement
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    maybe_warn_missing_semi ($1);
+		    $$ = $1;
+		  }
 		;
 
 semi_comma	: ';'
@@ -381,9 +396,14 @@ opt_list	: // empty
 		;
 
 list		: list1
-		  { $$ = $1; }
+		  {
+		    maybe_warn_missing_semi ($1);
+		    $$ = $1;
+		  }
 		| list1 comma_nl_sep
-		  { $$ = $1; }
+		  {
+		    $$ = $1;
+		  }
 		| list1 semi_sep
 		  {
 		    tree_statement *tmp = $1->rear ();
@@ -397,12 +417,17 @@ list1		: statement
 		    $$ = new tree_statement_list ($1);
 		  }
 		| list1 comma_nl_sep statement
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    maybe_warn_missing_semi ($1);
+		    $$ = $1;
+		  }
 		| list1 semi_sep statement
 		  {
 		    tree_statement *tmp = $1->rear ();
 		    tmp->set_print_flag (0);
 		    $1->append ($3);
+		    $$ = $1;
 		  }
 		;
 
@@ -1660,4 +1685,17 @@ make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
     retval =  new tree_index_expression (indir, args, l, c);
 
   return retval;
+}
+
+static void
+maybe_warn_missing_semi (tree_statement_list *t)
+{
+  if (defining_func && user_pref.warn_missing_semicolon)
+    {
+      tree_statement *tmp = t->rear();
+      if (tmp->is_expression ())
+
+	warning ("missing semicolon near line %d, column %d",
+		 tmp->line (), tmp->column ());
+    }
 }

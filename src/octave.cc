@@ -1024,38 +1024,47 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
     }
   else
     {
-      iprocstream cmd (tmp_str);
+      iprocstream *cmd = new iprocstream (tmp_str);
 
-      ostrstream output_buf;
+      add_unwind_protect (cleanup_iprocstream, cmd);
 
-      char ch;
-      while (cmd.get (ch))
-	output_buf.put (ch);
+      int status = 127;
 
-      output_buf << ends;
-
-      int status = cmd.close ();
-
-      // The value in status is as returned by waitpid.  If the
-      // process exited normally, extract the actual exit status of
-      // the command.  Otherwise, return 127 as a failure code.
-
-      if ((status & 0xff) == 0)
-	status = (status & 0xff00) >> 8;
-      else
-	status = 127;
-
-      if (nargout > 0 || nargin > 1)
+      if (cmd && *cmd)
 	{
-	  char *msg = output_buf.str ();
+	  ostrstream output_buf;
 
-	  retval(1) = (double) status;
-	  retval(0) = msg;
+	  char ch;
+	  while (cmd->get (ch))
+	    output_buf.put (ch);
 
-	  delete [] msg;
+	  output_buf << ends;
+
+	  status = cmd->close ();
+
+	  // The value in status is as returned by waitpid.  If the
+	  // process exited normally, extract the actual exit status of
+	  // the command.  Otherwise, return 127 as a failure code.
+
+	  if ((status & 0xff) == 0)
+	    status = (status & 0xff00) >> 8;
+
+	  if (nargout > 0 || nargin > 1)
+	    {
+	      char *msg = output_buf.str ();
+
+	      retval(1) = (double) status;
+	      retval(0) = msg;
+
+	      delete [] msg;
+	    }
+	  else
+	    maybe_page_output (output_buf);
 	}
       else
-	maybe_page_output (output_buf);
+	error ("unable to start subprocess for `%s'", tmp_str);
+
+      run_unwind_protect ();
     }
 
   return retval;

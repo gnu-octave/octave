@@ -77,7 +77,7 @@ static int clear_before_plotting = 1;
 static SLStack <char *> tmp_files;
 
 // Pipe to gnuplot.
-static oprocstream plot_stream;
+static oprocstream *plot_stream = 0;
 
 // Use shortest possible abbreviations to minimize trouble caused by
 // gnuplot's fixed-length command line buffer.
@@ -111,7 +111,13 @@ open_plot_stream (void)
 {
   static int initialized = 0;
 
-  if (! plot_stream.is_open ())
+  if (plot_stream && ! *plot_stream)
+    {
+      delete plot_stream;
+      plot_stream = 0;
+    }
+
+  if (! plot_stream)
     {
       initialized = 0;
 
@@ -120,8 +126,15 @@ open_plot_stream (void)
       char *plot_prog = user_pref.gnuplot_binary;
       if (plot_prog)
 	{
-	  plot_stream.open (plot_prog);
-	  if (! plot_stream.is_open ())
+	  plot_stream = new oprocstream (plot_prog);
+
+	  if (plot_stream && ! *plot_stream)
+	    {
+	      delete plot_stream;
+	      plot_stream = 0;
+	    }
+
+	  if (! plot_stream)
 	    {
 	      warning ("plot: unable to open pipe to `%s'",
 		       plot_prog);
@@ -138,20 +151,26 @@ open_plot_stream (void)
 	{
 	last_chance:
 
-	  plot_stream.open ("gnuplot");
+	  plot_stream = new oprocstream ("gnuplot");
 
-	  if (! plot_stream.is_open ())
+	  if (plot_stream && ! *plot_stream)
+	    {
+	      delete plot_stream;
+	      plot_stream = 0;
+	    }
+
+	  if (! plot_stream)
 	    error ("plot: unable to open pipe to `%s'", plot_prog);
 	}
     }
 
-  if (! initialized)
+  if (! error_state && plot_stream && *plot_stream && ! initialized)
     {
       initialized = 1;
-      plot_stream << "set data style lines\n";
+      *plot_stream << "set data style lines\n";
 
       if (gnuplot_terminal_type)
-	plot_stream << "set term " << gnuplot_terminal_type << "\n";
+	*plot_stream << "set term " << gnuplot_terminal_type << "\n";
     }
 }
 
@@ -162,7 +181,7 @@ send_to_plot_stream (const char *cmd)
 
   extern int pipe_handler_error_count;
 
-  if (! plot_stream.is_open ())
+  if (! (plot_stream && *plot_stream))
     {
       open_plot_stream ();
 
@@ -182,14 +201,14 @@ send_to_plot_stream (const char *cmd)
     error ("replot: no previous plot");
   else
     {
-      plot_stream << cmd;
+      *plot_stream << cmd;
 
       if (! (is_replot || is_splot || is_plot)
 	  && plot_line_count > 0
 	  && user_pref.automatic_replot)
-	plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
+	*plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
 
-      plot_stream.flush ();
+      plot_stream->flush ();
       pipe_handler_error_count = 0;
     }
 
@@ -1071,8 +1090,11 @@ cleanup_tmp_files (void)
 void
 close_plot_stream (void)
 {
-  if (plot_stream.is_open ())
-    plot_stream.close ();
+  if (plot_stream)
+    {
+      delete plot_stream;
+      plot_stream = 0;
+    }
 
   plot_line_count = 0;
 }
@@ -1080,7 +1102,7 @@ close_plot_stream (void)
 void
 do_external_plotter_cd (const char *newdir)
 {
-  if (plot_stream.is_open ())
+  if (plot_stream && *plot_stream)
     {
       ostrstream plot_buf;
       plot_buf << "cd \"" << newdir << "\"\n" << ends;

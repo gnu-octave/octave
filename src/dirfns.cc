@@ -62,6 +62,7 @@ Free Software Foundation, Inc.
 #include "sysdir.h"
 #include "tree-const.h"
 #include "tree-plot.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 extern "C"
@@ -427,21 +428,27 @@ print a directory listing")
     }
 
   ls_buf << ends;
-
   char *ls_command = ls_buf.str ();
-
-  iprocstream cmd (ls_command);
-
-  char ch;
-  ostrstream output_buf;
-  while (cmd.get (ch))
-    output_buf.put (ch);
-
-  output_buf << ends;
-
-  maybe_page_output (output_buf);
-
   delete [] ls_command;
+
+  iprocstream *cmd = new iprocstream (ls_command);
+
+  add_unwind_protect (cleanup_iprocstream, cmd);
+
+  if (cmd && *cmd)
+    {
+      int ch;
+      ostrstream output_buf;
+      while ((ch = cmd->get ()) != EOF)
+	output_buf << (char) ch;
+      output_buf << ends;
+
+      maybe_page_output (output_buf);
+    }
+  else
+    error ("couldn't start process for ls!");
+
+  run_unwind_protect ();
 
   DELETE_ARGV;
 

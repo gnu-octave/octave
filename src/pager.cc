@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "sighandlers.h"
 #include "tree-const.h"
+#include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -146,21 +147,29 @@ flush_output_to_pager (void)
       char *pgr = user_pref.pager_binary;
       if (pgr)
 	{
-	  oprocstream pager_stream (pgr);
-	  if (pager_stream)
+	  volatile sig_handler *old_sigint_handler;
+	  old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
+
+	  oprocstream *pager_stream = new oprocstream (pgr);
+
+	  add_unwind_protect (cleanup_oprocstream, pager_stream);
+
+	  int output_paged = 0;
+	  if (pager_stream && *pager_stream)
 	    {
-	      volatile sig_handler *old_sigint_handler;
-	      old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
-
-	      pager_stream << message;
+	      output_paged = 1;
+	      *pager_stream << message;
 	      delete [] message;
-	      pager_stream.flush ();
-	      pager_stream.close ();
-
-	      octave_set_signal_handler (SIGINT, old_sigint_handler);
-
-	      return;
+	      pager_stream->flush ();
+	      pager_stream->close ();
 	    }
+
+	  run_unwind_protect ();
+
+	  octave_set_signal_handler (SIGINT, old_sigint_handler);
+
+	  if (output_paged)
+	    return;
 	}
     }
 

@@ -467,7 +467,7 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n\
 
 // XXX FIXME XXX -- this may not be the best place for these...
 
-octave_value_list
+static octave_value_list
 feval (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
@@ -476,11 +476,22 @@ feval (const octave_value_list& args, int nargout)
 
   if (fcn)
     {
+      string_vector arg_names = args.name_tags ();
+
       int tmp_nargin = args.length () - 1;
-      octave_value_list tmp_args;
-      tmp_args.resize (tmp_nargin);
+
+      octave_value_list tmp_args (tmp_nargin, octave_value ());
+
+      string_vector tmp_arg_names (tmp_nargin);
+
       for (int i = 0; i < tmp_nargin; i++)
-	tmp_args(i) = args(i+1);
+	{
+	  tmp_args(i) = args(i+1);
+	  tmp_arg_names(i) = arg_names(i+1);
+	}
+
+      tmp_args.stash_name_tags (tmp_arg_names);
+
       retval = fcn->eval (nargout, tmp_args);
     }
 
@@ -793,7 +804,7 @@ do_octave_atexit (void)
     {
       octave_value_list fcn = octave_atexit_functions.pop ();
 
-      feval (fcn, false);
+      feval (fcn, 0);
     }
 }
 

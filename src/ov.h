@@ -37,8 +37,9 @@ class ostream;
 #include "idx-vector.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
-#include "oct-sym.h"
 #include "str-vec.h"
+
+#include "oct-sym.h"
 
 class Octave_map;
 class octave_stream;

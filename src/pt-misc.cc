@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream.h>
+#include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -36,6 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 #endif
+
+#include "str-vec.h"
 
 #include "defun.h"
 #include "error.h"
@@ -296,6 +299,37 @@ tree_argument_list::convert_to_const_vector (void)
   args.resize (j);
 
   return args;
+}
+
+string_vector
+tree_argument_list::get_arg_names (void) const
+{
+  int len = length ();
+
+  string_vector retval (len);
+
+  int k = 0;
+
+  for (Pix p = first (); p; next (p))
+    {
+      tree_expression *elt = this->operator () (p);
+
+      strstream str_buf;
+
+      tree_print_code pc_buf (str_buf);
+
+      elt->accept (pc_buf);
+
+      str_buf << ends;
+
+      const char *s = str_buf.str ();
+
+      retval(k++) = s;
+
+      delete [] s;
+    }
+
+  return retval;
 }
 
 void

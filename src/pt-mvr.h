@@ -39,6 +39,8 @@ class tree_walker;
 
 #include <string>
 
+#include "str-vec.h"
+
 #include "pt-mvr-base.h"
 #include "oct-obj.h"
 
@@ -58,8 +60,8 @@ public:
 
   octave_value eval (bool print = false);
 
-  octave_value_list eval (bool print, int nargout,
-			  const octave_value_list& args);
+  octave_value_list
+  eval (bool print, int nargout, const octave_value_list& args);
 
   void accept (tree_walker& tw);
 
@@ -98,7 +100,7 @@ public:
   tree_indirect_ref *ident (void)
     { return id; }
 
-  string name (void);
+  string name (void) const;
 
   tree_argument_list *arg_list (void)
     { return list; }
@@ -107,7 +109,8 @@ public:
 
   octave_value eval (bool print = false);
 
-  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
+  octave_value_list
+  eval (bool print, int nargout, const octave_value_list& args);
 
   void eval_error (void);
 
@@ -118,6 +121,8 @@ private:
   tree_indirect_ref *id;
 
   tree_argument_list *list;
+
+  string_vector arg_nm;
 };
 
 // Multi-valued assignment expressions.
@@ -142,7 +147,8 @@ public:
 
   octave_value eval (bool print = false);
 
-  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
+  octave_value_list
+  eval (bool print, int nargout, const octave_value_list& args);
 
   bool is_assignment_expression (void) const
     { return true; }

@@ -579,7 +579,7 @@ tree_print_code::visit_constant (tree_constant& val)
   if (in_parens)
     os << "(";
 
-  val.print (os, true, print_original_text);
+  val.print_raw (os, true, print_original_text);
 
   if (in_parens)
     os << ")";

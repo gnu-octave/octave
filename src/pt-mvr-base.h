@@ -52,8 +52,8 @@ public:
 
   octave_value eval (bool print = false);
 
-  virtual octave_value_list eval (bool print, int nargout,
-			      const octave_value_list& args) = 0;
+  virtual octave_value_list
+  eval (bool print, int nargout, const octave_value_list& args) = 0;
 };
 
 #endif

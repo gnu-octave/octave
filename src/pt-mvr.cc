@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
+#include "str-vec.h"
+
 #include "error.h"
 #include "oct-obj.h"
 #include "pager.h"
@@ -66,8 +68,7 @@ tree_oct_obj::eval (bool /* print */)
 }
 
 octave_value_list
-tree_oct_obj::eval (bool /* print */, int /* nargout */,
-		    const octave_value_list& /* args */)
+tree_oct_obj::eval (bool, int, const octave_value_list&)
 {
   return values;
 }
@@ -82,19 +83,19 @@ tree_oct_obj::accept (tree_walker& tw)
 
 tree_index_expression::tree_index_expression
   (tree_identifier *i, int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c)
-      {
-	id = new tree_indirect_ref (i);
-	list = 0;
-      }
+    : tree_multi_val_ret (l, c), id (new tree_indirect_ref (i)),
+      list (0), arg_nm ()
+{
+}
 
 tree_index_expression::tree_index_expression
   (tree_identifier *i, tree_argument_list *lst, int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c)
-      {
-	id = new tree_indirect_ref (i);
-	list = lst;
-      }
+    : tree_multi_val_ret (l, c), id (new tree_indirect_ref (i)),
+      list (lst), arg_nm ()
+{
+  if (list)
+    arg_nm = list->get_arg_names ();
+}
 
 tree_index_expression::~tree_index_expression (void)
 {
@@ -103,7 +104,7 @@ tree_index_expression::~tree_index_expression (void)
 }
 
 string
-tree_index_expression::name (void)
+tree_index_expression::name (void) const
 {
   return id->name ();
 }
@@ -129,6 +130,8 @@ tree_index_expression::eval (bool print)
       // args.
 
       octave_value_list args = list->convert_to_const_vector ();
+
+      args.stash_name_tags (arg_nm);
 
       if (error_state)
 	eval_error ();
@@ -167,8 +170,7 @@ tree_index_expression::eval (bool print)
 }
 
 octave_value_list
-tree_index_expression::eval (bool print, int nargout,
-			     const octave_value_list& /* args */)
+tree_index_expression::eval (bool print, int nargout, const octave_value_list&)
 {
   octave_value_list retval;
 
@@ -280,7 +282,7 @@ tree_multi_assignment_expression::eval (bool print)
 
 octave_value_list
 tree_multi_assignment_expression::eval (bool print, int nargout,
-					const octave_value_list& /* args */)
+					const octave_value_list&)
 {
   assert (etype == tree_expression::multi_assignment);
 

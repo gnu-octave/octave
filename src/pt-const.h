@@ -105,9 +105,13 @@ public:
   void print (ostream& os, bool pr_as_read_syntax = false,
 	      bool pr_orig_txt = true);
 
+  void print_raw (ostream& os, bool pr_as_read_syntax = false,
+		  bool pr_orig_txt = true);
+
   octave_value eval (bool print = false);
 
-  octave_value_list eval (bool, int, const octave_value_list&);
+  octave_value_list
+  eval (bool print, int nargout, const octave_value_list& args);
 
   // Store the original text corresponding to this constant for later
   // pretty printing.

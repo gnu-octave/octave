@@ -49,6 +49,16 @@ tree_constant::print (ostream& os, bool pr_as_read_syntax, bool pr_orig_text)
     val.print (os, pr_as_read_syntax);
 }
 
+void
+tree_constant::print_raw (ostream& os, bool pr_as_read_syntax,
+			  bool pr_orig_text) 
+{
+  if (pr_orig_text && ! orig_text.empty ())
+    os << orig_text;
+  else
+    val.print_raw (os, pr_as_read_syntax);
+}
+
 octave_value
 tree_constant::eval (bool print_result)
 {

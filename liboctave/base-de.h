@@ -42,8 +42,11 @@ public:
 
   base_diff_eqn& operator = (const base_diff_eqn& a)
     {
-      x = a.x;
-      t = a.t;
+      if (this != &a)
+	{
+	  x = a.x;
+	  t = a.t;
+	}
       return *this;
     }
 

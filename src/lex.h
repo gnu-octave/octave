@@ -33,6 +33,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     YY_FATAL_ERROR ("octave_read () in flex scanner failed");
 
 // Try to avoid crashing out completely on fatal scanner errors.
+// The call to yy_fatal_error should never happen, but it avoids a
+// `static function defined but not used' warning from gcc.
 
 #ifdef YY_FATAL_ERROR
 #undef YY_FATAL_ERROR
@@ -42,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     { \
       error (msg); \
       jump_to_top_level (); \
+      yy_fatal_error (msg); \
     } \
   while (0)
 

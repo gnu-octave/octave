@@ -26,7 +26,7 @@ DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
 	configure mkinstalldirs
 
 SUBDIRS = audio control elfun finance general image io linear-algebra \
-	miscellaneous plot polynomial set signal specfun \
+	miscellaneous plot polynomial quaternion set signal specfun \
 	special-matrix startup statistics strings time
 
 DISTSUBDIRS = $(SUBDIRS)

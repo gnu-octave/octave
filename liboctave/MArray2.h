@@ -120,6 +120,14 @@ public:
       return *this;
     }
 
+  MArray2<T>& insert (const Array2<T>& a, int r, int c)
+  {
+    Array2<T>::insert (a, r, c);
+    return *this;
+  }
+
+  MArray2<T> transpose (void) const { return Array2<T>::transpose (); }
+
   // element by element MArray2 by scalar ops
 
   friend MArray2<T>& operator += LTGT (MArray2<T>& a, const T& s);

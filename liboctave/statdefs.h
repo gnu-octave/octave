@@ -32,7 +32,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifndef S_ISREG			/* Doesn't have POSIX.1 stat stuff. */
+#ifndef mode_t
 #define mode_t unsigned short
+#endif
 #endif
 #if !defined(S_ISBLK) && defined(S_IFBLK)
 #define	S_ISBLK(m) (((m) & S_IFMT) == S_IFBLK)

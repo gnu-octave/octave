@@ -1,3 +1,14 @@
+Fri Dec  4 18:05:51 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* emacs/octave-mod.el (octave-abbrev-start): Use the correct name
+	of the abbrev table, and provide support for XEmacs.
+	(octave-xemacs-p): New variable.
+
+Tue Nov 24 23:31:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for strftime too.
+	Avoid checking for termios.h on NeXT systems.
+
 Thu Nov 19 16:07:57 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE): New macro.

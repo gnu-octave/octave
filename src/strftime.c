@@ -21,6 +21,8 @@
 # include <config.h>
 #endif
 
+#ifndef HAVE_STRFTIME
+
 #ifdef _LIBC
 # define HAVE_LIMITS_H 1
 # define HAVE_MBLEN 1
@@ -889,3 +891,5 @@ strftime (s, maxsize, format, tp)
     *p = '\0';
   return i;
 }
+
+#endif

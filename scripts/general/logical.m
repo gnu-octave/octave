@@ -32,7 +32,11 @@
 function y = logical (x)
 
   if (nargin == 1)
-    y = x != 0;
+    if (! islogical (x))
+      y = x != 0;
+    else
+      y = x;
+    endif
   else
     usage ("logical (x)");
   endif

@@ -612,6 +612,9 @@ airy (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   F77_FCN (zairy, ZAIRY) (zr, zi, id, kode, ar, ai, nz, ierr);
 
+  if (zi == 0.0 && (! scaled || zr > 0.0))
+    ai = 0.0;
+
   return bessel_return_value (Complex (ar, ai), ierr);
 }
 
@@ -629,6 +632,9 @@ biry (const Complex& z, bool deriv, bool scaled, int& ierr)
   int kode = scaled ? 2 : 1;
 
   F77_FCN (zbiry, ZBIRY) (zr, zi, id, kode, ar, ai, ierr);
+
+  if (zi == 0.0 && (! scaled || zr > 0.0))
+    ai = 0.0;
 
   return bessel_return_value (Complex (ar, ai), ierr);
 }

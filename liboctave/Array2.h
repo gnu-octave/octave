@@ -177,6 +177,8 @@ public:
 
   bool is_symmetric (void) const;
 
+  Array2<T> transpose (void) const;
+
 #ifdef HEAVYWEIGHT_INDEXING
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
 

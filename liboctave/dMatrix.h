@@ -93,10 +93,10 @@ public:
   Matrix stack (const ColumnVector& a) const;
   Matrix stack (const DiagMatrix& a) const;
 
-  Matrix transpose (void) const;
-
   friend Matrix real (const ComplexMatrix& a);
   friend Matrix imag (const ComplexMatrix& a);
+
+  Matrix transpose (void) const { return MArray2<double>::transpose (); }
 
   // resize is the destructive equivalent for this one
 

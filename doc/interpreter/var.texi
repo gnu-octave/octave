@@ -307,6 +307,11 @@ where all of Octave is installed (the default is @file{@value{OCTAVEHOME}},
 Octave was compiled (for example, @code{@value{TARGETHOSTTYPE}}).
 
 @vtable @code
+@item DEFAULT_LOADPATH
+@xref{Function Files}.
+
+Default value: @code{".:@var{octave-home}/lib/@var{version}"}.
+
 @item EDITOR
 @xref{Commands For History}.
 
@@ -330,7 +335,8 @@ Default value: @code{"@var{octave-home}/libexec/octave/@var{version}/exec/@var{a
 @item LOADPATH
 @xref{Function Files}.
 
-Default value: @code{".:@var{octave-home}/lib/@var{version}"}.
+Default value: @code{":"}, which tells Octave to use the directories
+specified by the built-in variable @code{DEFAULT_LOADPATH}.
 
 @item OCTAVE_HOME
 

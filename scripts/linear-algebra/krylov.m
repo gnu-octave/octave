@@ -16,47 +16,63 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function [U,H,k1] = krylov(A,v,k,eps1);
+function [U,H,k1] = krylov(A,v,k,eps1,pflg);
   # function [U,H,k1] = krylov(A,v,k{,eps1});
   # construct orthogonal basis U of Krylov subspace;
-  # 	span([v Av A^2*v ... A^(k+1)*v]);
+  #     span([v Av A^2*v ... A^(k+1)*v]);
   # via householder reflections; reflections are multiplied to obtain U
-  # eps1: threshhold for 0 relative to norm of current column (default: 1e-12)
-  # method used: householder reflections to guard against loss of
-  # orthogonality
-  #
+  # inputs:
+  #   A: square matrix
+  #   v: column vector
+  #   k: desired krylov subspace dimension (as above)
+  #   eps1: threshhold for 0 relative to norm of current column (default: 1e-12)
+  #   pflg: permutation flag (default 0): avoid using zero rows of
+  #      [A,v] as householder pivots; this avoids spurious non-zero entries
+  #      in returned orthogonal matrix U, but destroys the Householder matrix
+  #      structure of H.
   # outputs:
-  # returned basis U is n x k+1; A*U(:,1:k) = U*H
+  #   U: (n x k+1) orthogonal basis of Krylov subspace. A*U(:,1:k) = U*H
+  #   H: (pflg=0): Hessenberg matrix satisfying A*U(:,1:k) = U*H
+  #      (pflg=1): Workspace; does not satisfy above equation.
   # k1: dimension of span of krylov subspace (based on eps1)
   # if k > m-1, krylov returns the Hessenberg decompostion of A.
-  
+
   # Written by A. S. Hodel 1992
   # $Revision: 1.2 $
   # $Log$
 
-  if(nargin == 3)
-    eps1 = 1e-12;
+  if    (nargin > 5)   usage("[U,H,k1] = krylov(A,v,k{,eps1,pflg})");
+  elseif(nargin < 5)   pflg = 0;
+  elseif(nargin < 4)   eps1 = 1e-12; endif
+  na = is_square(A);
+  if(!na) error("krylov: A(%dx%d) must be square",na,na); endif
+  [m,n] = size(v);
+  if(!is_vector(v)) error("krylov: v(%dx%d) must be a vector",m,n);
+  elseif(length(v) != na)
+    error("krylov: A(%dx%d), v(%dx1); mismatch",na,na,length(v));
+  endif
+  v = vec(v);    # make sure it's a column vector
+  if(!is_scalar(k))
+    error("krylov: k(%dx%d) must be a scalar",rows(k), columns(k));
+  elseif( k > m)
+    warning("krylov: k is too large; reducing to %d",m-1);
+    k = m-1;
   endif
 
-  if( !is_square(A) )
-    error("first argument must be a square matrix")
-  else
-    [m,n] = size(v); 
-    if(m != is_square(A))
-      error("krylov: argument dimensions do not match")
-    elseif( !is_sample(k) )
-      error("krylov: third argument must be a scalar integer")
-    elseif( k > m)
-      warning(["krylov: k is too large; reducing to ",num2str(m)]);
-      k = m-1;
-    endif
-  endif
+  # check for zero input vector
+  if(norm(v) == 0) U = []; H = []; k1 = 0; return endif
 
-  if(norm(v) == 0)
-    U = [];
-    H = [];
-    k1 = 0;
-    return
+  # indices of legal pivot points (identifies trivial null space).
+  abm = max(abs([A,v]')); nzidx = find(abm != 0); zidx = find(abm == 0);
+
+  # check permutation flag
+  if(pflg)
+    # permute zero rows of [A,v] to trailing rows
+    permvec = [vec(nzidx); vec(zidx)];
+    pmat = eye(na); pmat = pmat(permvec,:);
+    ipermvec = pmat'*vec(1:na);
+    A = A(permvec,permvec);
+    v = v(permvec);
   endif
 
   k1 = k+1;		# Assume subspace basis has full rank
@@ -126,5 +142,16 @@ function [U,H,k1] = krylov(A,v,k,eps1);
    U(i,i) = 1;
    U(i:n,i:j1) = U(i:n,i:j1)-av*hv*(hv'*U(i:n,i:j1));
   endfor
+
+  # check permutation flag
+  if(pflg)
+    # permute rows of U back to original coordinates
+    U = U(ipermvec,:);
+  endif
+
+  # check for spurious nonzero entries
+  if( max(max( abs(U(zidx,:)) )) > eps1 )
+    warning("krylov: trivial null space corrupted; set pflg=1 or eps1>%e",eps1);
+  endif
 
 endfunction

@@ -337,6 +337,13 @@ and the function names in function declarations in
 There is also rudimentary support for Imenu (currently, function names
 can be indexed).
 
+@cindex TAGS
+@cindex Emacs TAGS files
+@cindex @code{otags}
+You can generate TAGS files for Emacs from Octave @file{.m} files using
+the shell script @code{otags} that is installed alongside your copy of
+Octave.
+
 Customization of Octave mode can be performed by modification of the
 variable @code{octave-mode-hook}.  It the value of this variable is
 non-@code{nil}, turning on Octave mode calls its value.

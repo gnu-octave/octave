@@ -173,21 +173,6 @@ charMatrix::row_as_string (int r, bool strip_ws = false) const
 }
 
 charMatrix
-charMatrix::transpose (void) const
-{
-  int nr = rows ();
-  int nc = cols ();
-  charMatrix result (nc, nr);
-  if (length () > 0)
-    {
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  result.elem (j, i) = elem (i, j);
-    }
-  return result;
-}
-
-charMatrix
 charMatrix::extract (int r1, int c1, int r2, int c2) const
 {
   if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }

@@ -31,10 +31,10 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function x = imagesc (x, zoom)
+function y = imagesc (x, zoom)
 
   if (nargin < 1 || nargin > 2)
-    usage ("image (matrix, [zoom])");
+    usage ("imagesc (matrix, [zoom])");
   elseif (nargin == 1)
     zoom = 4;
   endif
@@ -48,12 +48,12 @@ function x = imagesc (x, zoom)
   ## length (colormap) inclusive.
 
   if (maxval == minval)
-    x = ones (high, wide);
+    y = ones (high, wide);
   else
     ## Rescale values to between 1 and length (colormap) inclusive.
-    x = fix ((x - minval) / (maxval - minval) * (length (colormap) - 1)) + 1;
+    y = round ((x - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
   endif
 
-  image (x, zoom);
+  image (y, zoom);
 
 endfunction

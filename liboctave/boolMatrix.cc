@@ -60,21 +60,6 @@ boolMatrix::insert (const boolMatrix& a, int r, int c)
   return *this;
 }
 
-boolMatrix
-boolMatrix::transpose (void) const
-{
-  int nr = rows ();
-  int nc = cols ();
-  boolMatrix result (nc, nr);
-  if (length () > 0)
-    {
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  result.elem (j, i) = elem (i, j);
-    }
-  return result;
-}
-
 // unary operations
 
 boolMatrix

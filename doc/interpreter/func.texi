@@ -630,15 +630,23 @@ else, Octave will check the time stamps on all function files.
 
 @c XXX FIXME XXX -- note about time stamps on files in NFS environments?
 
+@defvr {Built-in Variable} DEFAULT_LOADPATH
+A colon separated list of directories in which to search for function
+files by default.  The value of this variable is also automatically
+substituted for leading, trailing, or doubled colons that appear in the
+built-in variable @code{LOADPATH}.
+@end defvr
+
 @defvr {Built-in Variable} LOADPATH
 A colon separated list of directories in which to search for function
 files.  @xref{Functions and Scripts}.  The value of @code{LOADPATH}
 overrides the environment variable @code{OCTAVE_PATH}.  @xref{Installation}.
 
 @code{LOADPATH} is now handled in the same way as @TeX{} handles
-@code{TEXINPUTS}.  If the path starts with @samp{:}, the standard path
-is prepended to the value of @code{LOADPATH}.  If it ends with @samp{:}
-the standard path is appended to the value of @code{LOADPATH}.
+@code{TEXINPUTS}.  Leading, trailing, or doubled colons that appear in
+@code{LOADPATH} are replaced by the value of @code{DEFAULT_LOADPATH}.
+The default value of @code{LOADPATH} is @code{":"}, which tells Octave
+to search in the directories specified by @code{DEFAULT_LOADPATH}.
 
 In addition, if any path element ends in @samp{//}, that directory and
 all subdirectories it contains are searched recursively for function

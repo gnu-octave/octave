@@ -188,6 +188,20 @@ Array2<T>::is_symmetric (void) const
   return false;
 }
 
+template <class T>
+Array2<T>
+Array2<T>::transpose (void) const
+{
+  Array2<T> result (d2, d1);
+
+  if (d1 > 0 && d2 > 0)
+    for (int j = 0; j < d2; j++)
+      for (int i = 0; i < d1; i++)
+	result.elem (j, i) = elem (i, j);
+
+  return result;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

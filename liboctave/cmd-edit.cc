@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 
@@ -139,6 +140,8 @@ gnu_readline::gnu_readline ()
   : command_editor (), previous_startup_hook (0),
     previous_event_hook (0), completion_function (0)
 {
+  rl_terminal_name = ::getenv ("TERM");
+
   rl_initialize ();
 
   do_blink_matching_paren (true);

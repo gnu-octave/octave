@@ -59,6 +59,9 @@ public:
   octave_bool_matrix (const boolMatrix& bm)
     : octave_base_matrix<boolMatrix> (bm) { }
 
+  octave_bool_matrix (const Array2<bool>& a)
+    : octave_base_matrix<boolMatrix> (a) { }
+
   octave_bool_matrix (const octave_bool_matrix& bm)
     : octave_base_matrix<boolMatrix> (bm) { }
 

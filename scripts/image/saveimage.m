@@ -150,31 +150,33 @@ function saveimage (filename, img, img_form, map)
   if (strcmp (img_form, "ppm"))
     if (grey && map_nr == 2 && bw)
 
-      map = map(:,1);
-
       if (map(1) != 0)
-	map(1) = 1;
+      	map = [1; 0];
       else
-	map(2) = 1;
+      	map = [0; 1];
       endif
 
-      img = map(img);
-      n_long = rem (img_sz, 8);
-      if (n_long == 0)
-	n_long = 8;
-      else
-	n_long++;
-      endif
+      n_long = rem (img_nc, 8);
+      tmp = zeros (ceil (img_nc/8), img_nr);
 
-      idx = 1:8:img_sz;
-      s_len = length (idx) - 1;
-
-      tmp = img (1:8:img_sz) * 128;
-      for i = 2:n_long
-	tmp = tmp + img (i:8:img_sz) * 2^(8-i);
-      endfor
-      for i = (n_long+1):8
-	tmp(1:s_len) = tmp(1:s_len) + img (i:8:img_sz) * 2^(8-i);
+      for i = 1:img_nr
+	idx = (i-1)*img_nc+1:i*img_nc;
+      	if (n_long > 0)
+	  img_row = [map(img(idx)); zeros (8-n_long, 1)];
+	else
+      	  img_row = map(img(idx));
+	endif
+	img_row
+	tmp
+	if (img_nc < 8)
+	  for j = 1:8
+	    tmp(:,i) = tmp(:,i) + img_row (j) * 2^(8-j);
+	  endfor
+	else
+	  for j = 1:8
+	    tmp(:,i) = tmp(:,i) + img_row (j:8:img_nc) * 2^(8-j);
+	  endfor
+	endif
       endfor
 
       fid = fopen (filename, "w");

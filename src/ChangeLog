@@ -1,5 +1,33 @@
-Thu Nov 19 14:30:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Wed Dec  2 22:38:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* utils.cc (file_in_loadpath): Expect argc == 2, not 3.
+
+Tue Nov 24 23:38:19 1998  Eric Norum <eric@skatter.USask.Ca>
+
+	* mkbuiltins: Also strip off leading `./' from file names.
+	* mkops: Ditto.
+
+Tue Nov 24 23:24:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strftime.c: Surround everything with #ifdef HAVE_STRFTIME / #endif.
+
+	* lex.h (YY_FATAL_ERROR): Call yy_falta_error after
+	jump_to_top_level to avoid gcc warning.
+
+Fri Nov 20 13:34:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-bool.h, ov-bool.cc (class octave_bool): Derive from
+	octave_base_scalar and get common functions via derivation.
+	* ov-scalar.h, ov-scalar.cc (class octave_scalar): Ditto.
+	* ov-complex.h, ov-complex.cc (class octave_complex): Ditto.
+
+	* ov-base-scalar.h, ov-base-scalar.cc (class octave_base_scalar):
+	New files for new class definition.  Put common scalar data type
+	stuff here.
+	* Makefile.in (OV_INCLUDES, OV_SRC): Add them to the lists.
+
+Thu Nov 19 14:30:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+	
 	* dynamic-ld.cc (octave_dynamic_loader::mangle_name):
 	Prepend underscore here.
 	(octave_dynamic_loader::load_fcn_from_dot_oct_file): Not here.

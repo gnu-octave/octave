@@ -728,21 +728,6 @@ ComplexMatrix::hermitian (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::transpose (void) const
-{
-  int nr = rows ();
-  int nc = cols ();
-  ComplexMatrix result (nc, nr);
-  if (length () > 0)
-    {
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  result.elem (j, i) = elem (i, j);
-    }
-  return result;
-}
-
-ComplexMatrix
 conj (const ComplexMatrix& a)
 {
   int a_len = a.length ();

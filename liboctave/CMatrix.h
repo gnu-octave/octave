@@ -114,7 +114,8 @@ public:
   ComplexMatrix stack (const ComplexDiagMatrix& a) const;
 
   ComplexMatrix hermitian (void) const;  // complex conjugate transpose
-  ComplexMatrix transpose (void) const;
+  ComplexMatrix transpose (void) const
+    { return MArray2<Complex>::transpose (); }
 
   friend ComplexMatrix conj (const ComplexMatrix& a);
 

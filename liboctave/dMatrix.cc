@@ -401,21 +401,6 @@ Matrix::stack (const DiagMatrix& a) const
 }
 
 Matrix
-Matrix::transpose (void) const
-{
-  int nr = rows ();
-  int nc = cols ();
-  Matrix result (nc, nr);
-  if (length () > 0)
-    {
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  result.elem (j, i) = elem (i, j);
-    }
-  return result;
-}
-
-Matrix
 real (const ComplexMatrix& a)
 {
   int a_len = a.length ();

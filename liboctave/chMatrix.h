@@ -67,8 +67,6 @@ public:
 
   string row_as_string (int r, bool strip_trailing_whitespace = false) const;
 
-  charMatrix transpose (void) const;
-
   // resize is the destructive equivalent for this one
 
   charMatrix extract (int r1, int c1, int r2, int c2) const;

@@ -1,3 +1,17 @@
+Tue Nov 24 23:38:19 1998  Eric Norum <eric@skatter.USask.Ca>
+
+	* statdefs.h: Only define mode_t if not already defined.
+
+Tue Nov 24 17:24:52 1998  john <john@arrows.demon.co.uk>
+
+	* lo-specfun.cc (airy, biry): Set imaginary part of result to zero
+	when appropriate.
+
+Mon Nov 23 09:57:05 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.cc (gnu_readline::gnu_readline): Set terminal name
+	before calling rl_initialize.
+
 Tue Nov 17 23:47:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-specfun.cc (besselh, airy, biry): New functions.

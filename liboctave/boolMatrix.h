@@ -51,11 +51,11 @@ public:
   bool operator == (const boolMatrix& a) const;
   bool operator != (const boolMatrix& a) const;
 
+  boolMatrix transpose (void) const { return Array2<bool>::transpose (); }
+
   // destructive insert/delete/reorder operations
 
   boolMatrix& insert (const boolMatrix& a, int r, int c);
-
-  boolMatrix transpose (void) const;
 
   // unary operations
 

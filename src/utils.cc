@@ -249,7 +249,7 @@ Look up NAME in LOADPATH.  See also file_in_path")
   if (error_state)
     return retval;
 
-  if (argc == 3)
+  if (argc == 2)
     retval = octave_env::make_absolute (Vload_path_dir_path.find (argv[1]),
 					octave_env::getcwd ());
   else

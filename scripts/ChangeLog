@@ -1,3 +1,30 @@
+Fri Dec  4 16:08:42 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* quaternion: New directory of functions from A. S. Hodel,
+	<a.s.hodel@eng.auburn.edu>.
+	* Makefile.in (SUBDIRS): Add it to the list.
+
+Tue Nov 24 21:41:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/saveimage.m: Make it work again for black and white colormaps.
+
+	* image/imagesc.m: Use rows (colormap), not length (colormap),
+	since there can be fewer rows than columns.  Round values to
+	nearest position in colormap instead of truncating. Correct usage
+	message.
+
+Tue Nov 24 14:50:52 1998  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+
+	* linear-algebra/krylov.m: New arg pflg.  If nonzero, avoid using
+	zero rows of [A,v] as householder pivots; this avoids spurious
+	non-zero entries in returned orthogonal matrix U, but destroys the
+	Householder matrix structure of H.
+
+Fri Nov 20 12:46:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/logical.m: Just copy input to output if argument is
+	already a logical object.
+
 Fri Nov  6 10:17:00 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* New files from OCST, in control subdiretory:

@@ -27,9 +27,13 @@
 
 function retval = is_vector (x)
 
+  retval = 0;
+
   if (nargin == 1)
-    [nr, nc] = size (x);
-    retval = ((nr == 1 && nc >= 1) || (nc == 1 && nr >= 1));
+    if (is_matrix (x))
+      [nr, nc] = size (x);
+      retval = ((nr == 1 && nc >= 1) || (nc == 1 && nr >= 1));
+    endif
   else
     usage ("is_vector (x)");
   endif

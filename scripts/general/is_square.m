@@ -30,12 +30,14 @@
 
 function retval = is_square (x)
 
+  retval = 0;
+
   if (nargin == 1)
-    [nr, nc] = size (x);
-    if (nr == nc && nr > 0)
-      retval = nr;
-    else
-      retval = 0;
+    if (is_matrix (x))
+      [nr, nc] = size (x);
+      if (nr == nc && nr > 0)
+      	retval = nr;
+      endif
     endif
   else
     usage ("is_square (x)");

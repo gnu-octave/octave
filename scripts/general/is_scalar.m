@@ -27,9 +27,13 @@
 
 function retval = is_scalar (x)
 
+  retval = 0;
+
   if (nargin == 1)
-    [nr, nc] = size (x);
-    retval = (nr == 1 && nc == 1);
+    if (is_matrix (x))
+      [nr, nc] = size (x);
+      retval = (nr == 1 && nc == 1);
+    endif
   else
     usage ("is_scalar (x)");
   endif

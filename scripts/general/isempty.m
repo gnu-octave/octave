@@ -25,12 +25,16 @@
 
 function retval = isempty (var)
 
-  if (nargin != 1)
+  retval = 0;
+
+  if (nargin == 1)
+    if (is_matrix (var))
+      [nr, nc] = size (var);
+      retval = (nr == 0 || nc == 0);
+    endif
+  else
     usage ("isempty (var)");
   endif
 
-  [nr, nc] = size (var);
-
-  retval = (nr == 0 || nc == 0);
 
 endfunction

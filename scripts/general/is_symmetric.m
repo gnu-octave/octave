@@ -33,16 +33,15 @@ function retval = is_symmetric (x,tol)
   retval = 0;
 
   if (nargin == 1 || nargin == 2)
-    [nr, nc] = size (x);
-    if (nr == nc && nr > 0)
-      if (nargin == 1)
-	tol = eps;
-      endif
-      if (isstr (x))
-	x = toascii (x);
-      endif
-      if (norm (x - x') / norm(x) <= tol)
-        retval = nr;
+    if (is_matrix (x))
+      [nr, nc] = size (x);
+      if (nr == nc && nr > 0)
+      	if (nargin == 1)
+	  tol = eps;
+      	endif
+      	if (norm (x - x') / norm(x) <= tol)
+          retval = nr;
+      	endif
       endif
     endif
   else

@@ -90,6 +90,7 @@ public:
 
 private:
 
+  int *data;
   int len;
   int num_zeros;
   int num_ones;
@@ -97,7 +98,6 @@ private:
   int min_val;
   unsigned int one_zero : 1;
   unsigned int initialized : 1;
-  int *data;
 
   void init_state (const char *rc = 0, int z_len = 0);
   void convert_one_zero_to_idx (void);

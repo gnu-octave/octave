@@ -319,10 +319,7 @@ int
 octave_kbhit (bool wait)
 {
 #ifdef HAVE__KBHIT
-  if (! wait && ! _kbhit ())
-    c = 0;
-  else
-    c = std::cin.get ();
+  int c = (! wait && ! _kbhit ()) ? 0 : std::cin.get ();
 #else
   raw_mode (true, wait);
 

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.369 $)
+AC_REVISION($Revision: 1.370 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1259,10 +1259,6 @@ typedef short nlink_t;
 
 #if !defined(HAVE_SIGSET_T)
 typedef int sigset_t;
-#endif
-
-#if defined(MKDIR_TAKES_ONE_ARG)
-#  define mkdir(a,b) mkdir(a)
 #endif
 ])
 

@@ -135,8 +135,65 @@ octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx)
   return (x > mx ? mx : (x < mn ? mn : static_cast<T2> (x)));
 }
 
+// If X is unsigned and the new type is signed, then we only have to
+// check the upper limit, but we should cast the maximum value of the
+// new type to an unsigned type before performing the comparison.
+// This should always be OK because the maximum value should always be
+// positive.
+
+#define US_S_FTR(T1, T2, TC) \
+  template <> \
+  inline T2 \
+  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2& mx) \
+  { \
+    return x > static_cast<TC> (mx) ? mx : x; \
+  }
+
+#define US_S_FTR_FCNS(T) \
+  US_S_FTR(T, char, unsigned char) \
+  US_S_FTR(T, signed char, unsigned char) \
+  US_S_FTR(T, short, unsigned short) \
+  US_S_FTR(T, int, unsigned int) \
+  US_S_FTR(T, long, unsigned long) \
+  US_S_FTR(T, long long, unsigned long long)
+
+US_S_FTR_FCNS (unsigned char)
+US_S_FTR_FCNS (unsigned short)
+US_S_FTR_FCNS (unsigned int)
+US_S_FTR_FCNS (unsigned long)
+US_S_FTR_FCNS (unsigned long long)
+
+// If X is signed and the new type is unsigned, then we only have to
+// check the lower limit (which will always be 0 for an unsigned
+// type).  The upper limit will be enforced correctly by converting to
+// the new type, even if the type of X is wider than the new type.
+
+#define S_US_FTR(T1, T2) \
+  template <> \
+  inline T2 \
+  octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2&) \
+  { \
+    return x < 0 ? 0 : x; \
+  }
+
+#define S_US_FTR_FCNS(T) \
+  S_US_FTR(T, unsigned char) \
+  S_US_FTR(T, unsigned short) \
+  S_US_FTR(T, unsigned int) \
+  S_US_FTR(T, unsigned long) \
+  S_US_FTR(T, unsigned long long)
+
+S_US_FTR_FCNS (char)
+S_US_FTR_FCNS (signed char)
+S_US_FTR_FCNS (short)
+S_US_FTR_FCNS (int)
+S_US_FTR_FCNS (long)
+S_US_FTR_FCNS (long long)
+
 #define OCTAVE_INT_FIT_TO_RANGE(r, T) \
-  octave_int_fit_to_range (r, std::numeric_limits<T>::min (), std::numeric_limits<T>::max ())
+  octave_int_fit_to_range (r, \
+                           std::numeric_limits<T>::min (), \
+                           std::numeric_limits<T>::max ())
 
 #define OCTAVE_INT_MIN_VAL2(T1, T2) \
   std::numeric_limits<typename octave_int_binop_traits<T1, T2>::TR>::min ()
@@ -154,6 +211,8 @@ class
 octave_int
 {
 public:
+
+  typedef T val_type;
 
   octave_int (void) : ival () { }
 

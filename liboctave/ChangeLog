@@ -1,3 +1,50 @@
+2004-08-30  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int_fit_to_range): Use template
+	specializations to avoid warnings about signed/unsigned comparisons.
+
+2004-08-28  John W. Eaton  <jwe@octave.org>
+
+	* data-conv.cc (do_float_format_conversion (unsigned char *,
+	size_t, int, oct_mach_info::float_format)): New function.
+	(GET_SIZED_INT_TYPE): New macro.
+	(string_to_data_type): Use it to return sized types corresponding
+	to Octave array data types.
+	(strip_spaces): New function.
+	(do_double_format_conversion, do_float_format_conversion): Pass
+	from_fmt and to_fmt.  Don't always assume the to_fmt is the native
+	float format.
+	(do_double_format_conversion,
+	IEEE_big_double_to_IEEE_little_double,
+	VAX_D_double_to_IEEE_little_double,
+	VAX_G_double_to_IEEE_little_double, Cray_to_IEEE_little_double,
+	IEEE_little_double_to_IEEE_big_double,
+	VAX_D_double_to_IEEE_big_double, VAX_G_double_to_IEEE_big_double,
+	Cray_to_IEEE_big_double, IEEE_little_double_to_VAX_D_double,
+	IEEE_big_double_to_VAX_D_double, VAX_G_double_to_VAX_D_double,
+	Cray_to_VAX_D_double, IEEE_little_double_to_VAX_G_double,
+	IEEE_big_double_to_VAX_G_double, VAX_D_double_to_VAX_G_double,
+	Cray_to_VAX_G_double):
+	Pass data as void*, not double*.
+	(do_float_format_conversion, IEEE_big_float_to_IEEE_little_float,
+	VAX_D_float_to_IEEE_little_float,
+	VAX_G_float_to_IEEE_little_float, Cray_to_IEEE_little_float,
+	IEEE_little_float_to_IEEE_big_float,
+	VAX_D_float_to_IEEE_big_float, VAX_G_float_to_IEEE_big_float,
+	Cray_to_IEEE_big_float, IEEE_little_float_to_VAX_D_float,
+	IEEE_big_float_to_VAX_D_float, VAX_G_float_to_VAX_D_float,
+	Cray_to_VAX_D_float, IEEE_little_float_to_VAX_G_float,
+	IEEE_big_float_to_VAX_G_float, VAX_D_float_to_VAX_G_float,
+	Cray_to_VAX_G_float):
+	Pass data as void*, not float*.
+
+2004-08-27  John W. Eaton  <jwe@octave.org>
+
+	* byte-swap.h (swap_bytes): New template versions, with
+	specializations.
+	(swap_2_bytes, swap_4_bytes, swap_8_bytes): Delete.
+	Change all uses.
+
 2004-08-24  David Bateman  <dbateman@free.fr>
 
 	* chNDArray.cc (concat): Check whether matrix to be inserted is

@@ -665,10 +665,10 @@ lower-case letters and @samp{%E} uses upper-case.  @xref{Floating-Point
 Conversions}, for details.
 
 @item @samp{%g}, @samp{%G}
-Print a floating-point number in either normal or exponential notation,
-whichever is more appropriate for its magnitude.  @samp{%g} uses
-lower-case letters and @samp{%G} uses upper-case.  @xref{Floating-Point
-Conversions}, for details.
+Print a floating-point number in either normal (fixed-point) or
+exponential notation, whichever is more appropriate for its magnitude.
+@samp{%g} uses lower-case letters and @samp{%G} uses upper-case.
+@xref{Floating-Point Conversions}, for details.
 
 @item @samp{%c}
 Print a single character.  @xref{Other Output Conversions}.

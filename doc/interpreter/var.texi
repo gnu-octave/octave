@@ -180,16 +180,17 @@ system for which Octave was compiled (for example,
 @code{alpha-dec-osf3.2}).
 
 @smallexample
-EDITOR                        "vi"
-EXEC_PATH                     ":$PATH"
-INFO_FILE                     "OCT_HOME/info/octave.info"
-INFO_PROGRAM                  "OCT_HOME/libexec/octave/VERSION/exec/SYS/info"
-LOADPATH                      ".:OCT_HOME/lib/VERSION"
-PAGER                         "less", or "more"
-PS1                           "\s:\#> "
-PS2                           "> "
-PS4                           "+ "
-automatic_replot              0
+EDITOR                  "vi"
+EXEC_PATH               ":$PATH"
+INFO_FILE               "OCT_HOME/info/octave.info"
+INFO_PROGRAM            "OCT_HOME/libexec/octave/VERSION/exec/SYS/info"
+LOADPATH                ".:OCT_HOME/lib/VERSION"
+PAGER                   "less", or "more"
+PS1                     "\s:\#> "
+PS2                     "> "
+PS4                     "+ "
+automatic_replot        0
+
 beep_on_error                 0
 completion_append_char        " "
 default_return_value          []
@@ -200,6 +201,7 @@ gnuplot_binary                "gnuplot"
 history_file                  "~/.octave_hist"
 history_size                  1024
 ignore_function_time_stamp    "system"
+
 implicit_str_to_num_ok        0
 ok_to_lose_imaginary_part     "warn"
 output_max_field_width        10
@@ -209,8 +211,8 @@ prefer_column_vectors         0
 prefer_zero_one_indexing      0
 print_answer_id_name          1
 print_empty_dimensions        1
-@c read_only_constants           1
 resize_on_range_error         1
+
 return_last_computed_value    0
 save_precision                17
 saving_history                1
@@ -221,6 +223,7 @@ suppress_verbose_help_message 1
 treat_neg_dim_as_zero         0
 warn_assign_as_truth_value    1
 warn_comma_in_global_decl     1
+
 warn_divide_by_zero           1
 warn_function_name_clash      1
 whitespace_in_literal_matrix  ""
@@ -230,13 +233,13 @@ The following variables may be set from the environment or by a command
 line option.
 
 @smallexample
-Variable        Environment Variable        Option 
---------        --------------------        ------
+Variable        Environment Variable    Option 
+--------        --------------------    ------
 EDITOR          EDITOR
-EXEC_PATH       OCTAVE_EXEC_PATH            --exec-path PATH    
-LOADPATH        OCTAVE_PATH                 --path PATH
-INFO_FILE       OCTAVE_INFO_FILE            --info-file FILE
-INFO_PROGRAM    OCTAVE_INFO_PROGRAM         --info-program PROGRAM
+EXEC_PATH       OCTAVE_EXEC_PATH        --exec-path PATH    
+LOADPATH        OCTAVE_PATH             --path PATH
+INFO_FILE       OCTAVE_INFO_FILE        --info-file FILE
+INFO_PROGRAM    OCTAVE_INFO_PROGRAM     --info-program PROGRAM
 history_size    OCTAVE_HISTSIZE
 history_file    OCTAVE_HISTFILE
 @end smallexample

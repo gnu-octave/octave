@@ -189,14 +189,15 @@ arguments that were passed to Octave.
 
 @defvr {Built-in Variable} program_invocation_name
 @defvrx {Built-in Variable} program_name
-When Octave starts, the value of @code{program_invocation_name} is
-automatically set to the name that was typed at the shell prompt to run
-Octave, and the value of @code{program_name} is automatically set to the
-final component of @code{program_invocation_name}.  For example, if you
-typed @file{@value{OCTAVEHOME}/bin/octave} to start Octave,
+When Octave starts, the value of the built-in variable
+@code{program_invocation_name} is automatically set to the name that was
+typed at the shell prompt to run Octave, and the value of
+@code{program_name} is automatically set to the final component of
+@code{program_invocation_name}.  For example, if you typed
+@file{@value{OCTAVEHOME}/bin/octave} to start Octave,
 @code{program_invocation_name} would have the value
-@file{@value{OCTAVEHOME}/bin/octave}, and @code{program_name} would have the
-value @code{octave}.
+@file{@value{OCTAVEHOME}/bin/octave}, and @code{program_name} would have
+the value @code{octave}.
 
 If executing a script from the command line (e.g., @code{octave foo.m}
 or using an executable Octave script, the program name is set to the

@@ -44,9 +44,9 @@ proceed as follows.
 
 @enumerate
 @item
-Make sure that the file @file{octave.el} (or even better, its
-byte-compiled version @file{octave.elc}) from the Octave distribution is
-somewhere in your load-path.
+Make sure that the file @file{octave.el} (or better, its byte-compiled
+version @file{octave.elc}) from the Octave distribution is somewhere in
+your load-path.
 
 @quotation
 @strong{Note:} The current version of @file{octave.el} was developed,
@@ -456,9 +456,9 @@ when Octave is waiting for input, or done sending output.
 
 You can also set up the Emacs Info reader for dealing with the results
 of Octave's @samp{help -i}.  For this, the package @file{gnuserv} needs
-to be installed, which unfortunately still does not come with GNU Emacs
-(it does with XEmacs).  It can be retrieved from any GNU Emacs Lisp Code
-Directory archive, e.g.@:
+to be installed.  The @file{gnuserv} package is not distributed with GNU
+Emacs, but it can be retrieved from any GNU Emacs Lisp Code Directory
+archive, e.g.@:
 @file{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
 in the @file{packages} subdirectory.  There is also a newer version
 around (use archie to look for @file{gnuserv-2.1alpha.tar.gz}).
@@ -480,9 +480,9 @@ in the indices of @emph{several} info files related to Octave (provided
 that the Emacs variable @code{octave-help-files} is set correctly).  In
 this case, set @code{INFO_PROGRAM} to @code{"info-emacs-octave-help"}.
 
-If you use Octave from within Emacs, these settings are best done in the
-@file{~/.emacs_octave} startup file (or the file pointed to by the Emacs
-variable @code{inferior-octave-startup-file}).
+If you use Octave from within Emacs, it is probably best to put these
+settings in the @file{~/.emacs_octave} startup file (or in the file
+named by the Emacs variable @code{inferior-octave-startup-file}).
 
 @c Local Variables:
 @c TeX-command-default: "Texinfo"

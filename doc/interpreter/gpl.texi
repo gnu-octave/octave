@@ -356,7 +356,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+02111-1307, USA.
 @end smallexample
 
 Also add information on how to contact you by electronic and paper mail.
@@ -366,9 +367,10 @@ when it starts in an interactive mode:
 
 @smallexample
 Gnomovision version 69, Copyright (C) 19@var{yy} @var{name of author}
-Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-This is free software, and you are welcome to redistribute it
-under certain conditions; type `show c' for details.
+Gnomovision comes with ABSOLUTELY NO WARRANTY; for details
+type `show w'.  This is free software, and you are welcome
+to redistribute it under certain conditions; type `show c'
+for details.
 @end smallexample
 
 The hypothetical commands @samp{show w} and @samp{show c} should show

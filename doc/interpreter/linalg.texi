@@ -657,10 +657,8 @@ Pad\'e
 @ifinfo
 Pade'
 @end ifinfo
-approximation method with
-three step preconditioning (SIAM Journal on Numerical Analysis, 1977).
-
-Diagonal
+approximation method with three step preconditioning (SIAM Journal on
+Numerical Analysis, 1977).  Diagonal
 @iftex
 @tex
 Pad\'e

@@ -57,13 +57,6 @@ page_screen_output = "false"
 to turn the pager off.
 
 @item
-Control-C doesn't work properly in the pager on DEC Alpha systems
-running OSF/1 3.0.
-
-This appears to be a bug in the OSF/1 3.0 Bourne shell.  The problem
-doesn't appear on systems running OSF/1 1.3.
-
-@item
 If you get messages like
 
 @example
@@ -118,9 +111,6 @@ recompiling gnuplot.
 Of course, this doesn't really fix the problem, but it does make it
 much less likely that you will run into trouble unless you are putting
 a very large number of lines on a given plot.
-
-@item
-String handling could use some work.
 @end itemize
 
 A list of ideas for future enhancements is distributed with Octave.  See

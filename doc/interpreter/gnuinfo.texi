@@ -568,20 +568,20 @@ disk.
 Here is a sample mode line for a window containing an uncompressed file
 named @file{dir}, showing the node @samp{Top}.
 
-@example
------Info: (dir)Top, 40 lines --Top---------------------------------------
+@smallexample
+-----Info: (dir)Top, 40 lines --Top------------------------------------
             ^^   ^   ^^^        ^^
           (file)Node #lines    where
-@end example
+@end smallexample
 
 When a node comes from a file which is compressed on disk, this is
 indicated in the mode line with two small @samp{z}'s.  In addition, if
 the info file containing the node has been split into subfiles, the name
 of the subfile containing the node appears in the modeline as well:
 
-@example
---zz-Info: (emacs)Top, 291 lines --Top-- Subfile: emacs-1.Z---------------
-@end example 
+@smallexample
+--zz-Info: (emacs)Top, 291 lines --Top-- Subfile: emacs-1.Z------------
+@end smallexample 
 
 When Info makes a node internally, such that there is no corresponding
 info file on disk, the name of the node is surrounded by asterisks
@@ -589,9 +589,9 @@ info file on disk, the name of the node is surrounded by asterisks
 are; the sample mode line below shows an internally constructed node
 showing possible completions:
 
-@example
------Info: *Completions*, 7 lines --All-----------------------------------
-@end example
+@smallexample
+-----Info: *Completions*, 7 lines --All--------------------------------
+@end smallexample
 
 @node Basic Windows, The Echo Area, The Mode Line, Window Commands
 @appendixsubsec Window Commands

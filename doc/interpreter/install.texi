@@ -18,8 +18,8 @@ Octave, see @ref{Binary Distributions}.
 @itemize @bullet
 @item
 Run the shell script @file{configure}.  This will determine the features
-your system has (or doesn't have) and create a file named Makefile from
-each of the files named Makefile.in.
+your system has (or doesn't have) and create a file named
+@file{Makefile} from each of the files named @file{Makefile.in}.
 
 Here is a summary of the configure options that are most frequently used
 when building Octave:
@@ -48,15 +48,15 @@ load functions at run time that are not loaded at compile time.
 Print a summary of the options recognized by the configure script.
 @end table
 
-See the file INSTALL for more information about the command line options
-used by configure.  That file also contains instructions for compiling
-in a directory other than where the source is located.
+See the file @file{INSTALL} for more information about the command line
+options used by configure.  That file also contains instructions for
+compiling in a directory other than where the source is located.
 
 @item
 Run make.
 
 You will need a recent version of GNU make.  Modifying Octave's
-Makefiles to work with other make programs is probably not worth
+makefiles to work with other make programs is probably not worth
 your time.  We recommend you get and compile GNU make instead.
 
 For plotting, you will need to have gnuplot installed on your system.
@@ -66,17 +66,18 @@ is a coincidence---it is not related to the GNU project or the FSF in
 any but the most peripheral sense.
 
 For version @value{VERSION}, you must have the GNU C++ compiler (gcc)
-version 2.6.3 or later to compile Octave.  You will also need version
-2.6.1 of the GNU C++ class library (libg++).  If you plan to modify the
-parser you will also need GNU bison and fles.  If you modify the
-documentation, you will need GNU Texinfo, along with the patch for the
-makeinfo program that is distributed with Octave.
+version 2.7.2 or later to compile Octave.  You will also need version
+2.7.1 or 2.7.2 of the GNU C++ class library (libg++).  If you plan to
+modify the parser you will also need GNU bison and fles.  If you modify
+the documentation, you will need GNU Texinfo, along with the patch for
+the makeinfo program that is distributed with Octave.
 
 GNU make, gcc, and libg++, gnuplot, bison, flex, and Texinfo are all
 available from many anonymous ftp archives.  The primary site is
 prep.ai.mit.edu, but it is often very busy.  A list of sites that mirror
 the software on prep is available by anonymous ftp from prep.ai.mit.edu
-in the file /pub/gnu/GNUinfo/FTP, or by fingering fsf@@prep.ai.mit.edu.
+in the file @file{/pub/gnu/GNUinfo/FTP}, or by fingering
+fsf@@prep.ai.mit.edu.
 
 If you don't have a Fortran compiler, or if your Fortran compiler
 doesn't work like the traditional Unix f77, you will need to have the
@@ -169,11 +170,6 @@ installation of Octave.
 
 @itemize @bullet
 @item
-If @code{configure} fails when trying to create its output files, you
-may have found a limitation in the version of @code{sed} on your
-system.  Using GNU @code{sed} avoids the problem.
-
-@item
 On some SCO systems, @code{info} fails to compile if
 @code{HAVE_TERMIOS_H} is defined int @file{config.h}.  Simply removing
 the definition from @file{info/config.h} should allow it to compile.
@@ -222,43 +218,24 @@ with texinfo-3.1 and apply the patch for makeinfo that is distributed
 with Octave.  See the file MAKEINFO.PATCH for more details.
 
 @item
-If you don't have NPSOL but you still want to be able to solve NLPs, or
-if you don't have QPSOL but you still want to solve QPs, you'll need to
-find replacements or order them from Stanford.  If you know of a freely
-redistributable replacement, please let us know---we might be interested
-in distributing it with Octave.
-
-You can get more information about NPSOL and QPSOL from
-
-@quotation
-Stanford Business Sofrtware, Inc.@*
-2680 Bayshore Parkway, Suite 304@*
-Mountain View, CA 94043@*
-Tel: (415) 962-8719@*
-Fax: (415) 962-1869
-@end quotation
-
-Octave may soon support FSQP, an NLP solver from Andre Tits
-(andre@@src.umd.edu) of the University of Maryland.  FSQP is available
-free of charge to academic sites, but can not be redistributed to third
-parties.
-
-@item
 Some of the Fortran subroutines may fail to compile with older versions
 of the Sun Fortran compiler.  If you get errors like
 
-@example
+@smallexample
 zgemm.f:
 	zgemm:
 warning: unexpected parent of complex expression subtree
-zgemm.f, line 245: warning: unexpected parent of complex expression subtree
+zgemm.f, line 245: warning: unexpected parent of complex
+  expression subtree
 warning: unexpected parent of complex expression subtree
-zgemm.f, line 304: warning: unexpected parent of complex expression subtree
+zgemm.f, line 304: warning: unexpected parent of complex
+  expression subtree
 warning: unexpected parent of complex expression subtree
-zgemm.f, line 327: warning: unexpected parent of complex expression subtree
+zgemm.f, line 327: warning: unexpected parent of complex
+  expression subtree
 pcc_binval: missing IR_CONV in complex op
 make[2]: *** [zgemm.o] Error 1
-@end example
+@end smallexample
 
 @noindent
 when compiling the Fortran subroutines in the @file{libcruft}
@@ -307,22 +284,10 @@ _NXRegisterDefaults
 .objc_class_name_NXBundle
 @end example
 
-One kludge around this problem is to extract @file{termios.o} from
+One kluge around this problem is to extract @file{termios.o} from
 @file{libposix.a}, put it in Octave's @file{src} directory, and add it
-to the list of files to link together in the Makefile.  Suggestions for
+to the list of files to link together in the makefile.  Suggestions for
 better ways to solve this problem are welcome!
-
-@item
-With g++ 2.6.3 (and possibly other 2.6.x versions) on some Intel x86
-systems, compiling @file{Array-d.cc} fails with the messages like
-
-@example
-as: /tmp/cc005254.s:4057: Local symbol LBB103 never defined.
-as: /tmp/cc005254.s:4057: Local symbol LBE103 never defined.
-@end example
-
-@noindent
-A possible workaround for this is to compile without @code{-g}.
 
 @item
 If Octave crashes immediately with a floating point exception, it is
@@ -331,7 +296,7 @@ for infinity and NaN.
 
 If your system actually does support IEEE arithmetic, you should be able
 to fix this problem by modifying the function @code{octave_ieee_init} in
-the file @file{sysdep.cc} to correctly initialize Octave's internal
+the file @file{lo-ieee.cc} to correctly initialize Octave's internal
 infinity and NaN variables.
 
 If your system does not support IEEE arithmetic but Octave's configure
@@ -344,72 +309,26 @@ modify Octave's configuration script to automatically determine the
 proper thing to do.
 
 @item
-Using the -O flag with old versions of the Sun Fortran compiler
-apparently prevents if from compiling some of the Fortran subroutines
-that Octave uses.  The workaround is to not use -O for those
-subroutines.
+If you don't have NPSOL but you still want to be able to solve NLPs, or
+if you don't have QPSOL but you still want to solve QPs, you'll need to
+find replacements or order them from Stanford.  If you know of a freely
+redistributable replacement, please let us know---we might be interested
+in distributing it with Octave.
 
-@ignore
-@c These next two items should no longer be problems, since g++ and
-@c libg++ use a different method for installing an appropriate set of
-@c header files.
-@item
-Problems with finite and isinf on systems that don't have @code{isinf()}
-but do have @code{finite()}.
+You can get more information about NPSOL and QPSOL from
 
-The copy of @file{math.h} supplied with libg++ version 2.3 (and possibly
-other versions as well) declares @code{finite()} as
+@quotation
+Stanford Business Sofrtware, Inc.@*
+2680 Bayshore Parkway, Suite 304@*
+Mountain View, CA 94043@*
+Tel: (415) 962-8719@*
+Fax: (415) 962-1869
+@end quotation
 
-@example
-double finite (double);
-@end example
-
-@noindent
-even though some (many? all?) systems declare it as
-
-@example
-int finite (double);
-@end example
-
-If the copy of @file{math.h} from libg++ was installed, you should edit
-it so that the libg++ declaration of @samp{finite()} matches the
-system's.
-
-@item
-Problems compiling octave.cc on RS/6000 (and possibly other)
-systems:
-
-If octave.cc fails to compile due to parse errors in system include
-files and undeclared subroutines like `gethostname' and `endpwent',
-it is probably because not all of the libg++ include files have been
-installed.  This appears to be a problem with libg++ version 2.3.
-Here's a fix:
-
-Apply the following patch to @file{libg++/config/rs6000.mh} and re-run
-make install for libg++.
-
-@example
-*** rs6000.mh~  Mon Aug 17 19:18:44 1992
---- rs6000.mh   Mon Dec 28 23:54:57 1992
-***************
-*** 3,6 ****
-  # /usr/include/unistd.h has write(int, char*, unsigned) instead
-  # of write(int, const void*, size_t).  This causes problems due
-  # to g++ new pedantic dis-allowal of void* -> char* conversions.
-! G_CONFIG_ARGS = "HAVE_UNISTD=0 /*broken*/"
---- 3,12 ----
-  # /usr/include/unistd.h has write(int, char*, unsigned) instead
-  # of write(int, const void*, size_t).  This causes problems due
-  # to g++ new pedantic dis-allowal of void* -> char* conversions.
-! G_CONFIG_ARGS = "HAVE_UNISTD=0 /*broken*/"
-! 
-! # If the C include files are C++-ready (with extern "C"),
-! # define: HAVE_CPLUS_EXTERN = 1 and: WRAP_C_INCLUDES =
-! # If not, define HAVE_CPLUS_EXTERN = 0, and do not define
-! # WRAP_C_INCLUDES here.
-! HAVE_CPLUS_EXTERN = 0
-@end example
-@end ignore
+Octave may soon support FSQP, an NLP solver from Andre Tits
+(andre@@src.umd.edu) of the University of Maryland.  FSQP is available
+free of charge to academic sites, but can not be redistributed to third
+parties.
 @end itemize
 
 @node Binary Distributions,  , Installation Problems, Installation
@@ -458,10 +377,8 @@ same time.
 @item lib/octave/@var{version}/exec/@var{host_type}
 Executables to be run by Octave rather than the user.
 
-@ignore
 @item lib/octave/@var{version}/oct/@var{host_type}
 Object files that will be dynamically loaded.
-@end ignore
 
 @item lib/octave/@var{version}/imagelib
 Image files that are distributed with Octave.
@@ -485,7 +402,8 @@ sh ./doinstall.sh /some/other/directory
 @end example
 
 @noindent
-Octave will then be installed in subdirectories of the directory @file{/some/other/directory}
+will install Octave in subdirectories of the directory
+@file{/some/other/directory}.
 @end itemize
 
 @node Creating a Binary Distribution,  , Installing Octave from a Binary Distribution, Binary Distributions
@@ -495,9 +413,9 @@ Here is how to build a binary distribution for others.
 
 @itemize @bullet
 @item
-Build Octave in the same directory as the source.  This is required
-since the @samp{binary-dist} targets in the Makefiles will not work if
-you compile outside the source tree.
+You must build Octave in the same directory as the source.  This is
+required since the @samp{binary-dist} targets in the makefiles will not
+work if you compile outside the source tree.
 
 @item
 Use @samp{CFLAGS=-O CXXFLAGS=-O LDFLAGS=} as arguments for Make because

@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "help.h"
+#include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "sighandlers.h"
@@ -151,10 +152,11 @@ octave_pager_buf::sync (void)
 
       char *buf = eback ();
 
-      bool bypass_pager = (really_flush_to_pager
-			   && user_pref.page_screen_output
-			   && ! user_pref.page_output_immediately
-			   && ! more_than_a_screenful (buf));
+      bool bypass_pager = (! interactive
+			   || (really_flush_to_pager
+			       && user_pref.page_screen_output
+			       && ! user_pref.page_output_immediately
+			       && ! more_than_a_screenful (buf)));
 
       do_sync (buf, bypass_pager);
 

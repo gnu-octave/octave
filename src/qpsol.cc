@@ -43,12 +43,38 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef QPSOL_MISSING
 
-// This should probably be defined in some shared file and declared in
-// a header file...
-extern int linear_constraints_ok (const ColumnVector& x,
-				  const ColumnVector& llb, const Matrix& c,
-				  const ColumnVector& lub, char *warn_for,
-				  int warn);
+// XXX FIXME XXX -- this is duplicated in npsol.cc
+
+static int
+linear_constraints_ok (const ColumnVector& x, const ColumnVector& llb,
+		       const Matrix& c, const ColumnVector& lub,
+		       char *warn_for, int warn)
+{
+  int x_len = x.capacity ();
+  int llb_len = llb.capacity ();
+  int lub_len = lub.capacity ();
+  int c_rows = c.rows ();
+  int c_cols = c.columns ();
+
+  int ok = 1;
+  if (warn)
+    {
+      if (c_rows == 0 || c_cols == 0 || llb_len == 0 || lub_len == 0)
+	{
+	  ok = 0;
+	  error ("%s: linear constraints must have nonzero dimensions",
+		 warn_for);
+	}
+      else if (x_len != c_cols || llb_len != lub_len || llb_len != c_rows)
+	{
+	  ok = 0;
+	  error ("%s: linear constraints have inconsistent dimensions",
+		 warn_for);
+	}
+    }
+
+  return ok;
+}
 
 static QPSOL_options qpsol_opts;
 

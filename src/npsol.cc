@@ -168,7 +168,7 @@ npsol_constraint_function (const ColumnVector& x)
   return retval;
 }
 
-int
+static int
 linear_constraints_ok (const ColumnVector& x, const ColumnVector& llb,
 		       const Matrix& c, const ColumnVector& lub,
 		       char *warn_for, int warn)
@@ -199,7 +199,7 @@ linear_constraints_ok (const ColumnVector& x, const ColumnVector& llb,
   return ok;
 }
 
-int
+static int
 nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 			  NLFunc::nonlinear_fcn g, const ColumnVector& nlub,
 			  char *warn_for, int warn)

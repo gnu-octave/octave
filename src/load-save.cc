@@ -54,12 +54,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quit.h"
 #include "str-vec.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
 #include "load-save.h"
 #include "oct-obj.h"
 #include "oct-map.h"
+#include "ov-cell.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "symtab.h"
@@ -93,6 +95,8 @@ static int Vsave_precision;
 #ifndef OCT_RBV
 #define OCT_RBV DBL_MAX / 100.0
 #endif
+
+#define CELL_ELT_TAG "<cell-element>"
 
 enum arrayclasstype
   {
@@ -128,6 +132,11 @@ enum mat5_data_type
     miUINT64,			// 64 bit unsigned
     miMATRIX			// MATLAB array
   };
+
+static bool
+save_mat5_binary_element (std::ostream& os,
+			  const octave_value& tc, const std::string& name,
+			  bool mark_as_global, bool save_as_floats);
 
 #ifdef HAVE_HDF5
 // this is only used for HDF5 import
@@ -542,7 +551,11 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       return std::string ();
     }
 
-  if (! valid_identifier (name))
+  if (name == CELL_ELT_TAG)
+    {
+      // This is OK -- name won't be used.
+    }
+  else if (! valid_identifier (name))
     {
       error ("load: bogus identifier `%s' found in file `%s'",
 	     name.c_str (), filename.c_str ());
@@ -599,6 +612,56 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	    }
 	  else
 	    error ("load: failed to extract number of rows and columns");
+	}
+      else if (SUBSTRING_COMPARE_EQ (typ, 0, 4, "cell"))
+	{
+	  int nr = 0;
+	  int nc = 0;
+
+	  if (extract_keyword (is, "rows",    nr) && nr >= 0
+	      && extract_keyword (is, "columns", nc) && nc >= 0)
+	    {
+	      if (nr > 0 && nc > 0)
+		{
+		  Cell tmp (nr, nc);
+
+		  for (int j = 0; j < nc; j++)
+		    {
+		      for (int i = 0; i < nr; i++)
+			{
+			  octave_value t2;
+
+			  // recurse to read cell elements
+			  std::string nm
+			    = read_ascii_data (is, filename, global, t2, count);
+
+			  if (nm == CELL_ELT_TAG)
+			    {
+			      if (is)
+				tmp.elem (i, j) = t2;
+			    }
+			  else
+			    {
+			      error ("load: cell array element had unexpected name");
+			      goto cell_read_error;
+			    }
+			}
+		    }
+
+		cell_read_error:
+
+		  if (is)
+		    tc = tmp;
+		  else
+		    error ("load: failed to load cell element");
+		}
+	      else if (nr == 0 || nc == 0)
+		tc = Cell (nr, nc);
+	      else
+		panic_impossible ();
+	    }
+	  else
+	    error ("load: failed to extract number of rows and columns for cell array");
 	}
       else if (SUBSTRING_COMPARE_EQ (typ, 0, 14, "complex scalar"))
 	{
@@ -2625,8 +2688,31 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   switch (arrayclass)
     {
     case mxCELL_CLASS:
-      warning ("load: cell arrays are not implemented");
-      goto skip_ahead;
+      {
+	Cell cell_array (nr, nc);
+
+	for (int j = 0; j < nc; j++)
+	  {
+	    for (int i = 0; i < nr; i++)
+	      {
+		octave_value tc2;
+
+		std::string nm
+		  = read_mat5_binary_element (is, filename, swap, global, tc2);
+
+		if (! is || error_state)
+		  {
+		    error ("load: reading cell data for `%s'", nm.c_str ());
+		    goto data_read_error;
+		  }
+
+		cell_array.elem (i, j) = tc2;
+	      }
+	  }
+
+	tc = cell_array;
+      }
+      break;
 
     case mxOBJECT_CLASS:
       warning ("load: objects are not implemented");
@@ -4085,6 +4171,31 @@ write_mat5_array (std::ostream& os, Matrix& m, const int save_as_floats)
     }
 }
 
+// Write out cell element values in the cell array to OS, preceded by
+// the appropriate tag.
+
+static bool 
+write_mat5_cell_array (std::ostream& os, Cell& cell, bool mark_as_global,
+		       const int save_as_floats)
+{
+  int nr = cell.rows ();
+  int nc = cell.columns ();
+
+  for (int j = 0; j < nc; j++)
+    {
+      for (int i = 0; i < nr; i++)
+	{
+	  octave_value ov = cell.elem (i, j);
+
+	  if (! save_mat5_binary_element (os, ov, "", mark_as_global,
+					  save_as_floats))
+	    return false;
+	}
+    }
+
+  return true;
+}
+
 // save the data from TC along with the corresponding NAME on stream
 // OS in the MatLab version 5 binary format.  Return true on success.
 
@@ -4124,6 +4235,8 @@ save_mat5_binary_element (std::ostream& os,
     flags |= mxDOUBLE_CLASS;
   else if (tc.is_map ()) 
     flags |= mxSTRUCT_CLASS;
+  else if (tc.is_cell ())
+    flags |= mxCELL_CLASS;
   else
     {
       gripe_wrong_type_arg ("save", tc, false);
@@ -4193,6 +4306,13 @@ save_mat5_binary_element (std::ostream& os,
       Matrix m = tc.matrix_value ();
 
       write_mat5_array (os, m, save_as_floats);
+    }
+  else if (tc.is_cell ())
+    {
+      Cell cell = tc.cell_value ();
+
+      if (! write_mat5_cell_array (os, cell, mark_as_global, save_as_floats))
+	goto error_cleanup;
     }
   else if (tc.is_complex_scalar () || tc.is_complex_matrix ()) 
     {
@@ -4544,6 +4664,33 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	}
 
       os << tmp;
+    }
+  else if (tc.is_cell ())
+    {
+      ascii_save_type (os, "cell", mark_as_global);
+
+      os << "# rows: " << tc.rows () << "\n"
+	 << "# columns: " << tc.columns () << "\n";
+
+      Cell tmp = tc.cell_value ();
+      
+      for (int j = 0; j < tmp.cols (); j++)
+	{
+	  for (int i = 0; i < tmp.rows (); i++)
+	    {
+	      octave_value o_val = tmp.elem (i, j);
+
+	      // Recurse to print sub-value.
+	      bool b = save_ascii_data (os, o_val, CELL_ELT_TAG,
+					infnan_warned, strip_nan_and_inf,
+					mark_as_global, 0);
+
+	      if (! b)
+		return os;
+	    }
+
+	  os << "\n";
+	}
     }
   else if (tc.is_complex_scalar ())
     {

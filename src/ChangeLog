@@ -1,3 +1,10 @@
+2003-02-18  Roger Banks <rbanks@colsa.com>
+
+	* load-save.cc (read_ascii_data, read_ascii_data,
+	read_mat5_binary_element, save_mat5_binary_element,
+	save_ascii_data): Handle cell arrays.
+	(write_mat5_cell_array): New function.
+
 2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (DLD_XSRC): Delete log.cc from the list.

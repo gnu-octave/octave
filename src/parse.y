@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Matrix.h"
 
+#include "defun.h"
 #include "error.h"
 #include "input.h"
 #include "lex.h"
@@ -56,6 +57,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
+
+// If TRUE, generate a warning for the assignment in things like
+//
+//   octave> if (a = 2 < n)
+//
+// but not
+//
+//   octave> if ((a = 2) < n)
+//
+static bool Vwarn_assign_as_truth_value;
+
+// If TRUE, generate a warning for the comma in things like
+//
+//   octave> global a, b = 2
+//
+static bool Vwarn_comma_in_global_decl;
+
+// If TRUE, generate warning if declared function name disagrees with
+// the name of the file in which it is defined.
+static bool Vwarn_function_name_clash;
+
+// If TRUE, generate warning if a statement in a function is not
+// terminated with a semicolon.  Useful for checking functions that
+// should only produce output using explicit printing statements.
+static bool Vwarn_missing_semicolon;
 
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
@@ -626,7 +652,7 @@ global_decl2	: identifier
 optcomma	: // empty
 		| ','
 		  {
-		    if (user_pref.warn_comma_in_global_decl)
+		    if (Vwarn_comma_in_global_decl)
 		      warning ("comma in global declaration not\
  interpreted as a command separator");
 		  }
@@ -1325,7 +1351,7 @@ maybe_convert_to_ans_assign (tree_expression *expr)
 static void
 maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
-  if (user_pref.warn_assign_as_truth_value
+  if (Vwarn_assign_as_truth_value
       && expr->is_assignment_expression ()
       && expr->is_in_parens () < 2)
     {
@@ -1948,7 +1974,7 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
     {
       if (curr_fcn_file_name != id_name)
 	{
-	  if (user_pref.warn_function_name_clash)
+	  if (Vwarn_function_name_clash)
 	    warning ("function name `%s' does not agree with function\
  file name `%s'", id_name.c_str (), curr_fcn_file_full_name.c_str ());
 
@@ -2058,7 +2084,7 @@ finish_matrix (tree_matrix *m)
 static void
 maybe_warn_missing_semi (tree_statement_list *t)
 {
-  if (lexer_flags.defining_func && user_pref.warn_missing_semicolon)
+  if (lexer_flags.defining_func && Vwarn_missing_semicolon)
     {
       tree_statement *tmp = t->rear();
 
@@ -2067,6 +2093,56 @@ maybe_warn_missing_semi (tree_statement_list *t)
 		 tmp->line (), tmp->column (),
 		 curr_fcn_file_full_name.c_str ());
     }
+}
+
+static int
+warn_assign_as_truth_value (void)
+{
+  Vwarn_assign_as_truth_value
+    = check_preference ("warn_assign_as_truth_value");
+
+  return 0;
+}
+
+static int
+warn_comma_in_global_decl (void)
+{
+  Vwarn_comma_in_global_decl = check_preference ("warn_comma_in_global_decl");
+
+  return 0;
+}
+
+static int
+warn_function_name_clash (void)
+{
+  Vwarn_function_name_clash = check_preference ("warn_function_name_clash");
+
+  return 0;
+}
+
+static int
+warn_missing_semicolon (void)
+{
+  Vwarn_missing_semicolon = check_preference ("warn_missing_semicolon");
+
+  return 0;
+}
+
+void
+symbols_of_parse (void)
+{
+  DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
+    "produce warning for assignments used as truth values");
+
+  DEFVAR (warn_comma_in_global_decl, 1.0, 0, warn_comma_in_global_decl,
+    "produce warning for commas in global declarations");
+
+  DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
+    "produce warning if function name conflicts with file name");
+
+  DEFVAR (warn_missing_semicolon, 0.0, 0, warn_missing_semicolon,
+    "produce a warning if a statement in a function file is not
+terminated with a semicolon");
 }
 
 /*

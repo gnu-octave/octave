@@ -191,6 +191,8 @@ private:
 // Flags that need to be shared between the lexer and parser.
 extern lexical_feedback lexer_flags;
 
+extern void symbols_of_lex (void);
+
 #endif
 
 /*

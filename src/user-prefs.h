@@ -47,6 +47,7 @@ struct user_preferences
   int save_precision;
   int silent_functions;
   int split_long_rows;
+  int suppress_verbose_help_message;
   int treat_neg_dim_as_zero;
   int warn_assign_as_truth_value;
   int warn_comma_in_global_decl;
@@ -89,6 +90,7 @@ extern int resize_on_range_error (void);
 extern int return_last_computed_value (void);
 extern int silent_functions (void);
 extern int split_long_rows (void);
+extern int suppress_verbose_help_message (void);
 extern int treat_neg_dim_as_zero (void);
 extern int warn_assign_as_truth_value (void);
 extern int warn_comma_in_global_decl (void);

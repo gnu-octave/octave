@@ -64,6 +64,7 @@ init_user_prefs (void)
   user_pref.save_precision = 0;
   user_pref.silent_functions = 0;
   user_pref.split_long_rows = 0;
+  user_pref.suppress_verbose_help_message = 0;
   user_pref.treat_neg_dim_as_zero = 0;
   user_pref.warn_assign_as_truth_value = 0;
   user_pref.warn_comma_in_global_decl = 0;
@@ -358,6 +359,19 @@ int
 split_long_rows (void)
 {
   user_pref.split_long_rows = check_str_pref ("split_long_rows");
+
+  return 0;
+}
+
+
+// Suppress printing of additional help message in help and usage
+// functions?
+
+int
+suppress_verbose_help_message (void)
+{
+  user_pref.suppress_verbose_help_message =
+    check_str_pref ("suppress_verbose_help_message");
 
   return 0;
 }

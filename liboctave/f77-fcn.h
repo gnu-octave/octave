@@ -23,6 +23,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_f77_fcn_h)
 #define octave_f77_fcn_h 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <setjmp.h>
 
 /* Some Fortran compilers append underscores or generate uppercase
@@ -30,9 +34,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (F77_APPEND_UNDERSCORE)
 #if defined (F77_UPPERCASE_NAMES)
-#define F77_FCN(f, F) F ## _
+#define F77_FCN(f, F) F##_
 #else
-#define F77_FCN(f, F) f ## _
+#define F77_FCN(f, F) f##_
 #endif
 #else
 #if defined (F77_UPPERCASE_NAMES)
@@ -47,11 +51,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if defined (F77_UPPERCASE_NAMES)
 #define F77_XFCN_ERROR(f, F) \
   (*current_liboctave_error_handler) \
-    ("exception encountered in Fortran subroutine %s", F);
+    ("exception encountered in Fortran subroutine %s", #F)
 #else
 #define F77_XFCN_ERROR(f, F) \
   (*current_liboctave_error_handler) \
-    ("exception encountered in Fortran subroutine %s", f);
+    ("exception encountered in Fortran subroutine %s", #f)
 #endif
 
 /* This can be used to call a Fortran subroutine that might call
@@ -81,6 +85,10 @@ extern jmp_buf f77_context;
    include string.h in this file. */
 
 extern void copy_f77_context (void *, void *, unsigned int);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

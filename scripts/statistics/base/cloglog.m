@@ -14,8 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## Returns cloglog (x) = - log (- log (x)), the complementary log-log
-## function.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cloglog (@var{x})
+## Return the complementary log-log function of @var{x}, defined as
+##
+## @example
+## - log (- log (@var{x}))
+## @end example
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Complementary log-log function

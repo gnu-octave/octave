@@ -14,22 +14,28 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [p, y] = ppplot (x [, dist [, params]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{p}, @var{y}] =} ppplot (@var{x}, @var{dist}, @var{params})
+## Perform a PP-plot (probability plot).
 ##
-## Performs a PP-plot (probability plot).
+## If F is the CDF of the distribution @var{dist} with parameters
+## @var{params} and @var{x} a sample vector of length @var{n}, the
+## PP-plot graphs ordinate @var{y}(@var{i}) = F (@var{i}-th largest
+## element of @var{x}) versus abscissa @var{p}(@var{i}) = (@var{i} -
+## 0.5)/@var{n}.  If the sample comes from F, the pairs will
+## approximately follow a straight line.
 ##
-## If F is the CDF of the distribution `dist' with parameters `params'
-## and x a sample vector of length n, the PP-plot graphs ordinate y(i) =
-## F (i-th largest element of x) versus abscissa p(i) = (i - 0.5)/n. If
-## the sample comes from F, the pairs will approximately follow a
-## straight line.
+## The default for @var{dist} is the standard normal distribution.  The
+## optional argument @var{params} contains a list of parameters of
+## @var{dist}.  For example, for a probability plot of the uniform
+## distribution on [2,4] and @var{x}, use
 ##
-## The default for `dist' is the standard normal distribution.  The
-## optional argument `params' contains a list of parameters of
-## `dist'. E.g., for a probability plot of the uniform distribution on
-## [2,4] ans x, use `ppplot (x, "uniform", 2, 4)'.
+## @example
+## ppplot (x, "uniform", 2, 4)
+## @end example
 ##
 ## If no output arguments are given, the data are plotted directly.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Perform a PP-plot (probability plot)

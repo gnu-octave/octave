@@ -14,18 +14,20 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  cut (X, BREAKS)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cut (@var{x}, @var{breaks})
 ## Create categorical data out of numerical or continuous data by
 ## cutting into intervals.
 ##
-## If BREAKS is a scalar, the data is cut into that many equal-width
-## intervals. If BREAKS is a vector of break points, the category has
-## length(BREAKS)-1 groups.
+## If @var{breaks} is a scalar, the data is cut into that many
+## equal-width intervals.  If @var{breaks} is a vector of break points,
+## the category has @code{length (@var{breaks}) - 1} groups.
 ##
-## Returns a vector of the same size as X telling which group each point
-## in X belongs to.  Groups are labelled from 1 to the number of groups;
-## points outside the range of BREAKS are labelled by NaN.
+## The returned value is a vector of the same size as @var{x} telling
+## which group each point in @var{x} belongs to.  Groups are labelled
+## from 1 to the number of groups; points outside the range of
+## @var{breaks} are labelled by @code{NaN}.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Cut data into intervals

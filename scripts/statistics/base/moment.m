@@ -14,15 +14,24 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  moment (x, p [, opt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} moment (@var{x}, @var{p}, @var{opt})
+## If @var{x} is a vector, compute the @var{p}-th moment of @var{x}.
 ##
-## Computes the p-th moment of x if it is a vector;  if x is a matrix,
-## return the row vector of the p-th moment of each column.
+## If @var{x} is a matrix, return the row vector containing the
+## @var{p}-th moment of each column.
 ##
 ## With the optional string opt, the kind of moment to be computed can
-## be specified.  If opt contains `c' or `a', central and/or absolute
-## moments are returned.  I.e., `moment(x, 3, "ac")' computes the third
-## central absolute moment of x.
+## be specified.  If opt contains @code{"c"} or @code{"a"}, central
+## and/or absolute moments are returned.  For example,
+##
+## @example
+## moment (x, 3, "ac")
+## @end example
+##
+## @noindent
+## computes the third central absolute moment of @var{x}.
+## @end deftypefn
 
 ## Can easily be made to work for continuous distributions (using quad)
 ## as well, but how does the general case work?

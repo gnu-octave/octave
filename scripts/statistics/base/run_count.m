@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  run_count (x, n)
-##
-## Counts the upward runs in the columns of x of length 1, 2, ... n-1
-## and >= n.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} run_count (@var{x}, @var{n})
+## Count the upward runs in the columns of @var{x} of length 1, 2, ...,
+## @var{n}-1 and greater than or equal to @var{n}.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Count upward runs

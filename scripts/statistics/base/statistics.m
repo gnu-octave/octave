@@ -14,13 +14,14 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  S = statistics (X)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} statistics (@var{x})
+## If @var{x} is a matrix, return a matrix with the minimum, first
+## quartile, median, third quartile, maximum, mean, standard deviation,
+## skewness and kurtosis of the columns of @var{x} as its rows.
 ##
-## If X is a matrix, return a matrix S with the min, first quartile,
-## median, third quartile, max, mean, std, skewness and kurtosis of the
-## columns of X as its rows.
-##
-## If X is a vector, treat it as a column vector.
+## If @var{x} is a vector, treat it as a column vector.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compute basic statistics

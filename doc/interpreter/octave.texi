@@ -40,7 +40,7 @@ END-INFO-DIR-ENTRY
 
 @defindex op
 
-@c Things like the Octave version number are defined in conf.txi.
+@c Things like the Octave version number are defined in conf.texi.
 @c This file doesn't include a chapter, so it must not be included
 @c if you want to run the Emacs function texinfo-multiple-files-update.
 
@@ -160,11 +160,328 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Operator Index::              An item for each documented operator.
 
 
+
 @detailmenu
  --- The Detailed Node Listing ---
 
 Preface
 
+* Acknowledgements::            
+* How You Can Contribute to Octave::  
+* Distribution::                
+
+A Brief Introduction to Octave
+
+* Running Octave::              
+* Simple Examples::             
+* Conventions::                 
+
+Conventions
+
+* Fonts::                       
+* Evaluation Notation::         
+* Printing Notation::           
+* Error Messages::              
+* Format of Descriptions::      
+
+Format of Descriptions
+
+* A Sample Function Description::  
+* A Sample Command Description::  
+* A Sample Variable Description::  
+
+Getting Started
+
+* Invoking Octave::             
+* Quitting Octave::             
+* Getting Help::                
+* Command Line Editing::        
+* Errors::                      
+* Executable Octave Programs::  
+* Comments::                    
+
+Invoking Octave
+
+* Command Line Options::        
+* Startup Files::               
+
+Command Line Editing
+
+* Cursor Motion::               
+* Killing and Yanking::         
+* Commands For Text::           
+* Commands For Completion::     
+* Commands For History::        
+* Customizing readline::        
+* Customizing the Prompt::      
+* Diary and Echo Commands::     
+
+Data Types
+
+* Built-in Data Types::         
+* User-defined Data Types::     
+* Object Sizes::                
+
+Built-in Data Types
+
+* Numeric Objects::             
+* String Objects::              
+* Data Structure Objects::      
+
+Numeric Data Types
+
+* Matrices::                    
+* Ranges::                      
+* Logical Values::              
+* Predicates for Numeric Objects::  
+
+Matrices
+
+* Empty Matrices::              
+
+Strings
+
+* Creating Strings::            
+* Searching and Replacing::     
+* String Conversions::          
+* Character Class Functions::   
+
+Containers
+
+* Lists::                       
+* Cell Arrays::                 
+
+Variables
+
+* Global Variables::            
+* Status of Variables::         
+* Summary of Built-in Variables::  
+* Defaults from the Environment::  
+
+Expressions
+
+* Index Expressions::           
+* Calling Functions::           
+* Arithmetic Ops::              
+* Comparison Ops::              
+* Boolean Expressions::         
+* Assignment Ops::              
+* Increment Ops::               
+* Operator Precedence::         
+
+Calling Functions
+
+* Call by Value::               
+* Recursion::                   
+
+Boolean Expressions
+
+* Element-by-element Boolean Operators::  
+* Short-circuit Boolean Operators::  
+
+Statements
+
+* The if Statement::            
+* The switch Statement::        
+* The while Statement::         
+* The for Statement::           
+* The break Statement::         
+* The continue Statement::      
+* The unwind_protect Statement::  
+* The try Statement::           
+* Continuation Lines::          
+
+The @code{for} Statement
+
+* Looping Over Structure Elements::  
+
+Functions and Script Files
+
+* Defining Functions::          
+* Multiple Return Values::      
+* Variable-length Argument Lists::  
+* Variable-length Return Lists::  
+* Returning From a Function::   
+* Function Files::              
+* Script Files::                
+* Dynamically Linked Functions::  
+* Organization of Functions::   
+
+Input and Output
+
+* Basic Input and Output::      
+* C-Style I/O Functions::       
+
+Basic Input and Output
+
+* Terminal Output::             
+* Terminal Input::              
+* Simple File I/O::             
+
+C-Style I/O Functions
+
+* Opening and Closing Files::   
+* Simple Output::               
+* Line-Oriented Input::         
+* Formatted Output::            
+* Output Conversion for Matrices::  
+* Output Conversion Syntax::    
+* Table of Output Conversions::  
+* Integer Conversions::         
+* Floating-Point Conversions::  Other Output Conversions::    
+* Other Output Conversions::    
+* Formatted Input::             
+* Input Conversion Syntax::     
+* Table of Input Conversions::  
+* Numeric Input Conversions::   
+* String Input Conversions::    
+* Binary I/O::                  
+* Temporary Files::             
+* EOF and Errors::              
+* File Positioning::            
+
+Plotting
+
+* Two-Dimensional Plotting::    
+* Specialized Two-Dimensional Plots::  
+* Three-Dimensional Plotting::  
+* Plot Annotations::            
+* Multiple Plots on One Page::  
+* Multiple Plot Windows::       
+* Interaction with gnuplot::    
+
+Matrix Manipulation
+
+* Finding Elements and Checking Conditions::  
+* Rearranging Matrices::        
+* Special Utility Matrices::    
+* Famous Matrices::             
+
+Arithmetic
+
+* Utility Functions::           
+* Complex Arithmetic::          
+* Trigonometry::                
+* Sums and Products::           
+* Special Functions::           
+* Mathematical Constants::      
+
+Linear Algebra
+
+* Basic Matrix Functions::      
+* Matrix Factorizations::       
+* Functions of a Matrix::       
+
+Quadrature
+
+* Functions of One Variable::   
+* Orthogonal Collocation::      
+
+Differential Equations
+
+* Ordinary Differential Equations::  
+* Differential-Algebraic Equations::  
+
+Optimization
+
+* Quadratic Programming::       
+* Nonlinear Programming::       
+* Linear Least Squares::        
+
+Statistics
+
+* Basic Statistical Functions::  
+* Models::                      
+* Distributions::               
+
+Control Theory
+
+* sysstruct::                   
+* sysinterface::                
+* sysdisp::                     
+* blockdiag::                   
+* numerical::                   
+* sysprop::                     
+* systime::                     
+* sysfreq::                     
+* cacsd::                       
+* misc::                        
+
+System Data Structure
+
+* sysstructvars::               
+* sysstructtf::                 
+* sysstructzp::                 
+* sysstructss::                 
+
+System Construction and Interface Functions
+
+* fir2sys::                     
+* ss2sys::                      
+* tf2sys::                      
+* zp2sys::                      
+* structaccess::                
+* structintern::                
+
+System Utilities
+
+* Timing Utilities::            
+* Filesystem Utilities::        
+* Controlling Subprocesses::    
+* Process ID Information::      
+* Environment Variables::       
+* Current Working Directory::   
+* Password Database Functions::  
+* Group Database Functions::    
+* System Information::          
+
+Tips and Standards
+
+* Style Tips::                  Writing clean and robust programs.
+* Coding Tips::                 Making code run faster.
+* Documentation Tips::          Writing readable documentation strings.
+* Comment Tips::                Conventions for writing comments.
+* Function Headers::            Standard headers for functions.
+
+Known Causes of Trouble with Octave
+
+* Actual Bugs::                 Bugs we will fix later.
+* Reporting Bugs::              
+* Bug Criteria::                
+* Bug Lists::                   
+* Bug Reporting::               
+* Sending Patches::             
+* Service::                     
+
+Reporting Bugs
+
+* Bug Criteria::                
+* Where: Bug Lists.             Where to send your bug report.
+* Reporting: Bug Reporting.     How to report a bug effectively.
+* Patches: Sending Patches.     How to send a patch for Octave.
+
+Installing Octave
+
+* Installation Problems::       
+* Binary Distributions::        
+
+Binary Distributions
+
+* Installing Octave from a Binary Distribution::  
+* Creating a Binary Distribution::  
+
+Emacs Octave Support
+
+* Installing EOS::              
+* Using Octave Mode::           
+* Running Octave From Within Emacs::  
+* Using the Emacs Info Reader for Octave::  
+
+Grammar
+
+* Keywords::                    
+
+@end detailmenu
 @end menu
 
 @include preface.texi

@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  values (x)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} values (@var{x})
 ## Return the different values in a column vector, arranged in ascending
 ## order.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Extract unique elements

@@ -14,11 +14,12 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:   meansq (x)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} meansq (@var{x})
 ## For vector arguments, return the mean square of the values.
 ## For matrix arguments, return a row vector contaning the mean square
 ## of each column.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compute mean square

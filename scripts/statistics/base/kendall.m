@@ -14,25 +14,52 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  kendall (x [, y])
-##
-## Computes Kendall's tau for each of the variables specified by the
-## input arguments.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} kendall (@var{x}, @var{y})
+## Compute Kendall's @var{tau} for each of the variables specified by
+## the input arguments.
 ##
 ## For matrices, each row is an observation and each column a variable;
 ## vectors are always observations and may be row or column vectors.
 ##
-## kendall (x) is equivalent to kendall (x, x).
+## @code{kendall (@var{x})} is equivalent to @code{kendall (@var{x},
+## @var{x})}.
 ##
-## For two data vectors x, y of common length n, Kendall's tau is the
-## correlation of the signs of all rank differences of x and y;  i.e.,
-## if both x and y have distinct entries, then \tau = \frac{1}{n(n-1)}
-## \sum_{i,j} SIGN(q_i-q_j) SIGN(r_i-r_j), where the q_i and r_i are the
-## ranks of x and y, respectively.
+## For two data vectors @var{x}, @var{y} of common length @var{n},
+## Kendall's @var{tau} is the correlation of the signs of all rank
+## differences of @var{x} and @var{y};  i.e., if both @var{x} and
+## @var{y} have distinct entries, then
 ##
-## If x and y are drawn from independent distributions, Kendall's tau is
-## asymptotically normal with mean 0 and variance (2 * (2n+5)) / (9 * n
-## * (n-1)).
+## @iftex
+## @tex
+## $$ \tau = {1 \over n(n-1)} \sum_{i,j} {\rm sign}(q_i-q_j) {\rm sign}(r_i-r_j) $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+##          1    
+## tau = -------   SUM sign (q(i) - q(j)) * sign (r(i) - r(j))
+##       n (n-1)   i,j
+## @end example
+## @end ifinfo
+##
+## @noindent
+## in which the
+## @iftex
+## @tex
+## $q_i$ and $r_i$
+## @end tex
+## @end iftex
+## @ifinfo
+## @var{q}(@var{i}) and @var{r}(@var{i})
+## @end ifinfo
+##  are the ranks of
+## @var{x} and @var{y}, respectively.
+##
+## If @var{x} and @var{y} are drawn from independent distributions,
+## Kendall's @var{tau} is asymptotically normal with mean 0 and variance
+## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Kendall's rank correlation tau

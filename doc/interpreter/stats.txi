@@ -9,6 +9,15 @@ I hope that someday Octave will include more statistics functions.  If
 you would like to help improve Octave in this area, please contact
 @email{bug-octave@@bevo.che.wisc.edu}.
 
+@menu
+* Basic Statistical Functions::  
+* Models::                      
+* Distributions::               
+@end menu
+
+@node Basic Statistical Functions, Models, Statistics, Statistics
+@section Basic Statistical Functions
+
 @DOCSTRING(mean)
 
 @DOCSTRING(median)
@@ -24,3 +33,56 @@ you would like to help improve Octave in this area, please contact
 @DOCSTRING(mahalanobis)
 
 @DOCSTRING(skewness)
+
+@c XXX FIXME XXX -- these need to be organized.
+
+@DOCSTRING(values)
+
+@DOCSTRING(var)
+
+@DOCSTRING(table)
+
+@DOCSTRING(studentize)
+
+@DOCSTRING(statistics)
+
+@DOCSTRING(spearman)
+
+@DOCSTRING(run_count)
+
+@DOCSTRING(ranks)
+
+@DOCSTRING(range)
+
+@DOCSTRING(qqplot)
+
+@DOCSTRING(probit)
+
+@DOCSTRING(ppplot)
+
+@DOCSTRING(moment)
+
+@DOCSTRING(meansq)
+
+@DOCSTRING(logit)
+
+@DOCSTRING(kendall)
+
+@DOCSTRING(iqr)
+
+@DOCSTRING(cut)
+
+@DOCSTRING(cor)
+
+@DOCSTRING(cloglog)
+
+@DOCSTRING(center)
+
+@node Tests, Models, Basic Statistical Functions, Statistics
+@section Tests
+
+@node Models, Distributions, Basic Statistical Functions, Statistics
+@section Models
+
+@node Distributions,  , Models, Statistics
+@section Distributions

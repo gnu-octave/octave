@@ -14,12 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  studentize (x)
-##
-## If x is a vector, subtract its mean and divide by its standard
+## -*- texinfo -*-
+## @deftypefn {Function File} {} studentize (@var{x})
+## If @var{x} is a vector, subtract its mean and divide by its standard
 ## deviation.
 ##
-## If x is a matrix, do the above for each column.
+## If @var{x} is a matrix, do the above for each column.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Subtract mean and divide by standard deviation

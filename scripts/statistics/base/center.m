@@ -14,10 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  center (x)
-##
-## If x is a vector, subtract its mean.
-## If x is a matrix, do the above for each column.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} center (@var{x})
+## If @var{x} is a vector, subtract its mean.
+## If @var{x} is a matrix, do the above for each column.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Center by subtracting means

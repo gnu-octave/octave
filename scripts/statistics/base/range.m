@@ -14,11 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  range (x)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} range (@var{x})
+## If @var{x} is a vector, return the range, i.e., the difference
+## between the maximum and the minimum, of the input data.
 ##
-## If x is a vector, return the range, i.e., the difference between the
-## maximum and the minimum, of the input data.
-## If x is a matrix, do the above for each column of x.
+## If @var{x} is a matrix, do the above for each column of @var{x}.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compute range

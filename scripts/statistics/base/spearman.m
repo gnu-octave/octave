@@ -14,22 +14,24 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  spearman (x [, y])
-##
-## Computes Spearman's rank correlation coefficient rho for each of the
-## variables specified by the input arguments.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} spearman (@var{x}, @var{y})
+## Compute Spearman's rank correlation coefficient @var{rho} for each of
+## the variables specified by the input arguments.
 ##
 ## For matrices, each row is an observation and each column a variable;
 ## vectors are always observations and may be row or column vectors.
 ##
-## spearman (x) is equivalent to spearman (x, x).
+## @code{spearman (@var{x})} is equivalent to @code{spearman (@var{x},
+## @var{x})}.
 ##
-## For two data vectors x and y, Spearman's rho is the correlation of
-## the ranks of x and y.
+## For two data vectors @var{x} and @var{y}, Spearman's @var{rho} is the
+## correlation of the ranks of @var{x} and @var{y}.
 ##
-## If x and y are drawn from independent distributions, rho has zero
-## mean and variance 1 / (n - 1), and is asymptotically normally
-## distributed.
+## If @var{x} and @var{y} are drawn from independent distributions,
+## @var{rho} has zero mean and variance @code{1 / (n - 1)}, and is
+## asymptotically normally distributed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Spearman's rank correlation rho

@@ -14,8 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## For each component of p, return the probit (the quantile of the
-## standard normal distribution) of p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} probit (@var{p})
+## For each component of @var{p}, return the probit (the quantile of the
+## standard normal distribution) of @var{p}.
+## @end deftypefn
 
 ## Written by KH <Kurt.Hornik@ci.tuwien.ac.at> on 1995/02/04
 ## Description:  Probit transformation

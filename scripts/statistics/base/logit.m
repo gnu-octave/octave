@@ -14,7 +14,11 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## For each component of p, return the logit log (p / (1-p)) of p.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} logit (@var{p})
+## For each component of @var{p}, return the logit @code{log (@var{p} /
+## (1-@var{p}))} of @var{p}.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Logit transformation

@@ -1,3 +1,149 @@
+Thu Mar 12 20:22:00 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* rdepend.make (depend): Add sed pattern for readlink.
+
+Tue Mar 10 22:09:59 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* dist.make: Account for presence of withenable.ac in top source
+ 	dir.
+
+Tue Feb 24 13:21:58 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* man.make: Additions from Vladimir Volovich <vvv@vvv.vsu.ru>.
+
+Mon Feb 16 09:44:30 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* makevars.make: Add vartexfonts to the variables being passed
+ 	around.
+
+	* paths.make: Add vartexfonts variable to make configuring
+ 	VARTEXFONTS directory easier.
+
+Tue Feb 10 17:58:44 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* man.make: Change sed delimiter from ! to %, in case !! is used
+ 	in any of the variables being substituted.  Spotted by Thomas
+ 	Esser.
+
+Fri Feb  6 17:57:27 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* dist.make: Correct ../contrib material.
+
+	* common.make: Add -pipe to gcc flags for maintainer.
+
+Tue Feb  3 22:13:56 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* dist.make [MAINT]: Improve handling of contrib dir.
+
+Thu Jan 29 16:20:12 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* paths.make: Let texmf be @texmfmain@, which is determined in
+ 	../kpathsea/withenable.ac.
+
+	* clean.make (distclean): Imply extraclean.
+
+Wed Jan 28 20:48:48 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* dist.make: Add unbackslsh.awk to top_files.  Account for contrib
+ 	dir.
+
+	* paths.make: A friendly warning: we're going full TDS in
+ 	texmf.in.
+
+	* rdepend.make: Since c-auto.h is generated, it must receive
+ 	special treatment like paths.h.
+
+Fri Jan  9 21:12:23 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* clean.make (distclean): Add stamp-tangle stamp-otangle to files
+ 	being removed.
+
+Sun Jan  4 15:56:57 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* man.make: Add end-of-file comment.
+
+	* Add man.make with rules for making manual pages.
+
+Fri Dec 12 10:30:25 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* dist.make (dist): Reflect change of install-sh to install.sh.
+  	Add djgpp directory to distributions.
+
+Tue Dec  2 16:12:53 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* clean.make (extraclean): Remove *.*pk and *.*gf, rather than *pk
+	and *gf.
+
+Mon Nov 24 19:07:23 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* texi.make: A change to get texi2dvi to work on the maintainer's
+ 	system.
+
+Thu Nov 20 00:03:29 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* dist.make (dist): Be less exuberant with write permissions when
+ 	creating a distribution.
+
+Tue Nov 18 13:46:49 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* rdepend.make (depend depend.make): Correct lex.yy to
+ 	$(LEX_OUTPUT_ROOT).
+
+Mon Nov 10 13:12:28 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* paths.make [mandir]: Corrected definition, which contained one
+ 	'man' too many.  From Sebastian Rahtz.
+
+Tue Oct 28 21:34:42 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* dist.make: Use cp -p when creating a distribution.
+
+Tue Oct 21 23:33:16 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* rdepend.make: Handle kpsestat and access when generating
+ 	dependencies.
+
+Mon Oct 20 11:38:09 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* clean.make, config.make, paths.make, tkpathsea.make: Renamed
+	texmf.cnf.in to texmf.in / c-auto.h.in to c-auto.in.
+
+Thu Oct 16 10:32:59 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* clean.make: Remove stamp-auto files for distclean and
+ 	configclean targets.  Remove *.exe files in clean target.  After
+ 	Peter Breitenlohner.
+
+Wed Oct 15 21:37:20 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* config.make: Don't try to create stamp-auto in source directory.
+
+	* dist.make: Do not bother to distribute stamp-auto.
+
+Mon Oct  6 09:27:18 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* config.make: Ensure that maintainer mode, once enabled, remains
+ 	enabled if the Makefiles are regenerated.
+
+	* rdepend.make (depend, depend.make): Add unbackslsh.awk filter.
+
+Tue Sep 30 12:14:55 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* texi.make (MAKEINFO_FLAGS): removed -I$(HOME)/gnu/gnuorg and
+ 	comment, added -I$(srcdir).
+
+Mon Sep 29 17:26:36 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* paths.make: Fixed mandir definition.  (Bruno BEAUFILS
+ 	<Bruno.Beaufils@lifl.fr>)
+
+Tue Sep 16 15:22:48 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* config.make: ac_dir is now /home/olaf/web2c/src/autoconf.  Use
+ 	-m $(ac_dir) in calls.
+
+	* rdepend.make: Enabled make depend.
+
 Thu Feb  6 17:35:18 1997  Karl Berry  <karl@cs.umb.edu>
 
 	* Kpathsea 3.0, Web2c 7.0, etc.

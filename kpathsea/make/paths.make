@@ -1,7 +1,7 @@
 # paths.make -- installation directories.
 #
 # The compile-time paths are defined in kpathsea/paths.h, which is built
-# from kpathsea/paths.h.in and these definitions.  See kpathsea/INSTALL
+# from kpathsea/texmf.in and these definitions.  See kpathsea/INSTALL
 # for how the various path-related files are used and created.
 
 # Do not change prefix and exec_prefix in Makefile.in!
@@ -32,16 +32,21 @@ infodir = @infodir@
 
 # Unix man pages.
 manext = 1
-mandir = $(prefix)/man/man$(manext)
+mandir = @mandir@/man$(manext)
 
 # TeX system-specific directories. Not all of the following are relevant
 # for all programs, but it seems cleaner to collect everything in one place.
 
-# The default paths are now in kpathsea/paths.h.in. Passing all the
+# The default paths are now in kpathsea/texmf.in. Passing all the
 # paths to sub-makes can make the arg list too long on system V.
+# Note that if you make changes below, you will have to make the
+# corresponding changes to texmf.in or texmf.cnf yourself.
 
 # The root of the main tree.
-texmf = $(datadir)/texmf
+texmf = @texmfmain@
+
+# The directory used by varfonts.
+vartexfonts = /var/tmp/texfonts
 
 # Regular input files.
 texinputdir = $(texmf)/tex
@@ -54,7 +59,7 @@ mftinputdir = $(texmf)/mft
 dvips_plain_macrodir = $(texinputdir)/plain/dvips
 dvilj_latex2e_macrodir = $(texinputdir)/latex/dvilj
 
-# MakeTeXPK.site, texmf.cnf, etc.
+# mktex.cnf, texmf.cnf, etc.
 web2cdir = $(texmf)/web2c
 
 # The top-level font directory.

@@ -411,25 +411,37 @@ looks_like_octave_copyright (const string& s)
 // IN_PARTS, consider each block of comments separately; otherwise,
 // grab them all at once.
 
+// XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
+// code!
+
 static string
 gobble_leading_white_space (FILE *ffile, int in_parts)
 {
   string help_txt;
 
-  int first_comments_seen = 0;
-  int have_help_text = 0;
-  int in_comment = 0;
+  bool first_comments_seen = false;
+  bool begin_comment = false;
+  bool have_help_text = false;
+  bool in_comment = false;
   int c;
 
   while ((c = getc (ffile)) != EOF)
     {
       current_input_column++;
 
+      if (begin_comment)
+	{
+	  if (c == '%' || c == '#')
+	    continue;
+	  else
+	    begin_comment = false;
+	}
+
       if (in_comment)
 	{
 	  if (! have_help_text)
 	    {
-	      first_comments_seen = 1;
+	      first_comments_seen = true;
 	      help_txt += (char) c;
 	    }
 
@@ -437,7 +449,7 @@ gobble_leading_white_space (FILE *ffile, int in_parts)
 	    {
 	      input_line_number++;
 	      current_input_column = 0;
-	      in_comment = 0;
+	      in_comment = false;
 
 	      if (in_parts)
 		{
@@ -460,19 +472,20 @@ gobble_leading_white_space (FILE *ffile, int in_parts)
 	    case ' ':
 	    case '\t':
 	      if (first_comments_seen)
-		have_help_text = 1;
+		have_help_text = true;
 	      break;
 
 	    case '\n':
 	      if (first_comments_seen)
-		have_help_text = 1;
+		have_help_text = true;
 	      input_line_number++;
 	      current_input_column = 0;
 	      continue;
 
 	    case '%':
 	    case '#':
-	      in_comment = 1;
+	      begin_comment = true;
+	      in_comment = true;
 	      break;
 
 	    default:

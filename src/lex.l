@@ -1063,22 +1063,34 @@ lookup_identifier (const string& name)
 // Grab the help text from an function file.  Always overwrites the
 // current contents of help_buf.
 
+// XXX FIXME XXX -- gobble_leading_white_space() in variables.cc
+// duplicates some of this code!
+
 static void
 grab_help_text (void)
 {
   help_buf.resize (0);
 
-  int in_comment = 1;
+  bool begin_comment = true;
+  bool in_comment = true;
   int c = 0;
 
   while ((c = yyinput ()) != EOF)
     {
+      if (begin_comment)
+	{
+	  if (c == '%' || c == '#')
+	    continue;
+	  else
+	    begin_comment = false;
+	}	
+
       if (in_comment)
 	{
 	  help_buf += (char) c;
 
 	  if (c == '\n')
-	    in_comment = 0;
+	    in_comment = false;
 	}
       else
 	{
@@ -1086,7 +1098,8 @@ grab_help_text (void)
 	    {
 	    case '%':
 	    case '#':
-	      in_comment = 1;
+	      in_comment = true;
+	      begin_comment = true;
 	      break;
 
 	    case ' ':

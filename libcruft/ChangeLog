@@ -1,0 +1,103 @@
+Wed May 22 15:07:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (stamp-shared): Use CC, not CXX to create shared
+	library.  Also use SHARED_FLIBS here instead of FLIBS.
+
+Sat Apr  6 21:28:47 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in (clean, mostlyclean): Also remove pic/*.o.
+	(maintainer-clean, distclean): Also remove stamp-picdir and pic
+	directory.
+
+Wed Apr  3 01:01:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in: Set SPECIAL_PICDEPEND after including Makeconf
+	and before including Makerules.
+
+Fri Mar 29 13:45:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (distclean): Delete so_locations, which is created
+	on DEC Alpha systems.
+	(distclean, maintainer-clean): Don't depend on clean.
+
+Wed Mar 27 05:59:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in: Add rules for making PIC code here.
+	* Makefile.in (libcruft.a): Depend on $(CRUFT_PICOBJ)
+	* misc/Makefile.in: Add rules for making PIC code from C and C++
+	files.
+
+Fri Feb  9 21:04:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/f77-extern.cc, misc/lo-error.cc: New files.
+	* misc/Makefile.in (SPECIAL, SPECIAL_DEPEND): Add them to the lists.
+	* Makefile.in (CRUFT_OBJ): Add it f77-extern.o and lo-error.o here
+	too.
+
+Sat Feb  3 07:57:39 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/dostop.c (dostop): Call error handler if we have a message.
+	Call longjmp on f77_context, not jump_to_top_level().
+	* misc/xstopx.f (xstopx): Pass non-blank strings on to dostop.
+
+Mon Jan  8 22:55:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (clean): If $(SHARED_LIBS), remove shared libs.
+	(mostlyclean): Ditto.
+
+Fri Dec 29 21:43:24 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in, Makerules.in: Handle creating position independent
+	code and shared libraries for Octave.
+
+Tue Dec 26 00:15:31 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in (stamp-picdir): New target.
+	(all): Depend on it.
+
+	* Makefile.in: Delete references to configure stuff.
+	* configure.in, mkinstalldirs: Delete.
+	
+Sun Dec 24 02:42:29 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linpack/spofa.f: New file.
+	* blas/level-1/sdot.f: New file.
+	* blas/level-2/dsyr.f: New file.
+
+Thu Dec 14 02:34:19 1995  Rick Niles  <niles@axp745.gsfc.nasa.gov>
+
+	* fftpack/cfftb1.f, fftpack/cfftf1.f, fftpack/cffti1.f,
+	odepack/prepj.f, odepack/solsy.f, odepack/stode.f:
+	Avoid warnings for nonstandard dimension statements of the form
+	`real foo(1)' by using `real foo(*)' instead.
+
+Mon Nov  6 07:24:03 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/dostop.c: Only call jump_to_top_level() if OCTAVE_SOURCE.
+
+Fri Nov  3 11:08:31 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/dostop.c: Just call jump_to_top_level() directly here.
+
+Wed Sep 20 00:01:03 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkinstalldirs: New file.
+	* Makefile.in (DISTFILES): Add it to the list.
+
+	* Makerules.in: Fix cleaning rules.  Use double colon so we can
+	add things in the makefiles in the subdirectories.
+
+	* Makefile.in (DISTFILES): Distribute configure.in and configure.
+	(distclean): Also remove Makerules, config.log, and config.status.
+	(maintainer-clean): Depend on distclean.
+
+Mon Apr 10 09:55:13 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* configure.in: New file.
+
+Fri Mar 10 10:38:29 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile.in (install uninstall clean mostlyclean distclean
+	realclean): Use SUBDIR_FOR_COMMAND.  Combine actions.
+
+See ChangeLog.1 in the top level directory for earlier changes.

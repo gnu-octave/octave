@@ -1,0 +1,540 @@
+Octave PROJECTS                                          -*- text -*-
+===============
+
+Check with bug-octave@bevo.che.wisc.edu for a possibly more current
+copy.  Also, if you start working steadily on a project, please let
+bug-octave@bevo.che.wisc.edu know.  We might have information that
+could help you; we'd also like to send you the GNU coding standards.
+
+This list is not exclusive -- there are many other things that might
+be good projects, but it might instead be something we already have,
+so check with bug-octave@bevo.che.wisc.edu before you start.
+
+---------
+Numerical:
+---------
+
+  * Merge control stuff.
+
+  * Improve logm, and sqrtm.
+
+  * Improve complex mapper functions.
+
+  * Make functions like gamma() return the right IEEE Inf or NaN
+    values for extreme args or other undefined cases.
+
+  * Handle complex values in fread and fwrite.
+
+  * Support for lp_solve for linear programming problems.
+
+  * Free QP solver.
+
+  * Free NLP solver.
+
+  * Support for sparse matrices.
+
+  * Fix CollocWt to handle Laguerre polynomials.  Make it easy to
+    extend it to other polynomial types.
+
+  * Add optional arguments to colloc so that it's not restricted to
+    Legendre polynomials.
+
+  * Fix eig to also be able to solve the generalized eigenvalue
+    problem, and to solve for eigenvalues and eigenvectors without
+    performing a balancing step first.
+
+  * Move rand, eye, xpow, xdiv, etc., functions to the matrix classes.
+
+  * Implement the following functions:
+    -- ppval    -- cross    -- dot
+
+  * Allow user-supplied gradient information to be passed to NPSOL.
+
+  * Support for FSQP.
+
+  * Convert FSQP style NLP statement to NPSOL style.
+
+  * Convert NPSOL style NLP statement to FSQP style.
+    - Look for linear equality constraints, extract corresponding rows
+	of C.  The rest are inequality constraints.
+    - Look for Nonlinear equality constraints and set up a vector of
+	pointers for shuffling.
+    - Transform lb <= C*x <= ub, lb != ub, to C*x - ub <= 0 and
+	lb - C*x <= 0.  Likewise for lb <= g(x) <= ub.
+    - Call FSQP.
+
+  * Optional inputs for fsqp.
+
+  * If possible, make economy QR factorization actually take advantage
+    of the form of the result instead of just dropping columns.
+    Lapack doesn't appear to do this yet.
+
+  * Check matrix classes for proper handling of empty matrices.
+
+  * Improve design of ODE, DAE, classes.
+
+  * Extend meaning of .* to include v .* M or M .* v (where v is a
+    column vector with the same number of rows as M) to scale rows of
+    M by elements of v.  Similarly, if w is a row vector with as many
+    columns as M, then either w .* M or M .* w scales the columns of
+    M.
+
+--------
+Graphics:
+--------
+
+  * Make plotting with plplot work.
+
+  * Fix interface with gnuplot to wait for gnuplot to output any text
+    before octave returns a prompt.  Possible by implementing two
+    way communication between gnuplot and Octave.
+
+  * Make gsave (and possibly gload) work.  Implement gsave by having it
+    also alter the plot command to not use temporary files (perhaps
+    with some user-specified template for naming them) and then
+    sending a `save' command to gnuplot.
+
+  * It would be nice to be able to check that a plot is currently
+    being displayed.
+
+  * Implement figure, clf, gcf, get, set, orient, print, close,
+    etc. in Matlab-compatible ways.
+
+  * Make it possible to check the current graphics terminal type.
+
+  * Merge patch that allows more than one gnuplot window to be open.
+
+-------
+Strings:
+-------
+
+  * Convert string functions to work on string arrays.
+
+  * Make find work for strings.
+
+----------------
+Other Data Types:
+----------------
+
+  * New types (char, short, etc.).
+
+  * 3d matrix stuff.
+
+  * Template functions for mixed-type ops.
+
+  * Stuff for arithmetic using charMatrix, intMatrix, etc.
+
+------------------------
+Graphical User Interface:
+------------------------
+
+  * In an X11 or other windowing environment, allow the user to pop up
+    windows for menus and other purposes.  A good place to start might
+    be Tk, as long as Tcl is avoided.
+
+  * Add a way to handle events, like alarms, mouse clicks, etc.
+
+------------
+Input/Output:
+------------
+
+  * Make fread and fwrite work for complex data.  Iostreams based
+    versions of these functions would also be nice, and if you are
+    working on them, it would be good to support other size
+    specifications (integer*2, etc.).
+
+  * Make load work to read files that contain numbers only, and put
+    the values in a matrix named after the file.
+
+  * Make load and save work for structures.
+
+  * Make load and save look for <file>.mat if only given <file>.
+
+  * Move some pr-output stuff to liboctave.
+
+  * Make the cutoff point for changing to packed storage a
+    user-preference variable with default value 8192.
+
+  * Save image data in binary format to save space.
+
+  * Use HDF for binary data.
+
+  * Make ascii load and save work for Inf and NaN.
+
+  * Complain if there is not enough disk space available (I think
+    there is simply not enough error checking in the code that handles
+    writing data).
+
+  * Make it possible to tie arbitrary input and output streams
+    together, similar to the way iostreams can be tied together.
+
+-----------
+Interpreter:
+-----------
+
+  * Consider grouping all preference variables in a structure instead
+    of further polluting the namespace.  Maybe `Octave_options.xxx'?
+
+  * Rewrite functions in input.cc to do the right thing in all cases
+    of using readline, forced interactive behavior, echoing of input,
+    etc.
+
+  * Make it possible to redefine built-in variables and functions.
+    (Fix whatever it is that is happening with clear for built-in
+    variables.)
+
+  * Make it possible to check if a variable is complex.
+
+  * Consider making linspace() and logspace() return the value
+    corresponding to the first argument if the number of requested
+    points is 1.
+
+  * Make it possible to get the names of the arguments that are passed
+    to functions, at least if simple variables are passed.
+
+  * Fix name of text-style functions (or at least explain it in the
+    manual).
+
+  * Consider allowing an arbitrary property list to be attached to any
+    variable.  This could be a more general way to handle the help
+    string that can currently be added with `document'.
+
+  * Allow more command line options to be accessible as built-in
+    variables (--echo-commands, etc.).
+
+  * Allow `octave -c STRING' to execute commands from STRING then
+    exit.
+
+  * Handle DOS style CRLFs in M files.  This should probably be
+    optional.
+
+  * Make the interpreter run faster.
+
+  * Make it possible to disable or enable all warnings on an
+    individual basis from the command line or via some built-in
+    structure variable.
+
+  * Consider making it possible to have arrays of structures, and some
+    way of indexing them.
+
+  * Allow arbitrary lower bounds for array indexing.  (Watch out for
+    the additional conflict with zero-one style indexing.)
+
+  * Recursive problems.
+
+  * Improve the way ignore_function_time_stamp works to allow
+    selecting by individual directories or functions.  Also,
+    optionally allow checking only once between each prompt instead of
+    every time the function is called.
+
+  * Make it possible to ask exist() to only look for certain classes
+   of variables, functions, files, etc. rather than always looking for
+   everything.
+
+  * Add a command-line option to tell Octave to just do syntax
+    checking and not execute statements.
+
+  * Is it necessary for do_binary_op and do_unary_op to be friends of
+    the tree_constant class.
+
+  * Clean up symtab and variable stuff.
+
+  * Input stream class for parser files -- must manage buffers for
+    flex and context for global variable settings.
+
+  * Make LEXICAL_ERROR have a value that is the error message for
+    parse_error() to print?
+
+  * Make it possible to clear dynamically loaded functions.
+
+  * Add a run-time alias mechanism that would allow things like
+
+      alias fun function_with_a_very_long_name 
+
+    so that `function_with_a_very_long_name' could be invoked as
+    `fun'.
+
+  * What should is_global() return when called for built-in variables?
+
+  * Make it possible to have `static' variables inside functions that
+    retain their values across calls.
+
+  * Allow local changes to variables to be written more compactly than
+    is currently possible with unwind_protect.  For example,
+
+      function f ()
+	local prefer_column_vectors = something;
+	...
+      endfunction
+
+    would be equivalent to
+
+      function f ()
+	unwind_protect
+	  save_prefer_column_vectors = prefer_column_vectors;
+	  prefer_column_vectors = something;
+	  ...
+	unwind_protect_cleanup
+	  prefer_column_vectors = save_prefer_column_vectors;
+	end_unwind_protect
+      endfunction
+
+  * Fix all function files to check for bogus inputs (wrong number or
+    types of input arguments, wrong number of output arguments).
+
+  * Handle options for built-in functions more consistently.
+
+  * Too much time is spent allocating and freeing memory.  What can be
+    done to improve performance?
+
+  * Error output from Fortran code is ugly.  Something should be done to
+    make it look better.
+
+  * It would be nice if output from the Fortran routines could be
+    passed through the pager.
+
+  * Attempt to recognize common subexpressions in the parser.
+
+  * Remove the buffer size limit in octave_read() in input.cc.
+
+  * Handle arrays with more than two dimensions.
+
+  * Consider making assignment statements like
+
+      M (i_idx, j_idx) = RHS
+
+    produce the value of RHS instead of the value of M.
+
+  * Consider making it possible to specify an empty matrix with a
+    syntax like [](e1, e2).  Of course at least one of the expressions
+    must be zero...
+
+  * Eliminate force_numeric and make_numeric functions.
+
+  * Is Matrix::fortran_vec() really necessary?
+
+  * print_usage() should set error_state in most cases?
+
+  * Add an option to make Octave quit executing a script when error() is
+    called.  Also make it possible for `return' or `break' to exit a
+    script.
+
+  * Make statements like this
+
+      foo bar baz
+
+    turn into function calls like this:
+
+      foo ("bar", "baz")
+
+    This is pretty ugly and introduces some conflicts.
+
+  * Make it possible to use text-style function names as variables.
+
+  * Add a command that works like bash's `builtin' command.
+
+  * Handle comments in parse trees for use with the type command.
+
+  * Clean up eye, eval, feval, keyboard, input, ones, zeros.
+
+  * It would be nice to have an interactive debugger.
+
+-------
+History:
+-------
+
+  * Add an option to allow saving input from script files in the
+    history list.
+
+  * Fix history problems -- core dump if multiple processes are
+    writing to the same history file?
+
+------------------------------
+Configuration and Installation:
+------------------------------
+
+  * Handle USE_READLINE.
+
+  * Make Octave as independent of the particular readline version as
+    possible.
+
+  * Should --enable-lite-kernel imply --enable-shared?
+
+  * Make it possible to configure without readline.
+
+  * Make it possible to configure without kpathsea.
+
+  * Makefile changes:
+      -- eliminate for loops
+      -- define shell commands or eliminate them
+      -- verify distclean
+      -- consolidate targets
+
+  * Make it possible to configure so that installed binaries and
+    shared libraries are stripped.
+
+  * Make installation of the static libraries optional.
+
+------------------------------
+Documentation and On-Line Help:
+------------------------------
+
+  * Document new features.
+      -- history-search-{back,for}ward.
+      -- try/catch.
+      -- Other stuff mentioned in the NEWS file.
+
+  * Improve the Texinfo Documentation for the interpreter.  It would
+    be useful to have lots more examples, to not have so many forward
+    references, and to not have very many simple lists of functions.
+
+  * The docs should mention something about efficiency and that using
+    array operations is almost always a good idea for speed.
+
+  * Texinfo documentation for the C++ classes.
+
+  * Support multiple info files, perhaps allowing one or more in each
+    directory in the LOADPATH, so that local collections of M-files
+    could be documented with Info.
+
+  * Figure out a good way to have functions and variables documented
+    in only one place.
+
+  * Improve help messages for operators and keywords in help.cc.
+
+  * Make index entries more consistent to improve behavior of `help -i'.
+
+  * Make `help -i' try to find a whole word match first.
+
+  * Allow help for local additions to be accessible with help -i.
+
+  * Make the arrow keys work in the info reader.
+
+  * Update Info to be based on the current Texinfo release.
+
+  * Clean up help stuff.
+
+  * Demo files.
+
+  * As the number of m-files with octave grows perhaps a 'Contents.m'
+    file for each toolbox (directory) would be appropriate so one
+    knows exactly what functions are in a toolbox with a quick look.
+    It would be best to generate information for each function directly
+    from the M-files, so that the information doesn't have to be
+    duplicated, and will remain current if the M-files change.  It
+    would also be best to do as much of this as possible in an M-file,
+    though I wouldn't mind adding some basic support for listing the
+    names of all the directories in the LOADPATH, and the names of all
+    the M-files in a given directory if that is needed.
+
+  * Some sort of blurb (2-3 pages) describing Octave in a reasonably
+    coherent way, where to get it etc., perhaps formatted pretty,
+    i.e. not just text.  Maybe start with the latest Announce file.
+
+-----
+Tests:
+-----
+
+  * Improved set of tests:
+
+      -- Tests for various functions.  Would be nice to have a test file
+	 corresponding to every function.
+
+      -- Tests for element by element operators:
+	   +  -  .*  ./  .\  .^  |  &  <  <=  ==  >=  >  !=  ! 
+
+      -- Tests for boolean operators:  &&  ||
+
+      -- Tests for other operators:  *  /  \  '  .'
+
+      -- Tests from bug reports.
+
+      -- Tests for indexed assignment.  Need to consider the following:
+	   o fortran-style indexing
+	   o zero-one indexing
+	   o assignment of empty matrix as well as values
+	   o resizing
+
+  * Tests for all internal functions.
+
+-----------
+Programming:
+-----------
+
+  * Move toward using more stuff from standard C++ library.
+
+  * More C++/Fortran cleanups.
+
+  * It is likely that there are still some memory leaks.  Hunt then down
+    and plug them. 
+
+  * Only include config.h in files that actually need it, instead of
+    including it in every .cc file.  Unfortunately, this might not be
+    so easy to figure out.
+
+  * GNU coding standards:
+
+    -- Add a `Makefile' target to the Makefiles.
+    -- Comments on #else and #endif preprocessor commands.
+    -- Change error message format to match standards everywhere.
+
+  * Use STL stuff instead of libg++ lists, maps, and stacks.
+
+  * Eliminate more global variables.
+
+  * Encapsulate readline in a class.  Include interface to stuff like
+    blink_matching_paren. 
+
+  * Encapsulate resource stuff in a class.
+
+  * Move procstream to liboctave.
+
+  * Replace more C-style vectors with Array<T> stuff.
+
+  * Use references and classes in more places.
+
+  * Share more code among the various *_options functions.
+
+-------------
+Miscellaneous:
+-------------
+
+  * Implement some functions for interprocess communication:  bind,
+    accept, connect, gethostbyname, etc.
+
+  * The ability to transparently handle very large files:
+
+    Juhana K Kouhia <kouhia@nic.funet.fi> wrote:
+
+      If I have a one-dimensional signal data with the size 400
+      Mbytes, then what are my choices to operate with it:
+
+       * I have to split the data
+       * Octave has a virtual memory on its own and I don't have to
+         worry about the splitting.
+
+      If I split the data, then my easily programmed processing
+      programs will become hard to program.
+
+      If possible, I would like to have the virtual memory system in
+      Octave i.e. the all big files, the user see as one big array or
+      such.  There could be several user selectable models to do the
+      virtual memory depending on what kind of data the user have (1d,
+      2d) and in what order they are processed (stream or random
+      access).
+
+    Perhaps this can be done entirely with a library of M-files.
+
+  * Add a function like strptime() which is the opposite of
+    strftime().  A C version is apparently in recent releases of the
+    Linux C library.
+
+  * Merge OS/2 changes.
+
+------
+Always:
+------
+
+  * Squash bugs.
+
+				--30--

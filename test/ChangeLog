@@ -1,0 +1,6 @@
+Fri Feb  9 21:40:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (OCTAVE_SCRIPT_PATH): Add ../src directory (for .oct
+	files) and current directory (why not?).
+
+See ChangeLog.1 in the top level directory for earlier changes.

@@ -1,0 +1,2612 @@
+Tue Jul 16 10:53:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (decode_prompt_string): Swap meanings of \h anbd \H.
+
+Mon Jul 15 16:01:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (run_command_and_return_output): Renamed from do_system.
+	(Fsystem): Make `system ("emacs")' work as one would expect.
+
+Sun Jul 14 17:34:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (Ffopen, Ffread, Ffwrite): Update doc strings,
+	correctly handle default architecture and precision args.
+
+	* load-save.cc (mopt_digit_to_float_format): Rename from
+	get_floating_point_format.
+	(float_format_to_mopt_digit): New function.
+
+	* oct-stream.cc (octave_base_stream::read, octave_base_stream::write):
+	Simplify by calling Matrix::read and Matrix::write to do real work
+	of reading, writing, and format conversion.
+
+	* oct-stream.h (octave_base_stream): Move data_type enum to
+	liboctave/data-conv.h.  Use float_format from
+	liboctave/mach-info.h instead of arch_type enum.
+
+	* sysdep.h, sysdep.cc (octave_words_big_endian, ten_little_endians):
+ 	Delete.  Now part of oct_mach_info class in liboctave.
+
+Tue Jul  9 11:18:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* arith-ops.cc, balance.cc, dassl.cc, data.cc, filter.cc, find.cc,
+	fsolve.cc, load-save.cc, log.cc, lsode.cc, minmax.cc, npsol.cc,
+	oct-obj.cc, oct-stream.cc, pr-output.cc, pt-cmd.cc, pt-const.cc,
+	pt-fvc.cc, pt-plot.cc, quad.cc, rand.cc, sighandlers.cc, sort.cc,
+	syscalls.cc, unwind-prot.cc, xdiv.cc, xpow.cc:
+	When indexing arrays, use operator() instead of elem() so that
+	bounds checking can be done consistently.
+
+Mon Jun 24 02:13:27 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-oct): Use INSTALL_PROGRAM, instead of
+	INSTALL_DATA for installing shared libraries.
+
+	* lex.l (grab_help_text): Ignore all initial comment characters,
+	not just the first.
+	* variables.cc (gobble_leading_white_space): Likewise.
+
+Sat Jun 22 22:43:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.h, input.cc (octave_completion_matches_called): New varaible.
+	(Fcompletion_matches): Set it to true on a successful call.
+	* toplev.cc (main_loop): If octave_completion_matches_called is
+	true, don't increment current_command_number.
+
+Thu Jun 13 03:52:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (is_mapper_function_name,
+	is_builtin_function_name): New functions.
+	(Fdocument): Use them.
+	Define as regular function, not a text style function.
+
+Thu Jun  6 00:09:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-plot.cc: Handle new built-in variable `gnuplot_has_frames'.
+
+Wed Jun  5 14:45:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (decode_prompt_string): \h now means the whole host
+	name and \H is the host name up to the first `.'.
+
+Thu May 30 23:41:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* fn-cache.cc (octave_fcn_file_name_cache::do_list): Always
+	recompute the lists of function files instead of trying to cache
+	them.
+
+Tue May 28 12:05:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (warn_old_style_preference): New function.
+	(check_preference): Use it.
+
+	* fn-cache.h: Include <ctime> here.
+
+Fri May 24 00:57:14 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (completion_matches): Don't return empty string_vectors.
+
+	* octave.cc (long_opts): Add braindead.
+
+Thu May 23 01:49:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (gnu_readline): New optional arg, force_readline.
+	(get_user_input): Use it.
+
+	* pt-const.cc (OCT_VAL_REP::assign): If converting the rhs to a
+	numeric value, convert a copy, not the actual object.
+	(OCT_VAL_REP::do_index): Prevent s([]) from resulting in a string
+	with zero rows.
+
+	* mappers.cc: Handle toascii here.
+	* strfns.cc: Not here.
+
+	* mappers.cc: Handle tolower and toupper here.
+	* mappers.h: Rename can_return_complex_for_real to flag and
+	overload meaning for ch_mapper.
+	* pt-fvc.cc (apply_mapper_fcn): Handle overloaded meaning.
+
+	* syscalls.cc (stat): Return 3 values instead of just 1.
+	(lstat): Likewise.
+
+Wed May 22 02:34:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-const.cc (OCT_VAL_REP::make_numeric): For string to number
+	conversions, correctly set type tag before calling force_numeric.
+	(do_binary_op): Force string to number conversion if both args are
+	strings and we are doing some sort of comparison operation.
+
+	* Makefile.in (stamp-tinst, stamp-interp): Use SH_TERMLIBS and
+	SH_LIBS instead of TERMLIBS and LIBS.
+
+	* pt-const.cc (do_unary_op): Add special case to handle
+	transposing strings.
+
+	* pt-mat.cc (Vstring_fill_char): New variable.
+	(symbols_of_pt_mat): DEFVAR it.
+
+	* input.cc (generate_struct_completions,
+	generate_possible_completions):	Return string_vector, not char **.
+	Change all callers.
+
+	* pt-const.cc (lookup_map_element): Use substr() correctly.
+
+Tue May 21 21:37:17 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+
+	* octave.cc: New args --no-site-file and --no-init-file.  Delete
+	--ignore-init-file.  The flag --norc (-f) implies both
+	--no-site-file and --no-init-file.
+
+Fri May 17 01:54:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (Fcompletion_matches): New function.
+
+	* utils.cc (get_fcn_file_names): Delete.
+	* help.cc (simple_help): Use new file name cache instead of
+	calling get_fcn_file_names.
+	* variables.cc (make_name_list): Likewise.
+
+	* fn-cache.h, fn-cache.cc, Map-fnc.cc: New files.
+	* Makefile.in: Add them to the lists.
+
+	* Makefile.in (uninstall): Install in octincludedir, not includedir.
+
+	* pt-plot.h: Include <csignal> here.
+
+Thu May 16 10:52:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_stream::oscanf, octave_base_stream::oscanf,
+ 	octave_base_stream::do_oscanf): New functions for backward
+	compatibility with older versions of Octave.
+	(scanf_format_elt, scanf_format_list): Keep track of width specifier.
+	* file-io.cc (Fscanf): New function.
+	(Fscanf, Ffscanf, Fsscanf): Handle compatibility arg.
+
+Wed May 15 01:00:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (do_scanf): If doing '%c' conversion, unset
+	ios::skipws on input stream.
+
+	* sighandlers.h, sighandlers.cc (octave_child, octave_child_list):
+	New classes for keeping track of the child processes we create.
+	(sigchld_handler): Check in octave_child_list to see if there is
+	anything we can do for the child that died.
+	* pager.cc: Register child pager process.
+	* pt-plot.cc: Likewise, for the plotter.
+	* Array-oc.cc: New file
+	* Makefile.in (TI_SRC): Add it to the list.
+
+	* pager.cc (do_sync): Don't check error_state.
+	(flushing_output_to_pager): New static variable.
+	(flush_octave_stdout): Use it to avoid doing anything if already
+	flushing output.
+
+	* sighandlers.cc (sigchld_handler): Call warning instead of
+	writing directly to cerr.
+	(sigpipe_handler): Call warning instead of message.
+
+	* octave.cc (main): Call install_signal_handlers,
+	initialize_file_io, initialize_symbol_tables, and install_builtins
+	before parsing command line options.
+
+	* user-prefs.h, user-prefs.cc: Delete.
+
+	* utils.cc (check_preference): Move here.
+	* user-prefs.cc: From here.
+
+	* defaults.cc: New file.  Move initialization stuff from
+	variables.cc.  Move DEFVARS for EDITOR, EXEC_PATH, LOADPATH,
+	IMAGEPATH, and OCTAVE_VERSION here.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	INFO_FILE and INFO_PROGRAM.
+	* help.cc: Move all of that here.
+	(symbols_of_help): Add DEFVARS for INFO_FILE and INFO_PROGRAM.
+
+Tue May 14 00:23:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.cc (do_sync): Be more defensive about sending stuff to the
+	external pager.
+	* sighandlers.cc (sigchld_handler): For now, only wait for
+	octave_pager_pid.  Don't call error().  Do set octave_pager_pid to
+	-1 if the pager process no longer exists.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	PWD.
+	* dirfns.cc: Move all of that here.
+	(symbols_of_dirfns): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	default_save_format and save_precision.
+	* load-save.cc: Move all of that here.
+	(symbols_of_load_save): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	warn_divide_by_zero.
+	* arith-ops.cc: Move all of that here.
+	(symbols_of_arith_ops): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* mappers.cc: Add wrappers for ctype is* functions so that they
+	will work on systems that only define them as macros.
+
+Mon May 13 00:27:08 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	suppress_verbose_help_message.
+	* help.cc: Move all of that here.
+	(symbols_of_help): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	treat_neg_dim_as_zero.
+	* pt-const.cc: Move all of that here.
+
+	* pager.cc (octave_pager_stream::do_sync): Don't return early if
+	not interactive.
+
+	* data.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+	* data.cc (symbols_of_data): New function.  Move definition of I,
+	Inf, J, NaN, e, eps, i, inf, j, nan, pi, realmin, and realmax here.
+	* variables.cc: From here.
+	(install_builtin_variables): Call symbols_of_data.
+
+	* file-io.cc (symbols_of_file_io): New function.  Move definition
+	of SEEK_CUR, SEEK_END, SEEK_SET, stdin, stdout, stderr here.
+	* variables.cc: From here.
+	(install_builtin_variables): Call symbols_of_file_io.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	do_fortran_indexing, implicit_str_to_num_ok,
+	ok_to_lose_imaginary_part, prefer_column_vectors,
+	prefer_zero_one_indexing, print_answer_id_name,
+	propagate_empty_matrices, resize_on_range_error, and
+	struct_levels_to_print.
+	* pt-const.cc: Move all of that here.
+	(symbols_of_pt_const): New function.
+	* variables.cc (install_builtin_variables): Call it.
+	* pt-fvc.cc (tree_identifier::assign): Use Vresize_on_range_error
+	instead of user_pref.resize_on_range_error here.
+	* load-save.cc (save_mat_binary_data): Use Vimplicit_str_to_num_ok
+	instead of user_pref.implicit_str_to_num_ok here.
+	* utils.cc (empty_arg): Use Vpropagate_empty_matrices instead of
+	user_pref.propagate_empty_matrices here.
+	* pt-exp-base.cc (tree_expression::is_logically_true): Likewise..
+
+	* pt-fcn.cc (symbols_of_pt_fcn): Also move DEFVAR for
+	default_return_value here.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	ps1, ps2, ps4, and completion_append_char.
+	* input.cc: Move all of that here.
+	(symbols_of_input): New function.
+	* variables.cc (install_builtin_variables): Call it.
+	* pt-pr-code.cc (indent): Use Vps4 instead of user_pref.ps4 here.
+	* help.cc (Ftype): Also here.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	automatic_replot, gnuplot_binary, and gnuplot_has_multiplot.
+	* pt-plot.cc: Move all of that here.
+	(symbols_of_pt_plot): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	beep_on_error.
+	* error.cc: Move all of that here.
+	(symbols_of_error): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	empty_list_elements_ok.
+	* pt-mat.cc: Move all of that here.
+	(symbols_of_pt_mat): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	define_all_return_values, return_last_computed_value, and
+	silent_functions.
+	* pt-fcn.cc: Move all of that here.
+	(symbols_of_pt_fcn): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	whitespace_in_literal_matrix.
+	* lex.l: Move all of that here.
+	(symbols_of_lex): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	warn_assign_as_truth_value, warn_comma_in_global_decl,
+	warn_function_name_clash, and warn_missing_semicolon.
+	* parse.y: Move all of that here.
+	(symbols_of_parse): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	output_precision, output_max_field_width, print_empty_dimensions,
+	and split_long_rows.
+	* pr-output.cc: Move all of that here.
+	(symbols_of_pr_output): New function.
+	* variables.cc (install_builtin_variables): Call it.
+
+	* user-prefs.h, user-prefs.cc: Delete all stuff related to
+	page_screen_output, page_output_immediately, and pager_binary.
+	* pager.cc: Move all of that here.
+
+	* user-prefs.h (check_preference): Provide declaration.
+	* user-prefs.cc (check_preference): Make external.
+
+	* toplev.cc (Foctave_config_info): New function.
+
+	* oct-conf.h.in: New file
+	* Makefile.in (oct-conf.h): New target.
+	Add it to the appropriate lists.
+
+	* sighandlers.cc (sigchld_handler): Don't complain about wait
+	returning a negative value.
+
+	* file-io.cc (Fsscanf, Fsprintf): Pass true for second arg of
+	octave_stream constructor.
+
+	* oct-stream.h (octave_stream): New field, preserve.
+	(octave_stream::~octave_stream): If preserve, don't delete rep.
+
+	* pager.cc (symbols_of_pager): Set default for
+	page_output_immediately to 0.
+
+	* toplev.cc (do_system): Correctly handle return_output.
+	Append ends to output_buf before calling str().
+
+	* variables.cc: If M_PI and M_E are available, use them.
+
+	* mk-oct-links.in (links_dir): If old link exists, delete it first.
+
+Sun May 12 01:46:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTFILES): List defaults.h.in and oct-gperf.h here.
+	(INCLUDES): Not here.
+	(install-inc): New target.
+	(uninstall): Also delete libraries and include files.
+	(install-inc): If linkdir is a directory, leave it alone.
+	(TERMLIBS, LIBPLPLOT, LIBDLFCN): Don't substitute here (now in
+	Makeconf).
+
+	* oct-stream.cc (octave_base_stream::do_read): Provide initial
+	value for tmp var.
+
+	* pt-walk.h, pt-pr-code.h, pt-pr-code.cc: New tree-walking classes.
+	* Makefile.in: Add them to the appropriate lists.
+	* pt-fvc-base.h, pt-exp-base.cc, pt-fvc-base.cc, pt-mvr-base.cc,
+	pt-base.cc, pt-mvr.cc, pt-mat.h, pt-mat.cc, pt-fvc.cc,
+	pt-const.cc, pt-cmd.cc, pt-const.h, pt-misc.cc, pt-plot.cc,
+	pt-fcn.cc, pt-plot.h, pt-mvr.h, pt-mvr-base.h, pt-misc.h,
+	pt-fcn.h, pt-exp.h, pt-exp.cc, pt-exp-base.h, pt-fvc.h, pt-cmd.h,
+	pt-base.h:
+	Replace print_code stuff with accept() functions.
+	Add member access functions where necessary.
+	* help.cc (Ftype): Update to use new method of walking trees to
+	print text representation of user-defined functions.
+
+	* file-io.cc (Ffscanf): Update doc string.
+	(Fsscanf): Likewise.
+
+	* oct-stream.cc (octave_base_stream::do_read): Correctly set max_size.
+	Pad mval with zeros on final resize.
+	(octave_base_stream::do_scanf): Likewise.
+	(do_scanf_conv): Correctly resize mval.
+	
+Sat May 11 05:14:09 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.cc (octave_pager_buf::sync): Correctly set bypass_pager.
+
+	* lex.l (<MATRIX>{SNLCMT}*\]{S}*): Match SNLCMT, not just SNL.
+
+Fri May  3 11:05:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-const.cc (OCT_VAL_REP::set_index): Complain if type can't be
+	indexed.
+
+	* input.cc (get_user_input): Don't increment input line number if
+	input is coming from eval string.
+
+	* user-prefs.cc: Allow empty strings for prompts.
+
+Thu May  2 10:50:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-mvr.h (class tree_oct_obj): Declare values data member const.
+
+Sun Apr 28 03:16:52 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* user-prefs.h (user_preferences): New field,
+	`page_output_immediately'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(page_output_immediately): New function.
+	* pager.cc (syms_of_pager): Add DEFVAR.
+	(really_flush_to_pager): New file-scope variable.
+	(flush_octave_stdout): Set and restore it.
+	(octave_pager_buf::sync): Check it, user_pref.page_screen_output,
+	and user_pref.page_output_immediately to decide when to really
+	flush output.
+	(more_than_a_screenful): New function.  If paging but not
+	immediately, then check this too.
+
+	* pager.cc (default_pager): Move here from variables.cc.  If pager
+	is less and LESS is not in the environment, append useful flags.
+	(symbols_of_pager): New function.
+	* variables.cc (install_builtin_variables): Call it.
+	Delete pager-related DEFVARs.	
+
+	* syswait.h (WIFSIGNALLED): Define if sys/wait.h doesn't.
+
+	* sighandlers.cc: Handle SIGCHLD.
+
+	* pager.cc, pager.h: Rewrite.
+	* pt-mvr.cc, pt-misc.cc, pt-fcn.cc, pt-const.cc, oct-hist.cc,
+	file-io.cc, help.cc, variables.cc, qpsol.cc, dassl.cc, quad.cc,
+	npsol.cc, lsode.cc, fsolve.cc, load-save.cc, dirfns.cc, octave.cc,
+	toplev.cc, error.cc, input.cc:
+	Write to octave_stdout and octave_diary instead of calling
+	maybe_page_output() or maybe_write_to_diary_file().
+
+	* oct-procbuf.h, oct-procbuf.cc: New files.
+	* procstream.h (class procstreambase): Use octave_procbuf instead
+	of procbuf from libg++, so we can get pids of subprocesses.
+
+Fri Apr 26 01:21:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-const.cc (OCT_VAL_REP::do_index): Call maybe_mutate() before
+	returning.
+
+	* mappers.h (struct Mapper_fcn): Delete.
+	(struct builtin_mapper_function): New field ch_mapper.
+	* pt-fvc.h (tree_builtin): Convert type of mapper_fcn from
+	Mapper_fcn to builtin_mapper_function.
+	* variables.cc (install_builtin_mapper): Likewise, for arg.
+	Simplify, since we don't have to do the copying ourselves now.
+	* pt-fvc.cc (apply_mapper_function): Handle ch_mapper case.
+	* defun.h (DEFUN_MAPPER): Likewise.
+	* mappers.cc (install_builtin_mappers): Likewise.
+	Add ctype is* functions here.
+
+Thu Apr 25 00:57:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* arith-ops.h, defun-int.h, defun.h, dynamic-ld.h, gripes.h,
+	load-save.h, oct-map.h, oct-obj.h, oct-stream.h, pt-cmd.h,
+	pt-const.h, pt-exp-base.h, pt-exp.h, pt-fcn.h, pt-fvc-base.h,
+	pt-fvc.h, pt-mat.h, pt-misc.h, pt-mvr-base.h, pt-mvr.h, pt-plot.h,
+	symtab.h, toplev.h, utils.h, variables.h, xpow.h, Array-tc.cc,
+	Map-i.cc, Map-tc.cc, SLList-tc.cc, arith-ops.cc, balance.cc,
+	bogus.cc, chol.cc, colloc.cc, dassl.cc, data.cc, det.cc,
+	dirfns.cc, eig.cc, error.cc, expm.cc, fft.cc, fft2.cc, file-io.cc,
+	filter.cc, find.cc, fsolve.cc, fsqp.cc, givens.cc, gripes.cc,
+	help.cc, hess.cc, ifft.cc, ifft2.cc, input.cc, inv.cc,
+	load-save.cc, log.cc, lpsolve.cc, lsode.cc, lu.cc, minmax.cc,
+	npsol.cc, oct-hist.cc, oct-obj.cc, oct-stream.cc, pager.cc,
+	pinv.cc, pr-output.cc, pt-cmd.cc, pt-const.cc, pt-exp-base.cc,
+	pt-exp.cc, pt-fcn.cc, pt-fvc-base.cc, pt-fvc.cc, pt-mat.cc,
+	pt-misc.cc, pt-mvr-base.cc, pt-mvr.cc, pt-plot.cc, qpsol.cc,
+	qr.cc, quad.cc, qzval.cc, rand.cc, resource.cc, schur.cc, sort.cc,
+	strfns.cc, svd.cc, syl.cc, symtab.cc, syscalls.cc, sysdep.cc,
+	timefns.cc, toplev.cc, utils.cc, variables.cc, xpow.cc, parse.y:
+	Rename tree_constant -> octave_value.
+	Rename Octave_object -> octave_value_list.
+
+Wed Apr 24 22:15:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (Fsystem): Merge functionality of async_system and
+	sync_system.
+
+	* oct-fstrm.h, oct-iostrm.h, oct-prcstrm.h, oct-stdstrm.h,
+	oct-stream.h, oct-strstrm.h, oct-fstrm.cc, oct-iostrm.cc,
+	oct-prcstrm.cc, oct-stdstrm.cc, oct-stream.cc, oct-strstrm.cc,
+	Array-os.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+	* file-io.cc: Rewrite to use new stream classes.
+
+Tue Apr 23 18:59:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* gripes.cc (gripe_not_supported): New function.
+
+	* toplev.cc (do_octave_atexit, Fatexit): New functions.
+	(octave_atexit_functions): New file-scope variable.
+	* octave.cc (main): Register do_octave_atexit with atexit.
+
+	* variables.cc (install_builtin_variables): Call
+	symbols_of_syscalls here.
+
+	* syscalls.h, syscalls.cc: New files.
+
+Mon Apr 22 21:14:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* syscalls.cc: New file.
+	(Flstat, Fmkfifo, Fstat, Funlink, Fwait, Fwaitpid): Move here.
+	* file-io.cc: From here.
+	* Makefile.in (SOURCES): Add syscalls.cc to the list.
+
+Wed Apr 17 18:34:10 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-info.h, file-info.cc: Delete files.
+	* Makefile.in: Remove from lists.
+
+	* toplev.cc (Fquit): Accept exit status argument.
+	(Fflops): Delete (now a function file).
+
+Thu Apr 11 16:20:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l: Recognize `.'.
+	Update current_input_column even for unrecognized characters.
+	Return LEXICAL_ERROR for unrecognized characters.
+
+Mon Apr  8 19:59:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (install_builtin_variables): Split into several
+	functions to make compiling with g++ go faster and consume less
+	memory.
+	
+Sun Apr  7 16:25:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (Fsave): Print usage if i == argc.
+	(Fload): Likewise.	
+
+Sat Apr  6 21:26:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (clean): Also delete pic/*.o
+	(maintainer-clean, distclean): Also remove stamp-picdir,
+	stamp-tinst, stamp-interp, and pic directory.
+	(stamp-prereq): New target.
+
+Wed Apr  3 11:19:30 1996  Rick Niles  <niles@axp745.gsfc.nasa.gov>
+
+	* resource.cc: Don't make including sys/resource.h and sys/times.h
+	mutually exclusive.
+
+Fri Mar 29 13:43:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (distclean): Delete so_locations, which is created
+	on DEC Alpha systems.
+
+Thu Mar 28 02:53:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.h (undo_string_escape): Provide extern declaration here.
+
+	* lex.l (NL): Allow \r\n as new line character.
+	(.): Complain if invalid character is found on input
+
+Fri Mar 22 03:47:52 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* resource.cc (getrusage): If getrusage is missing, try using
+	times to at least fill in the cpu time values.  If neither one is
+	available, return 0 for cpu times instead of NaN.
+	
+	* sighandlers.cc (octave_signal_mask): New file-scope variable.
+	(octave_save_signal_mask, octave_restore_signal_mask): New functions.
+	* toplev.cc (main_loop): Use them.
+
+Wed Mar 20 01:21:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (get_fcn_file_names (const string&, int)): Resize
+	retval to value of k, not i.
+	(get_fcn_file_names (int)): In loop for copying names to retval,
+	don't increment j twice.
+
+Mon Mar 18 22:27:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in ($(MAKEDEPS)): Depend on oct-gperf.h.
+
+Fri Mar  1 18:15:52 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* fsolve.cc (fsolve_options): Delete unused argument nargout.
+
+	* filter.cc: Use MArray instead of Array so that automatic
+	conversions will work again.
+
+Tue Feb 27 04:49:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (looks_like_octave_copyright): Make the strings
+	that we are trying to match both have length 29.
+
+	* Makefile.in (install-bin): Use $(INSTALL_PROGRAM), not $(INSTALL).
+
+	* load-save.cc (read_mat_binary_data): Make sure name is
+	NUL terminated.
+
+Mon Feb 26 18:18:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (whos): Make argv from tmp_args, not args.
+
+	* defun.h (DEFCONSTX): Don't stringify name.
+
+Sat Feb 24 01:12:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-oct): Make mk-oct-links executable.
+	* mk-oct-links.in (links_dir): Update to match new format of
+	DEFUN_DLD_BUILTIN macro.  Use LN_S, not just LN.
+	(links_dir): 
+
+	* pr-output.cc (octave_print_internal): New arg, extra_indent, for
+	versions of this function that take matrices and ranges.
+	* pt-const.cc (TC_REP::print (ostream&)): Fix printing of structures.
+	Pass struct_indent to octave_print_internal as appropriate.
+	(print_with_name (ostream&, const string&, bool)): Handle spacing
+	around `=' differently for structures.
+
+Fri Feb 23 04:51:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* token.cc (token (double, const string&, int, int)): Store orig_text.
+
+Tue Feb 20 20:36:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fclear): Fix off-by-one error.
+
+Sat Feb 17 16:54:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-hist.cc (default_history_file): Append "/.octave_hist" to
+	return value, not to home_directory.
+
+Fri Feb 16 18:10:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc: (NINT, D_NINT): Move to liboctave.
+
+	* sysdep.cc (octave_ieee_init): Move to liboctave.
+
+	* procstream.h, procstream.cc: Rewrite.
+
+	* pager.cc (cleanup_oprocstream): New static function.
+	* toplev.cc (cleanup_iprocstream): Likewise.
+	* dirfns.cc (cleanup_iprocstream): Likewise.
+
+	* unwind-prot.cc (matrix_cleanup, complex_matrix_cleanup): Delete.
+
+Thu Feb 15 22:03:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-obj.cc, oct-obj.h: Move most code to the header.
+
+	* oct-obj.cc (make_argv, all_strings): New member functions.
+	* utils.cc: Moved from here.
+
+	* load-save.cc: Move byte swapping stuff to liboctave.
+	Move float format conversion stuff to liboctave.
+	(all_parts_int, too_large_for_float): Move to liboctave.
+
+	* symtab.cc (valid_identifier): Move here.
+	* load-save.cc: From here.
+
+	* sysdep.cc: Move floating-point format stuff to liboctave.
+	* pr-output.cc: Include float-fmt.h here.
+
+Wed Feb 14 01:49:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun.h, defun-dld.h, defun-int.h: Simplify interface for DEFUN,
+	DEFUN_DLD, DEFVAR, and DEFCONST macros.  Change all uses.
+
+	* qzval.cc: Move guts to liboctave.
+
+Tue Feb 13 10:28:27 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (parse_fcn_file): Also avoid saving history if
+	input is from a script file.
+
+	* help.cc (Ftype): Call unwind_protect_str for user_pref.ps4.
+
+	* npsol.cc (nonlinear_constraints_ok): Now static.
+
+	* npsol.cc (linear_constraints_ok): Now static.
+	* qpsol.cc (linear_constraints_ok): Duplicate here.
+
+	* data.cc (Flinspace): Don't print usage message if nargin == 2.
+
+Sun Feb 11 14:20:32 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-oct-links.in: Rename from mk-oct-links.
+	(LN_S): Use this variable instead of ln.
+	Set -e option for shell.
+	Exit with status of last command.
+	Print message when making link.
+	* Makefile.in (DISTFILES): Add mk-oct-links.in to the list.
+	(install-oct): Run ./mk-oct-links, not $(srcdir)/mk-oct-links.
+
+	* variables.cc (install_builtin_variables): Restore accidentally
+	deleted DEFVAR for save_precision.
+
+Fri Feb  9 11:24:32 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (INCLUDES): Delete statdefs.h from the list (it's
+	now in the liboctave directory).
+
+	* toplev.cc (toplevel): Define here.
+	* octave.cc (toplevel): Not here.
+
+	* toplev.cc (main_loop): New function.
+	* octave.cc (main): Call it here instead of doing main loop
+	actions here.
+
+	* user-prefs.cc (do_fortran_indexing): Also set liboctave_dfi_flag.
+	(prefer_column_vectors): Also set liboctave_pcv_flag.
+	(prefer_zero_one_indexing): Also set liboctave_pzo_flag.
+	(resize_on_range_error): Also set liboctave_rre_flag.
+
+	* variables.cc (restore_command_history): New function.
+	(parse_fcn_file): Use it here in unwind_protect.
+
+	* dynamic-ld.cc (load_octave_oct_file): Reverse sense of test.
+	(load_octave_builtin): Delete.
+	(mangle_octave_oct_file_name): Delete.
+
+	* pt-fvc.cc (tree_builtin::eval): Don't try to dynamically load
+	functions here.
+
+	* pr-output.cc (set_format_style): Decrement argc for first arg too.
+	
+	* input.cc (gnu_readline): If readline returns an empty string,
+	convert it to a string containing a single newline character.
+
+	* octave.cc (octave_argv): Now a static string_vector.
+	(intern_argv): Use string_vector ops, not charMatrix ops.
+	* toplev.cc (octave_argv): Delete definition.
+	* toplev.h (octave_argv): Delete declaration.
+
+Thu Feb  8 10:58:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (conf-dist): New target.
+
+Tue Feb  6 10:59:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (Ftype): Correctly handle structure names.
+
+Sun Feb  4 02:02:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* qpsol.cc (Fqpsol): Call set_options(), not copy() to set
+	options for QPSOL objects.
+
+	* npsol.cc (Fnpsol): Call set_options(), not copy() to set
+	options for NPSOL objects.
+
+	* quad.cc (Fquad): Call set_options(), not copy() to set
+	options for Quad objects.
+
+	* dynamic-ld.cc (load_octave_builtin): Don't call destructor on string.
+	(load_octave_oct_file): Likewise.
+	Check oct_file.empty(), not just oct_file.
+
+	* fsolve.cc (Ffsolve): Call set_options(), not copy() to set
+	options for NLEqn object.
+
+	* variables.cc (do_who): Properly set match patterns from argument
+	vector for call to maybe_list.
+
+Sat Feb  3 03:29:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (long_opts): Properly set second field using new enum.
+
+	* lsode.cc: Change ODE to LSODE where appropriate.
+	Use LSODE_options, not ODE_options.
+
+	* dassl.cc: Change DAE to DASSL where appropriate.
+	Use DASSL_options, not ODE_options.
+
+Fri Feb  2 01:41:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dirfns.cc: Include unistd.h.
+
+	* parse.y, lex.l: Handle matrix lists without ml or mlnm stacks.
+	* pt-mat.h, pt-mat.cc (tree_matrix):
+	Rewrite to use SLList instead of home brew list.
+	* SLList-tm.cc: New file
+	* Makefile.in: Add it to the lists.
+	* SLStack-tm.cc: Delete.
+	* Makefile.in: Delete it from the lists.
+
+	* All pt-* files: Use bool instead of int where appropriate.
+
+	* Makefile.in (DEP_SOURCES_3): Add octave.cc.
+
+	* pt-const.h (class tree_constant::tree_constant_rep): Make
+	everything in this class public, then it doesn't need to declare
+	the tree_constant class as a friend.
+
+Thu Feb  1 01:42:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.h, lex.l, parse.h, parse.y (class lexical_feedback): New
+	class for lexer flags.  Replace lots of global vars with members
+	of this class.
+
+	* lex.l (class brace_paren_nesting_level): New class to replace
+	nesting_level stack.  nesting_level is now an instance of this
+	class.
+
+	* lex.l (yum_yum): New typedef.
+	(ATE_NOTHING): New global var.
+	(ATE_SPACE_OR_TAB, ATE_NEWLINE): Don't #define these, declare them
+	as const yum_yum.
+	(eat_whitespace, eat_continuation): Return yum_yum, not int.
+
+	* lex.l (SHORT_CIRCUIT_LOGICALS): Delete.  Always do this for ||
+	and && tokens.
+	(yy_flex_alloc, yy_flex_realloc, yy_flex_free, next_char_is_space):
+	Delete.
+
+	* toplev.cc (verbose_flag): Delete definition.
+	* toplev.h (verbose_flag): And declaration.
+	* octave.cc (verbose_flag): Now static.
+
+	* lex.l (lookup_identifier): Arg is now string, not char*.
+	(handle_identifier, is_plot_keyword, is_keyword): Likewise.
+	(strip_trailing_whitespace): Return value is now string, not char*.
+	(plot_style_token): Likewise, for both arg and return value.
+
+	* input.cc (octave_gets_line): Delete.
+	(gnu_readline, octave_gets, octave_read):
+	Properly handle input when using_readline is either true or false.
+	Don't limit length of input lines to flex buffer size.
+	(get_user_input): New function.
+
+	* octave.cc (main): Handle --no-line-editing.
+	* toplev.h (using_readline): Provide external declaration here.
+	* input.h: Not here.
+	* toplev.cc (using_readline): Define here.
+	* input.cc: Not here.
+
+	* toplev.h (no_line_editing): Delete declaration.
+	* input.cc (no_line_editing): Delete definition.
+
+Wed Jan 31 05:28:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (DEFAULT_ARRAY_SIZE, PROMPT_GROWTH): Delete definitions
+	of unused macros.
+	(read_octal): Now static.
+
+	* givens.cc (Fgivens): Use new functions from matrix classes
+	instead of calling Fortran functions directly.
+	* syl.cc (Fsyl): Likewise.
+	* expm.cc (Fexpm): Likewise.
+
+Mon Jan 29 00:00:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc: Use new prog_args class instead of calling getopt
+	directly.
+
+	* getopt.h, getopt.c, getopt1.c: Move to liboctave directory.
+	* Makefile: Remove from lists.
+
+	* utils.cc (strconcat, read_until, discard_until): Delete.
+
+	* pager.cc (terminal_columns, terminal_rows): Move to
+	liboctave/oct-term.cc.
+	* pager.cc, pr-output.cc: Include oct-term.h.
+
+	* utils.cc (list_in_columns): Moved to liboctave/str-vec.cc.
+	Change all callers to use new member function syntax.
+
+	* dirfns.cc (absolute_program): Now static.
+	(absolute_pathname): Delete.
+
+	* pt-plot.cc (save_in_tmp_file): Call oct_tempnam, not
+	octave_tmp_file_name.  Include file-ops.h.	
+	* file-io.cc (do_scanf, Foctave_tmp_file_name): Likewise.
+	* oct-hist.cc (mk_tmp_hist_file): Likewise.
+
+	* file-io.cc (Foctave_tmp_file_name): Move here.
+	* utils.cc: From here.
+
+	* utils.cc (octave_tmp_file_name): Move to liboctave/file-ops.cc.
+
+	* tempname.c, tempnam.c: Move to liboctave directory.
+	* Makefile.in: Remove from lists.
+
+Sun Jan 28 19:00:52 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xdiv.cc (all xdiv functions): Return Matrix or ComplexMatrix,
+	not tree_constant.
+
+	* oct-hist.h, oct-hist.cc, toplev.cc, octave.cc, input.cc,
+	file-io.cc, user-prefs.cc: Rewrite to use new command_history
+	class instead of calling readline history functions directly.
+
+	* utils.cc (get_fcn_file_names): Delete num arg.
+
+Thu Jan 25 20:33:54 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (matches_patterns): Use new glob_match class
+	instead of calling fnmatch directly.
+	* symtab.cc (matches_patterns, symbol_table::glob): Likewise.
+	* variables.cc (Fclear): Likewise.
+
+Wed Jan 24 02:05:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* fnmatch.h fnmatch.c: Delete.
+	* Makefile.in: Add glob stuff in the appropriate places, remove
+	fnmatch.h and fnmatch.c from lists.
+
+	* octave.cc (program_invocation_name, program_invocation_short_name):
+	Maybe declare.
+	(initialize_globals): Maybe initialize them.
+
+	* octave.cc (initialize_pathsearch): Define here, not in pathsearch.cc.
+	* pathsearch.h, pathsearch.cc: Remove files.
+	* Makefile.in: Remove them from the lists.
+	
+	* help.cc (simple_help): Ignore directories that don't have any .m
+	or .oct files.
+
+	* utils.cc (search_path_for_file): Use new dir_path class instead
+	of calling kpathsea routines directly.
+	(get_fcn_file_names): Likewise.
+	* help.cc (simple_help): Likewise.
+
+	* dirfns.cc (make_absolute): Don't convert empty arg to "./".
+
+	* sysdir.h: Move to liboctave directory.
+	* Makefile.in: Remove from lists.
+
+	* dirfns.cc (Freaddir): Use new dir_entry class instead of calling
+	readdir directly.  Include dir-ops.h, not sysdir.h.
+	* utils.cc (get_fcn_file_names): Likewise.  Delete unnecessary
+	first arg, change all callers.
+
+Tue Jan 23 00:43:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* safe-xstat.hin, safe-xstat.cin, statdefs.h, file-ops.h,
+	file-ops.cc, filemode.c, mkdir.c, rmdir.c, rename.c:
+	Files moved to liboctave directory.
+	* Makefile.in: Remove them from lists.  Move appropriate rules.
+
+	* acosh.c, asinh.c, atanh.c, erf.c, erfc.c, gamma.c, lgamma.c:
+	Files moved to liboctave directory.
+	* Makefile.in: Remove them from lists.
+	* missing-math.h: Deleted.
+	* pr-output.cc, sysdep.cc, minmax.cc, mappers.cc, expm.cc,
+	arith-ops.cc: Include oct-math.h, not cmath or missing-math.h.
+
+Mon Jan 22 19:33:05 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fexist): Use file_stat instead of calling stat
+	directly.  Include file-ops.h, not statdefs.h.
+	* octave.cc (execute_startup_files): Likewise.
+	* file-io.cc (file_io_get_file, fopen_internal, popen_internal, Fstat):
+	Likewise.
+	(mk_stat_map): Likewise, use file_stat object, not struct stat.
+	* oct-hist.cc (do_history): Likewise.
+
+	* file-ops.h, file-stat.cc: New files.
+	* Makefile.in: Include them.
+	* dirfns.cc: Delete is_newer.  Don't include statdefs.h.
+	* toplev.cc: Don't include statdefs.h.
+
+Sun Jan 21 22:48:03 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-mvr.h, pt-fvc.h, Map.cc, Map.h, dynamic-ld.h,
+	pt-fvc-base.cc, SLList-str.cc, pt-fcn.h, pt-fvc-base.h,
+	SLStack-str.cc, pt-mvr.cc, pt-exp.cc, token.h, token.cc,
+	user-prefs.h, pt-base.cc, user-prefs.cc, dirfns.h, sysdep.h,
+	sysdep.cc, input.h, parse.h, lex.l, parse.y, defun.h, mappers.h,
+	pt-fvc.cc, pt-plot.h, load-save.h, octave.cc, defun-int.h, help.h,
+	variables.h, oct-map.h, oct-obj.h, oct-obj.cc, pt-const.cc,
+	oct-map.cc, input.cc, symtab.h, pt-const.h, pathsearch.cc,
+	pr-output.h, pr-output.cc, toplev.h, timefns.cc, schur.cc,
+	pt-plot.cc, pager.cc, load-save.cc, dynamic-ld.cc, dirfns.cc,
+	data.cc, file-info.h, file-info.cc, colloc.cc, utils.h, qpsol.cc,
+	quad.cc, npsol.cc, lsode.cc, fsolve.cc, dassl.cc, file-io.cc,
+	help.cc, utils.cc, oct-hist.h, oct-hist.cc, symtab.cc, toplev.cc,
+	pt-fcn.cc, unwind-prot.h, unwind-prot.cc, variables.cc:
+	Most functions in these files that deal with character strings
+	have been converted to use the string class insatead of char*.  If
+	you want more detailed information, you'll have to figure it out
+	for yourself.
+
+Sat Jan 20 18:19:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc [WITH_DL]: Define RTLD_LAZY to be 1 if it is not
+	already defined.
+
+Sun Jan 14 07:48:05 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-const.cc (print_as_scalar, print_as_structure):
+	Make these member functions.
+	(tree_constant::print_with_name): New function, moved here from
+	old tree-expr.cc file (where it was called print_constant) and
+	converted to member function.  Change all callers.
+
+Fri Jan 12 01:54:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (initialize_globals): Don't do kpathsearch stuff here.
+	(main): Call initialize_pathsearch() here.
+	
+	* pathsearch.cc: New file.
+	* Makefile.in (SOURCES): Add it to the list
+
+	* oct-hist.h: Rename from octave-hist.h.
+	* oct-hist.cc: Rename from octave-hist.cc.
+	* Makefile.in, parse.y, other .cc files: Cope with it.
+
+	* dynamic-ld.cc: Avoid warnings if !WITH_DYNAMIC_LINKING.
+
+	* load-save.cc (save_ascii_data): string::data() returns const char*.
+
+	* utils.h: Don't provide forward declaration for tree_constant.
+
+	* oct-obj.h: Don't include mx-base.h or provide forward
+	declarations for Matrix and Range types.
+
+	* file-info.h: Don't include oct-obj.h.  Do include cstdio.
+
+	* symtab.h: Don't provide forward declaration for ostream.
+
+	* variables.h: Don't provide forward declarations for istream,
+	ostrstream, tree, builtin_function, or builtin_variable objects.
+
+	* balance.cc, chol.cc, colloc.cc, dassl.cc, det.cc, eig.cc,
+	expm.cc, fft.cc, fft2.cc, filter.cc, find.cc, fsolve.cc, fsqp.cc,
+	givens.cc, hess.cc, ifft.cc, ifft2.cc, inv.cc, log.cc, lpsolve.cc,
+	lsode.cc, lu.cc, minmax.cc, npsol.cc, pinv.cc, qpsol.cc, qr.cc,
+	quad.cc, qzval.cc, rand.cc, schur.cc, sort.cc, svd.cc, syl.cc:
+	Clean up #include statements.
+
+	* pt-const.h: Don't include oct-obj.h or tree-base.h.
+	Provide forward declaration of Octave_object here.
+	* pt-const.cc: Include oct-obj.h here.
+
+	* pt-mat.h, pt-fcn.h, pt-const.h, pt-misc.h, pt-plot.h,
+	pt-exp-base.h, pt-cmd.h, pt-fvc-base.h, pt-mvr-base.h, pt-exp.h,
+	pt-mvr.h, pt-fvc.h: New files, split from tree-expr.h and/or
+	renamed from other tree-*.h files (pt == parse tree).
+	* pt-base.cc, pt-const.cc, pt-exp.cc, pt-fvc-base.cc, pt-mat.cc,
+	pt-mvr-base.cc, pt-plot.cc, pt-cmd.cc, pt-exp-base.cc, pt-fcn.cc,
+	pt-fvc.cc, pt-misc.cc, pt-mvr.cc: Likewse, split from tree-expr.cc
+	and/or other tree-*.cc files.
+	* Makefile.in: Include them in the appropriate lists.
+	* All: Fix #include statements to match.
+
+	* Array-tc.cc: Don't instantiate ArrayRep objects.
+
+Thu Jan 11 02:35:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.cc (tree_constant::eval (int, int, const Octave_object&)):
+	Define here instead of in tree-const.h.
+
+Wed Jan 10 04:34:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.h (tree_constant::tree_constant (const string&):
+	* tree-const.cc (TC_REP::tree_constant_rep (const string&)):
+	New constructor.
+
+Tue Jan  9 04:10:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* rand.cc (do_rand): Use string_value() result directly instead of
+	c_str() conversion.
+	* balance.cc (Fbalance): Likewise.
+
+	* tree-const.cc (TC_REP::string_value()):
+	Handle new definition of charMatrix::row_as_string()
+	* load-save.cc (save_ascii_data): Ditto.
+	(save_binary_data): Ditto.
+	* pr-output.cc (octave_print_internal): Ditto.
+
+	* balance.cc (Fbalance):
+	Handle new definition of TC_REP::string_value()
+	* colloc.cc (Fcolloc): Ditto.
+	* dassl.cc (Fdassl_options): Ditto.
+	* data.cc (Fstruct_contains): Ditto.
+	* dirfns.cc (Fmkdir): Ditto.
+	(Freaddir): Ditto.
+	(Frmdir): Ditto.
+	(Frename): Ditto.
+	* error.cc (handle_message): Ditto.
+	* file-io.cc (process_printf_format): Ditto.
+	(fopen_internal): Ditto.
+	(file_io_get_file): Ditto.
+	(return_valid_file): Ditto.
+	(Flstat): Ditto.
+	(Fstat): Ditto.
+	(unlink_internal): Ditto.
+	(mkfifo_internal): Ditto.
+	(async_system_internal): Ditto.
+	(sync_system_internal): Ditto.
+	(execute_internal): Ditto.
+	(popen_internal): Ditto.
+	(fwrite_internal): Ditto.
+	(fread_internal): Ditto.
+	(do_printf): Ditto.
+	(do_scanf): Ditto.
+	* input.cc (get_user_input): Ditto.
+	* lsode.cc (Flsode_options): Ditto.
+	* npsol.cc (Fnpsol_options):Ditto.
+	* qpsol.cc (Fqpsol_options):Ditto.
+	* quad.cc (Fquad_options): Ditto.
+	* rand.cc (do_rand): Ditto.
+	* schur.cc (Fschur): Ditto.
+	* sysdep.cc (Fputenv): Ditto.
+	(Fgetenv): Ditto.
+	* timefns.cc (extract_tm): Ditto.
+	(Fstrftime): Ditto.
+	* toplev.cc (Fsource): Ditto.
+	(eval_string): Ditto.
+	(Fsystem): Ditto.
+	* tree-plot.cc (subplot::handle_plot_data): Ditto.
+	* variables.cc (is_valid_function): Ditto.
+	(Fis_global): Ditto.
+	(Fexist): Ditto.
+	(builtin_string_variable): Ditto.
+	* utils.cc (make_argv): Ditto.
+	(Fundo_string_escapes): Ditto.
+
+Mon Jan  8 01:54:50 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-bin): Use $(LN_S), not just ln.
+
+	* variables.cc (octave_fcn_file_dir): New function.
+	* tree-expr.cc (mark_as_system_fcn_file): Use it instead of
+	octave_lib_dir.
+
+	* Makefile.in (clean): If $(SHARED_LIBS), also remove shared libs.
+
+	* pr-output.cc (set_format (const ComplexMatrix&, int&, int&)):
+	Unconditionally call all_elements_are_int_or_inf_or_nan().
+	(set_format (const Matrix&, int&, int&)): Likewise.
+
+Sun Jan  7 19:12:39 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (oct_putenv): New function.
+	* sysdep.cc (Fputenv): Use oct_putenv.
+	* octave.cc (initialize_globals): Likewise.
+
+Sat Jan  6 23:22:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc (Fputenv): New function.
+
+	* input.cc (initialize_readline): Call rl_initialize() here.
+
+	* octave.cc: Conditionally define atexit to be on_exit here.
+	* toplev.cc: Not here.
+
+Fri Jan  5 14:01:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc: Don't include <pwd.h> here.
+
+	* octave-hist.cc, tree-plot.cc, utils.cc: Do include "sysdep.h".
+
+	* dirfns.cc, file-io.cc, help.cc, load-save.cc, octave.cc,
+	octave-hist.cc, tree-plot.cc, utils.cc:
+	Don't include <readline/tilde.h>.
+	* sysdep.h: Do include it here.
+
+	* tree-const.cc (TC_REP::assign (tree_constant&, Octave_object&)):
+ 	If we have a matrix or range, call maybe_mutate before returning.
+
+Sun Dec 31 15:56:18 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* npsol.cc (Fnpsol): Improve doc string.
+	* qpsol.cc (Fqpsol): Likewise.
+
+Fri Dec 29 21:46:58 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun-dld.h: Make work again for OCTAVE_LITE and
+	WITH_DYNAMIC_LINKING.
+
+	* Makefile.in: Handle shared libraries.
+
+Wed Dec 27 17:47:51 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-oct-links: New file.
+	* Makefile.in (install-oct): Use it.
+	* f-*.cc: Rename to *.cc.
+
+	* Makefile.in (install-bin, install-lib, install-oct): New targets.
+	(install): Use them.
+
+Tue Dec 26 21:38:22 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (reading_startup_message_printed): Move initialization
+	here and make extern.
+
+	* dirfns.cc, dynamic-ld.cc, help.cc, input.cc, octave-hist.cc,
+	octave.cc, sighandlers.cc, sysdep.cc, tree-expr.cc, tree-misc.cc,
+	utils.cc, variables.cc, parse.y, lex.l: Include toplev.h instead
+	of octave.h.
+	* toplev.h: rename from octave.h.
+
+	* octave.cc (main): Delete unused variable saved_sigint_handler.
+
+Sun Dec 24 00:26:54 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc: Massive re-write to handle dlopen/dlsym and
+	shl_load/shl_findsym methods of dynamic linking.
+
+	* utils.cc (get_fcn_file_names): Check for .oct files if
+	WITH_DYNAMIC_LINKING, not WITH_DLD.
+
+	* Makefile.in (LIB, TERMLIBS): Substitute values.
+	(octave): Add $(LIBS) to link command and use $(TERMLIBS) instead
+	of -ltermcap.
+
+Sat Dec 23 21:56:12 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.h, dynamic-ld.cc: Remove old unused code.
+
+	* variables.cc (load_fcn_from_file):
+	Always call load_octave_oct_file.
+
+Wed Dec 20 00:56:57 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (set_real_format, set_real_matrix_format,
+	set_complex_format, set_complex_matrix_format, set_range_format):
+	New functions.  Ensure the count of the digits to the right of the
+	decimal point is positive.
+
+	* xpow.cc (xpow (const Matrix&, double)): Print warning if
+	inverting singular matrix (but return value anyway, in the name of
+	compatibility).
+	xpow (const ComplexMatrix&, double)): Likewise.
+
+	* f-inv.cc (Finv): If matrix is singular, return result anyway, in
+	the name of compatibility.
+
+	* symtab.cc (symbol_record::pop_context):
+	Don't assert (! context.empty ()).
+
+	* tree-const.cc (TC_REP::char_matrix_value): Don't complain about
+	type conversion if object is an empty matrix.f
+	(TC_REP::assign): If rhs is a string, don't convert to numeric
+	type if rhs is empty or "".
+	Only widen if rhs is not empty.
+	Don't return 0x0 char_matrix if it is supposed to be a string.
+	
+	* arith-ops.h, mappers.h, pr-output.h, xdiv.h, xpow.h: Include
+	oct-cmplx.h in place of forward declaration for class Complex.
+
+	* pr-output.cc, mappers.cc, arith-ops.cc, xdiv.cc, xpow.cc,
+	utils.cc: Include "oct-cmplx.h" instead of <Complex.h>.
+
+	* octave.cc (initialize_error_handlers): Don't call
+	set_Complex_error_handler().
+	(octave_Complex_error_handler): Delete unused function.
+	Delete declaration for set_Complex_error_handler().
+
+	* sighandlers.cc (catch_interrupts): New function.
+	* octave.cc (main): Call catch_interrupts() instead of calling
+	octave_set_signal_handler() directly.
+
+Tue Dec 19 03:22:37 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (looks_like_octave_copyright): Also recognize the
+	string " This program is free software".
+
+Thu Dec 14 01:54:06 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave-hist.cc (clean_up_history): Only write history file if
+	user_pref.saving_history.
+
+	* octave-hist.cc (initialize_history, clean_up_history,
+	do_history): Perform tilde expansion on history file name.
+
+	* octave.cc (main): Check `defined (HAVE_ON_EXIT)' not just
+	`(HAVE_ON_EXIT)'.
+
+	* user-prefs.h (user_preferences): New fields, `history_file' and
+	`history_size'.
+	* user-prefs.cc (init_user_prefs): Initialize them.
+	(sv_history_file, history_size): New functions.
+	* variables.cc (install_builtin_variables): Initialize user-level
+	variables history_file and history_size.
+	* octave-hist.cc (default_history_size): Now extern.
+	(default_history_file): Likewise.
+	(octave_hist_size, octave_hist_file): Use user preference
+	variables instead.
+	* octave.cc (main): Call initialize_history after
+	execute_startup_files.
+
+Fri Dec  8 15:53:59 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* user-prefs.h (user_preferences): New field, `saving_history'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(saving_history): New function.
+	* variables.cc (install_builtin_variables): Initialize user-level
+	variable saving_history.
+	* octave.cc (parse_and_execute): Don't reset value of
+	saving_history here.
+	(main) Use user_pref.saving_history instead of saving_history.
+	* variables.cc (parse_fcn_file): Likewise.
+	* octave-hist.cc (maybe_save_history): Likewise.
+	Don't save history if input_from_startup_file.
+
+Mon Nov 27 23:05:52 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* resource.cc: Include systime.h before <sys/resource.h>.
+
+Tue Nov 14 14:09:40 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc: Include cstring.
+
+	* tree-expr.cc (print_code): Decrement indent level after printing
+	function body.
+
+	* Makefile.in: Remove references to oct-str.cc, oct-str.h, and
+	Array-string.cc.
+
+	* tree-const.h: Don't include oct-str.h.
+
+Mon Nov  6 11:16:49 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (make_plot_command, finish_colon_expression,
+	make_unwind_protect, make_try_command, make_for_command,
+	make_break_command, make_continue_command, make_return_command,
+	start_if_command, finish_if_command, make_elseif_clause,
+	make_simple_assignment, make_multi_val_ret, start_function_def,
+	frob_function_def, finish_function_def, start_matrix,
+	finish_matrix):  New functions.  Use them in the grammar to clean
+	things up a bit.  Possibly convert matrix lists, colon
+	expressions, binary expressions, and unary expressions to constant
+	values.
+	(tree_matrix_type): Delete.
+	(simple_expr1): Handle all expression stuff here, including
+	assignments.
+	(simple_expr): Just check to see that simple_expr1 produced
+	something useful.
+
+	* tree-plot.cc, tree-plot.h: Move most simple constructors to the
+	header file.
+
+	* tree-expr.h (tree_expression::is_constant): Move virtual
+	function definition here.
+	(tree_fvc::is_constant): From here.
+	(tree_expression::is_matrix_constant): New virtual function.
+	(tree_expression::is_range_constant): New virtual function.
+	* tree-expr.cc (tree_matrix::is_matrix_constant): New function.
+	* tree-expr.cc (tree_colon_expression::is_range_constant): New
+	function.
+
+Fri Nov  3 03:42:04 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc, utils.h (jump_to_top_level): Declare as extern "C".
+
+	* tree-const.h (tree_constant::eval ()): Only mutate if printing.
+
+	* tree-const.cc (TC_REP::tree_constant_rep (const Complex&),
+	TC_REP::tree_constant_rep (const ComplexMatrix&),
+	TC_REP::tree_constant_rep (const ComplexDiagMatrix&),
+	TC_REP::tree_constant_rep (const ComplexRowVector&),
+	TC_REP::tree_constant_rep (const ComplexColumnVector&)):
+	Also check to see if we can convert to scalar_constant, not just
+	complex_scalar_constant.
+
+	* user-prefs.h (user_preferences): New field, `exec_path'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(sv_exec_path): New function.
+	* variables.cc (install_builtin_variables): Add DEFUN for EXEC_PATH.
+	(default_exec_path): New function.
+	* octave.cc (exec_path): New global variable.
+	Don't set and putenv() exec path here.
+	(long_opts): Add --exec-path option.
+	(main): Handle it.
+	(initialize_globals): Set default value here.
+
+	* user-prefs.h (user_preferences): New field, `info_prog'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(sv_info_prog): New function.
+	* variables.cc (install_builtin_variables): Add DEFUN for INFO_PROGRAM.
+	(default_info_prog): New function.
+	* octave.cc (info_prog): New global variable.
+	(initialize_globals): Set default value here.
+	(long_opts): Add --info-prog option.
+	(main): Handle it.
+	* help.cc (try_info): Use user_pref.info_prog here.
+
+	* octave.cc (initialize_globals): Put arch_dir and bin_dir ahead
+	of shell_path when resetting PATH.
+
+Thu Nov  2 04:30:13 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-rand.cc (Frandn): New function.
+	(do_initialization): New function.
+	(do_rand): New function for doing the real work.
+	(Frand): Use it.
+
+	* octave.cc (parse_and_execute): New arg, warn_for.  If given,
+	print message if file cannot be opened.
+	Set curr_fcn_file_full_name here. 
+	(Fsource): Pass extra arg to parse_and_execute to get warning message.
+
+	* tree-const.h: Handle line and column info for double, Complex,
+	and char* constants.
+
+	* parse.y (maybe_convert_to_ans_assign): Pass along line and
+	column info from expression.
+
+	* parse.y (make_constant): New function.
+	(simple_expr1, word_list): Use it.
+	
+	* input.cc, input.h (curr_fcn_file_full_name): New global.
+	* variables.cc (load_fcn_from_file): Set it here.
+	* parse.y (func_def2, yyerror, maybe_warn_missing_semi): Use it.
+	(func_def2): If !reading_fcn_file, don't call strcmp if
+	curr_fcn_file_name is 0.
+
+	* octave.cc (Fsource): New function.
+	(parse_and_execute): Declare file name const char *.
+	* input.cc (get_input_from_file): Likewise.
+
+Wed Nov  1 13:54:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-filter.cc: New file.
+	* Makefile.in (DLD_SRC): Add it to the list.
+
+	* sysdep.h (gethostname): Change declaration to match definition
+	in sysdep.cc.
+
+	* resource.cc: Include sysdep.h here, for octave_NaN.
+
+Tue Oct 31 02:12:18 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.cc (TC_REP::assign): After converting rhs to a
+	numeric type, use the converted value, not the original.
+
+	* dirfns.cc (Fpwd): If nargout == 0, print the directory name
+	instead of returning it.
+
+	* pager.cc (maybe_page_output): Call maybe_write_to_diary_file here.
+	(flush_output_to_pager): Not here.
+
+Mon Oct 30 23:39:43 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (install_builtin_commands): Add DEFVAR for
+	echo_executing_commands.
+
+	* octave-hist.cc (do_edit_history): Handle new echo stuff.
+	* variables.cc (parse_fcn_file): Likewise.
+	* octave.cc (parse_and_execute): Likewise.
+	(main): Likewise.
+	* input.cc (do_input_echo):
+	(Fecho): New function.
+	
+	* tree-expr.cc (tree_function::print_code_function_header,
+	tree_function::print_code_function_trailer): New functions.
+	(tree_function::print_code): Use them.
+	(tree_function::eval): Likewise, if echoing commands.
+	* tree-misc.cc (tree_statement::maybe_echo_code): New function.
+
+	* user-prefs.h (user_preferences): New field, echo_executing_commands.
+	(echo_state): New enum, for various types of echoing we do.
+	* user-prefs.cc (echo_executing_commands): New function.
+
+	* tree-base.cc (print_code_indent): Print PS4 as line prefix.
+	* help.cc (Ftype): Add unwind_protect for ps4 and set it to ""
+	before printing code.
+
+	* tree-misc.h (tree_statement_list): New field, function_body.
+	(tree_statement_list::mark_as_function_body): New function.
+	* parse.y (func_def3): Mark function bodies.
+
+	* pr-output.cc (octave_print_internal): Undo string escapes when
+	printing charMatrix as strings.
+
+Sat Oct 28 17:38:29 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.h (undo_string_escapes): Add missing const in declaration.
+
+Fri Oct 27 03:49:44 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (next_available_file_number): New stack for keeping
+	track of next available file number.
+	(get_next_avail_file_num): New function.
+	(fopen_file_for_user, fopen_internal, popen_internal,
+	execute_internal): Use it.
+
+Mon Oct 23 07:00:09 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.cc (TC_REP::convert_to_matrix_type,
+	tree_constant::convert_to_matrix_type): New arg, make_complex.
+	(TC_REP::set_index): New arg, rhs_is_complex.  Pass it to
+	convert_to_matrix_type.
+	(TC_REP::assign): Pass rhs.is_complex_type() to set_index.
+
+Thu Oct 19 00:38:38 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xpow.cc: Include <climits>.
+
+	* sysdep.cc (Fpause): Do pause even if not interactive.
+
+	* tree-const.cc (TC_REP::assign): Don't make RHS numeric if both
+	RHS and LHS are strings.
+
+Wed Oct 18 22:19:16 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-expm.cc (Fexpm): Avoid taking log of negative number.  Also,
+	don't unnecessarily divide the input matrix by 1.0.
+
+	* input.cc (decode_prompt_string): Recognize \[ and \] too.
+	(initialize_readline): Bind M-p to history-search-backward and M-n
+	to history-search-forward.
+
+Tue Oct 17 04:31:06 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xpow.cc (xpow): Handle integer powers better for complex^double.
+	(elem_xpow): Likewise.
+
+	* lex.l ({CCHAR}): If nesting_level.top() is BRACE, return ';',
+	not '\n'.
+
+Mon Oct 16 19:03:45 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (Fwhich): Fix doc string.
+
+	* variables.cc (Fexist): Update doc string.
+
+Sun Oct 15 22:19:16 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Another massive set of changes to support character matrices
+	with indexing.  The Octave_str_object class is no longer used.
+	Anything having to do with Octave_str_object in the following
+	files has been changed to use charMatrix instead: octave.h,
+	load-save.cc, octave.cc, strfns.cc, data.cc, pr-output.h,
+	pr-output.cc, tree-const.h, dirfns.cc, tree-const.cc,
+	tree-expr.cc.
+
+Sat Oct 14 22:28:18 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-sort.cc (mx_sort): Don't attempt to sort vectors that have
+	only one element, or matrices that have only one row.
+
+Thu Oct 12 02:16:58 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mappers.cc (install_mapper_functions): Add gammaln as an alias
+	for lgamma.
+
+	* tree-const.h, tree-const.cc: Massive overhaul of indexing and
+	indexed assignment functions.
+	* tc-inlines.h, tc-rep.h: Remove files.
+	* Makefile.in: Remove mention of them here too.
+
+	* Makefile.in: Include $(TI_SRC) in DEP_SOURCES_3, not
+	$(TI_SOURCES).
+	Include $(DLD_SRC) in DEP_SOURCES_3.
+	Include $(TI_SRC) in DEF_FILES_5.
+
+Wed Oct 11 01:26:18 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (INCLUDES): Remove tc-inlines.h and tc-rep.h from
+	the list.
+
+Mon Oct  9 08:31:04 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (next_token_is_bin_op): Do match `.+', `.*', etc.
+
+Sun Oct  8 18:19:56 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.h, idx-vector.cc: Delete files.
+	* Makefile.in (SOURCES, INCLUDES): Remove them from lists.
+
+Fri Oct  6 00:52:06 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-svd.cc (Fsvd): If nargout == 0 or nargout == 1, don't ask for
+	U and V.
+
+Wed Oct  4 00:04:57 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-npsol.cc (Fnpsol, Fnpsol_options): Avoid unused variable
+	warnings if NPSOL_MISSING.
+	* f-qpsol.cc (Fqpsol, Fqpsol_options): Likewise for QPSOL_MISSING.
+
+	* Makefile.in (DISTFILES): Add octave.gperf.
+
+	* lex.l (next_token_is_bin_op): Don't ever return true for `.'
+	since that causes problems with things like [ .1 .1 ].
+
+Tue Oct  3 05:30:24 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (is_valid_function): Avoid setting error_state if
+	argument is not a string.
+
+	* parse.y (maybe_warn_missing_semi): New function.
+	(list1, list): Call it if statement not terminated by semicolon.
+	* tree-misc.h (tree_statement::line, tree_statement::column):
+	New functions.
+	* octave.cc (input_from_command_line_file): New global variable.
+	(main): Set it.
+	(parse_and_execute): Unwind-protect it and set it to zero.
+	(eval_string): Likewise.
+	* variables.cc (parse_fcn_file): Likewise.
+
+	* user-prefs.cc (warn_missing_semicolon): New function.
+	* user-prefs.h (user_preferences): New field, warn_missing_semicolon.
+	* variables.cc (install_builtin_variables): DEFVAR it.
+	
+	* tree-expr.cc (tree_expression::is_logically_true): Actually use
+	argument.
+
+Mon Oct  2 19:55:48 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (install_builtin_variables): Reduce the default
+	value of save_precision to 15.
+
+	* variables.cc (builtin_real_scalar_variable): Return 1 for
+	success, 0 for failure.
+
+	* user-prefs.cc (struct_levels_to_print, set_save_precision,
+	set_output_max_field_width, set_output_precision):
+	Change sense of test for builtin_real_scalar_variable return value.
+	(check_preference): Rename from check_str_pref.  Change all callers.
+	Accept value of 0 to be the same as "false" and nonzero to be the
+	same as "true".
+	Delete val to avoid memory leak.
+	* variables.cc (install_builtin_variables): Change initial values
+	from "true" to 1, "false" to 0.
+
+	* variables.cc (install_builtin_variables): Add DEFVAR for
+	gnuplot_has_multiplot.
+
+	* user-prefs.h (user_preferences): New field,
+	`gnuplot_has_multiplot'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(gnuplot_has_multiplot): New function.
+
+Sat Sep 30 16:52:57 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-gperf.h, octave.gperf: Newfiles.
+	* Makefile.in (DISTFILES): Add octave.gperf.
+	(INCLUDES): Add oct-gperf.h.
+	(oct-gperf.h): New rule.
+	(local-dist, dist): Depend on oct-gperf.h.
+	* lex.l (is_keyword): Use perfect hash function to lookup
+	keywords.
+
+Fri Sep 29 04:36:04 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_NAME_AND_VERSION): Add TARGET_HOST_TYPE to this.
+
+Thu Sep 28 00:03:51 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-expr.cc (tree_expression::is_logically_true): New function.
+	* tree-cmd.cc (tree_while_command::eval): Use it instead of
+	handling the test directly here.
+	* tree-misc.cc (tree_if_clause::eval): Likewise
+
+	* tree-const.cc (TC_REP::force_numeric): Don't try to print value
+	of str_obj with %s.
+
+	* error.cc (buffer_error_messages): Rename from
+	suppress_octave_error_messages.
+	(error_message_buffer): New global variable.
+	(verror): Handle buffering of messages.
+	(handle_message): New function.
+	(Ferror, Fwarning, Fusage): Use it instead of duplicating code.
+
+	* octave.cc (Feval): Buffer error messages instead of supressing them.
+
+	* lex.l (is_keyword): Recognize `try', `catch', and `end_try_catch'.
+	* parse.y (TRY, CATCH): New tokens.
+	(command): Recognize try-catch block.
+	(end_error): Add cases for unwind_protect_end and try_catch_end.
+	* token.h (end_tok_type): New field, try_catch_end.
+	* tree-cmd.h, tree-cmd.cc (tree_try_catch): New class.
+	* variables.cc (bind_global_error_variable): New Function.
+	(clear_global_error_variable): Likewise.
+	(install_builtin_variables): Add DEFCONST for __error_text__.
+	* help.cc (keywords): Add `try', `catch', and `end_try_catch'.
+
+	* tree-cmd.cc (tree_unwind_protect::eval): Undo previous change.
+
+	* dirfns.cc (Freaddir, Fmkdir, Frmdir):
+	Do tilde expansion on the argument.
+
+Tue Sep 26 00:10:29 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* f-dassl.cc, f-fsolve.cc, f-lsode.cc, f-npsol.cc, f-quad.cc:
+	Don't try to figure out if the user-supplied functions take the
+	correct number of arguments.  Simply let the call fail.
+	* variables.cc (takes_correct_nargs): Delete unused function.
+	* tree-expr.cc (tree_builtin::eval): Don't complain for too many
+	arguments to mapper functions.
+	* tree-expr.h, tree-expr.cc (tree_builtin, tree_function, tree_fvc):
+	Delete unused function max_expected_args.
+
+	* defun.h (DEFUN): Delete unnecessary args nargin_min and nargout_max.
+	New arg unused_arg_flags.
+	(DEFUN_TEXT): Likewise.
+	* defun-dld.h (DEFUN_DLD_BUILTIN): Likewise.
+	* defun-int.h (DEFUN_INTERNAL, DECLARE_FUN, DEFINE_FUN_STRUCT):
+	Do the real work.
+
+	* data.cc, dirfns.cc, dynamic-ld.cc, error.cc, f-balance.cc,
+ 	f-chol.cc, f-colloc.cc, f-dassl.cc, f-det.cc, f-eig.cc, f-expm.cc,
+ 	f-fft.cc, f-fft2.cc, f-find.cc, f-fsolve.cc, f-fsqp.cc,
+ 	f-givens.cc, f-hess.cc, f-ifft.cc, f-ifft2.cc, f-inv.cc, f-log.cc,
+ 	f-lpsolve.cc, f-lsode.cc, f-lu.cc, f-minmax.cc, f-npsol.cc,
+ 	f-pinv.cc, f-qpsol.cc, f-qr.cc, f-quad.cc, f-qzval.cc, f-rand.cc,
+ 	f-schur.cc, f-sort.cc, f-svd.cc, f-syl.cc, file-io.cc, help.cc,
+ 	input.cc, lex.l, load-save.cc, mappers.cc, octave-hist.cc,
+ 	octave.cc, octave.h, pager.cc, pr-output.cc, resource.cc,
+ 	sighandlers.cc, strfns.cc, sysdep.cc, timefns.cc, token.cc,
+ 	tree-const.cc, tree-expr.cc, tree-expr.h, tree-plot.cc,
+ 	unwind-prot.cc, unwind-prot.h, utils.cc, variables.cc,
+ 	variables.h, version.h, xdiv.cc:
+	Avoid unused variable warnings.
+
+	* tree-expr.h (tree_oct_obj::print_value (ostream&)):
+	Delete name of unused arg.
+	(tree_fvc::save (ostream&, int, int): Likewise.
+
+	* tree-const.h (tree_constant::tree_constant (magic_colon)):
+	Delete name of unused arg.
+	(tree_constant::tree_constant (all_va_args)): Likewise
+	(ColumnVector vector_value (int, int)): Likewise.
+	(ComplexColumnVector vector_value (int, int)): Likewise.
+	(Octave_object::eval (int, int, const Octave_object&): Likewise.
+
+	* octave.cc (execute_startup_files): Look for octaverc first in
+	site/m, then in $(version)/m.
+	* variables.cc (get_local_site_defaults): New function.
+	* defaults.h.in (OCTAVE_LOCALFCNFILEDIR, OCTAVE_LOCALSTARTUPFILEDIR):
+	New macros.
+	* Makefile.in (defaults.h): Also substitute ${localfcndir}.
+
+Mon Sep 25 17:01:03 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (install_builtin_variables): Add DEFCONST for "e".
+
+Fri Sep 22 02:18:45 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dirfns.cc (Fls): Delete ls_command after using it, not before.
+
+	* input.h, input.cc (gnu_readline): Don't declare gnu_readline
+	`extern "C"'.
+
+	* sysdep.h: Only declare gethostname if it is missing, then don't
+	declare it `extern "C"'.
+
+	* dirfns.cc: Don't declare strerror().
+
+	* input.cc (command_generator): Use malloc, not xmalloc.  Don't
+	declare xmalloc.
+	(gnu_readline): Don't declare this `extern "C"'.
+
+	* octave-hist.cc: Don't declare history_get().  It is now in
+	readline/history.h.
+
+	* input.cc: Don't declare history_get().  It is now in
+	readline/readline.h.
+
+	* resource.cc: Don't surround include of sys/resource.h in
+	`extern	"C" { }'.
+
+	* fnmatch.h [__cplusplus]: Surround contents in `extern "C" { }'.
+	* load-save.cc, symtab.cc, variables.cc: Don't surround
+	fnmatch.h include in `extern "C" { }'.
+
+	* help.cc: Don't #undef __FUNCTION_DEF before including
+	readline/tilde.h.
+
+	* dirfuns.cc, file-io.cc, help.cc, load-save.cc, octave-hist.cc,
+	sysdep.cc, tree-plot.cc, utils.cc, variables.cc:
+	Don't surround readline includes in `extern "C" { }'.
+
+	* sysdep.cc: Move all include statements to top of file.
+
+Tue Sep 19 01:58:21 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (Fsystem): Use iprocstream *, and unwind_protect it.
+	* pager.cc (flush_output_to_pager): Likewise.
+	* dirfns.cc (Fls): Likewise.
+	* tree-plot.cc (plot_stream): Now a pointer.
+	(open_plot_stream): Deal with it.
+	(send_to_plot_stream, cleanup_tmp_files, do_external_plotter_cd):
+	Likewise.
+
+	* procstream.cc (cleanup_iprocstream, cleanup_oprocstream):
+	New functions. 
+
+	* procstream.h, procstream.cc (class iprocstream, class oprocstream):
+	Keep track of pbuf.  Initialize it to 0 in default constructors,
+	delete it in destructor.  Don't call close in destructor.
+
+	* sighandlers.cc (octave_set_signal_handler): New function.
+	Use this name instead of signal everywhere.
+	* help.cc (try_info): Likewise.
+	* pager.cc (flush_output_to_pager): Likewise.
+	* octave.cc (main): Likewise.
+	* octave-hist.cc (do_edit_history): Likewise.
+
+	* input.cc (initialize_readline): Set rl_paren_string_delimiters
+	to avoid treating single quotes as string delimiters when doing
+	paren matching.
+
+	* Makefile.in (SOURCES): Don't list Map.cc or SLStack.cc here.
+
+	* tree-const.cc: Do include utils.h.
+
+	* sysdep.cc: Don't surround terminal includes in extern "C".
+	Include them before readline.h.
+
+	* Map.h: Don't include utils.h.
+	(CHNode::CHNode (const char*, const C&, CHNode *t):
+	Do strsave() inline.
+
+	* input.cc (generate_possible_completions): Generate name list
+	even when text == 0.
+	(operate_and_get_next): Don't declare history_stifled, call
+	history_is_stifled () instead.
+	Don't declare history_length, or max_input_history either.
+	Check (where >= history_length - 1) too, as in recent versions of
+	bash.
+	
+	* user-prefs.h (user_prefs): New field, `completion_append_char'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(sv_completion_append_char): New function.
+	* variables.cc (install_builtin_variables): Install
+	completion_append_char.
+	* input.cc (command_generator): Use it.
+
+	* SLList-expr.cc, SLList-misc.cc, SLList-plot.cc, SLList-tc.cc,
+	DLList-fi.cc: Include config.h.
+	* DLList-fi.cc: Include file-info.h, not file-io.h.
+
+Mon Sep 18 11:01:24 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.h (clean_up_and_exit): Tag with NORETURN instead of using
+	typedef trick.
+	* error.h (panic): Likewise.
+	* utils.h (jump_to_top_level): Likewise.
+
+	* file-io.h: Protect from multiple includes with octave_file_io,
+	not octave_files.
+
+	* file-info.h (class file_info): Convert to using std C++ string
+	class from char *.
+	* file-info.cc: Likewise.  Don't include utils.h.
+	* file-io.cc (return_valid_file, fopen_file_for_user,
+	fflush_internal, do_scanf): Use operator ==, not strcmp.
+	(close_files): Call error with file.name ().data (),
+	not file.name ().
+	(freport_internal): Call form with file.mode ().data () and
+	file.name ().data ().
+
+	* file-io.cc, file-io.h: Extract file_info class.
+	* file-info.cc, file-info.h: New files for file_info class.
+
+	* user-prefs.h (user_prefs): New field, `beep_on_error'.
+	* user-prefs.cc (init_user_prefs): Initialize it.
+	(beep_on_error): New function.
+	* variables.cc (install_builtin_variables): Install beep_on_error.
+	* octave.cc (maximum_braindamage): Set beep_on_error to "true".
+	* error.cc (verror): Conditionally beep.
+	(error): Don't reset error_state until after verror is called.
+
+Sun Sep 17 16:41:25 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat_binary_data, read_ascii_data,
+	save_ascii_data, read_binary_data, save_binary_data):
+	Handle string arrays.
+
+Fri Sep 15 00:24:19 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* user-prefs.cc (struct_levels_to_print,
+	set_output_max_field_width, set_output_precision,
+	set_save_precision): Eliminate unecessary kludge variable.
+	
+	* variables.cc (gobble_leading_white_space): New arg,
+	in_parts.  Change all callers.
+
+	* lex.l (HELP_FCN): Delete start state.  The `help' command is now
+	handled the same as any other text-style function.
+
+	* gripes.cc (gripe_invalid_value_specified): New function
+	* user-prefs.cc: Use it.
+
+	* sysdep.cc (octave_words_big_endian): New global variable.
+	(ten_little_endians): New function.
+	(sysdep_init): Call it.
+	* load-save.cc (words_big_endian): Use this at run-time instead of
+	depending on WORDS_BIGENDIAN at compile-time.
+
+	* symtab.h (SYMTAB_VARIABLES): New macro.
+	* variables.cc (Fclear): Use it instead of just
+	symbol_def::USER_VARIABLE when looking for variables.
+
+	* octave.cc (main): If there is a file to execute, set
+	program_invocation_name and program_name to the name of the file
+	and argv to the remaining args.
+	(intern_argv): Only define argv if there are some remaining
+	arguments.
+
+	* defun.h (DEFVAR_INT): New macro.
+	(DEFVAR): Define in terms of DEFVAR_INT.  Delete args protect and
+	eternal.
+	(DEFCONST): New macro.
+	* variables.cc (install_builtin_variables): Use DEFCONST where
+	appropriate, change uses of DEFVAR to match new definition.
+
+	* variables.cc (bind_builtin_variable): New variant that accepts
+	const tree_constant& value.
+	(install_builtin_variables): Properly alphabetize DEFVAR for this.
+
+	* octave.cc (short_opts): Prefix with `+' to prevent argv
+	permutation.
+	(main): Don't use readline if forced_interactive.
+	(traditional): New file-scope variable.
+	(long_opts, usage_string, verbose_usage): Add `--traditional'.
+	(maximum_braindamage): New function.
+	(main): Call it if --traditional.
+
+	* input.cc (do_input_echo): Print prompt correctly when
+	forced_interactive is either true or false.
+
+Thu Sep 14 00:54:06 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Fstruct_elements): New function.
+
+	* file-io.cc (Fumask): New function.
+
+	* dirfns.cc (Fmkdir, Frmdir, Frename): New functions.
+
+	* Makefile.in: Add rules and dependencies for building safe-stat.o
+	and safe-lstat.o.
+
+	* mkdir.c, rename.c, rmdir.c: New files.
+	* Makefile.in (SOURCES): Include them in the list.
+
+	* safe-xstat.hin, safe-xstat.cin: New files
+	* Makefile.in (DISTFILES): Include them in the list.
+
+	* sighandlers.cc (octave_new_handler): Try to continue on memory
+	exhausted errors.
+	(sigfpe_handler): Improve error message.
+
+	* Makefile.in: Use `ifndef omit_deps', not `ifndef $(omit_deps)'.
+
+	* dirfns.cc (Freaddir): New function.
+
+	* f-sort.cc: Complete rewrite.  Now uses stable sort algorithm and
+	correctly handles complex matrices containing columns of all real
+	numbers.
+
+Wed Sep 13 03:16:40 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* arith-ops.cc: Unconditionally #define DIVIDE_BY_ZERO_ERROR.
+
+	* variables.cc (install_builtin_variables): Unconditionally
+	install NaN and nan.
+
+	* mappers.cc (xisinf): Don't do bogus things if isinf, isnan, or
+	finite are missing.
+	(xfinite): Likewise.
+
+	* sysdep.cc (octave_ieee_init): Don't set octave_NaN and
+	octave_Inf if values are not available.
+
+	* resource.cc (mk_ru_map): Don't use ru_ or tv_ as prefixes to
+	Octave names for the structure members.
+
+Tue Sep 12 02:04:16 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* procstream.h, procstream.cc: Rewrite.
+
+Mon Sep 11 18:42:05 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* filemode.c: New file, from Emacs.
+	* Makefile.in (SOURCES): Add it to the list.
+
+	* file-io.cc (Fstat, Flstat, mk_stat_map): New functions.
+
+	* timefns.cc (mk_tm_map): Don't use tm_ as prefix to Octave names
+	for these structure members.
+	(extract_tm): Likewise.
+	(Flocaltime): Fix doc string to match.
+
+Thu Sep  7 02:04:27 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_user_variables): New function.
+	* sighandlers.cc (my_friendly_exit): Call it before exiting.
+	(sigfpe_handler): New function.
+	(install_signal_handlers) [__alpha__]: Install it.
+
+Wed Sep  6 14:35:10 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-cmd.cc (tree_unwind_protect::eval): Ignore errors and
+	suppress error messages while executing first block of
+	unwind_protect commands.
+
+	* parse.y (end_error): Add missing case for unwind_protect_end.
+
+	* tree-expr.cc (tree_builtin::eval): Complain if no arguments
+	given for mapper functions.
+	(tree_fvc::lookup_map_element): Print error message for invalid
+	structure reference.
+
+Tue Sep  5 02:04:12 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc, input.cc, load-save.cc, octave.cc, sysdep.cc,
+	variables.cc, octave-hist.cc, utils.cc, f-schur.cc, f-rand.cc,
+	f-quad.cc, f-qpsol.cc, f-npsol.cc, f-lsode.cc, f-fsolve.cc,
+	f-dassl.cc, f-colloc.cc, f-balance.cc, error.cc, data.cc:
+	Add const qualifiers where appropriate.
+
+	* dirfns.h: Include <ctime>, for time_t.
+
+	* tempname.c, file-io.cc, help.cc, input.cc, octave-hist.cc,
+	octave.cc, sighandlers.cc, sysdep.cc, tree-expr.cc, tree-misc.cc,
+	tree-plot.cc, utils.cc, variables.cc, sysdir.h:
+	Move #include <sys/type.h> inside #ifdef HAVE_UNISTD_H.
+
+	* syswait.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+	* file-io.cc, sighandlers.cc: Use it instead of including
+	sys/wait.h directly.
+
+	* octave.cc: Include statdefs.h, not sys/stat.h.
+
+	* sysdir.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+	* dirfns.cc, utils.cc: Use it instead of including the headers
+	directly.
+
+	* pathlen.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+	* dirfns.cc, input.cc: Use it instead of including sys/param.h
+	directly.
+	* utils.cc: Don't include sys/param.h
+
+Sun Sep  3 18:52:59 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.cc (TC_REP::string_value): Return const char*, not
+	char *.
+
+	* All .cc, .y, .l, .y files: Include <cctype>, not <ctype.h>, and
+	so on for all new C++ versions of these standard C headers.
+
+Thu Aug 31 17:09:38 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.h: Also hide `string'.
+
+	* oct-str.cc, oct-str.h: New files.
+	* Makefile.in: Add to the appropriate lists.
+	* tc-rep.h: Change char* to Octave_string* in anonymous union.
+	* tree-expr.cc (tree_matrix::eval): Handle multiple element strings.
+	* strfns.cc (toascii): Likewise.
+	* tree-const.cc (print_as_string): Likewise.
+	(TC_REP::force_numeric, TC_REP::rows, TC_REP::columns,
+	TC_REP::double_value, TC_REP::complex_value, TC_REP::matrix_value,
+	TC_REP::complex_matrix_value, TC_REP::convert_to_str): Likewise.
+	(TC_REP::print): Call octave_print_internal for string case.
+	(all_strings): New function.
+	Fix constructors to use new data structure.
+	* pr-output.cc (octave_print_internal): Add version for strings.
+	* Array-string.cc: New file.
+
+	* octave.cc (octave_argv): New global variable.
+	(intern_argv): New function.
+	(main): Fix argument parsing to do the right thing for arguments
+	to executable scripts.
+	* variables.cc: Add DEFUNs for argv, program_invocation_name, and
+	program_name.
+
+	* defun.h (DEFVAR): Fix comment.
+
+Thu Aug 24 00:02:00 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (fgets_internal): Make second arg optional.  Add
+	optional arg `strip_final_newline'.
+	(Ffgets): Change to match new definition of fgets_internal.
+	(Ffgetl): Implement using the new fgets_internal.
+
+	* f-rand.cc (Frand): Update code for sizing return value to match
+	that used by ones, zeros, and eye.
+
+Wed Aug 23 19:52:45 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.cc (do_vector_assign): Don't crash for
+	A(range) = scalar, or A(matrix) = scalar.
+
+	* f-dassl.cc (set_dassl_option): Rename from do_dassl_option.
+	(show_dassl_option): New function.
+	(Fdassl_options): Handle single arg.
+	* f-fsolve.cc (set_fsolve_option): Rename from do_fsolve_option.
+	(show_fsolve_option): New function.
+	(Ffsolve_options): Handle single arg.
+	* f-fsqp.cc (set_fsqp_option): Rename from do_fsqp_option.
+	(show_fsqp_option): New function.
+	(Ffsqp_options): Handle single arg.
+	* f-lpsolve.cc (set_lpsolve_option): Rename from do_lpsolve_option.
+	(show_lpsolve_option): New function.
+	(Flpsolve_options): Handle single arg.
+	* f-lsode.cc (set_lsode_option): Rename from do_lsode_option.
+	(show_lsode_option): New function.
+	(Flsode_options): Handle single arg.
+	* f-npsol.cc (set_npsol_option): Rename from do_npsol_option.
+	(show_npsol_option): New function.
+	(Fnpsol_options): Handle single arg.
+	* f-qpsol.cc (set_qpsol_option): Rename from do_qpsol_option.
+	(show_qpsol_option): New function.
+	(Fqpsol_options): Handle single arg.
+	* f-quad.cc: (set_quad_option): Rename from do_quad_option.
+	(show_quad_option): New function.
+	(Fquad_options): Handle single arg.
+	(Fquad): Doc fix.
+
+Tue Aug 22 00:38:05 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-plot.cc (do_external_plotter_cd): New function.
+	* dirfns.cc (octave_change_to_directory): New function.  If cd is
+	successful, also call do_external_plotter_cd().
+	(Fcd): Call octave_change_to_directory(), not change_to_directory().
+
+	* pr-output.cc (pr_any_float): Change declaration of counter to
+	size_t to avoid gcc warnings.
+
+	* idx-vector.cc, octave-hist.cc, tree-const.cc, tree-expr.cc,
+	tree-misc.cc, utils.cc, xpow.cc, Map.cc:
+	Update for change in for loop variable scope for gcc 2.7.0.
+
+Mon Aug 21 19:34:53 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* tree-const.cc (fortran_style_matrix_assignment): Properly handle
+	case of complex LHS, real RHS.
+
+	* Makefile.in: Only include dependency files if $(omit_deps) is
+	not set.
+
+Wed Jul  5 00:03:58 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc: Explicitly include string.h.
+
+Sun Jun 25 00:18:10 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* load-save.cc (too_large_for_float (const Matrix&)):
+	Extract elements as doubles, not Complex.
+
+Sat Jun 24 22:59:15 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* pr-output.cc (any_element_is_inf_or_nan): Declare extern, not static.
+	* f-svd.cc (Fsvd): Call here to avoid trying to take SVD of matrix
+	containing Inf or NaN values.
+
+	* pr-output.cc (bit_format): New file-scope variable.
+	(set_format, pr_any_float): Handle bit_format.
+	(octave_print_internal): Handle bit_format like bank_format.
+	(init_format_state): Initialize bit_format.
+	(set_format_style): Allow `format bit' and `format native-bit'.
+
+Thu Jun  8 15:20:26 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* mappers.cc (arg, imag, signum): If arg is NaN, return NaN.
+
+Mon May 15 14:47:04 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* pager.cc (Fdiary): Initialize diary_file here, not in the
+	file-scope declaration.
+
+	* tree-expr.cc (tree_index_expression::eval):
+	Handle nargin == 0 the same as other cases. 
+
+Tue May  2 10:02:23 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* load-save.cc (do_double_format_conversion): Add missing breaks.
+	(do_float_format_conversion): Likewise.
+
+Mon May  1 13:50:24 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile.in (OCTAVE_LIBS): Add @LIBPLPLOT@ to the list.
+
+	* timefns.cc (Ftime): Handle GETTIMEOFDAY_NO_TZ.
+
+	* Makefile.in (SOURCES): Delete tc-rep.cc, tc-rep-ass.cc, and
+	tc-rep-idx.cc from the list.
+
+	* tree-const.h: Add #pragma interface.
+	* tree-const.cc: Add contents of tc-rep.cc, tc-rep-ass.cc, and
+	tc-idx.cc to this file.  Add #pragma implementation.  This makes
+	tree-const.cc large, but makes the final binary smaller.
+	
+	*  unwind-prot.h unwind-prot.cc token.cc token.h procstream.cc
+	procstream.h idx-vector.cc idx-vector.h symtab.cc symtab.h
+	oct-map.cc oct-map.h oct-obj.cc oct-obj.h tree-plot.h tree-plot.cc
+	tree-misc.cc tree-misc.h tree-expr.cc tree-expr.h tree-cmd.cc
+	tree-cmd.h tree-base.cc tree-base.h:
+	Add #pragma interface/implementation.
+
+	* Makefile.in (OCTAVE_LIBS): Delete @LIBINFO@ from list.
+	* help.cc: Don't include info headers or extern declarations for
+	functions from info.
+	(try_info): Call info as a subprocess.	Delete second arg.
+	Handle SIGINT here, not in help_from_info().
+	(help_from_info): Complain if info doesn't work.
+
+	* defun-dld.h (DEFUN_DLD_BUILTIN) [OCTAVE_LITE && MAKE_BUILTINS]:
+	If ! WITH_DLD, simply emit a character string constant.
+
+Fri Apr 28 15:23:06 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* lex.l ({IDENT}{S}*): Don't delete tok.  That's handled by
+	strip_trailing_whitespace() now.
+	(<HELP_FCN>[^ \t\n]*{S}*|<TEXT_FCN>[^ \t\n\;\,]*{S}*): Ditto.
+
+	* pathsearch.h: Include kpathsea/progname.h.
+	* octave.cc (initialize_globals): Call kpse_set_progname().
+
+	* token.h: Declare copy constructor and operator = private.
+	* token.cc: Abort if copy constructor or operator = is used.
+
+Thu Apr 27 13:54:39 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tree-expr.cc (lookup_map_element): Don't list default argument
+	values here too.
+
+	* pr-output.cc (hex_format): New file-scope variable.
+	(set_format, pr_any_float): Handle hex_format.
+	(octave_print_internal): Handle hex_format like bank_format.
+	(init_format_state): Initialize hex_format.
+	(set_format_style): Allow `format hex' and `format native-hex'.
+
+	* variables.cc (bind_ans): Create ans_id each time with new and
+	ask tree_simple_assignment_expression to handle cleaning it up.
+	This apparently plugs a memory leak.
+
+	* help.cc (Ftype): Don't try to print map constants.  Handle
+	references to structure members.
+
+Wed Apr 26 12:40:59 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* input.cc (generate_struct_completions): New function.
+	(generate_possible_completions): Likewise.
+	(looks_like_struct): Likewise.
+	(command_generator): Handle completion of struct variables.
+
+	* tree-expr.h, tree-expr.cc (tree_fvc::lookup_map_element):
+	Add insert and silent args.
+
+	* oct-map.cc: New file.
+	* Makefile.in (SOURCES): Add it to the list.
+
+Mon Apr 24 09:41:02 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* variables.cc (Fexist): Handle structure references too.
+
+	* tree-const.cc (lookup_map_element (const char*, int, int):
+	New function.
+	(lookup_map_element (SLList<char*>&, int, int): New arg, silent.
+	* tc-rep.cc (lookup_map_element): New arg, silent. If nonzero,
+	don't call error().
+
+	* tc-rep.h (is_empty): Define here.
+	* tree-const.h (is_empty): Hand off to TC_REP::is_empty().
+
+	* data.cc (Fstruct_contains): Call lookup_map_element on args(0)
+	instead of extracting the map and calling contains() on it.
+
+	* parse.y (EPLUS, EMINUS): New tokens.
+	(simple_expr): Handle EPLUS, EMINUS the same as `+' and `-'.
+	* lex.l (".+", ".-"): New patterns.  Match these separately to
+	disallow using them as unary operators.
+
+	* lex.l (next_token_is_bin_op): Simplify by noting that spacing
+	only matters for those tokens that can also be unary ops.
+
+Fri Apr 21 14:34:45 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* load-save.cc (read_ascii_data): Allow reading of empty
+	matrices. 
+
+	* tc-rep-ass.cc (vector_assignment): Only assert that we are not
+	doing fortran-style indexing and that nr <= 1 || nc <= 1.
+	(do_vector_assign): Handle assignment of [] when one dimension is
+	zero and the other is anything.
+
+Thu Apr 20 13:56:21 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tc-rep-ass.cc (delete_rows, delete_columns): Simply return if
+	num_to_delete is 0.
+
+	* lex.l (handle_identifier): Don't match plot option keywords
+	inside parentheses or braces.
+
+	* variables.cc (parse_fcn_file): Also delete tmp_help_txt if
+	running a script.
+
+	* tree-cmd.h (tree_command): Add destructor.
+
+	* tree-expr.h tree_simple_assignment_expression (lhs_idx_expr):
+	Hang on to idx_expr, not just its parts so it can be deleted.
+	(init): Initialize it.
+	* tree-expr.cc (~tree_simple_assignment_expression): Delete it.
+
+	* tree-expr.h (tree_multi_val_ret, tree_oct_obj, tree_fvc,
+	tree_identifier, tree_builtin, tree_function): Add destructors.
+	* tree-expr.cc (tree_function::~tree_function): Delete some stuff.
+
+	* tree-misc.h (tree_va_return_list): Add destructor.
+
+	* octave.cc (__builtin_new, __builtin_delete): Provide our own,
+	for debugging.
+
+	* utils.cc (strconcat): Don't depend on the return value from
+	strcat.
+	(file_in_path): Simplify logic.
+
+	* parse.y (maybe_convert_to_ans_assign): Create ans_id each time
+	with new and ask tree_simple_assignment_expression to handle
+	cleaning it up.  This apparently plugs a memory leak.
+
+	* lex.l (strip_trailing_whitespace): Declare retval static.
+	Delete it before saving next string.
+
+	* error.cc (Ferror): Do call error() for empty string args.
+	(error_1): Don't print anything if fmt is "" or "\n", but do set
+	the error state appropriately.
+
+	* tree-cmd.cc (tree_unwind_protect::eval): Handle return and break
+	in the `try' part of the statement.
+
+Mon Apr 10 19:29:44 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* f-expm.cc, f-givens.cc, f-qzval.cc, f-syl.cc, f-rand.cc:
+	Where appropriate, declare Fortran functions to take reference
+	instead of pointer args.  Change callers.
+
+	* mappers.cc: Declare Fortran functions to take reference instead
+	of pointer args.  Change callers.	
+
+	* gamma.c, lgamma.c, erfc.c, erf.c, atanh.c, asinh.c, acosh.c:
+	Declare Fortran functions to take reference instead of pointer
+	args.
+
+Sun Apr  9 19:38:53 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* file-io.cc (Fpopen, Fpclose, Fexecute, Fsync_system,
+	Fasync_system, Fwaitpid, Fmkfifo, Funlink): New functions.
+
+	* sighandlers.cc (sigchld_handler): New function.
+	(install_signal_handlers): Add call to install
+	sigchld_handler. (This is #if 0'd out, waiting for code to help
+	determine which child exited and what to do about it).
+
+	* tree-expr.h (tree_oct_obj): New class.
+
+	* tree-expr.h (tree_multi_assignment_expression::preserve): New
+	data member.  Add arg with default value to constructors.  Change
+	callers as necessary.
+	* tree-expr.cc (~tree_multi_assignment_expression): Conditionally
+	delete lhs.
+
+	* parse.y (make_multi_val_ret): Pass matrix instead of getting it
+	from the global matrix list.
+	(expression): Extract matrix from matrix list before calling
+	make_multi_val_ret().
+
+	* parse.y (command): Handle new for loop syntax for structures.
+
+	* tree-plot.h (subplot_list): Include tree_print_code() in
+	initializer lists for constructors.
+	* tree-expr.h (tree_statement_list, tree_argument_list,
+	tree_parameter_list, tree_return_list, tree_global_init_list,
+	tree_if_command_list, ): Likewise.
+
+	* tree-cmd.h (tree_for_command::id_list): New data member.
+	(tree_for_command (tree_return_list*, tree_expression*,
+	tree_statement_list*, int, int)): Likewise.
+	* tree-cmd.cc (tree_for_command::eval): Handle for loops with
+	structures.
+	(do_for_loop_once (tree_return_list*, Octave_object&, int&)):
+	New form for handling for loops with structures.
+
+	* sysdep.cc (octave_ieee_init): Determine floating point format
+	here.
+	(native_float_format): New global variable.
+	(Fisieee): Compute return value from native_float_format, not by
+	using preprocessor macros.
+	* sysdep.h (enum floating_point_format): Move declaration here.
+	* load-save.cc: From here.
+	Always define all floating point format conversion routines.
+	(do_double_format_conversion, do_float_format_conversion):
+	Use native_float_format instead of preprocessor macros.
+
+Sat Apr  8 15:41:35 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile (TEMPLATE_SRC): New variable.
+	(DISTFILES): Add $(TEMPLATE_SRC).
+	(SOURCES): Delete Map.cc and SLStack.cc from here.
+
+	* variables.cc (install_builtin_variables): Use OCTAVE_VERSION
+	instead of version_string to initialize OCTAVE_VERSION.
+	* version.h (version_string): Delete.
+
+	* getopt.c (_getopt_internal): Initialize indfound to avoid warning.
+
+Fri Apr  7 15:29:41 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tc-inlines.h (REP_RHS_MATRIX): Just check to see if tc is real
+	or complex.  If conversion fails, return.
+
+Thu Apr  6 00:10:47 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* data.cc (Fstruct_contains): New function.
+
+	* tc-rep.cc (print_code): Add extra parens around while condition
+	to avoid warning.
+	* utils.cc (undo_string_escapes): Likewise.
+	* input.cc (decode_prompt_string): Likewise.  Also rewrite if
+	statement to avoid warning. 
+
+Tue Apr  4 22:54:17 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tree-expr.cc (tree_multi_assignment_expression::eval,
+	tree_simple_assignment_expression::eval):  Call print_constant
+	even if user_pref.print_answer_id_name is false.
+ 
+Mon Apr  3 17:57:14 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tc-inlines.h (TC_REP): Avoid redefinition.
+
+	* tree-const.h (do_binary_op, do_unary_op): Declare as friends of
+	tree_constant class too.
+
+	* tree-plot.h (subplot_using::have_values): Delete data member.
+	* tree-plot.cc (subplot_using::eval): Always recompute values.
+
+Fri Mar 31 10:18:32 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tc-rep.cc (print): Print open brace for structures here.
+	* tree-expr.cc (print_constant): Not here.
+
+	* symtab.cc (define): Don't delete arg if sv_fcn fails.
+
+	* tree-const.cc (print): New function.  Create ostrstream buffer
+	and pass it to rep->print().
+	* tree-const.h (eval (int)): Call print(), not rep->print().
+	* tc-rep.cc (structure_indent_level): New file-scope variable.
+	(print): New arg, output_buf, is stream to print to.
+	Print values of structure elements too.
+
+	* user-prefs.h (user_preferences): New field, struct_levels_to_print.
+	* user-prefs.cc (struct_levels_to_print): New function.
+	* variables.cc (install_builtin_variables): Add DEFVAR for new
+	variable struct_levels_to_print.
+
+	* tree-const.cc (print_as_scalar, print_as_structure): Move here
+	from tree-expr.cc and make extern.
+
+	* tree-expr.cc (print_as_structure): New function.
+	(print_constant): Use it.
+
+	* tree-expr.cc (print_constant): New arg, print_padding.
+	(tree_simple_assignment_expression::eval): Use print_constant
+	instead of duplicating code here.
+	(tree_multi_assignment_expression::eval): Likewise.
+
+Thu Mar 30 13:24:11 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile.in (SOURCES): Add resource.cc.
+	* resource.cc: New file, extracted from timefns.cc.
+	(Fgetrusage): New function.
+	* timefns.cc (cputime): Delete (now implemented in a function file
+	using new getrusage function).
+
+Wed Mar 29 22:52:42 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile.in (SOURCES): Add strftime.c.
+	* strftime.c: New file, from sh-utils distribution.
+
+	* timefns.cc (mk_tm_map, extract_tm, Ftime, Fgmtime, Flocaltime,
+	Fmktime, Fstrftime): New basic time functions.
+	(Fclock, Fdate): Delete (now implemented in function files using new
+	time functions).
+
+Tue Mar 28 17:51:51 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* file-io.cc (return_valid_file, do_printf, do_scanf,
+	fclose_internal, feof_internal, ferror_internal, fflush_internal,
+	fgets_internal, fopen_internal, fread_internal, freport_internal,
+	frewind_internal, fseek_internal, ftell_internal,
+	fwrite_internal): Declare static.
+	* file-io.h: Delete extern declarations for them.
+
+Fri Mar 24 09:52:50 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* pr-output.cc (pr_col_num_header): New function.
+	(compact_format): New file-scope variable.
+	(set_format_style): Handle loose and compact formats.
+	(octave_print_internal (ostream&, const ComplexMatrix&, int)):
+	Replace duplicate code with call to pr_col_num_header().
+	(octave_print_internal (ostream&, const Matrix&, int): Likewise.
+	(octave_print_internal (ostream&, const Range&, int): Likewise.
+
+Tue Mar 21 08:44:48 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* mappers.cc (xgamma): Always use Slatec library function.
+	* (xlgamma): Likewise.
+	* Makefile.in (SOURCES): Don't include lgamma.c.
+
+Fri Mar 17 22:38:39 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tc-rep.cc (TC_REP::new): Don't try to keep track of newlist_tail.
+	Explicitly initialize newlist to zero.
+	* tree-const.cc (tree_constant::operator new): Likewise.
+
+Fri Mar 10 12:40:24 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* tree-cmd.cc (quit_loop_now): Declare inline.
+	(tree_for_command::do_for_loop_once): Split into two versions, one
+	for the general case and one for when the loop variable is a
+	simple identifier.
+	(DO_LOOP): New macro.  Move tests outside of loop.
+	(tree_for_command::eval): Speed up by checking to see if loop
+	variable is a simple identifier and by using DO_LOOP.
+
+	* tree-const.h: New union of rep and freeptr.  The freeptr element
+	is used for our custom memory management functions.
+
+	* tc-rep.h: Add freeptr element to anonymous union (for our custom
+	memory management functions).
+
+	* tree-const.cc (newlist, newlist_grow_size, newlist_tail): New
+	static variables.
+	(tree_constant::operator new): Always define to allow more
+	efficient allocation of single tree_constants.
+	(tree_constant::operator delete): Likewise, handle deletion of the
+	memory we allocate.
+
+	* tc-rep.cc (newlist, newlist_grow_size, newlist_tail): New static
+	variables.
+	(tree_constant::operator new): Always define to allow more
+	efficient allocation of single tree_constants.
+	(tree_constant::operator delete): Likewise, handle deletion of the
+	memory we allocate.
+
+Fri Mar  3 14:00:08 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* error.cc (verror): Terminate output_buf with ends.
+
+	* statdefs.h: Use C-style comment in first line instead of
+	C++-style comment.
+
+Mon Feb 27 10:11:18 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* parse.y (maybe_convert_to_ans_assign): Only lookup ans once.
+	* variables.cc (bind_ans): New function.
+	* tree-expr.cc (tree_identifier::eval (int)): Use it here.
+	(tree_identifier::eval (int, int, const Octave_object&): And here.
+
+	* tree-expr.cc (install_nargin_and_nargout): New function.
+	* tree-expr.h (tree_function::tree_function (tree_statement_list *,
+	symbol_table *, int, int)): Call it.
+
+	* tree-expr.cc (tree_function::bind_nargin_and_nargout): New function.
+	(tree_function::eval): Call it insead of the one from variables.cc.
+
+	* variables.cc (bind_nargin_and_nargout): #if 0 out.
+
+Sun Feb 26 00:17:06 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* load-save.cc (Fload, Fsave): Free fname returned by tilde_expand().
+	* dirfns.cc (Fls): Likewise.
+
+	* tree-expr.cc (tree_multi_assignment_expression::eval (int, int,
+	const Octave_object&)): Call tree_return_list::operator () (Pix)
+	explicitly.
+
+	* octave.cc (initialize_globals): Put TEXMF in the environment for
+	kpthsea.
+
+	* Makefile.in (OCTAVE_LIBS): Use @LIBINFO@ and @LIBREADLINE@,
+	substituted by configure.  Use kpathsea.a, not libkpathsea, so we
+	don't have to modify the kpathsea Makefile.
+
+Sat Feb 25 18:59:26 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* pathsearch.cc: New file.
+	* pathsearch.h: New file.
+	* Makefile.in (INCLUDES): Include it in the list.
+	* dynamic-ld.cc, help.cc, utils.cc: Use it instead of repeating
+	identical code multiple times.
+
+	* variables.cc (install_builtin_variables): Only DEFVAR
+	suppress_verbose_help_message if USE_GNU_INFO.
+
+	* help.cc (Fhelp): Only handle -i if USE_GNU_INFO.
+	(additional_help_message): Only print message if USE_GNU_INFO.
+	(builtin_help): New function.
+	(help_from_info): New function.  Print warning if not USE_GNU_INFO.
+
+See ChangeLog.1 in the top level directory for earlier changes.

@@ -1,0 +1,67 @@
+Here is an attempt at a simple explanation of the directory layout for
+Octave's source files.
+
+  doc           -- Texinfo documentation for Octave
+
+  emacs         -- Emacs lisp stuff
+
+  glob          -- filename globbing functions
+
+  info          -- a modified version of the GNU Info reader
+
+  kpathsea      -- Karl Berry's path searching library
+
+  liboctave     -- the C++ interfaces to the numerical libraries and
+                   various OS facilities.
+
+  libcruft      -- various numerical libraries (mostly Fortran)
+    balgen         * balancing subroutines for eigenvalue computations
+    blas           * basic linear algebra subroutines
+    dassl          * differential-algebraic system solver
+    eispack        * subroutines for eigenvalue problems
+    fftpack        * subroutines for fast fourier transforms
+    lapack         * linear algebra package
+    linpack        * linear algebra package
+    minpack        * nonlinear equation solver
+    misc           * miscellaneous utilities
+    odepack        * odinary differential equation solver
+    quadpack       * subroutines for numerical integration
+    ranlib         * random number generators
+    slatec-fn      * various special function subroutines
+    villad         * subroutines for orthogonal collocation weights
+
+  make          -- make stuff used by kpathsea
+
+  plplot        -- the plplot plotting package
+
+  readline      -- GNU readline library (from bash), slightly modified
+
+  scripts       -- functions written in the Octave language
+    image          * image processing
+    control        * control theory
+    set            * set manipulation
+    general        * utility functions
+    statistics     * statistical stuff
+    plot           * plotting
+    polynomial     * polynomial manipulation
+    linear-algebra * linear algebra stuff
+    miscellaneous  * stuff that doesn't fit anywhere else
+    signal         * signal processing
+    specfun        * special mathematical functions
+    special-matrix * functions for generating special types of matrices
+    elfun          * elementary mathematical functions
+    startup        * initialization functions
+    strings        * character string manipulation
+    time           * time and date functions
+
+  src           -- the interpreter itself
+
+  test          -- tests for the interpreter
+    config         * configuration files for DejaGnu
+    octave.test    * subdirectories contianing actual tests are here
+
+
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering

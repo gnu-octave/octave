@@ -1,0 +1,142 @@
+               Enhancements in successive versions of FSQP
+
+Version 3.3 : April 1993
+      1. If the user so requests (via "mode"), during the line search,
+         FSQP will now evaluate objectives only after having determined 
+         that all constraints are satisfied.  This is of value when some 
+         objective functions are not defined outside the feasible set.
+      2. The reserved common block "fsqpst" is no longer used by FSQP.
+         Instead, a new reserved common block "fsqpus" is provided to   
+         give the users a choice of several possible stopping criteria.
+         (As a side-effect, the user is not allowed any more to have 
+         his/her own block data; see Section 4 of the manual for details.)
+      3. Some imperfections are fixed (e.g., comparision of double
+         precision number to hard zero, and incorrect checking of value
+         of "mode").
+
+Version 3.2 : March 1993                                            
+      1. The user is given the option to print output at every Nth iteration
+         and at the end, where N is a multiple of 10.
+
+Version 3.1a : January 1993                                           
+      1. Bugs are fixed (with the help of Yaguang Yang). These bugs
+         have to do with finding a feasible point. There should be 
+         no effect if the user's problem does not contain both nonlinear 
+         and linear equality constraints.                               
+
+Version 3.1 : November 1992      
+      1. Possible division by zero is avoided. 
+      2. Objective and constraint values at initial feasible point 
+         are printed out if iprint >=1. 
+      3. Estimates of Lagrange multipliers are made available on output
+         even when  execution is terminated abnormally in phase 2.       
+      4. Incorrect descriptions of nineq, neq, iwsize and nwsize in 
+         the user's manual and in the comments in fsqpd.f are corrected.
+
+Version 3.0d : October 1992                                           
+      1. Some imperfections (identified by WATFOR) are cleaned up.
+      2. Erroneous declaration of dummy argument in sampl*.f are corrected.
+
+Version 3.0c : September 1992                                           
+      1. A bug in identifying the active set of objectives is fixed.
+         (Thanks go to Yaguang Yang.)
+      2. Some imperfections (identified by WATFOR) are cleaned up.
+         (Thanks go to Jaroslav Dolezal and Jiri Fidler         
+          at CZ Academy of Sciences.)                                     
+
+Version 3.0b : August 1992                                           
+      1. A bug in assigning iskip(*) is fixed. This has to do with      
+         finding a feasible point.                                         
+      2. Other bugs associated with nonlinear equality constraints      
+         are fixed. The effect is on nonmonotone line search.            
+         (Thanks go to Yaguang Yang at the Institute for Systems Research,
+          University of Maryland at College Park.)                  
+
+Version 3.0a : June 1992                                              
+      1. A bug in check.f is fixed and a typo is corrected.             
+      2. A bug in initpt.f is fixed.
+      3. Printout message is adjusted for various situations.           
+      4. Computation of initial equality constraint violation is corrected.
+         (Thanks go to Jaroslav Dolezal and Jiri Fidler 
+          at CZ Academy of Sciences)
+      5. An output error for function values is corrected.              
+
+Version 3.0 : June 1992                                              
+      1. FSQP now also handles nonlinear equality constraints.  
+         "Semi-feasibility" for these constraints is maintained in 
+         the following sense: given a scalar constraint h(x)=0, 
+         if h(x0)<=0 (resp. >=0), then h(xk)<=0 (resp. >=0) for all k.
+      2. An option is added to allow users to have their own stopping   
+         criterion.                                                     
+      3. The interface for QPSOL is no longer part of the standard
+         distribution (but it is still available on request).
+      4. Objective and constraints now must be provided in Fortran 
+         "subroutines" rather than "functions".
+      5. Concerning the default stopping criterion, the norm requirement 
+         on the Kuhn-Tucker vector is replaced by a norm requirement on 
+         the Newton direction.               
+      6. The meaning of "mode" is redefined to encompass several attributes.
+      7. The argument list to call FSQPD is modified.                   
+      8. The Hessian matrix is reset to the identity whenever           
+         the line search fails to complete after a specified number     
+         of step reductions, provided the last reset occurred at least  
+         5*nparam iterations earlier (it used to be 1*nparam).                 
+                  
+Version 2.4b : November 1991
+      1. Bugs are fixed that affected the computation of a feasible point
+         and the initialization of iskp.  (Thanks go to Klaus Schittkowski
+         at U Bayreuth and John Hauser at USC.)
+
+Version 2.4a : November 1991
+    Mostly fixes on problems uncovered by Roque Donizete de Oliveira (Michigan.
+)
+      1. A bug is fixed that affected the multipliers given on output.
+      2. A few unused statements are commented out.
+      3. small() is modified to avoid too small a number on machines
+         that use extra-length registers for internal computations
+         (with Roque's help).
+
+Version 2.4 : October 1991
+      1. The Hessian matrix is reset to the identity whenever
+         the line search fails to complete after a specified number
+         of step reductions, provided the last reset occurred at least 
+         nparam iterations earlier.
+
+Version 2.3B : September 1991
+      1. A bug is fixed in reordering active functions.
+
+Version 2.3A : September 1991
+      1. A bug is fixed in reordering active functions.
+
+Version 2.3 : July 1991
+      1. KKT multipliers at the solution point are provided on output.
+      2. Bugs are fixed and code is adapted to be accepted by
+         some "tough" compilers (with the help of K. Schittkowski).
+
+Version 2.2 : June 1991
+      1. In computing d~, only the most "active" constraints and
+         objectives are taken into account, thus reducing the
+         number of function evaluations.
+      2. Refinements of nonmonotone line search are implemented 
+         for minimax problems without nonlinear constraints.
+      3. Line search is more efficient.
+      4. A bug is fixed in the computation of d~ in mode=1.
+      5. The calling sequences of both gradcn and gradob are
+         simplified.
+
+Version 2.1 : April 1991
+      1. FSQP can use either of two quadratic programming codes: 
+         QPSOL or QLD.
+      2. Reorder constraints and objectives to enable more efficient
+         line search.
+
+
+Version 2.0B : March 1991: Bugs are fixed
+Version 2.0A : October 1990: Bugs are fixed
+Version 2.0  : August 1990
+      1. Extension to the solution of constrained minimax problems.
+
+
+Version 1.0B : June 1990: Bugs are fixed
+Version 1.0A : December  1989: Bugs are fixed
+Version 1.0  : August 1989

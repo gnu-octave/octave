@@ -1,0 +1,96 @@
+Octave -- a high-level language for numerical computations.
+
+Copyright (C) 1996 John W. Eaton
+
+Last updated: Mon Feb  5 13:27:40 1996
+
+Overview
+--------
+
+Octave is a high-level language, primarily intended for numerical
+computations.  It provides a convenient command line interface for
+solving linear and nonlinear problems numerically.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the file COPYING for more
+details.
+
+Availability
+------------
+
+The latest released version of Octave is always available via
+anonymous ftp from ftp.che.wisc.edu in the directory /pub/octave.
+Complete source and binaries for several popular systems are
+available.
+
+Installation and Bugs
+---------------------
+
+Octave requires approximately 50MB of disk storage to unpack and
+install (significantly 	less if you don't compile with debugging
+symbols).  In order to build Octave, you will need a current version
+of g++, libg++, and GNU make.
+
+YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
+features of GNU Make that are not present in other versions of Make.
+GNU Make is very portable and easy to install.
+
+As of version 1.1.x, you must have G++ 2.6.2 or later to compile
+Octave.  In some cases, you may also need to install a patch for g++
+that is distributed with Octave in order to successfully compile
+Octave.
+
+See the notes in the files INSTALL and INSTALL.OCTAVE for more
+specific installation instructions, including directions for
+installing Octave from a binary distribution.
+
+The file BUGS contains a recommended procedure for reporting bugs, as
+well as a list of known problems and possible fixes.
+
+Binary Distributions
+--------------------
+
+Binary copies of Octave are now distributed for several popular Unix
+systems.  To save disk space, the complete source code for Octave is
+not included in the binary distributions, but should be available in
+the same place as the binaries.  If not, please contact
+bug-octave@bevo.che.wisc.edu.
+
+The file INSTALL.OCTAVE contains specific installation instructions,
+for installing Octave from a binary distribution.
+
+Implemenation
+-------------
+
+Octave is being developed with the Free Software Foundation's make,
+bison (a replacement for YACC), flex (a replacement for lex), gcc/g++,
+and libg++ on a SPARCstation II and a DECstation 5000/240.  It should
+be possible to install it on any machine that runs GCC/G++.  It may
+also be possible to install it using other implementations of these
+tools, but it will most certainly require much more work.  Do yourself
+a favor and get the GNU development tools, either via anonymous ftp
+from prep.ai.mit.edu or by writing the Free Software Foundation,
+59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+The underlying numerical solvers are currently standard Fortran ones
+like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library
+of C++ classes (see the files in the libcruft and liboctave
+subdirectories).  If possible, the Fortran subroutines are compiled
+with the system's Fortran compiler, and called directly from the C++
+functions.  If that's not possible, they are translated with f2c and
+compiled with a C compiler.  Better performance is usually achieved if
+the intermediate translation to C is avoided.
+
+The library of C++ classes may also be useful by itself.
+
+--
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering

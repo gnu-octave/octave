@@ -1,0 +1,23 @@
+Things to do before making a release:
+
+  * Ask testers for the type(s) of machines they are using.
+
+  * Update the version number in src/version.h.
+
+  * Update the version number in doc/refcard.tex.
+
+  * Add a `Version M.N.P released.' line to the ChangeLog.
+
+  * Update the NEWS file.
+
+  * Check the README file.
+
+  * Create a new Announce.M.N.P file for the current release.
+
+  * Run autoconf, autoheader, and configure before making tar files.
+
+  * Update the NEWS and README.octave files in the anonymous ftp
+    directory.
+
+  * Don't forget to use -static when linking the binaries for the
+    binary distributions.

@@ -1,0 +1,75 @@
+This file last updated: Thu Jan 12 15:28:50 1995
+
+This directory contains the source for Octave, a high-level interactive
+language for solving numerical problems.  See the files README.octave
+and Announce for more general information, and the file NEWS for a
+list of recent changes.
+
+------------------------------------------------------------------
+PLEASE NOTE:  We are only distributing gzipped files because we no
+longer have room to distribute both compressed and gzipped files.
+------------------------------------------------------------------
+
+Binary distributions:
+--------------------
+
+Binaries for several popular systems are distributed along with the
+source, and are available in the following subdirectories of
+/pub/octave/BINARIES:
+
+  subdirectory            binary compiled on
+  -----------------------------------------------------------------
+  alpha-dec-osf1.3        DEC Alpha/OSF1
+  mips-dec-ultrix4.2      DECstation running Ultrix 4.2
+  rs6000-ibm-aix3.2.5     RS/6000 running AIX 3.2.5
+  sparc-sun-sunos4.1.2    Sun SPARC running SunOS 4.1.2
+
+Note:
+
+  * Gnuplot binaries are *not* included.  For the plotting commands to
+    work, you will need to install gnuplot on your system.  See the
+    file INSTALL.octave in the top level directory of the distribution
+    for more details.
+
+  * Octave has been compiled assuming that you have `less' installed.
+    You can use the environment variable PAGER to choose another pager.
+
+  * We only have a limited amount of time available to devote to
+    making binaries, so binaries may not be immediately available
+    for some platforms.  Please contact bug-octave@bevo.che.wisc.edu if
+    you are interested in helping make binary distributions available.
+
+A note about patches:
+--------------------
+
+If you are trying to compile Octave with g++ 2.7.x, you should get the
+file README-GCC-2.7.0.
+
+The patch in the file libg++-procbuf-bug fixes a serious problem in
+libg++ that can cause Octave to crash when trying to execute commands
+like `ls', or display output through the pager.
+
+The patch in the file libg++-complex-div-bug fixes a problem in libg++
+that can cause division of real numbers by complex numbers to overflow
+unnecessarily.
+
+A note about .gz files:
+----------------------
+
+Files with names ending in `.gz' have been compressed with `gzip'.
+
+Unlike the compress utility, gzip is free of any known software
+patents and tends to compress better anyway.  Gzip can uncompress
+`compress'-compressed files too, so you can install it as "uncompress"
+and use it to handle both types of files.
+
+The gzip program is available in the directory /pub/gnu in shar, tar,
+or gzipped tar format (for those who already have a prior version of
+gzip and want faster data transmission).  It works on virtually every
+unix system, MSDOS, OS/2, and VMS.
+
+--
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering

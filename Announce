@@ -1,0 +1,133 @@
+Subject: ANNOUNCING:  Octave Version 1.2
+
+Octave version 1.2 is now available for ftp from ftp.che.wisc.edu
+in the directory /pub/octave.  Gzipped tar files are available along
+with a patch file relative to 1.1.0.  Please read the comments at the
+top of the patch file if you choose to use it to upgrade your
+installation.
+
+This is a primarily a bug-fixing release, but there are a few new
+features.  A list of user-visible changes since the last release is
+available in the file NEWS.  The file ChangeLog in the source
+distribution contains a more detailed record of changes made since the
+last release.
+
+Most bugs reported since the release of 1.1.0 have been fixed.  You
+can help make Octave more reliable by reporting any bugs you find.
+Please see the directions at the end of this announcement to find out
+how to ensure that the bugs you report will be fixed.
+
+Binaries for several popular systems are also available.  If you would
+like help out by making binaries available for other systems, please
+contact bug-octave@bevo.che.wisc.edu.
+
+What is Octave?
+---------------
+
+Octave is a high-level interactive language, primarily intended for
+numerical computations that is mostly compatible with Matlab.
+
+Octave can do arithmetic for real and complex scalars and matrices,
+solve sets of nonlinear algebraic equations, integrate functions over
+finite and infinite intervals, and integrate systems of ordinary
+differential and differential-algebraic equations.
+
+Octave uses the GNU readline library to handle reading and editing
+input.  By default, the line editing commands are similar to the
+cursor movement commands used by GNU Emacs, and a vi-style line
+editing interface is also available.  At the end of each session, the
+command history is saved, so that commands entered during previous
+sessions are not lost.
+
+The Octave distribution includes a 200+ page Texinfo manual.  Access
+to the complete text of the manual is available via the help command
+at the Octave prompt.
+
+Two and three dimensional plotting is fully supported using gnuplot.
+
+The underlying numerical solvers are currently standard Fortran ones
+like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library
+of C++ classes.  If possible, the Fortran subroutines are compiled
+with the system's Fortran compiler, and called directly from the C++
+functions.  If that's not possible, you can still compile Octave if
+you have the free Fortran to C translator f2c.
+
+Octave is also free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation.
+
+Instructions for obtaining Octave are given below.
+
+Where to get Octave
+-------------------
+
+If you are on the Internet, you can copy the latest distribution
+version of Octave from the file /pub/octave/octave-M.N.tar.gz, on the
+host ftp.che.wisc.edu.  This tar file has been compressed with GNU
+gzip, so be sure to use binary mode for the transfer.  M and N stand
+for version numbers; look at a listing of the directory through ftp to
+see what version is available.  After you unpack the distribution, be
+sure to look at the files README and INSTALL.
+
+Installation
+------------
+
+Octave requires approximately 50MB of disk storage to unpack and
+install (significantly less if you don't compile with debugging
+symbols).  In order to build Octave, you will need a current version
+of g++, libg++, and GNU make.  If you don't have these tools, you can
+get them from many anonymous ftp archives, including ftp.che.wisc.edu,
+ftp.uu.net, prep.ai.mit.edu, and wuarchive.wustl.edu, or by writing to
+the FSF at 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+Octave has been compiled and tested with g++ and libg++ on a
+SPARCstation 2 running SunOS 4.1.2, an IBM RS/6000 running AIX 3.2.5,
+DEC Alpha systems running OSF/1 1.3 and 3.0, a DECstation 5000/240
+running Ultrix 4.2a, and i486 systems running Linux.  It should work
+on most other Unix systems that have a working port of g++ and libg++.
+
+Implementation
+--------------
+
+Octave is being developed with GNU make, bison (a replacement for
+YACC), flex (a replacement for lex), gcc/g++, and libg++ on Sun
+SPARCstations, DEC DECstations, and IBM RS/6000s. It should be
+easy to port it to any machine that has a working port of gcc/g++.
+
+The underlying numerical solvers are currently standard Fortran ones
+like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library
+of C++ classes (see the files in the libcruft and liboctave
+subdirectories).  If possible, the Fortran subroutines are compiled
+with the system's Fortran compiler, and called directly from the C++
+functions.  If that's not possible, they are translated with f2c and
+compiled with a C compiler.  Better performance is usually achieved if
+the intermediate translation to C is avoided.
+
+The library of C++ classes may also be useful by itself, and they are
+distributed under the same terms as Octave.
+
+Bugs
+----
+
+Please report any problems you have to
+
+  bug-octave@bevo.che.wisc.edu
+
+Your bug reports play an essential role in making Octave reliable.
+
+Reporting a bug may help you by bringing a solution to your problem,
+or it may not.  In any case, the principal function of a bug report
+is to help the entire community by making the next version of Octave
+work better.  Bug reports are your contribution to the maintenance of
+Octave.
+
+The file BUGS in the top level directory of the source distribution
+contains more information about how to provide useful bug reports.
+
+Comments and suggestions are also always welcome.
+
+--
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering

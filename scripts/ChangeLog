@@ -1,0 +1,303 @@
+Mon Jul 15 16:15:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/bug_report.m: Don't redirect output to /dev/tty in
+	system command.
+	
+Fri Jul 12 12:24:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* __plr1__.m: Renamed from polar_int_1.m.
+	* __plr2__.m: Renamed from polar_int_2.m.
+	* __plr__.m: Renamed from polar_int.m.
+	* __plt1__.m: Renamed from plot_int_1.m.
+	* __plt2__.m: Renamed from plot_int_2.m.
+	* __plt2mm__.m: Renamed from plot_2_m_m_.m.
+	* __plt2mv__.m: Renamed from plot_2_m_v_.m.
+	* __plt2ss__.m: Renamed from plot_2_s_s_.m.
+	* __plt2vm__.m: Renamed from plot_2_v_m_.m.
+	* __plt2vv__.m: Renamed from plot_2_v_v_.m.
+	* __plt__.m: Renamed from plot_int.m.
+	* __pltopt__.m: Renamed from plot_opt.m.
+	Change all callers.
+
+Thu Jul 11 17:24:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* All .m files: Add regular Author:, Created:, and Adapted-By:
+	comments like those found in Emacs lisp files.
+
+Mon Jun 24 04:16:41 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* All .m files: Change comment style.
+
+Fri Jun 14 01:42:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* bottom_title.m, mplot.m, multiplot.m, oneplot.m, plot_border.m,
+	subplot.m, subwindow.m, top_title.m:
+	Print error message if gnuplot_has_multiplot is not true.
+
+Thu Jun  6 00:18:54 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/figure.m: New function.
+
+Wed Jun  5 18:19:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/strrep.m: New function.
+
+Thu May 23 15:04:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/bin2dec.m, strings/blanks.m, strings/deblank.m,
+	strings/dec2bin.m, strings/dec2hex.m, strings/findstr.m,
+	strings/hex2dec.m, strings/index.m, strings/rindex.m,
+	strings/split.m, strings/str2mat.m, strings/substr.m:
+	New functions from Kurt Hornik, heavily modified by jwe.
+
+	* general/reshape.m: Allow strings to be reshaped too.
+
+	* strings/strcmp.m: No longer need to set implicit_str_to_num_ok.
+	Always return a scalar.
+
+Wed May 22 19:52:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Make orientation of result compatible with
+	Matlab.
+
+Sat May 18 17:32:15 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Add missing close paren.
+
+Thu May 16 10:23:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/plot_opt.m: Set compatibility arg in call to sscanf.
+
+	* io/scanf.m: Delete.
+
+Mon May 13 09:37:38 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/median.m: Fix typo in usage message.
+
+Wed Apr 24 02:45:52 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/popen2.m: New file.
+
+Wed Apr 17 18:34:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Add io/Makefile.
+
+	* io: New directory.
+	* Makefile.in (SUBDIRS): Add it to the list.
+
+	* miscellaneous/flops.m: New file.
+
+Fri Mar 22 04:40:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/cputime.m: Return three arguments instead of a
+	vector, for compatibility with previous versions and with Matlab
+	(which only returns one scalar value).
+
+Wed Mar 20 05:09:48 1996  Kurt Hornik  <Kurt.Hornik@tuwien.ac.at>
+
+	* general/triu.m: Compute lower bound on loop index correctly.
+	* general/tril.m: Likewise, for upper bound.
+
+Tue Feb  6 09:29:43 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/saveimage.m: For color images, make sure indices into
+	temporary colormap and result matrix have proper orientation.
+	Set grey flag correctly.
+
+Tue Jan  9 00:12:14 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/std.m: Use better formula (from Jim Van Zandt
+	jrv@vanzandt.mv.com).
+
+Sun Jan  7 20:12:14 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* meshgrid.m: New file (from Jim Van Zandt jrv@vanzandt.mv.com).
+	* mesh.m: Transpose Z if only one arg.
+ 	Handle case of all three args being matrices (from Jim Van Zandt
+	jrv@vanzandt.mv.com).
+	* meshdom.m: Undo previous change.
+
+Wed Dec 20 13:48:12 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Add audio/Makefile
+
+Thu Nov 16 13:07:07 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* audio: New directory of files from Kurt Hornik and Andreas
+	Weingessel.
+	* audio/Makefile.in: New file.
+	* Makefile.in (SUBDIRS): Add audio to the list.
+
+Mon Nov  6 07:29:35 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Use `economy-stle' QR factorization.
+
+Fri Nov  3 00:38:46 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/mesh.m: Require, length (y) == rows (z) and length (x) ==
+	columns (z), not the other way around.
+	* plot/meshdom.m: Don't reverse order of elements in y.
+
+Thu Nov  2 23:56:53 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/axis.m: Return current axis if nargin == 0.
+
+Tue Oct 31 04:11:28 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/roots.m: Updates from Kurt Hornik.
+
+	* polynomial/polyder.m: New file.
+
+	* polynomial/polyderiv.m: Give return value and arg different names.
+
+Mon Oct 30 23:27:02 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/betainc.m: New file.
+	* specfun/gammainc.m: New file.
+
+Wed Oct 18 23:45:52 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/strerror.m: New file.
+	* general/perror.m: Implement using strerror().
+
+Thu Oct  5 03:21:36 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/bottom_title.m plot/mplot.m plot/multiplot.m plot/oneplot.m
+	plot/plot_border.m plot/subplot.m plot/subwindow.m
+	plot/top_title.m plot/zlabel.m: New files, from Vinayak Dutt.
+
+	* image/saveimage.m: Round img values first.
+
+Tue Oct  3 03:55:18 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/abcddim.m control/are.m general/tril.m general/triu.m
+	image/saveimage.m linear-algebra/kron.m linear-algebra/norm.m
+	linear-algebra/null.m miscellaneous/etime.m plot/contour.m
+	plot/mesh.m plot/plot_int.m plot/polar_int.m
+	special-matrix/hankel.m special-matrix/toeplitz.m
+	tuwien/strfun/split.m: Add missing semicolons.
+
+	* plot/polar_int.m: Use .', not ' to make vectors conform.
+
+	* image/Makefile.in: Don't build or install octtoppm.
+
+	* image/saveimage.m: Rewrite to avoid using octoppm and pbm
+	routines so that people who don't have the the pbm stuff installed
+	can still use this function.
+
+Mon Oct  2 05:10:44 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/saveimage.m: Better error checking, clean up a bit.
+
+Tue Sep 26 00:04:56 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/plot_opt.m: Change more to more_opts as a temporary fix to
+	avoid conflict with new built-in text-style function more.
+
+	* linear-algebra/norm.m: Also allow 2nd arg == "inf".
+
+	* startup/Makefile.in (install): Also install octaverc in
+	$localfcnfiledir/startup/octavrc.
+
+Wed Sep 20 00:01:30 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkinstalldirs: New file.
+	* Makefile.in (DISTFILES): Add it to the list.
+
+	* Makefile.in (DISTFILES): Distribute configure.in and configure.
+
+Thu Sep 14 03:56:19 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* special-matrix/hankel.m: Compatibility fix.  Complain if 
+	r(1) != c(nr), not if r(1) != c(1).
+	
+	* signal/filter.m: Doc fix.
+
+Wed Sep 13 03:19:05 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/cputime.m: Use new resource structure names (no
+	ru_ or tv_ prefixes).
+
+Tue Sep 12 02:20:44 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time/ctime.m: Fix doc string and usage message.
+
+Mon Sep 11 18:43:46 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time/clock.m: Use new time structure names (no tm_ prefix).
+
+Thu Aug 24 20:53:08 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/c2d.m: Make function work for any value of
+	whitespace_in_literal_matrix.
+	* control/dare.m: Likewise.
+	* control/tzero.m: Likewise.
+	* elfun/gcd.m: Likewise.
+	* elfun/lcm.m: Likewise.
+	* general/postpad.m: Likewise.
+	* general/prepad.m: Likewise.
+	* linear-algebra/kron.m: Likewise.
+	* miscellaneous/etime.m: Likewise.
+	* polynomial/conv.m: Likewise.
+	* polynomial/deconv.m: Likewise.
+	* polynomial/poly.m: Likewise.
+	* polynomial/roots.m: Likewise.
+	* signal/filter.m: Likewise.
+	* signal/freqz.m: Likewise.
+	* signal/fftfilt.m: Likewise.
+
+Tue Jun  6 22:34:04 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* miscellaneous/is_leap_year.m: Make work for vector args.
+
+Tue May  2 16:18:33 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* plot/polar_int_2.m: Add missing semicolons.
+	Set theta = theta', not rho'.
+
+Sun Apr 30 11:19:11 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* polynomial/roots.m: Make it work for any value of
+	whitespace_in_literal_matrix.
+
+Mon Apr 10 09:37:17 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* configure.in: New file.
+
+Thu Mar 30 13:29:35 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* control/lyap.m: Add missing semicolon.
+
+	* miscellaneous/cputime.m: New function file.
+
+Wed Mar 29 22:50:49 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* time: New directory.
+	* time/asctime.m, time/clock.m, time/ctime.m, time/date.m:
+	New function files.
+	* time/Makefile.in: New file.
+	* Makefile.in (SUBDIRS): Add time.
+
+Thu Mar 23 15:42:26 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* polynomial/polyreduce.m: Make sure initial index is not empty.
+
+Tue Mar 14 23:38:24 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* plot/plot_int_1.m: Transpose data with .', not '.
+
+Fri Mar 10 10:40:13 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile.in (install uninstall clean mostlyclean distclean
+	realclean): Use SUBDIR_FOR_COMMAND.  Combine actions.
+
+Sun Feb 26 22:18:22 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* Makefile.in (install): Create ls-R database file.
+	(uninstall): Delete it.
+
+Fri Feb 24 10:36:01 1995  John Eaton  <jwe@schoch.che.utexas.edu>
+
+	* scripts/image/saveimage.m: Fix typo.
+
+See ChangeLog.1 in the top level directory for earlier changes.

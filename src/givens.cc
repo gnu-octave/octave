@@ -34,11 +34,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "gripes.h"
 
-int F77_FCN (dlartg) (const double*, const double*, double*, double*,
-		      double*);
+extern "C"
+{
+  int F77_FCN (dlartg) (const double*, const double*, double*, double*,
+			double*);
 
-int F77_FCN (zlartg) (const Complex*, const Complex*, double*,
-		      Complex*, Complex*);
+  int F77_FCN (zlartg) (const Complex*, const Complex*, double*,
+			Complex*, Complex*);
+}
 
 // These aren't used?
 #if 0

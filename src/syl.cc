@@ -34,17 +34,20 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 
-int F77_FCN (dtrsyl) (const char*, const char*, const int*,
-		      const int*, const int*, const double*,
-		      const int*, const double*, const int*,
-		      const double*, const int*, double*, int*, long,
-		      long);
+extern "C"
+{
+  int F77_FCN (dtrsyl) (const char*, const char*, const int*,
+			const int*, const int*, const double*,
+			const int*, const double*, const int*,
+			const double*, const int*, double*, int*,
+			long, long);
  
-int F77_FCN (ztrsyl) (const char*, const char*, const int*,
-		      const int*, const int*, const Complex*,
-		      const int*, const Complex*, const int*,
-		      const Complex*, const int*, double*, int*, long,
-		      long);
+  int F77_FCN (ztrsyl) (const char*, const char*, const int*,
+			const int*, const int*, const Complex*,
+			const int*, const Complex*, const int*,
+			const Complex*, const int*, double*, int*,
+			long, long);
+}
 
 // Local function: check for empty matrix arguments.  Probably should make 
 // this available elsewhere, since tc-xxx functions do this a lot.

@@ -34,14 +34,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 
-int F77_FCN (qzhes) (const int*, const int*, double*, double*, const
-		     long*, double*);
+extern "C"
+{
+  int F77_FCN (qzhes) (const int*, const int*, double*, double*, const
+		       long*, double*);
  
-int F77_FCN (qzit) (const int*, const int*, double*, double*, const
-		    double*, const long*, double*, int*);
+  int F77_FCN (qzit) (const int*, const int*, double*, double*, const
+		      double*, const long*, double*, int*);
  
-int F77_FCN (qzval) (const int*, const int*, double*, double*,
-		     double*, double*, double*, const long*, double*);
+  int F77_FCN (qzval) (const int*, const int*, double*, double*,
+		       double*, double*, double*, const long*, double*);
+}
 
 // XXX FIXME XXX
 extern int empty_arg (tree_constant&);

@@ -396,7 +396,7 @@ stricmp (string1, string2)
 }
 #endif
 
-#ifdef HAVE_STRNICMP
+#ifndef HAVE_STRNICMP
 /* Compare at most COUNT characters from string1 to string2.  Case
    doesn't matter. */
 int

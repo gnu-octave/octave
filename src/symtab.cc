@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <climits>
 
 #include <iomanip.h>
+#include <fstream.h>
 
 #include "glob-match.h"
 #include "str-vec.h"
@@ -42,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-lvalue.h"
 #include "ov.h"
 #include "pager.h"
+#include "pt-pr-code.h"
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
@@ -79,6 +81,60 @@ SYMBOL_DEF::type_as_string (void) const
     retval = "dynamically-linked function";
 
   return retval;
+}
+
+void
+SYMBOL_DEF::type (ostream& os, const string& name, bool pr_type_info,
+		  bool quiet, bool pr_orig_txt)
+{
+  if (is_user_function ())
+    {
+      octave_function *defn = definition.function_value ();
+
+      string fn = defn ? defn->fcn_file_name () : string ();
+
+      if (pr_orig_txt && ! fn.empty ())
+	{
+	  ifstream fs (fn.c_str (), ios::in);
+
+	  if (fs)
+	    {
+	      if (pr_type_info && ! quiet)
+		os << name << " is the " << type_as_string ()
+		   << " defined from: " << fn << "\n\n";
+
+	      char ch;
+
+	      while (fs.get (ch))
+		os << ch;
+	    }
+	  else
+	    os << "unable to open `" << fn << "' for reading!\n";
+	}
+      else
+	{
+	  if (pr_type_info && ! quiet)
+	    os << name << " is a " << type_as_string () << ":\n\n";
+
+	  tree_print_code tpc (os, "", pr_orig_txt);
+
+	  defn->accept (tpc);
+	}
+    }
+  else if (is_user_variable ()
+	   || is_builtin_variable ()
+	   || is_builtin_constant ())
+    {
+      if (pr_type_info && ! quiet)
+	os << name << " is a " << type_as_string () << "\n";
+
+      definition.print_raw (os, true);
+
+      if (pr_type_info)
+	os << "\n";
+    }
+  else
+    os << name << " is a " << type_as_string () << "\n";
 }
 
 string
@@ -508,7 +564,7 @@ symbol_table::lookup (const string& nm, bool insert, bool warn)
       return sr;
     }
   else if (warn)
-    warning ("lookup: symbol`%s' not found", nm.c_str ());
+    warning ("lookup: symbol `%s' not found", nm.c_str ());
 
   return 0;
 }

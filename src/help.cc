@@ -60,7 +60,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
 #include "syswait.h"
@@ -802,89 +801,7 @@ do_type (ostream& os, const string& name, bool pr_type_info,
   symbol_record *sym_rec = lookup_by_name (name, 0);
 
   if (sym_rec && sym_rec->is_defined ())
-    {
-      if (sym_rec->is_user_function ())
-	{
-	  octave_value tmp = sym_rec->def ();
-		  
-	  octave_function *defn = tmp.function_value ();
-
-	  string fn = defn ? defn->fcn_file_name () : string ();
-
-	  if (pr_orig_txt && ! fn.empty ())
-	    {
-	      ifstream fs (fn.c_str (), ios::in);
-
-	      if (fs)
-		{
-		  if (pr_type_info && ! quiet)
-		    os << name << " is the function defined from: "
-		       << fn << "\n\n";
-
-		  char ch;
-
-		  while (fs.get (ch))
-		    os << ch;
-		}
-	      else
-		os << "unable to open `" << fn << "' for reading!\n";
-	    }
-	  else
-	    {
-	      if (pr_type_info && ! quiet)
-		os << name << " is a user-defined function:\n\n";
-
-	      tree_print_code tpc (os, "", pr_orig_txt);
-
-	      defn->accept (tpc);
-	    }
-	}
-
-      // XXX FIXME XXX -- this code should be shared with
-      // Fwhich.
-
-      else if (sym_rec->is_text_function ())
-	os << name << " is a built-in text-function\n";
-      else if (sym_rec->is_builtin_function ())
-	os << name << " is a built-in function\n";
-      else if (sym_rec->is_user_variable ()
-	       || sym_rec->is_builtin_variable ()
-	       || sym_rec->is_builtin_constant ())
-	{
-	  octave_value defn = sym_rec->def ();
-
-	  int var_ok = 1;
-
-	  if (! error_state)
-	    {
-	      if (pr_type_info && ! quiet)
-		{
-		  if (var_ok)
-		    {
-		      os << name;
-
-		      if (sym_rec->is_user_variable ())
-			os << " is a user-defined variable\n";
-		      else if (sym_rec->is_builtin_variable ())
-			os << " is a built-in variable\n";
-		      else if (sym_rec->is_builtin_constant ())
-			os << " is a built-in constant\n";
-		      else
-			panic_impossible ();
-		    }
-		  else
-		    os << "type: `" << name << "' has unknown type!\n";
-		}
-
-	      defn.print_raw (os, true);
-
-	      if (pr_type_info)
-		os << "\n";
-	    }
-	}
-      else
-	error ("type: `%s' has unknown type!", name.c_str ());
-    }
+    sym_rec->type (os, pr_type_info, quiet, pr_orig_txt);
   else
     {
       string ff = fcn_file_in_path (name);

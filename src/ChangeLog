@@ -1,6 +1,6 @@
 1999-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* symtab.cc (symbol_record::symbol_def::type_as_string): New function.
+	* symtab.cc (symbol_record::type_as_string): New function.
 
 	* symtab.cc (symbol_record::which): New functions.
 	* help.cc (do_which): New functions.
@@ -10,6 +10,7 @@
 	(builtin_help): Use them.
 
 	* help.cc (do_type): New function.
+	(symbol_record::type): New function.
 	(Ftype): Use them.
 
 	* help.cc (print_symbol_type): Delete.

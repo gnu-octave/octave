@@ -143,6 +143,9 @@ private:
 
     string type_as_string (void) const;
 
+    void type (ostream& os, const string& name, bool pr_type_info,
+	       bool quiet, bool pr_orig_txt);
+
     string which (const string& name);
 
     void which (ostream& os, const string& name);
@@ -316,6 +319,9 @@ public:
 
   string type_as_string (void) const
     { return definition->type_as_string (); }
+
+  void type (ostream& os, bool pr_type_info, bool quiet, bool pr_orig_txt)
+    { definition->type (os, name (), pr_type_info, quiet, pr_orig_txt); }
 
   string which (void) { return definition->which (name ()); }
 

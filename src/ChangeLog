@@ -1,3 +1,38 @@
+1999-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-cell.h, pt-cell.cc, ov-cell.h, ov-cell.cc, Cell.h, Cell.cc:
+	New files.
+	* Makefile.in: Add them to the appropriate lists.
+	* pt-walk.h (visit_cell (tree_cell&): New pure virtual.
+	* pt-pr-code.cc (tree_print_code::visit_cell (tree_cell&)): New
+	function.
+	* TEMPLATE-INST/Array-tc.cc: Instantiate 2D arrays of octave_value
+	objects.
+	* pt-all.h: Include pt-cell.h.
+	* ov.h, ov.cc (octave_value::is_cell, octave_value::cell_value):
+	New functions.
+	* ov-base.h, ov-base.cc (octave_value::is_cell,
+	octave_value::cell_value): Provide defaults.
+	* lex.h, lex.l: Handle `{' and `}' tokens (for cell arrays).
+	(bracketflag): Rename from braceflag.
+	(handle_close_bracket): Rename from handle_close_brace.
+	(class bracket_brace_paren_nesting_level): Rename from
+	brace_paren_nesting_level.
+	(bracket_brace_paren_nesting_level::bracket, 
+	bracket_brace_paren_nesting_level::is_bracket): New functions to
+	keep count of nesting level for `[' and `]'.
+	(bracket_brace_paren_nesting_level::brace, 
+	bracket_brace_paren_nesting_level::is_brace): Now keeps count of
+	nesting level for `{' and `}'.
+	* parse.y (tree_cell_type): New type.
+	Give '{' the same precedence and associativity as '(' and '.'
+	(matrix_rows, matrix_rows1): Rename from rows, rows1.
+	(cell, cell_rows, cell_rows1): New non-terminals.
+	(cell_or_matrix_row): Rename from matrix_row.
+	(primary_expr): Accept cell here.
+	(postfix_expr): Allow indexing using '{' arg_list '}'.
+	(finish_cell): New function.
+
 1999-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (jump_to_top_level): No longer declared extern "C".

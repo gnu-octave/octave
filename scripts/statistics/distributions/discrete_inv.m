@@ -46,8 +46,11 @@ function inv = discrete_inv (x, v, p)
   n = r * c;
   x = reshape (x, 1, n);
   m = length (v);
-  [v, ind] = sort (v);
+  v = sort (v);
   s = reshape (cumsum (p / sum (p)), m, 1);
+
+  ## Allow storage allocated for P to be reclaimed.
+  p = [];
 
   inv = NaN * ones (n, 1);
   if (any (k = find (x == 0)))
@@ -56,11 +59,20 @@ function inv = discrete_inv (x, v, p)
   if (any (k = find (x == 1)))
     inv(k) = v(m) * ones (1, length (k));
   endif
+
   if (any (k = find ((x > 0) & (x < 1))))
     n = length (k);
-    ## --FIXME--
-    ## This does not work!
-    inv(k) = v(sum ((ones (m, 1) * x(k)) > (s * ones (1, n))) + 1);
+
+    ## The following loop is a space/time tradeoff in favor of space,
+    ## since the dataset may be large.
+    ##
+    ## Vectorized code is:
+    ##
+    ##   inv(k) = v(sum ((ones (m, 1) * x(k)) > (s * ones (1, n))) + 1);
+
+    for q = 1:n
+      inv(q) = v(sum (x(q) > s) + 1);
+    endfor
   endif
 
   inv = reshape (inv, r, c);

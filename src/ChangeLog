@@ -1,3 +1,8 @@
+2004-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (all_strings): Always compute total required length
+	of retval.
+
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* error.cc (pr_where): New arg, print_code with default value true.

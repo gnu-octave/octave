@@ -280,24 +280,21 @@ octave_cell::all_strings (bool pad, bool) const
 
   int max_len = 0;
 
-  if (pad)
+  for (int j = 0; j < nc; j++)
     {
-      for (int j = 0; j < nc; j++)
+      for (int i = 0; i < nr; i++)
 	{
-	  for (int i = 0; i < nr; i++)
-	    {
-	      string_vector s = matrix(i,j).all_strings ();
+	  string_vector s = matrix(i,j).all_strings ();
 
-	      if (error_state)
-		return retval;
+	  if (error_state)
+	    return retval;
 
-	      n_elts += s.length ();
+	  n_elts += s.length ();
 
-	      int s_max_len = s.max_length ();
+	  int s_max_len = s.max_length ();
 
-	      if (s_max_len > max_len)
-		max_len = s_max_len;
-	    }
+	  if (s_max_len > max_len)
+	    max_len = s_max_len;
 	}
     }
 
@@ -325,8 +322,6 @@ octave_cell::all_strings (bool pad, bool) const
 	    }
 	}
     }
-
-
 
   return retval;
 }

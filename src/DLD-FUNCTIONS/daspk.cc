@@ -289,7 +289,7 @@ parameters for @code{daspk}.\n\
 
       DAEFunc func (daspk_user_function);
       DASPK dae (state, deriv, tzero, func);
-      dae.copy (daspk_opts);
+      dae.set_options (daspk_opts);
 
       Matrix output;
       Matrix deriv_output;

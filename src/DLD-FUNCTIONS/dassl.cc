@@ -394,7 +394,7 @@ parameters for @code{dassl}.\n\
 
       DASSL dae (state, deriv, tzero, func);
 
-      dae.copy (dassl_opts);
+      dae.set_options (dassl_opts);
 
       Matrix output;
       Matrix deriv_output;

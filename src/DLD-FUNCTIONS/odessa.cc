@@ -517,7 +517,7 @@ parameters for @code{lsode}.\n\
 	? ODESSA (state, theta, sensitivity_guess, tzero, func)
 	: ODESSA (state, tzero, func);
 	  
-      ode.copy (odessa_opts);
+      ode.set_options (odessa_opts);
 
       if (crit_times_set)
 	output = ode.integrate (out_times, crit_times);

@@ -406,6 +406,11 @@ public:
   print "      reset = opt.reset;
     }\n";
 
+  ## For backward compatibility and because set_options is probably
+  ## a better name in some contexts:
+
+  print "\n  void set_options (const ${class_name}& opt) { copy (opt); }\n";
+
   print "\n  void set_default_options (void) { init (); }\n";
 
   for ($i = 0; $i < $opt_num; $i++)

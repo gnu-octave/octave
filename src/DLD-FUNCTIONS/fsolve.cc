@@ -193,7 +193,7 @@ parameters for @code{fsolve}.\n\
 
       NLFunc nleqn_fcn (fsolve_user_function);
       NLEqn nleqn (x, nleqn_fcn);
-      nleqn.copy (fsolve_opts);
+      nleqn.set_options (fsolve_opts);
 
       int info;
       ColumnVector soln = nleqn.solve (info);

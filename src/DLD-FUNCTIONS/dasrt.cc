@@ -494,7 +494,7 @@ parameters for @code{dasrt}.\n\
 
   DASRT dae = DASRT (state, stateprime, tzero, func);
 
-  dae.copy (dasrt_opts);
+  dae.set_options (dasrt_opts);
 
   if (crit_times_set)
     output = dae.integrate (out_times, crit_times);

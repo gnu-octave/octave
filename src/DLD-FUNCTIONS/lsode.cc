@@ -358,7 +358,7 @@ parameters for @code{lsode}.\n\
 
       LSODE ode (state, tzero, func);
 
-      ode.copy (lsode_opts);
+      ode.set_options (lsode_opts);
 
       Matrix output;
       if (crit_times_set)

@@ -1,3 +1,13 @@
+2002-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/daspk.cc (daspk): Use set_options, not copy. 
+	* DLD-FUNCTIONS/dasrt.cc (dasrt): Likewise.
+	* DLD-FUNCTIONS/dassl.cc (dassl): Likewise.
+	* DLD-FUNCTIONS/fsolve.cc (fsolve): Likewise.
+	* DLD-FUNCTIONS/lsode.cc (lsode): Likewise.
+	* DLD-FUNCTIONS/odessa.cc (Fodessa): Likewise.
+	* DLD-FUNCTIONS/quad.cc (Fquad): Likewise.
+
 2002-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-map.cc (Octave_map::assign): Fix typo in resizing.

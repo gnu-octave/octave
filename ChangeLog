@@ -1,3 +1,11 @@
+2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/Makefile.in (DISTFILES): Add otags.1 to the list.
+
+2003-02-18  Dirk Eddelbuettel <edd@debian.org>
+
+	* emacs/otags.1: New file.
+
 2003-02-18  David Bateman <dbateman@free.fr>
 
 	* configure.in: Eliminate linpack

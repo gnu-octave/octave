@@ -365,10 +365,10 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
       int idx_j_is_colon = idx_j.is_colon ();
 
       if (idx_i_is_colon)
-	n = lhs_nr;
+	n = lhs_nr > 0 ? lhs_nr : rhs_nr;
 
       if (idx_j_is_colon)
-	m = lhs_nc;
+	m = lhs_nc > 0 ? lhs_nc : rhs_nc;
 
       if (idx_i && idx_j)
 	{

@@ -69,7 +69,7 @@ Numerical:
   * Optional inputs for fsqp.
 
   * Allow parameters to be passed through the call to fsolve() to the
-    user-supplied function for Matlab compatibility.  Don't place an
+   user-supplied function for Matlab compatibility.  Don't place an
     upper limit on the number of arguments.
 
   * If possible, make economy QR factorization actually take advantage
@@ -94,6 +94,9 @@ Numerical:
     f (x(i), y(j)).  If f is omitted, multiplication is the default.
     Should probably work for any vectors, not just if x is a column
     vector and y is a row vector.
+
+  * On systems that support matherr(), make it possible for users to
+    enable the printing of warning messages.
 
 --------
 Graphics:

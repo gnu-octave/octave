@@ -1,5 +1,11 @@
 Fri Dec  6 14:41:15 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array2-idx.h (assign): If index is a colon, set number of
+	elements to the lhs dimension if the lhs dimension is greater than
+	zero.  Otherwise, set it to the rhs dimension.
+
+	* Version 1.94.
+
 	* Array2-idx.h (assign): Test for rhs scalar case first.
 	If index is colon, set number of elements to lhs dimension, not
 	rhs dimension.

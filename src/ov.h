@@ -379,8 +379,9 @@ public:
 
   // Binary and unary operations.
 
-  friend octave_value do_binary_op (octave_value& a, octave_value& b,
-				    tree_expression::type t);
+  friend octave_value do_binary_op (octave_value::binary_op,
+				    const octave_value&,
+				    const octave_value&);
 
   // Can we make these go away?
 
@@ -474,10 +475,6 @@ extern void symbols_of_value (void);
 
 extern void increment_struct_indent (void);
 extern void decrement_struct_indent (void);
-
-extern octave_value
-do_binary_op (octave_value::binary_op, const octave_value&,
-	      const octave_value&);
 
 extern void install_types (void);
 

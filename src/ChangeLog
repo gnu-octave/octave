@@ -1,3 +1,8 @@
+Mon Dec  9 12:03:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h: Declare proper form of do_binary_op as friend to
+	octave_value class.
+
 Sat Dec  7 22:00:10 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (do_printf_conv, do_scanf_conv,

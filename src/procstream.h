@@ -42,7 +42,7 @@ procstreambase : virtual public ios
 
   void open (const char *command, int mode = ios::out);
   int is_open (void) { return rdbuf()->is_open (); }
-  void close (void);
+  int close (void);
 };
 
 class

@@ -51,11 +51,13 @@ procstreambase::open (const char *command, int mode = ios::out)
     set (ios::badbit);
 }
 
-void
+int
 procstreambase::close (void)
 {
+  int status = rdbuf()->sys_close ();
   if (! rdbuf()->close ())
     set (ios::failbit);
+  return status;
 }
 
 /*

@@ -1592,29 +1592,29 @@ builtin_shell_command (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin == 2 && args[1].is_string_type ())
     {
-      if (args[1].is_string_type ())
+      iprocstream cmd (args[1].string_value ());
+      char ch;
+      ostrstream output_buf;
+      while (cmd.get (ch))
+	output_buf.put (ch);
+      output_buf << ends;
+      int status = cmd.close ();
+      switch (nargout)
 	{
-	  iprocstream cmd (args[1].string_value ());
-	  char ch;
-	  ostrstream output_buf;
-	  while (cmd.get (ch))
-	    output_buf.put (ch);
-
-	  output_buf << ends;
-	  if (nargin == 2)
-	    {
-	      maybe_page_output (output_buf);
-	    }
-	  else
-	    {
-	      retval = new tree_constant [2];
-	      retval[0] = tree_constant (output_buf.str ());
-	    }
+	case 1:
+	  maybe_page_output (output_buf);
+	  retval = new tree_constant[1];
+	  retval[0] = tree_constant ((double) status);
+	  break;
+	case 2:
+	  retval = new tree_constant[3];
+	  retval[0] = tree_constant ((double) status);
+	  retval[1] = tree_constant (output_buf.str ());
+	  break;
+	  break;
 	}
-      else
-	error ("shell_cmd: first argument must be a string");
     }
   else
     print_usage ("shell_cmd");

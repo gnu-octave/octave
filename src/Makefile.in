@@ -218,7 +218,7 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 
 $(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h
 
-$(MAKEDEPS): defaults.h
+$(MAKEDEPS): defaults.h oct-gperf.h
 
 check: all
 .PHONY: check

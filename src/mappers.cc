@@ -33,6 +33,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f77-uscore.h"
 #include "variables.h"
 #include "mappers.h"
+#include "sysdep.h"
 #include "error.h"
 #include "utils.h"
 #include "defun.h"
@@ -68,7 +69,11 @@ arg (double x)
   if (x < 0.0)
     return M_PI;
   else
+#if defined (HAVE_ISNAN)
+    return xisnan (x) ? octave_NaN : 0.0;
+#else
     return 0.0;
+#endif
 }
 
 double
@@ -88,7 +93,11 @@ fix (double x)
 double
 imag (double x)
 {
+#if defined (HAVE_ISNAN)
+  return xisnan (x) ? octave_NaN : 0.0;
+#else
   return 0.0;
+#endif
 }
 
 double
@@ -111,7 +120,12 @@ signum (double x)
     tmp = -1.0;
   else if (x > 0.0)
     tmp = 1.0;
+
+#if defined (HAVE_ISNAN)
+  return xisnan (x) ? octave_NaN : tmp;
+#else
   return tmp;
+#endif
 }
 
 double

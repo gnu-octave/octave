@@ -102,48 +102,56 @@ close_files (void)
   octave_stream_list::clear ();
 }
 
+static void
+maybe_warn_interface_change (const std::string& mode)
+{
+  static bool warned = false;
+
+  if (! warned
+      && (mode == "r" || mode == "w" || mode == "a"
+	  || mode == "r+" || mode == "w+" || mode == "a+")
+      && ! is_globally_visible ("__disable_fopen_interface_change_warning__"))
+    {
+      warned = true;
+      warning ("fopen: default open mode is now binary");
+    }
+}
+
 static std::ios::openmode
-fopen_mode_to_ios_mode (const std::string& mode_arg)
+fopen_mode_to_ios_mode (const std::string& mode)
 {
   std::ios::openmode retval = std::ios::in;
 
-  if (! mode_arg.empty ())
+  if (! mode.empty ())
     {
-      std::string mode = mode_arg;
-
-      // Text mode doesn't matter (yet) for Octave.
-
-      size_t pos = mode.find ('t');
-
-      if (pos != NPOS)
-	mode.erase (pos);
-
       // Could probably be faster, but does it really matter?
 
-      if (mode == "r")
+      maybe_warn_interface_change (mode);
+
+      if (mode == "rt")
 	retval = std::ios::in;
-      else if (mode == "w")
+      else if (mode == "wt")
 	retval = std::ios::out | std::ios::trunc;
-      else if (mode == "a")
+      else if (mode == "at")
 	retval = std::ios::out | std::ios::app;
-      else if (mode == "r+")
+      else if (mode == "r+t")
 	retval = std::ios::in | std::ios::out;
-      else if (mode == "w+")
+      else if (mode == "w+t")
 	retval = std::ios::in | std::ios::out | std::ios::trunc;
-      else if (mode == "a+")
+      else if (mode == "a+t")
 	retval = std::ios::in | std::ios::out | std::ios::ate;
-      else if (mode == "rb")
+      else if (mode == "rb" || mode == "r")
 	retval = std::ios::in | std::ios::binary;
-      else if (mode == "wb")
+      else if (mode == "wb" || mode == "w")
 	retval = std::ios::out | std::ios::trunc | std::ios::binary;
-      else if (mode == "ab")
+      else if (mode == "ab" || mode == "a")
 	retval = std::ios::out | std::ios::app | std::ios::binary;
-      else if (mode == "r+b")
+      else if (mode == "r+b" || mode == "r+")
 	retval = std::ios::in | std::ios::out | std::ios::binary;
-      else if (mode == "w+b")
+      else if (mode == "w+b" || mode == "w+")
 	retval = (std::ios::in | std::ios::out | std::ios::trunc
 		  | std::ios::binary);
-      else if (mode == "a+b")
+      else if (mode == "a+b" || mode == "a+")
 	retval = (std::ios::in | std::ios::out | std::ios::ate
 		  | std::ios::binary);
       else
@@ -448,6 +456,13 @@ discarded.\n\
 Open or create a file for reading or writing at the end of the\n\
 file.\n\
 @end table\n\
+\n\
+Append a \"t\" to the mode string to open the file in text mode or a\n\
+\"b\" to open in binary mode.  On Windows and Macintosh systems, text\n\
+mode reading and writing automatically converts linefeeds to the\n\
+appropriate line end character for the system (carriage-return linefeed\n\
+on Windows, carriage-returnn on Macintosh).  The default if no mode is\n\
+specified is binary mode.\n\
 \n\
 The parameter @var{arch} is a string specifying the default data format\n\
 for the file.  Valid values for @var{arch} are:\n\

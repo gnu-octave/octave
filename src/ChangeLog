@@ -1,5 +1,15 @@
 2004-04-16  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc (maybe_warn_interface_change): New function.
+	(fopen_mode_to_ios_mode): Use it.
+
+2004-04-16  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* file-io.cc (fopen_mode_to_ios_mode):  Default to binary mode.
+	(Ffopen): Document 't' and 'b' mode flags.
+
+2004-04-16  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (DLD_XSRC): Add gcd.cc to the list.
 
 2004-04-16  David Bateman  <dbateman@free.fr>

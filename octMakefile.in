@@ -292,9 +292,9 @@ snapshot: snapshot-z
 
 snapshot-version:
 	@echo "creating src/version.h"
-	@gawk '/#define VERSION[ \t]*/ { \
+	@gawk '/#define OCTAVE_VERSION[ \t]*/ { \
 	  datestring = strftime("%y%m%d", systime()); \
-	  printf("#define VERSION \"ss-%s\";\n", datestring); \
+	  printf("#define OCTAVE_VERSION \"ss-%s\";\n", datestring); \
 	  next; \
 	} { print $$0 }' src/version.h > src/version.h.new
 	@$(top_srcdir)/move-if-change src/version.h.new src/version.h

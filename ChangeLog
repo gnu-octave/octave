@@ -1,3 +1,8 @@
+Mon Oct 20 01:31:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Reprint important warning messages at the end of
+	the run.
+
 Fri Oct 17 04:43:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Include the following change from RMS for octave-mode.el:

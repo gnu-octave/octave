@@ -67,16 +67,16 @@ function [p, yf] = polyfit (x, y, n)
 
   if (nargout == 2)
     yf = X * p;
+
+    if (y_is_row_vector)
+      yf = yf';
+    endif
   endif
 
   p = flipud (p);
 
   if (! prefer_column_vectors)
     p = p';
-  endif
-
-  if (y_is_row_vector)
-    yf = yf';
   endif
 
 endfunction

@@ -1,15 +1,29 @@
 Tue Nov 18 04:27:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pr-output.cc (Vfixed_point_format): New variable.
+	(fixed_point_format): New fucntion.
+	(symbols_of_pr_output): Add DEFVAR for fixed_point_format.
+	(set_real_matrix_format): Handle fixed point format
+	(set_complex_matrix_format): Handle fixed point format
+	(set_format): New arg, scale in Matrix, ComplexMatrix, Range versions.
+	(pr_scale_header): New function.
+	(octave_print_internal): Handle fixed point format in Matrix,
+	ComplexMatrix, and Range versions.
+	* octave.cc (maximum_braindamage): Set fixed_point_format to 1.0.
+
 	* utils.cc (do_string_escapes): Move here, from lex.l.
 	Arg is now const string& instead of char*.
 	Return new string object instead of modifying arg in place.
 	(Fdo_string_escapes): New function.
 	* lex.l (handle_string): Use new version of do_string_escapes.
-	* lex.l (Vbackslash_escapes): No longer static.
-	* oct-stream.cc (octave_base_stream::scanf): If !Vbackslash_escapes,
-	call do_backslash_escapes on format string here.
-	* oct-stream.cc (octave_base_stream::oscanf): Likewise.
-	* oct-stream.cc (octave_base_stream::printf): Likewise.
+
+	* lex.l (Vbackslash_escapes): Delete.
+	(backslash_escapes): Delete.
+	(do_string_escapes): Undo previous change.
+	(eat_whitespace, eat_continuation): Undo previous change.
+	(handle_string): Undo previous change.
+	(symbols_of_lex): Undo previous change.
+	* octave.cc (maximum_braindamage): Undo previous change.
 
 Fri Nov 14 01:53:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

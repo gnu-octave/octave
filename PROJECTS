@@ -234,6 +234,8 @@ Input/Output:
   * Make it possible to tie arbitrary input and output streams
     together, similar to the way iostreams can be tied together.
 
+  * Allow comments in number-only data files.
+
 -----------
 Interpreter:
 -----------

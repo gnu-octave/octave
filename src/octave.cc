@@ -331,6 +331,7 @@ maximum_braindamage (void)
   bind_builtin_variable ("define_all_return_values", 1.0);
   bind_builtin_variable ("do_fortran_indexing", 1.0);
   bind_builtin_variable ("empty_list_elements_ok", 1.0);
+  bind_builtin_variable ("fixed_point_format", 1.0);
   bind_builtin_variable ("implicit_str_to_num_ok", 1.0);
   bind_builtin_variable ("ok_to_lose_imaginary_part", 1.0);
   bind_builtin_variable ("page_screen_output", 0.0);

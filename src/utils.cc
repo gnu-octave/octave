@@ -396,7 +396,7 @@ do_string_escapes (const string& s)
       j++;
     }
 
-  retval.resize (j);
+  retval.resize (i);
 
   return retval;
 }

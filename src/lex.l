@@ -159,10 +159,6 @@ static brace_paren_nesting_level nesting_level;
 
 static int Vwhitespace_in_literal_matrix;
 
-// Should Octave treat backslashes in strings as escapes that
-// introduce special characters like newline (\n), tab (\t), etc.?
-static bool Vbackslash_escapes;
-
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -1296,7 +1292,7 @@ eat_whitespace (void)
 	    break;
 	  else
 	    {
-	      if (Vbackslash_escapes && have_continuation ())
+	      if (have_continuation ())
 		break;
 	      else
 		goto done;
@@ -1451,7 +1447,7 @@ eat_continuation (void)
   int retval = ATE_NOTHING;
   int c = yyinput ();
   if ((c == '.' && have_ellipsis_continuation ())
-      || (c == '\\' && Vbackslash_escapes && have_continuation ()))
+      || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
   else
     yyunput (c, yytext);
@@ -1471,7 +1467,7 @@ handle_string (char delim, int text_style)
     {
       current_input_column++;
 
-      if (c == '\\' && Vbackslash_escapes)
+      if (c == '\\')
 	{
 	  if (escape_pending)
 	    {
@@ -1513,15 +1509,14 @@ handle_string (char delim, int text_style)
 		{
 		  yyunput (c, yytext);
 		  buf << ends;
-		  char *tmp = buf.str ();
-		  string tok = Vbackslash_escapes
-		    ? do_string_escapes (tmp) : string (tmp);
-		  delete [] tmp;
+		  char *t = buf.str ();
+		  string s = do_string_escapes (t);
+		  delete [] t;
 
 		  if (text_style && lexer_flags.doing_set)
 		    {
-		      if (! tok.empty ())
-			tok = string (delim, 1) + tok + string (delim, 1);
+		      if (! s.empty ())
+			s = string (delim, 1) + s + string (delim, 1);
 		    }
 		  else
 		    {
@@ -1530,7 +1525,7 @@ handle_string (char delim, int text_style)
 		      lexer_flags.convert_spaces_to_comma = true;
 		    }
 
-		  yylval.tok_val = new token (tok);
+		  yylval.tok_val = new token (s);
 		  token_stack.push (yylval.tok_val);
 		  return TEXT;
 		}
@@ -1877,14 +1872,6 @@ lexical_feedback::init (void)
 }
 
 int
-backslash_escapes (void)
-{
-  Vbackslash_escapes = check_preference ("backslash_escapes");
-
-  return 0;
-}
-
-int
 whitespace_in_literal_matrix (void)
 {
   int pref = 0;
@@ -1907,10 +1894,6 @@ whitespace_in_literal_matrix (void)
 void
 symbols_of_lex (void)
 {
-  DEFVAR (backslash_escapes, 1.0, 0, backslash_escapes,
-    "if nonzero, Octave recognizes backslashes in strings as escapes that\n\
-introduce special characters like newline (\\n), tab (\\t), etc.");
-
   DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
 }

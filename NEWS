@@ -151,6 +151,12 @@ Summary of changes for version 2.1.x:
   * Structure elements completion on the command line actually works
     now.
 
+  * The new built-in variable `fixed_point_format' controls whether
+    Octave uses a scaled fixed-point format for displaying matrices.
+    The default value is 0 unless you use --traditional.
+
+  * The function sumsq now computes sum (x .* conj (x)) for complex values.
+
   * New configure option, --enable-readline.
 
   * New configure option, --enable-static.

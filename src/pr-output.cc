@@ -54,6 +54,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+// TRUE means use a scaled fixed point format for `format long' and
+// `format short'.
+static bool Vfixed_point_format;
+
 // The maximum field width for a number printed by the default output
 // routines.
 static int Voutput_max_field_width;
@@ -298,6 +302,14 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       fw += sign;
       rd = 0;
     }
+  else if (Vfixed_point_format)
+    {
+      rd = prec;
+      fw = rd + 2;
+      if (inf_or_nan && fw < 3)
+	fw = 3;
+      fw += sign;
+    }
   else
     {
       int ld_max, rd_max;
@@ -338,7 +350,8 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (fw > Voutput_max_field_width || print_e))
+      && (print_e
+	  || (! Vfixed_point_format && fw > Voutput_max_field_width)))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -363,7 +376,7 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 }
 
 static void
-set_format (const Matrix& m, int& fw)
+set_format (const Matrix& m, int& fw, double& scale)
 {
   curr_real_fmt = 0;
   curr_imag_fmt = 0;
@@ -387,6 +400,8 @@ set_format (const Matrix& m, int& fw)
   int x_min = min_abs == 0.0
     ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
 
+  scale = x_max == 0 ? 1.0 : pow (10.0, x_max - 1);
+
   set_real_matrix_format (sign, x_max, x_min, inf_or_nan,
 			  int_or_inf_or_nan, fw);
 }
@@ -395,7 +410,8 @@ static inline void
 set_format (const Matrix& m)
 {
   int fw;
-  set_format (m, fw);
+  double scale;
+  set_format (m, fw, scale);
 }
 
 static void
@@ -606,6 +622,14 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       r_fw += sign;
       rd = 0;
     }
+  else if (Vfixed_point_format)
+    {
+      rd = prec;
+      i_fw = r_fw = rd + 2;
+      if (inf_or_nan && i_fw < 3)
+	i_fw = r_fw = 3;
+      r_fw += sign;
+    }
   else
     {
       int ld_max, rd_max;
@@ -646,7 +670,8 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (r_fw > Voutput_max_field_width || print_e))
+      && (print_e
+	  || (! Vfixed_point_format && r_fw > Voutput_max_field_width)))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -679,7 +704,7 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 }
 
 static void
-set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
+set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
 {
   curr_real_fmt = 0;
   curr_imag_fmt = 0;
@@ -720,6 +745,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
+  scale = x_max == 0 ? 1.0 : pow (10.0, x_max - 1);
+
   set_complex_matrix_format (sign, x_max, x_min, r_x_max, r_x_min,
 			     inf_or_nan, int_or_inf_or_nan, r_fw, i_fw);
 }
@@ -728,11 +755,13 @@ static inline void
 set_format (const ComplexMatrix& cm)
 {
   int r_fw, i_fw;
-  set_format (cm, r_fw, i_fw);
+  double scale;
+  set_format (cm, r_fw, i_fw, scale);
 }
 
 static void
-set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
+set_range_format (bool sign, int x_max, int x_min, int all_ints,
+		  int& fw)
 {
   static char fmt_buf[128];
 
@@ -761,6 +790,11 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       int digits = x_max > x_min ? x_max : x_min;
       fw = sign + digits;
       rd = 0;
+    }
+  else if (Vfixed_point_format)
+    {
+      rd = prec;
+      fw = rd + 2 + sign;
     }
   else
     {
@@ -799,7 +833,8 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (fw > Voutput_max_field_width || print_e))
+      && (print_e
+	  || (! Vfixed_point_format && fw > Voutput_max_field_width)))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -821,7 +856,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
 }
 
 static void
-set_format (const Range& r, int& fw)
+set_format (const Range& r, int& fw, double& scale)
 {
   curr_real_fmt = 0;
   curr_imag_fmt = 0;
@@ -852,6 +887,8 @@ set_format (const Range& r, int& fw)
   int x_min = min_abs == 0.0
     ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
 
+  scale = x_max == 0 ? 1.0 : pow (10.0, x_max - 1);
+
   set_range_format (sign, x_max, x_min, all_ints, fw);
 }
 
@@ -859,7 +896,8 @@ static inline void
 set_format (const Range& r)
 {
   int fw;
-  set_format (r, fw);
+  double scale;
+  set_format (r, fw, scale);
 }
 
 union equiv
@@ -1080,6 +1118,18 @@ print_empty_matrix (ostream& os, int nr, int nc, bool pr_as_read_syntax)
 }
 
 static void
+pr_scale_header (ostream& os, double scale)
+{
+  if (Vfixed_point_format && scale != 1.0)
+    {
+      os.form ("  %-8.1e *\n", scale);
+
+      if (! compact_format)
+	os << "\n";
+    }
+}
+
+static void
 pr_col_num_header (ostream& os, int total_width, int max_width,
 		   int lim, int col, int extra_indent)
 {
@@ -1155,7 +1205,8 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
   else
     {
       int fw;
-      set_format (m, fw);
+      double scale = 1.0;
+      set_format (m, fw, scale);
       int column_width = fw + 2;
       int total_width = nc * column_width;
       int max_width = command_editor::terminal_cols ();
@@ -1229,6 +1280,8 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 	}
       else
 	{
+	  pr_scale_header (os, scale);
+
 	  for (int col = 0; col < nc; col += inc)
 	    {
 	      int lim = col + inc < nc ? col + inc : nc;
@@ -1244,7 +1297,10 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 		    {
 		      os << "  ";
 
-		      pr_float (os, m (i, j), fw);
+		      double tmp = (Vfixed_point_format && scale != 1.0)
+			? m(i,j) / scale : m(i,j);
+
+		      pr_float (os, tmp, fw);
 		    }
 
 		  if (i < nr - 1)
@@ -1307,7 +1363,8 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
   else
     {
       int r_fw, i_fw;
-      set_format (cm, r_fw, i_fw);
+      double scale = 1.0;
+      set_format (cm, r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
       column_width += (bank_format || hex_format|| bit_format) ? 2 : 7;
       int total_width = nc * column_width;
@@ -1382,6 +1439,8 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	}
       else
 	{
+	  pr_scale_header (os, scale);
+
 	  for (int col = 0; col < nc; col += inc)
 	    {
 	      int lim = col + inc < nc ? col + inc : nc;
@@ -1397,7 +1456,10 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 		    {
 		      os << "  ";
 
-		      pr_complex (os, cm (i, j));
+		      Complex tmp = (Vfixed_point_format && scale != 1.0)
+			? cm(i,j) / scale : cm(i,j);
+
+		      pr_complex (os, tmp, r_fw, i_fw);
 		    }
 
 		  if (i < nr - 1) 
@@ -1432,7 +1494,8 @@ octave_print_internal (ostream& os, const Range& r,
   else
     {
       int fw;
-      set_format (r, fw);
+      double scale = 1.0;
+      set_format (r, fw, scale);
 
       if (pr_as_read_syntax)
 	{
@@ -1480,6 +1543,8 @@ octave_print_internal (ostream& os, const Range& r,
 	  if (max_width < 0)
 	    max_width = 0;
 
+	  pr_scale_header (os, scale);
+
 	  int col = 0;
 	  while (col < num_elem)
 	    {
@@ -1493,7 +1558,12 @@ octave_print_internal (ostream& os, const Range& r,
 	      for (int i = col; i < lim; i++)
 		{
 		  double val = base + i * increment;
+
 		  os << "  ";
+
+		  if (Vfixed_point_format && scale != 1.0)
+		    val /= scale;
+
 		  pr_float (os, val, fw);
 		}
 
@@ -1729,6 +1799,14 @@ set output formatting style")
 }
 
 static int
+fixed_point_format (void)
+{
+  Vfixed_point_format = check_preference ("fixed_point_format");
+
+  return 0;
+}
+
+static int
 output_max_field_width (void)
 {
   double val;
@@ -1783,6 +1861,9 @@ split_long_rows (void)
 void
 symbols_of_pr_output (void)
 {
+  DEFVAR (fixed_point_format, 0.0, 0, fixed_point_format,
+    "use scaled fixed point format for `format short' and `format long'");
+
   DEFVAR (output_max_field_width, 10.0, 0, output_max_field_width,
     "maximum width of an output field for numeric output");
 

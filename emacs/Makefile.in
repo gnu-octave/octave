@@ -1,0 +1,62 @@
+#
+# Makefile for octave's emacs directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+EL_FILES = octave-hlp.el octave-inf.el octave-mod.el
+
+ELC_FILES = octave-hlp.elc octave-inf.elc octave-mod.elc
+
+SOURCES = $(EL_FILES)
+
+DISTFILES = Makefile.in $(EL_FILES) $(ELC_FILES) NEWS TODO
+
+BINDISTFILES = $(addprefix $(srcdir)/, $(EL_FILES) $(ELC_FILES) NEWS TODO)
+
+all:
+.PHONY: all
+
+install:
+.PHONY: install
+
+tags:
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+clean mostlyclean:
+.PHONY: clean mostlyclean
+
+distclean:
+	rm -f Makefile
+.PHONY: distclean
+
+maintainer-clean: distclean
+	rm -f tags TAGS
+.PHONY: maintainer-clean
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/emacs
+.PHONY: dist
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/emacs ; \
+	fi
+.PHONY: bin-dist

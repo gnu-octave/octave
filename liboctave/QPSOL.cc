@@ -78,8 +78,6 @@ qphess (const int& n, const int& nrowh, const int& ncolh,
 Vector
 QPSOL::minimize (double& objf, int& inform, Vector& lambda)
 {
-  int i;
-
   int n = x.capacity ();
  
   int itmax = (iteration_limit () < 0) ? 50 * n : iteration_limit ();
@@ -103,7 +101,7 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
 
   if (bnds.size () > 0)
     {
-      for (i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
 	{
 	  pbl[i] = bnds.lower_bound (i);
 	  pbu[i] = bnds.upper_bound (i);
@@ -111,14 +109,14 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
     }
   else
     {
-      for (i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
 	{
 	  pbl[i] = -bigbnd;
 	  pbu[i] = bigbnd;
 	}
     }
 
-  for (i = 0; i < nclin; i++)
+  for (int i = 0; i < nclin; i++)
     {
       pbl[i+n] = lc.lower_bound (i);
       pbu[i+n] = lc.upper_bound (i);
@@ -128,7 +126,7 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
 
   double *featol = new double [nctotl];
   double tmp = feasibility_tolerance ();
-  for (i = 0; i < nctotl; i++)
+  for (int i = 0; i < nctotl; i++)
     featol[i] = tmp;
 
   double *ph = H.fortran_vec ();

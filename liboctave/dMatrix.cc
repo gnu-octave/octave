@@ -636,7 +636,7 @@ Matrix::ifourier (void) const
   for (int j = 0; j < nsamples; j++)
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], wsave);
 
-  for (j = 0; j < npts*nsamples; j++)
+  for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / (double) npts;
 
   delete [] wsave;
@@ -680,14 +680,14 @@ Matrix::fourier2d (void) const
 
   F77_FCN (cffti, CFFTI) (npts, wsave);
 
-  for (j = 0; j < nsamples; j++)
+  for (int j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	row[i] = tmp_data[i*nr + j];
 
       F77_FCN (cfftf, CFFTF) (npts, row, wsave);
 
-      for (i = 0; i < npts; i++)
+      for (int i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = row[i];
     }
 
@@ -725,7 +725,7 @@ Matrix::ifourier2d (void) const
 
   delete [] wsave;
 
-  for (j = 0; j < npts*nsamples; j++)
+  for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / (double) npts;
 
   npts = nc;
@@ -736,14 +736,14 @@ Matrix::ifourier2d (void) const
 
   F77_FCN (cffti, CFFTI) (npts, wsave);
 
-  for (j = 0; j < nsamples; j++)
+  for (int j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	row[i] = tmp_data[i*nr + j];
 
       F77_FCN (cfftb, CFFTB) (npts, row, wsave);
 
-      for (i = 0; i < npts; i++)
+      for (int i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = row[i] / (double) npts;
     }
 
@@ -1010,9 +1010,8 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
   int nrr = m > n ? m : n;
   Matrix result (nrr, nrhs);
 
-  int i, j;
-  for (j = 0; j < nrhs; j++)
-    for (i = 0; i < m; i++)
+  for (int j = 0; j < nrhs; j++)
+    for (int i = 0; i < m; i++)
       result.elem (i, j) = b.elem (i, j);
 
   double *presult = result.fortran_vec ();
@@ -1032,8 +1031,8 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 			    rcond, rank, work, lwork, info);
 
   Matrix retval (n, nrhs);
-  for (j = 0; j < nrhs; j++)
-    for (i = 0; i < n; i++)
+  for (int j = 0; j < nrhs; j++)
+    for (int i = 0; i < n; i++)
       retval.elem (i, j) = result.elem (i, j);
 
   delete [] tmp_data;
@@ -1098,8 +1097,7 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
   int nrr = m > n ? m : n;
   ColumnVector result (nrr);
 
-  int i;
-  for (i = 0; i < m; i++)
+  for (int i = 0; i < m; i++)
     result.elem (i) = b.elem (i);
 
   double *presult = result.fortran_vec ();
@@ -1119,7 +1117,7 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 			    rcond, rank, work, lwork, info);
 
   ColumnVector retval (n);
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     retval.elem (i) = result.elem (i);
 
   delete [] tmp_data;

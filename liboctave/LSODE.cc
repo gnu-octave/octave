@@ -339,7 +339,7 @@ ODE::integrate (const ColumnVector& tout)
 	  if (integration_error)
 	    return retval;
 
-	  for (i = 0; i < n; i++)
+	  for (int i = 0; i < n; i++)
 	    retval.elem (j, i) = x_next.elem (i);
 	}
     }
@@ -421,7 +421,7 @@ ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
 	      if (save_output)
 		{
-		  for (i = 0; i < n; i++)
+		  for (int i = 0; i < n; i++)
 		    retval.elem (i_out-1, i) = x_next.elem (i);
 		}
 

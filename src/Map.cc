@@ -55,7 +55,9 @@ template <class C>
 Pix
 Map<C>::seek (const char *item) const
 {
-  for (Pix i = first (); i != 0 && strcmp (key (i), item) != 0; next (i))
+  Pix i = 0;
+
+  for (i = first (); i != 0 && strcmp (key (i), item) != 0; next (i))
     ; // Skip items until match found.
 
   return i;
@@ -168,7 +170,8 @@ CHMap<C>::operator [] (const char *item)
 {
   unsigned int h = hash (item) % size;
 
-  for (CHNode<C> *t = tab[h]; goodCHptr (t); t = t->tl)
+  CHNode<C> *t = 0;
+  for (t = tab[h]; goodCHptr (t); t = t->tl)
     if (strcmp (item, t->hd) == 0)
       return t->cont;
 
@@ -261,7 +264,9 @@ CHMap<C>::OK (void) const
 
   for (unsigned int i = 0; i < size; ++i)
     {
-      for (CHNode<C> *p = tab[i]; goodCHptr (p); p = p->tl)
+      CHNode<C> *p = 0;
+
+      for (p = tab[i]; goodCHptr (p); p = p->tl)
 	++n;
 
       v &= CHptr_to_index (p) == i + 1;

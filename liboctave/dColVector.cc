@@ -259,7 +259,7 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
   for (int i = 0; i < a_len; i++)
     result.elem (i) = a.elem (i) * m.elem (i, i);
 
-  for (i = a_len; i < nr; i++)
+  for (int i = a_len; i < nr; i++)
     result.elem (i) = 0.0;
 
   return result;

@@ -413,7 +413,7 @@ tree_matrix::eval (int print)
 // Compute size of result matrix, and check to see that the dimensions
 // of all the elements will match up properly.
 
-  for (i = 0; i < len; i++)
+  for (int i = 0; i < len; i++)
     {
       dir direct = list[i].direction;
 
@@ -490,7 +490,7 @@ tree_matrix::eval (int print)
   else
     m.resize (row_total, col_total, 0.0);
 
-  for (i = 0; i < len; i++)
+  for (int i = 0; i < len; i++)
     {
       tree_constant tmp = list[i].elem;
 

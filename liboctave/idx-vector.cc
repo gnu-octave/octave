@@ -258,7 +258,7 @@ idx_vector::convert_one_zero_to_idx (void)
 
       min_val = max_val = data[0];
 
-      i = 0;
+      int i = 0;
       do
 	{
 	  if (data[i] > max_val)

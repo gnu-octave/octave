@@ -285,29 +285,28 @@ CollocWt::init (void)
 			  dif1, dif2, dif3, pr);
 
   int id;
-  int i, j;
 
 // First derivative weights.
 
   id = 1;
-  for (i = 1; i <= nt; i++)
+  for (int i = 1; i <= nt; i++)
     {
       F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
 			      dif2, dif3, pr, vect); 
 
-      for (j = 0; j < nt; j++)
+      for (int j = 0; j < nt; j++)
 	A (i-1, j) = vect[j];
     }
 
 // Second derivative weights.
 
   id = 2;
-  for (i = 1; i <= nt; i++)
+  for (int i = 1; i <= nt; i++)
     {
       F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
 			      dif2, dif3, pr, vect); 
 
-      for (j = 0; j < nt; j++)
+      for (int j = 0; j < nt; j++)
 	B (i-1, j) = vect[j];
     }
 
@@ -315,7 +314,7 @@ CollocWt::init (void)
 
   id = 3;
   double *pq = q.fortran_vec ();
-  F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
+  F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, id, id, dif1,
 			  dif2, dif3, pr, pq);
 
   delete [] dif1;

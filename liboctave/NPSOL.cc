@@ -107,7 +107,7 @@ npsol_objfun (int& mode, const int& n, double *xx, double *objf,
 	mode = -1;
       else
 	{
-	  for (i = 0; i < n; i++)
+	  for (int i = 0; i < n; i++)
 	    objgrd[i] = tmp_grad.elem (i);
 	}
     }
@@ -135,7 +135,7 @@ npsol_confun (int& mode, const int& ncnln, const int& n,
     }
   else
     {
-      for (i = 0; i < ncnln; i++)
+      for (int i = 0; i < ncnln; i++)
 	cons[i] = tmp_c.elem (i);
     }
 
@@ -151,7 +151,7 @@ npsol_confun (int& mode, const int& ncnln, const int& n,
 	{
 	  int ld = nrowj;
 	  for (int j = 0; j < n; j++)
-	    for (i = 0; i < ncnln; i++)
+	    for (int i = 0; i < ncnln; i++)
 	      cjac[i+j*ld] = tmp_jac (i, j);
 	}
     }
@@ -241,7 +241,7 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
       cup[i+n] = lc.upper_bound (i);
     }
 
-  for (i = 0; i < ncnln; i++)
+  for (int i = 0; i < ncnln; i++)
     {
       clow[i+n+nclin] = nlc.lower_bound (i);
       cup[i+n+nclin] = nlc.upper_bound (i);

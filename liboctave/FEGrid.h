@@ -38,52 +38,36 @@ class ostream;
 
 class FEGrid
 {
-public:
-
-  FEGrid (void);
-  FEGrid (const Vector& elbnds);
-  FEGrid (int nel, double width);
-  FEGrid (int nel, double left, double right);
-
-  int in_bounds (double x) const;
-
-  int element (double x) const;
-
-  double left (void) const;
-  double right (void) const;
-
-  Vector element_boundaries (void) const;
-
-  friend ostream& operator << (ostream&, const FEGrid&);
-
-protected:
-
-  Vector elem;
-
 private:
 
   void error (const char* msg) const;
   void nel_error (void) const;
 
   void check_grid (void) const;
+
+public:
+
+  FEGrid (void) {}
+  FEGrid (const Vector& elbnds) { elem = elbnds; check_grid (); }
+  FEGrid (int nel, double width);
+  FEGrid (int nel, double left, double right);
+
+  int element (double x) const;
+
+  double left (void) const { return elem.elem (0); }
+  double right (void) const { return elem.elem (elem.capacity () - 1); }
+
+  int in_bounds (double x) const
+    { return (x >= left () && x <= right ()); }
+
+  Vector element_boundaries (void) const { return elem; }
+
+  friend ostream& operator << (ostream&, const FEGrid&);
+
+protected:
+
+  Vector elem;
 };
-
-inline FEGrid::FEGrid (void) {}
-
-inline FEGrid::FEGrid (const Vector& elbnds)
-  { elem = elbnds; check_grid (); }
-
-inline int FEGrid::in_bounds (double x) const
-  { return (x >= left () && x <= right ()); }
-
-inline double FEGrid::left (void) const
-  { return elem.elem (0); }
-
-inline double FEGrid::right (void) const
-  { return elem.elem (elem.capacity () - 1); }
-
-inline Vector FEGrid::element_boundaries (void) const
-  { return elem; }
 
 #endif
 

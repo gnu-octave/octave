@@ -63,15 +63,13 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
   ComplexMatrix A_fact (tmp_data, n, n);
 
-  int i;
-
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     {
       ipvt[i] -= 1;
       pvt[i] = i;
     }
 
-  for (i = 0; i < n - 1; i++)
+  for (int i = 0; i < n - 1; i++)
     {
       int k = ipvt[i];
       if (k != i)
@@ -86,17 +84,15 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   u.resize (n, n, 0.0);
   p.resize (n, n, 0.0);
 
-  for (i = 0; i < n; i++)
+  for (int i = 0; i < n; i++)
     {
       p.elem (i, pvt[i]) = 1.0;
 
-      int j;
-
       l.elem (i, i) = 1.0;
-      for (j = 0; j < i; j++)
+      for (int j = 0; j < i; j++)
 	l.elem (i, j) = A_fact.elem (i, j);
 
-      for (j = i; j < n; j++)
+      for (int j = i; j < n; j++)
 	u.elem (i, j) = A_fact.elem (i, j);
     }
 

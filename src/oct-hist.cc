@@ -259,7 +259,9 @@ do_history (int argc, char **argv)
 
   if (hlist)
     {
-      for (int i = 0; hlist[i]; i++)
+      int i = 0;
+
+      for (i = 0; hlist[i]; i++)
 	; // Do nothing.
 
       if (limit < 0)
@@ -365,7 +367,9 @@ edit_history_repl_hist (char *command)
   if (! hlist)
     return;
 
-  for (int i = 0; hlist[i]; i++)
+  int i = 0;
+
+  for (i = 0; hlist[i]; i++)
     ; // Count 'em.
   i--;
 

@@ -216,7 +216,7 @@ ddassl_f (const double& time, double *state, double *deriv,
     ires = -2;
   else
     {
-      for (i = 0; i < nn; i++)
+      for (int i = 0; i < nn; i++)
 	delta [i] = tmp_delta.elem (i);
     }
 
@@ -380,7 +380,7 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out)
 	  if (integration_error)
 	    return retval;
 
-	  for (i = 0; i < n; i++)
+	  for (int i = 0; i < n; i++)
 	    {
 	      retval.elem (j, i) = x_next.elem (i);
 	      xdot_out.elem (j, i) = xdot.elem (i);
@@ -469,7 +469,7 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit)
 
 	      if (save_output)
 		{
-		  for (i = 0; i < n; i++)
+		  for (int i = 0; i < n; i++)
 		    {
 		      retval.elem (i_out-1, i) = x_next.elem (i);
 		      xdot_out.elem (i_out-1, i) = xdot.elem (i);

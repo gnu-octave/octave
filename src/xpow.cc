@@ -530,9 +530,8 @@ elem_xpow (const Matrix& a, const Matrix& b)
   assert (nr == b.rows () && nc == b.columns ());
 
   int convert_to_complex = 0;
-  int i;
   for (int j = 0; j < nc; j++)
-    for (i = 0; i < nr; i++)
+    for (int i = 0; i < nr; i++)
       {
 	double atmp = a.elem (i, j);
 	double btmp = b.elem (i, j);
@@ -549,8 +548,8 @@ elem_xpow (const Matrix& a, const Matrix& b)
     {
       ComplexMatrix complex_result (nr, nc);
 
-      for (j = 0; j < nc; j++)
-	for (i = 0; i < nr; i++)
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
 	  {
 	    Complex atmp (a.elem (i, j));
 	    Complex btmp (b.elem (i, j));
@@ -562,8 +561,8 @@ elem_xpow (const Matrix& a, const Matrix& b)
     {
       Matrix result (nr, nc);
 
-      for (j = 0; j < nc; j++)
-	for (i = 0; i < nr; i++)
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
 	  result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
 
       return tree_constant (result);

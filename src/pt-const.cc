@@ -79,7 +79,9 @@ tree_constant::operator new (size_t size)
       int block_size = tc_newlist_grow_size * sizeof (tree_constant);
       tc_newlist = (tree_constant *) new char [block_size];
 
-      for (int i = 0; i < tc_newlist_grow_size - 1; i++)
+      int i = 0;
+
+      for (i = 0; i < tc_newlist_grow_size - 1; i++)
 	tc_newlist[i].freeptr = &tc_newlist[i+1];
 
       tc_newlist[i].freeptr = 0;
@@ -815,7 +817,9 @@ TC_REP::operator new (size_t size)
       int block_size = tc_rep_newlist_grow_size * sizeof (TC_REP);
       tc_rep_newlist = (TC_REP *) new char [block_size];
 
-      for (int i = 0; i < tc_rep_newlist_grow_size - 1; i++)
+      int i = 0;
+
+      for (i = 0; i < tc_rep_newlist_grow_size - 1; i++)
 	tc_rep_newlist[i].freeptr = &tc_rep_newlist[i+1];
 
       tc_rep_newlist[i].freeptr = 0;

@@ -157,7 +157,7 @@ hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
     *iflag = -1;
   else
     {
-      for (i = 0; i < nn; i++)
+      for (int i = 0; i < nn; i++)
 	fvec[i] = tmp_f.elem (i);
     }
 
@@ -185,7 +185,7 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 	*iflag = -1;
       else
 	{
-	  for (i = 0; i < nn; i++)
+	  for (int i = 0; i < nn; i++)
 	    fvec[i] = tmp_f.elem (i);
 	}
     }
@@ -201,7 +201,7 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 	{
 	  int ld = *ldfjac;
 	  for (int j = 0; j < nn; j++)
-	    for (i = 0; i < nn; i++)
+	    for (int i = 0; i < nn; i++)
 	      fjac[j*ld+i] = tmp_fj.elem (i, j);
 	}
     }
@@ -257,7 +257,7 @@ NLEqn::solve (int& info)
     {
       retval.resize (n);
 
-      for (i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
 	retval.elem (i) = px[i];
     }
 

@@ -590,7 +590,8 @@ list_in_columns (ostrstream& os, char **list)
 
   int max_name_length = 0;
   int total_names = 0;
-  for (char **names = list; *names; names++)
+  char **names = 0;
+  for (names = list; *names; names++)
     {
       total_names++;
       int name_length = strlen (*names);

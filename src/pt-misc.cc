@@ -368,7 +368,7 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
 
   if (vr_list)
     {
-      for (p = vr_list->first (); p != 0; vr_list->next (p))
+      for (Pix p = vr_list->first (); p != 0; vr_list->next (p))
 	{
 	  retval(i) = vr_list->operator () (p);
 	  i++;

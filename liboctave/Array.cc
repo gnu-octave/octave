@@ -569,21 +569,19 @@ Array2<T>::resize (int r, int c, const T& val)
   int min_r = old_d1 < r ? old_d1 : r;
   int min_c = old_d2 < c ? old_d2 : c;
 
-  int i, j;
-
   if (old_data && old_len > 0)
     {
-      for (j = 0; j < min_c; j++)
-	for (i = 0; i < min_r; i++)
+      for (int j = 0; j < min_c; j++)
+	for (int i = 0; i < min_r; i++)
 	  xelem (i, j) = old_data[old_d1*j+i];
     }
 
-  for (j = 0; j < min_c; j++)
-    for (i = min_r; i < r; i++)
+  for (int j = 0; j < min_c; j++)
+    for (int i = min_r; i < r; i++)
       xelem (i, j) = val;
 
-  for (j = min_c; j < c; j++)
-    for (i = 0; i < r; i++)
+  for (int j = min_c; j < c; j++)
+    for (int i = 0; i < r; i++)
       xelem (i, j) = val;
 
   if (--old_rep->count <= 0)

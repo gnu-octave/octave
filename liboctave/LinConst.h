@@ -45,25 +45,48 @@ class LinConst : public Bounds
 {
 public:
 
-  LinConst (void);
-  LinConst (int nclin, int nx);
+  LinConst (void) : Bounds () {}
+  LinConst (int nc, int n) : Bounds (nc), A (nb, n) {}
 
-  LinConst (int nclin_eq, int nclin_ineq, int nx);
+  LinConst (int eq, int ineq, int n)
+    : Bounds (eq+ineq), A (nb, n) {}
 
-  LinConst (const Vector& lb, const Matrix& A, const Vector& ub);
+  LinConst (const Vector& l, const Matrix& amat, const Vector& u)
+    : Bounds (l, u), A (amat)
+      {
+	if (nb != amat.rows ())
+	  error ("inconsistent sizes for constraint matrix and bounds vectors");
+      }
 
   LinConst (const Matrix& A_eq, const Vector& b_eq,
 	    const Matrix& A_ineq, const Vector& b_ineq);
 
-  LinConst (const LinConst& a);
+  LinConst (const LinConst& a)
+    : Bounds (a.lb, a.ub), A (a.constraint_matrix ()) {}
 
-  LinConst& operator = (const LinConst& a);
+  LinConst& operator = (const LinConst& a)
+    {
+      nb = a.nb;
+      lb = a.lb;
+      A  = a.A;
+      ub = a.ub;
+
+      return *this;
+    }
 
   LinConst& resize (int nclin, int n);
 
-  Matrix constraint_matrix (void) const;
+  Matrix constraint_matrix (void) const { return A; }
 
-  LinConst& set_constraint_matrix (const Matrix& A);
+  LinConst& set_constraint_matrix (const Matrix& amat)
+    {
+      if (lb.capacity () != amat.rows ())
+	error ("inconsistent size for new linear constraint matrix");
+
+      A = amat;
+
+      return *this;
+    }
 
   Matrix eq_constraint_matrix (void) const;
   Matrix ineq_constraint_matrix (void) const;
@@ -82,52 +105,6 @@ private:
   void error (const char *msg);
 
 };
-
-inline LinConst::LinConst (void) : Bounds () {}
-
-inline LinConst::LinConst (int nc, int n) : Bounds (nc), A (nb, n) {}
-
-inline LinConst::LinConst (int eq, int ineq, int n)
-  : Bounds (eq+ineq), A (nb, n) {}
-
-inline LinConst::LinConst (const Vector& l, const Matrix& amat,
-			   const Vector& u)
-  : Bounds (l, u), A (amat)
-{
-  if (nb != amat.rows ())
-    error ("inconsistent sizes for constraint matrix and bounds vectors");
-}
-
-inline LinConst::LinConst (const LinConst& a)
-  : Bounds (a.lb, a.ub), A (a.constraint_matrix ()) {}
-
-inline LinConst&
-LinConst::operator = (const LinConst& a)
-{
-  nb = a.nb;
-  lb = a.lb;
-  A  = a.A;
-  ub = a.ub;
-
-  return *this;
-}
-
-inline Matrix
-LinConst::constraint_matrix (void) const
-{
-  return A;
-}
-
-inline LinConst&
-LinConst::set_constraint_matrix (const Matrix& amat)
-{
-  if (lb.capacity () != amat.rows ())
-    error ("inconsistent size for new linear constraint matrix");
-
-  A = amat;
-
-  return *this;
-}
 
 #endif
 

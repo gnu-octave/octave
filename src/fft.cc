@@ -66,30 +66,27 @@ DEFUN_DLD ("fft", Ffft, Sfft, 2, 1,
       return retval;
     }
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-	ComplexMatrix mfft = m.fourier ();
-	retval = mfft;
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-	ComplexMatrix mfft = m.fourier ();
-	retval = mfft;
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-    case tree_constant_rep::complex_scalar_constant:
-      error ("fft: invalid scalar argument");
-      break;
-    default:
-      panic_impossible ();
-      break;
+      Matrix m = tmp.matrix_value ();
+      ComplexMatrix mfft = m.fourier ();
+      retval = mfft;
     }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      ComplexMatrix mfft = m.fourier ();
+      retval = mfft;
+    }
+  else if (tmp.is_scalar_type ())
+    {
+      error ("fft: invalid scalar argument");
+    }
+  else
+    {
+      gripe_wrong_type_arg ("fft", tmp);
+    }
+
   return retval;
 }
 

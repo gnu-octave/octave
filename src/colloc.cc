@@ -46,8 +46,7 @@ DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
       return retval;
     }
 
-  if (args(1).const_type () != tree_constant_rep::complex_scalar_constant
-      && args(1).const_type () != tree_constant_rep::scalar_constant)
+  if (! args(1).is_scalar_type ())
     {
       error ("colloc: first argument must be a scalar");
       return retval;

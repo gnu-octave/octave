@@ -159,7 +159,8 @@ tree_while_command::eval (void)
 	    warning ("while: empty matrix used in conditional");
 	  else if (flag == 0)
 	    {
-	      ::error ("while: empty matrix used in conditional");
+	      ::error ("empty matrix used in while condition near line\
+ %d, column %d", line (), column ()); 
 	      return;
 	    }
 	  t1 = tree_constant (0.0);
@@ -170,13 +171,16 @@ tree_while_command::eval (void)
 	  t1 = t2.all ();
 	}
 
-      tree_constant_rep::constant_type t = t1.const_type ();
-      if (t == tree_constant_rep::scalar_constant)
+      if (t1.is_real_scalar ())
 	expr_value = (int) t1.double_value ();
-      else if (t == tree_constant_rep::complex_scalar_constant)
+      else if (t1.is_complex_scalar ())
 	expr_value = t1.complex_value () != 0.0;
       else
-	panic_impossible ();
+	{
+	  ::error ("invalid type used in while condition near line %d,\
+ column %d", line (), column ());
+	  return;
+	}
 
       if (expr_value)
 	{
@@ -253,90 +257,84 @@ tree_for_command::eval (void)
       return;
     }
 
-  tree_constant_rep::constant_type expr_type = tmp_expr.const_type ();
-  switch (expr_type)
+  if (tmp_expr.is_scalar_type ())
     {
-    case tree_constant_rep::complex_scalar_constant:
-    case tree_constant_rep::scalar_constant:
-      {
-	tree_constant *rhs = new tree_constant (tmp_expr);
-	int quit = 0;
-	do_for_loop_once (rhs, quit);
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m_tmp;
-	ComplexMatrix cm_tmp;
-	int nr;
-	int steps;
-	if (expr_type == tree_constant_rep::matrix_constant)
-	  {
-	    m_tmp = tmp_expr.matrix_value ();
-	    nr = m_tmp.rows ();
-	    steps = m_tmp.columns ();
-	  }
-	else
-	  {
-	    cm_tmp = tmp_expr.complex_matrix_value ();
-	    nr = cm_tmp.rows ();
-	    steps = cm_tmp.columns ();
-	  }
+      tree_constant *rhs = new tree_constant (tmp_expr);
+      int quit = 0;
+      do_for_loop_once (rhs, quit);
+    }
+  else if (tmp_expr.is_matrix_type ())
+    {
+      Matrix m_tmp;
+      ComplexMatrix cm_tmp;
+      int nr;
+      int steps;
+      if (tmp_expr.is_real_matrix ())
+	{
+	  m_tmp = tmp_expr.matrix_value ();
+	  nr = m_tmp.rows ();
+	  steps = m_tmp.columns ();
+	}
+      else
+	{
+	  cm_tmp = tmp_expr.complex_matrix_value ();
+	  nr = cm_tmp.rows ();
+	  steps = cm_tmp.columns ();
+	}
 
-	for (int i = 0; i < steps; i++)
-	  {
-	    tree_constant *rhs;
+      for (int i = 0; i < steps; i++)
+	{
+	  tree_constant *rhs;
 
-	    if (nr == 1)
-	      {
-		if (expr_type == tree_constant_rep::matrix_constant)
-		  rhs = new tree_constant (m_tmp (0, i));
-		else
-		  rhs = new tree_constant (cm_tmp (0, i));
-	      }
-	    else
-	      {
-		if (expr_type == tree_constant_rep::matrix_constant)
-		  rhs = new tree_constant (m_tmp.extract (0, i, nr-1, i));
-		else
-		  rhs = new tree_constant (cm_tmp.extract (0, i, nr-1, i));
-	      }
+	  if (nr == 1)
+	    {
+	      if (tmp_expr.is_real_matrix ())
+		rhs = new tree_constant (m_tmp (0, i));
+	      else
+		rhs = new tree_constant (cm_tmp (0, i));
+	    }
+	  else
+	    {
+	      if (tmp_expr.is_real_matrix ())
+		rhs = new tree_constant (m_tmp.extract (0, i, nr-1, i));
+	      else
+		rhs = new tree_constant (cm_tmp.extract (0, i, nr-1, i));
+	    }
 
-	    int quit = 0;
-	    do_for_loop_once (rhs, quit);
-	    if (quit)
-	      break;
-	  }
-      }
-      break;
-    case tree_constant_rep::string_constant:
+	  int quit = 0;
+	  do_for_loop_once (rhs, quit);
+	  if (quit)
+	    break;
+	}
+    }
+  else if (tmp_expr.is_string ())
+    {
       gripe_string_invalid ();
-      break;
-    case tree_constant_rep::range_constant:
-      {
-	Range rng = tmp_expr.range_value ();
+    }
+  else if (tmp_expr.is_range ())
+    {
+      Range rng = tmp_expr.range_value ();
 
-	int steps = rng.nelem ();
-	double b = rng.base ();
-	double increment = rng.inc ();
+      int steps = rng.nelem ();
+      double b = rng.base ();
+      double increment = rng.inc ();
 
-	for (int i = 0; i < steps; i++)
-	  {
-	    double tmp_val = b + i * increment;
+      for (int i = 0; i < steps; i++)
+	{
+	  double tmp_val = b + i * increment;
 
-	    tree_constant *rhs = new tree_constant (tmp_val);
+	  tree_constant *rhs = new tree_constant (tmp_val);
 
-	    int quit = 0;
-	    do_for_loop_once (rhs, quit);
-	    if (quit)
-	      break;
-	  }
-      }
-      break;
-    default:
-      panic_impossible ();
-      break;
+	  int quit = 0;
+	  do_for_loop_once (rhs, quit);
+	  if (quit)
+	    break;
+	}
+    }
+  else
+    {
+      ::error ("invalid type in for loop expression near line %d, column %d",
+	       line (), column ());
     }
 }
 

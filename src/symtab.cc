@@ -679,29 +679,18 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
     {
 // Would be nice to avoid this cast.  XXX FIXME XXX
       tree_constant *tmp = (tree_constant *) sr.def ();
-      switch (tmp->const_type ())
-	{
-	case tree_constant_rep::scalar_constant:
-	  const_type = SR_INFO_SCALAR;
-	  break;
-	case tree_constant_rep::complex_scalar_constant:
-	  const_type = SR_INFO_COMPLEX_SCALAR;
-	  break;
-	case tree_constant_rep::matrix_constant:
-	  const_type = SR_INFO_MATRIX;
-	  break;
-	case tree_constant_rep::complex_matrix_constant:
-	  const_type = SR_INFO_COMPLEX_MATRIX;
-	  break;
-	case tree_constant_rep::range_constant:
-	  const_type = SR_INFO_RANGE;
-	  break;
-	case tree_constant_rep::string_constant:
-	  const_type = SR_INFO_STRING;
-	  break;
-	default:
-	  break;
-	}
+      if (tmp->is_real_scalar ())
+	const_type = SR_INFO_SCALAR;
+      else if (tmp->is_complex_scalar ())
+	const_type = SR_INFO_COMPLEX_SCALAR;
+      else if (tmp->is_real_matrix ())
+	const_type = SR_INFO_MATRIX;
+      else if (tmp->is_complex_matrix ())
+	const_type = SR_INFO_COMPLEX_MATRIX;
+      else if (tmp->is_range ())
+	const_type = SR_INFO_RANGE;
+      else if (tmp->is_string ())
+	const_type = SR_INFO_STRING;
 
       nr = tmp->rows ();
       nc = tmp->columns ();

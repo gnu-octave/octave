@@ -64,85 +64,83 @@ DEFUN_DLD ("lu", Flu, Slu, 2, 3,
 	gripe_empty_arg ("lu", 1);
     }
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-	if (m.rows () == m.columns ())
-	  {
-	    LU fact (m);
-	    switch (nargout)
+      Matrix m = tmp.matrix_value ();
+      if (m.rows () == m.columns ())
+	{
+	  LU fact (m);
+	  switch (nargout)
+	    {
+	    case 0:
+	    case 1:
+	    case 2:
 	      {
-	      case 1:
-	      case 2:
-		{
-		  Matrix P = fact.P ();
-		  Matrix L = P.transpose () * fact.L ();
-		  retval(1) = fact.U ();
-		  retval(0) = L;
-		}
-		break;
-	      case 3:
-	      default:
-		retval(2) = fact.P ();
+		Matrix P = fact.P ();
+		Matrix L = P.transpose () * fact.L ();
 		retval(1) = fact.U ();
-		retval(0) = fact.L ();
-		break;
+		retval(0) = L;
 	      }
-	  }
-	else
-	  gripe_square_matrix_required ("lu");
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-	if (m.rows () == m.columns ())
-	  {
-	    ComplexLU fact (m);
-	    switch (nargout)
-	      {
-	      case 1:
-	      case 2:
-		{
-		  ComplexMatrix P = fact.P ();
-		  ComplexMatrix L = P.transpose () * fact.L ();
-		  retval(1) = fact.U ();
-		  retval(0) = L;
-		}
-		break;
-	      case 3:
-	      default:
-		retval(2) = fact.P ();
-		retval(1) = fact.U ();
-		retval(0) = fact.L ();
-		break;
-	      }
-	  }
-	else
-	  gripe_square_matrix_required ("lu");
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-      {
-	double d = tmp.double_value ();
-	retval(2) = 1.0;
-	retval(1) = d;
-	retval(0) = 1.0;
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex c = tmp.complex_value ();
-	retval(2) = 1.0;
-	retval(1) = c;
-	retval(0) = 1.0;
-      }
-      break;
-    default:
-      break;
+	      break;
+	    case 3:
+	    default:
+	      retval(2) = fact.P ();
+	      retval(1) = fact.U ();
+	      retval(0) = fact.L ();
+	      break;
+	    }
+	}
+      else
+	gripe_square_matrix_required ("lu");
     }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      if (m.rows () == m.columns ())
+	{
+	  ComplexLU fact (m);
+	  switch (nargout)
+	    {
+	    case 0:
+	    case 1:
+	    case 2:
+	      {
+		ComplexMatrix P = fact.P ();
+		ComplexMatrix L = P.transpose () * fact.L ();
+		retval(1) = fact.U ();
+		retval(0) = L;
+	      }
+	      break;
+	    case 3:
+	    default:
+	      retval(2) = fact.P ();
+	      retval(1) = fact.U ();
+	      retval(0) = fact.L ();
+	      break;
+	    }
+	}
+      else
+	gripe_square_matrix_required ("lu");
+    }
+  else if (tmp.is_real_scalar ())
+    {
+      double d = tmp.double_value ();
+      retval(2) = 1.0;
+      retval(1) = d;
+      retval(0) = 1.0;
+    }
+  else if (tmp.is_complex_scalar ())
+    {
+      Complex c = tmp.complex_value ();
+      retval(2) = 1.0;
+      retval(1) = c;
+      retval(0) = 1.0;
+    }
+  else
+    {
+      gripe_wrong_type_arg ("lu", tmp);
+    }
+
   return retval;
 }
 

@@ -125,7 +125,7 @@ any_arg_is_magic_colon (const Octave_object& args)
 
   while (--nargin > 0)
     {
-      if (args(nargin).const_type () == tree_constant_rep::magic_colon)
+      if (args(nargin).is_magic_colon ())
 	return 1;
     }
   return 0;
@@ -453,7 +453,6 @@ tree_matrix::eval (int print)
   for (i = 0; i < len; i++)
     {
       tree_constant tmp = list[i].elem;
-      tree_constant_rep::constant_type tmp_type = tmp.const_type ();
 
       int nr = list[i].nr;
       int nc = list[i].nc;
@@ -485,74 +484,76 @@ tree_matrix::eval (int print)
 
       if (found_complex)
 	{
-	  switch (tmp_type)
+	  if (tmp.is_real_scalar ())
 	    {
-	    case tree_constant_rep::scalar_constant:
 	      cm (put_row, put_col) = tmp.double_value ();
-	      break;
-	    case tree_constant_rep::string_constant:
+	    }
+	  else if (tmp.is_string ())
+	    {
 	      if (all_strings && str_ptr)
 		{
 		  memcpy (str_ptr, tmp.string_value (), nc);
 		  str_ptr += nc;
-		  break;
 		}
-	    case tree_constant_rep::range_constant:
-	      tmp_type = tmp.force_numeric (1);
-	      if (tmp_type == tree_constant_rep::scalar_constant)
+	    }
+	  else if (tmp.is_range ())
+	    {
+	      tmp.force_numeric (1);
+	      if (tmp.is_real_scalar ())
 		m (put_row, put_col) = tmp.double_value ();
-	      else if (tmp_type == tree_constant_rep::matrix_constant)
+	      else if (tmp.is_real_matrix ())
 		m.insert (tmp.matrix_value (), put_row, put_col);
 	      else
 		panic_impossible ();
-	      break;
-	    case tree_constant_rep::matrix_constant:
+	    }
+	  else if (tmp.is_real_matrix ())
+	    {
 	      cm.insert (tmp.matrix_value (), put_row, put_col);
-	      break;
-	    case tree_constant_rep::complex_scalar_constant:
+	    }
+	  else if (tmp.is_complex_scalar ())
+	    {
 	      cm (put_row, put_col) = tmp.complex_value ();
-	      break;
-	    case tree_constant_rep::complex_matrix_constant:
+	    }
+	  else if (tmp.is_complex_matrix ())
+	    {
 	      cm.insert (tmp.complex_matrix_value (), put_row, put_col);
-	      break;
-	    case tree_constant_rep::magic_colon:
-	    default:
+	    }
+	  else
+	    {
 	      panic_impossible ();
-	      break;
 	    }
 	}
       else
 	{
-	  switch (tmp_type)
+	  if (tmp.is_real_scalar ())
 	    {
-	    case tree_constant_rep::scalar_constant:
 	      m (put_row, put_col) = tmp.double_value ();
-	      break;
-	    case tree_constant_rep::string_constant:
+	    }
+	  else if (tmp.is_string ())
+	    {
 	      if (all_strings && str_ptr)
 		{
 		  memcpy (str_ptr, tmp.string_value (), nc);
 		  str_ptr += nc;
-		  break;
 		}
-	    case tree_constant_rep::range_constant:
-	      tmp_type = tmp.force_numeric (1);
-	      if (tmp_type == tree_constant_rep::scalar_constant)
+	    }
+	  else if (tmp.is_range ())
+	    {
+	      tmp.force_numeric (1);
+	      if (tmp.is_real_scalar ())
 		m (put_row, put_col) = tmp.double_value ();
-	      else if (tmp_type == tree_constant_rep::matrix_constant)
+	      else if (tmp.is_real_matrix ())
 		m.insert (tmp.matrix_value (), put_row, put_col);
 	      else
 		panic_impossible ();
-	      break;
-	    case tree_constant_rep::matrix_constant:
+	    }
+	  else if (tmp.is_real_matrix ())
+	    {
 	      m.insert (tmp.matrix_value (), put_row, put_col);
-	      break;
-	    case tree_constant_rep::complex_scalar_constant:
-	    case tree_constant_rep::complex_matrix_constant:
-	    case tree_constant_rep::magic_colon:
-	    default:
+	    }
+	  else
+	    {
 	      panic_impossible ();
-	      break;
 	    }
 	}
 
@@ -1853,8 +1854,7 @@ tree_colon_expression::eval (int print)
     }
 
   tmp = tmp.make_numeric ();
-  if (tmp.const_type () != tree_constant_rep::scalar_constant
-      && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
+  if (! tmp.is_scalar_type ())
     {
       eval_error ("base for colon expression must be a scalar");
       return retval;
@@ -1871,8 +1871,7 @@ tree_colon_expression::eval (int print)
     }
 
   tmp = tmp.make_numeric ();
-  if (tmp.const_type () != tree_constant_rep::scalar_constant
-      && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
+  if (! tmp.is_scalar_type ())
     {
       eval_error ("limit for colon expression must be a scalar");
       return retval;
@@ -1892,8 +1891,7 @@ tree_colon_expression::eval (int print)
 	}
 
       tmp = tmp.make_numeric ();
-      if (tmp.const_type () != tree_constant_rep::scalar_constant
-	  && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
+      if (! tmp.is_scalar_type ())
 	{
 	  eval_error ("increment for colon expression must be a scalar");
 	  return retval;

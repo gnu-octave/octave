@@ -54,6 +54,9 @@ unnecessary rows and columns of U and V")
 
   tree_constant arg = args(1).make_numeric ();
 
+  if (error_state)
+    return retval;
+
   if (arg.rows () == 0 || arg.columns () == 0)
     {
       int flag = user_pref.propagate_empty_matrices;
@@ -63,10 +66,7 @@ unnecessary rows and columns of U and V")
 	    gripe_empty_arg ("svd", 0);
 
 	  Matrix m;
-	  retval.resize (3);
-	  retval(0) = m;
-	  retval(1) = m;
-	  retval(2) = m;
+	  retval.resize (3, m);
 	}
       else
 	gripe_empty_arg ("svd", 1);
@@ -74,78 +74,50 @@ unnecessary rows and columns of U and V")
       return retval;
     }
 
-  Matrix tmp;
-  ComplexMatrix ctmp;
-  switch (arg.const_type ())
-    {
-    case tree_constant_rep::scalar_constant:
-      tmp.resize (1, 1);
-      tmp.elem (0, 0) = arg.double_value ();
-      break;
-    case tree_constant_rep::matrix_constant:
-      tmp = arg.matrix_value ();
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      ctmp.resize (1, 1);
-      ctmp.elem (0, 0) = arg.complex_value ();
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      ctmp = arg.complex_matrix_value ();
-      break;
-    default:
-      panic_impossible ();
-      break;
-    }
-
   SVD::type type = (nargin == 3) ? SVD::economy : SVD::std;
 
-  switch (arg.const_type ())
+  if (arg.is_real_type ())
     {
-    case tree_constant_rep::scalar_constant:
-    case tree_constant_rep::matrix_constant:
-      {
-	SVD result (tmp, type);
+      Matrix tmp = arg.matrix_value ();
 
-	DiagMatrix sigma = result.singular_values ();
+      SVD result (tmp, type);
 
-	if (nargout == 0 || nargout == 1)
-	  {
-	    retval.resize (1);
-	    retval(0) = tree_constant (sigma.diag (), 1);
-	  }
-	else
-	  {
-	    retval.resize (3);
-	    retval(0) = result.left_singular_matrix ();
-	    retval(1) = sigma;
-	    retval(2) = result.right_singular_matrix ();
-	  }
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexSVD result (ctmp, type);
+      DiagMatrix sigma = result.singular_values ();
 
-	DiagMatrix sigma = result.singular_values ();
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval(0) = tree_constant (sigma.diag (), 1);
+	}
+      else
+	{
+	  retval(2) = result.right_singular_matrix ();
+	  retval(1) = sigma;
+	  retval(0) = result.left_singular_matrix ();
+	}
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-	if (nargout == 0 || nargout == 1)
-	  {
-	    retval.resize (1);
-	    retval(0) = tree_constant (sigma.diag (), 1);
-	  }
-	else
-	  {
-	    retval.resize (3);
-	    retval(0) = result.left_singular_matrix ();
-	    retval(1) = sigma;
-	    retval(2) = result.right_singular_matrix ();
-	  }
-      }
-      break;
-    default:
-      panic_impossible ();
-      break;
+      ComplexSVD result (ctmp, type);
+
+      DiagMatrix sigma = result.singular_values ();
+
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval(0) = tree_constant (sigma.diag (), 1);
+	}
+      else
+	{
+	  retval(2) = result.right_singular_matrix ();
+	  retval(1) = sigma;
+	  retval(0) = result.left_singular_matrix ();
+	}
+    }
+  else
+    {
+      gripe_wrong_type_arg ("svd", arg);
+      return retval;
     }
 
   return retval;

@@ -414,8 +414,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    TOK_RETURN (']');
 			}
 
-{D}+{EXPON}?{Im}	|
-{D}+\.{D}*{EXPON}?{Im}	|
+{D}+\.?{D}*{EXPON}?{Im}	|
 \.{D}+{EXPON}?{Im}	{
 			  double value;
 			  int nread = sscanf (yytext, "%lf", &value);
@@ -434,8 +433,8 @@ EXPON	([DdEe][+-]?{D}+)
 			  return IMAG_NUM;
 			}
 
-{D}+{EXPON}?		|
-{D}+\.{D}*{EXPON}?	|
+{D}+/\.[\*/\\^']	|
+{D}+\.?{D}*{EXPON}?	|
 \.{D}+{EXPON}?		|
 			{
 			  double value;

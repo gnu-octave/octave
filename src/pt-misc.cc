@@ -228,8 +228,7 @@ tree_parameter_list::define_from_arg_vector (const Octave_object& args)
 
       if (i < nargin)
 	{
-	  if (args(i).is_defined ()
-	      && (args(i).const_type () == tree_constant_rep::magic_colon))
+	  if (args(i).is_defined () && args(i).is_magic_colon ())
 	    {
 	      ::error ("invalid use of colon in function argument list");
 	      return;
@@ -423,10 +422,10 @@ tree_if_clause::eval (void)
 	}
 
       int expr_value = 0;
-      tree_constant_rep::constant_type t = t1.const_type ();
-      if (t == tree_constant_rep::scalar_constant)
+
+      if (t1.is_real_scalar ())
 	expr_value = (int) t1.double_value ();
-      else if (t == tree_constant_rep::complex_scalar_constant)
+      else if (t1.is_complex_scalar ())
 	expr_value = t1.complex_value () != 0.0;
       else
 	panic_impossible ();

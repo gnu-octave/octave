@@ -65,59 +65,55 @@ DEFUN_DLD ("inv", Finv, Sinv, 2, 1,
   if (nr == 0 && nc == 0)
     return mtmp;
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-	if (m.rows () == m.columns ())
-	  {
-	    int info;
-	    double rcond = 0.0;
-	    Matrix minv = m.inverse (info, rcond);
-	    if (info == -1)
-	      warning ("inverse: matrix singular to machine precision,\
+      Matrix m = tmp.matrix_value ();
+      if (m.rows () == m.columns ())
+	{
+	  int info;
+	  double rcond = 0.0;
+	  Matrix minv = m.inverse (info, rcond);
+	  if (info == -1)
+	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
-	    else
-	      retval = minv;
-	  }
-	else
-	  gripe_square_matrix_required ("inverse");
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-      {
-	double d = 1.0 / tmp.double_value ();
-	retval = d;
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-	if (m.rows () == m.columns ())
-	  {
-	    int info;
-	    double rcond = 0.0;
-	    ComplexMatrix minv = m.inverse (info, rcond);
-	    if (info == -1)
-	      warning ("inverse: matrix singular to machine precision,\
- rcond = %g", rcond);
-	    else
-	      retval = minv;
-	  }
-	else
-	  gripe_square_matrix_required ("inverse");
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex c = 1.0 / tmp.complex_value ();
-	retval = c;
-      }
-      break;
-    default:
-      break;
+	  else
+	    retval = minv;
+	}
+      else
+	gripe_square_matrix_required ("inverse");
     }
+  else if (tmp.is_real_scalar ())
+    {
+      double d = 1.0 / tmp.double_value ();
+      retval = d;
+    }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      if (m.rows () == m.columns ())
+	{
+	  int info;
+	  double rcond = 0.0;
+	  ComplexMatrix minv = m.inverse (info, rcond);
+	  if (info == -1)
+	    warning ("inverse: matrix singular to machine precision,\
+ rcond = %g", rcond);
+	  else
+	    retval = minv;
+	}
+      else
+	gripe_square_matrix_required ("inverse");
+    }
+  else if (tmp.is_complex_scalar ())
+    {
+      Complex c = 1.0 / tmp.complex_value ();
+      retval = c;
+    }
+  else
+    {
+      gripe_wrong_type_arg ("inv", tmp);
+    }
+
   return retval;
 }
 

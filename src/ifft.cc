@@ -66,30 +66,27 @@ DEFUN_DLD ("ifft", Fifft, Sifft,2, 1,
       return retval;
     }
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-	ComplexMatrix mifft = m.ifourier ();
-	retval = mifft;
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-	ComplexMatrix mifft = m.ifourier ();
-	retval = mifft;
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-    case tree_constant_rep::complex_scalar_constant:
-      error ("ifft: invalid scalar arguement");
-      break;
-    default:
-      panic_impossible ();
-      break;
+      Matrix m = tmp.matrix_value ();
+      ComplexMatrix mifft = m.ifourier ();
+      retval = mifft;
     }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      ComplexMatrix mifft = m.ifourier ();
+      retval = mifft;
+    }
+  else if (tmp.is_scalar_type ())
+    {
+      error ("ifft: invalid scalar arguement");
+    }
+  else
+    {
+      gripe_wrong_type_arg ("ifft", tmp);
+    }
+
   return retval;
 }
 

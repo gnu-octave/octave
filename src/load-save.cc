@@ -1924,6 +1924,8 @@ static int
 save_binary_data (ostream& os, const tree_constant& tc, char *name,
 		  char *doc, int mark_as_global) 
 {
+  int fail = 0;
+
   FOUR_BYTE_INT name_len = 0;
   if (name)
     name_len = strlen (name);
@@ -1943,14 +1945,14 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
   tmp = mark_as_global;
   os.write (&tmp, 1);
 
-  if (tc.is_scalar ())
+  if (tc.is_real_scalar ())
     {
       tmp = 1;
       os.write (&tmp, 1);
       double tmp = tc.double_value ();
       os.write (&tmp, 8);
     }
-  else if (tc.is_matrix ())
+  else if (tc.is_real_matrix ())
     {
       tmp = 2;
       os.write (&tmp, 1);
@@ -2021,13 +2023,26 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
       os.write (&inc, 8);
     }
   else
-    panic_impossible ();
+    {
+      gripe_wrong_type_arg ("save", tc);
+      fail = 1;
+    }
 
-// Really want to return 1 only if write is successful.
-  return 1;
+  return (os && ! fail);
 }
 
-// Save the data from T along with the corresponding NAME, and global
+static void
+ascii_save_type (ostream& os, char *type, int mark_as_global)
+{
+  if (mark_as_global)
+    os << "# type: global ";
+  else
+    os << "# type: ";
+
+  os << type << "\n";
+}
+
+// Save the data from TC along with the corresponding NAME, and global
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
 // above for load_ascii_data.  If NAME is null, the name: line is not
 // generated.  PRECISION specifies the number of decimal digits to print. 
@@ -2035,94 +2050,69 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
 // XXX FIXME XXX -- should probably write the help string here too.
 
 int
-save_ascii_data (ostream& os, const tree_constant& t,
+save_ascii_data (ostream& os, const tree_constant& tc,
 		 char *name, int mark_as_global, int precision)
 {
+  int fail = 0;
+
   if (! precision)
     precision = user_pref.save_precision;
 
   if (name)
     os << "# name: " << name << "\n";
 
-  switch (t.const_type ())
-    {
-    case tree_constant_rep::scalar_constant:
-    case tree_constant_rep::matrix_constant:
-    case tree_constant_rep::complex_scalar_constant:
-    case tree_constant_rep::complex_matrix_constant:
-    case tree_constant_rep::string_constant:
-    case tree_constant_rep::range_constant:
-      if (mark_as_global)
-	os << "# type: global ";
-      else
-	os << "# type: ";
-      break;
-
-    case tree_constant_rep::magic_colon:
-    default:
-      break;
-    }
-
   long old_precision = os.precision ();
   os.precision (precision);
 
-  switch (t.const_type ())
+  if (tc.is_real_scalar ())
     {
-    case tree_constant_rep::scalar_constant:
-      os << "scalar\n"
-	 << t.double_value () << "\n";
-      break;
-
-    case tree_constant_rep::matrix_constant:
-      os << "matrix\n"
-	 << "# rows: " << t.rows () << "\n"
-	 << "# columns: " << t.columns () << "\n"
-	 << t.matrix_value () ;
-      break;
-
-    case tree_constant_rep::complex_scalar_constant:
-      os << "complex scalar\n"
-	 << t.complex_value () << "\n";
-      break;
-
-    case tree_constant_rep::complex_matrix_constant:
-      os << "complex matrix\n"
-	 << "# rows: " << t.rows () << "\n"
-	 << "# columns: " << t.columns () << "\n"
-	 << t.complex_matrix_value () ;
-      break;
-
-    case tree_constant_rep::string_constant:
-      {
-	char *tmp = t.string_value ();
-	os << "string\n"
-	   << "# length: " << strlen (tmp) << "\n"
-	   << tmp << "\n";
-      }
-      break;
-
-    case tree_constant_rep::range_constant:
-      {
-	Range tmp = t.range_value ();
-
-	os << "range\n"
-	   << "# base, limit, increment\n"
-	   << tmp.base () << " "
-	   << tmp.limit () << " "
-	   << tmp.inc () << "\n";
-      }
-      break;
-
-    case tree_constant_rep::magic_colon:
-    default:
-      panic_impossible ();
-      break;
+      ascii_save_type (os, "scalar", mark_as_global);
+      os << tc.double_value () << "\n";
+    }
+  else if (tc.is_real_matrix ())
+    {
+      ascii_save_type (os, "matrix", mark_as_global);
+      os << "# rows: " << tc.rows () << "\n"
+	 << "# columns: " << tc.columns () << "\n"
+	 << tc.matrix_value () ;
+    }
+  else if (tc.is_complex_scalar ())
+    {
+      ascii_save_type (os, "complex scalar", mark_as_global);
+      os << tc.complex_value () << "\n";
+    }
+  else if (tc.is_complex_matrix ())
+    {
+      ascii_save_type (os, "complex matrix", mark_as_global);
+      os << "# rows: " << tc.rows () << "\n"
+	 << "# columns: " << tc.columns () << "\n"
+	 << tc.complex_matrix_value () ;
+    }
+  else if (tc.is_string ())
+    {
+      ascii_save_type (os, "string", mark_as_global);
+      char *tmp = tc.string_value ();
+      os << "# length: " << strlen (tmp) << "\n"
+	 << tmp << "\n";
+    }
+  else if (tc.is_string ())
+    {
+      ascii_save_type (os, "range", mark_as_global);
+      Range tmp = tc.range_value ();
+      os << "# base, limit, increment\n"
+	 << tmp.base () << " "
+	 << tmp.limit () << " "
+	 << tmp.inc () << "\n";
+    }
+  else
+    {
+      gripe_wrong_type_arg ("save", tc);
+      fail = 1;
     }
 
   os.precision (old_precision);
 
-// Really want to return 1 only if write is successful.
-  return 1;
+  return (os && ! fail);
 }
 
 // Save the info from sr on stream os in the format specified by fmt.
@@ -2178,11 +2168,16 @@ save_vars (ostream& os, char *pattern, int save_builtins,
   int i;
 
   for (i = 0; i < count; i++)
-    do_save (os, vars[i], fmt);
+    {
+      do_save (os, vars[i], fmt);
+
+      if (error_state)
+	break;
+    }
 
   delete [] vars;
 
-  if (save_builtins)
+  if (! error_state && save_builtins)
     {
       symbol_record **vars = global_sym_tab->glob
 	(count, pattern, symbol_def::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
@@ -2190,7 +2185,12 @@ save_vars (ostream& os, char *pattern, int save_builtins,
       saved += count;
 
       for (i = 0; i < count; i++)
-	do_save (os, vars[i], fmt);
+	{
+	  do_save (os, vars[i], fmt);
+
+	  if (error_state)
+	    break;
+	}
 
       delete [] vars;
     }
@@ -2335,19 +2335,20 @@ save variables in a file")
 
 // Maybe this should be a static function in tree-plot.cc?
 
-// If T is matrix, save it on stream OS in a format useful for
+// If TC is matrix, save it on stream OS in a format useful for
 // making a 3-dimensional plot with gnuplot.  If PARAMETRIC is
 // nonzero, assume a parametric 3-dimensional plot will be generated.
 
 int
-save_three_d (ostream& os, const tree_constant& t, int parametric)
+save_three_d (ostream& os, const tree_constant& tc, int parametric)
 {
-  int nr = t.rows ();
-  int nc = t.columns ();
+  int fail = 0;
 
-  switch (t.const_type ())
+  int nr = tc.rows ();
+  int nc = tc.columns ();
+
+  if (tc.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
       os << "# 3D data...\n"
 	 << "# type: matrix\n"
 	 << "# total rows: " << nr << "\n"
@@ -2359,7 +2360,7 @@ save_three_d (ostream& os, const tree_constant& t, int parametric)
 	  if (extras)
 	    warning ("ignoring last %d columns", extras);
 
-	  Matrix tmp = t.matrix_value ();
+	  Matrix tmp = tc.matrix_value ();
 	  for (int i = 0; i < nc-extras; i += 3)
 	    {
 	      os << tmp.extract (0, i, nr-1, i+2);
@@ -2369,7 +2370,7 @@ save_three_d (ostream& os, const tree_constant& t, int parametric)
 	}
       else
 	{
-	  Matrix tmp = t.matrix_value ();
+	  Matrix tmp = tc.matrix_value ();
 	  for (int i = 0; i < nc; i++)
 	    {
 	      os << tmp.extract (0, i, nr-1, i);
@@ -2377,15 +2378,14 @@ save_three_d (ostream& os, const tree_constant& t, int parametric)
 		os << "\n";
 	    }
 	}
-      break;
-
-    default:
-      ::error ("for now, I can only save real matrices in 3D format");
-      return 0;
-      break;
     }
-// Really want to return 1 only if write is successful.
-  return 1;
+  else
+    {
+      ::error ("for now, I can only save real matrices in 3D format");
+      fail = 1;
+    }
+
+  return (os && ! fail);
 }
 
 /*

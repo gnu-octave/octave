@@ -60,9 +60,8 @@ DEFUN_DLD ("eig", Feig, Seig, 2, 1,
 	  if (flag < 0)
 	    gripe_empty_arg ("eig", 0);
 	  Matrix m;
-	  retval.resize (2);
-	  retval(0) = m;
 	  retval(1) = m;
+	  retval(0) = m;
 	}
       else
 	gripe_empty_arg ("eig", 1);
@@ -79,34 +78,36 @@ DEFUN_DLD ("eig", Feig, Seig, 2, 1,
   Matrix tmp;
   ComplexMatrix ctmp;
   EIG result;
-  switch (arg.const_type ())
+  if (arg.is_real_scalar ())
     {
-    case tree_constant_rep::scalar_constant:
       tmp.resize (1, 1);
       tmp.elem (0, 0) = arg.double_value ();
       result = EIG (tmp);
-      break;
-    case tree_constant_rep::matrix_constant:
+    }
+  else if (arg.is_real_matrix ())
+    {
       tmp = arg.matrix_value ();
       result = EIG (tmp);
-      break;
-    case tree_constant_rep::complex_scalar_constant:
+    }
+  else if (arg.is_complex_scalar ())
+    {
       ctmp.resize (1, 1);
       ctmp.elem (0, 0) = arg.complex_value ();
       result = EIG (ctmp);
-      break;
-    case tree_constant_rep::complex_matrix_constant:
+    }
+  else if (arg.is_complex_matrix ())
+    {
       ctmp = arg.complex_matrix_value ();
       result = EIG (ctmp);
-      break;
-    default:
-      panic_impossible ();
-      break;
+    }
+  else
+    {
+      gripe_wrong_type_arg ("eig", tmp);
+      return retval;
     }
 
   if (nargout == 0 || nargout == 1)
     {
-      retval.resize (1);
       retval(0) = result.eigenvalues (), 1;
     }
   else
@@ -115,9 +116,8 @@ DEFUN_DLD ("eig", Feig, Seig, 2, 1,
 
       ComplexDiagMatrix d (result.eigenvalues ());
 
-      retval.resize (2);
-      retval(0) = result.eigenvectors ();
       retval(1) = d;
+      retval(0) = result.eigenvectors ();
     }
 
   return retval;

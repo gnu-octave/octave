@@ -95,27 +95,25 @@ npsol_objective_function (const ColumnVector& x)
 	}
     }
 
-  switch (objective_value.const_type ())
+  if (objective_value.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = objective_value.matrix_value ();
-	if (m.rows () == 1 && m.columns () == 1)
-	  retval = m.elem (0, 0);
-	else
-	  {
-	    gripe_user_returned_invalid ("npsol_objective");
-	    npsol_objective_error = 1; // XXX FIXME XXX
-	  }
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
+      Matrix m = objective_value.matrix_value ();
+      if (m.rows () == 1 && m.columns () == 1)
+	retval = m.elem (0, 0);
+      else
+	{
+	  gripe_user_returned_invalid ("npsol_objective");
+	  npsol_objective_error = 1; // XXX FIXME XXX
+	}
+    }
+  else if (objective_value.is_real_scalar ())
+    {
       retval = objective_value.double_value ();
-      break;
-    default:
+    }
+  else
+    {
       gripe_user_returned_invalid ("npsol_objective");
       npsol_objective_error = 1; // XXX FIXME XXX
-      break;
     }
 
   return retval;

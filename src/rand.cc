@@ -153,19 +153,18 @@ rand (SEED, N)        -- set seed")
     }
   else if (nargin == 2)
     {
-      switch (args(1).const_type ())
+      tree_constant tmp = args(1);
+
+      if (tmp.is_string ())
 	{
-	case tree_constant_rep::string_constant:
-	  char *s_arg = args(1).string_value ();
+	  char *s_arg = tmp.string_value ();
 	  if (strcmp (s_arg, "dist") == 0)
 	    {
-	      retval.resize (1);
 	      char *s = curr_rand_dist ();
 	      retval(0) = s;
 	    }
 	  else if (strcmp (s_arg, "seed") == 0)
 	    {
-	      retval.resize (1);
 	      double d = curr_rand_seed ();
 	      retval(0) = d;
 	    }
@@ -175,27 +174,30 @@ rand (SEED, N)        -- set seed")
 	    current_distribution = normal;
 	  else
 	    error ("rand: unrecognized string argument");
-	  break;
-	case tree_constant_rep::scalar_constant:
-	case tree_constant_rep::complex_scalar_constant:
-	  n = NINT (args(1).double_value ());
+	}
+      else if (tmp.is_scalar_type ())
+	{
+	  n = NINT (tmp.double_value ());
 	  m = n;
 	  goto gen_matrix;
-	case tree_constant_rep::range_constant:
-	  {
-	    Range r = args(1).range_value ();
-	    n = 1;
-	    m = NINT (r.nelem ());
-	  }
+	}
+      else if (tmp.is_range ())
+	{
+	  Range r = tmp.range_value ();
+	  n = 1;
+	  m = NINT (r.nelem ());
 	  goto gen_matrix;
-	case tree_constant_rep::matrix_constant:
-	case tree_constant_rep::complex_matrix_constant:
+	}
+      else if (tmp.is_matrix_type ())
+	{
 	  n = NINT (args(1).rows ());
 	  m = NINT (args(1).columns ());
 	  goto gen_matrix;
-	default:
-	  panic_impossible ();
-	  break;
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("rand", tmp);
+	  return retval;
 	}
     }
   else if (nargin == 3)
@@ -220,13 +222,11 @@ rand (SEED, N)        -- set seed")
 
   if (n == 0 || m == 0)
     {
-      retval.resize (1);
-      Matrix m (0, 0);
-      retval(0) = m;
+      Matrix m;
+      retval.resize (1, m);
     }
   else if (n > 0 && m > 0)
     {
-      retval.resize (1);
       Matrix rand_mat (n, m);
       for (int j = 0; j < m; j++)
 	for (int i = 0; i < n; i++)

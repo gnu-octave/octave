@@ -169,49 +169,45 @@ DEFUN_DLD ("find", Ffind, Sfind, 2, 3,
 
   tree_constant tmp = args(1).make_numeric ();
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-	return find_nonzero_elem_idx (m, nargout);
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-      {
-	double d = tmp.double_value ();
-	if (d != 0.0)
-	  {
-	    retval(0) = 1.0;
-	    if (nargout > 1)
-	      retval(1) = 1.0;
-	    if (nargout > 2)
-	      retval(2) = d;
-	  }
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-	return find_nonzero_elem_idx (m, nargout);
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex c = tmp.complex_value ();
-	if (c != 0.0)
-	  {
-	    retval(0) = 1.0;
-	    if (nargout > 1)
-	      retval(1) = 1.0;
-	    if (nargout > 2)
-	      retval(2) = c;
-	  }
-      }
-      break;
-    default:
-      break;
+      Matrix m = tmp.matrix_value ();
+      return find_nonzero_elem_idx (m, nargout);
     }
+  else if (tmp.is_real_scalar ())
+    {
+      double d = tmp.double_value ();
+      if (d != 0.0)
+	{
+	  retval(0) = 1.0;
+	  if (nargout > 1)
+	    retval(1) = 1.0;
+	  if (nargout > 2)
+	    retval(2) = d;
+	}
+    }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      return find_nonzero_elem_idx (m, nargout);
+    }
+  else if (tmp.is_complex_scalar ())
+    {
+      Complex c = tmp.complex_value ();
+      if (c != 0.0)
+	{
+	  retval(0) = 1.0;
+	  if (nargout > 1)
+	    retval(1) = 1.0;
+	  if (nargout > 2)
+	    retval(2) = c;
+	}
+    }
+  else
+    {
+      gripe_wrong_type_arg ("find", tmp);
+    }
+
   return retval;
 }
 

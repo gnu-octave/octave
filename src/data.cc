@@ -133,7 +133,7 @@ DEFUN ("isstr", Fisstr, Sisstr, 2, 1,
   else
     {
       if (nargin > 0 && args(1).is_defined ())
-	retval = args(1).isstr ();
+	retval = (double) args(1).is_string ();
     }
 
   return retval;

@@ -64,65 +64,61 @@ DEFUN_DLD ("det", Fdet, Sdet, 2, 1,
   if (nr == 0 && nc == 0)
     return 1.0;
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-	if (m.rows () == m.columns ())
-	  {
-	    int info;
-	    double rcond = 0.0;
-	    DET det = m.determinant (info, rcond);
-	    double d = 0.0;
-	    if (info == -1)
-	      warning ("det: matrix singular to machine precision, rcond = %g",
-		       rcond);
-	    else
-	      d = det.value ();
+      Matrix m = tmp.matrix_value ();
+      if (m.rows () == m.columns ())
+	{
+	  int info;
+	  double rcond = 0.0;
+	  DET det = m.determinant (info, rcond);
+	  double d = 0.0;
+	  if (info == -1)
+	    warning ("det: matrix singular to machine precision, rcond = %g",
+		     rcond);
+	  else
+	    d = det.value ();
 
-	    retval = d;
-	  }
-	else
-	  gripe_square_matrix_required ("det");
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-	if (m.rows () == m.columns ())
-	  {
-	    int info;
-	    double rcond = 0.0;
-	    ComplexDET det = m.determinant (info, rcond);
-	    Complex c = 0.0;
-	    if (info == -1)
-	      warning ("det: matrix singular to machine precision, rcond = %g",
-		       rcond);
-	    else
-	      c = det.value ();
-
-	    retval = c;
-	  }
-	else
-	  gripe_square_matrix_required ("det");
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-      {
-	double d = tmp.double_value ();
-	retval = d;
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex c = tmp.complex_value ();
-	retval = c;
-      }
-      break;
-    default:
-      break;
+	  retval = d;
+	}
+      else
+	gripe_square_matrix_required ("det");
     }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      if (m.rows () == m.columns ())
+	{
+	  int info;
+	  double rcond = 0.0;
+	  ComplexDET det = m.determinant (info, rcond);
+	  Complex c = 0.0;
+	  if (info == -1)
+	    warning ("det: matrix singular to machine precision, rcond = %g",
+		     rcond);
+	  else
+	    c = det.value ();
+
+	  retval = c;
+	}
+      else
+	gripe_square_matrix_required ("det");
+    }
+  else if (tmp.is_real_scalar ())
+    {
+      double d = tmp.double_value ();
+      retval = d;
+    }
+  else if (tmp.is_complex_scalar ())
+    {
+      Complex c = tmp.complex_value ();
+      retval = c;
+    }
+  else
+    {
+      gripe_wrong_type_arg ("det", tmp);
+    }
+
   return retval;
 }
 

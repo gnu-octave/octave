@@ -24,26 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_tree_const_rep_h)
 #define octave_tree_const_rep_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
-#include <stdlib.h>
-
-#include "tree-base.h"
-
-#include "mx-base.h"
-#include "Range.h"
-
-class idx_vector;
-
-struct Mapper_fcn;
-
-// Forward class declarations.
-
-class tree;
-class tree_constant;
-
 // The actual representation of the tree_constant.
 
 class
@@ -51,7 +31,8 @@ tree_constant_rep
 {
 friend class tree_constant;
 
-public:
+private:
+
   enum constant_type
     {
       unknown_constant,
@@ -71,7 +52,6 @@ public:
       column_orient,
     };
 
-private:
   tree_constant_rep (void);
 
   tree_constant_rep (double d);
@@ -102,23 +82,22 @@ private:
   void operator delete (void *p, size_t size);
 #endif
 
-  void resize (int i, int j);
-  void resize (int i, int j, double val);
+  int rows (void) const;
+  int columns (void) const;
 
-  void maybe_resize (int imax, force_orient fo = no_orient);
-  void maybe_resize (int imax, int jmax);
+  int is_defined (void) const
+    { return type_tag != tree_constant_rep::unknown_constant; }
 
-  int valid_as_scalar_index (void) const;
-
-// What type of constant am I?
+  int is_undefined (void) const
+    { return type_tag == tree_constant_rep::unknown_constant; }
 
   int is_unknown (void) const
     { return type_tag == tree_constant_rep::unknown_constant; }
 
-  int is_scalar (void) const
+  int is_real_scalar (void) const
     { return type_tag == tree_constant_rep::scalar_constant; }
 
-  int is_matrix (void) const
+  int is_real_matrix (void) const
     { return type_tag == tree_constant_rep::matrix_constant; }
 
   int is_complex_scalar (void) const
@@ -133,14 +112,11 @@ private:
   int is_range (void) const
     { return type_tag == tree_constant_rep::range_constant; }
 
-// Others tests, some more general, some just old names for the things
-// above.
+  int is_magic_colon (void) const
+    { return type_tag == tree_constant_rep::magic_colon; }
 
-  int is_defined (void) const
-    { return type_tag != tree_constant_rep::unknown_constant; }
-
-  int is_undefined (void) const
-    { return type_tag == tree_constant_rep::unknown_constant; }
+  tree_constant all (void) const;
+  tree_constant any (void) const;
 
   int is_scalar_type (void) const
     { return type_tag == scalar_constant
@@ -159,7 +135,6 @@ private:
     { return type_tag == complex_matrix_constant
              || type_tag == complex_scalar_constant; }
 
-
   int is_numeric_type (void) const
     { return type_tag == scalar_constant
              || type_tag == matrix_constant
@@ -173,14 +148,84 @@ private:
              || type_tag == complex_scalar_constant
 	     || type_tag == range_constant; }
 
-  double to_scalar (void) const;
-  ColumnVector to_vector (void) const;
-  Matrix to_matrix (void) const;
+  int valid_as_scalar_index (void) const;
+
+  int is_true (void) const;
+
+  double double_value (void) const;
+  Matrix matrix_value (void) const;
+  Complex complex_value (void) const;
+  ComplexMatrix complex_matrix_value (void) const;
+  char *string_value (void) const;
+  Range range_value (void) const;
+
+  tree_constant convert_to_str (void);
+
+  void convert_to_row_or_column_vector (void);
+
+  void force_numeric (int force_str_conv = 0);
+  tree_constant make_numeric (int force_str_conv = 0) const;
+
+  void bump_value (tree_expression::type);
+
+  void resize (int i, int j);
+  void resize (int i, int j, double val);
+
+  void maybe_resize (int imax, force_orient fo = no_orient);
+  void maybe_resize (int imax, int jmax);
 
   void stash_original_text (char *s);
 
-  tree_constant_rep::constant_type force_numeric (int force_str_conv = 0);
-  tree_constant make_numeric (int force_str_conv = 0) const;
+// Indexing.
+
+  tree_constant do_index (const Octave_object& args);
+
+  tree_constant do_scalar_index (const Octave_object& args) const;
+
+  tree_constant do_matrix_index (const Octave_object& args) const;
+
+  tree_constant do_matrix_index (const tree_constant& i_arg) const;
+
+  tree_constant do_matrix_index (const tree_constant& i_arg,
+				 const tree_constant& j_arg) const; 
+
+  tree_constant do_matrix_index (constant_type i) const;
+
+  tree_constant fortran_style_matrix_index (const tree_constant& i_arg) const;
+  tree_constant fortran_style_matrix_index (const Matrix& mi) const;
+
+  tree_constant do_vector_index (const tree_constant& i_arg) const;
+
+  tree_constant do_matrix_index (int i, const tree_constant& i_arg) const;
+  tree_constant do_matrix_index (const idx_vector& i,
+				 const tree_constant& i_arg) const; 
+  tree_constant do_matrix_index (const Range& i,
+				 const tree_constant& i_arg) const;
+  tree_constant do_matrix_index (constant_type i,
+				 const tree_constant& i_arg) const;
+
+  tree_constant do_matrix_index (int i, int j) const;
+  tree_constant do_matrix_index (int i, const idx_vector& j) const;
+  tree_constant do_matrix_index (int i, const Range& j) const;
+  tree_constant do_matrix_index (int i, constant_type cj) const;
+
+  tree_constant do_matrix_index (const idx_vector& i, int j) const;
+  tree_constant do_matrix_index (const idx_vector& i,
+				 const idx_vector& j) const;
+  tree_constant do_matrix_index (const idx_vector& i, const Range& j) const;
+  tree_constant do_matrix_index (const idx_vector& i, constant_type j) const;
+
+  tree_constant do_matrix_index (const Range& i, int j) const;
+  tree_constant do_matrix_index (const Range& i, const idx_vector& j) const;
+  tree_constant do_matrix_index (const Range& i, const Range& j) const;
+  tree_constant do_matrix_index (const Range& i, constant_type j) const;
+
+  tree_constant do_matrix_index (constant_type i, int j) const;
+  tree_constant do_matrix_index (constant_type i, const idx_vector& j) const;
+  tree_constant do_matrix_index (constant_type i, const Range& j) const;
+  tree_constant do_matrix_index (constant_type i, constant_type j) const;
+
+// Assignment.
 
   void assign (const tree_constant& rhs, const Octave_object& args);
 
@@ -264,92 +309,21 @@ private:
   void delete_columns (idx_vector& j);
   void delete_columns (Range& j);
 
-  void bump_value (tree_expression::type);
-
   void maybe_mutate (void);
+
   void print (void);
 
   void print_code (ostream& os);
 
-  tree_constant do_index (const Octave_object& args);
+// Binary and unary operations.
 
-  tree_constant do_scalar_index (const Octave_object& args) const;
+  friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
+				     tree_expression::type t);
 
-  tree_constant do_matrix_index (const Octave_object& args) const;
+  friend tree_constant do_unary_op (tree_constant& a,
+				    tree_expression::type t);
 
-  tree_constant do_matrix_index (const tree_constant& i_arg) const;
-
-  tree_constant do_matrix_index (const tree_constant& i_arg,
-				 const tree_constant& j_arg) const; 
-
-  tree_constant do_matrix_index (constant_type i) const;
-
-  tree_constant fortran_style_matrix_index (const tree_constant& i_arg) const;
-  tree_constant fortran_style_matrix_index (const Matrix& mi) const;
-
-  tree_constant do_vector_index (const tree_constant& i_arg) const;
-
-  tree_constant do_matrix_index (int i, const tree_constant& i_arg) const;
-  tree_constant do_matrix_index (const idx_vector& i,
-				 const tree_constant& i_arg) const; 
-  tree_constant do_matrix_index (const Range& i,
-				 const tree_constant& i_arg) const;
-  tree_constant do_matrix_index (constant_type i,
-				 const tree_constant& i_arg) const;
-
-  tree_constant do_matrix_index (int i, int j) const;
-  tree_constant do_matrix_index (int i, const idx_vector& j) const;
-  tree_constant do_matrix_index (int i, const Range& j) const;
-  tree_constant do_matrix_index (int i, constant_type cj) const;
-
-  tree_constant do_matrix_index (const idx_vector& i, int j) const;
-  tree_constant do_matrix_index (const idx_vector& i,
-				 const idx_vector& j) const;
-  tree_constant do_matrix_index (const idx_vector& i, const Range& j) const;
-  tree_constant do_matrix_index (const idx_vector& i, constant_type j) const;
-
-  tree_constant do_matrix_index (const Range& i, int j) const;
-  tree_constant do_matrix_index (const Range& i, const idx_vector& j) const;
-  tree_constant do_matrix_index (const Range& i, const Range& j) const;
-  tree_constant do_matrix_index (const Range& i, constant_type j) const;
-
-  tree_constant do_matrix_index (constant_type i, int j) const;
-  tree_constant do_matrix_index (constant_type i, const idx_vector& j) const;
-  tree_constant do_matrix_index (constant_type i, const Range& j) const;
-  tree_constant do_matrix_index (constant_type i, constant_type j) const;
-
-  double double_value (void) const;
-  Matrix matrix_value (void) const;
-  Complex complex_value (void) const;
-  ComplexMatrix complex_matrix_value (void) const;
-  char *string_value (void) const;
-  Range range_value (void) const;
-
-  int rows (void) const;
-  int columns (void) const;
-
-  tree_constant all (void) const;
-  tree_constant any (void) const;
-  tree_constant isstr (void) const;
-
-  tree_constant convert_to_str (void);
-
-  void convert_to_row_or_column_vector (void);
-
-  int is_true (void) const;
-
-  tree_constant cumprod (void) const;
-  tree_constant cumsum (void) const;
-  tree_constant prod (void) const;
-  tree_constant sum (void) const;
-  tree_constant sumsq (void) const;
-
-  tree_constant diag (void) const;
-  tree_constant diag (const tree_constant& a) const;
-
-  constant_type const_type (void) const { return type_tag; }
-
-  tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
+// Data.
 
   int count;
   constant_type type_tag;
@@ -363,13 +337,36 @@ private:
       Range *range;			// A set of evenly spaced values.
     };
   char *orig_text;
+
+// -------------------------------------------------------------------
+
+// These may not need to be member functions.
+
+  tree_constant cumprod (void) const;
+  tree_constant cumsum (void) const;
+  tree_constant prod (void) const;
+  tree_constant sum (void) const;
+  tree_constant sumsq (void) const;
+
+  tree_constant diag (void) const;
+  tree_constant diag (const tree_constant& a) const;
+
+  tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
+
+// -------------------------------------------------------------------
+
+// We want to eliminate this.
+
+  constant_type const_type (void) const { return type_tag; }
+
+// More conversions.  These should probably be eliminated.  If a user
+// of this class wants a certain kind of constant, he should simply
+// ask for it, and we should convert it if possible.
+
+  double to_scalar (void) const;
+  ColumnVector to_vector (void) const;
+  Matrix to_matrix (void) const;
 };
-
-extern tree_constant do_binary_op (tree_constant& a, tree_constant& b,
-				   tree_expression::type t);
-
-extern tree_constant do_unary_op (tree_constant& a,
-				  tree_expression::type t);
 
 #endif
 

@@ -1077,13 +1077,15 @@ identifier	: NAME
 arg_list	: ':'
 		  {
 		    tree_constant *colon;
-		    colon = new tree_constant (tree_constant_rep::magic_colon);
+		    tree_constant::magic_colon t;
+		    colon = new tree_constant (t);
 		    $$ = new tree_argument_list (colon);
 		  }
 		| arg_list ',' ':'
 		  {
 		    tree_constant *colon;
-		    colon = new tree_constant (tree_constant_rep::magic_colon);
+		    tree_constant::magic_colon t;
+		    colon = new tree_constant (t);
 		    $1->append (colon);
 		  }
 		| expression

@@ -106,210 +106,204 @@ DEFUN_DLD ("expm", Fexpm, Sexpm, 2, 1,
       double inf_norm;		// norm of preconditioned matrix
       int minus_one_j;		// used in computing pade approx
 
-      switch (tmp.const_type ())
+      if (tmp.is_complex_matrix ())
 	{
-	case tree_constant_rep::complex_matrix_constant:
-	  {
-	    ComplexMatrix m = tmp.complex_matrix_value ();
-	    Complex trshift = 0.0;		// trace shift value
+	  ComplexMatrix m = tmp.complex_matrix_value ();
+	  Complex trshift = 0.0;		// trace shift value
 
 // Preconditioning step 1: trace normalization.
 
-	    for (i = 0; i < n_cols; i++)
-	      trshift += m.elem (i, i);
-	    trshift /= n_cols;
-	    for (i = 0; i < n_cols; i++)
-	      m.elem (i, i) -= trshift;
+	  for (i = 0; i < n_cols; i++)
+	    trshift += m.elem (i, i);
+	  trshift /= n_cols;
+	  for (i = 0; i < n_cols; i++)
+	    m.elem (i, i) -= trshift;
 
 // Preconditioning step 2: eigenvalue balancing.
 
-	    ComplexAEPBALANCE mbal (m, balance_job);
-	    m = mbal.balanced_matrix ();
-	    ComplexMatrix d = mbal.balancing_matrix ();
+	  ComplexAEPBALANCE mbal (m, balance_job);
+	  m = mbal.balanced_matrix ();
+	  ComplexMatrix d = mbal.balancing_matrix ();
 
 // Preconditioning step 3: scaling.
 
-	    ColumnVector work (n_cols);
-	    inf_norm = F77_FCN (zlange) ("I", &n_cols, &n_cols, m.
-					 fortran_vec (), &n_cols,
-					 work.fortran_vec ());
+	  ColumnVector work (n_cols);
+	  inf_norm = F77_FCN (zlange) ("I", &n_cols, &n_cols, m.
+				       fortran_vec (), &n_cols,
+				       work.fortran_vec ());
 
-	    sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
+	  sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
 // Check whether we need to square at all.
 
-	    if (sqpow < 0)
-	      sqpow = 0;
-	    else
-	      {
-		for (inf_norm = 1.0, i = 0; i < sqpow; i++)
-		  inf_norm *= 2.0;
+	  if (sqpow < 0)
+	    sqpow = 0;
+	  else
+	    {
+	      for (inf_norm = 1.0, i = 0; i < sqpow; i++)
+		inf_norm *= 2.0;
 
-		m = m / inf_norm;
-	      }
+	      m = m / inf_norm;
+	    }
 
 // npp, dpp: pade' approx polynomial matrices.
 
-	    ComplexMatrix npp (n_cols, n_cols, 0.0);
-	    ComplexMatrix dpp = npp;
+	  ComplexMatrix npp (n_cols, n_cols, 0.0);
+	  ComplexMatrix dpp = npp;
 
 // Now powers a^8 ... a^1.
 
-	    minus_one_j = -1;
-	    for (j = 7; j >= 0; j--)
-	      {
-		npp = m * npp + m * padec[j];
-		dpp = m * dpp + m * (minus_one_j * padec[j]);
-		minus_one_j *= -1;
-	      }
+	  minus_one_j = -1;
+	  for (j = 7; j >= 0; j--)
+	    {
+	      npp = m * npp + m * padec[j];
+	      dpp = m * dpp + m * (minus_one_j * padec[j]);
+	      minus_one_j *= -1;
+	    }
 
 // Zero power.
 
-	    dpp = -dpp;
-	    for (j = 0; j < n_cols; j++)
-	      {
-		npp.elem (j, j) += 1.0;
-		dpp.elem (j, j) += 1.0;
-	      }
+	  dpp = -dpp;
+	  for (j = 0; j < n_cols; j++)
+	    {
+	      npp.elem (j, j) += 1.0;
+	      dpp.elem (j, j) += 1.0;
+	    }
 
 // Compute pade approximation = inverse (dpp) * npp.
 
-	    ComplexMatrix result = dpp.solve (npp);
+	  ComplexMatrix result = dpp.solve (npp);
 	
 // Reverse preconditioning step 3: repeated squaring.
 
-	    while (sqpow)
-	      {
-		result = result * result;
-		sqpow--;
-	      }
+	  while (sqpow)
+	    {
+	      result = result * result;
+	      sqpow--;
+	    }
 
 // reverse preconditioning step 2: inverse balancing XXX FIXME XXX:
 // should probably do this with lapack calls instead of a complete
 // matrix inversion.
 
-	    result = result.transpose ();
-	    d = d.transpose ();
-	    result = result * d;
-	    result = d.solve (result);
-	    result = result.transpose ();
+	  result = result.transpose ();
+	  d = d.transpose ();
+	  result = result * d;
+	  result = d.solve (result);
+	  result = result.transpose ();
 
 // Reverse preconditioning step 1: fix trace normalization.
 
-	    result = result * exp (trshift);
+	  result = result * exp (trshift);
 
-	    retval = result;
-	  }
-	  break;
-	case tree_constant_rep::complex_scalar_constant:
-	  {
-	    Complex c = tmp.complex_value ();
-	    retval = exp (c);
-	  }
-	  break;
-	case tree_constant_rep::matrix_constant:
-	  {
+	  retval = result;
+	}
+      else if (tmp.is_complex_scalar ())
+	{
+	  Complex c = tmp.complex_value ();
+	  retval = exp (c);
+	}
+      else if (tmp.is_real_matrix ())
+	{
 
 // Compute the exponential.
 
-	    Matrix m = tmp.matrix_value ();
+	  Matrix m = tmp.matrix_value ();
 
-	    double trshift = 0;		// trace shift value
+	  double trshift = 0;		// trace shift value
 
 // Preconditioning step 1: trace normalization.
 
-	    for (i = 0; i < n_cols; i++)
-	      trshift += m.elem (i, i);
-	    trshift /= n_cols;
-	    for (i = 0; i < n_cols; i++)
-	      m.elem (i, i) -= trshift;
+	  for (i = 0; i < n_cols; i++)
+	    trshift += m.elem (i, i);
+	  trshift /= n_cols;
+	  for (i = 0; i < n_cols; i++)
+	    m.elem (i, i) -= trshift;
 
 // Preconditioning step 2: balancing.
 
-	    AEPBALANCE mbal (m, balance_job);
-	    m = mbal.balanced_matrix ();
-	    Matrix d = mbal.balancing_matrix ();
+	  AEPBALANCE mbal (m, balance_job);
+	  m = mbal.balanced_matrix ();
+	  Matrix d = mbal.balancing_matrix ();
 
 // Preconditioning step 3: scaling.
 
-	    ColumnVector work(n_cols);
-	    inf_norm = F77_FCN (dlange) ("I", &n_cols, &n_cols,
-					 m.fortran_vec (), &n_cols,
-					 work.fortran_vec ());
+	  ColumnVector work(n_cols);
+	  inf_norm = F77_FCN (dlange) ("I", &n_cols, &n_cols,
+				       m.fortran_vec (), &n_cols,
+				       work.fortran_vec ());
 
-	    sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
+	  sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
 // Check whether we need to square at all.
 
-	    if (sqpow < 0)
-	      sqpow = 0;
-	    else
-	      {
-		for (inf_norm = 1.0, i = 0; i < sqpow; i++)
-		  inf_norm *= 2.0;
+	  if (sqpow < 0)
+	    sqpow = 0;
+	  else
+	    {
+	      for (inf_norm = 1.0, i = 0; i < sqpow; i++)
+		inf_norm *= 2.0;
 
-		m = m / inf_norm;
-	      }
+	      m = m / inf_norm;
+	    }
 
 // npp, dpp: pade' approx polynomial matrices.
 
-	    Matrix npp (n_cols, n_cols, 0.0);
-	    Matrix dpp = npp;
+	  Matrix npp (n_cols, n_cols, 0.0);
+	  Matrix dpp = npp;
 
 // now powers a^8 ... a^1.
 
-	    minus_one_j = -1;
-	    for (j = 7; j >= 0; j--)
-	      {
-		npp = m * npp + m * padec[j];
-		dpp = m * dpp + m * (minus_one_j * padec[j]);
-		minus_one_j *= -1;
-	      }
+	  minus_one_j = -1;
+	  for (j = 7; j >= 0; j--)
+	    {
+	      npp = m * npp + m * padec[j];
+	      dpp = m * dpp + m * (minus_one_j * padec[j]);
+	      minus_one_j *= -1;
+	    }
 // Zero power.
 
-	    dpp = -dpp;
-	    for(j = 0; j < n_cols; j++)
-	      {
-		npp.elem (j, j) += 1.0;
-		dpp.elem (j, j) += 1.0;
-	      }
+	  dpp = -dpp;
+	  for(j = 0; j < n_cols; j++)
+	    {
+	      npp.elem (j, j) += 1.0;
+	      dpp.elem (j, j) += 1.0;
+	    }
 
 // Compute pade approximation = inverse (dpp) * npp.
 
-	    Matrix result = dpp.solve (npp);
+	  Matrix result = dpp.solve (npp);
 
 // Reverse preconditioning step 3: repeated squaring.
 
-	    while(sqpow)
-	      {
-		result = result * result;
-		sqpow--;
-	      }
+	  while (sqpow)
+	    {
+	      result = result * result;
+	      sqpow--;
+	    }
 
 // Reverse preconditioning step 2: inverse balancing.
 
-	    result = result.transpose();
-	    d = d.transpose ();
-	    result = result * d;
-	    result = d.solve (result);
-	    result = result.transpose ();
+	  result = result.transpose();
+	  d = d.transpose ();
+	  result = result * d;
+	  result = d.solve (result);
+	  result = result.transpose ();
 
 // Reverse preconditioning step 1: fix trace normalization.
 
-	    result = result * exp (trshift);
+	  result = result * exp (trshift);
 
-	    retval = result;
-	  }
-	  break;
-	case tree_constant_rep::scalar_constant:
-	  {
-	    double d = tmp.double_value ();
-	    retval = exp (d);
-	  }
-	  break;
-	default:
-	  panic_impossible();
-	  break;
+	  retval = result;
+	}
+      else if (tmp.is_real_scalar ())
+	{
+	  double d = tmp.double_value ();
+	  retval = exp (d);
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("expm", tmp);
 	}
     }
   return retval;

@@ -158,20 +158,14 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
 
   tree_constant arg1;
   tree_constant arg2;
-  tree_constant_rep::constant_type arg1_type =
-    tree_constant_rep::unknown_constant;
-  tree_constant_rep::constant_type arg2_type =
-    tree_constant_rep::unknown_constant;
 
   switch (nargin)
     {
     case 3:
       arg2 = args(2).make_numeric ();
-      arg2_type = arg2.const_type ();
 // Fall through...
     case 2:
       arg1 = args(1).make_numeric ();
-      arg1_type = arg1.const_type ();
       break;
     default:
       panic_impossible ();
@@ -180,88 +174,80 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
 
   if (nargin == 2 && (nargout == 1 || nargout == 0))
     {
-      retval.resize (1);
-      switch (arg1_type)
+      if (arg1.is_real_scalar ())
 	{
-        case tree_constant_rep::scalar_constant:
 	  retval(0) = arg1.double_value ();
-          break;
-        case tree_constant_rep::complex_scalar_constant:
+	}
+      else if (arg1.is_complex_scalar ())
+	{
           retval(0) = arg1.complex_value ();
-          break;
-        case tree_constant_rep::matrix_constant:
-          {
-  	    Matrix m = arg1.matrix_value ();
-	    if (m.rows () == 1)
-	      retval(0) = m.row_min ();
-	    else
-	      retval(0) = tree_constant (m.column_min (), 0);
- 	  }
-          break;
-        case tree_constant_rep::complex_matrix_constant:
-          {
-            ComplexMatrix m = arg1.complex_matrix_value ();
-            if (m.rows () == 1)
-              retval(0) = m.row_min ();
-            else
-              retval(0) = tree_constant (m.column_min (), 0);
-          }
-	  break;
-	default:
-	  panic_impossible ();
-	  break;
+	}
+      else if (arg1.is_real_matrix ())
+	{
+	  Matrix m = arg1.matrix_value ();
+	  if (m.rows () == 1)
+	    retval(0) = m.row_min ();
+	  else
+	    retval(0) = tree_constant (m.column_min (), 0);
+	}
+      else if (arg1.is_complex_matrix ())
+	{
+	  ComplexMatrix m = arg1.complex_matrix_value ();
+	  if (m.rows () == 1)
+	    retval(0) = m.row_min ();
+	  else
+	    retval(0) = tree_constant (m.column_min (), 0);
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("min", arg1);
+	  return retval;
 	}
     }
   else if (nargin == 2 && nargout == 2)
     {
-      retval.resize (2);
-      switch (arg1_type)
+      if (arg1.is_real_scalar ())
         {
-	case tree_constant_rep::scalar_constant:
-	  {
-	    retval(0) = arg1.double_value ();
-	    retval(1) = 1;
-	  }
-          break;
-	case tree_constant_rep::complex_scalar_constant:
-	  {
-	    retval(0) = arg1.complex_value ();
-	    retval(1) = 1;
-	  }
-          break;
-	case tree_constant_rep::matrix_constant:
-	  {
-	    Matrix m = arg1.matrix_value ();
-	    if (m.rows () == 1)
-	      {
-		retval(0) = m.row_min ();
-		retval(1) = m.row_min_loc ();
-	      }
-	    else
-	      {
-		retval(0) = tree_constant (m.column_min (), 0);
-		retval(1) = tree_constant (m.column_min_loc (), 0);
-	      }
-	  }
-          break;
-	case tree_constant_rep::complex_matrix_constant:
-	  {
-	    ComplexMatrix m = arg1.complex_matrix_value ();
-	    if (m.rows () == 1)
-	      {
-		retval(0) = m.row_min ();
-		retval(1) = m.row_min_loc ();
-	      }
-	    else
-	      {
-		retval(0) = tree_constant (m.column_min (), 0);
-		retval(1) = tree_constant (m.column_min_loc (), 0);
-	      }
-	  }
-          break;
-	default:
-	  panic_impossible ();
-	  break;
+	  retval(1) = 1;
+	  retval(0) = arg1.double_value ();
+	}
+      else if (arg1.is_complex_scalar ())
+	{
+	  retval(1) = 1;
+	  retval(0) = arg1.complex_value ();
+	}
+      else if (arg1.is_real_matrix ())
+	{
+	  Matrix m = arg1.matrix_value ();
+	  if (m.rows () == 1)
+	    {
+	      retval(1) = m.row_min_loc ();
+	      retval(0) = m.row_min ();
+	    }
+	  else
+	    {
+	      retval(1) = tree_constant (m.column_min_loc (), 0);
+	      retval(0) = tree_constant (m.column_min (), 0);
+	    }
+	}
+      else if (arg1.is_complex_matrix ())
+	{
+	  ComplexMatrix m = arg1.complex_matrix_value ();
+	  if (m.rows () == 1)
+	    {
+	      retval(1) = m.row_min_loc ();
+	      retval(0) = m.row_min ();
+	    }
+	  else
+	    {
+	      retval(1) = tree_constant (m.column_min_loc (), 0);
+	      retval(0) = tree_constant (m.column_min (), 0);
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("min", arg1);
+	  return retval;
         }
     }
   else if (nargin == 3)
@@ -269,48 +255,43 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())
 	{
-	  retval.resize (1);
-          switch (arg1_type)
+// XXX FIXME XXX -- I don't think this is quite right.
+	  if (arg1.is_real_scalar ())
             {
-	    case tree_constant_rep::scalar_constant:
-	      {
-		double result;
-		double a_elem = arg1.double_value ();
-		double b_elem = arg2.double_value ();
-		result = MIN (a_elem, b_elem);
-		retval(0) = result;
-	      }
-              break;
-	    case tree_constant_rep::complex_scalar_constant:
-	      {
-		Complex result;
-		Complex a_elem = arg1.complex_value ();
-		Complex b_elem = arg2.complex_value ();
-		if (abs (a_elem) < abs (b_elem))
-		  result = a_elem;
-		else
-		  result = b_elem;
-		retval(0) = result;
-	      }
-              break;
-	    case tree_constant_rep::matrix_constant:
-	      {
-		Matrix result;
-		result = min (arg1.matrix_value (), arg2.matrix_value ());
-		retval(0) = result;
-	      }
-              break;
-	    case tree_constant_rep::complex_matrix_constant:
-	      {
-		ComplexMatrix result;
-		result = min (arg1.complex_matrix_value (),
-			      arg2.complex_matrix_value ());
-		retval(0) = result;
-	      }
-	      break;
-	    default:
-	      panic_impossible ();
-	      break;
+	      double result;
+	      double a_elem = arg1.double_value ();
+	      double b_elem = arg2.double_value ();
+	      result = MIN (a_elem, b_elem);
+	      retval(0) = result;
+	    }
+	  else if (arg1.is_complex_scalar ())
+	    {
+	      Complex result;
+	      Complex a_elem = arg1.complex_value ();
+	      Complex b_elem = arg2.complex_value ();
+	      if (abs (a_elem) < abs (b_elem))
+		result = a_elem;
+	      else
+		result = b_elem;
+	      retval(0) = result;
+	    }
+	  else if (arg1.is_real_matrix ())
+	    {
+	      Matrix result;
+	      result = min (arg1.matrix_value (), arg2.matrix_value ());
+	      retval(0) = result;
+	    }
+	  else if (arg1.is_complex_matrix ())
+	    {
+	      ComplexMatrix result;
+	      result = min (arg1.complex_matrix_value (),
+			    arg2.complex_matrix_value ());
+	      retval(0) = result;
+	    }
+	  else
+	    {
+	      gripe_wrong_type_arg ("min", arg1);
+	      return retval;
 	    }
 	}
       else
@@ -337,20 +318,14 @@ DEFUN_DLD ("max", Fmax, Smax, 3, 2,
 
   tree_constant arg1;
   tree_constant arg2;
-  tree_constant_rep::constant_type arg1_type =
-    tree_constant_rep::unknown_constant;
-  tree_constant_rep::constant_type arg2_type =
-    tree_constant_rep::unknown_constant;
 
   switch (nargin)
     {
     case 3:
       arg2 = args(2).make_numeric ();
-      arg2_type = arg2.const_type ();
 // Fall through...
     case 2:
       arg1 = args(1).make_numeric ();
-      arg1_type = arg1.const_type ();
       break;
     default:
       panic_impossible ();
@@ -359,137 +334,124 @@ DEFUN_DLD ("max", Fmax, Smax, 3, 2,
 
   if (nargin == 2 && (nargout == 1 || nargout == 0))
     {
-      retval.resize (1);
-      switch (arg1_type)
+      if (arg1.is_real_scalar ())
 	{
-        case tree_constant_rep::scalar_constant:
 	  retval(0) = arg1.double_value ();
-          break;
-        case tree_constant_rep::complex_scalar_constant:
+	}
+      else if (arg1.is_complex_scalar ())
+	{
           retval(0) = arg1.complex_value ();
-          break;
-        case tree_constant_rep::matrix_constant:
-          {
-  	    Matrix m = arg1.matrix_value ();
-	    if (m.rows () == 1)
-	      retval(0) = m.row_max ();
-	    else
-	      retval(0) = tree_constant (m.column_max (), 0);
- 	  }
-          break;
-        case tree_constant_rep::complex_matrix_constant:
-          {
-            ComplexMatrix m = arg1.complex_matrix_value ();
-            if (m.rows () == 1)
-              retval(0) = m.row_max ();
-            else
-              retval(0) = tree_constant (m.column_max (), 0);
-          }
-	  break;
-	default:
-	  panic_impossible ();
-	  break;
+	}
+      else if (arg1.is_real_matrix ())
+	{
+	  Matrix m = arg1.matrix_value ();
+	  if (m.rows () == 1)
+	    retval(0) = m.row_max ();
+	  else
+	    retval(0) = tree_constant (m.column_max (), 0);
+	}
+      else if (arg1.is_complex_matrix ())
+	{
+	  ComplexMatrix m = arg1.complex_matrix_value ();
+	  if (m.rows () == 1)
+	    retval(0) = m.row_max ();
+	  else
+	    retval(0) = tree_constant (m.column_max (), 0);
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("max", arg1);
+	  return retval;
 	}
     }
   else if (nargin == 2 && nargout == 2)
     {
-      retval.resize (2);
-      switch (arg1_type)
-        {
-	case tree_constant_rep::scalar_constant:
-	  {
-	    retval(0) = arg1.double_value ();
-	    retval(1) = 1;
-	  }
-          break;
-	case tree_constant_rep::complex_scalar_constant:
-	  {
-	    retval(0) = arg1.complex_value ();
-	    retval(1) = 1;
-	  }
-          break;
-	case tree_constant_rep::matrix_constant:
-	  {
-	    Matrix m = arg1.matrix_value ();
-	    if (m.rows () == 1)
-	      {
-		retval(0) = m.row_max ();
-		retval(1) = m.row_max_loc ();
-	      }
-	    else
-	      {
-		retval(0) = tree_constant (m.column_max (), 0);
-		retval(1) = tree_constant (m.column_max_loc (), 0);
-	      }
-	  }
-          break;
-	case tree_constant_rep::complex_matrix_constant:
-	  {
-	    ComplexMatrix m = arg1.complex_matrix_value ();
-	    if (m.rows () == 1)
-	      {
-		retval(0) = m.row_max ();
-		retval(1) = m.row_max_loc ();
-	      }
-	    else
-	      {
-		retval(0) = tree_constant (m.column_max (), 0);
-		retval(1) = tree_constant (m.column_max_loc (), 0);
-	      }
-	  }
-          break;
-	default:
-	  panic_impossible ();
-	  break;
-        }
+      if (arg1.is_real_scalar ())
+	{
+	  retval(1) = 1;
+	  retval(0) = arg1.double_value ();
+	}
+      else if (arg1.is_complex_scalar ())
+	{
+	  retval(1) = 1;
+	  retval(0) = arg1.complex_value ();
+	}
+      else if (arg1.is_real_matrix ())
+	{
+	  Matrix m = arg1.matrix_value ();
+	  if (m.rows () == 1)
+	    {
+	      retval(1) = m.row_max_loc ();
+	      retval(0) = m.row_max ();
+	    }
+	  else
+	    {
+	      retval(1) = tree_constant (m.column_max_loc (), 0);
+	      retval(0) = tree_constant (m.column_max (), 0);
+	    }
+	}
+      else if (arg1.is_complex_matrix ())
+	{
+	  ComplexMatrix m = arg1.complex_matrix_value ();
+	  if (m.rows () == 1)
+	    {
+	      retval(1) = m.row_max_loc ();
+	      retval(0) = m.row_max ();
+	    }
+	  else
+	    {
+	      retval(1) = tree_constant (m.column_max_loc (), 0);
+	      retval(0) = tree_constant (m.column_max (), 0);
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("max", arg1);
+	  return retval;
+	}
     }
   else if (nargin == 3)
     {
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())
 	{
-	  retval.resize (1);
-          switch (arg1_type)
+// XXX FIXME XXX -- I don't think this is quite right.
+          if (arg1.is_real_scalar ())
             {
-	    case tree_constant_rep::scalar_constant:
-	      {
-		double result;
-		double a_elem = arg1.double_value ();
-		double b_elem = arg2.double_value ();
-		result = MAX (a_elem, b_elem);
-		retval(0) = result;
-	      }
-              break;
-	    case tree_constant_rep::complex_scalar_constant:
-	      {
-		Complex result;
-		Complex a_elem = arg1.complex_value ();
-		Complex b_elem = arg2.complex_value ();
-		if (abs (a_elem) > abs (b_elem))
-		  result = a_elem;
-		else
-		  result = b_elem;
-		retval(0) = result;
-	      }
-              break;
-	    case tree_constant_rep::matrix_constant:
-	      {
-		Matrix result;
-		result = max (arg1.matrix_value (), arg2.matrix_value ());
-		retval(0) = result;
-	      }
-              break;
-	    case tree_constant_rep::complex_matrix_constant:
-	      {
-		ComplexMatrix result;
-		result = max (arg1.complex_matrix_value (),
-			      arg2.complex_matrix_value ());
-		retval(0) = result;
-	      }
-	      break;
-	    default:
-	      panic_impossible ();
-	      break;
+	      double result;
+	      double a_elem = arg1.double_value ();
+	      double b_elem = arg2.double_value ();
+	      result = MAX (a_elem, b_elem);
+	      retval(0) = result;
+	    }
+	  else if (arg1.is_complex_scalar ())
+	    {
+	      Complex result;
+	      Complex a_elem = arg1.complex_value ();
+	      Complex b_elem = arg2.complex_value ();
+	      if (abs (a_elem) > abs (b_elem))
+		result = a_elem;
+	      else
+		result = b_elem;
+	      retval(0) = result;
+	    }
+	  else if (arg1.is_real_matrix ())
+	    {
+	      Matrix result;
+	      result = max (arg1.matrix_value (), arg2.matrix_value ());
+	      retval(0) = result;
+	    }
+	  else if (arg1.is_complex_matrix ())
+	    {
+	      ComplexMatrix result;
+	      result = max (arg1.complex_matrix_value (),
+			    arg2.complex_matrix_value ());
+	      retval(0) = result;
+	    }
+	  else 
+	    {
+	      gripe_wrong_type_arg ("max", arg1);
+	      return retval;
 	    }
 	}
       else

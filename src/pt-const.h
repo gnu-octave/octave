@@ -37,7 +37,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-base.h"
 #include "tree-expr.h"
-#include "tc-rep.h"
 #include "oct-obj.h"
 
 class idx_vector;
@@ -49,31 +48,69 @@ struct Mapper_fcn;
 class
 tree_constant : public tree_fvc
 {
-friend class tree_constant_rep;
+private:
+
+#include "tc-rep.h"
+
+// The real representation of a constant, declared in tc-rep.h
+
+  tree_constant_rep *rep;
 
 public:
+
+  enum magic_colon { magic_colon_t };
+
+// Constructors.  It is possible to create the following types of
+// constants:
+//
+// constant type    constructor arguments
+// -------------    ---------------------
+// unknown          none
+// real scalar      double
+// real matrix      Matrix
+//                  DiagMatrix
+//                  RowVector
+//                  ColumnVector
+// complex scalar   Complex
+// complex matrix   ComplexMatrix
+//                  ComplexDiagMatrix
+//                  ComplexRowVector
+//                  ComplexColumnVector
+// string           char* (null terminated)
+// range            double, double, dobule
+//                  Range
+// magic colon      tree_constant::magic_colon
+
   tree_constant (void) : tree_fvc ()
     { rep = new tree_constant_rep (); rep->count = 1; }
 
   tree_constant (double d) : tree_fvc ()
     { rep = new tree_constant_rep (d); rep->count = 1; }
+
   tree_constant (const Matrix& m) : tree_fvc ()
     { rep = new tree_constant_rep (m); rep->count = 1; }
+
   tree_constant (const DiagMatrix& d) : tree_fvc ()
     { rep = new tree_constant_rep (d); rep->count = 1; }
+
   tree_constant (const RowVector& v, int pcv = -1) : tree_fvc ()
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+
   tree_constant (const ColumnVector& v, int pcv = -1) : tree_fvc ()
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const Complex& c) : tree_fvc ()
     { rep = new tree_constant_rep (c); rep->count = 1; }
+
   tree_constant (const ComplexMatrix& m) : tree_fvc ()
     { rep = new tree_constant_rep (m); rep->count = 1; }
+
   tree_constant (const ComplexDiagMatrix& d) : tree_fvc ()
     { rep = new tree_constant_rep (d); rep->count = 1; }
+
   tree_constant (const ComplexRowVector& v, int pcv = -1) : tree_fvc ()
       { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+
   tree_constant (const ComplexColumnVector& v, int pcv = -1) : tree_fvc () 
       { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
@@ -82,14 +119,25 @@ public:
 
   tree_constant (double base, double limit, double inc) : tree_fvc ()
     { rep = new tree_constant_rep (base, limit, inc); rep->count = 1; }
+
   tree_constant (const Range& r) : tree_fvc ()
     { rep = new tree_constant_rep (r); rep->count = 1; }
 
-  tree_constant (tree_constant_rep::constant_type t) : tree_fvc ()
-    { rep = new tree_constant_rep (t); rep->count = 1; }
+  tree_constant (tree_constant::magic_colon t) : tree_fvc ()
+    {
+      tree_constant_rep::constant_type tmp;
+      tmp = tree_constant_rep::magic_colon;
+      rep = new tree_constant_rep (tmp);
+      rep->count = 1;
+    }
+
+// Copy constructor.
 
   tree_constant (const tree_constant& a) : tree_fvc ()
     { rep = a.rep; rep->count++; }
+
+// Delete the representation of this constant if the count drops to
+// zero.
 
   ~tree_constant (void);
 
@@ -97,6 +145,8 @@ public:
   void *operator new (size_t size);
   void operator delete (void *p, size_t size);
 #endif
+
+// Simple assignment.
 
   tree_constant operator = (const tree_constant& a)
     {
@@ -108,80 +158,7 @@ public:
       return *this;  
     }
 
-  int is_constant (void) const { return 1; }
-
-  int is_scalar_type (void) const { return rep->is_scalar_type (); }
-  int is_matrix_type (void) const { return rep->is_matrix_type (); }
-
-  int is_real_type (void) const { return rep->is_real_type (); }
-  int is_complex_type (void) const { return rep->is_complex_type (); }
-
-  int is_numeric_type (void) const { return rep->is_numeric_type (); }
-
-  int is_numeric_or_range_type (void) const
-    { return rep->is_numeric_or_range_type (); }
-
-  int valid_as_scalar_index (void) const
-    { return rep->valid_as_scalar_index (); }
-
-// What type of constant am I?
-
-  int is_unknown (void) const { return rep->is_unknown (); }
-  int is_scalar (void) const { return rep->is_scalar (); }
-  int is_matrix (void) const { return rep->is_matrix (); }
-  int is_complex_scalar (void) const { return rep->is_complex_scalar (); }
-  int is_complex_matrix (void) const { return rep->is_complex_matrix (); }
-  int is_string (void) const { return rep->is_string (); }
-  int is_range (void) const { return rep->is_range (); }
-
-  int is_defined (void) const { return rep->is_defined (); }
-  int is_undefined (void) const { return rep->is_undefined (); }
-
-  double to_scalar (void) const { return rep->to_scalar (); }
-  ColumnVector to_vector (void) const { return rep->to_vector (); }
-  Matrix to_matrix (void) const { return rep->to_matrix (); }
-
-  void stash_original_text (char *s)
-    { rep->stash_original_text (s); }
-
-  tree_constant_rep::constant_type force_numeric (int force_str_conv = 0)
-    { return rep->force_numeric (force_str_conv); }
-
-  tree_constant make_numeric (int force_str_conv = 0) const
-    {
-      if (is_numeric_type ())
-	return *this;
-      else
-	return rep->make_numeric (force_str_conv);
-    }
-
-  tree_constant make_numeric_or_range (void) const
-    {
-      if (is_numeric_type ()
-	  || rep->type_tag == tree_constant_rep::range_constant)
-	return *this;
-      else
-	return rep->make_numeric ();
-    }
-
-  tree_constant make_numeric_or_magic (void) const
-    {
-      if (is_numeric_type ()
-	  || rep->type_tag == tree_constant_rep::magic_colon)
-	return *this;
-      else
-	return rep->make_numeric ();
-    }
-
-  tree_constant make_numeric_or_range_or_magic (void) const
-    {
-      if (is_numeric_type ()
-	  || rep->type_tag == tree_constant_rep::magic_colon
-	  || rep->type_tag == tree_constant_rep::range_constant)
-	return *this;
-      else
-	return rep->make_numeric ();
-    }
+// Indexed assignment.
 
   tree_constant assign (tree_constant& rhs, const Octave_object& args)
     {
@@ -195,6 +172,80 @@ public:
       return *this;
     }
 
+// Type.  It would be nice to eliminate the need for this.
+
+  int is_constant (void) const { return 1; }
+
+// Size.
+
+  int rows (void) const { return rep->rows (); }
+  int columns (void) const { return rep->columns (); }
+
+// Does this constant have a type?  Both of these are provided since
+// it is sometimes more natural to write is_undefined() instead of
+// ! is_defined().
+
+  int is_defined (void) const { return rep->is_defined (); }
+  int is_undefined (void) const { return rep->is_undefined (); }
+
+// What type is this constant?
+
+  int is_unknown (void) const { return rep->is_unknown (); }
+  int is_real_scalar (void) const { return rep->is_real_scalar (); }
+  int is_real_matrix (void) const { return rep->is_real_matrix (); }
+  int is_complex_scalar (void) const { return rep->is_complex_scalar (); }
+  int is_complex_matrix (void) const { return rep->is_complex_matrix (); }
+  int is_string (void) const { return rep->is_string (); }
+  int is_range (void) const { return rep->is_range (); }
+  int is_magic_colon (void) const { return rep->is_magic_colon (); }
+
+// Are any or all of the elements in this constant nonzero?
+
+  tree_constant all (void) const { return rep->all (); }
+  tree_constant any (void) const { return rep->any (); }
+
+// Broader classifications.
+
+  int is_scalar_type (void) const { return rep->is_scalar_type (); }
+  int is_matrix_type (void) const { return rep->is_matrix_type (); }
+
+  int is_real_type (void) const { return rep->is_real_type (); }
+  int is_complex_type (void) const { return rep->is_complex_type (); }
+
+// These need better names, since a range really is a numeric type.
+
+  int is_numeric_type (void) const { return rep->is_numeric_type (); }
+
+  int is_numeric_or_range_type (void) const
+    { return rep->is_numeric_or_range_type (); }
+
+// Is this constant valid as a scalar index?
+
+  int valid_as_scalar_index (void) const
+    { return rep->valid_as_scalar_index (); }
+
+// Does this constant correspond to a truth value?
+
+  int is_true (void) const { return rep->is_true (); }
+
+// Is at least one of the dimensions of this constant zero?
+
+  int is_empty (void) const
+    {
+      return ((! (is_magic_colon () || is_unknown ()))
+	      && (rows () == 0 || columns () == 0));
+    }
+
+// Are the dimensions of this constant zero by zero?
+
+  int is_zero_by_zero (void) const
+    {
+      return ((! (is_magic_colon () || is_unknown ()))
+	      && rows () == 0 && columns () == 0);
+    } 
+
+// Values.
+
   double double_value (void) const { return rep->double_value (); }
   Matrix matrix_value (void) const { return rep->matrix_value (); }
   Complex complex_value (void) const { return rep->complex_value (); }
@@ -203,50 +254,53 @@ public:
   char *string_value (void) const { return rep->string_value (); }
   Range range_value (void) const { return rep->range_value (); }
 
-  int rows (void) const { return rep->rows (); }
-  int columns (void) const { return rep->columns (); }
-
-  int is_empty (void) const
-    {
-      return (rep->type_tag != tree_constant_rep::magic_colon
-	      && rep->type_tag != tree_constant_rep::unknown_constant
-	      && (rows () == 0 || columns () == 0));
-    }
-
-  int is_zero_by_zero (void) const
-    {
-      return (rep->type_tag != tree_constant_rep::magic_colon
-	      && rep->type_tag != tree_constant_rep::unknown_constant
-	      && rows () == 0
-	      && columns () == 0);
-    } 
-
-
-  tree_constant all (void) const { return rep->all (); }
-  tree_constant any (void) const { return rep->any (); }
-  tree_constant isstr (void) const { return rep->isstr (); }
+// Conversions.  These should probably be private.  If a user of this
+// class wants a certain kind of constant, he should simply ask for
+// it, and we should convert it if possible.
 
   tree_constant convert_to_str (void) { return rep->convert_to_str (); }
 
   void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
 
-  int is_true (void) const { return rep->is_true (); }
+// These need better names, since a range really is a numeric type.
 
-  tree_constant cumprod (void) const { return rep->cumprod (); }
-  tree_constant cumsum (void) const { return rep->cumsum (); }
-  tree_constant prod (void) const { return rep->prod (); }
-  tree_constant sum (void) const { return rep->sum (); }
-  tree_constant sumsq (void) const { return rep->sumsq (); }
+  void force_numeric (int force_str_conv = 0)
+    { rep->force_numeric (force_str_conv); }
 
-  tree_constant diag (void) const { return rep->diag (); }
-  tree_constant diag (const tree_constant& a) const { return rep->diag (a); }
+  tree_constant make_numeric (int force_str_conv = 0) const
+    {
+      if (is_numeric_type ())
+	return *this;
+      else
+	return rep->make_numeric (force_str_conv);
+    }
 
-  tree_constant_rep::constant_type const_type (void) const
-    { return rep->const_type (); }
+  tree_constant make_numeric_or_range (void) const
+    {
+      if (is_numeric_type () || is_range ())
+	return *this;
+      else
+	return rep->make_numeric ();
+    }
 
-  tree_constant mapper (Mapper_fcn& m_fcn, int print) const
-    { return rep->mapper (m_fcn, print); }
+  tree_constant make_numeric_or_magic (void) const
+    {
+      if (is_numeric_type () || is_magic_colon ())
+	return *this;
+      else
+	return rep->make_numeric ();
+    }
+
+  tree_constant make_numeric_or_range_or_magic (void) const
+    {
+      if (is_numeric_type () || is_range () || is_magic_colon ())
+	return *this;
+      else
+	return rep->make_numeric ();
+    }
+
+// Increment or decrement this constant.
 
   void bump_value (tree_expression::type et)
     {
@@ -258,6 +312,9 @@ public:
 	}
       rep->bump_value (et);
     }
+
+// Evaluate this constant, possibly converting complex to real, or
+// matrix to scalar, etc.
 
   tree_constant eval (int print)
     {
@@ -283,10 +340,55 @@ public:
       return retval;
     }
 
+// Store the original text corresponding to this constant for later
+// pretty printing.
+
+  void stash_original_text (char *s)
+    { rep->stash_original_text (s); }
+
+// Pretty print this constant.
+ 
   void print_code (ostream& os);
 
+// Complain about unknown types used as args.
+
+  friend void gripe_wrong_type_arg (const char *name, const tree_constant& tc);
+
+// -------------------------------------------------------------------
+
+// These may not need to be member functions.
+
+  tree_constant cumprod (void) const { return rep->cumprod (); }
+  tree_constant cumsum (void) const { return rep->cumsum (); }
+  tree_constant prod (void) const { return rep->prod (); }
+  tree_constant sum (void) const { return rep->sum (); }
+  tree_constant sumsq (void) const { return rep->sumsq (); }
+
+  tree_constant diag (void) const { return rep->diag (); }
+  tree_constant diag (const tree_constant& a) const { return rep->diag (a); }
+
+  tree_constant mapper (Mapper_fcn& m_fcn, int print) const
+    { return rep->mapper (m_fcn, print); }
+
+// -------------------------------------------------------------------
+
+// We want to eliminate this, or at least make it private.
+
+  tree_constant_rep::constant_type const_type (void) const
+    { return rep->const_type (); }
+
+// More conversions.  These should probably be eliminated.  If a user
+// of this class wants a certain kind of constant, he should simply
+// ask for it, and we should convert it if possible.
+
+  double to_scalar (void) const { return rep->to_scalar (); }
+  ColumnVector to_vector (void) const { return rep->to_vector (); }
+  Matrix to_matrix (void) const { return rep->to_matrix (); }
+
+// -------------------------------------------------------------------
+
 private:
-  tree_constant_rep *rep;
+  char *type_as_string (void) const;
 };
 
 // XXX FIXME XXX -- this is not used very much now.  Perhaps it can be

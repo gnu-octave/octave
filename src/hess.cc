@@ -80,82 +80,76 @@ DEFUN_DLD ("hess", Fhess, Shess, 2, 2,
   Matrix tmp;
   ComplexMatrix ctmp;
 
-  switch (arg.const_type ())
+  if (arg.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	tmp = arg.matrix_value ();
+      tmp = arg.matrix_value ();
 
-	HESS result (tmp);
+      HESS result (tmp);
 
-	if (nargout == 0 || nargout == 1)
-	  {
-	    retval.resize (1);
-	    retval(0) = result.hess_matrix ();
-	  }
-        else
-	  {
-	    retval.resize (2);
-	    retval(0) = result.unitary_hess_matrix ();
-	    retval(1) = result.hess_matrix ();
-          }
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ctmp = arg.complex_matrix_value ();
-
-	ComplexHESS result (ctmp);
-
-	if (nargout == 0 || nargout == 1)
-	  {
-	    retval.resize (1);
-	    retval(0) = result.hess_matrix ();
-	  }
-  	else
-	  {
-	    retval.resize (2);
-	    retval(0) = result.unitary_hess_matrix ();
-	    retval(1) = result.hess_matrix ();
-	  }
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-      {
-	double d = arg.double_value ();
-	if (nargout == 0 || nargout == 1)
-	  {
-	    retval.resize (1);
-	    retval(0) = d;
-	  }
-	else
-	  {
-	    retval.resize (2);
-	    retval(0) = 1;
-	    retval(1) = d;
-	  }
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex c = arg.complex_value ();
-	if (nargout == 0 || nargout == 1)
- 	  {
-	    retval.resize (1);
-	    retval(0) = c;
-	  }
-	else
-	  {
-	    retval.resize (2);
-	    retval(0) = 1;
-	    retval(1) = c;
-	  }
-      }
-      break;
-    default:
-      panic_impossible ();
-      break;
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval.resize (1);
+	  retval(0) = result.hess_matrix ();
+	}
+      else
+	{
+	  retval.resize (2);
+	  retval(0) = result.unitary_hess_matrix ();
+	  retval(1) = result.hess_matrix ();
+	}
     }
+  else if (arg.is_complex_matrix ())
+    {
+      ctmp = arg.complex_matrix_value ();
+      ComplexHESS result (ctmp);
+
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval.resize (1);
+	  retval(0) = result.hess_matrix ();
+	}
+      else
+	{
+	  retval.resize (2);
+	  retval(0) = result.unitary_hess_matrix ();
+	  retval(1) = result.hess_matrix ();
+	}
+    }
+  else if (arg.is_real_scalar ())
+    {
+      double d = arg.double_value ();
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval.resize (1);
+	  retval(0) = d;
+	}
+      else
+	{
+	  retval.resize (2);
+	  retval(0) = 1;
+	  retval(1) = d;
+	}
+    }
+  else if (arg.is_complex_scalar ())
+    {
+      Complex c = arg.complex_value ();
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval.resize (1);
+	  retval(0) = c;
+	}
+      else
+	{
+	  retval.resize (2);
+	  retval(0) = 1;
+	  retval(1) = c;
+	}
+    }
+  else
+    {
+      gripe_wrong_type_arg ("hess", arg);
+    }
+
   return retval;
 }
 

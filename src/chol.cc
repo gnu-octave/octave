@@ -69,45 +69,41 @@ DEFUN_DLD ("chol", Fchol, Schol, 2, 1,
       return retval;
     }
 
-  switch (tmp.const_type ())
+  if (tmp.is_real_matrix ())
     {
-    case tree_constant_rep::matrix_constant:
-      {
-	Matrix m = tmp.matrix_value ();
-        int info;
-	CHOL fact (m, info);
-        if (info != 0)
-          error ("chol: matrix not positive definite");
-        else
-  	  retval = fact.chol_matrix ();
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      {
-	ComplexMatrix m = tmp.complex_matrix_value ();
-        int info;
-	ComplexCHOL fact (m, info);
-        if (info != 0)
-          error ("chol: matrix not positive definite");
-        else
-	  retval = fact.chol_matrix ();
-      }
-      break;
-    case tree_constant_rep::scalar_constant:
-      {
-	double d = tmp.double_value ();
-	retval = d;
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      {
-	Complex c = tmp.complex_value ();
-	retval = c;
-      }
-      break;
-    default:
-      break;
+      Matrix m = tmp.matrix_value ();
+      int info;
+      CHOL fact (m, info);
+      if (info != 0)
+	error ("chol: matrix not positive definite");
+      else
+	retval = fact.chol_matrix ();
     }
+  else if (tmp.is_complex_matrix ())
+    {
+      ComplexMatrix m = tmp.complex_matrix_value ();
+      int info;
+      ComplexCHOL fact (m, info);
+      if (info != 0)
+	error ("chol: matrix not positive definite");
+      else
+	retval = fact.chol_matrix ();
+    }
+  else if (tmp.is_real_scalar ())
+    {
+      double d = tmp.double_value ();
+      retval = d;
+    }
+  else if (tmp.is_complex_scalar ())
+    {
+      Complex c = tmp.complex_value ();
+      retval = c;
+    }
+  else
+    {
+      gripe_wrong_type_arg ("chol", tmp);
+    }
+
   return retval;
 }
 

@@ -26,7 +26,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cfloat>
-#include <climits>
 #include <cstring>
 #include <cctype>
 
@@ -70,152 +69,6 @@ enum load_save_format
     LS_MAT_BINARY,
     LS_UNKNOWN,
   };
-
-// Return nonzero if S is a valid identifier.
-
-static int
-valid_identifier (char *s)
-{
-  if (! s || ! (isalnum (*s) || *s == '_'))
-     return 0;
-
-  while (*++s != '\0')
-    if (! (isalnum (*s) || *s == '_'))
-      return 0;
-
-  return 1;
-}
-
-// Return nonzero if any element of M is not an integer.  Also extract
-// the largest and smallest values and return them in MAX_VAL and MIN_VAL.
-
-static int
-all_parts_int (const Matrix& m, double& max_val, double& min_val)
-{
-  int nr = m.rows ();
-  int nc = m.columns ();
-
-  if (nr > 0 && nc > 0)
-    {
-      max_val = m.elem (0, 0);
-      min_val = m.elem (0, 0);
-    }
-  else
-    return 0;
-
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = m.elem (i, j);
-
-	if (val > max_val)
-	  max_val = val;
-
-	if (val < min_val)
-	  min_val = val;
-
-	if (D_NINT (val) != val)
-	  return 0;
-      }
-  return 1;
-}
-
-// Return nonzero if any element of CM has a non-integer real or
-// imaginary part.  Also extract the largest and smallest (real or
-// imaginary) values and return them in MAX_VAL and MIN_VAL. 
-
-static int
-all_parts_int (const ComplexMatrix& m, double& max_val, double& min_val)
-{
-  int nr = m.rows ();
-  int nc = m.columns ();
-
-  if (nr > 0 && nc > 0)
-    {
-      Complex val = m.elem (0, 0);
-
-      double r_val = real (val);
-      double i_val = imag (val);
-
-      max_val = r_val;
-      min_val = r_val;
-
-      if (i_val > max_val)
-	max_val = i_val;
-
-      if (i_val < max_val)
-	min_val = i_val;
-    }
-  else
-    return 0;
-
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	Complex val = m.elem (i, j);
-
-	double r_val = real (val);
-	double i_val = imag (val);
-
-	if (r_val > max_val)
-	  max_val = r_val;
-
-	if (i_val > max_val)
-	  max_val = i_val;
-
-	if (r_val < min_val)
-	  min_val = r_val;
-
-	if (i_val < min_val)
-	  min_val = i_val;
-
-	if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
-	  return 0;
-      }
-  return 1;
-}
-
-static int
-too_large_for_float (const Matrix& m)
-{
-  int nr = m.rows ();
-  int nc = m.columns ();
-
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = m.elem (i, j);
-
-	if (val > FLT_MAX || val < FLT_MIN)
-	  return 1;
-      }
-
-  return 0;
-}
-
-static int
-too_large_for_float (const ComplexMatrix& m)
-{
-  int nr = m.rows ();
-  int nc = m.columns ();
-
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	Complex val = m.elem (i, j);
-
-	double r_val = real (val);
-	double i_val = imag (val);
-
-	if (r_val > FLT_MAX
-	    || i_val > FLT_MAX
-	    || r_val < FLT_MIN
-	    || i_val < FLT_MIN)
-	  return 1;
-      }
-
-  return 0;
-}
 
 // XXX FIXME XXX -- shouldn't this be implemented in terms of other
 // functions that are already available?
@@ -1759,7 +1612,7 @@ save_binary_data (ostream& os, const tree_constant& tc,
       save_type st = LS_DOUBLE;
       if (save_as_floats)
 	{
-	  if (too_large_for_float (m))
+	  if (m.too_large_for_float ())
 	    {
 	      warning ("save: some values too large to save as floats --");
 	      warning ("save: saving as doubles instead");
@@ -1770,7 +1623,7 @@ save_binary_data (ostream& os, const tree_constant& tc,
       else if (len > 8192) // XXX FIXME XXX -- make this configurable.
 	{
 	  double max_val, min_val;
-	  if (all_parts_int (m, max_val, min_val))
+	  if (m.all_integers (max_val, min_val))
 	    st = get_save_type (max_val, min_val);
 	}
       const double *mtmp = m.data ();
@@ -1798,7 +1651,7 @@ save_binary_data (ostream& os, const tree_constant& tc,
       save_type st = LS_DOUBLE;
       if (save_as_floats)
 	{
-	  if (too_large_for_float (m))
+	  if (m.too_large_for_float ())
 	    {
 	      warning ("save: some values too large to save as floats --");
 	      warning ("save: saving as doubles instead");
@@ -1809,7 +1662,7 @@ save_binary_data (ostream& os, const tree_constant& tc,
       else if (len > 4096) // XXX FIXME XXX -- make this configurable.
 	{
 	  double max_val, min_val;
-	  if (all_parts_int (m, max_val, min_val))
+	  if (m.all_integers (max_val, min_val))
 	    st = get_save_type (max_val, min_val);
 	}
       const Complex *mtmp = m.data ();

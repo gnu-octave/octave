@@ -316,6 +316,9 @@ public:
   friend ComplexMatrix map (c_c_Mapper f, const ComplexMatrix& a);
   void map (c_c_Mapper f);
 
+  int all_integers (double& max_val, double& min_val) const;
+  int too_large_for_float (void) const;
+
   Matrix all (void) const;
   Matrix any (void) const;
 

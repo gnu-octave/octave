@@ -41,20 +41,20 @@ function zr = tzero (a, b, c, d, bal)
       warning ("tzero: number of inputs,outputs differ.  squaring up");
       if (p > m)
 	warning ("       by padding b and d with zeros.");
-	b = [b, zeros (n, p-m)];
-	d = [d, zeros (p, p-m)];
+	b = [b, (zeros (n, p-m))];
+	d = [d, (zeros (p, p-m))];
 	m = p;
       else
 	warning ("       by padding c and d with zeros.");
-	c = [c; zeros (m-p, n)];
-	d = [d; zeros (m-p, m)];
+	c = [c; (zeros (m-p, n))];
+	d = [d; (zeros (m-p, m))];
 	p = m;
       endif
       warning ("This is a kludge.  Try again with SISO system.");
     endif
     ab = [-a, -b; c, d];
-    bb = [eye (n), zeros (n, m); zeros (p, n), zeros (p, m)];
-    [ab,bb] = balance (ab, bb);
+    bb = [(eye (n)), (zeros (n, m)); (zeros (p, n)), (zeros (p, m))];
+    [ab, bb] = balance (ab, bb);
     zr = -qzval (ab, bb);
   else
     error ("tzero: a, b, c, d not compatible");

@@ -49,7 +49,7 @@ function [Ad, Bd] = c2d (Ac, Bc, T)
     error ("c2d: Ac and Bc must have the same number of rows");
   endif
 
-  matexp = expm ([[Ac, Bc] * T; zeros (nb, na+nb)]);
+  matexp = expm ([[Ac, Bc] * T; (zeros (nb, na+nb))]);
 
   Ad = matexp (1:na, 1:na);
   Bd = matexp (1:na, na+1:na+nb);

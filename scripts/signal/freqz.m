@@ -43,7 +43,7 @@ function [h, w] = freqz(b,...)
   lb = length(b);
   b = reshape(b,1,lb);
 
-  k = max([la lb]);
+  k = max([la, lb]);
 
   if( n >= k)
     if (strcmp(region,"whole"))

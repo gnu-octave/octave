@@ -49,7 +49,7 @@ function r = roots (v)
       A (1, :) = -v (2:l) ./ v (1);
       r = eig (A);    
       if (f (m) < n)
-	r = [r; zeros(n - f(m), 1)];
+	r = [r; (zeros(n - f(m), 1))];
       endif
     else
       r = zeros (n - f(m), 1);

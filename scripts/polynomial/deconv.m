@@ -48,7 +48,7 @@ function [b, r] = deconv (y, a)
   lb = ly - la + 1;
 
   if (ly > la)
-    b = filter (y, a, [1 zeros (1, ly - la)]);
+    b = filter (y, a, [1, (zeros (1, ly - la))]);
   elseif (ly == la)
     b = filter (y, a, 1);
   else
@@ -61,7 +61,7 @@ function [b, r] = deconv (y, a)
   if (ly == lc)
     r = y - conv (a, b);
   else
-    r = [ zeros(1, lc - ly) y] - conv (a, b);
+    r = [(zeros (1, lc - ly)), y] - conv (a, b);
   endif
 
   r = polyreduce (r);

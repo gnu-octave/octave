@@ -31,7 +31,7 @@ function [g, v] = gcd (a, ...)
   if (nargin > 1)
     va_start;
     for k = 2:nargin;
-      a = [a, va_arg ()];
+      a = [a, (va_arg ())];
     endfor
   endif
   
@@ -43,14 +43,14 @@ function [g, v] = gcd (a, ...)
   v = sign (a(1));
   for k = 1:(length (a) - 1)
     x = [g, 1, 0];
-    y = [abs (a(k+1)), 0, 1];
+    y = [(abs (a(k+1))), 0, 1];
     while (y(1) > 0)
       r = x - y * floor (x(1) / y(1));
       x = y;
       y = r;
     endwhile
     g = x(1);
-    v = [x(2) * v, x(3) * sign (a(k+1))];
+    v = [x(2) * v, x(3) * (sign (a(k+1)))];
   endfor
     
 endfunction

@@ -56,14 +56,14 @@ function y = conv (a, b)
   # Use the shortest vector as the coefficent vector to filter.
   if (la < lb)
     if (ly > lb)
-      x = [b, zeros (1, ly - lb)];
+      x = [b, (zeros (1, ly - lb))];
     else
       x = b;
     endif
     y = filter (a, 1, x);
   else
     if(ly > la)
-      x = [a, zeros (1, ly - la)];
+      x = [a, (zeros (1, ly - la))];
     else
       x = a;
     endif

@@ -38,7 +38,7 @@ function secs = etime (t1, t0)
 # XXX FIXME XXX -- could check here to ensure that t1 and t0 really do
 # make sense as vectors returned from clock().
 
-    days_in_months = [31, 28, 31, 30, 31, 30 31, 31, 30, 31, 30, 31];
+    days_in_months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     if (is_leap_year (t1 (1)))
       days_in_months (2) = days_in_months (2) + 1;

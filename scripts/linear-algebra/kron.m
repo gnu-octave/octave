@@ -36,15 +36,17 @@ function x = kron (a, b)
 
     x = a (1, 1) * b;
     for ii = 2:ma
-      x = [x; a (ii, 1)*b];
+      tmp = a (ii, 1) * b
+      x = [x; tmp];
     endfor
 
 # Do remaining columns.
 
     for jj = 2:na
-      tmp = a (1, jj)*b;
+      tmp = a (1, jj) * b;
       for ii = 2:ma
-	tmp = [tmp; a (ii, jj)*b];
+        pmt = a (ii, jj) * b;
+	tmp = [tmp; pmt];
       endfor
       x = [x, tmp];
     endfor

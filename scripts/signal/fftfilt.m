@@ -41,7 +41,7 @@ function y = fftfilt (b, x, N)
   
   [r_x, c_x] = size (x);
   [r_b, c_b] = size (b);
-  if (! (min ([r_x c_x]) == 1 || min ([r_b c_b]) == 1))
+  if (! (min ([r_x, c_x]) == 1 || min ([r_b, c_b]) == 1))
     error ("fftfilt: both x and b should be vectors");
   endif
   l_x  = r_x * c_x;
@@ -65,7 +65,7 @@ function y = fftfilt (b, x, N)
     if !(is_scalar (N))
       error ("fftfilt: N has to be a scalar");
     endif
-    N = 2^(ceil (log (max ([N l_b])) / log(2)));
+    N = 2^(ceil (log (max ([N, l_b])) / log(2)));
     L = N - l_b + 1;
     B = fft (b, N);
     R = ceil (l_x / L);

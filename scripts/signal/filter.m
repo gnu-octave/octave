@@ -56,7 +56,7 @@ function [y, w] = filter(b,a,x,w)
   M = length(b);
   L = length(x);
 
-  MN = max([N M]);
+  MN = max([N, M]);
   lw = MN - 1;
 
   # It's convenient to pad the coefficient vectors to the same length.

@@ -29,7 +29,7 @@ function l = lcm (a, ...)
   if (nargin > 1)
     va_start;
     for k = 2:nargin;
-      a = [a, va_arg ()];
+      a = [a, (va_arg ())];
     endfor
   endif
   

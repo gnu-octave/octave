@@ -99,8 +99,8 @@ function x = dare (a, b, c, r, opt)
 
     brb = (b/r)*b';
     atc = a'\c;
-    [d, sy] = balance ([a + brb*atc, -brb/(a'); -atc, inv (a')], opt);
-    [u, s] = schur(sy,'D');
+    [d, sy] = balance ([a + brb*atc, -brb/(a'); -atc, (inv (a'))], opt);
+    [u, s] = schur (sy, 'D');
     u = d*u;
     n1 = n+1;
     n2 = 2*n;

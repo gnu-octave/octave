@@ -113,9 +113,9 @@ public:
 
   DASSL (void);
 
-  DASSL (const ColumnVector& x, double time, DAEFunc& f);
+  DASSL (const ColumnVector& state, double time, DAEFunc& f);
 
-  DASSL (const ColumnVector& x, const ColumnVector& xdot,
+  DASSL (const ColumnVector& state, const ColumnVector& xdot,
 	 double time, DAEFunc& f);
 
   ~DASSL (void) { }

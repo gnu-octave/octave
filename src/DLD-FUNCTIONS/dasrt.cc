@@ -327,7 +327,6 @@ parameters for @code{dasrt}.\n\
     DASRT_ABORT1 ("invalid recursive call");
 
   int argp = 0;
-  int ng = 0;
 
   int nargin = args.length ();
 
@@ -393,68 +392,17 @@ parameters for @code{dasrt}.\n\
   DAERTFunc func (dasrt_user_f);
   
   argp++;
-  double t0;
-  ColumnVector x0;
   
   if (args(1).is_string ())
     {
       dasrt_cf = is_valid_function (args(1), "dasrt", true);
 
       if (! dasrt_cf)
-	  DASRT_ABORT1 ("expecting function name as argument 2");
-      else
-        {
-	  octave_value_list blah;
-	  octave_value_list inputs;
-	  ColumnVector the_ts;
-	  x0 = ColumnVector (args(2).vector_value ());
+	DASRT_ABORT1 ("expecting function name as argument 2");
 
-	  if (error_state)
-	    DASRT_ABORT1 ("bad x0");
-
-	  the_ts = ColumnVector (args(4).vector_value ());
-
-	  if (error_state)
-	    DASRT_ABORT1 ("bad tout");
-
-	  t0 = the_ts(0);
-
-	  inputs(0) = x0;
-	  inputs(1) = t0;
-
-	  string g_name = args(1).string_value();
-
-	  if (error_state)
-	    DASRT_ABORT1 ("bad function name of stopping condition");
-
-	  blah = feval (g_name, inputs, 2);
-	  ColumnVector gout = ColumnVector (blah(0).vector_value ());
-
-	  ng = gout.length();
-	  int testg;
-	  for (testg = 0; testg < ng; testg++)
-	    {
-	      if (gout(testg) == 0)
-		DASRT_ABORT1 ("stopping condition satisfied at initial point");
-	    }
-        }
       argp++;
 
       func.set_constraint_function (dasrt_user_cf);
-    }
-  else
-    {
-      // Now this second argument is not a string.  It has to be x0.
-      // we call the dummy g function and set ng = 1;
-
-      x0 = ColumnVector (args(1).vector_value ());
-
-      if (error_state)
-	DASRT_ABORT1 ("bad x0");
-
-      func.set_constraint_function (dasrt_dumb_cf);
-
-      ng = 1;
     }
 
   ColumnVector state (args(argp++).vector_value ());
@@ -462,7 +410,7 @@ parameters for @code{dasrt}.\n\
   if (error_state)
     DASRT_ABORT2 ("expecting state vector as argument %d", argp);
 
-  ColumnVector stateprime (args(argp++).vector_value());
+  ColumnVector stateprime (args(argp++).vector_value ());
 
   if (error_state)
     DASRT_ABORT2 
@@ -477,12 +425,11 @@ parameters for @code{dasrt}.\n\
   double tzero = old_out_times (0);
 
   int ol = old_out_times.length ();
-  int ijk;
 
   ColumnVector out_times (ol-1, 0.0);
 
-  for (ijk = 1; ijk < ol; ijk++)
-    out_times(ijk-1) = old_out_times(ijk);
+  for (int i = 1; i < ol; i++)
+    out_times(i-1) = old_out_times(i);
 
   ColumnVector crit_times;
 
@@ -506,10 +453,9 @@ parameters for @code{dasrt}.\n\
 
   DASRT_result output;
 
-  DASRT dae = DASRT (ng, state, stateprime, tzero, func);
+  DASRT dae = DASRT (state, stateprime, tzero, func);
 
   dae.copy (dasrt_opts);
-  dae.set_ng (ng);
 
   if (error_state)
     DASRT_ABORT1 ("something is wrong");
@@ -527,7 +473,7 @@ parameters for @code{dasrt}.\n\
       Matrix old_output_state = output.state ();
 
       int lstuff = old_output_times.length ();
-      int lstate = x0.length ();
+      int lstate = state.length ();
 
       ColumnVector output_times (lstuff+1, 0.0);
 
@@ -536,20 +482,20 @@ parameters for @code{dasrt}.\n\
 
       output_times(0) = tzero;
 
-      for (ijk = 0; ijk < lstate; ijk++)
+      for (int i = 0; i < lstate; i++)
 	{
-	  output_deriv(0,ijk) = stateprime(ijk);
-	  output_state(0,ijk) = state(ijk);
+	  output_deriv(0,i) = stateprime(i);
+	  output_state(0,i) = state(i);
 	}
 
-      for (ijk = 0; ijk < lstuff; ijk++)
+      for (int i = 0; i < lstuff; i++)
 	{
-	  output_times(ijk+1) = old_output_times(ijk);
+	  output_times(i+1) = old_output_times(i);
 
-	  for (int lmnop=0; lmnop < lstate; lmnop++)
+	  for (int j = 0; j < lstate; j++)
 	    {
-	      output_deriv(ijk+1,lmnop) = old_output_deriv(ijk,lmnop);
-	      output_state(ijk+1,lmnop) = old_output_state(ijk,lmnop);
+	      output_deriv(i+1,j) = old_output_deriv(i,j);
+	      output_state(i+1,j) = old_output_state(i,j);
 	    }
 	}
 

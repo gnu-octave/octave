@@ -163,13 +163,14 @@ DASRT::DASRT (void)
   info.resize (30, 0);
 
   npar = 0;
+  ng = 0;
 
   liw = 0;
   lrw = 0;
 }
 
-DASRT::DASRT (const int& ng, const ColumnVector& state, 
-	      const ColumnVector& deriv, double time, DAERTFunc& f)
+DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
+	      double time, DAERTFunc& f)
   : DAERT (state, deriv, time, f)
 {
   n = size ();
@@ -180,14 +181,22 @@ DASRT::DASRT (const int& ng, const ColumnVector& state,
   stop_time_set = false;
   stop_time = 0.0;
 
-  DAERTFunc::operator = (f);
-
   sanity_checked = false;
 
   info.resize (30, 0);
   jroot.resize (ng, 1);
 
   npar = 0;
+
+  DAERTFunc::DAERTConstrFunc tmp_csub = DAERTFunc::constraint_function ();
+  
+  if (tmp_csub)
+    {
+      ColumnVector tmp = tmp_csub (state, time);
+      ng = tmp.length ();
+    }
+  else
+    ng = 0;
 
   rpar.resize (npar+1);
   ipar.resize (npar+1);
@@ -226,14 +235,12 @@ DASRT::init_work_size (int info_zero)
   double *prwork = rwork.fortran_vec ();
   int *piwork = iwork.fortran_vec ();
 
-
   F77_FUNC (ddasrt, DASRT) (ddasrt_f, n, t, py, pydot, t, pinfo,
 			    &rel_tol, &abs_tol, idid, prwork, lrw,
 			    piwork, liw, prpar, pipar, ddasrt_j,
 			    ddasrt_g, ng, pjroot);
 
   int iwadd = iwork(18);
-
 
   if (iwadd > 0)
     liw += iwadd;
@@ -251,14 +258,12 @@ DASRT::init_work_size (int info_zero)
 
   int rwadd = iwork(19);
 
-
   if (rwadd > 0)
     lrw += rwadd;
 
   rwork.resize (lrw, 0.0);
 
   info(0) = info_zero;
-
 }
 
 void
@@ -273,17 +278,6 @@ DASRT::set_stop_time (double t)
 {
   stop_time_set = true;
   stop_time = t;
-}
-
-void
-DASRT::set_ng (int the_ng)
-{
-  ng = the_ng;
-}
-
-int DASRT::get_ng (void)
-{
-  return ng;
 }
 
 void
@@ -302,10 +296,10 @@ DASRT::integrate (double tout)
       info(0) = 0;
 
       for (int i = 0; i < n; i++)
-       {
-	y(i,0) = x(i);
-        ydot(i,0) = xdot(i);
-       }
+	{
+	  y(i,0) = x(i);
+	  ydot(i,0) = xdot(i);
+	}
 
       integration_error = false;
 
@@ -335,12 +329,8 @@ DASRT::integrate (double tout)
 
 	  sanity_checked = true;
 	}
-
   
       init_work_size (info(0));
-
-
-
 
       if (iwork.length () != liw)
 	iwork.resize (liw);
@@ -350,7 +340,6 @@ DASRT::integrate (double tout)
 
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
-
 
       if (initial_step_size () >= 0.0)
 	{
@@ -375,7 +364,6 @@ DASRT::integrate (double tout)
 	}
       else
 	info(6) = 0;
-
 
       py = y.fortran_vec ();
       pydot = ydot.fortran_vec ();
@@ -403,9 +391,6 @@ DASRT::integrate (double tout)
       else
 	info(3) = 0;
     }
-
-
-
 
   F77_XFCN (ddasrt, DASRT, (ddasrt_f, n, t, py, pydot, tout, pinfo,
 			    &rel_tol, &abs_tol, idid, prwork, lrw,
@@ -486,7 +471,6 @@ DASRT::integrate (const ColumnVector& tout)
 
   int n_out = tout.capacity ();
 
-
   if (n_out > 0 && n > 0)
     {
       x_out.resize (n_out, n);
@@ -501,25 +485,26 @@ DASRT::integrate (const ColumnVector& tout)
 	      retval = DASRT_result (x_out, xdot_out, t_out);
 	      return retval;
 	    }
+
           if (idid == 4)
             t_out(j) = t;
           else
             t_out(j) = tout(j);
-
 
 	  for (int i = 0; i < n; i++)
 	    {
 	      x_out(j,i) = y(i,0);
 	      xdot_out(j,i) = ydot(i,0);
 	    }
-          if (idid ==4)
-           {
-            oldj = j;
-            j = n_out;
-            x_out.resize (oldj+1, n);
-            xdot_out.resize (oldj+1, n);
-            t_out.resize (oldj+1);
-           }
+
+          if (idid == 4)
+	    {
+	      oldj = j;
+	      j = n_out;
+	      x_out.resize (oldj+1, n);
+	      xdot_out.resize (oldj+1, n);
+	      t_out.resize (oldj+1);
+	    }
 	}
     }
 
@@ -606,6 +591,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 		  retval = DASRT_result (x_out, xdot_out, t_outs);
 		  return retval;
 		}
+
               if (idid == 4)
                 t_out = t;
 
@@ -624,7 +610,6 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
                       t_outs.resize (i_out);
                       i_out = n_out;
                     }
-
 		}
 
 	      if (do_restart)

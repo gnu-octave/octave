@@ -1,5 +1,7 @@
 2002-07-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/dasrt.cc (Fdasrt): No need to find ng here.
+
 	* DLD-FUNCTIONS/dassl.cc (dassl_user_jacobian): New function.
 	(Fdassl): Handle Jacobian function.
 

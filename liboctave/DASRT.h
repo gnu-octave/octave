@@ -158,7 +158,7 @@ public:
 
   DASRT (void);
 
-  DASRT (const int& ng, const ColumnVector& x, const ColumnVector& xdot, 
+  DASRT (const ColumnVector& state, const ColumnVector& deriv,
 	 double time, DAERTFunc& f);
 
   ~DASRT (void) { }
@@ -167,8 +167,6 @@ public:
 
   void set_stop_time (double t);
   void clear_stop_time (void);
-  void set_ng (int the_ng);
-  int get_ng (void);
 
   DASRT_result integrate (const ColumnVector& tout);
 

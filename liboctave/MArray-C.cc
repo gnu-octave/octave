@@ -47,7 +47,7 @@ INSTANTIATE_MARRAY2_FRIENDS (Complex)
 
 template class MDiagArray2<Complex>;
 
-INSTANTIATE_MDIAGARRAY_FRIENDS (Complex)
+INSTANTIATE_MDIAGARRAY2_FRIENDS (Complex)
 
 /*
 ;;; Local Variables: ***

@@ -80,30 +80,6 @@ public:
   ComplexRowVector& operator += (const RowVector& a);
   ComplexRowVector& operator -= (const RowVector& a);
 
-  // row vector by scalar -> row vector operations
-
-  friend ComplexRowVector operator + (const ComplexRowVector& a, double s);
-  friend ComplexRowVector operator - (const ComplexRowVector& a, double s);
-  friend ComplexRowVector operator * (const ComplexRowVector& a, double s);
-  friend ComplexRowVector operator / (const ComplexRowVector& a, double s);
-
-  friend ComplexRowVector operator + (const RowVector& a, const Complex& s);
-  friend ComplexRowVector operator - (const RowVector& a, const Complex& s);
-  friend ComplexRowVector operator * (const RowVector& a, const Complex& s);
-  friend ComplexRowVector operator / (const RowVector& a, const Complex& s);
-
-  // scalar by row vector -> row vector operations
-
-  friend ComplexRowVector operator + (double s, const ComplexRowVector& a);
-  friend ComplexRowVector operator - (double s, const ComplexRowVector& a);
-  friend ComplexRowVector operator * (double s, const ComplexRowVector& a);
-  friend ComplexRowVector operator / (double s, const ComplexRowVector& a);
-
-  friend ComplexRowVector operator + (const Complex& s, const RowVector& a);
-  friend ComplexRowVector operator - (const Complex& s, const RowVector& a);
-  friend ComplexRowVector operator * (const Complex& s, const RowVector& a);
-  friend ComplexRowVector operator / (const Complex& s, const RowVector& a);
-
   // row vector by matrix -> row vector
 
   friend ComplexRowVector operator * (const ComplexRowVector& a,

@@ -45,7 +45,7 @@ INSTANTIATE_MARRAY2_FRIENDS (short)
 
 template class MDiagArray2<short>;
 
-INSTANTIATE_MDIAGARRAY_FRIENDS (short)
+INSTANTIATE_MDIAGARRAY2_FRIENDS (short)
 
 /*
 ;;; Local Variables: ***

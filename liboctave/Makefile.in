@@ -40,6 +40,10 @@ MX_OP_INC := mx-cdm-cm.h mx-cdm-cs.h mx-cdm-dm.h mx-cdm-m.h \
 	mx-dm-cs.h mx-dm-m.h mx-dm-s.h mx-m-cdm.h mx-m-cm.h \
 	mx-m-cs.h mx-m-dm.h mx-s-cdm.h mx-s-cm.h mx-s-dm.h
 
+VX_OP_INC := vx-ccv-s.h vx-crv-s.h vx-cs-cv.h vx-cs-rv.h vx-cv-cs.h \
+	vx-rv-cs.h vx-s-ccv.h vx-s-crv.h \
+	vx-rv-crv.h vx-cv-ccv.h vx-crv-rv.h vx-ccv-cv.h
+
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
 	NLP.h ODE.h ODEFunc.h Objective.h QP.h Quad.h Range.h base-de.h \
@@ -52,7 +56,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h \
 	pathsearch.h prog-args.h statdefs.h str-vec.h sun-utils.h \
 	sysdir.h systime.h syswait.h \
 	$(MATRIX_INC) \
-	$(MX_OP_INC)
+	$(MX_OP_INC) \
+	$(VX_OP_INC)
 
 TEMPLATE_SRC := Array.cc Array2.cc Array3.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MDiagArray2.cc base-lu.cc
@@ -75,6 +80,10 @@ MX_OP_SRC := mx-cdm-cm.cc mx-cdm-cs.cc mx-cdm-dm.cc mx-cdm-m.cc \
 	mx-dm-cs.cc mx-dm-m.cc mx-dm-s.cc mx-m-cdm.cc mx-m-cm.cc \
 	mx-m-cs.cc mx-m-dm.cc mx-s-cdm.cc mx-s-cm.cc mx-s-dm.cc
 
+VX_OP_SRC := vx-ccv-s.cc vx-crv-s.cc vx-cs-cv.cc vx-cs-rv.cc vx-cv-cs.cc \
+	vx-rv-cs.cc vx-s-ccv.cc vx-s-crv.cc \
+	vx-rv-crv.cc vx-cv-ccv.cc vx-crv-rv.cc vx-ccv-cv.cc
+
 SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
 	LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc cmd-edit.cc \
 	cmd-hist.cc data-conv.cc dir-ops.cc f2c-main.c file-ops.cc \
@@ -88,7 +97,8 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \
-	$(MX_OP_SRC)
+	$(MX_OP_SRC) \
+	$(VX_OP_SRC)
 
 EXTRAS := mx-inlines.cc
 

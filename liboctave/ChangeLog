@@ -1,5 +1,19 @@
 2000-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* vx-rv-crv.h, vx-cv-ccv.h, vx-crv-rv.h, vx-ccv-cv.h,
+	vx-rv-crv.cc, vx-cv-ccv.cc, vx-crv-rv.cc, vx-ccv-cv.cc:
+	More new files.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* vx-ccv-s.h, vx-crv-s.h, vx-cs-cv.h, vx-cs-rv.h, vx-cv-cs.h,
+	vx-rv-cs.h, vx-s-ccv.h, vx-s-crv.h, vx-ccv-s.cc, vx-crv-s.cc,
+	vx-cs-cv.cc, vx-cs-rv.cc, vx-cv-cs.cc, vx-rv-cs.cc, vx-s-ccv.cc,
+	vx-s-crv.cc:, New files.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* CRowVector.h, CRowVector.cc, CColVector.h, CColVector.cc:
+	Delete scalar by vector and vector by scalar binary ops.
+
 	* MArray-defs.h: More new macros to handle MDiagArray operators.
 	* dDiagMatrix.h, CDiagMatrix.h: Use the op-forwarding macros.
 

@@ -56,7 +56,7 @@ class boolMatrix;
  \
     R r (len); \
  \
-    for (size_t i = 0; i < len; i++) \
+    for (int i = 0; i < len; i++) \
       r.elem(i) = v.elem(i) OP s; \
  \
     return r; \
@@ -67,6 +67,9 @@ class boolMatrix;
   VS_BIN_OP (R, operator -, -, V, S) \
   VS_BIN_OP (R, operator *, *, V, S) \
   VS_BIN_OP (R, operator /, /, V, S)
+
+#define VS_OP_DECLS(R, V, S) \
+  VS_BIN_OP_DECLS(R, V, S)
 
 // scalar by vector by operations.
 
@@ -84,7 +87,7 @@ class boolMatrix;
  \
     R r (len); \
  \
-    for (size_t i = 0; i < len; i++) \
+    for (int i = 0; i < len; i++) \
       r.elem(i) = s OP v.elem(i); \
  \
     return r; \
@@ -95,6 +98,9 @@ class boolMatrix;
   SV_BIN_OP (R, operator -, -, S, V) \
   SV_BIN_OP (R, operator *, *, S, V) \
   SV_BIN_OP (R, operator /, /, S, V)
+
+#define SV_OP_DECLS(R, S, V) \
+  SV_BIN_OP_DECLS(R, S, V)
 
 // vector by vector operations.
 
@@ -119,7 +125,7 @@ class boolMatrix;
       { \
 	r.resize (v1_len); \
  \
-	for (size_t i = 0; i < v1_len; i++) \
+	for (int i = 0; i < v1_len; i++) \
 	  r.elem(i) = v1.elem(i) OP v2.elem(i); \
       } \
  \
@@ -132,7 +138,8 @@ class boolMatrix;
   VV_BIN_OP (R, product,    *, V1, V2) \
   VV_BIN_OP (R, quotient,   /, V1, V2)
 
-#endif
+#define VV_OP_DECLS(R, V1, V2) \
+  VV_BIN_OP_DECLS(R, V1, V2)
 
 // matrix by scalar operations.
 
@@ -749,6 +756,8 @@ operator * (const DM& dm, const M& m) \
 
 #define DMDM_OP_DECLS(R, DM1, DM2) \
   DMDM_BIN_OP_DECLS (R, DM1, DM2)
+
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -81,46 +81,6 @@ public:
   ComplexColumnVector& operator += (const ColumnVector& a);
   ComplexColumnVector& operator -= (const ColumnVector& a);
 
-  // column vector by scalar -> column vector operations
-
-  friend ComplexColumnVector operator + (const ComplexColumnVector& a,
-					 double s);
-  friend ComplexColumnVector operator - (const ComplexColumnVector& a,
-					 double s);
-  friend ComplexColumnVector operator * (const ComplexColumnVector& a,
-					 double s);
-  friend ComplexColumnVector operator / (const ComplexColumnVector& a,
-					 double s);
-
-  friend ComplexColumnVector operator + (const ColumnVector& a,
-					 const Complex& s);  
-  friend ComplexColumnVector operator - (const ColumnVector& a,
-					 const Complex& s);
-  friend ComplexColumnVector operator * (const ColumnVector& a,
-					 const Complex& s);
-  friend ComplexColumnVector operator / (const ColumnVector& a,
-					 const Complex& s);
-
-  // scalar by column vector -> column vector operations
-
-  friend ComplexColumnVector operator + (double s,
-					 const ComplexColumnVector& a); 
-  friend ComplexColumnVector operator - (double s,
-					 const ComplexColumnVector& a);
-  friend ComplexColumnVector operator * (double s,
-					 const ComplexColumnVector& a);
-  friend ComplexColumnVector operator / (double s,
-					 const ComplexColumnVector& a);
-
-  friend ComplexColumnVector operator + (const Complex& s,
-					 const ColumnVector& a); 
-  friend ComplexColumnVector operator - (const Complex& s,
-					 const ColumnVector& a);
-  friend ComplexColumnVector operator * (const Complex& s,
-					 const ColumnVector& a);
-  friend ComplexColumnVector operator / (const Complex& s,
-					 const ColumnVector& a);
-
   // matrix by column vector -> column vector operations
 
   friend ComplexColumnVector operator * (const ComplexMatrix& a,

@@ -80,9 +80,6 @@ public:
   ComplexRowVector& operator += (const RowVector& a);
   ComplexRowVector& operator -= (const RowVector& a);
 
-  ComplexRowVector& operator += (const ComplexRowVector& a);
-  ComplexRowVector& operator -= (const ComplexRowVector& a);
-
   // row vector by scalar -> row vector operations
 
   friend ComplexRowVector operator + (const ComplexRowVector& a, double s);
@@ -166,6 +163,8 @@ Complex operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
 // other operations
 
 ComplexRowVector linspace (const Complex& x1, const Complex& x2, int n);
+
+MARRAY_FORWARD_DEFS (MArray, ComplexRowVector, Complex)
 
 #endif
 

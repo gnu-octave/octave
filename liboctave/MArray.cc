@@ -170,6 +170,13 @@ operator - (const MArray<T>& a)
   return result;
 }
 
+template <class T>
+MArray<T>
+operator + (const MArray<T>& a)
+{
+  return a;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

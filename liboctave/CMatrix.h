@@ -271,6 +271,8 @@ SM_BOOL_OP_DECLS (Complex, ComplexMatrix)
 MM_CMP_OP_DECLS (ComplexMatrix, ComplexMatrix)
 MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix)
 
+MARRAY_FORWARD_DEFS (MArray2, ComplexMatrix, Complex)
+
 #endif
 
 /*

@@ -248,6 +248,8 @@ SM_BOOL_OP_DECLS (double, Matrix)
 MM_CMP_OP_DECLS (Matrix, Matrix)
 MM_BOOL_OP_DECLS (Matrix, Matrix)
 
+MARRAY_FORWARD_DEFS (MArray2, Matrix, double)
+
 #endif
 
 /*

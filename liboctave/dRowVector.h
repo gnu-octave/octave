@@ -106,6 +106,8 @@ Complex operator * (const RowVector& a, const ComplexColumnVector& b);
 
 RowVector linspace (double x1, double x2, int n);
 
+MARRAY_FORWARD_DEFS (MArray, RowVector, double)
+
 #endif
 
 /*

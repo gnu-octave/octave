@@ -1462,8 +1462,8 @@ Matrix::expm (void) const
   int minus_one_j = -1;
   for (int j = 7; j >= 0; j--)
     {
-      npp = (m * npp) + (m * padec[j]);
-      dpp = (m * dpp) + (m * (minus_one_j * padec[j]));
+      npp = m * npp + padec[j] * m;
+      dpp = m * dpp + (minus_one_j * padec[j]) * m;
       minus_one_j *= -1;
     }
   

@@ -30,72 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array2.h"
 
-#if defined (LTGT)
-#undef LTGT
-#endif
-
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-#define LTGT
-#else
-
-#define LTGT <>
-
-template <class T>
-class MArray2;
-
-template <typename T> MArray2<T>& 
-operator += (MArray2<T>& a, const T& s);
-
-template <typename T> MArray2<T>& 
-operator -= (MArray2<T>& a, const T& s);
-
-template <typename T> MArray2<T>& 
-operator += (MArray2<T>& a, const MArray2<T>& b);
-
-template <typename T> MArray2<T>& 
-operator -= (MArray2<T>& a, const MArray2<T>& b);
-
-template <typename T> MArray2<T> 
-operator + (const MArray2<T>& a, const T& s);
-
-template <typename T> MArray2<T> 
-operator - (const MArray2<T>& a, const T& s);
-
-template <typename T> MArray2<T> 
-operator * (const MArray2<T>& a, const T& s);
-
-template <typename T> MArray2<T> 
-operator / (const MArray2<T>& a, const T& s);
-
-template <typename T> MArray2<T> 
-operator + (const T& s, const MArray2<T>& a);
-
-template <typename T> MArray2<T> 
-operator - (const T& s, const MArray2<T>& a);
-
-template <typename T> MArray2<T> 
-operator * (const T& s, const MArray2<T>& a);
-
-template <typename T> MArray2<T> 
-operator / (const T& s, const MArray2<T>& a);
-
-template <typename T> MArray2<T> 
-operator + (const MArray2<T>& a, const MArray2<T>& b);
-
-template <typename T> MArray2<T> 
-operator - (const MArray2<T>& a, const MArray2<T>& b);
-
-template <typename T> MArray2<T> 
-product (const MArray2<T>& a, const MArray2<T>& b);
-
-template <typename T> MArray2<T> 
-quotient (const MArray2<T>& a, const MArray2<T>& b);
-
-template <typename T> MArray2<T> 
-operator - (const MArray2<T>& a);
-#endif
-
 // Two dimensional array with math ops.
+
+// But first, some preprocessor abuse...
+
+#include "MArray-defs.h"
+
+MARRAY_OPS_FORWARD_DECLS (MArray2)
 
 template <class T>
 class MArray2 : public Array2<T>
@@ -127,32 +68,16 @@ public:
   }
 
   MArray2<T> transpose (void) const { return Array2<T>::transpose (); }
-};
 
-#undef LTGT
+  // Currently, the OPS functions don't need to be friends, but that
+  // may change.
+
+  MARRAY_OPS_FRIEND_DECLS (MArray2)
+};
 
 extern void
 gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
 		     int op2_nr, int op2_nc);
-
-#define INSTANTIATE_MARRAY2_FRIENDS(T) \
-  template MArray2<T>& operator += (MArray2<T>& a, const T& s); \
-  template MArray2<T>& operator -= (MArray2<T>& a, const T& s); \
-  template MArray2<T>& operator += (MArray2<T>& a, const MArray2<T>& b); \
-  template MArray2<T>& operator -= (MArray2<T>& a, const MArray2<T>& b); \
-  template MArray2<T> operator + (const MArray2<T>& a, const T& s); \
-  template MArray2<T> operator - (const MArray2<T>& a, const T& s); \
-  template MArray2<T> operator * (const MArray2<T>& a, const T& s); \
-  template MArray2<T> operator / (const MArray2<T>& a, const T& s); \
-  template MArray2<T> operator + (const T& s, const MArray2<T>& a); \
-  template MArray2<T> operator - (const T& s, const MArray2<T>& a); \
-  template MArray2<T> operator * (const T& s, const MArray2<T>& a); \
-  template MArray2<T> operator / (const T& s, const MArray2<T>& a); \
-  template MArray2<T> operator + (const MArray2<T>& a, const MArray2<T>& b); \
-  template MArray2<T> operator - (const MArray2<T>& a, const MArray2<T>& b); \
-  template MArray2<T> product (const MArray2<T>& a, const MArray2<T>& b); \
-  template MArray2<T> quotient (const MArray2<T>& a, const MArray2<T>& b); \
-  template MArray2<T> operator - (const MArray2<T>& a);
 
 #endif
 

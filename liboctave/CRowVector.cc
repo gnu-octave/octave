@@ -270,50 +270,6 @@ ComplexRowVector::operator -= (const RowVector& a)
   return *this;
 }
 
-ComplexRowVector&
-ComplexRowVector::operator += (const ComplexRowVector& a)
-{
-  int len = length ();
-
-  int a_len = a.length ();
-
-  if (len != a_len)
-    {
-      gripe_nonconformant ("operator +=", len, a_len);
-      return *this;
-    }
-
-  if (len == 0)
-    return *this;
-
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  add2 (d, a.data (), len);
-  return *this;
-}
-
-ComplexRowVector&
-ComplexRowVector::operator -= (const ComplexRowVector& a)
-{
-  int len = length ();
-
-  int a_len = a.length ();
-
-  if (len != a_len)
-    {
-      gripe_nonconformant ("operator -=", len, a_len);
-      return *this;
-    }
-
-  if (len == 0)
-    return *this;
-
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  subtract2 (d, a.data (), len);
-  return *this;
-}
-
 // row vector by scalar -> row vector operations
 
 ComplexRowVector

@@ -100,6 +100,8 @@ private:
   ColumnVector (double *d, int l) : MArray<double> (d, l) { }
 };
 
+MARRAY_FORWARD_DEFS (MArray, ColumnVector, double)
+
 #endif
 
 /*

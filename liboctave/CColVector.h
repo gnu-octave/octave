@@ -81,9 +81,6 @@ public:
   ComplexColumnVector& operator += (const ColumnVector& a);
   ComplexColumnVector& operator -= (const ColumnVector& a);
 
-  ComplexColumnVector& operator += (const ComplexColumnVector& a);
-  ComplexColumnVector& operator -= (const ComplexColumnVector& a);
-
   // column vector by scalar -> column vector operations
 
   friend ComplexColumnVector operator + (const ComplexColumnVector& a,
@@ -189,6 +186,8 @@ private:
 
   ComplexColumnVector (Complex *d, int l) : MArray<Complex> (d, l) { }
 };
+
+MARRAY_FORWARD_DEFS (MArray, ComplexColumnVector, Complex)
 
 #endif
 

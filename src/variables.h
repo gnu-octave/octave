@@ -70,7 +70,7 @@ struct builtin_function
 
 extern void initialize_symbol_tables (void);
 
-extern int lookup (symbol_record *s, int exec_script = 1);
+extern bool lookup (symbol_record *s, int exec_script = 1);
 
 extern symbol_record *lookup_by_name (const string& nm, int exec_script = 1);
 
@@ -86,9 +86,9 @@ extern void link_to_builtin_or_function (symbol_record *sr);
 
 extern void force_link_to_function (const string&);
 
-extern int is_builtin_variable (const string&);
-extern int is_text_function_name (const string&);
-extern int is_globally_visible (const string&);
+extern bool is_builtin_variable (const string&);
+extern bool is_text_function_name (const string&);
+extern bool is_globally_visible (const string&);
 
 extern tree_fvc *is_valid_function (const tree_constant&, const string&,
 				    int warn = 0); 

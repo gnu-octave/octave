@@ -1,7 +1,7 @@
 // pt-fvc-base.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -59,17 +59,18 @@ public:
   virtual void bump_value (tree_expression::type);
 
   virtual tree_constant lookup_map_element (SLList<string>& list,
-					    int insert = 0, int silent = 0);
+					    bool insert = false,
+					    bool silent = false);
 
   virtual string fcn_file_name (void)
     { return string (); }
 
   virtual time_t time_parsed (void);
 
-  virtual int is_system_fcn_file (void) const
-    { return 0; }
+  virtual bool is_system_fcn_file (void) const
+    { return false; }
 
-  virtual int save (ostream& /* os */, int /* mark_as_global */ = 0,
+  virtual int save (ostream& /* os */, bool /* mark_as_global */ = false,
 		    int /* precision */ = 17);
 };
 

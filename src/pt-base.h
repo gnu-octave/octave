@@ -1,7 +1,7 @@
 // pt-base.h                                           -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -57,7 +57,7 @@ public:
 
 private:
   static int curr_print_indent_level;
-  static int beginning_of_line;
+  static bool beginning_of_line;
 };
 
 // Base class for the parse tree.

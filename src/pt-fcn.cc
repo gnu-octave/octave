@@ -1,7 +1,7 @@
 // pt-fcn.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -152,7 +152,7 @@ tree_function::mark_as_system_fcn_file (void)
     system_fcn_file = 0;
 }
 
-int
+bool
 tree_function::takes_varargs (void) const
 {
   return (param_list && param_list->takes_varargs ());
@@ -186,7 +186,7 @@ tree_function::octave_all_va_args (void)
   return retval;
 }
 
-int
+bool
 tree_function::takes_var_return (void) const
 {
   return (ret_list && ret_list->takes_varargs ());
@@ -207,7 +207,7 @@ tree_function::stash_function_name (const string& s)
 }
 
 tree_constant
-tree_function::eval (int print)
+tree_function::eval (bool print)
 {
   tree_constant retval;
 
@@ -248,7 +248,7 @@ clear_symbol_table (void *table)
 }
 
 Octave_object
-tree_function::eval (int /* print */, int nargout, const Octave_object& args)
+tree_function::eval (bool /* print */, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -325,7 +325,7 @@ tree_function::eval (int /* print */, int nargout, const Octave_object& args)
   {
     bind_nargin_and_nargout (nargin, nargout);
 
-    int echo_commands
+    bool echo_commands
       = (user_pref.echo_executing_commands & ECHO_FUNCTIONS);
 
     if (echo_commands)
@@ -333,7 +333,7 @@ tree_function::eval (int /* print */, int nargout, const Octave_object& args)
 
     // Evaluate the commands that make up the function.
 
-    int pf = ! user_pref.silent_functions;
+    bool pf = ! user_pref.silent_functions;
     tree_constant last_computed_value = cmd_list->eval (pf);
 
     if (echo_commands)

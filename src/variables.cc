@@ -99,7 +99,7 @@ initialize_symbol_tables (void)
 
 // Is this variable a builtin?
 
-int
+bool
 is_builtin_variable (const string& name)
 {
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
@@ -108,7 +108,7 @@ is_builtin_variable (const string& name)
 
 // Is this a text-style function?
 
-int
+bool
 is_text_function_name (const string& s)
 {
   symbol_record *sr = global_sym_tab->lookup (s);
@@ -117,7 +117,7 @@ is_text_function_name (const string& s)
 
 // Is this function globally in this scope?
 
-int
+bool
 is_globally_visible (const string& name)
 {
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
@@ -762,10 +762,10 @@ parse_fcn_file (int exec_script, const string& ff)
   return script_file_executed;
 }
 
-static int
+static bool
 load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 {
-  int script_file_executed = 0;
+  bool script_file_executed = false;
 
   string nm = sym_rec->name ();
 
@@ -799,10 +799,10 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
   return script_file_executed;
 }
 
-int
+bool
 lookup (symbol_record *sym_rec, int exec_script)
 {
-  int script_executed = 0;
+  bool script_executed = false;
 
   if (! sym_rec->is_linked_to_global ())
     {
@@ -1475,7 +1475,7 @@ bind_ans (const tree_constant& val, int print)
   // tree_simple_assignment_expression along with a flag to not delete
   // it seems to create a memory leak.  Hmm.
 
-  tree_simple_assignment_expression tmp_ass (ans_id, tmp, 0, 1);
+  tree_simple_assignment_expression tmp_ass (ans_id, tmp, false, true);
 
   tmp_ass.eval (print);
 }

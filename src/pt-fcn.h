@@ -1,7 +1,7 @@
 // pt-fcn.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -100,10 +100,10 @@ public:
 
   void mark_as_system_fcn_file (void);
 
-  int is_system_fcn_file (void) const
+  bool is_system_fcn_file (void) const
     { return system_fcn_file; }
 
-  int takes_varargs (void) const;
+  bool takes_varargs (void) const;
 
   void octave_va_start (void)
     { curr_va_arg_number = num_named_args; }
@@ -112,7 +112,7 @@ public:
 
   Octave_object octave_all_va_args (void);
 
-  int takes_var_return (void) const;
+  bool takes_var_return (void) const;
 
   void octave_vr_val (const tree_constant& val);
 
@@ -121,9 +121,9 @@ public:
   string function_name (void)
     { return fcn_name; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
   void traceback_error (void);
 
@@ -138,7 +138,7 @@ private:
   string file_name;
   string fcn_name;
   time_t t_parsed;
-  int system_fcn_file;
+  bool system_fcn_file;
   int num_named_args;
   Octave_object args_passed;
   int num_args_passed;

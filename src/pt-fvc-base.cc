@@ -1,7 +1,7 @@
 // pt-fvc-base.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -62,7 +62,7 @@ tree_fvc::bump_value (tree_expression::type)
 }
 
 tree_constant
-tree_fvc::lookup_map_element (SLList<string>&, int, int)
+tree_fvc::lookup_map_element (SLList<string>&, bool, bool)
 {
   static tree_constant retval;
 
@@ -85,7 +85,7 @@ tree_fvc::time_parsed (void)
 }
 
 int
-tree_fvc::save (ostream&, int, int)
+tree_fvc::save (ostream&, bool, int)
 {
   panic_impossible ();
   return 0;

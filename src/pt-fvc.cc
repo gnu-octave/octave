@@ -1,7 +1,7 @@
 // pt-fvc.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -47,44 +47,48 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // But first, some extra functions used by the tree classes.
 
-static int
+static bool
 any_element_less_than (const Matrix& a, double val)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       if (a.elem (i, j) < val)
-	return 1;
-  return 0;
+	return true;
+
+  return false;
 }
 
-static int
+static bool
 any_element_greater_than (const Matrix& a, double val)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       if (a.elem (i, j) > val)
-	return 1;
-  return 0;
+	return true;
+
+  return false;
 }
 
 // Make sure that all arguments have values.
 
 // Are any of the arguments `:'?
 
-static int
+static bool
 any_arg_is_magic_colon (const Octave_object& args)
 {
   int nargin = args.length ();
 
   for (int i = 0; i < nargin; i++)
     if (args(i).is_magic_colon ())
-	return 1;
+	return true;
 
-  return 0;
+  return false;
 }
 
 // Symbols from the symbol table.
@@ -276,7 +280,7 @@ tree_identifier::assign (SLList<string> list, tree_constant& rhs,
   return retval;
 }
 
-int
+bool
 tree_identifier::is_defined (void)
 {
   return (sym && sym->is_defined ());
@@ -306,6 +310,7 @@ tree_identifier::eval_undefined_error (void)
 {
   int l = line ();
   int c = column ();
+
   if (l == -1 && c == -1)
     ::error ("`%s' undefined", name ().c_str ());
   else
@@ -329,7 +334,7 @@ tree_identifier::eval_undefined_error (void)
 //     over .m files.
 
 tree_fvc *
-tree_identifier::do_lookup (int& script_file_executed, int exec_script)
+tree_identifier::do_lookup (bool& script_file_executed, bool exec_script)
 {
   script_file_executed = lookup (sym, exec_script);
 
@@ -356,14 +361,14 @@ tree_identifier::mark_as_formal_parameter (void)
 }
 
 tree_constant
-tree_identifier::eval (int print)
+tree_identifier::eval (bool print)
 {
   tree_constant retval;
 
   if (error_state)
     return retval;
 
-  int script_file_executed = 0;
+  bool script_file_executed = false;
 
   tree_fvc *object_to_eval = do_lookup (script_file_executed);
 
@@ -382,7 +387,7 @@ tree_identifier::eval (int print)
 		retval = tmp(0);
 	    }
 	  else
-	    retval = object_to_eval->eval (0);
+	    retval = object_to_eval->eval (false);
 	}
       else
 	eval_undefined_error ();
@@ -400,14 +405,14 @@ tree_identifier::eval (int print)
 }
 
 Octave_object
-tree_identifier::eval (int print, int nargout, const Octave_object& args)
+tree_identifier::eval (bool print, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
   if (error_state)
     return retval;
 
-  int script_file_executed = 0;
+  bool script_file_executed = false;
 
   tree_fvc *object_to_eval = do_lookup (script_file_executed);
 
@@ -514,7 +519,7 @@ tree_indirect_ref::assign (tree_constant& t, const Octave_object& args)
 }
 
 tree_constant
-tree_indirect_ref::eval (int print)
+tree_indirect_ref::eval (bool print)
 {
   tree_constant retval;
 
@@ -527,7 +532,7 @@ tree_indirect_ref::eval (int print)
     }
   else
     {
-      int script_file_executed;
+      bool script_file_executed;
 
       tree_fvc *object_to_eval = id->do_lookup (script_file_executed, 0);
 
@@ -546,7 +551,7 @@ tree_indirect_ref::eval (int print)
 }
 
 Octave_object
-tree_indirect_ref::eval (int print, int nargout, const Octave_object& args)
+tree_indirect_ref::eval (bool print, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -559,7 +564,7 @@ tree_indirect_ref::eval (int print, int nargout, const Octave_object& args)
     }
   else
     {
-      int script_file_executed;
+      bool script_file_executed;
 
       tree_fvc *object_to_eval = id->do_lookup (script_file_executed, 0);
 
@@ -629,7 +634,7 @@ tree_builtin::tree_builtin (Octave_builtin_fcn g_fcn, const string& nm)
 }
 
 tree_constant
-tree_builtin::eval (int /* print */)
+tree_builtin::eval (bool /* print */)
 {
   tree_constant retval;
 
@@ -664,7 +669,7 @@ tree_builtin::eval (int /* print */)
 
 static tree_constant
 apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
-		  int /* print */)
+		  bool /* print */)
 {
   tree_constant retval;
 
@@ -750,7 +755,7 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
 }
 
 Octave_object
-tree_builtin::eval (int /* print */, int nargout, const Octave_object& args)
+tree_builtin::eval (bool /* print */, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 

@@ -1,7 +1,7 @@
-// tree-exp.h                                      -*- C++ -*-
+// pt-exp.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -52,12 +52,12 @@ tree_prefix_expression : public tree_expression
 
   ~tree_prefix_expression (void);
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
   void eval_error (void);
 
-  int is_prefix_expression (void) const
-    { return 1; }
+  bool is_prefix_expression (void) const
+    { return true; }
 
   char *oper (void) const;
 
@@ -82,7 +82,7 @@ tree_postfix_expression : public tree_expression
 
   ~tree_postfix_expression (void);
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
   void eval_error (void);
 
@@ -110,7 +110,7 @@ tree_unary_expression : public tree_expression
   ~tree_unary_expression (void)
     { delete op; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
   void eval_error (void);
 
@@ -141,7 +141,7 @@ tree_binary_expression : public tree_expression
       delete op2;
     }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
   void eval_error (void);
 
@@ -160,7 +160,7 @@ class
 tree_simple_assignment_expression : public tree_expression
 {
 private:
-  void init (int plhs, int ans_assign)
+  void init (bool plhs, bool ans_assign)
     {
       etype = tree_expression::assignment;
       lhs_idx_expr = 0;
@@ -172,19 +172,22 @@ private:
     }
 
  public:
-  tree_simple_assignment_expression (int plhs = 0, int ans_assign = 0,
+  tree_simple_assignment_expression (bool plhs = false,
+				     bool ans_assign = false,
 				     int l = -1, int c = -1)
     : tree_expression (l, c)
       { init (plhs, ans_assign); }
 
   tree_simple_assignment_expression (tree_identifier *i,
 				     tree_expression *r,
-				     int plhs = 0, int ans_assign = 0,
+				     bool plhs = false,
+				     bool ans_assign = false,
 				     int l = -1, int c = -1);
 
   tree_simple_assignment_expression (tree_indirect_ref *i,
 				     tree_expression *r,
-				     int plhs = 0, int ans_assign = 0,
+				     bool plhs = false,
+				     bool ans_assign = false,
 				     int l = -1, int c = -1)
     : tree_expression (l, c)
       {
@@ -195,22 +198,23 @@ private:
 
   tree_simple_assignment_expression (tree_index_expression *idx_expr,
 				     tree_expression *r,
-				     int plhs = 0, int ans_assign = 0,
+				     bool plhs = false,
+				     bool ans_assign = false,
 				     int l = -1, int c = -1);
 
   ~tree_simple_assignment_expression (void);
 
-  int left_hand_side_is_identifier_only (void);
+  bool left_hand_side_is_identifier_only (void);
 
   tree_identifier *left_hand_side_id (void);
 
-  int is_ans_assign (void)
+  bool is_ans_assign (void)
     { return ans_ass; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  int is_assignment_expression (void) const
-    { return 1; }
+  bool is_assignment_expression (void) const
+    { return true; }
 
   void eval_error (void);
 
@@ -221,8 +225,8 @@ private:
   tree_indirect_ref *lhs;
   tree_argument_list *index;
   tree_expression *rhs;
-  int preserve;
-  int ans_ass;
+  bool preserve;
+  bool ans_ass;
 };
 
 // Colon expressions.
@@ -247,11 +251,11 @@ tree_colon_expression : public tree_expression
       delete op3;
     }
 
-  int is_range_constant (void) const;
+  bool is_range_constant (void) const;
 
   tree_colon_expression *chain (tree_expression *t);
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
   void eval_error (const char *s);
 

@@ -1,7 +1,7 @@
 // pt-const.h                                        -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -54,269 +54,269 @@ private:
 
   class
   tree_constant_rep
-    {
-      private:
+  {
+  public:
 
-      friend class tree_constant;
+    enum constant_type
+      {
+	unknown_constant,
+	scalar_constant,
+	matrix_constant,
+	complex_scalar_constant,
+	complex_matrix_constant,
+	char_matrix_constant,
+	char_matrix_constant_str,
+	range_constant,
+	map_constant,
+	magic_colon,
+	all_va_args,
+      };
+
+    enum force_orient
+      {
+	no_orient,
+	row_orient,
+	column_orient,
+      };
 
-	enum constant_type
-	  {
-	    unknown_constant,
-	    scalar_constant,
-	    matrix_constant,
-	    complex_scalar_constant,
-	    complex_matrix_constant,
-	    char_matrix_constant,
-	    char_matrix_constant_str,
-	    range_constant,
-	    map_constant,
-	    magic_colon,
-	    all_va_args,
-	  };
+    tree_constant_rep (void);
 
-	enum force_orient
-	  {
-	    no_orient,
-	    row_orient,
-	    column_orient,
-	  };
+    tree_constant_rep (double d);
+    tree_constant_rep (const Matrix& m);
+    tree_constant_rep (const DiagMatrix& d);
+    tree_constant_rep (const RowVector& v, int pcv);
+    tree_constant_rep (const ColumnVector& v, int pcv);
 
-	tree_constant_rep (void);
+    tree_constant_rep (const Complex& c);
+    tree_constant_rep (const ComplexMatrix& m);
+    tree_constant_rep (const ComplexDiagMatrix& d);
+    tree_constant_rep (const ComplexRowVector& v, int pcv);
+    tree_constant_rep (const ComplexColumnVector& v, int pcv);
+
+    tree_constant_rep (const char *s);
+    tree_constant_rep (const string& s);
+    tree_constant_rep (const string_vector& s);
+    tree_constant_rep (const charMatrix& chm, bool is_string);
+
+    tree_constant_rep (double base, double limit, double inc);
+    tree_constant_rep (const Range& r);
+
+    tree_constant_rep (const Octave_map& m);
+
+    tree_constant_rep (tree_constant_rep::constant_type t);
+
+    tree_constant_rep (const tree_constant_rep& t);
+
+    ~tree_constant_rep (void);
+
+    void *operator new (size_t size);
+    void operator delete (void *p, size_t size);
+
+    int rows (void) const;
+    int columns (void) const;
+
+    bool is_defined (void) const
+      { return type_tag != unknown_constant; }
+
+    bool is_undefined (void) const
+      { return type_tag == unknown_constant; }
+
+    bool is_unknown (void) const
+      { return type_tag == unknown_constant; }
+
+    bool is_real_scalar (void) const
+      { return type_tag == scalar_constant; }
+
+    bool is_real_matrix (void) const
+      { return type_tag == matrix_constant; }
+
+    bool is_complex_scalar (void) const
+      { return type_tag == complex_scalar_constant; }
+
+    bool is_complex_matrix (void) const
+      { return type_tag == complex_matrix_constant; }
+
+    bool is_char_matrix (void) const
+      { return type_tag == char_matrix_constant; }
+
+    bool is_string (void) const
+      { return type_tag == char_matrix_constant_str; }
+
+    bool is_range (void) const
+      { return type_tag == range_constant; }
+
+    bool is_map (void) const
+      { return type_tag == map_constant; }
 
-	tree_constant_rep (double d);
-	tree_constant_rep (const Matrix& m);
-	tree_constant_rep (const DiagMatrix& d);
-	tree_constant_rep (const RowVector& v, int pcv);
-	tree_constant_rep (const ColumnVector& v, int pcv);
+    bool is_magic_colon (void) const
+      { return type_tag == magic_colon; }
 
-	tree_constant_rep (const Complex& c);
-	tree_constant_rep (const ComplexMatrix& m);
-	tree_constant_rep (const ComplexDiagMatrix& d);
-	tree_constant_rep (const ComplexRowVector& v, int pcv);
-	tree_constant_rep (const ComplexColumnVector& v, int pcv);
-
-	tree_constant_rep (const char *s);
-	tree_constant_rep (const string& s);
-	tree_constant_rep (const string_vector& s);
-	tree_constant_rep (const charMatrix& chm, int is_string);
-
-	tree_constant_rep (double base, double limit, double inc);
-	tree_constant_rep (const Range& r);
+    bool is_all_va_args (void) const
+      { return type_tag == all_va_args; }
 
-	tree_constant_rep (const Octave_map& m);
-
-	tree_constant_rep (tree_constant_rep::constant_type t);
-
-	tree_constant_rep (const tree_constant_rep& t);
-
-	~tree_constant_rep (void);
-
-	void *operator new (size_t size);
-	void operator delete (void *p, size_t size);
-
-	int rows (void) const;
-	int columns (void) const;
-
-	int is_defined (void) const
-	  { return type_tag != unknown_constant; }
-
-	int is_undefined (void) const
-	  { return type_tag == unknown_constant; }
-
-	int is_unknown (void) const
-	  { return type_tag == unknown_constant; }
-
-	int is_real_scalar (void) const
-	  { return type_tag == scalar_constant; }
-
-	int is_real_matrix (void) const
-	  { return type_tag == matrix_constant; }
-
-	int is_complex_scalar (void) const
-	  { return type_tag == complex_scalar_constant; }
-
-	int is_complex_matrix (void) const
-	  { return type_tag == complex_matrix_constant; }
-
-	int is_char_matrix (void) const
-	  { return type_tag == char_matrix_constant; }
-
-	int is_string (void) const
-	  { return type_tag == char_matrix_constant_str; }
+    tree_constant all (void) const;
+    tree_constant any (void) const;
+
+    bool is_real_type (void) const
+      {
+	return (type_tag == scalar_constant
+		|| type_tag == matrix_constant
+		|| type_tag == range_constant
+		|| type_tag == char_matrix_constant
+		|| type_tag == char_matrix_constant_str);
+      }
 
-	int is_range (void) const
-	  { return type_tag == range_constant; }
+    bool is_complex_type (void) const
+      {
+	return (type_tag == complex_matrix_constant
+		|| type_tag == complex_scalar_constant);
+      }
 
-	int is_map (void) const
-	  { return type_tag == map_constant; }
+    // Would be nice to get rid of the next four functions:
 
-	int is_magic_colon (void) const
-	  { return type_tag == magic_colon; }
+    bool is_scalar_type (void) const
+      {
+	return (type_tag == scalar_constant
+		|| type_tag == complex_scalar_constant);
+      }
 
-	int is_all_va_args (void) const
-	  { return type_tag == all_va_args; }
+    bool is_matrix_type (void) const
+      {
+	return (type_tag == matrix_constant
+		|| type_tag == complex_matrix_constant);
+      }
 
-	tree_constant all (void) const;
-	tree_constant any (void) const;
+    bool is_numeric_type (void) const
+      {
+	return (type_tag == scalar_constant
+		|| type_tag == matrix_constant
+		|| type_tag == complex_matrix_constant
+		|| type_tag == complex_scalar_constant);
+      }
 
-	int is_real_type (void) const
-	  {
-	    return (type_tag == scalar_constant
-		    || type_tag == matrix_constant
-		    || type_tag == range_constant
-		    || type_tag == char_matrix_constant
-		    || type_tag == char_matrix_constant_str);
-	  }
+    bool valid_as_scalar_index (void) const;
+    bool valid_as_zero_index (void) const;
 
-	int is_complex_type (void) const
-	  {
-	    return (type_tag == complex_matrix_constant
-		    || type_tag == complex_scalar_constant);
-	  }
+    bool is_true (void) const;
 
-	// Would be nice to get rid of the next four functions:
+    bool is_empty (void) const
+      {
+	return ((! (is_magic_colon ()
+		    || is_all_va_args ()
+		    || is_unknown ()))
+		&& (rows () == 0
+		    || columns () == 0));
+      }
 
-	int is_scalar_type (void) const
-	  {
-	    return (type_tag == scalar_constant
-		    || type_tag == complex_scalar_constant);
-	  }
+    double double_value (bool frc_str_conv = false) const;
+    Matrix matrix_value (bool frc_str_conv = false) const;
+    Complex complex_value (bool frc_str_conv = false) const;
+    ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const;
+    charMatrix char_matrix_value (bool frc_str_conv = false) const;
+    charMatrix all_strings (void) const;
+    string string_value (void) const;
+    Range range_value (void) const;
+    Octave_map map_value (void) const;
 
-	int is_matrix_type (void) const
-	  {
-	    return (type_tag == matrix_constant
-		    || type_tag == complex_matrix_constant);
-	  }
+    tree_constant& lookup_map_element (const string& name,
+				       bool insert = false,
+				       bool silent = false);
 
-	int is_numeric_type (void) const
-	  {
-	    return (type_tag == scalar_constant
-		    || type_tag == matrix_constant
-		    || type_tag == complex_matrix_constant
-		    || type_tag == complex_scalar_constant);
-	  }
+    ColumnVector vector_value (bool frc_str_conv = false,
+			       bool frc_vec_conv = false) const;
 
-	int valid_as_scalar_index (void) const;
-	int valid_as_zero_index (void) const;
+    ComplexColumnVector
+    complex_vector_value (bool frc_str_conv = false,
+			  bool frc_vec_conv = false) const;
 
-	int is_true (void) const;
+    tree_constant convert_to_str (void) const;
 
-	int is_empty (void) const
-	  {
-	    return ((! (is_magic_colon ()
-			|| is_all_va_args ()
-			|| is_unknown ()))
-		    && (rows () == 0
-			|| columns () == 0));
-	  }
+    void convert_to_row_or_column_vector (void);
 
-	double double_value (int frc_str_conv = 0) const;
-	Matrix matrix_value (int frc_str_conv = 0) const;
-	Complex complex_value (int frc_str_conv = 0) const;
-	ComplexMatrix complex_matrix_value (int frc_str_conv = 0) const;
-	charMatrix char_matrix_value (int frc_str_conv = 0) const;
-	charMatrix all_strings (void) const;
-        string string_value (void) const;
-	Range range_value (void) const;
-	Octave_map map_value (void) const;
+    void bump_value (tree_expression::type);
 
-	tree_constant& lookup_map_element (const string& name,
-					   int insert = 0,
-					   int silent = 0);
+    void resize (int i, int j);
+    void resize (int i, int j, double val);
 
-	ColumnVector vector_value (int frc_str_conv = 0,
-				   int frc_vec_conv = 0) const;
+    void stash_original_text (const string& s);
 
-	ComplexColumnVector complex_vector_value (int frc_str_conv = 0,
-						  int frc_vec_conv = 0) const;
+    void maybe_mutate (void);
 
-	tree_constant convert_to_str (void) const;
+    void print (void);
+    void print (ostream& os);
 
-	void convert_to_row_or_column_vector (void);
+    void print_code (ostream& os);
 
-	void bump_value (tree_expression::type);
+    void gripe_wrong_type_arg (const char *name,
+			       const tree_constant_rep& tcr) const;
 
-	void resize (int i, int j);
-	void resize (int i, int j, double val);
+    char *type_as_string (void) const;
 
-	void stash_original_text (const string& s);
+    // Binary and unary operations.
 
-	void maybe_mutate (void);
+    friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
+				       tree_expression::type t);
 
-	void print (void);
-	void print (ostream& os);
+    friend tree_constant do_unary_op (tree_constant& a,
+				      tree_expression::type t);
 
-	void print_code (ostream& os);
+    // We want to eliminate this.
 
-	void gripe_wrong_type_arg (const char *name,
-				   const tree_constant_rep& tcr) const;
+    constant_type const_type (void) const { return type_tag; }
 
-	char *type_as_string (void) const;
+    // We want to get rid of these too:
 
-	// Binary and unary operations.
+    void force_numeric (bool frc_str_conv = false);
+    tree_constant make_numeric (bool frc_str_conv = false) const;
 
-	friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
-					   tree_expression::type t);
+    // But not this.
 
-	friend tree_constant do_unary_op (tree_constant& a,
-					  tree_expression::type t);
+    void convert_to_matrix_type (bool make_complex);
 
-	// We want to eliminate this.
+    // Indexing and assignment.
 
-	constant_type const_type (void) const { return type_tag; }
+    void clear_index (void);
 
-	// We want to get rid of these too:
+    // void set_index (double d);
+    void set_index (const Range& r);
+    void set_index (const ColumnVector& v);
+    void set_index (const Matrix& m);
+    void set_index (char c);
 
-	void force_numeric (int frc_str_conv = 0);
-	tree_constant make_numeric (int frc_str_conv = 0) const;
+    void set_index (const Octave_object& args,
+		    bool rhs_is_complex = false);
 
-	// But not this.
+    tree_constant do_index (const Octave_object& args);
 
-	void convert_to_matrix_type (int make_complex);
+    void maybe_widen (constant_type t);
 
-	// Indexing and assignment.
+    void assign (tree_constant& rhs, const Octave_object& args);
 
-	void clear_index (void);
+    bool print_as_scalar (void);
 
-	// void set_index (double d);
-	void set_index (const Range& r);
-	void set_index (const ColumnVector& v);
-	void set_index (const Matrix& m);
-	void set_index (char c);
+    bool print_as_structure (void);
 
-	void set_index (const Octave_object& args, int rhs_is_complex = 0);
+    // Data.
 
-	tree_constant do_index (const Octave_object& args);
+    union
+      {
+	double scalar;			// A real scalar constant.
+	Matrix *matrix;			// A real matrix constant.
+	Complex *complex_scalar;	// A real scalar constant.
+	ComplexMatrix *complex_matrix;	// A real matrix constant.
+	charMatrix *char_matrix;	// A character string constant.
+	Range *range;			// A set of evenly spaced values.
+	Octave_map *a_map;		// An associative array.
 
-	void maybe_widen (constant_type t);
+	tree_constant_rep *freeptr;	// For custom memory management.
+      };
 
-	void assign (tree_constant& rhs, const Octave_object& args);
+    constant_type type_tag;
 
-	int print_as_scalar (void);
+    int count;
 
-	int print_as_structure (void);
-
-	// Data.
-
-	union
-	  {
-	    double scalar;		    // A real scalar constant.
-	    Matrix *matrix;		    // A real matrix constant.
-	    Complex *complex_scalar;	    // A real scalar constant.
-	    ComplexMatrix *complex_matrix;  // A real matrix constant.
-	    charMatrix *char_matrix;	    // A character string constant.
-	    Range *range;		    // A set of evenly spaced values.
-	    Octave_map *a_map;	      	    // An associative array.
-
-	    tree_constant_rep *freeptr;     // For custom memory management.
-	  };
-
-	constant_type type_tag;
-
-	int count;
-
-	string orig_text;
-    };
+    string orig_text;
+  };
 
   union
     {
@@ -398,7 +398,7 @@ public:
     : tree_fvc (l, c)
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
-  tree_constant (const charMatrix& chm, int is_string = 0) : tree_fvc ()
+  tree_constant (const charMatrix& chm, bool is_string = false) : tree_fvc ()
     { rep = new tree_constant_rep (chm, is_string); rep->count = 1; }
 
   tree_constant (double base, double limit, double inc) : tree_fvc ()
@@ -472,7 +472,7 @@ public:
 
   // Type.  It would be nice to eliminate the need for this.
 
-  int is_constant (void) const { return 1; }
+  bool is_constant (void) const { return true; }
 
   // Size.
 
@@ -483,22 +483,22 @@ public:
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().
 
-  int is_defined (void) const { return rep->is_defined (); }
-  int is_undefined (void) const { return rep->is_undefined (); }
+  bool is_defined (void) const { return rep->is_defined (); }
+  bool is_undefined (void) const { return rep->is_undefined (); }
 
   // Is this constant a particular type, or does it belong to a
   // particular class of types?
 
-  int is_unknown (void) const { return rep->is_unknown (); }
-  int is_real_scalar (void) const { return rep->is_real_scalar (); }
-  int is_real_matrix (void) const { return rep->is_real_matrix (); }
-  int is_complex_scalar (void) const { return rep->is_complex_scalar (); }
-  int is_complex_matrix (void) const { return rep->is_complex_matrix (); }
-  int is_string (void) const { return rep->is_string (); }
-  int is_range (void) const { return rep->is_range (); }
-  int is_map (void) const { return rep->is_map (); }
-  int is_magic_colon (void) const { return rep->is_magic_colon (); }
-  int is_all_va_args (void) const { return rep->is_all_va_args (); }
+  bool is_unknown (void) const { return rep->is_unknown (); }
+  bool is_real_scalar (void) const { return rep->is_real_scalar (); }
+  bool is_real_matrix (void) const { return rep->is_real_matrix (); }
+  bool is_complex_scalar (void) const { return rep->is_complex_scalar (); }
+  bool is_complex_matrix (void) const { return rep->is_complex_matrix (); }
+  bool is_string (void) const { return rep->is_string (); }
+  bool is_range (void) const { return rep->is_range (); }
+  bool is_map (void) const { return rep->is_map (); }
+  bool is_magic_colon (void) const { return rep->is_magic_colon (); }
+  bool is_all_va_args (void) const { return rep->is_all_va_args (); }
 
   // Are any or all of the elements in this constant nonzero?
 
@@ -507,34 +507,34 @@ public:
 
   // Other type stuff.
 
-  int is_real_type (void) const { return rep->is_real_type (); }
+  bool is_real_type (void) const { return rep->is_real_type (); }
 
-  int is_complex_type (void) const { return rep->is_complex_type (); }
+  bool is_complex_type (void) const { return rep->is_complex_type (); }
 
-  int is_scalar_type (void) const { return rep->is_scalar_type (); }
-  int is_matrix_type (void) const { return rep->is_matrix_type (); }
+  bool is_scalar_type (void) const { return rep->is_scalar_type (); }
+  bool is_matrix_type (void) const { return rep->is_matrix_type (); }
 
-  int is_numeric_type (void) const
+  bool is_numeric_type (void) const
     { return rep->is_numeric_type (); }
 
-  int valid_as_scalar_index (void) const
+  bool valid_as_scalar_index (void) const
     { return rep->valid_as_scalar_index (); }
 
-  int valid_as_zero_index (void) const
+  bool valid_as_zero_index (void) const
     { return rep->valid_as_zero_index (); }
 
   // Does this constant correspond to a truth value?
 
-  int is_true (void) const { return rep->is_true (); }
+  bool is_true (void) const { return rep->is_true (); }
 
   // Is at least one of the dimensions of this constant zero?
 
-  int is_empty (void) const
+  bool is_empty (void) const
     { return rep->is_empty (); }
 
   // Are the dimensions of this constant zero by zero?
 
-  int is_zero_by_zero (void) const
+  bool is_zero_by_zero (void) const
     {
       return ((! (is_magic_colon () || is_all_va_args () || is_unknown ()))
 	      && rows () == 0 && columns () == 0);
@@ -542,19 +542,19 @@ public:
 
   // Values.
 
-  double double_value (int frc_str_conv = 0) const
+  double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
 
-  Matrix matrix_value (int frc_str_conv = 0) const
+  Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
 
-  Complex complex_value (int frc_str_conv = 0) const
+  Complex complex_value (bool frc_str_conv = false) const
     { return rep->complex_value (frc_str_conv); }
 
-  ComplexMatrix complex_matrix_value (int frc_str_conv = 0) const
+  ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const
     { return rep->complex_matrix_value (frc_str_conv); }
 
-  charMatrix char_matrix_value (int frc_str_conv = 0) const
+  charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }
 
   charMatrix all_strings (void) const
@@ -568,18 +568,21 @@ public:
 
   Octave_map map_value (void) const;
 
-  tree_constant lookup_map_element (const string& ref, int insert = 0,
-				    int silent = 0);
+  tree_constant lookup_map_element (const string& ref,
+				    bool insert = false,
+				    bool silent = false);
 
   tree_constant lookup_map_element (SLList<string>& list,
-				    int insert = 0, int silent = 0);
+				    bool insert = false,
+				    bool silent = false);
 
-  ColumnVector vector_value (int /* frc_str_conv */ = 0,
-			     int /* frc_vec_conv */ = 0) const 
+  ColumnVector vector_value (bool /* frc_str_conv */ = false,
+			     bool /* frc_vec_conv */ = false) const 
     { return rep->vector_value (); }
 
-  ComplexColumnVector complex_vector_value (int /* frc_str_conv */ = 0,
-					    int /* frc_vec_conv */ = 0) const
+  ComplexColumnVector
+  complex_vector_value (bool /* frc_str_conv */ = false,
+			bool /* frc_vec_conv */ = false) const
     { return rep->complex_vector_value (); }
 
   // Binary and unary operations.
@@ -617,14 +620,14 @@ public:
   void print (void);
   void print (ostream& os) { rep->print (os); }
 
-  void print_with_name (const string& name, int print_padding = 1);
+  void print_with_name (const string& name, bool print_padding = true);
   void print_with_name (ostream& os, const string& name,
-			int print_padding = 1);
+			bool print_padding = true);
 
   // Evaluate this constant, possibly converting complex to real, or
   // matrix to scalar, etc.
 
-  tree_constant eval (int print_result)
+  tree_constant eval (bool print_result)
     {
       if (print_result)
 	{
@@ -635,7 +638,7 @@ public:
       return *this;
     }
 
-  Octave_object eval (int, int, const Octave_object&);
+  Octave_object eval (bool, int, const Octave_object&);
 
   // Store the original text corresponding to this constant for later
   // pretty printing.
@@ -663,17 +666,17 @@ private:
   tree_constant_rep::constant_type const_type (void) const
     { return rep->const_type (); }
 
-  void convert_to_matrix_type (int make_complex)
+  void convert_to_matrix_type (bool make_complex)
     { rep->convert_to_matrix_type (make_complex); }
 
   // Can we make these go away?
 
   // These need better names, since a range really is a numeric type.
 
-  void force_numeric (int frc_str_conv = 0)
+  void force_numeric (bool frc_str_conv = false)
     { rep->force_numeric (frc_str_conv); }
 
-  tree_constant make_numeric (int frc_str_conv = 0) const
+  tree_constant make_numeric (bool frc_str_conv = false) const
     {
       if (is_numeric_type ())
 	return *this;
@@ -681,9 +684,9 @@ private:
 	return rep->make_numeric (frc_str_conv);
     }
 
-  int print_as_scalar (void) { return rep->print_as_scalar (); }
+  bool print_as_scalar (void) { return rep->print_as_scalar (); }
 
-  int print_as_structure (void) { return rep->print_as_structure (); }
+  bool print_as_structure (void) { return rep->print_as_structure (); }
 };
 
 #endif

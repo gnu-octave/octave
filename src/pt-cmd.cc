@@ -1,7 +1,7 @@
 // pt-cmd.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -56,7 +56,7 @@ int returning = 0;
 #include "variables.h"
 
 // Decide if it's time to quit a for or while loop.
-static inline int
+static inline bool
 quit_loop_now (void)
 {
   // Maybe handle `continue N' someday...
@@ -64,7 +64,7 @@ quit_loop_now (void)
   if (continuing)
     continuing--;
 
-  int quit = (returning || breaking || continuing);
+  bool quit = (returning || breaking || continuing);
 
   if (breaking)
     breaking--;
@@ -212,13 +212,13 @@ tree_for_command::~tree_for_command (void)
 
 inline void
 tree_for_command::do_for_loop_once (tree_return_list *lst,
-				    const Octave_object& rhs, int& quit)
+				    const Octave_object& rhs, bool& quit)
 {
-  quit = 0;
+  quit = false;
 
   tree_oct_obj *tmp = new tree_oct_obj (rhs);
   tree_multi_assignment_expression tmp_ass (lst, tmp, 1);
-  tmp_ass.eval (0);
+  tmp_ass.eval (false);
 
   if (error_state)
     {
@@ -232,7 +232,7 @@ tree_for_command::do_for_loop_once (tree_return_list *lst,
       if (error_state)
 	{
 	  eval_error ();
-	  quit = 1;
+	  quit = true;
 	  return;
 	}
     }
@@ -242,13 +242,13 @@ tree_for_command::do_for_loop_once (tree_return_list *lst,
 
 inline void
 tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
-				    const tree_constant& rhs, int& quit)
+				    const tree_constant& rhs, bool& quit)
 {
-  quit = 0;
+  quit = false;
 
   tree_constant *tmp = new tree_constant (rhs);
-  tree_simple_assignment_expression tmp_ass (idx_expr, tmp, 1);
-  tmp_ass.eval (0);
+  tree_simple_assignment_expression tmp_ass (idx_expr, tmp, true);
+  tmp_ass.eval (false);
 
   if (error_state)
     {
@@ -262,7 +262,7 @@ tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
       if (error_state)
 	{
 	  eval_error ();
-	  quit = 1;
+	  quit = true;
 	  return;
 	}
     }
@@ -272,9 +272,9 @@ tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
 
 inline void
 tree_for_command::do_for_loop_once (tree_identifier *ident,
-				    tree_constant& rhs, int& quit)
+				    tree_constant& rhs, bool& quit)
 {
-  quit = 0;
+  quit = false;
 
   ident->assign (rhs);
 
@@ -290,7 +290,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
       if (error_state)
 	{
 	  eval_error ();
-	  quit = 1;
+	  quit = true;
 	  return;
 	}
     }
@@ -305,7 +305,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 	for (int i = 0; i < steps; i++) \
 	  { \
 	    tree_constant rhs (val); \
-	    int quit = 0; \
+	    bool quit = false; \
 	    do_for_loop_once (ident, rhs, quit); \
 	    if (quit) \
 	      break; \
@@ -314,7 +314,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 	for (int i = 0; i < steps; i++) \
 	  { \
 	    Octave_object rhs (val); \
-	    int quit = 0; \
+	    bool quit = false; \
 	    do_for_loop_once (id_list, rhs, quit); \
 	    if (quit) \
 	      break; \
@@ -323,7 +323,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 	for (int i = 0; i < steps; i++) \
 	  { \
 	    tree_constant rhs (val); \
-	    int quit = 0; \
+	    bool quit = false; \
 	    do_for_loop_once (tmp_id, rhs, quit); \
 	    if (quit) \
 	      break; \
@@ -337,7 +337,7 @@ tree_for_command::eval (void)
   if (error_state || ! expr)
     return;
 
-  tree_constant tmp_expr = expr->eval (0);
+  tree_constant tmp_expr = expr->eval (false);
 
   if (error_state || tmp_expr.is_undefined ())
     {
@@ -365,7 +365,7 @@ tree_for_command::eval (void)
 
   if (tmp_expr.is_scalar_type ())
     {
-      int quit = 0;
+      bool quit = false;
       if (ident)
 	do_for_loop_once (ident, tmp_expr, quit);
       else if (id_list)
@@ -430,7 +430,7 @@ tree_for_command::eval (void)
 
 	      tree_constant rhs (tmp_val);
 
-	      int quit = 0;
+	      bool quit = false;
 	      do_for_loop_once (ident, rhs, quit);
 
 	      if (quit)
@@ -445,7 +445,7 @@ tree_for_command::eval (void)
 
 	      Octave_object rhs (tmp_val);
 
-	      int quit = 0;
+	      bool quit = false;
 	      do_for_loop_once (id_list, rhs, quit);
 
 	      if (quit)
@@ -460,7 +460,7 @@ tree_for_command::eval (void)
 
 	      tree_constant rhs (tmp_val);
 
-	      int quit = 0;
+	      bool quit = false;
 	      do_for_loop_once (tmp_id, rhs, quit);
 
 	      if (quit)
@@ -478,7 +478,7 @@ tree_for_command::eval (void)
 	    {
 	      tree_constant rhs (tmp_val.contents (p));
 
-	      int quit;
+	      bool quit = false;
 	      do_for_loop_once (ident, rhs, quit);
 
 	      if (quit)
@@ -499,7 +499,7 @@ tree_for_command::eval (void)
 	      tmp (1) = tmp_val.key (p);
 	      tmp (0) = tmp_val.contents (p);
 
-	      int quit;
+	      bool quit = false;
 	      do_for_loop_once (id_list, tmp, quit);
 
 	      if (quit)
@@ -514,7 +514,7 @@ tree_for_command::eval (void)
 	    {
 	      tree_constant rhs = tmp_val.contents (p);
 
-	      int quit;
+	      bool quit = false;
 	      do_for_loop_once (tmp_id, rhs, quit);
 
 	      if (quit)
@@ -631,7 +631,7 @@ do_catch_code (void *ptr)
   breaking = 0;
 
   if (list)
-    list->eval (1);
+    list->eval (true);
 
   // This is the one for breaking.  (The unwind_protects are popped
   // off the stack in the reverse of the order they are pushed on).
@@ -668,7 +668,7 @@ tree_try_catch_command::eval (void)
     }
 
   if (try_code)
-    try_code->eval (1);
+    try_code->eval (true);
 
   if (catch_code && error_state)
     {
@@ -749,7 +749,7 @@ do_unwind_protect_cleanup_code (void *ptr)
   breaking = 0;
 
   if (list)
-    list->eval (1);
+    list->eval (true);
 
   // This is the one for breaking.  (The unwind_protects are popped
   // off the stack in the reverse of the order they are pushed on).
@@ -785,7 +785,7 @@ tree_unwind_protect_command::eval (void)
   add_unwind_protect (do_unwind_protect_cleanup_code, cleanup_code);
 
   if (unwind_protect_code)
-    unwind_protect_code->eval (1);
+    unwind_protect_code->eval (true);
 
   run_unwind_protect ();
 }

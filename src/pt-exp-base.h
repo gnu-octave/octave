@@ -1,7 +1,7 @@
 // pt-exp-base.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -82,38 +82,38 @@ public:
 
   virtual ~tree_expression (void) { }
 
-  virtual int is_constant (void) const
-    { return 0; }
+  virtual bool is_constant (void) const
+    { return false; }
 
-  virtual int is_matrix_constant (void) const
-    { return 0; }
+  virtual bool is_matrix_constant (void) const
+    { return false; }
 
-  virtual int is_range_constant (void) const
-    { return 0; }
+  virtual bool is_range_constant (void) const
+    { return false; }
 
-  virtual int is_multi_val_ret_expression (void) const
-    { return 0; }
+  virtual bool is_multi_val_ret_expression (void) const
+    { return false; }
 
-  virtual int is_identifier (void) const
-    { return 0; }
+  virtual bool is_identifier (void) const
+    { return false; }
 
-  virtual int is_indirect_ref (void) const
-    { return 0; }
+  virtual bool is_indirect_ref (void) const
+    { return false; }
 
-  virtual int is_index_expression (void) const
-    { return 0; }
+  virtual bool is_index_expression (void) const
+    { return false; }
 
-  virtual int is_assignment_expression (void) const
-    { return 0; }
+  virtual bool is_assignment_expression (void) const
+    { return false; }
 
-  virtual int is_prefix_expression (void) const
-    { return 0; }
+  virtual bool is_prefix_expression (void) const
+    { return false; }
 
-  virtual int is_logically_true (const char *);
+  virtual bool is_logically_true (const char *);
 
   virtual void mark_for_possible_ans_assign (void);
 
-  virtual tree_constant eval (int print) = 0;
+  virtual tree_constant eval (bool print) = 0;
 
 protected:
   type etype;

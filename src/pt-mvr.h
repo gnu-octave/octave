@@ -1,7 +1,7 @@
-// tree-mvr.h                                      -*- C++ -*-
+// pt-mvr.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -57,9 +57,9 @@ public:
 
   ~tree_oct_obj (void) { }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
   void print_code (ostream&) { }
 
@@ -90,8 +90,8 @@ public:
 
   ~tree_index_expression (void);
 
-  int is_index_expression (void) const
-    { return 1; }
+  bool is_index_expression (void) const
+    { return true; }
 
   tree_indirect_ref *ident (void)
     { return id; }
@@ -103,9 +103,9 @@ public:
 
   void mark_for_possible_ans_assign (void);
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
   void eval_error (void);
 
@@ -122,32 +122,32 @@ class
 tree_multi_assignment_expression : public tree_multi_val_ret
 {
  public:
-  tree_multi_assignment_expression (int plhs = 0, int l = -1, int c = -1)
+  tree_multi_assignment_expression (bool plhs = false, int l = -1, int c = -1)
     : tree_multi_val_ret (l, c, tree_expression::multi_assignment),
       preserve (plhs), lhs (0), rhs (0) { }
 
   tree_multi_assignment_expression (tree_return_list *lst,
 				    tree_multi_val_ret *r,
-				    int plhs = 0,
+				    bool plhs = false,
 				    int l = -1, int c = -1)
     : tree_multi_val_ret (l, c, tree_expression::multi_assignment),
       preserve (plhs), lhs (lst), rhs (r) { }
 
   ~tree_multi_assignment_expression (void);
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
-  int is_assignment_expression (void) const
-    { return 1; }
+  bool is_assignment_expression (void) const
+    { return true; }
 
   void eval_error (void);
 
   void print_code (ostream& os);
 
  private:
-  int preserve;
+  bool preserve;
   tree_return_list *lhs;
   tree_multi_val_ret *rhs;
 };

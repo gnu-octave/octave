@@ -1,7 +1,7 @@
 // pt-mvr-base.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,12 +46,12 @@ public:
 
   ~tree_multi_val_ret (void) { }
 
-  int is_multi_val_ret_expression (void) const
-    { return 1; }
+  bool is_multi_val_ret_expression (void) const
+    { return true; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  virtual Octave_object eval (int print, int nargout,
+  virtual Octave_object eval (bool print, int nargout,
 			      const Octave_object& args) = 0;
 };
 

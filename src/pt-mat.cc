@@ -1,7 +1,7 @@
 // pt-mat.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,96 +46,339 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // constant matrices, but it allows us to construct matrices from
 // other matrices, variables, and functions.
 
-tree_matrix::~tree_matrix (void)
-{
-  delete element;
-  delete next;
-}
+// But first, some internal classes that make our job much easier.
 
-int
-tree_matrix::is_matrix_constant (void) const
+class
+tm_row_const
 {
-  const tree_matrix *list = this;
+private:
 
-  while (list)
+  class
+  tm_row_const_rep : public SLList<tree_constant>
+  {
+  public:
+
+    tm_row_const_rep (void)
+      : SLList<tree_constant> (), count (1), nr (0), nc (0),
+	all_str (false), is_cmplx (false), ok (false) { }
+
+    tm_row_const_rep (const tree_matrix_row& mr)
+      : SLList<tree_constant> (), count (1), nr (0), nc (0),
+	all_str (false), is_cmplx (false), ok (false)
+        { init (mr); }
+
+    ~tm_row_const_rep (void) { }
+
+    int count;
+
+    int nr;
+    int nc;
+
+    bool all_str;
+    bool is_cmplx;
+
+    bool ok;
+
+    void init (const tree_matrix_row&);
+
+  private:
+
+    tm_row_const_rep (const tm_row_const_rep&);
+
+    tm_row_const_rep& operator =
+      (const tm_row_const_rep&);
+  };
+
+public:
+
+  tm_row_const (void) : rep (0) { }
+
+  tm_row_const (const tree_matrix_row& mr)
+    : rep (new tm_row_const_rep (mr)) { }
+
+  tm_row_const (const tm_row_const& x) : rep (x.rep)
     {
-      tree_expression *elem = list->element;
-
-      if (! elem->is_constant ())
-	return 0;
-
-      list = list->next;
+      if (rep)
+	rep->count++;
     }
 
-  return 1;
-}
-
-tree_matrix *
-tree_matrix::chain (tree_expression *t, tree_matrix::dir d)
-{
-  tree_matrix *tmp = new tree_matrix (t, d);
-  tmp->next = this;
-  return tmp;
-}
-
-tree_matrix *
-tree_matrix::reverse (void)
-{
-  tree_matrix *list = this;
-  tree_matrix *next;
-  tree_matrix *prev = 0;
-
-  while (list)
+  tm_row_const& operator = (const tm_row_const& x)
     {
-      next = list->next;
-      list->next = prev;
-      prev = list;
-      list = next;
+      if (this != &x && rep != x.rep)
+	{
+	  if (rep && --rep->count == 0)
+	    delete rep;
+
+	  rep = x.rep;
+
+	  if (rep)
+	    rep->count++;
+	}
+
+      return *this;
     }
-  return prev;
+
+  ~tm_row_const (void)
+    {
+      if (rep && --rep->count == 0)
+	delete rep;
+    }
+
+  int rows (void) { return rep->nr; }
+  int cols (void) { return rep->nc; }
+
+  bool all_strings (void) const { return rep->all_str; }
+  bool is_complex (void) const { return rep->is_cmplx; }
+
+  tree_constant& operator () (Pix p) { return rep->operator () (p); }
+
+  const tree_constant& operator () (Pix p) const
+    { return rep->operator () (p); }
+
+  Pix first (void) const { return rep->first (); }
+  void next (Pix& p) const { rep->next (p); }
+  
+  operator void* () const
+    {
+      return (rep && rep->ok) ? (void *) -1 : (void *) 0;
+    }
+
+private:
+
+  tm_row_const_rep *rep;
+};
+
+void
+tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
+{
+  all_str = true;
+
+  int empties_ok = user_pref.empty_list_elements_ok;
+
+  bool first_elem = true;
+
+  for (Pix p = mr.first (); p != 0; mr.next (p))
+    {
+      tree_expression *elt = mr (p);
+
+      tree_constant tmp = elt->eval (false);
+
+      if (error_state || tmp.is_undefined ())
+	break;
+      else
+	{
+	  int this_elt_nr = tmp.rows ();
+	  int this_elt_nc = tmp.columns ();
+
+	  if (this_elt_nr == 0 || this_elt_nc == 0)
+	    {
+	      if (empties_ok < 0)
+		warning ("empty matrix found in matrix list");
+	      else if (empties_ok == 0)
+		{
+		  ::error ("empty matrix found in matrix list");
+		  break;
+		}
+	    }
+	  else
+	    {
+	      if (first_elem)
+		{
+		  first_elem = false;
+
+		  nr = this_elt_nr;
+		}
+	      else if (this_elt_nr != nr)
+		{
+		  ::error ("number of rows must match");
+		  break;
+		}
+
+	      nc += this_elt_nc;
+
+	      append (tmp);
+	    }
+
+	  if (all_str && ! tmp.is_string ())
+	    all_str = false;
+
+	  if (! is_cmplx && tmp.is_complex_type ())
+	    is_cmplx = true;
+	}
+    }
+
+  ok = ! error_state;
 }
 
-int
-tree_matrix::length (void)
+template class SLNode<tm_row_const>;
+template class SLList<tm_row_const>;
+
+class
+tm_const : public SLList<tm_row_const>
 {
-  tree_matrix *list = this;
-  int len = 0;
-  while (list)
+public:
+
+  tm_const (const tree_matrix& tm)
+    : SLList<tm_row_const> (), nr (0), nc (0), all_str (false),
+      is_cmplx (false), ok (false)
+      { init (tm); }
+
+  ~tm_const (void) { }
+
+  int rows (void) const { return nr; }
+  int cols (void) const { return nc; }
+
+  bool all_strings (void) const { return all_str; }
+  bool is_complex (void) const { return is_cmplx; }
+
+  operator void* () const { return ok ? (void *) -1 : (void *) 0; }
+
+private:
+
+  int nr;
+  int nc;
+
+  bool all_str;
+  bool is_cmplx;
+
+  bool ok;
+
+  tm_const (void);
+
+  tm_const (const tm_const&);
+
+  tm_const& operator = (const tm_const&);
+
+  void init (const tree_matrix& tm);
+};
+
+void
+tm_const::init (const tree_matrix& tm)
+{
+  all_str = true;
+
+  int empties_ok = user_pref.empty_list_elements_ok;
+
+  bool first_elem = true;
+
+  // Just eval and figure out if what we have is complex or all
+  // strings.  We can't check columns until we know that this is a
+  // numeric matrix -- collections of strings can have elements of
+  // different lengths.
+
+  for (Pix p = tm.first (); p != 0; tm.next (p))
     {
-      len++;
-      list = list->next;
+      tree_matrix_row *elt = tm (p);
+
+      tm_row_const tmp (*elt);
+
+      if (tmp)
+	{
+	  if (all_str && ! tmp.all_strings ())
+	    all_str = false;
+
+	  if (! is_cmplx && tmp.is_complex ())
+	    is_cmplx = true;
+
+	  append (tmp);
+	}
+      else
+	break;
     }
-  return len;
+
+  if (! error_state)
+    {
+      for (Pix p = first (); p != 0; next (p))
+	{
+	  tm_row_const elt = this->operator () (p);
+
+	  int this_elt_nr = elt.rows ();
+	  int this_elt_nc = elt.cols ();
+
+	  if (this_elt_nr == 0 || this_elt_nc == 0)
+	    {
+	      if (empties_ok < 0)
+		warning ("empty matrix found in matrix list");
+	      else if (empties_ok == 0)
+		{
+		  ::error ("empty matrix found in matrix list");
+		  break;
+		}
+	    }
+	  else
+	    {
+	      if (first_elem)
+		{
+		  first_elem = false;
+
+		  nc = this_elt_nc;
+		}
+	      else if (all_str)
+		{
+		  if (this_elt_nc > nc)
+		    nc = this_elt_nc;
+		}
+	      else if (this_elt_nc != nc)
+		{
+		  ::error ("number of columns must match");
+		  break;
+		}
+
+	      nr += this_elt_nr;
+	    }
+	}
+    }
+
+  ok = ! error_state;
+}
+
+bool
+tree_matrix_row::is_matrix_constant (void) const
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_expression *elt = this->operator () (p);
+
+      if (! elt->is_constant ())
+	return false;
+    }
+
+  return true;
 }
 
 tree_return_list *
-tree_matrix::to_return_list (void)
+tree_matrix_row::to_return_list (void)
 {
   tree_return_list *retval = 0;
 
-  tree_matrix *list;
+  bool first_elem = true;
 
-  for (list = this; list; list = list->next)
+  for (Pix p = first (); p != 0; next (p))
     {
-      tree_expression *elem = list->element;
+      tree_expression *elt = this->operator () (p);
 
-      int is_id = elem->is_identifier ();
+      bool is_id = elt->is_identifier ();
 
-      int is_idx_expr = elem->is_index_expression ();
+      bool is_idx_expr = elt->is_index_expression ();
 
       if (is_id || is_idx_expr)
 	{
 	  tree_index_expression *idx_expr;
+
 	  if (is_id)
 	    {
-	      tree_identifier *id = (tree_identifier *) elem;
+	      tree_identifier *id = (tree_identifier *) elt;
 	      idx_expr = new tree_index_expression (id);
 	    }
 	  else
-	    idx_expr = (tree_index_expression *) elem;
+	    idx_expr = (tree_index_expression *) elt;
 
-	  if (list == this)
-	    retval = new tree_return_list (idx_expr);
+	  if (first_elem)
+	    {
+	      first_elem = false;
+
+	      retval = new tree_return_list (idx_expr);
+	    }
 	  else
 	    retval->append (idx_expr);
 	}
@@ -150,320 +393,143 @@ tree_matrix::to_return_list (void)
   return retval;
 }
 
-// Just about as ugly as it gets.
-
-struct const_matrix_list
+void
+tree_matrix_row::print_code (ostream& os)
 {
-  tree_matrix::dir direction;
-  tree_constant elem;
-  int nr;
-  int nc;
-};
+  Pix p = first ();
 
+  while (p)
+    {
+      tree_expression *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  elt->print_code (os);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
+}
+
+bool
+tree_matrix::is_matrix_constant (void) const
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_matrix_row *elt = this->operator () (p);
+
+      if (! elt->is_matrix_constant ())
+	return false;
+    }
+
+  return true;
+}
+
+// Just about as ugly as it gets.
 // Less ugly than before, anyway.
+// Looking better all the time.
 
 tree_constant
-tree_matrix::eval (int /* print */)
+tree_matrix::eval (bool /* print */)
 {
   tree_constant retval;
 
-  if (error_state)
-    return retval;
+  tm_const tmp (*this);
 
-  // Just count the elements without looking at them.
-
-  int total_len = length ();
-
-  // Easier to deal with this later instead of a tree_matrix
-  // structure.
-
-  const_matrix_list *list = new const_matrix_list [total_len];
-
-  // Stats we want to keep track of.
-
-  int all_strings = 1;
-
-  int found_complex = 0;
-
-  int row_total = 0;
-  int col_total = 0;
-
-  int row_height = 0;
-
-  int cols_this_row = 0;
-
-  int first_row = 1;
-
-  int empties_ok = user_pref.empty_list_elements_ok;
-
-  tree_matrix *ptr = this;
-
-  // Stuff for the result matrix or string.  Declared here so that we
-  // don't get warnings from gcc about the goto crossing the
-  // initialization of these values.
-
-  int put_row = 0;
-  int put_col = 0;
-
-  int prev_nr = 0;
-  int prev_nc = 0;
-
-  Matrix m;
-  ComplexMatrix cm;
-  charMatrix chm;
-
-  // Eliminate empties and gather stats.
-
-  int found_new_row_in_empties = 0;
-
-  int len = 0;
-  for (int i = 0; i < total_len; i++)
+  if (tmp)
     {
-      tree_expression *elem = ptr->element;
-      if (! elem)
-	{
-	  retval = tree_constant (Matrix ());
-	  goto done;
-	}
-
-      tree_constant tmp = elem->eval (0);
-      if (error_state || tmp.is_undefined ())
-	{
-	  retval = tree_constant ();
-	  goto done;
-	}
-
       int nr = tmp.rows ();
-      int nc = tmp.columns ();
+      int nc = tmp.cols ();
 
-      dir direct = ptr->direction;
+      Matrix m;
+      ComplexMatrix cm;
+      charMatrix chm;
 
-      if (nr == 0 || nc == 0)
-	{
-	  if (empties_ok < 0)
-	    warning ("empty matrix found in matrix list");
-	  else if (empties_ok == 0)
-	    {
-	      ::error ("empty matrix found in matrix list");
-	      retval = tree_constant ();
-	      goto done;
-	    }
+      // Now, extract the values from the individual elements and
+      // insert them in the result matrix.
 
-	  if (direct == md_down)
-	    found_new_row_in_empties = 1;
+      bool all_strings = tmp.all_strings ();
+      bool found_complex = tmp.is_complex ();
 
-	  goto next;
-	}
-
-      if (found_new_row_in_empties)
-	{
-	  found_new_row_in_empties = 0;
-	  list[len].direction = md_down;
-	}
+      if (all_strings)
+	chm.resize (nr, nc, 0);
+      else if (found_complex)
+	cm.resize (nr, nc, 0.0);
       else
-	list[len].direction = direct;
+	m.resize (nr, nc, 0.0);
 
-      list[len].elem = tmp;
-      list[len].nr = nr;
-      list[len].nc = nc;
+      int put_row = 0;
 
-      if (all_strings && ! tmp.is_string ())
-	all_strings = 0;
-
-      if (! found_complex && tmp.is_complex_type ())
-	found_complex = 1;
-
-      len++;
-
-    next:
-
-      ptr = ptr->next;
-    }
-
-  //  if (all_strings)
-  //    cerr << "all strings\n";
-
-  // Compute size of result matrix, and check to see that the dimensions
-  // of all the elements will match up properly.
-
-  for (int i = 0; i < len; i++)
-    {
-      dir direct = list[i].direction;
-
-      int nr = list[i].nr;
-      int nc = list[i].nc;
-
-      if (i == 0)
+      for (Pix p = tmp.first (); p != 0; tmp.next (p))
 	{
-	  row_total = nr;
-	  col_total = nc;
+	  int put_col = 0;
 
-	  row_height = nr;
-	  cols_this_row = nc;
-	}
-      else
-	{
-	  switch (direct)
+	  tm_row_const row = tmp (p);
+
+	  for (Pix q = row.first (); q != 0; row.next (q))
 	    {
-	    case md_right:
-	      {
-		if (nr != row_height)
-		  {
-		    ::error ("number of rows must match");
-		    goto done;
-		  }
-		else
-		  {
-		    cols_this_row += nc;
+	      tree_constant elt = row (q);
 
-		    if (first_row)
-		      col_total = cols_this_row;
-		    else if (all_strings && cols_this_row > col_total)
-		      col_total = cols_this_row;
-		  }
-	      }
-	      break;
+	      if (found_complex)
+		{
+		  if (elt.is_real_scalar ())
+		    cm (put_row, put_col) = elt.double_value ();
+		  else if (elt.is_real_matrix () || elt.is_range ())
+		    cm.insert (elt.matrix_value (), put_row, put_col);
+		  else if (elt.is_complex_scalar ())
+		    cm (put_row, put_col) = elt.complex_value ();
+		  else
+		    {
+		      ComplexMatrix cm_elt = elt.complex_matrix_value ();
 
-	    case md_down:
-	      {
-		if (cols_this_row != col_total && ! all_strings)
-		  {
-		    ::error ("number of columns must match");
-		    goto done;
-		  }
-		first_row = 0;
-		row_total += nr;
-		row_height = nr;
-		cols_this_row = nc;
-	      }
-	      break;
+		      if (error_state)
+			goto done;
 
-	    default:
-	      panic_impossible ();
-	      break;
+		      cm.insert (cm_elt, put_row, put_col);
+		    }
+		}
+	      else
+		{
+		  if (elt.is_real_scalar ())
+		    m (put_row, put_col) = elt.double_value ();
+		  else if (elt.is_string () && all_strings)
+		    {
+		      charMatrix chm_elt = elt.all_strings ();
+
+		      if (error_state)
+			goto done;
+
+		      chm.insert (chm_elt, put_row, put_col);
+		    }
+		  else
+		    {
+		      Matrix m_elt = elt.matrix_value ();
+
+		      if (error_state)
+			goto done;
+
+		      m.insert (m_elt, put_row, put_col);
+		    }
+		}
+
+	      if (all_strings && chm.rows () > 0 && chm.cols () > 0)
+		retval = tree_constant (chm, true);
+	      else if (found_complex)
+		retval = cm;
+	      else
+		retval = m;
+
+	      put_col += elt.columns ();
 	    }
+
+	  put_row += row.rows ();
 	}
     }
 
-  // Don't forget to check to see if the last element will fit.
-
-  if (all_strings && cols_this_row > col_total)
-    {
-      col_total = cols_this_row;
-    }
-  else if (cols_this_row != col_total)
-    {
-      ::error ("number of columns must match");
-      goto done;
-    }
-
-  // Now, extract the values from the individual elements and insert
-  // them in the result matrix.
-
-  if (all_strings)
-    chm.resize (row_total, col_total, 0);
-  else if (found_complex)
-    cm.resize (row_total, col_total, 0.0);
-  else
-    m.resize (row_total, col_total, 0.0);
-
-  for (int i = 0; i < len; i++)
-    {
-      tree_constant tmp = list[i].elem;
-
-      int nr = list[i].nr;
-      int nc = list[i].nc;
-
-      if (nr == 0 || nc == 0)
-	continue;
-
-      if (i == 0)
-	{
-	  put_row = 0;
-	  put_col = 0;
-	}
-      else
-	{
-	  switch (list[i].direction)
-	    {
-	    case md_right:
-	      put_col += prev_nc;
-	      break;
-
-	    case md_down:
-	      put_row += prev_nr;
-	      put_col = 0;
-	      break;
-
-	    default:
-	      panic_impossible ();
-	      break;
-	    }
-	}
-
-      if (found_complex)
-	{
-	  if (tmp.is_real_scalar ())
-	    {
-	      cm (put_row, put_col) = tmp.double_value ();
-	    }
-	  else if (tmp.is_real_matrix () || tmp.is_range ())
-	    {
-	      cm.insert (tmp.matrix_value (), put_row, put_col);
-	    }
-	  else if (tmp.is_complex_scalar ())
-	    {
-	      cm (put_row, put_col) = tmp.complex_value ();
-	    }
-	  else
-	    {
-	      ComplexMatrix cm_tmp = tmp.complex_matrix_value ();
-
-	      if (error_state)
-		goto done;
-
-	      cm.insert (cm_tmp, put_row, put_col);
-	    }
-	}
-      else
-	{
-	  if (tmp.is_real_scalar ())
-	    {
-	      m (put_row, put_col) = tmp.double_value ();
-	    }
-	  else if (tmp.is_string () && all_strings)
-	    {
-	      charMatrix chm_tmp = tmp.all_strings ();
-
-	      if (error_state)
-		goto done;
-
-	      chm.insert (chm_tmp, put_row, put_col);
-	    }
-	  else
-	    {
-	      Matrix m_tmp = tmp.matrix_value ();
-
-	      if (error_state)
-		goto done;
-
-	      m.insert (m_tmp, put_row, put_col);
-	    }
-	}
-
-      prev_nr = nr;
-      prev_nc = nc;
-    }
-
-  if (all_strings && chm.rows () > 0 && chm.cols () > 0)
-    retval = tree_constant (chm, 1);
-  else if (found_complex)
-    retval = cm;
-  else
-    retval = m;
-
- done:
-  delete [] list;
+done:
 
   return retval;
 }
@@ -478,29 +544,20 @@ tree_matrix::print_code (ostream& os)
 
   os << "[";
 
-  tree_matrix *list = this;
+  Pix p = first ();
 
-  while (list)
+  while (p)
     {
-      list->element->print_code (os);
+      tree_matrix_row *elt = this->operator () (p);
 
-      list = list->next;
+      next (p);
 
-      if (list)
+      if (elt)
 	{
-	  switch (list->direction)
-	    {
-	    case md_right:
-	      os << ", ";
-	      break;
+	  elt->print_code (os);
 
-	    case md_down:
-	      os << "; ";
-	      break;
-
-	    default:
-	      break;
-	    }
+	  if (p)
+	    os << "; ";
 	}
     }
 

@@ -1,7 +1,7 @@
 // pt-misc.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -62,36 +62,36 @@ friend class tree_statement_list;
 
 public:
   tree_statement (void)
-    : tree_print_code (), command (0), expression (0), print_flag (1) { }
+    : tree_print_code (), command (0), expression (0), print_flag (true) { }
 
   tree_statement (tree_command *c)
-    : tree_print_code (), command (c), expression (0), print_flag (1) { }
+    : tree_print_code (), command (c), expression (0), print_flag (true) { }
 
   tree_statement (tree_expression *e)
-    : tree_print_code (), command (0), expression (e), print_flag (1) { }
+    : tree_print_code (), command (0), expression (e), print_flag (true) { }
 
   ~tree_statement (void);
 
-  void set_print_flag (int print)
+  void set_print_flag (bool print)
     { print_flag = print; }
 
-  int is_command (void)
+  bool is_command (void)
     { return command != 0; }
 
-  int is_expression (void)
+  bool is_expression (void)
     { return expression != 0; }
 
   int line (void);
   int column (void);
 
-  void maybe_echo_code (int);
+  void maybe_echo_code (bool);
 
   void print_code (ostream& os);
 
 private:
   tree_command *command;	// Command to execute.
   tree_expression *expression;	// Command to execute.
-  int print_flag;		// Print result of eval for this command?
+  bool print_flag;		// Print result of eval for this command?
 };
 
 class
@@ -99,11 +99,11 @@ tree_statement_list : public SLList<tree_statement *>, public tree_print_code
 {
 public:
   tree_statement_list (void)
-    : SLList<tree_statement *> (), tree_print_code ()
-      { function_body = 0; }
+    : SLList<tree_statement *> (), tree_print_code (), function_body (false)
+      { }
 
   tree_statement_list (tree_statement *s)
-    : SLList<tree_statement *> (), tree_print_code (), function_body (0)
+    : SLList<tree_statement *> (), tree_print_code (), function_body (false)
       { append (s); }
 
   ~tree_statement_list (void)
@@ -115,16 +115,16 @@ public:
 	}
     }
 
-  void mark_as_function_body (void) { function_body = 1; }
+  void mark_as_function_body (void) { function_body = true; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout);
+  Octave_object eval (bool print, int nargout);
 
   void print_code (ostream& os);
 
 private:
-  int function_body;
+  bool function_body;
 };
 
 // Argument lists.  Used to hold the list of expressions that are the
@@ -181,20 +181,20 @@ public:
   void mark_varargs (void)
     { marked_for_varargs = 1; }
 
-  int takes_varargs (void) const
-    { return marked_for_varargs; }
+  bool takes_varargs (void) const
+    { return marked_for_varargs != 0; }
 
   void mark_varargs_only (void)
     { marked_for_varargs = -1; }
 
-  int varargs_only (void)
+  bool varargs_only (void)
     { return (marked_for_varargs < 0); }
 
   void initialize_undefined_elements (tree_constant& val);
 
   void define_from_arg_vector (const Octave_object& args);
 
-  int is_defined (void);
+  bool is_defined (void);
 
   Octave_object convert_to_const_vector (tree_va_return_list *vr_list);
 
@@ -297,10 +297,8 @@ public:
 
   ~tree_if_clause (void);
 
-  int is_else_clause (void)
-    {
-      return ! expr;
-    }
+  bool is_else_clause (void)
+    { return ! expr; }
 
   int eval (void);
 

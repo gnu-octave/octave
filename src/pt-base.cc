@@ -1,7 +1,7 @@
 // pt-base.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,7 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int tree_print_code::curr_print_indent_level = 0;
 
 // Nonzero means we are at the beginning of a line.
-int tree_print_code::beginning_of_line = 1;
+bool tree_print_code::beginning_of_line = true;
 
 // All print_code() functions should use this to print new lines.
 
@@ -49,7 +49,7 @@ tree_print_code::print_code_new_line (ostream& os)
 {
   os << "\n";
 
-  beginning_of_line = 1;
+  beginning_of_line = true;
 }
 
 // Each print_code() function should call this before printing
@@ -65,7 +65,7 @@ tree_print_code::print_code_indent (ostream& os)
   if (beginning_of_line)
     {
       os.form ("%s%*s", user_pref.ps4.c_str (), curr_print_indent_level, "");
-      beginning_of_line = 0;
+      beginning_of_line = false;
     }
 }
 
@@ -74,7 +74,7 @@ tree_print_code::print_code_indent (ostream& os)
 void
 tree_print_code::print_code_reset (void)
 {
-  beginning_of_line = 1;
+  beginning_of_line = true;
   curr_print_indent_level = 0;
 }
 

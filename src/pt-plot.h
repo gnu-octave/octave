@@ -1,7 +1,7 @@
 // pt-plot.h                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -79,7 +79,7 @@ public:
 
   ~plot_limits (void);
 
-  void print (int print, ostrstream& plot_buf);
+  void print (int ndim, ostrstream& plot_buf);
 
   void print_code (ostream& os);
 
@@ -235,7 +235,7 @@ public:
 };
 
 extern string save_in_tmp_file (tree_constant& t, int ndim = 2,
-				int parametric = 0);
+				bool parametric = false);
 
 extern void mark_for_deletion (const string&);
 

@@ -1,7 +1,7 @@
-// tree-fvc.h                                      -*- C++ -*-
+// pt-fvc.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -48,15 +48,15 @@ tree_identifier : public tree_fvc
 
 public:
   tree_identifier (int l = -1, int c = -1)
-    : tree_fvc (l, c), sym (0), maybe_do_ans_assign (0) { }
+    : tree_fvc (l, c), sym (0), maybe_do_ans_assign (false) { }
 
   tree_identifier (symbol_record *s, int l = -1, int c = -1)
-    : tree_fvc (l, c), sym (s), maybe_do_ans_assign (0) { }
+    : tree_fvc (l, c), sym (s), maybe_do_ans_assign (false) { }
 
   ~tree_identifier (void) { }
 
-  int is_identifier (void) const
-    { return 1; }
+  bool is_identifier (void) const
+    { return true; }
 
   string name (void) const;
 
@@ -72,22 +72,22 @@ public:
   tree_constant assign (SLList<string> list, tree_constant& t,
 			const Octave_object& args); 
 
-  int is_defined (void);
+  bool is_defined (void);
 
   void bump_value (tree_expression::type);
 
-  tree_fvc *do_lookup (int& script_file_executed, int exec_script = 1);
+  tree_fvc *do_lookup (bool& script_file_executed, bool exec_script = true);
 
   void link_to_global (void);
 
   void mark_as_formal_parameter (void);
 
   void mark_for_possible_ans_assign (void)
-    { maybe_do_ans_assign = 1; }
+    { maybe_do_ans_assign = true; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
   void eval_undefined_error (void);
 
@@ -95,7 +95,7 @@ public:
 
 private:
   symbol_record *sym;
-  int maybe_do_ans_assign;
+  bool maybe_do_ans_assign;
 };
 
 // Indirect references to values (structure references).
@@ -105,26 +105,26 @@ tree_indirect_ref : public tree_fvc
 {
 public:
   tree_indirect_ref (int l = -1, int c = -1)
-    : tree_fvc (l, c), id (0), preserve_ident (0) { }
+    : tree_fvc (l, c), id (0), preserve_ident (false) { }
 
   tree_indirect_ref (tree_identifier *i, int l = -1, int c = -1)
-    : tree_fvc (l, c), id (i), preserve_ident (0) { }
+    : tree_fvc (l, c), id (i), preserve_ident (false) { }
 
   ~tree_indirect_ref (void);
 
   tree_indirect_ref *chain (const string& s);
 
-  int is_indirect_ref (void) const
-    { return 1; }
+  bool is_indirect_ref (void) const
+    { return true; }
 
-  int is_identifier_only (void) const
+  bool is_identifier_only (void) const
     { return (id && refs.empty ()); }
 
   tree_identifier *ident (void)
     { return id; }
 
   void preserve_identifier (void)
-    { preserve_ident = 1; }
+    { preserve_ident = true; }
 
   string name (void) const;
 
@@ -134,16 +134,16 @@ public:
   void mark_for_possible_ans_assign (void)
     { id->mark_for_possible_ans_assign (); }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
   void print_code (ostream& os);
 
 private:
   tree_identifier *id;
   SLList<string> refs;
-  int preserve_ident;
+  bool preserve_ident;
 };
 
 // Builtin functions.
@@ -162,12 +162,12 @@ public:
 
 //  int is_builtin (void) const;
 
-  int is_mapper_function (void) const
+  bool is_mapper_function (void) const
     { return is_mapper; }
 
-  tree_constant eval (int print);
+  tree_constant eval (bool print);
 
-  Octave_object eval (int print, int nargout, const Octave_object& args);
+  Octave_object eval (bool print, int nargout, const Octave_object& args);
 
   string name (void) const
     { return my_name; }
@@ -175,7 +175,7 @@ public:
   void print_code (ostream& os);
 
 private:
-  int is_mapper;
+  bool is_mapper;
   Mapper_fcn mapper_fcn;
   Octave_builtin_fcn fcn;
   string my_name;

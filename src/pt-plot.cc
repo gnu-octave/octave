@@ -1,7 +1,7 @@
 // pt-plot.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -66,13 +66,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static int plot_line_count = 0;
 
 // Is this a parametric plot?  Makes a difference for 3D plotting.
-static int parametric_plot = 0;
+static bool parametric_plot = false;
 
 // The gnuplot terminal type.
 static char *gnuplot_terminal_type = 0;
 
 // Should the graph window be cleared before plotting the next line?
-static int clear_before_plotting = 1;
+static bool clear_before_plotting = true;
 
 // List of files to delete when we exit or crash.
 static SLStack <string> tmp_files;
@@ -110,7 +110,7 @@ static oprocstream *plot_stream = 0;
 static void
 open_plot_stream (void)
 {
-  static int initialized = 0;
+  static bool initialized = false;
 
   if (plot_stream && ! *plot_stream)
     {
@@ -120,7 +120,7 @@ open_plot_stream (void)
 
   if (! plot_stream)
     {
-      initialized = 0;
+      initialized = false;
 
       plot_line_count = 0;
 
@@ -169,7 +169,7 @@ open_plot_stream (void)
 
   if (! error_state && plot_stream && *plot_stream && ! initialized)
     {
-      initialized = 1;
+      initialized = true;
       *plot_stream << "set data style lines\n";
 
       if (gnuplot_terminal_type)
@@ -196,9 +196,9 @@ send_to_plot_stream (const char *cmd)
   int splot_len = strlen (GNUPLOT_COMMAND_SPLOT);
   int plot_len = strlen (GNUPLOT_COMMAND_PLOT);
 
-  int is_replot = (strncmp (cmd, GNUPLOT_COMMAND_REPLOT, replot_len) == 0);
-  int is_splot = (strncmp (cmd, GNUPLOT_COMMAND_SPLOT, splot_len) == 0);
-  int is_plot = (strncmp (cmd, GNUPLOT_COMMAND_PLOT, plot_len) == 0);
+  bool is_replot = (strncmp (cmd, GNUPLOT_COMMAND_REPLOT, replot_len) == 0);
+  bool is_splot = (strncmp (cmd, GNUPLOT_COMMAND_SPLOT, splot_len) == 0);
+  bool is_plot = (strncmp (cmd, GNUPLOT_COMMAND_PLOT, plot_len) == 0);
 
   if (plot_line_count == 0 && is_replot)
     error ("replot: no previous plot");
@@ -405,7 +405,7 @@ plot_range::print (ostrstream& plot_buf)
 
   if (lower)
     {
-      tree_constant lower_val = lower->eval (0);
+      tree_constant lower_val = lower->eval (false);
       if (error_state)
 	{
 	  ::error ("evaluating lower bound of plot range");
@@ -422,7 +422,7 @@ plot_range::print (ostrstream& plot_buf)
 
   if (upper)
     {
-      tree_constant upper_val = upper->eval (0);
+      tree_constant upper_val = upper->eval (false);
       if (error_state)
 	{
 	  ::error ("evaluating upper bound of plot range");
@@ -473,7 +473,7 @@ subplot_using::eval (int ndim, int n_max)
     {
       if (x[i])
 	{
-	  tree_constant tmp = x[i]->eval (0);
+	  tree_constant tmp = x[i]->eval (false);
 	  if (error_state)
 	    {
 	      ::error ("evaluating plot using command");
@@ -600,7 +600,7 @@ subplot_style::print (ostrstream& plot_buf)
 
       if (linetype)
 	{
-	  tree_constant tmp = linetype->eval (0);
+	  tree_constant tmp = linetype->eval (false);
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -621,7 +621,7 @@ subplot_style::print (ostrstream& plot_buf)
 
       if (pointtype)
 	{
-	  tree_constant tmp = pointtype->eval (0);
+	  tree_constant tmp = pointtype->eval (false);
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -723,7 +723,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 {
   if (plot_data)
     {
-      tree_constant data = plot_data->eval (0);
+      tree_constant data = plot_data->eval (false);
 
       if (! error_state && data.is_defined ())
 	{
@@ -815,7 +815,7 @@ subplot::print (int ndim, ostrstream& plot_buf)
 
   if (title_clause)
     {
-      tree_constant tmp = title_clause->eval (0);
+      tree_constant tmp = title_clause->eval (false);
       if (! error_state && tmp.is_string ())
 	plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
 	  << '"' << tmp.string_value () << '"';
@@ -913,7 +913,7 @@ subplot_list::print_code (ostream& os)
 }
 
 string
-save_in_tmp_file (tree_constant& t, int ndim, int parametric)
+save_in_tmp_file (tree_constant& t, int ndim, bool parametric)
 {
   string name = oct_tempnam ();
 
@@ -1046,9 +1046,9 @@ drawn.  With no argument, toggle the current state.")
 
     case 2:
       if (argv[1] == "on")
-	clear_before_plotting = 0;
+	clear_before_plotting = false;
       else if (argv[1] == "off")
-	clear_before_plotting = 1;
+	clear_before_plotting = true;
       else
 	print_usage ("hold");
       break;
@@ -1096,9 +1096,9 @@ set plotting options")
   if (argc > 1)
     {
       if (almost_match ("parametric", argv[1], 3))
-	parametric_plot = 1;
+	parametric_plot = true;
       else if (almost_match ("noparametric", argv[1], 5))
-	parametric_plot = 0;
+	parametric_plot = false;
       else if (almost_match ("term", argv[1], 1))
 	{
 	  delete [] gnuplot_terminal_type;

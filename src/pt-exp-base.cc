@@ -1,7 +1,7 @@
 // pt-exp-base.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,12 +40,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Expressions.
 
-int
+bool
 tree_expression::is_logically_true (const char *warn_for)
 {
-  int expr_value = 0;
+  bool expr_value = false;
 
-  tree_constant t1 = eval (0);
+  tree_constant t1 = eval (false);
 
   if (! error_state)
     {
@@ -75,7 +75,7 @@ tree_expression::is_logically_true (const char *warn_for)
 	  if (! error_state)
 	    {
 	      if (t1.is_real_scalar ())
-		expr_value = (int) t1.double_value ();
+		expr_value = t1.double_value () != 0.0;
 	      else if (t1.is_complex_scalar ())
 		expr_value = t1.complex_value () != 0.0;
 	      else
@@ -101,7 +101,7 @@ tree_expression::mark_for_possible_ans_assign (void)
 }
 
 tree_constant
-tree_expression::eval (int /* print */)
+tree_expression::eval (bool /* print */)
 {
   panic ("invalid evaluation of generic expression");
   return tree_constant ();

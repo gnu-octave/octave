@@ -1,7 +1,7 @@
 // pt-cmd.h                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -146,13 +146,13 @@ public:
 
 private:
   void do_for_loop_once (tree_return_list *lst,
-			 const Octave_object& rhs, int& quit);
+			 const Octave_object& rhs, bool& quit);
 
   void do_for_loop_once (tree_index_expression *idx_expr,
-			 const tree_constant& rhs, int& quit);
+			 const tree_constant& rhs, bool& quit);
 
   void do_for_loop_once (tree_identifier *ident,
-			 tree_constant& rhs, int& quit);
+			 tree_constant& rhs, bool& quit);
 
   tree_index_expression *id;	// Identifier to modify.
   tree_return_list *id_list;	// List of identifiers to modify.

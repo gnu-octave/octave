@@ -1,7 +1,7 @@
 // pt-const.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -100,16 +100,18 @@ decrement_structure_indent_level (void)
   structure_indent_level -= 2;
 }
 
-static int
+static bool
 any_element_is_complex (const ComplexMatrix& a)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       if (imag (a.elem (i, j)) != 0.0)
-	return 1;
-  return 0;
+	return true;
+
+  return false;
 }
 
 // The following three variables could be made static members of the
@@ -188,8 +190,8 @@ tree_constant::operator = (const tree_constant& a)
 }
 
 tree_constant
-tree_constant::lookup_map_element (const string& ref, int insert,
-				   int silent)
+tree_constant::lookup_map_element (const string& ref, bool insert,
+				   bool silent)
 {
   tree_constant retval;
 
@@ -218,8 +220,8 @@ tree_constant::lookup_map_element (const string& ref, int insert,
 }
 
 tree_constant
-tree_constant::lookup_map_element (SLList<string>& list, int insert,
-				   int silent)
+tree_constant::lookup_map_element (SLList<string>& list, bool insert,
+				   bool silent)
 {
   tree_constant retval;
 
@@ -258,7 +260,7 @@ tree_constant::print (void)
 }
 
 void
-tree_constant::print_with_name (const string& name, int print_padding)
+tree_constant::print_with_name (const string& name, bool print_padding)
 {
   ostrstream output_buf;
   print_with_name (output_buf, name, print_padding);
@@ -268,9 +270,9 @@ tree_constant::print_with_name (const string& name, int print_padding)
 
 void
 tree_constant::print_with_name (ostream& output_buf, const string& name,
-				int print_padding) 
+				bool print_padding) 
 {
-  int pad_after = 0;
+  bool pad_after = false;
 
   if (user_pref.print_answer_id_name)
     {
@@ -278,7 +280,7 @@ tree_constant::print_with_name (ostream& output_buf, const string& name,
 	output_buf << name << " = ";
       else
 	{
-	  pad_after = 1;
+	  pad_after = true;
 	  output_buf << name << " =\n\n";
 	}
     }
@@ -392,7 +394,7 @@ tree_constant::assign_map_element (SLList<string>& list,
 }
 
 Octave_object
-tree_constant::eval (int print, int, const Octave_object& args)
+tree_constant::eval (bool print, int, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -705,7 +707,7 @@ TC_REP::tree_constant_rep (const string_vector& s)
   type_tag = char_matrix_constant_str;
 }
 
-TC_REP::tree_constant_rep (const charMatrix& chm, int is_str)
+TC_REP::tree_constant_rep (const charMatrix& chm, bool is_str)
 {
   char_matrix = new charMatrix (chm);
   type_tag = is_str ? char_matrix_constant_str : char_matrix_constant;
@@ -1058,7 +1060,7 @@ TC_REP::any (void) const
   return retval;
 }
 
-int
+bool
 TC_REP::valid_as_scalar_index (void) const
 {
   return (type_tag == magic_colon
@@ -1071,7 +1073,7 @@ TC_REP::valid_as_scalar_index (void) const
 	      && NINT (range->base ()) == 1));
 }
 
-int
+bool
 TC_REP::valid_as_zero_index (void) const
 {
   return ((type_tag == scalar_constant
@@ -1086,10 +1088,10 @@ TC_REP::valid_as_zero_index (void) const
 	      && NINT (range->base ()) == 0));
 }
 
-int
+bool
 TC_REP::is_true (void) const
 {
-  int retval = 0;
+  int retval = false;
 
   if (error_state)
     return retval;
@@ -1147,7 +1149,7 @@ warn_implicit_conversion (const char *from, const char *to)
 }
 
 double
-TC_REP::double_value (int force_str_conv) const
+TC_REP::double_value (bool force_string_conv) const
 {
   double retval = octave_NaN;
 
@@ -1207,7 +1209,7 @@ TC_REP::double_value (int force_str_conv) const
 
     case char_matrix_constant_str:
       {
-	int flag = force_str_conv;
+	int flag = force_string_conv;
 	if (! flag)
 	  flag = user_pref.implicit_str_to_num_ok;
 
@@ -1243,7 +1245,7 @@ TC_REP::double_value (int force_str_conv) const
 }
 
 Matrix
-TC_REP::matrix_value (int force_str_conv) const
+TC_REP::matrix_value (bool force_string_conv) const
 {
   Matrix retval;
 
@@ -1284,7 +1286,7 @@ TC_REP::matrix_value (int force_str_conv) const
 
     case char_matrix_constant_str:
       {
-	int flag = force_str_conv;
+	int flag = force_string_conv;
 	if (! flag)
 	  flag = user_pref.implicit_str_to_num_ok;
 
@@ -1311,7 +1313,7 @@ TC_REP::matrix_value (int force_str_conv) const
 }
 
 Complex
-TC_REP::complex_value (int force_str_conv) const
+TC_REP::complex_value (bool force_string_conv) const
 {
   Complex retval (octave_NaN, octave_NaN);
 
@@ -1353,7 +1355,7 @@ TC_REP::complex_value (int force_str_conv) const
 
     case char_matrix_constant_str:
       {
-	int flag = force_str_conv;
+	int flag = force_string_conv;
 	if (! flag)
 	  flag = user_pref.implicit_str_to_num_ok;
 
@@ -1389,7 +1391,7 @@ TC_REP::complex_value (int force_str_conv) const
 }
 
 ComplexMatrix
-TC_REP::complex_matrix_value (int force_str_conv) const
+TC_REP::complex_matrix_value (bool force_string_conv) const
 {
   ComplexMatrix retval;
 
@@ -1417,7 +1419,7 @@ TC_REP::complex_matrix_value (int force_str_conv) const
 
     case char_matrix_constant_str:
       {
-	int flag = force_str_conv;
+	int flag = force_string_conv;
 	if (! flag)
 	  flag = user_pref.implicit_str_to_num_ok;
 
@@ -1446,11 +1448,11 @@ TC_REP::complex_matrix_value (int force_str_conv) const
 // XXX FIXME XXX -- this needs to try to do some conversions...
 
 charMatrix
-TC_REP::char_matrix_value (int force_str_conv) const
+TC_REP::char_matrix_value (bool force_string_conv) const
 {
   charMatrix retval;
 
-  int flag = force_str_conv;
+  int flag = force_string_conv;
   if (! flag)
     flag = user_pref.implicit_str_to_num_ok;
 
@@ -1510,7 +1512,7 @@ TC_REP::map_value (void) const
 }
 
 tree_constant&
-TC_REP::lookup_map_element (const string& name, int insert, int silent)
+TC_REP::lookup_map_element (const string& name, bool insert, bool silent)
 {
   static tree_constant retval;
 
@@ -1535,12 +1537,12 @@ TC_REP::lookup_map_element (const string& name, int insert, int silent)
 // than relying on matrix_value() to do any possible type conversions.
 
 ColumnVector
-TC_REP::vector_value (int force_str_conv,
-		      int force_vector_conversion) const
+TC_REP::vector_value (bool force_string_conv,
+		      bool force_vector_conversion) const
 {
   ColumnVector retval;
 
-  Matrix m = matrix_value (force_str_conv);
+  Matrix m = matrix_value (force_string_conv);
 
   if (error_state)
     return retval;
@@ -1579,12 +1581,12 @@ TC_REP::vector_value (int force_str_conv,
 // conversions.
 
 ComplexColumnVector
-TC_REP::complex_vector_value (int force_str_conv,
-			      int force_vector_conversion) const
+TC_REP::complex_vector_value (bool force_string_conv,
+			      bool force_vector_conversion) const
 {
   ComplexColumnVector retval;
 
-  ComplexMatrix m = complex_matrix_value (force_str_conv);
+  ComplexMatrix m = complex_matrix_value (force_string_conv);
 
   if (error_state)
     return retval;
@@ -1808,7 +1810,7 @@ TC_REP::convert_to_row_or_column_vector (void)
 }
 
 void
-TC_REP::convert_to_matrix_type (int make_complex)
+TC_REP::convert_to_matrix_type (bool make_complex)
 {
   switch (type_tag)
     {
@@ -1877,7 +1879,7 @@ TC_REP::convert_to_matrix_type (int make_complex)
 }
 
 void
-TC_REP::force_numeric (int force_str_conv)
+TC_REP::force_numeric (bool force_string_conv)
 {
   switch (type_tag)
     {
@@ -1890,7 +1892,7 @@ TC_REP::force_numeric (int force_str_conv)
 
     case char_matrix_constant_str:
       {
-	if (! force_str_conv && ! user_pref.implicit_str_to_num_ok)
+	if (! force_string_conv && ! user_pref.implicit_str_to_num_ok)
 	  {
 	    ::error ("string to numeric conversion failed --\
  default conversion turned off");
@@ -1964,7 +1966,7 @@ TC_REP::force_numeric (int force_str_conv)
 }
 
 tree_constant
-TC_REP::make_numeric (int force_str_conv) const
+TC_REP::make_numeric (bool force_string_conv) const
 {
   tree_constant retval;
 
@@ -1992,7 +1994,7 @@ TC_REP::make_numeric (int force_str_conv) const
 
     case char_matrix_constant_str:
       {
-	int flag = force_str_conv;
+	int flag = force_string_conv;
 	if (! flag)
 	  flag = user_pref.implicit_str_to_num_ok;
 
@@ -2002,7 +2004,7 @@ TC_REP::make_numeric (int force_str_conv) const
 	if (flag)
 	  {
 	    retval = *char_matrix;
-	    retval.force_numeric (force_str_conv);
+	    retval.force_numeric (force_string_conv);
 	  }
 	else
 	  gripe_invalid_conversion ("string", "char matrix");
@@ -2011,7 +2013,7 @@ TC_REP::make_numeric (int force_str_conv) const
 
     case range_constant:
       retval = *range;
-      retval.force_numeric (force_str_conv);
+      retval.force_numeric (force_string_conv);
       break;
 
     default:
@@ -2405,8 +2407,8 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 {
   tree_constant retval;
 
-  int first_empty = (a.rows () == 0 || a.columns () == 0);
-  int second_empty = (b.rows () == 0 || b.columns () == 0);
+  bool first_empty = (a.rows () == 0 || a.columns () == 0);
+  bool second_empty = (b.rows () == 0 || b.columns () == 0);
 
   if (first_empty || second_empty)
     {
@@ -2795,7 +2797,7 @@ TC_REP::set_index (char c)
 }
 
 void
-TC_REP::set_index (const Octave_object& args, int rhs_is_complex)
+TC_REP::set_index (const Octave_object& args, bool rhs_is_complex)
 {
   switch (type_tag)
     {
@@ -2839,16 +2841,16 @@ TC_REP::set_index (const Octave_object& args, int rhs_is_complex)
     }
 }
 
-static inline int
+static inline bool
 valid_scalar_indices (const Octave_object& args)
 {
   int nargin = args.length ();
 
   for (int i = 0; i < nargin; i++)
     if (! args(i).valid_as_scalar_index ())
-      return 0;
+      return false;
 
-  return 1;
+  return true;
 }
 
 tree_constant
@@ -2859,7 +2861,7 @@ TC_REP::do_index (const Octave_object& args)
   if (error_state)
     return retval;
 
-  int originally_scalar_type = is_scalar_type ();
+  bool originally_scalar_type = is_scalar_type ();
 
   if (originally_scalar_type && valid_scalar_indices (args))
     {
@@ -3113,11 +3115,12 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
     maybe_mutate ();
 }
 
-int
+bool
 TC_REP::print_as_scalar (void)
 {
   int nr = rows ();
   int nc = columns ();
+
   return (is_scalar_type ()
 	  || (is_string () && nr <= 1)
 	  || (is_matrix_type ()
@@ -3126,7 +3129,7 @@ TC_REP::print_as_scalar (void)
 		  || nc == 0)));
 }
 
-int
+bool
 TC_REP::print_as_structure (void)
 {
   return is_map ();

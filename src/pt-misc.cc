@@ -1,7 +1,7 @@
 // pt-misc.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -82,7 +82,7 @@ tree_statement::column (void)
 }
 
 void
-tree_statement::maybe_echo_code (int in_function_body)
+tree_statement::maybe_echo_code (bool in_function_body)
 {
   if (in_function_body
       && (user_pref.echo_executing_commands & ECHO_FUNCTIONS))
@@ -118,9 +118,9 @@ tree_statement::print_code (ostream& os)
 }
 
 tree_constant
-tree_statement_list::eval (int print)
+tree_statement_list::eval (bool print)
 {
-  int pf;
+  bool pf;
   tree_constant retval;
 
   if (error_state)
@@ -130,8 +130,8 @@ tree_statement_list::eval (int print)
     {
       tree_statement *elt = this->operator () (p);
 
-      if (print == 0)
-	pf = 0;
+      if (! print)
+	pf = false;
       else
 	pf = elt->print_flag;
 
@@ -163,13 +163,13 @@ tree_statement_list::eval (int print)
 }
 
 Octave_object
-tree_statement_list::eval (int print, int nargout)
+tree_statement_list::eval (bool print, int nargout)
 {
   Octave_object retval;
 
   if (nargout > 1)
     {
-      int pf;
+      bool pf;
 
       if (error_state)
 	return retval;
@@ -178,8 +178,8 @@ tree_statement_list::eval (int print, int nargout)
 	{
 	  tree_statement *elt = this->operator () (p);
 
-	  if (print == 0)
-	    pf = 0;
+	  if (! print)
+	    pf = false;
 	  else
 	    pf = elt->print_flag;
 
@@ -255,7 +255,7 @@ tree_argument_list::convert_to_const_vector (void)
       tree_expression *elt = this->operator () (p);
       if (elt)
 	{
-	  tree_constant tmp = elt->eval (0);
+	  tree_constant tmp = elt->eval (false);
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k);
@@ -403,7 +403,7 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
       tree_identifier *elt = this->operator () (p);
 
       if (elt->is_defined ())
-	retval(i) = elt->eval (0);
+	retval(i) = elt->eval (false);
 
       i++;
     }
@@ -420,10 +420,10 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
   return retval;
 }
 
-int
+bool
 tree_parameter_list::is_defined (void)
 {
-  int status = 1;
+  bool status = true;
 
   for (Pix p = first (); p != 0; next (p))
     {
@@ -431,7 +431,7 @@ tree_parameter_list::is_defined (void)
 
       if (! elt->is_defined ())
 	{
-	  status = 0;
+	  status = false;
 	  break;
 	}
     }
@@ -514,7 +514,7 @@ tree_global::eval (void)
 	  && (id = assign_expr->left_hand_side_id ()))
 	{
 	  id->link_to_global ();
-	  assign_expr->eval (0);
+	  assign_expr->eval (false);
 	}
       else
 	error ("global: unable to make individual structure elements global");
@@ -578,7 +578,7 @@ tree_if_clause::eval (void)
   if (is_else_clause () || expr->is_logically_true ("if"))
     {
       if (list)
-	list->eval (1);
+	list->eval (true);
 
       return 1;
     }
@@ -623,7 +623,7 @@ tree_if_command_list::print_code (ostream& os)
 {
   Pix p = first ();
 
-  int first_elt = 1;
+  bool first_elt = true;
 
   while (p)
     {
@@ -644,7 +644,7 @@ tree_if_command_list::print_code (ostream& os)
 	  elt->print_code (os);
 	}
 
-      first_elt = 0;
+      first_elt = false;
       next (p);
     }
 }

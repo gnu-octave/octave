@@ -1,7 +1,7 @@
 // pt-mat.h                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,47 +33,52 @@ class ostream;
 class tree_constant;
 class tree_return_list;
 
+#include <SLList.h>
+
 #include "pt-exp.h"
 
 // General matrices.  This allows us to construct matrices from
 // other matrices, variables, and functions.
 
 class
-tree_matrix : public tree_expression
+tree_matrix_row : public SLList<tree_expression *>
 {
 public:
-  enum dir
+
+  tree_matrix_row (tree_expression *e = 0) : SLList<tree_expression *> ()
     {
-      md_none,
-      md_right,
-      md_down,
-    };
+      if (e)
+	append (e);
+    }
 
-  tree_matrix (void)
-    : tree_expression (), direction (tree_matrix::md_none),
-      element (0), next (0) { }
+  ~tree_matrix_row (void) { }
 
-  tree_matrix (tree_expression *e, tree_matrix::dir d)
-    : tree_expression (), direction (d), element (e), next (0) { }
-
-  ~tree_matrix (void);
-
-  int is_matrix_constant (void) const;
-
-  tree_matrix *chain (tree_expression *e, tree_matrix::dir d);
-  tree_matrix *reverse (void);
-  int length (void);
+  bool is_matrix_constant (void) const;
 
   tree_return_list *to_return_list (void);
 
-  tree_constant eval (int print);
+  void print_code (ostream& os);
+};
+
+class
+tree_matrix : public tree_expression, public SLList<tree_matrix_row *>
+{
+public:
+
+  tree_matrix (tree_matrix_row *mr = 0)
+    : tree_expression (), SLList<tree_matrix_row *> ()
+      {
+	if (mr)
+	  append (mr);
+      }
+
+  ~tree_matrix (void) { }
+
+  bool is_matrix_constant (void) const;
+
+  tree_constant eval (bool print);
 
   void print_code (ostream& os);
-
-private:
-  tree_matrix::dir direction; // Direction from the previous element.
-  tree_expression *element;
-  tree_matrix *next;
 };
 
 #endif

@@ -1,7 +1,7 @@
 // pt-mvr.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,28 +46,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Make sure that all arguments have values.
 
-static int
+static bool
 all_args_defined (const Octave_object& args)
 {
   int nargin = args.length ();
 
   for (int i = 0; i < nargin; i++)
     if (args(i).is_undefined ())
-      return 0;
+      return false;
 
-  return 1;
+  return true;
 }
 
 // Used internally.
 
 tree_constant
-tree_oct_obj::eval (int /* print */)
+tree_oct_obj::eval (bool /* print */)
 {
   return values(0);
 }
 
 Octave_object
-tree_oct_obj::eval (int /* print */, int /* nargout */,
+tree_oct_obj::eval (bool /* print */, int /* nargout */,
 		    const Octave_object& /* args */)
 {
   return values;
@@ -111,7 +111,7 @@ tree_index_expression::mark_for_possible_ans_assign (void)
 }
 
 tree_constant
-tree_index_expression::eval (int print)
+tree_index_expression::eval (bool print)
 {
   tree_constant retval;
 
@@ -162,7 +162,7 @@ tree_index_expression::eval (int print)
 }
 
 Octave_object
-tree_index_expression::eval (int print, int nargout,
+tree_index_expression::eval (bool print, int nargout,
 			     const Octave_object& /* args */)
 {
   Octave_object retval;
@@ -273,7 +273,7 @@ tree_multi_assignment_expression::~tree_multi_assignment_expression (void)
 }
 
 tree_constant
-tree_multi_assignment_expression::eval (int print)
+tree_multi_assignment_expression::eval (bool print)
 {
   tree_constant retval;
 
@@ -290,7 +290,7 @@ tree_multi_assignment_expression::eval (int print)
 }
 
 Octave_object
-tree_multi_assignment_expression::eval (int print, int nargout,
+tree_multi_assignment_expression::eval (bool print, int nargout,
 					const Octave_object& /* args */)
 {
   assert (etype == tree_expression::multi_assignment);
@@ -311,8 +311,9 @@ tree_multi_assignment_expression::eval (int print, int nargout,
   if (results.length () > 0)
     {
       int i = 0;
-      int pad_after = 0;
-      int last_was_scalar_type = 0;
+
+      bool pad_after = false;
+
       for (Pix p = lhs->first (); p != 0; lhs->next (p))
 	{
 	  tree_index_expression *lhs_expr = lhs->operator () (p);
@@ -336,7 +337,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 	      tree_simple_assignment_expression tmp_expr
 		(lhs_expr, tmp, 1, 0, ma_line, ma_column);
 
-	      results(i) = tmp_expr.eval (0); // May change
+	      results(i) = tmp_expr.eval (false); // May change
 
 	      if (error_state)
 		break;
@@ -351,7 +352,8 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 	      if (print)
 		results(i).print_with_name (lhs_expr->name (), 0);
 
-	      pad_after++;
+	      pad_after = true;
+
 	      i++;
 	    }
 	  else
@@ -359,15 +361,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 	      tree_simple_assignment_expression tmp_expr
 		(lhs_expr, 0, 1, 0, ma_line, ma_column);
 
-	      tmp_expr.eval (0);
-
-	      if (error_state)
-		break;
-
-	      if (last_was_scalar_type && i == 1)
-		pad_after = 0;
-
-	      break;
+	      tmp_expr.eval (false);
 	    }
 	}
 

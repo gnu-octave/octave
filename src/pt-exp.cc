@@ -1,7 +1,7 @@
 // pt-exp.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -61,7 +61,7 @@ tree_prefix_expression::~tree_prefix_expression (void)
 }
 
 tree_constant
-tree_prefix_expression::eval (int print)
+tree_prefix_expression::eval (bool print)
 {
   tree_constant retval;
 
@@ -145,7 +145,7 @@ tree_postfix_expression::~tree_postfix_expression (void)
 }
 
 tree_constant
-tree_postfix_expression::eval (int print)
+tree_postfix_expression::eval (bool print)
 {
   tree_constant retval;
 
@@ -219,7 +219,7 @@ tree_postfix_expression::print_code (ostream& os)
 // Unary expressions.
 
 tree_constant
-tree_unary_expression::eval (int /* print */)
+tree_unary_expression::eval (bool /* print */)
 {
   if (error_state)
     return tree_constant ();
@@ -234,7 +234,7 @@ tree_unary_expression::eval (int /* print */)
     case tree_expression::transpose:
       if (op)
 	{
-	  tree_constant u = op->eval (0);
+	  tree_constant u = op->eval (false);
 	  if (error_state)
 	    eval_error ();
 	  else if (u.is_defined ())
@@ -337,7 +337,7 @@ tree_unary_expression::print_code (ostream& os)
 // Binary expressions.
  
 tree_constant
-tree_binary_expression::eval (int /* print */)
+tree_binary_expression::eval (bool /* print */)
 {
   if (error_state)
     return tree_constant ();
@@ -366,12 +366,12 @@ tree_binary_expression::eval (int /* print */)
     case tree_expression::or:
       if (op1)
 	{
-	  tree_constant a = op1->eval (0);
+	  tree_constant a = op1->eval (false);
 	  if (error_state)
 	    eval_error ();
 	  else if (a.is_defined () && op2)
 	    {
-	      tree_constant b = op2->eval (0);
+	      tree_constant b = op2->eval (false);
 	      if (error_state)
 		eval_error ();
 	      else if (b.is_defined ())
@@ -391,17 +391,17 @@ tree_binary_expression::eval (int /* print */)
     case tree_expression::and_and:
     case tree_expression::or_or:
       {
-	int result = 0;
+	bool result = false;
 	if (op1)
 	  {
-	    tree_constant a = op1->eval (0);
+	    tree_constant a = op1->eval (false);
 	    if (error_state)
 	      {
 		eval_error ();
 		break;
 	      }
 
-	    int a_true = a.is_true ();
+	    bool a_true = a.is_true ();
 	    if (error_state)
 	      {
 		eval_error ();
@@ -412,7 +412,7 @@ tree_binary_expression::eval (int /* print */)
 	      {
 		if (etype == tree_expression::or_or)
 		  {
-		    result = 1;
+		    result = true;
 		    goto done;
 		  }
 	      }
@@ -420,14 +420,14 @@ tree_binary_expression::eval (int /* print */)
 	      {
 		if (etype == tree_expression::and_and)
 		  {
-		    result = 0;
+		    result = false;
 		    goto done;
 		  }
 	      }
 
 	    if (op2)
 	      {
-		tree_constant b = op2->eval (0);
+		tree_constant b = op2->eval (false);
 		if (error_state)
 		  {
 		    eval_error ();
@@ -583,7 +583,7 @@ tree_binary_expression::print_code (ostream& os)
 // Simple assignment expressions.
 
 tree_simple_assignment_expression::tree_simple_assignment_expression
-  (tree_identifier *i, tree_expression *r, int plhs, int ans_assign,
+  (tree_identifier *i, tree_expression *r, bool plhs, bool ans_assign,
    int l, int c)
     : tree_expression (l, c)
       {
@@ -593,8 +593,8 @@ tree_simple_assignment_expression::tree_simple_assignment_expression
       }
 
 tree_simple_assignment_expression::tree_simple_assignment_expression
-  (tree_index_expression *idx_expr, tree_expression *r, int plhs,
-   int ans_assign, int l, int c)
+  (tree_index_expression *idx_expr, tree_expression *r, bool plhs,
+   bool ans_assign, int l, int c)
     : tree_expression (l, c)
       {
 	init (plhs, ans_assign);
@@ -617,7 +617,7 @@ tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
   delete rhs;
 }
 
-int
+bool
 tree_simple_assignment_expression::left_hand_side_is_identifier_only (void)
 {
   return lhs->is_identifier_only ();
@@ -630,7 +630,7 @@ tree_simple_assignment_expression::left_hand_side_id (void)
 }
 
 tree_constant
-tree_simple_assignment_expression::eval (int print)
+tree_simple_assignment_expression::eval (bool print)
 {
   assert (etype == tree_expression::assignment);
 
@@ -641,7 +641,7 @@ tree_simple_assignment_expression::eval (int print)
 
   if (rhs)
     {
-      tree_constant rhs_val = rhs->eval (0);
+      tree_constant rhs_val = rhs->eval (false);
       if (error_state)
 	{
 	  eval_error ();
@@ -694,6 +694,7 @@ tree_simple_assignment_expression::eval_error (void)
     {
       int l = line ();
       int c = column ();
+
       if (l != -1 && c != -1)
 	::error ("evaluating assignment expression near line %d, column %d",
 		 l, c);
@@ -732,11 +733,11 @@ tree_simple_assignment_expression::print_code (ostream& os)
 
 // Colon expressions.
 
-int
+bool
 tree_colon_expression::is_range_constant (void) const
 {
-  int tmp = (op1 && op1->is_constant ()
-	     && op2 && op2->is_constant ());
+  bool tmp = (op1 && op1->is_constant ()
+	      && op2 && op2->is_constant ());
 
   return op3 ? (tmp && op3->is_constant ()) : tmp;
 }
@@ -758,14 +759,14 @@ tree_colon_expression::chain (tree_expression *t)
 }
 
 tree_constant
-tree_colon_expression::eval (int /* print */)
+tree_colon_expression::eval (bool /* print */)
 {
   tree_constant retval;
 
   if (error_state || ! op1 || ! op2)
     return retval;
 
-  tree_constant tmp = op1->eval (0);
+  tree_constant tmp = op1->eval (false);
 
   if (tmp.is_undefined ())
     {
@@ -782,7 +783,7 @@ tree_colon_expression::eval (int /* print */)
       return retval;
     }
 
-  tmp = op2->eval (0);
+  tmp = op2->eval (false);
 
   if (tmp.is_undefined ())
     {
@@ -802,7 +803,7 @@ tree_colon_expression::eval (int /* print */)
   double inc = 1.0;
   if (op3)
     {
-      tmp = op3->eval (0);
+      tmp = op3->eval (false);
 
       if (tmp.is_undefined ())
 	{

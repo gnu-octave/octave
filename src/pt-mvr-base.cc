@@ -1,7 +1,7 @@
 // pt-mvr-base.cc                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // A base class for objects that can be return multiple values
 
 tree_constant
-tree_multi_val_ret::eval (int /* print */)
+tree_multi_val_ret::eval (bool /* print */)
 {
   panic ("invalid evaluation of generic expression");
   return tree_constant ();

@@ -313,6 +313,15 @@ idx_vector::sort_uniq (void)
     }
 }
 
+void
+idx_vector::shorten (int n)
+{
+  if (n > 0 && n <= len)
+    len = n;
+  else
+    panic_impossible ();
+}
+
 ostream&
 operator << (ostream& os, const idx_vector& a)
 {

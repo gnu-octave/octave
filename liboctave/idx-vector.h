@@ -64,6 +64,8 @@ public:
   void sort (void);
   void sort_uniq (void);
 
+  void shorten (int n); // Unsafe.  Avoid at all cost.
+
 // i/o
 
   friend ostream& operator << (ostream& os, const idx_vector& a);

@@ -1,0 +1,80 @@
+#
+# Makefile for octave's doc/faq directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ../..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+SOURCES =
+
+TEXINFO := FAQ.texi
+
+FORMATTED := FAQ.info FAQ.dvi FAQ.ps
+
+DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
+
+SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
+
+%.spell : %.texi
+	rm -f $@
+	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
+	mv $@.tmp $@
+
+all: FAQ.info FAQ.dvi FAQ.ps
+.PHONY: all
+
+FAQ.info: FAQ.texi
+	-makeinfo -I$(srcdir) -I$(srcdir)/.. FAQ.texi
+
+FAQ.dvi: FAQ.texi
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
+	  export TEXINPUTS ; \
+	  texi2dvi $(srcdir)/FAQ.texi
+
+FAQ.ps: FAQ.dvi
+	-dvips -o FAQ.ps FAQ.dvi
+
+check install uninstall mostlyclean clean:
+.PHONY: check install uninstall mostlyclean clean
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+spell: $(SPELL)
+.PHONY: spell
+
+distclean: clean
+	rm -f Makefile
+.PHONY: distclean
+
+maintainer-clean: distclean
+	rm -f tags TAGS FAQ.info FAQ.info-* FAQ.dvi FAQ.ps
+.PHONY: maintainer-clean
+
+local-dist: all
+	ln $(DISTFILES) ../`cat ../.fname`/doc/faq
+.PHONY: local-dist
+
+dist: all
+	ln $(DISTFILES) ../`cat ../.fname`/doc/faq
+.PHONY: dist
+
+doc-dist: all
+	ln $(FORMATTED) ../`cat ../.fname`/doc/faq
+.PHONY: doc-dist

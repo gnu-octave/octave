@@ -1,0 +1,115 @@
+#
+# Makefile for octave's doc/liboctave directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ../..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+SOURCES =
+
+TEXINFO = liboctave.texi
+
+FORMATTED = liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
+
+DISTFILES = Makefile.in conf.texi $(TEXINFO) $(FORMATTED)
+
+SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
+
+%.spell : %.texi
+	rm -f $@
+	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
+	mv $@.tmp $@
+
+all: conf.texi liboctave.info liboctave.dvi liboctave.ps
+.PHONY: all
+
+# This mess is supposed to prevent us from making info files
+# unnecessarily when building Octave in a subdirectory.
+
+conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
+	$(srcdir)/../conf.texi.in
+	@echo "Making conf.texi from conf.texi.in..."
+	@(version_val=${version}; \
+	sed < $(srcdir)/../conf.texi.in > conf.texi.tmp \
+	-e "s;%OCTAVE_VERSION%;$$version_val;" \
+	-e "s;%OCTAVE_HOME%;${prefix};")
+	@if test "$(srcdir)" = "." ; then \
+	  $(top_srcdir)/move-if-change conf.texi.tmp conf.texi; \
+	else \
+	  if cmp conf.texi.tmp $(srcdir)/conf.texi > /dev/null; then \
+	    echo conf.texi is unchanged; \
+	    rm -f conf.texi.tmp; \
+	  else \
+	    mv -f conf.texi.tmp conf.texi; \
+	  fi; \
+	fi
+
+liboctave.info: $(LIB_TEXINFO) conf.texi
+	-makeinfo -I$(srcdir) -I$(srcdir)/.. liboctave.texi
+
+liboctave.dvi: $(LIB_TEXINFO) conf.texi
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
+	  export TEXINPUTS ; \
+	  texi2dvi $(srcdir)/liboctave.texi
+
+liboctave.ps: liboctave.dvi
+	-dvips -o liboctave.ps liboctave.dvi
+
+check:
+.PHONY: check
+
+install: all
+.PHONY: install
+
+uninstall:
+	rm -f $(infodir)/liboctave.info*
+.PHONY: uninstall
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+spell: $(SPELL)
+.PHONY: spell
+
+mostlyclean clean:
+	rm -f liboctave.cp liboctave.fn liboctave.pg liboctave.tp \
+	liboctave.cps liboctave.fns liboctave.pgs liboctave.tps \
+	liboctave.aux liboctave.log liboctave.toc
+.PHONY: mostlyclean clean
+
+distclean: clean
+	rm -f Makefile
+.PHONY: distclean
+
+maintainer-clean: distclean
+	rm -f tags TAGS liboctave.info liboctave.info-* \
+	liboctave.dvi liboctave.ps
+.PHONY: maintainer-clean
+
+local-dist: all
+	ln $(DISTFILES) ../`cat ../.fname`/doc/liboctave
+.PHONY: local-dist
+
+dist: all
+	ln $(DISTFILES) ../`cat ../.fname`/doc/liboctave
+.PHONY: dist
+
+doc-dist: all
+	ln $(FORMATTED) ../`cat ../.fname`/doc/liboctave
+.PHONY: doc-dist

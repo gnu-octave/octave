@@ -1,0 +1,64 @@
+#
+# Makefile for octave's doc directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+SOURCES =
+
+DISTFILES = Makefile.in conf.texi.in texinfo.tex 
+
+SUBDIRS = faq interpreter liboctave refcard
+
+DISTSUBDIRS = $(SUBDIRS)
+
+all: $(SUBDIRS)
+.PHONY: all
+
+$(SUBDIRS):
+	echo making all in $@
+	cd $@ ; $(MAKE) all
+.PHONY: $(SUBDIRS)
+
+install uninstall clean mostlyclean distclean maintainer-clean::
+	@$(subdir-for-command)
+.PHONY: install uninstall clean mostlyclean distclean maintainer-clean
+
+tags TAGS:: $(SOURCES)
+	$(SUBDIR_FOR_COMMAND)
+
+tags::
+	ctags $(SOURCES)
+
+TAGS:: $(SOURCES)
+	etags $(SOURCES)
+
+distclean::
+	rm -f Makefile
+
+maintainer-clean:: distclean
+	rm -f tags TAGS
+
+local-dist:
+	ln $(DISTFILES) ../`cat ../.fname`/doc
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/doc
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+.PHONY: dist

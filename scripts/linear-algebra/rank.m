@@ -39,13 +39,18 @@ function retval = rank (A, tol)
 
   if (nargin == 1)
     sigma = svd (A);
-    tolerance = max (size (A)) * sigma (1) * eps;
+    if (isempty (sigma))
+      tolerance = 0;
+    else
+      tolerance = max (size (A)) * sigma (1) * eps;
+    endif
   elseif (nargin == 2)
     sigma = svd (A);
     tolerance = tol;
   else
     usage ("rank (A)");
   endif
+
   retval = sum (sigma > tolerance);
 
 endfunction

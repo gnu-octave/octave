@@ -248,8 +248,9 @@ dnl
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_STDC_HEADERS
-AC_HAVE_HEADERS(string.h varargs.h unistd.h sys/utsname.h)dnl
-AC_HAVE_HEADERS(sys/time.h sys/fcntl.h sys/ttold.h sys/ptem.h sys/select.h)dnl
+AC_HAVE_HEADERS(string.h varargs.h unistd.h floatingpoint.h)dnl
+AC_HAVE_HEADERS(sys/utsname.h sys/time.h sys/fcntl.h)dnl
+AC_HAVE_HEADERS(sys/ttold.h sys/ptem.h sys/select.h)dnl
 AC_DIR_HEADER
 AC_HAVE_FUNCS(setvbuf getcwd gethostname bzero rindex vfprintf vsprintf)dnl
 AC_HAVE_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror)dnl

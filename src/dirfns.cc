@@ -49,6 +49,7 @@ Free Software Foundation, Inc.
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
 #include "oct-str.h"
@@ -498,7 +499,7 @@ is printed.")
       if (error_state)
 	{
 	  status = -1;
-	  error ("readdir: string argument expected");
+	  gripe_wrong_type_arg ("readdir", args(0));
 	}
       else
 	{
@@ -573,7 +574,7 @@ otherwise prints an error message.")
       const char *dirname = args(0).string_value ();
 
       if (error_state)
-	error ("mkdir: string argument expected");
+	gripe_wrong_type_arg ("mkdir", args(0));
       else if (mkdir (dirname, 0777) < 0)
 	{
 	  status = -1;
@@ -604,7 +605,7 @@ otherwise prints an error message.")
       const char *dirname = args(0).string_value ();
 
       if (error_state)
-	error ("rmdir: string argument expected");
+	gripe_wrong_type_arg ("rmdir", args(0));
       else if (rmdir (dirname) < 0)
 	{
 	  status = -1;
@@ -633,14 +634,18 @@ otherwise prints an error message and returns -1.")
   if (args.length () == 2)
     {
       const char *from = args(0).string_value ();
-      const char *to = args(1).string_value ();
-
       if (error_state)
-	error ("rename: string arguments expected");
-      else if (rename (from, to) < 0)
+	gripe_wrong_type_arg ("rename", args(0));
+      else
 	{
-	  status = -1;
-	  error ("%s", strerror (errno));
+	  const char *to = args(1).string_value ();
+	  if (error_state)
+	    gripe_wrong_type_arg ("rename", args(1));
+	  else if (rename (from, to) < 0)
+	    {
+	      status = -1;
+	      error ("%s", strerror (errno));
+	    }
 	}
     }
   else

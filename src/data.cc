@@ -741,6 +741,41 @@ DEFUN ("is_struct", Fis_struct, Sis_struct, 1, 1,
   return retval;
 }
 
+DEFUN ("struct_elements", Fstruct_elements, Sstruct_elements, 1, 1,
+  "struct_elements (S)\n\
+\n\
+Return a list of the names of the elements of the structure S.")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      if (args (0).is_map ())
+	{
+	  Octave_map m = args(0).map_value ();
+	  char **names = m.make_name_list ();
+	  Octave_str_obj list (m.length ());
+	  char **ptr = names;
+	  int i = 0;
+	  while (*ptr)
+	    {
+	      list(i++) = *ptr;
+	      delete [] *ptr++;
+	    }
+	  delete [] names;
+	  retval(0) = list;
+	}
+      else
+	gripe_wrong_type_arg ("struct_elements", args (0));
+    }
+  else
+    print_usage ("struct_elements");
+
+  return retval;
+}
+
 DEFUN ("struct_contains", Fstruct_contains, Sstruct_contains, 1, 2,
   "struct_contains (S, NAME)\n\
 \n\

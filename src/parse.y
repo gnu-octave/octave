@@ -31,6 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstdio>
+
 #ifdef YYBYACC
 #include <cstdlib>
 #endif
@@ -2913,31 +2915,47 @@ script file but without requiring the file to be named `FILE.m'.")
 }
 
 octave_value_list
+feval (const string& name, const octave_value_list& args, int nargout)
+{
+  octave_value_list retval;
+
+  octave_function *fcn = is_valid_function (name, "feval", 1);
+
+  if (fcn)
+    retval = fcn->do_index_op (nargout, args);
+
+  return retval;
+}
+
+octave_value_list
 feval (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  octave_function *fcn = is_valid_function (args(0), "feval", 1);
-
-  if (fcn)
+  if (args.length () > 0)
     {
-      string_vector arg_names = args.name_tags ();
+      string name = args(0).string_value ();
 
-      int tmp_nargin = args.length () - 1;
-
-      octave_value_list tmp_args (tmp_nargin, octave_value ());
-
-      string_vector tmp_arg_names (tmp_nargin);
-
-      for (int i = 0; i < tmp_nargin; i++)
+      if (! error_state)
 	{
-	  tmp_args(i) = args(i+1);
-	  tmp_arg_names(i) = arg_names(i+1);
+	  string_vector arg_names = args.name_tags ();
+
+	  int tmp_nargin = args.length () - 1;
+
+	  octave_value_list tmp_args (tmp_nargin, octave_value ());
+
+	  string_vector tmp_arg_names (tmp_nargin);
+
+	  for (int i = 0; i < tmp_nargin; i++)
+	    {
+	      tmp_args(i) = args(i+1);
+	      tmp_arg_names(i) = arg_names(i+1);
+	    }
+
+	  tmp_args.stash_name_tags (tmp_arg_names);
+
+	  retval = feval (name, tmp_args, nargout);
 	}
-
-      tmp_args.stash_name_tags (tmp_arg_names);
-
-      retval = fcn->do_index_op (nargout, tmp_args);
     }
 
   return retval;

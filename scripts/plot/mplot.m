@@ -74,6 +74,8 @@ function mplot (...)
 
     eval (sprintf ("gset origin %g, %g", xo, yo));
 
+    clearplot;
+
   endif
 
 endfunction

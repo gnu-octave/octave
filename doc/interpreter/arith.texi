@@ -774,6 +774,10 @@ $0/0$, or $\infty - \infty$,
 0/0, or @samp{Inf - Inf},
 @end ifinfo
 or any operation with a NaN.
+
+Note that NaN always compares not equal to NaN.  This behavior is
+specified by the IEEE standard for floating point arithmetic.  To
+find NaN values, you must use the @code{isnan} function.
 @end defvr
 
 @defvr {Built-in Variable} pi

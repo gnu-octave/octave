@@ -783,7 +783,7 @@ fclose (out);
 The variable @code{EXEC_PATH} is a colon separated list of directories
 to search when executing subprograms.  Its initial value is taken from
 the environment variable @code{OCTAVE_EXEC_PATH} (if it exists) or
-@code{PATH}, but that value can be overridden by the the command line
+@code{PATH}, but that value can be overridden by the command line
 argument @code{--exec-path PATH}, or by setting the value of
 @code{EXEC_PATH} in a startup script.  If the value of @code{EXEC_PATH}
 begins (ends) with a colon, the directories

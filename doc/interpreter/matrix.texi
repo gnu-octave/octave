@@ -177,7 +177,7 @@ indices of nonzero elements of a matrix.  For example,
 @end example
 
 If three outputs are requested, @code{find} also returns a vector
-containing the the nonzero values.  For example,
+containing the nonzero values.  For example,
 
 @example
 @group

@@ -36,9 +36,7 @@ extern double xerf (double x);
 extern double xerfc (double x);
 extern double xisnan (double x);
 extern double xfinite (double x);
-extern double xgamma (double x);
 extern double xisinf (double x);
-extern double xlgamma (double x);
 
 extern double xisnan (const Complex& x);
 extern double xfinite (const Complex& x);

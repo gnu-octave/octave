@@ -1,3 +1,13 @@
+Thu Feb 19 01:16:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc (xgamma, xlgamma): Define here.
+	* lo-mappers.cc: Not here.
+
+	* lo-specfun.h: Declare xgamma and xlgamma here.
+	* lo-mappers.h: Not here.
+
+	* lo-specfun.h: Never declare gamma or lgamma.
+
 Tue Feb 10 16:14:36 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array-idx.h (assign): Allow A([]) = X to succeed if X is an

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.297 $)
+AC_REVISION($Revision: 1.298 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -125,7 +125,7 @@ dnl ### Allow the user disable support for plplot.
 dnl 
 dnl # USE_PLPLOT=true
 dnl # PLPLOT_DIR=plplot
-dnl # LIBPLPLOT=../plplot/libplplot.a
+dnl # LIBPLPLOT='$(TOPDIR)/plplot/libplplot.$(LIBEXT)
 USE_PLPLOT=false
 PLPLOT_DIR=""
 LIBPLPLOT=""
@@ -147,7 +147,7 @@ AC_SUBST(PLPLOT_DIR)
 
 READLINE_DIR=readline
 USE_READLINE=true
-LIBREADLINE=../readline/libreadline.a
+LIBREADLINE='$(TOPDIR)/readline/libreadline.$(LIBEXT)'
 AC_ARG_ENABLE(readline,
   [  --enable-readline       use readline library (default is yes)],
   [if test "$enableval" = no; then
@@ -160,6 +160,9 @@ if $USE_READLINE; then
 fi
 AC_SUBST(LIBREADLINE)
 AC_SUBST(READLINE_DIR)
+
+LIBKPATHSEA='$(TOPDIR)/kpathsea/libkpathsea.$(LIBEXT)'
+AC_SUBST(LIBKPATHSEA)
 
 ### Make it possible to have Octave's array and matrix classes do bounds
 ### checking on element references.  This slows some operations down a
@@ -517,6 +520,19 @@ else
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
 
+if $SHARED_LIBS; then
+  LIBOCTINTERP=-loctinterp
+  LIBOCTAVE=-loctave
+  LIBCRUFT=-lcruft
+else
+  LIBOCTINTERP='$(TOPDIR)/src/liboctinterp.$(LIBEXT)'
+  LIBOCTAVE='$(TOPDIR)/liboctave/liboctave.$(LIBEXT)'
+  LIBCRUFT='$(TOPDIR)/libcruft/libcruft.$(LIBEXT)'
+fi
+AC_SUBST(LIBOCTINTERP)
+AC_SUBST(LIBOCTAVE)
+AC_SUBST(LIBCRUFT)
+
 use_rpath=true
 AC_ARG_ENABLE(rpath,
   [  --enable-rpath          add -rpath to link command for shared libraries],
@@ -672,10 +688,10 @@ AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS(assert.h curses.h fcntl.h float.h floatingpoint.h \
-  grp.h ieeefp.h limits.h memory.h nan.h ncurses.h pwd.h sgtty.h \
-  stdlib.h string.h sys/param.h sys/resource.h sys/select.h sys/stat.h \
-  sys/time.h sys/times.h sys/types.h sys/utsname.h termcap.h termio.h \
-  termios.h unistd.h varargs.h)
+  fnmatch.h glob.h grp.h ieeefp.h limits.h memory.h nan.h ncurses.h \
+  pwd.h sgtty.h stdlib.h string.h sys/param.h sys/resource.h \
+  sys/select.h sys/stat.h sys/time.h sys/times.h sys/types.h \
+  sys/utsname.h termcap.h termio.h termios.h unistd.h varargs.h)
 
 if test "$ac_cv_header_termios_h" = yes \
     || test "$ac_cv_header_termio_h" = yes \
@@ -685,6 +701,25 @@ else
   AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
 
+GLOB_DIR=glob
+LIBGLOB='$(TOPDIR)/glob/libglob.$(LIBEXT)'
+GLOB_INCFLAGS='-I$(top_srcdir)/glob -I$(TOPDIR)/glob'
+if test "$ac_cv_header_fnmatch.h" = yes \
+  && test "$ac_cv_header_glob.h" = yes; then
+  GLOB_DIR=
+  AC_CHECK_LIB(glob, glob)
+  AC_CHECK_FUNCS(fnmatch glob)
+  if test "$ac_cv_func_fnmatch" = yes \
+    && test "$ac_cv_func_glob" = yes; then
+    GLOB_DIR=
+    LIBGLOB=
+    GLOB_INCFLAGS=
+  fi
+fi
+AC_SUBST(GLOB_DIR)
+AC_SUBST(LIBGLOB)
+AC_SUBST(GLOB_INCFLAGS)
+
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
@@ -693,7 +728,7 @@ AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
   gettimeofday getuid getwd lstat memmove mkdir mkfifo on_exit pipe \
   putenv rename rindex rmdir setgrent setpwent setvbuf sigaction \
   sigpending sigprocmask sigsuspend stat strcasecmp strdup strerror \
-  stricmp strncasecmp strnicmp tempnam umask unlink usleep vfork \
+  stricmp strncasecmp strnicmp tempnam umask unlink usleep \
   vfprintf vsprintf waitpid)
 
 OCTAVE_SMART_PUTENV
@@ -855,18 +890,6 @@ esac
 ### Check for nonstandard but common math functions that we need.
 
 AC_CHECK_FUNCS(acosh asinh atanh erf erfc)
-
-case "$canonical_host_type" in
-  *-*-cygwin32)
-    AC_MSG_RESULT(assuming gamma works)
-    AC_DEFINE(HAVE_GAMMA, 1)
-    AC_MSG_RESULT(assuming lgamma works)
-    AC_DEFINE(HAVE_LGAMMA, 1)
-  ;;
-  *)
-    AC_CHECK_FUNCS(gamma lgamma)
-  ;;
-esac
 
 ### Checks for OS specific cruft.
 
@@ -1086,7 +1109,7 @@ export CC
 export CXX
 export F77
 
-AC_CONFIG_SUBDIRS(glob kpathsea scripts $PLPLOT_DIR $READLINE_DIR)
+AC_CONFIG_SUBDIRS($(GLOB_DIR) kpathsea scripts $PLPLOT_DIR $READLINE_DIR)
 
 ### Do the substitutions in all the Makefiles.
 

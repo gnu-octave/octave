@@ -139,7 +139,7 @@ The default value for @code{prefer_zero_one_indexing} is 0.
 @end defvr
 
 Finally, indexing a scalar with a vector of ones can be used to create a
-vector the same size as the the index vector, with each element equal to
+vector the same size as the index vector, with each element equal to
 the value of the original scalar.  For example, the following statements
 
 @example

@@ -169,7 +169,7 @@ C
 C-------------------------------------------------------------------
       LOGICAL FIRST
       INTEGER IZE,K,L,MAGX,N,NB,NBMX,NCALC,NEND,NSIG,NSTART
-      DOUBLE PRECISION DGAMMA, D1MACH
+      DOUBLE PRECISION DGAMMA, D1MACH,
      1 ALPHA,B,CONST,CONV,EM,EMPAL,EMP2AL,EN,ENMTEN,ENSIG,
      2 ENTEN,EXPARG,FUNC,HALF,HALFX,ONE,P,PLAST,POLD,PSAVE,PSAVEL,
      3 RTNSIG,SUM,TEMPA,TEMPB,TEMPC,TEST,TOVER,TWO,X,XLARGE,ZERO
@@ -192,7 +192,7 @@ C-------------------------------------------------------------------
 C  Machine-dependent parameters
 C-------------------------------------------------------------------
       IF (FIRST) THEN
-        NSIG = NINT (-LOG (D1MACH (1)))
+        NSIG = NINT (-LOG (D1MACH (4)))
         ENTEN = 1.0D1 ** (INT (LOG10 (D1MACH (2))))
         ENSIG = 1.0D1 ** NSIG
         RTNSIG = 1.0D1 ** (-NINT (NSIG / 4.0))

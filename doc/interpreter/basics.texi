@@ -636,7 +636,7 @@ the history as necessary.  This is an incremental search.
 
 @item C-s
 Search forward starting at the current line and moving `down' through
-the the history as necessary.
+the history as necessary.
 @end table
 
 On most terminals, you can also use the arrow keys in place of @kbd{C-p}

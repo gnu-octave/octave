@@ -59,7 +59,7 @@ function [in, out, pid] = popen2 (command, args)
 
       if (stdin_status == 0 && stdout_status == 0)
 
-	pid = vfork ();
+	pid = fork ();
 
 	if (pid == 0)
 

@@ -78,4 +78,6 @@ function subwindow (xn, yn)
 
   eval (sprintf ("gset origin %g, %g", xo, yo));
 
+  clearplot;
+
 endfunction

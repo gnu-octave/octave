@@ -556,7 +556,7 @@ symbols_of_ov_usr_fcn (void)
   DEFVAR (default_return_value, Matrix (), 0, 0,
     "the default for value for unitialized variables returned from\n\
 functions.  Only used if the variable initialize_return_values is\n\
-set to \"true\".");
+nonzero.");
 
   DEFVAR (define_all_return_values, 0.0, 0, define_all_return_values,
     "control whether values returned from functions should have a\n\

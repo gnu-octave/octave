@@ -1,6 +1,7 @@
-Fri Feb  6 00:29:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Fri Feb 20 01:31:32 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* miscellaneous/popen2.m: Use vfork instead of fork.
+	* plot/mplot.m, plot/subplot.m, plot/oneplot.m, plot/multiplot.m,
+	plot/subwindow.m: Call clearplot after setting up multiplot mode.
 
 Tue Feb  3 00:18:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -65,7 +65,7 @@ error: nargin != 1
 @end deftypefn
 
 @defvr {Built-in Variable} error_text
-This variable contains the the text of error messages that would have
+This variable contains the text of error messages that would have
 been printed in the body of the most recent @code{unwind_protect} or
 @code{try} statement or the @var{try} part of the most recent call to
 the @code{eval} function.  Outside of the @code{unwind_protect} and

@@ -286,7 +286,7 @@ This function is patterned after AWK.  You can get the same result by
 @section String Conversions
 
 @deftypefn {Function File} {} bin2dec (@var{s})
-Return a decimal number corresponding to the the binary number
+Return a decimal number corresponding to the binary number
 represented as a string of zeros and ones.  For example,
 
 @example
@@ -296,7 +296,7 @@ bin2dec ("1110")
 @end deftypefn
 
 @deftypefn {Function File} {} dec2bin (@var{n})
-Return a binary number corresponding the the nonnegative decimal number
+Return a binary number corresponding the nonnegative decimal number
 @var{n}, as a string of ones and zeros.  For example,
 
 @example

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "defun.h"
 #include "error.h"
 #include "pt-cmd.h"
 #include "ov.h"
@@ -36,6 +37,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-id.h"
 #include "pt-walk.h"
+#include "utils.h"
+#include "variables.h"
+
+// Control whether otherwise uninitialized global variables are
+// given a default value.
+static int Vinitialize_global_variables;
 
 // Declarations (global, static, etc.).
 
@@ -97,12 +104,13 @@ tree_global_command::do_init (tree_decl_elt& elt)
 
       octave_lvalue ult = id->lvalue ();
 
-      if (ult.is_undefined ())
+      if (ult.is_undefined () && Vinitialize_global_variables)
 	{
 	  tree_expression *expr = elt.expression ();
 
 	  octave_value init_val = expr
-	    ? expr->rvalue () : octave_value (Matrix ());
+	    ? expr->rvalue ()
+	    : builtin_any_variable ("default_global_variable_value");
 
 	  ult.assign (octave_value::asn_eq, init_val);
 	}
@@ -163,6 +171,27 @@ tree_static_command::eval (void)
 	::error ("evaluating static command near line %d, column %d",
 		 line (), column ());
     }
+}
+
+static int
+initialize_global_variables (void)
+{
+  Vinitialize_global_variables
+    = check_preference ("initialize_global_variables");
+
+  return 0;
+}
+
+void
+symbols_of_pt_decl (void)
+{
+  DEFVAR (default_global_variable_value, , 0, 0,
+    "the default for value for otherwise uninitialized global variables.\n\
+Only used if the variable initialize_global_variables is nonzero.");
+
+  DEFVAR (initialize_global_variables, 0.0, 0, initialize_global_variables,
+    "control whether otherwise uninitialized global variables are\n\
+given a default value.  See also default_global_variable_value");
 }
 
 /*

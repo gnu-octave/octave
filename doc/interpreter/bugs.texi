@@ -466,7 +466,7 @@ discussion of matters related to using and installing Octave.  If would
 like to join the discussion, please send a short note to
 @email{help-octave@strong{-request}@@bevo.che.wisc.edu}.
 
-@strong{Please do not} send requests to be added or removed from the the
+@strong{Please do not} send requests to be added or removed from the
 mailing list, or other administrative trivia to the list itself.
 
 If you think you have found a bug in the installation procedure,

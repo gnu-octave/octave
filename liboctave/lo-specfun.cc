@@ -115,35 +115,22 @@ erfc (double x)
 }
 #endif
 
-#if !defined (HAVE_GAMMA)
 double
-gamma (double x)
+xgamma (double x)
 {
-  double retval;
-  F77_XFCN (xdgamma, XDGAMMA, (x, retval));
-  return retval;
+  double result;
+  F77_XFCN (xdgamma, XDGAMMA, (x, result));
+  return result;
 }
-#endif
-
-#if !defined (HAVE_LGAMMA)
-// If the system doesn't have lgamma, assume that it doesn't have
-// signgam either.
-
-int signgam;
 
 double
-lgamma (double x)
+xlgamma (double x)
 {
-  double retval;
+  double result;
   double sgngam;
-
-  F77_XFCN (dlgams, DLGAMS, (x, retval, sgngam));
-
-  signgam = (int) sgngam;
-
-  return retval;
+  F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
+  return result;
 }
-#endif
 
 int
 F77_FCN (ribesl, RIBESL) (const double& x, const double& alpha,

@@ -47,13 +47,8 @@ extern double erf (double);
 extern double erfc (double);
 #endif
 
-#if !defined (HAVE_GAMMA)
-extern double gamma (double);
-#endif
-
-#if !defined (HAVE_LGAMMA)
-extern double lgamma (double);
-#endif
+extern double xgamma (double x);
+extern double xlgamma (double x);
 
 extern Matrix besselj (double alpha, const Matrix& x);
 extern Matrix bessely (double alpha, const Matrix& x);

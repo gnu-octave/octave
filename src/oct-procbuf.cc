@@ -55,6 +55,8 @@ octave_procbuf::open (const char *command, int mode)
 
   int pipe_fds[2];
 
+  volatile int child_std_end = (mode & ios::in) ? 1 : 0;
+
   volatile int parent_end, child_end;
 
   if (is_open ())
@@ -74,21 +76,15 @@ octave_procbuf::open (const char *command, int mode)
       child_end = pipe_fds[0];
     }
 
-#if defined HAVE_VFORK
-  proc_pid = vfork ();
-#else
-  proc_pid = fork ();
-#endif
+  proc_pid = ::fork ();
 
   if (proc_pid == 0)
     {
-      int child_std_end = (mode & ios::in) ? 1 : 0;
-
       ::close (parent_end);
 
       if (child_end != child_std_end)
 	{
-	  dup2 (child_end, child_std_end);
+	  ::dup2 (child_end, child_std_end);
 	  ::close (child_end);
 	}
 
@@ -153,7 +149,7 @@ octave_procbuf::sys_close (void)
 
   do
     {
-      wait_pid = waitpid (proc_pid, &wstatus, 0);
+      wait_pid = ::waitpid (proc_pid, &wstatus, 0);
     }
   while (wait_pid == -1 && errno == EINTR);
 

@@ -1,3 +1,18 @@
+Fri Feb 20 00:38:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in, Makeconf.in: Try to set things up to use the
+	system glob and fnmatch headers and functions if they exist.
+	Better handling of include and lib flags.
+
+Thu Feb 19 01:21:19 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't check for gamma or lgamma
+	* acconfig.h: Delete undef for HAVE_GAMMA and HAVE_LGAMMA.
+
+Wed Feb 18 15:05:54 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't check for vfork.
+
 Wed Feb 11 19:41:22 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (mk-libdir-link): Don't create link if a directory

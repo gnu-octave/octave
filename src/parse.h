@@ -82,6 +82,9 @@ extern bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
 extern octave_value_list
+feval (const string& name, const octave_value_list& args, int nargout);
+
+extern octave_value_list
 feval (const octave_value_list& args, int nargout);
 
 extern octave_value_list

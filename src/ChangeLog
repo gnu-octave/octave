@@ -1,3 +1,42 @@
+Fri Feb 20 00:41:06 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-plot.cc (GPLOT_CMD_REPLOT): Clear before replot.
+
+	* Makefile.in: Better handling of lib flags for linking.
+
+Thu Feb 19 21:14:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-decl.cc (Vinitialize_global_values): New static variable.
+	(initialize_global_variables): New function.
+	(symbols_of_pt_decl): New function.
+	DEFVAR Vinitialize_global_values and initialize_global_variables.
+	(tree_global_command::do_init): If initialize_global_variables is
+	not true and the variable doesn't have an explicit initializer, don't
+	initialize it.  If we are giving it a default value, use the value
+	of the variable defualt_global_variable_value.
+	* octave.cc (maximum_braindamage): Set default_global_variable_value
+	and initialize_global_variables to Matlab-compatible values.
+
+Wed Feb 18 04:35:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/besselj.cc: Rename from bessel.cc.
+	* Makefile.in (DLD_XSRC): Likewise.
+
+	* syscalls.cc (Fvfork): Delete.
+
+	* oct-procbuf.cc: Just use fork.
+
+	* parse.y (feval): Provide version that takes function name
+	separate from other args.
+	* parse.h: Declare it.
+
+	* oct-procbuf.cc (octave_procbuf::open): Move declaration of
+	child_std_end outside of child scope and declare volatile.
+
+Mon Feb 16 15:04:28 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y: Include cstdio, for SEEK_SET.
+
 Thu Feb 12 22:07:00 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* system.c: New file.

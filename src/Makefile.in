@@ -39,7 +39,7 @@ ifeq ($(OCTAVE_LITE), true)
   endif
 endif
 
-DLD_XSRC := balance.cc bessel.cc betainc.cc chol.cc colloc.cc dassl.cc \
+DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc dassl.cc \
 	det.cc eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc \
 	fsolve.cc gammainc.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc \
@@ -167,11 +167,11 @@ VAR_2 := $(patsubst %.y, %, $(VAR_3))
 VAR_1 := $(patsubst %.l, %, $(VAR_2))
 VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
 
-OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../glob \
-	-L../dlfcn -L. $(RLD_FLAG)
+OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
+  -L$(TOPDIR)/src $(RLD_FLAG)
 
-OCTAVE_LIBS = -loctinterp -loctave $(SPECIAL_MATH_LIB) -lcruft $(LIBPLPLOT) \
-	$(LIBREADLINE) ../kpathsea/libkpathsea.$(LIBEXT) -lglob $(LIBDLFCN)
+OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+  $(LIBPLPLOT) $(LIBREADLINE) $(LIBKPATHSEA) $(LIBGLOB) $(LIBDLFCN)
 
 LIBS = @LIBS@
 

@@ -109,7 +109,7 @@ static pid_t plot_stream_pid = 0;
 #endif
 
 #ifndef GPLOT_CMD_REPLOT 
-#define GPLOT_CMD_REPLOT "rep"
+#define GPLOT_CMD_REPLOT "cle;rep"
 #endif
 
 #ifndef GPLOT_CMD_SPLOT 

@@ -41,23 +41,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
 #endif
 
-extern "C"
-{
-  int F77_FCN (xdgamma, XDGAMMA) (const double&, double&);
-
-  int F77_FCN (dlgams, DLGAMS) (const double&, double&, double&);
-}
-
 #ifndef M_LOG10E
 #define M_LOG10E 0.43429448190325182765
 #endif
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
-#endif
-
-#if defined (HAVE_LGAMMA) && ! defined (SIGNGAM_DECLARED)
-extern int signgam;
 #endif
 
 // Double -> double mappers.
@@ -170,16 +159,6 @@ xfinite (double x)
 }
 
 double
-xgamma (double x)
-{
-  double result;
-
-  F77_XFCN (xdgamma, XDGAMMA, (x, result));
-
-  return result;
-}
-
-double
 xisinf (double x)
 {
 #if defined (HAVE_ISINF)
@@ -189,17 +168,6 @@ xisinf (double x)
 #else
   return 0;
 #endif
-}
-
-double
-xlgamma (double x)
-{
-  double result;
-  double sgngam;
-
-  F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
-
-  return result;
 }
 
 // Complex -> double mappers.

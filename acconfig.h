@@ -37,6 +37,9 @@
 /* Define if you have sgtty.h. */
 #undef HAVE_SGTTY_H
 
+/* Define if your system has a sys_siglist variable. */
+#undef HAVE_SYS_SIGLIST
+
 /* Define if you have termios.h. */
 #undef HAVE_TERMIOS_H
 

@@ -47,7 +47,7 @@ int can_interrupt = 0;
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {
-  error ("caught %s -- stopping myself...", sig_name);
+  error ("%s -- stopping myself...", sig_name);
   clean_up_and_exit (sig_number);
 }
 
@@ -220,7 +220,7 @@ install_signal_handlers (void)
 #endif
 }
 
-#ifndef SYS_SIGLIST_DECLARED
+#ifndef HAVE_SYS_SIGLIST
 char *sys_siglist[NSIG + 1] =
 {
 #ifdef AIX

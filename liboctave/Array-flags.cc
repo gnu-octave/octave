@@ -31,16 +31,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (HEAVYWEIGHT_INDEXING)
 #if defined (OCTAVE_SOURCE)
-#include "user-prefs.h"
-int& dfi_flag = user_pref.do_fortran_indexing;
-int& pcv_flag = user_pref.prefer_column_vectors;
-int& pzo_flag = user_pref.prefer_zero_one_indexing;
-int& rre_flag = user_pref.resize_on_range_error;
-#else
-int dfi_flag = 0;
-int pcv_flag = 0;
-int pzo_flag = 0;
-int rre_flag = 0;
+int liboctave_dfi_flag = 0;
+int liboctave_pcv_flag = 0;
+int liboctave_pzo_flag = 0;
+int liboctave_rre_flag = 0;
 #endif
 #endif
 

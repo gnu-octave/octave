@@ -18,11 +18,16 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-MATRIX_INC := Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
-	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
-	CRowVector.h CmplxAEPBAL.h CmplxCHOL.h CmplxDET.h CmplxHESS.h \
-	CmplxLU.h CmplxQR.h CmplxQRP.h CmplxSCHUR.h CmplxSVD.h EIG.h \
-	chMatrix.h \
+LIBOCTAVE_LFLAGS = -L../libcruft -L../readline -L../kpathsea \
+	-L../glob -L. $(RLD_FLAG)
+
+LIBOCTAVE_LIBS = -lcruft -lreadline -lkpathsea -lglob
+
+MATRIX_INC := Array.h Array-flags.h Array-idx.h MArray.h Matrix.h \
+	mx-base.h mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h \
+	CMatrix.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h CmplxDET.h \
+	CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h CmplxSCHUR.h \
+	CmplxSVD.h EIG.h chMatrix.h \
 	dColVector.h dDiagMatrix.h dMatrix.h dRowVector.h dbleAEPBAL.h \
 	dbleCHOL.h dbleDET.h dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h \
 	dbleQRP.h dbleSCHUR.h dbleSVD.h
@@ -42,7 +47,7 @@ TI_SRC := Array-C.cc Array-ch.cc Array-i.cc Array-d.cc Array-s.cc \
 	Array-str.cc \
 	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
 
-MATRIX_SRC := Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
+MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc \
 	CmplxHESS.cc CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc \
 	CmplxSVD.cc EIG.cc chMatrix.cc dColVector.cc dDiagMatrix.cc \
@@ -98,7 +103,7 @@ liboctave.a: $(OBJECTS)
 stamp-shared: $(PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CXX) -shared -o liboctave.$(SHLEXT) $(PICOBJ) \
-	  -L../libcruft -lcruft; \
+	  $(LIBOCTAVE_LFLAGS) $(LIBOCTAVE_LIBS); \
 	else true; fi
 	touch stamp-shared
 

@@ -1,6 +1,7 @@
 2002-10-03  Paul Kienzle <pkienzle@users.sf.net>
 
-	* oct-time.cc: Win32 version of octave_time::stamp().
+	* oct-time.cc (octave_time::stamp): Better resolution for Windows
+	systems.
 
 2002-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -24,6 +24,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+#include <windows.h>
+
+#else
+
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -39,37 +50,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/poll.h>
 #endif
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-static void
-do_octave_usleep (unsigned int useconds)
-{
-#if defined (HAVE_USLEEP)
-
-  usleep (useconds);
-
-#elif defined (HAVE_SELECT)
-
-  struct timeval delay;
-
-  delay.tv_sec = 0;
-  delay.tv_usec = useconds;
-
-  select (0, 0, 0, 0, &delay);
-
-#elif defined (HAVE_POLL)
-
-  struct pollfd pfd;
-  int delay = useconds / 1000;
-
-  if (delay > 0)
-    poll (&fd, 0, delay);
-
 #endif
-}
 
 void
 octave_sleep (unsigned int seconds)
@@ -88,9 +69,42 @@ octave_usleep (unsigned int useconds)
   unsigned int usec = useconds % 1000000;
 
   if (sec > 0)
-    sleep (sec);
+    octave_sleep (sec);
 
-  do_octave_usleep (usec);
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+  /* Round to the nearest millisecond, with a minimum of 1 millisecond
+     if usleep was called with a a non-zero value.  */
+
+  if (usec > 500)
+    Sleep ((usec+500)/1000);
+  else if (usec > 0)
+    Sleep (1);
+  else
+    Sleep (0);
+
+#elif defined (HAVE_USLEEP)
+
+  usleep (usec);
+
+#elif defined (HAVE_SELECT)
+
+  struct timeval delay;
+
+  delay.tv_sec = 0;
+  delay.tv_usec = usec;
+
+  select (0, 0, 0, 0, &delay);
+
+#elif defined (HAVE_POLL)
+
+  struct pollfd pfd;
+  int delay = usec / 1000;
+
+  if (delay > 0)
+    poll (&fd, 0, delay);
+
+#endif
 }
 
 int

@@ -749,6 +749,22 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   return retval;
 }
 
+void
+octave_sleep (double seconds)
+{
+  if (seconds > 0)
+    {
+      double t;
+
+      unsigned int usec = modf (seconds, &t) * 1000000;
+
+      unsigned int sec = (t > UINT_MAX) ? UINT_MAX : (unsigned int) t;
+
+      octave_sleep (sec);
+      octave_usleep (usec);
+    }
+}
+
 static int
 treat_neg_dim_as_zero (void)
 {

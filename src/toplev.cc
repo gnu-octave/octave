@@ -497,6 +497,7 @@ variable @code{status} to the integer @samp{2}.\n\
 
 	  if (type == async)
 	    {
+#ifdef HAVE_FORK
 	      pid_t pid = fork ();
 
 	      if (pid < 0) 
@@ -512,6 +513,9 @@ variable @code{status} to the integer @samp{2}.\n\
 		}
 	      else
 		retval(0) = static_cast<double> (pid);
+#else
+ 	      error ("asynchronous system calls are not supported");
+#endif
 	    }
 	  else if (return_output)
 	    retval = run_command_and_return_output (cmd_str);

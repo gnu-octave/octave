@@ -497,11 +497,7 @@ clc;\n\
 	      octave_kbhit ();
 	    }
 	  else
-	    {
-	      int delay = NINT (dval);
-	      if (delay > 0)
-		octave_sleep (delay);
-	    }
+	    octave_sleep (dval);
 	}
     }
   else
@@ -530,11 +526,7 @@ Suspend the execution of the program for the given number of seconds.\n\
 	  if (xisnan (dval))
 	    warning ("sleep: NaN is an invalid delay");
 	  else
-	    {
-	      int delay = NINT (dval);
-	      if (delay > 0)
-		octave_sleep (delay);
-	    }
+	    octave_sleep (dval);
 	}
     }
   else

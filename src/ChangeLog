@@ -1,3 +1,21 @@
+2002-10-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cutils.c (octave_usleep): Call octave_sleep, not sleep.
+
+	* utils.cc (octave_sleep (double)): New function.
+	* utils.h: Provide decl.
+	* sysdep.cc (Fpause, Fsleep): Use it.
+
+	* cutils.c (do_octave_usleep): Merge with octave_usleep.
+	(octave_usleep): Make it work for Windows systems.  From Paul
+	Kienzle <pkienzle@users.sf.net>.
+
+2002-10-03  Paul Kienzle <pkienzle@users.sf.net>
+
+	* cutils.c (octave_usleep): Make it work for Windows systems.
+
+	* toplev.cc (Fsystem): Error message if fork is not available.
+
 2002-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cutils.c (octave_sleep): Handle Windows, which may not have

@@ -206,7 +206,7 @@ void
 symbols_of_oct_procbuf (void)
 {
   DEFVAR (kluge_procbuf_delay, static_cast<double> (Vkluge_procbuf_delay),
-	  0, kluge_procbuf_delay,
+	  kluge_procbuf_delay,
     "number of microseconds to delay in the parent after forking");
 }
 

@@ -609,13 +609,13 @@ string_fill_char (void)
 void
 symbols_of_pt_mat (void)
 {
-  DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
+  DEFVAR (empty_list_elements_ok, "warn", empty_list_elements_ok,
     "ignore the empty element in expressions like `a = [[], 1]'");
 
-  DEFVAR (implicit_num_to_str_ok, 0.0, 0, implicit_num_to_str_ok,
+  DEFVAR (implicit_num_to_str_ok, 0.0, implicit_num_to_str_ok,
     "make the result of things like `[97, 98, 99, \"123\"]' be a string");
 
-  DEFVAR (string_fill_char, " ", 0, string_fill_char,
+  DEFVAR (string_fill_char, " ", string_fill_char,
     "the character to fill with when creating string arrays.");
 }
 

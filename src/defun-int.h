@@ -45,9 +45,13 @@ install_builtin_function (octave_builtin::fcn f, const string& name,
 
 extern void
 install_builtin_variable (const string& n, const octave_value& v,
-			  bool iaf, bool p, bool e,
+			  bool p, bool e,
 			  symbol_record::change_function chg_fcn,
 			  const string& h);
+
+extern void
+install_builtin_constant (const string& n, const octave_value& v,
+			  bool p, const string& h);
 
 extern void
 alias_builtin (const string& alias, const string& name);
@@ -112,10 +116,14 @@ alias_builtin (const string& alias, const string& name);
 
 // How builtin variables are actually installed.
 
-#define DEFVAR_INTERNAL(name, sname, defn, inst_as_fcn, protect, \
-			chg_fcn, doc) \
-  install_builtin_variable (name, octave_value (defn), inst_as_fcn, \
-			    protect, (chg_fcn != 0), chg_fcn, doc)
+#define DEFVAR_INTERNAL(name, sname, defn, protect, chg_fcn, doc) \
+  install_builtin_variable (name, octave_value (defn), protect, \
+			    (chg_fcn != 0), chg_fcn, doc)
+
+// How builtin variables are actually installed.
+
+#define DEFCONST_INTERNAL(name, sname, defn, protect, doc) \
+  install_builtin_constant (name, octave_value (defn), protect, doc)
 
 // How mapper functions are actually installed.
 

@@ -332,7 +332,7 @@ print_rhs_assign_val (void)
 void
 symbols_of_pt_assign (void)
 {
-  DEFVAR (print_rhs_assign_val, 0.0, 0, print_rhs_assign_val,
+  DEFVAR (print_rhs_assign_val, 0.0, print_rhs_assign_val,
     "if TRUE, print the right hand side of assignments instead of the left");
 }
 

@@ -415,13 +415,13 @@ loadpath (void)
 void
 symbols_of_defaults (void)
 {
-  DEFVAR (EDITOR, Veditor, 0, editor,
+  DEFVAR (EDITOR, Veditor, editor,
     "name of the editor to be invoked by the edit_history command");
 
-  DEFVAR (EXEC_PATH, Vexec_path, 0, exec_path,
+  DEFVAR (EXEC_PATH, Vexec_path, exec_path,
     "colon separated list of directories to search for programs to run");
 
-  DEFVAR (LOADPATH, Vload_path, 0, loadpath,
+  DEFVAR (LOADPATH, Vload_path, loadpath,
     "colon separated list of directories to search for scripts.\n\
 The default value is \":\", which means to search the default list\n\
 of directories.  The default list of directories may be found in\n\
@@ -430,7 +430,7 @@ the built-in constant DEFAULT_LOADPATH");
   DEFCONST (DEFAULT_LOADPATH, Vdefault_load_path,
     "the default colon separated list of directories to search for scripts");
   
-  DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0, imagepath,
+  DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, imagepath,
     "colon separated list of directories to search for image files");
 
   DEFCONST (OCTAVE_HOME, Voctave_home,

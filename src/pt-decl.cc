@@ -188,11 +188,11 @@ initialize_global_variables (void)
 void
 symbols_of_pt_decl (void)
 {
-  DEFVAR (default_global_variable_value, , 0, 0,
+  DEFVAR (default_global_variable_value, , 0,
     "the default for value for otherwise uninitialized global variables.\n\
 Only used if the variable initialize_global_variables is nonzero.");
 
-  DEFVAR (initialize_global_variables, 0.0, 0, initialize_global_variables,
+  DEFVAR (initialize_global_variables, 0.0, initialize_global_variables,
     "control whether otherwise uninitialized global variables are\n\
 given a default value.  See also default_global_variable_value");
 }

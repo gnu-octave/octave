@@ -330,7 +330,7 @@ beep_on_error (void)
 void
 symbols_of_error (void)
 {
-  DEFVAR (beep_on_error, 0.0, 0, beep_on_error,
+  DEFVAR (beep_on_error, 0.0, beep_on_error,
     "if true, beep before printing error messages");
 
   DEFCONST (error_text, "",

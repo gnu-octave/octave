@@ -2107,7 +2107,7 @@ whitespace_in_literal_matrix (void)
 void
 symbols_of_lex (void)
 {
-  DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
+  DEFVAR (whitespace_in_literal_matrix, "", whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
 }
 

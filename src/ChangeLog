@@ -1,4 +1,47 @@
+Wed Jul 21 15:38:52 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_record::define, symbol_record::variable_reference):
+	Handle constants the same as functions.
+	(symbol_record::link_to_builtin_variable): New function.
+	(symbol_record::define_builtin_const): New function.
+	(symbol_record::define_as_fcn): Delete unused function.
+	(symbol_record::read_only_error):
+	Handle constants the same as variables.
+	* symtab.h (symbol_record::BUILTIN_CONSTANT): New enum value.
+	(symbol_record::symbol_type): Increase width to 7 bits.
+	(symbol_record::symbol_def::is_constant): New function.
+	(symbol_record::symbol_def::is_builtin_constant): New function.
+	(symbol_record::is_constant): New function.
+	(symbol_record::is_builtin_constant): New function.
+	(SYMTAB_ALL_TYPES): Add symbol_record::BUILTIN_CONSTANT.
+	* variables.cc (link_to_builtin_variable): Delete unused function.
+	(link_to_builtin_or_function): Handle built-in constants here too.
+
+	* defun.cc (install_builtin_variable): Delete inst_as_fcn arg.
+	(install_builtin_constant): New function.
+	(install_builtin_variable_as_function): Delete unused function.
+	* defun.h (DEFVAR_INTERNAL): Delete inst_as_fcn arg.
+	(DEFCONST_INTERNAL): New macro.
+	* defun.h (DEFVAR): Delete inst_as_fcn arg.
+	(DEFCONST, DEFCONSTX): Define using DEFCONST_INTERNAL instead of
+	DEFVAR_INTERNAL.
+	* data.cc, defaults.cc, error.cc, help.cc, input.cc, lex.l,
+	load-save.cc, oct-hist.cc, oct-procbuf.cc, ov-fcn.h,
+	ov-usr-fcn.cc, ov.cc, pager.cc, parse.y, pr-output.cc,
+	pt-assign.cc, pt-decl.cc, pt-mat.cc, pt-plot.cc, pt-stmt.cc,
+	toplev.cc, variables.cc:
+	Change all invocations of DEFVAR to match new definition.
+
+	* data.cc (symbols_of_data): Add DEFCONSTs for true and false.
+
 Thu Jul 15 10:59:42 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Fis_bool, Fis_complex, Fisempty, Fisnumeric, Fis_list,
+	Fis_map, Fis_struct): Return bool object.
+	(Fisreal): New function.
+
+	* ov-str-mat.h (octave_char_matrix_str): Only return true if
+	Vimplicit_str_to_num_ok is also true.
 
 	* DLD-FUNCTIONS/time.cc (Ftime): Print usage message if	any
 	arguments are supplied.

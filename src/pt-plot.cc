@@ -1240,34 +1240,34 @@ gnuplot_has_multiplot (void)
 void
 symbols_of_pt_plot (void)
 {
-  DEFVAR (automatic_replot, 0.0, 0, automatic_replot,
+  DEFVAR (automatic_replot, 0.0, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
-  DEFVAR (gnuplot_binary, "gnuplot", 0, gnuplot_binary,
+  DEFVAR (gnuplot_binary, "gnuplot", gnuplot_binary,
     "path to gnuplot binary");
 
-  DEFVAR (gnuplot_command_plot, "pl", 0, gnuplot_command_plot,
+  DEFVAR (gnuplot_command_plot, "pl", gnuplot_command_plot,
     "");
 
-  DEFVAR (gnuplot_command_replot, "rep", 0, gnuplot_command_replot,
+  DEFVAR (gnuplot_command_replot, "rep", gnuplot_command_replot,
     "");
 
-  DEFVAR (gnuplot_command_splot, "sp", 0, gnuplot_command_splot,
+  DEFVAR (gnuplot_command_splot, "sp", gnuplot_command_splot,
     "");
 
-  DEFVAR (gnuplot_command_using, "u", 0, gnuplot_command_using,
+  DEFVAR (gnuplot_command_using, "u", gnuplot_command_using,
     "");
 
-  DEFVAR (gnuplot_command_with, "w", 0, gnuplot_command_with,
+  DEFVAR (gnuplot_command_with, "w", gnuplot_command_with,
     "");
 
-  DEFVAR (gnuplot_command_axes, "ax", 0, gnuplot_command_axes,
+  DEFVAR (gnuplot_command_axes, "ax", gnuplot_command_axes,
     "");
 
-  DEFVAR (gnuplot_command_title, "t", 0, gnuplot_command_title,
+  DEFVAR (gnuplot_command_title, "t", gnuplot_command_title,
     "");
 
-  DEFVAR (gnuplot_command_end, "\n", 0, gnuplot_command_end,
+  DEFVAR (gnuplot_command_end, "\n", gnuplot_command_end,
     "");
 
 #ifdef GNUPLOT_HAS_FRAMES
@@ -1276,7 +1276,7 @@ symbols_of_pt_plot (void)
   double with_frames = 0.0;
 #endif
 
-  DEFVAR (gnuplot_has_frames, with_frames, 0, gnuplot_has_frames,
+  DEFVAR (gnuplot_has_frames, with_frames, gnuplot_has_frames,
     "true if gnuplot supports multiple plot windows on X11, false otherwise");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
@@ -1285,7 +1285,7 @@ symbols_of_pt_plot (void)
   double with_multiplot = 0.0;
 #endif
 
-  DEFVAR (gnuplot_has_multiplot, with_multiplot, 0, gnuplot_has_multiplot,
+  DEFVAR (gnuplot_has_multiplot, with_multiplot, gnuplot_has_multiplot,
     "true if gnuplot supports multiplot, false otherwise");
 }
 

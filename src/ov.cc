@@ -1503,31 +1503,31 @@ warn_divide_by_zero (void)
 void
 symbols_of_ov (void)
 {
-  DEFVAR (do_fortran_indexing, 0.0, 0, do_fortran_indexing,
+  DEFVAR (do_fortran_indexing, 0.0, do_fortran_indexing,
     "allow single indices for matrices");
 
-  DEFVAR (implicit_str_to_num_ok, 0.0, 0, implicit_str_to_num_ok,
+  DEFVAR (implicit_str_to_num_ok, 0.0, implicit_str_to_num_ok,
     "allow implicit string to number conversion");
 
-  DEFVAR (ok_to_lose_imaginary_part, "warn", 0, ok_to_lose_imaginary_part,
+  DEFVAR (ok_to_lose_imaginary_part, "warn", ok_to_lose_imaginary_part,
     "silently convert from complex to real by dropping imaginary part");
 
-  DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,
+  DEFVAR (prefer_column_vectors, 1.0, prefer_column_vectors,
     "prefer column/row vectors");
 
-  DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
+  DEFVAR (print_answer_id_name, 1.0, print_answer_id_name,
     "set output style to print `var_name = ...'");
 
-  DEFVAR (propagate_empty_matrices, 1.0, 0, propagate_empty_matrices,
+  DEFVAR (propagate_empty_matrices, 1.0, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");
 
-  DEFVAR (resize_on_range_error, 1.0, 0, resize_on_range_error,
+  DEFVAR (resize_on_range_error, 1.0, resize_on_range_error,
     "enlarge matrices on assignment");
 
-  DEFVAR (struct_levels_to_print, 2.0, 0, struct_levels_to_print,
+  DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
     "number of levels of structure elements to print");
 
-  DEFVAR (warn_divide_by_zero, 1.0, 0, warn_divide_by_zero,
+  DEFVAR (warn_divide_by_zero, 1.0, warn_divide_by_zero,
     "if TRUE, warn about division by zero");
 }
 

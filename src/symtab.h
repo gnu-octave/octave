@@ -52,6 +52,9 @@ symbol_record
 {
 public:
 
+  // If you add or delete an entry here, you'll also need to change
+  // the with parameter in the declaration for symbol_type below...
+
   enum TYPE
     {
       UNKNOWN = 0,
@@ -60,7 +63,8 @@ public:
       BUILTIN_FUNCTION = 4,
       TEXT_FUNCTION = 8,
       MAPPER_FUNCTION = 16,
-      BUILTIN_VARIABLE = 32
+      BUILTIN_VARIABLE = 32,
+      BUILTIN_CONSTANT = 64
     };
 
 private:
@@ -77,6 +81,9 @@ private:
 	definition (val), next_elem (0), count (1) { }
 
     ~symbol_def (void) { }
+
+    bool is_constant (void) const
+      { return (symbol_type & symbol_record::BUILTIN_CONSTANT); }
 
     bool is_variable (void) const
       {
@@ -101,6 +108,9 @@ private:
 
     bool is_user_function (void) const
       { return (symbol_type & symbol_record::USER_FUNCTION); }
+
+    bool is_builtin_constant (void) const
+      { return (symbol_type & symbol_record::BUILTIN_CONSTANT); }
 
     bool is_builtin_variable (void) const
       { return (symbol_type & symbol_record::BUILTIN_VARIABLE); }
@@ -155,7 +165,7 @@ private:
     static octave_allocator allocator;
 
     // The type of this symbol (see the enum above).
-    unsigned int symbol_type : 6;
+    unsigned int symbol_type : 7;
 
     // Nonzero means this variable cannot be cleared.
     unsigned int eternal : 1;
@@ -225,6 +235,12 @@ public:
   bool is_builtin_function (void) const
     { return definition->is_builtin_function (); }
 
+  bool is_constant (void) const
+    { return definition->is_constant (); }
+
+  bool is_builtin_constant (void) const
+    { return definition->is_builtin_constant (); }
+
   bool is_variable (void) const
     { return definition->is_variable (); }
 
@@ -257,7 +273,7 @@ public:
 
   void define_builtin_var (const octave_value& v);
 
-  bool define_as_fcn (const octave_value& v);
+  bool define_builtin_const (const octave_value& v);
 
   bool define (octave_function *f, unsigned int sym_type);
 
@@ -323,6 +339,8 @@ private:
 
   void replace_all_defs (symbol_def *sd);
 
+  void link_to_builtin_variable (void);
+
   // No copying!
 
   symbol_record (const symbol_record& s);
@@ -342,7 +360,8 @@ private:
 			  | symbol_record::BUILTIN_FUNCTION \
 			  | symbol_record::TEXT_FUNCTION \
 			  | symbol_record::MAPPER_FUNCTION \
-			  | symbol_record::BUILTIN_VARIABLE)
+			  | symbol_record::BUILTIN_VARIABLE \
+			  | symbol_record::BUILTIN_CONSTANT)
 
 #define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE \
 			  | symbol_record::BUILTIN_VARIABLE)

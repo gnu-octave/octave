@@ -1889,19 +1889,19 @@ split_long_rows (void)
 void
 symbols_of_pr_output (void)
 {
-  DEFVAR (fixed_point_format, 0.0, 0, fixed_point_format,
+  DEFVAR (fixed_point_format, 0.0, fixed_point_format,
     "use scaled fixed point format for `format short' and `format long'");
 
-  DEFVAR (output_max_field_width, 10.0, 0, output_max_field_width,
+  DEFVAR (output_max_field_width, 10.0, output_max_field_width,
     "maximum width of an output field for numeric output");
 
-  DEFVAR (output_precision, 5.0, 0, output_precision,
+  DEFVAR (output_precision, 5.0, output_precision,
     "number of significant figures to display for numeric output");
 
-  DEFVAR (print_empty_dimensions, 1.0, 0, print_empty_dimensions,
+  DEFVAR (print_empty_dimensions, 1.0, print_empty_dimensions,
     "also print dimensions of empty matrices");
 
-  DEFVAR (split_long_rows, 1.0, 0, split_long_rows,
+  DEFVAR (split_long_rows, 1.0, split_long_rows,
     "split long matrix rows instead of wrapping");
 }
 

@@ -189,7 +189,7 @@ silent_functions (void)
 void
 symbols_of_pt_stmt (void)
 {
-  DEFVAR (silent_functions, 0.0, 0, silent_functions,
+  DEFVAR (silent_functions, 0.0, silent_functions,
     "suppress printing results in called functions");
 }
 

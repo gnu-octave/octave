@@ -883,19 +883,19 @@ echo_executing_commands (void)
 void
 symbols_of_input (void)
 {
-  DEFVAR (PS1, "\\s:\\#> ", 0, ps1,
+  DEFVAR (PS1, "\\s:\\#> ", ps1,
     "primary prompt string");
 
-  DEFVAR (PS2, "> ", 0, ps2,
+  DEFVAR (PS2, "> ", ps2,
     "secondary prompt string");
 
-  DEFVAR (PS4, "+ ", 0, ps4,
+  DEFVAR (PS4, "+ ", ps4,
     "string printed before echoed input (enabled by --echo-input)");
 
-  DEFVAR (completion_append_char, " ", 0, completion_append_char,
+  DEFVAR (completion_append_char, " ", completion_append_char,
     "the string to append after successful command-line completion attempts");
 
-  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF), 0,
+  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF),
 	  echo_executing_commands,
     "echo commands as they are executed");
 }

@@ -35,10 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   defn is the initial value for the variable.
 //
-//   inst_as_fcn is a flag that says whether to install the variable as
-//     if it were a function (allowing the name to also be used as a
-//     variable by users, but recover its original definition if cleared).
-//
 //   protect is a flag that says whether it should be possible to give
 //     the variable a new value.
 //
@@ -52,27 +48,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   doc is the simple help text for this variable.
 
-#define DEFVAR(name, defn, inst_as_fcn, chg_fcn, doc) \
-  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, false, chg_fcn, doc)
+#define DEFVAR(name, defn, chg_fcn, doc) \
+  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, false, chg_fcn, doc)
 
-// Define a builtin-constant `__name__', and a corresponding variable
-// `name' that can be redefined.  (The variable is actually installed
-// in the symbol table as a function, so that it doesn't work like a
-// global variable when redefined.)
+// Define a builtin constant `name' (which may be redefined, but will
+// retain its original value when cleared) and also an alias to it
+// called `__name__' (which may not be redefined).
 
 #define DEFCONST(name, defn, doc) \
-  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, true, false, 0, doc); \
-  DEFVAR_INTERNAL ("__" ## #name ## "__", XSBV_ ## name, defn, false, \
-		   true, 0, doc)
+  DEFCONST_INTERNAL (#name, SBV_ ## name, defn, false, doc); \
+  DEFCONST_INTERNAL ("__" ## #name ## "__", XSBV_ ## name, defn, true, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the name of the structure has to be passed too.
 
 #define DEFCONSTX(name, sname, defn, doc) \
-  DEFVAR_INTERNAL (name, sname, defn, true, false, 0, doc); \
-  DEFVAR_INTERNAL ("__" ## name ## "__", X ## sname, defn, false, true, \
-		   0, doc)
+  DEFCONST_INTERNAL (name, sname, defn, false, doc); \
+  DEFCONST_INTERNAL ("__" ## name ## "__", X ## sname, defn, true, doc)
 
 // Define a builtin function.
 //

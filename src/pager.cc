@@ -507,13 +507,13 @@ page_screen_output (void)
 void
 symbols_of_pager (void)
 {
-  DEFVAR (PAGER, default_pager (), 0, pager_binary,
+  DEFVAR (PAGER, default_pager (), pager_binary,
     "path to pager binary");
 
-  DEFVAR (page_output_immediately, 0.0, 0, page_output_immediately,
+  DEFVAR (page_output_immediately, 0.0, page_output_immediately,
     "if paging output, start sending it as soon as it is available");
 
-  DEFVAR (page_screen_output, 1.0, 0, page_screen_output,
+  DEFVAR (page_screen_output, 1.0, page_screen_output,
     "if possible, send output intended for the screen through the pager");
 }
 

@@ -27,7 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cstring>
 #include <cctype>
-#include <ctime>
 
 #include <string>
 
@@ -43,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-env.h"
+#include "oct-time.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -2450,9 +2450,8 @@ write_header (ostream& os, load_save_format format)
 
     case LS_ASCII:
       {
-	time_t now = time (0);
-
-	string time_string = asctime (gmtime (&now));
+	octave_gmtime now;
+	string time_string = now.asctime ();
 	time_string = time_string.substr (0, time_string.length () - 1);
 
 	os << "# Created by Octave " OCTAVE_VERSION ", "
@@ -2751,14 +2750,14 @@ save_precision (void)
 void
 symbols_of_load_save (void)
 {
-  DEFVAR (crash_dumps_octave_core, 1.0, 0, crash_dumps_octave_core,
+  DEFVAR (crash_dumps_octave_core, 1.0, crash_dumps_octave_core,
     "write octave-core file if Octave crashes or is killed by a signal");
 
-  DEFVAR (default_save_format, "ascii", 0, default_save_format,
+  DEFVAR (default_save_format, "ascii", default_save_format,
     "default format for files created with save, may be one of\n\
 \"binary\", \"text\", or \"mat-binary\"");
 
-  DEFVAR (save_precision, 15.0, 0, save_precision,
+  DEFVAR (save_precision, 15.0, save_precision,
     "number of significant figures kept by the ASCII save command");
 }
 

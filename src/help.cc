@@ -1063,13 +1063,13 @@ suppress_verbose_help_message (void)
 void
 symbols_of_help (void)
 {
-  DEFVAR (INFO_FILE, Vinfo_file, 0, info_file,
+  DEFVAR (INFO_FILE, Vinfo_file, info_file,
     "name of the Octave info file");
 
-  DEFVAR (INFO_PROGRAM, Vinfo_prog, 0, info_prog,
+  DEFVAR (INFO_PROGRAM, Vinfo_prog, info_prog,
     "name of the Octave info reader");
 
-  DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
+  DEFVAR (suppress_verbose_help_message, 0.0, suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\
 help and usage functions");
 }

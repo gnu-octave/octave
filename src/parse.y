@@ -3253,24 +3253,24 @@ warn_variable_switch_label (void)
 void
 symbols_of_parse (void)
 {
-  DEFVAR (default_eval_print_flag, 1.0, 0, default_eval_print_flag,
+  DEFVAR (default_eval_print_flag, 1.0, default_eval_print_flag,
     "If the value of this variable is nonzero, Octave will print the\n\
 results of commands executed by eval() that do not end with semicolons.");
 
-  DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
+  DEFVAR (warn_assign_as_truth_value, 1.0, warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
 
-  DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
+  DEFVAR (warn_function_name_clash, 1.0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
 
-  DEFVAR (warn_future_time_stamp, 1.0, 0, warn_future_time_stamp,
+  DEFVAR (warn_future_time_stamp, 1.0, warn_future_time_stamp,
     "warn if a function file has a time stamp that is in the future");
 
-  DEFVAR (warn_missing_semicolon, 0.0, 0, warn_missing_semicolon,
+  DEFVAR (warn_missing_semicolon, 0.0, warn_missing_semicolon,
     "produce a warning if a statement in a function file is not\n\
 terminated with a semicolon");
 
-  DEFVAR (warn_variable_switch_label, 0.0, 0, warn_variable_switch_label,
+  DEFVAR (warn_variable_switch_label, 0.0, warn_variable_switch_label,
     "produce warning for variables used as switch labels");
 }
 

@@ -759,7 +759,7 @@ DEFUN (is_bool, args, ,
   octave_value retval;
 
   if (args.length () == 1)
-    retval = args(0).is_bool_type () ? 1.0 : 0.0;
+    retval = args(0).is_bool_type ();
   else
     print_usage ("is_bool");
 
@@ -769,14 +769,27 @@ DEFUN (is_bool, args, ,
 DEFALIAS (islogical, is_bool);
 
 DEFUN (is_complex, args, ,
-  "is_complex (x): return nonzero if x is a complex numeric object")
+  "is_complex (x): return nonzero if x is a complex-valued numeric object")
 {
   octave_value retval;
 
   if (args.length () == 1)
-    retval = args(0).is_complex_type () ? 1.0 : 0.0;
+    retval = args(0).is_complex_type ();
   else
     print_usage ("is_complex");
+
+  return retval;
+}
+
+DEFUN (isreal, args, ,
+  "isreal (x): return nonzero if x is a real-valued numeric object")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_real_type ();
+  else
+    print_usage ("isreal");
 
   return retval;
 }
@@ -807,7 +820,7 @@ DEFUN (isnumeric, args, ,
   octave_value retval;
 
   if (args.length () == 1)
-    retval = args(0).is_numeric_type () ? 1.0 : 0.0;
+    retval = args(0).is_numeric_type ();
   else
     print_usage ("isnumeric");
 
@@ -820,7 +833,7 @@ DEFUN (is_list, args, ,
   octave_value retval;
 
   if (args.length () == 1)
-    retval = args(0).is_list () ? 1.0 : 0.0;
+    retval = args(0).is_list ();
   else
     print_usage ("is_list");
 
@@ -853,7 +866,7 @@ DEFUN (is_struct, args, ,
   octave_value retval;
 
   if (args.length () == 1)
-    retval = args(0).is_map () ? 1.0 : 0.0;
+    retval = args(0).is_map ();
   else
     print_usage ("is_struct");
 
@@ -1241,6 +1254,9 @@ symbols_of_data (void)
   DEFCONST (eps, DBL_EPSILON,
     "machine precision");
 
+  DEFCONST (false, false,
+    "logical false value");
+
   DEFCONST (i, Complex (0.0, 1.0),
     "sqrt (-1)");
 
@@ -1268,8 +1284,11 @@ symbols_of_data (void)
   DEFCONST (realmin, DBL_MIN,
     "realmin (): return smallest representable floating point number");
 
-  DEFVAR (treat_neg_dim_as_zero, 0.0, 0, treat_neg_dim_as_zero,
+  DEFVAR (treat_neg_dim_as_zero, 0.0, treat_neg_dim_as_zero,
     "convert negative dimensions to zero");
+
+  DEFCONST (true, true,
+    "logical true value");
 }
 
 /*

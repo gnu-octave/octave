@@ -84,7 +84,6 @@ extern int builtin_real_scalar_variable (const string&, double&);
 extern octave_value builtin_any_variable (const string&);
 
 extern void link_to_global_variable (symbol_record *sr);
-extern void link_to_builtin_variable (symbol_record *sr);
 extern void link_to_builtin_or_function (symbol_record *sr);
 
 extern void force_link_to_function (const string&);

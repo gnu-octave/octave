@@ -592,21 +592,21 @@ return_last_computed_value (void)
 void
 symbols_of_ov_usr_fcn (void)
 {
-  DEFVAR (default_return_value, Matrix (), 0, 0,
+  DEFVAR (default_return_value, Matrix (), 0,
     "the default for value for unitialized variables returned from\n\
 functions.  Only used if the variable initialize_return_values is\n\
 nonzero.");
 
-  DEFVAR (define_all_return_values, 0.0, 0, define_all_return_values,
+  DEFVAR (define_all_return_values, 0.0, define_all_return_values,
     "control whether values returned from functions should have a\n\
 value even if one has not been explicitly assigned.  See also\n\
 default_return_value");
 
-  DEFVAR (max_recursion_depth, 256.0, 0, max_recursion_depth,
+  DEFVAR (max_recursion_depth, 256.0, max_recursion_depth,
     "maximum nesting level for functions called recursively.\n\
 The default value is 256.");
 
-  DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
+  DEFVAR (return_last_computed_value, 0.0, return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\
   last computed value");
 }

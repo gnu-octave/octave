@@ -26,7 +26,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 #include <cstring>
-#include <ctime>
 
 #include <string>
 
@@ -714,19 +713,10 @@ link_to_global_variable (symbol_record *sr)
 // Make the definition of the symbol record sr be the same as the
 // definition of the builtin variable of the same name.
 
-void
-link_to_builtin_variable (symbol_record *sr)
-{
-  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name ());
-
-  if (tmp_sym && tmp_sym->is_builtin_variable ())
-    sr->alias (tmp_sym);
-}
-
 // Make the definition of the symbol record sr be the same as the
-// definition of the builtin variable or function, or user function of
-// the same name, provided that the name has not been used as a formal
-// parameter.
+// definition of the builtin variable, constant, or function, or user
+// function of the same name, provided that the name has not been used
+// as a formal parameter.
 
 void
 link_to_builtin_or_function (symbol_record *sr)
@@ -734,7 +724,9 @@ link_to_builtin_or_function (symbol_record *sr)
   symbol_record *tmp_sym = global_sym_tab->lookup (sr->name ());
 
   if (tmp_sym
-      && (tmp_sym->is_builtin_variable () || tmp_sym->is_function ())
+      && (tmp_sym->is_builtin_variable ()
+	  || tmp_sym->is_builtin_constant ()
+	  || tmp_sym->is_function ())
       && ! tmp_sym->is_formal_parameter ())
     sr->alias (tmp_sym);
 }
@@ -1207,10 +1199,10 @@ ignore_function_time_stamp (void)
 void
 symbols_of_variables (void)
 {
-  DEFVAR (ans, , 0, 0,
+  DEFVAR (ans, , 0,
     "");
 
-  DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
+  DEFVAR (ignore_function_time_stamp, "system", ignore_function_time_stamp,
     "don't check to see if function files have changed since they were\n\
 last compiled.  Possible values are \"system\" and \"all\"");
 }

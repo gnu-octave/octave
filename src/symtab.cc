@@ -73,7 +73,7 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
 {
   if (! (is_variable () && read_only_error ("redefine")))
     {
-      if (is_function ())
+      if (is_function () || is_constant ())
 	push_def (new symbol_def ());
 
       if (definition->type () == symbol_record::BUILTIN_VARIABLE)
@@ -93,13 +93,13 @@ symbol_record::define_builtin_var (const octave_value& v)
 }
 
 bool
-symbol_record::define_as_fcn (const octave_value& v)
+symbol_record::define_builtin_const (const octave_value& v)
 {
   bool retval = false;
 
-  if (! (is_variable () || read_only_error ("redefine")))
+  if (! read_only_error ("redefine"))
     {
-      replace_all_defs (new symbol_def (v, symbol_record::BUILTIN_FUNCTION));
+      replace_all_defs (new symbol_def (v, symbol_record::BUILTIN_CONSTANT));
 
       retval = true;
     }
@@ -230,16 +230,26 @@ symbol_record::variable_value (void)
   return is_variable () ? def () : foo;
 }
 
+inline void
+symbol_record::link_to_builtin_variable (void)
+{
+  symbol_record *tmp_sym = global_sym_tab->lookup (name ());
+
+  if (tmp_sym && tmp_sym->is_builtin_variable ())
+    alias (tmp_sym);
+}
+
+
 octave_lvalue
 symbol_record::variable_reference (void)
 {
-  if (is_function ())
+  if (is_function () || is_constant ())
     clear ();
 
   if (! is_defined ())
     {
       if (! (is_formal_parameter () || is_linked_to_global ()))
-	link_to_builtin_variable (this);
+	link_to_builtin_variable ();
 
       if (! is_defined ())
 	{
@@ -326,7 +336,7 @@ symbol_record::read_only_error (const char *action)
 {
   if (is_read_only ())
     {
-      if (is_variable ())
+      if (is_variable () || is_constant ())
 	::error ("can't %s read-only constant `%s'", action, nm.c_str ());
       else if (is_function ())
 	::error ("can't %s read-only function `%s'", action, nm.c_str ());

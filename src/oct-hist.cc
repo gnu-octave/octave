@@ -643,15 +643,15 @@ saving_history (void)
 void
 symbols_of_oct_hist (void)
 {
-  DEFVAR (history_file, default_history_file (), 0, history_file,
+  DEFVAR (history_file, default_history_file (), history_file,
     "name of command history file");
 
   double tmp_hist_size = default_history_size ();
 
-  DEFVAR (history_size, tmp_hist_size, 0, history_size,
+  DEFVAR (history_size, tmp_hist_size, history_size,
     "number of commands to save in the history list");
 
-  DEFVAR (saving_history, 1.0, 0, saving_history,
+  DEFVAR (saving_history, 1.0, saving_history,
     "save command history");
 }
 

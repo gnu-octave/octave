@@ -101,41 +101,34 @@ install_builtin_function (octave_builtin::fcn f, const string& name,
   sym_rec->protect ();
 }
 
-static void
-install_builtin_variable_as_function (const string& name,
-				      const octave_value& val,
-				      bool protect, bool eternal,
-				      const string& help)
+void
+install_builtin_constant (const string& name, const octave_value& val,
+			  bool protect, const string& help)
 {
   symbol_record *sym_rec = global_sym_tab->lookup (name, true);
   sym_rec->unprotect ();
 
   string tmp_help = help.empty () ? sym_rec->help () : help;
 
-  sym_rec->define_as_fcn (val);
+  sym_rec->define_builtin_const (val);
 
   sym_rec->document (tmp_help);
 
   if (protect)
     sym_rec->protect ();
 
-  if (eternal)
-    sym_rec->make_eternal ();
+  // XXX FIXME XXX -- shouldn't constants be eternal?
+  //  if (eternal)
+  //    sym_rec->make_eternal ();
 }
 
 void
 install_builtin_variable (const string& name, const octave_value& value,
-			  bool install_as_function,
 			  bool protect, bool eternal,
 			  symbol_record::change_function chg_fcn,
-			  const string& help_string)
+			  const string& doc)
 {
-  if (install_as_function)
-    install_builtin_variable_as_function (name, value, protect,
-					  eternal, help_string);
-  else
-    bind_builtin_variable (name, value, protect, eternal,
-			   chg_fcn, help_string);
+  bind_builtin_variable (name, value, protect, eternal, chg_fcn, doc);
 }
 
 void

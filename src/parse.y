@@ -1427,7 +1427,7 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
   if (Vwarn_assign_as_truth_value
       && expr->is_assignment_expression ()
-      && expr->is_in_parens () < 2)
+      && expr->paren_count () < 2)
     {
       warning ("suggest parenthesis around assignment used as truth value");
     }

@@ -42,7 +42,7 @@ tree_expression : public tree
 public:
 
   tree_expression (int l = -1, int c = -1)
-    : tree (l, c), in_parens (0) { }
+    : tree (l, c), num_parens (0) { }
 
   virtual ~tree_expression (void) { }
 
@@ -72,7 +72,8 @@ public:
 
   virtual bool is_logically_true (const char *);
 
-  virtual bool is_in_parens (void) { return in_parens; }
+  virtual int paren_count (void) const
+    { return num_parens; }
 
   virtual void mark_for_possible_ans_assign (void);
 
@@ -80,16 +81,26 @@ public:
 
   virtual octave_variable_reference reference (void);
 
-  virtual string oper (void) const { return "<unknown>"; }
+  virtual string oper (void) const
+    { return "<unknown>"; }
 
   virtual string original_text (void) const;
 
-  expression *mark_in_parens (void) { in_parens++; return this; }
+  tree_expression *mark_in_parens (void)
+    {
+      num_parens++;
+      return this;
+    }
 
 protected:
 
-  // Nonzero if this expression appears inside parentheses.
-  int in_parens;
+  // A count of the number of times this expression appears directly
+  // inside a set of parentheses.
+  //
+  //   (((e1)) + e2)  ==> 2 for expression e1
+  //                  ==> 1 for expression ((e1)) + e2
+  //                  ==> 0 for expression e2
+  int num_parens;
 };
 
 #endif

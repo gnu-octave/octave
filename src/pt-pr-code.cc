@@ -70,10 +70,7 @@ tree_print_code::visit_binary_expression (tree_binary_expression& expr)
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   tree_expression *op1 = expr.lhs ();
 
@@ -87,8 +84,7 @@ tree_print_code::visit_binary_expression (tree_binary_expression& expr)
   if (op2)
     op2->accept (*this);
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -104,10 +100,7 @@ tree_print_code::visit_colon_expression (tree_colon_expression& expr)
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   tree_expression *op1 = expr.base ();
 
@@ -132,8 +125,7 @@ tree_print_code::visit_colon_expression (tree_colon_expression& expr)
       op2->accept (*this);
     }
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -333,16 +325,12 @@ tree_print_code::visit_identifier (tree_identifier& id)
 {
   indent ();
 
-  bool in_parens = id.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (id, "(");
 
   string nm = id.name ();
   os << (nm.empty () ? string ("(empty)") : nm);
 
-  if (in_parens)
-    os << ")";
+  print_parens (id, ")");
 }
 
 void
@@ -420,10 +408,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   tree_indirect_ref *id = expr.ident ();
 
@@ -439,8 +424,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
       os << ")";
     }
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -448,18 +432,14 @@ tree_print_code::visit_indirect_ref (tree_indirect_ref& expr)
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   // The name of the indirect ref includes the sub-elements.
 
   string nm = expr.name ();
   os << (nm.empty () ? string ("(empty)") : nm);
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -467,10 +447,7 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 {
   indent ();
 
-  bool in_parens = lst.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (lst, "(");
 
   os << "[";
 
@@ -493,8 +470,7 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 
   os << "]";
 
-  if (in_parens)
-    os << ")";
+  print_parens (lst, ")");
 }
 
 void
@@ -524,10 +500,7 @@ tree_print_code::visit_multi_assignment_expression
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   tree_return_list *lhs = expr.left_hand_side ();
 
@@ -551,8 +524,7 @@ tree_print_code::visit_multi_assignment_expression
   if (rhs)
     rhs->accept (*this);
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -574,15 +546,11 @@ tree_print_code::visit_constant (tree_constant& val)
 {
   indent ();
 
-  bool in_parens = val.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (val, "(");
 
   val.print_raw (os, true, print_original_text);
 
-  if (in_parens)
-    os << ")";
+  print_parens (val, ")");
 }
 
 void
@@ -687,10 +655,7 @@ tree_print_code::visit_postfix_expression (tree_postfix_expression& expr)
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   tree_expression *e = expr.operand ();
 
@@ -699,8 +664,7 @@ tree_print_code::visit_postfix_expression (tree_postfix_expression& expr)
 
   os << expr.oper ();
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -708,10 +672,7 @@ tree_print_code::visit_prefix_expression (tree_prefix_expression& expr)
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   os << expr.oper ();
 
@@ -720,8 +681,7 @@ tree_print_code::visit_prefix_expression (tree_prefix_expression& expr)
   if (e)
     e->accept (*this);
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -759,10 +719,7 @@ tree_print_code::visit_simple_assignment_expression
 {
   indent ();
 
-  bool in_parens = expr.is_in_parens ();
-
-  if (in_parens)
-    os << "(";
+  print_parens (expr, "(");
 
   if (! expr.is_ans_assign ())
     {
@@ -788,8 +745,7 @@ tree_print_code::visit_simple_assignment_expression
   if (rhs)
     rhs->accept (*this);
 
-  if (in_parens)
-    os << ")";
+  print_parens (expr, ")");
 }
 
 void
@@ -1156,6 +1112,15 @@ tree_print_code::reset (void)
 {
   beginning_of_line = true;
   curr_print_indent_level = 0;
+}
+
+void
+tree_print_code::print_parens (const tree_expression& expr, const char *txt)
+{
+  int n = expr.paren_count ();
+
+  for (int i = 0; i < n; i++)
+    os << txt;
 }
 
 /*

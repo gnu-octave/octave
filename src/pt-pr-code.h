@@ -31,6 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pt-walk.h"
 
+class tree_expression;
+
 // How to print the code that the parse trees represent.
 
 class
@@ -159,6 +161,8 @@ private:
   void indent (void);
 
   void reset (void);
+
+  void print_parens (const tree_expression& expr, const char *txt);
 
   // Must create with an output stream!
 

@@ -2916,6 +2916,192 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
   return retval;
 }
 
+// XXX FIXME XXX -- it would be nice to share code among the min/max
+// functions below.
+
+#define EMPTY_RETURN_CHECK(T) \
+  if (nr == 0 || nc == 0) \
+    return T (nr, nc);
+
+ComplexMatrix
+min (const Complex& c, const ComplexMatrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (c, m (i, j));
+      }
+
+  return result;
+}
+
+ComplexMatrix
+min (const ComplexMatrix& m, const Complex& c)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (m (i, j), c);
+      }
+
+  return result;
+}
+
+ComplexMatrix
+min (const ComplexMatrix& a, const ComplexMatrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg min expecting args of same size");
+      return ComplexMatrix ();
+    }
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    {
+      int columns_are_real_only = 1;
+      for (int i = 0; i < nr; i++)
+	{
+	  OCTAVE_QUIT;
+	  if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
+	    {
+	      columns_are_real_only = 0;
+	      break;
+	    }
+	}
+
+      if (columns_are_real_only)
+	{
+	  for (int i = 0; i < nr; i++)
+	    result (i, j) = xmin (real (a (i, j)), real (b (i, j)));
+	}
+      else
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      OCTAVE_QUIT;
+	      result (i, j) = xmin (a (i, j), b (i, j));
+	    }
+	}
+    }
+
+  return result;
+}
+
+ComplexMatrix
+max (const Complex& c, const ComplexMatrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (c, m (i, j));
+      }
+
+  return result;
+}
+
+ComplexMatrix
+max (const ComplexMatrix& m, const Complex& c)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (m (i, j), c);
+      }
+
+  return result;
+}
+
+ComplexMatrix
+max (const ComplexMatrix& a, const ComplexMatrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg max expecting args of same size");
+      return ComplexMatrix ();
+    }
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    {
+      int columns_are_real_only = 1;
+      for (int i = 0; i < nr; i++)
+	{
+	  OCTAVE_QUIT;
+	  if (imag (a (i, j)) != 0.0 || imag (b (i, j)) != 0.0)
+	    {
+	      columns_are_real_only = 0;
+	      break;
+	    }
+	}
+
+      if (columns_are_real_only)
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      OCTAVE_QUIT;
+	      result (i, j) = xmax (real (a (i, j)), real (b (i, j)));
+	    }
+	}
+      else
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      OCTAVE_QUIT;
+	      result (i, j) = xmax (a (i, j), b (i, j));
+	    }
+	}
+    }
+
+  return result;
+}
+
 MS_CMP_OPS(ComplexMatrix, real, Complex, real)
 MS_BOOL_OPS(ComplexMatrix, Complex, 0.0)
 

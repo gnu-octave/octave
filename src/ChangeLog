@@ -1,3 +1,8 @@
+2003-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/minmax.cc: Move min and max functions from here to
+	liboctave/dMatrix.cc and liboctave/CMatrix.cc.
+
 2003-01-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/rand.cc: Rewrite to use new octave_rand functions.

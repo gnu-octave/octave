@@ -1,3 +1,9 @@
+2003-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc, dMatrix.cc: Move min and max functions here, from
+	src/DLD-FUNCTIONS/minmax.cc, and make them extern.
+	* CMatrix.h, dMatrix.h: Provide decls.
+
 2003-01-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rand.h, oct-rand.cc: New files.

@@ -289,6 +289,14 @@ extern ComplexMatrix operator * (const Matrix&,        const ComplexMatrix&);
 extern ComplexMatrix operator * (const ComplexMatrix&, const Matrix&);
 extern ComplexMatrix operator * (const ComplexMatrix&, const ComplexMatrix&);
 
+extern ComplexMatrix min (const Complex& c, const ComplexMatrix& m);
+extern ComplexMatrix min (const ComplexMatrix& m, const Complex& c);
+extern ComplexMatrix min (const ComplexMatrix& a, const ComplexMatrix& b);
+
+extern ComplexMatrix max (const Complex& c, const ComplexMatrix& m);
+extern ComplexMatrix max (const ComplexMatrix& m, const Complex& c);
+extern ComplexMatrix max (const ComplexMatrix& a, const ComplexMatrix& b);
+
 MS_CMP_OP_DECLS (ComplexMatrix, Complex)
 MS_BOOL_OP_DECLS (ComplexMatrix, Complex)
 

@@ -76,7 +76,7 @@ function fmt = get_fmt (x, sep)
     else
       ## Could have anything.
       tfw = floor (log10 (abs (t))) + 1 + sep;
-      fw = max (tfw)
+      fw = max (tfw);
       if (any (t(tfw == fw) < 0))
 	fw++;
       endif

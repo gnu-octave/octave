@@ -246,6 +246,14 @@ extern Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 
 extern Matrix operator * (const Matrix& a, const Matrix& b);
 
+extern Matrix min (double d, const Matrix& m);
+extern Matrix min (const Matrix& m, double d);
+extern Matrix min (const Matrix& a, const Matrix& b);
+
+extern Matrix max (double d, const Matrix& m);
+extern Matrix max (const Matrix& m, double d);
+extern Matrix max (const Matrix& a, const Matrix& b);
+
 MS_CMP_OP_DECLS (Matrix, double)
 MS_BOOL_OP_DECLS (Matrix, double)
 

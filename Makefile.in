@@ -44,7 +44,7 @@ header-msg: FORCE
 	@echo "*  To compile Octave, you will need a recent versions of"
 	@echo "*  the following software:"
 	@echo "*"
-	@echo "*    g++ (2.95.x or a more recent version)"
+	@echo "*    g++ (3.2.x or a more recent version)"
 	@echo "*"
 	@echo "*    flex (2.5.4 or a more recent version) -- required if"
 	@echo "*    you need to recreate lex.cc from lex.l"

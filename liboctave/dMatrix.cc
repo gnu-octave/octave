@@ -2884,6 +2884,147 @@ operator * (const Matrix& m, const Matrix& a)
   return retval;
 }
 
+// XXX FIXME XXX -- it would be nice to share code among the min/max
+// functions below.
+
+#define EMPTY_RETURN_CHECK(T) \
+  if (nr == 0 || nc == 0) \
+    return T (nr, nc);
+
+Matrix
+min (double d, const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (Matrix);
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (d, m (i, j));
+      }
+
+  return result;
+}
+
+Matrix
+min (const Matrix& m, double d)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (Matrix);
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (m (i, j), d);
+      }
+
+  return result;
+}
+
+Matrix
+min (const Matrix& a, const Matrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg min expecting args of same size");
+      return Matrix ();
+    }
+
+  EMPTY_RETURN_CHECK (Matrix);
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmin (a (i, j), b (i, j));
+      }
+
+  return result;
+}
+
+Matrix
+max (double d, const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (Matrix);
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (d, m (i, j));
+      }
+
+  return result;
+}
+
+Matrix
+max (const Matrix& m, double d)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (Matrix);
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (m (i, j), d);
+      }
+
+  return result;
+}
+
+Matrix
+max (const Matrix& a, const Matrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg max expecting args of same size");
+      return Matrix ();
+    }
+
+  EMPTY_RETURN_CHECK (Matrix);
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+	result (i, j) = xmax (a (i, j), b (i, j));
+      }
+
+  return result;
+}
+
 MS_CMP_OPS(Matrix, , double, )
 MS_BOOL_OPS(Matrix, double, 0.0)
 

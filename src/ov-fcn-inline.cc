@@ -55,7 +55,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
   : octave_fcn_handle (0, n), iftext (f), ifargs (a) 
 {
   // Find a function name that isn't already in the symbol table.
-  std::string fname = unique_symbol_name ("__inline__");
+  std::string fname = unique_symbol_name ("__inline_");
 
   // Form a string representing the function. 
 

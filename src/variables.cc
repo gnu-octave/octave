@@ -662,14 +662,28 @@ symbol_exist (const std::string& name, const std::string& type)
   return retval;
 }
 
+#define GET_IDX(LEN) \
+  static_cast<int> ((LEN-1) * static_cast<double> (rand ()) / RAND_MAX)
+
 std::string
 unique_symbol_name (const std::string& basename)
 {
-  // XXX FIXME XXX Can we be smarter than just adding characters?
-  std::string name = basename;
-  while (symbol_exist (name, "any"))
-    name.append ("X");
-  return name;
+  static const std::string alpha
+    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  static size_t len = alpha.length ();
+
+  std::string nm = basename + alpha[GET_IDX (len)];
+
+  size_t pos = nm.length ();
+
+  if (nm.substr (0, 2) == "__")
+    nm.append ("__");
+
+  while (symbol_exist (nm, "any"))
+    nm.insert (pos++, 1, alpha[GET_IDX (len)]);
+
+  return nm;
 }
 
 DEFUN (exist, args, ,

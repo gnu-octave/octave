@@ -1,3 +1,13 @@
+2004-09-02  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/quad.cc (Fquad): Pass "__quad_fcn_" instead of
+	"__quad_fcn__" to unique_symbol_name.
+
+	* ov-fcn-inline.cc (octave_fcn_inline): Pass "__inline_" instead
+	of "__inline__" to unique_symbol_name.
+
+	* variables.cc (unique_symbol_name): Make better random symbol name.
+
 2004-09-01  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.58.

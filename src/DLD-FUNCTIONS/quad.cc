@@ -188,7 +188,7 @@ parameters for @code{quad}.\n\
 	quad_fcn = args(0).function_value ();
       else
 	{
-	  fcn_name = unique_symbol_name ("__quad__fcn__");
+	  fcn_name = unique_symbol_name ("__quad_fcn_");
 	  std::string fname = "function y = ";
 	  fname.append (fcn_name);
 	  fname.append ("(x) y = ");

@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdlib.h>
 #include <stdarg.h>
 
+#include "utils.h"
 #include "error.h"
 #include "pager.h"
 

@@ -1,3 +1,20 @@
+2003-12-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-pr-code.cc (tree_print_code::visit_complex_for_command, 
+	tree_print_code::visit_octave_user_function_header,
+	tree_print_code::visit_matrix, tree_print_code::visit_cell,
+	tree_print_code::visit_multi_assignment): Keep track of nearest
+	[, {, or ( nesting level.
+	(tree_print_code::visit_index_expression): Likewise.  Check nesting
+	level to decide how to print index.
+	(tree_print_code::reset): Also reset nesting level stack.
+
+	* pt-pr-code.h (tree_print_code::nesting): New data member.
+	(tree_print_code::tree_print_code): Initialize it.
+
+	* ov-base-mat.h (octave_base_matrix::octave_base_matrix (const MT&)):
+	If arg has no dimensions, resize to be 0x0.
+
 2003-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-map.cc (Octave_map::assign): Use Octave_map::contents member

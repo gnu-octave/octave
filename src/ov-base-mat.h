@@ -56,7 +56,11 @@ public:
     : octave_base_value () { }
 
   octave_base_matrix (const MT& m)
-    : octave_base_value (), matrix (m) { }
+    : octave_base_value (), matrix (m)
+  {
+    if (matrix.ndims () == 0)
+      matrix.resize (dim_vector (0, 0));
+  }
 
   octave_base_matrix (const octave_base_matrix& m)
     : octave_base_value (), matrix (m.matrix) { }

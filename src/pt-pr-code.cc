@@ -227,12 +227,14 @@ tree_print_code::visit_complex_for_command (tree_complex_for_command& cmd)
   indent ();
 
   os << "for [";
+  nesting.push ('[');
 
   tree_argument_list *lhs = cmd.left_hand_side ();
 
   if (lhs)
     lhs->accept (*this);
 
+  nesting.pop ();
   os << "] = ";
 
   tree_expression *expr = cmd.control_expr ();
@@ -305,7 +307,10 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
       int len = ret_list->length ();
 
       if (len > 1 || takes_var_return)
-	os << "[";
+	{
+	  os << "[";
+	  nesting.push ('[');
+	}
 
       ret_list->accept (*this);
 
@@ -318,7 +323,10 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 	}
 
       if (len > 1 || takes_var_return)
-	os << "]";
+	{
+	  nesting.pop ();
+	  os << "]";
+	}
 
       os << " = ";
     }
@@ -336,7 +344,10 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
       int len = param_list->length ();
 
       if (len > 0 || takes_varargs)
-	os << "(";
+	{
+	  os << "(";
+	  nesting.push ('(');
+	}
 
       param_list->accept (*this);
 
@@ -350,6 +361,7 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 
       if (len > 0 || takes_varargs)
 	{
+	  nesting.pop ();
 	  os << ")";
 	  newline ();
 	}
@@ -494,20 +506,38 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 	{
 	case '(':
 	  {
-	    os << " (";
+	    char nc = nesting.top ();
+	    if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
+	      os << "(";
+	    else
+	      os << " (";
+	    nesting.push ('(');
+
 	    tree_argument_list *l = *p_arg_lists;
 	    if (l)
 	      l->accept (*this);
+
+	    nesting.pop ();
 	    os << ")";
 	  }
 	  break;
 	    
 	case '{':
 	  {
-	    os << " {";
+	    char nc = nesting.top ();
+	    if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
+	      os << "{";
+	    else
+	      os << " {";
+	    // We only care about whitespace inside [] and {} when we
+	    // are defining matrix and cell objects, not when indexing.
+	    nesting.push ('(');
+
 	    tree_argument_list *l = *p_arg_lists;
 	    if (l)
 	      l->accept (*this);
+
+	    nesting.pop ();
 	    os << "}";
 	  }
 	  break;
@@ -539,6 +569,7 @@ tree_print_code::visit_matrix (tree_matrix& lst)
   print_parens (lst, "(");
 
   os << "[";
+  nesting.push ('[');
 
   tree_matrix::iterator p = lst.begin ();
 
@@ -555,6 +586,7 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 	}
     }
 
+  nesting.pop ();
   os << "]";
 
   print_parens (lst, ")");
@@ -568,6 +600,7 @@ tree_print_code::visit_cell (tree_cell& lst)
   print_parens (lst, "(");
 
   os << "{";
+  nesting.push ('{');
 
   tree_cell::iterator p = lst.begin ();
 
@@ -584,6 +617,7 @@ tree_print_code::visit_cell (tree_cell& lst)
 	}
     }
 
+  nesting.pop ();
   os << "}";
 
   print_parens (lst, ")");
@@ -603,12 +637,18 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
       int len = lhs->length ();
 
       if (len > 1)
-	os << "[";
+	{
+	  os << "[";
+	  nesting.push ('[');
+	}
 
       lhs->accept (*this);
 
       if (len > 1)
-	os << "]";
+	{
+	  nesting.pop ();
+	  os << "]";
+	}
     }
 
   os << " " << expr.oper () << " ";
@@ -1272,6 +1312,8 @@ tree_print_code::reset (void)
 {
   beginning_of_line = true;
   curr_print_indent_level = 0;
+  while (nesting.top () != 'n')
+    nesting.pop ();
 }
 
 void

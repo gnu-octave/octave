@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <stack>
 #include <string>
 
 #include "comment-list.h"
@@ -44,8 +45,13 @@ public:
   tree_print_code (std::ostream& os_arg,
 		   const std::string& pfx = std::string (),
 		   bool pr_orig_txt = true)
-    : os (os_arg), prefix (pfx), print_original_text (pr_orig_txt),
-      curr_print_indent_level (0), beginning_of_line (true) { }
+    : os (os_arg), prefix (pfx), nesting (),
+      print_original_text (pr_orig_txt),
+      curr_print_indent_level (0), beginning_of_line (true)
+  {
+    // For "none".
+    nesting.push ('n');
+  }
 
   ~tree_print_code (void) { }
 
@@ -148,6 +154,8 @@ private:
   std::ostream& os;
 
   std::string prefix;
+
+  std::stack<char> nesting;
 
   bool print_original_text;
 

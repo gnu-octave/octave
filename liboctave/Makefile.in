@@ -264,7 +264,11 @@ install-inc:
 	$(top_srcdir)/mkinstalldirs $(octincludedir)/octave
 	for f in $(INCLUDES_FOR_INSTALL); do \
 	  rm -f $(octincludedir)/octave/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
+	  if [ -f $$f ]; then \
+	    $(INSTALL_DATA) $$f $(octincludedir)/octave/$$f; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
+	  fi ; \
 	done
 .PHONY: install-inc
 

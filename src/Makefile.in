@@ -382,7 +382,7 @@ install-lib:
 	  if  test x$(SHLBIN) != x ; then \
 	      rm -f $(bindir)/liboctinterp.$(SHLBIN_VER); \
 	      $(INSTALL_PROGRAM) \
-	        liboctinterp.$(SHLBIN) $(bindir)/octinterp.$(SHLBIN_VER); \
+	        liboctinterp.$(SHLBIN) $(bindir)/liboctinterp.$(SHLBIN_VER); \
 	      rm -f $(bindir)/liboctinterp.$(SHLBIN); \
 	      $(LN_S) liboctinterp.$(SHLBIN_VER) $(bindir)/liboctinterp.$(SHLBIN); \
 	  fi; \

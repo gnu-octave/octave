@@ -1,5 +1,9 @@
 2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (SH_LDFLAGS): Additional options for Cygwin:
+	-Wl,--export-all-symbols -Wl,--enable-auto-import
+	-Wl,--allow-multiple-definition.
+
 	* Makeconf.in (TERMLIBS): Substitute here.
 
 	* configure.in: Define OCTAVE_USE_WINDOWS_API if 

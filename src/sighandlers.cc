@@ -172,7 +172,7 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGPOLL
-  signal (SIGPOLL, generic_sig_handler);
+  signal (SIGPOLL, SIG_IGN);
 #endif
 
 #ifdef SIGPROF
@@ -209,6 +209,10 @@ install_signal_handlers (void)
 
 #ifdef SIGVTALRM
   signal (SIGVTALRM, generic_sig_handler);
+#endif
+
+#ifdef SIGIO
+  signal (SIGIO, SIG_IGN);
 #endif
 
 #ifdef SIGXCPU

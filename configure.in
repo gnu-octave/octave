@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.442 $)
+AC_REVISION($Revision: 1.443 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1430,15 +1430,20 @@ typedef int sig_atomic_t;
 #define OCTAVE_HAVE_SIG_JUMP
 #endif
 
-/* Always use new, since we sometimes allocate large chunks of memory
-   and that can cause trouble due to stack size limits.
+/* Always use vector<T>, since we sometimes allocate large chunks
+   of memory and that can cause trouble due to stack size limits.
+
+   Note that using auto_ptr is not appropriate because it uses delete,
+   not delete[] and we need the latter to properly handle arrays
+   allocated with new[size].
+
 #if defined (HAVE_DYNAMIC_AUTO_ARRAYS)
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   T buf[size]
 #else */
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
-  std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
-  T *buf = buf ## _auto_ptr.get ()
+  std::vector<T> buf ## _vector (size); \
+  T *buf = &(buf ## _vector[0])
 /* #endif */
 
 #if defined (__DECCXX)

@@ -1,5 +1,12 @@
 2004-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-bool.cc, ov-cx-mat.cc, ov-re-mat.cc, ov-str-mat.cc:
+	Include <vector>.
+	* file-io.cc, ls-hdf5.cc, ls-mat4.cc, ls-mat5.cc, ls-oct-binary.cc:
+	Include <vector>, not <memory> for new defn of OCTAVE_LOCAL_BUFFER.
+	* load-save.cc, ls-mat-ascii.cc, ls-oct-ascii.cc
+	No need to include <memory> now.
+
 	* DLD-FUNCTIONS/eig.cc (Feig): Use new optional arg for EIG to
 	avoid computing eigenvectors if not requested.
 	Based on a patch from David Bateman  <dbateman@free.fr>.

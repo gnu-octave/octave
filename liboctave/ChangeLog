@@ -1,5 +1,8 @@
 2004-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* file-ops.cc: Include <vector> instead of <memory> for new
+	definition of OCTAVE_LOCAL_BUFFER.
+
 	* EIG.cc, EIG.h (EIG::init, EIG::symmetric_init, EIG::hermitian_init):
 	New arg, calc_eigenvectors.
 	* EIG.h (EIG:EIG): New optional arg, calc_eigenvectors.

@@ -54,7 +54,7 @@ curr_rand_seed (void)
 {
   union d2i { double d; int i[2]; };
   union d2i u;
-  F77_FCN (getsd) (u.i[0]), u.i[1]);
+  F77_FCN (getsd) (u.i[0], u.i[1]);
   return u.d;
 }
 

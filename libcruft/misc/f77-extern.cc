@@ -37,9 +37,6 @@ int f77_exception_encountered = 0;
 // For setjmp/longjmp.
 jmp_buf f77_context;
 
-// Pointer to the current error handling function.
-liboctave_error_handler current_liboctave_error_handler = liboctave_fatal;
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

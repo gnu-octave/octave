@@ -59,7 +59,7 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc NPSOL.cc QPSOL.cc \
 	Quad.cc Range.cc acosh.c asinh.c atanh.c cmd-hist.cc \
 	dir-ops.cc erf.c erfc.c f77-fcn.c file-ops.cc filemode.c \
-	gamma.c getopt.c getopt1.c idx-vector.cc lo-error.cc lgamma.c \
+	gamma.c getopt.c getopt1.c idx-vector.cc lgamma.c \
 	mkdir.c oct-glob.cc oct-term.cc pathsearch.cc prog-args.cc \
 	rename.c rmdir.c str-vec.cc sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \

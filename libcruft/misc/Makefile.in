@@ -12,9 +12,9 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
-SPECIAL = gen-d1mach.c d1mach-tst.for dostop.c misc-extern.cc
+SPECIAL = gen-d1mach.c d1mach-tst.for dostop.c f77-extern.cc lo-error.cc
 
-SPECIAL_DEPEND = d1mach.o dostop.o misc-extern.o
+SPECIAL_DEPEND = d1mach.o dostop.o f77-extern.o lo-error.o
 
 DISTFILES = $(subst d1mach.f, , $(DISTFILES))
 

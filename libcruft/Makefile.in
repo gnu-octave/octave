@@ -40,11 +40,13 @@ $(SUBDIRS):
 	cd $@; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
+MISC_OBJ := misc/d1mach.o misc/dostop.o misc/f77-extern.o misc/lo-error.o
+
 CRUFT_FSRC := $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))
 CRUFT_OBJ3 := $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
 CRUFT_OBJ2 := $(patsubst %.f, %.o, $(CRUFT_OBJ3))
 CRUFT_OBJ1 := $(subst misc/d1mach.o, , $(CRUFT_OBJ2))
-CRUFT_OBJ := $(CRUFT_OBJ1) misc/d1mach.o misc/dostop.o misc/misc-extern.o
+CRUFT_OBJ := $(CRUFT_OBJ1) $(MISC_OBJ)
 
 ifeq ($(SHARED_LIBS), true)
   ifdef FPICFLAG

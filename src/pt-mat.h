@@ -56,6 +56,8 @@ public:
 
   ~tree_matrix (void);
 
+  bool has_magic_end (void) const;
+
   bool all_elements_are_constant (void) const;
 
   bool rvalue_ok (void) const { return true; }

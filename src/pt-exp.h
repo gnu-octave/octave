@@ -47,6 +47,8 @@ public:
 
   virtual ~tree_expression (void) { }
 
+  virtual bool has_magic_end (void) const = 0;
+
   virtual bool is_constant (void) const { return false; }
 
   virtual bool is_matrix_constant (void) const { return false; }

@@ -54,6 +54,8 @@ public:
 
   ~tree_constant (void) { }
 
+  bool has_magic_end (void) const { return false; }
+
   void *operator new (size_t size) { return allocator.alloc (size); }
 
   void operator delete (void *p, size_t size) { allocator.free (p, size); }

@@ -56,6 +56,8 @@ public:
 
   ~tree_identifier (void) { }
 
+  bool has_magic_end (void) const { return (name () == "__end__"); }
+
   bool is_identifier (void) const { return true; }
 
   std::string name (void) const;

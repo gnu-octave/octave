@@ -409,6 +409,20 @@ tree_matrix::~tree_matrix (void)
 }
 
 bool
+tree_matrix::has_magic_end (void) const
+{
+  for (const_iterator p = begin (); p != end (); p++)
+    {
+      tree_argument_list *elt = *p;
+
+      if (elt && elt->has_magic_end ())
+	return true;
+    }
+
+  return false;
+}
+
+bool
 tree_matrix::all_elements_are_constant (void) const
 {
   for (const_iterator p = begin (); p != end (); p++)

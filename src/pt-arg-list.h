@@ -55,6 +55,8 @@ public:
 
   ~tree_argument_list (void);
 
+  bool has_magic_end (void) const;
+
   tree_expression *remove_front (void)
     {
       iterator p = begin ();

@@ -59,6 +59,8 @@ public:
 
   ~tree_simple_assignment (void);
 
+  bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
+
   bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
@@ -124,6 +126,8 @@ public:
       etype (t) { }
 
   ~tree_multi_assignment (void);
+
+  bool has_magic_end (void) const { return (rhs && rhs->has_magic_end ()); }
 
   bool is_assignment_expression (void) const { return true; }
 

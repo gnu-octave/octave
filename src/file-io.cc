@@ -1477,12 +1477,15 @@ use @code{fclose} for the same purpose.\n\
 
 DEFUN (tmpnam, args, ,
  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} tmpnam ()\n\
+@deftypefn {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
 Return a unique temporary file name as a string.\n\
 \n\
-Since the named file is not opened, by @code{tmpnam}, it\n\
-is possible (though relatively unlikely) that it will not be available\n\
-by the time your program attempts to open it.\n\
+If @var{prefix} is omitted, a value of @code{\"oct-\"} is used.\n\
+If @var{dir} is also omitted, the default directory for temporary files\n\
+is used.  If @var{dir} is provided, it must exist, otherwise the default\n\
+directory for temporary files is used.  Since the named file is not\n\
+opened, by @code{tmpnam}, it is possible (though relatively unlikely)\n\
+that it will not be available by the time your program attempts to open it.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1492,10 +1495,19 @@ by the time your program attempts to open it.\n\
   if (len < 3)
     {
       std::string dir = len > 0 ? args(0).string_value () : std::string ();
-      std::string pfx = len > 1 ? args(1).string_value () : std::string ("oct-");
 
       if (! error_state)
-	retval = file_ops::tempnam (dir, pfx);
+	{
+	  std::string pfx
+	    = len > 1 ? args(1).string_value () : std::string ("oct-");
+
+	  if (! error_state)
+	    retval = file_ops::tempnam (dir, pfx);
+	  else
+	    ::error ("expecting second argument to be a string");
+	}
+      else
+	::error ("expecting first argument to be a string");
     }
   else
     print_usage ("tmpnam");
@@ -1584,6 +1596,17 @@ Set the permission mask for file creation.  The parameter @var{mask}\n\
 void
 symbols_of_file_io (void)
 {
+#if ! defined (P_tmpdir)
+#define P_tmpdir "/tmp"
+#endif
+
+  DEFCONSTX ("P_tmpdir", SBV_P_tmpdir, P_tmpdir,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} P_tmpdir\n\
+The default name of the directory for temporary files on this system.\n\
+of this variable is system dependent.\n\
+@end defvr");
+
   // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
   // this way for Matlab compatibility.
 

@@ -61,6 +61,13 @@ public:
       delete op_increment;
     }
 
+  bool has_magic_end (void) const
+    {
+      return ((op_base && op_base->has_magic_end ())
+	      || (op_limit && op_limit->has_magic_end ())
+	      || (op_increment && op_increment->has_magic_end ()));
+    }
+
   void preserve_base (void) { save_base = true; }
 
   tree_colon_expression *append (tree_expression *t);

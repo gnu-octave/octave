@@ -1,5 +1,23 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-exp.h (tree_expression::has_magic_end): New pure virtual function.
+	* pt-id.h (tree_identifier::has_magic_end): New function.
+	* pt-colon.h (tree_colon_expression::has_magic_end): Likewise.
+	* pt-idx.h (tree_index_expression::has_magic_end): Likewise.
+	* pt-const.h (tree_constant::has_magic_end): Likewise.
+	* pt-unop.h (tree_unary_expression::has_magic_end): Likewise.
+	* pt-binop.h (tree_binary_expression::has_magic_end): Likewise.
+	* pt-assign.h (tree_multi_assignment::has_magic_end): Likewise.
+	(tree_simple_assignment::has_magic_end): Likewise.
+	* pt-mat.cc (tree_matrix::has_magic_end): Likewise.
+	* pt-arg-list.cc (tree_argument_list::has_magic_end): Likewise.
+
+	* pt-arg-list.cc (tree_argument_list::append): Check all
+	expression types for magic end token..
+
+	* file-io.cc (Ftmpnam): Improve error checking.
+	(symbols_of_file_io): Move definition of P_tmpdir here from dirfns.cc.
+
 	* dirfns.cc (symbols_of_dirfns): Install new built-in constant
 	P_tmpdir.
 

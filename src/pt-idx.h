@@ -60,6 +60,8 @@ public:
 
   ~tree_index_expression (void);
 
+  bool has_magic_end (void) const { return false; }
+
   void append (tree_argument_list *lst = 0, char t = '(');
 
   void append (const std::string& n);

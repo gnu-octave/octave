@@ -56,6 +56,8 @@ public:
 
   ~tree_unary_expression (void) { delete op; }
 
+  bool has_magic_end (void) const { return (op && op->has_magic_end ()); }
+
   tree_expression *operand (void) { return op; }
 
   std::string oper (void) const;

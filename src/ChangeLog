@@ -1,5 +1,7 @@
 2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mappers.cc (ximag, xreal): Return double, not Complex.
+
 	* error.cc (panic): Turn off buffering of error messages.
 	Don't call flush_octave_stdout here, verror will do it for us.	
 	(verror): Don't call flush_octave_stdout if buffering error messages.

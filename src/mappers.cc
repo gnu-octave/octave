@@ -140,16 +140,16 @@ xconj (double x)
   return x;
 }
 
-static Complex
+static double
 ximag (const Complex& x)
 {
-  return Complex (0.0, x.imag ());
+  return x.imag ();
 }
 
-static Complex
+static double
 xreal (const Complex& x)
 {
-  return Complex (x.real (), 0.0);
+  return x.real ();
 }
 
 void

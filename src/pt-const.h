@@ -688,6 +688,8 @@ public:
   int rows (void) { return rep->rows (); }
   int columns (void) { return rep->columns (); }
 
+  int is_empty (void) { return (rows () == 0 || columns () == 0); }
+
   tree_constant all (void) { return rep->all (); }
   tree_constant any (void) { return rep->any (); }
   tree_constant isstr (void) { return rep->isstr (); }

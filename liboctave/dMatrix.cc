@@ -160,12 +160,17 @@ Matrix::insert (const ColumnVector& a, int r, int c)
 Matrix&
 Matrix::insert (const DiagMatrix& a, int r, int c)
 {
-  if (r < 0 || r + a.rows () - 1 > rows ()
-      || c < 0 || c + a.cols () - 1 > cols ())
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (r < 0 || r + a_nr - 1 > rows ()
+      || c < 0 || c + a_nc - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
+
+  fill (0.0, r, c, r + a_nr - 1, c + a_nc - 1);
 
   for (int i = 0; i < a.length (); i++)
     elem (r+i, c+i) = a.elem (i, i);

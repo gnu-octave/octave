@@ -66,10 +66,10 @@ octave.dvi: $(TEXINFO) conf.texi
 octave.ps: octave.dvi
 	dvips -o octave.ps octave.dvi
 
-FAQ.info: $(TEXINFO) conf.texi
+FAQ.info: FAQ.texi
 	-makeinfo -I$(srcdir) FAQ.texi
 
-FAQ.dvi: $(TEXINFO) conf.texi
+FAQ.dvi: FAQ.texi
 	texi2dvi $(srcdir)/FAQ.texi
 
 FAQ.ps: FAQ.dvi

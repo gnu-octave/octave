@@ -706,8 +706,7 @@ DiagArray<T>::DiagArray (int n) : Array<T> (n)
 template <class T>
 DiagArray<T>::DiagArray (int n, const T& val) : Array<T> (n, val)
 {
-  nr = 0;
-  nc = 0;
+  nr = nc = n;
 }
 
 template <class T>

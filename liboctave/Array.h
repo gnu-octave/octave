@@ -1,7 +1,7 @@
 // Template array classes                              -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -211,11 +211,72 @@ public:
 
 /*
  * A two-dimensional array with diagonal elements only.
+ *
+ * Idea and example code for Proxy class and functions from:
+ *
+ * From: kanze@us-es.sel.de (James Kanze)
+ * Subject: Re: How to overload [] to do READ/WRITE differently ?
+ * Message-ID: <KANZE.93Nov29151407@slsvhdt.us-es.sel.de>
+ * Sender: news@us-es.sel.de
+ * Date: 29 Nov 1993 14:14:07 GMT
+ * --
+ * James Kanze                             email: kanze@us-es.sel.de
+ * GABI Software, Sarl., 8 rue du Faisan, F-67000 Strasbourg, France
  */
 
 template <class T>
 class DiagArray : public Array<T>
 {
+private:
+
+  class Proxy
+  {
+  public:
+
+    Proxy (DiagArray<T> *ref, int r, int c) : object (ref), i (r), j (c) { }
+
+    const Proxy& operator = (const T& val) const
+    {
+      if (i == j)
+	{
+	  if (object)
+	    object->set (val, i);
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("assignment to off-diagonal element attempted for diagonal array");
+
+      return *this;
+    }
+
+    operator T () const
+    {
+      if (object)
+	return object->get (i);
+      else
+	{
+	  static T foo (0);
+	  return foo;
+	}
+    }
+
+  private:
+
+// XXX FIXME XXX -- this is declared private to keep the user from
+// taking the address of a Proxy.  Maybe it should be implemented by
+// means of a companion function in the DiagArray class.
+
+    T *operator& () const;
+
+    int i;
+    int j;
+
+    DiagArray<T> *object;
+
+  };
+
+friend class Proxy;
+
 protected:
 
   int nr;
@@ -242,9 +303,32 @@ public:
   int cols (void) const;
   int columns (void) const;
 
-  T& elem (int r, int c);
-  T& checkelem (int r, int c);
-  T& operator () (int r, int c);
+  Proxy elem (int r, int c)
+  {
+    return Proxy (this, r, c);
+  }
+
+  Proxy checkelem (int r, int c)
+  {
+    if (r < 0 || c < 0 || r >= nr || c >= nc)
+      {
+	(*current_liboctave_error_handler) ("range error");
+	return Proxy (0, r, c);
+      }
+    else
+      return Proxy (this, r, c);
+  }
+
+  Proxy operator () (int r, int c)
+  {
+    if (r < 0 || c < 0 || r >= nr || c >= nc)
+      {
+	(*current_liboctave_error_handler) ("range error");
+	return Proxy (0, r, c);
+      }
+    else
+      return Proxy (this, r, c);
+  }
 
 // No checking.
   T& xelem (int r, int c);
@@ -255,6 +339,11 @@ public:
 
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
+
+private:
+
+  T get (int i) { return Array<T>::elem (i); }
+  void set (const T& val, int i) { Array<T>::elem (i) = val; }
 };
 
 #if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)

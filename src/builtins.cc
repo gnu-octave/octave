@@ -201,9 +201,9 @@ display, save, or load command history", },
     "show [options]\n\nshow plotting options", },
 
   { "who", -1, builtin_who,
-    "who [-global] [-top] [-local] [-all] [-fcn] [name ...]\n\n\
-list symbol(s) matching a list of regular expressions\n\
-if no arguments are given, the list of local symbols is printed", },
+    "who [-all] [-builtins] [-functions] [-long] [-variables]\n\n\
+List currently defined symbol(s).  Options may be shortened to one\n\
+character, but may not be combined.", },
 
   { NULL, -1, NULL, NULL, },
 };

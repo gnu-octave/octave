@@ -142,19 +142,23 @@ octave_range::double_value (bool) const
 }
 
 octave_value
-octave_range::all (void) const
+octave_range::all (int dim) const
 {
   // XXX FIXME XXX -- this is a potential waste of memory.
 
   Matrix m = range.matrix_value ();
 
-  return m.all ();
+  return m.all (dim);
 }
 
 octave_value
-octave_range::any (void) const
+octave_range::any (int dim) const
 {
-  return static_cast<double> (range.base () != 0.0 || range.nelem () > 1);
+  // XXX FIXME XXX -- this is a potential waste of memory.
+
+  Matrix m = range.matrix_value ();
+
+  return m.any (dim);
 }
 
 bool

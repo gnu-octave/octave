@@ -76,9 +76,9 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  octave_value all (void) const { return (scalar != 0.0); }
+  octave_value all (int = 0) const { return (scalar != 0.0); }
 
-  octave_value any (void) const { return (scalar != 0.0); }
+  octave_value any (int = 0) const { return (scalar != 0.0); }
 
   bool is_scalar_type (void) const { return true; }
 

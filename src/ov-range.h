@@ -107,9 +107,9 @@ public:
 
   bool is_range (void) const { return true; }
 
-  // XXX DO ME XXX
-  octave_value all (void) const;
-  octave_value any (void) const;
+  octave_value all (int dim = 0) const;
+
+  octave_value any (int dim = 0) const;
 
   bool is_real_type (void) const { return true; }
 

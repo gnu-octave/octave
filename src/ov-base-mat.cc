@@ -203,9 +203,9 @@ octave_base_matrix<MT>::is_true (void) const
     }
   else
     {
-      boolMatrix m = (matrix.all ()) . all ();
+      boolMatrix m = (matrix.all () . all ());
 
-      retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
+      retval = (m.rows () == 1 && m.columns () == 1 && m(0,0));
     }
 
   return retval;

@@ -197,14 +197,14 @@ public:
   bool all_integers (double& max_val, double& min_val) const;
   bool too_large_for_float (void) const;
  
-  boolMatrix all (int dim = 0) const;
-  boolMatrix any (int dim = 0) const;
+  boolMatrix all (int dim = -1) const;
+  boolMatrix any (int dim = -1) const;
 
-  Matrix cumprod (int dim = 0) const; //optional dimension argument
-  Matrix cumsum (int dim = 0) const;
-  Matrix prod (int dim = 0) const;
-  Matrix sum (int dim = 0) const;
-  Matrix sumsq (int dim = 0) const;
+  Matrix cumprod (int dim = -1) const;
+  Matrix cumsum (int dim = -1) const;
+  Matrix prod (int dim = -1) const;
+  Matrix sum (int dim = -1) const;
+  Matrix sumsq (int dim = -1) const;
   Matrix abs (void) const;
 
   ColumnVector diag (void) const;

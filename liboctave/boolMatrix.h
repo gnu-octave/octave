@@ -64,8 +64,8 @@ public:
 
   // other operations
 
-  boolMatrix all (int dim = 0) const;
-  boolMatrix any (int dim = 0) const;
+  boolMatrix all (int dim = -1) const;
+  boolMatrix any (int dim = -1) const;
 
 #if 0
   // i/o

@@ -241,14 +241,14 @@ public:
   bool all_integers (double& max_val, double& min_val) const;
   bool too_large_for_float (void) const;
 
-  boolMatrix all (int dim = 0) const;
-  boolMatrix any (int dim = 0) const;
+  boolMatrix all (int dim = -1) const;
+  boolMatrix any (int dim = -1) const;
 
-  ComplexMatrix cumprod (int dim = 0) const;
-  ComplexMatrix cumsum (int dim = 0) const;
-  ComplexMatrix prod (int dim = 0) const;
-  ComplexMatrix sum (int dim = 0) const;
-  ComplexMatrix sumsq (int dim = 0) const;
+  ComplexMatrix cumprod (int dim = -1) const;
+  ComplexMatrix cumsum (int dim = -1) const;
+  ComplexMatrix prod (int dim = -1) const;
+  ComplexMatrix sum (int dim = -1) const;
+  ComplexMatrix sumsq (int dim = -1) const;
 
   ComplexColumnVector diag (void) const;
   ComplexColumnVector diag (int k) const;

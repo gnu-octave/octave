@@ -91,8 +91,8 @@ public:
     return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
   }
 
-  octave_value all (int dim) const { return matrix.all (dim); }
-  octave_value any (int dim) const { return matrix.any (dim); }
+  octave_value all (int dim = 0) const { return matrix.all (dim); }
+  octave_value any (int dim = 0) const { return matrix.any (dim); }
 
   bool is_matrix_type (void) const { return true; }
 

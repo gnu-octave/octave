@@ -1,5 +1,14 @@
 2002-08-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* CMatrix.h (ComplexMatrix::all, ComplexMatrix::any,
+	ComplexMatrix::cumprod, ComplexMatrix::cumsum,
+	ComplexMatrix::prod, ComplexMatrix::sum, ComplexMatrix::sumsq):
+	Default value for dim is -1, not 0.
+	* dMatrix.h (Matrix::all, Matrix::any, Matrix::cumprod,
+	Matrix::cumsum, Matrix::prod, Matrix::sum, Matrix::sumsq): Likewise.
+	* boolMatrix.h (boolMatrix:all, boolMatrix::any): Likewise.
+	* chMatrix.h (charMatrix::all, charMatrix::any): Likewise.
+
 	* mx-inlines.cc (MX_ANY_ALL_OP_ROW_CODE, MX_ANY_ALL_OP_COL_CODE):
 	New macros.
 	(MX_ANY_ALL_OP): Define MX_ANY_ALL_OP using them and

@@ -224,7 +224,7 @@ tree_index_expression::eval_error (void)
     {
       int l = line ();
       int c = column ();
-      char *fmt;
+      const char *fmt;
       if (l != -1 && c != -1)
 	{
 	  if (list)

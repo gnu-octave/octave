@@ -68,7 +68,7 @@ public:
   bool is_prefix_expression (void) const
     { return true; }
 
-  char *oper (void) const;
+  const char *oper (void) const;
 
   tree_identifier *ident (void) { return id; }
 
@@ -110,7 +110,7 @@ public:
 
   void eval_error (void);
 
-  char *oper (void) const;
+  const char *oper (void) const;
 
   tree_identifier *ident (void) { return id; }
 
@@ -135,7 +135,6 @@ public:
   enum type
     {
       unknown,
-      not,
       unot,
       uminus,
       hermitian,
@@ -156,9 +155,9 @@ public:
 
   void eval_error (void);
 
-  char *oper (void) const;
+  const char *oper (void) const;
 
-  bool is_prefix_op (void) { return (etype == not || etype == uminus); }
+  bool is_prefix_op (void) { return (etype == unot || etype == uminus); }
 
   tree_expression *operand (void) { return op; }
 
@@ -199,8 +198,8 @@ public:
       cmp_ge,
       cmp_gt,
       cmp_ne,
-      and,
-      or
+      el_and,
+      el_or
     };
 
   tree_binary_expression (int l = -1, int c = -1, type t = unknown)
@@ -220,7 +219,7 @@ public:
 
   void eval_error (void);
 
-  char *oper (void) const;
+  const char *oper (void) const;
 
   tree_expression *lhs (void) { return op_lhs; }
   tree_expression *rhs (void) { return op_rhs; }
@@ -249,8 +248,8 @@ public:
   enum type
     {
       unknown,
-      and,
-      or
+      bool_and,
+      bool_or
     };
 
   tree_boolean_expression (int l = -1, int c = -1, type t)
@@ -264,7 +263,7 @@ public:
 
   octave_value eval (bool print);
 
-  char *oper (void) const;
+  const char *oper (void) const;
 
 private:
 

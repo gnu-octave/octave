@@ -47,7 +47,7 @@ public:
       simple_assignment,
       multi_assignment,
       colon,
-      index,
+      index
    };
 
   tree_expression (int l = -1, int c = -1, type et = unknown)
@@ -89,7 +89,7 @@ public:
 
   virtual octave_value eval (bool print) = 0;
 
-  virtual char *oper (void) const { return "<unknown>"; }
+  virtual const char *oper (void) const { return "<unknown>"; }
 
   virtual string original_text (void) const;
 

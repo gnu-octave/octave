@@ -102,10 +102,10 @@ tree_prefix_expression::eval (bool print)
   return retval;
 }
 
-char *
+const char *
 tree_prefix_expression::oper (void) const
 {
-  static char *op;
+  static const char *op;
   switch (etype)
     {
     case increment:
@@ -127,12 +127,8 @@ void
 tree_prefix_expression::eval_error (void)
 {
   if (error_state > 0)
-    {
-      char *op = oper ();
-
-      ::error ("evaluating prefix operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
+    ::error ("evaluating prefix operator `%s' near line %d, column %d",
+	     oper (), line (), column ());
 }
 
 void
@@ -185,10 +181,10 @@ tree_postfix_expression::eval (bool print)
   return retval;
 }
 
-char *
+const char *
 tree_postfix_expression::oper (void) const
 {
-  static char *op;
+  static const char *op;
   switch (etype)
     {
     case increment:
@@ -210,12 +206,8 @@ void
 tree_postfix_expression::eval_error (void)
 {
   if (error_state > 0)
-    {
-      char *op = oper ();
-
-      ::error ("evaluating postfix operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
+    ::error ("evaluating postfix operator `%s' near line %d, column %d",
+	     oper (), line (), column ());
 }
 
 void
@@ -244,7 +236,7 @@ tree_unary_expression::eval (bool /* print */)
 	{
 	  switch (etype)
 	    {
-	    case not:
+	    case unot:
 	      retval = u.not ();
 	      break;
 
@@ -276,13 +268,13 @@ tree_unary_expression::eval (bool /* print */)
   return retval;
 }
 
-char *
+const char *
 tree_unary_expression::oper (void) const
 {
-  static char *op;
+  static const char *op;
   switch (etype)
     {
-    case not:
+    case unot:
       op = "!";
       break;
 
@@ -309,12 +301,8 @@ void
 tree_unary_expression::eval_error (void)
 {
   if (error_state > 0)
-    {
-      char *op = oper ();
-
-      ::error ("evaluating unary operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
+    ::error ("evaluating unary operator `%s' near line %d, column %d",
+	     oper (), line (), column ());
 }
 
 void
@@ -415,11 +403,11 @@ tree_binary_expression::eval (bool /* print */)
 		  op = octave_value::ne;
 		  break;
 
-		case and:
+		case el_and:
 		  op = octave_value::el_and;
 		  break;
 
-		case or:
+		case el_or:
 		  op = octave_value::el_or;
 		  break;
 
@@ -448,10 +436,10 @@ tree_binary_expression::eval (bool /* print */)
   return retval;
 }
 
-char *
+const char *
 tree_binary_expression::oper (void) const
 {
-  static char *op;
+  static const char *op;
   switch (etype)
     {
     case add:
@@ -518,11 +506,11 @@ tree_binary_expression::oper (void) const
       op = "!=";
       break;
 
-    case and:
+    case el_and:
       op = "&";
       break;
 
-    case or:
+    case el_or:
       op = "|";
       break;
 
@@ -537,12 +525,8 @@ void
 tree_binary_expression::eval_error (void)
 {
   if (error_state > 0)
-    {
-      char *op = oper ();
-
-      ::error ("evaluating binary operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
+    ::error ("evaluating binary operator `%s' near line %d, column %d",
+	     oper (), line (), column ());
 }
 
 void
@@ -579,7 +563,7 @@ tree_boolean_expression::eval (bool /* print */)
 	    {
 	      if (a_true)
 		{
-		  if (etype == or)
+		  if (etype == bool_or)
 		    {
 		      result = true;
 		      goto done;
@@ -587,7 +571,7 @@ tree_boolean_expression::eval (bool /* print */)
 		}
 	      else
 		{
-		  if (etype == and)
+		  if (etype == bool_and)
 		    goto done;
 		}
 
@@ -621,17 +605,17 @@ tree_boolean_expression::eval (bool /* print */)
   return retval;
 }
 
-char *
+const char *
 tree_boolean_expression::oper (void) const
 {
-  static char *op;
+  static const char *op;
   switch (etype)
     {
-    case and:
+    case bool_and:
       op = "&&";
       break;
 
-    case or:
+    case bool_or:
       op = "||";
       break;
 

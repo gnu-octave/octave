@@ -106,10 +106,11 @@ string help_buf;
 // the file.
 
 // Generic error messages.
-static void yyerror (char *s);
+static void yyerror (const char *s);
 
 // Error mesages for mismatched end tokens.
-static void end_error (char *type, token::end_tok_type ettype, int l, int c);
+static void end_error
+	(const char *type, token::end_tok_type ettype, int l, int c);
 
 // Check to see that end tokens are properly matched.
 static int check_end (token *tok, token::end_tok_type expected);
@@ -1218,7 +1219,7 @@ opt_sep		: // empty
 // Generic error messages.
 
 static void
-yyerror (char *s)
+yyerror (const char *s)
 {
   int err_col = current_input_column - 1;
 
@@ -1267,9 +1268,10 @@ yyerror (char *s)
 // Error mesages for mismatched end tokens.
 
 static void
-end_error (char *type, token::end_tok_type ettype, int l, int c)
+end_error (const char *type, token::end_tok_type ettype, int l, int c)
 {
-  static char *fmt = "`%s' command matched by `%s' near line %d column %d";
+  static const char *fmt
+    = "`%s' command matched by `%s' near line %d column %d";
 
   switch (ettype)
     {
@@ -1694,11 +1696,11 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
       break;
 
     case EXPR_AND:
-      t = tree_binary_expression::and;
+      t = tree_binary_expression::el_and;
       break;
 
     case EXPR_OR:
-      t = tree_binary_expression::or;
+      t = tree_binary_expression::el_or;
       break;
 
     default:
@@ -1726,11 +1728,11 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
   switch (op)
     {
     case EXPR_AND_AND:
-      t = tree_boolean_expression::and;
+      t = tree_boolean_expression::bool_and;
       break;
 
     case EXPR_OR_OR:
-      t = tree_boolean_expression::or;
+      t = tree_boolean_expression::bool_or;
       break;
 
     default:
@@ -1821,7 +1823,7 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
       break;
 
     case EXPR_NOT:
-      t = tree_unary_expression::not;
+      t = tree_unary_expression::unot;
       break;
 
     case '-':

@@ -313,7 +313,7 @@ Like [S, ERR, MSG] = stat (NAME), but if NAME refers to a symbolic\n\
 link, returns information about the link itself, not the file that it\n\
 points to.")
 {
-  octave_value retval;
+  octave_value_list retval;
 
   if (args.length () == 1)
     {
@@ -323,6 +323,7 @@ points to.")
 	{
 	  file_stat fs (fname, false);
 
+	  if (fs)
 	    {
 	      retval(2) = string ();
 	      retval(1) = 0.0;

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.237 $)
+AC_REVISION($Revision: 1.238 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -567,6 +567,7 @@ else
   fi
 fi
 
+
 f77_rules_frag=Makerules.f77
 if $have_fortran_compiler; then
 changequote(,)dnl
@@ -633,6 +634,16 @@ else
   AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
 
+FORTRAN_MAIN_FLAG=
+case "$canonical_host_type" in
+  *-linux-*)
+    FORTRAN_MAIN_FLAG="-u MAIN__"
+  ;;
+esac
+if test -n "$FORTRAN_MAIN_FLAG"; then
+  AC_MSG_RESULT([defining FORTRAN_MAIN_FLAG to be $FORTRAN_MAIN_FLAG])
+fi
+
 FC=$F77
 AC_SUBST(FC)
 AC_SUBST(F77)
@@ -641,6 +652,7 @@ AC_SUBST(FUGLY)
 AC_SUBST(FLIBS)
 AC_SUBST(F2C)
 AC_SUBST(F2CFLAGS)
+AC_SUBST(FORTRAN_MAIN_FLAG)
 AC_SUBST_FILE(f77_rules_frag)
 
 ### Checks for header files.

@@ -49,7 +49,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 #include "str-vec.h"
-#include "sun-utils.h"
 
 #include "builtins.h"
 #include <defaults.h>

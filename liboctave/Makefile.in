@@ -62,12 +62,12 @@ MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc NPSOL.cc QPSOL.cc \
 	Quad.cc Range.cc acosh.c asinh.c atanh.c cmd-hist.cc \
-	data-conv.cc dir-ops.cc erf.c erfc.c file-ops.cc \
+	data-conv.cc dir-ops.cc erf.c erfc.c f2c-main.c file-ops.cc \
 	filemode.c gamma.c getopt.c getopt1.c idx-vector.cc lgamma.c \
 	lo-ieee.cc lo-mappers.cc lo-utils.cc mach-info.cc mkdir.c \
 	oct-alloc.cc oct-glob.cc oct-term.cc pathsearch.cc \
-	prog-args.cc rename.c rmdir.c str-vec.cc sun-utils.cc \
-	tempname.c tempnam.c \
+	prog-args.cc rename.c rmdir.c str-vec.cc tempname.c \
+	tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

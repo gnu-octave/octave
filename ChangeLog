@@ -1,10 +1,13 @@
 Thu Dec  5 11:05:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (ALL_LDFLAGS): Add $(FORTRAN_MAIN_FLAG).
+	* configure.in (FORTRAN_MAIN_FLAG): Substitute it.
+
 	* octave-bug.in: Prompt for abort, edit, list, or send.
 	Get subject from message in case it has been edited.
 
 	* configure.in: When looking for libf2c, provide definitions for
-	MAIN_ and MAIN__, just in case.
+	MAIN_ and MAIN__.
 
 Tue Dec  3 11:35:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

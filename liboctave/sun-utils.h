@@ -23,16 +23,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_sun_utils_h)
 #define octave_sun_utils_h 1
 
-// I think that this is really only needed if linking to Fortran
-// compiled libraries on a Sun.  It also seems to be needed on
-// Linux/ELF systems with g77.  It should never be called.
-
-#if defined (sun)
-extern "C" int MAIN_ ();
-#elif defined (linux) && defined (__ELF__)
-extern "C" int MAIN__ ();
-#endif
-
 // This is only needed to dereference pointers to doubles if mixing
 // GCC and Sun f77/cc compiled code.  See the GCC manual (where the
 // function access_double() is described) and the Sun f77 manual,

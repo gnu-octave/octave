@@ -1,5 +1,11 @@
 Thu Dec  5 13:05:18 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sun-utils.h: Don't declare MAIN_ or MAIN__ here.
+	* sun-utils.cc: Delete.
+	* f2c-main.c: New file
+
+	* Makefile.in: Fix file name lists.
+
 	* CMatrix.cc (lssolve): Don't redeclare retval, resize it.
 
 Wed Dec  4 12:24:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

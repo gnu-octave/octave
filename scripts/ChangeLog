@@ -1,6 +1,6 @@
-2000-09-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
-
 2000-09-08  Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
+
+	* plot/errorbar.m, plot/__errplot__.m: New functions.
 
 	* plot/mesh.m: Also set nologscale before plotting.
 	* plot/__pltopt1__.m: Handle xerrorbars, yerrorbars, and

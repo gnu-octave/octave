@@ -620,8 +620,7 @@ TC_REP::vector_assignment (const tree_constant& rhs,
   int nr = rows ();
   int nc = columns ();
 
-  assert ((nr == 1 || nc == 1 || (nr == 0 && nc == 0))
-	  && ! user_pref.do_fortran_indexing);
+  assert ((nr <= 1 || nc <= 1) && ! user_pref.do_fortran_indexing);
 
   tree_constant tmp_i = i_arg.make_numeric_or_range_or_magic ();
 
@@ -773,13 +772,17 @@ TC_REP::do_vector_assign (const tree_constant& rhs, int i)
 
       int len = MAX (nr, nc);
 
-      if (i < 0 || i >= len)
+      if (i < 0 || i >= len || (nr == 0 && nc == 0))
 	{
 	  ::error ("A(int) = []: index out of range");
 	  return;
 	}
 
-      if (nr == 1)
+      if (nr == 0 && nc > 0)
+	resize (0, nc - 1);
+      else if (nc == 0 && nr > 0)
+	resize (nr - 1, 0);
+      else if (nr == 1)
 	delete_column (i);
       else if (nc == 1)
 	delete_row (i);
@@ -2177,6 +2180,9 @@ TC_REP::delete_rows (idx_vector& iv)
   iv.sort_uniq ();
   int num_to_delete = iv.length ();
 
+  if (num_to_delete == 0)
+    return;
+
   int nr = rows ();
   int nc = columns ();
 
@@ -2237,6 +2243,9 @@ TC_REP::delete_rows (Range& ri)
 {
   ri.sort ();
   int num_to_delete = ri.nelem ();
+
+  if (num_to_delete == 0)
+    return;
 
   int nr = rows ();
   int nc = columns ();
@@ -2353,6 +2362,9 @@ TC_REP::delete_columns (idx_vector& jv)
   jv.sort_uniq ();
   int num_to_delete = jv.length ();
 
+  if (num_to_delete == 0)
+    return;
+
   int nr = rows ();
   int nc = columns ();
 
@@ -2413,6 +2425,9 @@ TC_REP::delete_columns (Range& rj)
 {
   rj.sort ();
   int num_to_delete = rj.nelem ();
+
+  if (num_to_delete == 0)
+    return;
 
   int nr = rows ();
   int nc = columns ();

@@ -273,7 +273,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
   if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
 				H5P_DEFAULT,
-				static_cast<void*> (nm.c_str ())) < 0)
+				X_CAST (void *, nm.c_str ())) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -301,7 +301,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 			    H5P_DEFAULT);
       if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
 				    H5P_DEFAULT,
-				    static_cast<void*> (stmp.c_str ())) < 0)
+				    X_CAST (void *, stmp.c_str ())) < 0)
 	{
 	  H5Sclose (space_hid);
 	  H5Tclose (type_hid);

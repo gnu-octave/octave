@@ -5,6 +5,7 @@
 2000-05-13  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 	* strings/strrep.m: Avoid for loop for speed.
+	* plot/axis.m: Handle string options for Matlab compatibility. 
 
 2000-04-04  John Smith <john@arrows.demon.co.uk>
 

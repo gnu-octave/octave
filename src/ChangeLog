@@ -1,5 +1,7 @@
 2004-09-01  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (INCLUDES): Add op-int.h to the list.
+
 	* version.h (OCTAVE_VERSION): Now 2.1.58.
 
 	* Makefile.in (DISTFILES): Include $(EXTRAS) in the list.

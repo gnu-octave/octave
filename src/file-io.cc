@@ -527,22 +527,31 @@ DEFUN (fprintf, args, ,
 
   if (nargin > 1)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream *os	= 0;
+      int fmt_n = 0;
+
+      if (args(0).is_string ())
+	os = octave_stream_list::lookup (1);
+      else
+	{
+	  fmt_n = 1;
+	  os = octave_stream_list::lookup (args(0));
+	}
 
       if (os)
 	{
-	  if (args(1).is_string ())
+	  if (args(fmt_n).is_string ())
 	    {
-	      string fmt = args(1).string_value ();
+	      string fmt = args(fmt_n).string_value ();
 
 	      octave_value_list tmp_args;
 
-	      if (nargin > 2)
+	      if (nargin > 1 + fmt_n)
 		{
-		  tmp_args.resize (nargin-2, octave_value ());
+		  tmp_args.resize (nargin-fmt_n-1, octave_value ());
 
-		  for (int i = 2; i < nargin; i++)
-		    tmp_args(i-2) = args(i);
+		  for (int i = fmt_n + 1; i < nargin; i++)
+		    tmp_args(i-fmt_n-1) = args(i);
 		}
 
 	      retval = os->printf (fmt, tmp_args);

@@ -1,6 +1,8 @@
 If you have trouble transferring Octave from this site, you might try
 one of those listed below.  They mirror the /pub/octave directory on
-ftp.che.wisc.edu.
+ftp.octave.org
+
+FTP:
 
   site                          directory
   ----                          ---------
@@ -9,17 +11,21 @@ ftp.che.wisc.edu.
   ftp.task.gda.pl               /pub/software/octave
   ftp.u-aizu.ac.jp              /pub/SciEng/numanal/Octave
   mirror.aarnet.edu.au          /pub/octave
+  neacm.fe.up.pt                /pub/octave
+
+HTTP:
+
+  url
+  ---
+  http://neacm.fe.up.pt/pub/octave
 
 The latest Octave sources may also be found on the official Free
 Software Foundation ftp site, ftp://ftp.gnu.org/pub/gnu/octave, which is
 also mirrored on many sites around the world.
 
-The web page http://ftpsearch.ntnu.no/ftpsearch is another useful
-resource for locating software that is available via anonymous ftp.
-
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
-Department of Chemical Engineering
+Department of Chemical & Biological Engineering
 
-Thu Sep 23 15:44:27 1999
+Thu Jun  3 14:37:06 2004

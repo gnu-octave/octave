@@ -87,7 +87,7 @@ public:
 
   virtual void mark_for_possible_ans_assign (void);
 
-  virtual octave_value eval (bool print) = 0;
+  virtual octave_value eval (bool print = false) = 0;
 
   virtual const char *oper (void) const { return "<unknown>"; }
 

@@ -1,3 +1,8 @@
+2004-01-23  Stefan van der Walt  <stefan@sun.ac.za>
+
+	* plot/bar.m: Increase size of cutoff vector from xlen-1 to xlen
+	so that bar (1, 1) will work.
+
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__errcomm__.m: Cope with nargin now being a function.

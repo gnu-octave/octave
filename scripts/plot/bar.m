@@ -75,7 +75,7 @@ function [xb, yb] = bar (x, y)
       if (xlen == ylen)
         len = 3 * xlen + 1;
         tmp_xb = tmp_yb = zeros (len, 1);
-        cutoff = zeros (1, xlen-1);
+        cutoff = zeros (1, xlen);
         for i = 1:xlen-1
           cutoff(i) = (x(i) + x(i+1)) / 2.0;
         endfor

@@ -13,6 +13,8 @@
 	* TEMPLATE-INST/Map-fnc.cc: Don't try to instantiate goodCHptr or
 	CHptr_to_index here.
 	* TEMPLATE-INST/Map-tc.cc: Likewise.
+	* Map.h (CHNode::goodCHptr, CHNode::CHptr_to_index): Now member
+	functions.  Change all callers.
 
 	* load-save.cc (read_binary_file_header): Declare magic_len `const'.
 

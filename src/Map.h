@@ -95,6 +95,16 @@ struct CHNode
     : tl (t), hd (h), cont (c) { }
 
   ~CHNode (void) { }
+
+  // The nodes are linked together serially via a version of a trick
+  // used in some vtables: odd pointers are actually links to the next
+  // table entry.  Not terrible, but not wonderful either.
+
+  int goodCHptr (void)
+    { return (((X_CAST (unsigned, t)) & 1) == 0); }
+
+  unsigned int CHptr_to_index (void)
+    { return (X_CAST (unsigned, t)) >> 1; }
 };
 
 #ifndef DEFAULT_INITIAL_CAPACITY

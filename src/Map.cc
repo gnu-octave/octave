@@ -109,25 +109,7 @@ Map<C>::error (const std::string& msg) const
 
 // CHMap class.
 
-// The nodes are linked together serially via a version of a trick
-// used in some vtables: odd pointers are actually links to the next
-// table entry.  Not terrible, but not wonderful either.
-
-template <class C>
-int
-goodCHptr (CHNode<C> *t)
-{
-  return (((X_CAST (unsigned, t)) & 1) == 0);
-}
-
 #define index_to_CHptr(i) (X_CAST (void *, (i << 1) + 1))
-
-template <class C>
-unsigned int
-CHptr_to_index (CHNode<C> *t)
-{
-  return (X_CAST (unsigned, t)) >> 1;
-}
 
 template <class C>
 CHMap<C>::CHMap (const C& dflt, unsigned int sz) : Map<C> (dflt)
@@ -155,7 +137,7 @@ CHMap<C>::seek (const std::string& key) const
 {
   unsigned int h = hash (key) % size;
 
-  for (CHNode<C> *t = tab[h]; goodCHptr (t); t = t->tl)
+  for (CHNode<C> *t = tab[h]; t->goodCHptr (); t = t->tl)
     if (key == t->hd)
       return Pix (t);
 
@@ -169,7 +151,7 @@ CHMap<C>::operator [] (const std::string& item)
   unsigned int h = hash (item) % size;
 
   CHNode<C> *t = 0;
-  for (t = tab[h]; goodCHptr (t); t = t->tl)
+  for (t = tab[h]; t->goodCHptr (); t = t->tl)
     if (item == t->hd)
       return t->cont;
 
@@ -187,7 +169,7 @@ CHMap<C>::del (const std::string& key)
 
   CHNode<C> *t = tab[h];
   CHNode<C> *trail = t;
-  while (goodCHptr (t))
+  while (t->goodCHptr ())
     {
       if (key == t->hd)
 	{
@@ -212,7 +194,7 @@ CHMap<C>::clear (void)
     {
       CHNode<C> *p = tab[i];
       tab[i] = static_cast<CHNode<C> *> (index_to_CHptr (i+1));
-      while (goodCHptr (p))
+      while (p->goodCHptr ())
 	{
 	  CHNode<C> *nxt = p->tl;
 	  delete p;
@@ -227,7 +209,7 @@ Pix
 CHMap<C>::first (void) const
 {
   for (unsigned int i = 0; i < size; ++i)
-    if (goodCHptr (tab[i]))
+    if (tab[i]->goodCHptr ())
       return Pix (tab[i]);
   return 0;
 }
@@ -237,13 +219,13 @@ void
 CHMap<C>::next (Pix& p) const
 {
   CHNode<C> *t = (static_cast<CHNode<C> *> (p))->tl;
-  if (goodCHptr (t))
+  if (t->goodCHptr ())
     p = Pix (t);
   else
     {
-      for (unsigned int i = CHptr_to_index (t); i < size; ++i)
+      for (unsigned int i = t->CHptr_to_index (); i < size; ++i)
 	{
-	  if (goodCHptr (tab[i]))
+	  if (tab[i]->goodCHptr ())
 	    {
 	      p =  Pix (tab[i]);
 	      return;
@@ -264,10 +246,10 @@ CHMap<C>::OK (void) const
     {
       CHNode<C> *p = 0;
 
-      for (p = tab[i]; goodCHptr (p); p = p->tl)
+      for (p = tab[i]; p->goodCHptr (); p = p->tl)
 	++n;
 
-      v &= CHptr_to_index (p) == i + 1;
+      v &= p->CHptr_to_index () == i + 1;
     }
 
   v &= count == n;

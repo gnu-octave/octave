@@ -68,10 +68,10 @@ get_dimensions (const octave_value& a,
 		const char *warn_for, int& nr, int& nc);
 
 extern int
-octave_format (ostream& os, const char *fmt, ...);
+octave_format (std::ostream& os, const char *fmt, ...);
 
 extern int
-octave_vformat (ostream& os, const char *fmt, va_list args);
+octave_vformat (std::ostream& os, const char *fmt, va_list args);
 
 extern "C" void octave_usleep (unsigned int useconds);
 

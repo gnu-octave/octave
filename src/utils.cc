@@ -675,7 +675,7 @@ get_dimensions (const octave_value& a, const octave_value& b,
 }
 
 extern int
-octave_format (ostream& os, const char *fmt, ...)
+octave_format (std::ostream& os, const char *fmt, ...)
 {
   int retval = -1;
 
@@ -690,7 +690,7 @@ octave_format (ostream& os, const char *fmt, ...)
 }
 
 extern int
-octave_vformat (ostream& os, const char *fmt, va_list args)
+octave_vformat (std::ostream& os, const char *fmt, va_list args)
 {
   int retval = -1;
 

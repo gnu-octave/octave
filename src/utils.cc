@@ -1078,7 +1078,7 @@ is_newer (const char *fa, time_t t)
 /*
  * Return to the main command loop in octave.cc.
  */
-void volatile
+void
 jump_to_top_level (void)
 {
   run_all_unwind_protects ();

@@ -36,7 +36,7 @@ extern void message (const char *name, const char *fmt, ...);
 extern void usage (const char *fmt, ...);
 extern void warning (const char *fmt, ...);
 extern void error (const char *fmt, ...);
-extern void volatile panic (const char *fmt, ...);
+extern void panic (const char *fmt, ...);
 
 // Current error state.
 extern int error_state;

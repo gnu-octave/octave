@@ -87,7 +87,7 @@ error (const char *fmt, ...)
   va_end (args);
 }
 
-void volatile
+void
 panic (const char *fmt, ...)
 {
   flush_output_to_pager ();

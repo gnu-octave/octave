@@ -1,3 +1,8 @@
+2004-01-22  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::assignN): Eliminate unnecessray code for
+	filling when RHS is scalar and dimension lengths agree.
+
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (distclean): Remove $(MX_OP_INC), $(VX_OP_INC),

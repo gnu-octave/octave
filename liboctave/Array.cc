@@ -2733,24 +2733,13 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       Array<int> result_idx (lhs_dims.length (), 0);
 
-      Array<int> elt_idx;
-
       RT scalar = rhs.elem (0);
 
       for (int i = 0; i < n; i++)
 	{
-	  elt_idx = get_elt_idx (idx, result_idx);
+	  Array<int> elt_idx = get_elt_idx (idx, result_idx);
 
-	  dim_vector lhs_inc;
-	  lhs_inc.resize (lhs_dims.length ());
-
-	  for (int j = 0; j < lhs_dims.length (); j++)
-	    lhs_inc(j) = lhs_dims(j) + 1;
-
-	  if (index_in_bounds(elt_idx, lhs_inc))
-	    lhs.checkelem (elt_idx) = scalar;
-	  else
-	    lhs.checkelem (elt_idx) = rfv;
+	  lhs.checkelem (elt_idx) = scalar;
 
 	  increment_index (result_idx, frozen_len);
 	}

@@ -381,10 +381,13 @@ tree_simple_for_command::eval (void)
 	if (error_state)
 	  goto cleanup;
 
-	if (rhs.is_real_type ())
-	  DO_ND_LOOP(m_tmp);
-	else
-	  DO_ND_LOOP(cm_tmp);
+	if (dv.numel () > 0)
+	  {
+	    if (rhs.is_real_type ())
+	      DO_ND_LOOP(m_tmp);
+	    else
+	      DO_ND_LOOP(cm_tmp);
+	  }
       }
     else if (rhs.is_map ())
       {

@@ -115,18 +115,6 @@ main_loop (void)
 {
   octave_save_signal_mask ();
 
-  if (octave_set_current_context)
-    {
-#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
-      panic_impossible ();
-#else
-      unwind_protect::run_all ();
-      raw_mode (0);
-      std::cout << "\n";
-      octave_restore_signal_mask ();
-#endif
-    }
-
   can_interrupt = true;
 
   octave_signal_hook = octave_signal_handler;

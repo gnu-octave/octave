@@ -145,9 +145,9 @@ octave_vsnprintf (const char *fmt, va_list args)
 
       if (buf)
 	vsnprintf (buf, size, fmt, args);
-
-      return buf;
     }
+
+  return buf;
 }
 
 char *

@@ -253,7 +253,7 @@ get_fcn_file_names (const string& name, int no_suffix)
 	    }
 	}
 
-      retval.resize (i);
+      retval.resize (k);
     }
 
   return retval;
@@ -287,7 +287,7 @@ get_fcn_file_names (int no_suffix)
 	}
 
       for (int j = 0; j < tmp_num; j++)
-	retval[k++] = names[j++];
+	retval[k++] = names[j];
     }
 
   retval.resize (k);

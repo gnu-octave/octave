@@ -1,3 +1,8 @@
+Wed Aug 13 14:14:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/blanks.m: Allow blanks(0) to return empty string.
+	Allow negative arguments if treat_neg_dim_as_zero is true.
+
 Wed Jun 25 21:26:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/mesh.m: Set noparametric plot mode after plotting.

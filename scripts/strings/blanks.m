@@ -30,10 +30,10 @@ function s = blanks (n)
     usage ("blanks (n)");
   endif
 
-  if (is_scalar (n) && n > 0 && n == round (n))
+  if (is_scalar (n) && n == round (n) && (treat_neg_dim_as_zero || n >= 0))
     s = setstr (ones (1, n) * toascii (" "));
   else
-    error ("blanks: n must be a positive integer");
+    error ("blanks: n must be a non-negative integer");
   endif
 
 endfunction

@@ -531,7 +531,11 @@ get_user_input (const octave_value_list& args, bool debug = false)
 	}
       else if (read_as_string)
 	{
-	  retval = input_buf;
+	  // XXX FIXME XXX -- fix gnu_readline and octave_gets instead!
+	  if (input_buf.length () == 1 && input_buf[0] == '\n')
+	    retval = "";
+	  else
+	    retval = input_buf;
 	}
       else
 	{

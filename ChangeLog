@@ -1,3 +1,8 @@
+Wed Aug 13 20:34:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-before-magic-comment-p): New function.
+	(calculate-octave-indent, octave-comment-indent): Use it.
+
 Sun Aug  3 15:33:18 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* info: Delete subdirectory.

@@ -655,7 +655,8 @@ level."
        ((and (looking-at octave-block-end-regexp)
 	     (octave-not-in-string-or-comment-p))
 	(setq icol (- icol (octave-block-end-offset))))
-       ((looking-at "\\s<\\s<\\s<\\S<")
+       ((or (looking-at "\\s<\\s<\\s<\\S<")
+	    (octave-before-magic-comment-p))
 	(setq icol (list 0 icol)))
        ((looking-at "\\s<\\S<")
 	(setq icol (list comment-column icol)))))
@@ -667,8 +668,14 @@ level."
     (* octave-block-offset
        (if (string-match (match-string 0) "switch") 2 1))))
 
+(defun octave-before-magic-comment-p ()
+  (save-excursion
+    (beginning-of-line)
+    (and (bobp) (looking-at "\\s-*#!"))))
+
 (defun octave-comment-indent ()
-  (if (looking-at "\\s<\\s<\\s<")
+  (if (or (looking-at "\\s<\\s<\\s<")
+	  (octave-before-magic-comment-p))
       0
     (if (looking-at "\\s<\\s<")
 	(calculate-octave-indent)

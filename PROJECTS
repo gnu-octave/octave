@@ -248,6 +248,12 @@ Interpreter:
     succeeds, even when implicit_str_to_num_ok is 0 at the time the
     function is parsed.
 
+  * Fix the parser so that
+
+      if (expr) 'this is a string' end
+
+    is parsed as IF expr STRING END.
+
   * Consider making x(:) work no matter what the value of
     do_fortran_indexing.
 

@@ -185,7 +185,7 @@ where xdot and x are vectors and t is a scalar.\n")
       break;
 
     default:
-      error ("lsode: second arg should be a string or 2-element string array");
+      error ("lsode: first arg should be a string or 2-element string array");
       break;
     }
 

@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // scalar unary ops.
 
 DEFUNOP_OP (not, scalar, !)
+DEFUNOP_OP (uplus, scalar, /* no-op */)
 DEFUNOP_OP (uminus, scalar, -)
 DEFUNOP_OP (transpose, scalar, /* no-op */)
 DEFUNOP_OP (hermitian, scalar, /* no-op */)

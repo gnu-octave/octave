@@ -40,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // matrix unary ops.
 
 DEFNDUNOP_OP (not, matrix, array, !)
+DEFNDUNOP_OP (uplus, matrix, array, /* no-op */)
 DEFNDUNOP_OP (uminus, matrix, array, -)
 
 DEFUNOP (transpose, matrix)
@@ -103,6 +104,7 @@ void
 install_m_m_ops (void)
 {
   INSTALL_UNOP (op_not, octave_matrix, not);
+  INSTALL_UNOP (op_uplus, octave_matrix, uplus);
   INSTALL_UNOP (op_uminus, octave_matrix, uminus);
   INSTALL_UNOP (op_transpose, octave_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_matrix, transpose);

@@ -47,6 +47,7 @@ DEFUNOP (not, complex)
   return octave_value (v.complex_value () == 0.0);
 }
 
+DEFUNOP_OP (uplus, complex, /* no-op */)
 DEFUNOP_OP (uminus, complex, -)
 DEFUNOP_OP (transpose, complex, /* no-op */)
 
@@ -182,6 +183,7 @@ void
 install_cs_cs_ops (void)
 {
   INSTALL_UNOP (op_not, octave_complex, not);
+  INSTALL_UNOP (op_uplus, octave_complex, uplus);
   INSTALL_UNOP (op_uminus, octave_complex, uminus);
   INSTALL_UNOP (op_transpose, octave_complex, transpose);
   INSTALL_UNOP (op_hermitian, octave_complex, hermitian);

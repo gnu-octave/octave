@@ -804,7 +804,7 @@ prefix_expr	: postfix_expr begin_obj_idx cancel_obj_idx
 		| EXPR_NOT prefix_expr %prec UNARY
 		  { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
 		| '+' prefix_expr %prec UNARY
-		  { $$ = $2; }
+		  { $$ = make_prefix_op ('+', $2, $1); }
 		| '-' prefix_expr %prec UNARY
 		  { $$ = make_prefix_op ('-', $2, $1); }
 		;
@@ -2215,6 +2215,10 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
     {
     case EXPR_NOT:
       t = octave_value::op_not;
+      break;
+
+    case '+':
+      t = octave_value::op_uplus;
       break;
 
     case '-':

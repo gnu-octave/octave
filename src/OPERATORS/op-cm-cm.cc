@@ -40,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // unary complex matrix ops.
 
 DEFNDUNOP_OP (not, complex_matrix, complex_array, !)
+DEFNDUNOP_OP (uplus, complex_matrix, complex_array, /* no-op */)
 DEFNDUNOP_OP (uminus, complex_matrix, complex_array, -)
 
 DEFUNOP (transpose, complex_matrix)
@@ -116,6 +117,7 @@ void
 install_cm_cm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_complex_matrix, not);
+  INSTALL_UNOP (op_uplus, octave_complex_matrix, uplus);
   INSTALL_UNOP (op_uminus, octave_complex_matrix, uminus);
   INSTALL_UNOP (op_transpose, octave_complex_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_complex_matrix, hermitian);

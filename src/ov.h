@@ -100,6 +100,7 @@ public:
   enum unary_op
   {
     op_not,
+    op_uplus,
     op_uminus,
     op_transpose,
     op_hermitian,

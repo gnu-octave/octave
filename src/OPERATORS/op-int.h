@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   /* scalar unary ops. */  \
  \
   DEFUNOP_OP (s_not, TYPE ## _scalar, !) \
+  DEFUNOP_OP (s_uplus, TYPE ## _scalar, /* no-op */) \
   DEFUNOP_OP (s_uminus, TYPE ## _scalar, -) \
   DEFUNOP_OP (s_transpose, TYPE ## _scalar, /* no-op */) \
   DEFUNOP_OP (s_hermitian, TYPE ## _scalar, /* no-op */) \
@@ -346,6 +347,7 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   /* matrix unary ops. */ \
  \
   DEFNDUNOP_OP (m_not, TYPE ## _matrix, TYPE ## _array, !) \
+  DEFNDUNOP_OP (m_uplus, TYPE ## _matrix, TYPE ## _array, /* no-op */) \
   DEFNDUNOP_OP (m_uminus, TYPE ## _matrix, TYPE ## _array, -) \
  \
   DEFUNOP (m_transpose, TYPE ## _matrix) \
@@ -473,6 +475,7 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_S_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _scalar, s_not); \
+  INSTALL_UNOP (op_uplus, octave_ ## TYPE ## _scalar, s_uplus); \
   INSTALL_UNOP (op_uminus, octave_ ## TYPE ## _scalar, s_uminus); \
   INSTALL_UNOP (op_transpose, octave_ ## TYPE ## _scalar, s_transpose); \
   INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _scalar, s_hermitian); \
@@ -616,6 +619,7 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
 
 #define OCTAVE_INSTALL_M_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _matrix, m_not); \
+  INSTALL_UNOP (op_uplus, octave_ ## TYPE ## _matrix, m_uplus); \
   INSTALL_UNOP (op_uminus, octave_ ## TYPE ## _matrix, m_uminus); \
   INSTALL_UNOP (op_transpose, octave_ ## TYPE ## _matrix, m_transpose); \
   INSTALL_UNOP (op_hermitian, octave_ ## TYPE ## _matrix, m_transpose); \

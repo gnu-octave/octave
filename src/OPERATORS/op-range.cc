@@ -51,6 +51,7 @@ DEFUNOP (not, range)
   return octave_value (! v.matrix_value());
 }
 
+DEFUNOP_OP (uplus, range, /* no-op */)
 DEFUNOP_OP (uminus, range, -)
 
 DEFUNOP (transpose, range)
@@ -80,6 +81,7 @@ void
 install_range_ops (void)
 {
   INSTALL_UNOP (op_not, octave_range, not);
+  INSTALL_UNOP (op_uplus, octave_range, uplus);
   INSTALL_UNOP (op_uminus, octave_range, uminus);
   INSTALL_UNOP (op_transpose, octave_range, transpose);
   INSTALL_UNOP (op_hermitian, octave_range, transpose);

@@ -134,6 +134,10 @@ octave_value::unary_op_as_string (unary_op op)
       retval = "!";
       break;
 
+    case op_uplus:
+      retval = "+";
+      break;
+
     case op_uminus:
       retval = "-";
       break;

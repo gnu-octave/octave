@@ -1,3 +1,20 @@
+2004-09-06  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_API_VERSION): Now api-v10.
+
+	* OPERATORS/op-b-b.cc, OPERATORS/op-bm-bm.cc: Define and install
+	unary plus and unary minus operators.
+
+	* OPERATORS/op-int.h, OPERATORS/op-cm-cm.cc,
+	OPERATORS/op-cs-cs.cc, OPERATORS/op-m-m.cc, OPERATORS/op-range.cc:
+	Define and install unary plus operator.
+
+	* ov.cc (unary_op_as_string): Handle op_uplus too.
+
+	* parse.y (prefix_expr): Build unary plus op here instead of
+	converting to no-op.
+	(make_prefix_op): Accept op_uplus.
+
 2004-09-03  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-b-bm.cc (DEFCONV): Define bool scalar to bool

@@ -45,6 +45,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // scalar unary ops.
 
 DEFUNOP_OP (not, bool, !)
+
+UNOPDECL (uplus, a)
+{
+  CAST_UNOP_ARG (const octave_bool&);
+  return octave_value (v.double_value ());
+}
+
+UNOPDECL (uminus, a)
+{
+  CAST_UNOP_ARG (const octave_bool&);
+  return octave_value (- v.double_value ());
+}
+
 DEFUNOP_OP (transpose, bool, /* no-op */)
 DEFUNOP_OP (hermitian, bool, /* no-op */)
 
@@ -63,6 +76,8 @@ void
 install_b_b_ops (void)
 {
   INSTALL_UNOP (op_not, octave_bool, not);
+  INSTALL_UNOP (op_uplus, octave_bool, uplus);
+  INSTALL_UNOP (op_uminus, octave_bool, uminus);
   INSTALL_UNOP (op_transpose, octave_bool, transpose);
   INSTALL_UNOP (op_hermitian, octave_bool, hermitian);
 

@@ -25,7 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define OCTAVE_VERSION "2.1.58"
 
-#define OCTAVE_API_VERSION "api-v9"
+#define OCTAVE_API_VERSION "api-v10"
 
 #define OCTAVE_COPYRIGHT \
   "Copyright (C) 2004 John W. Eaton."

@@ -41,6 +41,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // unary bool matrix ops.
 
 DEFNDUNOP_OP (not, bool_matrix, bool_array, !)
+DEFNDUNOP_OP (uplus, bool_matrix, array, +)
+DEFNDUNOP_OP (uminus, bool_matrix, array, -)
 
 DEFUNOP (transpose, bool_matrix)
 {
@@ -76,6 +78,8 @@ void
 install_bm_bm_ops (void)
 {
   INSTALL_UNOP (op_not, octave_bool_matrix, not);
+  INSTALL_UNOP (op_uplus, octave_bool_matrix, uplus);
+  INSTALL_UNOP (op_uminus, octave_bool_matrix, uminus);
   INSTALL_UNOP (op_transpose, octave_bool_matrix, transpose);
   INSTALL_UNOP (op_hermitian, octave_bool_matrix, transpose);
 

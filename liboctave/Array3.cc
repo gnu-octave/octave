@@ -54,7 +54,7 @@ Array3<T>::checkelem (int i, int j, int k)
       static T foo;
       return foo;
     }
-  return Array2<T>::elem (i, d1*k+j);
+  return Array2<T>::elem (i, d2*k+j);
 }
 
 template <class T>

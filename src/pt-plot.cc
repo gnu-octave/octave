@@ -45,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SLStack.h"
 #include "procstream.h"
 
+#include "file-ops.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -914,7 +915,7 @@ subplot_list::print_code (ostream& os)
 string
 save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 {
-  string name = octave_tmp_file_name ();
+  string name = oct_tempnam ();
 
   if (! name.empty ())
     {

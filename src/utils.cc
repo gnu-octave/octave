@@ -166,41 +166,6 @@ read_until (istream& stream, char character)
 }
 #endif
 
-// Get a temporary file name.
-
-string
-octave_tmp_file_name (void)
-{
-  string retval;
-
-  char *tmp = tempnam (0, "oct-");
-
-  if (tmp)
-    {
-      retval = tmp;
-
-      free (tmp);
-    }
-  else
-    error ("can't open temporary file!");
-
-  return retval;
-}
-
-DEFUN ("octave_tmp_file_name", Foctave_tmp_file_name,
-       Soctave_tmp_file_name, 10,
- "octave_tmp_file_name ()")
-{
-  tree_constant retval;
-
-  if (args.length () == 0)
-    retval = octave_tmp_file_name ();
-  else
-    print_usage ("octave_tmp_file_name");
-
-  return retval;
-}
-
 // Return to the main command loop in octave.cc.
 
 extern "C" void

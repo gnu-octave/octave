@@ -47,6 +47,7 @@ Software Foundation, Inc.
 #endif
 
 #include "cmd-hist.h"
+#include "file-ops.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -387,7 +388,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       reverse = 1;
     }
 
-  string name = octave_tmp_file_name ();
+  string name = oct_tempnam ();
 
   fstream file (name.c_str (), ios::out);
 

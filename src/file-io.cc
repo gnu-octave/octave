@@ -1384,7 +1384,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 	  xstring = xstring_str.c_str ();
 	}
 
-      tmp_file = octave_tmp_file_name ();
+      tmp_file = oct_tempnam ();
 
       fptr = fopen (tmp_file.c_str (), "w+");
       if (! fptr)
@@ -2509,6 +2509,20 @@ DEFUN ("lstat", Flstat, Slstat, 10,
     }
   else
     print_usage ("stat");
+
+  return retval;
+}
+
+DEFUN ("octave_tmp_file_name", Foctave_tmp_file_name,
+       Soctave_tmp_file_name, 10,
+ "octave_tmp_file_name ()")
+{
+  tree_constant retval;
+
+  if (args.length () == 0)
+    retval = oct_tempnam ();
+  else
+    print_usage ("octave_tmp_file_name");
 
   return retval;
 }

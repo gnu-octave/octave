@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cerrno>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #ifdef HAVE_UNISTD_H
@@ -34,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "file-ops.h"
+#include "lo-error.h"
 #include "statdefs.h"
 
 // These must come after <sys/types.h> and <sys/stat.h>.
@@ -220,6 +223,26 @@ oct_rmdir (const string& name)
 {
   return rmdir (name.c_str ());
 }
+
+string
+oct_tempnam (void)
+{
+  string retval;
+
+  char *tmp = tempnam (0, "oct-");
+
+  if (tmp)
+    {
+      retval = tmp;
+
+      free (tmp);
+    }
+  else
+    (*current_liboctave_error_handler) ("can't open temporary file!");
+
+  return retval;
+}
+
 
 int
 oct_umask (mode_t mode)

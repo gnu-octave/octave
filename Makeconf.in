@@ -284,6 +284,10 @@ imagepath = @imagepath@
 # The type of computer we are running on.
 canonical_host_type = @canonical_host_type@
 
+# Where Octave will look for startup files
+startupfiledir = ${fcnfiledir}/startup
+localstartupfiledir = ${localfcnfiledir}/startup
+
 # The -I flags to use for the mkoctfile script.
 ifeq ($(includedir),/usr/include)
  MKOCTFILE_INCFLAGS = \
@@ -473,6 +477,7 @@ $(SED) < $< > $@-t \
   -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEDIR%;\"${localoctfiledir}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
+  -e "s;%OCTAVE_LOCALSTARTUPFILEDIR%;\"${localstartupfile}\";" \
   -e "s;%OCTAVE_LOCALVERARCHLIBDIR%;\"${localverarchlibdir}\";" \
   -e "s;%OCTAVE_LOCALVERFCNFILEDIR%;\"${localverfcnfiledir}\";" \
   -e "s;%OCTAVE_LOCALVEROCTFILEDIR%;\"${localveroctfiledir}\";" \
@@ -482,6 +487,7 @@ $(SED) < $< > $@-t \
   -e "s;%OCTAVE_OCTFILEDIR%;\"${octfiledir}\";" \
   -e "s;%OCTAVE_OCTINCLUDEDIR%;\"${octincludedir}\";" \
   -e "s;%OCTAVE_OCTLIBDIR%;\"${octlibdir}\";" \
+  -e "s;%OCTAVE_STARTUPFILEDIR%;\"${startupfiledir}\";" \
   -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
   -e "s;%OCTAVE_VERSION%;\"${version}\";"
 $(top_srcdir)/move-if-change $@-t $@

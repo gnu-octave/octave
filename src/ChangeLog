@@ -1,3 +1,8 @@
+2003-07-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.h.in (OCTAVE_LOCALSTARTUPFILEDIR, OCTAVE_STARTUPFILEDIR):
+	Set values directly instead of constructing them.
+
 2003-06-28  Arno J. Klaassen  <arno@heho.snv.jussieu.fr>
 
 	* toplev.cc (octave_config_info): Key for OCTAVE_CONF_DEFS should

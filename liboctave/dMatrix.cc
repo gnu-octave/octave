@@ -630,7 +630,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
       Array<double> z(1);
       int lwork = -1;
 
-      // Query the optimum work array size
+      // Query the optimum work array size.
       F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt, 
 				 z.fortran_vec (), lwork, info));
 
@@ -648,7 +648,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 
       info = 0;
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond) 
 	anorm = retval.abs().sum().row(0).max();
@@ -659,13 +659,13 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    info = -1;
 	  else if (calc_cond) 
 	    {
-	      /* Now calculate the condition number for non-singular matrix */
+	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      Array<int> iz (nc);
 	      int *piz = iz.fortran_vec ();
@@ -1101,7 +1101,7 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 
       info = 0;
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond) 
 	anorm = atmp.abs().sum().row(0).max();
@@ -1112,7 +1112,7 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    {
@@ -1123,7 +1123,7 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 	    {
 	      if (calc_cond) 
 		{
-		  /* Now calc the condition number for non-singular matrix */
+		  // Now calc the condition number for non-singular matrix.
 		  char job = '1';
 		  Array<double> z (4 * nc);
 		  double *pz = z.fortran_vec ();
@@ -1219,7 +1219,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
       Array<int> iz (nc);
       int *piz = iz.fortran_vec ();
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = atmp.abs().sum().row(0).max();
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1228,7 +1228,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    {
@@ -1243,7 +1243,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 	    } 
 	  else 
 	    {
-	      /* Now calculate the condition number for non-singular matrix */
+	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
 					  rcond, pz, piz, info));
@@ -1366,7 +1366,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
       Array<int> iz (nc);
       int *piz = iz.fortran_vec ();
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = atmp.abs().sum().row(0).max();
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1375,7 +1375,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info > 0) 
 	    {
@@ -1390,7 +1390,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 	    } 
 	  else 
 	    {
-	      /* Now calculate the condition number for non-singular matrix */
+	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
 					  rcond, pz, piz, info));

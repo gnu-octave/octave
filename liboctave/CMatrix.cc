@@ -960,9 +960,9 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
       Complex *tmp_data = retval.fortran_vec ();
 
       Array<Complex> z(1);
-      int lwork = 1;
+      int lwork = -1;
 
-      // Query the optimum work array size
+      // Query the optimum work array size.
 
       F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt, 
 				 z.fortran_vec (), lwork, info));
@@ -981,7 +981,7 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 
       info = 0;
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm;
       if (calc_cond)
 	anorm  = retval.abs().sum().row(0).max();
@@ -992,13 +992,13 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    info = -1;
 	  else if (calc_cond) 
 	    {
-	      /* Now calculate the condition number for non-singular matrix */
+	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      Array<double> rz (2 * nc);
 	      double *prz = rz.fortran_vec ();
@@ -1436,7 +1436,7 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 
       info = 0;
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond) 
 	anorm = atmp.abs().sum().row(0).max();
@@ -1447,7 +1447,7 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    {
@@ -1458,7 +1458,7 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 	    {
 	      if (calc_cond) 
 		{
-		  /* Now calc the condition number for non-singular matrix */
+		  // Now calc the condition number for non-singular matrix.
 		  char job = '1';
 		  Array<Complex> z (2*nr);
 		  Complex *pz = z.fortran_vec ();
@@ -1583,7 +1583,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
       Array<double> rz (2 * nc);
       double *prz = rz.fortran_vec ();
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = atmp.abs().sum().row(0).max();
 
       F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1592,7 +1592,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    { 
@@ -1607,7 +1607,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 	    } 
 	  else 
 	    {
-	      /* Now calculate the condition number for non-singular matrix */
+	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
 					  rcond, pz, prz, info));
@@ -1732,7 +1732,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
       Array<double> rz (2 * nc);
       double *prz = rz.fortran_vec ();
 
-      /* Calculate the norm of the matrix, for later use */
+      // Calculate the norm of the matrix, for later use.
       double anorm = atmp.abs().sum().row(0).max();
 
       F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
@@ -1741,7 +1741,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  // Throw-away extra info LAPACK gives so as to not change output.
 	  rcond = 0.;
 	  if ( info != 0) 
 	    { 
@@ -1756,7 +1756,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 	    } 
 	  else 
 	    {
-	      /* Now calculate the condition number for non-singular matrix */
+	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
 					  rcond, pz, prz, info));

@@ -34,14 +34,16 @@ DEFS = @DEFS@
 AR = @AR@
 ARFLAGS = rv
 
+ALLOCA = @ALLOCA@
+
 # How to invoke ranlib.
 RANLIB = @RANLIB@
 
 .PHONY: all
 all: libglob.a
 
-libglob.a: glob.o fnmatch.o
-	$(AR) $(ARFLAGS) $@ glob.o fnmatch.o
+libglob.a: glob.o fnmatch.o $(ALLOCA)
+	$(AR) $(ARFLAGS) $@ glob.o fnmatch.o $(ALLOCA)
 	$(RANLIB) $@
 
 # For some reason, Unix make wants the dependencies on the source files.

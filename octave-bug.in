@@ -179,8 +179,12 @@ then
     ( echo "unable to send mail -- saving message in \$HOME/dead.octave-bug"; \
       cat $TEMP >> $HOME/dead.octave-bug; exit 1 )
 
-    echo "bug report sent to $BUGADDR"
+    status=$?
 
+    if test $status -eq 0
+    then
+      echo "bug report sent to $BUGADDR"
+    fi      
   fi
 else
   echo "problems with edit -- no bug report submitted"

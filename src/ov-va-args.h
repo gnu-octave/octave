@@ -67,6 +67,8 @@ public:
 
   bool is_all_va_args (void) const { return true; }
 
+  void print (ostream& os, bool pr_as_read_syntax = false);
+
   int type_id (void) const { return t_id; }
 
   string type_name (void) const { return t_name; }

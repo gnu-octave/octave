@@ -53,43 +53,71 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 bool
 file_stat::is_blk (void) const
 {
+#ifdef S_ISBLK
   return S_ISBLK (fs_mode);
+#else
+  return false;
+#endif
 }
 
 bool
 file_stat::is_chr (void) const
 {
+#ifdef S_ISCHR
   return S_ISCHR (fs_mode);
+#else
+  return false;
+#endif
 }
 
 bool
 file_stat::is_dir (void) const
 { 
+#ifdef S_ISDIR
   return S_ISDIR (fs_mode);
+#else
+  return false;
+#endif
 }
 
 bool
 file_stat::is_fifo (void) const
 { 
+#ifdef S_ISFIFO
   return S_ISFIFO (fs_mode);
+#else
+  return false;
+#endif
 }
 
 bool
 file_stat::is_lnk (void) const
 { 
+#ifdef S_ISLNK
   return S_ISLNK (fs_mode);
+#else
+  return false;
+#endif
 }
 
 bool
 file_stat::is_reg (void) const
 { 
+#ifdef S_ISREG
   return S_ISREG (fs_mode);
+#else
+  return false;
+#endif
 }
 
 bool
 file_stat::is_sock (void) const
 { 
+#ifdef S_ISSOCK
   return S_ISSOCK (fs_mode);
+#else
+  return false;
+#endif
 }
 
 extern "C" void mode_string ();

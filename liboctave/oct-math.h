@@ -33,13 +33,25 @@ extern "C" {
 // not, because they are not part of the standard math.h, and the
 // g++/libg++ installation no longer provides declarations for them.
 
-extern double acosh ();
-extern double asinh ();
-extern double atanh ();
-extern double erf ();
-extern double erfc ();
-extern double lgamma ();
-extern double gamma ();
+#ifndef HAVE_ACOSH
+extern double acosh (double);
+#endif
+
+#ifndef HAVE_ASINH
+extern double asinh (double);
+#endif
+
+#ifndef HAVE_ATANH
+extern double atanh (double);
+#endif
+
+#ifndef HAVE_ERF
+extern double erf (double);
+#endif
+
+#ifndef HAVE_ERFC
+extern double erfc (double);
+#endif
 
 #ifdef __cplusplus
 }

@@ -148,9 +148,9 @@ octave_complex::complex_matrix_value (bool) const
 }
 
 void
-octave_complex::print (ostream& os)
+octave_complex::print (ostream& os, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, scalar, false);
+  octave_print_internal (os, scalar, pr_as_read_syntax);
 }
 
 /*

@@ -73,6 +73,8 @@ public:
 
   bool valid_as_zero_index (void) const { return false; }
 
+  void print (ostream& os, bool pr_as_read_syntax = false);
+
   int type_id (void) const { return t_id; }
 
   string type_name (void) const { return t_name; }

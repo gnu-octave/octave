@@ -559,9 +559,6 @@ tree_print_code::visit_oct_obj (tree_oct_obj&)
   ::error ("visit_oct_obj: internal error");
 }
 
-// XXX FIXME XXX -- this should just call val.print_internal () or
-// something.  Checking the types here is a big no-no.
-
 void
 tree_print_code::visit_constant (tree_constant& val)
 {
@@ -572,65 +569,7 @@ tree_print_code::visit_constant (tree_constant& val)
   if (in_parens)
     os << "(";
 
-  if (val.is_real_scalar ())
-    {
-      string orig_text = val.original_text ();
-
-      if (orig_text.empty ())
-	octave_print_internal (os, val.double_value (), 1);
-      else
-	os << orig_text;
-    }
-  else if (val.is_real_matrix ())
-    {
-      octave_print_internal (os, val.matrix_value (), 1);
-    }
-  else if (val.is_complex_scalar ())
-    {
-      Complex cs = val.complex_value ();
-
-      double re = cs.real ();
-      double im = cs.imag ();
-
-      // If we have the original text and a pure imaginary, just
-      // print the original text, because this must be a constant
-      // that was parsed as part of a function.
-
-      string orig_text = val.original_text ();
-
-      if (! orig_text.empty () && re == 0.0 && im > 0.0)
-	os << orig_text;
-      else
-	octave_print_internal (os, cs, 1);
-    }
-  else if (val.is_complex_matrix ())
-    {
-      octave_print_internal (os, val.complex_matrix_value (), 1);
-    }
-  else if (val.is_string ())
-    {
-      octave_print_internal (os, val.all_strings (), 1, 1);
-    }
-  else if (val.is_char_matrix ())
-    {
-      octave_print_internal (os, val.char_matrix_value (), 1);
-    }
-  else if (val.is_range ())
-    {
-      octave_print_internal (os, val.range_value (), 1);
-    }
-  else if (val.is_magic_colon ())
-    {
-      os << ":";
-    }
-  else if (val.is_all_va_args ())
-    {
-      os << "all_va_args";
-    }
-  else
-    {
-      panic_impossible ();
-    }
+  val.print (os, true);
 
   if (in_parens)
     os << ")";

@@ -300,9 +300,9 @@ octave_complex_matrix::complex_matrix_value (bool) const
 }
 
 void
-octave_complex_matrix::print (ostream& os)
+octave_complex_matrix::print (ostream& os, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, matrix, false, struct_indent);
+  octave_print_internal (os, matrix, pr_as_read_syntax, struct_indent);
 }
 
 /*

@@ -169,7 +169,7 @@ public:
 
   void convert_to_row_or_column_vector (void);
 
-  void print (ostream& os);
+  void print (ostream& os, bool pr_as_read_syntax = false);
 
   int type_id (void) const { return t_id; }
 

@@ -1,5 +1,17 @@
 Sun Nov  3 00:45:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-const.cc (tree_constant::print): Just call val.print().
+	* ov-base.cc, ov-ch-mat.cc, ov-colon.cc, ov-complex.cc,
+	ov-cx-mat.cc, ov-range.cc, ov-re-mat.cc, ov-scalar.cc,
+	ov-str-mat.cc, ov-struct.cc ov-va-args.cc, ov.cc (print):
+	Handle pr_as_read_syntax arg.
+
+	* defaults.cc (subst_octave_home): Search for prefix repeatedly in
+	retval, not s.
+
+	* gripes.h: Make declaration of gripes_not_supported match
+	definition.
+
 	* mk-oct-links.in: In sed command, match "DEFUN_DLD *( *", not
 	"DEFUN_DLD_BUILTIN *( *".
 

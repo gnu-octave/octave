@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.  */
 /* Be sure we have constants from <unistd.h>.  */
 #include <kpathsea/c-unistd.h>
 
-#if HAVE_STDLIB_H
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 /* Include <stdlib.h> before <stddef.h>, to help avoid NULL
    redefinitions on some systems.  (We don't include <stddef.h>

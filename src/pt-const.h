@@ -323,7 +323,8 @@ public:
   void decrement (void) { val.decrement (); }
 
   void print (void);
-  void print (ostream& os) { val.print (os); }
+  void print (ostream& os, bool pr_as_read_syntax)
+    { val.print (os, pr_as_read_syntax); }
 
   void print_with_name (const string& name, bool print_padding = true);
   void print_with_name (ostream& os, const string& name,

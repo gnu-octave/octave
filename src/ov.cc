@@ -495,9 +495,9 @@ octave_value::complex_vector_value (bool force_string_conv,
 }
 
 void
-octave_value::print (void)
+octave_value::print (bool pr_as_read_syntax)
 {
-  print (octave_stdout);
+  print (octave_stdout, pr_as_read_syntax);
 }
 
 void

@@ -131,7 +131,7 @@ public:
 
   octave_value convert_to_str (void) const;
 
-  void print (ostream& os);
+  void print (ostream& os, bool pr_as_read_syntax = false);
 
   int type_id (void) const { return t_id; }
 

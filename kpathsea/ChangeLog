@@ -1,3 +1,8 @@
+Sun Nov  3 15:35:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* c-std.h: Use #ifdef, not #if to checm HAVE_STDLIB_H
+	* c-unistd.h: Likewise, for HAVE_UNISTD_H
+
 Tue Oct 29 17:27:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (SH_LIBS_TO_INSTALL): Use .$(SHLEXT), not .so.

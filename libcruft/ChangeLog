@@ -1,3 +1,8 @@
+Sun Nov  3 19:37:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (distclean): Delete target, since there is
+	nothing special to do.
+
 Wed Oct 30 17:20:14 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 1.90.

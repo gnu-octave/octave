@@ -130,7 +130,7 @@ public:
 
   void decrement (void) { matrix -= 1.0; }
 
-  void print (ostream& os);
+  void print (ostream& os, bool pr_as_read_syntax = false);
 
   int type_id (void) const { return t_id; }
 

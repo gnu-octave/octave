@@ -363,9 +363,10 @@ public:
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
 
-  void print (void);
+  void print (bool pr_as_read_syntax = false);
 
-  virtual void print (ostream& os) { rep->print (os); }
+  virtual void print (ostream& os, bool pr_as_read_syntax)
+    { rep->print (os, pr_as_read_syntax); }
 
   void print_with_name (const string& name, bool print_padding = true);
 

@@ -190,9 +190,9 @@ octave_range::convert_to_str (void) const
 }
 
 void
-octave_range::print (ostream& os)
+octave_range::print (ostream& os, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, range, false, struct_indent);
+  octave_print_internal (os, range, pr_as_read_syntax, struct_indent);
 }
 
 /*

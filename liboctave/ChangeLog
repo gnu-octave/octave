@@ -1,3 +1,14 @@
+Sun Nov  3 15:45:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc (file_stat::is_blk, file_stat::is_chr,
+	file_stat::is_dir, file_stat::is_fifo, file_stat::is_lnk,
+	file_stat::is_reg, file_stat::is_sock): Just return false if the
+	underlying macro is not defined.	
+
+	* oct-math.h (lgamma, gamma): Delete declarations.
+	(asinh, acosh, atanh, erf, erfc): Declare arg types too.
+	Protect declarations with #ifdef HAVE_*.
+
 Wed Oct 30 11:42:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 1.90.

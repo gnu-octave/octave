@@ -103,9 +103,9 @@ octave_scalar::convert_to_str (void) const
 }
 
 void
-octave_scalar::print (ostream& os)
+octave_scalar::print (ostream& os, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, scalar, false);
+  octave_print_internal (os, scalar, pr_as_read_syntax);
 }
 
 /*

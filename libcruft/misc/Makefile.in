@@ -42,6 +42,3 @@ machar.o: $(srcdir)/machar.c
 
 pic/machar.o: $(srcdir)/machar.c
 	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $< -o $@
-
-distclean::
-	rm -f d1mach.f gen-d1mach

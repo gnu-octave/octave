@@ -61,7 +61,7 @@ octave_struct::struct_elt_ref (const string& nm)
 }
 
 void
-octave_struct::print (ostream& os)
+octave_struct::print (ostream& os, bool)
 {
   // XXX FIXME XXX -- would be nice to print the output in some
   // standard order.  Maybe all substructures first, maybe

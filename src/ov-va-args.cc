@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <iostream.h>
+
 #include "error.h"
 #include "pr-output.h"
 #include "ov-va-args.h"
@@ -35,6 +37,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int octave_all_va_args::t_id = -1;
 
 const string octave_all_va_args::t_name ("va-arg");
+
+void
+octave_all_va_args::print (ostream& os, bool)
+{
+  os << "all_va_args";
+}
 
 /*
 ;;; Local Variables: ***

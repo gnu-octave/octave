@@ -89,9 +89,9 @@ octave_char_matrix::complex_value (bool) const
 }
 
 void
-octave_char_matrix::print (ostream& os)
+octave_char_matrix::print (ostream& os, bool pr_as_read_syntax)
 {
-  octave_print_internal (os, matrix, false, false, struct_indent);
+  octave_print_internal (os, matrix, pr_as_read_syntax, false, struct_indent);
 }
 
 /*

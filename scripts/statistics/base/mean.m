@@ -70,7 +70,7 @@ function y = mean (x, opt1, opt2)
       opt = opt1;
       need_dim = 1;
     else
-      dim = opt1
+      dim = opt1;
       opt = "a";
     endif
   elseif (nargin == 3)

@@ -1,3 +1,7 @@
+2003-10-02  Quentin Spencer  <qspencer@ieee.org>
+
+	* statistics/base/mean.m: Fix missing semicolon problem.
+
 2003-09-08  Al Niessner  <Al.Niessner@jpl.nasa.gov>
 
 	* plot/subplot.m: New global variable, __multiplot_scale__.

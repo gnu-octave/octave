@@ -90,8 +90,8 @@ octave_list::print_raw (ostream& os, bool) const
 {
   begin_unwind_frame ("octave_list_print");
 
-  indent (os);
   newline (os);
+  indent (os);
   os << "(";
   newline (os);
 
@@ -102,8 +102,6 @@ octave_list::print_raw (ostream& os, bool) const
   for (int i = 0; i < n; i++)
     {
       octave_value val = lst(i);
-
-      indent (os);
 
       val.print (os);
     }

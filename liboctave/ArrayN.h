@@ -49,9 +49,6 @@ ArrayN : public Array<T>
 {
 protected:
 
-  static int get_size (const dim_vector& dims)
-    { return Array<T>::get_size (dims); }
-
   ArrayN (T *d, const dim_vector& dv) : Array<T> (d, dv) { }
 
 public:

@@ -1,7 +1,7 @@
 // file-io.h                                              -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,8 +23,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Written by John C. Campbell <jcc@che.utexas.edu>.
 
-#if !defined (_files_h)
-#define _files_h 1
+#if !defined (octave_files_h)
+#define octave_files_h 1
 
 #include <Pix.h>
 

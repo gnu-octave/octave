@@ -1,7 +1,7 @@
 // token.h                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_token_h)
-#define _token_h 1
+#if !defined (octave_token_h)
+#define octave_token_h 1
 
 class symbol_record;
 

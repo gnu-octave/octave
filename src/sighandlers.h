@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_sighandlers_h)
-#define _sighandlers_h 1
+#if !defined (octave_sighandlers_h)
+#define octave_sighandlers_h 1
 
 // Signal handler return type.
 #ifndef RETSIGTYPE

@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_user_prefs_h)
-#define _user_prefs_h 1
+#if !defined (octave_user_prefs_h)
+#define octave_user_prefs_h 1
 
 struct user_preferences
 {

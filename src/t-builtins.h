@@ -1,7 +1,7 @@
 // builtin text function support.                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_t_builtins_h)
-#define _t_builtins_h 1
+#if !defined (octave_t_builtins_h)
+#define octave_t_builtins_h 1
 
 #include "tree-const.h"
 

@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_builtins_h)
-#define _builtins_h 1
+#if !defined (octave_builtins_h)
+#define octave_builtins_h 1
 
 class ostrstream;
 class Complex;

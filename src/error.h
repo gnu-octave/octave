@@ -1,7 +1,7 @@
 // error.h                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_error_h)
-#define _error_h 1
+#if !defined (octave_error_h)
+#define octave_error_h 1
 
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \

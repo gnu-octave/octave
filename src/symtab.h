@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_symtab_h)
-#define _symtab_h 1
+#if !defined (octave_symtab_h)
+#define octave_symtab_h 1
 
 #include <stdlib.h>
 #include <string.h>

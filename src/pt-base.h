@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_tree_base_h)
-#define _tree_base_h 1
+#if !defined (octave_tree_base_h)
+#define octave_tree_base_h 1
 
 #include <stdio.h>
 #include <time.h>

@@ -23,8 +23,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // Use the GNU readline library for command line editing and hisory.
 
-#if !defined (_input_h)
-#define _input_h 1
+#if !defined (octave_input_h)
+#define octave_input_h 1
 
 #include <stdio.h>
 

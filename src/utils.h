@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_utils_h)
-#define _utils_h 1
+#if !defined (octave_utils_h)
+#define octave_utils_h 1
 
 #include <time.h>
 

@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_octave_h)
-#define _octave_h 1
+#if !defined (octave_octave_h)
+#define octave_octave_h 1
 
 #include <stdio.h>
 

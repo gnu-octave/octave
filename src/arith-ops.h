@@ -2,7 +2,7 @@
 // Used by the tree class.                    
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -22,8 +22,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_arith_ops_h)
-#define _arith_ops_h 1
+#if !defined (octave_arith_ops_h)
+#define octave_arith_ops_h 1
 
 #include "tree-base.h"
 

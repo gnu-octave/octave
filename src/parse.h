@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_parse_h)
-#define _parse_h 1
+#if !defined (octave_parse_h)
+#define octave_parse_h 1
 
 #include "SLStack.h"
 

@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_variables_h)
-#define _variables_h 1
+#if !defined (octave_variables_h)
+#define octave_variables_h 1
 
 class istream;
 class symbol_record;

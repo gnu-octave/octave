@@ -1226,7 +1226,8 @@ do_who (int argc, const string_vector& argv)
       show_variables = 0;
     }
 
-  for (int i = 1; i < argc; i++)
+  int i;
+  for (i = 1; i < argc; i++)
     {
       if (argv[i] == "-all" || argv[i] == "-a")
 	{
@@ -1249,6 +1250,11 @@ do_who (int argc, const string_vector& argv)
 	break;
     }
 
+  int npats = argc - i;
+  string_vector pats (npats);
+  for (int j = 0; j < npats; j++)
+    pats[j] = argv[i+j];
+
   // If the user specified -l and nothing else, show variables.  If
   // evaluating this at the top level, also show functions.
 
@@ -1263,12 +1269,12 @@ do_who (int argc, const string_vector& argv)
 
   if (show_builtins)
     {
-      pad_after += maybe_list ("*** built-in variables:", argv, argc,
+      pad_after += maybe_list ("*** built-in variables:", pats, npats,
 			       output_buf, show_verbose, global_sym_tab,
 			       symbol_def::BUILTIN_VARIABLE,
 			       SYMTAB_ALL_SCOPES);
 
-      pad_after += maybe_list ("*** built-in functions:", argv, argc,
+      pad_after += maybe_list ("*** built-in functions:", pats, npats,
 			       output_buf, show_verbose, global_sym_tab,
 			       symbol_def::BUILTIN_FUNCTION,
 			       SYMTAB_ALL_SCOPES);
@@ -1277,20 +1283,20 @@ do_who (int argc, const string_vector& argv)
   if (show_functions)
     {
       pad_after += maybe_list ("*** currently compiled functions:",
-			       argv, argc, output_buf, show_verbose,
+			       pats, npats, output_buf, show_verbose,
 			       global_sym_tab, symbol_def::USER_FUNCTION,
 			       SYMTAB_ALL_SCOPES);
     }
 
   if (show_variables)
     {
-      pad_after += maybe_list ("*** local user variables:", argv, argc,
+      pad_after += maybe_list ("*** local user variables:", pats, npats,
 			       output_buf, show_verbose, curr_sym_tab,
 			       symbol_def::USER_VARIABLE,
 			       SYMTAB_LOCAL_SCOPE);
 
       pad_after += maybe_list ("*** globally visible user variables:",
-			       argv, argc, output_buf, show_verbose,
+			       pats, npats, output_buf, show_verbose,
 			       curr_sym_tab, symbol_def::USER_VARIABLE,
 			       SYMTAB_GLOBAL_SCOPE);
     }

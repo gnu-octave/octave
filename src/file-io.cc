@@ -73,17 +73,15 @@ static octave_value stderr_file;
 void
 initialize_file_io (void)
 {
-  octave_istream *stdin_stream
-    = new octave_istream (&cin, "stdin");
+  octave_stream stdin_stream = octave_istream::create (&cin, "stdin");
 
   // This uses octave_stdout (see pager.h), not cout so that Octave's
   // standard output stream will pass through the pager.
 
-  octave_ostream *stdout_stream
-    = new octave_ostream (&octave_stdout, "stdout");
+  octave_stream stdout_stream
+    = octave_ostream::create (&octave_stdout, "stdout");
 
-  octave_ostream *stderr_stream
-    = new octave_ostream (&cerr, "stderr");
+  octave_stream stderr_stream = octave_ostream::create (&cerr, "stderr");
 
   stdin_file = octave_stream_list::insert (stdin_stream);
   stdout_file = octave_stream_list::insert (stdout_stream);
@@ -142,6 +140,19 @@ fopen_mode_to_ios_mode (const string& mode)
   return retval;
 }
 
+DEFUN (is_stream, args, ,
+  "is_stream (x): return nonzero if x is a stream object")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_stream ();
+  else
+    print_usage ("is_stream");
+
+  return retval;
+}
+
 DEFUN (fclose, args, ,
   "fclose (FILENUM): close a file")
 {
@@ -183,10 +194,10 @@ DEFUN (fflush, args, ,
 	}
       else
 	{
-	  octave_stream *os = octave_stream_list::lookup (fid);
+	  octave_stream os = octave_stream_list::lookup (fid);
 
-	  if (os)
-	    retval = static_cast<double> (os->flush ());
+	  if (os.is_valid ())
+	    retval = static_cast<double> (os.flush ());
 	  else
 	    gripe_invalid_file_id ("fflush");
 	}
@@ -211,16 +222,16 @@ read a string from a file")
 
   if (nargin == 1 || nargin == 2)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  octave_value len_arg = (nargin == 2)
 	    ? args(1) : octave_value (static_cast<double> (INT_MAX));
 
 	  bool err = false;
 
-	  string tmp = os->getl (len_arg, err);
+	  string tmp = os.getl (len_arg, err);
 
 	  if (! err)
 	    {
@@ -251,16 +262,16 @@ read a string from a file")
 
   if (nargin == 1 || nargin == 2)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  octave_value len_arg = (nargin == 2)
 	    ? args(1) : octave_value (static_cast<double> (INT_MAX));
 
 	  bool err = false;
 
-	  string tmp = os->gets (len_arg, err);
+	  string tmp = os.gets (len_arg, err);
 
 	  if (! err)
 	    {
@@ -277,11 +288,11 @@ read a string from a file")
   return retval;
 }
 
-static octave_base_stream *
+static octave_stream
 do_stream_open (const string& name, const string& mode,
 		const string& arch, int& fid)
 {
-  octave_base_stream *retval = 0;
+  octave_stream retval;
 
   fid = -1;
 
@@ -293,17 +304,17 @@ do_stream_open (const string& name, const string& mode,
 	oct_mach_info::string_to_float_format (arch);
 
       if (! error_state)
-	retval = new octave_fstream (name, md, flt_fmt);
+	retval = octave_fstream::create (name, md, flt_fmt);
     }
 
   return retval;
 }
 
-static octave_base_stream *
+static octave_stream
 do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
 		const octave_value& tc_arch, const char *fcn, int& fid)
 {
-  octave_base_stream *retval = 0;
+  octave_stream retval;
 
   fid = -1;
 
@@ -411,12 +422,11 @@ DEFUN (fopen, args, ,
 
       int fid = -1;
 
-      octave_base_stream *os
-	= do_stream_open (args(0), mode, arch, "fopen", fid);
+      octave_stream os = do_stream_open (args(0), mode, arch, "fopen", fid);
 
-      if (os)
+      if (os.is_valid ())
 	{
-	  if (os->ok () && ! error_state)
+	  if (os && ! error_state)
 	    {
 	      retval(1) = "";
 	      retval(0) = octave_stream_list::insert (os);
@@ -425,12 +435,12 @@ DEFUN (fopen, args, ,
 	    {
 	      int error_number = 0;
 
-	      retval(1) = os->error (false, error_number);
+	      retval(1) = os.error (false, error_number);
 	      retval(0) = -1.0;
 	    }
 	}
       else
-	::error ("fopen: internal error");
+	error ("fopen: internal error");
     }
   else
     print_usage ("fopen");
@@ -462,10 +472,10 @@ DEFUN (frewind, args, ,
 
   if (nargin == 1)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
-	retval = static_cast<double> (os->rewind ());
+      if (os.is_valid ())
+	retval = static_cast<double> (os.rewind ());
       else
 	gripe_invalid_file_id ("frewind");
     }
@@ -492,14 +502,14 @@ ORIGIN may be one of:\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  octave_value origin_arg = (nargin == 3)
 	    ? args(2) : octave_value (-1.0);
 
-	  retval = static_cast<double> (os->seek (args(1), origin_arg));
+	  retval = static_cast<double> (os.seek (args(1), origin_arg));
 	}
       else
 	::error ("fseek: invalid file id");
@@ -519,10 +529,10 @@ DEFUN (ftell, args, ,
 
   if (nargin == 1)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
-	retval = static_cast<double> (os->tell ());
+      if (os.is_valid ())
+	retval = static_cast<double> (os.tell ());
       else
 	gripe_invalid_file_id ("ftell");
     }
@@ -541,7 +551,7 @@ DEFUN (fprintf, args, ,
 
   if (nargin > 1 || (nargin > 0 && args(0).is_string ()))
     {
-      octave_stream *os	= 0;
+      octave_stream os;
       int fmt_n = 0;
 
       if (args(0).is_string ())
@@ -552,7 +562,7 @@ DEFUN (fprintf, args, ,
 	  os = octave_stream_list::lookup (args(0));
 	}
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  if (args(fmt_n).is_string ())
 	    {
@@ -568,7 +578,7 @@ DEFUN (fprintf, args, ,
 		    tmp_args(i-fmt_n-1) = args(i);
 		}
 
-	      retval = os->printf (fmt, tmp_args);
+	      retval = os.printf (fmt, tmp_args);
 	    }
 	  else
 	    ::error ("fprintf: format must be a string");
@@ -591,10 +601,10 @@ DEFUN (fputs, args, ,
 
   if (nargin == 2)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
-	retval = os->puts (args(1));
+      if (os.is_valid ())
+	retval = os.puts (args(1));
       else
 	gripe_invalid_file_id ("fputs");
     }
@@ -617,11 +627,11 @@ DEFUN (sprintf, args, ,
       retval(1) = "unknown error";
       retval(0) = "";
 
-      octave_ostrstream ostr;
+      octave_ostrstream *ostr = new octave_ostrstream ();
 
-      octave_stream os (&ostr, true);
+      octave_stream os (ostr);
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  if (args(0).is_string ())
 	    {
@@ -639,9 +649,7 @@ DEFUN (sprintf, args, ,
 
 	      retval(2) = static_cast<double> (os.printf (fmt, tmp_args));
 	      retval(1) = os.error ();
-	      char *tmp = ostr.str ();
-	      retval(0) = tmp;
-	      delete [] tmp;
+	      retval(0) = ostr->str ();
 	    }
 	  else
 	    ::error ("sprintf: format must be a string");
@@ -684,15 +692,15 @@ more `C-like', and also compatible with previous versions of Octave")
 
   if (nargin == 3 && args(2).is_string ())
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  if (args(1).is_string ())
 	    {
 	      string fmt = args(1).string_value ();
 
-	      retval = os->oscanf (fmt);
+	      retval = os.oscanf (fmt);
 	    }
 	  else
 	    ::error ("fscanf: format must be a string");
@@ -707,9 +715,9 @@ more `C-like', and also compatible with previous versions of Octave")
 
       if (nargin == 2 || nargin == 3)
 	{
-	  octave_stream *os = octave_stream_list::lookup (args(0));
+	  octave_stream os = octave_stream_list::lookup (args(0));
 
-	  if (os)
+	  if (os.is_valid ())
 	    {
 	      if (args(1).is_string ())
 		{
@@ -722,7 +730,7 @@ more `C-like', and also compatible with previous versions of Octave")
 
 		  if (! error_state)
 		    {
-		      octave_value tmp = os->scanf (fmt, size, count);
+		      octave_value tmp = os.scanf (fmt, size, count);
 
 		      retval(1) = static_cast<double> (count);
 		      retval(0) = tmp;
@@ -777,11 +785,9 @@ more `C-like', and also compatible with previous versions of Octave")
 	{
 	  string data = args(0).string_value ();
 
-	  octave_istrstream istr (data);
+	  octave_stream os = octave_istrstream::create (data);
 
-	  octave_stream os (&istr, true);
-
-	  if (os)
+	  if (os.is_valid ())
 	    {
 	      if (args(1).is_string ())
 		{
@@ -811,11 +817,9 @@ more `C-like', and also compatible with previous versions of Octave")
 	    {
 	      string data = args(0).string_value ();
 
-	      octave_istrstream istr (data);
+	      octave_stream os = octave_istrstream::create (data);
 
-	      octave_stream os (&istr, true);
-
-	      if (os)
+	      if (os.is_valid ())
 		{
 		  if (args(1).is_string ())
 		    {
@@ -979,9 +983,9 @@ Reads data in binary form of type PRECISION from a file.\n\
       retval(1) = -1.0;
       retval(0) = Matrix ();
 
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  octave_value size = (nargin > 1)
 	    ? args(1) : octave_value (octave_Inf);
@@ -997,7 +1001,7 @@ Reads data in binary form of type PRECISION from a file.\n\
 
 	  int count = -1;
 
-	  octave_value tmp = do_fread (*os, size, prec, skip, arch, count);
+	  octave_value tmp = do_fread (os, size, prec, skip, arch, count);
 
 	  retval(1) = static_cast<double> (count);
 	  retval(0) = tmp;
@@ -1107,9 +1111,9 @@ DEFUN (fwrite, args, ,
 
   if (nargin > 1 && nargin < 6)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  octave_value data = args(1);
 
@@ -1122,7 +1126,7 @@ DEFUN (fwrite, args, ,
 	  octave_value arch = (nargin > 4)
 	    ? args(4) : octave_value ("unknown");
 
-	  double status = do_fwrite (*os, data, prec, skip, arch);
+	  double status = do_fwrite (os, data, prec, skip, arch);
 
 	  retval = status;
 	}
@@ -1147,10 +1151,10 @@ DEFUN (feof, args, ,
 
   if (nargin == 1)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
-	retval = os->eof () ? 1.0 : 0.0;
+      if (os.is_valid ())
+	retval = os.eof () ? 1.0 : 0.0;
       else
 	gripe_invalid_file_id ("feof");
     }
@@ -1172,9 +1176,9 @@ DEFUN (ferror, args, ,
 
   if (nargin == 1 || nargin == 2)
     {
-      octave_stream *os = octave_stream_list::lookup (args(0));
+      octave_stream os = octave_stream_list::lookup (args(0));
 
-      if (os)
+      if (os.is_valid ())
 	{
 	  bool clear = false;
 
@@ -1190,7 +1194,7 @@ DEFUN (ferror, args, ,
 
 	  int error_number = 0;
 
-	  string error_message = os->error (clear, error_number);
+	  string error_message = os.error (clear, error_number);
 
 	  retval(1) = static_cast<double> (error_number);
 	  retval(0) = error_message;
@@ -1253,13 +1257,13 @@ endwhile\n\
 	    {
 	      if (mode == "r")
 		{
-		  octave_iprocstream *ips = new octave_iprocstream (name);
+		  octave_stream ips = octave_iprocstream::create (name);
 
 		  retval = octave_stream_list::insert (ips);
 		}
 	      else if (mode == "w")
 		{
-		  octave_oprocstream *ops = new octave_oprocstream (name);
+		  octave_stream ops = octave_oprocstream::create (name);
 
 		  retval = octave_stream_list::insert (ops);
 		}

@@ -470,7 +470,7 @@ octave_value::octave_value (const Octave_map& m)
   rep->count = 1;
 }
 
-octave_value::octave_value (octave_stream *s, int n)
+octave_value::octave_value (const octave_stream& s, int n)
   : rep (new octave_file (s, n))
 {
   rep->count = 1;
@@ -715,7 +715,7 @@ octave_value::map_value (void) const
   return rep->map_value ();
 }
 
-octave_stream *
+octave_stream
 octave_value::stream_value (void) const
 {
   return rep->stream_value ();

@@ -39,8 +39,6 @@ public:
 			 oct_mach_info::native)
     : octave_base_stream (arg_md, flt_fmt) { }
 
-  ~octave_base_strstream (void) { }
-
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (streamoff offset, ios::seek_dir origin);
@@ -51,13 +49,17 @@ public:
 
   // The name of the file.
 
-  string name (void) { return string (); }
+  string name (void) const { return string (); }
 
   virtual streambuf *rdbuf (void) = 0;
 
   virtual bool bad (void) const = 0;
 
   virtual void clear (void) = 0;
+
+protected:
+
+  ~octave_base_strstream (void) { }
 
 private:
 
@@ -85,7 +87,13 @@ public:
 		     oct_mach_info::native)
     : octave_base_strstream (arg_md, flt_fmt), is (data.c_str ()) { }
 
-  ~octave_istrstream (void) { }
+  static octave_stream
+  create (const char *data, ios::openmode arg_md = ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+
+  static octave_stream
+  create (const string& data, ios::openmode arg_md = ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -100,6 +108,10 @@ public:
   bool bad (void) const { return is.bad (); }
 
   void clear (void) { is.clear (); }
+
+protected:
+
+  ~octave_istrstream (void) { }
 
 private:
 
@@ -122,7 +134,9 @@ public:
 		     oct_mach_info::native)
     : octave_base_strstream (arg_md, flt_fmt) { }
 
-  ~octave_ostrstream (void) { }
+  static octave_stream
+  create (ios::openmode arg_md = ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -132,10 +146,13 @@ public:
 
   ostream *output_stream (void) { return &os; }
 
-  char *str (void)
+  string str (void)
     {
       os << ends;
-      return os.str ();
+      char *tmp = os.str ();
+      string retval = tmp;
+      delete [] tmp;
+      return retval;
     }
 
   streambuf *rdbuf (void) { return os ? os.rdbuf () : 0; }
@@ -143,6 +160,10 @@ public:
   bool bad (void) const { return os.bad (); }
 
   void clear (void) { os.clear (); }
+
+protected:
+
+  ~octave_ostrstream (void) { }
 
 private:
 

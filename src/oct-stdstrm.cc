@@ -83,6 +83,14 @@ octave_base_stdiostream::tell (void) const
   return retval;
 }
 
+octave_stream
+octave_istdiostream::create (const string& n, FILE *f,
+			     ios::openmode arg_md,
+			     oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_istdiostream (n, f, arg_md, flt_fmt));
+}
+
 octave_istdiostream::octave_istdiostream (const string& n, FILE *f,
 					  ios::openmode arg_md,
 					  oct_mach_info::float_format flt_fmt)
@@ -95,6 +103,14 @@ octave_istdiostream::octave_istdiostream (const string& n, FILE *f,
 octave_istdiostream::~octave_istdiostream (void)
 {
   delete is;
+}
+
+octave_stream
+octave_ostdiostream::create (const string& n, FILE *f,
+			     ios::openmode arg_md,
+			     oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_ostdiostream (n, f, arg_md, flt_fmt));
 }
 
 octave_ostdiostream::octave_ostdiostream (const string& n, FILE *f,

@@ -108,7 +108,7 @@ public:
 
   bool is_map (void) const { return false; }
 
-  bool is_file (void) const { return false; }
+  bool is_stream (void) const { return false; }
 
   bool is_list (void) const { return false; }
 
@@ -179,7 +179,7 @@ public:
 
   Octave_map map_value (void) const;
 
-  octave_stream *stream_value (void) const;
+  octave_stream stream_value (void) const;
 
   int stream_number (void) const;
 

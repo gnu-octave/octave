@@ -70,15 +70,17 @@ octave_file::print_raw (ostream& os, bool) const
     {
       increment_indent_level ();
 
-      string name = stream->name ();
-      string mode = octave_stream::mode_as_string (stream->mode ());
+      string name = stream.name ();
+      string mode = octave_stream::mode_as_string (stream.mode ());
       string arch
-	= oct_mach_info::float_format_as_string (stream->float_format ());
+	= oct_mach_info::float_format_as_string (stream.float_format ());
+      string status = stream.is_open () ? "open" : "closed";
 
       indent (os); os << "id = " << number; newline (os);
       indent (os); os << "name = " << name; newline (os);
       indent (os); os << "mode = " << mode; newline (os);
       indent (os); os << "arch = " << arch; newline (os);
+      indent (os); os << "status = " << status; newline (os);
 
       decrement_indent_level ();
     }

@@ -35,7 +35,7 @@ template class Array<scanf_format_elt*>;
 
 template class Array<printf_format_elt*>;
 
-template class Array<octave_stream*>;
+template class Array<octave_stream>;
 
 /*
 ;;; Local Variables: ***

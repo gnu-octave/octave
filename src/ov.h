@@ -171,7 +171,7 @@ public:
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
-  octave_value (octave_stream *s, int n);
+  octave_value (const octave_stream& s, int n);
   octave_value (octave_function *f);
   octave_value (const octave_value_list& m);
   octave_value (octave_value::magic_colon);
@@ -313,6 +313,9 @@ public:
   virtual bool is_map (void) const
     { return rep->is_map (); }
 
+  virtual bool is_stream (void) const
+    { return rep->is_stream (); }
+
   virtual bool is_list (void) const
     { return rep->is_list (); }
 
@@ -422,7 +425,7 @@ public:
 
   virtual Octave_map map_value (void) const;
 
-  virtual octave_stream *stream_value (void) const;
+  virtual octave_stream stream_value (void) const;
 
   virtual int stream_number (void) const;
 

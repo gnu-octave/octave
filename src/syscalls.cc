@@ -108,13 +108,13 @@ system-dependent error message.\n\
 
   if (nargin == 2)
     {
-      octave_stream *old_stream = octave_stream_list::lookup (args(0));
-      octave_stream *new_stream = octave_stream_list::lookup (args(1));
+      octave_stream old_stream = octave_stream_list::lookup (args(0));
+      octave_stream new_stream = octave_stream_list::lookup (args(1));
 
-      if (! error_state)
+      if (old_stream.is_valid () && new_stream.is_valid ())
 	{
-	  int i_old = old_stream->file_number ();
-	  int i_new = new_stream->file_number ();
+	  int i_old = old_stream.file_number ();
+	  int i_new = new_stream.file_number ();
 
 	  if (i_old >= 0 && i_new >= 0)
 	    {
@@ -598,14 +598,11 @@ system-dependent error message.\n\
 	retval(2) = msg;
       else
 	{
-	  FILE *in_file = fdopen (fid[0], "r");
-	  FILE *out_file = fdopen (fid[1], "w");
+	  FILE *ifile = fdopen (fid[0], "r");
+	  FILE *ofile = fdopen (fid[1], "w");
 
-	  octave_istdiostream *is
-	    = new octave_istdiostream (string (), in_file);
-
-	  octave_ostdiostream *os
-	    = new octave_ostdiostream (string (), out_file);
+	  octave_stream is = octave_istdiostream::create (string (), ifile);
+	  octave_stream os = octave_ostdiostream::create (string (), ofile);
 
 	  octave_value_list file_ids;
 

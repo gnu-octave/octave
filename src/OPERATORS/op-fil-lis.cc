@@ -46,11 +46,11 @@ DEFBINOP (lshift, file, list)
 {
   CAST_BINOP_ARGS (const octave_file&, const octave_list&);
 
-  octave_stream *oct_stream = v1.stream_value ();
+  octave_stream oct_stream = v1.stream_value ();
 
   if (oct_stream)
     {
-      ostream *osp = oct_stream->output_stream ();
+      ostream *osp = oct_stream.output_stream ();
 
       if (osp)
 	{

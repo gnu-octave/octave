@@ -28,6 +28,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-prcstrm.h"
 
+octave_stream
+octave_iprocstream::create (const string& n, ios::openmode arg_md,
+			    oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_iprocstream (n, arg_md, flt_fmt));
+}
+
 octave_iprocstream::octave_iprocstream (const string& n,
 					ios::openmode arg_md,
 					oct_mach_info::float_format flt_fmt)
@@ -49,6 +56,13 @@ octave_iprocstream::~octave_iprocstream (void)
       pclose (fp);
       fp = 0;
     }
+}
+
+octave_stream
+octave_oprocstream::create (const string& n, ios::openmode arg_md,
+			    oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_oprocstream (n, arg_md, flt_fmt));
 }
 
 octave_oprocstream::octave_oprocstream (const string& n,

@@ -30,6 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-fstrm.h"
 
+octave_stream
+octave_fstream::create (const string& nm_arg, ios::openmode md,
+			oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_fstream (nm_arg, md, flt_fmt));
+}
+
 octave_fstream::octave_fstream (const string& nm_arg,
 				ios::openmode md = ios::in|ios::out,
 				oct_mach_info::float_format flt_fmt)
@@ -89,14 +96,6 @@ bool
 octave_fstream::eof (void) const
 {
   return fs.eof ();
-}
-
-// The name of the file.
-
-string
-octave_fstream::name (void)
-{
-  return nm;
 }
 
 istream *

@@ -41,8 +41,6 @@ public:
 			oct_mach_info::native)
     : octave_base_stream (md, flt_fmt), nm (n) { }
 
-  ~octave_base_iostream (void) { }
-
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (streamoff offset, ios::seek_dir origin);
@@ -57,9 +55,11 @@ public:
 
   // The name of the file.
 
-  string name (void);
+  string name (void) const { return nm; }
 
 protected:
+
+  ~octave_base_iostream (void) { }
 
   void invalid_operation (void) const;
 
@@ -85,11 +85,16 @@ public:
     : octave_base_iostream (nm, ios::in, oct_mach_info::native),
       is (arg) { }
 
-  ~octave_istream (void) { }
+  static octave_stream
+  create (istream *arg = 0, const string& nm = string ());
 
   istream *input_stream (void) { return is; }
 
   ostream *output_stream (void) { return 0; }
+
+protected:
+
+  ~octave_istream (void) { }
 
 private:
 
@@ -113,11 +118,16 @@ public:
     : octave_base_iostream (nm, ios::out, oct_mach_info::native),
       os (arg) { }
 
-  ~octave_ostream (void) { }
+  static octave_stream
+  create (ostream *arg, const string& nm = string ());
 
   istream *input_stream (void) { return 0; }
 
   ostream *output_stream (void) { return os; }
+
+protected:
+
+  ~octave_ostream (void) { }
 
 private:
 

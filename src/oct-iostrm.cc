@@ -54,18 +54,22 @@ octave_base_iostream::eof (void) const
   return false;
 }
 
-// The name of the file.
-
-string
-octave_base_iostream::name (void)
-{
-  return nm;
-}
-
 void
 octave_base_iostream::invalid_operation (void) const
 {
   ::error ("%s: invalid operation", stream_type ());
+}
+
+octave_stream
+octave_istream::create (istream *arg, const string& nm)
+{
+  return octave_stream (new octave_istream (arg, nm));
+}
+
+octave_stream
+octave_ostream::create (ostream *arg, const string& nm)
+{
+  return octave_stream (new octave_ostream (arg, nm));
 }
 
 /*

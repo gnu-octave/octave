@@ -37,7 +37,9 @@ public:
 		  oct_mach_info::float_format flt_fmt =
 		  oct_mach_info::native);
 
-  ~octave_fstream (void) { }
+  static octave_stream
+  create (const string& nm_arg, ios::openmode md = ios::in|ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -53,11 +55,15 @@ public:
 
   // The name of the file.
 
-  string name (void);
+  string name (void) const { return nm; }
 
   istream *input_stream (void);
 
   ostream *output_stream (void);
+
+protected:
+
+  ~octave_fstream (void) { }
 
 private:
 

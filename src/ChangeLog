@@ -1,3 +1,42 @@
+1999-11-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::is_stream): New predicate.
+	* ov-file.h (octave_file::is_stream): Return true.
+	* file-io.cc (Fis_stream): New function.
+
+	* ov-file.h (class octave_file): stream is now an object instead
+	of pointer.
+	* ov-file.cc (octave_file::print_raw): Handle stream as object
+	instead of pointer.  Also print stream status.
+
+	* ov-base.cc (octave_base_value::stream_value): Return object
+	instead of pointer.
+
+	* ov.cc (octave_value::stream_value): Return object instead of pointer.
+	(octave_value::octave_value (const octave_stream&)): Take const
+	reference instead of pointer arg.
+
+	* TEMPLATE-INST/Array-os.cc: Instantiate Arrays of octave_stream
+	objects, not pointers to them.
+
+	* OPERATORS/op-fil-b.cc: Cope with octave_stream class changes.
+	* OPERATORS/op-fil-bm.cc: Likewise.
+	* OPERATORS/op-fil-cm.cc: Likewise.
+	* OPERATORS/op-fil-cs.cc: Likewise.
+	* OPERATORS/op-fil-lis.cc: Likewise.
+	* OPERATORS/op-fil-m.cc: Likewise.
+	* OPERATORS/op-fil-rec.cc: Likewise.
+	* OPERATORS/op-fil-s.cc: Likewise.
+	* OPERATORS/op-fil-str.cc: Likewise.
+	* file-io.cc: Likewise.
+	* syscalls.cc (Fdup): Likewise.
+
+	* oct-fstrm.cc, oct-fstrm.h, oct-iostrm.cc, oct-iostrm.h,
+	oct-prcstrm.cc, oct-prcstrm.h, oct-stdstrm.cc, oct-stdstrm.h,
+	oct-stream.cc, oct-stream.h, oct-strstrm.cc, oct-strstrm.h:
+	Rewrite to allow octave_stream objects to be used like values
+	instead of having to use pointers.
+
 1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (octave_base_stream::do_scanf): If it looks like

@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ostream;
 
 #include "oct-alloc.h"
+#include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -50,9 +51,9 @@ octave_file : public octave_base_value
 public:
 
   octave_file (void)
-    : octave_base_value (), stream (0), number (-1) { }
+    : octave_base_value (), stream (), number (-1) { }
 
-  octave_file (octave_stream *s, int n)
+  octave_file (const octave_stream& s, int n)
     : octave_base_value (), stream (s), number (n) { }
 
   octave_file (const octave_file& f)
@@ -68,13 +69,13 @@ public:
 
   double scalar_value (bool) const { return static_cast<double> (number); }
 
-  octave_stream *stream_value (void) const { return stream; }
+  octave_stream stream_value (void) const { return stream; }
 
   int stream_number (void) const { return number; }
 
   bool is_defined (void) const { return true; }
 
-  bool is_file (void) const { return true; }
+  bool is_stream (void) const { return true; }
 
   void print (ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -85,7 +86,7 @@ public:
 private:
 
   // The stream object.
-  octave_stream *stream;
+  octave_stream stream;
 
   // The number of the beast.
   int number;

@@ -35,6 +35,12 @@ public:
 		      oct_mach_info::float_format flt_fmt =
 		      oct_mach_info::native);
 
+  static octave_stream
+  create (const string& n, ios::openmode arg_md = ios::in,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+
+protected:
+
   ~octave_iprocstream (void);
 
 private:
@@ -55,6 +61,12 @@ public:
 		      ios::openmode arg_md = ios::out,
 		      oct_mach_info::float_format flt_fmt =
 		      oct_mach_info::native);
+
+  static octave_stream
+  create (const string& n, ios::openmode arg_md = ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
+
+protected:
 
   ~octave_oprocstream (void);
 

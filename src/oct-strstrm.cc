@@ -74,6 +74,27 @@ octave_base_strstream::tell (void) const
   return retval;
 }
 
+octave_stream
+octave_istrstream::create (const char *data, ios::openmode arg_md,
+			   oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));
+}
+
+octave_stream
+octave_istrstream::create (const string& data, ios::openmode arg_md,
+			   oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));
+}
+
+octave_stream
+octave_ostrstream::create (ios::openmode arg_md,
+			   oct_mach_info::float_format flt_fmt)
+{
+  return octave_stream (new octave_ostrstream (arg_md, flt_fmt));
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

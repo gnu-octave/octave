@@ -38,8 +38,6 @@ public:
 			   oct_mach_info::native)
     : octave_base_stream (arg_md, flt_fmt), nm (n), fp (f) { }
 
-  ~octave_base_stdiostream (void);
-
   // Position a stream at OFFSET relative to ORIGIN.
 
   int seek (streamoff offset, ios::seek_dir origin);
@@ -50,7 +48,7 @@ public:
 
   // The name of the file.
 
-  string name (void) { return nm; }
+  string name (void) const { return nm; }
 
   virtual stdiobuf *rdbuf (void) const = 0;
 
@@ -63,6 +61,8 @@ protected:
   string nm;
 
   FILE *fp;
+
+  ~octave_base_stdiostream (void);
 
   // No copying!
 
@@ -81,7 +81,9 @@ public:
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
-  ~octave_istdiostream (void);
+  static octave_stream
+  create (const string& n, FILE *f = 0, ios::openmode arg_md = ios::in,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -107,6 +109,8 @@ protected:
 
   istdiostream *is;
 
+  ~octave_istdiostream (void);
+
 private:
 
   // No copying!
@@ -126,7 +130,9 @@ public:
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
-  ~octave_ostdiostream (void);
+  static octave_stream
+  create (const string& n, FILE *f = 0, ios::openmode arg_md = ios::out,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -151,6 +157,8 @@ public:
 protected:
 
   ostdiostream *os;
+
+  ~octave_ostdiostream (void);
 
 private:
 

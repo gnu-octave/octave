@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
 #include "ov-scalar.h"
@@ -261,10 +262,10 @@ octave_base_value::map_value (void) const
   return retval;
 }
 
-octave_stream *
+octave_stream
 octave_base_value::stream_value (void) const
 {
-  octave_stream *retval = 0;
+  octave_stream retval;
   gripe_wrong_type_arg ("octave_base_value::stream_value()", type_name ());
   return retval;
 }

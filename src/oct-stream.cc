@@ -210,7 +210,7 @@ scanf_format_list::~scanf_format_list (void)
 
   for (int i = 0; i < n; i++)
     {
-      scanf_format_elt *elt = list (i);
+      scanf_format_elt *elt = list(i);
       delete elt;
     }	
 }
@@ -235,7 +235,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 	      if (num_elts == list.length ())
 		list.resize (2 * num_elts);
 
-	      list (num_elts++) = elt;
+	      list(num_elts++) = elt;
 	    }
 	  else
 	    delete [] text;
@@ -405,7 +405,7 @@ scanf_format_list::printme (void) const
 
   for (int i = 0; i < n; i++)
     {
-      scanf_format_elt *elt = list (i);
+      scanf_format_elt *elt = list(i);
 
       cerr << elt->width << "\t"
 	   << elt->discard << "\t"
@@ -424,7 +424,7 @@ scanf_format_list::all_character_conversions (void)
     {
       for (int i = 0; i < n; i++)
 	{
-	  scanf_format_elt *elt = list (i);
+	  scanf_format_elt *elt = list(i);
 
 	  switch (elt->type)
 	    {
@@ -452,7 +452,7 @@ scanf_format_list::all_numeric_conversions (void)
     {
       for (int i = 0; i < n; i++)
 	{
-	  scanf_format_elt *elt = list (i);
+	  scanf_format_elt *elt = list(i);
 
 	  switch (elt->type)
 	    {
@@ -532,7 +532,7 @@ printf_format_list::~printf_format_list (void)
 
   for (int i = 0; i < n; i++)
     {
-      printf_format_elt *elt = list (i);
+      printf_format_elt *elt = list(i);
       delete elt;
     }	
 }
@@ -557,7 +557,7 @@ printf_format_list::add_elt_to_list (int args, char type, char modifier,
 	      if (num_elts == list.length ())
 		list.resize (2 * num_elts);
 
-	      list (num_elts++) = elt;
+	      list(num_elts++) = elt;
 	    }
 	  else
 	    delete [] text;
@@ -716,7 +716,7 @@ printf_format_list::printme (void) const
 
   for (int i = 0; i < n; i++)
     {
-      printf_format_elt *elt = list (i);
+      printf_format_elt *elt = list(i);
 
       cerr << elt->args<< "\t"
 	   << elt->type << "\t"
@@ -2178,6 +2178,43 @@ octave_base_stream::invalid_operation (const char *op, const char *rw)
   error (msg);
 }
 
+octave_stream::octave_stream (octave_base_stream *bs = 0)
+  : rep (bs)
+{
+  if (rep)
+    rep->count = 1;
+}
+
+octave_stream::~octave_stream (void)
+{
+  if (rep && --rep->count == 0)
+    delete rep;
+}
+
+octave_stream::octave_stream (const octave_stream& s)
+  : rep (s.rep)
+{
+  if (rep)
+    rep->count++;
+}
+
+octave_stream&
+octave_stream::operator = (const octave_stream& s)
+{
+  if (rep != s.rep)
+    {
+      if (rep && --rep->count == 0)
+	delete rep;
+
+      rep = s.rep;
+
+      if (rep)
+	rep->count++;
+    }
+
+  return *this;
+}
+
 int
 octave_stream::flush (void)
 {
@@ -2343,6 +2380,24 @@ octave_stream::rewind (void)
   return retval;
 }
 
+bool
+octave_stream::is_open (void) const
+{
+  bool retval = false;
+
+  if (stream_ok ("is_open"))
+    retval = rep->is_open ();
+
+  return retval;
+}
+
+void
+octave_stream::close (void)
+{
+  if (stream_ok ("close"))
+    rep->close ();
+}
+
 octave_value
 octave_stream::read (const Matrix& size,
 		     oct_data_conv::data_type dt, int skip,
@@ -2454,7 +2509,7 @@ octave_stream::error (bool clear, int& err_num)
 }
 
 string
-octave_stream::name (void)
+octave_stream::name (void) const
 {
   string retval;
 
@@ -2465,7 +2520,7 @@ octave_stream::name (void)
 }
 
 int
-octave_stream::mode (void)
+octave_stream::mode (void) const
 {
   int retval = 0;
 
@@ -2476,7 +2531,7 @@ octave_stream::mode (void)
 }
 
 oct_mach_info::float_format
-octave_stream::float_format (void)
+octave_stream::float_format (void) const
 {
   oct_mach_info::float_format retval = oct_mach_info::unknown;
 
@@ -2577,21 +2632,21 @@ octave_stream_list::instance_ok (void)
 }
 
 octave_value
-octave_stream_list::insert (octave_base_stream *obs)
+octave_stream_list::insert (const octave_stream& os)
 {
-  return (instance_ok ()) ? instance->do_insert (obs) : octave_value (-1.0);
+  return (instance_ok ()) ? instance->do_insert (os) : octave_value (-1.0);
 }
 
-octave_stream *
+octave_stream
 octave_stream_list::lookup (int fid)
 {
-  return (instance_ok ()) ? instance->do_lookup (fid) : 0;
+  return (instance_ok ()) ? instance->do_lookup (fid) : octave_stream ();
 }
 
-octave_stream *
+octave_stream
 octave_stream_list::lookup (const octave_value& fid)
 {
-  return (instance_ok ()) ? instance->do_lookup (fid) : 0;
+  return (instance_ok ()) ? instance->do_lookup (fid) : octave_stream ();
 }
 
 int
@@ -2645,64 +2700,57 @@ octave_stream_list::get_file_number (const octave_value& fid)
 }
 
 octave_value
-octave_stream_list::do_insert (octave_base_stream *obs)
+octave_stream_list::do_insert (const octave_stream& os)
 {
+  octave_value retval;
+
   int stream_number = -1;
 
-  octave_stream *os = 0;
+  // Insert item in first open slot, increasing size of list if
+  // necessary.
 
-  if (obs)
+  for (int i = 0; i < curr_len; i++)
     {
-      os = new octave_stream (obs);
+      octave_stream tmp = list(i);
 
-      // Insert item in first open slot, increasing size of list if
-      // necessary.
-
-      for (int i = 0; i < curr_len; i++)
+      if (! tmp)
 	{
-	  octave_stream *tmp = list (i);
-
-	  if (! tmp)
-	    {
-	      list (i) = os;
-	      stream_number = i;
-	      break;
-	    }
-	}
-
-      if (stream_number < 0)
-	{
-	  int total_len = list.length ();
-
-	  if (curr_len == total_len)
-	    list.resize (total_len * 2);
-
-	  list (curr_len) = os;
-	  stream_number = curr_len;
-	  curr_len++;
+	  list(i) = os;
+	  stream_number = i;
+	  break;
 	}
     }
-  else
-    ::error ("octave_stream_list: attempt to insert invalid stream");
+
+  if (stream_number < 0)
+    {
+      int total_len = list.length ();
+
+      if (curr_len == total_len)
+	list.resize (total_len * 2);
+
+      list(curr_len) = os;
+      stream_number = curr_len;
+      curr_len++;
+    }
 
   return octave_value (os, stream_number);
 }
 
-octave_stream *
+octave_stream
 octave_stream_list::do_lookup (int fid) const
 {
-  octave_stream *retval = 0;
+  octave_stream retval;
 
   if (fid >= 0 && fid < curr_len)
-    retval = list (fid);
+    retval = list(fid);
 
   return retval;
 }
 
-octave_stream *
+octave_stream
 octave_stream_list::do_lookup (const octave_value& fid) const
 {
-  octave_stream *retval = 0;
+  octave_stream retval;
 
   int i = get_file_number (fid);
 
@@ -2721,12 +2769,12 @@ octave_stream_list::do_remove (int fid)
 
   if (fid > 2 && fid < curr_len)
     {
-      octave_stream *os = list (fid);
+      octave_stream os = list(fid);
 
       if (os)
 	{
-	  delete os;
-	  list (fid) = 0;
+	  os.close ();
+	  list(fid) = octave_stream ();
 	  retval = 0;
 	}
     }
@@ -2752,19 +2800,13 @@ octave_stream_list::do_clear (void)
 {
   // Do flush stdout and stderr.
 
-  list (0) -> flush ();
-  list (1) -> flush ();
+  list(0) . flush ();
+  list(1) . flush ();
 
   // But don't delete them or stdin.
 
   for (int i = 3; i < curr_len; i++)
-    {
-      octave_stream *os = list (i);
-
-      delete os;
-
-      list (i) = 0;
-    }
+    list(i) = octave_stream ();
 }
 
 string_vector
@@ -2772,15 +2814,15 @@ octave_stream_list::do_get_info (int fid) const
 {
   string_vector retval;
 
-  octave_stream *os = do_lookup (fid);
+  octave_stream os = do_lookup (fid);
 
   if (os)
     {
       retval.resize (3);
 
-      retval(0) = os->name ();
-      retval(1) = octave_stream::mode_as_string (os->mode ());
-      retval(2) = oct_mach_info::float_format_as_string (os->float_format ());
+      retval(0) = os.name ();
+      retval(1) = octave_stream::mode_as_string (os.mode ());
+      retval(2) = oct_mach_info::float_format_as_string (os.float_format ());
     }
   else
     ::error ("invalid file id");
@@ -2820,16 +2862,16 @@ octave_stream_list::do_list_open_files (void) const
 
   for (int i = 0; i < curr_len; i++)
     {
-      octave_stream *os = list (i);
+      octave_stream os = list(i);
 
       if (os)
 	{
-	  string mode = octave_stream::mode_as_string (os->mode ());
+	  string mode = octave_stream::mode_as_string (os.mode ());
 
 	  string arch =
-	    oct_mach_info::float_format_as_string (os->float_format ());
+	    oct_mach_info::float_format_as_string (os.float_format ());
 
-	  string name = os->name ();
+	  string name = os.name ();
 
 	  buf << "  "
 	      << setiosflags (ios::right)
@@ -2863,7 +2905,7 @@ octave_stream_list::do_open_file_numbers (void) const
 
   for (int i = 3; i < curr_len; i++)
     {
-      if (list (i))
+      if (list(i))
 	retval (0, num_open++) = i;
     }
 
@@ -2885,9 +2927,9 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
 
       for (int i = 3; i < curr_len; i++)
 	{
-	  octave_stream *os = list (i);
+	  octave_stream os = list(i);
 
-	  if (os && os->name () == nm)
+	  if (os && os.name () == nm)
 	    {
 	      retval = i;
 	      break;

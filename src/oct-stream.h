@@ -222,7 +222,8 @@ public:
 
   octave_base_stream (ios::openmode arg_md = ios::in|ios::out,
 		      oct_mach_info::float_format ff = oct_mach_info::native)
-    : md (arg_md), flt_fmt (ff), fail (false) { }
+    : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true)
+  { }
 
   virtual ~octave_base_stream (void) { }
 
@@ -237,13 +238,13 @@ public:
 
   virtual long tell (void) const = 0;
 
-  // Return non-zero if EOF has been reached on this stream.
+  // Return TRUE if EOF has been reached on this stream.
 
   virtual bool eof (void) const = 0;
 
   // The name of the file.
 
-  virtual string name (void) = 0;
+  virtual string name (void) const = 0;
 
   // If the derived class provides this function and it returns a
   // pointer to a valid istream, scanf(), read(), getl(), and gets()
@@ -257,6 +258,12 @@ public:
 
   virtual ostream *output_stream (void) { return 0; }
 
+  // Return TRUE if this stream is open.
+
+  bool is_open (void) const { return open_state; }
+
+  void close (void) { open_state = false; }
+
   int file_number (void);
 
   bool ok (void) const { return ! fail; }
@@ -267,9 +274,9 @@ public:
 
 protected:
 
-  int mode (void) { return md; }
+  int mode (void) const { return md; }
 
-  oct_mach_info::float_format float_format (void) { return flt_fmt; }
+  oct_mach_info::float_format float_format (void) const { return flt_fmt; }
 
   // Set current error state and set fail to TRUE.
 
@@ -281,6 +288,9 @@ protected:
 
 private:
 
+  // A reference count.
+  int count;
+
   // The permission bits for the file.  Should be some combination of
   // ios::open_mode bits.
   int md;
@@ -290,6 +300,9 @@ private:
 
   // TRUE if an error has occurred.
   bool fail;
+
+  // TRUE if this stream is open.
+  bool open_state;
 
   // Should contain error message if fail is TRUE.
   string errmsg;
@@ -362,14 +375,13 @@ octave_stream
 {
 public:
 
-  octave_stream (octave_base_stream *bs = 0, bool pf = false)
-    : rep (bs), preserve (pf) { }
+  octave_stream (octave_base_stream *bs = 0);
 
-  ~octave_stream (void)
-    {
-      if (! preserve)
-	delete rep;
-    }
+  ~octave_stream (void);
+
+  octave_stream (const octave_stream&);
+
+  octave_stream& operator = (const octave_stream&);
 
   int flush (void);
 
@@ -385,6 +397,10 @@ public:
   long tell (void) const;
 
   int rewind (void);
+
+  bool is_open (void) const;
+
+  void close (void);
 
   octave_value read (const Matrix& size, oct_data_conv::data_type dt,
 		     int skip, oct_mach_info::float_format flt_fmt,
@@ -414,29 +430,28 @@ public:
 
   int file_number (void) { return rep ? rep->file_number () : -1; }
 
+  bool is_valid (void) const { return (rep != 0); }
+
   bool ok (void) const { return rep && rep->ok (); }
 
   operator bool () const { return ok (); }
 
-  string name (void);
+  string name (void) const;
 
-  int mode (void);
+  int mode (void) const;
 
-  oct_mach_info::float_format float_format (void);
+  oct_mach_info::float_format float_format (void) const;
 
   static string mode_as_string (int mode);
 
-  istream *input_stream (void) { return rep->input_stream (); }
+  istream *input_stream (void) { return rep ? rep->input_stream () : 0; }
 
-  ostream *output_stream (void) { return rep->output_stream (); }
+  ostream *output_stream (void) { return rep ? rep->output_stream () : 0; }
 
 private:
 
   // The actual representation of this stream.
   octave_base_stream *rep;
-
-  // If true, do not delete rep.
-  bool preserve;
 
   void invalid_stream_error (const char *op) const;
 
@@ -463,16 +478,6 @@ private:
       if (rep)
 	rep->error (msg);
     }
-
-  // Must create named streams.
-
-  octave_stream (void);
-
-  // No copying!
-
-  octave_stream (const octave_stream&);
-
-  octave_stream& operator = (const octave_stream&);
 };
 
 class
@@ -488,10 +493,10 @@ public:
 
   static bool instance_ok (void);
 
-  static octave_value insert (octave_base_stream *obs);
+  static octave_value insert (const octave_stream& os);
 
-  static octave_stream *lookup (int fid);
-  static octave_stream *lookup (const octave_value& fid);
+  static octave_stream lookup (int fid);
+  static octave_stream lookup (const octave_value& fid);
 
   static int remove (int fid);
   static int remove (const octave_value& fid);
@@ -509,16 +514,16 @@ public:
 
 private:
 
-  Array<octave_stream*> list;
+  Array<octave_stream> list;
 
   int curr_len;
 
   static octave_stream_list *instance;
 
-  octave_value do_insert (octave_base_stream *obs);
+  octave_value do_insert (const octave_stream& os);
 
-  octave_stream *do_lookup (int fid) const;
-  octave_stream *do_lookup (const octave_value& fid) const;
+  octave_stream do_lookup (int fid) const;
+  octave_stream do_lookup (const octave_value& fid) const;
 
   int do_remove (int fid);
   int do_remove (const octave_value& fid);

@@ -947,6 +947,15 @@ initialize_readline (void)
   rl_add_defun ("operate-and-get-next",
 		(Function *) operate_and_get_next, CTRL ('O'));
 
+
+  // And the history search functions.
+
+  rl_add_defun ("history-search-backward",
+		(Function *) rl_history_search_backward, META ('p'));
+
+  rl_add_defun ("history-search-forward",
+		(Function *) rl_history_search_forward, META ('n'));
+
   // Don't treat single quotes as string delimiters when doing paren
   // matching.
 

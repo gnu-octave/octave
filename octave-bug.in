@@ -170,31 +170,34 @@ then
 
 # Delete the `--------' separator in the message.
 
-    awk 'BEGIN{ in_header = 1; } \
-         /^--------[ \t]*$/ {
-           if (in_header) {
-             in_header = 0;
-             print "";
-             next;
-           }
-         } {
-           print $0;
-         }' $TEMP > $TEMP.x
+# Don't pretty-print this.  Odd whitespace kills Ultrix AWK!
+
+    awk 'BEGIN{in_header=1;} /^--------[ \t]*$/ {
+      if (in_header) { in_header=0; print ""; next; }
+    } { print $0; }' $TEMP > $TEMP.x
 
 # Now try to mail it.
 
-    ( rmail $BUGADDR < $TEMP.x ) > /dev/null 2>&1 || \
-    ( mailx -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1 || \
-    ( Mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1 || \
-    ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1 || \
-    ( /bin/mail $BUGADDR < $TEMP.x ) > /dev/null 2>&1 || \
-    ( echo "unable to send mail -- saving message in \$HOME/dead.octave-bug"; \
-      cat $TEMP >> $HOME/dead.octave-bug; exit 1 )
-
+    ( /bin/mail $BUGADDR < $TEMP ) > /dev/null 2>&1
     status=$?
+    if test $status -ne 0; then
+      ( Mail -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1
+      status=$?
+      if test $status -ne 0; then
+        ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1
+        status=$?
+        if test $status -ne 0; then
+          ( mailx -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1
+          status=$?
+        fi
+      fi
+    fi
 
-    if test $status -eq 0
-    then
+    if test $status -ne 0; then
+      echo "unable to send mail -- saving message in \$HOME/dead.octave-bug";
+      cat $TEMP >> $HOME/dead.octave-bug;
+      exit 1
+    else
       echo "bug report sent to: $TO_ADDR"
       echo "             cc to: $CC_ADDR"
     fi

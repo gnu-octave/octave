@@ -1,5 +1,12 @@
 Fri Nov 14 01:53:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* input.cc (get_user_input (const octave_value_list&, bool)):
+	Return octave_value() if user enters `quit', `exit', or `return'.
+	If debugging, let eval_string handle the printing chores and
+	reset error_state before asking for more input.
+
+	* input.cc (Fkeyboard): Unconditionally turn on history here.
+
 	* lex.l (have_continuation, have_ellipsis_continuation): Declare
 	arg as bool, not int.  Change callers.
 

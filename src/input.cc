@@ -64,6 +64,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sighandlers.h"
 #include "symtab.h"
 #include "sysdep.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -541,14 +542,9 @@ get_user_input (const octave_value_list& args, bool debug = false)
 	{
 	  int parse_status = 0;
 
-	  retval = eval_string (input_buf, true, parse_status);
+	  retval = eval_string (input_buf, (! debug), parse_status);
 
-	  if (retval.is_defined ())
-	    {
-	      if (debug)
-		retval.print (octave_stdout);
-	    }
-	  else
+	  if (retval.is_undefined ())
 	    retval = Matrix ();
 	}
     }
@@ -556,7 +552,17 @@ get_user_input (const octave_value_list& args, bool debug = false)
     error ("input: reading user-input failed!");
 
   if (debug)
-    goto again;
+    {
+      // Clear error_state so that if errors were encountered while
+      // evaluating user input, extra error messages will not be
+      // printed after we return.
+
+      error_state = 0;
+
+      retval = octave_value ();
+
+      goto again;
+    }
 
   return retval;
 }
@@ -579,6 +585,12 @@ value as a string.")
   return retval;
 }
 
+static void
+restore_command_history (void *)
+{
+  command_history::ignore_entries (! Vsaving_history);
+}
+
 DEFUN (keyboard, args, ,
   "keyboard (PROMPT)\n\
 \n\
@@ -589,7 +601,24 @@ maybe help in debugging function files")
   int nargin = args.length ();
 
   if (nargin == 0 || nargin == 1)
-    retval = get_user_input (args, true);
+    {
+      unwind_protect::begin_frame ("keyboard");
+
+      // XXX FIXME XXX -- we shouldn't need both the
+      // command_history object and the
+      // Vsaving_history variable...
+      command_history::ignore_entries (false);
+
+      unwind_protect::add (restore_command_history, 0);
+
+      unwind_protect_bool (Vsaving_history);
+
+      Vsaving_history = true;
+
+      retval = get_user_input (args, true);
+
+      unwind_protect::run_frame ("keyboard");
+    }
   else
     print_usage ("keyboard");
 

@@ -1,7 +1,0 @@
-set test npsol-1
-set prog_output "info good\nsolution good\nvalue good"
-do_test npsol-1.m
-
-set test npsol-2
-set prog_output "info good\nsolution good\nvalue good"
-do_test npsol-2.m

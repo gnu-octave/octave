@@ -1,5 +1,15 @@
 Fri Jun  6 15:20:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octMakefile.in (dist, binary-dist): Don't worry about npsol or qpsol.
+	* configure.in: Don't create libcruft/fsqp/Makefile,
+	libcruft/npsol/Makefile, or libcruft/qpsol/Makefile.
+
+	* octMakefile.in (DISTFILES): Don't distribute MAKEINFO.PATCH.
+
+	* octMakefile.in (DISTFILES): Don't distribute README.NLP.
+	* configure.in: Delete checks for FSQP, NPSOL, and QPSOL.
+	* acconfig.h: Delete undefs for FSQP, NPSOL, and QPSOL.
+
 	* readline: Update to new version (2.1).
 
 Thu Jun  5 01:38:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

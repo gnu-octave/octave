@@ -21,9 +21,6 @@
    upper case. */
 #undef F77_UPPERCASE_NAMES
 
-/* Define if you don't have FSQP. */
-#undef FSQP_MISSING
-
 /* Define if your system has a single-arg prototype for gettimeofday. */
 #undef GETTIMEOFDAY_NO_TZ 
 
@@ -66,17 +63,11 @@
 /* Define (to string::npos) if <string> doesn't. */
 #undef NPOS
 
-/* Define if you don't have NPSOL. */
-#undef NPSOL_MISSING
-
 /* Define to compile smaller kernel. */
 #undef OCTAVE_LITE
 
 /* Define if this is Octave. */
 #undef OCTAVE_SOURCE
-
-/* Define if you don't have QPSOL. */
-#undef QPSOL_MISSING
 
 /* Define if your struct rusage only has time information. */
 #undef RUSAGE_TIMES_ONLY

@@ -51,31 +51,9 @@ Numerical:
   * Implement the following functions:
     -- ppval    -- cross    -- dot
 
-  * Allow user-supplied gradient information to be passed to NPSOL.
-
-  * Actually allow control of the derivative level in NPSOL.  It can
-    be changed with npsol_options(), but then NPSOL::do_minimize()
-    sets it based on whether gradient and jacobian functions are
-    available. 
-
   * When constructing NLConst (and other) objects, make sure that
     there are sufficient checks to ensure that the dimensions all
     conform.
-
-  * Support for FSQP.
-
-  * Convert FSQP style NLP statement to NPSOL style.
-
-  * Convert NPSOL style NLP statement to FSQP style.
-    - Look for linear equality constraints, extract corresponding rows
-	of C.  The rest are inequality constraints.
-    - Look for Nonlinear equality constraints and set up a vector of
-	pointers for shuffling.
-    - Transform lb <= C*x <= ub, lb != ub, to C*x - ub <= 0 and
-	lb - C*x <= 0.  Likewise for lb <= g(x) <= ub.
-    - Call FSQP.
-
-  * Optional inputs for fsqp.
 
   * Allow parameters to be passed through the call to fsolve() to the
     user-supplied function for Matlab compatibility.  Don't place an

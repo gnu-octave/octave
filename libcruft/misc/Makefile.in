@@ -12,7 +12,7 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
-SPECIAL_SRC := machar.c f77-extern.cc f77-fcn.c lo-error.c quit.cc
+SPECIAL_SRC := machar.c f77-extern.cc f77-fcn.c lo-error.c cquit.c quit.cc
 
 DEP_1 := $(patsubst %.c, %.d, $(SPECIAL_SRC))
 MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))

@@ -1,3 +1,13 @@
+2003-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (MISC_OBJ): Add misc/cquit.o to the list.
+
+	* misc/Makefile.in (SPECIAL_SRC): Add cquit.c to the list.
+	* misc/cquit.c: New file.
+	* misc/quit.cc: Move everything except octave_interrupt_hook,
+	octave_bad_alloc_hook, octave_throw_interrupt_exception, and
+	octave_throw_bad_alloc to cquit.c.
+
 2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/quit.h (octave_interrupt_hook, octave_bad_alloc_hook):

@@ -1,3 +1,7 @@
+Fri Apr 17 10:53:39 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/str2mat.m: Handle string matrices too.
+
 Wed Apr 15 11:16:01 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* audio/loadaudio.m: Accept "pcm" as another file extension for

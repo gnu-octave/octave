@@ -396,15 +396,11 @@ make_name_list (void)
 void
 additional_help_message (ostream& os)
 {
-#if defined (USE_GNU_INFO)
-
   if (! Vsuppress_verbose_help_message)
     os << "\n\
 Additional help for builtin functions, operators, and variables\n\
 is available in the on-line version of the manual.  Use the command\n\
 `help -i <topic>' to search the manual index.\n";
-
-#endif
 
   if (! Vsuppress_verbose_help_message)
     os << "\n\
@@ -578,8 +574,6 @@ simple_help (void)
     }
 }
 
-#if defined (USE_GNU_INFO)
-
 static int
 try_info (const string& nm)
 {
@@ -653,16 +647,6 @@ help_from_info (const string_vector& argv, int idx, int argc)
 	}
     }
 }
-
-#else
-
-static void
-help_from_info (const string_vector&, int, int)
-{
-  message ("help", "Info help is not available in this version of Octave");
-}
-
-#endif
 
 static bool
 help_from_list (ostream& os, const help_list *list,
@@ -738,16 +722,10 @@ builtin_help (int argc, const string_vector& argv)
   additional_help_message (octave_stdout);
 }
 
-#if defined (USE_GNU_INFO)
-#define HELP_DOC_STRING \
-  "help [-i] [topic ...]\n\nprint cryptic yet witty messages"
-#else
-#define HELP_DOC_STRING \
-  "help [topic ...]\n\nprint cryptic yet witty messages"
-#endif
-
 DEFUN_TEXT (help, args, ,
-  HELP_DOC_STRING)
+  "help [-i] [topic ...]\n\
+\n\
+print cryptic yet witty messages")
 {
   octave_value_list retval;
 

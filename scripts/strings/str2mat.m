@@ -25,39 +25,43 @@
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe
 
-function m = str2mat (...)
+function retval = str2mat (...)
 
   if (nargin == 0)
     usage ("str2mat (s1, ...)");
   endif
 
   nc = 0;
+  nr = 0;
 
   va_start ();
 
+  nr = zeros (nargin, 1);
+  nc = zeros (nargin, 1);
   for k = 1 : nargin
     s = va_arg ();
     if (isstr (s))
-      tmp = columns (s);
+      [nr(k), nc(k)] = size (s);
     else
       error ("str2mat: all arguments must be strings");
     endif
-
-    if (tmp > nc)
-      nc = tmp;
-    endif
   endfor
 
-  m = setstr (ones (nargin, nc) * toascii (" "));
+  nr(find (nr == 0)) = 1;
+  retval_nr = sum (nr);
+  retval_nc = max (nc);
+
+  retval = setstr (ones (retval_nr, retval_nc) * toascii (" "));
 
   va_start ();
 
+  row_offset = 0;
   for k = 1 : nargin
     s = va_arg ();
-    tmp = columns (s);
-    if (tmp > 0)
-      m (k, 1:tmp) = s;
+    if (nc(k) > 0)
+      retval ((row_offset + 1) : (row_offset + nr(k)), 1:nc(k)) = s;
     endif
+    row_offset = row_offset + nr(k);
   endfor
 
 endfunction

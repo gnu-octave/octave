@@ -92,9 +92,6 @@
 /* To quiet autoheader. */
 #undef SMART_PUTENV
 
-/* Use GNU info for extended help system. */
-#undef USE_GNU_INFO
-
 /* Use plplot for plotting. */
 #undef USE_PLPLOT
 

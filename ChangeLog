@@ -1,3 +1,8 @@
+Sat Apr 18 20:15:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (USE_GNU_INFO): Delete everything related to this.
+	* acconfig.h (USE_GNU_INFO): Delete undef.
+
 Tue Apr 14 15:33:20 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* install-octave.in: Improve error messages if version number or

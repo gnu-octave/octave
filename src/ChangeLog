@@ -1,3 +1,7 @@
+Sat Apr 18 20:17:10 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (USE_GNU_INFO): Delete uses of this macro.
+
 Thu Apr 16 01:00:12 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.cc: Only include dlfcn.h if HAVE_DLFCN_H.

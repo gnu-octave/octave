@@ -205,6 +205,30 @@ public:
 			      const Octave_object& args) = 0;
 };
 
+// Used internally.
+
+class
+tree_oct_obj : public tree_multi_val_ret
+{
+public:
+  tree_oct_obj (int l = -1, int c = -1) : tree_multi_val_ret (l, c) { }
+
+  tree_oct_obj (const Octave_object& v, int l = -1, int c = -1)
+    : tree_multi_val_ret (l, c)
+      {
+	values = v;
+      }
+
+  tree_constant eval (int print);
+
+  Octave_object eval (int print, int nargout, const Octave_object& args);
+
+  void print_code (ostream& os) { }
+
+private:
+  Octave_object values;
+};
+
 // A base class for objects that can be evaluated with argument lists.
 
 class
@@ -676,20 +700,23 @@ class
 tree_multi_assignment_expression : public tree_multi_val_ret
 {
  public:
-  tree_multi_assignment_expression (int l = -1, int c = -1)
+  tree_multi_assignment_expression (int plhs = 0, int l = -1, int c = -1)
     : tree_multi_val_ret (l, c)
       {
 	etype = tree_expression::multi_assignment;
+	preserve = plhs;
 	lhs = 0;
 	rhs = 0;
       }
 
   tree_multi_assignment_expression (tree_return_list *lst,
 				    tree_multi_val_ret *r,
+				    int plhs = 0,
 				    int l = -1, int c = -1)
     : tree_multi_val_ret (l, c)
       {
 	etype = tree_expression::multi_assignment;
+	preserve = plhs;
 	lhs = lst;
 	rhs = r;
       }
@@ -708,6 +735,7 @@ tree_multi_assignment_expression : public tree_multi_val_ret
   void print_code (ostream& os);
 
  private:
+  int preserve;
   tree_return_list *lhs;
   tree_multi_val_ret *rhs;
 };

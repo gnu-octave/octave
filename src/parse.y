@@ -28,7 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define YYDEBUG 1
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <strstream.h>
@@ -151,7 +151,7 @@ static tree_expression *make_unary_op
 
 // Make an expression that handles assignment of multiple values.
 static tree_expression *make_multi_val_ret
-	 (tree_expression *rhs, int l = -1, int c = -1);
+	(tree_matrix *m, tree_expression *rhs, int l = -1, int c = -1);
 
 // Make an index expression.
 static tree_index_expression *make_index_expression
@@ -628,6 +628,18 @@ command		: plot_command
 		    $$ = new tree_for_command ($2, $4, $6,
 					       $1->line (), $1->column ());
 		  }
+		| FOR '[' screwed_again matrix_row SCREW_TWO '='
+		    expression optsep opt_list END
+		  {
+		    if (check_end ($10, token::for_end))
+		      ABORT_PARSE;
+		    looping--;
+		    tree_matrix *tmp = ml.pop ();
+		    tmp = tmp->reverse ();
+		    tree_return_list *id_list = tmp->to_return_list ();
+		    $$ = new tree_for_command (id_list, $7, $9,
+					       $1->line (), $1->column ()); 
+		  }
 		| BREAK
 		  {
 		    if (! (looping || defining_func))
@@ -722,8 +734,10 @@ expression	: variable '=' expression
 		  }
 		| '[' screwed_again matrix_row SCREW_TWO '=' expression
 		  {
-		    $$ = make_multi_val_ret ($6, $5->line (), $5->column ());
-
+		    tree_matrix *tmp = ml.pop ();
+		    tmp = tmp->reverse ();
+		    $$ = make_multi_val_ret (tmp, $6, $5->line (),
+					     $5->column ());
 		    if (! $$)
 		      ABORT_PARSE;
 		  }
@@ -1552,7 +1566,7 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
 // Make an expression that handles assignment of multiple values.
 
 static tree_expression *
-make_multi_val_ret (tree_expression *rhs, int l, int c) 
+make_multi_val_ret (tree_matrix *m, tree_expression *rhs, int l, int c)
 {
 // Convert the matrix list to a list of identifiers.  If that fails,
 // we can abort here, without losing anything -- no other possible
@@ -1563,11 +1577,7 @@ make_multi_val_ret (tree_expression *rhs, int l, int c)
 
   maybe_screwed_again--;
 
-  tree_matrix *tmp = ml.pop ();
-
-  tmp = tmp->reverse ();
-
-  tree_return_list *id_list = tmp->to_return_list ();
+  tree_return_list *id_list = m->to_return_list ();
 
   if (id_list)
     {
@@ -1585,7 +1595,8 @@ make_multi_val_ret (tree_expression *rhs, int l, int c)
 	  if (rhs->is_multi_val_ret_expression ())
 	    {
 	      tree_multi_val_ret *t = (tree_multi_val_ret *) rhs;
-	      retval = new tree_multi_assignment_expression (id_list, t, l, c);
+	      retval = new tree_multi_assignment_expression (id_list, t,
+							     0, l, c);
 	    }
 	  else
 	    yyerror ("RHS must be an expression that returns multiple values");

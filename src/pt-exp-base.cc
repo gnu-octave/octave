@@ -634,6 +634,20 @@ tree_multi_val_ret::eval (int print)
   return tree_constant ();
 }
 
+// Used internally.
+
+tree_constant
+tree_oct_obj::eval (int print)
+{
+  return values(0);
+}
+
+Octave_object
+tree_oct_obj::eval (int print, int nargout, const Octave_object& args)
+{
+  return values;
+}
+
 // A base class for objects that can be evaluated with argument lists.
 
 tree_constant
@@ -1984,7 +1998,9 @@ tree_simple_assignment_expression::print_code (ostream& os)
 
 tree_multi_assignment_expression::~tree_multi_assignment_expression (void)
 {
-  delete lhs;
+  if (! preserve)
+    delete lhs;
+
   delete rhs;
 }
 

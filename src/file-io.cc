@@ -630,7 +630,7 @@ from the beginning of the file @var{fid}.\n\
   return retval;
 }
 
-DEFUN (fprintf, args, ,
+DEFUN (fprintf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fprintf (@var{fid}, @var{template}, @dots{})\n\
 This function is just like @code{printf}, except that the output is\n\
@@ -638,6 +638,7 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 @end deftypefn")
 {
   double retval = -1.0;
+  bool return_char_count = true;
 
   int nargin = args.length ();
 
@@ -646,8 +647,16 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
       octave_stream os;
       int fmt_n = 0;
 
-      if (args(0).is_string ())
-	os = octave_stream_list::lookup (1, "fprintf");
+      if (args(0).is_string ()) 
+	{
+	  os = octave_stream_list::lookup (1, "fprintf");
+
+	  // For compatibility with Matlab, which does not return the
+	  // character count when behaving like printf (no file id
+	  // parameter).
+
+	  return_char_count = (nargout != 0);
+	}
       else
 	{
 	  fmt_n = 1;
@@ -679,7 +688,10 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
   else
     print_usage ("fprintf");
 
-  return retval;
+  if (return_char_count)
+    return retval;
+  else
+    return octave_value();
 }
 
 DEFUN (fputs, args, ,

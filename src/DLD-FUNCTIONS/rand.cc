@@ -298,7 +298,7 @@ do_rand (const octave_value_list& args, int nargin)
       Matrix rand_mat (n, m);
 
       for (volatile int j = 0; j < m; j++)
-	for (volatile i = 0; i < n; i++)
+	for (volatile int i = 0; i < n; i++)
 	  {
 	    double val;
 	    switch (current_distribution)

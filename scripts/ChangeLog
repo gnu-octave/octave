@@ -1,3 +1,7 @@
+2000-11-16  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+
+	* plot/contour.m: Reorder args for Matlab compatibility.
+
 2000-10-27  Mats Jansson  <mats.e.jansson@home.se>
 
 	* set/create_set.m: Avoid empty matrix in matrix list warning.

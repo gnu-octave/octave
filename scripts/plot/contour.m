@@ -18,7 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} contour (@var{z}, @var{n}, @var{x}, @var{y})
+## @deftypefn {Function File} {} contour (@var{z}, @var{n})
+## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{n})
 ## Make a contour plot of the three-dimensional surface described by
 ## @var{z}.  Someone needs to improve @code{gnuplot}'s contour routines
 ## before this will be very useful.
@@ -28,17 +29,19 @@
 
 ## Author: jwe
 
-function contour (z, n, x, y)
-
-  if (nargin == 1)
-    n = 10;
-  endif
+function contour (x, y, z, n)
 
   ## XXX FIXME XXX -- these plot states should really just be set
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
   if (nargin == 1 || nargin == 2)
+    z = x;
+    if (nargin == 1) 
+      n = 10;
+    else
+      n = y; 
+    endif
     if (is_matrix (z))
       gset nosurface;
       gset contour;

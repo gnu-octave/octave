@@ -183,44 +183,39 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 
   // Constraint stuff.
 
+  double bigbnd = infinite_bound ();
+
   Matrix clin = lc.constraint_matrix ();
   double *pclin = clin.fortran_vec ();
 
-  Array<double> aclow (n+nclin+ncnln);
-  double *clow = aclow.fortran_vec ();
-
-  Array<double> acup (n+nclin+ncnln);
-  double *cup = acup.fortran_vec ();
+  ColumnVector aclow (n+nclin+ncnln);
+  ColumnVector acup (n+nclin+ncnln);
 
   if (bnds.size () > 0)
     {
-      for (int i = 0; i < n; i++)
-	{
-	  clow[i] = bnds.lower_bound (i);
-	  cup[i] = bnds.upper_bound (i);
-	}
+      aclow.insert (bnds.lower_bounds (), 0);
+      acup.insert (bnds.upper_bounds (), 0);
     }
   else
     {
-      double huge = 1.0e30;
-      for (int i = 0; i < n; i++)
-	{
-	  clow[i] = -huge;
-	  cup[i] = huge;
-	}
+      aclow.fill (-bigbnd, 0, n-1);
+      acup.fill (bigbnd, 0, n-1);
     }
 
-  for (int i = 0; i < nclin; i++)
+  if (nclin > 0)
     {
-      clow[i+n] = lc.lower_bound (i);
-      cup[i+n] = lc.upper_bound (i);
+      aclow.insert (lc.lower_bounds (), n);
+      acup.insert (lc.upper_bounds (), n);
     }
 
-  for (int i = 0; i < ncnln; i++)
+  if (ncnln > 0)
     {
-      clow[i+n+nclin] = nlc.lower_bound (i);
-      cup[i+n+nclin] = nlc.upper_bound (i);
+      aclow.insert (nlc.lower_bounds (), n+nclin);
+      acup.insert (nlc.upper_bounds (), n+nclin);
     }
+
+  double *clow = aclow.fortran_vec ();
+  double *cup = acup.fortran_vec ();
 
   Array<double> ac (ncnln);
   double *c = ac.fortran_vec ();

@@ -72,14 +72,6 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
-
-  iwork = new int [liw];
-  rwork = new double [lrw];
-  for (int i = 4; i < 9; i++)
-    {
-      iwork[i] = 0;
-      rwork[i] = 0.0;
-    }
 }
 
 LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
@@ -100,20 +92,6 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
-
-  iwork = new int [liw];
-  rwork = new double [lrw];
-  for (int i = 4; i < 9; i++)
-    {
-      iwork[i] = 0;
-      rwork[i] = 0.0;
-    }
-}
-
-LSODE::~LSODE (void)
-{
-  delete [] rwork;
-  delete [] iwork;
 }
 
 void
@@ -180,6 +158,30 @@ lsode_j (const int& neq, const double& time, double *,
 ColumnVector
 LSODE::do_integrate (double tout)
 {
+  ColumnVector retval;
+
+  if (restart)
+    {
+      restart = 0;
+      istate = 1;
+    }
+
+  if (iwork.length () != liw)
+    {
+      iwork.resize (liw);
+
+      for (int i = 4; i < 9; i++)
+	iwork.elem (i) = 0;
+    }
+
+  if (rwork.length () != lrw)
+    {
+      rwork.resize (lrw);
+
+      for (int i = 4; i < 9; i++)
+	rwork.elem (i) = 0;
+    }
+
   if (jac)
     method_flag = 21;
   else
@@ -199,13 +201,12 @@ LSODE::do_integrate (double tout)
 
   // Try 5000 steps before giving up.
 
-  iwork[5] = 5000;
-  int working_too_hard = 0;
+  iwork.elem (5) = 5000;
 
   if (stop_time_set)
     {
       itask = 4;
-      rwork [0] = stop_time;
+      rwork.elem (0) = stop_time;
     }
   else
     {
@@ -215,64 +216,67 @@ LSODE::do_integrate (double tout)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  rwork[4] = (initial_step_size () >= 0.0) ? initial_step_size () : 0.0;
-  rwork[5] = (maximum_step_size () >= 0.0) ? maximum_step_size () : 0.0;
-  rwork[6] = (minimum_step_size () >= 0.0) ? minimum_step_size () : 0.0;
+  rwork.elem (4) = (initial_step_size () >= 0.0) ? initial_step_size () : 0.0;
+  rwork.elem (5) = (maximum_step_size () >= 0.0) ? maximum_step_size () : 0.0;
+  rwork.elem (6) = (minimum_step_size () >= 0.0) ? minimum_step_size () : 0.0;
 
-  if (restart)
-    {
-      restart = 0;
-      istate = 1;
-    }
+  int *piwork = iwork.fortran_vec ();
+  double *prwork = rwork.fortran_vec ();
+
+  working_too_hard = 0;
 
  again:
 
-  F77_FCN (lsode, LSODE) (lsode_f, n, xp, t, tout, itol, rel_tol,
-			  abs_tol, itask, istate, iopt, rwork, lrw,
-			  iwork, liw, lsode_j, method_flag);
+  F77_XFCN (lsode, LSODE, (lsode_f, n, xp, t, tout, itol, rel_tol,
+			   abs_tol, itask, istate, iopt, prwork, lrw,
+			   piwork, liw, lsode_j, method_flag));
 
-  switch (istate)
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in lsode");
+  else
     {
-    case -13: // Return requested in user-supplied function.
-    case -6:  // error weight became zero during problem. (solution
-	      // component i vanished, and atol or atol(i) = 0.)
-    case -5:  // repeated convergence failures (perhaps bad jacobian
-	      // supplied or wrong choice of mf or tolerances).
-    case -4:  // repeated error test failures (check all inputs).
-    case -3:  // illegal input detected (see printed message).
-    case -2:  // excess accuracy requested (tolerances too small).
-      integration_error = 1;
-      return ColumnVector ();
-      break;
-
-    case -1:  // excess work done on this call (perhaps wrong mf).
-      working_too_hard++;
-      if (working_too_hard > 20)
+      switch (istate)
 	{
-	  (*current_liboctave_error_handler)
-	    ("giving up after more than %d steps attempted in lsode",
-	     iwork[5] * 20);
+	case -13: // Return requested in user-supplied function.
+	case -6:  // error weight became zero during problem. (solution
+	          // component i vanished, and atol or atol(i) = 0.)
+	case -5:  // repeated convergence failures (perhaps bad jacobian
+	          // supplied or wrong choice of mf or tolerances).
+	case -4:  // repeated error test failures (check all inputs).
+	case -3:  // illegal input detected (see printed message).
+	case -2:  // excess accuracy requested (tolerances too small).
 	  integration_error = 1;
-	  return ColumnVector ();
-	}
-      else
-	{
-	  istate = 2;
-	  goto again;
-	}
-      break;
+	  break;
 
-    case 2:  // lsode was successful
-      break;
+	case -1:  // excess work done on this call (perhaps wrong mf).
+	  working_too_hard++;
+	  if (working_too_hard > 20)
+	    {
+	      (*current_liboctave_error_handler)
+		("giving up after more than %d steps attempted in lsode",
+		 iwork.elem (5) * 20);
+	      integration_error = 1;
+	    }
+	  else
+	    {
+	      istate = 2;
+	      goto again;
+	    }
+	  break;
 
-    default:
-      // Error?
-      break;
+	case 2:  // lsode was successful
+	  retval = x;
+	  t = tout;
+	  break;
+	  
+	default: // Error?
+	  (*current_liboctave_error_handler)
+	    ("unrecognized value of istate returned from lsode");
+	  break;
+	}
     }
 
-  t = tout;
-
-  return x;
+  return retval;
 }
 
 #if 0

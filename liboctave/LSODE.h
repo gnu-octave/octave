@@ -128,7 +128,7 @@ public:
   
   LSODE (const ColumnVector& state, double time, const ODEFunc& f);
 
-  ~LSODE (void);
+  ~LSODE (void) { }
 
   void force_restart (void);
 
@@ -157,14 +157,15 @@ private:
   int integration_error;
   int restart;
   int method_flag;
-  int *iwork;
-  double *rwork;
+  Array<int> iwork;
+  Array<double> rwork;
   int istate;
   int itol;
   int itask;
   int iopt;
   int liw;
   int lrw;
+  int working_too_hard;
 
   friend int lsode_f (int *neq, double *t, double *y, double *ydot);
 

@@ -87,13 +87,8 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 
   double bigbnd = infinite_bound ();
 
-  double *pa = 0;
-  Matrix clin;
-  if (nclin > 0)
-    {
-      clin = lc.constraint_matrix ();
-      pa = clin.fortran_vec ();
-    }
+  Matrix clin = lc.constraint_matrix ();
+  double *pa = clin.fortran_vec ();
 
   ColumnVector bl (n+nclin);
   ColumnVector bu (n+nclin);
@@ -105,8 +100,8 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
     }
   else
     {
-      bl.fill (-bigbnd);
-      bu.fill (bigbnd);
+      bl.fill (-bigbnd, 0, n-1);
+      bu.fill (bigbnd, 0, n-1);
     }
 
   if (nclin > 0)

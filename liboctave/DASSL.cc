@@ -63,12 +63,10 @@ DASSL::DASSL (void) : DAE ()
   liw = 0;
   lrw = 0;
 
-  info  = new int [15];
-  iwork = (int *) 0;
-  rwork = (double *) 0;
+  info.resize (15);
 
   for (int i = 0; i < 15; i++)
-    info [i] = 0;
+    info.elem (i) = 0;
 }
 
 DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
@@ -82,12 +80,10 @@ DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
 
-  info  = new int [15];
-  iwork = new int [liw];
-  rwork = new double [lrw];
+  info.resize (15);
 
   for (int i = 0; i < 15; i++)
-    info [i] = 0;
+    info.elem (i) = 0;
 }
 
 DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
@@ -105,19 +101,10 @@ DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
 
-  info  = new int [15];
-  iwork = new int [liw];
-  rwork = new double [lrw];
+  info.resize (15);
 
   for (int i = 0; i < 15; i++)
-    info [i] = 0;
-}
-
-DASSL::~DASSL (void)
-{
-  delete [] info;
-  delete [] rwork;
-  delete [] iwork;
+    info.elem (i) = 0;
 }
 
 void
@@ -199,12 +186,26 @@ ddassl_j (const double& time, double *, double *, double *pd, const
 ColumnVector
 DASSL::do_integrate (double tout)
 {
+  ColumnVector retval;
+
+  if (restart)
+    {
+      restart = 0;
+      info.elem (0) = 0;
+    }
+
+  if (iwork.length () != liw)
+    iwork.resize (liw);
+
+  if (rwork.length () != lrw)
+    rwork.resize (lrw);
+
   integration_error = 0;
 
   if (DAEFunc::jacobian_function ())
-    iwork [4] = 1;
+    iwork.elem (4) = 1;
   else
-    iwork [4] = 0;
+    iwork.elem (4) = 0;
 
   double *px    = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
@@ -215,93 +216,91 @@ DASSL::do_integrate (double tout)
 
   if (stop_time_set)
     {
-      info [3] = 1;
-      rwork [0] = stop_time;
+      info.elem (3) = 1;
+      rwork.elem (0) = stop_time;
     }
   else
-    info [3] = 0;
+    info.elem (3) = 0;
 
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
   if (initial_step_size () >= 0.0)
     {
-      rwork[2] = initial_step_size ();
-      info[7] = 1;
+      rwork.elem (2) = initial_step_size ();
+      info.elem (7) = 1;
     }
   else
-    info[7] = 0;
+    info.elem (7) = 0;
 
   if (maximum_step_size () >= 0.0)
     {
-      rwork[2] = maximum_step_size ();
-      info[6] = 1;
+      rwork.elem (2) = maximum_step_size ();
+      info.elem (6) = 1;
     }
   else
-    info[6] = 0;
+    info.elem (6) = 0;
 
   double *dummy = 0;
   int *idummy = 0;
 
-  if (restart)
-    {
-      restart = 0;
-      info[0] = 0;
-    }
+  int *pinfo = info.fortran_vec ();
+  int *piwork = iwork.fortran_vec ();
+  double *prwork = rwork.fortran_vec ();
 
 // again:
 
-  F77_FCN (ddassl, DDASSL) (ddassl_f, n, t, px, pxdot, tout, info,
-			    rel_tol, abs_tol, idid, rwork, lrw, iwork,
-			    liw, dummy, idummy, ddassl_j);
+  F77_XFCN (ddassl, DDASSL, (ddassl_f, n, t, px, pxdot, tout, pinfo,
+			     rel_tol, abs_tol, idid, prwork, lrw,
+			     piwork, liw, dummy, idummy, ddassl_j));
 
-  switch (idid)
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dassl");
+  else
     {
-    case 1: // A step was successfully taken in the
-	    // intermediate-output mode. The code has not yet reached
-	    // TOUT.
-      break;
+      switch (idid)
+	{
+	case 1: // A step was successfully taken in intermediate-output
+	        // mode. The code has not yet reached TOUT.
+	case 2: // The integration to TSTOP was successfully completed
+	        // (T=TSTOP) by stepping exactly to TSTOP.
+	case 3: // The integration to TOUT was successfully completed
+	        // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
+	        // interpolation.  YPRIME(*) is obtained by interpolation.
 
-    case 2: // The integration to TSTOP was successfully completed
-	    // (T=TSTOP) by stepping exactly to TSTOP.
-      break;
+	  retval = x;
+	  t = tout;
+	  break;
 
-    case 3: // The integration to TOUT was successfully completed
-	    // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
-	    // interpolation.  YPRIME(*) is obtained by interpolation.
-      break;
-
-    case -1: // A large amount of work has been expended.  (About 500 steps).
-    case -2: // The error tolerances are too stringent.
-    case -3: // The local error test cannot be satisfied because you
-	     // specified a zero component in ATOL and the
-	     // corresponding computed solution component is zero.
-	     // Thus, a pure relative error test is impossible for
-	     // this component.
-    case -6: // DDASSL had repeated error test failures on the last
-	     // attempted step.
-    case -7: // The corrector could not converge.
-    case -8: // The matrix of partial derivatives is singular.
-    case -9: // The corrector could not converge.  There were repeated
-	     // error test failures in this step.
-    case -10: // The corrector could not converge because IRES was
-	      // equal to minus one.
-    case -11: // IRES equal to -2 was encountered and control is being
-	      // returned to the calling program.
-    case -12: // DDASSL failed to compute the initial YPRIME.
-    case -33: // The code has encountered trouble from which it cannot
-	      // recover. A message is printed explaining the trouble
-	      // and control is returned to the calling program. For
-	      // example, this occurs when invalid input is detected.
-
-    default:
-      integration_error = 1;
-      break;
+	case -1: // A large amount of work has been expended.  (~500 steps).
+	case -2: // The error tolerances are too stringent.
+	case -3: // The local error test cannot be satisfied because you
+	         // specified a zero component in ATOL and the
+		 // corresponding computed solution component is zero.
+		 // Thus, a pure relative error test is impossible for
+		 // this component.
+	case -6: // DDASSL had repeated error test failures on the last
+		 // attempted step.
+	case -7: // The corrector could not converge.
+	case -8: // The matrix of partial derivatives is singular.
+	case -9: // The corrector could not converge.  There were repeated
+		 // error test failures in this step.
+	case -10: // The corrector could not converge because IRES was
+		  // equal to minus one.
+	case -11: // IRES equal to -2 was encountered and control is being
+		  // returned to the calling program.
+	case -12: // DDASSL failed to compute the initial YPRIME.
+	case -33: // The code has encountered trouble from which it cannot
+		  // recover. A message is printed explaining the trouble
+		  // and control is returned to the calling program. For
+		  // example, this occurs when invalid input is detected.
+	default:
+	  integration_error = 1;
+	  break;
+	}
     }
 
-  t = tout;
-
-  return x;
+  return retval;
 }
 
 Matrix

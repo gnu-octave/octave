@@ -119,7 +119,7 @@ public:
   DASSL (const ColumnVector& x, const ColumnVector& xdot,
 	 double time, DAEFunc& f);
 
- ~DASSL (void);
+  ~DASSL (void) { }
 
   void force_restart (void);
 
@@ -146,9 +146,9 @@ private:
   int liw;  
   int lrw;
   int idid;
-  int *info;
-  int *iwork;
-  double *rwork;
+  Array<int> info;
+  Array<int> iwork;
+  Array<double> rwork;
 
   friend int ddassl_j (double *time, double *state, double *deriv,
 		       double *pd, double *cj, double *rpar, int *ipar);

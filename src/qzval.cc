@@ -47,9 +47,6 @@ extern "C"
 		       double*, double*, double*, const long*, double*);
 }
 
-// XXX FIXME XXX
-extern ComplexMatrix ComplexMatrixLoad (tree_constant&);
-
 #ifdef WITH_DLD
 tree_constant *
 builtin_qzvalue_2 (tree_constant *args, int nargin, int nargout)

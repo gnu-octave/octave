@@ -545,7 +545,9 @@ private:
     {
       e = b + 1;
 
-      if (e >= len)
+      if (e == len)
+	; /* OK, we have found the last element.  */
+      else if (e > len)
 	b = e = NPOS;
       else
 	{
@@ -561,6 +563,10 @@ private:
   void next (void)
     {
       b = e + 1;
+
+      /* Skip any consecutive colons.  */
+      while (kpse_is_env_sep (path[b]) && b < len)
+	b++;
 
       if (b >= len)
 	b = e = NPOS;

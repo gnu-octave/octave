@@ -39,6 +39,8 @@ extern "C"
 // or otherwise cause trouble...
 #define string kpse_string
 
+#include <kpathsea/default.h>
+#include <kpathsea/expand.h>
 #include <kpathsea/pathsearch.h>
 #include <kpathsea/progname.h>
 
@@ -161,11 +163,24 @@ dir_path::init (void)
 
   kpse_clear_dir_cache ();
 
-  char *tmp = kpse_path_expand (p_orig.c_str ());
-  if (tmp)
+  char *t1 = 0;
+
+  if (p_default.empty ())
+    t1 = kpse_path_expand (p_orig.c_str ());
+  else
     {
-      p = tmp;
-      free (tmp);
+      char *t2 = kpse_expand_default (p_orig.c_str (), p_default.c_str ());
+
+      t1 = kpse_path_expand (t2);
+
+      if (t2)
+	free (t2);
+    }
+
+  if (t1)
+    {
+      p = t1;
+      free (t1);
     }
   else
     p = string ();

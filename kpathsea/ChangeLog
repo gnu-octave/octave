@@ -1,3 +1,8 @@
+Fri Oct 23 22:05:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* kdefault.c (kpse_expand_default): Always return newly allocated
+	storage.
+
 Fri Sep 25 13:28:54 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* elt-dirs.c (kpse_clear_dir_cache): New function.

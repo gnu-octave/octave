@@ -32,20 +32,22 @@ dir_path
 {
 public:
 
-  dir_path (const string& s = string ())
-    : p_orig (s), initialized (false)
+  dir_path (const string& s = string (), const string& d = string ())
+    : p_orig (s), p_default (d), initialized (false)
     {
       if (! p_orig.empty ())
 	init ();
     }
 
   dir_path (const dir_path& dp)
-    : p_orig (dp.p_orig), initialized (dp.initialized), p (dp.p), pv (dp.pv)
+    : p_orig (dp.p_orig), p_default (dp.p_default),
+      initialized (dp.initialized), p (dp.p), pv (dp.pv)
   { }
 
   dir_path& operator = (const dir_path& dp)
     {
       p_orig = dp.p_orig;
+      p_default = dp.p_default;
       initialized = dp.initialized;
       p = dp.p;
       pv = dp.pv;
@@ -82,11 +84,15 @@ private:
   // The colon separated list that we were given.
   string p_orig;
 
+  // The default path.  If specified, replaces leading, trailing, or
+  // doubled colons in p_orig.
+  string p_default;
+
   // TRUE means we've unpacked p.
   bool initialized;
 
   // A version of the colon separate list on which we have performed
-  // tilde and variable expansion.
+  // tilde, variable, and possibly default path expansion.
   string p;
 
   // The elements of the list.

@@ -1,4 +1,84 @@
+Wed Oct 28 11:01:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* OPERATORS/op-list.cc: New file.
+	* Makefile.in (OP_XSRC): Add it to the list.
+
+	* ov-list.cc (octave_list::assign): New function.
+
+	* ov-typeinfo.h (octave_value_typeinfo::assignany_ops):
+	New data member.
+	* ov-typeinfo.cc (octave_value_info::register_assignany_op,
+	octave_value_info::do_register_assignany_op,
+	octave_value_info::lookup_assignany_op,
+	octave_value_info::do_lookup_assignany_op):
+	New functions.
+	* ov.cc (octave_value::try_assignment (octave_value::assign_op,
+	const octave_value_list&, const octave_value&)): If no assignment
+	operator for particular RHS type exists, try finding one for
+	generic octave_value as RHS type.
+	* ops.h (DEFASSIGNANYOP_FN): New macro.
+
+	* ov-list.cc (Fsplice): New function.
+	* oct-obj.cc (octave_value_list::splice): New function.
+
+	* ov.cc (Vresize_on_range_error): No longer static.
+	* ov.h (Vresize_on_range_error): Provide extern declaration.
+
+	* oct-procbuf.cc (symbols_of_oct_procbuf): Don't declare static.
+
+	* data.cc (Flength): New function.
+	* ov.h (octave_value::length): New virtual function.
+	* ov-base.cc (octave_base_value::length): New function.
+	(octave_base_value::rows, octave_base_value::columns): Move
+	definitions here, from ov-base.h.  Don't return -1.  Instead,
+	gripe about wrong argument type.
+	* ov-bool-mat.h (octave_bool_matrix::length): New function.
+	* ov-bool.h (octave_bool::length): Ditto.
+	* ov-ch-mat.h (octave_char_matrix::length): Ditto.
+	* ov-complex.h (octave_complex::length): Ditto.
+	* ov-cx-mat.h (octave_complex_matrix::length): Ditto.
+	* ov-list.h (octave_list::length): Ditto.
+	* ov-range.h (octave_range::length): Ditto.
+	* ov-re-mat.h (octave_matrix::length): Ditto.
+	* ov-scalar.h (octave_scalar::length): Ditto.
+
+Tue Oct 27 22:19:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-list.cc (octave_list::print_raw): Handle case of empty list.
+	(octave_list::print_name_tag): Likewise.	
+
+	* octave.cc (intern_argv): Built-in variable argv is now a list of
+	strings instead of a string vector.
+	Always bind argv, making it an empty list if there are no args.
+
+Mon Oct 26 08:41:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xdiv.cc (mx_leftdiv_conform): Explicitly declare args to be
+	passed as references to const objects.  Fix explicit instantiation
+	requests to match.
+	(mx_div_conform): Likewise.
+
+	* pt-unop.h (tree_prefix_expression): Reorder constructor args to
+	put those with default values last.
+	(tree_postfix_expression): Likewise.
+	* parse.y: Change all callers.	
+
 Fri Oct 23 12:07:32 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (Ffile_in_loadpath): New function.
+
+	* defaults.cc (Vload_path, Vdefault_load_path): Now static.
+
+	* help.cc (simple_help): Use Vload_path_dir_path here instead of
+	trying to reconstruct it from Vload_path.
+	* fn-cache.cc (octave_fcn_file_name_cache::do_list): Likewise.
+	(octave_fcn_file_name_cache::update): Likewise.
+
+	* defaults.cc (octave_loadpath): Construct Vload_path_dir_path
+	using Vdefault_load_path.
+	(set_default_path): Likewise.
+
+	* defaults.h, defaults.cc (maybe_add_default_load_path): Delete.
 
 	* defaults.cc (Vdefault_load_path): New static variable.
 	(set_default_path): Set it.

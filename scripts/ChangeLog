@@ -1,3 +1,7 @@
+Wed Oct 28 11:51:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/length.m: Delete.
+
 Fri Oct 23 00:21:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Add finance/Makefile, statistics/base/Makefile,

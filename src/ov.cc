@@ -115,7 +115,7 @@ bool Vwarn_divide_by_zero;
 
 // If TRUE, resize matrices when performing and indexed assignment and
 // the indices are outside the current bounds.
-static bool Vresize_on_range_error;
+bool Vresize_on_range_error;
 
 // XXX FIXME XXX
 
@@ -845,6 +845,17 @@ octave_value::try_assignment (octave_value::assign_op op,
       f (*rep, idx, *(rhs.rep));
 
       retval = (! error_state);
+    }
+  else
+    {
+      f = octave_value_typeinfo::lookup_assignany_op (op, t_lhs);
+
+      if (f)
+	{
+	  f (*rep, idx, rhs);
+
+	  retval = (! error_state);
+	}
     }
 
   return retval;

@@ -52,6 +52,9 @@ public:
   static bool register_assign_op (octave_value::assign_op, int, int,
 				  assign_op_fcn);
 
+  static bool register_assignany_op (octave_value::assign_op, int,
+				     assign_op_fcn);
+
   static bool register_pref_assign_conv (int, int, int);
 
   static bool register_widening_op (int, int, type_conv_fcn);
@@ -66,6 +69,12 @@ public:
   lookup_assign_op (octave_value::assign_op op, int t_lhs, int t_rhs)
   {
     return instance->do_lookup_assign_op (op, t_lhs, t_rhs);
+  }
+
+  static assign_op_fcn
+  lookup_assignany_op (octave_value::assign_op op, int t_lhs)
+  {
+    return instance->do_lookup_assignany_op (op, t_lhs);
   }
 
   static int
@@ -93,6 +102,8 @@ protected:
 		  init_tab_sz, (binary_op_fcn) 0),
       assign_ops (octave_value::num_assign_ops, init_tab_sz,
 		  init_tab_sz, (assign_op_fcn) 0),
+      assignany_ops (octave_value::num_assign_ops, init_tab_sz,
+		     (assign_op_fcn) 0),
       pref_assign_conv (init_tab_sz, init_tab_sz, -1),
       widening_ops (init_tab_sz, init_tab_sz, (type_conv_fcn) 0)  { }
 
@@ -110,6 +121,8 @@ private:
 
   Array3<assign_op_fcn> assign_ops;
 
+  Array2<assign_op_fcn> assignany_ops;
+
   Array2<int> pref_assign_conv;
 
   Array2<type_conv_fcn> widening_ops;
@@ -122,6 +135,9 @@ private:
   bool do_register_assign_op (octave_value::assign_op, int, int,
 			      assign_op_fcn);
 
+  bool do_register_assignany_op (octave_value::assign_op, int,
+				 assign_op_fcn);
+
   bool do_register_pref_assign_conv (int, int, int);
 
   bool do_register_widening_op (int, int, type_conv_fcn);
@@ -131,6 +147,9 @@ private:
 
   assign_op_fcn
   do_lookup_assign_op (octave_value::assign_op, int, int);
+
+  assign_op_fcn
+  do_lookup_assignany_op (octave_value::assign_op, int);
 
   int do_lookup_pref_assign_conv (int, int);
 

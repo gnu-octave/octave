@@ -1,3 +1,10 @@
+Fri Oct 23 21:46:20 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.h (dir_path::default_path): New data member.
+	* pathsearch.cc (dir_path::init): Use it.
+
+	* Makefile.in: Avoid optmization when compiling lo-ieee.cc.
+
 Fri Oct 16 01:08:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* chMatrix.cc (charMatrix::extract): New function.

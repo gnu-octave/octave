@@ -380,6 +380,102 @@ factorization allows the construction of an orthogonal basis of
 @code{span (a)}.
 @end deftypefn
 
+
+@deftypefn {Function File} {@var{lambda} =} qz (@var{a}, @var{b})
+Generalized eigenvalue problem @math{A x = s B x},
+@var{QZ} decomposition.  Three ways to call:
+@enumerate
+@item @code{lambda = qz(A,B)}
+
+Computes the generalized eigenvalues @var{lambda} of @math{(A - sB)}.
+
+@item @code{[AA, BB, Q, Z @{, V, W, lambda@}] = qz (A, B)}
+
+Computes qz decomposition, generalized eigenvectors, and 
+        generalized eigenvalues of @math{(A - sB)}
+@example
+@group
+        A V = B V diag(lambda)
+        W' A = diag(lambda) W' B
+        AA = Q'*A*Z, BB = Q'*B*Z  with Q, Z orthogonal (unitary)= I
+@end group
+@end example
+
+@item @code{[AA,BB,Z@{,lambda@}] = qz(A,B,opt)}
+
+As in form [2], but allows ordering of generalized eigenpairs
+        for (e.g.) solution of discrete time algebraic Riccati equations.
+        Form 3 is not available for complex matrices and does not compute
+        the generalized eigenvectors V, W, nor the orthogonal matrix Q.
+@table @var
+@item opt
+ for ordering eigenvalues of the GEP pencil.  The leading  block
+             of the revised pencil contains all eigenvalues that satisfy:
+@table @code
+@item "N"
+ = unordered (default) 
+
+@item "S"
+= small: leading block has all |lambda| <=1 
+
+@item "B"
+ = big: leading block has all |lambda >= 1 
+
+@item "-"
+ = negative real part: leading  block has all eigenvalues
+                  in the open left half-plant
+
+@item "+"
+ = nonnegative real part:  leading block has all eigenvalues
+                  in the closed right half-plane
+@end  table
+@end table
+@end enumerate
+
+Note: qz performs permutation balancing, but not scaling (see balance).
+      Order of output arguments was selected for compatibility with MATLAB
+
+See also: balance, dare, eig, schur
+@end deftypefn
+
+@deftypefn {Function File} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
+Compute the Hessenberg-triangular decomposition of the matrix pencil
+@code{(@var{a}, @var{b})}, returning
+@code{@var{aa} = @var{q} * @var{a} * @var{z}}, 
+@code{@var{bb} = @var{q} * @var{b} * @var{z}}, with @var{q} and @var{z}
+orthogonal.  For example,
+
+@example
+@group
+[aa, bb, q, z] = qzhess ([1, 2; 3, 4], [5, 6; 7, 8])
+     @result{} aa = [ -3.02244, -4.41741;  0.92998,  0.69749 ]
+     @result{} bb = [ -8.60233, -9.99730;  0.00000, -0.23250 ]
+     @result{}  q = [ -0.58124, -0.81373; -0.81373,  0.58124 ]
+     @result{}  z = [ 1, 0; 0, 1 ]
+@end group
+@end example
+
+The Hessenberg-triangular decomposition is the first step in
+Moler and Stewart's QZ decomposition algorithm.
+
+Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
+edition}.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} qzval (@var{a}, @var{b})
+Compute generalized eigenvalues of the matrix pencil 
+@iftex
+@tex
+$a - \lambda b$.
+@end tex
+@end iftex
+@ifinfo
+@code{@var{a} - lambda @var{b}}.
+@end ifinfo
+
+The arguments @var{a} and @var{b} must be real matrices.
+@end deftypefn
+
 @deftypefn {Loadable Function} {@var{s} =} schur (@var{a})
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})
 @cindex Schur decomposition
@@ -782,44 +878,6 @@ kron (1:4, ones (3, 1))
          1  2  3  4
 @end group
 @end example
-@end deftypefn
-
-@deftypefn {Function File} {[@var{aa}, @var{bb}, @var{q}, @var{z}] =} qzhess (@var{a}, @var{b})
-Compute the Hessenberg-triangular decomposition of the matrix pencil
-@code{(@var{a}, @var{b})}, returning
-@code{@var{aa} = @var{q} * @var{a} * @var{z}}, 
-@code{@var{bb} = @var{q} * @var{b} * @var{z}}, with @var{q} and @var{z}
-orthogonal.  For example,
-
-@example
-@group
-[aa, bb, q, z] = qzhess ([1, 2; 3, 4], [5, 6; 7, 8])
-     @result{} aa = [ -3.02244, -4.41741;  0.92998,  0.69749 ]
-     @result{} bb = [ -8.60233, -9.99730;  0.00000, -0.23250 ]
-     @result{}  q = [ -0.58124, -0.81373; -0.81373,  0.58124 ]
-     @result{}  z = [ 1, 0; 0, 1 ]
-@end group
-@end example
-
-The Hessenberg-triangular decomposition is the first step in
-Moler and Stewart's QZ decomposition algorithm.
-
-Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
-edition}.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} qzval (@var{a}, @var{b})
-Compute generalized eigenvalues of the matrix pencil 
-@iftex
-@tex
-$a - \lambda b$.
-@end tex
-@end iftex
-@ifinfo
-@code{@var{a} - lambda @var{b}}.
-@end ifinfo
-
-The arguments @var{a} and @var{b} must be real matrices.
 @end deftypefn
 
 @deftypefn {Loadable Function} {@var{x} =} syl (@var{a}, @var{b}, @var{c})

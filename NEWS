@@ -1,6 +1,21 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * The built-in variable argv is now a list of strings instead of a
+    string vector.
+
+  * The value of LOADPATH set by the environment variable
+    OCTAVE_PATH, the -p or --path command line options, or on the
+    command line is no longer modified to include the default path.
+    Instead it is left as specified.  Its default value is now ":",
+    which tells Octave to search the default path, and the new
+    built-in variable DEFAULT_LOADPATH contains the default list of
+    directories to search.  
+
+  * The function file_in_path no longer does any special processing of
+    its PATH argument.  To search LOADPATH for files, it is now
+    generally better to use the new function file_in_loadpath.
+
   * If fread is given a skip parameter, the skip is performed after
     the read instead of before (for compatibility with Matlab).
 

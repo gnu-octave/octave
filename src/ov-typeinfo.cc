@@ -98,6 +98,14 @@ octave_value_typeinfo::register_assign_op (octave_value::assign_op op,
 }
 
 bool
+octave_value_typeinfo::register_assignany_op (octave_value::assign_op op,
+					       int t_lhs, assign_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_assignany_op (op, t_lhs, f) : -1;
+}
+
+bool
 octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
 						  int t_result) 
 {
@@ -136,6 +144,9 @@ octave_value_typeinfo::do_register_type (const string& name)
       assign_ops.resize (static_cast<int> (octave_value::num_assign_ops),
 			 len, len, static_cast<assign_op_fcn> (0));
 
+      assignany_ops.resize (static_cast<int> (octave_value::num_assign_ops),
+			    len, static_cast<assign_op_fcn> (0));
+
       pref_assign_conv.resize (len, len, -1);
 
       widening_ops.resize (len, len, static_cast<type_conv_fcn> (0));
@@ -164,6 +175,15 @@ octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
 					      assign_op_fcn f)
 {
   assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs) = f;
+
+  return false;
+}
+
+bool
+octave_value_typeinfo::do_register_assignany_op (octave_value::assign_op op,
+						  int t_lhs, assign_op_fcn f)
+{
+  assignany_ops.checkelem (static_cast<int> (op), t_lhs) = f;
 
   return false;
 }
@@ -200,6 +220,13 @@ octave_value_typeinfo::do_lookup_assign_op (octave_value::assign_op op,
 					    int t_lhs, int t_rhs)
 {
   return assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs);
+}
+
+assign_op_fcn
+octave_value_typeinfo::do_lookup_assignany_op (octave_value::assign_op op,
+					       int t_lhs)
+{
+  return assignany_ops.checkelem (static_cast<int> (op), t_lhs);
 }
 
 int

@@ -1,3 +1,8 @@
+2004-01-30  Jakub Bogusz  <qboosh@pld-linux.org>
+
+	* Array-flags.h (liboctave_wfi_flag, liboctave_wrore_flag):
+	Now bool, to match definition in Array-flags.cc.
+
 2004-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc: Include <vector> instead of <memory> for new

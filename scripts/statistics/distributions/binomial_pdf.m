@@ -33,31 +33,29 @@ function pdf = binomial_pdf (x, n, p)
     usage ("binomial_pdf (x, n, p)");
   endif
 
-  if (!isscalar (n) || !isscalar (p))
+  if (! isscalar (n) || ! isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
       error ("binomial_pdf: x, n and p must be of common size or scalar");
     endif
   endif
 
-  sz = size (x);
-  pdf = zeros (sz);
+  k = ((x >= 0) & (x <= n)
+       & (x == round (x)) & (n == round (n))
+       & (p >= 0) & (p <= 1));
 
-  k = find (isnan (x) | !(n >= 0) | (n != round (n)) | !(p >= 0) | !(p <= 1));
-  if (any (k))
-    pdf(k) = NaN;
-  endif
-
-  k = find ((x >= 0) & (x <= n) & (x == round (x))
-	    & (n == round (n)) & (p >= 0) & (p <= 1));
-  if (any (k))
-    if (isscalar (n) && isscalar (p))
-      pdf(k) = (bincoeff (n, x(k)) .* (p .^ x(k))
-		.* ((1 - p) .^ (n - x(k))));
-    else
-      pdf(k) = (bincoeff (n(k), x(k)) .* (p(k) .^ x(k))
-		.* ((1 - p(k)) .^ (n(k) - x(k))));
+  pdf = zeros (size (x));
+  pdf(! k) = NaN;
+  if (any (k(:)))
+    x = x(k);
+    if (! isscalar (n))
+      n = n(k);
     endif
+    if (! isscalar (p))
+      p = p(k);
+    endif
+    z = gammaln(n+1) - gammaln(x+1) - gammaln(n-x+1) + x.*log(p) + (n-x).*log(1-p);
+    pdf(k) = exp (z);
   endif
 
 endfunction

@@ -71,7 +71,7 @@ public:
   void operator delete (void *p, size_t size);
 #endif
 
-  octave_value struct_elt_val (const string& nm) const;
+  octave_value struct_elt_val (const string& nm, bool silent) const;
 
   octave_value& struct_elt_ref (const string& nm);
 

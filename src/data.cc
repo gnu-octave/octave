@@ -783,7 +783,8 @@ Return a list of the names of the elements of the structure S.")
 DEFUN (struct_contains, args, ,
   "struct_contains (S, NAME)\n\
 \n\
-return nonzero if S is a structure with element NAME")
+Return nonzero if S is a structure with element NAME.\n\
+S must be a structure and NAME must be a string.")
 {
   octave_value_list retval;
 
@@ -792,12 +793,15 @@ return nonzero if S is a structure with element NAME")
   if (nargin == 2)
     {
       retval = 0.0;
+
       if (args(0).is_map () && args(1).is_string ())
 	{
 	  string s = args(1).string_value ();
-	  octave_value tmp = args(0).struct_elt_val (s);
+	  octave_value tmp = args(0).struct_elt_val (s, true);
 	  retval = (double) tmp.is_defined ();
 	}
+      else
+	print_usage ("struct_contains");
     }
   else
     print_usage ("struct_contains");

@@ -77,7 +77,7 @@ public:
 
   idx_vector index_vector (void) const;
 
-  octave_value struct_elt_val (const string& nm) const;
+  octave_value struct_elt_val (const string& nm, bool silent) const;
 
   octave_value& struct_elt_ref (const string& nm);
 

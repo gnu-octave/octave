@@ -1,5 +1,13 @@
 Wed Oct 16 12:00:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h (octave_value::struct_elt_val): New optional arg, silent.
+	* ov-base.h, ov-base.cc, ov-struct.h, ov-struct.cc: Likewise, but
+	for the derived classes the arg is required.
+
+	* data.cc (Fstruct_contains): Require arguments to be struct and
+	string, respectively.  Call octave_value::struct_elt_val with
+	silent flag set.
+
 	* pt-mat.cc (tm_row_const::tm_row_const_rep::eval_error,
 	tm_row_const::tm_row_const_rep::eval_warning): New functions.
 	(tm_row_const::tm_row_const (const tree_matrix_row&): Use them to

@@ -40,7 +40,7 @@ const string octave_struct::t_name ("struct");
 
 
 octave_value
-octave_struct::struct_elt_val (const string& nm) const
+octave_struct::struct_elt_val (const string& nm, bool silent) const
 {
   octave_value retval;
 
@@ -48,7 +48,7 @@ octave_struct::struct_elt_val (const string& nm) const
 
   if (idx)
     retval = map.contents (idx);
-  else
+  else if (! silent)
     error ("structure has no member `%s'", nm.c_str ());
 
   return retval;

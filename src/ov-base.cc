@@ -63,7 +63,7 @@ octave_base_value::index_vector (void) const
 }
 
 octave_value
-octave_base_value::struct_elt_val (const string&) const
+octave_base_value::struct_elt_val (const string&, bool) const
 {
   string nm = type_name ();
   error ("can't perform structure reference operations for %s type",

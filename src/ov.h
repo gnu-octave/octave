@@ -189,8 +189,9 @@ public:
   virtual idx_vector index_vector (void) const
     { return rep->index_vector (); }
 
-  virtual octave_value struct_elt_val (const string& nm) const
-    { return rep->struct_elt_val (nm); }
+  virtual octave_value
+  struct_elt_val (const string& nm, bool silent = false) const
+    { return rep->struct_elt_val (nm, silent); }
 
   virtual octave_value& struct_elt_ref (const string& nm)
     { return rep->struct_elt_ref (nm); }

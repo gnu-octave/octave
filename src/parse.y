@@ -1068,6 +1068,11 @@ loop_command	: WHILE stash_comment expression opt_sep opt_list END
 		    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
 		      ABORT_PARSE;
 		  }
+		| FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
+		  {
+		    if (! ($$ = make_for_command ($1, $4, $6, $9, $10, $2)))
+		      ABORT_PARSE;
+		  }
 		;
 
 // =======

@@ -1,3 +1,8 @@
+2005-02-02  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (parse.cc): Expect 12 shift/reduce conflicts.
+	* parse.y (loop_command): Allow "for (k=1:10) ... endfor".
+
 2005-01-27  David Bateman  <dbateman@free.fr>
 
 	* ov-mapper.cc (octave_mapper::apply): Only work on real arguments

@@ -113,7 +113,7 @@ functions (.oct files).
        This command should bring up a gnuplot command window.  Try
        plotting something by typing
 
-         sin(x)
+         plot sin(x)
 
        at the gnuplot prompt.  This command should bring up a plot
        window displaying a sine wave.

@@ -52,7 +52,7 @@ static QPSOL_options qpsol_opts;
 #endif
 
 #if defined (QPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, 11,
+DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, 00,
   "This function requires QPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/qpsol/README.MISSING in the source distribution.")
@@ -385,7 +385,7 @@ show_qpsol_option (const char *keyword)
 #endif
 
 #if defined (QPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("qpsol_options", Fqpsol_options, Sqpsol_options, 10,
+DEFUN_DLD_BUILTIN ("qpsol_options", Fqpsol_options, Sqpsol_options, 00,
   "This function requires QPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/qpsol/README.MISSING in the source distribution.")

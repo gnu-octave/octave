@@ -228,7 +228,7 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 11,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 00,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
@@ -769,7 +769,7 @@ show_npsol_option (const char *keyword)
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, 10,
+DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, 00,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")

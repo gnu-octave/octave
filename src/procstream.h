@@ -36,7 +36,7 @@ class
 iprocstream : public ifstream
 {
 public:
-  iprocstream (void);
+  iprocstream (void) { pbuf = 0; }
   iprocstream (const char *command, int mode=ios::in);
 
   ~iprocstream (void);
@@ -51,11 +51,13 @@ private:
   procbuf *pbuf;
 };
 
+extern void cleanup_iprocstream (void *);
+
 class
 oprocstream : public ofstream
 {
 public:
-  oprocstream (void);
+  oprocstream (void) { pbuf = 0; }
   oprocstream (const char *command, int mode=ios::out);
 
   ~oprocstream (void);
@@ -69,6 +71,8 @@ public:
 private:
   procbuf *pbuf;
 };
+
+extern void cleanup_oprocstream (void *);
 
 #endif
 

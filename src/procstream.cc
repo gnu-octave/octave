@@ -34,13 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "procstream.h"
 
-iprocstream::iprocstream (void)
-{
-  pbuf = new procbuf ();
-
-  init (pbuf);
-}
-
 iprocstream::iprocstream (const char *command, int mode)
 {
   pbuf = new procbuf ();
@@ -53,7 +46,7 @@ iprocstream::iprocstream (const char *command, int mode)
 
 iprocstream::~iprocstream (void)
 {
-  close ();
+  delete pbuf;
 }
 
 void
@@ -61,8 +54,12 @@ iprocstream::open (const char *command, int mode)
 {
   clear ();
 
-  if (! pbuf)
-    pbuf = new procbuf ();
+  if (pbuf)
+    delete pbuf;
+
+  pbuf = new procbuf ();
+
+  init (pbuf);
 
   if (! pbuf->open (command, mode))
     set (ios::badbit);
@@ -81,7 +78,6 @@ iprocstream::close (void)
 
   if (is_open ())
     {
-
       status = pbuf->sys_close ();
 
       if (! pbuf->close ())
@@ -91,11 +87,10 @@ iprocstream::close (void)
   return status;
 }
 
-oprocstream::oprocstream (void)
+void
+cleanup_iprocstream (void *buf)
 {
-  pbuf = new procbuf ();
-
-  init (pbuf);
+  delete (iprocstream *) buf;
 }
 
 oprocstream::oprocstream (const char *command, int mode)
@@ -110,7 +105,7 @@ oprocstream::oprocstream (const char *command, int mode)
 
 oprocstream::~oprocstream (void)
 {
-  close ();
+  delete pbuf;
 }
 
 void
@@ -118,8 +113,12 @@ oprocstream::open (const char *command, int mode)
 {
   clear ();
 
-  if (! pbuf)
-    pbuf = new procbuf ();
+  if (pbuf)
+    delete pbuf;
+    
+  pbuf = new procbuf ();
+
+  init (pbuf);
 
   if (! pbuf->open (command, mode))
     set (ios::badbit);
@@ -138,13 +137,17 @@ oprocstream::close (void)
 
   if (is_open ())
     {
-      status = pbuf->sys_close ();
-
       if (! pbuf->close ())
 	set (ios::failbit);
     }
 
   return status;
+}
+
+void
+cleanup_oprocstream (void *buf)
+{
+  delete (oprocstream *) buf;
 }
 
 /*

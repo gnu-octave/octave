@@ -54,6 +54,7 @@ static SLStack <token*> token_stack;
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
+#include "tree-misc.h"
 #include "tree-plot.h"
 #include "tree-const.h"
 #include "y.tab.h"
@@ -1131,7 +1132,7 @@ grab_help_text (void)
 
   int in_comment = 1;
   int len = 0;
-  int c;
+  int c = 0;
 
   while ((c = yyinput ()) != EOF)
     {
@@ -1165,6 +1166,9 @@ grab_help_text (void)
     }
 
  done:
+
+  if (c)
+    yyunput (c, yytext);
 
   help_buf[len] =  '\0';
 }

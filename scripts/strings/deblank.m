@@ -21,11 +21,10 @@
 ##
 ## Remove trailing blanks from the string s.
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function t = deblank (s)
-
-## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("deblank (s)");

@@ -22,11 +22,10 @@
 ## Returns the hex number corresponding to the decimal number d.  For
 ## example, dec2hex (2748) returns "abc".
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function h = dec2hex (d)
-
-## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("dec2hex (d)");

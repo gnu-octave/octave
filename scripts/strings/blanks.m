@@ -21,11 +21,10 @@
 ##
 ## Returns a string of n blanks.
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function s = blanks (n)
-
-## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("blanks (n)");

@@ -17,24 +17,30 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  substr (s, beg, len)
+## usage:  substr (s, offset, len)
 ##
-## Returns the substring of S of length LEN starting at index BEG.
-## If LEN is missing, the substring extends to the end of S.
+## Returns the substring of S of length LEN starting at index OFFSET.
+## If OFFSET is negative, extraction starts that far from the end of
+## the string.  If LEN is omitted, the substring extends to the end
+## of S.
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
-function t = substr (s, beg, len)
-
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+function t = substr (s, offset, len)
 
   if (nargin < 2 || nargin > 3)
-    usage ("substr (s, beg, len)");
+    usage ("substr (s, offset [, len])");
   endif
 
   if (isstr (s))
     nc = columns (s);
-    if (beg > 0 && beg <= nc)
+    if (abs (offset) > 0 && abs (offset) <= nc)
+      if (offset > 0)
+	beg = offset;
+      else
+	beg = nc + offset + 1;
+      endif
       if (nargin == 2)
 	eos = nc;
       else
@@ -46,7 +52,7 @@ function t = substr (s, beg, len)
 	error ("substr: length = %d out of range", len);
       endif
     else
-      error ("substr: beginning index = %d out of range", beg);
+      error ("substr: offset = %d out of range", offset);
     endif
   else
     error ("substr: expecting string argument");

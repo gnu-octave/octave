@@ -24,13 +24,12 @@
 ##
 ## NOTE: this function does not work for arrays of strings.
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function n = rindex (s, t)
 
   ## This is patterned after the AWK function of the same name.
-
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 2)
     usage ("rindex (s, t)");

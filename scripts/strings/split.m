@@ -23,11 +23,10 @@
 ## pieces as the rows of M (padded with blanks to form a valid
 ## matrix).
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function m = split (s, t)
-
-## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 2)
     usage ("split (s, t)");

@@ -22,11 +22,10 @@
 ## Returns the decimal number corresponding to the binary number in
 ## quotes.  For example, bin2dec ("1110") returns 14.
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function y = bin2dec (x)
-
-## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin != 1)
     usage ("bin2dec (x)");

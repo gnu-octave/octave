@@ -1,3 +1,7 @@
+Tue Aug 20 18:27:36 1996  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* strings/substr.m: Allow negative OFFSET.  LEN is now optional.
+
 Mon Jul 15 16:15:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/bug_report.m: Don't redirect output to /dev/tty in

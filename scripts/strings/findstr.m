@@ -30,11 +30,10 @@
 ##   findstr ("abababa", "aba")     =>  [1, 3, 5]
 ##   findstr ("abababa", "aba", 0)  =>  [1, 5]
 
-## Author: jwe
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Adapted-By: jwe
 
 function v = findstr (s, t, overlap)
-
-  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin < 2 || nargin > 3)
     usage ("findstr (s, t [, overlap])");

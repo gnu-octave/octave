@@ -95,14 +95,14 @@ tree_indirect_ref::eval (bool print)
     retval = id->eval (print);
   else
     {
-      retval = value ();
+      octave_variable_reference tmp = reference ();
 
-      if (! error_state && retval.is_defined ())
+      if (! (error_state || tmp.is_undefined ()))
 	{
-	  if (maybe_do_ans_assign)
+	  retval = tmp.value ();
+
+	  if (! error_state && maybe_do_ans_assign && retval.is_defined ())
 	    bind_ans (retval, print);
-	  else if (print)
-	    retval.print_with_name (octave_stdout, name ());
 	}
     }
 
@@ -119,17 +119,18 @@ tree_indirect_ref::eval (bool print, int nargout,
     retval = id->eval (print, nargout, args);
   else
     {
-      octave_value tmp = value ();
+      octave_variable_reference tmp = reference ();
 
-      if (! error_state && tmp.is_defined ())
+      if (! (error_state || tmp.is_undefined ()))
 	{
-	  retval = tmp.index (args);
+	  tmp.index (args);
 
-	  if (! error_state)
+	  retval = tmp.value ();
+
+	  if (! error_state && maybe_do_ans_assign && nargout == 1
+	      && retval.length () > 0 && retval(0).is_defined ())
 	    {
-	      if (maybe_do_ans_assign && nargout == 1
-		  && retval.length () > 0 && retval(0).is_defined ())
-		bind_ans (retval(0), print);
+	      bind_ans (retval(0), print);
 	    }
 	}
     }
@@ -141,29 +142,6 @@ void
 tree_indirect_ref::accept (tree_walker& tw)
 {
   tw.visit_indirect_ref (*this);
-}
-
-octave_value
-tree_indirect_ref::value (void) const
-{
-  octave_value retval;
-
-  if (is_identifier_only ())
-    retval = id->value ();
-  else
-    {
-      if (id)
-	retval = id->value ();
-      else if (indir)
-	retval = indir->value ();
-      else
-	panic_impossible ();
-
-      if (! error_state)
-	retval = retval.struct_elt_val (nm);
-    }
-
-  return retval;
 }
 
 octave_variable_reference

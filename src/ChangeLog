@@ -1,3 +1,65 @@
+Sun May 11 17:51:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (Ftype): Make it work again for functions.
+
+	* pt-pr-code.cc (tree_print_code::print_parens): New function.
+	Use it in other tree_print_code functions to handle printing all
+	the parens that we found when parsing the expression, not just one
+	pair.
+	* pt-exp-base.h (tree_expression::paren_count): Rename from
+	is_in_parens.
+	* parse.y (maybe_warn_assign_as_truth_value): Use new name.
+
+	* parse.y (constant): New non-terminal.
+	(simple_expr1): Use it.
+
+	* parse.y (make_unary_op): Delete.
+	(simple_expr1): Where appropriate, use make_prefix_op and
+	make_postfix_op instead of make_unary_op.  Allow increment and
+	decrement ops to work on expressions, not just identifiers.
+	(make_prefix_op, make_postfix_op): Arg is expression, not identifier.
+	Handle old unary_op cases too.
+	(fold (tree_unary_expression *)): Delete.
+	* pt-exp.h, pt-exp.cc (tree_prefix_expression::eval): Handle unary
+	minus and not here.
+	(tree_postfix_expression::eval): Likewise, for transpose and hermitian.
+	(class tree_prefix_expression, class tree_postfix_expression):
+	Derive from tree_unary_expression.  Delete identifier member.
+	Delete ident member function.
+	(tree_unary_expression): Don't handle evaluation here.
+	* pt-exp-base.h (mark_in_parens): No longer virtual. Return this.
+	(reference): New virtual function.
+	(class tree_expression): Don't handle expression type here.
+	* pt-mvr-base.h (tree_multi_val_ret::tree_multi_val_ret): Likewise.
+	* pt-mvr.h, pt-mvr.cc (tree_multi_assignment_expression): Likewise.
+	* pt-walk.h (visit_unary_expression): Delete declaration.
+	* pt-pr-code.h, pt-pr-code.cc (visit_unary_expression): Delete.
+	(visit_prefix_expression): Use operand(), not ident().
+	new, visit_postfix_expression):
+	* pt-id.h, pt-id.cc (increment, decrement): Delete.
+
+	* pt-misc.cc (tree_parameter_list::define_from_arg_vector): Get a
+	reference to each element and use the assignment operator instead
+	of tree_identifier::define.
+	* pt-id.h, pt-id.cc (tree_identifier::define): Delete versions
+	that take octave_value and octave_symbol args.
+
+Sat May 10 23:32:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-indir.h, pt-indir.cc (tree_indirect_reference::value): Delete.
+
+	* oct-var-ref.cc (octave_variable_ref::assign): Clear idx after
+	assignment.
+
+	* ov.h, ov.cc (assign): Return void, not reference to octave_value.
+	(do_index_op): Rename, from index.
+	(do_struct_elt_index_op): Rename, from struct_elt_val.
+	Add version that accepts index arg.
+	Change all uses and derived classes to match.
+	* pt-const.h (index): Delete.
+	* oct-var-ref.h, oct-var-ref.cc (value): Handle indexed structure
+	ops here too.
+
 Fri May  9 07:40:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-exp.cc (print_rhs_assign_val, symbols_of_pt_exp): New functions.

@@ -786,10 +786,13 @@ S must be a structure and NAME must be a string.")
     {
       retval = 0.0;
 
+      // XXX FIXME XXX -- should this work for all types that can do
+      // structure reference operations?
+
       if (args(0).is_map () && args(1).is_string ())
 	{
 	  string s = args(1).string_value ();
-	  octave_value tmp = args(0).struct_elt_val (s, true);
+	  octave_value tmp = args(0).do_struct_elt_index_op (s, true);
 	  retval = static_cast<double> (tmp.is_defined ());
 	}
       else

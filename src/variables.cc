@@ -339,11 +339,13 @@ generate_struct_completions (const string& text, string& prefix, string& hint)
       if (tmp->is_constant ())
 	vtmp = tmp->eval ();
 
+      // XXX FIXME XXX -- make this work for all types that can do
+      // structure reference operations.
       if (vtmp.is_map ())
 	{
 	  for (int i = 1; i < elts.length (); i++)
 	    {
-	      vtmp = vtmp.struct_elt_val (elts[i], true);
+	      vtmp = vtmp.do_struct_elt_index_op (elts[i], true);
 
 	      if (! vtmp.is_map ())
 		break;
@@ -384,11 +386,14 @@ looks_like_struct (const string& text)
       if (tmp->is_constant ())
 	vtmp = tmp->eval ();
 
+      // XXX FIXME XXX -- should this work for all types that can do
+      // structure reference operations?
+
       if (vtmp.is_map ())
 	{
 	  for (int i = 1; i < elts.length (); i++)
 	    {
-	      vtmp = vtmp.struct_elt_val (elts[i], true);
+	      vtmp = vtmp.do_struct_elt_index_op (elts[i], true);
 
 	      if (! vtmp.is_map ())
 		{

@@ -486,15 +486,15 @@ gripe_no_conversion (const string& tn1, const string& tn2)
 	 tn2.c_str (), tn1.c_str ());
 }
 
-octave_value&
+void
 octave_value::assign (assign_op, const octave_value& rhs)
 {
   // XXX FIXME XXX -- make this work for ops other than `='.
 
-  return operator = (rhs);
+  operator = (rhs);
 }
 
-octave_value&
+void
 octave_value::assign (octave_value::assign_op op,
 		      const octave_value_list& idx,
 		      const octave_value& rhs)
@@ -521,8 +521,6 @@ octave_value::assign (octave_value::assign_op op,
       error ("indexed assignment to previously undefined variables");
       error ("is only possible when resize_on_range_error is true");
     }
-
-  return *this;
 }
 
 void
@@ -562,7 +560,7 @@ octave_value::struct_elt_ref (octave_value *, const string&)
 octave_value_list
 octave_value::eval (int, const octave_value_list& idx)
 {
-  return (idx.length () > 0) ? index (idx) : *this;
+  return (idx.length () > 0) ? do_index_op (idx) : *this;
 }
 
 Octave_map

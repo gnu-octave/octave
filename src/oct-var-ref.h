@@ -81,7 +81,12 @@ public:
   octave_value value (void)
     {
       return struct_elt_name.empty ()
-	? *val : val->struct_elt_val (struct_elt_name);
+	? (idx.empty ()
+	   ? *val
+	   : val->do_index_op (idx))
+	: (idx.empty ()
+	   ? val->do_struct_elt_index_op (struct_elt_name)
+	   : val->do_struct_elt_index_op (struct_elt_name, idx));
     }
 
 private:

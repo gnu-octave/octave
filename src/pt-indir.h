@@ -90,8 +90,6 @@ public:
   octave_value_list
   eval (bool print, int nargout, const octave_value_list& args);
 
-  octave_value value (void) const;
-
   octave_variable_reference reference (void);
 
   string elt_name (void)

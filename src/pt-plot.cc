@@ -660,10 +660,11 @@ subplot::extract_plot_data (int ndim, octave_value& data)
       ColumnVector val = sp_using_clause->values (ndim);
 
       octave_value_list args;
+
       args(1) = val;
       args(0) = octave_value::magic_colon_t;
 
-      retval = data.index (args);
+      retval = data.do_index_op (args);
 
       if (error_state)
 	return octave_value ();

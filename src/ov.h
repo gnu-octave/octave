@@ -213,13 +213,13 @@ public:
   virtual octave_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
-  virtual octave_value index (const octave_value_list& idx) const
-    { return rep->index (idx); }
+  virtual octave_value do_index_op (const octave_value_list& idx) const
+    { return rep->do_index_op (idx); }
 
-  octave_value& assign (assign_op, const octave_value& rhs);
+  void assign (assign_op, const octave_value& rhs);
 
-  octave_value& assign (assign_op, const octave_value_list& idx,
-			const octave_value& rhs);
+  void assign (assign_op, const octave_value_list& idx,
+	       const octave_value& rhs);
 
   virtual void
   assign_struct_elt (assign_op, const string& elt_nm,
@@ -233,8 +233,13 @@ public:
     { return rep->index_vector (); }
 
   virtual octave_value
-  struct_elt_val (const string& nm, bool silent = false) const
-    { return rep->struct_elt_val (nm, silent); }
+  do_struct_elt_index_op (const string& nm, bool silent = false)
+    { return rep->do_struct_elt_index_op (nm, silent); }
+
+  virtual octave_value
+  do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
+			  bool silent = false)
+    { return rep->do_struct_elt_index_op (nm, idx, silent); }
 
   octave_variable_reference struct_elt_ref (const string& nm);
 

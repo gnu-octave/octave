@@ -323,7 +323,7 @@ ops.cc: $(OP_SRC) mkops
 	@$(top_srcdir)/move-if-change $@-t $@
 
 liboctave-prereq:
-	$(MAKE) -C ../../liboctave stamp-prereq
+	$(MAKE) -C ../liboctave stamp-prereq
 .PHONY: liboctave-prereq
 
 $(DEF_FILES): liboctave-prereq mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h

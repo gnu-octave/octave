@@ -66,6 +66,10 @@ std::string Vlocal_arch_lib_dir;
 std::string Vlocal_ver_arch_lib_dir;
 std::string Vfcn_file_dir;
 
+// The default path that will be searched for programs that we
+// execute (in addition to the user-specified --exec-path).
+static std::string Vdefault_exec_path;
+
 // The path that will be searched for programs that we execute.
 // (--exec-path path)
 std::string Vexec_path;
@@ -245,6 +249,16 @@ set_default_bin_dir (void)
 }
 
 static void
+set_default_default_exec_path (void)
+{
+  Vdefault_exec_path
+    = Vlocal_ver_arch_lib_dir + std::string (SEPCHAR_STR)
+    + Vlocal_arch_lib_dir + std::string (SEPCHAR_STR)
+    + Varch_lib_dir + std::string (SEPCHAR_STR)
+    + Vbin_dir;
+}
+
+static void
 set_default_exec_path (void)
 {
   std::string octave_exec_path = octave_env::getenv ("OCTAVE_EXEC_PATH");
@@ -376,6 +390,8 @@ install_defaults (void)
 
   set_default_bin_dir ();
 
+  set_default_default_exec_path ();
+
   set_default_exec_path ();
 
   set_default_path ();
@@ -438,12 +454,6 @@ exec_path (void)
     {
       Vexec_path = s;
 
-      std::string std_path
-	= Vlocal_ver_arch_lib_dir + std::string	(SEPCHAR_STR)
-	+ Vlocal_arch_lib_dir + std::string (SEPCHAR_STR)
-	+ Varch_lib_dir + std::string (SEPCHAR_STR)
-	+ Vbin_dir;
-
       std::string path;
 
       int eplen = Vexec_path.length ();
@@ -455,23 +465,43 @@ exec_path (void)
 
 	  if (prepend)
 	    {
-	      path = std_path + Vexec_path;
-
-	      if (append)
-		path.append (std_path);
+	      path = Vdefault_exec_path + Vexec_path;
 	    }
 	  else
 	    {
 	      path = Vexec_path;
 
 	      if (append)
-		path.append (std_path);
+		path.append (Vdefault_exec_path);
 	    }
 	}
       else
-	path = std_path;
+	path = Vdefault_exec_path;
 
       octave_env::putenv ("PATH", path);
+    }
+
+  return status;
+}
+
+static int
+default_exec_path (void)
+{
+  int status = 0;
+
+  std::string s = builtin_string_variable ("DEFAULT_EXEC_PATH");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("DEFAULT_EXEC_PATH");
+      status = -1;
+    }
+  else
+    {
+      Vdefault_exec_path = s;
+
+      // Now also update PATH in environment.
+      exec_path ();
     }
 
   return status;
@@ -561,7 +591,7 @@ value is used as the default.  Otherwise, @code{EDITOR} is set to\n\
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} EXEC_PATH\n\
 The variable @code{EXEC_PATH} is a colon separated list of directories\n\
-to search when executing subprograms.  Its initial value is taken from\n\
+to search when executing external programs.  Its initial value is taken from\n\
 the environment variable @code{OCTAVE_EXEC_PATH} (if it exists) or\n\
 @code{PATH}, but that value can be overridden by the command line\n\
 argument @code{--exec-path PATH}, or by setting the value of\n\
@@ -583,6 +613,15 @@ a value for @code{EXEC_PATH} explicitly, these special directories are\n\
 prepended to your shell path.\n\
 @end defvr");
 
+  DEFVAR (DEFAULT_EXEC_PATH, Vdefault_exec_path, default_exec_path,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} DEFAULT_EXEC_PATH\n\
+A colon separated list of directories in which to search when executing\n\
+external programs.  The value of this variable is automatically\n\
+substituted for leading, trailing, or doubled colons that appear in the\n\
+built-in variable @code{EXEC_PATH}.\n\
+@end defvr");
+  
   DEFVAR (LOADPATH, Vload_path, loadpath,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} LOADPATH\n\
@@ -616,9 +655,9 @@ directories that are distributed with Octave.\n\
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} DEFAULT_LOADPATH\n\
 A colon separated list of directories in which to search for function\n\
-files by default.  The value of this variable is also automatically\n\
-substituted for leading, trailing, or doubled colons that appear in the\n\
-built-in variable @code{LOADPATH}.\n\
+files.  The value of this variable is automatically substituted for\n\
+leading, trailing, or doubled colons that appear in the built-in\n\
+variable @code{LOADPATH}.\n\
 @end defvr");
   
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, imagepath,

@@ -1,3 +1,12 @@
+2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (Vdefault_exec_path): New static variable.
+	(set_default_default_exec_path): New function.
+	(install_defaults): Call it.
+	(exec_path): Use it.
+	(default_exec_path): New function.
+	(symbols_of_defaults): Add DEFVAR for DEFAULT_EXEC_PATH.
+
 2003-07-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.h.in (OCTAVE_LOCALSTARTUPFILEDIR, OCTAVE_STARTUPFILEDIR):

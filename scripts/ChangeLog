@@ -4,6 +4,8 @@
 
 	* linear-algebra/krylovb.m: Fix typo in usage message.
 
+	* general/isdefinite.m: New function.
+
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/reshape: Delete.

@@ -107,7 +107,7 @@ Return true if @var{name} is a valid variable name\n\
 
   int argc = args.length () + 1;
 
-  string_vector argv = args.make_argv ("help");
+  string_vector argv = args.make_argv ("isvarname");
 
   if (error_state)
     return retval;

@@ -1181,6 +1181,7 @@ Signed character.\n\
 \n\
 @item \"unsigned char\"\n\
 @itemx \"uchar\"\n\
+@itemx \"uint8\"\n\
 Unsigned character.\n\
 \n\
 @item \"short\"\n\
@@ -1216,11 +1217,17 @@ Double precision float.\n\
 \n\
 @item \"integer*2\"\n\
 @itemx \"int16\"\n\
-Two byte integer.\n\
+Two byte signed integer.\n\
 \n\
 @item \"integer*4\"\n\
 @itemx \"int32\"\n\
-Four byte integer.\n\
+Four byte signed integer.\n\
+\n\
+@item \"uint16\"\n\
+Two byte unsigned integer.\n\
+\n\
+@item \"uint32\"\n\
+Four byte unsigned integer.\n\
 @end table\n\
 \n\
 @noindent\n\

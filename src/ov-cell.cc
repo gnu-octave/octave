@@ -506,6 +506,46 @@ array @var{string}.\n\
   return retval;
 }
 
+DEFUN (iscellstr, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} iscellstr (@var{cell})\n\
+Return true if every element of the cell array @var{cell} is a\n\
+character string\n\
+@end deftypefn")
+{
+  octave_value retval = true;
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args (0);
+
+      if (arg.is_cell ())
+	{
+	  Cell c = args(0).cell_value ();
+
+	  if (! error_state)
+	    {
+	      for (int i = 0; i < c.length (); i++)
+		{
+		  if (! c(i).is_string ())
+		    {
+		      retval = false;
+		      break;
+		    }
+		}
+	    }
+	  else
+	    error ("iscellstr: expecting argument to be a cell");
+	}
+      else
+	retval = false;
+    }
+  else
+    print_usage ("iscellstr");
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

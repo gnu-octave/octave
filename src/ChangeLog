@@ -1,5 +1,9 @@
 2003-11-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* utils.cc (Fisvarname): Pass correct name to make_argv.
+
+	* ov-cell.cc (Fiscellstr): New function.
+
 	* ov-file.h (octave_file::all, octave_file::any,
 	octave_file::dims, octave_file::is_real_type,
 	octave_file::ist_real_scalar): New functions.

@@ -613,71 +613,132 @@ cleanup_iprocstream (void *p)
   delete (iprocstream *) p;
 }
 
+static Octave_object
+do_system (const string& cmd_str, bool return_output)
+{
+  Octave_object retval;
+
+  iprocstream *cmd = new iprocstream (cmd_str.c_str ());
+
+  add_unwind_protect (cleanup_iprocstream, cmd);
+
+  int status = 127;
+
+  if (cmd && *cmd)
+    {
+      ostrstream output_buf;
+	      
+      char ch;
+      while (cmd->get (ch))
+	output_buf.put (ch);
+
+      output_buf << ends;
+
+      status = cmd->close ();
+
+      // The value in status is as returned by waitpid.  If the
+      // process exited normally, extract the actual exit status of
+      // the command.  Otherwise, return 127 as a failure code.
+
+      if ((status & 0xff) == 0)
+	status = (status & 0xff00) >> 8;
+
+      if (return_output)
+	{
+	  char *msg = output_buf.str ();
+
+	  retval(1) = (double) status;
+	  retval(0) = msg;
+
+	  delete [] msg;
+	}
+      else
+	maybe_page_output (output_buf);
+    }
+  else
+    error ("unable to start subprocess for `%s'", cmd_str.c_str ());
+
+  run_unwind_protect ();
+
+  return retval;
+}
+
 DEFUN (system, args, nargout,
-  "system (string [, return_output]): execute shell commands")
+  "system (STRING [, RETURN_OUTPUT] [, TYPE])\n\
+\n\
+Execute the shell command specified by STRING.\n\
+\n\
+If TYPE is \"async\", the process is started in the background and the\n\
+pid of the child proces is returned immediately.  Otherwise, the\n\
+process is started, and Octave waits until it exits.  If TYPE argument\n\
+is omitted, a value of \"sync\" is assumed.\n\
+\n\
+If NARGIN == 2 (the actual value of RETURN_OUTPUT is irrelevant) and\n\
+the subprocess is started synchronously, or if system() is called with\n\
+NARGIN == 1 and NARGOUT > 0, the output from the command is returned.\n\
+Otherwise, if the subprocess is executed synchronously, it's output is\n\
+sent to Octave's standard output (possibly being passed through the\n\
+pager).")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin > 0 && nargin < 4)
     {
-      print_usage ("system");
-      return retval;
-    }
+      bool return_output = (nargout > 0 || nargin > 1);
 
-  tree_constant tc_command = args(0);
+      string cmd_str = args(0).string_value ();
 
-  string tmp = tc_command.string_value ();
+      enum exec_type { sync, async };
 
-  if (error_state)
-    {
-      error ("system: expecting string as first argument");
-    }
-  else
-    {
-      iprocstream *cmd = new iprocstream (tmp.c_str ());
+      exec_type type = sync;
 
-      add_unwind_protect (cleanup_iprocstream, cmd);
-
-      int status = 127;
-
-      if (cmd && *cmd)
+      if (! error_state)
 	{
-	  ostrstream output_buf;
-
-	  char ch;
-	  while (cmd->get (ch))
-	    output_buf.put (ch);
-
-	  output_buf << ends;
-
-	  status = cmd->close ();
-
-	  // The value in status is as returned by waitpid.  If the
-	  // process exited normally, extract the actual exit status of
-	  // the command.  Otherwise, return 127 as a failure code.
-
-	  if ((status & 0xff) == 0)
-	    status = (status & 0xff00) >> 8;
-
-	  if (nargout > 0 || nargin > 1)
+	  if (nargin > 2)
 	    {
-	      char *msg = output_buf.str ();
+	      string type_str = args(2).string_value ();
 
-	      retval(1) = (double) status;
-	      retval(0) = msg;
-
-	      delete [] msg;
+	      if (! error_state)
+		{
+		  if (type_str == "sync")
+		    type = sync;
+		  else if (type_str == "async")
+		    type = async;
+		  else
+		    error ("system: third arg must be \"sync\" or \"async\"");
+		}
+	      else
+		error ("system: third argument must be a string");
 	    }
-	  else
-	    maybe_page_output (output_buf);
 	}
       else
-	error ("unable to start subprocess for `%s'", tmp.c_str ());
+	error ("system: expecting string as first argument");
 
-      run_unwind_protect ();
+      if (! error_state)
+	{
+	  if (type == async)
+	    {
+	      pid_t pid = fork ();
+
+	      if (pid < 0) 
+		error ("system: fork failed -- can't create child process");
+	      else if (pid == 0)
+		{
+		  system (cmd_str.c_str ());
+		  exit (0);
+		  retval(0) = 0.0;
+		}
+	      else
+		retval(0) = (double) pid;
+	    }
+	  else
+	    retval = do_system (cmd_str, return_output);
+	}
     }
+  else
+    print_usage ("system");
 
   return retval;
 }

@@ -88,7 +88,7 @@ function [xopt, fopt, status, extra] = glpkmex (varargin)
   endif
 
   if (nargin > 10 && ! isfield (param, "save"))
-    param.lpsolver = varargin{11};
+    param.save = varargin{11};
   endif
 
   if (nargout == 0)

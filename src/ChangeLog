@@ -7,6 +7,8 @@
 	(glpk_fault_hook): Call message instead of writing to octave_stderr.
 	(glpk_fault_hook): Call error instead of writing to octave_stderr.
 	(glpk): Likewise.
+	Declare mark static.  Delete declaration of fperr.
+	(glpk): Delete unnecessary casts.
 
 	* DLD-FUNCTIONS/__glpk__.cc (OCTAVE_GLPK_GET_REAL_PARAM,
 	OCTAVE_GLPK_GET_INT_PARAM): New macros.

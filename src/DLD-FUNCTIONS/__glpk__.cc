@@ -111,9 +111,7 @@ int RParam[NRealP] = {
   LPX_K_TOLOBJ
 };
 
-jmp_buf mark;  //-- Address for long jump to jump to
-int fperr; //-- Global error number
-
+static jmp_buf mark;  //-- Address for long jump to jump to
 
 int
 glpk_fault_hook (void * /* info */, char *msg)
@@ -125,10 +123,9 @@ glpk_fault_hook (void * /* info */, char *msg)
 int
 glpk_print_hook (void * /* info */, char *msg)
 {
-  message (0, "%s\n", msg);
+  message (0, "%s", msg);
   return 1;
 }
-
 
 int
 glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
@@ -291,19 +288,19 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     {
       if (isMIP)
 	{
-	  *status = static_cast<double> (lpx_mip_status (lp));
+	  *status = lpx_mip_status (lp);
 	  *fmin = lpx_mip_obj_val (lp);
 	}
       else
 	{
 	  if (lpsolver == 1)
 	    {
-	      *status = static_cast<double> (lpx_get_status (lp));
+	      *status = lpx_get_status (lp);
 	      *fmin = lpx_get_obj_val (lp);
 	    }
 	  else
 	    {
-	      *status = static_cast<double> (lpx_ipt_status (lp));
+	      *status = lpx_ipt_status (lp);
 	      *fmin = lpx_ipt_obj_val (lp);
 	    }
 	}
@@ -343,8 +340,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 	    }
 	}
 
-      *time = static_cast<double> (clock () - t_start) / CLOCKS_PER_SEC;
-      *mem = static_cast<double> (lib_env_ptr () -> mem_tpeak);
+      *time = (clock () - t_start) / CLOCKS_PER_SEC;
+      *mem = (lib_env_ptr () -> mem_tpeak);
 
       lpx_delete_prob (lp);
       return 0;
@@ -352,7 +349,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
    lpx_delete_prob (lp);
 
-   *status= static_cast<double> (errnum);
+   *status = errnum;
 
    return errnum;
 }

@@ -1,3 +1,26 @@
+2004-08-31  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-int.h (ss_pow, ms_el_pow, mm_el_pow): New power 
+	functions.
+	(sm_el_pow): Return correct type.
+	(OCTAVE_SS_POW_OPS, OCTAVE_SM_POW_OPS, OCTAVE_MS_POW_OPS,
+	OCTAVE_MM_POW_OPS): New macros to define the power operator over
+	integer types.
+	(OCTAVE_SS_INT_OPS, OCTAVE_SM_INT_OPS, OCTAVE_MS_INT_OPS,
+	OCTAVE_MM_INT_OPS): Use the new macros for the power operators.
+	(OCTAVE_INSTALL_SS_INT_OPS, OCTAVE_INSTALL_MS_INT_OPS,
+	OCTAVE_INSTALL_MM_INT_OPS): Install new power functions.
+
+	* OPERATORS/op-int-conv.cc (INT_CONV_FUNCTIONS): Correct return
+	types for unsigned integer scalars and signed integer matrices.
+
+	* ov-type-conv.h (OCTAVE_TYPE_CONV_BODY3): Conversion betwen same
+	types returns the original value.
+
+	* bitfcns.cc (BITOP): Fix for mixed scalar/matrix ops. Allow 
+	octave_range as an argument, by using class_name rather than
+	type_id to test.
+
 2004-08-31  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (pr_int): Also handle bank_format.

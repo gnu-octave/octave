@@ -86,23 +86,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   if (nargin == 2) \
     { \
-      if (args(0).type_id () == octave_matrix::static_type_id () \
-	  || args(0).type_id () == octave_scalar::static_type_id () \
-	  || args(1).type_id () == octave_matrix::static_type_id () \
-	  || args(1).type_id () == octave_scalar::static_type_id ()) \
+      if ((args(0).class_name () == octave_scalar::static_class_name ()) \
+	  || (args(1).class_name () == octave_scalar::static_class_name ())) \
 	{ \
-	  bool arg0_is_int = true; \
-	  bool arg1_is_int = true; \
- \
-	  if (args(0).type_id () == octave_matrix::static_type_id () \
-	      || args(0).type_id () == octave_scalar::static_type_id ()) \
-	    arg0_is_int = false; \
- \
-	  if (args(1).type_id () == octave_matrix::static_type_id () \
-	      || args(1).type_id () == octave_scalar::static_type_id ()) \
-	    arg1_is_int = false; \
- \
-	  if (!arg0_is_int && !arg1_is_int) \
+	  bool arg0_is_int = (args(0).class_name () !=	\
+			      octave_scalar::static_class_name ()); \
+	  bool arg1_is_int = (args(1).class_name () !=	\
+			      octave_scalar::static_class_name ()); \
+	  \
+	  if (! (arg0_is_int || arg1_is_int))	\
 	    { \
 	      uint64NDArray x (args(0).array_value ()); \
 	      uint64NDArray y (args(1).array_value ());	\
@@ -185,7 +177,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 		error ("%s: invalid operand type", FNAME); \
 	    } \
 	} \
-      else if (args(0).type_id () == args(1).type_id ()) \
+      else if (args(0).class_name () == args(1).class_name ()) \
 	{ \
 	  if (args(0).type_id () == octave_uint64_matrix::static_type_id () \
 	      || args(0).type_id () == octave_uint64_scalar::static_type_id ()) \

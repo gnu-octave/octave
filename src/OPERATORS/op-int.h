@@ -20,6 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include "quit.h"
+
 #define OCTAVE_CONCAT_FN(TYPE) \
   DEFNDCATOP_FN (TYPE ## _s_s, TYPE ## _scalar, TYPE ## _scalar, TYPE ## _array, TYPE ## _array, concat) \
   DEFNDCATOP_FN (TYPE ## _s_m, TYPE ## _scalar, TYPE ## _matrix, TYPE ## _array, TYPE ## _array, concat) \
@@ -62,7 +64,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     return octave_value (v1.T1 ## _scalar_value () / d); \
   } \
  \
-  /* DEFBINOP_FN (ss_pow, T1 ## _scalar, T2 ## _scalar, xpow) */ \
+  DEFBINOP_FN (ss_pow, T1 ## _scalar, T2 ## _scalar, xpow) \
  \
   DEFBINOP (ss_ldiv, T1 ## _scalar, T2 ## _scalar) \
   { \
@@ -116,8 +118,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   DEFBINOP_OP (ss_gt, T1 ## _scalar, T2 ## _scalar, >) \
   DEFBINOP_OP (ss_ne, T1 ## _scalar, T2 ## _scalar, !=)
 
+#define OCTAVE_SS_POW_OPS(T1, T2) \
+  octave_value xpow (octave_ ## T1 a, octave_ ## T2 b) {return pow (a, b);}
+
 #define OCTAVE_SS_INT_OPS(TYPE) \
   OCTAVE_S_INT_UNOPS (TYPE) \
+  OCTAVE_SS_POW_OPS (TYPE, TYPE) \
   OCTAVE_SS_INT_ARITH_OPS (TYPE, TYPE) \
   OCTAVE_SS_INT_CMP_OPS (TYPE, TYPE) \
   OCTAVE_SS_INT_BOOL_OPS (TYPE, TYPE)
@@ -160,15 +166,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   DEFNDBINOP_OP (sm_el_mul, TS ## _scalar, TM ## _matrix, TS ## _scalar, TM ## _array, *) \
   /* DEFNDBINOP_FN (sm_el_div, TS ## _scalar, TM ## _matrix, TS ## _scalar, TM ## _array, x_el_div) */ \
-  DEFBINOP (sm_el_pow, TS ## _scalar, TM ## _matrix) \
-  { \
-    CAST_BINOP_ARGS (const octave_ ## TS ## _scalar&, const octave_ ## TM ## _matrix&); \
- \
-    double d = v1.TS ## _scalar_value (); \
- \
-    /* XXX FIXME XXX Return type wrong */ \
-    return octave_value (elem_xpow (d, v2.array_value()));	\
-  } \
+  DEFNDBINOP_FN (sm_el_pow, TS ## _scalar, TM ## _matrix, TS ## _scalar, TM ## _array, elem_xpow) \
  \
   /* DEFBINOP (sm_el_ldiv, TS ## _scalar, TM ## _matrix) */ \
   /* { */ \
@@ -194,7 +192,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   /* DEFNDBINOP_FN (sm_el_and, TS ## _scalar, TYPE ## _matrix, TS ## _scalar, TYPE ## _array, mx_el_and) */ \
   /* DEFNDBINOP_FN (sm_el_or,  TS ## _scalar, TYPE ## _matrix, TS ## _scalar, TYPE ## _array, mx_el_or) */
 
+#define OCTAVE_SM_POW_OPS(T1, T2) \
+octave_value elem_xpow (octave_ ## T1 a, T2 ## NDArray b) \
+{ \
+  T2 ## NDArray result (b.dims ()); \
+  for (int i = 0; i < b.length (); i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = pow (a, b(i)); \
+    } \
+  return octave_value (result); \
+}
+
 #define OCTAVE_SM_INT_OPS(TYPE) \
+  OCTAVE_SM_POW_OPS (TYPE, TYPE) \
   OCTAVE_SM_INT_ARITH_OPS (TYPE, TYPE) \
   OCTAVE_SM_INT_CMP_OPS (TYPE, TYPE) \
   OCTAVE_SM_INT_BOOL_OPS (TYPE, TYPE) \
@@ -256,7 +267,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   /* return octave_value (v1.TM ## _array_value () / d); */ \
   /* } */ \
  \
-  /* DEFNDBINOP_FN (ms_el_pow, TM ## _matrix, TS ## _scalar, TM ## _array, TS ## _scalar, elem_xpow) */ \
+  DEFNDBINOP_FN (ms_el_pow, TM ## _matrix, TS ## _scalar, TM ## _array, TS ## _scalar, elem_xpow) \
  \
   /* DEFBINOP (el_ldiv, TM ## _matrix, TS ## _scalar) */ \
   /* { */ \
@@ -281,7 +292,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_MS_INT_ASSIGN_OPS(TM, TS) \
   DEFNDASSIGNOP_FN (ms_assign, TM ## _matrix, TS ## _scalar, TS ## _array, assign)
 
+#define OCTAVE_MS_POW_OPS(T1, T2) \
+octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
+{ \
+  T1 ## NDArray result (a.dims ()); \
+  for (int i = 0; i < a.length (); i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = pow (a(i), b);		\
+    } \
+  return octave_value (result); \
+}
+
 #define OCTAVE_MS_INT_OPS(TYPE) \
+  OCTAVE_MS_POW_OPS (TYPE, TYPE) \
   OCTAVE_MS_INT_ARITH_OPS (TYPE, TYPE) \
   OCTAVE_MS_INT_CMP_OPS (TYPE, TYPE) \
   OCTAVE_MS_INT_BOOL_OPS (TYPE, TYPE) \
@@ -330,7 +354,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   DEFNDBINOP_FN (mm_el_div, T1 ## _matrix, T2 ## _matrix, T1 ## _array, T2 ## _array, quotient) \
  \
-  /* DEFNDBINOP_FN (mm_el_pow, T1 ## _matrix, T2 ## _matrix, T1 ## _array, T2 ## _array, elem_xpow) */ \
+  DEFNDBINOP_FN (mm_el_pow, T1 ## _matrix, T2 ## _matrix, T1 ## _array, T2 ## _array, elem_xpow) \
  \
   /* DEFBINOP (mm_el_ldiv, T1 ## _matrix, T2 ## _matrix) */ \
   /* { */ \
@@ -354,8 +378,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_MM_INT_ASSIGN_OPS(TYPE) \
   DEFNDASSIGNOP_FN (mm_assign, TYPE ## _matrix, TYPE ## _matrix, TYPE ## _array, assign)
 
+#define OCTAVE_MM_POW_OPS(T1, T2) \
+octave_value elem_xpow (T1 ## NDArray a, T2 ## NDArray  b) \
+{ \
+  dim_vector a_dims = a.dims (); \
+  dim_vector b_dims = b.dims (); \
+  if (a_dims != b_dims) \
+    { \
+      gripe_nonconformant ("operator .^", a_dims, b_dims); \
+      return octave_value (); \
+    } \
+  T1 ## NDArray result (a_dims); \
+  for (int i = 0; i < a.length (); i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = pow (a(i), b(i)); \
+    } \
+  return octave_value (result); \
+}
+
 #define OCTAVE_MM_INT_OPS(TYPE) \
   OCTAVE_M_INT_UNOPS (TYPE) \
+  OCTAVE_MM_POW_OPS (TYPE, TYPE) \
   OCTAVE_MM_INT_ARITH_OPS (TYPE, TYPE) \
   OCTAVE_MM_INT_CMP_OPS (TYPE, TYPE) \
   OCTAVE_MM_INT_BOOL_OPS (TYPE, TYPE) \
@@ -387,7 +431,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   INSTALL_BINOP (op_sub, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_sub); \
   INSTALL_BINOP (op_mul, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_mul); \
   INSTALL_BINOP (op_div, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_div); \
-  /* INSTALL_BINOP (op_pow, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_pow); */ \
+  INSTALL_BINOP (op_pow, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_pow); \
   INSTALL_BINOP (op_ldiv, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_ldiv); \
   INSTALL_BINOP (op_el_mul, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_el_mul); \
   INSTALL_BINOP (op_el_div, octave_ ## T1 ## _scalar, octave_ ## T2 ## _scalar, ss_el_div); \
@@ -464,7 +508,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   INSTALL_BINOP (op_el_mul, octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, ms_el_mul); \
   /* INSTALL_BINOP (op_el_div, octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, ms_el_div); */ \
-  /* INSTALL_BINOP (op_el_pow, octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, ms_el_pow); */ \
+  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, ms_el_pow); \
   /* INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## _matrix, octave_ ## T2 ## _scalar, ms_el_ldiv); */
 
 #define OCTAVE_INSTALL_MS_INT_CMP_OPS(T1, T2) \
@@ -513,7 +557,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   /* INSTALL_BINOP (op_ldiv, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_ldiv); */ \
   INSTALL_BINOP (op_el_mul, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_el_mul); \
   INSTALL_BINOP (op_el_div, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_el_div); \
-  /* INSTALL_BINOP (op_el_pow, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_el_pow); */ \
+  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_el_pow); \
   /* INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## _matrix, octave_ ## T2 ## _matrix, mm_el_ldiv); */
 
 #define OCTAVE_INSTALL_MM_INT_CMP_OPS(T1, T2) \

@@ -61,6 +61,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	      gripe_invalid_conversion (arg_tname, result_tname); \
 	    } \
 	} \
+      else \
+        retval = arg; \
     } \
   else \
     print_usage (#NAME); \

@@ -83,15 +83,15 @@ DEFCONVFN (range_to_uint64, range, uint64)
   DEFCONVFN2 (tfrom ## _scalar_to_int32, tfrom, scalar, int32) \
   DEFCONVFN2 (tfrom ## _scalar_to_int64, tfrom, scalar, int64) \
  \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint8, tfrom, scalar, int8) \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint16, tfrom, scalar, int16) \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint32, tfrom, scalar, int32) \
-  DEFCONVFN2 (tfrom ## _scalar_to_uint64, tfrom, scalar, int64) \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint8, tfrom, scalar, uint8) \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint16, tfrom, scalar, uint16) \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint32, tfrom, scalar, uint32) \
+  DEFCONVFN2 (tfrom ## _scalar_to_uint64, tfrom, scalar, uint64) \
  \
-  DEFCONVFN2 (tfrom ## _matrix_to_int8, tfrom, matrix, uint8) \
-  DEFCONVFN2 (tfrom ## _matrix_to_int16, tfrom, matrix, uint16) \
-  DEFCONVFN2 (tfrom ## _matrix_to_int32, tfrom, matrix, uint32) \
-  DEFCONVFN2 (tfrom ## _matrix_to_int64, tfrom, matrix, uint64) \
+  DEFCONVFN2 (tfrom ## _matrix_to_int8, tfrom, matrix, int8) \
+  DEFCONVFN2 (tfrom ## _matrix_to_int16, tfrom, matrix, int16) \
+  DEFCONVFN2 (tfrom ## _matrix_to_int32, tfrom, matrix, int32) \
+  DEFCONVFN2 (tfrom ## _matrix_to_int64, tfrom, matrix, int64) \
  \
   DEFCONVFN2 (tfrom ## _matrix_to_uint8, tfrom, matrix, uint8) \
   DEFCONVFN2 (tfrom ## _matrix_to_uint16, tfrom, matrix, uint16) \

@@ -267,6 +267,36 @@ public:
     return *this;
   }
 
+  octave_int<T>& operator *= (const octave_int<T>& x)
+  {
+    double t = static_cast<double> (value ());
+    double tx = static_cast<double> (x.value ());
+    ival = OCTAVE_INT_FIT_TO_RANGE (t * tx, T);
+    return *this;
+  }
+
+  octave_int<T>& operator /= (const octave_int<T>& x)
+  {
+    double t = static_cast<double> (value ());
+    double tx = static_cast<double> (x.value ());
+    ival = OCTAVE_INT_FIT_TO_RANGE (t / tx, T);
+    return *this;
+  }
+
+  template <class T2>
+  octave_int<T>& operator <<= (const T2& x)
+  {
+    ival = ((ival << x) > std::numeric_limits<T>::max ()) ? 0 : (ival << x);
+    return *this;
+  }
+
+  template <class T2>
+  octave_int<T>& operator >>= (const T2& x)
+  {
+    ival >>= x;
+    return *this;
+  }
+
   octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
   octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
 
@@ -278,6 +308,43 @@ private:
 
   T ival;
 };
+
+template <class T>
+T
+pow (const T& a, const T& b)
+{
+  T retval;
+
+  T zero = T (0);
+  T one = T (1);
+
+  if (b == zero)
+    retval = one;
+  else if (b < zero)
+    retval = zero;
+  else
+    {
+      T a_val = a;
+      T b_val = b;
+
+      retval = a;
+
+      b_val -= 1;
+
+      while (b_val)
+	{
+	  if (b_val & one)
+	    retval = retval * a_val;
+
+	  b_val = b_val >> 1;
+
+	  if (b_val > zero)
+	    a_val = a_val * a_val;
+	}
+    }
+
+  return retval;
+}
 
 template <class T>
 std::ostream&
@@ -337,17 +404,21 @@ OCTAVE_INT_BITCMP_OP (&)
 OCTAVE_INT_BITCMP_OP (|)
 OCTAVE_INT_BITCMP_OP (^)
 
-#define OCTAVE_INT_BITSHIFT_OP(OP) \
- \
-  template <class T1, class T2> \
-  octave_int<T1> \
-  operator OP (const octave_int<T1>& x, const T2& y) \
-  { \
-    return ((x.value () OP y) > std::numeric_limits<T1>::max ()) ? 0 : (x.value () OP y); \
-  }
+template <class T1, class T2>
+octave_int<T1>
+operator << (const octave_int<T1>& x, const T2& y)
+{
+  T1 retval = x;
+  return retval <<= y;
+}
 
-OCTAVE_INT_BITSHIFT_OP (<<)
-OCTAVE_INT_BITSHIFT_OP (>>)
+template <class T1, class T2>
+octave_int<T1>
+operator >> (const octave_int<T1>& x, const T2& y)
+{
+  T1 retval = x;
+  return retval >>= y;
+}
 
 template <class T>
 octave_int<T>
@@ -355,9 +426,9 @@ bitshift (const octave_int<T>& a, int n,
 	  const octave_int<T>& mask = std::numeric_limits<T>::max ())
 {
   if (n > 0)
-    return (a.value () << n) & mask.value ();
+    return (a << n) & mask;
   else if (n < 0)
-    return (a.value () >> -n) & mask.value ();
+    return (a >> -n) & mask;
   else
     return a;
 }

@@ -1,5 +1,26 @@
 2004-08-31  John W. Eaton  <jwe@octave.org>
 
+	* oct-inttypes.h (pow): Args now const reference.
+	(octave_int<T>::operator *=, octave_int<T>::operator /=,
+	octave_int<T>::operator <<=, octave_int<T>::operator >>=):
+	New member functions.
+	(OCTAVE_INT_BITSHIFT_OP): Delete macro.
+	(operator >> (const octave_int<T1>& x, const T2& y)):
+	Define in terms of >>=.
+	(operator << (const octave_int<T1>& x, const T2& y)):
+	Define in terms of <<=.
+	(bitshift): Operate on octave_int<T> objects, not the values, so
+	we get proper saturation properties.
+
+2004-08-31  David Bateman  <dbateman@free.fr>
+
+	* oct-inttypes.h (pow (constT, T)): New template.
+
+	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, uint8NDArray.cc, 
+	uint16NDArray.cc, uint32NDArray.cc: Instantiate power function.
+
+2004-08-31  John W. Eaton  <jwe@octave.org>
+
 	* oct-inttypes.h (octave_int::byte_size): New function.
 
 2004-08-31  John W. Eaton  <jwe@octave.org>

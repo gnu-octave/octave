@@ -291,6 +291,15 @@ octave_base_value::matrix_value (bool) const
   return retval;
 }
 
+ArrayN<double>
+octave_base_value::double_nd_array_value (bool) const
+{
+  ArrayN<double> retval;
+  gripe_wrong_type_arg ("octave_base_value::double_nd_array_value()",
+			type_name ());
+  return retval;
+}
+
 Complex
 octave_base_value::complex_value (bool) const
 {

@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <list>
 
+#include "ArrayN.h"
 #include "Range.h"
 #include "idx-vector.h"
 #include "mx-base.h"
@@ -336,6 +337,9 @@ public:
   virtual bool is_real_matrix (void) const
     { return rep->is_real_matrix (); }
 
+  virtual bool is_real_nd_array (void) const
+    { return rep->is_real_nd_array (); }
+
   virtual bool is_complex_scalar (void) const
     { return rep->is_complex_scalar (); }
 
@@ -470,6 +474,9 @@ public:
 
   virtual Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
+
+  virtual ArrayN<double> double_nd_array_value (bool frc_str_conv = false) const
+    { return rep->double_nd_array_value (frc_str_conv); }
 
   virtual Complex complex_value (bool frc_str_conv = false) const
     { return rep->complex_value (frc_str_conv); }

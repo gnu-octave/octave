@@ -106,6 +106,8 @@ public:
 
   bool is_real_matrix (void) const { return false; }
 
+  bool is_real_nd_array (void) const { return false; }
+
   bool is_complex_scalar (void) const { return false; }
 
   bool is_complex_matrix (void) const { return false; }
@@ -188,6 +190,8 @@ public:
   Cell cell_value (void) const;
 
   Matrix matrix_value (bool = false) const;
+
+  ArrayN<double> double_nd_array_value (bool frc_str_conv = false) const;
 
   Complex complex_value (bool = false) const;
 

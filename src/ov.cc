@@ -1221,6 +1221,11 @@ octave_value::numeric_assign (const std::string& type,
 		{
 		  retval = tmp->subsasgn (type, idx, rhs);
 
+		  // The assignment may have converted to a type that
+		  // is wider than necessary.
+
+		  retval.maybe_mutate ();
+
 		  done = (! error_state);
 		}
 	      else
@@ -1746,6 +1751,7 @@ install_types (void)
   octave_scalar::register_type ();
   octave_complex::register_type ();
   octave_matrix::register_type ();
+  octave_double_nd_array::register_type ();
   octave_complex_matrix::register_type ();
   octave_range::register_type ();
   octave_bool::register_type ();

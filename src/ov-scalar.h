@@ -89,6 +89,9 @@ public:
   Matrix matrix_value (bool = false) const
     { return Matrix (1, 1, scalar); }
 
+  ArrayN<double> double_nd_array_value (bool = false) const
+    { return ArrayN<double> (Array<int> (1, 1), scalar); }
+
   Complex complex_value (bool = false) const { return scalar; }
 
   ComplexMatrix complex_matrix_value (bool = false) const

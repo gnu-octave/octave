@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <string>
 
-#include "ArrayN.h"
+#include "mx-base.h"
 #include "oct-alloc.h"
 
 #include "error.h"
@@ -60,15 +60,21 @@ public:
 
   ~octave_double_nd_array (void) { }
 
-  octave_value *clone (void) const { return new octave_double_nd_array (*this); }
-  octave_value *empty_clone (void) const { return new octave_double_nd_array (); }
+  octave_value *clone (void) const
+    { return new octave_double_nd_array (*this); }
 
-#if 0
+  octave_value *empty_clone (void) const
+    { return new octave_double_nd_array (); }
+
   octave_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const Matrix& rhs);
+  void assign (const octave_value_list& idx, const ArrayN<double>& rhs);
 
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
+  // Need to implement idx_vector (ArrayN<double>) for this one.
+  //
+  // idx_vector index_vector (void) const { return idx_vector (array); }
+
+  bool is_real_nd_array (void) const { return true; }
 
   bool is_real_matrix (void) const { return false; }
 
@@ -77,6 +83,8 @@ public:
   bool valid_as_scalar_index (void) const;
 
   double double_value (bool = false) const;
+
+  ArrayN<double> double_nd_array_value (bool = false) const { return array; }
 
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
@@ -87,7 +95,8 @@ public:
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (matrix_value ()); }
-#endif
+
+  Matrix convert_slice_to_matrix (const Array<int>& ra_idx) const;
 
 private:
 

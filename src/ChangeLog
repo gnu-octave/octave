@@ -1,3 +1,34 @@
+2003-09-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::double_nd_array_value): New function.
+	(octave_value::is_real_nd_array): New function.
+
+	* ov-base.cc (octave_base_value::double_nd_array_value): New function.
+	* ov-base.h: Provide decl.
+	(octave_base_value::is_real_nd_array): New function.
+
+2003-09-09  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* ov-re-mat.h (octave_matrix::double_nd_array_value): New function.
+	* ov-scalar.h (octave_scalar::double_nd_array_value): New function.
+
+	* ov-re-nd-array.cc (octave_double_nd_array::assign): New function.
+	(octave_double_nd_array::try_narrowing_conversion): Likewise.
+	(octave_double_nd_array::valid_as_scalar_index): Likewise.
+	(octave_double_nd_array::double_value): Likewise.
+	(octave_double_nd_array::matrix_value): Likewise.
+	(octave_double_nd_array::complex_value): Likewise.
+	(octave_double_nd_array::convert_slice_to_matrix): Likewise.
+	* ov-re-nd-array.h: Provide decls.
+	(octave_double_nd_array::is_real_nd_array): New function.
+	(octave_double_nd_array::double_nd_array_value): New function.
+	(octave_double_nd_array::double_nd_array_value): New function.
+
+	* OPERATORS/op-m-nd.cc, OPERATORS/op-nd-m.cc,
+	OPERATORS/op-nd-nd.cc, OPERATORS/op-nd-s.cc, OPERATORS/op-s-nd.cc:
+	New files.
+	* Makefile.in (OP_XSRC): Add them to the list.
+
 2003-09-08  D.  <dbateman@free.fr>
 
 	* OPERATORS/op-cs-s.cc (DEFBINOP): First arg is complex, second is

@@ -60,6 +60,17 @@ template int assign (Array2<double>&, const Array2<char>&, const double&);
 #include "ArrayN.cc"
 
 template class ArrayN<double>;
+
+template int assign (ArrayN<double>&, const ArrayN<double>&);
+template int assign (ArrayN<double>&, const ArrayN<int>&);
+template int assign (ArrayN<double>&, const ArrayN<short>&);
+template int assign (ArrayN<double>&, const ArrayN<char>&);
+
+template int assign (ArrayN<double>&, const ArrayN<double>&, const double&);
+template int assign (ArrayN<double>&, const ArrayN<int>&, const double&);
+template int assign (ArrayN<double>&, const ArrayN<short>&, const double&);
+template int assign (ArrayN<double>&, const ArrayN<char>&, const double&);
+
 template std::ostream& operator << (std::ostream&, const ArrayN<double>&);
 
 #include "DiagArray2.h"

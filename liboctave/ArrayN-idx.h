@@ -22,6 +22,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "Array-flags.h"
+#include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
 

@@ -1,3 +1,7 @@
+2003-09-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-d.cc: Instantiate assign functions.
+
 2003-09-09  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* ArrayN-idx.h (vector_equivalent, equal_arrays): New functions.

@@ -98,9 +98,11 @@ OP_XSRC := op-b-b.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
 	op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
 	op-cs-s.cc op-fil-b.cc op-fil-bm.cc op-fil-cm.cc \
 	op-fil-cs.cc op-fil-m.cc op-fil-s.cc op-fil-lis.cc \
-	op-fil-rec.cc op-fil-str.cc op-list.cc op-m-cm.cc op-m-cs.cc \
-	op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc op-s-cs.cc op-s-m.cc \
-	op-s-s.cc op-str-m.cc op-str-s.cc op-str-str.cc
+	op-fil-rec.cc op-fil-str.cc op-list.cc op-m-cm.cc \
+	op-m-cs.cc op-m-m.cc op-m-nd.cc op-m-s.cc op-nd-m.cc \
+	op-nd-nd.cc op-nd-s.cc op-range.cc op-s-cm.cc \
+	op-s-cs.cc op-s-m.cc op-s-nd.cc op-s-s.cc op-str-m.cc \
+	op-str-s.cc op-str-str.cc
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
 

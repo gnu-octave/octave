@@ -366,13 +366,13 @@ install-lib:
 	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLEXT_VER); \
-	  $(INSTALL_PROGRAM) liboctinterp.$(SHLLIB) \
+	  $(INSTALL) liboctinterp.$(SHLLIB) \
 	    $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB_VER); \
 	  rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
 	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
-	    $(INSTALL) \
+	    $(INSTALL_PROGRAM) \
 	      liboctinterp.$(SHLBIN) $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
 	  fi; \
 	fi

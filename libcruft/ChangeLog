@@ -1,7 +1,7 @@
 2003-07-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-lib): Use $(INSTALL), not
-	$(INSTALL_PROGRAM) for $(SHLBIN) files.
+	$(INSTALL_PROGRAM) for $(SHLLIB) files.
 
 2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -229,14 +229,14 @@ ArrayN<T>::resize (const Array<int>& dims)
   if (no_change)
     return;
 
+  int old_len = length ();
+
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
   Array<T>::rep = new typename Array<T>::ArrayRep (get_size (dims));
 
   Array<int> old_dimensions = dimensions;
-
-  int old_len = length ();
 
   dimensions = dims;
 
@@ -287,13 +287,13 @@ ArrayN<T>::resize (const Array<int>& dims, const T& val)
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
   const T *old_data = data ();
 
+  int old_len = length ();
+
   int len = get_size (dims);
 
   Array<T>::rep = new typename Array<T>::ArrayRep (len);
 
   Array<int> old_dimensions = dimensions;
-
-  int old_len = length ();
 
   dimensions = dims;
 
@@ -354,22 +354,110 @@ template <class T>
 std::ostream&
 operator << (std::ostream& os, const ArrayN<T>& a)
 {
-  Array<int> dims = a.dimensions;
+  Array<int> a_dims = a.dimensions;
 
-  int n_dims = dims.length ();
+  int n_dims = a_dims.length ();
 
-  os << n_dims << "-dimensional array (";
+  os << n_dims << "-dimensional array";
 
-  for (int i = 0; i < n_dims - 1; i++)
-    os << dims(i) << "x";
-  os << dims(n_dims-1) << ")\n\n";
+  if (n_dims)
+    {
+      os << " (";
 
-  os << "data:\n";
+      for (int i = 0; i < n_dims - 1; i++)
+	os << a_dims(i) << "x";
 
-  int n = ArrayN<T>::get_size (dims);
+      os << a_dims(n_dims-1) << ")";
+    }
 
-  //  for (int i = 0; i < n; i++)
-  //    os << a.elem (i) << "\n";
+  os <<"\n\n";
+
+  if (n_dims)
+    {
+      os << "data:";
+
+      Array<int> ra_idx (n_dims,0);
+
+      // Number of times the first 2d-array is to be displayed.
+
+      int m = 1;
+      for (int i = 2; i < n_dims; i++)
+	m *= a_dims(i);
+
+      if (m == 1)
+        {
+          int rows = 0;
+          int cols = 0;
+
+          switch (n_dims)
+            {
+	    case 2:
+	      rows = a_dims(0);
+	      cols = a_dims(1);
+
+	      for (int j = 0; j < rows; j++)
+		{
+		  ra_idx(0) = j;
+		  for (int k = 0; k < cols; k++)
+		    {
+		      ra_idx(1) = k;
+		      os << " " << a.elem(ra_idx);
+		    }
+		  os << "\n";
+		}
+	      break;
+
+	    case 1:
+	      rows = a_dims(0);
+
+	      for (int k = 0; k < rows; k++)
+		{
+		  ra_idx(0) = k;
+		  os << " " << a.elem(ra_idx);
+		}
+	      break;
+
+	    default:
+	      (*current_liboctave_error_handler)
+		("std::operator <<: problems with dimensions (= 0)!");
+	    }
+
+          os << "\n";
+        }
+      else
+        {
+          int rows = a_dims(0);
+          int cols = a_dims(1);
+
+          for (int i = 0; i < m; i++)
+            {
+              os << "\n(:,:,";
+
+              for (int j = 2; j < n_dims - 1; j++)
+		os << ra_idx(j) + 1 << ",";
+
+	      os << ra_idx(n_dims - 1) + 1 << ") = \n";
+
+	      for (int j = 0; j < rows; j++)
+	        {
+	          ra_idx(0) = j;
+
+	          for (int k = 0; k < cols; k++)
+	            {
+		      ra_idx(1) = k;
+		      os << " " << a.elem(ra_idx);
+		    }
+
+	          os << "\n";
+	        }
+
+	      os << "\n";
+
+	      if (i != m - 1)
+		increment_index (ra_idx, a_dims, 2);
+            }
+        }
+    }
 
   return os;
 }

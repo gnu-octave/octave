@@ -1,7 +1,18 @@
+2003-07-29  Heine Kolltveit <kolltvei@idi.ntnu.no>
+
+	* ArrayN.cc (operator <<): Improve output readability.
+	(increment_index (Array<int>&, Array<int>&, int)) New function.
+
+2003-07-29  Petter Risholm	<risholm@stud.ntnu.no>
+
+	* ArrayN.cc (ArrayN<T>::resize (const Array<int>&, const T&)):
+	* ArrayN.cc (ArrayN<T>::resize (const Array<int>&)):
+	Initialize old_len before changing size.
+
 2003-07-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-lib): Use $(INSTALL), not
-	$(INSTALL_PROGRAM) for $(SHLBIN) files.
+	$(INSTALL_PROGRAM) for $(SHLLIB) files.
 
 2003-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

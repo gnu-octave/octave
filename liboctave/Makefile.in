@@ -247,13 +247,13 @@ install-lib:
 	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB_VER); \
-	  $(INSTALL_PROGRAM) \
+	  $(INSTALL \
 	    liboctave.$(SHLLIB) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB_VER); \
 	  rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
 	  $(LN_S) liboctave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
-	    $(INSTALL) \
+	    $(INSTALL_PROGRAM) \
 	      liboctave.$(SHLBIN) $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
 	  fi; \
 	fi

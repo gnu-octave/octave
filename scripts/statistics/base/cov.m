@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cov (@var{x}, @var{y})
 ## If each row of @var{x} and @var{y} is an observation and each column is
-## a variable, the (@var{i},@var{j})-th entry of
+## a variable, the (@var{i}, @var{j})-th entry of
 ## @code{cov (@var{x}, @var{y})} is the covariance between the @var{i}-th
 ## variable in @var{x} and the @var{j}-th variable in @var{y}.  If called
 ## with one argument, compute @code{cov (@var{x}, @var{x})}.

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} isdefinite (@var{x},@var{tol})
+## @deftypefn {Function File} {} isdefinite (@var{x}, @var{tol})
 ## Return 1 if @var{x} is symmetric positive definite within the
 ## tolerance specified by @var{tol} or 0 if @var{x} is symmetric
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}

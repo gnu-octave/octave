@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} moment (@var{x}, @var{p}, @var{opt},@var{dim})
+## @deftypefn {Function File} {} moment (@var{x}, @var{p}, @var{opt}, @var{dim})
 ## If @var{x} is a vector, compute the @var{p}-th moment of @var{x}.
 ##
 ## If @var{x} is a matrix, return the row vector containing the

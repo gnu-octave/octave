@@ -23,7 +23,7 @@
 ##
 ## Default: tol = 10*norm(a,'fro')*eps
 ##
-## Returns 1 if the system @var{sys} or the pair (@var{a},@var{c}) is
+## Returns 1 if the system @var{sys} or the pair (@var{a}, @var{c}) is
 ## observable, 0 if not.
 ##
 ## @strong{See} @code{is_controllable} for detailed description of arguments

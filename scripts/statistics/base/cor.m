@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cor (@var{x}, @var{y})
-## The (@var{i},@var{j})-th entry of @code{cor (@var{x}, @var{y})} is
+## The (@var{i}, @var{j})-th entry of @code{cor (@var{x}, @var{y})} is
 ## the correlation between the @var{i}-th variable in @var{x} and the
 ## @var{j}-th variable in @var{y}.
 ##

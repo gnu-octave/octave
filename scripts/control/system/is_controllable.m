@@ -36,7 +36,7 @@
 ## @table @var
 ## @item retval
 ## Logical flag; returns true (1) if the system @var{sys} or the
-## pair (@var{a},@var{b}) is controllable, whichever was passed as input
+## pair (@var{a}, @var{b}) is controllable, whichever was passed as input
 ## arguments.
 ## @item U
 ##  U is an orthogonal basis of the controllable subspace.

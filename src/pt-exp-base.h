@@ -514,11 +514,10 @@ private:
   char *fcn_name;
   time_t t_parsed;
   int system_fcn_file;
-  int varargs_ok;
   int num_named_args;
   Octave_object args_passed;
   int num_args_passed;
-  int curr_arg_number;
+  int curr_va_arg_number;
 };
 
 /*

@@ -1155,8 +1155,8 @@ tree_identifier::eval (int print)
 	{
 	  int nargout = maybe_do_ans_assign ? 0 : 1;
 
-//	  int nargin = (ans->is_constant ()) ? 0 : 1;
-	  Octave_object tmp_args;
+	  int nargin = (ans->is_constant ()) ? 0 : 1;
+	  Octave_object tmp_args (nargin);
 	  Octave_object tmp = ans->eval (0, nargout, tmp_args);
 
 	  if (tmp.length () > 0)
@@ -1286,10 +1286,9 @@ tree_function::tree_function (void)
   fcn_name = (char *) NULL;
   t_parsed = 0;
   system_fcn_file = 0;
-  varargs_ok = 0;
   num_named_args = 0;
   num_args_passed = 0;
-  curr_arg_number = 0;
+  curr_va_arg_number = 0;
 }
 
 tree_function::tree_function (tree *cl, symbol_table *st)
@@ -1303,10 +1302,9 @@ tree_function::tree_function (tree *cl, symbol_table *st)
   fcn_name = (char *) NULL;
   t_parsed = 0;
   system_fcn_file = 0;
-  varargs_ok = 0;
   num_named_args = 0;
   num_args_passed = 0;
-  curr_arg_number = 0;
+  curr_va_arg_number = 0;
 }
 
 tree_function::~tree_function (void)
@@ -1324,11 +1322,14 @@ tree_function *
 tree_function::define_param_list (tree_parameter_list *t)
 {
   param_list = t;
-  varargs_ok = (param_list != (tree_parameter_list *) NULL
-		&& param_list->takes_varargs ());
 
-  if (varargs_ok)
-    num_named_args = param_list->length ();
+  if (param_list != (tree_parameter_list *) NULL)
+    {
+      int len = param_list->length ();
+      int va_only = param_list->varargs_only ();
+      num_named_args = va_only ? len - 1 : len;
+      curr_va_arg_number = num_named_args;
+    }
 
   return this;
 }
@@ -1400,13 +1401,14 @@ tree_function::is_system_fcn_file (void) const
 int
 tree_function::takes_varargs (void) const
 {
-  return varargs_ok;
+  return (param_list != (tree_parameter_list *) NULL
+	  && param_list->takes_varargs ());
 }
 
 void
 tree_function::octave_va_start (void)
 {
-  curr_arg_number = num_named_args + 1;
+  curr_va_arg_number = num_named_args;
 }
 
 tree_constant
@@ -1414,14 +1416,11 @@ tree_function::octave_va_arg (void)
 {
   tree_constant retval;
 
-  if (curr_arg_number < num_args_passed)
-    {
-      retval = args_passed (curr_arg_number);
-      curr_arg_number++;
-    }
+  if (curr_va_arg_number < num_args_passed)
+    retval = args_passed (++curr_va_arg_number);
   else
     ::error ("error getting arg number %d -- only %d provided",
-	     curr_arg_number, num_args_passed-1);
+	     curr_va_arg_number, num_args_passed-1);
 
   return retval;
 }
@@ -1447,7 +1446,7 @@ tree_function::eval (int print)
   if (error_state || cmd_list == NULL_TREE)
     return retval;
 
-  Octave_object tmp_args;
+  Octave_object tmp_args (1);
   Octave_object tmp = eval (print, 1, tmp_args);
 
   if (! error_state && tmp.length () > 0)
@@ -1515,7 +1514,7 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
   num_args_passed = nargin;
 
   unwind_protect_int (num_named_args);
-  unwind_protect_int (curr_arg_number);
+  unwind_protect_int (curr_va_arg_number);
 
   if (param_list != (tree_parameter_list *) NULL
       && ! param_list->varargs_only ())

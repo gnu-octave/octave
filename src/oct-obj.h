@@ -28,7 +28,47 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class tree_constant;
 
-typedef Array<tree_constant> Octave_object;
+class Octave_object : public Array<tree_constant>
+{
+public:
+
+  Octave_object (void) : Array<tree_constant> () { }
+  Octave_object (int n) : Array<tree_constant> (n) { }
+  Octave_object (const Octave_object& obj) : Array<tree_constant> (obj) { }
+
+  Octave_object& operator = (const Octave_object& obj)
+    {
+      Array<tree_constant>::operator = (obj);
+      return *this;
+    }
+
+#if 0
+// For now, translate the index, since it will be somewhat difficult
+// to fix this without some major (and relatively risky) surgery.
+
+  tree_constant& elem (int n)
+    { return Array<tree_constant>::elem (n - 1); }
+
+  tree_constant& checkelem (int n);
+    { return Array<tree_constant>::checkelem (n - 1); }
+
+  tree_constant& operator () (int n);
+    { return Array<tree_constant>::operator () (n - 1); }
+
+// No checking.
+  tree_constant& xelem (int n);
+    { return Array<tree_constant>::xelem (n - 1); }
+
+  tree_constant elem (int n) const;
+    { return Array<tree_constant>::elem (n - 1); }
+
+  tree_constant checkelem (int n) const;
+    { return Array<tree_constant>::checkelem (n - 1); }
+
+  tree_constant operator () (int n) const;
+    { return Array<tree_constant>::operator () (n - 1); }
+#endif
+};
 
 #endif
 

@@ -1,0 +1,59 @@
+%{
+
+enum octave_kw_id
+{
+  all_va_args_kw,
+  break_kw,
+  catch_kw,
+  continue_kw,
+  else_kw,
+  elseif_kw,
+  end_kw,
+  end_try_catch_kw,
+  end_unwind_protect_kw,
+  endfor_kw,
+  endfunction_kw,
+  endif_kw,
+  endwhile_kw,
+  for_kw,
+  function_kw,
+  global_kw,
+  gplot_kw,
+  gsplot_kw,
+  if_kw,
+  replot_kw,
+  return_kw,
+  try_kw,
+  unwind_protect_kw,
+  unwind_protect_cleanup_kw,
+  while_kw
+};
+
+%}
+struct octave_kw { char *name; int tok; octave_kw_id kw_id; };
+%%
+all_va_args, ALL_VA_ARGS, all_va_args_kw
+break, BREAK, break_kw
+catch, CATCH, catch_kw
+continue, CONTINUE, continue_kw
+else, ELSE, else_kw
+elseif, ELSEIF, elseif_kw
+end, END, end_kw
+end_try_catch, END, end_try_catch_kw
+end_unwind_protect, END, end_unwind_protect_kw
+endfor, END, endfor_kw
+endfunction, END, endfunction_kw
+endif, END, endif_kw
+endwhile, END, endwhile_kw
+for, FOR, for_kw
+function, FCN, function_kw
+global, GLOBAL, global_kw
+gplot, PLOT, gplot_kw
+gsplot, PLOT, gsplot_kw
+if, IF, if_kw
+replot, PLOT, replot_kw
+return, FUNC_RET, return_kw
+try, TRY, try_kw
+unwind_protect, UNWIND, unwind_protect_kw
+unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
+while, WHILE, while_kw

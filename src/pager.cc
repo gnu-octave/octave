@@ -239,9 +239,9 @@ octave_pager_buf::sync (void)
 	{
 	  do_sync (buf, len, bypass_pager);
 
-	  seekoff (0, std::ios::beg);
-
 	  flush_current_contents_to_diary ();
+
+	  seekoff (0, std::ios::beg);
 	}
     }
 
@@ -257,7 +257,7 @@ octave_pager_buf::flush_current_contents_to_diary (void)
 
   octave_diary.write (buf, len);
 
-  diary_skip = 0;  
+  diary_skip = 0;
 }
 
 void
@@ -271,10 +271,12 @@ octave_diary_buf::sync (void)
 {
   if (write_to_diary_file && external_diary_file)
     {
-      int len = pptr () - eback ();
+      char *buf = eback ();
+
+      int len = pptr () - buf;
 
       if (len > 0)
-	external_diary_file.write (eback (), len);
+	external_diary_file.write (buf, len);
     }
 
   seekoff (0, std::ios::beg);

@@ -1,3 +1,9 @@
+2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.cc (octave_pager_buf::sync): Set pointer to beginning
+	of buffer after calling flush_currnt_contents_to_diary.
+	(octave_diary_buf::sync): Call eback only once.
+
 2002-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (.): Remove test for EOF since it is already handled

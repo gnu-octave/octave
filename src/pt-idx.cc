@@ -44,6 +44,15 @@ tree_index_expression::~tree_index_expression (void)
   delete list;
 }
 
+// This is useful for printing the name of the variable in an indexed
+// assignment.
+
+string
+tree_index_expression::name (void) const
+{
+  return expr->name ();
+}
+
 octave_value_list
 tree_index_expression::rvalue (int nargout)
 {

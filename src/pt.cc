@@ -20,59 +20,44 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_tree_h)
-#define octave_tree_h 1
-
 #if defined (__GNUG__)
-#pragma interface
+#pragma implementation
+#endif
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
 
 #include <string>
 
-class ostream;
+#include <iostream.h>
+#include <strstream.h>
 
-class tree_walker;
+#include "pt.h"
+#include "pt-pr-code.h"
 
-// Base class for the parse tree.
+// Hide the details of the string buffer so that we are less likely to
+// create a memory leak.
 
-class
-tree
+string
+tree::str_print_code (void)
 {
-public:
+  ostrstream buf;
 
-  tree (int l = -1, int c = -1)
-    {
-      line_num = l;
-      column_num = c;
-    }
+  tree_print_code tpc (buf);
 
-  virtual ~tree (void) { }
+  accept (tpc);
 
-  virtual int line (void) const
-    { return line_num; }
+  buf << ends;
 
-  virtual int column (void) const
-    { return column_num; }
+  const char *s = buf.str ();
 
-  virtual void accept (tree_walker& tw) = 0;
+  string retval = s;
 
-  string str_print_code (void);
+  delete [] s;
 
-private:
-
-  // The input line and column where we found the text that was
-  // eventually converted to this tree node.
-  int line_num;
-  int column_num;
-
-  // No copying!
-
-  tree (const tree&);
-
-  tree& operator = (const tree&);
-};
-
-#endif
+  return retval;
+}
 
 /*
 ;;; Local Variables: ***

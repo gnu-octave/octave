@@ -40,7 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
-#include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "utils.h"
 
@@ -114,28 +113,15 @@ tree_simple_assignment::rvalue (void)
 
 		  if (error_state)
 		    eval_error ();
-		  else if (! Vprint_rhs_assign_val)
+		  else
 		    {
 		      octave_value lhs_val = ult.value ();
 
 		      if (! error_state && print_result ())
 			{
 			  if (Vprint_rhs_assign_val)
-			    {
-			      ostrstream buf;
-
-			      tree_print_code tpc (buf);
-
-			      lhs->accept (tpc);
-
-			      buf << ends;
-
-			      const char *tag = buf.str ();
-
-			      rhs_val.print_with_name (octave_stdout, tag);
-
-			      delete [] tag;
-			    }
+			    rhs_val.print_with_name (octave_stdout,
+						     lhs->str_print_code ());
 			  else
 			    lhs_val.print_with_name (octave_stdout,
 						     lhs->name ());
@@ -271,22 +257,8 @@ tree_multi_assignment::rvalue (int)
 			      if (! error_state && print_result ())
 				{
 				  if (Vprint_rhs_assign_val)
-				    {
-				      ostrstream buf;
-
-				      tree_print_code tpc (buf);
-
-				      lhs_elt->accept (tpc);
-
-				      buf << ends;
-
-				      const char *tag = buf.str ();
-
-				      tmp.print_with_name
-					(octave_stdout, tag);
-
-				      delete [] tag;
-				    }
+				    tmp.print_with_name (octave_stdout,
+							 lhs_elt->str_print_code ());
 				  else
 				    lhs_val.print_with_name (octave_stdout,
 							     lhs_elt->name ());

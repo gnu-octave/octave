@@ -55,6 +55,8 @@ public:
   bool is_index_expression (void) const
     { return true; }
 
+  string name (void) const;
+
   tree_expression *expression (void)
     { return expr; }
 

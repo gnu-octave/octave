@@ -1,5 +1,12 @@
 Fri May 16 00:07:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-idx.cc (tree_index_expression::name): New function.
+
+	* pt.cc	(tree::str_print_code): New file, new convenience function.
+	* pt-arg-list.cc (tree_argument_list::get_arg_names): Use it.
+	* pt-assign.cc (tree_simple_assignment::rvalue): Likewise.
+	(tree_multi_assignment::rvalue): Likewise.
+
 	* pt-colon.h (tree_colon_expression::save_base): New data memmber.
 	(tree_colon_expression::preserve_base): New function.
 	* parse.y (finish_colon_expression): When converting to a simple

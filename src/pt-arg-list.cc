@@ -147,19 +147,7 @@ tree_argument_list::get_arg_names (void) const
     {
       tree_expression *elt = this->operator () (p);
 
-      strstream str_buf;
-
-      tree_print_code pc_buf (str_buf);
-
-      elt->accept (pc_buf);
-
-      str_buf << ends;
-
-      const char *s = str_buf.str ();
-
-      retval(k++) = s;
-
-      delete [] s;
+      retval(k++) = elt->str_print_code ();
     }
 
   return retval;

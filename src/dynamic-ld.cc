@@ -159,7 +159,7 @@ octave_shl_load_dynamic_loader::resolve_reference (const string& name,
 
   if (handle)
     {
-      int status = shl_findsym (&handle, nm, TYPE_UNDEFINED, retval);
+      int status = shl_findsym (&handle, nm, TYPE_PROCEDURE, &retval);
 
       if (status < 0)
 	{

@@ -1,3 +1,9 @@
+Thu May 22 13:32:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc (octave_shl_load_dynamic_loader::resolve_reference): 
+	Call shl_findsym with type set to TYPE_PROCEDURE.  Pass the
+	address of the pointer we want to define.
+
 Wed May 21 16:30:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/time.cc (extract_tm): Avoid memory leak in dealing

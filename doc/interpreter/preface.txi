@@ -159,6 +159,18 @@ supporting the development of Octave:
 
 @itemize @bullet
 @item
+The National Science Foundation, through grant numbers CTS-0105360,
+CTS-9708497, CTS-9311420, and CTS-8957123.
+
+@item
+The industrial members of the Texas-Wisconsin Modeling and Control
+Consortium (@uref{http://www.che.utexas.edu/twmcc, TWMCC}).
+
+@item
+The Paul A. Elfers Endowed Chair in Chemical Engineering at the
+University of Wisconsin-Madison.
+
+@item
 Digital Equipment Corporation, for an equipment grant as part of their
 External Research Program.
 

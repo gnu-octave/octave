@@ -37,11 +37,7 @@ all:
 .PHONY: all
 
 install install-strip:
-	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
-	for f in $(FCN_FILES_NO_DIR); do \
-	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	done
+	$(do-script-install)
 	$(top_srcdir)/mkinstalldirs $(imagedir)
 	for f in $(IMAGE_FILES_NO_DIR); do \
 	  rm -f $(imagedir)/$$f; \
@@ -51,9 +47,7 @@ install install-strip:
 .PHONY: install install-strip
 
 uninstall:
-	for f in $(FCN_FILES_NO_DIR); \
-	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	done
+	$(do-script-uninstall)
 	for f in $(IMAGE_FILES_NO_DIR); \
 	  do rm -f $(imagedir)/$$f; \
 	done

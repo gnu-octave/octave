@@ -1,3 +1,23 @@
+2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* audio/Makefile.in, control/base/Makefile.in,
+	control/hinf/Makefile.in, control/obsolete/Makefile.in,
+	control/system/Makefile.in, elfun/Makefile.in,
+	finance/Makefile.in, general/Makefile.in, image/Makefile.in,
+	io/Makefile.in, linear-algebra/Makefile.in,
+	miscellaneous/Makefile.in, polynomial/Makefile.in,
+	quaternion/Makefile.in, set/Makefile.in, signal/Makefile.in,
+	specfun/Makefile.in, special-matrix/Makefile.in,
+	statistics/base/Makefile.in, statistics/distributions/Makefile.in,
+	statistics/models/Makefile.in, statistics/tests/Makefile.in,
+	strings/Makefile.in, time/Makefile.in, plot/Makefile.in,
+	deprecated/Makefile.in: Use new do-script-install and
+	do-script-uninstall macros.
+
+	* mkpkgadd: New script.
+
+	* plot/close.m: New file.
+
 2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* image/image.m: Use -raw option for xv.

@@ -157,14 +157,18 @@ install: all
 	    done ; \
 	  fi ; \
 	  if test -f $(infodir)/dir ; then \
-	    echo "" ; \
-	    echo "You should add the following entry" ; \
-	    echo "" ; \
-	    echo "* Octave: (octave)." ; \
-	    echo "	Interactive language for numerical computations." ; \
-	    echo "" ; \
-	    echo "to $(infodir)/dir." ; \
-	    echo "" ; \
+	    if grep "^\* Octave: (octave)." $(infodir)/dir > /dev/null ; then \
+	      true ; \
+	    else \
+	      echo "" ; \
+	      echo "You should add the following entry" ; \
+	      echo "" ; \
+	      echo "* Octave: (octave)." ; \
+	      echo "	Interactive language for numerical computations." ; \
+	      echo "" ; \
+	      echo "to $(infodir)/dir." ; \
+	      echo "" ; \
+	    fi ; \
 	  else \
 	    echo "installing $(srcdir)/dir in $(infodir)" ; \
 	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir ; \

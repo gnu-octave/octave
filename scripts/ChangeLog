@@ -1,5 +1,13 @@
 1999-10-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* control/bode.m: Don't return anything if nargout == 0.
+
+1999-10-20  James B. Rawlings  <jbraw@bevo.che.wisc.edu>
+
+	* control/bode.m: Don't do axis scaling for magnitude plots.
+
+1999-10-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* Makefile.in (DISTFILES): Add move-if-change, mkdoc, and
 	gethelp.cc to the list.
 

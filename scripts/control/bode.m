@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [mag,phase,w] = bode(sys,w,outputs,inputs,plot_style)
+function [mag_r,phase_r,w_r] = bode(sys,w,outputs,inputs,plot_style)
 # [mag,phase,w] = bode(sys[,w,outputs,inputs,plot_style])
 # Produce Bode plots of a system
 #
@@ -131,14 +131,14 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs,plot_style)
     if(do_db_plot && max(mag) > 0)
       ylabel("Gain in dB");
       md = 20*log10(mag);
+      axvec = axis2dlim([vec(w),vec(md)]);
+      axvec(1:2) = wv;
+      axis(axvec);
     else
       ylabel("Gain |Y/U|")
       md = mag;
     endif
 
-    axvec = axis2dlim([vec(w),vec(md)]);
-    axvec(1:2) = wv;
-    axis(axvec);
     grid("on");
     if (do_db_plot)
       semilogx(w,md);
@@ -165,6 +165,9 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs,plot_style)
         oneplot();
       endif
     endif
-    mag = phase = w = [];
+  else
+    mag_r = mag;
+    phase_r = phase;
+    w_r = w;
   endif
 endfunction

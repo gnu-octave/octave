@@ -47,10 +47,10 @@ typedef int (*lsode_jac_ptr) (const int&, const double&, double*,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
-			   double&, int&, double&, const double*, int&,
-			   int&, int&, double*, int&, int*, int&,
-			   lsode_jac_ptr, int&);
+  F77_FUNC (dlsode, DLSODE) (lsode_fcn_ptr, int&, double*, double&,
+			     double&, int&, double&, const double*, int&,
+			     int&, int&, double*, int&, int*, int&,
+			     lsode_jac_ptr, int&);
 }
 
 static ODEFunc::ODERHSFunc user_fun;
@@ -273,9 +273,9 @@ LSODE::do_integrate (double tout)
       LSODE_options::reset = false;
     }
 
-  F77_XFCN (lsode, LSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
-			   pabs_tol, itask, istate, iopt, prwork, lrw,
-			   piwork, liw, lsode_j, method_flag));
+  F77_XFCN (dlsode, DLSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
+			     pabs_tol, itask, istate, iopt, prwork, lrw,
+			     piwork, liw, lsode_j, method_flag));
 
   if (f77_exception_encountered)
     {

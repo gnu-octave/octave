@@ -1,5 +1,11 @@
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* LSODE.cc (LSODE::do_integrate): Avoid name conflict on systems
+	that upcase Fortran names by calling dlsode instead of lsode.
+
+	* ODESSA.cc (ODESSA::do_integrate): Avoid name conflict on systems
+	that upcase Fortran names by calling dodessa instead of odessa.
+
 	* file-ops.cc (file_ops::symlink): Cope with systems that expect
 	non-const args for symlink system call.
 	(file_ops::readlink): Likewise, for readlink.

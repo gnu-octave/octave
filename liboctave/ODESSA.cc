@@ -55,11 +55,11 @@ typedef int (*odessa_dfdp_ptr) (int*, const double&, double*,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (odessa, ODESSA) (odessa_fcn_ptr, odessa_dfdp_ptr, int*,
-			     double*, double*, double&, double&,
-			     int&, double&, const double*, int&, 
-			     int&, int*, double*, int&, int*, int&,
-			     odessa_jac_ptr, int&);
+  F77_FUNC (dodessa, DODESSA) (odessa_fcn_ptr, odessa_dfdp_ptr, int*,
+			       double*, double*, double&, double&,
+			       int&, double&, const double*, int&, 
+			       int&, int*, double*, int&, int*, int&,
+			       odessa_jac_ptr, int&);
 }
 
 template class Array<Matrix>;
@@ -457,10 +457,10 @@ ODESSA::integrate (double tout)
 
   const double *pabs_tol = abs_tol.fortran_vec ();
 
-   F77_XFCN (odessa, ODESSA, (odessa_f, odessa_b, pneq, py, ppar, t,
-			      tout, itol, rel_tol, pabs_tol, itask,
-			      istate, piopt, prwork, lrw, piwork, liw,
-			      odessa_j, method_flag));
+   F77_XFCN (dodessa, DODESSA, (odessa_f, odessa_b, pneq, py, ppar, t,
+				tout, itol, rel_tol, pabs_tol, itask,
+				istate, piopt, prwork, lrw, piwork, liw,
+				odessa_j, method_flag));
 
   if (f77_exception_encountered)
     {

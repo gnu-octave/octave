@@ -1,3 +1,15 @@
+2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* odepack/dlsode.f: Rename from odepack/lsode.f.
+	* odepack/dlsode.f (DLSODE): Rename from LSODE to avoid name
+	conflict with LSODE class constructors on systems that upcase
+	Fortran names.
+
+	* odessa/dodessa.f: Rename from odessa/odessa.f.
+	* odessa/dodessa.f (DODESSA): Rename from ODESSA to avoid name
+	conflict with ODESSA class constructors on systems that upcase
+	Fortran names.
+
 2003-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (MISC_OBJ): Add misc/cquit.o to the list.

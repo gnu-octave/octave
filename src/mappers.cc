@@ -399,14 +399,14 @@ Return the imaginary part of @var{z} as a real number.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalnum (@var{s})\n\
 Return 1 for characters that are letters or digits (@code{isalpha\n\
-(@var{a})} or @code{isdigit (@var{a})} is true).\n\
+(@var{s})} or @code{isdigit (@var{s})} is true).\n\
 @end deftypefn");
 
   DEFUN_MAPPER (isalpha, xisalpha, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalpha (@var{s})\n\
-Return true for characters that are letters (@code{isupper (@var{a})}\n\
-or @code{islower (@var{})} is true).\n\
+Return true for characters that are letters (@code{isupper (@var{s})}\n\
+or @code{islower (@var{s})} is true).\n\
 @end deftypefn");
 
   DEFUN_MAPPER (isascii, xisascii, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,

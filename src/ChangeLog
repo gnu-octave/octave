@@ -1,5 +1,8 @@
 2002-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defun-int.h (DEFUN_MAPPER_INTERNAL): Don't forget doc string
+	when creating octave_mapper object.
+
 	* sysdep.cc (BSD_init): Avoid failure if FP_X_DNML is not defined.
 
 2002-11-08  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -202,7 +202,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
       X_CAST (octave_mapper::d_d_mapper, d_d_map), \
       X_CAST (octave_mapper::d_c_mapper, d_c_map), \
       X_CAST (octave_mapper::c_c_mapper, c_c_map), \
-      lo, hi, ch_map_flag, can_ret_cmplx_for_real, #name))
+      lo, hi, ch_map_flag, can_ret_cmplx_for_real, #name, doc))
 
 #endif /* ! MAKE_BUILTINS */
 

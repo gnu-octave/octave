@@ -1,3 +1,8 @@
+2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__errcomm__.m: Fix thinko in previous change.
+	From Teemu Ikonen  <tpikonen@pcu.helsinki.fi>.
+
 2004-02-16  A S Hodel  <a.s.hodel@Eng.Auburn.EDU>
 
 	* control/base/__bodquist__.m, control/base/__stepimp__.m,

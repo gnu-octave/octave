@@ -45,7 +45,7 @@ function __errcomm__ (caller, varargin)
     endif
     hold on;
     k = 1;
-    while (nargs)
+    while (nargs-- > 0)
       a = varargin{k++};
       nargs--;
       if (isvector (a))
@@ -58,7 +58,7 @@ function __errcomm__ (caller, varargin)
       sz = size (a);
       ndata = 1;
       arg1 = a;
-      while (nargs--)
+      while (nargs-- > 0)
 	a = varargin{k++};
 	if (isstr (a))
 	  fmt = a;

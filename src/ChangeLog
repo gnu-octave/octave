@@ -1,5 +1,18 @@
 2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sighandlers.cc (sig_hup_or_term_handler): New function.
+	(install_signal_handlers): Install sig_hup_or_term_handler for
+	SIGHUP and SIGTERM instead of generic_sig_handler.
+	(Vsighup_dumps_octave_core, Vsigterm_dumps_octave_core):
+	New static variables.
+	(sighup_dumps_octave_core, sigterm_dumps_octave_core):
+	New static functions.
+	(symbols_of_sighandlers): Add DEFVARs for sighup_dumps_octave_core
+	and sigterm_dumps_octave_core.
+
+	* defaults.h.in (OCTAVE_LOCALAPIFCNFILEDIR, OCTAVE_LOCALAPIOCTFILEDIR):
+	Subsitute new variables. 
+
 	* defun.cc (check_version): Compare version to OCTAVE_API_VERSION,
 	not OCTAVE_VERSION.  Mismatch is now fatal.
 	* defun-int.h (DEFINE_FUN_INSTALLER_FUN3): Pass

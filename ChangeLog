@@ -1,5 +1,22 @@
 2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (do-subst-default-vals): Substitute OCTAVE_API_VERSION.
+	* octave-config.in: Handle new variable OCTAVE_API_VERSION.
+
+	* octMakefile.in (DIRS_TO_MAKE): Delete undefined vars
+	$(localfcnfilepathdirs) and $(localoctfilepathdirs) from the list.
+
+	* octave-config.in: Handle new variables OCTAVE_LOCALAPIFCNFILEDIR
+	and OCTAVE_LOCALAPIOCTFILEDIR
+
+	* configure.in (localapifcnfiledir): New variable.
+	(localfcnfilepath): Add it to the list.
+	(localapioctfiledir): New variable.
+	(localoctfilepath): Add it to the list.
+	* Makeconf.in (do-subst-default-vals): Substitute new varibles.
+
+	* Makeconf.in (getapiversion, apiversion): New macros.
+
 	* octMakefile.in (DIRS_TO_MAKE): Include $(localverarchlibdir) in
 	the list.
 

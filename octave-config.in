@@ -5,6 +5,7 @@
 # Rafael Laboissiere <rafael@laboissiere.net>
 # This script is in the public domain
 
+API_VERSION="%OCTAVE_API_VERSION%"
 CANONICAL_HOST_TYPE="%OCTAVE_CANONICAL_HOST_TYPE%"
 DEFAULT_PAGER="%OCTAVE_DEFAULT_PAGER%"
 ARCHLIBDIR="%OCTAVE_ARCHLIBDIR%"
@@ -21,6 +22,8 @@ INFOFILE="%OCTAVE_INFOFILE%"
 LIBDIR="%OCTAVE_LIBDIR%"
 LIBEXECDIR="%OCTAVE_LIBEXECDIR%"
 LIBEXECDIR="%OCTAVE_LIBEXECDIR%"
+LOCALAPIFCNFILEDIR="%OCTAVE_LOCALAPIFCNFILEDIR%"
+LOCALAPIOCTFILEDIR="%OCTAVE_LOCALAPIOCTFILEDIR%"
 LOCALARCHLIBDIR="%OCTAVE_LOCALARCHLIBDIR%"
 LOCALFCNFILEDIR="%OCTAVE_LOCALFCNFILEDIR%"
 LOCALFCNFILEPATH="%OCTAVE_LOCALFCNFILEPATH%"
@@ -67,23 +70,25 @@ Options:
   -p VAR, --print VAR   Print the value of the given configuration
 		        variable VAR.  Recognized variables are:
 
-			  CANONICAL_HOST_TYPE    LOCALFCNFILEDIR    
-			  DEFAULT_PAGER          LOCALFCNFILEPATH
-			  ARCHLIBDIR             LOCALOCTFILEDIR
-			  BINDIR                 LOCALOCTFILEPATH
-			  DATADIR                LOCALSTARTUPFILEDIR
-			  EXEC_PREFIX            LOCALVERARCHLIBDIR
-			  FCNFILEDIR             LOCALVERFCNFILEDIR
-			  FCNFILEPATH            LOCALVEROCTFILEDIR
-			  IMAGEDIR               MAN1DIR
-			  IMAGEPATH              MAN1EXT
-			  INCLUDEDIR             MANDIR
-			  INFODIR                OCTFILEDIR
-			  INFOFILE               OCTINCLUDEDIR
-			  LIBDIR                 OCTLIBDIR
-			  LIBEXECDIR             PREFIX
-			  LIBEXECDIR             STARTUPFILEDIR
-			  LOCALARCHLIBDIR        VERSION
+                          API_VERSION            LOCALARCHLIBDIR
+                          CANONICAL_HOST_TYPE    LOCALFCNFILEDIR
+                          DEFAULT_PAGER          LOCALFCNFILEPATH
+                          ARCHLIBDIR             LOCALOCTFILEDIR
+                          BINDIR                 LOCALOCTFILEPATH
+                          DATADIR                LOCALSTARTUPFILEDIR
+                          EXEC_PREFIX            LOCALVERARCHLIBDIR
+                          FCNFILEDIR             LOCALVERFCNFILEDIR
+                          FCNFILEPATH            LOCALVEROCTFILEDIR
+                          IMAGEDIR               MAN1DIR
+                          IMAGEPATH              MAN1EXT
+                          INCLUDEDIR             MANDIR
+                          INFODIR                OCTFILEDIR
+                          INFOFILE               OCTINCLUDEDIR
+                          LIBDIR                 OCTLIBDIR
+                          LIBEXECDIR             PREFIX
+                          LIBEXECDIR             STARTUPFILEDIR
+                          LOCALAPIFCNFILEDIR     VERSION
+                          LOCALAPIOCTFILEDIR
 
   -v, --version         Print the Octave version number.
 

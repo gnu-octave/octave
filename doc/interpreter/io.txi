@@ -129,10 +129,15 @@ user-defined types.
 
 @DOCSTRING(save)
 
-There are three variables that modify the behavior of @code{save} and one
-that controls whether variables are saved when Octave exits unexpectedly.
+There are three variables that modify the behavior of @code{save} and
+three more that control whether variables are saved when Octave exits
+unexpectedly.
 
 @DOCSTRING(crash_dumps_octave_core)
+
+@DOCSTRING(sighup_dumps_octave_core)
+
+@DOCSTRING(sigterm_dumps_octave_core)
 
 @DOCSTRING(default_save_format)
 

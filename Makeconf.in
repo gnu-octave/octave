@@ -13,12 +13,16 @@ SED = @SED@
 export SED
 
 # A shell command to extract the version number from version.h.
-getversion = $(SED) -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
+getversion = $(SED) -e '/OCTAVE_VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
+
+# A shell command to extract the API version number from version.h.
+getapiversion = $(SED) -e '/OCTAVE_API_VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
 
 # Look for version.h to get version information.
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
 version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
 version := $(shell $(getversion) $(version_file))
+apiversion := $(shell $(getapiversion) $(version_file))
 
 #### Start of system configuration section. ####
 
@@ -243,6 +247,7 @@ fcnfiledir = @fcnfiledir@
 # ${fcnfiledir}.  This should be a colon-separated list of
 # directories.
 localfcnfiledir = @localfcnfiledir@
+localapifcnfiledir = @localapifcnfiledir@
 localverfcnfiledir = @localverfcnfiledir@
 localfcnfilepath = @localfcnfilepath@
 
@@ -268,6 +273,7 @@ octfiledir = @octfiledir@
 # (i.e. customizations), before consulting ${octfiledir}.  This should
 # be a colon-separated list of directories.
 localoctfiledir = @localoctfiledir@
+localapioctfiledir = @localapioctfiledir@
 localveroctfiledir = @localveroctfiledir@
 localoctfilepath = @localoctfilepath@
 
@@ -472,6 +478,8 @@ $(SED) < $< > $@-t \
   -e "s;%OCTAVE_INFOFILE%;\"${infofile}\";" \
   -e "s;%OCTAVE_LIBDIR%;\"${libdir}\";" \
   -e "s;%OCTAVE_LIBEXECDIR%;\"${libexecdir}\";" \
+  -e "s;%OCTAVE_LOCALAPIFCNFILEDIR%;\"${localapifcnfiledir}\";" \
+  -e "s;%OCTAVE_LOCALAPIOCTFILEDIR%;\"${localapioctfiledir}\";" \
   -e "s;%OCTAVE_LOCALARCHLIBDIR%;\"${localarchlibdir}\";" \
   -e "s;%OCTAVE_LOCALFCNFILEDIR%;\"${localfcnfiledir}\";" \
   -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
@@ -489,6 +497,7 @@ $(SED) < $< > $@-t \
   -e "s;%OCTAVE_OCTLIBDIR%;\"${octlibdir}\";" \
   -e "s;%OCTAVE_STARTUPFILEDIR%;\"${startupfiledir}\";" \
   -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
+  -e "s;%OCTAVE_API_VERSION%;\"${apiversion}\";" \
   -e "s;%OCTAVE_VERSION%;\"${version}\";"
 $(top_srcdir)/move-if-change $@-t $@
 endef

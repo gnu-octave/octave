@@ -371,6 +371,16 @@ Default value: 17.
 
 Default value: 1.
 
+@item sighup_dumps_octave_core
+@xref{Simple File I/O}.
+
+Default value: 1.
+
+@item sigterm_dumps_octave_core
+@xref{Simple File I/O}.
+
+Default value: 1.
+
 @item silent_functions
 @xref{Defining Functions}.
 

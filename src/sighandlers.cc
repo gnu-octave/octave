@@ -60,6 +60,14 @@ bool can_interrupt = false;
 // TRUE means we should try to enter the debugger on SIGINT.
 static bool Vdebug_on_interrupt = false;
 
+// Allow users to avoid writing octave-core for SIGHUP (sent by
+// closing gnome-terminal, for example).  Note that this variable has
+// no effect if Vcrash_dumps_octave_core is FALSE.
+static bool Vsighup_dumps_octave_core;
+
+// Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
+static bool Vsigterm_dumps_octave_core;
+
 #if RETSIGTYPE == void
 #define SIGHANDLER_RETURN(status) return
 #else
@@ -234,6 +242,44 @@ sigfpe_handler (int /* sig */)
 #endif /* defined(__alpha__) */
 #endif /* defined(SIGFPE) */
 
+#if defined (SIGHUP) || defined (SIGTERM)
+static RETSIGTYPE
+sig_hup_or_term_handler (int sig)
+{
+  MAYBE_ACK_SIGNAL (sig);
+
+  MAYBE_REINSTALL_SIGHANDLER (sig, sig_hup_or_term_handler);
+
+  switch (sig)
+    {
+#if defined (SIGHUP)
+    case SIGHUP:
+      {
+	if (Vsighup_dumps_octave_core)
+	  save_user_variables ();
+      }
+      break;
+#endif
+
+#if defined (SIGTERM)
+    case SIGTERM:
+      {
+	if (Vsigterm_dumps_octave_core)
+	  save_user_variables ();
+      }
+      break;
+#endif
+
+    default:
+      break;
+    }
+
+  clean_up_and_exit (0);
+
+  SIGHANDLER_RETURN (0);
+}
+#endif
+
 #if 0
 #if defined (SIGWINCH)
 static RETSIGTYPE
@@ -404,7 +450,7 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGHUP
-  octave_set_signal_handler (SIGHUP, generic_sig_handler);
+  octave_set_signal_handler (SIGHUP, sig_hup_or_term_handler);
 #endif
 
 #ifdef SIGILL
@@ -451,7 +497,7 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGTERM
-  octave_set_signal_handler (SIGTERM, generic_sig_handler);
+  octave_set_signal_handler (SIGTERM, sig_hup_or_term_handler);
 #endif
 
 #ifdef SIGTRAP
@@ -771,6 +817,22 @@ debug_on_interrupt (void)
   return 0;
 }
 
+static int
+sighup_dumps_octave_core (void)
+{
+  Vsighup_dumps_octave_core = check_preference ("sighup_dumps_octave_core");
+
+  return 0;
+}
+
+static int
+sigterm_dumps_octave_core (void)
+{
+  Vsigterm_dumps_octave_core = check_preference ("sigterm_dumps_octave_core");
+
+  return 0;
+}
+
 void
 symbols_of_sighandlers (void)
 {
@@ -782,6 +844,24 @@ debugging mode when it receives an interrupt signal (typically\n\
 generated with @kbd{C-c}).  If a second interrupt signal is received\n\
 before reaching the debugging mode, a normal interrupt will occur.\n\
 The default value is 0.\n\
+@end defvr");
+
+  DEFVAR (sighup_dumps_octave_core, true, sighup_dumps_octave_core,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} sighup_dumps_octave_core\n\
+If this variable is set to a nonzero value and\n\
+@code{crash_dumps_octave_core} is also nonzero, Octave tries to save all\n\
+current variables the the file \"octave-core\" if it receives a\n\
+hangup signal.  The default value is 1.\n\
+@end defvr");
+
+  DEFVAR (sigterm_dumps_octave_core, true, sigterm_dumps_octave_core,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} sigterm_dumps_octave_core\n\
+If this variable is set to a nonzero value and\n\
+@code{crash_dumps_octave_core} is also nonzero, Octave tries to save all\n\
+current variables the the file \"octave-core\" if it receives a\n\
+terminate signal.  The default value is 1.\n\
 @end defvr");
 
   DEFCONST (SIG, make_sig_struct (),

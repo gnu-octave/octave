@@ -66,7 +66,6 @@ CLEANSUBDIRS = $(DISTSUBDIRS) @GLOB_DIR@
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(octfiledir) $(archlibdir) $(localarchlibdir) $(localverarchlibdir) \
-  $(localfcnfilepathdirs) $(localoctfilepathdirs) \
   $(shell echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}') \
   $(shell echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}')
 

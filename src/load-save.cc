@@ -5415,9 +5415,9 @@ static int
 crash_dumps_octave_core (void)
 {
   Vcrash_dumps_octave_core = check_preference ("crash_dumps_octave_core");
+
   return 0;
 }
-
 
 static int
 default_save_format (void)

@@ -33,10 +33,9 @@ class ostream;
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
 
-class SVD
+class
+SVD
 {
-friend class Matrix;
-
 public:
 
   enum type
@@ -47,7 +46,6 @@ public:
     };
 
   SVD (void) { }
-
 
   SVD (const Matrix& a, type svd_type = SVD::std) { init (a, svd_type); }
 
@@ -65,9 +63,12 @@ public:
 
   SVD& operator = (const SVD& a)
     {
-      sigma = a.sigma;
-      left_sm = a.left_sm;
-      right_sm = a.right_sm;
+      if (this != &a)
+	{
+	  sigma = a.sigma;
+	  left_sm = a.left_sm;
+	  right_sm = a.right_sm;
+	}
 
       return *this;
     }
@@ -82,13 +83,13 @@ public:
 
 private:
 
-  int init (const Matrix& a, type svd_type = std);
-
   SVD::type type_computed;
 
   DiagMatrix sigma;
   Matrix left_sm;
   Matrix right_sm;
+
+  int init (const Matrix& a, type svd_type = std);
 };
 
 #endif

@@ -280,21 +280,19 @@ static void
 get_dimensions (const tree_constant& a, const char *warn_for,
 		int& nr, int& nc)
 {
-  tree_constant tmpa = a;
-
-  if (tmpa.is_scalar_type ())
+  if (a.is_scalar_type ())
     {
-      double tmp = tmpa.double_value ();
+      double tmp = a.double_value ();
       nr = nc = NINT (tmp);
     }
   else
     {
-      nr = tmpa.rows ();
-      nc = tmpa.columns ();
+      nr = a.rows ();
+      nc = a.columns ();
 
       if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
 	{
-	  ColumnVector v = tmpa.vector_value ();
+	  ColumnVector v = a.vector_value ();
 
 	  if (error_state)
 	    return;
@@ -313,18 +311,13 @@ static void
 get_dimensions (const tree_constant& a, const tree_constant& b,
 		const char *warn_for, int& nr, int& nc)
 {
-  tree_constant tmpa = a;
-  tree_constant tmpb = b;
+  nr = NINT (a.double_value ());
+  nc = NINT (b.double_value ());
 
-  if (tmpa.is_scalar_type () && tmpb.is_scalar_type ())
-    {
-      nr = NINT (tmpa.double_value ());
-      nc = NINT (tmpb.double_value ());
-
-      check_dimensions (nr, nc, warn_for); // May set error_state.
-    }
-  else
+  if (error_state)
     error ("%s: expecting two scalar arguments", warn_for);
+  else
+    check_dimensions (nr, nc, warn_for); // May set error_state.
 }
 
 static tree_constant

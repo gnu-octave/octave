@@ -255,7 +255,7 @@ if $depend; then
       cmd="rm -f $d"
       $dbg $cmd
       eval $cmd
-      cmd="$CC $DEPEND_FLAGS $CPPFLAGS $ALL_CFLAGS $f | $SED $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
+      cmd="$CC $DEPEND_FLAGS $CPPFLAGS $ALL_CFLAGS $incflags $def $f | $SED $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
       $dbg $cmd
       eval $cmd
     done
@@ -278,7 +278,7 @@ if $depend; then
       cmd="rm -f $d"
       $dbg $cmd
       eval $cmd
-      cmd="$CXX $DEPEND_FLAGS $CPPFLAGS $ALL_CXXFLAGS $f | $SED $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
+      cmd="$CXX $DEPEND_FLAGS $CPPFLAGS $ALL_CXXFLAGS $incflags $defs $f | $SED $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
       $dbg $cmd
       eval $cmd
     done

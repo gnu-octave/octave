@@ -1943,19 +1943,22 @@ get_file_format (const char *fname, const char *orig_fname)
       file.seekg (0, ios::beg);
 
       FOUR_BYTE_INT mopt, nr, nc, imag, len;
-      int swap;
 
-      if (read_mat_file_header (file, swap, mopt, nr, nc, imag, len, 1) == 0)
+      int err = read_mat_file_header (file, swap, mopt, nr, nc, imag, len, 1);
+
+      if (! err)
 	retval = LS_MAT_BINARY;
       else
 	{
 	  file.seekg (0, ios::beg);
 
 	  char *tmp = extract_keyword (file, "name");
-	  if (tmp)
-	    retval = LS_ASCII;
 
-	  delete [] tmp;
+	  if (tmp)
+	    {
+	      retval = LS_ASCII;
+	      delete [] tmp;
+	    }
 	}
     }
 

@@ -414,6 +414,7 @@ builtin_help (int argc, char **argv)
     }
   else
     {
+      char *m_file_name = (char *) NULL;
       symbol_record *sym_rec;
       help_list *op_help_list = operator_help ();
       help_list *kw_help_list = keyword_help ();
@@ -472,20 +473,23 @@ builtin_help (int argc, char **argv)
 // appear to be out of date.  Don\'t execute commands from the file if
 // it turns out to be a script file.
 
-	  sym_rec = global_sym_tab->lookup (argv[i], 1, 0);
-	  if (sym_rec != (symbol_record *) NULL)
+	  m_file_name = m_file_in_path (argv[i]);
+	  if (m_file_name != (char *) NULL)
 	    {
-	      tree_identifier tmp (sym_rec);
-	      tmp.parse_m_file (0);
-	      char *h = sym_rec->help ();
-	      if (h != (char *) NULL && *h != '\0')
+	      sym_rec = global_sym_tab->lookup (argv[i], 1, 0);
+	      if (sym_rec != (symbol_record *) NULL)
 		{
-		  output_buf << "\n" << h << "\n";
-		  goto next;
+		  tree_identifier tmp (sym_rec);
+		  tmp.parse_m_file (0);
+		  char *h = sym_rec->help ();
+		  if (h != (char *) NULL && *h != '\0')
+		    {
+		      output_buf << "\n" << h << "\n";
+		      goto next;
+		    }
 		}
 	    }
-	  else
-	    global_sym_tab->clear (argv[i]);
+	  delete [] m_file_name;
 
 	  output_buf << "Sorry, `" << argv[i] << "' is not documented\n";
 

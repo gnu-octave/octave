@@ -58,7 +58,7 @@ extern char *make_absolute (char *, char *);
 extern char *get_working_directory (char *);
 extern int change_to_directory (char *);
 extern int is_newer (char *, time_t);
-extern volatile void jump_to_top_level (void);
+extern void volatile jump_to_top_level (void);
 extern char *s_plural (int);
 extern char *es_plural (int);
 extern char *save_in_tmp_file (tree_constant& t, int nd = 2, int para = 0);

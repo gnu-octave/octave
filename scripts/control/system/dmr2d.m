@@ -28,12 +28,11 @@
 ## discrete time system;
 ## @code{dmr2d} exits with an error if @var{sys} is not discrete
 ## @item   idx
-## list of states with sampling time @code{sysgettsam(@var{sys})} (may
-## be empty)
+## indices or names of states with sampling time 
+## @code{sysgettsam(@var{sys})} (may be empty); see @code{listidx}
 ## @item   sprefix
 ## list of string prefixes of states with sampling time
-## @code{sysgettsam(@var{sys})}
-## (may be empty)
+## @code{sysgettsam(@var{sys})} (may be empty)
 ## @item   Ts2
 ## sampling time of states not specified by @var{idx}, @var{sprefix}
 ## must be an integer multiple of @code{sysgettsam(@var{sys})}
@@ -84,6 +83,11 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   elseif(!is_digital(sys))
     error("sys must be discrete-time; continuous time passed");
+  
+  endif
+
+  if(is_signal_list(idx) | isstr(idx))
+    idx = sysidx(sys,"st",idx);
 
   elseif (!(is_vector(idx) | isempty(idx)))
     error(["idx(",num2str(rows(idx)),"x",num2str(columns(idx)), ...
@@ -117,7 +121,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   ## compute number of steps
   if(Ts1 > Ts2)
-    error(["Current sampling time=",num2str(Ts1),"< Ts2=",num2str(Ts2)]);
+    error(["Current sampling time=",num2str(Ts1)," > Ts2=",num2str(Ts2)]);
   endif
   nstp = floor(Ts2/Ts1+0.5);
   if(abs((Ts2 - Ts1*nstp)/Ts1) > 1e-12)
@@ -172,7 +176,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   ## permute A, B (stname permuted for debugging only)
   da = da(pv,pv);
   db = db(pv,:);
-  stname = stname(pv,:);
+  stname = stname(pv);
 
   ## partition A, B:
   lfidx = length(fidx);
@@ -251,7 +255,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   da = da(pvi,pvi);
   db = db(pvi,:);
-  stname = stname(pvi,:);
+  stname = stname(pvi);
 
   ## construct new system and return
   dsys = ss2sys(da,db,dc,dd,Ts2,0,nz,stname,inname,outname,find(yd == 1));

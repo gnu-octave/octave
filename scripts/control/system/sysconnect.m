@@ -26,8 +26,9 @@
 ## system data structure
 ## @item   out_idx
 ## @itemx  in_idx
-## list of connections indices; @math{y(out_idx(ii))}
-## is connected to @math{u(in_idx(ii))}.
+## names or indices of signals to connect (see @code{sysidx}).
+## The output specified by @math{out_idx(ii)} is connected to the input
+## specified by @math{in_idx(ii)}.
 ## @item   order
 ## logical flag (default = 0)
 ## @table @code
@@ -87,6 +88,14 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   elseif(tol > 1e2*sqrt(eps))
     warning(["sysconnect: tol set to large value=",num2str(tol), ...
         ", eps=",num2str(eps)])
+  endif
+
+  ## convert signal names to indices
+  if(is_signal_list(input_list) | isstr(input_list))
+    input_list = sysidx(sys,"in",input_list);
+  endif
+  if(is_signal_list(output_list) | isstr(output_list))
+    output_list = sysidx(sys,"out",output_list);
   endif
 
   ## verify sizes,format of input, output lists

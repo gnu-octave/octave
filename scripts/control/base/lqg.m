@@ -40,7 +40,7 @@
 ## @itemx  R
 ## state, control weighting respectively.  Control ARE is
 ## @item  in_idx
-## indices of controlled inputs
+## names or indices of controlled inputs (see @code{sysidx}, @code{listidx})
 ##
 ## default: last dim(R) inputs are assumed to be controlled inputs, all
 ## others are assumed to be noise inputs.
@@ -94,7 +94,14 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
   elseif(nout != columns(Sigv))
     error(["lqg: sys has ",num2str(nout)," outputs, dim(Sigv)=", ...
           num2str(columns(Sigv)),")"])
-  elseif(length(input_list) != columns(R))
+  endif
+
+  ## check for names of signals
+  if(is_signal_list(input_list) | isstr(input_list))
+    input_list = sysidx(sys,"in",input_list);
+  endif
+
+  if(length(input_list) != columns(R))
     error(["lqg: length(input_list)=",num2str(length(input_list)), ...
           ", columns(R)=", num2str(columns(R))]);
   endif

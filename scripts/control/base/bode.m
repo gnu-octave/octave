@@ -65,6 +65,7 @@
 ## The names or indices of outputs and inputs to be used in the frequency
 ## response.  See @code{sysprune}.
 ##
+## @strong{Example}
 ## @example
 ## bode(sys,[],"y_3",list("u_1","u_4");
 ## @end example
@@ -132,6 +133,8 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
   endif
 
   [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "bode");
+  bode_nin = sysdimensions(sys,"in");
+  bode_nout = sysdimensions(sys,"out");
 
   [stname,inname,outname] = sysgetsignals(sys);
   systsam = sysgettsam(sys);

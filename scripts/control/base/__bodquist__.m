@@ -27,9 +27,8 @@
 ## @item w
 ## range of frequencies; empty if user wants default
 ## @item out_idx
-## vector output indices or list of output signal names; empty if user wants all
-## @item in_idx
-## vector of input indices of list of input signal names; empty if user wants all
+## @itemx in_idx
+## names or indices of output/input signal names; empty if user wants all
 ## @item rname
 ## name of routine that called __bodquist__ ("bode", "nyquist", or "nichols")
 ## @end table

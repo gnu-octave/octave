@@ -53,8 +53,8 @@
 ## not change excessively from point to point and that singular
 ## points (e.g., crossovers from +/- 180) are accurately shown.
 ## @end enumerate
-## outputs, inputs: the indices of the output(s) and input(s) to be used in
-## the frequency response; see sysprune.
+## outputs, inputs: names or indices of the output(s) and input(s) to be 
+## used in the frequency response; see sysprune.
 ##
 ## @strong{Inputs} (pass as empty to get default values)
 ## @table @var

@@ -41,16 +41,17 @@
 ## @end table
 ##
 ## @item signum
-## Index of signal (or indices of signals if signum is a vector)
+## index(indices) or name(s) or signals; see @code{sysidx}
 ##
 ## @item strflg
 ## flag to return a string instead of a list;  Values:
 ## @table @code
 ## @item 0
-## (default) return a list (even if signum is a scalar)
+## (default) return a list (even if signum specifies an individual signal)
 ##
 ## @item 1
-## return a string.  Exits with an error if signum is not a scalar.
+## return a string.  Exits with an error if signum does not specify an 
+## individual signal.
 ## @end table
 ##
 ## @end table
@@ -166,7 +167,10 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
         sigid));
     endif
     if(nargin >= 3)
-      if(signum > length(stname))
+      if( is_signal_list(signum) | isstr(signum) )
+        signum = listidx(stname,signum);
+      end
+      if(max(signum) > length(stname))
         error(sprintf("sysgetsignals(sys,\"%s\",%d):only %d entries.\n", ...
           sigid,signum, rows(stname)));
       else

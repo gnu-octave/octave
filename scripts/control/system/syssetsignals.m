@@ -47,9 +47,9 @@
 ## To desired output continuous/discrete flag.
 ## Set name to 0 for continuous, or 1 for discrete.
 ## @end table
-## @item list
-## vector of indices of outputs, yd, inputs, or
-## states whose respective names should be changed.
+## @item sig_idx
+## indices or names of outputs, yd, inputs, or
+## states whose respective names/values should be changed.
 ##
 ## Default: replace entire list of names/entire yd vector.
 ## @end table
@@ -101,6 +101,16 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
     strcmp(opt,"in") + strcmp(opt,"st") ) )
     error("opt must be one of [], ""out"", ""yd"", ""in"", or ""st""");
   elseif(nargin == 4)
+    if(is_signal_list(sig_idx) | isstr(sig_idx))
+      ## convert to vector of indices
+      if(opt == "yd")
+        sig_idx = sysidx(sys,"out",sig_idx);
+      else
+        sig_idx = sysidx(sys,opt,sig_idx);
+      endif
+    endif
+
+    ## check index vector
     if(min(size(sig_idx)) > 1)
       disp("syssetsignals: sig_idx=")
       disp(sig_idx);

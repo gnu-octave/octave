@@ -26,7 +26,7 @@
 ## system data structure
 ## @item out_idx
 ## @itemx in_idx
-## list of connections indices;
+## indices or names of desired signals (see @code{sigidx}).
 ## duplicates are made of @code{y(out_idx(ii))} and @code{u(in_idx(ii))}.
 ## @end table
 ##
@@ -68,6 +68,14 @@ function retsys = sysdup (Asys, output_list, input_list)
   Asys = sysupdate(Asys,"ss");
   [nn,nz,mm,pp] = sysdimensions(Asys);
   [aa,bb,cc,dd] = sys2ss(Asys);
+
+  ## check for signal names
+  if(is_signal_list(input_list) | isstr(input_list))
+    input_list = sysidx(Asys,"in",input_list);
+  endif
+  if(is_signal_list(output_list) | isstr(output_list))
+    output_list = sysidx(Asys,"out",output_list);
+  endif
 
   ## first duplicate inputs
   if(is_vector(input_list))

@@ -133,10 +133,6 @@ function saveimage (filename, img, img_form, map)
 
   map = round (255 * map);
 
-  bw = (map_nr == 2
-        && ((map(1,1) == 0 && map(2,1) == 255)
-            || (map(1,1) == 255 && map(2,1) == 0)));
-
   img = round (img');
   [img_nr, img_nc] = size (img);
 
@@ -160,43 +156,7 @@ function saveimage (filename, img, img_form, map)
     tagline = sprintf ("# Created by Octave %s, %s",
 		       __OCTAVE_VERSION__, time_string);
 
-    if (grey && map_nr == 2 && bw)
-
-      if (map(1) != 0)
-        map = [0; 1];
-      else
-        map = [1; 0];
-      endif
-
-      n_long = rem (img_nc, 8);
-      tmp = zeros (ceil (img_nc/8), img_nr);
-
-      for i = 1:img_nr
-        idx = (i-1)*img_nc+1:i*img_nc;
-        if (n_long > 0)
-          img_row = [map(img(idx)); (zeros (8-n_long, 1))];
-        else
-          img_row = map(img(idx));
-        endif
-	l_img_row = length (img_row);
-        if (img_nc < 8)
-          for j = 1:8
-            tmp(:,i) = tmp(:,i) + img_row (j) * 2^(8-j);
-          endfor
-        else
-          for j = 1:8
-            tmp(:,i) = tmp(:,i) + img_row (j:8:l_img_row) * 2^(8-j);
-          endfor
-        endif
-      endfor
-
-      fid = fopen (filename, "w");
-      fprintf (fid, "P4\n%s\n%d %d\n", tagline, img_nr, img_nc);
-      fwrite (fid, tmp, "char");
-      fprintf (fid, "\n");
-      fclose (fid);
-
-    elseif (grey)
+    if (grey)
 
       fid = fopen (filename, "w");
       fprintf (fid, "P5\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);

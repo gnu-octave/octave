@@ -1,3 +1,7 @@
+2000-12-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/saveimage.m: Don't try to create rawbit image.
+
 2000-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (bin-dist): Pass -C to $(MAKE), not -c.

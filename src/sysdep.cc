@@ -67,8 +67,10 @@ LOSE! LOSE!
 #include <sys/utsname.h>
 #endif
 
+#if defined (USE_READLINE)
 #include <readline/readline.h>
 #include <readline/tilde.h>
+#endif
 
 extern char *term_clrpag;
 extern "C" void _rl_output_character_function ();

@@ -54,11 +54,10 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-// This must come before anything that includes iostream.h...
-// (This is apparently no longer true...)
-
-#include "readline/readline.h"
-#include "readline/history.h"
+#if defined (USE_READLINE)
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif
 
 #include "str-vec.h"
 

@@ -39,10 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-extern "C"
-{
 #include <readline/history.h>
-}
 
 #include "file-ops.h"
 #include "lo-error.h"
@@ -67,11 +64,11 @@ command_history::command_history (const string& f, int n)
 	{
 	  xfile = f;
 
-	  read_history (f.c_str ());
+	  ::read_history (f.c_str ());
 
 	  lines_in_file = where ();
 
-	  using_history ();
+	  ::using_history ();
 	}
 
       if (n > 0)
@@ -122,7 +119,7 @@ command_history::add (const string& s)
 {
   if (! ignoring_entries ())
     {
-      add_history (s.c_str ());
+      ::add_history (s.c_str ());
       lines_this_session++;
     }
 }
@@ -130,27 +127,27 @@ command_history::add (const string& s)
 void
 command_history::remove (int n)
 {
-  HIST_ENTRY *discard = remove_history (n);
+  HIST_ENTRY *discard = ::remove_history (n);
 
   if (discard)
     {
       if (discard->line)
-	free (discard->line);
+	::free (discard->line);
 
-      free (discard);
+      ::free (discard);
     }
 }
 
 int
 command_history::where (void)
 {
-  return where_history ();
+  return ::where_history ();
 }
 
 int
 command_history::base (void)
 {
-  return history_base;
+  return ::history_base;
 }
 
 int
@@ -162,19 +159,19 @@ command_history::current_number (void)
 void
 command_history::stifle (int n)
 {
-  stifle_history (n);
+  ::stifle_history (n);
 }
 
 int
 command_history::unstifle (void)
 {
-  return unstifle_history ();
+  return ::unstifle_history ();
 }
 
 int
 command_history::is_stifled (void)
 {
-  return history_is_stifled ();
+  return ::history_is_stifled ();
 }
 
 void
@@ -187,12 +184,12 @@ command_history::read (const string& f_arg)
 
   if (! f.empty ())
     {
-      int status = read_history (f.c_str ());
+      int status = ::read_history (f.c_str ());
 
       if (status != 0)
 	error (status);
       else
-	using_history ();
+	::using_history ();
     }
   else
     error ("command_history::read: missing file name");
@@ -211,13 +208,13 @@ command_history::read_range (const string& f_arg, int from, int to)
 
   if (! f.empty ())
     {
-      int status = read_history_range (f.c_str (), from, to);
+      int status = ::read_history_range (f.c_str (), from, to);
 
       if (status != 0)
 	error (status);
       else
 	{
-	  using_history ();
+	  ::using_history ();
 	  lines_in_file = where ();
 	}
     }
@@ -235,7 +232,7 @@ command_history::write (const string& f_arg)
 
   if (! f.empty ())
     {
-      int status = write_history (f.c_str ());
+      int status = ::write_history (f.c_str ());
 
       if (status != 0)
 	error (status);
@@ -270,7 +267,7 @@ command_history::append (const string& f_arg)
 		  close (tem);
 		}
 
-	      int status = append_history (lines_this_session, f.c_str ());
+	      int status = ::append_history (lines_this_session, f.c_str ());
 
 	      if (status != 0)
 		error (status);
@@ -294,7 +291,7 @@ command_history::truncate_file (const string& f_arg, int n)
     f = xfile;
 
   if (! f.empty ())
-    history_truncate_file (f.c_str (), n);
+    ::history_truncate_file (f.c_str (), n);
   else
     error ("command_history::truncate_file: missing file name");
 }
@@ -306,7 +303,7 @@ command_history::list (int limit, int number_lines)
 
   if (limit)
     {
-      HIST_ENTRY **hlist = history_list ();
+      HIST_ENTRY **hlist = ::history_list ();
 
       if (hlist)
 	{
@@ -324,7 +321,7 @@ command_history::list (int limit, int number_lines)
 	      ostrstream output_buf;
 
 	      if (number_lines)
-		output_buf.form ("%5d%c", i + history_base,
+		output_buf.form ("%5d%c", i + ::history_base,
 				 hlist[i]->data ? '*' : ' '); 
 
 	      output_buf << hlist[i]->line << ends;
@@ -346,7 +343,7 @@ command_history::get_entry (int n)
 {
   string retval;
 
-  HIST_ENTRY *entry = history_get (history_base + n);
+  HIST_ENTRY *entry = ::history_get (::history_base + n);
 
   if (entry && entry->line)
     retval = entry->line;
@@ -357,14 +354,14 @@ command_history::get_entry (int n)
 void
 command_history::replace_entry (int which, const string& line)
 {
-  HIST_ENTRY *discard = replace_history_entry (which, line.c_str (), 0);
+  HIST_ENTRY *discard = ::replace_history_entry (which, line.c_str (), 0);
 
   if (discard)
     {
       if (discard->line)
-	free (discard->line);
+	::free (discard->line);
 
-      free (discard);
+      ::free (discard);
     }
 }
 
@@ -383,16 +380,16 @@ command_history::clean_up_and_save (const string& f_arg, int n)
 
       stifle (n);
 
-      write_history (f.c_str ());
+      ::write_history (f.c_str ());
     }
   else
     error ("command_history::clean_up_and_save: missing file name");
 }
 
 void
-command_history::error (int errno)
+command_history::error (int err_num)
 {
-  (*current_liboctave_error_handler) ("%s", strerror (errno));
+  (*current_liboctave_error_handler) ("%s", strerror (err_num));
 }
 
 void

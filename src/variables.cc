@@ -41,7 +41,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#if defined (USE_READLINE)
 #include <readline/readline.h>
+#endif
 
 #include "file-ops.h"
 #include "oct-glob.h"

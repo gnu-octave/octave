@@ -325,21 +325,23 @@ keyword_help (void)
   return keywords;
 }
 
-#define VERBOSE_HELP_MESSAGE \
-  "\n\
-Additional help for builtin functions, operators, and variables\n\
-is available in the on-line version of the manual.\n\
-\n\
-Use the command `help -i <topic>' to search the manual index.\n"
-
+#if defined (USE_GNU_INFO)
 static void
 additional_help_message (ostream& os)
 {
-#ifdef USE_GNU_INFO
   if (! Vsuppress_verbose_help_message)
-    os << VERBOSE_HELP_MESSAGE;
-#endif
+    os << "\n\
+Additional help for builtin functions, operators, and variables\n\
+is available in the on-line version of the manual.\n\
+\n\
+Use the command `help -i <topic>' to search the manual index.\n";
 }
+#else
+static void
+additional_help_message (ostream&)
+{
+}
+#endif
 
 void
 print_usage (const string& nm, int just_usage)
@@ -518,7 +520,7 @@ simple_help (void)
   additional_help_message (octave_stdout);
 }
 
-#ifdef USE_GNU_INFO
+#if defined (USE_GNU_INFO)
 static int
 try_info (const string& nm)
 {
@@ -563,12 +565,10 @@ try_info (const string& nm)
 
   return status;
 }
-#endif
 
 static void
 help_from_info (const string_vector& argv, int idx, int argc)
 {
-#ifdef USE_GNU_INFO
   if (idx == argc)
     try_info (string ());
   else
@@ -594,10 +594,14 @@ help_from_info (const string_vector& argv, int idx, int argc)
 	    }
 	}
     }
-#else
-  message (0, "sorry, help -i is not available in this version of Octave");
-#endif
 }
+#else
+static void
+help_from_info (const string_vector&, int, int)
+{
+  message (0, "sorry, help -i is not available in this version of Octave");
+}
+#endif
 
 int
 help_from_list (ostream& os, const help_list *list,
@@ -671,7 +675,7 @@ builtin_help (int argc, const string_vector& argv)
   additional_help_message (octave_stdout);
 }
 
-#ifdef USE_GNU_INFO
+#if defined (USE_GNU_INFO)
 DEFUN_TEXT (help, args, ,
   "help [-i] [topic ...]\n\
 \n\
@@ -962,11 +966,9 @@ symbols_of_help (void)
   DEFVAR (INFO_PROGRAM, Vinfo_prog, 0, info_prog,
     "name of the Octave info reader");
 
-#ifdef USE_GNU_INFO
   DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\
 help and usage functions");
-#endif
 }
 
 /*

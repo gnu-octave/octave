@@ -1,5 +1,11 @@
 Tue Nov  5 13:00:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* input.cc, sysdep.cc, variables.cc: Only include readline.h and
+	history.h if USE_READLINE is defined.
+
+	* help.cc: Make it compile without warnings even if USE_GNU_INFO
+	is not defined.
+
 	* sighandlers.h (octave_child_list): Don't define
 	HAVE_POSIX_SIGNALS HERE.
 

@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.223 $)
+AC_REVISION($Revision: 1.224 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -426,11 +426,15 @@ fi
 AC_SUBST(OCTAVE_LITE)
 
 ### special checks for odd OS specific things.
+###
+### I am told that on some SCO systems, the only place to find some
+### functions like gethostname and gettimeofday is in libsocket.
 
 AC_ISC_POSIX
 AC_MINIX
 AC_AIX
 AC_CHECK_LIB(sun, getpwnam)
+AC_CHECK_LIB(socket, gethostname)
 
 ### How big are ints and how are they oriented?  These could probably
 ### be eliminated in favor of run-time checks.
@@ -867,6 +871,8 @@ AC_TRY_LINK([#include <stdio.h>],
   AC_MSG_RESULT(yes)
   AC_DEFINE(HAVE_SYS_SIGLIST, 1),
   AC_MSG_RESULT(no))
+OCTAVE_SIGNAL_CHECK
+OCTAVE_REINSTALL_SIGHANDLERS
 
 ### Type stuff.
 

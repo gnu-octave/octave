@@ -84,16 +84,18 @@ extern "C" int on_exit ();
 #endif
 
 // Don't redefine the variables if glibc already has.
-#ifndef HAVE_PROGRAM_INVOCATION_NAME
-char *program_invocation_name;
-char *program_invocation_short_name;
-#else
+#if defined (HAVE_PROGRAM_INVOCATION_NAME)
 extern char *program_invocation_name;
 extern char *program_invocation_short_name;
+#else
+char *program_invocation_name;
+char *program_invocation_short_name;
 #endif
 
+#if defined (USE_READLINE)
 // This is from readline's paren.c:
 extern int rl_blink_matching_paren;
+#endif
 
 // The command-line options.
 static string_vector octave_argv;
@@ -196,7 +198,7 @@ initialize_globals (const string& name)
 {
   // Kpathsea needs this.
 
-#ifndef HAVE_PROGRAM_INVOCATION_NAME
+#if ! defined (HAVE_PROGRAM_INVOCATION_NAME)
   program_invocation_name = strsave (name.c_str ());
   program_invocation_short_name = strrchr (program_invocation_name, '/');
   if (! program_invocation_short_name)
@@ -328,9 +330,9 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   -i, --interactive       Force interactive behavior.\n\
-  --no-init-file          Don't read the ~/.octaverc or .octaverc files\n\
+  --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
-  --no-site-file          Don't read the site-wide octaverc file\n\
+  --no-site-file          Don't read the site-wide octaverc file.\n\
   -p PATH, --path PATH    Set initial LOADPATH to PATH.\n\
   -q, --silent            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\

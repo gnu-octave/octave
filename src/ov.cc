@@ -634,9 +634,6 @@ octave_value::try_assignment_with_conversion (const octave_value_list& idx,
 	  rep->count = 1;
 	}
 
-      cerr << type_name () << "\n";
-      cerr << tmp_rhs.type_name () << "\n";
-
       if (cf_this || cf_rhs)
 	{
 	  assignment_ok = try_assignment (idx, tmp_rhs);

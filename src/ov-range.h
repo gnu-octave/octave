@@ -89,6 +89,8 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
+  octave_value index (const octave_value_list& idx) const;
+
   idx_vector index_vector (void) const { return idx_vector (range); }
 
   int rows (void) const { return (columns () > 0); }

@@ -1,3 +1,16 @@
+Tue Oct 29 15:54:27 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-range.cc (octave_range::index): New Function.
+	(octave_range::all, octave_range::any, octave_range::is_true):
+	Make these functions work.
+
+	* ov.cc (octave_value::try_assignment_with_conversion): Remove
+	left over debugging print statements.
+
+Mon Oct 28 10:49:03 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strftime.c: Add missing #endif for previous change.
+
 Sun Oct 27 14:06:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-hist.cc (do_history): Rewite option parsing to avoid

@@ -1149,11 +1149,13 @@ read_mat_binary_data (istream& is, const string& filename,
     }
 
   // LEN includes the terminating character, and the file is also
-  // supposed to include it.
+  // supposed to include it, but apparently not all files do.  Either
+  // way, I think this should work.
 
-  name = new char [len];
+  name = new char [len+1];
   if (! is.read (name, len))
     goto data_read_error;
+  name[len] = '\0';
 
   dlen = nr * nc;
   if (dlen < 0)

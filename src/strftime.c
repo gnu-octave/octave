@@ -90,6 +90,7 @@
 #else
 #include <time.h>
 #endif
+#endif
 
 #ifndef STDC_HEADERS
 time_t mktime ();

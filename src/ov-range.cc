@@ -78,6 +78,24 @@ octave_range::try_narrowing_conversion (void)
   return retval;
 }
 
+octave_value
+octave_range::index (const octave_value_list& idx) const
+{
+  // XXX FIXME XXX -- this doesn't solve the problem of
+  //
+  //   a = 1:5; a(1, 1, 1)
+  //
+  // and similar constructions.  Hmm...
+
+  // XXX FIXME XXX -- using this constructor avoids possibly narrowing
+  // the range to a scalar value.  Need a better solution to this
+  // problem.
+
+  octave_value tmp (new octave_matrix (range.matrix_value ()));
+
+  return tmp.index (idx);
+}
+
 double
 octave_range::double_value (bool) const
 {
@@ -96,24 +114,42 @@ octave_range::double_value (bool) const
 octave_value
 octave_range::all (void) const
 {
-  octave_value retval;
-  error ("octave_range::all(): not implemented");
-  return retval;
+  // XXX FIXME XXX -- this is a potential waste of memory.
+
+  Matrix m = range.matrix_value ();
+
+  return m.all ();
 }
 
 octave_value
 octave_range::any (void) const
 {
-  octave_value retval;
-  error ("octave_range::any(): not implemented");
-  return retval;
+  return (double) (range.base () != 0.0 || range.nelem () > 1);
 }
 
 bool
 octave_range::is_true (void) const
 {
   bool retval = false;
-  error ("octave_range::is_true(): not implemented");
+
+  if (range.nelem () == 0)
+    {
+      int flag = Vpropagate_empty_matrices;
+
+      if (flag < 0)
+	warning ("empty range used in conditional expression");
+      else if (flag == 0)
+	error ("empty range used in conditional expression");
+    }
+  else
+    {
+      // XXX FIXME XXX -- this is a potential waste of memory.
+
+      Matrix m ((range.matrix_value () . all ()) . all ());
+
+      retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
+    }
+
   return retval;
 }
 

@@ -28,7 +28,7 @@
 ## constructed:
 ## values: @code{"ss"}, @code{"zp"}, or @code{"tf"}
 ##
-## @strong{Note} FIR initialized systems return @code{systype="tf"}.
+## FIR initialized systems return @code{systype="tf"}.
 ## @end deftypefn
 
 function systype = sysgettype (sys)

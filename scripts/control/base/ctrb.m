@@ -27,7 +27,7 @@
 ##
 ## of a system data structure or the pair (@var{a}, @var{b}).
 ##
-## @strong{Note} @code{ctrb} forms the controllability matrix.
+## @code{ctrb} forms the controllability matrix.
 ## The numerical properties of @code{is_controllable}
 ## are much better for controllability tests.
 ## @end deftypefn

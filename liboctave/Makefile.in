@@ -129,7 +129,7 @@ SOURCES := \
 	$(LIBOCT_READLINE_SOURCES) \
 	$(LIBOCT_PATHSEARCH_SOURCES)
 
-EXTRAS := mx-inlines.cc kpse.cc
+EXTRAS := mx-inlines.cc kpse.cc intNDArray.cc
 
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 

@@ -64,7 +64,7 @@ Represents a literal double-quote character, @samp{"}.
 Represents a literal single-quote character, @samp{'}.
 
 @item \0
-Represents the ``nul'' character, control-@, ASCII code 0.
+Represents the ``nul'' character, control-@@, ASCII code 0.
 
 @item \a
 Represents the ``alert'' character, control-g, ASCII code 7.

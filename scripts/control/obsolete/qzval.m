@@ -32,7 +32,7 @@
 ##
 ## @var{a} and @var{b} must be real matrices.
 ##
-## @strong{Note} @code{qzval} is obsolete; use @code{qz} instead.
+## @code{qzval} is obsolete; use @code{qz} instead.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

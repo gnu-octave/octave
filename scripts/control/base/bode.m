@@ -80,7 +80,6 @@
 ## the vector of frequency values used
 ## @end table
 ##
-## @strong{Notes}
 ## @enumerate
 ## @item If no output arguments are given, e.g.,
 ## @example

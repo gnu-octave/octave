@@ -27,7 +27,7 @@
 ##      @result{} 4
 ## @end example
 ##
-## @strong{Note:}  This function does not work for arrays of strings.
+## @strong{Caution:}  This function does not work for arrays of strings.
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>

@@ -44,7 +44,7 @@
 ## @item t
 ## sampling time; required if sys is purely continuous.
 ##
-## @strong{Note} If the 2nd argument is not a string, @code{c2d} assumes that
+## If the 2nd argument is not a string, @code{c2d} assumes that
 ## the 2nd argument is @var{t} and performs appropriate argument checks.
 ## @item "matched"
 ## Use the matched pole/zero equivalent transformation (currently only
@@ -66,7 +66,7 @@
 ## @end example
 ## via the matrix exponential or bilinear transform
 ##
-## @strong{Note} This function adds the suffix  @code{_d}
+## This function adds the suffix  @code{_d}
 ## to the names of the new discrete states.
 ## @end deftypefn
 

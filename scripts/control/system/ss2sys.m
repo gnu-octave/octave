@@ -72,7 +72,7 @@
 ##
 ## Unlike states, discrete/continous outputs may appear in any order.
 ##
-## @strong{Note} @code{sys2ss} returns a vector @var{yd} where
+## @code{sys2ss} returns a vector @var{yd} where
 ## @var{yd}(@var{outlist}) = 1; all other entries of @var{yd} are 0.
 ##
 ## @strong{Outputs}

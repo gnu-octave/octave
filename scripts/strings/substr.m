@@ -34,7 +34,6 @@
 ## @end example
 ##
 ## @quotation
-## @strong{Note:}
 ## This function is patterned after AWK.  You can get the same result by
 ## @code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.
 ## @end quotation

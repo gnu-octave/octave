@@ -1,3 +1,13 @@
+2004-08-31  John W. Eaton  <jwe@octave.org>
+
+	* data.cc (fill_matrix, identity_matrix): Convert class name to
+	oct_data_conv::data_type and switch on that.
+	(identity_matrix (int, int)): New template.
+	(identity_matrix (int, int, const std::string&)): Use it.
+
+	* ov.h (octave_type_traits, octave_array_type_traits): Move here.
+	* oct-stream.cc: From here.
+
 2004-08-31  David Bateman  <dbateman@free.fr>
 
 	* data.cc (Fzeros, Fones, Feye): Update help text for optional

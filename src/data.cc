@@ -1208,31 +1208,24 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   int nargin = args.length ();
 
-  std::string nm = "double";
+  oct_data_conv::data_type dt = oct_data_conv::dt_double;
 
-  int ndim = 0;
-
-  dim_vector dims;
+  dim_vector dims (1, 1);
   
-  // Check for type information.
-
   if (nargin > 0 && args(nargin-1).is_string ())
     {
-      nm = args(nargin-1).string_value();
+      std::string nm = args(nargin-1).string_value ();
       nargin--;
 
-      if (nm != "int8" && nm != "int16" && nm != "int32" && nm != "int64" &&
-	  nm != "uint8" && nm != "uint16" && nm != "uint32" && nm != "uint64"
-	  && nm != "double")
-	error ("%s: Unrecognized or illegal classname", fcn);
-    }
+      dt = oct_data_conv::string_to_data_type (nm);
 
-  // determine matrix dimension
+      if (error_state)
+	return retval;
+    }
 
   switch (nargin)
     {
     case 0:
-      ndim = 0;
       break;
 
     case 1:
@@ -1259,78 +1252,62 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   if (! error_state)
     {
-      ndim = dims.length ();
-
-      for (int i = ndim-1; i > 1; i--)
-	{
-	  if (dims(i) == 1)
-	    ndim--;
-	  else
-	    break;
-	}
-
-      dims.resize (ndim);
+      dims.chop_trailing_singletons ();
 
       check_dimensions (dims, fcn);
 
+      // XXX FIXME XXX -- perhaps this should be made extensible by
+      // using the class name to lookup a function to call to create
+      // the new value.
+
+      // Note that automatic narrowing will handle conversion from
+      // NDArray to scalar.
+
       if (! error_state)
 	{
-
-#define INT_FILL_MATRIX(TYPE) \
-	  { \
-	    switch (ndim)	\
-	      { \
-	      case 0: \
-	        retval = octave_ ## TYPE (val); \
-	        break; \
-		  \
-	      default: \
-	        retval = TYPE ## NDArray (dims, val); \
-	        break; \
-	      } \
-	  }
-
-	  if (nm == "int8")
-	    INT_FILL_MATRIX (int8)
-	  else if (nm == "int16")
-	    INT_FILL_MATRIX (int16)
-	  else if (nm == "int32")
-	    INT_FILL_MATRIX (int32)
-	  else if (nm == "int64")
-	    INT_FILL_MATRIX (int64)
-	  else if (nm == "uint8")
-	    INT_FILL_MATRIX (uint8)
-	  else if (nm == "uint16")
-	    INT_FILL_MATRIX (uint16)
-	  else if (nm == "uint32")
-	    INT_FILL_MATRIX (uint32)
-	  else if (nm == "uint64")
-	    INT_FILL_MATRIX (uint64)
-	  else
+	  switch (dt)
 	    {
-	      // Construct either scalar, matrix or N-d array.
-	      switch (ndim)
-		{
-		case 0:
-		  retval = val;
-		  break;
+	    case oct_data_conv::dt_int8:
+	      retval = int8NDArray (dims, val);
+	      break;
 
-		case 1:
-		  retval = Matrix (dims(0), dims(0), val);
-		  break;
+	    case oct_data_conv::dt_uint8:
+	      retval = uint8NDArray (dims, val);
+	      break;
 
-		case 2:
-		  retval = Matrix (dims(0), dims(1), val);
-		  break;
+	    case oct_data_conv::dt_int16:
+	      retval = int16NDArray (dims, val);
+	      break;
 
-		default:
-		  retval = NDArray (dims, val);
-		  break;
-		}
+	    case oct_data_conv::dt_uint16:
+	      retval = uint16NDArray (dims, val);
+	      break;
+
+	    case oct_data_conv::dt_int32:
+	      retval = int32NDArray (dims, val);
+	      break;
+
+	    case oct_data_conv::dt_uint32:
+	      retval = uint32NDArray (dims, val);
+	      break;
+
+	    case oct_data_conv::dt_int64:
+	      retval = int64NDArray (dims, val);
+	      break;
+
+	    case oct_data_conv::dt_uint64:
+	      retval = uint64NDArray (dims, val);
+	      break;
+
+	    case oct_data_conv::dt_single: // XXX FIXME XXX
+	    case oct_data_conv::dt_double:
+	      retval = NDArray (dims, val);
+	      break;
+
+	    default:
+	      error ("%s: invalid class name", fcn);
+	      break;
 	    }
-
-#undef INT_FILL_MATRIX
-
 	}
     }
 
@@ -1384,71 +1361,100 @@ val = zeros (n,m, \"uint8\")\n\
   return fill_matrix (args, 0.0, "zeros");
 }
 
+template <class MT>
+octave_value
+identity_matrix (int nr, int nc)
+{
+  octave_value retval;
+
+  typename octave_array_type_traits<MT>::element_type one (1);
+
+  if (nr == 1 && nc == 1)
+    retval = one;
+  else
+    {
+      dim_vector dims (nr, nc);
+
+      typename octave_array_type_traits<MT>::element_type zero (0);
+
+      MT m (dims, zero);
+
+      if (nr > 0 && nc > 0)
+	{
+	  int n = std::min (nr, nc);
+
+	  for (int i = 0; i < n; i++)
+	    m(i,i) = one;
+	}
+
+      retval = m;
+    }
+
+  return retval;
+}
+
 static octave_value
 identity_matrix (int nr, int nc, const std::string& nm)
 {
   octave_value retval;
 
-#define INT_EYE_MATRIX(TYPE) \
-  { \
-    if (nr == 1 && nc == 1) \
-      retval = octave_ ## TYPE (1); \
-    else \
-      { \
-	dim_vector dims (nr, nc); \
-	TYPE ## NDArray m (dims, octave_ ## TYPE (0));\
-	if (nr > 0 && nc > 0) \
-	  { \
-	    int n = std::min (nr, nc); \
-		\
-	    for (int i = 0; i < n; i++)	\
-	      m (i, i) = octave_ ## TYPE (1); \
-	  } \
-	retval = m; \
-      } \
-  }
+  oct_data_conv::data_type dt = oct_data_conv::string_to_data_type (nm);
 
-  if (nm == "int8")
-    INT_EYE_MATRIX (int8)
-  else if (nm == "int16")
-    INT_EYE_MATRIX (int16)
-  else if (nm == "int32")
-    INT_EYE_MATRIX (int32)
-  else if (nm == "int64")
-    INT_EYE_MATRIX (int64)
-  else if (nm == "uint8")
-    INT_EYE_MATRIX (uint8)
-  else if (nm == "uint16")
-    INT_EYE_MATRIX (uint16)
-  else if (nm == "uint32")
-    INT_EYE_MATRIX (uint32)
-  else if (nm == "uint64")
-    INT_EYE_MATRIX (uint64)
-  else
+  // XXX FIXME XXX -- perhaps this should be made extensible by using
+  // the class name to lookup a function to call to create the new
+  // value.
+
+  if (! error_state)
     {
-      if (nr == 1 && nc == 1)
-	retval = 1.0;
-      else
+      switch (dt)
 	{
+	case oct_data_conv::dt_int8:
+	  retval = identity_matrix<int8NDArray> (nr, nc);
+	  break;
 
-	  Matrix m (nr, nc, 0.0);
-      
-	  if (nr > 0 && nc > 0)
-	    {
-	      int n = std::min (nr, nc);
+	case oct_data_conv::dt_uint8:
+	  retval = identity_matrix<uint8NDArray> (nr, nc);
+	  break;
 
-	      for (int i = 0; i < n; i++)
-		m (i, i) = 1.0;
-	    }
+	case oct_data_conv::dt_int16:
+	  retval = identity_matrix<int16NDArray> (nr, nc);
+	  break;
 
-	  retval = m;
+	case oct_data_conv::dt_uint16:
+	  retval = identity_matrix<uint16NDArray> (nr, nc);
+	  break;
+
+	case oct_data_conv::dt_int32:
+	  retval = identity_matrix<int32NDArray> (nr, nc);
+	  break;
+
+	case oct_data_conv::dt_uint32:
+	  retval = identity_matrix<uint32NDArray> (nr, nc);
+	  break;
+
+	case oct_data_conv::dt_int64:
+	  retval = identity_matrix<int64NDArray> (nr, nc);
+	  break;
+
+	case oct_data_conv::dt_uint64:
+	  retval = identity_matrix<uint64NDArray> (nr, nc);
+	  break;
+
+	case oct_data_conv::dt_single: // XXX FIXME XXX
+	case oct_data_conv::dt_double:
+	  retval = identity_matrix<NDArray> (nr, nc);
+	  break;
+
+	default:
+	  error ("eye: invalid class name");
+	  break;
 	}
     }
 
-#undef INT_EYE_MATRIX
-
   return retval;
 }
+
+#undef INT_EYE_MATRIX
 
 DEFUN (eye, args, ,
   "-*- texinfo -*-\n\

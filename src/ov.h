@@ -951,6 +951,61 @@ extern void decrement_list_indent (void);
 
 extern void install_types (void);
 
+// XXX FIXME XXX -- these trait classes probably belong somehwere else...
+
+template <typename T>
+class
+octave_type_traits
+{
+public:
+  typedef T val_type;
+};
+
+#define OCTAVE_TYPE_TRAIT(T, VAL_T) \
+  template <> \
+  class \
+  octave_type_traits<T> \
+  { \
+  public: \
+    typedef VAL_T val_type; \
+  }
+
+OCTAVE_TYPE_TRAIT (octave_int8, octave_int8::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint8, octave_uint8::val_type);
+OCTAVE_TYPE_TRAIT (octave_int16, octave_int16::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint16, octave_uint16::val_type);
+OCTAVE_TYPE_TRAIT (octave_int32, octave_int32::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint32, octave_uint32::val_type);
+OCTAVE_TYPE_TRAIT (octave_int64, octave_int64::val_type);
+OCTAVE_TYPE_TRAIT (octave_uint64, octave_uint64::val_type);
+
+template <typename T>
+class octave_array_type_traits
+{
+public:
+  typedef T element_type;
+};
+
+#define OCTAVE_ARRAY_TYPE_TRAIT(T, ELT_T) \
+  template <> \
+  class \
+  octave_array_type_traits<T> \
+  { \
+  public: \
+    typedef ELT_T element_type; \
+  }
+
+OCTAVE_ARRAY_TYPE_TRAIT (charNDArray, char);
+OCTAVE_ARRAY_TYPE_TRAIT (int8NDArray, octave_int8);
+OCTAVE_ARRAY_TYPE_TRAIT (uint8NDArray, octave_uint8);
+OCTAVE_ARRAY_TYPE_TRAIT (int16NDArray, octave_int16);
+OCTAVE_ARRAY_TYPE_TRAIT (uint16NDArray, octave_uint16);
+OCTAVE_ARRAY_TYPE_TRAIT (int32NDArray, octave_int32);
+OCTAVE_ARRAY_TYPE_TRAIT (uint32NDArray, octave_uint32);
+OCTAVE_ARRAY_TYPE_TRAIT (int64NDArray, octave_int64);
+OCTAVE_ARRAY_TYPE_TRAIT (uint64NDArray, octave_uint64);
+OCTAVE_ARRAY_TYPE_TRAIT (NDArray, double);
+
 #endif
 
 /*

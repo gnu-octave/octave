@@ -435,8 +435,10 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   OCTAVE_MM_INT_ARITH_OPS (TYPE, TYPE) \
   OCTAVE_MM_INT_CMP_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_MM_INT_CMP_OPS (mmx, TYPE ## _, ) \
+  OCTAVE_MM_INT_CMP_OPS (mxm, , TYPE ## _) \
   OCTAVE_MM_INT_BOOL_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_MM_INT_BOOL_OPS (mmx, TYPE ## _, ) \
+  OCTAVE_MM_INT_BOOL_OPS (mxm, , TYPE ## _) \
   OCTAVE_MM_INT_ASSIGN_OPS (mm, TYPE ## _, TYPE ## _, TYPE ## _) \
   OCTAVE_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, , ) \
   OCTAVE_MM_CONV(TYPE ## _, complex_)
@@ -629,8 +631,10 @@ octave_value elem_xpow (T1 ## NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (TYPE, TYPE) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mmx, TYPE ## _, ) \
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (mxm, , TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mmx, TYPE ## _, ) \
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (mxm, , TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, ) \
   INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_complex_matrix, TYPE ## _m_complex_m_conv) \

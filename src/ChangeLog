@@ -3,6 +3,13 @@
 	* version.h (OCTAVE_VERSION): Now 2.1.60.
 	(OCTAVE_API_VERSION): Now api-v11.
 
+	* OPERATORS/op-int.h (OCTAVE_MM_INT_OPS): Include missing matrix
+	by int matrix ops.
+	(OCTAVE_INSTALL_MM_INT_OPS): Install them.
+
+	* OPERATORS/op-i64-i64.cc: Define and install missing int64 by
+	matrix and scalar ops.
+
 2004-09-24  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-inline (Finline): Attempt better auto-detection of

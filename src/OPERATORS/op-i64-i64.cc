@@ -85,20 +85,36 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 OCTAVE_S_INT_UNOPS (int64)
 OCTAVE_SS_INT_CMP_OPS (ss, int64_, int64_)
+OCTAVE_SS_INT_CMP_OPS (sx, int64_, )
+OCTAVE_SS_INT_CMP_OPS (xs, , int64_)
 OCTAVE_SS_INT_BOOL_OPS (ss, int64_, int64_, octave_int64 (0), octave_int64 (0))
+OCTAVE_SS_INT_BOOL_OPS (sx, int64_, , octave_int64 (0), 0)
+OCTAVE_SS_INT_BOOL_OPS (xs, , int64_, 0, octave_int64 (0))
 
 OCTAVE_SM_INT_CMP_OPS (sm, int64_, int64_)
+OCTAVE_SM_INT_CMP_OPS (xm, , int64_)
+OCTAVE_SM_INT_CMP_OPS (smx, int64_, )
 OCTAVE_SM_INT_BOOL_OPS (sm, int64_, int64_)
+OCTAVE_SM_INT_BOOL_OPS (xm, , int64_)
+OCTAVE_SM_INT_BOOL_OPS (smx, int64_, )
 
 OCTAVE_MS_INT_CMP_OPS (ms, int64_, int64_)
+OCTAVE_MS_INT_CMP_OPS (mx, int64_, )
+OCTAVE_MS_INT_CMP_OPS (mxs, , int64_)
 OCTAVE_MS_INT_BOOL_OPS (ms, int64_, int64_)
+OCTAVE_MS_INT_BOOL_OPS (mx, int64_, )
+OCTAVE_MS_INT_BOOL_OPS (mxs, , int64_)
 OCTAVE_MS_INT_ASSIGN_OPS (ms, int64_, int64_, int64_)
 OCTAVE_MS_INT_ASSIGN_OPS (mx, int64_, , )
 OCTAVE_MS_INT_ASSIGN_OPS (mc, int64_, complex_, )
 
 OCTAVE_M_INT_UNOPS (int64)
 OCTAVE_MM_INT_CMP_OPS (mm, int64_, int64_)
+OCTAVE_MM_INT_CMP_OPS (mmx, int64_, )
+OCTAVE_MM_INT_CMP_OPS (mxm, , int64_)
 OCTAVE_MM_INT_BOOL_OPS (mm, int64_, int64_)
+OCTAVE_MM_INT_BOOL_OPS (mmx, int64_, )
+OCTAVE_MM_INT_BOOL_OPS (mxm, , int64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mm, int64_, int64_, int64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmx, int64_, , )
 OCTAVE_MM_INT_ASSIGN_OPS (mmc, int64_, complex_, )
@@ -127,25 +143,43 @@ OCTAVE_MIXED_INT_CMP_OPS (int64, int32)
 OCTAVE_MIXED_INT_CMP_OPS (int64, uint32)
 OCTAVE_MIXED_INT_CMP_OPS (int64, uint64)
 
+OCTAVE_CONCAT_FN (int64);
+
 void
 install_i64_i64_ops (void)
 {
   OCTAVE_INSTALL_S_INT_UNOPS (int64);
   OCTAVE_INSTALL_SS_INT_CMP_OPS (ss, int64_, int64_);
+  OCTAVE_INSTALL_SS_INT_CMP_OPS (sx, int64_, );
+  OCTAVE_INSTALL_SS_INT_CMP_OPS (xs, , int64_);
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (ss, int64_, int64_);
+  OCTAVE_INSTALL_SS_INT_BOOL_OPS (sx, int64_, );
+  OCTAVE_INSTALL_SS_INT_BOOL_OPS (xs, , int64_);
 
   OCTAVE_INSTALL_SM_INT_CMP_OPS (sm, int64_, int64_);
+  OCTAVE_INSTALL_SM_INT_CMP_OPS (xm, , int64_);
+  OCTAVE_INSTALL_SM_INT_CMP_OPS (smx, int64_, );
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (sm, int64_, int64_);
+  OCTAVE_INSTALL_SM_INT_BOOL_OPS (xm, , int64_);
+  OCTAVE_INSTALL_SM_INT_BOOL_OPS (smx, int64_, );
 
   OCTAVE_INSTALL_MS_INT_CMP_OPS (ms, int64_, int64_);
+  OCTAVE_INSTALL_MS_INT_CMP_OPS (mx, int64_, );
+  OCTAVE_INSTALL_MS_INT_CMP_OPS (mxs, , int64_);
   OCTAVE_INSTALL_MS_INT_BOOL_OPS (ms, int64_, int64_);
+  OCTAVE_INSTALL_MS_INT_BOOL_OPS (mx, int64_, );
+  OCTAVE_INSTALL_MS_INT_BOOL_OPS (mxs, , int64_);
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (ms, int64_, int64_);
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mx, int64_, );
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mc, int64_, complex_);
 
   OCTAVE_INSTALL_M_INT_UNOPS (int64);
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mm, int64_, int64_);
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (mmx, int64_, );
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (mxm, , int64_);
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mm, int64_, int64_);
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (mmx, int64_, );
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (mxm, , int64_);
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mm, int64_, int64_);
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, int64_, );
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmc, int64_, complex_);
@@ -181,6 +215,8 @@ install_i64_i64_ops (void)
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int64, int32);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int64, uint32);
   OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int64, uint64);
+
+  OCTAVE_INSTALL_CONCAT_FN (int64);
 }
 
 /*

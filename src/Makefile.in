@@ -58,7 +58,8 @@ DLD_SRC := f-balance.cc f-chol.cc f-colloc.cc f-dassl.cc f-det.cc \
 DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
-	defun-int.h dirfns.h dynamic-ld.h error.h file-io.h fnmatch.h \
+	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
+	file-io.h fnmatch.h \
 	getopt.h gripes.h help.h idx-vector.h input.h lex.h \
 	load-save.h mappers.h missing-math.h octave.h octave-hist.h \
 	oct-map.h oct-obj.h oct-str.h pager.h parse.h pathlen.h \
@@ -77,16 +78,17 @@ TI_SRC := Array-string.cc Array-tc.cc Map-tc.cc DLList-fi.cc \
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
 SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
-	dynamic-ld.cc erf.c erfc.c error.cc file-io.cc filemode.c \
+	dynamic-ld.cc erf.c erfc.c error.cc file-info.cc file-io.cc \
+	filemode.c \
 	fnmatch.c getopt.c getopt1.c gripes.cc help.cc idx-vector.cc \
-	input.cc lex.l load-save.cc mappers.cc octave.cc \
+	input.cc lex.l load-save.cc mappers.cc mkdir.c octave.cc \
 	octave-hist.cc oct-map.cc oct-obj.cc oct-str.cc pager.cc \
-	parse.y pr-output.cc procstream.cc resource.cc sighandlers.cc \
-	strcasecmp.c strncase.c strfns.cc strftime.c symtab.cc \
-	sysdep.cc tempname.c timefns.cc tempnam.c token.cc \
-	tree-base.cc tree-cmd.cc tree-const.cc tree-expr.cc \
-	tree-misc.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
-	utils.cc variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc
+	parse.y pr-output.cc procstream.cc rename.c resource.cc \
+	rmdir.c sighandlers.cc strcasecmp.c strncase.c strfns.cc \
+	strftime.c symtab.cc sysdep.cc tempname.c timefns.cc \
+	tempnam.c token.cc tree-base.cc tree-cmd.cc tree-const.cc \
+	tree-expr.cc tree-misc.cc tree-plot.cc unwind-prot.cc \
+	user-prefs.cc utils.cc variables.cc xdiv.cc xpow.cc
 
 TEMPLATE_SRC = Map.cc SLStack.cc
 
@@ -118,11 +120,11 @@ OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
 	../libcruft/libcruft.a @LIBREADLINE@ @LIBPLPLOT@ \
 	../kpathsea/kpathsea.a @LIBDLD@
 
-DISTFILES = Makefile.in mkdefs mkbuiltins \
-	parse.cc lex.cc y.tab.h $(INCLUDES) $(DLD_SRC) $(SOURCES) \
-	$(TEMPLATE_SRC) $(TI_SRC)
+DISTFILES = Makefile.in mkdefs mkbuiltins parse.cc lex.cc y.tab.h \
+	safe-xstat.cin safe-xstat.hin \
+	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
-all: defaults.h octave
+all: defaults.h safe-stat.h safe-lstat.h octave
 .PHONY: all
 
 octave: $(OBJECTS) $(DLD_OBJ) $(OCTAVE_LIBS) liboctdld.a
@@ -203,7 +205,7 @@ dist: parse.cc lex.cc
 # Special rules -- these files need special things to be defined.
 
 defaults.h: defaults.h.in ../Makeconf Makefile
-	@echo "making defaults.h from defaults.h.in"
+	@echo "making $@ from $<"
 	@(sed < $< > $@.tmp \
 	  -e "s;%DEFAULT_PAGER%;\"${DEFAULT_PAGER}\";" \
 	  -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
@@ -225,6 +227,32 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 	  -e "s;%CXXLIB_LIST%;\"${CXXLIB_LIST}\";" \
 	  -e "s;%CXXLIB_PATH%;\"${CXXLIB_PATH}\";")
 	@$(top_srcdir)/move-if-change $@.tmp $@
+
+extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'
+extract_lstat = sed 's/@l@/l/g; s/@L@/L/g; s/	*@LSTAT_ONLY@//'
+
+safe-lstat.c: safe-xstat.cin
+	@echo "making $@ from $<"
+	@$(extract_lstat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-lstat.h: safe-xstat.hin
+	@echo "making $@ from $<"
+	@$(extract_lstat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-stat.c: safe-xstat.cin
+	@echo "making $@ from $<"
+	@$(extract_stat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-stat.h: safe-xstat.hin
+	@echo "making $@ from $<"
+	@$(extract_stat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-stat.o: safe-stat.h
+safe-lstat.o: safe-lstat.h safe-stat.h
 
 check: all
 .PHONY: check

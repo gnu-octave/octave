@@ -31,7 +31,7 @@ function [Uret, Ucols] = krylovb (A, V, k, eps1, pflg)
     case (5)
       [Uret, H, Ucols] = krylov (A, V, k, eps1, pflg);
     otherwise
-      usage ("[Uret, Ucols] = krylovb (A, V, k ,eps1, pflg));
+      usage ("[Uret, Ucols] = krylovb (A, V, k ,eps1, pflg)");
   endswitch
 
 endfunction

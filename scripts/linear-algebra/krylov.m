@@ -43,7 +43,7 @@
 
 ## Author: A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
-function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
+function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
   defeps = 1e-12;
 
@@ -81,6 +81,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
   ## check for trivial solution
   if (Vnrm == 0)
     Uret = [];
+    H = [];
     nu = 0;
     return;
   endif

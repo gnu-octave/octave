@@ -117,10 +117,10 @@ mx_sort (NDArray &m, bool return_idx, int dim)
     return retval;
 
   dim_vector dv = m.dims ();
-  int ns = dv (dim);
-  int iter = dv.numel () / ns;
-  int stride = 1;
-  for (int i = 0; i < dim; i++)
+  unsigned int ns = dv (dim);
+  unsigned int iter = dv.numel () / ns;
+  unsigned int stride = 1;
+  for (unsigned int i = 0; i < (unsigned int)dim; i++)
     stride *= dv(i);
 
 #if defined(HAVE_IEEE754_COMPLIANCE) && defined(EIGHT_BYTE_INT)
@@ -135,15 +135,15 @@ mx_sort (NDArray &m, bool return_idx, int dim)
       OCTAVE_LOCAL_BUFFER (vec_index *, vi, ns);
       OCTAVE_LOCAL_BUFFER (vec_index, vix, ns);
       
-      for (int i = 0; i < ns; i++)
+      for (unsigned int i = 0; i < ns; i++)
 	vi[i] = &vix[i];
 
       NDArray idx (dv);
       
-      for (int j = 0; j < iter; j++)
+      for (unsigned int j = 0; j < iter; j++)
 	{
-	  int offset = j;
-	  int offset2 = 0;
+	  unsigned int offset = j;
+	  unsigned int offset2 = 0;
 	  while (offset >= stride)
 	    {
 	      offset -= stride;
@@ -154,7 +154,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	  /* Flip the data in the vector so that int compares on 
 	   * IEEE754 give the correct ordering
 	   */
-	  for (int i = 0; i < ns; i++)
+	  for (unsigned int i = 0; i < ns; i++)
 	    {
 	      vi[i]->vec = FloatFlip (p[i*stride + offset]);
 	      vi[i]->indx = i + 1;
@@ -165,7 +165,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	  /* Flip the data out of the vector so that int compares on
 	   *  IEEE754 give the correct ordering
 	   */
-	  for (int i = 0; i < ns; i++)
+	  for (unsigned int i = 0; i < ns; i++)
 	    {
 	      p[i*stride + offset] = IFloatFlip (vi[i]->vec);
 	      idx(i*stride + offset) = vi[i]->indx;
@@ -200,16 +200,15 @@ mx_sort (NDArray &m, bool return_idx, int dim)
   else
     {
       octave_sort<unsigned EIGHT_BYTE_INT> ieee754_sort;
-      OCTAVE_LOCAL_BUFFER (unsigned EIGHT_BYTE_INT, vi, ns);
  
       if (stride == 1)
 	{
-	  for (int j = 0; j < iter; j++)
+	  for (unsigned int j = 0; j < iter; j++)
 	    {
 	      /* Flip the data in the vector so that int compares on 
 	       * IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		p[i] = FloatFlip (p[i]);
 	      
 	      ieee754_sort.sort (p, ns);
@@ -217,7 +216,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	      /* Flip the data out of the vector so that int compares on
 	       *  IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		p[i] = IFloatFlip (p[i]);
 
 	      /* There are two representations of NaN. One will be sorted to
@@ -241,10 +240,12 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	}
       else
 	{
-	  for (int j = 0; j < iter; j++)
+	  OCTAVE_LOCAL_BUFFER (unsigned EIGHT_BYTE_INT, vi, ns);
+
+	  for (unsigned int j = 0; j < iter; j++)
 	    {
-	      int offset = j;
-	      int offset2 = 0;
+	      unsigned int offset = j;
+	      unsigned int offset2 = 0;
 	      while (offset >= stride)
 		{
 		  offset -= stride;
@@ -255,7 +256,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	      /* Flip the data in the vector so that int compares on 
 	       * IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		vi[i] = FloatFlip (p[i*stride + offset]);
 
 	      ieee754_sort.sort (vi, ns);
@@ -263,7 +264,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	      /* Flip the data out of the vector so that int compares on
 	       *  IEEE754 give the correct ordering
 	       */
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		p[i*stride + offset] = IFloatFlip (vi[i]);
 	      
 	      /* There are two representations of NaN. One will be sorted to
@@ -291,18 +292,18 @@ mx_sort (NDArray &m, bool return_idx, int dim)
       OCTAVE_LOCAL_BUFFER (vec_index *, vi, ns);
       OCTAVE_LOCAL_BUFFER (vec_index, vix, ns);
 
-      for (int i = 0; i < ns; i++)
+      for (unsigned int i = 0; i < ns; i++)
 	vi[i] = &vix[i];
 
       NDArray idx (dv);
       
       if (stride == 1)
 	{
-	  for (int j = 0; j < iter; j++)
+	  for (unsigned int j = 0; j < iter; j++)
 	    {
-	      int offset = j * ns;
+	      unsigned int offset = j * ns;
 
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		{
 		  vi[i]->vec = v[i];
 		  vi[i]->indx = i + 1;
@@ -310,7 +311,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 
 	      indexed_double_sort.sort (vi, ns);
 	  
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		{
 		  v[i] = vi[i]->vec;
 		  idx(i + offset) = vi[i]->indx;
@@ -320,10 +321,10 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	}
       else
 	{
-	  for (int j = 0; j < iter; j++)
+	  for (unsigned int j = 0; j < iter; j++)
 	    {
-	      int offset = j;
-	      int offset2 = 0;
+	      unsigned int offset = j;
+	      unsigned int offset2 = 0;
 	      while (offset >= stride)
 		{
 		  offset -= stride;
@@ -331,7 +332,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 		}
 	      offset += offset2 * stride * ns;
 	      
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		{
 		  vi[i]->vec = v[i*stride + offset];
 		  vi[i]->indx = i + 1;
@@ -339,7 +340,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 
 	      indexed_double_sort.sort (vi, ns);
 	      
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		{
 		  v[i*stride+offset] = vi[i]->vec;
 		  idx(i*stride+offset) = vi[i]->indx;
@@ -354,7 +355,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
       octave_sort<double> double_sort (double_compare);
 
       if (stride == 1)
-	for (int j = 0; j < iter; j++)
+	for (unsigned int j = 0; j < iter; j++)
 	  {
 	    double_sort.sort (v, ns);
 	    v += ns;
@@ -362,10 +363,10 @@ mx_sort (NDArray &m, bool return_idx, int dim)
       else
 	{
 	  OCTAVE_LOCAL_BUFFER (double, vi, ns);
-	  for (int j = 0; j < iter; j++) 
+	  for (unsigned int j = 0; j < iter; j++) 
 	    {
-	      int offset = j;
-	      int offset2 = 0;
+	      unsigned int offset = j;
+	      unsigned int offset2 = 0;
 	      while (offset >= stride)
 		{
 		  offset -= stride;
@@ -373,12 +374,12 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 		}
 	      offset += offset2 * stride * ns;
 
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		vi[i] = v[i*stride + offset];
 
 	      double_sort.sort (vi, ns);
 	      
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		v[i*stride + offset] = vi[i];
 	    }
 	}
@@ -397,10 +398,10 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
     return retval;
 
   dim_vector dv = m.dims ();
-  int ns = dv (dim);
-  int iter = dv.numel () / ns;
-  int stride = 1;
-  for (int i = 0; i < dim; i++)
+  unsigned int ns = dv (dim);
+  unsigned int iter = dv.numel () / ns;
+  unsigned int stride = 1;
+  for (unsigned int i = 0; i < (unsigned int)dim; i++)
     stride *= dv(i);
 
   octave_sort<complex_vec_index *> indexed_double_sort (complex_compare);
@@ -410,18 +411,18 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
   OCTAVE_LOCAL_BUFFER (complex_vec_index *, vi, ns);
   OCTAVE_LOCAL_BUFFER (complex_vec_index, vix, ns);
 
-  for (int i = 0; i < ns; i++)
+  for (unsigned int i = 0; i < ns; i++)
     vi[i] = &vix[i];
 
   NDArray idx (dv);
 
   if (stride == 1)
     {
-      for (int j = 0; j < iter; j++)
+      for (unsigned int j = 0; j < iter; j++)
 	{
-	  int offset = j * ns;
+	  unsigned int offset = j * ns;
 
-	  for (int i = 0; i < ns; i++)
+	  for (unsigned int i = 0; i < ns; i++)
 	    {
 	      vi[i]->vec = v[i];
 	      vi[i]->indx = i + 1;
@@ -431,7 +432,7 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
       
 	  if (return_idx)
 	    {
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		{
 		  v[i] = vi[i]->vec;
 		  idx(i + offset) = vi[i]->indx;
@@ -439,7 +440,7 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
 	    }
 	  else
 	    {
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		v[i] = vi[i]->vec;
 	    }
 	  v += ns;
@@ -447,10 +448,10 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
     }
   else
     {
-      for (int j = 0; j < iter; j++)
+      for (unsigned int j = 0; j < iter; j++)
 	{
-	  int offset = j;
-	  int offset2 = 0;
+	  unsigned int offset = j;
+	  unsigned int offset2 = 0;
 	  while (offset >= stride)
 	    {
 	      offset -= stride;
@@ -458,7 +459,7 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
 	    }
 	  offset += offset2 * stride * ns;
 
-	  for (int i = 0; i < ns; i++)
+	  for (unsigned int i = 0; i < ns; i++)
 	    {
 	      vi[i]->vec = v[i*stride + offset];
 	      vi[i]->indx = i + 1;
@@ -468,7 +469,7 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
       
 	  if (return_idx)
 	    {
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		{
 		  v[i*stride + offset] = vi[i]->vec;
 		  idx(i*stride + offset) = vi[i]->indx;
@@ -476,7 +477,7 @@ mx_sort (ComplexNDArray &m, bool return_idx, int dim)
 	    }
 	  else
 	    {
-	      for (int i = 0; i < ns; i++)
+	      for (unsigned int i = 0; i < ns; i++)
 		v[i*stride + offset] = vi[i]->vec;
 	    }
 	}

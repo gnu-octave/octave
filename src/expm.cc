@@ -100,13 +100,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
       return retval;
     }
 
-  int i, j;
-
   char* balance_job = "B";	// variables for balancing
-
-  int sqpow;		// power for scaling and squaring
-  double inf_norm;	// norm of preconditioned matrix
-  int minus_one_j;	// used in computing pade approx
 
   if (arg.is_real_type ())
     {
@@ -121,10 +115,12 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 
       // Preconditioning step 1: trace normalization.
 
-      for (i = 0; i < nc; i++)
+      for (int i = 0; i < nc; i++)
 	trshift += m.elem (i, i);
+
       trshift /= nc;
-      for (i = 0; i < nc; i++)
+
+      for (int i = 0; i < nc; i++)
 	m.elem (i, i) -= trshift;
 
       // Preconditioning step 2: balancing.
@@ -136,13 +132,13 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
       // Preconditioning step 3: scaling.
 
       ColumnVector work(nc);
-      inf_norm = F77_FCN (dlange, DLANGE) ("I", nc, nc,
-					   m.fortran_vec (), nc,
-					   work.fortran_vec ());
+      double inf_norm
+	= F77_FCN (dlange, DLANGE) ("I", nc, nc, m.fortran_vec (),nc,
+				    work.fortran_vec ());
 
-      sqpow = (int) (inf_norm > 0.0
-		     ? (1.0 + log (inf_norm) / log (2.0))
-		     : 0.0);
+      int sqpow = (int) (inf_norm > 0.0
+			 ? (1.0 + log (inf_norm) / log (2.0))
+			 : 0.0);
 
       // Check whether we need to square at all.
 
@@ -151,10 +147,11 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 
       if (sqpow > 0)
 	{
-	  for (inf_norm = 1.0, i = 0; i < sqpow; i++)
-	    inf_norm *= 2.0;
+	  double scale_factor = 1.0;
+	  for (int i = 0; i < sqpow; i++)
+	    scale_factor *= 2.0;
 
-	  m = m / inf_norm;
+	  m = m / scale_factor;
 	}
 
       // npp, dpp: pade' approx polynomial matrices.
@@ -164,8 +161,8 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 
       // Now powers a^8 ... a^1.
 
-      minus_one_j = -1;
-      for (j = 7; j >= 0; j--)
+      int minus_one_j = -1;
+      for (int j = 7; j >= 0; j--)
 	{
 	  npp = m * npp + m * padec[j];
 	  dpp = m * dpp + m * (minus_one_j * padec[j]);
@@ -175,7 +172,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
       // Zero power.
 
       dpp = -dpp;
-      for(j = 0; j < nc; j++)
+      for(int j = 0; j < nc; j++)
 	{
 	  npp.elem (j, j) += 1.0;
 	  dpp.elem (j, j) += 1.0;
@@ -218,10 +215,12 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 
       // Preconditioning step 1: trace normalization.
 
-      for (i = 0; i < nc; i++)
+      for (int i = 0; i < nc; i++)
 	trshift += m.elem (i, i);
+
       trshift /= nc;
-      for (i = 0; i < nc; i++)
+
+      for (int i = 0; i < nc; i++)
 	m.elem (i, i) -= trshift;
 
       // Preconditioning step 2: eigenvalue balancing.
@@ -233,13 +232,13 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
       // Preconditioning step 3: scaling.
 
       ColumnVector work (nc);
-      inf_norm = F77_FCN (zlange, ZLANGE) ("I", nc, nc,
-					   m.fortran_vec (), nc,
-					   work.fortran_vec ());
+      double inf_norm
+	= F77_FCN (zlange, ZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
+				    work.fortran_vec ());
 
-      sqpow = (int) (inf_norm > 0.0
-		     ? (1.0 + log (inf_norm) / log (2.0))
-		     : 0.0);
+      int sqpow = (int) (inf_norm > 0.0
+			 ? (1.0 + log (inf_norm) / log (2.0))
+			 : 0.0);
 
       // Check whether we need to square at all.
 
@@ -248,10 +247,11 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 
       if (sqpow > 0)
 	{
-	  for (inf_norm = 1.0, i = 0; i < sqpow; i++)
-	    inf_norm *= 2.0;
+	  double scale_factor = 1.0;
+	  for (int i = 0; i < sqpow; i++)
+	    scale_factor *= 2.0;
 
-	  m = m / inf_norm;
+	  m = m / scale_factor;
 	}
 
       // npp, dpp: pade' approx polynomial matrices.
@@ -261,8 +261,8 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 
       // Now powers a^8 ... a^1.
 
-      minus_one_j = -1;
-      for (j = 7; j >= 0; j--)
+      int minus_one_j = -1;
+      for (int j = 7; j >= 0; j--)
 	{
 	  npp = m * npp + m * padec[j];
 	  dpp = m * dpp + m * (minus_one_j * padec[j]);
@@ -272,7 +272,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
       // Zero power.
 
       dpp = -dpp;
-      for (j = 0; j < nc; j++)
+      for (int j = 0; j < nc; j++)
 	{
 	  npp.elem (j, j) += 1.0;
 	  dpp.elem (j, j) += 1.0;

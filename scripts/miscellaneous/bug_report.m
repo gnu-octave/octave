@@ -37,31 +37,34 @@ function bug_report ()
   subject = "";
   subject = input ("Subject: ", "s");
 
-  ## XXX FIXME XXX -- really need a better system command, one that will
-  ## automatically send output from the command to stdout...
+  unwind_protect
 
-  prefs = octave_tmp_file_name ();
+    prefs = tmpnam ();
 
-  if (! isempty (prefs))
-    fopen (prefs, "w");
-    dump_prefs (prefs);
-    fclose (prefs);
-  endif
+    if (! isempty (prefs))
+      fopen (prefs, "w");
+      dump_prefs (prefs);
+      fclose (prefs);
+    endif
 
-  cmd = "octave-bug";
+    cmd = "octave-bug";
 
-  if (length (subject) > 0)
-    cmd = sprintf ("%s -s \"%s\"", cmd, subject);
-  endif
+    if (length (subject) > 0)
+      cmd = sprintf ("%s -s \"%s\"", cmd, subject);
+    endif
 
-  if (! isempty (prefs))
-    cmd = sprintf ("%s %s", cmd, prefs);
-  endif
+    if (! isempty (prefs))
+      cmd = sprintf ("%s %s", cmd, prefs);
+    endif
 
-  system (cmd);
+    system (cmd);
 
-  if (! isempty (prefs))
-    system (sprintf ("rm -f %s", prefs));
-  endif
+  unwind_protect_cleanup
+
+    if (! isempty (prefs))
+      unlink (prefs);
+    endif
+
+  end_unwind_protect
 
 endfunction

@@ -36,22 +36,28 @@ function X = record (sec, sampling_rate)
     usage ("X = record (sec [, sampling_rate])");
   endif
 
-  file = octave_tmp_file_name ();
+  unwind_protect
 
-  input ("Please hit ENTER and speak afterwards!\n", 1);
+    file = tmpnam ();
 
-  cmd = sprintf ("dd if=/dev/dsp of=%s bs=%d count=%d",
-                 file, sampling_rate, sec)
+    input ("Please hit ENTER and speak afterwards!\n", 1);
 
-  system (cmd);
+    cmd = sprintf ("dd if=/dev/dsp of=%s bs=%d count=%d",
+                   file, sampling_rate, sec)
 
-  num = fopen (file, "r");
+    system (cmd);
 
-  [Y, c] = fread (num, sampling_rate * sec, "uchar");
+    num = fopen (file, "r");
 
-  fclose (num);
+    [Y, c] = fread (num, sampling_rate * sec, "uchar");
 
-  unlink (file);
+    fclose (num);
+
+  unwind_protect_cleanup
+
+    unlink (file);
+
+  end_unwind_protect
 
   X = Y - 127;
 

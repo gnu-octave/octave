@@ -1,5 +1,7 @@
 Sat Nov  2 20:44:55 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* file-io.cc (Ftmpnam): Rename from Foctave_temp_file_name.
+
 	* Makefile.in (DLD_SRC): Move time.cc and getrusage.cc here from
 	SOURCES.  Add getpwent.cc.
 

@@ -1232,8 +1232,8 @@ DEFUN (pclose, args, ,
   return retval;
 }
 
-DEFUN (octave_tmp_file_name, args, ,
- "octave_tmp_file_name ()\n\
+DEFUN (tmpnam, args, ,
+ "tmpnam ()\n\
 Return unique temporary file name.")
 {
   octave_value retval;
@@ -1241,10 +1241,12 @@ Return unique temporary file name.")
   if (args.length () == 0)
     retval = oct_tempnam ();
   else
-    print_usage ("octave_tmp_file_name");
+    print_usage ("tmpnam");
 
   return retval;
 }
+
+DEFALIAS (octave_tmp_file_name, tmpnam);
 
 static int
 convert (int x, int ibase, int obase)

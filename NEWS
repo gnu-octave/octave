@@ -190,13 +190,13 @@ Summary of changes for version 2.0:
   * New audio functions from Andreas Weingessel
     <Andreas.Weingessel@ci.tuwien.ac.at>.
 
-      lin2mu    -- linear to mu-law encoding
-      loadaudio -- load an audio file to a vector
-      mu2lin    -- mu-law to linear encoding
-      playaudio -- play an audio file
-      record    -- record sound and store in vector
-      saveaudio -- save a vector as an audio file
-      setaudio  -- executes mixer shell command
+      lin2mu     -- linear to mu-law encoding
+      loadaudio  -- load an audio file to a vector
+      mu2lin     -- mu-law to linear encoding
+      playaudio  -- play an audio file
+      record     -- record sound and store in vector
+      saveaudio  -- save a vector as an audio file
+      setaudio   -- executes mixer shell command
 
   * New plotting functions from Vinayak Dutt.  Ones dealing with
     multiple plots on one page require features from gnuplot 3.6beta
@@ -247,8 +247,8 @@ Summary of changes for version 2.0:
 
     These functions return new strings.
 
-      tolower   -- convert to lower case
-      toupper   -- convert to upper case
+      tolower  -- convert to lower case
+      toupper  -- convert to upper case
 
   * New function, fgetl.  Both fgetl and fgets accept an optional
     second argument that specifies a maximum number of characters to
@@ -278,21 +278,21 @@ Summary of changes for version 2.0:
 
   * New io/subprocess functions:
 
-      fputs        -- write a string to a file with no formatting
-      popen2       -- start a subprocess with 2-way communication
-      mkfifo       -- create a FIFO special file
-      popen        -- open a pipe to a subprocess
-      pclose       -- close a pipe from a subprocess
-      waitpid      -- check the status of or wait for subprocesses
+      fputs    -- write a string to a file with no formatting
+      popen2   -- start a subprocess with 2-way communication
+      mkfifo   -- create a FIFO special file
+      popen    -- open a pipe to a subprocess
+      pclose   -- close a pipe from a subprocess
+      waitpid  -- check the status of or wait for subprocesses
 
   * New time functions:
 
-      asctime   -- format time structure according to local format
-      ctime     -- equivalent to `asctime (localtime (TMSTRUCT))'
-      gmtime    -- return time structure corresponding to UTC
-      localtime -- return time structure corresponding to local time zone
-      strftime  -- print given time structure using specified format
-      time      -- return current time
+      asctime    -- format time structure according to local format
+      ctime      -- equivalent to `asctime (localtime (TMSTRUCT))'
+      gmtime     -- return time structure corresponding to UTC
+      localtime  -- return time structure corresponding to local time zone
+      strftime   -- print given time structure using specified format
+      time       -- return current time
 
     The `clock' and `date' functions are now implemented in M-files
     using these basic functions.
@@ -310,11 +310,12 @@ Summary of changes for version 2.0:
 
   * Other new functions:
 
-      atexit             -- register functions to be called when Octave exits
-      putenv             -- define an environment variable
-      meshgrid           -- compatible with Matlab's meshgrid function
-      tilde_expand       -- perform tilde expansion on string
-      completion_matches -- perform command completion on string
+      tmpnam              -- replaces octave_tmp_file_name
+      atexit              -- register functions to be called when Octave exits
+      putenv              -- define an environment variable
+      meshgrid            -- compatible with Matlab's meshgrid function
+      tilde_expand        -- perform tilde expansion on string
+      completion_matches  -- perform command completion on string
 
   * The New function octave_config_info returns a structure containing
     information about how Octave was configured and compiled.

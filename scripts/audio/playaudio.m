@@ -37,8 +37,6 @@
 
 function playaudio (name, ext)
 
-  file = octave_tmp_file_name ();
-
   usage_msg = "playaudio (name [, ext])  or  playaudio (X)";
 
   if (nargin == 1 && is_vector (name) && ! isstr (name))
@@ -53,11 +51,15 @@ function playaudio (name, ext)
       endif
     endif
     X = name + 127;
-    num = fopen (file, "w");
-    c = fwrite (num, X, "uchar");
-    fclose (num);
-    system (sprintf ("cat %s > /dev/dsp", file));
-    unlink (file);
+    unwind_protect
+      file = tmpnam ();
+      num = fopen (file, "w");
+      c = fwrite (num, X, "uchar");
+      fclose (num);
+      system (sprintf ("cat %s > /dev/dsp", file));
+    unwind_protect_cleanup
+      unlink (file);
+    end_unwind_protect
   elseif (nargin >= 1 && isstr (name))
     ## play a file
     if (nargin == 1)

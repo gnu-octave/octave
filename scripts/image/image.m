@@ -43,21 +43,23 @@ function image (x, zoom)
     usage ("image (matrix, [zoom])");
   endif
 
-  ## XXX FIXME XXX -- we should use octave_tmp_file_name.
-
-  rnd_str = num2str (fix (rand * 10000));
-  ppm_name = ["image.", rnd_str, ".ppm" ];
+  ppm_name = tmpnam ();
 
   saveimage (ppm_name, x, "ppm");
 
   ## Start the viewer.  Try xv, then xloadimage.
 
   xv = sprintf ("xv -expand %f %s", zoom, ppm_name);
+
   xloadimage = sprintf ("xloadimage -zoom %f %s", zoom*100, ppm_name);
+
   rm = sprintf ("rm -f %s", ppm_name);
 
-  command = sprintf ("( %s || %s && %s ) > /dev/null 2>&1 &", ...
-                     xv, xloadimage, rm);
+  ## Need to let the shell clean up the tmp file because we are putting
+  ## the viewer in the background.
+
+  command = sprintf ("( %s || %s && %s ) > /dev/null 2>&1 &",
+		     xv, xloadimage, rm);
 
   system (command);
 

@@ -633,6 +633,7 @@ terminal_prep_terminal ()
   ttybuff.c_oflag &= (~ONLCR & ~OCRNL);
 #endif
   ttybuff.c_lflag &= (~ICANON & ~ECHO);
+
   ttybuff.c_cc[VMIN] = 1;
   ttybuff.c_cc[VTIME] = 0;
 

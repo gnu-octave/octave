@@ -166,6 +166,8 @@ static bracket_brace_paren_nesting_level nesting_level;
 
 static int Vwhitespace_in_literal_matrix;
 
+static bool Vwarn_matlab_incompatible = false;
+
 static bool Vwarn_separator_insert = false;
 
 static bool Vwarn_single_quote_string = false;
@@ -196,6 +198,10 @@ static yum_yum eat_whitespace (void);
 static yum_yum eat_continuation (void);
 static void maybe_warn_separator_insert (char sep);
 static void gripe_single_quote_string (void);
+static void gripe_matlab_incompatible (const std::string& msg);
+static void maybe_gripe_matlab_incompatible_comment (char c);
+static void gripe_matlab_incompatible_continuation (void);
+static void gripe_matlab_incompatible_operator (const std::string& op);
 
 %}
 
@@ -210,10 +216,9 @@ Im	[iIjJ]
 CCHAR	[#%]
 COMMENT	({CCHAR}.*{NL})
 SNLCMT	({SNL}|{COMMENT})
-NOTEQ	((~=)|(!=)|(<>))
-POW	((\*\*)|(\^))
-EPOW	(\.{POW})
 NOT	((\~)|(\!))
+POW     ((\*\*)|(\^))
+EPOW    (\.{POW})
 IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
@@ -469,6 +474,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {CONT}{S}*{NL} |
 {CONT}{S}*{COMMENT} {
+    if (yytext[0] == '\\')
+      gripe_matlab_incompatible_continuation ();
     scan_for_comments (yytext);
     promptflag--;
     current_input_column = 1;
@@ -525,8 +532,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (nesting_level.none ())
       return '\n';
-
-    if (nesting_level.is_bracket ())
+    else if (nesting_level.is_paren ())
+      gripe_matlab_incompatible ("bare newline inside parentheses");
+    else if (nesting_level.is_bracket ())
       return LEXICAL_ERROR;
   }
 
@@ -609,6 +617,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
+    maybe_gripe_matlab_incompatible_comment (yytext[0]);
+
     if (nesting_level.none ())
       return '\n';
     else if (nesting_level.is_bracket ())
@@ -619,18 +629,20 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // Other operators.
 %}
 
-".+"	{ BIN_OP_RETURN (EPLUS, false); }
-".-"	{ BIN_OP_RETURN (EMINUS, false); }
+".+"	{ XBIN_OP_RETURN (EPLUS, false); }
+".-"	{ XBIN_OP_RETURN (EMINUS, false); }
 ".*"	{ BIN_OP_RETURN (EMUL, false); }
 "./"	{ BIN_OP_RETURN (EDIV, false); }
 ".\\"	{ BIN_OP_RETURN (ELEFTDIV, false); }
-{EPOW}	{ BIN_OP_RETURN (EPOW, false); }
+".^"	{ BIN_OP_RETURN (EPOW, false); }
+".**"	{ XBIN_OP_RETURN (EPOW, false); }
 ".'"	{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true); }
-"++"	{ do_comma_insert_check (); BIN_OP_RETURN (PLUS_PLUS, true); }
-"--"	{ do_comma_insert_check (); BIN_OP_RETURN (MINUS_MINUS, true); }
+"++"	{ do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true); }
+"--"	{ do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true); }
 "<="	{ BIN_OP_RETURN (EXPR_LE, false); }
 "=="	{ BIN_OP_RETURN (EXPR_EQ, false); }
-{NOTEQ}	{ BIN_OP_RETURN (EXPR_NE, false); }
+"~="	{ BIN_OP_RETURN (EXPR_NE, false); }
+"!="	{ XBIN_OP_RETURN (EXPR_NE, false); }
 ">="	{ BIN_OP_RETURN (EXPR_GE, false); }
 "&"	{ BIN_OP_RETURN (EXPR_AND, false); }
 "|"	{ BIN_OP_RETURN (EXPR_OR, false); }
@@ -641,17 +653,22 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "\\"	{ BIN_OP_RETURN (LEFTDIV, false); }
 ";"	{ BIN_OP_RETURN (';', true); }
 ","	{ BIN_OP_RETURN (',', true); }
-{POW}	{ BIN_OP_RETURN (POW, false); }
+"^"	{ BIN_OP_RETURN (POW, false); }
+"**"	{ XBIN_OP_RETURN (POW, false); }
 "="	{ BIN_OP_RETURN ('=', true); }
 "&&"	{ BIN_OP_RETURN (EXPR_AND_AND, false); }
 "||"	{ BIN_OP_RETURN (EXPR_OR_OR, false); }
-"<<"	{ BIN_OP_RETURN (LSHIFT, false); }
-">>"	{ BIN_OP_RETURN (RSHIFT, false); }
+"<<"	{ XBIN_OP_RETURN (LSHIFT, false); }
+">>"	{ XBIN_OP_RETURN (RSHIFT, false); }
 
 {NOT} {
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
       lexer_flags.past_plot_range = true;
-    BIN_OP_RETURN (EXPR_NOT, false);
+
+    if (yytext[0] == '~')
+      BIN_OP_RETURN (EXPR_NOT, false);
+    else
+      XBIN_OP_RETURN (EXPR_NOT, false);
   }
 
 "+" { 
@@ -697,22 +714,22 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     return '@';
   }
 
-"+="	{ BIN_OP_RETURN (ADD_EQ, false); }
-"-="	{ BIN_OP_RETURN (SUB_EQ, false); }
-"*="	{ BIN_OP_RETURN (MUL_EQ, false); }
-"/="	{ BIN_OP_RETURN (DIV_EQ, false); }
-"\\="	{ BIN_OP_RETURN (LEFTDIV_EQ, false); }
-".+="	{ BIN_OP_RETURN (ADD_EQ, false); }
-".-="	{ BIN_OP_RETURN (SUB_EQ, false); }
-".*="	{ BIN_OP_RETURN (EMUL_EQ, false); }
-"./="	{ BIN_OP_RETURN (EDIV_EQ, false); }
-".\\="	{ BIN_OP_RETURN (ELEFTDIV_EQ, false); }
-{POW}=  { BIN_OP_RETURN (POW_EQ, false); }
-{EPOW}= { BIN_OP_RETURN (EPOW_EQ, false); }
-"&="	{ BIN_OP_RETURN (AND_EQ, false); }
-"|="	{ BIN_OP_RETURN (OR_EQ, false); }
-"<<="	{ BIN_OP_RETURN (LSHIFT_EQ, false); }
-">>="	{ BIN_OP_RETURN (RSHIFT_EQ, false); }
+"+="	{ XBIN_OP_RETURN (ADD_EQ, false); }
+"-="	{ XBIN_OP_RETURN (SUB_EQ, false); }
+"*="	{ XBIN_OP_RETURN (MUL_EQ, false); }
+"/="	{ XBIN_OP_RETURN (DIV_EQ, false); }
+"\\="	{ XBIN_OP_RETURN (LEFTDIV_EQ, false); }
+".+="	{ XBIN_OP_RETURN (ADD_EQ, false); }
+".-="	{ XBIN_OP_RETURN (SUB_EQ, false); }
+".*="	{ XBIN_OP_RETURN (EMUL_EQ, false); }
+"./="	{ XBIN_OP_RETURN (EDIV_EQ, false); }
+".\\="	{ XBIN_OP_RETURN (ELEFTDIV_EQ, false); }
+{POW}=  { XBIN_OP_RETURN (POW_EQ, false); }
+{EPOW}= { XBIN_OP_RETURN (EPOW_EQ, false); }
+"&="	{ XBIN_OP_RETURN (AND_EQ, false); }
+"|="	{ XBIN_OP_RETURN (OR_EQ, false); }
+"<<="	{ XBIN_OP_RETURN (LSHIFT_EQ, false); }
+">>="	{ XBIN_OP_RETURN (RSHIFT_EQ, false); }
 
 "{" {
     nesting_level.brace ();
@@ -1275,8 +1292,9 @@ grab_help_text (void)
 	{
 	  switch (c)
 	    {
-	    case '%':
 	    case '#':
+	    case '%':
+	      maybe_gripe_matlab_incompatible_comment (yytext[0]);
 	      in_comment = true;
 	      begin_comment = true;
 	      break;
@@ -1537,6 +1555,7 @@ scan_for_comments (const char *text)
 	    }
 	  else
 	    {
+	      maybe_gripe_matlab_incompatible_comment (c);
 	      in_comment = true;
 	      beginning_of_comment = true;
 	    }
@@ -1644,6 +1663,7 @@ eat_whitespace (void)
 	    }
 	  else
 	    {
+	      maybe_gripe_matlab_incompatible_comment (c);
 	      in_comment = true;
 	      beginning_of_comment = true;
 	    }
@@ -1802,6 +1822,7 @@ have_continuation (bool trailing_comments_ok)
 		}
 	      else
 		{
+		  maybe_gripe_matlab_incompatible_comment (c);
 		  in_comment = true;
 		  beginning_of_comment = true;
 		}
@@ -1818,6 +1839,7 @@ have_continuation (bool trailing_comments_ok)
 	    }
 	  current_input_column = 0;
 	  promptflag--;
+	  gripe_matlab_incompatible_continuation ();
 	  return true;
 
 	case '\r':
@@ -1835,6 +1857,7 @@ have_continuation (bool trailing_comments_ok)
 		}
 	      current_input_column = 0;
 	      promptflag--;
+	      gripe_matlab_incompatible_continuation ();
 	      return true;
 	    }
 
@@ -1990,7 +2013,9 @@ handle_string (char delim, int text_style)
 		  yylval.tok_val = new token (s, bos_line, bos_col);
 		  token_stack.push (yylval.tok_val);
 
-		  if (delim == '\'')
+		  if (delim == '"')
+		    gripe_matlab_incompatible ("\" used as string delimiter");
+		  else if (delim == '\'')
 		    gripe_single_quote_string ();
 
 		  return TEXT;
@@ -2411,6 +2436,7 @@ check_for_garbage_after_fcn_def (void)
 	    }
 	  else
 	    {
+	      maybe_gripe_matlab_incompatible_comment (c);
 	      in_comment = true;
 	      beginning_of_comment = true;
 	    }
@@ -2550,6 +2576,44 @@ gripe_single_quote_string (void)
     }
 }
 
+static void
+gripe_matlab_incompatible (const std::string& msg)
+{
+  if (Vwarn_matlab_incompatible)
+    warning ("potential Matlab compatibility problem: %s", msg.c_str ());
+}
+
+static void
+maybe_gripe_matlab_incompatible_comment (char c)
+{
+  if (c == '#')
+    gripe_matlab_incompatible ("# used as comment character");
+}
+
+static void
+gripe_matlab_incompatible_continuation (void)
+{
+  gripe_matlab_incompatible ("\\ used as line continuation marker");
+}
+
+static void
+gripe_matlab_incompatible_operator (const std::string& op)
+{
+  std::string t = op;
+  int n = t.length ();
+  if (t[n-1] == '\n')
+    t.resize (n-1);
+  gripe_matlab_incompatible (t + " used as operator");
+}
+
+static int
+warn_matlab_incompatible (void)
+{
+  Vwarn_matlab_incompatible = check_preference ("warn_matlab_incompatible");
+
+  return 0;
+}
+
 static int
 warn_separator_insert (void)
 {
@@ -2589,6 +2653,13 @@ whitespace_in_literal_matrix (void)
 void
 symbols_of_lex (void)
 {
+  DEFVAR (warn_matlab_incompatible, 0.0, warn_matlab_incompatible,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_matlab_incompatible\n\
+Print warnings for Octave language features that may cause\n\
+compatibility problems with Matlab.\n\
+@end defvr");
+
   DEFVAR (warn_separator_insert, 0.0, warn_separator_insert,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_separator_insert\n\

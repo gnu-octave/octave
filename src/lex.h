@@ -82,6 +82,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   while (0)
 
+#define XBIN_OP_RETURN(tok, convert) \
+  do \
+    { \
+	gripe_matlab_incompatible_operator (yytext); \
+        BIN_OP_RETURN (tok, convert); \
+    } \
+  while (0)
+
 // XXX FIXME XXX -- these input buffer things should be members of an
 // parser input stream class.
 

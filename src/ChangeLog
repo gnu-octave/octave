@@ -1,5 +1,16 @@
 2002-08-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l: Warn for various Matlab-incompatibilities.
+	No longer accept <> for NOTEQ.
+	(gripe_matlab_incompatible): New function.
+	(maybe_gripe_matlab_incompatible_comment): Likewise.
+	(gripe_matlab_incompatible_continuation): Likewise.
+	(gripe_matlab_incompatible_operator): Likewise.
+	(warn_matlab_incompatible): New function.
+	(Vwarn_matlab_incompatible): New static variable.
+	(symbols_of_lex): Add a DEFVAR for it.
+	
+
 	* file-io.cc (fopen_mode_to_ios_mode): Default value is std::ios::in.
 	Return std::ios::openmode instead of int.
 

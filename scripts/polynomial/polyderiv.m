@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-function p = polyderiv (p)
+function q = polyderiv (p)
 
 # usage: polyderiv (p)
 #
@@ -38,13 +38,13 @@ function p = polyderiv (p)
 
   lp = length (p);
   if (lp == 1)
-    p = 0;
+    q = 0;
     return;
   elseif (lp == 0)
-    p = [];
+    q = [];
     return;
   end
 
-  p = p (1:(lp-1)) .* [(lp-1):-1:1];
+  q = p (1:(lp-1)) .* [(lp-1):-1:1];
 
 endfunction

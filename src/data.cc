@@ -633,8 +633,8 @@ m = size (x, 2): return number of columns in x")
 	}
       else if (nargout == 2)
 	{
-	  retval(1) = (double) nc;
-	  retval(0) = (double) nr;
+	  retval(1) = static_cast<double> (nc);
+	  retval(0) = static_cast<double> (nr);
 	}
     }
   else if (nargin == 2 && nargout < 2)
@@ -646,9 +646,9 @@ m = size (x, 2): return number of columns in x")
       else
 	{
 	  if (nd == 1)
-	    retval(0) = (double) (args(0).rows ());
+	    retval(0) = static_cast<double> (args(0).rows ());
 	  else if (nd == 2)
-	    retval(0) = (double) (args(0).columns ());
+	    retval(0) = static_cast<double> (args(0).columns ());
 	  else
 	    error ("size: invalid second argument -- expecting 1 or 2");
 	}
@@ -798,7 +798,7 @@ S must be a structure and NAME must be a string.")
 	{
 	  string s = args(1).string_value ();
 	  octave_value tmp = args(0).struct_elt_val (s, true);
-	  retval = (double) tmp.is_defined ();
+	  retval = static_cast<double> (tmp.is_defined ());
 	}
       else
 	print_usage ("struct_contains");

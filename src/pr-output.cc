@@ -246,8 +246,8 @@ set_format (double d, int& fw)
 
   double d_abs = d < 0.0 ? -d : d;
 
-  int digits = (inf_or_nan || d_abs == 0.0) ? 0
-    : (int) floor (log10 (d_abs) + 1.0);
+  int digits = (inf_or_nan || d_abs == 0.0)
+    ? 0 : static_cast<int> (floor (log10 (d_abs) + 1.0));
 
   set_real_format (sign, digits, inf_or_nan, nan_or_int, fw);
 }
@@ -380,8 +380,11 @@ set_format (const Matrix& m, int& fw)
   double max_abs = pr_max_internal (m_abs);
   double min_abs = pr_min_internal (m_abs);
 
-  int x_max = max_abs == 0.0 ? 0 : (int) floor (log10 (max_abs) + 1.0);
-  int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
+  int x_max = max_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (max_abs) + 1.0));
+
+  int x_min = min_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
 
   set_real_matrix_format (sign, x_max, x_min, inf_or_nan,
 			  int_or_inf_or_nan, fw);
@@ -529,8 +532,11 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double r_abs = rp < 0.0 ? -rp : rp;
   double i_abs = ip < 0.0 ? -ip : ip;
 
-  int r_x = r_abs == 0.0 ? 0 : (int) floor (log10 (r_abs) + 1.0);
-  int i_x = i_abs == 0.0 ? 0 : (int) floor (log10 (i_abs) + 1.0);
+  int r_x = r_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (r_abs) + 1.0));
+
+  int i_x = i_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (i_abs) + 1.0));
 
   int x_max, x_min;
 
@@ -698,11 +704,17 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
   double i_max_abs = pr_max_internal (i_m_abs);
   double i_min_abs = pr_min_internal (i_m_abs);
 
-  int r_x_max = r_max_abs == 0.0 ? 0 : (int) floor (log10 (r_max_abs) + 1.0);
-  int r_x_min = r_min_abs == 0.0 ? 0 : (int) floor (log10 (r_min_abs) + 1.0);
+  int r_x_max = r_max_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (r_max_abs) + 1.0));
 
-  int i_x_max = i_max_abs == 0.0 ? 0 : (int) floor (log10 (i_max_abs) + 1.0);
-  int i_x_min = i_min_abs == 0.0 ? 0 : (int) floor (log10 (i_min_abs) + 1.0);
+  int r_x_min = r_min_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (r_min_abs) + 1.0));
+
+  int i_x_max = i_max_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (i_max_abs) + 1.0));
+
+  int i_x_min = i_min_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (i_min_abs) + 1.0));
 
   int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
   int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
@@ -833,8 +845,11 @@ set_format (const Range& r, int& fw)
   double max_abs = r_max < 0.0 ? -r_max : r_max;
   double min_abs = r_min < 0.0 ? -r_min : r_min;
 
-  int x_max = max_abs == 0.0 ? 0 : (int) floor (log10 (max_abs) + 1.0);
-  int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
+  int x_max = max_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (max_abs) + 1.0));
+
+  int x_min = min_abs == 0.0
+    ? 0 : static_cast<int> (floor (log10 (min_abs) + 1.0));
 
   set_range_format (sign, x_max, x_min, all_ints, fw);
 }
@@ -922,12 +937,12 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	      || flt_fmt == oct_mach_info::unknown)
 	    {
 	      for (size_t i = 0; i < sizeof (double); i++)
-		os.form ("%02x", (int) tmp.i[i]);
+		os.form ("%02x", static_cast<int> (tmp.i[i]));
 	    }
 	  else
 	    {
 	      for (int i = sizeof (double) - 1; i >= 0; i--)
-		os.form ("%02x", (int) tmp.i[i]);
+		os.form ("%02x", static_cast<int> (tmp.i[i]));
 	    }
 	}
       else if (bit_format)
@@ -1548,8 +1563,8 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  bind_builtin_variable ("output_precision", (double) prec);
-  bind_builtin_variable ("output_max_field_width", (double) fw);
+  bind_builtin_variable ("output_precision", static_cast<double> (prec));
+  bind_builtin_variable ("output_max_field_width", static_cast<double> (fw));
 }
 
 static void
@@ -1704,7 +1719,7 @@ output_max_field_width (void)
       && ! xisnan (val))
     {
       int ival = NINT (val);
-      if (ival > 0 && (double) ival == val)
+      if (ival > 0 && ival == val)
 	{
 	  Voutput_max_field_width = ival;
 	  return 0;
@@ -1722,7 +1737,7 @@ output_precision (void)
       && ! xisnan (val))
     {
       int ival = NINT (val);
-      if (ival >= 0 && (double) ival == val)
+      if (ival >= 0 && ival == val)
 	{
 	  Voutput_precision = ival;
 	  return 0;

@@ -122,14 +122,14 @@ octave_value_typeinfo::do_register_type (const string& name)
 
       types.resize (len, string ());
 
-      binary_ops.resize ((int) octave_value::num_binary_ops, len, len,
-			 (binary_op_fcn) 0);
+      binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
+			 len, len, static_cast<binary_op_fcn> (0));
 
-      assign_ops.resize (len, len, (assign_op_fcn) 0);
+      assign_ops.resize (len, len, static_cast<assign_op_fcn> (0));
 
       pref_assign_conv.resize (len, len, -1);
 
-      widening_ops.resize (len, len, (type_conv_fcn) 0);
+      widening_ops.resize (len, len, static_cast<type_conv_fcn> (0));
     }
 
   types (i) = name;
@@ -144,7 +144,7 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
 					      int t1, int t2,
 					      binary_op_fcn f)
 {
-  binary_ops.checkelem ((int) op, t1, t2) = f;
+  binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
 
   return false;
 }
@@ -182,7 +182,7 @@ binary_op_fcn
 octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,
 					    int t1, int t2)
 {
-  return binary_ops.checkelem ((int) op, t1, t2);
+  return binary_ops.checkelem (static_cast<int> (op), t1, t2);
 }
 
 assign_op_fcn

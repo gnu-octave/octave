@@ -46,8 +46,8 @@ Range::all_elements_are_ints (void) const
   // will also be an integer, even if the limit is not.
 
   return (! (xisnan (rng_base) || xisnan (rng_inc))
-	  && (double) NINT (rng_base) == rng_base
-	  && (double) NINT (rng_inc) == rng_inc);
+	  && NINT (rng_base) == rng_base
+	  && NINT (rng_inc) == rng_inc);
 }
 
 Matrix
@@ -237,7 +237,7 @@ Range::nelem_internal (void) const
 
   double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 
-  int n_intervals = (int) (tmp > 0.0 ? tmp : 0);
+  int n_intervals = (tmp > 0.0 ? static_cast<int> (tmp) : 0);
 
   return (n_intervals >= INT_MAX - 1) ? -1 : n_intervals;
 }

@@ -343,7 +343,7 @@ otherwise, return 0.")
 
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
 
-  retval = (double) (sr && sr->is_linked_to_global ());
+  retval = static_cast<double> (sr && sr->is_linked_to_global ());
 
   return retval;
 }
@@ -642,7 +642,7 @@ static void
 safe_fclose (void *f)
 {
   if (f)
-    fclose ((FILE *) f);
+    fclose (static_cast<FILE *> (f));
 }
 
 static int
@@ -671,7 +671,7 @@ parse_fcn_file (int exec_script, const string& ff)
 
   FILE *ffile = get_input_from_file (ff, 0);
 
-  add_unwind_protect (safe_fclose, (void *) ffile);
+  add_unwind_protect (safe_fclose, ffile);
 
   if (ffile)
     {
@@ -1542,7 +1542,7 @@ history_size (void)
       && ! xisnan (val))
     {
       int ival = NINT (val);
-      if (ival >= 0 && (double) ival == val)
+      if (ival >= 0 && ival == val)
 	{
 	  Vhistory_size = ival;
 	  octave_command_history.set_size (ival);
@@ -1616,7 +1616,7 @@ symbols_of_variables (void)
   DEFCONST (argv, , 0, 0,
     "the command line arguments this program was invoked with");
 
-  DEFVAR (echo_executing_commands, (double) ECHO_OFF, 0,
+  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF), 0,
 	  echo_executing_commands,
     "echo commands as they are executed");
 

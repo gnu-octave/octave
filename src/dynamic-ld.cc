@@ -118,11 +118,11 @@ shl_resolve_octave_reference (const string& name, const string& file)
   // specification of the libraries at runtime.  Instead, they are
   // specified when the .oct file is created.
 
-  void *handle = shl_load (file.c_str (), BIND_DEFERRED, 0L);
+  shl_t handle = shl_load (file.c_str (), BIND_DEFERRED, 0L);
 
   if (handle)
     {
-      int status = shl_findsym ((shl_t *) &handle, name.c_str (),
+      int status = shl_findsym (&handle, name.c_str (),
 				TYPE_UNDEFINED, retval);
 
       if (status < 0)

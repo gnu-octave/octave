@@ -608,8 +608,8 @@ DEFUN (isieee, , ,
   oct_mach_info::float_format flt_fmt =
     oct_mach_info::native_float_format ();
 
-  return (double) (flt_fmt == oct_mach_info::ieee_little_endian
-		   || flt_fmt == oct_mach_info::ieee_big_endian);
+  return static_cast<double> (flt_fmt == oct_mach_info::ieee_little_endian
+			      || flt_fmt == oct_mach_info::ieee_big_endian);
 }
 
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)

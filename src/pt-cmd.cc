@@ -572,7 +572,7 @@ tree_try_catch_command::~tree_try_catch_command (void)
 static void
 do_catch_code (void *ptr)
 {
-  tree_statement_list *list = (tree_statement_list *) ptr;
+  tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
   // Set up for letting the user print any messages from errors that
   // occurred in the body of the try_catch statement.
@@ -661,7 +661,7 @@ tree_unwind_protect_command::~tree_unwind_protect_command (void)
 static void
 do_unwind_protect_cleanup_code (void *ptr)
 {
-  tree_statement_list *list = (tree_statement_list *) ptr;
+  tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
   // We want to run the cleanup code without error_state being set,
   // but we need to restore its value, so that any errors encountered

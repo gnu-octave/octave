@@ -73,7 +73,7 @@ FEGrid::FEGrid (int nel, double left, double right)
 
   elem.resize (nel+1);
 
-  double width = (right - left) / (double) nel;
+  double width = (right - left) / nel;
 
   for (int i = 0; i <= nel; i++)
     elem.elem (i) = i * width + left;

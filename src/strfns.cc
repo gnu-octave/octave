@@ -44,7 +44,7 @@ DEFUN (isstr, args, ,
   int nargin = args.length ();
 
   if (nargin == 1 && args(0).is_defined ())
-    retval = (double) args(0).is_string ();
+    retval = static_cast<double> (args(0).is_string ());
   else
     print_usage ("isstr");
 

@@ -1,3 +1,10 @@
+Sun Mar  9 03:44:52 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc, FEGrid.cc, Range.cc, dMatrix.cc, data-conv.cc,
+	dir-ops.cc, file-ops.h, idx-vector.cc, idx-vector.h, lo-ieee.cc,
+	lo-mappers.cc, oct-alloc.cc: Use `static_cast<T> (val)' instead of
+	old C-style `(T) val' casts.
+
 Thu Mar  6 20:20:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (operator >>): Return if an error occurs instead of

@@ -45,15 +45,15 @@ mk_tm_map (struct tm *tm, double fraction)
   Octave_map m;
 
   m ["usec"] = fraction * 1e6;
-  m ["sec"] = (double) tm->tm_sec;
-  m ["min"] = (double) tm->tm_min;
-  m ["hour"] = (double) tm->tm_hour;
-  m ["mday"] = (double) tm->tm_mday;
-  m ["mon"] = (double) tm->tm_mon;
-  m ["year"] = (double) tm->tm_year;
-  m ["wday"] = (double) tm->tm_wday;
-  m ["yday"] = (double) tm->tm_yday;
-  m ["isdst"] = (double) tm->tm_isdst;
+  m ["sec"] = static_cast<double> (tm->tm_sec);
+  m ["min"] = static_cast<double> (tm->tm_min);
+  m ["hour"] = static_cast<double> (tm->tm_hour);
+  m ["mday"] = static_cast<double> (tm->tm_mday);
+  m ["mon"] = static_cast<double> (tm->tm_mon);
+  m ["year"] = static_cast<double> (tm->tm_year);
+  m ["wday"] = static_cast<double> (tm->tm_wday);
+  m ["yday"] = static_cast<double> (tm->tm_yday);
+  m ["isdst"] = static_cast<double> (tm->tm_isdst);
 #if defined (HAVE_TM_ZONE)
   m ["zone"]  = tm->tm_zone;
 #elif defined (HAVE_TZNAME)
@@ -118,7 +118,7 @@ seconds since the epoch.")
 
 #endif
  
-  return (double) now + fraction;
+  return static_cast<double> (now + fraction);
 }
 
 DEFUN_DLD (gmtime, args, ,
@@ -202,7 +202,7 @@ DEFUN_DLD (mktime, args, ,
       struct tm *tm = extract_tm (map, fraction);
 
       if (! error_state)
-	retval = (double) mktime (tm) + fraction;
+	retval = static_cast<double> (mktime (tm) + fraction);
     }
   else
     print_usage ("mktime");

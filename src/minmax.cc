@@ -466,7 +466,8 @@ DEFUN_DLD (min, args, nargout,
 	  for (int i = 0; i < len; i++)
 	    {
 	      int tmp = index.elem (i) + 1;
-	      idx.elem (i) = (tmp <= 0) ? octave_NaN : (double) tmp;
+	      idx.elem (i) = (tmp <= 0)
+		? octave_NaN : static_cast<double> (tmp);
 	    }
 
 	  retval(1) = octave_value (idx, 0);
@@ -679,7 +680,8 @@ DEFUN_DLD (max, args, nargout,
 	  for (int i = 0; i < len; i++)
 	    {
 	      int tmp = index.elem (i) + 1;
-	      idx.elem (i) = (tmp <= 0) ? octave_NaN : (double) tmp;
+	      idx.elem (i) = (tmp <= 0)
+		? octave_NaN : static_cast<double> (tmp);
 	    }
 
 	  retval(1) = octave_value (idx, 0);

@@ -136,7 +136,7 @@ create_index_array (int n)
   vs (0) = v (k-1); \
   for (int i = 1; i < n; i++) \
     { \
-      k = l ((int) idx (i-1)); \
+      k = l (static_cast<int> (idx (i-1))); \
       idx (i) = k; \
       vs (i) = v (k-1); \
     }
@@ -147,7 +147,7 @@ create_index_array (int n)
   ms (0, j) = m (k-1, j); \
   for (int i = 1; i < nr; i++) \
     { \
-      k = l ((int) idx (i-1, j)); \
+      k = l (static_cast<int> (idx (i-1, j))); \
       idx (i, j) = k; \
       ms (i, j) = m (k-1, j); \
     }

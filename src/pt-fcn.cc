@@ -79,8 +79,8 @@ tree_function::install_nargin_and_nargout (void)
 void
 tree_function::bind_nargin_and_nargout (int nargin, int nargout)
 {
-  nargin_sr->define ((double) nargin);
-  nargout_sr->define ((double) nargout);
+  nargin_sr->define (static_cast<double> (nargin));
+  nargout_sr->define (static_cast<double> (nargout));
 }
 
 tree_function::~tree_function (void)
@@ -225,14 +225,14 @@ tree_function::eval (bool print)
 static void
 pop_symbol_table_context (void *table)
 {
-  symbol_table *tmp = (symbol_table *) table;
+  symbol_table *tmp = static_cast<symbol_table *> (table);
   tmp->pop_context ();
 }
 
 static void
 delete_vr_list (void *list)
 {
-  tree_va_return_list *tmp = (tree_va_return_list *) list;
+  tree_va_return_list *tmp = static_cast<tree_va_return_list *> (list);
   tmp->clear ();
   delete tmp;
 }
@@ -240,19 +240,20 @@ delete_vr_list (void *list)
 static void
 clear_symbol_table (void *table)
 {
-  symbol_table *tmp = (symbol_table *) table;
+  symbol_table *tmp = static_cast<symbol_table *> (table);
   tmp->clear ();
 }
 
 static void
 unprotect_function (void *sr_arg)
 {
-  symbol_record *sr = (symbol_record *) sr_arg;
+  symbol_record *sr = static_cast<symbol_record *> (sr_arg);
   sr->unprotect ();
 }
 
 octave_value_list
-tree_function::eval (bool /* print */, int nargout, const octave_value_list& args)
+tree_function::eval (bool /* print */, int nargout,
+		     const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -272,13 +273,13 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
   if (symtab_entry && ! symtab_entry->is_read_only ())
     {
       symtab_entry->protect ();
-      add_unwind_protect (unprotect_function, (void *) symtab_entry);
+      add_unwind_protect (unprotect_function, symtab_entry);
     }
 
   if (call_depth > 1)
     {
       sym_tab->push_context ();
-      add_unwind_protect (pop_symbol_table_context, (void *) sym_tab);
+      add_unwind_protect (pop_symbol_table_context, sym_tab);
 
       if (vr_list)
 	{
@@ -290,7 +291,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 	  // Clear and delete the new one before restoring the old
 	  // one.
 
-	  add_unwind_protect (delete_vr_list, (void *) vr_list);
+	  add_unwind_protect (delete_vr_list, vr_list);
 	}
     }
 
@@ -299,7 +300,7 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 
   // Force symbols to be undefined again when this function exits.
 
-  add_unwind_protect (clear_symbol_table, (void *) sym_tab);
+  add_unwind_protect (clear_symbol_table, sym_tab);
 
   // Save old and set current symbol table context, for
   // eval_undefined_error().

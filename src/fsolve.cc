@@ -176,7 +176,7 @@ where y and x are vectors.")
   retval(0) = soln, 1;
 
   if (nargout > 1)
-    retval(1) = (double) info;
+    retval(1) = static_cast<double> (info);
 
   return retval;
 }

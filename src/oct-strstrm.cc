@@ -60,11 +60,11 @@ octave_base_strstream::tell (void) const
     {
       // XXX FIXME XXX -- shouldn't have to do this!
 
-      streambuf *sb = ((octave_base_strstream *)this)->rdbuf ();
+      streambuf *sb = (static_cast<octave_base_strstream *>(this))->rdbuf ();
 
       if (sb)
 	{
-	  retval = (long) sb->seekoff (0, ios::cur);
+	  retval = static_cast<long> (sb->seekoff (0, ios::cur));
 
 	  if (bad ())
 	    retval = -1;

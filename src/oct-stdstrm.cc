@@ -73,7 +73,7 @@ octave_base_stdiostream::tell (void) const
 
       if (sb)
 	{
-	  retval = (long) sb->seekoff (0, ios::cur);
+	  retval = static_cast<long> (sb->seekoff (0, ios::cur));
 
 	  if (bad ())
 	    retval = -1;

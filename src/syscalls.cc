@@ -64,24 +64,24 @@ mk_stat_map (const file_stat& fs)
 {
   Octave_map m;
 
-  m["dev"] = (double) fs.dev ();
-  m["ino"] = (double) fs.ino ();
+  m["dev"] = static_cast<double> (fs.dev ());
+  m["ino"] = static_cast<double> (fs.ino ());
   m["modestr"] = fs.mode_as_string ();
-  m["nlink"] = (double) fs.nlink ();
-  m["uid"] = (double) fs.uid ();
-  m["gid"] = (double) fs.gid ();
+  m["nlink"] = static_cast<double> (fs.nlink ());
+  m["uid"] = static_cast<double> (fs.uid ());
+  m["gid"] = static_cast<double> (fs.gid ());
 #if defined (HAVE_ST_RDEV)
-  m["rdev"] = (double) fs.rdev ();
+  m["rdev"] = static_cast<double> (fs.rdev ());
 #endif
-  m["size"] = (double) fs.size ();
-  m["atime"] = (double) fs.atime ();
-  m["mtime"] = (double) fs.mtime ();
-  m["ctime"] = (double) fs.ctime ();
+  m["size"] = static_cast<double> (fs.size ());
+  m["atime"] = static_cast<double> (fs.atime ());
+  m["mtime"] = static_cast<double> (fs.mtime ());
+  m["ctime"] = static_cast<double> (fs.ctime ());
 #if defined (HAVE_ST_BLKSIZE)
-  m["blksize"] = (double) fs.blksize ();
+  m["blksize"] = static_cast<double> (fs.blksize ());
 #endif
 #if defined (HAVE_ST_BLOCKS)
-  m["blocks"] = (double) fs.blocks ();
+  m["blocks"] = static_cast<double> (fs.blocks ());
 #endif
 
   return m;
@@ -120,7 +120,7 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 		{
 		  int status = dup2 (i_old, i_new);
 
-		  retval(0) = (double) status;
+		  retval(0) = static_cast<double> (status);
 
 		  if (status < 0)
 		    retval(1) = strerror (errno);
@@ -206,7 +206,7 @@ be nonzero, and MSG will contain a system-dependent error message.")
 	    {
 	      int status = execvp (exec_file.c_str (), exec_args);
 
-	      retval(0) = (double) status;
+	      retval(0) = static_cast<double> (status);
 
 	      if (status < 0)
 		retval(1) = strerror (errno);
@@ -262,7 +262,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	    {
 	      int status = fcntl (fid, req, arg);
 
-	      retval(0) = (double) status;
+	      retval(0) = static_cast<double> (status);
 
 	      if (status < 0)
 		retval(1) = strerror (errno);
@@ -301,7 +301,7 @@ has occured, and MSG contains a system-dependent error message.")
 #if defined (HAVE_FORK)
       pid_t pid = fork ();
 
-      retval(0) = (double) pid;
+      retval(0) = static_cast<double> (pid);
 
       if (pid < 0)
 	retval(1) = strerror (errno);
@@ -522,13 +522,13 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
 	  if (args(1).is_scalar_type ())
 	    {
-	      long mode = (long) args(1).double_value ();
+	      long mode = static_cast<long> (args(1).double_value ());
 
 	      string msg;
 
 	      int status = oct_mkfifo (name, mode, msg);
 
-	      retval(0) = (double) status;
+	      retval(0) = static_cast<double> (status);
 
 	      if (status < 0)
 		retval(1) = msg;
@@ -591,7 +591,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	  file_ids (0, 1) = octave_stream_list::insert (os);
 
           retval(0) = file_ids;
-	  retval(1) = (double) status;
+	  retval(1) = static_cast<double> (status);
 	}
 #else
       gripe_not_supported ("pipe");
@@ -684,7 +684,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
 	  int status = oct_unlink (name, msg);
 
-	  retval(0) = (double) status;
+	  retval(0) = static_cast<double> (status);
 
 	  if (status < 0)
 	    retval(1) = msg;	    
@@ -768,7 +768,7 @@ error message.")
 		{
 		  pid_t status = waitpid (pid, 0, options);
 
-		  retval(0) = (double) status;
+		  retval(0) = static_cast<double> (status);
 
 		  if (status < 0)
 		    retval(1) = strerror (errno);
@@ -793,77 +793,77 @@ void
 symbols_of_syscalls (void)
 {
 #if defined (F_DUPFD)
-  DEFCONST (F_DUPFD, (double) F_DUPFD, 0, 0,
+  DEFCONST (F_DUPFD, static_cast<double> (F_DUPFD), 0, 0,
     "");
 #endif
 
 #if defined (F_GETFD)
-  DEFCONST (F_GETFD, (double) F_GETFD, 0, 0,
+  DEFCONST (F_GETFD, static_cast<double> (F_GETFD), 0, 0,
     "");
 #endif
 
 #if defined (F_GETFL)
-  DEFCONST (F_GETFL, (double) F_GETFL, 0, 0,
+  DEFCONST (F_GETFL, static_cast<double> (F_GETFL), 0, 0,
     "");
 #endif
 
 #if defined (F_SETFD)
-  DEFCONST (F_SETFD, (double) F_SETFD, 0, 0,
+  DEFCONST (F_SETFD, static_cast<double> (F_SETFD), 0, 0,
     "");
 #endif
 
 #if defined (F_SETFL)
-  DEFCONST (F_SETFL, (double) F_SETFL, 0, 0,
+  DEFCONST (F_SETFL, static_cast<double> (F_SETFL), 0, 0,
     "");
 #endif
 
 #if defined (O_APPEND)
-  DEFCONST (O_APPEND, (double) O_APPEND, 0, 0,
+  DEFCONST (O_APPEND, static_cast<double> (O_APPEND), 0, 0,
     "");
 #endif
 
 #if defined (O_ASYNC)
-  DEFCONST (O_ASYNC, (double) O_ASYNC, 0, 0,
+  DEFCONST (O_ASYNC, static_cast<double> (O_ASYNC), 0, 0,
     "");
 #endif
 
 #if defined (O_CREAT)
-  DEFCONST (O_CREAT, (double) O_CREAT, 0, 0,
+  DEFCONST (O_CREAT, static_cast<double> (O_CREAT), 0, 0,
     "");
 #endif
 
 #if defined (O_EXCL)
-  DEFCONST (O_EXCL, (double) O_EXCL, 0, 0,
+  DEFCONST (O_EXCL, static_cast<double> (O_EXCL), 0, 0,
     "");
 #endif
 
 #if defined (O_NONBLOCK)
-  DEFCONST (O_NONBLOCK, (double) O_NONBLOCK, 0, 0,
+  DEFCONST (O_NONBLOCK, static_cast<double> (O_NONBLOCK), 0, 0,
     "");
 #endif
 
 #if defined (O_RDONLY)
-  DEFCONST (O_RDONLY, (double) O_RDONLY, 0, 0,
+  DEFCONST (O_RDONLY, static_cast<double> (O_RDONLY), 0, 0,
     "");
 #endif
 
 #if defined (O_RDWR)
-  DEFCONST (O_RDWR, (double) O_RDWR, 0, 0,
+  DEFCONST (O_RDWR, static_cast<double> (O_RDWR), 0, 0,
     "");
 #endif
 
 #if defined (O_SYNC)
-  DEFCONST (O_SYNC, (double) O_SYNC, 0, 0,
+  DEFCONST (O_SYNC, static_cast<double> (O_SYNC), 0, 0,
     "");
 #endif
 
 #if defined (O_TRUNC)
-  DEFCONST (O_TRUNC, (double) O_TRUNC, 0, 0,
+  DEFCONST (O_TRUNC, static_cast<double> (O_TRUNC), 0, 0,
     "");
 #endif
 
 #if defined (O_WRONLY)
-  DEFCONST (O_WRONLY, (double) O_WRONLY, 0, 0,
+  DEFCONST (O_WRONLY, static_cast<double> (O_WRONLY), 0, 0,
     "");
 #endif
 }

@@ -178,7 +178,7 @@ intern_argv (int argc, char **argv)
       bind_builtin_variable ("__argv__", octave_argv, 1, 1, 0);
     }
 
-  bind_builtin_variable ("nargin", (double) argc-1, 1, 1, 0);
+  bind_builtin_variable ("nargin", static_cast<double> (argc-1), 1, 1, 0);
 }
 
 // Initialize some global variables for later use.
@@ -600,7 +600,7 @@ main (int argc, char **argv)
       // XXX FIXME XXX -- is this the right thing to do?
 
       bind_builtin_variable ("echo_executing_commands",
-			     (double) ECHO_CMD_LINE);
+			     static_cast<double> (ECHO_CMD_LINE));
     }
 
   if (! interactive)

@@ -611,7 +611,7 @@ tree_boolean_expression::eval (bool /* print */)
 	    done:
 
 	      if (! error_state)
-		retval = octave_value ((double) result);
+		retval = octave_value (static_cast<double> (result));
 	    }
 	}
     }

@@ -56,8 +56,8 @@ mk_pw_map (struct passwd *pw)
 
       m ["name"] = pw->pw_name;
       m ["passwd"] = pw->pw_passwd;
-      m ["uid"] = STATIC_CAST (double, pw->pw_uid);
-      m ["gid"] = STATIC_CAST (double, pw->pw_gid);
+      m ["uid"] = static_cast<double> (pw->pw_uid);
+      m ["gid"] = static_cast<double> (pw->pw_gid);
       m ["gecos"] = pw->pw_gecos;
       m ["dir"] = pw->pw_dir;
       m ["shell"] = pw->pw_shell;
@@ -111,7 +111,7 @@ Search for a password entry with a matching user ID.")
 	{
 	  if (D_NINT (dval) == dval)
 	    {
-	      uid_t uid = STATIC_CAST (uid_t, dval);
+	      uid_t uid = static_cast<uid_t> (dval);
 
 	      retval = mk_pw_map (getpwuid (uid));
 	    }

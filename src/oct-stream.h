@@ -90,7 +90,11 @@ public:
 
   bool ok (void) const { return (nconv >= 0); }
 
-  operator void* () const { return ok () ? (void *) -1 : (void *) 0; }
+  operator void* () const
+    {
+      return ok ()
+	? static_cast<void *> (-1) : static_cast<void *> (0);
+    }
 
   bool all_character_conversions (void);
 
@@ -175,7 +179,11 @@ public:
 
   bool ok (void) const { return (nconv >= 0); }
 
-  operator void* () const { return ok () ? (void *) -1 : (void *) 0; }
+  operator void* () const
+    {
+      return ok ()
+	? static_cast<void *> (-1) : static_cast<void *> (0);
+    }
 
 private:
 
@@ -409,7 +417,11 @@ public:
 
   bool ok (void) const { return rep && rep->ok (); }
 
-  operator void* () const { return ok () ? (void *) -1 : (void *) 0; }
+  operator void* () const
+    {
+      return ok ()
+	? static_cast<void *> (-1) : static_cast<void *> (0);
+    }
 
   string name (void);
 

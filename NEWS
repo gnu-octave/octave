@@ -1,3 +1,16 @@
+Summary of changes for version 2.0.6:
+------------------------------------
+
+  * Functions like quad, fsolve, and lsode can take either a function
+    name or a simple function body as a string.  For example,
+
+      quad ("sqrt (x)", 0, 1)
+
+    is equivalent to
+
+      function y = f (x) y = sqrt (x); endfunction
+      quad ("f", 0, 1)
+
 Summary of changes for version 2.0.5:
 ------------------------------------
 

@@ -116,7 +116,7 @@ template <class C>
 static int
 goodCHptr (CHNode<C> *t)
 {
-  return ((((unsigned) t) & 1) == 0);
+  return (((static_cast<unsigned> (t)) & 1) == 0);
 }
 
 // This sucks, but avoids g++ 2.6.0 `type unification failed' errors.
@@ -124,14 +124,14 @@ goodCHptr (CHNode<C> *t)
 static void *
 index_to_CHptr (int i)
 {
-  return (void *) ((i << 1) + 1);
+  return static_cast<void *> ((i << 1) + 1);
 }
 
 template <class C>
 static unsigned int
 CHptr_to_index (CHNode<C> *t)
 {
-  return ((unsigned) t) >> 1;
+  return (static_cast<unsigned> (t)) >> 1;
 }
 
 template <class C>
@@ -139,7 +139,7 @@ CHMap<C>::CHMap (const C& dflt, unsigned int sz) : Map<C> (dflt)
 {
   tab = new CHNode<C>* [size = sz];
   for (unsigned int i = 0; i < size; ++i)
-    tab[i] = (CHNode<C> *) index_to_CHptr (i+1);
+    tab[i] = static_cast<CHNode<C> *> (index_to_CHptr (i+1));
   count = 0;
 }
 
@@ -148,7 +148,7 @@ CHMap<C>::CHMap (const CHMap& a) : Map<C> (a.def)
 {
   tab = new CHNode<C>* [size = a.size];
   for (unsigned int i = 0; i < size; ++i)
-    tab[i] = (CHNode<C> *) index_to_CHptr (i+1);
+    tab[i] = static_cast<CHNode<C> *> (index_to_CHptr (i+1));
   count = 0;
   for (Pix p = a.first (); p; a.next (p))
     (*this) [a.key (p)] = a.contents (p);
@@ -216,7 +216,7 @@ CHMap<C>::clear (void)
   for (unsigned int i = 0; i < size; ++i)
     {
       CHNode<C> *p = tab[i];
-      tab[i] = (CHNode<C> *) index_to_CHptr (i+1);
+      tab[i] = static_cast<CHNode<C> *> (index_to_CHptr (i+1));
       while (goodCHptr (p))
 	{
 	  CHNode<C> *nxt = p->tl;
@@ -241,7 +241,7 @@ template <class C>
 void
 CHMap<C>::next (Pix& p) const
 {
-  CHNode<C> *t = ((CHNode<C> *) p)->tl;
+  CHNode<C> *t = (static_cast<CHNode<C> *> (p))->tl;
   if (goodCHptr (t))
     p = Pix (t);
   else

@@ -158,7 +158,8 @@ public:
   
   operator void* () const
     {
-      return (rep && rep->ok) ? (void *) -1 : (void *) 0;
+      return (rep && rep->ok)
+	? static_cast<void *> (-1) : static_cast<void *> (0);
     }
 
 private:
@@ -276,7 +277,8 @@ public:
   bool is_complex (void) const { return is_cmplx; }
   bool all_empty (void) const { return all_mt; }
 
-  operator void* () const { return ok ? (void *) -1 : (void *) 0; }
+  operator void* () const
+    { return ok ? static_cast<void *> (-1) : static_cast<void *> (0); }
 
 private:
 
@@ -416,11 +418,11 @@ tree_matrix_row::to_return_list (void)
 
 	  if (is_id)
 	    {
-	      tree_identifier *id = (tree_identifier *) elt;
+	      tree_identifier *id = static_cast<tree_identifier *> (elt);
 	      idx_expr = new tree_index_expression (id);
 	    }
 	  else
-	    idx_expr = (tree_index_expression *) elt;
+	    idx_expr = static_cast<tree_index_expression *> (elt);
 
 	  if (first_elem)
 	    {

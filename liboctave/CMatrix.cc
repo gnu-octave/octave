@@ -1000,7 +1000,7 @@ ComplexMatrix::ifourier (void) const
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / (double) npts;
+    tmp_data[j] = tmp_data[j] / npts;
 
   return retval;
 }
@@ -1100,7 +1100,7 @@ ComplexMatrix::ifourier2d (void) const
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / (double) npts;
+    tmp_data[j] = tmp_data[j] / npts;
 
   npts = nc;
   nsamples = nr;
@@ -1122,7 +1122,7 @@ ComplexMatrix::ifourier2d (void) const
       F77_FCN (cfftb, CFFTB) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
-	tmp_data[i*nr + j] = prow[i] / (double) npts;
+	tmp_data[i*nr + j] = prow[i] / npts;
     }
 
   return retval;
@@ -1579,9 +1579,8 @@ ComplexMatrix::expm (void) const
     = F77_FCN (zlange, ZLANGE) ("I", nc, nc, m.fortran_vec (), nc,
 				work.fortran_vec ());
 
-  int sqpow = (int) (inf_norm > 0.0
-		     ? (1.0 + log (inf_norm) / log (2.0))
-		     : 0.0);
+  int sqpow = (inf_norm > 0.0
+	       ? static_cast<int> (1.0 + log (inf_norm) / log (2.0)) : 0);
 
   // Check whether we need to square at all.
 

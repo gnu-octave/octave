@@ -365,7 +365,7 @@ DEFALIAS (chdir, cd);
 static void
 cleanup_iprocstream (void *p)
 {
-  delete (iprocstream *) p;
+  delete static_cast <iprocstream *> (p);
 }
 
 DEFUN_TEXT (ls, args, ,
@@ -512,7 +512,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	  int status = oct_mkdir (oct_tilde_expand (dirname),
 				  0777, msg);
 
-	  retval(0) = (double) status;
+	  retval(0) = static_cast<double> (status);
 
 	  if (status < 0)
 	    retval(1) = msg;
@@ -549,7 +549,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
 	  int status = oct_rmdir (oct_tilde_expand (dirname), msg);
 
-	  retval(0) = (double) status;
+	  retval(0) = static_cast<double> (status);
 
 	  if (status < 0)
 	    retval(1) = msg;
@@ -592,7 +592,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
 	      int status = oct_rename (from, to, msg);
 
-	      retval(0) = (double) status;
+	      retval(0) = static_cast<double> (status);
 
 	      if (status < 0)
 		retval(1) = msg;

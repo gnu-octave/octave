@@ -708,7 +708,7 @@ Matrix::ifourier (void) const
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / (double) npts;
+    tmp_data[j] = tmp_data[j] / npts;
 
   return retval;
 }
@@ -808,7 +808,7 @@ Matrix::ifourier2d (void) const
     F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
-    tmp_data[j] = tmp_data[j] / (double) npts;
+    tmp_data[j] = tmp_data[j] / npts;
 
   npts = nc;
   nsamples = nr;
@@ -830,7 +830,7 @@ Matrix::ifourier2d (void) const
       F77_FCN (cfftb, CFFTB) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
-	tmp_data[i*nr + j] = prow[i] / (double) npts;
+	tmp_data[i*nr + j] = prow[i] / npts;
     }
 
   return retval;
@@ -2639,7 +2639,7 @@ template <class T>
 static void
 read_int (istream& is, bool swap_bytes, T& val)
 {
-  is.read ((char *) &val, sizeof (T));
+  is.read (static_cast<char *> (&val), sizeof (T));
 
   if (swap_bytes)
     {
@@ -2649,15 +2649,15 @@ read_int (istream& is, bool swap_bytes, T& val)
 	  break;
 
 	case 2:
-	  swap_2_bytes ((char *) &val);
+	  swap_2_bytes (static_cast<char *> (&val));
 	  break;
 
 	case 4:
-	  swap_4_bytes ((char *) &val);
+	  swap_4_bytes (static_cast<char *> (&val));
 	  break;
 
 	case 8:
-	  swap_8_bytes ((char *) &val);
+	  swap_8_bytes (static_cast<char *> (&val));
 	  break;
 
 	default:
@@ -2762,7 +2762,7 @@ do_read (istream& is, oct_data_conv::data_type dt,
       {
 	float f;
 
-	is.read ((char *) &f, sizeof (float));
+	is.read (static_cast<char *> (&f), sizeof (float));
 
 	if (do_float_conversion)
 	  do_float_format_conversion (&f, 1, flt_fmt);
@@ -2773,7 +2773,7 @@ do_read (istream& is, oct_data_conv::data_type dt,
 
     case oct_data_conv::dt_double:
       {
-	is.read ((char *) &val, sizeof (double));
+	is.read (static_cast<char *> (&val), sizeof (double));
 
 	if (do_float_conversion)
 	  do_double_format_conversion (&val, 1, flt_fmt);
@@ -2953,15 +2953,15 @@ write_int (ostream& os, bool swap_bytes, T val)
 	  break;
 
 	case 2:
-	  swap_2_bytes ((char *) &val);
+	  swap_2_bytes (static_cast<char *> (&val));
 	  break;
 
 	case 4:
-	  swap_4_bytes ((char *) &val);
+	  swap_4_bytes (static_cast<char *> (&val));
 	  break;
 
 	case 8:
-	  swap_8_bytes ((char *) &val);
+	  swap_8_bytes (static_cast<char *> (&val));
 	  break;
 
 	default:
@@ -2970,7 +2970,7 @@ write_int (ostream& os, bool swap_bytes, T val)
 	}
     }
 
-  os.write ((char *) &val, sizeof (T));
+  os.write (static_cast<char *> (&val), sizeof (T));
 }
 
 template void write_int (ostream&, bool, char);
@@ -2993,49 +2993,49 @@ do_write (ostream& os, double d, oct_data_conv::data_type dt,
   switch (dt)
     {
     case oct_data_conv::dt_char:
-      write_int (os, swap_bytes, (char) d);
+      write_int (os, swap_bytes, static_cast<char> (d));
       break;
 
     case oct_data_conv::dt_schar:
-      write_int (os, swap_bytes, (signed char) d);
+      write_int (os, swap_bytes, static_cast<signed char> (d));
       break;
 
     case oct_data_conv::dt_uchar:
-      write_int (os, swap_bytes, (unsigned char) d);
+      write_int (os, swap_bytes, static_cast<unsigned char> (d));
       break;
 
     case oct_data_conv::dt_short:
-      write_int (os, swap_bytes, (short) d);
+      write_int (os, swap_bytes, static_cast<short> (d));
       break;
 
     case oct_data_conv::dt_ushort:
-      write_int (os, swap_bytes, (unsigned short) d);
+      write_int (os, swap_bytes, static_cast<unsigned short> (d));
       break;
 
     case oct_data_conv::dt_int:
-      write_int (os, swap_bytes, (int) d);
+      write_int (os, swap_bytes, static_cast<int> (d));
       break;
 
     case oct_data_conv::dt_uint:
-      write_int (os, swap_bytes, (unsigned int) d);
+      write_int (os, swap_bytes, static_cast<unsigned int> (d));
       break;
 
     case oct_data_conv::dt_long:
-      write_int (os, swap_bytes, (long) d);
+      write_int (os, swap_bytes, static_cast<long> (d));
       break;
 
     case oct_data_conv::dt_ulong:
-      write_int (os, swap_bytes, (unsigned long) d);
+      write_int (os, swap_bytes, static_cast<unsigned long> (d));
       break;
 
     case oct_data_conv::dt_float:
       {
-	float f = (float) d;
+	float f = d;
 
 	if (do_float_conversion)
 	  do_float_format_conversion (&f, 1, flt_fmt);
 
-	os.write ((char *) &f, sizeof (float));
+	os.write (static_cast<char *> (&f), sizeof (float));
       }
       break;
 
@@ -3044,7 +3044,7 @@ do_write (ostream& os, double d, oct_data_conv::data_type dt,
 	if (do_float_conversion)
 	  do_double_format_conversion (&d, 1, flt_fmt);
 
-	os.write ((char *) &d, sizeof (double));
+	os.write (static_cast<char *> (&d), sizeof (double));
       }
       break;
 

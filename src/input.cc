@@ -422,7 +422,7 @@ gnu_readline (const char *s, bool force_readline)
 
       if (tmp && strlen (tmp) == 0)
 	{
-	  retval = (char *) malloc (2);
+	  retval = static_cast<char *> (malloc (2));
 	  retval[0] = '\n';
 	  retval[1] = '\0';
 	}
@@ -442,7 +442,7 @@ gnu_readline (const char *s, bool force_readline)
       int grow_size = 1024;
       int max_size = grow_size;
 
-      char *buf = (char *) malloc (max_size);
+      char *buf = static_cast<char *> (malloc (max_size));
       char *bufptr = buf;
 
       do
@@ -456,7 +456,7 @@ gnu_readline (const char *s, bool force_readline)
 		  int tmp = bufptr - buf + grow_size - 1;
 		  grow_size *= 2;
 		  max_size += grow_size;
-		  buf = (char *) realloc (buf, max_size);
+		  buf = static_cast<char *> (realloc (buf, max_size));
 		  bufptr = buf + tmp;
 
 		  if (*(bufptr-1) == '\n')
@@ -538,7 +538,7 @@ get_user_input (void)
     {
       size_t len = current_eval_string.length ();
 
-      retval = (char *) malloc (len + 2);
+      retval = static_cast<char *> (malloc (len + 2));
 
       strcpy (retval, current_eval_string.c_str ());
 
@@ -683,7 +683,7 @@ generate_struct_completions (const char *text, char *& prefix,
 
       tree_constant *def = 0;
       if (tmp_fvc->is_constant ())
-	def = (tree_constant *) tmp_fvc;
+	def = static_cast<tree_constant *> (tmp_fvc);
 
       if (def && def->is_map ())
 	{
@@ -777,7 +777,7 @@ looks_like_struct (const char *nm)
 
       tree_constant *def = 0;
       if (tmp_fvc->is_constant ())
-	def = (tree_constant *) tmp_fvc;
+	def = static_cast<tree_constant *> (tmp_fvc);
 
       if (def && def->is_map ())
 	{
@@ -858,7 +858,7 @@ command_generator (const char *text, int state)
 	  if (strncmp (name, hint, hint_len) == 0)
 	    {
 	      int len = 2 + prefix_len + strlen (name);
-	      char *buf = (char *) malloc (len);
+	      char *buf = static_cast<char *> (malloc (len));
 
 	      if (prefix)
 		{
@@ -952,7 +952,7 @@ operate_and_get_next (int /* count */, int /* c */)
     saved_history_line_to_use = where + 1;
 
   old_rl_startup_hook = rl_startup_hook;
-  rl_startup_hook = (Function *) set_saved_history;
+  rl_startup_hook = static_cast<Function *> (set_saved_history);
 }
 
 void
@@ -969,21 +969,21 @@ initialize_readline (void)
 
   // Tell the completer that we want to try first.
 
-  rl_attempted_completion_function = (CPPFunction *) command_completer;
+  rl_attempted_completion_function
+    = static_cast<CPPFunction *> (command_completer);
 
   // Bind operate-and-get-next.
 
-  rl_add_defun ("operate-and-get-next",
-		(Function *) operate_and_get_next, CTRL ('O'));
+  rl_add_defun ("operate-and-get-next", operate_and_get_next, CTRL ('O'));
 
 
   // And the history search functions.
 
-  rl_add_defun ("history-search-backward",
-		(Function *) rl_history_search_backward, META ('p'));
+  rl_add_defun ("history-search-backward", rl_history_search_backward,
+		META ('p'));
 
-  rl_add_defun ("history-search-forward",
-		(Function *) rl_history_search_forward, META ('n'));
+  rl_add_defun ("history-search-forward", rl_history_search_forward,
+		META ('n'));
 
   // Don't treat single quotes as string delimiters when doing paren
   // matching.
@@ -1161,10 +1161,10 @@ Without any arguments, toggle the current echo state.")
 	if ((Vecho_executing_commands & ECHO_SCRIPTS)
 	    || (Vecho_executing_commands & ECHO_FUNCTIONS))
 	  bind_builtin_variable ("echo_executing_commands",
-				 (double) ECHO_OFF);
+				 static_cast<double> (ECHO_OFF));
 	else
 	  bind_builtin_variable ("echo_executing_commands",
-				 (double) ECHO_SCRIPTS);
+				 static_cast<double> (ECHO_SCRIPTS));
       }
       break;
 
@@ -1174,10 +1174,10 @@ Without any arguments, toggle the current echo state.")
 
 	if (arg == "on")
 	  bind_builtin_variable ("echo_executing_commands",
-				 (double) ECHO_SCRIPTS);
+				 static_cast<double> (ECHO_SCRIPTS));
 	else if (arg == "off")
 	  bind_builtin_variable ("echo_executing_commands",
-				 (double) ECHO_OFF);
+				 static_cast<double> (ECHO_OFF));
 	else
 	  print_usage ("echo");
       }
@@ -1188,11 +1188,14 @@ Without any arguments, toggle the current echo state.")
 	string arg = argv[1];
 
 	if (arg == "on" && argv[2] == "all")
-	  bind_builtin_variable ("echo_executing_commands",
-				 (double) (ECHO_SCRIPTS | ECHO_FUNCTIONS));
+	  {
+	    int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
+	    bind_builtin_variable ("echo_executing_commands",
+				   static_cast<double> (tmp));
+	  }
 	else if (arg == "off" && argv[2] == "all")
 	  bind_builtin_variable ("echo_executing_commands",
-				 (double) ECHO_OFF);
+				 static_cast<double> (ECHO_OFF));
 	else
 	  print_usage ("echo");
       }

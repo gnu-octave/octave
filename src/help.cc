@@ -833,7 +833,7 @@ display the definition of each NAME that refers to a function")
 
 		  assert (defn && defn->is_constant ());
 
-		  tree_constant *tmp = (tree_constant *) defn;
+		  tree_constant *tmp = static_cast<tree_constant *> (defn);
 
 		  int var_ok = 1;
 		  if (tmp && tmp->is_map ())

@@ -177,7 +177,7 @@ tree_identifier::assign (const octave_value_list& args,
 
       if (sym->is_variable () && sym->is_defined ())
 	{
-	  tree_constant *tmp = (tree_constant *) sym->def ();
+	  tree_constant *tmp = static_cast<tree_constant *> (sym->def ());
 	  retval = tmp->assign (args, rhs);
 	}
       else

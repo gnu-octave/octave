@@ -44,7 +44,7 @@ dir_entry::open (const string& n)
     {
       close ();
 
-      dir = (void *) opendir (name.c_str ());
+      dir = static_cast<void *> (opendir (name.c_str ()));
 
       if (dir)
 	fail = false;
@@ -68,16 +68,16 @@ dir_entry::read (void)
 
       struct dirent *dir_ent;
 
-      while ((dir_ent = readdir ((DIR *) dir)))
+      while ((dir_ent = readdir (static_cast<DIR *> (dir))))
 	count++;
 
-      rewinddir ((DIR *) dir);
+      rewinddir (static_cast<DIR *> (dir));
 
       dirlist.resize (count);
 
       for (int i = 0; i < count; i++)
 	{
-	  dir_ent = readdir ((DIR *) dir);
+	  dir_ent = readdir (static_cast<DIR *> (dir));
 
 	  if (dir_ent)
 	    dirlist[i] = dir_ent->d_name;
@@ -93,7 +93,7 @@ void
 dir_entry::close (void)
 {
   if (dir)
-    closedir ((DIR *) dir);
+    closedir (static_cast<DIR *> (dir));
 
   dir = 0;
 }

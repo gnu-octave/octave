@@ -145,18 +145,18 @@ integrand is singular.")
   int indefinite = 0;
   IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
   double bound = 0.0;
-  if ((int) xisinf (a) && (int) xisinf (b))
+  if (xisinf (a) && xisinf (b))
     {
       indefinite = 1;
       indef_type = IndefQuad::doubly_infinite;
     }
-  else if ((int) xisinf (a))
+  else if (xisinf (a))
     {
       indefinite = 1;
       bound = b;
       indef_type = IndefQuad::neg_inf_to_bound;
     }
-  else if ((int) xisinf (b))
+  else if (xisinf (b))
     {
       indefinite = 1;
       bound = a;

@@ -144,8 +144,8 @@ parse_and_execute (FILE *f, int print)
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (f);
 
-  add_unwind_protect (restore_input_buffer, (void *) old_buf);
-  add_unwind_protect (delete_input_buffer, (void *) new_buf);
+  add_unwind_protect (restore_input_buffer, old_buf);
+  add_unwind_protect (delete_input_buffer, new_buf);
 
   switch_to_buffer (new_buf);
 
@@ -201,7 +201,7 @@ static void
 safe_fclose (void *f)
 {
   if (f)
-    fclose ((FILE *) f);
+    fclose (static_cast<FILE *> (f));
 }
 
 void
@@ -220,7 +220,7 @@ parse_and_execute (const string& s, int print, int verbose,
 
   if (f)
     {
-      add_unwind_protect (safe_fclose, (void *) f);
+      add_unwind_protect (safe_fclose, f);
 
       unwind_protect_int (input_line_number);
       unwind_protect_int (current_input_column);
@@ -541,8 +541,8 @@ eval_string (const string& s, int print, int& parse_status, int nargout)
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (0);
 
-  add_unwind_protect (restore_input_buffer, (void *) old_buf);
-  add_unwind_protect (delete_input_buffer, (void *) new_buf);
+  add_unwind_protect (restore_input_buffer, old_buf);
+  add_unwind_protect (delete_input_buffer, new_buf);
 
   switch_to_buffer (new_buf);
 
@@ -652,7 +652,7 @@ string CATCH.")
 static void
 cleanup_iprocstream (void *p)
 {
-  delete (iprocstream *) p;
+  delete static_cast<iprocstream *> (p);
 }
 
 static octave_value_list
@@ -687,7 +687,7 @@ run_command_and_return_output (const string& cmd_str)
 
       char *msg = output_buf.str ();
 
-      retval(1) = (double) status;
+      retval(1) = static_cast<double> (status);
       retval(0) = msg;
 
       delete [] msg;
@@ -774,7 +774,7 @@ or\n\
 		  retval(0) = 0.0;
 		}
 	      else
-		retval(0) = (double) pid;
+		retval(0) = static_cast<double> (pid);
 	    }
 	  else if (return_output)
 	    retval = run_command_and_return_output (cmd_str);
@@ -790,7 +790,7 @@ or\n\
 	      if (WIFEXITED (status))
 		status = WEXITSTATUS (status);
 
-	      retval = (double) status;
+	      retval = static_cast<double> (status);
 	    }
 	}
     }
@@ -869,7 +869,7 @@ information.")
   m ["prefix"] = OCTAVE_PREFIX;
   m ["exec_prefix"] = OCTAVE_EXEC_PREFIX;
   m ["datadir"] = OCTAVE_DATADIR;
-  m ["dld"] = (double) octave_supports_dynamic_linking;
+  m ["dld"] = static_cast<double> (octave_supports_dynamic_linking);
   m ["libdir"] = OCTAVE_LIBDIR;
   m ["bindir"] = OCTAVE_BINDIR;
   m ["infodir"] = OCTAVE_INFODIR;
@@ -942,11 +942,11 @@ __builtin_new (size_t sz)
   /* malloc (0) is unpredictable; avoid it.  */
   if (sz == 0)
     sz = 1;
-  p = (void *) malloc (sz);
+  p = malloc (sz);
   while (p == 0)
     {
       (*__new_handler) ();
-      p = (void *) malloc (sz);
+      p = malloc (sz);
     }
 
   if (debug_new_delete)

@@ -215,7 +215,7 @@ saved_variable::restore_value (void)
       break;
 
     case string_type:
-      ((string *) gen_ptr) -> assign (*str_value);
+      (static_cast<string *> (gen_ptr)) -> assign (*str_value);
       break;
 
     case generic_ptr:
@@ -235,7 +235,7 @@ saved_variable::restore_value (void)
 static void
 restore_saved_variable (void *s)
 {
-  saved_variable *sv = (saved_variable *) s;
+  saved_variable *sv = static_cast<saved_variable *> (s);
   sv->restore_value ();
   delete sv;
 }
@@ -244,21 +244,21 @@ void
 unwind_protect_int_internal (int *ptr, int value)
 {
   saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, (void *) s);
+  add_unwind_protect (restore_saved_variable, s);
 }
 
 void
 unwind_protect_str_internal (string *ptr, const string& value)
 {
   saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, (void *) s);
+  add_unwind_protect (restore_saved_variable, s);
 }
 
 void
 unwind_protect_ptr_internal (void **ptr, void *value)
 {
   saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, (void *) s);
+  add_unwind_protect (restore_saved_variable, s);
 }
 
 /*

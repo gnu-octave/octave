@@ -112,7 +112,9 @@ public:
 
   bool ok (void) const { return initialized && ! fail; }
 
-  operator void* () const { return ok () ? (void *) -1 : (void *) 0; }
+  operator void* () const
+    { return ok ()
+	? static_cast<void *> (-1) : static_cast<void *> (0); }
 
   bool exists (void) const { return ok (); }
 

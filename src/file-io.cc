@@ -147,7 +147,7 @@ DEFUN (fclose, args, ,
 
   if (nargin == 1)
     {
-      retval = (double) octave_stream_list::remove (args(0));
+      retval = static_cast<double> (octave_stream_list::remove (args(0)));
 
       if (retval < 0)
 	gripe_invalid_file_id ("fclose");
@@ -182,7 +182,7 @@ DEFUN (fflush, args, ,
 	  octave_stream *os = octave_stream_list::lookup (fid);
 
 	  if (os)
-	    retval = (double) os->flush ();
+	    retval = static_cast<double> (os->flush ());
 	  else
 	    gripe_invalid_file_id ("fflush");
 	}
@@ -212,7 +212,7 @@ read a string from a file")
       if (os)
 	{
 	  octave_value len_arg = (nargin == 2)
-	    ? args(1) : octave_value ((double) INT_MAX);
+	    ? args(1) : octave_value (static_cast<double> (INT_MAX));
 
 	  bool err = false;
 
@@ -220,7 +220,7 @@ read a string from a file")
 
 	  if (! err)
 	    {
-	      retval(1) = (double) tmp.length ();
+	      retval(1) = static_cast<double> (tmp.length ());
 	      retval(0) = tmp;
 	    }
 	}
@@ -252,7 +252,7 @@ read a string from a file")
       if (os)
 	{
 	  octave_value len_arg = (nargin == 2)
-	    ? args(1) : octave_value ((double) INT_MAX);
+	    ? args(1) : octave_value (static_cast<double> (INT_MAX));
 
 	  bool err = false;
 
@@ -260,7 +260,7 @@ read a string from a file")
 
 	  if (! err)
 	    {
-	      retval(1) = (double) tmp.length ();
+	      retval(1) = static_cast<double> (tmp.length ());
 	      retval(0) = tmp;
 	    }
 	}
@@ -405,7 +405,8 @@ DEFUN (fopen, args, ,
 	  if (os->ok () && ! error_state)
 	    {
 	      retval(1) = "";
-	      retval(0) = (double) octave_stream_list::insert (os);
+	      retval(0)
+		= static_cast<double> (octave_stream_list::insert (os));
 	    }
 	  else
 	    {
@@ -450,7 +451,7 @@ DEFUN (frewind, args, ,
       octave_stream *os = octave_stream_list::lookup (args(0));
 
       if (os)
-	retval = (double) os->rewind ();
+	retval = static_cast<double> (os->rewind ());
       else
 	gripe_invalid_file_id ("frewind");
     }
@@ -484,7 +485,7 @@ ORIGIN may be one of:\n\
 	  octave_value origin_arg = (nargin == 3)
 	    ? args(2) : octave_value (-1.0);
 
-	  retval = (double) os->seek (args(1), origin_arg);
+	  retval = static_cast<double> (os->seek (args(1), origin_arg));
 	}
       else
 	::error ("fseek: invalid file id");
@@ -507,7 +508,7 @@ DEFUN (ftell, args, ,
       octave_stream *os = octave_stream_list::lookup (args(0));
 
       if (os)
-	retval = (double) os->tell ();
+	retval = static_cast<double> (os->tell ());
       else
 	gripe_invalid_file_id ("ftell");
     }
@@ -700,7 +701,7 @@ more `C-like', and also compatible with previous versions of Octave")
 		    {
 		      octave_value tmp = os->scanf (fmt, size, count);
 
-		      retval(1) = (double) count;
+		      retval(1) = static_cast<double> (count);
 		      retval(0) = tmp;
 		    }
 		}
@@ -809,9 +810,9 @@ more `C-like', and also compatible with previous versions of Octave")
 		      // position will clear it.
 		      string errmsg = os.error ();
 
-		      retval(3) = (double) (os.tell () + 1);
+		      retval(3) = static_cast<double> (os.tell () + 1);
 		      retval(2) = errmsg;
-		      retval(1) = (double) count;
+		      retval(1) = static_cast<double> (count);
 		      retval(0) = tmp;
 		    }
 		  else
@@ -980,7 +981,7 @@ Reads data in binary form of type PRECISION from a file.\n\
 
 	  octave_value tmp = do_fread (*os, size, prec, skip, arch, count);
 
-	  retval(1) = (double) count;
+	  retval(1) = static_cast<double> (count);
 	  retval(0) = tmp;
 	}
       else
@@ -1175,7 +1176,7 @@ DEFUN (ferror, args, ,
 
 	  string error_message = os->error (clear, error_number);
 
-	  retval(1) = (double) error_number;
+	  retval(1) = static_cast<double> (error_number);
 	  retval(0) = error_message;
 	}
       else
@@ -1247,7 +1248,7 @@ DEFUN (pclose, args, ,
 
   if (nargin == 1)
     {
-      retval = (double) octave_stream_list::remove (args(0));
+      retval = static_cast<double> (octave_stream_list::remove (args(0)));
 
       if (retval < 0)
 	gripe_invalid_file_id ("pclose");
@@ -1329,7 +1330,7 @@ printed.")
 	{
 	  int mask = NINT (dmask);
 
-	  if ((double) mask != dmask || mask < 0)
+	  if (mask != dmask || mask < 0)
 	    {
 	      status = -1;
 	      ::error ("umask: MASK must be a positive integer value");
@@ -1347,7 +1348,7 @@ printed.")
     print_usage ("umask");
 
   if (status >= 0)
-    retval(0) = (double) status;
+    retval(0) = static_cast<double> (status);
 
   return retval;
 }

@@ -77,7 +77,7 @@ octave_fstream::tell (void) const
   if (fs)
     {
       filebuf *fb = fs.rdbuf ();
-      retval = (long) fb->seekoff (0, ios::cur);
+      retval = static_cast<long> (fb->seekoff (0, ios::cur));
     }
 
   return retval;

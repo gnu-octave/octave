@@ -83,9 +83,7 @@ conj (double x)
 double
 fix (double x)
 {
-  int tmp;
-  tmp = (int) x;
-  return (double) tmp;
+  return static_cast<int> (x);
 }
 
 double
@@ -152,7 +150,7 @@ double
 xisnan (double x)
 {
 #if defined (HAVE_ISNAN)
-  return (double) isnan (x);
+  return isnan (x);
 #else
   return 0;
 #endif
@@ -162,9 +160,9 @@ double
 xfinite (double x)
 {
 #if defined (HAVE_FINITE)
-  return (double) finite (x);
+  return finite (x);
 #elif defined (HAVE_ISINF) && defined (HAVE_ISNAN)
-  return (double) (! isinf (x) && ! isnan (x));
+  return (! isinf (x) && ! isnan (x));
 #else
   return 1;
 #endif
@@ -180,9 +178,9 @@ double
 xisinf (double x)
 {
 #if defined (HAVE_ISINF)
-  return (double) isinf (x);
+  return isinf (x);
 #elif defined (HAVE_FINITE) && defined (HAVE_ISNAN)
-  return (double) (! (finite (x) || isnan (x)));
+  return (! (finite (x) || isnan (x)));
 #else
   return 0;
 #endif
@@ -205,9 +203,7 @@ double
 xisnan (const Complex& x)
 {
 #if defined (HAVE_ISNAN)
-  double rx = real (x);
-  double ix = imag (x);
-  return (double) (isnan (rx) || isnan (ix));
+  return (isnan (real (x)) || isnan (imag (x)));
 #else
   return 0;
 #endif
@@ -216,15 +212,13 @@ xisnan (const Complex& x)
 double
 xfinite (const Complex& x)
 {
-  double rx = real (x);
-  double ix = imag (x);
-  return (double) (! ((int) xisinf (rx) || (int) xisinf (ix)));
+  return (! (xisinf (real (x)) || xisinf (imag (x))));
 }
 
 double
 xisinf (const Complex& x)
 {
-  return (double) (! (int) xfinite (x));
+  return (! xfinite (x));
 }
 
 // Complex -> complex mappers.
@@ -278,25 +272,19 @@ atanh (const Complex& x)
 Complex
 ceil (const Complex& x)
 {
-  int re = (int) ceil (real (x));
-  int im = (int) ceil (imag (x));
-  return Complex (re, im);
+  return Complex (ceil (real (x)), ceil (imag (x)));
 }
 
 Complex
 fix (const Complex& x)
 {
-  int re = (int) real (x);
-  int im = (int) imag (x);
-  return Complex (re, im);
+  return Complex (real (x), imag (x));
 }
 
 Complex
 floor (const Complex& x)
 {
-  int re = (int) floor (real (x));
-  int im = (int) floor (imag (x));
-  return Complex (re, im);
+  return Complex (floor (real (x)), floor (imag (x)));
 }
 
 Complex
@@ -308,9 +296,7 @@ log10 (const Complex& x)
 Complex
 round (const Complex& x)
 {
-  double re = D_NINT (real (x));
-  double im = D_NINT (imag (x));
-  return Complex (re, im);
+  return Complex (D_NINT (real (x)), D_NINT (imag (x)));
 }
 
 Complex

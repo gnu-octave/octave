@@ -1003,7 +1003,7 @@ DEFUN (ishold, , ,
 \n\
 Return 1 if hold is on, otherwise return 0.")
 {
-  return (double) (! clear_before_plotting);
+  return static_cast<double> (! clear_before_plotting);
 }
 
 DEFUN (purge_tmp_files, , ,

@@ -60,7 +60,7 @@ mk_gr_map (struct group *gr)
 #else
       m ["passwd"] = "";
 #endif
-      m ["gid"] = STATIC_CAST (double, gr->gr_gid);
+      m ["gid"] = static_cast<double> (gr->gr_gid);
 
       if (gr->gr_mem)
 	{
@@ -138,7 +138,7 @@ Search for a group entry with a matching group ID.")
 	{
 	  if (D_NINT (dval) == dval)
 	    {
-	      gid_t gid = STATIC_CAST (gid_t, dval);
+	      gid_t gid = static_cast<gid_t> (dval);
 
 	      retval = mk_gr_map (getgrgid (gid));
 	    }

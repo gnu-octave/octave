@@ -194,7 +194,8 @@ public:
       return *this;
     }
 
-  idx_vector::operator void * () const { return (void *) rep->ok (); }
+  idx_vector::operator void * () const
+    { return static_cast<void *> (rep->ok ()); }
 
   int idx_vector::capacity (void) const { return rep->capacity (); }
   int idx_vector::length (int cl) const { return rep->length (cl); }

@@ -1,3 +1,7 @@
+Sun Mar  9 03:44:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.h.bot (STATIC_CAST): Delete definition.
+
 Thu Mar  6 03:26:41 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* emacs/octave-hlp.el: Provide octave-hlp.

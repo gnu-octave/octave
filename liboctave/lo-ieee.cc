@@ -70,7 +70,7 @@ octave_ieee_init (void)
   octave_Inf = 1.0 / (tmp - tmp);
 #elif defined (__alpha__)
   extern unsigned int DINFINITY[2];
-  octave_Inf =  (*((double *) (DINFINITY)));
+  octave_Inf =  (*(static_cast<double *> (DINFINITY)));
 #elif defined (HAVE_INFINITY)
   octave_Inf = infinity ();
 #elif defined (linux)
@@ -95,7 +95,7 @@ octave_ieee_init (void)
   octave_NaN = NAN;
 #elif defined (__alpha__)
   extern unsigned int DQNAN[2];
-  octave_NaN = (*((double *) (DQNAN)));
+  octave_NaN = (*(static_cast<double *> (DQNAN)));
 #elif defined (HAVE_QUIET_NAN)
   octave_NaN = quiet_nan (0L);
 #else

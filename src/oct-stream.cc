@@ -62,7 +62,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 	    {
 	      int ival = NINT (dval);
 
-	      if ((double) ival == dval)
+	      if (ival == dval)
 		retval = ival;
 	      else
 		conv_err = 4;
@@ -1260,7 +1260,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 		if (is.scan (fmt, &tmp))
 		  {
 		    if (! discard)
-		      retval = (double) tmp;
+		      retval = static_cast<double> (tmp);
 		  }
 		else
 		  quit = true;
@@ -1547,7 +1547,10 @@ public:
   string string_value (void);
 
   operator void* () const
-    { return (curr_state == ok) ? (void *) -1 : (void *) 0; }
+    {
+      return (curr_state == ok)
+	? static_cast<void *> (-1) : static_cast<void *> (0);
+    }
 
   bool no_more_values (void) { return curr_state == list_exhausted; }
 
@@ -1814,10 +1817,12 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			      {
 				if (elt->modifier == 'l')
 				  do_printf_conv (os, fmt, nsa, sa_1,
-						  sa_2, true, (long) val);
+						  sa_2, true,
+						  static_cast<long> (val));
 				else
 				  do_printf_conv (os, fmt, nsa, sa_1,
-						  sa_2, true, (int) val);
+						  sa_2, true,
+						  static_cast<int> (val));
 			      }
 			      break;
 

@@ -1,3 +1,17 @@
+Sun Mar  9 03:46:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	 * Map.cc, data.cc, dirfns.cc, dynamic-ld.cc, file-io.cc,
+	 fsolve.cc, getgrent.cc, getpwent.cc, getrusage.cc, help.cc,
+	 input.cc, load-save.cc, mappers.cc, minmax.cc, npsol.cc,
+	 oct-fstrm.cc, oct-procbuf.h, oct-stdstrm.cc, oct-stdstrm.h,
+	 oct-stream.cc, oct-stream.h, oct-strstrm.cc, octave.cc,
+	 ov-base.h, ov-range.cc, ov-typeinfo.cc, ov.cc, pr-output.cc,
+	 pt-cmd.cc, pt-exp.cc, pt-fcn.cc, pt-fvc.cc, pt-mat.cc,
+	 pt-misc.cc, pt-plot.cc, qpsol.cc, quad.cc, sort.cc, strfns.cc,
+	 symtab.cc, syscalls.cc, sysdep.cc, time.cc, toplev.cc,
+	 unwind-prot.cc, unwind-prot.h, variables.cc, xpow.cc:
+	 Use `static_cast<T> (val)' instead of old C-style `(T) val' casts.
+
 Sat Mar  8 02:35:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (save_ascii_data, save_three_d): Where appropriate,

@@ -54,7 +54,8 @@ void unwind_protect_var_internal (void *ptr, void *value, size_t size);
   unwind_protect_str_internal (&(s), (s))
 
 #define unwind_protect_ptr(p) \
-  unwind_protect_ptr_internal ((void **) &(p), (void *) (p))
+  unwind_protect_ptr_internal (static_cast<void **> (&(p)), \
+			       static_cast<void *> (p))
 
 class
 unwind_elem

@@ -410,8 +410,7 @@ intcmp (int *ii, int *jj)
 static inline void
 sort_data (int *d, int l)
 {
-  qsort ((void *) d, l, sizeof (int),
-	 (int (*)(const void*, const void*)) intcmp);
+  qsort (d, l, sizeof (int), intcmp);
 }
 
 static inline int

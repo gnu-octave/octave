@@ -415,7 +415,7 @@ symbol_record::define (tree_constant *t)
     {
       // Would be nice to be able to avoid this cast.  XXX FIXME XXX
 
-      definition->define ((tree_constant *) saved_def);
+      definition->define (static_cast<tree_constant *> (saved_def));
       return 0;
     }
 
@@ -604,7 +604,7 @@ symbol_record::variable_value (void) const
 
   if (is_variable ())
     {
-      tree_constant *tmp = (tree_constant *) def ();
+      tree_constant *tmp = static_cast<tree_constant *> (def ());
       retval = tmp->value ();
     }
 
@@ -629,7 +629,7 @@ symbol_record::variable_reference (void)
 	}
     }
 
-  tree_constant *tmp = (tree_constant *) def ();
+  tree_constant *tmp = static_cast<tree_constant *> (def ());
 
   return tmp->reference ();
 }
@@ -652,7 +652,7 @@ symbol_record::push_context (void)
   context.push (definition);
   definition = 0;
 
-  global_link_context.push ((unsigned) linked_to_global);
+  global_link_context.push (static_cast<unsigned> (linked_to_global));
   linked_to_global = 0;
 }
 
@@ -741,7 +741,7 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
     {
       // Would be nice to avoid this cast.  XXX FIXME XXX
 
-      tree_constant *tmp = (tree_constant *) sr.def ();
+      tree_constant *tmp = static_cast<tree_constant *> (sr.def ());
 
       const_type = tmp->type_name ();
 
@@ -1058,8 +1058,8 @@ symbol_table::long_list (int& count, const string_vector& pats,
   symbols[count] = symbol_record_info ();
 
   if (sort && symbols)
-    qsort ((void *) symbols, count, sizeof (symbol_record_info),
-	   (int (*)(const void*, const void*)) symbol_record_info_cmp);
+    qsort (symbols, count, sizeof (symbol_record_info),
+	   symbol_record_info_cmp);
 
   return symbols;
 }

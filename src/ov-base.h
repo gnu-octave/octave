@@ -65,10 +65,10 @@ public:
   octave_value *clone (void) { return new octave_base_value (*this); }
 
   type_conv_fcn numeric_conversion_function (void) const
-    { return (type_conv_fcn) 0; }
+    { return static_cast<type_conv_fcn> (0); }
 
   octave_value *try_narrowing_conversion (void)
-    { return (octave_value *) 0; }
+    { return static_cast<octave_value *> (0); }
 
   octave_value index (const octave_value_list& idx) const;
 

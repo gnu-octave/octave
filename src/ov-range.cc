@@ -129,7 +129,7 @@ octave_range::all (void) const
 octave_value
 octave_range::any (void) const
 {
-  return (double) (range.base () != 0.0 || range.nelem () > 1);
+  return static_cast<double> (range.base () != 0.0 || range.nelem () > 1);
 }
 
 bool

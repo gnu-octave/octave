@@ -77,29 +77,29 @@ Return system resource statistics.")
 
   getrusage (RUSAGE_SELF, &ru);
 
-  tv_tmp ["sec"] = (double) ru.ru_utime.tv_sec;
-  tv_tmp ["usec"] = (double) ru.ru_utime.tv_usec;
+  tv_tmp ["sec"] = static_cast<double> (ru.ru_utime.tv_sec);
+  tv_tmp ["usec"] = static_cast<double> (ru.ru_utime.tv_usec);
   m ["utime"] = octave_value (tv_tmp);
 
-  tv_tmp ["sec"] = (double) ru.ru_stime.tv_sec;
-  tv_tmp ["usec"] = (double) ru.ru_stime.tv_usec;
+  tv_tmp ["sec"] = static_cast<double> (ru.ru_stime.tv_sec);
+  tv_tmp ["usec"] = static_cast<double> (ru.ru_stime.tv_usec);
   m ["stime"] = octave_value (tv_tmp);
 
 #if ! defined (RUSAGE_TIMES_ONLY)
-  m ["maxrss"] = (double) ru.ru_maxrss;
-  m ["ixrss"] = (double) ru.ru_ixrss;
-  m ["idrss"] = (double) ru.ru_idrss;
-  m ["isrss"] = (double) ru.ru_isrss;
-  m ["minflt"] = (double) ru.ru_minflt;
-  m ["majflt"] = (double) ru.ru_majflt;
-  m ["nswap"] = (double) ru.ru_nswap;
-  m ["inblock"] = (double) ru.ru_inblock;
-  m ["oublock"] = (double) ru.ru_oublock;
-  m ["msgsnd"] = (double) ru.ru_msgsnd;
-  m ["msgrcv"] = (double) ru.ru_msgrcv;
-  m ["nsignals"] = (double) ru.ru_nsignals;
-  m ["nvcsw"] = (double) ru.ru_nvcsw;
-  m ["nivcsw"] = (double) ru.ru_nivcsw;
+  m ["maxrss"] = static_cast<double> (ru.ru_maxrss);
+  m ["ixrss"] = static_cast<double> (ru.ru_ixrss);
+  m ["idrss"] = static_cast<double> (ru.ru_idrss);
+  m ["isrss"] = static_cast<double> (ru.ru_isrss);
+  m ["minflt"] = static_cast<double> (ru.ru_minflt);
+  m ["majflt"] = static_cast<double> (ru.ru_majflt);
+  m ["nswap"] = static_cast<double> (ru.ru_nswap);
+  m ["inblock"] = static_cast<double> (ru.ru_inblock);
+  m ["oublock"] = static_cast<double> (ru.ru_oublock);
+  m ["msgsnd"] = static_cast<double> (ru.ru_msgsnd);
+  m ["msgrcv"] = static_cast<double> (ru.ru_msgrcv);
+  m ["nsignals"] = static_cast<double> (ru.ru_nsignals);
+  m ["nvcsw"] = static_cast<double> (ru.ru_nvcsw);
+  m ["nivcsw"] = static_cast<double> (ru.ru_nivcsw);
 #endif
 
 #else
@@ -117,16 +117,16 @@ Return system resource statistics.")
   fraction = ticks % HZ;
   seconds = ticks / HZ;
 
-  tv_tmp ["sec"] = (double) seconds;
-  tv_tmp ["usec"] = (double) (fraction * 1e6 / HZ);
+  tv_tmp ["sec"] = static_cast<double> (seconds);
+  tv_tmp ["usec"] = static_cast<double> (fraction * 1e6 / HZ);
   m ["utime"] = octave_value (tv_tmp);
 
   ticks = t.tms_stime + t.tms_cstime;
   fraction = ticks % HZ;
   seconds = ticks / HZ;
 
-  tv_tmp ["sec"] = (double) seconds;
-  tv_tmp ["usec"] = (double) (fraction * 1e6 / HZ);
+  tv_tmp ["sec"] = static_cast<double> (seconds);
+  tv_tmp ["usec"] = static_cast<double> (fraction * 1e6 / HZ);
   m ["stime"] = octave_value (tv_tmp);
 
 #else

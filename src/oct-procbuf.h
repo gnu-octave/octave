@@ -48,7 +48,7 @@ public:
   octave_procbuf *open (const char *command, int mode);
 
   octave_procbuf *close (void)
-    { return (octave_procbuf *) filebuf::close (); }
+    { return static_cast<octave_procbuf *> (filebuf::close ()); }
 
   virtual int sys_close (void);
 

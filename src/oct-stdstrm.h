@@ -93,7 +93,7 @@ public:
 
   // XXX FIXME XXX -- should not have to cast away const here.
   stdiobuf *rdbuf (void) const
-    { return is ? ((istdiostream *) is)->rdbuf () : 0; }
+    { return is ? (const_cast<istdiostream *> (is))->rdbuf () : 0; }
 
   bool bad (void) const { return is ? is->bad () : true; }
 
@@ -138,7 +138,7 @@ public:
 
   // XXX FIXME XXX -- should not have to cast away const here.
   stdiobuf *rdbuf (void) const
-    { return os ? ((ostdiostream *) os)->rdbuf () : 0; }
+    { return os ? (const_cast<ostdiostream *> (os))->rdbuf () : 0; }
 
   bool bad (void) const { return os ? os->bad () : true; }
 

@@ -53,10 +53,10 @@ void
 octave_allocator::free (void *p, size_t size)
 {
   if (size != item_size)
-    ::delete [] ((char *) p);
+    ::delete [] (static_cast<char *> (p));
   else
     {
-      link *tmp = (link *) p;
+      link *tmp = static_cast<link *> (p);
       tmp->next = head;
       head = tmp;
     }
@@ -79,13 +79,13 @@ octave_allocator::grow (void)
       while (p < last)
 	{
 	  char *next = p + item_size;
-	  ((link *) p) -> next = (link *) next;
+	  (static_cast<link *> (p)) -> next = static_cast<link *> (next);
 	  p = next;
 	}
 
-      ((link *) last) -> next = 0;
+      (static_cast<link *> (last)) -> next = 0;
 
-      head = (link *) start;
+      head = static_cast<link *> (start);
     }
   else
     {

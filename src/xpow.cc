@@ -65,7 +65,7 @@ xisint (double x)
 octave_value
 xpow (double a, double b)
 {
-  if (a < 0.0 && (int) b != b)
+  if (a < 0.0 && static_cast<int> (b) != b)
     {
       Complex atmp (a);
       return pow (atmp, b);
@@ -163,9 +163,9 @@ xpow (const Matrix& a, double b)
     error ("for A^b, A must be square");
   else
     {
-      if ((int) b == b)
+      if (static_cast<int> (b) == b)
 	{
-	  int btmp = (int) b;
+	  int btmp = b;
 	  if (btmp == 0)
 	    {
 	      retval = DiagMatrix (nr, nr, 1.0);
@@ -253,7 +253,7 @@ xpow (const Complex& a, double b)
   Complex result;
 
   if (xisint (b))
-    result = pow (a, (int) b);
+    result = pow (a, static_cast<int> (b));
   else
     result = pow (a, b);
 
@@ -348,9 +348,9 @@ xpow (const ComplexMatrix& a, double b)
     error ("for A^b, A must be square");
   else
     {
-      if ((int) b == b)
+      if (static_cast<int> (b) == b)
 	{
-	  int btmp = (int) b;
+	  int btmp = b;
 	  if (btmp == 0)
 	    {
 	      retval = DiagMatrix (nr, nr, 1.0);
@@ -504,7 +504,7 @@ elem_xpow (const Matrix& a, double b)
   int nr = a.rows ();
   int nc = a.cols ();
 
-  if ((int) b != b && a.any_element_is_negative ())
+  if (static_cast<int> (b) != b && a.any_element_is_negative ())
     {
       ComplexMatrix result (nr, nc);
       for (int j = 0; j < nc; j++)
@@ -553,7 +553,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
       {
 	double atmp = a (i, j);
 	double btmp = b (i, j);
-	if (atmp < 0.0 && (int) btmp != btmp)
+	if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
 	  {
 	    convert_to_complex = 1;
 	    goto done;
@@ -642,7 +642,7 @@ elem_xpow (const Complex& a, const Matrix& b)
       {
 	double btmp = b (i, j);
 	if (xisint (btmp))
-	  result (i, j) = pow (a, (int) btmp);
+	  result (i, j) = pow (a, static_cast<int> (btmp));
 	else
 	  result (i, j) = pow (a, btmp);
       }
@@ -678,7 +678,7 @@ elem_xpow (const ComplexMatrix& a, double b)
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result (i, j) = pow (a (i, j), (int) b);
+	  result (i, j) = pow (a (i, j), static_cast<int> (b));
     }
   else
     {
@@ -712,7 +712,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
       {
 	double btmp = b (i, j);
 	if (xisint (btmp))
-	  result (i, j) = pow (a (i, j), (int) btmp);
+	  result (i, j) = pow (a (i, j), static_cast<int> (btmp));
 	else
 	  result (i, j) = pow (a (i, j), btmp);
       }

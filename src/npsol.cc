@@ -522,7 +522,7 @@ Handle all of the following:
   if (nargout > 1)
     retval(1) = objf;
   if (nargout > 2)
-    retval(2) = (double) inform;
+    retval(2) = static_cast<double> (inform);
   if (nargout > 3)
     retval(3) = lambda;
 

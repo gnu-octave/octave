@@ -180,7 +180,8 @@ tree_statement_list::eval (bool print, int nargout)
 		  if (expr->is_multi_val_ret_expression ())
 		    {
 		      octave_value_list args;
-		      tree_multi_val_ret *t = (tree_multi_val_ret *) expr;
+		      tree_multi_val_ret *t;
+		      t = static_cast<tree_multi_val_ret *> (expr);
 		      retval = t->eval (pf, nargout, args);
 		    }
 		  else

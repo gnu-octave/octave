@@ -665,6 +665,13 @@ TC_REP::tree_constant_rep (const char *s)
   orig_text = 0;
 }
 
+TC_REP::tree_constant_rep (const string& s)
+{
+  char_matrix = new charMatrix (s);
+  type_tag = char_matrix_constant_str;
+  orig_text = 0;
+}
+
 TC_REP::tree_constant_rep (const charMatrix& chm, int is_str)
 {
   char_matrix = new charMatrix (chm);

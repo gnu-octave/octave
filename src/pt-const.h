@@ -99,6 +99,7 @@ private:
 	tree_constant_rep (const ComplexColumnVector& v, int pcv);
 
 	tree_constant_rep (const char *s);
+	tree_constant_rep (const string& s);
 	tree_constant_rep (const charMatrix& chm, int is_string);
 
 	tree_constant_rep (double base, double limit, double inc);
@@ -343,6 +344,7 @@ public:
   //                  ComplexColumnVector
   // char matrix      charMatrix
   // string           char* (null terminated)
+  //                  string
   //                  charMatrix
   // range            double, double, double
   //                  Range
@@ -384,6 +386,9 @@ public:
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const char *s, int l = -1, int c = -1) : tree_fvc (l, c)
+    { rep = new tree_constant_rep (s); rep->count = 1; }
+
+  tree_constant (const string& s, int l = -1, int c = -1) : tree_fvc (l, c)
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
   tree_constant (const charMatrix& chm, int is_string = 0) : tree_fvc ()

@@ -50,6 +50,7 @@ public:
   charMatrix (const MArray2<char>& a) : MArray2<char> (a) { }
   charMatrix (const charMatrix& a) : MArray2<char> (a) { }
   charMatrix (const char *s);
+  charMatrix (const string& s);
 
   charMatrix& operator = (const charMatrix& a)
     {

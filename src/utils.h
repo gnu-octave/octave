@@ -52,9 +52,7 @@ extern char *oct_file_in_path (const char *);
 
 extern char *octave_tmp_file_name (void);
 
-#if 0
 extern char **pathstring_to_vector (char *pathstring);
-#endif
 
 extern void jump_to_top_level (void);
 

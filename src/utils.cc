@@ -206,7 +206,6 @@ octave_tmp_file_name (void)
   return retval;
 }
 
-#if 0
 char **
 pathstring_to_vector (char *pathstring)
 {
@@ -255,7 +254,6 @@ pathstring_to_vector (char *pathstring)
 
   return path;
 }
-#endif
 
 // Return to the main command loop in octave.cc.
 

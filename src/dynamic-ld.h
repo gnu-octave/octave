@@ -26,18 +26,26 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "oct-obj.h"
 
-typedef Octave_object (*builtin_fcn_ptr) (const Octave_object&, int);
+typedef Octave_object (*Octave_builtin_fcn)(const Octave_object&, int);
 
+extern Octave_builtin_fcn load_octave_builtin (const char *name);
+
+extern int load_octave_oct_file (const char *name);
+
+extern void init_dynamic_linker (void);
+
+// OLD:
+
+#if 0
 extern void octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1);
 
 extern void octave_dld_tc2_unlink_by_file (const char *name, int hard = 1);
 
-extern builtin_fcn_ptr octave_dld_tc2 (const char *name, const char *fcn);
+extern Octave_builtin_fcn octave_dld_tc2 (const char *name);
 
 extern Octave_object octave_dld_tc2_and_go (const Octave_object&,
-					    int nargout,
-					    const char *name,
-					    const char *fcn);
+					    int nargout, const char *name);
+#endif
 
 #endif
 

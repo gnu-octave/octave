@@ -25,38 +25,76 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <strstream.h>
+
 extern "C"
 {
-#include "dld/dld.h"
+#include <dld/dld.h>
+
+#define boolean kpathsea_boolean
+#define false kpathsea_false
+#define true kpathsea_true
+#include <kpathsea/pathsearch.h>
 }
 
 #include "dynamic-ld.h"
 #include "tree-const.h"
 #include "user-prefs.h"
+#include "variables.h"
+#include "defaults.h"
 #include "octave.h"
 #include "utils.h"
 #include "error.h"
 
-void
-octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1)
+typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
+
+// XXX FIXME XXX -- should this list be in a user-level variable,
+// with default taken from the environment?
+
+#ifndef STD_LIB_PATH
+#define STD_LIB_PATH "/lib:/usr/lib:/usr/local/lib"
+#endif
+
+#ifndef OCTAVE_LIB_PATH
+#define OCTAVE_LIB_PATH OCTAVE_LIBDIR ":" FLIB_PATH ":" CXXLIB_PATH 
+#endif
+
+static char *lib_dir_path = OCTAVE_LIB_PATH ":" STD_LIB_PATH;
+
+// This is the list of interesting libraries that Octave is linked
+// with.  Maybe it should include the readline, info, and kpathsea
+// libraries.  Would there ever be a time that they would really be
+// needed?
+
+#ifndef SYSTEM_LIB_LIST
+#define SYSTEM_LIB_LIST "libtermcap.a:libm.a" ":" CXXLIB_LIST
+#endif
+
+#ifndef OCTAVE_LIB_LIST
+#define OCTAVE_LIB_LIST "liboctdld.a:liboctave.a:libcruft.a:libdld.a"
+#endif
+
+static char *lib_list = OCTAVE_LIB_LIST ":" FLIB_LIST ":" SYSTEM_LIB_LIST;
+
+static char *
+mangle_octave_builtin_name (const char *name)
 {
-// XXX FIXME XXX -- need to determine the name mangling scheme
-// automatically, in case it changes, or is different on different
-// systems, even if they have g++.
-  char *mangled_fcn_name = strconcat (name, "__FRC13Octave_objecti");
-  int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
-  if (status != 0)
-    dld_perror ("octave_dld_tc2_unlink_by_symbol");
-  delete [] mangled_fcn_name;
+  char *tmp = strconcat (name, "__FRC13Octave_objecti");
+  char *retval = strconcat ("F", tmp);
+  delete [] tmp;
+  return retval;
 }
 
-void
-octave_dld_tc2_unlink_by_file (const char *name, int hard = 1)
+static char *
+mangle_octave_oct_file_name (const char *name)
 {
-  int status = dld_unlink_by_file (name, hard);
-  if (status != 0)
-    dld_perror ("octave_dld_tc2_unlink_by_file");
+  char *tmp = strconcat (name, "__Fv");
+  char *retval = strconcat ("FS", tmp);
+  delete [] tmp;
+  return retval;
 }
+
+#ifdef WITH_DLD
 
 static void
 octave_dld_init (void)
@@ -66,70 +104,238 @@ octave_dld_init (void)
   if (! initialized)
     {
       char *full_path = dld_find_executable (raw_prog_name);
+
       if (full_path)
 	{
 	  int status = dld_init (full_path);
+
 	  if (status != 0)
-	    {
-	      dld_perror ("octave_dld_tc2_and_go");
-	      error ("failed to load symbols from `%s'", full_path);
-	    }
+	    error ("failed to load symbols from `%s'", full_path);
 	  else
 	    initialized = 1;
 	}
       else
-	error ("octave_dld_tc2_and_go: can't find full path to `%s'",
-	       prog_name);
+	error ("octave_dld_init: can't find full path to `%s'", prog_name);
     }
 }
 
-/*
- * Look for object in path.  It should provide a definition for the
- * function we just marked as undefined.  If we find it, we\'ll also
- * try to load the remaining undefined symbols.
- */
+static void
+octave_list_undefined_symbols (ostream& os)
+{
+  char **list = dld_list_undefined_sym ();
+
+  if (list)
+    {
+      os << "undefined symbols:\n\n";
+      for (int i = 0; i < dld_undefined_sym_count; i++)
+	os << list[i] << "\n";
+      os << "\n";
+    }
+}
+
+static void *
+dld_octave_resolve_reference (const char *name, const char *file = 0)
+{
+  dld_create_reference (name);
+
+  if (file)
+    {
+      if (dld_link (file) != 0)
+	{
+	  error ("failed to link file %s", file);
+	  return 0;
+	}
+
+      if (dld_function_executable_p (name))
+	return (void *) dld_get_func (name);
+    }
+
+// For each library, try to find it in a list of directories, then
+// link to it.  It would have been nice to use the kpathsea functions
+// here too, but calls to them can't be nested as they would need to
+// be here...
+
+  char **libs = pathstring_to_vector (lib_list);
+  char **ptr = libs;
+  char *lib_list_elt;
+
+  while ((lib_list_elt = *ptr++))
+    {
+      char *lib = kpse_path_search (lib_dir_path, lib_list_elt,
+				    kpathsea_true);
+
+      if (lib && dld_link (lib) != 0)
+	{
+	  error ("failed to link library %s", lib);
+	  return 0;
+	}
+
+      if (dld_function_executable_p (name))
+	return (void *) dld_get_func (name);
+    }
+
+// If we get here, there was a problem.
+
+  ostrstream output_buf;
+  octave_list_undefined_symbols (output_buf);
+  char *msg = output_buf.str ();
+  error (msg);
+  delete [] msg;
+
+  return 0;
+}
+
+static Octave_builtin_fcn
+dld_octave_builtin (const char *name)
+{
+  Octave_builtin_fcn retval = 0;
+
+  char *mangled_name = mangle_octave_builtin_name (name);
+
+  retval = (Octave_builtin_fcn) dld_octave_resolve_reference (mangled_name);
+
+  delete [] mangled_name;
+
+  return retval;
+}
+
+static int
+dld_octave_oct_file (const char *name)
+{
+  char *oct_file = oct_file_in_path (name);
+
+  if (oct_file)
+    {
+      char *mangled_name = mangle_octave_oct_file_name (name);
+
+      Octave_builtin_fcn_struct_fcn f =
+	(Octave_builtin_fcn_struct_fcn) dld_octave_resolve_reference
+	  (mangled_name, oct_file);
+
+      if (f)
+	{
+	  builtin_function *s = f ();
+
+	  if (s)
+	    {
+	      install_builtin_function (s);
+	      return 1;
+	    }
+	}
+
+      delete [] oct_file;
+    }
+
+  return 0;
+}
+
+#endif
+
+Octave_builtin_fcn
+load_octave_builtin (const char *name)
+{
+#ifdef WITH_DLD
+  return dld_octave_builtin (name);
+#else
+  return 0;
+#endif
+}
+
+int
+load_octave_oct_file (const char *name)
+{
+#ifdef WITH_DLD
+  return dld_octave_oct_file (name);
+#endif
+  return 0;
+}
+
+void
+init_dynamic_linker (void)
+{
+#ifdef WITH_DLD
+  octave_dld_init ();
+#endif
+}
+
+// OLD:
+
+#if 0
+
+void
+octave_dld_tc2_unlink_by_symbol (const char *name, int hard)
+{
+// XXX FIXME XXX -- need to determine the name mangling scheme
+// automatically, in case it changes, or is different on different
+// systems, even if they have g++.
+
+  char *mangled_fcn_name = strconcat (name, "__FRC13Octave_objecti");
+
+  int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
+
+  if (status != 0)
+    dld_perror ("octave_dld_tc2_unlink_by_symbol");
+
+  delete [] mangled_fcn_name;
+}
+
+void
+octave_dld_tc2_unlink_by_file (const char *name, int hard)
+{
+  int status = dld_unlink_by_file (name, hard);
+
+  if (status != 0)
+    dld_perror ("octave_dld_tc2_unlink_by_file");
+}
+
+// Look for object in path.  It should provide a definition for the
+// function we just marked as undefined.  If we find it, we'll also
+// try to load the remaining undefined symbols.
+
 static int
 octave_dld_link (const char *object)
 {
   char *file = file_in_path (object, 0);
+
   int status = dld_link (file);
+
   if (status != 0)
     dld_perror ("octave_dld_link");
     
-  delete [] file;
   return status;
 }
 
 int
 octave_dld_tc2_link (const char *object)
 {
+  static char *ol = octave_lib_dir ();
+  static char *liboctave = strconcat (ol, "/liboctave.a");
+  static char *libcruft = strconcat (ol, "/libcruft.a");
+
   int status = octave_dld_link (object);
+
   if (status == 0)
     {
-// XXX FIXME XXX -- this obviously won't work everywhere...
-      char *octave_lib = "/home/jwe/src/octave/sun4-dld/liboctave.a";
-      status = octave_dld_link (octave_lib);
+      status = octave_dld_link (liboctave);
+
       if (status == 0)
-	{
-// XXX FIXME XXX -- this obviously won't work everywhere...
-	  char *cruft_library = "/home/jwe/src/octave/sun4-dld/libcruft.a";
-	  octave_dld_link (cruft_library);
-	}
+	octave_dld_link (libcruft);
     }
+
   return status;
 }
 
-builtin_fcn_ptr
-octave_dld_tc2 (const char *name, const char *fcn)
+Octave_builtin_fcn
+octave_dld_tc2 (const char *name)
 {
-  builtin_fcn_ptr retval = 0;
+  Octave_builtin_fcn retval = 0;
 
   octave_dld_init ();
 
 // XXX FIXME XXX -- need to determine the name mangling scheme
 // automatically, in case it changes, or is different on different
 // systems, even if they have g++.
-  char *mangled_fcn_name = strconcat (fcn, "__FRC13Octave_objecti");
+  char *mangled_fcn_name = strconcat (name, "__FRC13Octave_objecti");
 
 // See if the function has already been loaded.  If not, mark it as
 // undefined.
@@ -137,15 +343,17 @@ octave_dld_tc2 (const char *name, const char *fcn)
   if (dld_get_func (mangled_fcn_name) == 0)
     dld_create_reference (mangled_fcn_name);
 
-// XXX FIXME XXX -- this obviously won't work everywhere...
-  char *octave_dld_library = "/home/jwe/src/octave/sun4-dld/liboctdld.a";
-  int status = octave_dld_tc2_link (octave_dld_library);
+  static char *ol = octave_lib_dir ();
+  static char *liboctdld = strconcat (ol, "/liboctdld.a");
+
+  int status = octave_dld_tc2_link (liboctdld);
+
   if (status == 0)
     {
 // Return a pointer to the function we just loaded.  If we can\'t find
 // it, this will return NULL.
 
-      retval = (builtin_fcn_ptr) dld_get_func (mangled_fcn_name);
+      retval = (Octave_builtin_fcn) dld_get_func (mangled_fcn_name);
     }
 
   delete [] mangled_fcn_name;
@@ -156,11 +364,11 @@ octave_dld_tc2 (const char *name, const char *fcn)
 
 Octave_object
 octave_dld_tc2_and_go (const Octave_object& args, int nargout,
-		       const char *name, const char *fcn)
+		       const char *name)
 {
   Octave_object retval;
 
-  builtin_fcn_ptr fcn_to_call = octave_dld_tc2 (name, fcn);
+  Octave_builtin_fcn fcn_to_call = octave_dld_tc2 (name);
 
   if (fcn_to_call)
     retval = (*fcn_to_call) (args, nargout);
@@ -169,6 +377,8 @@ octave_dld_tc2_and_go (const Octave_object& args, int nargout,
 
   return retval;
 }
+
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -148,6 +148,10 @@ install: all
 	rm -f $(bindir)/octave
 	$(INSTALL) octave $(bindir)/octave-$(version)
 	ln $(bindir)/octave-$(version) $(bindir)/octave
+	if test -d $(libdir) ; then true ; else $(TOPDIR)/mkpath $(libdir) ; fi
+	if $(OCTAVE_LITE) && $(WITH_DLD) ; then \
+	  $(INSTALL_DATA) ../liboctdld.a $(libdir)/liboctdld.a ; \
+	fi
 .PHONY: install
 
 uninstall:
@@ -207,7 +211,11 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 	  -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
 	  -e "s;%OCTAVE_FCNFILEPATH%;\"${fcnfilepath}\";" \
 	  -e "s;%OCTAVE_IMAGEPATH%;\"${imagepath}\";" \
-	  -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";")
+	  -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";" \
+	  -e "s;%FLIB_LIST%;\"${FLIB_LIST}\";" \
+	  -e "s;%FLIB_PATH%;\"${FLIB_PATH}\";" \
+	  -e "s;%CXXLIB_LIST%;\"${CXXLIB_LIST}\";" \
+	  -e "s;%CXXLIB_PATH%;\"${CXXLIB_PATH}\";")
 	@$(top_srcdir)/move-if-change $@.tmp $@
 
 check: all

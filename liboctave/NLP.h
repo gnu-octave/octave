@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_NLP_h)
 #define _NLP_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include "Objective.h"
 #include "Bounds.h"
 #include "LinConst.h"

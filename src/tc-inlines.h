@@ -143,7 +143,7 @@ fortran_column (int i, int nr)
 }
 
 static inline int
-valid_scalar_indices (tree_constant *args, int nargs)
+valid_scalar_indices (const tree_constant *args, int nargs)
 {
   int valid = args != NULL_TREE_CONST
     && ((nargs == 3 && args[2].valid_as_scalar_index ()

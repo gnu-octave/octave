@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "octave.h"
 #include "utils.h"
 #include "tree.h"
+#include "help.h"
 #include "mappers.h"
 #include "user-prefs.h"
 #include "variables.h"
@@ -666,8 +667,8 @@ last computed value\n", },
   { NULL, NULL, NULL, NULL, },
 };
 
-void
-make_eternal (char *s)
+static void
+make_eternal (const char *s)
 {
   symbol_record *sym_rec = curr_sym_tab->lookup (s, 0, 0);
   if (sym_rec != (symbol_record *) NULL)
@@ -896,7 +897,7 @@ install_builtins (void)
 }
 
 int
-is_text_function_name (char *s)
+is_text_function_name (const char *s)
 {
   int retval = 0;
 

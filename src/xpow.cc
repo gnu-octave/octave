@@ -26,8 +26,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <assert.h>
-#include "error.h"
+#include <Complex.h>
+
 #include "xpow.h"
+#include "Matrix.h"
+#include "tree-const.h"
+#include "error.h"
 
 // This function also appears in tree-const.cc.  Maybe it should be a
 // member function of the Matrix class.
@@ -74,7 +78,7 @@ xpow (double a, double b)
 }
 
 tree_constant
-xpow (double a, Matrix& b)
+xpow (double a, const Matrix& b)
 {
   tree_constant retval;
 
@@ -107,7 +111,7 @@ xpow (double a, Matrix& b)
 }
 
 tree_constant
-xpow (double a, Complex& b)
+xpow (double a, const Complex& b)
 {
   Complex result;
   Complex atmp (a);
@@ -116,7 +120,7 @@ xpow (double a, Complex& b)
 }
 
 tree_constant
-xpow (double a, ComplexMatrix& b)
+xpow (double a, const ComplexMatrix& b)
 {
   tree_constant retval;
 
@@ -149,7 +153,7 @@ xpow (double a, ComplexMatrix& b)
 }
 
 tree_constant
-xpow (Matrix& a, double b)
+xpow (const Matrix& a, double b)
 {
   tree_constant retval;
 
@@ -209,7 +213,7 @@ xpow (Matrix& a, double b)
 }
 
 tree_constant
-xpow (Matrix& a, Complex& b)
+xpow (const Matrix& a, const Complex& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -235,7 +239,7 @@ xpow (Matrix& a, Complex& b)
 }
 
 tree_constant
-xpow (Complex& a, double b)
+xpow (const Complex& a, double b)
 {
   Complex result;
   result = pow (a, b);
@@ -243,7 +247,7 @@ xpow (Complex& a, double b)
 }
 
 tree_constant
-xpow (Complex& a, Matrix& b)
+xpow (const Complex& a, const Matrix& b)
 {
   tree_constant retval;
 
@@ -278,7 +282,7 @@ xpow (Complex& a, Matrix& b)
 }
 
 tree_constant
-xpow (Complex& a, Complex& b)
+xpow (const Complex& a, const Complex& b)
 {
   Complex result;
   result = pow (a, b);
@@ -286,7 +290,7 @@ xpow (Complex& a, Complex& b)
 }
 
 tree_constant
-xpow (Complex& a, ComplexMatrix& b)
+xpow (const Complex& a, const ComplexMatrix& b)
 {
   tree_constant retval;
 
@@ -319,7 +323,7 @@ xpow (Complex& a, ComplexMatrix& b)
 }
 
 tree_constant
-xpow (ComplexMatrix& a, double b)
+xpow (const ComplexMatrix& a, double b)
 {
   tree_constant retval;
 
@@ -379,7 +383,7 @@ xpow (ComplexMatrix& a, double b)
 }
 
 tree_constant
-xpow (ComplexMatrix& a, Complex& b)
+xpow (const ComplexMatrix& a, const Complex& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -422,7 +426,7 @@ xpow (ComplexMatrix& a, Complex& b)
  */
 
 tree_constant
-elem_xpow (double a, Matrix& b)
+elem_xpow (double a, const Matrix& b)
 {
   tree_constant retval;
 
@@ -454,7 +458,7 @@ elem_xpow (double a, Matrix& b)
 }
 
 tree_constant
-elem_xpow (double a, ComplexMatrix& b)
+elem_xpow (double a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -468,7 +472,7 @@ elem_xpow (double a, ComplexMatrix& b)
 }
 
 tree_constant
-elem_xpow (Matrix& a, double b)
+elem_xpow (const Matrix& a, double b)
 {
   tree_constant retval;
 
@@ -501,7 +505,7 @@ elem_xpow (Matrix& a, double b)
 }
 
 tree_constant
-elem_xpow (Matrix& a, Matrix& b)
+elem_xpow (const Matrix& a, const Matrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -550,7 +554,7 @@ elem_xpow (Matrix& a, Matrix& b)
 }
 
 tree_constant
-elem_xpow (Matrix& a, Complex& b)
+elem_xpow (const Matrix& a, const Complex& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -564,7 +568,7 @@ elem_xpow (Matrix& a, Complex& b)
 }
 
 tree_constant
-elem_xpow (Matrix& a, ComplexMatrix& b)
+elem_xpow (const Matrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -580,7 +584,7 @@ elem_xpow (Matrix& a, ComplexMatrix& b)
 }
 
 tree_constant
-elem_xpow (Complex& a, Matrix& b)
+elem_xpow (const Complex& a, const Matrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -594,7 +598,7 @@ elem_xpow (Complex& a, Matrix& b)
 }
 
 tree_constant
-elem_xpow (Complex& a, ComplexMatrix& b)
+elem_xpow (const Complex& a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -608,7 +612,7 @@ elem_xpow (Complex& a, ComplexMatrix& b)
 }
 
 tree_constant
-elem_xpow (ComplexMatrix& a, double b)
+elem_xpow (const ComplexMatrix& a, double b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -622,7 +626,7 @@ elem_xpow (ComplexMatrix& a, double b)
 }
 
 tree_constant
-elem_xpow (ComplexMatrix& a, Matrix& b)
+elem_xpow (const ComplexMatrix& a, const Matrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -638,7 +642,7 @@ elem_xpow (ComplexMatrix& a, Matrix& b)
 }
 
 tree_constant
-elem_xpow (ComplexMatrix& a, Complex& b)
+elem_xpow (const ComplexMatrix& a, const Complex& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
@@ -652,7 +656,7 @@ elem_xpow (ComplexMatrix& a, Complex& b)
 }
 
 tree_constant
-elem_xpow (ComplexMatrix& a, ComplexMatrix& b)
+elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();

@@ -46,7 +46,7 @@ class symbol_table;
 #define TREE_FCN_TYPEDEFS 1
 
 typedef tree_constant (*Text_fcn)(int, char **);
-typedef tree_constant* (*General_fcn)(tree_constant *, int, int);
+typedef tree_constant* (*General_fcn)(const tree_constant *, int, int);
 
 #endif
 
@@ -140,7 +140,7 @@ public:
 
   ~tree_builtin (void);
 
-  int is_builtin (void);
+  int is_builtin (void) const;
 
   tree_constant eval (int print);
 
@@ -148,7 +148,8 @@ public:
 
   tree_constant eval (int argc, char **argv, int print);
 
-  tree_constant *eval (tree_constant *args, int n_in, int n_out, int print);
+  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
+		       int print);
 
   tree *def (void);
   char *name (void);
@@ -180,7 +181,7 @@ public:
 
   ~tree_identifier (void);
 
-  int is_identifier (void);
+  int is_identifier (void) const;
 
   tree *def (void);
   char *name (void);
@@ -210,7 +211,8 @@ public:
 
   tree_constant eval (int argc, char **argv, int print);
   
-  tree_constant *eval (tree_constant *args, int n_in, int n_out, int print);
+  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
+		       int print);
 
   void eval_undefined_error (void);
 
@@ -249,7 +251,8 @@ public:
 
   tree_constant eval (int argc, char **argv, int print);
 
-  tree_constant *eval (tree_constant *args, int n_in, int n_out, int print);
+  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
+		       int print);
 
   int max_expected_args (void);
 
@@ -383,7 +386,7 @@ public:
 
   tree_constant eval (int print);
 
-  int is_assignment_expression (void);
+  int is_assignment_expression (void) const;
 };
 
 /*
@@ -473,7 +476,7 @@ tree_index_expression : public tree_expression
 
   ~tree_index_expression (void);
 
-  int is_index_expression (void);
+  int is_index_expression (void) const;
 
   tree_identifier *ident (void);
 

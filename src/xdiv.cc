@@ -26,8 +26,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <assert.h>
-#include "error.h"
+#include <Complex.h>
+
 #include "xdiv.h"
+#include "Matrix.h"
+#include "tree-const.h"
+#include "error.h"
 
 static inline int
 result_ok (int info, double rcond, int warn = 1)
@@ -80,7 +84,7 @@ mx_div_conform (int b_nr, int b_nc, int a_nc, int warn = 1)
 
 /* 1 */
 tree_constant
-xdiv (Matrix& a, Matrix& b)
+xdiv (const Matrix& a, const Matrix& b)
 {
   if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
     return tree_constant ();
@@ -105,7 +109,7 @@ xdiv (Matrix& a, Matrix& b)
 
 /* 2 */
 tree_constant
-xdiv (Matrix& a, ComplexMatrix& b)
+xdiv (const Matrix& a, const ComplexMatrix& b)
 {
   if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
     return tree_constant ();
@@ -130,7 +134,7 @@ xdiv (Matrix& a, ComplexMatrix& b)
 
 /* 3 */
 tree_constant
-xdiv (ComplexMatrix& a, Matrix& b)
+xdiv (const ComplexMatrix& a, const Matrix& b)
 {
   if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
     return tree_constant ();
@@ -155,7 +159,7 @@ xdiv (ComplexMatrix& a, Matrix& b)
 
 /* 4 */
 tree_constant
-xdiv (ComplexMatrix& a, ComplexMatrix& b)
+xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
     return tree_constant ();
@@ -190,7 +194,7 @@ xdiv (ComplexMatrix& a, ComplexMatrix& b)
  */
 
 tree_constant
-x_el_div (double a, Matrix& b)
+x_el_div (double a, const Matrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -205,7 +209,7 @@ x_el_div (double a, Matrix& b)
 }
 
 tree_constant
-x_el_div (double a, ComplexMatrix& b)
+x_el_div (double a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -220,7 +224,7 @@ x_el_div (double a, ComplexMatrix& b)
 }
 
 tree_constant
-x_el_div (Complex a, Matrix& b)
+x_el_div (const Complex a, const Matrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -235,7 +239,7 @@ x_el_div (Complex a, Matrix& b)
 }
 
 tree_constant
-x_el_div (Complex a, ComplexMatrix& b)
+x_el_div (const Complex a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
   int nc = b.columns ();
@@ -262,7 +266,7 @@ x_el_div (Complex a, ComplexMatrix& b)
 
 /* 1 */
 tree_constant
-xleftdiv (Matrix& a, Matrix& b)
+xleftdiv (const Matrix& a, const Matrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
     return tree_constant ();
@@ -284,7 +288,7 @@ xleftdiv (Matrix& a, Matrix& b)
 
 /* 2 */
 tree_constant
-xleftdiv (Matrix& a, ComplexMatrix& b)
+xleftdiv (const Matrix& a, const ComplexMatrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
     return tree_constant ();
@@ -306,7 +310,7 @@ xleftdiv (Matrix& a, ComplexMatrix& b)
 
 /* 3 */
 tree_constant
-xleftdiv (ComplexMatrix& a, Matrix& b)
+xleftdiv (const ComplexMatrix& a, const Matrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
     return tree_constant ();
@@ -328,7 +332,7 @@ xleftdiv (ComplexMatrix& a, Matrix& b)
 
 /* 4 */
 tree_constant
-xleftdiv (ComplexMatrix& a, ComplexMatrix& b)
+xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
     return tree_constant ();

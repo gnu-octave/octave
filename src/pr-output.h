@@ -36,10 +36,10 @@ class ComplexMatrix;
 class Range;
 
 extern void octave_print_internal (ostrstream& os, double d);
-extern void octave_print_internal (ostrstream& os, Matrix& m);
-extern void octave_print_internal (ostrstream& os, Complex& c);
-extern void octave_print_internal (ostrstream& os, ComplexMatrix& cm);
-extern void octave_print_internal (ostrstream& os, Range& r);
+extern void octave_print_internal (ostrstream& os, const Matrix& m);
+extern void octave_print_internal (ostrstream& os, const Complex& c);
+extern void octave_print_internal (ostrstream& os, const ComplexMatrix& cm);
+extern void octave_print_internal (ostrstream& os, const Range& r);
 
 extern void set_format_style (int argc, char **argv);
 

@@ -183,7 +183,7 @@ discard_until (istream& stream, char character)
 } 
 
 void
-check_dimensions (int& nr, int& nc, char *warnfor)
+check_dimensions (int& nr, int& nc, const char *warnfor)
 {
   if (nr < 0 || nc < 0)
     {
@@ -456,7 +456,7 @@ default_pager (void)
  * See if the given file is in the path.
  */
 char *
-file_in_path (char *name, char *suffix)
+file_in_path (const char *name, const char *suffix)
 {
   char *nm = strconcat ("/", name);
   char *tmp = nm;
@@ -500,7 +500,7 @@ file_in_path (char *name, char *suffix)
  * to the file.
  */
 char *
-m_file_in_path (char *name)
+m_file_in_path (const char *name)
 {
   return file_in_path (name, ".m");
 }
@@ -529,7 +529,7 @@ polite_directory_format (char *name)
  * Return 1 if STRING contains an absolute pathname, else 0.
  */
 int
-absolute_pathname (char *string)
+absolute_pathname (const char *string)
 {
   if (!string || !*string)
     return 0;
@@ -555,7 +555,7 @@ absolute_pathname (char *string)
  * look up through $PATH.
  */
 int
-absolute_program (char *string)
+absolute_program (const char *string)
 {
   return (strchr (string, '/') != (char *)NULL);
 }
@@ -583,7 +583,7 @@ base_pathname (char *string)
  * the string contained a bad number.
  */
 int
-read_octal (char *string)
+read_octal (const char *string)
 {
   int result = 0;
   int digits = 0;
@@ -646,7 +646,7 @@ sub_append_string (char *source, char *target, int *index, int *size)
  *	\\	a backslash
  */
 char *
-decode_prompt_string (char *string)
+decode_prompt_string (const char *string)
 {
   int result_size = PROMPT_GROWTH;
   int result_index = 0;
@@ -849,7 +849,7 @@ decode_prompt_string (char *string)
 
 /*
  * Remove the last N directories from PATH.  Do not PATH blank.
- * PATH must contain enoung space for MAXPATHLEN characters.
+ * PATH must contain enough space for MAXPATHLEN characters.
  */
 void
 pathname_backup (char *path, int n)
@@ -880,7 +880,7 @@ pathname_backup (char *path, int n)
  * begin with.
  */
 char *
-make_absolute (char *string, char *dot_path)
+make_absolute (const char *string, const char *dot_path)
 {
   static char current_path[MAXPATHLEN];
   register char *cp;
@@ -942,7 +942,7 @@ make_absolute (char *string, char *dot_path)
  * FOR_WHOM is the name of the caller for error printing.
  */ 
 char *
-get_working_directory (char *for_whom)
+get_working_directory (const char *for_whom)
 {
   if (!follow_symbolic_links)
     {
@@ -975,7 +975,7 @@ get_working_directory (char *for_whom)
  * link following, etc.
  */ 
 int
-change_to_directory (char *newdir)
+change_to_directory (const char *newdir)
 {
   char *t;
 
@@ -1031,7 +1031,7 @@ change_to_directory (char *newdir)
  *   stat on a fails        returns   -1
  */
 int
-is_newer (char *fa, time_t t)
+is_newer (const char *fa, time_t t)
 {
   struct stat fa_sb;
   register int fa_stat;
@@ -1188,7 +1188,7 @@ close_plot_stream (void)
 }
 
 int
-almost_match (char *std, char *s, int min_match_len = 1)
+almost_match (const char *std, const char *s, int min_match_len = 1)
 {
   int stdlen = strlen (std);
   int slen = strlen (s);
@@ -1199,7 +1199,7 @@ almost_match (char *std, char *s, int min_match_len = 1)
 }
 
 char **
-get_m_file_names (int& num, char *dir, int no_suffix)
+get_m_file_names (int& num, const char *dir, int no_suffix)
 {
   static int num_max = 256;
   char **retval = new char * [num_max];

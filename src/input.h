@@ -41,7 +41,7 @@ extern char **command_completer (char *text, int start, int end);
 extern void initialize_readline (void);
 
 // Global pointer for eval().
-extern char *current_eval_string;
+extern const char *current_eval_string;
 
 // Nonzero means get input from current_eval_string.
 extern int get_input_from_eval_string;

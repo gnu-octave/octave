@@ -25,16 +25,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma implementation
 #endif
 
+#include "idx-vector.h"
 #include "user-prefs.h"
-#include "error.h"
-#include "gripes.h"
-#include "utils.h"
 #include "tree-const.h"
+#include "utils.h"
+#include "gripes.h"
+#include "error.h"
 
 #include "tc-inlines.cc"
 
 int
-tree_constant_rep::valid_as_scalar_index (void)
+tree_constant_rep::valid_as_scalar_index (void) const
 {
   int valid = type_tag == magic_colon
     || (type_tag == scalar_constant && NINT (scalar) == 1)
@@ -45,7 +46,8 @@ tree_constant_rep::valid_as_scalar_index (void)
 }
 
 tree_constant
-tree_constant_rep::do_scalar_index (tree_constant *args, int nargs) 
+tree_constant_rep::do_scalar_index (const tree_constant *args,
+				    int nargs) const
 {
   if (valid_scalar_indices (args, nargs))
     {
@@ -141,7 +143,8 @@ tree_constant_rep::do_scalar_index (tree_constant *args, int nargs)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (tree_constant *args, int nargin)
+tree_constant_rep::do_matrix_index (const tree_constant *args,
+				    int nargin) const
 {
   tree_constant retval;
 
@@ -174,7 +177,7 @@ tree_constant_rep::do_matrix_index (tree_constant *args, int nargin)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (tree_constant& i_arg)
+tree_constant_rep::do_matrix_index (const tree_constant& i_arg) const
 {
   tree_constant retval;
 
@@ -192,7 +195,8 @@ tree_constant_rep::do_matrix_index (tree_constant& i_arg)
 }
 
 tree_constant
-tree_constant_rep::fortran_style_matrix_index (tree_constant& i_arg)
+tree_constant_rep::fortran_style_matrix_index
+  (const tree_constant& i_arg) const
 {
   tree_constant retval;
 
@@ -252,7 +256,7 @@ tree_constant_rep::fortran_style_matrix_index (tree_constant& i_arg)
 }
 
 tree_constant
-tree_constant_rep::fortran_style_matrix_index (Matrix& mi)
+tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
 {
   assert (is_matrix_type ());
 
@@ -337,7 +341,7 @@ tree_constant_rep::fortran_style_matrix_index (Matrix& mi)
 }
 
 tree_constant
-tree_constant_rep::do_vector_index (tree_constant& i_arg)
+tree_constant_rep::do_vector_index (const tree_constant& i_arg) const
 {
   tree_constant retval;
 
@@ -452,7 +456,8 @@ tree_constant_rep::do_vector_index (tree_constant& i_arg)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (tree_constant& i_arg, tree_constant& j_arg)
+tree_constant_rep::do_matrix_index (const tree_constant& i_arg,
+				    const tree_constant& j_arg) const
 {
   tree_constant retval;
 
@@ -516,7 +521,7 @@ tree_constant_rep::do_matrix_index (tree_constant& i_arg, tree_constant& j_arg)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (int i, tree_constant& j_arg)
+tree_constant_rep::do_matrix_index (int i, const tree_constant& j_arg) const
 {
   tree_constant retval;
 
@@ -593,7 +598,8 @@ tree_constant_rep::do_matrix_index (int i, tree_constant& j_arg)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (idx_vector& iv, tree_constant& j_arg)
+tree_constant_rep::do_matrix_index (const idx_vector& iv,
+				    const tree_constant& j_arg) const
 {
   tree_constant retval;
 
@@ -670,7 +676,8 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, tree_constant& j_arg)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (Range& ri, int imax, tree_constant& j_arg)
+tree_constant_rep::do_matrix_index (const Range& ri, int imax,
+				    const tree_constant& j_arg) const
 {
   tree_constant retval;
 
@@ -746,7 +753,7 @@ tree_constant_rep::do_matrix_index (Range& ri, int imax, tree_constant& j_arg)
 
 tree_constant
 tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
-				    tree_constant& j_arg)
+				    const tree_constant& j_arg) const
 {
   tree_constant retval;
 
@@ -821,7 +828,7 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (int i, int j)
+tree_constant_rep::do_matrix_index (int i, int j) const
 {
   tree_constant retval;
 
@@ -834,7 +841,7 @@ tree_constant_rep::do_matrix_index (int i, int j)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (int i, idx_vector& jv)
+tree_constant_rep::do_matrix_index (int i, const idx_vector& jv) const
 {
   tree_constant retval;
 
@@ -853,7 +860,7 @@ tree_constant_rep::do_matrix_index (int i, idx_vector& jv)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (int i, Range& rj)
+tree_constant_rep::do_matrix_index (int i, const Range& rj) const
 {
   tree_constant retval;
 
@@ -876,8 +883,8 @@ tree_constant_rep::do_matrix_index (int i, Range& rj)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (int i,
-				    tree_constant_rep::constant_type mcj)
+tree_constant_rep::do_matrix_index
+  (int i, tree_constant_rep::constant_type mcj) const
 {
   assert (mcj == magic_colon);
 
@@ -898,7 +905,7 @@ tree_constant_rep::do_matrix_index (int i,
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (idx_vector& iv, int j)
+tree_constant_rep::do_matrix_index (const idx_vector& iv, int j) const
 {
   tree_constant retval;
 
@@ -918,7 +925,8 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, int j)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (idx_vector& iv, idx_vector& jv)
+tree_constant_rep::do_matrix_index (const idx_vector& iv,
+				    const idx_vector& jv) const
 {
   tree_constant retval;
 
@@ -943,7 +951,8 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, idx_vector& jv)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (idx_vector& iv, Range& rj)
+tree_constant_rep::do_matrix_index (const idx_vector& iv,
+				    const Range& rj) const
 {
   tree_constant retval;
 
@@ -972,8 +981,8 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, Range& rj)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (idx_vector& iv,
-				    tree_constant_rep::constant_type mcj)
+tree_constant_rep::do_matrix_index
+  (const idx_vector& iv, tree_constant_rep::constant_type mcj) const
 {
   assert (mcj == magic_colon);
 
@@ -999,7 +1008,7 @@ tree_constant_rep::do_matrix_index (idx_vector& iv,
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (Range& ri, int j)
+tree_constant_rep::do_matrix_index (const Range& ri, int j) const
 {
   tree_constant retval;
 
@@ -1022,7 +1031,8 @@ tree_constant_rep::do_matrix_index (Range& ri, int j)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (Range& ri, idx_vector& jv)
+tree_constant_rep::do_matrix_index (const Range& ri,
+				    const idx_vector& jv) const
 {
   tree_constant retval;
 
@@ -1050,7 +1060,7 @@ tree_constant_rep::do_matrix_index (Range& ri, idx_vector& jv)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (Range& ri, Range& rj)
+tree_constant_rep::do_matrix_index (const Range& ri, const Range& rj) const
 {
   tree_constant retval;
 
@@ -1083,8 +1093,8 @@ tree_constant_rep::do_matrix_index (Range& ri, Range& rj)
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (Range& ri,
-				    tree_constant_rep::constant_type mcj)
+tree_constant_rep::do_matrix_index
+  (const Range& ri, tree_constant_rep::constant_type mcj) const
 {
   assert (mcj == magic_colon);
 
@@ -1116,7 +1126,7 @@ tree_constant_rep::do_matrix_index (Range& ri,
 
 tree_constant
 tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
-				    int j)
+				    int j) const
 {
   assert (mci == magic_colon);
 
@@ -1138,7 +1148,7 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 
 tree_constant
 tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
-				    idx_vector& jv)
+				    const idx_vector& jv) const
 {
   assert (mci == magic_colon);
 
@@ -1165,7 +1175,7 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 
 tree_constant
 tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
-				    Range& rj)
+				    const Range& rj) const
 {
   assert (mci == magic_colon);
 
@@ -1196,7 +1206,7 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 
 tree_constant
 tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
-				    tree_constant_rep::constant_type mcj)
+				    tree_constant_rep::constant_type mcj) const
 {
   assert (mci == magic_colon && mcj == magic_colon);
 
@@ -1204,7 +1214,8 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 }
 
 tree_constant
-tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci)
+tree_constant_rep::do_matrix_index
+  (tree_constant_rep::constant_type mci) const
 {
   assert (mci == magic_colon);
 

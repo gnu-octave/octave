@@ -28,9 +28,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <Complex.h>
-
-#include "help.h"
+class Complex;
+struct help_list;
 
 #ifndef MAPPER_FCN_TYPEDEFS
 #define MAPPER_FCN_TYPEDEFS 1
@@ -77,7 +76,7 @@ struct builtin_string_variables
 };
 
 extern void install_builtins (void);
-extern int is_text_function_name (char *s);
+extern int is_text_function_name (const char *s);
 
 extern help_list *builtin_mapper_functions_help (void);
 extern help_list *builtin_general_functions_help (void);

@@ -25,11 +25,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma implementation
 #endif
 
+#include "idx-vector.h"
 #include "user-prefs.h"
-#include "error.h"
-#include "gripes.h"
-#include "utils.h"
 #include "tree-const.h"
+#include "utils.h"
+#include "gripes.h"
+#include "error.h"
 
 #include "tc-inlines.cc"
 
@@ -372,7 +373,7 @@ tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
 
 void
 tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
-					int ilen, char *rm)
+					int ilen, const char *rm)
 {
   int nr = rows ();
   int nc = columns ();
@@ -437,6 +438,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
 
   int ilen = iv.capacity ();
   check_vector_assign (rhs_nr, rhs_nc, ilen, "matrix");
+  if (error_state)
+    return;
 
   force_orient f_orient = no_orient;
   if (rhs_nr == 1 && rhs_nc != 1)
@@ -472,6 +475,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri, int imax)
 
   int ilen = ri.nelem ();
   check_vector_assign (rhs_nr, rhs_nc, ilen, "range");
+  if (error_state)
+    return;
 
   force_orient f_orient = no_orient;
   if (rhs_nr == 1 && rhs_nc != 1)

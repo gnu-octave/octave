@@ -30,11 +30,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdlib.h>
 #include <assert.h>
-#include <iostream.h>
-#include "Matrix.h"
-#include "Range.h"
 
 #define FAIL assert(0) /* XXX FIXME XXX */
+
+class ostream;
+class Matrix;
+class Range;
 
 class idx_vector
 {
@@ -42,8 +43,8 @@ public:
   idx_vector (void);
   idx_vector (const idx_vector& a);
 
-  idx_vector (Matrix& m, int do_ftn_idx, char *rc = (char *) NULL,
-	      int z_len = 0);
+  idx_vector (const Matrix& m, int do_ftn_idx,
+	      const char *rc = (char *) NULL, int z_len = 0);
 
   idx_vector (const Range& r);
 
@@ -81,7 +82,7 @@ private:
   int min_val;
   int *data;
 
-  void init_state (char *rc = (char *) NULL, int z_len = 0);
+  void init_state (const char *rc = (char *) NULL, int z_len = 0);
   void convert_one_zero_to_idx (void);
 };
 

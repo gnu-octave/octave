@@ -28,7 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <Complex.h>
+class Complex;
 
 #include "missing-math.h"
 

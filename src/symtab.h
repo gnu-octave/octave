@@ -92,9 +92,9 @@ public:
   void define (tree_builtin *t);
   void define (tree_function *t);
 
-  tree *def (void);
-  char *help (void);
-  void document (char *h);
+  tree *def (void) const;
+  char *help (void) const;
+  void document (const char *h);
 
   int save (ostream& os, int mark_as_global);
 
@@ -122,19 +122,19 @@ symbol_record
 
 public:
   symbol_record (void);
-  symbol_record (char *n);
-  symbol_record (char *n, symbol_record *nxt);
+  symbol_record (const char *n);
+  symbol_record (const char *n, symbol_record *nxt);
 
  ~symbol_record (void);
 
-  char *name (void);
-  char *help (void); 
-  tree *def (void);
+  char *name (void) const;
+  char *help (void) const; 
+  tree *def (void) const;
 
-  int is_function (void);
-  int is_variable (void);
+  int is_function (void) const;
+  int is_variable (void) const;
 
-  int is_defined (void);
+  int is_defined (void) const;
 
   void set_sv_function (sv_Function f);
 
@@ -146,7 +146,7 @@ public:
   int define (tree_function *t);
   int define_as_fcn (tree_constant *t);
 
-  void document (char *h);
+  void document (const char *h);
 
   void protect (void);
   void unprotect (void);
@@ -159,14 +159,14 @@ public:
   void undefine (void);
 
   void mark_as_formal_parameter (void);
-  int is_formal_parameter (void);
+  int is_formal_parameter (void) const;
 
   void mark_as_forced_global (void);
-  int is_forced_global (void);
+  int is_forced_global (void) const;
 
   void alias (symbol_record *s, int force = 0);
 
-  symbol_record *next (void);
+  symbol_record *next (void) const;
 
 private:
 
@@ -192,34 +192,34 @@ public:
 
   symbol_table (void);
 
-  symbol_record *lookup (char *nm, int insert = 0, int warn = 0);
+  symbol_record *lookup (const char *nm, int insert = 0, int warn = 0);
 
   void clear (void);
-  int clear (char *nm);
+  int clear (const char *nm);
   void undefine (void);
 
   void bind_globals (void);
 
   int save (ostream& os, int mark_as_global = 0);
-  int save (ostream& os, char *name, int mark_as_global = 0);
+  int save (ostream& os, const char *name, int mark_as_global = 0);
 
-  int size (void);
+  int size (void) const;
 
-  char **list (void);
-  char **var_list (void);
-  char **fcn_list (void);
+  char **list (void) const;
+  char **var_list (void) const;
+  char **fcn_list (void) const;
 
-  char **list (int& count);
-  char **var_list (int& count);
-  char **fcn_list (int& count);
+  char **list (int& count) const;
+  char **var_list (int& count) const;
+  char **fcn_list (int& count) const;
 
-  char **sorted_list (void);
-  char **sorted_var_list (void);
-  char **sorted_fcn_list (void);
+  char **sorted_list (void) const;
+  char **sorted_var_list (void) const;
+  char **sorted_fcn_list (void) const;
 
-  char **sorted_list (int& count);
-  char **sorted_var_list (int& count);
-  char **sorted_fcn_list (int& count);
+  char **sorted_list (int& count) const;
+  char **sorted_var_list (int& count) const;
+  char **sorted_fcn_list (int& count) const;
 
 private:
 

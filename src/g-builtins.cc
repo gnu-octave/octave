@@ -127,7 +127,7 @@ typedef RETSIGTYPE sig_handler (...);
  * Are all elements of a constant nonzero?
  */
 tree_constant *
-builtin_all (tree_constant *args, int nargin, int nargout)
+builtin_all (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -147,7 +147,7 @@ builtin_all (tree_constant *args, int nargin, int nargout)
  * Are any elements of a constant nonzero?
  */
 tree_constant *
-builtin_any (tree_constant *args, int nargin, int nargout)
+builtin_any (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -167,7 +167,7 @@ builtin_any (tree_constant *args, int nargin, int nargout)
  * Balancing for eigenvalue problems
  */
 tree_constant *
-builtin_balance (tree_constant *args, int nargin, int nargout)
+builtin_balance (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin <= 1 || nargin > 4 || nargout < 1 || nargout > 4)
@@ -185,7 +185,7 @@ builtin_balance (tree_constant *args, int nargin, int nargout)
  * Clear the screen?
  */
 tree_constant *
-builtin_clc (tree_constant *args, int nargin, int nargout)
+builtin_clc (const tree_constant *args, int nargin, int nargout)
 {
   rl_beg_of_line ();
   rl_kill_line (1);
@@ -197,7 +197,7 @@ builtin_clc (tree_constant *args, int nargin, int nargout)
  * Time in a vector.
  */
 tree_constant *
-builtin_clock (tree_constant *args, int nargin, int nargout)
+builtin_clock (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -225,7 +225,7 @@ builtin_clock (tree_constant *args, int nargin, int nargout)
  * Close the stream to the plotter.
  */
 tree_constant *
-builtin_closeplot (tree_constant *args, int nargin, int nargout)
+builtin_closeplot (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   close_plot_stream ();
@@ -236,7 +236,7 @@ builtin_closeplot (tree_constant *args, int nargin, int nargout)
  * Collocation roots and weights.
  */
 tree_constant *
-builtin_colloc (tree_constant *args, int nargin, int nargout)
+builtin_colloc (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -253,7 +253,7 @@ builtin_colloc (tree_constant *args, int nargin, int nargout)
  * Cumulative sums and products.
  */
 tree_constant *
-builtin_cumprod (tree_constant *args, int nargin, int nargout)
+builtin_cumprod (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -270,7 +270,7 @@ builtin_cumprod (tree_constant *args, int nargin, int nargout)
 }
 
 tree_constant *
-builtin_cumsum (tree_constant *args, int nargin, int nargout)
+builtin_cumsum (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -304,7 +304,7 @@ dassl_usage (void)
 }
 
 tree_constant *
-builtin_dassl (tree_constant *args, int nargin, int nargout)
+builtin_dassl (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = new tree_constant [2];
 
@@ -321,7 +321,7 @@ builtin_dassl (tree_constant *args, int nargin, int nargout)
  * Time in a string.
  */
 tree_constant *
-builtin_date (tree_constant *args, int nargin, int nargout)
+builtin_date (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -345,7 +345,7 @@ builtin_date (tree_constant *args, int nargin, int nargout)
  * Determinant of a matrix.
  */
 tree_constant *
-builtin_det (tree_constant *args, int nargin, int nargout)
+builtin_det (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -365,7 +365,7 @@ builtin_det (tree_constant *args, int nargin, int nargout)
  * Diagonal elements of a matrix.
  */
 tree_constant *
-builtin_diag (tree_constant *args, int nargin, int nargout)
+builtin_diag (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -405,7 +405,7 @@ builtin_disp (tree_constant *args, int nargin, int nargout)
  * Compute eigenvalues and eigenvectors.
  */
 tree_constant *
-builtin_eig (tree_constant *args, int nargin, int nargout)
+builtin_eig (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -441,7 +441,7 @@ builtin_error (tree_constant *args, int nargin, int nargout)
  * Evaluate text argument as octave source.
  */
 tree_constant *
-builtin_eval (tree_constant *args, int nargin, int nargout)
+builtin_eval (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin == 2)
@@ -459,7 +459,7 @@ builtin_eval (tree_constant *args, int nargin, int nargout)
  * Check if variable or file exists.
  */
 tree_constant *
-builtin_exist (tree_constant *args, int nargin, int nargout)
+builtin_exist (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin == 2 && args[1].is_string_type ())
@@ -477,7 +477,7 @@ builtin_exist (tree_constant *args, int nargin, int nargout)
  * Matrix exponential.
  */
 tree_constant *
-builtin_expm (tree_constant *args, int nargin, int nargout)
+builtin_expm (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -497,7 +497,7 @@ builtin_expm (tree_constant *args, int nargin, int nargout)
  * Identity matrix.
  */
 tree_constant *
-builtin_eye (tree_constant *args, int nargin, int nargout)
+builtin_eye (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -523,7 +523,7 @@ builtin_eye (tree_constant *args, int nargin, int nargout)
  * Closing a file
  */
 tree_constant *
-builtin_fclose (tree_constant *args, int nargin, int nargout)
+builtin_fclose (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -537,7 +537,7 @@ builtin_fclose (tree_constant *args, int nargin, int nargout)
  * Evaluate first argument as a function.
  */
 tree_constant *
-builtin_feval (tree_constant *args, int nargin, int nargout)
+builtin_feval (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin > 1)
@@ -551,7 +551,7 @@ builtin_feval (tree_constant *args, int nargin, int nargout)
  * Flushing output to a file
  */
 tree_constant *
-builtin_fflush (tree_constant *args, int nargin, int nargout)
+builtin_fflush (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -565,7 +565,7 @@ builtin_fflush (tree_constant *args, int nargin, int nargout)
  * Fast Fourier Transform
  */
 tree_constant *
-builtin_fft (tree_constant *args, int nargin, int nargout)
+builtin_fft (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -585,7 +585,7 @@ builtin_fft (tree_constant *args, int nargin, int nargout)
  * get a string from a file
  */
 tree_constant *
-builtin_fgets (tree_constant *args, int nargin, int nargout)
+builtin_fgets (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 3  && nargout < 3)
@@ -600,7 +600,7 @@ builtin_fgets (tree_constant *args, int nargin, int nargout)
  * do_fortran_indexing is true...
  */
 tree_constant *
-builtin_find (tree_constant *args, int nargin, int nargout)
+builtin_find (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin == 2)
@@ -617,7 +617,7 @@ builtin_find (tree_constant *args, int nargin, int nargout)
  * Don\'t really count floating point operations.
  */
 tree_constant *
-builtin_flops (tree_constant *args, int nargin, int nargout)
+builtin_flops (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin > 2)
@@ -633,7 +633,7 @@ builtin_flops (tree_constant *args, int nargin, int nargout)
  * Opening a file.
  */
 tree_constant *
-builtin_fopen (tree_constant *args, int nargin, int nargout)
+builtin_fopen (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 3)
@@ -657,7 +657,7 @@ builtin_fopen (tree_constant *args, int nargin, int nargout)
  * Formatted printing to a file.
  */
 tree_constant *
-builtin_fprintf (tree_constant *args, int nargin, int nargout)
+builtin_fprintf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin < 3)
@@ -671,7 +671,7 @@ builtin_fprintf (tree_constant *args, int nargin, int nargout)
  * rewind a file
  */
 tree_constant *
-builtin_frewind (tree_constant *args, int nargin, int nargout)
+builtin_frewind (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -685,7 +685,7 @@ builtin_frewind (tree_constant *args, int nargin, int nargout)
  * report on open files
  */
 tree_constant *
-builtin_freport (tree_constant *args, int nargin, int nargout)
+builtin_freport (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin > 1)
@@ -698,7 +698,7 @@ builtin_freport (tree_constant *args, int nargin, int nargout)
  * Formatted reading from a file.
  */
 tree_constant *
-builtin_fscanf (tree_constant *args, int nargin, int nargout)
+builtin_fscanf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2 && nargin != 3)
@@ -712,7 +712,7 @@ builtin_fscanf (tree_constant *args, int nargin, int nargout)
  * seek a point in a file for reading and/or writing 
  */
 tree_constant *
-builtin_fseek (tree_constant *args, int nargin, int nargout)
+builtin_fseek (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 3 && nargin != 4)
@@ -734,7 +734,7 @@ fsolve_usage (void)
 }
 
 tree_constant *
-builtin_fsolve (tree_constant *args, int nargin, int nargout)
+builtin_fsolve (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -765,7 +765,7 @@ fsqp_usage (void)
 }
 
 tree_constant *
-builtin_fsqp (tree_constant *args, int nargin, int nargout)
+builtin_fsqp (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -788,7 +788,7 @@ builtin_fsqp (tree_constant *args, int nargin, int nargout)
  * tell current position of file
  */
 tree_constant *
-builtin_ftell (tree_constant *args, int nargin, int nargout)
+builtin_ftell (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -802,7 +802,7 @@ builtin_ftell (tree_constant *args, int nargin, int nargout)
  * Get the value of an environment variable.
  */
 tree_constant *
-builtin_getenv (tree_constant *args, int nargin, int nargout)
+builtin_getenv (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin == 2 && args[1].is_string_type ())
@@ -823,7 +823,7 @@ builtin_getenv (tree_constant *args, int nargin, int nargout)
  * Inverse Fast Fourier Transform
  */
 tree_constant *
-builtin_ifft (tree_constant *args, int nargin, int nargout)
+builtin_ifft (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -843,7 +843,7 @@ builtin_ifft (tree_constant *args, int nargin, int nargout)
  * Inverse of a square matrix.
  */
 tree_constant *
-builtin_inv (tree_constant *args, int nargin, int nargout)
+builtin_inv (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -863,7 +863,7 @@ builtin_inv (tree_constant *args, int nargin, int nargout)
  * Prompt user for input.
  */
 tree_constant *
-builtin_input (tree_constant *args, int nargin, int nargout)
+builtin_input (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -882,7 +882,7 @@ builtin_input (tree_constant *args, int nargin, int nargout)
  * Is the argument a string?
  */
 tree_constant *
-builtin_isstr (tree_constant *args, int nargin, int nargout)
+builtin_isstr (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -902,7 +902,7 @@ builtin_isstr (tree_constant *args, int nargin, int nargout)
  * Maybe help in debugging.
  */
 tree_constant *
-builtin_keyboard (tree_constant *args, int nargin, int nargout)
+builtin_keyboard (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -921,7 +921,7 @@ builtin_keyboard (tree_constant *args, int nargin, int nargout)
  * Matrix logarithm.
  */
 tree_constant *
-builtin_logm (tree_constant *args, int nargin, int nargout)
+builtin_logm (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -943,7 +943,7 @@ lpsolve_usage (void)
 }
 
 tree_constant *
-builtin_lpsolve (tree_constant *args, int nargin, int nargout)
+builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -981,7 +981,7 @@ lsode_usage (void)
 }
 
 tree_constant *
-builtin_lsode (tree_constant *args, int nargin, int nargout)
+builtin_lsode (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -998,7 +998,7 @@ builtin_lsode (tree_constant *args, int nargin, int nargout)
  * LU factorization.
  */
 tree_constant *
-builtin_lu (tree_constant *args, int nargin, int nargout)
+builtin_lu (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1015,7 +1015,7 @@ builtin_lu (tree_constant *args, int nargin, int nargout)
  * Max values.
  */
 tree_constant *
-builtin_max (tree_constant *args, int nargin, int nargout)
+builtin_max (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1032,7 +1032,7 @@ builtin_max (tree_constant *args, int nargin, int nargout)
  * Min values.
  */
 tree_constant *
-builtin_min (tree_constant *args, int nargin, int nargout)
+builtin_min (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1071,7 +1071,7 @@ npsol_usage (void)
 }
 
 tree_constant *
-builtin_npsol (tree_constant *args, int nargin, int nargout)
+builtin_npsol (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1101,7 +1101,7 @@ builtin_npsol (tree_constant *args, int nargin, int nargout)
  * A matrix of ones.
  */
 tree_constant *
-builtin_ones (tree_constant *args, int nargin, int nargout)
+builtin_ones (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1126,7 +1126,7 @@ builtin_ones (tree_constant *args, int nargin, int nargout)
  * You guessed it.
  */
 tree_constant *
-builtin_pause (tree_constant *args, int nargin, int nargout)
+builtin_pause (const tree_constant *args, int nargin, int nargout)
 {
   if (! (nargin == 1 || nargin == 2))
     {
@@ -1148,7 +1148,7 @@ builtin_pause (tree_constant *args, int nargin, int nargout)
  * Delete turds from /tmp.
  */
 tree_constant *
-builtin_purge_tmp_files (tree_constant *, int, int)
+builtin_purge_tmp_files (const tree_constant *, int, int)
 {
   cleanup_tmp_files ();
   return NULL_TREE_CONST;
@@ -1158,7 +1158,7 @@ builtin_purge_tmp_files (tree_constant *, int, int)
  * Formatted printing.
  */
 tree_constant *
-builtin_printf (tree_constant *args, int nargin, int nargout)
+builtin_printf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin < 2)
@@ -1172,7 +1172,7 @@ builtin_printf (tree_constant *args, int nargin, int nargout)
  * Product.
  */
 tree_constant *
-builtin_prod (tree_constant *args, int nargin, int nargout)
+builtin_prod (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -1192,7 +1192,7 @@ builtin_prod (tree_constant *args, int nargin, int nargout)
  * Print name of current working directory.
  */
 tree_constant *
-builtin_pwd (tree_constant *args, int nargin, int nargout)
+builtin_pwd (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   char *directory;
@@ -1242,7 +1242,7 @@ qpsol_usage (void)
 }
 
 tree_constant *
-builtin_qpsol (tree_constant *args, int nargin, int nargout)
+builtin_qpsol (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1271,7 +1271,7 @@ builtin_qpsol (tree_constant *args, int nargin, int nargout)
  * QR factorization.
  */
 tree_constant *
-builtin_qr (tree_constant *args, int nargin, int nargout)
+builtin_qr (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1288,7 +1288,7 @@ builtin_qr (tree_constant *args, int nargin, int nargout)
  * generalized eigenvalues via qz
  */
 tree_constant *
-builtin_qzval (tree_constant *args, int nargin, int nargout)
+builtin_qzval (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1306,7 +1306,7 @@ builtin_qzval (tree_constant *args, int nargin, int nargout)
  * Random numbers.
  */
 tree_constant *
-builtin_quad (tree_constant *args, int nargin, int nargout)
+builtin_quad (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1325,7 +1325,7 @@ builtin_quad (tree_constant *args, int nargin, int nargout)
  * I'm outta here.
  */
 tree_constant *
-builtin_quit (tree_constant *args, int nargin, int nargout)
+builtin_quit (const tree_constant *args, int nargin, int nargout)
 {
   quitting_gracefully = 1;
   clean_up_and_exit (0);
@@ -1336,7 +1336,7 @@ builtin_quit (tree_constant *args, int nargin, int nargout)
  * Random numbers.
  */
 tree_constant *
-builtin_rand (tree_constant *args, int nargin, int nargout)
+builtin_rand (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1360,7 +1360,7 @@ builtin_rand (tree_constant *args, int nargin, int nargout)
  * Replot current plot.
  */
 tree_constant *
-builtin_replot (tree_constant *args, int nargin, int nargout)
+builtin_replot (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1376,7 +1376,7 @@ builtin_replot (tree_constant *args, int nargin, int nargout)
  * Formatted reading.
  */
 tree_constant *
-builtin_scanf (tree_constant *args, int nargin, int nargout)
+builtin_scanf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -1409,7 +1409,7 @@ builtin_setstr (tree_constant *args, int nargin, int nargout)
  * Execute a shell command.
  */
 tree_constant *
-builtin_shell_command (tree_constant *args, int nargin, int nargout)
+builtin_shell_command (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1447,7 +1447,7 @@ builtin_shell_command (tree_constant *args, int nargin, int nargout)
  * Report rows and columns.
  */
 tree_constant *
-builtin_size (tree_constant *args, int nargin, int nargout)
+builtin_size (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1484,7 +1484,7 @@ builtin_size (tree_constant *args, int nargin, int nargout)
  * Sort columns.
  */
 tree_constant *
-builtin_sort (tree_constant *args, int nargin, int nargout)
+builtin_sort (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1500,7 +1500,7 @@ builtin_sort (tree_constant *args, int nargin, int nargout)
  * Formatted printing to a string.
  */
 tree_constant *
-builtin_sprintf (tree_constant *args, int nargin, int nargout)
+builtin_sprintf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin < 2)
@@ -1514,7 +1514,7 @@ builtin_sprintf (tree_constant *args, int nargin, int nargout)
  * Matrix sqrt.
  */
 tree_constant *
-builtin_sqrtm (tree_constant *args, int nargin, int nargout)
+builtin_sqrtm (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1530,7 +1530,7 @@ builtin_sqrtm (tree_constant *args, int nargin, int nargout)
  * Formatted reading from a string.
  */
 tree_constant *
-builtin_sscanf (tree_constant *args, int nargin, int nargout)
+builtin_sscanf (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 3)
@@ -1544,7 +1544,7 @@ builtin_sscanf (tree_constant *args, int nargin, int nargout)
  * Sum.
  */
 tree_constant *
-builtin_sum (tree_constant *args, int nargin, int nargout)
+builtin_sum (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -1564,7 +1564,7 @@ builtin_sum (tree_constant *args, int nargin, int nargout)
  * Sum of squares.
  */
 tree_constant *
-builtin_sumsq (tree_constant *args, int nargin, int nargout)
+builtin_sumsq (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin != 2)
@@ -1584,7 +1584,7 @@ builtin_sumsq (tree_constant *args, int nargin, int nargout)
  * Singluar value decomposition.
  */
 tree_constant *
-builtin_svd (tree_constant *args, int nargin, int nargout)
+builtin_svd (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1601,7 +1601,7 @@ builtin_svd (tree_constant *args, int nargin, int nargout)
  * Sylvester equation solver.
  */
 tree_constant *
-builtin_syl (tree_constant *args, int nargin, int nargout)
+builtin_syl (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1618,7 +1618,7 @@ builtin_syl (tree_constant *args, int nargin, int nargout)
  * Schur Decomposition
  */
 tree_constant *
-builtin_schur (tree_constant *args, int nargin, int nargout)
+builtin_schur (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1643,7 +1643,7 @@ builtin_schur (tree_constant *args, int nargin, int nargout)
  * Givens rotation
  */
 tree_constant *
-builtin_givens (tree_constant *args, int nargin, int nargout)
+builtin_givens (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1659,7 +1659,7 @@ builtin_givens (tree_constant *args, int nargin, int nargout)
  * Hessenberg Decomposition
  */
 tree_constant *
-builtin_hess (tree_constant *args, int nargin, int nargout)
+builtin_hess (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -1676,7 +1676,7 @@ builtin_hess (tree_constant *args, int nargin, int nargout)
  * Copying information.
  */
 tree_constant *
-builtin_warranty (tree_constant *args, int nargin, int nargout)
+builtin_warranty (const tree_constant *args, int nargin, int nargout)
 {
   ostrstream output_buf;
   output_buf << "\n    Octave, version " << version_string
@@ -1704,7 +1704,7 @@ builtin_warranty (tree_constant *args, int nargin, int nargout)
  * A matrix of zeros.
  */
 tree_constant *
-builtin_zeros (tree_constant *args, int nargin, int nargout)
+builtin_zeros (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 

@@ -101,19 +101,19 @@ symbol_def::define (tree_function *t)
 }
 
 tree *
-symbol_def::def (void)
+symbol_def::def (void) const
 {
   return definition;
 }
 
 char *
-symbol_def::help (void)
+symbol_def::help (void) const
 {
   return help_string;
 }
 
 void
-symbol_def::document (char *h)
+symbol_def::document (const char *h)
 {
   delete [] help_string;
   help_string = strsave (h);
@@ -139,7 +139,7 @@ symbol_record::symbol_record (void)
   next_elem = (symbol_record *) NULL;
 }
 
-symbol_record::symbol_record (char *n)
+symbol_record::symbol_record (const char *n)
 {
   nm = strsave (n);
   formal_param = 0;
@@ -150,7 +150,7 @@ symbol_record::symbol_record (char *n)
   next_elem = (symbol_record *) NULL;
 }
 
-symbol_record::symbol_record (char *n, symbol_record *nxt)
+symbol_record::symbol_record (const char *n, symbol_record *nxt)
 {
   nm = strsave (n);
   formal_param = 0;
@@ -173,13 +173,13 @@ symbol_record::~symbol_record (void)
 }
 
 char *
-symbol_record::name (void)
+symbol_record::name (void) const
 {
   return nm;
 }
 
 char *
-symbol_record::help (void)
+symbol_record::help (void) const
 {
   if (var != (symbol_def *) NULL)
     return var->help ();
@@ -190,7 +190,7 @@ symbol_record::help (void)
 }
 
 tree *
-symbol_record::def (void)
+symbol_record::def (void) const
 {
   if (var != (symbol_def *) NULL)
     return var->def ();
@@ -201,19 +201,19 @@ symbol_record::def (void)
 }
 
 int
-symbol_record::is_function (void)
+symbol_record::is_function (void) const
 {
   return (var == (symbol_def *) NULL && fcn != (symbol_def *) NULL);
 }
 
 int
-symbol_record::is_variable (void)
+symbol_record::is_variable (void) const
 {
   return (var != (symbol_def *) NULL);
 }
 
 int
-symbol_record::is_defined (void)
+symbol_record::is_defined (void) const
 {
   return (var != (symbol_def *) NULL || fcn != (symbol_def *) NULL);
 }
@@ -356,7 +356,7 @@ symbol_record::define_as_fcn (tree_constant *t)
 }
 
 void
-symbol_record::document (char *h)
+symbol_record::document (const char *h)
 {
   if (var != (symbol_def *) NULL)
     var->document (h);
@@ -487,7 +487,7 @@ symbol_record::mark_as_formal_parameter (void)
 }
 
 int
-symbol_record::is_formal_parameter (void)
+symbol_record::is_formal_parameter (void) const
 {
   return formal_param;
 }
@@ -499,7 +499,7 @@ symbol_record::mark_as_forced_global (void)
 }
 
 int
-symbol_record::is_forced_global (void)
+symbol_record::is_forced_global (void) const
 {
   return forced_global;
 }
@@ -534,7 +534,7 @@ symbol_record::alias (symbol_record *s, int force = 0)
 }
 
 symbol_record *
-symbol_record::next (void)
+symbol_record::next (void) const
 {
   return next_elem;
 }
@@ -548,7 +548,7 @@ symbol_table::symbol_table (void)
 }
 
 symbol_record *
-symbol_table::lookup (char *nm, int insert = 0, int warn = 0)
+symbol_table::lookup (const char *nm, int insert = 0, int warn = 0)
 {
   int index = hash (nm) & HASH_MASK;
 
@@ -605,7 +605,7 @@ symbol_table::clear (void)
 }
 
 int
-symbol_table::clear (char *nm)
+symbol_table::clear (const char *nm)
 {
   int index = hash (nm) & HASH_MASK;
 
@@ -691,7 +691,7 @@ symbol_table::save (ostream& os, int mark_as_global = 0)
 }
 
 int
-symbol_table::save (ostream& os, char *name, int mark_as_global = 0)
+symbol_table::save (ostream& os, const char *name, int mark_as_global = 0)
 {
   int status = 0;
   symbol_record *sr = lookup (name, 0, 0);
@@ -701,7 +701,7 @@ symbol_table::save (ostream& os, char *name, int mark_as_global = 0)
 }
 
 int
-symbol_table::size (void)
+symbol_table::size (void) const
 {
   int count = 0;
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
@@ -717,28 +717,28 @@ symbol_table::size (void)
 }
 
 char **
-symbol_table::list (void)
+symbol_table::list (void) const
 {
   int count;
   return list (count);
 }
 
 char **
-symbol_table::var_list (void)
+symbol_table::var_list (void) const
 {
   int count;
   return var_list (count);
 }
 
 char **
-symbol_table::fcn_list (void)
+symbol_table::fcn_list (void) const
 {
   int count;
   return fcn_list (count);
 }
 
 char **
-symbol_table::list (int& count)
+symbol_table::list (int& count) const
 {
   count = 0;
   int n = size ();
@@ -761,7 +761,7 @@ symbol_table::list (int& count)
 }
 
 char **
-symbol_table::var_list (int& count)
+symbol_table::var_list (int& count) const
 {
   count = 0;
   int n = size ();
@@ -785,7 +785,7 @@ symbol_table::var_list (int& count)
 }
 
 char **
-symbol_table::fcn_list (int& count)
+symbol_table::fcn_list (int& count) const
 {
   count = 0;
   int n = size ();
@@ -815,28 +815,28 @@ pstrcmp (char **a, char **b)
 }
 
 char **
-symbol_table::sorted_list (void)
+symbol_table::sorted_list (void) const
 {
   int count = 0;
   return sorted_list (count);
 }
 
 char **
-symbol_table::sorted_var_list (void)
+symbol_table::sorted_var_list (void) const
 {
   int count = 0;
   return sorted_var_list (count);
 }
 
 char **
-symbol_table::sorted_fcn_list (void)
+symbol_table::sorted_fcn_list (void) const
 {
   int count = 0;
   return sorted_fcn_list (count);
 }
 
 char **
-symbol_table::sorted_list (int& count)
+symbol_table::sorted_list (int& count) const
 {
   char **symbols = list (count);
   if (symbols != (char **) NULL)
@@ -846,7 +846,7 @@ symbol_table::sorted_list (int& count)
 }
 
 char **
-symbol_table::sorted_var_list (int& count)
+symbol_table::sorted_var_list (int& count) const
 {
   char **symbols = var_list (count);
   if (symbols != (char **) NULL)
@@ -856,7 +856,7 @@ symbol_table::sorted_var_list (int& count)
 }
 
 char **
-symbol_table::sorted_fcn_list (int& count)
+symbol_table::sorted_fcn_list (int& count) const
 {
   char **symbols = fcn_list (count);
   if (symbols != (char **) NULL)

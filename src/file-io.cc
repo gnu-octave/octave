@@ -54,7 +54,7 @@ class File_info
 {
  public:
   File_info (void);
-  File_info (int num, char *nm, FILE *t, char *md);
+  File_info (int num, const char *nm, FILE *t, const char *md);
   File_info (const File_info& f);
 
   File_info& operator = (const File_info& f);
@@ -106,7 +106,7 @@ File_info::~File_info (void)
   delete [] _mode;
 }
 
-File_info::File_info (int n, char *nm, FILE *t, char *md)
+File_info::File_info (int n, const char *nm, FILE *t, const char *md)
 {
   _number = n;
   _name = strsave (nm);
@@ -143,7 +143,7 @@ File_info::mode (void) const
 static DLList <File_info> file_list;
 
 void
-initialize_file_io ()
+initialize_file_io (void)
 {
   File_info _stdin (0, "stdin", stdin, "r");
   File_info _stdout (1, "stdout", stdout, "w");
@@ -157,7 +157,7 @@ initialize_file_io ()
 }
 
 Pix
-return_valid_file (tree_constant& arg)
+return_valid_file (const tree_constant& arg)
 {
   if (arg.is_string_type ())
     {
@@ -198,7 +198,7 @@ return_valid_file (tree_constant& arg)
 }
 
 static Pix 
-fopen_file_for_user (tree_constant& arg, char *mode)
+fopen_file_for_user (const tree_constant& arg, const char *mode)
 {
   char *file_name = arg.string_value ();
 
@@ -226,7 +226,7 @@ fopen_file_for_user (tree_constant& arg, char *mode)
 
 
 tree_constant *
-fclose_internal (tree_constant *args)
+fclose_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -260,7 +260,7 @@ fclose_internal (tree_constant *args)
 }
 
 tree_constant *
-fflush_internal (tree_constant *args)
+fflush_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -296,7 +296,7 @@ fflush_internal (tree_constant *args)
 }
 
 static int
-valid_mode (char *mode)
+valid_mode (const char *mode)
 {
   if (mode != (char *) NULL)
     {
@@ -311,7 +311,7 @@ valid_mode (char *mode)
 }
 
 tree_constant *
-fgets_internal (tree_constant *args, int nargout)
+fgets_internal (const tree_constant *args, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -375,7 +375,7 @@ fgets_internal (tree_constant *args, int nargout)
 }
 
 tree_constant *
-fopen_internal (tree_constant *args)
+fopen_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
   Pix p;
@@ -440,7 +440,7 @@ fopen_internal (tree_constant *args)
 }
 
 tree_constant *
-freport_internal ()
+freport_internal (void)
 {
   tree_constant *retval = NULL_TREE_CONST;
   Pix p = file_list.first ();
@@ -463,7 +463,7 @@ freport_internal ()
 }
 
 tree_constant *
-frewind_internal (tree_constant *args)
+frewind_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -478,7 +478,7 @@ frewind_internal (tree_constant *args)
 }
 
 tree_constant *
-fseek_internal (tree_constant *args, int nargin)
+fseek_internal (const tree_constant *args, int nargin)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -532,7 +532,7 @@ fseek_internal (tree_constant *args, int nargin)
 }
 
 tree_constant *
-ftell_internal (tree_constant *args)
+ftell_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
   Pix p = return_valid_file (args[1]);
@@ -552,7 +552,7 @@ ftell_internal (tree_constant *args)
 }
 
 void
-close_files ()
+close_files (void)
 {
   Pix p = file_list.first ();
 
@@ -570,8 +570,8 @@ close_files ()
 }
 
 static int
-process_printf_format (char *s, tree_constant *args, ostrstream& sb,
-		       char *type, int nargin)
+process_printf_format (const char *s, const tree_constant *args,
+		       ostrstream& sb, const char *type, int nargin)
 {
   ostrstream fmt;
 
@@ -769,7 +769,8 @@ process_printf_format (char *s, tree_constant *args, ostrstream& sb,
 
 
 tree_constant *
-do_printf (char *type, tree_constant *args, int nargin, int nargout)
+do_printf (const char *type, const tree_constant *args, int nargin,
+	   int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   fmt_arg_count = 1;
@@ -889,9 +890,9 @@ do_printf (char *type, tree_constant *args, int nargin, int nargout)
 }
 
 static int
-process_scanf_format (char *s, tree_constant *args, ostrstream& fmt,
-		      char *type, int nargout, FILE* fptr,
-		      tree_constant *values)
+process_scanf_format (const char *s, const tree_constant *args,
+		      ostrstream& fmt, const char *type, int nargout,
+		      FILE* fptr, tree_constant *values)
 {
   fmt << "%";
 
@@ -1050,7 +1051,7 @@ process_scanf_format (char *s, tree_constant *args, ostrstream& fmt,
 }
 
 tree_constant *
-do_scanf (char *type, tree_constant *args, int nargin, int nargout)
+do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   char *scanf_fmt = (char *) NULL;

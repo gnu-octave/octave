@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <ctype.h>
 #include <setjmp.h>
 #include <math.h>
+#include <Complex.h>
 
 #include "error.h"
 #include "gripes.h"
@@ -79,7 +80,7 @@ Matrix_bool_op
  * Check row and column dimensions for binary matrix operations.
  */
 static inline int
-m_add_conform (Matrix& a, Matrix& b, int warn)
+m_add_conform (const Matrix& a, const Matrix& b, int warn)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -95,7 +96,7 @@ m_add_conform (Matrix& a, Matrix& b, int warn)
 }
 
 static inline int
-m_add_conform (Matrix& a, ComplexMatrix& b, int warn)
+m_add_conform (const Matrix& a, const ComplexMatrix& b, int warn)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -111,7 +112,7 @@ m_add_conform (Matrix& a, ComplexMatrix& b, int warn)
 }
 
 static inline int
-m_add_conform (ComplexMatrix& a, Matrix& b, int warn)
+m_add_conform (const ComplexMatrix& a, const Matrix& b, int warn)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -127,7 +128,7 @@ m_add_conform (ComplexMatrix& a, Matrix& b, int warn)
 }
 
 static inline int
-m_add_conform (ComplexMatrix& a, ComplexMatrix& b, int warn)
+m_add_conform (const ComplexMatrix& a, const ComplexMatrix& b, int warn)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -143,7 +144,7 @@ m_add_conform (ComplexMatrix& a, ComplexMatrix& b, int warn)
 }
 
 static inline int
-m_mul_conform (Matrix& a, Matrix& b, int warn)
+m_mul_conform (const Matrix& a, const Matrix& b, int warn)
 {
   int ac = a.columns ();
   int br = b.rows ();
@@ -157,7 +158,7 @@ m_mul_conform (Matrix& a, Matrix& b, int warn)
 }
 
 static inline int
-m_mul_conform (Matrix& a, ComplexMatrix& b, int warn)
+m_mul_conform (const Matrix& a, const ComplexMatrix& b, int warn)
 {
   int ac = a.columns ();
   int br = b.rows ();
@@ -171,7 +172,7 @@ m_mul_conform (Matrix& a, ComplexMatrix& b, int warn)
 }
 
 static inline int
-m_mul_conform (ComplexMatrix& a, Matrix& b, int warn)
+m_mul_conform (const ComplexMatrix& a, const Matrix& b, int warn)
 {
   int ac = a.columns ();
   int br = b.rows ();
@@ -185,7 +186,7 @@ m_mul_conform (ComplexMatrix& a, Matrix& b, int warn)
 }
 
 static inline int
-m_mul_conform (ComplexMatrix& a, ComplexMatrix& b, int warn)
+m_mul_conform (const ComplexMatrix& a, const ComplexMatrix& b, int warn)
 {
   int ac = a.columns ();
   int br = b.rows ();
@@ -216,7 +217,7 @@ m_mul_conform (ComplexMatrix& a, ComplexMatrix& b, int warn)
 
 /* 1 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, double s, Matrix& a)
+mx_stupid_bool_op (Matrix_bool_op op, double s, const Matrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -263,7 +264,7 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, Matrix& a)
 
 /* 2 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, double s, ComplexMatrix& a)
+mx_stupid_bool_op (Matrix_bool_op op, double s, const ComplexMatrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -310,7 +311,7 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, ComplexMatrix& a)
 
 /* 3 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, double s)
+mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, double s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -357,7 +358,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, double s)
 
 /* 4 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Complex& s)
+mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Complex& s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -404,7 +405,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Complex& s)
 
 /* 5 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Matrix& b)
+mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Matrix& b)
 {
   if (! m_add_conform (a, b, 1))
     return Matrix ();
@@ -454,7 +455,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Matrix& b)
 
 /* 6 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, ComplexMatrix& b)
+mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const ComplexMatrix& b)
 {
   if (! m_add_conform (a, b, 1))
     return Matrix ();
@@ -503,7 +504,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, ComplexMatrix& b)
 
 /* 7 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, Complex& s, Matrix& a)
+mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const Matrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -550,7 +551,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Complex& s, Matrix& a)
 
 /* 8 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, Complex& s, ComplexMatrix& a)
+mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const ComplexMatrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -597,7 +598,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Complex& s, ComplexMatrix& a)
 
 /* 9 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, double s)
+mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, double s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -644,7 +645,7 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, double s)
 
 /* 10 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Complex& s)
+mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Complex& s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
@@ -691,7 +692,7 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Complex& s)
 
 /* 11 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Matrix& b)
+mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Matrix& b)
 {
   if (! m_add_conform (a, b, 1))
     return Matrix ();
@@ -740,7 +741,8 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Matrix& b)
 
 /* 12 */
 static Matrix
-mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, ComplexMatrix& b)
+mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
+		   const ComplexMatrix& b) 
 {
   if (! m_add_conform (a, b, 1))
     return Matrix ();
@@ -824,7 +826,7 @@ do_unary_op (double d, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (Matrix& a, tree::expression_type t)
+do_unary_op (const Matrix& a, tree::expression_type t)
 {
   Matrix result;
 
@@ -849,7 +851,7 @@ do_unary_op (Matrix& a, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (Complex& c, tree::expression_type t)
+do_unary_op (const Complex& c, tree::expression_type t)
 {
   Complex result = 0.0;
 
@@ -876,7 +878,7 @@ do_unary_op (Complex& c, tree::expression_type t)
 }
 
 tree_constant
-do_unary_op (ComplexMatrix& a, tree::expression_type t)
+do_unary_op (const ComplexMatrix& a, tree::expression_type t)
 {
   ComplexMatrix result;
 
@@ -989,7 +991,7 @@ do_binary_op (double a, double b, tree::expression_type t)
 
 /* 2 */
 tree_constant
-do_binary_op (double a, Matrix& b, tree::expression_type t)
+do_binary_op (double a, const Matrix& b, tree::expression_type t)
 {
   Matrix result;
 
@@ -1060,7 +1062,7 @@ do_binary_op (double a, Matrix& b, tree::expression_type t)
 
 /* 3 */
 tree_constant
-do_binary_op (double a, Complex& b, tree::expression_type t)
+do_binary_op (double a, const Complex& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1151,7 +1153,7 @@ do_binary_op (double a, Complex& b, tree::expression_type t)
 
 /* 4 */
 tree_constant
-do_binary_op (double a, ComplexMatrix& b, tree::expression_type t)
+do_binary_op (double a, const ComplexMatrix& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1242,7 +1244,7 @@ do_binary_op (double a, ComplexMatrix& b, tree::expression_type t)
 
 /* 5 */
 tree_constant
-do_binary_op (Matrix& a, double b, tree::expression_type t)
+do_binary_op (const Matrix& a, double b, tree::expression_type t)
 {
   Matrix result;
 
@@ -1311,7 +1313,7 @@ do_binary_op (Matrix& a, double b, tree::expression_type t)
 
 /* 6 */
 tree_constant
-do_binary_op (Matrix& a, Matrix& b, tree::expression_type t)
+do_binary_op (const Matrix& a, const Matrix& b, tree::expression_type t)
 {
   Matrix result;
 
@@ -1399,7 +1401,7 @@ do_binary_op (Matrix& a, Matrix& b, tree::expression_type t)
 
 /* 7 */
 tree_constant
-do_binary_op (Matrix& a, Complex& b, tree::expression_type t)
+do_binary_op (const Matrix& a, const Complex& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1489,7 +1491,7 @@ do_binary_op (Matrix& a, Complex& b, tree::expression_type t)
 
 /* 8 */
 tree_constant
-do_binary_op (Matrix& a, ComplexMatrix& b, tree::expression_type t)
+do_binary_op (const Matrix& a, const ComplexMatrix& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1600,7 +1602,7 @@ do_binary_op (Matrix& a, ComplexMatrix& b, tree::expression_type t)
 
 /* 9 */
 tree_constant
-do_binary_op (Complex& a, double b, tree::expression_type t)
+do_binary_op (const Complex& a, double b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1691,7 +1693,7 @@ do_binary_op (Complex& a, double b, tree::expression_type t)
 
 /* 10 */
 tree_constant
-do_binary_op (Complex& a, Matrix& b, tree::expression_type t)
+do_binary_op (const Complex& a, const Matrix& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1713,8 +1715,9 @@ do_binary_op (Complex& a, Matrix& b, tree::expression_type t)
     case tree::leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
-      a = 1.0 / a;
-// fall through...
+      result_type = RT_complex;
+      complex_result = b / a;
+      break;
     case tree::multiply:
     case tree::el_mul:
       result_type = RT_complex;
@@ -1782,7 +1785,7 @@ do_binary_op (Complex& a, Matrix& b, tree::expression_type t)
 
 /* 11 */
 tree_constant
-do_binary_op (Complex& a, Complex& b, tree::expression_type t)
+do_binary_op (const Complex& a, const Complex& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1873,7 +1876,8 @@ do_binary_op (Complex& a, Complex& b, tree::expression_type t)
 
 /* 12 */
 tree_constant
-do_binary_op (Complex& a, ComplexMatrix& b, tree::expression_type t)
+do_binary_op (const Complex& a, const ComplexMatrix& b,
+	      tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -1895,8 +1899,9 @@ do_binary_op (Complex& a, ComplexMatrix& b, tree::expression_type t)
     case tree::leftdiv:
       if (a == 0.0)
 	DIVIDE_BY_ZERO_ERROR;
-      a = 1.0 / a;
-// fall through...
+      result_type = RT_complex;
+      complex_result = b / a;
+      break;
     case tree::multiply:
     case tree::el_mul:
       result_type = RT_complex;
@@ -1964,7 +1969,7 @@ do_binary_op (Complex& a, ComplexMatrix& b, tree::expression_type t)
 
 /* 13 */
 tree_constant
-do_binary_op (ComplexMatrix& a, double b, tree::expression_type t)
+do_binary_op (const ComplexMatrix& a, double b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -2054,7 +2059,7 @@ do_binary_op (ComplexMatrix& a, double b, tree::expression_type t)
 
 /* 14 */
 tree_constant
-do_binary_op (ComplexMatrix& a, Matrix& b, tree::expression_type t)
+do_binary_op (const ComplexMatrix& a, const Matrix& b, tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -2165,7 +2170,8 @@ do_binary_op (ComplexMatrix& a, Matrix& b, tree::expression_type t)
 
 /* 15 */
 tree_constant
-do_binary_op (ComplexMatrix& a, Complex& b, tree::expression_type t)
+do_binary_op (const ComplexMatrix& a, const Complex& b,
+	      tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;
@@ -2255,7 +2261,8 @@ do_binary_op (ComplexMatrix& a, Complex& b, tree::expression_type t)
 
 /* 16 */
 tree_constant
-do_binary_op (ComplexMatrix& a, ComplexMatrix& b, tree::expression_type t)
+do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
+	      tree::expression_type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
   RT result_type = RT_unknown;

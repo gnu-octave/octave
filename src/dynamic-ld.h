@@ -32,16 +32,19 @@ class tree_constant;
 
 typedef tree_constant* (*builtin_fcn_ptr) (tree_constant*, int, int);
 
-extern void octave_dld_tc2_unlink_by_symbol (char *name, int hard = 1);
+extern void octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1);
 
-extern void octave_dld_tc2_unlink_by_file (char *name, int hard = 1);
+extern void octave_dld_tc2_unlink_by_file (const char *name, int hard = 1);
 
-extern builtin_fcn_ptr octave_dld_tc2 (char *name, char *fcn, char *object);
+extern builtin_fcn_ptr octave_dld_tc2 (const char *name,
+				       const char *fcn,
+				       const char *object);
 
 extern tree_constant *octave_dld_tc2_and_go (tree_constant *args,
 					     int nargin, int nargout,
-					     char *name, char *fcn,
-					     char *object);
+					     const char *name,
+					     const char *fcn,
+					     const char *object);
 
 #endif
 

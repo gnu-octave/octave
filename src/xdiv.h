@@ -28,26 +28,25 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <Complex.h>
+class Complex;
+class Matrix;
+class ComplexMatrix;
+class tree_constant;
 
-#include "Matrix.h"
+extern tree_constant xdiv (const Matrix& a, const Matrix& b);
+extern tree_constant xdiv (const Matrix& a, const ComplexMatrix& b);
+extern tree_constant xdiv (const ComplexMatrix& a, const Matrix& b);
+extern tree_constant xdiv (const ComplexMatrix& a, const ComplexMatrix& b);
 
-#include "tree-const.h"
+extern tree_constant x_el_div (double a, const Matrix& b);
+extern tree_constant x_el_div (double a, const ComplexMatrix& b);
+extern tree_constant x_el_div (const Complex a, const Matrix& b);
+extern tree_constant x_el_div (const Complex a, const ComplexMatrix& b);
 
-extern tree_constant xdiv (Matrix& a, Matrix& b);
-extern tree_constant xdiv (Matrix& a, ComplexMatrix& b);
-extern tree_constant xdiv (ComplexMatrix& a, Matrix& b);
-extern tree_constant xdiv (ComplexMatrix& a, ComplexMatrix& b);
-
-extern tree_constant x_el_div (double a, Matrix& b);
-extern tree_constant x_el_div (double a, ComplexMatrix& b);
-extern tree_constant x_el_div (Complex a, Matrix& b);
-extern tree_constant x_el_div (Complex a, ComplexMatrix& b);
-
-extern tree_constant xleftdiv (Matrix& a, Matrix& b);
-extern tree_constant xleftdiv (Matrix& a, ComplexMatrix& b);
-extern tree_constant xleftdiv (ComplexMatrix& a, Matrix& b);
-extern tree_constant xleftdiv (ComplexMatrix& a, ComplexMatrix& b);
+extern tree_constant xleftdiv (const Matrix& a, const Matrix& b);
+extern tree_constant xleftdiv (const Matrix& a, const ComplexMatrix& b);
+extern tree_constant xleftdiv (const ComplexMatrix& a, const Matrix& b);
+extern tree_constant xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b);
 
 #endif
 

@@ -89,7 +89,8 @@ min (const Matrix& a, const Matrix& b)
 }
 
 static void
-get_dimensions (tree_constant& a, char *warn_for, int& nr, int& nc)
+get_dimensions (const tree_constant& a, const char *warn_for,
+		int& nr, int& nc)
 {
   tree_constant tmpa = a.make_numeric ();
 
@@ -108,8 +109,8 @@ get_dimensions (tree_constant& a, char *warn_for, int& nr, int& nc)
 }
 
 static void
-get_dimensions (tree_constant& a, tree_constant& b, char *warn_for,
-		int& nr, int& nc)
+get_dimensions (const tree_constant& a, const tree_constant& b,
+		const char *warn_for, int& nr, int& nc)
 {
   tree_constant tmpa = a.make_numeric ();
   tree_constant tmpb = b.make_numeric ();
@@ -126,7 +127,7 @@ get_dimensions (tree_constant& a, tree_constant& b, char *warn_for,
 }
 
 tree_constant
-fill_matrix (tree_constant& a, double val, char *warn_for)
+fill_matrix (const tree_constant& a, double val, const char *warn_for)
 {
   int nr, nc;
   get_dimensions (a, warn_for, nr, nc);
@@ -140,7 +141,8 @@ fill_matrix (tree_constant& a, double val, char *warn_for)
 }
 
 tree_constant
-fill_matrix (tree_constant& a, tree_constant& b, double val, char *warn_for)
+fill_matrix (const tree_constant& a, const tree_constant& b,
+	     double val, const char *warn_for)
 {
   int nr, nc;
   get_dimensions (a, b, warn_for, nr, nc); // May set error_state.
@@ -154,7 +156,7 @@ fill_matrix (tree_constant& a, tree_constant& b, double val, char *warn_for)
 }
 
 tree_constant
-identity_matrix (tree_constant& a)
+identity_matrix (const tree_constant& a)
 {
   int nr, nc;
   get_dimensions (a, "eye", nr, nc); // May set error_state.
@@ -175,7 +177,7 @@ identity_matrix (tree_constant& a)
 }
 
 tree_constant
-identity_matrix (tree_constant& a, tree_constant& b)
+identity_matrix (const tree_constant& a, const tree_constant& b)
 {
   int nr, nc;
   get_dimensions (a, b, "eye", nr, nc);  // May set error_state.
@@ -289,7 +291,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m)
 }
 
 tree_constant
-find_nonzero_elem_idx (tree_constant& a)
+find_nonzero_elem_idx (const tree_constant& a)
 {
   tree_constant retval;
 
@@ -339,7 +341,7 @@ find_nonzero_elem_idx (tree_constant& a)
 // one...
 
 tree_constant *
-matrix_log (tree_constant& a)
+matrix_log (const tree_constant& a)
 {
   tree_constant *retval = new tree_constant [2];
 
@@ -450,7 +452,7 @@ matrix_log (tree_constant& a)
 }
 
 tree_constant *
-matrix_sqrt (tree_constant& a)
+matrix_sqrt (const tree_constant& a)
 {
   tree_constant *retval = new tree_constant [2];
 
@@ -561,7 +563,7 @@ matrix_sqrt (tree_constant& a)
 }
 
 tree_constant *
-column_max (tree_constant *args, int nargin, int nargout)
+column_max (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -634,7 +636,7 @@ column_max (tree_constant *args, int nargin, int nargout)
 }
 
 tree_constant *
-column_min (tree_constant *args, int nargin, int nargout)
+column_min (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
@@ -841,7 +843,7 @@ mx_sort (ComplexRowVector& cv, RowVector& idx, int return_idx)
 }
 
 tree_constant *
-sort (tree_constant *args, int nargin, int nargout)
+sort (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
@@ -936,7 +938,7 @@ sort (tree_constant *args, int nargin, int nargout)
 }
 
 tree_constant *
-feval (tree_constant *args, int nargin, int nargout)
+feval (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
@@ -957,7 +959,7 @@ feval (tree_constant *args, int nargin, int nargout)
 }
 
 tree_constant
-eval_string (char *string, int print, int ans_assign,
+eval_string (const char *string, int print, int ans_assign,
 	     int& parse_status)
 {
   begin_unwind_frame ("eval_string");
@@ -1004,7 +1006,7 @@ eval_string (char *string, int print, int ans_assign,
 }
 
 tree_constant
-eval_string (tree_constant& arg, int& parse_status)
+eval_string (const tree_constant& arg, int& parse_status)
 {
   if (! arg.is_string_type ())
     {
@@ -1020,13 +1022,13 @@ eval_string (tree_constant& arg, int& parse_status)
 }
 
 static int
-match_sans_spaces (char *standard, char *test)
+match_sans_spaces (const char *standard, const char *test)
 {
-  char *tp = test;
+  const char *tp = test;
   while (*tp == ' ' || *tp == '\t')
     tp++;
 
-  char *ep = test + strlen (test) - 1;
+  const char *ep = test + strlen (test) - 1;
   while (*ep == ' ' || *ep == '\t')
     ep--;
 
@@ -1036,7 +1038,8 @@ match_sans_spaces (char *standard, char *test)
 }
 
 tree_constant
-get_user_input (tree_constant *args, int nargin, int nargout, int debug = 0)
+get_user_input (const tree_constant *args, int nargin, int nargout,
+		int debug = 0)
 {
   tree_constant retval;
 

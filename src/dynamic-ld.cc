@@ -38,7 +38,7 @@ extern "C"
 #include "error.h"
 
 void
-octave_dld_tc2_unlink_by_symbol (char *name, int hard = 1)
+octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1)
 {
   char *mangled_fcn_name = strconcat (name, "__FP13tree_constantii");
   int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
@@ -48,7 +48,7 @@ octave_dld_tc2_unlink_by_symbol (char *name, int hard = 1)
 }
 
 void
-octave_dld_tc2_unlink_by_file (char *name, int hard = 1)
+octave_dld_tc2_unlink_by_file (const char *name, int hard = 1)
 {
   int status = dld_unlink_by_file (name, hard);
   if (status != 0)
@@ -86,7 +86,7 @@ octave_dld_init (void)
  * try to load the remaining undefined symbols.
  */
 static int
-octave_dld_link (char *object)
+octave_dld_link (const char *object)
 {
   char *file = file_in_path (object, (char *) NULL);
   int status = dld_link (file);
@@ -98,7 +98,7 @@ octave_dld_link (char *object)
 }
 
 int
-octave_dld_tc2_link (char *object)
+octave_dld_tc2_link (const char *object)
 {
   int status = octave_dld_link (object);
   if (status == 0)
@@ -111,7 +111,7 @@ octave_dld_tc2_link (char *object)
 }
 
 builtin_fcn_ptr
-octave_dld_tc2 (char *name, char *fcn, char *object)
+octave_dld_tc2 (const char *name, const char *fcn, const char *object)
 {
   builtin_fcn_ptr retval = (builtin_fcn_ptr) NULL;
 
@@ -142,7 +142,7 @@ octave_dld_tc2 (char *name, char *fcn, char *object)
 
 tree_constant *
 octave_dld_tc2_and_go (tree_constant *args, int nargin, int nargout,
-		       char *name, char *fcn, char *object)
+		       const char *name, const char *fcn, const char *object)
 {
   tree_constant *retval = NULL_TREE_CONST;
 

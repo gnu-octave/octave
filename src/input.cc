@@ -83,7 +83,7 @@ gnu_readline (char *s)
 #include "builtins.h"
 
 // Global pointer for eval().
-char *current_eval_string = (char *) NULL;
+const char *current_eval_string = (char *) NULL;
 
 // Nonzero means get input from current_eval_string.
 int get_input_from_eval_string = 0;

@@ -28,43 +28,43 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <Complex.h>
-
-#include "Matrix.h"
-
-#include "tree-const.h"
+class Complex;
+class Matrix;
+class ComplexMatrix;
+class tree_constant;
 
 extern tree_constant xpow (double a, double b);
-extern tree_constant xpow (double a, Matrix& b);
-extern tree_constant xpow (double a, Complex& b);
-extern tree_constant xpow (double a, ComplexMatrix& b);
+extern tree_constant xpow (double a, const Matrix& b);
+extern tree_constant xpow (double a, const Complex& b);
+extern tree_constant xpow (double a, const ComplexMatrix& b);
 
-extern tree_constant xpow (Matrix& a, double b);
-extern tree_constant xpow (Matrix& a, Complex& b);
+extern tree_constant xpow (const Matrix& a, double b);
+extern tree_constant xpow (const Matrix& a, const Complex& b);
 
-extern tree_constant xpow (Complex& a, double b);
-extern tree_constant xpow (Complex& a, Matrix& b);
-extern tree_constant xpow (Complex& a, Complex& b);
-extern tree_constant xpow (Complex& a, ComplexMatrix& b);
+extern tree_constant xpow (const Complex& a, double b);
+extern tree_constant xpow (const Complex& a, const Matrix& b);
+extern tree_constant xpow (const Complex& a, const Complex& b);
+extern tree_constant xpow (const Complex& a, const ComplexMatrix& b);
 
-extern tree_constant xpow (ComplexMatrix& a, double b);
-extern tree_constant xpow (ComplexMatrix& a, Complex& b);
+extern tree_constant xpow (const ComplexMatrix& a, double b);
+extern tree_constant xpow (const ComplexMatrix& a, const Complex& b);
 
-extern tree_constant elem_xpow (double a, Matrix& b);
-extern tree_constant elem_xpow (double a, ComplexMatrix& b);
+extern tree_constant elem_xpow (double a, const Matrix& b);
+extern tree_constant elem_xpow (double a, const ComplexMatrix& b);
 
-extern tree_constant elem_xpow (Matrix& a, double b);
-extern tree_constant elem_xpow (Matrix& a, Matrix& b);
-extern tree_constant elem_xpow (Matrix& a, Complex& b);
-extern tree_constant elem_xpow (Matrix& a, ComplexMatrix& b);
+extern tree_constant elem_xpow (const Matrix& a, double b);
+extern tree_constant elem_xpow (const Matrix& a, const Matrix& b);
+extern tree_constant elem_xpow (const Matrix& a, const Complex& b);
+extern tree_constant elem_xpow (const Matrix& a, const ComplexMatrix& b);
 
-extern tree_constant elem_xpow (Complex& a, Matrix& b);
-extern tree_constant elem_xpow (Complex& a, ComplexMatrix& b);
+extern tree_constant elem_xpow (const Complex& a, const Matrix& b);
+extern tree_constant elem_xpow (const Complex& a, const ComplexMatrix& b);
 
-extern tree_constant elem_xpow (ComplexMatrix& a, double b);
-extern tree_constant elem_xpow (ComplexMatrix& a, Matrix& b);
-extern tree_constant elem_xpow (ComplexMatrix& a, Complex& b);
-extern tree_constant elem_xpow (ComplexMatrix& a, ComplexMatrix& b);
+extern tree_constant elem_xpow (const ComplexMatrix& a, double b);
+extern tree_constant elem_xpow (const ComplexMatrix& a, const Matrix& b);
+extern tree_constant elem_xpow (const ComplexMatrix& a, const Complex& b);
+extern tree_constant elem_xpow (const ComplexMatrix& a,
+				const ComplexMatrix& b);
 
 #endif
 

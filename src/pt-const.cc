@@ -387,12 +387,6 @@ tree_constant_rep::tree_constant_rep (const char *s)
   type_tag = string_constant;
 }
 
-tree_constant_rep::tree_constant_rep (const String& s)
-{
-  string = strsave (s);
-  type_tag = string_constant;
-}
-
 tree_constant_rep::tree_constant_rep (double b, double l, double i)
 {
   range = new Range (b, l, i);
@@ -655,7 +649,7 @@ tree_constant_rep::maybe_resize (int i, force_orient f_orient = no_orient)
 }
 
 double
-tree_constant_rep::to_scalar (void)
+tree_constant_rep::to_scalar (void) const
 {
   tree_constant tmp = make_numeric ();
 
@@ -702,7 +696,7 @@ tree_constant_rep::to_scalar (void)
 }
 
 ColumnVector
-tree_constant_rep::to_vector (void)
+tree_constant_rep::to_vector (void) const
 {
   tree_constant tmp = make_numeric ();
 
@@ -743,7 +737,7 @@ tree_constant_rep::to_vector (void)
 }
 
 Matrix
-tree_constant_rep::to_matrix (void)
+tree_constant_rep::to_matrix (void) const
 {
   tree_constant tmp = make_numeric ();
 
@@ -829,7 +823,7 @@ tree_constant_rep::force_numeric (int force_str_conv = 0)
 }
 
 tree_constant
-tree_constant_rep::make_numeric (int force_str_conv = 0)
+tree_constant_rep::make_numeric (int force_str_conv = 0) const
 {
   tree_constant retval;
   switch (type_tag)
@@ -1248,7 +1242,7 @@ tree_constant_rep::eval (int print)
 }
 
 tree_constant *
-tree_constant_rep::eval (tree_constant *args, int nargin, int nargout,
+tree_constant_rep::eval (const tree_constant *args, int nargin, int nargout,
 			 int print)
 {
   if (error_state)
@@ -1535,7 +1529,7 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
 }
 
 double
-tree_constant_rep::double_value (void)
+tree_constant_rep::double_value (void) const
 {
   switch (type_tag)
     {
@@ -1560,7 +1554,7 @@ tree_constant_rep::double_value (void)
 }
 
 Matrix
-tree_constant_rep::matrix_value (void)
+tree_constant_rep::matrix_value (void) const
 {
   switch (type_tag)
     {
@@ -1585,7 +1579,7 @@ tree_constant_rep::matrix_value (void)
 }
 
 Complex
-tree_constant_rep::complex_value (void)
+tree_constant_rep::complex_value (void) const
 {
   switch (type_tag)
     {
@@ -1600,7 +1594,7 @@ tree_constant_rep::complex_value (void)
 }
 
 ComplexMatrix
-tree_constant_rep::complex_matrix_value (void)
+tree_constant_rep::complex_matrix_value (void) const
 {
   switch (type_tag)
     {
@@ -1626,21 +1620,21 @@ tree_constant_rep::complex_matrix_value (void)
 }
 
 char *
-tree_constant_rep::string_value (void)
+tree_constant_rep::string_value (void) const
 {
   assert (type_tag == string_constant);
   return string;
 }
 
 Range
-tree_constant_rep::range_value (void)
+tree_constant_rep::range_value (void) const
 {
   assert (type_tag == range_constant);
   return *range;
 }
 
 int
-tree_constant_rep::rows (void)
+tree_constant_rep::rows (void) const
 {
   int retval = -1;
   switch (type_tag)
@@ -1671,7 +1665,7 @@ tree_constant_rep::rows (void)
 }
 
 int
-tree_constant_rep::columns (void)
+tree_constant_rep::columns (void) const
 {
   int retval = -1;
   switch (type_tag)
@@ -1706,7 +1700,7 @@ tree_constant_rep::columns (void)
 }
 
 tree_constant
-tree_constant_rep::all (void)
+tree_constant_rep::all (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -1752,7 +1746,7 @@ tree_constant_rep::all (void)
 }
 
 tree_constant
-tree_constant_rep::any (void)
+tree_constant_rep::any (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -1798,10 +1792,10 @@ tree_constant_rep::any (void)
 }
 
 tree_constant
-tree_constant_rep::isstr (void)
+tree_constant_rep::isstr (void) const
 {
   double status = 0.0;
-  if (const_type () == string_constant)
+  if (type_tag == string_constant)
     status = 1.0;
   tree_constant retval (status);
   return retval;
@@ -1879,7 +1873,7 @@ tree_constant_rep::convert_to_str (void)
 }
 
 tree_constant
-tree_constant_rep::cumprod (void)
+tree_constant_rep::cumprod (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -1919,7 +1913,7 @@ tree_constant_rep::cumprod (void)
 }
 
 tree_constant
-tree_constant_rep::cumsum (void)
+tree_constant_rep::cumsum (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -1959,7 +1953,7 @@ tree_constant_rep::cumsum (void)
 }
 
 tree_constant
-tree_constant_rep::prod (void)
+tree_constant_rep::prod (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -1999,7 +1993,7 @@ tree_constant_rep::prod (void)
 }
 
 tree_constant
-tree_constant_rep::sum (void)
+tree_constant_rep::sum (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -2039,7 +2033,7 @@ tree_constant_rep::sum (void)
 }
 
 tree_constant
-tree_constant_rep::sumsq (void)
+tree_constant_rep::sumsq (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -2082,7 +2076,7 @@ tree_constant_rep::sumsq (void)
 }
 
 static tree_constant
-make_diag (Matrix& v, int k)
+make_diag (const Matrix& v, int k)
 {
   int nr = v.rows ();
   int nc = v.columns ();
@@ -2124,7 +2118,7 @@ make_diag (Matrix& v, int k)
 }
 
 static tree_constant
-make_diag (ComplexMatrix& v, int k)
+make_diag (const ComplexMatrix& v, int k)
 {
   int nr = v.rows ();
   int nc = v.columns ();
@@ -2166,7 +2160,7 @@ make_diag (ComplexMatrix& v, int k)
 }
 
 tree_constant
-tree_constant_rep::diag (void)
+tree_constant_rep::diag (void) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -2222,7 +2216,7 @@ tree_constant_rep::diag (void)
 }
 
 tree_constant
-tree_constant_rep::diag (tree_constant& a)
+tree_constant_rep::diag (const tree_constant& a) const
 {
   if (type_tag == string_constant || type_tag == range_constant)
     {
@@ -2336,7 +2330,7 @@ tree_constant_rep::print_if_string (ostream& os, int warn)
 }
 
 tree_constant
-tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print)
+tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 {
   tree_constant retval;
 
@@ -2475,7 +2469,7 @@ tree_constant::operator delete (void *p, size_t size)
  * and/or gripe when appropriate.
  */
 tree_constant *
-vector_of_empties (int nargout, char *fcn_name)
+vector_of_empties (int nargout, const char *fcn_name)
 {
   tree_constant *retval = NULL_TREE_CONST;
 

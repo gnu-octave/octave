@@ -30,37 +30,29 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include "tree-const.h"
-#include "utils.h"
 #include <Pix.h>
-#include <stdio.h>
 
-extern Pix return_valid_file (tree_constant& arg);
+class tree_constant;
 
-extern tree_constant *fclose_internal (tree_constant *args);
+extern Pix return_valid_file (const tree_constant& arg);
 
-extern tree_constant *fflush_internal (tree_constant *args);
+extern tree_constant *fclose_internal (const tree_constant *args);
+extern tree_constant *fflush_internal (const tree_constant *args);
+extern tree_constant *fgets_internal (const tree_constant *args, int nargout);
+extern tree_constant *fopen_internal (const tree_constant *args);
+extern tree_constant *freport_internal (void);
+extern tree_constant *frewind_internal (const tree_constant *args);
+extern tree_constant *fseek_internal (const tree_constant *args, int nargin);
+extern tree_constant *ftell_internal (const tree_constant *args);
 
-extern tree_constant *fgets_internal (tree_constant *args, int nargout);
+extern void initialize_file_io (void);
 
-extern tree_constant *fopen_internal (tree_constant *args);
+extern void close_files (void);
 
-extern tree_constant *freport_internal ();
-
-extern tree_constant *frewind_internal (tree_constant *args);
-
-extern tree_constant *fseek_internal (tree_constant *args, int nargin);
-
-extern tree_constant *ftell_internal (tree_constant *args);
-
-extern void initialize_file_io ();
-
-extern void close_files ();
-
-extern tree_constant *do_printf (char *type, tree_constant *args,
+extern tree_constant *do_printf (const char *type, const tree_constant *args,
 				 int nargin, int nargout);
 
-extern tree_constant *do_scanf (char *type, tree_constant *args,
+extern tree_constant *do_scanf (const char *type, const tree_constant *args,
 				int nargin, int nargout);
 
 #endif

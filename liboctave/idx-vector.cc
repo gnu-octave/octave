@@ -25,9 +25,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma implementation
 #endif
 
+#include <iostream.h>
+
+#include "Matrix.h"
+#include "Range.h"
 #include "idx-vector.h"
-#include "error.h"
 #include "user-prefs.h"
+#include "error.h"
 #include "utils.h"
 
 idx_vector::idx_vector (const idx_vector& a)
@@ -59,7 +63,8 @@ tree_to_mat_idx (double x)
     return ((int) (x - 0.5) - 1);
 }
 
-idx_vector::idx_vector (Matrix& m, int do_ftn_idx, char *rc, int z_len = 0)
+idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
+			const char *rc, int z_len = 0)
 {
   int nr = m.rows ();
   int nc = m.columns ();
@@ -146,7 +151,7 @@ idx_vector::operator = (const idx_vector& a)
 }
 
 void
-idx_vector::init_state (char *rc, int z_len = 0)
+idx_vector::init_state (const char *rc, int z_len = 0)
 {
   one_zero = 1;
   num_zeros = 0;

@@ -39,6 +39,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
+#include "help.h"
 
 // Symbol table for symbols at the top level.
 symbol_table *top_level_sym_tab;

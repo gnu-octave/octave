@@ -52,7 +52,7 @@ function inv = normal_inv (x, m, v)
   v = reshape (v, 1, s);
   inv = zeros (1, s);
 
-  k = find (isinf (m) | isnan (m) | !(v >= 0) | !(v < Inf));
+  k = find (isinf (m) | isnan (m) | !(v > 0) | !(v < Inf));
   if (any (k))
     inv(k) = NaN * ones (1, length (k));
   endif
@@ -61,6 +61,14 @@ function inv = normal_inv (x, m, v)
   if (any (k))
     inv(k) = m(k) + sqrt (v(k)) .* stdnormal_inv (x(k));
   endif
+
+  k = find ((v == 0) & (x > 0) & (x < 1));
+  if (any (k))
+    inv(k) = m(k);
+  endif
+
+  inv((v == 0) & (x == 0)) = -Inf;
+  inv((v == 0) & (x == 1)) = Inf;
 
   inv = reshape (inv, r, c);
 

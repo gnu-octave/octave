@@ -6,9 +6,13 @@ c -- Do a better job than dgami for large values of x.
 
       double precision a, x, result
       intrinsic exp, log, sqrt, sign, aint
+      external dgami, dlngam, d9lgit, d9lgic, d9gmit
+
+C     external dgamr
+C     DOUBLE PRECISION DGAMR
 
       DOUBLE PRECISION AEPS, AINTA, ALGAP1, ALNEPS, ALNG, ALX,
-     $     BOT, H, SGA, SGNGAM, SQEPS, T, D1MACH, DGAMR, D9GMIT,
+     $     BOT, H, SGA, SGNGAM, SQEPS, T, D1MACH, D9GMIT,
      $     D9LGIC, D9LGIT, DLNGAM, DGAMI 
 
       LOGICAL FIRST

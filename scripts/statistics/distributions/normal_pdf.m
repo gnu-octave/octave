@@ -57,10 +57,13 @@ function pdf = normal_pdf (x, m, v)
     pdf(k) = NaN * ones (1, length (k));
   endif
 
-  k = find (!isinf (m) & !isnan (m) & (v > 0) & (v < Inf));
+  k = find (!isinf (m) & !isnan (m) & (v >= 0) & (v < Inf));
   if (any (k))
     pdf(k) = stdnormal_pdf ((x(k) - m(k)) ./ sqrt (v(k))) ./ sqrt (v(k));
   endif
+
+  pdf((v == 0) & (x == m)) = Inf;
+  pdf((v == 0) & ((x < m) | (x > m))) = 0;
 
   pdf = reshape (pdf, r, c);
 

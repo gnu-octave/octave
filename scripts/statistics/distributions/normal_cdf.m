@@ -57,10 +57,12 @@ function cdf = normal_cdf (x, m, v)
     cdf(k) = NaN * ones (1, length (k));
   endif
 
-  k = find (!isinf (m) & !isnan (m) & (v > 0) & (v < Inf));
+  k = find (!isinf (m) & !isnan (m) & (v >= 0) & (v < Inf));
   if (any (k))
     cdf(k) = stdnormal_cdf ((x(k) - m(k)) ./ sqrt (v(k)));
   endif
+
+  cdf((v == 0) & (x == m)) = 0.5;
 
   cdf = reshape (cdf, r, c);
 

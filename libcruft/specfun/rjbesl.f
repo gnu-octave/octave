@@ -155,7 +155,7 @@ C   TWOPI2 - (2*PI - TWOPI) to working precision, i.e.,
 C            TWOPI1 + TWOPI2 = 2 * PI to extra precision.
 C---------------------------------------------------------------------
       PARAMETER (PI2 = 0.636619772367581343075535D0)
-      PARAMETER (TWOPI1 = 6.28125D0,
+      PARAMETER (TWOPI1 = 6.28125D0)
       PARAMETER (TWOPI2 = 1.935307179586476925286767D-3)
       PARAMETER (ZERO = 0.0D0, EIGHTH = 0.125D0, HALF = 0.5D0)
       PARAMETER (ONE = 1.0D0, TWO = 2.0D0, THREE = 3.0D0)
@@ -171,23 +171,24 @@ C---------------------------------------------------------------------
      4 5.109094217170944D19,1.12400072777760768D21,
      5 2.585201673888497664D22,6.2044840173323943936D23/
 C---------------------------------------------------------------------
+      DATA FIRST /.TRUE./
+C---------------------------------------------------------------------
+C Statement functions for conversion and the gamma function.
+C---------------------------------------------------------------------
+      CONV(I) = DBLE(I)
+      FUNC(X) = DGAMMA(X)
+C---------------------------------------------------------------------
 C  Machine-dependent parameters
 C---------------------------------------------------------------------
-      DATA FIRST /.TRUE./
       IF (FIRST) THEN
         NSIG = NINT (-LOG (D1MACH (1)))
-        ENTEN = 1.0D1 ** (INT (LOG10 (D1MACH (2)))
+        ENTEN = 1.0D1 ** (INT (LOG10 (D1MACH (2))))
         ENSIG = 1.0D1 ** NSIG
         RTNSIG = 1.0D1 ** (-NINT (NSIG / 4.0))
         ENMTEN = 4.0D0 * D1MACH (1)
         XLARGE = 1.0D4
         FIRST = .FALSE.
       ENDIF
-C---------------------------------------------------------------------
-C Statement functions for conversion and the gamma function.
-C---------------------------------------------------------------------
-      CONV(I) = DBLE(I)
-      FUNC(X) = DGAMMA(X)
 C---------------------------------------------------------------------
 C Check for out of range arguments.
 C---------------------------------------------------------------------

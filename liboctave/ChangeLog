@@ -1,3 +1,17 @@
+Thu Nov  7 10:45:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array3.cc (Array3<T>::resize): Make it work.
+
+Wed Nov  6 22:44:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-alloc.h, oct-alloc.cc: New files.
+	* Makefile.in: Add them to the lists.
+
+Mon Nov  4 21:49:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleQRP.cc (QRP::QRP): Don't pass tmp data to unsafe constructor.
+	* CmplxQRP.cc (ComplexQRP::ComplexQRP): Ditto.
+
 Sun Nov  3 15:45:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc (file_stat::is_blk, file_stat::is_chr,

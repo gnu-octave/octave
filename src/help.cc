@@ -25,8 +25,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <signal.h>
 #include <stdlib.h>
+#include <string.h>
 #include <iostream.h>
 #include <strstream.h>
 
@@ -45,21 +50,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "utils.h"
 #include "help.h"
 #include "defun.h"
-
-#ifdef USE_GNU_INFO
-extern "C"
-{
-#include "info/info.h"
-#include "info/dribble.h"
-#include "info/terminal.h"
-
-extern int initialize_info_session ();
-extern int index_entry_exists ();
-extern int do_info_index_search ();
-extern void finish_info_session ();
-extern char *replace_in_documentation ();
-}
-#endif
 
 extern "C"
 {
@@ -521,63 +511,47 @@ simple_help (void)
 
 #ifdef USE_GNU_INFO
 static int
-try_info (const char *string, int force = 0)
+try_info (const char *string)
 {
   int status = 0;
 
+  static char *cmd_str = 0;
+
+  delete [] cmd_str;
+  cmd_str = 0;
+
+  ostrstream cmd_buf;
+
+  cmd_buf << "info --file " << user_pref.info_file;
+
   char *directory_name = strsave (user_pref.info_file);
-  char *temp = filename_non_directory (directory_name);
-
-  if (temp != directory_name)
+  char *file = strrchr (directory_name, '/');
+  if (file)
     {
-      *temp = 0;
-      info_add_path (directory_name, INFOPATH_PREPEND);
+      file++;
+      *file = 0;
+      cmd_buf << " --directory " << directory_name;
     }
-
   delete [] directory_name;
 
-  NODE *initial_node = info_get_node (user_pref.info_file, 0);
+  if (string)
+    cmd_buf << " --index-search " << string;
 
-  if (! initial_node)
-    {
-      warning ("can't find info file!\n");
-      status = -1;
-    }
+  cmd_buf << ends;
+
+  cmd_str = cmd_buf.str ();
+
+  volatile sig_handler *old_sigint_handler;
+  old_sigint_handler = signal (SIGINT, SIG_IGN);
+
+  status = system (cmd_str);
+
+  signal (SIGINT, old_sigint_handler);
+
+  if ((status & 0xff) == 0)
+    status = (signed char) ((status & 0xff00) >> 8);
   else
-    {
-      status = initialize_info_session (initial_node, 0);
-
-      if (status == 0 && (force || index_entry_exists (windows, string)))
-	{
-	  terminal_clear_screen ();
-
-	  terminal_prep_terminal ();
-
-	  display_update_display (windows);
-
-	  info_last_executed_command = 0;
-
-	  if (! force)
-	    do_info_index_search (windows, 0, string);
-
-	  char *format = replace_in_documentation
-	    ("Type \"\\[quit]\" to quit, \"\\[get-help-window]\" for help.");
-
-	  window_message_in_echo_area (format);
-
-	  info_read_and_dispatch ();
-
-	  terminal_goto_xy (0, screenheight - 1);
-
-	  terminal_clear_to_eol ();
-
-	  terminal_unprep_terminal ();
-
-	  status = 1;
-	}
-
-      finish_info_session (initial_node, 0);
-    }
+    status = 127;
 
   return status;
 }
@@ -588,14 +562,7 @@ help_from_info (int argc, char **argv)
 {
 #ifdef USE_GNU_INFO
   if (argc == 1)
-    {
-      volatile sig_handler *old_sigint_handler;
-      old_sigint_handler = signal (SIGINT, SIG_IGN);
-
-      try_info (0, 1);
-
-      signal (SIGINT, old_sigint_handler);
-    }
+    try_info (0);
   else
     {
       while (--argc > 0)
@@ -605,17 +572,23 @@ help_from_info (int argc, char **argv)
 	  if (! *argv || ! **argv)
 	    continue;
 
-	  volatile sig_handler *old_sigint_handler;
-	  old_sigint_handler = signal (SIGINT, SIG_IGN);
+	  int status = try_info (*argv);
 
-	  if (! try_info (*argv))
+	  if (status)
 	    {
-	      message ("help", "sorry, `%s' is not indexed in the manual",
-		       *argv); 
-	      sleep (2);
+	      if (status < 0)
+		{
+		  message ("help",
+			   "sorry, `%s' is not indexed in the manual",
+			   *argv);
+		  sleep (2);
+		}
+	      else
+		{
+		  error ("help: unable to find info!");
+		  break;
+		}
 	    }
-
-	  signal (SIGINT, old_sigint_handler);
 	}
     }
 #else

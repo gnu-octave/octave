@@ -26,40 +26,42 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_procbuf_h)
 #define octave_octave_procbuf_h 1
 
-#include <fstream>
-
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
+#include "c-file-ptr-stream.h"
+
 class
-octave_procbuf : public std::filebuf
+octave_procbuf : public c_file_ptr_buf
 {
 public:
 
   octave_procbuf (void)
-    : std::filebuf (), wstatus (-1), proc_pid (-1), next (0) { }
+    : c_file_ptr_buf (0), wstatus (-1), open_p (false), proc_pid (-1),
+      next (0) { }
 
   octave_procbuf (const char *command, int mode)
-    : std::filebuf (), wstatus (-1), proc_pid (-1), next (0)
-  { open (command, mode); }
+    : c_file_ptr_buf (0), wstatus (-1), open_p (false), proc_pid (-1),
+      next (0) { open (command, mode); }
 
   ~octave_procbuf (void) { close (); }
 
   octave_procbuf *open (const char *command, int mode);
 
-  octave_procbuf *close (void)
-    { return static_cast<octave_procbuf *> (std::filebuf::close ()); }
-
-  virtual int sys_close (void);
+  octave_procbuf *close (void);
 
   int wait_status (void) const { return wstatus; }
+
+  bool is_open (void) const { return open_p; }
 
   pid_t pid (void) { return proc_pid; }
 
 protected:
 
   int wstatus;
+
+  bool open_p;
 
   pid_t proc_pid;
 

@@ -1,5 +1,8 @@
 2000-03-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-procbuf.h, oct-procbuf.cc (octave_procbuf):
+	Derive from c_file_ptr_buf instead of filebuf.
+
 	* oct-stream.cc (octave_base_stream::printf): Use octave_format
 	instead of ostream::form.  Return number of characters written.
 

@@ -54,11 +54,6 @@ static int Vkluge_procbuf_delay = 0;
 
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
-//
-// It should work with the filebuf class from libg++, but it might not
-// work with others since it depends on being able to get at the
-// underlying file descriptor with filebuf::fd(), which is not
-// standard.
 
 static octave_procbuf *octave_procbuf_list = 0;
 
@@ -104,7 +99,7 @@ octave_procbuf::open (const char *command, int mode)
 
       while (octave_procbuf_list)
 	{
-	  ::close (octave_procbuf_list->fd ());
+	  ::fclose (octave_procbuf_list->f);
 	  octave_procbuf_list = octave_procbuf_list->next;
 	}
 
@@ -124,7 +119,9 @@ octave_procbuf::open (const char *command, int mode)
       return 0;
     }
 
-  attach (parent_end);
+  f = ::fdopen (parent_end, (mode & std::ios::in) ? "w" : "r");
+
+  open_p = true;
 
   next = octave_procbuf_list;
   octave_procbuf_list = this;
@@ -138,8 +135,8 @@ octave_procbuf::open (const char *command, int mode)
 #endif
 }
 
-int
-octave_procbuf::sys_close (void)
+octave_procbuf *
+octave_procbuf::close (void)
 {
 #if defined (HAVE_SYS_WAIT_H)
 
@@ -159,27 +156,24 @@ octave_procbuf::sys_close (void)
 	}
     }
 
-  if (status < 0 || ::close (fd ()) < 0)
-    return -1;
+  if (status == 0 && ::fclose (f) == 0)
+    {
+      using namespace std;
 
-  {
-    using namespace std;
+      do
+	{
+	  wait_pid = ::waitpid (proc_pid, &wstatus, 0);
+	}
+      while (wait_pid == -1 && errno == EINTR);
+    }
 
-    do
-      {
-	wait_pid = ::waitpid (proc_pid, &wstatus, 0);
-      }
-    while (wait_pid == -1 && errno == EINTR);
-  }
+  open_p = false;
 
-  if (wait_pid == -1)
-    return -1;
-
-  return wstatus;
+  return this;
 
 #else
 
-  return -1;
+  return 0;
 
 #endif
 }

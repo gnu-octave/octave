@@ -1,0 +1,170 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Data Types, Numeric Data Types, Getting Started, Top
+@chapter Data Types
+@cindex data types
+
+All versions of Octave include a number of built-in data types,
+including real and complex scalars and matrices, character strings, and
+a data structure type.
+
+It is also possible to define new specialized data types by writing a
+small amount of C++ code.  On some systems, new data types can be loaded
+dynamically while Octave is running, so it is not necessary to recompile
+all of Octave just to add a new type.  @xref{Dynamically Linked
+Functions} for more information about Octave's dynamic linking
+capabilities.
+
+@menu
+* Built-in Data Types::         
+* User-defined Data Types::     
+* Object Sizes::                
+@end menu
+
+@node Built-in Data Types, User-defined Data Types, Data Types, Data Types
+@section Built-in Data Types
+@cindex data types, built-in
+@cindex built-in data types
+
+The standard built-in data types are real and complex scalars and
+matrices, character strings, and a data structure type.  Additional
+built-in data types may be added in future versions.  If you need a
+specialize data type that is not currently provided as a built-in type,
+you are encouraged to write your own user-defined data type and
+contribute it for distribution in a future release of Octave.
+
+@menu
+* Numeric Objects::             
+* String Objects::              
+* Data Structure Objects::      
+@end menu
+
+@node Numeric Objects, String Objects, Built-in Data Types, Built-in Data Types
+@subsection Numeric Objects
+@cindex numeric constant
+@cindex numeric value
+
+Octave's built-in numeric objects include real and complex scalars and
+matrices.  All built-in numeric data is currently stored as double
+precision numbers.  On systems that use the IEEE floating point format,
+values in the range
+@iftex
+@tex
+ $2.2251\times10^{-308}$ to $1.7977\times10^{308}$
+@end tex
+@end iftex
+@ifinfo
+ 2.2251e-308 to 1.7977e+308
+@end ifinfo
+ can be stored, and the relative precision is approximately
+@iftex
+@tex
+ $2.2204\times10^{-16}$.
+@end tex
+@end iftex
+@ifinfo
+ 2.2204e-16.
+@end ifinfo
+The exact values are given by the variables @var{realmin},
+@var{realmax}, and @var{eps}, respectively.
+
+Matrix objects can be of any size, and can be dynamically reshaped and
+resized.  It is easy to extract individual rows, columns, or submatrices
+is using a variety of powerful indexing features.
+
+@xref{Numeric Data Types}, for more information.
+
+@node String Objects, Data Structure Objects, Numeric Objects, Built-in Data Types
+@subsection String Objects
+@cindex strings
+@cindex character strings
+@opindex "
+@opindex '
+
+A character string in Octave consists of a sequence of characters
+enclosed in either double-quote or single-quote marks.  Internally,
+Octave currently stores strings as matrices of characters.  All the
+indexing operations that work for matrix objects also work for strings.
+
+@xref{Strings}, for more information.
+
+@node Data Structure Objects,  , String Objects, Built-in Data Types
+@subsection Data Structure Objects
+@cindex structures
+@cindex data structures
+
+Octave's data structure type can help you to organize related objects of
+different types.  The current implementation uses an associative array
+with indices limited to strings, but the syntax is more like C-style
+structures.
+
+@xref{Data Structures}, for more information.
+
+@node User-defined Data Types, Object Sizes, Built-in Data Types, Data Types
+@section User-defined Data Types
+@cindex user-defined data types
+@cindex data types, user-defined
+
+@node Object Sizes,  , User-defined Data Types, Data Types
+@section Object Sizes
+
+The following functions allow you to determine the size of a variable or
+expression.  These functions are defined for all objects.  They return
+-1 when the operation doesn't make sense.  For example, Octave's data
+structure type doesn't have rows or columns, so @code{rows} and
+@code{columns} return -1 for structure arguments.
+
+@deftypefn {Function File} {} columns (@var{a})
+Return the number of columns of @var{a}.
+@end deftypefn
+
+@deftypefn {Function File} {} rows (@var{a})
+Return the number of rows of @var{a}.
+@end deftypefn
+
+@deftypefn {Function File} {} length (@var{a})
+Return the number of rows of @var{a} or the number of columns of
+@var{a}, whichever is larger.
+@end deftypefn
+
+@deftypefn {Function File} {} size (@var{a}, @var{n})
+Return the number rows and columns of @var{a}.
+
+With one input argument and one output argument, the result is returned
+in a 2 element row vector.  If there are two output arguments, the
+number of rows is assigned to the first, and the number of columns to
+the second.  For example,
+
+@example
+@group
+octave:13> size ([1, 2; 3, 4; 5, 6])
+ans =
+
+  3  2
+
+octave:14> [nr, nc] = size ([1, 2; 3, 4; 5, 6])
+nr = 3
+
+nc = 2
+@end group
+@end example
+
+If given a second argument of either 1 or 2, @code{size} will return
+only the row or column dimension.  For example
+
+@example
+octave:15> size ([1, 2; 3, 4; 5, 6], 2)
+ans = 2
+@end example
+
+@noindent
+returns the number of columns in the given matrix.
+@end deftypefn
+
+@deftypefn {Function File} {} isempty (@var{a})
+Return 1 if @var{a} is an empty matrix (either the number of rows, or
+the number of columns, or both are zero).  Otherwise, return 0.
+@end deftypefn
+

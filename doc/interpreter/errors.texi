@@ -1,0 +1,114 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Error Handling, Input and Output, Functions and Scripts, Top
+@chapter Error Handling
+
+@deftypefn {Built-in Function} {} error (@var{template}, @dots{})
+The @code{error} function formats the optional arguments under the
+control of the template string @var{template} using the same rules as
+the @code{printf} family of functions (@pxref{Formatted Output}).
+The resulting message is prefixed by the string @samp{error: } and
+printed on the @code{stderr} stream.
+
+Calling @code{error} also sets Octave's internal error state such that
+control will return to the top level without evaluating any more
+commands.  This is useful for aborting from functions or scripts.
+
+If the error message does not end with a new line character, Octave will
+print a traceback of all the function calls leading to the error.  For
+example, given the following function definitions:
+
+@example
+@group
+function f () g () end
+function g () h () end
+function h () nargin == 1 || error ("nargin != 1"); end
+@end group
+@end example
+
+@noindent
+calling the function @code{f} will result in a list of messages that
+can help you to quickly locate the exact location of the error:
+
+@example
+@group
+f ()
+error: nargin != 1
+error: evaluating index expression near line 1, column 30
+error: evaluating binary operator `||' near line 1, column 27
+error: called from `h'
+error: called from `g'
+error: called from `f'
+@end group
+@end example
+
+If the error message ends in a new line character, Octave will print the
+message but will not display any traceback messages as it returns
+control to the top level.  For example, modifying the error message
+in the previous example to end in a new line causes Octave to only print
+a single message:
+
+@example
+@group
+function h () nargin == 1 || error ("nargin != 1\n"); end
+f ()
+error: nargin != 1
+@end group
+@end example
+@end deftypefn
+
+@defvr {Built-in Variable} error_text
+This variable contains the the text of error messages that would have
+been printed in the body of the most recent @code{unwind_protect} or
+@code{try} statement or the @var{try} part of the most recent call to
+the @code{eval} function.  Outside of the @code{unwind_protect} and
+@code{try} statements or the @code{eval} function, or if no error has
+ocurred within them, the value of @code{error_text} is guaranteed to be
+the empty string.
+
+Note that the message does not include the first @samp{error: } prefix,
+so that it may easily be passed to the @code{error} function without
+additional processing@footnote{Yes, it's a kluge, but it seems to be a
+reasonably useful one.}.
+
+@xref{The try Statement} and @ref{The unwind_protect Statement}.
+@end defvr
+
+@defvr {Built-in Variable} beep_on_error
+If the value of @code{beep_on_error} is nonzero, Octave will try
+to ring your terminal's bell before printing an error message.  The
+default value is 0.
+@end defvr
+
+@deftypefn {Built-in Function} {} warning (@var{msg})
+Print the message @var{msg} prefixed by the string @samp{warning: }.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} usage (@var{msg})
+Print the message @var{msg}, prefixed by the string @samp{usage: }, and
+set Octave's internal error state such that control will return to the
+top level without evaluating any more commands.  This is useful for
+aborting from functions.
+
+After @code{usage} is evaluated, Octave will print a traceback of all
+the function calls leading to the usage message.
+@end deftypefn
+
+The following pair of functions are of limited usefulness, and may be
+removed from future versions of Octave.
+
+@deftypefn {Function File} {} perror (@var{name}, @var{num})
+Print the error message for function @var{name} corresponding to the
+error number @var{num}.  This function is intended to be used to print
+useful error messages for those functions that return numeric error
+codes.
+@end deftypefn
+
+@deftypefn {Function File} {} strerror (@var{name}, @var{num})
+Return the text of an error message for function @var{name}
+corresponding to the error number @var{num}.  This function is intended
+to be used to print useful error messages for those functions that
+return numeric error codes.
+@end deftypefn

@@ -1,0 +1,53 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Grammar, Copying, Emacs, Top
+@chapter Grammar
+@cindex grammar rules
+@cindex language definition
+
+Someday I hope to expand this to include a semi-formal description of
+Octave's language.
+
+@menu
+* Keywords::                    
+@end menu
+
+@node Keywords,  , Grammar, Grammar
+@section Keywords
+@cindex keywords
+
+The following identifiers are keywords, and may not be used as variable
+or function names:
+
+@example
+@group
+all_va_args             endwhile
+break                   for
+catch                   function
+continue                global
+else                    gplot
+elseif                  gsplot
+end                     if
+end_try_catch           return
+end_unwind_protect      try
+endfor                  unwind_protect
+endfunction             unwind_protect_cleanup
+endif                   while
+@end group
+@end example
+
+The following command-like functions are also reserved, and may not be
+used as variable or function names:
+
+@example
+@group
+casesen       echo          load          show
+cd            edit_history  ls            type
+chdir         format        more          which
+clear         help          run_history   who
+diary         history       save          whos
+dir           hold          set
+@end group
+@end example

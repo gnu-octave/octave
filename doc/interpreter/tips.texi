@@ -1,0 +1,355 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Tips, Trouble, System Utilities, Top
+@appendix Tips and Standards
+@cindex tips
+@cindex standards of coding style
+@cindex coding standards
+
+This chapter describes no additional features of Octave.  Instead it
+gives advice on making effective use of the features described in the
+previous chapters.
+
+@menu
+* Style Tips::                  Writing clean and robust programs.
+* Coding Tips::                 Making code run faster.
+* Documentation Tips::          Writing readable documentation strings.
+* Comment Tips::                Conventions for writing comments.
+* Function Headers::            Standard headers for functions.
+@end menu
+
+@node Style Tips, Coding Tips, Tips, Tips
+@section Writing Clean Octave Programs
+
+Here are some tips for avoiding common errors in writing Octave code
+intended for widespread use:
+
+@itemize @bullet
+@item
+Since all global variables share the same name space, and all functions
+share another name space, you should choose a short word to distinguish
+your program from other Octave programs.  Then take care to begin the
+names of all global variables, constants, and functions with the chosen
+prefix.  This helps avoid name conflicts.
+
+If you write a function that you think ought to be added to Octave under
+a certain name, such as @code{twiddle-matrix}, don't call it by that name
+in your program.  Call it @code{mylib-twiddle-matrix} in your program,
+and send mail to @samp{bug-octave@@bevo.che.wisc.edu} suggesting that it
+be added to Octave.  If and when it is, the name can be changed easily
+enough.
+
+If one prefix is insufficient, your package may use two or three
+alternative common prefixes, so long as they make sense.
+
+Separate the prefix from the rest of the symbol name with an underscore
+@samp{_}.  This will be consistent with Octave itself and with most
+Octave programs.
+
+@item
+When you encounter an error condition, call the function @code{error}
+(or @code{usage}).  The function @code{error} does not return.
+@xref{Errors}.
+
+@item
+Please put a copyright notice on the file if you give copies to anyone.
+Use the same lines that appear at the top of the function files
+distributed with Octave.  If you have not signed papers to assign the
+copyright to anyone else, then place your name in the copyright notice.
+@end itemize
+
+@node Coding Tips, Documentation Tips, Style Tips, Tips
+@section Tips for Making Code Run Faster.
+@cindex execution speed
+@cindex speedups
+
+Here are some ways of improving the execution speed of Octave programs.
+
+@itemize @bullet
+@item
+Avoid looping wherever possible.
+
+@item
+Use iteration rather than recursion whenever possible.
+Function calls are slow in Octave.
+
+@item
+Avoid resizing matrices unnecessarily.  When building a single result
+matrix from a series of calculations, set the size of the result matrix
+first, then insert values into it.  Write
+
+@example
+@group
+result = zeros (big_n, big_m)
+for i = over:and_over
+  r1 = @dots{}
+  r2 = @dots{}
+  result (r1, r2) = new_value ();
+endfor
+@end group
+@end example
+
+@noindent
+instead of
+
+@example
+@group
+result = [];
+for i = ever:and_ever
+  result = [ result, new_value() ];
+endfor
+@end group
+@end example
+
+@item
+Avoid calling @code{eval} or @code{feval} whenever possible, because
+they require Octave to parse input or look up the name of a function in
+the symbol table.
+
+If you are using @code{eval} as an exception handling mechanism and not
+because you need to execute some arbitrary text, use the @code{try}
+statement instead.  @xref{The try Statement}.
+@end itemize
+
+@node Documentation Tips, Comment Tips, Coding Tips, Tips
+@section Tips for Documentation Strings
+
+Here are some tips for the writing of documentation strings.
+
+@itemize @bullet
+@item
+Every command, function, or variable intended for users to know about
+should have a documentation string.
+
+@item
+An internal variable or subroutine of an Octave program might as well have
+a documentation string.
+
+@item
+The first line of the documentation string should consist of one or two
+complete sentences that stand on their own as a summary.
+
+The documentation string can have additional lines that expand on the
+details of how to use the function or variable.  The additional lines
+should also be made up of complete sentences.
+
+@item
+For consistency, phrase the verb in the first sentence of a
+documentation string as an infinitive with ``to'' omitted.  For
+instance, use ``Return the frob of A and B.'' in preference to ``Returns
+the frob of A and B@.''  Usually it looks good to do likewise for the
+rest of the first paragraph.  Subsequent paragraphs usually look better
+if they have proper subjects.
+
+@item
+Write documentation strings in the active voice, not the passive, and in
+the present tense, not the future.  For instance, use ``Return a list
+containing A and B.'' instead of ``A list containing A and B will be
+returned.''
+
+@item
+Avoid using the word ``cause'' (or its equivalents) unnecessarily.
+Instead of, ``Cause Octave to display text in boldface,'' write just
+``Display text in boldface.''
+
+@item
+Do not start or end a documentation string with whitespace.
+
+@item
+Format the documentation string so that it fits in an Emacs window on an
+80-column screen.  It is a good idea for most lines to be no wider than
+60 characters.
+
+However, rather than simply filling the entire documentation string, you
+can make it much more readable by choosing line breaks with care.
+Use blank lines between topics if the documentation string is long.
+ 
+@item
+@strong{Do not} indent subsequent lines of a documentation string so
+that the text is lined up in the source code with the text of the first
+line.  This looks nice in the source code, but looks bizarre when users
+view the documentation.  Remember that the indentation before the
+starting double-quote is not part of the string!
+
+@item
+The documentation string for a variable that is a yes-or-no flag should
+start with words such as ``Nonzero means@dots{}'', to make it clear that
+all nonzero values are equivalent and indicate explicitly what zero and
+nonzero mean.
+
+@item
+When a function's documentation string mentions the value of an argument
+of the function, use the argument name in capital letters as if it were
+a name for that value.  Thus, the documentation string of the operator
+@code{/} refers to its second argument as @samp{DIVISOR}, because the
+actual argument name is @code{divisor}.
+
+Also use all caps for meta-syntactic variables, such as when you show
+the decomposition of a list or vector into subunits, some of which may
+vary.
+@end itemize
+
+@node Comment Tips, Function Headers, Documentation Tips, Tips
+@section Tips on Writing Comments
+
+Here are the conventions to follow when writing comments.
+
+@table @samp
+@item #
+Comments that start with a single sharp-sign, @samp{#}, should all be
+aligned to the same column on the right of the source code.  Such
+comments usually explain how the code on the same line does its job.  In
+the Emacs mode for Octave, the @kbd{M-;} (@code{indent-for-comment})
+command automatically inserts such a @samp{#} in the right place, or
+aligns such a comment if it is already present.
+
+@item ##
+Comments that start with two semicolons, @samp{##}, should be aligned to
+the same level of indentation as the code.  Such comments usually
+describe the purpose of the following lines or the state of the program
+at that point.
+@end table
+
+@noindent
+The indentation commands of the Octave mode in Emacs, such as @kbd{M-;}
+(@code{indent-for-comment}) and @kbd{TAB} (@code{octave-indent-line})
+automatically indent comments according to these conventions,
+depending on the number of semicolons.  @xref{Comments,,
+Manipulating Comments, emacs, The GNU Emacs Manual}.
+
+@node Function Headers,  , Comment Tips, Tips
+@section Conventional Headers for Octave Functions
+@cindex header comments
+
+Octave has conventions for using special comments in function files
+to give information such as who wrote them.  This section explains these
+conventions.
+
+The top of the file should contain a copyright notice, followed by a
+block of comments that can be used as the help text for the function.
+Here is an example:
+
+@example
+## Copyright (C) 1996 John W. Eaton
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public
+## License as published by the Free Software Foundation;
+## either version 2, or (at your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied
+## warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+## PURPOSE.  See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public
+## License along with Octave; see the file COPYING.  If not,
+## write to the Free Software Foundation, 59 Temple Place -
+## Suite 330, Boston, MA 02111-1307, USA.
+
+## usage: [IN, OUT, PID] = popen2 (COMMAND, ARGS)
+##
+## Start a subprocess with two-way communication.  COMMAND
+## specifies the name of the command to start.  ARGS is an
+## array of strings containing options for COMMAND.  IN and
+## OUT are the file ids of the input and streams for the
+## subprocess, and PID is the process id of the subprocess,
+## or -1 if COMMAND could not be executed.
+##
+## Example:
+##
+##  [in, out, pid] = popen2 ("sort", "-nr");
+##  fputs (in, "these\nare\nsome\nstrings\n");
+##  fclose (in);
+##  while (isstr (s = fgets (out)))
+##    fputs (stdout, s);
+##  endwhile
+##  fclose (out);
+@end example
+
+Octave uses the first block of comments in a function file that do not
+appear to be a copyright notice as the help text for the file.  For
+Octave to recognize the first comment block as a copyright notice, it
+must match the regular expression
+
+@example
+^ Copyright (C).*\n\n This file is part of Octave.
+@end example
+
+@noindent
+or
+
+@example
+^ Copyright (C).*\n\n This program is free softwar
+@end example
+
+@noindent
+(after stripping the leading comment characters).  This is a fairly
+strict requirement, and may be relaxed somewhat in the future.
+
+After the copyright notice and help text come several @dfn{header
+comment} lines, each beginning with @samp{## @var{header-name}:}.  For
+example,
+
+@example
+@group
+## Author: jwe
+## Keywords: subprocesses input-output
+## Maintainer: jwe
+@end group
+@end example
+
+Here is a table of the conventional possibilities for @var{header-name}:
+
+@table @samp
+@item Author
+This line states the name and net address of at least the principal
+author of the library.
+
+@smallexample
+## Author: John W. Eaton <jwe@@bevo.che.wsic.edu>
+@end smallexample
+
+@item Maintainer
+This line should contain a single name/address as in the Author line, or
+an address only, or the string @samp{jwe}.  If there is no maintainer
+line, the person(s) in the Author field are presumed to be the
+maintainers.  The example above is mildly bogus because the maintainer
+line is redundant.
+
+The idea behind the @samp{Author} and @samp{Maintainer} lines is to make
+possible a function to ``send mail to the maintainer'' without
+having to mine the name out by hand.
+
+Be sure to surround the network address with @samp{<@dots{}>} if
+you include the person's full name as well as the network address.
+
+@item Created
+This optional line gives the original creation date of the
+file.  For historical interest only.
+
+@item Version
+If you wish to record version numbers for the individual Octave program,
+put them in this line.
+
+@item Adapted-By
+In this header line, place the name of the person who adapted the
+library for installation (to make it fit the style conventions, for
+example).
+
+@item Keywords
+This line lists keywords.  Eventually, it will be used by an apropos
+command to allow people will find your package when they're looking for
+things by topic area.  To separate the keywords, you can use spaces,
+commas, or both.
+@end table
+
+Just about every Octave function ought to have the @samp{Author} and
+@samp{Keywords} header comment lines.  Use the others if they are
+appropriate.  You can also put in header lines with other header
+names---they have no standard meanings, so they can't do any harm.

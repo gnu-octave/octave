@@ -1,0 +1,555 @@
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Variables, Expressions, Data Structures, Top
+@chapter Variables
+@cindex variables, user-defined
+@cindex user-defined variables
+
+Variables let you give names to values and refer to them later.  You have
+already seen variables in many of the examples.  The name of a variable
+must be a sequence of letters, digits and underscores, but it may not begin
+with a digit.  Octave does not enforce a limit on the length of variable
+names, but it is seldom useful to have variables with names longer than
+about 30 characters.  The following are all valid variable names
+
+@cindex job hunting
+@cindex getting a good job
+@cindex flying high and fast
+@example
+@group
+x
+x15
+__foo_bar_baz__
+fucnrdthsucngtagdjb
+@end group
+@end example
+
+@noindent
+However, names like @code{__foo_bar_baz__} that begin and end with two
+underscores are understood to be reserved for internal use by Octave.
+You should not use them in code you write, except to access Octave's
+documented internal variables and built-in symbolic constants.
+
+Case is significant in variable names.  The symbols @code{a} and
+@code{A} are distinct variables.
+
+A variable name is a valid expression by itself.  It represents the
+variable's current value.  Variables are given new values with
+@dfn{assignment operators} and @dfn{increment operators}.
+@xref{Assignment Ops, ,Assignment Expressions}.
+
+A number of variables have special built-in meanings.  For example,
+@code{PWD} holds the current working directory, and @code{pi} names the
+ratio of the circumference of a circle to its diameter. @xref{Summary of
+Built-in Variables}, for a list of all the predefined variables.  Some
+of these built-in symbols are constants and may not be changed.  Others
+can be used and assigned just like all other variables, but their values
+are also used or changed automatically by Octave.
+
+Variables in Octave do not have fixed types, so it is possible to first
+store a numeric value in a variable and then to later use the same name
+to hold a string value in the same program.  Variables may not be used
+before they have been given a value.  Doing so results in an error.
+
+@menu
+* Global Variables::            
+* Status of Variables::         
+* Summary of Built-in Variables::  
+* Defaults from the Environment::  
+@end menu
+
+@node Global Variables, Status of Variables, Variables, Variables
+@section Global Variables
+@cindex global variables
+@cindex @code{global} statement
+@cindex variables, global
+
+A variable that has been declared @dfn{global} may be accessed from
+within a function body without having to pass it as a formal parameter.
+
+A variable may be declared global using a @code{global} declaration
+statement.  The following statements are all global declarations.
+
+@example
+@group
+global a
+global b = 2
+global c = 3, d, e = 5
+@end group
+@end example
+
+It is necessary declare a variable as global within a function body in
+order to access it.  For example,
+
+@example
+@group
+global x
+function f ()
+x = 1;
+endfunction
+f ()
+@end group
+@end example
+
+@noindent
+does @emph{not} set the value of the global variable @samp{x} to 1.  In
+order to change the value of the global variable @samp{x}, you must also
+declare it to be global within the function body, like this
+
+@example
+@group
+function f ()
+  global x;
+  x = 1;
+endfunction
+@end group
+@end example
+
+Passing a global variable in a function parameter list will
+make a local copy and not modify the global value.  For example, given
+the function
+
+@example
+@group
+function f (x)
+  x = 0
+endfunction
+@end group
+@end example
+
+@noindent
+and the definition of @samp{x} as a global variable at the top level,
+
+@example
+global x = 13
+@end example
+
+@noindent
+the expression
+
+@example
+f (x)
+@end example
+
+@noindent
+will display the value of @samp{x} from inside the function as @samp{0},
+but the value of @samp{x} at the top level remains unchanged, because
+the function works with a @emph{copy} of its argument.
+
+@defvr {Built-in Variable} warn_comma_in_global_decl
+If the value of @code{warn_comma_in_global_decl} is nonzero, a
+warning is issued for statements like
+
+@example
+global a = 1, b
+@end example
+
+@noindent
+which makes the variables @samp{a} and @samp{b} global and assigns the
+value 1 to the variable @samp{a}, because in this context, the comma is
+not interpreted as a statement separator.
+
+The default value of @code{warn_comma_in_global_decl} is nonzero.
+@end defvr
+
+@deftypefn {Built-in Function} {} is_global (@var{name})
+Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For
+example,
+
+@example
+@group
+global x
+is_global ("x")
+     @result{} 1
+@end group
+@end example
+@end deftypefn
+
+@node Status of Variables, Summary of Built-in Variables, Global Variables, Variables
+@section Status of Variables
+
+@deffn {Command} clear options pattern @dots{}
+Delete the names matching the given patterns from the symbol table.  The
+pattern may contain the following special characters:
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lower and upper case alphabetic characters. 
+@end table
+
+For example, the command
+
+@example
+clear foo b*r
+@end example
+
+@noindent
+clears the name @code{foo} and all names that begin with the letter
+@code{b} and end with the letter @code{r}.
+
+If @code{clear} is called without any arguments, all user-defined
+variables (local and global) are cleared from the symbol table.  If
+@code{clear} is called with at least one argument, only the visible
+names matching the arguments are cleared.  For example, suppose you have
+defined a function @code{foo}, and then hidden it by performing the
+assignment @code{foo = 2}.  Executing the command @samp{clear foo} once
+will clear the variable definition and restore the definition of
+@code{foo} as a function.  Executing @samp{clear foo} a second time will
+clear the function definition.
+
+This command may not be used within a function body.
+@end deffn
+
+@deffn {Command} who options pattern @dots{}
+@deffnx {Command} whos options pattern @dots{}
+List currently defined symbols matching the given patterns.  The
+following are valid options.  They may be shortened to one character but
+may not be combined.
+
+@table @code
+@item -all
+List all currently defined symbols.
+
+@item -builtins
+List built-in variables and functions.  This includes all currently
+compiled function files, but does not include all function files that
+are in the @code{LOADPATH}.
+
+@item -functions
+List user-defined functions.
+
+@item -long
+Print a long listing including the type and dimensions of any symbols.
+The symbols in the first column of output indicate whether it is
+possible to redefine the symbol, and whether it is possible for it to be
+cleared.
+
+@item -variables
+List user-defined variables.
+@end table
+
+Valid patterns are the same as described for the @code{clear} command
+above.  If no patterns are supplied, all symbols from the given category
+are listed.  By default, only user defined functions and variables
+visible in the local scope are displayed.
+
+The command @code{whos} is equivalent to @code{who -long}.
+@end deffn
+
+@deftypefn {Built-in Function} {} exist (@var{name})
+Return 1 if the name exists as a variable, and 2 if the name (after
+appending @samp{.m}) is a function file in the path.  Otherwise, return
+0.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} document (@var{symbol}, @var{text})
+Set the documentation string for @var{symbol} to @var{text}.
+@end deftypefn
+
+@deffn {Command} type options name @dots{}
+Display the definition of each @var{name} that refers to a function.
+
+Normally also displays if each @var{name} is user-defined or builtin;
+the @code{-q} option suppresses this behaviour.
+
+Currently, Octave can only display functions that can be compiled
+cleanly, because it uses its internal representation of the function to
+recreate the program text.
+
+Comments are not displayed because Octave's parser currently discards
+them as it converts the text of a function file to its internal
+representation.  This problem may be fixed in a future release.
+@end deffn
+
+@deffn {Command} which name @dots{}
+Display the type of each @var{name}.  If @var{name} is defined from a
+function file, the full name of the file is also displayed.
+@end deffn
+
+@node Summary of Built-in Variables, Defaults from the Environment, Status of Variables, Variables
+@section Summary of Built-in Variables
+
+Here is a summary of all of Octave's built-in variables along with
+cross references to additional information and their default values.  In
+the following table @code{OCT_HOME} stands for the root directory where
+Octave is installed (for example, @file{@value{OCTAVEHOME}}, @code{VERSION}
+stands for the Octave version number (for example, @value{VERSION}, and
+@code{SYS} stands for the type of system for which Octave was compiled
+(for example, @code{@value{TARGETHOSTTYPE}}).
+
+@vtable @code
+@item EDITOR
+@xref{Commands For History}.
+
+Default value: @code{"vi"}.
+
+@item EXEC_PATH
+@xref{Controlling Subprocesses}.
+
+Default value: @code{":$PATH"}.
+
+@item INFO_FILE
+@xref{Getting Help}.
+
+Default value: @code{"OCT_HOME/info/octave.info"}.
+
+@item INFO_PROGRAM
+@xref{Getting Help}.
+
+Default value: @code{"OCT_HOME/libexec/octave/VERSION/exec/SYS/info"}.
+
+@item LOADPATH
+@xref{Function Files}.
+
+Default value: @code{".:OCT_HOME/lib/VERSION"}.
+
+@item PAGER
+@xref{Input and Output}.
+
+Default value: @code{"less", or "more"}.
+
+@item PS1
+@xref{Customizing the Prompt}.
+
+Default value: @code{"\s:\#> "}.
+
+@item PS2
+@xref{Customizing the Prompt}.
+
+Default value: @code{"> "}.
+
+@item PS4
+@xref{Customizing the Prompt}.
+
+Default value: @code{"+ "}.
+
+@item automatic_replot
+@xref{Two-Dimensional Plotting}.
+
+Default value: 0.
+
+@item beep_on_error
+@xref{Error Handling}.
+
+Default value: 0.
+
+@item completion_append_char
+@xref{Commands For Completion}.
+
+Default value: @code{" "}.
+
+@item default_return_value
+@xref{Multiple Return Values}.
+
+Default value: @code{[]}.
+
+@item do_fortran_indexing
+@xref{Index Expressions}.
+
+Default value: 0.
+
+@item define_all_return_values
+@xref{Multiple Return Values}.
+
+Default value: 0.
+
+@item empty_list_elements_ok
+@xref{Empty Matrices}.
+
+Default value: @code{"warn"}.
+
+@item gnuplot_binary
+@xref{Three-Dimensional Plotting}.
+
+Default value: @code{"gnuplot"}.
+
+@item history_file
+@xref{Commands For History}.
+
+Default value: @code{"~/.octave_hist"}.
+
+@item history_size
+@xref{Commands For History}.
+
+Default value: 1024.
+
+@item ignore_function_time_stamp
+@xref{Function Files}.
+
+Default value: @code{"system"}.
+
+@item implicit_str_to_num_ok
+@xref{String Conversions}.
+
+Default value: 0.
+
+@item ok_to_lose_imaginary_part
+@xref{Special Utility Matrices}.
+
+Default value: @code{"warn"}.
+
+@item output_max_field_width
+@xref{Matrices}.
+
+Default value: 10.
+
+@item output_precision
+@xref{Matrices}.
+
+Default value: 5.
+
+@item page_screen_output
+@xref{Input and Output}.
+
+Default value: 1.
+
+@item prefer_column_vectors
+@xref{Index Expressions}.
+
+Default value: 0.
+
+@item prefer_zero_one_indexing
+@xref{Index Expressions}.
+
+Default value: 0.
+
+@item print_answer_id_name
+@xref{Terminal Output}.
+
+Default value: 1.
+
+@item print_empty_dimensions
+@xref{Empty Matrices}.
+
+Default value: 1.
+
+@item resize_on_range_error
+@xref{Index Expressions}.
+
+Default value: 1.
+
+@item return_last_computed_value
+@xref{Returning From a Function}.
+
+Default value: 0.
+
+@item save_precision
+@xref{Simple File I/O}.
+
+Default value: 17.
+
+@item saving_history
+@xref{Commands For History}.
+
+Default value: 1.
+
+@item silent_functions
+@xref{Defining Functions}.
+
+Default value: 0.
+
+@item split_long_rows
+@xref{Matrices}.
+
+Default value: 1.
+
+@item struct_levels_to_print
+@xref{Data Structures}.
+
+Default value: 2.
+
+@item suppress_verbose_help_message
+@xref{Getting Help}.
+
+Default value: 1.
+
+@item treat_neg_dim_as_zero
+@xref{Special Utility Matrices}.
+
+Default value: 0.
+
+@item warn_assign_as_truth_value
+@xref{The if Statement}.
+
+Default value: 1.
+
+@item warn_comma_in_global_decl
+@xref{Global Variables}.
+
+Default value: 1.
+
+@item warn_divide_by_zero
+@xref{Arithmetic Ops}.
+
+Default value: 1.
+
+@item warn_function_name_clash
+@xref{Function Files}.
+
+Default value: 1.
+
+@item whitespace_in_literal_matrix
+@xref{Matrices}.
+
+Default value: @code{""}.
+@end vtable
+
+
+@node Defaults from the Environment,  , Summary of Built-in Variables, Variables
+@section Defaults from the Environment
+
+Octave uses the values of the following environment variables to set the
+default values for the corresponding built-in variables.  In addition,
+the values from the environment may be overridden by command-line
+arguments.  @xref{Command Line Options}.
+
+@vtable @code
+@item EDITOR
+@xref{Commands For History}.
+
+Built-in variable: @code{EDITOR}.
+
+@item OCTAVE_EXEC_PATH        
+@xref{Controlling Subprocesses}.
+
+Built-in variable: @code{EXEC_PATH}.
+Command-line argument: @code{--exec-path}.
+
+@item OCTAVE_PATH
+@xref{Function Files}.
+
+Built-in variable: @code{LOADPATH}.
+Command-line argument: @code{--path}.
+
+@item OCTAVE_INFO_FILE
+@xref{Getting Help}.
+
+Built-in variable: @code{INFO_FILE}.
+Command-line argument: @code{--info-file}.
+
+@item OCTAVE_INFO_PROGRAM
+@xref{Getting Help}.
+
+Built-in variable: @code{INFO_PROGRAM}.
+Command-line argument: @code{--info-program}.
+
+@item OCTAVE_HISTSIZE
+@xref{Commands For History}.
+
+Built-in variable: @code{history_size}.
+
+@item OCTAVE_HISTFILE
+@xref{Commands For History}.
+
+Built-in variable: @code{history_file}.
+@end vtable

@@ -54,7 +54,7 @@ static int call_depth = 0;
 
 static ColumnVector
 dasrt_user_f (const ColumnVector& x, const ColumnVector& xprime,
-	       double t, int& ires)
+	      double t, int& ires)
 {
   ColumnVector retval;
 
@@ -62,23 +62,23 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xprime,
 
   int n = x.length ();
 
+  args(2) = t;
+
   if (n > 1)
     {
-      args(0) = x;
       args(1) = xprime;
+      args(0) = x;
     }
   else if (n == 1)
     {
-      args(0) = x(0);
       args(1) = xprime(0);
+      args(0) = x(0);
     }
   else
     {
-      args(0) = Matrix ();
       args(1) = Matrix ();
+      args(0) = Matrix ();
     }
-
-  args(2) = t;
 
   if (dasrt_f)
     {
@@ -146,48 +146,48 @@ dasrt_user_cf (const ColumnVector& x, double t)
   return retval;
 }
 
-static ColumnVector
-dasrt_dumb_cf (const ColumnVector& x, double t)
-{
-  ColumnVector retval (1, 1.0);
-  return retval;
-}
-
-#if 0
 static Matrix
-dasrt_user_mf (double t, const ColumnVector& x, const ColumnVector& xprime,
-		const double& cj, octave_function *mf)
+dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
+	      double t, double cj)
 {
   Matrix retval;
 
-  if (mf)
+  int nstates = x.capacity ();
+
+  assert (nstates == xdot.capacity ());
+
+  octave_value_list args;
+
+  args(3) = cj;
+  args(2) = t;
+
+  if (nstates > 1)
     {
-      octave_value_list args;
+      Matrix m1 (nstates, 1);
+      Matrix m2 (nstates, 1);
+      for (int i = 0; i < nstates; i++)
+	{
+	  m1 (i, 0) = x (i);
+	  m2 (i, 0) = xdot (i);
+	}
+      octave_value state (m1);
+      octave_value deriv (m2);
+      args(1) = deriv;
+      args(0) = state;
+    }
+  else
+    {
+      double d1 = x (0);
+      double d2 = xdot (0);
+      octave_value state (d1);
+      octave_value deriv (d2);
+      args(1) = deriv;
+      args(0) = state;
+    }
 
-      int n = x.length ();
-
-      if (n > 1)
-        {
-	  args(0) = x;
-	  args(1) = xprime;
-	  args(3) = cj;
-        }
-      else if (n == 1)
-        {
-	  args(0) = x(0);
-	  args(1) = xprime(0);
-	  args(3) = cj;
-        }
-      else
-        {
-	  args(0) = Matrix ();
-	  args(1) = Matrix ();
-	  args(3) = Matrix ();
-        }
-
-      args(2) = t;
-
-      octave_value_list tmp = mf->do_multi_index_op (1, args);
+  if (dasrt_j)
+    {
+      octave_value_list tmp = dasrt_j->do_multi_index_op (1, args);
 
       if (error_state)
 	{
@@ -195,7 +195,8 @@ dasrt_user_mf (double t, const ColumnVector& x, const ColumnVector& xprime,
 	  return retval;
 	}
 
-      if (tmp.length () > 0 && tmp(0).is_defined ())
+      int tlen = tmp.length ();
+      if (tlen > 0 && tmp(0).is_defined ())
 	{
 	  retval = tmp(0).matrix_value ();
 
@@ -208,13 +209,6 @@ dasrt_user_mf (double t, const ColumnVector& x, const ColumnVector& xprime,
 
   return retval;
 }
-
-static Matrix
-dasrt_user_j (const ColumnVector& x, const ColumnVector& xprime, double t)
-{
-  return dasrt_user_mf (t, x, xprime, dasrt_j);
-}
-#endif
 
 #define DASRT_ABORT \
   do \
@@ -446,10 +440,8 @@ parameters for @code{dasrt}.\n\
       crit_times_set = true;
     }
 
-#if 0
   if (dasrt_j)
     func.set_jacobian_function (dasrt_user_j);
-#endif
 
   DASRT_result output;
 

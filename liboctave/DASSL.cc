@@ -51,6 +51,7 @@ int F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
+
 static int nn;
 
 DASSL::DASSL (void) : DAE ()
@@ -215,6 +216,7 @@ DASSL::do_integrate (double tout)
   double *pxdot = xdot.fortran_vec ();
 
   nn = n;
+
   user_fun = DAEFunc::fun;
   user_jac = DAEFunc::jac;
 

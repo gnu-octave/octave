@@ -73,6 +73,7 @@ int F77_FUNC (ddasrt, DASRT) (dasrt_fcn_ptr, const int&, double&,
 static DAEFunc::DAERHSFunc user_fsub;
 static DAEFunc::DAEJacFunc user_jsub;
 static DAERTFunc::DAERTConstrFunc user_csub;
+
 static int nn;
 
 static int
@@ -302,6 +303,8 @@ DASRT::integrate (double tout)
 	}
 
       integration_error = false;
+
+      nn = n;
 
       user_fsub = DAEFunc::function ();
       user_jsub = DAEFunc::jacobian_function ();

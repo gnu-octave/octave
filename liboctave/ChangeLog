@@ -2,6 +2,7 @@
 
 	* DASRT.h (DASRT::set_ng, DASRT::get_ng): Delete
 	* DASRT.cc (DASRT::DASRT): Set ng here.
+	(DASRT::integrate): Don't forget to set nn.
 
 	* DAEFunc.h (DAEFunc): Jacobian function now follows format of DASSL.
 	* DASSL.cc (ddassl_j): Make it work.

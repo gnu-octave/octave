@@ -338,7 +338,7 @@ print_usage (const char *string, int just_usage)
 	    << h << "\n";
 
 	  if (! just_usage)
-	    additional_help_message (output_buf)
+	    additional_help_message (output_buf);
 	  output_buf << ends;
 	  maybe_page_output (output_buf);
 	}

@@ -120,7 +120,7 @@ gmtime (time ())\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   if (args.length () == 1)
     {
@@ -161,7 +161,7 @@ localtime (time ())\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   if (args.length () == 1)
     {
@@ -190,7 +190,7 @@ mktime (localtime (time ())\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   if (args.length () == 1)
     {
@@ -365,7 +365,7 @@ Year (1970-).\n\
 @end table\n\
 @end deftypefn\n")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   if (args.length () == 2)
     {
@@ -392,6 +392,42 @@ Year (1970-).\n\
     }
   else
     print_usage ("strftime");
+
+  return retval;
+}
+
+DEFUN_DLD (strptime, args, ,
+ "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{tm_struct}, @var{nchars}] =} stpftime (@var{str}, @var{fmt})\n\
+Convert the string @var{str} to a time structure under the control of\n\
+the format @var{fmt}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 2)
+    {
+      string str = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  string fmt = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      octave_strptime t (str, fmt);
+
+	      retval(1) = static_cast<double> (t.characters_converted ());
+	      retval(0) = octave_value (mk_tm_map (t));
+	    }
+	  else
+	    error ("strptime: expecting format string as second argument");
+	}
+      else
+	error ("strptime: expecting string as first argument");
+    }
+  else
+    print_usage ("strptime");
 
   return retval;
 }

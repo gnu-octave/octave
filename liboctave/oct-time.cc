@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 #include "lo-utils.h"
+#define __USE_XOPEN
 #include "oct-time.h"
 
 octave_time::octave_time (const octave_base_tm& tm)
@@ -216,6 +217,41 @@ octave_gmtime::init (const octave_time& ot)
   time_t t = ot;
 
   octave_base_tm::init (gmtime (&t));
+}
+
+void
+octave_strptime::init (const string& str, const string& fmt)
+{
+  struct tm t;
+
+  t.tm_sec = 0;
+  t.tm_min = 0;
+  t.tm_hour = 0;
+  t.tm_mday = 0;
+  t.tm_mon = 0;
+  t.tm_year = 0;
+  t.tm_wday = 0;
+  t.tm_yday = 0;
+  t.tm_isdst = 0;
+
+#if defined (HAVE_TM_ZONE)
+  char *ps = strsave ("");
+  t.tm_zone = ps;
+#endif
+
+  char *p = strsave (str.c_str ());
+
+  char *q = strptime (p, fmt.c_str (), &t);
+
+  nchars = p - q;
+
+  delete [] p;
+
+  octave_base_tm::init (&t);
+
+#if defined (HAVE_TM_ZONE)
+  delete ps;
+#endif
 }
 
 /*

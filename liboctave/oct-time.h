@@ -295,6 +295,35 @@ private:
   void init (const octave_time& ot);
 };
 
+class
+octave_strptime : public octave_base_tm
+{
+public:
+
+  octave_strptime (const string& str, const string& fmt)
+    : octave_base_tm () { init (str, fmt); }
+
+  octave_strptime (const octave_strptime& s)
+    : octave_base_tm (s) { nchars = s.nchars; }
+
+  octave_strptime& operator = (const octave_strptime& s)
+  {
+    octave_base_tm::operator = (s);
+    nchars = s.nchars;
+    return *this;
+  }
+
+  int characters_converted (void) const { return nchars; }
+
+  ~octave_strptime (void) { }
+
+private:
+
+  int nchars;
+
+  void init (const string& str, const string& fmt);
+};
+
 #endif
 
 /*

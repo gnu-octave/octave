@@ -798,8 +798,8 @@ octave_value::complex_column_vector_value (bool force_string_conv,
 
   if (nc == 1)
     {
-      retval.resize (nc);
-      for (int i = 0; i < nc; i++)
+      retval.resize (nr);
+      for (int i = 0; i < nr; i++)
 	retval (i) = m (i, 0);
     }
   else

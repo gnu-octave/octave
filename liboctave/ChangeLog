@@ -1,3 +1,10 @@
+2000-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.h, oct-time.cc (octave_strptime): New class.
+
+	* strptime.c: New file, from glibc 2.1.2.
+	* Makefile.in (SOURCES): Add strptime.c to the list.
+
 2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* MArray.h (MArray <const Array<T>&)): New constructor.

@@ -736,10 +736,6 @@ Miscellaneous:
       a(:,50:250)=zeros(100,200), and then store it back into the
       memory of my c code.
 
-  * Add a function like strptime() which is the opposite of
-    strftime().  A C version is apparently in recent releases of the
-    Linux C library.
-
   * Add a definition to lgrind so that it supports Octave.
     (See http://www.tex.ac.uk/tex-archive/support/lgrind/ for more
     information about lgrind.)

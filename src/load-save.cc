@@ -2646,7 +2646,7 @@ the file @file{data} in Octave's binary format.\n\
 	{
 	  append = true;
 	}
-      if (argv[i] == "-ascii" || argv[i] == "-a")
+      else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  format = LS_ASCII;
 	}

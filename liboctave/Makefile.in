@@ -82,7 +82,7 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
 	lo-sysdep.cc lo-utils.cc mach-info.cc mkdir.c oct-alloc.cc \
 	oct-env.cc oct-group.cc oct-passwd.cc oct-shlib.cc oct-syscalls.cc \
 	oct-time.cc pathsearch.cc prog-args.cc rename.c rmdir.c \
-	strftime.c str-vec.cc tempname.c tempnam.c \
+	strftime.c strptime.c str-vec.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \

@@ -225,8 +225,8 @@ tree_plot_command::eval (void)
       }
       break;
     default:
-      panic_impossible ();
-      break;
+      gripe_2_or_3_dim_plot ();
+      return;
     }
 
   if (range)
@@ -245,7 +245,7 @@ tree_plot_command::eval (void)
     {
       int status = plot_list->print (ndim, plot_buf);
 
-      if (status < 0)
+      if (error_state || status < 0)
 	return;
     }
 
@@ -289,7 +289,7 @@ tree_plot_command::print_code (ostream& os)
       os << "gsplot";
       break;
     default:
-      panic_impossible ();
+      os << "<unkown plot command>";
       break;
     }
 
@@ -691,7 +691,7 @@ subplot::print (int ndim, ostrstream& plot_buf)
 	      file = save_in_tmp_file (data, ndim, parametric_plot);
 	      break;
 	    default:
-	      panic_impossible ();
+	      gripe_2_or_3_dim_plot ();
 	      break;
 	    }
 
@@ -821,7 +821,7 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 	      save_three_d (file, t, parametric);
 	      break;
 	    default:
-	      panic_impossible ();
+	      gripe_2_or_3_dim_plot ();
 	      break;
 	    }
 	}

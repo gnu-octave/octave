@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.405 $)
+AC_REVISION($Revision: 1.406 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -267,15 +267,27 @@ case "$canonical_host_type" in
       AC_MSG_RESULT([adding -mieee-fp to XTRA_CXXFLAGS])])
   ;;
   alpha*-*-*)
-    OCTAVE_CC_FLAG(-mieee-with-inexact, [
-      ieee_fp_flag=-mieee-with-inexact
-      XTRA_CFLAGS="$XTRA_CFLAGS -mieee-with-inexact"
-      AC_MSG_RESULT([adding -mieee-with-inexact to XTRA_CFLAGS])])
+    if test "$GCC" = yes; then
+      OCTAVE_CC_FLAG(-mieee-with-inexact, [
+	ieee_fp_flag=-mieee-with-inexact
+	XTRA_CFLAGS="$XTRA_CFLAGS -mieee-with-inexact"
+	AC_MSG_RESULT([adding -mieee-with-inexact to XTRA_CFLAGS])])
 
-    OCTAVE_CXX_FLAG(-mieee-with-inexact, [
-      ieee_fp_flag=-mieee-with-inexact
-      XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-with-inexact"
-      AC_MSG_RESULT([adding -mieee-with-inexact to XTRA_CXXFLAGS])])
+      OCTAVE_CXX_FLAG(-mieee-with-inexact, [
+	ieee_fp_flag=-mieee-with-inexact
+	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-with-inexact"
+	AC_MSG_RESULT([adding -mieee-with-inexact to XTRA_CXXFLAGS])])
+    else
+      OCTAVE_CC_FLAG(-ieee, [
+	ieee_fp_flag=-ieee
+	XTRA_CFLAGS="$XTRA_CFLAGS -ieee"
+	AC_MSG_RESULT([adding -ieee to XTRA_CFLAGS])])
+
+      OCTAVE_CXX_FLAG(-ieee, [
+	ieee_fp_flag=-ieee
+	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -ieee"
+	AC_MSG_RESULT([adding -ieee to XTRA_CXXFLAGS])])
+    fi
   ;;
   *ibm-aix4*)
     OCTAVE_CC_FLAG(-mminimal-toc, [
@@ -334,6 +346,16 @@ else
   BUILD_CFLAGS="-O2 -g"
   BUILD_CXX="$CXX"
   BUILD_CXXFLAGS="-O2 -g"
+  case "$canonical_host_type" in
+    sparc-sun-solaris2*)
+      if test "$GCC" != yes; then
+	BUILD_CC="$CC" -O1
+	BUILD_CFLAGS="-g"
+	BUILD_CXX="$CXX" -O1
+	BUILD_CXXFLAGS="-g"
+      fi
+    ;;
+  esac
   BUILD_EXEEXT="$EXEEXT"
 fi
 

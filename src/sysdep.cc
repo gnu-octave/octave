@@ -124,6 +124,18 @@ CYGWIN_init (void)
 }
 #endif
 
+#if defined (__DECCXX)
+
+// These don't seem to be instantiated automatically...
+
+template std::istream&
+std::operator >> (std::istream&, std::complex<double>&);
+
+template std::string&
+std::string::append (const std::string&, size_t, size_t);
+
+#endif
+
 #if defined (NeXT)
 extern "C"
 {

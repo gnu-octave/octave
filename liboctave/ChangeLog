@@ -1,3 +1,29 @@
+Thu Feb 13 14:35:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>::index (idx_vector&, idx_vector&)):
+	Fix typo in last change. 
+
+	* CColVector.cc (ComplexColumnVector::map (d_c_mapper)):
+	Convert from friend (moved from dColVector.cc).
+	* CMatrix.cc (ComplexMatrix::map (d_c_mapper)):
+	Likewise (moved	from dMatrix.cc).
+	* CRowVector.cc (ComplexRowVector::map (d_c_mapper)):
+	Likewise (moved	from dRowVector.cc).
+
+	* dColVector.cc (ColumnVector::map (d_d_mapper)): Convert from friend.
+	* dMatrix.cc (Matrix::map (d_d_mapper)): Likewise.
+	* dRowVector.cc (RowVector::map (d_d_mapper)): Likewise.
+	* CColVector.cc (ComplexColumnVector::map (c_c_mapper)): Likewise.
+	* CMatrix.cc (ComplexMatrix::map (c_c_mapper)): Likewise.
+	* CRowVector.cc (ComplexRowVector::map (c_c_mapper)): Likewise.
+
+	* dColVector.cc (ColumnVector::apply): Rename from map, return *this.
+	* dMatrix.cc (Matrix::apply): Likewise.
+	* dRowVector.cc (RowVector::apply): Likewise.
+	* CColVector.cc (ComplexColumnVector::apply): Likewise.
+	* CMatrix.cc (ComplexMatrix::apply): Likewise.
+	* CRowVector.cc (ComplexRowVector::apply): Likewise.
+
 Tue Feb 11 19:44:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-ieee.cc: Declare quiet_nan() and infinity().

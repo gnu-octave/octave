@@ -169,7 +169,7 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 	}
       else if (n == 0)
 	{
-	  if (m = 0)
+	  if (m == 0)
 	    retval.resize (0, 0);
 	  else if (idx_j.is_colon_equiv (nc, 1))
 	    retval.resize (0, nc);

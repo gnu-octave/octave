@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.256 $)
+AC_REVISION($Revision: 1.257 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -418,6 +418,7 @@ changequote([,])dnl
       FPICFLAG=+Z
     fi
     SHLEXT=sl
+    SH_LDFLAGS="-shared -fPIC"
     RLD_FLAG='-Xlinker +b -Xlinker $(libdir)'
   ;;
   *-sgi-*)

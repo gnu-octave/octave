@@ -47,6 +47,7 @@ case "$canonical_host_type" in
   ;;
   hppa*-hp-hpux*)
     SHLEXT=sl
+    SH_LDFLAGS="-shared -fPIC"
   ;;
 esac
 AC_MSG_RESULT([defining CPICFLAG to be $CPICFLAG])

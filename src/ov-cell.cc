@@ -287,15 +287,30 @@ octave_cell::print_raw (std::ostream& os, bool) const
       newline (os);
     }
   else
-    os << "{}";
+    {
+      os << "{}";
+      if (nr > 0 || nc > 0)
+	os << "(" << nr << "x" << nc << ")";
+      os << "\n";
+    }
 }
 
 bool
 octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
-  os << name << " =";
-  newline (os);
+
+  int nr = rows ();
+  int nc = columns ();
+
+  if (nr > 0 && nc > 0)
+    {
+      os << name << " =";
+      newline (os);
+    }
+  else
+    os << name << " = ";
+
   return false;
 }
 

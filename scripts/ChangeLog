@@ -1,3 +1,11 @@
+2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/popen2.m: Use F_SETFL and O_NONBLOCK, not
+	__F_SETFL__ and __O_NONBLOCK__.
+
+	* image/saveimage.m: Use OCTAVE_VERSION, not __OCTAVE_VERSION__.
+	* miscellaneous/bug_report.m: Likewise.
+
 2002-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/mod.m: Use isreal (x), not any (any (imag (x))).

@@ -1,3 +1,15 @@
+2002-08-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (octave_cell::print_raw): Print empty dimensions too.
+	(octave_cell::print_name_tag): Don't print new line if cell is empty.
+
+	* octave.cc (intern_argv): Don't install __argv__.
+
+	* defun-int.h (UNDERSCORIFY): Delete.
+	(DEFCONST_INTERNAL): Don't install double underscore versions of
+	constants since they aren't really needed.
+	(DEFCONSTX_INTERNAL): Likewise.
+
 2002-07-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* symtab.cc (symbol_table::clear (void)): Clear all records.

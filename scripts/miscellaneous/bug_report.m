@@ -50,7 +50,7 @@ function bug_report ()
       endif
     endif
 
-    cmd = strcat ("octave-bug-", __OCTAVE_VERSION__);
+    cmd = strcat ("octave-bug-", OCTAVE_VERSION);
 
     if (length (subject) > 0)
       cmd = sprintf ("%s -s \"%s\"", cmd, subject);

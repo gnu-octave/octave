@@ -175,7 +175,6 @@ intern_argv (int argc, char **argv)
     }
 
   bind_builtin_constant ("argv", octave_argv, true, true);
-  bind_builtin_constant ("__argv__", octave_argv, true, true);
 }
 
 static void

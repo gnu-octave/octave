@@ -50,7 +50,7 @@ default_numeric_conversion_function (const octave_value& a)
   return new octave_matrix (v.matrix_value ());
 }
 
-octave_value::numeric_conv_fcn
+octave_value::type_conv_fcn
 octave_char_matrix_str::numeric_conversion_function (void) const
 {
   return default_numeric_conversion_function;

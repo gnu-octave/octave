@@ -48,8 +48,8 @@ template class Array3<octave_value::binary_op_fcn>;
 template class Array<octave_value::assign_op_fcn>;
 template class Array2<octave_value::assign_op_fcn>;
 
-template class Array<octave_value::widening_op_fcn>;
-template class Array2<octave_value::widening_op_fcn>;
+template class Array<octave_value::type_conv_fcn>;
+template class Array2<octave_value::type_conv_fcn>;
 
 int
 octave_value_typeinfo::register_type (const string& name)
@@ -93,7 +93,7 @@ octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
 
 bool
 octave_value_typeinfo::register_widening_op (int t, int t_result,
-					     octave_value::widening_op_fcn f)
+					     octave_value::type_conv_fcn f)
 {
   if (! instance)
     instance = new octave_value_typeinfo ();
@@ -125,7 +125,7 @@ octave_value_typeinfo::do_register_type (const string& name)
 
       pref_assign_conv.resize (len, len, -1);
 
-      widening_ops.resize (len, len, (octave_value::widening_op_fcn) 0);
+      widening_ops.resize (len, len, (octave_value::type_conv_fcn) 0);
     }
 
   types (i) = name;
@@ -165,7 +165,7 @@ octave_value_typeinfo::do_register_pref_assign_conv (int t_lhs, int t_rhs,
 
 bool
 octave_value_typeinfo::do_register_widening_op
-  (int t, int t_result, octave_value::widening_op_fcn f)
+  (int t, int t_result, octave_value::type_conv_fcn f)
 {
   widening_ops.checkelem (t, t_result) = f;
 
@@ -193,7 +193,7 @@ octave_value_typeinfo::do_lookup_pref_assign_conv (int t_lhs, int t_rhs)
   return pref_assign_conv.checkelem (t_lhs, t_rhs);
 }
 
-octave_value::widening_op_fcn
+octave_value::type_conv_fcn
 octave_value_typeinfo::do_lookup_widening_op (int t, int t_result)
 {
   return widening_ops.checkelem (t, t_result);

@@ -51,7 +51,7 @@ public:
 
   static bool register_pref_assign_conv (int, int, int);
 
-  static bool register_widening_op (int, int, octave_value::widening_op_fcn);
+  static bool register_widening_op (int, int, octave_value::type_conv_fcn);
 
   static octave_value::binary_op_fcn
   lookup_binary_op (octave_value::binary_op op, int t1, int t2)
@@ -71,7 +71,7 @@ public:
     return instance->do_lookup_pref_assign_conv (t_lhs, t_rhs);
   }
 
-  static octave_value::widening_op_fcn
+  static octave_value::type_conv_fcn
   lookup_widening_op (int t, int t_result)
   {
     return instance->do_lookup_widening_op (t, t_result);
@@ -90,7 +90,7 @@ protected:
 		  (octave_value::binary_op_fcn) 0),
       assign_ops (32, 32, (octave_value::assign_op_fcn) 0),
       pref_assign_conv (32, 32, -1),
-      widening_ops (32, 32, (octave_value::widening_op_fcn) 0)  { }
+      widening_ops (32, 32, (octave_value::type_conv_fcn) 0)  { }
 
 private:
 
@@ -106,7 +106,7 @@ private:
 
   Array2<int> pref_assign_conv;
 
-  Array2<octave_value::widening_op_fcn> widening_ops;
+  Array2<octave_value::type_conv_fcn> widening_ops;
 
   int do_register_type (const string&);
 
@@ -117,7 +117,7 @@ private:
 
   bool do_register_pref_assign_conv (int, int, int);
 
-  bool do_register_widening_op (int, int, octave_value::widening_op_fcn);
+  bool do_register_widening_op (int, int, octave_value::type_conv_fcn);
 
   octave_value::binary_op_fcn
   do_lookup_binary_op (octave_value::binary_op, int, int);
@@ -126,7 +126,7 @@ private:
 
   int do_lookup_pref_assign_conv (int, int);
 
-  octave_value::widening_op_fcn do_lookup_widening_op (int, int);
+  octave_value::type_conv_fcn do_lookup_widening_op (int, int);
 
   string_vector do_installed_type_names (void);
 

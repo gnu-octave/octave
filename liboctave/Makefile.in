@@ -21,7 +21,8 @@ INSTALL_DATA = @INSTALL_DATA@
 ifeq ($(INCLUDE_LINK_DEPS), true)
   LINK_DEPS = \
     -L../libcruft -L../kpathsea -L../glob -L. $(RLD_FLAG) \
-    $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) -lglob $(LIBS)
+    $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) \
+    -lglob $(LIBS) $(LIBKPATHSEA)
 endif
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h Array-flags.h \
@@ -220,7 +221,7 @@ liboctave.$(SHLEXT_VER): liboctave.$(SHLEXT)
 
 liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS) $(LIBKPATHSEA)
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 

@@ -1,3 +1,11 @@
+2002-10-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-mapper.cc (octave_mapper::apply): Don't try real_type case if
+	arg is a string and we have a ch_map_fcn.
+
+	* Makefile.in: Add $(LIBKPATHSEA) to $(OCTAVE_LIBS) if
+	$(INCLUDE_LINK_DEPS) is false, not if $(SHARED_LIBS) is false.
+
 2002-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/daspk.cc (daspk): Use set_options, not copy. 

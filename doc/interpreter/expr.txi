@@ -191,7 +191,7 @@ matrix @code{a},
 [nr, nc] = size (a);
 x = zeros (nr, n * nc);
 for i = 1:n
-  x(:,(i-1)*n+1:i*n) = a;
+  x(:,(i-1)*nc+1:i*nc) = a;
 endfor
 @end group
 @end example

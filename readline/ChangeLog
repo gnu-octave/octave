@@ -1,3 +1,8 @@
+2000-02-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* support/config.guess: Update to latest from subversions.gnu.org.
+	* support/config.sub: Likewise.  Recognize sv1-cray as a basic_machine.
+
 2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* acconfig.h: Use #undef GWINSZ_IN_SYS_IOCTL, not

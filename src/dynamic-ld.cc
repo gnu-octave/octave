@@ -40,7 +40,10 @@ extern "C"
 void
 octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1)
 {
-  char *mangled_fcn_name = strconcat (name, "__FP13tree_constanti");
+// XXX FIXME XXX -- need to determine the name mangling scheme
+// automatically, in case it changes, or is different on different
+// systems, even if they have g++.
+  char *mangled_fcn_name = strconcat (name, "__FRC13Octave_objecti");
   int status = dld_unlink_by_symbol (mangled_fcn_name, hard);
   if (status != 0)
     dld_perror ("octave_dld_tc2_unlink_by_symbol");
@@ -63,7 +66,7 @@ octave_dld_init (void)
   if (! initialized)
     {
       char *full_path = dld_find_executable (raw_prog_name);
-      if (full_path != (char *) NULL)
+      if (full_path)
 	{
 	  int status = dld_init (full_path);
 	  if (status != 0)
@@ -88,7 +91,7 @@ octave_dld_init (void)
 static int
 octave_dld_link (const char *object)
 {
-  char *file = file_in_path (object, (char *) NULL);
+  char *file = file_in_path (object, 0);
   int status = dld_link (file);
   if (status != 0)
     dld_perror ("octave_dld_link");
@@ -103,21 +106,30 @@ octave_dld_tc2_link (const char *object)
   int status = octave_dld_link (object);
   if (status == 0)
     {
-      status = octave_dld_link ("liboctave.a");
+// XXX FIXME XXX -- this obviously won't work everywhere...
+      char *octave_lib = "/home/jwe/src/octave/sun4-dld/liboctave.a";
+      status = octave_dld_link (octave_lib);
       if (status == 0)
-	octave_dld_link ("libcruft.a");
+	{
+// XXX FIXME XXX -- this obviously won't work everywhere...
+	  char *cruft_library = "/home/jwe/src/octave/sun4-dld/libcruft.a";
+	  octave_dld_link (cruft_library);
+	}
     }
   return status;
 }
 
 builtin_fcn_ptr
-octave_dld_tc2 (const char *name, const char *fcn, const char *object)
+octave_dld_tc2 (const char *name, const char *fcn)
 {
-  builtin_fcn_ptr retval = (builtin_fcn_ptr) NULL;
+  builtin_fcn_ptr retval = 0;
 
   octave_dld_init ();
 
-  char *mangled_fcn_name = strconcat (fcn, "__FP13tree_constanti");
+// XXX FIXME XXX -- need to determine the name mangling scheme
+// automatically, in case it changes, or is different on different
+// systems, even if they have g++.
+  char *mangled_fcn_name = strconcat (fcn, "__FRC13Octave_objecti");
 
 // See if the function has already been loaded.  If not, mark it as
 // undefined.
@@ -125,7 +137,9 @@ octave_dld_tc2 (const char *name, const char *fcn, const char *object)
   if (dld_get_func (mangled_fcn_name) == 0)
     dld_create_reference (mangled_fcn_name);
 
-  int status = octave_dld_link (object);
+// XXX FIXME XXX -- this obviously won't work everywhere...
+  char *octave_dld_library = "/home/jwe/src/octave/sun4-dld/liboctdld.a";
+  int status = octave_dld_tc2_link (octave_dld_library);
   if (status == 0)
     {
 // Return a pointer to the function we just loaded.  If we can\'t find
@@ -142,13 +156,13 @@ octave_dld_tc2 (const char *name, const char *fcn, const char *object)
 
 Octave_object
 octave_dld_tc2_and_go (const Octave_object& args, int nargout,
-		       const char *name, const char *fcn, const char *object)
+		       const char *name, const char *fcn)
 {
   Octave_object retval;
 
-  builtin_fcn_ptr fcn_to_call = octave_dld_tc2 (name, fcn, object);
+  builtin_fcn_ptr fcn_to_call = octave_dld_tc2 (name, fcn);
 
-  if (fcn_to_call != (builtin_fcn_ptr) NULL)
+  if (fcn_to_call)
     retval = (*fcn_to_call) (args, nargout);
   else
     error ("octave_dld_tc2_and_go: failed to load `%s'", name);

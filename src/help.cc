@@ -706,9 +706,9 @@ display_help_text (ostream& os, const string& msg)
 
       ostrstream buf;
       buf << "sed 's/^[#%]+ *//' | makeinfo"
-	  << " -D VERSION \"" << OCTAVE_VERSION << "\""
-	  << " -D OCTAVE_HOME \"" << OCTAVE_PREFIX << "\""
-	  << " -D TARGETHOSTTYPE \"" << CANONICAL_HOST_TYPE << "\""
+	  << " -D VERSION=\"" << OCTAVE_VERSION << "\""
+	  << " -D OCTAVE_HOME=\"" << OCTAVE_PREFIX << "\""
+	  << " -D TARGETHOSTTYPE=\"" << CANONICAL_HOST_TYPE << "\""
 	  << " --fill-column " << cols
 	  << " --no-warn"
 	  << " --no-validate"

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
+## @deftypefn {Function File} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
 ## Start a subprocess with two-way communication.  The name of the process
 ## is given by @var{command}, and @var{args} is an array of strings
 ## containing options for the command.  The file identifiers for the input

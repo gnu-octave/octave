@@ -71,6 +71,8 @@ public:
 
   ArrayN (const ArrayN<T>& a) : Array<T> (a, a.dims ()) { }
 
+  ArrayN (const Array<T>& a) : Array<T> (a) { }
+
   ArrayN (const Array<T>& a, const dim_vector& dims) : Array<T> (a, dims) { }
 
   ~ArrayN (void) { }
@@ -88,6 +90,8 @@ public:
 
   void resize (const dim_vector& dims, const T& val)
     { Array<T>::resize (dims, val); }
+
+  ArrayN<T> squeeze (void) const { return Array<T>::squeeze (); }
 
   ArrayN<T>& insert (const ArrayN<T>& a, const dim_vector& dims)
     {

@@ -52,6 +52,43 @@ Array<T>::~Array (void)
   delete [] idx;
 }
 
+template <class T>
+Array<T>
+Array<T>::squeeze (void) const
+{
+  Array<T> retval = *this;
+
+  bool dims_changed = false;
+
+  dim_vector new_dimensions = dimensions;
+
+  int k = 0;
+
+  for (int i = 0; i < ndims (); i++)
+    {
+      if (dimensions(i) == 1)
+	dims_changed = true;
+      else
+	new_dimensions(k++) = dimensions(i);
+    }
+
+  if (dims_changed)
+    {
+      if (k == 0)
+	new_dimensions = dim_vector (1);
+      else
+	new_dimensions.resize (k);
+
+      Array<T> retval = *this;
+
+      retval.make_unique ();
+
+      retval.dimensions = new_dimensions;
+    }
+
+  return retval;
+}
+
 // A guess (should be quite conservative).
 #define MALLOC_OVERHEAD 1024
 
@@ -85,13 +122,10 @@ Array<T>::get_size (int r, int c)
   int nt = nr + nc;
   double dt = dr * dc;
 
-  if (dt <= 0.5)
+  if (dt < 0.5)
     {
       nt--;
       dt *= 2;
-
-      if (dt <= 0.5)
-	nt--;
     }
 
   return (nt < nl || (nt == nl && dt < dl)) ? r * c : max_items;
@@ -128,13 +162,16 @@ Array<T>::get_size (int r, int c, int p)
   int nt = nr + nc + np;
   double dt = dr * dc * dp;
 
-  if (dt <= 0.5)
+  if (dt < 0.5)
     {
       nt--;
       dt *= 2;
 
-      if (dt <= 0.5)
-	nt--;
+      if (dt < 0.5)
+	{
+	  nt--;
+	  dt *= 2;
+	}
     }
 
   return (nt < nl || (nt == nl && dt < dl)) ? r * c * p : max_items;
@@ -178,15 +215,12 @@ Array<T>::get_size (const dim_vector& ra_idx)
 
       nt += nra_idx;
       dt *= dra_idx;
-    }
 
-  if (dt <= 0.5)
-    {
-      nt--;
-      dt *= 2;
-
-      if (dt <= 0.5)
-	nt--;
+      if (dt < 0.5)
+	{
+	  nt--;
+	  dt *= 2;
+	}
     }
 
   if (nt < nl || (nt == nl && dt < dl))

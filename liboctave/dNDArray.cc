@@ -34,6 +34,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 #include "lo-ieee.h"
 
+#include "ArrayN-inline.h"
+
 // XXX FIXME XXX -- this is not quite the right thing.
 
 boolMatrix
@@ -68,6 +70,40 @@ NDArray::any (int dim) const
       ("any is not yet implemented for N-d Arrays");
 
   return retval;
+}
+
+Matrix
+NDArray::matrix_value (void) const
+{
+  Matrix retval;
+
+  int nd = ndims ();
+
+  switch (nd)
+    {
+    case 1:
+      retval = Matrix (Array2<double> (*this, dimensions(0), 1));
+      break;
+
+    case 2:
+      retval = Matrix (Array2<double> (*this, dimensions(0), dimensions(1)));
+      break;
+
+    default:
+      (*current_liboctave_error_handler)
+	("invalid converstion of NDArray to Matrix");
+      break;
+    }
+
+  return retval;
+}
+
+void
+NDArray::increment_index (Array<int>& ra_idx,
+			  const dim_vector& dimensions,
+			  int start_dimension)
+{
+  ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
 bool
@@ -118,32 +154,6 @@ NDArray::all_integers (double& max_val, double& min_val) const
     }
 
   return true;
-}
-
-Matrix
-NDArray::matrix_value (void) const
-{
-  Matrix retval;
-
-  int nd = ndims ();
-
-  switch (nd)
-    {
-    case 1:
-      retval = Matrix (Array2<double> (*this, dimensions(0), 1));
-      break;
-
-    case 2:
-      retval = Matrix (Array2<double> (*this, dimensions(0), dimensions(1)));
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-	("invalid converstion of NDArray to Matrix");
-      break;
-    }
-
-  return retval;
 }
 
 /*

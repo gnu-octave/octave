@@ -1,3 +1,7 @@
+2003-10-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_PREREQ): Require 2.57.
+
 2003-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AH_BOTTOM): Don't define HEAVYWEIGHT_INDEXING here.

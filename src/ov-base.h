@@ -68,6 +68,8 @@ public:
   type_conv_fcn numeric_conversion_function (void) const
     { return static_cast<type_conv_fcn> (0); }
 
+  octave_value squeeze (void) const;
+
   octave_value *try_narrowing_conversion (void)
     { return static_cast<octave_value *> (0); }
 

@@ -66,6 +66,8 @@ public:
   octave_value *clone (void) const { return new octave_base_matrix (*this); }
   octave_value *empty_clone (void) const { return new octave_base_matrix (); }
 
+  octave_value squeeze (void) const { return matrix.squeeze (); }
+
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 

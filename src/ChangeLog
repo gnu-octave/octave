@@ -1,3 +1,19 @@
+2003-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (PRINT_ND_ARRAY): New macro.
+	(octave_print_internal): Use it.
+
+2003-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.cc	(octave_value::octave_value (const ArrayN<octave_value>&,
+	bool)):	New constructor.
+	* ov.h: Provide decl.
+
+	* ov.h (octave_value::squeeze): New virtual function.
+	* ov-base.cc (squeeze): Provide default implementation.
+	* ov-base-mat.h (octave_base_matrix::squeeze): New function.
+	* data.cc (Fsqueeze): New function.
+
 2003-10-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (make_valid_identifier): Return new string.

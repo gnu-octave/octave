@@ -56,6 +56,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
 
 octave_value
+octave_base_value::squeeze (void) const
+{
+  std::string nm = type_name ();
+  error ("squeeze: invalid operation for %s type", nm.c_str ());
+  return octave_value ();
+}
+
+octave_value
 octave_base_value::subsref (const std::string&,
 			    const std::list<octave_value_list>&)
 {

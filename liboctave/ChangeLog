@@ -1,3 +1,22 @@
+2003-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CNDArray.cc (ComplexNDArray::increment_index): New function.
+	* dNDArray.cc (NDArray::increment_index): Likewise.
+	* boolNDArray.cc (boolNDArray::increment_index): Likewise.
+	* chNDArray.cc (charNDArray::increment_index): Likewise.
+
+	* dim-vector.h (rows, cols): Delete unused data members.
+
+	* Array.cc (Array<T>::get_size): Fix thinko.
+
+2003-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::squeeze): New function.
+	* CNDArray.h (ComplexNDArray::squeeze): Likewise.
+	* dNDArray.h (NDArray::squeeze): Likewise.
+	* boolNDArray.h (boolNDArray::squeeze): Likewise.
+	* chNDArray.h (charNDArray::squeeze): Likewise.
+
 2003-10-06  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (ArrayN<T>::indexN): New definition.

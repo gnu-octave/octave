@@ -69,6 +69,12 @@ public:
 
   boolMatrix matrix_value (void) const;
 
+  boolNDArray squeeze (void) const { return ArrayN<bool>::squeeze (); }
+
+  static void increment_index (Array<int>& ra_idx,
+			       const dim_vector& dimensions,
+			       int start_dimension = 0);
+
   // i/o
 
   // friend std::ostream& operator << (std::ostream& os, const NDArray& a);

@@ -33,6 +33,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-base.h"
 #include "lo-ieee.h"
 
+#include "ArrayN-inline.h"
+
 // XXX FIXME XXX -- this is not quite the right thing.
 
 boolMatrix
@@ -94,6 +96,14 @@ boolNDArray::matrix_value (void) const
     }
 
   return retval;
+}
+
+void
+boolNDArray::increment_index (Array<int>& ra_idx,
+			      const dim_vector& dimensions,
+			      int start_dimension)
+{
+  ::increment_index (ra_idx, dimensions, start_dimension);
 }
 
 /*

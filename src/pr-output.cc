@@ -1485,6 +1485,69 @@ octave_print_internal (std::ostream& os, const Matrix& m,
     }
 }
 
+#define PRINT_ND_ARRAY(os, nda, NDA_T, ELT_T, MAT_T) \
+  do \
+    { \
+      int ndims = nda.ndims (); \
+ \
+      dim_vector dims = nda.dims (); \
+ \
+      Array<int> ra_idx (ndims, 0); \
+ \
+      int m = 1; \
+ \
+      for (int i = 2; i < ndims; i++) \
+	m *= dims(i); \
+ \
+      int nr = dims(0); \
+      int nc = dims(1); \
+ \
+      for (int i = 0; i < m; i++) \
+	{ \
+	  std::string nm = "ans"; \
+ \
+	  if (m > 1) \
+	    { \
+	      nm += "(:,:,"; \
+ \
+	      OSSTREAM buf; \
+ \
+	      for (int k = 2; k < ndims; k++) \
+		{ \
+		  buf << ra_idx(k) + 1; \
+ \
+		  if (k < ndims - 1) \
+		    buf << ","; \
+		  else \
+		    buf << ")"; \
+		} \
+ \
+	      buf << OSSTREAM_ENDS; \
+ \
+	      nm += OSSTREAM_STR (buf); \
+ \
+	      OSSTREAM_FREEZE (buf); \
+	    } \
+ \
+	  Array<idx_vector> idx (ndims); \
+ \
+	  idx(0) = idx_vector (':'); \
+	  idx(1) = idx_vector (':'); \
+ \
+	  for (int k = 2; k < ndims; k++) \
+	    idx(k) = idx_vector (ra_idx(k) + 1); \
+ \
+          octave_value page \
+            = MAT_T (Array2<ELT_T> (nda.index (idx), nr, nc)); \
+ \
+	  page.print_with_name (os, nm); \
+ \
+	  if (i < m) \
+	    NDA_T::increment_index (ra_idx, dims, 2); \
+	} \
+    } \
+  while (0)
+
 void
 octave_print_internal (std::ostream& os, const NDArray& nda,
 		       bool pr_as_read_syntax, int extra_indent)
@@ -1498,7 +1561,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
       break;
 
     default:
-      os << nda;
+      PRINT_ND_ARRAY (os, nda, NDArray, double, Matrix);
       break;
     }
 }
@@ -1691,7 +1754,7 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
       break;
 
     default:
-      os << nda;
+      PRINT_ND_ARRAY (os, nda, ComplexNDArray, Complex, ComplexMatrix);
       break;
     }
 }
@@ -1826,7 +1889,7 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
       break;
 
     default:
-      os << nda;
+      PRINT_ND_ARRAY (os, nda, boolNDArray, bool, boolMatrix);
       break;
     }
 }
@@ -1892,7 +1955,7 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
       break;
 
     default:
-      os << nda;
+      PRINT_ND_ARRAY (os, nda, charNDArray, char, charMatrix);
       break;
     }
 }

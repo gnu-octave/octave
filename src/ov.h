@@ -182,7 +182,8 @@ public:
 
   octave_value (octave_time t);
   octave_value (double d);
-  octave_value (const Cell& m, bool is_cs_list = false);
+  octave_value (const ArrayN<octave_value>& a, bool is_cs_list = false);
+  octave_value (const Cell& c, bool is_cs_list = false);
   octave_value (const Matrix& m);
   octave_value (const NDArray& nda);
   octave_value (const DiagMatrix& d);
@@ -268,6 +269,9 @@ public:
     { return rep->numeric_conversion_function (); }
 
   void maybe_mutate (void);
+
+  virtual octave_value squeeze (void) const
+    { return rep->squeeze (); }
 
   virtual octave_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }

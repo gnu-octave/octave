@@ -88,6 +88,20 @@ DEFBINOP (el_ldiv, matrix, matrix)
 DEFBINOP_FN (el_and, matrix, matrix, mx_el_and)
 DEFBINOP_FN (el_or, matrix, matrix, mx_el_or)
 
+#if 0
+static octave_value
+oct_assignop_assign (octave_value& a1,
+		     const octave_value_list& idx,
+		     const octave_value& a2)
+{
+  CAST_BINOP_ARGS (octave_matrix&, const octave_matrix&);
+
+  v1.assign (idx, v2.double_nd_array_value ());
+
+  return octave_value ();
+}
+#endif
+
 DEFASSIGNOP_FN (assign, matrix, matrix, assign)
 
 void

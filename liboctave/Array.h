@@ -246,6 +246,8 @@ public:
 
   dim_vector dims (void) const { return dimensions; }
 
+  Array<T> squeeze (void) const;
+
   static int get_size (int r, int c);
   static int get_size (int r, int c, int p);
   static int get_size (const dim_vector& dims);

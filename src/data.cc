@@ -1184,6 +1184,22 @@ The @code{linspace} function always returns a row vector.\n\
   return retval;
 }
 
+DEFUN (squeeze, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} squeeze (@var{x})\n\
+Remove singleton dimensions from @var{x} and return the result.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    return args(0).squeeze ();
+  else
+    print_usage ("squeeze");    
+
+  return retval;
+}
+
 void
 symbols_of_data (void)
 {

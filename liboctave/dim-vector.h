@@ -118,8 +118,6 @@ public:
 
 private:
 
-  int rows;
-  int cols;
   int ndims;
   int *dims;
 };

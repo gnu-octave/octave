@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acot (@var{X})
-## acot (X): compute the inverse cotangent of X for each element of X
+## @deftypefn {Mapping Function} {} acot (@var{x})
+## Compute the inverse cotangent of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

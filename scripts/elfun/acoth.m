@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## acoth (z):  compute the inverse hyperbolic cotangent for each element of z.
+## -*- texinfo -*-
+## @deftypefn {Mapping Function} acoth (@var{x})
+## Compute the inverse hyperbolic cotangent of each element of @var{x}.
+## @end deftypefn
 
 ## Author: jwe
 

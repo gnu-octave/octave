@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} sech (@var{X})
-## sech (X): compute the hyperbolic secant of X for each element of X
+## @deftypefn {Mapping Function} {} sech (@var{x})
+## Compute the hyperbolic secant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

@@ -18,6 +18,8 @@ Functions}, for more information about Octave's dynamic linking
 capabilities.  @ref{User-defined Data Types} describes what you must do
 to define a new data type for Octave.
 
+@DOCSTRING(typeinfo)
+
 @menu
 * Built-in Data Types::         
 * User-defined Data Types::     

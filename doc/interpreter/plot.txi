@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Plotting, Matrix Manipulation, Input and Output, Top
+@node Plotting
 @chapter Plotting
 
 All of Octave's plotting functions use @code{gnuplot} to handle the
@@ -20,6 +20,8 @@ low-level plotting functions.
 * Three-Dimensional Plotting::  
 * Plot Annotations::            
 * Multiple Plots on One Page::  
+* Multiple Plot Windows::       
+* Interaction with @code{gnuplot}::  
 @end menu
 
 @node Two-Dimensional Plotting, Specialized Two-Dimensional Plots, Plotting, Plotting
@@ -186,6 +188,8 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 
 @DOCSTRING(clearplot)
 
+@DOCSTRING(shg)
+
 @DOCSTRING(closeplot)
 
 @DOCSTRING(purge_tmp_files)
@@ -290,15 +294,9 @@ The @sc{Matlab}-style three-dimensional plotting commands are:
 
 @DOCSTRING(mesh)
 
+@DOCSTRING(meshgrid)
+
 @DOCSTRING(meshdom)
-
-@DOCSTRING(gnuplot_binary)
-
-@DOCSTRING(gnuplot_has_frames)
-
-@DOCSTRING(figure)
-
-@DOCSTRING(gnuplot_has_multiplot)
 
 @node Plot Annotations, Multiple Plots on One Page, Three-Dimensional Plotting, Plotting
 @section Plot Annotations
@@ -307,9 +305,11 @@ The @sc{Matlab}-style three-dimensional plotting commands are:
 
 @DOCSTRING(title)
 
+@DOCSTRING(bottom_title)
+
 @DOCSTRING(xlabel)
 
-@node Multiple Plots on One Page,  , Plot Annotations, Plotting
+@node Multiple Plots on One Page, Multiple Plot Windows, Plot Annotations, Plotting
 @section Multiple Plots on One Page
 
 The following functions all require a version of @code{gnuplot} that
@@ -328,3 +328,35 @@ supports the multiplot feature.
 @DOCSTRING(subwindow)
 
 @DOCSTRING(top_title)
+
+@node Multiple Plot Windows, Interaction with @code{gnuplot}, Multiple Plots on One Page, Plotting
+@section Multiple Plot Windows
+
+@DOCSTRING(figure)
+
+@node Interaction with @code{gnuplot},  , Multiple Plot Windows, Plotting
+@section Interaction with @code{gnuplot}
+
+@DOCSTRING(gnuplot_binary)
+
+@DOCSTRING(gnuplot_has_frames)
+
+@DOCSTRING(gnuplot_has_multiplot)
+
+@DOCSTRING(graw)
+
+@DOCSTRING(gnuplot_command_plot)
+
+@DOCSTRING(gnuplot_command_replot)
+
+@DOCSTRING(gnuplot_command_splot)
+
+@DOCSTRING(gnuplot_command_using)
+
+@DOCSTRING(gnuplot_command_with)
+
+@DOCSTRING(gnuplot_command_axes)
+
+@DOCSTRING(gnuplot_command_title)
+
+@DOCSTRING(gnuplot_command_end)

@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} asec (@var{X})
-## asec (X): compute the inverse secant of X for each element of X
+## @deftypefn {Mapping Function} {} asec (@var{x})
+## Compute the inverse secant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

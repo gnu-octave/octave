@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} coth (@var{X})
-## coth (X): compute the hyperbolic cotangent of X for each element of X
+## @deftypefn {Mapping Function} {} coth (@var{x})
+## Compute the hyperbolic cotangent of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

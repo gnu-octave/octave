@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} asech (@var{X})
-## asech (X): compute the inverse hyperbolic secant of X for each element of X
+## @deftypefn {Mapping Function} {} asech (@var{x})
+## Compute the inverse hyperbolic secant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

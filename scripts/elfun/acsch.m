@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acsch (@var{X})
-## acsch (X): compute the inverse hyperbolic for each element of X
+## @deftypefn {Mapping Function} {} acsch (@var{x})
+## Compute the inverse hyperbolic cosecant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

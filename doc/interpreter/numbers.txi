@@ -68,6 +68,7 @@ You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 @menu
 * Matrices::                    
 * Ranges::                      
+* Logical Values::              
 * Predicates for Numeric Objects::  
 @end menu
 
@@ -224,6 +225,8 @@ by setting the built-in variable @code{whitespace_in_literal_matrix} to
 
 @DOCSTRING(whitespace_in_literal_matrix)
 
+@DOCSTRING(warn_separator_insert)
+
 When you type a matrix or the name of a variable whose value is a
 matrix, Octave responds by printing the matrix in with neatly aligned
 rows and columns.  If the rows of the matrix are too large to fit on the
@@ -324,7 +327,7 @@ replaces the list with a single matrix constant.
 
 @DOCSTRING(propagate_empty_matrices)
 
-@node Ranges, Predicates for Numeric Objects, Matrices, Numeric Data Types
+@node Ranges, Logical Values, Matrices, Numeric Data Types
 @section Ranges
 @cindex range expressions
 @cindex expression, range
@@ -371,8 +374,21 @@ When Octave parses a range expression, it examines the elements of the
 expression to determine whether they are all constants.  If they are, it
 replaces the range expression with a single range constant.
 
-@node Predicates for Numeric Objects,  , Ranges, Numeric Data Types
+@node Logical Values, Predicates for Numeric Objects, Ranges, Numeric Data Types
+@section Logical Values
+
+@DOCSTRING(true)
+
+@DOCSTRING(false)
+
+@node Predicates for Numeric Objects,  , Logical Values, Numeric Data Types
 @section Predicates for Numeric Objects
+
+@DOCSTRING(isnumeric)
+
+@DOCSTRING(isreal)
+
+@DOCSTRING(is_complex)
 
 @DOCSTRING(is_matrix)
 
@@ -383,3 +399,5 @@ replaces the range expression with a single range constant.
 @DOCSTRING(is_square)
 
 @DOCSTRING(is_symmetric)
+
+@DOCSTRING(is_bool)

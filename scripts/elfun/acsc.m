@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} acsc (@var{X})
-## acsc (X): compute the inverse cosecant of X for each element of X
+## @deftypefn {Mapping Function} {} acsc (@var{x})
+## Compute the inverse cosecant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

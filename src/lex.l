@@ -2289,15 +2289,25 @@ void
 symbols_of_lex (void)
 {
   DEFVAR (warn_separator_insert, 0.0, warn_separator_insert,
-    "print warning if commas or semicolons that might be inserted\n\
-automatically in literal matrices");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_separator_insert\n\
+Print warning if commas or semicolons that might be inserted\n\
+automatically in literal matrices.\n\
+@end defvr");
 
   DEFVAR (warn_single_quote_string, 0.0, warn_single_quote_string,
-    "print warning if a signle quote character is used to introduce a\n\
- string constant");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_single_quote_string\n\
+Print warning if a signle quote character is used to introduce a\n\
+string constant.\n\
+@end defvr");
 
   DEFVAR (whitespace_in_literal_matrix, "", whitespace_in_literal_matrix,
-    "control auto-insertion of commas and semicolons in literal matrices");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} whitespace_in_literal_matrix\n\
+Control auto-insertion of commas and semicolons in literal matrices.\n\
+@end defvr");
+
 }
 
 /*

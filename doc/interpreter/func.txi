@@ -560,9 +560,15 @@ else, Octave will check the time stamps on all function files.
 
 @DOCSTRING(LOADPATH)
 
+@DOCSTRING(rehash)
+
+@DOCSTRING(file_in_loadpath)
+
 @DOCSTRING(ignore_function_time_stamp)
 
 @DOCSTRING(warn_function_name_clash)
+
+@DOCSTRING(warn_future_time_stamp)
 
 @node Script Files, Dynamically Linked Functions, Function Files, Functions and Scripts
 @section Script Files
@@ -836,21 +842,19 @@ M-file.  Similar decreases in execution time can be expected for other
 functions, particularly those that rely on functions like @code{lsode}
 that require user-supplied functions.
 
-Just as for M-files, Octave will automatically reload dynamically linked
-functions when the files that define them are more recent than the last
-time that the function was loaded.  Two variables are available to
-control how Octave behaves when dynamically linked functions are cleared
-or reloaded.
-
-@c XXX FIXME XXX -- this variable no longer exists!
-
-@defvr {Built-in Variable} auto_unload_dot_oct_files
-If the value of @code{auto_unload_dot_oct_files} is nonzero, Octave will
-automatically unload any @file{.oct} files when there are no longer any
-functions in the symbol table that reference them.
-@end defvr
+Just as for M-files, Octave will automatically reload a dynamically linked
+function when the file that defines it is more recent than the last
+time that the function was loaded.  If more than one function is defined
+in a single @file{.oct} file, reloading the file may force other
+functions to be cleared and reloaded.  If all the functions loaded from
+a given @file{.oct} file are cleared, Octave will automatically unload
+the @file{.oct} file.
 
 @DOCSTRING(warn_reload_forces_clear)
+
+@c XXX FIXME XXX -- is there a better place for this?
+
+@DOCSTRING(variables_can_hide_functions)
 
 Additional examples for writing dynamically linked functions are
 available in the files in the @file{src} directory of the Octave

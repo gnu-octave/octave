@@ -161,7 +161,11 @@ map_m_m (d_dd_fcn f, const Matrix& x, const Matrix& y)
 }
 
 DEFUN (atan2, args, ,
-  "atan2 (Y, X): atan (Y / X) in range -pi to pi")
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
+Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
+and @var{x}.  The result is in range -pi to pi.\n\
+@deftypefn")
 {
   octave_value_list retval;
 
@@ -247,7 +251,10 @@ DEFUN (atan2, args, ,
 }
 
 DEFUN (cumprod, args, ,
-  "cumprod (X): cumulative products")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cumprod (@var{x})\n\
+Cumulative products.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -284,7 +291,10 @@ DEFUN (cumprod, args, ,
 }
 
 DEFUN (cumsum, args, ,
-  "cumsum (X): cumulative sums")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cumsum (@var{x})\n\
+Cumulative sums.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -555,7 +565,10 @@ diag ([1, 2, 3], 1)\n\
 }
 
 DEFUN (prod, args, ,
-  "prod (X): products")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} prod (@var{x})\n\
+Products.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -692,7 +705,10 @@ returns the number of columns in the given matrix.\n\
 }
 
 DEFUN (sum, args, ,
-  "sum (X): sum of elements")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} sum (@var{x})\n\
+Sum of elements.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -729,13 +745,16 @@ DEFUN (sum, args, ,
 }
 
 DEFUN (sumsq, args, ,
-  "sumsq (X): sum of squares of elements.\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} sumsq (@var{x})\n\
+Sum of squares of elements.\n\
 \n\
 This function is equivalent to computing\n\
 \n\
   sum (X .* conj (X))\n\
 \n\
-but it uses less memory and avoids calling conj if X is real.")
+but it uses less memory and avoids calling conj if X is real.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -772,7 +791,10 @@ but it uses less memory and avoids calling conj if X is real.")
 }
 
 DEFUN (is_bool, args, ,
-  "is_bool (x): return nonzero if x is a boolean object")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Functio} {} is_bool (@var{x})\n\
+Return true if @var{x} is a boolean object.\n\
+@deftypefn")
 {
   octave_value retval;
 
@@ -787,7 +809,10 @@ DEFUN (is_bool, args, ,
 DEFALIAS (islogical, is_bool);
 
 DEFUN (is_complex, args, ,
-  "is_complex (x): return nonzero if x is a complex-valued numeric object")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_complex (@var{x})\n\
+Return true if @var{x} is a complex-valued numeric object.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -800,7 +825,10 @@ DEFUN (is_complex, args, ,
 }
 
 DEFUN (isreal, args, ,
-  "isreal (x): return nonzero if x is a real-valued numeric object")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isreal (@var{x})\n\
+Return true if @var{x} is a real-valued numeric object.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -837,7 +865,10 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
 }
 
 DEFUN (isnumeric, args, ,
-  "isnumeric (x): return nonzero if x is a numeric object")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isnumeric (@var{x})\n\
+Return nonzero if @var{x} is a numeric object.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -850,7 +881,10 @@ DEFUN (isnumeric, args, ,
 }
 
 DEFUN (is_list, args, ,
-  "is_list (x): return nonzero if x is a list")
+  "-*- texinfo -*-\n
+@deftypefn {Built-in Function} {} is_list (@var{x})\n\
+Return nonzero if @var{x} is a list.\n\
+@end deftypefn")
 {
   octave_value retval;
 

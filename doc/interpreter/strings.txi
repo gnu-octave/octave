@@ -126,6 +126,8 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(int2str)
 
+@DOCSTRING(com2str)
+
 @DOCSTRING(setstr)
 
 @DOCSTRING(strcat)
@@ -174,11 +176,15 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(toupper)
 
+@DOCSTRING(do_string_escapes)
+
 @DOCSTRING(undo_string_escapes)
 
 @DOCSTRING(implicit_num_to_str_ok)
 
 @DOCSTRING(implicit_str_to_num_ok)
+
+@DOCSTRING(warn_single_quote_string)
 
 @node Character Class Functions,  , String Conversions, Strings
 @section Character Class Functions

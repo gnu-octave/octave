@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} csc (@var{X})
-## csc (X): compute the cosecant of X for each element of X
+## @deftypefn {Mapping Function} {} csc (@var{x})
+## Compute the cosecant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

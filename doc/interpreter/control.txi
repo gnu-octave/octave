@@ -237,6 +237,10 @@ data structures are given in @ref{sysdisp}.
 
 @DOCSTRING(sysupdate)
 
+@DOCSTRING(minfo)
+
+@DOCSTRING(sysgettsam)
+
 @node structintern,  , structaccess, sysinterface
 @subsection Data structure internal functions
 
@@ -252,8 +256,6 @@ data structures are given in @ref{sysdisp}.
 @section System display functions
 
 @DOCSTRING(sysout)
-
-@DOCSTRING(polyout)
 
 @DOCSTRING(tfout)
 
@@ -309,12 +311,18 @@ system data structures.
 
 @DOCSTRING(wgt1o)
 
+@DOCSTRING(parallel)
+
+@DOCSTRING(sysmin)
+
 @node numerical, sysprop, blockdiag, Control Theory
 @section Numerical Functions
 
 @DOCSTRING(are)
 
 @DOCSTRING(dare)
+
+@DOCSTRING(dre)
 
 @DOCSTRING(dgram)
 
@@ -455,6 +463,8 @@ References:
 @DOCSTRING(hinfsyn)
 
 @DOCSTRING(hinfsyn_chk)
+
+@DOCSTRING(hinfsyn_ric)
 
 @DOCSTRING(lqe)
 

@@ -25,6 +25,10 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @DOCSTRING(det)
 
+@DOCSTRING(dmult)
+
+@DOCSTRING(dot)
+
 @DOCSTRING(eig)
 
 @DOCSTRING(givens)
@@ -61,6 +65,12 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 @DOCSTRING(schur)
 
 @DOCSTRING(svd)
+
+@c XXX FIXME XXX -- should there be a new section here?
+
+@DOCSTRING(housh)
+
+@DOCSTRING(krylov)
 
 @node Functions of a Matrix,  , Matrix Factorizations, Linear Algebra
 @section Functions of a Matrix

@@ -17,20 +17,22 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## prepad (x, l)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{x} =} prepad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {Function File} {@var{x} =} postpad (@var{x}, @var{l}, @var{c})
 ##
-## Prepends zeros to the vector x until it is of length l.
-## prepad(x,l,c) prepends the constant c instead of zero.
+## Prepends (appends) the scalar value @var{c} to the vector @var{x}
+## until it is of length @var{l}.  If the third argument is not
+## supplied, a value of 0 is used.
 ##
-## If length (x) > l, elements from the beginning of x are removed
-## until a vector of length l is obtained.
+## If @code{length (x) > l}, elements from the beginning (end) of
+## @var{x} are removed until a vector of length l is obtained.
+## @end deftypefn
+
+## Author: Tony Richardson <arichard@stark.cc.oh.us>
+## Created: June 1994
 
 function y = prepad (x, l, c)
-
-  ## Author:
-  ##  Tony Richardson
-  ##  arichard@stark.cc.oh.us
-  ##  June 1994
 
   if (nargin == 2)
     c = 0;

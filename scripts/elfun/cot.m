@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} cot (@var{X})
-## cot (X): compute the cotangent of X for each element of X
+## @deftypefn {Mapping Function} {} cot (@var{x})
+## Compute the cotangent of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

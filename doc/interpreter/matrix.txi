@@ -50,7 +50,9 @@ Note that in conditional contexts (like the test clause of @code{if} and
 @code{while} statements) Octave treats the test as if you had typed
 @code{all (all (condition))}.
 
-@DOCSTRING(common_size)
+@DOCSTRING(xor)
+
+@DOCSTRING(is_duplicate_entry)
 
 @DOCSTRING(diff)
 
@@ -62,6 +64,8 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(find)
         
+@DOCSTRING(common_size)
+
 @node Rearranging Matrices, Special Utility Matrices, Finding Elements and Checking Conditions, Matrix Manipulation
 @section Rearranging Matrices
 
@@ -103,6 +107,8 @@ a (i, :)
 @DOCSTRING(vec)
 
 @DOCSTRING(vech)
+
+@DOCSTRING(prepad)
 
 @node Special Utility Matrices, Famous Matrices, Rearranging Matrices, Matrix Manipulation
 @section Special Utility Matrices
@@ -163,6 +169,8 @@ compiled by Barry W. Brown and James Lovato of the Department of
 Biomathematics at The University of Texas, M.D. Anderson Cancer Center,
 Houston, TX 77030.
 
+@DOCSTRING(randperm)
+
 @DOCSTRING(diag)
 
 @c XXX FIXME XXX -- is this really worth documenting?
@@ -181,6 +189,8 @@ create vectors with evenly or logarithmically spaced elements.
 @DOCSTRING(logspace)
 
 @DOCSTRING(treat_neg_dim_as_zero)
+
+@DOCSTRING(ok_to_lose_imaginary_part)
 
 @node Famous Matrices,  , Special Utility Matrices, Matrix Manipulation
 @section Famous Matrices

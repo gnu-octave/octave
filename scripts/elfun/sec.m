@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} sec (@var{X})
-## sec (X): compute the secant of X for each element of X
+## @deftypefn {Mapping Function} {} sec (@var{x})
+## Compute the secant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

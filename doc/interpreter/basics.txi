@@ -106,6 +106,10 @@ Force interactive behavior.  This can be useful for running Octave via a
 remote shell command or inside an Emacs shell buffer.  For another way
 to run Octave within Emacs, see @ref{Emacs}.
 
+@item --no-history
+@itemx -H
+Disable command-line history.
+
 @item --no-init-file
 @cindex @code{--no-init-file}
 Don't read the @file{~/.octaverc} or @file{.octaverc} files.
@@ -324,12 +328,14 @@ with @kbd{ESC}.  Thus, to enter @kbd{M-u}, you could type
 terminals with real Meta keys.  In the following sections, Meta
 characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 
+
 @menu
 * Cursor Motion::               
 * Killing and Yanking::         
 * Commands For Text::           
 * Commands For Completion::     
 * Commands For History::        
+* Customizing @code{readline}::  
 * Customizing the Prompt::      
 * Diary and Echo Commands::     
 @end menu
@@ -499,7 +505,7 @@ List the possible completions of the text before the cursor.
 
 @DOCSTRING(completion_matches)
 
-@node Commands For History, Customizing the Prompt, Commands For Completion, Command Line Editing
+@node Commands For History, Customizing @code{readline}, Commands For Completion, Command Line Editing
 @subsection Commands For Manipulating The History
 @cindex command history
 @cindex input history
@@ -564,7 +570,14 @@ re-running chunks of commands from the history list.
 
 @DOCSTRING(saving_history)
 
-@node Customizing the Prompt, Diary and Echo Commands, Commands For History, Command Line Editing
+@node Customizing @code{readline}, Customizing the Prompt, Commands For History, Command Line Editing
+@subsection Customizing @code{readline}
+
+@c XXX FIXME XXX -- need a brief description of the ~/.inputrc file here.
+
+@DOCSTRING{read_readline_init_file}
+
+@node Customizing the Prompt, Diary and Echo Commands, Customizing @code{readline}, Command Line Editing
 @subsection Customizing the Prompt
 @cindex prompt customization
 @cindex customizing the prompt

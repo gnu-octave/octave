@@ -156,14 +156,14 @@ abs (3 + 4i)\n\
 
   DEFUN_MAPPER (acos, 0, 0, 0, acos, 0, acos, -1.0, 1.0, 1,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} acos (@var{X})\n\
-acos (X): compute the inverse cosine of X for each element of X\n\
+@deftypefn {Mapping Function} {} acos (@var{x})\n\
+Compute the inverse cosine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (acosh, 0, 0, 0, acosh, 0, acosh, 1.0, DBL_MAX, 1,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} acosh (@var{X})\n\
-acosh (X): compute the inverse hyperbolic cosine of X for each element of X.\n\
+@deftypefn {Mapping Function} {} acosh (@var{x})\n\
+Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (angle, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
@@ -197,26 +197,26 @@ arg (3 + 4i)\n\
 
   DEFUN_MAPPER (asin, 0, 0, 0, asin, 0, asin, -1.0, 1.0, 1,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} asin (@var{X})\n\
-asin (X): compute inverse sin (X) for each element of X\n\
+@deftypefn {Mapping Function} {} asin (@var{x})\n\
+Compute the inverse sine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (asinh, 0, 0, 0, asinh, 0, asinh, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} asinh (@var{X})\n\
-asinh (X): compute the inverse hyperbolic sin (X) for each element of X\n\
+@deftypefn {Mapping Function} {} asinh (@var{x})\n\
+Ompute the inverse hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (atan, 0, 0, 0, atan, 0, atan, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} atan (@var{X})\n\
-atan (X): compute the inverse tangent of (X) for each element of X\n\
+@deftypefn {Mapping Function} {} atan (@var{x})\n\
+Compute the inverse tangent of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (atanh, 0, 0, 0, atanh, 0, atanh, -1.0, 1.0, 1,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} atanh (@var{X})\n\
-atanh (X): compute the inverse hyperbolic tanget of X for each element of X\n\
+@deftypefn {Mapping Function} {} atanh (@var{x})\n\
+Compute the inverse hyperbolic tanget of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (ceil, 0, 0, 0, ceil, 0, ceil, 0.0, 0.0, 0,
@@ -243,14 +243,14 @@ $\\bar{z} = x - iy$.\n\
 
   DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, cos, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} cos (@var{X})\n\
-cos (X): compute the cosine of X for each element of X\n\
+@deftypefn {Mapping Function} {} cos (@var{x})\n\
+Compute the cosine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (cosh, 0, 0, 0, cosh, 0, cosh, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} acosh (@var{X})\n\
-acosh (X): compute the inverse hyperbolic cosine of X for each element of X\n\
+@deftypefn {Mapping Function} {} cosh (@var{x})\n\
+Compute the hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (erf, 0, 0, 0, xerf, 0, 0, 0.0, 0.0, 0,
@@ -527,14 +527,14 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 
   DEFUN_MAPPER (sin, 0, 0, 0, sin, 0, sin, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} sin (@var{X})\n\
-sin (X): compute the sin of X for each element of X\n\
+@deftypefn {Mapping Function} {} sin (@var{x})\n\
+Compute the sin of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (sinh, 0, 0, 0, sinh, 0, sinh, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} sinh (@var{X})\n\
-sinh (X): compute the inverse hyperbolic sin of X for each element of X\n\
+@deftypefn {Mapping Function} {} sinh (@var{x})\n\
+Compute the inverse hyperbolic sin of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, sqrt, 0.0, DBL_MAX, 1,
@@ -548,13 +548,13 @@ result is returned.  To compute the matrix square root, see\n\
   DEFUN_MAPPER (tan, 0, 0, 0, tan, 0, tan, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
-tan (X): compute tanget of X for each element of X\n\
+Compute tanget of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (tanh, 0, 0, 0, tanh, 0, tanh, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} tanh (@var{X})\n\
-tanh (X): compute hyperbolic tangent of X for each element of X\n\
+@deftypefn {Mapping Function} {} tanh (@var{x})\n\
+Compute hyperbolic tangent of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (toascii, xtoascii, 0, 0, 0, 0, 0, 0.0, 0.0, 1,

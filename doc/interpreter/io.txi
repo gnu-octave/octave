@@ -598,7 +598,7 @@ functions to read formatted input.  There are two forms of each of these
 functions.  One can be used to extract vectors of data from a file, and
 the other is more `C-like'.
 
-DOSTRING(fscanf)
+@DOCSTRING(fscanf)
 
 @DOCSTRING(sscanf)
 

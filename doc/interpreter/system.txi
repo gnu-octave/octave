@@ -133,6 +133,8 @@ about the status of files.
 
 @DOCSTRING(glob)
 
+@DOCSTRING(fnmatch)
+
 @DOCSTRING(file_in_path)
 
 @DOCSTRING(tilde_expand)

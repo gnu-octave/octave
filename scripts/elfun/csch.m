@@ -18,8 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} csch (@var{X})
-## csch (X): compute the hyperbolic cosecant of X for each element of X
+## @deftypefn {Mapping Function} {} csch (@var{x})
+## Compute the hyperbolic cosecant of each element of @var{x}.
 ## @end deftypefn
 
 ## Author: jwe

@@ -4,6 +4,9 @@
 	after consecutive comment characters.
 	* lex.l (grab_help_text): Ditto.
 
+	* lex.l (Vwhitespace_in_literal_matrix, Vwarn_separator_insert,
+	Vwarn_single_quote_string): Texinfoize doc string.
+
 2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h, ov.cc (octave_value::column_vector_value,

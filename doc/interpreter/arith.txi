@@ -120,7 +120,7 @@ $\pi/180$
 @DOCSTRING(cosh)
 @DOCSTRING(tanh)
 @DOCSTRING(sech)
-@DOCSTRING(scsh)
+@DOCSTRING(csch)
 @DOCSTRING(coth)
 
 @DOCSTRING(asinh)

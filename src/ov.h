@@ -59,18 +59,24 @@ public:
   octave_xvalue (void) { }
 };
 
+class octave_value;
+
+// XXX FIXME XXX -- these should probably really be inside the scope
+// of the octave_value class, but the cygwin32 beta16 version of g++
+// can't handlt that.
+
+typedef octave_value (*binary_op_fcn)
+  (const octave_value&, const octave_value&);
+
+typedef octave_value (*assign_op_fcn)
+  (octave_value&, const octave_value_list&, const octave_value&);
+
+typedef octave_value * (*type_conv_fcn) (const octave_value&);
+
 class
 octave_value
 {
 public:
-
-  typedef octave_value (*binary_op_fcn)
-    (const octave_value&, const octave_value&);
-
-  typedef octave_value (*assign_op_fcn)
-    (octave_value&, const octave_value_list&, const octave_value&);
-
-  typedef octave_value * (*type_conv_fcn) (const octave_value&);
 
   enum binary_op
   {

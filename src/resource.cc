@@ -85,6 +85,7 @@ Return system resource statistics.")
   tv_tmp ["usec"] = (double) ru.ru_stime.tv_usec;
   m ["stime"] = octave_value (tv_tmp);
 
+#if ! defined (RUSAGE_TIMES_ONLY)
   m ["maxrss"] = (double) ru.ru_maxrss;
   m ["ixrss"] = (double) ru.ru_ixrss;
   m ["idrss"] = (double) ru.ru_idrss;
@@ -99,6 +100,7 @@ Return system resource statistics.")
   m ["nsignals"] = (double) ru.ru_nsignals;
   m ["nvcsw"] = (double) ru.ru_nvcsw;
   m ["nivcsw"] = (double) ru.ru_nivcsw;
+#endif
 
 #else
 #if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)

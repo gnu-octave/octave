@@ -576,7 +576,7 @@ octave_value::convert_and_assign (const octave_value_list& idx,
 
   if (t_result >= 0)
     {
-      octave_value::type_conv_fcn cf
+      type_conv_fcn cf
 	= octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
 
       if (cf)
@@ -617,7 +617,7 @@ octave_value::try_assignment_with_conversion (const octave_value_list& idx,
   if (! (error_state || assignment_ok))
     {
       octave_value tmp_rhs;
-      octave_value::type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
+      type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
 
       if (cf_rhs)
 	tmp_rhs = octave_value (cf_rhs (*rhs.rep));
@@ -625,7 +625,7 @@ octave_value::try_assignment_with_conversion (const octave_value_list& idx,
 	tmp_rhs = rhs;
 
       octave_value *old_rep = 0;
-      octave_value::type_conv_fcn cf_this = numeric_conversion_function ();
+      type_conv_fcn cf_this = numeric_conversion_function ();
 
       if (cf_this)
 	{
@@ -670,8 +670,7 @@ octave_value::try_assignment (const octave_value_list& idx,
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 
-  octave_value::assign_op_fcn f
-    = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
+  assign_op_fcn f = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
 
   if (f)
     {
@@ -699,15 +698,14 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
 
-  octave_value::binary_op_fcn f
-    = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+  binary_op_fcn f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
   if (f)
     retval = f (*v1.rep, *v2.rep);
   else
     {
       octave_value tv1;
-      octave_value::type_conv_fcn cf1 = v1.numeric_conversion_function ();
+      type_conv_fcn cf1 = v1.numeric_conversion_function ();
 
       if (cf1)
 	{
@@ -718,7 +716,7 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 	tv1 = v1;
 
       octave_value tv2;
-      octave_value::type_conv_fcn cf2 = v2.numeric_conversion_function ();
+      type_conv_fcn cf2 = v2.numeric_conversion_function ();
 
       if (cf2)
 	{
@@ -730,7 +728,7 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 
       if (cf1 || cf2)
 	{
-	  octave_value::binary_op_fcn f
+	  binary_op_fcn f
 	    = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
 	  if (f)

@@ -1,3 +1,18 @@
+Fri Oct 25 01:10:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* resource.cc (getrusage): [HAVE_GETRUSAGE && RUSAGE_TIMES_ONLY]:
+	Only fill in time values.
+
+Thu Oct 24 20:37:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y: Comment out the %expect declaration so byacc can
+	compile this file.
+	(if_cmd_list): Add missing semicolon.
+	Include <cstdlib> for getenv if using byacc.
+
+	* ov.h: Move typedefs outside of octave_value class scope to avoid
+	problem with cygwin32 beta16 compiler.
+
 Fri Oct 18 13:44:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h (octave_value::index): Undo previous change.

@@ -31,6 +31,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#ifdef YYBYACC
+#include <cstdlib>
+#endif
+
 #include <strstream.h>
 
 #include "Matrix.h"
@@ -350,8 +354,9 @@ static void maybe_warn_missing_semi (tree_statement_list *);
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
 %right POW EPOW
 
-// There are 19 shift/reduce conflicts, ok?
-%expect 19
+// There are 19 shift/reduce conflicts, ok?  But this only works with
+// bison...
+// %expect 19
 
 // Where to start.
 %start input
@@ -723,7 +728,7 @@ if_command	: IF if_cmd_list END
 		;
 
 if_cmd_list	: if_cmd_list1
-		  { $$ = $1 }
+		  { $$ = $1; }
 		| if_cmd_list1 else_clause
 		  {
 		    $1->append ($2);

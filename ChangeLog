@@ -1,3 +1,12 @@
+Fri Oct 25 01:13:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Define RUSAGE_TIMES_ONLY if cygwin32.
+
+Thu Oct 24 21:17:53 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.guess: Update to version that understands what to do for
+	cygwin32 systems.
+
 Fri Oct 18 12:23:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't comment out substitutions for plplot stuff.

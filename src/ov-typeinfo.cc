@@ -41,15 +41,15 @@ octave_value_typeinfo *octave_value_typeinfo::instance = 0;
 #include <Array2.cc>
 #include <Array3.cc>
 
-template class Array<octave_value::binary_op_fcn>;
-template class Array2<octave_value::binary_op_fcn>;
-template class Array3<octave_value::binary_op_fcn>;
+template class Array<binary_op_fcn>;
+template class Array2<binary_op_fcn>;
+template class Array3<binary_op_fcn>;
 
-template class Array<octave_value::assign_op_fcn>;
-template class Array2<octave_value::assign_op_fcn>;
+template class Array<assign_op_fcn>;
+template class Array2<assign_op_fcn>;
 
-template class Array<octave_value::type_conv_fcn>;
-template class Array2<octave_value::type_conv_fcn>;
+template class Array<type_conv_fcn>;
+template class Array2<type_conv_fcn>;
 
 int
 octave_value_typeinfo::register_type (const string& name)
@@ -63,7 +63,7 @@ octave_value_typeinfo::register_type (const string& name)
 bool
 octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
 					   int t1, int t2,
-					   octave_value::binary_op_fcn f)
+					   binary_op_fcn f)
 {
   if (! instance)
     instance = new octave_value_typeinfo ();
@@ -73,7 +73,7 @@ octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
 
 bool
 octave_value_typeinfo::register_assign_op (int t_lhs, int t_rhs,
-					   octave_value::assign_op_fcn f)
+					   assign_op_fcn f)
 {
   if (! instance)
     instance = new octave_value_typeinfo ();
@@ -93,7 +93,7 @@ octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
 
 bool
 octave_value_typeinfo::register_widening_op (int t, int t_result,
-					     octave_value::type_conv_fcn f)
+					     type_conv_fcn f)
 {
   if (! instance)
     instance = new octave_value_typeinfo ();
@@ -119,13 +119,13 @@ octave_value_typeinfo::do_register_type (const string& name)
       types.resize (len, string ());
 
       binary_ops.resize ((int) octave_value::num_binary_ops, len, len,
-			 (octave_value::binary_op_fcn) 0);
+			 (binary_op_fcn) 0);
 
-      assign_ops.resize (len, len, (octave_value::assign_op_fcn) 0);
+      assign_ops.resize (len, len, (assign_op_fcn) 0);
 
       pref_assign_conv.resize (len, len, -1);
 
-      widening_ops.resize (len, len, (octave_value::type_conv_fcn) 0);
+      widening_ops.resize (len, len, (type_conv_fcn) 0);
     }
 
   types (i) = name;
@@ -138,7 +138,7 @@ octave_value_typeinfo::do_register_type (const string& name)
 bool
 octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
 					      int t1, int t2,
-					      octave_value::binary_op_fcn f)
+					      binary_op_fcn f)
 {
   binary_ops.checkelem ((int) op, t1, t2) = f;
 
@@ -147,7 +147,7 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
 
 bool
 octave_value_typeinfo::do_register_assign_op (int t_lhs, int t_rhs,
-					      octave_value::assign_op_fcn f)
+					      assign_op_fcn f)
 {
   assign_ops.checkelem (t_lhs, t_rhs) = f;
 
@@ -165,7 +165,7 @@ octave_value_typeinfo::do_register_pref_assign_conv (int t_lhs, int t_rhs,
 
 bool
 octave_value_typeinfo::do_register_widening_op
-  (int t, int t_result, octave_value::type_conv_fcn f)
+  (int t, int t_result, type_conv_fcn f)
 {
   widening_ops.checkelem (t, t_result) = f;
 
@@ -174,14 +174,14 @@ octave_value_typeinfo::do_register_widening_op
 
 #include <iostream.h>
 
-octave_value::binary_op_fcn
+binary_op_fcn
 octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,
 					    int t1, int t2)
 {
   return binary_ops.checkelem ((int) op, t1, t2);
 }
 
-octave_value::assign_op_fcn
+assign_op_fcn
 octave_value_typeinfo::do_lookup_assign_op (int t_lhs, int t_rhs)
 {
   return assign_ops.checkelem (t_lhs, t_rhs);
@@ -193,7 +193,7 @@ octave_value_typeinfo::do_lookup_pref_assign_conv (int t_lhs, int t_rhs)
   return pref_assign_conv.checkelem (t_lhs, t_rhs);
 }
 
-octave_value::type_conv_fcn
+type_conv_fcn
 octave_value_typeinfo::do_lookup_widening_op (int t, int t_result)
 {
   return widening_ops.checkelem (t, t_result);

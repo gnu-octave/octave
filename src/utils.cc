@@ -189,9 +189,16 @@ read_until (istream& stream, char character)
 char *
 octave_tmp_file_name (void)
 {
-  char *retval = tempnam (0, "oct-");
+  static char *retval = 0;
+
+  if (retval)
+    free (retval);
+
+  retval = tempnam (0, "oct-");
+
   if (! retval)
     error ("can't open temporary file!");
+
   return retval;
 }
 

@@ -806,7 +806,7 @@ subplot_list::print_code (ostream& os)
 char *
 save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 {
-  char *name = strsave (octave_tmp_file_name ());
+  char *name = octave_tmp_file_name ();
   if (name)
     {
       ofstream file (name);
@@ -828,7 +828,6 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
       else
 	{
 	  error ("couldn't open temporary output file `%s'", name);
-	  delete [] name;
 	  name = 0;
 	}
     }

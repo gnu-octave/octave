@@ -1355,24 +1355,28 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
       std::string str;
 
       str = symbols(i)->name ();
-      param_length(pos_n) = ((str.length () > static_cast<size_t> (param_length(pos_n))) ?
-			     str.length () : param_length(pos_n));
+      param_length(pos_n) = ((str.length ()
+			      > static_cast<size_t> (param_length(pos_n)))
+			     ? str.length () : param_length(pos_n));
 
       str = symbols(i)->type_name ();
-      param_length(pos_t) = ((str.length () > static_cast<size_t> (param_length(pos_t))) ?
-			     str.length () : param_length(pos_t));
+      param_length(pos_t) = ((str.length ()
+			      > static_cast<size_t> (param_length(pos_t)))
+			     ? str.length () : param_length(pos_t));
 
       elements1 = symbols(i)->numel ();
       ss1 << elements1;
       str = ss1.str ();
-      param_length(pos_e) = ((str.length () > static_cast<size_t> (param_length(pos_e))) ?
-			     str.length () : param_length(pos_e));
+      param_length(pos_e) = ((str.length ()
+			      > static_cast<size_t> (param_length(pos_e)))
+			     ? str.length () : param_length(pos_e));
 
       bytes1 = symbols(i)->byte_size ();
       ss2 << bytes1;
       str = ss2.str ();
-      param_length(pos_b) = ((str.length () > static_cast<size_t> (param_length(pos_b))) ?
-			     str.length () : param_length (pos_b));
+      param_length(pos_b) = ((str.length ()
+			      > static_cast<size_t> (param_length(pos_b)))
+			     ? str.length () : param_length (pos_b));
     }
 
   idx = 0;
@@ -1426,14 +1430,12 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	    {
 	      param.parameter_length = param_length(pos);
 	      param.text = param_names(pos);
-	      param.line.assign (param_names (pos).length (), '=');
+	      param.line.assign (param_names(pos).length (), '=');
 
-	      param.parameter_length = (a > param.parameter_length ? 
-		                       a : param.parameter_length);
-	      if((param.command == 's') && (param.modifier == 'c') && (b > 0))
-	      {
+	      param.parameter_length = (a > param.parameter_length
+					? a : param.parameter_length);
+	      if (param.command == 's' && param.modifier == 'c' && b > 0)
 		param.first_parameter_length = b;
-	      }
 	    }
 	  else
 	    {
@@ -1489,14 +1491,15 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 
 	  // What happens if whos_line_format contains negative numbers
 	  // at param_length positions?
-	  param.balance = ((b < 0) ? 0 : param.balance);
-	  param.first_parameter_length = ((b < 0) ? 0 :
+	  param.balance = (b < 0 ? 0 : param.balance);
+	  param.first_parameter_length = (b < 0 ? 0 :
 					  param.first_parameter_length);
-	  param.parameter_length = ((a < 0) ? 0 :
-				    (param.parameter_length <
-				     param_length (pos_s)) ?
-				    param_length (pos_s) :
-				    param.parameter_length);
+	  param.parameter_length = (a < 0
+				    ? 0
+				    : (param.parameter_length
+				       < param_length(pos_s)
+				       ? param_length(pos_s)
+				       : param.parameter_length));
 
 	  // Parameter will not be pushed into parameter list if ...
 	  if (! error_encountered)

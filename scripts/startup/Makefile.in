@@ -32,7 +32,7 @@ BINDISTFILES = $(srcdir)/octaverc
 all:
 .PHONY: all
 
-install:
+install install-strip:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	if test -f $(fcnfiledir)/$(script_sub_dir)/octaverc ; then true ; \
 	else \
@@ -50,7 +50,7 @@ install:
 #	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 #	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 #	done
-.PHONY: install
+.PHONY: install install-strip
 
 uninstall:
 #	for f in $(FCN_FILES_NO_DIR) ; \

@@ -1,3 +1,24 @@
+Wed Mar 12 16:57:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-strip): New target.
+	* audio/Makefile.in: Ditto.
+	* control/Makefile.in: Ditto.
+	* elfun/Makefile.in: Ditto.
+	* general/Makefile.in: Ditto.
+	* image/Makefile.in: Ditto.
+	* io/Makefile.in: Ditto.
+	* linear-algebra/Makefile.in: Ditto.
+	* miscellaneous/Makefile.in: Ditto.
+	* plot/Makefile.in: Ditto.
+	* polynomial/Makefile.in: Ditto.
+	* set/Makefile.in: Ditto.
+	* signal/Makefile.in: Ditto.
+	* specfun/Makefile.in: Ditto.
+	* special-matrix/Makefile.in: Ditto.
+	* startup/Makefile.in: Ditto.
+	* statistics/Makefile.in: Ditto.
+	* strings/Makefile.in: Ditto.
+
 Tue Mar 11 10:14:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* elfun/coth.m: Write as cosh(x) ./ sinh(x) instead of 1 ./ tanh(x).

@@ -100,7 +100,7 @@ BUGS:
 	cd doc ; $(MAKE) ../BUGS
 .PHONY: BUGS
 
-install::
+install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
 	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug
 	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile
@@ -116,9 +116,9 @@ maintainer-clean::
 	@echo "************************************************************"
 	@echo ""
 
-install uninstall tags TAGS::
+install install-strip uninstall tags TAGS::
 	@$(subdir-for-command)
-.PHONY: install uninstall tags
+.PHONY: install install-strip uninstall tags
 
 clean mostlyclean distclean maintainer-clean::
 	$(foreach d, $(CLEANSUBDIRS), $(do-subdir-for-command))

@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.41 1997-02-26 18:49:10 jwe Exp $
+# $Id: Makefile.in,v 1.42 1997-03-12 23:06:16 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -118,6 +118,9 @@ sub-all: all
 install:
 	$(top_srcdir)/mkinstalldirs $(archlibdir)
 	$(INSTALL_PROGRAM) info$(EXE) $(archlibdir)/info$(EXE)
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
 
 uninstall:
 	rm -f $(archlibdir)/info

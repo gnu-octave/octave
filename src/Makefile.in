@@ -248,6 +248,10 @@ check: all
 install: install-bin install-oct install-lib install-inc
 .PHONY: install
 
+install-strip:
+	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
+.PHONY: install-strip
+
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave$(EXE)

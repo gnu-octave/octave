@@ -1,3 +1,9 @@
+Wed Mar 12 16:59:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (install-strip): New target.
+
+	* Makefile.in (install-strip): New target.
+
 Mon Mar  3 15:38:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ranlib/Makefile.in (EXTERNAL_DISTFILES): Add Basegen.doc.

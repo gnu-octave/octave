@@ -1,3 +1,7 @@
+Wed Mar 12 16:59:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-strip): New target.
+
 Mon Mar  3 15:40:54 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (DISTFILES): Add config.guess, config.sub, and

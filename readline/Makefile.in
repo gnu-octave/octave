@@ -191,6 +191,9 @@ install:
 	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(libdir)/$$f; fi; \
 	done
 
+install-strip:
+	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
+
 uninstall:
 
 # The rule for 'includes' is written funny so that the if statement

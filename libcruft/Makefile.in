@@ -81,7 +81,7 @@ $(CRUFT_OBJ):
 check: all
 .PHONY: check
 
-install uninstall clean mostlyclean distclean maintainer-clean::
+install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)
 
 install::
@@ -93,6 +93,9 @@ install::
 	  rm -f $(libdir)/libcruft.$(SHLEXT); \
 	  $(INSTALL_PROGRAM) libcruft.$(SHLEXT) $(libdir)/libcruft.$(SHLEXT); \
 	fi
+
+install-strip::
+	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
 
 uninstall::
 	rm -f $(libdir)/libcruft.a

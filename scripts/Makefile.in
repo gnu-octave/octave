@@ -44,11 +44,12 @@ $(SUBDIRS):
 	cd $@ ; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
-install uninstall clean mostlyclean distclean maintainer-clean::
+install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)
-.PHONY: install uninstall clean mostlyclean distclean maintainer-clean
+.PHONY: install install-strip uninstall
+.PHONY: clean mostlyclean distclean maintainer-clean
 
-install::
+install install-strip::
 	ls -LR $(datadir)/octave $(libexecdir)/octave > $(datadir)/octave/ls-R
 
 uninstall::

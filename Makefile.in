@@ -8,7 +8,8 @@
 
 TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea info dlfcn \
 	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
-	install uninstall tags TAGS dist conf-dist snapshot snapshot-version
+	install install-strip uninstall tags TAGS dist conf-dist \
+	snapshot snapshot-version
 
 NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
 
@@ -20,9 +21,6 @@ $(TARGETS): FORCE
 
 $(NO_DEP_TARGETS): FORCE
 	$(MAKE) -f octMakefile omit_deps=true $@
-
-install-strip:
-	$(MAKE) -f octMakefile INSTALL_PROGRAM='${INSTALL} -s' install
 
 binary-dist: FORCE
 	@if test -f configure && test -f octMakefile.in ; then \

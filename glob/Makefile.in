@@ -71,4 +71,4 @@ realclean: distclean
 glob.tar glob.tar.Z:
 	$(MAKE) -C .. $@
 
-install:
+install install-strip:

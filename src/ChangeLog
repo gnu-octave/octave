@@ -1,3 +1,7 @@
+Wed Mar 12 16:57:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-strip): New target.
+
 Mon Mar 10 22:38:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (clean): Delete .oct files too.

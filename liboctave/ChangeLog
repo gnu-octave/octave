@@ -1,3 +1,7 @@
+Wed Mar 12 16:59:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-strip): New target.
+
 Mon Mar 10 22:34:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CmplxCHOL.cc, CmplxHESS.cc, CmplxLU.cc, CmplxQR.cc,

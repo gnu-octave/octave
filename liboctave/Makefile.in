@@ -163,6 +163,10 @@ check: all
 install: install-lib install-inc
 .PHONY: install
 
+install-strip:
+	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
+.PHONY: install-strip
+
 install-lib:
 	$(top_srcdir)/mkinstalldirs $(libdir)
 	rm -f $(libdir)/liboctave.a

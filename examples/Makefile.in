@@ -34,11 +34,11 @@ DISTSUBDIRS =
 all:
 .PHONY: all
 
-install:
+install install-strip:
 	for f in $(SCRIPTS); do \
 	  $(INSTALL_SCRIPT) $(srcdir)/$$f $(archlibdir)/$$f ; \
 	done
-.PHONY: install
+.PHONY: install install-strip
 
 tags:
 	ctags $(SOURCES)

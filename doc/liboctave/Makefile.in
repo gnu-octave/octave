@@ -55,8 +55,8 @@ liboctave.ps: liboctave.dvi
 check:
 .PHONY: check
 
-install: all
-.PHONY: install
+install install-strip: all
+.PHONY: install install-strip
 
 uninstall:
 	rm -f $(infodir)/liboctave.info*

@@ -80,7 +80,7 @@ octave.ps: octave.dvi
 check: all
 .PHONY: check
 
-install: all
+install install-strip: all
 	$(top_srcdir)/mkinstalldirs $(man1dir) $(infodir)
 	@if test -d $(man1dir) ; then \
 	  rm -f $(man1dir)/octave$(man1ext) ; \
@@ -117,7 +117,7 @@ install: all
 	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir ; \
 	  fi ; \
 	fi
-.PHONY: install
+.PHONY: install install-strip
 
 uninstall:
 	rm -f $(infodir)/octave.info* $(man1dir)/octave$(man1ext)

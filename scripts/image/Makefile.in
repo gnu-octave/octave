@@ -36,7 +36,7 @@ BINDISTFILES = $(FCN_FILES) $(IMAGE_FILES)
 all:
 .PHONY: all
 
-install:
+install install-strip:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	for f in $(FCN_FILES_NO_DIR) ; do \
 	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
@@ -48,7 +48,7 @@ install:
 	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f ; \
 	done
 	$(top_srcdir)/mkinstalldirs $(archlibdir)
-.PHONY: install
+.PHONY: install install-strip
 
 uninstall:
 	for f in $(FCN_FILES_NO_DIR) ; \

@@ -37,7 +37,7 @@ endif
 
 include ../Makerules
 
-install::
+install install-strip::
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
 	$(INSTALL_DATA) $(srcdir)/f77-fcn.h $(octincludedir)/f77-fcn.h
 	$(INSTALL_DATA) $(srcdir)/lo-error.h $(octincludedir)/lo-error.h

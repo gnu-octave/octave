@@ -51,8 +51,8 @@ refcard-letter.dvi: refcard-letter.tex refcard.tex
 refcard-letter.ps: refcard-letter.dvi
 	-dvips -T 11in,8.5in -o refcard-letter.ps refcard-letter.dvi
 
-check install uninstall:
-.PHONY: check install uninstall
+check install install-strip uninstall:
+.PHONY: check install install-strip uninstall
 
 tags: $(SOURCES)
 	ctags $(SOURCES)

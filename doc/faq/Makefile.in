@@ -49,8 +49,8 @@ FAQ.dvi: FAQ.texi
 FAQ.ps: FAQ.dvi
 	-dvips -o FAQ.ps FAQ.dvi
 
-check install uninstall:
-.PHONY: check install uninstall
+check install install-strip uninstall:
+.PHONY: check install install-strip uninstall
 
 tags: $(SOURCES)
 	ctags $(SOURCES)

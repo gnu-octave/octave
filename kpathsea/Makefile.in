@@ -165,6 +165,9 @@ install:
 	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(libdir)/$$f; fi; \
 	done
 
+install-strip:
+	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
+
 uninstall:
 
 # Installation of kpathsea itself is complicated by the fact that we

@@ -1,3 +1,11 @@
+Wed Mar 12 16:56:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-strip): Don't try to set INSTALL_PROGRAM here.
+
+	* emacs/Makefile.in (install-strip): New target.
+	* dlfcn/Makefile.in: Ditto.
+	* examples/Makefile.in: Ditto.
+
 Sun Mar  9 03:44:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.h.bot (STATIC_CAST): Delete definition.

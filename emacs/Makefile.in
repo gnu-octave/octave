@@ -31,8 +31,8 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(EL_FILES) $(ELC_FILES) NEWS TODO)
 all:
 .PHONY: all
 
-install:
-.PHONY: install
+install install-strip:
+.PHONY: install install-strip
 
 tags:
 	ctags $(SOURCES)

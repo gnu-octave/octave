@@ -505,7 +505,8 @@ Configuration and Installation:
   * Add an --enable-pathsearch option to configure to make it possible
     to configure and run without kpathsea. 
 
-  * Make configure take more defaults from the environment.
+  * Make configure take more defaults from the environment.  It should
+    definitely pay attention to CFLAGS, CXXFLAGS, FFLAGS, etc.
 
   * Should --enable-lite-kernel imply --enable-shared?
 

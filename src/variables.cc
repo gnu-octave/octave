@@ -747,12 +747,12 @@ parse_fcn_file (int exec_script, char *ff)
       if (is_function_file (ffile))
 	{
 	  unwind_protect_int (user_pref.echo_executing_commands);
-	  unwind_protect_int (saving_history);
+	  unwind_protect_int (user_pref.saving_history);
 	  unwind_protect_int (reading_fcn_file);
 	  unwind_protect_int (input_from_command_line_file);
 
 	  user_pref.echo_executing_commands = ECHO_OFF;
-	  saving_history = 0;
+	  user_pref.saving_history = 0;
 	  reading_fcn_file = 1;
 	  input_from_command_line_file = 0;
 
@@ -1829,9 +1829,8 @@ directory specification");
     "if a function does not return any values explicitly, return the\n\
   last computed value");
 
-  DEFVAR ("save_precision", SBV_save_precision, 15.0, 0,
-	  set_save_precision,
-    "number of significant figures kept by the ASCII save command");
+  DEFVAR ("saving_history", SBV_saving_history, 1.0, 0, saving_history,
+    "save command history");
 
   DEFVAR ("silent_functions", SBV_silent_functions, 0.0, 0,
 	  silent_functions,

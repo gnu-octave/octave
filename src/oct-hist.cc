@@ -138,7 +138,7 @@ clean_up_history (void)
 void
 maybe_save_history (const char *s)
 {
-  if (user_pref.saving_history)
+  if (user_pref.saving_history && ! input_from_startup_file)
     {
       add_history (s);
       history_lines_this_session++;

@@ -88,7 +88,7 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
   for (int i = 0; i < nn; i++)
     tmp_deriv(i) = deriv[i];
 
-  ColumnVector tmp_fval = user_fsub (tmp_state, tmp_deriv, t, ires);
+  ColumnVector tmp_fval = (*user_fsub) (tmp_state, tmp_deriv, t, ires);
 
   if (tmp_fval.length () == 0)
     ires = -2;
@@ -100,12 +100,6 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 
   return 0;
 }
-
-//typedef int (*efptr) (const double& t, const int& n, double *state,
-//		      double *ework, double *rpar, int *ipar,
-//		      const int& ieform, int& ires);
-
-//static efptr e_fun;
 
 int
 ddasrt_j (const double& time, const double *state, const double *deriv,
@@ -122,7 +116,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
       tmp_state.elem (i) = state [i];
     }
 
-  Matrix tmp_pd = user_jsub (tmp_state, tmp_deriv, time, cj);
+  Matrix tmp_pd = (*user_jsub) (tmp_state, tmp_deriv, time, cj);
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
@@ -141,14 +135,13 @@ ddasrt_g (const int& neq, const double& t, const double *state,
   for (int i = 0; i < n; i++)
     tmp_state(i) = state[i];
 
-  ColumnVector tmp_fval = user_csub (tmp_state, t);
+  ColumnVector tmp_fval = (*user_csub) (tmp_state, t);
 
   for (int i = 0; i < ng; i++)
     gout[i] = tmp_fval(i);
 
   return 0;
 }
-
 
 DASRT::DASRT (void)
   : DAERT ()
@@ -163,11 +156,41 @@ DASRT::DASRT (void)
 
   info.resize (30, 0);
 
-  npar = 0;
   ng = 0;
 
   liw = 0;
   lrw = 0;
+}
+
+DASRT::DASRT (const ColumnVector& state, double time, DAERTFunc& f)
+  : DAERT (state, time, f)
+{
+  n = size ();
+
+  initialized = false;
+  restart = false;
+
+  stop_time_set = false;
+  stop_time = 0.0;
+
+  liw = 20 + n;
+  lrw = 50 + 9*n + n*n;
+
+  sanity_checked = false;
+
+  info.resize (15, 0);
+
+  DAERTFunc::DAERTConstrFunc tmp_csub = DAERTFunc::constraint_function ();
+  
+  if (tmp_csub)
+    {
+      ColumnVector tmp = tmp_csub (state, time);
+      ng = tmp.length ();
+    }
+  else
+    ng = 0;
+
+  jroot.resize (ng, 1);
 }
 
 DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
@@ -185,9 +208,6 @@ DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
   sanity_checked = false;
 
   info.resize (30, 0);
-  jroot.resize (ng, 1);
-
-  npar = 0;
 
   DAERTFunc::DAERTConstrFunc tmp_csub = DAERTFunc::constraint_function ();
   
@@ -199,72 +219,10 @@ DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
   else
     ng = 0;
 
-  rpar.resize (npar+1);
-  ipar.resize (npar+1);
+  liw = 20 + n + 1000;
+  lrw = 50 + 9*n + n*n + 1000;
 
-  info(11) = npar;
-
-  // Also store it here, for communication with user-supplied
-  // subroutines.
-  ipar(0) = npar;
-
-  y.resize (n, 1, 0.0);
-  ydot.resize (n, 1, 0.0);
-}
-
-void
-DASRT::init_work_size (int info_zero)
-{
-  double t;
-  double *py = y.fortran_vec ();
-  double *pydot = ydot.fortran_vec ();
-  double rel_tol = relative_tolerance ();
-  double abs_tol = absolute_tolerance ();
-  int *pinfo = info.fortran_vec ();
-  double *prpar = rpar.fortran_vec ();
-  int *pipar = ipar.fortran_vec ();
-  int *pjroot = jroot.fortran_vec ();
-  int idid;
-
-  // We do not have to lie.
-  rwork.resize (5000+9*n+n*n, 0.0);
-  iwork.resize (n+20, 0);
-
-  liw = n+20;
-  lrw = 5000+9*n+n*n;
-
-  double *prwork = rwork.fortran_vec ();
-  int *piwork = iwork.fortran_vec ();
-
-  F77_FUNC (ddasrt, DASRT) (ddasrt_f, n, t, py, pydot, t, pinfo,
-			    &rel_tol, &abs_tol, idid, prwork, lrw,
-			    piwork, liw, prpar, pipar, ddasrt_j,
-			    ddasrt_g, ng, pjroot);
-
-  int iwadd = iwork(18);
-
-  if (iwadd > 0)
-    liw += iwadd;
-
-  info(0) = 0;
-
-  iwork.resize (liw, 0);
-
-  piwork = iwork.fortran_vec ();
-
-  F77_FUNC (ddasrt, DASRT) (ddasrt_f, n, t, py, pydot, t, pinfo,
-			    &rel_tol, &abs_tol, idid, prwork, lrw,
-			    piwork, liw, prpar, pipar, ddasrt_j,
-			    ddasrt_g, ng, pjroot);
-
-  int rwadd = iwork(19);
-
-  if (rwadd > 0)
-    lrw += rwadd;
-
-  rwork.resize (lrw, 0.0);
-
-  info(0) = info_zero;
+  jroot.resize (ng, 1);
 }
 
 void
@@ -296,15 +254,7 @@ DASRT::integrate (double tout)
     {
       info(0) = 0;
 
-      for (int i = 0; i < n; i++)
-	{
-	  y(i,0) = x(i);
-	  ydot(i,0) = xdot(i);
-	}
-
       integration_error = false;
-
-      nn = n;
 
       user_fsub = DAEFunc::function ();
       user_jsub = DAEFunc::jacobian_function ();
@@ -315,11 +265,16 @@ DASRT::integrate (double tout)
       else
 	info(4) = 0;
 
+      px = x.fortran_vec ();
+      pxdot = xdot.fortran_vec ();
+
+      nn = n;
+
       if (! sanity_checked)
 	{
 	  int ires = 0;
 
-	  ColumnVector fval = user_fsub (x, xdot, t, ires);
+	  ColumnVector fval = (*user_fsub) (x, xdot, t, ires);
 
 	  if (fval.length () != x.length ())
 	    {
@@ -333,8 +288,6 @@ DASRT::integrate (double tout)
 	  sanity_checked = true;
 	}
   
-      init_work_size (info(0));
-
       if (iwork.length () != liw)
 	iwork.resize (liw);
 
@@ -368,13 +321,9 @@ DASRT::integrate (double tout)
       else
 	info(6) = 0;
 
-      py = y.fortran_vec ();
-      pydot = ydot.fortran_vec ();
       pinfo = info.fortran_vec ();
       piwork = iwork.fortran_vec ();
       prwork = rwork.fortran_vec ();
-      prpar = rpar.fortran_vec ();
-      pipar = ipar.fortran_vec ();
       pjroot = jroot.fortran_vec ();
 
       info(5) = 0;
@@ -395,9 +344,12 @@ DASRT::integrate (double tout)
 	info(3) = 0;
     }
 
-  F77_XFCN (ddasrt, DASRT, (ddasrt_f, n, t, py, pydot, tout, pinfo,
+  double *dummy = 0;
+  int *idummy = 0;
+
+  F77_XFCN (ddasrt, DASRT, (ddasrt_f, n, t, px, pxdot, tout, pinfo,
 			    &rel_tol, &abs_tol, idid, prwork, lrw,
-			    piwork, liw, prpar, pipar, ddasrt_j,
+			    piwork, liw, dummy, idummy, ddasrt_j,
 			    ddasrt_g, ng, pjroot));
 
   if (f77_exception_encountered)
@@ -420,14 +372,10 @@ DASRT::integrate (double tout)
 	case 5: // The integration to TSTOP was successfully completed
 	        // (T=TSTOP) by stepping to TSTOP within the
 	        // tolerance.  Must restart to continue.
-	  for (int i = 0; i < n; i++)
-	    x(i) = y(i,0);
 	  t = tout;
 	  break;
 
 	case 4: //  We've hit the stopping condition.
-          for (int i = 0; i < n; i++)
-            x(i) = y(i,0);
           break;
 
 	case -1: // A large amount of work has been expended.  (~500 steps).
@@ -468,7 +416,7 @@ DASRT::integrate (const ColumnVector& tout)
 
   Matrix x_out;
   Matrix xdot_out;
-  ColumnVector t_out;
+  ColumnVector t_out = tout;
 
   int oldj = 0;
 
@@ -478,11 +426,17 @@ DASRT::integrate (const ColumnVector& tout)
     {
       x_out.resize (n_out, n);
       xdot_out.resize (n_out, n);
-      t_out.resize (n_out);
 
-      for (int j = 0; j < n_out; j++)
+      for (int i = 0; i < n; i++)
+	{
+	  x_out(0,i) = x(i);
+	  xdot_out(0,i) = xdot(i);
+	}
+
+      for (int j = 1; j < n_out; j++)
 	{
 	  integrate (tout(j));
+
 	  if (integration_error)
 	    {
 	      retval = DASRT_result (x_out, xdot_out, t_out);
@@ -496,17 +450,16 @@ DASRT::integrate (const ColumnVector& tout)
 
 	  for (int i = 0; i < n; i++)
 	    {
-	      x_out(j,i) = y(i,0);
-	      xdot_out(j,i) = ydot(i,0);
+	      x_out(j,i) = x(i);
+	      xdot_out(j,i) = xdot(i);
 	    }
 
           if (idid == 4)
 	    {
-	      oldj = j;
-	      j = n_out;
-	      x_out.resize (oldj+1, n);
-	      xdot_out.resize (oldj+1, n);
-	      t_out.resize (oldj+1);
+	      x_out.resize (j+1, n);
+	      xdot_out.resize (j+1, n);
+	      t_out.resize (j+1);
+	      break;
 	    }
 	}
     }
@@ -523,7 +476,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 
   Matrix x_out;
   Matrix xdot_out;
-  ColumnVector t_outs;
+  ColumnVector t_outs = tout;
 
   int n_out = tout.capacity ();
 
@@ -531,14 +484,13 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
     {
       x_out.resize (n_out, n);
       xdot_out.resize (n_out, n);
-      t_outs.resize (n_out);
 
       int n_crit = tcrit.capacity ();
 
       if (n_crit > 0)
 	{
 	  int i_crit = 0;
-	  int i_out = 0;
+	  int i_out = 1;
 	  double next_crit = tcrit(0);
 	  double next_out;
 	  while (i_out < n_out)
@@ -602,11 +554,13 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 		{
 		  for (int i = 0; i < n; i++)
 		    {
-		      x_out(i_out-1,i) = y(i,0);
-		      xdot_out(i_out-1,i) = ydot(i,0);
+		      x_out(i_out-1,i) = x(i);
+		      xdot_out(i_out-1,i) = xdot(i);
 		    }
+
                   t_outs(i_out-1) = t_out;
-                  if (idid ==4)
+
+                  if (idid == 4)
                     {
                       x_out.resize (i_out, n);
                       xdot_out.resize (i_out, n);

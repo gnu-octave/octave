@@ -158,6 +158,8 @@ public:
 
   DASRT (void);
 
+  DASRT (const ColumnVector& state, double time, DAERTFunc& f);
+
   DASRT (const ColumnVector& state, const ColumnVector& deriv,
 	 double time, DAERTFunc& f);
 
@@ -189,37 +191,25 @@ private:
   int liw;  
   int lrw;
   int idid;
-  int ieform;
-  int lun;
 
   int n;
-  int npar;
   int ng;
 
   Array<int> info;
   Array<int> iwork;
-  Array<int> ipar;
   Array<int> jroot;
 
   Array<double> rwork;
-  Array<double> rpar;
-
-  Matrix y;
-  Matrix ydot;
 
   double abs_tol;
   double rel_tol;
 
-  double *py;
-  double *pydot;
+  double *px;
+  double *pxdot;
   int *pinfo;
   int *piwork;
   double *prwork;
-  double *prpar;
-  int *pipar;
   int *pjroot;
-
-  void init_work_size (int);
 
   void integrate (double t);
 };

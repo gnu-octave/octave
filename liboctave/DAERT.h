@@ -35,6 +35,9 @@ public:
   DAERT (void)
     : base_diff_alg_eqn (), DAERTFunc () { }
 
+  DAERT (const ColumnVector& x, double t, DAERTFunc& f)
+    : base_diff_alg_eqn (x, t), DAERTFunc (f) { }
+
   DAERT (const ColumnVector& x, const ColumnVector& xdot, double t,
 	DAERTFunc& f)
     : base_diff_alg_eqn (x, xdot, t), DAERTFunc (f) { }

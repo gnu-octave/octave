@@ -56,13 +56,13 @@ static int nn;
 
 DASSL::DASSL (void) : DAE ()
 {
-  stop_time_set = 0;
+  stop_time_set = false;
   stop_time = 0.0;
 
   liw = 0;
   lrw = 0;
 
-  sanity_checked = 0;
+  sanity_checked = false;
 
   info.resize (15);
 
@@ -75,27 +75,24 @@ DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
 {
   n = size ();
 
-  stop_time_set = 0;
+  stop_time_set = false;
   stop_time = 0.0;
 
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
 
-  sanity_checked = 0;
+  sanity_checked = false;
 
-  info.resize (15);
-
-  for (int i = 0; i < 15; i++)
-    info.elem (i) = 0;
+  info.resize (15, 0);
 }
 
 DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
-	  double time, DAEFunc& f)
+	      double time, DAEFunc& f)
   : DAE (state, deriv, time, f)
 {
   n = size ();
 
-  stop_time_set = 0;
+  stop_time_set = false;
   stop_time = 0.0;
 
   DAEFunc::set_function (f.function ());
@@ -104,7 +101,7 @@ DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
 
-  sanity_checked = 0;
+  sanity_checked = false;
 
   info.resize (15);
 
@@ -116,20 +113,20 @@ void
 DASSL::force_restart (void)
 {
   restart = 1;
-  integration_error = 0;
+  integration_error = false;
 }
 
 void
 DASSL::set_stop_time (double tt)
 {
-  stop_time_set = 1;
+  stop_time_set = true;
   stop_time = tt;
 }
 
 void
 DASSL::clear_stop_time (void)
 {
-  stop_time_set = 0;
+  stop_time_set = false;
 }
 
 int
@@ -205,20 +202,20 @@ DASSL::do_integrate (double tout)
   if (rwork.length () != lrw)
     rwork.resize (lrw);
 
-  integration_error = 0;
+  integration_error = false;
 
-  if (DAEFunc::jacobian_function ())
+  user_fun = DAEFunc::fun;
+  user_jac = DAEFunc::jac;
+
+  if (user_jac)
     info.elem (4) = 1;
   else
     info.elem (4) = 0;
 
-  double *px    = x.fortran_vec ();
+  double *px = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
 
   nn = n;
-
-  user_fun = DAEFunc::fun;
-  user_jac = DAEFunc::jac;
 
   if (! sanity_checked)
     {
@@ -231,11 +228,11 @@ DASSL::do_integrate (double tout)
 	  (*current_liboctave_error_handler)
 	    ("dassl: inconsistent sizes for state and residual vectors");
 
-	  integration_error = 1;
+	  integration_error = true;
 	  return retval;
 	}
 
-      sanity_checked = 1;
+      sanity_checked = true;
     }
   
   if (stop_time_set)
@@ -280,7 +277,7 @@ DASSL::do_integrate (double tout)
 
   if (f77_exception_encountered)
     {
-      integration_error = 1;
+      integration_error = true;
       (*current_liboctave_error_handler) ("unrecoverable error in dassl");
     }
   else
@@ -294,7 +291,6 @@ DASSL::do_integrate (double tout)
 	case 3: // The integration to TOUT was successfully completed
 	        // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
 	        // interpolation.  YPRIME(*) is obtained by interpolation.
-
 	  retval = x;
 	  t = tout;
 	  break;
@@ -322,7 +318,7 @@ DASSL::do_integrate (double tout)
 		  // and control is returned to the calling program. For
 		  // example, this occurs when invalid input is detected.
 	default:
-	  integration_error = 1;
+	  integration_error = true;
 	  break;
 	}
     }

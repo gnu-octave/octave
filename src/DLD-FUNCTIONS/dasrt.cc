@@ -410,20 +410,13 @@ parameters for @code{dasrt}.\n\
     DASRT_ABORT2 
        ("expecting time derivative of state vector as argument %d", argp);
 
-  ColumnVector old_out_times (args(argp++).vector_value ());
+  ColumnVector out_times (args(argp++).vector_value ());
 
   if (error_state)
     DASRT_ABORT2
 	("expecting output time vector as %s argument %d", argp);
 
-  double tzero = old_out_times (0);
-
-  int ol = old_out_times.length ();
-
-  ColumnVector out_times (ol-1, 0.0);
-
-  for (int i = 1; i < ol; i++)
-    out_times(i-1) = old_out_times(i);
+  double tzero = out_times (0);
 
   ColumnVector crit_times;
 
@@ -459,41 +452,9 @@ parameters for @code{dasrt}.\n\
 
   if (! error_state)
     {
-      ColumnVector old_output_times = output.times ();
-
-      Matrix old_output_deriv = output.deriv ();
-      Matrix old_output_state = output.state ();
-
-      int lstuff = old_output_times.length ();
-      int lstate = state.length ();
-
-      ColumnVector output_times (lstuff+1, 0.0);
-
-      Matrix output_deriv (lstuff+1, lstate, 0.0);
-      Matrix output_state (lstuff+1, lstate, 0.0);
-
-      output_times(0) = tzero;
-
-      for (int i = 0; i < lstate; i++)
-	{
-	  output_deriv(0,i) = stateprime(i);
-	  output_state(0,i) = state(i);
-	}
-
-      for (int i = 0; i < lstuff; i++)
-	{
-	  output_times(i+1) = old_output_times(i);
-
-	  for (int j = 0; j < lstate; j++)
-	    {
-	      output_deriv(i+1,j) = old_output_deriv(i,j);
-	      output_state(i+1,j) = old_output_state(i,j);
-	    }
-	}
-
-      retval(2) = output_times;
-      retval(1) = output_deriv;
-      retval(0) = output_state;
+      retval(2) = output.times ();
+      retval(1) = output.deriv ();
+      retval(0) = output.state ();
     }
   else
     {

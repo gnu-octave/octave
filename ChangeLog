@@ -3,6 +3,7 @@ Wed Nov 13 11:04:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* configure.in: If running on an SCO system, define SCO, and force
 	HAVE_ISINF and HAVE_ISNAN to be defined.
 	Also check for ieeefp.h and nan.h.
+	* acconfig.h (HAVE_ISINF, HAVE_ISNAN, SCO): Add undefs.
 
 Tue Nov 12 21:50:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

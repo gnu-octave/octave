@@ -33,6 +33,12 @@
 /* Define if your gnuplot has mutliplot. */
 #undef GNUPLOT_HAS_MULTIPLOT
 
+/* Define if you have isinf(). */
+#undef HAVE_ISINF
+
+/* Define if you have isnan(). */
+#undef HAVE_ISNAN
+
 /* Define if you have BSD style signals. */
 #undef HAVE_BSD_SIGNALS
 
@@ -65,6 +71,9 @@
 
 /* Define if your struct rusage only has time information. */
 #undef RUSAGE_TIMES_ONLY
+
+/* Define if you are using an SCO system. */
+#undef SCO
 
 /* Define this to be the path separator for your system, as a
    character constant */

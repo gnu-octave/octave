@@ -49,6 +49,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr-output.h"
 #include "variables.h"
 
+#include "byte-swap.h"
+#include "ls-oct-ascii.h"
+#include "ls-utils.h"
+
 #if ! defined (UCHAR_MAX)
 #define UCHAR_MAX 255
 #endif
@@ -225,6 +229,371 @@ octave_matrix::convert_to_str_internal (bool, bool) const
 
   return retval;
 }
+
+static Matrix
+strip_infnan (const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  Matrix retval (nr, nc);
+
+  int k = 0;
+  for (int i = 0; i < nr; i++)
+    {
+      for (int j = 0; j < nc; j++)
+	{
+	  double d = m (i, j);
+	  if (xisnan (d))
+	    goto next_row;
+	  else
+	    retval (k, j) = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
+	}
+      k++;
+
+    next_row:
+      continue;
+    }
+
+  if (k > 0)
+    retval.resize (k, nc);
+
+  return retval;
+}
+
+bool 
+octave_matrix::save_ascii (std::ostream& os, bool& infnan_warned, 
+			       bool strip_nan_and_inf)
+{
+  dim_vector d = dims ();
+  if (d.length () > 2)
+    {
+      NDArray tmp = array_value ();
+
+      if (strip_nan_and_inf)
+	{
+	  warning ("save: Can not strip Inf or NaN values");
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
+      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
+	{
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
+
+      os << "# ndims: " << d.length () << "\n";
+
+      for (int i=0; i < d.length (); i++)
+	os << " " << d (i);
+
+      os << "\n" << tmp;
+    }
+  else
+    {
+      // Keep this case, rather than use generic code above for backward 
+      // compatiability. Makes load_ascii much more complex!!
+      os << "# rows: " << rows () << "\n"
+	 << "# columns: " << columns () << "\n";
+
+      Matrix tmp = matrix_value ();
+
+      if (strip_nan_and_inf)
+	tmp = strip_infnan (tmp);
+      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
+	{
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
+
+      os << tmp;
+    }
+
+  return true;
+}
+
+bool 
+octave_matrix::load_ascii (std::istream& is)
+{
+  int mdims = 0;
+  bool success = true;
+  std::streampos pos = is.tellg ();
+
+  if (extract_keyword (is, "ndims", mdims, true))
+    {
+      if (mdims >= 0)
+	{
+	  dim_vector dv;
+	  dv.resize (mdims);
+
+	  for (int i = 0; i < mdims; i++)
+	    is >> dv(i);
+
+	  NDArray tmp(dv);
+	  is >> tmp;
+
+	  if (!is) 
+	    {
+	      error ("load: failed to load matrix constant");
+	      success = false;
+	    }
+	  matrix = tmp;
+	}
+      else
+	{
+	  error ("load: failed to extract number of rows and columns");
+	  success = false;
+	}
+    }
+  else
+    {
+      int nr = 0;
+      int nc = 0;
+
+      // re-read the same line again
+      is.clear ();
+      is.seekg (pos);
+
+      if (extract_keyword (is, "rows", nr) && nr >= 0
+	  && extract_keyword (is, "columns", nc) && nc >= 0)
+	{
+	  if (nr > 0 && nc > 0)
+	    {
+	      Matrix tmp (nr, nc);
+	      is >> tmp;
+	      if (is)
+		matrix = tmp;
+	      else
+		{
+		  error ("load: failed to load matrix constant");
+		  success = false;
+		}
+	    }
+	  else if (nr == 0 || nc == 0)
+	    matrix = Matrix (nr, nc);
+	  else
+	    panic_impossible ();
+	}
+      else 
+	{
+	  error ("load: failed to extract number of rows and columns");
+	  success = false;
+	}
+    }
+
+  return success;
+}
+
+bool 
+octave_matrix::save_binary (std::ostream& os, bool& save_as_floats)
+{
+
+  dim_vector d = dims ();
+  if (d.length() < 1)
+    return false;
+
+  // Use negative value for ndims to differentiate with old format!!
+  FOUR_BYTE_INT tmp = - d.length();
+  os.write (X_CAST (char *, &tmp), 4);
+  for (int i=0; i < d.length (); i++)
+    {
+      tmp = d(i);
+      os.write (X_CAST (char *, &tmp), 4);
+    }
+
+  NDArray m = array_value ();
+  save_type st = LS_DOUBLE;
+  if (save_as_floats)
+    {
+      if (m.too_large_for_float ())
+	{
+	  warning ("save: some values too large to save as floats --");
+	  warning ("save: saving as doubles instead");
+	}
+      else
+	st = LS_FLOAT;
+    }
+  else if (d.numel () > 8192) // XXX FIXME XXX -- make this configurable.
+    {
+      double max_val, min_val;
+      if (m.all_integers (max_val, min_val))
+	st = get_save_type (max_val, min_val);
+    }
+
+  const double *mtmp = m.data ();
+  write_doubles (os, mtmp, st, d.numel ());
+
+  return true;
+}
+
+bool 
+octave_matrix::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  char tmp;
+  FOUR_BYTE_INT mdims;
+  if (! is.read (X_CAST (char *, &mdims), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &mdims));
+  if (mdims < 0)
+    {
+      mdims = - mdims;
+      FOUR_BYTE_INT di;
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+	{
+	  if (! is.read (X_CAST (char *, &di), 4))
+	    return false;
+	  if (swap)
+	    swap_4_bytes (X_CAST (char *, &di));
+	  dv(i) = di;
+	}
+
+      if (! is.read (X_CAST (char *, &tmp), 1))
+	return false;
+
+      NDArray m(dv);
+      double *re = m.fortran_vec ();
+      read_doubles (is, re, X_CAST (save_type, tmp), dv.numel (), swap, fmt);
+      if (error_state || ! is)
+	return false;
+      matrix = m;
+    }
+  else
+    {
+      FOUR_BYTE_INT nr, nc;
+      nr = mdims;
+      if (! is.read (X_CAST (char *, &nc), 4))
+	return false;
+      if (swap)
+	swap_4_bytes (X_CAST (char *, &nc));
+      if (! is.read (X_CAST (char *, &tmp), 1))
+	return false;
+      Matrix m (nr, nc);
+      double *re = m.fortran_vec ();
+      int len = nr * nc;
+      read_doubles (is, re, X_CAST (save_type, tmp), len, swap, fmt);
+      if (error_state || ! is)
+	return false;
+      matrix = m;
+    }
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+{
+  dim_vector d = dims ();
+  hsize_t hdims[d.length () > 2 ? d.length () : 3];
+  hid_t space_hid = -1, data_hid = -1;
+  int rank = ( (d (0) == 1) && (d.length () == 2) ? 1 : d.length ());
+  bool retval = true;
+  NDArray m = array_value ();
+
+  // Octave uses column-major, while HDF5 uses row-major ordering
+  for (int i = 0, j = d.length() - 1; i < d.length (); i++, j--)
+    hdims[i] = d (j);
+
+  space_hid = H5Screate_simple (rank, hdims, (hsize_t*) 0);
+  if (space_hid < 0) return false;
+
+  hid_t save_type_hid = H5T_NATIVE_DOUBLE;
+
+  if (save_as_floats)
+    {
+      if (m.too_large_for_float ())
+	{
+	  warning ("save: some values too large to save as floats --");
+	  warning ("save: saving as doubles instead");
+	}
+      else
+	save_type_hid = H5T_NATIVE_FLOAT;
+    }
+#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+  // hdf5 currently doesn't support float/integer conversions
+  else
+    {
+      double max_val, min_val;
+
+      if (m.all_integers (max_val, min_val))
+	save_type_hid
+	  = save_type_to_hdf5 (get_save_type (max_val, min_val));
+    }
+#endif /* HAVE_HDF5_INT2FLOAT_CONVERSIONS */
+  
+  data_hid = H5Dcreate (loc_id, name, save_type_hid, space_hid, 
+			H5P_DEFAULT);
+  if (data_hid < 0)
+    {
+      H5Sclose (space_hid);
+      return false;
+    }
+
+  double *mtmp = m.fortran_vec ();
+  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+		     H5P_DEFAULT, (void*) mtmp) >= 0;
+
+  H5Dclose (data_hid);
+  H5Sclose (space_hid);
+  return retval;
+}
+
+bool
+octave_matrix::load_hdf5 (hid_t loc_id, const char *name,
+			  bool /* have_h5giterate_bug */)
+{
+  bool retval = false;
+  hid_t data_hid = H5Dopen (loc_id, name);
+  hid_t space_id = H5Dget_space (data_hid);
+
+  hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+  
+  if (rank < 1)
+    {
+      H5Sclose (space_id);
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
+  OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
+
+  H5Sget_simple_extent_dims (space_id, hdims, maxdims);
+
+  dim_vector dv;
+
+  // Octave uses column-major, while HDF5 uses row-major ordering
+  if (rank == 1)
+    {
+      dv.resize (2);
+      dv(0) = 1;
+      dv(1) = hdims[0];
+    }
+  else
+    {
+      dv.resize (rank);
+      for (int i = 0, j = rank - 1; i < (int)rank; i++, j--)
+	dv(j) = hdims[i];
+    }
+
+  NDArray m (dv);
+  double *re = m.fortran_vec ();
+  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) re) >= 0) 
+    {
+      retval = true;
+      matrix = m;
+    }
+
+  H5Sclose (space_id);
+  H5Dclose (data_hid);
+  return retval;
+}
+#endif
 
 void
 octave_matrix::print_raw (std::ostream& os,

@@ -521,6 +521,53 @@ octave_base_value::list_value (void) const
   return retval;
 }
 
+bool 
+octave_base_value::save_ascii (std::ostream&, bool&, bool)
+{
+  gripe_wrong_type_arg ("octave_base_value::save_ascii()", type_name ());
+  return false;
+}
+
+bool 
+octave_base_value::load_ascii (std::istream&)
+{
+  gripe_wrong_type_arg ("octave_base_value::load_ascii()", type_name ());
+  return false;
+}
+
+bool 
+octave_base_value::save_binary (std::ostream&, bool&)
+{
+  gripe_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
+  return false;
+}
+
+bool 
+octave_base_value::load_binary (std::istream&, bool,
+				oct_mach_info::float_format)
+{
+  gripe_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
+  return false;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_base_value::save_hdf5 (hid_t, const char *, bool)
+{
+  gripe_wrong_type_arg ("octave_base_value::save_binary()", type_name ());
+
+  return false;
+}
+
+bool 
+octave_base_value::load_hdf5 (hid_t, const char *, bool)
+{
+  gripe_wrong_type_arg ("octave_base_value::load_binary()", type_name ());
+
+  return false;
+}
+#endif
+
 CONVDECLX (matrix_conv)
 {
   return new octave_matrix ();

@@ -1,3 +1,14 @@
+2004-01-06  David Bateman  <dbateman@free.fr>
+
+ 	* CNDArray.cc (ComplexNDArray::any_element_is_inf_or_nan, 
+ 	ComplexNDArray::all_elements_are_real, ComplexNDArray::all_integers,
+ 	ComplexNDArray::too_large_for_float): New functions
+ 
+ 	* CNDArray.cc (operator <<, operator >>): New IO operators.
+ 	* CNDArray.h: Provide decls.
+ 	* dNDArray.cc (operator <<, operator >>): New IO operators.
+ 	* dNDArray.h: Provide decls.
+
 2003-12-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-ops: Delete bnda x bnda, b x bnda, and bnda x b ops since

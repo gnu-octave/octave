@@ -43,6 +43,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "pr-output.h"
 
+#include "ls-oct-ascii.h"
+#include "ls-hdf5.h"
+
 template class octave_base_scalar<Complex>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_complex);
@@ -145,6 +148,173 @@ octave_complex::complex_array_value (bool /* force_conversion */) const
 {
   return ComplexNDArray (dim_vector (1, 1), scalar);
 }
+
+bool 
+octave_complex::save_ascii (std::ostream& os, bool& infnan_warned, 
+			    bool strip_nan_and_inf)
+{
+  Complex c = complex_value ();
+
+  if (strip_nan_and_inf)
+    {
+      if (xisnan (c))
+	{
+	  error ("only value to plot is NaN");
+	  return false;
+	}
+      else
+	{
+	  double re = real (c);
+	  double im = imag (c);
+
+	  re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
+	  im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
+
+	  c = Complex (re, im);
+
+	  octave_write_complex (os, c);
+	  os << "\n";
+	}
+    }
+  else
+    {
+      if (! infnan_warned && (xisnan (c) || xisinf (c)))
+	{
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
+      
+      octave_write_complex (os, c);
+      os << "\n";
+    }
+
+  return true;
+}
+
+bool 
+octave_complex::load_ascii (std::istream& is)
+{
+  scalar = octave_read_complex (is);
+
+  if (!is) 
+    {
+      error ("load: failed to load complex scalar constant");
+      return false;
+    }
+
+  return true;
+}
+
+
+bool 
+octave_complex::save_binary (std::ostream& os, bool& /* save_as_floats */)
+{
+  char tmp = (char) LS_DOUBLE;
+  os.write (X_CAST (char *, &tmp), 1);
+  Complex ctmp = complex_value ();
+  os.write (X_CAST (char *, &ctmp), 16);
+
+  return true;
+}
+
+bool 
+octave_complex::load_binary (std::istream& is, bool swap,
+			     oct_mach_info::float_format fmt)
+{
+  char tmp;
+  if (! is.read (X_CAST (char *, &tmp), 1))
+    return false;
+
+  Complex ctmp;
+  read_doubles (is, X_CAST (double *, &ctmp), X_CAST (save_type, tmp), 2, 
+		swap, fmt);
+  if (error_state || ! is)
+    return false;
+
+  scalar = ctmp;
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_complex::save_hdf5 (hid_t loc_id, const char *name,
+			   bool /* save_as_floats */)
+{
+  hsize_t dimens[3];
+  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
+  bool retval = true;
+
+  space_hid = H5Screate_simple (0, dimens, (hsize_t*) 0);
+  if (space_hid < 0) return false;
+
+  type_hid = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
+  if (type_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      return false;
+    }
+
+  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
+  if (data_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      return false;
+    }
+
+  Complex tmp = complex_value ();
+  retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+		     (void*) X_CAST (double*, &tmp)) >= 0;
+
+  H5Dclose (data_hid);
+  H5Tclose (type_hid);
+  H5Sclose (space_hid);
+  return retval;
+}
+
+bool
+octave_complex::load_hdf5 (hid_t loc_id, const char *name,
+			   bool /* have_h5giterate_bug */)
+{
+  bool retval = false;
+  hid_t data_hid = H5Dopen (loc_id, name);
+  hid_t type_hid = H5Dget_type (data_hid);
+
+  hid_t complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
+
+  if (! hdf5_types_compatible (type_hid, complex_type))
+    {
+      H5Tclose(complex_type);
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  hid_t space_id = H5Dget_space (data_hid);
+  hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+  if (rank != 0) 
+    {
+      H5Tclose(complex_type);
+      H5Sclose (space_id);
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  // complex scalar:
+  Complex ctmp;
+  if (H5Dread (data_hid, complex_type, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+	       (void *) X_CAST (double *, &ctmp)) >= 0)
+    {
+      retval = true;
+      scalar = ctmp;
+    }
+
+  H5Tclose(complex_type);
+  H5Sclose (space_id);
+  H5Dclose (data_hid);
+  return retval;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

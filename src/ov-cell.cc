@@ -45,6 +45,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 
+#include "byte-swap.h"
+#include "ls-oct-ascii.h"
+#include "ls-oct-binary.h"
+#include "ls-hdf5.h"
+#include "ls-utils.h"
+
 template class octave_base_matrix<Cell>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cell);
@@ -394,6 +400,455 @@ octave_cell::print_raw (std::ostream& os, bool) const
       newline (os);
     }
 }
+
+#define CELL_ELT_TAG "<cell-element>"
+
+bool 
+octave_cell::save_ascii (std::ostream& os, bool& infnan_warned, 
+			       bool strip_nan_and_inf)
+{
+  dim_vector d = dims ();
+  if (d.length () > 2)
+    {
+      os << "# ndims: " << d.length () << "\n";
+      
+      for (int i=0; i < d.length (); i++)
+	os << " " << d (i);
+      os << "\n";
+
+      Cell tmp = cell_value ();
+      
+      for (int i = 0; i < d.numel (); i++)
+	{
+	  octave_value o_val = tmp.elem (i);
+
+	  // Recurse to print sub-value.
+	  bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, infnan_warned, 
+				    strip_nan_and_inf, 0, 0);
+	      
+	  if (! b)
+	    return os;
+	}
+    }
+  else
+    {
+      // Keep this case, rather than use generic code above for backward 
+      // compatiability. Makes load_ascii much more complex!!
+      os << "# rows: " << rows () << "\n"
+	 << "# columns: " << columns () << "\n";
+
+      Cell tmp = cell_value ();
+      
+      for (int j = 0; j < tmp.cols (); j++)
+	{
+	  for (int i = 0; i < tmp.rows (); i++)
+	    {
+	      octave_value o_val = tmp.elem (i, j);
+
+	      // Recurse to print sub-value.
+	      bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, 
+					infnan_warned, 
+					strip_nan_and_inf, 0, 0);
+	      
+	      if (! b)
+		return os;
+	    }
+	  
+	  os << "\n";
+	}
+    }
+
+  return true;
+}
+
+bool 
+octave_cell::load_ascii (std::istream& is)
+{
+  int mdims = 0;
+  bool success = true;
+  std::streampos pos = is.tellg ();
+
+  if (extract_keyword (is, "ndims", mdims, true))
+    {
+      if (mdims >= 0)
+	{
+	  dim_vector dv;
+	  dv.resize (mdims);
+
+	  for (int i = 0; i < mdims; i++)
+	    is >> dv(i);
+
+	  Cell tmp(dv);
+
+	  for (int i = 0; i < dv.numel (); i++)
+	    {
+	      octave_value t2;
+	      bool dummy;
+
+	      // recurse to read cell elements
+	      std::string nm = read_ascii_data (is, std::string (), 
+						dummy, t2, count);
+
+	      if (nm == CELL_ELT_TAG)
+		{
+		  if (is)
+		    tmp.elem (i) = t2;
+		}
+	      else
+		{
+		  error ("load: cell array element had unexpected name");
+		  success = false;
+		  break;
+		}
+	    }
+
+	  if (is)
+	    matrix = tmp;
+	  else
+	    {
+	      error ("load: failed to load matrix constant");
+	      success = false;
+	    }
+	}
+      else
+	{
+	  error ("load: failed to extract number of rows and columns");
+	  success = false;
+	}
+      
+    }
+  else
+    {
+      int nr = 0;
+      int nc = 0;
+
+      // re-read the same line again
+      is.clear ();
+      is.seekg (pos);
+
+      if (extract_keyword (is, "rows", nr) && nr >= 0
+	  && extract_keyword (is, "columns", nc) && nc >= 0)
+	{
+	  if (nr > 0 && nc > 0)
+	    {
+	      Cell tmp (nr, nc);
+
+	      for (int j = 0; j < nc; j++)
+		{
+		  for (int i = 0; i < nr; i++)
+		    {
+		      octave_value t2;
+		      bool dummy;
+
+		      // recurse to read cell elements
+		      std::string nm = read_ascii_data (is, std::string (), 
+							dummy, t2, count);
+
+		      if (nm == CELL_ELT_TAG)
+			{
+			  if (is)
+			    tmp.elem (i, j) = t2;
+			}
+		      else
+			{
+			  error ("load: cell array element had unexpected name");
+			  success = false;
+			  goto cell_read_error;
+			}
+		    }
+		}
+	      
+	    cell_read_error:
+
+	      if (is) 
+		matrix = tmp;
+	      else
+		{
+		  error ("load: failed to load cell element");
+		  success = false;
+		}
+	    }
+	  else if (nr == 0 || nc == 0)
+	    matrix = Cell (nr, nc);
+	  else
+	    panic_impossible ();
+	}
+      else {
+	error ("load: failed to extract number of rows and columns for cell array");
+	success = false;
+      }
+    }
+
+  return success;
+}
+
+bool 
+octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
+{
+  dim_vector d = dims ();
+  if (d.length () < 1)
+    return false;
+
+  // Use negative value for ndims
+  FOUR_BYTE_INT di = - d.length();
+  os.write (X_CAST (char *, &di), 4);
+  for (int i=0; i < d.length (); i++)
+    {
+      di = d(i);
+      os.write (X_CAST (char *, &di), 4);
+    }
+  
+  Cell tmp = cell_value ();
+      
+  for (int i = 0; i < d.numel (); i++)
+    {
+      octave_value o_val = tmp.elem (i);
+
+      // Recurse to print sub-value.
+      bool b = save_binary_data (os, o_val, CELL_ELT_TAG, "", 0, 
+				 save_as_floats);
+	      
+      if (! b)
+	return false;
+    }
+  
+  return true;
+}
+
+bool 
+octave_cell::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  bool success = true;
+  FOUR_BYTE_INT mdims;
+  if (! is.read (X_CAST (char *, &mdims), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &mdims));
+  if (mdims >= 0)
+    return false;
+
+  mdims = -mdims;
+  FOUR_BYTE_INT di;
+  dim_vector dv;
+  dv.resize (mdims);
+
+  for (int i = 0; i < mdims; i++)
+    {
+      if (! is.read (X_CAST (char *, &di), 4))
+	return false;
+      if (swap)
+	swap_4_bytes (X_CAST (char *, &di));
+      dv(i) = di;
+    }
+  
+  int nel = dv.numel ();
+  Cell tmp(dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      octave_value t2;
+      bool dummy;
+      std::string doc;
+
+      // recurse to read cell elements
+      std::string nm = read_binary_data (is, swap, fmt, std::string (), 
+					 dummy, t2, doc);
+
+      if (nm == CELL_ELT_TAG)
+	{
+	  if (is)
+	    tmp.elem (i) = t2;
+	}
+      else
+	{
+	  error ("load: cell array element had unexpected name");
+	  success = false;
+	  break;
+	}
+    }
+
+  if (is)
+    matrix = tmp;
+  else
+    {
+      error ("load: failed to load matrix constant");
+      success = false;
+    }
+
+  return success;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+{
+  hsize_t dimens[3];
+  hid_t space_hid = -1, data_hid = -1, size_hid = -1;
+
+  data_hid = H5Gcreate (loc_id, name, 0);
+  if (data_hid < 0) return false;
+
+  // Have to save rows/columns since can't have a dataset of groups....
+  space_hid = H5Screate_simple (0, dimens, (hsize_t*) 0);
+  if (space_hid < 0) 
+    {
+      H5Gclose (data_hid);
+      return false;
+    }
+
+  size_hid = H5Dcreate (data_hid, "rows", H5T_NATIVE_INT, space_hid, 
+			H5P_DEFAULT);
+  if (size_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      H5Gclose (data_hid);
+      return false;
+    }
+
+  int rc = rows();
+  if (! H5Dwrite (size_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL,
+		  H5P_DEFAULT, (void*) &rc) < 0)
+    {
+      H5Dclose (size_hid);
+      H5Sclose (space_hid);
+      H5Gclose (data_hid);
+      return false;
+    }
+  H5Dclose (size_hid);
+
+  size_hid = H5Dcreate (data_hid, "columns", H5T_NATIVE_INT, space_hid, 
+			H5P_DEFAULT);
+  if (size_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      H5Gclose (data_hid);
+      return false;
+    }
+
+  rc = columns();
+  if (! H5Dwrite (size_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL,
+		  H5P_DEFAULT, (void*) &rc) < 0)
+    {
+      H5Dclose (size_hid);
+      H5Sclose (space_hid);
+      H5Gclose (data_hid);
+      return false;
+    }
+  H5Dclose (size_hid);
+  H5Sclose (space_hid);
+
+  // recursively add each element of the cell to this group
+  Cell tmp = cell_value ();
+  
+  for (int j = 0; j < tmp.cols (); j++)
+    {
+      for (int i = 0; i < tmp.rows (); i++)
+	{
+	  char s[20];
+	  sprintf (s, "_%d", (i + j * tmp.rows ()));
+
+	  if (! add_hdf5_data(data_hid, tmp.elem (i, j), s, "", false,
+			      save_as_floats))
+	    {
+	      H5Gclose (data_hid);
+	      return false;
+	    }
+	}
+    }
+
+  H5Gclose (data_hid);
+  return true;
+}
+
+bool
+octave_cell::load_hdf5 (hid_t loc_id, const char *name,
+			bool have_h5giterate_bug)
+{
+  bool retval = false;
+  hid_t group_id = H5Gopen (loc_id, name);
+
+  if (group_id < 0)
+    return false;
+
+  hid_t data_hid = H5Dopen (group_id, "rows");
+  hid_t space_hid = H5Dget_space (data_hid);
+  hsize_t rank = H5Sget_simple_extent_ndims (space_hid);
+  if (rank != 0) 
+    {
+      H5Dclose(data_hid);
+      H5Gclose(group_id);
+      return false;
+    }
+
+  int nr;
+  if (H5Dread (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) &nr) < 0)
+    {
+      H5Dclose(data_hid);
+      H5Gclose(group_id);
+      return false;
+    }
+  H5Dclose (data_hid);
+
+  data_hid = H5Dopen (group_id, "columns");
+  space_hid = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_hid);
+  if (rank != 0)
+    {
+      H5Dclose(data_hid);
+      H5Gclose(group_id);
+      return false;
+    }
+
+  int nc;
+  if (H5Dread (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) &nc) < 0)
+    {
+      H5Dclose(data_hid);
+      H5Gclose(group_id);
+      return false;
+    }
+  H5Dclose (data_hid);
+  H5Gclose (group_id);
+
+  hdf5_callback_data dsub;
+
+  herr_t retval2 = -1;
+  Cell m (nr, nc);
+  int current_item = 0;
+  if (have_h5giterate_bug)
+    current_item = 2;   // Skip row/columns items in group
+
+  for (int j = 0; j < nc; j++)
+    {
+      for (int i = 0; i < nr; i++)
+	{
+	  retval2 = H5Giterate (loc_id, name, &current_item,
+				hdf5_read_next_data, &dsub);
+	  if (retval2 <= 0)
+	    break;
+
+	  octave_value ov = dsub.tc;
+	  m.elem (i, j) = ov;
+
+	  if (have_h5giterate_bug)
+	    current_item++;  // H5Giterate returned the last index processed
+
+	}
+      if (retval2 <= 0)
+	break;
+    }
+
+  if (retval2 >= 0)
+    {
+      matrix = m;
+      retval = true;
+    }
+  
+  return retval;
+}
+#endif
 
 DEFUN (iscell, args, ,
   "-*- texinfo -*-\n\

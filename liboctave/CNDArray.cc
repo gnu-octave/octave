@@ -29,10 +29,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cfloat>
+
 #include "Array-util.h"
 #include "CNDArray.h"
 #include "mx-base.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 
 // XXX FIXME XXX -- could we use a templated mixed-type copy function
 // here?
@@ -72,6 +75,114 @@ ComplexNDArray::operator ! (void) const
 }
 
 // XXX FIXME XXX -- this is not quite the right thing.
+
+bool
+ComplexNDArray::any_element_is_inf_or_nan (void) const
+{
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      Complex val = elem (i);
+      if (xisinf (val) || xisnan (val))
+	return true;
+    }
+  return false;
+}
+
+// Return true if no elements have imaginary components.
+
+bool
+ComplexNDArray::all_elements_are_real (void) const
+{
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      double ip = imag (elem (i));
+
+      if (ip != 0.0 || lo_ieee_signbit (ip))
+	return false;
+    }
+
+  return true;
+}
+
+// Return nonzero if any element of CM has a non-integer real or
+// imaginary part.  Also extract the largest and smallest (real or
+// imaginary) values and return them in MAX_VAL and MIN_VAL. 
+
+bool
+ComplexNDArray::all_integers (double& max_val, double& min_val) const
+{
+  int nel = nelem ();
+
+  if (nel > 0)
+    {
+      Complex val = elem (0);
+
+      double r_val = real (val);
+      double i_val = imag (val);
+      
+      max_val = r_val;
+      min_val = r_val;
+
+      if (i_val > max_val)
+	max_val = i_val;
+
+      if (i_val < max_val)
+	min_val = i_val;
+    }
+  else
+    return false;
+
+  for (int i = 0; i < nel; i++)
+    {
+      Complex val = elem (i);
+
+      double r_val = real (val);
+      double i_val = imag (val);
+
+      if (r_val > max_val)
+	max_val = r_val;
+
+      if (i_val > max_val)
+	max_val = i_val;
+
+      if (r_val < min_val)
+	min_val = r_val;
+
+      if (i_val < min_val)
+	min_val = i_val;
+
+      if (D_NINT (r_val) != r_val || D_NINT (i_val) != i_val)
+	return false;
+    }
+
+  return true;
+}
+
+bool
+ComplexNDArray::too_large_for_float (void) const
+{
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      Complex val = elem (i);
+
+      double r_val = real (val);
+      double i_val = imag (val);
+
+      if (r_val > FLT_MAX
+	  || i_val > FLT_MAX
+	  || r_val < FLT_MIN
+	  || i_val < FLT_MIN)
+	return true;
+    }
+
+  return false;
+}
 
 boolNDArray
 ComplexNDArray::all (int dim) const
@@ -173,6 +284,47 @@ ComplexNDArray::compute_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
+}
+
+
+// This contains no information on the array structure !!!
+std::ostream&
+operator << (std::ostream& os, const ComplexNDArray& a)
+{
+  int nel = a.nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      os << " ";
+      octave_write_complex (os, a.elem (i));
+      os << "\n";
+    }
+  return os;
+}
+
+std::istream&
+operator >> (std::istream& is, ComplexNDArray& a)
+{
+  int nel = a.nelem ();
+
+  if (nel < 1 )
+    is.clear (std::ios::badbit);
+  else
+    {
+      Complex tmp;
+      for (int i = 0; i < nel; i++)
+	  {
+	    tmp = octave_read_complex (is);
+	    if (is)
+	      a.elem (i) = tmp;
+	    else
+	      goto done;
+	  }
+    }
+
+ done:
+
+  return is;
 }
 
 NDS_CMP_OPS(ComplexNDArray, real, Complex, real)

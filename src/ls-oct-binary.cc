@@ -99,43 +99,37 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   global flag          integer             1
 //
-//   data type            integer             1
+//   data type            char                1
 //
-//   data (one of):
+// In general "data type" is 255, and in that case the next arguments
+// in the data set are
 //
-//     scalar:
-//       data             real                8
+//   object               type            bytes
+//   ------               ----            -----
+//   type_length          integer             4
 //
-//     complex scalar:
-//       data             complex            16
+//   type                 string    type_length
 //
-//     matrix:
-//       rows             integer             4
-//       columns          integer             4
-//       data             real            r*c*8
+// The string "type" is then used with octave_value_typeinfo::lookup_type
+// to create an octave_value of the correct type. The specific load/save
+// function is then called.
 //
-//     complex matrix:
-//       rows             integer             4
-//       columns          integer             4
-//       data             complex        r*c*16
+// For backward compatiablity "data type" can also be a value between 1
+// and 7, where this defines a hardcoded octave_value of the type
 //
-//     string:
-//       length           int                 4
-//       data             string         length
+//   data type                  octave_value
+//   ---------                  ------------
+//   1                          scalar
+//   2                          matrix
+//   3                          complex scalar
+//   4                          complex matrix
+//   5                          string   (old style storage)
+//   6                          range
+//   7                          string
 //
-//     range:
-//       base             real                8
-//       limit            real                8
-//       increment        real                8
-//
-//     string array
-//       elements         int                 4
-//
-//       for each element:
-//         length         int                 4
-//         data           string         length
-//
-// FILENAME is used for error messages.
+// Except for "data type" equal 5 that requires special treatment, these
+// old style "data type" value also cause the specific load/save functions
+// to be called. FILENAME is used for error messages.
 
 std::string
 read_binary_data (std::istream& is, bool swap,
@@ -191,82 +185,30 @@ read_binary_data (std::istream& is, bool swap,
   if (! is.read (X_CAST (char *, &tmp), 1))
     goto data_read_error;
 
+  // All cases except 255 kept for backwards compatibility
   switch (tmp)
     {
     case 1:
-      {
-	if (! is.read (X_CAST (char *, &tmp), 1))
-	  goto data_read_error;
-	double dtmp;
-	read_doubles (is, &dtmp, X_CAST (save_type, tmp), 1, swap, fmt);
-	if (error_state || ! is)
-	  goto data_read_error;
-	tc = dtmp;
-      }
+      tc = octave_value_typeinfo::lookup_type ("scalar");
       break;
 
     case 2:
-      {
-	FOUR_BYTE_INT nr, nc;
-	if (! is.read (X_CAST (char *, &nr), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_4_bytes (X_CAST (char *, &nr));
-	if (! is.read (X_CAST (char *, &nc), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_4_bytes (X_CAST (char *, &nc));
-	if (! is.read (X_CAST (char *, &tmp), 1))
-	  goto data_read_error;
-	Matrix m (nr, nc);
-	double *re = m.fortran_vec ();
-	int len = nr * nc;
-	read_doubles (is, re, X_CAST (save_type, tmp), len, swap, fmt);
-	if (error_state || ! is)
-	  goto data_read_error;
-	tc = m;
-      }
+      tc = octave_value_typeinfo::lookup_type ("matrix");
       break;
 
     case 3:
-      {
-	if (! is.read (X_CAST (char *, &tmp), 1))
-	  goto data_read_error;
-	Complex ctmp;
-	read_doubles (is, X_CAST (double *, &ctmp),
-		      X_CAST (save_type, tmp), 2, swap, fmt);
-	if (error_state || ! is)
-	  goto data_read_error;
-	tc = ctmp;
-      }
+      tc = octave_value_typeinfo::lookup_type ("complex scalar");
       break;
 
     case 4:
-      {
-	FOUR_BYTE_INT nr, nc;
-	if (! is.read (X_CAST (char *, &nr), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_4_bytes (X_CAST (char *, &nr));
-	if (! is.read (X_CAST (char *, &nc), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_4_bytes (X_CAST (char *, &nc));
-	if (! is.read (X_CAST (char *, &tmp), 1))
-	  goto data_read_error;
-	ComplexMatrix m (nr, nc);
-	Complex *im = m.fortran_vec ();
-	int len = nr * nc;
-	read_doubles (is, X_CAST (double *, im),
-		      X_CAST (save_type, tmp), 2*len, swap, fmt);
-	if (error_state || ! is)
-	  goto data_read_error;
-	tc = m;
-      }
+      tc = octave_value_typeinfo::lookup_type ("complex matrix");
       break;
 
     case 5:
       {
+	// XXX FIXME XXXX
+	// This is cruft, since its for a save type that is old. Maybe
+	// this is taking backward compatability too far!!
 	FOUR_BYTE_INT len;
 	if (! is.read (X_CAST (char *, &len), 4))
 	  goto data_read_error;
@@ -277,66 +219,45 @@ read_binary_data (std::istream& is, bool swap,
 	  goto data_read_error;
 	s[len] = '\0';
 	tc = s;
+
+	// Early return, since don't want rest of this function
+	return retval;
       }
       break;
 
     case 6:
-      {
-	if (! is.read (X_CAST (char *, &tmp), 1))
-	  goto data_read_error;
-	double bas, lim, inc;
-	if (! is.read (X_CAST (char *, &bas), 8))
-	  goto data_read_error;
-	if (swap)
-	  swap_8_bytes (X_CAST (char *, &bas));
-	if (! is.read (X_CAST (char *, &lim), 8))
-	  goto data_read_error;
-	if (swap)
-	  swap_8_bytes (X_CAST (char *, &lim));
-	if (! is.read (X_CAST (char *, &inc), 8))
-	  goto data_read_error;
-	if (swap)
-	  swap_8_bytes (X_CAST (char *, &inc));
-	Range r (bas, lim, inc);
-	tc = r;
-      }
+      tc = octave_value_typeinfo::lookup_type ("range");
       break;
 
     case 7:
-      {
-	FOUR_BYTE_INT elements;
-	if (! is.read (X_CAST (char *, &elements), 4))
-	  goto data_read_error;
-	if (swap)
-	  swap_4_bytes (X_CAST (char *, &elements));
-	charMatrix chm (elements, 0);
-	int max_len = 0;
-	for (int i = 0; i < elements; i++)
-	  {
-	    FOUR_BYTE_INT len;
-	    if (! is.read (X_CAST (char *, &len), 4))
-	      goto data_read_error;
-	    if (swap)
-	      swap_4_bytes (X_CAST (char *, &len));
-	    OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
-	    if (! is.read (X_CAST (char *, btmp), len))
-	      goto data_read_error;
-	    if (len > max_len)
-	      {
-		max_len = len;
-		chm.resize (elements, max_len, 0);
-	      }
-	    btmp [len] = '\0';
-	    chm.insert (btmp, i, 0);
-	  }
-	tc = octave_value (chm, true);
-      }
+      tc = octave_value_typeinfo::lookup_type ("string");
       break;
 
+    case 255:
+      {
+	// Read the saved variable type
+	FOUR_BYTE_INT len;
+	if (! is.read (X_CAST (char *, &len), 4))
+	  goto data_read_error;
+	if (swap)
+	  swap_4_bytes (X_CAST (char *, &len));
+	OCTAVE_LOCAL_BUFFER (char, s, len+1);
+	if (! is.read (X_CAST (char *, s), len))
+	  goto data_read_error;
+	s[len] = '\0';
+	std::string typ = s;
+	tc = octave_value_typeinfo::lookup_type (typ);
+      }
+      break;
     default:
+      goto data_read_error;
+      break;
+    }
+  
+  if (!tc.load_binary (is, swap, fmt))
+    {
     data_read_error:
       error ("load: trouble reading binary file `%s'", filename.c_str ());
-      break;
     }
 
   return retval;
@@ -366,118 +287,24 @@ save_binary_data (std::ostream& os, const octave_value& tc,
   tmp = mark_as_global;
   os.write (X_CAST (char *, &tmp), 1);
 
-  if (tc.is_string ())
-    {
-      tmp = 7;
-      os.write (X_CAST (char *, &tmp), 1);
-      FOUR_BYTE_INT nr = tc.rows ();
-      os.write (X_CAST (char *, &nr), 4);
-      charMatrix chm = tc.char_matrix_value ();
-      for (int i = 0; i < nr; i++)
-	{
-	  FOUR_BYTE_INT len = chm.cols ();
-	  os.write (X_CAST (char *, &len), 4);
-	  std::string tstr = chm.row_as_string (i);
-	  const char *btmp = tstr.data ();
-	  os.write (X_CAST (char *, btmp), len);
-	}
-    }
-  else if (tc.is_range ())
-    {
-      tmp = 6;
-      os.write (X_CAST (char *, &tmp), 1);
-      tmp = (char) LS_DOUBLE;
-      os.write (X_CAST (char *, &tmp), 1);
-      Range r = tc.range_value ();
-      double bas = r.base ();
-      double lim = r.limit ();
-      double inc = r.inc ();
-      os.write (X_CAST (char *, &bas), 8);
-      os.write (X_CAST (char *, &lim), 8);
-      os.write (X_CAST (char *, &inc), 8);
-    }
-  else if (tc.is_real_scalar ())
-    {
-      tmp = 1;
-      os.write (X_CAST (char *, &tmp), 1);
-      tmp = (char) LS_DOUBLE;
-      os.write (X_CAST (char *, &tmp), 1);
-      double dtmp = tc.double_value ();
-      os.write (X_CAST (char *, &dtmp), 8);
-    }
-  else if (tc.is_real_matrix ())
-    {
-      tmp = 2;
-      os.write (X_CAST (char *, &tmp), 1);
-      Matrix m = tc.matrix_value ();
-      FOUR_BYTE_INT nr = m.rows ();
-      FOUR_BYTE_INT nc = m.columns ();
-      os.write (X_CAST (char *, &nr), 4);
-      os.write (X_CAST (char *, &nc), 4);
-      int len = nr * nc;
-      save_type st = LS_DOUBLE;
-      if (save_as_floats)
-	{
-	  if (m.too_large_for_float ())
-	    {
-	      warning ("save: some values too large to save as floats --");
-	      warning ("save: saving as doubles instead");
-	    }
-	  else
-	    st = LS_FLOAT;
-	}
-      else if (len > 8192) // XXX FIXME XXX -- make this configurable.
-	{
-	  double max_val, min_val;
-	  if (m.all_integers (max_val, min_val))
-	    st = get_save_type (max_val, min_val);
-	}
-      const double *mtmp = m.data ();
-      write_doubles (os, mtmp, st, len);
-    }
-  else if (tc.is_complex_scalar ())
-    {
-      tmp = 3;
-      os.write (X_CAST (char *, &tmp), 1);
-      tmp = (char) LS_DOUBLE;
-      os.write (X_CAST (char *, &tmp), 1);
-      Complex ctmp = tc.complex_value ();
-      os.write (X_CAST (char *, &ctmp), 16);
-    }
-  else if (tc.is_complex_matrix ())
-    {
-      tmp = 4;
-      os.write (X_CAST (char *, &tmp), 1);
-      ComplexMatrix m = tc.complex_matrix_value ();
-      FOUR_BYTE_INT nr = m.rows ();
-      FOUR_BYTE_INT nc = m.columns ();
-      os.write (X_CAST (char *, &nr), 4);
-      os.write (X_CAST (char *, &nc), 4);
-      int len = nr * nc;
-      save_type st = LS_DOUBLE;
-      if (save_as_floats)
-	{
-	  if (m.too_large_for_float ())
-	    {
-	      warning ("save: some values too large to save as floats --");
-	      warning ("save: saving as doubles instead");
-	    }
-	  else
-	    st = LS_FLOAT;
-	}
-      else if (len > 4096) // XXX FIXME XXX -- make this configurable.
-	{
-	  double max_val, min_val;
-	  if (m.all_integers (max_val, min_val))
-	    st = get_save_type (max_val, min_val);
-	}
-      const Complex *mtmp = m.data ();
-      write_doubles (os, X_CAST (const double *, mtmp), st, 2*len);
-    }
-  else
-    gripe_wrong_type_arg ("save", tc, false);
+  // 255 flags the new binary format
+  tmp = 255;
+  os.write (X_CAST (char *, &tmp), 1);
 
-  return os;
+  // Write the string corresponding to the octave_value type
+  std::string typ = tc.type_name ();
+  FOUR_BYTE_INT len = typ.length ();
+  os.write (X_CAST (char *, &len), 4);
+  const char *btmp = typ.data ();
+  os.write (X_CAST (char *, btmp), len);
+      
+  // The octave_value of tc is const. Make a copy...
+  octave_value val = tc;
+
+  // Call specific save function
+  bool success = val.save_binary (os, save_as_floats);
+
+  return (os && success);
 }
 
 /*

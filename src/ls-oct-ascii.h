@@ -23,8 +23,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_ls_oct_ascii_h)
 #define octave_ls_oct_ascii_h 1
 
+#include <cfloat>
+
+// Flag for cell elements
+#define CELL_ELT_TAG "<cell-element>"
+
+// Used when converting Inf to something that gnuplot can read.
+
+#ifndef OCT_RBV
+#define OCT_RBV DBL_MAX / 100.0
+#endif
+
 extern std::string
-extract_keyword (std::istream& is, const char *keyword);
+extract_keyword (std::istream& is, const char *keyword, 
+		 const bool next_only = false);
+
+extern  bool
+extract_keyword (std::istream& is, const char *keyword, int& value,
+		 const bool next_only = false);
 
 extern std::string
 read_ascii_data (std::istream& is, const std::string& filename, bool& global,

@@ -375,7 +375,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 octave_value
 do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
-	 bool list_only, bool swap, bool verbose, bool import,
+	 bool list_only, bool swap, bool verbose,
 	 const string_vector& argv, int argv_idx, int argc, int nargout)
 {
   octave_value retval;
@@ -415,8 +415,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
 #ifdef HAVE_HDF5
 	case LS_HDF5:
-	  name = read_hdf5_data (stream, orig_fname,
-				 global, tc, doc, import);
+	  name = read_hdf5_data (stream, orig_fname, global, tc, doc);
 	  break;
 #endif /* HAVE_HDF5 */
 
@@ -586,19 +585,15 @@ Force Octave to assume the file is in HDF5 format.\n\
 (HDF5 is a free, portable binary format developed by the National\n\
 Center for Supercomputing Applications at the University of Illinois.)\n\
 Note that Octave can read HDF5 files not created by itself, but may\n\
-skip some datasets in formats that it cannot support.  In particular,\n\
-it will skip datasets of data types that it does not recognize, with\n\
-dimensionality > 2, or with names that aren't valid Octave identifiers\n\
-See, however, the @samp{-import} option to ameliorate this somewhat.\n"
+skip some datasets in formats that it cannot support.\n"
 
 HAVE_HDF5_HELP_STRING
 
 "\n\
 @item -import\n\
-Make a stronger attempt to import foreign datasets.  Currently, this means\n\
-that for HDF5 files, invalid characters in names are converted to @samp{_},\n\
-and datasets with dimensionality > 2 are imported as lists of matrices (or\n\
-lists of lists of matrices, or ...).\n\
+The @samp{-import} is acceptted but ignored for backward compatiability.\n\
+Octave can now support multi-dimensional HDF data and automatically modifies\n\
+variable names if they are invalid Octave identifiers.\n\
 \n\
 @end table\n\
 @end deffn")
@@ -621,7 +616,6 @@ lists of lists of matrices, or ...).\n\
   bool force = false;
   bool list_only = false;
   bool verbose = false;
-  bool import = false;
 
   int i;
   for (i = 1; i < argc; i++)
@@ -665,7 +659,7 @@ lists of lists of matrices, or ...).\n\
 	}
       else if (argv[i] == "-import" || argv[i] == "-i")
 	{
-	  import = true;
+	  warning ("load: -import ignored");
 	}
       else
 	break;
@@ -700,7 +694,7 @@ lists of lists of matrices, or ...).\n\
 	  // can't fix this using std::cin only.
 
 	  retval = do_load (std::cin, orig_fname, force, format, flt_fmt,
-			    list_only, swap, verbose, import, argv, i, argc,
+			    list_only, swap, verbose, argv, i, argc,
 			    nargout);
 	}
       else
@@ -724,7 +718,7 @@ lists of lists of matrices, or ...).\n\
 	    {
 	      retval = do_load (hdf5_file, orig_fname, force, format,
 				flt_fmt, list_only, swap, verbose,
-				import, argv, i, argc, nargout);
+				argv, i, argc, nargout);
 
 	      hdf5_file.close ();
 	    }
@@ -768,7 +762,7 @@ lists of lists of matrices, or ...).\n\
 		}
 
 	      retval = do_load (file, orig_fname, force, format,
-				flt_fmt, list_only, swap, verbose, import,
+				flt_fmt, list_only, swap, verbose,
 				argv, i, argc, nargout);
 	      file.close ();
 	    }
@@ -1270,7 +1264,7 @@ the file @file{data} in Octave's binary format.\n\
 
 #ifdef HAVE_HDF5
       if (format == LS_HDF5)
-        error ("load: cannot write HDF5 format to stdout");
+        error ("save: cannot write HDF5 format to stdout");
       else
 #endif /* HAVE_HDF5 */
 	// don't insert any commands here!  the brace below must go
@@ -1310,11 +1304,12 @@ the file @file{data} in Octave's binary format.\n\
 	{
 	  hdf5_ofstream hdf5_file (fname.c_str ());
 
-	  if (hdf5_file.file_id >= 0) {
-	    save_vars (argv, i, argc, hdf5_file, save_builtins, format,
-		       save_as_floats, true);
+	  if (hdf5_file.file_id >= 0)
+	    {
+	      save_vars (argv, i, argc, hdf5_file, save_builtins, format,
+			 save_as_floats, true);
 
-	    hdf5_file.close ();
+	      hdf5_file.close ();
 	  }
 	else
 	  {

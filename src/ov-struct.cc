@@ -40,6 +40,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "variables.h"
 
+#include "byte-swap.h"
+#include "ls-oct-ascii.h"
+#include "ls-oct-binary.h"
+#include "ls-hdf5.h"
+#include "ls-utils.h"
+
 DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
@@ -526,6 +532,214 @@ the second must be a string.\n\
 
   return retval;
 }
+
+bool 
+octave_struct::save_ascii (std::ostream& os, bool& infnan_warned, 
+			   bool strip_nan_and_inf)
+{
+  Octave_map m = map_value ();
+  os << "# length: " << m.length () << "\n";
+
+  Octave_map::iterator i = m.begin ();
+  while (i != m.end ())
+    {
+      Cell val = map.contents (i);
+      octave_value tmp = (map.numel () == 1) ? val(0) : 
+	octave_value (val, true);
+
+      bool b = save_ascii_data (os, tmp, m.key (i), infnan_warned, 
+				strip_nan_and_inf, 0, 0);
+      
+      if (! b)
+	return os;
+
+      i++;
+    }
+
+  return true;
+}
+
+bool 
+octave_struct::load_ascii (std::istream& is)
+{
+  int len = 0;
+  bool success = true;
+
+  if (extract_keyword (is, "length", len) && len >= 0)
+    {
+      if (len > 0)
+	{
+	  Octave_map m (map);
+
+	  for (int j = 0; j < len; j++)
+	    {
+	      octave_value t2;
+	      bool dummy;
+
+	      // recurse to read cell elements
+	      std::string nm
+		= read_ascii_data (is, std::string (), dummy, t2, count);
+
+	      if (!is)
+		break;
+
+	      m.assign (nm, t2);
+	    }
+
+	  if (is) 
+	    map = m;
+	  else
+	    {
+	      error ("load: failed to load structure");
+	      success = false;
+	    }
+	}
+      else if (len == 0 )
+	map = Octave_map ();
+      else
+	panic_impossible ();
+    }
+  else {
+    error ("load: failed to extract number of elements in structure");
+    success = false;
+  }
+
+  return success;
+}
+
+bool 
+octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
+{
+  Octave_map m = map_value ();
+
+  FOUR_BYTE_INT len = m.length();
+  os.write (X_CAST (char *, &len), 4);
+  
+  Octave_map::iterator i = m.begin ();
+  while (i != m.end ())
+    {
+      Cell val = map.contents (i);
+      octave_value tmp = (map.numel () == 1) ? val(0) : 
+	octave_value (val, true);
+
+      bool b = save_binary_data (os, tmp, m.key (i), "", 0, save_as_floats);
+      
+      if (! b)
+	return os;
+
+      i++;
+    }
+
+  return true;
+}
+
+bool 
+octave_struct::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  bool success = true;
+  FOUR_BYTE_INT len;
+  if (! is.read (X_CAST (char *, &len), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &len));
+
+  if (len > 0)
+    {
+      Octave_map m (map);
+
+      for (int j = 0; j < len; j++)
+	{
+	  octave_value t2;
+	  bool dummy;
+	  std::string doc;
+
+	  // recurse to read cell elements
+	  std::string nm = read_binary_data (is, swap, fmt, std::string (), 
+					     dummy, t2, doc);
+
+	  if (!is)
+	    break;
+
+	  m.assign (nm, t2);
+	}
+
+      if (is) 
+	map = m;
+      else
+	{
+	  error ("load: failed to load structure");
+	  success = false;
+	}
+    }
+  else if (len == 0 )
+    map = Octave_map ();
+  else
+    panic_impossible ();
+
+  return success;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+{
+  hid_t data_hid = -1;
+
+  data_hid = H5Gcreate (loc_id, name, 0);
+  if (data_hid < 0) return false;
+
+  // recursively add each element of the structure to this group
+  Octave_map m = map_value ();
+  Octave_map::iterator i = m.begin ();
+  while (i != m.end ())
+    {
+      Cell val = map.contents (i);
+      octave_value tmp = (map.numel () == 1) ? val(0) : 
+	octave_value (val, true);
+
+      bool retval2 = add_hdf5_data (data_hid, tmp, m.key (i), "", false, 
+				    save_as_floats);
+
+      if (! retval2)
+	break;
+
+      i++;
+    }
+
+  H5Gclose (data_hid);
+  return true;
+}
+
+bool 
+octave_struct::load_hdf5 (hid_t loc_id, const char *name,
+			  bool have_h5giterate_bug)
+{
+  bool retval = false;
+
+  hdf5_callback_data dsub;
+
+  herr_t retval2;
+  Octave_map m;
+  int current_item = 0;
+  while ((retval2 = H5Giterate (loc_id, name, &current_item,
+				hdf5_read_next_data, &dsub)) > 0)
+    {
+      m.assign (dsub.name, dsub.tc);
+
+      if (have_h5giterate_bug)
+	current_item++;  // H5Giterate returned the last index processed
+    }
+
+  if (retval2 >= 0)
+    {
+      map = m;
+      retval = true;
+    }
+  
+  return retval;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

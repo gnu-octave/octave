@@ -109,10 +109,51 @@ public:
     { hdf5_fstreambase::open (name, mode, prot); }
 };
 
+// Callback data structure for passing data to hdf5_read_next_data, below.
+
+struct
+hdf5_callback_data
+{
+  hdf5_callback_data (void)
+    : name (), global (false), tc (), doc () { }
+
+  // the following fields are set by hdf5_read_data on successful return:
+
+  // the name of the variable
+  std::string name;
+
+  // whether it is global
+  bool global;
+
+  // the value of the variable, in Octave form
+  octave_value tc;
+
+  // a documentation string (NULL if none)
+  std::string doc;
+};
+
+#if HAVE_HDF5_INT2FLOAT_CONVERSIONS
+extern hid_t
+save_type_to_hdf5 (save_type st)
+#endif
+
+extern hid_t
+hdf5_make_complex_type (hid_t num_type);
+
+extern bool
+hdf5_types_compatible (hid_t t1, hid_t t2);
+
+extern herr_t
+hdf5_read_next_data (hid_t group_id, const char *name, void *dv);
+
+extern bool
+add_hdf5_data (hid_t loc_id, const octave_value& tc,
+	       const std::string& name, const std::string& doc,
+	       bool mark_as_global, bool save_as_floats);
+
 extern std::string
-read_hdf5_data (std::istream& is,
-		const std::string& filename, bool& global,
-		octave_value& tc, std::string& doc, bool import);
+read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
+		octave_value& tc, std::string& doc);
 
 extern bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,

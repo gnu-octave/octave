@@ -41,6 +41,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "pr-output.h"
 
+#include "byte-swap.h"
+#include "ls-hdf5.h"
+#include "ls-utils.h"
+
 DEFINE_OCTAVE_ALLOCATOR (octave_range);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_range, "range", "double");
@@ -249,6 +253,213 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
     
   return retval;
 }
+
+// Skip white space and comments on stream IS.
+
+static void
+skip_comments (std::istream& is)
+{
+  char c = '\0';
+  while (is.get (c))
+    {
+      if (c == ' ' || c == '\t' || c == '\n')
+	; // Skip whitespace on way to beginning of next line.
+      else
+	break;
+    }
+
+  for (;;)
+    {
+      if (is && (c == '%' || c == '#'))
+	while (is.get (c) && c != '\n')
+	  ; // Skip to beginning of next line, ignoring everything.
+      else
+	break;
+    }
+}
+
+bool 
+octave_range::save_ascii (std::ostream& os, bool& /* infnan_warned */,
+			  bool /* strip_nan_and_inf */)
+{
+  Range r = range_value ();
+  double base = r.base ();
+  double limit = r.limit ();
+  double inc = r.inc ();
+
+  os << "# base, limit, increment\n";
+  octave_write_double (os, base);
+  os << " ";
+  octave_write_double (os, limit);
+  os << " ";
+  octave_write_double (os, inc);
+  os << "\n";
+
+  return true;
+}
+
+bool 
+octave_range::load_ascii (std::istream& is)
+{
+  // # base, limit, range comment added by save ().
+  skip_comments (is);
+
+  is >> range;
+
+  if (!is)
+    {
+      error ("load: failed to load range constant");
+      return false;
+    }
+
+  return true;
+}
+
+bool 
+octave_range::save_binary (std::ostream& os, bool& /* save_as_floats */)
+{
+  char tmp = (char) LS_DOUBLE;
+  os.write (X_CAST (char *, &tmp), 1);
+  Range r = range_value ();
+  double bas = r.base ();
+  double lim = r.limit ();
+  double inc = r.inc ();
+  os.write (X_CAST (char *, &bas), 8);
+  os.write (X_CAST (char *, &lim), 8);
+  os.write (X_CAST (char *, &inc), 8);
+
+  return true;
+}
+
+bool 
+octave_range::load_binary (std::istream& is, bool swap,
+			   oct_mach_info::float_format /* fmt */)
+{
+  char tmp;
+  if (! is.read (X_CAST (char *, &tmp), 1))
+    return false;
+  double bas, lim, inc;
+  if (! is.read (X_CAST (char *, &bas), 8))
+    return false;
+  if (swap)
+    swap_8_bytes (X_CAST (char *, &bas));
+  if (! is.read (X_CAST (char *, &lim), 8))
+    return false;
+  if (swap)
+    swap_8_bytes (X_CAST (char *, &lim));
+  if (! is.read (X_CAST (char *, &inc), 8))
+    return false;
+  if (swap)
+    swap_8_bytes (X_CAST (char *, &inc));
+  Range r (bas, lim, inc);
+  range = r;
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+// The following subroutines creates an HDF5 representation of the way
+// we will store Octave range types (triplets of floating-point numbers). 
+// NUM_TYPE is the HDF5 numeric type to use for storage (e.g. 
+// H5T_NATIVE_DOUBLE to save as 'double'). Note that any necessary 
+// conversions are handled automatically by HDF5.
+
+static hid_t
+hdf5_make_range_type (hid_t num_type)
+{
+  hid_t type_id = H5Tcreate (H5T_COMPOUND, sizeof (double) * 3);
+
+  H5Tinsert (type_id, "base", 0 * sizeof (double), num_type);
+  H5Tinsert (type_id, "limit", 1 * sizeof (double), num_type);
+  H5Tinsert (type_id, "increment", 2 * sizeof (double), num_type);
+
+  return type_id;
+}
+
+bool
+octave_range::save_hdf5 (hid_t loc_id, const char *name,
+			 bool /* save_as_floats */)
+{
+  hsize_t dims[3];
+  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
+  bool retval = true;
+
+  space_hid = H5Screate_simple (0, dims, (hsize_t*) 0);
+  if (space_hid < 0) return false;
+
+  type_hid = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
+  if (type_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      return false;
+    }
+
+  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
+  if (data_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      return false;
+    }
+  
+  Range r = range_value ();
+  double range_vals[3];
+  range_vals[0] = r.base ();
+  range_vals[1] = r.limit ();
+  range_vals[2] = r.inc ();
+
+  retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		     (void*) range_vals) >= 0;
+
+  H5Dclose (data_hid);
+  H5Tclose (type_hid);
+  H5Sclose (space_hid);
+  return retval;
+}
+
+bool 
+octave_range::load_hdf5 (hid_t loc_id, const char *name,
+			 bool /* have_h5giterate_bug */)
+{
+  bool retval = false;
+  hid_t data_hid = H5Dopen (loc_id, name);
+  hid_t type_hid = H5Dget_type (data_hid);
+
+  hid_t range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
+
+  if (! hdf5_types_compatible (type_hid, range_type))
+    {
+      H5Tclose(range_type);
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  hid_t space_hid = H5Dget_space (data_hid);
+  hsize_t rank = H5Sget_simple_extent_ndims (space_hid);
+
+  if (rank != 0)
+    {
+      H5Tclose(range_type);
+      H5Sclose (space_hid);
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  double rangevals[3];
+  if (H5Dread (data_hid, range_type, H5S_ALL, H5S_ALL, H5P_DEFAULT, 
+	       (void *) rangevals) >= 0)
+    {
+      retval = true;
+      Range r (rangevals[0], rangevals[1], rangevals[2]);
+      range = r;
+    }
+
+  H5Tclose(range_type);
+  H5Sclose (space_hid);
+  H5Dclose (data_hid);
+  return retval;
+
+}
+#endif
 
 /*
 ;;; Local Variables: ***

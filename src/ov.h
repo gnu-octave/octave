@@ -33,6 +33,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <list>
 
+#if defined (HAVE_HDF5)
+#include <hdf5.h>
+#endif
 
 #include "Range.h"
 #include "idx-vector.h"
@@ -641,6 +644,29 @@ public:
 
   virtual void print_info (std::ostream& os,
 			   const std::string& prefix = std::string ()) const;
+
+  virtual bool save_ascii (std::ostream& os, bool& infnan_warned,
+			   bool strip_nan_and_inf) 
+    { return rep->save_ascii (os, infnan_warned, strip_nan_and_inf); }
+
+  virtual bool load_ascii (std::istream& is)
+    { return rep->load_ascii (is); }
+
+  virtual bool save_binary (std::ostream& os, bool& save_as_floats)
+    { return rep->save_binary (os, save_as_floats); }
+
+  virtual bool load_binary (std::istream& is, bool swap,
+			    oct_mach_info::float_format fmt)
+    { return rep->load_binary (is, swap, fmt); }
+
+#if defined (HAVE_HDF5)
+  virtual bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+    { return rep->save_hdf5 (loc_id, name, save_as_floats); }
+
+  virtual bool load_hdf5 (hid_t loc_id, const char *name,
+			  bool have_h5giterate_bug)
+    { return rep->load_hdf5 (loc_id, name, have_h5giterate_bug); }
+#endif
 
 protected:
 

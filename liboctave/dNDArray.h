@@ -105,8 +105,8 @@ public:
 
   // i/o
 
-  // friend std::ostream& operator << (std::ostream& os, const NDArray& a);
-  // friend std::istream& operator >> (std::istream& is, NDArray& a);
+  friend std::ostream& operator << (std::ostream& os, const NDArray& a);
+  friend std::istream& operator >> (std::istream& is, NDArray& a);
 
   static double resize_fill_value (void) { return 0; }
 

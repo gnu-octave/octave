@@ -148,6 +148,9 @@ octave_value_typeinfo::register_widening_op (int t, int t_result,
     ? instance->do_register_widening_op (t, t_result, f) : false;
 }
 
+// XXX FIXME XXX -- we should also store all class names and provide a
+// way to list them (calling class with nargin == 0?).
+
 int
 octave_value_typeinfo::do_register_type (const std::string& t_name,
 					 const std::string& c_name,
@@ -339,6 +342,7 @@ octave_value_typeinfo::do_lookup_type (const std::string& nm)
       if (nm == types(i))
 	{
 	  retval = vals(i);
+	  retval.make_unique ();
 	  break;
 	}
     }

@@ -74,6 +74,11 @@ public:
 
   // XXX FIXME XXX -- this is not quite the right thing.
 
+  bool any_element_is_inf_or_nan (void) const;
+  bool all_elements_are_real (void) const;
+  bool all_integers (double& max_val, double& min_val) const;
+  bool too_large_for_float (void) const;
+
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
@@ -98,8 +103,8 @@ public:
 
   // i/o
 
-  // friend std::ostream& operator << (std::ostream& os, const NDArray& a);
-  // friend std::istream& operator >> (std::istream& is, NDArray& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexNDArray& a);
+  friend std::istream& operator >> (std::istream& is, ComplexNDArray& a);
 
   static Complex resize_fill_value (void) { return Complex (0.0, 0.0); }
 

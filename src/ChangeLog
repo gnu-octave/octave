@@ -1,3 +1,101 @@
+2004-01-06  David Bateman  <dbateman@free.fr>
+
+	* ls-hdf5.cc: Fix handle of old versus new format files.
+
+ 	* ls-oct-binary.cc: Split the load/save functionality into the types
+ 	themselves.  Backward compatibility maintained.
+	
+ 	* ov-struct.cc (save_binary, load_binary):
+ 	* ov-str-mat.cc (save_binary, load_binary):
+ 	* ov-scalar.cc (save_binary, load_binary):
+ 	* ov-re-mat.cc (save_binary, load_binary):
+ 	* ov-range.cc (save_binary, load_binary):
+ 	* ov-list.cc (save_binary, load_binary):
+ 	* ov-cx-mat.cc (save_binary, load_binary):
+ 	* ov-complex.cc (save_binary, load_binary):
+ 	* ov-cell.cc (save_binary, load_binary):
+ 	* ov-bool.cc (save_binary, load_binary):
+ 	* ov-bool-mat.cc (save_binary, load_binary):
+	New functions for loading and saving structures in octave binary
+	format.
+
+ 	* ov-str-mat.h (save_binary, load_binary):
+ 	* ov-scalar.h (save_binary, load_binary):
+ 	* ov-re-mat.h (save_binary, load_binary):
+ 	* ov-range.h (save_binary, load_binary):
+ 	* ov-list.h (save_binary, load_binary):
+ 	* ov-cx-mat.h (save_binary, load_binary):
+ 	* ov-complex.h (save_binary, load_binary):
+ 	* ov-cell.h (save_binary, load_binary):
+ 	* ov-bool.h (save_binary, load_binary):
+ 	* ov-bool-mat.h (save_binary, load_binary):
+ 	* ov-struct.h (save_binary, load_binary):
+	Provide decls.
+
+ 	* ov.h (save_binary, load_binary): New virtual functions.
+
+ 	* ov-base.cc (save_binary, load_binary): New functions, for fallbacks
+ 	with error message.
+ 	* ov-base.h: Provide decls.
+
+ 	* load-save.cc: Remove "-import" flag and make it the default.
+ 	* load-save.h: Likewise.
+
+ 	* ls-oct-ascii.cc: Split the load/save functionality into the types
+ 	themselves. Save "string" variables with the name "string" rather than
+ 	string array. Backward compatiability maintained in ov-cs-mat.cc.
+ 	Include new version of extract_keyword that halts if the next value is
+ 	invalid rather that searching for the next valid value.
+ 
+ 	* ls-oct-ascii.h: Extract_keyword header updated.
+	Include definition of OCT_RBV and CELL_ELT_TAG, since they are now
+	used elsewhere.
+ 
+ 	* ls-hdf5.cc: Split load/save functionality into the types themselves.
+ 	The hdf5 format is changed so that each object is a group with a
+ 	dataset "type" being a string with the octave_value type and the
+ 	dataset or group "value" containing the value of the data, struct, etc.
+ 	This allows extensibility. Backward compatibility is maintained. The
+ 	"import" flag is now assumed to always be true and has been removed.
+  
+ 	* ov-struct.cc (save_ascii, load_ascii, save_hdf5, load_hdf5): 
+ 	* ov-str-mat.cc (save_ascii, load_ascii, save_hdf5, load_hdf5): 
+ 	* ov-scalar.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+	* ov-re-mat.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-range.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-list.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-cx-mat.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-complex.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-cell.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-bool.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-bool-mat.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	New functions for loading and saving structures in octave ascii
+	and hdf5 formatted files.
+
+ 	* ov-struct.h (save_ascii, load_ascii, save_hdf5, load_hdf5): 
+ 	* ov-str-mat.h (save_ascii, load_ascii, save_hdf5, load_hdf5): 
+ 	* ov-scalar.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-re-mat.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-range.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-list.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-cx-mat.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-complex.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-cell.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-bool.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	* ov-bool-mat.h (save_ascii, load_ascii, save_hdf5, load_hdf5):
+ 	Provide decls.
+ 
+ 	* ov-typeinfo.cc (octave_value_typeinfo::do_lookup_type): Include
+ 	make_unique so that the stored type value is not used for all loaded
+ 	variables.
+ 
+ 	* ov.h: (save_ascii, load_ascii, save_hdf5 and load_hdf5):
+	New virtual functions.
+ 	
+  	* ov-base.cc (save_ascii, load_ascii, save_hdf5, load_hdf5):
+	New functions, for fallbacks with error message.
+	* ov-base.h: Provide decls.
+
 2003-12-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cx-mat.cc (octave_complex_matrix::assign): RHS arg is N-d.

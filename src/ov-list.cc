@@ -39,6 +39,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-list.h"
 #include "unwind-prot.h"
 
+#include "byte-swap.h"
+#include "ls-oct-ascii.h"
+#include "ls-oct-binary.h"
+#include "ls-hdf5.h"
+#include "ls-utils.h"
+
 DEFINE_OCTAVE_ALLOCATOR (octave_list);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_list, "list", "list");
@@ -494,6 +500,204 @@ is equivalent to @code{append (@var{list_1}, @var{list_2})}.\n\
 
   return retval;
 }
+
+bool 
+octave_list::save_ascii (std::ostream& os, bool& infnan_warned, 
+			   bool strip_nan_and_inf)
+{
+  octave_value_list lst = list_value ();
+  os << "# length: " << lst.length () << "\n";
+
+  for (int i = 0; i < lst.length (); ++i)
+    {
+      // should we use lst.name_tags () to label the elements?
+      char s[20];
+      sprintf (s, "_%d", i);
+      bool b = save_ascii_data (os, lst (i), s, infnan_warned, 
+				strip_nan_and_inf, 0, 0);
+      
+      if (! b)
+	return false;
+    }
+
+  return true;
+}
+
+bool 
+octave_list::load_ascii (std::istream& is)
+{
+  int len = 0;
+  bool success = true;
+
+  if (extract_keyword (is, "length", len) && len >= 0)
+    {
+      if (len > 0)
+	{
+	  octave_value_list lst;
+
+	  for (int j = 0; j < len; j++)
+	    {
+	      octave_value t2;
+	      bool dummy;
+
+	      // recurse to read list elements
+	      std::string nm
+		= read_ascii_data (is, std::string (), dummy, t2, count);
+
+	      if (!is)
+		break;
+
+	      lst.append (t2);
+	    }
+
+	  if (is) 
+	    data = lst;
+	  else
+	    {
+	      error ("load: failed to load list");
+	      success = false;
+	    }
+	}
+      else if (len == 0 )
+	data = Cell (0, 0);
+      else
+	panic_impossible ();
+    }
+  else {
+    error ("load: failed to extract number of elements in list");
+    success = false;
+  }
+
+  return success;
+}
+
+bool 
+octave_list::save_binary (std::ostream& os, bool& save_as_floats)
+{
+  octave_value_list lst = list_value ();
+
+  FOUR_BYTE_INT len = lst.length();
+  os.write (X_CAST (char *, &len), 4);
+  
+  for (int i = 0; i < lst.length (); i++)
+    {
+      // should we use lst.name_tags () to label the elements?
+      char s[20];
+      sprintf (s, "_%d", i);
+
+      // Recurse to print sub-value.
+      bool b = save_binary_data (os, lst(i), s, "", 0, save_as_floats);
+	      
+      if (! b)
+	return false;
+    }
+  
+  return true;
+}
+
+bool 
+octave_list::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  FOUR_BYTE_INT len;
+  if (! is.read (X_CAST (char *, &len), 4))
+    return false;
+  if (swap)
+    swap_4_bytes (X_CAST (char *, &len));
+
+  if (len > 0)
+    {
+      octave_value_list lst;
+
+      for (int i = 0; i < len; i++)
+	{
+	  octave_value t2;
+	  bool dummy;
+	  std::string doc;
+	  
+	  // recurse to read list elements
+	  std::string nm = read_binary_data (is, swap, fmt, std::string (), 
+					     dummy, t2, doc);
+	  
+	  if (!is)
+	    return false;
+	  
+	  lst.append(t2);
+	}
+
+      if (is)
+	data = lst;
+      else
+	{
+	  error ("load: failed to load list");
+	  return false;
+	}
+
+    }
+  else if (len == 0 )
+    data = Cell (0, 0);
+  else
+    return false;
+  
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
+{
+  hid_t data_hid = -1;
+
+  data_hid = H5Gcreate (loc_id, name, 0);
+  if (data_hid < 0) return false;
+
+  // recursively add each element of the list to this group
+  octave_value_list lst = list_value ();
+
+  for (int i = 0; i < lst.length (); ++i)
+    {
+      // should we use lst.name_tags () to label the elements?
+      char s[20];
+      sprintf (s, "_%d", i);
+      bool retval2 = add_hdf5_data (data_hid, lst (i), s, "",
+				    false, save_as_floats);
+      if (! retval2)
+	break;
+    }
+
+  H5Gclose (data_hid);
+  return true;
+}
+
+bool
+octave_list::load_hdf5 (hid_t loc_id,  const char *name,
+			bool have_h5giterate_bug)
+{
+  bool retval = false;
+
+  hdf5_callback_data dsub;
+
+  herr_t retval2;
+  octave_value_list lst;
+  int current_item = 0;
+  while ((retval2 = H5Giterate (loc_id, name, &current_item,
+				hdf5_read_next_data, &dsub)) > 0)
+    {
+      lst.append (dsub.tc);
+
+      if (have_h5giterate_bug)
+	current_item++;  // H5Giterate returned the last index processed
+    }
+
+  if (retval2 >= 0)
+    {
+      data = lst;
+      retval = true;
+    }
+  
+  return retval;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -43,6 +43,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+#include "ls-oct-ascii.h"
+#include "ls-hdf5.h"
+
 template class octave_base_scalar<double>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
@@ -114,6 +117,140 @@ octave_scalar::convert_to_str_internal (bool, bool) const
 
   return retval;
 }
+
+bool 
+octave_scalar::save_ascii (std::ostream& os, bool& infnan_warned, 
+			   bool strip_nan_and_inf)
+{
+  double d = double_value ();
+
+  if (strip_nan_and_inf)
+    {
+      if (xisnan (d))
+	{
+	  error ("only value to plot is NaN");
+	  return false;
+	}
+      else
+	{
+	  d = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
+	  octave_write_double (os, d);
+	  os << "\n";
+	}
+    }
+  else
+    {
+      if (! infnan_warned && (xisnan (d) || xisinf (d)))
+	{
+	  warning ("save: Inf or NaN values may not be reloadable");
+	  infnan_warned = true;
+	}
+
+      octave_write_double (os, d);
+      os << "\n";
+    }
+
+  return true;
+}
+
+bool 
+octave_scalar::load_ascii (std::istream& is)
+{
+  scalar = octave_read_double (is);
+  if (!is)
+    {
+      error ("load: failed to load scalar constant");
+      return false;
+    }
+
+  return true;
+}
+
+bool 
+octave_scalar::save_binary (std::ostream& os, bool& /* save_as_floats */)
+{
+  char tmp = (char) LS_DOUBLE;
+  os.write (X_CAST (char *, &tmp), 1);
+  double dtmp = double_value ();
+  os.write (X_CAST (char *, &dtmp), 8);
+
+  return true;
+}
+
+bool 
+octave_scalar::load_binary (std::istream& is, bool swap,
+				 oct_mach_info::float_format fmt)
+{
+  char tmp;
+  if (! is.read (X_CAST (char *, &tmp), 1))
+    return false;
+
+  double dtmp;
+  read_doubles (is, &dtmp, X_CAST (save_type, tmp), 1, swap, fmt);
+  if (error_state || ! is)
+    return false;
+
+  scalar = dtmp;
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_scalar::save_hdf5 (hid_t loc_id, const char *name,
+			  bool /* save_as_floats */)
+{
+  hsize_t dimens[3];
+  hid_t space_hid = -1, data_hid = -1;
+  bool retval = true;
+
+  space_hid = H5Screate_simple (0, dimens, (hsize_t*) 0);
+  if (space_hid < 0) return false;
+
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_DOUBLE, space_hid, 
+			H5P_DEFAULT);
+  if (data_hid < 0) 
+    {
+      H5Sclose (space_hid);
+      return false;
+    }
+
+  double tmp = double_value ();
+  retval = H5Dwrite (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL,
+		     H5P_DEFAULT, (void*) &tmp) >= 0;
+
+  H5Dclose (data_hid);
+  H5Sclose (space_hid);
+  return retval;
+}
+
+bool
+octave_scalar::load_hdf5 (hid_t loc_id, const char *name,
+			  bool /* have_h5giterate_bug */)
+{
+  hid_t data_hid = H5Dopen (loc_id, name);
+  hid_t space_id = H5Dget_space (data_hid);
+
+  hsize_t rank = H5Sget_simple_extent_ndims (space_id);
+
+  if (rank != 0)
+    { 
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  double dtmp;
+  if (H5Dread (data_hid, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
+	       H5P_DEFAULT, (void *) &dtmp) < 0)
+    { 
+      H5Dclose (data_hid);
+      return false;
+    }
+
+  scalar = dtmp;
+  H5Dclose (data_hid);
+  return true;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

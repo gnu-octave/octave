@@ -110,6 +110,23 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+
+  bool save_ascii (std::ostream& os, bool& infnan_warned,
+		 bool strip_nan_and_inf);
+
+  bool load_ascii (std::istream& is);
+
+  bool save_binary (std::ostream& os, bool& save_as_floats);
+
+  bool load_binary (std::istream& is, bool swap, 
+		    oct_mach_info::float_format fmt);
+
+#if defined (HAVE_HDF5)
+  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+
+  bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
+#endif
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

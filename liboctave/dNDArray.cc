@@ -286,6 +286,46 @@ NDArray::compute_index (Array<int>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
+// This contains no information on the array structure !!!
+std::ostream&
+operator << (std::ostream& os, const NDArray& a)
+{
+  int nel = a.nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      os << " ";
+      octave_write_double (os, a.elem (i));
+      os << "\n";
+    }
+  return os;
+}
+
+std::istream&
+operator >> (std::istream& is, NDArray& a)
+{
+  int nel = a.nelem ();
+
+  if (nel < 1 )
+    is.clear (std::ios::badbit);
+  else
+    {
+      double tmp;
+      for (int i = 0; i < nel; i++)
+	  {
+	    tmp = octave_read_double (is);
+	    if (is)
+	      a.elem (i) = tmp;
+	    else
+	      goto done;
+	  }
+    }
+
+ done:
+
+  return is;
+}
+
 NDS_CMP_OPS(NDArray, , double, )
 NDS_BOOL_OPS(NDArray, double, 0.0)
 

@@ -61,7 +61,7 @@ read_binary_file_header (std::istream& is, bool& swap,
 extern octave_value
 do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
-	 bool list_only, bool swap, bool verbose, bool import,
+	 bool list_only, bool swap, bool verbose,
 	 const string_vector& argv, int argv_idx, int argc, int nargout);
 
 extern void

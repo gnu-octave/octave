@@ -26,7 +26,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <cfloat>
 #include <cstring>
 #include <cctype>
 
@@ -71,26 +70,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // The number of decimal digits to use when writing ascii data.
 static int Vsave_precision;
 
-#define CELL_ELT_TAG "<cell-element>"
-
-// Used when converting Inf to something that gnuplot can read.
-
-#ifndef OCT_RBV
-#define OCT_RBV DBL_MAX / 100.0
-#endif
-
 // Functions for reading ascii data.
-
-static void
-ascii_save_type (std::ostream& os, const char *type, bool mark_as_global)
-{
-  if (mark_as_global)
-    os << "# type: global ";
-  else
-    os << "# type: ";
-
-  os << type << "\n";
-}
 
 static Matrix
 strip_infnan (const Matrix& m)
@@ -123,69 +103,6 @@ strip_infnan (const Matrix& m)
   return retval;
 }
 
-static ComplexMatrix
-strip_infnan (const ComplexMatrix& m)
-{
-  int nr = m.rows ();
-  int nc = m.columns ();
-
-  ComplexMatrix retval (nr, nc);
-
-  int k = 0;
-  for (int i = 0; i < nr; i++)
-    {
-      for (int j = 0; j < nc; j++)
-	{
-	  Complex c = m (i, j);
-	  if (xisnan (c))
-	    goto next_row;
-	  else
-	    {
-	      double re = real (c);
-	      double im = imag (c);
-
-	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
-	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
-
-	      retval (k, j) = Complex (re, im);
-	    }
-	}
-      k++;
-
-    next_row:
-      continue;
-    }
-
-  if (k > 0)
-    retval.resize (k, nc);
-
-  return retval;
-}
-
-// Skip white space and comments on stream IS.
-
-static void
-skip_comments (std::istream& is)
-{
-  char c = '\0';
-  while (is.get (c))
-    {
-      if (c == ' ' || c == '\t' || c == '\n')
-	; // Skip whitespace on way to beginning of next line.
-      else
-	break;
-    }
-
-  for (;;)
-    {
-      if (is && (c == '%' || c == '#'))
-	while (is.get (c) && c != '\n')
-	  ; // Skip to beginning of next line, ignoring everything.
-      else
-	break;
-    }
-}
-
 // Extract a KEYWORD and its value from stream IS, returning the
 // associated value in a new string.
 //
@@ -194,7 +111,7 @@ skip_comments (std::istream& is)
 //  [%#][ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
 
 std::string
-extract_keyword (std::istream& is, const char *keyword)
+extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 {
   std::string retval;
 
@@ -236,6 +153,8 @@ extract_keyword (std::istream& is, const char *keyword)
 	      OSSTREAM_FREEZE (value);
 	      break;
 	    }
+	  else if (next_only)
+	    break;
 	}
     }
 
@@ -267,8 +186,9 @@ extract_keyword (std::istream& is, const char *keyword)
 //
 //  [%#][ \t]*keyword[ \t]*int-value.*\n
 
-static bool
-extract_keyword (std::istream& is, const char *keyword, int& value)
+bool
+extract_keyword (std::istream& is, const char *keyword, int& value, 
+		 const bool next_only)
 {
   bool status = false;
   value = 0;
@@ -308,6 +228,8 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 		; // Skip to beginning of next line;
 	      break;
 	    }
+	  else if (next_only)
+	    break;
 	}
     }
   return status;
@@ -316,6 +238,9 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.  If the value
 // is tagged as global in the file, return TRUE in GLOBAL.
+//
+// Each type supplies its own function to load the data, and so this
+// function is extensible.
 //
 // FILENAME is used for error messages.
 //
@@ -334,7 +259,7 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 // # type: <type>
 // # <info>
 //
-// Where:
+// Where, for the built in types are:
 //
 //  <name> : a valid identifier
 //
@@ -345,21 +270,25 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 //             | complex scalar
 //             | matrix
 //             | complex matrix
+//             | bool
+//             | bool matrix
 //             | string
 //             | range
-//             | string array
 //
 //  <info> : <matrix info>
 //         | <string info>
-//         | <string array info>
 //
 //  <matrix info> : # rows: <integer>
 //                : # columns: <integer>
 //
-//  <string info> : # length: <integer>
+//  <string info> : # elements: <integer>
+//                : # length: <integer> (once before each string)
 //
-//  <string array info> : # elements: <integer>
-//                      : # length: <integer> (once before each string)
+//  For backward compatibility the type "string array" is treated as a
+// "string" type. Also "string" can have a single element with no elements
+// line such that
+//
+//  <string info> : # length: <integer>
 //
 // Formatted ASCII data follows the header.
 //
@@ -375,7 +304,7 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 // Example:
 //
 //  # name: foo
-//  # type: string array
+//  # type: string
 //  # elements: 5
 //  # length: 4
 //  this
@@ -389,7 +318,8 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 //  array
 //
 // XXX FIXME XXX -- this format is fairly rigid, and doesn't allow for
-// arbitrary comments, etc.  Someone should fix that.
+// arbitrary comments.  Someone should fix that. It does allow arbitrary
+// types however.
 
 // Ugh.  The signature of the compare method is not standard in older
 // versions of the GNU libstdc++.  Do this instead:
@@ -442,196 +372,13 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       else
 	typ = tag;
 
-      if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "scalar"))
-	{
-	  double tmp = octave_read_double (is);
-	  if (is)
-	    tc = tmp;
-	  else
-	    error ("load: failed to load scalar constant");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "matrix"))
-	{
-	  int nr = 0;
-	  int nc = 0;
-
-	  if (extract_keyword (is, "rows", nr) && nr >= 0
-	      && extract_keyword (is, "columns", nc) && nc >= 0)
-	    {
-	      if (nr > 0 && nc > 0)
-		{
-		  Matrix tmp (nr, nc);
-		  is >> tmp;
-		  if (is)
-		    tc = tmp;
-		  else
-		    error ("load: failed to load matrix constant");
-		}
-	      else if (nr == 0 || nc == 0)
-		tc = Matrix (nr, nc);
-	      else
-		panic_impossible ();
-	    }
-	  else
-	    error ("load: failed to extract number of rows and columns");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 4, "cell"))
-	{
-	  int nr = 0;
-	  int nc = 0;
-
-	  if (extract_keyword (is, "rows",    nr) && nr >= 0
-	      && extract_keyword (is, "columns", nc) && nc >= 0)
-	    {
-	      if (nr > 0 && nc > 0)
-		{
-		  Cell tmp (nr, nc);
-
-		  for (int j = 0; j < nc; j++)
-		    {
-		      for (int i = 0; i < nr; i++)
-			{
-			  octave_value t2;
-
-			  // recurse to read cell elements
-			  std::string nm
-			    = read_ascii_data (is, filename, global, t2, count);
-
-			  if (nm == CELL_ELT_TAG)
-			    {
-			      if (is)
-				tmp.elem (i, j) = t2;
-			    }
-			  else
-			    {
-			      error ("load: cell array element had unexpected name");
-			      goto cell_read_error;
-			    }
-			}
-		    }
-
-		cell_read_error:
-
-		  if (is)
-		    tc = tmp;
-		  else
-		    error ("load: failed to load cell element");
-		}
-	      else if (nr == 0 || nc == 0)
-		tc = Cell (nr, nc);
-	      else
-		panic_impossible ();
-	    }
-	  else
-	    error ("load: failed to extract number of rows and columns for cell array");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 14, "complex scalar"))
-	{
-	  Complex tmp = octave_read_complex (is);
-	  if (is)
-	    tc = tmp;
-	  else
-	    error ("load: failed to load complex scalar constant");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 14, "complex matrix"))
-	{
-	  int nr = 0;
-	  int nc = 0;
-
-	  if (extract_keyword (is, "rows", nr) && nr > 0
-	      && extract_keyword (is, "columns", nc) && nc > 0)
-	    {
-	      ComplexMatrix tmp (nr, nc);
-	      is >> tmp;
-	      if (is)
-		tc = tmp;
-	      else
-		error ("load: failed to load complex matrix constant");
-	    }
-	  else
-	    error ("load: failed to extract number of rows and columns");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
-	{
-	  int elements;
-	  if (extract_keyword (is, "elements", elements) && elements >= 0)
-	    {
-	      // XXX FIXME XXX -- need to be able to get max length
-	      // before doing anything.
-
-	      charMatrix chm (elements, 0);
-	      int max_len = 0;
-	      for (int i = 0; i < elements; i++)
-		{
-		  int len;
-		  if (extract_keyword (is, "length", len) && len >= 0)
-		    {
-		      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
-
-		      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
-			{
-			  error ("load: failed to load string constant");
-			  break;
-			}
-		      else
-			{
-			  tmp [len] = '\0';
-			  if (len > max_len)
-			    {
-			      max_len = len;
-			      chm.resize (elements, max_len, 0);
-			    }
-			  chm.insert (tmp, i, 0);
-			}
-		    }
-		  else
-		    error ("load: failed to extract string length for element %d", i+1);
-		}
-
-	      if (! error_state)
-		tc = octave_value (chm, true);
-	    }
-	  else
-	    error ("load: failed to extract number of string elements");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 6, "string"))
-	{
-	  int len;
-	  if (extract_keyword (is, "length", len) && len >= 0)
-	    {
-	      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
-
-	      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
-		{
-		  error ("load: failed to load string constant");
-		}
-	      else
-		{
-		  tmp [len] = '\0';
-
-		  if (is)
-		    tc = tmp;
-		  else
-		    error ("load: failed to load string constant");
-		}
-	    }
-	  else
-	    error ("load: failed to extract string length");
-	}
-      else if (SUBSTRING_COMPARE_EQ (typ, 0, 5, "range"))
-	{
-	  // # base, limit, range comment added by save ().
-
-	  skip_comments (is);
-	  Range tmp;
-	  is >> tmp;
-	  if (is)
-	    tc = tmp;
-	  else
-	    error ("load: failed to load range constant");
-	}
+      // Special case for backward compatiablity. A small bit of cruft
+      if (SUBSTRING_COMPARE_EQ (typ, 0, 12, "string array"))
+	tc = octave_value (charMatrix (), true);
       else
-	error ("load: unknown constant type `%s'", tag.c_str ());
+	tc = octave_value_typeinfo::lookup_type (typ);
+
+      tc.load_ascii (is);
     }
   else
     error ("load: failed to extract keyword specifying value type");
@@ -679,186 +426,12 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
 
   octave_value val = val_arg;
 
-  if (val.is_range ())
-    {
-      Range r = val.range_value ();
-      double base = r.base ();
-      double limit = r.limit ();
-      double inc = r.inc ();
-      if (! (NINT (base) == base
-	     && NINT (limit) == limit
-	     && NINT (inc) == inc))
-	val = val.matrix_value ();
-    }	
-
-  if (val.is_string ())
-    {
-      ascii_save_type (os, "string array", mark_as_global);
-      charMatrix chm = val.char_matrix_value ();
-      int elements = chm.rows ();
-      os << "# elements: " << elements << "\n";
-      for (int i = 0; i < elements; i++)
-	{
-	  unsigned len = chm.cols ();
-	  os << "# length: " << len << "\n";
-	  std::string tstr = chm.row_as_string (i, false, true);
-	  const char *tmp = tstr.data ();
-	  if (tstr.length () > len)
-	    panic_impossible ();
-	  os.write (X_CAST (char *, tmp), len);
-	  os << "\n";
-	}
-    }
-  else if (val.is_range ())
-    {
-      ascii_save_type (os, "range", mark_as_global);
-      Range tmp = val.range_value ();
-      os << "# base, limit, increment\n";
-      octave_write_double (os, tmp.base ());
-      os << " ";
-      octave_write_double (os, tmp.limit ());
-      os << " ";
-      octave_write_double (os, tmp.inc ());
-      os << "\n";
-    }
-  else if (val.is_real_scalar ())
-    {
-      ascii_save_type (os, "scalar", mark_as_global);
-
-      double d = val.double_value ();
-
-      if (strip_nan_and_inf)
-	{
-	  if (xisnan (d))
-	    {
-	      error ("only value to plot is NaN");
-	      success = false;
-	    }
-	  else
-	    {
-	      d = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
-	      octave_write_double (os, d);
-	      os << "\n";
-	    }
-	}
-      else
-	{
-	  if (! infnan_warned && (xisnan (d) || xisinf (d)))
-	    {
-	      warning ("save: Inf or NaN values may not be reloadable");
-	      infnan_warned = true;
-	    }
-
-	  octave_write_double (os, d);
-	  os << "\n";
-	}
-    }
-  else if (val.is_real_matrix ())
-    {
-      ascii_save_type (os, "matrix", mark_as_global);
-
-      os << "# rows: " << val.rows () << "\n"
-	 << "# columns: " << val.columns () << "\n";
-
-      Matrix tmp = val.matrix_value ();
-
-      if (strip_nan_and_inf)
-	tmp = strip_infnan (tmp);
-      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
-	{
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
-
-      os << tmp;
-    }
-  else if (val.is_cell ())
-    {
-      ascii_save_type (os, "cell", mark_as_global);
-
-      os << "# rows: " << val.rows () << "\n"
-	 << "# columns: " << val.columns () << "\n";
-
-      Cell tmp = val.cell_value ();
-      
-      for (int j = 0; j < tmp.cols (); j++)
-	{
-	  for (int i = 0; i < tmp.rows (); i++)
-	    {
-	      octave_value o_val = tmp.elem (i, j);
-
-	      // Recurse to print sub-value.
-	      bool b = save_ascii_data (os, o_val, CELL_ELT_TAG,
-					infnan_warned, strip_nan_and_inf,
-					mark_as_global, 0);
-
-	      if (! b)
-		return os;
-	    }
-
-	  os << "\n";
-	}
-    }
-  else if (val.is_complex_scalar ())
-    {
-      ascii_save_type (os, "complex scalar", mark_as_global);
-
-      Complex c = val.complex_value ();
-
-      if (strip_nan_and_inf)
-	{
-	  if (xisnan (c))
-	    {
-	      error ("only value to plot is NaN");
-	      success = false;
-	    }
-	  else
-	    {
-	      double re = real (c);
-	      double im = imag (c);
-
-	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
-	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
-
-	      c = Complex (re, im);
-
-	      octave_write_complex (os, c);
-	      os << "\n";
-	    }
-	}
-      else
-	{
-	  if (! infnan_warned && (xisnan (c) || xisinf (c)))
-	    {
-	      warning ("save: Inf or NaN values may not be reloadable");
-	      infnan_warned = true;
-	    }
-
-	  octave_write_complex (os, c);
-	  os << "\n";
-	}
-    }
-  else if (val.is_complex_matrix ())
-    {
-      ascii_save_type (os, "complex matrix", mark_as_global);
-
-      os << "# rows: " << val.rows () << "\n"
-	 << "# columns: " << val.columns () << "\n";
-
-      ComplexMatrix tmp = val.complex_matrix_value ();
-
-      if (strip_nan_and_inf)
-	tmp = strip_infnan (tmp);
-      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
-	{
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
-
-      os << tmp;
-    }
+  if (mark_as_global)
+    os << "# type: global " << val.type_name () << "\n";
   else
-    gripe_wrong_type_arg ("save", val, false);
+    os << "# type: " << val.type_name() << "\n";
+
+  success = val . save_ascii(os, infnan_warned, strip_nan_and_inf);
 
   os.precision (old_precision);
 

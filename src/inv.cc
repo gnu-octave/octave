@@ -76,13 +76,11 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 10,
 	  int info;
 	  double rcond = 0.0;
 
-	  Matrix minv = m.inverse (info, rcond);
+	  retval = m.inverse (info, rcond);
 
 	  if (info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
-	  else
-	    retval = minv;
 	}
     }
   else if (arg.is_complex_type ())
@@ -94,13 +92,11 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 10,
 	  int info;
 	  double rcond = 0.0;
 
-	  ComplexMatrix minv = m.inverse (info, rcond);
+	  retval = m.inverse (info, rcond);
 
 	  if (info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
-	  else
-	    retval = minv;
 	}
     }
   else

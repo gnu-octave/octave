@@ -202,7 +202,15 @@ xpow (const Matrix& a, double b)
 	      if (btmp < 0)
 		{
 		  btmp = -btmp;
-		  atmp = a.inverse ();
+
+		  int info;
+		  double rcond = 0.0;
+
+		  atmp = a.inverse (info, rcond);
+
+		  if (info == -1)
+		    warning ("inverse: matrix singular to machine\
+ precision, rcond = %g", rcond);
 		}
 	      else
 		atmp = a;
@@ -387,7 +395,15 @@ xpow (const ComplexMatrix& a, double b)
 	      if (btmp < 0)
 		{
 		  btmp = -btmp;
-		  atmp = a.inverse ();
+
+		  int info;
+		  double rcond = 0.0;
+
+		  atmp = a.inverse (info, rcond);
+
+		  if (info == -1)
+		    warning ("inverse: matrix singular to machine\
+ precision, rcond = %g", rcond);
 		}
 	      else
 		atmp = a;

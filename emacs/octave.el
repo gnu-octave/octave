@@ -1,4 +1,4 @@
-;; octave-mode.el --- Octave mode for GNU Emacs
+;; octave.el --- Octave mode for GNU Emacs
 
 ;;; Copyright (c) 1986, 1993, 1994, 1995 Free Software Foundation, Inc.
 

@@ -2924,8 +2924,14 @@ extern void assign (Array2<char>&, const Array2<char>&);
 void
 TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 {
+  // XXX FIXME XXX -- we should probably have special cases for rhs
+  // being a range type, since converting to a matrix can waste a lot
+  // of memory.
+
+  tree_constant rhs_tmp = rhs;
+
   if (! (is_string () && rhs.is_string ()))
-    tree_constant rhs_tmp = rhs.make_numeric ();
+    rhs_tmp.force_numeric ();
 
   if (error_state)
     return;
@@ -2943,9 +2949,9 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
   if (error_state)
     return;
 
-  maybe_widen (rhs.const_type ());
+  maybe_widen (rhs_tmp.const_type ());
 
-  set_index (args, rhs.is_complex_type ());
+  set_index (args, rhs_tmp.is_complex_type ());
 
   if (! error_state)
     {
@@ -2953,16 +2959,16 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 	{
 	case complex_matrix_constant:
 	  {
-	    switch (rhs.const_type ())
+	    switch (rhs_tmp.const_type ())
 	      {
 	      case complex_scalar_constant:
 	      case complex_matrix_constant:
-		::assign (*complex_matrix, rhs.complex_matrix_value ());
+		::assign (*complex_matrix, rhs_tmp.complex_matrix_value ());
 		break;
 
 	      case scalar_constant:
 	      case matrix_constant:
-		::assign (*complex_matrix, rhs.matrix_value ());
+		::assign (*complex_matrix, rhs_tmp.matrix_value ());
 		break;
 
 	      default:
@@ -2975,15 +2981,15 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 	case scalar_constant:
 	case matrix_constant:
 	  {
-	    switch (rhs.const_type ())
+	    switch (rhs_tmp.const_type ())
 	      {
 	      case scalar_constant:
 	      case matrix_constant:
-		::assign (*matrix, rhs.matrix_value ());
+		::assign (*matrix, rhs_tmp.matrix_value ());
 		break;
 
 	      case char_matrix_constant:
-		::assign (*matrix, rhs.char_matrix_value ());
+		::assign (*matrix, rhs_tmp.char_matrix_value ());
 		break;
 
 	      default:
@@ -2995,7 +3001,7 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 
 	case char_matrix_constant:
 	case char_matrix_constant_str:
-	  ::assign (*char_matrix, rhs.char_matrix_value ());
+	  ::assign (*char_matrix, rhs_tmp.char_matrix_value ());
 	  break;
 
 	default:

@@ -17,8 +17,6 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Originally written by Rick Niles <niles@axp745.gsfc.nasa.gov>.
-
 ## usage: fmt = __pltopt__ (caller, opt)
 ##
 ## Decode plot option strings.
@@ -39,7 +37,7 @@
 ##   "~"   for errorbars plot style.
 ##   "#~"  for boxerrorbars plot style.
 ##   "n"   with n in 1-6 (wraps at 8), plot color
-##   "nm"  with m in 1-6 (wraps at 6), point style (only valid with "@" or "-@")
+##   "nm"  with m in 1-6 (wraps at 6), point style (only valid for "@" or "-@")
 ##   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
 ##
 ##   Special points formats:
@@ -60,7 +58,9 @@
 ##       5       cyan                house
 ##       6       brown               there exists
 
-## Author: jwe
+## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
+## Adapted-By: jwe
+## Maintainer: jwe
 
 function fmt = __pltopt__ (caller, opt)
 

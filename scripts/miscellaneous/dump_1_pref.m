@@ -17,6 +17,8 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## This is an internal function used by dump_prefs().
+
 ## Author: jwe
 
 function dump_1_pref (file, var)

@@ -25,6 +25,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cfloat>
 
+#include <string>
+
+#include "str-vec.h"
+
 // Flag for cell elements
 #define CELL_ELT_TAG "<cell-element>"
 
@@ -40,6 +44,11 @@ extract_keyword (std::istream& is, const char *keyword,
 
 extern  bool
 extract_keyword (std::istream& is, const char *keyword, int& value,
+		 const bool next_only = false);
+
+extern  bool
+extract_keyword (std::istream& is, const string_vector& keywords,
+		 std::string& keyword, int& value,
 		 const bool next_only = false);
 
 extern std::string

@@ -110,6 +110,22 @@ tree_index_expression::~tree_index_expression (void)
     }
 }
 
+bool
+tree_index_expression::has_magic_end (void) const
+{
+  for (std::list<tree_argument_list *>::const_iterator p = args.begin ();
+       p != args.end ();
+       p++)
+    {
+      tree_argument_list *elt = *p;
+
+      if (elt && elt->has_magic_end ())
+	return true;
+    }
+  
+  return false;
+}
+
 // This is useful for printing the name of the variable in an indexed
 // assignment.
 

@@ -481,119 +481,132 @@ octave_cell::save_ascii (std::ostream& os, bool& infnan_warned,
 bool 
 octave_cell::load_ascii (std::istream& is)
 {
-  int mdims = 0;
   bool success = true;
-  std::streampos pos = is.tellg ();
 
-  if (extract_keyword (is, "ndims", mdims, true))
+  string_vector keywords(2);
+
+  keywords[0] = "ndims";
+  keywords[1] = "rows";
+
+  std::string kw;
+  int val = 0;
+
+  if (extract_keyword (is, keywords, kw, val, true))
     {
-      if (mdims >= 0)
+      if (kw == "ndims")
 	{
-	  dim_vector dv;
-	  dv.resize (mdims);
+	  int mdims = val;
 
-	  for (int i = 0; i < mdims; i++)
-	    is >> dv(i);
-
-	  Cell tmp(dv);
-
-	  for (int i = 0; i < dv.numel (); i++)
+	  if (mdims >= 0)
 	    {
-	      octave_value t2;
-	      bool dummy;
+	      dim_vector dv;
+	      dv.resize (mdims);
 
-	      // recurse to read cell elements
-	      std::string nm = read_ascii_data (is, std::string (), 
-						dummy, t2, count);
+	      for (int i = 0; i < mdims; i++)
+		is >> dv(i);
 
-	      if (nm == CELL_ELT_TAG)
+	      Cell tmp(dv);
+
+	      for (int i = 0; i < dv.numel (); i++)
 		{
-		  if (is)
-		    tmp.elem (i) = t2;
+		  octave_value t2;
+		  bool dummy;
+
+		  // recurse to read cell elements
+		  std::string nm = read_ascii_data (is, std::string (), 
+						    dummy, t2, count);
+
+		  if (nm == CELL_ELT_TAG)
+		    {
+		      if (is)
+			tmp.elem (i) = t2;
+		    }
+		  else
+		    {
+		      error ("load: cell array element had unexpected name");
+		      success = false;
+		      break;
+		    }
 		}
+
+	      if (is)
+		matrix = tmp;
 	      else
 		{
-		  error ("load: cell array element had unexpected name");
+		  error ("load: failed to load matrix constant");
 		  success = false;
-		  break;
 		}
 	    }
-
-	  if (is)
-	    matrix = tmp;
 	  else
 	    {
-	      error ("load: failed to load matrix constant");
+	      error ("load: failed to extract number of rows and columns");
+	      success = false;
+	    }
+	}
+      else if (kw == "rows")
+	{
+	  int nr = val;
+	  int nc = 0;
+
+	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
+	    {
+	      if (nr > 0 && nc > 0)
+		{
+		  Cell tmp (nr, nc);
+
+		  for (int j = 0; j < nc; j++)
+		    {
+		      for (int i = 0; i < nr; i++)
+			{
+			  octave_value t2;
+			  bool dummy;
+
+			  // recurse to read cell elements
+			  std::string nm = read_ascii_data (is, std::string (),
+							    dummy, t2, count);
+
+			  if (nm == CELL_ELT_TAG)
+			    {
+			      if (is)
+				tmp.elem (i, j) = t2;
+			    }
+			  else
+			    {
+			      error ("load: cell array element had unexpected name");
+			      success = false;
+			      goto cell_read_error;
+			    }
+			}
+		    }
+	      
+		cell_read_error:
+
+		  if (is)
+		    matrix = tmp;
+		  else
+		    {
+		      error ("load: failed to load cell element");
+		      success = false;
+		    }
+		}
+	      else if (nr == 0 || nc == 0)
+		matrix = Cell (nr, nc);
+	      else
+		panic_impossible ();
+	    }
+	  else
+	    {
+	      error ("load: failed to extract number of rows and columns for cell array");
 	      success = false;
 	    }
 	}
       else
-	{
-	  error ("load: failed to extract number of rows and columns");
-	  success = false;
-	}
-      
+	panic_impossible ();
     }
   else
     {
-      int nr = 0;
-      int nc = 0;
-
-      // re-read the same line again
-      is.clear ();
-      is.seekg (pos);
-
-      if (extract_keyword (is, "rows", nr) && nr >= 0
-	  && extract_keyword (is, "columns", nc) && nc >= 0)
-	{
-	  if (nr > 0 && nc > 0)
-	    {
-	      Cell tmp (nr, nc);
-
-	      for (int j = 0; j < nc; j++)
-		{
-		  for (int i = 0; i < nr; i++)
-		    {
-		      octave_value t2;
-		      bool dummy;
-
-		      // recurse to read cell elements
-		      std::string nm = read_ascii_data (is, std::string (), 
-							dummy, t2, count);
-
-		      if (nm == CELL_ELT_TAG)
-			{
-			  if (is)
-			    tmp.elem (i, j) = t2;
-			}
-		      else
-			{
-			  error ("load: cell array element had unexpected name");
-			  success = false;
-			  goto cell_read_error;
-			}
-		    }
-		}
-	      
-	    cell_read_error:
-
-	      if (is) 
-		matrix = tmp;
-	      else
-		{
-		  error ("load: failed to load cell element");
-		  success = false;
-		}
-	    }
-	  else if (nr == 0 || nc == 0)
-	    matrix = Cell (nr, nc);
-	  else
-	    panic_impossible ();
-	}
-      else {
-	error ("load: failed to extract number of rows and columns for cell array");
-	success = false;
-      }
+      error ("load: failed to extract number of rows and columns");
+      success = false;
     }
 
   return success;

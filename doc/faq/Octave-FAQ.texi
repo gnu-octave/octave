@@ -4,7 +4,9 @@
 @settitle Frequently asked questions about Octave (with answers)
 
 @setchapternewpage off
-
+@direntry
+* Octave-FAQ: (Octave-FAQ). Frequently asked questions about Octave
+@end direntry
 @titlepage
 @title Octave FAQ
 @subtitle Frequently asked questions about Octave

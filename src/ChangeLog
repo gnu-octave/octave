@@ -1,3 +1,24 @@
+2004-12-22  John W. Eaton  <jwe@octave.org>
+
+	* ls-oct-ascii.cc (extract_keyword (std::istream&, const
+	string_vector&, std::string&, int&, const bool): New function.
+	* ls-oct-ascii.h: Provide decl.
+	* ov-bool-mat.cc (octave_bool_matrix::load_ascii):
+	Use new extract_keyword function to avoid calling tellg/seekg.
+	* ov-cell.cc (octave_cell::load_ascii): Likewise.
+	* ov-cx-mat.cc (octave_complex_matrix::load_ascii): Likewise.
+	* ov-re-mat.cc (octave_matrix::load_ascii): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::load_ascii): Likewise.
+
+2004-12-20  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::has_magic_end): Return true if
+	any argument list element has a magic end token.
+
+2004-12-03  John W. Eaton  <jwe@octave.org>
+  
+  	* version.h (OCTAVE_VERSION): Now 2.1.64.
+
 2004-12-03  Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
 
 	* file-io.cc: Doc string fixes.

@@ -294,51 +294,55 @@ octave_char_matrix_str::save_ascii (std::ostream& os,
 bool 
 octave_char_matrix_str::load_ascii (std::istream& is)
 {
-  int mdims = 0;
   bool success = true;
-  std::streampos pos = is.tellg ();
 
-  if (extract_keyword (is, "ndims", mdims, true))
+  string_vector keywords(3);
+
+  keywords[0] = "ndims";
+  keywords[1] = "elements";
+  keywords[2] = "length";
+
+  std::string kw;
+  int val = 0;
+
+  if (extract_keyword (is, keywords, kw, val, true))
     {
-      if (mdims >= 0)
+      if (kw == "ndims")
 	{
-	  dim_vector dv;
-	  dv.resize (mdims);
+	  int mdims = val;
 
-	  for (int i = 0; i < mdims; i++)
-	    is >> dv(i);
-
-	  charNDArray tmp(dv);
-	  char *ftmp = tmp.fortran_vec ();
-
-	  // Skip the return line
-	  if (! is.read (ftmp, 1))
-	    return false;
-
-	  if (! is.read (ftmp, dv.numel ()) || !is)
+	  if (mdims >= 0)
 	    {
-	      error ("load: failed to load string constant");
-	      success = false;
+	      dim_vector dv;
+	      dv.resize (mdims);
+
+	      for (int i = 0; i < mdims; i++)
+		is >> dv(i);
+
+	      charNDArray tmp(dv);
+	      char *ftmp = tmp.fortran_vec ();
+
+	      // Skip the return line
+	      if (! is.read (ftmp, 1))
+		return false;
+
+	      if (! is.read (ftmp, dv.numel ()) || !is)
+		{
+		  error ("load: failed to load string constant");
+		  success = false;
+		}
+	      else
+		matrix = tmp;
 	    }
 	  else
-	    matrix = tmp;
+	    {
+	      error ("load: failed to extract matrix size");
+	      success = false;
+	    }
 	}
-      else
+      else if (kw == "elements")
 	{
-	  error ("load: failed to extract matrix size");
-	  success = false;
-	}
-    }
-  else
-    {
-      int elements;
-
-      // re-read the same line again
-      is.clear ();
-      is.seekg (pos);
-
-      if (extract_keyword (is, "elements", elements, true))
-	{
+	  int elements = val;
 
 	  if (elements >= 0)
 	    {
@@ -382,7 +386,6 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 	  
 	      if (! error_state)
 		matrix = chm;
-	  
 	    }
 	  else
 	    {
@@ -390,15 +393,11 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 	      success = false;
 	    }
 	}
-      else
+      else if (kw == "length")
 	{
-	  // re-read the same line again
-	  is.clear ();
-	  is.seekg (pos);
-
-	  int len;
+	  int len = val;
       
-	  if (extract_keyword (is, "length", len) && len >= 0)
+	  if (len >= 0)
 	    {
 	      // This is cruft for backward compatiability, 
 	      // but relatively harmless.
@@ -420,6 +419,13 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 		}
 	    }
 	}
+      else
+	panic_impossible ();
+    }
+  else
+    {
+      error ("load: failed to extract number of rows and columns");
+      success = false;
     }
 
   return success;

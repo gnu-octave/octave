@@ -4,6 +4,9 @@
 
 \input texinfo  @c -*-texinfo-*-
 @setfilename liboctave.info
+@direntry
+* liboctave: (liboctave). Octave C++ Classes
+@end direntry
 
 @c @smallbook
 @c @setchapternewpage odd

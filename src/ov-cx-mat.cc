@@ -276,52 +276,33 @@ octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned,
 bool 
 octave_complex_matrix::load_ascii (std::istream& is)
 {
-  int mdims = 0;
   bool success = true;
-  std::streampos pos = is.tellg ();
 
-  if (extract_keyword (is, "ndims", mdims, true))
+  string_vector keywords(2);
+
+  keywords[0] = "ndims";
+  keywords[1] = "rows";
+
+  std::string kw;
+  int val = 0;
+
+  if (extract_keyword (is, keywords, kw, val, true))
     {
-      if (mdims >= 0)
+      if (kw == "ndims")
 	{
-	  dim_vector dv;
-	  dv.resize (mdims);
+	  int mdims = val;
 
-	  for (int i = 0; i < mdims; i++)
-	    is >> dv(i);
-
-	  ComplexNDArray tmp(dv);
-	  is >> tmp;
-
-	  if (!is) 
+	  if (mdims >= 0)
 	    {
-	      error ("load: failed to load matrix constant");
-	      success = false;
-	    }
-	  matrix = tmp;
-	}
-      else
-	{
-	  error ("load: failed to extract number of rows and columns");
-	  success = false;
-	}
-    }
-  else
-    {
-      int nr = 0;
-      int nc = 0;
+	      dim_vector dv;
+	      dv.resize (mdims);
 
-      // re-read the same line again
-      is.clear ();
-      is.seekg (pos);
+	      for (int i = 0; i < mdims; i++)
+		is >> dv(i);
 
-      if (extract_keyword (is, "rows", nr) && nr >= 0
-	  && extract_keyword (is, "columns", nc) && nc >= 0)
-	{
-	  if (nr > 0 && nc > 0)
-	    {
-	      ComplexMatrix tmp (nr, nc);
+	      ComplexNDArray tmp(dv);
 	      is >> tmp;
+
 	      if (!is) 
 		{
 		  error ("load: failed to load matrix constant");
@@ -329,16 +310,48 @@ octave_complex_matrix::load_ascii (std::istream& is)
 		}
 	      matrix = tmp;
 	    }
-	  else if (nr == 0 || nc == 0)
-	    matrix = ComplexMatrix (nr, nc);
 	  else
-	    panic_impossible ();
+	    {
+	      error ("load: failed to extract number of rows and columns");
+	      success = false;
+	    }
 	}
-      else 
+      else if (kw == "rows")
 	{
-	  error ("load: failed to extract number of rows and columns");
-	  success = false;
+	  int nr = val;
+	  int nc = 0;
+
+	  if (nr >= 0 && extract_keyword (is, "columns", nc) && nc >= 0)
+	    {
+	      if (nr > 0 && nc > 0)
+		{
+		  ComplexMatrix tmp (nr, nc);
+		  is >> tmp;
+		  if (!is)
+		    {
+		      error ("load: failed to load matrix constant");
+		      success = false;
+		    }
+		  matrix = tmp;
+		}
+	      else if (nr == 0 || nc == 0)
+		matrix = ComplexMatrix (nr, nc);
+	      else
+		panic_impossible ();
+	    }
+	  else
+	    {
+	      error ("load: failed to extract number of rows and columns");
+	      success = false;
+	    }
 	}
+      else
+	panic_impossible ();
+    }
+  else
+    {
+      error ("load: failed to extract number of rows and columns");
+      success = false;
     }
 
   return success;

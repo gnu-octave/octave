@@ -60,7 +60,7 @@ public:
 
   ~tree_index_expression (void);
 
-  bool has_magic_end (void) const { return false; }
+  bool has_magic_end (void) const;
 
   void append (tree_argument_list *lst = 0, char t = '(');
 

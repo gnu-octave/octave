@@ -105,8 +105,8 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 
   if (nclin > 0)
     {
-      bl.insert (lc.lower_bounds (), 0);
-      bu.insert (lc.upper_bounds (), 0);
+      bl.insert (lc.lower_bounds (), n);
+      bu.insert (lc.upper_bounds (), n);
     }
 
   double *pbl = bl.fortran_vec ();

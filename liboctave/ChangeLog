@@ -1,3 +1,8 @@
+Thu Aug  8 16:04:17 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* QPSOL.cc (QPSOL::do_minimize): Insert linear constraint bounds
+	starting at n, not 0.
+
 Sat Jul 27 02:54:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (Matrix::Matrix (const RowVector&),

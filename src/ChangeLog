@@ -1,3 +1,9 @@
+Sat Mar  1 01:17:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strftime.c: Update to current version from FSF.
+	* time.cc (Fstrftime): Call strftime with buf = 0 to get buffer
+	size, then call again to actually format the time struct.
+
 Fri Feb 28 01:49:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	Implement switch statement:

@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include<iostream.h>
+
 #include "defun-dld.h"
 #include "error.h"
 #include "help.h"
@@ -247,6 +249,7 @@ Time fields:\n\
   %T  time, 24-hour (hh:mm:ss)\n\
   %X  locale's time representation (%H:%M:%S)\n\
   %Z  time zone (EDT), or nothing if no time zone is determinable\n\
+  %z  offset from GMT\n\
 \n\
 Date fields:\n\
 \n\
@@ -283,15 +286,15 @@ Date fields:\n\
 
       if (! error_state)
 	{
-	  int bufsize = 1024;
-	  char *buf = new char [bufsize];
+	  const char *fmt_str = fmt.c_str ();
 
-	  while (! strftime (buf, bufsize, fmt.c_str (), tm))
-	    {
-	      delete [] buf;
-	      bufsize *= 2;
-	      buf = new char [bufsize];
-	    }
+	  size_t bufsize = strftime (0, (size_t) UINT_MAX, fmt_str, tm);
+
+	  char *buf = new char [++bufsize];
+
+	  buf[0] = '\0';
+
+	  strftime (buf, bufsize, fmt_str, tm);
 
 	  retval = buf;
 

@@ -106,6 +106,8 @@ gnu_readline (char *s)
 #include "sighandlers.h"
 #include "user-prefs.h"
 #include "oct-obj.h"
+#include "oct-map.h"
+#include "symtab.h"
 #include "defun.h"
 
 #ifndef MAXPATHLEN
@@ -630,39 +632,218 @@ get_input_from_stdin (void)
   return rl_instream;
 }
 
-static char *
-command_generator (char *text, int state)
+static char **
+generate_struct_completions (const char *text, char *& prefix,
+			     char *& hint)
 {
-  static int len = 0;
-  static int list_index = 0;
+  char **names = 0;
 
+  char *id = strsave (text);
+  char *ptr = strchr (id, '.');
+  *ptr = '\0';
+
+  char *elts = ptr + 1;
+  ptr = strrchr (elts, '.');
+  if (ptr)
+    *ptr = '\0';
+  else
+    elts = 0;
+
+  prefix = strsave (text);
+  ptr = strrchr (prefix, '.');
+  *ptr = '\0';
+
+  hint = strsave (ptr + 1);
+
+  symbol_record *sr = curr_sym_tab->lookup (id, 0, 0);
+  if (! sr)
+    sr = global_sym_tab->lookup (id, 0, 0);
+
+  if (sr && sr->is_defined ())
+    {
+      tree_fvc *tmp_fvc = sr->def ();
+
+      tree_constant *def = 0;
+      if (tmp_fvc->is_constant ())
+	def = (tree_constant *) tmp_fvc;
+
+      if (def && def->is_map ())
+	{
+	  if (elts && *elts)
+	    {
+	      tree_constant ult = def->lookup_map_element (elts, 0, 1);
+
+	      if (ult.is_map ())
+		{
+		  Octave_map m = ult.map_value ();
+		  names = m.make_name_list ();
+		}
+	    }
+	  else
+	    {
+	      Octave_map m = def->map_value ();
+	      names = m.make_name_list ();
+	    }
+	}
+    }
+
+  delete [] id;
+
+  return names;
+}
+
+static char **
+generate_possible_completions (const char *text, char *& prefix,
+			       char *& hint)
+{
+  char **names = 0;
+
+  prefix = 0;
+
+  if (text && *text && *text != '.')
+    {
+      if (strrchr (text, '.'))
+	{
+	  names = generate_struct_completions (text, prefix, hint);
+	}
+      else
+	{
+	  hint = strsave (text);
+
+	  names = make_name_list ();
+	}
+    }
+
+  return names;
+}
+
+static int
+looks_like_struct (const char *nm)
+{
+  int retval = 0;
+
+  char *id = strsave (nm);
+  char *elts = 0;
+  char *ptr = strchr (id, '.');
+  if (ptr)
+    {
+      *ptr = '\0';
+      elts = ptr + 1;
+    }
+
+  symbol_record *sr = curr_sym_tab->lookup (id, 0, 0);
+  if (! sr)
+    sr = global_sym_tab->lookup (id, 0, 0);
+
+  if (sr && sr->is_defined ())
+    {
+      tree_fvc *tmp_fvc = sr->def ();
+
+      tree_constant *def = 0;
+      if (tmp_fvc->is_constant ())
+	def = (tree_constant *) tmp_fvc;
+
+      if (def && def->is_map ())
+	{
+	  if (elts && *elts)
+	    {
+	      tree_constant ult = def->lookup_map_element (elts, 0, 1);
+
+	      if (ult.is_map ())
+		retval = 1;
+	    }
+	  else
+	    retval = 1;
+	}
+    }
+
+  delete [] id;
+
+  return retval;	
+}
+
+static char *
+command_generator (const char *text, int state)
+{
+  static char *prefix = 0;
+  static char *hint = 0;
+
+  static int prefix_len = 0;
+  static int hint_len = 0;
+
+  static int list_index = 0;
   static char **name_list = 0;
+
+  static int matches = 0;
 
   if (state == 0)
     {
       list_index = 0;
-      len = strlen (text);
 
       if (name_list)
 	{
 	  char **ptr = name_list;
 	  while (ptr && *ptr)
 	    delete [] *ptr++;
+
 	  delete [] name_list;
+
+	  name_list = 0;
 	}
 
-      name_list = make_name_list ();
+      delete [] prefix;
+      prefix = 0;
+
+      delete [] hint;
+      prefix = 0;
+
+      name_list = generate_possible_completions (text, prefix, hint);
+
+      prefix_len = 0;
+      if (prefix)
+	prefix_len = strlen (prefix) + 1;
+	
+      hint_len = 0;
+      if (hint)
+	hint_len = strlen (hint);
+
+      matches = 0;
+      if (name_list)
+	{
+	  int i = 0;
+	  while (name_list[i])
+	    if (strncmp (name_list[i++], hint, hint_len) == 0)
+	      matches++;
+	}
     }
 
-  char *name;
-  while ((name = name_list[list_index]) != 0)
+  if (name_list && matches)
     {
-      list_index++;
-      if (strncmp (name, text, len) == 0)
+      char *name;
+      while ((name = name_list[list_index]) != 0)
 	{
-	  char *buf = xmalloc (1 + strlen (name));
-	  strcpy (buf, name);
-	  return buf;
+	  list_index++;
+	  if (strncmp (name, hint, hint_len) == 0)
+	    {
+	      int len = 3 + prefix_len + strlen (name);
+	      char *buf = xmalloc (len);
+
+	      if (prefix)
+		{
+		  strcpy (buf, prefix);
+		  strcat (buf, ".");
+		  strcat (buf, name);
+		}
+	      else
+		strcpy (buf, name);
+
+	      if (matches == 1 && looks_like_struct (buf))
+		rl_completion_append_character = '.';
+	      else
+		rl_completion_append_character = ' ';
+
+	      return buf;
+	    }
 	}
     }
 

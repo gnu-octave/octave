@@ -1197,7 +1197,7 @@ yyerror (char *s)
 static void
 end_error (char *type, token::end_tok_type ettype, int l, int c)
 {
-  static char *fmt = "%s command matched by `%s' near line %d column %d";
+  static char *fmt = "`%s' command matched by `%s' near line %d column %d";
 
   switch (ettype)
     {

@@ -132,16 +132,13 @@ clean mostlyclean distclean maintainer-clean::
 	$(foreach d, $(CLEANSUBDIRS), $(do-subdir-for-command))
 .PHONY: clean mostlyclean distclean maintainer-clean
 
-distclean::
+maintainer-clean distclean::
 	rm -f octMakefile octave-bug Makefile Makeconf config.cache \
 	config.h config.log config.status Makerules.f77 mk-oct-links \
 	mkoctfile Makefrag.f77
 
-maintainer-clean distclean::
-	rm -f configure config.h.in octMakefile octave-bug Makefile \
-	Makeconf config.cache config.h config.log config.status \
-	Makerules.f77 mk-oct-links mkoctfile BUGS INSTALL.OCTAVE \
-	Makefrag.f77 install-octave
+maintainer-clean::
+	rm -f configure config.h.in BUGS INSTALL.OCTAVE install-octave
 
 # Rules for making a source distribution.
 

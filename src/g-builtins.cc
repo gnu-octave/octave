@@ -1550,22 +1550,6 @@ builtin_rand (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Replot current plot.
- */
-tree_constant *
-builtin_replot (const tree_constant *args, int nargin, int nargout)
-{
-  tree_constant *retval = NULL_TREE_CONST;
-
-  if (nargin > 1)
-    warning ("replot: ignoring extra arguments");
-
-  send_to_plot_stream ("replot\n");
-
-  return retval;
-}
-
-/*
  * Formatted reading.
  */
 tree_constant *

@@ -381,13 +381,21 @@ plot_command	: PLOT plot_command1
 		  }
 		| PLOT ranges plot_command1
 		  {
-		    tree_subplot_list *tmp = $3->reverse ();
-		    $$ = new tree_plot_command (tmp, $2, $1->pttype ());
-		    plotting = 0;
-		    past_plot_range = 0;
-		    in_plot_range = 0;
-		    in_plot_using = 0;
-		    in_plot_style = 0;
+		    if ($1->pttype () == token::replot)
+		      {
+			yyerror ("cannot specify new ranges with replot");
+			ABORT_PARSE;
+		      }
+		    else
+		      {
+			tree_subplot_list *tmp = $3->reverse ();
+			$$ = new tree_plot_command (tmp, $2, $1->pttype ());
+			plotting = 0;
+			past_plot_range = 0;
+			in_plot_range = 0;
+			in_plot_using = 0;
+			in_plot_style = 0;
+		      }
 		  }
 		;
 

@@ -1057,12 +1057,20 @@ is_keyword (char *s)
     {
       plotting = 1;
       yylval.tok_val = new token (token::two_dee, l, c);
+      token_stack.push (yylval.tok_val);
       return PLOT;
     }
   else if (strcmp ("gsplot", s) == 0)
     {
       plotting = 1;
       yylval.tok_val = new token (token::three_dee, l, c);
+      token_stack.push (yylval.tok_val);
+      return PLOT;
+    }
+  else if (strcmp ("replot", s) == 0)
+    {
+      plotting = 1;
+      yylval.tok_val = new token (token::replot, l, c);
       token_stack.push (yylval.tok_val);
       return PLOT;
     }

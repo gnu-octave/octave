@@ -89,6 +89,9 @@ tree_plot_command::eval (int print)
 
   switch (ndim)
     {
+    case 1:
+      plot_buf << "replot";
+      break;
     case 2:
       plot_buf << "plot";
       break;

@@ -115,7 +115,6 @@ extern tree_constant *builtin_quad_options (const tree_constant *, int, int);
 extern tree_constant *builtin_quit (const tree_constant *, int, int);
 extern tree_constant *builtin_qzval (const tree_constant *, int, int);
 extern tree_constant *builtin_rand (const tree_constant *, int, int);
-extern tree_constant *builtin_replot (const tree_constant *, int, int);
 extern tree_constant *builtin_setstr (tree_constant *, int, int);
 extern tree_constant *builtin_scanf (const tree_constant *, int, int);
 extern tree_constant *builtin_schur (const tree_constant *, int, int);

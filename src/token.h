@@ -55,6 +55,7 @@ public:
 
   enum plot_tok_type
     {
+      replot = 1,
       two_dee = 2,
       three_dee = 3,
     };

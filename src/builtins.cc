@@ -605,9 +605,6 @@ at which the integrand is singular.\n", },
        rand (\"seed\")         -- get current seed\n\
        rand (\"seed\", n)      -- set seed", },
 
-  { "replot", 1, 0, builtin_replot,
-    "replot (): redisplay current plot", },
-
   { "scanf", 2, -1, builtin_scanf,
     "[a, b, c, ...] = scanf (\"fmt\")", },
 

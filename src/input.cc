@@ -387,7 +387,7 @@ do_input_echo (const string& input_string)
 {
   int do_echo = reading_script_file ?
     (Vecho_executing_commands & ECHO_SCRIPTS)
-      : (Vecho_executing_commands & ECHO_CMD_LINE);
+      : (Vecho_executing_commands & ECHO_CMD_LINE) && ! forced_interactive;
 
   if (do_echo)
     {
@@ -430,7 +430,10 @@ gnu_readline (const char *s, bool force_readline)
   else
     {
       if (s && *s && (interactive || forced_interactive))
-	fprintf (rl_outstream, s);
+	{
+	  fprintf (rl_outstream, s);
+	  fflush (rl_outstream);
+	}
 
       FILE *curr_stream = rl_instream;
       if (reading_fcn_file || reading_script_file)
@@ -493,11 +496,9 @@ octave_gets (void)
 
       string prompt = decode_prompt_string (ps);
 
-      if (interactive)
-	{
-	  pipe_handler_error_count = 0;
-	  flush_octave_stdout ();
-	}
+      pipe_handler_error_count = 0;
+
+      flush_octave_stdout ();
 
       octave_diary << prompt;
 

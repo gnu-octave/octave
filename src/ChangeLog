@@ -1,3 +1,12 @@
+Wed Jan 22 20:54:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (gnu_readline): If not using readline, flush
+	rl_outstream after printing prompt.
+	(octave_gets): Also call flush_octave_stdout() if
+	forced_interactive, not just if interactive.
+	(do_input_echo): If forced_interactive, only echo prompt and
+	command line if also reading a script file.
+
 Tue Jan 21 23:02:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* SLList.h: Include "BaseSLList.h", not <BaseSLList.h>.

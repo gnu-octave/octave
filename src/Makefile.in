@@ -51,12 +51,12 @@ LIBOBJS = @LIBOBJS@
 	    mv $@.tmp $@ ; \
 	fi
 
-INCLUDES = arith-ops.h builtins.h dynamic-ld.h error.h f-colloc.h \
-	f-dassl.h f-det.h f-eig.h f-fft.h f-fsolve.h f-fsqp.h \
-	f-hess.h f-ifft.h f-inv.h f-lpsolve.h f-lsode.h f-lu.h \
-	f-npsol.h f-qpsol.h f-qr.h f-quad.h f-rand.h f-schur.h \
-	f-svd.h file-io.h g-builtins.h gripes.h help.h idx-vector.h \
-	input.h lex.h mappers.h missing-math.h octave.h \
+INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in error.h \
+	f-colloc.h f-dassl.h f-det.h f-eig.h f-fft.h f-fsolve.h \
+	f-fsqp.h f-hess.h f-ifft.h f-inv.h f-lpsolve.h f-lsode.h \
+	f-lu.h f-npsol.h f-qpsol.h f-qr.h f-quad.h f-rand.h \
+	f-schur.h f-svd.h file-io.h g-builtins.h gripes.h help.h \
+	idx-vector.h input.h lex.h mappers.h missing-math.h octave.h \
 	octave-hist.h pager.h parse.h pr-output.h procstream.h \
 	sighandlers.h statdefs.h symtab.h sysdep.h t-builtins.h \
 	tree-base.h tree-const.h tree.h unwind-prot.h user-prefs.h \
@@ -98,7 +98,7 @@ OCTAVE_LIBS = ../liboctave.a ../libcruft.a ../libreadline.a @LIBDLD@
 DISTFILES = Makefile.in parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(SOURCES)
 
-all: octave
+all: defaults.h octave
 .PHONY: all
 
 octave: $(DLD_OBJECTS) $(OBJECTS) $(OCTAVE_LIBS) $(LIBOBJS)
@@ -156,12 +156,11 @@ dist: parse.cc lex.cc
 
 # Special rules -- these files need special things to be defined.
 
-utils.o:
-	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) \
-	-DOCTAVE_HOME=\"$(prefix)\"  \
-	-DDEFAULT_PAGER=\"$(DEFAULT_PAGER)\"  \
-	$(srcdir)/utils.cc
-
-y.tab.h: parse.cc
+defaults.h: ../Makeconf defaults.h.in
+	@echo "Making defaults.h from defaults.h.in..."
+	@(sed < $(srcdir)/defaults.h.in > defaults.h.tmp \
+	-e 's;@DEFAULT_PAGER@;${DEFAULT_PAGER};' \
+	-e 's;@OCTAVE_HOME@;${prefix};')
+	@$(srcdir)/move-if-change defaults.h.tmp defaults.h
 
 include $(MAKEDEPS)

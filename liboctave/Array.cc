@@ -1540,6 +1540,9 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   dim_vector lhs_dims = dims ();
 
+  if (lhs_dims.all_zero ())
+    return;
+
   int n_lhs_dims = lhs_dims.length ();
 
   Array<int> idx_is_colon (n_idx, 0);
@@ -1791,60 +1794,68 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	}
       else if (n_idx == 1)
 	{
-	  // This handle cases where we only have one index (not colon).
-	  // The index denotes which elements we should delete in the array
-	  // which can be of any dimension. We return a column vector, except
-	  // for the case where we are operating on a row column. The elements
-	  // are numerated columns by column.
+	  // This handle cases where we only have one index (not
+	  // colon).  The index denotes which elements we should
+	  // delete in the array which can be of any dimension. We
+	  // return a column vector, except for the case where we are
+	  // operating on a row vector. The elements are numerated
+	  // column by column.
 	  //
 	  // A(3,3,3)=2;
 	  // A(3:5) = []; A(6)=[]
-	  //
-	  idx_vector idx_vec = ra_idx(0);
-
-	  int num_to_delete = idx_vec.capacity ();
 
 	  int lhs_numel = numel ();
 
-	  int new_numel = lhs_numel - num_to_delete;
+	  idx_vector idx_vec = ra_idx(0);
 
-	  T *new_data = new T[new_numel];
+	  idx_vec.freeze (lhs_numel, 0, true, liboctave_wrore_flag);
+      
+	  idx_vec.sort (true);
 
-	  Array<int> lhs_ra_idx (ndims (), 0);
+	  int num_to_delete = idx_vec.length (lhs_numel);
 
-	  int ii = 0;
-	  int iidx = 0;
-
-	  for (int i = 0; i < lhs_numel; i++)
+	  if (num_to_delete > 0)
 	    {
-	      if (iidx < num_to_delete && i == idx_vec.elem (iidx))
+	      int new_numel = lhs_numel - num_to_delete;
+
+	      T *new_data = new T[new_numel];
+
+	      Array<int> lhs_ra_idx (ndims (), 0);
+
+	      int ii = 0;
+	      int iidx = 0;
+
+	      for (int i = 0; i < lhs_numel; i++)
 		{
-		  iidx++;
+		  if (iidx < num_to_delete && i == idx_vec.elem (iidx))
+		    {
+		      iidx++;
+		    }
+		  else
+		    {
+		      new_data[ii++] = elem (lhs_ra_idx);
+		    }
+
+		  increment_index (lhs_ra_idx, lhs_dims);
+		}
+
+	      if (--(Array<T>::rep)->count <= 0)
+		delete Array<T>::rep;
+
+	      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_numel);
+
+	      dimensions.resize (2);
+
+	      if (lhs_dims.length () == 2 && lhs_dims(1) == 1)
+		{
+		  dimensions(0) = new_numel;
+		  dimensions(1) = 1;
 		}
 	      else
 		{
-		  new_data[ii++] = elem (lhs_ra_idx);
+		  dimensions(0) = 1;
+		  dimensions(1) = new_numel;
 		}
-
-	      increment_index (lhs_ra_idx, lhs_dims);
-	    }
-
-	  if (--(Array<T>::rep)->count <= 0)
-	    delete Array<T>::rep;
-
-	  Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_numel);
-
-	  dimensions.resize (2);
-
-	  if (lhs_dims.length () == 2 && lhs_dims(1) == 1)
-	    {
-	      dimensions(0) = new_numel;
-	      dimensions(1) = 1;
-	    }
-	  else
-	    {
-	      dimensions(0) = 1;
-	      dimensions(1) = new_numel;
 	    }
 	}
       else if (num_ones (idx_is_colon) < n_idx)

@@ -1,3 +1,10 @@
+2004-03-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::maybe_delete_elements): Return immediately
+	if all LHS dimensions are zero.  For one index case, freeze and
+	sort idx_vec before checking length, and do nothing if
+	num_to_delete is zero.
+
 2004-03-04  David Bateman  <dbateman@free.fr>
 
 	* dNDArray.cc (NDArray::ifourier): Arg is int, not const int.

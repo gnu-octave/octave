@@ -181,15 +181,17 @@ install-inc:
 	  rm -f $(octincludedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
 	done
-	linkdir=`echo $(octincludedir) | sed 's/-$(version)$$//'` ; \
-	if [ "$$linkdir" = $(octincludedir) ] ; then \
+	tmp=`echo $(octincludedir) | sed 's|/*$$||'` ; \
+	dir=`echo $$tmp | sed 's|[^/]*$$||'` ; \
+	src=`echo $$tmp | sed 's|^.*/||'` ; \
+	dest=`echo $$src | sed 's|-$(version)$$||'` ; \
+	if [ "$$src" = "$$dest" ] ; then \
 	  true ; \
 	else \
-	  if [ -d $$linkdir ] ; then \
+	  if [ -d $$dir/$$dest ] ; then \
 	    true ; \
 	  else \
-	    rm -f $$linkdir ; \
-	    $(LN_S) $(octincludedir) $$linkdir ; \
+	    cd $$dir ; rm -f $$dest && $(LN_S) $$src $$dest ; \
 	  fi ; \
 	fi
 .PHONY: install-inc

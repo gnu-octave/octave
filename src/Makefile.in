@@ -261,9 +261,9 @@ mk-oct-links: mk-oct-links.in
 
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
-	rm -f $(bindir)/octave
+	rm -f $(bindir)/octave$(EXE)
 	$(INSTALL_PROGRAM) octave$(EXE) $(bindir)/octave-$(version)$(EXE)
-	$(LN_S) $(bindir)/octave-$(version)$(EXE) $(bindir)/octave$(EXE)
+	cd $(bindir) ; $(LN_S) octave-$(version)$(EXE) octave$(EXE)
 .PHONY: install-bin
 
 install-oct: mk-oct-links
@@ -297,13 +297,20 @@ install-inc:
 	  rm -f $(octincludedir)/$$f ; \
 	  $(INSTALL_DATA) $$f $(octincludedir)/$$f ; \
 	done
-	linkdir=`echo $(octincludedir) | sed 's/-$(version)$$//'` ; \
-	if [ "$$linkdir" = $(octincludedir) ] ; then \
+	tmp=`echo $(octincludedir) | sed 's|/*$$||'` ; \
+	dir=`echo $$tmp | sed 's|[^/]*$$||'` ; \
+	src=`echo $$tmp | sed 's|^.*/||'` ; \
+	dest=`echo $$src | sed 's|-$(version)$$||'` ; \
+	if [ "$$src" = "$$dest" ] ; then \
 	  true ; \
 	else \
-	  rm -f $$linkdir && $(LN_S) $(octincludedir) $$linkdir ; \
+	  if [ -d $$dir/$$dest ] ; then \
+	    true ; \
+	  else \
+	    cd $$dir ; rm -f $$dest && $(LN_S) $$src $$dest ; \
+	  fi ; \
 	fi
-.PHONY: install-lib
+.PHONY: install-inc
 
 uninstall:
 	rm -f $(bindir)/octave$(EXE)

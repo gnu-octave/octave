@@ -165,10 +165,6 @@ public:
   // structure element.
   bool looking_at_indirect_ref;
 
-  // TRUE means we need to do some extra lookahead to avoid being
-  // screwed by bogus function syntax.
-  int maybe_screwed_again;
-
   // TRUE means that we've already seen the name of this function.
   // Should only matter if defining_func is also TRUE.
   bool parsed_function_name;

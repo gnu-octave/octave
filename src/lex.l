@@ -1950,9 +1950,6 @@ lexical_feedback::init (void)
   // Not initially looking at indirect references.
   looking_at_indirect_ref = false;
 
-  // Not initially screwed by `function [...] = f (...)' syntax.
-  maybe_screwed_again = 0;
-
   // Quote marks strings intially.
   quote_is_transpose = false;
 }
@@ -1961,7 +1958,9 @@ int
 whitespace_in_literal_matrix (void)
 {
   int pref = 0;
+
   string val = builtin_string_variable ("whitespace_in_literal_matrix");
+
   if (! val.empty ())
     {
       if (val.compare ("ignore", 0, 6) == 0)
@@ -1969,7 +1968,9 @@ whitespace_in_literal_matrix (void)
       else if (val.compare ("traditional", 0, 11) == 0)
 	pref = 1;
     }
+
   Vwhitespace_in_literal_matrix = pref;
+
   return 0;
 }
 

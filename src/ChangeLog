@@ -1,5 +1,7 @@
 2002-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (fill_matrix): If nargin is zero, use val, not 0.0.
+
 	* main.c: New file.
 	* octave.h: New file.
 	* octave.cc (octave_main): Rename from main.

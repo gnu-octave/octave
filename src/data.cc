@@ -919,7 +919,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
   switch (nargin)
     {
     case 0:
-      retval = 0.0;
+      retval = val;
       break;
 
     case 1:

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.425 $)
+AC_REVISION($Revision: 1.426 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -828,6 +828,12 @@ AC_SUBST(library_path_var)
 
 AC_CHECK_FUNCS(gethostname, [], [AC_CHECK_LIB(socket, gethostname)])
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
+
+case "$canonical_host_type" in
+  *-*-cygwin* | *-*-mingw*)
+   AC_CHECK_LIB(wsock32, gethostname)
+  ;;
+esac
 
 ### Type stuff.
 

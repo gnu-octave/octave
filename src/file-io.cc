@@ -1573,9 +1573,6 @@ system-dependent error message.\n\
   return retval;
 }
 
-#define HAVE_MKSTEMP 1
-
-
 DEFUN (mkstemp, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} tmpfile (@var{template}, @var{delete})\n\

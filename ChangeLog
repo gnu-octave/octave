@@ -1,3 +1,7 @@
+2003-04-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Look for wsock32 library on MinGW systems.
+
 2003-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (OCTAVE_LOCAL_BUFFER): Always allocate temporary

@@ -1,7 +1,7 @@
 // error.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -76,6 +76,9 @@ warning (const char *fmt, ...)
 void
 error (const char *fmt, ...)
 {
+  if (error_state == -2)
+    return;
+
   if (! error_state)
     error_state = 1;
 
@@ -83,7 +86,18 @@ error (const char *fmt, ...)
 
   va_list args;
   va_start (args, fmt);
-  verror ("error", fmt, args);
+
+  int len;
+  if (fmt && fmt[(len = strlen (fmt) - 1)] == '\n')
+    {
+      error_state = -2;
+      char *tmp_fmt = strsave (fmt);
+      tmp_fmt[len - 1] = '\0';
+      verror ("error", tmp_fmt, args);
+    }
+  else
+    verror ("error", fmt, args);
+
   va_end (args);
 }
 

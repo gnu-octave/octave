@@ -1,5 +1,11 @@
 Tue Mar 25 17:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octave.cc (maximum_braindamage): Don't bind prefer_zero_one_indexing.
+	* ov.h: Don't declare Vprefer_zero_one_indexing.
+	* ov.cc: Don't define Vprefer_zero_one_indexing.
+	(prefer_zero_one_indexing): Delete.
+	(symbols_of_value): Delete DEFVAR for prefer_zero_one_indexing.
+
 	* ov.h, ov.cc, ov-base.h, ov-base.cc: Add constructors and
 	extractors for bool and boolMatrix types. 
 	

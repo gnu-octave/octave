@@ -1,5 +1,11 @@
 Tue Mar 25 17:37:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* idx-vector.h (idx_vector::idx_vector_rep::freeze,
+	idx_vector::freeze): Delete prefer_zero_one arg.
+	* Array-idx.h, Array2-idx.h: Change all callers.
+
+	* Array-flags.h, Array-flags.cc (liboctave_pzo_flag): Delete.
+
 	* mx-op-defs.h: New file for operator definitions.
 	* mx-cdm-cm.h, mx-cdm-cs.h, mx-cdm-dm.h, mx-cdm-m.h, mx-cdm-s.h,
 	mx-cm-cdm.h, mx-cm-dm.h, mx-cm-m.h, mx-cm-s.h, mx-cs-cdm.h,

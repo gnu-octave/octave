@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int liboctave_dfi_flag = 0;
 int liboctave_pcv_flag = 0;
-int liboctave_pzo_flag = 0;
 int liboctave_rre_flag = 0;
 
 #endif

@@ -383,7 +383,6 @@ maximum_braindamage (void)
   bind_builtin_variable ("ok_to_lose_imaginary_part", 1.0);
   bind_builtin_variable ("page_screen_output", 0.0);
   bind_builtin_variable ("prefer_column_vectors", 0.0);
-  bind_builtin_variable ("prefer_zero_one_indexing", 1.0);
   bind_builtin_variable ("print_empty_dimensions", 0.0);
   bind_builtin_variable ("treat_neg_dim_as_zero", 1.0);
   bind_builtin_variable ("warn_function_name_clash", 0.0);

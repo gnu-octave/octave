@@ -108,7 +108,7 @@ Array2<T>::index (idx_vector& idx) const
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
 
-      idx.freeze (nr * nc, "matrix", liboctave_pzo_flag);
+      idx.freeze (nr * nc, "matrix");
 
       if (idx)
 	{
@@ -158,8 +158,8 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
   int nr = d1;
   int nc = d2;
 
-  int n = idx_i.freeze (nr, "row", liboctave_pzo_flag);
-  int m = idx_j.freeze (nc, "column", liboctave_pzo_flag);
+  int n = idx_i.freeze (nr, "row");
+  int m = idx_j.freeze (nc, "column");
 
   if (idx_i && idx_j)
     {
@@ -377,11 +377,9 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
       idx_vector idx_i = tmp[0];
       idx_vector idx_j = tmp[1];
 
-      int n = idx_i.freeze (lhs_nr, "row", liboctave_pzo_flag,
-			    liboctave_rre_flag);
+      int n = idx_i.freeze (lhs_nr, "row", liboctave_rre_flag);
 
-      int m = idx_j.freeze (lhs_nc, "column", liboctave_pzo_flag,
-			    liboctave_rre_flag);
+      int m = idx_j.freeze (lhs_nc, "column", liboctave_rre_flag);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -457,8 +455,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  int lhs_len = lhs.length ();
 
-	  int n = idx.freeze (lhs_len, 0, liboctave_pzo_flag,
-			      liboctave_rre_flag);
+	  int n = idx.freeze (lhs_len, 0, liboctave_rre_flag);
 
 	  if (idx)
 	    {
@@ -542,8 +539,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  idx_vector idx = tmp[0];
 
-	  idx.freeze (lhs_nc, "vector", liboctave_pzo_flag,
-		      liboctave_rre_flag);
+	  idx.freeze (lhs_nc, "vector", liboctave_rre_flag);
 
 	  if (idx)
 	    {
@@ -568,8 +564,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  idx_vector idx = tmp[0];
 
-	  idx.freeze (lhs_nr, "vector", liboctave_pzo_flag,
-		      liboctave_rre_flag);
+	  idx.freeze (lhs_nr, "vector", liboctave_rre_flag);
 
 	  if (idx)
 	    {
@@ -593,8 +588,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	  idx_vector *tmp = lhs.get_idx ();
 	  idx_vector idx = tmp[0];
 
-	  int len = idx.freeze (lhs_nr * lhs_nc, "matrix",
-				liboctave_pzo_flag);
+	  int len = idx.freeze (lhs_nr * lhs_nc, "matrix");
 
 	  if (idx)
 	    {

@@ -78,7 +78,7 @@ Array<T>::index (idx_vector& idx) const
 
   int len = length ();
 
-  int n = idx.freeze (len, "vector", liboctave_pzo_flag);
+  int n = idx.freeze (len, "vector");
 
   if (idx)
     {
@@ -188,8 +188,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   int lhs_len = lhs.length ();
   int rhs_len = rhs.length ();
 
-  int n = idx.freeze (lhs_len, "vector", liboctave_pzo_flag,
-		      liboctave_rre_flag);
+  int n = idx.freeze (lhs_len, "vector", liboctave_rre_flag);
 
   if (n != 0)
     {

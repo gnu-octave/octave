@@ -552,8 +552,7 @@ IDX_VEC_REP::print (ostream& os) const
 }
 
 int
-IDX_VEC_REP::freeze (int z_len, const char *tag,
-		     int prefer_zero_one, int resize_ok)
+IDX_VEC_REP::freeze (int z_len, const char *tag, int resize_ok)
 {
   if (frozen)
     {

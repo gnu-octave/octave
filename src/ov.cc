@@ -89,12 +89,6 @@ int Vok_to_lose_imaginary_part;
 // TRUE.
 bool Vprefer_column_vectors;
 
-// If TRUE, prefer logical (zore-one) indexing over normal indexing
-// when there is a conflice.  For example, given a = [2, 3], the
-// expression  a ([1, 1]) would return [2 3] (instead of [2 2], which
-// would be returned if prefer_zero_one_indxing were FALSE).
-bool Vprefer_zero_one_indexing;
-
 // If TRUE, print the name along with the value.
 bool Vprint_answer_id_name;
 
@@ -841,16 +835,6 @@ prefer_column_vectors (void)
 }
 
 static int
-prefer_zero_one_indexing (void)
-{
-  Vprefer_zero_one_indexing = check_preference ("prefer_zero_one_indexing");
-
-  liboctave_pzo_flag = Vprefer_zero_one_indexing;
-
-  return 0;
-}
-
-static int
 print_answer_id_name (void)
 {
   Vprint_answer_id_name = check_preference ("print_answer_id_name");
@@ -916,9 +900,6 @@ symbols_of_value (void)
 
   DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,
     "prefer column/row vectors");
-
-  DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
-    "when there is a conflict, prefer zero-one style indexing");
 
   DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
     "set output style to print `var_name = ...'");

@@ -23,7 +23,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if defined (OCTAVE_SOURCE)
 extern int liboctave_dfi_flag;
 extern int liboctave_pcv_flag;
-extern int liboctave_pzo_flag;
 extern int liboctave_rre_flag;
 #endif
 

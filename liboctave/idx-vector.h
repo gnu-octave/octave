@@ -106,8 +106,7 @@ private:
 
     void shorten (int n); // Unsafe.  Avoid at all cost.
 
-    int freeze (int z_len, const char *tag, int prefer_zero_one,
-		int resize_ok);
+    int freeze (int z_len, const char *tag, int resize_ok);
 
     // i/o
 
@@ -246,9 +245,8 @@ public:
 
 // i/o
 
-  int freeze (int z_len, const char *tag, int prefer_zero_one = 0,
-	      int resize_ok = 0)
-    { return rep->freeze (z_len, tag, prefer_zero_one, resize_ok); }
+  int freeze (int z_len, const char *tag, int resize_ok = 0)
+    { return rep->freeze (z_len, tag, resize_ok); }
 
   ostream& print (ostream& os) const { return rep->print (os); }
 

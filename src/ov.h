@@ -450,12 +450,6 @@ extern int Vok_to_lose_imaginary_part;
 // TRUE.
 extern bool Vprefer_column_vectors;
 
-// If TRUE, prefer logical (zore-one) indexing over normal indexing
-// when there is a conflice.  For example, given a = [2, 3], the
-// expression  a ([1, 1]) would return [2 3] (instead of [2 2], which
-// would be returned if prefer_zero_one_indxing were FALSE).
-extern bool Vprefer_zero_one_indexing;
-
 // If TRUE, print the name along with the value.
 extern bool Vprint_answer_id_name;
 

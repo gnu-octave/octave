@@ -1,7 +1,10 @@
+2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ArrayN.cc (increment_index): New arg, start_dimension.
+
 2003-07-29  Heine Kolltveit <kolltvei@idi.ntnu.no>
 
 	* ArrayN.cc (operator <<): Improve output readability.
-	(increment_index (Array<int>&, Array<int>&, int)) New function.
 
 2003-07-29  Petter Risholm	<risholm@stud.ntnu.no>
 

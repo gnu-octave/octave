@@ -181,21 +181,22 @@ index_in_bounds (const Array<int>& ra_idx, const Array<int>& dimensions)
 }
 
 static inline void
-increment_index (Array<int>& ra_idx, const Array<int>& dimensions)
+increment_index (Array<int>& ra_idx, const Array<int>& dimensions,
+		 int start_dimension = 0)
 {
-  ra_idx(0)++;
+  ra_idx(start_dimension)++;
 
   int n = ra_idx.length () - 1;
 
-  for (int i = 0; i < n; i++)
+  for (int i = start_dimension; i < n; i++)
     {
       if (ra_idx(i) < dimensions(i))
-	break;
+ 	break;
       else
-	{
-	  ra_idx(i) = 0;
-	  ra_idx(i+1)++;
-	}
+ 	{
+ 	  ra_idx(i) = 0;
+ 	  ra_idx(i+1)++;
+ 	}
     }
 }
 

@@ -114,6 +114,8 @@ extern void bind_builtin_variable (const char *, tree_constant *,
 
 extern void install_builtin_variables (void);
 
+extern char *maybe_add_default_load_path (const char *p);
+
 extern char *octave_lib_dir (void);
 extern char *octave_arch_lib_dir (void);
 extern char *octave_bin_dir (void);

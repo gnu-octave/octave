@@ -704,7 +704,7 @@ sv_loadpath (void)
   if (s)
     {
       delete [] user_pref.loadpath;
-      user_pref.loadpath = s;
+      user_pref.loadpath = maybe_add_default_load_path (s);
     }
   else
     {

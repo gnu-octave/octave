@@ -378,6 +378,33 @@ default_pager (void)
   return pager_binary;
 }
 
+// Always returns a new string.
+
+char *
+maybe_add_default_load_path (const char *p)
+{
+  static char *std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
+
+  char *pathstring = strsave (p);
+
+  if (pathstring[0] == SEPCHAR)
+    {
+      char *tmp = pathstring;
+      pathstring = strconcat (std_path, pathstring);
+      delete [] tmp;
+    }
+
+  int tmp_len = strlen (pathstring);
+  if (pathstring[tmp_len-1] == SEPCHAR)
+    {
+      char *tmp = pathstring;
+      pathstring = strconcat (pathstring, std_path);
+      delete [] tmp;
+    }
+
+  return pathstring;
+}
+
 char *
 octave_lib_dir (void)
 {
@@ -396,36 +423,14 @@ octave_lib_dir (void)
 char *
 default_path (void)
 {
+  static char *std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
+
+  static char *oct_path = getenv ("OCTAVE_PATH");
+
   static char *pathstring = 0;
   delete [] pathstring;
 
-  static char *std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
-
-  char *oct_path = getenv ("OCTAVE_PATH");
-
-  if (oct_path)
-    {
-      pathstring = strsave (oct_path);
-
-      if (pathstring[0] == SEPCHAR)
-	{
-	  char *tmp = pathstring;
-	  pathstring = strconcat (std_path, pathstring);
-	  delete [] tmp;
-	}
-
-      int tmp_len = strlen (pathstring);
-      if (pathstring[tmp_len-1] == SEPCHAR)
-	{
-	  char *tmp = pathstring;
-	  pathstring = strconcat (pathstring, std_path);
-	  delete [] tmp;
-	}
-    }
-  else
-    pathstring = strsave (std_path);
-
-  return pathstring;
+  return oct_path ? strsave (oct_path) : strsave (std_path);
 }
 
 char *

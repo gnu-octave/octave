@@ -30,7 +30,7 @@ file_stat
 {
 public:
 
-  file_stat (const string& n = string (), bool fl = 1)
+  file_stat (const string& n = string (), bool fl = true)
     : file_name (n), follow_links (fl), initialized (false)
       {
 	if (! file_name.empty ())

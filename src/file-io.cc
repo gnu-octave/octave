@@ -1376,7 +1376,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 	  xstring = gnu_readline ("");
 
 	  if (xstring && *xstring)
-	    maybe_save_history (xstring);
+	    octave_command_history.add (xstring);
 	}
       else
 	{

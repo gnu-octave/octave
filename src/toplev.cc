@@ -261,7 +261,7 @@ clean_up_and_exit (int retval)
 {
   raw_mode (0);
 
-  clean_up_history ();
+  octave_command_history.clean_up_and_save ();
 
   close_plot_stream ();
 

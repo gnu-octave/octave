@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "mappers.h"
+#include "oct-hist.h"
+#include "sysdep.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -246,6 +248,7 @@ history_size (void)
       if (ival >= 0 && (double) ival == val)
 	{
 	  user_pref.history_size = ival;
+	  octave_command_history.set_size (ival);
 	  return 0;
 	}
     }
@@ -437,7 +440,7 @@ int
 saving_history (void)
 {
   user_pref.saving_history = check_preference ("saving_history");
-
+  octave_command_history.ignore_entries (! user_pref.saving_history);
   return 0;
 }
 
@@ -870,7 +873,10 @@ sv_history_file (void)
       status = -1;
     }
   else
-    user_pref.history_file = s;
+    {
+      user_pref.history_file = s;
+      octave_command_history.set_file (oct_tilde_expand (s));
+    }
 
   return status;
 }

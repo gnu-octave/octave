@@ -345,7 +345,7 @@ decode_prompt_string (const string& s)
 	    case '!':
 	      {
 		char number_buffer[128];
-		int num = current_history_number ();
+		int num = octave_command_history.current_number ();
 		if (num > 0)
                   sprintf (number_buffer, "%d", num);
 		else
@@ -477,7 +477,8 @@ octave_gets (void)
 
   if (octave_gets_line && *octave_gets_line)
     {
-      maybe_save_history (octave_gets_line);
+      if (! input_from_startup_file)
+	octave_command_history.add (octave_gets_line);
 
       maybe_write_to_diary_file (octave_gets_line);
 
@@ -1013,7 +1014,8 @@ get_user_input (const Octave_object& args, int debug = 0)
 
   if (input_buf)
     {
-      maybe_save_history (input_buf);
+      if (! input_from_startup_file)
+	octave_command_history.add (input_buf);
 
       int len = strlen (input_buf);
 

@@ -46,15 +46,11 @@ Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-#include <fcntl.h>
-
-#include <readline/history.h>
-
+#include "cmd-hist.h"
 #include "str-vec.h"
 
 #include "defun.h"
 #include "error.h"
-#include "file-ops.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
@@ -69,11 +65,8 @@ Software Foundation, Inc.
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
 
-// The number of hisory lines we read from the history file.
-static int history_lines_in_file = 0;
-
-// The number of history lines we've saved so far.
-static int history_lines_this_session = 0;
+// Guess what?
+command_history octave_command_history;
 
 // Get some default values, possibly reading them from the
 // environment.
@@ -121,41 +114,6 @@ default_history_file (void)
   return file;
 }
 
-// Prime the history list.
-
-void
-initialize_history (void)
-{
-  string file = oct_tilde_expand (user_pref.history_file);
-
-  read_history (file.c_str ());
-
-  using_history ();
-
-  history_lines_in_file = where_history ();
-}
-
-void
-clean_up_history (void)
-{
-  stifle_history (user_pref.history_size);
-
-  string file = oct_tilde_expand (user_pref.history_file);
-
-  if (user_pref.saving_history)
-    write_history (file.c_str ());
-}
-
-void
-maybe_save_history (const string& s)
-{
-  if (user_pref.saving_history && ! input_from_startup_file)
-    {
-      add_history (s.c_str ());
-      history_lines_this_session++;
-    }
-}
-
 // Display, save, or load history.  Stolen and modified from bash.
 //
 // Arg of -w FILENAME means write file, arg of -r FILENAME
@@ -165,8 +123,6 @@ maybe_save_history (const string& s)
 static void
 do_history (int argc, const string_vector& argv)
 {
-  HIST_ENTRY **hlist;
-
   int numbered_output = 1;
 
   int i;
@@ -176,64 +132,30 @@ do_history (int argc, const string_vector& argv)
 	  && (argv[i][1] == 'r' || argv[i][1] == 'w'
 	      || argv[i][1] == 'a' || argv[i][1] == 'n'))
 	{
-	  int result = 0;
-
 	  string file;
 
 	  if (i < argc - 1)
-	    file = oct_tilde_expand (argv[i+1]);
-	  else
-	    file = oct_tilde_expand (user_pref.history_file);
+	    {
+	      file = oct_tilde_expand (argv[i+1]);
+	      octave_command_history.set_file (file);
+	    }
 
 	  switch (argv[i][1])
 	    {
 	    case 'a':		// Append `new' lines to file.
-	      {
-		if (history_lines_this_session)
-		  {
-		    if (history_lines_this_session < where_history ())
-		      {
-			// Create file if it doesn't already exist.
-
-			file_stat fs (file);
-
-			if (! fs)
-			  {
-			    int tem;
-
-			    tem = open (file.c_str (), O_CREAT, 0666);
-			    close (tem);
-			  }
-
-			result
-			  = append_history (history_lines_this_session,
-					    file.c_str ());
-
-			history_lines_in_file += history_lines_this_session;
-			history_lines_this_session = 0;
-		      }
-		  }
-	      }
+	      octave_command_history.append ();
 	      break;
 
 	    case 'w':		// Write entire history.
-	      result = write_history (file.c_str ());
+	      octave_command_history.write ();
 	      break;
 
 	    case 'r':		// Read entire file.
-	      result = read_history (file.c_str ());
+	      octave_command_history.read ();
 	      break;
 
 	    case 'n':		// Read `new' history from file.
-
-	      // Read all of the lines in the file that we haven't
-	      // already read.
-
-	      using_history ();
-	      result = read_history_range (file.c_str (),
-					   history_lines_in_file, -1);
-	      using_history ();
-	      history_lines_in_file = where_history ();
+	      octave_command_history.read_range ();
 	      break;
 	    }
 	  return;
@@ -249,54 +171,37 @@ do_history (int argc, const string_vector& argv)
 	break;
     }
 
-  int limited = 0;
-  int limit = 0;
+  int limit = -1;
 
   if (i < argc)
     {
-      limited = 1;
       if (sscanf (argv[i].c_str (), "%d", &limit) != 1)
         {
 	  if (argv[i][0] == '-')
 	    error ("history: unrecognized option `%s'", argv[i].c_str ());
 	  else
 	    error ("history: bad non-numeric arg `%s'", argv[i].c_str ());
+
 	  return;
         }
-    }
-
-  hlist = history_list ();
-
-  if (hlist)
-    {
-      int i = 0;
-
-      for (i = 0; hlist[i]; i++)
-	; // Do nothing.
 
       if (limit < 0)
 	limit = -limit;
+    }
 
-      if (!limited)
-	i = 0;
-      else
-	if ((i -= limit) < 0)
-	  i = 0;
+  string_vector hlist = octave_command_history.list (limit, numbered_output);
 
+  int len = hlist.length ();
+
+  if (len > 0)
+    {
       ostrstream output_buf;
 
-      while (hlist[i])
-	{
-//	  QUIT;  // in bash: (interrupt_state) throw_to_top_level ();
-
-	  if (numbered_output)
-	    output_buf.form ("%5d%c", i + history_base,
-			     hlist[i]->data ? '*' : ' '); 
-	  output_buf << hlist[i]->line << "\n";
-	  i++;
-	}
+      for (i = 0; i < len; i++)
+	output_buf << hlist[i] << "\n";
 
       output_buf << ends;
+
       maybe_page_output (output_buf);
     }
 }
@@ -357,95 +262,76 @@ edit_history_readline (fstream& stream)
 
 // Use `command' to replace the last entry in the history list, which,
 // by this time, is `run_history blah...'.  The intent is that the
-// new command become the history entry, and that `fc' should never
+// new command becomes the history entry, and that `fc' should never
 // appear in the history list.  This way you can do `run_history' to
 // your heart's content.
 
 static void
-edit_history_repl_hist (char *command)
+edit_history_repl_hist (const string& command)
 {
-  if (! command || ! *command)
-    return;
-
-  HIST_ENTRY **hlist = history_list ();
-
-  if (! hlist)
-    return;
-
-  int i = 0;
-
-  for (i = 0; hlist[i]; i++)
-    ; // Count 'em.
-  i--;
-
-  // History_get () takes a parameter that should be offset by history_base.
-
-  // Don't free this.
-  HIST_ENTRY *histent = history_get (history_base + i);
-  if (! histent)
-    return;
-
-  char *data = 0;
-  if (histent->data)
+  if (! command.empty ())
     {
-      int len = strlen (histent->data);
-      data = (char *) malloc (len);
-      strcpy (data, histent->data);
-    }
+      string_vector hlist = octave_command_history.list ();
 
-  int n = strlen (command);
+      int len = hlist.length ();
 
-  if (command[n - 1] == '\n')
-    command[n - 1] = '\0';
-
-  if (command && *command)
-    {
-      HIST_ENTRY *discard = replace_history_entry (i, command, data);
-      if (discard)
+      if (len > 0)
 	{
-	  if (discard->line)
-	    free (discard->line);
+	  int i = len - 1;
 
-	  free ((char *) discard);
+	  string histent = octave_command_history.get_entry (i);
+
+	  if (! histent.empty ())
+	    {
+	      string cmd = command;
+
+	      int cmd_len = cmd.length ();
+
+	      if (cmd[cmd_len - 1] == '\n')
+		cmd.resize (cmd_len - 1);
+
+	      if (! cmd.empty ())
+		octave_command_history.replace_entry (i, cmd);
+	    }
 	}
     }
 }
 
 static void
-edit_history_add_hist (char *line)
+edit_history_add_hist (const string& line)
 {
-  if (line)
+  if (! line.empty ())
     {
-      int len = strlen (line);
-      if (len > 0 && line[len-1] == '\n')
-	line[len-1] = '\0';
+      string tmp = line;
 
-      if (line[0] != '\0')
-	add_history (line);
+      int len = tmp.length ();
+	
+      if (len > 0 && tmp[len-1] == '\n')
+	tmp.resize (len - 1);
+
+      if (! tmp.empty ())
+	octave_command_history.add (tmp);
     }
 }
-
-#define histline(i) (hlist[(i)]->line)
 
 static string
 mk_tmp_hist_file (int argc, const string_vector& argv,
 		  int insert_curr, char *warn_for) 
 {
-  HIST_ENTRY **hlist;
+  string retval;
 
-  hlist = history_list ();
+  string_vector hlist = octave_command_history.list ();
 
-  int hist_count = 0;
-
-  while (hlist[hist_count++])
-    ; // Find the number of items in the history list.
+  int hist_count = hlist.length ();
 
   // The current command line is already part of the history list by
   // the time we get to this point.  Delete it from the list.
 
   hist_count -= 2;
+
   if (! insert_curr)
-    remove_history (hist_count);
+    octave_command_history.remove (hist_count);
+
   hist_count--;
 
   // If no numbers have been specified, the default is to edit the
@@ -484,13 +370,13 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       || hist_end > hist_count)
     {
       error ("%s: history specification out of range", warn_for);
-      return 0;
+      return retval;
     }
 
   if (usage_error)
     {
       usage ("%s [first] [last]", warn_for);
-      return 0;
+      return retval;
     }
 
   if (hist_end < hist_beg)
@@ -509,18 +395,18 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
     {
       error ("%s: couldn't open temporary file `%s'", warn_for,
 	     name.c_str ());
-      return 0;
+      return retval;
     }
 
   if (reverse)
     {
       for (int i = hist_end; i >= hist_beg; i--)
-	file << histline (i) << "\n";
+	file << hlist[i] << "\n";
     }
   else
     {
       for (int i = hist_beg; i <= hist_end; i++)
-	file << histline (i) << "\n";
+	file << hlist[i] << "\n";
     }
 
   file.close ();
@@ -538,9 +424,9 @@ do_edit_history (int argc, const string_vector& argv)
 
   // Call up our favorite editor on the file of commands.
 
-  ostrstream buf;
-  buf << user_pref.editor << " " << name << ends;
-  char *cmd = buf.str ();
+  string cmd = user_pref.editor;
+  cmd.append (" ");
+  cmd.append (name);
 
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?
@@ -548,7 +434,7 @@ do_edit_history (int argc, const string_vector& argv)
   volatile sig_handler *saved_sigint_handler
     = octave_set_signal_handler (SIGINT, SIG_IGN);
 
-  system (cmd);
+  system (cmd.c_str ());
 
   octave_set_signal_handler (SIGINT, saved_sigint_handler);
 
@@ -607,7 +493,7 @@ do_run_history (int argc, const string_vector& argv)
   if (name.empty ())
     return;
 
-  // Turn on command echo, so the output from this will make better
+  // Turn on command echo so the output from this will make better
   // sense.
 
   begin_unwind_frame ("do_run_history");
@@ -620,22 +506,11 @@ do_run_history (int argc, const string_vector& argv)
 
   run_unwind_frame ("do_run_history");
 
-  // Delete the temporary file.  Should probably be done with an
-  // unwind_protect.
+  // Delete the temporary file.
+
+  // XXX FIXME XXX -- should probably be done using an unwind_protect.
 
   unlink (name.c_str ());
-}
-
-int
-current_history_number (void)
-{
-  using_history ();
-
-  if (user_pref.history_size > 0)
-    return history_base + where_history ();
-  else
-    return -1;
-
 }
 
 DEFUN_TEXT ("edit_history", Fedit_history, Sedit_history, 10,

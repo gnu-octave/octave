@@ -26,12 +26,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "cmd-hist.h"
+
 extern int default_history_size (void);
 extern string default_history_file (void);
-extern void initialize_history (void);
-extern void clean_up_history (void);
-extern void maybe_save_history (const string& s);
-extern int current_history_number (void);
+
+// Guess what?
+extern command_history octave_command_history;
 
 // Nonzero means input is coming from temporary history file.
 extern int input_from_tmp_history_file;

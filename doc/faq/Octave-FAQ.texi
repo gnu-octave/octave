@@ -90,20 +90,21 @@ Free Software Foundation.
 
 @node How can I cite Octave?
 @chapter How can I cite Octave?
-Pointing to @url{octave.org} is good, because that gives people a
-direct way to find out more.  If citation of a URL is not allowed by a
-publisher, or if you also want to point to a traditional reference,
-then you can cite the Octave manual:
+
+Pointing to @url{http://www.octave.org} is good, because that gives
+people a direct way to find out more.  If citation of a URL is not
+allowed by a publisher, or if you also want to point to a traditional
+reference, then you can cite the Octave manual:
 
 @example
 @group
-  @@BOOK{eaton:2002,
+  @@BOOK@{eaton:2002,
     author =     "John W. Eaton",
     title =      "GNU Octave Manual",
     publisher =  "Network Theory Limited",
     year =       "2002",
     isbn =       "0-9541617-2-6"
-  }
+  @}
 @end group
 @end example
 

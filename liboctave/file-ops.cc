@@ -39,13 +39,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-
 #include "file-ops.h"
 #include "lo-error.h"
 #include "oct-env.h"
+#include "oct-passwd.h"
 #include "statdefs.h"
 #include "str-vec.h"
 
@@ -181,8 +178,6 @@ file_ops::tilde_expand (const string& name)
 {
   string expansion = name;
 
-#if defined (HAVE_PWD_H)
-
   // If no leading tilde, do nothing.
 
   size_t beg = name.find_first_not_of (" \t");
@@ -218,12 +213,11 @@ file_ops::tilde_expand (const string& name)
 
 	  string user = name.substr (beg+1, len);
 
-	  struct passwd *p
-	    = static_cast<struct passwd *> (::getpwnam (user.c_str ()));
+	  octave_passwd pw = octave_passwd::getpwnam (user);
 
 	  // If no such user, just use `.'.
 
-	  string home = p ? p->pw_dir : ".";
+	  string home = pw.empty () ? : string (".") : pw.dir ();
       
 	  expansion = string (" ", beg) + home;
 
@@ -231,8 +225,6 @@ file_ops::tilde_expand (const string& name)
 	    expansion.append (name.substr (end));
 	}
     }
-
-#endif
 
   return expansion;
 }

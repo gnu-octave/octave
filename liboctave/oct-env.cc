@@ -50,14 +50,11 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-passwd.h"
 
 octave_env::octave_env (void)
   : follow_symbolic_links (true), verbatim_pwd (true),
@@ -374,9 +371,9 @@ octave_env::do_get_user_name (void) const
 
   if (user_name.empty ())
     {
-      struct passwd *entry = getpwuid (getuid ());
+      octave_passwd pw = octave_passwd::getpwuid (getuid ());
 
-      user_name = entry ? entry->pw_name : "I have no name!";
+      user_name = pw.empty () ? string ("I have no name!") : pw.name ();
     }
 
   return user_name;

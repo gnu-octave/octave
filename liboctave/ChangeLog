@@ -1,3 +1,10 @@
+Mon May  5 17:53:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc: (file_ops::tilde_expand): Use new octave_passwd class.
+	* oct-env.cc (octave_env::do_get_user_name): Likewise.
+
+	* oct-passwd.h, oct-passwd.cc: New files.
+
 Sun May  4 22:17:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statdefs.h: Only include sys/types.h if HAVE_SYS_STAT_H is defined.

@@ -47,8 +47,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	data-conv.h dir-ops.h file-ops.h file-stat.h getopt.h \
 	glob-match.h idx-vector.h lo-ieee.h lo-mappers.h lo-sysdep.h \
 	lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h oct-env.h \
-	oct-math.h pathsearch.h prog-args.h statdefs.h str-vec.h \
-	sun-utils.h sysdir.h \
+	oct-math.h oct-group.h oct-passwd.h pathsearch.h prog-args.h \
+	statdefs.h str-vec.h sun-utils.h sysdir.h \
 	$(MATRIX_INC) \
 	$(MX_OP_INC)
 
@@ -81,8 +81,8 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 	file-ops.cc file-stat.cc filemode.c gamma.c getopt.c getopt1.c \
 	glob-match.cc idx-vector.cc lgamma.c lo-ieee.cc lo-mappers.cc \
 	lo-sysdep.cc lo-utils.cc mach-info.cc mkdir.c oct-alloc.cc \
-	oct-env.cc pathsearch.cc prog-args.cc rename.c rmdir.c \
-	str-vec.cc tempname.c tempnam.c \
+	oct-env.cc oct-group.cc oct-passwd.cc pathsearch.cc \
+	prog-args.cc rename.c rmdir.c str-vec.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \

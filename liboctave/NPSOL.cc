@@ -321,7 +321,7 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   delete [] clow;
   delete [] cup;
   delete [] c;
-  delete [] clin;
+  delete [] cjac;
   delete [] objgrd;
   delete [] r;
   delete [] iw;

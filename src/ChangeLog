@@ -1,6 +1,8 @@
 2002-12-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-arg-list.cc (F__end__): Fail if rows or columns is negative.
+	(tree_argument_list::convert_to_const_vector): Only protect and
+	save pointer to the indexed object if it is a constant.
 
 	* syscalls.cc (Fmkfifo): Use long_value instead of cast.
 

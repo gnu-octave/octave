@@ -116,11 +116,25 @@ DEFCONSTFUN (__end__, , ,
 	  break;
 
 	case 0:
-	  retval = indexed_object->rows ();
+	  {
+	    int nr = indexed_object->rows ();
+
+	    if (nr < 0)
+	      ::error ("invalid use of end");
+	    else
+	      retval = nr;
+	  }
 	  break;
 
 	case 1:
-	  retval = indexed_object->columns ();
+	  {
+	    int nc = indexed_object->columns ();
+
+	    if (nc < 0)
+	      ::error ("invalid use of end");
+	    else
+	      retval = nc;
+	  }
 	  break;
 
 	default:
@@ -129,7 +143,7 @@ DEFCONSTFUN (__end__, , ,
 	}
     }
   else
-    ::error ("__end__: internal error");
+    ::error ("invalid use of end");
 
   return retval;
 }
@@ -137,11 +151,19 @@ DEFCONSTFUN (__end__, , ,
 octave_value_list
 tree_argument_list::convert_to_const_vector (const octave_value *object)
 {
-  unwind_protect::begin_frame ("convert_to_const_vector");
+  // END doesn't make sense for functions.  Maybe we need a different
+  // way of asking an octave_value object this question?
 
-  unwind_protect_ptr (indexed_object);
+  bool stash_object = (object && object->is_constant ());
 
-  indexed_object = object;
+  if (stash_object)
+    {
+      unwind_protect::begin_frame ("convert_to_const_vector");
+
+      unwind_protect_ptr (indexed_object);
+
+      indexed_object = object;
+    }
 
   int len = length ();
 
@@ -214,7 +236,8 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
   args.resize (j);
 
-  unwind_protect::run_frame ("convert_to_const_vector");
+  if (stash_object)
+    unwind_protect::run_frame ("convert_to_const_vector");
 
   return args;
 }

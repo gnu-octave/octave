@@ -63,7 +63,7 @@ public:
 			     const std::list<octave_value_list>& idx,
 			     int nargout);
 
-  octave_function *function_value (bool) { return this; }
+  octave_function *function_value (bool = false) { return this; }
 
   bool is_builtin_function (void) const { return true; }
 

@@ -66,7 +66,7 @@ public:
 
   ~octave_mapper (void) { }
 
-  octave_function *function_value (bool) { return this; }
+  octave_function *function_value (bool = false) { return this; }
 
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)

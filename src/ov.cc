@@ -606,8 +606,14 @@ octave_value::octave_value (octave_function *f)
   rep->count = 1;
 }
 
-octave_value::octave_value (const octave_fcn_handle& fh)
-  : rep (new octave_fcn_handle (fh))
+octave_value::octave_value (const fcn_handle_array& fha)
+  : rep (new octave_fcn_handle (fha))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (octave_function *f, const std::string& nm)
+  : rep (new octave_fcn_handle (f, nm))
 {
   rep->count = 1;
 }

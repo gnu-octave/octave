@@ -205,10 +205,9 @@ template <class MT>
 bool
 octave_base_matrix<MT>::print_as_scalar (void) const
 {
-  int nr = rows ();
-  int nc = columns ();
+  dim_vector dv = dims ();
 
-  return (nr == 1 && nc == 1 || (nr == 0 || nc == 0));
+  return (dv.all_ones () || dv.any_zero ());
 }
 
 template <class MT>

@@ -61,7 +61,7 @@ public:
 
   ~octave_user_function (void);
 
-  octave_function *function_value (bool) { return this; }
+  octave_function *function_value (bool = false) { return this; }
 
   octave_user_function *define_param_list (tree_parameter_list *t);
 

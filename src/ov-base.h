@@ -165,6 +165,8 @@ public:
 
   bool is_constant (void) const { return false; }
 
+  bool is_function_handle (void) const { return false; }
+
   bool is_function (void) const { return false; }
 
   bool is_builtin_function (void) const { return false; }
@@ -230,9 +232,9 @@ public:
 
   streamoff_array streamoff_array_value (void) const;
 
-  octave_function *function_value (bool silent);
+  octave_function *function_value (bool silent = false);
 
-  octave_fcn_handle *fcn_handle_value (bool silent);
+  octave_fcn_handle *fcn_handle_value (bool silent = false);
 
   octave_value_list list_value (void) const;
 

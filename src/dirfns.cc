@@ -53,6 +53,7 @@ Free Software Foundation, Inc.
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
+#include "file-ops.h"
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
@@ -60,7 +61,6 @@ Free Software Foundation, Inc.
 #include "pathlen.h"
 #include "procstream.h"
 #include "pt-plot.h"
-#include "statdefs.h"
 #include "sysdep.h"
 #include "sysdir.h"
 #include "toplev.h"
@@ -544,9 +544,7 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("mkdir", args(0));
       else
 	{
-	  string tmp = oct_tilde_expand (dirname);
-
-	  int mkdir_retval = mkdir (tmp.c_str (), 0777);
+	  int mkdir_retval = xmkdir (oct_tilde_expand (dirname), 0777);
 
 	  if (mkdir_retval < 0)
 	    {
@@ -582,9 +580,7 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("rmdir", args(0));
       else
 	{
-	  string tmp = oct_tilde_expand (dirname);
-
-	  int rmdir_retval = rmdir (tmp.c_str ());
+	  int rmdir_retval = xrmdir (oct_tilde_expand (dirname));
 
 	  if (rmdir_retval < 0)
 	    {
@@ -624,7 +620,7 @@ otherwise prints an error message and returns -1.")
 
 	  if (error_state)
 	    gripe_wrong_type_arg ("rename", args(1));
-	  else if (rename (from.c_str (), to.c_str ()) < 0)
+	  else if (xrename (from, to) < 0)
 	    {
 	      status = -1;
 	      error ("%s", strerror (errno));

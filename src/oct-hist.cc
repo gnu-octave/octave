@@ -54,12 +54,12 @@ Software Foundation, Inc.
 
 #include "defun.h"
 #include "error.h"
+#include "file-ops.h"
 #include "input.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "sighandlers.h"
-#include "statdefs.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
@@ -195,9 +195,9 @@ do_history (int argc, const string_vector& argv)
 		      {
 			// Create file if it doesn't already exist.
 
-			struct stat buf;
+			file_stat fs (file);
 
-			if (stat (file.c_str (), &buf) == -1)
+			if (! fs)
 			  {
 			    int tem;
 

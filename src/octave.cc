@@ -55,6 +55,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dynamic-ld.h"
 #include "error.h"
 #include "file-io.h"
+#include "file-ops.h"
 #include "help.h"
 #include "input.h"
 #include "lex.h"
@@ -65,7 +66,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pathsearch.h"
 #include "procstream.h"
 #include "sighandlers.h"
-#include "statdefs.h"
 #include "sysdep.h"
 #include "pt-const.h"
 #include "pt-misc.h"
@@ -241,14 +241,15 @@ execute_startup_files (void)
 
       // Names alone are not enough.
 
-      struct stat home_rc_statbuf;
-      stat (home_rc.c_str (), &home_rc_statbuf);
+      file_stat fs_home_rc (home_rc);
 
-      struct stat dot_rc_statbuf;
-      stat ("./.octaverc", &dot_rc_statbuf);
+      if (fs_home_rc)
+	{
+	  file_stat fs_dot_rc ("./.octaverc");
 
-      if (home_rc_statbuf.st_ino == dot_rc_statbuf.st_ino)
-	home_rc_already_executed = 1;
+	  if (fs_dot_rc && fs_home_rc.ino () == fs_dot_rc.ino ())
+	    home_rc_already_executed = 1;
+	}
     }
 
   if (! home_rc_already_executed)

@@ -59,6 +59,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "file-info.h"
 #include "file-io.h"
+#include "file-ops.h"
 #include "help.h"
 #include "input.h"
 #include "mappers.h"
@@ -66,13 +67,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "pager.h"
-#include "statdefs.h"
 #include "sysdep.h"
 #include "syswait.h"
 #include "utils.h"
 #include "variables.h"
-
-extern "C" void mode_string ();
 
 // keeps a count of args sent to printf or scanf
 static int fmt_arg_count = 0;
@@ -195,20 +193,22 @@ file_io_get_file (const tree_constant& arg, const char *mode,
 	{
 	  string name = arg.string_value ();
 
-	  struct stat buffer;
-	  int status = stat (name.c_str (), &buffer);
+	  file_stat fs (name);
 
-	  if (status == 0)
+	  if (fs)
 	    {
-	      if ((buffer.st_mode & S_IFREG) == S_IFREG)
+	      if (fs.is_reg ())
 		p = fopen_file_for_user (name, mode, warn_for);
 	      else
 		error ("%s: invalid file type", warn_for);
 	    }
-	  else if (status < 0 && *mode != 'r')
-	    p = fopen_file_for_user (name, mode, warn_for);
 	  else
-	    error ("%s: can't stat file `%s'", warn_for, name.c_str ());
+	    {
+	      if (*mode != 'r')
+		p = fopen_file_for_user (name, mode, warn_for);
+	      else
+		error ("%s: can't stat file `%s'", warn_for, name.c_str ());
+	    }
 	}
       else
 	error ("%s: invalid file specifier", warn_for);
@@ -489,9 +489,9 @@ fopen_internal (const Octave_object& args)
       return retval;
     }
 
-  struct stat buffer;
-  if (stat (name.c_str (), &buffer) == 0
-      && (buffer.st_mode & S_IFDIR) == S_IFDIR)
+  file_stat fs (name);
+
+  if (fs && fs.is_dir ())
     {
       error ("fopen: can't open directory");
       return retval;
@@ -1960,9 +1960,9 @@ popen_internal (const Octave_object& args)
       return retval;
     }
 
-  struct stat buffer;
-  if (stat (name.c_str (), &buffer) == 0
-      && (buffer.st_mode & S_IFDIR) == S_IFDIR)
+  file_stat fs (name);
+
+  if (fs && fs.is_dir ())
     {
       error ("popen: can't open directory");
       return retval;
@@ -2345,7 +2345,7 @@ mkfifo_internal (const Octave_object& args)
 
   long mode = (long) args(1).double_value ();
 
-  retval (0) = (double) mkfifo (name.c_str (), mode);
+  retval (0) = (double) xmkfifo (name, mode);
 
   return retval;
 }
@@ -2414,32 +2414,28 @@ DEFUN ("unlink", Funlink, Sunlink, 10,
 }
 
 static Octave_map
-mk_stat_map (struct stat& st)
+mk_stat_map (const file_stat& fs)
 {
   Octave_map m;
 
-  char mode_as_string[11];
-  mode_string (st.st_mode, mode_as_string);
-  mode_as_string[10] = '\0';
-
-  m["dev"] = (double) st.st_dev;
-  m["ino"] = (double) st.st_ino;
-  m["modestr"] = mode_as_string;
-  m["nlink"] = (double) st.st_nlink;
-  m["uid"] = (double) st.st_uid;
-  m["gid"] = (double) st.st_gid;
+  m["dev"] = (double) fs.dev ();
+  m["ino"] = (double) fs.ino ();
+  m["modestr"] = fs.mode_as_string ();
+  m["nlink"] = (double) fs.nlink ();
+  m["uid"] = (double) fs.uid ();
+  m["gid"] = (double) fs.gid ();
 #if defined (HAVE_ST_RDEV)
-  m["rdev"] = (double) st.st_rdev;
+  m["rdev"] = (double) fs.rdev ();
 #endif
-  m["size"] = (double) st.st_size;
-  m["atime"] = (double) st.st_atime;
-  m["mtime"] = (double) st.st_mtime;
-  m["ctime"] = (double) st.st_ctime;
+  m["size"] = (double) fs.size ();
+  m["atime"] = (double) fs.atime ();
+  m["mtime"] = (double) fs.mtime ();
+  m["ctime"] = (double) fs.ctime ();
 #if defined (HAVE_ST_BLKSIZE)
-  m["blksize"] = (double) st.st_blksize;
+  m["blksize"] = (double) fs.blksize ();
 #endif
 #if defined (HAVE_ST_BLOCKS)
-  m["blocks"] = (double) st.st_blocks;
+  m["blocks"] = (double) fs.blocks ();
 #endif
 
   return m;
@@ -2475,12 +2471,12 @@ DEFUN ("stat", Fstat, Sstat, 10,
 
       if (! error_state)
 	{
-	  struct stat buf;
+	  file_stat fs (fname);
 
-	  if (stat (fname.c_str (), &buf) < 0)
-	    retval = -1.0;
+	  if (fs)
+	    retval = tree_constant (mk_stat_map (fs));
 	  else
-	    retval = tree_constant (mk_stat_map (buf));
+	    retval = -1.0;
 	}
     }
   else
@@ -2503,12 +2499,12 @@ DEFUN ("lstat", Flstat, Slstat, 10,
 
       if (! error_state)
 	{
-	  struct stat buf;
+	  file_stat fs (fname);
 
-	  if (lstat (fname.c_str (), &buf) < 0)
-	    retval = -1.0;
+	  if (fs)
+	    retval = tree_constant (mk_stat_map (fs));
 	  else
-	    retval = tree_constant (mk_stat_map (buf));
+	    retval = -1.0;
 	}
     }
   else
@@ -2582,9 +2578,7 @@ printed.")
 	      int oct_mask = convert (mask, 8, 10);
 
 	      if (! error_state)
-#if defined (HAVE_UMASK)
-		status = convert (umask (oct_mask), 10, 8);
-#endif
+		status = convert (xumask (oct_mask), 10, 8);
 	    }
 	}
     }

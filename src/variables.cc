@@ -49,6 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirfns.h"
 #include "dynamic-ld.h"
 #include "error.h"
+#include "file-ops.h"
 #include "help.h"
 #include "input.h"
 #include "lex.h"
@@ -57,7 +58,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
-#include "statdefs.h"
 #include "symtab.h"
 #include "sysdep.h"
 #include "pt-const.h"
@@ -283,8 +283,9 @@ returns:\n\
 	    }
 	  else
 	    {
-	      struct stat buf;
-	      if (stat (name.c_str (), &buf) == 0 && S_ISREG (buf.st_mode))
+	      file_stat fs (name);
+
+	      if (fs && fs.is_reg ())
 		retval = 2.0;
 	    }
 	}

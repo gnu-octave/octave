@@ -24,7 +24,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstdlib>
 #include <csignal>
+
 #include <new>
 
 #include <iostream.h>
@@ -88,11 +90,28 @@ octave_restore_signal_mask (void)
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {
-  error ("%s -- stopping myself...", sig_name);
+  static bool been_there_done_that = false;
 
-  save_user_variables ();
+  if (been_there_done_that)
+    {
+#ifdef SIGABRT
+      octave_set_signal_handler (SIGABRT, SIG_DFL);
+#endif
 
-  clean_up_and_exit (sig_number);
+      error ("attempted clean up seems to have failed -- aborting...");
+
+      abort ();
+    }
+  else
+    {
+      been_there_done_that = true;
+
+      error ("%s -- stopping myself...", sig_name);
+
+      save_user_variables ();
+
+      clean_up_and_exit (sig_number);
+    }
 }
 
 // I know, not really a signal handler.

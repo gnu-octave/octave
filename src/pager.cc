@@ -150,14 +150,14 @@ flush_output_to_pager (void)
 	  if (pager_stream)
 	    {
 	      volatile sig_handler *old_sigint_handler;
-	      old_sigint_handler = signal (SIGINT, SIG_IGN);
+	      old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
 
 	      pager_stream << message;
 	      delete [] message;
 	      pager_stream.flush ();
 	      pager_stream.close ();
 
-	      signal (SIGINT, old_sigint_handler);
+	      octave_set_signal_handler (SIGINT, old_sigint_handler);
 
 	      return;
 	    }

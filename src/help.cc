@@ -545,11 +545,11 @@ try_info (const char *string)
   cmd_str = cmd_buf.str ();
 
   volatile sig_handler *old_sigint_handler;
-  old_sigint_handler = signal (SIGINT, SIG_IGN);
+  old_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
 
   status = system (cmd_str);
 
-  signal (SIGINT, old_sigint_handler);
+  octave_set_signal_handler (SIGINT, old_sigint_handler);
 
   if ((status & 0xff) == 0)
     status = (signed char) ((status & 0xff00) >> 8);

@@ -547,9 +547,12 @@ do_edit_history (int argc, char **argv)
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?
 
-  volatile sig_handler *saved_sigint_handler = signal (SIGINT, SIG_IGN);
+  volatile sig_handler *saved_sigint_handler
+    = octave_set_signal_handler (SIGINT, SIG_IGN);
+
   system (cmd);
-  signal (SIGINT, saved_sigint_handler);
+
+  octave_set_signal_handler (SIGINT, saved_sigint_handler);
 
   // Write the commands to the history file since parse_and_execute
   // disables command line history while it executes.

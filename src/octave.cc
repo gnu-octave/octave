@@ -700,7 +700,8 @@ main (int argc, char **argv)
 
   // Allow the user to interrupt us without exiting.
 
-  volatile sig_handler *saved_sigint_handler = signal (SIGINT, SIG_IGN);
+  volatile sig_handler *saved_sigint_handler
+    = octave_set_signal_handler (SIGINT, SIG_IGN);
 
   if (setjmp (toplevel) != 0)
     {
@@ -711,7 +712,7 @@ main (int argc, char **argv)
 
   can_interrupt = 1;
 
-  signal (SIGINT, saved_sigint_handler);
+  octave_set_signal_handler (SIGINT, saved_sigint_handler);
 
   // The big loop.
 

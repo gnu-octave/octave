@@ -43,6 +43,8 @@ extern int pipe_handler_error_count;
 // Nonzero means we can be interrupted.
 extern int can_interrupt;
 
+extern sig_handler *octave_set_signal_handler (int, sig_handler *);
+
 extern void install_signal_handlers (void);
 
 // This is taken directly from Emacs 19:

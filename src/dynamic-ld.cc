@@ -35,6 +35,9 @@ extern "C"
 #define false kpathsea_false
 #define true kpathsea_true
 #include <kpathsea/pathsearch.h>
+#undef true
+#undef false
+#undef boolean
 }
 
 #include "dynamic-ld.h"

@@ -1,3 +1,11 @@
+Mon Dec  1 00:51:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dassl/xerhlt.f, dassl/xermsg.f, dassl/xerprn.f, dassl/xgetua.f,
+	dassl/xsetua.f: Delete.
+
+	* slatec-err: New directory.
+	* Makefile.in: Add it to the list.
+
 Sun Nov 30 17:55:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* slatec-fn/xdgami.f, slatec-fn/xdbetai.f, slatec-fn/xderfc.f,

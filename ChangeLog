@@ -1,3 +1,18 @@
+Thu Dec 11 09:43:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.h.bot: Define DYNAMIC_CAST and REINTERPRET_CAST using new
+	style for casts.  Define CONST_CAST and STATIC_CAST too.
+
+	* configure.in (SH_LD): Set default to $CXX, not $CC.
+
+Mon Dec  1 00:49:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Add libcruft/slatec-err/Makefile.
+
+Sun Nov 30 18:19:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for gamma and lgamma too.
+
 Fri Nov 28 23:21:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_OUTPUT): Include libcruft/specfun/Makefile.

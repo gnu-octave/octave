@@ -75,13 +75,11 @@ MX_OP_SRC := mx-cdm-cm.cc mx-cdm-cs.cc mx-cdm-dm.cc mx-cdm-m.cc \
 	mx-dm-cs.cc mx-dm-m.cc mx-dm-s.cc mx-m-cdm.cc mx-m-cm.cc \
 	mx-m-cs.cc mx-m-dm.cc mx-s-cdm.cc mx-s-cm.cc mx-s-dm.cc
 
-SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc \
-	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc \
-	cmd-edit.cc cmd-hist.cc data-conv.cc \
-	dbleBessel.cc dbleBetai.cc dbleGammai.cc dir-ops.cc \
-	f2c-main.c \
-	file-ops.cc file-stat.cc filemode.c getopt.c getopt1.c \
-	glob-match.cc idx-vector.cc lo-ieee.cc lo-mappers.cc \
+SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
+	LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc cmd-edit.cc \
+	cmd-hist.cc data-conv.cc dir-ops.cc f2c-main.c file-ops.cc \
+	file-stat.cc filemode.c getopt.c getopt1.c glob-match.cc \
+	idx-vector.cc lo-ieee.cc lo-mappers.cc lo-specfun.cc \
 	lo-sysdep.cc lo-utils.cc mach-info.cc mkdir.c oct-alloc.cc \
 	oct-env.cc oct-group.cc oct-passwd.cc oct-syscalls.cc \
 	pathsearch.cc prog-args.cc rename.c rmdir.c str-vec.cc \

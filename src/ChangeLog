@@ -1,4 +1,13 @@
+Tue Dec  9 02:45:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (INCLUDES): Don't forget Pix.h.
+
+	* BaseSLList.cc: Don't include nonstandard libg++ header files.
+
 Sun Nov 30 14:58:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc: Include cmath, not oct-math.
+	* sysdep.cc: Likewise.
 
 	* DLD-FUNCTIONS/bessel.cc: New file.
 	* Makefile.in (DLD_XSRC): Add it to the list.

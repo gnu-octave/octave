@@ -25,6 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cfloat>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 
@@ -41,7 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
-#include "oct-math.h"
 #include "str-vec.h"
 
 #include "defun.h"

@@ -7,9 +7,13 @@
 #define GCC_ATTR_UNUSED
 #endif
 
-#define DYNAMIC_CAST(T, E) (T) (E)
+#define CONST_CAST(T, E) const_cast<T> (E)
 
-#define REINTERPRET_CAST(T, E) (T) (E)
+#define DYNAMIC_CAST(T, E) dynamic_cast<T> (E)
+
+#define REINTERPRET_CAST(T, E) reinterpret_cast<T> (E)
+
+#define STATIC_CAST(T, E) static_cast<T> (E)
 
 #define HEAVYWEIGHT_INDEXING 1
 

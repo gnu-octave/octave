@@ -1,4 +1,4 @@
-## Copyright (C) 1995, 1996, 1997  Kurt Hornik
+## Copyright (C) 1995, 1996  Kurt Hornik
 ## 
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -22,16 +22,21 @@
 ## Created: 27 September 1994
 ## Adapted-By: jwe
 
-function y = erfinv (x)
+function [y, iterations] = erfinv (x)
   
   if (nargin != 1)
     usage ("erfinv (x)");
   endif
-  
+
+  maxit = 100;
+  tol = eps;
+
+  iterations = 0;
+
   [m, n] = size (x);  
   x = reshape (x, m * n, 1);
   y = zeros (m * n, 1);
-  
+
   i = find ((x < -1) | (x > 1));
   if any (i)
     y(i) = NaN * ones (length (i), 1);
@@ -42,15 +47,19 @@ function y = erfinv (x)
 
   t = find (x == 1);
   y (t) = Inf * ones (size (t));
-  
+
   i = find ((x > -1) & (x < 1));
   if any (i)
     s = sqrt (pi) / 2;
     z_old = ones (length (i), 1);
-    z_new = zeros (length (i), 1);
-    while (any (any (abs (z_new - z_old) > 2 * eps)))
+    z_new = sqrt (-log (1 - abs (x(i)))) .* sign (x(i));
+    while (any (abs (erf (z_old) - x(i)) > tol * abs (x(i))))
       z_old = z_new;
       z_new = z_old - (erf (z_old) - x(i)) .* exp (z_old.^2) * s;
+      if (++iterations > maxit)
+	warning ("erfinv: iteration limit exceeded");
+	break;
+      endif
     endwhile
     y(i) = z_new;
   endif

@@ -1,3 +1,8 @@
+Fri Sep  3 00:01:38 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/erfinv.m: Improve stopping criterion.
+	Add iteration count as second return value.
+
 Mon Aug 30 12:07:00 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/base/mean.m: Use .', not ' to reorient row vectors.

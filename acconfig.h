@@ -44,8 +44,7 @@
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING
 
-/* Define to compile smaller kernel.  Only works if some form of
-   dynamic linking is also supported and used. */
+/* Define to compile smaller kernel. */
 #undef OCTAVE_LITE
 
 /* Define if this is Octave. */

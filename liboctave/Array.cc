@@ -2496,16 +2496,14 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			}
 		    }
 		}
-	      else if (rhs_nr == 1 && rhs_nc == 1 && len <= lhs_nr * lhs_nc)
+	      else if (rhs_nr == 1 && rhs_nc == 1)
 		{
 		  RT scalar = rhs.elem (0, 0);
 
 		  for (int i = 0; i < len; i++)
 		    {
 		      int ii = idx_i.elem (i);
-		      int fr = ii % lhs_nr;
-		      int fc = (ii - fr) / lhs_nr;
-		      lhs.elem (fr, fc) = scalar;
+		      lhs.elem (ii) = scalar;
 		    }
 		}
 	      else
@@ -2642,7 +2640,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		  lhs.elem (ii) = rhs.elem (i);
 		}
 	    }
-	  else if (rhs_is_scalar && len <= lhs_len)
+	  else if (rhs_is_scalar)
 	    {
 	      RT scalar = rhs.elem (0);
 

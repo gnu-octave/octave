@@ -1,3 +1,10 @@
+2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::assign2, Array<T>::assignN):
+	For X(I) = RHS, don't restrict I to fewer elements than X.
+
+	* Array.cc (Array<T>::assign2): Simplify indexing for X(I) = RHS case.
+
 2004-01-22  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* mx-inlines.cc	(MX_ND_REDUCTION, MX_ND_CUMULATIVE_OP):

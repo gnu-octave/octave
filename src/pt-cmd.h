@@ -40,7 +40,6 @@ class tree_index_expression;
 class tree_identifier;
 class tree_return_list;
 class octave_value;
-class symbol_record;
 
 class tree_command;
 class tree_decl_command;

@@ -39,6 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_symbol;
 class octave_function;
+class octave_value;
+class octave_variable_reference;
 
 class string_vector;
 

@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-walk.h"
 #include "symtab.h"
 #include "utils.h"
+#include "variables.h"
 
 // Indirect references to values (structure elements).
 

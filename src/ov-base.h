@@ -98,6 +98,8 @@ public:
 
   octave_value reshape (const dim_vector&) const;
 
+  octave_value permute (const Array<int>& vec, bool = false) const;
+
   bool is_defined (void) const { return false; }
 
   bool is_cell (void) const { return false; }

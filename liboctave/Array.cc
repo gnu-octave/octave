@@ -356,6 +356,71 @@ Array<T>::reshape (const dim_vector& new_dims) const
 }
 
 template <class T>
+Array<T>
+Array<T>::permute (const Array<int>& perm_vec, bool inv) const
+{
+  Array<T> retval;
+
+  dim_vector dv = dims ();
+  dim_vector dv_new;
+
+  int nd = dv.length ();
+
+  dv_new.resize (nd);
+
+  // Need this array to check for identical elements in permutation array.
+  Array<bool> checked (nd, false);
+
+  // Find dimension vector of permuted array.
+  for (int i = 0; i < nd; i++)
+    {
+      int perm_el = perm_vec.elem (i);
+
+      if (perm_el > dv.length () || perm_el < 1)
+	{
+	  (*current_liboctave_error_handler)
+	    ("permutation vector contains an invalid element");
+
+	  return retval;
+	}
+
+      if (checked.elem(perm_el - 1))
+	{
+	  (*current_liboctave_error_handler)
+	    ("PERM cannot contain identical elements");
+
+	  return retval;
+	}
+      else
+	checked.elem(perm_el - 1) = true;
+
+      dv_new (i) = dv (perm_el - 1);
+    }
+
+  retval.resize (dv_new);
+
+  // Index array to the original array.
+  Array<int> old_idx (nd, 0);
+
+  // Number of elements in Array (should be the same for
+  // both the permuted array and original array).
+  int n = retval.length ();
+
+  // Permute array.
+  for (int i = 0; i < n; i++)
+    {
+      // Get the idx of permuted array.
+      Array<int> new_idx = calc_permutated_idx (old_idx, perm_vec, inv);
+
+      retval.elem (new_idx) = elem (old_idx);
+
+      increment_index (old_idx, dv);
+    }
+
+  return retval;
+}
+
+template <class T>
 void
 Array<T>::resize_no_fill (int n)
 {

@@ -510,6 +510,25 @@ short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
   return retval;
 }
 
+Array<int>
+calc_permutated_idx (const Array<int>& old_idx, 
+		     const Array<int>& perm_vec, bool inv)
+{
+  int n_el = old_idx.length ();
+
+  Array<int> retval (n_el);
+
+  for (int i = 0; i < n_el; i++)
+    {
+      if (inv)
+	retval(perm_vec(i)-1) = old_idx(i);
+      else
+	retval(i) = old_idx(perm_vec(i)-1);
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

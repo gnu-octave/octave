@@ -665,6 +665,55 @@ omitted, it defaults to 1 (column-wise products).\n\
   DATA_REDUCTION (prod);
 }
 
+static octave_value
+do_permute (const octave_value_list& args, bool inv, const std::string& fname)
+{
+  octave_value retval;
+
+  if (args.length () == 2 && args(1).length () == args(0).dims ().length ())
+    {
+      Array<int> vec = args(1).int_vector_value ();
+
+      octave_value ret = args(0).permute (vec, inv);
+
+      if (! error_state)
+	retval = ret;
+    }
+  else
+    print_usage (fname);
+
+  return retval;
+}
+
+DEFUN (permute, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} permute (@var{a}, @var{perm})\n\
+Return the generalized transpose for an N-d array object @var{a}.\n\
+The permutation vector @var{perm} must contain the elements\n\
+@code{1:ndims(a)} (in any order, but each element must appear just once).\n\
+\n\
+@end deftypefn\n\
+@seealso{ipermute}")
+{
+  return do_permute (args, false, "permute");
+}
+
+DEFUN (ipermute, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ipermute (@var{a}, @var{iperm})\n\
+The inverse of the @code{permute} function.  The expression\n\
+\n\
+@example\n\
+ipermute (permute (a, perm), perm)\n\
+@end example\n\
+returns the original array @var{a}.\n\
+\n\
+@end deftypefn\n\
+@seealso{permute}")
+{
+  return do_permute (args, true, "ipermute");
+}
+
 DEFUN (length, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} length (@var{a})\n\

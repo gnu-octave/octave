@@ -2220,32 +2220,32 @@ ComplexMatrix::expm (void) const
   OCTAVE_QUIT;
 
   // construct balancing permutation vector
-  Array<int> ipermute (nc);
+  Array<int> iperm (nc);
   for (int i = 0; i < nc; i++)
-    ipermute(i) = i;  // initialize to identity permutation
+    iperm(i) = i;  // initialize to identity permutation
 
   // leading permutations in forward order
   for (int i = 0; i < (ilo-1); i++)
     {
       int swapidx = static_cast<int> (dpermute(i)) - 1;
-      int tmp = ipermute(i);
-      ipermute(i) = ipermute(swapidx);
-      ipermute(swapidx) = tmp;
+      int tmp = iperm(i);
+      iperm(i) = iperm(swapidx);
+      iperm(swapidx) = tmp;
     }
 
   // trailing permutations must be done in reverse order
   for (int i = nc - 1; i >= ihi; i--)
     {
       int swapidx = static_cast<int> (dpermute(i)) - 1;
-      int tmp = ipermute(i);
-      ipermute(i) = ipermute(swapidx);
-      ipermute(swapidx) = tmp;
+      int tmp = iperm(i);
+      iperm(i) = iperm(swapidx);
+      iperm(swapidx) = tmp;
     }
 
   // construct inverse balancing permutation vector
   Array<int> invpvec (nc);
   for (int i = 0; i < nc; i++)
-    invpvec(ipermute(i)) = i;     // Thanks to R. A. Lippert for this method
+    invpvec(iperm(i)) = i;     // Thanks to R. A. Lippert for this method
 
   OCTAVE_QUIT;
 

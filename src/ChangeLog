@@ -1,3 +1,19 @@
+2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (do_permute): New function.
+	(Fpermute, Fipermute): Use it.
+
+	* ov-base.cc (octave_base_value::permute): New function.
+	* ov-base.h: Provide decl.
+
+	* ov.h (octave_value::ipermute): New function.
+
+2003-11-11  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* data.cc (Fpermute, Fipermute): New functions.
+	* ov.h (octave_value::permute): New function.
+	* ov-base-mat.h (octave_base_matrix::permute): New function.
+
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-obj.h (octave_value_list): Internal representation is now

@@ -1,3 +1,15 @@
+2003-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.h (Array<T>::ipermute): New function.
+
+2003-11-11  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::permute): New function.
+	* Array.h: Provide decl.
+
+	* Array-util.cc (calc_permutated_idx): New function.
+	* Array-util.h: Provide decl.
+
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::index2): Return value has orientation of

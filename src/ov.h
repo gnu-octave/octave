@@ -332,6 +332,12 @@ public:
   virtual octave_value reshape (const dim_vector& dv) const
     { return rep->reshape (dv); }
 
+  virtual octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return rep->permute (vec, inv); }
+
+  octave_value ipermute (const Array<int>& vec) const
+    { return rep->permute (vec, true); }
+
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().

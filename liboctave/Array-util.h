@@ -87,6 +87,8 @@ extern dim_vector short_freeze (Array<idx_vector>& ra_idx,
 				const dim_vector& dimensions,
 				int resize_ok);
 
+extern Array<int> calc_permutated_idx (const Array<int>& old_idx, 
+				       const Array<int>& perm_vec, bool inv);
 #endif
 
 /*

@@ -407,6 +407,10 @@ public:
 
   Array<T> reshape (const dim_vector& new_dims) const;
 
+  Array<T> permute (const Array<int>& vec, bool inv = false) const;
+  Array<T> ipermute (const Array<int>& vec) const
+    { return permute (vec, true); }
+
   void resize_no_fill (int n);
   void resize_and_fill (int n, const T& val);
 

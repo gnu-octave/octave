@@ -1,4 +1,3 @@
-// MArray-C.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -49,6 +48,5 @@ INSTANTIATE_MDIAGARRAY_FRIENDS (Complex)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// lo-utils.h                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -32,6 +31,5 @@ extern double D_NINT (double x);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

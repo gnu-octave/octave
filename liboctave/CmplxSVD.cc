@@ -1,4 +1,3 @@
-//                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -151,6 +150,5 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

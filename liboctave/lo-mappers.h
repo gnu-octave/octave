@@ -1,4 +1,3 @@
-// lo-mappers.h                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -61,6 +60,5 @@ extern Complex tanh (const Complex& x);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-//                                  -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -257,6 +256,5 @@ extern ComplexColumnVector Qzval (const Matrix& a, const Matrix& b);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

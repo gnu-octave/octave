@@ -1,4 +1,3 @@
-//                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -97,6 +96,5 @@ AEPBALANCE::init (const Matrix& a, const string& balance_job)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

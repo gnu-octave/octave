@@ -1,4 +1,4 @@
-// RowVector manipulations.                              -*- C++ -*-
+// RowVector manipulations.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -385,6 +385,5 @@ operator * (const RowVector& v, const ComplexColumnVector& a)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -37,6 +37,5 @@ copy_f77_context (void *from, void *to, unsigned int size)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

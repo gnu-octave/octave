@@ -1,4 +1,3 @@
-//                                                       -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -41,6 +40,5 @@ int liboctave_rre_flag = 0;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

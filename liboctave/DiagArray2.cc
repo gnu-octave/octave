@@ -1,4 +1,4 @@
-// Template array classes                              -*- C++ -*-
+// Template array classes
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -203,6 +203,5 @@ DiagArray2<T>::resize (int r, int c, const T& val)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

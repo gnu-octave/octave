@@ -1,4 +1,4 @@
-// DiagMatrix manipulations.                             -*- C++ -*-
+// DiagMatrix manipulations.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -829,6 +829,5 @@ operator << (ostream& os, const ComplexDiagMatrix& a)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

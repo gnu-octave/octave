@@ -1,4 +1,3 @@
-//                                  -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -89,6 +88,5 @@ typedef Complex (*c_c_Mapper)(const Complex&);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// QLD.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -135,6 +134,5 @@ QLD::minimize (double& objf, int& inform)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

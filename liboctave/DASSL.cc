@@ -1,4 +1,3 @@
-// DASSL.cc                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -450,6 +449,5 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

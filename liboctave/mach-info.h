@@ -1,4 +1,3 @@
-// float-fmt.h                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -46,6 +45,5 @@ extern int float_format_init (void);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

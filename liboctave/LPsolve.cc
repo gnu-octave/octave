@@ -1,4 +1,3 @@
-// LPsolve.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -43,6 +42,5 @@ LPsolve::do_minimize (double&, int&, ColumnVector&)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

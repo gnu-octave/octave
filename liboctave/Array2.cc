@@ -1,4 +1,4 @@
-// Template array classes                              -*- C++ -*-
+// Template array classes
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -200,6 +200,5 @@ Array2<T>::insert (const Array2<T>& a, int r, int c)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// QPSOL.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -167,6 +166,5 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

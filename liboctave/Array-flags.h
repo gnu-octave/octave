@@ -30,6 +30,5 @@ extern int liboctave_rre_flag;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

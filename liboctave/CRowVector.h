@@ -1,4 +1,3 @@
-//                                  -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -171,6 +170,5 @@ ComplexRowVector linspace (const Complex& x1, const Complex& x2, int n);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,4 @@
-// Matrix manipulations.                              -*- C++ -*-
+// Matrix manipulations.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -2841,6 +2841,5 @@ Qzval (const Matrix& a, const Matrix& b)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,4 @@
-// Template array classes                              -*- C++ -*-
+// Template array classes
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -575,6 +575,5 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

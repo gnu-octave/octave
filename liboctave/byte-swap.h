@@ -1,4 +1,3 @@
-// byte-swap.h                                            -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -92,6 +91,5 @@ swap_8_bytes (char *t, int len)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

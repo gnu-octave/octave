@@ -102,6 +102,5 @@ extern void copy_f77_context (void *, void *, unsigned int);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

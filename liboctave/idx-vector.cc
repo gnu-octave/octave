@@ -1,4 +1,3 @@
-// idx-vector.cc                                       -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -491,6 +490,5 @@ IDX_VEC_REP::freeze (int z_len, const char *tag,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

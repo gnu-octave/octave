@@ -1,4 +1,3 @@
-//                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -100,6 +99,5 @@ base_lu <lu_type, p_type> :: P (void) const
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

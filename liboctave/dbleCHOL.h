@@ -1,4 +1,3 @@
-//                                  -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -69,6 +68,5 @@ private:
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

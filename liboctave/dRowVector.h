@@ -1,4 +1,3 @@
-//                                  -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -114,6 +113,5 @@ RowVector linspace (double x1, double x2, int n);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

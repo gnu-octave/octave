@@ -53,6 +53,5 @@ lgamma (double x)
 /*
 ;;; Local Variables: ***
 ;;; mode: C ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// CollocWt.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -191,6 +190,5 @@ operator << (ostream& os, const CollocWt& a)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

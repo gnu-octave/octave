@@ -1,4 +1,4 @@
-// Template array classes                              -*- C++ -*-
+// Template array classes
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -245,6 +245,5 @@ public:
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

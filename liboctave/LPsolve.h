@@ -1,4 +1,3 @@
-// LPsolve.h                                               -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -73,6 +72,5 @@ public:
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

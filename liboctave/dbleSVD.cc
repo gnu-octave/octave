@@ -1,4 +1,3 @@
-//                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -158,6 +157,5 @@ operator << (ostream& os, const SVD& a)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

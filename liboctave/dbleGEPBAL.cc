@@ -1,4 +1,3 @@
-//                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -226,6 +225,5 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const string& balance_job)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

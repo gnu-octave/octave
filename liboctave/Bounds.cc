@@ -1,4 +1,3 @@
-// Bounds.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -97,6 +96,5 @@ operator << (ostream& os, const Bounds& b)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

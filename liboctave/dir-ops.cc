@@ -1,4 +1,3 @@
-// dir-ops.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -111,6 +110,5 @@ dir_entry::copy (const dir_entry& de)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

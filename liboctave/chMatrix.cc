@@ -1,4 +1,4 @@
-// Matrix manipulations.                              -*- C++ -*-
+// Matrix manipulations.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -129,6 +129,5 @@ charMatrix::row_as_string (int r) const
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

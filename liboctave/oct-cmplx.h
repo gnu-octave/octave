@@ -1,4 +1,3 @@
-// oct-cmplx.h                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -33,6 +32,5 @@ typedef complex<double> Complex;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

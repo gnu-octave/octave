@@ -1,4 +1,3 @@
-// LinConst.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -57,6 +56,5 @@ operator << (ostream& os, const LinConst& c)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

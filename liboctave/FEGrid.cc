@@ -1,4 +1,3 @@
-// FEGrid.cc                                              -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -137,6 +136,5 @@ operator << (ostream& s, const FEGrid& g)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

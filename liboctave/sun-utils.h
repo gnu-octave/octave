@@ -1,4 +1,3 @@
-// sun-utils.h                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton

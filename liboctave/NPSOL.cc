@@ -1,4 +1,3 @@
-// NPSOL.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -424,6 +423,5 @@ NPSOL_options::set_option (const string& key, double opt)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

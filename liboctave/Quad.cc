@@ -1,4 +1,3 @@
-// Quad.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -160,6 +159,5 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

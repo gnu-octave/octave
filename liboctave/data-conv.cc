@@ -1,4 +1,3 @@
-// data-conv.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -636,6 +635,5 @@ write_doubles (ostream& os, const double *data, save_type type, int len)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

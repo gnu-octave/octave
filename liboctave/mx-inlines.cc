@@ -1,4 +1,4 @@
-// Helper functions for matrix classes.                 -*- C++ -*-
+// Helper functions for matrix classes.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -840,6 +840,5 @@ copy (Complex *x, const double *y, int len)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

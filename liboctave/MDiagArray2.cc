@@ -1,4 +1,4 @@
-// MArray.cc                                             -*- C++ -*-
+// MArray.cc
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -141,6 +141,5 @@ operator - (const MDiagArray2<T>& a)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

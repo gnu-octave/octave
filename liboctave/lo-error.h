@@ -1,4 +1,4 @@
-// error.h                                              -*- C++ -*-
+// error.h
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -46,6 +46,5 @@ extern void set_liboctave_error_handler (liboctave_error_handler f);
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

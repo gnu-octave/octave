@@ -1,4 +1,3 @@
-// FSQP.h                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -43,6 +42,5 @@ FSQP : public NLP
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

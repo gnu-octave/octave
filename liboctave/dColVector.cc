@@ -1,4 +1,4 @@
-// ColumnVector manipulations.                            -*- C++ -*-
+// ColumnVector manipulations.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -368,6 +368,5 @@ operator >> (istream& is, ColumnVector& a)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

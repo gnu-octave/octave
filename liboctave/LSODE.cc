@@ -1,4 +1,3 @@
-// LSODE.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -432,6 +431,5 @@ LSODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

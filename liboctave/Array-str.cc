@@ -1,4 +1,3 @@
-// Array-str.cc                                        -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -33,6 +32,5 @@ template class Array<string>;
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,3 @@
-// str-vec.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -102,6 +101,5 @@ string_vector::list_in_columns (ostream& os) const
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,4 @@
-// Matrix manipulations.                              -*- C++ -*-
+// Matrix manipulations.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -3789,6 +3789,5 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

@@ -1,4 +1,4 @@
-// utils.cc                                              -*- C++ -*-
+// utils.cc
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -56,6 +56,5 @@ D_NINT (double x)
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

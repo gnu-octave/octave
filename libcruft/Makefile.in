@@ -28,9 +28,10 @@ INSTALL_DATA = @INSTALL_DATA@
 # e.g. if they are already present on the system.  For these, their
 # dirname is substituted by configure and may be the empty string.
 
-CRUFT_DIRS = amos @BLAS_DIR@ blas-xtra daspk dassl @FFT_DIR@ @LAPACK_DIR@ \
-	lapack-xtra linpack minpack misc odepack odessa ordered-qz quadpack \
-	ranlib slatec-err slatec-fn villad
+CRUFT_DIRS = amos @BLAS_DIR@ blas-xtra daspk dasrt dassl \
+	@FFT_DIR@ @LAPACK_DIR@ lapack-xtra linpack minpack \
+	misc odepack odessa ordered-qz quadpack ranlib \
+	slatec-err slatec-fn villad
 
 SUBDIRS = $(CRUFT_DIRS)
 

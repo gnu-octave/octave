@@ -217,11 +217,11 @@ VERSION:
 .PHONY: VERSION
 
 ARCH:
-	echo $(target_host_type) > ARCH
+	echo $(canonical_host_type) > ARCH
 .PHONY: ARCH
 
 binary-dist: VERSION ARCH octave-bug dist-info-files
-	echo octave-$(version)-$(target_host_type) > .fname
+	echo octave-$(version)-$(canonical_host_type) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(BINDISTFILES) `cat .fname`

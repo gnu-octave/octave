@@ -69,7 +69,7 @@ function contour (z, n, x, y)
         for i = 1:3:len
           zz(:,i)   = x;
           zz(:,i+1) = y(k) * ones (xlen, 1);
-          zz(:,i+2) = z(k,:)';
+          zz(:,i+2) = z(:,k);
           k++;
         endfor
         gset nosurface;

@@ -49,7 +49,7 @@ int error_state = 0;
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
-bool buffer_error_messages;
+bool buffer_error_messages = false;
 
 // The message buffer
 ostrstream *error_message_buffer = 0;

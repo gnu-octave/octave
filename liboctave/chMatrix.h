@@ -68,6 +68,9 @@ public:
 
   charMatrix transpose (void) const;
 
+  Matrix all (void) const;
+  Matrix any (void) const;
+
 #if 0
   // i/o
 

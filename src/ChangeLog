@@ -1,3 +1,26 @@
+Sat Jan 31 00:00:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-ch-mat.cc (octave_char_matrix::is_true): Make it work.
+	* ov-str-mat.h, ov-str-mat.cc (octave_char_matrix_str::is_true):
+	Delete.
+
+	* load-save.cc (read_ascii_data): Allow strings of length 0.
+	If we don't find data on the first call, fail with error message.
+	(do_load): Pass count of items read to read_ascii_data.
+	Allow `load foo xyz' to work when foo contains only numbers.
+
+Fri Jan 30 23:46:42 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-str-mat.h (octave_char_matrix_str::all): Delete.
+	(octave_char_matrix_str::any): Delete.
+	* ov-ch-mat.h (octave_char_matrix::all, octave_char_matrix::any):
+	Call charMatrix::all, charMatrix::any.
+
+Thu Jan 29 16:25:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat_binary_data): Handle third digit of MOPT
+	as flag indicating row or column major ordering.
+
 Wed Jan 28 00:18:17 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/dassl.cc (lsode_option_table):

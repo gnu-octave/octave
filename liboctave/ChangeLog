@@ -1,3 +1,7 @@
+Fri Jan 30 23:48:43 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* chMatrix.cc (charMatrix::all, charMatrix::any): New functions.
+
 Tue Jan 20 16:30:00 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (Matrix::expm): Skip trace normalization step if the

@@ -560,7 +560,7 @@ information.")
   m ["localoctfilepath"] = OCTAVE_LOCALOCTFILEPATH;
   m ["fcnfilepath"] = OCTAVE_FCNFILEPATH;
   m ["imagepath"] = OCTAVE_IMAGEPATH;
-  m ["target_host_type"] = TARGET_HOST_TYPE;
+  m ["canonical_host_type"] = TARGET_HOST_TYPE;
   m ["configure_options"] = config_opts;
   m ["F77"] = F77;
   m ["FFLAGS"] = FFLAGS;

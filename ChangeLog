@@ -1,3 +1,9 @@
+Sat Jan 31 19:29:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* acconfig.h: Add #undefs for HAVE_GAMMA and HAVE_LGAMMA to avoid
+	bug in autoconf, but #if 0 them out to avoid warning messages
+	about redefining them.
+
 Mon Jan 26 13:26:09 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (do-subst-config-vals): Substitute XTRA_CFLAGS and

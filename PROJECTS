@@ -119,6 +119,9 @@ Graphics:
     before octave returns a prompt.  Possible by implementing two
     way communication between gnuplot and Octave.
 
+  * Handle gnuplot ranges correctly for parametric modes (accept 3
+    ranges for 2d plots and 5 ranges for 3d plots).
+
   * Make gsave (and possibly gload) work.  Implement gsave by having it
     also alter the plot command to not use temporary files (perhaps
     with some user-specified template for naming them) and then
@@ -708,6 +711,27 @@ Miscellaneous:
       access).
 
     Perhaps this can be done entirely with a library of M-files.
+
+  * An interface to gdb.
+
+    Michael Smolsky <fnsiguc@weizmann.weizmann.ac.il> wrote:
+
+      I was thinking about a tool, which could be very useful for me
+      in my numerical simulation work. It is an interconnection
+      between gdb and octave. We are often managing very large arrays
+      of data in our fortran or c codes, which might be studied with
+      the help of octave at the algorithm development stages. Assume
+      you're coding, say, wave equation.  And want to debug the
+      code. It would be great to pick some array from the memory of
+      the code you're develloping, fft it and see the image as a
+      log-log plot of the spectral density. I'm facing similar
+      problems now.  To avoid high c-development cost, I develop in
+      matlab/octave, and then rewrite into c. It might be so much
+      easier, if I could off-load a c array right from the debugger
+      into octave, study it, and, perhaps, change some [many] values
+      with a convenient matlab/octave syntax, similar to
+      a(:,50:250)=zeros(100,200), and then store it back into the
+      memory of my c code.
 
   * Add a function like strptime() which is the opposite of
     strftime().  A C version is apparently in recent releases of the

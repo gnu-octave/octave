@@ -36,6 +36,13 @@
 /* Define if your system's struct group has a gr_passwd field. */
 #undef HAVE_GR_PASSWD
 
+#if 0
+/* These are just here to keep autoheader from thinking that they are
+   missing even though they really aren't. */
+#undef HAVE_GAMMA
+#undef HAVE_LGAMMA
+#endif
+
 /* Define if you have isinf(). */
 #undef HAVE_ISINF
 

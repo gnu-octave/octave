@@ -84,17 +84,12 @@ public:
 
   void assign (const octave_value_list& idx, const charMatrix& rhs);
 
-  octave_value all (void) const;
-  octave_value any (void) const;
-
   bool is_string (void) const { return true; }
 
   bool is_real_type (void) const { return true; }
 
   bool valid_as_scalar_index (void) const;
   bool valid_as_zero_index (void) const;
-
-  bool is_true (void) const;
 
   Matrix matrix_value (bool = false) const;
 

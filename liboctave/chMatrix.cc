@@ -176,6 +176,117 @@ charMatrix::transpose (void) const
   return result;
 }
 
+// XXX FIXME XXX -- these should probably return a boolMatrix type
+// instead, but that will have to wait for a future version...
+
+Matrix
+charMatrix::all (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+  Matrix retval;
+  if (nr > 0 && nc > 0)
+    {
+      if (nr == 1)
+	{
+	  retval.resize (1, 1);
+	  retval.elem (0, 0) = 1.0;
+	  for (int j = 0; j < nc; j++)
+	    {
+	      if (elem (0, j) == 0)
+		{
+		  retval.elem (0, 0) = 0.0;
+		  break;
+		}
+	    }
+	}
+      else if (nc == 1)
+	{
+	  retval.resize (1, 1);
+	  retval.elem (0, 0) = 1.0;
+	  for (int i = 0; i < nr; i++)
+	    {
+	      if (elem (i, 0) == 0)
+		{
+		  retval.elem (0, 0) = 0.0;
+		  break;
+		}
+	    }
+	}
+      else
+	{
+	  retval.resize (1, nc);
+	  for (int j = 0; j < nc; j++)
+	    {
+	      retval.elem (0, j) = 1.0;
+	      for (int i = 0; i < nr; i++)
+		{
+		  if (elem (i, j) == 0)
+		    {
+		      retval.elem (0, j) = 0.0;
+		      break;
+		    }
+		}
+	    }
+	}
+    }
+  return retval;
+}
+
+Matrix
+charMatrix::any (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+  Matrix retval;
+  if (nr > 0 && nc > 0)
+    {
+      if (nr == 1)
+	{
+	  retval.resize (1, 1);
+	  retval.elem (0, 0) = 0.0;
+	  for (int j = 0; j < nc; j++)
+	    {
+	      if (elem (0, j) != 0)
+		{
+		  retval.elem (0, 0) = 1.0;
+		  break;
+		}
+	    }
+	}
+      else if (nc == 1)
+	{
+	  retval.resize (1, 1);
+	  retval.elem (0, 0) = 0.0;
+	  for (int i = 0; i < nr; i++)
+	    {
+	      if (elem (i, 0) != 0)
+		{
+		  retval.elem (0, 0) = 1.0;
+		  break;
+		}
+	    }
+	}
+      else
+	{
+	  retval.resize (1, nc);
+	  for (int j = 0; j < nc; j++)
+	    {
+	      retval.elem (0, j) = 0.0;
+	      for (int i = 0; i < nr; i++)
+		{
+		  if (elem (i, j) != 0)
+		    {
+		      retval.elem (0, j) = 1.0;
+		      break;
+		    }
+		}
+	    }
+	}
+    }
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

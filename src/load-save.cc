@@ -464,14 +464,19 @@ extract_keyword (istream& is, const char *keyword, int& value)
 
 static char *
 read_ascii_data (istream& is, const string& filename, bool& global,
-		 octave_value& tc)
+		 octave_value& tc, int count)
 {
   // Read name for this entry or break on EOF.
 
   char *name = extract_keyword (is, "name");
 
   if (! name)
-    return 0;
+    {
+      if (count == 0)
+	error ("load: no data found in file `%s'", filename.c_str ());
+
+      return 0;
+    }
 
   if (! *name)
     {
@@ -584,10 +589,10 @@ read_ascii_data (istream& is, const string& filename, bool& global,
 	      for (int i = 0; i < elements; i++)
 		{
 		  int len;
-		  if (extract_keyword (is, "length", len) && len > 0)
+		  if (extract_keyword (is, "length", len) && len >= 0)
 		    {
 		      char *tmp = new char [len+1];
-		      if (! is.read (tmp, len))
+		      if (len > 0 && ! is.read (tmp, len))
 			{
 			  error ("load: failed to load string constant");
 			  break;
@@ -1263,6 +1268,7 @@ read_mat_binary_data (istream& is, const string& filename,
   bool swap = false;
   int type = 0;
   int prec = 0;
+  int order = 0;
   int mach = 0;
   int dlen = 0;
 
@@ -1277,11 +1283,13 @@ read_mat_binary_data (istream& is, const string& filename,
 	return 0;
     }
 
-  type = mopt % 10; // Full, sparse, etc.
-  mopt /= 10;       // Eliminate first digit.
-  prec = mopt % 10; // double, float, int, etc.
-  mopt /= 100;      // Skip unused third digit too.
-  mach = mopt % 10; // IEEE, VAX, etc.
+  type = mopt % 10;  // Full, sparse, etc.
+  mopt /= 10;        // Eliminate first digit.
+  prec = mopt % 10;  // double, float, int, etc.
+  mopt /= 10;        // Eliminate second digit.
+  order = mopt % 10; // Row or column major ordering.
+  mopt /= 10;        // Eliminate third digit.
+  mach = mopt % 10;  // IEEE, VAX, etc.
 
   flt_fmt = mopt_digit_to_float_format (mach);
 
@@ -1316,6 +1324,13 @@ read_mat_binary_data (istream& is, const string& filename,
   if (dlen < 0)
     goto data_read_error;
 
+  if (order)
+    {
+      int tmp = nr;
+      nr = nc;
+      nc = tmp;
+    }
+
   re.resize (nr, nc);
 
   read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
@@ -1344,10 +1359,10 @@ read_mat_binary_data (istream& is, const string& filename,
 	for (int i = 0; i < nr; i++)
 	  ctmp (i, j) = Complex (re (i, j), im (i, j));
 
-      tc = ctmp;
+      tc = order ? ctmp.transpose () : ctmp;
     }
   else
-    tc = re;
+    tc = order ? re.transpose () : re;
 
   if (type == 1)
     tc = tc.convert_to_str ();
@@ -1497,7 +1512,7 @@ do_load (istream& stream, const string& orig_fname, bool force,
       switch (format)
 	{
 	case LS_ASCII:
-	  name = read_ascii_data (stream, orig_fname, global, tc);
+	  name = read_ascii_data (stream, orig_fname, global, tc, count);
 	  break;
 
 	case LS_BINARY:
@@ -1529,7 +1544,12 @@ do_load (istream& stream, const string& orig_fname, bool force,
 	{
 	  if (tc.is_defined ())
 	    {
-	      if (argv_idx == argc
+	      if (format == LS_MAT_ASCII && argv_idx < argc)
+		warning ("load: loaded ASCII file `%s' -- ignoring extra args",
+			 orig_fname.c_str());
+
+	      if (format == LS_MAT_ASCII
+		  || argv_idx == argc
 		  || matches_patterns (argv, argv_idx, argc, name))
 		{
 		  count++;

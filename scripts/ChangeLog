@@ -1,3 +1,17 @@
+Sat Jan 31 01:09:32 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* signal/fftshift.m: New file.
+
+	* plot/contour.m: Fix for non-square case.
+
+	* general/randperm.m: New file.
+
+Fri Jan 30 15:20:39 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/betai.m: Restore file for compatibility with previous
+	versions.  Call betainc with reordered args.
+	* specfun/gammai.m: Likewise, call gammainc with reordered args.
+
 Wed Jan 28 22:44:59 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/contour.m: Handle discrete contour levels.

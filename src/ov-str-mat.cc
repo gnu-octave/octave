@@ -140,22 +140,6 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
     }
 }
 
-octave_value
-octave_char_matrix_str::all (void) const
-{
-  octave_value retval;
-  error ("octave_char_matrix_str::all(): not implemented");
-  return retval;
-}
-
-octave_value
-octave_char_matrix_str::any (void) const
-{
-  octave_value retval;
-  error ("octave_char_matrix_str::any(): not implemented");
-  return retval;
-}
-
 bool
 octave_char_matrix_str::valid_as_scalar_index (void) const
 {
@@ -168,14 +152,6 @@ octave_char_matrix_str::valid_as_zero_index (void) const
 {
   bool retval = false;
   error ("octave_char_matrix_str::valid_as_zero_index(): not implemented");
-  return retval;
-}
-
-bool
-octave_char_matrix_str::is_true (void) const
-{
-  bool retval = false;
-  error ("octave_char_matrix_str::is_true(): not implemented");
   return retval;
 }
 

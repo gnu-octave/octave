@@ -43,22 +43,22 @@ int quad_integration_error = 0;
 
 extern "C"
 {
-  int F77_FCN (dqagp, DQAGP) (const double (*)(double*, int&),
+  int F77_FCN (dqagp, DQAGP) (int (*)(double*, int&, double*),
 			      const double&, const double&,
 			      const int&, const double*,
 			      const double&, const double&, double&,
 			      double&, int&, int&, const int&,
 			      const int&, int&, int*, double*);
 
-  int F77_FCN (dqagi, DQAGI) (const double (*)(double*, int&),
+  int F77_FCN (dqagi, DQAGI) (int (*)(double*, int&, double*),
 			      const double&, const int&,
 			      const double&, const double&, double&,
 			      double&, int&, int&, const int&,
 			      const int&, int&, int*, double*); 
 }
 
-static double
-user_function (double *x, int& ierr)
+static int
+user_function (double *x, int& ierr, double *result)
 {
 #if defined (sun) && defined (__GNUC__)
   double xx = access_double (x);
@@ -68,12 +68,18 @@ user_function (double *x, int& ierr)
 
   quad_integration_error = 0;
 
-  double retval = (*user_fcn) (xx);
+  double xresult = (*user_fcn) (xx);
+
+#if defined (sun) && defined (__GNUC__)
+  assign_double (result, xresult);
+#else
+  *result = xresult;
+#endif
 
   if (quad_integration_error)
     ierr = -1;
 
-  return retval;
+  return 0;
 }
 
 double

@@ -75,6 +75,16 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(rot90)
 
+@DOCSTRING(cat)
+
+@DOCSTRING(horzcat)
+
+@DOCSTRING(vertcat)
+
+@DOCSTRING(permute)
+
+@DOCSTRING(ipermute)
+
 @DOCSTRING(reshape)
 
 @DOCSTRING(shift)

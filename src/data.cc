@@ -1010,8 +1010,6 @@ cat (2, A, B)\n\
 \n\
      1 1 0 0\n\
      1 1 0 0\n\
-     1 1 0 0\n\
-     1 1 0 0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1798,11 +1796,10 @@ A pure imaginary number, defined as\n\
 @ifinfo\n\
   @code{sqrt (-1)}.\n\
 @end ifinfo\n\
-The @code{I} and @code{J} forms are true constants, and cannot be\n\
-modified.  The @code{i} and @code{j} forms are like ordinary variables,\n\
-and may be used for other purposes.  However, unlike other variables,\n\
-they once again assume their special predefined values if they are\n\
-cleared @xref{Status of Variables}.\n\
+These built-in variables behave like functions so you can use the names\n\
+for other purposes.  If you use them as variables and assign values to\n\
+them and then clear them, they once again assume their special predefined\n\
+values @xref{Status of Variables}.\n\
 @end defvr"
 
 #define INFINITY_DOC_STRING "-*- texinfo -*-\n\

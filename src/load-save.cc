@@ -311,7 +311,10 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
   if (file_exist)
     file_exist.close ();
   else
-    return LS_UNKNOWN;
+    {
+      error ("load: nonexistent file `%s'", fname.c_str ());
+      return LS_UNKNOWN;
+    }
 
 #ifdef HAVE_HDF5
   // check this before we open the file
@@ -749,6 +752,8 @@ variable names if they are invalid Octave identifiers.\n\
 		error ("load: couldn't open input file `%s'",
 		       orig_fname.c_str ());
 	    }
+	  else
+	    error ("load: nonexistent file `%s'", orig_fname.c_str ());
 	}
       else
 #endif /* HAVE_HDF5 */
@@ -798,6 +803,8 @@ variable names if they are invalid Octave identifiers.\n\
 	    error ("load: couldn't open input file `%s'",
 		   orig_fname.c_str ());
 	}
+      else
+	error ("load: nonexistent file: `%s'", orig_fname.c_str ());
     }
 
   return retval;

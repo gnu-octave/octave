@@ -503,10 +503,9 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   int empty = true; \
  \
   /* If dim is larger then number of dims, return array as is */ \
-  if (dim > dv.length ()) \
+  if (dim >= dv.length ()) \
     { \
       retval = RET_TYPE (*this); \
- \
       return retval; \
     } \
  \
@@ -523,7 +522,6 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   if (empty) \
     { \
       retval.resize (dv); \
- \
       return retval; \
     } \
  \
@@ -559,7 +557,6 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   if (squeezed) \
     {  \
       retval.resize (dv); \
- \
       return retval; \
     } \
  \

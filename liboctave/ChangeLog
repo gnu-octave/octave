@@ -1,3 +1,7 @@
+2004-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-inlines.cc (MX_ND_CUMULATIVE_OP): Fix off-by-one error.
+
 2004-04-02  David Bateman  <dbateman@free.fr>
 
 	* lo-specfun.cc (besselj, bessely, besseli, besselk, besselh1, 

@@ -1,3 +1,9 @@
+2004-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (get_file_format): Error if file does not exist.
+	(Fload): Also complain here if specific file type is specified and
+	file does not exist.
+
 2004-04-02  Quentin Spencer  <qspencer@ieee.org>
 
 	* parse.y: Use persistent instead of static in warnings messages.

@@ -1,3 +1,7 @@
+1999-12-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkbuiltins: Add #undef quad to generated file.
+
 1999-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (Vwarn_separator_insert): New variable.

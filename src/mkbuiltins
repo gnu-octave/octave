@@ -29,6 +29,10 @@ cat << \EOF
 #include "oct-obj.h"
 #include "variables.h"
 
+#if defined (quad)
+#undef quad
+#endif
+
 #if defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING)
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc)
 #else

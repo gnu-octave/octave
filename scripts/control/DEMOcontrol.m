@@ -46,36 +46,35 @@
 
 function DEMOcontrol ()
 
-  disp(' O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X')
+  puts ("O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X")
 
   while (1)
-    clc
-    k = 0;
-    while (k > 8 || k < 1),
-      k = menu("Octave Controls System Toolbox Demo", ...
-	'System representation', ...
-    	'Block diagram manipulations ', ...
-    	'Frequency response functions ', ...
-    	'State space analysis functions ', ...
-    	'Root locus functions ', ...
-	'LQG/H2/Hinfinity functions ', ...
-    	'End');
 
+    clc ();
+
+    k = 0;
+
+    while (k > 8 || k < 1),
+      k = menu ("Octave Controls System Toolbox Demo",
+		"System representation",
+    		"Block diagram manipulations",
+    		"Frequency response functions",
+    		"State space analysis functions",
+    		"Root locus functions",
+		"LQG/H2/Hinfinity functions",
+    		"End");
     endwhile
-    if(k == 1)
-      sysrepdemo
-    elseif (k == 2)
-      bddemo
-    elseif (k == 3)
-      frdemo
-    elseif (k == 4)
-      analdemo
-    elseif (k == 5)
-      rldemo
-    elseif (k == 6)
-      dgkfdemo
-    elseif (k == 7)
-      return
-    endif
+
+    switch (k)
+      case (1) sysrepdemo ();
+      case (2) bddemo ();
+      case (3) frdemo ();
+      case (4) analdemo ();
+      case (5) rldemo ();
+      case (6) dgkfdemo ();
+      case (7) return;
+    endswitch
+
   endwhile
+
 endfunction

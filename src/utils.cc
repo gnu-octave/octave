@@ -245,7 +245,7 @@ pathstring_to_vector (char *pathstring)
 
 // Return to the main command loop in octave.cc.
 
-void
+extern "C" void
 jump_to_top_level (void)
 {
   run_all_unwind_protects ();

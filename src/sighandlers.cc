@@ -171,9 +171,6 @@ sigfpe_handler (int /* sig */)
 
 // Handle SIGINT by restarting the parser (see octave.cc).
 
-// XXX FIXME XXX -- it would probably be good to try to use POSIX
-// signal interface if it is available.
-
 static RETSIGTYPE
 sigint_handler (int /* sig */)
 {

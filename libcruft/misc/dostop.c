@@ -25,21 +25,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "config.h"
 #endif
 
-#include <signal.h>
-#include <stdlib.h>
+extern void jump_to_top_level (void);
 
-/*
- * All the STOP statements in the Fortran routines have been replaced
- * with a call to XSTOPX, defined in the file libcruft/misc/xstopx.f.
- *
- * The XSTOPX function calls this function, which will send a SIGINT
- * signal to the program that invoked it.
- *
- * Octave\'s SIGINT signal handler calls jump_to_top_level(), and the
- * user will end up at the top level instead of the shell prompt.
- *
- * Programs that don\'t handle SIGINT will be interrupted.
- */
+/* All the STOP statements in the Fortran routines have been replaced
+   with a call to XSTOPX, defined in the file libcruft/misc/xstopx.f.
+
+   The XSTOPX function calls this function, which calls
+   jump_to_top_level(), and the user will end up at the top level
+   instead of the shell prompt. */
 
 volatile void
 #if defined (F77_APPEND_UNDERSCORE)
@@ -48,8 +41,7 @@ dostop_ (void)
 dostop (void)
 #endif
 {
-  raise (SIGINT);
-  abort ();
+  jump_to_top_level ();
 }
 
 /*

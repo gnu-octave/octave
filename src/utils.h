@@ -47,7 +47,7 @@ extern char *octave_tmp_file_name (void);
 
 extern char **pathstring_to_vector (char *pathstring);
 
-extern void jump_to_top_level (void) NORETURN;
+extern "C" void jump_to_top_level (void) NORETURN;
 
 extern int almost_match (const char *std, const char *s,
 			 int min_match_len = 1, int case_sens = 1);

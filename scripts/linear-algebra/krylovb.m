@@ -16,20 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## function [U, Ucols] = krylovb (A, V, k ,eps1, pflg);
-## construct orthogonal basis U of block Krylov subspace;
-## [V AV A^2*V ... A^(k+1)*V];
-## method used: householder reflections to guard against loss of
-## orthogonality
-## eps1: threshhold for 0 (optional, default: 1e-12)
-## pflg: permutation flag (optional)
-## outputs:
-## returned basis U is orthogonal matrix; due to "zeroed"
-## columns of product, may not satisfy A U = U H identity
-## Ucols: dimension of span of krylov subspace (based on eps1)
-## if k > m-1, krylov returns the Hessenberg decompostion of A.
-##
-## Note: krylovb directly calls and is superseded by krylov.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{u}, @var{ucols}] =} krylovb (@var{a}, @var{v}, @var{k}, @var{eps1}, @var{pflg})
+## See @code{krylov}.
+## @end deftypefn
 
 function [Uret, Ucols] = krylovb (A, V, k, eps1, pflg)
 

@@ -235,156 +235,98 @@ do_bessel (enum bessel_type type, const char *fn,
 }
 
 DEFUN_DLD (besselj, args, nargout,
-  "[J, IERR] = BESSELJ (ALPHA, X [, 1])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
+Compute Bessel or Hankel functions of various kinds:\n\
 \n\
-Compute Bessel functions of the first kind.\n\
+@table @code\n\
+@item besselj\n\
+Bessel functions of the first kind.\n\
+@item bessely\n\
+Bessel functions of the second kind.\n\
+@item besseli\n\
+Modified Bessel functions of the first kind.\n\
+@item besselk\n\
+Modified Bessel functions of the second kind.\n\
+@item besselh\n\
+Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
+ = 2) kind.\n\
+@end table\n\
 \n\
-If a third argument is supplied, scale the result by exp(-I*Z) for\n\
-K = 1 or exp(I*Z) for K = 2.\n\
+If thet argumemt @var{opt} is supplied, the result is scaled by the\n\
+@code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for\n\
+ @var{K} = 2.\n\
 \n\
-If ALPHA is a scalar, the result is the same size as X.  If X is a\n\
-scalar, the result is the same size as ALPHA.  If ALPHA is a row\n\
-vector and X is a column vector, the result is a matrix with\n\
-length(X) rows and length(ALPHA) columns.  Otherwise, ALPHA and X must\n\
-conform and the result will be the same size.\n\
+If @var{alpha} is a scalar, the result is the same size as @var{x}.\n\
+If @var{x} is a scalar, the result is the same size as @var{alpha}.\n\
+If @var{alpha} is a row vector and @var{x} is a column vector, the\n\
+result is a matrix with @code{length (@var{x})} rows and\n\
+@code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and\n\
+@var{x} must conform and the result will be the same size.\n\
 \n\
-ALPHA must be real.  X may be complex.\n\
+The value of @var{alpha} must be real.  The value of @var{x} may be\n\
+complex.\n\
 \n\
-If requested, IERR contains the following status information and is\n\
-the same size as the result.\n\
+If requested, @var{ierr} contains the following status information\n\
+and is the same size as the result.\n\
 \n
-  0  normal return\n\
-  1  input error, return NaN\n\
-  2  overflow, return Inf\n\
-  3  loss of significance by argument reduction results in less than\n\
-     half of machine accuracy\n\
-  4  complete loss of significance by argument reduction, return NaN\n\
-  5  error -- no computation, algorithm termination condition not met,\n\
-     return NaN")
+@enumerate 0\n\
+@item\n\
+Normal return.\n\
+@item\n\
+Input error, return @code{NaN}.\n\
+@item\n\
+Overflow, return @code{Inf}.\n\
+@item\n\
+Loss of significance by argument reduction results in less than\n\
+half of machine accuracy.\n\
+@item\n\
+Complete loss of significance by argument reduction, return @code{NaN}.\n\
+@item\n\
+Error---no computation, algorithm termination condition not met,\n\
+return @code{NaN}.\n\
+@end enumerate\n\
+@end deftypefn")
 {
   return do_bessel (BESSEL_J, "besselj", args, nargout);
 }
 
 DEFUN_DLD (bessely, args, nargout,
-  "[Y, IERR] = BESSELY (ALPHA, X [, 1])\n\
-\n\
-Compute Bessel functions of the second kind.\n\
-\n\
-If a third argument is supplied, scale the result by exp(-I*Z) for\n\
-K = 1 or exp(I*Z) for K = 2.\n\
-\n\
-If ALPHA is a scalar, the result is the same size as X.  If X is a\n\
-scalar, the result is the same size as ALPHA.  If ALPHA is a row\n\
-vector and X is a column vector, the result is a matrix with\n\
-length(X) rows and length(ALPHA) columns.  Otherwise, ALPHA and X must\n\
-conform and the result will be the same size.\n\
-\n\
-ALPHA must be real.  X may be complex.\n\
-\n\
-If requested, IERR contains the following status information and is\n\
-the same size as the result.\n\
-\n
-  0  normal return\n\
-  1  input error, return NaN\n\
-  2  overflow, return Inf\n\
-  3  loss of significance by argument reduction results in less than\n\
-     half of machine accuracy\n\
-  4  complete loss of significance by argument reduction, return NaN\n\
-  5  error -- no computation, algorithm termination condition not met,\n\
-     return NaN")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})\n\
+See besselj.\n\
+@end deftypefn")
 {
   return do_bessel (BESSEL_Y, "bessely", args, nargout);
 }
 
 DEFUN_DLD (besseli, args, nargout,
-  "[I, IERR] = BESSELI (ALPHA, X [, 1])\n\
-\n\
-Compute modified Bessel functions of the first kind.\n\
-\n\
-If a third argument is supplied, scale the result by exp(-I*Z) for\n\
-K = 1 or exp(I*Z) for K = 2.\n\
-\n\
-If ALPHA is a scalar, the result is the same size as X.  If X is a\n\
-scalar, the result is the same size as ALPHA.  If ALPHA is a row\n\
-vector and X is a column vector, the result is a matrix with\n\
-length(X) rows and length(ALPHA) columns.  Otherwise, ALPHA and X must\n\
-conform and the result will be the same size.\n\
-\n\
-ALPHA must be real.  X may be complex.\n\
-\n\
-If requested, IERR contains the following status information and is\n\
-the same size as the result.\n\
-\n
-  0  normal return\n\
-  1  input error, return NaN\n\
-  2  overflow, return Inf\n\
-  3  loss of significance by argument reduction results in less than\n\
-     half of machine accuracy\n\
-  4  complete loss of significance by argument reduction, return NaN\n\
-  5  error -- no computation, algorithm termination condition not met,\n\
-     return NaN")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})\n\
+See besselj.\n\
+@end deftypefn")
 {
   return do_bessel (BESSEL_I, "besseli", args, nargout);
 }
 
 DEFUN_DLD (besselk, args, nargout,
-  "[K, IERR] = BESSELK (ALPHA, X [, 1])\n\
-\n\
-Compute modified Bessel functions of the second kind.\n\
-\n\
-If a third argument is supplied, scale the result by exp(-I*Z) for\n\
-K = 1 or exp(I*Z) for K = 2.\n\
-\n\
-If ALPHA is a scalar, the result is the same size as X.  If X is a\n\
-scalar, the result is the same size as ALPHA.  If ALPHA is a row\n\
-vector and X is a column vector, the result is a matrix with\n\
-length(X) rows and length(ALPHA) columns.  Otherwise, ALPHA and X must\n\
-conform and the result will be the same size.\n\
-\n\
-ALPHA must be real.  X may be complex.\n\
-\n\
-If requested, IERR contains the following status information and is\n\
-the same size as the result.\n\
-\n
-  0  normal return\n\
-  1  input error, return NaN\n\
-  2  overflow, return Inf\n\
-  3  loss of significance by argument reduction results in less than\n\
-     half of machine accuracy\n\
-  4  complete loss of significance by argument reduction, return NaN\n\
-  5  error -- no computation, algorithm termination condition not met,\n\
-     return NaN")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})\n\
+See besselj.\n\
+@end deftypefn")
 {
   return do_bessel (BESSEL_K, "besselk", args, nargout);
 }
 
 DEFUN_DLD (besselh, args, nargout,
-  "[H, IERR] = besselh (ALPHA, K, X [, 1])\n\
-\n\
-Compute Hankel functions of the first (K = 1) or second (K = 2) kind.\n\
-\n\
-If a fourth argument is supplied, scale the result by exp(-I*Z) for\n\
-K = 1 or exp(I*Z) for K = 2.\n\
-\n\
-If ALPHA is a scalar, the result is the same size as X.  If X is a\n\
-scalar, the result is the same size as ALPHA.  If ALPHA is a row\n\
-vector and X is a column vector, the result is a matrix with\n\
-length(X) rows and length(ALPHA) columns.  Otherwise, ALPHA and X must\n\
-conform and the result will be the same size.\n\
-\n\
-ALPHA must be real.  X may be complex.\n\
-\n\
-If requested, IERR contains the following status information and is\n\
-the same size as the result.\n\
-\n
-  0  normal return\n\
-  1  input error, return NaN\n\
-  2  overflow, return Inf\n\
-  3  loss of significance by argument reduction results in less than\n\
-     half of machine accuracy\n\
-  4  complete loss of significance by argument reduction, return NaN\n\
-  5  error -- no computation, algorithm termination condition not met,\n\
-     return NaN")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})\n\
+See besselj.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -427,33 +369,45 @@ the same size as the result.\n\
 }
 
 DEFUN_DLD (airy, args, nargout,
-  "[A, IERR] = airy (K, Z, [, 1])\n\
-\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{a}, @var{ierr}] =} airy (@var{k}, @var{z}, @var{opt})\n\
 Compute Airy functions of the first and second kind, and their\n\
 derivatives.\n\
 \n\
+@example\n\
   K   Function   Scale factor (if a third argument is supplied)\n\
  ---  --------   ----------------------------------------------\n\
   0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
   1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
   2   Bi (Z)     exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
   3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
+@end example\n\
 \n\
-The function call airy (Z) is equivalent to airy (0, Z).\n\
+The function call @code{airy (@var{z})} is equivalent to
+@code{airy (0, @var{z})}.\n\
 \n\
-The result is the same size as Z.
+The result is the same size as @var{z}.
 \n\
-If requested, IERR contains the following status information and is\n\
-the same size as the result.\n\
+If requested, @var{ierr} contains the following status information and\n\
+is the same size as the result.\n\
 \n
-  0  normal return\n\
-  1  input error, return NaN\n\
-  2  overflow, return Inf\n\
-  3  loss of significance by argument reduction results in less than\n\
-     half of machine accuracy\n\
-  4  complete loss of significance by argument reduction, return NaN\n\
-  5  error -- no computation, algorithm termination condition not met,\n\
-     return NaN")
+@enumerate 0\n\
+@item\n\
+Normal return.\n\
+@item\n\
+Input error, return @code{NaN}.\n\
+@item\n\
+Overflow, return @code{Inf}.\n\
+@item\n\
+Loss of significance by argument reduction results in less than half\n\
+ of machine accuracy.\n\
+@item\n\
+Complete loss of significance by argument reduction, return @code{NaN}.\n\
+@item\n\
+Error---no computation, algorithm termination condition not met,\n\
+return @code{NaN}\n\
+@end enumerate\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

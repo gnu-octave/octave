@@ -160,7 +160,9 @@ sin ([1, 2; 3, 4])
 @node Special Functions, Mathematical Constants, Sums and Products, Arithmetic
 @section Special Functions
 
-@DOCSTRING(bessel)
+@DOCSTRING(besselj)
+
+@DOCSTRING(airy)
 
 @DOCSTRING(beta)
 

@@ -611,7 +611,7 @@ process_printf_format (char *s, tree_constant *args, ostrstream& sb,
 	  return -1;
 	}
 
-      fmt << (int) (args[fmt_arg_count++].double_value ());
+      fmt << NINT (args[fmt_arg_count++].double_value ());
       s++;
       chars_from_fmt_str++;
     }
@@ -651,7 +651,7 @@ process_printf_format (char *s, tree_constant *args, ostrstream& sb,
 	  return -1;
 	}
 
-      fmt << (int) (args[fmt_arg_count++].double_value ());
+      fmt << NINT (args[fmt_arg_count++].double_value ());
       s++;
       chars_from_fmt_str++;
     }

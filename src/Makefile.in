@@ -83,10 +83,9 @@ endif
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
-	file-io.h fnmatch.h getopt.h gripes.h help.h \
-	input.h lex.h load-save.h mappers.h \
-	oct-gperf.h oct-hist.h oct-map.h oct-obj.h pager.h parse.h \
-	pathlen.h pathsearch.h pr-output.h procstream.h pt-base.h \
+	file-io.h getopt.h gripes.h help.h input.h lex.h load-save.h \
+	mappers.h oct-gperf.h oct-hist.h oct-map.h oct-obj.h pager.h \
+	parse.h pathlen.h pr-output.h procstream.h pt-base.h \
 	pt-cmd.h pt-const.h pt-exp-base.h pt-exp.h pt-fcn.h \
 	pt-fvc-base.h pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h \
 	pt-mvr.h pt-plot.h sighandlers.h statdefs.h symtab.h sysdep.h \
@@ -107,12 +106,11 @@ ifdef CXXPICFLAG
   TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
 endif
 
-SOURCES := arith-ops.cc data.cc dirfns.cc \
-	dynamic-ld.cc error.cc file-info.cc file-io.cc \
-	fnmatch.c getopt.c getopt1.c \
+SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc error.cc \
+	file-info.cc file-io.cc getopt.c getopt1.c \
 	gripes.cc help.cc input.cc lex.l load-save.cc mappers.cc \
 	oct-hist.cc oct-map.cc oct-obj.cc pager.cc parse.y \
-	pathsearch.cc pr-output.cc procstream.cc pt-base.cc pt-cmd.cc \
+	pr-output.cc procstream.cc pt-base.cc pt-cmd.cc \
 	pt-const.cc pt-exp-base.cc pt-exp.cc pt-fcn.cc pt-fvc-base.cc \
 	pt-fvc.cc pt-mat.cc pt-misc.cc pt-mvr-base.cc pt-mvr.cc \
 	pt-plot.cc resource.cc sighandlers.cc \
@@ -153,10 +151,10 @@ DEF_FILES_1 := $(patsubst %.l, %.def, $(DEF_FILES_2))
 DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 
 OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
-	-L../kpathsea -L. $(RLD_FLAG)
+	-L../kpathsea -L../glob -L. $(RLD_FLAG)
 
 OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
-	@LIBPLPLOT@ -lreadline -lkpathsea
+	@LIBPLPLOT@ -lreadline -lkpathsea -lglob
 
 LIBS_TO_INSTALL = liboctinterp.a libtinst.a \
 	liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)

@@ -25,24 +25,16 @@ install-strip:
 	$(MAKE) -f octMakefile INSTALL_PROGRAM='${INSTALL} -s' install
 
 binary-dist: FORCE
-	@echo "***"
-	@echo "*** you must specify either static or dynamic:"
-	@echo "***"
-	@echo "*** make dynamic-binary-dist"
-	@echo "***"
-	@echo "***   dynamically linked version typically including support"
-	@echo "***   for shared libraried and dynamically linked functions"
-	@echo "***"
-	@echo "*** make static-binary-dist"
-	@echo "***"
-	@echo "***   statically linked version"
-	@echo "***"
-
-static-binary-dist: FORCE
-	$(MAKE) -f octMakefile DIST_TYPE=static binary-dist
-
-dynamic-binary-dist: FORCE
-	$(MAKE) -f octMakefile DIST_TYPE=dynamic binary-dist
+	@if test -f configure && test -f octMakefile.in ; then \
+	  ./configure --disable-shared --disable-dl --disable-shl ; \
+	else \
+	  echo "" ; \
+	  echo "*** You must run make binary-dist in the source directory." ; \
+	  echo "" ; \
+	  exit 1 ; \
+	fi
+	$(MAKE) -f octMakefile CFLAGS=-O CXXFLAGS=-O LDFLAGS=-static all
+	$(MAKE) -f octMakefile binary-dist
 
 # Maybe this message will prevent people from asking why the
 # Makefiles don't work for them.  Maybe not.
@@ -84,8 +76,7 @@ help: header-msg
 	@echo ""
 	@echo "  dist                 create a source distribution"
 	@echo "  conf-dist            create a config files distribution"
-	@echo "  static-binary-dist   create a binary distribution"
-	@echo "  dynamic-binary-dist  create a binary distribution"
+	@echo "  binary-dist          create a binary distribution"
 	@echo ""
 	@echo "  clean                remove files created by make all"
 	@echo "  mostlyclean          remove most files created by make all"

@@ -1,3 +1,19 @@
+Fri Feb 14 14:07:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (bin-dist-type): Delete target.
+	(binary-dist): Don't depend on bin-dist-type.
+	Don't delete config.status or config.h here.
+	(BINDISTFILES): Include config.status and config.h here.
+
+	* Makefile.in (config-check): New target.
+	(all): Depend on config-check.
+	(static-binary-distribution, dynamic-binary-distribution): Delete.
+	(binary-distribution): If in source directory, run configure and
+	make with appropriate args.
+
+	* octMakefile.in (maintainer-clean, distclean): Don't delete Makefile.
+	(CONF_DISTFILES): Distribute Makefile too.
+
 Thu Feb 13 16:25:09 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (SH_LD, SH_LDFLAGS): New variables.

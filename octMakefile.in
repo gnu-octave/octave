@@ -19,7 +19,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
-CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
+CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in configure \
 	configure.in config.guess config.sub aclocal.m4 config.h.in \
 	acconfig.h config.h.bot install-sh
 
@@ -50,7 +50,7 @@ XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	ChangeLog ChangeLog.[0-9]
 
 BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
-	octave-bug VERSION ARCH
+	octave-bug config.status config.h VERSION ARCH
 
 # Subdirectories in which to run `make bin-dist'.
 BINDISTSUBDIRS = libcruft liboctave src kpathsea readline info \
@@ -125,7 +125,7 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile octave-bug Makefile Makeconf config.cache
+	rm -f octMakefile octave-bug Makeconf config.cache
 	rm -f config.h config.log config.status Makerules.f77
 	rm -f mk-oct-links mkoctfile
 
@@ -201,17 +201,6 @@ conf-dist:
 
 # Rules for making a binary distribution.
 
-bin-dist-type:
-	@if [ -z "$(DIST_TYPE)" ]; then \
-	  echo "***" ; \
-	  echo "*** Must specify a value for DIST_TYPE (static or dynamic)" ; \
-	  echo "***" ; \
-	  exit 1 ; \
-	else \
-	  exit 0 ; \
-	fi
-.PHONY: bin-dist-type
-
 VERSION:
 	echo $(version) > VERSION
 .PHONY: VERSION
@@ -220,8 +209,8 @@ ARCH:
 	echo $(target_host_type) > ARCH
 .PHONY: ARCH
 
-binary-dist: bin-dist-type VERSION ARCH octave-bug dist-info-files
-	echo octave-$(version)-$(target_host_type)-$(DIST_TYPE) > .fname
+binary-dist: VERSION ARCH octave-bug dist-info-files
+	echo octave-$(version)-$(target_host_type) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(BINDISTFILES) `cat .fname`
@@ -236,8 +225,7 @@ binary-dist: bin-dist-type VERSION ARCH octave-bug dist-info-files
 	tar xf `cat .fname`.tar
 	find `cat .fname` \( \( -name RCS -a -type d \) \
 	  -o \( -name OLD -a -type d \) -o -name "=*" \
-	  -o -name '*~' -o -name '#*#' -o -name config.log \
-	  -o -name config.status -o -name Makefile \
+	  -o -name '*~' -o -name '#*#' -o -name Makefile \
 	  -o -name c-auto.h \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
 	rm -rf `cat .fname`/test/octave.test/npsol

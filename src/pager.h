@@ -29,8 +29,6 @@ class ostrstream;
 #include <string>
 
 extern char *get_pager (void);
-extern int terminal_columns (void);
-extern int terminal_rows (void);
 extern void initialize_pager (void);
 extern void maybe_page_output (ostrstream& msg_buf);
 extern void flush_output_to_pager (void);

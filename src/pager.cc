@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "procstream.h"
 
+#include "oct-term.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -75,26 +76,6 @@ line_count (char *s)
 	  count++;
     }
   return count;
-}
-
-// For now, use the variables from readline.  It already handles
-// SIGWINCH, so these values have a good chance of being correct even
-// if the window changes size (they will be wrong if, for example, the
-// luser changes the window size while the pager is running, and the
-// signal is handled by the pager instead of us.
-
-int
-terminal_columns (void)
-{
-  extern int screenwidth;
-  return screenwidth > 0 ? screenwidth : 80;
-}
-
-int
-terminal_rows (void)
-{
-  extern int screenheight;
-  return screenheight > 0 ? screenheight : 24;
 }
 
 void

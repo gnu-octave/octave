@@ -142,7 +142,6 @@ file_info::mode (void) const
   return file_mode;
 }
 
-
 // double linked list containing relevant information about open files
 static DLList <file_info> file_list;
 
@@ -229,6 +228,37 @@ fopen_file_for_user (const tree_constant& arg, const char *mode)
   return (Pix) NULL;
 }
 
+static Pix
+file_io_get_file (const tree_constant arg, const char *mode,
+		  const char *warn_for)
+{
+  Pix p = return_valid_file (arg);
+
+  if (p == (Pix) NULL)
+    {
+      if (arg.is_string_type ())
+	{
+	  char *name = arg.string_value ();
+
+	  struct stat buffer;
+	  int status = stat (name, &buffer);
+
+	  if (status == 0)
+	    {
+	      if ((buffer.st_mode & S_IFREG) == S_IFREG)
+		p = fopen_file_for_user (arg, mode);
+	      else
+		error ("%s: invalid file type", warn_for);
+	    }
+	  else
+	    error ("%s: can't stat file `%s'", warn_for, name);
+	}
+      else
+	error ("%s: invalid file specifier", warn_for);
+    }
+
+  return p;
+}
 
 tree_constant *
 fclose_internal (const tree_constant *args)
@@ -321,31 +351,12 @@ fgets_internal (const tree_constant *args, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  Pix p = return_valid_file (args[1]);
+  Pix p = file_io_get_file (args[1], "r", "fgets");
   
   if (p == (Pix) NULL)
-    {
-      if (args[1].is_string_type ())
-	{
-	  struct stat buffer;
-	  char *name = args[1].string_value ();
-	  if (stat (name, &buffer) == 0
-	      && (buffer.st_mode & S_IFREG) == S_IFREG)
-	    {
-	      p = fopen_file_for_user (args[1], "r");
-	    }
-	  else
-	    {
-	      error ("fgets: file dosen't exist");
-	      return retval;
-	    }
-	}
-      else
-	return retval;
-    }
-  
-  int length = 0;
+    return retval;
 
+  int length = 0;
   if (args[2].is_scalar_type ())
     {
       length = (int) args[2].double_value ();
@@ -356,8 +367,9 @@ fgets_internal (const tree_constant *args, int nargout)
 	}
     }
 
-  char string[length+1];
   file_info file = file_list (p);
+
+  char string[length+1];
   char *success = fgets (string, length+1, file.fptr ());
 
   if (success == (char *) NULL)
@@ -473,12 +485,13 @@ frewind_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  Pix p = return_valid_file (args[1]);
-  if (p == (Pix) NULL)
-    p = fopen_file_for_user (args[1], "a+");   
+  Pix p = file_io_get_file (args[1], "a+", "frewind");
 
-  file_info file = file_list (p);
-  rewind (file.fptr ());
+  if (p != (Pix) NULL)
+    {
+      file_info file = file_list (p);
+      rewind (file.fptr ());
+    }
 
   return retval;
 }
@@ -488,10 +501,10 @@ fseek_internal (const tree_constant *args, int nargin)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  Pix p = return_valid_file (args[1]);
+  Pix p = file_io_get_file (args[1], "a+", "fseek");
 
   if (p == (Pix) NULL)
-    p = fopen_file_for_user (args[1], "a+");
+    return retval;
 
   long origin = SEEK_SET;
   long offset = 0;
@@ -541,18 +554,19 @@ tree_constant *
 ftell_internal (const tree_constant *args)
 {
   tree_constant *retval = NULL_TREE_CONST;
-  Pix p = return_valid_file (args[1]);
 
-  if (p == (Pix) NULL)
-    p = fopen_file_for_user (args[1], "a+");
+  Pix p = file_io_get_file (args[1], "a+", "ftell");
 
-  file_info file = file_list (p);
-  long offset = ftell (file.fptr ());
-  retval = new tree_constant[2];
-  retval[0] = tree_constant ((double) offset);
+  if (p != (Pix) NULL)
+    {
+      file_info file = file_list (p);
+      long offset = ftell (file.fptr ());
+      retval = new tree_constant[2];
+      retval[0] = tree_constant ((double) offset);
 
-  if (offset == -1L)
-    error ("ftell: write error");
+      if (offset == -1L)
+	error ("ftell: write error");
+    }
 
   return retval;
 }
@@ -785,8 +799,6 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 
   if (strcmp (type, "fprintf") == 0)
     {
-      Pix p;
-
       if (args[2].is_string_type ())
 	{
 	  fmt = args[2].string_value ();
@@ -798,31 +810,21 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 	  return retval;
 	}
 
-      if (args[1].is_scalar_type ())
-	{
-	  p = return_valid_file (args[1]);
-	  if (p == (Pix) NULL)
-	    return retval;
-	}
-      else if (args[1].is_string_type ())
-	{
-	  p = return_valid_file (args[1]);
-	  if (p == (Pix) NULL)
-	    p = fopen_file_for_user (args[1], "a+");
-	}
-      else
-	  {
-	    error ("%s: invalid file specifier", type);
-	    return retval;
-	  }
+      Pix p = file_io_get_file (args[1], "a+", type);
+
+      if (p == (Pix) NULL)
+	return retval;
 
       file = file_list (p);
+
       if (file.mode () == "r")
 	{
 	  error ("%s: file is read only", type);
 	  return retval;
 	}
+
       fmt = args[2].string_value ();
+
       fmt_arg_count++;
     }
   else if (args[1].is_string_type ())
@@ -896,13 +898,11 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 }
 
 static int
-process_scanf_format (const char *s, const tree_constant *args,
-		      ostrstream& fmt, const char *type, int nargout,
-		      FILE* fptr, tree_constant *values)
+process_scanf_format (const char *s, ostrstream& fmt,
+		      const char *type, int nargout, FILE* fptr,
+		      tree_constant *values)
 {
   fmt << "%";
-
-  tree_constant_rep::constant_type arg_type;
 
   int chars_from_fmt_str = 0;
   int store_value = 1;
@@ -943,13 +943,11 @@ process_scanf_format (const char *s, const tree_constant *args,
   if (*s == '\0')
     goto invalid_format;
 
-  if (fmt_arg_count >= nargout && store_value)
-    {
-      error ("%s: not enough arguments", type);
-      return -1;
-    }
+// Even if we don't have a place to store them, attempt to convert
+// everything specified by the format string.
 
-  arg_type = args[fmt_arg_count].const_type ();
+  if (fmt_arg_count >= nargout)
+    store_value = 0;
 
   switch (*s)
     {
@@ -1033,10 +1031,9 @@ process_scanf_format (const char *s, const tree_constant *args,
       goto invalid_format;
     }
 
-  if (success > 0 || (success == 0 && store_value == 0))
+  if (success > 0)
     return chars_from_fmt_str;
-
-  if (success == 0)
+  else if (success == 0)
     warning ("%s: invalid conversion", type);
   else if (success == EOF)
     {
@@ -1070,7 +1067,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
   if (strcmp (type, "scanf") != 0)
     {
-      if ( args[2].is_string_type ())
+      if (args[2].is_string_type ())
 	scanf_fmt = args[2].string_value ();
       else
 	{
@@ -1083,19 +1080,10 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
   if (doing_fscanf)
     {
-      Pix p;
-      if (args[1].is_scalar_type ()
-	  || args[1].is_string_type ())
-	{
-	  p = return_valid_file (args[1]);
-	  if (p == (Pix) NULL)
-	    return retval;
-	}
-      else
-	{
-	  error ("%s: invalid file specifier", type);
-	  return retval;
-	}
+      Pix p = file_io_get_file (args[1], "r", type);
+
+      if (p == (Pix) NULL)
+	return retval;
 
       file = file_list (p);
 
@@ -1108,7 +1096,8 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
       fptr = file.fptr ();
     }
 
-  if (args[1].is_string_type () || (doing_fscanf && file.number () == 0))
+  if ((fptr == (FILE *) NULL && args[1].is_string_type ())
+      || (doing_fscanf && file.number () == 0))
     {
       char *string;
 
@@ -1181,8 +1170,8 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
 // We must be looking at a format specifier.  Extract it or fail.
 
-      int status = process_scanf_format (ptr, args, fmt, type,
-					 nargout, fptr, retval);
+      int status = process_scanf_format (ptr, fmt, type, nargout,
+					 fptr, retval);
 
       if (status < 0)
 	{

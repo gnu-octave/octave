@@ -1,3 +1,19 @@
+2001-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-inlines.cc (MX_CUMMULATIVE_OP): New macro.
+	* CMatrix.cc (ComplexMatrix::cumprod, ComplexMatrix::cumsum): Use it.
+	* dMatrix.cc (Matrix::cumprod, Matrix::cumsum): Likewise.
+
+	* mx-inlines.cc (MX_REDUCTION_OP, MX_REDUCTION_OP_COL_EXPR,
+	MX_REDUCTION_OP_ROW_EXPR): New macros.
+	* dMatrix.cc (Matrix::prod, Matrix::sum): Use MX_REDUCTION_OP.
+	* CMatrix.cc (ComplexMatrix::prod, ComplexMatrix::sum): Likewise.
+
+	* mx-inlines.cc (MX_BASE_REDUCTION_OP): New macro.
+	DIM == -1 now means no orientation for vector sums.
+	* dMatrix.cc (ComplexMatrix::sumsq): Use it.
+	* CMatrix.cc (ComplexMatrix::sumsq): Likewise.
+
 2001-11-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Range.cc (Range::nelem_internal): Special case ranges that must

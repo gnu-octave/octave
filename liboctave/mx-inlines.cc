@@ -227,6 +227,101 @@ OP_DUP_FCN (real, mx_inline_real_dup, double,  Complex)
 OP_DUP_FCN (imag, mx_inline_imag_dup, double,  Complex)
 OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
+// Avoid some code duplication.  Maybe we should use templates.
+
+#define MX_CUMMULATIVE_OP(RET_TYPE, ELT_TYPE, OP) \
+ \
+  int nr = rows (); \
+  int nc = cols (); \
+ \
+  RET_TYPE retval (nr, nc); \
+ \
+  if (nr > 0 && nc > 0) \
+    { \
+      if ((nr == 1 && dim == -1) || dim == 1) \
+	{ \
+	  for (int i = 0; i < nr; i++) \
+	    { \
+	      ELT_TYPE t = elem (i, 0); \
+	      for (int j = 0; j < nc; j++) \
+		{ \
+		  retval.elem (i, j) = t; \
+		  if (j < nc - 1) \
+		    t OP elem (i, j+1); \
+		} \
+	    } \
+	} \
+      else \
+	{ \
+	  for (int j = 0; j < nc; j++) \
+	    { \
+	      ELT_TYPE t = elem (0, j); \
+	      for (int i = 0; i < nr; i++) \
+		{ \
+		  retval.elem (i, j) = t; \
+		  if (i < nr - 1) \
+		    t OP elem (i+1, j); \
+		} \
+	    } \
+	} \
+    } \
+ \
+  return retval
+
+#define MX_BASE_REDUCTION_OP(RET_TYPE, ROW_EXPR, COL_EXPR, INIT_VAL, \
+			     MT_RESULT) \
+ \
+  int nr = rows (); \
+  int nc = cols (); \
+ \
+  RET_TYPE retval; \
+ \
+  if (nr > 0 && nc > 0) \
+    { \
+      if ((nr == 1 && dim == -1) || dim == 1) \
+	{ \
+	  retval.resize (nr, 1); \
+	  for (int i = 0; i < nr; i++) \
+	    { \
+	      retval.elem (i, 0) = INIT_VAL; \
+	      for (int j = 0; j < nc; j++) \
+		{ \
+		  ROW_EXPR; \
+		} \
+	    } \
+	} \
+      else \
+	{ \
+	  retval.resize (1, nc); \
+	  for (int j = 0; j < nc; j++) \
+	    { \
+	      retval.elem (0, j) = INIT_VAL; \
+	      for (int i = 0; i < nr; i++) \
+		{ \
+		  COL_EXPR; \
+		} \
+	    } \
+	} \
+    } \
+  else \
+    { \
+      retval.resize (1, 1); \
+      retval.elem (0, 0) = MT_RESULT; \
+    } \
+ \
+  return retval
+
+#define MX_REDUCTION_OP_ROW_EXPR(OP) \
+  retval.elem (i, 0) OP elem (i, j)
+
+#define MX_REDUCTION_OP_COL_EXPR(OP) \
+  retval.elem (0, j) OP elem (i, j)
+
+#define MX_REDUCTION_OP(RET_TYPE, OP, INIT_VAL, MT_RESULT) \
+  MX_BASE_REDUCTION_OP (RET_TYPE, \
+			MX_REDUCTION_OP_ROW_EXPR (OP), \
+			MX_REDUCTION_OP_COL_EXPR (OP), \
+			INIT_VAL, MT_RESULT)
 #endif
 
 /*

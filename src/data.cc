@@ -261,11 +261,11 @@ and @var{x}.  The result is in range -pi to pi.\n\
     { \
       octave_value arg = args(0); \
  \
-      int dim = (nargin == 1 ? 0 : args(1).int_value (true) - 1); \
+      int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
  \
       if (! error_state) \
 	{ \
-	  if (dim == 0 || dim == 1) \
+	  if (dim <= 1 && dim >= -1) \
 	    { \
 	      if (arg.is_real_type ()) \
 		{ \

@@ -2444,195 +2444,42 @@ ComplexMatrix::any (void) const
 ComplexMatrix
 ComplexMatrix::cumprod (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  ComplexMatrix retval (nr, nc);
-  if (nr > 0 && nc > 0)
-    {
-      if ((nr == 1 && dim == 0) || dim == 1)
-	{
-	  for (int i = 0; i < nr; i++)
-	    {
-	      Complex prod = elem (i, 0);
-	      for (int j = 0; j < nc; j++)
-		{
-		  retval.elem (i, j) = prod;
-		  if (j < nc - 1)
-		    prod *= elem (i, j+1);
-		}
-	    }
-	}
-      else
-	{
-	  for (int j = 0; j < nc; j++)
-	    {
-	      Complex prod = elem (0, j);
-	      for (int i = 0; i < nr; i++)
-		{
-		  retval.elem (i, j) = prod;
-		  if (i < nr - 1)
-		    prod *= elem (i+1, j);
-		}
-	    }
-	}
-    }
-  return retval;
+  MX_CUMMULATIVE_OP (ComplexMatrix, Complex, *=);
 }
 
 ComplexMatrix
 ComplexMatrix::cumsum (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  ComplexMatrix retval (nr, nc);
-  if (nr > 0 && nc > 0)
-    {
-      if ((nr == 1 && dim == 0) || dim == 1)
-	{
-	  for (int i = 0; i < nr; i++)
-	    {
-	      Complex sum = elem (i, 0);
-	      for (int j = 0; j < nc; j++)
-		{
-		  retval.elem (i, j) = sum;
-		  if (j < nc - 1)
-		    sum += elem (i, j+1);
-		}
-	    }
-	}
-      else
-	{
-	  for (int j = 0; j < nc; j++)
-	    {
-	      Complex sum = elem (0, j);
-	      for (int i = 0; i < nr; i++)
-		{
-		  retval.elem (i, j) = sum;
-		  if (i < nr - 1)
-		    sum += elem (i+1, j);
-		}
-	    }
-	}
-    }
-  return retval;
+  MX_CUMMULATIVE_OP (ComplexMatrix, Complex, +=);
 }
 
 ComplexMatrix
 ComplexMatrix::prod (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  ComplexMatrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if ((nr == 1 && dim == 0) || dim == 1)
-	{
-	  retval.resize(nr, 1);
-	  for (int i = 0; i < nr; i++)
-	    {
-	      retval.elem (i, 0) = 1.0;
-	      for (int j = 0; j < nc; j++)
-		retval.elem (i, 0) *= elem (i, j);
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = 1.0;
-	      for (int i = 0; i < nr; i++)
-		retval.elem (0, j) *= elem (i, j);
-	    }
-	}
-    }
-  else
-    {
-      retval.resize (1,1);
-      retval.elem (0,0) = 1.0;
-    }
-  return retval;
+  MX_REDUCTION_OP (ComplexMatrix, *=, 1.0, 1.0);
 }
 
 ComplexMatrix
 ComplexMatrix::sum (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  ComplexMatrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if ((nr == 1 && dim == 0) || dim == 1)
-	{
-	  retval.resize (nr, 1);
-	  for (int i = 0; i < nr; i++)
-	    {
-	      retval.elem (i, 0) = 0.0;
-	      for (int j = 0; j < nc; j++)
-		retval.elem (i, 0) += elem (i, j);
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = 0.0;
-	      for (int i = 0; i < nr; i++)
-		retval.elem (0, j) += elem (i, j);
-	    }
-	}
-    }
-  else
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 0.0;
-    }
-  return retval;
+  MX_REDUCTION_OP (ComplexMatrix, +=, 0.0, 0.0);
 }
 
 ComplexMatrix
 ComplexMatrix::sumsq (int dim) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  ComplexMatrix retval;
-  if (nr > 0 && nc > 0)
-    {
-      if ((nr == 1 && dim == 0) || dim == 1)
-	{
-	  retval.resize (nr, 1);
-	  for (int i = 0; i < nr; i++)
-	    {
-	      retval.elem (i, 0) = 0.0;
-	      for (int j = 0; j < nc; j++)
-		{
-		  Complex d = elem (i, j);
-		  retval.elem (i, 0) += d * conj (d);
-		}
-	    }
-	}
-      else
-	{
-	  retval.resize (1, nc);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = 0.0;
-	      for (int i = 0; i < nr; i++)
-		{
-		  Complex d = elem (i, j);
-		  retval.elem (0, j) += d * conj (d);
-		}
-	    }
-	}
-    }
-  else
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 0.0;
-    }
+#define ROW_EXPR \
+  Complex d = elem (i, j); \
+  retval.elem (i, 0) += d * conj (d)
 
-  return retval;
+#define COL_EXPR \
+  Complex d = elem (i, j); \
+  retval.elem (0, j) += d * conj (d)
+
+  MX_BASE_REDUCTION_OP (ComplexMatrix, ROW_EXPR, COL_EXPR, 0.0, 0.0);
+
+#undef ROW_EXPR
+#undef COL_EXPR
 }
 
 ComplexColumnVector

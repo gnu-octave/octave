@@ -89,12 +89,13 @@ error (const char *fmt, ...)
   va_start (args, fmt);
 
   int len;
-  if (fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
+  if (fmt && *fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
     {
       error_state = -2;
       char *tmp_fmt = strsave (fmt);
       tmp_fmt[len - 1] = '\0';
       verror ("error", tmp_fmt, args);
+      delete [] tmp_fmt;
     }
   else
     verror ("error", fmt, args);

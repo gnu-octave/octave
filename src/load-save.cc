@@ -597,7 +597,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		  if (extract_keyword (is, "length", len) && len >= 0)
 		    {
 		      char *tmp = new char [len+1];
-		      if (len > 0 && ! is.read (tmp, len))
+		      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
 			{
 			  error ("load: failed to load string constant");
 			  break;
@@ -755,7 +755,7 @@ read_binary_data (std::istream& is, bool swap,
   // We expect to fail here, at the beginning of a record, so not
   // being able to read another name should not result in an error.
 
-  is.read (&name_len, 4);
+  is.read (X_CAST (char *, &name_len), 4);
   if (! is)
     return 0;
   if (swap)
@@ -763,10 +763,10 @@ read_binary_data (std::istream& is, bool swap,
 
   name = new char [name_len+1];
   name[name_len] = '\0';
-  if (! is.read (name, name_len))
+  if (! is.read (X_CAST (char *, name), name_len))
     goto data_read_error;
 
-  is.read (&doc_len, 4);
+  is.read (X_CAST (char *, &doc_len), 4);
   if (! is)
     goto data_read_error;
   if (swap)
@@ -774,22 +774,22 @@ read_binary_data (std::istream& is, bool swap,
 
   doc = new char [doc_len+1];
   doc[doc_len] = '\0';
-  if (! is.read (doc, doc_len))
+  if (! is.read (X_CAST (char *, doc), doc_len))
     goto data_read_error;
 
-  if (! is.read (&tmp, 1))
+  if (! is.read (X_CAST (char *, &tmp), 1))
     goto data_read_error;
   global = tmp ? 1 : 0;
 
   tmp = 0;
-  if (! is.read (&tmp, 1))
+  if (! is.read (X_CAST (char *, &tmp), 1))
     goto data_read_error;
 
   switch (tmp)
     {
     case 1:
       {
-	if (! is.read (&tmp, 1))
+	if (! is.read (X_CAST (char *, &tmp), 1))
 	  goto data_read_error;
 	double dtmp;
 	read_doubles (is, &dtmp, X_CAST (save_type, tmp), 1, swap, fmt);
@@ -802,15 +802,15 @@ read_binary_data (std::istream& is, bool swap,
     case 2:
       {
 	FOUR_BYTE_INT nr, nc;
-	if (! is.read (&nr, 4))
+	if (! is.read (X_CAST (char *, &nr), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &nr));
-	if (! is.read (&nc, 4))
+	if (! is.read (X_CAST (char *, &nc), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &nc));
-	if (! is.read (&tmp, 1))
+	if (! is.read (X_CAST (char *, &tmp), 1))
 	  goto data_read_error;
 	Matrix m (nr, nc);
 	double *re = m.fortran_vec ();
@@ -824,7 +824,7 @@ read_binary_data (std::istream& is, bool swap,
 
     case 3:
       {
-	if (! is.read (&tmp, 1))
+	if (! is.read (X_CAST (char *, &tmp), 1))
 	  goto data_read_error;
 	Complex ctmp;
 	read_doubles (is, X_CAST (double *, &ctmp),
@@ -838,15 +838,15 @@ read_binary_data (std::istream& is, bool swap,
     case 4:
       {
 	FOUR_BYTE_INT nr, nc;
-	if (! is.read (&nr, 4))
+	if (! is.read (X_CAST (char *, &nr), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &nr));
-	if (! is.read (&nc, 4))
+	if (! is.read (X_CAST (char *, &nc), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &nc));
-	if (! is.read (&tmp, 1))
+	if (! is.read (X_CAST (char *, &tmp), 1))
 	  goto data_read_error;
 	ComplexMatrix m (nr, nc);
 	Complex *im = m.fortran_vec ();
@@ -862,12 +862,12 @@ read_binary_data (std::istream& is, bool swap,
     case 5:
       {
 	FOUR_BYTE_INT len;
-	if (! is.read (&len, 4))
+	if (! is.read (X_CAST (char *, &len), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &len));
 	char *s = new char [len+1];
-	if (! is.read (s, len))
+	if (! is.read (X_CAST (char *, s), len))
 	  {
 	    delete [] s;
 	    goto data_read_error;
@@ -879,18 +879,18 @@ read_binary_data (std::istream& is, bool swap,
 
     case 6:
       {
-	if (! is.read (&tmp, 1))
+	if (! is.read (X_CAST (char *, &tmp), 1))
 	  goto data_read_error;
 	double bas, lim, inc;
-	if (! is.read (&bas, 8))
+	if (! is.read (X_CAST (char *, &bas), 8))
 	  goto data_read_error;
 	if (swap)
 	  swap_8_bytes (X_CAST (char *, &bas));
-	if (! is.read (&lim, 8))
+	if (! is.read (X_CAST (char *, &lim), 8))
 	  goto data_read_error;
 	if (swap)
 	  swap_8_bytes (X_CAST (char *, &lim));
-	if (! is.read (&inc, 8))
+	if (! is.read (X_CAST (char *, &inc), 8))
 	  goto data_read_error;
 	if (swap)
 	  swap_8_bytes (X_CAST (char *, &inc));
@@ -902,7 +902,7 @@ read_binary_data (std::istream& is, bool swap,
     case 7:
       {
 	FOUR_BYTE_INT elements;
-	if (! is.read (&elements, 4))
+	if (! is.read (X_CAST (char *, &elements), 4))
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &elements));
@@ -911,12 +911,12 @@ read_binary_data (std::istream& is, bool swap,
 	for (int i = 0; i < elements; i++)
 	  {
 	    FOUR_BYTE_INT len;
-	    if (! is.read (&len, 4))
+	    if (! is.read (X_CAST (char *, &len), 4))
 	      goto data_read_error;
 	    if (swap)
 	      swap_4_bytes (X_CAST (char *, &len));
 	    char *tmp = new char [len+1];
-	    if (! is.read (tmp, len))
+	    if (! is.read (X_CAST (char *, tmp), len))
 	      {
 		delete [] tmp;
 		goto data_read_error;
@@ -1185,20 +1185,20 @@ read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt,
   // being able to read another mopt value should not result in an
   // error.
 
-  is.read (&mopt, 4);
+  is.read (X_CAST (char *, &mopt), 4);
   if (! is)
     return 1;
 
-  if (! is.read (&nr, 4))
+  if (! is.read (X_CAST (char *, &nr), 4))
     goto data_read_error;
 
-  if (! is.read (&nc, 4))
+  if (! is.read (X_CAST (char *, &nc), 4))
     goto data_read_error;
 
-  if (! is.read (&imag, 4))
+  if (! is.read (X_CAST (char *, &imag), 4))
     goto data_read_error;
 
-  if (! is.read (&len, 4))
+  if (! is.read (X_CAST (char *, &len), 4))
     goto data_read_error;
 
 // If mopt is nonzero and the byte order is swapped, mopt will be
@@ -1384,7 +1384,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   // way, I think this should work.
 
   name = new char [len+1];
-  if (! is.read (name, len))
+  if (! is.read (X_CAST (char *, name), len))
     goto data_read_error;
   name[len] = '\0';
 
@@ -1466,7 +1466,7 @@ read_binary_file_header (std::istream& is, bool& swap,
 {
   const int magic_len = 10;
   char magic[magic_len+1];
-  is.read (magic, magic_len);
+  is.read (X_CAST (char *, magic), magic_len);
   magic[magic_len] = '\0';
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
     swap = oct_mach_info::words_big_endian ();
@@ -1480,7 +1480,7 @@ read_binary_file_header (std::istream& is, bool& swap,
     }
 	
   char tmp = 0;
-  is.read (&tmp, 1);
+  is.read (X_CAST (char *, &tmp), 1);
 
   flt_fmt = mopt_digit_to_float_format (tmp);
 
@@ -1932,67 +1932,67 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 {
   FOUR_BYTE_INT name_len = name.length ();
 
-  os.write (&name_len, 4);
+  os.write (X_CAST (char *, &name_len), 4);
   os << name;
 
   FOUR_BYTE_INT doc_len = doc.length ();
 
-  os.write (&doc_len, 4);
+  os.write (X_CAST (char *, &doc_len), 4);
   os << doc;
 
   char tmp;
 
   tmp = mark_as_global;
-  os.write (&tmp, 1);
+  os.write (X_CAST (char *, &tmp), 1);
 
   if (tc.is_string ())
     {
       tmp = 7;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       FOUR_BYTE_INT nr = tc.rows ();
-      os.write (&nr, 4);
+      os.write (X_CAST (char *, &nr), 4);
       charMatrix chm = tc.char_matrix_value ();
       for (int i = 0; i < nr; i++)
 	{
 	  FOUR_BYTE_INT len = chm.cols ();
-	  os.write (&len, 4);
+	  os.write (X_CAST (char *, &len), 4);
 	  std::string tstr = chm.row_as_string (i);
 	  const char *tmp = tstr.data ();
-	  os.write (tmp, len);
+	  os.write (X_CAST (char *, tmp), len);
 	}
     }
   else if (tc.is_range ())
     {
       tmp = 6;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       tmp = (char) LS_DOUBLE;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       Range r = tc.range_value ();
       double bas = r.base ();
       double lim = r.limit ();
       double inc = r.inc ();
-      os.write (&bas, 8);
-      os.write (&lim, 8);
-      os.write (&inc, 8);
+      os.write (X_CAST (char *, &bas), 8);
+      os.write (X_CAST (char *, &lim), 8);
+      os.write (X_CAST (char *, &inc), 8);
     }
   else if (tc.is_real_scalar ())
     {
       tmp = 1;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       tmp = (char) LS_DOUBLE;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       double tmp = tc.double_value ();
-      os.write (&tmp, 8);
+      os.write (X_CAST (char *, &tmp), 8);
     }
   else if (tc.is_real_matrix ())
     {
       tmp = 2;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       Matrix m = tc.matrix_value ();
       FOUR_BYTE_INT nr = m.rows ();
       FOUR_BYTE_INT nc = m.columns ();
-      os.write (&nr, 4);
-      os.write (&nc, 4);
+      os.write (X_CAST (char *, &nr), 4);
+      os.write (X_CAST (char *, &nc), 4);
       int len = nr * nc;
       save_type st = LS_DOUBLE;
       if (save_as_floats)
@@ -2017,21 +2017,21 @@ save_binary_data (std::ostream& os, const octave_value& tc,
   else if (tc.is_complex_scalar ())
     {
       tmp = 3;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       tmp = (char) LS_DOUBLE;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       Complex tmp = tc.complex_value ();
-      os.write (&tmp, 16);
+      os.write (X_CAST (char *, &tmp), 16);
     }
   else if (tc.is_complex_matrix ())
     {
       tmp = 4;
-      os.write (&tmp, 1);
+      os.write (X_CAST (char *, &tmp), 1);
       ComplexMatrix m = tc.complex_matrix_value ();
       FOUR_BYTE_INT nr = m.rows ();
       FOUR_BYTE_INT nc = m.columns ();
-      os.write (&nr, 4);
-      os.write (&nc, 4);
+      os.write (X_CAST (char *, &nr), 4);
+      os.write (X_CAST (char *, &nc), 4);
       int len = nr * nc;
       save_type st = LS_DOUBLE;
       if (save_as_floats)
@@ -2075,25 +2075,25 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 
-  os.write (&mopt, 4);
+  os.write (X_CAST (char *, &mopt), 4);
   
   FOUR_BYTE_INT nr = tc.rows ();
-  os.write (&nr, 4);
+  os.write (X_CAST (char *, &nr), 4);
 
   FOUR_BYTE_INT nc = tc.columns ();
-  os.write (&nc, 4);
+  os.write (X_CAST (char *, &nc), 4);
 
   int len = nr * nc;
 
   FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
-  os.write (&imag, 4);
+  os.write (X_CAST (char *, &imag), 4);
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it.
 
   FOUR_BYTE_INT name_len = name.length () + 1;
 
-  os.write (&name_len, 4);
+  os.write (X_CAST (char *, &name_len), 4);
   os << name << '\0';
 
   if (tc.is_string ())
@@ -2102,7 +2102,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       unwind_protect_int (Vimplicit_str_to_num_ok);
       Vimplicit_str_to_num_ok = true;
       Matrix m = tc.matrix_value ();
-      os.write (m.data (), 8 * len);
+      os.write (X_CAST (char *, m.data ()), 8 * len);
       unwind_protect::run_frame ("save_mat_binary_data");
     }
   else if (tc.is_range ())
@@ -2114,31 +2114,31 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
       for (int i = 0; i < nel; i++)
 	{
 	  double x = base + i * inc;
-	  os.write (&x, 8);
+	  os.write (X_CAST (char *, &x), 8);
 	}
     }
   else if (tc.is_real_scalar ())
     {
       double tmp = tc.double_value ();
-      os.write (&tmp, 8);
+      os.write (X_CAST (char *, &tmp), 8);
     }
   else if (tc.is_real_matrix ())
     {
       Matrix m = tc.matrix_value ();
-      os.write (m.data (), 8 * len);
+      os.write (X_CAST (char *, m.data ()), 8 * len);
     }
   else if (tc.is_complex_scalar ())
     {
       Complex tmp = tc.complex_value ();
-      os.write (&tmp, 16);
+      os.write (X_CAST (char *, &tmp), 16);
     }
   else if (tc.is_complex_matrix ())
     {
       ComplexMatrix m_cmplx = tc.complex_matrix_value ();
       Matrix m = ::real(m_cmplx);
-      os.write (m.data (), 8 * len);
+      os.write (X_CAST (char *, m.data ()), 8 * len);
       m = ::imag(m_cmplx);
-      os.write (m.data (), 8 * len);
+      os.write (X_CAST (char *, m.data ()), 8 * len);
     }
   else
     gripe_wrong_type_arg ("save", tc, false);
@@ -2270,7 +2270,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	  os << "# length: " << len << "\n";
 	  std::string tstr = chm.row_as_string (i);
 	  const char *tmp = tstr.data ();
-	  os.write (tmp, len);
+	  os.write (X_CAST (char *, tmp), len);
 	  os << "\n";
 	}
     }
@@ -2477,7 +2477,7 @@ write_header (std::ostream& os, load_save_format format)
 
 	char tmp = (char) float_format_to_mopt_digit (flt_fmt);
 
-	os.write (&tmp, 1);
+	os.write (X_CAST (char *, &tmp), 1);
       }
     break;
 

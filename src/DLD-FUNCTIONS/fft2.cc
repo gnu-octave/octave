@@ -37,10 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (HAVE_FFTW3)
 #define FFTSRC "@sc{Fftw}"
-#define WISDOM ", fft_wisdom"
 #else
 #define FFTSRC "@sc{Fftpack}"
-#define WISDOM 
 #endif
 
 static octave_value
@@ -151,11 +149,9 @@ zeros.\n\
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
 of @var{a} is treated seperately\n\
 @end deftypefn\n\
-@seealso {ifft2, fft, fftn"
-WISDOM
-"}")
+@seealso {ifft2, fft, fftn fftw_wisdom}")
 {
-  return do_fft2(args, "fft2", 0);
+  return do_fft2 (args, "fft2", 0);
 }
 
 
@@ -172,11 +168,9 @@ zeros.\n\
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
 of @var{a} is treated seperately\n\
 @end deftypefn\n\
-@seealso {fft2, ifft, ifftn"
-WISDOM
-"}")
+@seealso {fft2, ifft, ifftn, fftw_wisdom}")
 {
-  return do_fft2(args, "ifft2", 1);
+  return do_fft2 (args, "ifft2", 1);
 }
 
 /*

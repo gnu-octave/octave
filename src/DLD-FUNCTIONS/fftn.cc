@@ -36,10 +36,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (HAVE_FFTW3)
 #define FFTSRC "@sc{Fftw}"
-#define WISDOM ", fft_wisdom"
 #else
 #define FFTSRC "@sc{Fftpack}"
-#define WISDOM 
 #endif
 
 static octave_value
@@ -132,11 +130,9 @@ truncated prior to performing the FFT. Otherwise if an element\n\
 of @var{siz} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
 @end deftypefn\n\
-@seealso {ifftn, fft, fft2"
-WISDOM
-"}")
+@seealso {ifftn, fft, fft2, fftw_wisdom}")
 {
-  return do_fftn(args, "fftn", 0);
+  return do_fftn (args, "fftn", 0);
 }
 
 DEFUN_DLD (ifftn, args, ,
@@ -151,11 +147,9 @@ truncated prior to performing the inverse FFT. Otherwise if an element\n\
 of @var{siz} is larger than the corresponding dimension @var{a}\n\
 is resized and padded with zeros.\n\
 @end deftypefn\n\
-@seealso {fftn, ifft, ifft2"
-WISDOM
-"}")
+@seealso {fftn, ifft, ifft2, fftw_wisdom}")
 {
-  return do_fftn(args, "ifftn", 1);
+  return do_fftn (args, "ifftn", 1);
 }
 
 /*

@@ -35,10 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (HAVE_FFTW3)
 #define FFTSRC "@sc{Fftw}"
-#define WISDOM ", fft_wisdom"
 #else
 #define FFTSRC "@sc{Fftpack}"
-#define WISDOM 
 #endif
 
 static octave_value
@@ -161,11 +159,9 @@ smaller than the dimension along which the FFT is calculated, then\n\
 If called with three agruments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the FFT is performed\n\
 @end deftypefn\n\
-@seealso {ifft, fft2, fftn"
-WISDOM
-"}")
+@seealso {ifft, fft2, fftn, fftw_wisdom}")
 {
-  return do_fft(args, "fft", 0);
+  return do_fft (args, "fft", 0);
 }
 
 
@@ -189,11 +185,9 @@ then @var{a} is truncated.\n\
 If called with three agruments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the inverse FFT is performed\n\
 @end deftypefn\n\
-@seealso {fft, ifft2, ifftn"
-WISDOM
-"}")
+@seealso {fft, ifft2, ifftn, fftw_wisdom}")
 {
-  return do_fft(args, "ifft", 1);
+  return do_fft (args, "ifft", 1);
 }
 
 /*

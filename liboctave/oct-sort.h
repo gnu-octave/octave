@@ -109,16 +109,20 @@ template <class T>
 class
 octave_sort
 {
- public:
+public:
+
   octave_sort (void);
 
   octave_sort (bool (*comp) (T, T));
   
-  ~octave_sort (void) { merge_freemem ( ); }
+  ~octave_sort (void) { merge_freemem (); }
+
+  void set_compare (bool (*comp) (T, T)) { compare = comp; }
 
   void sort (T *v, int elements);
 
- private:
+private:
+
   /* One MergeState exists on the stack per invocation of mergesort.  It's just
    * a convenient way to pass state around among the helper functions.
    *

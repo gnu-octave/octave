@@ -1,3 +1,8 @@
+2004-09-15  David Bateman  <dbateman@free.fr>
+
+	* oct-sort.h (octave_sort<T>::set_compare (bool (*comp) (T, T))):
+	New function to set the comparison function for the sort.
+
 2004-09-10  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.cc (xround): Fix typo.

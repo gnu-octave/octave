@@ -1,4 +1,4 @@
-/*
+v/*
 
 Copyright (C) 1996, 1997 John W. Eaton
 Copyright (C) 2004 David Bateman
@@ -50,10 +50,10 @@ public:
 };
 
 template <class T>
-static octave_value_list
+static octave_value
 mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   if (m.length () < 1)
     return retval;
@@ -105,7 +105,7 @@ mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 	}
     }
 
-  retval(0) = octave_value (m);
+  retval = m;
 
   return retval;
 }
@@ -219,7 +219,7 @@ inline unsigned EIGHT_BYTE_INT IFloatFlip(unsigned EIGHT_BYTE_INT f)
 
 bool
 ascending_compare (unsigned EIGHT_BYTE_INT a, 
-		    unsigned EIGHT_BYTE_INT b)
+		   unsigned EIGHT_BYTE_INT b)
 {
   return (a < b);
 }
@@ -250,10 +250,10 @@ template class vec_index<unsigned EIGHT_BYTE_INT>;
 template class octave_sort<vec_index<unsigned EIGHT_BYTE_INT> *>;
 
 template <>
-static octave_value_list
+static octave_value
 mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   if (m.length () < 1)
     return retval;
@@ -362,7 +362,8 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	}
     }
 
-  retval(0) = m;
+  retval = m;
+
   return retval;
 }
 
@@ -459,6 +460,7 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
 
   retval(1) = idx;
   retval(0) = m;
+
   return retval;
 }
 

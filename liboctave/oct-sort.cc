@@ -92,14 +92,14 @@ The Python license is
 template <class T>
 octave_sort<T>::octave_sort (void) : compare (NULL) 
 { 
-  merge_init ( ); 
+  merge_init (); 
   merge_getmem (1024);
 }
 
 template <class T>
 octave_sort<T>::octave_sort (bool (*comp) (T, T)) : compare (comp) 
 { 
-  merge_init ( ); 
+  merge_init (); 
   merge_getmem (1024);
 }
   

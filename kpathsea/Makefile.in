@@ -139,16 +139,21 @@ paths.h: texmf.cnf
 
 # A few object files need extra definitions. The dependencies are below.
 tex-file.o:
-	[ -z "$(CPICFLAG)" ] ||\
-	  $(CC) $(CPPFLAGS) $(CPICFLAG) $(CFLAGS) \
-	    -DDEFAULT_FONT_SIZES='"$(default_texsizes)"'\
-	    -c $(srcdir)/tex-file.c -o pic/$@
 	$(CC) $(CPPFLAGS) $(CFLAGS) \
 	  -DDEFAULT_FONT_SIZES='"$(default_texsizes)"' -c $(srcdir)/tex-file.c
+
+pic/tex-file.o:
+	$(CC) $(CPPFLAGS) $(CPICFLAG) $(CFLAGS) \
+	  -DDEFAULT_FONT_SIZES='"$(default_texsizes)"'\
+	  -c $(srcdir)/tex-file.c -o pic/$@
 
 # Need the -DHAVE_CONFIG_H.
 gmalloc.o:
 	$(CC) $(CPPFLAGS) @DEFS@ $(CFLAGS) -c $(srcdir)/gmalloc.c
+
+pic/gmalloc.o:
+	$(CC) $(CPPFLAGS) $(CPICFLAG) @DEFS@ $(CFLAGS) \
+	  -c $(srcdir)/gmalloc.c -o pic/gmalloc.o
 
 check: 
 

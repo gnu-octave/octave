@@ -3,6 +3,7 @@ Thu Feb 13 17:35:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* configure.in: Update config for shared libraries.
 	* Makefile.in (stamp-shared): Use $(SH_LD) $(SH_LDFLAGS) instead
 	of $(CXX) -shared.
+	(tex-file.o, pic/tex-file.o, gmalloc.o, pic/gmalloc.o): Update rules.
 
 	* Makefile.in (stamp-picdir): Silence noise about making pic.
 

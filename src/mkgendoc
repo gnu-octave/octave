@@ -38,7 +38,7 @@ cat << \EOF
   print_doc_string (#name, doc);
 
 static void
-print_doc_string (const string& name, const std::string& doc)
+print_doc_string (const std::string& name, const std::string& doc)
 {
   std::cout << "";
 

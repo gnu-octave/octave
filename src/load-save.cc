@@ -2946,8 +2946,12 @@ save variables in a file")
 // XXX FIXME XXX -- should things intended for the screen end up in a 
 // tree_constant (string)?
 
-      save_vars (argv, argc, cout, save_builtins, format,
+      ostrstream buf;
+
+      save_vars (argv, argc, buf, save_builtins, format,
 		 save_as_floats);
+
+      maybe_page_output (buf);
     }
   else if (argc == 1 && glob_pattern_p (*argv)) // Guard against things
     {						// like `save a*',

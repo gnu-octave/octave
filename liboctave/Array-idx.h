@@ -139,6 +139,9 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 	      {
 		iidx++;
 		new_len--;
+
+		if (iidx == num_to_delete)
+		  break;
 	      }
 
 	  if (new_len > 0)
@@ -149,7 +152,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 	      iidx = 0;
 	      for (int i = 0; i < len; i++)
 		{
-		  if (i == idx.elem (iidx))
+		  if (iidx < num_to_delete && i == idx.elem (iidx))
 		    iidx++;
 		  else
 		    {

@@ -453,7 +453,7 @@ print a directory listing")
 
 DEFALIAS (dir, ls);
 
-DEFUN ("pwd", Fpwd, Spwd, 00,
+DEFUN ("pwd", Fpwd, Spwd, 01,
   "pwd (): print current working directory")
 {
   Octave_object retval;
@@ -477,10 +477,16 @@ DEFUN ("pwd", Fpwd, Spwd, 00,
 
   if (directory)
     {
-      char *s = strconcat (directory, "\n");
-      retval = s;
-      delete [] s;
+      if (nargout == 0)
+	{
+	  ostrstream output_buf;
+	  output_buf << directory << "\n" << ends;
+	  maybe_page_output (output_buf);
+	}
+      else
+	retval = directory;
     }
+
   return retval;
 }
 

@@ -49,7 +49,7 @@ extern "C"
 #include "error.h"
 #include "toplev.h"
 #include "pathsearch.h"
-#include "tree-const.h"
+#include "pt-const.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
@@ -81,8 +81,6 @@ mangle_octave_oct_file_name (const char *name)
   delete [] tmp;
   return retval;
 }
-
-#endif
 
 #if defined (WITH_DL)
 
@@ -290,9 +288,11 @@ dld_resolve_octave_reference (const char *name, const char *file)
 }
 
 #endif
+#endif
 
+#if defined (WITH_DYNAMIC_LINKING)
 static void *
-resolve_octave_reference (const char *name, const char *file = 0)
+resolve_octave_reference (const char *name, const char *file)
 {
 #if defined (WITH_DL)
 
@@ -308,9 +308,14 @@ resolve_octave_reference (const char *name, const char *file = 0)
 
 #endif
 }
+#endif
 
 Octave_builtin_fcn
+#if defined (WITH_DYNAMIC_LINKING)
 load_octave_builtin (const char *name)
+#else
+load_octave_builtin (const char *)
+#endif
 {
   Octave_builtin_fcn retval = 0;
 

@@ -1,4 +1,4 @@
-// tree-expr2.h                                      -*- C++ -*-
+// tree-exp.h                                      -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton

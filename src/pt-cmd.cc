@@ -1,4 +1,4 @@
-// tree-cmd.cc                                           -*- C++ -*-
+// pt-cmd.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -45,11 +45,12 @@ int returning = 0;
 #include "gripes.h"
 #include "oct-map.h"
 #include "symtab.h"
-#include "tree-base.h"
-#include "tree-cmd.h"
-#include "tree-const.h"
-#include "tree-expr.h"
-#include "tree-misc.h"
+#include "pt-cmd.h"
+#include "pt-const.h"
+#include "pt-exp.h"
+#include "pt-fvc.h"
+#include "pt-misc.h"
+#include "pt-mvr.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "variables.h"

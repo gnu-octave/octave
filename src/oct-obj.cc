@@ -29,15 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "Array.h"
-#include "Range.h"
-#include "mx-base.h"
-
 #include "oct-obj.h"
-#include "tree-const.h"
 
-// We can't put these functions in oct-obj.h without including
-// tree-const.h there too, and that causes trouble...
+// XXX FIXME XXX -- these can probably go in oct-obj.h now.
 
 Octave_object::Octave_object (double d)
   : Array<tree_constant> (1, tree_constant (d)) { }

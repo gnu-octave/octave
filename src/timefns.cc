@@ -28,11 +28,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "defun.h"
+#include "error.h"
 #include "help.h"
 #include "oct-map.h"
-#include "oct-obj.h"
 #include "systime.h"
-#include "tree-const.h"
+#include "pt-const.h"
+#include "oct-obj.h"
 #include "utils.h"
 
 // Date and time functions.

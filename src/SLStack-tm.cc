@@ -26,8 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SLStack.h"
 #include "SLStack.cc"
 
-#include "tree-base.h"
-#include "tree-expr.h"
+#include "pt-mat.h"
 
 template class SLNode<tree_matrix *>;
 template class SLList<tree_matrix *>;

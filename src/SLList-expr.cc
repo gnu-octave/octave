@@ -29,7 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <SLList.h>
 
-#include "tree-expr.h"
+#include "pt-exp.h"
+#include "pt-fvc.h"
+#include "pt-mvr.h"
 
 template class SLNode<tree_expression *>;
 template class SLList<tree_expression *>;

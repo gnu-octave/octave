@@ -34,9 +34,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "help.h"
 #include "oct-map.h"
-#include "oct-obj.h"
 #include "sysdep.h"
-#include "tree-const.h"
+#include "pt-const.h"
+#include "oct-obj.h"
 #include "utils.h"
 
 #ifndef RUSAGE_SELF

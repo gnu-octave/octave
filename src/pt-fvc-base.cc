@@ -1,4 +1,4 @@
-// tree-fvc.cc                                          -*- C++ -*-
+// pt-fvc-base.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton

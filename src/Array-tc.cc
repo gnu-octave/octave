@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "Array.cc"
 
-#include "tree-const.h"
+#include "pt-const.h"
 
 extern template class Array<int>;
 extern template class Array2<int>;

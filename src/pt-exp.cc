@@ -1,4 +1,4 @@
-// tree-expr2.cc                                          -*- C++ -*-
+// pt-exp.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton

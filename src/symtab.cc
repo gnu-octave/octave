@@ -33,9 +33,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "symtab.h"
-#include "tree-base.h"
-#include "tree-const.h"
-#include "tree-expr.h"
+#include "pt-const.h"
+#include "pt-fcn.h"
+#include "pt-fvc.h"
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"

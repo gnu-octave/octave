@@ -1,4 +1,4 @@
-// tree-fvc2.h                                      -*- C++ -*-
+// tree-fvc.h                                      -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton

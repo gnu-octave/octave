@@ -1,4 +1,4 @@
-// tree-base.cc                                           -*- C++ -*-
+// pt-base.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include "tree-base.h"
+#include "pt-base.h"
 #include "user-prefs.h"
 
 // Current indentation.

@@ -1,4 +1,4 @@
-// octave-hist.cc                                        -*- C++ -*-
+// oct-hist.cc                                        -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -51,13 +51,14 @@ Software Foundation, Inc.
 #include "defun.h"
 #include "error.h"
 #include "input.h"
-#include "oct-obj.h"
-#include "octave-hist.h"
+#include "oct-hist.h"
 #include "toplev.h"
 #include "pager.h"
 #include "sighandlers.h"
 #include "statdefs.h"
 #include "sysdep.h"
+#include "pt-const.h"
+#include "oct-obj.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"

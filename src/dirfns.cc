@@ -53,7 +53,6 @@ Free Software Foundation, Inc.
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "oct-obj.h"
 #include "toplev.h"
 #include "pager.h"
 #include "pathlen.h"
@@ -61,10 +60,12 @@ Free Software Foundation, Inc.
 #include "statdefs.h"
 #include "sysdep.h"
 #include "sysdir.h"
-#include "tree-const.h"
-#include "tree-plot.h"
+#include "pt-const.h"
+#include "oct-obj.h"
+#include "pt-plot.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "variables.h"
 
 // Temp storage for a path.
 static char tdir[MAXPATHLEN];

@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Map.h"
 #include "Map.cc"
 
-#include "tree-const.h"
+#include "pt-const.h"
 
 template class Map<tree_constant>;
 template class CHNode<tree_constant>;

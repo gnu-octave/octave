@@ -42,6 +42,8 @@ Software Foundation, Inc.
 
 #include <string>
 
+#include <iostream.h>
+
 #ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <unistd.h>
@@ -75,10 +77,11 @@ extern "C" void _rl_output_character_function ();
 #include "f77-uscore.h"
 #include "help.h"
 #include "input.h"
-#include "oct-obj.h"
+#include "mappers.h"
 #include "toplev.h"
 #include "sysdep.h"
-#include "tree-const.h"
+#include "pt-const.h"
+#include "oct-obj.h"
 #include "utils.h"
 
 extern "C" double F77_FCN (d1mach, D1MACH) (const int&);

@@ -1,4 +1,4 @@
-// tree-const.cc                                         -*- C++ -*-
+// pt-const.cc                                         -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -38,6 +38,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include <strstream.h>
 
+#include <SLList.h>
+
 #include "mx-base.h"
 #include "Range.h"
 
@@ -45,11 +47,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "idx-vector.h"
+#include "mappers.h"
 #include "oct-map.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "pr-output.h"
 #include "sysdep.h"
-#include "tree-const.h"
+#include "pt-const.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -354,6 +358,22 @@ tree_constant::assign_map_element (SLList<char*>& list,
     }
 
   return tree_constant ();
+}
+
+Octave_object
+tree_constant::eval (int print, int, const Octave_object& args)
+{
+  Octave_object retval;
+
+  if (args.length () > 0)
+    retval(0) = rep->do_index (args);
+  else
+    retval(0) = *this;
+
+  if (retval(0).is_defined ())
+    retval(0).eval (print);
+
+  return retval;
 }
 
 void

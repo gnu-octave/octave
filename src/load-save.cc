@@ -43,12 +43,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "load-save.h"
+#include "mappers.h"
 #include "pager.h"
 #include "symtab.h"
 #include "sysdep.h"
-#include "tree-base.h"
-#include "tree-const.h"
-#include "tree-expr.h"
+#include "pt-const.h"
+#include "oct-obj.h"
+#include "pt-exp.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -2822,7 +2823,7 @@ save_ascii_data (ostream& os, const tree_constant& tc,
 	  int len = chm.cols ();
 	  os << "# length: " << len << "\n";
 	  string tstr = chm.row_as_string (i);
-	  char *tmp = tstr.data ();
+	  const char *tmp = tstr.data ();
 	  os.write (tmp, len);
 	  os << "\n";
 	}

@@ -1,4 +1,4 @@
-// tree-base.h                                           -*- C++ -*-
+// pt-base.h                                           -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton

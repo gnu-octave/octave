@@ -40,7 +40,8 @@ Software Foundation, Inc.
 #include "gripes.h"
 #include "help.h"
 #include "oct-map.h"
-#include "tree-const.h"
+#include "pt-const.h"
+#include "oct-obj.h"
 #include "user-prefs.h"
 #include "utils.h"
 

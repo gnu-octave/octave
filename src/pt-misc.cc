@@ -1,4 +1,4 @@
-// tree-misc.cc                                          -*- C++ -*-
+// pt-misc.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -39,13 +39,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "oct-obj.h"
-#include "toplev.h"
 #include "pager.h"
-#include "tree-base.h"
-#include "tree-cmd.h"
-#include "tree-const.h"
-#include "tree-expr.h"
-#include "tree-misc.h"
+#include "toplev.h"
+#include "pt-cmd.h"
+#include "pt-const.h"
+#include "pt-exp.h"
+#include "pt-fcn.h"
+#include "pt-fvc.h"
+#include "pt-misc.h"
+#include "pt-mvr.h"
 #include "user-prefs.h"
 
 // Nonzero means we're breaking out of a loop or function body.
@@ -63,6 +65,20 @@ tree_statement::~tree_statement (void)
 {
   delete command;
   delete expression;
+}
+
+int
+tree_statement::line (void)
+{
+  return command
+    ? command->line () : (expression ? expression->line () : -1);
+}
+
+int
+tree_statement::column (void)
+{
+  return command
+    ? command->column () : (expression ? expression->column () : -1);
 }
 
 void
@@ -305,6 +321,15 @@ tree_argument_list::print_code (ostream& os)
 
 // Parameter lists.
 
+tree_parameter_list::~tree_parameter_list (void)
+{
+  while (! empty ())
+    {
+      tree_identifier *t = remove_front ();
+      delete t;
+    }
+}
+
 void
 tree_parameter_list::mark_as_formal_parameters (void)
 {
@@ -437,6 +462,15 @@ tree_parameter_list::print_code (ostream& os)
 
 // Return lists.
 
+tree_return_list::~tree_return_list (void)
+{
+  while (! empty ())
+    {
+      tree_index_expression *t = remove_front ();
+      delete t;
+    }
+}
+
 void
 tree_return_list::print_code (ostream& os)
 {
@@ -459,6 +493,12 @@ tree_return_list::print_code (ostream& os)
 }
 
 // Global.
+
+tree_global::~tree_global (void)
+{
+  delete ident;
+  delete assign_expr;
+}
 
 void
 tree_global::eval (void)
@@ -525,6 +565,12 @@ tree_global_init_list::print_code (ostream& os)
 }
 
 // If.
+
+tree_if_clause::~tree_if_clause (void)
+{
+  delete expr;
+  delete list;
+}
 
 int
 tree_if_clause::eval (void)

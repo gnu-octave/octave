@@ -251,84 +251,70 @@ and @var{x}.  The result is in range -pi to pi.\n\
   return retval;
 }
 
+#define DATA_REDUCTION(FCN) \
+ \
+  octave_value_list retval; \
+ \
+  int nargin = args.length (); \
+ \
+  if (nargin == 1 || nargin == 2) \
+    { \
+      octave_value arg = args(0); \
+ \
+      int dim = (nargin == 1 ? 0 : args(1).int_value (true) - 1); \
+ \
+      if (! error_state) \
+	{ \
+	  if (dim == 0 || dim == 1) \
+	    { \
+	      if (arg.is_real_type ()) \
+		{ \
+		  Matrix tmp = arg.matrix_value (); \
+ \
+		  if (! error_state) \
+		    retval(0) = tmp.FCN (dim); \
+		} \
+	      else if (arg.is_complex_type ()) \
+		{ \
+		  ComplexMatrix tmp = arg.complex_matrix_value (); \
+ \
+		  if (! error_state) \
+		    retval(0) = tmp.FCN (dim); \
+		} \
+	      else \
+		{ \
+		  gripe_wrong_type_arg (#FCN, arg); \
+		  return retval; \
+		} \
+	    } \
+	  else \
+	    error (#FCN ": invalid dimension argument = %d", dim + 1); \
+	} \
+    } \
+  else \
+    print_usage (#FCN); \
+ \
+  return retval
+
 DEFUN (cumprod, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cumprod (@var{x})\n\
-Cumulative products.\n\
+@deftypefn {Built-in Function} {} cumprod (@var{x}, @var{dim})\n\
+Cumulative product of elements along dimension @var{dim}.  If\n\
+@var{dim} is omitted, it defaults to 1 (column-wise cumulative\n\
+products).\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_real_type ())
-	{
-	  Matrix tmp = arg.matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.cumprod ();
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix tmp = arg.complex_matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.cumprod ();
-	}
-      else
-	{
-	  gripe_wrong_type_arg ("cumprod", arg);
-	  return retval;
-	}
-    }
-  else
-    print_usage ("cumprod");
-
-  return retval;
+  DATA_REDUCTION (cumprod);
 }
 
 DEFUN (cumsum, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cumsum (@var{x})\n\
-Cumulative sums.\n\
+@deftypefn {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
+Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
+is omitted, it defaults to 1 (column-wise cumulative sums).\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_real_type ())
-	{
-	  Matrix tmp = arg.matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.cumsum ();
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix tmp = arg.complex_matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.cumsum ();
-	}
-      else
-	{
-	  gripe_wrong_type_arg ("cumsum", arg);
-	  return retval;
-	}
-    }
-  else
-    print_usage ("cumsum");
-
-  return retval;
+  DATA_REDUCTION (cumsum);
 }
 
 static octave_value
@@ -567,42 +553,12 @@ diag ([1, 2, 3], 1)\n\
 
 DEFUN (prod, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} prod (@var{x})\n\
-Products.\n\
+@deftypefn {Built-in Function} {} prod (@var{x}, @var{dim})\n\
+Product of elements along dimension @var{dim}.  If @var{dim} is\n\
+omitted, it defaults to 1 (column-wise products).\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_real_type ())
-	{
-	  Matrix tmp = arg.matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.prod ();
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix tmp = arg.complex_matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.prod ();
-	}
-      else
-	{
-	  gripe_wrong_type_arg ("prod", arg);
-	  return retval;
-	}
-    }
-  else
-    print_usage ("prod");
-
-  return retval;
+  DATA_REDUCTION (prod);
 }
 
 DEFUN (length, args, ,
@@ -707,88 +663,28 @@ returns the number of columns in the given matrix.\n\
 
 DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sum (@var{x})\n\
-Sum of elements.\n\
+@deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\
+Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
+omitted, it defaults to 1 (column-wise sum).\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_real_type ())
-	{
-	  Matrix tmp = arg.matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.sum ();
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix tmp = arg.complex_matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.sum ();
-	}
-      else
-	{
-	  gripe_wrong_type_arg ("sum", arg);
-	  return retval;
-	}
-    }
-  else
-    print_usage ("sum");
-
-  return retval;
+  DATA_REDUCTION (sum);
 }
 
 DEFUN (sumsq, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} sumsq (@var{x})\n\
-Sum of squares of elements.\n\
+@deftypefn {Built-in Function} {} sumsq (@var{x}, @var{dim})\n\
+Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
+is omitted, it defaults to 1 (column-wise sum of squares).\n\
 \n\
 This function is equivalent to computing\n\
-\n\
-  sum (X .* conj (X))\n\
-\n\
-but it uses less memory and avoids calling conj if X is real.\n\
+@example\n\
+sum (x .* conj (x), dim)\n\
+@end example\n\
+but it uses less memory and avoids calling conj if @var{x} is real.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_real_type ())
-	{
-	  Matrix tmp = arg.matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.sumsq ();
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix tmp = arg.complex_matrix_value ();
-
-	  if (! error_state)
-	    retval(0) = tmp.sumsq ();
-	}
-      else
-	{
-	  gripe_wrong_type_arg ("sumsq", arg);
-	  return retval;
-	}
-    }
-  else
-    print_usage ("sumsq");
-
-  return retval;
+  DATA_REDUCTION (sumsq);
 }
 
 DEFUN (is_bool, args, ,

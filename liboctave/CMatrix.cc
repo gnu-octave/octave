@@ -2320,38 +2320,28 @@ ComplexMatrix::any (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::cumprod (void) const
+ComplexMatrix::cumprod (int dim) const
 {
   int nr = rows ();
   int nc = cols ();
-  ComplexMatrix retval;
+  ComplexMatrix retval (nr, nc);
   if (nr > 0 && nc > 0)
     {
-      if (nr == 1)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  retval.resize (1, nc);
-	  Complex prod = elem (0, 0);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = prod;
-	      if (j < nc - 1)
-		prod *= elem (0, j+1);
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (nr, 1);
-	  Complex prod = elem (0, 0);
 	  for (int i = 0; i < nr; i++)
 	    {
-	      retval.elem (i, 0) = prod;
-	      if (i < nr - 1)
-		prod *= elem (i+1, 0);
+	      Complex prod = elem (0, 0);
+	      for (int j = 0; j < nc; j++)
+		{
+		  retval.elem (0, j) = prod;
+		  if (j < nc - 1)
+		    prod *= elem (i, j+1);
+		}
 	    }
 	}
       else
 	{
-	  retval.resize (nr, nc);
 	  for (int j = 0; j < nc; j++)
 	    {
 	      Complex prod = elem (0, j);
@@ -2368,38 +2358,28 @@ ComplexMatrix::cumprod (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::cumsum (void) const
+ComplexMatrix::cumsum (int dim) const
 {
   int nr = rows ();
   int nc = cols ();
-  ComplexMatrix retval;
+  ComplexMatrix retval (nr, nc);
   if (nr > 0 && nc > 0)
     {
-      if (nr == 1)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  retval.resize (1, nc);
-	  Complex sum = elem (0, 0);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = sum;
-	      if (j < nc - 1)
-		sum += elem (0, j+1);
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (nr, 1);
-	  Complex sum = elem (0, 0);
 	  for (int i = 0; i < nr; i++)
 	    {
-	      retval.elem (i, 0) = sum;
-	      if (i < nr - 1)
-		sum += elem (i+1, 0);
+	      Complex sum = elem (0, 0);
+	      for (int j = 0; j < nc; j++)
+		{
+		  retval.elem (i, j) = sum;
+		  if (j < nc - 1)
+		    sum += elem (i, j+1);
+		}
 	    }
 	}
       else
 	{
-	  retval.resize (nr, nc);
 	  for (int j = 0; j < nc; j++)
 	    {
 	      Complex sum = elem (0, j);
@@ -2416,26 +2396,22 @@ ComplexMatrix::cumsum (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::prod (void) const
+ComplexMatrix::prod (int dim) const
 {
   int nr = rows ();
   int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
-      if (nr == 1)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
-	  for (int j = 0; j < nc; j++)
-	    retval.elem (0, 0) *= elem (0, j);
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
+	  retval.resize(nr, 1);
 	  for (int i = 0; i < nr; i++)
-	    retval.elem (0, 0) *= elem (i, 0);
+	    {
+	      retval.elem (i, 0) = 1.0;
+	      for (int j = 0; j < nc; j++)
+		retval.elem (i, 0) *= elem (i, j);
+	    }
 	}
       else
 	{
@@ -2448,30 +2424,31 @@ ComplexMatrix::prod (void) const
 	    }
 	}
     }
+  else
+    {
+      retval.resize (1,1);
+      retval.elem (0,0) = 1.0;
+    }
   return retval;
 }
 
 ComplexMatrix
-ComplexMatrix::sum (void) const
+ComplexMatrix::sum (int dim) const
 {
   int nr = rows ();
   int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
-      if (nr == 1)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
-	  for (int j = 0; j < nc; j++)
-	    retval.elem (0, 0) += elem (0, j);
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
+	  retval.resize (nr, 1);
 	  for (int i = 0; i < nr; i++)
-	    retval.elem (0, 0) += elem (i, 0);
+	    {
+	      retval.elem (i, 0) = 0.0;
+	      for (int j = 0; j < nc; j++)
+		retval.elem (i, 0) += elem (i, j);
+	    }
 	}
       else
 	{
@@ -2484,35 +2461,33 @@ ComplexMatrix::sum (void) const
 	    }
 	}
     }
+  else
+    {
+      retval.resize (1, 1);
+      retval.elem (0, 0) = 0.0;
+    }
   return retval;
 }
 
 ComplexMatrix
-ComplexMatrix::sumsq (void) const
+ComplexMatrix::sumsq (int dim) const
 {
   int nr = rows ();
   int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
-      if (nr == 1)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
-	  for (int j = 0; j < nc; j++)
-	    {
-	      Complex d = elem (0, j);
-	      retval.elem (0, 0) += d * conj (d);
-	    }
-	}
-      else if (nc == 1)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
+	  retval.resize (nr, 1);
 	  for (int i = 0; i < nr; i++)
 	    {
-	      Complex d = elem (i, 0);
-	      retval.elem (0, 0) += d * conj (d);
+	      retval.elem (i, 0) = 0.0;
+	      for (int j = 0; j < nc; j++)
+		{
+		  Complex d = elem (i, j);
+		  retval.elem (i, 0) += d * conj (d);
+		}
 	    }
 	}
       else
@@ -2529,6 +2504,12 @@ ComplexMatrix::sumsq (void) const
 	    }
 	}
     }
+  else
+    {
+      retval.resize (1, 1);
+      retval.elem (0, 0) = 0.0;
+    }
+
   return retval;
 }
 

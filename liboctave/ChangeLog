@@ -1,3 +1,16 @@
+2000-10-12  Cai Jianming <caijianming@yahoo.co.uk>
+
+	dMatrix.cc (Matrix::cumprod (int) const): New arg, DIM.
+	(Matrix::cumsum (int) const): Likewise.
+	(Matrix::prod (int) const): Likewise.
+	(Matrix::sum (int) const): Likewise.
+	(Matrix::sumsq (int) const): Likewise.
+	* CMatrix.cc (ComplexMatrix::cumprod (int dim) const): Likewise.
+	(ComplexMatrix::cumsum (int) const): Likewise.
+	(ComplexMatrix::prod (int) const): Likewise.
+	(ComplexMatrix::sum (int) const): Likewise.
+	(ComplexMatrix::sumsq (int) const): Likewise.
+
 2000-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::index (idx_vector&)): Correctly set

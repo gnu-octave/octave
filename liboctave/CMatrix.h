@@ -244,11 +244,11 @@ public:
   boolMatrix all (void) const;
   boolMatrix any (void) const;
 
-  ComplexMatrix cumprod (void) const;
-  ComplexMatrix cumsum (void) const;
-  ComplexMatrix prod (void) const;
-  ComplexMatrix sum (void) const;
-  ComplexMatrix sumsq (void) const;
+  ComplexMatrix cumprod (int dim = 0) const;
+  ComplexMatrix cumsum (int dim = 0) const;
+  ComplexMatrix prod (int dim = 0) const;
+  ComplexMatrix sum (int dim = 0) const;
+  ComplexMatrix sumsq (int dim = 0) const;
 
   ComplexColumnVector diag (void) const;
   ComplexColumnVector diag (int k) const;

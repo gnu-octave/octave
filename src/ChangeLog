@@ -1,3 +1,15 @@
+2000-10-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	Change patterned after patch by Cai Jianming
+	<caijianming@yahoo.co.uk> to support for DIM arg in 2.0.x sources.
+
+	* data.cc (DATA_REDUCTION): New macro.  Handle second DIM arg here.
+	(Fcumprod): Replace function body with DATA_REDUCTION.
+	(Fcumsum): Likewise.
+	(Fprod): Likewise.
+	(Fsum): Likewise.
+	(Fsumsq): Likewise.
+
 2000-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* error.cc (pr_where_2): New function.

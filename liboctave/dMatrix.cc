@@ -1873,45 +1873,28 @@ Matrix::any (void) const
 }
 
 Matrix
-Matrix::cumprod (void) const
+Matrix::cumprod (int dim) const
 {
-  Matrix retval;
-
   int nr = rows ();
   int nc = cols ();
+  Matrix retval (nr, nc);
 
-  if (nr == 1)
+  if (nr > 0 && nc >0)
     {
-      retval.resize (1, nc);
-      if (nc > 0)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  double prod = elem (0, 0);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = prod;
-	      if (j < nc - 1)
-		prod *= elem (0, j+1);
-	    }
-	}
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr, 1);
-      if (nr > 0)
-	{
-	  double prod = elem (0, 0);
 	  for (int i = 0; i < nr; i++)
 	    {
-	      retval.elem (i, 0) = prod;
-	      if (i < nr - 1)
-		prod *= elem (i+1, 0);
+	      double prod = elem (i, 0);
+	      for (int j = 0; j < nc; j++)
+		{
+		  retval.elem (0, j) = prod;
+		  if (j < nc - 1)
+		    prod *= elem (i, j+1);
+		}
 	    }
 	}
-    }
-  else
-    {
-      retval.resize (nr, nc);
-      if (nr > 0 && nc > 0)
+      else
 	{
 	  for (int j = 0; j < nc; j++)
 	    {
@@ -1929,45 +1912,28 @@ Matrix::cumprod (void) const
 }
 
 Matrix
-Matrix::cumsum (void) const
+Matrix::cumsum (int dim) const
 {
-  Matrix retval;
-
   int nr = rows ();
   int nc = cols ();
+  Matrix retval (nr, nc);
 
-  if (nr == 1)
+  if (nr > 0 && nc > 0)
     {
-      retval.resize (1, nc);
-      if (nc > 0)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  double sum = elem (0, 0);
-	  for (int j = 0; j < nc; j++)
-	    {
-	      retval.elem (0, j) = sum;
-	      if (j < nc - 1)
-		sum += elem (0, j+1);
-	    }
-	}
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr, 1);
-      if (nr > 0)
-	{
-	  double sum = elem (0, 0);
 	  for (int i = 0; i < nr; i++)
 	    {
-	      retval.elem (i, 0) = sum;
-	      if (i < nr - 1)
-		sum += elem (i+1, 0);
+	      double sum = elem (i, 0);
+	      for (int j = 0; j < nc; j++)
+		{
+		  retval.elem (i, j) = sum;
+		  if (j < nc - 1)
+		    sum += elem (i, j+1);
+		}
 	    }
 	}
-    }
-  else
-    {
-      retval.resize (nr, nc);
-      if (nr > 0 && nc > 0)
+      else
 	{
 	  for (int j = 0; j < nc; j++)
 	    {
@@ -1985,129 +1951,125 @@ Matrix::cumsum (void) const
 }
 
 Matrix
-Matrix::prod (void) const
+Matrix::prod (int dim) const
 {
   Matrix retval;
 
   int nr = rows ();
   int nc = cols ();
 
-  if (nr == 1)
+  if (nr > 0 && nc > 0)
     {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 1.0;
-      for (int j = 0; j < nc; j++)
-	retval.elem (0, 0) *= elem (0, j);
-    }
-  else if (nc == 1)
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 1.0;
-      for (int i = 0; i < nr; i++)
-	retval.elem (0, 0) *= elem (i, 0);
-    }
-  else
-    {
-      if (nc == 0)
+      if ((nr == 1 && dim == 0) || dim == 1)
 	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 1.0;
-	}
-      else
-	retval.resize (1, nc);
-
-      for (int j = 0; j < nc; j++)
-	{
-	  retval.elem (0, j) = 1.0;
-	  for (int i = 0; i < nr; i++)
-	    retval.elem (0, j) *= elem (i, j);
-	}
-    }
-  return retval;
-}
-
-Matrix
-Matrix::sum (void) const
-{
-  Matrix retval;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr == 1)
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 0.0;
-      for (int j = 0; j < nc; j++)
-	retval.elem (0, 0) += elem (0, j);
-    }
-  else if (nc == 1)
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 0.0;
-      for (int i = 0; i < nr; i++)
-	retval.elem (0, 0) += elem (i, 0);
-    }
-  else
-    {
-      if (nc == 0)
-	{
-	  retval.resize (1, 1);
-	  retval.elem (0, 0) = 0.0;
-	}
-      else
-	retval.resize (1, nc);
-
-      for (int j = 0; j < nc; j++)
-	{
-	  retval.elem (0, j) = 0.0;
-	  for (int i = 0; i < nr; i++)
-	    retval.elem (0, j) += elem (i, j);
-	}
-    }
-  return retval;
-}
-
-Matrix
-Matrix::sumsq (void) const
-{
-  Matrix retval;
-
-  int nr = rows ();
-  int nc = cols ();
-
-  if (nr == 1)
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 0.0;
-      for (int j = 0; j < nc; j++)
-	{
-	  double d = elem (0, j);
-	  retval.elem (0, 0) += d * d;
-	}
-    }
-  else if (nc == 1)
-    {
-      retval.resize (1, 1);
-      retval.elem (0, 0) = 0.0;
-      for (int i = 0; i < nr; i++)
-	{
-	  double d = elem (i, 0);
-	  retval.elem (0, 0) += d * d;
-	}
-    }
-  else
-    {
-      retval.resize (1, nc);
-      for (int j = 0; j < nc; j++)
-	{
-	  retval.elem (0, j) = 0.0;
+	  retval.resize(nr, 1);
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double d = elem (i, j);
-	      retval.elem (0, j) += d * d;
+	      retval.elem (i, 0) = 1.0;
+	      for (int j = 0; j < nc; j++)
+		retval.elem (i, 0) *= elem (i, j);
 	    }
 	}
+      else
+	{
+	  retval.resize (1, nc);
+	  for (int j = 0; j < nc; j++)
+	    {
+	      retval.elem (0, j) = 1.0;
+	      for (int i = 0; i < nr; i++)
+		retval.elem (0, j) *= elem (i, j);
+	    }
+	}
+    }
+  else
+    {
+      retval.resize (1, 1);
+      retval.elem (0, 0) = 1.0;
+    }
+
+  return retval;
+}
+
+Matrix
+Matrix::sum (int dim) const
+{
+  Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
+  if (nr > 0 && nc > 0)
+    {
+      if ((nr == 1 && dim == 0) || dim == 1)
+	{
+	  retval.resize (nr, 1);
+	  for (int i = 0; i < nr; i++)
+	    {
+	      retval.elem (i, 0) = 0.0;
+	      for (int j = 0; j < nc; j++)
+		retval.elem (i, 0) += elem (i, j);
+	    }
+	}
+      else
+	{
+	  retval.resize (1, nc);
+	  for (int j = 0; j < nc; j++)
+	    {
+	      retval.elem (0, j) = 0.0;
+	      for (int i = 0; i < nr; i++)
+		retval.elem (0, j) += elem (i, j);
+	    }
+	}
+    }
+  else
+    {
+      retval.resize (1, 1);
+      retval.elem (0, 0) = 0.0;
+    }
+  return retval;
+}
+
+Matrix
+Matrix::sumsq (int dim) const
+{
+  Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
+  if (nr > 0 && nc > 0)
+    {
+      if ((nr == 1 && dim == 0) || dim == 1)
+	{
+	  retval.resize (nr, 1);
+	  for (int i = 0; i < nr; i++)
+	    {
+	      retval.elem (i, 0) = 0.0;
+	      for (int j = 0; j < nc; j++)
+		{
+		  double d = elem (i, j);
+		  retval.elem (i, 0) += d * d;
+		}
+	    }
+	}
+      else
+	{
+	  retval.resize (1, nc);
+	  for (int j = 0; j < nc; j++)
+	    {
+	      retval.elem (0, j) = 0.0;
+	      for (int i = 0; i < nr; i++)
+		{
+		  double d = elem (i, j);
+		  retval.elem (0, j) += d * d;
+		}
+	    }
+	}
+    }
+  else
+    {
+      retval.resize (1, 1);
+      retval.elem (0, 0) = 0.0;
     }
   return retval;
 }

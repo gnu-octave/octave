@@ -200,11 +200,11 @@ public:
   boolMatrix all (void) const;
   boolMatrix any (void) const;
 
-  Matrix cumprod (void) const;
-  Matrix cumsum (void) const;
-  Matrix prod (void) const;
-  Matrix sum (void) const;
-  Matrix sumsq (void) const;
+  Matrix cumprod (int dim = 0) const; //optional dimension argument
+  Matrix cumsum (int dim = 0) const;
+  Matrix prod (int dim = 0) const;
+  Matrix sum (int dim = 0) const;
+  Matrix sumsq (int dim = 0) const;
   Matrix abs (void) const;
 
   ColumnVector diag (void) const;

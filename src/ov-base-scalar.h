@@ -59,6 +59,8 @@ public:
 
   ~octave_base_scalar (void) { }
 
+  octave_value squeeze (void) const { return scalar; }
+
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 

@@ -1,3 +1,20 @@
+2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-conf.h.in: Add OCTAVE_CONF_DL_LD, OCTAVE_CONF_DL_LDFLAGS,
+	and OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS.
+	Delete OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS.
+
+	* toplev.cc (octave_config_info): Delete MKOCTFILE_SH_LDFLAGS.
+	Add DL_LD, DL_LDFLAGS, and MKOCTFILE_DL_LDFLAGS to the struct.
+
+2004-02-14  Per Persson  <persquare@mac.com>
+
+	* Makefile.in (%.oct): Use DL_LD instead of SH_LD to build .oct files.
+
+2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base-scalar.h (octave_base_scalar::squeeze): New function.
+
 2004-02-13  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* data.cc (Fcat): New function.

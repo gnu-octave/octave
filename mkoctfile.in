@@ -31,8 +31,8 @@ set -e
 : ${DEPEND_FLAGS=%OCTAVE_CONF_DEPEND_FLAGS%}
 : ${DEPEND_EXTRA_SED_PATTERN=%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%}
 
-: ${SH_LD=%OCTAVE_CONF_SH_LD%}
-: ${SH_LDFLAGS=%OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS%}
+: ${DL_LD=%OCTAVE_CONF_DL_LD%}
+: ${DL_LDFLAGS=%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%}
 
 : ${RLD_FLAG=%OCTAVE_CONF_RLD_FLAG%}
 : ${RDYNAMIC_FLAG=%OCTAVE_CONF_RDYNAMIC_FLAG%}
@@ -143,8 +143,8 @@ Options:
                             F77           XTRA_CFLAGS
                             FFLAGS        XTRA_CXXFLAGS
                             FPICFLAG      SHLEXT
-                            CC            SH_LD
-                            CFLAGS        SH_LDFLAGS
+                            CC            DL_LD
+                            CFLAGS        DL_LDFLAGS
 
                             INCLUDE_LINK_DEPS
 
@@ -390,7 +390,7 @@ if $link; then
     if $INCLUDE_LINK_DEPS ; then
 	LINK_DEPS="$LFLAGS $LIBOCTAVE $LIBCRUFT $LIBOCTINTERP $BLAS_LIBS $FFTW_LIBS"
     fi
-    cmd="$SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags $LINK_DEPS"
+    cmd="$DL_LD $DL_LDFLAGS -o $octfile $objfiles $ldflags $LINK_DEPS"
     $dbg $cmd
     eval $cmd
   fi

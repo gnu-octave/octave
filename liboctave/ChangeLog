@@ -1,3 +1,8 @@
+2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::squeeze): Always return an array with at
+	least two dimensions.
+
 2004-02-13  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* mx-inlines.cc (MX_ND_CAT): New macro.

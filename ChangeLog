@@ -1,3 +1,24 @@
+2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile (SH_LD, SH_LDFLAGS): Delete.
+	(DL_LD, DL_LDFLAGS): New variables.  Use them instead of SH_LD and
+	SH_LDFLAGS for creating .oct files.
+	Fix help text.
+
+	* configure.in (MKOCTFILE_SH_LDFLAGS): Delete.
+	(MKOCTFILE_DL_LDFLAGS): New variable, default to DL_LDFLAGS.
+
+	* Makeconf.in (do-subst-config-vals): Add DL_LD, DL_LDFLAGS, and
+	MKOCTFILE_DL_LDFLAGS to the list of substitutions.
+	Delete MKOCTFILE_SH_LDFLAGS.
+
+2004-02-14  Per Persson  <persquare@mac.com>
+
+	* configure.in (DL_LD, DL_LDFLAGS): New variables, default to
+	SH_LD and SH_LDFLAGS, respectively.
+	Define independently for SH_LD and SH_LDFLAGS for *-*-darwin* targets.
+	* Makeconf.in (DL_LD, DL_LDFLAGS): Substitute them here.
+
 2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (header-msg): Required bison version now 1.31 or later.

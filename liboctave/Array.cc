@@ -76,10 +76,35 @@ Array<T>::squeeze (void) const
 
   if (dims_changed)
     {
-      if (k == 0)
-	new_dimensions = dim_vector (1);
-      else
-	new_dimensions.resize (k);
+      switch (k)
+	{
+	case 0:
+	  new_dimensions = dim_vector (1, 1);
+	  break;
+
+	case 1:
+	  {
+	    int tmp = new_dimensions(0);
+
+	    new_dimensions.resize (2);
+
+	    if (dimensions(0) == 1)
+	      {
+		new_dimensions(0) = 1;
+		new_dimensions(1) = tmp;
+	      }
+	    else
+	      {
+		new_dimensions(0) = tmp;
+		new_dimensions(1) = 1;
+	      }
+	  }
+	  break;
+
+	default:
+	  new_dimensions.resize (k);
+	  break;
+	}
 
       retval.make_unique ();
 

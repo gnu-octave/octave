@@ -32,10 +32,10 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   ifdef CXXPICFLAG
     %.oct : pic/%.o octave$(EXEEXT)
-	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
   else
     %.oct : %.o octave$(EXEEXT)
-	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
   endif
 endif
 

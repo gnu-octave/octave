@@ -584,7 +584,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       else if (strncmp (ptr, "string array", 12) == 0)
 	{
 	  int elements;
-	  if (extract_keyword (is, "elements", elements) && elements > 0)
+	  if (extract_keyword (is, "elements", elements) && elements >= 0)
 	    {
 	      // XXX FIXME XXX -- need to be able to get max length
 	      // before doing anything.
@@ -627,14 +627,22 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       else if (strncmp (ptr, "string", 6) == 0)
 	{
 	  int len;
-	  if (extract_keyword (is, "length", len) && len > 0)
+	  if (extract_keyword (is, "length", len) && len >= 0)
 	    {
 	      char *tmp = new char [len+1];
-	      is.get (tmp, len+1, EOF);
-	      if (is)
-		tc = tmp;
+	      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
+		{
+		  error ("load: failed to load string constant");
+		}
 	      else
-		error ("load: failed to load string constant");
+		{
+		  tmp [len] = '\0';
+
+		  if (is)
+		    tc = tmp;
+		  else
+		    error ("load: failed to load string constant");
+		}
 	    }
 	  else
 	    error ("load: failed to extract string length");

@@ -1,5 +1,16 @@
 2000-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pr-output.cc (float_format::float_format): Set default values
+	for width and precision to -1.
+	(operator << (ostream&, pr_formatted_float&): Set width and
+	precision if values are >= 0.
+	(set_real_format, set_real_matrix_format, set_range_format,
+	set_complex_format, set_complex_matrix_format): If we have all
+	integers, infinities, or nans, set precision equal to field width.
+
+	* load-save.cc (read_ascii_data): Allow empty strings and string
+	vectors to be restored.
+
 	* variables.cc (var_matches_any_pattern): New function.
 	(Fclear): Use it to make exclusive clear work correctly.
 

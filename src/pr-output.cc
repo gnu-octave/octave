@@ -104,7 +104,7 @@ float_format
 {
 public:
 
-  float_format (int w = 0, int p = 0, int f = 0)
+  float_format (int w = -1, int p = -1, int f = 0)
     : fw (w), prec (p), fmt (f), up (0), sp (0) { }
 
   float_format (const float_format& ff)
@@ -177,10 +177,10 @@ public:
 std::ostream&
 operator << (std::ostream& os, const pr_formatted_float& pff)
 {
-  if (pff.f.fw > 0)
+  if (pff.f.fw >= 0)
     os << std::setw (pff.f.fw);
 
-  if (pff.f.prec > 0)
+  if (pff.f.prec >= 0)
     os << std::setprecision (pff.f.prec);
 
   std::ios::fmtflags oflags = os.flags (pff.f.fmt | pff.f.up | pff.f.sp);
@@ -280,7 +280,7 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
       if (inf_or_nan && fw < 3)
 	fw = 3;
       fw += sign;
-      rd = 0;
+      rd = fw;
     }
   else
     {
@@ -402,7 +402,7 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       if (inf_or_nan && fw < 3)
 	fw = 3;
       fw += sign;
-      rd = 0;
+      rd = fw;
     }
   else
     {
@@ -548,7 +548,7 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
       if (inf_or_nan && i_fw < 3)
 	i_fw = r_fw = 3;
       r_fw += sign;
-      rd = 0;
+      rd = r_fw;
     }
   else
     {
@@ -725,7 +725,7 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       if (inf_or_nan && i_fw < 3)
 	i_fw = r_fw = 3;
       r_fw += sign;
-      rd = 0;
+      rd = r_fw;
     }
   else
     {
@@ -888,7 +888,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = sign + digits;
-      rd = 0;
+      rd = fw;
     }
   else if (Vfixed_point_format)
     {

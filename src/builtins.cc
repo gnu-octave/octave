@@ -454,6 +454,9 @@ where y and x are vectors.", },
   { "isstr", 2, 1, builtin_isstr,
     "isstr (X): return 1 if X is a string", },
 
+  { "kbhit", 1, 1, builtin_kbhit,
+    "kbhit: get a single character from the terminal", },
+
   { "keyboard", 2, 1, builtin_keyboard,
     "keyboard (\"prompt\"): maybe help in debugging function files", },
 

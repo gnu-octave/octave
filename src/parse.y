@@ -59,23 +59,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-// Nonzero means we're in the middle of defining a function.
-int defining_func = 0;
-
-// Nonzero means we're in the middle of defining a loop.
-int looping = 0;
-
-// Nonzero means we're in the middle of defining a conditional expression.
-int iffing = 0;
-
-// Nonzero means we need to do some extra lookahead to avoid being
-// screwed by bogus function syntax.
-int maybe_screwed = 0;
-
-// Nonzero means we need to do some extra lookahead to avoid being
-// screwed by bogus function syntax.
-int maybe_screwed_again = 0;
-
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
 
@@ -95,26 +78,6 @@ int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
 string help_buf;
-
-// Nonzero means we're working on a plot command.
-int plotting = 0;
-
-// Nonzero means we've seen something that means we must be past the
-// range part of a plot command.
-int past_plot_range = 0;
-
-// Nonzero means we're looking at the range part of a plot command.
-int in_plot_range = 0;
-
-// Nonzero means we're looking at the using part of a plot command.
-int in_plot_using = 0;
-
-// Nonzero means we're looking at the style part of a plot command.
-int in_plot_style = 0;
-
-// Nonzero means we're looking at an indirect reference to a structure
-// element.
-int looking_at_indirect_ref = 0;
 
 // Forward declarations for some functions defined at the bottom of
 // the file.
@@ -491,7 +454,7 @@ list		: list1
 
 list1		: statement
 		  {
-		    beginning_of_function = 0;
+		    lexer_flags.beginning_of_function = 0;
 		    $$ = new tree_statement_list ($1);
 		  }
 		| list1 comma_nl_sep statement
@@ -601,12 +564,12 @@ plot_options	: using
 
 using		: using1
 		  {
-		    in_plot_using = 0;
+		    lexer_flags.in_plot_using = 0;
 		    $$ = $1;
 		  }
 		| using1 expression
 		  {
-		    in_plot_using = 0;
+		    lexer_flags.in_plot_using = 0;
 		    $$ = $1->set_format ($2);
 		  }
 		;
@@ -679,7 +642,7 @@ command		: plot_command
 		  { $$ = $1; }
 		| if_command
 		  {
-		    iffing--;
+		    lexer_flags.iffing--;
 		    $$ = $1;
 		  }
 		| UNWIND optsep opt_list CLEANUP optsep opt_list END
@@ -765,7 +728,7 @@ sep		: ','
 		;
 
 screwed_again	: // empty
-		  { maybe_screwed_again++; }
+		  { lexer_flags.maybe_screwed_again++; }
 		;
 
 expression	: simple_expr
@@ -930,23 +893,23 @@ local_symtab	: // empty
 		;
 
 safe		: // empty
-		  { maybe_screwed = 0; }
+		  { lexer_flags.maybe_screwed = 0; }
 		;
 
 are_we_screwed	: // empty
-		  { maybe_screwed = 1; }
+		  { lexer_flags.maybe_screwed = 1; }
 		;
 
 func_def	: FCN g_symtab are_we_screwed func_def1
 		  {
 		    curr_sym_tab = top_level_sym_tab;
-		    defining_func = 0;
+		    lexer_flags.defining_func = 0;
 		    $$ = 0;
 		  }
 		| FCN g_symtab are_we_screwed func_def2
 		  {
 		    curr_sym_tab = top_level_sym_tab;
-		    defining_func = 0;
+		    lexer_flags.defining_func = 0;
 		    $$ = 0;
 		  }
 		;
@@ -1018,7 +981,7 @@ fcn_end_or_eof	: END
 
 indirect_ref	: indirect_ref1
 		  {
-		    looking_at_indirect_ref = 0;
+		    lexer_flags.looking_at_indirect_ref = 0;
 		    $$ = $1;
 		  }
 
@@ -1027,7 +990,8 @@ indirect_ref1	: identifier
 		    $$ = new tree_indirect_ref ($1, $1->line (),
 						$1->column ());
 		  }
-		| indirect_ref1 '.' { looking_at_indirect_ref = 1; } TEXT_ID
+		| indirect_ref1 '.'
+		    { lexer_flags.looking_at_indirect_ref = 1; } TEXT_ID
 		  { $$ = $1->chain ($4->text ()); }
 		;
 
@@ -1048,24 +1012,24 @@ variable	: indirect_ref
 
 param_list	: '(' ')'
 		  {
-		    quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = 0;
 		    $$ = 0;
 		  }
 		| '(' ELLIPSIS ')'
 		  {
-		    quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = 0;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
 		| param_list1 ')'
 		  {
-		    quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		  }
 		| param_list1 ',' ELLIPSIS ')'
 		  {
-		    quote_is_transpose = 0;
+		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		    $1->mark_varargs ();
 		  }
@@ -1365,11 +1329,11 @@ make_plot_command (token *tok, plot_limits *range, subplot_list *list)
       return 0;
     }
 
-  plotting = 0;
-  past_plot_range = 0;
-  in_plot_range = 0;
-  in_plot_using = 0;
-  in_plot_style = 0;
+  lexer_flags.plotting = 0;
+  lexer_flags.past_plot_range = 0;
+  lexer_flags.in_plot_range = 0;
+  lexer_flags.in_plot_using = 0;
+  lexer_flags.in_plot_style = 0;
   
   return new tree_plot_command (list, range, tok->pttype ());
 }
@@ -1704,7 +1668,7 @@ make_while_command (token *while_tok, tree_expression *expr,
 
   if (! check_end (end_tok, token::while_end))
     {
-      looping--;
+      lexer_flags.looping--;
 
       int l = while_tok->line ();
       int c = while_tok->column ();
@@ -1726,7 +1690,7 @@ make_for_command (token *for_tok, tree_index_expression *var,
 
   if (! check_end (end_tok, token::for_end))
     {
-      looping--;
+      lexer_flags.looping--;
 
       int l = for_tok->line ();
       int c = for_tok->column ();
@@ -1747,7 +1711,7 @@ make_for_command (token *for_tok, tree_expression *expr,
 
   if (! check_end (end_tok, token::for_end))
     {
-      looping--;
+      lexer_flags.looping--;
 
       tree_matrix *tmp = ml.pop ();
       tmp = tmp->reverse ();
@@ -1769,7 +1733,7 @@ make_break_command (token *break_tok)
 {
   tree_command *retval = 0;
 
-  if (! (looping || defining_func))
+  if (! (lexer_flags.looping || lexer_flags.defining_func))
     yyerror ("break: only meaningful within a loop or function body");
   else
     {
@@ -1789,7 +1753,7 @@ make_continue_command (token *continue_tok)
 {
   tree_command *retval = 0;
 
-  if (! looping)
+  if (! lexer_flags.looping)
     yyerror ("continue: only meaningful within a `for' or `while' loop");
   else
     {
@@ -1809,7 +1773,7 @@ make_return_command (token *return_tok)
 {
   tree_command *retval = 0;
 
-  if (! defining_func)
+  if (! lexer_flags.defining_func)
     yyerror ("return: only meaningful within a function");
   else
     {
@@ -1887,7 +1851,7 @@ make_multi_val_ret (tree_expression *rhs, token *eq_tok)
 
   tree_expression *retval = 0;
 
-  maybe_screwed_again--;
+  lexer_flags.maybe_screwed_again--;
 
   tree_matrix *tmp = ml.pop ();
 
@@ -2078,7 +2042,7 @@ finish_matrix (void)
 
   mlnm.pop ();
 
-  maybe_screwed_again--;
+  lexer_flags.maybe_screwed_again--;
 
   tree_matrix *list = ml.pop ();
 
@@ -2102,7 +2066,7 @@ finish_matrix (void)
 static void
 maybe_warn_missing_semi (tree_statement_list *t)
 {
-  if (defining_func && user_pref.warn_missing_semicolon)
+  if (lexer_flags.defining_func && user_pref.warn_missing_semicolon)
     {
       tree_statement *tmp = t->rear();
 

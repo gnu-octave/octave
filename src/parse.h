@@ -37,23 +37,6 @@ class tree_matrix;
 class tree_identifier;
 class symbol_table;
 
-// Nonzero means we're in the middle of defining a function.
-extern int defining_func;
-
-// Nonzero means we're in the middle of defining a loop.
-extern int looping;
-
-// Nonzero means we're in the middle of defining a conditional expression.
-extern int iffing;
-
-// Nonzero means we need to do some extra lookahead to avoid being
-// screwed by bogus function syntax.
-extern int maybe_screwed;
-
-// Nonzero means we need to do some extra lookahead to avoid being
-// screwed by bogus function syntax.
-extern int maybe_screwed_again;
-
 // Temporary symbol table pointer used to cope with bogus function syntax.
 extern symbol_table *tmp_local_sym_tab;
 
@@ -76,26 +59,6 @@ extern int current_input_column;
 
 // Buffer for help text snagged from function files.
 extern string help_buf;
-
-// Nonzero means we're working on a plot command.
-extern int plotting;
-
-// Nonzero means we've seen something that means we must be past the
-// range part of a plot command.
-extern int past_plot_range;
-
-// Nonzero means we're looking at the range part of a plot command.
-extern int in_plot_range;
-
-// Nonzero means we're looking at the using part of a plot command.
-extern int in_plot_using;
-
-// Nonzero means we're looking at the style part of a plot command.
-extern int in_plot_style;
-
-// Nonzero means we're looking at an indirect reference to a structure
-// element.
-extern int looking_at_indirect_ref;
 
 #endif
 

@@ -24,8 +24,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 %s MATRIX
 
 %{
-#define SHORT_CIRCUIT_LOGICALS 1
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -64,51 +62,53 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "y.tab.h"
 #include "oct-gperf.h"
 
+// Flags that need to be shared between the lexer and parser.
+lexical_feedback lexer_flags;
+
 // Stack to hold tokens so that we can delete them when the parser is
 // reset and avoid growing forever just because we are stashing some
 // information.  This has to appear before lex.h is included, because
 // one of the macros defined there uses token_stack.
 static SLStack <token*> token_stack;
 
-// Nonzero means we think we are looking at a set command.
-static int doing_set = 0;
-
-// GAG.  Stupid kludge so that [[1,2][3,4]] will work.
-static do_comma_insert = 0;
-
-// Brace level count.
-static int braceflag = 0;
-
-// Return transpose or start a string?
-int quote_is_transpose = 0;
-
-// Nonzero means we thing we are looking at the beginning of a
-// function definition.
-int beginning_of_function = 0;
-
-// Nonzero means that we should convert spaces to a comma inside a
-// matrix definition.
-static int convert_spaces_to_comma = 1;
-
-// Another context hack, this time for the plot command's `using',
-// `title', and `with' keywords.
-static int cant_be_identifier = 0;
-
-#define BRACE 1
-#define PAREN 2
-
 // Did eat_whitespace() eat a space or tab, or a newline, or both?
-#define ATE_SPACE_OR_TAB 1
-#define ATE_NEWLINE 2
+
+typedef int yum_yum;
+
+const yum_yum ATE_NOTHING = 0;
+const yum_yum ATE_SPACE_OR_TAB = 1;
+const yum_yum ATE_NEWLINE = 2;
 
 // Is the closest nesting level a square brace or a paren?
-//
-//  BRACE -> spaces are important (they can turn into commas)
-//           new lines are important (they can turn into semicolons)
-//
-//  PAREN -> spaces and new lines are not important
 
-static SLStack <int> nesting_level;
+class brace_paren_nesting_level : public SLStack <int>
+{
+public:
+
+  brace_paren_nesting_level (void) : SLStack<int> () { }
+
+  ~brace_paren_nesting_level (void) { }
+
+  void brace (void) { push (BRACE); }
+  bool is_brace (void) { return ! empty () && top () == BRACE; }
+
+  void paren (void) { push (PAREN); }
+  bool is_paren (void) { return ! empty () && top () == PAREN; }
+
+  bool none (void) { return empty (); }
+
+  void remove (void) { if (! empty ()) SLStack<int>::pop (); }
+
+private:
+
+  enum { BRACE = 1, PAREN = 2 };
+
+  brace_paren_nesting_level (const brace_paren_nesting_level&);
+
+  brace_paren_nesting_level& operator = (const brace_paren_nesting_level&);
+};
+
+static brace_paren_nesting_level nesting_level;
 
 // Forward declarations for functions defined at the bottom of this
 // file.
@@ -131,8 +131,8 @@ static int handle_close_brace (int spc_gobbled);
 static int handle_identifier (const string& tok, int spc_gobbled);
 static int have_continuation (int trailing_comments_ok = 1);
 static int have_ellipsis_continuation (int trailing_comments_ok = 1);
-static int eat_whitespace (void);
-static int eat_continuation (void);
+static yum_yum eat_whitespace (void);
+static yum_yum eat_continuation (void);
 
 %}
 
@@ -165,14 +165,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <TEXT_FCN>{NL} {
     BEGIN 0;
     current_input_column = 1;
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = 0;
+    lexer_flags.cant_be_identifier = 0;
+    lexer_flags.convert_spaces_to_comma = 1;
     return '\n';
   }
 
 <TEXT_FCN>[\;\,] {
-    if (doing_set && strcmp (yytext, ",") == 0)
+    if (lexer_flags.doing_set && strcmp (yytext, ",") == 0)
       {
 	TOK_PUSH_AND_RETURN (yytext, TEXT);
       }
@@ -225,9 +225,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <MATRIX>{S}*\,{S}* {
     current_input_column += yyleng;
     int tmp = eat_continuation ();
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = 0;
+    lexer_flags.cant_be_identifier = 0;
+    lexer_flags.convert_spaces_to_comma = 1;
     if (user_pref.whitespace_in_literal_matrix != 2
 	&& (tmp & ATE_NEWLINE) == ATE_NEWLINE)
       unput (';');
@@ -249,13 +249,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	int bin_op = next_token_is_bin_op (1, yytext);
 	int postfix_un_op = next_token_is_postfix_unary_op (1, yytext);
 
-	if (! (postfix_un_op || bin_op || nesting_level.empty ())
-	    && nesting_level.top () == BRACE
-	    && convert_spaces_to_comma)
+	if (! (postfix_un_op || bin_op)
+	    && nesting_level.is_brace ()
+	    && lexer_flags.convert_spaces_to_comma)
 	  {
-	    quote_is_transpose = 0;
-	    cant_be_identifier = 0;
-	    convert_spaces_to_comma = 1;
+	    lexer_flags.quote_is_transpose = 0;
+	    lexer_flags.cant_be_identifier = 0;
+	    lexer_flags.convert_spaces_to_comma = 1;
 	    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
 	      unput (';');
 	    return (',');
@@ -272,9 +272,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <MATRIX>{SNLCMT}*;{SNLCMT}* {
     fixup_column_count (yytext);
     eat_whitespace ();
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = 0;
+    lexer_flags.cant_be_identifier = 0;
+    lexer_flags.convert_spaces_to_comma = 1;
     return ';';
   }
 
@@ -289,14 +289,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     eat_whitespace ();
     if (user_pref.whitespace_in_literal_matrix != 2)
       {
-	quote_is_transpose = 0;
-	cant_be_identifier = 0;
-	convert_spaces_to_comma = 1;
+	lexer_flags.quote_is_transpose = 0;
+	lexer_flags.cant_be_identifier = 0;
+	lexer_flags.convert_spaces_to_comma = 1;
 
-	if (nesting_level.empty ())
+	if (nesting_level.none ())
 	  return LEXICAL_ERROR;
 
-	if (nesting_level.top () == BRACE)
+	if (nesting_level.is_brace ())
 	  return ';';
       }
   }
@@ -308,37 +308,36 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 \[{S}* {
-    nesting_level.push (BRACE);
+    nesting_level.brace ();
 
     current_input_column += yyleng;
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = 0;
+    lexer_flags.cant_be_identifier = 0;
+    lexer_flags.convert_spaces_to_comma = 1;
 
     promptflag--;
     eat_whitespace ();
 
-    if (plotting && ! past_plot_range)
+    if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
       {
-	in_plot_range = 1;
+	lexer_flags.in_plot_range = 1;
 	return OPEN_BRACE;
       }
     else
       {
 	mlnm.push (1);
-	braceflag++;
+	lexer_flags.braceflag++;
 	BEGIN MATRIX;
 	return '[';
       }
   }
 
 \] {
-    if (! nesting_level.empty ())
-      nesting_level.pop ();
+    nesting_level.remove ();
 
-    if (plotting && ! past_plot_range)
+    if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
       {
-	in_plot_range = 0;
+	lexer_flags.in_plot_range = 0;
 	TOK_RETURN (CLOSE_BRACE);
       }
     else
@@ -421,15 +420,15 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 {NL} {
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
     current_input_column = 1;
-    convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = 0;
+    lexer_flags.cant_be_identifier = 0;
+    lexer_flags.convert_spaces_to_comma = 1;
 
-    if (nesting_level.empty ())
+    if (nesting_level.none ())
       return '\n';
 
-    if (nesting_level.top () == BRACE)
+    if (nesting_level.is_brace ())
       return LEXICAL_ERROR;
   }
 
@@ -440,9 +439,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 "'" {
     current_input_column++;
-    convert_spaces_to_comma = 1;
+    lexer_flags.convert_spaces_to_comma = 1;
 
-    if (quote_is_transpose)
+    if (lexer_flags.quote_is_transpose)
       {
 	do_comma_insert_check ();
 	return QUOTE;
@@ -466,7 +465,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 ":" {
-    if (plotting && (in_plot_range || in_plot_using))
+    if (lexer_flags.plotting
+	&& (lexer_flags.in_plot_range || lexer_flags.in_plot_using))
       BIN_OP_RETURN (COLON, 1);
     else
       BIN_OP_RETURN (':', 0);
@@ -478,10 +478,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %} 
 
 {CCHAR} {
-    if (help_buf.empty () && beginning_of_function && nesting_level.empty ())
+    if (help_buf.empty ()
+	&& lexer_flags.beginning_of_function
+	&& nesting_level.none ())
       {
 	grab_help_text ();
-	beginning_of_function = 0;
+	lexer_flags.beginning_of_function = 0;
       }
     else
       {
@@ -490,14 +492,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	  ; // Eat comment.
       }
 
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
     current_input_column = 1;
-    convert_spaces_to_comma = 1;
+    lexer_flags.quote_is_transpose = 0;
+    lexer_flags.cant_be_identifier = 0;
+    lexer_flags.convert_spaces_to_comma = 1;
 
-    if (nesting_level.empty ())
+    if (nesting_level.none ())
       return '\n';
-    else if (nesting_level.top () == BRACE)
+    else if (nesting_level.is_brace ())
       return ';';
   }
 
@@ -529,58 +531,42 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 ","		{ BIN_OP_RETURN (',', 1); }
 {POW}		{ BIN_OP_RETURN (POW, 0); }
 "="		{ BIN_OP_RETURN ('=', 1); }
-
-"||" {
-#ifdef SHORT_CIRCUIT_LOGICALS
-    BIN_OP_RETURN (EXPR_OR_OR, 0);
-#else
-    BIN_OP_RETURN (EXPR_OR, 0);
-#endif
-  }
-
-"&&" {
-#ifdef SHORT_CIRCUIT_LOGICALS
-    BIN_OP_RETURN (EXPR_AND_AND, 0);
-#else
-    BIN_OP_RETURN (EXPR_AND, 0);
-#endif
-  }
+"||"		{ BIN_OP_RETURN (EXPR_OR_OR, 0); }
+"&&"		{ BIN_OP_RETURN (EXPR_AND_AND, 0); }
 
 {NOT} {
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
+    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
+      lexer_flags.past_plot_range = 1;
     BIN_OP_RETURN (EXPR_NOT, 0);
   }
 
 "+" { 
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
+    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
+      lexer_flags.past_plot_range = 1;
     BIN_OP_RETURN ('+', 0);
   }
 
 "-" { 
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
+    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
+      lexer_flags.past_plot_range = 1;
     BIN_OP_RETURN ('-', 0);
   }
 
 "(" {
-    if (plotting && ! in_plot_range)
-      past_plot_range = 1;
-    nesting_level.push (PAREN);
+    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
+      lexer_flags.past_plot_range = 1;
+    nesting_level.paren ();
     promptflag--;
     TOK_RETURN ('(');
   }
 
 ")" {
-    if (! nesting_level.empty ())
-      nesting_level.pop ();
+    nesting_level.remove ();
 
     current_input_column++;
-    cant_be_identifier = 1;
-    quote_is_transpose = 1;
-    convert_spaces_to_comma = (! nesting_level.empty ()
-			       && nesting_level.top () == BRACE);
+    lexer_flags.cant_be_identifier = 1;
+    lexer_flags.quote_is_transpose = 1;
+    lexer_flags.convert_spaces_to_comma = nesting_level.is_brace ();
     do_comma_insert_check ();
     return ')';
   }
@@ -607,7 +593,7 @@ do_comma_insert_check (void)
   yyunput (c, yytext);
   if (spc_gobbled)
     yyunput (' ', yytext);
-  do_comma_insert = (braceflag && c == '[');
+  lexer_flags.do_comma_insert = (lexer_flags.braceflag && c == '[');
 }
 
 // Fix things up for errors or interrupts.  The parser is never called
@@ -617,75 +603,42 @@ do_comma_insert_check (void)
 void
 reset_parser (void)
 {
-// Start off on the right foot.
+  // Start off on the right foot.
   BEGIN 0;
   error_state = 0;
 
-// We do want a prompt by default.
+  // We do want a prompt by default.
   promptflag = 1;
 
-// Not initially screwed by `function [...] = f (...)' syntax.
-  maybe_screwed = 0;
-  maybe_screwed_again = 0;
-
-// Not initially inside a loop or if statement.
-  looping = 0;
-  iffing = 0;
-
-// Quote marks strings intially.
-  quote_is_transpose = 0;
-
-// Next token can be identifier.
-  cant_be_identifier = 0;
-
-// No need to do comma insert or convert spaces to comma at beginning
-// of input. 
-  do_comma_insert = 0;
-  convert_spaces_to_comma = 1;
-
-// Not initially defining a function.
-  beginning_of_function = 0;
-  defining_func = 0;
-
-// Not initially doing any plotting or setting of plot attributes.
-  plotting = 0;
-  in_plot_range = 0;
-  past_plot_range = 0;
-  in_plot_using = 0;
-  in_plot_style = 0;
-  doing_set = 0;
-
-// Not initially looking at indirect references.
-  looking_at_indirect_ref = 0;
-
-// Error may have occurred inside some parentheses or braces.
+  // Error may have occurred inside some parentheses or braces.
   nesting_level.clear ();
 
-// Not initially defining a matrix list.
-  braceflag = 0;
+  // Not initially defining a matrix list.
   ml.clear ();
   mlnm.clear ();
 
-// Clear out the stack of token info used to track line and column
-// numbers.
+  // Clear out the stack of token info used to track line and column
+  // numbers.
   while (! token_stack.empty ())
     delete token_stack.pop ();
 
-// Can be reset by defining a function.
+  // Can be reset by defining a function.
   if (! (reading_script_file || reading_fcn_file))
     {
       current_input_column = 1;
       input_line_number = current_command_number - 1;
     }
 
-// Only ask for input from stdin if we are expecting interactive
-// input.
+  // Only ask for input from stdin if we are expecting interactive
+  // input.
   if (interactive && ! (reading_fcn_file || get_input_from_eval_string))
     yyrestart (stdin);
 
-// Clear the buffer for help text.
-
+  // Clear the buffer for help text.
   help_buf.resize (0);
+
+  // Reset other flags.
+  lexer_flags.init ();
 }
 
 // Replace backslash escapes in a string with the real values.
@@ -787,29 +740,6 @@ yywrap (void)
   return 1;
 }
 
-// These are not needed with flex-2.4.6, but may be needed with
-// earlier 2.4.x versions.
-
-#if 0
-static void *
-yy_flex_alloc (int size)
-{
-  return (void *) malloc ((unsigned) size);
-}
-
-static void *
-yy_flex_realloc (void *ptr, int size)
-{
-  return (void *) realloc (ptr, (unsigned) size);
-}
-
-static void
-yy_flex_free (void *ptr)
-{
-  free (ptr);
-}
-#endif
-
 // Tell us all what the current buffer is.
 
 YY_BUFFER_STATE
@@ -910,12 +840,12 @@ is_plot_keyword (const string& s)
     }
   else if (almost_match ("using", t))
     {
-      in_plot_using = 1;
+      lexer_flags.in_plot_using = 1;
       return USING;
     }
   else if (almost_match ("with", t))
     {
-      in_plot_style = 1;
+      lexer_flags.in_plot_style = 1;
       return WITH;
     }
   else if (strcmp ("clear", t) == 0)
@@ -933,13 +863,13 @@ is_plot_keyword (const string& s)
 static int
 is_keyword (const string& s)
 {
-  if (plotting && in_plot_style)
+  if (lexer_flags.plotting && lexer_flags.in_plot_style)
     {
       string sty = plot_style_token (s);
 
       if (! sty.empty ())
 	{
-	  in_plot_style = 0;
+	  lexer_flags.in_plot_style = 0;
 	  yylval.tok_val = new token (sty);
 	  token_stack.push (yylval.tok_val);
 	  return STYLE;
@@ -1001,12 +931,12 @@ is_keyword (const string& s)
 	case for_kw:
 	case while_kw:
 	  promptflag--;
-	  looping++;
+	  lexer_flags.looping++;
 	  break;
 
 	case if_kw:
-	  iffing++;
 	  promptflag--;
+	  lexer_flags.iffing++;
 	  break;
 
 	case try_kw:
@@ -1015,22 +945,22 @@ is_keyword (const string& s)
 	  break;
 
 	case gplot_kw:
-	  plotting = 1;
+	  lexer_flags.plotting = 1;
 	  yylval.tok_val = new token (token::two_dee, l, c);
 	  break;
 
 	case gsplot_kw:
-	  plotting = 1;
+	  lexer_flags.plotting = 1;
 	  yylval.tok_val = new token (token::three_dee, l, c);
 	  break;
 
 	case replot_kw:
-	  plotting = 1;
+	  lexer_flags.plotting = 1;
 	  yylval.tok_val = new token (token::replot, l, c);
 	  break;
 
 	case function_kw:
-	  if (defining_func)
+	  if (lexer_flags.defining_func)
 	    {
 	      error ("function keyword invalid within a function body");
 
@@ -1048,9 +978,9 @@ is_keyword (const string& s)
 	    {
 	      tmp_local_sym_tab = new symbol_table ();
 	      curr_sym_tab = tmp_local_sym_tab;
-	      defining_func = 1;
+	      lexer_flags.defining_func = 1;
 	      promptflag--;
-	      beginning_of_function = 1;
+	      lexer_flags.beginning_of_function = 1;
 	      if (! (reading_fcn_file || reading_script_file))
 		input_line_number = 1;
 	    }
@@ -1151,17 +1081,6 @@ looks_like_bin_op (int spc_prev, int spc_next)
 {
   return ((spc_prev && spc_next) || ! spc_prev);
 }
-
-// Duh.  This seems to no longer be needed.
-#if 0
-static int
-next_char_is_space (void)
-{
-  int c = yyinput ();
-  yyunput (c, yytext);
-  return (c == ' ' || c == '\t');
-}
-#endif
 
 // Try to determine if the next token should be treated as a postfix
 // unary operator.  This is ugly, but it seems to do the right thing.
@@ -1276,13 +1195,14 @@ strip_trailing_whitespace (char *s)
 //
 // Return value is logical OR of the following values:
 //
+//  ATE_NOTHING      : no spaces to eat
 //  ATE_SPACE_OR_TAB : space or tab in input
 //  ATE_NEWLINE      : bare new line in input
 
-static int
+static yum_yum
 eat_whitespace (void)
 {
-  int retval = 0;
+  yum_yum retval = ATE_NOTHING;
   int in_comment = 0;
   int c;
   while ((c = yyinput ()) != EOF)
@@ -1349,16 +1269,16 @@ handle_number (char *yytext)
   double value;
   int nread = sscanf (yytext, "%lf", &value);
 
-// If yytext doesn't contain a valid number, we are in deep doo doo.
+  // If yytext doesn't contain a valid number, we are in deep doo doo.
 
   assert (nread == 1);
 
-  quote_is_transpose = 1;
-  cant_be_identifier = 1;
-  convert_spaces_to_comma = 1;
+  lexer_flags.quote_is_transpose = 1;
+  lexer_flags.cant_be_identifier = 1;
+  lexer_flags.convert_spaces_to_comma = 1;
 
-  if (plotting && ! in_plot_range)
-    past_plot_range = 1;
+  if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
+    lexer_flags.past_plot_range = 1;
 
   yylval.tok_val = new token (value, yytext, input_line_number,
 			      current_input_column);
@@ -1462,10 +1382,10 @@ have_ellipsis_continuation (int trailing_comments_ok)
 //
 // Return value is the same as described for eat_whitespace().
 
-static int
+static yum_yum
 eat_continuation (void)
 {
-  int retval = 0;
+  int retval = ATE_NOTHING;
   int c = yyinput ();
   if ((c == '.' && have_ellipsis_continuation ())
       || (c == '\\' && have_continuation ()))
@@ -1533,7 +1453,7 @@ handle_string (char delim, int text_style)
 		  char *tok = buf.str ();
 		  do_string_escapes (tok);
 
-		  if (text_style && doing_set)
+		  if (text_style && lexer_flags.doing_set)
 		    {
 		      if (tok)
 			{
@@ -1549,9 +1469,9 @@ handle_string (char delim, int text_style)
 		    }
 		  else
 		    {
-		      quote_is_transpose = 1;
-		      cant_be_identifier = 1;
-		      convert_spaces_to_comma = 1;
+		      lexer_flags.quote_is_transpose = 1;
+		      lexer_flags.cant_be_identifier = 1;
+		      lexer_flags.convert_spaces_to_comma = 1;
 		    }
 
 		  yylval.tok_val = new token (tok);
@@ -1575,27 +1495,27 @@ handle_string (char delim, int text_style)
 static int
 handle_close_brace (int spc_gobbled)
 {
-  if (! nesting_level.empty ())
+  if (! nesting_level.none ())
     {
-      nesting_level.pop ();
-      braceflag--;
+      nesting_level.remove ();
+      lexer_flags.braceflag--;
     }
 
-  if (braceflag == 0)
+  if (lexer_flags.braceflag == 0)
     BEGIN 0;
 
   int c1 = yyinput ();
   if (c1 == '=')
     {
-      quote_is_transpose = 0;
-      cant_be_identifier = 0;
-      convert_spaces_to_comma = 1;
+      lexer_flags.quote_is_transpose = 0;
+      lexer_flags.cant_be_identifier = 0;
+      lexer_flags.convert_spaces_to_comma = 1;
 
       int c2 = yyinput ();
       unput (c2);
       unput (c1);
 
-      if (c2 != '=' && maybe_screwed_again)
+      if (c2 != '=' && lexer_flags.maybe_screwed_again)
 	return SCREW_TWO;
       else
 	return ']';
@@ -1604,7 +1524,7 @@ handle_close_brace (int spc_gobbled)
     {
       unput (c1);
 
-      if (braceflag && user_pref.whitespace_in_literal_matrix != 2)
+      if (lexer_flags.braceflag && user_pref.whitespace_in_literal_matrix != 2)
 	{
 	  int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
 	  int postfix_un_op = next_token_is_postfix_unary_op
@@ -1612,10 +1532,9 @@ handle_close_brace (int spc_gobbled)
 
 	  int other_op = match_any (c1, ",;\n]");
 
-	  if (! (postfix_un_op || bin_op || other_op
-		 || nesting_level.empty ())
-	      && nesting_level.top () == BRACE
-	      && convert_spaces_to_comma)
+	  if (! (postfix_un_op || bin_op || other_op)
+	      && nesting_level.is_brace ()
+	      && lexer_flags.convert_spaces_to_comma)
 	    {
 	      unput (',');
 	      return ']';
@@ -1623,9 +1542,9 @@ handle_close_brace (int spc_gobbled)
 	}
     }
 
-  quote_is_transpose = 1;
-  cant_be_identifier = 0;
-  convert_spaces_to_comma = 1;
+  lexer_flags.quote_is_transpose = 1;
+  lexer_flags.cant_be_identifier = 0;
+  lexer_flags.convert_spaces_to_comma = 1;
   return ']';
 }
 
@@ -1633,8 +1552,7 @@ static void
 maybe_unput_comma (int spc_gobbled)
 {
   if (user_pref.whitespace_in_literal_matrix != 2
-      && ! nesting_level.empty ()
-      && nesting_level.top () == BRACE) 
+      && nesting_level.is_brace ())
     {
       int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
 
@@ -1663,23 +1581,25 @@ maybe_unput_comma (int spc_gobbled)
 static int
 handle_identifier (const string& tok, int spc_gobbled)
 {
-// It is almost always an error for an identifier to be followed
-// directly by another identifier.  Special cases are handled below.
+  // It is almost always an error for an identifier to be followed
+  // directly by another identifier.  Special cases are handled
+  // below.
 
-  cant_be_identifier = 1;
+  lexer_flags.cant_be_identifier = 1;
 
-// If we are expecting a structure element, we just want to return
-// TEXT_ID, which is a string that is also a valid identifier.  But
-// first, we have to decide whether to insert a comma.
+  // If we are expecting a structure element, we just want to return
+  // TEXT_ID, which is a string that is also a valid identifier.  But
+  // first, we have to decide whether to insert a comma.
 
-  if (looking_at_indirect_ref)
+  if (lexer_flags.looking_at_indirect_ref)
     {
       maybe_unput_comma (spc_gobbled);
       TOK_PUSH_AND_RETURN (tok, TEXT_ID);
     }
 
-// If we have a regular keyword, or a plot STYLE, return it.  Keywords
-// can be followed by identifiers (TOK_RETURN handles that).
+  // If we have a regular keyword, or a plot STYLE, return it.
+  // Keywords can be followed by identifiers (TOK_RETURN handles
+  // that).
 
   int kw_token = is_keyword (tok);
   if (kw_token)
@@ -1687,60 +1607,61 @@ handle_identifier (const string& tok, int spc_gobbled)
       if (kw_token == STYLE)
 	{
 	  current_input_column += yyleng;
-	  quote_is_transpose = 0;
-	  convert_spaces_to_comma = 1;
+	  lexer_flags.quote_is_transpose = 0;
+	  lexer_flags.convert_spaces_to_comma = 1;
 	  return kw_token;
 	}
       else
 	TOK_RETURN (kw_token);
     }
 
-// See if we have a plot keyword (title, using, with, or clear).
+  // See if we have a plot keyword (title, using, with, or clear).
 
-  if (plotting)
+  if (lexer_flags.plotting)
     {
-// Yes, we really do need both of these plot_range variables.  One
-// is used to mark when we are past all possiblity of a plot range,
-// the other is used to mark when we are actually between the square
-// brackets that surround the range.
+      // Yes, we really do need both of these plot_range variables.
+      // One is used to mark when we are past all possiblity of a plot
+      // range, the other is used to mark when we are actually between
+      // the square brackets that surround the range.
 
-      if (! in_plot_range)
-	past_plot_range = 1;
+      if (! lexer_flags.in_plot_range)
+	lexer_flags.past_plot_range = 1;
 
       // Option keywords can't appear in parentheses or braces.
 
       int plot_option_kw = 0;
-      if (nesting_level.empty ())
+      if (nesting_level.none ())
 	plot_option_kw = is_plot_keyword (tok);
 
-      if (cant_be_identifier && plot_option_kw)
+      if (lexer_flags.cant_be_identifier && plot_option_kw)
 	TOK_RETURN (plot_option_kw);
     }
 
-// If we are looking at a text style function, set up to gobble its
-// arguments.  These are also reserved words, but only because it
-// would be very difficult to do anything intelligent with them if
-// they were not reserved.
+  // If we are looking at a text style function, set up to gobble its
+  // arguments.  These are also reserved words, but only because it
+  // would be very difficult to do anything intelligent with them if
+  // they were not reserved.
 
   if (is_text_function_name (tok))
     {
       BEGIN TEXT_FCN;
 
       if (tok == "set")
-	doing_set = 1;
+	lexer_flags.doing_set = 1;
     }
 
   int c = yyinput ();
   yyunput (c, yytext);
   int next_tok_is_eq = (c == '=');
 
-// Make sure we put the return values of a function in the symbol
-// table that is local to the function.
+  // Make sure we put the return values of a function in the symbol
+  // table that is local to the function.
 
-  if (next_tok_is_eq && defining_func && maybe_screwed)
+  if (next_tok_is_eq
+      && lexer_flags.defining_func && lexer_flags.maybe_screwed)
     curr_sym_tab = tmp_local_sym_tab;
 
-// Find the token in the symbol table.
+  // Find the token in the symbol table.
 
   yylval.tok_val = new token (lookup_identifier (tok),
 			      input_line_number,
@@ -1748,35 +1669,35 @@ handle_identifier (const string& tok, int spc_gobbled)
 
   token_stack.push (yylval.tok_val);
 
-// After seeing an identifer, it is ok to convert spaces to a comma
-// (if needed).
+  // After seeing an identifer, it is ok to convert spaces to a comma
+  // (if needed).
 
-  convert_spaces_to_comma = 1;
+  lexer_flags.convert_spaces_to_comma = 1;
 
-// If we are defining a function and we have not seen the parameter
-// list yet and the next token is `=', return a token that represents
-// the only return value for the function.  For example,
-//
-//   function SCREW = f (args);
-//
-// The variable maybe_screwed is reset in parse.y.
+  // If we are defining a function and we have not seen the parameter
+  // list yet and the next token is `=', return a token that
+  // represents the only return value for the function.  For example,
+  //
+  //   function SCREW = f (args);
+  //
+  // The variable maybe_screwed is reset in parse.y.
 
   if (next_tok_is_eq)
     {
       current_input_column += yyleng;
-      if (defining_func && maybe_screwed)
+      if (lexer_flags.defining_func && lexer_flags.maybe_screwed)
 	return SCREW;
       else
 	return NAME;
     }
 
-// At this point, we are only dealing with identifiers that are not
-// followed by `=' (if the next token is `=', there is no need to
-// check to see if we should insert a comma (invalid syntax), or allow
-// a following `'' to be treated as a transpose (the next token is
-// `=', so it can't be `''.
+  // At this point, we are only dealing with identifiers that are not
+  // followed by `=' (if the next token is `=', there is no need to
+  // check to see if we should insert a comma (invalid syntax), or
+  // allow a following `'' to be treated as a transpose (the next
+  // token is `=', so it can't be `''.
 
-  quote_is_transpose = 1;
+  lexer_flags.quote_is_transpose = 1;
   do_comma_insert_check ();
 
   maybe_unput_comma (spc_gobbled);
@@ -1792,9 +1713,9 @@ handle_identifier (const string& tok, int spc_gobbled)
 void
 check_for_garbage_after_fcn_def (void)
 {
-// By making a newline be the next character to be read, we will force
-// the parser to return after reading the function.  Calling yyunput
-// with EOF seems not to work...
+  // By making a newline be the next character to be read, we will
+  // force the parser to return after reading the function.  Calling
+  // yyunput with EOF seems not to work...
 
   int in_comment = 0;
   int lineno = input_line_number;
@@ -1835,19 +1756,56 @@ check_for_garbage_after_fcn_def (void)
   yyunput ('\n', yytext);
 }
 
-/*
+void
+lexical_feedback::init (void)
+{
+  // Not initially defining a function.
+  beginning_of_function = 0;
+  defining_func = 0;
 
-Maybe someday...
+  // Not initially defining a matrix list.
+  braceflag = 0;
 
-"+="		return ADD_EQ;
-"-="		return SUB_EQ;
-"*="		return MUL_EQ;
-"/="		return DIV_EQ;
-"\\="		return LEFTDIV_EQ;
-".+="		return ADD_EQ;
-".-="		return SUB_EQ;
-".*="		return EMUL_EQ;
-"./="		return EDIV_EQ;
-".\\="		return ELEFTDIV_EQ;
+  // Next token can be identifier.
+  cant_be_identifier = 0;
 
-*/
+  // No need to do comma insert or convert spaces to comma at
+  // beginning of input. 
+  convert_spaces_to_comma = 1;
+  do_comma_insert = 0;
+
+  // Not initially doing any plotting or setting of plot attributes.
+  doing_set = 0;
+  in_plot_range = 0;
+  in_plot_style = 0;
+  in_plot_using = 0;
+  past_plot_range = 0;
+  plotting = 0;
+
+  // Not initially inside a loop or if statement.
+  iffing = 0;
+  looping = 0;
+
+  // Not initially looking at indirect references.
+  looking_at_indirect_ref = 0;
+
+  // Not initially screwed by `function [...] = f (...)' syntax.
+  maybe_screwed = 0;
+  maybe_screwed_again = 0;
+
+  // Quote marks strings intially.
+  quote_is_transpose = 0;
+}
+
+// Maybe someday...
+//
+// "+="		return ADD_EQ;
+// "-="		return SUB_EQ;
+// "*="		return MUL_EQ;
+// "/="		return DIV_EQ;
+// "\\="	return LEFTDIV_EQ;
+// ".+="	return ADD_EQ;
+// ".-="	return SUB_EQ;
+// ".*="	return EMUL_EQ;
+// "./="	return EDIV_EQ;
+// ".\\="	return ELEFTDIV_EQ;

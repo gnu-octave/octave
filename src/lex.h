@@ -50,9 +50,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   do \
     { \
       current_input_column += yyleng; \
-      quote_is_transpose = 0; \
-      cant_be_identifier = 0; \
-      convert_spaces_to_comma = 1; \
+      lexer_flags.quote_is_transpose = 0; \
+      lexer_flags.cant_be_identifier = 0; \
+      lexer_flags.convert_spaces_to_comma = 1; \
       return (tok); \
     } \
   while (0)
@@ -73,12 +73,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       yylval.tok_val = new token (input_line_number, current_input_column); \
       token_stack.push (yylval.tok_val); \
       current_input_column += yyleng; \
-      quote_is_transpose = 0; \
-      cant_be_identifier = 0; \
-      convert_spaces_to_comma = convert; \
+      lexer_flags.quote_is_transpose = 0; \
+      lexer_flags.cant_be_identifier = 0; \
+      lexer_flags.convert_spaces_to_comma = convert; \
       return (tok); \
     } \
   while (0)
+
+// XXX FIXME XXX -- these input buffer things should be members of an
+// parser input stream class.
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
@@ -101,14 +104,93 @@ extern void restore_input_buffer (void *buf);
 extern void delete_input_buffer (void *buf);
 
 // See if a function file has extra garbage after the end statement.
+// This needs to be defined in lex.l so that it can use yyinput() but
+// it must be called from parse.y.
 extern void check_for_garbage_after_fcn_def (void);
 
-// Return transpose or start a string?
-extern int quote_is_transpose;
+// For communication between the lexer and parser.
 
-// Nonzero means we thing we are looking at the beginning of a
-// function definition.
-extern int beginning_of_function;
+class lexical_feedback
+{
+public:
+
+  lexical_feedback (void) { init (); }
+
+  ~lexical_feedback (void) { }
+
+  void init (void);
+
+  // Nonzero means we thing we are looking at the beginning of a
+  // function definition.
+  int beginning_of_function;
+
+  // Brace level count.
+  int braceflag;
+
+  // Another context hack, this time for the plot command's `using',
+  // `title', and `with' keywords.
+  int cant_be_identifier;
+
+  // Nonzero means that we should convert spaces to a comma inside a
+  // matrix definition.
+  int convert_spaces_to_comma;
+
+  // Nonzero means we're in the middle of defining a function.
+  int defining_func;
+
+  // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
+  int do_comma_insert;
+
+  // Nonzero means we think we are looking at a set command.
+  int doing_set;
+
+  // Nonzero means we're in the middle of defining a conditional
+  // expression.
+  int iffing;
+
+  // Nonzero means we're looking at the range part of a plot command.
+  int in_plot_range;
+
+  // Nonzero means we're looking at the using part of a plot command.
+  int in_plot_using;
+
+  // Nonzero means we're looking at the style part of a plot command.
+  int in_plot_style;
+
+  // Nonzero means we're looking at an indirect reference to a
+  // structure element.
+  int looking_at_indirect_ref;
+
+  // Nonzero means we're in the middle of defining a loop.
+  int looping;
+
+  // Nonzero means we need to do some extra lookahead to avoid being
+  // screwed by bogus function syntax.
+  int maybe_screwed;
+
+  // Nonzero means we need to do some extra lookahead to avoid being
+  // screwed by bogus function syntax.
+  int maybe_screwed_again;
+
+  // Nonzero means we've seen something that means we must be past the
+  // range part of a plot command.
+  int past_plot_range;
+
+  // Nonzero means we're working on a plot command.
+  int plotting;
+
+  // Return transpose or start a string?
+  int quote_is_transpose;
+
+private:
+
+  lexical_feedback (const lexical_feedback&);
+
+  lexical_feedback& operator = (const lexical_feedback&);
+};
+
+// Flags that need to be shared between the lexer and parser.
+extern lexical_feedback lexer_flags;
 
 #endif
 

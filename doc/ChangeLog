@@ -1,3 +1,9 @@
+2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
+
+	* interpreter/Makefile.in (munge-texi$(BUILD_EXEEXT)): Pass
+	$(BUILD_CXXFLAGS) and $(BUILD_LDFLAGS) to compiler.
+	(%.o : %.cc): Delete pattern rule.
+
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/munge-texi.cc: Define __USE_STD_IOSTREAM if using

@@ -1,3 +1,8 @@
+2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in (gethelp$(BUILD_EXEEXT)): Pass $(BUILD_CXXFLAGS) and
+	$(BUILD_LDFLAGS) to compiler.
+
 2003-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/num2str.m: Don't specify field width for scalars.

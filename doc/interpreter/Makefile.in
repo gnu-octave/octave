@@ -68,11 +68,8 @@ all: octave.info octave.dvi octave.ps octave_toc.html
 
 $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
 
-%.o : %.cc
-	$(BUILD_CXX) -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
-
-munge-texi$(BUILD_EXEEXT): munge-texi.o
-	$(BUILD_CXX) -o $@ $^
+munge-texi$(BUILD_EXEEXT): munge-texi.cc
+	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 src-DOCSTRINGS:
 	$(MAKE) -C ../../src DOCSTRINGS

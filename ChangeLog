@@ -1,5 +1,14 @@
 2003-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Don't bother with compiler flags for
+	explicit/no-implicit template instantiation.
+
+2003-01-11  Paul Kienzle <pkienzle@users.sf.net>
+
+	* configure.in, Makeconf.in: Allow setting of BUILD_LDFLAGS.
+
+2003-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* autogen.sh: Use --force for autoconf and autoheader.
 
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.407 $)
+AC_REVISION($Revision: 1.408 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -173,12 +173,6 @@ AC_PROG_CXXCPP
 gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
   sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
 
-### Auto instantiate all templates, other than those that are explicitly
-### instantiated in Octave. Octave currently instantiates all needed
-### templates for GCC-2.8.x and EGCS-1.1.x, but not for newer GNU releases
-### nor for other supported compilers.
-
-cxx_auto_instantiate_templates=yes
 case "$gxx_version" in
   1.* | 2.[[0123456789]].*)
     AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])
@@ -298,21 +292,6 @@ case "$canonical_host_type" in
   ;;
 esac
 
-### We do our own template instantiation for specific compilers.
-
-if test "$cxx_auto_instantiate_templates" = no; then
-  case "$canonical_host_type" in
-    *-*-darwin*)
-      OCTAVE_CXX_FLAG(-fno-coalesce-templates, [
-	XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-coalesce-templates"
-	AC_MSG_RESULT([adding -fno-coalesce-templates to XTRA_CXXFLAGS])])
-    ;;
-  esac
-  OCTAVE_CXX_FLAG(-fno-implicit-templates, [
-    XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-implicit-templates"
-    AC_MSG_RESULT([adding -fno-implicit-templates to XTRA_CXXFLAGS])])
-fi
-
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
 
@@ -333,37 +312,39 @@ OCTAVE_CXX_PREPENDS_UNDERSCORE
 ### Defaults for cross compiling.  BUILD_CC and BUILD_CXX are
 ### the compilers that we use for building tools on the build system.
 ### For now, we assume that the only cross compiling we can do is
-### with gcc on a Unixy system.
+### with gcc on a Unixy system, but the dedicated hacker can override these.
 
 if test "$cross_compiling" = yes; then
   BUILD_CC="gcc"
   BUILD_CFLAGS="-O2 -g"
   BUILD_CXX="g++"
   BUILD_CXXFLAGS="-O2 -g"
+  BUILD_LDFLAGS=""
   BUILD_EXEEXT=""
 else
-  BUILD_CC="$CC"
-  BUILD_CFLAGS="-O2 -g"
-  BUILD_CXX="$CXX"
-  BUILD_CXXFLAGS="-O2 -g"
+  BUILD_CC='$(CC)'
+  BUILD_CFLAGS='$(CFLAGS)'
+  BUILD_CXX='$(CXX)'
+  BUILD_CXXFLAGS='$(CXXFLAGS)'
+  BUILD_LDFLAGS='$(LDFLAGS)'
   case "$canonical_host_type" in
     sparc-sun-solaris2*)
       if test "$GCC" != yes; then
-	BUILD_CC="$CC -O1"
-	BUILD_CFLAGS="-g"
-	BUILD_CXX="$CXX -O1"
-	BUILD_CXXFLAGS="-g"
+        ## The Sun C++ compiler never seems to complete compiling
+	## gendoc.cc unless we reduce the optimization level...
+	BUILD_CXXFLAGS="-g -O1"
       fi
     ;;
   esac
-  BUILD_EXEEXT="$EXEEXT"
+  BUILD_EXEEXT='$(EXEEXT)'
 fi
 
 AC_ARG_VAR(BUILD_CC, [build system C compiler (used if cross compiling)])
 AC_ARG_VAR(BUILD_CFLAGS, [build system C compiler flags (used if cross compiling)])
 AC_ARG_VAR(BUILD_CXX, [build system C++ compiler (used if cross compiling)])
 AC_ARG_VAR(BUILD_CXXFLAGS, [build system C++ compiler flags (used if cross compiling)])
-AC_SUBST(BUILD_EXEEXT)
+AC_ARG_VAR(BUILD_LDFLAGS, [build system C++ compiler link flags (used if cross compiling)])
+AC_ARG_VAR(BUILD_EXEEXT, [build system executable extension (used if cross compiling)])
 
 dnl This is bogus.  We shouldn't have to explicitly add libc too!
 

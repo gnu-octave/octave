@@ -53,7 +53,7 @@ DOCSTRINGS: gethelp$(BUILD_EXEEXT) mkdoc $(ALL_M_FILES)
 	mv $@.t $@
 
 gethelp$(BUILD_EXEEXT): gethelp.cc
-	$(BUILD_CXX) -o $@ $^
+	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)

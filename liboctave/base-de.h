@@ -80,7 +80,7 @@ public:
 
   // Integrate from current point and return output at all points
   // specified by t.
-  virtual Matrix integrate (const ColumnVector tt)
+  virtual Matrix integrate (const ColumnVector& tt)
     { return do_integrate (tt); }
 
   // Set new x0, t0 and integrate to return output at all points

@@ -59,7 +59,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (nr != nc)
     {

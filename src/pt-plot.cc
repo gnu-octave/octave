@@ -1031,7 +1031,7 @@ Return 1 if the next line will be added to the current plot, or 0 if\n\
 the plot device will be cleared before drawing the next line.\n\
 @end deftypefn")
 {
-  return static_cast<double> (! clear_before_plotting);
+  return octave_value (! clear_before_plotting);
 }
 
 DEFUN (purge_tmp_files, , ,
@@ -1283,7 +1283,7 @@ gnuplot_has_multiplot (void)
 void
 symbols_of_pt_plot (void)
 {
-  DEFVAR (automatic_replot, 0.0, automatic_replot,
+  DEFVAR (automatic_replot, false, automatic_replot,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} automatic_replot\n\
 You can tell Octave to redisplay the plot each time anything about it\n\
@@ -1340,9 +1340,9 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @end defvr");
 
 #if defined (GNUPLOT_HAS_FRAMES)
-  double with_frames = 1.0;
+  bool with_frames = true;
 #else
-  double with_frames = 0.0;
+  bool with_frames = false;
 #endif
 
   DEFVAR (gnuplot_has_frames, with_frames, gnuplot_has_frames,
@@ -1356,9 +1356,9 @@ configure got it wrong, or if you upgrade your gnuplot installation.\n\
 @end defvr");
 
 #if defined (GNUPLOT_HAS_MULTIPLOT)
-  double with_multiplot = 1.0;
+  bool with_multiplot = true;
 #else
-  double with_multiplot = 0.0;
+  bool with_multiplot = false;
 #endif
 
   DEFVAR (gnuplot_has_multiplot, with_multiplot, gnuplot_has_multiplot,

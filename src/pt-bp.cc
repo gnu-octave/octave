@@ -55,7 +55,7 @@ tree_breakpoint::take_action (tree &tr)
     {
       if (tr.is_breakpoint ())
 	{
-	  bp_list.append (octave_value (static_cast<double> (tr.line ())));
+	  bp_list.append (octave_value (tr.line ()));
 	  line = tr.line () + 1;
 	}
     }

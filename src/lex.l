@@ -2671,21 +2671,21 @@ whitespace_in_literal_matrix (void)
 void
 symbols_of_lex (void)
 {
-  DEFVAR (warn_matlab_incompatible, 0.0, warn_matlab_incompatible,
+  DEFVAR (warn_matlab_incompatible, false, warn_matlab_incompatible,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_matlab_incompatible\n\
 Print warnings for Octave language features that may cause\n\
 compatibility problems with Matlab.\n\
 @end defvr");
 
-  DEFVAR (warn_separator_insert, 0.0, warn_separator_insert,
+  DEFVAR (warn_separator_insert, false, warn_separator_insert,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_separator_insert\n\
 Print warning if commas or semicolons might be inserted\n\
 automatically in literal matrices.\n\
 @end defvr");
 
-  DEFVAR (warn_single_quote_string, 0.0, warn_single_quote_string,
+  DEFVAR (warn_single_quote_string, false, warn_single_quote_string,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_single_quote_string\n\
 Print warning if a signle quote character is used to introduce a\n\

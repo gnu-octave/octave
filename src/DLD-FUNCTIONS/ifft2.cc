@@ -45,7 +45,7 @@ larger than the size of @var{a}, @var{a} is resized and padded with\n\
 zeros.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -94,7 +94,7 @@ zeros.\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty || n_rows == 0 || n_cols == 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (arg.is_real_type ())
     {

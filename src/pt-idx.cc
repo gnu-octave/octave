@@ -283,7 +283,7 @@ tree_index_expression::rvalue (int nargout)
 
 	    case '.':
 	      {
-		idx.push_back (get_struct_index (p_arg_nm, p_dyn_field));
+		idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
 
 		if (error_state)
 		  eval_error ();
@@ -349,7 +349,7 @@ tree_index_expression::lvalue (void)
 
 	case '.':
 	  {
-	    idx.push_back (get_struct_index (p_arg_nm, p_dyn_field));
+	    idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
 
 	    if (error_state)
 	      eval_error ();

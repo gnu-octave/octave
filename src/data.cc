@@ -53,7 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define ANY_ALL(FCN) \
  \
-  octave_value_list retval; \
+  octave_value retval; \
  \
   int nargin = args.length (); \
  \
@@ -188,7 +188,7 @@ Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
 and @var{x}.  The result is in range -pi to pi.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -207,7 +207,7 @@ and @var{x}.  The result is in range -pi to pi.\n\
       int arg_x_empty = empty_arg ("atan2", x_nr, x_nc);
 
       if (arg_y_empty > 0 && arg_x_empty > 0)
-	return Matrix ();
+	return octave_value (Matrix ());
       else if (arg_y_empty || arg_x_empty)
 	return retval;
 
@@ -273,7 +273,7 @@ and @var{x}.  The result is in range -pi to pi.\n\
 
 #define DATA_REDUCTION(FCN) \
  \
-  octave_value_list retval; \
+  octave_value retval; \
  \
   int nargin = args.length (); \
  \
@@ -292,14 +292,14 @@ and @var{x}.  The result is in range -pi to pi.\n\
 		  Matrix tmp = arg.matrix_value (); \
  \
 		  if (! error_state) \
-		    retval(0) = tmp.FCN (dim); \
+		    retval = tmp.FCN (dim); \
 		} \
 	      else if (arg.is_complex_type ()) \
 		{ \
 		  ComplexMatrix tmp = arg.complex_matrix_value (); \
  \
 		  if (! error_state) \
-		    retval(0) = tmp.FCN (dim); \
+		    retval = tmp.FCN (dim); \
 		} \
 	      else \
 		{ \
@@ -368,7 +368,7 @@ make_diag (const Matrix& v, int k)
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
 	m (i+roff, i+coff) = v (0, i);
-      retval = octave_value (m);
+      retval = m;
     }
   else
     {
@@ -376,7 +376,7 @@ make_diag (const Matrix& v, int k)
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
 	m (i+roff, i+coff) = v (i, 0);
-      retval = octave_value (m);
+      retval = m;
     }
 
   return retval;
@@ -410,7 +410,7 @@ make_diag (const ComplexMatrix& v, int k)
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
 	m (i+roff, i+coff) = v (0, i);
-      retval = octave_value (m);
+      retval = m;
     }
   else
     {
@@ -418,7 +418,7 @@ make_diag (const ComplexMatrix& v, int k)
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
 	m (i+roff, i+coff) = v (i, 0);
-      retval = octave_value (m);
+      retval = m;
     }
 
   return retval;
@@ -560,7 +560,7 @@ diag ([1, 2, 3], 1)\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -599,7 +599,7 @@ odd definition is used for compatibility with Matlab).\n\
       int len = args(0).length ();
 
       if (! error_state)
-	retval = static_cast<double> (len);
+	retval = len;
     }
   else
     print_usage ("length");
@@ -654,12 +654,12 @@ returns the number of columns in the given matrix.\n\
 	  Matrix m (1, 2);
 	  m (0, 0) = nr;
 	  m (0, 1) = nc;
-	  retval = m;
+	  retval(0) = m;
 	}
       else if (nargout == 2)
 	{
-	  retval(1) = static_cast<double> (nc);
-	  retval(0) = static_cast<double> (nr);
+	  retval(1) = nc;
+	  retval(0) = nr;
 	}
     }
   else if (nargin == 2 && nargout < 2)
@@ -671,9 +671,9 @@ returns the number of columns in the given matrix.\n\
       else
 	{
 	  if (nd == 1)
-	    retval(0) = static_cast<double> (args(0).rows ());
+	    retval(0) = args(0).rows ();
 	  else if (nd == 2)
-	    retval(0) = static_cast<double> (args(0).columns ());
+	    retval(0) = args(0).columns ();
 	  else
 	    error ("size: invalid second argument -- expecting 1 or 2");
 	}
@@ -767,16 +767,16 @@ Return 1 if @var{a} is an empty matrix (either the number of rows, or\n\
 the number of columns, or both are zero).  Otherwise, return 0.\n\
 @end deftypefn")
 {
-  double retval = 0.0;
+  octave_value retval = false;
 
   if (args.length () == 1)
     {
       octave_value arg = args(0);
 
       if (arg.is_matrix_type ())
-	retval = static_cast<double> (arg.rows () == 0 || arg.columns () == 0);
+	retval = (arg.rows () == 0 || arg.columns () == 0);
       else if (arg.is_list () || arg.is_string ())
-	retval = static_cast<double> (arg.length () == 0);
+	retval = (arg.length () == 0);
     }
   else
     print_usage ("isempty");
@@ -822,16 +822,16 @@ DEFUN (ismatrix, args, ,
 Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 @end deftypefn")
 {
-  double retval = 0.0;
+  octave_value retval = false;
 
   if (args.length () == 1)
     {
       octave_value arg = args(0);
 
       if (arg.is_scalar_type () || arg.is_range ())
-	retval = 1.0;
+	retval = true;
       else if (arg.is_matrix_type ())
-	retval = static_cast<double> (arg.rows () >= 1 && arg.columns () >= 1);
+	retval = (arg.rows () >= 1 && arg.columns () >= 1);
     }
   else
     print_usage ("ismatrix");
@@ -863,7 +863,7 @@ Return a list of strings naming the elements of the structure\n\
 argument that is not a structure.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -872,7 +872,7 @@ argument that is not a structure.\n\
       if (args (0).is_map ())
 	{
 	  Octave_map m = args(0).map_value ();
-	  retval(0) = m.keys ();
+	  retval = m.keys ();
 	}
       else
 	gripe_wrong_type_arg ("struct_elements", args (0));
@@ -891,13 +891,13 @@ element named @var{name}.  The first argument must be a structure and\n\
 the second must be a string.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
   if (nargin == 2)
     {
-      retval = 0.0;
+      retval = false;
 
       // XXX FIXME XXX -- should this work for all types that can do
       // structure reference operations?
@@ -908,7 +908,7 @@ the second must be a string.\n\
 
 	  Octave_map m = args(0).map_value ();
 
-	  retval = static_cast<double> (m.contains (key));
+	  retval = m.contains (key);
 	}
       else
 	print_usage ("struct_contains");

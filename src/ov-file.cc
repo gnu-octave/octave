@@ -46,7 +46,7 @@ default_numeric_conversion_function (const octave_value& a)
 {
   CAST_CONV_ARG (const octave_file&);
 
-  return new octave_scalar (static_cast<double> (v.stream_number ()));
+  return new octave_scalar (v.stream_number ());
 }
 
 type_conv_fcn

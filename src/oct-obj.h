@@ -49,51 +49,6 @@ public:
   octave_value_list (const octave_value& tc)
     : data (1, tc) { }
 
-  octave_value_list (double d)
-    : data (1, octave_value (d)) { }
-
-  octave_value_list (const Matrix& m)
-    : data (1, octave_value (m)) { }
-
-  octave_value_list (const DiagMatrix& d)
-    : data (1, octave_value (d)) { }
-
-  octave_value_list (const RowVector& v)
-    : data (1, octave_value (v)) { }
-
-  octave_value_list (const ColumnVector& v)
-    : data (1, octave_value (v)) { }
-
-  octave_value_list (const Complex& c)
-    : data (1, octave_value (c)) { }
-
-  octave_value_list (const ComplexMatrix& m)
-    : data (1, octave_value (m)) { }
-
-  octave_value_list (const ComplexDiagMatrix& d)
-    : data (1, octave_value (d)) { }
-
-  octave_value_list (const ComplexRowVector& v)
-    : data (1, octave_value (v)) { }
-
-  octave_value_list (const ComplexColumnVector& v)
-    : data (1, octave_value (v)) { }
-
-  octave_value_list (const char *s)
-    : data (1, octave_value (s)) { }
-
-  octave_value_list (const std::string& s)
-    : data (1, octave_value (s)) { }
-
-  octave_value_list (const string_vector& s)
-    : data (1, octave_value (s)) { }
-
-  octave_value_list (double base, double limit, double inc)
-    : data (1, octave_value (base, limit, inc)) { }
-
-  octave_value_list (const Range& r)
-    : data (1, octave_value (r)) { }
-
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }
 

@@ -118,7 +118,7 @@ $D_q(a)$\n\
 is ill-conditioned.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -138,7 +138,7 @@ is ill-conditioned.\n\
   if (arg_is_empty < 0)
     return retval;
   if (arg_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (nr != nc)
     {

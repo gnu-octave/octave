@@ -3596,7 +3596,7 @@ eval_string (const octave_value& arg, bool silent, int& parse_status,
   if (error_state)
     {
       error ("eval: expecting std::string argument");
-      return -1.0;
+      return octave_value (-1);
     }
 
   return eval_string (s, silent, parse_status, nargout);
@@ -3741,7 +3741,7 @@ warn_variable_switch_label (void)
 void
 symbols_of_parse (void)
 {
-  DEFVAR (default_eval_print_flag, 1.0, default_eval_print_flag,
+  DEFVAR (default_eval_print_flag, true, default_eval_print_flag,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} default_eval_print_flag\n\
 If the value of this variable is nonzero, Octave prints the results of\n\
@@ -3749,7 +3749,7 @@ commands executed by @code{eval} that do not end with semicolons.  If it\n\
 is zero, automatic printing is suppressed.  The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (warn_assign_as_truth_value, 1.0, warn_assign_as_truth_value,
+  DEFVAR (warn_assign_as_truth_value, true, warn_assign_as_truth_value,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_assign_as_truth_value\n\
 If the value of @code{warn_assign_as_truth_value} is nonzero, a\n\
@@ -3813,7 +3813,7 @@ contexts.\n\
 The default value of @code{warn_assign_as_truth_value} is 1.\n\
 @end defvr");
 
-  DEFVAR (warn_function_name_clash, 1.0, warn_function_name_clash,
+  DEFVAR (warn_function_name_clash, true, warn_function_name_clash,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_function_name_clash\n\
 If the value of @code{warn_function_name_clash} is nonzero, a warning is\n\
@@ -3823,14 +3823,14 @@ disagree, the name declared inside the file is ignored.)  If the value\n\
 is 0, the warning is omitted.  The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (warn_future_time_stamp, 1.0, warn_future_time_stamp,
+  DEFVAR (warn_future_time_stamp, true, warn_future_time_stamp,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_future_time_stamp\n\
 If the value of this variable is nonzero, Octave will print a warning\n\
 if it finds a function file with a time stamp that is in the future.\n\
 @end defvr");
 
-  DEFVAR (warn_missing_semicolon, 0.0, warn_missing_semicolon,
+  DEFVAR (warn_missing_semicolon, false, warn_missing_semicolon,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_missing_semicolon\n\
 If the value of this variable is nonzero, Octave will warn when\n\
@@ -3838,7 +3838,7 @@ statements in function definitions don't end in semicolons.  The default\n\
 value is 0.\n\
 @end defvr");
 
-  DEFVAR (warn_precedence_change, 1.0, warn_precedence_change,
+  DEFVAR (warn_precedence_change, true, warn_precedence_change,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_precedence_change\n\
 If the value of this variable is nonzero, Octave will warn about\n\
@@ -3847,7 +3847,7 @@ precedence for some operators.  Precedence changes have typically\n\
 been made for Matlab compatibility.  The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (warn_variable_switch_label, 0.0, warn_variable_switch_label,
+  DEFVAR (warn_variable_switch_label, false, warn_variable_switch_label,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_variable_switch_label\n\
 If the value of this variable is nonzero, Octave will print a warning if\n\

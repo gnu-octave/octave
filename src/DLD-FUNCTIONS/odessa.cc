@@ -230,7 +230,7 @@ odessa_user_b (const ColumnVector& x, double t,
   return retval;
 }
 
-static octave_value_list
+static octave_value
 make_list (const Array<Matrix>& m_array)
 {
   octave_value_list retval;
@@ -242,7 +242,7 @@ make_list (const Array<Matrix>& m_array)
   for (int i = 0; i < len; i++)
     retval(i) = m_array(i);
 
-  return retval;
+  return octave_value (retval);
 }
 
 #define ODESSA_ABORT() \

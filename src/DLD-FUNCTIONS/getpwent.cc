@@ -51,18 +51,18 @@ mk_pw_map (const octave_passwd& pw)
     {
       Octave_map m;
 
-      m ["name"] = pw.name ();
-      m ["passwd"] = pw.passwd ();
-      m ["uid"] = static_cast<double> (pw.uid ());
-      m ["gid"] = static_cast<double> (pw.gid ());
-      m ["gecos"] = pw.gecos ();
-      m ["dir"] = pw.dir ();
-      m ["shell"] = pw.shell ();
+      m ["name"](0) = pw.name ();
+      m ["passwd"](0) = pw.passwd ();
+      m ["uid"](0) = static_cast<double> (pw.uid ());
+      m ["gid"](0) = static_cast<double> (pw.gid ());
+      m ["gecos"](0) = pw.gecos ();
+      m ["dir"](0) = pw.dir ();
+      m ["shell"](0) = pw.shell ();
 
       retval = m;
     }
   else
-    retval = 0.0;
+    retval = 0;
 
   return retval;
 }
@@ -78,7 +78,7 @@ opening it if necessary. Once the end of the data has been reached,\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = 0.0;
+  retval(0) = 0;
 
   int nargin = args.length ();
 
@@ -106,7 +106,7 @@ database, @code{getpwuid} returns 0.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = 0.0;
+  retval(0) = 0;
 
   int nargin = args.length ();
 

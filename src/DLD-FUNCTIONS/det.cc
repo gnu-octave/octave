@@ -57,7 +57,7 @@ of the reciprocal condition number if requested.\n\
 
   if (nr == 0 && nc == 0)
     {
-      retval = 1.0;
+      retval(0) = 1.0;
       return retval;
     }
 
@@ -65,7 +65,7 @@ of the reciprocal condition number if requested.\n\
   if (arg_is_empty < 0)
     return retval;
   if (arg_is_empty > 0)
-    return Matrix (1, 1, 1.0);
+    return octave_value (Matrix (1, 1, 1.0));
 
   if (nr != nc)
     {

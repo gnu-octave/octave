@@ -157,6 +157,7 @@ public:
   enum all_va_args { all_va_args_t };
 
   octave_value (void);
+  octave_value (int i);
   octave_value (double d);
   octave_value (const Cell& m);
   octave_value (const Matrix& m);
@@ -261,7 +262,7 @@ public:
 
   octave_value next_subsref (const std::string type, const
 			     std::list<octave_value_list>& idx,
-			     int skip = 1);
+			     size_t skip = 1);
 
   virtual octave_value do_index_op (const octave_value_list& idx,
 				    int resize_ok)

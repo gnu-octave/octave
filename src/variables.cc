@@ -502,7 +502,7 @@ isglobal (\"x\")\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
   int nargin = args.length ();
 
@@ -522,7 +522,7 @@ isglobal (\"x\")\n\
 
   symbol_record *sr = curr_sym_tab->lookup (name);
 
-  retval = static_cast<double> (sr && sr->is_linked_to_global ());
+  retval = (sr && sr->is_linked_to_global ());
 
   return retval;
 }
@@ -671,7 +671,7 @@ Check only for directories.\n\
 @end table\n\
 @end deftypefn")
 {
-  octave_value retval = 0.0;
+  octave_value retval = false;
 
   int nargin = args.length ();
 
@@ -685,7 +685,7 @@ Check only for directories.\n\
 	    = (nargin == 2) ? args(1).string_value () : std::string ("any");
 
 	  if (! error_state)
-	    retval = static_cast<double> (symbol_exist (name, type));
+	    retval = symbol_exist (name, type);
 	  else
 	    error ("exist: expecting second argument to be a string");
 	}

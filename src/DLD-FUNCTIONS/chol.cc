@@ -72,7 +72,7 @@ r' * r = a.\n\
   if (arg_is_empty < 0)
     return retval;
   if (arg_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (arg.is_real_type ())
     {

@@ -338,7 +338,7 @@ warn_reload_forces_clear (void)
 void
 symbols_of_dynamic_ld (void)
 {
-  DEFVAR (warn_reload_forces_clear, 1.0, warn_reload_forces_clear,
+  DEFVAR (warn_reload_forces_clear, true, warn_reload_forces_clear,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_reload_forces_clear\n\
 If several functions have been loaded from the same file, Octave must\n\

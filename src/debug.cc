@@ -144,7 +144,7 @@ The rline returned is the real line that the breakpoint was set at.\n\
   else
     error ("dbstop: one argument when in a function and two when not\n");
 
-  retval = static_cast<double> (result);
+  retval = result;
 
   return retval;
 }

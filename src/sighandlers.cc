@@ -625,7 +625,7 @@ debug_on_interrupt (void)
 void
 symbols_of_sighandlers (void)
 {
-  DEFVAR (debug_on_interrupt, 0.0, debug_on_interrupt,
+  DEFVAR (debug_on_interrupt, false, debug_on_interrupt,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} debug_on_interrupt\n\
 If @code{debug_on_interrupt} is nonzero, Octave will try to enter\n\

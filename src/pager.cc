@@ -587,7 +587,7 @@ terminal that is more than one screen long to the program named by the\n\
 value of the variable @code{PAGER}.\n\
 @end defvr");
 
-  DEFVAR (page_output_immediately, 0.0, page_output_immediately,
+  DEFVAR (page_output_immediately, false, page_output_immediately,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} page_output_immediately\n\
 If the value of @code{page_output_immediately} is nonzero, Octave sends\n\
@@ -596,7 +596,7 @@ buffers its output and waits until just before the prompt is printed to\n\
 flush it to the pager.  The default value is 0.\n\
 @end defvr");
 
-  DEFVAR (page_screen_output, 1.0, page_screen_output,
+  DEFVAR (page_screen_output, true, page_screen_output,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} page_screen_output\n\
 If the value of @code{page_screen_output} is nonzero, all output\n\

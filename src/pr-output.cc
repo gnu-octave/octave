@@ -1882,8 +1882,8 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  bind_builtin_variable ("output_precision", static_cast<double> (prec));
-  bind_builtin_variable ("output_max_field_width", static_cast<double> (fw));
+  bind_builtin_variable ("output_precision", prec);
+  bind_builtin_variable ("output_max_field_width", fw);
 }
 
 static void
@@ -2177,7 +2177,7 @@ split_long_rows (void)
 void
 symbols_of_pr_output (void)
 {
-  DEFVAR (fixed_point_format, 0.0, fixed_point_format,
+  DEFVAR (fixed_point_format, false, fixed_point_format,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} fixed_point_format\n\
 If the value of this variable is nonzero, Octave will scale all values\n\
@@ -2221,7 +2221,7 @@ This variable specifies the minimum number of significant figures to\n\
 display for numeric output.  The default value is 5.\n\
 @end defvr");
 
-  DEFVAR (print_empty_dimensions, 1.0, print_empty_dimensions,
+  DEFVAR (print_empty_dimensions, true, print_empty_dimensions,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} print_empty_dimensions\n\
 If the value of @code{print_empty_dimensions} is nonzero, the\n\
@@ -2240,7 +2240,7 @@ ans = [](3x0)\n\
 @end example\n\
 @end defvr");
 
-  DEFVAR (split_long_rows, 1.0, split_long_rows,
+  DEFVAR (split_long_rows, true, split_long_rows,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} split_long_rows\n\
 For large matrices, Octave may not be able to display all the columns of\n\

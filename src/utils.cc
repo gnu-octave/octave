@@ -823,7 +823,7 @@ treat_neg_dim_as_zero (void)
 void
 symbols_of_utils (void)
 {
-  DEFVAR (treat_neg_dim_as_zero, 0.0, treat_neg_dim_as_zero,
+  DEFVAR (treat_neg_dim_as_zero, false, treat_neg_dim_as_zero,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} treat_neg_dim_as_zero\n\
 If the value of @code{treat_neg_dim_as_zero} is nonzero, expressions\n\

@@ -343,6 +343,12 @@ octave_value::octave_value (void)
   rep->count = 1;
 }
 
+octave_value::octave_value (int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
 octave_value::octave_value (double d)
   : rep (new octave_scalar (d))
 {
@@ -579,14 +585,12 @@ octave_value::subsref (const std::string type,
 octave_value
 octave_value::next_subsref (const std::string type,
 			    const std::list<octave_value_list>& idx,
-			    int skip) 
+			    size_t skip) 
 {
-  assert (skip > 0);
-
   if (idx.size () > skip)
     {
       std::list<octave_value_list> new_idx (idx);
-      for (int i = 0; i < skip; i++)
+      for (size_t i = 0; i < skip; i++)
 	new_idx.erase (new_idx.begin ());
       return subsref (type.substr (skip), new_idx);
     }
@@ -1762,7 +1766,7 @@ warn_divide_by_zero (void)
 void
 symbols_of_ov (void)
 {
-  DEFVAR (do_fortran_indexing, 0.0, do_fortran_indexing,
+  DEFVAR (do_fortran_indexing, false, do_fortran_indexing,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} do_fortran_indexing\n\
 If the value of @code{do_fortran_indexing} is nonzero, Octave allows \n\
@@ -1771,7 +1775,7 @@ by treating the matrix as a single vector created from the columns of\n\
 the matrix.  The default value is 0. \n\
 @end defvr");
 
-  DEFVAR (implicit_str_to_num_ok, 0.0, implicit_str_to_num_ok,
+  DEFVAR (implicit_str_to_num_ok, false, implicit_str_to_num_ok,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} implicit_str_to_num_ok\n\
 If the value of @code{implicit_str_to_num_ok} is nonzero, implicit\n\
@@ -1791,7 +1795,7 @@ control is returned to the top level.  The default value is\n\
 @code{\"warn\"}.\n\
 @end defvr");
 
-  DEFVAR (prefer_column_vectors, 1.0, prefer_column_vectors,
+  DEFVAR (prefer_column_vectors, true, prefer_column_vectors,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} prefer_column_vectors\n\
 If @code{prefer_column_vectors} is nonzero, operations like\n\
@@ -1811,7 +1815,7 @@ row or column), the original orientation is respected, regardless of the\n\
 value of @code{prefer_column_vectors}.\n\
 @end defvr");
 
-  DEFVAR (print_answer_id_name, 1.0, print_answer_id_name,
+  DEFVAR (print_answer_id_name, true, print_answer_id_name,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} print_answer_id_name\n\
 If the value of @code{print_answer_id_name} is nonzero, variable\n\
@@ -1819,7 +1823,7 @@ names are printed along with the result.  Otherwise, only the result\n\
 values are printed.  The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (propagate_empty_matrices, 1.0, propagate_empty_matrices,
+  DEFVAR (propagate_empty_matrices, true, propagate_empty_matrices,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} propagate_empty_matrices\n\
 If the value of @code{propagate_empty_matrices} is nonzero,\n\
@@ -1827,7 +1831,7 @@ functions like @code{inverse} and @code{svd} will return an empty matrix\n\
 if they are given one as an argument.  The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (resize_on_range_error, 1.0, resize_on_range_error,
+  DEFVAR (resize_on_range_error, true, resize_on_range_error,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} resize_on_range_error\n\
 If the value of @code{resize_on_range_error} is nonzero, expressions\n\
@@ -1847,7 +1851,7 @@ of @code{resize_on_range_error} is 0, an error message is printed and\n\
 control is returned to the top level.  The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (silent_functions, 0.0, silent_functions,
+  DEFVAR (silent_functions, false, silent_functions,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} silent_functions\n\
 If the value of @code{silent_functions} is nonzero, internal output\n\
@@ -1875,7 +1879,7 @@ You can tell Octave how many structure levels to display by setting the\n\
 built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
 @end defvr");
 
-  DEFVAR (warn_divide_by_zero, 1.0, warn_divide_by_zero,
+  DEFVAR (warn_divide_by_zero, true, warn_divide_by_zero,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_divide_by_zero\n\
 If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\

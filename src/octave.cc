@@ -158,8 +158,7 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  bind_builtin_variable ("nargin", static_cast<double> (argc-1),
-			 true, true, 0);
+  bind_builtin_variable ("nargin", argc-1, true, true, 0);
 
   Cell octave_argv;
 
@@ -590,8 +589,7 @@ octave_main (int argc, char **argv)
 
       // XXX FIXME XXX -- is this the right thing to do?
 
-      bind_builtin_variable ("echo_executing_commands",
-			     static_cast<double> (ECHO_CMD_LINE));
+      bind_builtin_variable ("echo_executing_commands", ECHO_CMD_LINE);
     }
 
   if (! interactive)

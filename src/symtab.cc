@@ -1076,7 +1076,7 @@ variables_can_hide_functions (void)
 void
 symbols_of_symtab (void)
 {
-  DEFVAR (variables_can_hide_functions, 1.0, variables_can_hide_functions,
+  DEFVAR (variables_can_hide_functions, true, variables_can_hide_functions,
     "-*- texinfo -*-\n\
 @defvr variables_can_hide_functions\n\
 If the value of this variable is nonzero, assignments to variables may\n\

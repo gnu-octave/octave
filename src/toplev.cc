@@ -262,7 +262,7 @@ x = computer ()\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -563,7 +563,7 @@ variable @code{status} to the integer @samp{2}.\n\
 	      if (WIFEXITED (status))
 		status = WEXITSTATUS (status);
 
-	      retval = static_cast<double> (status);
+	      retval(0) = status;
 	    }
 	}
     }
@@ -588,11 +588,11 @@ do_octave_atexit (void)
 
   while (! octave_atexit_functions.empty ())
     {
-      octave_value_list fcn = octave_atexit_functions.top ();
+      std::string fcn = octave_atexit_functions.top ();
 
       octave_atexit_functions.pop ();
 
-      feval (fcn, 0);
+      feval (fcn, octave_value_list (), 0);
 
       flush_octave_stdout ();
     }
@@ -684,110 +684,110 @@ specified option.\n\
 
   Octave_map m;
 
-  m ["ALL_CFLAGS"] = OCTAVE_CONF_ALL_CFLAGS;
-  m ["ALL_CXXFLAGS"] = OCTAVE_CONF_ALL_CXXFLAGS;
-  m ["ALL_FFLAGS"] = OCTAVE_CONF_ALL_FFLAGS;
-  m ["ALL_LDFLAGS"] = OCTAVE_CONF_ALL_LDFLAGS;
-  m ["AR"] = OCTAVE_CONF_AR;
-  m ["ARFLAGS"] = OCTAVE_CONF_ARFLAGS;
-  m ["BLAS_LIBS"] = OCTAVE_CONF_BLAS_LIBS;
-  m ["CC"] = OCTAVE_CONF_CC;
-  m ["CC_VERSION"] = OCTAVE_CONF_CC_VERSION;
-  m ["CFLAGS"] = OCTAVE_CONF_CFLAGS;
-  m ["CPICFLAG"] = OCTAVE_CONF_CPICFLAG;
-  m ["CPPFLAGS"] = OCTAVE_CONF_CPPFLAGS;
-  m ["CXX"] = OCTAVE_CONF_CXX;
-  m ["CXXCPP"] = OCTAVE_CONF_CXXCPP;
-  m ["CXXFLAGS"] = OCTAVE_CONF_CXXFLAGS;
-  m ["CXXPICFLAG"] = OCTAVE_CONF_CXXPICFLAG;
-  m ["CXX_VERSION"] = OCTAVE_CONF_CXX_VERSION;
-  m ["DEFAULT_PAGER"] = OCTAVE_DEFAULT_PAGER;
-  m ["DLFCN_INCFLAGS"] = OCTAVE_CONF_DLFCN_INCFLAGS;
-  m ["EXEEXT"] = OCTAVE_CONF_EXEEXT;
-  m ["F2C"] = OCTAVE_CONF_F2C;
-  m ["F2CFLAGS"] = OCTAVE_CONF_F2CFLAGS;
-  m ["F77"] = OCTAVE_CONF_F77;
-  m ["FC"] = OCTAVE_CONF_FC;
-  m ["FFLAGS"] = OCTAVE_CONF_FFLAGS;
-  m ["FFTW_LIBS"] = OCTAVE_CONF_FFTW_LIBS;
-  m ["FLIBS"] = OCTAVE_CONF_FLIBS;
-  m ["FPICFLAG"] = OCTAVE_CONF_FPICFLAG;
-  m ["GLOB_INCFLAGS"] = OCTAVE_CONF_GLOB_INCFLAGS;
-  m ["INCFLAGS"] = OCTAVE_CONF_INCFLAGS;
-  m ["LDFLAGS"] = OCTAVE_CONF_LDFLAGS;
-  m ["LD_CXX"] = OCTAVE_CONF_LD_CXX;
-  m ["LD_STATIC_FLAG"] = OCTAVE_CONF_LD_STATIC_FLAG;
-  m ["LEX"] = OCTAVE_CONF_LEX;
-  m ["LEXLIB"] = OCTAVE_CONF_LEXLIB;
-  m ["LFLAGS"] = OCTAVE_CONF_LFLAGS;
-  m ["LIBCRUFT"] = OCTAVE_CONF_LIBCRUFT;
-  m ["LIBDLFCN"] = OCTAVE_CONF_LIBDLFCN;
-  m ["LIBEXT"] = OCTAVE_CONF_LIBEXT;
-  m ["LIBFLAGS"] = OCTAVE_CONF_LIBFLAGS;
-  m ["LIBGLOB"] = OCTAVE_CONF_LIBGLOB;
-  m ["LIBKPATHSEA"] = OCTAVE_CONF_LIBKPATHSEA;
-  m ["LIBOCTAVE"] = OCTAVE_CONF_LIBOCTAVE;
-  m ["LIBOCTINTERP"] = OCTAVE_CONF_LIBOCTINTERP;
-  m ["LIBPLPLOT"] = OCTAVE_CONF_LIBPLPLOT;
-  m ["LIBREADLINE"] = OCTAVE_CONF_LIBREADLINE;
-  m ["LIBS"] = OCTAVE_CONF_LIBS;
-  m ["LN_S"] = OCTAVE_CONF_LN_S;
-  m ["MKOCTFILE_INCFLAGS"] = OCTAVE_CONF_MKOCTFILE_INCFLAGS;
-  m ["MKOCTFILE_LFLAGS"] = OCTAVE_CONF_MKOCTFILE_LFLAGS;
-  m ["MKOCTFILE_SH_LDFLAGS"] = OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS;
-  m ["RANLIB"] = OCTAVE_CONF_RANLIB;
-  m ["RDYNAMIC_FLAG"] = OCTAVE_CONF_RDYNAMIC_FLAG;
-  m ["RLD_FLAG"] = OCTAVE_CONF_RLD_FLAG;
-  m ["RUNTEST"] = OCTAVE_CONF_RUNTEST;
-  m ["SED"] = OCTAVE_CONF_SED;
-  m ["SHARED_LIBS"] = OCTAVE_CONF_SHARED_LIBS;
-  m ["SHLEXT"] = OCTAVE_CONF_SHLEXT;
-  m ["SHLEXT_VER"] = OCTAVE_CONF_SHLEXT_VER;
-  m ["SH_LD"] = OCTAVE_CONF_SH_LD;
-  m ["SH_LDFLAGS"] = OCTAVE_CONF_SH_LDFLAGS;
-  m ["SONAME_FLAGS"] = OCTAVE_CONF_SONAME_FLAGS;
-  m ["STATIC_LIBS"] = OCTAVE_CONF_STATIC_LIBS;
-  m ["UGLY_DEFS"] = OCTAVE_CONF_DEFS;
-  m ["UGLY_DEFS"] = OCTAVE_CONF_UGLY_DEFS;
-  m ["ENABLE_DYNAMIC_LINKING"] = OCTAVE_CONF_ENABLE_DYNAMIC_LINKING;
-  m ["XTRA_CFLAGS"] = OCTAVE_CONF_XTRA_CFLAGS;
-  m ["XTRA_CXXFLAGS"] = OCTAVE_CONF_XTRA_CXXFLAGS;
-  m ["YACC"] = OCTAVE_CONF_YACC;
-  m ["YFLAGS"] = OCTAVE_CONF_YFLAGS;
-  m ["archlibdir"] = OCTAVE_ARCHLIBDIR;
-  m ["bindir"] = OCTAVE_BINDIR;
-  m ["canonical_host_type"] = OCTAVE_CANONICAL_HOST_TYPE;
-  m ["config_opts"] = OCTAVE_CONF_config_opts;
-  m ["datadir"] = OCTAVE_DATADIR;
-  m ["dld"] = static_cast<double> (octave_supports_dynamic_linking);
-  m ["exec_prefix"] = OCTAVE_EXEC_PREFIX;
-  m ["fcnfiledir"] = OCTAVE_FCNFILEDIR;
-  m ["fcnfilepath"] = OCTAVE_FCNFILEPATH;
-  m ["imagedir"] = OCTAVE_IMAGEDIR;
-  m ["imagepath"] = OCTAVE_IMAGEPATH;
-  m ["includedir"] = OCTAVE_INCLUDEDIR;
-  m ["infodir"] = OCTAVE_INFODIR;
-  m ["infofile"] = OCTAVE_INFOFILE;
-  m ["libdir"] = OCTAVE_LIBDIR;
-  m ["libexecdir"] = OCTAVE_LIBEXECDIR;
-  m ["localarchlibdir"] = OCTAVE_LOCALARCHLIBDIR;
-  m ["localfcnfiledir"] = OCTAVE_LOCALFCNFILEDIR;
-  m ["localfcnfilepath"] = OCTAVE_LOCALFCNFILEPATH;
-  m ["localoctfiledir"] = OCTAVE_LOCALOCTFILEDIR;
-  m ["localoctfilepath"] = OCTAVE_LOCALOCTFILEPATH;
-  m ["localstartupfiledir"] = OCTAVE_LOCALSTARTUPFILEDIR;
-  m ["localverarchlibdir"] = OCTAVE_LOCALVERARCHLIBDIR;
-  m ["localverfcnfiledir"] = OCTAVE_LOCALVERFCNFILEDIR;
-  m ["localveroctfiledir"] = OCTAVE_LOCALVEROCTFILEDIR;
-  m ["man1dir"] = OCTAVE_MAN1DIR;
-  m ["man1ext"] = OCTAVE_MAN1EXT;
-  m ["mandir"] = OCTAVE_MANDIR;
-  m ["octfiledir"] = OCTAVE_OCTFILEDIR;
-  m ["octincludedir"] = OCTAVE_OCTINCLUDEDIR;
-  m ["octlibdir"] = OCTAVE_OCTLIBDIR;
-  m ["prefix"] = OCTAVE_PREFIX;
-  m ["startupfiledir"] = OCTAVE_STARTUPFILEDIR;
-  m ["version"] = OCTAVE_VERSION;
+  m ["ALL_CFLAGS"](0) = OCTAVE_CONF_ALL_CFLAGS;
+  m ["ALL_CXXFLAGS"](0) = OCTAVE_CONF_ALL_CXXFLAGS;
+  m ["ALL_FFLAGS"](0) = OCTAVE_CONF_ALL_FFLAGS;
+  m ["ALL_LDFLAGS"](0) = OCTAVE_CONF_ALL_LDFLAGS;
+  m ["AR"](0) = OCTAVE_CONF_AR;
+  m ["ARFLAGS"](0) = OCTAVE_CONF_ARFLAGS;
+  m ["BLAS_LIBS"](0) = OCTAVE_CONF_BLAS_LIBS;
+  m ["CC"](0) = OCTAVE_CONF_CC;
+  m ["CC_VERSION"](0) = OCTAVE_CONF_CC_VERSION;
+  m ["CFLAGS"](0) = OCTAVE_CONF_CFLAGS;
+  m ["CPICFLAG"](0) = OCTAVE_CONF_CPICFLAG;
+  m ["CPPFLAGS"](0) = OCTAVE_CONF_CPPFLAGS;
+  m ["CXX"](0) = OCTAVE_CONF_CXX;
+  m ["CXXCPP"](0) = OCTAVE_CONF_CXXCPP;
+  m ["CXXFLAGS"](0) = OCTAVE_CONF_CXXFLAGS;
+  m ["CXXPICFLAG"](0) = OCTAVE_CONF_CXXPICFLAG;
+  m ["CXX_VERSION"](0) = OCTAVE_CONF_CXX_VERSION;
+  m ["DEFAULT_PAGER"](0) = OCTAVE_DEFAULT_PAGER;
+  m ["DLFCN_INCFLAGS"](0) = OCTAVE_CONF_DLFCN_INCFLAGS;
+  m ["EXEEXT"](0) = OCTAVE_CONF_EXEEXT;
+  m ["F2C"](0) = OCTAVE_CONF_F2C;
+  m ["F2CFLAGS"](0) = OCTAVE_CONF_F2CFLAGS;
+  m ["F77"](0) = OCTAVE_CONF_F77;
+  m ["FC"](0) = OCTAVE_CONF_FC;
+  m ["FFLAGS"](0) = OCTAVE_CONF_FFLAGS;
+  m ["FFTW_LIBS"](0) = OCTAVE_CONF_FFTW_LIBS;
+  m ["FLIBS"](0) = OCTAVE_CONF_FLIBS;
+  m ["FPICFLAG"](0) = OCTAVE_CONF_FPICFLAG;
+  m ["GLOB_INCFLAGS"](0) = OCTAVE_CONF_GLOB_INCFLAGS;
+  m ["INCFLAGS"](0) = OCTAVE_CONF_INCFLAGS;
+  m ["LDFLAGS"](0) = OCTAVE_CONF_LDFLAGS;
+  m ["LD_CXX"](0) = OCTAVE_CONF_LD_CXX;
+  m ["LD_STATIC_FLAG"](0) = OCTAVE_CONF_LD_STATIC_FLAG;
+  m ["LEX"](0) = OCTAVE_CONF_LEX;
+  m ["LEXLIB"](0) = OCTAVE_CONF_LEXLIB;
+  m ["LFLAGS"](0) = OCTAVE_CONF_LFLAGS;
+  m ["LIBCRUFT"](0) = OCTAVE_CONF_LIBCRUFT;
+  m ["LIBDLFCN"](0) = OCTAVE_CONF_LIBDLFCN;
+  m ["LIBEXT"](0) = OCTAVE_CONF_LIBEXT;
+  m ["LIBFLAGS"](0) = OCTAVE_CONF_LIBFLAGS;
+  m ["LIBGLOB"](0) = OCTAVE_CONF_LIBGLOB;
+  m ["LIBKPATHSEA"](0) = OCTAVE_CONF_LIBKPATHSEA;
+  m ["LIBOCTAVE"](0) = OCTAVE_CONF_LIBOCTAVE;
+  m ["LIBOCTINTERP"](0) = OCTAVE_CONF_LIBOCTINTERP;
+  m ["LIBPLPLOT"](0) = OCTAVE_CONF_LIBPLPLOT;
+  m ["LIBREADLINE"](0) = OCTAVE_CONF_LIBREADLINE;
+  m ["LIBS"](0) = OCTAVE_CONF_LIBS;
+  m ["LN_S"](0) = OCTAVE_CONF_LN_S;
+  m ["MKOCTFILE_INCFLAGS"](0) = OCTAVE_CONF_MKOCTFILE_INCFLAGS;
+  m ["MKOCTFILE_LFLAGS"](0) = OCTAVE_CONF_MKOCTFILE_LFLAGS;
+  m ["MKOCTFILE_SH_LDFLAGS"](0) = OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS;
+  m ["RANLIB"](0) = OCTAVE_CONF_RANLIB;
+  m ["RDYNAMIC_FLAG"](0) = OCTAVE_CONF_RDYNAMIC_FLAG;
+  m ["RLD_FLAG"](0) = OCTAVE_CONF_RLD_FLAG;
+  m ["RUNTEST"](0) = OCTAVE_CONF_RUNTEST;
+  m ["SED"](0) = OCTAVE_CONF_SED;
+  m ["SHARED_LIBS"](0) = OCTAVE_CONF_SHARED_LIBS;
+  m ["SHLEXT"](0) = OCTAVE_CONF_SHLEXT;
+  m ["SHLEXT_VER"](0) = OCTAVE_CONF_SHLEXT_VER;
+  m ["SH_LD"](0) = OCTAVE_CONF_SH_LD;
+  m ["SH_LDFLAGS"](0) = OCTAVE_CONF_SH_LDFLAGS;
+  m ["SONAME_FLAGS"](0) = OCTAVE_CONF_SONAME_FLAGS;
+  m ["STATIC_LIBS"](0) = OCTAVE_CONF_STATIC_LIBS;
+  m ["UGLY_DEFS"](0) = OCTAVE_CONF_DEFS;
+  m ["UGLY_DEFS"](0) = OCTAVE_CONF_UGLY_DEFS;
+  m ["ENABLE_DYNAMIC_LINKING"](0) = OCTAVE_CONF_ENABLE_DYNAMIC_LINKING;
+  m ["XTRA_CFLAGS"](0) = OCTAVE_CONF_XTRA_CFLAGS;
+  m ["XTRA_CXXFLAGS"](0) = OCTAVE_CONF_XTRA_CXXFLAGS;
+  m ["YACC"](0) = OCTAVE_CONF_YACC;
+  m ["YFLAGS"](0) = OCTAVE_CONF_YFLAGS;
+  m ["archlibdir"](0) = OCTAVE_ARCHLIBDIR;
+  m ["bindir"](0) = OCTAVE_BINDIR;
+  m ["canonical_host_type"](0) = OCTAVE_CANONICAL_HOST_TYPE;
+  m ["config_opts"](0) = OCTAVE_CONF_config_opts;
+  m ["datadir"](0) = OCTAVE_DATADIR;
+  m ["dld"](0) = octave_supports_dynamic_linking;
+  m ["exec_prefix"](0) = OCTAVE_EXEC_PREFIX;
+  m ["fcnfiledir"](0) = OCTAVE_FCNFILEDIR;
+  m ["fcnfilepath"](0) = OCTAVE_FCNFILEPATH;
+  m ["imagedir"](0) = OCTAVE_IMAGEDIR;
+  m ["imagepath"](0) = OCTAVE_IMAGEPATH;
+  m ["includedir"](0) = OCTAVE_INCLUDEDIR;
+  m ["infodir"](0) = OCTAVE_INFODIR;
+  m ["infofile"](0) = OCTAVE_INFOFILE;
+  m ["libdir"](0) = OCTAVE_LIBDIR;
+  m ["libexecdir"](0) = OCTAVE_LIBEXECDIR;
+  m ["localarchlibdir"](0) = OCTAVE_LOCALARCHLIBDIR;
+  m ["localfcnfiledir"](0) = OCTAVE_LOCALFCNFILEDIR;
+  m ["localfcnfilepath"](0) = OCTAVE_LOCALFCNFILEPATH;
+  m ["localoctfiledir"](0) = OCTAVE_LOCALOCTFILEDIR;
+  m ["localoctfilepath"](0) = OCTAVE_LOCALOCTFILEPATH;
+  m ["localstartupfiledir"](0) = OCTAVE_LOCALSTARTUPFILEDIR;
+  m ["localverarchlibdir"](0) = OCTAVE_LOCALVERARCHLIBDIR;
+  m ["localverfcnfiledir"](0) = OCTAVE_LOCALVERFCNFILEDIR;
+  m ["localveroctfiledir"](0) = OCTAVE_LOCALVEROCTFILEDIR;
+  m ["man1dir"](0) = OCTAVE_MAN1DIR;
+  m ["man1ext"](0) = OCTAVE_MAN1EXT;
+  m ["mandir"](0) = OCTAVE_MANDIR;
+  m ["octfiledir"](0) = OCTAVE_OCTFILEDIR;
+  m ["octincludedir"](0) = OCTAVE_OCTINCLUDEDIR;
+  m ["octlibdir"](0) = OCTAVE_OCTLIBDIR;
+  m ["prefix"](0) = OCTAVE_PREFIX;
+  m ["startupfiledir"](0) = OCTAVE_STARTUPFILEDIR;
+  m ["version"](0) = OCTAVE_VERSION;
 
   int nargin = args.length ();
 
@@ -796,10 +796,10 @@ specified option.\n\
       std::string arg = args(0).string_value ();
 
       if (! error_state)
-	retval = octave_value (m [arg.c_str ()](0));
+	retval = m [arg.c_str ()](0);
     }
   else if (nargin == 0)
-    retval = octave_value (m);
+    retval = m;
   else
     print_usage ("octave_config_info");
 

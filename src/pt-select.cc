@@ -132,9 +132,6 @@ equal (const octave_value& val, const octave_value& test)
 {
   bool retval = false;
 
-  int t1 = val.type_id ();
-  int t2 = test.type_id ();
-
   // If there is no op_eq for these types, we can't compare values.
 
   if (val.rows () == test.rows () && val.columns () == test.columns ())

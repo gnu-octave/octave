@@ -210,8 +210,7 @@ kluge_procbuf_delay (void)
 void
 symbols_of_oct_procbuf (void)
 {
-  DEFVAR (__kluge_procbuf_delay__, static_cast<double> (Vkluge_procbuf_delay),
-	  kluge_procbuf_delay,
+  DEFVAR (__kluge_procbuf_delay__, Vkluge_procbuf_delay, kluge_procbuf_delay,
     "-*- texinfo -*-\n\
 @defvr __kluge_procbuf_delay__\n\
 Number of microseconds to delay in the parent after forking.\n\

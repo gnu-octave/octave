@@ -221,7 +221,7 @@ DEFUN (pwd, , nargout,
 Return the current working directory.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   std::string directory = octave_env::getcwd ();
 
@@ -314,7 +314,7 @@ system-dependent error message.\n\
 	  int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
 					0777, msg);
 
-	  retval(0) = static_cast<double> (status);
+	  retval(0) = status;
 
 	  if (status < 0)
 	    retval(1) = msg;
@@ -353,7 +353,7 @@ system-dependent error message.\n\
 
 	  int status = file_ops::rmdir (file_ops::tilde_expand (dirname), msg);
 
-	  retval(0) = static_cast<double> (status);
+	  retval(0) = status;
 
 	  if (status < 0)
 	    retval(1) = msg;
@@ -398,7 +398,7 @@ system-dependent error message.\n\
 
 	      int status = file_ops::link (from, to, msg);
 
-	      retval(0) = static_cast<double> (status);
+	      retval(0) = status;
 
 	      if (status < 0)
 		retval(1) = msg;
@@ -444,7 +444,7 @@ system-dependent error message.\n\
 
 	      int status = file_ops::symlink (from, to, msg);
 
-	      retval(0) = static_cast<double> (status);
+	      retval(0) = status;
 
 	      if (status < 0)
 		retval(1) = msg;
@@ -489,7 +489,7 @@ system-dependent error message.\n\
 
 	  retval(0) = result;
 
-	  retval(1) = static_cast<double> (status);
+	  retval(1) = status;
 
 	  if (status < 0)
 	    retval(2) = msg;
@@ -534,7 +534,7 @@ system-dependent error message.\n\
 
 	      int status = file_ops::rename (from, to, msg);
 
-	      retval(0) = static_cast<double> (status);
+	      retval(0) = status;
 
 	      if (status < 0)
 		retval(1) = msg;

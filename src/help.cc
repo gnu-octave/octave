@@ -1102,7 +1102,7 @@ Octave runs to format help text that contains Texinfo markup commands.\n\
 Its default initial value is @code{\"makeinfo\"}.\n\
 @end defvr");
 
-  DEFVAR (suppress_verbose_help_message, 0.0, suppress_verbose_help_message,
+  DEFVAR (suppress_verbose_help_message, false, suppress_verbose_help_message,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} suppress_verbose_help_message\n\
 If the value of @code{suppress_verbose_help_message} is nonzero, Octave\n\

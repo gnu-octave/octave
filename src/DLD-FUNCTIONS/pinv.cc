@@ -46,7 +46,7 @@ tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\
 where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -76,7 +76,7 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (arg.is_real_type ())
     {

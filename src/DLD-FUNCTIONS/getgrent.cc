@@ -51,15 +51,15 @@ mk_gr_map (const octave_group& gr)
     {
       Octave_map m;
 
-      m ["name"] = gr.name ();
-      m ["passwd"] = gr.passwd ();
-      m ["gid"] = static_cast<double> (gr.gid ());
-      m ["mem"] = gr.mem ();
+      m ["name"](0) = gr.name ();
+      m ["passwd"](0) = gr.passwd ();
+      m ["gid"](0) = static_cast<double> (gr.gid ());
+      m ["mem"](0) = gr.mem ();
 
       retval = m;
     }
   else
-    retval = 0.0;
+    retval = 0;
 
   return retval;
 }
@@ -74,7 +74,7 @@ Once the end of the data has been reached, @code{getgrent} returns 0.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = 0.0;
+  retval(0) = 0;
 
   int nargin = args.length ();
 
@@ -102,7 +102,7 @@ Return the first entry from the group database with the group ID\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = 0.0;
+  retval(0) = 0;
 
   int nargin = args.length ();
 
@@ -142,7 +142,7 @@ Return the first entry from the group database with the group name\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = 0.0;
+  retval(0) = 0;
 
   int nargin = args.length ();
 

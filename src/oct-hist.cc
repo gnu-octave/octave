@@ -717,7 +717,7 @@ The default value is @code{1024}, but may be overridden by the\n\
 environment variable @code{OCTAVE_HISTSIZE}.\n\
 @end defvr");
 
-  DEFVAR (saving_history, 1.0, saving_history,
+  DEFVAR (saving_history, true, saving_history,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} saving_history\n\
 If the value of @code{saving_history} is nonzero, command entered\n\

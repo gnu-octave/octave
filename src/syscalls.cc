@@ -65,24 +65,24 @@ mk_stat_map (const file_stat& fs)
 {
   Octave_map m;
 
-  m["dev"] = static_cast<double> (fs.dev ());
-  m["ino"] = static_cast<double> (fs.ino ());
-  m["modestr"] = fs.mode_as_string ();
-  m["nlink"] = static_cast<double> (fs.nlink ());
-  m["uid"] = static_cast<double> (fs.uid ());
-  m["gid"] = static_cast<double> (fs.gid ());
+  m["dev"](0) = static_cast<double> (fs.dev ());
+  m["ino"](0) = static_cast<double> (fs.ino ());
+  m["modestr"](0) = fs.mode_as_string ();
+  m["nlink"](0) = static_cast<double> (fs.nlink ());
+  m["uid"](0) = static_cast<double> (fs.uid ());
+  m["gid"](0) = static_cast<double> (fs.gid ());
 #if defined (HAVE_STRUCT_STAT_ST_RDEV)
-  m["rdev"] = static_cast<double> (fs.rdev ());
+  m["rdev"](0) = static_cast<double> (fs.rdev ());
 #endif
-  m["size"] = static_cast<double> (fs.size ());
-  m["atime"] = static_cast<double> (fs.atime ());
-  m["mtime"] = static_cast<double> (fs.mtime ());
-  m["ctime"] = static_cast<double> (fs.ctime ());
+  m["size"](0) = static_cast<double> (fs.size ());
+  m["atime"](0) = static_cast<double> (fs.atime ());
+  m["mtime"](0) = static_cast<double> (fs.mtime ());
+  m["ctime"](0) = static_cast<double> (fs.ctime ());
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-  m["blksize"] = static_cast<double> (fs.blksize ());
+  m["blksize"](0) = static_cast<double> (fs.blksize ());
 #endif
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-  m["blocks"] = static_cast<double> (fs.blocks ());
+  m["blocks"](0) = static_cast<double> (fs.blocks ());
 #endif
 
   return m;
@@ -126,7 +126,7 @@ system-dependent error message.\n\
 
 		  int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-		  retval(0) = static_cast<double> (status);
+		  retval(0) = status;
 		  retval(1) = msg;
 		}
 	    }
@@ -205,7 +205,7 @@ error message.\n\
 
 	      int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
-	      retval(0) = static_cast<double> (status);
+	      retval(0) = status;
 	      retval(1) = msg;
 	    }
 	}
@@ -301,7 +301,7 @@ system-dependent error message.\n\
 
 		  int status = octave_syscalls::fcntl (fid, req, arg, msg);
 
-		  retval(0) = static_cast<double> (status);
+		  retval(0) = status;
 		  retval(1) = msg;
 		}
 	    }
@@ -351,7 +351,7 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 
       pid_t pid = octave_syscalls::fork (msg);
 
-      retval(0) = static_cast<double> (pid);
+      retval(0) = pid;
       retval(1) = msg;
     }
   else
@@ -377,7 +377,7 @@ Return the process group id of the current process.\n\
     {
       std::string msg;
 
-      retval(0) = static_cast<double> (octave_syscalls::getpgrp (msg));
+      retval(0) = octave_syscalls::getpgrp (msg);
       retval(1) = msg;
     }
   else
@@ -392,7 +392,7 @@ DEFUN (getpid, args, ,
 Return the process id of the current process.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -410,7 +410,7 @@ DEFUN (getppid, args, ,
 Return the process id of the parent process.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -428,12 +428,12 @@ DEFUN (getegid, args, ,
 Return the effective group id of the current process.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = octave_syscalls::getegid ();
+    retval = static_cast<double> (octave_syscalls::getegid ());
   else
     print_usage ("getegid");
 
@@ -446,12 +446,12 @@ DEFUN (getgid, args, ,
 Return the real group id of the current process.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = octave_syscalls::getgid ();
+    retval = static_cast<double> (octave_syscalls::getgid ());
   else
     print_usage ("getgid");
 
@@ -464,12 +464,12 @@ DEFUN (geteuid, args, ,
 Return the effective user id of the current process.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = octave_syscalls::geteuid ();
+    retval = static_cast<double> (octave_syscalls::geteuid ());
   else
     print_usage ("geteuid");
 
@@ -482,12 +482,12 @@ DEFUN (getuid, args, ,
 Return the real user id of the current process.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = octave_syscalls::getuid ();
+    retval = static_cast<double> (octave_syscalls::getuid ());
   else
     print_usage ("getuid");
 
@@ -514,7 +514,7 @@ See stat.\n\
 	    {
 	      retval(2) = std::string ();
 	      retval(1) = 0.0;
-	      retval(0) = octave_value (mk_stat_map (fs));
+	      retval(0) = mk_stat_map (fs);
 	    }
 	  else
 	    {
@@ -563,7 +563,7 @@ system-dependent error message.\n\
 
 	      int status = file_ops::mkfifo (name, mode, msg);
 
-	      retval(0) = static_cast<double> (status);
+	      retval(0) = status;
 
 	      if (status < 0)
 		retval(1) = msg;
@@ -622,7 +622,7 @@ system-dependent error message.\n\
 	  file_ids(1) = octave_stream_list::insert (os);
 	  file_ids(0) = octave_stream_list::insert (is);
 
-	  retval(1) = static_cast<double> (status);
+	  retval(1) = status;
           retval(0) = octave_value (file_ids);
 	}
     }
@@ -777,7 +777,7 @@ system-dependent error message.\n\
 
 	  int status = file_ops::unlink (name, msg);
 
-	  retval(0) = static_cast<double> (status);
+	  retval(0) = status;
 	  retval(1) = msg;	    
 	}
       else
@@ -864,7 +864,7 @@ message.\n\
 
 	      pid_t status = octave_syscalls::waitpid (pid, options, msg);
 
-	      retval(0) = static_cast<double> (status);
+	      retval(0) = status;
 	      retval(1) = msg;
 	    }
 	}
@@ -885,105 +885,105 @@ void
 symbols_of_syscalls (void)
 {
 #if defined (F_DUPFD)
-  DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, static_cast<double> (F_DUPFD),
+  DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, F_DUPFD,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_DUPFD\n\
 @end defvr");
 #endif
 
 #if defined (F_GETFD)
-  DEFCONSTX ("F_GETFD", SBV_F_GETFD, static_cast<double> (F_GETFD),
+  DEFCONSTX ("F_GETFD", SBV_F_GETFD, F_GETFD,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_GETFD\n\
 @end defvr");
 #endif
 
 #if defined (F_GETFL)
-  DEFCONSTX ("F_GETFL", SBV_F_GETFL, static_cast<double> (F_GETFL),
+  DEFCONSTX ("F_GETFL", SBV_F_GETFL, F_GETFL,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_GETFL\n\
 @end defvr");
 #endif
 
 #if defined (F_SETFD)
-  DEFCONSTX ("F_SETFD", SBV_F_SETFD, static_cast<double> (F_SETFD),
+  DEFCONSTX ("F_SETFD", SBV_F_SETFD, F_SETFD,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_SETFD\n\
 @end defvr");
 #endif
 
 #if defined (F_SETFL)
-  DEFCONSTX ("F_SETFL", SBV_F_SETFL, static_cast<double> (F_SETFL),
+  DEFCONSTX ("F_SETFL", SBV_F_SETFL, F_SETFL,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_SETFL\n\
 @end defvr");
 #endif
 
 #if defined (O_APPEND)
-  DEFCONSTX ("O_APPEND", SBV_O_APPEND, static_cast<double> (O_APPEND),
+  DEFCONSTX ("O_APPEND", SBV_O_APPEND, O_APPEND,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_APPEND\n\
 @end defvr");
 #endif
 
 #if defined (O_ASYNC)
-  DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, static_cast<double> (O_ASYNC),
+  DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, O_ASYNC,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_ASYNC\n\
 @end defvr");
 #endif
 
 #if defined (O_CREAT)
-  DEFCONSTX ("O_CREAT", SBV_O_CREAT, static_cast<double> (O_CREAT),
+  DEFCONSTX ("O_CREAT", SBV_O_CREAT, O_CREAT,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_CREAT\n\
 @end defvr");
 #endif
 
 #if defined (O_EXCL)
-  DEFCONSTX ("O_EXCL", SBV_O_EXCL, static_cast<double> (O_EXCL),
+  DEFCONSTX ("O_EXCL", SBV_O_EXCL, O_EXCL,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_EXCL\n\
 @end defvr");
 #endif
 
 #if defined (O_NONBLOCK)
-  DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, static_cast<double> (O_NONBLOCK),
+  DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, O_NONBLOCK,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_NONBLOCK\n\
 @end defvr");
 #endif
 
 #if defined (O_RDONLY)
-  DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, static_cast<double> (O_RDONLY),
+  DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, O_RDONLY,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_RDONLY\n\
 @end defvr");
 #endif
 
 #if defined (O_RDWR)
-  DEFCONSTX ("O_RDWR", SBV_O_RDWR, static_cast<double> (O_RDWR),
+  DEFCONSTX ("O_RDWR", SBV_O_RDWR, O_RDWR,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_RDWR\n\
 @end defvr");
 #endif
 
 #if defined (O_SYNC)
-  DEFCONSTX ("O_SYNC", SBV_O_SYNC, static_cast<double> (O_SYNC),
+  DEFCONSTX ("O_SYNC", SBV_O_SYNC, O_SYNC,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_SYNC\n\
 @end defvr");
 #endif
 
 #if defined (O_TRUNC)
-  DEFCONSTX ("O_TRUNC", SBV_O_TRUNC, static_cast<double> (O_TRUNC),
+  DEFCONSTX ("O_TRUNC", SBV_O_TRUNC, O_TRUNC,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_TRUNC\n\
 @end defvr");
 #endif
 
 #if defined (O_WRONLY)
-  DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, static_cast<double> (O_WRONLY),
+  DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, O_WRONLY,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_WRONLY\n\
 @end defvr");

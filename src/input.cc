@@ -565,12 +565,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	  if (debug)
 	    goto again;
 	  else
-	    {
-	      if (read_as_string)
-		return "";
-	      else
-		return Matrix ();
-	    }
+	    return read_as_string ? octave_value ("") : octave_value (Matrix ());
 	}
 
       if (debug)
@@ -719,7 +714,9 @@ do_keyboard (const octave_value_list& args)
 
   Vsaving_history = true;
 
-  retval = get_user_input (args, true, 0);
+  octave_value_list tmp = get_user_input (args, true, 0);
+
+  retval = tmp(0);
 
   unwind_protect::run_frame ("do_keyboard");
 
@@ -795,11 +792,9 @@ state.\n\
       {
 	if ((Vecho_executing_commands & ECHO_SCRIPTS)
 	    || (Vecho_executing_commands & ECHO_FUNCTIONS))
-	  bind_builtin_variable ("echo_executing_commands",
-				 static_cast<double> (ECHO_OFF));
+	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
-	  bind_builtin_variable ("echo_executing_commands",
-				 static_cast<double> (ECHO_SCRIPTS));
+	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
       }
       break;
 
@@ -808,11 +803,9 @@ state.\n\
 	std::string arg = argv[1];
 
 	if (arg == "on")
-	  bind_builtin_variable ("echo_executing_commands",
-				 static_cast<double> (ECHO_SCRIPTS));
+	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
 	else if (arg == "off")
-	  bind_builtin_variable ("echo_executing_commands",
-				 static_cast<double> (ECHO_OFF));
+	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
 	  print_usage ("echo");
       }
@@ -825,12 +818,10 @@ state.\n\
 	if (arg == "on" && argv[2] == "all")
 	  {
 	    int tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS);
-	    bind_builtin_variable ("echo_executing_commands",
-				   static_cast<double> (tmp));
+	    bind_builtin_variable ("echo_executing_commands", tmp);
 	  }
 	else if (arg == "off" && argv[2] == "all")
-	  bind_builtin_variable ("echo_executing_commands",
-				 static_cast<double> (ECHO_OFF));
+	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
 	  print_usage ("echo");
       }
@@ -1131,8 +1122,7 @@ append to successful command-line completion attempts.  The default\n\
 value is @code{\" \"} (a single space).\n\
 @end defvr");
 
-  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF),
-	  echo_executing_commands,
+  DEFVAR (echo_executing_commands, ECHO_OFF, echo_executing_commands,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} echo_executing_commands\n\
 This variable may also be used to control the echo state.  It may be\n\

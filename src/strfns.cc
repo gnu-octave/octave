@@ -41,12 +41,12 @@ DEFUN (isstr, args, ,
 Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
   if (nargin == 1 && args(0).is_defined ())
-    retval = static_cast<double> (args(0).is_string ());
+    retval = args(0).is_string ();
   else
     print_usage ("isstr");
 
@@ -68,7 +68,7 @@ setstr ([97, 98, 99])\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 

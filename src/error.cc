@@ -769,7 +769,7 @@ debug_on_warning (void)
 void
 symbols_of_error (void)
 {
-  DEFVAR (beep_on_error, 0.0, beep_on_error,
+  DEFVAR (beep_on_error, false, beep_on_error,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} beep_on_error\n\
 If the value of @code{beep_on_error} is nonzero, Octave will try\n\
@@ -777,7 +777,7 @@ to ring your terminal's bell before printing an error message.  The\n\
 default value is 0.\n\
 @end defvr");
 
-  DEFVAR (debug_on_error, 0.0, debug_on_error,
+  DEFVAR (debug_on_error, false, debug_on_error,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} debug_on_error\n\
 If the value of @code{debug_on_error} is nonzero, Octave will try\n\
@@ -786,7 +786,7 @@ inhibit printing of the normal traceback message (you will only see\n\
 the top-level error message).  The default value is 0.\n\
 @end defvr");
 
-  DEFVAR (debug_on_warning, 0.0, debug_on_warning,
+  DEFVAR (debug_on_warning, false, debug_on_warning,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} debug_on_warning\n\
 If the value of @code{debug_on_warning} is nonzero, Octave will try\n\

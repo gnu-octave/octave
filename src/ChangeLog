@@ -1,3 +1,34 @@
+2002-12-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/time.cc (extract_tm): Use int_value() instead of
+	casting double_value() to int.
+
+	* DLD-FUNCITONS/time.cc ()
+
+	* ov.cc (octave_value::next_subsref): Arg "skip" is now size_t.
+
+	* oct-obj.h (octave_value_list::octave_value_list (double),
+	octave_value_list::octave_value_list (const Matrix&),
+	octave_value_list::octave_value_list (const DiagMatrix&),
+	octave_value_list::octave_value_list (const RowVector&),
+	octave_value_list::octave_value_list (const ColumnVector&),
+	octave_value_list::octave_value_list (const Complex&),
+	octave_value_list::octave_value_list (const ComplexMatrix&),
+	octave_value_list::octave_value_list (const ComplexDiagMatrix&),
+	octave_value_list::octave_value_list (const ComplexRowVector&),
+	octave_value_list::octave_value_list (const ComplexColumnVector&),
+	octave_value_list::octave_value_list (const char *),
+	octave_value_list::octave_value_list (const std::string&),
+	octave_value_list::octave_value_list (const string_vector&),
+	octave_value_list::octave_value_list (double, double, double),
+	octave_value_list::octave_value_list (const Range&): Delete.
+	Adjust uses of octave_value/octave_value_list to handle this change.
+
+	* ov.cc (octave_value::octave_value (int)): New constructor.
+	* ov.h: Provide decl.
+	In files that construct integer-valued octave_value objects, use
+	ints instead of casing to double.
+
 2002-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (read_mat_ascii_data): Allow commas to separate values.

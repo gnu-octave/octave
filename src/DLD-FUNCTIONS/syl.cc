@@ -59,7 +59,7 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -87,7 +87,7 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   int arg_c_is_empty = empty_arg ("syl", c_nr, c_nc);
 
   if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
   else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
     return retval;
 

@@ -1220,7 +1220,7 @@ hdf5_import_multidim (hid_t data_id, hid_t space_id, hsize_t rank,
 	}
 
       if (retval > 0)
-	tc = lst;
+	tc = octave_value (lst);
     }
 
   return retval;
@@ -1686,7 +1686,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  d->global = hdf5_check_attr (group_id, "OCTAVE_GLOBAL");
 
 	  if (is_list)
-	    d->tc = lst;
+	    d->tc = octave_value (lst);
 	  else
 	    d->tc = m;
 	}
@@ -3905,9 +3905,10 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
       Octave_map::iterator i = m.begin ();
       while (i != m.end ())
 	{
-	  bool retval2 = add_hdf5_data (data_id, 
-					m.contents (i), m.key (i), "",
-					false, save_as_floats);
+	  // XXX FIXME XXX -- if the length of the structure array is
+	  // 1, should we really create a list object?
+	  bool retval2 = add_hdf5_data (data_id, octave_value (m.contents (i)),
+					m.key (i), "", false, save_as_floats);
 	  if (! retval2)
 	    goto error_cleanup;
 
@@ -4267,9 +4268,11 @@ save_mat5_binary_element (std::ostream& os,
 	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the data of each element
-	    bool retval2 = save_mat5_binary_element (os, m.contents (i), "",
-						     mark_as_global,
-						     save_as_floats);
+	    // XXX FIXME XXX -- if the length of the structure array is
+	    // 1, should we really create a list object?
+	    bool retval2
+	      = save_mat5_binary_element (os, octave_value (m.contents (i)),
+					  "", mark_as_global, save_as_floats);
 
 	    if (! retval2)
 	      goto error_cleanup;
@@ -5314,7 +5317,7 @@ save_precision (void)
 void
 symbols_of_load_save (void)
 {
-  DEFVAR (crash_dumps_octave_core, 1.0, crash_dumps_octave_core,
+  DEFVAR (crash_dumps_octave_core, true, crash_dumps_octave_core,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} crash_dumps_octave_core\n\
 If this variable is set to a nonzero value, Octave tries to save all\n\

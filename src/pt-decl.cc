@@ -216,7 +216,7 @@ foo\n\
 the variable @code{default_global_variable_value} is initially undefined.\n\
 @end defvr");
 
-  DEFVAR (initialize_global_variables, 0.0, initialize_global_variables,
+  DEFVAR (initialize_global_variables, false, initialize_global_variables,
     "-*- texinfo -*-\n\
 @defvr initialize_global_variables\n\
 If the value of this variable is nonzero, global variables are given\n\

@@ -48,7 +48,7 @@ matrix, @var{n} specifies the number of rows of @var{a} to use.  If\n\
 padded with zeros.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -87,7 +87,7 @@ padded with zeros.\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty || n_points == 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (arg.is_real_type ())
     {

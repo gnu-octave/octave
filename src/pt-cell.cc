@@ -59,7 +59,7 @@ tree_cell::rvalue (void)
 
       if (nc < 0)
 	nc = elt->length ();
-      else if (nc != elt->length ())
+      else if (nc != static_cast<int> (elt->length ()))
 	{
 	  ::error ("number of columns must match");
 	  return retval;

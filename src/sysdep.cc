@@ -387,7 +387,7 @@ getenv (\"PATH\")\n\
 returns a string containing the value of your path.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -461,7 +461,7 @@ identical to the above example, but don't wait for a keypress,\n\
 returning the empty string if no key is available.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   // XXX FIXME XXX -- add timeout and default value args?
 
@@ -608,8 +608,8 @@ floating point calculations.\n\
   oct_mach_info::float_format flt_fmt =
     oct_mach_info::native_float_format ();
 
-  return static_cast<double> (flt_fmt == oct_mach_info::ieee_little_endian
-			      || flt_fmt == oct_mach_info::ieee_big_endian);
+  return octave_value (flt_fmt == oct_mach_info::ieee_little_endian
+		       || flt_fmt == oct_mach_info::ieee_big_endian);
 }
 
 DEFUN (tilde_expand, args, ,
@@ -633,7 +633,7 @@ tilde_expand (\"~/bin\")\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 

@@ -160,13 +160,12 @@ close the file, an error message is printed and @code{fclose} returns\n\
 0.  Otherwise, it returns 1.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = static_cast<double> (octave_stream_list::remove (args(0),
-				  "fclose"));
+    retval = octave_stream_list::remove (args(0), "fclose");
   else
     print_usage ("fclose");
 
@@ -182,7 +181,7 @@ For example, it is always a good idea to flush the standard output\n\
 stream before calling @code{input}.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -196,14 +195,14 @@ stream before calling @code{input}.\n\
 	{
 	  flush_octave_stdout ();
 
-	  retval = 0.0;
+	  retval = 0;
 	}
       else
 	{
 	  octave_stream os = octave_stream_list::lookup (fid, "fflush");
 
 	  if (! error_state)
-	    retval = static_cast<double> (os.flush ());
+	    retval = os.flush ();
 	}
     }
   else
@@ -227,8 +226,8 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 {
   octave_value_list retval;
 
-  retval(1) = 0.0;
-  retval(0) = -1.0;
+  retval(1) = 0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -239,7 +238,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
       if (! error_state)
 	{
 	  octave_value len_arg = (nargin == 2)
-	    ? args(1) : octave_value (static_cast<double> (INT_MAX));
+	    ? args(1) : octave_value (INT_MAX);
 
 	  bool err = false;
 
@@ -285,7 +284,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
       if (! error_state)
 	{
 	  octave_value len_arg = (nargin == 2)
-	    ? args(1) : octave_value (static_cast<double> (INT_MAX));
+	    ? args(1) : octave_value (INT_MAX);
 
 	  bool err = false;
 
@@ -557,7 +556,7 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
 @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -566,7 +565,7 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
       octave_stream os = octave_stream_list::lookup (args(0), "frewind");
 
       if (! error_state)
-	retval = static_cast<double> (os.rewind ());
+	retval = os.rewind ();
     }
   else
     print_usage ("frewind");
@@ -586,7 +585,7 @@ offset must be zero, or a value returned by @code{ftell} (in which case\n\
 @var{origin} must be @code{SEEK_SET}.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -599,7 +598,7 @@ offset must be zero, or a value returned by @code{ftell} (in which case\n\
 	  octave_value origin_arg = (nargin == 3)
 	    ? args(2) : octave_value (-1.0);
 
-	  retval = static_cast<double> (os.seek (args(1), origin_arg));
+	  retval = os.seek (args(1), origin_arg);
 	}
     }
   else
@@ -615,7 +614,7 @@ Return the position of the file pointer as the number of characters\n\
 from the beginning of the file @var{fid}.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -639,7 +638,7 @@ This function is just like @code{printf}, except that the output is\n\
 written to the stream @var{fid} instead of @code{stdout}.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
   bool return_char_count = true;
 
   int nargin = args.length ();
@@ -702,7 +701,7 @@ DEFUN (fputs, args, ,
 Write a string to a file with no formatting.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -759,7 +758,7 @@ converted.\n\
 		    tmp_args(i-1) = args(i);
 		}
 
-	      retval(2) = static_cast<double> (os.printf (fmt, tmp_args));
+	      retval(2) = os.printf (fmt, tmp_args);
 	      retval(1) = os.error ();
 	      retval(0) = ostr->str ();
 	    }
@@ -863,7 +862,7 @@ conversions is returned in @var{count}\n\
 		    {
 		      octave_value tmp = os.scanf (fmt, size, count);
 
-		      retval(1) = static_cast<double> (count);
+		      retval(1) = count;
 		      retval(0) = tmp;
 		    }
 		}
@@ -952,7 +951,7 @@ string is treated as an end-of-file condition.\n\
 
 		      retval(3) = static_cast<double> (os.tell () + 1);
 		      retval(2) = errmsg;
-		      retval(1) = static_cast<double> (count);
+		      retval(1) = count;
 		      retval(0) = tmp;
 		    }
 		  else
@@ -1201,7 +1200,7 @@ values read is returned in @code{count}\n\
 
 	  octave_value tmp = do_fread (os, size, prec, skip, arch, count);
 
-	  retval(1) = static_cast<double> (count);
+	  retval(1) = count;
 	  retval(0) = tmp;
 	}
     }
@@ -1273,7 +1272,7 @@ The behavior of @code{fwrite} is undefined if the values in @var{data}\n\
 are too large to fit in the specified precision.\n\
 @end deftypefn")
 {
-  octave_value retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -1314,7 +1313,7 @@ file has already been encountered, not if the next read operation will\n\
 result in an end-of-file condition.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -1366,7 +1365,7 @@ error condition.\n\
 
 	  std::string error_message = os.error (clear, error_number);
 
-	  retval(1) = static_cast<double> (error_number);
+	  retval(1) = error_number;
 	  retval(0) = error_message;
 	}
     }
@@ -1409,7 +1408,7 @@ endwhile\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
@@ -1457,13 +1456,12 @@ Close a file identifier that was opened by @code{popen}.  You may also\n\
 use @code{fclose} for the same purpose.\n\
 @end deftypefn")
 {
-  double retval = -1.0;
+  octave_value retval = -1;
 
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = static_cast<double> (octave_stream_list::remove (args(0),
-				  "pclose"));
+    retval = octave_stream_list::remove (args(0), "pclose");
   else
     print_usage ("pclose");
 
@@ -1571,7 +1569,7 @@ Set the permission mask for file creation.  The parameter @var{mask}\n\
     print_usage ("umask");
 
   if (status >= 0)
-    retval(0) = static_cast<double> (status);
+    retval(0) = status;
 
   return retval;
 }
@@ -1582,7 +1580,7 @@ symbols_of_file_io (void)
   // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
   // this way for Matlab compatibility.
 
-  DEFCONSTX ("SEEK_SET", SBV_SEEK_SET, -1.0,
+  DEFCONSTX ("SEEK_SET", SBV_SEEK_SET, -1,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} SEEK_SET\n\
 @defvrx {Built-in Variable} SEEK_CUR\n\
@@ -1602,13 +1600,13 @@ used with fseek to position file relative to the end.\n\
 @end table\n\
 @end defvr");
 
-  DEFCONSTX ("SEEK_CUR", SBV_SEEK_CUR, 0.0,
+  DEFCONSTX ("SEEK_CUR", SBV_SEEK_CUR, 0,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} SEEK_CUR\n\
 See SEEK_SET.\n\
 @end defvr");
 
-  DEFCONSTX ("SEEK_END", SBV_SEEK_END, 1.0,
+  DEFCONSTX ("SEEK_END", SBV_SEEK_END, 1,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} SEEK_END\n\
 See SEEK_SET.\n\

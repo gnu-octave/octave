@@ -1782,7 +1782,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 		if (OCTAVE_SCAN (is, *elt, &tmp))
 		  {
 		    if (! discard)
-		      retval = static_cast<double> (tmp);
+		      retval = tmp;
 		  }
 		else
 		  quit = true;
@@ -1935,7 +1935,7 @@ octave_base_stream::oscanf (const std::string& fmt)
 		}
 	    }
 
-	  retval (nconv) = static_cast<double> (num_values);
+	  retval(nconv) = num_values;
 
 	  if (! quit)
 	    {

@@ -621,7 +621,7 @@ string_fill_char (void)
 void
 symbols_of_pt_mat (void)
 {
-  DEFVAR (empty_list_elements_ok, 1.0, empty_list_elements_ok,
+  DEFVAR (empty_list_elements_ok, true, empty_list_elements_ok,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} empty_list_elements_ok\n\
 This variable controls whether Octave ignores empty matrices in a matrix\n\
@@ -640,7 +640,7 @@ and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.\n\
 The default value is 1.\n\
 @end defvr");
 
-  DEFVAR (implicit_num_to_str_ok, 0.0, implicit_num_to_str_ok,
+  DEFVAR (implicit_num_to_str_ok, false, implicit_num_to_str_ok,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} implicit_num_to_str_ok\n\
 If the value of @code{implicit_num_to_str_ok} is nonzero, implicit\n\

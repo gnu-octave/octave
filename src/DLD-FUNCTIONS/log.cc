@@ -62,7 +62,7 @@ needs to be improved to be more robust.\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (arg.is_real_scalar ())
     {
@@ -181,7 +181,7 @@ needs to be improved to be more robust.\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Matrix ();
+    return octave_value (Matrix ());
 
   if (arg.is_real_scalar ())
     {

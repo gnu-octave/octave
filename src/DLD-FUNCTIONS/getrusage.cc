@@ -138,29 +138,29 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
 
   getrusage (RUSAGE_SELF, &ru);
 
-  tv_tmp ["sec"] = static_cast<double> (ru.ru_utime.tv_sec);
-  tv_tmp ["usec"] = static_cast<double> (ru.ru_utime.tv_usec);
-  m ["utime"] = octave_value (tv_tmp);
+  tv_tmp ["sec"](0) = static_cast<double> (ru.ru_utime.tv_sec);
+  tv_tmp ["usec"](0) = static_cast<double> (ru.ru_utime.tv_usec);
+  m ["utime"](0) = octave_value (tv_tmp);
 
-  tv_tmp ["sec"] = static_cast<double> (ru.ru_stime.tv_sec);
-  tv_tmp ["usec"] = static_cast<double> (ru.ru_stime.tv_usec);
-  m ["stime"] = octave_value (tv_tmp);
+  tv_tmp ["sec"](0) = static_cast<double> (ru.ru_stime.tv_sec);
+  tv_tmp ["usec"](0) = static_cast<double> (ru.ru_stime.tv_usec);
+  m ["stime"](0) = octave_value (tv_tmp);
 
 #if ! defined (RUSAGE_TIMES_ONLY)
-  m ["maxrss"] = static_cast<double> (ru.ru_maxrss);
-  m ["ixrss"] = static_cast<double> (ru.ru_ixrss);
-  m ["idrss"] = static_cast<double> (ru.ru_idrss);
-  m ["isrss"] = static_cast<double> (ru.ru_isrss);
-  m ["minflt"] = static_cast<double> (ru.ru_minflt);
-  m ["majflt"] = static_cast<double> (ru.ru_majflt);
-  m ["nswap"] = static_cast<double> (ru.ru_nswap);
-  m ["inblock"] = static_cast<double> (ru.ru_inblock);
-  m ["oublock"] = static_cast<double> (ru.ru_oublock);
-  m ["msgsnd"] = static_cast<double> (ru.ru_msgsnd);
-  m ["msgrcv"] = static_cast<double> (ru.ru_msgrcv);
-  m ["nsignals"] = static_cast<double> (ru.ru_nsignals);
-  m ["nvcsw"] = static_cast<double> (ru.ru_nvcsw);
-  m ["nivcsw"] = static_cast<double> (ru.ru_nivcsw);
+  m ["maxrss"](0) = static_cast<double> (ru.ru_maxrss);
+  m ["ixrss"](0) = static_cast<double> (ru.ru_ixrss);
+  m ["idrss"](0) = static_cast<double> (ru.ru_idrss);
+  m ["isrss"](0) = static_cast<double> (ru.ru_isrss);
+  m ["minflt"](0) = static_cast<double> (ru.ru_minflt);
+  m ["majflt"](0) = static_cast<double> (ru.ru_majflt);
+  m ["nswap"](0) = static_cast<double> (ru.ru_nswap);
+  m ["inblock"](0) = static_cast<double> (ru.ru_inblock);
+  m ["oublock"](0) = static_cast<double> (ru.ru_oublock);
+  m ["msgsnd"](0) = static_cast<double> (ru.ru_msgsnd);
+  m ["msgrcv"](0) = static_cast<double> (ru.ru_msgrcv);
+  m ["nsignals"](0) = static_cast<double> (ru.ru_nsignals);
+  m ["nvcsw"](0) = static_cast<double> (ru.ru_nvcsw);
+  m ["nivcsw"](0) = static_cast<double> (ru.ru_nivcsw);
 #endif
 
 #else
@@ -178,46 +178,46 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   fraction = ticks % HZ;
   seconds = ticks / HZ;
 
-  tv_tmp ["sec"] = static_cast<double> (seconds);
-  tv_tmp ["usec"] = static_cast<double> (fraction * 1e6 / HZ);
-  m ["utime"] = octave_value (tv_tmp);
+  tv_tmp ["sec"](0) = static_cast<double> (seconds);
+  tv_tmp ["usec"](0) = static_cast<double> (fraction * 1e6 / HZ);
+  m ["utime"](0) = octave_value (tv_tmp);
 
   ticks = t.tms_stime + t.tms_cstime;
   fraction = ticks % HZ;
   seconds = ticks / HZ;
 
-  tv_tmp ["sec"] = static_cast<double> (seconds);
-  tv_tmp ["usec"] = static_cast<double> (fraction * 1e6 / HZ);
-  m ["stime"] = octave_value (tv_tmp);
+  tv_tmp ["sec"](0) = static_cast<double> (seconds);
+  tv_tmp ["usec"](0) = static_cast<double> (fraction * 1e6 / HZ);
+  m ["stime"](0) = octave_value (tv_tmp);
 
 #else
 
-  tv_tmp ["sec"] = 0.0;
-  tv_tmp ["usec"] = 0.0;
-  m ["utime"] = octave_value (tv_tmp);
+  tv_tmp ["sec"](0) = 0;
+  tv_tmp ["usec"](0) = 0;
+  m ["utime"](0) = octave_value (tv_tmp);
 
-  tv_tmp ["sec"] = 0.0;
-  tv_tmp ["usec"] = 0.0;
-  m ["stime"] = octave_value (tv_tmp);
+  tv_tmp ["sec"](0) = 0;
+  tv_tmp ["usec"](0) = 0;
+  m ["stime"](0) = octave_value (tv_tmp);
 
 #endif
 
   double tmp = lo_ieee_nan_value ();
 
-  m ["maxrss"] = tmp;
-  m ["ixrss"] = tmp;
-  m ["idrss"] = tmp;
-  m ["isrss"] = tmp;
-  m ["minflt"] = tmp;
-  m ["majflt"] = tmp;
-  m ["nswap"] = tmp;
-  m ["inblock"] = tmp;
-  m ["oublock"] = tmp;
-  m ["msgsnd"] = tmp;
-  m ["msgrcv"] = tmp;
-  m ["nsignals"] = tmp;
-  m ["nvcsw"] = tmp;
-  m ["nivcsw"] = tmp;
+  m ["maxrss"](0) = tmp;
+  m ["ixrss"](0) = tmp;
+  m ["idrss"](0) = tmp;
+  m ["isrss"](0) = tmp;
+  m ["minflt"](0) = tmp;
+  m ["majflt"](0) = tmp;
+  m ["nswap"](0) = tmp;
+  m ["inblock"](0) = tmp;
+  m ["oublock"](0) = tmp;
+  m ["msgsnd"](0) = tmp;
+  m ["msgrcv"](0) = tmp;
+  m ["nsignals"](0) = tmp;
+  m ["nvcsw"](0) = tmp;
+  m ["nivcsw"](0) = tmp;
 
 #endif
 

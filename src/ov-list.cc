@@ -58,7 +58,7 @@ octave_list::subsref (const std::string type,
 	  {
 	    idx_vector i = tmp_idx (0).index_vector ();
 
-	    retval = octave_value_list (lst.index (i));
+	    retval = octave_value (octave_value_list (lst.index (i)));
 	  }
 	else
 	  error ("only one index allowed for lists");
@@ -106,7 +106,7 @@ octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
     {
       idx_vector i = idx (0).index_vector ();
 
-      retval = octave_value_list (lst.index (i, resize_ok));
+      retval = octave_value (octave_value_list (lst.index (i, resize_ok)));
     }
   else
     error ("lists may only be indexed by a single scalar");
@@ -357,7 +357,7 @@ a list containing the three elements @samp{(1 2 (3 4))}.\n\
 		tmp.append (ov);
 	    }
 
-	  retval = tmp;
+	  retval = octave_value (tmp);
 	}
     }
   else
@@ -381,7 +381,7 @@ Return a new list created by reversing the elements of @var{list}.\n\
       octave_value_list tmp = args(0).list_value ();
 
       if (! error_state)
-	  retval = tmp.reverse ();
+	  retval = octave_value (tmp.reverse ());
     }
   else
     print_usage ("reverse");
@@ -441,7 +441,7 @@ is equivalent to @code{append (@var{list_1}, @var{list_2})}.\n\
 		}
 
 	      if (! error_state)
-		retval = list_1.splice (offset, length, list_2);
+		retval = octave_value (list_1.splice (offset, length, list_2));
 	    }
 	  else
 	    error ("splice: OFFSET must be an integer");

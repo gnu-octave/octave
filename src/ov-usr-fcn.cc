@@ -578,8 +578,8 @@ octave_user_function::bind_automatic_vars
   if (! arg_names.empty ())
     argn_sr->define (arg_names);
 
-  nargin_sr->define (static_cast<double> (nargin));
-  nargout_sr->define (static_cast<double> (nargout));
+  nargin_sr->define (nargin);
+  nargout_sr->define (nargout);
 
   if (takes_varargs ())
     {
@@ -760,7 +760,7 @@ The value given to otherwise uninitialized return values if\n\
 @code{[]}.\n\
 @end defvr");
 
-  DEFVAR (define_all_return_values, 0.0, define_all_return_values,
+  DEFVAR (define_all_return_values, false, define_all_return_values,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} define_all_return_values\n\
 If the value of @code{define_all_return_values} is nonzero, Octave\n\
@@ -779,7 +779,7 @@ returns to the top level.\n\
 The default value is 256.\n\
 @end defvr");
 
-  DEFVAR (return_last_computed_value, 0.0, return_last_computed_value,
+  DEFVAR (return_last_computed_value, false, return_last_computed_value,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} return_last_computed_value\n\
 If the value of @code{return_last_computed_value} is true, and a\n\

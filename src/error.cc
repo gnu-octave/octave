@@ -56,7 +56,7 @@ verror (const char *name, const char *fmt, va_list args)
   if (name)
     output_buf << name << ": ";
   output_buf.vform (fmt, args);
-  output_buf << endl;
+  output_buf << endl << ends;
 
   char *msg = output_buf.str ();
 

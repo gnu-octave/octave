@@ -1,7 +1,7 @@
 // tree-plot.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -534,7 +534,7 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 
 	      int n = NINT (val);
 
-	      if (n > n_max || n < 1)
+	      if (n < 1 || n_max > 0 && n > n_max)
 		{
 		  ::error ("using: column %d out of range", n); 
 		  return -1;

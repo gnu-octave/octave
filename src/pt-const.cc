@@ -4930,6 +4930,11 @@ TC_REP::do_vector_assign (const tree_constant& rhs, idx_vector& iv)
 	      ::error ("A(matrix) = X: where A is a column vector, X must also be a");
 	      ::error ("column vector with the same number of elements as matrix");
 	    }
+	  else if (nr == 0 || nc == 0)
+	    {
+	      ::error ("A(matrix) = X: X must be a vector with the same");
+	      ::error ("number of elements as matrix");
+	    }
 	  else
 	    panic_impossible ();
 	}
@@ -5016,6 +5021,11 @@ TC_REP::do_vector_assign (const tree_constant& rhs, Range& ri)
 	{
 	  ::error ("A(range) = X: where A is a column vector, X must also be a");
 	  ::error ("column vector with the same number of elements as range");
+	}
+      else if (nr == 0 || nc == 0)
+	{
+	  ::error ("A(range) = X: X must be a vector with the same");
+	  ::error ("number of elements as range");
 	}
       else
 	panic_impossible ();

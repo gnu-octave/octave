@@ -51,6 +51,9 @@
 /* Define if you don't have QPSOL. */
 #undef QPSOL_MISSING
 
+/* Define if your struct rusage only has time information. */
+#undef RUSAGE_TIMES_ONLY
+
 /* Define this to be the path separator for your system, as a
    character constant */
 #undef SEPCHAR

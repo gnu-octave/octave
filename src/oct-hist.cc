@@ -49,10 +49,12 @@ Software Foundation, Inc.
 #include "error.h"
 #include "input.h"
 #include "octave.h"
+#include "oct-obj.h"
 #include "user-prefs.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
 #include "sighandlers.h"
+#include "defun.h"
 
 extern "C"
 {
@@ -86,7 +88,7 @@ default_history_size (void)
 {
   int size = 1024;
   char *env_size = getenv ("OCTAVE_HISTSIZE");
-  if (env_size != (char *) NULL)
+  if (env_size)
     {
       int val;
       if (sscanf (env_size, "%d", &val) == 1)
@@ -98,24 +100,21 @@ default_history_size (void)
 static char *
 default_history_file (void)
 {
-  char *file = (char *) NULL;;
+  char *file = 0;
 
   char *env_file = getenv ("OCTAVE_HISTFILE");
-  if (env_file != (char *) NULL)
+  if (env_file)
     {
       fstream f (env_file, (ios::in | ios::out));
-      if (f != 0)
+      if (f)
 	{
 	  file = strsave (env_file);
 	  f.close ();
 	}
     }
 
-  if (file == (char *) NULL)
-    {
-      if (home_directory != NULL)
-	file = strconcat (home_directory, "/.octave_hist");
-    }
+  if (! file && home_directory)
+    file = strconcat (home_directory, "/.octave_hist");
 
   return file;
 }
@@ -260,7 +259,7 @@ do_history (int argc, char **argv)
 
   if (hlist)
     {
-      for (int i = 0; hlist[i] != (HIST_ENTRY *) NULL; i++)
+      for (int i = 0; hlist[i]; i++)
 	; // Do nothing.
 
       if (limit < 0)
@@ -321,7 +320,7 @@ edit_history_readline (fstream& stream)
   if (! lindex)
     {
       delete [] line;
-      return (char *) NULL;
+      return 0;
     }
 
   if (lindex + 2 >= line_len)
@@ -354,12 +353,12 @@ extern "C"
 static void
 edit_history_repl_hist (char *command)
 {
-  if (command == (char *) NULL || *command == '\0')
+  if (! command || ! *command)
     return;
 
   HIST_ENTRY **hlist = history_list ();
 
-  if (hlist == (HIST_ENTRY **) NULL)
+  if (! hlist)
     return;
 
   for (int i = 0; hlist[i]; i++)
@@ -371,11 +370,11 @@ edit_history_repl_hist (char *command)
 
 // Don't free this.
   HIST_ENTRY *histent = history_get (history_base + i);
-  if (histent == (HIST_ENTRY *) NULL)
+  if (! histent)
     return;
 
-  char *data = (char *) NULL;
-  if (histent->data != (char *) NULL)
+  char *data = 0;
+  if (histent->data)
     {
       int len = strlen (histent->data);
       data = (char *) malloc (len);
@@ -387,12 +386,12 @@ edit_history_repl_hist (char *command)
   if (command[n - 1] == '\n')
     command[n - 1] = '\0';
 
-  if (command != (char *) NULL && *command != '\0')
+  if (command && *command)
     {
       HIST_ENTRY *discard = replace_history_entry (i, command, data);
-      if (discard != (HIST_ENTRY *) NULL)
+      if (discard)
 	{
-	  if (discard->line != (char *) NULL)
+	  if (discard->line)
 	    free (discard->line);
 
 	  free ((char *) discard);
@@ -403,7 +402,7 @@ edit_history_repl_hist (char *command)
 static void
 edit_history_add_hist (char *line)
 {
-  if (line != (char *) NULL)
+  if (line)
     {
       int len = strlen (line);
       if (len > 0 && line[len-1] == '\n')
@@ -425,7 +424,7 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
 
   int hist_count = 0;
 
-  while (hlist[hist_count++] != (HIST_ENTRY *) NULL)
+  while (hlist[hist_count++])
     ; // Find the number of items in the history list.
 
 // The current command line is already part of the history list by the
@@ -474,13 +473,13 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
       || hist_end > hist_count)
     {
       error ("%s: history specification out of range", warn_for);
-      return (char *) NULL;
+      return 0;
     }
 
   if (usage_error)
     {
       usage ("%s [first] [last]", warn_for);
-      return (char *) NULL;
+      return 0;
     }
 
   if (hist_end < hist_beg)
@@ -491,14 +490,14 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
       reverse = 1;
     }
 
-  char *name = tmpnam ((char *) NULL);
+  char *name = tmpnam (0);
 
   fstream file (name, ios::out);
 
   if (! file)
     {
       error ("%s: couldn't open temporary file `%s'", warn_for, name);
-      return (char *) NULL;
+      return 0;
     }
 
   if (reverse)
@@ -522,7 +521,7 @@ do_edit_history (int argc, char **argv)
 {
   char *name = mk_tmp_hist_file (argc, argv, 0, "edit_history");
 
-  if (name == (char *) NULL)
+  if (! name)
     return;
 
 // Call up our favorite editor on the file of commands.
@@ -545,7 +544,7 @@ do_edit_history (int argc, char **argv)
 
   char *line;
   int first = 1;
-  while ((line = edit_history_readline (file)) != NULL)
+  while ((line = edit_history_readline (file)) != 0)
     {
 
 // Skip blank lines
@@ -592,7 +591,7 @@ do_run_history (int argc, char **argv)
 {
   char *name = mk_tmp_hist_file (argc, argv, 1, "run_history");
 
-  if (name == (char *) NULL)
+  if (! name)
     return;
 
 // Turn on command echo, so the output from this will make better sense.
@@ -625,6 +624,54 @@ current_history_number (void)
   else
     return -1;
 
+}
+
+DEFUN_TEXT ("edit_history", Fedit_history, Sedit_history, -1, 1,
+  "edit_history [first] [last]\n\
+\n\
+edit commands from the history list")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("edit_history");
+
+  do_edit_history (argc, argv);
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN_TEXT ("history", Fhistory, Shistory, -1, 1,
+  "history [N] [-w file] [-r file] [-q]\n\
+\n\
+display, save, or load command history")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("history");
+
+  do_history (argc, argv);
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN_TEXT ("run_history", Frun_history, Srun_history, -1, 1,
+  "run_history [first] [last]\n\
+\n\
+run commands from the history list")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("run_history");
+
+  do_run_history (argc, argv);
+
+  DELETE_ARGV;
+
+  return retval;
 }
 
 /*

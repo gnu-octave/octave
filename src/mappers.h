@@ -26,7 +26,39 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 class Complex;
 
-#include "missing-math.h"
+typedef double (*d_d_Mapper)(double);
+typedef double (*d_c_Mapper)(const Complex&);
+typedef Complex (*c_c_Mapper)(const Complex&);
+
+// If can_return_complex_for_real_arg is 1, lower_limit and
+// upper_limit specify the range of values for which a real arg
+// returns a real value.  Outside that range, we have to convert args
+// to complex, and call the complex valued function.
+//
+// If can_return_complex_for_real_arg is 0, lower_limit and
+// upper_limit are ignored.
+
+struct Mapper_fcn
+{
+  int can_return_complex_for_real_arg;
+  double lower_limit;
+  double upper_limit;
+  d_d_Mapper d_d_mapper;
+  d_c_Mapper d_c_mapper;
+  c_c_Mapper c_c_mapper;
+};
+
+struct builtin_mapper_function
+{
+  char *name;
+  int can_return_complex_for_real_arg;
+  double lower_limit;
+  double upper_limit;
+  d_d_Mapper d_d_mapper;
+  d_c_Mapper d_c_mapper;
+  c_c_Mapper c_c_mapper;
+  char *help_string;
+};
 
 extern double arg (double x);
 extern double conj (double x);
@@ -35,13 +67,13 @@ extern double imag (double x);
 extern double real (double x);
 extern double round (double x);
 extern double signum (double x);
+extern double xisnan (double x);
 extern double xfinite (double x);
 extern double xisinf (double x);
-extern double xisnan (double x);
 
+extern double xisnan (const Complex& x);
 extern double xfinite (const Complex& x);
 extern double xisinf (const Complex& x);
-extern double xisnan (const Complex& x);
 
 extern Complex acos (const Complex& x);
 extern Complex acosh (const Complex& x);
@@ -57,6 +89,8 @@ extern Complex round (const Complex& x);
 extern Complex signum (const Complex& x);
 extern Complex tan (const Complex& x);
 extern Complex tanh (const Complex& x);
+
+extern void install_mapper_functions (void);
 
 #endif
 

@@ -28,6 +28,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+#include <stddef.h>
+
 typedef void (*cleanup_func)(void *ptr);
 
 void add_unwind_protect (cleanup_func fptr, void *ptr);

@@ -1,4 +1,4 @@
-// The constants for the tree class.                      -*- C++ -*-
+// tc-rep.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -656,7 +656,7 @@ tree_constant_rep::maybe_resize (int i, int j)
 }
 
 void
-tree_constant_rep::maybe_resize (int i, force_orient f_orient = no_orient)
+tree_constant_rep::maybe_resize (int i, force_orient f_orient)
 {
   int nr = rows ();
   int nc = columns ();
@@ -816,7 +816,7 @@ tree_constant_rep::to_matrix (void) const
 }
 
 tree_constant_rep::constant_type
-tree_constant_rep::force_numeric (int force_str_conv = 0)
+tree_constant_rep::force_numeric (int force_str_conv)
 {
   switch (type_tag)
     {
@@ -887,7 +887,7 @@ tree_constant_rep::force_numeric (int force_str_conv = 0)
 }
 
 tree_constant
-tree_constant_rep::make_numeric (int force_str_conv = 0) const
+tree_constant_rep::make_numeric (int force_str_conv) const
 {
   tree_constant retval;
   switch (type_tag)
@@ -1488,10 +1488,10 @@ tree_constant_rep::load (istream& is)
 
   char *tag = extract_keyword (is, "type");
 
-  if (tag != (char *) NULL && *tag != '\0')
+  if (tag && *tag)
     {
       char *ptr = strchr (tag, ' ');
-      if (ptr != (char *) NULL)
+      if (ptr)
 	{
 	  *ptr = '\0';
 	  is_global = (strncmp (tag, "global", 6) == 0);
@@ -2567,7 +2567,7 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	  && (scalar < m_fcn.lower_limit
 	      || scalar > m_fcn.upper_limit))
 	{
-	  if (m_fcn.c_c_mapper != NULL)
+	  if (m_fcn.c_c_mapper)
 	    {
 	      Complex c = m_fcn.c_c_mapper (Complex (scalar));
 	      retval = tree_constant (c);
@@ -2577,7 +2577,7 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	}
       else
 	{
-	  if (m_fcn.d_d_mapper != NULL)
+	  if (m_fcn.d_d_mapper)
 	    {
 	      double d = m_fcn.d_d_mapper (scalar);
 	      retval = tree_constant (d);
@@ -2591,7 +2591,7 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	  && (any_element_less_than (*matrix, m_fcn.lower_limit)
 	      || any_element_greater_than (*matrix, m_fcn.upper_limit)))
 	{
-	  if (m_fcn.c_c_mapper != NULL)
+	  if (m_fcn.c_c_mapper)
 	    {
 	      ComplexMatrix cm = map (m_fcn.c_c_mapper,
 				      ComplexMatrix (*matrix));
@@ -2602,7 +2602,7 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	}
       else
 	{
-	  if (m_fcn.d_d_mapper != NULL)
+	  if (m_fcn.d_d_mapper)
 	    {
 	      Matrix m = map (m_fcn.d_d_mapper, *matrix);
 	      retval = tree_constant (m);
@@ -2612,13 +2612,13 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	}
       break;
     case complex_scalar_constant:
-      if (m_fcn.d_c_mapper != NULL)
+      if (m_fcn.d_c_mapper)
 	{
 	  double d;
 	  d = m_fcn.d_c_mapper (*complex_scalar);
 	  retval = tree_constant (d);
 	}
-      else if (m_fcn.c_c_mapper != NULL)
+      else if (m_fcn.c_c_mapper)
 	{
 	  Complex c;
 	  c = m_fcn.c_c_mapper (*complex_scalar);
@@ -2628,13 +2628,13 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
 	panic_impossible ();
       break;
     case complex_matrix_constant:
-      if (m_fcn.d_c_mapper != NULL)
+      if (m_fcn.d_c_mapper)
 	{
 	  Matrix m;
 	  m = map (m_fcn.d_c_mapper, *complex_matrix);
 	  retval = tree_constant (m);
 	}
-      else if (m_fcn.c_c_mapper != NULL)
+      else if (m_fcn.c_c_mapper)
 	{
 	  ComplexMatrix cm;
 	  cm = map (m_fcn.c_c_mapper, *complex_matrix);
@@ -2659,7 +2659,7 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
  * hand off to other functions to do the real work.
  */
 void
-tree_constant_rep::assign (tree_constant& rhs, const Octave_object& args)
+tree_constant_rep::assign (const tree_constant& rhs, const Octave_object& args)
 {
   tree_constant rhs_tmp = rhs.make_numeric ();
 
@@ -2698,7 +2698,7 @@ tree_constant_rep::assign (tree_constant& rhs, const Octave_object& args)
  * this can convert the left-hand side to a matrix.
  */
 void
-tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
+tree_constant_rep::do_scalar_assignment (const tree_constant& rhs,
 					 const Octave_object& args)
 {
   assert (type_tag == unknown_constant
@@ -2805,7 +2805,7 @@ tree_constant_rep::do_scalar_assignment (tree_constant& rhs,
  * matrix to an expression with empty indices to do nothing.
  */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 const Octave_object& args)
 {
   assert (type_tag == unknown_constant
@@ -2878,8 +2878,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
  * Matrix assignments indexed by a single value.
  */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 tree_constant& i_arg)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 const tree_constant& i_arg)
 {
   int nr = rows ();
   int nc = columns ();
@@ -2924,8 +2924,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
  * multi-dimensional matrices.
  */
 void
-tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
-						    tree_constant& i_arg)
+tree_constant_rep::fortran_style_matrix_assignment (const tree_constant& rhs,
+						    const tree_constant& i_arg)
 {
   tree_constant tmp_i = i_arg.make_numeric_or_magic ();
 
@@ -3087,7 +3087,7 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
  * Fortran-style assignment for vector index.
  */
 void
-tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::fortran_style_matrix_assignment (const tree_constant& rhs,
 						    idx_vector& i)
 {
   assert (rhs.is_matrix_type ());
@@ -3133,7 +3133,7 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
  */
 void
 tree_constant_rep::fortran_style_matrix_assignment
-  (tree_constant& rhs, tree_constant_rep::constant_type mci)
+  (const tree_constant& rhs, tree_constant_rep::constant_type mci)
 {
   assert (rhs.is_matrix_type () && mci == tree_constant_rep::magic_colon);
 
@@ -3182,7 +3182,8 @@ tree_constant_rep::fortran_style_matrix_assignment
  * assignment to a matrix indexed by two colons.
  */
 void
-tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
+tree_constant_rep::vector_assignment (const tree_constant& rhs,
+				      const tree_constant& i_arg)
 {
   int nr = rows ();
   int nc = columns ();
@@ -3301,7 +3302,7 @@ tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
  * Assignment to a vector with an integer index.
  */
 void
-tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
+tree_constant_rep::do_vector_assign (const tree_constant& rhs, int i)
 {
   int rhs_nr = rhs.rows ();
   int rhs_nc = rhs.columns ();
@@ -3359,7 +3360,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
  * Assignment to a vector with a vector index.
  */
 void
-tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
+tree_constant_rep::do_vector_assign (const tree_constant& rhs,
+				     idx_vector& iv)
 {
   if (rhs.is_zero_by_zero ())
     {
@@ -3464,7 +3466,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
  * Assignment to a vector with a range index.
  */
 void
-tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
+tree_constant_rep::do_vector_assign (const tree_constant& rhs,
+				     Range& ri)
 {
   if (rhs.is_zero_by_zero ())
     {
@@ -3573,9 +3576,9 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
  * assignment.
  */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 tree_constant& i_arg,
-					 tree_constant& j_arg)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 const tree_constant& i_arg,
+					 const tree_constant& j_arg)
 {
   tree_constant tmp_i = i_arg.make_numeric_or_range_or_magic ();
 
@@ -3637,8 +3640,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* MA1 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
-					 tree_constant& j_arg)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs, int i,
+					 const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
@@ -3775,8 +3778,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 
 /* MA2 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
-					 tree_constant& j_arg)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 idx_vector& iv,
+					 const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
@@ -3907,8 +3911,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 
 /* MA3 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 Range& ri, tree_constant& j_arg)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 Range& ri,
+					 const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
@@ -4044,9 +4049,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* MA4 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 tree_constant_rep::constant_type i,
-					 tree_constant& j_arg)
+					 const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
@@ -4227,7 +4232,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 1 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, int j)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 int i, int j)
 {
   REP_ELEM_ASSIGN (i, j, rhs.double_value (), rhs.complex_value (),
 		   rhs.is_real_type ());
@@ -4235,7 +4241,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, int j)
 
 /* 2 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs, int i,
 					 idx_vector& jv)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
@@ -4247,7 +4253,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 
 /* 3 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, Range& rj)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 int i, Range& rj)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -4265,7 +4272,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i, Range& rj)
 
 /* 4 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs, int i,
 					 tree_constant_rep::constant_type mcj)
 {
   assert (mcj == magic_colon);
@@ -4295,7 +4302,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 
 /* 5 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 idx_vector& iv, int j)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
@@ -4310,8 +4317,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 6 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 idx_vector& iv, idx_vector& jv)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 idx_vector& iv,
+					 idx_vector& jv)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -4329,8 +4337,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 7 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 idx_vector& iv, Range& rj)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 idx_vector& iv,
+					 Range& rj)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -4352,7 +4361,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 8 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 idx_vector& iv,
 					 tree_constant_rep::constant_type mcj)
 {
   assert (mcj == magic_colon);
@@ -4381,7 +4391,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 
 /* 9 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri, int j)
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 Range& ri, int j)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
 
@@ -4399,7 +4410,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri, int j)
 
 /* 10 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 Range& ri,
 					 idx_vector& jv)
 {
   REP_RHS_MATRIX (rhs, rhs_m, rhs_cm, rhs_nr, rhs_nc);
@@ -4422,7 +4434,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 
 /* 11 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 Range& ri,
 					 Range& rj)
 {
   double ib = ri.base ();
@@ -4448,7 +4461,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 
 /* 12 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
+					 Range& ri,
 					 tree_constant_rep::constant_type mcj)
 {
   assert (mcj == magic_colon);
@@ -4479,7 +4493,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, Range& ri,
 
 /* 13 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
 					 int j)
 {
@@ -4510,7 +4524,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 14 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
 					 idx_vector& jv)
 {
@@ -4540,7 +4554,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 15 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
 					 Range& rj)
 {
@@ -4574,7 +4588,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 /* 16 */
 void
-tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
+tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 tree_constant_rep::constant_type mci,
 					 tree_constant_rep::constant_type mcj)
 {
@@ -5247,8 +5261,8 @@ tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
 
   if (index_nr >= 1 && index_nc >= 1)
     {
-      const double *cop_out = (const double *) NULL;
-      const Complex *c_cop_out = (const Complex *) NULL;
+      const double *cop_out = 0;
+      const Complex *c_cop_out = 0;
       int real_type = type_tag == matrix_constant;
       if (real_type)
 	cop_out = matrix->data ();
@@ -6224,9 +6238,10 @@ tree_constant
 tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 				    tree_constant_rep::constant_type mcj) const
 {
+  tree_constant retval;
   assert (mci == magic_colon && mcj == magic_colon);
-
-  return tree_constant (*this);
+  retval = tree_constant (*this);
+  return retval;
 }
 
 tree_constant

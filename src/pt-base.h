@@ -1,4 +1,4 @@
-// tree.h                                                -*- C++ -*-
+// tree-base.h                                           -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -24,24 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_tree_base_h)
 #define octave_tree_base_h 1
 
-#include <stdio.h>
-#include <time.h>
-#include <assert.h>
-
-#ifndef NULL_TREE
-#define NULL_TREE (tree *)NULL
-#endif
-
-#ifndef NULL_TREE_CONST
-#define NULL_TREE_CONST (tree_constant *)NULL
-#endif
-
-class tree;
-class tree_fvc;
-class ostream;
 class tree_constant;
-class tree_identifier;
-class tree_argument_list;
 
 /*
  * Base class for the parse tree.

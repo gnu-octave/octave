@@ -27,6 +27,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <sys/types.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream.h>
@@ -49,7 +54,7 @@ extern char *xmalloc ();
  */
 #if 0
 #define LINE_SIZE 8192
-static int no_line_editing = 1;
+static int no_line_editing = 0;
 #endif
 
 char *
@@ -57,7 +62,7 @@ gnu_readline (char *s)
 {
 #if 0
   static int state = 0;
-  static char *line_from_stdin = (char *) NULL;
+  static char *line_from_stdin = 0;
   if (no_line_editing)
     {
       if (! state)
@@ -75,20 +80,38 @@ gnu_readline (char *s)
 }
 }
 
-#include "variables.h"
+#include "help.h"
 #include "error.h"
 #include "utils.h"
 #include "input.h"
 #include "pager.h"
-#include "help.h"
+#include "parse.h"
+#include "dirfns.h"
+#include "octave.h"
+#include "variables.h"
+#include "tree-const.h"
 #include "octave-hist.h"
 #include "sighandlers.h"
-#include "parse.h"
 #include "user-prefs.h"
-#include "builtins.h"
+#include "oct-obj.h"
+#include "defun.h"
+
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 1024
+#endif
+
+// The size that strings change by.
+#ifndef DEFAULT_ARRAY_SIZE
+#define DEFAULT_ARRAY_SIZE 512
+#endif
+
+// The growth rate for the prompt string.
+#ifndef PROMPT_GROWTH
+#define PROMPT_GROWTH 50
+#endif
 
 // Global pointer for eval().
-const char *current_eval_string = (char *) NULL;
+const char *current_eval_string = 0;
 
 // Nonzero means get input from current_eval_string.
 int get_input_from_eval_string = 0;
@@ -97,13 +120,13 @@ int get_input_from_eval_string = 0;
 int reading_fcn_file = 0;
 
 // Simple name of function file we are reading.
-char *curr_fcn_file_name = (char *) NULL;
+char *curr_fcn_file_name = 0;
 
 // Nonzero means we're parsing a script file.
 int reading_script_file = 0;
 
 // If we are reading from an M-file, this is it.
-FILE *ff_instream = (FILE *) NULL;
+FILE *ff_instream = 0;
 
 // Nonzero means we are using readline.
 int using_readline = 1;
@@ -121,11 +144,282 @@ int forced_interactive = 0;
 int promptflag = 1;
 
 // The current line of input, from wherever.
-char *current_input_line = (char *) NULL;
+char *current_input_line = 0;
 
 // A line of input from readline.
-static char *octave_gets_line = (char *) NULL;
+static char *octave_gets_line = 0;
 
+extern tree_constant eval_string (const char *string, int print,
+				  int ans_assign, int& parse_status);
+
+/*
+ * Append SOURCE to TARGET at INDEX.  SIZE is the current amount of
+ * space allocated to TARGET.  SOURCE can be NULL, in which case
+ * nothing happens.  Gets rid of SOURCE by free ()ing it.  Returns
+ * TARGET in case the location has changed.
+ */
+static char *
+sub_append_string (char *source, char *target, int *index, int *size)
+{
+  if (source)
+    {
+      while ((int)strlen (source) >= (int)(*size - *index))
+	{
+	  char *tmp = new char [*size += DEFAULT_ARRAY_SIZE];
+	  strcpy (tmp, target);
+	  delete [] target;
+	  target = tmp;
+	}
+
+      strcat (target, source);
+      *index += strlen (source);
+
+      delete [] source;
+    }
+  return target;
+}
+
+/*
+ * Return the octal number parsed from STRING, or -1 to indicate that
+ * the string contained a bad number.
+ */
+int
+read_octal (const char *string)
+{
+  int result = 0;
+  int digits = 0;
+
+  while (*string && *string >= '0' && *string < '8')
+    {
+      digits++;
+      result = (result * 8) + *string++ - '0';
+    }
+
+  if (! digits || result > 0777 || *string)
+    result = -1;
+
+  return result;
+}
+
+/*
+ * Return a string which will be printed as a prompt.  The string may
+ * contain special characters which are decoded as follows: 
+ *   
+ *	\t	the time
+ *	\d	the date
+ *	\n	CRLF
+ *	\s	the name of the shell (program)
+ *	\w	the current working directory
+ *	\W	the last element of PWD
+ *	\u	your username
+ *	\h	the hostname
+ *	\#	the command number of this command
+ *	\!	the history number of this command
+ *	\$	a $ or a # if you are root
+ *	\<octal> character code in octal
+ *	\\	a backslash
+ */
+static char *
+decode_prompt_string (const char *string)
+{
+  int result_size = PROMPT_GROWTH;
+  int result_index = 0;
+  char *result = new char [PROMPT_GROWTH];
+  int c;
+  char *temp = 0;
+
+  result[0] = 0;
+  while (c = *string++)
+    {
+      if (c == '\\')
+	{
+	  c = *string;
+
+	  switch (c)
+	    {
+	    case '0':
+	    case '1':
+	    case '2':
+	    case '3':
+	    case '4':
+	    case '5':
+	    case '6':
+	    case '7':
+	      {
+		char octal_string[4];
+		int n;
+
+		strncpy (octal_string, string, 3);
+		octal_string[3] = '\0';
+
+		n = read_octal (octal_string);
+
+		temp = strsave ("\\");
+		if (n != -1)
+		  {
+		    string += 3;
+		    temp[0] = n;
+		  }
+
+		c = 0;
+		goto add_string;
+	      }
+	  
+	    case 't':
+	    case 'd':
+	      /* Make the current time/date into a string. */
+	      {
+		time_t the_time = time (0);
+		char *ttemp = ctime (&the_time);
+		temp = strsave (ttemp);
+
+		if (c == 't')
+		  {
+		    strcpy (temp, temp + 11);
+		    temp[8] = '\0';
+		  }
+		else
+		  temp[10] = '\0';
+
+		goto add_string;
+	      }
+
+	    case 'n':
+	      if (! no_line_editing)
+		temp = strsave ("\r\n");
+	      else
+		temp = strsave ("\n");
+	      goto add_string;
+
+	    case 's':
+	      {
+		temp = base_pathname (prog_name);
+		temp = strsave (temp);
+		goto add_string;
+	      }
+	
+	    case 'w':
+	    case 'W':
+	      {
+		char t_string[MAXPATHLEN];
+#define EFFICIENT
+#ifdef EFFICIENT
+
+// Use the value of PWD because it is much more effecient.
+
+		temp = user_pref.pwd;
+
+		if (! temp)
+		  getcwd (t_string, MAXPATHLEN);
+		else
+		  strcpy (t_string, temp);
+#else
+		getcwd (t_string, MAXPATHLEN);
+#endif	/* EFFICIENT */
+
+		if (c == 'W')
+		  {
+		    char *dir = strrchr (t_string, '/');
+		    if (dir && dir != t_string)
+		      strcpy (t_string, dir + 1);
+		    temp = strsave (t_string);
+		  }
+		else
+		  temp = strsave (polite_directory_format (t_string));
+		goto add_string;
+	      }
+      
+	    case 'u':
+	      {
+		temp = strsave (user_name);
+
+		goto add_string;
+	      }
+
+	    case 'h':
+	      {
+		char *t_string;
+
+		temp = strsave (host_name);
+		if (t_string = strchr (temp, '.'))
+		  *t_string = '\0';
+		
+		goto add_string;
+	      }
+
+	    case '#':
+	      {
+		char number_buffer[128];
+		sprintf (number_buffer, "%d", current_command_number);
+		temp = strsave (number_buffer);
+		goto add_string;
+	      }
+
+	    case '!':
+	      {
+		char number_buffer[128];
+		int num = current_history_number ();
+		if (num > 0)
+                  sprintf (number_buffer, "%d", num);
+		else
+		  strcpy (number_buffer, "!");
+		temp = strsave (number_buffer);
+		goto add_string;
+	      }
+
+	    case '$':
+	      temp = strsave (geteuid () == 0 ? "#" : "$");
+	      goto add_string;
+
+	    case '\\':
+	      temp = strsave ("\\");
+	      goto add_string;
+
+	    default:
+	      temp = strsave ("\\ ");
+	      temp[1] = c;
+
+	    add_string:
+	      if (c)
+		string++;
+	      result =
+		(char *)sub_append_string (temp, result,
+					   &result_index, &result_size);
+	      temp = 0; /* Free ()'ed in sub_append_string (). */
+	      result[result_index] = '\0';
+	      break;
+	    }
+	}
+      else
+	{
+	  while (3 + result_index > result_size)
+	    {
+	      char *tmp = new char [result_size += PROMPT_GROWTH];
+	      strcpy (tmp, result);
+	      delete [] result;
+	      result = tmp;
+	    }
+	  result[result_index++] = c;
+	  result[result_index] = '\0';
+	}
+    }
+
+#if 0
+  /* I don't really think that this is a good idea.  Do you? */
+  if (! find_variable ("NO_PROMPT_VARS"))
+    {
+      WORD_LIST *expand_string (), *list;
+      char *string_list ();
+
+      list = expand_string (result, 1);
+      free (result);
+      result = string_list (list);
+      dispose_words (list);
+    }
+#endif
+
+  return result;
+}
 /*
  * Use GNU readline to get an input line and store it in the history
  * list.
@@ -133,10 +427,10 @@ static char *octave_gets_line = (char *) NULL;
 static char *
 octave_gets (void)
 {
-  if (octave_gets_line != NULL)
+  if (octave_gets_line)
     {
       free (octave_gets_line);
-      octave_gets_line = (char *) NULL;
+      octave_gets_line = 0;
     }
 
   if (interactive || forced_interactive)
@@ -181,7 +475,7 @@ octave_read (char *buf, int max_size)
 {
   int status = 0;
 
-  static char *stashed_line = (char *) NULL;
+  static char *stashed_line = 0;
 
   if (get_input_from_eval_string)
     {
@@ -205,7 +499,7 @@ octave_read (char *buf, int max_size)
   else if (using_readline)
     {
       char *cp = octave_gets ();
-      if (cp != (char *) NULL)
+      if (cp)
 	{
 	  int len = strlen (cp);
 	  if (len >= max_size)
@@ -226,12 +520,12 @@ octave_read (char *buf, int max_size)
       if (reading_fcn_file || reading_script_file)
 	curr_stream = ff_instream;
 
-      assert (curr_stream != (FILE *) NULL);
+      assert (curr_stream);
 
 // Why is this required?
       buf[0] = '\0';
 
-      if (fgets (buf, max_size, curr_stream) != (char *) NULL)
+      if (fgets (buf, max_size, curr_stream))
 	{
 	  int len = strlen (buf);
 	  if (len > max_size - 2)
@@ -272,14 +566,14 @@ octave_read (char *buf, int max_size)
  * warning if the file doesn't exist.
  */
 FILE *
-get_input_from_file (char *name, int warn = 1)
+get_input_from_file (char *name, int warn)
 {
-  FILE *instream = (FILE *) NULL;
+  FILE *instream = 0;
 
   if (name && *name)
     instream = fopen (name, "r");
 
-  if (instream == (FILE *) NULL && warn)
+  if (! instream && warn)
     warning ("%s: no such file or directory", name);
 
   if (reading_fcn_file || reading_script_file)
@@ -308,14 +602,14 @@ command_generator (char *text, int state)
   static int len = 0;
   static int list_index = 0;
 
-  static char **name_list = (char **) NULL;
+  static char **name_list = 0;
 
   if (state == 0)
     {
       list_index = 0;
       len = strlen (text);
 
-      if (name_list != (char **) NULL)
+      if (name_list)
 	{
 	  char **ptr = name_list;
 	  while (ptr && *ptr)
@@ -327,7 +621,7 @@ command_generator (char *text, int state)
     }
 
   char *name;
-  while ((name = name_list[list_index]) != (char *) NULL)
+  while ((name = name_list[list_index]) != 0)
     {
       list_index++;
       if (strncmp (name, text, len) == 0)
@@ -338,13 +632,13 @@ command_generator (char *text, int state)
 	}
     }
 
-  return (char *) NULL;
+  return 0;
 }
 
 static char **
 command_completer (char *text, int start, int end)
 {
-  char **matches = (char **) NULL;
+  char **matches = 0;
   matches = completion_matches (text, command_generator);
   return matches;
 }
@@ -359,7 +653,7 @@ command_completer (char *text, int start, int end)
 static int saved_history_line_to_use = 0;
 
 // ??
-static Function *old_rl_startup_hook = (Function *) NULL;
+static Function *old_rl_startup_hook = 0;
 
 static void
 set_saved_history (void)
@@ -382,7 +676,7 @@ set_saved_history (void)
 	      if (rl_undo_list)
 		{
 		  free_undo_list ();
-		  rl_undo_list = (UNDO_LIST *) NULL;
+		  rl_undo_list = 0;
 		}
 	    }
 	}
@@ -424,6 +718,124 @@ initialize_readline (void)
 // Bind operate-and-get-next.
   rl_add_defun ("operate-and-get-next",
 		(Function *) operate_and_get_next, CTRL ('O'));
+}
+
+static int
+match_sans_spaces (const char *standard, const char *test)
+{
+  const char *tp = test;
+  while (*tp == ' ' || *tp == '\t')
+    tp++;
+
+  const char *ep = test + strlen (test) - 1;
+  while (*ep == ' ' || *ep == '\t')
+    ep--;
+
+  int len = ep - tp + 1;
+
+  return (strncmp (standard, tp, len) == 0);
+}
+
+static Octave_object
+get_user_input (const Octave_object& args, int nargout, int debug = 0)
+{
+  tree_constant retval;
+
+  int nargin = args.length ();
+
+  int read_as_string = 0;
+
+  if (nargin == 3)
+    read_as_string++;
+
+  char *prompt = "debug> ";
+  if (nargin > 1)
+   {
+      if (args(1).is_string_type ())
+	prompt = args(1).string_value ();
+      else
+	{
+	  error ("input: unrecognized argument");
+	  return retval;
+	}
+    }
+
+ again:
+
+  flush_output_to_pager ();
+
+  char *input_buf = gnu_readline (prompt);
+
+  if (input_buf)
+    {
+      maybe_save_history (input_buf);
+
+      int len = strlen (input_buf);
+
+      if (len < 1)
+	{
+	  if (debug)
+	    goto again;
+	  else
+	    return retval;
+	}
+
+      if (match_sans_spaces ("exit", input_buf)
+	  || match_sans_spaces ("quit", input_buf)
+	  || match_sans_spaces ("return", input_buf))
+	return tree_constant ();
+      else if (read_as_string)
+	retval = input_buf;
+      else
+	{
+	  int parse_status = 0;
+	  retval = eval_string (input_buf, 0, 0, parse_status);
+	  if (debug && retval.is_defined ())
+	    retval.eval (1);
+	}
+    }
+  else
+    error ("input: reading user-input failed!");
+
+  if (debug)
+    goto again;
+
+  return retval;
+}
+
+DEFUN ("input", Finput, Sinput, 3, 1,
+  "input (PROMPT [, S])\n\
+\n\
+Prompt user for input.  If the second argument is present, return
+value as a string.")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2 || nargin == 3)
+    retval = get_user_input (args, nargout);
+  else
+    print_usage ("input");
+
+  return retval;
+}
+
+DEFUN ("keyboard", Fkeyboard, Skeyboard, 2, 1,
+  "keyboard (PROMPT)\n\
+\n\
+maybe help in debugging function files")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    retval = get_user_input (args, nargout, 1);
+  else
+    print_usage ("keyboard");
+
+  return retval;
 }
 
 /*

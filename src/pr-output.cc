@@ -27,7 +27,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include <strstream.h>
-#include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <float.h>
@@ -45,13 +44,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "pager.h"
 #include "error.h"
 #include "utils.h"
+#include "defun.h"
 
 // Current format string for real numbers and the real part of complex
 // numbers.
-static char *curr_real_fmt = (char *) NULL;
+static char *curr_real_fmt = 0;
 
 // Current format string for the imaginary part of complex numbers.
-static char *curr_imag_fmt = (char *) NULL;
+static char *curr_imag_fmt = 0;
 
 // Nonzero means don\'t do any fancy formatting.
 static int free_format = 0;
@@ -184,8 +184,8 @@ pr_min_internal (const Matrix& m)
 static void
 set_format (double d, int& fw)
 {
-  curr_real_fmt = (char *) NULL;
-  curr_imag_fmt = (char *) NULL;
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
 
   if (free_format)
     return;
@@ -275,8 +275,8 @@ set_format (double d)
 static void
 set_format (const Matrix& m, int& fw)
 {
-  curr_real_fmt = (char *) NULL;
-  curr_imag_fmt = (char *) NULL;
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
 
   if (free_format)
     return;
@@ -389,8 +389,8 @@ set_format (const Matrix& m)
 static void
 set_format (const Complex& c, int& r_fw, int& i_fw)
 {
-  curr_real_fmt = (char *) NULL;
-  curr_imag_fmt = (char *) NULL;
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
 
   if (free_format)
     return;
@@ -528,8 +528,8 @@ set_format (const Complex& c)
 static void
 set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
 {
-  curr_real_fmt = (char *) NULL;
-  curr_imag_fmt = (char *) NULL;
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
 
   if (free_format)
     return;
@@ -678,8 +678,8 @@ set_format (const ComplexMatrix& cm)
 static void
 set_format (const Range& r, int& fw)
 {
-  curr_real_fmt = (char *) NULL;
-  curr_imag_fmt = (char *) NULL;
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
 
   if (free_format)
     return;
@@ -790,9 +790,7 @@ pr_any_float (const char *fmt, ostrstream& os, double d, int fw = 0)
   if (d == -0.0)
     d = 0.0;
 
-  if (fmt == (char *) NULL)
-    os << d;
-  else
+  if (fmt)
     {
       if (xisinf (d))
 	{
@@ -817,6 +815,8 @@ pr_any_float (const char *fmt, ostrstream& os, double d, int fw = 0)
       else
 	os.form (fmt, d);
     }
+  else
+    os << d;
 }
 
 static inline void
@@ -1130,6 +1130,21 @@ octave_print_internal (ostrstream& os, const Range& r)
     }
 }
 
+DEFUN ("disp", Fdisp, Sdisp, 3, 1,
+  "disp (X): display value without name tag")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    args(1).eval (1);
+  else
+    print_usage ("disp");
+
+  return retval;
+}
+
 static void
 init_format_state (void)
 {
@@ -1143,7 +1158,7 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  tree_constant *tmp = NULL_TREE_CONST;
+  tree_constant *tmp = 0;
 
   tmp = new tree_constant ((double) prec);
   bind_builtin_variable ("output_precision", tmp);
@@ -1251,6 +1266,22 @@ set_format_style (int argc, char **argv)
       init_format_state ();
       set_output_prec_and_fw (5, 10);
     }
+}
+
+DEFUN_TEXT ("format", Fformat, Sformat, -1, 1,
+  "format [style]\n\
+\n\
+set output formatting style")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("format");
+
+  set_format_style (argc, argv);
+
+  DELETE_ARGV;
+
+  return retval;
 }
 
 /*

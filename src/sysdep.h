@@ -26,6 +26,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern void sysdep_init (void);
 
+extern void raw_mode (int);
+extern int kbhit (void);
+
+
+extern "C"
+{
+extern int gethostname ();
+}
+
 // Octave's idea of infinity.
 extern double octave_Inf;
 

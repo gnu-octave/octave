@@ -25,18 +25,42 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define octave_variables_h 1
 
 class istream;
+class ostrstream;
 class symbol_record;
 class symbol_table;
 class tree;
 class tree_fvc;
 class tree_constant;
+class Octave_object;
 
-struct builtin_mapper_functions;
-struct builtin_text_functions;
-struct builtin_general_functions;
-struct builtin_string_variables;
+struct builtin_mapper_function;
+struct builtin_function;
+struct builtin_variable;
 
-#include "builtins.h"
+typedef int (*sv_Function)(void);
+
+struct builtin_variable
+{
+  char *name;
+  tree_constant *value;
+  int install_as_function;
+  int protect;
+  int eternal;
+  sv_Function sv_function;
+  char *help_string;
+};
+
+typedef Octave_object (*Octave_builtin_fcn)(const Octave_object&, int);
+
+struct builtin_function
+{
+  char *name;
+  int nargin_max;
+  int nargout_max;
+  int is_text_fcn;
+  Octave_builtin_fcn fcn;
+  char *help_string;
+};
 
 extern void initialize_symbol_tables (void);
 
@@ -44,18 +68,17 @@ extern int symbol_out_of_date (symbol_record *sr);
 
 extern void document_symbol (const char *name, const char *help);
 
-extern void install_builtin_mapper_function (builtin_mapper_functions *mf);
+extern void install_builtin_mapper (builtin_mapper_function *mf);
 
-extern void install_builtin_text_function (builtin_text_functions *tf);
+extern void install_builtin_function (builtin_function *gf);
 
-extern void install_builtin_general_function (builtin_general_functions *gf);
-
-extern void install_builtin_variable (builtin_string_variables *sv);
+extern void install_builtin_variable (builtin_variable *v);
 
 extern void install_builtin_variable_as_function (const char *name,
 						  tree_constant *val,
 						  int protect = 0,
-						  int eternal = 0);  
+						  int eternal = 0,
+						  const char *help = 0);
 
 extern void bind_nargin_and_nargout (symbol_table *sym_tab,
 				     int nargin, int nargout);
@@ -63,7 +86,7 @@ extern void bind_nargin_and_nargout (symbol_table *sym_tab,
 extern void bind_builtin_variable (const char *, tree_constant *,
 				   int protect = 0, int eternal = 0,
 				   sv_Function f = (sv_Function) 0,
-				   const char *help = (char *) 0);
+				   const char *help = 0);
 
 extern char *builtin_string_variable (const char *);
 extern int builtin_real_scalar_variable (const char *, double&);
@@ -83,9 +106,38 @@ extern void skip_comments (istream&);
 extern int valid_identifier (char *);
 extern int identifier_exists (char *);
 extern int is_builtin_variable (const char *name);
-extern tree_fvc *is_valid_function (tree_constant&, char *, int warn = 0);
+extern tree_fvc *is_valid_function (const tree_constant&, char *,
+				    int warn = 0); 
 extern int takes_correct_nargs (tree_fvc *, int, char *, int warn = 0);
 extern char **make_name_list (void);
+
+extern int is_text_function_name (const char *s);
+
+struct help_list;
+
+extern help_list *builtin_mapper_functions_help (void);
+extern help_list *builtin_general_functions_help (void);
+extern help_list *builtin_text_functions_help (void);
+extern help_list *builtin_variables_help (void);
+
+extern int help_from_list (ostrstream& output_buf,
+			   const help_list *list, const char *string,
+			   int usage);
+
+extern void additional_help_message (ostrstream& output_buf);
+
+extern void print_usage (const char *s, int just_usage = 0);
+
+extern void install_builtin_variables (void);
+
+extern char *octave_home (void);
+extern char *octave_lib_dir (void);
+extern char *octave_info_dir (void);
+extern char *default_path (void);
+extern char *default_info_file (void);
+extern char *default_editor (void);
+extern char *get_site_defaults (void);
+extern char *default_pager (void);
 
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;

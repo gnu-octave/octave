@@ -1,4 +1,4 @@
-// The rest of the tree classes.                          -*- C++ -*-
+// tc-rep.h                                             -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -36,6 +36,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "Range.h"
 
 class idx_vector;
+
+struct Mapper_fcn;
 
 /*
  * Forward class declarations.
@@ -156,64 +158,78 @@ public:
   tree_constant_rep::constant_type force_numeric (int force_str_conv = 0);
   tree_constant make_numeric (int force_str_conv = 0) const;
 
-  void assign (tree_constant& rhs, const Octave_object& args);
+  void assign (const tree_constant& rhs, const Octave_object& args);
 
-  void do_scalar_assignment (tree_constant& rhs, const Octave_object& args);
+  void do_scalar_assignment (const tree_constant& rhs,
+			     const Octave_object& args);
 
-  void do_matrix_assignment (tree_constant& rhs, const Octave_object& args);
+  void do_matrix_assignment (const tree_constant& rhs,
+			     const Octave_object& args);
 
-  void do_matrix_assignment (tree_constant& rhs, tree_constant& i_arg);
+  void do_matrix_assignment (const tree_constant& rhs,
+			     const tree_constant& i_arg);
 
-  void do_matrix_assignment
-    (tree_constant& rhs, tree_constant& i_arg, tree_constant& j_arg);
+  void do_matrix_assignment (const tree_constant& rhs,
+			     const tree_constant& i_arg,
+			     const tree_constant& j_arg);
 
-  void fortran_style_matrix_assignment (tree_constant& rhs,
-					tree_constant& i_arg);
+  void fortran_style_matrix_assignment (const tree_constant& rhs,
+					const tree_constant& i_arg);
 
-  void fortran_style_matrix_assignment (tree_constant& rhs, constant_type ci);
+  void fortran_style_matrix_assignment (const tree_constant& rhs,
+					constant_type ci);
 
-  void fortran_style_matrix_assignment (tree_constant& rhs, idx_vector& i);
+  void fortran_style_matrix_assignment (const tree_constant& rhs,
+					idx_vector& i);
 
-  void vector_assignment (tree_constant& rhs, tree_constant& i_arg);
+  void vector_assignment (const tree_constant& rhs,
+			  const tree_constant& i_arg);
 
   void check_vector_assign (int rhs_nr, int rhs_nc, int ilen,
 			    const char *rm);
 
-  void do_vector_assign (tree_constant& rhs, int i);
-  void do_vector_assign (tree_constant& rhs, idx_vector& i);
-  void do_vector_assign (tree_constant& rhs, Range& i);
+  void do_vector_assign (const tree_constant& rhs, int i);
+  void do_vector_assign (const tree_constant& rhs, idx_vector& i);
+  void do_vector_assign (const tree_constant& rhs, Range& i);
 
-  void do_matrix_assignment
-    (tree_constant& rhs, int i, tree_constant& j_arg);
-  void do_matrix_assignment
-    (tree_constant& rhs, idx_vector& i, tree_constant& j_arg);
-  void do_matrix_assignment
-    (tree_constant& rhs, Range& i, tree_constant& j_arg);
-  void do_matrix_assignment
-    (tree_constant& rhs, constant_type i, tree_constant& j_arg);
+  void do_matrix_assignment (const tree_constant& rhs, int i,
+			     const tree_constant& j_arg);
+  void do_matrix_assignment (const tree_constant& rhs, idx_vector& i,
+			     const tree_constant& j_arg);
+  void do_matrix_assignment (const tree_constant& rhs, Range& i,
+			     const tree_constant& j_arg);
+  void do_matrix_assignment (const tree_constant& rhs, constant_type i,
+			     const tree_constant& j_arg);
 
-  void do_matrix_assignment (tree_constant& rhs, int i, int j);
-  void do_matrix_assignment (tree_constant& rhs, int i, idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, int i, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, int i, constant_type cj);
+  void do_matrix_assignment (const tree_constant& rhs, int i, int j);
+  void do_matrix_assignment (const tree_constant& rhs, int i, idx_vector& jv);
+  void do_matrix_assignment (const tree_constant& rhs, int i, Range& j);
+  void do_matrix_assignment (const tree_constant& rhs, int i, constant_type cj);
 
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv, int j);
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
+  void do_matrix_assignment (const tree_constant& rhs, idx_vector& iv,
+			     int j);
+  void do_matrix_assignment (const tree_constant& rhs, idx_vector& iv,
 			     idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
+  void do_matrix_assignment (const tree_constant& rhs, idx_vector& iv,
+			     Range& j);
+  void do_matrix_assignment (const tree_constant& rhs, idx_vector& iv,
 			     constant_type j);
 
-  void do_matrix_assignment (tree_constant& rhs, Range& i, int j);
-  void do_matrix_assignment (tree_constant& rhs, Range& i, idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, Range& i, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, Range& i, constant_type j);
-
-  void do_matrix_assignment (tree_constant& rhs, constant_type i, int j);
-  void do_matrix_assignment (tree_constant& rhs, constant_type i,
+  void do_matrix_assignment (const tree_constant& rhs, Range& i, int j);
+  void do_matrix_assignment (const tree_constant& rhs, Range& i,
 			     idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, constant_type i, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, constant_type i,
+  void do_matrix_assignment (const tree_constant& rhs, Range& i,
+			     Range& j);
+  void do_matrix_assignment (const tree_constant& rhs, Range& i,
+			     constant_type j);
+
+  void do_matrix_assignment (const tree_constant& rhs, constant_type i, int j);
+  void do_matrix_assignment (const tree_constant& rhs, constant_type i,
+			     idx_vector& jv);
+  void do_matrix_assignment (const tree_constant& rhs, constant_type i,
+			     Range& j);
+  void do_matrix_assignment (const tree_constant& rhs,
+			     const constant_type i,
 			     constant_type j);
 
   void delete_row (int);

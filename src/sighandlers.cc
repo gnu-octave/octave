@@ -1,7 +1,7 @@
 // sighandlers.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -127,7 +127,7 @@ static RETSIGTYPE
 sigpipe_handler (int i)
 {
   if (pipe_handler_error_count++ == 0)
-    message ((char *) NULL, "broken pipe");
+    message (0, "broken pipe");
 
 // Don\'t loop forever on account of this.
   if (pipe_handler_error_count  > 100)

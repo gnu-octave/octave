@@ -1,4 +1,4 @@
-// Builtin function support.                               -*- C++ -*-
+// builtins.h                                          -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -24,69 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_builtins_h)
 #define octave_builtins_h 1
 
-class ostrstream;
-class Complex;
-struct help_list;
-
-typedef double (*d_d_Mapper)(double);
-typedef double (*d_c_Mapper)(const Complex&);
-typedef Complex (*c_c_Mapper)(const Complex&);
-
-// If can_return_complex_for_real_arg is 1, lower_limit and
-// upper_limit specify the range of values for which a real arg
-// returns a real value.  Outside that range, we have to convert args
-// to complex, and call the complex valued function.
-//
-// If can_return_complex_for_real_arg is 0, lower_limit and
-// upper_limit are ignored.
-
-struct Mapper_fcn
-{
-  int can_return_complex_for_real_arg;
-  double lower_limit;
-  double upper_limit;
-  d_d_Mapper d_d_mapper;
-  d_c_Mapper d_c_mapper;
-  c_c_Mapper c_c_mapper;
-};
-
-struct builtin_mapper_functions
-{
-  char *name;
-  int can_return_complex_for_real_arg;
-  double lower_limit;
-  double upper_limit;
-  d_d_Mapper d_d_mapper;
-  d_c_Mapper d_c_mapper;
-  c_c_Mapper c_c_mapper;
-  char *help_string;
-};
-
-typedef int (*sv_Function)(void);
-
-struct builtin_string_variables
-{
-  char *name;
-  char *value;
-  sv_Function sv_function;
-  char *help_string;
-};
-
 extern void install_builtins (void);
-extern int is_text_function_name (const char *s);
-
-extern help_list *builtin_mapper_functions_help (void);
-extern help_list *builtin_general_functions_help (void);
-extern help_list *builtin_text_functions_help (void);
-extern help_list *builtin_variables_help (void);
-
-extern int help_from_list (ostrstream& output_buf,
-			   const help_list *list, const char *string,
-			   int usage);
-
-extern void additional_help_message (ostrstream& output_buf);
-
-extern void print_usage (const char *s, int just_usage = 0);
 
 #endif
 

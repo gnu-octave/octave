@@ -1,4 +1,4 @@
-// Tree classes.                                      -*- C++ -*-
+// tree-expr.h                                      -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -28,18 +28,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+#include <time.h>
 #include <stdio.h>
 
-#include "builtins.h"
+#include "variables.h"
+#include "mappers.h"
 #include "error.h"
 #include "oct-obj.h"
 
 class tree_constant;
 class symbol_record;
 class symbol_table;
-
-typedef Octave_object (*Text_fcn)(int, char **, int);
-typedef Octave_object (*General_fcn)(const Octave_object&, int);
 
 class tree_matrix;
 class tree_builtin;
@@ -351,7 +350,7 @@ public:
   virtual tree_constant assign (tree_constant& t, const Octave_object& args);
 
   virtual char *name (void) const
-    { panic_impossible (); return (char *) NULL; }
+    { panic_impossible (); return 0; }
 
   virtual void bump_value (tree::expression_type)
     { panic_impossible (); }
@@ -360,7 +359,7 @@ public:
     { panic_impossible (); return 0; }
   
   virtual char *fcn_file_name (void)
-    { return (char *) NULL; }
+    { return 0; }
 
   virtual time_t time_parsed (void)
     { panic_impossible (); return 0; }
@@ -380,20 +379,19 @@ class
 tree_builtin : public tree_fvc
 {
 public:
-  tree_builtin (const char *nm = (char *) NULL);
+  tree_builtin (const char *nm = 0);
 
   tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
-		const char *nm = (char *) NULL);
+		const char *nm = 0);
 
-  tree_builtin (int i_max, int o_max, Text_fcn t_fcn,
-		const char *nm = (char *) NULL);
-
-  tree_builtin (int i_max, int o_max, General_fcn t_fcn,
-		const char *nm = (char *) NULL);
+  tree_builtin (int i_max, int o_max, Octave_builtin_fcn f,
+		const char *nm = 0);
 
   ~tree_builtin (void);
 
 //  int is_builtin (void) const;
+
+  int is_mapper_function (void) const;
 
   tree_constant eval (int print);
 
@@ -406,9 +404,9 @@ public:
 private:
   int nargin_max;
   int nargout_max;
+  int is_mapper;
   Mapper_fcn mapper_fcn;
-  Text_fcn text_fcn;
-  General_fcn general_fcn;
+  Octave_builtin_fcn fcn;
   char *my_name;
 };
 

@@ -41,21 +41,21 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 unwind_elem::unwind_elem (void)
 {
-  unwind_elem_tag = (char *) NULL;
-  unwind_elem_fptr = (cleanup_func) NULL;
-  unwind_elem_ptr = (void *) NULL;
+  unwind_elem_tag = 0;
+  unwind_elem_fptr = 0;
+  unwind_elem_ptr = 0;
 }
 
 unwind_elem::unwind_elem (char *t)
 {
   unwind_elem_tag = strsave (t);
-  unwind_elem_fptr = (cleanup_func) NULL;
-  unwind_elem_ptr = (void *) NULL;
+  unwind_elem_fptr = 0;
+  unwind_elem_ptr = 0;
 }
 
 unwind_elem::unwind_elem (cleanup_func f, void *p)
 {
-  unwind_elem_tag = (char *) NULL;
+  unwind_elem_tag = 0;
   unwind_elem_fptr = f;
   unwind_elem_ptr = p;
 }
@@ -115,7 +115,7 @@ run_unwind_protect (void)
   unwind_elem el = unwind_protect_list.pop ();
 
   cleanup_func f = el.fptr ();
-  if (f != (cleanup_func) NULL)
+  if (f)
     f (el.ptr ());
 }
 
@@ -140,11 +140,11 @@ run_unwind_frame (char *tag)
       unwind_elem el = unwind_protect_list.pop ();
 
       cleanup_func f = el.fptr ();
-      if (f != (cleanup_func) NULL)
+      if (f)
 	f (el.ptr ());
 
       char *t = el.tag ();
-      if (t != (char *) NULL && strcmp (t, tag) == 0)
+      if (t && strcmp (t, tag) == 0)
 	break;
     }
 }
@@ -156,7 +156,7 @@ discard_unwind_frame (char *tag)
     {
       unwind_elem el = unwind_protect_list.pop ();
       char *t = el.tag ();
-      if (t != (char *) NULL && strcmp (t, tag) == 0)
+      if (t && strcmp (t, tag) == 0)
 	break;
     }
 }
@@ -169,7 +169,7 @@ run_all_unwind_protects (void)
       unwind_elem el = unwind_protect_list.pop ();
 
       cleanup_func f = el.fptr ();
-      if (f != (cleanup_func) NULL)
+      if (f)
 	f (el.ptr ());
     }
 }
@@ -225,8 +225,8 @@ class saved_variable
 
 saved_variable::saved_variable (void)
 {
-  gen_ptr = (void *) NULL;
-  gen_ptr_value = (void *) NULL;
+  gen_ptr = 0;
+  gen_ptr_value = 0;
   type_tag = generic;
   size = 0;
 }

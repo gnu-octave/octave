@@ -1,4 +1,4 @@
-// Tree class.                                          -*- C++ -*-
+// tree-cmd.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -30,9 +30,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <iostream.h>
-
-// For NULL.
-#include <stdio.h>
 
 #include "user-prefs.h"
 #include "variables.h"
@@ -102,16 +99,16 @@ list_to_vector (tree *list, int& len)
  */
 tree_command_list::tree_command_list (void)
 {
-  command = NULL_TREE;
+  command = 0;
   print_flag = 1;
-  next = (tree_command_list *) NULL;
+  next = 0;
 }
 
 tree_command_list::tree_command_list (tree *t)
 {
   command = t;
   print_flag = 1;
-  next = (tree_command_list *) NULL;
+  next = 0;
 }
 
 tree_command_list::~tree_command_list (void)
@@ -139,9 +136,9 @@ tree_command_list::reverse (void)
 {
   tree_command_list *list = this;
   tree_command_list *next;
-  tree_command_list *prev = (tree_command_list *) NULL;
+  tree_command_list *prev = 0;
 
-  while (list != (tree_command_list *) NULL)
+  while (list)
     {
       next = list->next;
       list->next = prev;
@@ -160,8 +157,7 @@ tree_command_list::eval (int print)
   if (error_state)
     return retval;
 
-  tree_command_list *list;
-  for (list = this; list != (tree_command_list *) NULL; list = list->next)
+  for (tree_command_list *list = this; list; list = list->next)
     {
       if (print == 0)
 	pf = 0;
@@ -169,7 +165,7 @@ tree_command_list::eval (int print)
 	pf = list->print_flag;
 
       tree *cmd = list->command;
-      if (cmd == NULL_TREE)
+      if (! cmd)
 	retval = tree_constant ();
       else
 	{
@@ -191,34 +187,33 @@ tree_command_list::eval (int print)
 /*
  * Global.
  */
-tree_global_command::tree_global_command (int l = -1, int c = -1)
+tree_global_command::tree_global_command (int l, int c)
 {
   line_num = l;
   column_num = c;
-  sr = (symbol_record *) NULL;
-  rhs = (tree_expression *) NULL;
-  next = (tree_global_command *) NULL;
+  sr = 0;
+  rhs = 0;
+  next = 0;
 }
 
-tree_global_command::tree_global_command (symbol_record *s,
-					  int l = -1, int c = -1)
+tree_global_command::tree_global_command (symbol_record *s, int l, int c)
 {
   line_num = l;
   column_num = c;
   sr = s;
-  rhs = (tree_expression *) NULL;
-  next = (tree_global_command *) NULL;
+  rhs = 0;
+  next = 0;
 }
 
 tree_global_command::tree_global_command (symbol_record *s,
 					  tree_expression *e,
-					  int l = -1, int c = -1) 
+					  int l, int c) 
 {
   line_num = l;
   column_num = c;
   sr = s;
   rhs = e;
-  next = (tree_global_command *) NULL;
+  next = 0;
 }
 
 tree_global_command::~tree_global_command (void)
@@ -227,7 +222,7 @@ tree_global_command::~tree_global_command (void)
 }
 
 tree_global_command *
-tree_global_command::chain (symbol_record *s, int l = -1, int c = -1)
+tree_global_command::chain (symbol_record *s, int l, int c)
 {
   tree_global_command *tmp = new tree_global_command (s, l, c);
   tmp->next = this;
@@ -236,7 +231,7 @@ tree_global_command::chain (symbol_record *s, int l = -1, int c = -1)
 
 tree_global_command *
 tree_global_command::chain (symbol_record *s, tree_expression *e,
-			    int l = -1, int c = -1)
+			    int l, int c)
 {
   tree_global_command *tmp = new tree_global_command (s, e, l, c);
   tmp->next = this;
@@ -248,9 +243,9 @@ tree_global_command::reverse (void)
 {
   tree_global_command *list = this;
   tree_global_command *next;
-  tree_global_command *prev = (tree_global_command *) NULL;
+  tree_global_command *prev = 0;
 
-  while (list != (tree_global_command *) NULL)
+  while (list)
     {
       next = list->next;
       list->next = prev;
@@ -267,7 +262,7 @@ tree_global_command::eval (int print)
 
   link_to_global_variable (sr);
 
-  if (rhs != NULL_TREE)
+  if (rhs)
     {
       tree_identifier *id = new tree_identifier (sr);
       tree_constant tmp_rhs = rhs->eval (0);
@@ -295,7 +290,7 @@ tree_global_command::eval (int print)
 	}
     }
 
-  if (next != (tree_global_command *) NULL)
+  if (next)
     next->eval (print);
 
   return retval;
@@ -312,25 +307,24 @@ tree_global_command::eval_error (void)
 /*
  * While.
  */
-tree_while_command::tree_while_command (int l = -1, int c = -1)
+tree_while_command::tree_while_command (int l, int c)
 {
   line_num = l;
   column_num = c;
-  expr = (tree_expression *) NULL;
-  list = NULL_TREE;
+  expr = 0;
+  list = 0;
 }
 
-tree_while_command::tree_while_command (tree_expression *e,
-					int l = -1, int c = -1) 
+tree_while_command::tree_while_command (tree_expression *e, int l, int c) 
 {
   line_num = l;
   column_num = c;
   expr = e;
-  list = NULL_TREE;
+  list = 0;
 }
 
 tree_while_command::tree_while_command (tree_expression *e, tree *lst,
-					int l = -1, int c = -1)
+					int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -355,7 +349,7 @@ tree_while_command::eval (int print)
   for (;;)
     {
       int expr_value = 0;
-      if (expr == (tree_expression *) NULL)
+      if (! expr)
 	return tree_constant ();
       tree_constant t1 = expr->eval (0);
 
@@ -393,7 +387,7 @@ tree_while_command::eval (int print)
 
       if (expr_value)
 	{
-	  if (list != NULL_TREE)
+	  if (list)
 	    {
 	      retval = list->eval (1);
 	      if (error_state)
@@ -423,18 +417,18 @@ tree_while_command::eval_error (void)
 /*
  * For.
  */
-tree_for_command::tree_for_command (int l = -1, int c = -1)
+tree_for_command::tree_for_command (int l, int c)
 {
   line_num = l;
   column_num = c;
-  id = (tree_index_expression *) NULL;
-  expr = (tree_expression *) NULL;
-  list = NULL_TREE;
+  id = 0;
+  expr = 0;
+  list = 0;
 }
 
 tree_for_command::tree_for_command (tree_index_expression *ident,
 				    tree_expression *e, tree *lst,
-				    int l = -1, int c = -1)
+				    int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -455,7 +449,7 @@ tree_for_command::eval (int print)
 {
   tree_constant retval;
 
-  if (error_state || expr == (tree_expression *) NULL)
+  if (error_state || ! expr)
     return retval;
 
   tree_constant tmp_expr = expr->eval (0);
@@ -580,7 +574,7 @@ tree_for_command::do_for_loop_once (tree_constant *rhs, int& quit)
       return tree_constant ();
     }
 
-  if (list != NULL_TREE)
+  if (list)
     {
       retval = list->eval (1);
       if (error_state)
@@ -599,32 +593,32 @@ tree_for_command::do_for_loop_once (tree_constant *rhs, int& quit)
 /*
  * If.
  */
-tree_if_command::tree_if_command (int l = -1, int c = -1)
+tree_if_command::tree_if_command (int l, int c)
 {
   line_num = l;
   column_num = c;
-  expr = (tree_expression *) NULL;
-  list = NULL_TREE;
-  next = (tree_if_command *) NULL;
+  expr = 0;
+  list = 0;
+  next = 0;
 }
 
-tree_if_command::tree_if_command (tree *lst, int l = -1, int c = -1)
+tree_if_command::tree_if_command (tree *lst, int l, int c)
 {
   line_num = l;
   column_num = c;
-  expr = (tree_expression *) NULL;
+  expr = 0;
   list = lst;
-  next = (tree_if_command *) NULL;
+  next = 0;
 }
 
 tree_if_command::tree_if_command (tree_expression *e, tree *lst,
-				  int l = -1, int c = -1)
+				  int l, int c)
 {
   line_num = l;
   column_num = c;
   expr = e;
   list = lst;
-  next = (tree_if_command *) NULL;
+  next = 0;
 }
 
 tree_if_command::~tree_if_command (void)
@@ -635,7 +629,7 @@ tree_if_command::~tree_if_command (void)
 }
 
 tree_if_command *
-tree_if_command::chain (tree *lst, int l = -1, int c = -1)
+tree_if_command::chain (tree *lst, int l, int c)
 {
   tree_if_command *tmp = new tree_if_command (lst, l, c);
   tmp->next = this;
@@ -643,7 +637,7 @@ tree_if_command::chain (tree *lst, int l = -1, int c = -1)
 }
 
 tree_if_command *
-tree_if_command::chain (tree_expression *e, tree *lst, int l = -1, int c = -1)
+tree_if_command::chain (tree_expression *e, tree *lst, int l, int c)
 {
   tree_if_command *tmp = new tree_if_command (e, lst, l, c);
   tmp->next = this;
@@ -655,9 +649,9 @@ tree_if_command::reverse (void)
 {
   tree_if_command *list = this;
   tree_if_command *next;
-  tree_if_command *prev = (tree_if_command *) NULL;
+  tree_if_command *prev = 0;
 
-  while (list != (tree_if_command *) NULL)
+  while (list)
     {
       next = list->next;
       list->next = prev;
@@ -676,13 +670,13 @@ tree_if_command::eval (int print)
   if (error_state)
     return retval;
 
-  tree_if_command *lst;
-  for (lst = this; lst != (tree_if_command *) NULL; lst = lst->next)
+  
+  for (tree_if_command *lst = this; lst; lst = lst->next)
     {
-      if (lst->expr != (tree_expression *) NULL)
+      if (lst->expr)
 	{
 	  tree_expression *tmp = lst->expr;
-	  if (tmp == (tree_expression *) NULL)
+	  if (! tmp)
 	    return tree_constant ();
 	  tree_constant t1 = tmp->eval (0);
 	  if (error_state || t1.is_undefined ())
@@ -720,7 +714,7 @@ tree_if_command::eval (int print)
 
 	  if (expr_value)
 	    {
-	      if (lst->list != NULL_TREE)
+	      if (lst->list)
 		retval = lst->list->eval (1);
 	      else
 		::error ("if: empty command list");
@@ -733,7 +727,7 @@ tree_if_command::eval (int print)
 	}
       else
 	{
-	  if (lst->list != NULL_TREE)
+	  if (lst->list)
 	    retval = lst->list->eval (1);
 	  else
 	    ::error ("if: empty command list");
@@ -759,7 +753,7 @@ tree_if_command::eval_error (void)
 /*
  * Break.  Is this overkill, or what?
  */
-tree_break_command::tree_break_command (int l = -1, int c = -1)
+tree_break_command::tree_break_command (int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -780,7 +774,7 @@ tree_break_command::eval (int print)
 /*
  * Continue.
  */
-tree_continue_command::tree_continue_command (int l = -1, int c = -1)
+tree_continue_command::tree_continue_command (int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -801,7 +795,7 @@ tree_continue_command::eval (int print)
 /*
  * Return.
  */
-tree_return_command::tree_return_command (int l = -1, int c = -1)
+tree_return_command::tree_return_command (int l, int c)
 {
   line_num = l;
   column_num = c;

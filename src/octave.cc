@@ -40,6 +40,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <signal.h>
 #include <assert.h>
 #include <iostream.h>
+#include <strstream.h>
 #include <fstream.h>
 
 #include "getopt.h"
@@ -50,8 +51,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "variables.h"
 #include "error.h"
 #include "tree-const.h"
+#include "tree-plot.h"
 #include "utils.h"
-#include "builtins.h"
 #include "input.h"
 #include "pager.h"
 #include "lex.h"
@@ -59,9 +60,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "parse.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
+#include "builtins.h"
 #include "version.h"
 #include "file-io.h"
 #include "sysdep.h"
+#include "defun.h"
 
 #if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
 extern "C" { int on_exit (); }
@@ -69,31 +72,31 @@ extern "C" { int on_exit (); }
 #endif
 
 // argv[0] for this program.
-char *raw_prog_name = (char *) NULL;
+char *raw_prog_name = 0;
 
 // Cleaned-up name of this program, not including path information.
-char *prog_name = (char *) NULL;
+char *prog_name = 0;
 
 // Login name for user running this program.
-char *user_name = (char *) NULL;
+char *user_name = 0;
 
 // Name of the host we are running on.
-char *host_name = (char *) NULL;
+char *host_name = 0;
 
 // User's home directory.
-char *home_directory = (char *) NULL;
+char *home_directory = 0;
 
 // Guess what?
-char *the_current_working_directory = (char *) NULL;
+char *the_current_working_directory = 0;
 
 // Load path specified on command line.
-char *load_path = (char *) NULL;
+char *load_path = 0;
 
 // Name of the info file specified on command line.
-char *info_file = (char *) NULL;
+char *info_file = 0;
 
 // Name of the editor to be invoked by the edit_history command.
-char *editor = (char *) NULL;
+char *editor = 0;
 
 // If nonzero, don't do fancy line editing.
 int no_line_editing = 0;
@@ -105,10 +108,10 @@ int current_command_number = 1;
 int quitting_gracefully = 0;
 
 // Current command to execute.
-tree *global_command = (tree *) NULL;
+tree *global_command = 0;
 
 // Pointer to function that is currently being evaluated.
-tree_function *curr_function = (tree_function *) NULL;
+tree_function *curr_function = 0;
 
 // Nonzero means input is coming from startup file.
 int input_from_startup_file = 0;
@@ -182,10 +185,10 @@ initialize_globals (char *name)
     host_name = strsave (hostname);
 
   char *hd = getenv ("HOME");
-  if (hd == (char *) NULL)
-    home_directory = strsave ("I have no home~!");
-  else
+  if (hd)
     home_directory = strsave (hd);
+  else
+    home_directory = strsave ("I have no home!");
 
   raw_prog_name = strsave (name);
   prog_name = strsave ("octave");
@@ -225,7 +228,7 @@ parse_and_execute (FILE *f, int print)
     {
       reset_parser ();
       retval = yyparse ();
-      if (retval == 0 && global_command != NULL_TREE)
+      if (retval == 0 && global_command)
 	{
 	  global_command->eval (print);
 	  delete global_command;
@@ -246,7 +249,7 @@ parse_and_execute (char *s, int print)
   reading_script_file = 1;
 
   FILE *f = get_input_from_file (s, 0);
-  if (f != (FILE *) NULL)
+  if (f)
     {
       unwind_protect_int (input_line_number);
       unwind_protect_int (current_input_column);
@@ -281,8 +284,8 @@ execute_startup_files (void)
 
 // Try to execute commands from $HOME/.octaverc and ./.octaverc.
 
-  char *home_rc = (char *) NULL;
-  if (home_directory != NULL)
+  char *home_rc = 0;
+  if (home_directory)
     {
       home_rc = strconcat (home_directory, "/.octaverc");
       parse_and_execute (home_rc, 0);
@@ -416,7 +419,7 @@ main (int argc, char **argv)
 	  forced_interactive = 1;
 	  break;
 	case 'p':
-	  if (optarg != (char *) NULL)
+	  if (optarg)
 	    load_path = strsave (optarg);
 	  break;
 	case 'q':
@@ -429,7 +432,7 @@ main (int argc, char **argv)
 	  print_version_and_exit ();
 	  break;
 	case INFO_FILE_OPTION:
-	  if (optarg != (char *) NULL)
+	  if (optarg)
 	    info_file = strsave (optarg);
 	  break;
 	default:
@@ -479,13 +482,13 @@ main (int argc, char **argv)
   else if (remaining_args == 1)
     {
       FILE *infile = get_input_from_file (argv[optind]);
-      if (infile == (FILE *) NULL)
-	clean_up_and_exit (1);
-      else
+      if (infile)
 	{
 	  rl_blink_matching_paren = 0;
 	  switch_to_buffer (create_buffer (infile));
 	}
+      else
+	clean_up_and_exit (1);
     }
   else
     {
@@ -544,7 +547,7 @@ main (int argc, char **argv)
 
       retval = yyparse ();
 
-      if (retval == 0 && global_command != NULL_TREE)
+      if (retval == 0 && global_command)
 	{
 	  global_command->eval (1);
 	  delete global_command;
@@ -554,6 +557,196 @@ main (int argc, char **argv)
   while (retval == 0);
 
   clean_up_and_exit (retval);
+}
+
+DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 2, 1,
+  "casesen [on|off]")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("casesen");
+
+  if (argc == 1 || (argc > 1 && strcmp (argv[1], "off") == 0))
+    warning ("casesen: sorry, Octave is always case sensitive");
+  else if (argc > 1 && strcmp (argv[1], "on") == 0)
+    ; // ok.
+  else
+    print_usage ("casesen");
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFALIAS (exit, quit)
+
+DEFUN ("flops", Fflops, Sflops, 2, 1,
+  "flops (): count floating point operations")
+{
+  int nargin = args.length ();
+
+  if (nargin > 2)
+    print_usage ("flops");
+
+  warning ("flops is a flop, always returning zero");
+
+  return 0.0;
+}
+
+DEFUN ("quit", Fquit, Squit, 1, 0,
+  "quit (): exit Octave gracefully")
+{
+  Octave_object retval;
+  quitting_gracefully = 1;
+  clean_up_and_exit (0);
+  return retval;
+}
+
+DEFUN ("warranty", Fwarranty, Swarranty, 1, 0,
+  "warranty (): describe copying conditions")
+{
+  Octave_object retval;
+
+  ostrstream output_buf;
+  output_buf << "\n    Octave, version " << version_string
+	     << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton\n"
+	     << "\n\
+    This program is free software; you can redistribute it and/or modify\n\
+    it under the terms of the GNU General Public License as published by\n\
+    the Free Software Foundation; either version 2 of the License, or\n\
+    (at your option) any later version.\n\
+\n\
+    This program is distributed in the hope that it will be useful,\n\
+    but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+    GNU General Public License for more details.\n\
+\n\
+    You should have received a copy of the GNU General Public License\n\
+    along with this program. If not, write to the Free Software\n\
+    Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.\n\
+\n";
+
+  output_buf << ends;
+  maybe_page_output (output_buf);
+
+  return retval;
+}
+
+// XXX FIXME XXX -- this may not be the best place for these...
+
+Octave_object
+feval (const Octave_object& args, int nargout)
+{
+  Octave_object retval;
+
+  tree_fvc *fcn = is_valid_function (args(1), "feval", 1);
+  if (fcn)
+    {
+      int nargin = args.length () - 1;
+      Octave_object tmp_args (nargin);
+      for (int i = 0; i < nargin; i++)
+	tmp_args(i) = args(i+1);
+      retval = fcn->eval (0, nargout, tmp_args);
+    }
+
+  return retval;
+}
+
+DEFUN ("feval", Ffeval, Sfeval, -1, 1,
+  "feval (NAME, ARGS, ...)\n\
+\n\
+evaluate NAME as a function, passing ARGS as its arguments")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    retval = feval (args, nargout);
+  else
+    print_usage ("feval");
+
+  return retval;
+}
+
+tree_constant
+eval_string (const char *string, int print, int ans_assign,
+	     int& parse_status)
+{
+  begin_unwind_frame ("eval_string");
+
+  unwind_protect_int (get_input_from_eval_string);
+  unwind_protect_ptr (global_command);
+  unwind_protect_ptr (current_eval_string);
+
+  get_input_from_eval_string = 1;
+  current_eval_string = string;
+
+  YY_BUFFER_STATE old_buf = current_buffer ();
+  YY_BUFFER_STATE new_buf = create_buffer (0);
+
+  add_unwind_protect (restore_input_buffer, (void *) old_buf);
+  add_unwind_protect (delete_input_buffer, (void *) new_buf);
+
+  switch_to_buffer (new_buf);
+
+  unwind_protect_ptr (curr_sym_tab);
+
+  reset_parser ();
+
+  parse_status = yyparse ();
+
+// Important to reset the idea of where input is coming from before
+// trying to eval the command we just parsed -- it might contain the
+// name of an function file that still needs to be parsed!
+
+  tree *command = global_command;
+
+  run_unwind_frame ("eval_string");
+
+  tree_constant retval;
+
+  if (parse_status == 0 && command)
+    {
+      retval = command->eval (print);
+      delete command;
+    }
+
+  return retval;
+}
+
+tree_constant
+eval_string (const tree_constant& arg, int& parse_status)
+{
+  if (! arg.is_string_type ())
+    {
+      error ("eval: expecting string argument");
+      return -1;
+    }
+
+  char *string = arg.string_value ();
+
+// Yes Virginia, we always print here...
+
+  return eval_string (string, 1, 1, parse_status);
+}
+
+DEFUN ("eval", Feval, Seval, 2, 1,
+  "eval (STRING): evaluate STRING as octave code")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      int parse_status = 0;
+      retval = eval_string (args(1), parse_status);
+    }
+  else
+    print_usage ("eval");
+
+  return retval;
 }
 
 /*

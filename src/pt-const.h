@@ -1,4 +1,4 @@
-// The rest of the tree classes.                          -*- C++ -*-
+// tree-const.h                                        -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -33,13 +33,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "mx-base.h"
 #include "Range.h"
 
-#include "builtins.h"
 #include "tree-base.h"
 #include "tree-expr.h"
 #include "tc-rep.h"
 #include "oct-obj.h"
 
 class idx_vector;
+
+struct Mapper_fcn;
 
 /*
  * Constants.
@@ -98,7 +99,7 @@ public:
   void operator delete (void *p, size_t size);
 #endif
 
-  tree_constant operator = (tree_constant& a)
+  tree_constant operator = (const tree_constant& a)
     {
       if (--rep->count <= 0 && rep != a.rep)
 	delete rep;
@@ -286,41 +287,9 @@ private:
   tree_constant_rep *rep;
 };
 
-/*
- * Here are some extra functions that are related to the tree_constant
- * class but that don't need to be class members or friends.
- */
-
+// XXX FIXME XXX -- this is not used very much now.  Perhaps it can be
+// eliminated.
 extern Octave_object vector_of_empties (int nargout, const char *fcn_name);
-
-extern tree_constant fill_matrix (const tree_constant& a,
-				  double d, const char *warn_for);
-extern tree_constant fill_matrix (const tree_constant& a,
-				  const tree_constant& b,
-				  double d, const char *warn_for);
-
-extern tree_constant identity_matrix (const tree_constant& a);
-extern tree_constant identity_matrix (const tree_constant& a,
-				      const tree_constant& b);
-
-extern Octave_object find_nonzero_elem_idx (const tree_constant& a,
-					    int nargout);
-
-extern Octave_object matrix_log (const tree_constant& a);
-extern Octave_object matrix_sqrt (const tree_constant& a);
-
-extern Octave_object column_max (const Octave_object& args, int nargout);
-extern Octave_object column_min (const Octave_object& args, int nargout);
-  
-extern Octave_object sort (const Octave_object& args, int nargout);
- 
-extern Octave_object feval (const Octave_object& args, int nargout);
-
-extern tree_constant eval_string (const tree_constant& arg, int&
-				  parse_status);
-
-extern tree_constant get_user_input (const Octave_object& args,
-				     int nargout, int debug = 0);
 
 #endif
 

@@ -35,14 +35,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "utils.h"
 #include "symtab.h"
 
-token::token (int l = -1, int c = -1)
+token::token (int l, int c)
 {
   line_num = l;
   column_num = c;
   type_tag = generic_token;
 }
 
-token::token (char *s, int l = -1, int c = -1)
+token::token (char *s, int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -50,7 +50,7 @@ token::token (char *s, int l = -1, int c = -1)
   str = strsave (s);
 }
 
-token::token (double d, int l = -1, int c = -1)
+token::token (double d, int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -58,7 +58,7 @@ token::token (double d, int l = -1, int c = -1)
   num = d;
 }
 
-token::token (end_tok_type t, int l = -1, int c = -1)
+token::token (end_tok_type t, int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -66,7 +66,7 @@ token::token (end_tok_type t, int l = -1, int c = -1)
   et = t;
 }
 
-token::token (plot_tok_type t, int l = -1, int c = -1)
+token::token (plot_tok_type t, int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -74,7 +74,7 @@ token::token (plot_tok_type t, int l = -1, int c = -1)
   pt = t;
 }
 
-token::token (symbol_record *s, int l = -1, int c = -1)
+token::token (symbol_record *s, int l, int c)
 {
   line_num = l;
   column_num = c;

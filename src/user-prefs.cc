@@ -50,7 +50,7 @@ check_str_pref (char *var)
 {
   char *val = builtin_string_variable (var);
   int pref = -1;
-  if (val != (char *) NULL)
+  if (val)
     {
       if (strncmp (val, "yes", 3) == 0
 	  || strncmp (val, "true", 4) == 0)
@@ -103,7 +103,7 @@ commas_in_literal_matrix (void)
 {
   int pref = 0;
   char *val = builtin_string_variable ("commas_in_literal_matrix");
-  if (val != (char *) NULL)
+  if (val)
     {
       if (strncmp (val, "required", 8) == 0)
 	pref = 2;
@@ -154,7 +154,7 @@ ignore_function_time_stamp (void)
 
   char *val = builtin_string_variable ("ignore_function_time_stamp");
 
-  if (val != (char *) NULL)
+  if (val)
     {
       if (strncmp (val, "all", 3) == 0)
 	pref = 2;
@@ -486,7 +486,7 @@ sv_editor (void)
   int status = 0;
 
   char *s = builtin_string_variable ("EDITOR");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.editor;
       user_pref.editor = s;
@@ -506,7 +506,7 @@ sv_gnuplot_binary (void)
   int status = 0;
 
   char *s = builtin_string_variable ("gnuplot_binary");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.gnuplot_binary;
       user_pref.gnuplot_binary = s;
@@ -526,7 +526,7 @@ sv_info_file (void)
   int status = 0;
 
   char *s = builtin_string_variable ("INFO_FILE");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.info_file;
       user_pref.info_file = s;
@@ -546,7 +546,7 @@ sv_loadpath (void)
   int status = 0;
 
   char *s = builtin_string_variable ("LOADPATH");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.loadpath;
       user_pref.loadpath = s;
@@ -566,7 +566,7 @@ sv_pager_binary (void)
   int status = 0;
 
   char *s = builtin_string_variable ("PAGER");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.pager_binary;
       user_pref.pager_binary = s;
@@ -586,7 +586,7 @@ sv_ps1 (void)
   int status = 0;
 
   char *s = builtin_string_variable ("PS1");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.ps1;
       user_pref.ps1 = s;
@@ -606,7 +606,7 @@ sv_ps2 (void)
   int status = 0;
 
   char *s = builtin_string_variable ("PS2");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.ps2;
       user_pref.ps2 = s;
@@ -626,7 +626,7 @@ sv_pwd (void)
   int status = 0;
 
   char *s = builtin_string_variable ("PWD");
-  if (s != (char *) NULL)
+  if (s)
     {
       delete [] user_pref.pwd;
       user_pref.pwd = s;

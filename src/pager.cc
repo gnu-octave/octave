@@ -1,7 +1,7 @@
 // pager.cc                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,13 +36,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "pager.h"
 
 // Where we stash output headed for the screen.
-static ostrstream *pager_buf = (ostrstream *) NULL;
+static ostrstream *pager_buf = 0;
 
 static int
 line_count (char *s)
 {
   int count = 0;
-  if (s != (char *) NULL)
+  if (s)
     {
       char c;
       while ((c = *s++) != '\0')
@@ -89,7 +89,7 @@ maybe_page_output (ostrstream& msg_buf)
 
   if (interactive
       && user_pref.page_screen_output
-      && user_pref.pager_binary != (char *) NULL)
+      && user_pref.pager_binary)
     {
       *pager_buf << message;
       delete [] message;
@@ -109,7 +109,7 @@ flush_output_to_pager (void)
 
   char *message = pager_buf->str ();
 
-  if (message == (char *) NULL || *message == '\0')
+  if (! message || ! *message)
     {
       delete [] message;
       initialize_pager ();
@@ -121,7 +121,7 @@ flush_output_to_pager (void)
   if (nlines > terminal_rows () - 2)
     {
       char *pgr = user_pref.pager_binary;
-      if (pgr != (char *) NULL)
+      if (pgr)
 	{
 	  oprocstream pager_stream (pgr);
 	  if (pager_stream)

@@ -617,7 +617,7 @@ tree_builtin::tree_builtin (const string& nm)
   my_name = nm;
 }
 
-tree_builtin::tree_builtin (Mapper_fcn& m_fcn, const string &nm)
+tree_builtin::tree_builtin (builtin_mapper_function& m_fcn, const string &nm)
 {
   mapper_fcn = m_fcn;
   is_mapper = 1;
@@ -658,7 +658,7 @@ tree_builtin::eval (bool /* print */)
 }
 
 static octave_value
-apply_mapper_fcn (const octave_value& arg, Mapper_fcn& m_fcn,
+apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 		  bool /* print */)
 {
   octave_value retval;

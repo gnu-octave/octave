@@ -70,7 +70,7 @@ class ComplexQR;
 // Other data types we use but that don't always need to have full
 // declarations.
 
-class Complex;
+#include "oct-cmplx.h"
 
 class istream;
 class ostream;

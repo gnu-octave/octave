@@ -704,7 +704,7 @@ subplot::handle_plot_data (int ndim, OSSTREAM& plot_buf)
 
 	      if (ftmp)
 		{
-		  plot_buf << " \"" << file << '"';
+		  plot_buf << " '" << file << "'";
 		}
 	      else
 		{
@@ -752,7 +752,7 @@ subplot::handle_plot_data (int ndim, OSSTREAM& plot_buf)
 		  if (file.length () > 0)
 		    {
 		      mark_for_deletion (file);
-		      plot_buf << " \"" << file << '"';
+		      plot_buf << " '" << file << "'";
 		    }
 		}
 	    }
@@ -926,7 +926,7 @@ do_external_plotter_cd (const std::string& newdir)
   if (plot_stream && *plot_stream)
     {
       OSSTREAM plot_buf;
-      plot_buf << "cd \"" << newdir << "\"" << Vgnuplot_command_end
+      plot_buf << "cd '" << newdir << "'" << Vgnuplot_command_end
 	       << OSSTREAM_ENDS;
       send_to_plot_stream (OSSTREAM_STR (plot_buf));
       OSSTREAM_FREEZE (plot_buf);

@@ -93,8 +93,8 @@ ComplexHESS::init (const ComplexMatrix& a)
    F77_FCN (zgebak) (&job, &side, &n, &ilo, &ihi, scale, &n, z, &n, &info,
 		     1L, 1L); 
 
-   hess_mat = ComplexMatrix (h,n,n);
-   unitary_hess_mat = ComplexMatrix (z,n,n);
+   hess_mat = ComplexMatrix (h, n, n);
+   unitary_hess_mat = ComplexMatrix (z, n, n);
 
 // If someone thinks of a more graceful way of doing this (or faster for
 // that matter :-)), please let me know!

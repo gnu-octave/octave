@@ -41,6 +41,7 @@ class DiagMatrix : public DiagArray<double>
 {
 friend class SVD;
 friend class ComplexSVD;
+friend class ComplexDiagMatrix;
 
 public:
 

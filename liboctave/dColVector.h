@@ -36,7 +36,9 @@ extern "C++" {
 
 class ColumnVector : public Array<double>
 {
+friend class Matrix;
 friend class RowVector;
+friend class ComplexColumnVector;
 
 public:
 
@@ -132,7 +134,7 @@ public:
 // i/o
 
   friend ostream& operator << (ostream& os, const ColumnVector& a);
-  friend ostream& operator >> (ostream& is, ColumnVector& a);
+  friend istream& operator >> (istream& is, ColumnVector& a);
 
 #define KLUDGE_VECTORS
 #define TYPE double

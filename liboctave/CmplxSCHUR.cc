@@ -116,8 +116,8 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 			&lwork, rwork, bwork, &info, 1L, 1L);
     }
 
-  schur_mat = ComplexMatrix (s,n,n);
-  unitary_mat = ComplexMatrix (q,n,n);
+  schur_mat = ComplexMatrix (s, n, n);
+  unitary_mat = ComplexMatrix (q, n, n);
 
   delete [] w;
   delete [] work;

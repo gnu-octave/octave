@@ -36,7 +36,9 @@ extern "C++" {
 
 class ComplexColumnVector : public Array<Complex>
 {
+friend class ColumnVector;
 friend class ComplexRowVector;
+friend class ComplexMatrix;
 
 public:
 
@@ -144,7 +146,7 @@ public:
 // i/o
 
   friend ostream& operator << (ostream& os, const ComplexColumnVector& a);
-  friend ostream& operator >> (ostream& is, ComplexColumnVector& a);
+  friend istream& operator >> (istream& is, ComplexColumnVector& a);
 
 #define KLUDGE_VECTORS
 #define TYPE Complex
@@ -154,8 +156,10 @@ public:
 #undef TYPE
 #undef KL_VEC_TYPE
 
-private:
-
+// private:
+// XXX FIXME XXX -- why does it not work to make this private, with
+// ColumnVector declared as a friend of ComplexColumnVector?  It seems
+// to work for the similar case with Matrix/ComplexMatrix.  Hmm...
   ComplexColumnVector (Complex *d, int l) : Array<Complex> (d, l) { }
 };
 

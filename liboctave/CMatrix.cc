@@ -917,7 +917,7 @@ ComplexMatrix::inverse (int& info) const
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (int& info, volatile double& rcond) const
+ComplexMatrix::inverse (int& info, double& rcond) const
 {
   int nr = rows ();
   int nc = cols ();
@@ -936,7 +936,8 @@ ComplexMatrix::inverse (int& info, volatile double& rcond) const
 
   F77_FCN (zgeco) (tmp_data, &nr, &nc, ipvt, &rcond, z);
 
-  if (rcond + 1.0 == 1.0)
+  volatile double tmp_rcond = rcond;
+  if (tmp_rcond + 1.0 == 1.0)
     {
       info = -1;
       copy (tmp_data, data (), len);  // Restore contents.
@@ -1036,7 +1037,7 @@ ComplexMatrix::determinant (int& info) const
 }
 
 ComplexDET
-ComplexMatrix::determinant (int& info, volatile double& rcond) const
+ComplexMatrix::determinant (int& info, double& rcond) const
 {
   ComplexDET retval;
 
@@ -1060,7 +1061,8 @@ ComplexMatrix::determinant (int& info, volatile double& rcond) const
 
       F77_FCN (zgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
-      if (rcond + 1.0 == 1.0)
+      volatile double tmp_rcond = rcond;
+      if (tmp_rcond + 1.0 == 1.0)
 	{
 	  info = -1;
 	  retval = ComplexDET ();
@@ -1118,8 +1120,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info) const
   return solve (b, info, rcond);
 }
 ComplexMatrix
-ComplexMatrix::solve (const ComplexMatrix& b, int& info,
-		      volatile double& rcond) const
+ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
 {
   ComplexMatrix retval;
 
@@ -1142,7 +1143,8 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info,
 
   F77_FCN (zgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
-  if (rcond + 1.0 == 1.0)
+  volatile double tmp_rcond = rcond;
+  if (tmp_rcond + 1.0 == 1.0)
     {
       info = -2;
     }
@@ -1182,7 +1184,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info) const
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
-		      volatile double& rcond) const
+		      double& rcond) const
 {
   ComplexColumnVector retval;
 
@@ -1204,7 +1206,8 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 
   F77_FCN (zgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
-  if (rcond + 1.0 == 1.0)
+  volatile double tmp_rcond = rcond;
+  if (tmp_rcond + 1.0 == 1.0)
     {
       info = -2;
     }

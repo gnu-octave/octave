@@ -61,10 +61,6 @@ class Complex;
 class istream;
 class ostream;
 
-#ifndef FILE
-struct FILE;
-#endif
-
 #ifndef MAPPER_FCN_TYPEDEFS
 #define MAPPER_FCN_TYPEDEFS 1
 

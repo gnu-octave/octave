@@ -566,7 +566,7 @@ Matrix::inverse (int& info) const
 }
 
 Matrix
-Matrix::inverse (int& info, volatile double& rcond) const
+Matrix::inverse (int& info, double& rcond) const
 {
   int nr = rows ();
   int nc = cols ();
@@ -585,7 +585,8 @@ Matrix::inverse (int& info, volatile double& rcond) const
 
   F77_FCN (dgeco) (tmp_data, &nr, &nc, ipvt, &rcond, z);
 
-  if (rcond + 1.0 == 1.0)
+  volatile double tmp_rcond = rcond;
+  if (tmp_rcond + 1.0 == 1.0)
     {
       info = -1;
       copy (tmp_data, data (), len);  // Restore matrix contents.
@@ -685,7 +686,7 @@ Matrix::determinant (int& info) const
 }
 
 DET
-Matrix::determinant (int& info, volatile double& rcond) const
+Matrix::determinant (int& info, double& rcond) const
 {
   DET retval;
 
@@ -709,7 +710,8 @@ Matrix::determinant (int& info, volatile double& rcond) const
 
       F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
-      if (rcond + 1.0 == 1.0)
+      volatile double tmp_rcond = rcond;
+      if (tmp_rcond + 1.0 == 1.0)
 	{
 	  info = -1;
 	  retval = DET ();
@@ -746,7 +748,7 @@ Matrix::solve (const Matrix& b, int& info) const
 }
 
 Matrix
-Matrix::solve (const Matrix& b, int& info, volatile double& rcond) const
+Matrix::solve (const Matrix& b, int& info, double& rcond) const
 {
   Matrix retval;
 
@@ -767,7 +769,8 @@ Matrix::solve (const Matrix& b, int& info, volatile double& rcond) const
 
   F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
-  if (rcond + 1.0 == 1.0)
+  volatile double tmp_rcond = rcond;
+  if (tmp_rcond + 1.0 == 1.0)
     {
       info = -2;
     }
@@ -827,7 +830,7 @@ Matrix::solve (const ColumnVector& b, int& info) const
 }
 
 ColumnVector
-Matrix::solve (const ColumnVector& b, int& info, volatile double& rcond) const
+Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
 {
   ColumnVector retval;
 
@@ -848,7 +851,8 @@ Matrix::solve (const ColumnVector& b, int& info, volatile double& rcond) const
 
   F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
-  if (rcond + 1.0 == 1.0)
+  volatile double tmp_rcond = rcond;
+  if (tmp_rcond + 1.0 == 1.0)
     {
       info = -2;
     }

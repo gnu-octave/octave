@@ -649,6 +649,7 @@ operator >> (istream& is, ComplexColumnVector& a)
             break;
         }
     }
+  return is;
 }
 
 /*

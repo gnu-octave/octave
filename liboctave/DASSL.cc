@@ -45,8 +45,8 @@ extern "C"
 				double*, double*, int*));
 }
 
-static DAERHSFunc user_fun;
-static DAEJacFunc user_jac;
+static DAEFunc::DAERHSFunc user_fun;
+static DAEFunc::DAEJacFunc user_jac;
 static int nn;
 
 DAE::DAE (void)
@@ -232,7 +232,7 @@ ddassl_j (double *time, double *state, double *deriv, double *pd,
   Matrix tmp_dfdxdot (nn, nn);
   Matrix tmp_dfdx (nn, nn);
 
-  DAEJac tmp_jac;
+  DAEFunc::DAEJac tmp_jac;
   tmp_jac.dfdxdot = &tmp_dfdxdot;
   tmp_jac.dfdx    = &tmp_dfdx;
 
@@ -254,7 +254,7 @@ DAE::integrate (double tout)
 {
   integration_error = 0;
 
-  if (DAEFunc::jac)
+  if (DAEFunc::jacobian_function ())
     iwork [4] = 1;
   else
     iwork [4] = 0;

@@ -34,6 +34,8 @@ extern "C++" {
 
 class DET
 {
+friend class Matrix;
+
 public:
 
   DET (void);

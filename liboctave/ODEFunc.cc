@@ -64,7 +64,7 @@ ODEFunc::operator = (const ODEFunc& a)
   return *this;
 }
 
-ODERHSFunc
+ODEFunc::ODERHSFunc
 ODEFunc::function (void) const
 {
   return fun;
@@ -77,7 +77,7 @@ ODEFunc::set_function (ODERHSFunc f)
   return *this;
 }
 
-ODEJacFunc
+ODEFunc::ODEJacFunc
 ODEFunc::jacobian_function (void) const
 {
   return jac;

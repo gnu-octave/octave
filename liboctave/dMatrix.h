@@ -28,6 +28,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+// For FILE...
+#include <stdio.h>
+
 #include "Array.h"
 
 #include "mx-defs.h"
@@ -36,8 +39,16 @@ extern "C++" {
 
 class Matrix : public Array2<double>
 {
+friend class ColumnVector;
+friend class AEPBAL;
+friend class CHOL;
+friend class GEPBAL;
+friend class HESS;
 friend class LU;
+friend class QR;
+friend class SCHUR;
 friend class SVD;
+friend class ComplexMatrix;
 
 public:
 

@@ -41,6 +41,8 @@ extern "C++" {
 
 class ComplexDiagMatrix : public DiagArray<Complex>
 {
+  friend DiagMatrix;
+
 public:
 
   ComplexDiagMatrix (void) : DiagArray<Complex> () { }

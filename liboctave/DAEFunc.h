@@ -40,20 +40,23 @@ extern "C++" {
 #if !defined (octave_DAEFunc_typedefs)
 #define octave_DAEFunc_typedefs 1
 
-typedef struct DAEJac
-{
-  Matrix *dfdxdot;
-  Matrix *dfdx;
-};
-
-typedef Vector (*DAERHSFunc) (const Vector& x, const Vector& xdot, double);
-typedef DAEJac (*DAEJacFunc) (const Vector& x, const Vector& xdot, double);
-
 #endif
 
 class DAEFunc
 {
 public:
+
+  struct DAEJac
+    {
+      Matrix *dfdxdot;
+      Matrix *dfdx;
+    };
+
+  typedef Vector (*DAERHSFunc) (const Vector& x,
+				const Vector& xdot, double); 
+
+  typedef DAEJac (*DAEJacFunc) (const Vector& x,
+				const Vector& xdot, double);
 
   DAEFunc (void);
   DAEFunc (DAERHSFunc f);

@@ -36,6 +36,8 @@ extern "C++" {
 
 class ComplexDET
 {
+  friend class ComplexMatrix;
+
 public:
 
   ComplexDET (void);

@@ -38,8 +38,14 @@ extern "C++" {
 
 class ComplexMatrix : public Array2<Complex>
 {
+friend class ComplexCHOL;
+friend class ComplexHESS;
 friend class ComplexLU;
+friend class ComplexQR;
+friend class ComplexSCHUR;
 friend class ComplexSVD;
+friend class ComplexColumnVector;
+friend class Matrix;
 
 public:
  

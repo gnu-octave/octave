@@ -47,8 +47,8 @@ extern "C"
 			       double*, int*), int *);
 }
 
-static ColumnVector (*user_fun) (ColumnVector&, double);
-static Matrix       (*user_jac) (ColumnVector&, double);
+static ODEFunc::ODERHSFunc user_fun;
+static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
 
 ODE::ODE (void)

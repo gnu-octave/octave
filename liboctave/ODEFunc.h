@@ -37,17 +37,12 @@ extern "C++" {
 #define Vector ColumnVector
 #endif
 
-#ifndef _ODEFunc_typedefs
-#define _ODEFunc_typedefs 1
-
-typedef Vector (*ODERHSFunc) (const Vector&, double);
-typedef Matrix (*ODEJacFunc) (const Vector&, double);
-
-#endif
-
 class ODEFunc
 {
 public:
+
+  typedef Vector (*ODERHSFunc) (const Vector&, double);
+  typedef Matrix (*ODEJacFunc) (const Vector&, double);
 
   ODEFunc (void);
   ODEFunc (ODERHSFunc f);

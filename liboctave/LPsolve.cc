@@ -35,6 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 Vector
 LPsolve::minimize (double& objf, int& inform, Vector& lambda)
 {
+  return Vector ();
 }
 
 void

@@ -481,6 +481,7 @@ operator >> (istream& is, ColumnVector& a)
             break;
         }
     }
+  return is;
 }
 
 /*

@@ -506,6 +506,7 @@ operator >> (istream& is, RowVector& a)
             break;
         }
     }
+  return is;
 }
 
 /*

@@ -64,7 +64,7 @@ DAEFunc::operator = (const DAEFunc& a)
   return *this;
 }
 
-DAERHSFunc
+DAEFunc::DAERHSFunc
 DAEFunc::function (void) const
 {
   return fun;
@@ -77,7 +77,7 @@ DAEFunc::set_function (DAERHSFunc f)
   return *this;
 }
 
-DAEJacFunc
+DAEFunc::DAEJacFunc
 DAEFunc::jacobian_function (void) const
 {
   return jac;

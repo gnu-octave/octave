@@ -1,3 +1,8 @@
+2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/odessa.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 2002-07-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-assign.cc (tree_multi_assignment::rvalue): Call

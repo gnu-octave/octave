@@ -51,6 +51,64 @@ public:
     }
 
   ~ODE (void) { }
+
+  // Derived classes must provide functions to actually do the
+  // integration.
+
+  // Return the vector of states at output time t.
+  virtual ColumnVector do_integrate (double tt) = 0;
+
+  // Return a matrix of states at each output time specified by t.
+  // The rows of the result matrix should each correspond to a new
+  // output time.
+  virtual Matrix do_integrate (const ColumnVector& tt) = 0;
+
+  virtual Matrix do_integrate (const ColumnVector& tt,
+			       const ColumnVector& ttcrit) = 0;
+
+  // Lots of ways to call the single function and optionally set and
+  // get additional information.
+
+  // Integrate to t from current point.
+  virtual ColumnVector integrate (double tt)
+    { return do_integrate (tt); }
+
+  // Set new x0, t0 and integrate to t.
+  virtual ColumnVector integrate (const ColumnVector& x0, double t0, double tt)
+    {
+      initialize (x0, t0);
+      return do_integrate (tt);
+    }
+
+  // Integrate from current point and return output at all points
+  // specified by t.
+  virtual Matrix integrate (const ColumnVector& tt)
+    { return do_integrate (tt); }
+
+  // Set new x0, t0 and integrate to return output at all points
+  // specified by t.
+  virtual Matrix integrate (const ColumnVector& x0, double t0,
+			    const ColumnVector& tt)
+    {
+      initialize (x0, t0);
+      return do_integrate (tt);
+    }
+
+  // Integrate from current point and return output at all points
+  // specified by t.
+  virtual Matrix integrate (const ColumnVector& tt,
+			    const ColumnVector& ttcrit)
+    { return do_integrate (tt, ttcrit); }
+
+  // Set new x0, t0 and integrate to return output at all points
+  // specified by t.
+  virtual Matrix integrate (const ColumnVector& x0, double t0,
+			    const ColumnVector& tt,
+			    const ColumnVector& ttcrit)
+    {
+      initialize (x0, t0);
+      return do_integrate (tt, ttcrit);
+    }
 };
 
 #endif

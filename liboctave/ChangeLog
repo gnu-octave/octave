@@ -1,3 +1,13 @@
+2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ODE.h: Move integrate and do_integrate method declarations and
+	definitions here.
+	* base-de.h: From here.
+
+	* ODES.h, ODES.cc, ODESFunc.h, ODESSA.h, ODESSA.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+	(LIBOCTAVE_CXX_SOURCES): 
+
 2002-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* NLEqn.cc (NLEqn::error_message): New function.

@@ -1,3 +1,8 @@
+2004-11-17  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::index): Call generic N-d indexing function
+	if idx_arg is N-d.
+
 2004-11-09  David Bateman  <dbateman@free.fr>
 
 	* dNDArray.cc (concat): Delete.

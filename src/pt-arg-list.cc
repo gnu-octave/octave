@@ -129,7 +129,11 @@ DEFCONSTFUN (__end__, , ,
 	{
 	case -1:
 	  {
-	    int numel = indexed_object->numel ();
+	    // We want numel = prod (size ()) here, so dont' use
+	    // index_object->numel () as that may be different (it is
+	    // the number of nonzero elements for sparse arrays).
+
+	    int numel = dv.numel ();
 
 	    if (numel < 0)
 	      {

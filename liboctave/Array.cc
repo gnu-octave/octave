@@ -1934,19 +1934,27 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
 
-  switch (ndims ())
+  dim_vector dv = idx_arg.orig_dimensions ();
+
+  if (dv.length () > 2 || ndims () > 2)
+    retval = indexN (idx_arg, resize_ok, rfv);
+  else
     {
-    case 1:
-      retval = index1 (idx_arg, resize_ok, rfv);
-      break;
+      switch (ndims ())
+	{
+	case 1:
+	  retval = index1 (idx_arg, resize_ok, rfv);
+	  break;
 
-    case 2:
-      retval = index2 (idx_arg, resize_ok, rfv);
-      break;
+	case 2:
+	  retval = index2 (idx_arg, resize_ok, rfv);
+	  break;
 
-    default:
-      retval = indexN (idx_arg, resize_ok, rfv);
-      break;
+	default:
+	  (*current_liboctave_error_handler)
+	    ("invalid array (internal error)");
+	  break;
+	}
     }
 
   return retval;

@@ -594,22 +594,54 @@ void
 symbols_of_ov_usr_fcn (void)
 {
   DEFVAR (default_return_value, Matrix (), 0,
-    "the default for value for unitialized variables returned from\n\
-functions.  Only used if the variable initialize_return_values is\n\
-nonzero.");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} default_return_value\n\
+The value given to otherwise uninitialized return values if\n\
+@code{define_all_return_values} is nonzero.  The default value is\n\
+@code{[]}.\n\
+@end defvr");
 
   DEFVAR (define_all_return_values, 0.0, define_all_return_values,
-    "control whether values returned from functions should have a\n\
-value even if one has not been explicitly assigned.  See also\n\
-default_return_value");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} define_all_return_values\n\
+If the value of @code{define_all_return_values} is nonzero, Octave\n\
+will substitute the value specified by @code{default_return_value} for\n\
+any return values that remain undefined when a function returns.  The\n\
+default value is 0.\n\
+@end defvr");
 
   DEFVAR (max_recursion_depth, 256.0, max_recursion_depth,
-    "maximum nesting level for functions called recursively.\n\
-The default value is 256.");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} max_recursion_depth\n\
+Limit the number of times a function may be called recursively.\n\
+If the limit is exceeded, an error message is printed and control\n\
+returns to the top level.\n\
+\n\
+The default value is 256.\n\
+@end defvr");
 
   DEFVAR (return_last_computed_value, 0.0, return_last_computed_value,
-    "if a function does not return any values explicitly, return the\n\
-  last computed value");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} return_last_computed_value\n\
+If the value of @code{return_last_computed_value} is true, and a\n\
+function is defined without explicitly specifying a return value, the\n\
+function will return the value of the last expression.  Otherwise, no\n\
+value will be returned.  The default value is 0.\n\
+\n\
+For example, the function\n\
+\n\
+@example\n\
+function f ()\n\
+  2 + 2;\n\
+endfunction\n\
+@end example\n\
+\n\
+@noindent\n\
+will either return nothing, if the value of\n\
+@code{return_last_computed_value} is 0, or 4, if the value of\n\
+@code{return_last_computed_value} is nonzero.\n\
+@end defvr");
+
 }
 
 /*

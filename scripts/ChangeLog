@@ -18,6 +18,7 @@
 	* general/tril.m: Ditto.
 	* general/triu.m: Ditto.
 	* general/logspace.m: Ditto.
+	* general/nargchk.m: Ditto.
 
 1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -451,13 +451,42 @@ prepended to your shell path.\n\
 @end defvr");
 
   DEFVAR (LOADPATH, Vload_path, loadpath,
-    "colon separated list of directories to search for scripts.\n\
-The default value is \":\", which means to search the default list\n\
-of directories.  The default list of directories may be found in\n\
-the built-in constant DEFAULT_LOADPATH");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} LOADPATH\n\
+A colon separated list of directories in which to search for function\n\
+files.  @xref{Functions and Scripts}.  The value of @code{LOADPATH}\n\
+overrides the environment variable @code{OCTAVE_PATH}.  @xref{Installation}.\n\
+\n\
+@code{LOADPATH} is now handled in the same way as @TeX{} handles\n\
+@code{TEXINPUTS}.  Leading, trailing, or doubled colons that appear in\n\
+@code{LOADPATH} are replaced by the value of @code{DEFAULT_LOADPATH}.\n\
+The default value of @code{LOADPATH} is @code{\":\"}, which tells Octave\n\
+to search in the directories specified by @code{DEFAULT_LOADPATH}.\n\
+\n\
+In addition, if any path element ends in @samp{//}, that directory and\n\
+all subdirectories it contains are searched recursively for function\n\
+files.  This can result in a slight delay as Octave caches the lists of\n\
+files found in the @code{LOADPATH} the first time Octave searches for a\n\
+function.  After that, searching is usually much faster because Octave\n\
+normally only needs to search its internal cache for files.\n\
+\n\
+To improve performance of recursive directory searching, it is best for\n\
+each directory that is to be searched recursively to contain\n\
+@emph{either} additional subdirectories @emph{or} function files, but\n\
+not a mixture of both.\n\
+\n\
+@xref{Organization of Functions} for a description of the function file\n\
+directories that are distributed with Octave.\n\
+@end defvr");
 
   DEFCONST (DEFAULT_LOADPATH, Vdefault_load_path,
-    "the default colon separated list of directories to search for scripts");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} DEFAULT_LOADPATH\n\
+A colon separated list of directories in which to search for function\n\
+files by default.  The value of this variable is also automatically\n\
+substituted for leading, trailing, or doubled colons that appear in the\n\
+built-in variable @code{LOADPATH}.\n\
+@end defvr");
   
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, imagepath,
     "colon separated list of directories to search for image files");

@@ -1311,8 +1311,22 @@ symbols_of_variables (void)
     "");
 
   DEFVAR (ignore_function_time_stamp, "system", ignore_function_time_stamp,
-    "don't check to see if function files have changed since they were\n\
-last compiled.  Possible values are \"system\" and \"all\"");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} ignore_function_time_stamp\n\
+This variable can be used to prevent Octave from making the system call\n\
+@code{stat} each time it looks up functions defined in function files.\n\
+If @code{ignore_function_time_stamp} to @code{\"system\"}, Octave will not\n\
+automatically recompile function files in subdirectories of\n\
+@file{@var{octave-home}/lib/@var{version}} if they have changed since\n\
+they were last compiled, but will recompile other function files in the\n\
+@code{LOADPATH} if they change.  If set to @code{\"all\"}, Octave will not\n\
+recompile any function files unless their definitions are removed with\n\
+@code{clear}.  For any other value of @code{ignore_function_time_stamp},\n\
+Octave will always check to see if functions defined in function files\n\
+need to recompiled.  The default value of @code{ignore_function_time_stamp} is\n\
+@code{\"system\"}.\n\
+@end defvr");
+
 }
 
 /*

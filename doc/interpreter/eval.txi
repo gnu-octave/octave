@@ -16,61 +16,11 @@ to do just that, and are necessary in order to evaluate commands that
 are not known until run time, or to write functions that will need to
 call user-supplied functions.
 
-@deftypefn {Built-in Function} {} eval (@var{command})
-Parse the string @var{command} and evaluate it as if it were an Octave
-program, returning the last value computed.  The @var{command} is
-evaluated in the current context, so any results remain available after
-@code{eval} returns.  For example,
+@DOCSTRING(eval)
 
-@example
-@group
-eval ("a = 13")
-     @print{} a = 13
-     @result{} 13
-@end group
-@end example
+@DOCSTRING(default_eval_print_flag)
 
-In this case, the value of the evaluated expression is printed and it is
-also returned returned from @code{eval}.  Just as with any other
-expression, you can turn printing off by ending the expression in a
-semicolon.  For example,
-
-@example
-eval ("a = 13;")
-     @result{} 13
-@end example
-
-In this example, the variable @code{a} has been given the value 13, but
-the value of the expression is not printed.  You can also turn off
-automatic printing for all expressions executed by @code{eval} using the
-variable @code{default_eval_print_flag}.
-@end deftypefn
-
-@defvr {Built-in Variable} default_eval_print_flag
-If the value of this variable is nonzero, Octave prints the results of
-commands executed by @code{eval} that do not end with semicolons.  If it
-is zero, automatic printing is suppressed.  The default value is 1.
-@end defvr
-
-@deftypefn {Built-in Function} {} feval (@var{name}, @dots{})
-Evaluate the function named @var{name}.  Any arguments after the first
-are passed on to the named function.  For example,
-
-@example
-feval ("acos", -1)
-     @result{} 3.1416
-@end example
-
-@noindent
-calls the function @code{acos} with the argument @samp{-1}.
-
-The function @code{feval} is necessary in order to be able to write
-functions that call user-supplied functions, because Octave does not
-have a way to declare a pointer to a function (like C) or to declare a
-special kind of variable that can be used to hold the name of a function
-(like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions
-by name, and use @code{feval} to call them.
-@end deftypefn
+@DOCSTRING(feval)
 
 Here is a simple-minded function using @code{feval} that finds the root
 of a user-supplied function of one variable using Newton's method.

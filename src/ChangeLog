@@ -6,7 +6,17 @@
 	* DLD-FUNCTIONS/sort.cc (Fsort): Ditto.
 	* mappers.cc (Fisinf, Fisnan, Ffinite): Ditto.
 	* data.cc (Fall, Fany, Fdiag, Fones, Fzeros, Feye, Flinspace): Ditto.
-	* ov.cc (Vok_to_lose_imaginary_part): Ditto.
+	* defaults.cc (Vloadpath, Vdefault_loadpath): Ditto.
+	* parse.y (Feval, Ffeval, Vdefault_eval_print_flag,
+	Vwarn_missing_semicolon, Vwarn_function_name_clash, Fsource): Ditto.
+	* ov-usr-fcn.cc (Vmax_recursion_depth, Vdefault_return_value,
+	Vdefine_all_return_values, Vreturn_last_computed_value): Ditto.
+	* ov.cc (Vok_to_lose_imaginary_part, Vdo_fortran_indexing,
+	Vprefer_column_vectors, Vresize_on_range_error,
+	Vwarn_divide_by_zero): Ditto.
+	* pt-stmt.cc (Vsilent_functions): Ditto.
+	* variables.cc (Vignore_function_time_stamp): Ditto.
+	* dynamic-ld.cc (Vwarn_reload_forces_clear): Ditto.
 
 1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

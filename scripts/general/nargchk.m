@@ -17,11 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: nargchk (nargin_min, nargin_max, n)
-##
-## If N is in the range NARGIN_MIN to NARGIN_MAX, return the empty
-## matrix.  Otherwise, return a message indicating whether N is too
-## large or too small.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} nargchk (@var{nargin_min}, @var{nargin_max}, @var{n})
+## If @var{n} is in the range @var{nargin_min} through @var{nargin_max}
+## inclusive, return the empty matrix.  Otherwise, return a message
+## indicating whether @var{n} is too large or too small.
+## 
+## This is useful for checking to see that the number of arguments supplied
+## to a function is within an acceptable range.
+## @end deftypefn
 
 ## Author: jwe
 

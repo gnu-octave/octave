@@ -3072,10 +3072,12 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 }
 
 DEFUN (source, args, ,
-  "source (FILE)\n\
-\n\
-Parse and execute the contents of FILE.  Like executing commands in a\n\
-script file but without requiring the file to be named `FILE.m'.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} source (@var{file})\n\
+Parse and execute the contents of @var{file}.  This is equivalent to\n\
+executing commands from a script file, but without requiring the file to\n\
+be named @file{@var{file}.m}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -3156,9 +3158,26 @@ feval (const octave_value_list& args, int nargout)
 }
 
 DEFUN (feval, args, nargout,
-  "feval (NAME, ARGS, ...)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} feval (@var{name}, @dots{})\n\
+Evaluate the function named @var{name}.  Any arguments after the first\n\
+are passed on to the named function.  For example,\n\
 \n\
-evaluate NAME as a function, passing ARGS as its arguments")
+@example\n\
+feval (\"acos\", -1)\n\
+     @result{} 3.1416\n\
+@end example\n\
+\n\
+@noindent\n\
+calls the function @code{acos} with the argument @samp{-1}.\n\
+\n\
+The function @code{feval} is necessary in order to be able to write\n\
+functions that call user-supplied functions, because Octave does not\n\
+have a way to declare a pointer to a function (like C) or to declare a\n\
+special kind of variable that can be used to hold the name of a function\n\
+(like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions\n\
+by name, and use @code{feval} to call them.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -3248,10 +3267,37 @@ eval_string (const octave_value& arg, bool silent, int& parse_status,
 }
 
 DEFUN (eval, args, nargout,
-  "eval (TRY, CATCH)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} eval (@var{try}, @var{catch})\n\
+Parse the string @var{try} and evaluate it as if it were an Octave\n\
+program, returning the last value computed.  If that fails, evaluate\n\
+the string @var{catch}.  The string @var{try} is evaluated in the\n\
+current context, so any results remain available after @code{eval}\n\
+returns.  For example,\n\
 \n\
-Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
-string CATCH.")
+@example\n\
+@group\n\
+eval (\"a = 13\")\n\
+     @print{} a = 13\n\
+     @result{} 13\n\
+@end group\n\
+@end example\n\
+\n\
+In this case, the value of the evaluated expression is printed and it is\n\
+also returned returned from @code{eval}.  Just as with any other\n\
+expression, you can turn printing off by ending the expression in a\n\
+semicolon.  For example,\n\
+\n\
+@example\n\
+eval (\"a = 13;\")\n\
+     @result{} 13\n\
+@end example\n\
+\n\
+In this example, the variable @code{a} has been given the value 13, but\n\
+the value of the expression is not printed.  You can also turn off\n\
+automatic printing for all expressions executed by @code{eval} using the\n\
+variable @code{default_eval_print_flag}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -3350,8 +3396,12 @@ void
 symbols_of_parse (void)
 {
   DEFVAR (default_eval_print_flag, 1.0, default_eval_print_flag,
-    "If the value of this variable is nonzero, Octave will print the\n\
-results of commands executed by eval() that do not end with semicolons.");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} default_eval_print_flag\n\
+If the value of this variable is nonzero, Octave prints the results of\n\
+commands executed by @code{eval} that do not end with semicolons.  If it\n\
+is zero, automatic printing is suppressed.  The default value is 1.\n\
+@end defvr");
 
   DEFVAR (warn_assign_as_truth_value, 1.0, warn_assign_as_truth_value,
     "-*- texinfo -*-\n\
@@ -3418,14 +3468,25 @@ The default value of @code{warn_assign_as_truth_value} is 1.\n\
 @end defvr");
 
   DEFVAR (warn_function_name_clash, 1.0, warn_function_name_clash,
-    "produce warning if function name conflicts with file name");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_function_name_clash\n\
+If the value of @code{warn_function_name_clash} is nonzero, a warning is\n\
+issued when Octave finds that the name of a function defined in a\n\
+function file differs from the name of the file.  (If the names\n\
+disagree, the name declared inside the file is ignored.)  If the value\n\
+is 0, the warning is omitted.  The default value is 1.\n\
+@end defvr");
 
   DEFVAR (warn_future_time_stamp, 1.0, warn_future_time_stamp,
     "warn if a function file has a time stamp that is in the future");
 
   DEFVAR (warn_missing_semicolon, 0.0, warn_missing_semicolon,
-    "produce a warning if a statement in a function file is not\n\
-terminated with a semicolon");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_missing_semicolon\n\
+If the value of this variable is nonzero, Octave will warn when\n\
+statements in function definitions don't end in semicolons.  The default\n\
+value is 0.\n\
+@end defvr");
 
   DEFVAR (warn_variable_switch_label, 0.0, warn_variable_switch_label,
     "-*- texinfo -*-\n\

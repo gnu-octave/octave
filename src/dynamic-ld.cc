@@ -333,7 +333,14 @@ void
 symbols_of_dynamic_ld (void)
 {
   DEFVAR (warn_reload_forces_clear, 1.0, warn_reload_forces_clear,
-    "warn if reloading a .oct file forces other functions to be cleared");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_reload_forces_clear\n\
+If several functions have been loaded from the same file, Octave must\n\
+clear all the functions before any one of them can be reloaded.  If\n\
+@code{warn_reload_forces_clear}, Octave will warn you when this happens,\n\
+and print a list of the additional functions that it is forced to clear.\n\
+@end defvr");
+
 }
 
 /*

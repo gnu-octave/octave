@@ -1518,7 +1518,13 @@ void
 symbols_of_ov (void)
 {
   DEFVAR (do_fortran_indexing, 0.0, do_fortran_indexing,
-    "allow single indices for matrices");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} do_fortran_indexing\n\
+If the value of @code{do_fortran_indexing} is nonzero, Octave allows \n\
+you to select elements of a two-dimensional matrix using a single index\n\
+by treating the matrix as a single vector created from the columns of\n\
+the matrix.  The default value is 0. \n\
+@end defvr");
 
   DEFVAR (implicit_str_to_num_ok, 0.0, implicit_str_to_num_ok,
     "-*- texinfo -*-\n\
@@ -1541,7 +1547,24 @@ control is returned to the top level.  The default value is\n\
 @end defvr");
 
   DEFVAR (prefer_column_vectors, 1.0, prefer_column_vectors,
-    "prefer column/row vectors");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} prefer_column_vectors\n\
+If @code{prefer_column_vectors} is nonzero, operations like\n\
+\n\
+@example\n\
+for i = 1:10\n\
+  a (i) = i;\n\
+endfor\n\
+@end example\n\
+\n\
+@noindent\n\
+(for @code{a} previously  undefined) produce column vectors.  Otherwise, row\n\
+vectors are preferred.  The default value is 1.\n\
+\n\
+If a variable is already defined to be a vector (a matrix with a single\n\
+row or column), the original orientation is respected, regardless of the\n\
+value of @code{prefer_column_vectors}.\n\
+@end defvr");
 
   DEFVAR (print_answer_id_name, 1.0, print_answer_id_name,
     "set output style to print `var_name = ...'");
@@ -1555,7 +1578,24 @@ if they are given one as an argument.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (resize_on_range_error, 1.0, resize_on_range_error,
-    "enlarge matrices on assignment");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} resize_on_range_error\n\
+If the value of @code{resize_on_range_error} is nonzero, expressions\n\
+like\n\
+\n\
+@example\n\
+for i = 1:10\n\
+  a (i) = sqrt (i);\n\
+endfor\n\
+@end example\n\
+\n\
+@noindent\n\
+(for @code{a} previously undefined) result in the variable @code{a}\n\
+being resized to be just large enough to hold the new value.  New\n\
+elements that have not been given a value are set to zero.  If the value\n\
+of @code{resize_on_range_error} is 0, an error message is printed and\n\
+control is returned to the top level.  The default value is 1.\n\
+@end defvr");
 
   DEFVAR (struct_levels_to_print, 2.0, struct_levels_to_print,
     "-*- texinfo -*-\n\
@@ -1565,7 +1605,13 @@ built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
 @end defvr");
 
   DEFVAR (warn_divide_by_zero, 1.0, warn_divide_by_zero,
-    "if TRUE, warn about division by zero");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_divide_by_zero\n\
+If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
+is issued when Octave encounters a division by zero.  If the value is\n\
+0, the warning is omitted.  The default value is 1.\n\
+@end defvr");
+
 }
 
 /*

@@ -190,7 +190,26 @@ void
 symbols_of_pt_stmt (void)
 {
   DEFVAR (silent_functions, 0.0, silent_functions,
-    "suppress printing results in called functions");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} silent_functions\n\
+If the value of @code{silent_functions} is nonzero, internal output\n\
+from a function is suppressed.  Otherwise, the results of expressions\n\
+within a function body that are not terminated with a semicolon will\n\
+have their values printed.  The default value is 0.\n\
+\n\
+For example, if the function\n\
+\n\
+@example\n\
+function f ()\n\
+  2 + 2\n\
+endfunction\n\
+@end example\n\
+\n\
+@noindent\n\
+is executed, Octave will either print @samp{ans = 4} or nothing\n\
+depending on the value of @code{silent_functions}.\n\
+@end defvr");
+
 }
 
 /*

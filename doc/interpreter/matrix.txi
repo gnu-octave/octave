@@ -167,11 +167,10 @@ Houston, TX 77030.
 
 @c XXX FIXME XXX -- is this really worth documenting?
 @c
-@c @DOCSTRING(ok_to_lose_imaginary_part)
+@c DOCSTRING(ok_to_lose_imaginary_part)
 @c 
 @c XXX FIXME XXX -- this is here because it is used by @code{ones},
 @c @code{zeros}, @code{rand}, etc.
-@c @end defvr
 
 The functions @code{linspace} and @code{logspace} make it very easy to
 create vectors with evenly or logarithmically spaced elements.

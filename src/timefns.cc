@@ -38,6 +38,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define RUSAGE_SELF 0
 #endif
 
+#if defined (HAVE_GETRUSAGE)
+extern "C"
+{
+  int getrusage ();
+}
+#endif
+
+
 DEFUN ("clock", Fclock, Sclock, 1, 0,
   "clock (): return current date and time in vector with elements\n\
 \n\

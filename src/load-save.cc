@@ -2283,7 +2283,7 @@ save_vars (ostream& os, const string& pattern, int save_builtins,
   int count;
 
   symbol_record **vars = curr_sym_tab->glob
-    (count, pattern, symbol_def::USER_VARIABLE, SYMTAB_ALL_SCOPES);
+    (count, pattern, symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
 
   int saved = count;
 
@@ -2302,7 +2302,7 @@ save_vars (ostream& os, const string& pattern, int save_builtins,
   if (! error_state && save_builtins)
     {
       symbol_record **vars = global_sym_tab->glob
-	(count, pattern, symbol_def::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
+	(count, pattern, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
 
       saved += count;
 

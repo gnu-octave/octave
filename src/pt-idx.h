@@ -63,6 +63,9 @@ public:
   tree_argument_list *arg_list (void)
     { return list; }
 
+  bool lvalue_ok (void) const
+    { return expr->lvalue_ok (); }
+
   bool rvalue_ok (void) const
     { return true; }
 

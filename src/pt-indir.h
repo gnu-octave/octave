@@ -58,7 +58,7 @@ public:
 
   string name (void) const;
 
-  bool rvalue_ok (void) const
+  bool lvalue_ok (void) const
     { return true; }
 
   octave_value rvalue (void);

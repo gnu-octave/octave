@@ -41,7 +41,7 @@ install_builtin_mapper (void *mf_arg)
   symbol_record *sym_rec = global_sym_tab->lookup (mf->name (), true);
 
   unsigned int t
-    = symbol_def::BUILTIN_FUNCTION | symbol_def::MAPPER_FUNCTION;
+    = symbol_record::BUILTIN_FUNCTION | symbol_record::MAPPER_FUNCTION;
 
   sym_rec->unprotect ();
   sym_rec->define (mf, t);
@@ -58,10 +58,10 @@ install_builtin_function (void *f_arg, const string& name,
 
   symbol_record *sym_rec = global_sym_tab->lookup (name, true);
 
-  unsigned int t = symbol_def::BUILTIN_FUNCTION;
+  unsigned int t = symbol_record::BUILTIN_FUNCTION;
 
   if (is_text_fcn)
-    t |= symbol_def::TEXT_FUNCTION;
+    t |= symbol_record::TEXT_FUNCTION;
 
   sym_rec->unprotect ();
   sym_rec->define (new octave_builtin (f, name, doc), t);

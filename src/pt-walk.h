@@ -46,7 +46,6 @@ class tree_indirect_ref;
 class tree_matrix;
 class tree_multi_assignment;
 class tree_no_op_command;
-class tree_oct_obj;
 class tree_constant;
 class tree_parameter_list;
 class tree_plot_command;
@@ -140,9 +139,6 @@ public:
 
   virtual void
   visit_no_op_command (tree_no_op_command&) = 0;
-
-  virtual void
-  visit_oct_obj (tree_oct_obj&) = 0;
 
   virtual void
   visit_constant (tree_constant&) = 0;

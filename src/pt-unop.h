@@ -96,7 +96,7 @@ public:
 
   octave_value rvalue (void);
 
-  octave_value_list rvalue (int nargou);
+  octave_value_list rvalue (int nargout);
 
   void eval_error (void);
 

@@ -490,14 +490,14 @@ simple_help (void)
 
   // XXX FIXME XXX -- is this distinction needed?
 
-  LIST_SYMBOLS (symbol_def::TEXT_FUNCTION,
+  LIST_SYMBOLS (symbol_record::TEXT_FUNCTION,
 		"text functions (these names are also reserved)");
 
-  LIST_SYMBOLS (symbol_def::MAPPER_FUNCTION, "mapper functions");
+  LIST_SYMBOLS (symbol_record::MAPPER_FUNCTION, "mapper functions");
 
-  LIST_SYMBOLS (symbol_def::BUILTIN_FUNCTION, "general functions");
+  LIST_SYMBOLS (symbol_record::BUILTIN_FUNCTION, "general functions");
 
-  LIST_SYMBOLS (symbol_def::BUILTIN_VARIABLE, "builtin variables");
+  LIST_SYMBOLS (symbol_record::BUILTIN_VARIABLE, "builtin variables");
 
   // Also need to list variables and currently compiled functions from
   // the symbol table, if there are any.

@@ -79,6 +79,12 @@ public:
 
   void mark_as_formal_parameter (void);
 
+  // We really need to know whether this symbol referst to a variable
+  // or a function, but we may not know that yet.
+
+  bool lvalue_ok (void) const
+    { return true; }
+
   octave_value rvalue (void);
 
   octave_value_list rvalue (int nargout);

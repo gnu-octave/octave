@@ -90,8 +90,6 @@ public:
 
   void visit_no_op_command (tree_no_op_command&);
 
-  void visit_oct_obj (tree_oct_obj&);
-
   void visit_constant (tree_constant&);
 
   void visit_parameter_list (tree_parameter_list&);

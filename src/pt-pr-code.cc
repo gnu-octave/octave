@@ -440,7 +440,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 
   print_parens (expr, "(");
 
-  tree_expression *e= expr.expression ();
+  tree_expression *e = expr.expression ();
 
   if (e)
     e->accept (*this);
@@ -543,12 +543,6 @@ tree_print_code::visit_no_op_command (tree_no_op_command& cmd)
   indent ();
 
   os << cmd.original_command ();
-}
-
-void
-tree_print_code::visit_oct_obj (tree_oct_obj&)
-{
-  ::error ("visit_oct_obj: internal error");
 }
 
 void

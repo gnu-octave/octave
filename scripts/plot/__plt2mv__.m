@@ -21,7 +21,6 @@
 
 function __plt2mv__ (x, y, fmt)
 
-  keyboard
   if (nargin < 2 || nargin > 3)
     msg = sprintf ("__plt2mv__ (x, y)\n");
     msg = sprintf ("%s              __plt2mv__ (x, y, fmt)", msg);
@@ -55,7 +54,6 @@ function __plt2mv__ (x, y, fmt)
   fmt_nr = rows (fmt);
   if (x_nc > 0)
     tmp = [x, y];
-    keyboard
     cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
 		   deblank (fmt (k, :)));
     if (k < fmt_nr)

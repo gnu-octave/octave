@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 1998 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,33 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: oneplot
+## usage: upper (s)
 ##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch
-##
-## Switches from multiplot (if in multiplot mode) to single plot
-## mode
+## See also: toupper
 
-## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
-## Created: 3 July 95
-## Adapted-By: jwe
+## Author: jwe
 
-function oneplot ()
+function retval = upper (s)
 
-  if (gnuplot_has_multiplot)
-
-    global __multiplot_mode__ = 0;
-
-    if (__multiplot_mode__)
-      gset nomultiplot;
-      gset size 1, 1;
-      gset origin 0, 0;
-      __multiplot_mode__ = 0;
-      gnuplot_command_replot = "rep";
-      clearplot;
-    endif
-
+  if (nargin != 1)
+    usage ("upper (s)");
   endif
+
+  retval = toupper (s);
 
 endfunction

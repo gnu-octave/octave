@@ -90,7 +90,7 @@ function [nn, xx] = hist (y, x)
   endfor
   freq (n) = sum (y >= cutoff (n-1));
 
-  if (nargout == 2)
+  if (nargout > 0)
     nn = freq;
     xx = x;
   else

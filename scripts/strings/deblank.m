@@ -37,6 +37,8 @@ function t = deblank (s)
 
     if (len == 0)
       t = s;
+    elseif (s == " ")
+      t = "";
     else
       s = reshape (s, 1, len);
       k = max (find (s != " "));

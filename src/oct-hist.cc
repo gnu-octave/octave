@@ -32,9 +32,9 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <csignal>
 #include <cstdlib>
 #include <cstring>
-#include <csignal>
 
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H

@@ -3,40 +3,179 @@
 # mkoctfile -- create a .oct file suitable for dynamic linking by
 # Octave.
 
+# Exit immediately on any error.
+
 set -e
 
-if [ $# -eq 1 ]; then
-  srcfile="$1"
-  basnm=`echo $srcfile | sed 's,\.cc$,,'`
-  objfile=$basnm.o
-  octfile=$basnm.oct
-else
-  echo "usage: mkoctfile file.cc" 1>&2
-  exit 1
+# Default values for these variables are filled in when Octave is
+# compiled. 
+
+: ${CPPFLAGS=%CPPFLAGS%}
+: ${INCFLAGS=%INCFLAGS%}
+: ${F77=%F77%}
+: ${FFLAGS=%FFLAGS%}
+: ${FPICFLAG=%FPICFLAG%}
+: ${CC=%CC%}
+: ${CFLAGS=%CFLAGS%}
+: ${CPICFLAG=%CPICFLAG%}
+: ${CXX=%CXX%}
+: ${CXXFLAGS=%CXXFLAGS%}
+: ${CXXPICFLAG=%CXXPICFLAG%}
+: ${HOST_CXXFLAGS=%HOST_CXXFLAGS%}
+: ${NO_IMPLICIT_TEMPLATES=%NO_IMPLICIT_TEMPLATES%}
+: ${GCC_IEEE_FP_FLAG=%GCC_IEEE_FP_FLAG%}
+
+: ${SH_LD=%SH_LD%}
+: ${SH_LDFLAGS=%SH_LDFLAGS%}
+
+: ${ALL_FFLAGS="$FFLAGS"}
+
+: ${ALL_CFLAGS="$INCFLAGS $GCC_IEEE_FP_FLAG $CFLAGS"}
+
+: ${ALL_CXXFLAGS="$INCFLAGS $HOST_CXXFLAGS $NO_IMPLICIT_TEMPLATES $GCC_IEEE_FP_FLAG $CXXFLAGS"}
+
+# Local variables.
+
+usage_msg="usage: mkoctfile [options] file ..."
+
+cfiles=
+ccfiles=
+f77files=
+objfiles=
+octfiles=
+octfile=
+ldflags=
+dbg=:
+strip=
+
+if [ $# -eq 0 ]; then
+  echo $usage_msg
+  exit 1;
 fi
 
-# Configuration:  these variables are filled in at configuration time.
+while [ $# -gt 0 ]; do
+  file=
+  case "$1" in
+    *.c)
+      file=$1
+      cfiles="$cfiles $file"
+    ;;
+    *.cc | *.C | *.cpp)
+      file=$1
+      ccfiles="$ccfiles $file"
+    ;;
+    *.f | *.F)
+      file=$1
+      f77files="$f77files $file"
+    ;;
+    *.o)
+      file=$1
+      objfiles="$objfiles $file"
+    ;;
+    -d | --debug)
+      dbg=echo
+    ;;
+    -h | -? | --help)
+      echo $usage_msg
+      cat << EOF
 
-CPPFLAGS=%CPPFLAGS%
-INCFLAGS=%INCFLAGS%
-CXX=%CXX%
-CXX_VERSION=%CXX_VERSION%
-CXXFLAGS=%CXXFLAGS%
-CXXPICFLAG=%CXXPICFLAG%
-HOST_CXXFLAGS=%HOST_CXXFLAGS%
-NO_IMPLICIT_TEMPLATES=%NO_IMPLICIT_TEMPLATES%
-GCC_IEEE_FP_FLAG=%GCC_IEEE_FP_FLAG%
+Options:
 
-SH_LD=%SH_LD%
-SH_LDFLAGS=%SH_LDFLAGS%
+  -h, -? --help           Print this message.
+  -v, --verbose           Echo commands as they are executed.
+  -o FILE, --ouput FILE   Output file name.  Default extension is .oct.
+  -lLIB                   Add library LIB to link command.
 
-ALL_CXXFLAGS="$INCFLAGS $HOST_CXXFLAGS $NO_IMPLICIT_TEMPLATES \
-  $GCC_IEEE_FP_FLAG $CXXFLAGS"
+  FILE                    Compile or link FILE.  Recognized file types are:
 
-echo "making $objfile from $srcfile"
+			    .c    C source
+			    .cc   C++ source
+			    .C    C++ source
+			    .cpp  C++ source
+			    .f    Fortran source
+			    .F    Fortran source
+			    .o    object file
 
-eval $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $srcfile -o $objfile
+EOF
+      exit 0
+    ;;
+    -o | --output)
+      shift
+      if [ $# -gt 0 ]; then
+        octfile=`echo $1 | sed 's,\.[^.]*$,,'`.oct
+      else
+        echo "mkoctfile: output file name missing"
+      fi
+    ;;
+    -*)
+      ldflags="$ldflags $1";;
+    "")
+      break
+    ;;
+    *)
+      echo "mkoctfile: unrecognized argument $1"
+      exit 1
+    ;;
+  esac
+  if [ -n "$file" ]; then
+    if [ -z "$octfile" ]; then
+      octfile=`echo $file | sed 's,\.[^.]*$,,'`.oct
+    fi
+  fi
+  shift
+done
 
-echo "making $octfile from $objfile"
+# Compile Fortran, C, and C++ files.  Add the name of each object file
+# that is produced to the overall list of object files.
 
-eval $SH_LD $SH_LDFLAGS -o $octfile $objfile
+if [ -n "$f77files" ]; then
+  for f in $f77files; do
+    case $f in
+      *.f)
+        b=`echo $f | sed 's,\.f$,,'`
+      ;;
+      *.F)
+        b=`echo $f | sed 's,\.F$,,'`
+      ;;
+    esac
+    o=$b.o
+    objfiles="$objfiles $o"
+    $dbg $F77 -c $FPICFLAG $ALL_FFLAGS $f -o $o
+    eval $F77 -c $FPICFLAG $ALL_FFLAGS $f -o $o
+  done
+fi
+
+if [ -n "$cfiles" ]; then
+  for f in $cfiles; do
+    b=`echo $f | sed 's,\.c$,,'`
+    o=$b.o
+    objfiles="$objfiles $o"
+    $dbg $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $f -o $o
+    eval $CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $f -o $o
+  done
+fi
+
+if [ -n "$ccfiles" ]; then
+  for f in $ccfiles; do
+    case $f in
+      *.cc)
+        b=`echo $f | sed 's,\.cc$,,'`
+      ;;
+      *.C)
+        b=`echo $f | sed 's,\.C$,,'`
+      ;;
+      *.cpp)
+        b=`echo $f | sed 's,\.cpp$,,'`
+      ;;
+    esac
+    o=$b.o
+    objfiles="$objfiles $o"
+    $dbg $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $f -o $o
+    eval $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $f -o $o
+  done
+fi
+
+# Link all the object files.
+
+$dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles
+eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles

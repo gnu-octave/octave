@@ -73,7 +73,7 @@ valid_scalar_indices (const octave_value_list& args)
 }
 
 octave_value
-octave_complex::index (const octave_value_list& idx) const
+octave_complex::do_index_op (const octave_value_list& idx) const
 {
   octave_value retval;
 
@@ -93,7 +93,7 @@ octave_complex::index (const octave_value_list& idx) const
 
       octave_value tmp (new octave_complex_matrix (complex_matrix_value ()));
 
-      retval = tmp.index (idx);
+      retval = tmp.do_index_op (idx);
     }
 
   return retval;

@@ -61,7 +61,7 @@ octave_char_matrix_str::numeric_conversion_function (void) const
 }
 
 octave_value
-octave_char_matrix_str::index (const octave_value_list& idx) const
+octave_char_matrix_str::do_index_op (const octave_value_list& idx) const
 {
   octave_value retval;
 

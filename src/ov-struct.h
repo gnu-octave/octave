@@ -73,7 +73,11 @@ public:
   void operator delete (void *p, size_t size)
     { allocator.free (p, size); }
 
-  octave_value struct_elt_val (const string& nm, bool silent) const;
+  octave_value
+  do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
+			  bool silent);
+
+  octave_value do_struct_elt_index_op (const string& nm, bool silent);
 
   octave_variable_reference
   struct_elt_ref (octave_value *parent, const string& nm);

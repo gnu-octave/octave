@@ -70,7 +70,7 @@ public:
   void operator delete (void *p, size_t size)
     { allocator.free (p, size); }
 
-  octave_value index (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx) const;
 
   bool is_defined (void) const { return true; }
 

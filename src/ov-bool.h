@@ -74,7 +74,7 @@ public:
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value index (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx) const;
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

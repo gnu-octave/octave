@@ -77,7 +77,7 @@ octave_matrix::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_matrix::index (const octave_value_list& idx) const
+octave_matrix::do_index_op (const octave_value_list& idx) const
 {
   octave_value retval;
 
@@ -215,7 +215,15 @@ octave_matrix::assign_struct_elt (assign_op, const string&,
 }
 
 octave_value
-octave_matrix::struct_elt_val (const string& nm, bool silent) const
+octave_matrix::do_struct_elt_index_op (const string& nm,
+				       const octave_value_list& idx,
+				       bool silent)
+{
+  // XXX DO_ME XXX
+}
+
+octave_value
+octave_matrix::do_struct_elt_index_op (const string& nm, bool silent)
 {
   octave_value retval;
 

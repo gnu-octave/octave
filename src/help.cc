@@ -53,6 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
+#include "oct-usr-fcn.h"
 #include "pager.h"
 #include "pathsearch.h"
 #include "pt-pr-code.h"
@@ -718,7 +719,7 @@ print cryptic yet witty messages")
 }
 
 DEFUN_TEXT (type, args, nargout,
-  "type NAME ...]\n\
+  "type NAME\n\
 \n\
 display the definition of each NAME that refers to a function")
 {
@@ -782,7 +783,10 @@ display the definition of each NAME that refers to a function")
 	    {
 	      if (sym_rec->is_user_function ())
 		{
-		  octave_symbol *defn = sym_rec->def ();
+		  octave_symbol *tmp = sym_rec->def ();
+
+		  octave_user_function *defn
+		    = static_cast<octave_user_function *> (tmp);
 
 		  string fn = defn->fcn_file_name ();
 		  string ff = fcn_file_in_path (fn);
@@ -815,8 +819,7 @@ display the definition of each NAME that refers to a function")
 
 		      tree_print_code tpc (output_buf, "", pr_orig_txt);
 
-		      // XXX FIXME XXX
-		      // defn->accept (tpc);
+		      defn->accept (tpc);
 		    }
 		}
 

@@ -52,7 +52,7 @@ int octave_base_value::t_id = -1;
 const string octave_base_value::t_name ("<unknown type>");
 
 octave_value
-octave_base_value::index (const octave_value_list&) const
+octave_base_value::do_index_op (const octave_value_list&) const
 {
   string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
@@ -68,7 +68,18 @@ octave_base_value::index_vector (void) const
 }
 
 octave_value
-octave_base_value::struct_elt_val (const string&, bool) const
+octave_base_value::do_struct_elt_index_op (const string&,
+					   const octave_value_list&,
+					   bool)
+{
+  string nm = type_name ();
+  error ("can't perform indexed structure reference operations for %s type",
+	 nm.c_str ());
+  return octave_value ();
+}
+
+octave_value
+octave_base_value::do_struct_elt_index_op (const string&, bool)
 {
   string nm = type_name ();
   error ("can't perform structure reference operations for %s type",

@@ -46,7 +46,15 @@ const string
 octave_struct::t_name ("struct");
 
 octave_value
-octave_struct::struct_elt_val (const string& nm, bool silent) const
+octave_struct::do_struct_elt_index_op (const string& nm,
+				       const octave_value_list& idx,
+				       bool silent)
+{
+  // XXX DO_ME XXX
+}
+
+octave_value
+octave_struct::do_struct_elt_index_op (const string& nm, bool silent)
 {
   octave_value retval;
 

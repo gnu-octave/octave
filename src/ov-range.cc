@@ -86,7 +86,7 @@ octave_range::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_range::index (const octave_value_list& idx) const
+octave_range::do_index_op (const octave_value_list& idx) const
 {
   // XXX FIXME XXX -- this doesn't solve the problem of
   //
@@ -100,7 +100,7 @@ octave_range::index (const octave_value_list& idx) const
 
   octave_value tmp (new octave_matrix (range.matrix_value ()));
 
-  return tmp.index (idx);
+  return tmp.do_index_op (idx);
 }
 
 double

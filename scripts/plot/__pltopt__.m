@@ -19,7 +19,7 @@
 
 ## Originally written by Rick Niles <niles@axp745.gsfc.nasa.gov>.
 
-## usage: fmt = plot_opt (caller, opt)
+## usage: fmt = __pltopt__ (caller, opt)
 ##
 ## Decode plot option strings.
 ##
@@ -62,7 +62,7 @@
 
 ## Author: jwe
 
-function fmt = plot_opt (caller, opt)
+function fmt = __pltopt__ (caller, opt)
 
   set_color = 0;
   set_symbol = 0;
@@ -87,11 +87,11 @@ function fmt = plot_opt (caller, opt)
   ERRORBARS = "e";
 
   if (nargin != 2)
-    usage ("plot_opt (opt)");
+    usage ("__pltopt__ (opt)");
   endif
 
   if (! isstr (opt))
-    error ("plot_opt: argument must be a string");
+    error ("__pltopt__: argument must be a string");
   endif
 
   while (more_opts)

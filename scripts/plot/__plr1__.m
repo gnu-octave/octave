@@ -19,10 +19,10 @@
 
 ## Author: jwe
 
-function polar_int_1 (theta, fmt)
+function __plr1__ (theta, fmt)
 
   if (nargin != 2)
-    usage ("polar_int_1 (theta, fmt)");
+    usage ("__plr1__ (theta, fmt)");
   endif
 
   [nr, nc] = size (theta);
@@ -41,6 +41,6 @@ function polar_int_1 (theta, fmt)
     theta = (1:nr)';
   endif
 
-  polar_int_2 (theta, rho, fmt);
+  __plr2__ (theta, rho, fmt);
 
 endfunction

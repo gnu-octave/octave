@@ -37,6 +37,6 @@ function semilogx (...)
   set nologscale y;
   set nopolar;
 
-  plot_int ("semilogx", all_va_args);
+  __plt__ ("semilogx", all_va_args);
 
 endfunction

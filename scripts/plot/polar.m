@@ -35,22 +35,22 @@ function polar (x1, x2, fmt)
 
   if (nargin == 3)
     if (isstr (fmt))
-      fmt = plot_opt ("polar", fmt);
+      fmt = __pltopt__ ("polar", fmt);
     else
       error ("polar: third argument must be a string");
     endif
-    polar_int_2 (x1, x2, fmt);
+    __plr2__ (x1, x2, fmt);
   elseif (nargin == 2)
     if (isstr (x2))
-      fmt = plot_opt ("polar", x2);
-      polar_int_1 (x1, fmt);
+      fmt = __pltopt__ ("polar", x2);
+      __plr1__ (x1, fmt);
     else
       fmt = "";
-      polar_int_2 (x1, x2, fmt);
+      __plr2__ (x1, x2, fmt);
     endif
   elseif (nargin == 1)
     fmt = "";
-    polar_int_1 (x1, fmt);
+    __plr1__ (x1, fmt);
   else
     usage ("polar (theta, rho, fmt)");
   endif

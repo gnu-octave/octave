@@ -19,11 +19,11 @@
 
 ## Author: jwe
 
-function plot_2_s_s (x, y, fmt)
+function __plt2ss__ (x, y, fmt)
 
   if (nargin < 2 || nargin > 3)
-    msg = sprintf ("plot_2_s_s (x, y)");
-    msg = sprintf ("%s              plot_2_s_s (x, y, fmt)", msg);
+    msg = sprintf ("__plt2ss__ (x, y)");
+    msg = sprintf ("%s              __plt2ss__ (x, y, fmt)", msg);
     usage (msg);
   elseif (nargin == 2)
     fmt = "";
@@ -37,7 +37,7 @@ function plot_2_s_s (x, y, fmt)
     cmd = sprintf ("gplot tmp %s", fmt);
     eval (cmd);
   else
-    error ("plot_2_s_s: arguments must be scalars");
+    error ("__plt2ss__: arguments must be scalars");
   endif
 
 endfunction

@@ -61,7 +61,7 @@ function mplot (...)
   set nologscale;
   set nopolar;
 
-  plot_int ("plot", all_va_args);
+  __plt__ ("plot", all_va_args);
 
   ## update the plot position
 

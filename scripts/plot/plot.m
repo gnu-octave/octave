@@ -43,7 +43,7 @@
 ## coordinates and the x coordinates are taken to be the indices of the
 ## elements, starting with 1.
 ##
-## To see possible options for FMT please see plot_opt.
+## To see possible options for FMT please see __pltopt__.
 ##
 ## Examples:
 ##
@@ -58,7 +58,7 @@
 ##
 ##     b will be plotted with points of type "*".
 ##
-## See also: semilogx, semilogy, loglog, polar, mesh, contour, plot_opt
+## See also: semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
 ## Author: jwe
@@ -68,6 +68,6 @@ function plot (...)
   set nologscale;
   set nopolar;
 
-  plot_int ("plot", all_va_args);
+  __plt__ ("plot", all_va_args);
 
 endfunction

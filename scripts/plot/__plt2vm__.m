@@ -19,11 +19,11 @@
 
 ## Author: jwe
 
-function plot_2_v_m (x, y, fmt)
+function __plt2vm__ (x, y, fmt)
 
   if (nargin < 2 || nargin > 3)
-    msg = sprintf ("plot_2_v_m (x, y)\n");
-    msg = sprintf ("%s              plot_2_v_m (x, y, fmt)", msg);
+    msg = sprintf ("__plt2vm__ (x, y)\n");
+    msg = sprintf ("%s              __plt2vm__ (x, y, fmt)", msg);
     usage (msg);
   elseif (nargin == 2)
     fmt = "";
@@ -47,7 +47,7 @@ function plot_2_v_m (x, y, fmt)
     y_nr = y_nc;
     y_nc = tmp;
   else
-    error ("plot_2_v_m: matrix dimensions must match");
+    error ("__plt2vm__: matrix dimensions must match");
   endif
 
   if (y_nc > 0)
@@ -58,7 +58,7 @@ function plot_2_v_m (x, y, fmt)
     endfor
     eval (cmd);
   else
-    error ("plot_2_v_m: arguments must be a matrices");
+    error ("__plt2vm__: arguments must be a matrices");
   endif
 
 endfunction

@@ -19,11 +19,11 @@
 
 ## Author: jwe
 
-function plot_2_v_v (x, y, fmt)
+function __plt2vv__ (x, y, fmt)
 
   if (nargin < 2 || nargin > 3)
-    msg = sprintf ("plot_2_v_v (x, y)\n");
-    msg = sprintf ("%s              plot_2_v_v (x, y, fmt)", msg);
+    msg = sprintf ("__plt2vv__ (x, y)\n");
+    msg = sprintf ("%s              __plt2vv__ (x, y, fmt)", msg);
     usage (msg);
   elseif (nargin == 2)
     fmt = "";
@@ -47,7 +47,7 @@ function plot_2_v_v (x, y, fmt)
   endif
 
   if (x_nr != y_nr)
-    error ("plot_2_v_v: vector lengths must match");
+    error ("__plt2vv__: vector lengths must match");
   endif
 
   tmp = [x, y];

@@ -19,11 +19,11 @@
 
 ## Author: jwe
 
-function plot_int (caller, ...)
+function __plt__ (caller, ...)
 
   if (nargin == 2)
 
-    plot_int_1 (va_arg (), "");
+    __plt1__ (va_arg (), "");
 
   elseif (nargin > 2)
 
@@ -48,18 +48,18 @@ function plot_int (caller, ...)
 	  if (! x_set)
 	    error ("plot: no data to plot");
 	  endif
-	  fmt = plot_opt (caller, new);
+	  fmt = __pltopt__ (caller, new);
 	  if (! y_set)
-	    plot_int_1 (x, fmt);
+	    __plt1__ (x, fmt);
 	  else
-	    plot_int_2 (x, y, fmt);
+	    __plt2__ (x, y, fmt);
 	  endif
 	  hold on;
 	  x_set = 0;
 	  y_set = 0;
 	elseif (x_set)
 	  if (y_set)
-	    plot_int_2 (x, y, fmt);
+	    __plt2__ (x, y, fmt);
 	    hold on;
 	    x = new;
 	    y_set = 0;
@@ -78,9 +78,9 @@ function plot_int (caller, ...)
 
       if  (x_set)
 	if (y_set)
-	  plot_int_2 (x, y, fmt);
+	  __plt2__ (x, y, fmt);
 	else
-	  plot_int_1 (x, fmt);
+	  __plt1__ (x, fmt);
 	endif
       endif
 

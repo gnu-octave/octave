@@ -37,6 +37,6 @@ function loglog (...)
   set logscale y;
   set nopolar;
 
-  plot_int ("loglog", all_va_args);
+  __plt__ ("loglog", all_va_args);
 
 endfunction

@@ -19,10 +19,10 @@
 
 ## Author: jwe
 
-function plot_int_1 (x1, fmt)
+function __plt1__ (x1, fmt)
 
   if (nargin < 1 || nargin > 2)
-    usage ("plot_int_1 (x1, fmt)");
+    usage ("__plt1__ (x1, fmt)");
   endif
 
   if (nargin == 1)
@@ -30,7 +30,7 @@ function plot_int_1 (x1, fmt)
   endif
 
   if (! isstr (fmt))
-    error ("plot_int_1: fmt must be a string");
+    error ("__plt1__: fmt must be a string");
   endif
 
   [nr, nc] = size (x1);
@@ -49,6 +49,6 @@ function plot_int_1 (x1, fmt)
     x1 = (1:nr)';
   endif
 
-  plot_int_2 (x1, x2, fmt);
+  __plt2__ (x1, x2, fmt);
 
 endfunction

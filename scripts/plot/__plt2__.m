@@ -19,10 +19,10 @@
 
 ## Author: jwe
 
-function plot_int_2 (x1, x2, fmt)
+function __plt2__ (x1, x2, fmt)
 
   if (nargin < 2 || nargin > 3)
-    usage ("plot_int_2 (x1, x2, fmt)");
+    usage ("__plt2__ (x1, x2, fmt)");
   endif
 
   if (nargin == 2)
@@ -30,7 +30,7 @@ function plot_int_2 (x1, x2, fmt)
   endif
 
   if (! isstr (fmt))
-    error ("plot_int_2: fmt must be a string");
+    error ("__plt2__: fmt must be a string");
   endif
 
   if (any (any (imag (x1))))
@@ -41,19 +41,19 @@ function plot_int_2 (x1, x2, fmt)
   endif
   if (is_scalar (x1))
     if (is_scalar (x2))
-      plot_2_s_s (x1, x2, fmt);
+      __plt2ss__ (x1, x2, fmt);
     endif
   elseif (is_vector (x1))
     if (is_vector (x2))
-      plot_2_v_v (x1, x2, fmt);
+      __plt2vv__ (x1, x2, fmt);
     elseif (is_matrix (x2))
-      plot_2_v_m (x1, x2, fmt);
+      __plt2vm__ (x1, x2, fmt);
     endif
   elseif (is_matrix (x1))
     if (is_vector (x2))
-      plot_2_m_v (x1, x2, fmt);
+      __plt2mv__ (x1, x2, fmt);
     elseif (is_matrix (x2))
-      plot_2_m_m (x1, x2, fmt);
+      __plt2mm__ (x1, x2, fmt);
     endif
   endif
 

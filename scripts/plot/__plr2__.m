@@ -19,10 +19,10 @@
 
 ## Author: jwe
 
-function polar_int_2 (theta, rho, fmt)
+function __plr2__ (theta, rho, fmt)
 
   if (nargin != 3)
-    usage ("polar_int_2 (theta, rho, fmt)");
+    usage ("__plr2__ (theta, rho, fmt)");
   endif
 
   if (any (imag (theta)))
@@ -37,7 +37,7 @@ function polar_int_2 (theta, rho, fmt)
     if (is_scalar (rho))
       x = rho * cos (theta);
       y = rho * sin (theta);
-      plot_2_s_s (x, y, fmt);
+      __plt2ss__ (x, y, fmt);
     endif
   elseif (is_vector (theta))
     if (is_vector (rho))
@@ -52,7 +52,7 @@ function polar_int_2 (theta, rho, fmt)
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
-      plot_2_v_v (x, y, fmt);
+      __plt2vv__ (x, y, fmt);
     elseif (is_matrix (rho))
       [t_nr, t_nc] = size (theta);
       if (t_nr == 1)
@@ -73,7 +73,7 @@ function polar_int_2 (theta, rho, fmt)
       endif
       x = diag (cos (theta)) * rho;
       y = diag (sin (theta)) * rho;
-      plot_2_v_m (x, y, fmt);
+      __plt2vm__ (x, y, fmt);
     endif
   elseif (is_matrix (theta))
     if (is_vector (rho))
@@ -97,14 +97,14 @@ function polar_int_2 (theta, rho, fmt)
       diag_r = diag (r);
       x = diag_r * cos (theta);
       y = diag_r * sin (theta);
-      plot_2_m_v (x, y, fmt);
+      __plt2mv__ (x, y, fmt);
     elseif (is_matrix (rho))
       if (size (rho) != size (theta))
 	error ("polar: matrix dimensions must match");
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
-      plot_2_m_m (x, y, fmt);
+      __plt2mm__ (x, y, fmt);
     endif
   endif
 

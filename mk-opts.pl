@@ -758,7 +758,7 @@ $doc_string\@end deftypefn\")
     print_usage (\"$opt_fcn_name\");
 
   return retval;
-}";  
+}\n";  
 }
 
 sub emit_options_debug

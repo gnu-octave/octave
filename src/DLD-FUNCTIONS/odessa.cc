@@ -300,7 +300,7 @@ parameters for @code{odessa}.")
       
       if (len > 2)
 	{
-	  string t = f_str_arg(2);
+	  std::string t = f_str_arg(2);
 
 	  if (t.length () > 0)
 	    {
@@ -314,7 +314,7 @@ parameters for @code{odessa}.")
 
       if (len > 1)
 	{
-	  string t = f_str_arg(1);
+	  std::string t = f_str_arg(1);
 	  
 	  if (t.length () > 0)
 	    {

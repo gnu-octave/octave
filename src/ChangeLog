@@ -1,3 +1,8 @@
+2001-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/dassl.cc (dassl_user_function): Allow user
+	supplied RES function to return IDID as second value.
+
 2001-07-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y: Clear help_buf after documenting function.

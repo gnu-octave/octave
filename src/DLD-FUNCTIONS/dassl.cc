@@ -50,7 +50,8 @@ static DASSL_options dassl_opts;
 static int call_depth = 0;
 
 ColumnVector
-dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
+dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
+		     double t, int& ires)
 {
   ColumnVector retval;
 
@@ -95,9 +96,13 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 	  return retval;
 	}
 
-      if (tmp.length () > 0 && tmp(0).is_defined ())
+      int tlen = tmp.length ();
+      if (tlen > 0 && tmp(0).is_defined ())
 	{
 	  retval = ColumnVector (tmp(0).vector_value ());
+
+	  if (tlen > 1)
+	    ires = tmp(1).int_value ();
 
 	  if (error_state || retval.length () == 0)
 	    gripe_user_supplied_eval ("dassl");

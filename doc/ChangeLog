@@ -1,3 +1,7 @@
+2001-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (MAIN_TEXINFO): Look in $(srcdir).
+
 2001-03-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* liboctave/Makefile.in (liboctave_toc.html): Use -expand info and

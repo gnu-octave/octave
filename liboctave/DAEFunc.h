@@ -38,7 +38,8 @@ public:
     };
 
   typedef ColumnVector (*DAERHSFunc) (const ColumnVector& x,
-				      const ColumnVector& xdot, double); 
+				      const ColumnVector& xdot,
+				      double, int&); 
 
   typedef DAEJac (*DAEJacFunc) (const ColumnVector& x,
 				const ColumnVector& xdot, double);

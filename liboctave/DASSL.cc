@@ -145,14 +145,17 @@ ddassl_f (const double& time, double *state, double *deriv,
       tmp_state.elem (i) = state [i];
     }
 
-  tmp_delta = user_fun (tmp_state, tmp_deriv, time);
+  tmp_delta = user_fun (tmp_state, tmp_deriv, time, ires);
 
-  if (tmp_delta.length () == 0)
-    ires = -2;
-  else
+  if (ires >= 0)
     {
-      for (int i = 0; i < nn; i++)
-	delta [i] = tmp_delta.elem (i);
+      if (tmp_delta.length () == 0)
+	ires = -2;
+      else
+	{
+	  for (int i = 0; i < nn; i++)
+	    delta [i] = tmp_delta.elem (i);
+	}
     }
 
   return 0;
@@ -220,7 +223,9 @@ DASSL::do_integrate (double tout)
 
   if (! sanity_checked)
     {
-      ColumnVector res = (*user_fun) (x, xdot, t);
+      int ires = 0;
+
+      ColumnVector res = (*user_fun) (x, xdot, t, ires);
 
       if (res.length () != x.length ())
 	{

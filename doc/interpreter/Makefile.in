@@ -30,7 +30,7 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 
 SOURCES := $(SUB_SOURCE)
 
-MAIN_TEXINFO := octave.texi
+MAIN_TEXINFO := $(SRCDIR)/octave.texi
 
 SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 

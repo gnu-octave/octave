@@ -55,7 +55,6 @@ template <class T>
 ArrayRep<T>::ArrayRep (const ArrayRep<T>& a)
 {
   len = a.len;
-  count = a.count;
 
   data = new T [len];
   for (int i = 0; i < len; i++)

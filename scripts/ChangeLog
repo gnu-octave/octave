@@ -3,6 +3,8 @@ Fri Dec  4 16:08:42 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* quaternion: New directory of functions from A. S. Hodel,
 	<a.s.hodel@eng.auburn.edu>.
 	* Makefile.in (SUBDIRS): Add it to the list.
+	* quaternion/Makefile.in: New file.
+	* configure.in (AC_OUTPUT): Add quaternion/Makefile.
 
 Tue Nov 24 21:41:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

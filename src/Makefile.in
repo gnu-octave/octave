@@ -162,7 +162,7 @@ TERMLIBS = @TERMLIBS@
 
 LIBS = @LIBS@
 
-DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links \
+DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links.in \
 	octave.gperf octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
@@ -243,8 +243,7 @@ install-lib:
 install-oct:
 	$(top_srcdir)/mkinstalldirs $(octfiledir)
 	for f in $(OCT_FILES); do $(INSTALL_DATA) $$f $(octfiledir)/$$f; done
-	$(srcdir)/mk-oct-links $(octfiledir) \
-	  $(addprefix $(srcdir)/, $(DLD_SRC))
+	./mk-oct-links $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC))
 .PHONY: install-oct
 
 uninstall:

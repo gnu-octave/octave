@@ -186,8 +186,11 @@ public:
   // Should only matter if defining_func is also TRUE.
   bool parsed_function_name;
 
-  // TRUE means that we're parsing a nested function definition.
-  bool parsing_nested_function;
+  // Are we parsing a nested function?
+  //   1 ==> Yes.
+  //   0 ==> No.
+  //  -1 ==> Yes, but it is the last one because we have seen EOF.
+  int parsing_nested_function;
 
   // TRUE means we've seen something that means we must be past the
   // range part of a plot command.

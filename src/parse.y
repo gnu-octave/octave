@@ -1294,7 +1294,8 @@ function_end	: END
 		  }
 		| END_OF_INPUT
 		  {
-		    lexer_flags.parsing_nested_function = false;
+		    if (lexer_flags.parsing_nested_function)
+		      lexer_flags.parsing_nested_function = -1;
 
 		    if (! (reading_fcn_file || reading_script_file
 			   || get_input_from_eval_string))
@@ -2595,6 +2596,9 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 
   help_buf.resize (0);
 
+  if (lexer_flags.parsing_nested_function < 0)
+    lexer_flags.parsing_nested_function = 0;
+  
   return fcn;
 }
 

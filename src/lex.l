@@ -22,7 +22,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 %s COMMAND_START
 %s MATRIX_START
-%s NESTED_FUNCTION_START
+
+%x NESTED_FUNCTION_END
+%x NESTED_FUNCTION_BEGIN
 
 %{
 #ifdef HAVE_CONFIG_H
@@ -241,8 +243,15 @@ EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
-<NESTED_FUNCTION_START>{} {
+<NESTED_FUNCTION_END>. {
+    BEGIN NESTED_FUNCTION_BEGIN;
+    unput (yytext[0]);
+    return ';';
+  }
+
+<NESTED_FUNCTION_BEGIN>. {
     BEGIN 0;
+    unput (yytext[0]);
     prep_for_nested_function ();
     return FCN;
   }
@@ -781,15 +790,20 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 . {
-    current_input_column++;
+    // EOF happens here if we are parsing nested functions.
 
-    // EOF can't happen here (we catch it above).
+    if (yytext[0] != EOF)
+      {
+	current_input_column++;
 
-    error ("invalid character `%s' (ASCII %d) near line %d, column %d",
-	   undo_string_escape (yytext[0]), static_cast<int> (yytext[0]),
-	   input_line_number, current_input_column);
+	error ("invalid character `%s' (ASCII %d) near line %d, column %d",
+	       undo_string_escape (yytext[0]), static_cast<int> (yytext[0]),
+	       input_line_number, current_input_column);
 
-    return LEXICAL_ERROR;
+	return LEXICAL_ERROR;
+      }
+    else
+      TOK_RETURN (END_OF_INPUT);
   }
 
 %%
@@ -1083,8 +1097,10 @@ prep_for_function (void)
 static void
 prep_for_nested_function (void)
 {
-  lexer_flags.parsing_nested_function = true;
+  lexer_flags.parsing_nested_function = 1;
   prep_for_function ();
+  // We're still only expecting one end token for this set of functions.
+  end_tokens_expected--;
   yylval.tok_val = new token (input_line_number, current_input_column);
   token_stack.push (yylval.tok_val);
 }
@@ -1246,15 +1262,19 @@ is_keyword (const std::string& s)
 	      {
 		if (reading_fcn_file)
 		  {
-
 		    if (lexer_flags.parsing_nested_function)
 		      {
-			BEGIN NESTED_FUNCTION_START;
+			BEGIN NESTED_FUNCTION_END;
+
 			yylval.tok_val = new token (token::function_end, l, c);
+			token_stack.push (yylval.tok_val);
+
+			return END;
 		      }
 		    else
 		      {
 			prep_for_nested_function ();
+
 			return FCN;
 		      }
 		  }
@@ -2619,7 +2639,7 @@ lexical_feedback::init (void)
   beginning_of_function = false;
   defining_func = false;
   parsed_function_name = false;
-  parsing_nested_function = false;
+  parsing_nested_function = 0;
 
   // Not parsing a function return or parameter list.
   looking_at_return_list = false;

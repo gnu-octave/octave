@@ -1,5 +1,20 @@
 2002-12-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (function_end): If parsing a nested function, set
+	lexer_flags.parsing_nested_function to -1.
+	(frob_function): If lexer_flags.parsing_nested_function is
+	negative, set it to zero.
+	* lex.h (lexical_feedback::parsing_nested_function): Now int.
+	Change uses as needed.
+
+	* lex.l (NESTED_FUNCTION_BEGIN): Rename from NESTED_FUNCTION_START.
+	Now an exclusive start state.
+	(NESTED_FUNCTION_END): New exclusive start state.
+	(is_keyword): When matching a new function keyword in a nested
+	function context, explicitly return END and set start state to
+	NESTED_FUNCTION_END.
+	(.): Accept EOF here too.
+
 	* variables.cc (link_to_builtin_or_function): Maybe prepend parent
 	function name symbol name.
 

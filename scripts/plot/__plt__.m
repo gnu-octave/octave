@@ -29,91 +29,38 @@ function __plt__ (caller, varargin)
 
   if (nargs >= 2)
 
-    first_plot = 1;
-    hold_state = ishold ();
+    k = 1;
+    j = 1;
+    x = varargin{k++};
+    nargs -= 2;
+    x_set = 1;
+    y_set = 0;
+    gp_cmd = "gplot";
+    have_gp_cmd = false;
 
-    unwind_protect
+    ## Gather arguments, decode format, gather plot strings, and plot lines.
 
-      k = 1;
-      j = 1;
-      x = varargin{k++};
-      nargs -= 2;
-      x_set = 1;
-      y_set = 0;
-      gp_cmd = "gplot";
-      have_gp_cmd = false;
+    while (nargs-- > 0)
 
-      ## Gather arguments, decode format, gather plot strings, and plot lines.
+      fmt = "";
+      new = varargin{k++};
 
-      while (nargs-- > 0)
+      if (j > 1)
+	sep = ",\\\n";
+      else
+	sep = "";
+      endif
 
-        fmt = "";
-        new = varargin{k++};
-
-        if (j > 1)
-          sep = ",\\\n";
-        else
-          sep = "";
-        endif
-
-        if (isstr (new))
-          if (! x_set)
-            error ("plot: no data to plot");
-          endif
-          fmt = __pltopt__ (caller, new);
-          if (! y_set)
-            [data{j}, fmtstr] = __plt1__ (x, fmt);
-          else
-            [data{j}, fmtstr] = __plt2__ (x, y, fmt);
-          endif
-	  if (iscell (data{j}))
-	    for i = 1:length (data{j})
-	      gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
-				j, i, fmtstr{i});
-	      sep = ",\\\n";
-	      have_gp_cmd = true;
-	    endfor
-	  else
-            gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
-	    have_gp_cmd = true;
-          endif
-          x_set = 0;
-          y_set = 0;
-        elseif (x_set)
-          if (y_set)
-            [data{j}, fmtstr] = __plt2__ (x, y, fmt);
-	    if (iscell (data{j}))
-	      for i = 1:length (data{j})
-		gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
-				  j, i, fmtstr{i});
-		sep = ",\\\n";
-		have_gp_cmd = true;
-	      endfor
-	    else
-	      gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
-	      have_gp_cmd = true;
-	    endif
-            x = new;
-            y_set = 0;
-          else
-            y = new;
-            y_set = 1;
-          endif
-        else
-          x = new;
-          x_set = 1;
-        endif
-
-      endwhile
-
-      ## Handle last plot.
-
-      if (x_set)
-        if (y_set)
-          [data{j}, fmtstr] = __plt2__ (x, y, fmt);
-        else
-          [data{j}, fmtstr] = __plt1__ (x, fmt);
-        endif
+      if (isstr (new))
+	if (! x_set)
+	  error ("plot: no data to plot");
+	endif
+	fmt = __pltopt__ (caller, new);
+	if (! y_set)
+	  [data{j}, fmtstr] = __plt1__ (x, fmt);
+	else
+	  [data{j}, fmtstr] = __plt2__ (x, y, fmt);
+	endif
 	if (iscell (data{j}))
 	  for i = 1:length (data{j})
 	    gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
@@ -124,29 +71,66 @@ function __plt__ (caller, varargin)
 	else
 	  gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
 	  have_gp_cmd = true;
-        endif
+	endif
+	x_set = 0;
+	y_set = 0;
+      elseif (x_set)
+	if (y_set)
+	  [data{j}, fmtstr] = __plt2__ (x, y, fmt);
+	  if (iscell (data{j}))
+	    for i = 1:length (data{j})
+	      gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
+				j, i, fmtstr{i});
+	      sep = ",\\\n";
+	      have_gp_cmd = true;
+	    endfor
+	  else
+	    gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	    have_gp_cmd = true;
+	  endif
+	  x = new;
+	  y_set = 0;
+	else
+	  y = new;
+	  y_set = 1;
+	endif
+      else
+	x = new;
+	x_set = 1;
       endif
 
-      if (have_gp_cmd)
-        eval (gp_cmd);
+    endwhile
+
+    ## Handle last plot.
+
+    if (x_set)
+      if (y_set)
+	[data{j}, fmtstr] = __plt2__ (x, y, fmt);
+      else
+	[data{j}, fmtstr] = __plt1__ (x, fmt);
       endif
-
-    unwind_protect_cleanup
-
-      if (! hold_state)
-        hold off;
+      if (iscell (data{j}))
+	for i = 1:length (data{j})
+	  gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
+			    j, i, fmtstr{i});
+	  sep = ",\\\n";
+	  have_gp_cmd = true;
+	endfor
+      else
+	gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	have_gp_cmd = true;
       endif
+    endif
 
-    end_unwind_protect
-
+    if (have_gp_cmd)
+      eval (gp_cmd);
+    endif
   else
-
     msg = sprintf ("%s (x)\n", caller);
     msg = sprintf ("%s       %s (x, y)\n", msg, caller);
     msg = sprintf ("%s       %s (x2, y1, x2, y2)\n", msg, caller);
     msg = sprintf ("%s       %s (x, y, fmt)", msg, caller);
     usage (msg);
-
   endif
 
 endfunction

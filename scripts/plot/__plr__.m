@@ -59,7 +59,7 @@ function __plr__ (theta, rho, fmt)
       if (isscalar (rho))
         x = rho * cos (theta);
         y = rho * sin (theta);
-        __plt__ (x, y, fmt);
+        __plt__ ("polar", x, y, fmt);
       endif
     elseif (isvector (theta))
       if (isvector (rho))
@@ -74,7 +74,7 @@ function __plr__ (theta, rho, fmt)
         endif
         x = rho .* cos (theta);
         y = rho .* sin (theta);
-        __plt__ (x, y, fmt);
+        __plt__ ("polar", x, y, fmt);
       elseif (ismatrix (rho))
         [t_nr, t_nc] = size (theta);
         if (t_nr == 1)
@@ -95,7 +95,7 @@ function __plr__ (theta, rho, fmt)
         endif
         x = diag (cos (theta)) * rho;
         y = diag (sin (theta)) * rho;
-        __plt__ (x, y, fmt);
+        __plt__ ("polar", x, y, fmt);
       endif
     elseif (ismatrix (theta))
       if (isvector (rho))
@@ -119,14 +119,14 @@ function __plr__ (theta, rho, fmt)
         diag_r = diag (r);
         x = diag_r * cos (theta);
         y = diag_r * sin (theta);
-        __plt__ (x, y, fmt);
+        __plt__ ("polar", x, y, fmt);
       elseif (ismatrix (rho))
         if (size (rho) != size (theta))
           error ("polar: matrix dimensions must match");
         endif
         x = rho .* cos (theta);
         y = rho .* sin (theta);
-        __plt__ (x, y, fmt);
+        __plt__ ("polar", x, y, fmt);
       endif
     endif
   else

@@ -1,5 +1,10 @@
 2005-01-24  John W. Eaton  <jwe@octave.org>
 
+	* plot/__plr__.m, plot/__plr2__.m: Pass name of caller to __plt__.
+
+	* plot/__plt__.m: No need to save and reset hold state now.
+	(first_plot): Delete unused variable.
+
 	* plot/__plr2__.m, plot/__plt2__.m: Improve diagnostics.
 
 	* plot/__plr__.m: Use __plt__, not specific __pltXX__ functions.

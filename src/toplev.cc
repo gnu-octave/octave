@@ -163,6 +163,13 @@ parse_and_execute (FILE *f, int print)
   run_unwind_frame ("parse_and_execute");
 }
 
+static void
+safe_fclose (void *f)
+{
+  if (f)
+    fclose ((FILE *) f);
+}
+
 void
 parse_and_execute (const string& s, int print, int verbose,
 		   const char *warn_for)
@@ -179,6 +186,8 @@ parse_and_execute (const string& s, int print, int verbose,
 
   if (f)
     {
+      add_unwind_protect (safe_fclose, (void *) f);
+
       unwind_protect_int (input_line_number);
       unwind_protect_int (current_input_column);
 
@@ -193,8 +202,6 @@ parse_and_execute (const string& s, int print, int verbose,
 	}
 
       parse_and_execute (f, print);
-
-      fclose (f);
 
       if (verbose)
 	cout << "done." << endl;

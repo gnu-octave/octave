@@ -1,5 +1,10 @@
 Thu Nov 14 00:06:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (parse_fcn_file): Add unwind-protect for file
+	pointer, so the file is always closed.
+	(get_help_from_file): Likewise.
+	* toplev.cc (parse_and_execute): Likewise.
+
 	* Makefile.in (install-oct): Depend on mk-oct-links.
 	(mk-oct-links): New target.
 

@@ -7,7 +7,7 @@
 # installed.  The remaining arguments should be the list of source
 # files that were used to create the .oct files.
 
-LN_S="@LN_S@"
+LN_S="%LN_S%"
 
 links_dir=$1
 shift

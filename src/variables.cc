@@ -590,6 +590,13 @@ restore_command_history (void *)
   octave_command_history.ignore_entries (! Vsaving_history);
 }
 
+static void
+safe_fclose (void *f)
+{
+  if (f)
+    fclose ((FILE *) f);
+}
+
 static int
 parse_fcn_file (int exec_script, const string& ff)
 {
@@ -615,6 +622,8 @@ parse_fcn_file (int exec_script, const string& ff)
   current_input_column = 1;
 
   FILE *ffile = get_input_from_file (ff, 0);
+
+  add_unwind_protect (safe_fclose, (void *) ffile);
 
   if (ffile)
     {
@@ -689,7 +698,6 @@ parse_fcn_file (int exec_script, const string& ff)
 
 	  script_file_executed = 1;
 	}
-      fclose (ffile);
     }
 
   run_unwind_frame ("parse_fcn_file");
@@ -787,8 +795,11 @@ get_help_from_file (const string& path)
 
       if (fptr)
 	{
+	  add_unwind_protect (safe_fclose, (void *) fptr);
+
 	  retval = gobble_leading_white_space (fptr, true, true);
-	  fclose (fptr);
+
+	  run_unwind_protect ();
 	}
     }
 

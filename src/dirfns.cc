@@ -42,8 +42,9 @@ Free Software Foundation, Inc.
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <stddef.h>
+#include <errno.h>
 #include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strstream.h>

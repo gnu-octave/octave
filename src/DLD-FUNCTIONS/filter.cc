@@ -88,7 +88,20 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
       return y;
     }
 
-  if (si_dims.length () != x_dims.length ())
+  if (si_dims.length() == 1)
+    {
+      // Special case as x_dims.length() might be 2, but be a vector
+      if (x_dims.length() > 2 || 
+	  (x_dims.length () == 2 && ((x_dims(0) != 1 ||
+				      x_dims(1) != si_dims(0)) &&
+				     (x_dims(1) != 1 || 
+				      x_dims(0) != si_dims(0)))))
+	{
+	  error ("filter: dimensionality of si and x must agree");
+	  return y;
+	}
+    }
+  else if (si_dims.length () != x_dims.length ())
     {
       error ("filter: dimensionality of si and x must agree");
       return y;
@@ -99,7 +112,10 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
     {
       if (i == dim)
 	continue;
-      
+     
+      if (x_dims(i) == 1)
+	continue;
+ 
       if (si_dims (++si_dim) != x_dims (i))
 	{
 	  error ("filter: dimensionality of si and x must agree");

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 
 #include "error.h"
+#include "gripes.h"
 #include "mappers.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -92,6 +93,9 @@ init_user_prefs (void)
 //   return of  1 => always ok.
 //   return of  0 => never ok.
 //   return of -1 => ok, but give me warning (default).
+
+// XXX FIXME XXX -- should also allow zero to mean "false" and nonzero
+// to mean "true".
 
 static int
 check_str_pref (char *var)
@@ -393,7 +397,7 @@ struct_levels_to_print (void)
     kludge++;
   else
     {
-      warning ("invalid value specified for struct_levels_to_print");
+      gripe_invalid_value_specified ("struct_levels_to_print");
       status = -1;
     }
 
@@ -565,7 +569,7 @@ set_output_max_field_width (void)
     kludge++;
   else
     {
-      warning ("invalid value specified for output_max_field_width");
+      gripe_invalid_value_specified ("output_max_field_width");
       status = -1;
     }
 
@@ -595,7 +599,7 @@ set_output_precision (void)
     kludge++;
   else
     {
-      warning ("invalid value specified for output_precision");
+      gripe_invalid_value_specified ("output_precision");
       status = -1;
     }
 
@@ -625,7 +629,7 @@ set_save_precision (void)
     kludge++;
   else
     {
-      warning ("invalid value specified for save_precision");
+      gripe_invalid_value_specified ("save_precision");
       status = -1;
     }
 
@@ -645,7 +649,7 @@ sv_editor (void)
     }
   else
     {
-      warning ("invalid value specified for EDITOR");
+      gripe_invalid_value_specified ("EDITOR");
       status = -1;
     }
 
@@ -665,7 +669,7 @@ sv_default_save_format (void)
     }
   else
     {
-      warning ("invalid value specified for default_save_format");
+      gripe_invalid_value_specified ("default_save_format");
       status = -1;
     }
 
@@ -685,7 +689,7 @@ sv_gnuplot_binary (void)
     }
   else
     {
-      warning ("invalid value specified for gnuplot_binary");
+      gripe_invalid_value_specified ("gnuplot_binary");
       status = -1;
     }
 
@@ -705,7 +709,7 @@ sv_imagepath (void)
     }
   else
     {
-      warning ("invalid value specified for IMAGEPATH");
+      gripe_invalid_value_specified ("IMAGEPATH");
       status = -1;
     }
 
@@ -725,7 +729,7 @@ sv_info_file (void)
     }
   else
     {
-      warning ("invalid value specified for INFO_FILE");
+      gripe_invalid_value_specified ("INFO_FILE");
       status = -1;
     }
 
@@ -745,7 +749,7 @@ sv_loadpath (void)
     }
   else
     {
-      warning ("invalid value specified for LOADPATH");
+      gripe_invalid_value_specified ("LOADPATH");
       status = -1;
     }
 
@@ -765,7 +769,7 @@ sv_pager_binary (void)
     }
   else
     {
-      warning ("invalid value specified for PAGER");
+      gripe_invalid_value_specified ("PAGER");
       status = -1;
     }
 
@@ -785,7 +789,7 @@ sv_ps1 (void)
     }
   else
     {
-      warning ("invalid value specified for PS1");
+      gripe_invalid_value_specified ("PS1");
       status = -1;
     }
 
@@ -805,7 +809,7 @@ sv_ps2 (void)
     }
   else
     {
-      warning ("invalid value specified for PS2");
+      gripe_invalid_value_specified ("PS2");
       status = -1;
     }
 
@@ -825,7 +829,7 @@ sv_ps4 (void)
     }
   else
     {
-      warning ("invalid value specified for PS4");
+      gripe_invalid_value_specified ("PS4");
       status = -1;
     }
 
@@ -845,7 +849,7 @@ sv_pwd (void)
     }
   else
     {
-      warning ("invalid value specified for PWD");
+      gripe_invalid_value_specified ("PWD");
       status = -1;
     }
 

@@ -88,6 +88,12 @@ gripe_invalid_conversion (const char *from, const char *to)
 }
 
 void
+gripe_invalid_value_specified (const char *name)
+{
+  warning ("invalid value specified for `%s'", name);
+}
+
+void
 gripe_2_or_3_dim_plot (void)
 {
   error ("plot: can only plot in 2 or 3 dimensions");

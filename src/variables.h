@@ -104,8 +104,10 @@ extern void install_builtin_variable_as_function (const char *name,
 
 extern void alias_builtin (const char *alias, const char *name);
 
+#if 0
 extern void bind_nargin_and_nargout (symbol_table *sym_tab,
 				     int nargin, int nargout);
+#endif
 
 extern void bind_builtin_variable (const char *, tree_constant *,
 				   int protect = 0, int eternal = 0,

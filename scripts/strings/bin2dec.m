@@ -17,10 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  bin2dec (x)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} bin2dec (@var{s})
+## Return the decimal number corresponding to the binary number
+## represented by the string @var{s}.  For example,
 ##
-## Returns the decimal number corresponding to the binary number in
-## quotes.  For example, bin2dec ("1110") returns 14.
+## @example
+## bin2dec ("1110")
+##      @result{} 14
+## @end example
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{bool} =} isletter(@var{s})
 ## Returns true if @var{s} is a letter false otherwise.
 ## @end deftypefn

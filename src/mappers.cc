@@ -171,7 +171,7 @@ Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
 
   DEFUN_MAPPER (arg, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} angle (@var{z})\n\
+@deftypefn {Mapping Function} {} arg (@var{z})\n\
 Compute the argument of @var{z}, defined as\n\
 @iftex\n\
 @tex\n\

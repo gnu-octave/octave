@@ -496,17 +496,24 @@ files.\n\
 @end defvr");
 
   DEFCONST (OCTAVE_HOME, Voctave_home,
-    "top-level Octave installation directory");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} OCTAVE_HOME\n\
+The name of the top-level Octave installation directory.\n\
+@end defvr");
 
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} OCTAVE_VERSION\n\
 The version number of Octave, as a string.\n\
 @end defvr");
+
 }
 
 DEFUN (rehash, , ,
-  "rehash (): reinitialize LOADPATH directory cache")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} rehash ()\n\
+Reinitialize Octave's @code{LOADPATH} directory cache.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

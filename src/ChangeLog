@@ -2,9 +2,13 @@
 
 	* DLD-FUNCTIONS/gammainc.cc (Fgammainc): Texinfoize doc string.
 	* ov-typeinfo.cc (Ftypeinfo): Ditto.
-
-	* DLD-FUNCTIONS/minmax.cc (Fmax, Fmin): Texinfoize doc strings.
+	* parse.y (Vwarn_future_time_stamp): Ditto.
+	* DLD-FUNCTIONS/minmax.cc (Fmax, Fmin): Ditto.
 	* ov-usr-fcn.cc (Fva_arg, Fva_start, Fvr_val): Ditto.
+	* defaults.cc (VOCTAVE_HOME, Frehash): Ditto.
+	* toplev.cc (Fwarranty, Fcasesen): Ditto.
+	* utils.cc (Fdo_string_escapes, Ffile_in_loadpath): Ditto.
+	* variables.cc (F__dump_symtab_info__, F__dump_symbol_info__): Ditto.
 
 	* pt-plot.cc (Fgraw, Fgset, Fgshow, Vgnuplot_command_plot, 
 	Vgnuplot_command_replot, Vgnuplot_command_splot,

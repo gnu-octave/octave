@@ -238,9 +238,12 @@ search_path_for_file (const string& path, const string& name)
 }
 
 DEFUN (file_in_loadpath, args, ,
-  "file_in_loadpath (NAME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} file_in_loadpath (@var{name})\n\
 \n\
-Look up NAME in LOADPATH.  See also file_in_path")
+Look up @var{name} in Octave's @code{LOADPATH}.\n\
+@end deftypefn\n\
+@seealso{file_in_path}")
 {
   octave_value_list retval;
 
@@ -437,7 +440,10 @@ do_string_escapes (const string& s)
 }
 
 DEFUN (do_string_escapes, args, ,
-  "do_string_escapes (STRING)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} do_string_escapes (@var{string})\n\
+Convert special characters in @var{string} to their escaped forms.\n\
+@end deftypefn")
 {
   octave_value retval;
 

@@ -24,7 +24,6 @@
 ##
 ## makes a title with the given text at the bottom of the plot
 ## rather than the top.
-##
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe

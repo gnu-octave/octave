@@ -3497,7 +3497,11 @@ is 0, the warning is omitted.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (warn_future_time_stamp, 1.0, warn_future_time_stamp,
-    "warn if a function file has a time stamp that is in the future");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_future_time_stamp\n\
+If the value of this variable is nonzero, Octave will print a warning\n\
+if it finds a function file with a time stamp that is in the future.\n\
+@end defvr");
 
   DEFVAR (warn_missing_semicolon, 0.0, warn_missing_semicolon,
     "-*- texinfo -*-\n\

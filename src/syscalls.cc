@@ -878,78 +878,109 @@ symbols_of_syscalls (void)
 {
 #if defined (F_DUPFD)
   DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, static_cast<double> (F_DUPFD),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} F_DUPFD\n\
+@end defvr");
 #endif
 
 #if defined (F_GETFD)
   DEFCONSTX ("F_GETFD", SBV_F_GETFD, static_cast<double> (F_GETFD),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} F_GETFD\n\
+@end defvr");
 #endif
 
 #if defined (F_GETFL)
   DEFCONSTX ("F_GETFL", SBV_F_GETFL, static_cast<double> (F_GETFL),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} F_GETFL\n\
+@end defvr");
 #endif
 
 #if defined (F_SETFD)
   DEFCONSTX ("F_SETFD", SBV_F_SETFD, static_cast<double> (F_SETFD),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} F_SETFD\n\
+@end defvr");
 #endif
 
 #if defined (F_SETFL)
   DEFCONSTX ("F_SETFL", SBV_F_SETFL, static_cast<double> (F_SETFL),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} F_SETFL\n\
+@end defvr");
 #endif
 
 #if defined (O_APPEND)
   DEFCONSTX ("O_APPEND", SBV_O_APPEND, static_cast<double> (O_APPEND),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_APPEND\n\
+@end defvr");
 #endif
 
 #if defined (O_ASYNC)
   DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, static_cast<double> (O_ASYNC),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_ASYNC\n\
+@end defvr");
 #endif
 
 #if defined (O_CREAT)
   DEFCONSTX ("O_CREAT", SBV_O_CREAT, static_cast<double> (O_CREAT),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_CREAT\n\
+@end defvr");
 #endif
 
 #if defined (O_EXCL)
   DEFCONSTX ("O_EXCL", SBV_O_EXCL, static_cast<double> (O_EXCL),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_EXCL\n\
+@end defvr");
 #endif
 
 #if defined (O_NONBLOCK)
   DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, static_cast<double> (O_NONBLOCK),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_NONBLOCK\n\
+@end defvr");
 #endif
 
 #if defined (O_RDONLY)
   DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, static_cast<double> (O_RDONLY),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_RDONLY\n\
+@end defvr");
 #endif
 
 #if defined (O_RDWR)
   DEFCONSTX ("O_RDWR", SBV_O_RDWR, static_cast<double> (O_RDWR),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_RDWR\n\
+@end defvr");
 #endif
 
 #if defined (O_SYNC)
   DEFCONSTX ("O_SYNC", SBV_O_SYNC, static_cast<double> (O_SYNC),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_SYNC\n\
+@end defvr");
 #endif
 
 #if defined (O_TRUNC)
   DEFCONSTX ("O_TRUNC", SBV_O_TRUNC, static_cast<double> (O_TRUNC),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_TRUNC\n\
+@end defvr");
 #endif
 
 #if defined (O_WRONLY)
   DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, static_cast<double> (O_WRONLY),
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} O_WRONLY\n\
+@end defvr");
 #endif
+
 }
 
 /*

@@ -19,9 +19,6 @@
 
 ## See xlabel.
 
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, title
-
 ## Author: jwe
 
 function ylabel (text)

@@ -1223,7 +1223,10 @@ This command may not be used within a function body.\n\
 }
 
 DEFUN (__dump_symtab_info__, args, ,
-  "__dump_symtab_info__ (): print raw symbol table statistices")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __dump_symtab_info__ ()\n\
+Print raw symbol table statistices.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1247,7 +1250,10 @@ DEFUN (__dump_symtab_info__, args, ,
 }
 
 DEFUN (__dump_symbol_info__, args, ,
-  "__dump_symbol_info__ (NAME)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __dump_symbol_info__ (@var{name})\n\
+Print symbol table information for the symbol @var{name}.
+@end deftypefn")
 {
   octave_value_list retval;
 

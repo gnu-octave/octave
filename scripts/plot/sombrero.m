@@ -17,12 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: sombrero (n)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} sombrero (@var{n})
 ##
-## Draw a `sombrero' in three dimensions using n grid lines.  The
+## Draw a `sombrero' in three dimensions using @var{n} grid lines.  The
 ## function plotted is
 ##
+## @example
 ##   z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

@@ -173,7 +173,10 @@ clean_up_and_exit (int retval)
 }
 
 DEFUN_TEXT (casesen, args, ,
-  "casesen [on|off]")
+  "-*- texinfo -*-\n\
+@deffn {Command} casesen arg\n\
+Provided for compatibility with Matlab, but does nothing.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -271,7 +274,10 @@ Octave's exit status.\n\
 DEFALIAS (exit, quit);
 
 DEFUN (warranty, , ,
-  "warranty (): describe copying conditions")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} warranty ()\n\
+Describe the conditions for copying and distributing Octave.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -19,9 +19,6 @@
 
 ## See xlabel.
 
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, title
-
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95
 ## Adapted-By: jwe

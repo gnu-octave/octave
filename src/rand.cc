@@ -123,7 +123,10 @@ rand (SEED, N)        -- set seed")
   if (! initialized)
     {
 // Make the random number generator give us a different sequence every
-// time we start octave unless we specifically set the seed.
+// time we start octave unless we specifically set the seed.  The
+// technique used below will cycle monthly, but it it does seem to
+// work ok to give fairly different seeds each time Octave starts.
+
 #if 0
       int s0 = 1234567890;
       int s1 = 123456789;
@@ -134,8 +137,12 @@ rand (SEED, N)        -- set seed")
       time (&now);
       tm = localtime (&now);
  
-      int s0 = tm->tm_min * 60 + tm->tm_sec;
-      int s1 = (tm->tm_mday - 1) * 24 * 3600 + tm->tm_hour * 3600 + s0;
+      int hour = tm->tm_hour + 1;
+      int minute = tm->tm_min + 1;
+      int second = tm->tm_sec + 1;
+
+      int s0 = tm->tm_mday * hour * minute * second;
+      int s1 = hour * minute * second;
 #endif
       s0 = force_to_fit_range (s0, 1, 2147483563);
       s1 = force_to_fit_range (s1, 1, 2147483399);

@@ -41,7 +41,8 @@ class subplot_list;
 
 #include <SLList.h>
 
-#include "tree.h"
+#include "tree-cmd.h"
+#include "tree-expr.h"
 
 class
 tree_plot_command : public tree_command

@@ -46,7 +46,7 @@ int returning = 0;
 #include "symtab.h"
 #include "error.h"
 #include "gripes.h"
-#include "tree.h"
+#include "tree-base.h"
 #include "tree-expr.h"
 #include "tree-cmd.h"
 #include "tree-misc.h"

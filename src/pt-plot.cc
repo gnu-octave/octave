@@ -41,12 +41,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "procstream.h"
 
 #include "user-prefs.h"
+#include "tree-base.h"
+#include "tree-expr.h"
+#include "tree-cmd.h"
 #include "tree-const.h"
 #include "tree-plot.h"
 #include "help.h"
 #include "error.h"
 #include "utils.h"
-#include "tree.h"
 #include "defun.h"
 
 extern "C"

@@ -39,6 +39,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "octave-hist.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
+#include "tree-base.h"
+#include "tree-expr.h"
 #include "tree-const.h"
 #include "variables.h"
 #include "statdefs.h"
@@ -56,7 +58,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "defun.h"
 #include "input.h"
 #include "parse.h"
-#include "tree.h"
 #include "help.h"
 #include "lex.h"
 
@@ -1739,6 +1740,9 @@ save variables in a file")
   return retval;
 }
 
+// XXX FIXME XXX -- this should take a list of regular expressions
+// naming the variables to look for.
+
 static Octave_object
 do_who (int argc, char **argv, int nargout)
 {
@@ -1748,6 +1752,8 @@ do_who (int argc, char **argv, int nargout)
   int show_functions = (curr_sym_tab == top_level_sym_tab);
   int show_variables = 1;
   int show_verbose = 0;
+
+  char *my_name = argv[0];
 
   if (argc > 1)
     {
@@ -1777,7 +1783,7 @@ do_who (int argc, char **argv, int nargout)
 	       || strcmp (*argv, "-v") == 0)
 	show_variables++;
       else
-	warning ("who: unrecognized option `%s'", *argv);
+	warning ("%s: unrecognized option `%s'", my_name, *argv);
     }
 
 // If the user specified -l and nothing else, show variables.  If

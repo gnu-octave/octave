@@ -40,6 +40,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "octave-hist.h"
 #include "user-prefs.h"
+#include "tree-base.h"
+#include "tree-expr.h"
+#include "tree-cmd.h"
 #include "tree-const.h"
 #include "tree-misc.h"
 #include "variables.h"
@@ -52,7 +55,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "pager.h"
 #include "input.h"
 #include "utils.h"
-#include "tree.h"
 #include "lex.h"
 
 // Nonzero means we're in the middle of defining a function.

@@ -21,8 +21,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-// Don't even think about moving the tree.h include to symtab.h...
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -35,7 +33,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "variables.h"
 #include "utils.h"
-#include "tree.h"
+#include "tree-base.h"
+#include "tree-expr.h"
 #include "tree-const.h"
 
 /*

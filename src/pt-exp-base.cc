@@ -45,7 +45,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "error.h"
 #include "pager.h"
-#include "tree.h"
+#include "tree-base.h"
 #include "tree-expr.h"
 #include "tree-misc.h"
 #include "tree-const.h"

@@ -128,7 +128,8 @@ typedef SLStack<symbol_def *> slstack_type_p_symbol_def;
 #include "token.h"
 typedef SLStack<token *> slstack_type_p_token;
 
-#include "tree.h"
+#include "tree-base.h"
+#include "tree-expr.h"
 typedef SLStack<tree_matrix *> slstack_type_p_tree_matrix;
 
 #include "unwind-prot.h"

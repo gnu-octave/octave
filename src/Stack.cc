@@ -54,7 +54,8 @@ typedef Stack<symbol_def *> stack_type_p_symbol_def;
 #include "token.h"
 typedef Stack<token *> stack_type_p_token;
 
-#include "tree.h"
+#include "tree-base.h"
+#include "tree-expr.h"
 typedef Stack<tree_matrix *> stack_type_p_tree_matrix;
 
 #include "unwind-prot.h"

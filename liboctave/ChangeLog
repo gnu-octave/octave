@@ -1,3 +1,9 @@
+2001-05-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.cc (dir_path::set_program_name): Set the environment
+	variables SELFAUTOLOC, SELFAUTODIR, SELFAUTOPARENT, and TEXMFDBS
+	to the empty string.
+
 2001-05-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2.h (Array2<T>::operator = (const Array2<T>&)):

@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "lo-utils.h"
+#include "oct-env.h"
 #include "oct-kpse.h"
 #include "pathsearch.h"
 #include "str-vec.h"
@@ -136,6 +137,19 @@ void
 dir_path::set_program_name (const std::string& nm)
 {
   ::octave_kpse_set_progname (nm.c_str ());
+
+  // Calling kpse_set_progname has the unfortunate side-effect of
+  // exporting the following variables.  We make them empty here so
+  // that they will not interfere with TeX, if it is run as a
+  // subprocess of Octave.
+  //
+  // XXX FIXME XXX -- is there a reasonable way to actually remove
+  // them from the environment?
+
+  octave_env::putenv ("SELFAUTOLOC", "");
+  octave_env::putenv ("SELFAUTODIR", "");
+  octave_env::putenv ("SELFAUTOPARENT", "");
+  octave_env::putenv ("TEXMFDBS", "");
 }
 
 void

@@ -100,6 +100,8 @@ public:
 
   bool is_map (void) const { return false; }
 
+  bool is_list (void) const { return false; }
+
   bool is_magic_colon (void) const { return false; }
 
   bool is_all_va_args (void) const { return false; }
@@ -149,6 +151,8 @@ public:
   Range range_value (void) const;
 
   Octave_map map_value (void) const;
+
+  octave_value_list list_value (void) const;
 
   bool bool_value (void) const;
 

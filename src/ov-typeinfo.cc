@@ -51,6 +51,7 @@ template class Array3<binary_op_fcn>;
 
 template class Array<assign_op_fcn>;
 template class Array2<assign_op_fcn>;
+template class Array3<assign_op_fcn>;
 
 template class Array<type_conv_fcn>;
 template class Array2<type_conv_fcn>;
@@ -76,13 +77,14 @@ octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
 }
 
 bool
-octave_value_typeinfo::register_assign_op (int t_lhs, int t_rhs,
+octave_value_typeinfo::register_assign_op (octave_value::assign_op op,
+					   int t_lhs, int t_rhs,
 					   assign_op_fcn f)
 {
   if (! instance)
     instance = new octave_value_typeinfo ();
 
-  return instance->do_register_assign_op (t_lhs, t_rhs, f);
+  return instance->do_register_assign_op (op, t_lhs, t_rhs, f);
 }
 
 bool
@@ -125,7 +127,8 @@ octave_value_typeinfo::do_register_type (const string& name)
       binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
 			 len, len, static_cast<binary_op_fcn> (0));
 
-      assign_ops.resize (len, len, static_cast<assign_op_fcn> (0));
+      assign_ops.resize (static_cast<int> (octave_value::num_assign_ops),
+			 len, len, static_cast<assign_op_fcn> (0));
 
       pref_assign_conv.resize (len, len, -1);
 
@@ -150,10 +153,11 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
 }
 
 bool
-octave_value_typeinfo::do_register_assign_op (int t_lhs, int t_rhs,
+octave_value_typeinfo::do_register_assign_op (octave_value::assign_op op,
+					      int t_lhs, int t_rhs,
 					      assign_op_fcn f)
 {
-  assign_ops.checkelem (t_lhs, t_rhs) = f;
+  assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs) = f;
 
   return false;
 }
@@ -186,9 +190,10 @@ octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,
 }
 
 assign_op_fcn
-octave_value_typeinfo::do_lookup_assign_op (int t_lhs, int t_rhs)
+octave_value_typeinfo::do_lookup_assign_op (octave_value::assign_op op,
+					    int t_lhs, int t_rhs)
 {
-  return assign_ops.checkelem (t_lhs, t_rhs);
+  return assign_ops.checkelem (static_cast<int> (op), t_lhs, t_rhs);
 }
 
 int

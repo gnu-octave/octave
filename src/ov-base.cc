@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-ch-mat.h"
 #include "ov-str-mat.h"
 #include "ov-range.h"
+#include "ov-list.h"
 
 int octave_base_value::t_id = -1;
 
@@ -174,6 +175,14 @@ octave_base_value::map_value (void) const
 {
   Octave_map retval;
   gripe_wrong_type_arg ("octave_base_value::map_value()", type_name ());
+  return retval;
+}
+
+octave_value_list
+octave_base_value::list_value (void) const
+{
+  octave_value_list retval;
+  gripe_wrong_type_arg ("octave_base_value::list_value()", type_name ());
   return retval;
 }
 

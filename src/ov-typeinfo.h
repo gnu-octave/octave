@@ -47,7 +47,8 @@ public:
   static bool register_binary_op (octave_value::binary_op, int, int,
 				  binary_op_fcn);
 
-  static bool register_assign_op (int, int, assign_op_fcn);
+  static bool register_assign_op (octave_value::assign_op, int, int,
+				  assign_op_fcn);
 
   static bool register_pref_assign_conv (int, int, int);
 
@@ -60,9 +61,9 @@ public:
   }
 
   static assign_op_fcn
-  lookup_assign_op (int t_lhs, int t_rhs)
+  lookup_assign_op (octave_value::assign_op op, int t_lhs, int t_rhs)
   {
-    return instance->do_lookup_assign_op (t_lhs, t_rhs);
+    return instance->do_lookup_assign_op (op, t_lhs, t_rhs);
   }
 
   static int
@@ -88,7 +89,8 @@ protected:
     : num_types (0), types (init_tab_sz, string ()),
       binary_ops (octave_value::num_binary_ops, init_tab_sz,
 		  init_tab_sz, (binary_op_fcn) 0),
-      assign_ops (init_tab_sz, init_tab_sz, (assign_op_fcn) 0),
+      assign_ops (octave_value::num_assign_ops, init_tab_sz,
+		  init_tab_sz, (assign_op_fcn) 0),
       pref_assign_conv (init_tab_sz, init_tab_sz, -1),
       widening_ops (init_tab_sz, init_tab_sz, (type_conv_fcn) 0)  { }
 
@@ -104,7 +106,7 @@ private:
 
   Array3<binary_op_fcn> binary_ops;
 
-  Array2<assign_op_fcn> assign_ops;
+  Array3<assign_op_fcn> assign_ops;
 
   Array2<int> pref_assign_conv;
 
@@ -115,7 +117,8 @@ private:
   bool do_register_binary_op (octave_value::binary_op, int, int,
 			      binary_op_fcn);
 
-  bool do_register_assign_op (int, int, assign_op_fcn);
+  bool do_register_assign_op (octave_value::assign_op, int, int,
+			      assign_op_fcn);
 
   bool do_register_pref_assign_conv (int, int, int);
 
@@ -124,7 +127,8 @@ private:
   binary_op_fcn
   do_lookup_binary_op (octave_value::binary_op, int, int);
 
-  assign_op_fcn do_lookup_assign_op (int, int);
+  assign_op_fcn
+  do_lookup_assign_op (octave_value::assign_op, int, int);
 
   int do_lookup_pref_assign_conv (int, int);
 

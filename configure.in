@@ -21,8 +21,8 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.68 $)dnl
-AC_PREREQ(1.122)
+AC_REVISION($Revision: 1.69 $)dnl
+AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
 dnl
@@ -31,39 +31,14 @@ dnl
 dnl See if we were given the target host type.  If not, use
 dnl config.guess to try to guess the target host type.
 dnl
-if test $# -gt 0; then
-  TARGET=`eval echo $\{\`echo $#\`\}`
-  case $TARGET in
-    -*)
-      target_host_type=
-    ;;
-    *)
-      target_host_type=$TARGET
-    ;;
-  esac
-fi
-dnl
-if test -z "$target_host_type" -o "$target_host_type" = unknown; then
-  target_host_type=`sh $srcdir/config.guess`
-  if test -z "$target_host_type"; then
-    AC_MSG_WARN([unable to guess system type])
-    target_host_type=unknown
-  fi
-fi
-dnl
-dnl Use config.sub to come up with a standard vendor-host-os triple.
-dnl
-canonical_host_type=`sh $srcdir/config.sub $target_host_type 2>&1`
-status=$?
-if test $status -eq 0; then
-  echo "configuring Octave for a $target_host_type"
-else
-  canonical_host_type=unknown
-  AC_MSG_WARN([configuring Octave for an unknown system type])
+AC_CANONICAL_HOST
+target_host_type=${host:=unknown}
+canonical_host_type=${host:=unknown}
+if test "$host" = "unknown"; then
+AC_MSG_WARN([configuring Octave for unknown system type
+])
 fi
 AC_SUBST(target_host_type)dnl
-AC_MSG_RESULT([target_host_type is $target_host_type])
-AC_MSG_RESULT([canonical_host_type is $canonical_host_type])
 dnl
 dnl Allow the user to force us to use f2c.
 dnl
@@ -90,6 +65,8 @@ fi
 AC_SUBST(lite_kernel)dnl
 dnl
 dnl some defaults
+dnl
+AC_PREFIX_DEFAULT(/usr/local)
 dnl
 exec_prefix='$(prefix)'
 bindir='$(exec_prefix)/bin'

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.243 $)
+AC_REVISION($Revision: 1.244 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -1055,7 +1055,14 @@ else
   AC_MSG_WARN([at the Octave prompt.])
 fi
 
-AC_CHECK_PROGS(DEFAULT_PAGER, less more page pg, [])
+octave_possible_pagers="less more page pg"
+case "$canonical_host_type" in
+  *-*-cygwin32)
+    octave_possible_pagers="$octave_possible_pagers more.com"
+  ;;
+esac
+
+AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
 if test -z "$DEFAULT_PAGER"; then
   AC_MSG_WARN([I couldn't find `less', `more', `page', or `pg'])
 fi

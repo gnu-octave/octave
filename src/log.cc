@@ -184,7 +184,7 @@ DEFUN_DLD (sqrtm, args, ,
   else if (arg.is_complex_scalar ())
     {
       Complex c = arg.complex_value ();
-      retval(0) = log (c);
+      retval(0) = sqrt (c);
     }
   else if (arg.is_real_type ())
     {

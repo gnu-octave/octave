@@ -33,9 +33,13 @@ Here is a list of current problems (and workarounds, where available).
 * GNU info doesn't work yet.  It compiles but doesn't run.  Perhaps the
   problem is just that a proper termcap entry needs to be defined.
 
-* If you have a working version of less, the pager will probably work.
-  The GNU-WIN32 tools used to include a copy of less, but I am told it
-  was dropped from the distribution because it didn't work very well.
+* If no other pager can be found, Octave will use more.com.  Since
+  that's a pretty limited pager (no going backward, etc.) you may want
+  to find a working version of less.  The GNU-WIN32 tools used to
+  include a copy of less, but I am told it was dropped from the
+  distribution because it didn't work very well.  If you know of a
+  better port of less that will work with Octave, please contact
+  bug-octave@bevo.che.wisc.edu.
 
 * To make plotting work, you will need to find a version of gnuplot
   that can read commands from a pipe.  The binary versions of gnuplot
@@ -62,4 +66,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Tue Dec 10 01:00:52 1996
+Wed Jan  8 23:15:59 1997

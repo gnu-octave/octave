@@ -1,3 +1,8 @@
+Wed Jan  8 23:12:02 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (DEFAULT_PAGER): On cygwin32 systems, also look for
+	more.com.
+
 Tue Jan  7 00:16:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.1 released.

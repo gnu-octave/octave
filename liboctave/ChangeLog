@@ -1,3 +1,8 @@
+2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* EIG.cc (EIG::init, EIG::symmetric_init):
+	Query Lapack for workspace size.
+
 2004-02-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::resize_and_fill (const dim_vector&, const T&)): 

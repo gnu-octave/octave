@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function cputime ()
+function retval = cputime ()
 
 # usage: cputime
 #

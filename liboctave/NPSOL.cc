@@ -37,9 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef NPSOL_MISSING
 
-#include "dMatrix.h"
-
 #include "NPSOL.h"
+#include "dMatrix.h"
 #include "f77-uscore.h"
 #include "sun-utils.h"
 

@@ -1,4 +1,15 @@
+2004-09-08  John W. Eaton  <jwe@octave.org>
+
+	* ov.h: Add octave_array_type_traits specialization for
+	boolNDArray element type.
+
 2004-09-07  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc: Instantiate octave_stream::write for Array<bool>.
+	(octave_stream::read): Expand read_fptr_table to include dt_logical.
+
+	* ov-bool.h (octave_bool::write): New function.
+	* ov-bool-mat.h (octave_bool_matrix::write): New function.
 
 	* ov-fcn-inline.h (octave_fcn_inline::octave_fcn_inline): New copy
 	constructor.

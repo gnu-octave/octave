@@ -1,5 +1,10 @@
 2004-09-07  John W. Eaton  <jwe@octave.org>
 
+	* data-conv.cc (oct_data_conv::string_to_data_type): Handle dt_logical.
+	(oct_data_conv::data_type_as_string): Likewise.
+
+	* data-conv.h (oct_data_conv::data_type): Add dt_logical to list.
+
 	* Range.cc (round): Delete unused function.
 
 	* lo-mappers.cc (xround): Rename from round.  Change all uses.

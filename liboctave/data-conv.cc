@@ -235,6 +235,8 @@ oct_data_conv::string_to_data_type (const std::string& str)
       else
 	retval = dt_single;
     }
+  else if (s == "logical")
+    retval = dt_logical;
   else
     (*current_liboctave_error_handler) ("invalid data type specified");
 
@@ -446,6 +448,10 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
 
     case oct_data_conv::dt_float:
       retval = "float";
+      break;
+
+    case oct_data_conv::dt_logical:
+      retval = "logical";
       break;
 
     case oct_data_conv::dt_unknown:

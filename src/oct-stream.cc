@@ -2972,17 +2972,17 @@ do_read (octave_stream& strm, int nr, int nc, int block_size,
   DO_READ_VAL_TEMPLATE (VAL_T, signed char); \
   DO_READ_VAL_TEMPLATE (VAL_T, unsigned char)
 
-INSTANTIATE_DO_READ(int8NDArray);
-INSTANTIATE_DO_READ(uint8NDArray);
-INSTANTIATE_DO_READ(int16NDArray);
-INSTANTIATE_DO_READ(uint16NDArray);
-INSTANTIATE_DO_READ(int32NDArray);
-INSTANTIATE_DO_READ(uint32NDArray);
-INSTANTIATE_DO_READ(int64NDArray);
-INSTANTIATE_DO_READ(uint64NDArray);
-// INSTANTIATE_DO_READ(floatNDArray);
-INSTANTIATE_DO_READ(NDArray);
-INSTANTIATE_DO_READ(charNDArray);
+INSTANTIATE_DO_READ (int8NDArray);
+INSTANTIATE_DO_READ (uint8NDArray);
+INSTANTIATE_DO_READ (int16NDArray);
+INSTANTIATE_DO_READ (uint16NDArray);
+INSTANTIATE_DO_READ (int32NDArray);
+INSTANTIATE_DO_READ (uint32NDArray);
+INSTANTIATE_DO_READ (int64NDArray);
+INSTANTIATE_DO_READ (uint64NDArray);
+// INSTANTIATE_DO_READ (floatNDArray);
+INSTANTIATE_DO_READ (NDArray);
+INSTANTIATE_DO_READ (charNDArray);
 
 typedef octave_value (*read_fptr) (octave_stream&, int, int, int, int, bool,
 				   oct_mach_info::float_format ffmt, int&);
@@ -3003,7 +3003,8 @@ template class Array2<read_fptr>;
   read_fptr_table(R,oct_data_conv::dt_double) = do_read<VAL_T, double>; \
   read_fptr_table(R,oct_data_conv::dt_char) = do_read<VAL_T, char>; \
   read_fptr_table(R,oct_data_conv::dt_schar) = do_read<VAL_T, signed char>; \
-  read_fptr_table(R,oct_data_conv::dt_uchar) = do_read<VAL_T, unsigned char>
+  read_fptr_table(R,oct_data_conv::dt_uchar) = do_read<VAL_T, unsigned char>; \
+  read_fptr_table(R,oct_data_conv::dt_logical) = do_read<VAL_T, unsigned char>
 
 octave_value
 octave_stream::read (const Array<double>& size, int block_size,
@@ -3016,7 +3017,7 @@ octave_stream::read (const Array<double>& size, int block_size,
 
   // Table function pointers for return types x read types.
 
-  static Array2<read_fptr> read_fptr_table (oct_data_conv::dt_unknown, 13, 0);
+  static Array2<read_fptr> read_fptr_table (oct_data_conv::dt_unknown, 14, 0);
 
   if (! initialized)
     {
@@ -3032,6 +3033,7 @@ octave_stream::read (const Array<double>& size, int block_size,
       FILL_TABLE_ROW (oct_data_conv::dt_char, charNDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_schar, charNDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_uchar, charNDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_logical, boolNDArray);
 
       initialized = true;
     }
@@ -3307,6 +3309,11 @@ octave_stream::write (const Array<T>& data, int block_size,
 
 template int
 octave_stream::write (const Array<char>&, int,
+		      oct_data_conv::data_type,
+		      int, oct_mach_info::float_format);
+
+template int
+octave_stream::write (const Array<bool>&, int,
 		      oct_data_conv::data_type,
 		      int, oct_mach_info::float_format);
 

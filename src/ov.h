@@ -1000,6 +1000,7 @@ public:
   }
 
 OCTAVE_ARRAY_TYPE_TRAIT (charNDArray, char);
+OCTAVE_ARRAY_TYPE_TRAIT (boolNDArray, bool);
 OCTAVE_ARRAY_TYPE_TRAIT (int8NDArray, octave_int8);
 OCTAVE_ARRAY_TYPE_TRAIT (uint8NDArray, octave_uint8);
 OCTAVE_ARRAY_TYPE_TRAIT (int16NDArray, octave_int16);

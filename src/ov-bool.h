@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-alloc.h"
 #include "str-vec.h"
 
+#include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
 #include "ov-typeinfo.h"
@@ -131,6 +132,14 @@ public:
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
+
+  int write (octave_stream& os, int block_size,
+	     oct_data_conv::data_type output_type, int skip,
+	     oct_mach_info::float_format flt_fmt) const
+    {
+      return os.write (bool_array_value (), block_size, output_type,
+		       skip, flt_fmt);
+    }
 
 private:
 

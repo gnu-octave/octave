@@ -79,16 +79,17 @@ public:
       dt_char      = 10,
       dt_schar     = 11,
       dt_uchar     = 12,
-      dt_short     = 13,
-      dt_ushort    = 14,
-      dt_int       = 15,
-      dt_uint      = 16,
-      dt_long      = 17,
-      dt_ulong     = 18,
-      dt_longlong  = 19,
-      dt_ulonglong = 20,
-      dt_float     = 21,
-      dt_unknown   = 22 // Must be last, have largest value!
+      dt_logical   = 13,
+      dt_short     = 14,
+      dt_ushort    = 15,
+      dt_int       = 16,
+      dt_uint      = 17,
+      dt_long      = 18,
+      dt_ulong     = 19,
+      dt_longlong  = 20,
+      dt_ulonglong = 21,
+      dt_float     = 22,
+      dt_unknown   = 23 // Must be last, have largest value!
     };
 
   static data_type string_to_data_type (const std::string& s);

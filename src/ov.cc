@@ -29,8 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Array-flags.h"
-#include "str-vec.h"
+#include "data-conv.h"
 #include "quit.h"
+#include "str-vec.h"
 
 #include "oct-obj.h"
 #include "oct-stream.h"
@@ -2157,6 +2158,25 @@ install_types (void)
   octave_fcn_inline::register_type ();
   octave_streamoff::register_type ();
 }
+
+#if 0
+DEFUN (cast, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cast (@var{val}, @var{type})\n\
+Convert @var{val} to the new data type @var{type}.\n\
+@end deftypefn\n\
+@seealso{class, typeinfo}")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    error ("cast: not implemented");
+  else
+    print_usage ("cast");
+
+  return retval;
+}
+#endif
 
 DEFUN (sizeof, args, ,
   "-*- texinfo -*-\n\

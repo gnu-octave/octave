@@ -81,16 +81,16 @@ else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif
 
-INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
+INCLUDES := arith-ops.h builtins.h defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h \
 	file-io.h gripes.h help.h input.h lex.h load-save.h \
 	mappers.h oct-fstrm.h oct-gperf.h oct-hist.h oct-iostrm.h \
 	oct-map.h oct-obj.h oct-prcstrm.h oct-procbuf.h \
-	oct-stdstrm.h oct-stream.h \
-	oct-strstrm.h pager.h parse.h pathlen.h pr-output.h \
-	procstream.h pt-base.h pt-cmd.h pt-const.h pt-exp-base.h \
-	pt-exp.h pt-fcn.h pt-fvc-base.h pt-fvc.h pt-mat.h pt-misc.h \
-	pt-mvr-base.h pt-mvr.h pt-plot.h sighandlers.h symtab.h \
+	oct-stdstrm.h oct-stream.h oct-strstrm.h pager.h parse.h \
+	pathlen.h pr-output.h procstream.h pt-base.h pt-cmd.h \
+	pt-const.h pt-exp-base.h pt-exp.h pt-fcn.h pt-fvc-base.h \
+	pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h pt-mvr.h \
+	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
 	unwind-prot.h user-prefs.h utils.h variables.h version.h \
 	xdiv.h xpow.h Map.h SLStack.h Stack.h
@@ -112,11 +112,11 @@ SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc error.cc \
 	file-io.cc gripes.cc help.cc input.cc lex.l \
 	load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc oct-iostrm.cc \
 	oct-map.cc oct-obj.cc oct-prcstrm.cc oct-procbuf.cc \
-	oct-stdstrm.cc oct-stream.cc \
-	oct-strstrm.cc pager.cc parse.y pr-output.cc procstream.cc \
+	oct-stdstrm.cc oct-stream.cc oct-strstrm.cc pager.cc \
+	parse.y pr-output.cc procstream.cc \
 	pt-base.cc pt-cmd.cc pt-const.cc pt-exp-base.cc pt-exp.cc \
 	pt-fcn.cc pt-fvc-base.cc pt-fvc.cc pt-mat.cc pt-misc.cc \
-	pt-mvr-base.cc pt-mvr.cc pt-plot.cc resource.cc \
+	pt-mvr-base.cc pt-mvr.cc pt-plot.cc pt-pr-code.cc resource.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
 	symtab.cc syscalls.cc sysdep.cc timefns.cc token.cc toplev.cc \
 	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
@@ -167,7 +167,7 @@ TERMLIBS = @TERMLIBS@
 LIBS = @LIBS@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links.in \
-	octave.gperf octave.cc parse.cc lex.cc y.tab.h \
+	defaults.h.in octave.gperf octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
 all: stamp-prereq stamp-picdir libraries \
@@ -230,7 +230,7 @@ $(MAKEDEPS): defaults.h oct-gperf.h
 check: all
 .PHONY: check
 
-install: all install-bin install-lib install-oct
+install: install-bin install-oct install-lib install-inc
 .PHONY: install
 
 install-bin:
@@ -240,13 +240,6 @@ install-bin:
 	$(LN_S) $(bindir)/octave-$(version) $(bindir)/octave
 .PHONY: install-bin
 
-install-lib:
-	$(top_srcdir)/mkinstalldirs $(libdir)
-	for f in $(LIBS_TO_INSTALL); do \
-	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
-	done
-.PHONY: install-lib
-
 install-oct:
 	$(top_srcdir)/mkinstalldirs $(octfiledir)
 	chmod a+rx mk-oct-links
@@ -254,8 +247,36 @@ install-oct:
 	./mk-oct-links $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC))
 .PHONY: install-oct
 
+install-lib:
+	$(top_srcdir)/mkinstalldirs $(libdir)
+	for f in $(LIBS_TO_INSTALL); do \
+	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
+	done
+.PHONY: install-lib
+
+install-inc:
+	$(top_srcdir)/mkinstalldirs $(includedir)
+	for f in $(INCLUDES) defaults.h ; do \
+	  rm -f $(includedir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
+	done
+	linkdir=`echo $(includedir) | sed 's/-$(version)$$//'` ; \
+	if [ "$$linkdir" = $(includedir) ] ; then \
+	  true ; \
+	else \
+	  if [ -d $$linkdir ] ; then \
+	    true ; \
+	  else \
+	    rm -f $$linkdir ; \
+	    $(LN_S) $(includedir) $$linkdir ; \
+	  fi ; \
+	fi
+.PHONY: install-lib
+
 uninstall:
 	rm -f $(bindir)/octave
+	for f in $(LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
+	for f in $(INCLUDES) defaults.h; do rm -f $(includedir)/$$f; done
 .PHONY: uninstall
 
 tags: $(SOURCES) $(DLD_SRC) $(TI_SRC)

@@ -169,11 +169,11 @@ install-inc:
 	  true ; \
 	else \
 	  if [ -d $$linkdir ] ; then \
-	    mv $$linkdir $$linkdir.old ; \
+	    true ; \
 	  else \
 	    rm -f $$linkdir ; \
+	    $(LN_S) $(includedir) $$linkdir ; \
 	  fi ; \
-	  $(LN_S) $(includedir) $$linkdir ; \
 	fi
 .PHONY: install-inc
 

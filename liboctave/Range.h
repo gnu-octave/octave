@@ -32,6 +32,7 @@ extern "C++" {
 
 class istream;
 class ostream;
+class Matrix;
 
 class Range
 {
@@ -45,6 +46,8 @@ class Range
   double limit (void) const;
   double inc (void) const;
   int nelem (void) const;
+
+  Matrix matrix_value (void) const;
 
   double min (void) const;
   double max (void) const;

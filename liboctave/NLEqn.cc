@@ -61,12 +61,12 @@ NLEqn::error (const char* msg)
 
 // Constructors
 
-NLEqn::NLEqn (void) : NLFunc (), x (), n (0) {}
+NLEqn::NLEqn (void) : NLFunc (), n (0), x () { }
 
 NLEqn::NLEqn (const Vector& xvec, const NLFunc f) 
-  : NLFunc (f), x (xvec), n (xvec.capacity ()) {}
+  : NLFunc (f), n (xvec.capacity ()), x (xvec) { }
 
-NLEqn::NLEqn (const NLEqn& a) : NLFunc (a.fun, a.jac), x (a.x), n (a.n) {}
+NLEqn::NLEqn (const NLEqn& a) : NLFunc (a.fun, a.jac), n (a.n), x (a.x) { }
 
 void
 NLEqn::resize (int nn)

@@ -33,6 +33,24 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <limits.h>
 
 #include "Range.h"
+#include "dMatrix.h"
+
+Matrix
+Range::matrix_value (void) const
+{
+  Matrix retval;
+
+  if (rng_nelem > 0)
+    {
+      retval.resize (1, rng_nelem);
+      double b = rng_base;
+      double increment = rng_inc;
+      for (int i = 0; i < rng_nelem; i++)
+	retval.elem (0, i) = b + i * increment;
+    }
+
+  return retval;
+}
 
 // NOTE: max and min only return useful values if nelem > 0.
 

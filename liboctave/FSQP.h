@@ -24,11 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_FSQP_h)
 #define octave_FSQP_h 1
 
+#ifndef FSQP_MISSING
+
 #if defined (__GNUG__)
 #pragma interface
 #endif
-
-#ifndef FSQP_MISSING
 
 #include "NLP.h"
 
@@ -44,9 +44,9 @@ class FSQP : public NLP
  private:
 };
 
-#endif /* FSQP_MISSING */
-
 } // extern "C++"
+
+#endif /* FSQP_MISSING */
 
 #endif
 

@@ -237,13 +237,13 @@ private:
   inline T get (int i) { return Array<T>::elem (i); }
   inline void set (const T& val, int i) { Array<T>::elem (i) = val; }
 
-#if ! defined (_AIX)
+#if ! (defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6)
   class Proxy
   {
   public:
 
     inline Proxy (DiagArray<T> *ref, int r, int c)
-      : object (ref), i (r), j (c) { } 
+      : i (r), j (c), object (ref) { } 
 
     inline const Proxy& operator = (const T& val) const
     {
@@ -314,7 +314,7 @@ public:
   int cols (void) const;
   int columns (void) const;
 
-#if defined (_AIX)
+#if defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6
   T& elem (int r, int c);
   T& checkelem (int r, int c);
   T& operator () (int r, int c);

@@ -439,6 +439,10 @@ pathstring_to_vector (char *pathstring)
 char *
 octave_home (void)
 {
+#ifdef RUN_IN_PLACE
+  static char *home = OCTAVE_HOME;
+  return home;
+#else
   static char *home =  (char *) NULL;
   delete [] home;
   char *oh = getenv ("OCTAVE_HOME");
@@ -447,11 +451,16 @@ octave_home (void)
   else
     home = strsave (OCTAVE_HOME);
   return home;
+#endif
 }
 
 char *
 octave_lib_dir (void)
 {
+#ifdef RUN_IN_PLACE
+  static char *ol = OCTAVE_LIB_DIR;
+  return ol;
+#else
   static char *ol = (char *) NULL;
   delete [] ol;
   char *oh = octave_home ();
@@ -459,16 +468,22 @@ octave_lib_dir (void)
   ol = strconcat (tmp, version_string);
   delete [] tmp;
   return ol;
+#endif
 }
 
 char *
 octave_info_dir (void)
 {
+#ifdef RUN_IN_PLACE
+  static char *oi = OCTAVE_INFO_DIR;
+  return oi;
+#else
   static char *oi = (char *) NULL;
   delete [] oi;
   char *oh = octave_home ();
   oi = strconcat (oh, "/info/");
   return oi;
+#endif
 }
 
 /*

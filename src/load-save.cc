@@ -141,15 +141,45 @@ save_mat5_binary_element (std::ostream& os,
 #ifdef HAVE_HDF5
 // this is only used for HDF5 import
 // try to convert s into a valid identifier, replacing invalid chars with "_":
-static void
-make_valid_identifier (char *s)
+static std::string
+make_valid_identifier (const std::string& nm)
 {
-  if (s)
+  std::string retval;
+
+  size_t nm_len = nm.length ();
+
+  if (nm_len > 0)
     {
-      for (; *s; ++s)
-	if (! (isalnum (*s) || *s == '_'))
-	  *s = '_';
+      if (! isalpha (nm[0]))
+	retval += '_';
+
+      for (size_t i = 0; i < nm_len; i++)
+	{
+	  char c = nm[i];
+	  retval += (isalnum (c) || c == '_') ? c : '_';
+	}
     }
+
+  return retval;
+}
+
+static bool
+ident_is_all_digits (const std::string& id)
+{
+  bool retval = true;
+
+  size_t len = 0;
+
+  for (size_t i = 0; i < len; i++)
+    {
+      if (! isdigit (id[i]))
+	{
+	  retval = false;
+	  break;
+	}
+    }
+
+  return retval;
 }
 #endif /* HAVE_HDF5 */
 
@@ -1406,14 +1436,15 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   herr_t retval = 0;
   bool ident_valid = valid_identifier (name);
 
-  OCTAVE_LOCAL_BUFFER (char, vname, strlen (name) + 1);
+  std::string vname = name;
 
-  strcpy (vname, name);
+  // Allow identifiers as all digits so we can load lists saved by
+  // earlier versions of Octave.
 
-  if (! ident_valid && d->import)
+  if (! ident_valid && (d->import || ident_is_all_digits (vname)))
     {
       // fix the identifier, replacing invalid chars with underscores
-      make_valid_identifier (vname);
+      vname = make_valid_identifier (vname);
 
       // check again (in case vname was null, empty, or some such thing):
       ident_valid = valid_identifier (vname); 
@@ -1792,7 +1823,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  H5Gget_comment (group_id, name, comment_length, tdoc);
 	  d->doc = tdoc;
 	}
-      else if (strcmp (name, vname) != 0)
+      else if (vname != name)
 	{
 	  // the name was changed by import; store the original name
 	  // as the documentation string:

@@ -1,3 +1,10 @@
+2003-10-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (make_valid_identifier): Return new string.
+	Arg is now string, not char *.
+	(ident_is_all_digits): New function.
+	(hdf5_read_next_data): Use it.
+
 2003-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (input_event_hook): Clear the event hook if hook_fcn

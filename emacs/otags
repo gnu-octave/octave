@@ -20,7 +20,10 @@
 # Author: Mario Storti <mstorti@minerva.unl.edu.ar>
 
 etags --lang=none \
-      --regex='/[ \t]*function.*=[ \t]*\([^ \t]*\)[ \t]*(/\1/' \
+      --regex='/[ \t]*function.*=[ \t]*\([^ \t()]*\)[ \t]*(/\1/' \
+      --regex='/[ \t]*function.*=[ \t]*\([^ \t()]*\)[ \t]*$/\1/' \
+      --regex='/[ \t]*function[ \t]*\([^ \t()]*\)[ \t]*(/\1/' \
+      --regex='/[ \t]*function[ \t]*\([^ \t()]*\)[ \t]*$/\1/' \
       --regex='/###key \(.*\)/\1/' \
       --regex='/[ \t]*global[ \t].*/' \
       *.m

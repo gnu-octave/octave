@@ -69,6 +69,12 @@
 /* Use GNU info for extended help system. */
 #undef USE_GNU_INFO
 
+/* Use Karl Berry's path search library. */
+#undef USE_KPATHSEARCH
+
+/* Use GNU readline for command line editing and history. */
+#undef USE_READLINE
+
 /* Define if math.h declares signgam. */
 #undef SIGNGAM_DECLARED
 

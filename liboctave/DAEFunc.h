@@ -23,10 +23,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_DAEFunc_h)
 #define octave_DAEFunc_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 class Matrix;
 class ColumnVector;
 

@@ -35,10 +35,16 @@ function [n, m, p] = abcddim (a, b, c, d)
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # a s hodel: modified to accept pure-gain systems aug 1996
-# $Revision: 1.16 $
+# $Revision: 1.17 $
 # $Log: abcddim.m,v $
-# Revision 1.16  1998-12-09 18:42:12  jwe
+# Revision 1.17  1998-12-10 03:06:31  jwe
 # *** empty log message ***
+#
+# Revision 2.0.0.2  1998/12/08  23:29:21  hodel
+# Octave-Marsyas Interface updated for signals-as-lists
+#
+# Revision 2.0.0.1  1998/12/08  21:40:44  hodel
+# Dummy version to match ftp.eng.auburn.edu version number
 #
 # Revision 2.0.0.0  1998/12/08  21:36:51  hodel
 # Branch for beta release patches

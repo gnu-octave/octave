@@ -31,11 +31,11 @@ function K = hinf_ctr(dgs,F,H,Z,g)
   # Do not attempt to use this at home; no argument checking performed.
 
   # A. S. Hodel August 1995
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
   # Revised by Kai P Mueller April 1998 to solve the general H_infinity
   # problem using unitary transformations Q (on w and z)
   # and non-singular transformations R (on u and y).
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   nw = dgs.nw;
   nu = dgs.nu;

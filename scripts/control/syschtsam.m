@@ -23,7 +23,7 @@ function retsys = syschtsam(sys,tsam)
 # This function changes the sampling time (tsam) of the system.
 
 # Written by John Ingram August 1996
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if (nargin != 2)
     usage("retsys = syschtsam(sys,tsam)");

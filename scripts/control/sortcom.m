@@ -32,7 +32,7 @@ function [yy,idx] = sortcom(xx,opt)
 # idx: permutation vector: yy = xx(idx)
 
 # Written by A. S. Hodel June 1995
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if( nargin < 1 | nargin > 2 )
      usage("yy = sortcom(xx[,opt]");

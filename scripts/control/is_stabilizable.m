@@ -38,7 +38,7 @@ function [retval,U] = is_stabilizable (a, b, tol)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 to accept systems
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if(nargin < 1)        usage("[retval,U] = is_stabilizable(a {, b ,tol})");
   elseif(is_struct(a))

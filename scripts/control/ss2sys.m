@@ -72,7 +72,7 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   #
 
   #  Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.1 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -168,7 +168,7 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
     retsys = syssetsignals(retsys,"yd",ones(1,p)*(tsam > 0));
   else
     if(!isempty(outlist)) 
-      retsys = syssetsignals(retsys,"yd",outlist,ones(size(outlist)));
+      retsys = syssetsignals(retsys,"yd",ones(size(outlist)),outlist);
     endif
   endif
 

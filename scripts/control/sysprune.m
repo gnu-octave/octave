@@ -38,7 +38,7 @@ function sys = sysprune(sys,output_list,input_list)
 
 # A. S. Hodel August 1995
 # Updated by John Ingram 7-15-96
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if( nargin != 3  )
     usage("retsys = sysprune(sys,output_list,input_list)");

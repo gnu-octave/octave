@@ -33,7 +33,7 @@ function retval = is_stable (a, tol, disc)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for systems
 # Updated to simpler form by a.s.hodel 1998
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if( (nargin < 1) | (nargin > 3) )   usage("is_stable(a {,tol,disc})");
   elseif(is_struct(a))

@@ -38,7 +38,7 @@ function [retsys] = zgpbal(Asys)
   
   # A. S. Hodel July 24 1992
   # Conversion to Octave by R. Bruce Tenison July 3, 1994
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if( (nargin != 1) | (!is_struct(Asys)))
     usage("retsys = zgpbal(Asys)");

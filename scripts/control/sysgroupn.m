@@ -28,7 +28,7 @@ function names = sysgroupn(names,kind)
 #
 #  used internally in sysgroup
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   # check for duplicate names
   l = length(names);

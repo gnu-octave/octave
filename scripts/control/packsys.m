@@ -32,7 +32,7 @@ function Asys = packsys(a,b,c,d,dflg)
   # Written by R. Bruce Tenison  July 29, 1994
   # Modified by David Clem November 13, 1994
   # Modified by A. S. Hodel April 1995
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   warning("packsys is obsolete!  Use ss2sys instead.");
   

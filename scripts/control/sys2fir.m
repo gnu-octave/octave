@@ -20,7 +20,7 @@ function [c,tsam,inname,outname] = sys2fir(sys)
 # function [c,tsam,inname,outname] = sys2fir(sys)
 # extract fir system from system data structure
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 # a s hodel July 1996
 
   # let sys2tf do most of the work

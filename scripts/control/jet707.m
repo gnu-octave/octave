@@ -28,7 +28,7 @@ function outsys = jet707()
 
   # Written by Kai P. Mueller September 28, 1997
   # Updates
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if (nargin != 0)
     usage("outsys = jet707()")

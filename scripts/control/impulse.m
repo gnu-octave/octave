@@ -36,7 +36,7 @@ function [y, t] = impulse(sys, inp, tstop, n)
 # Written by Kai P. Mueller October 2, 1997
 # based on lsim.m of Scottedward Hodel
 # modified by
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if((nargin < 1) || (nargin > 4))
     usage("[y, u] = impulse(sys[, inp, tstop, n])");

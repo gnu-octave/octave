@@ -23,8 +23,10 @@ function retval = strappend(strlist,suffix);
   if(nargin != 2 | nargout > 1)
     usage(" retval = strappend(strlist,suffix)");
   elseif(!is_signal_list(strlist))
+    strlist
     error("strlist must be a list of strings (see is_signal_list)");
-  elseif(!(isstr(suffix) & is_vector(suffix)))
+  elseif(!(isstr(suffix) & rows(suffix) == 1))
+    suffix
     error("suffix must be a single string");
   endif
 

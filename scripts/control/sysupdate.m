@@ -34,7 +34,7 @@ function sys = sysupdate(sys,opt)
 # see also: tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, sys2zp
 
 # Written by John Ingram  7-9-96
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   # check for correct number of inputs 
   if (nargin != 2)

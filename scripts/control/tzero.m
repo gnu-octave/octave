@@ -39,7 +39,7 @@ function [zer, gain] = tzero(A,B,C,D)
   
   # R. Bruce Tenison July 4, 1994
   # A. S. Hodel Aug 1995: allow for MIMO and system data structures
-  # $Revision: 1.17 $ 
+  # $Revision: 1.18 $ 
 
   # get A,B,C,D and Asys variables, regardless of initial form
   if(nargin == 4)

@@ -22,7 +22,7 @@ function [sig, tau] = zgrownorm(mat,meps)
 # returns nonz = number of rows of mat whose two norm exceeds meps
 #         zer = number of rows of mat whose two norm is less than meps
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   rownorm = [];
   for ii=1:rows(mat)

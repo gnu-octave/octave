@@ -39,7 +39,7 @@ function [g gmin gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
   # Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
   #    Int. J. Control, vol 54, #5, 1991
   # Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if((nargin == 0) || (nargin > 4))
     usage("[g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])");

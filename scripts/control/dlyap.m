@@ -34,7 +34,7 @@ function x = dlyap (a, b)
 # (1977).
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 
   if ((n = is_square (a)) == 0)
     warning ("dlyap: a must be square");

@@ -48,7 +48,7 @@ function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
 
 # Written by A. S. Hodel August 1995; revised for new system format
 # August 1996
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
 sav_val = implicit_str_to_num_ok;
 implicit_str_to_num_ok = 1;

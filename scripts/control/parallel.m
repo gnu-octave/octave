@@ -33,7 +33,7 @@ function sysp = parallel(Asys,Bsys)
 # Written by David Clem August 15, 1994
 # completely rewritten Oct 1996 a s hodel
 # SYS_INTERNAL accesses members of system structure
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if(nargin != 2)
     usage("sysp = parallel(Asys,Bsys)");

@@ -40,7 +40,7 @@ function retsys = syschnames(sys,opt,list,names)
 #            (or yd values, where appropriate)
 
 # Written by John Ingram August 1996; updated by A. S. Hodel 1998
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   retsys = syssetsignals(sys,opt,names,list);
 

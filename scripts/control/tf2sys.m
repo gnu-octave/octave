@@ -29,7 +29,7 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   #  Written by R. Bruce Tenison  July 29, 1994
   #  Name changed to TF2SYS July 1995
   #  updated for new system data structure format July 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   save_val = implicit_str_to_num_ok;
   implicit_str_to_num_ok = 1;

@@ -34,7 +34,7 @@ function [num,den] = ss2tf(a,b,c,d)
 
 # Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
 # a s hodel: modified to allow for pure gain blocks Aug 1996
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
 # Check args
   [n,m,p] = abcddim(a,b,c,d);

@@ -2,7 +2,7 @@ function T = sysgettsam(sys)
 # T = sysgettsam(sys)
 # return the sampling time of the system
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
 if(!is_struct(sys))
   usage("T = sysgettsam(sys)");

@@ -19,7 +19,7 @@
 function dgkfdemo()
 # Octave Controls toolbox demo: H2/Hinfinity options demos
 # Written by A. S. Hodel June 1995
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
  
   save_val = page_screen_output;
   page_screen_output = 1;

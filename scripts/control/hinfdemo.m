@@ -99,7 +99,7 @@
 
 
 # Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
 yn = [];
 while (length(yn) < 1)

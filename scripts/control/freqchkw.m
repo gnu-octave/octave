@@ -21,7 +21,7 @@ function USEW = freqchkw(w)
   # used by freqresp to check that input frequency vector is legal
 
   # A S Hodel July 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if(isempty(w))
     USEW = 0;

@@ -31,7 +31,7 @@ function [retval,U] = is_observable (a,c,tol)
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.
-# $Revision: 1.15 $ 
+# $Revision: 1.16 $ 
 
   if( nargin < 1) 
     usage("[retval,U] = is_observable(a , c {, tol})");

@@ -30,7 +30,7 @@ function y = polyout(c,x)
 
 # Written by A. Scottedward Hodel (scotte@eng.auburn.edu) May 1995)
 # Nov 1998: Correctly handles complex coefficients
-# $Revision: 2.0.0.0 $ 
+# $Revision: 2.0.0.2 $ 
   
   if (nargin < 1 ) || (nargin > 2) || (nargout < 0 ) || (nargout > 1)
     usage("[y = ] polyout(c,[x])");

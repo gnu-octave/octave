@@ -21,7 +21,7 @@ function [a,b,c,d] = unpacksys(syst)
   # Obsolete.  Use sys2ss instead.
 
   # Written by David Clem August 19, 1994
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   warning("unpacksys obsolete; calling sys2ss");
   [a,b,c,d] = sys2ss(syst);

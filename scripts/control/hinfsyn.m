@@ -56,12 +56,12 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
 
   # A. S. Hodel August 1995
   # Updated for Packed system structures December 1996 by John Ingram
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
   #
   # Revised by Kai P Mueller April 1998 to solve the general H_infinity
   # problem using unitary transformations Q (on w and z)
   # and non-singular transformations R (on u and y).
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   old_page_val = page_screen_output;
   page_screen_output = 0;

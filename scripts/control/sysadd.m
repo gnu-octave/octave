@@ -36,7 +36,7 @@ function sys = sysadd(Gsys,Hsys)
 #                  --------
 
 # Written by John Ingram July 1996
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;

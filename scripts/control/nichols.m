@@ -94,14 +94,12 @@ function [mag,phase,w] = nichols(sys,w,outputs,inputs)
     xlabel("Phase (deg)");
     ylabel("Gain in dB");
     if(is_siso(sys))
-      title(["Nichols plot of |[Y/U]",tistr,"|, u=", inname, ...
-	", y=",outname]);
+      title(["Nichols plot of |[Y/U]",tistr,"|, u=", ...
+	sysgetsignals(sys,"in",1,1), ", y=",sysgetsignals(sys,"out",1,1)]);
     else
       title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
-      disp("MIMO plot from")
-      outlist(inname,"	");
-      disp("to")
-      outlist(outname,"	");
+      printf("MIMO plot from\n%s\nto\n%s\n",outlist(inname,"	"), ...
+        outlist(outname,"	"));
     endif
     md = 20*log10(mag);
     axvec = axis2dlim([vec(phase),vec(md)]);

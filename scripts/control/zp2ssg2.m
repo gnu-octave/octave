@@ -23,7 +23,7 @@ function [poly,rvals] = zp2ssg2(rvals)
 # extract 2 values from rvals (if possible) and construct
 # a polynomial with those roots.
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 # A. S. Hodel Aug 1996
 
 # locate imaginary roots (if any)

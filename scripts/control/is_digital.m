@@ -22,7 +22,7 @@ function DIGITAL = is_digital(sys)
 # exits with an error of sys is a mixed (continuous and discrete) system
 
 # a s hodel July 1996
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 # SYS_INTERNAL accesses members of system structure
 
   # checked for sampled data system (mixed)

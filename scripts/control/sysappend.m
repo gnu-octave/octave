@@ -48,7 +48,7 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
   #     sys = discrete:            yd = ones(1,rows(c))
   
   # written by John Ingram August 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
   
   sav_implicit_str_to_num_ok = implicit_str_to_num_ok;	# save for later
   sav_empty_list_elements_ok = empty_list_elements_ok;

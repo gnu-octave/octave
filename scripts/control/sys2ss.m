@@ -41,7 +41,7 @@ function [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)
 
   # Written by David Clem August 19, 1994
   # Updates by John Ingram July 14, 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if(nargin != 1)
     usage("[a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)")

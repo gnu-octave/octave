@@ -39,7 +39,7 @@ function [a,b,c,d] = tf2ss(num,den)
 
   # Written by R. Bruce Tenison (June 22, 1994) btenison@eng.auburn.edu
   # mod A S Hodel July, Aug  1995
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if(nargin != 2)        error("tf2ss: wrong number of input arguments")
   elseif(isempty(num))   error("tf2ss: empty numerator");

@@ -40,7 +40,7 @@ function K = place(sys, P)
 #
 # code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
 # toolbox
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;

@@ -46,7 +46,7 @@ function [sys] = starp(P, K, ny, nu);
 # ny and/or nu may be negative (= negative feedback)
 
 # Written by Kai Mueller May 1998
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if((nargin != 2) && (nargin != 4))
     usage("[sys] = starp(P, K, ny, nu)");

@@ -49,7 +49,7 @@ function dsys = c2d (sys, opt, T)
 # Written by R.B. Tenison (btenison@eng.auburn.edu)
 # October 1993
 # Updated by John Ingram for system data structure August 1996
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;

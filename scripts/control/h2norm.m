@@ -30,7 +30,7 @@ function h2gain = h2norm(sys)
 
   # A. S. Hodel Aug 1995
   # updated for system data structure by John Ingram November 1996
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if((nargin != 1))
     usage("h2gain = h2norm(sys)");

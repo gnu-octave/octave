@@ -57,8 +57,14 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
 # Modified by David Clem November 13, 1994
 # again by A. S. Hodel July 1995 (smart plot range, etc.)
 # Modified by Kai P. Mueller September 28, 1997 (multiplot mode)
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 # $Log: bode.m,v $
+# Revision 2.0.0.2  1998/12/08  23:29:23  hodel
+# Octave-Marsyas Interface updated for signals-as-lists
+#
+# Revision 2.0.0.1  1998/12/08  21:40:45  hodel
+# Dummy version to match ftp.eng.auburn.edu version number
+#
 # Revision 2.0.0.0  1998/12/08  21:36:52  hodel
 # Branch for beta release patches
 #

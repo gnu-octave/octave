@@ -31,7 +31,7 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
 
 # Written by Kai P. Mueller October 2, 1997
 # based on lsim.m of Scottedward Hodel
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   if (sitype == 1)         IMPULSE = 0;
   elseif (sitype == 2)     IMPULSE = 1;

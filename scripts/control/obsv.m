@@ -39,7 +39,7 @@ function Qb = obsv(sys, c)
 
   # Written by Kai P. Mueller November 4, 1997
   # modified by
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
 
   if (nargin == 2)
     a = sys;

@@ -24,7 +24,7 @@ function [y,my,ny] = abcddims (x)
 # get set to 0.  my and ny are the row and column dimensions of the result.
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) Feb 1997
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   y = x;
   if(isempty(y))

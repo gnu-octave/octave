@@ -20,7 +20,7 @@ function frdemo()
 # Octave Controls toolbox demo: Frequency Response demo
 # Written by David Clem August 15, 1994 
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 # a s hodel: updated to match new order of ss2zp outputs
 # J Ingram:  updated for system data structure format August 1996
 

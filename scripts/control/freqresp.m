@@ -28,7 +28,7 @@ function [ff,w] = freqresp(sys,USEW,w);
   #      ff and w are both returned as row vectors
 
   #  Written by: R. Bruce Tenison July 11, 1994
-  # $Revision: 2.0.0.0 $
+  # $Revision: 2.0.0.2 $
   # SYS_INTERNAL accesses members of system data structure
 
   save_val = empty_list_elements_ok;

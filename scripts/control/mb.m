@@ -1,7 +1,7 @@
 # I think that this m-file can be deleted
 # a.s.hodel@eng.auburn.edu - 4 Dec. 1998
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
 Ap = [0 1;1960 0];
 Bp = [0;-6261];

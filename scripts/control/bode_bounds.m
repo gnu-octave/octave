@@ -24,7 +24,7 @@ function [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,tsam)
 #
 # used internally in freqresp
 
-# $Revision: 2.0.0.0 $
+# $Revision: 2.0.0.2 $
 
   # make sure zer,pol are row vectors
   if(!isempty(pol)) pol = reshape(pol,1,length(pol)); endif

@@ -27,8 +27,8 @@ AC_INIT(startup/octaverc)
 AC_PROG_INSTALL
 
 AC_OUTPUT(Makefile audio/Makefile control/Makefile elfun/Makefile
-	  general/Makefile image/Makefile linear-algebra/Makefile
-	  miscellaneous/Makefile plot/Makefile polynomial/Makefile
-	  set/Makefile signal/Makefile specfun/Makefile
-	  special-matrix/Makefile startup/Makefile statistics/Makefile
-	  strings/Makefile time/Makefile)
+	  general/Makefile image/Makefile io/Makefile
+	  linear-algebra/Makefile miscellaneous/Makefile plot/Makefile
+	  polynomial/Makefile set/Makefile signal/Makefile
+	  specfun/Makefile special-matrix/Makefile startup/Makefile
+	  statistics/Makefile strings/Makefile time/Makefile)

@@ -75,7 +75,6 @@ extern "C"
 LOSE! LOSE!
 #endif
 
-extern int ioctl ();
 char *tilde_expand (char *s); /* From readline's tilde.c */
 }
 

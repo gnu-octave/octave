@@ -60,8 +60,6 @@ extern void _rl_output_character_function ();
 #else
 LOSE! LOSE!
 #endif
-
-extern int ioctl ();
 }
 
 #ifndef STDIN_FILENO

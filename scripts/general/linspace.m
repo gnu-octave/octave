@@ -33,7 +33,7 @@ function retval = linspace (x1, x2, n)
     npoints = 100;
   elseif (nargin == 3)
     if (length (n) == 1)
-      npoints = n;
+      npoints = fix (n);
     else
       error ("linspace: arguments must be scalars");
     endif

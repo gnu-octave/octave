@@ -1,3 +1,10 @@
+1999-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/munge-texi.cc (process_texi_input_file): Begin
+	transformed files with `% DO NOT EDIT' instead of `@c DO NOT EDIT'
+	to prevent problems with TeX not knowing the definition of @c
+	before it is used.
+
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (%.texi : %.txi): Suppress command echo.

@@ -106,7 +106,7 @@ process_doc_file (const string& fname)
 static void
 process_texi_input_file (istream& is, ostream& os)
 {
-  os << "@c DO NOT EDIT!  Generated automatically by munge-texi.\n\n";
+  os << "% DO NOT EDIT!  Generated automatically by munge-texi.\n\n";
 
   bool bol = true;
 

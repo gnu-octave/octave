@@ -30,8 +30,8 @@
 
 ## Author: jwe
 
-function xlabel (...)
+function xlabel (varargin)
 
-  __axis_label__ ("xlabel", all_va_args);
+  __axis_label__ ("xlabel", varargin{:});
 
 endfunction

@@ -30,7 +30,7 @@
 
 ## Author: jwe
 
-function num = menu (t, ...)
+function num = menu (t, varargin)
 
   if (nargin < 2)
     usage ("menu (title, opt1, ...)");
@@ -57,10 +57,9 @@ function num = menu (t, ...)
     nopt = nargin - 1;
 
     while (1)
-      va_start ();
       for i = 1:nopt
         printf ("  [%2d] ", i);
-        disp (va_arg ());
+        disp (varargin{i});
       endfor
       printf ("\n");
       s = input ("pick a number, any number: ", "s");

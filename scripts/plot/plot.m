@@ -183,7 +183,7 @@
 
 ## Author: jwe
 
-function plot (...)
+function plot (varargin)
 
   ## XXX FIXME XXX -- these plot states should really just be set
   ## temporarily, probably inside an unwind_protect block, but there is
@@ -192,6 +192,6 @@ function plot (...)
   gset nologscale;
   gset nopolar;
 
-  __plt__ ("plot", all_va_args);
+  __plt__ ("plot", varargin{:});
 
 endfunction

@@ -45,7 +45,7 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Perform a QQ-plot (quantile plot)
 
-function [q, s] = qqplot (x, dist, ...)
+function [q, s] = qqplot (x, dist, varargin)
 
   if (nargin < 1)
     usage ("qqplot (x, dist, params)");
@@ -67,9 +67,9 @@ function [q, s] = qqplot (x, dist, ...)
     q = feval (f, t);
     q_label = f;
   else
-    param_string = sprintf ("%g", va_arg ());
+    param_string = sprintf ("%g", varargin{1});
     for k = 2 : (nargin - 2);
-      param_string = sprintf ("%s, %g", param_string, va_arg ())
+      param_string = sprintf ("%s, %g", param_string, varargin{k})
     endfor
     q = eval (sprintf ("%s (t, %s);", f, param_string));
     q_label = sprintf ("%s with parameter(s) %s", f, param_string);

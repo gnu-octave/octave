@@ -43,7 +43,7 @@
 ## Created: July 1996
 ## Updated for variable number of arguments July 1999 A. S. Hodel
 
-function sys = sysadd (...)
+function sys = sysadd (varargin)
 
   if(nargin < 1)
     usage("sysadd: sys = sysysadd(Gsys{,Hsys, ...})");
@@ -51,9 +51,8 @@ function sys = sysadd (...)
 
   ## collect all arguments
   arglist = list();
-  va_start();
   for kk=1:nargin
-    arglist(kk) = va_arg();
+    arglist(kk) = varargin{kk};
     if(!is_struct(nth(arglist,kk)))
       error("sysadd: argument %d is not a data structure",kk);
     endif

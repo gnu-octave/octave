@@ -32,7 +32,7 @@
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe
 
-function retval = str2mat (...)
+function retval = str2mat (varargin)
 
   if (nargin == 0)
     usage ("str2mat (s1, ...)");
@@ -41,12 +41,10 @@ function retval = str2mat (...)
   nc = 0;
   nr = 0;
 
-  va_start ();
-
   nr = zeros (nargin, 1);
   nc = zeros (nargin, 1);
   for k = 1 : nargin
-    s = va_arg ();
+    s = varargin{k};
     if (! isstr (s))
       s = setstr (s);
     endif
@@ -64,11 +62,9 @@ function retval = str2mat (...)
 
   retval = setstr (ones (retval_nr, retval_nc) * toascii (" "));
 
-  va_start ();
-
   row_offset = 0;
   for k = 1 : nargin
-    s = va_arg ();
+    s = varargin{k};
     if (! isstr (s))
       s = setstr (s);
     endif

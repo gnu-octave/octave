@@ -50,7 +50,7 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: One-sample Kolmogorov-Smirnov test
 
-function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
+function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
 
   if (nargin < 2)
     usage ("[pval, ks] = kolmogorov_smirnov_test (x, dist,, params, alt)");
@@ -71,7 +71,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, ...)
   else
     args = "";
     for k = 1 : (nargin-2);
-      tmp  = va_arg ();
+      tmp  = varargin{k};
       if isstr (tmp)
         alt = tmp;
       else

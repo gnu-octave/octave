@@ -28,7 +28,7 @@
 
 ## Author: jwe
 
-function semilogx (...)
+function semilogx (varargin)
 
   ## XXX FIXME XXX -- these plot states should really just be set
   ## temporarily, probably inside an unwind_protect block, but there is
@@ -38,6 +38,6 @@ function semilogx (...)
   gset nologscale y;
   gset nopolar;
 
-  __plt__ ("semilogx", all_va_args);
+  __plt__ ("semilogx", varargin{:});
 
 endfunction

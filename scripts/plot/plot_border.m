@@ -51,7 +51,7 @@
 ## Created: 3 July 95
 ## Adapted-By: jwe
 
-function plot_border (...)
+function plot_border (varargin)
 
   if (! gnuplot_has_multiplot)
     error ("plot_border: gnuplot does not appear to support this feature");
@@ -64,11 +64,11 @@ function plot_border (...)
   all = 0;
   none = 1;
 
-  va_start ();
+  k = 1;
 
   while (nargin--)
 
-    arg = va_arg ();
+    arg = varargin{k++};
 
     if (! isstr (arg))
       error ("plot_border: input not a string");

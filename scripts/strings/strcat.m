@@ -33,7 +33,7 @@
 
 ## Author: jwe
 
-function st = strcat (s, t, ...)
+function st = strcat (s, t, varargin)
 
   if (nargin > 1)
     save_empty_list_elements_ok = empty_list_elements_ok;
@@ -45,8 +45,9 @@ function st = strcat (s, t, ...)
         error ("strcat: all arguments must be strings");
       endif
       n = nargin - 2;
+      k = 1;
       while (n--)
-        tmp = va_arg ();
+        tmp = varargin{k++};
         if (isstr (tmp))
           tmpst = [tmpst, tmp];
         else

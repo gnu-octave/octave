@@ -39,16 +39,16 @@
 ## Created: 16 September 1994
 ## Adapted-By: jwe
 
-function l = lcm (a, ...)
+function l = lcm (a, varargin)
 
   if (nargin == 0)
     usage ("lcm (a, ...)");
   endif
 
   if (nargin > 1)
-    va_start;
-    for k = 2:nargin;
-      a = [a, (va_arg ())];
+    k = 1;
+    for i = 2:nargin
+      a = [a, varargin{k++}];
     endfor
   endif
 

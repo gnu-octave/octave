@@ -110,7 +110,7 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function errorbar (...)
+function errorbar (varargin)
 
   if (nargin < 2)
     usage ("errorbar (...)");
@@ -122,8 +122,9 @@ function errorbar (...)
       clg ()
     endif
     hold ("on");
+    k = 1;
     while (nargin)
-      a = va_arg ();
+      a = varargin{k++};
       nargin--;
       if (is_vector (a))
 	a = a(:);
@@ -138,7 +139,7 @@ function errorbar (...)
       fmt = " ";
       while (nargin)
 	nargin--;
-	a = va_arg ();
+	a = varargin{k++};
 	if (isstr (a))
 	  fmt = a;
 	  cmd = "__errplot__ (arg1";

@@ -38,7 +38,7 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Kruskal-Wallis test
 
-function [pval, k, df] = kruskal_wallis_test (...)
+function [pval, k, df] = kruskal_wallis_test (varargin)
 
   m = nargin;
   if (m < 2)
@@ -47,9 +47,9 @@ function [pval, k, df] = kruskal_wallis_test (...)
 
   n = [];
   p = [];
-  va_start;
+
   for i = 1 : m;
-    x = va_arg ();
+    x = varargin{i};
     if (! is_vector (x))
       error ("kruskal_wallis_test: all arguments must be vectors");
     endif

@@ -1,3 +1,36 @@
+2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/system/sysmult.m: Use varargin instead of old style varargs.
+	* control/system/sysadd.m: Likewise.
+	* control/system/sysgroup.m: Likewise.
+	* control/system/syssub.m: Likewise.
+	* elfun/gcd.m: Likewise.
+	* elfun/lcm.m: Likewise.
+	* general/common_size.m: Likewise.
+	* io/printf.m: Likewise.
+	* miscellaneous/menu.m: Likewise.
+	* miscellaneous/path.m: Likewise.
+	* plot/__errplot__.m: Likewise.
+	* plot/__plt__.m: Likewise.
+	* plot/axis.m: Likewise.
+	* plot/errorbar.m: Likewise.
+	* plot/mplot.m: Likewise.
+	* plot/loglog.m: Likewise.
+	* plot/plot.m: Likewise.
+	* plot/plot_border.m: Likewise.
+	* plot/semilogx.m: Likewise.
+	* plot/semilogy.m: Likewise.
+	* plot/xlabel.m: Likewise.
+	* plot/ylabel.m: Likewise.
+	* plot/zlabel.m: Likewise.
+	* statistics/base/ppplot.m: Likewise.
+	* statistics/base/qqplot.m: Likewise.
+	* statistics/tests/bartlett_test.m: Likewise.
+	* statistics/tests/kolmogorov_smirnov_test.m: Likewise.
+	* statistics/tests/kruskal_wallis_test.m: Likewise.
+	* strings/str2mat.m: Likewise.
+	* strings/strcat.m: Likewise.
+
 2002-06-27  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
 
 	* statistics/distributions/gamma_pdf.m: Avoid overflow in more cases.

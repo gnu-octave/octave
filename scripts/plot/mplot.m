@@ -32,7 +32,7 @@
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe
 
-function mplot (...)
+function mplot (varargin)
 
   if (! gnuplot_has_multiplot)
     error ("mplot: gnuplot does not appear to support this feature");
@@ -51,7 +51,7 @@ function mplot (...)
   gset nologscale;
   gset nopolar;
 
-  __plt__ ("plot", all_va_args);
+  __plt__ ("plot", varargin{:});
 
   ## update the plot position
 

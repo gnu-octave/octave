@@ -27,12 +27,12 @@
 
 ## Author: jwe
 
-function retval = printf (fmt, ...)
+function retval = printf (fmt, varargin)
 
   retval = -1;
 
   if (nargin > 0)
-    retval = fprintf (stdout, fmt, all_va_args);
+    retval = fprintf (stdout, fmt, varargin{:});
   else
     usage ("printf (fmt, ...)");
   endif

@@ -50,7 +50,7 @@
 ## modified by John Ingram July 1996
 ## A. S. Hodel: modified for variable number of arguments 1999
 
-function sys = sysgroup (...)
+function sys = sysgroup (varargin)
 
   save_emp = empty_list_elements_ok;
   empty_list_elements_ok = 1;
@@ -61,9 +61,8 @@ function sys = sysgroup (...)
 
   ## collect all arguments
   arglist = list();
-  va_start();
   for kk=1:nargin
-    arglist(kk) = va_arg();
+    arglist(kk) = varargin{kk};
     if(!is_struct(nth(arglist,kk)))
       error("sysgroup: argument %d is not a data structure",kk);
     endif

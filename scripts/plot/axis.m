@@ -114,7 +114,7 @@
 
 ## Author: jwe
 
-function curr_axis = axis (ax, ...)
+function curr_axis = axis (ax, varargin)
 
   ## This may not be correct if someone has used the gnuplot interface
   ## directly...
@@ -259,7 +259,7 @@ function curr_axis = axis (ax, ...)
   endif
 
   if (nargin > 1)
-    axis(all_va_args);
+    axis (varargin{:});
   endif
 endfunction
 

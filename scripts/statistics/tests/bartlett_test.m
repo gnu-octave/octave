@@ -35,7 +35,7 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Bartlett test for homogeneity of variances
 
-function [pval, chisq, df] = bartlett_test (...)
+function [pval, chisq, df] = bartlett_test (varargin)
 
   k = nargin;
   if (k < 2)
@@ -44,9 +44,9 @@ function [pval, chisq, df] = bartlett_test (...)
 
   f = zeros (k, 1);
   v = zeros (k, 1);
-  va_start ();
+
   for i = 1 : k;
-    x = va_arg ();
+    x = varargin{i};
     if (! is_vector (x))
       error ("bartlett_test: all arguments must be vectors");
     endif

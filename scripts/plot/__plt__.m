@@ -23,11 +23,11 @@
 
 ## Author: jwe
 
-function __plt__ (caller, ...)
+function __plt__ (caller, varargin)
 
   if (nargin == 2)
 
-    __plt1__ (va_arg (), "");
+    __plt1__ (varargin{1}, "");
 
   elseif (nargin > 2)
 
@@ -36,7 +36,8 @@ function __plt__ (caller, ...)
 
     unwind_protect
 
-      x = va_arg ();
+      k = 1;
+      x = varargin{k++};
       nargin = nargin - 2;
       x_set = 1;
       y_set = 0;
@@ -46,7 +47,7 @@ function __plt__ (caller, ...)
       while (nargin-- > 0)
 
         fmt = "";
-        new = va_arg ();
+        new = varargin{k++};
 
         if (isstr (new))
           if (! x_set)

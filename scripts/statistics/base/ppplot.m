@@ -43,7 +43,7 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Perform a PP-plot (probability plot)
 
-function [p, y] = ppplot (x, dist, ...)
+function [p, y] = ppplot (x, dist, varargin)
 
   if (nargin < 1)
     usage ("ppplot (x, dist, params)");
@@ -64,7 +64,7 @@ function [p, y] = ppplot (x, dist, ...)
   if (nargin <= 2)
     y = feval (F, s);
   else
-    y = feval (F, s, all_va_args);
+    y = feval (F, s, varargin{:});
   endif
 
   if (nargout == 0)

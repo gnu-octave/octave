@@ -43,32 +43,26 @@
 ## Created: 15 October 1994
 ## Adapted-By: jwe
 
-function [errorcode, ...] = common_size (...)
+function [errorcode, varargout] = common_size (varargin)
 
   if (nargin < 2)
     error ("common_size: only makes sense if nargin >= 2");
   endif
 
-  va_start ();
-  for k = 1 : nargin
-    s(k, :) = size (va_arg ());
+  for i = 1 : nargin
+    s(i,:) = size (varargin{i});
   endfor
 
   m = max (s);
   if (any (any ((s != 1)') & any ((s != ones (nargin, 1) * m)')))
     errorcode = 1;
-    va_start ();
-    for k = 1 : nargin
-      vr_val (va_arg ());
-    endfor
+    varargout = varargin;
   else
     errorcode = 0;
-    va_start ();
-    for k = 1 : nargin
-      if (prod (s(k, :)) == 1)
-        vr_val (va_arg () * ones (m));
-      else
-        vr_val (va_arg ());
+    for i = 1 : nargin
+      varargout{i} = varargin{i};
+      if (prod (s(i,:)) == 1)
+	varargout{i} *= ones (m);
       endif
     endfor
   endif

@@ -26,8 +26,8 @@
 ## Created: 3 July 95
 ## Adapted-By: jwe
 
-function zlabel (...)
+function zlabel (varargin)
 
-  __axis_label__ ("zlabel", all_va_args);
+  __axis_label__ ("zlabel", varargin{:});
 
 endfunction

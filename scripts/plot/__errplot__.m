@@ -33,18 +33,18 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function __errplot__ (...)
+function __errplot__ (varargin)
 
   if (nargin < 3) # atleast two data arguments needed
     usage ("__errplot__ (arg1, ..., fmt)");
   endif
 
   fstr = " ";
-
   ndata = 0;
+  k = 1;
 
   while (nargin--)
-    a = va_arg ();
+    a = varargin{k++};
     if (! isstr (a))
       ndata++;
       eval (sprintf ("arg%d = a;", ndata));

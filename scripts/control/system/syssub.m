@@ -42,7 +42,7 @@
 ## Created: July 1996
 ## updated for variable numbers of input arguments by July 1999 A. S. Hodel
 
-function sys = syssub (...)
+function sys = syssub (varargin)
 
   if(nargin < 1)
     usage("syssub: sys = syssub(Gsys{,Hsys,...})");
@@ -50,9 +50,8 @@ function sys = syssub (...)
 
   ## collect all arguments
   arglist = list();
-  va_start();
   for kk=1:nargin
-    arglist(kk) = va_arg();
+    arglist(kk) = varargin{kk};
     if(!is_struct(nth(arglist,kk)))
       error("syssub: argument %d is not a data structure",kk);
     endif

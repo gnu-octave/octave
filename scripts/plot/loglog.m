@@ -28,7 +28,7 @@
 
 ## Author: jwe
 
-function loglog (...)
+function loglog (varargin)
 
   ## XXX FIXME XXX -- these plot states should really just be set
   ## temporarily, probably inside an unwind_protect block, but there is
@@ -38,6 +38,6 @@ function loglog (...)
   gset logscale y;
   gset nopolar;
 
-  __plt__ ("loglog", all_va_args);
+  __plt__ ("loglog", varargin{:});
 
 endfunction

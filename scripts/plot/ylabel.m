@@ -24,8 +24,8 @@
 
 ## Author: jwe
 
-function ylabel (...)
+function ylabel (varargin)
 
-  __axis_label__ ("ylabel", all_va_args);
+  __axis_label__ ("ylabel", varargin{:});
 
 endfunction

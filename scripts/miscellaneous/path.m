@@ -36,7 +36,7 @@
 
 ## Author: jwe
 
-function p = path (...)
+function p = path (varargin)
 
   if (nargin == 0)
     if (nargout == 0)
@@ -46,9 +46,9 @@ function p = path (...)
       p = LOADPATH;
     endif
   else
-    p = va_arg ();
+    p = varargin{1};
     for i = 2:nargin
-      p = sprintf ("%s:%s", p, va_arg ());
+      p = sprintf ("%s:%s", p, varargin{i});
     endfor
     LOADPATH = p;
   endif

@@ -297,6 +297,8 @@ for those, you must type @kbd{help comma} or @kbd{help semicolon}.
 
 @DOCSTRING(INFO_PROGRAM)
 
+@DOCSTRING(MAKEINFO_PROGRAM)
+
 @DOCSTRING(suppress_verbose_help_message)
 
 @node Command Line Editing, Errors, Getting Help, Getting Started

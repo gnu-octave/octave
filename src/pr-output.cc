@@ -1784,7 +1784,7 @@ returns the formatted output in a string.\n\
 	{
 	  std::ostrstream buf;
 	  args(0).print (buf);
-	  buf << ends;
+	  buf << std::ends;
 	  char *tmp = buf.str ();
 	  retval = tmp;
 	  delete [] tmp;

@@ -1,3 +1,8 @@
+2000-06-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (display_help_text): If writing to filter fails, send
+	unformatted text to output stream.
+
 2000-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* OPERATORS/op-bm-bm.cc (eq): Define using mx_el_eq, not operator ==.

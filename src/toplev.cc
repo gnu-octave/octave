@@ -550,11 +550,11 @@ Register a function to be called when Octave exits.  For example,\n\
 \n\
 @example\n\
 @group\n\
-function print_flops_at_exit ()\n\
+function print_fortune ()\n\
   printf (\"\\n%s\\n\", system (\"fortune\"));\n\
   fflush (stdout);\n\
 endfunction\n\
-atexit (\"print_flops_at_exit\");\n\
+atexit (\"print_fortune\");\n\
 @end group\n\
 @end example\n\
 \n\

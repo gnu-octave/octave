@@ -749,14 +749,18 @@ it depends on are defined in the files @file{defun-dld.h},
 header file @file{octave/oct.h}).
 
 Note that the third parameter to @code{DEFUN_DLD} (@code{nargout}) is
-not used, so it is omitted from the list of arguments to in order to
-avoid  the warning from gcc about an unused function parameter.
+not used, so it is omitted from the list of arguments in order to
+avoid the warning from gcc about an unused function parameter.
+
+The next line,
+
+@example
+ColumnVector dx (3);
+@end example
 
 @noindent
 simply declares an object to store the right hand sides of the
-differential equation, and
-
-The statement
+differential equation, and the statement
 
 @example
 ColumnVector x = args(0).vector_value ();

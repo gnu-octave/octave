@@ -74,6 +74,9 @@ std::string Vinfo_file;
 // (--info-program program)
 std::string Vinfo_prog;
 
+// Name of the makeinfo program to run.
+static std::string Vmakeinfo_prog = "makeinfo";
+
 // If TRUE, don't print additional help message in help and usage
 // functions.
 static bool Vsuppress_verbose_help_message;
@@ -608,7 +611,8 @@ display_help_text (std::ostream& os, const std::string& msg)
 	cols = 72;
 
       std::ostrstream buf;
-      buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | makeinfo"
+      buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | "
+	  << Vmakeinfo_prog
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
 	  << " -D \"TARGETHOSTTYPE " << OCTAVE_CANONICAL_HOST_TYPE << "\""
@@ -627,7 +631,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 
       delete [] cmd;
 
-      if (filter)
+      if (filter && filter.is_open ())
 	{
 	  filter << "@macro seealso {args}\n"
 		 << "\n"
@@ -637,15 +641,25 @@ display_help_text (std::ostream& os, const std::string& msg)
 
 	  filter << msg.substr (pos+1);
 
-	  filter.close ();
+	  int status = filter.close ();
 
 	  std::ifstream tmp_file (tmp_file_name.c_str ());
 
-	  int c;
-	  while ((c = tmp_file.get ()) != EOF)
-	    os << (char) c;
+	  if (WIFEXITED (status) && WEXITSTATUS (status) == 0)
+	    {
+	      int c;
+	      while ((c = tmp_file.get ()) != EOF)
+		os << (char) c;
 
-	  tmp_file.close ();
+	      tmp_file.close ();
+	    }
+	  else
+	    {
+	      warning ("help: Texinfo formatting filter exited abnormally");
+	      warning ("help: raw Texinfo source of help text follows...");
+
+	      os << "\n" << msg;
+	    }
 
 	  file_ops::unlink (tmp_file_name);
 	}
@@ -1031,6 +1045,24 @@ info_prog (void)
 }
 
 static int
+makeinfo_prog (void)
+{
+  int status = 0;
+
+  std::string s = builtin_string_variable ("MAKEINFO_PROGRAM");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("MAKEINFO_PROGRAM");
+      status = -1;
+    }
+  else
+    Vmakeinfo_prog = s;
+
+  return status;
+}
+
+static int
 suppress_verbose_help_message (void)
 {
   Vsuppress_verbose_help_message
@@ -1046,16 +1078,31 @@ symbols_of_help (void)
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} INFO_FILE\n\
 The variable @code{INFO_FILE} names the location of the Octave info file.\n\
-The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
-@var{octave-home} is the directory where all of Octave is installed.\n\
+The default value is @code{\"@var{octave-home}/info/octave.info\"}, in\n\
+which @var{octave-home} is the directory where all of Octave is installed.\n\
 @end defvr");
 
   DEFVAR (INFO_PROGRAM, Vinfo_prog, info_prog,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} INFO_FILE\n\
-The variable @code{INFO_FILE} names the location of the Octave info file.\n\
-The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
-@var{octave-home} is the directory where all of Octave is installed.\n\
+@defvr {Built-in Variable} INFO_PROGRAM\n\
+The variable @code{INFO_PROGRAM} names the info program to run.  Its\n\
+default initial value is\n\
+@code{\"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info\"}\n\
+in which @var{octave-home} is the directory where all of Octave is\n\
+installed, @var{version} is the Octave version number, and @var{arch}\n\
+is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
+default initial value may be overridden by the environment variable\n\
+@code{OCTAVE_INFO_PROGRAM}, or the command line argument\n\
+@code{--info-program NAME}, or by setting the value of\n\
+@code{INFO_PROGRAM} in a startup script\n\
+@end defvr");
+
+  DEFVAR (MAKEINFO_PROGRAM, Vmakeinfo_prog, makeinfo_prog,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} MAKEINFO_PROGRAM\n\
+The variable @code{MAKEINFO_PROGRAM} names the makeinfo program that\n\
+Octave runs to format help text that contains Texinfo markup commands.\n\
+Its default initial value is @code{\"makeinfo\"}.\n\
 @end defvr");
 
   DEFVAR (suppress_verbose_help_message, 0.0, suppress_verbose_help_message,

@@ -42,6 +42,7 @@ extern tree_constant builtin_edit_history (int, char **);
 extern tree_constant builtin_format (int, char **);
 extern tree_constant builtin_help (int, char **);
 extern tree_constant builtin_history (int, char **);
+extern tree_constant builtin_hold (int, char **);
 extern tree_constant builtin_load (int, char **);
 extern tree_constant builtin_ls (int, char **);
 extern tree_constant builtin_run_history (int, char **);

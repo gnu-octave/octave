@@ -92,6 +92,10 @@ public:
 };
 
 #define INSTANTIATE_MARRAY_FRIENDS(T) \
+  template MArray<T>& operator += (MArray<T>& a, const T& s); \
+  template MArray<T>& operator -= (MArray<T>& a, const T& s); \
+  template MArray<T>& operator += (MArray<T>& a, const MArray<T>& b); \
+  template MArray<T>& operator -= (MArray<T>& a, const MArray<T>& b); \
   template MArray<T> operator + (const MArray<T>& a, const T& s); \
   template MArray<T> operator - (const MArray<T>& a, const T& s); \
   template MArray<T> operator * (const MArray<T>& a, const T& s); \

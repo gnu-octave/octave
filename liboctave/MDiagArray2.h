@@ -102,6 +102,8 @@ public:
 };
 
 #define INSTANTIATE_MDIAGARRAY_FRIENDS(T) \
+  template MDiagArray2<T>& operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b); \
+  template MDiagArray2<T>& operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b); \
   template MDiagArray2<T> operator * (const MDiagArray2<T>& a, const T& s); \
   template MDiagArray2<T> operator / (const MDiagArray2<T>& a, const T& s); \
   template MDiagArray2<T> operator * (const T& s, const MDiagArray2<T>& a); \

@@ -28,47 +28,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-class ostream;
-
+#include "base-lu.h"
 #include "dMatrix.h"
 #include "CMatrix.h"
 
 class
-ComplexLU
+ComplexLU : public base_lu <ComplexMatrix, Matrix>
 {
 public:
 
-  ComplexLU (void) : l (), u (), p () { }
+  ComplexLU (void) : base_lu <ComplexMatrix, Matrix> () { }
 
   ComplexLU (const ComplexMatrix& a);
 
-  ComplexLU (const ComplexLU& a) : l (a.l), u (a.u), p (a.p) { }
+  ComplexLU (const ComplexLU& a) : base_lu <ComplexMatrix, Matrix> (a) { }
 
   ComplexLU& operator = (const ComplexLU& a)
     {
       if (this != &a)
-	{
-	  l = a.l;
-	  u = a.u;
-	  p = a.p;
-	}
+	base_lu <ComplexMatrix, Matrix> :: operator = (a);
+
       return *this;
     }
 
   ~ComplexLU (void) { }
-
-  ComplexMatrix L (void) const { return l; }
-  ComplexMatrix U (void) const { return u; }
-
-  Matrix P (void) const { return p; }
-
-  friend ostream&  operator << (ostream& os, const ComplexLU& a);
-
-private:
-
-  ComplexMatrix l;
-  ComplexMatrix u;
-  Matrix p;
 };
 
 #endif

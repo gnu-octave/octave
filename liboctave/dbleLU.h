@@ -28,46 +28,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-class ostream;
-
+#include "base-lu.h"
 #include "dMatrix.h"
 
-class LU
+class
+LU : public base_lu <Matrix, Matrix>
 {
 public:
 
-  LU (void) : l (), u (), p () { }
+  LU (void) : base_lu <Matrix, Matrix> () { }
 
   LU (const Matrix& a);
 
-  LU (const LU& a) : l (a.l), u (a.u), p (a.p) { }
+  LU (const LU& a) : base_lu <Matrix, Matrix> (a) { }
 
   LU& operator = (const LU& a)
     {
       if (this != &a)
-	{
-	  l = a.l;
-	  u = a.u;
-	  p = a.p;
-	}
+	base_lu <Matrix, Matrix> :: operator = (a);
+
       return *this;
     }
 
   ~LU (void) { }
-
-  Matrix L (void) const { return l; }
-
-  Matrix U (void) const { return u; }
-
-  Matrix P (void) const { return p; }
-
-  friend ostream&  operator << (ostream& os, const LU& a);
-
-private:
-
-  Matrix l;
-  Matrix u;
-  Matrix p;
 };
 
 #endif

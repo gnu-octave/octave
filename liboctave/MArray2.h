@@ -91,6 +91,10 @@ public:
 };
 
 #define INSTANTIATE_MARRAY2_FRIENDS(T) \
+  template MArray2<T>& operator += (MArray2<T>& a, const T& s); \
+  template MArray2<T>& operator -= (MArray2<T>& a, const T& s); \
+  template MArray2<T>& operator += (MArray2<T>& a, const MArray2<T>& b); \
+  template MArray2<T>& operator -= (MArray2<T>& a, const MArray2<T>& b); \
   template MArray2<T> operator + (const MArray2<T>& a, const T& s); \
   template MArray2<T> operator - (const MArray2<T>& a, const T& s); \
   template MArray2<T> operator * (const MArray2<T>& a, const T& s); \

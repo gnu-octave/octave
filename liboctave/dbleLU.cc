@@ -34,6 +34,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 #include "mx-inlines.cc"
 
+// Instantiate the base LU class for the types we need.
+
+#include <base-lu.h>
+#include <base-lu.cc>
+
+template class base_lu <Matrix, Matrix>;
+
+// Define the constructor for this particular derivation.
+
 extern "C"
 {
   int F77_FCN (dgesv, DGESV) (const int&, const int&, double*,
@@ -54,11 +63,11 @@ LU::LU (const Matrix& a)
 
   int n = a_nr;
 
-  Array<int> ipvt (n);
+  ipvt.resize (n);
   int *pipvt = ipvt.fortran_vec ();
 
-  Matrix A_fact = a;
-  double *tmp_data = A_fact.fortran_vec ();
+  a_fact = a;
+  double *tmp_data = a_fact.fortran_vec ();
 
   int info = 0;
   double dummy = 0;
@@ -68,42 +77,7 @@ LU::LU (const Matrix& a)
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgesv");
   else
-    {
-      Array<int> pvt (n);
-
-      for (int i = 0; i < n; i++)
-	{
-	  ipvt.elem (i) -= 1;
-	  pvt.elem (i) = i;
-	}
-
-      for (int i = 0; i < n - 1; i++)
-	{
-	  int k = ipvt.elem (i);
-	  if (k != i)
-	    {
-	      int tmp = pvt.elem (k);
-	      pvt.elem (k) = pvt.elem (i);
-	      pvt.elem (i) = tmp;
-	    }
-	}
-
-      l.resize (n, n, 0.0);
-      u.resize (n, n, 0.0);
-      p.resize (n, n, 0.0);
-
-      for (int i = 0; i < n; i++)
-	{
-	  p.elem (i, pvt.elem (i)) = 1.0;
-
-	  l.elem (i, i) = 1.0;
-	  for (int j = 0; j < i; j++)
-	    l.elem (i, j) = A_fact.elem (i, j);
-
-	  for (int j = i; j < n; j++)
-	    u.elem (i, j) = A_fact.elem (i, j);
-	}
-    }
+    ipvt -= 1;
 }
 
 /*

@@ -87,7 +87,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
   bool \
   FS ## name ## _ ## cxx_abi (const octave_shlib& shl) \
   { \
-    check_version (OCTAVE_VERSION, #name); \
+    check_version (OCTAVE_API_VERSION, #name); \
     install_dld_function (F ## name, #name, shl, doc); \
     return error_state ? false : true; \
   }

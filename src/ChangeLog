@@ -1,5 +1,11 @@
 2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defun.cc (check_version): Compare version to OCTAVE_API_VERSION,
+	not OCTAVE_VERSION.  Mismatch is now fatal.
+	* defun-int.h (DEFINE_FUN_INSTALLER_FUN3): Pass
+	OCTAVE_API_VERSION instead of OCTAVE_VERSION to check_version.
+	* version.h (OCTAVE_API_VERSION): New macro.
+
 	* defaults.cc (Vdefault_exec_path): New static variable.
 	(set_default_default_exec_path): New function.
 	(install_defaults): Call it.

@@ -68,13 +68,13 @@ print_usage (const std::string& nm, bool just_usage)
 void
 check_version (const std::string& version, const std::string& fcn)
 {
-  if (version != OCTAVE_VERSION)
+  if (version != OCTAVE_API_VERSION)
     {
-      warning ("incompatible version %s found in function `%s'",
-	       version.c_str (), fcn.c_str ());
-      warning ("this can lead to incorrect results or other failures");
-      warning ("you can fix this problem by recompiling this .oct file");
-
+      error ("API version %s found in .oct file function `%s'\n"
+	     "       does not match the running Octave (API version %s)\n"
+	     "       this can lead to incorrect results or other failures\n"
+	     "       you can fix this problem by recompiling this .oct file",
+	     version.c_str (), fcn.c_str (), OCTAVE_API_VERSION);
     }
 }
 

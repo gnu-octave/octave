@@ -15,7 +15,7 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test_2 (@var{x}, @var{y}, @var{alt})
+## @deftypefn {Function File} {[@var{pval}, @var{ks}, @var{d}] =} kolmogorov_smirnov_test_2 (@var{x}, @var{y}, @var{alt})
 ## Perform a 2-sample Kolmogorov-Smirnov test of the null hypothesis
 ## that the samples @var{x} and @var{y} come from the same (continuous)
 ## distribution.  I.e., if F and G are the CDFs corresponding to the
@@ -34,13 +34,16 @@
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##
+## The third returned value, @var{d}, is the test statistic, the maximum
+## vertical distance between the two cumulative distribution functions.
+##
 ## If no output argument is given, the p-value is displayed.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Two-sample Kolmogorov-Smirnov test
 
-function [pval, ks] = kolmogorov_smirnov_test_2 (x, y, alt)
+function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
 
   if (nargin < 2 || nargin > 3)
     usage ("[pval, ks] = kolmogorov_smirnov_test_2 (x, y, tol)");
@@ -66,15 +69,27 @@ function [pval, ks] = kolmogorov_smirnov_test_2 (x, y, alt)
   [s, i] = sort ([x; y]);
   count (find (i <= n_x)) = 1 / n_x;
   count (find (i > n_x)) = - 1 / n_y;
+
+  z = cumsum(count);
+  if ( find(diff(s))) 
+    ## There are some ties, so keep only those changes.
+    warning ("cannot compute correct p-values with ties")
+    elems = [find(diff(s)); n_x + n_y];
+    z = z(elems);
+  endif
+  
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
-    ks   = sqrt (n) * max (abs (cumsum (count)));
+    d    = max (abs (z));
+    ks   = sqrt (n) * d;
     pval = 1 - kolmogorov_smirnov_cdf (ks);
   elseif (strcmp (alt, ">"))
-    ks   = sqrt (n) * max (cumsum (count));
-    pval = exp(- 2 * ks^2);
-  elseif (strcmp(alt, "<"))
-    ks   = - sqrt (n) * min (cumsum (count));
-    pval = exp(- 2 * ks^2);
+    d    = max (z);
+    ks   = sqrt (n) * d;
+    pval = exp (-2 * ks^2);
+  elseif (strcmp (alt, "<"))
+    d    = min (z);
+    ks   = -sqrt (n) * d;
+    pval = exp (-2 * ks^2);
   else
     error ("kolmogorov_smirnov_test_2: option %s not recognized", alt);
   endif

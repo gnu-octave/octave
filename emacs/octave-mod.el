@@ -119,7 +119,7 @@ All Octave abbrevs start with a grave accent (`).")
 
 (defvar octave-text-functions
   '("casesen" "cd" "chdir" "clear" "diary" "dir" "document" "echo"
-    "edit_history" "format" "gset" "gshow" "help" "history" "hold"
+    "edit_history" "format" "graw" "gset" "gshow" "help" "history" "hold"
     "load" "ls" "more" "run_history" "save" "set" "show" "type"
     "which" "who" "whos")
   "Text functions in Octave (these names are also reserved).")

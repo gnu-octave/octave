@@ -232,7 +232,7 @@ public:
 
   Octave_object eval (int print, int nargout, const Octave_object& args);
 
-  void print_code (ostream& os) { }
+  void print_code (ostream&) { }
 
 private:
   Octave_object values;
@@ -275,8 +275,8 @@ public:
   virtual int is_system_fcn_file (void) const
     { return 0; }
 
-  virtual int save (ostream& os, int mark_as_global = 0,
-		    int precision = 17)
+  virtual int save (ostream& /* os */, int /* mark_as_global */ = 0,
+		    int /* precision */ = 17)
     { panic_impossible (); return 0; }
 };
 

@@ -139,7 +139,7 @@ public:
   tree_constant (const Octave_map& m) : tree_fvc ()
     { rep = new tree_constant_rep (m); rep->count = 1; }
 
-  tree_constant (tree_constant::magic_colon t) : tree_fvc ()
+  tree_constant (tree_constant::magic_colon) : tree_fvc ()
     {
       tree_constant_rep::constant_type tmp;
       tmp = tree_constant_rep::magic_colon;
@@ -147,7 +147,7 @@ public:
       rep->count = 1;
     }
 
-  tree_constant (tree_constant::all_va_args t) : tree_fvc ()
+  tree_constant (tree_constant::all_va_args) : tree_fvc ()
     {
       tree_constant_rep::constant_type tmp;
       tmp = tree_constant_rep::all_va_args;
@@ -306,12 +306,12 @@ public:
   tree_constant lookup_map_element (SLList<char*>& list,
 				    int insert = 0, int silent = 0);
 
-  ColumnVector vector_value (int force_string_conversion = 0,
-			     int force_vector_conversion = 0) const 
+  ColumnVector vector_value (int /* force_string_conversion */ = 0,
+			     int /* force_vector_conversion */ = 0) const 
     { return rep->vector_value (); }
 
-  ComplexColumnVector complex_vector_value (int force_string_conv = 0,
-					    int force_vec_conv = 0) const
+  ComplexColumnVector complex_vector_value (int /* force_string_conv */ = 0,
+					    int /* force_vec_conv */ = 0) const
     { return rep->complex_vector_value (); }
 
 // Binary and unary operations.
@@ -363,7 +363,7 @@ public:
       return *this;
     }
 
-  Octave_object eval (int print, int nargout, const Octave_object& args)
+  Octave_object eval (int print, int /* nargout */, const Octave_object& args)
     {
       Octave_object retval;
 

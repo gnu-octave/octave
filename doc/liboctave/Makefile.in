@@ -20,7 +20,10 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-TEXINFO = liboctave.texi
+TEXINFO = array.texi bugs.texi conf.texi cp-idx.texi diffeq.texi \
+	factor.texi fn-idx.texi gpl.texi install.texi intro.texi \
+	liboctave.texi matvec.texi nleqn.texi ode.texi optim.texi \
+	preface.texi quad.texi range.texi
 
 FORMATTED = liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
 
@@ -57,10 +60,10 @@ conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
 	  fi; \
 	fi
 
-liboctave.info: $(LIB_TEXINFO) conf.texi
+liboctave.info: $(TEXINFO) conf.texi
 	-makeinfo -I$(srcdir) $(srcdir)/liboctave.texi
 
-liboctave.dvi: $(LIB_TEXINFO) conf.texi
+liboctave.dvi: $(TEXINFO) conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
 	  export TEXINPUTS ; \
 	  texi2dvi $(srcdir)/liboctave.texi

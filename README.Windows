@@ -121,16 +121,26 @@ functions (.oct files).
     g. close gnuplot and start the Octave installation.
 
 13. Get the Octave sources, either from a current snapshot
-    distribution or from CVS:
+    distribution or from CVS.
+
+    You should check the web page http://www.octave.org/download.html
+    or look for the file RECOMMENDED-IS-N.NN.NN in the ftp download
+    directory to see what version is currently recommended (N.NN.NN
+    will be an actual version number, like 2.1.50).  If more recent
+    versions may be available they should be considered experimental.
+
+    The CVS sources are only recommended for people who want be
+    involved in Octave's development process and who don't mind
+    running into the occasional show-stopping bug.
 
     Snapshot:
 
       a. Download a copy of the current version of Octave from
          ftp://ftp.octave.org.  You may use the command line ftp
          client in Cygwin or a web browser.  You are looking for the
-         most recent version in the pub/octave/bleeding-edge
+         most recent recommended version in the pub/octave/bleeding-edge
          directory.  At the time of this writing, it was
-         octave-2.1.46.tar.gz.  Save this file to your Cygwin home
+         octave-2.1.50.tar.gz.  Save this file to your Cygwin home
          directory.  This directory will usually be called something
          like c:\cygwin\home\jwe from Windows (the precise location
          depends on where you chose to install Cygwin).
@@ -144,15 +154,15 @@ functions (.oct files).
 
       b. Unpack the source files using the command:
 
-           tar zxf octave-2.1.46.tar.gz
+           tar zxf octave-2.1.50.tar.gz
 
          in the Cygwin shell.  This command will create a subdirectory
-         called octave-2.1.46 in your home directory.
+         called octave-2.1.50 in your home directory.
 
       c. Change your current working directory to the top-level Octave
          source directory:
 
-           cd octave-2.1.46
+           cd octave-2.1.50
 
          then continue with step 14 below.
 
@@ -241,4 +251,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Wed Apr 30 17:15:32 2003
+Sun Jan 11 12:19:47 2004

@@ -1,3 +1,20 @@
+Tue Apr 14 14:41:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (index): Allow x(:) even when do_fortran_indexing
+	is not set.
+	(index): Allow x = zeros (2, 0); x(1,:) to work.
+
+	* lo-specfun.cc (gammainc): Use dgamit to compute
+	(\int_0^x exp(-t) t^(a-1) dt)/gamma(a), not just
+	\int_0^x exp(-t) t^(a-1) dt.
+
+Wed Apr  8 22:50:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-C.cc, Array-b.cc, Array-ch.cc, Array-i.cc, Array-d.cc,
+	Array-s.cc: Change return types of all `assign' explicit
+	instantiations to be int, not void, to match the template decl in
+	Array.h.
+
 Mon Apr  6 00:27:06 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-specfun.cc (gammainc): Reorder args in call to xdgami.

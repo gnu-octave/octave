@@ -922,10 +922,15 @@ display the definition of each NAME that refers to a function")
 					   << "' has unknown type!\n";
 			    }
 			}
+
+		      defn.print_raw (output_buf, true);
+
+		      if (nargout == 0)
+			output_buf << "\n";
 		    }
 		}
 	      else
-		output_buf << "type: `" << argv[i] << "' has unknown type!\n";
+		error ("type: `%s' has unknown type!", argv[i].c_str ());
 	    }
 	  else
 	    {
@@ -951,7 +956,7 @@ display the definition of each NAME that refers to a function")
 			       << "' for reading!\n";
 		}
 	      else
-		output_buf << "type: `" << argv[i] << "' undefined\n";
+		error ("type: `%s' undefined", argv[i].c_str ());
 	    }
 	}
 

@@ -12,7 +12,13 @@ version=`cat VERSION 2> /dev/null`
 
 if test -z "$version"
 then
-  echo "install-octave: no version number!"
+  cat <<EOF 
+install-octave: no version number!
+
+Are you sure you have a binary distribution of Octave?  If you are
+trying to install Octave from its sources, please read and follow
+the directions given in the file INSTALL.OCTAVE.
+EOF
   exit 1
 fi
 
@@ -21,7 +27,13 @@ canonical_host_type=`cat ARCH 2> /dev/null`
 
 if test -z "$canonical_host_type"
 then
-  echo "install-octave: host archetecture not found!"
+  cat <<EOF 
+install-octave: host archetecture not found!
+
+Are you sure you have a binary distribution of Octave?  If you are
+trying to install Octave from its sources, please read and follow
+the directions given in the file INSTALL.OCTAVE.
+EOF
   exit 1
 fi
 
@@ -223,10 +235,6 @@ fi
 echo "installing octave-bug as $bindir/octave-bug"
 cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug
-
-echo "installing info as $archlibdir/info"
-cp info/info $archlibdir/info
-chmod 755 $archlibdir/info
 
 if test -f LIBRARIES; then
   echo "installing shared libraries in $octlibdir"

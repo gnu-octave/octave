@@ -33,22 +33,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template class Array<Complex>;
 
-template void assign (Array<Complex>&, const Array<Complex>&);
-template void assign (Array<Complex>&, const Array<double>&);
-template void assign (Array<Complex>&, const Array<int>&);
-template void assign (Array<Complex>&, const Array<short>&);
-template void assign (Array<Complex>&, const Array<char>&);
+template int assign (Array<Complex>&, const Array<Complex>&);
+template int assign (Array<Complex>&, const Array<double>&);
+template int assign (Array<Complex>&, const Array<int>&);
+template int assign (Array<Complex>&, const Array<short>&);
+template int assign (Array<Complex>&, const Array<char>&);
 
 #include "Array2.h"
 #include "Array2.cc"
 
 template class Array2<Complex>;
 
-template void assign (Array2<Complex>&, const Array2<Complex>&);
-template void assign (Array2<Complex>&, const Array2<double>&);
-template void assign (Array2<Complex>&, const Array2<int>&);
-template void assign (Array2<Complex>&, const Array2<short>&);
-template void assign (Array2<Complex>&, const Array2<char>&);
+template int assign (Array2<Complex>&, const Array2<Complex>&);
+template int assign (Array2<Complex>&, const Array2<double>&);
+template int assign (Array2<Complex>&, const Array2<int>&);
+template int assign (Array2<Complex>&, const Array2<short>&);
+template int assign (Array2<Complex>&, const Array2<char>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

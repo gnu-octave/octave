@@ -103,7 +103,7 @@ Array2<T>::index (idx_vector& idx) const
 	    retval = Array2<T> (tmp, 1, len);
 	}
     }
-  else if (liboctave_dfi_flag)
+  else if (liboctave_dfi_flag || idx.is_colon ())
     {
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
@@ -173,6 +173,8 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 	    retval.resize (0, 0);
 	  else if (idx_j.is_colon_equiv (nc, 1))
 	    retval.resize (0, nc);
+	  else if (idx_i.is_colon_equiv (nr, 1))
+	    retval.resize (0, m);
 	  else
 	    (*current_liboctave_error_handler) ("invalid row index = 0");
 	}
@@ -182,6 +184,8 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 	    retval.resize (0, 0);
 	  else if (idx_i.is_colon_equiv (nr, 1))
 	    retval.resize (nr, 0);
+	  else if (idx_j.is_colon_equiv (nc, 1))
+	    retval.resize (n, 0);
 	  else
 	    (*current_liboctave_error_handler) ("invalid column index = 0");
 	}

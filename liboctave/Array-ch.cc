@@ -31,14 +31,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template class Array<char>;
 
-template void assign (Array<char>&, const Array<char>&);
+template int assign (Array<char>&, const Array<char>&);
 
 #include "Array2.h"
 #include "Array2.cc"
 
 template class Array2<char>;
 
-template void assign (Array2<char>&, const Array2<char>&);
+template int assign (Array2<char>&, const Array2<char>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

@@ -1,3 +1,7 @@
+Tue Apr 14 14:01:22 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* slatec-fn/xdgamit.f (xdgamit): New file.
+
 Mon Apr  6 00:26:35 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* slatec-fn/xdgami.f (xdgami): Reorder args to match dgami.

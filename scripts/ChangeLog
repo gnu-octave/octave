@@ -1,3 +1,10 @@
+Fri Apr 10 10:46:21 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dump_prefs.m: Use string array for list of values.
+	Move functionality of dump_1_pref here, but use built-in function
+	type to extract value, and put it inside try/catch block.
+	* miscellaneous/dump_1_pref.m: Delete unused function.
+
 Wed Apr  8 13:17:58 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__pltopt1.m__: New file.

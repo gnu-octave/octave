@@ -1,3 +1,10 @@
+Tue Apr 14 15:33:20 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* install-octave.in: Improve error messages if version number or
+	host architecture can't be found.
+
+	* install-octave.in: Don't install info reader.
+
 Fri Mar 27 02:54:59 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_F2C_F77_COMPAT): Use a Fortran subroutine

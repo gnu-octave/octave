@@ -60,7 +60,7 @@ extern "C"
 
   int F77_FCN (xdgamma, XDGAMMA) (const double&, double&);
 
-  int F77_FCN (xdgami, XDGAMI) (const double&, const double&, double&);
+  int F77_FCN (xdgamit, XDGAMIT) (const double&, const double&, double&);
 
   int F77_FCN (dlgams, DLGAMS) (const double&, double&, double&);
 }
@@ -472,11 +472,20 @@ betainc (const Matrix& x, const Matrix& a, const Matrix& b)
   return retval;
 }
 
+// XXX FIXME XXX -- there is still room for improvement here...
+
 double
 gammainc (double x, double a)
 {
   double retval;
-  F77_XFCN (xdgami, XDGAMI, (a, x, retval));
+
+  F77_XFCN (xdgamit, XDGAMIT, (a, x, retval));
+
+  if (x == 0.0)
+    retval = 0.0;
+  else if (x > 0.0)
+    retval = exp (a * log (x) + log (retval));
+
   return retval;
 }
 

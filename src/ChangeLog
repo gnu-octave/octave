@@ -1,4 +1,11 @@
+Fri Apr 10 11:01:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (type): Also print values of variables.
+
 Wed Apr  8 01:00:58 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (set_format): Set scale to 1.0 if all elements are
+	int or inf or nan.
 
 	* parse.y (Vwarn_future_time_stamp): New variable.
 	(symbols_of_parse): Add DEFVAR for it.

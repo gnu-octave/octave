@@ -1,6 +1,9 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * For matrices, x(:) now works no matter what the value of
+    do_fortran_indexing is.
+
   * Octave's expression parser is more general and consistent.  It is
     now possible to access structure elements and index arbitrary
     values.  For example, expressions like

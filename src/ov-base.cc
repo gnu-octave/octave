@@ -264,9 +264,10 @@ octave_base_value::print_info (std::ostream& os,
       { \
 	if (require_int && D_NINT (d) != d) \
 	  error ("conversion of %g to " #T " value failed", d); \
-	else if (d < MIN_LIMIT || d > MAX_LIMIT) \
-	  error ("conversion of %g to short int out of range (%d, %d)", \
-		 d, MIN_LIMIT, MAX_LIMIT); \
+	else if (d < MIN_LIMIT) \
+	  retval = MIN_LIMIT; \
+	else if (d > MAX_LIMIT) \
+	  retval = MAX_LIMIT; \
 	else \
 	  retval = static_cast<T> (fix (d)); \
       } \

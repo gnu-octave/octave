@@ -1,3 +1,7 @@
+2004-10-21  John W. Eaton  <jwe@octave.org>
+
+	* ov-base.cc (INT_CONV_METHOD): Apply saturation semantics here too.
+
 2004-10-19  John W. Eaton  <jwe@octave.org>
 
 	* ov-range.h (octave_range::write): New function.

@@ -66,6 +66,27 @@ string_vector::string_vector (const char * const *s, int n)
     elem (i) = s[i];
 }
 
+string_vector&
+string_vector::uniq (void)
+{
+  int len = length ();
+
+  if (len > 0)
+    {
+      int k = 0;
+
+      for (int i = 1; i < len; i++)
+	if (elem(i) != elem(k))
+	  if (++k != i)
+	    elem(k) = elem(i);
+
+      if (len != ++k)
+	resize (k);
+    }
+
+  return *this;
+}
+
 char **
 string_vector::c_str_vec (void) const
 {

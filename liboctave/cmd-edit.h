@@ -39,6 +39,8 @@ public:
 
   typedef int (*fcn) (...);
 
+  typedef string (*completion_fcn) (const string&, int);
+
   virtual ~command_editor (void) { }
 
   static void set_name (const string& n);
@@ -69,7 +71,9 @@ public:
 
   static void set_completion_append_character (char c);
 
-  static void set_attempted_completion_function (fcn f);
+  static void set_completion_function (completion_fcn f);
+
+  static completion_fcn get_completion_function (void);
 
   static void insert_text (const string& text);
 
@@ -136,7 +140,9 @@ protected:
 
   virtual void do_set_completion_append_character (char) { }
 
-  virtual void do_set_attempted_completion_function (fcn) { }
+  virtual void do_set_completion_function (completion_fcn) { }
+
+  virtual completion_fcn do_get_completion_function (void) const { return 0; }
 
   virtual void do_insert_text (const string&) = 0;
 

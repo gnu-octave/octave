@@ -68,6 +68,8 @@ public:
 
   typedef command_editor::fcn fcn;
 
+  typedef command_editor::completion_fcn completion_fcn;
+
   gnu_readline (void);
 
   ~gnu_readline (void) { }
@@ -100,7 +102,9 @@ public:
 
   void do_set_completion_append_character (char c);
 
-  void do_set_attempted_completion_function (fcn f);
+  void do_set_completion_function (completion_fcn f);
+
+  completion_fcn do_get_completion_function (void) const;
 
   void do_insert_text (const string& text);
 
@@ -118,12 +122,15 @@ private:
 
   fcn previous_startup_hook;
 
-  fcn attempted_completion_function;
+  completion_fcn completion_function;
+
+  static char *command_generator (const char *text, int state);
+
+  static char **command_completer (char *text, int start, int end);
 };
 
 gnu_readline::gnu_readline ()
-  : command_editor (), previous_startup_hook (0),
-    attempted_completion_function (0)
+  : command_editor (), previous_startup_hook (0), completion_function (0)
 {
   rl_initialize ();
 
@@ -263,9 +270,21 @@ gnu_readline::do_set_completion_append_character (char c)
 }
 
 void
-gnu_readline::do_set_attempted_completion_function (fcn f)
+gnu_readline::do_set_completion_function (completion_fcn f)
 {
-  attempted_completion_function = f;
+  completion_function = f;
+
+  typedef char** (*foo) (...);
+
+  rl_attempted_completion_function
+    = completion_function
+    ? static_cast<foo> (gnu_readline::command_completer) : 0;
+}
+
+gnu_readline::completion_fcn
+gnu_readline::do_get_completion_function (void) const
+{
+  return completion_function;
 }
 
 void
@@ -326,6 +345,35 @@ gnu_readline::operate_and_get_next (int /* count */, int /* c */)
     command_history::set_mark (x_where + 1);
 
   command_editor::set_startup_hook (command_history::goto_mark);
+}
+
+char *
+gnu_readline::command_generator (const char *text, int state)
+{
+  char *retval = 0;
+
+  completion_fcn f = command_editor::get_completion_function ();
+
+  string tmp = f (text, state);
+
+  size_t len = tmp.length ();
+
+  if (len > 0)
+    {
+      retval = static_cast<char *> (malloc (len+1));
+
+      strcpy (retval, tmp.c_str ());
+    }
+
+  return retval;
+}
+
+char **
+gnu_readline::command_completer (char *text, int /* start */, int /* end */)
+{
+  char **matches = 0;
+  matches = completion_matches (text, gnu_readline::command_generator);
+  return matches;
 }
 
 #endif
@@ -416,7 +464,7 @@ command_editor::instance_ok (void)
 
   if (! instance)
     {
-      (*current_liboctave_error_handler)
+      current_liboctave_error_handler
 	("unable to create command history object!");
 
       retval = false;
@@ -548,10 +596,17 @@ command_editor::set_completion_append_character (char c)
 }
 
 void
-command_editor::set_attempted_completion_function (fcn f)
+command_editor::set_completion_function (completion_fcn f)
 {
   if (instance_ok ())
-    instance->do_set_attempted_completion_function (f);
+    instance->do_set_completion_function (f);
+}
+
+command_editor::completion_fcn
+command_editor::get_completion_function (void)
+{
+  return (instance_ok ())
+    ? instance->do_get_completion_function () : 0;
 }
 
 void
@@ -834,13 +889,13 @@ command_editor::read_octal (const string& s)
 void
 command_editor::error (int err_num)
 {
-  (*current_liboctave_error_handler) ("%s", strerror (err_num));
+  current_liboctave_error_handler ("%s", strerror (err_num));
 }
 
 void
 command_editor::error (const string& s)
 {
-  (*current_liboctave_error_handler) ("%s", s.c_str ());
+  current_liboctave_error_handler ("%s", s.c_str ());
 }
 
 /*

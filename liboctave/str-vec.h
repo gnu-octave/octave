@@ -58,42 +58,48 @@ public:
   string_vector (const char * const *s, int n);
 
   string_vector& operator = (const string_vector& s)
-    {
-      if (this != &s)
-	Array<string>::operator = (s);
+  {
+    if (this != &s)
+      Array<string>::operator = (s);
 
-      return *this;
-    }
+    return *this;
+  }
 
   ~string_vector (void) { }
 
   int empty (void) const { return length () == 0; }
 
   int max_length (void) const
-    {
-      int n = length ();
-      int longest = 0;
+  {
+    int n = length ();
+    int longest = 0;
 
-      for (int i = 0; i < n; i++)
-	{
-	  int tmp = elem(i).length ();
+    for (int i = 0; i < n; i++)
+      {
+	int tmp = elem(i).length ();
 
-	  if (tmp > longest)
-	    longest = tmp;
-	}
+	if (tmp > longest)
+	  longest = tmp;
+      }
 
-      return longest;
-    }
+    return longest;
+  }
 
   string& operator[] (int i) { return Array<string>::elem (i); }
 
   string operator[] (int i) const { return Array<string>::elem (i); }
 
-  string_vector& qsort (void)
-    {
-      Array<string>::qsort (str_vec_compare);
-      return *this;
-    }
+  string_vector& qsort (bool make_unique = false)
+  {
+    Array<string>::qsort (str_vec_compare);
+
+    if (make_unique)
+      uniq ();
+
+    return *this;
+  }
+
+  string_vector& uniq (void);
 
   char **c_str_vec (void) const;
 

@@ -91,6 +91,8 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 
 EXTRAS := mx-inlines.cc
 
+INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
+
 DISTFILES := Makefile.in ChangeLog safe-xstat.cin safe-xstat.hin \
 	$(SOURCES) $(INCLUDES) $(EXTRAS)
 
@@ -198,7 +200,7 @@ install-lib:
 
 install-inc:
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
-	for f in $(INCLUDES) $(TEMPLATE_SRC) ; do \
+	for f in $(INCLUDES_FOR_INSTALL) ; do \
 	  rm -f $(octincludedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
 	done

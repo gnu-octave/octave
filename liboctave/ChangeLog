@@ -1,4 +1,15 @@
+Wed May  7 21:14:06 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-syscalls.h, oct-syscalls.cc: New files.
+
+	* cmd-edit.h, cmd-edit.cc: Handle completion function.
+
+	* str-vec.h, str-vec.cc (string_vector::uniq): New function.
+
 Tue May  6 00:52:02 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (INCLUDES_FOR_INSTALL): New variable.
+	(install-inc): Use it.
 
 	* file-ops.h, file-ops.cc (tempnam): Add DIR and PREFIX args.
 	Handle errors and missing functions consistently.

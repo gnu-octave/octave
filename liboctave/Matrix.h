@@ -139,6 +139,21 @@ extern "C"
 			const double*, int*, double*, const int*,
 			int*);
 
+//
+// fortran functions for generalized eigenvalue problems
+//
+  int F77_FCN (reduce) (const int*, const int*, double*,
+	   	        const int*, double*,
+			int*, int*, double*, double*);
+
+  int F77_FCN (scaleg) (const int*, const int*, double*,
+	   	        const int*, double*,
+			const int*, const int*, double*, double*, double*);
+
+  int F77_FCN (gradeq) (const int*, const int*, double*,
+	   	        const int*, double*,
+			int*, int*, double*, double*);
+
 /*
  * f2c translates complex*16 as
  *
@@ -247,6 +262,9 @@ class ComplexMatrix;
 class ComplexColumnVector;
 class ComplexRowVector;
 class ComplexDiagMatrix;
+class AEPBALANCE;
+class ComplexAEPBALANCE;
+class GEPBALANCE;
 class DET;
 class ComplexDET;
 class EIG;
@@ -271,7 +289,9 @@ friend class RowVector;
 friend class DiagMatrix;
 friend class ComplexMatrix;
 friend class ComplexDiagMatrix;
+friend class AEPBALANCE;
 friend class EIG;
+friend class GEPBALANCE;
 friend class HESS;
 friend class SCHUR;
 friend class SVD;
@@ -1079,6 +1099,7 @@ friend class Matrix;
 friend class DiagMatrix;
 friend class ComplexRowVector;
 friend class ComplexDiagMatrix;
+friend class ComplexAEPBALANCE;
 friend class EIG;
 friend class ComplexHESS;
 friend class ComplexSVD;
@@ -1992,6 +2013,109 @@ inline Complex ComplexDiagMatrix::operator () (int r, int c) const
   { return checkelem (r, c); }
 
 /*
+ * Result of a AEP Balance operation
+ */
+
+class AEPBALANCE
+{
+friend class Matrix;
+
+public:
+  AEPBALANCE (void) {}
+
+  AEPBALANCE (const Matrix& a, const char *balance_job);
+
+  AEPBALANCE (const AEPBALANCE& a);
+
+  AEPBALANCE& operator = (const AEPBALANCE& a);
+  Matrix balanced_matrix (void) const;
+  Matrix balancing_matrix (void) const;
+  friend ostream& operator << (ostream& os, const AEPBALANCE& a);
+
+private:
+  int init (const Matrix& a, const char * balance_job);
+
+  Matrix balanced_mat;
+  Matrix balancing_mat;
+};
+
+inline AEPBALANCE::AEPBALANCE (const Matrix& a,const char * balance_job) 
+{
+  init (a,balance_job); 
+}
+
+inline AEPBALANCE::AEPBALANCE (const AEPBALANCE& a)
+{
+  balanced_mat = a.balanced_mat;
+  balancing_mat = a.balancing_mat;
+}
+
+inline AEPBALANCE&
+AEPBALANCE::operator = (const AEPBALANCE& a)
+{
+  balanced_mat = a.balanced_mat;
+  balancing_mat = a.balancing_mat;
+
+  return *this;
+}
+inline Matrix AEPBALANCE::balanced_matrix (void) const
+  { return balanced_mat; }
+
+inline Matrix AEPBALANCE::balancing_matrix (void) const
+  { return balancing_mat; }
+
+/*
+ * Result of a Complex balancing operation
+ */
+
+class ComplexAEPBALANCE
+{
+friend class ComplexMatrix;
+
+public:
+  ComplexAEPBALANCE (void) {}
+  ComplexAEPBALANCE (const ComplexMatrix& a, const char *balance_job);
+  ComplexAEPBALANCE (const ComplexAEPBALANCE& a);
+  ComplexAEPBALANCE& operator = (const ComplexAEPBALANCE& a);
+  ComplexMatrix balanced_matrix (void) const;
+  ComplexMatrix balancing_matrix (void) const;
+
+  friend ostream& operator << (ostream& os, const ComplexAEPBALANCE& a);
+
+private:
+  int init (const ComplexMatrix& a, const char * balance_job);
+
+  ComplexMatrix balanced_mat;
+  ComplexMatrix balancing_mat;
+};
+
+inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a, const char * balance_job) 
+{
+  init(a,balance_job); 
+}
+
+inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
+{
+  balanced_mat = a.balanced_mat;
+  balancing_mat = a.balancing_mat;
+}
+
+inline ComplexAEPBALANCE&
+ComplexAEPBALANCE::operator = (const ComplexAEPBALANCE& a)
+{
+  balanced_mat = a.balanced_mat;
+  balancing_mat = a.balancing_mat;
+
+  return *this;
+}
+
+inline ComplexMatrix ComplexAEPBALANCE::balanced_matrix (void) const
+  { return balanced_mat; }
+
+inline ComplexMatrix ComplexAEPBALANCE::balancing_matrix (void) const
+  { return balancing_mat; }
+
+/*
  * Result of a Determinant calculation.
  */
 
@@ -2083,6 +2207,76 @@ inline Complex ComplexDET::value (void) const
 
 inline ComplexDET::ComplexDET (const Complex *d)
   { det[0] = d[0]; det[1] = d[1]; }
+
+/*
+ * Result of a GEP Balance operation
+ * Note: currenlty only do balancing on real data.  Complex balancing
+ * done on magnitudes of complex data.
+ */
+
+class GEPBALANCE
+{
+friend class Matrix;
+
+public:
+  GEPBALANCE (void) {}
+
+  GEPBALANCE (const Matrix& a, const Matrix &, const char *balance_job);
+
+  GEPBALANCE (const GEPBALANCE& a);
+
+  GEPBALANCE& operator = (const GEPBALANCE& a);
+  Matrix balanced_a_matrix (void) const;
+  Matrix balanced_b_matrix (void) const;
+  Matrix left_balancing_matrix (void) const;
+  Matrix right_balancing_matrix (void) const;
+  friend ostream& operator << (ostream& os, const GEPBALANCE& a);
+
+private:
+  int init (const Matrix& a, const Matrix& b, const char * balance_job);
+
+  Matrix balanced_a_mat;
+  Matrix balanced_b_mat;
+  Matrix left_balancing_mat;
+  Matrix right_balancing_mat;
+};
+
+inline GEPBALANCE::GEPBALANCE (const Matrix& a, const Matrix& b, 
+  const char * balance_job) 
+{
+  init (a,b,balance_job); 
+}
+
+inline GEPBALANCE::GEPBALANCE (const GEPBALANCE& a)
+{
+  balanced_a_mat = a.balanced_a_mat;
+  balanced_b_mat = a.balanced_b_mat;
+  left_balancing_mat = a.left_balancing_mat;
+  right_balancing_mat = a.right_balancing_mat;
+}
+
+inline GEPBALANCE&
+GEPBALANCE::operator = (const GEPBALANCE& a)
+{
+  balanced_a_mat = a.balanced_a_mat;
+  balanced_b_mat = a.balanced_b_mat;
+  left_balancing_mat = a.left_balancing_mat;
+  right_balancing_mat = a.right_balancing_mat;
+
+  return *this;
+}
+
+inline Matrix GEPBALANCE::balanced_a_matrix (void) const 
+  { return balanced_a_mat; }
+
+inline Matrix GEPBALANCE::balanced_b_matrix (void) const 
+  { return balanced_b_mat; }
+
+inline Matrix GEPBALANCE::left_balancing_matrix (void) const 
+  { return left_balancing_mat; }
+
+inline Matrix GEPBALANCE::right_balancing_matrix (void) const 
+  { return right_balancing_mat; }
 
 /*
  * Result of a Hessenbug Decomposition

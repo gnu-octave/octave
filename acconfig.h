@@ -6,9 +6,6 @@
    Leave the following blank line there!!  Autoheader needs it.  */
 
 
-/* Define if your math.h declares struct exception for matherr() */
-#undef EXCEPTION_IN_MATH
-
 /* Define if your Fortran compiler appends an underscore to external
    names. */ 
 #undef F77_APPEND_UNDERSCORE
@@ -20,29 +17,8 @@
 /* Define if you don't have FSQP. */
 #undef FSQP_MISSING
 
-/* Define if your system has a single-arg prototype for gettimeofday. */
-#undef GETTIMEOFDAY_NO_TZ
-
-/* Define if you have finite.  */
-#undef HAVE_FINITE
-
-/* Define if you have isinf.  */
-#undef HAVE_ISINF
-
-/* Define if you have isnan.  */
-#undef HAVE_ISNAN
-
-/* Define if you have sgtty.h. */
-#undef HAVE_SGTTY_H
-
-/* Define if your system has a sys_siglist variable. */
-#undef HAVE_SYS_SIGLIST
-
-/* Define if you have termios.h. */
-#undef HAVE_TERMIOS_H
-
-/* Define if you have termio.h. */
-#undef HAVE_TERMIO_H
+/* Define if your gnuplot has mutliplot. */
+#undef GNUPLOT_HAS_MULTIPLOT
 
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING

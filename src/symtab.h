@@ -45,6 +45,15 @@ class string_vector;
 class symbol_record;
 class symbol_table;
 
+struct
+whos_parameter
+{
+  char command, modifier;
+  int parameter_length, first_parameter_length, dimensions, balance;
+  std::string text;
+  std::string line;
+};
+
 // Individual records in a symbol table.
 
 class
@@ -145,6 +154,18 @@ private:
 
     bool is_eternal (void) const
       { return eternal; }
+
+    bool is_matrix_type (void) const 
+      { return definition.is_matrix_type (); }
+
+    size_t byte_size (void) const
+      { return definition.byte_size (); };
+
+    int numel (void) const
+      { return definition.numel (); };
+
+    dim_vector dims (void) const 
+      { return definition.dims (); }
 
     int rows (void) const { return definition.rows (); }
     int columns (void) const { return definition.columns (); }
@@ -325,6 +346,23 @@ public:
   bool is_static (void) const { return tagged_static; }
   void unmark_static (void) { tagged_static = false; }
 
+  bool is_matrix_type (void) const 
+    { return definition->is_matrix_type (); }
+
+  size_t byte_size (void) const
+    { return definition->byte_size (); };
+
+  int numel (void) const
+    { return definition->numel (); };
+
+  dim_vector dims (void) const { return definition->dims (); }
+
+  int dimensions_string_req_first_space (int print_dims) const;
+
+  int dimensions_string_req_total_space (int print_dims) const;
+
+  std::string make_dimensions_string (int print_dims) const;
+
   int rows (void) const { return definition->rows (); }
   int columns (void) const { return definition->columns (); }
 
@@ -351,7 +389,8 @@ public:
 
   void pop_context (void);
 
-  void print_symbol_info_line (std::ostream& os) const;
+  void print_symbol_info_line (std::ostream& os,
+			       std::list<whos_parameter>& params) const;
 
   void print_info (std::ostream& os,
 		   const std::string& prefix = std::string ()) const;
@@ -454,6 +493,11 @@ public:
   int size (void) const;
 
   Array<symbol_record *>
+  subsymbol_list (const string_vector& pats = string_vector (),
+		  unsigned int type = SYMTAB_ALL_TYPES,
+		  unsigned int scope = SYMTAB_ALL_SCOPES) const;
+
+  Array<symbol_record *>
   symbol_list (const string_vector& pats = string_vector (),
 	       unsigned int type = SYMTAB_ALL_TYPES,
 	       unsigned int scope = SYMTAB_ALL_SCOPES) const;
@@ -511,6 +555,13 @@ private:
 
   static unsigned long int symtab_count;
 
+  void
+  print_descriptor (std::ostream& os, 
+		    std::list<whos_parameter> params) const;
+
+  std::list<whos_parameter>
+  parse_whos_line_format (Array<symbol_record *>& symbols) const;
+
   unsigned int hash (const std::string& s);
 
   // No copying!
@@ -519,6 +570,9 @@ private:
 
   symbol_table& operator = (const symbol_table&);
 };
+
+// Defines layout for the whos/who -long command.
+extern std::string Vwhos_line_format;
 
 #endif
 

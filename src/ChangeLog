@@ -1,3 +1,27 @@
+2004-07-23  Oyvind Kristiansen  <oyvinkri@stud.ntnu.no>
+
+	* symtab.cc (symbol_record::subsymbols_list): New method.
+	(symbol_record::maybe_list): Call to subsymbols_list and merge
+	result with the original list of symbols.
+
+	* symtab.cc (symbol_record::make_dimensions_string): New method.
+	(symbol_record::print_symbol_info_line): Print N-d info.  Output
+	for long format now under control of format string.
+	(symbol_table::maybe_list): Headers to whos listing updated.
+	Also print footer info.
+	(symbol_table::print_descriptor): Method printing the 
+	header of whos listings.
+	(symbol_table::parse_whos_line_format): New method.
+	(whos_line_format, Vwhos_line_format): New built-in variables.
+	(symbols_of_symtab): DEFVAR them.
+	(symbol_record::nelem, symbol_record::symbol_def::nelem,
+	symbol_record::byte_size, symbol_record::symbol_def::byte_size):
+	New methods.
+	(symbol_record::dimensions_string_req_first_space): New	method.
+	(symbol_record::dimensions_string_req_total_space): New	method.
+	* symtab.h (whos_parameter): New struct.  Container for one
+	parameter in whos_line_format.
+
 2004-07-22  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* DLD-FUNCTIONS/dassl.cc (Fdassl): Fix doc string.

@@ -203,6 +203,10 @@ the value of the persistent variable @code{pvar} is 2.
 
 @DOCSTRING(who)
 
+@DOCSTRING(whos)
+
+@DOCSTRING(whos_line_format)
+
 @DOCSTRING(exist)
 
 @DOCSTRING(document)

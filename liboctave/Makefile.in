@@ -92,18 +92,18 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f *.a *.o
+	rm -f *.a *.o *.d
 .PHONY: clean
 
 mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile  *.a $(TMPSRC) $(TMPINC) *.d
+	rm -f Makefile
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS *.d
+	rm -f tags TAGS
 .PHONY: maintainer-clean
 
 local-dist:

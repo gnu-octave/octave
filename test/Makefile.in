@@ -57,13 +57,14 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
+	rm -f  octave.log octave.sum
 .PHONY: clean
 
 mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave.log octave.sum
+	rm -f Makefile
 .PHONY: distclean
 
 maintainer-clean: distclean

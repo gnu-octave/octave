@@ -119,7 +119,9 @@ clean-tar:
 	echo octave-$(version) > .fname
 	tar xf `cat .fname`.tar
 	find `cat .fname` \( \( -name RCS -a -type d \) \
-	  -o -name '*~' -o -name '#*#' \) -print | xargs rm -rf
+	  -o -name '*~' -o -name '#*#' -o -name config.log \
+	  -o -name config.status -o -name Makefile \
+	  -o -name c-auto.h \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
 	rm -rf `cat .fname`/test/octave.test/npsol
 	rm -rf `cat .fname`/test/octave.test/qpsol

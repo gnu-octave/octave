@@ -174,7 +174,8 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o builtins.cc
+	rm -f *.a *.o builtins.cc safe-stat.h safe-lstat.h \
+	defaults.h *.d *.def
 .PHONY: clean
 
 mostlyclean:
@@ -182,12 +183,12 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave .fname *.d *.def safe-stat.h safe-lstat.h
+	rm -f Makefile octave .fname
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c \
-	lex.cc parse.cc defaults.h
+	lex.cc parse.cc
 .PHONY: maintainer-clean
 
 local-dist: parse.cc lex.cc

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "mappers.h"
 #include "pager.h"
+#include "pt-fvc.h"
 #include "oct-obj.h"
 #include "utils.h"
 #include "variables.h"

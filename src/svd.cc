@@ -74,7 +74,7 @@ X may not contain any Inf or NaN values.")
 
       if (! error_state)
 	{
-	  if (any_element_is_inf_or_nan (tmp))
+	  if (tmp.any_element_is_inf_or_nan ())
 	    {
 	      error ("svd: cannot take SVD of matrix containing Inf or\
  NaN values"); 
@@ -103,7 +103,7 @@ X may not contain any Inf or NaN values.")
 
       if (! error_state)
 	{
-	  if (any_element_is_inf_or_nan (ctmp))
+	  if (ctmp.any_element_is_inf_or_nan ())
 	    {
 	      error ("svd: cannot take SVD of matrix containing Inf or\
  NaN values"); 

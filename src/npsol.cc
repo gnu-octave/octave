@@ -522,8 +522,8 @@ typedef int (NPSOL_options::*i_get_opt_mf) (void);
 
 struct NPSOL_OPTIONS
 {
-  char *keyword;
-  char *kw_tok[MAX_TOKENS + 1];
+  const char *keyword;
+  const char *kw_tok[MAX_TOKENS + 1];
   int min_len[MAX_TOKENS + 1];
   int min_toks_to_match;
   d_set_opt_mf d_set_fcn;
@@ -674,7 +674,7 @@ print_npsol_option_list (void)
 
   NPSOL_OPTIONS *list = npsol_option_table;
 
-  char *keyword;
+  const char *keyword;
   while ((keyword = list->keyword) != 0)
     {
       output_buf.form ("  %-40s ", keyword);

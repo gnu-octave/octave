@@ -102,7 +102,7 @@ DAE::DAE (int size)
     info [i] = 0;
 }
 
-DAE::DAE (const Vector& state, double time, DAEFunc& f)
+DAE::DAE (const ColumnVector& state, double time, DAEFunc& f)
 {
   n = state.capacity ();
   t = time;
@@ -129,7 +129,8 @@ DAE::DAE (const Vector& state, double time, DAEFunc& f)
     info [i] = 0;
 }
 
-DAE::DAE (const Vector& state, const Vector& deriv, double time, DAEFunc& f)
+DAE::DAE (const ColumnVector& state, const ColumnVector& deriv,
+	  double time, DAEFunc& f)
 {
   if (deriv.capacity () != state.capacity ())
     {
@@ -169,14 +170,14 @@ DAE::~DAE (void)
   delete iwork;
 }
 
-Vector
+ColumnVector
 DAE::deriv (void)
 {
   return xdot;
 }
 
 void
-DAE::initialize (const Vector& state, double time)
+DAE::initialize (const ColumnVector& state, double time)
 {
   integration_error = 0;
   restart = 1;
@@ -187,7 +188,8 @@ DAE::initialize (const Vector& state, double time)
 }
 
 void
-DAE::initialize (const Vector& state, const Vector& deriv, double time)
+DAE::initialize (const ColumnVector& state,
+		 const ColumnVector& deriv, double time)
 {
   integration_error = 0;
   restart = 1;
@@ -200,9 +202,9 @@ int
 ddassl_f (const double& time, double *state, double *deriv,
 	  double *delta, int& ires, double *, int *)
 {
-  Vector tmp_deriv (nn);
-  Vector tmp_state (nn);
-  Vector tmp_delta (nn);
+  ColumnVector tmp_deriv (nn);
+  ColumnVector tmp_state (nn);
+  ColumnVector tmp_delta (nn);
 
   for (int i = 0; i < nn; i++)
     {
@@ -227,8 +229,8 @@ int
 ddassl_j (const double& time, double *, double *, double *pd, const
 	  double& cj, double *, int *)
 {
-  Vector tmp_state (nn);
-  Vector tmp_deriv (nn);
+  ColumnVector tmp_state (nn);
+  ColumnVector tmp_deriv (nn);
 
   // XXX FIXME XXX
 
@@ -252,7 +254,7 @@ ddassl_j (const double& time, double *, double *, double *pd, const
   return 0;
 }
 
-Vector
+ColumnVector
 DAE::integrate (double tout)
 {
   integration_error = 0;
@@ -361,7 +363,7 @@ DAE::integrate (double tout)
 }
 
 Matrix
-DAE::integrate (const Vector& tout, Matrix& xdot_out)
+DAE::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
   int n_out = tout.capacity ();
@@ -396,7 +398,8 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out)
 }
 
 Matrix
-DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit) 
+DAE::integrate (const ColumnVector& tout, Matrix& xdot_out,
+		const ColumnVector& tcrit) 
 {
   Matrix retval;
   int n_out = tout.capacity ();

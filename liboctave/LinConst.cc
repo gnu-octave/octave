@@ -42,8 +42,8 @@ LinConst::error (const char* msg)
   (*current_liboctave_error_handler) ("fatal LinConst error: %s", msg);
 }
 
-LinConst::LinConst (const Matrix& a_eq, const Vector& b_eq,
-		    const Matrix& a_ineq, const Vector& b_ineq)
+LinConst::LinConst (const Matrix& a_eq, const ColumnVector& b_eq,
+		    const Matrix& a_ineq, const ColumnVector& b_ineq)
 {
   // Need some checks here.
 
@@ -123,10 +123,10 @@ LinConst::ineq_constraint_matrix (void) const
   return retval;
 }
 
-Vector
+ColumnVector
 LinConst::eq_constraint_vector (void) const
 {
-  Vector retval (nb);
+  ColumnVector retval (nb);
   int count = 0;
   for (int i = 0; i < nb; i++)
     {
@@ -140,10 +140,10 @@ LinConst::eq_constraint_vector (void) const
   return retval;
 }
 
-Vector
+ColumnVector
 LinConst::ineq_constraint_vector (void) const
 {
-  Vector retval (2*nb);
+  ColumnVector retval (2*nb);
   int count = 0;
   for (int i = 0; i < nb; i++)
     {

@@ -287,6 +287,7 @@ private:
 			  | symbol_def::USER_VARIABLE \
 			  | symbol_def::BUILTIN_FUNCTION \
 			  | symbol_def::TEXT_FUNCTION \
+			  | symbol_def::MAPPER_FUNCTION \
 			  | symbol_def::BUILTIN_VARIABLE)
 
 class

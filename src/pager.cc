@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <fstream.h>
 
+#include "oct-term.h"
+
 #include "procstream.h"
 
 #include "defaults.h"
@@ -60,52 +62,80 @@ static sig_handler *saved_sigint_handler = 0;
 static int really_flush_to_pager = 0;
 
 static void
-do_sync (const char *msg)
+do_sync (const char *msg, bool bypass_pager)
 {
   if (! error_state)
     {
       if (msg && *msg)
 	{
-	  if (! external_pager)
+	  if (bypass_pager)
+	    cout << msg;
+	  else
 	    {
-	      string pgr = user_pref.pager_binary;
-
-	      if (! pgr.empty ())
+	      if (! external_pager)
 		{
-		  saved_sigint_handler
-		    = octave_set_signal_handler (SIGINT, SIG_IGN);
+		  string pgr = user_pref.pager_binary;
 
-		  external_pager = new oprocstream (pgr.c_str ());
-
-		  if (external_pager)
-		    octave_pager_pid = external_pager->pid ();
-		}
-	    }
-
-	  if (external_pager)
-	    {
-	      *external_pager << msg;
-
-	      if (external_pager->fail ())
-		{
-		  octave_pager_pid = -1;
-
-		  delete external_pager;
-		  external_pager = 0;
-
-		  if (saved_sigint_handler)
+		  if (! pgr.empty ())
 		    {
-		      octave_set_signal_handler (SIGINT, saved_sigint_handler);
-		      saved_sigint_handler = 0;
+		      saved_sigint_handler
+			= octave_set_signal_handler (SIGINT, SIG_IGN);
+
+		      external_pager = new oprocstream (pgr.c_str ());
+
+		      if (external_pager)
+			octave_pager_pid = external_pager->pid ();
 		    }
 		}
+
+	      if (external_pager)
+		{
+		  *external_pager << msg;
+
+		  if (external_pager->fail ())
+		    {
+		      octave_pager_pid = -1;
+
+		      delete external_pager;
+		      external_pager = 0;
+
+		      if (saved_sigint_handler)
+			{
+			  octave_set_signal_handler (SIGINT,
+						     saved_sigint_handler);
+			  saved_sigint_handler = 0;
+			}
+		    }
+		  else
+		    external_pager->flush ();
+		}
 	      else
-		external_pager->flush ();
+		cout << msg;
 	    }
-	  else
-	    cout << msg;
 	}
     }
+}
+
+static bool
+more_than_a_screenful (const char *s)
+{
+  if (s)
+    {
+      int available_rows = terminal_rows () - 2;
+
+      char c;
+
+      while ((c = *s++) != '\0')
+	if (c == '\n')
+	  {
+	    count++;
+
+	    if (count > available_rows)
+	      return true;
+	  }
+    }
+
+  return false;
 }
 
 int
@@ -119,7 +149,12 @@ octave_pager_buf::sync (void)
 
       char *buf = eback ();
 
-      do_sync (buf);
+      bool bypass_pager = (really_flush_to_pager
+			   && user_pref.page_screen_output
+			   && ! user_pref.page_output_immediately
+			   && more_than_a_screenful (buf));
+
+      do_sync (buf, bypass_pager);
 
       octave_diary << buf;
 

@@ -1,5 +1,12 @@
 2005-03-22  John W. Eaton  <jwe@octave.org>
 
+	* optimization/glpk.m: Adapt to Octave coding style.
+	No need for varargout or varargin.
+	Print usage message if nargin > 11.
+	Allow any value of nargout.
+	Use repmat (C, nr, nc) instead of char (C * ones (nr, nc)).
+	Avoid looping when checking character classes.
+
 	* optimization: New directory.
 	* Makefile.in (SUBDIRS): Add it to the list.
 	* optimization/Makefile.in: New file.

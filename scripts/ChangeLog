@@ -1,3 +1,7 @@
+2002-10-31  Francesco Potorti` <pot@gnu.org>
+
+	* statistics/distributions/discrete_pdf.m: Fix typo.
+
 2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkdoc: Exit immediately on errors.

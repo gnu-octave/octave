@@ -57,7 +57,7 @@ function pdf = discrete_pdf (x, v, p)
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
-    pdf (k) = ((x(k) * ones (1, m)) == (ones (n, 1) * v)) * P;
+    pdf (k) = ((x(k) * ones (1, m)) == (ones (n, 1) * v)) * p;
   endif
 
   pdf = reshape (pdf, r, c);

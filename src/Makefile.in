@@ -82,11 +82,10 @@ SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	octave-hist.cc oct-map.cc oct-obj.cc pager.cc parse.y \
 	pr-output.cc procstream.cc resource.cc sighandlers.cc \
 	strcasecmp.c strncase.c strfns.cc strftime.c symtab.cc \
-	sysdep.cc tc-rep.cc tc-rep-ass.cc tc-rep-idx.cc tempname.c \
-	timefns.cc tempnam.c token.cc tree-base.cc tree-cmd.cc \
-	tree-const.cc tree-expr.cc tree-misc.cc tree-plot.cc \
-	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
-	xpow.cc Map.cc SLStack.cc
+	sysdep.cc tempname.c timefns.cc tempnam.c token.cc \
+	tree-base.cc tree-cmd.cc tree-const.cc tree-expr.cc \
+	tree-misc.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
+	utils.cc variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc
 
 TEMPLATE_SRC = Map.cc SLStack.cc
 
@@ -115,7 +114,7 @@ DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 # nothing.
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
-	../libcruft/libcruft.a @LIBINFO@ @LIBREADLINE@ \
+	../libcruft/libcruft.a @LIBREADLINE@ \
 	../kpathsea/kpathsea.a @LIBDLD@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins \

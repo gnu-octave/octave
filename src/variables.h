@@ -78,7 +78,8 @@ extern void link_to_builtin_or_function (symbol_record *sr);
 extern void force_link_to_function (const char *s);
 
 extern int is_builtin_variable (const char *name);
-extern int is_text_function_name (const char *s);
+extern int is_text_function_name (const char *name);
+extern int is_globally_visible (const char *name);
 
 extern tree_fvc *is_valid_function (const tree_constant&, char *,
 				    int warn = 0); 

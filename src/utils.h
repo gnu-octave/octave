@@ -38,20 +38,31 @@ volatile v_fcn_v jump_to_top_level;
 
 extern char *strsave (const char *);
 extern char *strconcat (const char *, const char *);
+
 extern void discard_until (istream&, char);
+
+#if 0
+extern char *read_until (istream&, char);
+#endif
+
 extern char *file_in_path (const char *, const char *);
 extern char *fcn_file_in_path (const char *);
 extern char *oct_file_in_path (const char *);
+
 extern char **pathstring_to_vector (char *pathstring);
+
 extern void jump_to_top_level (void);
+
 extern int almost_match (const char *std, const char *s,
 			 int min_match_len = 1, int case_sens = 1);
 extern int keyword_almost_match (const char **std, int *min_len,
 				 const char *s, int min_toks_to_match,
 				 int max_toks);
+
 extern char **get_fcn_file_names (int& ffl_len, const char *dir,
 				  int no_suffix); 
 extern char **get_fcn_file_names (int& ffl_len, int no_suffix);
+
 extern int NINT (double x);
 extern double D_NINT (double x);
 

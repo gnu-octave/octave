@@ -47,6 +47,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-cmd.h"
 #include "tree-const.h"
 #include "tree-plot.h"
+#include "load-save.h"
 #include "help.h"
 #include "error.h"
 #include "utils.h"
@@ -806,10 +807,10 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 	  switch (ndim)
 	    {
 	    case 2:
-	      t.save (file);
+	      save_ascii_data (file, t);
 	      break;
 	    case 3:
-	      t.save_three_d (file, parametric);
+	      save_three_d (file, t, parametric);
 	      break;
 	    default:
 	      panic_impossible ();

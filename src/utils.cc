@@ -157,6 +157,46 @@ discard_until (istream& stream, char character)
     stream.putback ((char) c);
 } 
 
+#if 0
+
+// XXX UNTESTED XXX
+
+// Read input until a given character is read.  Returns characters
+// read in a new string that must be freed by the caller.
+
+char *
+read_until (istream& stream, char character)
+{
+  int grow_size = 8;
+  int limit = grow_size;
+  char *buf = new char [limit];
+  char *bp = buf;
+
+ get_more:
+  is.getline (bp, limit, character);
+
+  if (is.gcount () == 0)
+    {
+      delete [] buf;
+      return 0;
+    }
+
+  if (is.gcount () == limit && buf[limit-1] != '\0')
+    {
+      char *tmp = new char [limit + grow_size];
+      strcpy (tmp, buf);
+      delete [] buf;
+      buf = tmp;
+      bp = tmp + limit - 1;
+      limit += grow_size;
+      grow_size *= 2;
+      goto get_more;
+    }
+
+  return buf;
+}
+#endif
+
 char **
 pathstring_to_vector (char *pathstring)
 {

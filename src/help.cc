@@ -468,8 +468,7 @@ simple_help (void)
 
   LIST_SYMBOLS (symbol_record::BUILTIN_VARIABLE, "built-in variables");
 
-  LIST_SYMBOLS (symbol_record::TEXT_FUNCTION,
-		"text functions (these names are also reserved)");
+  LIST_SYMBOLS (symbol_record::COMMAND, "commands");
 
   LIST_SYMBOLS (symbol_record::MAPPER_FUNCTION, "mapper functions");
 
@@ -770,7 +769,7 @@ builtin_help (int argc, const string_vector& argv)
   additional_help_message (octave_stdout);
 }
 
-DEFUN_TEXT (help, args, ,
+DEFCMD (help, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} help\n\
 Octave's @code{help} command can be used to print brief usage-style\n\
@@ -845,7 +844,7 @@ do_type (std::ostream& os, const std::string& name, bool pr_type_info,
     }
 }
 
-DEFUN_TEXT (type, args, nargout,
+DEFCMD (type, args, nargout,
   "-*- texinfo -*-\n\
 \n\
 @deffn {Command} type options name @dots{}\n\
@@ -969,7 +968,7 @@ do_which (std::ostream& os, const std::string& name)
     }
 }
 
-DEFUN_TEXT (which, args, nargout,
+DEFCMD (which, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} which name @dots{}\n\
 Display the type of each @var{name}.  If @var{name} is defined from a\n\

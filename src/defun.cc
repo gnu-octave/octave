@@ -104,7 +104,7 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
   unsigned int t = symbol_record::BUILTIN_FUNCTION;
 
   if (is_text_fcn)
-    t |= symbol_record::TEXT_FUNCTION;
+    t |= symbol_record::COMMAND;
 
   sym_rec->unprotect ();
   sym_rec->define (new octave_builtin (f, name, doc), t);
@@ -139,7 +139,7 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
   unsigned int t = symbol_record::DLD_FUNCTION;
 
   if (is_text_fcn)
-    t |= symbol_record::TEXT_FUNCTION;
+    t |= symbol_record::COMMAND;
 
   sym_rec->unprotect ();
   sym_rec->define (new octave_dld_function (f, shl, name, doc), t);

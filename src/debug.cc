@@ -80,7 +80,7 @@ get_user_function (std::string str = "")
 }
 
 
-DEFUN_TEXT (dbstop, args, ,
+DEFCMD (dbstop, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {rline =} dbstop (func, line)\n\
 Set a breakpoint in a function\n\
@@ -149,7 +149,7 @@ The rline returned is the real line that the breakpoint was set at.\n\
   return retval;
 }
 
-DEFUN_TEXT (dbclear, args, ,
+DEFCMD (dbclear, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbclear (func, line)\n\
 Delete a breakpoint in a function\n\
@@ -214,7 +214,7 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
   return retval;
 }
 
-DEFUN_TEXT (dbstatus, args, ,
+DEFCMD (dbstatus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {lst =} dbstatus ([func])\n\
 Return a vector containing the lines on which a function has \n\
@@ -273,7 +273,7 @@ mode this should be left out.\n\
   return retval;
 }
 
-DEFUN_TEXT (dbwhere, , ,
+DEFCMD (dbwhere, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbwhere ()\n\
 Show where we are in the code\n\
@@ -348,7 +348,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
 }
 
-DEFUN_TEXT (dbtype, args, ,
+DEFCMD (dbtype, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbtype ()\n\
 List script file with line numbers.\n\

@@ -532,7 +532,7 @@ do_run_history (int argc, const string_vector& argv)
   unlink (name.c_str ());
 }
 
-DEFUN_TEXT (edit_history, args, ,
+DEFCMD (edit_history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} edit_history options\n\
 If invoked with no arguments, @code{edit_history} allows you to edit the\n\
@@ -582,7 +582,7 @@ omitted, the previous command in the history list is used.\n\
   return retval;
 }
 
-DEFUN_TEXT (history, args, ,
+DEFCMD (history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} history options\n\
 If invoked with no arguments, @code{history} displays a list of commands\n\
@@ -625,7 +625,7 @@ typed without displaying line numbers, use the command\n\
   return retval;
 }
 
-DEFUN_TEXT (run_history, args, ,
+DEFCMD (run_history, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} run_history [first] [last]\n\
 Similar to @code{edit_history}, except that the editor is not invoked,\n\

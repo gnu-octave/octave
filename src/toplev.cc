@@ -213,7 +213,7 @@ clean_up_and_exit (int retval)
   exit (retval == EOF ? 0 : retval);
 }
 
-DEFUN_TEXT (casesen, args, ,
+DEFCMD (casesen, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} casesen arg\n\
 Provided for compatibility with Matlab, but does nothing.\n\

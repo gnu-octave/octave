@@ -3071,7 +3071,7 @@ HDF5 load and save are not available, as this Octave executable was\n\
 not linked with the HDF5 library."
 #endif /* ! HAVE HDF5 */
 
-DEFUN_TEXT (load, args, nargout,
+DEFCMD (load, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} load options file v1 v2 @dots{}\n\
 Load the named variables from the file @var{file}.  As with @code{save},\n\
@@ -4881,7 +4881,7 @@ save_user_variables (void)
     }
 }
 
-DEFUN_TEXT (save, args, ,
+DEFCMD (save, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} save options file v1 v2 @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{} in the file\n\

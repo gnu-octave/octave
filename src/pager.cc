@@ -407,7 +407,7 @@ open_diary_file (void)
     error ("diary: can't open diary file `%s'", diary_file.c_str ());
 }
 
-DEFUN_TEXT (diary, args, ,
+DEFCMD (diary, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} diary options\n\
 Create a list of all commands @emph{and} the output they produce, mixed\n\
@@ -478,7 +478,7 @@ Without any arguments, @code{diary} toggles the current diary state.\n\
   return retval;
 }
 
-DEFUN_TEXT (more, args, ,
+DEFCMD (more, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} more\n\
 @deffnx {Command} more on\n\

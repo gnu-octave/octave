@@ -982,7 +982,7 @@ this will close the plot window.\n\
   return retval;
 }
 
-DEFUN_TEXT (hold, args, ,
+DEFCMD (hold, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} hold @var{args}\n\
 Tell Octave to `hold' the current data on the plot when executing\n\
@@ -1090,7 +1090,7 @@ Send @var{string} directly to gnuplot subprocess.\n\
   return retval;
 }
 
-DEFUN_TEXT (gset, args, ,
+DEFCMD (gset, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} gset options\n\
 Set plotting options for gnuplot\n\
@@ -1144,7 +1144,7 @@ Set plotting options for gnuplot\n\
   return retval;
 }
 
-DEFUN_TEXT (set, args, nargout,
+DEFCMD (set, args, nargout,
   "-*- texinfo -*-\n\
 This command is has been replaced by @code{gset}.")
 {
@@ -1152,7 +1152,7 @@ This command is has been replaced by @code{gset}.")
   return Fgset (args, nargout);
 }
 
-DEFUN_TEXT (gshow, args, ,
+DEFCMD (gshow, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} gshow options\n\
 Show plotting options.\n\
@@ -1184,7 +1184,7 @@ Show plotting options.\n\
   return retval;
 }
 
-DEFUN_TEXT (show, args, nargout,
+DEFCMD (show, args, nargout,
   "-*- texinfo -*-\n\
 This command is has been replaced by @code{gshow}.")
 {

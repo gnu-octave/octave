@@ -1,5 +1,33 @@
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defun.h (DEFCMD): Rename from DEFUN_TEXT.  Provide DEFUN_TEXT as
+	an alias for DEFCMD.  Change all uses.
+
+	* variables.cc (at_top_level): New function.
+	(do_who, Fmark_as_command, Funmark_command): Use it.
+
+	* lex.l (COMMAND_START): Rename from TEXT_FCN.  Change all uses.
+	(MATRIX_START): Rename from MATRIX.  Change all uses.
+	* variables.cc (command_function_set): Rename from
+	text_function_set.
+	(mark_as_command): Rename from mark_as_text_function.
+	(is_marked_as_command): Rename from is_marked_as_text_function.
+	(Fmark_as_command): Rename from Fmark_as_text_function.
+	(Funmark_command): Rename from Funmark_text_function.
+	(is_command_name): Rename from is_text_function_name.
+	* symtab.h (symbol_record::COMMAND): Rename from TEXT_FUNCTION.
+	(symbol_record::mark_as_command): Rename from mark_as_text_function.
+	(symbol_record::unmark_command): Rename from
+	symbol_record::unmark_text_function.
+	(symbol_record::is_command): Rename from
+	symbol_record::is_text_function.
+	(symbol_record::symbol_def::mark_as_command): Rename from
+	symbol_record::symbol_def::mark_as_text_function.
+	(symbol_record::symbol_def::unmark_command): Rename from
+	symbol_record::symbol_def::unmark_text_function.
+	(symbol_record::symbol_def::is_command): Rename from
+	symbol_record::symbol_def::is_text_function.
+
 	* pt-jump.h, pt-jump.cc: Undo previous changes.
 	* parse.y: Undo previous changes for brea, continue, and return.
 

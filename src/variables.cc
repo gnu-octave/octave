@@ -71,6 +71,12 @@ symbol_table *global_sym_tab = 0;
 // Symbol table for functions and built-in symbols.
 symbol_table *fbi_sym_tab = 0;
 
+static inline bool
+at_top_level (void)
+{
+  return (curr_sym_tab == top_level_sym_tab);
+}
+
 // Initialization.
 
 // Create the initial symbol tables and set the current scope at the
@@ -102,91 +108,101 @@ is_builtin_variable (const std::string& name)
   return (sr && sr->is_builtin_variable ());
 }
 
-// Is this a text-style function?
+// Is this a command-style function?
 
-static std::set <std::string> text_function_set;
+static std::set <std::string> command_set;
 
 static inline bool
-is_marked_as_text_function (const std::string& s)
+is_marked_as_command (const std::string& s)
 {
-  return text_function_set.find (s) != text_function_set.end ();
+  return command_set.find (s) != command_set.end ();
 }
 
 static inline void
-mark_as_text_function (const std::string& s)
+mark_as_command (const std::string& s)
 {
-  text_function_set.insert (s);
+  command_set.insert (s);
 }
 
 static inline void
-unmark_text_function (const std::string& s)
+unmark_command (const std::string& s)
 {
-  text_function_set.erase (s);
+  command_set.erase (s);
 
   symbol_record *sr = fbi_sym_tab->lookup (s);
 
   if (sr)
-    sr->unmark_text_function ();
+    sr->unmark_command ();
 }
 
-DEFUN_TEXT (mark_as_text_function, args, ,
+DEFCMD (mark_as_command, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mark_as_text_function (@var{name})\n\
-Enter @var{name} into the list of text functions\n\
+@deftypefn {Built-in Function} {} mark_as_command (@var{name})\n\
+Enter @var{name} into the list of commands.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (at_top_level ())
     {
-      int argc = nargin + 1;
+      int nargin = args.length ();
 
-      string_vector argv = args.make_argv ("mark_as_text_function");
-
-      if (! error_state)
+      if (nargin > 0)
 	{
-	  for (int i = 1; i < argc; i++)
-	    mark_as_text_function (argv[i]);
+	  int argc = nargin + 1;
+
+	  string_vector argv = args.make_argv ("mark_as_command");
+
+	  if (! error_state)
+	    {
+	      for (int i = 1; i < argc; i++)
+		mark_as_command (argv[i]);
+	    }
 	}
+      else
+	print_usage ("mark_as_command");
     }
   else
-    print_usage ("mark_as_text_function");
+    warning ("mark_as_command: invalid use inside function body");
 
   return retval;
 }
 
-DEFUN_TEXT (unmark_text_function, args, ,
+DEFCMD (unmark_command, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mark_as_text_function (@var{name})\n\
-Enter @var{name} into the list of text functions\n\
+@deftypefn {Built-in Function} {} mark_as_command (@var{name})\n\
+Remove @var{name} from the list of commands.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (at_top_level ())
     {
-      int argc = nargin + 1;
+      int nargin = args.length ();
 
-      string_vector argv = args.make_argv ("unmark_text_function");
-
-      if (! error_state)
+      if (nargin > 0)
 	{
-	  for (int i = 1; i < argc; i++)
-	    unmark_text_function (argv[i]);
+	  int argc = nargin + 1;
+
+	  string_vector argv = args.make_argv ("unmark_command");
+
+	  if (! error_state)
+	    {
+	      for (int i = 1; i < argc; i++)
+		unmark_command (argv[i]);
+	    }
 	}
+      else
+	print_usage ("unmark_command");
     }
   else
-    print_usage ("unmark_text_function");
+    warning ("mark_as_command: invalid use inside function body");
 
   return retval;
 }
 
 bool
-is_text_function_name (const std::string& s)
+is_command_name (const std::string& s)
 {
   bool retval = false;
 
@@ -194,16 +210,16 @@ is_text_function_name (const std::string& s)
 
   if (sr)
     {
-      if (sr->is_text_function ())
+      if (sr->is_command ())
 	retval = true;
-      else if (is_marked_as_text_function (s))
+      else if (is_marked_as_command (s))
 	{
-	  sr->mark_as_text_function ();
+	  sr->mark_as_command ();
 	  retval = true;
 	}
     }
   else
-    retval = is_marked_as_text_function (s);
+    retval = is_marked_as_command (s);
 
   return retval;
 }
@@ -958,7 +974,7 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
 	  if (! error_state)
 	    {
 	      if (is_builtin_variable (name)
-		  || is_text_function_name (name)
+		  || is_command_name (name)
 		  || is_mapper_function_name (name)
 		  || is_builtin_function_name (name))
 		error ("document: can't redefine help for built-in variables and functions");
@@ -1021,7 +1037,7 @@ do_who (int argc, const string_vector& argv)
 
   if (! (show_builtins || show_functions || show_variables))
     {
-      show_functions = (curr_sym_tab == top_level_sym_tab);
+      show_functions = at_top_level ();
       show_variables = true;
     }
 
@@ -1035,7 +1051,7 @@ do_who (int argc, const string_vector& argv)
 
   if (show_verbose && ! (show_builtins || show_functions || show_variables))
     {
-      show_functions = (curr_sym_tab == top_level_sym_tab);
+      show_functions = at_top_level ();
       show_variables = 1;
     }
 
@@ -1087,7 +1103,7 @@ do_who (int argc, const string_vector& argv)
   return retval;
 }
 
-DEFUN_TEXT (who, args, ,
+DEFCMD (who, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} who options pattern @dots{}\n\
 @deffnx {Command} whos options pattern @dots{}\n\
@@ -1139,7 +1155,7 @@ The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
   return retval;
 }
 
-DEFUN_TEXT (whos, args, ,
+DEFCMD (whos, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} whos options pattern @dots{}\n\
 See who.\n\
@@ -1577,7 +1593,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     } \
   while (0)
 
-DEFUN_TEXT (clear, args, ,
+DEFCMD (clear, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} clear [-x] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\

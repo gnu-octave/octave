@@ -82,7 +82,7 @@ octave_change_to_directory (const std::string& newdir)
   return cd_ok;
 }
 
-DEFUN_TEXT (cd, args, ,
+DEFCMD (cd, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} cd dir\n\
 @deffnx {Command} chdir dir\n\
@@ -140,7 +140,7 @@ cleanup_iprocstream (void *p)
   delete static_cast <iprocstream *> (p);
 }
 
-DEFUN_TEXT (ls, args, ,
+DEFCMD (ls, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} ls options\n\
 @deffnx {Command} dir options\n\

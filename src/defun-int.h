@@ -100,7 +100,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 // Generate code to install name in the symbol table.  The script
 // mkdefs will create a .def file for every .cc file that uses DEFUN,
-// or DEFUN_TEXT.
+// or DEFCMD.
 
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \

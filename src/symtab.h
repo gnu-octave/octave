@@ -62,7 +62,7 @@ public:
       USER_VARIABLE = 2,
       DLD_FUNCTION = 4,
       BUILTIN_FUNCTION = 8,
-      TEXT_FUNCTION = 16,
+      COMMAND = 16,
       MAPPER_FUNCTION = 32,
       BUILTIN_VARIABLE = 64,
       BUILTIN_CONSTANT = 128
@@ -92,7 +92,7 @@ private:
 		|| symbol_type & symbol_record::BUILTIN_VARIABLE);
       }
 
-    // It's not necessary to check for TEXT_FUNCTION and MAPPER_FUNCTION
+    // It's not necessary to check for COMMAND and MAPPER_FUNCTION
     // here.  Those tags are just used as additional qualifiers for
     // the other types of functions.
 
@@ -106,14 +106,14 @@ private:
     bool is_user_variable (void) const
       { return (symbol_type & symbol_record::USER_VARIABLE); }
 
-    void mark_as_text_function (void)
-      { symbol_type |= symbol_record::TEXT_FUNCTION; }
+    void mark_as_command (void)
+      { symbol_type |= symbol_record::COMMAND; }
 
-    void unmark_text_function (void)
-      { symbol_type &= ~symbol_record::TEXT_FUNCTION; }
+    void unmark_command (void)
+      { symbol_type &= ~symbol_record::COMMAND; }
 
-    bool is_text_function (void) const
-      { return (symbol_type & symbol_record::TEXT_FUNCTION); }
+    bool is_command (void) const
+      { return (symbol_type & symbol_record::COMMAND); }
 
     bool is_mapper_function (void) const
       { return (symbol_type & symbol_record::MAPPER_FUNCTION); }
@@ -243,14 +243,14 @@ public:
   bool is_function (void) const
     { return definition->is_function (); }
 
-  void mark_as_text_function (void)
-    { definition->mark_as_text_function (); }
+  void mark_as_command (void)
+    { definition->mark_as_command (); }
 
-  void unmark_text_function (void)
-    { definition->unmark_text_function (); }
+  void unmark_command (void)
+    { definition->unmark_command (); }
 
-  bool is_text_function (void) const
-    { return definition->is_text_function (); }
+  bool is_command (void) const
+    { return definition->is_command (); }
 
   bool is_mapper_function (void) const
     { return definition->is_mapper_function (); }
@@ -390,7 +390,7 @@ private:
 			  | symbol_record::USER_VARIABLE \
 			  | symbol_record::DLD_FUNCTION \
 			  | symbol_record::BUILTIN_FUNCTION \
-			  | symbol_record::TEXT_FUNCTION \
+			  | symbol_record::COMMAND \
 			  | symbol_record::MAPPER_FUNCTION \
 			  | symbol_record::BUILTIN_VARIABLE \
 			  | symbol_record::BUILTIN_CONSTANT)

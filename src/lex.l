@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-%s TEXT_FCN
-%s MATRIX
+%s COMMAND_START
+%s MATRIX_START
 
 %{
 #ifdef HAVE_CONFIG_H
@@ -233,12 +233,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
 %{
-// Help and other text-style functions are a pain in the ass.  This
+// Help and other command-style functions are a pain in the ass.  This
 // stuff needs to be simplified.  May require some changes in the
 // parser too.
 %}
 
-<TEXT_FCN>{NL} {
+<COMMAND_START>{NL} {
     BEGIN 0;
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
@@ -247,7 +247,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     return '\n';
   }
 
-<TEXT_FCN>[\;\,] {
+<COMMAND_START>[\;\,] {
     if (lexer_flags.doing_set && strcmp (yytext, ",") == 0)
       {
 	TOK_PUSH_AND_RETURN (yytext, STRING);
@@ -262,12 +262,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       }
   }
 
-<TEXT_FCN>[\"\'] {
+<COMMAND_START>[\"\'] {
     current_input_column++;
     return handle_string (yytext[0], true);
   }
 
-<TEXT_FCN>[^#% \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
+<COMMAND_START>[^#% \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
     std::string tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, STRING);
   }
@@ -284,7 +284,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // after seeing a ']' character...
 %}
 
-<MATRIX>{SNLCMT}*\]{S}* {
+<MATRIX_START>{SNLCMT}*\]{S}* {
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     int c = yytext[yyleng-1];
@@ -299,7 +299,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // commas.
 %}
 
-<MATRIX>{S}*\,{S}* {
+<MATRIX_START>{S}*\,{S}* {
     current_input_column += yyleng;
 
     int tmp = eat_continuation ();
@@ -326,7 +326,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // here we can end up inserting too many commas.
 %}
 
-<MATRIX>{S}+ {
+<MATRIX_START>{S}+ {
     current_input_column += yyleng;
 
     int tmp = eat_continuation ();
@@ -364,7 +364,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // semicolons.
 %}
 
-<MATRIX>{SNLCMT}*;{SNLCMT}* {
+<MATRIX_START>{SNLCMT}*;{SNLCMT}* {
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
@@ -380,8 +380,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // semicolons.
 %}
 
-<MATRIX>{S}*{COMMENT}{SNLCMT}* |
-<MATRIX>{S}*{NL}{SNLCMT}* {
+<MATRIX_START>{S}*{COMMENT}{SNLCMT}* |
+<MATRIX_START>{S}*{NL}{SNLCMT}* {
     scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
@@ -430,7 +430,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     else
       {
 	lexer_flags.bracketflag++;
-	BEGIN MATRIX;
+	BEGIN MATRIX_START;
 	return '[';
       }
   }
@@ -469,7 +469,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %{
 // Eat whitespace.  Whitespace inside matrix constants is handled by
-// the <MATRIX> start state code above.
+// the <MATRIX_START> start state code above.
 %}
 
 {S}* {
@@ -528,7 +528,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 %{
 // A new line character.  New line characters inside matrix constants
-// are handled by the <MATRIX> start state code above.  If closest
+// are handled by the <MATRIX_START> start state code above.  If closest
 // nesting is inside parentheses, don't return a row separator.
 %}
 
@@ -2356,7 +2356,7 @@ handle_identifier (void)
   // something like [ab,cd] = foo (), force the symbol to be inserted
   // as a variable in the current symbol table.
 
-  if (is_text_function_name (tok) && ! is_variable (tok))
+  if (is_command_name (tok) && ! is_variable (tok))
     {
       if (next_tok_is_eq
 	  || lexer_flags.looking_at_return_list
@@ -2370,7 +2370,7 @@ handle_identifier (void)
 	  if (tok == "gset")
 	    lexer_flags.doing_set = true;
 
-	  BEGIN TEXT_FCN;
+	  BEGIN COMMAND_START;
 	}
     }
 

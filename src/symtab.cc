@@ -64,8 +64,8 @@ SYMBOL_DEF::type_as_string (void) const
 
   if (is_user_variable ())
     retval = "user-defined variable";
-  else if (is_text_function ())
-    retval = "built-in text function";
+  else if (is_command ())
+    retval = "built-in command";
   else if (is_mapper_function ())
     retval = "built-in mapper function";
   else if (is_user_function ())

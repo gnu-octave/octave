@@ -2011,7 +2011,7 @@ set_format_style (int argc, const string_vector& argv)
     }
 }
 
-DEFUN_TEXT (format, args, ,
+DEFCMD (format, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} format options\n\
 Control the format of the output produced by @code{disp} and Octave's\n\

@@ -88,14 +88,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DEFUNX(name, fname, args_name, nargout_name, doc) \
   DEFUNX_INTERNAL (name, fname, args_name, nargout_name, false, doc)
 
-// Define a builtin text-style function.
+// Define a builtin command-style function.
 //
 // This is like DEFUN, except that it defines a function that can be
 // called from the Octave language without using parenthesis to
 // surround the arguments). 
 
-#define DEFUN_TEXT(name, args_name, nargout_name, doc) \
+#define DEFCMD(name, args_name, nargout_name, doc) \
   DEFUN_INTERNAL (name, args_name, nargout_name, true, doc)
+
+// For backward compatibility.
+
+#define DEFUN_TEXT DEFCMD
 
 // Define a mapper function.
 //

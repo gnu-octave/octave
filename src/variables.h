@@ -43,7 +43,7 @@ class string_vector;
 extern void initialize_symbol_tables (void);
 
 extern bool is_builtin_variable (const std::string&);
-extern bool is_text_function_name (const std::string&);
+extern bool is_command_name (const std::string&);
 extern bool is_mapper_function_name (const std::string&);
 extern bool is_builtin_function_name (const std::string&);
 extern bool is_globally_visible (const std::string&);

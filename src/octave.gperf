@@ -66,6 +66,7 @@ gplot, PLOT, gplot_kw
 gsplot, PLOT, gsplot_kw
 if, IF, if_kw
 otherwise, OTHERWISE, otherwise_kw
+persistent, STATIC, static_kw
 replot, PLOT, replot_kw
 return, FUNC_RET, return_kw
 static, STATIC, static_kw

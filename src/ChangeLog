@@ -1,5 +1,7 @@
 2002-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octave.gperf: Allow "persistent" as a synonym for static.
+
 	* defun-int.h (DEFUN_MAPPER_INTERNAL): Don't forget doc string
 	when creating octave_mapper object.
 

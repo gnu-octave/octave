@@ -2545,7 +2545,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     // delay checking for a multidimensional array until we have read
     // the variable name
-    is.seekg (pos + dimension_length);
+    is.seekg (pos + static_cast<std::streamoff> (dimension_length));
   }
 
   // array name subelement
@@ -2567,7 +2567,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	if (! is.read (X_CAST (char *, name), len ))
 	  goto data_read_error;
 	
-	is.seekg (pos + PAD (len));
+	is.seekg (pos + static_cast<std::streamoff> (PAD (len)));
       }
 
     name[len] = '\0';
@@ -2682,7 +2682,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	is.seekg (pos + PAD (len));
+	is.seekg (pos + static_cast<std::streamoff> (PAD (len)));
       }
       
       // imaginary data subelement
@@ -2720,7 +2720,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	tc = tc.convert_to_str ();
     }
 
-  is.seekg (pos + element_length);
+  is.seekg (pos + static_cast<std::streamoff> (element_length));
 
   return name;
 
@@ -2734,7 +2734,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
  skip_ahead:
   warning ("      skipping over `%s'", name);
   delete [] name;
-  is.seekg (pos + element_length);
+  is.seekg (pos + static_cast<std::streamoff> (element_length));
   return read_mat5_binary_element (is, filename, swap, global, tc);
 }
 

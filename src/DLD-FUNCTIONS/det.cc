@@ -104,7 +104,7 @@ of the reciprocal condition number if requested.\n\
 	  if (nargout > 1)
 	    retval(1) = rcond;
 
-	  retval(0) = (info == -1 ? 0.0 : det.value ());
+	  retval(0) = (info == -1 ? Complex (0.0) : det.value ());
 	}
     }
   else

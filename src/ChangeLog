@@ -1,3 +1,10 @@
+2001-04-18  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* load-save.cc (read_mat5_binary_element): Cast arguments to the
+	correct type when adding stream positions.
+	* DLD-FUNCTIONS/det.cc (det): Explicity create a Complex value to
+	work around a Sun C++ type conversion bug.
+
 2001-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* symtab.cc (define_builtin_const): Don't call replace_all_defs

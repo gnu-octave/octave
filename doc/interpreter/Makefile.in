@@ -91,11 +91,11 @@ check: all
 .PHONY: check
 
 install: all
-	$(top_srcdir)/mkinstalldirs $(mandir) $(infodir)
-	@if test -d $(mandir) ; then \
-	  rm -f $(mandir)/octave.$(manext) ; \
-	  echo "installing $(srcdir)/octave.1 in $(mandir)" ; \
-	  $(INSTALL_DATA) $(srcdir)/octave.1 $(mandir)/octave.$(manext) ; \
+	$(top_srcdir)/mkinstalldirs $(man1dir) $(infodir)
+	@if test -d $(man1dir) ; then \
+	  rm -f $(man1dir)/octave$(man1ext) ; \
+	  echo "installing $(srcdir)/octave.1 in $(man1dir)" ; \
+	  $(INSTALL_DATA) $(srcdir)/octave.1 $(man1dir)/octave$(man1ext) ; \
 	fi
 	@if test -d $(infodir) ; then \
 	  rm -f $(infodir)/octave.info* ; \
@@ -130,7 +130,7 @@ install: all
 .PHONY: install
 
 uninstall:
-	rm -f $(infodir)/octave.info* $(mandir)/octave.$(manext)
+	rm -f $(infodir)/octave.info* $(man1dir)/octave$(man1ext)
 .PHONY: uninstall
 
 tags: $(SOURCES)

@@ -64,33 +64,36 @@ trap 'rm -f $TEMP $TEMP.x; exit 1' 1 2 3 13 15
 trap 'rm -f $TEMP $TEMP.x' 0
 
 UN=
-if (uname) > /dev/null 2>&1
-then
+if (uname) > /dev/null 2>&1; then
   UN=`uname -a`
 fi
 
 HAVE_FMT=false
-if (fmt < /dev/null) > /dev/null 2>&1
-then
+if (fmt < /dev/null) > /dev/null 2>&1; then
   HAVE_FMT=true
 fi
 
 ss_p=`echo $VERSION | grep "^ss-"`
-if test -n "$ss_p"
-then
+if test -n "$ss_p"; then
   BUGADDR="octave-maintainers@bevo.che.wisc.edu"
 else
-  BUGADDR="bug-octave@bevo.che.wisc.edu"
+  pretest_p=`echo $VERSION \
+    | sed 's,.*[0-9]*\.[0-9]*\.\([0-9]*\).*,\1,' \
+    | grep -v '\.'`
+
+  if test -n "$pretest_p" && test "$pretest_p" -ge 90; then
+    BUGADDR="octave-maintainers@bevo.che.wisc.edu"
+  else
+    BUGADDR="bug-octave@bevo.che.wisc.edu"
+  fi
 fi
 
 SUBJECT="[50 character or so descriptive subject here (for reference)]"
-if test $# -gt 0
-then
+if test $# -gt 0; then
   case "$1" in
     -s)
       shift
-      if test $# -gt 0
-      then
+      if test $# -gt 0; then
         SUBJECT="$1"
         shift
       else
@@ -159,17 +162,14 @@ DEFS:
 
 EOF
 
-if $HAVE_FMT
-then
+if $HAVE_FMT; then
   echo $DEFS | fmt | sed 's/^/  /' >> $TEMP
 else
   echo $DEFS >> $TEMP
 fi
 
-if test $# -gt 0
-then
-  if test -f "$1"
-  then
+if test $# -gt 0; then
+  if test -f "$1"; then
     cat >> $TEMP << EOF
 
 User-preferences (please do not edit this section):
@@ -185,10 +185,8 @@ cp $TEMP $TEMP.x
 
 status=0
 
-if $EDITOR $TEMP
-then
-  if cmp -s $TEMP $TEMP.x
-  then
+if $EDITOR $TEMP; then
+  if cmp -s $TEMP $TEMP.x; then
     echo "file not changed -- no bug report submitted"
     status=1
   elif test `wc $TEMP | awk '{print $1}'` -eq 0; then
@@ -202,8 +200,7 @@ then
     TO_ADDR=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^[Tt][Oo]://p'`
     CC_ADDR=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^[Cc][Cc]://p'`
 
-    if test -z "$TO_ADDR"
-    then
+    if test -z "$TO_ADDR"; then
       echo "no valid \`To:' field found in header -- using $BUGADDR instead"
     else
       BUGADDR="$TO_ADDR"      

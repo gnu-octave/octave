@@ -302,11 +302,9 @@ esac
 # are often available.  If they are missing, we try to replace them
 # with functions from the BSD/NET2 math library.
 
-XLIBS="$LIBS"
-LIBS="$XLIBS -lm"
+AC_HAVE_LIBRARY(-lm)dnl
 AC_HAVE_FUNCS(finite isnan isinf)dnl
 AC_REPLACE_FUNCS(acosh asinh atanh)dnl
-LIBS="$XLIBS"
 
 if test -n "$LIBOBJS"; then
   for func in $LIBOBJS
@@ -371,20 +369,12 @@ warning: I didn't find gnuplot.  It isn't necessary to have gnuplot
 EOF
 fi
 
-AC_PROGRAM_CHECK(DEFAULT_PAGER, less, less, [])dnl
-if test -z "$DEFAULT_PAGER"; then
-  AC_PROGRAM_CHECK(DEFAULT_PAGER, more, more, [])dnl
-fi
-if test -z "$DEFAULT_PAGER"; then
-  AC_PROGRAM_CHECK(DEFAULT_PAGER, page, page, [])dnl
-fi
-if test -z "$DEFAULT_PAGER"; then
-  AC_PROGRAM_CHECK(DEFAULT_PAGER, pg, pg, [])dnl
-fi
+AC_PROGRAMS_CHECK(DEFAULT_PAGER, less more page pg, [])dnl
 if test -z "$DEFAULT_PAGER"; then
   echo "warning: I couldn't find less(1), more(1), page(1), or pg(1)"
+elif test "$DEFAULT_PAGER" = less; then
+  DEFAULT_PAGER="less -e"
 fi
-AC_SUBST(DEFAULT_PAGER)dnl
 
 AC_PROGRAM_CHECK(RUNTEST, runtest, runtest, [])dnl
 AC_PROGRAM_CHECK(EXPECT, expect, expect, [])dnl

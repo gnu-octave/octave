@@ -1,5 +1,16 @@
 2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-except.cc (do_catch_code): Don't do anything special for
+	tree_return_command::returning, or tree_break_command::breaking.
+
+	* error.cc (vwarning): New function.
+	(warning): Use it instead of calling verror.
+
+	* oct-stream.cc (octave_base_stream::oscanf):
+	Result is now always nconv+1 elements.  Return count of successful
+	conversions in last element.
+	* file-io.cc (Ffscanf, Fsscanf, Fscanf): Fix doc string.
+
 	* pt-except.cc (do_catch_code): Unwind-protect buffer_error_messages.
 	Be sure to run all unwind-protects before returning.
 	(tree_try_catch_command::eval): Add do_catch_code cleanup function

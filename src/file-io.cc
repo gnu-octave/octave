@@ -764,7 +764,7 @@ converted.\n\
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } fscanf (@var{fid}, @var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] = } fscanf (@var{fid}, @var{template}, \"C\")\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -800,7 +800,8 @@ The number of items successfully read is returned in @var{count}.\n\
 In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
-compatible with previous versions of Octave.\n\
+compatible with previous versions of Octave.  The number of successful\n\
+conversions is returned in @var{count}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -865,7 +866,7 @@ compatible with previous versions of Octave.\n\
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } sscanf (@var{string}, @var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] = } sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.\n\
@@ -957,7 +958,7 @@ string is treated as an end-of-file condition.\n\
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{val}, @var{count}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}] = } scanf (@var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] = } scanf (@var{template}, \"C\")\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\

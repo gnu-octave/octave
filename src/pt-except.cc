@@ -65,37 +65,8 @@ do_catch_code (void *ptr)
 
   unwind_protect::add (clear_global_error_variable, 0);
 
-  // Similarly, if we have seen a return or break statement, allow all
-  // the catch code to run before returning or handling the break.
-  // We don't have to worry about continue statements because they can
-  // only occur in loops.
-
-  unwind_protect_int (tree_return_command::returning);
-  tree_return_command::returning = 0;
-
-  unwind_protect_int (tree_break_command::breaking);
-  tree_break_command::breaking = 0;
-
   if (list)
     list->eval ();
-
-  // This is the one for breaking.  (The unwind_protects are popped
-  // off the stack in the reverse of the order they are pushed on).
-
-  // XXX FIXME XXX -- inside a try-catch, should break work like
-  // a return, or just jump to the end of the try_catch block?
-  // The following code makes it just jump to the end of the block.
-
-  unwind_protect::run ();
-  if (tree_break_command::breaking)
-    tree_break_command::breaking--;
-
-  // This is the one for returning.
-
-  if (tree_return_command::returning)
-    unwind_protect::discard ();
-  else
-    unwind_protect::run ();
 
   unwind_protect::run_frame ("do_catch_code");
 }
@@ -174,23 +145,43 @@ do_unwind_protect_cleanup_code (void *ptr)
   if (list)
     list->eval ();
 
-  // This is the one for breaking.  (The unwind_protects are popped
-  // off the stack in the reverse of the order they are pushed on).
+  // The unwind_protects are popped off the stack in the reverse of
+  // the order they are pushed on.
 
-  // XXX FIXME XXX -- inside an unwind_protect, should break work like
-  // a return, or just jump to the end of the unwind_protect block?
-  // The following code makes it just jump to the end of the block.
+  // XXX FIXME XXX -- these statements say that if we see a break or
+  // return statement in the cleanup block, that we want to use the
+  // new value of the breaking or returning flag instead of restoring
+  // the previous value.  Is that the right thing to do?  I think so.
+  // Consider the case of
+  //
+  //   function foo ()
+  //     unwind_protect
+  //       stderr << "1: this should always be executed\n";
+  //       break;
+  //       stderr << "1: this should never be executed\n";
+  //     unwind_protect_cleanup
+  //       stderr << "2: this should always be executed\n";
+  //       return;
+  //       stderr << "2: this should never be executed\n";
+  //     end_unwind_protect
+  //   endfunction
+  //
+  // If we reset the value of the breaking flag, both the returning
+  // flag and the breaking flag will be set, and we shouldn't have
+  // both.  So, use the most recent one.  If there is no return or
+  // break in the cleanup block, the values should be reset to
+  // whatever they were when the cleanup block was entered.
 
-  unwind_protect::run ();
-  if (tree_break_command::breaking)
-    tree_break_command::breaking--;
-
-  // This is the one for returning.
-
-  if (tree_return_command::returning)
-    unwind_protect::discard ();
+  if (tree_break_command::breaking || tree_return_command::returning)
+    {
+      unwind_protect::discard ();
+      unwind_protect::discard ();
+    }
   else
-    unwind_protect::run ();
+    {
+      unwind_protect::run ();
+      unwind_protect::run ();
+    }
 
   // We don't want to ignore errors that occur in the cleanup code, so
   // if an error is encountered there, leave error_state alone.

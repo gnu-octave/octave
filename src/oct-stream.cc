@@ -1822,7 +1822,7 @@ octave_base_stream::oscanf (const string& fmt)
 
 	    int len = fmt_list.length ();
 
-	    retval.resize (nconv, Matrix ());
+	    retval.resize (nconv+1, Matrix ());
 
 	    const scanf_format_elt *elt = fmt_list.first ();
 
@@ -1849,7 +1849,7 @@ octave_base_stream::oscanf (const string& fmt)
 		  }
 	      }
 
-	    retval.resize (num_values);
+	    retval (nconv) = static_cast<double> (num_values);
 
 	    if (! quit)
 	      {

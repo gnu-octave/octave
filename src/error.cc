@@ -57,6 +57,29 @@ bool buffer_error_messages = false;
 // The message buffer
 ostrstream *error_message_buffer = 0;
 
+// Warning messages are never buffered.
+// XXX FIXME XXX -- we should provide another way to turn them off...
+
+static void
+vwarning (const char *name, const char *fmt, va_list args)
+{
+  flush_octave_stdout ();
+
+  ostrstream output_buf;
+
+  if (name)
+    {
+      octave_diary << name << ": ";
+      cerr << name << ": ";
+    }
+
+  octave_diary.vform (fmt, args);
+  cerr.vform (fmt, args);
+
+  octave_diary << endl;
+  cerr << endl;
+}
+
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
@@ -175,7 +198,7 @@ warning (const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   warning_state = 1;
-  verror ("warning", fmt, args);
+  vwarning ("warning", fmt, args);
   va_end (args);
 }
 

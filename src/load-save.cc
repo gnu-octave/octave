@@ -2061,7 +2061,7 @@ do_load (istream& stream, const char *orig_fname, int force,
 }
 
 DEFUN_TEXT ("load", Fload, Sload, -1, 1,
-  "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n
+  "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n\
 \n\
 Load variables from a file.\n\
 \n\
@@ -2838,7 +2838,7 @@ save_vars (char **argv, int argc, ostream& os, int save_builtins,
 }
 
 DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
-  "save [-ascii] [-binary] [-float-binary] [-mat-binary] \
+  "save [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
      [-save-builtins] file [pattern ...]\n\
 \n\
 save variables in a file")

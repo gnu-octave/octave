@@ -1,3 +1,8 @@
+Fri Feb 28 20:53:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* texinfo.tex: Update to latest version from Karl Berry, and apply
+	previous patch too.
+
 Thu Feb 27 03:34:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* texinfo.tex (\codeunder): Maybe make it work for @var{} inside

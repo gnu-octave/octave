@@ -1,6 +1,9 @@
 Summary of changes for version 2.0.5:
 ------------------------------------
 
+  * A `switch' statement is now available.  See the Statements chapter
+    in the manual for details.
+
   * Commands like ls, save, and cd may now also be used as formal
     parameters for functions.
 

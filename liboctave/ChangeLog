@@ -1,3 +1,17 @@
+Fri Feb 28 20:11:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CmplxQR.cc (ComplexQR::init): New function.
+	(ComplexQR::ComplexQR): Use it.  Use initializer list too.
+	* CmplxQRP.cc (ComplexQRP::init): New function.
+	Get sizes right in all cases.
+	(ComplexQR::ComplexQRP): Use it.  Use initializer list too.
+
+	* dbleQR.cc (QR::init): New function.
+	(QR::QR): Use it.  Use initializer list too.
+	* dbleQRP.cc (QRP::init): New function.
+	Get sizes right in all cases.
+	(QR::QRP): Use it.  Use initializer list too.
+
 Wed Feb 26 15:46:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mach-info.cc (oct_mach_info::string_to_float_format):

@@ -279,10 +279,10 @@ MKOCTFILE_INCFLAGS = \
 # How to make .o files:
 
 %.o : %.c
-	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
+	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $< -o $@
 
 %.o : %.cc
-	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $<
+	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $< -o $@
 
 pic/%.o : %.c
 	$(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o $@

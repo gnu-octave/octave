@@ -1,3 +1,16 @@
+2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (libcruft.$(LIBEXT)): New target.
+	(all): Depend on `libraries', not `$(SUBDIRS) shared-lib'.
+	Conditionally construct `libraries' target.
+	(libcruft.$(SHLEXT_VER)): Delete target before rebuilding.
+	* Makerules.in (LIBCRUFT): Delete variable.
+	(LIBCRUFT_DEPEND): Conditionally define to $(LIBCRUFT_OBJS) only.
+	(all): Print warning if anything is done.
+	(stmp-pic): New target.
+	($CRUFT_PICOBJ): Depend on stmp-pic.
+	(clean, mostlyclean): Remove pic and stmp-pic.
+
 2000-02-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lapack/dbdsqr.f, lapack/dgeesv.f, lapack/dgelss.f,

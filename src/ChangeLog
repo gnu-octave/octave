@@ -1,3 +1,18 @@
+2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* src/Makefile.in (LIBRARIES): Conditionally define.
+	(libraries): Depend on $(LIBRARIES).
+	(octave): Depend on $(LIBRARIES), not libraries.  Also depend on
+	stamp-prereq and stamp-oct-links.
+	(all): Don't depend on stamp-prereq or stamp-oct-links.
+	(liboctinterp.$(LIBEXT), liboctinterp.$(SHELXT)): Delete target
+	before rebuilding.
+
+2000-03-21  Ben Sapp <bsapp@nua.lampf.lanl.gov>:
+
+	* src/Makefile.in (libraries): Depend only on library targets, not
+	archive members.
+
 2000-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (objects): New target

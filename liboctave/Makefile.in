@@ -148,24 +148,30 @@ pic:
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctave.$(LIBEXT)($(OBJECTS)) liboctave.$(SHLEXT)
+    libraries: liboctave.$(LIBEXT) liboctave.$(SHLEXT)
   else
     libraries: liboctave.$(SHLEXT)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctave.$(LIBEXT)($(OBJECTS))
+    libraries: liboctave.$(LIBEXT)
   else
     libraries:
   endif
 endif
 .PHONY: libraries
 
+liboctave.$(LIBEXT): $(OBJECTS)
+	rm -f $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
+
 liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
 	rm -f $@
 	$(LN_S) $< $@
 
 liboctave.$(SHLEXT_VER): $(PICOBJ)
+	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 $(PICOBJ): stmp-pic

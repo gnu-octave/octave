@@ -203,10 +203,40 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: stamp-prereq libraries stamp-oct-links octave DOCSTRINGS
+all: octave DOCSTRINGS
 .PHONY: all
 
 objects: $(OBJECTS)
+
+ifeq ($(SHARED_LIBS), true)
+  ifeq ($(STATIC_LIBS), true)
+    LIBRARIES = liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
+  else
+    LIBRARIES = liboctinterp.$(SHLEXT)
+  endif
+else
+  ifeq ($(STATIC_LIBS), true)
+    LIBRARIES = liboctinterp.$(LIBEXT)
+  else
+    LIBRARIES =
+  endif
+endif
+
+libraries: $(LIBRARIES)
+.PHONY: libraries
+
+liboctinterp.$(LIBEXT): $(OBJECTS)
+	rm -f $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
+	rm -f $@
+	$(LN_S) $< $@
+
+liboctinterp.$(SHLEXT_VER): $(PICOBJ)
+	rm -f $@
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 stamp-oct-links: $(OCT_FILES)
 	if [ -n "$(OCT_FILES)" ]; then \
@@ -217,7 +247,8 @@ stamp-oct-links: $(OCT_FILES)
 stamp-prereq: defaults.h oct-conf.h
 	touch stamp-prereq
 
-octave: octave.o builtins.o ops.o $(DLD_STATIC_OBJ) libraries
+octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
+	octave.o builtins.o ops.o $(DLD_STATIC_OBJ)
 	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o octave \
 	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
@@ -240,32 +271,6 @@ pic:
 	  echo "mkdir pic"; \
 	  mkdir pic; \
 	fi
-
-ifeq ($(SHARED_LIBS), true)
-  ifeq ($(STATIC_LIBS), true)
-    libraries: liboctinterp.$(LIBEXT)($(OBJECTS)) liboctinterp.$(SHLEXT)
-  else
-    libraries: liboctinterp.$(SHLEXT)
-  endif
-else
-  ifeq ($(STATIC_LIBS), true)
-    libraries: liboctinterp.$(LIBEXT)($(OBJECTS))
-  else
-    libraries:
-  endif
-endif
-.PHONY: libraries
-
-liboctinterp.$(LIBEXT): $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $^
-	$(RANLIB) $@
-
-liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
-	rm -f $@
-	$(LN_S) $< $@
-
-liboctinterp.$(SHLEXT_VER): $(PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 $(PICOBJ): stmp-pic
 

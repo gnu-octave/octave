@@ -31,20 +31,25 @@ endif
 CWD = $(shell pwd)
 THISDIR = $(notdir $(CWD))
 
-LIBCRUFT := ../libcruft.$(LIBEXT)
-
 LIBCRUFT_OBJS = $(CRUFT_OBJ) $(SPECIAL_DEPEND)
 
-LIBCRUFT_DEPS = $(LIBCRUFT)($(LIBCRUFT_OBJS))
-
 ifeq ($(STATIC_LIBS), true)
-  LIBCRUFT_DEPEND := $(LIBCRUFT_DEPS)
+  LIBCRUFT_DEPEND := $(LIBCRUFT_OBJS)
 endif
 
 all: pic $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
+	@echo "warning: run make in parent directory to update libraries"
 .PHONY: all
 
 .PRECIOUS: $(LIBCRUFT_OBJS)
+
+stmp-pic: pic
+	@if [ -f stmp-pic ]; then \
+	  true; \
+	else \
+	  echo "touch stmp-pic"; \
+	  touch stmp-pic; \
+	fi
 
 pic:
 	@if [ -d pic ]; then \
@@ -53,6 +58,8 @@ pic:
 	  echo "mkdir pic"; \
 	  mkdir pic; \
 	fi
+
+$(CRUFT_PICOBJ): stmp-pic
 
 install:: all
 .PHONY: install
@@ -68,15 +75,18 @@ TAGS: $(SOURCES)
 
 clean::
 	rm -f *.a *.o pic/*.o
+	-rmdir pic
+	rm -f stmp-pic
 .PHONY: clean
 
 mostlyclean::
 	rm -f *.o pic/*.o
+	-rmdir pic
+	rm -f stmp-pic
 .PHONY: mostlyclean
 
 distclean:: clean
 	rm -f Makefile
-	-rmdir pic
 .PHONY: distclean
 	
 maintainer-clean:: distclean

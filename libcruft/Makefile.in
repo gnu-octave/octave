@@ -36,7 +36,7 @@ ifeq ($(SHARED_LIBS), true)
   BINDISTFILES = libcruft.$(SHLEXT_VER)
 endif
 
-all: $(SUBDIRS) shared-lib
+all: libraries
 .PHONY: all
 
 $(SUBDIRS):
@@ -67,17 +67,31 @@ ifeq ($(SHARED_LIBS), true)
 endif
 
 ifeq ($(SHARED_LIBS), true)
-shared-lib: libcruft.$(SHLEXT)
+  ifeq ($(STATIC_LIBS), true)
+    libraries: $(SUBDIRS) libcruft.$(LIBEXT) libcruft.$(SHLEXT)
+  else
+    libraries: $(SUBDIRS) libcruft.$(SHLEXT)
+  endif
 else
-shared-lib:
+  ifeq ($(STATIC_LIBS), true)
+    libraries: $(SUBDIRS) libcruft.$(LIBEXT)
+  else
+    libraries:
+  endif
 endif
-.PHONY: shared-lib
+.PHONY: libraries
+
+libcruft.$(LIBEXT): $(CRUFT_OBJ)
+	rm -f $@
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
 
 libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
 	rm -f $@
 	$(LN_S) $< $@
 
 libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)
+	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
 $(CRUFT_OBJ):

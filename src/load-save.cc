@@ -88,12 +88,17 @@ enum floating_point_format
     LS_UNKNOWN_FLT_FMT,
   };
 
+// Not all of the following are currently used.
+
 enum save_type
   {
     LS_U_CHAR,
     LS_U_SHORT,
+    LS_U_INT,
+    LS_CHAR,
     LS_SHORT,
     LS_INT,
+    LS_FLOAT,
     LS_DOUBLE,
   };
 
@@ -462,6 +467,14 @@ write_doubles (ostream& os, double *data, save_type type, int len)
 
     case LS_U_SHORT:
       LS_DO_WRITE (unsigned TWO_BYTE_INT, data, 2, len, os);
+      break;
+
+    case LS_U_INT:
+      LS_DO_WRITE (unsigned FOUR_BYTE_INT, data, 4, len, os);
+      break;
+
+    case LS_CHAR:
+      LS_DO_WRITE (signed char, data, 1, len, os);
       break;
 
     case LS_SHORT:
@@ -1390,6 +1403,39 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
   return -1;
 }
 
+// We don't just use a cast here, because we need to be able to detect
+// possible errors.
+
+static floating_point_format
+get_floating_point_format (int mach)
+{
+  switch (mach)
+    {
+    case 0:
+      flt_fmt = LS_IEEE_LITTLE;
+      break;
+
+    case 1:
+      flt_fmt = LS_IEEE_BIG;
+      break;
+
+    case 2:
+      flt_fmt = LS_VAX_D;
+      break;
+
+    case 3:
+      flt_fmt = LS_VAX_G;
+      break;
+
+    case 4:
+      flt_fmt = LS_CRAY;
+      break;
+
+    default:
+      flt_fmt = LS_UNKOWN_FLT_FMT;
+      break;
+    }
+}
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.
 //
@@ -1430,14 +1476,9 @@ read_mat_binary_data (istream& is, const char *filename,
   mopt /= 100;      // Skip unused third digit too.
   mach = mopt % 10; // IEEE, VAX, etc.
 
-  switch (mach)
+  flt_fmt = get_floating_point_format (mach);
+  if (flt_fmt == LS_UNKNOWN_FLT_FMT)
     {
-    case 0: flt_fmt = LS_IEEE_LITTLE; break;
-    case 1: flt_fmt = LS_IEEE_BIG;    break;
-    case 2: flt_fmt = LS_VAX_D;       break;
-    case 3: flt_fmt = LS_VAX_G;       break;
-    case 4: flt_fmt = LS_CRAY;        break;
-    default:
       error ("load: unrecognized binary format!");
       return 0;
     }
@@ -1553,14 +1594,9 @@ read_binary_file_header (istream& is, int& swap,
   char tmp = 0;
   is.read (&tmp, 1);
 
-  switch (tmp)
+  flt_fmt = get_floating_point_format (tmp);
+  if (flt_fmt == LS_UNKNOWN_FLT_FMT)
     {
-    case 0: flt_fmt = LS_IEEE_LITTLE; break;
-    case 1: flt_fmt = LS_IEEE_BIG;    break;
-    case 2: flt_fmt = LS_VAX_D;       break;
-    case 3: flt_fmt = LS_VAX_G;       break;
-    case 4: flt_fmt = LS_CRAY;        break;
-    default:
       if (! quiet)
         error ("load: unrecognized binary format!");
       return -1;

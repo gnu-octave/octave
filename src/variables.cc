@@ -1429,33 +1429,33 @@ This command may not be used within a function body.\n\
 
 	  while (++idx < argc)
 	    {
-	      if (argv[idx] == "--all" || argv[idx] == "-a")
+	      if (argv[idx] == "-all" || argv[idx] == "-a")
 		{
 		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
 
 		  have_dash_option = true;
 		  clear_all = true;
 		}
-	      else if (argv[idx] == "--exclusive" || argv[idx] == "-x")
+	      else if (argv[idx] == "-exclusive" || argv[idx] == "-x")
 		{
 		  have_dash_option = true;
 		  exclusive = true;
 		}
-	      else if (argv[idx] == "--functions" || argv[idx] == "-f")
+	      else if (argv[idx] == "-functions" || argv[idx] == "-f")
 		{
 		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
 
 		  have_dash_option = true;
 		  clear_functions = true;
 		}
-	      else if (argv[idx] == "--global" || argv[idx] == "-g")
+	      else if (argv[idx] == "-global" || argv[idx] == "-g")
 		{
 		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
 
 		  have_dash_option = true;
 		  clear_globals = true;
 		}
-	      else if (argv[idx] == "--variables" || argv[idx] == "-v")
+	      else if (argv[idx] == "-variables" || argv[idx] == "-v")
 		{
 		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
 
@@ -1480,7 +1480,7 @@ This command may not be used within a function body.\n\
 
 		      if (++idx < argc)
 			warning
-			  ("clear: ignoring extra arguments after --all");
+			  ("clear: ignoring extra arguments after -all");
 
 		      curr_sym_tab->clear ();
 		      fbi_sym_tab->clear_functions ();

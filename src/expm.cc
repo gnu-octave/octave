@@ -56,9 +56,6 @@ extern "C"
 			   const Complex*, const int*, double*);
 }
 
-// XXX FIXME XXX
-extern int empty_arg (tree_constant&);
-
 tree_constant
 matrix_exp (tree_constant& a)
 {
@@ -79,7 +76,7 @@ matrix_exp (tree_constant& a)
       1.9270852604185938e-9,
     };
 
-  if (empty_arg (tmp))
+  if (tmp.is_empty ())
     {
       int flag = user_pref.propagate_empty_matrices;
       if (flag != 0)

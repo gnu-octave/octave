@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.436 $)
+AC_REVISION($Revision: 1.438 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -865,7 +865,7 @@ AC_CHECK_SIZEOF(long long)
 
 ### Does the C compiler handle alloca() and const correctly?
 
-AC_FUNC_ALLOCA([])
+AC_FUNC_ALLOCA
 AC_C_CONST
 
 ### See if we should define NPOS.
@@ -934,7 +934,11 @@ fi
 ## avoids the problem.
 
 GLOB_DIR=glob
-LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o'
+if test -n "$(ALLOCA)"; then
+  LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o $(TOPDIR)/glob/alloca.o'
+else
+  LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o'
+fi
 GLOB_INCFLAGS='-I$(top_srcdir)/glob -I$(TOPDIR)/glob'
 if test "$have_fnmatch_h" = yes && test "$have_glob_h" = yes; then
   AC_EGREP_CPP(yes, [#include <fnmatch.h>

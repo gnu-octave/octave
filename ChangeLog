@@ -1,3 +1,7 @@
+2003-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: If we need alloca, then also include it in LIBGLOB.
+
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Preserve CFLAGS and CXXFLAGS before doing anything.

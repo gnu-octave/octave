@@ -29,9 +29,11 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include <builtin.h>
 #include "BaseSLList.h"
 
+#include "error.h"
+
 void BaseSLList::error(const char* msg) const
 {
-  (*lib_error_handler)("SLList", msg);
+  ::error ("SLList: %s", msg);
 }
 
 int BaseSLList::length() const

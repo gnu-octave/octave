@@ -1,3 +1,8 @@
+Wed Dec 18 20:17:23 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* BaseSLList.cc: Include error.h.
+	(BaseSLList::error): Call ::error() to process error message.
+
 Fri Dec 13 02:38:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.cc (octave_value::convert_and_assign): Preserve lhs value if

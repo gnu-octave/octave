@@ -72,17 +72,48 @@ the search path, then you might be able to fix that with a symbolic
 link.  However, if your version of libg++ was not compiled with your
 current version of gcc, you are likely to run into more trouble.
 
+The linker can't find -lieee
+----------------------------
+
+This can happen because your libraries don't match your version of
+gcc.  Some recent Linux distributions don't include a libieee.a file
+because IEEE support is now the default and the library is no longer
+needed, but the gcc specs file still adds -lieee to the linker command
+if gcc is invoked with the -mieeefp flag.  I believe that you should
+be able to fix this by editing the gcc specs file.  In it, you should
+find something like this:
+
+  %{!shared: %{mieee-fp:-lieee} %{p:-lgmon} %{pg:-lgmon} \
+  %{!ggdb:-lc} %{ggdb:-lg}}
+
+changing it to
+
+  %{!shared: %{p:-lgmon} %{pg:-lgmon} %{!ggdb:-lc} %{ggdb:-lg}}
+
+should keep gcc from adding -lieee to the link command.  You can find
+the location of the specs file by running the command gcc -v.
+
+My system doesn't have g77
+--------------------------
+
+A binary release of g77 that should work with gcc 2.7.2 is available
+from sunsite.unc.edu in the directory /pub/Linux/devel/lang/fortran.
+There is also a Debian package for g77.
+
 Upgrading your compiler and libraries
 -------------------------------------
 
-Finally, installing libg++ on a Linux system is not as simple as it
-should be, because libg++ shares some basic I/O code with the Linux C
-library, and they must be compatible.  You should get and read the
-release notes for the compiler and libraries.
+Installing libg++ on a Linux system is not as simple as it should be,
+because libg++ shares some basic I/O code with the Linux C library,
+and they must be compatible.  You should get and read the release
+notes for the compiler and libraries.
+
+If you have comments or suggestions for this document, please contact
+bug-octave@bevo.che.wisc.edu.
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Sat Dec 14 09:44:05 1996
+Tue Dec 17 13:24:52 1996

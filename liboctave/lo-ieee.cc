@@ -31,10 +31,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <floatingpoint.h>
 #endif
 
-#if defined (HAVE_NAN_H) && defined (SCO)
+#if defined (HAVE_NAN_H)
+#if defined (SCO)
 #define _IEEE 1
+#endif
 #include <nan.h>
+#if defined (SCO)
 #undef _IEEE
+#endif
 #endif
 
 #include "lo-ieee.h"

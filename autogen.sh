@@ -29,12 +29,12 @@ for i in `find . -name configure.in -print`; do (
     if [ -f skip-autoconf ]; then
       echo "skipping autoconf in $dir"
     else
-      autoconf
+      autoconf --force
     fi
     if [ -f skip-autoheader ]; then
       echo "skipping autoheader in $dir"
     else
-      autoheader
+      autoheader --force
     fi
 ); done
 

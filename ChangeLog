@@ -1,3 +1,7 @@
+2003-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* autogen.sh: Use --force for autoconf and autoheader.
+
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (CONF_DISTFILES): Include acx_blas.m4 and

@@ -22,7 +22,7 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	acconfig.h MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = bsd-math dld
+DISTDIRS = bsd-math dld kpathsea
 
 # Subdirectories to run make in for the primary targets.
 SUBDIRS = libcruft liboctave @DLD_DIR@ info readline src doc scripts 
@@ -55,6 +55,10 @@ libcruft:
 liboctave:
 	cd liboctave ; $(MAKE) all
 .PHONY: liboctave
+
+kpathsea:
+	cd kpathsea ; $(MAKE) all
+.PHONY: kpathsea
 
 dld:
 	cd dld ; $(MAKE) all
@@ -97,7 +101,6 @@ BUGS.info:
 .PHONY: BUGS.info
 
 install:
-	echo $(DIRS_TO_MAKE)
 	for dir in $(DIRS_TO_MAKE) ; do \
 	  if test -d $$dir ; then true ; else ./mkpath $$dir ; fi ; \
 	done
@@ -137,19 +140,18 @@ realclean:
 # Now that things are under RCS control, we need to do the recursive
 # chmod so that the distributed files end up with reasonable modes.
 
-local-dist: octave.info INSTALL.info BUGS.info
-	echo octave-local-$(version) > .fname
-	rm -rf `cat .fname`
-	mkdir `cat .fname`
-	ln $(DISTFILES) `cat .fname`
-	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
-	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	tar chf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname`
+# Shared rules for making clean tar files.
+
+clean-tar:
 	tar xf `cat .fname`.tar
+	find `cat .fname` \( -name RCS -a -type d \) -o -name '*~' \
+		-o -name '#*#' -exec rm -rf {} \;
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
-.PHONY: local-dist
+	rm -rf `cat .fname` .fname
+.PHONY: clean-tar
+
+# Rules for making a source distribution.
 
 links-for-dist: octave.info INSTALL.info BUGS.info
 	echo octave-$(version) > .fname
@@ -160,6 +162,20 @@ links-for-dist: octave.info INSTALL.info BUGS.info
 	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) dist; cd ..; done
 .PHONY: links-for-dist
 
+dist-tar: links-for-dist
+	tar chf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+.PHONY: dist-tar
+
+clean-dist-tar: dist-tar
+	$(MAKE) clean-tar
+.PHONY: clean-dist-tar
+
+dist: clean-dist-tar
+.PHONY: dist
+
+# Rules for making a binary distribution.
+
 links-for-bin-dist: octave.info INSTALL.info BUGS.info
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
@@ -168,27 +184,23 @@ links-for-bin-dist: octave.info INSTALL.info BUGS.info
 	for dir in $(BINDISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) dist; cd ..; done
 .PHONY: links-for-dist
 
-binary-dist: links-for-bin-dist .fname
+bin-dist-tar: links-for-bin-dist
 	strip src/octave
 	ln src/octave `cat .fname`/octave
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
-	tar xf `cat .fname`.tar
-	chmod -R a+rwX `cat .fname`
-	tar cf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname` .fname
+.PHONY: bin-dist-tar
+
+clean-bin-dist-tar: bin-dist-tar
+	$(MAKE) clean-tar
+.PHONY: clean-bin-dist-tar
+
+binary-dist: clean-bin-dist-tar
 .PHONY: binary-dist
 
-dist: links-for-dist
-	tar chf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname`
-	tar xf `cat .fname`.tar
-	chmod -R a+rwX `cat .fname`
-	tar cf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname` .fname
-.PHONY: dist
+# Rules for making a distribution of the docs.
 
-doc-dist:
+doc-dist-tar:
 	echo octave-$(version) > .fname
 	echo octave-doc-$(version).tar > .tarfname
 	rm -rf `cat .fname`
@@ -197,11 +209,34 @@ doc-dist:
 	mkdir `cat .fname`/doc; cd doc; $(MAKE) doc-dist
 	tar chf `cat .tarfname` `cat .fname`
 	rm -rf `cat .fname`
-	tar xf `cat .tarfname`
-	chmod -R a+rwX `cat .fname`
-	tar cf `cat .tarfname` `cat .fname`
-	rm -rf `cat .fname` .fname
+.PHONY: doc-dist-tar
+
+clean-doc-dist-tar: doc-dist-tar
+	$(MAKE) clean-tar
+.PHONY: clean-doc-dist-tar
+
+doc-dist: clean-doc-dist-tar
 .PHONY: doc-dist
+
+# Rules for making a distribution for local use.
+
+local-dist-tar: octave.info INSTALL.info BUGS.info
+	echo octave-local-$(version) > .fname
+	rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln $(DISTFILES) `cat .fname`
+	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
+	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	tar chf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+.PHONY: local-dist-tar
+
+clean-local-dist-tar: local-dist-tar
+	$(MAKE) clean-tar
+.PHONY: clean-local-dist-tar
+
+local-dist: clean-local-dist-tar
+.PHONY: local-dist
 
 dist-z:
 	echo octave-$(version).tar > .fname

@@ -66,6 +66,8 @@ public:
       return *this;
     }
 
+  ~EIG (void) { }
+
   ComplexColumnVector eigenvalues (void) const { return lambda; }
 
   ComplexMatrix eigenvectors (void) const { return v; }

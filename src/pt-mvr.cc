@@ -137,24 +137,19 @@ tree_index_expression::eval (bool print)
 	eval_error ();
       else
 	{
-	  if (error_state)
-	    eval_error ();
+	  if (all_args_defined (args))
+	    {
+	      octave_value_list tmp = id->eval (print, 1, args);
+
+	      if (error_state)
+		eval_error ();
+	      else if (tmp.length () > 0)
+		retval = tmp(0);
+	    }
 	  else
 	    {
-	      if (all_args_defined (args))
-		{
-		  octave_value_list tmp = id->eval (print, 1, args);
-
-		  if (error_state)
-		    eval_error ();
-		  else if (tmp.length () > 0)
-		    retval = tmp(0);
-		}
-	      else
-		{
-		  ::error ("undefined arguments found in index expression");
-		  eval_error ();
-		}
+	      ::error ("undefined arguments found in index expression");
+	      eval_error ();
 	    }
 	}
     }
@@ -188,22 +183,17 @@ tree_index_expression::eval (bool print, int nargout, const octave_value_list&)
 	eval_error ();
       else
 	{
-	  if (error_state)
-	    eval_error ();
+	  if (all_args_defined (tmp_args))
+	    {
+	      retval = id->eval (print, nargout, tmp_args);
+
+	      if (error_state)
+		eval_error ();
+	    }
 	  else
 	    {
-	      if (all_args_defined (tmp_args))
-		{
-		  retval = id->eval (print, nargout, tmp_args);
-
-		  if (error_state)
-		    eval_error ();
-		}
-	      else
-		{
-		  ::error ("undefined arguments found in index expression");
-		  eval_error ();
-		}
+	      ::error ("undefined arguments found in index expression");
+	      eval_error ();
 	    }
 	}
     }

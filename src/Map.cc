@@ -132,6 +132,42 @@ CHMap<C>::CHMap (const CHMap& a) : Map<C> (a.def)
 }
 
 template <class C>
+CHMap<C>&
+CHMap<C>::operator = (const CHMap& a)
+{
+  Map<C>::operator = (*this);
+
+  unsigned int old_size = a.size;
+
+  CHNode<C> **old_tab = tab;
+  old_size = a.size;
+
+  size = old_size;
+  tab = new CHNode<C>* [size];
+
+  for (unsigned int i = 0; i < size; ++i)
+    tab[i] = static_cast<CHNode<C> *> (index_to_CHptr (i+1));
+
+  for (Pix p = a.first (); p; a.next (p))
+    (*this) [a.key (p)] = a.contents (p);
+
+  for (unsigned int i = 0; i < old_size; ++i)
+    {
+      CHNode<C> *p = old_tab[i];
+      old_tab[i] = static_cast<CHNode<C> *> (index_to_CHptr (i+1));
+      while (p->goodCHptr ())
+	{
+	  CHNode<C> *nxt = p->tl;
+	  delete p;
+	  p = nxt;
+	}
+    }
+  delete [] old_tab;
+
+  return *this;
+}
+
+template <class C>
 Pix
 CHMap<C>::seek (const std::string& key) const
 {

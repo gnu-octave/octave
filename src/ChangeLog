@@ -1,3 +1,17 @@
+2001-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Map.h, Map.cc (CHMap<C>::operator = (const CHMap&)): New function.
+	(Map<C>::operator = (const Map&)): Likewise.
+	(Map<C> (const Map&)): Likewise.
+
+	* OPERATORS/op-cm-cs.cc, OPERATORS/op-cm-s.cc,
+	OPERATORS/op-m-cs.cc, OPERATORS/op-m-s.cc:
+	Make ldiv operator work for row vector by scalar ops.
+
+	* OPERATORS/op-cs-cm.cc, OPERATORS/op-cs-m.cc,
+	OPERATORS/op-s-cm.cc, OPERATORS/op-s-m.cc:
+	Make div operator work for scalar by column vector ops.
+
 2001-01-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (safe_fclose): Discard comments at the end of a file.

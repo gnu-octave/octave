@@ -53,7 +53,17 @@ protected:
   C def;
 
 public:
-  Map (const C& dflt) : def (dflt) { count = 0; }
+  Map (const C& dflt) : count (0), def (dflt) { }
+
+  Map (const Map& m) : count (m.count), def (m.def) { }
+
+  Map& operator = (const Map& m)
+    {
+      count = m.count;
+      def = m.def;
+
+      return *this;
+    }
 
   virtual ~Map (void) { }
 
@@ -125,10 +135,12 @@ public:
 
   CHMap (const CHMap& a);
 
+  CHMap& operator = (const CHMap& a);
+
   ~CHMap (void)
     {
       clear ();
-      delete tab;
+      delete [] tab;
     }
 
   C& operator [] (const std::string& key);
@@ -151,8 +163,8 @@ public:
       if (p == 0)
 	error ("null Pix");
 
-     return ((CHNode<C> *) p)->cont;
-   }
+      return ((CHNode<C> *) p)->cont;
+    }
 
   Pix seek (const std::string& key) const;
 

@@ -1,3 +1,7 @@
+2001-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-cutils.c: Don't delcare strptime.
+
 2001-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc (operator * (const ComplexMatrix&, const ComplexMatrix&):

@@ -124,7 +124,7 @@ OV_INTTYPE_SRC := \
 	ov-int8.cc ov-int16.cc ov-int32.cc ov-int64.cc \
 	ov-uint8.cc ov-uint16.cc ov-uint32.cc ov-uint64.cc
 
-OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
+OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-cs-list.cc ov-list.cc ov-re-mat.cc ov-cx-mat.cc \
 	ov-range.cc ov-scalar.cc ov-complex.cc ov-str-mat.cc \
 	ov-streamoff.cc ov-struct.cc ov-va-args.cc \
@@ -157,7 +157,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 
 SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
-EXTRAS := ov-base-int.cc
+EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc 
 
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(EXTRAS)
 

@@ -20,11 +20,11 @@ INSTALL_DATA = @INSTALL_DATA@
 
 DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	octMakefile.in Makeconf.in NEWS PROJECTS README README.NLP \
-	SENDING-PATCHES THANKS f2c-compat.sh flibs.sh cxxlibs.sh \
-	configure configure.in config.guess config.sub \
-	move-if-change octave.sh octave-bug.in octave-mode.el \
-	install-sh doinstall.sh mkinstalldirs config.h.in acconfig.h \
-	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
+	SENDING-PATCHES THANKS configure configure.in config.guess \
+	config.sub move-if-change octave.sh octave-bug.in \
+	octave-mode.el aclocal.m4 install-sh doinstall.sh \
+	mkinstalldirs config.h.in acconfig.h MAKEINFO.PATCH \
+	ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
 DISTDIRS = kpathsea make

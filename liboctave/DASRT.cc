@@ -49,12 +49,12 @@ typedef int (*dasrt_constr_ptr) (const int&, const double&, const double*,
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (ddasrt, DASRT) (dasrt_fcn_ptr, const int&, double&,
-			    double*, double*, const double&, int*,
-			    const double*, const double*, int&, double*,
-			    const int&, int*, const int&, double*,
-			    int*, dasrt_jac_ptr, dasrt_constr_ptr,
-			    const int&, int*);
+  F77_FUNC (ddasrt, DDASRT) (dasrt_fcn_ptr, const int&, double&,
+			     double*, double*, const double&, int*,
+			     const double*, const double*, int&, double*,
+			     const int&, int*, const int&, double*,
+			     int*, dasrt_jac_ptr, dasrt_constr_ptr,
+			     const int&, int*);
 }
 
 static DAEFunc::DAERHSFunc user_fsub;

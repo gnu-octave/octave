@@ -21,10 +21,11 @@
 
 TOPDIR = ..
 
-include $(TOPDIR)/Makeconf
-
 srcdir = @srcdir@
+top_srcdir = @top_srcdir@
 VPATH  = @srcdir@:@srcdir@/../src
+
+include $(TOPDIR)/Makeconf
 
 common = @srcdir@/../src
 

@@ -8,10 +8,11 @@
 
 TOPDIR = ..
 
-include $(TOPDIR)/Makeconf
-
 srcdir = @srcdir@
+top_srcdir = @top_srcdir@
 VPATH = @srcdir@:@srcdir@/../bsd-math
+
+include $(TOPDIR)/Makeconf
 
 LIBOBJS = @LIBOBJS@
 

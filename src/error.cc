@@ -65,6 +65,31 @@ verror (const char *name, const char *fmt, va_list args)
   delete [] msg;
 }
 
+static void
+error_1 (const char *name, const char *fmt, va_list args)
+{
+  if (error_state != -2)
+    {
+      if (! error_state)
+	error_state = 1;
+
+      if (! suppress_octave_error_messages)
+	{
+	  int len = 0;
+	  if (fmt && *fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
+	    {
+	      error_state = -2;
+	      char *tmp_fmt = strsave (fmt);
+	      tmp_fmt[len - 1] = '\0';
+	      verror (name, tmp_fmt, args);
+	      delete [] tmp_fmt;
+	    }
+	  else
+	    verror (name, fmt, args);
+	}
+    }
+}
+
 void
 message (const char *name, const char *fmt, ...)
 {
@@ -96,30 +121,18 @@ warning (const char *fmt, ...)
 void
 error (const char *fmt, ...)
 {
-  if (error_state == -2)
-    return;
-
-  if (! error_state)
-    error_state = 1;
-
-  if (suppress_octave_error_messages)
-    return;
-
   va_list args;
   va_start (args, fmt);
+  error_1 ("error", fmt, args);
+  va_end (args);
+}
 
-  int len = 0;
-  if (fmt && *fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
-    {
-      error_state = -2;
-      char *tmp_fmt = strsave (fmt);
-      tmp_fmt[len - 1] = '\0';
-      verror ("error", tmp_fmt, args);
-      delete [] tmp_fmt;
-    }
-  else
-    verror ("error", fmt, args);
-
+void
+parse_error (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_1 (0, fmt, args);
   va_end (args);
 }
 

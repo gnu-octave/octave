@@ -161,7 +161,6 @@ static tree_index_expression *make_index_expression
   do \
     { \
       global_command = 0; \
-      reset_parser (); \
       yyerrok; \
       if (interactive) \
 	YYACCEPT; \
@@ -632,8 +631,7 @@ command		: plot_command
 		  {
 		    if (!looping)
 		      {
-			yyerror ("parse error");
-			error ("break: only meaningful within a `for'\
+			yyerror ("break: only meaningful within a `for'\
  or `while' loop");
 			ABORT_PARSE;
 		      }
@@ -643,8 +641,7 @@ command		: plot_command
 		  {
 		    if (!looping)
 		      {
-			yyerror ("parse error");
-			error ("continue: only meaningful within a\
+			yyerror ("continue: only meaningful within a\
  `for' or `while' loop");
 			ABORT_PARSE;
 		      }
@@ -655,8 +652,7 @@ command		: plot_command
 		  {
 		    if (!defining_func)
 		      {
-			yyerror ("parse error");
-			error ("return: only meaningful within a function");
+			yyerror ("return: only meaningful within a function");
 			ABORT_PARSE;
 		      }
 		    $$ = new tree_return_command ($1->line (), $1->column ());
@@ -719,8 +715,7 @@ expression	: variable '=' expression
 		      ($1, $3, 0, 0, $2->line (), $2->column ()); }
 		| NUM '=' expression
 		  {
-		    yyerror ("parse error");
-		    error ("invalid assignment to a number");
+		    yyerror ("invalid assignment to a number");
 		    $$ = 0;
 		    ABORT_PARSE;
 		  }
@@ -844,10 +839,7 @@ colon_expr	: simple_expr ':' simple_expr
 		  {
 		    $$ = $1->chain ($3);
 		    if (! $$)
-		      {
-			yyerror ("parse error");
-			ABORT_PARSE;
-		      }
+		      ABORT_PARSE;
 		  }
 		;
 
@@ -941,8 +933,7 @@ return_list1	: return_list_x identifier
 		  { $$ = new tree_parameter_list ($2); }
 		| return_list_x error
 		  {
-		    yyerror ("parse error");
-		    error ("invalid function return list");
+		    yyerror ("invalid function return list");
 		    ABORT_PARSE;
 		  }
 		| return_list1 ',' identifier
@@ -954,8 +945,7 @@ func_def2	: identifier safe local_symtab func_def3
 		    char *id_name = $1->name ();
 //		    if (is_text_function_name (id_name))
 //		      {
-//			yyerror ("parse error");
-//			error ("invalid use of reserved word %s", id_name);
+//			yyerror ("invalid use of reserved word %s", id_name);
 //			ABORT_PARSE;
 //		      }
 
@@ -1051,8 +1041,7 @@ variable	: indirect_ref
 		  { $$ = make_index_expression ($1, $3); }
 		| indirect_ref '['
 		  {
-		    yyerror ("parse error");
-		    error ("use `(\' and `)\' as index operators, not\
+		    yyerror ("use `(\' and `)\' as index operators, not\
  `[\' and `]\'"); 
 		    $$ = 0;
 		    ABORT_PARSE;
@@ -1090,14 +1079,12 @@ param_list1	: '(' identifier
 		  { $1->append ($3); }
 		| '(' error
 		  {
-		    yyerror ("parse error");
-		    error ("invalid parameter list");
+		    yyerror ("invalid parameter list");
 		    ABORT_PARSE;
 		  }
 		| param_list1 ',' error
 		  {
-		    yyerror ("parse error");
-		    error ("invalid parameter list");
+		    yyerror ("invalid parameter list");
 		    ABORT_PARSE;
 		  }
 		;
@@ -1195,16 +1182,18 @@ yyerror (char *s)
   if (err_col == 0 && line)
     err_col = strlen (line) + 1;
 
-// Print a message like `parse error', maybe printing the line number
-// and file name.
-
   ostrstream output_buf;
 
-  output_buf.form ("\n%s", s);
-
   if (reading_fcn_file || reading_script_file)
-    output_buf.form (" near line %d of file %s.m", input_line_number,
-		     curr_fcn_file_name);
+    output_buf << "parse error near line " << input_line_number
+	       << " of file " << curr_fcn_file_name << ".m:";
+  else
+    output_buf << "parse error:";
+
+  if (s && strcmp (s, "parse error") != 0)
+    output_buf << "\n\n  " << s;
+
+  output_buf << "\n\n";
 
   if (line)
     {
@@ -1214,16 +1203,25 @@ yyerror (char *s)
           len--;
           line[len] = '\0';
         }
-// Print the line, maybe with a pointer near the error token.
-      if (err_col > len)
-        output_buf.form (":\n\n  %s\n\n", line);
-      else
-        output_buf.form (":\n\n  %s\n  %*s\n\n", line, err_col, "^");
-    }
-  else
-    output_buf << "\n\n";
 
-  maybe_page_output (output_buf);
+// Print the line, maybe with a pointer near the error token.
+
+      output_buf << "  " << line << "\n";
+      if (err_col <= len)
+	{
+	  for (int i = 0; i < err_col + 1; i++)
+	    output_buf << " ";
+	  output_buf << "^";
+	}
+    }
+
+  output_buf << "\n" << ends;
+
+  char *msg = output_buf.str ();
+
+  parse_error (msg);
+
+  delete [] msg;
 }
 
 // Error mesages for mismatched end tokens.
@@ -1584,20 +1582,13 @@ make_multi_val_ret (tree_expression *rhs, int l, int c)
 	      retval = new tree_multi_assignment_expression (id_list, t, l, c);
 	    }
 	  else
-	    {
-	      yyerror ("parse error");
-	      error ("RHS must be an expression that can return\
- multiple values");
-	    }
+	    yyerror ("RHS must be an expression that returns multiple values");
 	}
       else
 	panic_impossible ();
     }
   else
-    {
-      yyerror ("parse error");
-      error ("invalid identifier list for assignment");
-    }
+    yyerror ("invalid identifier list for assignment");
 
   return retval;
 }

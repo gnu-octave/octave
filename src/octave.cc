@@ -271,7 +271,9 @@ parse_and_execute (FILE *f, int print)
   do
     {
       reset_parser ();
+
       retval = yyparse ();
+
       if (retval == 0 && global_command)
 	{
 	  global_command->eval (print);
@@ -635,6 +637,9 @@ main (int argc, char **argv)
 	}
     }
   while (retval == 0);
+
+  if (retval == 1 && ! error_state)
+    retval = 0;
 
   clean_up_and_exit (retval);
 }

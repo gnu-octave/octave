@@ -550,9 +550,9 @@ octave_value::maybe_mutate (void)
 }
 
 octave_value_list
-octave_value::do_index_op (int nargout, const octave_value_list& idx)
+octave_value::do_multi_index_op (int nargout, const octave_value_list& idx)
 {
-  return rep->do_index_op (nargout, idx);
+  return rep->do_multi_index_op (nargout, idx);
 }
 
 static void

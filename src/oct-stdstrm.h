@@ -32,15 +32,15 @@ octave_base_stdiostream : public octave_base_stream
 {
 public:
 
-  octave_base_stdiostream (const std::string& n, FILE *f,
-			   ios::openmode arg_md = ios::in|ios::out,
-			   oct_mach_info::float_format flt_fmt =
-			   oct_mach_info::native)
+  octave_base_stdiostream
+    (const std::string& n, FILE *f,
+     std::ios::openmode arg_md = std::ios::in|std::ios::out,
+     oct_mach_info::float_format flt_fmt = oct_mach_info::native)
     : octave_base_stream (arg_md, flt_fmt), nm (n), fp (f) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (streamoff offset, ios::seek_dir origin);
+  int seek (streamoff offset, std::ios::seek_dir origin);
 
   // Return current stream position.
 
@@ -77,12 +77,13 @@ octave_istdiostream : public octave_base_stdiostream
 public:
 
   octave_istdiostream (const std::string& n, FILE *f = 0,
-		       ios::openmode arg_md = ios::in,
+		       std::ios::openmode arg_md = std::ios::in,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
-  create (const std::string& n, FILE *f = 0, ios::openmode arg_md = ios::in,
+  create (const std::string& n, FILE *f = 0,
+	  std::ios::openmode arg_md = std::ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.
@@ -126,12 +127,13 @@ octave_ostdiostream : public octave_base_stdiostream
 public:
 
   octave_ostdiostream (const std::string& n, FILE *f = 0,
-		       ios::openmode arg_md = ios::out,
+		       std::ios::openmode arg_md = std::ios::out,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
-  create (const std::string& n, FILE *f = 0, ios::openmode arg_md = ios::out,
+  create (const std::string& n, FILE *f = 0,
+	  std::ios::openmode arg_md = std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Return non-zero if EOF has been reached on this stream.

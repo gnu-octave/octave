@@ -104,29 +104,29 @@ fopen_mode_to_ios_mode (const std::string& mode)
       // Could probably be faster, but does it really matter?
 
       if (mode == "r")
-	retval = ios::in;
+	retval = std::ios::in;
       else if (mode == "w")
-	retval = ios::out | ios::trunc;
+	retval = std::ios::out | std::ios::trunc;
       else if (mode == "a")
-	retval = ios::out | ios::app;
+	retval = std::ios::out | std::ios::app;
       else if (mode == "r+")
-	retval = ios::in | ios::out;
+	retval = std::ios::in | std::ios::out;
       else if (mode == "w+")
-	retval = ios::in | ios::out | ios::trunc;
+	retval = std::ios::in | std::ios::out | std::ios::trunc;
       else if (mode == "a+")
-	retval = ios::in | ios::out | ios::app;
+	retval = std::ios::in | std::ios::out | std::ios::app;
       else if (mode == "rb")
-	retval = ios::in | ios::bin;
+	retval = std::ios::in | std::ios::bin;
       else if (mode == "wb")
-	retval = ios::out | ios::trunc | ios::bin;
+	retval = std::ios::out | std::ios::trunc | std::ios::bin;
       else if (mode == "ab")
-	retval = ios::out | ios::app | ios::bin;
+	retval = std::ios::out | std::ios::app | std::ios::bin;
       else if (mode == "r+b")
-	retval = ios::in | ios::out | ios::bin;
+	retval = std::ios::in | std::ios::out | std::ios::bin;
       else if (mode == "w+b")
-	retval = ios::in | ios::out | ios::trunc | ios::bin;
+	retval = std::ios::in | std::ios::out | std::ios::trunc | std::ios::bin; 
       else if (mode == "a+b")
-	retval = ios::in | ios::out | ios::app | ios::bin;
+	retval = std::ios::in | std::ios::out | std::ios::app | std::ios::bin;
       else
 	::error ("invalid mode specified");
     }

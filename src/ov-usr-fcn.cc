@@ -254,7 +254,8 @@ unprotect_function (void *sr_arg)
 }
 
 octave_value_list
-octave_user_function::do_index_op (int nargout, const octave_value_list& args)
+octave_user_function::do_multi_index_op (int nargout,
+					 const octave_value_list& args)
 {
   octave_value_list retval;
 

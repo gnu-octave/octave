@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-procbuf.h"
 
 class
-procstreambase : virtual public ios
+procstreambase : virtual public std::ios
 {
 public:
 
@@ -72,12 +72,12 @@ public:
 
   iprocstream (void) : procstreambase () { }
 
-  iprocstream (const char *name, int mode=ios::in)
+  iprocstream (const char *name, int mode = std::ios::in)
     : procstreambase(name, mode) { }
 
   ~iprocstream (void) { }
 
-  void open (const char *name, int mode=ios::in)
+  void open (const char *name, int mode = std::ios::in)
     { procstreambase::open (name, mode); }
 
 private:
@@ -94,12 +94,12 @@ public:
  
   oprocstream (void) : procstreambase () { }
 
-  oprocstream (const char *name, int mode=ios::out)
+  oprocstream (const char *name, int mode = std::ios::out)
     : procstreambase(name, mode) { }
 
   ~oprocstream (void) { }
 
-  void open (const char *name, int mode=ios::out)
+  void open (const char *name, int mode = std::ios::out)
     { procstreambase::open(name, mode); }
 
 private:

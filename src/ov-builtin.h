@@ -54,7 +54,8 @@ public:
 
   bool is_builtin_function (void) const { return true; }
 
-  octave_value_list do_index_op (int nargout, const octave_value_list& args);
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& args);
 
 protected:
 

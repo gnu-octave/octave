@@ -3169,7 +3169,7 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
   octave_function *fcn = is_valid_function (name, "feval", 1);
 
   if (fcn)
-    retval = fcn->do_index_op (nargout, args);
+    retval = fcn->do_multi_index_op (nargout, args);
 
   return retval;
 }

@@ -72,7 +72,8 @@ public:
 
   octave_value do_index_op (const octave_value_list& idx);
 
-  octave_value_list do_index_op (int nargout, const octave_value_list& idx);
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& idx);
 
   idx_vector index_vector (void) const;
 

@@ -31,15 +31,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-fstrm.h"
 
 octave_stream
-octave_fstream::create (const std::string& nm_arg, ios::openmode md,
+octave_fstream::create (const std::string& nm_arg, std::ios::openmode md,
 			oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_fstream (nm_arg, md, flt_fmt));
 }
 
-octave_fstream::octave_fstream (const std::string& nm_arg,
-				ios::openmode md = ios::in|ios::out,
-				oct_mach_info::float_format flt_fmt)
+octave_fstream::octave_fstream
+  (const std::string& nm_arg,
+   std::ios::openmode md = std::ios::in|std::ios::out,
+   oct_mach_info::float_format flt_fmt)
   : octave_base_stream (md, flt_fmt), nm (nm_arg)
 {
   // Override default protection of 0664 so that umask will appear to
@@ -58,7 +59,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_fstream::seek (streamoff offset, ios::seek_dir origin)
+octave_fstream::seek (streamoff offset, std::ios::seek_dir origin)
 {
   int retval = -1;
 
@@ -88,7 +89,7 @@ octave_fstream::tell (void) const
   if (fs)
     {
       filebuf *fb = fs.rdbuf ();
-      retval = static_cast<long> (fb->seekoff (0, ios::cur));
+      retval = static_cast<long> (fb->seekoff (0, std::ios::cur));
     }
 
   return retval;
@@ -107,7 +108,7 @@ octave_fstream::input_stream (void)
 {
   std::istream *retval = 0;
 
-  if (mode () & ios::in)
+  if (mode () & std::ios::in)
     retval = &fs;
 
   return retval;
@@ -118,7 +119,7 @@ octave_fstream::output_stream (void)
 {
   std::ostream *retval = 0;
 
-  if (mode () & ios::out)
+  if (mode () & std::ios::out)
     retval = &fs;
 
   return retval;

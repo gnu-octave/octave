@@ -166,7 +166,7 @@ tree_identifier::rvalue (int nargout)
 	    {
 	      octave_value_list tmp_args;
 
-	      retval = val.do_index_op (nargout, tmp_args);
+	      retval = val.do_multi_index_op (nargout, tmp_args);
 	    }
 	  else
 	    {

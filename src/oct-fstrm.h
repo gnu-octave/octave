@@ -33,17 +33,18 @@ octave_fstream : public octave_base_stream
 public:
 
   octave_fstream (const std::string& nm_arg,
-		  ios::openmode md = ios::in|ios::out,
+		  std::ios::openmode md = std::ios::in|std::ios::out,
 		  oct_mach_info::float_format flt_fmt =
 		  oct_mach_info::native);
 
   static octave_stream
-  create (const std::string& nm_arg, ios::openmode md = ios::in|ios::out,
+  create (const std::string& nm_arg,
+	  std::ios::openmode md = std::ios::in|std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (streamoff offset, ios::seek_dir origin);
+  int seek (streamoff offset, std::ios::seek_dir origin);
 
   // Return current stream position.
 

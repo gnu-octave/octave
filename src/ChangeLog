@@ -1,5 +1,9 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h (octave_value::do_multi_index_op): Rename from do_index_op.
+
+	* ov-fcn.h (octave_function::is_system_fcn_file): Now const.
+
 	* Map.cc (index_to_CHptr): Now a macro.
 	(CHMap<C>::hash): Now a member function.
 

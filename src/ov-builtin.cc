@@ -52,7 +52,7 @@ any_arg_is_magic_colon (const octave_value_list& args)
 }
 
 octave_value_list
-octave_builtin::do_index_op (int nargout, const octave_value_list& args)
+octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;
 

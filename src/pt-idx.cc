@@ -85,7 +85,7 @@ tree_index_expression::rvalue (int nargout)
 	  if (tmp.is_constant ())
 	    retval = tmp.do_index_op (args);
 	  else
-	    retval = tmp.do_index_op (nargout, args);
+	    retval = tmp.do_multi_index_op (nargout, args);
 	}
       else
 	eval_error ();

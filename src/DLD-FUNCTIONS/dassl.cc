@@ -86,7 +86,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
   if (dassl_fcn)
     {
-      octave_value_list tmp = dassl_fcn->do_index_op (1, args);
+      octave_value_list tmp = dassl_fcn->do_multi_index_op (1, args);
 
       if (error_state)
 	{

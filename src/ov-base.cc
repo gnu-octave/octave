@@ -61,7 +61,7 @@ octave_base_value::do_index_op (const octave_value_list&)
 }
 
 octave_value_list
-octave_base_value::do_index_op (int, const octave_value_list&)
+octave_base_value::do_multi_index_op (int, const octave_value_list&)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());

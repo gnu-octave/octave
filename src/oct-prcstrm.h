@@ -31,12 +31,12 @@ octave_iprocstream : public octave_istdiostream
 public:
 
   octave_iprocstream (const std::string& n,
-		      ios::openmode arg_md = ios::in,
+		      std::ios::openmode arg_md = std::ios::in,
 		      oct_mach_info::float_format flt_fmt =
 		      oct_mach_info::native);
 
   static octave_stream
-  create (const std::string& n, ios::openmode arg_md = ios::in,
+  create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
 protected:
@@ -58,12 +58,12 @@ octave_oprocstream : public octave_ostdiostream
 public:
 
   octave_oprocstream (const std::string& n,
-		      ios::openmode arg_md = ios::out,
+		      std::ios::openmode arg_md = std::ios::out,
 		      oct_mach_info::float_format flt_fmt =
 		      oct_mach_info::native);
 
   static octave_stream
-  create (const std::string& n, ios::openmode arg_md = ios::out,
+  create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
 protected:

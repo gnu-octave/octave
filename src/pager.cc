@@ -241,7 +241,7 @@ octave_pager_buf::sync (void)
 	{
 	  do_sync (buf, len, bypass_pager);
 
-	  seekoff (0, ios::beg);
+	  seekoff (0, std::ios::beg);
 
 	  octave_diary.write (buf, len);
 	}
@@ -271,7 +271,7 @@ octave_diary_buf::sync (void)
 	external_diary_file.write (eback (), len);
     }
 
-  seekoff (0, ios::beg);
+  seekoff (0, std::ios::beg);
 
   return 0;
 }
@@ -381,7 +381,7 @@ open_diary_file (void)
 {
   close_diary_file ();
 
-  external_diary_file.open (diary_file.c_str (), ios::app);
+  external_diary_file.open (diary_file.c_str (), std::ios::app);
 
   if (! external_diary_file)
     error ("diary: can't open diary file `%s'", diary_file.c_str ());

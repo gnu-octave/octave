@@ -95,7 +95,7 @@ SYMBOL_DEF::type (std::ostream& os, const std::string& name, bool pr_type_info,
 
       if (pr_orig_txt && ! fn.empty ())
 	{
-	  std::ifstream fs (fn.c_str (), ios::in);
+	  std::ifstream fs (fn.c_str (), std::ios::in);
 
 	  if (fs)
 	    {
@@ -453,9 +453,9 @@ symbol_record::print_symbol_info_line (std::ostream& os)
      << (hides_fcn () ? "f" : (hides_builtin () ? "F" : "-"))
 #endif
      << "  "
-     << setiosflags (ios::left) << setw (24) << type_name () . c_str ();
+     << setiosflags (std::ios::left) << setw (24) << type_name () . c_str ();
 
-  os << resetiosflags (ios::left);
+  os << resetiosflags (std::ios::left);
 
   int nr = rows ();
   int nc = columns ();
@@ -463,14 +463,14 @@ symbol_record::print_symbol_info_line (std::ostream& os)
   if (nr < 0)
     os << "      -";
   else
-    os << setiosflags (ios::right) << setw (7) << nr;
+    os << setiosflags (std::ios::right) << setw (7) << nr;
 
   if (nc < 0)
     os << "      -";
   else
-    os << setiosflags (ios::right) << setw (7) << nc;
+    os << setiosflags (std::ios::right) << setw (7) << nc;
 
-  os << resetiosflags (ios::right);
+  os << resetiosflags (std::ios::right);
 
   os << "  " << name () << "\n";
 }

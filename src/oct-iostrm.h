@@ -33,14 +33,14 @@ octave_base_iostream : public octave_base_stream
 public:
 
   octave_base_iostream (const std::string& n = std::string (),
-			ios::openmode md = ios::in|ios::out,
+			std::ios::openmode md = std::ios::in|std::ios::out,
 			oct_mach_info::float_format flt_fmt =
 			oct_mach_info::native)
     : octave_base_stream (md, flt_fmt), nm (n) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (streamoff offset, ios::seek_dir origin);
+  int seek (streamoff offset, std::ios::seek_dir origin);
 
   // Return current stream position.
 
@@ -79,7 +79,7 @@ octave_istream : public octave_base_iostream
 public:
 
   octave_istream (std::istream *arg = 0, const std::string& nm = std::string ())
-    : octave_base_iostream (nm, ios::in, oct_mach_info::native),
+    : octave_base_iostream (nm, std::ios::in, oct_mach_info::native),
       is (arg) { }
 
   static octave_stream
@@ -116,7 +116,7 @@ octave_ostream : public octave_base_iostream
 public:
 
   octave_ostream (std::ostream *arg, const std::string& nm = std::string ())
-    : octave_base_iostream (nm, ios::out, oct_mach_info::native),
+    : octave_base_iostream (nm, std::ios::out, oct_mach_info::native),
       os (arg) { }
 
   static octave_stream

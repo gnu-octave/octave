@@ -63,7 +63,7 @@ quad_user_function (double x)
 
   if (quad_fcn)
     {
-      octave_value_list tmp = quad_fcn->do_index_op (1, args);
+      octave_value_list tmp = quad_fcn->do_multi_index_op (1, args);
 
       if (error_state)
 	{

@@ -60,7 +60,7 @@ public:
 
   virtual bool is_dynamically_loaded_function (void) const { return false; }
 
-  virtual bool is_system_fcn_file (void) { return false; }
+  virtual bool is_system_fcn_file (void) const { return false; }
 
   virtual std::string fcn_file_name (void) const { return std::string (); }
 

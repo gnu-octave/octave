@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_strstream::seek (streamoff offset, ios::seek_dir origin)
+octave_base_strstream::seek (streamoff offset, std::ios::seek_dir origin)
 {
   int retval = -1;
 
@@ -64,7 +64,7 @@ octave_base_strstream::tell (void) const
 
       if (sb)
 	{
-	  retval = static_cast<long> (sb->seekoff (0, ios::cur));
+	  retval = static_cast<long> (sb->seekoff (0, std::ios::cur));
 
 	  if (bad ())
 	    retval = -1;
@@ -75,21 +75,21 @@ octave_base_strstream::tell (void) const
 }
 
 octave_stream
-octave_istrstream::create (const char *data, ios::openmode arg_md,
+octave_istrstream::create (const char *data, std::ios::openmode arg_md,
 			   oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));
 }
 
 octave_stream
-octave_istrstream::create (const std::string& data, ios::openmode arg_md,
+octave_istrstream::create (const std::string& data, std::ios::openmode arg_md,
 			   oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_istrstream (data, arg_md, flt_fmt));
 }
 
 octave_stream
-octave_ostrstream::create (ios::openmode arg_md,
+octave_ostrstream::create (std::ios::openmode arg_md,
 			   oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_ostrstream (arg_md, flt_fmt));

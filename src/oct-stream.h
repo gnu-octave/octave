@@ -227,7 +227,7 @@ friend class octave_stream;
 
 public:
 
-  octave_base_stream (ios::openmode arg_md = ios::in|ios::out,
+  octave_base_stream (std::ios::openmode arg_md = std::ios::in|std::ios::out,
 		      oct_mach_info::float_format ff = oct_mach_info::native)
     : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true)
   { }
@@ -239,7 +239,7 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  virtual int seek (streamoff offset, ios::seek_dir origin) = 0;
+  virtual int seek (streamoff offset, std::ios::seek_dir origin) = 0;
 
   // Return current stream position.
 
@@ -299,7 +299,7 @@ private:
   int count;
 
   // The permission bits for the file.  Should be some combination of
-  // ios::open_mode bits.
+  // std::ios::open_mode bits.
   int md;
 
   // Data format.
@@ -398,7 +398,7 @@ public:
   std::string gets (int max_len, bool& err);
   std::string gets (const octave_value& max_len, bool& err);
 
-  int seek (streamoff offset, ios::seek_dir origin);
+  int seek (streamoff offset, std::ios::seek_dir origin);
   int seek (const octave_value& offset, const octave_value& origin);
 
   long tell (void) const;

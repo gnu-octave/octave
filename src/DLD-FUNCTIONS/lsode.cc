@@ -70,7 +70,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   if (lsode_fcn)
     {
-      octave_value_list tmp = lsode_fcn->do_index_op (1, args);
+      octave_value_list tmp = lsode_fcn->do_multi_index_op (1, args);
 
       if (error_state)
 	{
@@ -110,7 +110,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   if (lsode_jac)
     {
-      octave_value_list tmp = lsode_jac->do_index_op (1, args);
+      octave_value_list tmp = lsode_jac->do_multi_index_op (1, args);
 
       if (error_state)
 	{

@@ -237,7 +237,7 @@ public:
     { return rep->do_index_op (idx); }
 
   virtual octave_value_list
-  do_index_op (int nargout, const octave_value_list& idx);
+  do_multi_index_op (int nargout, const octave_value_list& idx);
 
   void assign (assign_op, const octave_value& rhs);
 

@@ -231,7 +231,7 @@ octave_mapper::apply (const octave_value& arg) const
 }
 
 octave_value_list
-octave_mapper::do_index_op (int, const octave_value_list& args)
+octave_mapper::do_multi_index_op (int, const octave_value_list& args)
 {
   octave_value retval;
 

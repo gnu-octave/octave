@@ -1587,7 +1587,7 @@ set_format_style (int argc, const string_vector& argv)
   int idx = 1;
   string arg = argv[idx++];
 
-  if (argc > 1)
+  if (--argc > 0)
     {
       if (arg == "short")
 	{

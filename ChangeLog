@@ -1,5 +1,9 @@
 Fri Mar 28 16:53:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Don't add -fpe1 to FFLAGS on Alpha OSF/1 systems
+	unless we are also using a version of gcc that appears to support
+	IEEE floating point.
+
 	* aclocal.m4 (OCTAVE_FLIBS): Require OCTAVE_HOST_TYPE.
 	Skip -lkernel32 on cygwin32 systems.
 

@@ -198,13 +198,16 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 	}
       else
 	{
+	  int len = (this_elt_dv.length () < dv.length ()
+		     ? this_elt_dv.length () : dv.length ());
+
 	  if (this_elt_nr != dv (0))
 	    {
 	      eval_error ("number of rows must match",
 			  elt->line (), elt->column (), this_elt_nr, dv (0));
 	      return false;
 	    }
-	  for (int i = 2; i < this_elt_dv.length (); i++)
+	  for (int i = 2; i < len; i++)
 	    {
 	      if (this_elt_dv (i) != dv (i))
 		{
@@ -212,6 +215,22 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 		  return false;
 		}
 	    }
+
+	  if (this_elt_dv.length () > len)
+	    for (int i = len; i < this_elt_dv.length (); i++)
+	      if (this_elt_dv (i) != 1)
+		{
+		  eval_error ("dimensions mismatch", elt->line (), elt->column (), this_elt_dv (i), 1);
+		  return false;
+		}
+
+	  if (dv.length () > len)
+	    for (int i = len; i < dv.length (); i++)
+	      if (dv (i) != 1)
+		{
+		  eval_error ("dimensions mismatch", elt->line (), elt->column (), 1, dv (i));
+		  return false;
+		}
 	}
       dv.elem (1) = dv.elem (1) + this_elt_nc;
 
@@ -423,8 +442,10 @@ tm_const::init (const tree_matrix& tm)
 	      else
 		{
 		  bool get_out = false;
+		  int len = (this_elt_dv.length () < dv.length ()
+			     ? this_elt_dv.length () : dv.length ());
 
-		  for (int i = 1; i < this_elt_dv.length (); i++)
+		  for (int i = 1; i < len; i++)
 		    {
 		      if (i == 1 && this_elt_nc != dv (1))
 			{
@@ -440,6 +461,24 @@ tm_const::init (const tree_matrix& tm)
 			  break;
 			}
 		    }
+
+		  if (this_elt_dv.length () > len)
+		    for (int i = len; i < this_elt_dv.length (); i++)
+		      if (this_elt_dv (i) != 1)
+			{
+			  ::error ("dimensions mismatch (dim = %i, %d != %d)", i+1, this_elt_dv (i), 1);
+			  get_out = true;
+			  break;
+			}
+
+		  if (dv.length () > len)
+		    for (int i = len; i < dv.length (); i++)
+		      if (dv (i) != 1)
+			{
+			  ::error ("dimensions mismatch (dim = %i, %d != %d)", i+1, 1, dv(i));
+			  get_out = true;
+			  break;
+			}
 
 		  if (get_out)
 		    break;

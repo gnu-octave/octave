@@ -1,3 +1,9 @@
+2004-10-12  David Bateman  <dbateman@free.fr>
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::do_init_element,
+	tm_const::init): Dimensionality of matrices not necessarily the
+	same.  Check before comparing.
+
 2004-10-06  John W. Eaton  <jwe@octave.org>
 
 	* pt-fcn-handle.h (tree_fcn_handle::name): New function.
@@ -135,7 +141,7 @@
 	Call delete on each symbol record in the table instead of just
 	clearing them.
 
-2004-09-17 David Bateman <dbateman@free.fr>
+2004-09-17 David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sort.cc (ascending_compare, descending_compare):
 	Now templates (avoids g++ 3.4.x compile problems).
@@ -1312,7 +1318,7 @@
 	* ov-str-mat.cc (octave_char_matrix_str::load_hdf5,
 	octave_char_matrix_str::save_hdf5): Likewise.
 
-2004-03-03 David Bateman <dbateman@free.fr>
+2004-03-03 David Bateman  <dbateman@free.fr>
 
 	* ov-cell.cc (octave_cell::save_hdf5, octave_cell::load_hdf5):
 	Make N-d aware.
@@ -1502,7 +1508,7 @@
 	(set_default_fftw_wisdom_prog): Rename from set_default_wisdom_prog.
 	* defaults.h.in (Vfftw_wisdom_prog): Provide extern decl.
 
-2004-02-16 David Bateman <dbateman@free.fr>
+2004-02-16 David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/fft.cc: Adapt for Nd arrays, combine with ifft.cc.
 	* DLD-FUNCTIONS/ifft.cc: Delete.
@@ -2918,7 +2924,7 @@
 	New files.
 	* Makefile.in (OP_XSRC): Add them to the list.
 
-2003-09-09  David Bateman <dbateman@free.fr>
+2003-09-09  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-cs-s.cc (DEFBINOP): First arg is complex, second is
 	double.
@@ -3619,7 +3625,7 @@
 
 	* DLD-FUNCTIONS/sqrtm.cc: New file.
 
-2003-02-18  David Bateman <dbateman@free.fr>
+2003-02-18  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/lu.cc (Flu): Allow non-square matrices.
 

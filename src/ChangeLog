@@ -1,3 +1,14 @@
+2003-07-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (maximum_braindamage): Don't set
+	default_global_variable_value or initialize_global_variables.
+
+	* pt-decl.cc (Vinitialize_global_variables): Delete.
+	(initialize_global_variables): Delete.
+	(symbols_of_pt_decl): Delete.
+	(tree_global_command::do_init): Default initial value is now
+	always [].
+
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (maximum_braindamage): Don't set default_eval_print_flag.

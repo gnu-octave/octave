@@ -53,7 +53,6 @@ function dump_prefs (file)
               "beep_on_error";
               "completion_append_char";
               "crash_dumps_octave_core";
-              "default_global_variable_value";
               "default_return_value";
               "default_save_format";
               "define_all_return_values";
@@ -71,7 +70,6 @@ function dump_prefs (file)
               "history_file";
               "history_size";
               "ignore_function_time_stamp";
-              "initialize_global_variables";
               "max_recursion_depth";
               "output_max_field_width";
               "output_precision";

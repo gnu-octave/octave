@@ -1,3 +1,8 @@
+2003-07-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dump_prefs.m: Delete default_global_variable_value
+	and initialize_global_variables from the list.
+
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* image/colormap.m: Don't save and restore default_eval_print_flag.

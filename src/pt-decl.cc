@@ -40,10 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-// Control whether otherwise uninitialized global variables are
-// given a default value.
-static int Vinitialize_global_variables;
-
 // Declarations (global, static, etc.).
 
 tree_decl_elt::~tree_decl_elt (void)
@@ -116,9 +112,8 @@ tree_global_command::do_init (tree_decl_elt& elt)
 
 	      if (expr)
 		init_val = expr->rvalue ();
-	      else if (Vinitialize_global_variables)
-		init_val
-		  = builtin_any_variable ("default_global_variable_value");
+	      else
+		init_val = Matrix ();
 
 	      ult.assign (octave_value::op_asn_eq, init_val);
 	    }
@@ -180,50 +175,6 @@ tree_static_command::eval (void)
 	::error ("evaluating static command near line %d, column %d",
 		 line (), column ());
     }
-}
-
-static int
-initialize_global_variables (void)
-{
-  Vinitialize_global_variables
-    = check_preference ("initialize_global_variables");
-
-  return 0;
-}
-
-void
-symbols_of_pt_decl (void)
-{
-  DEFVAR (default_global_variable_value, , 0,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} default_global_variable_value\n\
-The default for value for otherwise uninitialized global variables.\n\
-Only used if the variable initialize_global_variables is nonzero.\n\
-If @code{initialize_global_variables} is nonzero, the value of\n\
-@code{default_glbaol_variable_value} is used as the initial value of\n\
-global variables that are not explicitly initialized.  for example,\n\
-\n\
-@example\n\
-@group\n\
-initialize_global_variables = 1;\n\
-default_global_variable_value = 13;\n\
-global foo;\n\
-foo\n\
-     @result{} 13\n\
-@end group\n\
-@end example\n\
-\n\
-the variable @code{default_global_variable_value} is initially undefined.\n\
-@end defvr");
-
-  DEFVAR (initialize_global_variables, false, initialize_global_variables,
-    "-*- texinfo -*-\n\
-@defvr initialize_global_variables\n\
-If the value of this variable is nonzero, global variables are given\n\
-the default initial value specified by the built-in variable\n\
-@code{default_global_variable_value}.\n\
-@end defvr");
-
 }
 
 /*

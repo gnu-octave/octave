@@ -138,10 +138,6 @@ will display the value of @code{x} from inside the function as 0,
 but the value of @code{x} at the top level remains unchanged, because
 the function works with a @emph{copy} of its argument.
 
-@DOCSTRING(initialize_global_variables)
-
-@DOCSTRING(default_global_variable_value)
-
 @DOCSTRING(isglobal)
 
 @node Status of Variables

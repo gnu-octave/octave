@@ -11,6 +11,7 @@ Tue Nov 12 14:44:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	(TOPDIR, top_srcdir, DISTFILES): For Octave.
 	Include $(TOPDIR)/Makeconf, for Octave.
 	Don't add $(common) for dvi or info targets.
+	(Makefile): Depend on Makefile.in and config.status.
 
 	* configure.in: Copy here from (in texinfo distribution).
 

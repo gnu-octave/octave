@@ -1,3 +1,8 @@
+Sun Jun 15 21:06:37 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (acos (const Complex&)): Select branch that is
+	compatible with Matlab.
+
 Tue Jun 10 10:58:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h: Correctly handle empty matrices indexed by a

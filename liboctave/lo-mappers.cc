@@ -231,45 +231,42 @@ Complex
 acos (const Complex& x)
 {
   static Complex i (0, 1);
-  Complex retval = -i * log (x + sqrt (x*x - 1.0));
-  return retval;
+
+  return (real (x) * imag (x) < 0.0) ? i * acosh (x) : -i * acosh (x);
 }
 
 Complex
 acosh (const Complex& x)
 {
-  Complex retval = log (x + sqrt (x*x - 1.0));
-  return retval;
+  return log (x + sqrt (x*x - 1.0));
 }
 
 Complex
 asin (const Complex& x)
 {
   static Complex i (0, 1);
-  Complex retval = -i * log (i*x + sqrt (1.0 - x*x));
-  return retval;
+
+  return -i * log (i*x + sqrt (1.0 - x*x));
 }
 
 Complex
 asinh (const Complex& x)
 {
-  Complex retval = log (x + sqrt (x*x + 1.0));
-  return retval;
+  return log (x + sqrt (x*x + 1.0));
 }
 
 Complex
 atan (const Complex& x)
 {
   static Complex i (0, 1);
-  Complex retval = i * log ((i + x) / (i - x)) / 2.0;
-  return retval;
+
+  return i * log ((i + x) / (i - x)) / 2.0;
 }
 
 Complex
 atanh (const Complex& x)
 {
-  Complex retval = log ((1 + x) / (1 - x)) / 2.0;
-  return retval;
+  return log ((1 + x) / (1 - x)) / 2.0;
 }
 
 Complex
@@ -311,15 +308,13 @@ signum (const Complex& x)
 Complex
 tan (const Complex& x)
 {
-  Complex retval = sin (x) / cos (x);
-  return retval;
+  return sin (x) / cos (x);
 }
 
 Complex
 tanh (const Complex& x)
 {
-  Complex retval = sinh (x) / cosh (x);
-  return retval;
+  return sinh (x) / cosh (x);
 }
 
 /*

@@ -195,7 +195,11 @@ OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
 
 OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(LIBOCT_READLINE) \
   $(LIBOCT_PATHSEARCH) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
-  $(LIBPLPLOT) $(LIBKPATHSEA) $(LIBGLOB) $(LIBDLFCN)
+  $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
+
+ifneq ($SHARED_LIBS), true)
+OCTAVE_LIBS += $(LIBKPATHSEA)
+endif
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \

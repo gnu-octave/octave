@@ -262,7 +262,7 @@ liboct-pathsearch.$(SHLEXT): liboct-pathsearch.$(SHLEXT_VER)
 
 liboct-pathsearch.$(SHLEXT_VER): $(LIBOCT_PATHSEARCH_PICOBJ)
 	rm -f $@
-	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LIBKPATHSEA)
 
 $(LIBOCT_PATHSEARCH_PICOBJ): stmp-pic
 

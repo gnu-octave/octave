@@ -506,10 +506,7 @@ octave_value::octave_value (octave_function *f)
 octave_value::octave_value (const octave_value_list& l, bool is_cs_list)
   : rep (0)
 {
-  if (is_cs_list)
-    rep = new octave_cs_list (l);
-  else
-    new octave_list (l);
+  rep = is_cs_list ? new octave_cs_list (l) : new octave_list (l);
 
   rep->count = 1;
 }

@@ -1,3 +1,11 @@
+2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (OCTAVE_LIBS): Only include $(LIBKPATHSEA) if not
+	using shared libraries.
+
+	* ov.cc (octave_value::octave_value (const octave_value_list&, bool)):
+	Don't forget to assign rep.
+
 2002-08-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l: Warn for various Matlab-incompatibilities.

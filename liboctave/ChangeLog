@@ -1,3 +1,8 @@
+2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (liboct-pathsearch.$(SHLEXT_VER)): Link to
+	$(LIBKPATHSEA) here.
+
 2002-08-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-ieee.cc (lo_ieee_is_NA): New function.

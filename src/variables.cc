@@ -1508,10 +1508,8 @@ install_builtin_variables (void)
   DEFVAR ("J", SBV_J, Complex (0.0, 1.0), 0, 1, 1, 0,
     "sqrt (-1)");
 
-  #if defined (HAVE_ISNAN)
   DEFVAR ("NaN", SBV_NaN, octave_NaN, 0, 1, 1, 0,
     "not a number");
-  #endif
 
   DEFVAR ("LOADPATH", SBV_LOADPATH, load_path, 0, 0, 1, sv_loadpath,
     "colon separated list of directories to search for scripts");
@@ -1609,10 +1607,8 @@ default_return_value");
   DEFVAR ("j", SBV_j, Complex (0.0, 1.0), 1, 1, 1, 0,
     "sqrt (-1)");
 
-  #if defined (HAVE_ISNAN)
   DEFVAR ("nan", SBV_nan, octave_NaN, 0, 1, 1, 0,
     "not a number");
-  #endif
 
   DEFVAR ("ok_to_lose_imaginary_part", SBV_ok_to_lose_imaginary_part,
 	  "warn", 0, 0, 1, ok_to_lose_imaginary_part,

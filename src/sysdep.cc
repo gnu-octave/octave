@@ -178,6 +178,10 @@ octave_ieee_init (void)
     }
 #endif
 
+#endif
+
+#if defined (HAVE_ISNAN)
+
 #if defined (HAVE_QUIET_NAN)
   octave_NaN = (double) quiet_nan ();
 #elif defined (linux)
@@ -188,14 +192,6 @@ octave_ieee_init (void)
 #else
   octave_NaN = octave_Inf / octave_Inf;
 #endif
-
-#else
-
-  // This is sort of cheesy, but what can we do, other than blowing it
-  // off completely, or writing an entire IEEE emulation package?
-
-  octave_Inf = DBL_MAX;
-  octave_NaN = DBL_MAX;
 
 #endif
 

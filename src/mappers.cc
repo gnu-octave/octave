@@ -167,7 +167,7 @@ xfinite (double x)
 #elif defined (HAVE_ISINF) && defined (HAVE_ISNAN)
   return (double) (! isinf (x) && ! isnan (x));
 #else
-  return (double) (x > -DBL_MAX && x < DBL_MAX);
+  return 1;
 #endif
 }
 
@@ -185,7 +185,7 @@ xisinf (double x)
 #elif defined (HAVE_FINITE) && defined (HAVE_ISNAN)
   return (double) (! (finite (x) || isnan (x)));
 #else
-  return (double) (x == DBL_MAX || x == -DBL_MAX);
+  return 0;
 #endif
 }
 

@@ -181,7 +181,7 @@ a loop, using a special form of the @code{for} statement
 The following functions are available to give you information about
 structures.
 
-@DOCSTRING(is_struct)
+@DOCSTRING(isstruct)
 
 @DOCSTRING(struct_contains)
 

@@ -5,4 +5,4 @@
 @node I/O Streams, Variables, Containers, Top
 @chapter I/O Streams
 
-@DOCSTRING(is_stream)
+@DOCSTRING(isstream)

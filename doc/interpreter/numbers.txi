@@ -388,16 +388,16 @@ replaces the range expression with a single range constant.
 
 @DOCSTRING(isreal)
 
-@DOCSTRING(is_complex)
+@DOCSTRING(iscomplex)
 
-@DOCSTRING(is_matrix)
+@DOCSTRING(ismatrix)
 
-@DOCSTRING(is_vector)
+@DOCSTRING(isvector)
 
-@DOCSTRING(is_scalar)
+@DOCSTRING(isscalar)
 
-@DOCSTRING(is_square)
+@DOCSTRING(issquare)
 
-@DOCSTRING(is_symmetric)
+@DOCSTRING(issymmetric)
 
-@DOCSTRING(is_bool)
+@DOCSTRING(isbool)

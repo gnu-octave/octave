@@ -25,7 +25,7 @@
 
 @DOCSTRING(splice)
 
-@DOCSTRING(is_list)
+@DOCSTRING(islist)
 
 @node Cell Arrays,  , Lists, Containers
 @section Cell Arrays

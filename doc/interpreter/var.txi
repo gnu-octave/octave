@@ -142,7 +142,7 @@ the function works with a @emph{copy} of its argument.
 
 @DOCSTRING(default_global_variable_value)
 
-@DOCSTRING(is_global)
+@DOCSTRING(isglobal)
 
 @node Status of Variables, Summary of Built-in Variables, Global Variables, Variables
 @section Status of Variables

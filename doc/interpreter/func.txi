@@ -147,7 +147,7 @@ If we had written @code{avg} like this instead,
 @example
 @group
 function retval = avg (v)
-  if (is_vector (v))
+  if (isvector (v))
     retval = sum (v) / length (v);
   endif
 endfunction
@@ -177,7 +177,7 @@ written like this:
 @group
 function retval = avg (v)
   retval = 0;
-  if (is_vector (v))
+  if (isvector (v))
     retval = sum (v) / length (v);
   else
     error ("avg: expecting vector argument");
@@ -203,7 +203,7 @@ function retval = avg (v)
   if (nargin != 1)
     usage ("avg (vector)");
   endif
-  if (is_vector (v))
+  if (isvector (v))
     retval = sum (v) / length (v);
   else
     error ("avg: expecting vector argument");
@@ -917,7 +917,7 @@ Elementary functions.
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
-@code{is_matrix}, @code{nargchk}, etc.
+@code{ismatrix}, @code{nargchk}, etc.
 
 @item image
 Image processing tools.  These functions require the X Window System.

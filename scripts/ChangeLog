@@ -12,6 +12,9 @@
 	* deprecated/is_symmetric.m: New file.
 	* deprecated/is_vector.m: New file.
 
+	* deprecated: New directory.
+	* Makefile.in (SUBDIRS): Add it to the list.
+
 	* general/isscalar.m: Rename from is_scalar.m.
 	* general/issquare.m: Rename from is_square.m.
 	* general/issymmetric.m: Rename from is_symmetric.m.

@@ -36,24 +36,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-cmplx.h"
 
 #include "error.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "utils.h"
 #include "xpow.h"
-
-// This function also appears in tree-const.cc.  Maybe it should be a
-// member function of the Matrix class.
-
-static int
-any_element_is_negative (const Matrix& a)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      if (a (i, j) < 0.0)
-	return 1;
-  return 0;
-}
 
 static inline int
 xisint (double x)
@@ -69,14 +54,12 @@ xisint (double x)
 //            +--   +---+---+----+----+
 //   scalar   |     | 1 | 5 |  7 | 11 |
 //                  +---+---+----+----+
-//   matrix         | 2 | E |  8 |  E |
+//   matrix         | 2 | * |  8 |  * |
 //                  +---+---+----+----+
 //   complex_scalar | 3 | 6 |  9 | 12 |
 //                  +---+---+----+----+
-//   complex_matrix | 4 | E | 10 |  E |
+//   complex_matrix | 4 | * | 10 |  * |
 //                  +---+---+----+----+
-//
-//   E -> error, trapped in arith-ops.cc.
 
 // -*- 1 -*-
 octave_value
@@ -98,7 +81,7 @@ xpow (double a, const Matrix& b)
   octave_value retval;
 
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
     error ("for x^A, A must be square");
@@ -141,12 +124,10 @@ xpow (double a, const ComplexMatrix& b)
   octave_value retval;
 
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for x^A, A must be square");
-    }
+    error ("for x^A, A must be square");
   else
     {
       EIG b_eig (b);
@@ -176,12 +157,10 @@ xpow (const Matrix& a, double b)
   octave_value retval;
 
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for A^b, A must be square");
-    }
+    error ("for A^b, A must be square");
   else
     {
       if ((int) b == b)
@@ -246,12 +225,10 @@ xpow (const Matrix& a, const Complex& b)
   octave_value retval;
 
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for A^b, A must be square");
-    }
+    error ("for A^b, A must be square");
   else
     {
       EIG a_eig (a);
@@ -290,12 +267,10 @@ xpow (const Complex& a, const Matrix& b)
   octave_value retval;
 
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for x^A, A must be square");
-    }
+    error ("for x^A, A must be square");
   else
     {
       EIG b_eig (b);
@@ -334,12 +309,10 @@ xpow (const Complex& a, const ComplexMatrix& b)
   octave_value retval;
 
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for x^A, A must be square");
-    }
+    error ("for x^A, A must be square");
   else
     {
       EIG b_eig (b);
@@ -369,12 +342,10 @@ xpow (const ComplexMatrix& a, double b)
   octave_value retval;
 
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for A^b, A must be square");
-    }
+    error ("for A^b, A must be square");
   else
     {
       if ((int) b == b)
@@ -439,12 +410,10 @@ xpow (const ComplexMatrix& a, const Complex& b)
   octave_value retval;
 
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for A^b, A must be square");
-    }
+    error ("for A^b, A must be square");
   else
     {
       EIG a_eig (a);
@@ -484,7 +453,7 @@ elem_xpow (double a, const Matrix& b)
   octave_value retval;
 
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   // For now, assume the worst.
 
@@ -516,7 +485,7 @@ octave_value
 elem_xpow (double a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -533,9 +502,9 @@ elem_xpow (const Matrix& a, double b)
   octave_value retval;
 
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
-  if ((int) b != b && any_element_is_negative (a))
+  if ((int) b != b && a.any_element_is_negative ())
     {
       ComplexMatrix result (nr, nc);
       for (int j = 0; j < nc; j++)
@@ -567,9 +536,16 @@ elem_xpow (const Matrix& a, const Matrix& b)
   octave_value retval;
 
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
-  assert (nr == b.rows () && nc == b.columns ());
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+
+  if (nr != b_nr || nc != b_nc)
+    {
+      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+      return octave_value ();
+    }
 
   int convert_to_complex = 0;
   for (int j = 0; j < nc; j++)
@@ -584,7 +560,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
 	  }
       }
 
- done:
+done:
 
   if (convert_to_complex)
     {
@@ -619,7 +595,7 @@ octave_value
 elem_xpow (const Matrix& a, const Complex& b)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -634,9 +610,16 @@ octave_value
 elem_xpow (const Matrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
-  assert (nr == b.rows () && nc == b.columns ());
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+
+  if (nr != b_nr || nc != b_nc)
+    {
+      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+      return octave_value ();
+    }
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -651,7 +634,7 @@ octave_value
 elem_xpow (const Complex& a, const Matrix& b)
 {
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -672,7 +655,7 @@ octave_value
 elem_xpow (const Complex& a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
-  int nc = b.columns ();
+  int nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -687,7 +670,7 @@ octave_value
 elem_xpow (const ComplexMatrix& a, double b)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   ComplexMatrix result (nr, nc);
 
@@ -712,9 +695,16 @@ octave_value
 elem_xpow (const ComplexMatrix& a, const Matrix& b)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
-  assert (nr == b.rows () && nc == b.columns ());
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+
+  if (nr != b_nr || nc != b_nc)
+    {
+      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+      return octave_value ();
+    }
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -735,7 +725,7 @@ octave_value
 elem_xpow (const ComplexMatrix& a, const Complex& b)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
@@ -750,10 +740,18 @@ octave_value
 elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
+
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+
+  if (nr != b_nr || nc != b_nc)
+    {
+      gripe_nonconformant ("operator .^", nr, nc, b_nr, b_nc);
+      return octave_value ();
+    }
 
   ComplexMatrix result (nr, nc);
-
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       result (i, j) = pow (a (i, j), b (i, j));

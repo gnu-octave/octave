@@ -206,7 +206,7 @@ close_diary_file (void)
 }
 
 void
-maybe_write_to_diary_file (const char *s)
+maybe_write_to_diary_file (const string& s)
 {
   if (write_to_diary_file && diary_stream)
     diary_stream << s;

@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostrstream;
 
+#include <string>
+
 extern char *get_pager (void);
 extern int terminal_columns (void);
 extern int terminal_rows (void);
@@ -34,7 +36,7 @@ extern void maybe_page_output (ostrstream& msg_buf);
 extern void flush_output_to_pager (void);
 
 extern void close_diary_file (void);
-extern void maybe_write_to_diary_file (const char *s);
+extern void maybe_write_to_diary_file (const string& s);
 
 #endif
 

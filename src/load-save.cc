@@ -1055,7 +1055,7 @@ skip_comments (istream& is)
 //
 // Input should look something like:
 //
-//  #[ \t]*keyword[ \t]*:[ \t]*string-value\n
+//  #[ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
 
 static char *
 extract_keyword (istream& is, char *keyword)
@@ -1101,6 +1101,19 @@ extract_keyword (istream& is, char *keyword)
 	    }
 	}
     }
+
+  if (retval)
+    {
+      int len = strlen (retval);
+      if (len > 0)
+	{
+	  char *ptr = retval + len - 1;
+	  while (*ptr == ' ' || *ptr == '\t')
+	    ptr--;
+	  *(ptr+1) = '\0';
+	}
+    }
+
   return retval;
 }
 
@@ -1109,7 +1122,7 @@ extract_keyword (istream& is, char *keyword)
 //
 // Input should look something like:
 //
-//  [ \t]*keyword[ \t]*int-value\n
+//  [ \t]*keyword[ \t]*int-value.*\n
 
 static int
 extract_keyword (istream& is, char *keyword, int& value)

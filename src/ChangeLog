@@ -1,3 +1,40 @@
+2004-09-03  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-int.h (OCTAVE_MS_INT_OPS): Don't define indexed int
+	matrix = complex scalar assignment ops.
+	(OCTAVE_MS_INT_OPS): Don't define indexed int matrix = complex
+	matrix assignment ops.
+	(OCTAVE_SM_CONV): New macro.
+	(OCTAVE_SM_INT_OPS): Use it to define int scalar -> (int|complex)
+	matrix widening ops.
+	(OCTAVE_RE_INT_ASSIGN_OPS, OCTAVE_CX_INT_ASSIGN_OPS): New macros.
+	(OCTAVE_INT_OPS): Use them here.
+	(OCTAVE_INSTALL_SS_INT_OPS): Install indexed int scalar = scalar
+	and indexed int scalar = complex scalar assignment conversions.
+	(OCTAVE_INSTALL_SM_INT_OPS): Install int scalar -> (int|complex)
+	matrix widening ops.  Install indexed int scalar =
+	(int|real|complex) matrix assignment conversions.
+	(OCTAVE_INSTALL_MS_INT_OPS): Install indexed int matrix = complex
+	scalar assignment conversion.
+	(OCTAVE_INSTALL_MM_INT_OPS): Install int matrix -> complex matrix
+	widening op.  Install indexed int matrix = complex matrix
+	assignment conversion.
+	(OCTAVE_INSTALL_RE_INT_ASSIGN_OPS, OCTAVE_INSTALL_CX_INT_ASSIGN_OPS):
+	New macros.
+	(OCTAVE_INSTALL_INT_OPS): Use them.
+
+	* op-int.h: (OCTAVE_INSTALL_SM_INT_ASSIGNCONV): New macro.
+	* OPERATORS/op-i8-i8.cc, OPERATORS/op-i16-i16.cc,
+	OPERATORS/op-i32-i32.cc, OPERATORS/op-i64-i64.cc,
+	OPERATORS/op-ui8-ui8.cc, OPERATORS/op-ui16-ui16.cc,
+	OPERATORS/op-ui32-ui32.cc, OPERATORS/op-ui64-ui64.cc:
+	Use it to define mixed size integer scalar/integer matrix
+	assignment conversions.
+
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::complex_array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::complex_array_vale):
+	New functions.
+
 2004-09-02  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/quad.cc (Fquad): Pass "__quad_fcn_" instead of

@@ -68,7 +68,17 @@ public:
       NDArray retval (matrix.dims ()); 
       int nel = matrix.numel ();
       for (int i = 0; i < nel; i++)
-        retval (i) = double (matrix(i));
+        retval(i) = double (matrix(i));
+      return retval;
+    }
+
+  ComplexNDArray
+  complex_array_value (bool = false) const
+    { 
+      ComplexNDArray retval (matrix.dims ()); 
+      int nel = matrix.numel ();
+      for (int i = 0; i < nel; i++)
+        retval(i) = Complex (matrix(i));
       return retval;
     }
 
@@ -123,7 +133,15 @@ public:
   array_value (bool = false) const
     { 
       NDArray retval (dim_vector (1,1)); 
-      retval (0) = double (scalar);
+      retval(0) = double (scalar);
+      return retval;
+    }
+
+  ComplexNDArray
+  complex_array_value (bool = false) const
+    { 
+      ComplexNDArray retval (dim_vector (1,1)); 
+      retval(0) = Complex (scalar);
       return retval;
     }
 

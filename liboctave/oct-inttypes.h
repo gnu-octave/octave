@@ -133,7 +133,7 @@ template <class T1, class T2>
 inline T2
 octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx)
 {
-  return (x > mx ? mx : (x < mn ? mn : static_cast<T2> (x)));
+  return (x > mx ? mx : (x < mn ? mn : T2 (x)));
 }
 
 // If X is unsigned and the new type is signed, then we only have to

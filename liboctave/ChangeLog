@@ -1,3 +1,8 @@
+2004-09-03  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_fit_to_range): Use constructor instead of
+	static_cast for type conversion.
+
 2004-09-01  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (pow, operator +, operator -, operator *,

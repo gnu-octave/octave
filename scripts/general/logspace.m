@@ -20,7 +20,7 @@
 ## usage: logspace (x1, x2, n)
 ##
 ## Return a vector of n logarithmically equally spaced points between
-## x1 and x2 inclusive.
+## 10^x1 and 10^x2 inclusive.
 ##
 ## If the final argument is omitted, n = 50 is assumed.
 ##

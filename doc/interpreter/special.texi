@@ -197,7 +197,15 @@ the value of @code{prefer_column_vectors}.
 
 @deftypefn {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
 Similar to @code{linspace} except that the values are logarithmically
-spaced.
+spaced from
+@iftex
+@tex
+$10^{base}$ to $10^{limit}$.
+@end tex
+@end iftex
+@ifinfo
+10^base to 10^limit.
+@end ifinfo
 
 If @var{limit} is equal to
 @iftex

@@ -1,5 +1,7 @@
 Thu Nov  7 12:43:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octMakefile.in (bin-dist-tar): Delete references to octtopnm.
+
 	* configure.in (RLD_FLAG): Define if x86-linux.
 
 	* Version 1.91.

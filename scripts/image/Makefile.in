@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m octtopnm.c
+SOURCES = *.m
 IMAGES = *.img
 
 DISTFILES = Makefile.in $(SOURCES) $(IMAGES)
@@ -34,9 +34,6 @@ IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
 all:
 .PHONY: all
 
-octtopnm: octtopnm.o
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) octtopnm.o -o octtopnm
-
 install:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	for f in $(FCN_FILES_NO_DIR) ; do \
@@ -49,7 +46,6 @@ install:
 	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f ; \
 	done
 	$(top_srcdir)/mkinstalldirs $(archlibdir)
-#	$(INSTALL_PROGRAM) octtopnm $(archlibdir)/octtopnm
 .PHONY: install
 
 uninstall:
@@ -59,11 +55,9 @@ uninstall:
 	for f in $(IMAGE_FILES_NO_DIR) ; \
 	  do rm -f $(imagedir)/$$f ; \
 	done
-#	rm -f $(archlibdir)/octtopnm
 .PHONY: uninstall
 
 clean:
-	rm -f octtopnm.o octtopnm
 .PHONY: clean
 
 tags: $(SOURCES)

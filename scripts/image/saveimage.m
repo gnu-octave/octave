@@ -259,7 +259,7 @@ function saveimage (filename, img, img_form, map)
     fid = fopen (filename, "w");
 
     fprintf (fid, "%%!PS-Adobe-2.0 EPSF-2.0\n");
-    fprintf (fid, "%%%%Creator: pnmtops\n");
+    fprintf (fid, "%%%%Creator: Octave %s (saveimage.m)\n", OCTAVE_VERSION);
     fprintf (fid, "%%%%Title: %s\n", filename);
     fprintf (fid, "%%%%Pages: 1\n");
     fprintf (fid, "%%%%BoundingBox: %d %d %d %d\n",
@@ -282,19 +282,13 @@ function saveimage (filename, img, img_form, map)
 
     img = map(img);
 
-    ## XXX FIXME XXX -- this would be much faster if fprintf knew about
-    ## vector arguments.
+    fmt = "%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x\n";
+    fprintf (fid, fmt, img);
 
-    count = 0;
-    for i = 1:img_sz
-      fprintf (fid, "%x", img (i));
-      if (++count == 30)
-	count = 0;
-	fprintf (fid, "\n");
-      endif
-    endfor
+    if (rem (img_sz, 30) != 0)
+      fprintf (fid, "\n" );
+    endif
 
-    fprintf (fid, "\n" );
     fprintf (fid, "grestore\n" );
     fprintf (fid, "showpage\n" );
     fprintf (fid, "%%%%Trailer\n" );

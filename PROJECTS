@@ -81,10 +81,6 @@ Numerical:
     user-supplied function for Matlab compatibility.  Don't place an
     upper limit on the number of arguments.
 
-  * Check matrices for symmetry before computing eigenvalues, etc.,
-    and then use the routines for symmetric matrices for improved
-    performance.
-
   * Check matrix classes for proper handling of empty matrices.
 
   * Force all empty matrices to be 0x0 even when other dimensions have

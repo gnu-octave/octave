@@ -33,6 +33,18 @@ template class Array<bool>;
 
 template void assign (Array<bool>&, const Array<bool>&);
 
+#include "Array2.h"
+#include "Array2.cc"
+
+template class Array2<bool>;
+
+template void assign (Array2<bool>&, const Array2<bool>&);
+
+#include "DiagArray2.h"
+#include "DiagArray2.cc"
+
+template class DiagArray2<bool>;
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -28,7 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define SHORT_CIRCUIT_LOGICALS 1
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
 #include <strstream.h>

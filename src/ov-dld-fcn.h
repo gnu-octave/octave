@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <cstdlib>
+
 #include <string>
 
 #include "oct-shlib.h"
@@ -47,7 +49,7 @@ octave_dld_function : public octave_builtin
 {
 public:
 
-  octave_dld_function (void);
+  octave_dld_function (void) { abort (); }
 
   octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
 		       const std::string& nm = std::string (),

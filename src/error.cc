@@ -180,7 +180,7 @@ verror (const char *name, const char *fmt, va_list args)
 
   if (buffer_error_messages)
     {
-      string tmp = msg_string;
+      std::string tmp = msg_string;
 
       if (! error_message_buffer)
 	{

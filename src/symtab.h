@@ -446,7 +446,7 @@ public:
 
   void pop_context (void);
 
-  void print_info (ostream& os) const;
+  void print_info (std::ostream& os) const;
 
 private:
 

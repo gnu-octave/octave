@@ -10,9 +10,9 @@ looks_like_octave_copyright (const string& s)
 {
   bool retval = false;
 
-  string t = s.substr (0, 15);
+  string t = s.substr (0, 14);
 
-  if (t == " Copyright (C) ")
+  if (t == "Copyright (C) ")
     {
       size_t pos = s.find ('\n');
 
@@ -24,10 +24,10 @@ looks_like_octave_copyright (const string& s)
 	    {
 	      pos++;
 
-	      t = s.substr (pos, 29);
+	      t = s.substr (pos, 28);
 
-	      if (t == " This file is part of Octave."
-		  || t == " This program is free softwar")
+	      if (t == "This file is part of Octave."
+		  || t == "This program is free softwar")
 		retval = true;
 	    }
 	}
@@ -48,6 +48,7 @@ extract_help_text (void)
   bool begin_comment = false;
   bool have_help_text = false;
   bool in_comment = false;
+  bool discard_space = true;
   int c;
 
   while ((c = cin.get ()) != EOF)
@@ -56,6 +57,11 @@ extract_help_text (void)
 	{
 	  if (c == '%' || c == '#')
 	    continue;
+	  else if (discard_space && c == ' ')
+	    {
+	      discard_space = false;
+	      continue;
+	    }
 	  else
 	    begin_comment = false;
 	}
@@ -71,6 +77,7 @@ extract_help_text (void)
 	  if (c == '\n')
 	    {
 	      in_comment = false;
+	      discard_space = true;
 
 	      if ((c = cin.get ()) != EOF)
 		{

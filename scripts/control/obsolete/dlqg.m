@@ -103,7 +103,7 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
       error("dlqg: G, Sigw incompatibly dimensioned");
     endif
   else
-    error("dlqg: illegal number of arguments")
+    error ("dlqg: invalid number of arguments")
   endif
 
   if (! (is_square(Sigw) && is_square(Sigv) ) )

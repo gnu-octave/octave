@@ -250,7 +250,7 @@ See also: balance, dare, eig, schur\n\
     }
   else if (nargin == 3 && (nargout < 3 || nargout > 4))
     {
-      error ("qz: Illegal number of output arguments for form [3] call");
+      error ("qz: invalid number of output arguments for form [3] call");
       return retval;
     }
 
@@ -279,7 +279,7 @@ See also: balance, dare, eig, schur\n\
 	  && ord_job[0] != '+'
 	  && ord_job[0] != '-')
 	{
-	  error ("qz: illegal order option");
+	  error ("qz: invalid order option");
 	  return retval;
 	}
 
@@ -600,7 +600,7 @@ See also: balance, dare, eig, schur\n\
 	      break;
 
 	    default:
-	      // illegal order option (should never happen, since we
+	      // invalid order option (should never happen, since we
 	      // checked the options at the top).
 	      panic_impossible ();
 	      break;

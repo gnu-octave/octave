@@ -190,7 +190,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
           warning("syssetsignals: opt=yd: names(%d)=%e, must be 0 or 1", ...
             badidx(ii), names(badidx(ii)) );
         endfor
-        error("opt=yd: illegal values in names");
+        error ("opt=yd: invalid values in names");
       endif
 
       for ii=1:length(sig_idx)

@@ -217,8 +217,8 @@ function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outl
   elseif((!is_matrix(n)) | isstr(n))
     error("Parameter n is not a numerical value.");
   elseif( (!is_scalar(n)) | (n < 0 ) | (n != round(n)) )
-    if(is_scalar(n))     error("illegal value of n=%d,%e",n,n);
-    else                 error("illegal value of n=(%dx%d)", ...
+    if(is_scalar(n))     error("invalid value of n=%d,%e",n,n);
+    else                 error("invalid value of n=(%dx%d)", ...
                            rows(n), columns(n));                endif
   endif
 
@@ -229,16 +229,16 @@ function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outl
     error("Parameter nz is not a numerical value.");
   elseif( (!is_scalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
     if(is_scalar(nz))
-      error(["illegal value of nz=",num2str(nz)]);
+      error(["invalid value of nz=",num2str(nz)]);
     else
-      error(["illegal value of nz=(",num2str(rows(nz)),"x", ...
+      error(["invalid value of nz=(",num2str(rows(nz)),"x", ...
         num2str(columns(nz)),")"]);
     endif
   endif
 
   ## check for total number of states
   if( (n + nz) != na )
-    error(["Illegal: a is ",num2str(na),"x",num2str(na),", n=", ...
+    error(["invalid: a is ",num2str(na),"x",num2str(na),", n=", ...
         num2str(n),", nz=",num2str(nz)]);
   endif
 

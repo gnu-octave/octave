@@ -57,7 +57,7 @@ function [yy, idx] = sortcom (xx, opt)
     if(strcmp(opt,"re"))        datavec = real(xx);
     elseif(strcmp(opt,"im"))    datavec = imag(xx);
     elseif(strcmp(opt,"mag"))   datavec = abs(xx);
-    else                        error(["sortcom: illegal option = ", opt])
+    else                        error(["sortcom: invalid option = ", opt])
     endif
 
     [datavec,idx] = sort(datavec);

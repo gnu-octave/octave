@@ -1,45 +1,46 @@
-# Copyright (C) 1993, 1998, 1999 Auburn University.  All rights reserved.
-#
-# This file is part of Octave.
-#
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-#
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+## Copyright (C) 1993, 1998, 1999 Auburn University.  All rights reserved.
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 2, or (at your option) any
+## later version.
+##
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
+
+## function [U,H,nu] = krylov(A,V,k{,eps1,pflg});
+## construct orthogonal basis U of block Krylov subspace;
+##  [V AV A^2*V ... A^(k+1)*V];
+## method used: householder reflections to guard against loss of
+## orthogonality
+## eps1: threshhold for 0 (default: 1e-12)
+## pflg: flag to use row pivoting  (improves numerical behavior)
+##   0 [default]: no pivoting; prints a warning message if trivial
+##                null space is corrupted
+##   1          : pivoting performed
+##
+## outputs:
+##   Uret: orthogonal basis of block krylov subspace
+##   H: Hessenberg matrix; if V is a vector then A U = U H
+##      otherwise H is meaningless
+## nu: dimension of span of krylov subspace (based on eps1)
+## if B is a vector and k > m-1, krylov returns H = the Hessenberg
+## decompostion of A.
+##
+## Reference: Hodel and Misra, "Partial Pivoting in the Computation of
+##     Krylov Subspaces", to be submitted to Linear Algebra and its
+##     Applications
+## written by A. Scottedward Hodel a.s.hodel@eng.auburn.edu
 
 function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
-  # function [U,H,nu] = krylov(A,V,k{,eps1,pflg});
-  # construct orthogonal basis U of block Krylov subspace;
-  #  [V AV A^2*V ... A^(k+1)*V];
-  # method used: householder reflections to guard against loss of
-  # orthogonality
-  # eps1: threshhold for 0 (default: 1e-12)
-  # pflg: flag to use row pivoting  (improves numerical behavior)
-  #   0 [default]: no pivoting; prints a warning message if trivial
-  #                null space is corrupted
-  #   1          : pivoting performed
-  #
-  # outputs:
-  #   Uret: orthogonal basis of block krylov subspace
-  #   H: Hessenberg matrix; if V is a vector then A U = U H
-  #      otherwise H is meaningless
-  # nu: dimension of span of krylov subspace (based on eps1)
-  # if B is a vector and k > m-1, krylov returns H = the Hessenberg
-  # decompostion of A.
-  #
-  # Reference: Hodel and Misra, "Partial Pivoting in the Computation of
-  #     Krylov Subspaces", to be submitted to Linear Algebra and its
-  #     Applications
-  # written by A. Scottedward Hodel a.s.hodel@eng.auburn.edu
 
   defeps = 1e-12;
   if(nargin < 3 | nargin > 5)

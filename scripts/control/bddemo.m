@@ -599,7 +599,7 @@ function bddemo ()
       disp("You can check this: PKcl = PK / (1 + PK), as expected")
       prompt
       elseif(meth != 5)
-        disp("Illegal selection")
+        disp("invalid selection")
      endif
     endwhile
 

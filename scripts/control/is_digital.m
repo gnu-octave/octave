@@ -41,7 +41,7 @@ function DIGITAL = is_digital (sys, eflg)
   case(1),  eflg = 0;
   case(2),
     if( isempty(find(eflg == [0, 1, 2])) )
-      error("Illegal value of eflg=%d (%e)",eflg,eflg);
+      error("invalid value of eflg=%d (%e)",eflg,eflg);
     endif
   otherwise,
     usage("DIGITAL = is_digital(sys{,eflg})");

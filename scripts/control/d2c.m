@@ -72,7 +72,7 @@ function csys = d2c (sys, opt)
   elseif(isstr(opt))   # all remaining cases are for nargin == 2
     tol = 1e-12;
     if( !(strcmp(opt,"log") | strcmp(opt,"bi") ) )
-      error(["d2c: illegal opt passed=",opt]);
+      error(["d2c: invalid opt passed=",opt]);
     endif
   elseif(!is_sample(opt))
     error("tol must be a postive scalar")

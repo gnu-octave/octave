@@ -45,7 +45,7 @@ function retval = com2str (zz, flg)
   endif
 
   if(flg != 0 & flg != 1)
-    error(["Illegal flg value: ",num2str(flg)]);
+    error(["invalid flg value: ",num2str(flg)]);
   endif
 
   sgns = "+-";

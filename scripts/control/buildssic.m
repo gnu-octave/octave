@@ -220,7 +220,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     xx = Clst(ii,:);
     iu = xx(1);
     if ((iu < 1) || (iu > m))
-      error("---> Illegal value in first col of Clst.");
+      error("---> invalid value in first col of Clst.");
     endif
     if (inp_used(iu))
       error("---> Input specified more than once.");
@@ -229,7 +229,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     for kk = 2:mx
       it = xx(kk);
       if (abs(it) > p)
-        error("---> Illegal row value in Clst.");
+        error("---> invalid row value in Clst.");
       elseif (it)
         K(iu,abs(it)) = sign(it);
       endif
@@ -262,7 +262,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   for ii = 1:lul
     it = Ulst(ii);
     if ((it < 1) || (it > m))
-      error("---> Illegal value in Ulst.");
+      error("---> invalid value in Ulst.");
     endif
     C = [C; kc(it,:)];
     D = [D; kdi(it,:)];
@@ -276,7 +276,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   for ii = 1:lol
     iu = Olst(ii);
     if (!iu || (abs(iu) > p+lul))
-      error("---> Illegal value in Olst.");
+      error("---> invalid value in Olst.");
     endif
     Cnew(ii,:) = sign(iu)*C(abs(iu),:);
     Dnew(ii,:) = sign(iu)*D(abs(iu),:);
@@ -289,7 +289,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   for ii = 1:lil
     iu = Ilst(ii);
     if (!iu || (abs(iu) > m))
-      error("---> Illegal value in Ilst.");
+      error("---> invalid value in Ilst.");
     endif
     Bnew(:,ii) = sign(iu)*B(:,abs(iu));
     Dnew(:,ii) = sign(iu)*D(:,abs(iu));

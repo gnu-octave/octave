@@ -100,7 +100,7 @@ function dsys = c2d (sys, opt, T)
   if (!is_sample(T))
     error("sampling period T must be a postive, real scalar");
   elseif( ! (strcmp(opt,"ex") | strcmp(opt,"bi") ) )
-    error(["illegal option passed: ",opt])
+    error(["invalid option passed: ",opt])
   endif
 
   sys = sysupdate(sys,"ss");

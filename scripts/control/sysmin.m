@@ -165,7 +165,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
       if(isempty(xx)) xx = 0;  endif    # signal no states in reduced model
       retsys = sysprune(sys,[],[],xx);
     otherwise,
-      error("illegal value of flg=%d",flg);
+      error ("invalid value of flg = %d", flg);
     endswitch
     if(sysdimensions(retsys,"st") > 0)
       [cflg,Uc] = is_controllable(retsys); nc = columns(Uc);

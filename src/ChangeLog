@@ -1,3 +1,9 @@
+2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (gobble_leading_whitespace): Discard first space character
+	after consecutive comment characters.
+	* lex.l (grab_help_text): Ditto.
+
 2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h, ov.cc (octave_value::column_vector_value,

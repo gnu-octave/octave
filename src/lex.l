@@ -1173,7 +1173,7 @@ force_local_variable (const string& name)
 // Grab the help text from an function file.  Always overwrites the
 // current contents of help_buf.
 
-// XXX FIXME XXX -- gobble_leading_white_space() in variables.cc
+// XXX FIXME XXX -- gobble_leading_white_space() in parse.y
 // duplicates some of this code!
 
 static void
@@ -1183,6 +1183,7 @@ grab_help_text (void)
 
   bool begin_comment = true;
   bool in_comment = true;
+  bool discard_space = true;
   int c = 0;
 
   while ((c = yyinput ()) != EOF)
@@ -1191,6 +1192,11 @@ grab_help_text (void)
 	{
 	  if (c == '%' || c == '#')
 	    continue;
+	  else if (discard_space && c == ' ')
+	    {
+	      discard_space = false;
+	      continue;
+	    }
 	  else
 	    begin_comment = false;
 	}	
@@ -1200,7 +1206,10 @@ grab_help_text (void)
 	  help_buf += (char) c;
 
 	  if (c == '\n')
-	    in_comment = false;
+	    {
+	      in_comment = false;
+	      discard_space = true;
+	    }
 	}
       else
 	{

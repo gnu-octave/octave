@@ -80,21 +80,22 @@ function [n, nz, m, p, yd] = sysdimensions (sys, opt)
   m = length(sysgetsignals(sys,"in"));
   p = length(sysgetsignals(sys,"out"));
   yd = sys.yd;
-  legal_options = list("all","cst","dst","st","in","out");
-  legal_values = list(n,n,nz,n+nz,m,p);
+  valid_options = list("all","cst","dst","st","in","out");
+  valid_values = list(n,n,nz,n+nz,m,p);
 
-  legal_opt = 0;
-  for ii=1:length(legal_options)
-    if(strcmp(nth(legal_options,ii),opt))
-      n = nth(legal_values,ii);
-      legal_opt = 1;
+  valid_opt = 0;
+  for ii=1:length(valid_options)
+    if(strcmp(nth(valid_options,ii),opt))
+      n = nth(valid_values,ii);
+      valid_opt = 1;
       if(ii > 1 & nargout > 1)
         warning("opt=%s, %d output arguments requested",opt,nargout);
       endif
     endif
   endfor
-  if(!legal_opt)
-    error("illegal option passed = %s",opt);
+
+  if (! valid_opt)
+    error ("invalid option passed = %s", opt);
   endif
 
 endfunction

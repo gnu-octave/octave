@@ -117,7 +117,7 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
 
   [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
 
-  ## check for legal state permutation
+  ## check for valid state permutation
   if(nn & nz)
     c_idx = find(state_idx <= nn);
     if(!isempty(c_idx)) max_c = max(c_idx);

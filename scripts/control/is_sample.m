@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{retval} =} is_sample (@var{Ts})
-## return true if @var{Ts} is a legal sampling time
+## return true if @var{Ts} is a valid sampling time
 ## (real,scalar, > 0)
 ## @end deftypefn
 

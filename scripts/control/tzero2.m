@@ -34,7 +34,7 @@ function zr = tzero2 (a, b, c, d, bal)
   if (nargin == 4)
     bal = "B";
   elseif (nargin != 5)
-    error ("tzero: illegal number of arguments");
+    error ("tzero: invalid number of arguments");
   endif
 
   [n, m, p] = abcddim (a, b, c, d);

@@ -38,7 +38,7 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
 
   if (sitype == 1)         IMPULSE = 0;
   elseif (sitype == 2)     IMPULSE = 1;
-  else                     error("stepimp: illegal sitype argument.")
+  else                     error("stepimp: invalid sitype argument.")
   endif
   sys = sysupdate(sys,"ss");
 

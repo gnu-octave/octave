@@ -227,7 +227,7 @@ while(opt != quitopt)
   case(quitopt),
     printf("Exiting quaternion demo\n");
   otherwise,
-    error(sprintf("Illegal option %f",opt));
+    error ("invalid option %f", opt);
   endswitch    
 endwhile
 endfunction

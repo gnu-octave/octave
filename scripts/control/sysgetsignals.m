@@ -182,7 +182,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
           endif
           stname = nth(stname,signum);
         otherwise,
-          error("Illegal value of strflg=%e",strflg);
+          error ("invalid value of strflg = %e", strflg);
         endswitch
 
       endif

@@ -1,1 +1,2 @@
-fprintf ("foo", "bar")
+s.a = 1;
+fprintf (s)

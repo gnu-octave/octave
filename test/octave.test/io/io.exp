@@ -163,8 +163,16 @@ set prog_output "\n... fprintf:.*"
 do_test fprintf-2.m
 
 set test fprintf-3
-set prog_output "error:.*"
+set prog_output "\n... fprintf:.*"
 do_test fprintf-3.m
+
+set test fprintf-4
+set prog_output "error:.*"
+do_test fprintf-4.m
+
+set test fprintf-5
+set prog_output "error:.*"
+do_test fprintf-5.m
 
 set test fscanf-1
 set prog_output "\n... fscanf:.*"

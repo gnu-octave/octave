@@ -1,1 +1,1 @@
-fprintf ("foo")
+fprintf (1)

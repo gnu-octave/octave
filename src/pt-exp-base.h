@@ -115,6 +115,9 @@ public:
 
   ~tree_expression (void) { }
 
+  virtual int is_multi_val_ret_expression (void) const
+    { return 0; }
+
   virtual int is_identifier (void) const
     { return 0; }
 
@@ -131,9 +134,6 @@ public:
     { panic_impossible (); }
 
   virtual tree_constant eval (int print) = 0;
-
-  virtual Octave_object eval (int print, int nargout,
-			      const Octave_object& args);
 
 protected:
   type etype;
@@ -185,19 +185,33 @@ private:
   tree_matrix *next;
 };
 
+// A base class for objects that can be return multiple values
+
+class
+tree_multi_val_ret : public tree_expression
+{
+public:
+  tree_multi_val_ret (int l = -1, int c = -1) : tree_expression (l, c) { }
+
+  int is_multi_val_ret_expression (void) const
+    { return 1; }
+
+  tree_constant eval (int print);
+
+  virtual Octave_object eval (int print, int nargout,
+			      const Octave_object& args) = 0;
+};
+
 // A base class for objects that can be evaluated with argument lists.
 
 class
-tree_fvc : public tree_expression
+tree_fvc : public tree_multi_val_ret
 {
 public:
-  tree_fvc (int l = -1, int c = -1) : tree_expression (l, c) { }
+  tree_fvc (int l = -1, int c = -1) : tree_multi_val_ret (l, c) { }
 
   virtual int is_constant (void) const
     { return 0; }
-
-//  virtual int is_builtin (void) const
-//    { return 0; }
 
   virtual tree_constant assign (tree_constant& t, const Octave_object& args);
 
@@ -292,17 +306,17 @@ private:
 // Index expressions.
 
 class
-tree_index_expression : public tree_expression
+tree_index_expression : public tree_multi_val_ret
 {
  public:
-  tree_index_expression (int l = -1, int c = -1) : tree_expression (l, c)
+  tree_index_expression (int l = -1, int c = -1) : tree_multi_val_ret (l, c)
     {
       id = 0;
       list = 0;
     }
 
   tree_index_expression (tree_identifier *i, int l = -1, int c = -1)
-    : tree_expression (l, c)
+    : tree_multi_val_ret (l, c)
       {
 	id = i;
 	list = 0;
@@ -310,7 +324,7 @@ tree_index_expression : public tree_expression
 
   tree_index_expression (tree_identifier *i, tree_argument_list *lst,
 			 int l = -1, int c = -1)
-    : tree_expression (l, c)
+    : tree_multi_val_ret (l, c)
       {
 	id = i;
 	list = lst;
@@ -495,28 +509,10 @@ tree_binary_expression : public tree_expression
   tree_expression *op2;
 };
 
-// Assignment expressions.
-
-class
-tree_assignment_expression : public tree_expression
-{
-public:
-  tree_assignment_expression (int l = -1, int c = -1)
-    : tree_expression (l, c)
-    { etype = tree_expression::assignment; }
-
-  ~tree_assignment_expression (void) { }
-
-  tree_constant eval (int print);
-
-  int is_assignment_expression (void) const
-    { return 1; }
-};
-
 // Simple assignment expressions.
 
 class
-tree_simple_assignment_expression : public tree_assignment_expression
+tree_simple_assignment_expression : public tree_expression
 {
  public:
   void init (int plhs, int ans_assign)
@@ -531,14 +527,14 @@ tree_simple_assignment_expression : public tree_assignment_expression
 
   tree_simple_assignment_expression (int plhs = 0, int ans_assign = 0,
 				     int l = -1, int c = -1)
-    : tree_assignment_expression (l, c)
+    : tree_expression (l, c)
       { init (plhs, ans_assign); }
 
   tree_simple_assignment_expression (tree_identifier *i,
 				     tree_expression *r,
 				     int plhs = 0, int ans_assign = 0,
 				     int l = -1, int c = -1)
-    : tree_assignment_expression (l, c)
+    : tree_expression (l, c)
       {
 	init (plhs, ans_assign);
 	lhs = i;
@@ -549,7 +545,7 @@ tree_simple_assignment_expression : public tree_assignment_expression
 				     tree_expression *r,
 				     int plhs = 0, int ans_assign = 0,
 				     int l = -1, int c = -1)
-    : tree_assignment_expression (l, c)
+    : tree_expression (l, c)
       {
 	init (plhs, ans_assign);
 	lhs = idx_expr->ident ();
@@ -567,6 +563,9 @@ tree_simple_assignment_expression : public tree_assignment_expression
 
   tree_constant eval (int print);
 
+  int is_assignment_expression (void) const
+    { return 1; }
+
   void eval_error (void);
 
   void print_code (ostream& os);
@@ -582,11 +581,11 @@ tree_simple_assignment_expression : public tree_assignment_expression
 // Multi-valued assignment expressions.
 
 class
-tree_multi_assignment_expression : public tree_assignment_expression
+tree_multi_assignment_expression : public tree_multi_val_ret
 {
  public:
   tree_multi_assignment_expression (int l = -1, int c = -1)
-    : tree_assignment_expression (l, c)
+    : tree_multi_val_ret (l, c)
       {
 	etype = tree_expression::multi_assignment;
 	lhs = 0;
@@ -594,9 +593,9 @@ tree_multi_assignment_expression : public tree_assignment_expression
       }
 
   tree_multi_assignment_expression (tree_return_list *lst,
-				    tree_expression *r,
+				    tree_multi_val_ret *r,
 				    int l = -1, int c = -1)
-    : tree_assignment_expression (l, c)
+    : tree_multi_val_ret (l, c)
       {
 	etype = tree_expression::multi_assignment;
 	lhs = lst;
@@ -609,13 +608,16 @@ tree_multi_assignment_expression : public tree_assignment_expression
 
   Octave_object eval (int print, int nargout, const Octave_object& args);
 
+  int is_assignment_expression (void) const
+    { return 1; }
+
   void eval_error (void);
 
   void print_code (ostream& os);
 
  private:
   tree_return_list *lhs;
-  tree_expression *rhs;
+  tree_multi_val_ret *rhs;
 };
 
 // Colon expressions.

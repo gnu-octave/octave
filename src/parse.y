@@ -148,6 +148,10 @@ static tree_expression *make_postfix_op (int op, tree_identifier *op1,
 static tree_expression *make_unary_op (int op, tree_expression *op1,
 				       token *tok_val);
 
+// Make an expression that handles assignment of multiple values.
+static tree_expression *make_multi_val_ret (tree_expression *rhs,
+					    int l = -1, int c = -1);
+
 #define ABORT_PARSE \
   do \
     { \
@@ -163,9 +167,8 @@ static tree_expression *make_unary_op (int op, tree_expression *op1,
 
 %}
 
-/*
- * Bison declarations.
- */
+// Bison declarations.
+
 %union
 {
 // The type of the basic tokens returned by the lexer.
@@ -270,9 +273,8 @@ static tree_expression *make_unary_op (int op, tree_expression *op1,
 // Where to start.
 %start input
 
-/*
- * Grammar rules.
- */
+// Grammar rules.
+
 %%
 
 input		: input1
@@ -689,38 +691,19 @@ screwed_again	: // empty
 expression	: variable '=' expression
 		  { $$ = new tree_simple_assignment_expression
 		      ($1, $3, 0, 0, $2->line (), $2->column ()); }
-		| '[' screwed_again matrix_row SCREW_TWO '=' expression
-		  {
-
-// Will need a way to convert the matrix list to a list of
-// identifiers.	 If that fails, we can abort here, without losing
-// anything -- no other possible syntax is valid if we've seen the
-// equals sign as the next token after the `]'.
-
-		    $$ = 0;
-		    maybe_screwed_again--;
-		    tree_matrix *tmp = ml.pop ();
-		    tmp = tmp->reverse ();
-		    tree_return_list *id_list = tmp->to_return_list ();
-		    if (id_list)
-		      {
-			$$ = new tree_multi_assignment_expression
-			  (id_list, $6, $5->line (), $5->column ());
-		      }
-		    else
-		      {
-			yyerror ("parse error");
-			error ("invalid identifier list for assignment");
-			$$ = 0;
-			ABORT_PARSE;
-		      }
-		  }
 		| NUM '=' expression
 		  {
 		    yyerror ("parse error");
 		    error ("invalid assignment to a number");
 		    $$ = 0;
 		    ABORT_PARSE;
+		  }
+		| '[' screwed_again matrix_row SCREW_TWO '=' expression
+		  {
+		    $$ = make_multi_val_ret ($6, $5->line (), $5->column ());
+
+		    if (! $$)
+		      ABORT_PARSE;
 		  }
 		| simple_expr
 		  { $$ = $1; }
@@ -1126,6 +1109,8 @@ matrix_row	: expression		// First element on row.
 
 %%
 
+// Generic error messages.
+
 static void
 yyerror (char *s)
 {
@@ -1165,6 +1150,8 @@ yyerror (char *s)
   maybe_page_output (output_buf);
 }
 
+// Error mesages for mismatched end tokens.
+
 static void
 end_error (char *type, token::end_tok_type ettype, int l, int c)
 {
@@ -1192,6 +1179,8 @@ end_error (char *type, token::end_tok_type ettype, int l, int c)
       break;
     }
 }
+
+// Check to see that end tokens are properly matched.
 
 static int
 check_end (token *tok, token::end_tok_type expected)
@@ -1228,19 +1217,21 @@ check_end (token *tok, token::end_tok_type expected)
     return 0;
 }
 
-/*
- * Need to make sure that the expression isn't already an identifier
- * that has a name, or an assignment expression.
- *
- * Note that an expression can't be just an identifier anymore -- it
- * must at least be an index expression (see the definition of the
- * non-terminal `variable' above).
- *
- * XXX FIXME XXX.  This isn't quite sufficient.  For example, try the
- * command `x = 4, x' for `x' previously undefined.
- *
- * XXX FIXME XXX -- we should probably delay doing this until eval-time.
- */
+// Try to figure out early if an expression should become an
+// assignment to the builtin variable ans.
+//
+// Need to make sure that the expression isn't already an identifier
+// that has a name, or an assignment expression.
+//
+// Note that an expression can't be just an identifier anymore -- it
+// must at least be an index expression (see the definition of the
+// non-terminal `variable' above).
+//
+// XXX FIXME XXX.  This isn't quite sufficient.  For example, try the
+// command `x = 4, x' for `x' previously undefined.
+//
+// XXX FIXME XXX -- we should probably delay doing this until eval-time.
+
 static tree_expression *
 maybe_convert_to_ans_assign (tree_expression *expr)
 {
@@ -1266,6 +1257,9 @@ maybe_convert_to_ans_assign (tree_expression *expr)
     }
 }
 
+// Maybe print a warning if an assignment expression is used as the
+// test in a logical expression.
+
 static void
 maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
@@ -1276,6 +1270,8 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
       warning ("suggest parenthesis around assignment used as truth value");
     }
 }
+
+// Build a binary expression.
 
 static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
@@ -1355,6 +1351,8 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
   return new tree_binary_expression (op1, op2, t, l, c);
 }
 
+// Build a prefix expression.
+
 static tree_expression *
 make_prefix_op (int op, tree_identifier *op1, token *tok_val)
 {
@@ -1378,6 +1376,8 @@ make_prefix_op (int op, tree_identifier *op1, token *tok_val)
   return new tree_prefix_expression (op1, t, l, c);
 }
 
+// Build a postfix expression.
+
 static tree_expression *
 make_postfix_op (int op, tree_identifier *op1, token *tok_val)
 {
@@ -1400,6 +1400,8 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
 
   return new tree_postfix_expression (op1, t, l, c);
 }
+
+// Build a unary expression.
 
 static tree_expression *
 make_unary_op (int op, tree_expression *op1, token *tok_val)
@@ -1428,4 +1430,60 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
   int c = tok_val->column ();
 
   return new tree_unary_expression (op1, t, l, c);
+}
+
+// Make an expression that handles assignment of multiple values.
+
+static tree_expression *
+make_multi_val_ret (tree_expression *rhs, int l, int c) 
+{
+// Convert the matrix list to a list of identifiers.  If that fails,
+// we can abort here, without losing anything -- no other possible
+// syntax is valid if we've seen the equals sign as the next token
+// after the `]'. 
+
+  tree_expression *retval = 0;
+
+  maybe_screwed_again--;
+
+  tree_matrix *tmp = ml.pop ();
+
+  tmp = tmp->reverse ();
+
+  tree_return_list *id_list = tmp->to_return_list ();
+
+  if (id_list)
+    {
+      int list_len = id_list->length ();
+
+      if (list_len == 1)
+	{
+	  tree_index_expression *lhs = id_list->remove_front ();
+	  retval = new tree_simple_assignment_expression (lhs, rhs, l, c);
+	  
+	}
+      else if (list_len > 1)
+	{
+	  if (rhs->is_multi_val_ret_expression ())
+	    {
+	      tree_multi_val_ret *t = (tree_multi_val_ret *) rhs;
+	      retval = new tree_multi_assignment_expression (id_list, t, l, c);
+	    }
+	  else
+	    {
+	      yyerror ("parse error");
+	      error ("RHS must be an expression that can return\
+ multiple values");
+	    }
+	}
+      else
+	panic_impossible ();
+    }
+  else
+    {
+      yyerror ("parse error");
+      error ("invalid identifier list for assignment");
+    }
+
+  return retval;
 }

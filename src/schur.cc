@@ -68,7 +68,7 @@ characters:\n\
 
       if (error_state)
 	{
-	  error ("schur: expecting string as third argument");
+	  error ("schur: expecting string as second argument");
 	  return retval;
 	}
     }

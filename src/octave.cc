@@ -64,6 +64,7 @@ extern "C"
 #include "help.h"
 #include "octave.h"
 #include "parse.h"
+#include "defaults.h"
 #include "procstream.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
@@ -597,6 +598,38 @@ DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 2, 1,
     print_usage ("casesen");
 
   DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN ("computer", Fcomputer, Scomputer, 1, 0,
+  "computer ():\n\
+\n\
+Have Octave ask the system, \"What kind of computer are you?\"")
+{
+  Octave_object retval;
+
+  if (args.length () != 1)
+    warning ("computer: ignoring extra arguments");
+
+  ostrstream output_buf;
+
+  if (strcmp (TARGET_HOST_TYPE, "unknown") == 0)
+    output_buf << "Hi Dave, I'm a HAL-9000";
+  else
+    output_buf << TARGET_HOST_TYPE;
+
+  if (nargout == 0)
+    {
+      output_buf << "\n" << ends;
+      maybe_page_output (output_buf);
+    }
+  else
+    {
+      char *msg = output_buf.str ();
+      retval = msg;
+      delete [] msg;
+    }
 
   return retval;
 }

@@ -37,6 +37,10 @@ BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 # Subdirectories to run `make dist' in
 BINDISTSUBDIRS = doc scripts
 
+DIRS_TO_MAKE = $(fcnfiledir) $(octfiledir) $(archlibdir) \
+  `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
+  `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
+
 all: mkpath
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: all
@@ -93,6 +97,10 @@ BUGS.info:
 .PHONY: BUGS.info
 
 install:
+	echo $(DIRS_TO_MAKE)
+	for dir in $(DIRS_TO_MAKE) ; do \
+	  if test -d $$dir ; then true ; else ./mkpath $$dir ; fi ; \
+	done
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: install
 

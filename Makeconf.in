@@ -81,46 +81,86 @@ getversion = sed -e '/version_string/!d' -e 's/.*"\(.*\)".*/\1/' -e q
 # and gets us back up to the top level of the source tree.
 version = `$(getversion) $(srcdir)/$(TOPDIR)/src/version.h`
 
-# Common prefix for installation directories.
-# NOTE: This directory must exist when you start installation.
-prefix = /usr/local
+# ==================== Where To Install Things ====================
 
-# Directory in which to put host dependent programs and libraries
-exec_prefix = $(prefix)
+# The default location for installation.  Everything is placed in
+# subdirectories of this directory.  The default values for many of
+# the variables below are expressed in terms of this one, so you may
+# not need to change them.  This defaults to /usr/local.
+prefix = @prefix@
 
-# Where to install the executables.
-bindir = $(exec_prefix)/bin
+# Like `prefix', but used for architecture-specific files.
+exec_prefix = @exec_prefix@
 
-# Where to put libraries like libcruft.a, liboctave.a, and libreadline.a
-libdir = $(exec_prefix)/lib
+# Where to install Octave and other binaries that people will want to
+# run directly.
+bindir = @bindir@
 
-# Where octave will look for M-files
-libsubdir = $(libdir)/octave/$(version)
+# Where to install architecture-independent data files.  ${fcnfiledir}
+# and ${localfcnfiledir} are subdirectories of this.
+datadir = @datadir@
 
-# Where to put the manual pages.
-mandir = $(prefix)/man/man1
-# Extension (not including `.') for the installed manual page filenames.
+# Where to install and expect libraries like libcruft.a, liboctave.a,
+# and libreadline.a, executable files to be run by Octave rather than
+# directly by users, and other architecture-dependent data.
+# ${archlibdir} is a subdirectory of this. 
+libdir = @libdir@
+
+# Where to install Octave's include files.  The default is
+# ${prefix}/include/octave
+includedir = @includedir@
+
+# Where to install Octave's man pages, and what extension they should
+# have.  The default is ${prefix}/man/man1
+mandir = @mandir@
 manext = 1
 
-# Where to put the info files.
-infodir = $(prefix)/info
+# Where to install and expect the info files describing Octave..
+infodir = @infodir@
 
-# Where to put extra data files, system-wide startup files, etc.
-datadir = $(prefix)/lib/octave
+# ==================== Octave-specific directories ====================
 
-# Where to put installed include files.
-includedir = $(prefix)/include/octave
+# These variables hold the values Octave will actually use.  They are
+# based on the values of the standard Make variables above.
+
+# Where to install the function file distributed with
+# Octave.  This includes the Octave version, so that the
+# function files for different versions of Octave will install
+# themselves in separate directories.
+fcnfiledir = @fcnfiledir@
+
+# Directories Octave should search for function files specific
+# to this site (i.e. customizations), before consulting
+# ${fcnfiledir}.  This should be a colon-separated list of
+# directories.
+localfcnfilepath = @localfcnfilepath@
+
+# Where to put executables to be run by Octave rather than
+# the user.  This path usually includes the Octave version
+# and configuration name, so that multiple configurations
+# for multiple versions of Octave may be installed at once.
+archlibdir = @archlibdir@
+
+# Where to put object files that will by dynamically loaded.
+# This path usually includes the Octave version and configuration
+# name, so that multiple configurations for multiple versions of
+# Octave may be installed at once. 
+octfiledir = @octfiledir@
+
+# Directories Octave should search for object files that will be
+# dynamically loaded and that are specific to this site
+# (i.e. customizations), before consulting ${octfiledir}.  This should
+# be a colon-separated list of directories.
+localoctfilepath = @localoctfilepath@
+
+# Where Octave will search to find its function files.  Before
+# changing this, check to see if your purpose wouldn't
+# better be served by changing localfcnfilepath.  This
+# should be a colon-separated list of directories.
+fcnfilepath = @fcnfilepath@
 
 # The type of computer we are running on.
 target_host_type = @target_host_type@
-
-# Normally this is the same as $(prefix).  With --run-in-place it is
-# $(srcdir).
-OCTAVE_HOME = @OCTAVE_HOME@
-
-# These are not used unless RUN_IN_PLACE is defined.
-OCTAVE_INFO_DIR = @OCTAVE_INFO_DIR@
-OCTAVE_LIB_DIR = @OCTAVE_LIB_DIR@
 
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!

@@ -261,34 +261,83 @@ a function.")
 static char *
 octave_home (void)
 {
-#ifdef RUN_IN_PLACE
-  static char *home = OCTAVE_HOME;
-  return home;
-#else
-  static char *home = 0;
-  delete [] home;
   char *oh = getenv ("OCTAVE_HOME");
-  if (oh)
-    home = strsave (oh);
+
+  return (oh ? oh : OCTAVE_PREFIX);
+}
+
+static char *
+subst_octave_home (char *s)
+{
+  char *home = octave_home ();
+  char *prefix = OCTAVE_PREFIX;
+
+  char *retval;
+
+  if (strcmp (home, prefix) == 0)
+    retval = strsave (s);
   else
-    home = strsave (OCTAVE_HOME);
-  return home;
-#endif
+    {
+      int len_home = strlen (home);
+      int len_prefix = strlen (prefix);
+
+      int count = 0;
+      char *ptr = s;
+      while (strstr (ptr, prefix))
+	{
+	  ptr += len_prefix;
+	  count++;
+	}
+
+      int grow_size = count * (len_home - len_prefix);
+
+      int len_retval = strlen (s) + grow_size;
+
+      retval = new char [len_retval+1];
+
+      char *p1 = s;
+      char *p2 = p1;
+      char *pdest = retval;
+
+      for (int i = 0; i < count; i++)
+	{
+	  p2 = strstr (p1, prefix);
+	  
+	  if (! p2)
+	    panic_impossible ();
+
+	  if (p1 == p2)
+	    {
+	      memcpy (pdest, home, len_home);
+	      pdest += len_home;
+	      p1 += len_prefix;
+	    }
+	  else
+	    {
+	      int len = (int) (p2 - p1);
+	      memcpy (pdest, p1, len);
+	      pdest += len;
+	      p1 += len;
+	    }
+
+	}
+    }
+
+  return retval;
 }
 
 static char *
 octave_info_dir (void)
 {
-#ifdef RUN_IN_PLACE
-  static char *oi = OCTAVE_INFO_DIR;
-  return oi;
-#else
-  static char *oi = 0;
-  delete [] oi;
-  char *oh = octave_home ();
-  oi = strconcat (oh, "/info/");
-  return oi;
-#endif
+  static char *retval = subst_octave_home (OCTAVE_INFODIR);
+  return retval;
+}
+
+static char *
+octave_arch_lib_dir (void)
+{
+  static char *retval = subst_octave_home (OCTAVE_ARCHLIBDIR);
+  return retval;
 }
 
 static char *
@@ -312,18 +361,8 @@ default_pager (void)
 char *
 octave_lib_dir (void)
 {
-#ifdef RUN_IN_PLACE
-  static char *ol = OCTAVE_LIB_DIR;
-  return ol;
-#else
-  static char *ol = 0;
-  delete [] ol;
-  char *oh = octave_home ();
-  char *tmp = strconcat (oh, "/lib/octave/");
-  ol = strconcat (tmp, version_string);
-  delete [] tmp;
-  return ol;
-#endif
+  static char *retval = subst_octave_home (OCTAVE_LIBDIR);
+  return retval;
 }
 
 // Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
@@ -340,12 +379,7 @@ default_path (void)
   static char *pathstring = 0;
   delete [] pathstring;
 
-  static char *std_path = 0;
-  delete [] std_path;
-
-  char *libdir = octave_lib_dir ();
-
-  std_path = strconcat (".:", libdir);
+  static char *std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
 
   char *oct_path = getenv ("OCTAVE_PATH");
 

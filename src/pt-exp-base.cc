@@ -141,13 +141,6 @@ tree_expression::eval (int print)
   return tree_constant ();
 }
 
-Octave_object
-tree_expression::eval (int print, int nargout, const Octave_object& args)
-{
-  panic ("invalid evaluation of generic expression");
-  return Octave_object ();
-}
-
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
 // other matrices, variables, and functions.
@@ -588,6 +581,15 @@ tree_matrix::print_code (ostream& os)
 
   if (in_parens)
     os << ")";
+}
+
+// A base class for objects that can be return multiple values
+
+tree_constant
+tree_multi_val_ret::eval (int print)
+{
+  panic ("invalid evaluation of generic expression");
+  return tree_constant ();
 }
 
 // A base class for objects that can be evaluated with argument lists.
@@ -1466,15 +1468,6 @@ tree_binary_expression::print_code (ostream& os)
 
   if (in_parens)
     os << ")";
-}
-
-// Assignment expressions.
-
-tree_constant
-tree_assignment_expression::eval (int print)
-{
-  panic ("invalid evaluation of generic expression");
-  return tree_constant ();
 }
 
 // Simple assignment expressions.

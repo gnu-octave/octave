@@ -1,5 +1,10 @@
 2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
 
+	* Array.cc (Array<T>::maybe_delete_elements): Declare idx_is_colon
+	and idx_is_colon_equiv Array<int> instead of dim_vector.
+
+	* Array.cc (Array<T>::assignN): Compute new dims in a cleaner way.
+
 	* Array.cc (Array<T>::index): Check for frozen_lengths.length ()
 	== n_dims before checking to see if all indices are colon_equiv.
 

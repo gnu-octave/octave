@@ -1413,11 +1413,9 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   dim_vector lhs_dims = dims ();
 
-  dim_vector idx_is_colon;
-  idx_is_colon.resize (n_idx);
+  Array<int> idx_is_colon (n_idx, 0);
 
-  dim_vector idx_is_colon_equiv;
-  idx_is_colon_equiv.resize (n_idx);
+  Array<int> idx_is_colon_equiv (n_idx, 0);
 
   // Initialization of colon arrays.
 
@@ -2710,15 +2708,13 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      dim_vector new_dims;
 	      new_dims.resize (lhs_dims.length ());
 
-	      for (int i = 0; i < lhs_dims.length (); i++)
-		{
-		  if (i < idx.length () - 1
-		      && idx(i).elem (0) + 1 > lhs_dims(i))
-		    new_dims(i) = idx(i).elem (0)+1;
-		  else
-		    new_dims(i) = lhs_dims(i);
-		}
+	      for (int i = 0; i < idx.length () - 1; i++)
+		new_dims(i) = idx(i).elem (0) >= lhs_dims(i)
+		  ? idx(i).elem (0) + 1 : lhs_dims (i);
 
+	      for (int i = idx.length (); i < lhs_dims.length (); i++)
+		new_dims(i) = lhs_dims (i);
+  
 	      lhs.resize (new_dims, rfv);
 
 	      lhs_dims = lhs.dims ();

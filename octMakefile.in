@@ -53,7 +53,7 @@ BINDISTSUBDIRS = emacs scripts doc
 CLEANSUBDIRS = $(DISTSUBDIRS) glob kpathsea
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
-  $(octfiledir) $(archlibdir) \
+  $(octfiledir) $(archlibdir) $(localarchlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
 

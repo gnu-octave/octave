@@ -792,6 +792,7 @@ DEFUN (octave_config_info, , ,
   m ["startupfiledir"] = OCTAVE_STARTUPFILEDIR;
   m ["localfcnfilepath"] = OCTAVE_LOCALFCNFILEPATH;
   m ["archlibdir"] = OCTAVE_ARCHLIBDIR;
+  m ["localarchlibdir"] = OCTAVE_LOCALARCHLIBDIR;
   m ["octfiledir"] = OCTAVE_OCTFILEDIR;
   m ["localoctfilepath"] = OCTAVE_LOCALOCTFILEPATH;
   m ["fcnfilepath"] = OCTAVE_FCNFILEPATH;

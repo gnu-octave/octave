@@ -78,6 +78,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_ARCHLIBDIR %OCTAVE_ARCHLIBDIR%
 #endif
 
+#ifndef OCTAVE_LOCALARCHLIBDIR
+#define OCTAVE_LOCALARCHLIBDIR %OCTAVE_LOCALARCHLIBDIR%
+#endif
+
 #ifndef OCTAVE_OCTFILEDIR
 #define OCTAVE_OCTFILEDIR %OCTAVE_OCTFILEDIR%
 #endif
@@ -120,6 +124,7 @@ extern string Vbin_dir;
 extern string Vlib_dir;
 extern string Vinfo_dir;
 extern string Varch_lib_dir;
+extern string Vlocal_arch_lib_dir;
 extern string Vfcn_file_dir;
 
 // The path that will be searched for programs that we execute.

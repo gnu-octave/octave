@@ -32,6 +32,8 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <iostream.h>
+
 #include <cstdlib>
 
 #include <string>
@@ -57,6 +59,7 @@ string Vbin_dir;
 string Vlib_dir;
 string Vinfo_dir;
 string Varch_lib_dir;
+string Vlocal_arch_lib_dir;
 string Vfcn_file_dir;
 
 // The path that will be searched for programs that we execute.
@@ -116,6 +119,12 @@ static void
 set_default_arch_lib_dir (void)
 {
   Varch_lib_dir = subst_octave_home (OCTAVE_ARCHLIBDIR);
+}
+
+static void
+set_default_local_arch_lib_dir (void)
+{
+  Vlocal_arch_lib_dir = subst_octave_home (OCTAVE_LOCALARCHLIBDIR);
 }
 
 static void
@@ -258,6 +267,8 @@ install_defaults (void)
 
   set_default_arch_lib_dir ();
 
+  set_default_local_arch_lib_dir ();
+
   set_default_fcn_file_dir ();
 
   set_default_bin_dir ();
@@ -302,15 +313,24 @@ exec_path (void)
 {
   int status = 0;
 
-  if (Vexec_path.empty ())
+  string s = builtin_string_variable ("EXEC_PATH");
+
+  if (s.empty ())
     {
       gripe_invalid_value_specified ("EXEC_PATH");
       status = -1;
     }
   else
     {
-      int len = Varch_lib_dir.length () + Vbin_dir.length ()
-	+ strlen (SEPCHAR_STR); 
+      Vexec_path = s;
+
+      string std_path = Vlocal_arch_lib_dir;
+      std_path.append (SEPCHAR_STR);
+      std_path.append (Varch_lib_dir);
+      std_path.append (SEPCHAR_STR);
+      std_path.append (Vbin_dir);
+
+      int std_len = std_path.length ();
 
       static char *putenv_cmd = 0;
 
@@ -325,49 +345,46 @@ exec_path (void)
 	  int prepend = (Vexec_path[0] == ':');
 	  int append = (eplen > 1 && Vexec_path[eplen-1] == ':');
 
+	  cerr << eplen << ", " << Vexec_path[eplen-1] << "\n";
+
 	  if (prepend)
 	    {
 	      if (append)
 		{
-		  putenv_cmd = new char [2 * len + eplen + 6];
-		  sprintf (putenv_cmd,
-			   "PATH=%s" SEPCHAR_STR "%s%s%s" SEPCHAR_STR "%s",
-			   Varch_lib_dir.c_str (), Vbin_dir.c_str (),
-			   Vexec_path.c_str (), Varch_lib_dir.c_str (),
-			   Vbin_dir.c_str ());
+		  putenv_cmd = new char [2 * std_len + eplen + 6];
+		  sprintf (putenv_cmd, "PATH=%s%s%s",
+			   std_path.c_str (), Vexec_path.c_str (),
+			   std_path.c_str ());
 		}
 	      else
 		{
-		  putenv_cmd = new char [len + eplen + 6];
-		  sprintf (putenv_cmd,
-			   "PATH=%s" SEPCHAR_STR "%s%s",
-			   Varch_lib_dir.c_str (), Vbin_dir.c_str (),
-			   Vexec_path.c_str ());
+		  putenv_cmd = new char [std_len + eplen + 6];
+		  sprintf (putenv_cmd, "PATH=%s%s",
+			   std_path.c_str (), Vexec_path.c_str ());
 		}
 	    }
 	  else
 	    {
 	      if (append)
 		{
-		  putenv_cmd = new char [len + eplen + 6];
-		  sprintf (putenv_cmd,
-			   "PATH=%s%s" SEPCHAR_STR "%s",
-			   Vexec_path.c_str (), Varch_lib_dir.c_str (),
-			   Vbin_dir.c_str ());
+		  putenv_cmd = new char [std_len + eplen + 6];
+		  sprintf (putenv_cmd, "PATH=%s%s",
+			   Vexec_path.c_str (), std_path.c_str ());
 		}
 	      else
 		{
-		  putenv_cmd = new char [len + eplen + 6];
+		  putenv_cmd = new char [eplen + 6];
 		  sprintf (putenv_cmd, "PATH=%s", Vexec_path.c_str ());
 		}
 	    }
 	}
       else
 	{
-	  putenv_cmd = new char [len+6];
-	  sprintf (putenv_cmd, "PATH=%s" SEPCHAR_STR "%s",
-		   Varch_lib_dir.c_str (), Vbin_dir.c_str ());
+	  putenv_cmd = new char [std_len+6];
+	  sprintf (putenv_cmd, "PATH=%s", std_path.c_str ());
 	}
+
+      cerr << putenv_cmd << "\n";
 
       putenv (putenv_cmd);
     }

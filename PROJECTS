@@ -65,6 +65,10 @@ Numerical:
 
   * Optional inputs for fsqp.
 
+  * Allow parameters to be passed through the call to fsolve() to the
+    user-supplied function for Matlab compatibility.  Don't place an
+    upper limit on the number of arguments.
+
   * If possible, make economy QR factorization actually take advantage
     of the form of the result instead of just dropping columns.
     Lapack doesn't appear to do this yet.
@@ -72,6 +76,9 @@ Numerical:
   * Check matrix classes for proper handling of empty matrices.
 
   * Improve design of ODE, DAE, classes.
+
+  * Make it possible to specify a time which dassl and lsode should
+    not integrate past.
 
   * Extend meaning of .* to include v .* M or M .* v (where v is a
     column vector with the same number of rows as M) to scale rows of
@@ -364,6 +371,8 @@ Interpreter:
   * It would be nice to have an interactive debugger.
 
   * Make whos report total memory used by variables (and functions?).
+
+  * Rewrite whos and the symbol_record_info class.
 
 -------
 History:

@@ -206,6 +206,10 @@ localfcnfilepath = @localfcnfilepath@
 # for multiple versions of Octave may be installed at once.
 archlibdir = @archlibdir@
 
+# Where to put executables to be run by Octave rather than by the
+# user that are specific to this site.
+localarchlibdir = @localarchlibdir@
+
 # Where to put object files that will by dynamically loaded.
 # This path usually includes the Octave version and configuration
 # name, so that multiple configurations for multiple versions of
@@ -300,7 +304,7 @@ endef
 
 define do-subst-config-vals
 echo "making $@ from $<"
-sed < $< > $@.tmp \
+sed < $< \
   -e "s;%VERSION%;\"${version}\";" \
   -e "s;%config_opts%;\"${config_opts}\";" \
   -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";" \
@@ -332,8 +336,8 @@ sed < $< > $@.tmp \
   -e "s;%LIBS%;\"${LIBS}\";" \
   -e "s;%LEXLIB%;\"${LEXLIB}\";" \
   -e "s;%LIBPLPLOT%;\"${LIBPLPLOT}\";" \
-  -e "s;%LIBDLFCN%;\"${LIBDLFCN}\";" \
-  -e "s;%DEFS%;\"${UGLY_DEFS}\";"
+  -e "s;%LIBDLFCN%;\"${LIBDLFCN}\";" | sed \
+  -e "s;%DEFS%;\"${UGLY_DEFS}\";" > $@.tmp
 $(top_srcdir)/move-if-change $@.tmp $@
 endef
 
@@ -351,6 +355,7 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_LOCALFCNFILEDIR%;\"${localfcnfiledir}\";" \
   -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
   -e "s;%OCTAVE_ARCHLIBDIR%;\"${archlibdir}\";" \
+  -e "s;%OCTAVE_LOCALARCHLIBDIR%;\"${localarchlibdir}\";" \
   -e "s;%OCTAVE_OCTFILEDIR%;\"${octfiledir}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
   -e "s;%OCTAVE_FCNFILEPATH%;\"${fcnfilepath}\";" \

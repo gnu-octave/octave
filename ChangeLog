@@ -1,3 +1,16 @@
+Wed Oct 30 01:04:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (DIRS_TO_MAKE): Add localarchlibdir to list.
+
+	* configure.in (localarchlibdir): New variable.
+	* Makeconf.in (localarchlibdir): Substitute it.
+	(do-subst-default-vals): Likewise.
+
+Sun Oct 27 14:03:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-config-vals): Split into two sed commands
+	to try to avoid fixed limits in some seds and/or systems.
+
 Fri Oct 25 01:13:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.h.bot: Add definition for GCC_ATTRIBUTE_UNUSED.

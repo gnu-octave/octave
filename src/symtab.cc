@@ -900,7 +900,7 @@ symbol_table::rename (const char *old_name, const char *new_name)
       ptr = ptr->next ();
     }
 
-  panic_impossible ();
+  error ("unable to rename `%s' to `%s', old_name, new_name");
 }
 
 void

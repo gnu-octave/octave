@@ -957,6 +957,9 @@ func_def2	: identifier safe local_symtab func_def3
 			    global_sym_tab->rename (id_name,
 						    curr_fcn_file_name);
 
+			    if (error_state)
+			      ABORT_PARSE;
+
 			    id_name = $1->name ();
 			  }
 

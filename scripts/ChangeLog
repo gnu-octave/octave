@@ -1,3 +1,7 @@
+2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/erfinv.m: Fix usage message.
+
 2002-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* elfun/coth.m: Use 1 ./ tanh(z) instead of cosh(z) ./ sinh(z).

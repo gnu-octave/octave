@@ -29,14 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <csetjmp>
 #include <cstring>
 
+#include <fstream.h>
+#include <iostream.h>
+#include <strstream.h>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <sys/param.h>
-#include <iostream.h>
-#include <strstream.h>
-#include <fstream.h>
 
 #include <Complex.h>
 

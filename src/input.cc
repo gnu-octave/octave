@@ -44,13 +44,13 @@ Free Software Foundation, Inc.
 #include <cassert>
 #include <csignal>
 
+#include <iostream.h>
+#include <strstream.h>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
-#include <iostream.h>
-#include <strstream.h>
 
 // This must come before anything that includes iostream.h...
 extern "C"
@@ -93,6 +93,7 @@ gnu_readline (char *s)
 }
 }
 
+#include "pathlen.h"
 #include "help.h"
 #include "error.h"
 #include "utils.h"
@@ -111,10 +112,6 @@ gnu_readline (char *s)
 #include "oct-map.h"
 #include "symtab.h"
 #include "defun.h"
-
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 1024
-#endif
 
 // The size that strings change by.
 #ifndef DEFAULT_ARRAY_SIZE

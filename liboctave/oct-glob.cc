@@ -42,8 +42,19 @@ glob_match::match (const string& s)
 
   const char *str = s.c_str ();
 
+  int fnmatch_flags = 0;
+
+  if (flags & pathname)
+    fnmatch_flags |= FNM_PATHNAME;
+
+  if (flags & noescape)
+    fnmatch_flags |= FNM_NOESCAPE;
+
+  if (flags & period)
+    fnmatch_flags |= FNM_PERIOD;
+
   for (int i = 0; i < npat; i++)
-    if (fnmatch (pat(i).c_str (), str, flags) != FNM_NOMATCH)
+    if (fnmatch (pat(i).c_str (), str, fnmatch_flags) != FNM_NOMATCH)
       return true;
 
   return false;

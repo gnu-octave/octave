@@ -1,5 +1,8 @@
 Wed Nov 20 00:35:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sysdep.cc (octave_chdir): [__EMX__]: Make copy of string before
+	converting to upper case.
+
 	* getgrent.cc (mk_gr_map): Only set the passwd field if
 	HAVE_GR_PASSWD is defined.
 

@@ -1,5 +1,8 @@
 Tue Nov 19 23:07:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-glob.cc (glob_match::match): Don't expect our flag values to
+	be the same as they are in fnmatch.h.
+
 	* f77-fcn.c, f77-fcn.h: Move to libcruft/misc directory.
 
 	* Makefile.in (INCLUDES): Delete f77-fcn.h.

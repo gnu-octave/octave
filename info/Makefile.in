@@ -58,7 +58,7 @@ INCLUDES = display.h doc.h echo_area.h filesys.h general.h \
 
 TEXI = info-stnd.texi info.texi userdoc.texi
 
-DISTFILES = Makefile.in README NEWS info.1 \
+DISTFILES = Makefile.in README NEWS info.1 configure.in acconfig.h \
 	  $(SOURCES) $(INCLUDES) $(TEXINFO)
 
 GETOPT_OBJS = getopt.o getopt1.o

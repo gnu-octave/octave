@@ -409,8 +409,11 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   while (0)
 
 DEFUN_DLD (__glpk__, args, ,
-  "__glpk__: internal interface for the GLPK library.\n\
-You should be using using glpk instead")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{values}] =} __glpk__ (@var{args})\n\
+Internal interface for the GNU GLPK library.\n\
+You should be using using the @code{glpk} function instead.\n\
+@end deftypefn")
 {
   // The list of values to return.  See the declaration in oct-obj.h
   octave_value_list retval;

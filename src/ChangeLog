@@ -1,5 +1,7 @@
 2005-03-24  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Texinfoize doc string.
+
 	* Makefile.in (install-oct): Always create $(octfiledir) and
 	install PKG_ADD file there.
 

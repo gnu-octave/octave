@@ -1,50 +1,75 @@
 # Copyright (C) 1995 John W. Eaton
-# 
+#
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2, or (at your option) any
 # later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-function saveimage (filename, X, img_form, map)
+function saveimage (filename, img, img_form, map)
 
 # Save a matrix to disk in image format.
-# 
+#
 # saveimage (filename, x) saves matrix x to file filename in octave's
 # image format.  The current colormap is saved in the file also.
-# 
+#
 # saveimage (filename, x, "img") saves the image in the default format
 # and is the same as saveimage (filename, x).
-# 
+#
 # saveimage (filename, x, "ppm") saves the image in ppm format instead
 # of the default octave image format.
-# 
+#
 # saveimage (filename, x, "ps") saves the image in PostScript format
 # instead of the default octave image format. (Note: images saved in
 # PostScript format can not be read back into octave with loadimage.)
-# 
+#
 # saveimage (filename, x, format, map) saves the image along with the
 # specified colormap in the specified format.
-# 
+#
 # Note: If the colormap contains only two entries and these entries
 # are black and white, the bitmap ppm and PostScript formats are used.
 # If the image is a gray scale image (the entries within each row of
 # the colormap are equal) the gray scale ppm and PostScript image
 # formats are used, otherwise the full color formats are used.
-# 
+#
+# The conversion to PostScript is based on pbmtolps.c, which was
+# written by 
+#
+#   George Phillips <phillips@cs.ubc.ca>
+#   Department of Computer Science
+#   University of British Columbia
+#
+# and is part of the portable bitmap utilities,
+#
 # SEE ALSO: loadimage, save, load, colormap
 
 # Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+
+# Rewritten by jwe to avoid using octoppm and pbm routines so that
+# people who don't have the the pbm stuff installed can still use this
+# function. 
+#
+# The conversion to PostScript is based on pnmtops.c, which is part of
+# the portable bitmap utilties and bears this copyright notice:
+#
+# Copyright (C) 1989 by Jef Poskanzer.
+#
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose and without fee is hereby granted, provided
+# that the above copyright notice appear in all copies and that both that
+# copyright notice and this permission notice appear in supporting
+# documentation.  This software is provided "as is" without express or
+# implied warranty.
 
   if (nargin < 2 || nargin > 4)
     usage ("saveimage (filename, matrix, [format, [colormap]])");
@@ -53,7 +78,10 @@ function saveimage (filename, X, img_form, map)
   if (nargin < 4)
     map = colormap ();
   endif
-  if (columns (map) != 3)
+
+  [map_nr, map_nc] = size (map);
+
+  if (map_nc != 3)
     error ("colormap should be an N x 3 matrix");
   endif
 
@@ -64,10 +92,10 @@ function saveimage (filename, X, img_form, map)
   elseif (! (strcmp (img_form, "img")
              || strcmp (img_form, "ppm")
 	     || strcmp (img_form, "ps")))
-    error ("unsupported image format specification");     
+    error ("unsupported image format specification");
   endif
 
-  if (! is_matrix (X))
+  if (! is_matrix (img))
     warning ("image variable is not a matrix");
   endif
 
@@ -78,31 +106,202 @@ function saveimage (filename, X, img_form, map)
 # If we just want Octave image format, save and return.
 
   if (strcmp (img_form, "img"))
-    eval (strcat ("save -ascii ", filename, " map X"));
+    eval (strcat ("save -ascii ", filename, " map img"));
     return;
   endif
 
-  unwind_protect
-
-    oct_file = octave_tmp_file_name ();
-
-# Save image in Octave image file format
-
-    eval (strcat ("save -ascii ", oct_file, " map X"));
-
 # Convert to another format if requested.
 
-    if (strcmp (img_form, "ppm"))
-      shell_cmd (sprintf ("octtopnm %s > %s", oct_file, filename));
-    elseif (strcmp (img_form, "ps") == 1)
-      shell_cmd (sprintf ("octtopnm %s | pnmtops > %s 2> /dev/null",
-                          oct_file, filename));
+  grey = ! (any (map(:,1) != map(:,2) || map(:,1) != map (:,3)));
+
+  pbm = pgm = ppm = 0;
+
+  map_sz = map_nr * map_nc;
+
+  map = reshape (map, map_sz, 1);
+
+  idx = find (map > 1);
+  map (idx) = ones (size (idx));
+
+  idx = find (map < 0);
+  map (idx) = zeros (size (idx));
+
+  map = round (255 * map);
+
+  bw = (map_nr == 2
+        && ((map(1,1) == 0 && map(2,1) == 255)
+            || (map(1,1) == 255 && map(2,1) == 0)));
+
+  img = img';
+  [img_nr, img_nc] = size (img);
+
+  img_sz = img_nr * img_nc;
+  img = reshape (img, img_sz, 1);
+
+  idx = find (img >= map_nr - 1);
+  img (idx) = ones (size (idx)) * map_nr;
+
+  idx = find (img <= 0);
+  img (idx) = ones (size (idx));
+
+  if (strcmp (img_form, "ppm"))
+    if (grey && map_nr == 2 && bw)
+
+      map = map(:,1);
+
+      if (map(1) != 0)
+	map(1) = 1;
+      else
+	map(2) = 1;
+      endif
+
+      img = map(img);
+      n_long = rem (img_sz, 8);
+      if (n_long == 0)
+	n_long = 8;
+      else
+	n_long = 1 + nlong;
+      endif
+
+      idx = 1:8:img_sz;
+      s_len = length (idx) - 1;
+
+      tmp = img (1:8:img_sz) * 128;
+      for i = 2:n_long
+	tmp = tmp + img (i:8:img_sz) * 2^(8-i);
+      endfor
+      size (tmp)
+      for i = (n_long+1):8
+	tmp(1:s_len) = tmp(1:s_len) + img (i:8:img_sz) * 2^(8-i);
+      endfor
+
+      fid = fopen (filename, "w");
+      fprintf (fid, "P4\n%d %d\n", img_nr, img_nc);
+      fwrite (fid, tmp, "char");
+      fprintf (fid, "\n");
+      fclose (fid);
+
+    elseif (grey)
+
+      fid = fopen (filename, "w");
+      fprintf (fid, "P5\n%d %d\n255\n", img_nr, img_nc);
+      fwrite (fid, map(img), "uchar");
+      fprintf (fid, "\n");
+      fclose (fid);
+
+    else
+
+      img_idx = (1:3:3*img_sz)+2;
+      map_idx = (2*map_nr+1):map_sz;
+
+      tmap = map(map_idx);
+      tmp(img_idx--) = tmap(img);
+
+      map_idx = map_idx - map_nr;
+      tmap = map(map_idx);
+      tmp(img_idx--) = tmap(img);
+
+      map_idx = map_idx - map_nr;
+      tmap = map(map_idx);
+      tmp(img_idx--) = tmap(img);
+
+      fid = fopen (filename, "w");
+      fprintf (fid, "P6\n%d %d\n255\n", img_nr, img_nc);
+      fwrite (fid, tmp, "uchar");
+      fprintf (fid, "\n");
+      fclose (fid);
+
     endif
 
-  unwind_protect_cleanup
+  elseif (strcmp (img_form, "ps") == 1)
 
-    shell_cmd (sprintf ("rm -f %s", oct_file));
+    if (! grey)
+      error ("must have a greyscale color map for conversion to PostScript")
+    endif
 
-  end_unwind_protect
+    bps = 8;
+    dpi = 300;
+    pagewid = 612;
+    pagehgt = 762;
+    MARGIN = 0.95;
+    devpix = dpi / 72.0 + 0.5;
+    pixfac = 72.0 / dpi * devpix;
+
+# Compute padding to round cols * bps up to the nearest multiple of 8
+# (nr and nc are switched because we transposed the image above).
+
+    padright = (((img_nr * bps + 7) / 8) * 8 - img_nr * bps) / bps;
+
+    scols = img_nr * pixfac;
+    srows = img_nc * pixfac;
+
+    if (scols > pagewid * MARGIN || srows > pagehgt * MARGIN)
+      if (scols > pagewid * MARGIN)
+	scale = scale * (pagewid / scols * MARGIN);
+	scols = scale * img_nr * pixfac;
+	srows = scale * img_nc * pixfac;
+      endif
+      if (srows > pagehgt * MARGIN)
+	scale = scale * (pagehgt / srows * MARGIN);
+	scols = scale * img_nr * pixfac;
+	srows = scale * img_nc * pixfac;
+      endif
+      warning ("image too large for page, rescaling to %g", scale);
+    endif
+
+    llx = (pagewid - scols) / 2;
+    lly = (pagehgt - srows) / 2;
+    urx = llx + fix (scols + 0.5);
+    ury = lly + fix (srows + 0.5);
+
+    fid = fopen (filename, "w");
+
+    fprintf (fid, "%%!PS-Adobe-2.0 EPSF-2.0\n");
+    fprintf (fid, "%%%%Creator: pnmtops\n");
+    fprintf (fid, "%%%%Title: %s\n", filename);
+    fprintf (fid, "%%%%Pages: 1\n");
+    fprintf (fid, "%%%%BoundingBox: %d %d %d %d\n",
+             fix (llx), fix (lly), fix (urx), fix (ury));
+    fprintf (fid, "%%%%EndComments\n" );
+    fprintf (fid, "/readstring {\n");
+    fprintf (fid, "  currentfile exch readhexstring pop\n");
+    fprintf (fid, "} bind def\n");
+    fprintf (fid, "/picstr %d string def\n",
+             fix ((img_nr + padright) * bps / 8));
+    fprintf (fid, "%%%%EndProlog\n");
+    fprintf (fid, "%%%%Page: 1 1\n");
+    fprintf (fid, "gsave\n");
+    fprintf (fid, "%g %g translate\n", llx, lly);
+    fprintf (fid, "%g %g scale\n", scols, srows);
+    fprintf (fid, "%d %d %d\n", img_nr, img_nc, bps);
+    fprintf (fid, "[ %d 0 0 -%d 0 %d ]\n", img_nr, img_nc, img_nc);
+    fprintf (fid, "{ picstr readstring }\n" );
+    fprintf (fid, "image\n" );
+
+    img = map(img);
+
+# XXX FIXME XXX -- this would be much faster if fprintf knew about
+# vector arguments.
+
+    count = 0;
+    for i = 1:img_sz
+      fprintf (fid, "%x", img (i))
+      if (++count == 30)
+	count = 0;
+	fprintf (fid, "\n");
+      endif
+    endfor
+
+    fprintf (fid, "\n" );
+    fprintf (fid, "grestore\n" );
+    fprintf (fid, "showpage\n" );
+    fprintf (fid, "%%%%Trailer\n" );
+    fclose (fid);
+
+  else
+    error ("saveimage: what happened to the image type?");
+  endif
 
 endfunction
+
+

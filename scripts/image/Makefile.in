@@ -31,7 +31,7 @@ FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 IMAGE_FILES = $(wildcard $(srcdir)/*.img)
 IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
 
-all: octtopnm
+all:
 .PHONY: all
 
 octtopnm: octtopnm.o
@@ -49,7 +49,7 @@ install:
 	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f ; \
 	done
 	$(top_srcdir)/mkinstalldirs $(archlibdir)
-	$(INSTALL_PROGRAM) octtopnm $(archlibdir)/octtopnm
+#	$(INSTALL_PROGRAM) octtopnm $(archlibdir)/octtopnm
 .PHONY: install
 
 uninstall:
@@ -59,7 +59,7 @@ uninstall:
 	for f in $(IMAGE_FILES_NO_DIR) ; \
 	  do rm -f $(imagedir)/$$f ; \
 	done
-	rm -f $(archlibdir)/octtopnm
+#	rm -f $(archlibdir)/octtopnm
 .PHONY: uninstall
 
 clean:

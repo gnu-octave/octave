@@ -197,13 +197,13 @@ char **argv;
       for(row=0; row<img_rows; row++) {
         for(col=0; col<img_cols; col++) {
           if(index == 7) {
-            byte = (byte << 1) + !rgb[img[row][col]-1][0];
+            byte =  2 * byte + !rgb[img[row][col]-1][0];
             fwrite(&byte,sizeof(unsigned char),1,stdout);
             byte = 0;
             index = 0;
           }
           else {
-            byte = (byte << 1) + !rgb[img[row][col]-1][0];
+            byte = 2 * byte + !rgb[img[row][col]-1][0];
             index++;
           }
         }

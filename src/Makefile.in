@@ -203,7 +203,8 @@ endif
 ifeq ($(INCLUDE_LINK_DEPS),true)
   OCTINTERP_LINK_DEPS = -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT)
   OCT_LINK_DEPS = \
-    -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) -L. $(LIBOCTINTERP)
+    -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
+    -L. $(LIBOCTINTERP) $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
 endif
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MArray2.h"
 
 #include "mx-defs.h"
+#include "str-vec.h"
 
 class
 charMatrix : public MArray2<char>
@@ -50,6 +51,7 @@ public:
   charMatrix (const charMatrix& a) : MArray2<char> (a) { }
   charMatrix (const char *s);
   charMatrix (const string& s);
+  charMatrix (const string_vector& s);
 
   charMatrix& operator = (const charMatrix& a)
     {

@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // #include <sys/types.h>  // XXX FIXME XXX
 
 #include "lo-error.h"
+#include "str-vec.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
 
@@ -58,6 +59,18 @@ charMatrix::charMatrix (const string& s)
   int nc = cols ();
   for (int i = 0; i < nc; i++)
     elem (0, i) = s[i];
+}
+
+charMatrix::charMatrix (const string_vector& s)
+  : MArray2<char> (s.length (), s.max_length ())
+{
+  for (int i = 0; i < nr; i++)
+    {
+      int nc = s[i].length ();
+
+      for (int j = 0; j < nc; j++)
+	elem (i, j) = s[i][j];
+    }
 }
 
 int

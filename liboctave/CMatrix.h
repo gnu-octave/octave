@@ -53,8 +53,12 @@ public:
   ComplexMatrix (const Matrix& a);
   ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
+  ComplexMatrix (const RowVector& rv);
+  ComplexMatrix (const ColumnVector& cv);
   ComplexMatrix (const DiagMatrix& a);
   //  ComplexMatrix (const MDiagArray2<Complex>& a) : MArray2<Complex> (a) { }
+  ComplexMatrix (const ComplexRowVector& rv);
+  ComplexMatrix (const ComplexColumnVector& cv);
   ComplexMatrix (const ComplexDiagMatrix& a);
 
   ComplexMatrix (const charMatrix& a);

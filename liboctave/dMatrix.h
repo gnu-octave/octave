@@ -55,6 +55,8 @@ public:
   Matrix (int r, int c, double val) : MArray2<double> (r, c, val) { }
   Matrix (const MArray2<double>& a) : MArray2<double> (a) { }
   Matrix (const Matrix& a) : MArray2<double> (a) { }
+  Matrix (const RowVector& rv);
+  Matrix (const ColumnVector& cv);
   //  Matrix (const MDiagArray2<double>& a) : MArray2<double> (a) { }
   Matrix (const DiagMatrix& a);
 

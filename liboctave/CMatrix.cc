@@ -107,11 +107,39 @@ ComplexMatrix::ComplexMatrix (const Matrix& a)
       elem (i, j) = a.elem (i, j);
 }
 
+ComplexMatrix::ComplexMatrix (const RowVector& rv)
+  : MArray2<Complex> (1, rv.length (), 0.0)
+{
+  for (int i = 0; i < rv.length (); i++)
+    elem (0, i) = rv.elem (i);
+}
+
+ComplexMatrix::ComplexMatrix (const ColumnVector& cv)
+  : MArray2<Complex> (cv.length (), 1, 0.0)
+{
+  for (int i = 0; i < cv.length (); i++)
+    elem (i, 0) = cv.elem (i);
+}
+
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
   : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
+}
+
+ComplexMatrix::ComplexMatrix (const ComplexRowVector& rv)
+  : MArray2<Complex> (1, rv.length (), 0.0)
+{
+  for (int i = 0; i < rv.length (); i++)
+    elem (0, i) = rv.elem (i);
+}
+
+ComplexMatrix::ComplexMatrix (const ComplexColumnVector& cv)
+  : MArray2<Complex> (cv.length (), 1, 0.0)
+{
+  for (int i = 0; i < cv.length (); i++)
+    elem (i, 0) = cv.elem (i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)

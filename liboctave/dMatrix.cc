@@ -109,6 +109,20 @@ extern "C"
 
 // Matrix class.
 
+Matrix::Matrix (const RowVector& rv)
+  : MArray2<double> (1, rv.length (), 0.0)
+{
+  for (int i = 0; i < rv.length (); i++)
+    elem (0, i) = rv.elem (i);
+}
+
+Matrix::Matrix (const ColumnVector& cv)
+  : MArray2<double> (cv.length (), 1, 0.0)
+{
+  for (int i = 0; i < cv.length (); i++)
+    elem (i, 0) = cv.elem (i);
+}
+
 Matrix::Matrix (const DiagMatrix& a)
   : MArray2<double> (a.rows (), a.cols (), 0.0)
 {

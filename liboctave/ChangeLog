@@ -1,3 +1,17 @@
+Sat Jul 27 02:54:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::Matrix (const RowVector&),
+	Matrix::Matrix (const ColumnVector&)): New constructors.
+
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const RowVector&),
+	ComplexMatrix::ComplexMatrix (const ColumnVector&),
+	ComplexMatrix::ComplexMatrix (const ComplexRowVector&),
+	ComplexMatrix::ComplexMatrix (const ComplexColumnVector&)):
+	New constructors.
+
+	* chMatrix.cc (charMatrix::charMatrix (const string_vector&)):
+	New constructor.
+
 Wed Jul 24 16:39:16 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.cc (do_integrate): Check to make sure that the state and

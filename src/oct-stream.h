@@ -23,17 +23,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_stream_h)
 #define octave_octave_stream_h 1
 
-#include <string>
+class Matrix;
+class string_vector;
+class octave_value;
+class octave_value_list;
 
-#include <iostream.h>
-#include <strstream.h>
+class istream;
+class ostream;
+class ostrstream;
+
+#include <string>
 
 #include "Array.h"
 #include "data-conv.h"
 #include "mach-info.h"
-
-#include "oct-obj.h"
-#include "str-vec.h"
 
 struct
 scanf_format_elt

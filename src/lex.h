@@ -122,10 +122,10 @@ public:
   // Brace level count.
   int braceflag;
 
-  // Nonzero means we're in the middle of defining a loop.
+  // TRUE means we're in the middle of defining a loop.
   int looping;
 
-  // Nonzero means we think we are looking at the beginning of a
+  // TRUE means we think we are looking at the beginning of a
   // function definition.
   bool beginning_of_function;
 
@@ -133,51 +133,51 @@ public:
   // `title', and `with' keywords.
   bool cant_be_identifier;
 
-  // Nonzero means that we should convert spaces to a comma inside a
+  // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
   bool convert_spaces_to_comma;
 
-  // Nonzero means we're in the middle of defining a function.
+  // TRUE means we're in the middle of defining a function.
   bool defining_func;
 
-  // Nonzero means we're parsing the return list for a function.
+  // TRUE means we're parsing the return list for a function.
   bool looking_at_return_list;
 
-  // Nonzero means we're parsing the parameter list for a function.
+  // TRUE means we're parsing the parameter list for a function.
   bool looking_at_parameter_list;
 
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;
 
-  // Nonzero means we think we are looking at a set command.
+  // TRUE means we think we are looking at a set command.
   bool doing_set;
 
-  // Nonzero means we're looking at the range part of a plot command.
+  // TRUE means we're looking at the range part of a plot command.
   bool in_plot_range;
 
-  // Nonzero means we're looking at the using part of a plot command.
+  // TRUE means we're looking at the using part of a plot command.
   bool in_plot_using;
 
-  // Nonzero means we're looking at the style part of a plot command.
+  // TRUE means we're looking at the style part of a plot command.
   bool in_plot_style;
 
-  // Nonzero means we're looking at an indirect reference to a
+  // TRUE means we're looking at an indirect reference to a
   // structure element.
   bool looking_at_indirect_ref;
 
-  // Nonzero means we need to do some extra lookahead to avoid being
-  // screwed by bogus function syntax.
-  bool maybe_screwed;
-
-  // Nonzero means we need to do some extra lookahead to avoid being
+  // TRUE means we need to do some extra lookahead to avoid being
   // screwed by bogus function syntax.
   int maybe_screwed_again;
 
-  // Nonzero means we've seen something that means we must be past the
+  // TRUE means that we've already seen the name of this function.
+  // Should only matter if defining_func is also TRUE.
+  bool parsed_function_name;
+
+  // TRUE means we've seen something that means we must be past the
   // range part of a plot command.
   bool past_plot_range;
 
-  // Nonzero means we're working on a plot command.
+  // TRUE means we're working on a plot command.
   bool plotting;
 
   // Return transpose or start a string?

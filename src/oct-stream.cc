@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "oct-stream.h"
+#include "oct-obj.h"
 #include "utils.h"
 
 // Possible values for conv_err:

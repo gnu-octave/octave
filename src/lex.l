@@ -572,8 +572,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 "=="	{ BIN_OP_RETURN (EXPR_EQ, false); }
 {NOTEQ}	{ BIN_OP_RETURN (EXPR_NE, false); }
 ">="	{ BIN_OP_RETURN (EXPR_GE, false); }
-"|"	{ BIN_OP_RETURN (EXPR_OR, false); }
 "&"	{ BIN_OP_RETURN (EXPR_AND, false); }
+"|"	{ BIN_OP_RETURN (EXPR_OR, false); }
 "<"	{ BIN_OP_RETURN (EXPR_LT, false); }
 ">"	{ BIN_OP_RETURN (EXPR_GT, false); }
 "*"	{ BIN_OP_RETURN ('*', false); }
@@ -583,8 +583,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 ","	{ BIN_OP_RETURN (',', true); }
 {POW}	{ BIN_OP_RETURN (POW, false); }
 "="	{ BIN_OP_RETURN ('=', true); }
-"||"	{ BIN_OP_RETURN (EXPR_OR_OR, false); }
 "&&"	{ BIN_OP_RETURN (EXPR_AND_AND, false); }
+"||"	{ BIN_OP_RETURN (EXPR_OR_OR, false); }
 
 {NOT} {
     if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
@@ -626,6 +626,17 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 "." {
     TOK_RETURN ('.');
   }
+
+"+="	{ BIN_OP_RETURN (ADD_EQ, false); }
+"-="	{ BIN_OP_RETURN (SUB_EQ, false); }
+"*="	{ BIN_OP_RETURN (MUL_EQ, false); }
+"/="	{ BIN_OP_RETURN (DIV_EQ, false); }
+".+="	{ BIN_OP_RETURN (ADD_EQ, false); }
+".-="	{ BIN_OP_RETURN (SUB_EQ, false); }
+".*="	{ BIN_OP_RETURN (EMUL_EQ, false); }
+"./="	{ BIN_OP_RETURN (EDIV_EQ, false); }
+"&="	{ BIN_OP_RETURN (AND_EQ, false); }
+"|="	{ BIN_OP_RETURN (OR_EQ, false); }
 
 %{
 // Unrecognized input is a lexical error.
@@ -926,7 +937,7 @@ is_plot_keyword (const string& s)
     }
 }
 
-// Handle keywords.  Could probably be more efficient...
+// Handle keywords.
 
 static int
 is_keyword (const string& s)
@@ -1048,11 +1059,16 @@ is_keyword (const string& s)
 	    }
 	  else
 	    {
+	      // Prepare for local symbols.
+
 	      tmp_local_sym_tab = new symbol_table ();
-	      curr_sym_tab = tmp_local_sym_tab;
-	      lexer_flags.defining_func = true;
+
 	      promptflag--;
+
+	      lexer_flags.defining_func = true;
+	      lexer_flags.parsed_function_name = false;
 	      lexer_flags.beginning_of_function = true;
+
 	      if (! (reading_fcn_file || reading_script_file))
 		input_line_number = 1;
 	    }
@@ -1768,8 +1784,14 @@ handle_identifier (const string& tok, int spc_gobbled)
   // Make sure we put the return values of a function in the symbol
   // table that is local to the function.
 
+  // If we are defining a function and we have not seen the function
+  // name yet and the next token is `=', then this identifier must be
+  // the only return value for the function and it belongs in the
+  // local symbol table.
+
   if (next_tok_is_eq
-      && lexer_flags.defining_func && lexer_flags.maybe_screwed)
+      && lexer_flags.defining_func
+      && ! lexer_flags.parsed_function_name)
     curr_sym_tab = tmp_local_sym_tab;
 
   // Kluge alert.
@@ -1811,35 +1833,17 @@ handle_identifier (const string& tok, int spc_gobbled)
 
   lexer_flags.convert_spaces_to_comma = true;
 
-  // If we are defining a function and we have not seen the parameter
-  // list yet and the next token is `=', return a token that
-  // represents the only return value for the function.  For example,
-  //
-  //   function SCREW = f (args);
-  //
-  // The variable maybe_screwed is reset in parse.y.
-
-  if (next_tok_is_eq)
+  if (! next_tok_is_eq)
     {
-      current_input_column += yyleng;
-      if (lexer_flags.defining_func && lexer_flags.maybe_screwed)
-	return SCREW;
-      else
-	return NAME;
+      lexer_flags.quote_is_transpose = true;
+
+      do_comma_insert_check ();
+
+      maybe_unput_comma (spc_gobbled);
     }
 
-  // At this point, we are only dealing with identifiers that are not
-  // followed by `=' (if the next token is `=', there is no need to
-  // check to see if we should insert a comma (invalid syntax), or
-  // allow a following `'' to be treated as a transpose (the next
-  // token is `=', so it can't be `''.
-
-  lexer_flags.quote_is_transpose = true;
-  do_comma_insert_check ();
-
-  maybe_unput_comma (spc_gobbled);
-
   current_input_column += yyleng;
+
   return NAME;
 }
 
@@ -1905,6 +1909,7 @@ lexical_feedback::init (void)
   // Not initially defining a function.
   beginning_of_function = false;
   defining_func = false;
+  parsed_function_name = false;
 
   // Not parsing a function return or parameter list.
   looking_at_return_list = false;
@@ -1930,7 +1935,6 @@ lexical_feedback::init (void)
   looking_at_indirect_ref = false;
 
   // Not initially screwed by `function [...] = f (...)' syntax.
-  maybe_screwed = false;
   maybe_screwed_again = 0;
 
   // Quote marks strings intially.
@@ -1959,19 +1963,6 @@ symbols_of_lex (void)
   DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
 }
-
-// Maybe someday...
-//
-// "+="		return ADD_EQ;
-// "-="		return SUB_EQ;
-// "*="		return MUL_EQ;
-// "/="		return DIV_EQ;
-// "\\="	return LEFTDIV_EQ;
-// ".+="	return ADD_EQ;
-// ".-="	return SUB_EQ;
-// ".*="	return EMUL_EQ;
-// "./="	return EDIV_EQ;
-// ".\\="	return ELEFTDIV_EQ;
 
 /*
 ;;; Local Variables: ***

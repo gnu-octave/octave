@@ -27,10 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+class string_vector;
+
 #include <string>
 
 #include "Array.h"
-#include "str-vec.h"
 
 #include "ov.h"
 

@@ -46,25 +46,8 @@ template int assign (Array<Complex>&, const Array<short>&, const Complex&);
 template int assign (Array<Complex>&, const Array<char>&, const Complex&);
 
 #include "Array2.h"
-#include "Array2.cc"
 
 template class Array2<Complex>;
-
-#if 0
-
-template int assign (Array2<Complex>&, const Array2<Complex>&);
-template int assign (Array2<Complex>&, const Array2<double>&);
-template int assign (Array2<Complex>&, const Array2<int>&);
-template int assign (Array2<Complex>&, const Array2<short>&);
-template int assign (Array2<Complex>&, const Array2<char>&);
-
-template int assign (Array2<Complex>&, const Array2<Complex>&, const Complex&);
-template int assign (Array2<Complex>&, const Array2<double>&, const Complex&);
-template int assign (Array2<Complex>&, const Array2<int>&, const Complex&);
-template int assign (Array2<Complex>&, const Array2<short>&, const Complex&);
-template int assign (Array2<Complex>&, const Array2<char>&, const Complex&);
-
-#endif
 
 #include "ArrayN.h"
 #include "ArrayN.cc"

@@ -36,17 +36,8 @@ template int assign (Array<bool>&, const Array<bool>&);
 template int assign (Array<bool>&, const Array<bool>&, const bool&);
 
 #include "Array2.h"
-#include "Array2.cc"
 
 template class Array2<bool>;
-
-#if 0
-
-template int assign (Array2<bool>&, const Array2<bool>&);
-
-template int assign (Array2<bool>&, const Array2<bool>&, const bool&);
-
-#endif
 
 #include "ArrayN.h"
 #include "ArrayN.cc"

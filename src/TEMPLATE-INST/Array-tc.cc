@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.cc"
 
 #include "Array2.h"
-#include "Array2.cc"
 
 #include "ArrayN.h"
 #include "ArrayN.cc"
@@ -59,15 +58,6 @@ template int assign (Array<octave_value>&,
 
 
 template class Array2<octave_value>;
-
-#if 0
-
-template int assign (Array2<octave_value>&, const Array2<octave_value>&);
-
-template int assign (Array2<octave_value>&,
-		     const Array2<octave_value>&, const octave_value&);
-
-#endif
 
 template class ArrayN<octave_value>;
 

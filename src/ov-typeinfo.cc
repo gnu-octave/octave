@@ -40,9 +40,11 @@ octave_value_typeinfo::init_tab_sz (16);
 octave_value_typeinfo *
 octave_value_typeinfo::instance (0);
 
+#include <Array.h>
+#include <Array2.h>
+#include <Array3.h>
+
 #include <Array.cc>
-#include <Array2.cc>
-#include <Array3.cc>
 
 template class Array<unary_op_fcn>;
 template class Array2<unary_op_fcn>;

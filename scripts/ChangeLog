@@ -1,3 +1,9 @@
+2000-06-08  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* control/base/__stepimp__.m: Reset multiplot state when done.
+	Do the right thing even if automatic_replot is not zero.
+	Avoid failure if system has pure imaginary poles.
+
 2000-06-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/logical.m: Return arg if it is empty.  Better error

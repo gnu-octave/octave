@@ -83,7 +83,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
     ## remove poles near zero from eigenvalue array ev
     nk = NSTATES;
     for i = 1:NSTATES
-      if (abs(ev(i)) < 1.0e-10)
+      if (abs(real(ev(i))) < 1.0e-10)
         ev(i) = 0;
         nk = nk - 1;
       endif
@@ -209,71 +209,77 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       x = F * x + G;
     endfor
   endif
-
-  if(nargout == 0)
-    ## Plot the information
-    oneplot();
-    gset nogrid
-    gset nologscale
-    gset autoscale
-    gset nokey
-    clearplot();
-    if (gnuplot_has_multiplot)
-      if (IMPULSE)
-        gm = zeros(NOUT, 1);
-        tt = "impulse";
-      else
-        ssys = ss2sys(F, G, C, D, t_step);
-        gm = dcgain(ssys);
-        tt = "step";
-      endif
-      ncols = floor(sqrt(NOUT));
-      nrows = ceil(NOUT / ncols);
-      for i = 1:NOUT
-        subplot(nrows, ncols, i);
-        title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
-          sysgetsignals(sys,"out",i,1)));
-        if (DIGITAL)
-          [ts, ys] = stairs(t, y(i,:));
-          ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
-          if (length(gm) > 0)
-            yy = [ys; gm(i)*ones(size(ts))];
-          else
-            yy = ys;
-          endif
-          grid("on");
-          xlabel("time [s]");
-          ylabel("y(t)");
-          plot(ts, yy);
-        else
-          if (length(gm) > 0)
-            yy = [y(i,:); gm(i)*ones(size(t))];
-          else
-            yy = y(i,:);
-          endif
-          grid("on");
-          xlabel("time [s]");
-          ylabel("y(t)");
-          plot(t, yy);
-        endif
-      endfor
-      ## leave gnuplot in multiplot mode is bad style
+  
+  save_automatic_replot = automatic_replot;
+  unwind_protect
+    automatic_replot = 0;
+    if(nargout == 0)
+      ## Plot the information
       oneplot();
-    else
-      ## plot everything in one diagram
-      title([tt, " response | ", sysgetsignals(sys,"in",inp,1), ...
-        " -> all outputs"]);
-      if (DIGITAL)
-        stairs(t, y(i,:));
+      gset nogrid
+      gset nologscale
+      gset autoscale
+      gset nokey
+      clearplot();
+      if (gnuplot_has_multiplot)
+	if (IMPULSE)
+          gm = zeros(NOUT, 1);
+          tt = "impulse";
+	else
+          ssys = ss2sys(F, G, C, D, t_step);
+          gm = dcgain(ssys);
+          tt = "step";
+	endif
+	ncols = floor(sqrt(NOUT));
+	nrows = ceil(NOUT / ncols);
+	for i = 1:NOUT
+          subplot(nrows, ncols, i);
+          title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
+			sysgetsignals(sys,"out",i,1)));
+          if (DIGITAL)
+            [ts, ys] = stairs(t, y(i,:));
+            ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
+            if (length(gm) > 0)
+              yy = [ys; gm(i)*ones(size(ts))];
+            else
+              yy = ys;
+            endif
+            grid("on");
+            xlabel("time [s]");
+            ylabel("y(t)");
+            plot(ts, yy);
+          else
+            if (length(gm) > 0)
+              yy = [y(i,:); gm(i)*ones(size(t))];
+            else
+              yy = y(i,:);
+            endif
+            grid("on");
+            xlabel("time [s]");
+            ylabel("y(t)");
+            plot(t, yy);
+          endif
+	endfor
+	## leave gnuplot in multiplot mode is bad style
+	oneplot();
       else
-        grid("on");
-        xlabel("time [s]");
-        ylabel("y(t)");
-        plot(t, y(i,:));
+	## plot everything in one diagram
+	title([tt, " response | ", sysgetsignals(sys,"in",inp,1), ...
+               " -> all outputs"]);
+	if (DIGITAL)
+          stairs(t, y(i,:));
+	else
+          grid("on");
+          xlabel("time [s]");
+          ylabel("y(t)");
+          plot(t, y(i,:));
+	endif
       endif
+      y=[];
+      t=[];
     endif
-    y=[];
-    t=[];
-  endif
-  ## printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
-endfunction
+    ## printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
+  unwind_protect_cleanup
+    automatic_replot = save_automatic_replot;
+  end_unwind_protect
+endfunction  

@@ -199,6 +199,13 @@ containing the nonzero values.  For example,\n\
       if (! error_state)
 	retval = find_nonzero_elem_idx (cnda, nargout);
     }
+  else if (arg.is_string ())
+    {
+      charNDArray cnda = arg.char_array_value ();
+
+      if (! error_state)
+	retval = find_nonzero_elem_idx (cnda, nargout);
+    }
   else
     {
       gripe_wrong_type_arg ("find", arg);

@@ -75,19 +75,16 @@ extern bool
 looks_like_struct (const std::string& text);
 
 extern int
-symbol_exist (const std::string& name,
-	      const std::string& type = std::string ());
+symbol_exist (const std::string& name, const std::string& type = "any");
 
 extern bool lookup (symbol_record *s, bool exec_script = true);
 
 extern symbol_record *
 lookup_by_name (const std::string& nm, bool exec_script = true);
 
-extern octave_function *
-lookup_function (const std::string& nm);
+extern octave_value lookup_function (const std::string& nm);
 
-extern octave_user_function *
-lookup_user_function (const std::string& nm);
+extern octave_value lookup_user_function (const std::string& nm);
 
 extern octave_value get_global_value (const std::string& nm);
 

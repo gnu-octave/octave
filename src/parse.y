@@ -672,6 +672,13 @@ cell_or_matrix_row
 		  { $$ = $1; }
 		;
 
+fcn_handle	: '@' FCN_HANDLE
+		  {
+		    $$ = make_fcn_handle ($2);
+		    lexer_flags.looking_at_function_handle--;
+		  }
+		;
+
 fcn_handle	: FCN_HANDLE
 		  { $$ = make_fcn_handle ($1); }
 		;

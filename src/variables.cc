@@ -811,10 +811,10 @@ lookup_by_name (const std::string& nm, bool exec_script)
   return sym_rec;
 }
 
-octave_function *
+octave_value
 lookup_function (const std::string& nm)
 {
-  octave_function *retval = 0;
+  octave_value retval;
 
   symbol_record *sr = 0;
 
@@ -838,16 +838,16 @@ lookup_function (const std::string& nm)
       octave_value v = sr->def ();
 
       if (v.is_function ())
-	retval = v.function_value ();
+	retval = v;
     }
 
   return retval;
 }
 
-octave_user_function *
+octave_value
 lookup_user_function (const std::string& nm)
 {
-  octave_user_function *retval = 0;
+  octave_value retval;
 
   symbol_record *sr = 0;
 
@@ -867,11 +867,7 @@ lookup_user_function (const std::string& nm)
     }
 
   if (sr)
-    {
-      octave_value v = sr->def ();
-
-      retval = v.user_function_value (true);
-    }
+    retval = sr->def ();
 
   return retval;
 }

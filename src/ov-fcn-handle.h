@@ -44,11 +44,16 @@ class
 octave_fcn_handle : public octave_base_value
 {
 public:
+  enum fcn_type { fcn_handle = 1, fcn_inline = 2 };
 
-  octave_fcn_handle (void) : fcn (0), nm () { }
+  octave_fcn_handle (void)
+    : typ (fcn_handle), fcn (), nm (), iftext (), ifargs () { }
 
-  octave_fcn_handle (octave_function *f, const std::string& n)
-    : fcn (f), nm (n) { }
+  octave_fcn_handle (const octave_value& f,  const std::string& n)
+    : typ (fcn_handle), fcn (f), nm (n), iftext (), ifargs () { }
+
+  octave_fcn_handle (const std::string& f, const string_vector& a, 
+		     const std::string& n = std::string ());
 
   ~octave_fcn_handle (void) { }
 
@@ -67,11 +72,20 @@ public:
 
   bool is_function_handle (void) const { return true; }
 
-  octave_function *function_value (bool = false) { return fcn; }
+  octave_function *function_value (bool = false)
+    { return fcn.function_value (); }
 
-  std::string name (void) const { return nm; }
+  std::string inline_fcn_name (void) const { return nm; }
+
+  std::string inline_fcn_text (void) const { return iftext; }
+
+  string_vector inline_fcn_arg_names (void) const { return ifargs; }
+
+  bool is_inline (void) const { return (typ == fcn_inline); }
 
   octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
+
+  octave_value convert_to_str_internal (bool, bool) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -89,11 +103,20 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
+  // The type of function handle 
+  fcn_type typ;
+
   // The function we are handling.
-  octave_function *fcn;
+  octave_value fcn;
 
   // The name of the handle, including the "@".
   std::string nm;
+
+  // The expression of an inline function
+  std::string iftext;
+
+  // The args of an inline function
+  string_vector ifargs;
 };
 
 extern octave_value make_fcn_handle (const std::string& nm);

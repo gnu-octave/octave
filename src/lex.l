@@ -603,8 +603,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // Function handles.
 %}
 
-@{IDENT} {
-    TOK_PUSH_AND_RETURN (&yytext[1], FCN_HANDLE);
+"@" {
+    current_input_column++;
+    lexer_flags.quote_is_transpose = false;
+    lexer_flags.cant_be_identifier = false;
+    lexer_flags.convert_spaces_to_comma = false;
+    lexer_flags.looking_at_function_handle++;
+    COUNT_TOK_AND_RETURN ('@');
   }
 
 %{
@@ -2480,11 +2485,23 @@ handle_identifier (void)
       return STRUCT_ELT;
     }
 
+  int kw_token = is_keyword_token (tok);
+
+  if (lexer_flags.looking_at_function_handle)
+    {
+      if (kw_token)
+	{
+	  error ("function handles may not refer to keywords");
+
+	  return LEXICAL_ERROR;
+	}
+      else
+	TOK_PUSH_AND_RETURN (tok, FCN_HANDLE);
+    }
+
   // If we have a regular keyword, or a plot STYLE, return it.
   // Keywords can be followed by identifiers (TOK_RETURN handles
   // that).
-
-  int kw_token = is_keyword_token (tok);
 
   if (kw_token)
     {
@@ -2629,6 +2646,9 @@ lexical_feedback::init (void)
   defining_func = false;
   parsed_function_name = false;
   parsing_nested_function = 0;
+
+  // Not initiallly looking at a function handle.
+  looking_at_function_handle = 0;
 
   // Not parsing a function return or parameter list.
   looking_at_return_list = false;

@@ -236,8 +236,6 @@ public:
   octave_value (const Octave_map& m);
   octave_value (const octave_stream& s, int n);
   octave_value (const streamoff_array& off);
-  octave_value (octave_function *f);
-  octave_value (octave_function *f, const std::string &nm); // function handle
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);

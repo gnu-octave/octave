@@ -734,18 +734,6 @@ octave_value::octave_value (const streamoff_array& off)
   rep->count = 1;
 }
 
-octave_value::octave_value (octave_function *f)
-  : rep (f)
-{
-  rep->count = 1;
-}
-
-octave_value::octave_value (octave_function *f, const std::string& nm)
-  : rep (new octave_fcn_handle (f, nm))
-{
-  rep->count = 1;
-}
-
 octave_value::octave_value (const octave_value_list& l, bool is_csl)
   : rep (0)
 {

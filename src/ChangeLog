@@ -1,3 +1,53 @@
+2004-08-05  John W. Eaton  <jwe@octave.org>
+
+	* variables.h (symbol_exist): Default for type is now "any".
+
+2004-08-05  David Bateman  <dbateman@free.fr>
+
+	* ov-fcn-handle.cc (octave_fcn_handle (const std::string&, 
+	const string_vector&, const std::string&)): New constructor for inline
+	function handles.
+	(octave_fcn_handle::print_raw): Allow inline functions to be printed.
+	(octave_fcn_handle::convert_to_str_internal): New function to allow
+	Fchar to work on inlined function handles.
+	(Finline, Fformula, Fargnames, Fvectorize): New functions.
+	* ov-fcn-handle.h (octave_fcn_handle (const std::string&, 
+	const string_vector&, const std::string&)): Provide decl.
+	(octave_fcn_handle::convert_to_str_internal): Provide decl.
+	(fcn_type): New enum for the type of function handle.
+	(octave_fcn_handle::inline_fcn_text, octave_fcn_handle::is_inline,
+	octave_fcn_handle::inline_fcn_arg_names): New functions.
+	(octave_fcn_handle::typ, octave_fcn_handle::iftext,
+	octave_fcn_handle::ifargs): New private variables for inline functions.
+
+2004-08-04  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (fcn_handle):
+	Recognize '@' FCN_HANDLE rather than just FCN_HANDLE.
+	Decrement lexer_flags.looking_at_function_handle here.
+	* lex.h (lexical_feedback::looking_at_function_handle):
+	New data member.
+	(lexical_feedback::init): Initialize it.
+	* lex.l (handle_identifier): Only reject keywords if we are
+	looking at a function handle.
+	("@"): Recognize this separately from what follows.
+	Increment lexer_flags.looking_at_function_handle here.
+
+	* ov-fcn-handle.h (octave_fcn_handle::octave_fcn_handle
+	(octave_function*, const std::string)): Delete.
+	* ov.h, ov.cc (octave_value::octave_value (octave_function *)): Delete.
+	(octave_value::octave_value (octave_function *, const std::string)):
+	Delete.
+
+	* ov-fcn-handle.h (octave_fcn_handle::fcn): Now octave_value, not
+	pointer to octave_function.
+	(octave_fcn_handle::octave_fcn_handle (const octave_value&, const
+	std::string)): New constructor.
+	* variables.cc (lookup_function): Return octave_value, not pointer
+	to octave_function.  Change all uses.
+	(lookup_user_function): Return octave_value, not pointer
+	to octave_user_function.  Change all uses.
+
 2004-08-03  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.cc (octave_user_fcn::do_multi_index_op): Call

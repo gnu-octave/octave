@@ -606,7 +606,9 @@ function accepts a variable number of arguments.\n\
 
       if (! error_state)
 	{
-	  octave_user_function *fcn = lookup_user_function (fname);
+	  octave_value fcn_val = lookup_user_function (fname);
+
+	  octave_user_function *fcn = fcn_val.user_function_value (true);
 
 	  if (fcn)
 	    {
@@ -676,7 +678,9 @@ At the top level, @code{nargout} is undefined.\n\
 
       if (! error_state)
 	{
-	  octave_user_function *fcn = lookup_user_function (fname);
+	  octave_value fcn_val = lookup_user_function (fname);
+
+	  octave_user_function *fcn = fcn_val.user_function_value (true);
 
 	  if (fcn)
 	    {

@@ -33,7 +33,7 @@ extern char *octave_getcwd (char *, int);
 extern int octave_chdir (const char *);
 
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-extern int gethostname ();
+extern int gethostname (char *, int);
 #endif
 
 // Octave's idea of infinity.

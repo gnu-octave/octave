@@ -257,7 +257,8 @@ is_globally_visible (const std::string& name)
 // Is this octave_value a valid function?
 
 octave_function *
-is_valid_function (const std::string& fcn_name, const std::string& warn_for, bool warn)
+is_valid_function (const std::string& fcn_name,
+		   const std::string& warn_for, bool warn)
 {
   octave_function *ans = 0;
 
@@ -288,7 +289,8 @@ is_valid_function (const std::string& fcn_name, const std::string& warn_for, boo
 }
 
 octave_function *
-is_valid_function (const octave_value& arg, const std::string& warn_for, bool warn)
+is_valid_function (const octave_value& arg,
+		   const std::string& warn_for, bool warn)
 {
   octave_function *ans = 0;
 

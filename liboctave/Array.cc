@@ -79,8 +79,6 @@ Array<T>::squeeze (void) const
       else
 	new_dimensions.resize (k);
 
-      Array<T> retval = *this;
-
       retval.make_unique ();
 
       retval.dimensions = new_dimensions;

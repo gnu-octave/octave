@@ -1193,7 +1193,7 @@ Remove singleton dimensions from @var{x} and return the result.\n\
   octave_value retval;
 
   if (args.length () == 1)
-    return args(0).squeeze ();
+    retval = args(0).squeeze ();
   else
     print_usage ("squeeze");    
 

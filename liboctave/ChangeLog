@@ -1,5 +1,7 @@
 2003-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (Array<T>::squeeze): Delete redundant retval decl.
+
 	* mx-cdm-cm.cc, mx-cdm-cm.h, mx-cdm-cs.cc, mx-cdm-cs.h,
 	mx-cdm-dm.cc, mx-cdm-dm.h, mx-cdm-m.cc, mx-cdm-m.h, mx-cdm-s.cc,
 	mx-cdm-s.h, mx-cm-cdm.cc, mx-cm-cdm.h, mx-cm-dm.cc, mx-cm-dm.h,

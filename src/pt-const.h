@@ -355,14 +355,14 @@ public:
 
   void do_vector_assign (tree_constant& rhs, int i);
   void do_vector_assign (tree_constant& rhs, idx_vector& i);
-  void do_vector_assign (tree_constant& rhs, Range& i, int imax);
+  void do_vector_assign (tree_constant& rhs, Range& i);
 
   void do_matrix_assignment
     (tree_constant& rhs, int i, tree_constant& j_arg);
   void do_matrix_assignment
     (tree_constant& rhs, idx_vector& i, tree_constant& j_arg);
   void do_matrix_assignment
-    (tree_constant& rhs, Range& i, int imax, tree_constant& j_arg);
+    (tree_constant& rhs, Range& i, tree_constant& j_arg);
   void do_matrix_assignment
     (tree_constant& rhs, constant_type i, tree_constant& j_arg);
 
@@ -425,7 +425,7 @@ public:
   tree_constant do_matrix_index (int i, const tree_constant& i_arg) const;
   tree_constant do_matrix_index (const idx_vector& i,
 				 const tree_constant& i_arg) const; 
-  tree_constant do_matrix_index (const Range& i, int imax,
+  tree_constant do_matrix_index (const Range& i,
 				 const tree_constant& i_arg) const;
   tree_constant do_matrix_index (constant_type i,
 				 const tree_constant& i_arg) const;
@@ -714,7 +714,12 @@ public:
     }
 
   int is_zero_by_zero (void) const
-    { return (rows () == 0 && columns () == 0); } 
+    {
+      return (rep->type_tag != tree_constant_rep::magic_colon
+	      && rep->type_tag != tree_constant_rep::unknown_constant
+	      && rows () == 0
+	      && columns () == 0);
+    } 
 
 
   tree_constant all (void) const { return rep->all (); }

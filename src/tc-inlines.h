@@ -73,11 +73,19 @@ indexed_assign_conforms (int lhs_nr, int lhs_nc, int rhs_nr, int rhs_nc)
 }
 
 static inline int
+is_one_zero (const Range& r)
+{
+  double b = r.base ();
+  double l = r.limit ();
+  return (r.nelem () == 2 && NINT (b) == 1 && NINT (l) == 0);
+}
+
+static inline int
 is_zero_one (const Range& r)
 {
   double b = r.base ();
   double l = r.limit ();
-  return (NINT (b) == 0 && NINT (l) == 1 && r.nelem () == 2);
+  return (r.nelem () == 2 && NINT (b) == 0 && NINT (l) == 1);
 }
 
 static inline int
@@ -92,7 +100,7 @@ index_check (int i, char *rc)
 }
 
 static inline int
-index_check (const Range& r, int& max_val, char *rc)
+index_check (const Range& r, char *rc)
 {
   if (r.nelem () < 1)
     {
@@ -100,26 +108,15 @@ index_check (const Range& r, int& max_val, char *rc)
       return -1;
     }
 
-  double b = r.base ();
-  int ib = tree_to_mat_idx (b);
+  int imin = tree_to_mat_idx (r.min ());
 
-  if (ib < 0)
+  if (imin < 0)
     {
-      error ("invalid %s index = %d", rc, ib+1);
+      error ("invalid %s index = %d", rc, imin+1);
       return -1;
     }
 
-  double lim = r.limit ();
-  max_val = tree_to_mat_idx (lim);
-
   return 0;
-}
-
-static inline int
-index_check (const Range& r, char *rc)
-{
-  int max_val;
-  return index_check (r, max_val, rc);
 }
 
 static inline int

@@ -282,15 +282,13 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 	if (! ii)
 	  return;
 
-	int imax = ii.max ();
-
 	if (nr <= 1 || nc <= 1)
 	  {
-	    maybe_resize (imax-1);
+	    maybe_resize (ii.max () - 1);
 	    if (error_state)
 	      return;
 	  }
-	else if (range_max_check (imax-1, len) < 0)
+	else if (range_max_check (ii.max () - 1, len) < 0)
 	  return;
 
 	if (ii.capacity () != rhs_nr * rhs_nc)
@@ -359,16 +357,20 @@ tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
     case range_constant:
       {
 	Range ri = tmp_i.range_value ();
-	if (rows () == 2 && is_zero_one (ri))
+	int len = nr * nc;
+	if (len == 2 && is_zero_one (ri))
 	  {
 	    do_vector_assign (rhs, 1);
 	  }
+	else if (len == 2 && is_one_zero (ri))
+	  {
+	    do_vector_assign (rhs, 0);
+	  }
 	else
 	  {
-	    int imax;
-	    if (index_check (ri, imax, "") < 0)
+	    if (index_check (ri, "") < 0)
 	      return;
-	    do_vector_assign (rhs, ri, imax);
+	    do_vector_assign (rhs, ri);
 	  }
       }
       break;
@@ -544,7 +546,7 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
 }
 
 void
-tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri, int imax)
+tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri)
 {
   if (rhs.is_zero_by_zero ())
     {
@@ -583,7 +585,7 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri, int imax)
       else if (rhs_nc == 1 && rhs_nr != 1)
 	f_orient = column_orient;
 
-      maybe_resize (imax, f_orient);
+      maybe_resize (tree_to_mat_idx (ri.max ()), f_orient);
       if (error_state)
 	return;
 
@@ -743,16 +745,20 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     case range_constant:
       {
 	Range ri = tmp_i.range_value ();
-	if (rows () == 2 && is_zero_one (ri))
+	int nr = rows ();
+	if (nr == 2 && is_zero_one (ri))
 	  {
 	    do_matrix_assignment (rhs, 1, j_arg);
 	  }
+	else if (nr == 2 && is_one_zero (ri))
+	  {
+	    do_matrix_assignment (rhs, 0, j_arg);
+	  }
 	else
 	  {
-	    int imax;
-	    if (index_check (ri, imax, "row") < 0)
+	    if (index_check (ri, "row") < 0)
 	      return;
-	    do_matrix_assignment (rhs, ri, imax, j_arg);
+	    do_matrix_assignment (rhs, ri, j_arg);
 	  }
       }
       break;
@@ -831,16 +837,20 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	    return;
 	  }
 
-	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
+	int nc = columns ();
+	if (nc == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, i, 1);
 	  }
+	else if (nc == 2 && is_one_zero (rj) && rhs_nc == 1)
+	  {
+	    do_matrix_assignment (rhs, i, 0);
+	  }
 	else
 	  {
-	    int jmax;
-	    if (index_check (rj, jmax, "column") < 0)
+	    if (index_check (rj, "column") < 0)
 	      return;
-	    maybe_resize (i, jmax);
+	    maybe_resize (i, tree_to_mat_idx (rj.max ()));
 	    if (error_state)
 	      return;
 
@@ -969,16 +979,20 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	    return;
 	  }
 
-	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
+	int nc = columns ();
+	if (nc == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, iv, 1);
 	  }
+	else if (nc == 2 && is_one_zero (rj) && rhs_nc == 1)
+	  {
+	    do_matrix_assignment (rhs, iv, 0);
+	  }
 	else
 	  {
-	    int jmax;
-	    if (index_check (rj, jmax, "column") < 0)
+	    if (index_check (rj, "column") < 0)
 	      return;
-	    maybe_resize (iv.max (), jmax);
+	    maybe_resize (iv.max (), tree_to_mat_idx (rj.max ()));
 	    if (error_state)
 	      return;
 
@@ -1027,8 +1041,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 
 void
 tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
-					 Range& ri, int imax,
-					 tree_constant& j_arg)
+					 Range& ri, tree_constant& j_arg) 
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();
 
@@ -1051,7 +1064,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
  the same number of elements as range");
 	    return;
 	  }
-	maybe_resize (imax, j);
+	maybe_resize (tree_to_mat_idx (ri.max ()), j);
 	if (error_state)
 	  return;
 
@@ -1075,7 +1088,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
  must match the number of elements in matrix");
 	    return;
 	  }
-	maybe_resize (imax, jv.max ());
+	maybe_resize (tree_to_mat_idx (ri.max ()), jv.max ());
 	if (error_state)
 	  return;
 
@@ -1097,16 +1110,23 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    return;
 	  }
 
-	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
+	int nc = columns ();
+	if (nc == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, ri, 1);
 	  }
+	else if (nc == 2 && is_one_zero (rj) && rhs_nc == 1)
+	  {
+	    do_matrix_assignment (rhs, ri, 0);
+	  }
 	else
 	  {
-	    int jmax;
-	    if (index_check (rj, jmax, "column") < 0)
+	    if (index_check (rj, "column") < 0)
 	      return;
-	    maybe_resize (imax, jmax);
+
+	    maybe_resize (tree_to_mat_idx (ri.max ()),
+			  tree_to_mat_idx (rj.max ()));
+
 	    if (error_state)
 	      return;
 
@@ -1123,7 +1143,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 	if (indexed_assign_conforms (ri.nelem (), new_nc, rhs_nr, rhs_nc))
 	  {
-	    maybe_resize (imax, new_nc-1);
+	    maybe_resize (tree_to_mat_idx (ri.max ()), new_nc-1);
 	    if (error_state)
 	      return;
 	  }
@@ -1269,16 +1289,20 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 
 	if (indexed_assign_conforms (new_nr, rj.nelem (), rhs_nr, rhs_nc))
 	  {
-	    if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
+	    int nc = columns ();
+	    if (nc == 2 && is_zero_one (rj) && rhs_nc == 1)
 	      {
 		do_matrix_assignment (rhs, magic_colon, 1);
 	      }
+	    else if (nc == 2 && is_one_zero (rj) && rhs_nc == 1)
+	      {
+		do_matrix_assignment (rhs, magic_colon, 0);
+	      }
 	    else
 	      {
-		int jmax;
-		if (index_check (rj, jmax, "column") < 0)
+		if (index_check (rj, "column") < 0)
 		  return;
-		maybe_resize (new_nr-1, jmax);
+		maybe_resize (new_nr-1, tree_to_mat_idx (rj.max ()));
 		if (error_state)
 		  return;
 	      }

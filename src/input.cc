@@ -790,15 +790,24 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
 	  if (debug)
 	    goto again;
 	  else
-	    return retval;
+	    {
+	      if (read_as_string)
+		return "";
+	      else
+		return Matrix ();
+	    }
 	}
 
       if (match_sans_spaces ("exit", input_buf)
 	  || match_sans_spaces ("quit", input_buf)
 	  || match_sans_spaces ("return", input_buf))
-	return tree_constant ();
+	{
+	  return retval;
+	}
       else if (read_as_string)
-	retval = input_buf;
+	{
+	  retval = input_buf;
+	}
       else
 	{
 	  int parse_status = 0;
@@ -809,7 +818,7 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
 		retval.eval (1);
 	    }
 	  else
-	    retval = tree_constant (Matrix ());
+	    retval = Matrix ();
 	}
     }
   else

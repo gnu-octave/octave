@@ -1,0 +1,146 @@
+// oct-conf.h.in
+/*
+
+Copyright (C) 1996 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+#if !defined (octave_conf_h)
+#define octave_conf_h 1
+
+#ifndef config_opts
+#define config_opts %config_opts%
+#endif
+
+#ifndef TARGET_HOST_TYPE
+#define TARGET_HOST_TYPE %TARGET_HOST_TYPE%
+#endif
+
+#ifndef F77
+#define F77 %F77%
+#endif
+
+#ifndef FFLAGS
+#define FFLAGS %FFLAGS%
+#endif
+
+#ifndef FPICFLAG
+#define FPICFLAG %FPICFLAG%
+#endif
+
+#ifndef F2C
+#define F2C %F2C%
+#endif
+
+#ifndef F2CFLAGS
+#define F2CFLAGS %F2CFLAGS%
+#endif
+
+#ifndef FLIBS
+#define FLIBS %FLIBS%
+#endif
+
+#ifndef CPPFLAGS
+#define CPPFLAGS %CPPFLAGS%
+#endif
+
+#ifndef INCFLAGS
+#define INCFLAGS %INCFLAGS%
+#endif
+
+#ifndef CC
+#define CC %CC%
+#endif
+
+#ifndef CC_VERSION
+#define CC_VERSION %CC_VERSION%
+#endif
+
+#ifndef CFLAGS
+#define CFLAGS %CFLAGS%
+#endif
+
+#ifndef CPICFLAG
+#define CPICFLAG %CPICFLAG%
+#endif
+
+#ifndef CXX
+#define CXX %CXX%
+#endif
+
+#ifndef CXX_VERSION
+#define CXX_VERSION %CXX_VERSION%
+#endif
+
+#ifndef CXXFLAGS
+#define CXXFLAGS %BUG_CXXFLAGS%
+#endif
+
+#ifndef CXXPICFLAG
+#define CXXPICFLAG %CXXPICFLAG%
+#endif
+
+#ifndef LDFLAGS
+#define LDFLAGS %LDFLAGS%
+#endif
+
+#ifndef LIBFLAGS
+#define LIBFLAGS %LIBFLAGS%
+#endif
+
+#ifndef RLD_FLAG
+#define RLD_FLAG %RLD_FLAG%
+#endif
+
+#ifndef CXXLIBS
+#define CXXLIBS %CXXLIBS%
+#endif
+
+#ifndef TERMLIBS
+#define TERMLIBS %TERMLIBS%
+#endif
+
+#ifndef LIBS
+#define LIBS %LIBS%
+#endif
+
+#ifndef LEXLIB
+#define LEXLIB %LEXLIB%
+#endif
+
+#ifndef LIBPLPLOT
+#define LIBPLPLOT %LIBPLPLOT%
+#endif
+
+#ifndef LIBDLFCN
+#define LIBDLFCN %LIBDLFCN%
+#endif
+
+#ifndef DEFS
+#define DEFS %DEFS%
+#endif
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

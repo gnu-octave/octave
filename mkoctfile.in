@@ -1,0 +1,56 @@
+#! /bin/sh
+#
+# mkoctfile -- create a .oct file suitable for dynamic linking by
+# Octave.
+
+set -e
+
+if [ $# -eq 1 ]; then
+  srcfile="$1"
+  basnm=`echo $srcfile | sed 's,\.cc$,,'`
+  objfile=$basnm.o
+  octfile=$basnm.oct
+else
+  echo "usage: mkoctfile file.cc" 1>&2
+  exit 1
+fi
+
+# Configuration:  these variables are filled in at configuration time.
+
+CPPFLAGS=%CPPFLAGS%
+INCFLAGS=%INCFLAGS%
+CXX=%CXX%
+CXX_VERSION=%CXX_VERSION%
+CXXFLAGS=%CXXFLAGS%
+CXXPICFLAG=%CXXPICFLAG%
+HOST_CXXFLAGS=%HOST_CXXFLAGS%
+NO_IMPLICIT_TEMPLATES=%NO_IMPLICIT_TEMPLATES%
+GCC_IEEE_FP_FLAG=%GCC_IEEE_FP_FLAG%
+
+LDFLAGS=%LDFLAGS%
+LIBFLAGS=%LIBFLAGS%
+RLD_FLAG=%RLD_FLAG%
+FLIBS=%FLIBS%
+LIBS=%LIBS%
+LEXLIB=%LEXLIB%
+CXXLIBS=%CXXLIBS%
+TERMLIBS=%TERMLIBS%
+LIBPLPLOT=%LIBPLPLOT%
+LIBDLFCN=%LIBDLFCN%
+
+# For now, leave -lglob out (glob/Makefile.in needs to be fixed to
+# install it.
+
+OCTAVE_LIBS="-loctinterp -loctave -ltinst -lcruft \
+  $LIBPLPLOT -lreadline -lkpathsea $LIBDLFCN"
+
+ALL_CXXFLAGS="$INCFLAGS $HOST_CXXFLAGS $NO_IMPLICIT_TEMPLATES \
+  $GCC_IEEE_FP_FLAG $CXXFLAGS"
+
+echo "making $objfile from $srcfile"
+
+$CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $srcfile -o $objfile
+
+echo "making $octfile from $objfile"
+
+$CXX -shared -o $octfile $objfile $LIBFLAGS $RLD_FLAG $OCTAVE_LIBS $FLIBS $LEXLIB $TERMLIBS $LIBS -lg++

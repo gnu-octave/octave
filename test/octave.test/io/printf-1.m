@@ -1,1 +1,1 @@
-printf ("%s: %d\n", "test", 1)
+x = printf ("%s: %d\n", "test", 1)

@@ -1,5 +1,12 @@
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* file-io.cc (Ffrewind): Only return value if nargout > 0.
+	(Ffprintf): Likewise.
+	(Fprintf): Likewise.
+
+	* file-io.cc (Ffrewind): Return 0 for success, -1 for failure.
+	Make docs match.
+
 	* Makefile.in (distclean): Remove DOCSTRINGS.
 	(maintainer-clean): Remove $(OPT_HANDLERS).
 

@@ -47,7 +47,7 @@ set prog_output "^ans = 1"
 do_test sscanf-5.m
 
 set test printf-1
-set prog_output "test: 1\nans = 8"
+set prog_output "test: 1\nx = 8"
 do_test printf-1.m
 
 set test printf-2

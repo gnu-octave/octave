@@ -567,15 +567,17 @@ freport ()\n\
   return retval;
 }
 
-DEFUN (frewind, args, ,
+DEFUN (frewind, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} frewind (@var{fid})\n\
 Move the file pointer to the beginning of the file @var{fid}, returning\n\
-1 for success, and 0 if an error was encountered.  It is equivalent to\n\
+0 for success, and -1 if an error was encountered.  It is equivalent to\n\
 @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
+  octave_value retval;
+
+  int result = -1;
 
   int nargin = args.length ();
 
@@ -584,10 +586,13 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
       octave_stream os = octave_stream_list::lookup (args(0), "frewind");
 
       if (! error_state)
-	retval = os.rewind ();
+	result = os.rewind ();
     }
   else
     print_usage ("frewind");
+
+  if (nargout > 0)
+    retval = result;
 
   return retval;
 }
@@ -659,7 +664,9 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 {
   static std::string who = "fprintf";
 
-  octave_value retval = -1;
+  octave_value retval;
+
+  int result = -1;
 
   bool return_char_count = true;
 
@@ -673,12 +680,6 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
       if (args(0).is_string ()) 
 	{
 	  os = octave_stream_list::lookup (1, who);
-
-	  // For compatibility with Matlab, which does not return the
-	  // character count when behaving like printf (no file id
-	  // parameter).
-
-	  return_char_count = (nargout != 0);
 	}
       else
 	{
@@ -702,7 +703,7 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 		    tmp_args(i-fmt_n-1) = args(i);
 		}
 
-	      retval = os.printf (fmt, tmp_args, who);
+	      result = os.printf (fmt, tmp_args, who);
 	    }
 	  else
 	    ::error ("%s: format must be a string", who.c_str ());
@@ -711,13 +712,13 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
   else
     print_usage (who);
 
-  if (return_char_count)
-    return retval;
-  else
-    return octave_value();
+  if (nargout > 0)
+    retval = result;
+
+  return retval;
 }
 
-DEFUN (printf, args, ,
+DEFUN (printf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} printf (@var{fid}, @var{template}, @dots{})\n\
 Print optional arguments under the control of the template string\n\
@@ -727,7 +728,9 @@ Print optional arguments under the control of the template string\n\
 {
   static std::string who = "printf";
 
-  octave_value retval = -1;
+  octave_value retval;
+
+  int result = -1;
 
   int nargin = args.length ();
 
@@ -747,13 +750,16 @@ Print optional arguments under the control of the template string\n\
 		tmp_args(i-1) = args(i);
 	    }
 
-	  retval = stdout_stream.printf (fmt, tmp_args, who);
+	  result = stdout_stream.printf (fmt, tmp_args, who);
 	}
       else
 	::error ("%s: format must be a string", who.c_str ());
     }
   else
     print_usage (who);
+
+  if (nargout > 0)
+    retval = result;
 
   return retval;
 }
@@ -1796,9 +1802,9 @@ DEFUN (umask, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} umask (@var{mask})\n\
 Set the permission mask for file creation.  The parameter @var{mask}\n\
- is an integer, interpreted as an octal number.  If successful,\n\
- returns the previous value of the mask (as an integer to be\n\
- interpreted as an octal number); otherwise an error message is printed.\n\
+is an integer, interpreted as an octal number.  If successful,\n\
+returns the previous value of the mask (as an integer to be\n\
+interpreted as an octal number); otherwise an error message is printed.\n\
 @end deftypefn")
 {
   octave_value_list retval;

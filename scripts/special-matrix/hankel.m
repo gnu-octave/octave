@@ -44,8 +44,7 @@
 ## @end example
 ## @end ifinfo
 ## @end deftypefn
-
-## See also: vander, sylvester_matrix, hilb, invhilb, toeplitz
+## @seealso{vander, sylvester_matrix, hilb, invhilb, toeplitz}
 
 ## Author: jwe
 

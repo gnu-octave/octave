@@ -24,9 +24,8 @@
 ##
 ## The optional third argument specifies the line type.
 ## @end deftypefn
-
-## See also: plot, semilogx, semilogy, loglog, mesh, contour, bar,
-##           stairs, gplot, gsplot, replot, xlabel, ylabel, title
+## @seealso{plot, semilogx, semilogy, loglog, mesh, contour, bar,
+## stairs, gplot, gsplot, replot, xlabel, ylabel, title}
 
 ## Author: jwe
 

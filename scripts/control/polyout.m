@@ -25,9 +25,8 @@
 ##  to string @var{y} or to the screen (if @var{y} is omitted)
 ##  @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
-
-##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
-##	filter, polyderiv, polyinteg
+## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue, 
+## filter, polyderiv, polyinteg}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: May 1995

@@ -50,14 +50,9 @@
 ## @end example
 ## The Arnoldi iteration is executed with @code{krylov} if the system has a single input; otherwise a block Arnoldi iteration is performed with @code{krylovb}.
 ## 
-## @strong{See also}
-## @code{is_observable}, @code{is_stabilizable}, @code{is_detectable}, 
-## 	@code{krylov}, @code{krylovb}
-## 
 ## @end deftypefn
-
-## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-##     is_observable, is_stabilizable, is_detectable, krylov, krylovb
+## @seealso{size, rows, columns, length, is_matrix, is_scalar, is_vector
+## is_observable, is_stabilizable, is_detectable, krylov, krylovb}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

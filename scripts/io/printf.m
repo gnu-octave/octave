@@ -23,8 +23,7 @@
 ## control of the template string @var{template} to the stream
 ## @code{stdout}.
 ## @end deftypefn
-
-## See also: fprintf sprintf
+## @seealso{fprintf and sprintf}
 
 ## Author: jwe
 

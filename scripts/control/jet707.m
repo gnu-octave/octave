@@ -24,8 +24,7 @@
 ##  System outputs:  (1) airspeed and (2) pitch angle
 ##  Ref: R. Brockhaus: Flugregelung (Flight Control), Springer, 1994
 ## @end deftypefn
-
-## see also: ord2
+## @seealso{ord2}
  
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: September 28, 1997

@@ -68,8 +68,7 @@
 ##  Systems, Vol 5, no 2 (1992)  pp 165-194.
 ## 
 ## @end deftypefn
-
-## See also: balance, are
+## @seealso{balance, are}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

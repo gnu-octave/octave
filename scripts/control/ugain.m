@@ -23,10 +23,8 @@
 ##  complex systems from simple systems with buildssic.
 ##  Watch out if you are forming sampled systems since "ugain"
 ##  does not contain a sampling period.  
-## 
-## See also: hinfdemo (MIMO H_infinty example, Boeing 707-321 aircraft model)
-## 
 ## @end deftypefn
+## @seealso{hinfdemo (MIMO H_infinty example, Boeing 707-321 aircraft model)}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: April 1998

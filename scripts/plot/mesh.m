@@ -26,9 +26,8 @@
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
 ## @end deftypefn
-
-## See also: plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
-##           contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
+## @seealso{plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
+## contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
 
 ## Author: jwe
 

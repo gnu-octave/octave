@@ -21,8 +21,7 @@
 ## @deftypefn {Function File} {} is_vector (@var{a})
 ## Return 1 if @var{a} is a vector.  Otherwise, return 0.
 ## @end deftypefn
-
-## See also: size, rows, columns, length, is_scalar, is_matrix
+## @seealso{size, rows, columns, length, is_scalar, is_matrix}
 
 ## Author: jwe
 

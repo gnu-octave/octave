@@ -59,8 +59,7 @@
 ## @end ifinfo
 ## in order to  be compatible with the corresponding @sc{Matlab} function.
 ## @end deftypefn
-
-## See also: linspace
+## @seealso{linspace}
 
 ## Author: jwe
 

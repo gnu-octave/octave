@@ -22,8 +22,7 @@
 ##  are compatible, otherwise @var{retval} = 0 with an appropriate diagnostic
 ##  message printed to the screen.  The matrices b, c, or d may be omitted.
 ## @end deftypefn
-
-## See also: abcddim
+## @seealso{abcddim}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: November 4, 1997

@@ -21,9 +21,8 @@
 ##  print formatted zero-pole form to the screen.  
 ## @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
-
-##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
-##	filter, polyderiv, polyinteg, polyout 
+## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue, 
+## filter, polyderiv, polyinteg, polyout} 
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: June 1995

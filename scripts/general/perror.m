@@ -24,8 +24,7 @@
 ## useful error messages for those functions that return numeric error
 ## codes.
 ## @end deftypefn
-
-## See also: strerror
+## @seealso{strerror}
 
 ## Author: jwe
 

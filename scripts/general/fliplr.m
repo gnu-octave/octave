@@ -30,8 +30,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-
-## See also: flipu, rot90
+## @seealso{flipud, rot90}
 
 ## Author: jwe
 

@@ -14,21 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  nper (r, p, a [, l] [, method])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} nper (@var{r}, @var{p}, @var{a} [, @var{l}] [, @var{method}])
 ##
-## Computes the number of regular payments of p necessary to amortize a
-## loan of amount a and interest r.
+## Computes the number of regular payments of @var{p} necessary to amortize @var{a}
+## loan of amount @var{a} and interest @var{r}.
 ##
-## With the optional scalar argument l, one can specify an additional
-## lump-sum payment of l made at the end of the amortization time. With
+## With the optional scalar argument @var{l}, one can specify an additional
+## lump-sum payment of @var{l} made at the end of the amortization time. With
 ## the optional string argument `method', one can specify whether
 ## payments are made at the end ("e", default) or at the beginning ("b")
 ## of each period.
 ##
 ## Note that the rate r is not specified in percent, i.e., one has to
 ## write 0.05 rather than 5 %.
-##
-## See also:  pv, pmt, rate;  npv.
+## @end deftypefn
+## @seealso{pv, pmt, rate, npv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Number of payments needed for amortizing a loan

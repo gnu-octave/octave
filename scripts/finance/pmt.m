@@ -14,17 +14,17 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  pmt (r, n, a [, l] [, method])
-##
+## -*- texinfo -*- 
+## @deftypefn {Function File} {} pmt (@var{r}, @var{n}, @var{a} [, @var{l}] [, @var{method}])
 ## Compute the amount of periodic payment necessary to amortize a loan
-## of amount a with interest rate r in n periods.
+## of amount a with interest rate @var{r} in @var{n} periods.
 ##
 ## With the optional scalar argument l, one can specify an initial
 ## lump-sum payment. With the optional string argument `method', one can
 ## specify whether payments are made at the end ("e", default) or at the
 ## beginning ("b") of each period.
-##
-## See also:  pv, nper, rate
+## @end deftypefn
+## @seealso{pv, nper, rate}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Amount of periodic payment needed to amortize a loan

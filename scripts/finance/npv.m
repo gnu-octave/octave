@@ -14,21 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  npv (r, p [, i])
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} npv (@var{r}, @var{p} [, @var{i}])
 ## Returns the net present value of a series of irregular (i.e., not
-## necessarily identical) payments p which occur at the ends of n
-## consecutive periods.  r specifies the one-period interest rates and
+## necessarily identical) payments @var{p} which occur at the ends of @var{n}
+## consecutive periods.  @var{r} specifies the one-period interest rates and
 ## can either be a scalar (constant rates) or a vector of the same
-## length as p.
+## length as @var{p}.
 ##
-## With the optional scalar argument i, one can specify an initial
+## With the optional scalar argument @var{i}, one can specify an initial
 ## investment.
 ##
 ## Note that rates are not specified in percent, i.e., one has to write
 ## 0.05 rather than 5 %.
-##
-## See also:  irr;  pv.
+## @end deftypefn
+## @seealso{irr, pv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Net present value of a series of payments

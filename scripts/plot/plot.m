@@ -155,9 +155,8 @@
 ## This command will plot the data in the variable @code{b} will be plotted
 ## with points displayed as @samp{*}.
 ## @end deftypefn
-
-## See also: semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
+## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
 
 ## Author: jwe
 

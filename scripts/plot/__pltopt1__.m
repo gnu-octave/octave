@@ -17,11 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: fmt = __pltopt1__ (caller, opt)
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{fmt} =} __pltopt1__ (@var{caller}, @var{opt})
 ##
 ## Really decode plot option strings.
-##
-## See also: __pltopt__
+## @end deftypefn
+## @seealso{ __pltopt__}
 
 ## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
 ## Adapted-By: jwe

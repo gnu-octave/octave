@@ -23,8 +23,7 @@
 ## parameter descriptions.
 ## 
 ## @end deftypefn
-
-## See also: fir2sys
+## @seealso{fir2sys}
  
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: July 1996

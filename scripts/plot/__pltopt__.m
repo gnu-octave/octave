@@ -61,7 +61,7 @@
 ##     5    cyan      cyan        dot long dash  triangle    filled square
 ##     6    brown     yellow      dot short dash  "*"         "o"         
 ##
-## See also: __pltopt1__
+## @seealso{__pltopt1__}
 
 ## Author: jwe
 ## Adapted-By: jwe

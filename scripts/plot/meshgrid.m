@@ -17,18 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [xx, yy] = meshgrid (x, y)
-##
-## Given vectors of x and y coordinates, return two matrices corresponding
-## to the x and y coordinates of a mesh.  The rows of xx are copies of x,
-## and the columns of yy are copies of y.
-##
-## [xx, yy] = meshgrid (x) is an abbreviation for [xx, yy] = meshgrid (x, x).
-##
-## See sombrero.m for an example of using meshgrid.
-##
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
+## @deftypefnx {Function File {[@var{xx}, @var{yy}] =} meshgrid (@var{x})
+## Given vectors of @var{x} and @var{y} coordinates, return two matrices corresponding
+## to the @var{x} and @var{y} coordinates of a mesh.  The rows of @var{xx} are copies of @var{x},
+## and the columns of @var{yy} are copies of @var{y}.
+## @end deftypefn
+## @seealso{sombrero, plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
 
 ## Author: jwe
 

@@ -25,9 +25,8 @@
 ## displayed, use the command @code{replot} to redisplay it with the new
 ## labels.
 ## @end deftypefn
-
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, ylabel, title
+## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+## bar, stairs, gplot, gsplot, replot, ylabel, title}
 
 ## Author: jwe
 

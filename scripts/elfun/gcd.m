@@ -40,8 +40,7 @@
 ## g = v(1) * a(k) + ... + v(k) * a(k)
 ## @end example
 ## @end deftypefn
-
-## See also: lcm, min, max, ceil, floor.
+## @seealso{lcm, min, max, ceil, floor}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994

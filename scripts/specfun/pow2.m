@@ -36,8 +36,7 @@
 ##  f .* (2 .^ e).
 ## @end ifinfo
 ## @end deftypefn
-
-## See also: nextpow2
+## @seealso{nextpow2}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

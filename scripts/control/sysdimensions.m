@@ -63,8 +63,7 @@
 ## @end table
 ## 
 ## @end deftypefn
-
-## See also: sysgetsignals, sysgettsam
+## @seealso{sysgetsignals, sysgettsam}
 
 function [n, nz, m, p, yd] = sysdimensions (sys, opt)
 

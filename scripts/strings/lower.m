@@ -17,9 +17,9 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: lower (s)
-##
-## See also: tolower
+## @deftypefn {Function File} {@var{s} =} lower(@var{S})
+## @end deftypefn
+## @seealso{tolower}
 
 ## Author: jwe
 

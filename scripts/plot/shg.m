@@ -17,13 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: shg
+## -*- texinfo -*- 
+## @deftypefn {Function File} {} shg
 ##
 ## Show the graph window.  Currently, this is the same as executing
 ## replot without any arguments.
-##
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
+## 
+## @end deftypefn 
+## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel}
 
 ## Author: jwe
 

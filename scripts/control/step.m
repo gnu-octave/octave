@@ -43,8 +43,7 @@
 ## 
 ## When invoked with the output paramter y the plot is not displayed.  
 ## @end deftypefn
- 
-## See also:  impulse, stepimp
+## @seealso{impulse, stepimp}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: September 30, 1997

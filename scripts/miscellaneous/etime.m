@@ -32,8 +32,7 @@
 ## will set the variable @code{elapsed_time} to the number of seconds since
 ## the variable @code{t0} was set.
 ## @end deftypefn
-
-## See also: tic, toc, clock, cputime
+## @seealso{tic, toc, clock, cputime}
 
 ## Author: jwe
 

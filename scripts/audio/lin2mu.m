@@ -23,8 +23,7 @@
 ## linear encoding, @code{lin2mu (@var{x})} is the corresponding mu-law
 ## encoding.
 ## @end deftypefn
-
-## See also: mu2lin, loadaudio, saveaudio, playaudio, setaudio, record
+## @seealso{mu2lin, loadaudio, saveaudio, playaudio, setaudio, record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

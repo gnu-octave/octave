@@ -33,8 +33,7 @@
 ## lcm ([a1, ..., ak]).
 ## @end example
 ## @end deftypefn
-
-## See also: gcd, min, max, ceil, floor.  
+## @seealso{gcd, min, max, ceil, floor}  
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994

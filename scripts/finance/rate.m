@@ -14,17 +14,17 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  rate (n, p, v [, l] [, method])
+## -*- texinfo -*- 
+## @deftypefn {Function File} {} rate (@var{n}, @var{p}, @var{v} [, @var{l}] [,@var{method}])
+## Computes the rate of return on an investment of present value @var{v} which
+## pays @var{p} in @var{n} consecutive periods.
 ##
-## Computes the rate of return on an investment of present value v which
-## pays p in n consecutive periods.
-##
-## With the optional scalar argument l, one can specify an additional
-## lump-sum payment made at the end of n periods. With the optional
-## string argument `method', one can specify whether payments are made
+## With the optional scalar argument @var{l}, one can specify an additional
+## lump-sum payment made at the end of @var{n} periods. With the optional
+## string argument @var{`method'}, one can specify whether payments are made
 ## at the end ("e", default) or at the beginning ("b") of each period.
-##
-## See also:  pv, pmt, nper;  npv.
+## @end deftypefn
+## @seealso{pv, pmt, nper, npv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Rate of return of an investment

@@ -21,8 +21,7 @@
 ## @deftypefn {Function File} {} columns (@var{a})
 ## Return the number of columns of @var{a}.
 ## @end deftypefn
-
-## See also: size, rows, length, is_scalar, is_vector, is_matrix
+## @seealso{size, rows, length, is_scalar, is_vector, is_matrix}
 
 ## Author: jwe
 

@@ -29,8 +29,7 @@
 ## An error message is printed if the dimensions of the arguments do not
 ## agree, or if either of the arguments is complex.
 ## @end deftypefn
-
-## See also: round
+## @seealso{round}
 
 ## Author: jwe
 

@@ -22,9 +22,8 @@
 ## Specify a title for a plot.  If you already have a plot displayed, use
 ## the command @code{replot} to redisplay it with the new title.
 ## @end deftypefn
-
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel
+## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel}
 
 ## Author: jwe
 

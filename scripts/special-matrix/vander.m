@@ -47,8 +47,7 @@
 ## @end example
 ## @end ifinfo
 ## @end deftypefn
-
-## See also: hankel, sylvester_matrix, hilb, invhilb, toeplitz
+## @seealso{hankel, sylvester_matrix, hilb, invhilb, toeplitz}
 
 ## Author: jwe
 

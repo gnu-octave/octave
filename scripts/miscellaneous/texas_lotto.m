@@ -17,12 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: texas_lotto
+## @deftypefn {Function File } {@var{winning_numbers} =} texas_lotto ()
 ##
 ## Pick 6 unique numbers between 1 and 50 that are guaranteed to win
 ## the Texas Lotto.
-##
-## See also: rand
+## @end deftypefn 
+## @seealso{rand}
 
 ## Author: jwe
 

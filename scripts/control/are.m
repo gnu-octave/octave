@@ -58,8 +58,7 @@
 ## matrix.
 ## 
 ## @end deftypefn
-
-## See also: balance, dare
+## @seealso{balance, dare}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

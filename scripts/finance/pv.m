@@ -14,13 +14,13 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  pv (r, n, p [, l] [, method])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} pv (@var{r}, @var{n}, @var{p} [, @var{l}] [, @var{method}])
+## Returns the present value of an investment that will pay off @var{p} for @var{n}
+## consecutive periods, assuming an interest @var{r}.
 ##
-## Returns the present value of an investment that will pay off p for n
-## consecutive periods, assuming an interest r.
-##
-## With the optional scalar argument l, one can specify an additional
-## lump-sum payment made at the end of n periods.
+## With the optional scalar argument @var{l}, one can specify an additional
+## lump-sum payment made at the end of @var{n} periods.
 ##
 ## With the optional string argument `method', one can specify whether
 ## payments are made at the end ("e", default) or at the beginning ("b")
@@ -28,8 +28,8 @@
 ##
 ## Note that the rate r is not specified in percent, i.e., one has to
 ## write 0.05 rather than 5 %.
-##
-## See also:  pmt, nper, rate;  npv.
+## @end deftypefn
+## @seealso{pmt, nper, rate, npv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Present value of an investment

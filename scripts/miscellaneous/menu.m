@@ -26,8 +26,7 @@
 ## in, but it may be confusing to present more than will fit easily on one
 ## screen.
 ## @end deftypefn
-
-## See also: disp, printf, input
+## @seealso{disp, printf, input}
 
 ## Author: jwe
 

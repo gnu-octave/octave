@@ -18,8 +18,7 @@
 ## @deftypefn {Mapping Function} {} erfinv (@var{z})
 ## Computes the inverse of the error function,
 ## @end deftypefn
-
-##  See also: erf, erfc
+## @seealso{erf, erfc}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 27 September 1994

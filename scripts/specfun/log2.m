@@ -28,8 +28,7 @@
 ##  1/2 <= abs(f) < 1 and x = f * 2^e.
 ## @end ifinfo
 ## @end deftypefn
-
-## See also: log, log10, logspace, exp
+## @seealso{log, log10, logspace, exp}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## @deftypefn {Operator} {} : ()
 ## Array row or command separator.
-##
-## See also: comma
+## @end deftypefn
+## @seealso{comma}

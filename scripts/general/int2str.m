@@ -24,8 +24,7 @@
 ## but are provided for compatibility with @sc{Matlab}.  For better control
 ## over the results, use @code{sprintf} (@pxref{Formatted Output}).
 ## @end deftypefn
-
-## See also: sprintf, num2str
+## @seealso{sprintf, num2str}
 
 ## Author: jwe
 

@@ -23,25 +23,51 @@
 ## @strong{Inputs}
 ## @table @var
 ##   @item a
-##   @var{n} by @var{n} matrix
+##   @var{n} by @var{n} matrix;
 ##   @item b
 ##   Matrix: @var{n} by @var{n}, @var{n} by @var{m}, or @var{p} by @var{n}.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{x}: matrix satisfying appropriate discrete time Lyapunov equation.
+## @strong{Output}
+## @table @var
+## @item x
+## matrix satisfying appropriate discrete time Lyapunov equation.
+## @end table
+##
 ## Options:
 ## @itemize @bullet
-## @item @var{b} is square: solve @code{a x a' - x + b = 0}
+## @item @var{b} is square: solve 
+## @iftex
+## @tex
+## $$ axa^T - x + b = 0 $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @code{a x a' - x + b = 0}
+## @end ifinfo
 ## @item @var{b} is not square: @var{x} satisfies either
+## @iftex
+## @tex
+## $$ axa^T - x + bb^T = 0 $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ## a x a' - x + b b' = 0
 ## @end example
+## @end ifinfo
 ## @noindent
 ## or
+## @iftex
+## @tex
+## $$ a^Txa - x + b^Tb = 0, $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ## a' x a - x + b' b = 0,
 ## @end example
+## @end ifinfo
 ## @noindent
 ## whichever is appropriate.
 ## @end itemize
@@ -54,7 +80,7 @@
 ##
 ## Column-by-column solution method as suggested in
 ## Hammarling, @cite{Numerical Solution of the Stable, Non-Negative
-## Definite Lyapunov Equation}, IMA Journal of Numerical Analysis, Volume
+## Definite Lyapunov Equation}, @acronym{IMA} Journal of Numerical Analysis, Volume
 ## 2, pages 303--323 (1982).
 ## @end deftypefn
 

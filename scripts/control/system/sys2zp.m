@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ##@deftypefn {Function File} {[@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname}] =} sys2zp (@var{sys})
 ## Extract zero/pole/leading coefficient information from a system data
-## structure
+## structure.
 ##
-## See zp for parameter descriptions.
+## See @command{zp} for parameter descriptions.
 ##
 ## @strong{Example}
 ## @example

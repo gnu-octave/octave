@@ -36,7 +36,8 @@ parameter may only be a scalar.
 The local error test applied at each integration step is
 
 @example
-  abs (local error in x(i)) <= rtol * abs (y(i)) + atol(i)
+  abs (local error in x(i))
+       <= rtol * abs (y(i)) + atol(i)
 @end example
   END_DOC_ITEM
   TYPE = "double"

@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ord2 (@var{nfreq}, @var{damp}, @var{gain})
 ## Creates a continuous 2nd order system with parameters:
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item nfreq
@@ -30,17 +31,30 @@
 ## This is steady state value only for damp > 0.
 ## gain is assumed to be 1.0 if ommitted.
 ## @end table
-## @strong{Outputs}
-## @var{outsys}
-## system data structure has representation with @math{w = 2 * pi * nfreq}:
+##
+## @strong{Output}
+## @table @var
+## @item outsys
+## system data structure has representation with 
+## @ifinfo
+## @math{w = 2 * pi * nfreq}:
+## @end ifinfo
+## @iftex
+## @tex
+## $ w = 2  \pi  f $:
+## @end tex
+## @end iftex
 ## @example
+## @group
 ##     /                                        \
 ##     | / -2w*damp -w \  / w \                 |
 ## G = | |             |, |   |, [ 0  gain ], 0 |
 ##     | \   w       0 /  \ 0 /                 |
 ##     \                                        /
+## @end group
 ## @end example
-## @strong{See also} @code{jet707} (MIMO example, Boeing 707-321
+## @end table
+## @strong{See also} @command{jet707} (@acronym{MIMO} example, Boeing 707-321
 ## aircraft model)
 ## @end deftypefn
 

@@ -20,9 +20,17 @@
 ## @deftypefn {Function File} {[@var{wmin}, @var{wmax}] =} bode_bounds (@var{zer}, @var{pol}, @var{dflg}, @var{tsam})
 ## Get default range of frequencies based on cutoff frequencies of system
 ## poles and zeros.
-## Frequency range is the interval [10^wmin,10^wmax]
+## Frequency range is the interval
+## @iftex
+## @tex
+## $ [ 10^{w_{min}}, 10^{w_{max}} ] $
+## @end tex
+## @end iftex
+## @ifinfo
+## [10^@var{wmin}, 10^@var{wmax}]
+## @end ifinfo
 ##
-## Used internally in __freqresp__ (@code{bode}, @code{nyquist})
+## Used internally in @command{__freqresp__} (@command{bode}, @command{nyquist})
 ## @end deftypefn
 
 function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)

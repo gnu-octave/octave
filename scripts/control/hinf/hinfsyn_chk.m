@@ -20,13 +20,23 @@
 ## @deftypefn {Function File} {[@var{retval}, @var{pc}, @var{pf}] =} hinfsyn_chk (@var{a}, @var{b1}, @var{b2}, @var{c1}, @var{c2}, @var{d12}, @var{d21}, @var{g}, @var{ptol})
 ## Called by @code{hinfsyn} to see if gain @var{g} satisfies conditions in
 ## Theorem 3 of
-## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
-## H2 and Hinf Control Problems", IEEE TAC August 1989
+## Doyle, Glover, Khargonekar, Francis, @cite{State Space Solutions to Standard}
+## @iftex
+## @tex
+## $ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-2 and H-infinity}
+## @end ifinfo
+## @cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
 ##
-## @strong{Warning} Do not attempt to use this at home; no argument
+## @strong{Warning:} do not attempt to use this at home; no argument
 ## checking performed.
 ##
-## @strong{Inputs} as returned by @code{is_dgkf}, except for:
+## @strong{Inputs}
+##
+## As returned by @code{is_dgkf}, except for:
 ## @table @var
 ## @item g
 ## candidate gain level
@@ -39,9 +49,27 @@
 ## @item retval
 ##  1 if g exceeds optimal Hinf closed loop gain, else 0
 ## @item pc
-##  solution of "regulator" H-inf ARE
+## solution of ``regulator'' 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## @acronym{ARE}
 ## @item pf
-##  solution of "filter" H-inf ARE
+## solution of ``filter''
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## @acronym{ARE}
 ## @end table
 ## Do not attempt to use this at home; no argument checking performed.
 ## @end deftypefn

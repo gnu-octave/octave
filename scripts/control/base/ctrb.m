@@ -19,16 +19,23 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ctrb (@var{sys}, @var{b})
 ## @deftypefnx {Function File} {} ctrb (@var{a}, @var{b})
-## Build controllability matrix
+## Build controllability matrix:
+## @iftex
+## @tex
+## $$ Q_s = [ B AB A^2B \ldots A^{n-1}B ] $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ##              2       n-1
 ## Qs = [ B AB A B ... A   B ]
 ## @end example
+## @end ifinfo
 ##
 ## of a system data structure or the pair (@var{a}, @var{b}).
 ##
-## @code{ctrb} forms the controllability matrix.
-## The numerical properties of @code{is_controllable}
+## @command{ctrb} forms the controllability matrix.
+## The numerical properties of @command{is_controllable}
 ## are much better for controllability tests.
 ## @end deftypefn
 

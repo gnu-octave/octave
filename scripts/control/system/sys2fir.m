@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{c}, @var{tsam}, @var{input}, @var{output}] =} sys2fir (@var{sys})
 ##
-## Extract FIR data from system data structure; see fir2sys for
+## Extract @acronym{FIR} data from system data structure; see @command{fir2sys} for
 ## parameter descriptions.
 ## @end deftypefn
 ## @seealso{fir2sys}

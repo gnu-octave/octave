@@ -17,12 +17,17 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} prompt (@var{inputs})
-## @format
-## function prompt([str])
+## @deftypefn {Function File} {} prompt (@var{str})
 ## Prompt user to continue
-## str: input string. Default value: "\n ---- Press a key to continue ---"
-## @end format
+## 
+## @strong{Input}
+## @table @var
+## @item str
+## Input string. Its default value is: 
+## @example 
+## \n ---- Press a key to  continue ---
+## @end example
+## @end table
 ## @end deftypefn
 
 ## Author: David Clem

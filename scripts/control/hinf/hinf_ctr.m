@@ -17,8 +17,17 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hinf_ctr (@var{dgs}, @var{f}, @var{h}, @var{z}, @var{g})
-## Called by @code{hinfsyn} to compute the H_inf optimal controller.
+## @deftypefn {Function File} {@var{K} =} hinf_ctr (@var{dgs}, @var{f}, @var{h}, @var{z}, @var{g})
+## Called by @code{hinfsyn} to compute the 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## optimal controller.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -31,7 +40,10 @@
 ## final gamma value
 ## @end table
 ## @strong{Outputs}
+## @table @var
+## @item K
 ## controller (system data structure)
+## @end table
 ##
 ## Do not attempt to use this at home; no argument checking performed.
 ## @end deftypefn

@@ -17,14 +17,21 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysgroup (@var{asys}, @var{bsys})
-## Combines two systems into a single system
+## @deftypefn {Function File} {@var{sys} =} sysgroup (@var{asys}, @var{bsys})
+## Combines two systems into a single system.
 ##
 ## @strong{Inputs}
-## @var{asys}, @var{bsys}: system data structures
+## @table @var
+## @item asys
+## @itemx bsys
+## System data structures.
+## @end table
 ##
-## @strong{Outputs}
+## @strong{Output}
+## @table @var
+## @item sys
 ## @math{sys = @r{block diag}(asys,bsys)}
+## @end table
 ## @example
 ## @group
 ##          __________________
@@ -39,8 +46,7 @@
 ## @end group
 ## @end example
 ## The function also rearranges the internal state-space realization of @var{sys}
-## so that the
-## continuous states come first and the discrete states come last.
+## so that the continuous states come first and the discrete states come last.
 ## If there are duplicate names, the second name has a unique suffix appended
 ## on to the end of the name.
 ## @end deftypefn

@@ -17,23 +17,39 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ss2tf (@var{inputs})
-## @format
-## [num,den] = ss2tf(a,b,c,d)
+## @deftypefn {Function File} {[@var{num}, @var{den}] =} ss2tf (@var{a}, @var{b}, @var{c}, @var{d})
 ## Conversion from tranfer function to state-space.
-## The state space system
+## The state space system:
+## @iftex
+## @tex
+## $$ \dot x = Ax + Bu $$
+## $$ y = Cx + Du $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ##       .
 ##       x = Ax + Bu
 ##       y = Cx + Du
+## @end example
+## @end ifinfo
 ##
-## is converted to a transfer function
+## is converted to a transfer function:
+## @iftex
+## @tex
+## $$ G(s) = { { \rm num }(s) \over { \rm den }(s) } $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ##
 ##                 num(s)
 ##           G(s)=-------
 ##                 den(s)
+## @end example
+## @end ifinfo
 ##
-## used internally in system data structure format manipulations
-## @end format
+## used internally in system data structure format manipulations.
 ## @end deftypefn
 
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>

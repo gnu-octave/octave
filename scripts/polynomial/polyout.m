@@ -17,14 +17,21 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} polyout (@var{c}, @var{x})
+## @deftypefn {Function File} {} polyout (@var{c}, @var{x})
 ## Write formatted polynomial
+## @iftex
+## @tex
+## $$ c(x) = c_1 x^n + \ldots + c_n x + c_{n+1} $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
 ## @end example
+## @end ifinfo
 ##  and return it as a string or write it to the screen (if
 ##  @var{nargout} is zero).
-##  @var{x} defaults to the string @code{"s"}
+##  @var{x} defaults to the string @code{"s"}.
 ## @end deftypefn
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
 ## filter, polyderiv, and polyinteg}

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} bddemo (@var{inputs})
-## Octave Controls toolbox demo: Block Diagram Manipulations demo
+## Octave Controls toolbox demo: Block Diagram Manipulations demo.
 ## @end deftypefn
 
 ## Author: David Clem

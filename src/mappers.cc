@@ -222,7 +222,6 @@ $\\theta = \\tan^{-1}(y/x)$.\n\
 @ifinfo\n\
 @var{theta} = @code{atan (@var{y}/@var{x})}.\n\
 @end ifinfo\n\
-\n\
 @noindent\n\
 in radians. \n\
 \n\
@@ -245,7 +244,7 @@ Compute the inverse sine of each element of @var{x}.\n\
   DEFUN_MAPPER (asinh, 0, 0, 0, asinh, 0, asinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asinh (@var{x})\n\
-Ompute the inverse hyperbolic sine of each element of @var{x}.\n\
+Compute the inverse hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (atan, 0, 0, 0, atan, 0, atan, 0.0, 0.0, 0, 0,
@@ -257,7 +256,7 @@ Compute the inverse tangent of each element of @var{x}.\n\
   DEFUN_MAPPER (atanh, 0, 0, 0, atanh, 0, atanh, -1.0, 1.0, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atanh (@var{x})\n\
-Compute the inverse hyperbolic tanget of each element of @var{x}.\n\
+Compute the inverse hyperbolic tangent of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (ceil, 0, 0, 0, ceil, 0, ceil, 0.0, 0.0, 0, 0,
@@ -349,8 +348,8 @@ otherwise. For example,\n\
 \n\
 @example\n\
 @group\n\
-finite ([13, Inf, NaN])\n\
-     @result{} [ 1, 0, 0 ]\n\
+finite ([13, Inf, NA, NaN])\n\
+     @result{} [ 1, 0, 0, 0 ]\n\
 @end group\n\
 @end example\n\
 @end deftypefn");
@@ -599,13 +598,13 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
   DEFUN_MAPPER (sin, 0, 0, 0, sin, 0, sin, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
-Compute the sin of each element of @var{x}.\n\
+Compute the sine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (sinh, 0, 0, 0, sinh, 0, sinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
-Compute the inverse hyperbolic sin of each element of @var{x}.\n\
+Compute the inverse hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, sqrt, 0.0, octave_Inf, 0, 1,
@@ -619,7 +618,7 @@ result is returned.  To compute the matrix square root, see\n\
   DEFUN_MAPPER (tan, 0, 0, 0, tan, 0, tan, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
-Compute tanget of each element of @var{x}.\n\
+Compute tangent of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (tanh, 0, 0, 0, tanh, 0, tanh, 0.0, 0.0, 0, 0,

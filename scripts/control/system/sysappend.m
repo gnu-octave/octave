@@ -17,12 +17,12 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysappend (@var{sys}, @var{b}, @var{c}, @var{d}, @var{outname}, @var{inname}, @var{yd})
+## @deftypefn {Function File} {@var{sys} =} sysappend (@var{syst}, @var{b}, @var{c}, @var{d}, @var{outname}, @var{inname}, @var{yd})
 ## appends new inputs and/or outputs to a system
 ##
 ## @strong{Inputs}
 ## @table @var
-## @item sys
+## @item syst
 ## system data structure
 ##
 ## @item b
@@ -45,14 +45,16 @@
 ## @math{yd(ii)=1} indicates a discrete output.
 ## @end table
 ##
-## @strong{Outputs} @var{sys}
+## @strong{Outputs}
+## @table @var
+## @item sys
 ## @example
 ## @group
-##    sys.b := [sys.b , b]
-##    sys.c := [sys.c  ]
+##    sys.b := [syst.b , b]
+##    sys.c := [syst.c  ]
 ##             [ c     ]
-##    sys.d := [sys.d | D12 ]
-##             [D21   | D22 ]
+##    sys.d := [syst.d | D12 ]
+##             [ D21   | D22 ]
 ## @end group
 ## @end example
 ## where @math{D12}, @math{D21}, and @math{D22} are the appropriate dimensioned
@@ -63,13 +65,15 @@
 ##      the new inputs and outputs are be assigned default names.
 ## @item @var{yd} is a binary vector of length rows(c) that indicates
 ##      continuous/sampled outputs.  Default value for @var{yd} is:
-##
-## @item @var{sys} = continuous or mixed
+## @itemize @minus
+## @item @var{sys} is continuous or mixed
 ## @var{yd} = @code{zeros(1,rows(c))}
 ##
-## @item @var{sys} = discrete
+## @item @var{sys} is discrete
 ## @var{yd} = @code{ones(1,rows(c))}
 ## @end itemize
+## @end itemize
+## @end table
 ## @end deftypefn
 
 ## Author: John Ingram <ingraje@eng.auburn.edu>

@@ -20,8 +20,11 @@
 ## @deftypefn {Function File} {[@var{csys}, @var{acd}, @var{ccd}] =} syscont (@var{sys})
 ## Extract the purely continuous subsystem of an input system.
 ##
-## @strong{Inputs}
-## @var{sys} is a system data structure
+## @strong{Input}
+## @table @var
+## @item sys
+## system data structure.
+## @end table
 ##
 ## @strong{Outputs}
 ## @table @var

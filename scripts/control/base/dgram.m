@@ -18,11 +18,18 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dgram (@var{a}, @var{b})
-## Return controllability grammian of discrete time system
+## Return controllability gramian of discrete time system
+## @iftex
+## @tex
+## $$ x_{k+1} = ax_k + bu_k $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ##   x(k+1) = a x(k) + b u(k)
 ## @end example
-##
+## @end ifinfo
+## 
 ## @strong{Inputs}
 ## @table @var
 ## @item a
@@ -31,11 +38,22 @@
 ## @var{n} by @var{m} matrix
 ## @end table
 ##
-## @strong{Outputs}
+## @strong{Output}
+## @table @var
+## @item m 
+## @var{n} by @var{n} matrix, satisfies
+## @iftex
+## @tex
+## $$ ama^T - m + bb^T = 0 $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @var{m} (@var{n} by @var{n}) satisfies
 ## @example
 ##  a m a' - m + b*b' = 0
 ## @end example
+## @end ifinfo
+## @end table
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

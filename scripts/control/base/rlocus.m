@@ -17,25 +17,40 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rlocus (@var{inputs})
-## @format
-## [rldata, k] = rlocus(sys[,increment,min_k,max_k])
-## Displays root locus plot of the specified SISO system.
+## @deftypefn {Function File} {[@var{rldata}, @var{k}] =} rlocus (@var{sys}[, @var{increment}, @var{min_k}, @var{max_k}])
 ##
+## Displays root locus plot of the specified @acronym{SISO} system.
+## @example
+## @group
 ##        -----   ---     --------
 ##    --->| + |---|k|---->| SISO |----------->
 ##        -----   ---     --------        |
 ##        - ^                             |
 ##          |_____________________________|
+## @end group
+## @end example
 ##
-## inputs: sys = system data structure
-## min_k, max_k,increment: minimum, maximum values of k and
-## the increment used in computing gain values
-## Outputs: plots the root locus to the screen.
-## rldata: Data points plotted column 1: real values, column 2: imaginary
-## values)
-## k: gains for real axis break points.
-## @end format
+## @strong{Inputs}
+## @table @var
+## @item sys
+## system data structure
+## @item min_k
+## Minimum value of @var{k}
+## @item max_k
+## Maximum value of @var{k}
+## @item increment
+## The increment used in computing gain values
+## @end table
+##
+## @strong{Outputs}
+##
+## Plots the root locus to the screen.
+## @table @var 
+## @item rldata
+## Data points plotted: in column 1 real values, in column 2 the imaginary values.
+## @item k
+## Gains for real axis break points.
+## @end table
 ## @end deftypefn
 
 ## Author: David Clem

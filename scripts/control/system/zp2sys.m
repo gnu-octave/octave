@@ -23,20 +23,23 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item   zer
-## vector of system zeros
+## Vector of system zeros.
 ## @item   pol
-## vector of system poles
+## Vector of system poles.
 ## @item   k
-## scalar leading coefficient
+## Scalar leading coefficient.
 ## @item   tsam
-## sampling period. default: 0 (continuous system)
+## Sampling period; default: 0 (continuous system).
 ## @item   inname
 ## @itemx  outname
-## input/output signal names (lists of strings)
+## Input/output signal names (lists of strings).
 ## @end table
 ##
-## @strong{Outputs}
-## sys: system data structure
+## @strong{Output}
+## @table @var
+## @item sys
+## System data structure.
+## @end table
 ##
 ## @strong{Example}
 ## @example

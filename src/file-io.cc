@@ -1751,7 +1751,7 @@ DEFUN (mkstemp, args, ,
 @deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} tmpfile (@var{template}, @var{delete})\n\
 Return the file ID corresponding to a new temporary file with a unique\n\
 name created from @var{template}.  The last six characters of @var{template}\n\
-must be @code{XXXXXX} and tehse are replaced with a string that makes the\n\
+must be @code{XXXXXX} and these are replaced with a string that makes the\n\
 filename unique.  The file is then created with mode read/write and\n\
 permissions that are system dependent (on GNU/Linux systems, the permissions\n\
 will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\

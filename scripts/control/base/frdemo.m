@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} frdemo ()
-## Octave Controls toolbox demo: Frequency Response demo
+## Octave Control Toolbox demo: Frequency Response demo.
 ## @end deftypefn
 
 ## Author: David Clem

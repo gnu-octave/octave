@@ -17,9 +17,10 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ltifr (@var{a}, @var{b}, @var{w})
-## @deftypefnx {Function File} {} ltifr (@var{sys}, @var{w})
-## Linear time invariant frequency response of single input systems
+## @deftypefn {Function File} {@var{out} =} ltifr (@var{a}, @var{b}, @var{w})
+## @deftypefnx {Function File} {@var{out} =} ltifr (@var{sys}, @var{w})
+## Linear time invariant frequency response of single-input systems.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item a
@@ -30,12 +31,22 @@
 ## @item w
 ## vector of frequencies
 ## @end table
-## @strong{Outputs}
-## @var{out}
+## @strong{Output}
+## @table @var
+## @item out
+## frequency response, that is:
+## @end table
+## @iftex
+## @tex
+## $$ G(j\omega) = (j\omegaI-A)^{-1}B $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ##                            -1
-##             G(s) = (jw I-A) B
+##              G(s) = (jw I-A) B
 ## @end example
+## @end ifinfo
 ## for complex frequencies @math{s = jw}.
 ## @end deftypefn
 

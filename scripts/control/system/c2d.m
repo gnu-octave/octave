@@ -20,6 +20,31 @@
 ## @deftypefn {Function File} {} c2d (@var{sys}, @var{opt}, @var{t})
 ## @deftypefnx {Function File} {} c2d (@var{sys}, @var{t})
 ##
+## Converts the system data structure describing:
+## @iftex
+## @tex
+## $$ \dot x = A_cx + B_cu $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## .
+## x = Ac x + Bc u
+## @end example
+## @end ifinfo
+## into a discrete time equivalent model:
+## @iftex
+## @tex
+## $$ x_{n+1} = A_dx_n + B_du_n $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## x[n+1] = Ad x[n] + Bd u[n]
+## @end example
+## @end ifinfo
+## via the matrix exponential or bilinear transform.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
@@ -33,38 +58,37 @@
 ## use the matrix exponential (default)
 ## @item "bi"
 ## use the bilinear transformation
-## @end table
+## @iftex
+## @tex
+## $$ s = { 2(z-1) \over T(z+1) } $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ##     2(z-1)
 ## s = -----
 ##     T(z+1)
 ## @end example
+## @end ifinfo
 ## FIXME: This option exits with an error if @var{sys} is not purely
 ## continuous. (The @code{ex} option can handle mixed systems.)
-## @item t
-## sampling time; required if sys is purely continuous.
-##
-## If the 2nd argument is not a string, @code{c2d} assumes that
-## the 2nd argument is @var{t} and performs appropriate argument checks.
 ## @item "matched"
 ## Use the matched pole/zero equivalent transformation (currently only
-## works for purely continuous SISO systems).
+## works for purely continuous @acronym{SISO} systems).
+## @end table
+## @item t
+## sampling time; required if @var{sys} is purely continuous.
+## 
+## @strong{Note:} if the second argument is not a string, @code{c2d()}
+## assumes that the second argument is @var{t} and performs 
+## appropriate argument checks.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{dsys} discrete time equivalent via zero-order hold,
-## sample each @var{t} sec.
-##
-## converts the system data structure describing
-## @example
-## .
-## x = Ac x + Bc u
-## @end example
-## into a discrete time equivalent model
-## @example
-## x[n+1] = Ad x[n] + Bd u[n]
-## @end example
-## via the matrix exponential or bilinear transform
+## @strong{Output}
+## @table @var
+## @item dsys 
+## Discrete time equivalent via zero-order hold, sample each @var{t} sec.
+## @end table
 ##
 ## This function adds the suffix  @code{_d}
 ## to the names of the new discrete states.

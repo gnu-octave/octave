@@ -18,23 +18,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} tf2sys (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
-## build system data structure from transfer function format data
+## Build system data structure from transfer function format data.
 ##
 ## @strong{Inputs}
 ## @table @var
 ## @item  num
 ## @itemx den
-## coefficients of numerator/denominator polynomials
+## Coefficients of numerator/denominator polynomials.
 ## @item tsam
-## sampling interval. default: 0 (continuous time)
+## Sampling interval; default: 0 (continuous time).
 ## @item inname
 ## @itemx outname
-## input/output signal names; may be a string or cell array with a single string
+## Input/output signal names; may be a string or cell array with a single string
 ## entry.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{sys} = system data structure
+## @strong{Output}
+## @table @var
+## @item sys
+## System data structure.
+## @end table
 ##
 ## @strong{Example}
 ## @example

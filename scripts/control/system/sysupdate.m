@@ -39,10 +39,13 @@
 ## @end table
 ##
 ## @strong{Outputs}
-## @var{retsys}: contains union of data in sys and requested data.
-## If requested data in sys is already up to date then retsys=sys.
+## @table @var
+## @item retsys
+## Contains union of data in sys and requested data.
+## If requested data in @var{sys} is already up to date then @var{retsys}=@var{sys}.
+## @end table
 ##
-## Conversion to @code{tf} or @code{zp} exits with an error if the system is
+## Conversion to @command{tf} or @command{zp} exits with an error if the system is
 ## mixed continuous/digital.
 ## @end deftypefn
 ## @seealso{tf, ss, zp, sysout, sys2ss, sys2tf, and sys2zp}

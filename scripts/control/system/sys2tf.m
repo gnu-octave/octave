@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname}] =} sys2tf (@var{sys})
-## Extract transfer function data from a system data structure
+## Extract transfer function data from a system data structure.
 ##
-## See tf for parameter descriptions.
+## See @command{tf} for parameter descriptions.
 ##
 ## @strong{Example}
 ## @example

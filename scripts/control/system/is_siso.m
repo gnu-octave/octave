@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} is_siso (@var{sys})
-## return nonzero if the system data structure
+## Returns nonzero if the system data structure
 ## @var{sys} is single-input, single-output.
 ## @end deftypefn
 

@@ -25,15 +25,15 @@
 ## @var{c} is used.  If the second argument is omitted, the first row is
 ## taken to be the same as the first column.
 ##
-## A square Toeplitz matrix has the form
+## A square Toeplitz matrix has the form:
 ## @iftex
 ## @tex
 ## $$
-## \left[\matrix{c_0    & r_1     & r_2      & \ldots & r_n\cr
-##               c_1    & c_0     & r_1      &        & c_{n-1}\cr
-##               c_2    & c_1     & c_0      &        & c_{n-2}\cr
-##               \vdots &         &          &        & \vdots\cr
-##               c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right].
+## \left[\matrix{c_0    & r_1     & r_2      & \cdots & r_n\cr
+##               c_1    & c_0     & r_1      & \cdots & r_{n-1}\cr
+##               c_2    & c_1     & c_0      & \cdots & r_{n-2}\cr
+##               \vdots & \vdots  & \vdots   & \ddots & \vdots\cr
+##               c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right]
 ## $$
 ## @end tex
 ## @end iftex
@@ -42,12 +42,11 @@
 ## @example
 ## @group
 ## c(0)  r(1)   r(2)  ...  r(n)
-## c(1)  c(0)   r(1)      r(n-1)
-## c(2)  c(1)   c(0)      r(n-2)
-##  .                       .
-##  .                       .
-##  .                       .
-##
+## c(1)  c(0)   r(1)  ... r(n-1)
+## c(2)  c(1)   c(0)  ... r(n-2)
+##  .     ,      ,   .      .
+##  .     ,      ,     .    .
+##  .     ,      ,       .  .
 ## c(n) c(n-1) c(n-2) ...  c(0)
 ## @end group
 ## @end example

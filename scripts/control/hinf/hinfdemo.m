@@ -19,28 +19,57 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hinfdemo ()
 ##
-## H_infinity design demos for continuous SISO and MIMO systems and a
-## discrete system.  The SISO system is difficult to control because it
-## is non minimum phase and unstable.  The second design example
-## controls the "jet707" plant, the linearized state space model of a
-## Boeing 707-321 aircraft at v=80m/s (M = 0.26, Ga0 = -3 deg, alpha0 =
-## 4 deg, kappa = 50 deg).  Inputs: (1) thrust and (2) elevator angle
-## outputs: (1) airspeed and (2) pitch angle. The discrete system is a
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## design demos for continuous @acronym{SISO} and @acronym{MIMO} systems and a
+## discrete system.  The @acronym{SISO} system is difficult to control because
+## it is non-minimum-phase and unstable. The second design example
+## controls the @command{jet707} plant, the linearized state space model of a
+## Boeing 707-321 aircraft at @var{v}=80 m/s 
+## @iftex
+## @tex
+## ($M = 0.26$, $G_{a0} = -3^{\circ}$, ${\alpha}_0 = 4^{\circ}$, ${\kappa}= 50^{\circ}$).
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{M} = 0.26, @var{Ga0} = -3 deg, @var{alpha0} = 4 deg, @var{kappa} = 50 deg).
+## @end ifinfo
+## Inputs: (1) thrust and (2) elevator angle
+## Outputs: (1) airspeed and (2) pitch angle. The discrete system is a
 ## stable and second order.
 ##
 ## @table @asis
-## @item SISO plant
-## @display
+## @item @acronym{SISO} plant:
+##
+## @iftex
+## @tex
+## $$ G(s) = { s-2 \over (s+2) (s-1) } $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ## @group
 ##                 s - 2
 ##      G(s) = --------------
 ##             (s + 2)(s - 1)
+## @end group
+## @end example
+## @end ifinfo
+##
+## @example
+## @group
 ##
 ##                               +----+
 ##          -------------------->| W1 |---> v1
 ##      z   |                    +----+
-##      ----|-------------+                   || T   ||     => min.
-##          |             |                       vz   infty
+##      ----|-------------+
+##          |             |
 ##          |    +---+    v   y  +----+
 ##        u *--->| G |--->O--*-->| W2 |---> v2
 ##          |    +---+       |   +----+
@@ -49,14 +78,36 @@
 ##          -----| K |<-------
 ##               +---+
 ## @end group
-## @end display
-## W1 und W2 are the robustness and performance weighting
-## functions
+## @end example
+## 
+## @iftex
+## @tex
+## $$ { \rm min } \Vert T_{vz} \Vert _\infty $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## min || T   ||
+##         vz   infty
+## @end example
+## @end ifinfo
 ##
-## @item MIMO plant
-## The optimal controller minimizes the H_infinity norm of the
-## augmented plant P (mixed-sensitivity problem):
-## @display
+## @var{W1} und @var{W2} are the robustness and performance weighting
+## functions.
+##
+## @item @acronym{MIMO} plant:
+## The optimal controller minimizes the 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## norm of the
+## augmented plant @var{P} (mixed-sensitivity problem):
+## @example
 ## @group
 ##      w
 ##       1 -----------+
@@ -70,11 +121,24 @@
 ##             |          +----+      |   +----+
 ##             |                      |
 ##             ^                      v
-##              u (from                 y (to K)
-##                controller
-##                K)
+##             u                       y (to K)
+##          (from controller K)
+## @end group
+## @end example
 ##
-##
+## @iftex
+## @tex
+## $$ \left [ \matrix{ z_1 \cr
+##                     z_2 \cr
+##                     y   } \right ] =  
+##  P \left [ \matrix{ w_1 \cr
+##                     w_2 \cr
+##                     u   } \right ] $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## @group
 ##                   +    +           +    +
 ##                   | z  |           | w  |
 ##                   |  1 |           |  1 |
@@ -83,37 +147,59 @@
 ##                   | y  |           | u  |
 ##                   +    +           +    +
 ## @end group
-## @end display
+## @end example
+## @end ifinfo
 ##
-## @item DISCRETE SYSTEM
+## @item Discrete system:
 ## This is not a true discrete design. The design is carried out
 ## in continuous time while the effect of sampling is described by
 ## a bilinear transformation of the sampled system.
-## This method works quite well if the sampling period is "small"
+## This method works quite well if the sampling period is ``small''
 ## compared to the plant time constants.
 ##
-## @item The continuous plant
-## @display
+## @item The continuous plant:
+## @iftex
+## @tex
+## $$ G(s) = { 1 \over (s+2)(s+1) } $$
+## @end tex
+## @end iftex
+##
+## @ifinfo
+## @example
 ## @group
 ##                    1
 ##      G (s) = --------------
 ##       k      (s + 2)(s + 1)
 ##
 ## @end group
-## @end display
-## is discretised with a ZOH (Sampling period = Ts = 1 second):
-## @display
+## @end example
+## @end ifinfo
+##
+## is discretised with a @acronym{ZOH} (Sampling period = @var{Ts} = 1 second):
+## @iftex
+## @tex
+## $$ G(z) = { 0.199788z + 0.073498 \over (z - 0.36788) (z - 0.13534) } $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ## @group
 ##
 ##                0.199788z + 0.073498
-##      G(s) = --------------------------
+##      G(z) = --------------------------
 ##             (z - 0.36788)(z - 0.13534)
+## @end group
+## @end example
+## @end ifinfo
+##
+## @example
+## @group
 ##
 ##                               +----+
 ##          -------------------->| W1 |---> v1
 ##      z   |                    +----+
-##      ----|-------------+                   || T   ||     => min.
-##          |             |                       vz   infty
+##      ----|-------------+
+##          |             |
 ##          |    +---+    v      +----+
 ##          *--->| G |--->O--*-->| W2 |---> v2
 ##          |    +---+       |   +----+
@@ -122,9 +208,20 @@
 ##          -----| K |<-------
 ##               +---+
 ## @end group
-## @end display
-## W1 and W2 are the robustness and performancs weighting
-## functions
+## @end example
+## @iftex
+## @tex
+## $$ { \rm min } \Vert T_{vz} \Vert _\infty $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## min || T   ||
+##         vz   infty
+## @end example
+## @end ifinfo
+## @var{W1} and @var{W2} are the robustness and performance weighting
+## functions.
 ## @end table
 ## @end deftypefn
 

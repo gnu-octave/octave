@@ -17,28 +17,44 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[K}, @var{gain}, @var{kc}, @var{kf}, @var{pc}, @var{pf}] = h2syn (@var{asys}, @var{nu}, @var{ny}, @var{tol})
-## Design H2 optimal controller per procedure in
-## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
-## H2 and Hinf Control Problems", IEEE TAC August 1989
+## @deftypefn {Function File} {[@var{K}, @var{gain}, @var{kc}, @var{kf}, @var{pc}, @var{pf}] = } h2syn (@var{asys}, @var{nu}, @var{ny}, @var{tol})
+## Design 
+## @iftex
+## @tex
+## $ { \cal H }_2 $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-2
+## @end ifinfo
+## optimal controller per procedure in 
+## Doyle, Glover, Khargonekar, Francis, @cite{State-Space Solutions to Standard}
+## @iftex
+## @tex
+## $ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-2 and H-infinity}
+## @end ifinfo
+## @cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
 ##
-## Discrete time control per Zhou, Doyle, and Glover, ROBUST AND OPTIMAL
-## CONTROL, Prentice-Hall, 1996
+## Discrete-time control per Zhou, Doyle, and Glover, @cite{Robust and optimal control}, Prentice-Hall, 1996.
 ##
-## @strong{Inputs} input system is passed as either
+## @strong{Inputs}
 ## @table @var
 ## @item asys
 ## system data structure (see ss, sys2ss)
 ## @itemize @bullet
 ## @item controller is implemented for continuous time systems
-## @item controller is NOT implemented for discrete time systems
+## @item controller is @strong{not} implemented for discrete time systems
 ## @end itemize
 ## @item nu
 ## number of controlled inputs
 ## @item ny
 ## number of measured outputs
 ## @item tol
-## threshhold for 0.  Default: 200*eps
+## threshold for 0.  Default: 200*@code{eps}
 ## @end table
 ##
 ## @strong{Outputs}
@@ -52,9 +68,9 @@
 ## @item    kf
 ## state estimator (packed)
 ## @item    pc
-## ARE solution matrix for regulator subproblem
+## @acronym{ARE} solution matrix for regulator subproblem
 ## @item    pf
-## ARE solution matrix for filter subproblem
+## @acronym{ARE} solution matrix for filter subproblem
 ## @end table
 ## @end deftypefn
 

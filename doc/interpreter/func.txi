@@ -375,7 +375,7 @@ does contain a nonzero element.
 
 @defvr {Keyword} return
 When Octave encounters the keyword @code{return} inside a function or
-script, it returns control to be caller immediately.  At the top level,
+script, it returns control to the caller immediately. At the top level,
 the return statement is ignored.  A @code{return} statement is assumed
 at the end of every function definition.
 @end defvr
@@ -667,8 +667,6 @@ The next statements
 
 @example
 @group
-ColumnVector dx (3);
-
 dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0)
                  - 8.375e-06*pow (x(0), 2));
 
@@ -679,7 +677,7 @@ dx(2) = 0.161*(x(0) - x(2));
 @end example
 
 @noindent
-define the right hand side of the differential equation.  Finally, we
+define the right-hand side of the differential equation.  Finally, we
 can return @code{dx}:
 
 @example

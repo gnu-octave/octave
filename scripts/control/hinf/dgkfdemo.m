@@ -18,7 +18,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dgkfdemo ()
-## Octave Controls toolbox demo: H2/Hinfinity options demos
+## Octave Controls toolbox demo: 
+## @iftex
+## @tex
+## $ { \cal H }_2 $/$ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-2/H-infinity
+## @end ifinfo
+## options demos.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

@@ -18,14 +18,14 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
+## @deftypefn {Function File} {@var{x} =} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
 ##
 ## Return the solution, @var{x} of the discrete-time algebraic Riccati
 ## equation
 ## @iftex
 ## @tex
 ## $$
-## A^TXA - X + A^TXB (R + B^TXB)^{-1} B^TXA + Q = 0
+## A^TXA - X + A^TXB  (R + B^TXB)^{-1} B^TXA + Q = 0
 ## $$
 ## @end tex
 ## @end iftex
@@ -39,33 +39,36 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item a
-## @var{n} by @var{n}.
+## @var{n} by @var{n} matrix;
 ##
 ## @item b
-## @var{n} by @var{m}.
+## @var{n} by @var{m} matrix;
 ##
 ## @item q
-## @var{n} by @var{n}, symmetric positive semidefinite, or @var{p} by @var{n}.
-## In the latter case @math{q:=q'*q} is used.
+## @var{n} by @var{n} matrix, symmetric positive semidefinite, or a @var{p} by @var{n} matrix,
+## In the latter case @math{q:=q'*q} is used;
 ##
 ## @item r
-## @var{m} by @var{m}, symmetric positive definite (invertible).
+## @var{m} by @var{m}, symmetric positive definite (invertible);
 ##
 ## @item opt
 ## (optional argument; default = @code{"B"}):
 ## String option passed to @code{balance} prior to ordered @var{QZ} decomposition.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{x} solution of DARE.
+## @strong{Output}
+## @table @var
+## @item x
+## solution of @acronym{DARE}.
+## @end table
 ##
 ## @strong{Method}
-## Generalized eigenvalue approach (Van Dooren; SIAM J.
+## Generalized eigenvalue approach (Van Dooren; @acronym{SIAM} J.
 ##  Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
 ##
-##  See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
-##  Algebraic Riccati Equations," Mathematics of Control, Signals and
-##  Systems, Vol 5, no 2 (1992)  pp 165-194.
+##  See also: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
+##  Algebraic Riccati Equations}, Mathematics of Control, Signals and
+##  Systems, Vol 5, no 2 (1992), pp 165--194.
 ##
 ## @end deftypefn
 ## @seealso{balance and are}

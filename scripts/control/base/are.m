@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} are (@var{a}, @var{b}, @var{c}, @var{opt})
-## Solve the algebraic Riccati equation
+## @deftypefn {Function File} {@var{x} =} are (@var{a}, @var{b}, @var{c}, @var{opt})
+## Solve the Algebraic Riccati Equation
 ## @iftex
 ## @tex
 ## $$
@@ -37,23 +37,26 @@
 ## for identically dimensioned square matrices
 ## @table @var
 ## @item a
-## @var{n}x@var{n} matrix.
+## @var{n} by @var{n} matrix;
 ## @item b
-##   @var{n}x@var{n} matrix or @var{n}x@var{m} matrix; in the latter case
-##   @var{b} is replaced by @math{b:=b*b'}.
+##   @var{n} by @var{n} matrix or @var{n} by @var{m} matrix; in the latter case
+##   @var{b} is replaced by @math{b:=b*b'};
 ## @item c
-##   @var{n}x@var{n} matrix or @var{p}x@var{m} matrix; in the latter case
-##   @var{c} is replaced by @math{c:=c'*c}.
+##   @var{n} by @var{n} matrix or @var{p} by @var{m} matrix; in the latter case
+##   @var{c} is replaced by @math{c:=c'*c};
 ## @item opt
 ## (optional argument; default = @code{"B"}):
 ## String option passed to @code{balance} prior to ordered Schur decomposition.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{x}: solution of the ARE.
+## @strong{Output}
+## @table @var
+## @item x
+## solution of the @acronym{ARE}.
+## @end table
 ##
 ## @strong{Method}
-## Laub's Schur method (IEEE Transactions on
+## Laub's Schur method (@acronym{IEEE} Transactions on
 ## Automatic Control, 1979) is applied to the appropriate Hamiltonian
 ## matrix.
 ##

@@ -44,7 +44,7 @@ The optional item @var{ranges} has the syntax
 
 @noindent
 and may be used to specify the ranges for the axes of the plot,
-independent of the actual range of the data.  The range for the y axes
+independent of the actual range of the data.  The range for the y axis
 and any of the individual limits may be omitted.  A range @code{[:]}
 indicates that the default limits should be used.  This normally means
 that a range just large enough to include all the data points will be

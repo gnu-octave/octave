@@ -17,15 +17,23 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{zer}, @var{pol}]=} pzmap (@var{sys})
+## @deftypefn {Function File} {[@var{zer}, @var{pol}] =} pzmap (@var{sys})
 ## Plots the zeros and poles of a system in the complex plane.
-## @strong{Inputs}
-## @var{sys} system data structure
+##
+## @strong{Input}
+## @table @var
+## @item sys
+## System data structure.
+## @end table
 ##
 ## @strong{Outputs}
+## @table @var
+## @item pol
+## @item zer
 ## if omitted, the poles and zeros are plotted on the screen.
-## otherwise, pol, zer are returned as the system poles and zeros.
-## (see sys2zp for a preferable function call)
+## otherwise, @var{pol} and @var{zer} are returned as the 
+## system poles and zeros (see @command{sys2zp} for a preferable function call).
+## @end table
 ## @end deftypefn
 
 function [zer, pol]=pzmap (sys)

@@ -17,9 +17,9 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {} rldemo (@var{inputs})
-##Octave Controls toolbox demo: Root Locus demo
-##@end deftypefn
+## @deftypefn {Function File} {} rldemo (@var{inputs})
+## Octave Control toolbox demo: Root Locus demo.
+## @end deftypefn
 
 ## Author: David Clem
 ## Created: August 15, 1994

@@ -17,19 +17,28 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_digital (@var{sys})
-## Return nonzero if system is digital;
-## inputs:
-## sys: system data structure
-## eflg: 0 [default] exit with an error if system is mixed (continuous and
-## discrete components)
-##     : 1 print a warning if system is mixed (continuous and discrete)
-##     : 2 silent operation
-## outputs:
-## DIGITAL:  0: system is purely continuous
-##        :  1: system is purely discrete
-##        : -1: system is mixed continuous and discrete
-## Exits with an error of sys is a mixed (continuous and discrete) system
+## @deftypefn {Function File} {@var{digital} =} is_digital (@var{sys}, @var{eflg})
+## Return nonzero if system is digital.
+##
+## @strong{Inputs}
+## @table @var
+## @item sys
+## System data structure.
+## @item eflg
+## When equal to 0 (default value), exits with an error if the system 
+## is mixed (continuous and discrete components); when equal to 1, print
+## a warning if the system is mixed (continuous and discrete); when equal
+## to 2, operate silently.
+## @end table
+##
+## @strong{Output}
+## @table @var
+## @item digital
+## When equal to 0, the system is purely continuous; when equal to 1, the
+## system is purely discrete; when equal to -1, the system is mixed continuous 
+## and discrete.
+## @end table
+## Exits with an error if @var{sys} is a mixed (continuous and discrete) system.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

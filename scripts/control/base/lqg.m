@@ -38,9 +38,9 @@
 ## intensities of independent Gaussian noise processes (as above)
 ## @item  q
 ## @itemx  r
-## state, control weighting respectively.  Control ARE is
+## state, control weighting respectively.  Control @acronym{ARE} is
 ## @item  in_idx
-## names or indices of controlled inputs (see @code{sysidx}, @code{cellidx})
+## names or indices of controlled inputs (see @command{sysidx}, @command{cellidx})
 ##
 ## default: last dim(R) inputs are assumed to be controlled inputs, all
 ## others are assumed to be noise inputs.
@@ -48,17 +48,17 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item    k
-## system data structure format LQG optimal controller (Obtain A,B,C
-## matrices with @code{sys2ss}, @code{sys2tf}, or @code{sys2zp} as
-## appropriate)
+## system data structure format @acronym{LQG} optimal controller (Obtain A, B, C
+## matrices with @command{sys2ss}, @command{sys2tf}, or @command{sys2zp} as
+## appropriate).
 ## @item    p1
-## Solution of control (state feedback) algebraic Riccati equation
+## Solution of control (state feedback) algebraic Riccati equation.
 ## @item    q1
-## Solution of estimation algebraic Riccati equation
+## Solution of estimation algebraic Riccati equation.
 ## @item    ee
-## estimator poles
+## Estimator poles.
 ## @item    es
-## controller poles
+## Controller poles.
 ## @end table
 ## @end deftypefn
 ## @seealso{h2syn, lqe, and lqr}

@@ -17,18 +17,18 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysmult (@var{asys}, @var{bsys})
+## @deftypefn {Function File} {@var{sys} =} sysmult (@var{Asys}, @var{Bsys})
 ## Compute @math{sys = Asys*Bsys} (series connection):
 ## @example
 ## @group
 ## u   ----------     ----------
-## --->|  bsys  |---->|  asys  |--->
+## --->|  Bsys  |---->|  Asys  |--->
 ##     ----------     ----------
 ## @end group
 ## @end example
-## A warning occurs if there is direct feed-through
-## from an input of Bsys or a continuous state of @var{bsys} through a
-## discrete output of Bsys to a continuous state or output in @var{asys}
+## A warning occurs if there is direct feed-through from an input 
+## or a continuous state of @var{Bsys}, through a discrete output 
+## of @var{Bsys}, to a continuous state or output in @var{Asys}
 ## (system data structure does not recognize discrete inputs).
 ## @end deftypefn
 

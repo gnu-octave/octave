@@ -17,20 +17,34 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sortcom (@var{inputs})
-## @format
-## [yy,idx] = sortcom(xx[,opt]): sort a complex vector
-## xx: complex vector
-## opt: sorting option:
-##  "re": real part (default)
-##  "mag": by magnitude
-##  "im": by imaginary part
+## @deftypefn {Function File} {[@var{yy}, @var{idx}] =} sortcom (@var{xx}[, @var{opt}])
+## Sort a complex vector.
 ##
-## if opt != "im" then complex conjugate pairs are grouped together,
-## a - jb followed by a + jb.
-## yy: sorted values
-## idx: permutation vector: yy = xx(idx)
-## @end format
+## @strong{Inputs}
+## @table @var
+## @item xx
+## Complex vector
+## @item opt
+## sorting option:
+## @table @code
+## @item "re"
+## Real part (default);
+## @item "mag"
+## By magnitude;
+## @item "im"
+## By imaginary part.
+## @end table
+## if @var{opt} is not chosen as @code{"im"}, then complex conjugate pairs are grouped together,
+## @math{a - jb} followed by @math{a + jb}.
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item yy
+## Sorted values
+## @item idx
+## Permutation vector: @code{yy = xx(idx)}
+## @end table
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

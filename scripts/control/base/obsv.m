@@ -17,8 +17,19 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {} obsv (@var{sys}, @var{c})
-## Build observability matrix
+## @deftypefn {Function File} {} obsv (@var{sys}, @var{c})
+## @deftypefnx {Function File} {} obsv (@var{a}, @var{c})
+## Build observability matrix:
+## @iftex
+## @tex
+## $$ Q_b = \left[ \matrix{  C       \cr
+##                           CA    \cr
+##                           CA^2  \cr
+##                           \vdots  \cr
+##                           CA^{n-1} } \right ] $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ## @group
 ##      | C        |
@@ -28,11 +39,10 @@
 ##      | CA^(n-1) |
 ## @end group
 ## @end example
-## of a system data structure or the pair (A, C).
+## @end ifinfo
+## of a system data structure or the pair (@var{a}, @var{c}).
 ##
-## Note: @code{obsv()} forms the observability matrix.
-##
-## The numerical properties of is_observable()
+## The numerical properties of @command{is_observable}
 ## are much better for observability tests.
 ## @end deftypefn
 

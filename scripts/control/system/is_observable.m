@@ -21,12 +21,12 @@
 ## @deftypefnx {Function File} {[@var{retval}, @var{u}] =} is_observable (@var{sys}, @var{tol})
 ## Logical check for system observability.
 ##
-## Default: tol = 10*norm(a,'fro')*eps
+## Default: tol = @code{tol = 10*norm(a,'fro')*eps}
 ##
 ## Returns 1 if the system @var{sys} or the pair (@var{a}, @var{c}) is
 ## observable, 0 if not.
 ##
-## @strong{See} @code{is_controllable} for detailed description of arguments
+## See @command{is_controllable} for detailed description of arguments
 ## and default values.
 ## @end deftypefn
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, and isvector}

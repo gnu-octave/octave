@@ -103,7 +103,10 @@ a =
 @{
   b =
   @{
-    c = <structure>
+    c =
+    @{
+      d: 1x1 struct
+    @}
   @}
 @}
 @end group

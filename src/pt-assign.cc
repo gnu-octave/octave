@@ -334,7 +334,7 @@ symbols_of_pt_assign (void)
 {
   DEFVAR (print_rhs_assign_val, false, print_rhs_assign_val,
     "-*- texinfo -*-\n\
-@defvr print_rhs_assign_val\n\
+@defvr {Built-in Variable} print_rhs_assign_val\n\
 If the value of this variable is non-zero, Octave will print the value\n\
 of the right hand side of assignment expressions instead of the value\n\
 of the left hand side (after the assignment).\n\

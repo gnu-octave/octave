@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {[@var{xinf}, @var{x_ha_err}] =} hinfsyn_ric (@var{a}, @var{bb}, @var{c1}, @var{d1dot}, @var{r}, @var{ptol})
 ## Forms
 ## @example
-## xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
-## Ha = [A 0*A; -C1'*C1 -A'] - xx;
+## xx = ([bb; -c1'*d1dot]/r) * [d1dot'*c1 bb'];
+## Ha = [a 0*a; -c1'*c1 - a'] - xx;
 ## @end example
 ## and solves associated Riccati equation.
 ## The error code @var{x_ha_err} indicates one of the following

@@ -228,7 +228,7 @@ output without change.  For example,\n\
 \n\
 @example\n\
 @group\n\
-strftime (\"%r (%Z) %A %e %B %Y\", localtime (time ())\n\
+strftime (\"%r (%Z) %A %e %B %Y\", localtime (time ()) )\n\
      @result{} \"01:15:06 AM (CST) Monday 17 February 1997\"\n\
 @end group\n\
 @end example\n\

@@ -17,12 +17,23 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} jet707 ()
-## Creates linearized state space model of a Boeing 707-321 aircraft
-## at v=80m/s. (M = 0.26, Ga0 = -3 deg, alpha0 = 4 deg, kappa = 50 deg)
-## System inputs:   (1) thrust   and (2) elevator angle
-## System outputs:  (1) airspeed and (2) pitch angle
-## Ref: R. Brockhaus: Flugregelung (Flight Control), Springer, 1994
+## @deftypefn {Function File} {@var{sys} =} jet707 ()
+## Creates a linearized state-space model of a Boeing 707-321 aircraft
+## at @var{v}=80 m/s 
+## @iftex
+## @tex
+## ($M = 0.26$, $G_{a0} = -3^{\circ}$, ${\alpha}_0 = 4^{\circ}$, ${\kappa}= 50^{\circ}$).
+## @end tex
+## @end iftex
+## @ifinfo
+## (@var{M} = 0.26, @var{Ga0} = -3 deg, @var{alpha0} = 4 deg, @var{kappa} = 50 deg).
+## @end ifinfo
+##
+## System inputs: (1) thrust and (2) elevator angle.
+##
+## System outputs:  (1) airspeed and (2) pitch angle.
+##
+## @strong{Reference}: R. Brockhaus: @cite{Flugregelung} (Flight Control), Springer, 1994.
 ## @end deftypefn
 ## @seealso{ord2}
 

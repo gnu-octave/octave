@@ -19,17 +19,17 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{retval}, @var{dgkf_struct} ] =} is_dgkf (@var{asys}, @var{nu}, @var{ny}, @var{tol} )
 ## Determine whether a continuous time state space system meets
-## assumptions of DGKF algorithm.
+## assumptions of @acronym{DGKF} algorithm.
 ## Partitions system into:
 ## @example
-## [dx/dt] = [A  | Bw  Bu  ][w]
-## [ z   ]   [Cz | Dzw Dzu ][u]
+## [dx/dt]   [A  | Bw  Bu  ][w]
+## [ z   ] = [Cz | Dzw Dzu ][u]
 ## [ y   ]   [Cy | Dyw Dyu ]
 ## @end example
 ## or similar discrete-time system.
 ## If necessary, orthogonal transformations @var{qw}, @var{qz} and nonsingular
 ## transformations @var{ru}, @var{ry} are applied to respective vectors
-## @var{w}, @var{z}, @var{u}, @var{y} in order to satisfy DGKF assumptions.
+## @var{w}, @var{z}, @var{u}, @var{y} in order to satisfy @acronym{DGKF} assumptions.
 ## Loop shifting is used if @var{dyu} block is nonzero.
 ##
 ## @strong{Inputs}
@@ -41,14 +41,14 @@
 ## @item        ny
 ## number of measured outputs
 ## @item        tol
-## threshhold for 0.  Default: 200@var{eps}
+## threshold for 0; default: 200*@code{eps}.
 ## @end table
 ## @strong{Outputs}
 ## @table @var
 ## @item    retval
 ## true(1) if system passes check, false(0) otherwise
 ## @item    dgkf_struct
-## data structure of @code{is_dgkf} results.  Entries:
+## data structure of @command{is_dgkf} results.  Entries:
 ## @table @var
 ## @item      nw
 ## @itemx     nz
@@ -84,15 +84,23 @@
 ## @end table
 ## @end table
 ## @code{is_dgkf} exits with an error if the system is mixed
-## discrete/continuous
+## discrete/continuous.
 ##
 ## @strong{References}
 ## @table @strong
 ## @item [1]
-## Doyle, Glover, Khargonekar, Francis, "State Space Solutions
-## to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
+## Doyle, Glover, Khargonekar, Francis, @cite{State Space Solutions to Standard}
+## @iftex
+## @tex
+## $ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-2 and H-infinity}
+## @end ifinfo
+## @cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
 ## @item [2]
-## Maciejowksi, J.M.: "Multivariable feedback design,"
+## Maciejowksi, J.M., @cite{Multivariable Feedback Design}, Addison-Wesley, 1989.
 ## @end table
 ## @end deftypefn
 

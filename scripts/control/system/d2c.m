@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} d2c (@var{sys}, @var{tol})
 ## @deftypefnx {Function File} {} d2c (@var{sys}, @var{opt})
-## Convert discrete (sub)system to a purely continuous system.  Sampling
-## time used is @code{sysgettsam(@var{sys})}
+## Convert a discrete (sub)system into a purely continuous one. 
+## The sampling time used is @code{sysgettsam(@var{sys})}.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -28,7 +28,7 @@
 ## system data structure with discrete components
 ## @item   tol
 ## Scalar value.
-## tolerance for convergence of default @code{"log"} option (see below)
+## Tolerance for convergence of default @code{"log"} option (see below)
 ## @item   opt
 ## conversion option.  Choose from:
 ## @table @code
@@ -50,8 +50,11 @@
 ## discrete
 ## @end table
 ## @end table
-## @strong{Outputs} @var{csys} continuous time system (same dimensions and
-## signal names as in @var{sys}).
+## @strong{Output}
+## @table @var
+## @item csys 
+## continuous time system (same dimensions and signal names as in @var{sys}).
+## @end table
 ## @end deftypefn
 
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>

@@ -21,14 +21,14 @@
 ## @deftypefn {Function File} {} vander (@var{c})
 ## Return the Vandermonde matrix whose next to last column is @var{c}.
 ##
-## A Vandermonde matrix has the form
+## A Vandermonde matrix has the form:
 ## @iftex
 ## @tex
 ## $$
-## \left[\matrix{c_0^n  & \ldots & c_0^2  & c_0    & 1\cr
-##               c_1^n  & \ldots & c_1^2  & c_1    & 1\cr
-##               \vdots &        & \vdots & \vdots & \vdots\cr
-##               c_n^n  & \ldots & c_n^2  & c_n    & 1}\right].
+## \left[\matrix{c_1^{n-1}  & \cdots & c_1^2  & c_1    & 1      \cr
+##               c_2^{n-1}  & \cdots & c_2^2  & c_2    & 1      \cr
+##               \vdots     & \ddots & \vdots & \vdots & \vdots \cr
+##               c_n^{n-1}  & \cdots & c_n^2  & c_n    & 1      }\right]
 ## $$
 ## @end tex
 ## @end iftex
@@ -36,13 +36,12 @@
 ##
 ## @example
 ## @group
-## c(0)^n ... c(0)^2  c(0)  1
-## c(1)^n ... c(1)^2  c(1)  1
-##  .           .      .    .
-##  .           .      .    .
-##  .           .      .    .
-##
-## c(n)^n ... c(n)^2  c(n)  1
+## c(1)^(n-1) ... c(1)^2  c(1)  1
+## c(2)^(n-1) ... c(2)^2  c(2)  1
+##     .     .      .      .    .
+##     .       .    .      .    .
+##     .         .  .      .    .
+## c(n)^(n-1) ... c(n)^2  c(n)  1
 ## @end group
 ## @end example
 ## @end ifinfo

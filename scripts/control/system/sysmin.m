@@ -18,20 +18,32 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{retsys}, @var{nc}, @var{no}] =} sysmin (@var{sys}, @var{flg})
-## return a minimal (or reduced order) system
-## inputs:
-##   sys: system data structure
-##   flg: 0 [default] return minimal system; state names lost
-##      : 1           return system with physical states removed that
-##                    are either uncontrollable or unobservable
-##                    (cannot reduce further without discarding physical
-##                    meaning of states)
-## outputs:
-##   retsys: returned system
-##   nc: number of controllable states in the returned system
-##   no: number of observable states in the returned system
-##   cflg: is_controllable(retsys)
-##   oflg: is_observable(retsys)
+## Returns a minimal (or reduced order) system
+##
+## @strong{Inputs}
+## @table @var
+## @item sys
+## System data structure
+## @item flg
+## When equal to 0 (default value), returns minimal system,
+## in which state names are lost; when equal to 1, returns system 
+## with physical states removed that are either uncontrollable or 
+## unobservable (cannot reduce further without discarding physical
+## meaning of states).
+## @end table
+## @strong{Outputs}
+## @table @var
+## @item retsys
+## Returned system.
+## @item nc
+## Number of controllable states in the returned system.
+## @item no
+## Number of observable states in the returned system.
+## @item cflg
+## @code{is_controllable(retsys)}.
+## @item oflg
+## @code{is_observable(retsys)}.
+## @end table
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

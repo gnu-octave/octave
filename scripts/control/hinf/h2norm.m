@@ -17,12 +17,29 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function Fil} {} h2norm (@var{sys})
-## Computes the H2 norm of a system data structure (continuous time only)
+## @deftypefn {Function File} {} h2norm (@var{sys})
+## Computes the 
+## @iftex
+## @tex
+## $ { \cal H }_2 $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-2
+## @end ifinfo
+## norm of a system data structure (continuous time only).
 ##
 ## Reference:
-## Doyle, Glover, Khargonekar, Francis, ``State Space Solutions to Standard
-## H2 and Hinf Control Problems", IEEE TAC August 1989
+## Doyle, Glover, Khargonekar, Francis, @cite{State-Space Solutions to Standard} 
+## @iftex
+## @tex
+## $ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-2 and H-infinity}
+## @end ifinfo
+## @cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -50,7 +67,7 @@ function h2gain = h2norm (sys)
       M = lyap (a,b*b');
     endif
     if( min(real(eig(M))) < 0)
-      error("h2norm: grammian not >= 0 (lightly damped modes?)")
+      error("h2norm: gramian not >= 0 (lightly damped modes?)")
     endif
 
     h2gain = sqrt(trace(d'*d + c*M*c'));

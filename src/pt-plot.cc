@@ -1358,7 +1358,7 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @defvr {Built-in Variable} gnuplot_has_frames\n\
 If the value of this variable is nonzero, Octave assumes that your copy\n\
 of gnuplot has support for multiple frames that is included in recent\n\
-3.6beta releases.  It's initial value is determined by configure, but it\n\
+3.6beta releases.  Its initial value is determined by configure, but it\n\
 can be changed in your startup script or at the command line in case\n\
 configure got it wrong, or if you upgrade your gnuplot installation.\n\
 @end defvr");

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} DEMOcontrol
 ## Octave Control Systems Toolbox demo/tutorial program.  The demo
-## allows the user to select among several categories of OCST function:
+## allows the user to select among several categories of @acronym{OCST} function:
 ## @example
 ## @group
 ## octave:1> DEMOcontrol
@@ -36,7 +36,7 @@
 ## @end group
 ## @end example
 ## Command examples are interactively run for users to observe the use
-## of OCST functions.
+## of @acronym{OCST} functions.
 ## @end deftypefn
 ## @seealso{Demo Programs: bddemo.m, frdemo.m, analdemo.m,
 ## moddmeo.m, rldemo.m}
@@ -46,7 +46,7 @@
 
 function DEMOcontrol ()
 
-  puts ("O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X")
+  puts ("O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X");
 
   while (1)
 

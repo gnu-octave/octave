@@ -58,28 +58,28 @@
 ##
 ## @strong{Outputs}
 ## @table @bullet
-## @item If @var{sigid} is not specified
+## @item If @var{sigid} is not specified:
 ## @table @var
 ## @item stname
 ## @itemx inname
 ## @itemx outname
 ## signal names (cell array of strings);  names of states,
-## inputs, and outputs, respectively
+## inputs, and outputs, respectively.
 ## @item yd
 ## binary vector; @var{yd}(@var{ii}) is nonzero if output @var{ii} is
 ## discrete.
 ## @end table
 ##
-## @item If @var{sigid} is specified but @var{signum} is not specified, then
+## @item If @var{sigid} is specified but @var{signum} is not specified:
 ## @table @code
 ## @item sigid="in"
-## @var{siglist} is set to the cell array of input names
+## @var{siglist} is set to the cell array of input names.
 ##
 ## @item sigid="out"
-## @var{siglist} is set to the cell array of output names
+## @var{siglist} is set to the cell array of output names.
 ##
 ## @item sigid="st"
-## @var{siglist} is set to the cell array of state names
+## @var{siglist} is set to the cell array of state names.
 ##
 ## stage signals
 ## @item sigid="yd"
@@ -89,9 +89,9 @@
 ##
 ## @end table
 ##
-## @item if the first three input arguments are specified, then @var{signame} is
-## a cell array of the specified signal names (@var{sigid} is @code{"in"},
-## @code{"out"}, or @code{"st"}), or else the logical flag
+## @item If the first three input arguments are specified:
+## @var{signame} is a cell array of the specified signal names (@var{sigid} is 
+## @code{"in"}, @code{"out"}, or @code{"st"}), or else the logical flag
 ## indicating whether output(s) @var{signum} is(are) discrete (@var{sigval}=1)
 ## or continuous (@var{sigval}=0).
 ## @end table
@@ -99,7 +99,8 @@
 ## @strong{Examples} (From @code{sysrepdemo})
 ## @example
 ## octave> sys=ss(rand(4),rand(4,2),rand(3,4));
-## octave> [Ast,Ain,Aout,Ayd] = sysgetsignals(sys) i  # get all signal names
+## octave># get all signal names
+## octave> [Ast,Ain,Aout,Ayd] = sysgetsignals(sys)
 ## Ast =
 ## (
 ##   [1] = x_1
@@ -121,18 +122,21 @@
 ## Ayd =
 ##
 ##   0  0  0
-## octave> Ain = sysgetsignals(sys,"in")   # get only input signal names
+## octave> # get only input signal names:
+## octave> Ain = sysgetsignals(sys,"in")
 ## Ain =
 ## (
 ##   [1] = u_1
 ##   [2] = u_2
 ## )
-## octave> Aout = sysgetsignals(sys,"out",2)   # get name of output 2 (in cell array)
+## octave> # get name of output 2 (in cell array):
+## octave> Aout = sysgetsignals(sys,"out",2)
 ## Aout =
 ## (
 ##   [1] = y_2
 ## )
-## octave> Aout = sysgetsignals(sys,"out",2,1)  # get name of output 2 (as string)
+## octave> # get name of output 2 (as string):
+## octave> Aout = sysgetsignals(sys,"out",2,1)
 ## Aout = y_2
 ## @end example
 ## @end deftypefn

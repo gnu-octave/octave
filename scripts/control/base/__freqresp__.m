@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __freqresp__ (@var{sys}, @var{USEW}, @var{w})
-## Frequency response function - used internally by @code{bode}, @code{nyquist}.
-## minimal argument checking; "do not attempt to do this at home"
+## Frequency response function - used internally by @command{bode}, @command{nyquist}.
+## minimal argument checking; ``do not attempt to do this at home''.
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -33,7 +33,7 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item @var{out}
-## vector of finite @math{G(j*w)} entries (or @math{||G(j*w)||} for MIMO)
+## vector of finite @math{G(j*w)} entries (or @math{||G(j*w)||} for @acronym{MIMO})
 ## @item w
 ## vector of corresponding frequencies
 ## @end table

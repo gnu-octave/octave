@@ -17,13 +17,13 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tzero2 (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
-## Compute the transmission zeros of a, b, c, d.
+## @deftypefn {Function File} {@var{zr} =} tzero2 (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
+## Compute the transmission zeros of @var{a}, @var{b}, @var{c}, @var{d}.
 ##
-## bal = balancing option (see balance); default is "B".
+## @var{bal} = balancing option (see balance); default is @code{"B"}.
 ##
-## Needs to incorporate @code{mvzero} algorithm to isolate finite zeros; use
-## @code{tzero} instead.
+## Needs to incorporate @command{mvzero} algorithm to isolate finite zeros; 
+## use @command{tzero} instead.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

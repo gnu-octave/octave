@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} lyap (@var{a}, @var{b}, @var{c})
 ## @deftypefnx {Function File} {} lyap (@var{a}, @var{b})
 ## Solve the Lyapunov (or Sylvester) equation via the Bartels-Stewart
-## algorithm (Communications of the ACM, 1972).
+## algorithm (Communications of the @acronym{ACM}, 1972).
 ##
 ## If @var{a}, @var{b}, and @var{c} are specified, then @code{lyap} returns
 ## the solution of the  Sylvester equation
@@ -35,7 +35,7 @@
 ##     a x + x b + c = 0
 ## @end example
 ## @end ifinfo
-## If only @code{(a, b)} are specified, then @code{lyap} returns the
+## If only @code{(a, b)} are specified, then @command{lyap} returns the
 ## solution of the Lyapunov equation
 ## @iftex
 ## @tex

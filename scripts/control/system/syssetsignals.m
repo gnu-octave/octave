@@ -19,29 +19,30 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} syssetsignals (@var{sys}, @var{opt}, @var{names}, @var{sig_idx})
 ## change the names of selected inputs, outputs and states.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
-## system data structure
+## System data structure.
 ##
 ## @item opt
-## change default name (output)
+## Change default name (output).
 ##
 ## @table @code
 ## @item "out"
-## change selected output names
+## Change selected output names.
 ## @item "in"
-## change selected input names
+## Change selected input names.
 ## @item "st"
-## change selected state names
+## Change selected state names.
 ## @item "yd"
-## change selected outputs from discrete to continuous or
+## Change selected outputs from discrete to continuous or
 ## from continuous to discrete.
 ## @end table
 ##
 ## @item names
 ## @table @code
-## @item opt = "out", "in", or "st"
+## @item opt = "out", "in", "st"
 ## string or string array containing desired signal names or values.
 ## @item opt = "yd"
 ## To desired output continuous/discrete flag.
@@ -53,9 +54,13 @@
 ##
 ## Default: replace entire cell array of names/entire yd vector.
 ## @end table
+##
 ## @strong{Outputs}
-## @var{retsys=sys} with appropriate signal names changed
-## (or yd values, where appropriate)
+## @table @var
+## @item retsys
+## @var{sys} with appropriate signal names changed
+## (or @var{yd} values, where appropriate).
+## @end table
 ##
 ## @strong{Example}
 ## @example

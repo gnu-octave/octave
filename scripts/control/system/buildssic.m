@@ -20,20 +20,28 @@
 ## @deftypefn {Function File} {} buildssic (@var{clst}, @var{ulst}, @var{olst}, @var{ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
 ##
 ## Form an arbitrary complex (open or closed loop) system in
-## state-space form from several systems. "@code{buildssic}" can
-## easily (despite it's cryptic syntax) integrate transfer functions
+## state-space form from several systems. @command{buildssic} can
+## easily (despite its cryptic syntax) integrate transfer functions
 ## from a complex block diagram into a single system with one call.
 ## This function is especially useful for building open loop
-## interconnections for H_infinity and H2 designs or for closing
-## loops with these controllers.
+## interconnections for 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $ and $ { \cal H }_2 $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity and H-2
+## @end ifinfo
+## designs or for closing loops with these controllers.
 ##
-## Although this function is general purpose, the use of "@code{sysgroup}"
-## "@code{sysmult}", "@code{sysconnect}" and the like is recommended for
+## Although this function is general purpose, the use of @command{sysgroup}
+## @command{sysmult}, @command{sysconnect} and the like is recommended for
 ## standard operations since they can handle mixed discrete and continuous
 ## systems and also the names of inputs, outputs, and states.
 ##
 ## The parameters consist of 4 lists that describe the connections
-## outputs and inputs and up to 8 systems s1-s8.
+## outputs and inputs and up to 8 systems @var{s1}--@var{s8}.
 ## Format of the lists:
 ## @table @var
 ## @item      clst
@@ -42,27 +50,27 @@
 ## equal to the sum of all inputs of s1-s8.
 ##
 ## Example:
-## @code{[1 2 -1; 2 1 0]} ==> new input 1 is old inpout 1
-## + output 2 - output 1, new input 2 is old input 2
+## @code{[1 2 -1; 2 1 0]} means that:  new input 1 is old input 1
+## + output 2 - output 1, and new input 2 is old input 2
 ## + output 1. The order of rows is arbitrary.
 ##
-## @item     ulst
-## if not empty the old inputs in vector Ulst will
+## @item ulst
+## if not empty the old inputs in vector @var{ulst} will
 ## be appended to the outputs. You need this if you
-## want to "pull out" the input of a system. Elements
-## are input numbers of s1-s8.
+## want to ``pull out'' the input of a system. Elements
+## are input numbers of @var{s1}--@var{s8}.
 ##
-## @item     olst
+## @item olst
 ## output list, specifiy the outputs of the resulting
-## systems. Elements are output numbers of s1-s8.
-## The numbers are alowed to be negative and may
+## systems. Elements are output numbers of @var{s1}--@var{s8}.
+## The numbers are allowed to be negative and may
 ## appear in any order. An empty matrix means
 ## all outputs.
 ##
-## @item     ilst
+## @item ilst
 ## input list, specifiy the inputs of the resulting
-## systems. Elements are input numbers of s1-s8.
-## The numbers are alowed to be negative and may
+## systems. Elements are input numbers of @var{s1}--@var{s8}.
+## The numbers are allowed to be negative and may
 ## appear in any order. An empty matrix means
 ## all inputs.
 ## @end table
@@ -82,20 +90,22 @@
 ## @end group
 ## @end example
 ##
-## The closed loop system GW can be optained by
+## The closed loop system @var{GW} can be optained by
 ## @example
 ## GW = buildssic([1 2; 2 -1], 2, [1 2 3], 2, G, K);
 ## @end example
 ## @table @var
 ## @item clst
-## (1. row) connect input 1 (G) with output 2 (K).
-## (2. row) connect input 2 (K) with neg. output 1 (G).
+## 1st row: connect input 1 (@var{G}) with output 2 (@var{K}).
+##
+## 2nd row: connect input 2 (@var{K}) with negative output 1 (@var{G}).
 ## @item ulst
-## append input of (2) K to the number of outputs.
+## Append input of 2 (@var{K}) to the number of outputs.
 ## @item olst
-## Outputs are output of 1 (G), 2 (K) and appended output 3 (from Ulst).
+## Outputs are output of 1 (@var{G}), 2 (@var{K}) and 
+## appended output 3 (from @var{ulst}).
 ## @item ilst
-## the only input is 2 (K).
+## The only input is 2 (@var{K}).
 ## @end table
 ##
 ## Here is a real example:
@@ -104,8 +114,8 @@
 ##                          +----+
 ##     -------------------->| W1 |---> v1
 ## z   |                    +----+
-## ----|-------------+                   || GW   ||     => min.
-##     |             |                        vz   infty
+## ----|-------------+
+##     |             |
 ##     |    +---+    v      +----+
 ##     *--->| G |--->O--*-->| W2 |---> v2
 ##     |    +---+       |   +----+
@@ -114,14 +124,33 @@
 ##    u                  y
 ## @end group
 ## @end example
+## @iftex
+## @tex
+## $$ { \rm min } \Vert GW_{vz} \Vert _\infty $$  
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## min || GW   ||
+##          vz   infty
+## @end example
+## @end ifinfo
 ##
-## The closed loop system GW from [z; u]' to [v1; v2; y]' can be
-## obtained by (all SISO systems):
+## The closed loop system @var{GW} 
+## @iftex
+## @tex
+## from $ [z, u]^T $ to $ [v_1, v_2, y]^T $
+## @end tex
+## @end iftex
+## @ifinfo
+## from [z, u]' to [v1, v2, y]' 
+## @end ifinfo
+## can be obtained by (all @acronym{SISO} systems):
 ## @example
 ## GW = buildssic([1, 4; 2, 4; 3, 1], 3, [2, 3, 5],
 ##                [3, 4], G, W1, W2, One);
 ## @end example
-## where "One" is a unity gain (auxillary) function with order 0.
+## where ``One'' is a unity gain (auxillary) function with order 0.
 ## (e.g. @code{One = ugain(1);})
 ## @end deftypefn
 

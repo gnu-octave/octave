@@ -19,31 +19,40 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}] =} zp2ss (@var{zer}, @var{pol}, @var{k})
 ## Conversion from zero / pole to state space.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item zer
 ## @itemx pol
-## vectors of (possibly) complex poles and zeros of a transfer
-## function.  Complex values must come in conjugate pairs
-## (i.e., x+jy in zer means that x-jy is also in zer)
-## @item k
-## real scalar (leading coefficient)
-## @end table
-## @strong{Outputs}
-##  @var{a}, @var{b}, @var{c}, @var{d}
-## The state space system
-## @example
-## .
-## x = Ax + Bu
-## y = Cx + Du
-## @end example
-## is obtained from a vector of zeros and a vector of poles via the
-## function call @code{[a,b,c,d] = zp2ss(zer,pol,k)}.
-## The vectors @samp{zer} and
-## @samp{pol} may either be row or column vectors.  Each zero and pole that
-## has an imaginary part must have a conjugate in the list.
+## Vectors of (possibly) complex poles and zeros of a transfer
+## function. Complex values must come in conjugate pairs
+## (i.e., @math{x+jy} in @var{zer} means that @math{x-jy} is also in @var{zer}).
 ## The number of zeros must not exceed the number of poles.
-## @samp{k} is @code{zp}-form leading coefficient.
+## @item k
+## Real scalar (leading coefficient).
+## @end table
+##
+## @strong{Outputs}
+## @table @var
+## @item @var{a}
+## @itemx @var{b}
+## @itemx @var{c}
+## @itemx @var{d}
+## The state space system, in the form:
+## @iftex
+## @tex
+## $$ \dot x = Ax + Bu $$
+## $$ y = Cx + Du $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+##      .
+##      x = Ax + Bu
+##      y = Cx + Du
+## @end example
+## @end ifinfo
+## @end table
 ## @end deftypefn
 
 ## Author: David Clem

@@ -694,7 +694,7 @@ DEFUN (lasterr, args, ,
 @deftypefn {Built-in Function} {} lasterr ()\n\
 @deftypefnx {Built-in Function} {} lasterr (@var{msg})\n\
 Without any arguments, return the last error message.  With one\n\
-argument, set the last warning message to @var{msg}.\n\
+argument, set the last error message to @var{msg}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -722,7 +722,7 @@ DEFUN (lastwarn, args, ,
 @deftypefn {Built-in Function} {} lastwarn ()\n\
 @deftypefnx {Built-in Function} {} lastwarn (@var{msg})\n\
 Without any arguments, return the last warning message.  With one\n\
-argument, set the last error message to @var{msg}.\n\
+argument, set the last warning message to @var{msg}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} acoth (@var{x})
+## @deftypefn {Mapping Function} {} acoth (@var{x})
 ## Compute the inverse hyperbolic cotangent of each element of @var{x}.
 ## @end deftypefn
 

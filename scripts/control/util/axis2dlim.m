@@ -18,15 +18,22 @@
 
 ## -*- texinfo -*-
 ## @deftypefn{Function File} {} axis2dlim (@var{axdata})
-## determine axis limits for 2-d data(column vectors); leaves a 10% margin
-## around the plots.
-## puts in margins of +/- 0.1 if data is one dimensional (or a single point)
+## Determine axis limits for 2-D data (column vectors); leaves a 10%
+## margin around the plots.
+## Inserts margins of +/- 0.1 if data is one-dimensional 
+## (or a single point).
 ##
-## @strong{Inputs}
-## @var{axdata} nx2 matrix of data [x,y]
+## @strong{Input}
+## @table @var
+## @item axdata
+## @var{n} by 2 matrix of data [@var{x}, @var{y}].
+## @end table
 ##
-## @strong{Outputs}
-## @var{axvec} vector of axis limits appropriate for call to axis() function
+## @strong{Output}
+## @table @var
+## @item axvec
+## Vector of axis limits appropriate for call to @command{axis} function.
+## @end table
 ## @end deftypefn
 
 function axvec = axis2dlim (axdata)

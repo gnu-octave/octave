@@ -1766,7 +1766,7 @@ symbols_of_symtab (void)
 {
   DEFVAR (variables_can_hide_functions, true, variables_can_hide_functions,
     "-*- texinfo -*-\n\
-@defvr variables_can_hide_functions\n\
+@defvr {Built-in Variable} variables_can_hide_functions\n\
 If the value of this variable is nonzero, assignments to variables may\n\
 hide previously defined functions of the same name.  A negative value\n\
 will cause Octave to print a warning, but allow the operation.\n\

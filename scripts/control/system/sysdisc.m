@@ -19,17 +19,20 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{dsys}, @var{adc}, @var{cdc}] =} sysdisc (@var{sys})
 ##
-## @strong{Inputs}
-## @var{sys} = system data structure
+## @strong{Input}
+## @table @var
+## @item sys
+## System data structure.
+## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
 ## @item dsys
-## purely discrete portion of sys (returned empty if there is
-## no purely discrete path from inputs to outputs)
+## Purely discrete portion of sys (returned empty if there is
+## no purely discrete path from inputs to outputs).
 ## @item    adc
 ## @itemx   cdc
-## connections from continuous states to discrete states and discrete
+## Connections from continuous states to discrete states and discrete.
 ## outputs, respectively.
 ## @end table
 ## @end deftypefn

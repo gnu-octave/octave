@@ -20,8 +20,11 @@
 ## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{yd}] =} sys2ss (@var{sys})
 ## Extract state space representation from system data structure.
 ##
-## @strong{Inputs}
-## @var{sys} system data structure
+## @strong{Input}
+## @table @var
+## @item sys
+## System data structure.
+## @end table
 ##
 ## @strong{Outputs}
 ## @table @var
@@ -29,29 +32,29 @@
 ## @itemx b
 ## @itemx c
 ## @itemx d
-## state space matrices for sys
+## State space matrices for @var{sys}.
 ##
 ## @item tsam
-## sampling time of sys (0 if continuous)
+## Sampling time of @var{sys} (0 if continuous).
 ##
 ## @item n
 ## @itemx nz
-## number of continuous, discrete states (discrete states come
-## last in state vector @var{x})
+## Number of continuous, discrete states (discrete states come
+## last in state vector @var{x}).
 ##
 ## @item stname
 ## @itemx inname
 ## @itemx outname
-## signal names (lists of strings);  names of states,
-## inputs, and outputs, respectively
+## Signal names (lists of strings);  names of states,
+## inputs, and outputs, respectively.
 ##
 ## @item yd
-## binary vector; @var{yd}(@var{ii}) is 1 if output @var{y}(@var{ii})$
-## is discrete (sampled); otherwise  @var{yd}(@var{ii}) 0.
+## Binary vector; @var{yd}(@var{ii}) is 1 if output @var{y}(@var{ii})
+## is discrete (sampled); otherwise  @var{yd}(@var{ii}) is 0.
 ##
 ## @end table
 ## A warning massage is printed if the system is a mixed
-## continuous and discrete system
+## continuous and discrete system.
 ##
 ## @strong{Example}
 ## @example

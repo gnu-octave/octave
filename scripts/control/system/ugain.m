@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {} ugain (@var{n})
 ## Creates a system with unity gain, no states.
 ## This trivial system is sometimes needed to create arbitrary
-## complex systems from simple systems with buildssic.
-## Watch out if you are forming sampled systems since "ugain"
+## complex systems from simple systems with @command{buildssic}.
+## Watch out if you are forming sampled systems since @command{ugain}
 ## does not contain a sampling period.
 ## @end deftypefn
 ## @seealso{hinfdemo and jet707}

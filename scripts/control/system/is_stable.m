@@ -25,15 +25,15 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item  tol
-## is a roundoff paramter, set to 200*@var{eps} if omitted.
+## is a roundoff parameter, set to 200*@code{eps} if omitted.
 ## @item dflg
 ## Digital system flag (not required for system data structure):
 ## @table @code
 ## @item @var{dflg} != 0
-## stable if eig(a) in unit circle
+## stable if eig(a) is in the unit circle
 ##
 ## @item @var{dflg} == 0
-## stable if eig(a) in open LHP (default)
+## stable if eig(a) is in the open LHP (default)
 ## @end table
 ## @end table
 ## @end deftypefn

@@ -17,9 +17,9 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
+## @deftypefn {Function File} {@var{outsys} =} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
 ## Create system structure from state-space data.   May be continous,
-## discrete, or mixed (sampeled-data)
+## discrete, or mixed (sampled data)
 ##
 ## @strong{Inputs}
 ## @table @var
@@ -75,8 +75,11 @@
 ## @code{sys2ss} returns a vector @var{yd} where
 ## @var{yd}(@var{outlist}) = 1; all other entries of @var{yd} are 0.
 ##
-## @strong{Outputs}
-## @var{outsys} = system data structure
+## @strong{Output}
+## @table @var
+## @item outsys
+## system data structure
+## @end table
 ##
 ## @strong{System partitioning}
 ##

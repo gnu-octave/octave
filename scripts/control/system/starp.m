@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} starp (@var{P}, @var{K}, @var{ny}, @var{nu})
-## @format
 ##
 ## Redheffer star product or upper/lower LFT, respectively.
-##
+## @example
+## @group
 ##
 ##                +-------+
 ##      --------->|       |--------->
@@ -37,14 +37,14 @@
 ##                |   K   |
 ##      --------->|       |--------->
 ##                +-------+
+## @end group
+## @end example
+## If @var{ny} and @var{nu} ``consume'' all inputs and outputs of
+## @var{K} then the result is a lower fractional transformation. 
+## If @var{ny} and @var{nu} ``consume'' all inputs and outputs of 
+## @var{P} then the result is an upper fractional transformation.
 ##
-## If ny and nu "consume" all inputs and outputs of K then the result
-## is a lower fractional transformation. If ny and nu "consume" all
-## inputs and outputs of P then the result is an upper fractional
-## transformation.
-##
-## ny and/or nu may be negative (= negative feedback)
-## @end format
+## @var{ny} and/or @var{nu} may be negative (i.e. negative feedback).
 ## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

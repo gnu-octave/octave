@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} damp (@var{p}, @var{tsam})
 ## Displays eigenvalues, natural frequencies and damping ratios
-## of the eigenvalues of a matrix @var{p} or the @math{A}-matrix of a
+## of the eigenvalues of a matrix @var{p} or the @math{A} matrix of a
 ## system @var{p}, respectively.
 ## If @var{p} is a system, @var{tsam} must not be specified.
 ## If @var{p} is a matrix and @var{tsam} is specified, eigenvalues

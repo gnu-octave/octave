@@ -20,15 +20,20 @@
 ## @deftypefn {Function File} {} sysgettype (@var{sys})
 ## return the initial system type of the system
 ##
-## @strong{Inputs}
-## @var{sys}: system data structure
+## @strong{Input}
+## @table @var
+## @item sys
+## System data structure.
+## @end table
 ##
-## @strong{Outputs}
-## @var{systype}: string indicating how the structure was initially
-## constructed:
-## values: @code{"ss"}, @code{"zp"}, or @code{"tf"}
+## @strong{Output}
+## @table @var
+## @item systype
+## String indicating how the structure was initially
+## constructed. Values: @code{"ss"}, @code{"zp"}, or @code{"tf"}.
+## @end table
 ##
-## FIR initialized systems return @code{systype="tf"}.
+## @acronym{FIR} initialized systems return @code{systype="tf"}.
 ## @end deftypefn
 
 function systype = sysgettype (sys)

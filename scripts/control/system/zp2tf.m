@@ -19,17 +19,16 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{num}, @var{den}] =} zp2tf (@var{zer}, @var{pol}, @var{k})
 ## Converts zeros / poles to a transfer function.
+##
 ## @strong{Inputs}
 ## @table @var
 ## @item zer
 ## @itemx pol
-## vectors of (possibly complex) poles and zeros of a transfer
-## function.  Complex values should appear in conjugate pairs
+## Vectors of (possibly complex) poles and zeros of a transfer
+## function.  Complex values must appear in conjugate pairs.
 ## @item k
-## real scalar (leading coefficient)
+## Real scalar (leading coefficient).
 ## @end table
-## @code{[num,den] = zp2tf(zer,pol,k)} forms the transfer function
-## @code{num/den} from the vectors of poles and zeros.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

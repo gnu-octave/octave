@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} log2 (@var{x})
-## @deftypefnx {Mapping Function} {[@var{f}, @var{e}]} log2 (@var{x})
+## @deftypefnx {Mapping Function} {[@var{f}, @var{e}] =} log2 (@var{x})
 ## Compute the base-2 logarithm of @var{x}.  With two outputs, returns
 ## @var{f} and @var{e} such that
 ## @iftex

@@ -17,29 +17,41 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tf2ss (@var{inputs})
-## @format
+## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}] =} tf2ss (@var{num}, @var{den})
 ## Conversion from tranfer function to state-space.
-## The state space system
+## The state space system:
+## @iftex
+## @tex
+## $$ \dot x = Ax + Bu $$
+## $$ y = Cx + Du $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ##       .
 ##       x = Ax + Bu
 ##       y = Cx + Du
-##
-## is obtained from a transfer function
-##
+## @end example
+## @end ifinfo
+## is obtained from a transfer function:
+## @iftex
+## @tex
+## $$ G(s) = { { \rm num }(s) \over { \rm den }(s) } $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
 ##                 num(s)
 ##           G(s)=-------
 ##                 den(s)
+## @end example
+## @end ifinfo
 ##
-## via the function call [a,b,c,d] = tf2ss(num,den).
-## The vector 'den' must contain only one row, whereas the vector 'num'
-## may contain as many rows as there are outputs of the system 'y'.
-## The state space system matrices obtained from this function will be
-## in controllable canonical form as described in "Modern Control Theory",
-## [Brogan, 1991].
-##
-##
-## @end format
+## The vector @var{den} must contain only one row, whereas the vector 
+## @var{num} may contain as many rows as there are outputs @var{y} of 
+## the system. The state space system matrices obtained from this function 
+## will be in controllable canonical form as described in @cite{Modern Control 
+## Theory}, (Brogan, 1991).
 ## @end deftypefn
 
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>

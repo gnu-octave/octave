@@ -17,14 +17,22 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysreorder (@var{vlen}, @var{list})
+## @deftypefn {Function File} {@var{pv} =} sysreorder (@var{vlen}, @var{list})
 ##
 ## @strong{Inputs}
-## @var{vlen}=vector length, @var{list}= a subset of @code{[1:vlen]},
+## @table @var
+## @item vlen
+## Vector length.
+## @item list
+## A subset of @code{[1:vlen]}.
+## @end table
 ##
-## @strong{Outputs}
-## @var{pv}: a permutation vector to order elements of @code{[1:vlen]} in
+## @strong{Output}
+## @table @var
+## @item pv
+## A permutation vector to order elements of @code{[1:vlen]} in
 ## @code{list} to the end of a vector.
+## @end table
 ##
 ## Used internally by @code{sysconnect} to permute vector elements to their
 ## desired locations.

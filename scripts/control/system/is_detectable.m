@@ -23,9 +23,9 @@
 ##
 ## Returns 1 if the system @var{a} or the pair (@var{a}, @var{c}) is
 ## detectable, 0 if not, and -1 if the system has unobservable modes at the
-## imaginary axis (unit circle for discrete-time systems)
+## imaginary axis (unit circle for discrete-time systems).
 ##
-## @strong{See} @code{is_stabilizable} for detailed description of
+## @strong{See} @command{is_stabilizable} for detailed description of
 ## arguments and computational method.
 ##
 ##

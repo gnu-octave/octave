@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
 ## Create system structure from state-space data.   May be continous,
-## discrete, or mixed (sampeled-data)
+## discrete, or mixed (sampled data)
 ##
 ## @strong{Inputs}
 ## @table @var

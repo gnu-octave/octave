@@ -17,21 +17,19 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lsim (@var{sys}, @var{u}, @var{t}, @var{x0})
-## Produce output for a linear simulation of a system
+## @deftypefn {Function File} {[@var{y}, @var{x}] =} lsim (@var{sys}, @var{u}, @var{t}, @var{x0})
+## Produce output for a linear simulation of a system; produces 
+## a plot for the output of the system, @var{sys}.
 ##
-## Produces a plot for the output of the system, sys.
+## @var{u} is an array that contains the system's inputs.  Each row in @var{u}
+## corresponds to a different time step.  Each column in @var{u} corresponds to a
+## different input.  @var{t} is an array that contains the time index of the
+## system; @var{t} should be regularly spaced.  If initial conditions are required
+## on the system, the @var{x0} vector should be added to the argument list.
 ##
-## U is an array that contains the system's inputs.  Each row in u
-## corresponds to a different time step.  Each column in u corresponds to a
-## different input.  T is an array that contains the time index of the
-## system.  T should be regularly spaced.  If initial conditions are required
-## on the system, the x0 vector should be added to the argument list.
-##
-## When the lsim function is invoked with output parameters:
-## [y,x] = lsim(sys,u,t,[x0])
-## a plot is not displayed, however, the data is returned in y = system output
-## and x = system states.
+## When the lsim function is invoked a plot is not displayed; 
+## however, the data is returned in @var{y} (system output)
+## and @var{x} (system states).
 ## @end deftypefn
 
 ## Author: David Clem

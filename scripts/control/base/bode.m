@@ -39,7 +39,7 @@
 ## @end itemize
 ##
 ## @strong{Default} the default frequency range is selected as follows: (These
-## steps are NOT performed if @var{w} is specified)
+## steps are @strong{not} performed if @var{w} is specified)
 ## @enumerate
 ## @item via routine __bodquist__, isolate all poles and zeros away from
 ## @var{w}=0 (@var{jw}=0 or @math{@code{exp}(jwT)}=1) and select the frequency
@@ -91,7 +91,7 @@
 ## Failure to include a concluding semicolon will yield some garbage
 ## being printed to the screen (@code{ans = []}).
 ##
-## @item If the requested plot is for an MIMO system, mag is set to
+## @item If the requested plot is for an @acronym{MIMO} system, mag is set to
 ## @math{||G(jw)||} or @math{||G(@code{exp}(jwT))||}
 ## and phase information is not computed.
 ## @end enumerate

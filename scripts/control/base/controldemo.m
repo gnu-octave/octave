@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} controldemo ()
-## Controls toolbox demo.
+## Control Systems Toolbox demo.
 ## @end deftypefn
 ## @seealso{Demo programs: bddemo, frdemo, analdemo, moddmeo, rldemo}
 

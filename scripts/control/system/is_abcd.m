@@ -17,11 +17,11 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} is_abcd (@var{a}, @var{b}, @var{c}, @var{d})
+## @deftypefn {Function File} {@var{retval} =} is_abcd (@var{a}, @var{b}, @var{c}, @var{d})
 ##  Returns @var{retval} = 1 if the dimensions of @var{a}, @var{b},
 ##  @var{c}, @var{d} are compatible, otherwise @var{retval} = 0 with an
 ##  appropriate diagnostic message printed to the screen.  The matrices
-##  b, c, or d may be omitted.
+##  @var{b}, @var{c}, or @var{d} may be omitted.
 ## @end deftypefn
 ## @seealso{abcddim}
 

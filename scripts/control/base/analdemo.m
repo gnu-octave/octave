@@ -32,7 +32,7 @@ function analdemo ()
     k=0;
     while(k > 8 || k < 1)
       k = menu("Octave State Space Analysis Demo", ...
-        "System grammians (gram, dgram)", ...
+        "System gramians (gram, dgram)", ...
         "System zeros (tzero)", ...
         "Continuous => Discrete and Discrete => Continuous conversions (c2d,d2c)", ...
         "Algebraic Riccati Equation (are, dare)", ...
@@ -47,22 +47,22 @@ function analdemo ()
       prompt
 
       clc
-      disp("System Grammians: (see Moore, IEEE T-AC, 1981) \n");
+      disp("System Gramians: (see Moore, IEEE T-AC, 1981) \n");
       disp("Example #1, consider the discrete time state space system:\n");
       a=[1, 5, -8.4; 1.2, -3, 5; 1, 7, 9]
       b=[1, 5; 2, 6; -4.4, 5]
       c=[1, -1.5, 2; 6, -9.8, 1]
       d=0
       prompt
-      disp("\nThe discrete controllability grammian is computed as follows:");
-      cmd = "grammian = dgram(a, b);";
+      disp("\nThe discrete controllability gramian is computed as follows:");
+      cmd = "gramian = dgram(a, b);";
       run_cmd;
       disp("Results:\n");
-      grammian = dgram(a,b)
+      gramian = dgram(a,b)
       disp("Variable Description:\n");
-      disp("grammian => discrete controllability grammian");
+      disp("gramian => discrete controllability gramian");
       disp("a, b => a and b matrices of discrete time system\n");
-      disp("A dual approach may be used to compute the observability grammian.");
+      disp("A dual approach may be used to compute the observability gramian.");
       prompt
       clc
 
@@ -76,15 +76,15 @@ function analdemo ()
       c=[1, -1.1, 7; 3, -9.8, 2]
       d=0
       prompt
-      disp("\nThe continuous controllability grammian is computed as follows:");
-      cmd = "grammian = gram(a, b);";
+      disp("\nThe continuous controllability gramian is computed as follows:");
+      cmd = "gramian = gram(a, b);";
       run_cmd;
       disp("Results:\n");
-      grammian = gram(a,b)
+      gramian = gram(a,b)
       disp("Variable Description:\n");
-      disp("grammian => continuous controllability grammian");
+      disp("gramian => continuous controllability gramian");
       disp("a, b => a and b matrices of continuous time system\n");
-      disp("A dual approach may be used to compute the observability grammian.");
+      disp("A dual approach may be used to compute the observability gramian.");
       prompt
       clc
 

@@ -36,12 +36,17 @@
 ## the number of data values.
 ##
 ## Both parameters @var{tstop} and @var{n} can be omitted and will be
-## computed from the eigenvalues of the A-Matrix.
+## computed from the eigenvalues of the A Matrix.
 ## @end table
 ## @strong{Outputs}
-## @var{y}, @var{t}: impulse response
+## @table @var
+## @item y
+## Values of the step response.
+## @item t
+## Times of the step response.
+## @end table
 ##
-## When invoked with the output paramter y the plot is not displayed.
+## When invoked with the output parameter @var{y} the plot is not displayed.
 ## @end deftypefn
 ## @seealso{impulse and __stepimp__}
 

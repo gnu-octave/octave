@@ -20,15 +20,15 @@
 ## @deftypefn {Function File} {[@var{y}, @var{t}] =} __stepimp__ (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
 ## Impulse or step response for a linear system.
 ## The system can be discrete or multivariable (or both).
-## This m-file contains the "common code" of step and impulse.
+## This m-file contains the ``common code'' of step and impulse.
 ##
-## Produces a plot or the response data for system sys.
+## Produces a plot or the response data for system @var{sys}.
 ##
-## Limited argument checking; "do not attempt to do this at home".
-## Used internally in @code{impulse}, @code{step}. Use @code{step}
-## or @code{impulse} instead.
+## Limited argument checking; ``do not attempt to do this at home''.
+## Used internally in @command{impulse}, @command{step}. Use @command{step}
+## or @command{impulse} instead.
 ## @end deftypefn
-## @seealso{step and impulse}
+## @seealso{step, impulse}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: October 2, 1997

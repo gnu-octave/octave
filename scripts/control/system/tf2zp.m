@@ -17,11 +17,12 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tf2zp (@var{inputs})
-## Converts transfer functions to poles / zeros.
+## @deftypefn {Function File} {[@var{zer}, @var{pol}, @var{k}] =} tf2zp (@var{num}, @var{den})
+## Converts transfer functions to poles-and-zero representations.
 ##
-## [zer,pol,k] = tf2zp(num,den) returns the zeros and poles of the SISO system
-## defined by num/den.  K is a gain associated with the system zeros.
+## Returns the zeros and poles of the @acronym{SISO} system defined 
+## by @var{num}/@var{den}.
+## @var{k} is a gain associated with the system zeros.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

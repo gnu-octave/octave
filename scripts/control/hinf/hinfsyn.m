@@ -22,56 +22,101 @@
 ## @strong{Inputs} input system is passed as either
 ## @table @var
 ## @item asys
-## system data structure (see ss, sys2ss)
+## system data structure (see @command{ss}, @command{sys2ss})
 ## @itemize @bullet
 ## @item controller is implemented for continuous time systems
-## @item controller is NOT implemented for discrete time systems  (see
-## bilinear transforms in @code{c2d}, @code{d2c})
+## @item controller is @strong{not} implemented for discrete time systems  (see
+## bilinear transforms in @command{c2d}, @command{d2c})
 ## @end itemize
 ## @item nu
 ## number of controlled inputs
 ## @item ny
 ## number of measured outputs
 ## @item gmin
-## initial lower bound on H-infinity optimal gain
+## initial lower bound on 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## optimal gain
 ## @item gmax
-## initial upper bound on H-infinity optimal gain
+## initial upper bound on 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## Optimal gain.
 ## @item gtol
-## gain threshhold.  Routine quits when gmax/gmin < 1+tol
+## Gain threshold.  Routine quits when @var{gmax}/@var{gmin} < 1+tol.
 ## @item ptol
-## poles with abs(real(pole)) < ptol*||H|| (H is appropriate
+## poles with @code{abs(real(pole))} 
+## @iftex
+## @tex
+## $ < ptol \Vert H \Vert $
+## @end tex
+## @end iftex
+## @ifinfo
+## < ptol*||H|| 
+## @end ifinfo
+## (@var{H} is appropriate
 ## Hamiltonian) are considered to be on the imaginary axis.
-## Default: 1e-9
+## Default: 1e-9.
 ## @item tol
-## threshhold for 0.  Default: 200*eps
+## threshold for 0.  Default: 200*@code{eps}.
 ##
 ## @var{gmax}, @var{min}, @var{tol}, and @var{tol} must all be postive scalars.
 ## @end table
 ## @strong{Outputs}
 ## @table @var
 ## @item k
-## system controller
+## System controller.
 ## @item g
-## designed gain value
+## Designed gain value.
 ## @item gw
-## closed loop system
+## Closed loop system.
 ## @item xinf
-## ARE solution matrix for regulator subproblem
+## @acronym{ARE} solution matrix for regulator subproblem.
 ## @item yinf
-## ARE solution matrix for filter subproblem
+## @acronym{ARE} solution matrix for filter subproblem.
 ## @end table
 ##
+## References:
 ## @enumerate
-## @item Doyle, Glover, Khargonekar, Francis, "State Space Solutions
-## to Standard H2 and Hinf Control Problems," IEEE TAC August 1989
+## @item Doyle, Glover, Khargonekar, Francis, @cite{State-Space Solutions
+## to Standard}
+## @iftex
+## @tex
+## $ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-2 and H-infinity}
+## @end ifinfo
+## @cite{Control Problems}, @acronym{IEEE} @acronym{TAC} August 1989.
 ##
-## @item Maciejowksi, J.M., "Multivariable feedback design,"
-## Addison-Wesley, 1989, ISBN 0-201-18243-2
+## @item Maciejowksi, J.M., @cite{Multivariable feedback design},
+## Addison-Wesley, 1989, @acronym{ISBN} 0-201-18243-2.
 ##
-## @item Keith Glover and John C. Doyle, "State-space formulae for all
-## stabilizing controllers that satisfy and h-infinity-norm bound
-## and relations to risk sensitivity,"
-## Systems & Control Letters 11, Oct. 1988, pp 167-172.
+## @item Keith Glover and John C. Doyle, @cite{State-space formulae for all
+## stabilizing controllers that satisfy an}
+## @iftex
+## @tex
+## $ { \cal H }_\infty $@cite{norm}
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-infinity-norm}
+## @end ifinfo
+## @cite{bound and relations to risk sensitivity},
+## Systems & Control Letters 11, Oct. 1988, pp 167--172.
 ## @end enumerate
 ## @end deftypefn
 

@@ -17,32 +17,48 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tzero (@var{a}, @var{b}, @var{c}, @var{d}, @var{opt})
-## @deftypefnx {Function File} {} tzero (@var{sys}, @var{opt})
-## Compute transmission zeros of a continuous
+## @deftypefn {Function File} {[@var{zer}, @var{gain}] =} tzero (@var{a}, @var{b}, @var{c}, @var{d}, @var{opt})
+## @deftypefnx {Function File} {[@var{zer}, @var{gain}] =} tzero (@var{sys}, @var{opt})
+## Compute transmission zeros of a continuous system:
+## @iftex
+## @tex
+## $$ \dot x = Ax + Bu $$
+## $$ y = Cx + Du $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ## .
 ## x = Ax + Bu
 ## y = Cx + Du
 ## @end example
-## or discrete
+## @end ifinfo
+## or of a discrete one:
+## @iftex
+## @tex
+## $$ x_{k+1} = Ax_k + Bu_k $$
+## $$ y_k = Cx_k + Du_k $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
 ## x(k+1) = A x(k) + B u(k)
 ## y(k)   = C x(k) + D u(k)
 ## @end example
-## system.
+## @end ifinfo
+## 
 ## @strong{Outputs}
 ## @table @var
 ## @item zer
 ##  transmission zeros of the system
 ## @item gain
-## leading coefficient (pole-zero form) of SISO transfer function
+## leading coefficient (pole-zero form) of @acronym{SISO} transfer function
 ## returns gain=0 if system is multivariable
 ## @end table
 ## @strong{References}
 ## @enumerate
 ## @item Emami-Naeini and Van Dooren, Automatica, 1982.
-## @item Hodel, "Computation of Zeros with Balancing," 1992 Lin. Alg. Appl.
+## @item Hodel, @cite{Computation of Zeros with Balancing}, 1992 Lin. Alg. Appl.
 ## @end enumerate
 ## @end deftypefn
 

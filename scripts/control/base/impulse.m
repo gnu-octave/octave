@@ -36,12 +36,17 @@
 ## the number of data values.
 ##
 ## Both parameters @var{tstop} and @var{n} can be omitted and will be
-## computed from the eigenvalues of the A-Matrix.
+## computed from the eigenvalues of the A Matrix.
 ## @end table
 ## @strong{Outputs}
-## @var{y}, @var{t}: impulse response
+## @table @var
+## @item y
+## Values of the impulse response.
+## @item t
+## Times of the impulse response.
+## @end table
 ## @end deftypefn
-## @seealso{step and __stepimp__}
+## @seealso{step, __stepimp__}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: October 2, 1997

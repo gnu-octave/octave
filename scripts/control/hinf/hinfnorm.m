@@ -18,14 +18,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm (@var{sys}, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol})
-##  Computes the H infinity norm of a system data structure.
+## Computes the 
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## norm of a system data structure.
 ##
 ## @strong{Inputs}
 ## @table @var
 ## @item sys
 ## system data structure
 ## @item tol
-## H infinity norm search tolerance (default: 0.001)
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## norm search tolerance (default: 0.001)
 ## @item gmin
 ## minimum value for norm search (default: 1e-9)
 ## @item gmax
@@ -34,14 +51,30 @@
 ## pole tolerance:
 ## @itemize @bullet
 ## @item if sys is continuous, poles with
-## |real(pole)| < ptol*||H|| (H is appropriate Hamiltonian)
+## @iftex
+## @tex
+## $ \vert {\rm real}(pole) \vert < ptol \Vert H \Vert $
+## @end tex
+## @end iftex
+## @ifinfo
+## @math{ |real(pole))| < ptol*||H|| }
+## @end ifinfo
+## (@var{H} is appropriate Hamiltonian)
 ## are considered to be on the imaginary axis.
 ##
 ## @item if sys is discrete, poles with
-## |abs(pole)-1| < ptol*||[s1,s2]|| (appropriate symplectic pencil)
-## are considered to be on the unit circle
+## @iftex
+## @tex
+## $ \vert { \rm pole } - 1 \vert < ptol \Vert [ s_1 s_2 ] \Vert $
+## @end tex
+## @end iftex
+## @ifinfo
+## @math{|abs(pole)-1| < ptol*||[s1,s2]||}
+## @end ifinfo
+## (appropriate symplectic pencil)
+## are considered to be on the unit circle.
 ##
-## @item Default: 1e-9
+## @item Default value: 1e-9
 ## @end itemize
 ## @end table
 ##
@@ -52,15 +85,31 @@
 ## if the system is unstable.
 ## @item gmin
 ## @itemx gmax
-## Actual system gain lies in the interval [@var{gmin}, @var{gmax}]
+## Actual system gain lies in the interval [@var{gmin}, @var{gmax}].
 ## @end table
 ##
 ## References:
-## Doyle, Glover, Khargonekar, Francis, "State space solutions to standard
-## H2 and Hinf control problems", IEEE TAC August 1989
-## Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
-## Int. J. Control, vol 54, #5, 1991
-## Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
+## Doyle, Glover, Khargonekar, Francis, @cite{State-space solutions to standard}
+## @iftex
+## @tex
+## $ { \cal H }_2 $ @cite{and} $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-2 and H-infinity}
+## @end ifinfo
+## @cite{control problems}, @acronym{IEEE} @acronym{TAC} August 1989;
+## Iglesias and Glover, @cite{State-Space approach to discrete-time}
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## @cite{H-infinity}
+## @end ifinfo
+## @cite{control}, Int. J. Control, vol 54, no. 5, 1991;
+## Zhou, Doyle, Glover, @cite{Robust and Optimal Control}, Prentice-Hall, 1996.
 ## @end deftypefn
 
 function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)

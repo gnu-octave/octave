@@ -18,21 +18,27 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fir2sys (@var{num}, @var{tsam}, @var{inname}, @var{outname})
-## construct a system data structure from FIR description
+## construct a system data structure from @acronym{FIR} description
 ##
-## @strong{Inputs:}
+## @strong{Inputs}
 ## @table @var
 ## @item num
-## vector of coefficients @math{[c_0 c_1 ... c_n]}
-## of the SISO FIR transfer function
+## vector of coefficients 
 ## @ifinfo
-##
-## C(z) = c0 + c1*z^@{-1@} + c2*z^@{-2@} + ... + znz^@{-n@}
-##
+## [c0, c1, ..., cn]
 ## @end ifinfo
 ## @iftex
 ## @tex
-## $$C(z) = c0 + c1*z^{-1} + c2*z^{-2} + ... + znz^{-n}$$
+## $ [c_0, c_1, \ldots, c_n ]$
+## @end tex
+## @end iftex
+## of the @acronym{SISO} @acronym{FIR} transfer function
+## @ifinfo
+## C(z) = c0 + c1*z^(-1) + c2*z^(-2) + ... + cn*z^(-n)
+## @end ifinfo
+## @iftex
+## @tex
+## $$ C(z) = c_0 + c_1z^{-1} + c_2z^{-2} + \ldots + c_nz^{-n} $$
 ## @end tex
 ## @end iftex
 ##
@@ -46,12 +52,16 @@
 ## name of output signal; may be a string or a list with a single entry.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{sys} (system data structure)
+## @strong{Output}
+## @table @var
+## @item sys
+## system data structure
+## @end table
 ##
 ## @strong{Example}
 ## @example
-## octave:1> sys = fir2sys([1 -1 2 4],0.342,"A/D input","filter output");
+## octave:1> sys = fir2sys([1 -1 2 4],0.342,\
+## > "A/D input","filter output");
 ## octave:2> sysout(sys)
 ## Input(s)
 ##         1: A/D input

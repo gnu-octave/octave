@@ -16,18 +16,25 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-##  function [systype, nout, nin, ncstates, ndstates] = minfo(inmat)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{systype}, @var{nout}, @var{nin}, @var{ncstates}, @var{ndstates}] =} minfo (@var{inmat})
+## Determines the type of system matrix.  @var{inmat} can be a varying, 
+## a system, a constant, and an empty matrix.
 ##
-## MINFO:  Determines the type of system matrix.  INMAT can be
-##         a varying(*), system, constant, and empty matrix.
-##
-##    Returns:
-##      systype can be one of:
-##            varying, system, constant, and empty
-##      nout is the number of outputs of the system
-##      nin is the number of inputs of the system
-##      ncstates is the number of continuous states of the system
-##       ndstates is the number of discrete states of the system
+## @strong{Outputs}
+## @table @var
+## @item systype 
+## Can be one of: varying, system, constant, and empty.
+## @item nout 
+## The number of outputs of the system.
+## @item nin
+## The number of inputs of the system.
+## @item ncstates
+## The number of continuous states of the system.
+## @item ndstates 
+## The number of discrete states of the system.
+## @end table
+## @end deftypefn
 
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
 ## Created: July 29, 1994

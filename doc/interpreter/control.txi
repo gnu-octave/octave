@@ -5,7 +5,7 @@
 @node Control Theory
 @chapter Control Theory
 
-The Octave Control Systems Toolbox (OCST) was initially developed
+The Octave Control Systems Toolbox (@acronym{OCST}) was initially developed
 by Dr.@: A. Scottedward Hodel 
 @email{a.s.hodel@@eng.auburn.edu} with the assistance
 of his students
@@ -15,13 +15,13 @@ of his students
 @item John E. Ingram @email{John.Ingram@@sea.siemans.com}, and 
 @item Kristi McGowan.  
 @end itemize
-This development was supported in part by NASA's Marshall Space Flight 
-Center as part of an in-house CACSD environment.  Additional important 
+This development was supported in part by @acronym{NASA}'s Marshall Space Flight 
+Center as part of an in-house @acronym{CACSD} environment.  Additional important 
 contributions were made by Dr. Kai Mueller @email{mueller@@ifr.ing.tu-bs.de}
 and Jose Daniel Munoz Frias (@code{place.m}).
 
 An on-line menu-driven tutorial is available via @code{DEMOcontrol};
-beginning OCST users should start with this program. 
+beginning @acronym{OCST} users should start with this program. 
 
 @DOCSTRING(DEMOcontrol)
 
@@ -48,27 +48,27 @@ beginning OCST users should start with this program.
 * sysstructss::                 
 @end menu
 
-The OCST stores all dynamic systems in
+The @acronym{OCST} stores all dynamic systems in
 a single data structure format that can represent continuous systems,
 discrete-systems, and mixed (hybrid) systems in state-space form, and
 can also represent purely continuous/discrete systems in either
 transfer function or pole-zero form. In order to
 provide more flexibility in treatment of discrete/hybrid systems, the
-OCST also keeps a record of which system outputs are sampled.
+@acronym{OCST} also keeps a record of which system outputs are sampled.
 
 Octave structures are accessed with a syntax much like that used
 by the C programming language.  For consistency in
-use of the data structure used in the OCST, it is recommended that
+use of the data structure used in the @acronym{OCST}, it is recommended that
 the system structure access m-files be used (@pxref{sysinterface}).
 Some elements of the data structure are absent depending on the internal
 system representation(s) used.  More than one system representation
-can be used for SISO systems; the OCST m-files ensure that all representations
+can be used for @acronym{SISO} systems; the @acronym{OCST} m-files ensure that all representations
 used are consistent with one another.
 
 @DOCSTRING(sysrepdemo)
 
 @node sysstructvars
-@subsection Variables common to all OCST system formats
+@subsection Variables common to all @acronym{OCST} system formats
 
 The data structure elements (and variable types) common to all  system
 representations are listed below; examples of the initialization
@@ -176,7 +176,7 @@ names of system states   (list of strings)
 @node sysinterface
 @section System Construction and Interface Functions
 
-Construction and manipulations of the OCST system data structure
+Construction and manipulations of the @acronym{OCST} system data structure
 (@pxref{sysstruct}) requires attention to many details in order
 to ensure that data structure contents remain consistent.  Users
 are strongly encouraged to use the system interface functions
@@ -352,13 +352,13 @@ system data structures.
 
 @DOCSTRING(zgshsr)
 
-References:
+@strong{References}
 @table @strong
 @item  ZGEP
- Hodel, "Computation of Zeros with Balancing," 1992, Linear Algebra
+ Hodel, @cite{Computation of Zeros with Balancing}, 1992, Linear Algebra
  and its Applications
 @item @strong{Generalized CG}
- Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
+ Golub and Van Loan, @cite{Matrix Computations, 2nd ed} 1989.
 @end table
 
 @node sysprop

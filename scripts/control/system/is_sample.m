@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} is_sample (@var{ts})
 ## Return true if @var{ts} is a valid sampling time
-## (real,scalar, > 0)
+## (real, scalar, > 0).
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

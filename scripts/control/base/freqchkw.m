@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} freqchkw (@var{w})
-## Used by @code{__freqresp__} to check that input frequency vector @var{w}
+## Used by @command{__freqresp__} to check that input frequency vector @var{w}
 ## is valid.
 ## Returns boolean value.
 ## @end deftypefn

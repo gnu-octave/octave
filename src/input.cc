@@ -1164,10 +1164,10 @@ value of @code{PS2} is @code{\"> \"}.\n\
   DEFVAR (PS4, "+ ", ps4,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} PS4\n\
-If Octave is invoked with the @code{--echo-input} option, the value of\n\
+If Octave is invoked with the @code{--echo-commands} option, the value of\n\
 @code{PS4} is printed before each line of input that is echoed.  The\n\
 default value of @code{PS4} is @code{\"+ \"}.  @xref{Invoking Octave}, for\n\
-a description of @code{--echo-input}.\n\
+a description of @code{--echo-commands}.\n\
 @end defvr");
 
   DEFVAR (completion_append_char, " ", completion_append_char,

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} syschnames (@var{sys}, @var{opt}, @var{list}, @var{names})
-## Superseded by @code{syssetsignals}
+## Superseded by @command{syssetsignals}.
 ## @end deftypefn
 
 ## Author: John Ingram <ingraje@eng.auburn.edu>

@@ -67,75 +67,9 @@ a (1, :)
 @noindent
 and select the first row of the matrix.
 
-A special form of indexing may be used to select elements of a matrix or
-vector.  If the indices are vectors made up of only ones and zeros, the
-result is a new matrix whose elements correspond to the elements of the
-index vector that are equal to one.  For example,
+@c FIXED -- sections on variable prefer_zero_one_indexing were removed
 
-@example
-@group
-a = [1, 2; 3, 4];
-a ([1, 0], :)
-@end group
-@end example
-
-@noindent
-selects the first row of the matrix @code{a}.
-
-This operation can be useful for selecting elements of a matrix based on
-some condition, since the comparison operators return matrices of ones
-and zeros.
-
-This special zero-one form of indexing leads to a conflict with the
-standard indexing operation.  For example, should the following
-statements
-
-@example
-@group
-a = [1, 2; 3, 4];
-a ([1, 1], :)
-@end group
-@end example
-
-@noindent
-return the original matrix, or the matrix formed by selecting the first
-row twice?  Although this conflict is not likely to arise very often in
-practice, you may select the behavior you prefer by setting the built-in
-variable @code{prefer_zero_one_indexing}.
-
-@c XXX FIXME XXX -- this variable no longer exists!
-
-@defvr {Built-in Variable} prefer_zero_one_indexing
-If the value of @code{prefer_zero_one_indexing} is nonzero, Octave
-will perform zero-one style indexing when there is a conflict with the
-normal indexing rules.  @xref{Index Expressions}.  For example, given a
-matrix
-
-@example
-a = [1, 2, 3, 4]
-@end example
-
-@noindent
-with @code{prefer_zero_one_indexing} is set to nonzero, the
-expression
-
-@example
-a ([1, 1, 1, 1])
-@end example
-
-@noindent
-results in the matrix @code{[ 1, 2, 3, 4 ]}.  If the value of
-@code{prefer_zero_one_indexing} set to 0, the result would be
-the matrix @code{[ 1, 1, 1, 1 ]}.
-
-In the first case, Octave is selecting each element corresponding to a
-@samp{1} in the index vector.  In the second, Octave is selecting the
-first element multiple times.
-
-The default value for @code{prefer_zero_one_indexing} is 0.
-@end defvr
-
-Finally, indexing a scalar with a vector of ones can be used to create a
+Indexing a scalar with a vector of ones can be used to create a
 vector the same size as the index vector, with each element equal to
 the value of the original scalar.  For example, the following statements
 
@@ -890,7 +824,7 @@ A (:, 1:2:5) = []
 @end example
 
 @noindent
-deletes the first, third, and fifth columns.
+deletes the first, second, and fifth columns.
 
 An assignment is an expression, so it has a value.  Thus, @code{z = 1}
 as an expression has the value 1.  One consequence of this is that you

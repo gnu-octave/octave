@@ -23,22 +23,22 @@
 ## plot is printed to the screen.
 ##
 ## Compute the frequency response of a system.
+##
 ## @strong{Inputs} (pass as empty to get default values)
 ## @table @var
 ## @item sys
 ## system data structure (must be either purely continuous or discrete;
-## see is_digital)
+## see @code{is_digital})
 ## @item w
 ## frequency values for evaluation.
-## if sys is continuous, then bode evaluates @math{G(jw)}
-## if sys is discrete, then bode evaluates @math{G(exp(jwT))}, where
-## @math{T} is the system sampling time.
+## If sys is continuous, then bode evaluates @math{G(@var{jw})}; 
+## if sys is discrete, then bode evaluates @math{G(exp(@var{jwT}))},
+## where @var{T} is the system sampling time.
 ## @item default
 ## the default frequency range is selected as follows: (These
-## steps are NOT performed if @var{w} is specified)
-## @end table
+## steps are @strong{not} performed if @var{w} is specified)
 ## @enumerate
-## @item via routine __bodquist__, isolate all poles and zeros away from
+## @item via routine @command{__bodquist__}, isolate all poles and zeros away from
 ## @var{w}=0 (@var{jw}=0 or @math{exp(@var{jwT})=1}) and select the frequency
 ## range based on the breakpoint locations of the frequencies.
 ## @item if @var{sys} is discrete time, the frequency range is limited
@@ -47,17 +47,14 @@
 ## [0,2p*pi]
 ## @end ifinfo
 ## @iftex
-## $[0,2p*\pi]$
+## @tex
+## $ [ 0,2  p \pi ] $
+## @end tex
 ## @end iftex
-## @item A "smoothing" routine is used to ensure that the plot phase does
+## @item A ``smoothing'' routine is used to ensure that the plot phase does
 ## not change excessively from point to point and that singular
 ## points (e.g., crossovers from +/- 180) are accurately shown.
 ## @end enumerate
-## outputs, inputs: names or indices of the output(s) and input(s) to be 
-## used in the frequency response; see sysprune.
-##
-## @strong{Inputs} (pass as empty to get default values)
-## @table @var
 ## @item   atol
 ## for interactive nyquist plots: atol is a change-in-slope tolerance
 ## for the of asymptotes (default = 0; 1e-2 is a good choice).  This allows
@@ -70,7 +67,7 @@
 ## @itemx   imagp
 ## the real and imaginary parts of the frequency response
 ## @math{G(jw)} or @math{G(exp(jwT))} at the selected frequency values.
-## @item    w
+## @item w
 ## the vector of frequency values used
 ## @end table
 ##
@@ -79,9 +76,17 @@
 ## interactively if they wish to zoom in (remove asymptotes)
 ## Descriptive labels are automatically placed.
 ##
-## Note: if the requested plot is for an MIMO system, a warning message is
+## Note: if the requested plot is for an @acronym{MIMO} system, a warning message is
 ## presented; the returned information is of the magnitude
-## ||G(jw)|| or ||G(exp(jwT))|| only; phase information is not computed.
+## @iftex
+## @tex
+## $ \Vert G(jw) \Vert $ or $ \Vert G( {\rm exp}(jwT) \Vert $
+## @end tex
+## @end iftex
+## @ifinfo
+## ||G(jw)|| or ||G(exp(jwT))||
+## @end ifinfo
+## only; phase information is not computed.
 ## @end deftypefn
 
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>

@@ -207,30 +207,48 @@ DEFUN_DLD (qz, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{lambda} =} qz (@var{a}, @var{b})\n\
 Generalized eigenvalue problem @math{A x = s B x},\n\
-@var{QZ} decomposition.  Three ways to call:\n\
+@var{QZ} decomposition. There are three ways to call this function:\n\
 @enumerate\n\
 @item @code{lambda = qz(A,B)}\n\
 \n\
-Computes the generalized eigenvalues @var{lambda} of @math{(A - sB)}.\n\
-\n\
+Computes the generalized eigenvalues\n\
+@iftex\n\
+@tex\n\
+$\\lambda$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
+@var{lambda}\n\
+@end ifinfo\n\
+of @math{(A - s B)}.\n\
 @item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}\n\
 \n\
 Computes qz decomposition, generalized eigenvectors, and \n\
         generalized eigenvalues of @math{(A - sB)}\n\
+@iftex\n\
+@tex\n\
+$$ AV = BV{ \\rm diag }(\\lambda) $$\n\
+$$ W^T A = { \\rm diag }(\\lambda)W^T B $$\n\
+$$ AA = Q^T AZ, BB = Q^T BZ $$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
 @example\n\
 @group\n\
-        A V = B V diag(lambda)\n\
-        W' A = diag(lambda) W' B\n\
-        AA = Q'*A*Z, BB = Q'*B*Z  with Q, Z orthogonal (unitary)= I\n\
+        A*V = B*V*diag(lambda)\n\
+        W'*A = diag(lambda)*W'*B\n\
+        AA = Q'*A*Z, BB = Q'*B*Z\n\
 @end group\n\
 @end example\n\
+@end ifinfo\n\
+with @var{Q} and @var{Z} orthogonal (unitary)= @var{I}\n\
 \n\
-@item @code{[AA,BB,Z@{,lambda@}] = qz(A,B,opt)}\n\
+@item @code{[AA,BB,Z@{, lambda@}] = qz(A,B,opt)}\n\
 \n\
 As in form [2], but allows ordering of generalized eigenpairs\n\
         for (e.g.) solution of discrete time algebraic Riccati equations.\n\
-        Form 3 is not available for complex matrices and does not compute\n\
-        the generalized eigenvectors V, W, nor the orthogonal matrix Q.\n\
+        Form 3 is not available for complex matrices, and does not compute\n\
+        the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.\n\
 @table @var\n\
 @item opt\n\
  for ordering eigenvalues of the GEP pencil.  The leading  block\n\

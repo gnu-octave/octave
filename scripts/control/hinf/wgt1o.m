@@ -17,18 +17,37 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wgt1o (@var{vl}, @var{vh}, @var{fc})
+## @deftypefn {Function File} {@var{W} =} wgt1o (@var{vl}, @var{vh}, @var{fc})
 ## State space description of a first order weighting function.
 ##
-## Weighting function are needed by the H2/H_infinity design procedure.
-## These function are part of thye augmented plant P (see hinfdemo
-## for an applicattion example).
+## Weighting function are needed by the 
+## @iftex
+## @tex
+## $ { \cal H }_2 / { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-2/H-infinity
+## @end ifinfo
+## design procedure.
+## These function are part of the augmented plant @var{P}
+## (see @command{hinfdemo} for an application example).
 ##
-## vl = Gain at low frequencies
+## @strong{Inputs}
+## @table @var
+## @item vl
+## Gain at low frequencies.
+## @item vh
+## Gain at high frequencies.
+## @item fc
+## Corner frequency (in Hz, @strong{not} in rad/sec)
+## @end table
 ##
-## vh = Gain at high frequencies
-##
-## fc = Corner frequency (in Hz, *not* in rad/sec)
+## @strong{Output}
+## @table @var
+## @item W
+## Weighting function, given in form of a system data structure.
+## @end table
 ## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

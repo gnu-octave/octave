@@ -17,10 +17,18 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} zgshsr (@var{y})
-## apply householder vector based on @math{e^(m)} to
-## (column vector) y.
-## Called by zgfslv
+## @deftypefn {Function File} {@var{x} =} zgshsr (@var{y})
+## Apply householder vector based on 
+## @iftex
+## @tex
+## $ e^m $
+## @end tex
+## @end iftex
+## @ifinfo
+## @math{e^(m)}
+## @end ifinfo
+## to column vector @var{y}.
+## Called by @command{zgfslv}.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

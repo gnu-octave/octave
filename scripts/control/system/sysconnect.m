@@ -17,45 +17,49 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysconnect (@var{sys}, @var{out_idx}, @var{in_idx}, @var{order}, @var{tol})
+## @deftypefn {Function File} {@var{clsys} =} sysconnect (@var{sys}, @var{out_idx}, @var{in_idx}, @var{order}, @var{tol})
 ## Close the loop from specified outputs to respective specified inputs
 ##
 ## @strong{Inputs}
 ## @table @var
 ## @item   sys
-## system data structure
+## System data structure.
 ## @item   out_idx
 ## @itemx  in_idx
-## names or indices of signals to connect (see @code{sysidx}).
+## Names or indices of signals to connect (see @code{sysidx}).
 ## The output specified by @math{out_idx(ii)} is connected to the input
 ## specified by @math{in_idx(ii)}.
 ## @item   order
 ## logical flag (default = 0)
 ## @table @code
 ## @item        0
-## leave inputs and outputs in their original order
+## Leave inputs and outputs in their original order.
 ## @item        1
-## permute inputs and outputs to the order shown in the diagram below
+## Permute inputs and outputs to the order shown in the diagram below.
 ## @end table
 ## @item     tol
-## tolerance for singularities in algebraic loops default: 200@var{eps}
+## Tolerance for singularities in algebraic loops, default: 200@code{eps}.
 ## @end table
 ##
 ## @strong{Outputs}
-## @var{sys}: resulting closed loop system.
+## @table @var
+## @item clsys
+## Resulting closed loop system.
+## @end table
 ##
 ## @strong{Method}
+##
 ## @code{sysconnect} internally permutes selected inputs, outputs as shown
 ## below, closes the loop, and then permutes inputs and outputs back to their
 ## original order
 ## @example
 ## @group
-##                  ____________________
+##                  --------------------
 ##  u_1       ----->|                  |----> y_1
 ##                  |        sys       |
 ##          old u_2 |                  |
 ## u_2* ---->(+)--->|                  |----->y_2
-## (in_idx)   ^     -------------------|    | (out_idx)
+## (in_idx)   ^     --------------------    | (out_idx)
 ##            |                             |
 ##            -------------------------------
 ## @end group

@@ -1,3 +1,5 @@
+## Copyright (C) 1998 Kai P. Mueller.
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -19,15 +21,22 @@
 ## @deftypefnx {Function File} {@var{retval} =} is_stabilizable (@var{a}, @var{b}, @var{tol}, @var{dflg})
 ## Logical check for system stabilizability (i.e., all unstable modes are controllable). 
 ## Returns 1 if the system is stabilizable, 0 if the the system is not stabilizable, -1 
-## if the system has non stabilizable modes at the imaginary axis (unit circle for discrete-time
-## systems.
+## if the system has non stabilizable modes at the imaginary axis (unit circle for 
+## discrete-time systems.
 ##
-## Test for stabilizability is performed via Hautus Lemma. If @var{dflg}!=0 assume that 
-## discrete-time matrices (a,b) are supplied.
-##
-
-## See also: size, rows, columns, length, ismatrix, isscalar, isvector
-##     is_observable, is_stabilizable, is_detectable
+## Test for stabilizability is performed via Hautus Lemma. If 
+## @iftex
+## @tex
+## @var{dflg}$\neq$0
+## @end tex
+## @end iftex
+## @ifinfo 
+## @var{dflg}!=0
+## @end ifinfo
+## assume that discrete-time matrices (a,b) are supplied.
+## @end deftypefn
+## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
+## is_observable, is_stabilizable, is_detectable}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysprune (@var{asys}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {@var{retsys} =} sysprune (@var{asys}, @var{out_idx}, @var{in_idx})
 ## Extract specified inputs/outputs from a system
 ##
 ## @strong{Inputs}
@@ -26,9 +26,8 @@
 ## system data structure
 ## @item out_idx
 ## @itemx in_idx
-##
 ## Indices or signal names of the outputs and inputs to be kept in the returned
-## system; remaining connections are "pruned" off.
+## system; remaining connections are ``pruned'' off.
 ## May select as [] (empty matrix) to specify all outputs/inputs.
 ##
 ## @example
@@ -38,8 +37,11 @@
 ##
 ## @end table
 ##
-## @strong{Outputs}
-## @var{retsys}: resulting system
+## @strong{Output}
+## @table @var
+## @item retsys
+## Resulting system.
+## @end table
 ## @example
 ## @group
 ##            ____________________

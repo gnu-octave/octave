@@ -17,10 +17,10 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} zginit (@var{a}, @var{b}, @var{c}, @var{d})
-## Construct right hand side vector zz
+## @deftypefn {Function File} {@var{zz} =} zginit (@var{a}, @var{b}, @var{c}, @var{d})
+## Construct right hand side vector @var{zz}
 ## for the zero-computation generalized eigenvalue problem
-## balancing procedure.  Called by zgepbal.
+## balancing procedure.  Called by @command{zgepbal}.
 ## @end deftypefn
 
 ## References:

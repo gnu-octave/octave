@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} moddemo (@var{inputs})
-## Octave Controls toolbox demo: Model Manipulations demo
+## Octave Control toolbox demo: Model Manipulations demo.
 ## @end deftypefn
 
 ## Author: David Clem

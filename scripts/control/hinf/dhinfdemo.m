@@ -18,28 +18,55 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dhinfdemo ()
-## Demonstrate the functions available for designining a discrete
-## H_infinity controller.  This is not a true discrete design. The
+## Demonstrate the functions available to design a discrete
+## @iftex
+## @tex
+## $ { \cal H }_\infty $
+## @end tex
+## @end iftex
+## @ifinfo
+## H-infinity
+## @end ifinfo
+## controller.  This is not a true discrete design. The
 ## design is carried out in continuous time while the effect of sampling
 ## is described by a bilinear transformation of the sampled system.
 ## This method works quite well if the sampling period is "small"
 ## compared to the plant time constants.
 ##
 ## Continuous plant:
-##
+## @iftex
+## @tex
+## $$ G(s) = { 1 \over (s+2) (s+1) } $$
+## @end tex
+## @end iftex
+## @ifinfo
 ## @example
+## @group
 ##                   1
 ##      G(s) = --------------
 ##             (s + 2)(s + 1)
+## @end group
 ## @end example
+## @end ifinfo
 ##
-## Discretised plant with ZOH (Sampling period = Ts = 1 second):
+## Discretised plant with @acronym{ZOH} (Sampling period = @var{Ts} = 1 second):
+## @iftex
+## @tex
+## $$ G(z) = { 0.39958z + 0.14700 \over (z - 0.36788) (z - 0.13533) } $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## @group
+##                 0.39958z + 0.14700
+##      G(z) = --------------------------
+##             (z - 0.36788)(z - 0.13533)
+## @end group
+## @end example
+## @end ifinfo
 ##
 ## @example
-##                 0.39958z + 0.14700
-##      G(s) = --------------------------
-##             (z - 0.36788)(z - 0.13533)
-##
+## @group
 ##                               +----+
 ##          -------------------->| W1 |---> v1
 ##      z   |                    +----+
@@ -52,6 +79,7 @@
 ##          |    +---+       |
 ##          -----| K |<-------
 ##               +---+
+## @end group
 ## @end example
 ##
 ## @noindent

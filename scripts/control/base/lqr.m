@@ -107,8 +107,8 @@
 ## @end table
 ##
 ## @strong{Reference}
-## Anderson and Moore, OPTIMAL CONTROL: LINEAR QUADRATIC METHODS,
-## Prentice-Hall, 1990, pp. 56-58
+## Anderson and Moore, @cite{Optimal control: linear quadratic methods},
+## Prentice-Hall, 1990, pp. 56--58.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

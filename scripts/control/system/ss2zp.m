@@ -17,15 +17,11 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ss2zp (@var{inputs})
-## @format
-## Converts a state space representation to a set of poles and zeros.
+## @deftypefn {Function File} {[@var{pol}, @var{zer}, @var{k}] =} ss2zp (@var{a}, @var{b}, @var{c}, @var{d})
+## Converts a state space representation to a set of poles and zeros;
+## @var{k} is a gain associated with the zeros.
 ##
-## [pol,zer,k] = ss2zp(a,b,c,d) returns the poles and zeros of the state space
-## system (a,b,c,d).  K is a gain associated with the zeros.
-##
-## used internally in system data structure format manipulations
-## @end format
+## Used internally in system data structure format manipulations.
 ## @end deftypefn
 
 ## Author: David Clem

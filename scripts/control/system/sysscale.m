@@ -17,20 +17,31 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysscale (@var{sys}, @var{outscale}, @var{inscale}, @var{outname}, @var{inname})
+## @deftypefn {Function File} {@var{retsys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}, @var{outname}, @var{inname})
 ## scale inputs/outputs of a system.
 ##
 ## @strong{Inputs}
-## sys: structured system
-## outscale, inscale: constant matrices of appropriate dimension
+## @table @var
+## @item sys
+## Structured system.
+## @item outscale
+## @itemx inscale
+## Constant matrices of appropriate dimension.
+## @item outname
+## @itemx inname
+## Lists of strings with the names of respectively outputs and inputs.
+## @end table
 ##
-## @strong{Outputs}
-## @var{sys}: resulting open loop system:
+## @strong{Output}
+## @table @var
+## @item retsys
+## resulting open loop system:
 ## @example
 ##       -----------    -------    -----------
 ## u --->| inscale |--->| sys |--->| outscale |---> y
 ##       -----------    -------    -----------
 ## @end example
+## @end table
 ## If the input names and output names (each a list of strings)
 ## are not given and the scaling matrices
 ## are not square, then default names will be given to the inputs and/or

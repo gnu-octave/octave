@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{tvals}, @var{plist}] =} dre (@var{sys}, @var{q}, @var{r}, @var{qf}, @var{t0}, @var{tf}, @var{ptol}, @var{maxits});
+## @deftypefn {Function File} {[@var{tvals}, @var{plist}] =} dre (@var{sys}, @var{q}, @var{r}, @var{qf}, @var{t0}, @var{tf}, @var{ptol}, @var{maxits})
 ## Solve the differential Riccati equation
 ## @ifinfo
 ## @example
@@ -28,19 +28,19 @@
 ## @iftex
 ## @tex
 ## $$ -{dP \over dt} = A^T P+PA-PBR^{-1}B^T P+Q $$
-## $$ P(t_f) = Qf $$
+## $$ P(t_f) = Q_f $$
 ## @end tex
 ## @end iftex
-## for the LTI system sys.  Solution of standard LTI
-## state feedback optimization
+## for the @acronym{LTI} system sys.  Solution of 
+## standard @acronym{LTI} state feedback optimization
 ## @ifinfo
 ## @example
-##   min \int_@{t_0@}^@{t_f@} x' Q x + u' R u dt + x(t_f)' Qf x(t_f)
+##   min int(t0, tf) ( x' Q x + u' R u ) dt + x(tf)' Qf x(tf)
 ## @end example
 ## @end ifinfo
 ## @iftex
 ## @tex
-## $$ \min \int_{t_0}^{t_f} x^T Q x + u^T R u dt + x(t_f)^T Qf x(t_f) $$
+## $$ \min \int_{t_0}^{t_f} x^T Q x + u^T R u dt + x(t_f)^T Q_f x(t_f) $$
 ## @end tex
 ## @end iftex
 ## optimal input is
@@ -77,15 +77,21 @@
 ## @item tvals
 ## time values at which @var{p}(@var{t}) is computed
 ## @item plist
-## list values of @var{p}(@var{t}); @var{plist} @{ @var{ii} @}
-## is @var{p}(@var{tvals}(@var{ii})).
-##
-## @item tvals
-## @example
-## is selected so that || Plist@{ii@} - Plist@{ii-1@} || < Ptol
-## for ii=2:length(tvals)
-## @end example
+## list values of @var{p}(@var{t}); @var{plist} @{ @var{i} @}
+## is @var{p}(@var{tvals}(@var{i}))
 ## @end table
+## @var{tvals} is selected so that:
+## @iftex
+## @tex
+## $$ \Vert plist_{i} - plist_{i-1} \Vert < ptol $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @example
+## || Plist@{i@} - Plist@{i-1@} || < Ptol
+## @end example
+## @end ifinfo
+## for every @var{i} between 2 and length(@var{tvals}).
 ## @end deftypefn
 
 function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)

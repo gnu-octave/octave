@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysdup (@var{asys}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {@var{retsys} =} sysdup (@var{asys}, @var{out_idx}, @var{in_idx})
 ## Duplicate specified input/output connections of a system
 ##
 ## @strong{Inputs}
@@ -30,23 +30,26 @@
 ## duplicates are made of @code{y(out_idx(ii))} and @code{u(in_idx(ii))}.
 ## @end table
 ##
-## @strong{Outputs}
-## @var{retsys}: resulting closed loop system:
+## @strong{Output}
+## @table @var
+## @item retsys
+## Resulting closed loop system:
 ## duplicated i/o names are appended with a @code{"+"} suffix.
-##
+## @end table
 ##
 ## @strong{Method}
+##
 ## @code{sysdup} creates copies of selected inputs and outputs as
-## shown below.  u1/y1 is the set of original inputs/outputs, and
-## u2,y2 is the set of duplicated inputs/outputs in the order specified
-## in @var{in_idx}, @var{out_idx}, respectively
+## shown below.  @var{u1}, @var{y1} is the set of original inputs/outputs, and
+## @var{u2}, @var{y2} is the set of duplicated inputs/outputs in the order 
+## specified in @var{in_idx}, @var{out_idx}, respectively
 ## @example
 ## @group
 ##           ____________________
 ## u1  ----->|                  |----> y1
 ##           |       asys       |
 ## u2 ------>|                  |----->y2
-## (in_idx)  -------------------| (out_idx)
+## (in_idx)  -------------------- (out_idx)
 ## @end group
 ## @end example
 ## @end deftypefn

@@ -32,7 +32,7 @@
 ## @ifinfo
 ##
 ## @example
-## v(1) * z^(N-1) + ... + v(N-1) * z + v(N).
+## v(1) * z^(N-1) + ... + v(N-1) * z + v(N)
 ## @end example
 ## @end ifinfo
 ## @end deftypefn

@@ -71,7 +71,7 @@ public:
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  bool cat (charNDArray& cat_array, int dim, int add_dim) const;
+  bool cat (const charNDArray& ra_arg, int dim, int add_dim);
  
   charMatrix matrix_value (void) const;
 

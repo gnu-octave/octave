@@ -2999,6 +2999,38 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 }
 
 template <class T>
+bool 
+cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, int dim, int add_dim)
+{
+  bool retval = false;
+  
+  dim_vector dv = ra_arg.dims ();
+  
+  Array<int> ra_idx (dv.length (), 0);
+  
+  for (int i = 0; i < ra_arg.length (); i++)
+    {
+      if (i != 0)
+	increment_index (ra_idx, dv);
+      
+      Array<int> ra_idx2 = ra_idx;
+      
+      if (dim >= ra_idx2.length ())
+	{
+	  ra_idx2.resize_and_fill (dim + 1, 0);
+	  
+	  retval = true;
+	}
+      
+      ra_idx2(dim) = ra_idx2(dim) + add_dim;
+
+      ra_cat(ra_idx2) = ra_arg(ra_idx);
+    }
+
+  return retval;
+}
+
+template <class T>
 void
 Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 {

@@ -523,6 +523,10 @@ public:
 // Array<T>::dimensions should be protected, not public, but we can't
 // do that because of bugs in gcc prior to 3.3.
 
+template <class T>
+bool 
+cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, int dim, int add_dim);
+
 template <class LT, class RT>
 /* friend */ int
 assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
@@ -553,9 +557,14 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   template int assignN (Array<LT>&, const Array<RT>&, const LT&); \
   template int assign (Array<LT>&, const Array<RT>&)
 
+
 #define INSTANTIATE_ARRAY(T) \
   template class Array<T>; \
-  template T resize_fill_value (const T&)
+  template T resize_fill_value (const T&); \
+
+#define INSTANTIATE_CAT(T) \
+  template bool cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, \
+                        int dim, int add_dim)
 
 #define INSTANTIATE_ARRAY_AND_ASSIGN(T) \
   INSTANTIATE_ARRAY (T); \

@@ -31,6 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 INSTANTIATE_ARRAY_AND_ASSIGN (char);
 
+INSTANTIATE_CAT (char);
+
 #include "Array2.h"
 
 template class Array2<char>;

@@ -232,7 +232,7 @@ ComplexNDArray::sum (int dim) const
 }
 
 bool
-ComplexNDArray::cat (ComplexNDArray& cat_arr, int dim, int add_dim) const
+ComplexNDArray::cat (const ComplexNDArray& ra_arg, int dim, int add_dim)
 {
   MX_ND_CAT;
 }

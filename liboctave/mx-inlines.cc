@@ -610,11 +610,11 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 #define MX_ND_CAT \
  bool retval = false;\
  \
-  dim_vector dv = dims (); \
+  dim_vector dv = ra_arg.dims (); \
  \
    Array<int> ra_idx (dv.length (), 0); \
  \
-   for (int i = 0; i < length (); i++) \
+   for (int i = 0; i < ra_arg.length (); i++) \
      { \
        if (i != 0) \
 	 increment_index (ra_idx, dv, 0); \
@@ -630,7 +630,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
        ra_idx2.elem (dim) = ra_idx2.elem (dim) + add_dim; \
  \
-       cat_arr.elem (ra_idx2) =  elem (ra_idx); \
+       elem (ra_idx2) =  ra_arg.elem (ra_idx); \
      } \
  \
    return retval

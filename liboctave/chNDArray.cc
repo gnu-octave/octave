@@ -49,7 +49,7 @@ charNDArray::any (int dim) const
 }
 
 bool
-charNDArray::cat (charNDArray& cat_arr, int dim, int add_dim) const
+charNDArray::cat (const charNDArray& ra_arg, int dim, int add_dim)
 {
   MX_ND_CAT;  
 }

@@ -44,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base-mat.cc"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
+#include "Array-util.h"
 
 #include "byte-swap.h"
 #include "ls-oct-ascii.h"
@@ -1007,6 +1008,86 @@ character string\n\
   else
     print_usage ("iscellstr");
 
+  return retval;
+}
+
+DEFUN (struct2cell, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} struct2cell (@var{S})\n\
+Create a new cell array from the objects stored in the struct object.\n\
+If F is the number of fields in the structure, the resulting cell array will\n\
+have a dimension vector corresponding to [F size(S)].\n\
+\n\
+@end deftypefn\n\
+@seealso{cell2struct, fieldnames}")
+{
+  octave_value retval;
+  
+  int nargin = args.length ();
+  
+  if (nargin == 1)
+    {
+      Octave_map m = args(0).map_value();
+      
+      if (! error_state)
+	{
+	  dim_vector m_dv = m.dims ();
+	  
+	  string_vector keys = m.keys ();
+	  
+	  int fields_numel = keys.length ();
+	  
+	  // The resulting dim_vector should have dimensions:
+	  // [numel(fields) size(struct)]
+	  dim_vector result_dv;
+	  result_dv.resize (m_dv.length () + 1); //Add 1 for the fields
+	  
+	  result_dv(0) = fields_numel;	 
+
+	  for (int i = 1; i < result_dv.length (); i++)
+	    result_dv(i) = m_dv(i-1);
+	  
+	  // Squeeze to be sure that a (3,1) vector doesn't
+	  // get turned into a (3,3,1) vector.
+	  result_dv = result_dv.squeeze (); 
+	  
+	  Cell c (result_dv);
+	  
+	  // Use ra_idx both for counting and for assignments,
+	  // so ra_idx(0) will both contain fields_numel for 
+	  // each call to increment_index and j for each assignment.
+	  Array<int> ra_idx (result_dv.length (), 0);
+	  ra_idx(0) = fields_numel;	  
+
+	  for (int i = 0; i < m_dv.numel (); i++)
+	    {
+	      for (int j = 0; j < fields_numel; j++)
+		{
+		  ra_idx(0) = j;
+		  
+		  Cell c_tmp = m.contents (keys(j));
+		  
+		  if (c_tmp.length () > 1) // Is a cell
+		    c(ra_idx) = c_tmp;
+		  else if (c_tmp.length () == 1) // Get octave_value
+		    c(ra_idx) = c_tmp(0);
+		  else // c.tmp.length () == 0, Create empty Cell
+		    c(ra_idx) = Cell();
+		  
+		  ra_idx(0) = fields_numel;
+		}
+
+	      increment_index(ra_idx, result_dv);	      
+	    }
+
+	  retval = c;
+	}
+      else
+	error ("struct2cell: expecting argument to be a cell array");
+    }
+  else
+    print_usage ("struct2cell");
+  
   return retval;
 }
 

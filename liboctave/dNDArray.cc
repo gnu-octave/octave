@@ -213,9 +213,10 @@ NDArray::sum (int dim) const
 }
 
 bool
-NDArray::cat (NDArray& cat_arr, int dim, int add_dim) const
+NDArray::cat (const NDArray& ra_arg, int dim, int add_dim)
 {
-  MX_ND_CAT;
+  //  MX_ND_CAT;
+  return ::cat_ra (*this, ra_arg, dim, add_dim);
 }
 
 NDArray

@@ -808,7 +808,7 @@ do_cat (const octave_value_list& args)
 		  cat_cx = ComplexNDArray (cat_re);
 		  
 		  extended_dims =
-		    tmp.complex_array_value ().cat (cat_cx, dim, curr_add_dims);
+		    cat_cx.cat (tmp.complex_array_value (), dim, curr_add_dims);
 		  
 		  t = COMPLEX;
 		}
@@ -819,18 +819,18 @@ do_cat (const octave_value_list& args)
 		  cat_ch = charNDArray (octave_value (cat_re).char_array_value ());
 		  
 		  extended_dims =
-		    tmp.char_array_value ().cat (cat_ch, dim, curr_add_dims);
+		    cat_ch.cat (tmp.char_array_value (), dim, curr_add_dims);
 		  
 		  t = CHAR;
 		}
 	      else
 		extended_dims = 
-		  tmp.array_value().cat (cat_re, dim, curr_add_dims);
+		  cat_re.cat (tmp.array_value(), dim, curr_add_dims);
 	    }
 	  else if (t == COMPLEX)
 	    {
 	      extended_dims = 
-		tmp.complex_array_value ().cat (cat_cx, dim, curr_add_dims);
+		cat_cx.cat (tmp.complex_array_value (), dim, curr_add_dims);
 	    }
 	  else if (t == CHAR)
 	    {
@@ -841,7 +841,7 @@ do_cat (const octave_value_list& args)
 		}
 	      else
 		extended_dims =
-		  tmp.char_array_value ().cat (cat_ch, dim, curr_add_dims);
+		  cat_ch.cat (tmp.char_array_value (), dim, curr_add_dims);
 	    }
 	  
 	  if (error_state) return retval; // Wrong conversion in the last if statement

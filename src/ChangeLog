@@ -1,3 +1,7 @@
+2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* ov-cell.cc (Fstruct2cell): New function.
+
 2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (OCTINTERP_LINK_DEPS, OCT_LINK_DEPS): Always define.

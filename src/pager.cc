@@ -119,14 +119,16 @@ maybe_page_output (ostrstream& msg_buf)
 void
 flush_output_to_pager (void)
 {
-  *pager_buf << ends;
+ // Extract message from buffer, then delete the buffer so that any
+ // new messages get sent separately.
 
+  *pager_buf << ends;
   char *message = pager_buf->str ();
+  initialize_pager ();
 
   if (! message || ! *message)
     {
       delete [] message;
-      initialize_pager ();
       return;
     }
 
@@ -143,19 +145,16 @@ flush_output_to_pager (void)
 	  if (pager_stream)
 	    {
 	      pager_stream << message;
-	      pager_stream.flush ();
-
 	      delete [] message;
-	      initialize_pager ();
+	      pager_stream.flush ();
 	      return;
 	    }
 	}
     }
 
   cout << message;
-  cout.flush ();
   delete [] message;
-  initialize_pager ();
+  cout.flush ();
 }
 
 static void

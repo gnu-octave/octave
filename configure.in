@@ -144,6 +144,17 @@ fi
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(EXTERNAL_TEMPLATES)dnl
 
+case "$CC" in
+  gcc* | */gcc*)
+    case "$canonical_host_type" in
+      *-i[3456]86-*)
+        GCC_IEEE_FP_FLAG="-mieee-fp"
+      ;;
+    esac
+  ;;
+esac
+AC_SUBST(GCC_IEEE_FP_FLAG)dnl
+
 # If we haven't been forced to use f2c, try to find a Fortran compiler
 # under any one of several common Un*x Fortran compiler names. 
 # Put fc last to avoid confusion with some vendor's /bin/sh fc

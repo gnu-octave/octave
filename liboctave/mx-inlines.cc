@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_mx_ops_h)
-#define octave_mx_ops 1
+#if !defined (octave_mx_inlines_h)
+#define octave_mx_inlines_h 1
 
 #include <cstddef>
 
@@ -194,6 +194,7 @@ VV_OP2S (Complex, Complex)
     return true; \
   }
 
+OP_EQ_FCN (bool,    bool)
 OP_EQ_FCN (char,    char)
 OP_EQ_FCN (double,  double)
 OP_EQ_FCN (Complex, Complex)

@@ -60,6 +60,7 @@ public:
   //  Matrix (const MDiagArray2<double>& a) : MArray2<double> (a) { }
   Matrix (const DiagMatrix& a);
 
+  Matrix (const boolMatrix& a);
   Matrix (const charMatrix& a);
 
   Matrix& operator = (const Matrix& a)
@@ -175,32 +176,6 @@ public:
 
   friend Matrix operator * (const ColumnVector& a, const RowVector& b);
 
-  // diagonal matrix by scalar -> matrix operations
-
-  friend Matrix operator + (const DiagMatrix& a, double s);
-  friend Matrix operator - (const DiagMatrix& a, double s);
-
-  // scalar by diagonal matrix -> matrix operations
-
-  friend Matrix operator + (double s, const DiagMatrix& a);
-  friend Matrix operator - (double s, const DiagMatrix& a);
-
-  // matrix by diagonal matrix -> matrix operations
-
-  friend Matrix operator + (const Matrix& a, const DiagMatrix& b);
-  friend Matrix operator - (const Matrix& a, const DiagMatrix& b);
-  friend Matrix operator * (const Matrix& a, const DiagMatrix& b);
-
-  // diagonal matrix by matrix -> matrix operations
-
-  friend Matrix operator + (const DiagMatrix& a, const Matrix& b);
-  friend Matrix operator - (const DiagMatrix& a, const Matrix& b);
-  friend Matrix operator * (const DiagMatrix& a, const Matrix& b);
-
-  // matrix by matrix -> matrix operations
-
-  friend Matrix operator * (const Matrix& a, const Matrix& b);
-
   // other operations
 
   Matrix map (d_d_Mapper f) const;
@@ -259,6 +234,8 @@ extern Matrix Givens (double, double);
 extern Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 
 extern ComplexColumnVector Qzval (const Matrix& a, const Matrix& b);
+
+extern Matrix operator * (const Matrix& a, const Matrix& b);
 
 #endif
 

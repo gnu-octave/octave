@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "byte-swap.h"
+#include "dMatrix.h"
 #include "dbleAEPBAL.h"
 #include "dbleDET.h"
 #include "dbleSCHUR.h"
@@ -44,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
+#include "mx-m-dm.h"
 #include "mx-inlines.cc"
 #include "oct-cmplx.h"
 
@@ -134,6 +136,14 @@ Matrix::Matrix (const DiagMatrix& a)
 
 // XXX FIXME XXX -- could we use a templated mixed-type copy function
 // here?
+
+Matrix::Matrix (const boolMatrix& a)
+  : MArray2<double> (a.rows (), a.cols ())
+{
+  for (int i = 0; i < a.rows (); i++)
+    for (int j = 0; j < a.cols (); j++)
+      elem (i, j) = a.elem (i, j);
+}
 
 Matrix::Matrix (const charMatrix& a)
   : MArray2<double> (a.rows (), a.cols ())
@@ -1544,290 +1554,6 @@ operator * (const ColumnVector& v, const RowVector& a)
 	  F77_XFCN (dgemm, DGEMM, ("N", "N", len, a_len, 1, 1.0,
 				   v.data (), len, a.data (), 1, 0.0,
 				   c, len, 1L, 1L));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in dgemm");
-	}
-    }
-
-  return retval;
-}
-
-// diagonal matrix by scalar -> matrix operations
-
-Matrix
-operator + (const DiagMatrix& a, double s)
-{
-  Matrix tmp (a.rows (), a.cols (), s);
-  return a + tmp;
-}
-
-Matrix
-operator - (const DiagMatrix& a, double s)
-{
-  Matrix tmp (a.rows (), a.cols (), -s);
-  return a + tmp;
-}
-
-// scalar by diagonal matrix -> matrix operations
-
-Matrix
-operator + (double s, const DiagMatrix& a)
-{
-  Matrix tmp (a.rows (), a.cols (), s);
-  return tmp + a;
-}
-
-Matrix
-operator - (double s, const DiagMatrix& a)
-{
-  Matrix tmp (a.rows (), a.cols (), s);
-  return tmp - a;
-}
-
-// matrix by diagonal matrix -> matrix operations
-
-Matrix
-operator + (const Matrix& m, const DiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  Matrix result (m);
-  int a_len = a.length ();
-  for (int i = 0; i < a_len; i++)
-    result.elem (i, i) += a.elem (i, i);
-
-  return result;
-}
-
-Matrix
-operator - (const Matrix& m, const DiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  Matrix result (m);
-  int a_len = a.length ();
-  for (int i = 0; i < a_len; i++)
-    result.elem (i, i) -= a.elem (i, i);
-
-  return result;
-}
-
-Matrix
-operator * (const Matrix& m, const DiagMatrix& a)
-{
-  Matrix retval;
-
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nc != a_nr)
-    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
-  else
-    {
-      if (nr == 0 || nc == 0 || a_nc == 0)
-	retval.resize (nr, a_nc, 0.0);
-      else
-	{
-	  retval.resize (nr, a_nc);
-	  double *c = retval.fortran_vec ();
-
-	  double *ctmp = 0;
-
-	  int a_len = a.length ();
-
-	  for (int j = 0; j < a_len; j++)
-	    {
-	      int idx = j * nr;
-	      ctmp = c + idx;
-
-	      if (a.elem (j, j) == 1.0)
-		{
-		  for (int i = 0; i < nr; i++)
-		    ctmp[i] = m.elem (i, j);
-		}
-	      else if (a.elem (j, j) == 0.0)
-		{
-		  for (int i = 0; i < nr; i++)
-		    ctmp[i] = 0.0;
-		}
-	      else
-		{
-		  for (int i = 0; i < nr; i++)
-		    ctmp[i] = a.elem (j, j) * m.elem (i, j);
-		}
-	    }
-
-	  if (a_nr < a_nc)
-	    {
-	      for (int i = nr * nc; i < nr * a_nc; i++)
-		ctmp[i] = 0.0;
-	    }
-	}
-    }
-
-  return retval;
-}
-
-// diagonal matrix by matrix -> matrix operations
-
-Matrix
-operator + (const DiagMatrix& m, const Matrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  Matrix result (a);
-  for (int i = 0; i < m.length (); i++)
-    result.elem (i, i) += m.elem (i, i);
-
-  return result;
-}
-
-Matrix
-operator - (const DiagMatrix& m, const Matrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  Matrix result (-a);
-  for (int i = 0; i < m.length (); i++)
-    result.elem (i, i) += m.elem (i, i);
-
-  return result;
-}
-
-Matrix
-operator * (const DiagMatrix& m, const Matrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-  if (nc != a_nr)
-    {
-      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0 || a_nc == 0)
-    return Matrix (nr, a_nc, 0.0);
-
-  Matrix c (nr, a_nc);
-
-  for (int i = 0; i < m.length (); i++)
-    {
-      if (m.elem (i, i) == 1.0)
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = a.elem (i, j);
-	}
-      else if (m.elem (i, i) == 0.0)
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = 0.0;
-	}
-      else
-	{
-	  for (int j = 0; j < a_nc; j++)
-	    c.elem (i, j) = m.elem (i, i) * a.elem (i, j);
-	}
-    }
-
-  if (nr > nc)
-    {
-      for (int j = 0; j < a_nc; j++)
-	for (int i = a_nr; i < nr; i++)
-	  c.elem (i, j) = 0.0;
-    }
-
-  return c;
-}
-
-// matrix by matrix -> matrix operations
-
-Matrix
-operator * (const Matrix& m, const Matrix& a)
-{
-  Matrix retval;
-
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nc != a_nr)
-    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
-  else
-    {
-      if (nr == 0 || nc == 0 || a_nc == 0)
-	retval.resize (nr, a_nc, 0.0);
-      else
-	{
-	  int ld  = nr;
-	  int lda = a_nr;
-
-	  retval.resize (nr, a_nc);
-	  double *c = retval.fortran_vec ();
-
-	  F77_XFCN (dgemm, DGEMM, ("N", "N", nr, a_nc, nc, 1.0,
-				   m.data (), ld, a.data (), lda, 0.0,
-				   c, nr, 1L, 1L));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
@@ -3279,6 +3005,46 @@ Qzval (const Matrix& a, const Matrix& b)
     }
   else
     (*current_liboctave_error_handler) ("qzval: square matrices required");
+
+  return retval;
+}
+
+// matrix by matrix -> matrix operations
+
+Matrix
+operator * (const Matrix& m, const Matrix& a)
+{
+  Matrix retval;
+
+  int nr = m.rows ();
+  int nc = m.cols ();
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nc != a_nr)
+    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
+  else
+    {
+      if (nr == 0 || nc == 0 || a_nc == 0)
+	retval.resize (nr, a_nc, 0.0);
+      else
+	{
+	  int ld  = nr;
+	  int lda = a_nr;
+
+	  retval.resize (nr, a_nc);
+	  double *c = retval.fortran_vec ();
+
+	  F77_XFCN (dgemm, DGEMM, ("N", "N", nr, a_nc, nc, 1.0,
+				   m.data (), ld, a.data (), lda, 0.0,
+				   c, nr, 1L, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgemm");
+	}
+    }
 
   return retval;
 }

@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 class ColumnVector;
+class boolMatrix;
 class Matrix;
 class Range;
 
@@ -67,6 +68,10 @@ private:
     idx_vector_rep (double d);
 
     idx_vector_rep (char c);
+
+    idx_vector_rep (bool b);
+
+    idx_vector_rep (const boolMatrix& bm);
 
     idx_vector_rep (const idx_vector_rep& a);
 
@@ -128,7 +133,7 @@ private:
 
     void init_state (void);
 
-    void maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one);
+    void maybe_convert_one_zero_to_idx (int z_len);
   };
 
 public:
@@ -166,6 +171,18 @@ public:
   idx_vector (char c)
     {
       rep = new idx_vector_rep (c);
+      rep->count = 1;
+    }
+
+  idx_vector (bool b)
+    {
+      rep = new idx_vector_rep (b);
+      rep->count = 1;
+    }
+
+  idx_vector (const boolMatrix& bm)
+    {
+      rep = new idx_vector_rep (bm);
       rep->count = 1;
     }
 
@@ -238,8 +255,8 @@ public:
   friend ostream& operator << (ostream& os, const idx_vector& a)
     { return a.print (os); }
 
-  void maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one = 0)
-    { rep->maybe_convert_one_zero_to_idx (z_len, prefer_zero_one); }
+  void maybe_convert_one_zero_to_idx (int z_len)
+    { rep->maybe_convert_one_zero_to_idx (z_len); }
 
 private:
 

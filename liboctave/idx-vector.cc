@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "Range.h"
+#include "boolMatrix.h"
 #include "dColVector.h"
 #include "dMatrix.h"
 
@@ -104,6 +105,7 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
   colon_equiv_checked = 0;
   colon_equiv = 0;
   colon = 0;
+  one_zero = 0;
 
   len = v.length ();
 
@@ -114,7 +116,6 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
     {
       num_zeros = 0;
       num_ones = 0;
-      one_zero = 0;
       max_val = 0;
       min_val = 0;
       initialized = 1;
@@ -146,6 +147,7 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
   colon_equiv_checked = 0;
   colon_equiv = 0;
   colon = 0;
+  one_zero = 0;
 
   orig_nr = m.rows ();
   orig_nc = m.columns ();
@@ -156,7 +158,6 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
     {
       num_zeros = 0;
       num_ones = 0;
-      one_zero = 0;
       max_val = 0;
       min_val = 0;
       initialized = 1;
@@ -190,6 +191,7 @@ IDX_VEC_REP::idx_vector_rep (double d)
   colon_equiv_checked = 0;
   colon_equiv = 0;
   colon = 0;
+  one_zero = 0;
 
   len = 1;
 
@@ -216,6 +218,7 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
   colon_equiv_checked = 0;
   colon_equiv = 0;
   colon = 0;
+  one_zero = 0;
 
   len = r.nelem ();
 
@@ -231,7 +234,6 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
     {
       num_zeros = 0;
       num_ones = 0;
-      one_zero = 0;
       max_val = 0;
       min_val = 0;
       initialized = 1;
@@ -270,6 +272,66 @@ IDX_VEC_REP::idx_vector_rep (char c)
   colon_equiv_checked = 0;
   colon_equiv = 0;
   data = 0;
+
+  init_state ();
+}
+
+IDX_VEC_REP::idx_vector_rep (bool b)
+{
+  data = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
+  one_zero = 1;
+
+  len = 1;
+
+  orig_nr = 1;
+  orig_nc = 1;
+
+  data = new int [len];
+
+  data[0] = tree_to_mat_idx (b);
+
+  init_state ();
+}
+
+IDX_VEC_REP::idx_vector_rep (const boolMatrix& bm)
+{
+  data = 0;
+  initialized = 0;
+  frozen = 0;
+  colon_equiv_checked = 0;
+  colon_equiv = 0;
+  colon = 0;
+  one_zero = 1;
+
+  orig_nr = bm.rows ();
+  orig_nc = bm.columns ();
+
+  len = orig_nr * orig_nc;
+
+  if (len == 0)
+    {
+      num_zeros = 0;
+      num_ones = 0;
+      one_zero = 0;
+      max_val = 0;
+      min_val = 0;
+      initialized = 1;
+      return;
+    }
+  else
+    {
+      int k = 0;
+      data = new int [len];
+
+      for (int j = 0; j < orig_nc; j++)
+	for (int i = 0; i < orig_nr; i++)
+	  data[k++] = tree_to_mat_idx (bm.elem (i, j));
+    }
 
   init_state ();
 }
@@ -313,13 +375,11 @@ IDX_VEC_REP::init_state (void)
 
   if (colon)
     {
-      one_zero = 0;
-      min_val = max_val = 0;
+      min_val = 0;
+      max_val = 0;
     }
   else
     {
-      one_zero = 1;
-
       min_val = max_val = data[0];
 
       int i = 0;
@@ -329,9 +389,6 @@ IDX_VEC_REP::init_state (void)
 	    num_zeros++;
 	  else if (data[i] == 0)
 	    num_ones++;
-
-	  if (one_zero && data[i] != -1 && data[i] != 0)
-	    one_zero = 0;
 
 	  if (data[i] > max_val)
 	    max_val = data[i];
@@ -346,10 +403,9 @@ IDX_VEC_REP::init_state (void)
 }
 
 void
-IDX_VEC_REP::maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one)
+IDX_VEC_REP::maybe_convert_one_zero_to_idx (int z_len)
 {
-  if (one_zero && z_len == len
-      && (num_ones != len || prefer_zero_one))
+  if (one_zero && z_len == len)
     {
       if (num_ones == 0)
 	{
@@ -515,7 +571,7 @@ IDX_VEC_REP::freeze (int z_len, const char *tag,
 	frozen_len = 0;
       else
 	{
-	  maybe_convert_one_zero_to_idx (z_len, prefer_zero_one);
+	  maybe_convert_one_zero_to_idx (z_len);
 
 	  max_val = max ();
 	  min_val = min ();

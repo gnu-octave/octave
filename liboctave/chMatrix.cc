@@ -29,14 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <cstdio>
-#include <cstring>
-
 #include <string>
 
 #include <iostream.h>
-
-// #include <sys/types.h>  // XXX FIXME XXX
 
 #include "lo-error.h"
 #include "str-vec.h"

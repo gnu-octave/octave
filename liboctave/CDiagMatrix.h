@@ -125,25 +125,11 @@ public:
   friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
 				       const ComplexDiagMatrix& b);
 
-  friend ComplexDiagMatrix operator + (const ComplexDiagMatrix& a,
-				       const DiagMatrix& b);
-  friend ComplexDiagMatrix operator - (const ComplexDiagMatrix& a,
-				       const DiagMatrix& b);
   friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
 				       const DiagMatrix& b);
 
-  friend ComplexDiagMatrix operator + (const DiagMatrix& a,
-				       const ComplexDiagMatrix& b);
-  friend ComplexDiagMatrix operator - (const DiagMatrix& a,
-				       const ComplexDiagMatrix& b);
   friend ComplexDiagMatrix operator * (const DiagMatrix& a,
 				       const ComplexDiagMatrix& b);
-
-  friend ComplexDiagMatrix product (const ComplexDiagMatrix& a,
-				    const DiagMatrix& b); 
-
-  friend ComplexDiagMatrix product (const DiagMatrix& a,
-				    const ComplexDiagMatrix& b);
 
   // other operations
 

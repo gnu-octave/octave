@@ -20,53 +20,42 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_chMatrix_int_h)
-#define octave_chMatrix_int_h 1
+#if !defined (octave_boolMatrix_int_h)
+#define octave_boolMatrix_int_h 1
 
 #if defined (__GNUG__)
 #pragma interface
 #endif
 
-#include <string>
-
 #include "MArray2.h"
 
 #include "mx-defs.h"
-#include "str-vec.h"
 
 class
-charMatrix : public MArray2<char>
+boolMatrix : public MArray2<bool>
 {
-friend class ComplexMatrix;
-
 public:
 
-  charMatrix (void) : MArray2<char> () { }
-  charMatrix (int r, int c) : MArray2<char> (r, c) { }
-  charMatrix (int r, int c, char val) : MArray2<char> (r, c, val) { }
-  charMatrix (const MArray2<char>& a) : MArray2<char> (a) { }
-  charMatrix (const charMatrix& a) : MArray2<char> (a) { }
-  charMatrix (const char *s);
-  charMatrix (const string& s);
-  charMatrix (const string_vector& s);
+  boolMatrix (void) : MArray2<bool> () { }
+  boolMatrix (int r, int c) : MArray2<bool> (r, c) { }
+  boolMatrix (int r, int c, bool val) : MArray2<bool> (r, c, val) { }
+  boolMatrix (const MArray2<bool>& a) : MArray2<bool> (a) { }
+  boolMatrix (const boolMatrix& a) : MArray2<bool> (a) { }
 
-  charMatrix& operator = (const charMatrix& a)
+  boolMatrix& operator = (const boolMatrix& a)
     {
-      MArray2<char>::operator = (a);
+      MArray2<bool>::operator = (a);
       return *this;
     }
 
-  bool operator == (const charMatrix& a) const;
-  bool operator != (const charMatrix& a) const;
+  bool operator == (const boolMatrix& a) const;
+  bool operator != (const boolMatrix& a) const;
 
   // destructive insert/delete/reorder operations
 
-  charMatrix& insert (const char *s, int r, int c);
-  charMatrix& insert (const charMatrix& a, int r, int c);
+  boolMatrix& insert (const boolMatrix& a, int r, int c);
 
-  string row_as_string (int r, bool strip_trailing_whitespace = false) const;
-
-  charMatrix transpose (void) const;
+  boolMatrix transpose (void) const;
 
 #if 0
   // i/o
@@ -77,7 +66,7 @@ public:
 
 private:
 
-  charMatrix (char *ch, int r, int c) : MArray2<char> (ch, r, c) { }
+  boolMatrix (bool *b, int r, int c) : MArray2<bool> (b, r, c) { }
 };
 
 #endif

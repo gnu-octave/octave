@@ -40,15 +40,15 @@ function axis (ax)
     endif
 
     if (len > 1)
-      eval (sprintf ("set xrange [%d:%d];", ax (1), ax (2)));
+      eval (sprintf ("set xrange [%g:%g];", ax (1), ax (2)));
     endif
 
     if (len > 3)
-      eval (sprintf ("set yrange [%d:%d];", ax (3), ax (4)));
+      eval (sprintf ("set yrange [%g:%g];", ax (3), ax (4)));
     endif
 
     if (len > 5)
-      eval (sprintf ("set zrange [%d:%d];", ax (5), ax (6)));
+      eval (sprintf ("set zrange [%g:%g];", ax (5), ax (6)));
     endif
 
   else

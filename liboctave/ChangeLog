@@ -1,4 +1,18 @@
+Fri Jul 16 11:23:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DAEFunc.h: Remove useless preprocessor conditional.
+
 Thu Jul 15 14:10:33 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.cc (command_editor::do_decode_prompt_string):
+	Use octave_time object instead of time_t.
+
+	* file-stat.h (file_stat::fs_atime, file_stat::fs_mtime,
+	file_stat::fs_ctime): Now octave_time objects.
+	(file_stat::atime, file_stat::mtime, file_stat::ctime):
+	Return octave_time objects.
+	(file_stat::is_newer): Args are now octave_time objects instead of
+	time_t.
 
 	* oct-time.h (octave_time::as_double): Delete.
 	(octave_time::operator double ()): New function.

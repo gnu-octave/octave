@@ -1,3 +1,7 @@
+1999-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/kron.m: Fix typo in previous change
+
 1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/bode.m: Allow optional 5th arg to specify plot style.

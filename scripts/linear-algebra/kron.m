@@ -43,7 +43,7 @@ function x = kron (a, b)
       for ii = 1:ma
 	x(i_vec+(ii-1)*m,j_vec) = a(ii,jj) * b;
       endfor
-      j_vec = jvec + n;
+      j_vec = j_vec + n;
     endfor
     
   else

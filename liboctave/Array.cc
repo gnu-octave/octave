@@ -1656,7 +1656,8 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	}
       else
 	{
-	  if (idx_orig_rows == 1 || idx_orig_columns == 1)
+	  if (idx_arg.one_zero_only ()
+	      || idx_orig_rows == 1 || idx_orig_columns == 1)
 	    {
 	      if (nr == 1)
 		retval = Array<T> (tmp, dim_vector (1, len));

@@ -1,5 +1,8 @@
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (Array<T>::index2): Return value has orientation of
+	indexed value if indexing a vector with a bool matrix.
+
 	* ArrayN.h (ArrayN<T>::get_size): Delete.
 
 	* Array.cc, ArrayN.cc, dNDArray.cc, CNDArray.cc, boolNDArray.cc,

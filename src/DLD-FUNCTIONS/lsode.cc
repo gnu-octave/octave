@@ -132,6 +132,30 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   return retval;
 }
 
+#define LSODE_ABORT() \
+  do \
+    { \
+      unwind_protect::run_frame ("Flsode"); \
+      return retval; \
+    } \
+  while (0)
+ 
+#define LSODE_ABORT1(msg) \
+  do \
+    { \
+      ::error ("lsode: " ## msg); \
+      LSODE_ABORT (); \
+    } \
+  while (0)
+
+#define LSODE_ABORT2(fmt, arg) \
+  do \
+    { \
+      ::error ("lsode: " ## fmt, arg); \
+      LSODE_ABORT (); \
+    } \
+  while (0)
+
 DEFUN_DLD (lsode, args, nargout,
   "lsode (F, X0, T_OUT, T_CRIT)\n\
 \n\
@@ -150,10 +174,7 @@ where xdot and x are vectors and t is a scalar.\n")
   call_depth++;
 
   if (call_depth > 1)
-    {
-      error ("lsode: invalid recursive call");
-      return retval;
-    }
+    LSODE_ABORT1 ("invalid recursive call");
 
   int nargin = args.length ();
 
@@ -196,28 +217,22 @@ where xdot and x are vectors and t is a scalar.\n")
 	  break;
 
 	default:
-	  error ("lsode: first arg should be a string or 2-element string array");
-	  break;
+	  LSODE_ABORT1
+	    ("first arg should be a string or 2-element string array");
 	}
 
       if (error_state || ! lsode_fcn)
-	return retval;
+	LSODE_ABORT ();
 
       ColumnVector state = args(1).vector_value ();
 
       if (error_state)
-	{
-	  error ("lsode: expecting state vector as second argument");
-	  return retval;
-	}
+	LSODE_ABORT1 ("expecting state vector as second argument");
 
       ColumnVector out_times = args(2).vector_value ();
 
       if (error_state)
-	{
-	  error ("lsode: expecting output time vector as third argument");
-	  return retval;
-	}
+	LSODE_ABORT1 ("expecting output time vector as third argument");
 
       ColumnVector crit_times;
 
@@ -227,10 +242,7 @@ where xdot and x are vectors and t is a scalar.\n")
 	  crit_times = args(3).vector_value ();
 
 	  if (error_state)
-	    {
-	      error ("lsode: expecting critical time vector as fourth argument");
-	      return retval;
-	    }
+	    LSODE_ABORT1 ("expecting critical time vector as fourth argument");
 
 	  crit_times_set = 1;
 	}
@@ -480,21 +492,8 @@ to the shortest match.")
   return retval;
 }
 
-#define DLD_INSTALLER_FCN() \
-  bool \
-  FSoctave_install_dld_functions (void)
-
-#define INSTALL_DLD_FCN(name) \
-  if (! FS ## name ()) \
-    return false
-
-DLD_INSTALLER_FCN ()
-{
-  INSTALL_DLD_FCN (lsode);
-  INSTALL_DLD_FCN (lsode_options);
-
-  return true;
-}
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (lsode);
+		  INSTALL_DLD_FCN (lsode_options);)
 
 /*
 ;;; Local Variables: ***

@@ -21,14 +21,11 @@ INSTALL_DATA = @INSTALL_DATA@
 
 EL_FILES = octave-hlp.el octave-inf.el octave-mod.el
 
-ELC_FILES = octave-hlp.elc octave-inf.elc octave-mod.elc
-
 SOURCES = $(EL_FILES) otags
 
-DISTFILES = Makefile.in $(EL_FILES) $(ELC_FILES) otags NEWS TODO
+DISTFILES = Makefile.in $(EL_FILES) otags NEWS TODO README
 
-BINDISTFILES = \
-	$(addprefix $(srcdir)/, $(EL_FILES) $(ELC_FILES) otags NEWS TODO)
+BINDISTFILES = $(addprefix $(srcdir)/, $(EL_FILES) otags NEWS TODO README)
 
 all:
 .PHONY: all

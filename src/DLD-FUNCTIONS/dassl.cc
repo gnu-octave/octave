@@ -108,6 +108,30 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   return retval;
 }
 
+#define DASSL_ABORT() \
+  do \
+    { \
+      unwind_protect::run_frame ("Fdassl"); \
+      return retval; \
+    } \
+  while (0)
+
+#define DASSL_ABORT1(msg) \
+  do \
+    { \
+      ::error ("dassl: " ## msg); \
+      DASSL_ABORT (); \
+    } \
+  while (0)
+
+#define DASSL_ABORT2(fmt, arg) \
+  do \
+    { \
+      ::error ("dassl: " ## fmt, arg); \
+      DASSL_ABORT (); \
+    } \
+  while (0)
+
 DEFUN_DLD (dassl, args, ,
   "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
 dassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\
@@ -127,10 +151,7 @@ where x, xdot, and res are vectors, and t is a scalar.")
   call_depth++;
 
   if (call_depth > 1)
-    {
-      error ("dassl: invalid recursive call");
-      return retval;
-    }
+    DASSL_ABORT1 ("invalid recursive call");
 
   int nargin = args.length ();
 
@@ -142,31 +163,22 @@ where x, xdot, and res are vectors, and t is a scalar.")
 	 "; endfunction");
 
       if (! dassl_fcn)
-	return retval;
+	DASSL_ABORT ();
 
       ColumnVector state = args(1).vector_value ();
 
       if (error_state)
-	{
-	  error ("dassl: expecting state vector as second argument");
-	  return retval;
-	}
+	DASSL_ABORT1 ("expecting state vector as second argument");
 
       ColumnVector deriv = args(2).vector_value ();
 
       if (error_state)
-	{
-	  error ("dassl: expecting derivative vector as third argument");
-	  return retval;
-	}
+	DASSL_ABORT1 ("expecting derivative vector as third argument");
 
       ColumnVector out_times = args(3).vector_value ();
 
       if (error_state)
-	{
-	  error ("dassl: expecting output time vector as fourth argument");
-	  return retval;
-	}
+	DASSL_ABORT1 ("expecting output time vector as fourth argument");
 
       ColumnVector crit_times;
       int crit_times_set = 0;
@@ -175,19 +187,13 @@ where x, xdot, and res are vectors, and t is a scalar.")
 	  crit_times = args(4).vector_value ();
 
 	  if (error_state)
-	    {
-	      error ("dassl: expecting critical time vector as fifth argument");
-	      return retval;
-	    }
+	    DASSL_ABORT1 ("expecting critical time vector as fifth argument");
 
 	  crit_times_set = 1;
 	}
 
       if (state.capacity () != deriv.capacity ())
-	{
-	  error ("dassl: x and xdot must have the same size");
-	  return retval;
-	}
+	DASSL_ABORT1 ("x and xdot must have the same size");
 
       double tzero = out_times (0);
 
@@ -385,21 +391,8 @@ to the shortest match.")
   return retval;
 }
 
-#define DLD_INSTALLER_FCN() \
-  bool \
-  FSoctave_install_dld_functions (void)
-
-#define INSTALL_DLD_FCN(name) \
-  if (! FS ## name ()) \
-    return false
-
-DLD_INSTALLER_FCN ()
-{
-  INSTALL_DLD_FCN (dassl);
-  INSTALL_DLD_FCN (dassl_options);
-
-  return true;
-}
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (dassl);
+		  INSTALL_DLD_FCN (dassl_options);)
 
 /*
 ;;; Local Variables: ***

@@ -371,4 +371,3 @@ directory and makes this the current buffer's default directory."
 (provide 'octave-inf)
 
 ;;; octave-inf.el ends here
-

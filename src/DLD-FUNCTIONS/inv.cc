@@ -111,6 +111,9 @@ DEFUN_DLD (inverse, args, nargout,
   return Finv (args, nargout);
 }
 
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (inv);
+		  INSTALL_DLD_FCN (inverse);)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

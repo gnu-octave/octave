@@ -511,9 +511,15 @@ the same size as the result.\n\
   return retval;
 }
 
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (besselj);
+		  INSTALL_DLD_FCN (bessely);
+		  INSTALL_DLD_FCN (besseli);
+		  INSTALL_DLD_FCN (besselk);
+		  INSTALL_DLD_FCN (besselh);
+		  INSTALL_DLD_FCN (airy);)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***
 */
-

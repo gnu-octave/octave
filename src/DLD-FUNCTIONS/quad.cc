@@ -92,6 +92,30 @@ quad_user_function (double x)
   return retval;
 }
 
+#define QUAD_ABORT() \
+  do \
+    { \
+      unwind_protect::run_frame ("Fquad"); \
+      return retval; \
+    } \
+  while (0)
+
+#define QUAD_ABORT1(msg) \
+  do \
+    { \
+      ::error ("quad: " ## msg); \
+      QUAD_ABORT (); \
+    } \
+  while (0)
+
+#define QUAD_ABORT2(fmt, arg) \
+  do \
+    { \
+      ::error ("quad: " ## fmt, arg); \
+      QUAD_ABORT (); \
+    } \
+  while (0)
+
 DEFUN_DLD (quad, args, nargout,
   "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
 \n\
@@ -121,10 +145,7 @@ integrand is singular.")
   call_depth++;
 
   if (call_depth > 1)
-    {
-      error ("quad: invalid recursive call");
-      return retval;
-    }
+    QUAD_ABORT1 ("invalid recursive call");
 
   int nargin = args.length ();
 
@@ -134,23 +155,17 @@ integrand is singular.")
 				   "function y = __quad_fcn__ (x) y = ",
 				   "; endfunction");
       if (! quad_fcn)
-	return retval;
+	QUAD_ABORT ();
 
       double a = args(1).double_value ();
 
       if (error_state)
-	{
-	  error ("quad: expecting second argument to be a scalar");
-	  return retval;
-	}
+	QUAD_ABORT1 ("expecting second argument to be a scalar");
 
       double b = args(2).double_value ();
 
       if (error_state)
-	{
-	  error ("quad: expecting third argument to be a scalar");
-	  return retval;
-	}
+	QUAD_ABORT1 ("expecting third argument to be a scalar");
 
       int indefinite = 0;
       IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
@@ -186,29 +201,20 @@ integrand is singular.")
 	{
 	case 5:
 	  if (indefinite)
-	    {
-	      error("quad: singularities not allowed on infinite intervals");
-	      return retval;
-	    }
+	    QUAD_ABORT1 ("singularities not allowed on infinite intervals");
 
 	  have_sing = 1;
 
 	  sing = args(4).vector_value ();
 
 	  if (error_state)
-	    {
-	      error ("quad: expecting vector of singularities as fourth argument");
-	      return retval;
-	    }
+	    QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
 
 	case 4:
 	  tol = args(3).vector_value ();
 
 	  if (error_state)
-	    {
-	      error ("quad: expecting vector of tolerances as fifth argument");
-	      return retval;
-	    }
+	    QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");
 
 	  switch (tol.capacity ())
 	    {
@@ -220,8 +226,7 @@ integrand is singular.")
 	      break;
 
 	    default:
-	      error ("quad: expecting tol to contain no more than two values");
-	      return retval;
+	      QUAD_ABORT1 ("expecting tol to contain no more than two values");
 	    }
 
 	case 3:
@@ -259,10 +264,7 @@ integrand is singular.")
       retval(0) = val;
     }
   else
-    {
-      print_usage ("quad");
-      return retval;
-    }
+    print_usage ("quad");
 
   unwind_protect::run_frame ("Fquad");
 
@@ -417,21 +419,8 @@ to the shortest match.")
   return retval;
 }
 
-#define DLD_INSTALLER_FCN() \
-  bool \
-  FSoctave_install_dld_functions (void)
-
-#define INSTALL_DLD_FCN(name) \
-  if (! FS ## name ()) \
-    return false
-
-DLD_INSTALLER_FCN ()
-{
-  INSTALL_DLD_FCN (quad);
-  INSTALL_DLD_FCN (quad_options);
-
-  return true;
-}
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (quad);
+		  INSTALL_DLD_FCN (quad_options);)
 
 /*
 ;;; Local Variables: ***

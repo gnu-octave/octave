@@ -701,6 +701,9 @@ DEFUN_DLD (max, args, nargout,
   return retval;
 }
 
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (min);
+		  INSTALL_DLD_FCN (max);)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

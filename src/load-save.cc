@@ -1096,15 +1096,20 @@ read_mat_ascii_data (istream& is, const string& filename,
 		  for (int j = 0; j < nc; j++)
 		    {
 		      tmp_stream >> d;
-		      if (is)
+
+		      if (tmp_stream)
 			tmp.elem (i, j) = d;
 		      else
-			goto done;
+			{
+			  error ("load: failed to read matrix from file `%s'",
+				 filename.c_str ());
+
+			  return name;
+			}
+
 		    }
 		}
 	    }
-
-	done:
 
 	  if (is)
 	    {

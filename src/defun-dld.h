@@ -55,6 +55,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   DEFINE_FUN_INSTALLER_FUN (name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 
+#if (defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING))
+
+#define INSTALL_DLD_FCNS(body) \
+  bool \
+  FSoctave_install_dld_functions (void) \
+  { \
+    body \
+    return true; \
+  }
+
+#else
+
+#define INSTALL_DLD_FCNS(body)
+
+#endif
+
+#define INSTALL_DLD_FCN(name) \
+  if (! FS ## name ()) \
+    return false
+
 #endif
 
 #endif

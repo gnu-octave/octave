@@ -1,5 +1,28 @@
 1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Be sure to call
+	unwind_protect::run_frame before returning.
+	* DLD-FUNCTIONS/quad.cc (Fquad): Likewise.
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Likewise.
+	* DLD-FUNCTIONS/dassl.cc (Fdassl): Likewise.
+
+	* load-save.cc (read_mat_ascii_data): When reading from
+	tmp_stream, check its state, not the state of is.
+
+	* defun-dld.h (INSTALL_DLD_FCN, INSTALL_DLD_FCNS): New macros.
+	* DLD-FUNCTIONS/dassl.cc: Use them.
+	* DLD-FUNCTIONS/lsode.cc: Ditto.
+	* DLD-FUNCTIONS/fsolve.cc: Ditto.
+	* DLD-FUNCTIONS/quad.cc: Ditto.
+	* DLD-FUNCTIONS/time.cc: Ditto.
+	* DLD-FUNCTIONS/besselj.cc: Ditto.
+	* DLD-FUNCTIONS/getgrent.cc: Ditto.
+	* DLD-FUNCTIONS/getpwent.cc: Ditto.
+	* DLD-FUNCTIONS/inv.cc: Ditto.
+	* DLD-FUNCTIONS/log.cc: Ditto.
+	* DLD-FUNCTIONS/minmax.cc: Ditto.
+	* DLD-FUNCTIONS/rand.cc: Ditto.
+
 	* data.cc (Flinspace): Let linspace functions handle errors.
 
 	* mkgendoc (print_doc_string): Handle quoted names.
@@ -42,8 +65,9 @@
 
 1999-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* ov-usr-fcn.cc (octave_user_function::do_index_op): If call_depth
-	is exceeded, call unwind_protect::run_frame before returning.
+	* ov-usr-fcn.cc (octave_user_function::do_index_op): If
+	Vmax_recursion_depth is exceeded, call unwind_protect::run_frame
+	before returning.
 
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

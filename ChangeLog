@@ -1,3 +1,10 @@
+1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/README: New file.
+	* emacs/Makefile.in (DISTFILES, BINDISTFILES): Add it to the lists.
+
+	* emacs/Makefile.in: Don't distribute .elc files.
+
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for select and poll.  Also check for poll.h

@@ -216,6 +216,12 @@ Close the group database.\n\
   return retval;
 }
 
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (getgrent);
+		  INSTALL_DLD_FCN (getgrgid);
+		  INSTALL_DLD_FCN (getgrnam);
+		  INSTALL_DLD_FCN (setgrent);
+		  INSTALL_DLD_FCN (endgrent);)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

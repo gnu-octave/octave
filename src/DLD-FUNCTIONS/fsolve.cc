@@ -124,6 +124,30 @@ fsolve_user_function (const ColumnVector& x)
   return retval;
 }
 
+#define FSOLVE_ABORT() \
+  do \
+    { \
+      unwind_protect::run_frame ("Ffsolve"); \
+      return retval; \
+    } \
+  while (0)
+
+#define FSOLVE_ABORT1(msg) \
+  do \
+    { \
+      ::error ("fsolve: " ## msg); \
+      FSOLVE_ABORT (); \
+    } \
+  while (0)
+
+#define FSOLVE_ABORT2(fmt, arg) \
+  do \
+    { \
+      ::error ("fsolve: " ## fmt, arg); \
+      FSOLVE_ABORT (); \
+    } \
+  while (0)
+
 DEFUN_DLD (fsolve, args, nargout,
   "Solve nonlinear equations using Minpack.  Usage:\n\
 \n\
@@ -144,10 +168,7 @@ where y and x are vectors.")
   call_depth++;
 
   if (call_depth > 1)
-    {
-      error ("fsolve: invalid recursive call");
-      return retval;
-    }
+    FSOLVE_ABORT1 ("invalid recursive call");
 
   int nargin = args.length ();
 
@@ -157,15 +178,12 @@ where y and x are vectors.")
 				    "function y = __fsolve_fcn__ (x) y = ",
 				    "; endfunction");
       if (! fsolve_fcn)
-	return retval;
+	FSOLVE_ABORT ();
 
       ColumnVector x = args(1).vector_value ();
 
       if (error_state)
-	{
-	  error ("fsolve: expecting vector as second argument");
-	  return retval;
-	}
+	FSOLVE_ABORT1 ("expecting vector as second argument");
 
       if (nargin > 2)
 	warning ("fsolve: ignoring extra arguments");
@@ -344,21 +362,8 @@ to the shortest match.")
   return retval;
 }
 
-#define DLD_INSTALLER_FCN() \
-  bool \
-  FSoctave_install_dld_functions (void)
-
-#define INSTALL_DLD_FCN(name) \
-  if (! FS ## name ()) \
-    return false
-
-DLD_INSTALLER_FCN ()
-{
-  INSTALL_DLD_FCN (fsolve);
-  INSTALL_DLD_FCN (fsolve_options);
-
-  return true;
-}
+INSTALL_DLD_FCNS (INSTALL_DLD_FCN (fsolve);
+		  INSTALL_DLD_FCN (fsolve_options);)
 
 /*
 ;;; Local Variables: ***

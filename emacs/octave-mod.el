@@ -40,6 +40,7 @@
 ;; `run-octave' for further information on usage and customization.
 
 ;;; Code:
+(require 'custom)
 
 (defgroup octave nil
   "Major mode for editing Octave source files."

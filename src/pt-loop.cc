@@ -56,16 +56,16 @@ quit_loop_now (void)
 
   // Maybe handle `continue N' someday...
 
-  if (tree_continue_command::continuing)
-    tree_continue_command::continuing--;
+  if (tree_continue_expression::continuing)
+    tree_continue_expression::continuing--;
 
   bool quit = (error_state
-	       || tree_return_command::returning
-	       || tree_break_command::breaking
-	       || tree_continue_command::continuing);
+	       || tree_return_expression::returning
+	       || tree_break_expression::breaking
+	       || tree_continue_expression::continuing);
 
-  if (tree_break_command::breaking)
-    tree_break_command::breaking--;
+  if (tree_break_expression::breaking)
+    tree_break_expression::breaking--;
 
   return quit;
 }

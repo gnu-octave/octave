@@ -1,5 +1,16 @@
 2002-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-jump.h, pt-jump.cc (tree_break_expression,
+	tree_continue_expression, tree_return_expression): Rename from
+	tree_break_command, tree_continue_command, tree_return_command.
+	Implement as expressions that return TRUE instead of commands.
+	Change all uses.
+	* parse.y (make_break_expression, make_continue_expression,
+	make_return_expression): Rename from make_break_command,
+	make_continue_command, make_return_command.  Change all uses.
+	(jump_expr): Rename from jump_command, type is now expression.
+	Use in simple_expr, not command.	
+
 	* toplev.cc (octave_initialized): New global variable.
 	(main_loop): Set it to true here.
 	* sighandlers.cc (sigint_handler): Exit immediately if we have not

@@ -39,63 +39,69 @@ class octave_value_list;
 // Break.
 
 // Nonzero means we're breaking out of a loop or function body.
-int tree_break_command::breaking = 0;
+int tree_break_expression::breaking = 0;
 
-void
-tree_break_command::eval (void)
+octave_value
+tree_break_expression::rvalue (void)
 {
   // Even if we have an error we should still enter debug mode.
   MAYBE_DO_BREAKPOINT;
 
   if (! error_state)
     breaking = 1;
+
+  return true;
 }
 
 void
-tree_break_command::accept (tree_walker& tw)
+tree_break_expression::accept (tree_walker& tw)
 {
-  tw.visit_break_command (*this);
+  tw.visit_break_expression (*this);
 }
 
 // Continue.
 
 // Nonzero means we're jumping to the end of a loop.
-int tree_continue_command::continuing = 0;
+int tree_continue_expression::continuing = 0;
 
-void
-tree_continue_command::eval (void)
+octave_value
+tree_continue_expression::rvalue (void)
 {
   MAYBE_DO_BREAKPOINT;
 
   if (! error_state)
     continuing = 1;
+
+  return true;
 }
 
 void
-tree_continue_command::accept (tree_walker& tw)
+tree_continue_expression::accept (tree_walker& tw)
 {
-  tw.visit_continue_command (*this);
+  tw.visit_continue_expression (*this);
 }
 
 // Return.
 
 // Nonzero means we're returning from a function.  Global because it
 // is also needed in tree-expr.cc.
-int tree_return_command::returning = 0;
+int tree_return_expression::returning = 0;
 
-void
-tree_return_command::eval (void)
+octave_value
+tree_return_expression::rvalue (void)
 {
   MAYBE_DO_BREAKPOINT;
 
   if (! error_state)
     returning = 1;
+
+  return true;
 }
 
 void
-tree_return_command::accept (tree_walker& tw)
+tree_return_expression::accept (tree_walker& tw)
 {
-  tw.visit_return_command (*this);
+  tw.visit_return_expression (*this);
 }
 
 /*

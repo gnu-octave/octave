@@ -149,11 +149,11 @@ do_unwind_protect_cleanup_code (void *ptr)
   // We don't have to worry about continue statements because they can
   // only occur in loops.
 
-  unwind_protect_int (tree_return_command::returning);
-  tree_return_command::returning = 0;
+  unwind_protect_int (tree_return_expression::returning);
+  tree_return_expression::returning = 0;
 
-  unwind_protect_int (tree_break_command::breaking);
-  tree_break_command::breaking = 0;
+  unwind_protect_int (tree_break_expression::breaking);
+  tree_break_expression::breaking = 0;
 
   if (list)
     list->eval ();
@@ -185,7 +185,7 @@ do_unwind_protect_cleanup_code (void *ptr)
   // break in the cleanup block, the values should be reset to
   // whatever they were when the cleanup block was entered.
 
-  if (tree_break_command::breaking || tree_return_command::returning)
+  if (tree_break_expression::breaking || tree_return_expression::returning)
     {
       unwind_protect::discard ();
       unwind_protect::discard ();

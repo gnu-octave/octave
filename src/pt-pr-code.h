@@ -53,11 +53,11 @@ public:
 
   void visit_binary_expression (tree_binary_expression&);
 
-  void visit_break_command (tree_break_command&);
+  void visit_break_expression (tree_break_expression&);
 
   void visit_colon_expression (tree_colon_expression&);
 
-  void visit_continue_command (tree_continue_command&);
+  void visit_continue_expression (tree_continue_expression&);
 
   void visit_decl_command (tree_decl_command&);
 
@@ -107,7 +107,7 @@ public:
 
   void visit_prefix_expression (tree_prefix_expression&);
 
-  void visit_return_command (tree_return_command&);
+  void visit_return_expression (tree_return_expression&);
 
   void visit_return_list (tree_return_list&);
 

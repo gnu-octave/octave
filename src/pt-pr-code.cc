@@ -82,7 +82,7 @@ tree_print_code::visit_binary_expression (tree_binary_expression& expr)
 }
 
 void
-tree_print_code::visit_break_command (tree_break_command&)
+tree_print_code::visit_break_expression (tree_break_expression&)
 {
   indent ();
 
@@ -123,7 +123,7 @@ tree_print_code::visit_colon_expression (tree_colon_expression& expr)
 }
 
 void
-tree_print_code::visit_continue_command (tree_continue_command&)
+tree_print_code::visit_continue_expression (tree_continue_expression&)
 {
   indent ();
 
@@ -782,7 +782,7 @@ tree_print_code::visit_prefix_expression (tree_prefix_expression& expr)
 }
 
 void
-tree_print_code::visit_return_command (tree_return_command&)
+tree_print_code::visit_return_expression (tree_return_expression&)
 {
   indent ();
 

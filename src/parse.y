@@ -219,17 +219,17 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
 		  tree_expression *expr, tree_statement_list *body,
 		  token *end_tok, octave_comment_list *lc);
 
-// Build a break command.
-static tree_command *
-make_break_command (token *break_tok);
+// Build a break expression.
+static tree_expression *
+make_break_expression (token *break_tok);
 
-// Build a continue command.
-static tree_command *
-make_continue_command (token *continue_tok);
+// Build a continue expression.
+static tree_expression *
+make_continue_expression (token *continue_tok);
 
-// Build a return command.
-static tree_command *
-make_return_command (token *return_tok);
+// Build a return expression.
+static tree_expression *
+make_return_expression (token *return_tok);
 
 // Start an if command.
 static tree_if_command_list *
@@ -418,8 +418,9 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
 %type <tree_expression_type> title matrix cell
-%type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
-%type <tree_expression_type> simple_expr colon_expr assign_expr expression
+%type <tree_expression_type> primary_expr postfix_expr prefix_expr
+%type <tree_expression_type> binary_expr simple_expr colon_expr
+%type <tree_expression_type> assign_expr jump_expr expression
 %type <tree_identifier_type> identifier
 %type <octave_user_function_type> function1 function2 function3
 %type <tree_index_expression_type> word_list_cmd
@@ -429,7 +430,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_parameter_list_type> param_list param_list1
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
-%type <tree_command_type> jump_command except_command function
+%type <tree_command_type> except_command function
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -786,6 +787,8 @@ colon_expr1	: prefix_expr
 
 simple_expr	: colon_expr
 		  { $$ = $1; }
+		| jump_expr
+		  { $$ = $1; }
 		| simple_expr LSHIFT simple_expr
 		  { $$ = make_binary_op (LSHIFT, $1, $2, $3); }
 		| simple_expr RSHIFT simple_expr
@@ -890,8 +893,6 @@ command		: declaration
 		| select_command
 		  { $$ = $1; }
 		| loop_command
-		  { $$ = $1; }
-		| jump_command
 		  { $$ = $1; }
 		| except_command
 		  { $$ = $1; }
@@ -1041,19 +1042,19 @@ loop_command	: WHILE stash_comment expression opt_sep opt_list END
 // Jumping
 // =======
 
-jump_command	: BREAK
+jump_expr	: BREAK
 		  {
-		    if (! ($$ = make_break_command ($1)))
+		    if (! ($$ = make_break_expression ($1)))
 		      ABORT_PARSE;
 		  }
 		| CONTINUE
 		  {
-		    if (! ($$ = make_continue_command ($1)))
+		    if (! ($$ = make_continue_expression ($1)))
 		      ABORT_PARSE;
 		  }
 		| FUNC_RET
 		  {
-		    if (! ($$ = make_return_command ($1)))
+		    if (! ($$ = make_return_expression ($1)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -2243,12 +2244,12 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
   return retval;
 }
 
-// Build a break command.
+// Build a break expression.
 
-static tree_command *
-make_break_command (token *break_tok)
+static tree_expression *
+make_break_expression (token *break_tok)
 {
-  tree_command *retval = 0;
+  tree_expression *retval = 0;
 
   int l = break_tok->line ();
   int c = break_tok->column ();
@@ -2256,46 +2257,46 @@ make_break_command (token *break_tok)
   if (lexer_flags.looping || lexer_flags.defining_func
       || reading_script_file || evaluating_function_body
       || evaluating_looping_command)
-    retval = new tree_break_command (l, c);
+    retval = new tree_break_expression (l, c);
   else
-    retval = new tree_no_op_command ("break", l, c);
+    yyerror ("invalid use of break");
 
   return retval;
 }
 
-// Build a continue command.
+// Build a continue expression.
 
-static tree_command *
-make_continue_command (token *continue_tok)
+static tree_expression *
+make_continue_expression (token *continue_tok)
 {
-  tree_command *retval = 0;
+  tree_expression *retval = 0;
 
   int l = continue_tok->line ();
   int c = continue_tok->column ();
 
   if (lexer_flags.looping || evaluating_looping_command)
-    retval = new tree_continue_command (l, c);
+    retval = new tree_continue_expression (l, c);
   else
-    retval = new tree_no_op_command ("continue", l, c);
+    yyerror ("invalid use of continue");
 
   return retval;
 }
 
-// Build a return command.
+// Build a return expression.
 
-static tree_command *
-make_return_command (token *return_tok)
+static tree_expression *
+make_return_expression (token *return_tok)
 {
-  tree_command *retval = 0;
+  tree_expression *retval = 0;
 
   int l = return_tok->line ();
   int c = return_tok->column ();
 
   if (lexer_flags.defining_func || reading_script_file
       || evaluating_function_body)
-    retval = new tree_return_command (l, c);
+    retval = new tree_return_expression (l, c);
   else
-    retval = new tree_no_op_command ("return", l, c);
+    yyerror ("invalid use of return");
 
   return retval;
 }
@@ -2865,14 +2866,14 @@ parse_and_execute (FILE *f)
 
 	      OCTAVE_QUIT;
 
-	      bool quit = (tree_return_command::returning
-			   || tree_break_command::breaking);
+	      bool quit = (tree_return_expression::returning
+			   || tree_break_expression::breaking);
 
-	      if (tree_return_command::returning)
-		tree_return_command::returning = 0;
+	      if (tree_return_expression::returning)
+		tree_return_expression::returning = 0;
 
-	      if (tree_break_command::breaking)
-		tree_break_command::breaking--;
+	      if (tree_break_expression::breaking)
+		tree_break_expression::breaking--;
 
 	      if (error_state)
 		{
@@ -3558,9 +3559,9 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 	      command = 0;
 
 	      if (error_state
-		  || tree_return_command::returning
-		  || tree_break_command::breaking
-		  || tree_continue_command::continuing)
+		  || tree_return_expression::returning
+		  || tree_break_expression::breaking
+		  || tree_continue_expression::continuing)
 		break;
 	    }
 	  else if (parser_end_of_input)

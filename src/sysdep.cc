@@ -120,7 +120,7 @@ NeXT_init (void)
 {
   malloc_error (malloc_handler);
 }
-#endif
+endif
 
 #if defined (__EMX__)
 OS2_init (void)
@@ -320,7 +320,12 @@ kbhit (void)
 }
 
 DEFUN (clc, , ,
-  "clc (): clear screen")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} clc ()\n\
+@deftypefnx {Built-in Function} {} home ()\n\
+Clear the terminal screen and move the cursor to the upper left corner.\n\
+@end deftypefn\n\
+")
 {
   command_editor::clear_screen ();
 

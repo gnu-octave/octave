@@ -534,9 +534,41 @@ do_run_history (int argc, const string_vector& argv)
 }
 
 DEFUN_TEXT (edit_history, args, ,
-  "edit_history [first] [last]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} edit_history options\n\
+If invoked with no arguments, @code{edit_history} allows you to edit the\n\
+history list using the editor named by the variable @code{EDITOR}.  The\n\
+commands to be edited are first copied to a temporary file.  When you\n\
+exit the editor, Octave executes the commands that remain in the file.\n\
+It is often more convenient to use @code{edit_history} to define functions \n\
+rather than attempting to enter them directly on the command line.\n\
+By default, the block of commands is executed as soon as you exit the\n\
+editor.  To avoid executing any commands, simply delete all the lines\n\
+from the buffer before exiting the editor.\n\
 \n\
-edit commands from the history list")
+The @code{edit_history} command takes two optional arguments specifying\n\
+the history numbers of first and last commands to edit.  For example,\n\
+the command\n\
+\n\
+@example\n\
+edit_history 13\n\
+@end example\n\
+\n\
+@noindent\n\
+extracts all the commands from the 13th through the last in the history\n\
+list.  The command\n\
+\n\
+@example\n\
+edit_history 13 169\n\
+@end example\n\
+\n\
+@noindent\n\
+only extracts commands 13 through 169.  Specifying a larger number for\n\
+the first command than the last command reverses the list of commands\n\
+before placing them in the buffer to be edited.  If both arguments are\n\
+omitted, the previous command in the history list is used.\n\
+@end deffn\n\
+")
 {
   octave_value_list retval;
 
@@ -553,9 +585,34 @@ edit commands from the history list")
 }
 
 DEFUN_TEXT (history, args, ,
-  "history [N] [-w file] [-r file] [-q]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} history options\n\
+If invoked with no arguments, @code{history} displays a list of commands\n\
+that you have executed.  Valid options are:\n\
 \n\
-display, save, or load command history")
+@table @code\n\
+@item -w @var{file}\n\
+Write the current history to the file @var{file}.  If the name is\n\
+omitted, use the default history file (normally @file{~/.octave_hist}).\n\
+\n\
+@item -r @var{file}\n\
+Read the file @var{file}, replacing the current history list with its\n\
+contents.  If the name is omitted, use the default history file\n\
+(normally @file{~/.octave_hist}).\n\
+\n\
+@item @var{N}\n\
+Only display the most recent @var{N} lines of history.\n\
+\n\
+@item -q\n\
+Don't number the displayed lines of history.  This is useful for cutting\n\
+and pasting commands if you are using the X Window System.\n\
+@end table\n\
+\n\
+For example, to display the five most recent commands that you have\n\
+typed without displaying line numbers, use the command\n\
+@kbd{history -q 5}.\n\
+@end deffn\n\
+")
 {
   octave_value_list retval;
 
@@ -572,9 +629,12 @@ display, save, or load command history")
 }
 
 DEFUN_TEXT (run_history, args, ,
-  "run_history [first] [last]\n\
-\n\
-run commands from the history list")
+  "-*- texinfo -*-\n\
+@deffn {Command} run_history [first] [last]\n\
+Similar to @code{edit_history}, except that the editor is not invoked,\n\
+and the commands are simply executed as they appear in the history list.\n\
+@end deffn\n\
+")
 {
   octave_value_list retval;
 
@@ -644,15 +704,33 @@ void
 symbols_of_oct_hist (void)
 {
   DEFVAR (history_file, default_history_file (), history_file,
-    "name of command history file");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} history_file\n\
+This variable specifies the name of the file used to store command\n\
+history.  The default value is @code{\"~/.octave_hist\"}, but may be\n\
+overridden by the environment variable @code{OCTAVE_HISTFILE}.\n\
+@end defvr\n\
+");
 
   double tmp_hist_size = default_history_size ();
 
   DEFVAR (history_size, tmp_hist_size, history_size,
-    "number of commands to save in the history list");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} history_size\n\
+This variable specifies how many entries to store in the history file.\n\
+The default value is @code{1024}, but may be overridden by the\n\
+environment variable @code{OCTAVE_HISTSIZE}.\n\
+@end defvr\n\
+");
 
   DEFVAR (saving_history, 1.0, saving_history,
-    "save command history");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} saving_history\n\
+If the value of @code{saving_history} is nonzero, command entered\n\
+on the command line are saved in the file specified by the variable\n\
+@code{history_file}.\n\
+@end defvr\n\
+");
 }
 
 /*

@@ -17,10 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  y = lin2mu (x)
-##
-## x is a vector of an 8- or 16-bit linearly encoded audio sample,
-## This is transformed into a mu-law encoded vector.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} lin2mu (@var{x})
+## If the vector @var{x} represents mono audio data in 8- or 16-bit
+## linear encoding, @code{lin2mu (@var{x})} is the corresponding mu-law
+## encoding.
+## @end deftypefn
+
+## See also: mu2lin, loadaudio, saveaudio, playaudio, setaudio, record
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 17 October 1994

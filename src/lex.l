@@ -741,7 +741,7 @@ fixup_column_count (char *s)
 #ifdef yywrap
 #undef yywrap
 #endif
-static int
+int
 yywrap (void)
 {
   return 1;
@@ -1532,7 +1532,7 @@ have_continuation (bool trailing_comments_ok)
   ostrstream buf;
 
   bool in_comment = false;
-  char c;
+  int c;
   while ((c = yyinput ()) != EOF)
     {
       buf << (char) c;

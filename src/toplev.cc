@@ -236,9 +236,14 @@ x = computer ()\n\
 }
 
 DEFUN (quit, args, nargout,
-  "quit (STATUS): exit Octave gracefully, returning STATUS to the system.\n\
-\n\
-STATUS should be an integer value.  If STATUS is missing, 0 is assumed.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} exit (@var{status})\n\
+@deftypefnx {Built-in Function} {} quit (@var{status})\n\
+Exit the current Octave session.  If the optional integer value\n\
+@var{status} is supplied, pass that value to the operating system as the\n\
+Octave's exit status.\n\
+@end deftypefn\n\
+")
 {
   octave_value_list retval;
 
@@ -532,10 +537,24 @@ do_octave_atexit (void)
 }
 
 DEFUN (atexit, args, ,
-  "atexit (NAME): register NAME as a function to call when Octave exits\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} atexit (@var{fcn})\n\
+Register a function to be called when Octave exits.  For example,\n\
 \n\
-Functions are called with no arguments in the reverse of the order in\n\
-which they were registered with atexit()")
+@example\n\
+@group\n\
+function print_flops_at_exit ()\n\
+  printf (\"\\n%s\\n\", system (\"fortune\"));\n\
+  fflush (stdout);\n\
+endfunction\n\
+atexit (\"print_flops_at_exit\");\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+will print a message when Octave exits.\n\
+@end deftypefn\n\
+")
 {
   octave_value_list retval;
 
@@ -689,15 +708,66 @@ void
 symbols_of_toplev (void)
 {
   DEFCONST (argv, ,
-    "the command line arguments this program was invoked with");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} argv\n\
+The command line arguments passed to Octave are available in this\n\
+variable.  For example, if you invoked Octave using the command\n\
+\n\
+@example\n\
+octave --no-line-editing --silent\n\
+@end example\n\
+\n\
+@noindent\n\
+@code{argv} would be a list of strings with the elements\n\
+@code{--no-line-editing} and @code{--silent}.\n\
+\n\
+If you write an executable Octave script, @code{argv} will contain the\n\
+list of arguments passed to the script.  @pxref{Executable Octave Programs}.\n\
+@end defvr\n\
+");
 
   DEFCONST (program_invocation_name,
 	    octave_env::get_program_invocation_name (),
-    "the full name of the current program or script, including the\n\
-directory specification");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} program_invocation_name\n\
+@defvrx {Built-in Variable} program_name\n\
+When Octave starts, the value of the built-in variable\n\
+@code{program_invocation_name} is automatically set to the name that was\n\
+typed at the shell prompt to run Octave, and the value of\n\
+@code{program_name} is automatically set to the final component of\n\
+@code{program_invocation_name}.  For example, if you typed\n\
+@samp{@value{OCTAVEHOME}/bin/octave} to start Octave,\n\
+@code{program_invocation_name} would have the value\n\
+@code{\"@value{OCTAVEHOME}/bin/octave\"}, and @code{program_name} would\n\
+have the value @code{\"octave\"}.\n\
+\n\
+If executing a script from the command line (e.g., @code{octave foo.m})\n\
+or using an executable Octave script, the program name is set to the\n\
+name of the script.  @xref{Executable Octave Programs} for an example of\n\
+how to create an executable Octave script.\n\
+@end defvr\n\
+");
 
   DEFCONST (program_name, octave_env::get_program_name (),
-    "the name of the current program or script");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} program_invocation_name\n\
+@defvrx {Built-in Variable} program_name\n\
+When Octave starts, the value of the built-in variable\n\
+@code{program_invocation_name} is automatically set to the name that was\n\
+typed at the shell prompt to run Octave, and the value of\n\
+@code{program_name} is automatically set to the final component of\n\
+@code{program_invocation_name}.  For example, if you typed\n\
+@samp{@value{OCTAVEHOME}/bin/octave} to start Octave,\n\
+@code{program_invocation_name} would have the value\n\
+@code{\"@value{OCTAVEHOME}/bin/octave\"}, and @code{program_name} would\n\
+have the value @code{\"octave\"}.\n\
+\n\
+If executing a script from the command line (e.g., @code{octave foo.m})\n\
+or using an executable Octave script, the program name is set to the\n\
+name of the script.  @xref{Executable Octave Programs} for an example of\n\
+how to create an executable Octave script.\n\
+@end defvr\n\
+");
 }
 
 /*

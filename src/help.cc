@@ -827,9 +827,24 @@ builtin_help (int argc, const string_vector& argv)
 }
 
 DEFUN_TEXT (help, args, ,
-  "help [-i] [topic ...]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} help\n\
+Octave's @code{help} command can be used to print brief usage-style\n\
+messages, or to display information directly from an on-line version of\n\
+the printed manual, using the GNU Info browser.  If invoked without any\n\
+arguments, @code{help} prints a list of all the available operators,\n\
+functions, and built-in variables.  If the first argument is @code{-i},\n\
+the @code{help} command searches the index of the on-line version of\n\
+this manual for the given topics.\n\
 \n\
-print cryptic yet witty messages")
+For example, the command @kbd{help help} prints a short message\n\
+describing the @code{help} command, and @kbd{help -i help} starts the\n\
+GNU Info browser at this node in the on-line version of the manual.\n\
+\n\
+Once the GNU Info browser is running, help for using it is available\n\
+using the command @kbd{C-h}.\n\
+@end deffn\n\
+")
 {
   octave_value_list retval;
 
@@ -1174,14 +1189,31 @@ void
 symbols_of_help (void)
 {
   DEFVAR (INFO_FILE, Vinfo_file, info_file,
-    "name of the Octave info file");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} INFO_FILE\n\
+The variable @code{INFO_FILE} names the location of the Octave info file.\n\
+The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
+@var{octave-home} is the directory where all of Octave is installed.\n\
+@end defvr\n\
+");
 
   DEFVAR (INFO_PROGRAM, Vinfo_prog, info_prog,
-    "name of the Octave info reader");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} INFO_FILE\n\
+The variable @code{INFO_FILE} names the location of the Octave info file.\n\
+The default value is @code{\"@var{octave-home}/info/octave.info\"}, where\n\
+@var{octave-home} is the directory where all of Octave is installed.\n\
+@end defvr\n\
+");
 
   DEFVAR (suppress_verbose_help_message, 0.0, suppress_verbose_help_message,
-    "suppress printing of message pointing to additional help in the\n\
-help and usage functions");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} suppress_verbose_help_message\n\
+If the value of @code{suppress_verbose_help_message} is nonzero, Octave\n\
+will not add additional help information to the end of the output from\n\
+the @code{help} command and usage messages for built-in commands.\n\
+@end defvr\n\
+");
 }
 
 /*

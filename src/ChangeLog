@@ -1,3 +1,18 @@
+1999-11-02  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* src/help.cc (Fhelp): Texinfoize doc string.
+	* src/input.cc (Fecho, Fcompletion_matches): Ditto.
+	* src/oct-hist.cc (Fedit_history, Fhistory, Frun_history): Ditto.
+	* src/pager.cc (Fdiary): Ditto.
+	* src/sysdep.cc (Fclc): Ditto.
+	* src/toplev.cc (Fquit, Fatexit): Ditto.
+	
+1999-11-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (yywrap): No longer static.
+	(have_continuation): Declare input character as int, not char, so
+	comparison to EOF will work.
+
 1999-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defun.cc (print_usage): Use display_help_text instead of sending

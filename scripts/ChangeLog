@@ -1,3 +1,12 @@
+1999-11-02  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* scripts/audio/lin2mu.m: Texinfoize doc string.
+	* scripts/audio/loadaudio.m: Ditto.
+	* scripts/audio/mu2lin.m: Ditto.
+	* scripts/audio/playaudio.m: Ditto.
+	* scripts/audio/record.m: Ditto.
+	* scripts/audio/saveaudio.m: Ditto.
+
 1999-10-26  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* elfun/acot.m: Texinfoize doc string.

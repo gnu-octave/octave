@@ -17,6 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} record (@var{sec}, @var{sampling_rate})
+## Records @var{sec} seconds of audio input into the vector @var{x}.  The
+## default value for @var{sampling_rate} is 8000 samples per second, or
+## 8kHz.  The program waits until the user types @key{RET} and then
+## immediately starts to record.
+## @end deftypefn
+
+## See also: lin2mu, mu2lin, loadaudio, saveaudio, playaudio, setaudio
+
 ## usage:  X = record (sec [, sampling_rate])
 ##
 ## Records sec seconds of audio into the vector X.

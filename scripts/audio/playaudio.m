@@ -17,19 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: playaudio (name [, ext])
-##        playaudio (X)
-##
-## `playaudio ("name" [, "ext"])' plays the audio file "name.ext". The
-## default value for the "ext" argument, which has to be written
-## without the initial ".", is "lin".
-## Currently, the following audio formats are suppored:
-## *) linear encoding with extension "lin" or "raw", played using
-##    /dev/dsp
-## *) mu-law encoding with extension "mu", "au" or "snd", played
-##    using /dev/audio
-##
-## `playaudio (X)' plays the audio data contained in the vector X.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} playaudio (@var{name}, @var{ext})
+## @deftypefnx {Function File} {} playaudio (@var{x})
+## Plays the audio file @file{@var{name}.@var{ext}} or the audio data
+## stored in the vector @var{x}.
+## @end deftypefn
+
+## See also: lin2mu, mu2lin, loadaudio, saveaudio, setaudio, record
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 11 April 1994

@@ -17,12 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: y = mu2lin (x [, bit])
-##
-## If x is a vector of audio data with mu-law encoding, mu2lin (x)
-## holds the same data with linear encoding.
-## The optional argument bit specifies whether the input data is
-## 8 bit (default) or 16 bit.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} mu2lin (@var{x}, @var{bps})
+## If the vector @var{x} represents mono audio data in mu-law encoding,
+## @code{mu2lin} converts it to linear encoding.  The optional argument
+## @var{bps} specifies whether the input data uses 8 bit per sample
+## (default) or 16 bit.
+## @end deftypefn
+
+## See also: lin2mu, loadaudio, saveaudio, playaudio, setaudio, record
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 18 October 1994

@@ -17,17 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  saveaudio (name, X, [, ext [, bit]])
-##
-## Saves a vector X of audio data in the file "name.ext".
-## The format of the audio file is determined by ext which has to be
-## written without an inital ".";  default value for ext is "lin".
-##
-## Currently, the following audio formats are supported:
-## *) mu-law files with extension "mu", "au" or "snd"
-## *) linearly encoded files with extension "lin" or "raw"
-## If the data is saved linearly, the bit argument decides whether an
-## 8-bit (default) or a 16-bit format is used.
+## -*- texinfo -*- 
+## @deftypefn {Function File} {} saveaudio (@var{name}, @var{x}, @var{ext}, @var{bps})
+## Saves a vector @var{x} of audio data to the file
+## @file{@var{name}.@var{ext}}.  The optional parameters @var{ext} and
+## @var{bps} determine the encoding and the number of bits per sample used
+## in the audio file (see @code{loadaudio});  defaults are @file{lin} and
+## 8, respectively.
+## @end deftypefn
+
+## See also: lin2mu, mu2lin, loadaudio, playaudio, setaudio, record
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 5 September 1994

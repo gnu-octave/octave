@@ -17,20 +17,21 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  X = loadaudio (name [, ext [, bit]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
+## Loads audio data from the file @file{@var{name}.@var{ext}} into the
+## vector @var{x}.  
 ##
-## Loads audio data from the file "name.ext" into the data vector X.
-## Default value for the "ext" argument, which has to be written
-## without the initial ".", is "lin".
-## Currently, the following audio formats are supported:
-## *) mu-law encoding with extension "mu", "au", or "snd"
-## *) linear encoding with extension "lin", "pcm", or "raw"
-##
-## The `bit' argument can be either 8 (default) or 16.
-## Depending on the value of bit, linearly encoded files are
-## interpreted as being in 8 and 16 bit format, respectively, and
-## mu-law encoded files are transformed to 8 and 16-bit linear
-## format, respectively.
+## The extension @var{ext} determines how the data in the audio file is
+## interpreted;  the extensions @file{lin} (default) and @file{raw}
+## correspond to linear, the extensions @file{au}, @file{mu}, or @file{snd}
+## to mu-law encoding.
+## 
+## The argument @var{bps} can be either 8 (default) or 16, and specifies
+## the number of bits per sample used in the audio file.
+## @end deftypefn
+
+## See also: lin2mu, mu2lin, saveaudio, playaudio, setaudio, record
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 10 April 1994

@@ -358,10 +358,26 @@ open_diary_file (void)
 }
 
 DEFUN_TEXT (diary, args, ,
-  "diary [on|off]\n\
-diary [file]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} diary options\n\
+Create a list of all commands @emph{and} the output they produce, mixed\n\
+together just as you see them on your terminal.  Valid options are:\n\
 \n\
-redirect all input and screen output to a file.")
+@table @code\n\
+@item on\n\
+Start recording your session in a file called @file{diary} in your\n\
+current working directory.\n\
+\n\
+@item off\n\
+Stop recording your session in the diary file.\n\
+\n\
+@item @var{file}\n\
+Record your session in the file named @var{file}.\n\
+@end table\n\
+\n\
+Without any arguments, @code{diary} toggles the current diary state.\n\
+@end deffn\n\
+")
 {
   octave_value_list retval;
 

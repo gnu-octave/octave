@@ -647,15 +647,32 @@ maybe help in debugging function files")
 }
 
 DEFUN_TEXT(echo, args, ,
-  "echo [options]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} echo options\n\
+Control whether commands are displayed as they are executed.  Valid\n\
+options are:\n\
 \n\
-  echo [on|off]         -- enable or disable echoing of commands as\n\
-                           they are executed in script files\n\
+@table @code\n\
+@item on\n\
+Enable echoing of commands as they are executed in script files.\n\
 \n\
-  echo [on all|off all] -- enable or disable echoing of commands as they\n\
-                           are executed in script files and functions\n\
+@item off\n\
+Disable echoing of commands as they are executed in script files.\n\
 \n\
-Without any arguments, toggle the current echo state.")
+@item on all\n\
+Enable echoing of commands as they are executed in script files and\n\
+functions.\n\
+\n\
+@item off all\n\
+Disable echoing of commands as they are executed in script files and\n\
+functions.\n\
+@end table\n\
+\n\
+@noindent\n\
+If invoked without any arguments, @code{echo} toggles the current echo\n\
+state.\n\
+@end deffn\n\
+")
 {
   octave_value_list retval;
 
@@ -722,12 +739,16 @@ Without any arguments, toggle the current echo state.")
 }
 
 DEFUN (completion_matches, args, nargout,
-  "completion_matches (HINT): generate possible completions given HINT\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} completion_matches (@var{hint})\n\
+Generate possible completions given @var{hint}.\n\
 \n\
 This function is provided for the benefit of programs like Emacs which\n\
-might be controlling Octave and handling user input.  The current command\n\
-number is not incremented when this function is called.  This is a feature,\n\
-not a bug.")
+might be controlling Octave and handling user input.  The current\n\
+command number is not incremented when this function is called.  This is\n\
+a feature, not a bug.\n\
+@end deftypefn\n\
+")
 {
   octave_value retval;
 
@@ -884,20 +905,82 @@ void
 symbols_of_input (void)
 {
   DEFVAR (PS1, "\\s:\\#> ", ps1,
-    "primary prompt string");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} PS1\n\
+The primary prompt string.  When executing interactively, Octave\n\
+displays the primary prompt @code{PS1} when it is ready to read a\n\
+command.\n\
+\n\
+The default value of @code{PS1} is @code{\"\\s:\\#> \"}.  To change it, use a\n\
+command like\n\
+\n\
+@example\n\
+octave:13> PS1 = \"\\\\u@@\\\\H> \"\n\
+@end example\n\
+\n\
+@noindent\n\
+which will result in the prompt @samp{boris@@kremvax> } for the user\n\
+@samp{boris} logged in on the host @samp{kremvax.kgb.su}.  Note that two\n\
+backslashes are required to enter a backslash into a string.\n\
+@xref{Strings}.\n\
+@end defvr\n\
+");
 
   DEFVAR (PS2, "> ", ps2,
-    "secondary prompt string");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} PS2\n\
+The secondary prompt string, which is printed when Octave is\n\
+expecting additional input to complete a command.  For example, when\n\
+defining a function over several lines, Octave will print the value of\n\
+@code{PS1} at the beginning of each line after the first.  The default\n\
+value of @code{PS2} is @code{\"> \"}.\n\
+@end defvr\n\
+");
 
   DEFVAR (PS4, "+ ", ps4,
-    "string printed before echoed input (enabled by --echo-input)");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} PS4\n\
+If Octave is invoked with the @code{--echo-input} option, the value of\n\
+@code{PS4} is printed before each line of input that is echoed.  The\n\
+default value of @code{PS4} is @code{"+ "}.  @xref{Invoking Octave}, for\n\
+a description of @code{--echo-input}.\n\
+@end defvr\n\
+");
 
   DEFVAR (completion_append_char, " ", completion_append_char,
-    "the string to append after successful command-line completion attempts");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} completion_append_char\n\
+The value of @code{completion_append_char} is used as the character to\n\
+append to successful command-line completion attempts.  The default\n\
+value is @code{\" \"} (a single space).\n\
+@end defvr\n\
+");
 
   DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF),
 	  echo_executing_commands,
-    "echo commands as they are executed");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} echo_executing_commands\n\
+This variable may also be used to control the echo state.  It may be\n\
+the sum of the following values:\n\
+\n\
+@table @asis\n\
+@item 1\n\
+Echo commands read from script files.\n\
+\n\
+@item 2\n\
+Echo commands from functions.\n\
+\n\
+@item 4\n\
+Echo commands read from command line.\n\
+@end table\n\
+\n\
+More than one state can be active at once.  For example, a value of 3 is\n\
+equivalent to the command @kbd{echo on all}.\n\
+\n\
+The value of @code{echo_executing_commands} is set by the @kbd{echo}\n\
+command and the command line option @code{--echo-input}.\n\
+@end defvr\n\
+");
 }
 
 /*

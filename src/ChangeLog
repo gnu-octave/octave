@@ -2,6 +2,8 @@ Wed Apr 15 01:03:05 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (Vlast_prompt_time): New global variable.
 	(octave_gets): Set it.
+	* ov-fcn.h (octave_function::time_checked): New virtual function
+	(octave_function::mark_fcn_file_up_to_date): Ditto.
 	* ov-usr-fcn.h (octave_user_function::time_checked): New function.
 	(octave_user_function::mark_fcn_file_up_to_date): Ditto.
 	(octave_user_function::t_checked): New data member.

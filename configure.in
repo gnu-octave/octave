@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.162 $)
+AC_REVISION($Revision: 1.163 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -313,14 +313,6 @@ AC_ARG_ENABLE(shl,
   [if test $enableval = no; then WITH_SHL=false; else WITH_SHL=true; fi],
   WITH_SHL=false)
 AC_SUBST(WITH_SHL)
-
-if $WITH_DL || $WITH_SHL; then
-  AC_DEFINE(WITH_DYNAMIC_LINKING, 1)
-  WITH_DYNAMIC_LINKING=true
-else
-  WITH_DYNAMIC_LINKING=false
-fi
-AC_SUBST(WITH_DYNAMIC_LINKING)
 
 ### Enable creation of shared libraries.  Currently only works with
 ### gcc on some systems.
@@ -692,6 +684,17 @@ fi
 if $WITH_SHL; then
   AC_DEFINE(WITH_SHL, 1)
 fi
+
+### Set WITH_DYNAMIC_LINKING after all the other shared library stuff
+### has been determined.
+
+if $WITH_DL || $WITH_SHL; then
+  AC_DEFINE(WITH_DYNAMIC_LINKING, 1)
+  WITH_DYNAMIC_LINKING=true
+else
+  WITH_DYNAMIC_LINKING=false
+fi
+AC_SUBST(WITH_DYNAMIC_LINKING)
 
 ### There is more than one possible prototype for gettimeofday.  See
 ### which one (if any) appears in sys/time.h.

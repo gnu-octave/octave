@@ -145,16 +145,16 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 		    {
 		      std::string doc_string = help_text[symbol_name];
 
-		      int i = 0;
-		      while (doc_string[i] == ' ')
-			i++;
+		      int j = 0;
+		      while (doc_string[j] == ' ')
+			j++;
 
-		      if (doc_string.substr (i, 15) == "-*- texinfo -*-")
+		      if (doc_string.substr (j, 15) == "-*- texinfo -*-")
 			{
-			  i += 15;
+			  j += 15;
 
-			  while (isspace (doc_string[i]))
-			    i++;
+			  while (isspace (doc_string[j]))
+			    j++;
 
 			  // Make `see also' references in functions
 			  // possible using @anchor{TAG} (new with
@@ -162,7 +162,7 @@ process_texi_input_file (std::istream& is, std::ostream& os)
 
 			  os << "@anchor{doc-" << symbol_name << "}\n";
 
-			  os << doc_string.substr (i);
+			  os << doc_string.substr (j);
 			}
 		      else
 			os << doc_string;

@@ -1,3 +1,8 @@
+2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/munge-texi.cc (process_texi_input_file):
+	Avoid -Wshadow warnings.
+
 2003-08-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* refcard/Makefile.in (refcard-a4.pdf, refcard-legal.pdf,

@@ -46,7 +46,7 @@ SOURCES = dir.c display.c echo_area.c filesys.c info-utils.c info.c \
 	makedoc.c nodemenu.c footnotes.c dribble.c variables.c gc.c \
 	error.c
 
-INCLUDES = display.h doc.h echo_area.h filesys.h general.h getopt.h \
+INCLUDES = display.h doc.h echo_area.h filesys.h general.h \
 	info-utils.h info.h infomap.h nodes.h search.h session.h \
 	signals.h termdep.h terminal.h tilde.h indices.h window.h \
 	footnotes.h dribble.h variables.h gc.h
@@ -75,7 +75,7 @@ MAKEDOC_OBJECTS = makedoc.o xmalloc.o
 MAKEDOC_SOURCE = makedoc.c xmalloc.c
 
 .c.o:
-	$(CC) -c $(CPPFLAGS) $(LDEFS) -I$(common) $(ALL_CFLAGS) $<
+	$(CC) -c $(CPPFLAGS) $(LDEFS) -I$(common) $(UGLY_ALL_CFLAGS) $<
 
 all: ../libinfo.a # info.info info-stnd.info
 .PHONY: all

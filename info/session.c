@@ -60,9 +60,9 @@ static int info_windows_index = 0;
 static int info_windows_slots = 0;
 
 void remember_window_and_node (), forget_window_and_nodes ();
-void initialize_info_session (), info_session ();
-void display_startup_message_and_start ();
+void display_startup_message_and_start (), info_session ();
 void finish_info_session ();
+int initialize_info_session ();
 
 /* Begin an info session finding the nodes specified by FILENAME and NODENAMES.
    For each loaded node, create a new window.  Always split the largest of the
@@ -258,7 +258,7 @@ extern void initialize_info_signal_handler ();
 
 /* Initialize the first info session by starting the terminal, window,
    and display systems. */
-void
+int
 initialize_info_session (node, clear_screen)
      NODE *node;
      int clear_screen;
@@ -274,10 +274,18 @@ initialize_info_session (node, clear_screen)
 	term_name = "dumb";
 
       info_error (TERM_TOO_DUMB, term_name);
-      exit (1);
+      return -1;
     }
+
+  if (screenwidth < 4 || screenheight < 4)
+    {
+      info_error (TERM_TOO_SMALL, screenheight, screenwidth);
+      return -1;
+    }
+
   if (clear_screen)
     terminal_clear_screen ();
+
   initialize_info_keymaps ();
   window_initialize_windows (screenwidth, screenheight);
   initialize_info_signal_handler ();
@@ -293,6 +301,8 @@ initialize_info_session (node, clear_screen)
     info_input_stream = stdin;
 
   info_windows_initialized_p = 1;
+
+  return 0;
 }
 
 /* Tell Info that input is coming from the file FILENAME. */

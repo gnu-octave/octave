@@ -444,9 +444,9 @@ try_info (const char *string, int force = 0)
     }
   else
     {
-      initialize_info_session (initial_node, 0);
+      status = initialize_info_session (initial_node, 0);
 
-      if (force || index_entry_exists (windows, string))
+      if (status == 0 && (force || index_entry_exists (windows, string)))
 	{
 	  terminal_clear_screen ();
 

@@ -38,6 +38,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
+#ifndef NPSOL_MISSING
+
 // Global pointers for user defined functions required by npsol.
 static tree_fvc *npsol_objective;
 static tree_fvc *npsol_constraints;
@@ -226,6 +228,8 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
     }
   return ok;
 }
+
+#endif
 
 #if defined (NPSOL_MISSING)
 DEFUN_DLD ("npsol", Fnpsol, Snpsol, 11, 3,
@@ -525,6 +529,8 @@ Handle all of the following:
   return retval;
 }
 
+#ifndef NPSOL_MISSING
+
 typedef void (NPSOL_options::*d_set_opt_mf) (double);
 typedef void (NPSOL_options::*i_set_opt_mf) (int);
 typedef double (NPSOL_options::*d_get_opt_mf) (void);
@@ -736,6 +742,8 @@ do_npsol_option (char *keyword, double val)
 
   warning ("npsol_options: no match for `%s'", keyword);
 }
+
+#endif
 
 #if defined (NPSOL_MISSING)
 DEFUN_DLD ("npsol_options", Fnpsol_options, Snpsol_options, -1, 1,

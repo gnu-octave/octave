@@ -38,6 +38,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
+#ifndef QPSOL_MISSING
+
 // This should probably be defined in some shared file and declared in
 // a header file...
 extern int linear_constraints_ok (const ColumnVector& x,
@@ -46,6 +48,8 @@ extern int linear_constraints_ok (const ColumnVector& x,
 				  int warn);
 
 static QPSOL_options qpsol_opts;
+
+#endif
 
 #if defined (QPSOL_MISSING)
 DEFUN_DLD ("qpsol", Fqpsol, Sqpsol, 9, 3,
@@ -227,6 +231,8 @@ Handle all of the following:
   return retval;
 }
 
+#ifndef QPSOL_MISSING
+
 typedef void (QPSOL_options::*d_set_opt_mf) (double);
 typedef void (QPSOL_options::*i_set_opt_mf) (int);
 typedef double (QPSOL_options::*d_get_opt_mf) (void);
@@ -342,6 +348,8 @@ do_qpsol_option (char *keyword, double val)
 
   warning ("qpsol_options: no match for `%s'", keyword);
 }
+
+#endif
 
 #if defined (QPSOL_MISSING)
 DEFUN_DLD ("qpsol_options", Fqpsol_options, Sqpsol_options, -1, 1,

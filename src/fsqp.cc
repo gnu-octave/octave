@@ -32,6 +32,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
+#ifndef FSQP_MISSING
+
 // Global pointers for user defined functions required by fsqp.
 // static tree *fsqp_objective;
 // static tree *fsqp_constraints;
@@ -48,6 +50,8 @@ fsqp_constraint_function (const ColumnVector& x)
   ColumnVector retval;
   return retval;
 }
+
+#endif
 
 #if defined (FSQP_MISSING)
 DEFUN_DLD ("fsqp", Ffsqp, Sfsqp, 11, 3,

@@ -2898,7 +2898,8 @@ extern void assign (Array2<char>&, const Array2<char>&);
 void
 TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 {
-  tree_constant rhs_tmp = rhs.make_numeric ();
+  if (! (is_string () && rhs.is_string ()))
+    tree_constant rhs_tmp = rhs.make_numeric ();
 
   if (error_state)
     return;

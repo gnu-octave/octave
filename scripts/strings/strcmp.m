@@ -102,7 +102,7 @@ function retval = strcmp (s1, s2)
 	  if (n == r2)
 	    retval = zeros (n, 1);
 	    for i = 1:n
-	      retval(i) = strcmp (t2{i}, deblank (s2(i,:)));
+	      retval(i) = strcmp (t1{i}, deblank (s2(i,:)));
 	    endfor
 	    retval = reshape (retval, r1, c1);
 	  endif

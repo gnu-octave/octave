@@ -1,3 +1,7 @@
+2004-09-15  John W. Eaton  <jwe@octave.org>
+
+	* strings/strcmp.m: Fix typo in cell/string array case.
+
 2004-09-10  David Bateman  <dbateman@free.fr>
 
 	* statistics/distributions/binomial_rnd.m: Fix error for scalar n

@@ -1281,7 +1281,9 @@ match_any (char c, const char *s)
 // return 1 if it looks like it should be treated as a binary
 // operator.  For example,
 //
-//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==> binary
+//   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==>  binary
+//
+//   [ 1 +2 ]  ==>  unary
 
 static bool
 looks_like_bin_op (bool spc_prev, int next_char)
@@ -1352,10 +1354,17 @@ next_token_is_postfix_unary_op (bool spc_prev)
 // operator.
 //
 // This kluge exists because whitespace is not always ignored inside
-// the square brackets that are used to create matrix objects.
+// the square brackets that are used to create matrix objects (though
+// spacing only really matters in the cases that can be interpreted
+// either as binary ops or prefix unary ops: currently just +, -).
 //
-// Line continuations directly after the operator will cause this
-// function to return FALSE.
+// Note that
+//
+//   octave> [a +\
+//   > b]
+//
+// (the characters '[' 'a' ' ' '+' '\' LFD 'b' ']') will cause Octave
+// to treat the + as a binary operator.
 
 static bool
 next_token_is_bin_op (bool spc_prev)
@@ -1366,17 +1375,39 @@ next_token_is_bin_op (bool spc_prev)
 
   switch (c0)
     {
-    case ':':
     case '+':
     case '-':
+      {
+	int c1 = yyinput ();
+
+	switch (c1)
+	  {
+	  case '+':
+	  case '-':
+	    // Unary ops, spacing doesn't matter.
+	    break;
+
+	  case '=':
+	    // Binary ops, spacing doesn't matter.
+	    bin_op = true;
+	    break;
+
+	  default:
+	    // Could be either, spacing matters.
+	    bin_op = looks_like_bin_op (spc_prev, c1);
+	    break;
+	  }
+
+	unput (c1);
+      }
+      break;
+
+    case ':':
     case '/':
     case '\\':
     case '^':
-      {
-	int c1 = yyinput ();
-	bin_op = looks_like_bin_op (spc_prev, c1);
-	unput (c1);
-      }
+      // Always a binary op (may also include /=, \=, and ^=).
+      bin_op = true;
       break;
 
     // .+ .- ./ .\ .^ .* .**
@@ -1384,31 +1415,12 @@ next_token_is_bin_op (bool spc_prev)
       {
 	int c1 = yyinput ();
 
-	if (match_any (c1, "+-/\\^"))
-	  {
-	    int c2 = yyinput ();
-	    bin_op = looks_like_bin_op (spc_prev, c2);
-	    unput (c2);
-	  }
-	else if (c1 == '*')
-	  {
-	    int c2 = yyinput ();
-
-	    if (c2 == '*')
-	      {
-		int c3 = yyinput ();
-		bin_op = looks_like_bin_op (spc_prev, c3);
-		unput (c3);
-	      }
-	    else
-	      bin_op = looks_like_bin_op (spc_prev, c2);
-
-	    unput (c2);
-	  }
+	if (match_any (c1, "+-/\\^*"))
+	  // Always a binary op (may also include .+=, .-=, ./=, ...).
+	  bin_op = true;
 	else if (! isdigit (c1) && c1 != ' ' && c1 != '\t' && c1 != '.')
-	  {
-	    bin_op = true;
-	  }
+	  // A structure element reference is a binary op.
+	  bin_op = true;
 
 	unput (c1);
       }
@@ -1419,38 +1431,26 @@ next_token_is_bin_op (bool spc_prev)
     case '&':
     case '|':
     case '*':
-      {
-	int c1 = yyinput ();
-
-	if (c1 == c0)
-	  {
-	    int c2 = yyinput ();
-	    bin_op = looks_like_bin_op (spc_prev, c2);
-	    unput (c2);
-	  }
-	else
-	  bin_op = looks_like_bin_op (spc_prev, c1);
-
-	unput (c1);
-      }
+      // Always a binary op (may also include ==, &&, ||, **).
+      bin_op = true;
       break;
 
-    // <= >= <> ~= != < >
+    // < <= <> > >=
     case '<':
     case '>':
+      // Always a binary op (may also include <=, <>, >=).
+      bin_op = true;
+      break;
+
+    // ~= !=
     case '~':
     case '!':
       {
 	int c1 = yyinput ();
 
-	if ((c1 == '=') || (c1 == '<' && c1 == '>'))
-	  {
-	    int c2 = yyinput ();
-	    bin_op = looks_like_bin_op (spc_prev, c2);
-	    unput (c2);
-	  }
-	else if (c1 != '~' && c1 != '!')
-	  bin_op = looks_like_bin_op (spc_prev, c1);
+	// ~ and ! can be unary ops, so require following =.
+	if (c1 == '=')
+	  bin_op = true;
 
 	unput (c1);
       }

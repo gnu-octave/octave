@@ -1047,7 +1047,6 @@ make_name_list (void)
   int glb_len = 0;
   int top_len = 0;
   int lcl_len = 0;
-  int ffl_len = 0;
 
   string_vector key;
   string_vector glb;
@@ -1059,11 +1058,16 @@ make_name_list (void)
   // strings.
 
   key = names (keyword_help (), key_len);
+
   glb = global_sym_tab->list (glb_len);
+
   top = top_level_sym_tab->list (top_len);
+
   if (top_level_sym_tab != curr_sym_tab)
     lcl = curr_sym_tab->list (lcl_len);
+
   ffl = get_fcn_file_names (ffl_len, 1);
+  int ffl_len = ffl.length ();
 
   int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
 

@@ -367,7 +367,7 @@ get_fcn_file_names (const string& name, int no_suffix)
 }
 
 string_vector
-get_fcn_file_names (int& num, int no_suffix)
+get_fcn_file_names (int no_suffix)
 {
   static int num_max = 1024;
 

@@ -50,16 +50,6 @@ extern "C"
 			long, long);
 }
 
-// Local function: check for empty matrix arguments.  Probably should make 
-// this available elsewhere, since tc-xxx functions do this a lot.
-
-int
-empty_arg (tree_constant& arg)
-{
-  return (arg.rows () == 0 || arg.columns () == 0);
-}
-
-
 // Local function: construct return vector of empty matrices.  Return
 // empty matrices and/or gripe when appropriate.  Probably should make
 // this available elsewhere, since tc-xxx functions do this a lot.
@@ -143,7 +133,7 @@ syl (tree_constant *args, int nargin, int nargout)
   tree_constant argb = args[2].make_numeric ();
   tree_constant argc = args[3].make_numeric ();
 
-  if (empty_arg (arga) || empty_arg (argb) || empty_arg (argc))
+  if (arga.is_empty () || argb.is_empty () || argc.is_empty ())
     retval = empty_tree (nargout, "syl");
   else
     {

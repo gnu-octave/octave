@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "error.h"
 #include "file-ops.h"
 #include "lo-error.h"
 #include "statdefs.h"
@@ -199,17 +200,28 @@ is_newer (const string& file, time_t time)
   return fs ? fs.is_newer (time) : -1;
 }
 
+// We provide a replacement for mkdir().
+
 int
 oct_mkdir (const string& name, mode_t mode)
 {
   return mkdir (name.c_str (), mode);
 }
 
+// I don't know how to emulate this on systems that don't provide it.
+
 int
 oct_mkfifo (const string& name, mode_t mode)
 {
+#if defined (HAVE_MKFIFO)
   return mkfifo (name.c_str (), mode);
+#else
+  ::error ("mkfifo: not implemented on this system");
+  return -1;
+#endif
 }
+
+// We provide a replacement for rename().
 
 int
 oct_rename (const string& from, const string& to)
@@ -217,11 +229,15 @@ oct_rename (const string& from, const string& to)
   return rename (from.c_str (), to.c_str ());
 }
 
+// We provide a replacement for rmdir().
+
 int
 oct_rmdir (const string& name)
 {
   return rmdir (name.c_str ());
 }
+
+// We provide a replacement for tempnam().
 
 string
 oct_tempnam (void)

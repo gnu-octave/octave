@@ -1,3 +1,8 @@
+Sat Oct 26 23:37:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc (mkfifo) [! HAVE_MKFIFO]: Just print an error
+	message and return -1.
+
 Fri Oct 25 01:24:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* str-vec.h (str_vec_compare): Declare args as const void *, then

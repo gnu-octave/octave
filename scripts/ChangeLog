@@ -1,3 +1,14 @@
+Thu Jan 13 00:56:57 2000  John W. Eaton  <jwe@bahaha.che.wisc.edu>
+
+	* control/obsolete: New directory
+	* control/obsolete/swaprows.m: Move here from control directory.
+	* control/obsolete/swapcols.m: Likewise.
+	* control/obsolete/dlqg.m: Likewise.
+	* control/obsolete/minfo.m: Likewise.
+	* control/obsolete/packsys.m: Likewise.
+	* control/obsolete/qzval.m: Likewise.
+	* control/obsolete/unpacksys.m: Likewise.
+
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/fliplr.m: Eliminate useless copy of arg.

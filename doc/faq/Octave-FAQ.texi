@@ -1,6 +1,6 @@
 \input texinfo.tex      @c -*-texinfo-*-
 
-@setfilename FAQ.info
+@setfilename Octave-FAQ.info
 @settitle Frequently asked questions about Octave (with answers)
 
 @setchapternewpage off

@@ -246,6 +246,7 @@ kpsewhich: $(kpathsea) kpsewhich.o
 
 $(kpathsea): $(objects)
 	$(LIBTOOL) archive $(AR) $(ARFLAGS) $@ $(objects)
+	$(INSTALL_LIBTOOL_LIBS) . lib$(library).la
 
 # All the objects depend on the klibtool configuration file.
 $(objects): klibtool.config
@@ -305,6 +306,12 @@ $(kpathsea_dir)/paths.h: texmf.cnf
 # Need an extra definition for this. Dependencies included below.
 tex-file.o:
 	$(KPATHSEA_CC) -DDEFAULT_FONT_SIZES='\"$(default_texsizes)\"' $(srcdir)/tex-file.c
+
+# Yes, this depends on GNU Make.  So?  We have to omit optimizaiton
+# for this file on the DEC Alpha with some versions of gcc.  It's
+# simpler to just omit optimization for all platforms.  --jwe
+hash.lo:
+	$(KPATHSEA_CC) $(srcdir)/hash.c $(filter-out -O%, $(ALL_CFLAGS))
 
 check: kpsewhich
 	./kpsewhich -expand-var '$$TEXMF'

@@ -3,6 +3,9 @@ Thu May 22 22:04:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* Makefile.in: Look in make instead of ../make for files to include.
 	Do ac_includes by hand, since ac_include requires an extension to
 	autoconf that doesn't seem to be distributed with kpathsea (yet).
+	($(kpathsea)): Add a rule to `install' libkpathsea.a locally so
+	Octave will have something to link to.
+	(hash.lo): Don't optimize.
 
 Fri Feb  7 11:53:09 1997  Karl Berry  <karl@cs.umb.edu>
 

@@ -333,7 +333,13 @@ void
 symbols_of_pt_assign (void)
 {
   DEFVAR (print_rhs_assign_val, 0.0, print_rhs_assign_val,
-    "if TRUE, print the right hand side of assignments instead of the left");
+    "-*- texinfo -*-\n\
+@defvr print_rhs_assign_val\n\
+If the value of this variable is non-zero, Octave will print the value\n\
+of the right hand side of assignment expressions instead of the value\n\
+of the left hand side (after the assignment).\n\
+@end defvr");
+
 }
 
 /*

@@ -175,7 +175,11 @@ octave_cell::print_name_tag (ostream& os, const string& name) const
 }
 
 DEFUN (iscell, args, ,
-  "iscell (x): return nonzero if x is a cell array")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} iscell (@var{x})\n\
+Return true if @var{x} is a cell array object.  Otherwise, return\n\
+false.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -188,9 +192,16 @@ DEFUN (iscell, args, ,
 }
 
 DEFUN (cell, args, ,
-  "cell (N)\n\
-cell (M, N)\n\
-cell (size (A))")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cell (@var{x})\n\
+@deftypefnx {Built-in Function} {} cell (@var{n}, @var{m})\n\
+Create a new cell array object.  If invoked with a single scalar\n\
+argument, @code{cell} returns a square cell array with the dimension\n\
+specified.  If you supply two scalar arguments, @code{cell} takes\n\
+them to be the number of rows and columns.  If given a vector with two\n\
+elements, @code{cell} uses the values of the elements as the number of\n\
+rows and columns, respectively.\n\
+@end deftypefn")
 {
   octave_value retval;
 

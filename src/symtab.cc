@@ -950,7 +950,13 @@ void
 symbols_of_symtab (void)
 {
   DEFVAR (variables_can_hide_functions, 1.0, variables_can_hide_functions,
-    "Should variables be allowed to hide functions of the same name?");
+    "-*- texinfo -*-\n\
+@defvr variables_can_hide_functions\n\
+If the value of this variable is nonzero, assignments to variables may\n\
+hide previously defined functions of the same name.  A negative value\n\
+will cause Octave to print a warning, but allow the operation.\n\
+@end defvr");
+
 }
 
 

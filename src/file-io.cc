@@ -135,7 +135,10 @@ fopen_mode_to_ios_mode (const string& mode)
 }
 
 DEFUN (is_stream, args, ,
-  "is_stream (x): return nonzero if x is a stream object")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_stream (@var{x})\n\
+Return true if @var{x} is a stream object.  Otherwise, return false.\n\
+@end deftypefn")
 {
   octave_value retval;
 

@@ -854,7 +854,12 @@ a feature, not a bug.\n\
 }
 
 DEFUN (read_readline_init_file, args, ,
-  "read_readline_init_file (FILE)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} read_readline_init_file (@var{file})\n\
+Read the readline library initialiazation file @var{file}.  If\n\
+@var{file} is omitted, read the default initialization file (normally\n\
+@file{~/.inputrc}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

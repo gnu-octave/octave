@@ -10,6 +10,12 @@
 	* utils.cc (Fdo_string_escapes, Ffile_in_loadpath): Ditto.
 	* variables.cc (F__dump_symtab_info__, F__dump_symbol_info__): Ditto.
 	* ov-list.cc (Flist, Fappend, Fnth, Freverse, Fsplice): Ditto.
+	* input.cc (Fread_readline_init_file): Ditto.
+	* file-io.cc (Fis_stream): Ditto.
+	* ov-cell.cc (Fiscell, Fcell): Ditto.
+	* pt-assign.cc (Vprint_rhs_assign_val): Ditto.
+	* pt-decl.cc (Vinitialize_global_variables): Ditto.
+	* symtab.cc (Vvariables_can_hide_functions): Ditto.
 
 	* pt-plot.cc (Fgraw, Fgset, Fgshow, Vgnuplot_command_plot, 
 	Vgnuplot_command_replot, Vgnuplot_command_splot,

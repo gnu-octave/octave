@@ -211,8 +211,13 @@ the variable @code{default_global_variable_value} is initially undefined.\n\
 @end defvr");
 
   DEFVAR (initialize_global_variables, 0.0, initialize_global_variables,
-    "control whether otherwise uninitialized global variables are\n\
-given a default value.  See also default_global_variable_value");
+    "-*- texinfo -*-\n\
+@defvr initialize_global_variables\n\
+If the value of this variable is nonzero, global variables are given\n\
+the default initial value specified by the built-in variable\n\
+@code{default_global_variable_value}.\n\
+@end defvr");
+
 }
 
 /*

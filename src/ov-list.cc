@@ -145,7 +145,7 @@ octave_list::print_name_tag (ostream& os, const string& name) const
 
 DEFUN (list, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} list (@var{a1}, @var{a2}, @dots{}})\n\
+@deftypefn {Built-in Function} {} list (@var{a1}, @var{a2}, @dots{})\n\
 Create a new list with elements given by the arguments @var{a1},\n\
 @var{a2}, @dots{}.\n\
 @end deftypefn")
@@ -266,7 +266,7 @@ Replace @var{length} elements of @var{list_1} beginning at\n\
 @var{length} is omitted, all elements from @var{offset} to the end of\n\
 @var{list_1} are replaced.  As a special case, if @var{offset} is one\n\
 greater than the length of @var{list_1} and @var{length} is 0, splice\n\
-is equivalent to @code{append (@var{list_1}, @var{list_2}).\n\
+is equivalent to @code{append (@var{list_1}, @var{list_2})}.\n\
 @end deftypefn") 
 {
   octave_value retval;

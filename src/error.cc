@@ -211,20 +211,23 @@ handle_message (error_fun f, const char *msg, const octave_value_list& args)
 
   int nargin = args.length ();
 
-  octave_value arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
-
-  if (arg.is_defined ())
+  if (nargin > 0)
     {
-      if (arg.is_string ())
-	{
-	  tstr = arg.string_value ();
-	  msg = tstr.c_str ();
+      octave_value arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
 
-	  if (! msg)
+      if (arg.is_defined ())
+	{
+	  if (arg.is_string ())
+	    {
+	      tstr = arg.string_value ();
+	      msg = tstr.c_str ();
+	      
+	      if (! msg)
+		return retval;
+	    }
+	  else if (arg.is_empty ())
 	    return retval;
 	}
-      else if (arg.is_empty ())
-	return retval;
     }
 
 // Ugh.

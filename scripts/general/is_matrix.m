@@ -29,7 +29,7 @@ function retval = is_matrix (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);
-    retval = (nr >= 0 && nc >= 0);
+    retval = (nr > 0 && nc > 0);
   else
     usage ("is_matrix (x)");
   endif

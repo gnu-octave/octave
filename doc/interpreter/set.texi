@@ -27,8 +27,8 @@ Return the set of elements that are in either of the sets @var{x} and
 
 @example
 @group
-union ([ 1, 2, 3 ], [ 2, 3, 5 ])
-     @result{} [ 1, 2, 5 ]
+union ([ 1, 2, 4 ], [ 2, 3, 5 ])
+     @result{} [ 1, 2, 3, 4, 5 ]
 @end group
 @end example
 @end deftypefn

@@ -137,6 +137,12 @@ public:
   // Nonzero means we're in the middle of defining a function.
   int defining_func;
 
+  // Nonzero means we're parsing the return list for a function.
+  int looking_at_return_list;
+
+  // Nonzero means we're parsing the parameter list for a function.
+  int looking_at_parameter_list;
+
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   int do_comma_insert;
 

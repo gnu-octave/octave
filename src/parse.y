@@ -855,6 +855,10 @@ g_symtab	: // empty
 		  { curr_sym_tab = global_sym_tab; }
 		;
 
+in_return_list	: // empty
+		  { lexer_flags.looking_at_return_list = 1; }
+		;
+
 local_symtab	: // empty
 		  { curr_sym_tab = tmp_local_sym_tab; }
 		;
@@ -887,21 +891,29 @@ func_def1	: SCREW safe g_symtab '=' func_def2
 		  { $$ = finish_function_def ($1, $4); }
 		;
 
-return_list_x	: '[' safe local_symtab
+return_list_x	: '[' safe local_symtab in_return_list
 		;
 
 return_list	: return_list_x ']'
-		  { $$ = new tree_parameter_list (); }
+		  {
+		    lexer_flags.looking_at_return_list = 0;
+		    $$ = new tree_parameter_list ();
+		  }
 		| return_list_x ELLIPSIS ']'
 		  {
+		    lexer_flags.looking_at_return_list = 0;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
 		| return_list1 ']'
-		  { $$ = $1; }
+		  {
+		    lexer_flags.looking_at_return_list = 0;
+		    $$ = $1;
+		  }
 		| return_list1 ',' ELLIPSIS ']'
 		  {
+		    lexer_flags.looking_at_return_list = 0;
 		    $1->mark_varargs ();
 		    $$ = $1;
 		  }
@@ -981,6 +993,10 @@ variable	: indirect_ref
 		  }
 		;
 
+in_param_list	: // empty
+		  { lexer_flags.looking_at_parameter_list = 1; }
+		;
+
 param_list	: '(' ')'
 		  {
 		    lexer_flags.quote_is_transpose = 0;
@@ -995,12 +1011,14 @@ param_list	: '(' ')'
 		  }
 		| param_list1 ')'
 		  {
+		    lexer_flags.looking_at_parameter_list = 0;
 		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		    $$ = $1;
 		  }
 		| param_list1 ',' ELLIPSIS ')'
 		  {
+		    lexer_flags.looking_at_parameter_list = 0;
 		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		    $1->mark_varargs ();
@@ -1008,8 +1026,8 @@ param_list	: '(' ')'
 		  }
 		;
 
-param_list1	: '(' identifier
-		  { $$ = new tree_parameter_list ($2); }
+param_list1	: '(' in_param_list identifier
+		  { $$ = new tree_parameter_list ($3); }
 		| param_list1 ',' identifier
 		  {
 		    $1->append ($3);

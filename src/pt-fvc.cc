@@ -779,19 +779,19 @@ tree_builtin::eval (bool /* print */, int nargout, const octave_value_list& args
     }
   else if (is_mapper)
     {
-// XXX FIXME XXX -- should we just assume nargin_max == 1?
-//
-//      if (nargin > nargin_max)
-//	::error ("%s: too many arguments", my_name.c_str ());
-//      else
-      if (nargin > 0 && args(0).is_defined ())
-	{
-	  octave_value tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
-	  retval(0) = tmp;
-	}
+      if (nargin > 1)
+	::error ("%s: too many arguments", my_name.c_str ());
+      else if (nargin < 1)
+	::error ("%s: too few arguments", my_name.c_str ());
       else
 	{
-	  ::error ("%s: too few arguments", my_name.c_str ());
+	  if (args(0).is_defined ())
+	    {
+	      octave_value tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
+	      retval(0) = tmp;
+	    }
+	  else
+	    ::error ("%s: argument undefined", my_name.c_str ());
 	}
     }
   else

@@ -1,3 +1,22 @@
+Tue Feb 25 22:21:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time.cc (strftime): increase initial buffer size.
+
+Mon Feb 24 17:49:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-fvc.cc (tree_builtin::eval): Enable checking for max number
+	of arguments.
+
+	* error.cc (handle_message): Don't fail if args is empty.
+
+Sun Feb 23 22:42:52 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.h (lexical_feedback::looking_at_return_list): New field.
+	(lexical_feedback::looking_at_parameter_list): Ditto.
+	* lex.l (lexical_feedback::init): Initialize them.
+	(handle_identifier): Use them.
+	* parse.y: Likewise.
+
 Fri Feb 21 15:35:18 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l: Require flex 2.5 or later (we really want 2.5.4 or later,

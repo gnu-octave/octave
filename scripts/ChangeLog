@@ -1,3 +1,11 @@
+Wed Feb 26 01:48:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/is_matrix.m: Return zero for empty matrices.
+
+Tue Feb 25 15:16:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/vech.m: Size result just once.
+
 Sun Feb 23 00:15:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/is_square.m: Handle empty matrices correctly.

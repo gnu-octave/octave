@@ -31,11 +31,15 @@ function retval = hadamard (k)
     usage ("hadamard (n)");
   endif
 
-  if (k < 1)
-    retval = 1;
+  if (is_scalar (k))
+    if (k < 1)
+      retval = 1;
+    else
+      tmp = hadamard (k-1);
+      retval = [tmp, tmp; tmp, -tmp];
+    endif
   else
-    tmp = hadamard (k-1);
-    retval = [tmp, tmp; tmp, -tmp];
+    error ("hadamard: expecting scalar argument");
   endif
 
 endfunction

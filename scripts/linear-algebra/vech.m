@@ -40,6 +40,7 @@ function v = vech (x)
   ## This should be quicker than having an inner `for' loop as well.
   ## Ideally, vech should be written in C++.
   n = rows (x);
+  v = zeros ((n+1)*n/2, 1);
   count = 0;
   for j = 1 : n
     i = j : n; 

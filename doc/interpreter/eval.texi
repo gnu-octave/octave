@@ -66,13 +66,13 @@ special kind of variable that can be used to hold the name of a function
 by name, and use @code{feval} to call them.
 @end deftypefn
 
-@cindex Fordyce, A. P.
-@findex newtroot
 Here is a simple-minded function using @code{feval} that finds the root
 of a user-supplied function of one variable using Newton's method.
 
 @example
 @group
+@cindex Fordyce, A. P.
+@findex newtroot
 function result = newtroot (fname, x)
 
 # usage: newtroot (fname, x)

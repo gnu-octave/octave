@@ -1759,13 +1759,20 @@ handle_identifier (const string& tok, int spc_gobbled)
   // Kluge alert.
   //
   // If we are looking at a text style function, set up to gobble its
-  // arguments.  If the following token is `=', force the symbol to be
+  // arguments.
+  //
+  // If the following token is `=', or if we are parsing a function
+  // return list or function parameter list, force the symbol to be
   // inserted as a variable in the current symbol table.
 
   if (is_text_function_name (tok) && ! is_variable (tok))
     {
-      if (next_tok_is_eq)
-	force_local_variable (tok);
+      if (next_tok_is_eq
+	  || lexer_flags.looking_at_return_list
+	  || lexer_flags.looking_at_parameter_list)
+	{
+	  force_local_variable (tok);
+	}
       else if (! next_tok_is_paren)
 	{
 	  if (tok == "gset")
@@ -1876,6 +1883,10 @@ lexical_feedback::init (void)
   // Not initially defining a function.
   beginning_of_function = 0;
   defining_func = 0;
+
+  // Not parsing a function return or parameter list.
+  looking_at_return_list = 0;
+  looking_at_parameter_list = 0;
 
   // Not initially defining a matrix list.
   braceflag = 0;

@@ -1,3 +1,11 @@
+Summary of changes for version 2.0.5:
+------------------------------------
+
+  * Commands like ls, save, and cd may now also be used as formal
+    parameters for functions.
+
+  * More tests.
+
 Summary of changes for version 2.0.4:
 ------------------------------------
 

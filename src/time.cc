@@ -55,10 +55,8 @@ mk_tm_map (struct tm *tm, double fraction)
 #if defined (HAVE_TM_ZONE)
   m ["zone"]  = tm->tm_zone;
 #elif defined (HAVE_TZNAME)
-  if (tm->tm_isdst && tzname[1] && *tzname[1])
-    m ["zone"] = tzname[1];
-  else
-    m ["zone"] = tzname[0];
+  if (tm->tm_isdst == 0 || tm->tm_isdst == 1)
+    m ["zone"] = tzname[tm->tm_isdst];
 #else
   m ["zone"] = zone_name (tm);
 #endif
@@ -285,7 +283,7 @@ Date fields:\n\
 
       if (! error_state)
 	{
-	  int bufsize = 128;
+	  int bufsize = 1024;
 	  char *buf = new char [bufsize];
 
 	  while (! strftime (buf, bufsize, fmt.c_str (), tm))

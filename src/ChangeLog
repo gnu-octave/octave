@@ -1,5 +1,16 @@
 2002-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-map.cc (Octave_map::assign): Fix typo in resizing.
+
+	* pt-loop.cc (tree_complex_for_command::eval): Only return list
+	for val if struct array has more than one element.
+	(tree_simple_for_command::eval): Likewise.
+
+	* ov-struct.cc (octave_struct::print_raw): Don't create
+	octave_list directly, use octave_value (const octave_value_list&)
+	constructor instead.
+	Call print_with_name for tmp, not val(0).
+
 	* version.h (OCTAVE_VERSION): Now 2.1.37.
 	(OCTAVE_CONTRIB_STATEMENT): New macro.
 	(OCTAVE_STARTUP_MESSAGE): Use it.

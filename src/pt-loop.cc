@@ -373,7 +373,10 @@ tree_simple_for_command::eval (void)
 	  {
 	    MAYBE_DO_BREAKPOINT;
 
-	    octave_value val = tmp_val.contents (p);
+	    octave_value_list val_lst = tmp_val.contents (p);
+
+	    octave_value val
+	      = (val_lst.length () == 1) ? val_lst(0) : octave_value (val_lst);
 
 	    bool quit = false;
 
@@ -482,7 +485,12 @@ tree_complex_for_command::eval (void)
       for (p = tmp_val.first (); p != 0; tmp_val.next (p))
 	{
 	  octave_value key = tmp_val.key (p);
-	  octave_value val = tmp_val.contents (p);
+
+	  octave_value_list val_lst = tmp_val.contents (p);
+
+	  int n = tmp_val.array_length ();
+
+	  octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
 
 	  MAYBE_DO_BREAKPOINT;
 

@@ -56,6 +56,7 @@ Octave_map::array_length (void) const
       Pix p = first ();
       array_len = contents(p).length ();
     }
+
   return array_len;
 }
 
@@ -82,9 +83,9 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
       else if (rhs_len > len)
 	{
 	  for (Pix p = first (); p != 0; next (p))
-	    contents(p).resize (len, fill_value);
+	    contents(p).resize (rhs_len, fill_value);
 
-	  array_len = len;
+	  array_len = rhs_len;
 	}
 
       map[key] = tmp;

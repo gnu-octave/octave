@@ -402,7 +402,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	  std::string key = map.key (p);
 	  octave_value_list val = map.contents (p);
 
-	  octave_value tmp = (n == 1) ? val(0) : octave_list (val);
+	  octave_value tmp = (n == 1) ? val(0) : octave_value (val);
 
 	  if (print_keys_only)
 	    {
@@ -411,7 +411,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	      newline (os);
 	    }
 	  else
-	    val(0).print_with_name (os, key);
+	    tmp.print_with_name (os, key);
 	}
 
       decrement_indent_level ();

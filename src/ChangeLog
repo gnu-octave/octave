@@ -1,5 +1,14 @@
 2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-bp.cc (octave_debug_on_interrupt_state): New global variable.
+	* pt-bp.h: Provide decl.
+	(MAYBE_DO_BREAKPOINT): Check it.
+
+	* sighandlers.cc (sigint_handler): Handle debug_on_interrupt.
+	(Vdebug_on_interrupt): New static variable.
+	(symbols_of_sighandlers): New function.  DEFVAR Vdebug_on_interrupt.
+	(debug_on_interrupt): New function.
+
 	* lex.h (YY_FATAL_ERROR): Use OCTAVE_QUIT here.
 
 	* utils.cc (toplevel): Delete variable.

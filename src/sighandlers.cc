@@ -39,9 +39,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd-edit.h"
 #include "quit.h"
 
+#include "defun.h"
 #include "error.h"
 #include "load-save.h"
 #include "pager.h"
+#include "pt-bp.h"
 #include "sighandlers.h"
 #include "syswait.h"
 #include "toplev.h"
@@ -53,6 +55,9 @@ int pipe_handler_error_count = 0;
 
 // TRUE means we can be interrupted.
 bool can_interrupt = false;
+
+// TRUE means we should try to enter the debugger on SIGINT.
+static bool Vdebug_on_interrupt = false;
 
 #if RETSIGTYPE == void
 #define SIGHANDLER_RETURN(status) return
@@ -266,15 +271,23 @@ sigint_handler (int)
 
   if (can_interrupt)
     {
-#if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
+      if (Vdebug_on_interrupt)
+	{
+	  if (! octave_debug_on_interrupt_state)
+	    {
+	      octave_debug_on_interrupt_state = true;
+
+	      SIGHANDLER_RETURN (0);
+	    }
+	  else
+	    // Clear the flag and do normal interrupt stuff.
+	    octave_debug_on_interrupt_state = false;
+	}
+
       octave_interrupt_state = 1;
 
       if (octave_interrupt_immediately)
 	octave_jump_to_enclosing_context ();
-#else
-      octave_interrupt_state = 1;
-      panic_impossible ();
-#endif
     }
 
   SIGHANDLER_RETURN (0);
@@ -599,6 +612,28 @@ octave_child_list::do_elem (int i)
     return list (i);
   else
     return foo;
+}
+
+static int
+debug_on_interrupt (void)
+{
+  Vdebug_on_interrupt = check_preference ("debug_on_interrupt");
+
+  return 0;
+}
+
+void
+symbols_of_sighandlers (void)
+{
+  DEFVAR (debug_on_interrupt, 0.0, debug_on_interrupt,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} debug_on_interrupt\n\
+If @code{debug_on_interrupt} is nonzero, Octave will try to enter\n\
+debugging mode when it receives an interrupt signal (typically\n\
+generated with @kbd{C-c}).  If a second interrupt signal is received\n\
+before reaching the debugging mode, a normal interrupt will occur.\n\
+The default value is 0.\n\
+@end defvr");
 }
 
 /*

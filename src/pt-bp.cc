@@ -33,6 +33,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "pt-all.h"
 
+// TRUE means SIGINT should put us in the debugger at the next
+// available breakpoint.
+bool octave_debug_on_interrupt_state = false;
+
 void 
 tree_breakpoint::take_action (tree &tr)
 {

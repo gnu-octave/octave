@@ -168,15 +168,22 @@ tree_breakpoint : public tree_walker
   tree_breakpoint& operator = (const tree_breakpoint&);
 };
 
+// TRUE means SIGINT should put us in the debugger at the next
+// available breakpoint.
+extern bool octave_debug_on_interrupt_state;
+
 #define MAYBE_DO_BREAKPOINT \
   do \
     { \
-      if ((tree::break_next && tree::last_line == 0) \
+      if (octave_debug_on_interrupt_state \
+	  || (tree::break_next && tree::last_line == 0) \
 	  || (tree::break_next \
 	      && curr_function == tree::break_function \
 	      && tree::last_line != line ()) \
 	  || is_breakpoint ()) \
         { \
+          octave_debug_on_interrupt_state = false; \
+ \
           tree::break_next = false; \
  \
           if (curr_function) \

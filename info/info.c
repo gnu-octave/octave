@@ -310,6 +310,12 @@ main (argc, argv)
 	  info_read_and_dispatch ();
 
 	  terminal_unprep_terminal ();
+
+	  /* On program exit, leave the cursor at the bottom of the
+	     window, and restore the terminal IO. */
+	  terminal_goto_xy (0, screenheight - 1);
+	  terminal_clear_to_eol ();
+	  fflush (stdout);
 	}
       else
 	{

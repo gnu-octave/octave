@@ -2387,9 +2387,12 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
 	  else
 	    error ("%s: unable to handle real arguments", m_fcn.name);
 	}
-      else if (arg.is_matrix_type ())
+      else
 	{
 	  Matrix m = arg.matrix_value ();
+
+	  if (error_state)
+	    return retval;
 
 	  if (m_fcn.can_return_complex_for_real_arg
 	      && (any_element_less_than (m, m_fcn.lower_limit)
@@ -2405,8 +2408,6 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
 	  else
 	    error ("%s: unable to handle real arguments", m_fcn.name);
 	}
-      else
-	gripe_wrong_type_arg ("mapper", arg);
     }
   else if (arg.is_complex_type ())
     {
@@ -2421,9 +2422,12 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
 	  else
 	    error ("%s: unable to handle complex arguments", m_fcn.name);
 	}
-      else if (arg.is_matrix_type ())
+      else
 	{
 	  ComplexMatrix cm = arg.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
 
 	  if (m_fcn.d_c_mapper)
 	    retval = map (m_fcn.d_c_mapper, cm);
@@ -2432,8 +2436,6 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
 	  else
 	    error ("%s: unable to handle complex arguments", m_fcn.name);
 	}
-      else
-	gripe_wrong_type_arg ("mapper", arg);
     }
   else
     gripe_wrong_type_arg ("mapper", arg);

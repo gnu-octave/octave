@@ -1,5 +1,8 @@
 2005-01-18  John W. Eaton  <jwe@octave.org>
 
+	* ov-complex.h (octave_complex::any): New function.
+	* ov-scalar.h (octave_scalar::any): New function.
+
 	* file-io.cc (Fmkstemp): Fix doc string.  Error message belongs in
 	third output value.  From Mats Jansson <mats.e.jansson@home.se>.
 

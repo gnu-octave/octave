@@ -613,7 +613,10 @@ boolNDArray
 ComplexNDArray::any (int dim) const
 {
   MX_ND_ANY_ALL_REDUCTION
-    (MX_ND_ANY_EVAL (elem (iter_idx) != Complex (0, 0)), false);
+    (MX_ND_ANY_EVAL (elem (iter_idx) != Complex (0, 0)
+		     && ! (lo_ieee_isnan (::real (elem (iter_idx)))
+			   || lo_ieee_isnan (::imag (elem (iter_idx))))),
+		     false);
 }
 
 ComplexNDArray

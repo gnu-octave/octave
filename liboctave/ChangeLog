@@ -1,3 +1,11 @@
+2005-01-18  John W. Eaton  <jwe@octave.org>
+
+	* mx-inlines.cc (MX_ND_REDUCTION): Delete RET_ELT_TYPE arg.
+	Change all uses.  Use VAL instead of RET_ELT_TYPE when resizing.
+
+	* dNDArray.cc (NDArray::any): NaN does not count as a nonzero value.
+	* CNDArray.cc (ComplexNDArray::any): Likewise.
+
 2005-01-18  David Bateman <dbateman@free.fr>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, const Array<int>&)):

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <string>
 
+#include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
@@ -72,6 +73,9 @@ public:
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
+
+  octave_value any (int = 0) const
+    { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
 
   bool is_real_scalar (void) const { return true; }
 

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <string>
 
+#include "lo-ieee.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
@@ -73,6 +74,13 @@ public:
   octave_value *try_narrowing_conversion (void);
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+
+  octave_value any (int = 0) const
+    {
+      return (scalar != Complex (0, 0)
+	      && ! (lo_ieee_isnan (::real (scalar))
+		    || lo_ieee_isnan (::imag (scalar))));
+    }
 
   bool is_complex_scalar (void) const { return true; }
 

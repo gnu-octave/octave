@@ -379,7 +379,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
    } 
  
 #define MX_ND_REDUCTION(EVAL_EXPR, END_EXPR, VAL, ACC_DECL, \
-                        RET_TYPE, RET_ELT_TYPE) \
+                        RET_TYPE) \
  \
   RET_TYPE retval; \
  \
@@ -457,7 +457,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   int num_iter = (this->numel () / dim_length); \
  \
   /* Make sure retval has correct dimensions */ \
-  retval.resize (dv, RET_ELT_TYPE ()); \
+  retval.resize (dv, VAL); \
  \
   Array<int> iter_idx (dv.length (), 0); \
  \
@@ -489,14 +489,14 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
 #define MX_ND_REAL_OP_REDUCTION(ASN_EXPR, INIT_VAL) \
   MX_ND_REDUCTION (acc ASN_EXPR, retval.elem (iter_idx) = acc, \
-                   INIT_VAL, double acc = INIT_VAL, NDArray, double)
+                   INIT_VAL, double acc = INIT_VAL, NDArray)
 
 #define MX_ND_COMPLEX_OP_REDUCTION(ASN_EXPR, INIT_VAL) \
   MX_ND_REDUCTION (acc ASN_EXPR, retval.elem (iter_idx) = acc, \
-                   INIT_VAL, Complex acc = INIT_VAL, ComplexNDArray, Complex)
+                   INIT_VAL, Complex acc = INIT_VAL, ComplexNDArray)
 
 #define MX_ND_ANY_ALL_REDUCTION(EVAL_EXPR, VAL) \
-  MX_ND_REDUCTION (EVAL_EXPR, , VAL, , boolNDArray, bool)
+  MX_ND_REDUCTION (EVAL_EXPR, , VAL, , boolNDArray)
 
 #define MX_ND_CUMULATIVE_OP(RET_TYPE, ACC_TYPE, VAL, OP) \
   RET_TYPE retval; \

@@ -605,7 +605,9 @@ NDArray::all (int dim) const
 boolNDArray
 NDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
+  MX_ND_ANY_ALL_REDUCTION
+    (MX_ND_ANY_EVAL (elem (iter_idx) != 0
+		     && ! lo_ieee_isnan (elem (iter_idx))), false);
 }
 
 NDArray

@@ -149,11 +149,15 @@ template <class T>
 Array<T>&
 Array<T>::operator = (const Array<T>& a)
 {
-  if (--rep->count <= 0)
-    delete rep;
+  if (this != &a)
+    {
+      if (--rep->count <= 0)
+	delete rep;
 
-  rep = a.rep;
-  rep->count++;
+      rep = a.rep;
+      rep->count++;
+    }
+
   return *this;
 }
 
@@ -378,9 +382,13 @@ template <class T>
 Array2<T>&
 Array2<T>::operator = (const Array2<T>& a)
 {
-  Array<T>::operator = (a);
-  d1 = a.d1;
-  d2 = a.d2;
+  if (this != &a)
+    {
+      Array<T>::operator = (a);
+      d1 = a.d1;
+      d2 = a.d2;
+    }
+
   return *this;
 }
 
@@ -625,10 +633,14 @@ template <class T>
 Array3<T>&
 Array3<T>::operator = (const Array3<T>& a)
 {
-  Array<T>::operator = (a);
-  d1 = a.d1;
-  d2 = a.d2;
-  d3 = a.d3;
+  if (this != &a)
+    {
+      Array<T>::operator = (a);
+      d1 = a.d1;
+      d2 = a.d2;
+      d3 = a.d3;
+    }
+
   return *this;
 }
 
@@ -789,9 +801,13 @@ template <class T>
 DiagArray<T>&
 DiagArray<T>::operator = (const DiagArray<T>& a)
 {
-  Array<T>::operator = (a);
-  nr = a.nr;
-  nc = a.nc;
+  if (this != &a)
+    {
+      Array<T>::operator = (a);
+      nr = a.nr;
+      nc = a.nc;
+    }
+
   return *this;
 }
 

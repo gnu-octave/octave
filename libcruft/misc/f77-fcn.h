@@ -75,6 +75,10 @@ extern jmp_buf f77_context;
 
 extern void copy_f77_context (void *, void *, unsigned int);
 
+#if !defined (F77_FCN)
+#define F77_FCN(f, F) F77_FUNC (f, F)
+#endif
+
 #ifdef __cplusplus
 }
 #endif

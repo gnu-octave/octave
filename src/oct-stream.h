@@ -362,9 +362,14 @@ octave_stream
 {
 public:
 
-  octave_stream (octave_base_stream *bs = 0) : rep (bs) { }
+  octave_stream (octave_base_stream *bs = 0, bool pf = false)
+    : rep (bs), preserve (pf) { }
 
-  ~octave_stream (void) { delete rep; }
+  ~octave_stream (void)
+    {
+      if (! preserve)
+	delete rep;
+    }
 
   int flush (void);
 
@@ -428,6 +433,9 @@ private:
 
   // The actual representation of this stream.
   octave_base_stream *rep;
+
+  // If true, don't delete rep.
+  bool preserve;
 
   void invalid_stream_error (const char *op) const;
 

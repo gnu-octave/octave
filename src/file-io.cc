@@ -541,7 +541,7 @@ DEFUN (sprintf, args, ,
 
       octave_ostrstream ostr;
 
-      octave_stream os (&ostr);
+      octave_stream os (&ostr, true);
 
       if (os)
 	{
@@ -673,7 +673,7 @@ from STRING")
 
 	  octave_istrstream istr (data);
 
-	  octave_stream os (&istr);
+	  octave_stream os (&istr, true);
 
 	  if (os)
 	    {

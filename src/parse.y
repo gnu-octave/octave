@@ -94,6 +94,11 @@ bool Vwarn_future_time_stamp;
 // should only produce output using explicit printing statements.
 static bool Vwarn_missing_semicolon;
 
+// If TRUE, generate warning about the meaning of code changing due to
+// changes in precedence levels for various ops (typically for Matlab
+// compatibility).
+static bool Vwarn_precedence_change;
+
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
 
@@ -445,8 +450,10 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 // Precedence and associativity.
 %left ';' ',' '\n'
 %right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
-%left EXPR_AND_AND EXPR_OR_OR
-%left EXPR_AND EXPR_OR
+%left EXPR_OR_OR
+%left EXPR_AND_AND
+%left EXPR_OR
+%left EXPR_AND
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %left LSHIFT RSHIFT
 %left ':'
@@ -1963,6 +1970,15 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR:
       t = octave_value::op_el_or;
+      if (Vwarn_precedence_change
+          && op1->paren_count () == 0 && op2->is_binary_expression ())
+        {
+	  tree_binary_expression *e
+	    = dynamic_cast<tree_binary_expression *> (op2);
+
+	  if (e->op_type () == octave_value::op_el_and)
+	    warning ("meaning may have changed due to change in precedence for & and | operators");
+        }
       break;
 
     default:
@@ -1995,6 +2011,15 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR_OR:
       t = tree_boolean_expression::bool_or;
+      if (Vwarn_precedence_change
+          && op1->paren_count () == 0 && op2->is_boolean_expression ())
+        {
+	  tree_boolean_expression *e
+	    = dynamic_cast<tree_boolean_expression *> (op2);
+
+	  if (e->op_type () == tree_boolean_expression::bool_and)
+	    warning ("meaning may have changed due to change in precedence for && and || operators");
+        }
       break;
 
     default:
@@ -3671,6 +3696,14 @@ warn_missing_semicolon (void)
 }
 
 static int
+warn_precedence_change (void)
+{
+  Vwarn_precedence_change = check_preference ("warn_precedence_change");
+
+  return 0;
+}
+
+static int
 warn_variable_switch_label (void)
 {
   Vwarn_variable_switch_label
@@ -3777,6 +3810,15 @@ if it finds a function file with a time stamp that is in the future.\n\
 If the value of this variable is nonzero, Octave will warn when\n\
 statements in function definitions don't end in semicolons.  The default\n\
 value is 0.\n\
+@end defvr");
+
+  DEFVAR (warn_precedence_change, 1.0, warn_precedence_change,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_precedence_change\n\
+If the value of this variable is nonzero, Octave will warn about\n\
+possible changes in the meaning of some code due to changes in\n\
+precedence for some operators.  Precedence changes have typically\n\
+been made for Matlab compatibility.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (warn_variable_switch_label, 0.0, warn_variable_switch_label,

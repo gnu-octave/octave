@@ -1,3 +1,19 @@
+2002-08-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-binop.h (tree_binary_expression::is_binary_expression):
+	New function, return true.
+	(tree_boolean_expression::is_boolean_expression): New function,
+	return true.
+	* pt-exp.h (tree_expression::is_binary_expression): New function.
+	(tree_expression::is_boolean_expression): Likewise.
+	* parse.y (EXPR_OR_OR): Now lower precedence than EXPR_AND_AND.
+	(EXPR_OR): Now lower precedence than EXPR_AND.
+	(make_boolean_op): Maybe warn about change in precedence.
+	(make_binary_op): Likewise.
+	(Vwarn_precedence_change): New static variable.
+	(warn_precedence_change): New function.
+	(Vwarn_precedence_change): New DEFVAR.
+
 2002-08-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (ANY_ALL): Improve arg checks.

@@ -62,6 +62,8 @@ public:
       delete op_rhs;
     }
 
+  bool is_binary_expression (void) const { return true; }
+
   bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
@@ -71,6 +73,8 @@ public:
   void eval_error (void);
 
   std::string oper (void) const;
+
+  octave_value::binary_op op_type (void) const { return etype; }
 
   tree_expression *lhs (void) { return op_lhs; }
   tree_expression *rhs (void) { return op_rhs; }
@@ -118,6 +122,8 @@ public:
 
   ~tree_boolean_expression (void) { }
 
+  bool is_boolean_expression (void) const { return true; }
+
   bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
@@ -125,6 +131,8 @@ public:
   octave_value_list rvalue (int nargout);
 
   std::string oper (void) const;
+
+  type op_type (void) const { return etype; }
 
 private:
 

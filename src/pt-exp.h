@@ -59,6 +59,10 @@ public:
 
   virtual bool is_prefix_expression (void) const { return false; }
 
+  virtual bool is_binary_expression (void) const { return false; }
+
+  virtual bool is_boolean_expression (void) const { return false; }
+
   virtual bool is_logically_true (const char *);
 
   virtual bool lvalue_ok (void) const { return false; }

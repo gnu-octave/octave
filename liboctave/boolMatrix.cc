@@ -76,7 +76,7 @@ boolMatrix::transpose (void) const
 }
 
 boolMatrix
-Matrix::all (void) const
+boolMatrix::all (void) const
 {
   int nr = rows ();
   int nc = cols ();
@@ -130,7 +130,7 @@ Matrix::all (void) const
 }
 
 boolMatrix
-Matrix::any (void) const
+boolMatrix::any (void) const
 {
   int nr = rows ();
   int nc = cols ();

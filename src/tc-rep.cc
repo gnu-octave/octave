@@ -358,8 +358,8 @@ TC_REP::tree_constant_rep (const Octave_map& m)
 
 TC_REP::tree_constant_rep (TC_REP::constant_type t)
 {
-  assert (t == magic_colon);
-  type_tag = magic_colon;
+  assert (t == magic_colon || t == all_va_args);
+  type_tag = t;
   orig_text = 0;
 }
 
@@ -401,6 +401,7 @@ TC_REP::tree_constant_rep (const tree_constant_rep& t)
       break;
 
     case magic_colon:
+    case all_va_args:
       break;
     }
 
@@ -438,6 +439,7 @@ TC_REP::~tree_constant_rep (void)
     case unknown_constant:
     case scalar_constant:
     case magic_colon:
+    case all_va_args:
       break;
     }
 
@@ -1714,6 +1716,7 @@ TC_REP::print (void)
 
 	case unknown_constant:
 	case magic_colon:
+	case all_va_args:
 	  panic_impossible ();
 	  break;
 	}
@@ -1775,6 +1778,10 @@ TC_REP::print_code (ostream& os)
 
     case magic_colon:
       os << ":";
+      break;
+
+    case all_va_args:
+      os << "all_va_args";
       break;
 
     case map_constant:

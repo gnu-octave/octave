@@ -862,6 +862,8 @@ public:
 
   tree_constant octave_va_arg (void);
 
+  Octave_object octave_all_va_args (void);
+
   int takes_var_return (void) const;
 
   void octave_vr_val (const tree_constant& val);

@@ -56,6 +56,7 @@ private:
 public:
 
   enum magic_colon { magic_colon_t };
+  enum all_va_args { all_va_args_t };
 
 // Constructors.  It is possible to create the following types of
 // constants:
@@ -77,6 +78,7 @@ public:
 // range            double, double, dobule
 //                  Range
 // magic colon      tree_constant::magic_colon
+// all_va_args      tree_constant::all_va_args
 
   tree_constant (void) : tree_fvc ()
     { rep = new tree_constant_rep (); rep->count = 1; }
@@ -127,6 +129,14 @@ public:
     {
       tree_constant_rep::constant_type tmp;
       tmp = tree_constant_rep::magic_colon;
+      rep = new tree_constant_rep (tmp);
+      rep->count = 1;
+    }
+
+  tree_constant (tree_constant::all_va_args t) : tree_fvc ()
+    {
+      tree_constant_rep::constant_type tmp;
+      tmp = tree_constant_rep::all_va_args;
       rep = new tree_constant_rep (tmp);
       rep->count = 1;
     }
@@ -202,6 +212,7 @@ public:
   int is_range (void) const { return rep->is_range (); }
   int is_map (void) const { return rep->is_map (); }
   int is_magic_colon (void) const { return rep->is_magic_colon (); }
+  int is_all_va_args (void) const { return rep->is_all_va_args (); }
 
 // Are any or all of the elements in this constant nonzero?
 
@@ -236,7 +247,7 @@ public:
 
   int is_empty (void) const
     {
-      return ((! (is_magic_colon () || is_unknown ()))
+      return ((! (is_magic_colon () || is_all_va_args () || is_unknown ()))
 	      && (rows () == 0 || columns () == 0));
     }
 
@@ -244,7 +255,7 @@ public:
 
   int is_zero_by_zero (void) const
     {
-      return ((! (is_magic_colon () || is_unknown ()))
+      return ((! (is_magic_colon () || is_all_va_args () || is_unknown ()))
 	      && rows () == 0 && columns () == 0);
     } 
 
@@ -389,7 +400,7 @@ private:
 
   tree_constant make_numeric_or_magic (void) const
     {
-      if (is_numeric_type () || is_magic_colon ())
+      if (is_numeric_type () || is_all_va_args () || is_magic_colon ())
 	return *this;
       else
 	return rep->make_numeric ();
@@ -397,7 +408,8 @@ private:
 
   tree_constant make_numeric_or_range_or_magic (void) const
     {
-      if (is_numeric_type () || is_range () || is_magic_colon ())
+      if (is_numeric_type () || is_range () || is_all_va_args ()
+	  || is_magic_colon ())
 	return *this;
       else
 	return rep->make_numeric ();

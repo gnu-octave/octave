@@ -36,6 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-base.h"
 #include "tree-expr.h"
 #include "tree-cmd.h"
+#include "octave.h"
 #include "tree-misc.h"
 #include "tree-const.h"
 #include "user-prefs.h"
@@ -203,26 +204,54 @@ tree_argument_list::convert_to_const_vector (void)
 {
   int len = length ();
 
+// XXX FIXME XXX -- would be nice to know in advance how largs args
+// needs to be even when we have a list containing an all_va_args
+// token.
+
   Octave_object args;
   args.resize (len);
 
   Pix p = first ();
+  int j = 0;
   for (int k = 0; k < len; k++)
     {
       tree_expression *elt = this->operator () (p);
       if (elt)
 	{
-	  args(k) = elt->eval (0);
+	  tree_constant tmp = elt->eval (0);
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k);
+	      args = Octave_object ();
 	      break;
+	    }
+	  else
+	    {
+	      if (tmp.is_all_va_args ())
+		{
+		  if (curr_function)
+		    {
+		      Octave_object tva;
+		      tva = curr_function->octave_all_va_args ();
+		      int n = tva.length ();
+		      for (int i = 0; i < n; i++)
+			args(j++) = tva(i);
+		    }
+		  else
+		    {
+		      ::error ("all_va_args is only valid inside functions");
+		      args = Octave_object ();
+		      break;
+		    }
+		}
+	      else
+		args(j++) = tmp;
 	    }
 	  next (p);
 	}
       else
 	{
-	  args(k) = tree_constant ();
+	  args(j) = tree_constant ();
 	  break;
 	}
     }

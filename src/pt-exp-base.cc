@@ -857,9 +857,16 @@ tree_identifier::bump_value (tree_expression::type etype)
 {
   if (sym)
     {
-      tree_fvc *tmp = sym->def ();
-      if (tmp)
-	tmp->bump_value (etype);
+      if (sym->is_read_only ())
+	{
+	  ::error ("can't redefined read-only variable `%s'", name ());
+	}
+      else
+	{
+	  tree_fvc *tmp = sym->def ();
+	  if (tmp)
+	    tmp->bump_value (etype);
+	}
     }
 }
 
@@ -1238,19 +1245,23 @@ tree_index_expression::eval (int print)
 
       Octave_object args = list->convert_to_const_vector ();
 
-      int nargin = args.length ();
-
       if (error_state)
 	eval_error ();
-      else if (nargin > 0 && all_args_defined (args))
+      else
 	{
-	  Octave_object tmp = id->eval (print, 1, args);
+	  int nargin = args.length ();
 
 	  if (error_state)
 	    eval_error ();
+	  else if (nargin > 0 && all_args_defined (args))
+	    {
+	      Octave_object tmp = id->eval (print, 1, args);
 
-	  if (tmp.length () > 0)
-	    retval = tmp(0);
+	      if (error_state)
+		eval_error ();
+	      else if (tmp.length () > 0)
+		retval = tmp(0);
+	    }
 	}
     }
   else
@@ -1278,16 +1289,21 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 
       Octave_object args = list->convert_to_const_vector ();
 
-      int nargin = args.length ();
-
       if (error_state)
 	eval_error ();
-      else if (nargin > 0 && all_args_defined (args))
+      else
 	{
-	  retval = id->eval (print, nargout, args);
+	  int nargin = args.length ();
 
 	  if (error_state)
 	    eval_error ();
+	  else if (nargin > 0 && all_args_defined (args))
+	    {
+	      retval = id->eval (print, nargout, args);
+
+	      if (error_state)
+		eval_error ();
+	    }
 	}
     }
   else
@@ -1365,12 +1381,17 @@ tree_prefix_expression::eval (int print)
   if (id)
     {
       id->bump_value (etype);
-      retval = id->eval (print);
       if (error_state)
+	eval_error ();
+      else
 	{
-	  retval = tree_constant ();
+	  retval = id->eval (print);
 	  if (error_state)
-	    eval_error ();
+	    {
+	      retval = tree_constant ();
+	      if (error_state)
+		eval_error ();
+	    }
 	}
     }
   return retval;
@@ -1906,15 +1927,20 @@ tree_simple_assignment_expression::eval (int print)
 
 	  Octave_object args = index->convert_to_const_vector ();
 
-	  int nargin = args.length ();
-
 	  if (error_state)
 	    eval_error ();
-	  else if (nargin > 0)
+	  else
 	    {
-	      retval = lhs->assign (rhs_val, args);
+	      int nargin = args.length ();
+
 	      if (error_state)
 		eval_error ();
+	      else if (nargin > 0)
+		{
+		  retval = lhs->assign (rhs_val, args);
+		  if (error_state)
+		    eval_error ();
+		}
 	    }
 	}
     }
@@ -2577,6 +2603,20 @@ tree_function::octave_va_arg (void)
   else
     ::error ("va_arg: error getting arg number %d -- only %d provided",
 	     curr_va_arg_number + 1, num_args_passed);
+
+  return retval;
+}
+
+Octave_object
+tree_function::octave_all_va_args (void)
+{
+  Octave_object retval;
+
+  retval.resize (num_args_passed - num_named_args);
+
+  int k = 0;
+  for (int i = num_named_args; i < num_args_passed; i++)
+    retval(k++) = args_passed(i);
 
   return retval;
 }

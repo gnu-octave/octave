@@ -231,6 +231,7 @@ static tree_index_expression *make_index_expression
 %token LEXICAL_ERROR
 %token FCN SCREW_TWO
 %token ELLIPSIS
+%token ALL_VA_ARGS
 %token END_OF_INPUT
 %token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
@@ -1116,6 +1117,15 @@ arg_list	: ':'
 		    colon = new tree_constant (t);
 		    $$ = new tree_argument_list (colon);
 		  }
+		| expression
+		  { $$ = new tree_argument_list ($1); }
+		| ALL_VA_ARGS
+		  {
+		    tree_constant *all_va_args;
+		    tree_constant::all_va_args t;
+		    all_va_args = new tree_constant (t);
+		    $$ = new tree_argument_list (all_va_args);
+		  }
 		| arg_list ',' ':'
 		  {
 		    tree_constant *colon;
@@ -1123,10 +1133,15 @@ arg_list	: ':'
 		    colon = new tree_constant (t);
 		    $1->append (colon);
 		  }
-		| expression
-		  { $$ = new tree_argument_list ($1); }
 		| arg_list ',' expression
 		  { $1->append ($3); }
+		| arg_list ',' ALL_VA_ARGS
+		  {
+		    tree_constant *all_va_args;
+		    tree_constant::all_va_args t;
+		    all_va_args = new tree_constant (t);
+		    $1->append (all_va_args);
+		  }
 		;
 
 matrix		: '[' screwed_again rows ']'

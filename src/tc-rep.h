@@ -44,6 +44,7 @@ private:
       range_constant,
       map_constant,
       magic_colon,
+      all_va_args,
     };
 
   enum force_orient
@@ -120,6 +121,9 @@ private:
 
   int is_magic_colon (void) const
     { return type_tag == tree_constant_rep::magic_colon; }
+
+  int is_all_va_args (void) const
+    { return type_tag == tree_constant_rep::all_va_args; }
 
   tree_constant all (void) const;
   tree_constant any (void) const;

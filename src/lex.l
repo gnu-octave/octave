@@ -968,6 +968,9 @@ is_keyword (char *s)
   int l = input_line_number;
   int c = current_input_column;
 
+// XXX FIXME XXX -- this has really become too large a list to search
+// like this...
+
   int end_found = 0;
   if (strcmp ("break", s) == 0)
     {
@@ -1125,6 +1128,12 @@ is_keyword (char *s)
       end_found = 1;
       yylval.tok_val = new token (token::unwind_protect_end, l, c);
       token_stack.push (yylval.tok_val);
+    }
+  else if (strcmp ("all_va_args", s) == 0)
+    {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
+      return ALL_VA_ARGS;
     }
 
   if (end_found)

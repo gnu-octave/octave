@@ -85,9 +85,7 @@ public:
 
   void assign (const octave_value_list& idx, const octave_value& rhs);
 
-  int length (void) const { return lst.length (); }
-
-  int nelem (void) const { return length (); }
+  dim_vector dims (void) const { return dim_vector (1, lst.length ()); }
 
   bool is_defined (void) const { return true; }
 

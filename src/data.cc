@@ -1005,22 +1005,22 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
       get_dimensions (args(0), fcn, dims);
       break;
 
-      default:
-	{
-	  dims.resize (nargin);
+    default:
+      {
+	dims.resize (nargin);
 
-	  for (int i = 0; i < nargin; i++)
-	    {
-	      dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
+	for (int i = 0; i < nargin; i++)
+	  {
+	    dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
 
-	      if (error_state)
-		{
-		  error ("%s: expecting scalar arguments", fcn);
-		  break;
-		}
-	    }
-	}
-	break;
+	    if (error_state)
+	      {
+		error ("%s: expecting scalar arguments", fcn);
+		break;
+	      }
+	  }
+      }
+      break;
     }
 
   if (! error_state)

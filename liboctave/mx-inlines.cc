@@ -350,9 +350,9 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
 #define MX_ANY_OP(DIM) MX_ANY_ALL_OP (DIM, false, !=, true)
 
-#define MX_ND_ALL_EXPR elem (iter_idx) == 0
+#define MX_ND_ALL_EXPR elem (iter_idx) == 0 
 
-#define MX_ND_ANY_EXPR elem (iter_idx)
+#define MX_ND_ANY_EXPR elem (iter_idx) != 0
 
 #define MX_ND_ALL_EVAL(TEST_EXPR) \
  if (TEST_EXPR) \
@@ -362,7 +362,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
      retval (iter_idx) = 0; \
      break; \
    } \
-   else \
+ else \
    { \
      if (dim > -1) \
        iter_idx (dim) = 0; \
@@ -378,77 +378,108 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
      break; \
    } 
 
-#define MX_ND_ALL_ANY(EVAL_EXPR) \
+#define MX_ND_ANY_ALL(EVAL_EXPR, VAL) \
  \
   boolNDArray retval; \
  \
   dim_vector dv = dims (); \
- /* Check to see if we have a empty matrix: [] */ \
-  for (int i = 0; i < dv.length (); i++)\
-    if (dv (i) == 0) \
-      { \
-        dim_vector dv_temp (1, 1); \
-        retval.resize (dv_temp, false); \
-        return retval; \
-      } \
-  if (dim == -1)/* We need to find first non-singleton dim */ \
+ \
+  int empty = true; \
+ \
+  for (int i = 0; i < dv.length (); i++) \
     { \
-      /* Be sure to return a scalar if we have a vector */ \
-      if (dv.length () == 2 && dv (0) == 1 && dv (1) >= 1) \
-        dim = 1; \
-      else \
-        for (int i = 0; i < dv.length (); i++) \
-	  { \
-            if (dv (i) > 1) \
-	      { \
-	        dim = i; \
-                break; \
-	      } \
-	  } \
-      if (dim == -1) \
+      if (dv(i) > 0) \
         { \
-	  (*current_liboctave_error_handler) \
-	    ("all dimensions are singleton"); \
-          return retval; \
-	} \
+          empty = false; \
+          break; \
+        } \
     } \
- /*  Length of Dimension */\
+ \
+  if (empty) \
+    { \
+      dim_vector retval_dv (1, 1); \
+      retval.resize (retval_dv, VAL); \
+      return retval; \
+    } \
+ \
+  if (dim == -1) /* We need to find first non-singleton dim */ \
+    { \
+      for (int i = 0; i < dv.length (); i++) \
+        { \
+	  if (dv (i) != 1) \
+	    { \
+	      dim = i; \
+	      break; \
+	    } \
+        } \
+ \
+      if (dim == -1) \
+       	dim = 0; \
+    } \
+ \
+  int squeezed = 0; \
+ \
+  for (int i = 0; i < dv.length (); i++) \
+    { \
+      if (dv(i) == 0) \
+        { \
+          squeezed = 1;\
+	  break;\
+        } \
+    } \
+ \
+  if (squeezed) \
+    { \
+      dv(dim) = 1; \
+ \
+      retval.resize (dv, VAL); \
+ \
+      return retval; \
+    } \
+ \
+  /*  Length of Dimension */ \
   int dim_length = 1; \
+ \
   /* dim = -1 means from here that the user specified a */ \
   /* dimension which is larger that the number of dimensions */ \
   /* of the array */ \
+ \
   if (dim >= dv.length ()) \
     dim = -1; \
   else \
-    dim_length = dv (dim); \
+    dim_length = dv(dim); \
+ \
   if (dim > -1) \
-    dv (dim) = 1; \
+    dv(dim) = 1; \
  \
- /* We need to find the number of elements we need to */ \
- /* fill in retval. First we need to get last idx of  */ \
- /* the dimension vector                              */ \
+  /* We need to find the number of elements we need to */ \
+  /* fill in retval. First we need to get last idx of  */ \
+  /* the dimension vector                              */ \
+ \
   Array<int> temp_dv (dv.length (), 0); \
-  for (int x = 0; x < dv.length (); x++) \
-    temp_dv (x) = dv (x) - 1; \
  \
- /* This finds the number of elements in retval */ \
+  for (int x = 0; x < dv.length (); x++) \
+    temp_dv(x) = dv(x) - 1; \
+ \
+  /* This finds the number of elements in retval */ \
   int num_iter = compute_index (temp_dv, dv) + 1; \
  \
- /* Make sure retval has correct dimensions */ \
- retval.resize (dv, false); \
+  /* Make sure retval has correct dimensions */ \
+  retval.resize (dv, false); \
  \
   Array<int> iter_idx (dv.length (), 0); \
  \
- /* Filling in values.         */ \
- /* First loop finds new index */ \
+  /* Filling in values.         */ \
+  /* First loop finds new index */ \
+ \
   for (int j = 0; j < num_iter; j++) \
     { \
       for (int i = 0; i < dim_length; i++) \
 	{ \
 	  if (dim > -1) \
-	     iter_idx (dim) = i; \
+	    iter_idx(dim) = i; \
  \
-	  EVAL_EXPR \
+	  EVAL_EXPR; \
 	} \
  \
       if (dim > -1) \
@@ -458,7 +489,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
     } \
  \
   return retval
-
+ 
 
 #endif
 

@@ -1,5 +1,59 @@
 2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-list.h (octave_list::nelem): Delete.
+	(octave_list::dims): New function.
+	* ov-range.h (octave_list::dims): New function.
+	* ov-struct.h (octave_struct::dims): New function.
+	* ov-base-scalar.h (octave_base_scalar::dims): New function.
+
+	* ov.h (octave_value::rows): No longer virtual.
+	* ov.cc (octave_value::rows): Provide common implementation.
+	* ov-base.h (octave_base_value::rows): Delete.
+	* ov-base-mat.h (octave_base_matrix<T>::rows): Delete.
+	* ov-base-scalar.h (octave_base_scalar<T>::rows): Delete.
+	* ov-struct.h (octave_struct::rows): Delete.
+	* ov-range.h (octave_range::rows): Delete.
+
+	* ov.h (octave_value::columns): No longer virtual.
+	* ov.cc (octave_value::columns): Provide common implementation.
+	* ov-base.h (octave_base_value::columns): Delete.
+	* ov-base-mat.h (octave_base_matrix<T>::columns): Delete.
+	* ov-base-scalar.h (octave_base_scalar<T>::columns): Delete.
+	* ov-struct.h (octave_struct::columns): Delete.
+	* ov-range.h (octave_range::columns): Delete.
+
+	* ov.h (octave_value::numel): No longer virtual.
+	* ov.cc (octave_value::numel): Provide common implementation.
+	* ov-base.h (octave_base_value::numel): Delete.
+	* ov-base-mat.h (octave_base_matrix<T>::numel): Delete.
+	* ov-base-scalar.h (octave_base_scalar<T>::numel): Delete.
+	* ov-struct.h (octave_struct::numel): Delete.
+
+	* ov-cs-list.h (octave_cs_list::dims): New function.
+	(octave_cs_list::length): Delete.
+
+	* ov.h (octave_value::ndims): No longer virtual.
+	* ov.cc (octave_value::ndims): Provide common implementation.
+	* ov-base.h (octave_base_value::ndims): Delete.
+	* ov-base-mat.h (octave_base_matrix<T>::ndims): Delete.
+	* ov-base-scalar.h (octave_base_scalar<T>::ndims): Delete.
+	* ov-struct.h (octave_struct::ndims): Delete.
+
+	* ov-cell.cc (Fcell): Make it work for N-d cells.
+
+	* Cell.h (Cell::Cell  (const dim_vector&, const octave_value&)):
+	New constructor.
+
+	* ov.h (octave_value::length): No longer virtual.
+	* ov.cc (octave_value::length): Provide common implementation.
+	* ov-base.h (octave_base_value::length): Delete.
+	* ov-base-mat.h (octave_base_matrix<T>::length): Delete.
+	* ov-base-scalar.h (octave_base_scalar<T>::length): Delete.
+	* ov-struct.h (octave_struct::length): Delete.
+	* ov-cs-list.h (octave_cs_list::length): Delete.
+	* ov-list.h (octave_list::length): Delete.
+	* ov-range.h (octave_range::length): Delete.
+
 	* load-save.cc (save_mat5_binary_element): Use numel instead of
 	array_length.
 	* ov-struct.cc (octave_struct::print_raw): Likewise.

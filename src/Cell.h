@@ -56,6 +56,9 @@ public:
   Cell (int n, int m, const octave_value& val = resize_fill_value ())
     : ArrayN<octave_value> (dim_vector (n, m), val) { }
 
+  Cell (const dim_vector& dims, const octave_value& val = resize_fill_value ())
+    : ArrayN<octave_value> (dims, val) { }
+
   Cell (const ArrayN<octave_value>& c)
     : ArrayN<octave_value> (c) { }
 

@@ -103,10 +103,11 @@ public:
 
   idx_vector index_vector (void) const { return idx_vector (range); }
 
-  int rows (void) const { return (columns () > 0); }
-  int columns (void) const { return range.nelem (); }
-
-  int length (void) const { return range.nelem (); }
+  dim_vector dims (void) const
+    {
+      int n = range.nelem ();
+      return dim_vector (n > 0, n);
+    }
 
   bool is_defined (void) const { return true; }
 

@@ -79,8 +79,6 @@ public:
 
   void assign (const octave_value_list& idx, const octave_value& rhs);
 
-  int length (void) const { return lst.length (); }
-
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

@@ -445,31 +445,55 @@ rows and columns, respectively.\n\
 
   int nargin = args.length ();
 
+  dim_vector dims;
+
   switch (nargin)
     {
-    case 1:
-      {
-	int nr, nc;
-	get_dimensions (args(0), "cell", nr, nc);
-
-	if (! error_state)
-	  retval = Cell (nr, nc, Matrix ());
-      }
+    case 0:
+      dims = dim_vector (0, 0);
       break;
 
-    case 2:
-      {
-	int nr, nc;
-	get_dimensions (args(0), args(1), "cell", nr, nc);
-
-	if (! error_state)
-	  retval = Cell (nr, nc, Matrix ());
-      }
+    case 1:
+      get_dimensions (args(0), "cell", dims);
       break;
 
     default:
-      print_usage ("cell");
+      {
+	dims.resize (nargin);
+
+	for (int i = 0; i < nargin; i++)
+	  {
+	    dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
+
+	    if (error_state)
+	      {
+		error ("cell: expecting scalar arguments");
+		break;
+	      }
+	  }
+      }
       break;
+    }
+
+  if (! error_state)
+    {
+      int ndim = dims.length ();
+
+      check_dimensions (dims, "cell");
+
+      if (! error_state)
+	{
+	  switch (ndim)
+	    {
+	    case 1:
+	      retval = Cell (dims(0), dims(0), Matrix ());
+	      break;
+
+	    default:
+	      retval = Cell (dims, Matrix ());
+	      break;
+	    }
+	}
     }
 
   return retval;

@@ -194,7 +194,11 @@ Octave_map&
 Octave_map::assign (const std::string& key, const Cell& rhs)
 {
   if (empty ())
-    map[key] = rhs;
+    {
+      map[key] = rhs;
+
+      dimensions = dim_vector (1, 1);
+    }
   else
     {
       if (dims () == rhs.dims ())

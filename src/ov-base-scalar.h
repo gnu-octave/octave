@@ -74,19 +74,11 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
-  int rows (void) const { return 1; }
-
-  int columns (void) const { return 1; }
-
-  int length (void) const { return 1; }
-
-  int ndims (void) const { return 2; }
-
-  int numel (void) const { return 1; }
-
   bool is_constant (void) const { return true; }
 
   bool is_defined (void) const { return true; }
+
+  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
   octave_value all (int = 0) const { return (scalar != 0.0); }
 

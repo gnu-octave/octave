@@ -68,13 +68,13 @@ NDArray::operator ! (void) const
 boolNDArray
 NDArray::all (int dim) const
 {
-  MX_ND_ALL_ANY (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR));
+  MX_ND_ANY_ALL (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR), true);
 }
 
 boolNDArray
 NDArray::any (int dim) const
 {
-  MX_ND_ALL_ANY (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR));
+  MX_ND_ANY_ALL (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
 }
 
 Matrix

@@ -90,19 +90,10 @@ public:
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
-  int rows (void) const { return matrix.rows (); }
-  int columns (void) const { return matrix.columns (); }
-
   dim_vector dims (void) const { return matrix.dims (); }
 
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
-
-  int length (void) const;
-
-  int ndims (void) const;
-
-  int numel (void) const { return matrix.numel (); }
 
   bool is_matrix_type (void) const { return true; }
 

@@ -817,6 +817,84 @@ octave_value::assign (assign_op op, const octave_value& rhs)
   return *this;
 }
 
+int
+octave_value::rows (void) const
+{
+  dim_vector dv = dims ();
+
+  return (dv.length () > 0) ? dv(0) : -1;
+}
+
+int
+octave_value::columns (void) const
+{
+  dim_vector dv = dims ();
+
+  return (dv.length () > 1) ? dv(1) : -1;
+}
+
+int
+octave_value::length (void) const
+{
+  int retval = 0;
+
+  dim_vector dv = dims ();
+      
+  for (int i = 0; i < dv.length (); i++)
+    {
+      if (dv(i) < 0)
+	{
+	  retval = -1;
+	  break;
+	}
+
+      if (dv(i) > retval)
+	retval = dv(i);
+    }
+
+  return retval;
+}
+
+int
+octave_value::ndims (void) const
+{
+  dim_vector dv = dims ();
+
+  int n_dims = dv.length ();
+     
+   // Remove trailing singleton dimensions.
+
+   for (int i = n_dims; i > 2; i--)
+     {
+       if (dv(i-1) == 1)
+	 n_dims--;
+       else
+	 break;
+     }
+   
+   // The result is always >= 2.
+
+   if (n_dims < 2)
+     n_dims = 2;
+
+   return n_dims;
+}
+
+int
+octave_value::numel (void) const
+{
+  dim_vector dv = dims ();
+
+  int n_dims = dv.length ();
+
+  int retval = n_dims > 0 ? dv(0) : 0;
+
+  for (int i = 1; i < n_dims; i++)
+    retval *= dv(i);
+
+  return retval;    
+}
+
 Cell
 octave_value::cell_value (void) const
 {

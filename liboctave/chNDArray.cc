@@ -40,13 +40,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 boolNDArray
 charNDArray::all (int dim) const
 {
-  MX_ND_ALL_ANY (MX_ND_ALL_EVAL (elem (iter_idx) == ' '));
+  MX_ND_ANY_ALL (MX_ND_ALL_EVAL (elem (iter_idx) == ' '), true);
 }
 
 boolNDArray
 charNDArray::any (int dim) const
 {
-  MX_ND_ALL_ANY (MX_ND_ANY_EVAL (elem (iter_idx) != ' '));
+  MX_ND_ANY_ALL (MX_ND_ANY_EVAL (elem (iter_idx) != ' '), false);
 }
 
 charMatrix

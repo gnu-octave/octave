@@ -316,23 +316,18 @@ public:
 
   // Size.
 
-  virtual int rows (void) const
-    { return rep->rows (); }
-
-  virtual int columns (void) const
-    { return rep->columns (); }
-
   virtual dim_vector dims (void) const
     { return rep->dims (); }
 
-  virtual int length (void) const
-    { return rep->length (); }
+  int rows (void) const;
 
-  virtual int ndims (void) const
-    { return rep->ndims (); }
+  int columns (void) const;
 
-  virtual int numel (void) const
-    { return rep->numel (); }
+  int length (void) const;
+
+  int ndims (void) const;
+
+  int numel (void) const;
 
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of

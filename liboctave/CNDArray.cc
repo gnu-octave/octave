@@ -77,15 +77,15 @@ ComplexNDArray::operator ! (void) const
 boolNDArray
 ComplexNDArray::all (int dim) const
 {
-  MX_ND_ALL_ANY (MX_ND_ALL_EVAL (real (elem (iter_idx)) == 0
-				 && imag (elem (iter_idx)) == 0));
+  MX_ND_ANY_ALL (MX_ND_ALL_EVAL (real (elem (iter_idx)) == 0
+				 && imag (elem (iter_idx)) == 0), true);
 }
 
 boolNDArray
 ComplexNDArray::any (int dim) const
 {
-  MX_ND_ALL_ANY (MX_ND_ANY_EVAL (real (elem (iter_idx))
-				 || imag (elem (iter_idx))));
+  MX_ND_ANY_ALL (MX_ND_ANY_EVAL (real (elem (iter_idx)) != 0
+				 || imag (elem (iter_idx)) != 0), false);
 }
 
 ComplexMatrix

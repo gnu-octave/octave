@@ -94,17 +94,7 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
-  int rows (void) const { return -1; }
-
-  int columns (void) const { return -1; }
-
-  dim_vector dims (void) const { return dim_vector (rows (), columns ()); }
-
-  int length (void) const { return -1; }
-
-  int ndims (void) const { return -1; }
-
-  int numel (void) const { return -1; }
+  dim_vector dims (void) const { return dim_vector (-1, -1); }
 
   bool is_defined (void) const { return false; }
 

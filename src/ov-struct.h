@@ -87,17 +87,7 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
-  int rows (void) const { return map.rows (); }
-
-  int columns (void) const { return map.columns (); }
-
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
-  }
+  dim_vector dims (void) const { return map.dims (); }
 
   bool is_defined (void) const { return true; }
 

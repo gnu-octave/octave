@@ -1,3 +1,10 @@
+2003-12-21  Schloegl Alois  <alois.schloegl@tugraz.at>
+
+	* miscellaneous/fullfile.m: If filename is empty, set it to "."
+	before continuing.
+
+	* miscellaneous/fileparts.m: Allow name to start with ".".
+
 2003-12-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/ind2sub.m: New file.

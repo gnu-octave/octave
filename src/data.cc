@@ -264,9 +264,9 @@ and @var{x}.  The result is in range -pi to pi.\n\
 DEFUN (fmod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})\n\
-Compute the floating point remainder of @var{y} / @var{x} using the C\n\
-library function @code{fmod}.  The result has the same sign as @var{x}.\n\
-If @var{y} is zero, the result implementation-defined.\n\
+Compute the floating point remainder of dividing @var{x} by @var{y}\n\
+using the C library function @code{fmod}.  The result has the same\n\
+sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
 @end deftypefn")
 {
   octave_value retval;

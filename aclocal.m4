@@ -585,7 +585,7 @@ EOF
       ;;
 ### XXX FIXME XXX -- Ignore test result on OS X.  Yes it prepends
 ### underscore, but also messes with the name so test fails (incorrectly).
-      *-*-darwin6*)
+      *-*-darwin*)
         octave_cv_cxx_prepends_underscore=yes
       ;;
     esac

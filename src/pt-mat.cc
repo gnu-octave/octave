@@ -53,7 +53,7 @@ static int Vempty_list_elements_ok;
 static bool Vimplicit_num_to_str_ok;
 
 // The character to fill with when creating string arrays.
-static char Vstring_fill_char;
+char Vstring_fill_char = ' ';
 
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from

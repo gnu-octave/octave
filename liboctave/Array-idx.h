@@ -177,7 +177,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_arg)
 
 template <class LT, class RT>
 int
-assign (Array<LT>& lhs, const Array<RT>& rhs)
+assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& resize_fill_value)
 {
   int retval = 1;
 
@@ -196,7 +196,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 	{
 	  int max_idx = lhs_idx.max () + 1;
 	  if (max_idx > lhs_len)
-	    lhs.resize (max_idx, static_cast<LT> (0));
+	    lhs.resize (max_idx, resize_fill_value);
 	}
 
       if (rhs_len == n)

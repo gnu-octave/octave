@@ -4475,8 +4475,10 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
 	{
 	  int len = chm.cols ();
 	  os << "# length: " << len << "\n";
-	  std::string tstr = chm.row_as_string (i);
+	  std::string tstr = chm.row_as_string (i, false, true);
 	  const char *tmp = tstr.data ();
+	  if (tstr.length () > len)
+	    panic_impossible ();
 	  os.write (X_CAST (char *, tmp), len);
 	  os << "\n";
 	}

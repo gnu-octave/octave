@@ -39,6 +39,12 @@ template int assign (Array<Complex>&, const Array<int>&);
 template int assign (Array<Complex>&, const Array<short>&);
 template int assign (Array<Complex>&, const Array<char>&);
 
+template int assign (Array<Complex>&, const Array<Complex>&, const Complex&);
+template int assign (Array<Complex>&, const Array<double>&, const Complex&);
+template int assign (Array<Complex>&, const Array<int>&, const Complex&);
+template int assign (Array<Complex>&, const Array<short>&, const Complex&);
+template int assign (Array<Complex>&, const Array<char>&, const Complex&);
+
 #include "Array2.h"
 #include "Array2.cc"
 
@@ -49,6 +55,12 @@ template int assign (Array2<Complex>&, const Array2<double>&);
 template int assign (Array2<Complex>&, const Array2<int>&);
 template int assign (Array2<Complex>&, const Array2<short>&);
 template int assign (Array2<Complex>&, const Array2<char>&);
+
+template int assign (Array2<Complex>&, const Array2<Complex>&, const Complex&);
+template int assign (Array2<Complex>&, const Array2<double>&, const Complex&);
+template int assign (Array2<Complex>&, const Array2<int>&, const Complex&);
+template int assign (Array2<Complex>&, const Array2<short>&, const Complex&);
+template int assign (Array2<Complex>&, const Array2<char>&, const Complex&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

@@ -78,10 +78,6 @@ octave_bool_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern void assign (Array2<bool>&, const Array2<bool>&);
-#endif
-
 void
 octave_bool_matrix::assign (const octave_value_list& idx,
 			    const boolMatrix& rhs)

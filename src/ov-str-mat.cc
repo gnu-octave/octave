@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-str-mat.h"
 #include "gripes.h"
 #include "pr-output.h"
+#include "pt-mat.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
 
@@ -94,10 +95,6 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx)
   return retval;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern void assign (Array2<char>&, const Array2<char>&);
-#endif
-
 void
 octave_char_matrix_str::assign (const octave_value_list& idx,
 				const charMatrix& rhs)
@@ -119,7 +116,7 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
 	matrix.set_index (i);
 	matrix.set_index (j);
 
-	::assign (matrix, tmp);
+	::assign (matrix, tmp, Vstring_fill_char);
       }
       break;
 
@@ -129,7 +126,7 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
 
 	matrix.set_index (i);
 
-	::assign (matrix, tmp);
+	::assign (matrix, tmp, Vstring_fill_char);
       }
       break;
 

@@ -129,7 +129,7 @@ charMatrix::insert (const charMatrix& a, int r, int c)
 }
 
 std::string
-charMatrix::row_as_string (int r, bool strip_ws) const 
+charMatrix::row_as_string (int r, bool strip_ws, bool raw) const 
 {
   std::string retval;
 
@@ -150,23 +150,26 @@ charMatrix::row_as_string (int r, bool strip_ws) const
   for (int i = 0; i < nc; i++)
     retval[i] = elem (r, i);
 
-  if (strip_ws)
+  if (! raw)
     {
-      while (--nc >= 0)
+      if (strip_ws)
 	{
-	  char c = retval[nc];
-	  if (c && c != ' ')
-	    break;
+	  while (--nc >= 0)
+	    {
+	      char c = retval[nc];
+	      if (c && c != ' ')
+		break;
+	    }
 	}
-    }
-  else
-    {
-      while (--nc >= 0)
-	if (retval[nc])
-	  break;
-    }
+      else
+	{
+	  while (--nc >= 0)
+	    if (retval[nc])
+	      break;
+	}
 
-  retval.resize (nc+1);
+      retval.resize (nc+1);
+    }
 
   return retval;
 }

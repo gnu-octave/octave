@@ -1,3 +1,34 @@
+2001-05-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* chMatrix.cc (charMatrix::row_as_string): New parameter, raw.
+
+	* Array-i.cc, Array-s.cc, Array-d.cc, Array-ch.cc, Array-C.cc,
+	Array-b.cc: Instantiate three arg assign functions.
+
+	* ArrayN.cc (assign (ArrayN<LT>&, const ArrayN<RT>&, const LT&)):
+	New arg, resize_fill_value.
+	* ArrayN.h: Provide declaration.
+	(assign (ArrayN<LT>&, const ArrayN<RT>&): Define here by calling
+	three arg version.
+
+	* Array3.cc (assign (Array3<LT>&, const Array3<RT>&, const LT&)):
+	New arg, resize_fill_value.
+	* Array3.h: Provide declaration.
+	(assign (Array3<LT>&, const Array3<RT>&): Define here by calling
+	three arg version.
+
+	* Array2.cc (assign (Array2<LT>&, const Array2<RT>&, const LT&)):
+	New arg, resize_fill_value.
+	* Array2.h: Provide declaration.
+	(assign (Array2<LT>&, const Array2<RT>&): Define here by calling
+	three arg version.
+
+	* Array.cc (assign (Array<LT>&, const Array<RT>&, const LT&)):
+	New arg, resize_fill_value.
+	* Array.h: Provide declaration.
+	(assign (Array<LT>&, const Array<RT>&): Define here by calling
+	three arg version.
+
 2001-05-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pathsearch.cc (dir_path::set_program_name): Set the environment

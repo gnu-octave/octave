@@ -257,7 +257,7 @@ ArrayN<T>::index (Array<idx_vector>& arr_idx) const
 
 template <class LT, class RT>
 int
-assign (ArrayN<LT>&, const ArrayN<RT>&)
+assign (ArrayN<LT>&, const ArrayN<RT>&, const LT&)
 {
   assert (0);
   return 0;

@@ -188,7 +188,14 @@ public:
 
 template <class LT, class RT>
 int
-assign (Array2<LT>& lhs, const Array2<RT>& rhs);
+assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& resize_fill_value);
+
+template <class LT, class RT>
+int
+assign (Array2<LT>& lhs, const Array2<RT>& rhs)
+{
+  return assign (lhs, rhs, static_cast<LT> (0));
+}
 
 #endif
 

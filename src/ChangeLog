@@ -1,3 +1,17 @@
+2001-05-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cx-mat.cc: Deleve unnecessary instantiation of assign function.
+	* ov-re-mat.cc: Likewise.
+	* ov-re-nd-array.cc: Likewise.
+	* ov-str-mat.cc: Likewise.
+	* ov-bool-mat.cc: Likewise.
+
+	* load-save.cc (save_ascii_data): When saving string data, get raw
+	string value for matrix row since there may be embedded nuls.
+
+	* pt-mat.cc (Vstring_fill_char): No longer static.
+	* pt-mat.h: Provide declaration.
+
 2001-05-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (initialize_pathsearch): Save initial value of the

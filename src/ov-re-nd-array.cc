@@ -67,10 +67,6 @@ octave_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern void assign (Array2<double>&, const Array2<double>&);
-#endif
-
 void
 octave_matrix::assign (const octave_value_list& idx, const Matrix& rhs)
 {

@@ -65,7 +65,7 @@ public:
   charMatrix& insert (const char *s, int r, int c);
   charMatrix& insert (const charMatrix& a, int r, int c);
 
-  std::string row_as_string (int, bool = false) const;
+  std::string row_as_string (int, bool strip_ws = false, bool raw = false) const;
 
   // resize is the destructive equivalent for this one
 

@@ -43,7 +43,7 @@ Array3<T>::value (void)
 
 template <class LT, class RT>
 int
-assign (Array3<LT>&, const Array3<RT>&)
+assign (Array3<LT>&, const Array3<RT>&, const LT&)
 {
   assert (0);
   return 0;

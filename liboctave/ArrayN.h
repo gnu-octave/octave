@@ -187,7 +187,14 @@ public:
 
 template <class LT, class RT>
 int
-assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs);
+assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs, const LT& resize_fill_value);
+
+template <class LT, class RT>
+int
+assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs)
+{
+  return assign (lhs, rhs, static_cast<LT> (0));
+}
 
 template <class T>
 std::ostream&

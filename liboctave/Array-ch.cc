@@ -33,12 +33,16 @@ template class Array<char>;
 
 template int assign (Array<char>&, const Array<char>&);
 
+template int assign (Array<char>&, const Array<char>&, const char&);
+
 #include "Array2.h"
 #include "Array2.cc"
 
 template class Array2<char>;
 
 template int assign (Array2<char>&, const Array2<char>&);
+
+template int assign (Array2<char>&, const Array2<char>&, const char&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

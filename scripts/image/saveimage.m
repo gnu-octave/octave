@@ -291,7 +291,7 @@ function saveimage (filename, img, img_form, map)
 
     img = map(img);
 
-    fmt = "%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x\n";
+    fmt = "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n";
     fprintf (fid, fmt, img);
 
     if (rem (img_sz, 30) != 0)

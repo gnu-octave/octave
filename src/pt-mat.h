@@ -76,6 +76,9 @@ private:
   tree_matrix& operator = (const tree_matrix&);
 };
 
+// The character to fill with when creating string arrays.
+extern char Vstring_fill_char;
+
 #endif
 
 /*

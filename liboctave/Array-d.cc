@@ -36,6 +36,11 @@ template int assign (Array<double>&, const Array<int>&);
 template int assign (Array<double>&, const Array<short>&);
 template int assign (Array<double>&, const Array<char>&);
 
+template int assign (Array<double>&, const Array<double>&, const double&);
+template int assign (Array<double>&, const Array<int>&, const double&);
+template int assign (Array<double>&, const Array<short>&, const double&);
+template int assign (Array<double>&, const Array<char>&, const double&);
+
 #include "Array2.h"
 #include "Array2.cc"
 
@@ -45,6 +50,11 @@ template int assign (Array2<double>&, const Array2<double>&);
 template int assign (Array2<double>&, const Array2<int>&);
 template int assign (Array2<double>&, const Array2<short>&);
 template int assign (Array2<double>&, const Array2<char>&);
+
+template int assign (Array2<double>&, const Array2<double>&, const double&);
+template int assign (Array2<double>&, const Array2<int>&, const double&);
+template int assign (Array2<double>&, const Array2<short>&, const double&);
+template int assign (Array2<double>&, const Array2<char>&, const double&);
 
 #include "ArrayN.h"
 #include "ArrayN.cc"

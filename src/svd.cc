@@ -80,6 +80,9 @@ unnecessary rows and columns of U and V")
     {
       Matrix tmp = arg.matrix_value ();
 
+      if (error_state)
+	return retval;
+
       SVD result (tmp, type);
 
       DiagMatrix sigma = result.singular_values ();
@@ -98,6 +101,9 @@ unnecessary rows and columns of U and V")
   else if (arg.is_complex_type ())
     {
       ComplexMatrix ctmp = arg.complex_matrix_value ();
+
+      if (error_state)
+	return retval;
 
       ComplexSVD result (ctmp, type);
 

@@ -37,6 +37,11 @@ LIBS_TO_INSTALL = libkpathsea.a
 
 SH_LIBS_TO_INSTALL = libkpathsea.$(SHLEXT)
 
+ifeq ($(SHARED_LIBS), true)
+  BINDISTFILES = libkpathsea.$(SHLEXT)
+  BINDISTLIBS = $(addprefix kpathsea/, libkpathsea.$(SHLEXT))
+endif
+
 default all: stamp-picdir kpsewhich MakeTeXPK kpathsea.info stamp-shared
 
 stamp-picdir:
@@ -196,6 +201,13 @@ distdir: INSTALL TAGS kpathsea.info kpathsea.dvi
 	ln CONFIGURE HIER common.ac $(distdir)
 	cd $(distdir); rm -f paths.h
 	cd $(distdir); add-version $(version) version.c
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/kpathsea ; \
+	fi
+	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+.PHONY: bin-dist
 
 ac_include ../make/config.make
 

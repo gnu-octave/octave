@@ -1,3 +1,13 @@
+Sat Jan 25 22:34:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in, balgen/Makefile.in, blas/Makefile.in,
+	cfsqp/Makefile.in, dassl/Makefile.in, eispack/Makefile.in,
+	fftpack/Makefile.in, fsqp/Makefile.in, lapack/Makefile.in,
+	linpack/Makefile.in, minpack/Makefile.in, misc/Makefile.in,
+	npsol/Makefile.in, odepack/Makefile.in, qpsol/Makefile.in,
+	quadpack/Makefile.in, ranlib/Makefile.in, slatec-fn/Makefile.in,
+	villad/Makefile.in (bin-dist): New target.
+
 Wed Jan 22 15:03:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in (pic/machar.o): Add $(CPICFLAG) for this target.

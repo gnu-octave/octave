@@ -1,3 +1,7 @@
+Sat Jan 25 22:36:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (bin-dist): Update for 2.x.
+
 Fri Jan 24 10:05:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mk-oct-links.in: New arg, -p, to just print list of files to link.

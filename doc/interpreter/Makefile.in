@@ -31,10 +31,22 @@ TEXINFO = amuse.texi arith.texi audio.texi bugs.texi bugs1.texi \
 	stats.texi stmt.texi strings.texi system.texi var.texi \
 	vr-idx.texi
 
-FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
+FORMATTED = octave.dvi octave.ps octave.info octave.info octave.info-[0-9]*
 
 DISTFILES = Makefile.in dir octave.1 conf.texi gpl.texi \
 	$(TEXINFO) $(FORMATTED)
+
+ifeq ($(wildcard octave.info), )
+  BINDISTFILES = $(srcdir)/octave.1 $(srcdir)/octave.info \
+	$(wildcard $(srcdir)/octave.info-[0-9]*)
+else
+  BINDISTFILES = $(srcdir)/octave.1 octave.info octave.info-[0-9]*
+endif
+
+# Look for version.h to get version information.
+xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
+
+version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
 
 SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
@@ -162,3 +174,9 @@ maintainer-clean: distclean
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
 .PHONY: dist
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/interpreter ; \
+	fi
+.PHONY: bin-dist

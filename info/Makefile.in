@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.37 1997-01-20 17:25:41 jwe Exp $
+# $Id: Makefile.in,v 1.38 1997-01-26 04:40:02 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -107,6 +107,8 @@ DVI = info.dvi info-stnd.dvi
 DISTFILES = Makefile.in ChangeLog README NEWS info.1 configure.in \
   configure mkinstalldirs $(SRCS) $(HDRS) $(infofiles) $(TEXINFO) $(DVI)
 
+BINDISTFILES = info
+
 %.o : %.c
 	$(CC) -c $(CPPFLAGS) $(LDEFS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
 
@@ -159,6 +161,12 @@ realclean: distclean
 dist: all-info all-dvi
 	ln $(DISTFILES) ../`cat ../.fname`/info
 .PHONY: dist
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/info ; \
+	fi
+.PHONY: bin-dist
 
 TAGS: $(SRCS) makedoc-TAGS
 	etags $(SRCS)

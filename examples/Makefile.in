@@ -18,9 +18,13 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = hello.cc make_int.cc info-emacs-info info-emacs-octave-help
+SCRIPTS = info-emacs-info info-emacs-octave-help
 
-DISTFILES = Makefile.in $(SOURCES)
+SOURCES = hello.cc make_int.cc
+
+DISTFILES = Makefile.in $(SOURCES) $(SCRIPTS)
+
+BINDISTFILES = $(addprefix $(srcdir)/, $(SCRIPTS))
 
 SUBDIRS = 
 
@@ -52,3 +56,9 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/examples
 .PHONY: dist
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/examples ; \
+	fi
+.PHONY: bin-dist

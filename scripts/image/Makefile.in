@@ -31,6 +31,8 @@ FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 IMAGE_FILES = $(wildcard $(srcdir)/*.img)
 IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
 
+BINDISTFILES = $(FCN_FILES) $(IMAGE_FILES)
+
 all:
 .PHONY: all
 
@@ -80,3 +82,7 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/image
 .PHONY: dist
+
+bin-dist:
+	ln $(BINDISTFILES) ../../`cat ../../.fname`/scripts/image
+.PHONY: bin-dist

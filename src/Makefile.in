@@ -170,8 +170,14 @@ DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links.in \
 	octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TI_SRC)
 
-all: stamp-prereq stamp-picdir libraries \
-	$(OCT_FILES) octave
+ifeq ($(SHARED_LIBS), true)
+  BINDISTFILES = octave $(OCT_FILES) $(SH_LIBS_TO_INSTALL)
+  BINDISTLIBS = $(addprefix src/, $(SH_LIBS_TO_INSTALL))
+else
+  BINDISTFILES = octave $(OCT_FILES)
+endif
+
+all: stamp-prereq stamp-picdir libraries $(OCT_FILES) octave
 .PHONY: all
 
 stamp-prereq: defaults.h oct-conf.h
@@ -249,6 +255,7 @@ mk-oct-links: mk-oct-links.in
 	sed < $< > $@.tmp \
 	  -e "s;%LN_S%;${LN_S};"
 	$(top_srcdir)/move-if-change $@.tmp $@
+	chmod a+rx mk-oct-links
 
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
@@ -260,7 +267,6 @@ install-bin:
 install-oct: mk-oct-links
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(top_srcdir)/mkinstalldirs $(octfiledir) ; \
-	  chmod a+rx mk-oct-links ; \
 	  xfiles="$(OCT_FILES)" ; \
 	  for f in $$xfiles ; do \
 	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
@@ -342,6 +348,18 @@ dist: parse.cc lex.cc oct-gperf.h
 conf-dist:
 	ln octave.cc Makefile.in ../`cat ../.fname`/src
 .PHONY: conf-dist
+
+bin-dist: mk-oct-links
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/src ; \
+	fi
+	if [ -n "$(OCT_FILES)" ]; then \
+	  ./mk-oct-links -p $(octfiledir) \
+	    $(addprefix $(srcdir)/, $(DLD_SRC)) \
+	    > ../`cat ../.fname`/src/links-to-make ; \
+	fi
+	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+.PHONY: bin-dist
 
 # Special rules -- these files need special things to be defined.
 

@@ -31,6 +31,8 @@ SUBDIRS = audio control elfun general image io linear-algebra \
 
 DISTSUBDIRS = $(SUBDIRS)
 
+BINDISTSUBDIRS = $(SUBDIRS)
+
 FCN_FILES = # $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
@@ -68,6 +70,10 @@ maintainer-clean::
 	rm -f tags TAGS Makefile config.log config.status
 
 dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
+	$(LN_S) $(DISTFILES) ../`cat ../.fname`/scripts
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: dist
+
+bin-dist:
+	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+.PHONY: bin-dist

@@ -25,8 +25,8 @@ CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
 	README README.Linux README.NLP README.Windows ROADMAP \
-	SENDING-PATCHES THANKS move-if-change octave.sh octave-bug.in \
-	doinstall.sh mkinstalldirs mkoctfile.in texi2dvi INFO.PATCH \
+	SENDING-PATCHES THANKS move-if-change octave-sh octave-bug.in \
+	install-octave mkinstalldirs mkoctfile.in texi2dvi INFO.PATCH \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
@@ -43,12 +43,20 @@ CONF_DISTSUBDIRS = src
 DISTSUBDIRS = libcruft liboctave info readline dlfcn src scripts \
 	test doc examples
 
-BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
-	BUGS PROJECTS octave-bug octave.sh doinstall.sh \
-	mkinstalldirs
+XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
+	PROJECTS README README.Linux README.NLP README.Windows \
+	SENDING-PATCHES THANKS octave-sh insatll-octave mkinstalldirs \
+	ChangeLog ChangeLog.[0-9]
 
-# Subdirectories in which to run `make dist'.
-BINDISTSUBDIRS = emacs scripts doc
+BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
+	octave-bug VERSION ARCH
+
+# Subdirectories in which to run `make bin-dist'.
+BINDISTSUBDIRS = libcruft liboctave src info kpathsea readline \
+	scripts doc examples
+
+# Complete directories trees to distribute with binary distributions.
+BINDISTDIRS = emacs
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS) glob kpathsea
@@ -123,37 +131,9 @@ maintainer-clean distclean::
 	rm -f config.h config.log config.status Makerules.f77
 	rm -f mk-oct-links mkoctfile
 
-# Now that things are under RCS control, we need to do the recursive
-# chmod so that the distributed files end up with reasonable modes.
-
-# Shared rules for making clean tar files.
-
-clean-tar:
-	echo octave-$(version) > .fname
-	tar xf `cat .fname`.tar
-	find `cat .fname` \( \( -name RCS -a -type d \) \
-	  -o \( -name OLD -a -type d \) -o -name "=*" \
-	  -o -name '*~' -o -name '#*#' -o -name config.log \
-	  -o -name config.status -o -name Makefile \
-	  -o -name c-auto.h \) -print | xargs rm -rf
-	rm -f `cat .fname`/test/octave.test/*.m
-	rm -rf `cat .fname`/test/octave.test/npsol
-	rm -rf `cat .fname`/test/octave.test/qpsol
-	chmod -R a+rwX `cat .fname`
-	tar cf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname` .fname
-.PHONY: clean-tar
-
-dist-z:
-	echo octave-$(version) > .fname
-	rm -f `cat .fname`.tar.gz
-	gzip --best `cat .fname`.tar
-	rm -f .fname
-.PHONY: dist-z
-
 # Rules for making a source distribution.
 
-dist-info-files: octave.info INSTALL.OCTAVE BUGS kpathsea.info
+dist-info-files: INSTALL.OCTAVE BUGS
 .PHONY: dist-info-files
 
 links-for-dist: dist-info-files
@@ -170,50 +150,62 @@ dist-tar: links-for-dist
 	rm -rf `cat .fname`
 .PHONY: dist-tar
 
-clean-dist-tar: dist-tar
-	$(MAKE) clean-tar
-.PHONY: clean-dist-tar
-
-dist: clean-dist-tar
+dist: dist-tar
+	echo octave-$(version) > .fname
+	tar xf `cat .fname`.tar
+	find `cat .fname` \( \( -name RCS -a -type d \) \
+	  -o \( -name OLD -a -type d \) -o -name "=*" \
+	  -o -name '*~' -o -name '#*#' -o -name config.log \
+	  -o -name config.status -o -name Makefile \
+	  -o -name c-auto.h \) -print | xargs rm -rf
+	rm -f `cat .fname`/test/octave.test/*.m
+	rm -rf `cat .fname`/test/octave.test/npsol
+	rm -rf `cat .fname`/test/octave.test/qpsol
+	chmod -R a+rwX `cat .fname`
+	tar cf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname` .fname
 .PHONY: dist
 
 # Rules for making a binary distribution.
 
-links-for-bin-dist: dist-info-files
-	echo octave-$(version) > .fname
+VERSION:
+	echo $(version) > VERSION
+.PHONY: VERSION
+
+ARCH:
+	echo $(target_host_type) > ARCH
+.PHONY: ARCH
+
+links-for-bin-dist: VERSION ARCH octave-bug dist-info-files
+	echo octave-$(version)-$(target_host_type) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(BINDISTFILES) `cat .fname`
-	for dir in $(BINDISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) dist; cd ..; done
-.PHONY: links-for-dist
+#	for dir in $(BINDISTDIRS); do ln -s ../$$dir `cat .fname`; done
+	for dir in $(BINDISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) bin-dist; cd ..; done
+.PHONY: links-for-bin-dist
 
 bin-dist-tar: links-for-bin-dist
-	-strip src/octave
-	echo octave-$(version) > .fname
-	ln src/octave `cat .fname`/octave
+	echo octave-$(version)-$(target_host_type) > .fname
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
 .PHONY: bin-dist-tar
 
-clean-bin-dist-tar: bin-dist-tar
-	$(MAKE) clean-tar
-.PHONY: clean-bin-dist-tar
-
-# binary-dist: clean-bin-dist-tar
-binary-dist:
-	@echo ""
-	@echo "**********************************************************"
-	@echo "*                                                        *"
-	@echo "* The binary-dist target doesn't work for this version   *"
-	@echo "* of Octave.                                             *"
-	@echo "*                                                        *"
-	@echo "* If you are interested in making a binary distribution  *"
-	@echo "* of this version of Octave, please contact              *"
-	@echo "* bug-octave@bevo.che.wisc.edu.                          *"
-	@echo "*                                                        *"
-	@echo "**********************************************************"
-	@echo ""
-.PHONY: binary-dist
+binary-dist bin-dist: bin-dist-tar
+	echo octave-$(version)-$(target_host_type) > .fname
+	tar xf `cat .fname`.tar
+	find `cat .fname` \( \( -name RCS -a -type d \) \
+	  -o \( -name OLD -a -type d \) -o -name "=*" \
+	  -o -name '*~' -o -name '#*#' -o -name config.log \
+	  -o -name config.status -o -name Makefile \
+	  -o -name c-auto.h \) -print | xargs rm -rf
+	rm -f `cat .fname`/test/octave.test/*.m
+	rm -rf `cat .fname`/test/octave.test/npsol
+	rm -rf `cat .fname`/test/octave.test/qpsol
+	chmod -R a+rwX `cat .fname`
+	tar cf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname` .fname
+.PHONY: binary-dist bin-dist
 
 # Rules for making a dist of just the stuff needed to run configure.
 

@@ -1,3 +1,9 @@
+Sat Jan 25 22:27:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (bin-dist): New target.
+
+	* install-octave: Rename from doinstall.sh.  Update for 2.x.
+
 Wed Jan 22 11:14:07 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (ld_run_path): Anchor search at beginning of line to

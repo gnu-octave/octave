@@ -1,4 +1,4 @@
-#
+
 # Makefile for octave's scripts/elfun directory
 #
 # John W. Eaton
@@ -26,6 +26,8 @@ DISTFILES = Makefile.in $(SOURCES)
 
 FCN_FILES = $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
+
+BINDISTFILES = $(FCN_FILES)
 
 all:
 .PHONY: all
@@ -67,3 +69,7 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/elfun
 .PHONY: dist
+
+bin-dist:
+	ln $(BINDISTFILES) ../../`cat ../../.fname`/scripts/elfun
+.PHONY: bin-dist

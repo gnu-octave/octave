@@ -1,3 +1,7 @@
+Sat Jan 25 22:33:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (bin-dist): New target.
+
 Thu Dec  5 18:59:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.sub: Update to current version from FSF.

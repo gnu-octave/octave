@@ -54,4 +54,4 @@ machar.o: $(srcdir)/machar.c
 	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $<
 
 pic/machar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $< -o $@
+	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DDP $< -o $@

@@ -112,6 +112,11 @@ endif
 DISTFILES = $(CSOURCES) $(HSOURCES) Makefile.in configure.in \
 	configure README STANDALONE COPYING config.h.in
 
+ifeq ($(SHARED_LIBS), true)
+  BINDISTFILES = $(SH_LIBS_TO_INSTALL)
+  BINDISTLIBS = $(addprefix readline/, $(SH_LIBS_TO_INSTALL))
+endif
+
 SUBDIRS = doc examples
 
 # The texinfo files which document this library.
@@ -222,6 +227,14 @@ dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/readline/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	ln $(DISTFILES) ../`cat ../.fname`/readline
 .PHONY: dist
+
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/readline ; \
+	fi
+	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+.PHONY: bin-dist
 
 # Dependencies
 readline.o: readline.c readline.h rldefs.h rlconf.h chardefs.h

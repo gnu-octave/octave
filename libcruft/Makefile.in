@@ -32,6 +32,11 @@ SUBDIRS = $(CRUFT_DIRS)
 
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
+ifeq ($(SHARED_LIBS), true)
+  BINDISTFILES = libcruft.$(SHLEXT)
+  BINDISTLIBS = $(addprefix libcruft/, libcruft.$(SHLEXT))
+endif
+
 all: $(SUBDIRS) stamp-shared
 .PHONY: all
 
@@ -117,3 +122,10 @@ dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	ln $(DISTFILES) ../`cat ../.fname`/libcruft
 .PHONY: dist
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/libcruft ; \
+	fi
+	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+.PHONY: bin-dist

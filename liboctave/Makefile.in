@@ -77,6 +77,11 @@ EXTRAS := mx-inlines.cc
 DISTFILES := Makefile.in ChangeLog safe-xstat.cin safe-xstat.hin \
 	$(SOURCES) $(INCLUDES) $(EXTRAS)
 
+ifeq ($(SHARED_LIBS), true)
+  BINDISTFILES = liboctave.$(SHLEXT)
+  BINDISTLIBS = $(addprefix liboctave/, liboctave.$(SHLEXT))
+endif
+
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
@@ -100,7 +105,7 @@ stamp-prereq: safe-stat.h safe-lstat.h
 	touch stamp-prereq
 
 stamp-picdir:
-	if [ "$(SHARED_LIBS)" = true ]; then \
+	if $(SHARED_LIBS); then \
 	  if [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
 	    if [ -d pic ]; then \
 	      true ; \
@@ -221,6 +226,13 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 .PHONY: dist
+
+bin-dist:
+	if [ -n "$(BINDISTFILES)" ]; then \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/liboctave ; \
+	fi
+	echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES
+.PHONY: bin-dist
 
 # If missing, GNU make attempts to create them in the reverse of the
 # order in which they are listed here.  We rely on that fact to ensure

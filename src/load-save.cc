@@ -306,16 +306,6 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 {
   load_save_format retval = LS_UNKNOWN;
 
-  // If the file doesn't exist do nothing
-  std::ifstream file_exist (fname.c_str ());
-  if (file_exist)
-    file_exist.close ();
-  else
-    {
-      error ("load: nonexistent file `%s'", fname.c_str ());
-      return LS_UNKNOWN;
-    }
-
 #ifdef HAVE_HDF5
   // check this before we open the file
   if (H5Fis_hdf5 (fname.c_str ()) > 0)
@@ -724,6 +714,24 @@ modifies variable names if they are invalid Octave identifiers.\n\
     {
       std::string fname = file_ops::tilde_expand (argv[i]);
 
+      // Check if file exists, if it doesn't then also check with a 
+      // .mat extension
+      std::ifstream file_exist (fname.c_str ());
+      if (file_exist)
+	file_exist.close ();
+      else
+	{
+	  fname.append (".mat");
+	  std::ifstream file_mat_exist (fname.c_str ());
+	  if (file_mat_exist)
+	    file_mat_exist.close ();
+	  else
+	    {
+	      error ("load: nonexistent file: `%s'", orig_fname.c_str ());
+	      return retval;
+	    }
+	}
+
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
 
@@ -732,28 +740,19 @@ modifies variable names if they are invalid Octave identifiers.\n\
 	{
 	  i++;
 
-	  // If the file doesn't exist do nothing
-	  std::ifstream file (fname.c_str (), std::ios::in);
-	  if (file)
+	  hdf5_ifstream hdf5_file (fname.c_str ());
+
+	  if (hdf5_file.file_id >= 0)
 	    {
-	      file.close ();
-	      
-	      hdf5_ifstream hdf5_file (fname.c_str ());
+	      retval = do_load (hdf5_file, orig_fname, force, format,
+				flt_fmt, list_only, swap, verbose,
+				argv, i, argc, nargout);
 
-	      if (hdf5_file.file_id >= 0)
-		{
-		  retval = do_load (hdf5_file, orig_fname, force, format,
-				    flt_fmt, list_only, swap, verbose,
-				    argv, i, argc, nargout);
-
-		  hdf5_file.close ();
-		}
-	      else
-		error ("load: couldn't open input file `%s'",
-		       orig_fname.c_str ());
+	      hdf5_file.close ();
 	    }
 	  else
-	    error ("load: nonexistent file `%s'", orig_fname.c_str ());
+	    error ("load: couldn't open input file `%s'",
+		   orig_fname.c_str ());
 	}
       else
 #endif /* HAVE_HDF5 */
@@ -803,8 +802,6 @@ modifies variable names if they are invalid Octave identifiers.\n\
 	    error ("load: couldn't open input file `%s'",
 		   orig_fname.c_str ());
 	}
-      else
-	error ("load: nonexistent file: `%s'", orig_fname.c_str ());
     }
 
   return retval;

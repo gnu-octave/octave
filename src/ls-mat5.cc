@@ -86,7 +86,10 @@ enum arrayclasstype
     mxINT16_CLASS,		// 16 bit signed integer
     mxUINT16_CLASS,		// 16 bit unsigned integer
     mxINT32_CLASS,		// 32 bit signed integer
-    mxUINT32_CLASS		// 32 bit unsigned integer
+    mxUINT32_CLASS,		// 32 bit unsigned integer
+    mxINT64_CLASS,		// 64 bit signed integer
+    mxUINT64_CLASS,		// 64 bit unsigned integer
+    mxFUNCTION_CLASS            // Function handle
   };
 
 // Read COUNT elements of data from IS in the format specified by TYPE,
@@ -159,6 +162,175 @@ read_mat5_binary_data (std::istream& is, double *data,
     }
 }
 
+template <class T>
+void
+read_mat5_integer_data (std::istream& is, T &m, int count, bool swap,
+			mat5_data_type type)
+{
+
+#define READ_INTEGER_DATA(TYPE, swap, data, size, len, stream)	\
+  do \
+    { \
+      if (len > 0) \
+	{ \
+	  volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
+	  stream.read (X_CAST (char *, ptr), size * len); \
+	  if (swap) \
+	    swap_bytes< size > (ptr, len); \
+	  TYPE tmp = ptr[0]; \
+	  for (int i = len - 1; i > 0; i--) \
+	    data[i] = ptr[i]; \
+	  data[0] = tmp; \
+	} \
+    } \
+  while (0)
+
+  switch (type)
+    {
+    case miINT8:
+      READ_INTEGER_DATA (signed char, swap, m.fortran_vec (), 1, 
+			 count, is);
+      break;
+
+    case miUINT8:
+      READ_INTEGER_DATA (unsigned char, swap, m.fortran_vec (), 1, 
+			 count, is);
+      break;
+
+    case miINT16:
+      READ_INTEGER_DATA (signed TWO_BYTE_INT, swap, m.fortran_vec (), 2, 
+			 count, is);
+      break;
+
+    case miUINT16:
+      READ_INTEGER_DATA (unsigned TWO_BYTE_INT, swap, m.fortran_vec (), 2, 
+			 count, is);
+      break;
+
+    case miINT32:
+      READ_INTEGER_DATA (signed FOUR_BYTE_INT, swap, m.fortran_vec (), 4, 
+			 count, is);
+      break;
+
+    case miUINT32:
+      READ_INTEGER_DATA (unsigned FOUR_BYTE_INT, swap, m.fortran_vec (), 4, 
+			 count, is);
+      break;
+
+    case miSINGLE:
+    case miRESERVE1:
+    case miDOUBLE:
+    case miRESERVE2:
+    case miRESERVE3:
+      break;
+
+    case miINT64:
+#ifdef EIGHT_BYTE_INT
+      READ_INTEGER_DATA (signed EIGHT_BYTE_INT, swap, m.fortran_vec (), 8, 
+			 count, is);
+#endif
+      break;
+
+    case miUINT64:
+#ifdef EIGHT_BYTE_INT
+      READ_INTEGER_DATA (unsigned EIGHT_BYTE_INT, swap, m.fortran_vec (), 8, 
+			 count, is);
+#endif
+      break;
+
+    case miMATRIX:
+    default:
+      break;
+    }
+
+#undef READ_INTEGER_DATA
+
+}
+
+template void read_mat5_integer_data (std::istream& is, int8NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, int16NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, int32NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, int64NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, uint8NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, uint16NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, uint32NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+template void read_mat5_integer_data (std::istream& is, uint64NDArray &m,
+				      int count, bool swap,
+				      mat5_data_type type);
+
+#define OCTAVE_MAT5_INTEGER_READ(TYP) \
+  { \
+	TYP re (dims); \
+  \
+	std::streampos tmp_pos; \
+  \
+	if (read_mat5_tag (is, swap, type, len)) \
+	  { \
+	    error ("load: reading matrix data for `%s'", retval.c_str ()); \
+	    goto data_read_error; \
+	  } \
+  \
+	int n = re.length (); \
+	tmp_pos = is.tellg (); \
+	read_mat5_integer_data (is, re, n, swap, \
+				(enum mat5_data_type) type); \
+  \
+	if (! is || error_state) \
+	  { \
+	    error ("load: reading matrix data for `%s'", retval.c_str ()); \
+	    goto data_read_error; \
+	  } \
+  \
+	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len))); \
+  \
+	if (imag) \
+	  { \
+	    /* We don't handle imag integer types, convert to an array */ \
+	    NDArray im (dims); \
+  \
+	    if (read_mat5_tag (is, swap, type, len)) \
+	      { \
+		error ("load: reading matrix data for `%s'", \
+		       retval.c_str ()); \
+		goto data_read_error; \
+	      } \
+  \
+	    n = im.length (); \
+	    read_mat5_binary_data (is, im.fortran_vec (), n, swap, \
+				   (enum mat5_data_type) type, flt_fmt); \
+  \
+	    if (! is || error_state) \
+	      { \
+		error ("load: reading imaginary matrix data for `%s'", \
+		       retval.c_str ()); \
+		goto data_read_error; \
+	      } \
+  \
+	    ComplexNDArray ctmp (dims); \
+  \
+	    for (int i = 0; i < n; i++) \
+	      ctmp(i) = Complex (double (re(i)), im(i)); \
+  \
+            tc = ctmp;  \
+	  } \
+	else \
+	  tc = re; \
+  }
+  
 // Read one element tag from stream IS, 
 // place the type code in TYPE and the byte count in BYTES
 // return nonzero on error
@@ -224,7 +396,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   // first used to avoid errors from gcc about goto crossing
   // initialization of variable.
 
-  NDArray re;
   oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
   int type = 0;
   bool imag;
@@ -297,7 +468,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	read_int (is, swap, n);
 	dims(i) = n;
       }
-    re.resize (dims);
 
     std::streampos tmp_pos = is.tellg ();
     is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (dim_len) - dim_len));
@@ -362,6 +532,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     case mxSPARSE_CLASS:
       warning ("load: sparse arrays are not implemented");
+      goto skip_ahead;
+
+    case mxFUNCTION_CLASS:
+      warning ("load: function handles are not implemented");
       goto skip_ahead;
 
     case mxSTRUCT_CLASS:
@@ -446,24 +620,51 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
       break;
 
+    case mxINT8_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (int8NDArray);
+      break;
+
+    case mxUINT8_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (uint8NDArray);
+      break;
+
+    case mxINT16_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (int16NDArray);
+      break;
+
+    case mxUINT16_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (uint16NDArray);
+      break;
+
+    case mxINT32_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (int32NDArray);
+      break;
+
+    case mxUINT32_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (uint32NDArray);
+      break;
+
+    case mxINT64_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (int64NDArray);
+      break;
+
+    case mxUINT64_CLASS:
+      OCTAVE_MAT5_INTEGER_READ (uint64NDArray);
+      break;
+
     case mxCHAR_CLASS:
       // handle as a numerical array to start with
 
     case mxDOUBLE_CLASS:
     case mxSINGLE_CLASS:
-    case mxINT8_CLASS:
-    case mxUINT8_CLASS:
-    case mxINT16_CLASS:
-    case mxUINT16_CLASS:
-    case mxINT32_CLASS:
-    case mxUINT32_CLASS:
     default:
-      // handle all these numerical formats as double arrays
-      
-      // real data subelement
       {
+	NDArray re (dims);
+      
+	// real data subelement
+
 	std::streampos tmp_pos;
-	
+	  
 	if (read_mat5_tag (is, swap, type, len))
 	  {
 	    error ("load: reading matrix data for `%s'", retval.c_str ());
@@ -482,42 +683,42 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  }
 
 	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
-      }
-      
-      // imaginary data subelement
-      if (imag)
-	{
-	  NDArray im (dims);
+
+	// imaginary data subelement
+	if (imag)
+	  {
+	    NDArray im (dims);
 	  
-	  if (read_mat5_tag (is, swap, type, len))
-	    {
-	      error ("load: reading matrix data for `%s'", retval.c_str ());
-	      goto data_read_error;
-	    }
+	    if (read_mat5_tag (is, swap, type, len))
+	      {
+		error ("load: reading matrix data for `%s'", retval.c_str ());
+		goto data_read_error;
+	      }
 
-	  int n = im.length ();
-	  read_mat5_binary_data (is, im.fortran_vec (), n, swap,
-				 (enum mat5_data_type) type, flt_fmt);
+	    n = im.length ();
+	    read_mat5_binary_data (is, im.fortran_vec (), n, swap,
+				   (enum mat5_data_type) type, flt_fmt);
 
-	  if (! is || error_state)
-	    {
-	      error ("load: reading imaginary matrix data for `%s'",
-		     retval.c_str ());
-	      goto data_read_error;
-	    }
+	    if (! is || error_state)
+	      {
+		error ("load: reading imaginary matrix data for `%s'",
+		       retval.c_str ());
+		goto data_read_error;
+	      }
 
-	  ComplexNDArray ctmp (dims);
+	    ComplexNDArray ctmp (dims);
 
-	  for (int i = 0; i < n; i++)
-	    ctmp(i) = Complex (re(i), im(i));
+	    for (int i = 0; i < n; i++)
+	      ctmp(i) = Complex (re(i), im(i));
 
-	  tc = ctmp;
-	}
-      else
-	tc = re;
+	    tc = ctmp;
+	  }
+	else
+	  tc = re;
 
-      if (arrayclass == mxCHAR_CLASS)
-	tc = tc.convert_to_str (false, true);
+	if (arrayclass == mxCHAR_CLASS)
+	  tc = tc.convert_to_str (false, true);
+      }
     }
 
   is.seekg (pos + static_cast<std::streamoff> (element_length));
@@ -710,6 +911,76 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
     }
 }
 
+template <class T>
+void 
+write_mat5_integer_data (std::ostream& os, const T& m, int size)
+{
+  int nel = m.nelem ();
+  mat5_data_type mst;
+  unsigned len;
+
+  switch (size)
+    {
+    case 1:
+      mst = miUINT8;
+      break;
+    case 2:
+      mst = miUINT16;
+      break;
+    case 3:
+      mst = miUINT32;
+      break;
+    case 4:
+      mst = miUINT64;
+      break;
+    case -1:
+      mst = miINT8;
+      size = - size;
+      break;
+    case -2:
+      mst = miINT16;
+      size = - size;
+      break;
+    case -3:
+      mst = miINT32;
+      size = - size;
+      break;
+    case -4:
+    default:
+      mst = miINT64;
+      size = - size;
+      break;
+    }
+
+  len = nel*size;
+  write_mat5_tag (os, mst, len);
+
+  os.write (X_CAST(char *, m.data ()), len);
+
+  if (PAD (len) > len)
+    {
+      static char buf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+      os.write (buf, PAD (len) - len);
+    }
+}
+
+template void write_mat5_integer_data (std::ostream& os,
+				       const int8NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os, 
+				       const int16NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os, 
+				       const int32NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os,
+				       const int64NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os, 
+				       const uint8NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os,
+				       const uint16NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os,
+				       const uint32NDArray &m, int size);
+template void write_mat5_integer_data (std::ostream& os,
+				       const uint64NDArray &m, int size);
+
 // Write out cell element values in the cell array to OS, preceded by
 // the appropriate tag.
 
@@ -742,6 +1013,7 @@ save_mat5_binary_element (std::ostream& os,
   FOUR_BYTE_INT flags=0;
   FOUR_BYTE_INT junk=0;
   std::streampos fixup, contin;
+  std::string cname = tc.class_name ();
 
   // element type and length
   fixup = os.tellp ();
@@ -758,6 +1030,22 @@ save_mat5_binary_element (std::ostream& os,
 
   if (tc.is_string ())
     flags |= mxCHAR_CLASS;
+  else if (cname == "int8")
+    flags |= mxINT8_CLASS;
+  else if (cname == "int16")
+    flags |= mxINT16_CLASS;
+  else if (cname == "int32")
+    flags |= mxINT32_CLASS;
+  else if (cname == "int64")
+    flags |= mxINT64_CLASS;
+  else if (cname == "uint8")
+    flags |= mxUINT8_CLASS;
+  else if (cname == "uint16")
+    flags |= mxUINT16_CLASS;
+  else if (cname == "uint32")
+    flags |= mxUINT32_CLASS;
+  else if (cname == "uint64")
+    flags |= mxUINT64_CLASS;
   else if (tc.is_real_scalar ())
     flags |= mxDOUBLE_CLASS;
   else if (tc.is_real_matrix () || tc.is_range ())
@@ -839,6 +1127,54 @@ save_mat5_binary_element (std::ostream& os,
       
       if (paddedlength > len)
 	os.write ((char *)buf, paddedlength - len);
+    }
+  else if (cname == "int8")
+    {
+      int8NDArray m = tc.int8_array_value ();
+
+      write_mat5_integer_data (os, m, -1);
+    }
+  else if (cname == "int16")
+    {
+      int16NDArray m = tc.int16_array_value ();
+
+      write_mat5_integer_data (os, m, -2);
+    }
+  else if (cname == "int32")
+    {
+      int32NDArray m = tc.int32_array_value ();
+
+      write_mat5_integer_data (os, m, -4);
+    }
+  else if (cname == "int64")
+    {
+      int64NDArray m = tc.int64_array_value ();
+
+      write_mat5_integer_data (os, m, -8);
+    }
+  else if (cname == "uint8")
+    {
+      uint8NDArray m = tc.uint8_array_value ();
+
+      write_mat5_integer_data (os, m, 1);
+    }
+  else if (cname == "uint16")
+    {
+      uint16NDArray m = tc.uint16_array_value ();
+
+      write_mat5_integer_data (os, m, 2);
+    }
+  else if (cname == "uint32")
+    {
+      uint32NDArray m = tc.uint32_array_value ();
+
+      write_mat5_integer_data (os, m, 4);
+    }
+  else if (cname == "uint64")
+    {
+      uint64NDArray m = tc.uint64_array_value ();
+
+      write_mat5_integer_data (os, m, 8);
     }
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {

@@ -1,3 +1,19 @@
+2004-12-02  David Bateman  <dbateman@free.fr>
+
+	* ls-mat5.cc (arrayclasstype): Add mxINT64_CLASS, mxUINT64_CLASS,
+	mxFUNCTION_CLASS enum values.
+	(read_mat5_integer_data): New template function.
+	(OCTAVE_MAT5_INTEGER_READ): New macro.
+	(read_mat5_binary_element): Handle reading integer types.
+	Eliminate automatic conversion from int to double.
+	(write_mat5_integer_data): New template function.
+	Instantiate it for the 8 integer data types
+	(save_mat5_binary_element): Handle integer data types.
+
+	* load-save.cc (Fload): Check file existence here.
+	If file does not exist, append ".mat" to name and try again.
+	(get_file_format): Delete check for file existence.
+
 2004-11-30  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (oct-gperf.h): Use -L C++ instead of -L ANSI_C.

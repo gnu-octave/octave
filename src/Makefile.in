@@ -260,6 +260,7 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 clean:
 	rm -f *.a *.o builtins.cc safe-stat.h safe-lstat.h \
 	defaults.h *.d *.def
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean:

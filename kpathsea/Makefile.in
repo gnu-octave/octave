@@ -33,16 +33,36 @@ tex-glyph.o tex-make.o tilde.o truncate.o uppercasify.o variable.o       \
 version.o xcalloc.o xfopen.o xmalloc.o xopendir.o xputenv.o xrealloc.o   \
 xstat.o xstrdup.o $(malloc)
 
-library = kpathsea
+LIBS_TO_INSTALL = libkpathsea.a libkpathsea.so
 
-default all: kpsewhich MakeTeXPK $(library).info
+default all: stamp-picdir kpsewhich MakeTeXPK kpathsea.info stamp-shared
 
-$(library).a: $(objects)
+stamp-picdir:
+	if [ -n "$(CPICFLAG)" ]; then \
+	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
+	else true; fi
+	touch stamp-picdir
+
+libkpathsea.a: $(objects)
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $(objects)
 	$(RANLIB) $@
 
-kpsewhich: $(library).a kpsewhich.o
+ifeq ($(SHARED_LIBS), true)
+  ifdef CPICFLAG
+    PICOBJ := $(addprefix pic/, $(objects))
+  else
+    PICOBJ := $(objects)
+  endif
+endif
+
+stamp-shared: $(PICOBJ)
+	if $(SHARED_LIBS); then \
+	  $(CC) -shared -o libkpathsea.$(SHLEXT) $(PICOBJ); \
+	fi
+	touch stamp-shared
+
+kpsewhich: libkpathsea.a kpsewhich.o
 	$(link_command) kpsewhich.o $(LOADLIBES)
 
 MakeTeXPK: MakeTeXPK.in $(top_srcdir)/../make/paths.make
@@ -113,6 +133,10 @@ gmalloc.o:
 check: 
 
 install:
+	for f in $(LIBS_TO_INSTALL); do \
+	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
+	done
+
 uninstall:
 
 # Installation of kpathsea itself is complicated by the fact that we
@@ -142,33 +166,33 @@ uninstall:
 #uninstall-data:
 #	rm -f $(infodir)/kpathsea.info*
 #
-#install-library: $(library).a 
+#install-library: libkpathsea.a 
 #	$(SHELL) $(top_srcdir)/../mkdirchain $(includedir)/kpathsea $(libdir)
-#	$(INSTALL_DATA) $(library).a $(libdir)/lib$(library).a
+#	$(INSTALL_DATA) libkpathsea.a $(libdir)/libkpathsea.a
 #	for f in $(install_headers); do \
 #	  $(INSTALL_DATA) $$f $(includedir)/kpathsea/$$f; done
 #	rm -f $(includedir)/kpathsea/c-auto.h
 #uninstall-library:
-#	rm -f $(libdir)/lib$(library).a
+#	rm -f $(libdir)/libkpathsea.a
 #	for f in $(install_headers); do rm -f $(includedir)/$$f; done
 
 # distdir is used by other distributions; they define $(distdir).
-distdir: INSTALL TAGS $(library).info $(library).dvi
+distdir: INSTALL TAGS kpathsea.info kpathsea.dvi
 	rm -rf $(distdir)
 	mkdir -p $(distdir)
 	ln $(ln_files) $(distdir)
 	cp -p $(HOME)/gnu/gnuorg/*.texi $(distdir)
 	touch *.info*
-	ln *.info* *.texi $(library).aux $(library).cps $(distdir)
+	ln *.info* *.texi kpathsea.aux kpathsea.cps $(distdir)
 	ln CONFIGURE HIER common.ac $(distdir)
 	cd $(distdir); rm -f paths.h
 	cd $(distdir); add-version $(version) version.c
 
 ac_include ../make/config.make
 
-info: $(library).info
-dvi: $(library).dvi
-INSTALL: $(library).texi install.texi
+info: kpathsea.info
+dvi: kpathsea.dvi
+INSTALL: kpathsea.texi install.texi
 	$(MAKEINFO) $(MAKEINFO_FLAGS) --no-headers $< -o - \
 	  | sed -n -e '/^Installation/,/wrong fonts/'p >$@
 	add-info-toc $@

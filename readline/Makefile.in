@@ -201,6 +201,7 @@ readline: $(OBJECTS)
 clean:
 	$(RM) -f $(OBJECTS) libreadline.a libhistory.a
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 maintainer-clean realclean distclean mostlyclean: clean
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)

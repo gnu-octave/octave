@@ -5,6 +5,7 @@ TAGS: *.c *.h
 
 mostlyclean::
 	rm -f *.o $(program) $(programs) squeeze $(library).a
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 clean:: mostlyclean
 	rm -f *.dvi *.lj

@@ -123,6 +123,7 @@ TAGS: $(SOURCES)
 
 clean:
 	rm -f *.a *.o *.d pic/*.o
+	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean: clean

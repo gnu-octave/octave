@@ -1,6 +1,7 @@
 2001-05-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in: Remove remaining references to readline.
+	(CONF_DISTFILES): Add autogen.sh to the list.
 
 2001-05-02  Mumit Khan  <khan@nanotech.wisc.edu>
 

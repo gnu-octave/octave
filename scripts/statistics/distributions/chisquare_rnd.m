@@ -42,8 +42,8 @@ function rnd = chisquare_rnd (n, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (n) != 1) && ((length (size (n)) != length (sz)) ||
-				any (size (n) != sz)))
+    if (any (size (n) != 1)
+	&& (length (size (n)) != length (sz) ||	any (size (n) != sz)))
       error ("chisquare_rnd: n must be scalar or of size [r, c]");
     endif
   elseif (nargin == 2)
@@ -55,8 +55,8 @@ function rnd = chisquare_rnd (n, r, c)
       error ("chisquare_rnd: r must be a postive integer or vector");
     endif
 
-    if (any (size (n) != 1) && ((length (size (n)) != length (sz)) ||
-				any (size (n) != sz)))
+    if (any (size (n) != 1)
+	&& (length (size (n)) != length (sz) || any (size (n) != sz)))
       error ("chisquare_rnd: n must be scalar or of size sz");
     endif
   elseif (nargin == 1)

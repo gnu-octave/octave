@@ -51,8 +51,8 @@ function rnd = cauchy_rnd (l, scale, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (l) != 1) && ((length (size (l)) != length (sz)) ||
-				any (size (l) != sz)))
+    if (any (size (l) != 1)
+	&& (length (size (l)) != length (sz) || any (size (l) != sz)))
       error ("cauchy_rnd: lambda and sigma must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -64,8 +64,8 @@ function rnd = cauchy_rnd (l, scale, r, c)
       error ("cauchy_rnd: r must be a postive integer or vector");
     endif
 
-    if (any (size (l) != 1) && ((length (size (l)) != length (sz)) ||
-				any (size (l) != sz)))
+    if (any (size (l) != 1)
+	&& (length (size (l)) != length (sz) ||	any (size (l) != sz)))
       error ("cauchy_rnd: lambda and sigma must be scalar or of size sz");
     endif
   elseif (nargin == 2)

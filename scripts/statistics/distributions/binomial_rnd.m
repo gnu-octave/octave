@@ -52,8 +52,8 @@ function rnd = binomial_rnd (n, p, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (n) != 1) && ((length (size (n)) != length (sz)) ||
-				any (size (n) != sz)))
+    if (any (size (n) != 1)
+	&& (length (size (n)) != length (sz) ||	any (size (n) != sz)))
       error ("binomial_rnd: n and must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -65,8 +65,8 @@ function rnd = binomial_rnd (n, p, r, c)
       error ("binomial_rnd: r must be a postive integer or vector");
     endif
 
-    if (any (size (n) != 1) && ((length (size (n)) != length (sz)) ||
-				any (size (n) != sz)))
+    if (any (size (n) != 1)
+	&& (length (size (n)) != length (sz) || any (size (n) != sz)))
       error ("binomial_rnd: n and must be scalar or of size sz");
     endif
   elseif (nargin == 2)

@@ -52,8 +52,8 @@ function rnd = beta_rnd (a, b, r, c)
     endif
     sz = [r, c];
 
-    if (any (size (a) != 1) && ((length (size (a)) != length (sz)) ||
-				any (size (a) != sz)))
+    if (any (size (a) != 1)
+	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
       error ("beta_rnd: a and b must be scalar or of size [r,c]");
     endif
   elseif (nargin == 3)
@@ -65,8 +65,8 @@ function rnd = beta_rnd (a, b, r, c)
       error ("beta_rnd: r must be a postive integer or vector");
     endif
 
-    if (any (size (a) != 1) && ((length (size (a)) != length (sz)) ||
-				any (size (a) != sz)))
+    if (any (size (a) != 1)
+	&& (length (size (a)) != length (sz) || any (size (a) != sz)))
       error ("beta_rnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)

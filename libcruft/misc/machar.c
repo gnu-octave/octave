@@ -123,8 +123,8 @@ rmachar(int *ibeta, int *it, int *irnd, int *ngrd, int *machep,
 {
       int i,iz,j,k;
       int mx,itmp,nxres;
-      REAL a,b,beta,betain,one,y,z,zero;
-      REAL betah,t,tmp,tmpa,tmp1,two;
+      volatile REAL a,b,beta,betain,one,y,z,zero;
+      volatile REAL betah,two,t,tmp,tmpa,tmp1;
 
       (*irnd) = 1;
       one = (REAL)(*irnd);

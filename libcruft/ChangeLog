@@ -1,3 +1,7 @@
+2005-03-01  John W. Eaton  <jwe@octave.org>
+
+	* misc/machar.c (rmachar): Declare local REAL variables volatile.
+
 2005-02-25  John W. Eaton  <jwe@octave.org>
 
 	* blas/zher.f: New file.

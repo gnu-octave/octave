@@ -34,6 +34,8 @@ CRUFT_DIRS = amos @BLAS_DIR@ blas-xtra dassl fftpack @LAPACK_DIR@ \
 
 SUBDIRS = $(CRUFT_DIRS)
 
+DISTSUBDIRS = $(sort $(CRUFT_DIRS) blas lapack)
+
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
 
 ifeq ($(SHARED_LIBS), true)
@@ -158,7 +160,7 @@ maintainer-clean::
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER); fi
 
 dist:
-	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done
 	ln $(DISTFILES) ../`cat ../.fname`/libcruft
 .PHONY: dist
 

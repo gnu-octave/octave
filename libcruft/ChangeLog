@@ -1,3 +1,8 @@
+2000-07-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTSUBDIRS): New macro.
+	(dist): Use it instead of SUBDIRS.
+
 2000-06-30  Steven G. Johnson  <stevenj@alum.mit.edu>
 
 	* blas-xtra, lapack-xtra: New directories.

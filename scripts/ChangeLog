@@ -1,3 +1,8 @@
+2002-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* elfun/coth.m: Use 1 ./ tanh(z) instead of cosh(z) ./ sinh(z).
+	From "Michael O'Brien" <mobrien@kento.unm.edu>.
+
 2001-06-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/distributions/discrete_cdf.m: Downcase incorrectly

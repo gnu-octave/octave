@@ -1,3 +1,7 @@
+2003-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* db.c: Define _GNU_SOURCE.
+
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in ($(kpathsea)): Build object files only.

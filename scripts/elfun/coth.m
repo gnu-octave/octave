@@ -30,6 +30,6 @@ function w = coth (z)
     usage ("coth (z)");
   endif
 
-  w = cosh (z) ./ sinh (z);
+  w = 1 ./ tanh (z);
 
 endfunction

@@ -21,7 +21,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.87 $)
+AC_REVISION($Revision: 1.88 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -544,7 +544,17 @@ dnl with an argument.
 ### with functions from the BSD/NET2 math library.
 
 AC_CHECK_LIB(sunmath, main)
-AC_CHECK_LIB(m, main)
+
+dnl This is bogus.  We shouldn't have to explicitly add libc too!
+
+case "$canonical_host_type" in
+  *-*-linux*)
+    AC_CHECK_LIB(m, main, , , -lc)
+  ;;
+  *)
+    AC_CHECK_LIB(m, main)
+  ;;
+esac
 
 XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"

@@ -282,7 +282,6 @@ builtin_clear (int argc, char **argv)
 
       delete [] names;
       delete [] g_names;
-      delete [] g_names;
 
     }
   return retval;

@@ -1,6 +1,7 @@
 Thu Sep 24 13:51:03 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_OUTPUT): Add libcruft/ordered-qz to the list.
+	Delete libcruft/balgen and libcruft/eispack from the list.
 
 Mon Aug 31 12:07:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

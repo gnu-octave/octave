@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "gripes.h"
 #include "help.h"
+#include "oct-obj.h"
 #include "ov.h"
 #include "toplev.h"
 #include "variables.h"
@@ -425,6 +426,16 @@ symbols_of_defaults (void)
 
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
     "Octave version");
+}
+
+DEFUN (rehash, , ,
+  "rehash (): reinitialize LOADPATH directory cache")
+{
+  octave_value_list retval;
+
+  Vload_path_dir_path.rehash ();
+
+  return retval;
 }
 
 /*

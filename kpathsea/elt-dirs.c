@@ -68,6 +68,33 @@ typedef struct
 static cache_entry *the_cache = NULL;
 static unsigned cache_length = 0;
 
+void
+kpse_clear_dir_cache P1H(void)
+{
+  while (cache_length > 0)
+    {
+      str_llist_type elt = *the_cache[--cache_length].value;
+
+      while (elt)
+	{
+	  str_llist_type next = STR_LLIST_NEXT (*elt);
+
+	  string s = STR_LLIST (*elt);
+
+	  if (s)
+	    free (s);
+
+	  free (elt);
+
+	  elt = next;
+	}
+    }
+
+  if (the_cache)
+    free (the_cache);
+
+  the_cache = NULL;
+}
 
 /* Associate KEY with VALUE.  We implement the cache as a simple linear
    list, since it's unlikely to ever be more than a dozen or so elements

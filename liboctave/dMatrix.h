@@ -234,8 +234,6 @@ extern Matrix Givens (double, double);
 
 extern Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 
-extern ComplexColumnVector Qzval (const Matrix& a, const Matrix& b);
-
 extern Matrix operator * (const Matrix& a, const Matrix& b);
 
 MS_CMP_OP_DECLS (Matrix, double)

@@ -1,4 +1,27 @@
+Fri Sep 25 11:50:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (write_header): Rename from write_binary_header.
+	Also write header for Octave ASCII files.
+
+	* load-save.cc (Fsave): Implement -append option.
+
+	* defaults.cc (Frehash): New function.
+
+Fri Sep 25 11:50:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (help_from_info): Improve error message in case that
+	info doesn't work.
+
 Thu Sep 24 10:48:12 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DLD_XSRC): Replace qzval.cc with qz.cc
+
+	* DLD-FUNCTIONS/balance.cc: Update from A. S. Hodel
+	<scotte@eng.auburn.edu>.
+
+	* DLD-FUNCTIONS/qz.cc: New file.
+
+	* DLD-FUNCTIONS/qzval.cc: Delete.
 
 	* parse.y (plot_command1): Don't allow it to be empty.
 	(plot_command): Handle simple `PLOT' and `PLOT ranges' as special

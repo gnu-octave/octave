@@ -72,5 +72,8 @@ extern string kpse_path_search P3H(const_string path, const_string name,
    all the filenames (or NULL if none), instead of taking the first.  */
 extern string *kpse_all_path_search P2H(const_string path, const_string name);
 
+/* Clear the directory cache.  */
+extern void kpse_clear_dir_cache P1H(void);
+
 #endif /* not KPATHSEA_PATHSEARCH_H */
 

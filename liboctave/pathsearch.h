@@ -71,6 +71,12 @@ public:
 
   static void set_program_name (const string&);
 
+  void rehash (void)
+    {
+      initialized = false;
+      init ();
+    }
+
 private:
 
   // The colon separated list that we were given.

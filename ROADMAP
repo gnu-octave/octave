@@ -14,16 +14,15 @@ Octave's source files.
   kpathsea      -- Karl Berry's path searching library
 
   libcruft      -- various numerical libraries (mostly Fortran)
-    balgen         * balancing subroutines for eigenvalue computations
     blas           * basic linear algebra subroutines
     dassl          * differential-algebraic system solver
-    eispack        * subroutines for eigenvalue problems
     fftpack        * subroutines for fast fourier transforms
     lapack         * linear algebra package
     linpack        * linear algebra package
     minpack        * nonlinear equation solver
     misc           * miscellaneous utilities
     odepack        * odinary differential equation solver
+    ordered-qz     * code for ordering eigenvalues for QZ factorization
     quadpack       * subroutines for numerical integration
     ranlib         * random number generators
     slatec-fn      * various special function subroutines

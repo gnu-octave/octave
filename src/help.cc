@@ -640,7 +640,8 @@ help_from_info (const string_vector& argv, int idx, int argc)
 		}
 	      else
 		{
-		  error ("help: unable to find info!");
+		  error ("help: unable to find info");
+		  error ("help: you need info 2.18 or later (texinfo 3.12)");
 		  break;
 		}
 	    }

@@ -1,3 +1,8 @@
+Fri Sep 25 13:28:54 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* elt-dirs.c (kpse_clear_dir_cache): New function.
+	* pathsearch.h (kpse_clear_dir_cache): Provide declaration.
+
 Mon Aug 31 12:07:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.sub: Accept armv4 everywhere arm is allowed.

@@ -159,6 +159,8 @@ dir_path::init (void)
       octave_kpathsea_initialized = true;
     }
 
+  kpse_clear_dir_cache ();
+
   char *tmp = kpse_path_expand (p_orig.c_str ());
   if (tmp)
     {

@@ -1,4 +1,25 @@
+Fri Sep 25 14:26:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-env.cc (octave_env::do_get_home_directory): 
+ 	If HOME can't be found, set it to "/".
+	(octave_env::do_get_user_name)
+	If user name can't be found, set it to "unknown".
+	(octave_env::do_get_host_name)
+	If host name can't be found, set it to "unknown".
+
+	* pathsearch.h (dir_path::rehash): New function.
+	* pathsearch.cc (dir_path::init): Clear kpathsea's internal
+	diretcory cache before doing initialization.
+
 Thu Sep 24 13:23:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Qzval): Delete.
+	(qzhes, qzit, qzval): Delete F77_FCN declarations.
+	* dMatrix.h (Qzval): Delete declaration.
+
+	* dbleGEPBAL.h, dbleGEPBAL.cc: Delete.
+	* Makefile.in (MATRIX_INC, MATRIX_SRC): Delete them from the lists.
+	* mx-ext.h: Don't include dbleGEPBAL.
 
 	* lo-ieee.cc (octave_ieee_init): For now, use X_CAST instead of
 	static_cast.

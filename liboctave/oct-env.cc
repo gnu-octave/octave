@@ -364,7 +364,7 @@ octave_env::do_get_home_directory (void) const
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      hd = pw ? pw.dir () : string ("I have no home!");
+      hd = pw ? pw.dir () : string ("/");
     }
 
   return hd;
@@ -380,7 +380,7 @@ octave_env::do_get_user_name (void) const
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      user_name = pw ? string ("I have no name!") : pw.name ();
+      user_name = pw ? string ("unknown") : pw.name ();
     }
 
   return user_name;
@@ -398,7 +398,7 @@ octave_env::do_get_host_name (void) const
 
       int status = gethostname (hostname, 255);
 
-      host_name = (status < 0) ? "I have no host!" : hostname;
+      host_name = (status < 0) ? "unknown" : hostname;
     }
 
   return host_name;

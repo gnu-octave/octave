@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cstring>
 #include <cctype>
+#include <ctime>
 
 #include <string>
 
@@ -41,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -55,6 +57,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+#include "version.h"
 
 // The default output format.  May be one of "binary", "text", or
 // "mat-binary".
@@ -2366,28 +2369,53 @@ get_default_save_format (void)
 }
 
 static void
-write_binary_header (ostream& os, load_save_format format)
+write_header (ostream& os, load_save_format format)
 {
-  if (format == LS_BINARY)
+  switch (format)
     {
-      os << (oct_mach_info::words_big_endian ()
-	     ? "Octave-1-B" : "Octave-1-L");
+    case LS_BINARY:
+      {
+	os << (oct_mach_info::words_big_endian ()
+	       ? "Octave-1-B" : "Octave-1-L");
 
-      oct_mach_info::float_format flt_fmt =
-	oct_mach_info::native_float_format ();
+	oct_mach_info::float_format flt_fmt =
+	  oct_mach_info::native_float_format ();
 
-      char tmp = (char) float_format_to_mopt_digit (flt_fmt);
+	char tmp = (char) float_format_to_mopt_digit (flt_fmt);
 
-      os.write (&tmp, 1);
+	os.write (&tmp, 1);
+      }
+    break;
+
+    case LS_ASCII:
+      {
+	time_t now = time (0);
+
+	string time_string = asctime (gmtime (&now));
+	time_string = time_string.substr (0, time_string.length () - 1);
+
+	os << "# Created by Octave " OCTAVE_VERSION ", "
+	   << time_string
+	   << " <"
+	   << octave_env::get_user_name ()
+	   << "@"
+	   << octave_env::get_host_name ()
+	   << ">" << "\n";
+      }
+    break;
+
+    default:
+      break;
     }
 }
 
 static void
 save_vars (const string_vector& argv, int argv_idx, int argc,
 	   ostream& os, bool save_builtins, load_save_format fmt,
-	   bool save_as_floats) 
+	   bool save_as_floats, bool write_header_info)
 {
-  write_binary_header (os, fmt);
+  if (write_header_info)
+    write_header (os, fmt);
 
   if (argv_idx == argc)
     {
@@ -2424,7 +2452,7 @@ save_user_variables (void)
 
   if (file)
     {
-      save_vars (string_vector (), 0, 0, file, false, format, false);
+      save_vars (string_vector (), 0, 0, file, false, format, false, true);
       message (0, "save to `%s' complete", fname);
     }
   else
@@ -2432,7 +2460,7 @@ save_user_variables (void)
 }
 
 DEFUN_TEXT (save, args, ,
-  "save [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
+  "save [-append] [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
      [-save-builtins] file [pattern ...]\n\
 \n\
 save variables in a file")
@@ -2455,9 +2483,15 @@ save variables in a file")
 
   load_save_format format = get_default_save_format ();
 
+  bool append = false;
+
   int i;
   for (i = 1; i < argc; i++)
     {
+      if (argv[i] == "-append")
+	{
+	  append = true;
+	}
       if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
 	  format = LS_ASCII;
@@ -2503,7 +2537,7 @@ save variables in a file")
       // in a octave_value (string)?
 
       save_vars (argv, i, argc, octave_stdout, save_builtins, format,
-		 save_as_floats);
+		 save_as_floats, true);
     }
 
   // Guard against things like `save a*', which are probably mistakes...
@@ -2519,16 +2553,21 @@ save variables in a file")
 
       i++;
 
-      unsigned mode = ios::out|ios::trunc;
+      unsigned mode = ios::out;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= ios::bin;
+
+      mode |= append ? ios::ate : ios::trunc;
 
       ofstream file (fname.c_str (), mode);
 
       if (file)
 	{
+	  bool write_header_info
+	    = ((file.rdbuf ())->seekoff (0, ios::cur) == 0);
+
 	  save_vars (argv, i, argc, file, save_builtins, format,
-		     save_as_floats);
+		     save_as_floats, write_header_info);
 	}
       else
 	{

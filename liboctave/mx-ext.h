@@ -33,12 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dbleDET.h"
 #include "CmplxDET.h"
 
-// Result of a GEP Balance operation
-// Note: currenlty only do balancing on real data.  Complex balancing
-// done on magnitudes of complex data.
-
-#include "dbleGEPBAL.h"
-
 // Result of a Cholesky Factorization
 
 #include "dbleCHOL.h"

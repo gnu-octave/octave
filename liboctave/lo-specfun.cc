@@ -95,7 +95,7 @@ double
 acosh (double x)
 {
   double retval;
-  F77_XFCN (xdacosh, XDACOSH, (x, retval));
+  F77_FUNC (xdacosh, XDACOSH) (x, retval);
   return retval;
 }
 #endif
@@ -105,7 +105,7 @@ double
 asinh (double x)
 {
   double retval;
-  F77_XFCN (xdasinh, XDASINH, (x, retval));
+  F77_FUNC (xdasinh, XDASINH) (x, retval);
   return retval;
 }
 #endif
@@ -115,7 +115,7 @@ double
 atanh (double x)
 {
   double retval;
-  F77_XFCN (xdatanh, XDATANH, (x, retval));
+  F77_FUNC (xdatanh, XDATANH) (x, retval);
   return retval;
 }
 #endif
@@ -125,7 +125,7 @@ double
 erf (double x)
 {
   double retval;
-  F77_XFCN (xderf, XDERF, (x, retval));
+  F77_FUNC (xderf, XDERF) (x, retval);
   return retval;
 }
 #endif
@@ -135,7 +135,7 @@ double
 erfc (double x)
 {
   double retval;
-  F77_XFCN (xderfc, XDERFC, (x, retval));
+  F77_FUNC (xderfc, XDERFC) (x, retval);
   return retval;
 }
 #endif
@@ -144,7 +144,7 @@ double
 xgamma (double x)
 {
   double result;
-  F77_XFCN (xdgamma, XDGAMMA, (x, result));
+  F77_FUNC (xdgamma, XDGAMMA) (x, result);
   return result;
 }
 
@@ -153,7 +153,7 @@ xlgamma (double x)
 {
   double result;
   double sgngam;
-  F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
+  F77_FUNC (dlgams, DLGAMS) (x, result, sgngam);
   return result;
 }
 
@@ -690,7 +690,7 @@ double
 betainc (double x, double a, double b)
 {
   double retval;
-  F77_XFCN (xdbetai, XDBETAI, (x, a, b, retval));
+  F77_FUNC (xdbetai, XDBETAI) (x, a, b, retval);
   return retval;
 }
 
@@ -859,7 +859,7 @@ gammainc (double x, double a, bool& err)
       err = true;
     }
   else
-    F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
+    F77_FUNC (xgammainc, XGAMMAINC) (a, x, retval);
 
   return retval;
 }

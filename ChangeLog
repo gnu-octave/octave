@@ -1,3 +1,9 @@
+2002-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for sigsetjmp and siglongjmp.
+	(AH_BOTTOM): If both are found, define OCTAVE_HAVE_SIG_JUMP.
+	Also check for sig_atomic_t, typedef it if not available.
+
 2002-11-10  Per Persson <persquare@mac.com>
 
 	* configure.in: Detect dyld API for dynamic linking on OS X.

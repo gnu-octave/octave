@@ -68,6 +68,8 @@ static int
 ddaspk_f (const double& time, const double *state, const double *deriv,
 	  const double&, double *delta, int& ires, double *, int *)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   ColumnVector tmp_deriv (nn);
   ColumnVector tmp_state (nn);
   ColumnVector tmp_delta (nn);
@@ -91,6 +93,8 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 	}
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -104,7 +108,12 @@ ddaspk_psol (const int& neq, const double& time, const double *state,
 	     int *iwp, double *b, const double& eplin, int& ier,
 	     double *, int*)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   abort ();
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -113,6 +122,8 @@ static int
 ddaspk_j (const double& time, const double *state, const double *deriv,
 	  double *pd, const double& cj, double *, int *)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   // XXX FIXME XXX -- would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
@@ -129,6 +140,8 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
       pd [nn * j + i] = tmp_pd.elem (i, j);
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

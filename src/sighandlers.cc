@@ -124,22 +124,6 @@ my_friendly_exit (const char *sig_name, int sig_number)
     }
 }
 
-// I know, not really a signal handler.
-
-static void
-octave_new_handler (void)
-{
-  std::cerr << "error: memory exhausted -- trying to return to prompt\n";
-
-  if (can_interrupt)
-    {
-      OCTAVE_JUMP_TO_TOP_LEVEL;
-      panic_impossible ();
-    }
-  else
-    my_friendly_exit ("operator new", OCTAVE_MEMORY_EXHAUSTED_ERROR);
-}
-
 sig_handler *
 octave_set_signal_handler (int sig, sig_handler *handler)
 {
@@ -241,8 +225,11 @@ sigfpe_handler (int /* sig */)
 
   if (can_interrupt)
     {
+      // XXX FIXME XXX -- this may simply set the interrupt state.  We
+      // can only hope for the best after returning?  We probably need
+      // to throw an exception.
+
       OCTAVE_OCTAVE_JUMP_TO_TOP_LEVEL;
-      panic_impossible ();
     }
 
   SIGHANDLER_RETURN (0);
@@ -375,8 +362,6 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h)
 void
 install_signal_handlers (void)
 {
-  std::set_new_handler (octave_new_handler);
-
   octave_catch_interrupts ();
 
 #ifdef SIGABRT

@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dMatrix.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "quit.h"
 
 typedef int (*hybrd1_fcn_ptr) (int*, double*, double*, int*);
 
@@ -63,6 +64,8 @@ NLEqn::error (const char* msg)
 int
 hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   int nn = *n;
   ColumnVector tmp_f (nn);
   ColumnVector tmp_x (nn);
@@ -80,6 +83,8 @@ hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
 	fvec[i] = tmp_f.elem (i);
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -87,6 +92,8 @@ int
 hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 	    int *ldfjac, int *iflag)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   int nn = *n;
   ColumnVector tmp_x (nn);
 
@@ -124,6 +131,8 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 	      fjac[j*ld+i] = tmp_fj.elem (i, j);
 	}
     }
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

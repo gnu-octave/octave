@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-sstream.h"
+#include "quit.h"
 
 typedef int (*dasrt_fcn_ptr) (const double&, const double*, const double*,
 			      double*, int&, double*, int*);
@@ -63,6 +64,8 @@ static int
 ddasrt_f (const double& t, const double *state, const double *deriv,
 	  double *delta, int& ires, double *rpar, int *ipar)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   ColumnVector tmp_state (nn);
   ColumnVector tmp_deriv (nn);
 
@@ -82,6 +85,8 @@ ddasrt_f (const double& t, const double *state, const double *deriv,
 	delta[i] = tmp_fval(i);
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -89,6 +94,8 @@ int
 ddasrt_j (const double& time, const double *state, const double *deriv,
 	  double *pd, const double& cj, double *, int *)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   // XXX FIXME XXX -- would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
@@ -106,6 +113,8 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
     for (int i = 0; i < nn; i++)
       pd [nn * j + i] = tmp_pd.elem (i, j);
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -113,6 +122,8 @@ static int
 ddasrt_g (const int& neq, const double& t, const double *state,
 	  const int& ng, double *gout, double *rpar, int *ipar) 
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   int n = neq;
 
   ColumnVector tmp_state (n);
@@ -123,6 +134,8 @@ ddasrt_g (const int& neq, const double& t, const double *state,
 
   for (int i = 0; i < ng; i++)
     gout[i] = tmp_fval(i);
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Quad.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "quit.h"
 #include "sun-utils.h"
 
 static integrand_fcn user_fcn;
@@ -59,6 +60,8 @@ int F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&, const int&,
 static int
 user_function (double *x, int& ierr, double *result)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
 #if defined (sun) && defined (__GNUC__)
   double xx = access_double (x);
 #else
@@ -77,6 +80,8 @@ user_function (double *x, int& ierr, double *result)
 
   if (quad_integration_error)
     ierr = -1;
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

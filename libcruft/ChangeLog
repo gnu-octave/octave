@@ -1,3 +1,25 @@
+2002-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/quit.cc (octave_allocation_error): New variable.
+	(octave_throw_bad_alloc): New function.
+	* misc/quit.h: Provide decls.
+	(OCTAVE_THROW_BAD_ALLOC): New macro.
+	(END_INTERRUPT_WITH_EXCEPTIONS): Also catch bad_alloc.
+	* misc/f77-fcn.h (F77_XFCN): Handle allocation errors.
+
+	* misc/quit.h (octave_jmp_buf): New typedef.
+	(current_context): Type is now octave_jmp_buf.
+	(octave_set_current_context): Use sigsetjmp if we have it.
+	(octave_interrupt_immediately, octave_interrupt_state): Type is
+	now sig_atomic_t.
+	(BEGIN_INTERRUPT_WITH_EXCEPTIONS, END_INTERRUPT_WITH_EXCEPTIONS):
+	New macros.
+
+	* misc/quit.cc (octave_jump_to_enclosing_context): Use siglongjmp
+	if we have it.	
+	(octave_save_current_context, octave_restore_current_context): Use
+	octave_jmp_buf type here.
+
 2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in: Handle automatic dependency generation for

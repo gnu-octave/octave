@@ -70,6 +70,8 @@ static int
 odessa_f (int* neq, const double& t, double *state,
 	  double *par, double *fval)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   int n = neq[0];
   int n_par = neq[1];
 
@@ -93,6 +95,8 @@ odessa_f (int* neq, const double& t, double *state,
 	fval[i] = tmp_fval(i);
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -101,6 +105,8 @@ odessa_j (int* neq, const double& t, double *state,
 	  double *par, const int& ml, const int& mu, double *pd,
 	  const int& nrowpd)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   int n = neq[0];
   int n_par = neq[1];
 
@@ -124,6 +130,8 @@ odessa_j (int* neq, const double& t, double *state,
 	  pd[nrowpd*j+i] = tmp_fval(i,j);
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -132,6 +140,8 @@ odessa_b (int* neq, const double& t, double *state,
 	  double *par, double *dfdp, const int& jpar)
 
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   int n = neq[0];
   int n_par = neq[1];
 
@@ -153,6 +163,8 @@ odessa_b (int* neq, const double& t, double *state,
       for (int i = 0; i < n; i++)
 	dfdp[i] = tmp_fval(i);
     }
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

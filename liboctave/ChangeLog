@@ -1,3 +1,18 @@
+2002-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc: Use F77_FUNC instead of F77_XFCN for calls to
+	fortran code that should run fast enough that it is not worth all
+	the setup costs of F77_XFCN.
+
+	* Quad.cc (user_function): Surround body of function with
+	BEGIN_INTERRUPT_WITH_EXCEPTIONS, END_INTERRUPT_WITH_EXCEPTIONS.
+	* ODESSA.cc (odessa_f, odessa_j, odessa_b): Likewise.
+	* NLEqn.cc (hybrd1_fcn, hybrj1_fcn): Likewise.
+	* LSODE.cc (lsode_f, lsode_j): Likewise.
+	* DASSL.cc (ddassl_f, ddassl_j): Likewise.
+	* DASRT.cc (ddasrt_f, ddasrt_j, ddasrt_g): Likewise.
+	* DASPK.cc (ddaspk_f, ddaspk_psol, ddaspk_j): Likewise.
+
 2002-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-ieee.cc (octave_ieee_init): Check defined (__osf__) instead

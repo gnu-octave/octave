@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-sstream.h"
+#include "quit.h"
 
 typedef int (*dassl_fcn_ptr) (const double&, const double*, const double*,
 			      double*, int&, double*, int*);
@@ -59,6 +60,8 @@ static int
 ddassl_f (const double& time, const double *state, const double *deriv,
 	  double *delta, int& ires, double *, int *)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   // XXX FIXME XXX -- would be nice to avoid copying the data.
 
   ColumnVector tmp_deriv (nn);
@@ -84,6 +87,8 @@ ddassl_f (const double& time, const double *state, const double *deriv,
 	}
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -91,6 +96,8 @@ static int
 ddassl_j (const double& time, const double *state, const double *deriv,
 	  double *pd, const double& cj, double *, int *)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   // XXX FIXME XXX -- would be nice to avoid copying the data.
 
   ColumnVector tmp_state (nn);
@@ -107,6 +114,8 @@ ddassl_j (const double& time, const double *state, const double *deriv,
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
       pd [nn * j + i] = tmp_pd.elem (i, j);
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

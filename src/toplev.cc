@@ -90,6 +90,18 @@ octave_user_function *curr_function = 0;
 // Original value of TEXMFDBS environment variable.
 std::string octave_original_texmfdbs;
 
+static void
+recover_from_exception (void)
+{
+  unwind_protect::run_all ();
+  can_interrupt = true;
+  SET_OCTAVE_INTERRUPT_IMMEDIATELY (0);
+  octave_interrupt_state = 0;
+  octave_allocation_error = 0;
+  octave_restore_signal_mask ();
+  octave_catch_interrupts ();
+}
+
 int
 main_loop (void)
 {
@@ -118,7 +130,7 @@ main_loop (void)
   int retval = 0;
   do
     {
-      OCTAVE_TRY_WITH_INTERRUPTS
+      try
 	{
 	  curr_sym_tab = top_level_sym_tab;
 
@@ -176,13 +188,14 @@ main_loop (void)
 	}
       OCTAVE_CATCH_INTERRUPTS
 	{
-	  unwind_protect::run_all ();
-	  can_interrupt = true;
-	  SET_OCTAVE_INTERRUPT_IMMEDIATELY (0);
-	  octave_interrupt_state = 0;
+	  recover_from_exception ();
 	  std::cout << "\n";
-	  octave_restore_signal_mask ();
-	  octave_catch_interrupts ();
+	}
+      catch (bad_alloc)
+	{
+	  recover_from_exception ();
+	  std::cerr
+	    << "error: memory exhausted -- trying to return to prompt\n";
 	}
     }
   while (retval == 0);

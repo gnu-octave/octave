@@ -1,3 +1,13 @@
+2002-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (octave_new_handler): Delete.
+	(install_signal_handlers): Don't call set_new_handler.
+	* toplev.cc (main_loop): Handle bad_alloc exception here.
+
+	* sighandlers.cc (octave_new_handler): Allow return after
+	OCTAVE_JUMP_TO_TOP_LEVEL.
+	(sigfpe_handler): Likewise.
+
 2002-11-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (is_variable): New static function.

@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 
+#include <new>
+
 // Include signal.h, not csignal since the latter might only define
 // the ANSI standard C signal interface.
 
@@ -33,24 +35,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quit.h"
 
-jmp_buf current_context;
+octave_jmp_buf current_context;
 
 void
 octave_save_current_context (void *save_buf)
 {
-  memcpy (save_buf, current_context, sizeof (jmp_buf));
+  memcpy (save_buf, current_context, sizeof (octave_jmp_buf));
 }
 
 void
 octave_restore_current_context (void *save_buf)
 {
-  memcpy (current_context, save_buf, sizeof (jmp_buf));
+  memcpy (current_context, save_buf, sizeof (octave_jmp_buf));
 }
 
 void
 octave_jump_to_enclosing_context (void)
 {
+#if defined (OCTAVE_HAVE_SIG_JUMP)
+  siglongjmp (current_context, 1);
+#else
   longjmp (current_context, 1);
+#endif
 }
 
 // Allow us to save the signal mask and then restore it to the most
@@ -83,14 +89,22 @@ octave_restore_signal_mask (void)
 
 #if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)
 
-int octave_interrupt_immediately = 0;
+sig_atomic_t octave_interrupt_immediately = 0;
 
-int octave_interrupt_state = 0;
+sig_atomic_t octave_interrupt_state = 0;
+
+sig_atomic_t octave_allocation_error = 0;
 
 void
 octave_throw_interrupt_exception (void)
 {
   throw octave_interrupt_exception ();
+}
+
+void
+octave_throw_bad_alloc (void)
+{
+  throw bad_alloc ();
 }
 
 #endif

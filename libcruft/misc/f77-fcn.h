@@ -29,8 +29,6 @@ extern "C" {
 
 #include "quit.h"
 
-#include <stdio.h>
-
 /* Hack to stringize macro results. */
 #define xSTRINGIZE(x) #x
 #define STRINGIZE(x) xSTRINGIZE(x)
@@ -61,6 +59,8 @@ extern "C" {
           octave_restore_current_context ((char *) saved_context); \
 	  if (f77_exception_encountered) \
 	    F77_XFCN_ERROR (f, F); \
+          else if (octave_allocation_error) \
+            OCTAVE_THROW_BAD_ALLOC; \
           else \
             OCTAVE_THROW_TO_TOP_LEVEL; \
 	} \

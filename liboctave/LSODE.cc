@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-sstream.h"
+#include "quit.h"
 
 typedef int (*lsode_fcn_ptr) (const int&, const double&, double*,
 			      double*, int&);
@@ -57,6 +58,8 @@ static int
 lsode_f (const int& neq, const double& time, double *,
 	 double *deriv, int& ierr) 
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   ColumnVector tmp_deriv;
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
@@ -73,6 +76,8 @@ lsode_f (const int& neq, const double& time, double *,
 	deriv [i] = tmp_deriv.elem (i);
     }
 
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
   return 0;
 }
 
@@ -80,6 +85,8 @@ static int
 lsode_j (const int& neq, const double& time, double *,
 	 const int&, const int&, double *pd, const int& nrowpd)
 {
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
   Matrix tmp_jac (neq, neq);
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
@@ -91,6 +98,8 @@ lsode_j (const int& neq, const double& time, double *,
   for (int j = 0; j < neq; j++)
     for (int i = 0; i < neq; i++)
       pd [nrowpd * j + i] = tmp_jac (i, j);
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
 
   return 0;
 }

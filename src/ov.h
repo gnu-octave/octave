@@ -175,7 +175,7 @@ public:
 #if defined (HAVE_LONG_LONG_INT)
   octave_value (long long int i);
 #endif
-#if defined (HAVE_UNSIGNEDLONG_LONG_INT)
+#if defined (HAVE_UNSIGNED_LONG_LONG_INT)
   octave_value (unsigned long long int i);
 #endif
 

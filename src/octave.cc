@@ -110,31 +110,37 @@ static bool verbose_flag = false;
 // Usage message
 static const char *usage_string = 
   "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
-       [--help] [--info-file file] [--info-program prog] [--interactive]\n\
-       [--no-history] [--no-init-file] [--no-line-editing] [--no-site-file]\n\
-       [-p path] [--path path] [--silent] [--traditional] [--verbose]\n\
-       [--version] [file]";
+       [--funcall FUNC] [--help] [--info-file file] [--info-program prog]\n\
+       [--interactive] [--no-history] [--no-init-file] [--no-line-editing]\n\
+       [--no-site-file] [-p path] [--path path] [--silent] [--traditional]\n\
+       [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
 // to prevent getopt from permuting arguments!
 static const char *short_opts = "+?HVdfhip:qvx";
 
+// The name of the optional initial function to call at startup.
+// (--funcall FUNC)
+static std::string fun_to_call;
+
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define EXEC_PATH_OPTION 1
-#define INFO_FILE_OPTION 2
-#define INFO_PROG_OPTION 3
-#define NO_INIT_FILE_OPTION 4
-#define NO_LINE_EDITING_OPTION 5
-#define NO_SITE_FILE_OPTION 6
-#define TRADITIONAL_OPTION 7
+#define FUNCALL_OPTION 2
+#define INFO_FILE_OPTION 3
+#define INFO_PROG_OPTION 4
+#define NO_INIT_FILE_OPTION 5
+#define NO_LINE_EDITING_OPTION 6
+#define NO_SITE_FILE_OPTION 7
+#define TRADITIONAL_OPTION 8
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
     { "braindead",        prog_args::no_arg,       0, TRADITIONAL_OPTION },
     { "echo-commands",    prog_args::no_arg,       0, 'x' },
     { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
+    { "funcall",          prog_args::required_arg,  0, FUNCALL_OPTION },
     { "help",             prog_args::no_arg,       0, 'h' },
     { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
     { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
@@ -284,6 +290,7 @@ Options:\n\
   --debug, -d             Enter parser debugging mode.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
+  --funcall FUNC          Call Octave function FUNC with no arguments.\n\
   --help, -h, -?          Print short help message and exit.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
@@ -303,8 +310,10 @@ Options:\n\
 \n\
 Additional information about Octave is available via the WWW at\n\
 http://www.octave.org.\n\
-\n\
-Please report bugs to the bug-octave@bevo.che.wisc.edu mailing list.\n";
+\n"
+OCTAVE_CONTRIB_STATEMENT "\n\
+\n"
+OCTAVE_BUGS_STATEMENT "\n";
 
   exit (0);
 }
@@ -461,6 +470,11 @@ octave_main (int argc, char **argv)
 	    bind_builtin_variable ("EXEC_PATH", args.optarg ());
 	  break;
 
+	case FUNCALL_OPTION:
+	  if (args.optarg ())
+	    fun_to_call = args.optarg ();
+	  break;
+
 	case INFO_FILE_OPTION:
 	  if (args.optarg ())
 	    bind_builtin_variable ("INFO_FILE", args.optarg ());
@@ -595,7 +609,7 @@ octave_main (int argc, char **argv)
   if (! interactive)
     line_editing = false;
 
-  int retval = main_loop ();
+  int retval = main_loop (fun_to_call);
 
   if (retval == 1 && ! error_state)
     retval = 0;

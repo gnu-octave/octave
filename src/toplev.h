@@ -37,7 +37,7 @@ extern void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
 extern int
-main_loop (void);
+main_loop (const std::string& fun_to_call);
 
 extern void
 do_octave_atexit (void);

@@ -54,10 +54,6 @@ static bool Vdefine_all_return_values;
 // don't actually define any return variables.
 static bool Vreturn_last_computed_value;
 
-// If TRUE, turn off printing of results in functions (as if a
-// semicolon has been appended to each statement).
-static bool Vsilent_functions;
-
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;
 
@@ -341,8 +337,7 @@ octave_user_function::eval (int nargout, const octave_value_list& args)
 
     // Evaluate the commands that make up the function.
 
-    bool pf = ! Vsilent_functions;
-    octave_value last_computed_value = cmd_list->eval (pf);
+    octave_value last_computed_value = cmd_list->eval ();
 
     if (echo_commands)
       print_code_function_trailer ();
@@ -536,14 +531,6 @@ return_last_computed_value (void)
   return 0;
 }
 
-static int
-silent_functions (void)
-{
-  Vsilent_functions = check_preference ("silent_functions");
-
-  return 0;
-}
-
 void
 symbols_of_oct_usr_fcn (void)
 {
@@ -560,9 +547,6 @@ default_return_value");
   DEFVAR (return_last_computed_value, 0.0, 0, return_last_computed_value,
     "if a function does not return any values explicitly, return the\n\
   last computed value");
-
-  DEFVAR (silent_functions, 0.0, 0, silent_functions,
-    "suppress printing results in called functions");
 }
 
 /*

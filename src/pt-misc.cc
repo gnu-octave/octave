@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "defun.h"
 #include "error.h"
 #include "input.h"
 #include "oct-obj.h"
@@ -53,6 +54,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "toplev.h"
+#include "utils.h"
 #include "variables.h"
 
 // Nonzero means we're breaking out of a loop or function body.
@@ -63,6 +65,10 @@ extern int continuing;
 
 // Nonzero means we're returning from a function.
 extern int returning;
+
+// If TRUE, turn off printing of results in functions (as if a
+// semicolon has been appended to each statement).
+static bool Vsilent_functions;
 
 // A list of commands to be executed.
 
@@ -96,6 +102,57 @@ tree_statement::maybe_echo_code (bool in_function_body)
     }
 }
 
+octave_value
+tree_statement::eval (bool silent, bool in_function_body)
+{
+  octave_value retval;
+
+  bool pf = silent ? false : print_flag;
+
+  if (cmd || expr)
+    {
+      maybe_echo_code (in_function_body);
+
+      if (cmd)
+	cmd->eval ();
+      else
+	retval = expr->eval (pf);
+    }
+
+  return retval;
+}
+
+octave_value_list
+tree_statement::eval (bool silent, int nargout, bool in_function_body)
+{
+  bool pf = silent ? false : print_flag;
+
+  octave_value_list retval;
+
+  if (cmd || expr)
+    {
+      maybe_echo_code (in_function_body);
+
+      if (cmd)
+	cmd->eval ();
+      else
+	{
+	  if (expr->is_multi_val_ret_expression ())
+	    {
+	      octave_value_list args;
+
+	      tree_multi_val_ret *t = static_cast<tree_multi_val_ret *> (expr);
+
+	      retval = t->eval (pf, nargout, args);
+	    }
+	  else
+	    retval = expr->eval (pf);
+	}
+    }
+
+  return retval;
+}
+
 void
 tree_statement::accept (tree_walker& tw)
 {
@@ -103,9 +160,8 @@ tree_statement::accept (tree_walker& tw)
 }
 
 octave_value
-tree_statement_list::eval (bool print)
+tree_statement_list::eval (bool silent)
 {
-  bool pf;
   octave_value retval;
 
   if (error_state)
@@ -115,25 +171,42 @@ tree_statement_list::eval (bool print)
     {
       tree_statement *elt = this->operator () (p);
 
-      if (! print)
-	pf = false;
-      else
-	pf = elt->print_flag;
+      bool silent_flag =
+	silent ? true : (function_body ? Vsilent_functions : false);
 
-      tree_command *cmd = elt->command ();
-      tree_expression *expr = elt->expression ();
+      retval = elt->eval (silent_flag, function_body);
 
-      if (cmd || expr)
+      if (error_state)
+	break;
+
+      if (breaking || continuing)
+	break;
+
+      if (returning)
+	break;
+    }
+
+  return retval;
+}
+
+octave_value_list
+tree_statement_list::eval (bool no_print, int nargout)
+{
+  octave_value_list retval;
+
+  if (error_state)
+    return retval;
+
+  if (nargout > 1)
+    {
+      for (Pix p = first (); p != 0; next (p))
 	{
-	  elt->maybe_echo_code (function_body);
+	  tree_statement *elt = this->operator () (p);
 
-	  if (cmd)
-	    cmd->eval ();
-	  else
-	    retval = expr->eval (pf);
+	  retval = elt->eval (no_print, nargout, function_body);
 
 	  if (error_state)
-	    return octave_value ();
+	    break;
 
 	  if (breaking || continuing)
 	    break;
@@ -141,71 +214,9 @@ tree_statement_list::eval (bool print)
 	  if (returning)
 	    break;
 	}
-      else
-	retval = octave_value ();
-    }
-  return retval;
-}
-
-octave_value_list
-tree_statement_list::eval (bool print, int nargout)
-{
-  octave_value_list retval;
-
-  if (nargout > 1)
-    {
-      bool pf;
-
-      if (error_state)
-	return retval;
-
-      for (Pix p = first (); p != 0; next (p))
-	{
-	  tree_statement *elt = this->operator () (p);
-
-	  if (! print)
-	    pf = false;
-	  else
-	    pf = elt->print_flag;
-
-	  tree_command *cmd = elt->command ();
-	  tree_expression *expr = elt->expression ();
-
-	  if (cmd || expr)
-	    {
-	      elt->maybe_echo_code (function_body);
-
-	      if (cmd)
-		cmd->eval ();
-	      else
-		{
-		  if (expr->is_multi_val_ret_expression ())
-		    {
-		      octave_value_list args;
-		      tree_multi_val_ret *t;
-		      t = static_cast<tree_multi_val_ret *> (expr);
-		      retval = t->eval (pf, nargout, args);
-		    }
-		  else
-		    retval = expr->eval (pf);
-		}
-
-	      if (error_state)
-		return octave_value ();
-
-	      if (breaking || continuing)
-		break;
-
-	      if (returning)
-		break;
-	    }
-	  else
-	    retval = octave_value_list ();
-	}
-      return retval;
     }
   else
-    retval = eval (print);
+    retval = eval (no_print);
 
   return retval;
 }
@@ -486,7 +497,7 @@ tree_if_clause::eval (void)
   if (is_else_clause () || expr->is_logically_true ("if"))
     {
       if (list)
-	list->eval (true);
+	list->eval ();
 
       return 1;
     }
@@ -569,7 +580,7 @@ tree_switch_case::eval (const octave_value& val)
   if (is_default_case () || label_matches (val))
     {
       if (list)
-	list->eval (true);
+	list->eval ();
 
       retval = 1;
     }
@@ -607,6 +618,21 @@ void
 tree_switch_case_list::accept (tree_walker& tw)
 {
   tw.visit_switch_case_list (*this);
+}
+
+static int
+silent_functions (void)
+{
+  Vsilent_functions = check_preference ("silent_functions");
+
+  return 0;
+}
+
+void
+symbols_of_pt_misc (void)
+{
+  DEFVAR (silent_functions, 0.0, 0, silent_functions,
+    "suppress printing results in called functions");
 }
 
 /*

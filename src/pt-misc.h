@@ -62,8 +62,6 @@ class tree_walker;
 class
 tree_statement
 {
-friend class tree_statement_list;
-
 public:
 
   tree_statement (void)
@@ -89,11 +87,15 @@ public:
   int line (void);
   int column (void);
 
-  void maybe_echo_code (bool);
+  void maybe_echo_code (bool in_function_body);
 
   bool print_result (void) { return print_flag; }
 
   tree_command *command (void) { return cmd; }
+
+  octave_value eval (bool silent, bool in_function_body);
+
+  octave_value_list eval (bool silent, int nargout, bool in_function_body);
 
   tree_expression *expression (void) { return expr; }
 
@@ -137,9 +139,9 @@ public:
 
   void mark_as_function_body (void) { function_body = true; }
 
-  octave_value eval (bool print = false);
+  octave_value eval (bool silent = false);
 
-  octave_value_list eval (bool print, int nargout);
+  octave_value_list eval (bool silent, int nargout);
 
   void accept (tree_walker& tw);
 
@@ -433,6 +435,8 @@ public:
 
   void accept (tree_walker& tw);
 };
+
+extern void symbols_of_pt_misc (void);
 
 #endif
 

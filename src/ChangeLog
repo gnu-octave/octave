@@ -1,3 +1,20 @@
+Mon Apr 28 00:38:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-misc.cc (Vsilent_functions, silent_functions):
+	Move here from oct-usr-fcn.cc.
+	(symbols_of_pt_misc): New function.  DEFVAR silent_functions.
+	(tree_statement_list::eval): Handle Vsilent_functions here instead
+	of in octave_user_function::eval.
+	(tree_statement::eval): New functions.
+	(tree_statement_list::eval): Use them.
+	Change print flag arg to silent flag.  Change all callers.
+	* variables.cc (install_builtin_variables): Call symbols_of_pt_misc.
+	* toplev.cc (parse_and_execute): Delete print arg.  Change all callers.
+	(eval_string): Change print flag arg to silent flag.  Change callers.
+
+	* dynamic-ld.h, dynamic-ld.cc: Rewrite to use singleton class.
+	* variables.cc (load_fcn_from_file): Use new dynamic linking class.
+
 Sun Apr 27 20:17:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.h (Octave_builtin_fcn): Delete typedef.

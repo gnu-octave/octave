@@ -80,6 +80,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-mat.h"
+#include "pt-misc.h"
 #include "pt-plot.h"
 #include "pr-output.h"
 #include "syscalls.h"
@@ -300,7 +301,7 @@ extract_function (const octave_value& arg, const string& warn_for,
 	{
 	  int parse_status;
 
-	  eval_string (cmd, 0, parse_status);
+	  eval_string (cmd, true, parse_status);
 
 	  if (parse_status == 0)
 	    {
@@ -749,7 +750,7 @@ parse_fcn_file (bool exec_script, const string& ff)
 	  Vsaving_history = 0;
 	  reading_script_file = 1;
 
-	  parse_and_execute (ffile, 1);
+	  parse_and_execute (ffile);
 
 	  script_file_executed = 1;
 	}
@@ -1716,6 +1717,7 @@ install_builtin_variables (void)
   symbols_of_parse ();
   symbols_of_pr_output ();
   symbols_of_pt_mat ();
+  symbols_of_pt_misc ();
   symbols_of_pt_plot ();
   symbols_of_syscalls ();
   symbols_of_toplev ();

@@ -141,7 +141,7 @@ int input_from_command_line_file = 1;
 jmp_buf toplevel;
 
 void
-parse_and_execute (FILE *f, bool print)
+parse_and_execute (FILE *f)
 {
   begin_unwind_frame ("parse_and_execute");
   
@@ -170,7 +170,7 @@ parse_and_execute (FILE *f, bool print)
 
       if (retval == 0 && global_command)
 	{
-	  global_command->eval (print);
+	  global_command->eval ();
 
 	  delete global_command;
 
@@ -209,8 +209,7 @@ safe_fclose (void *f)
 }
 
 void
-parse_and_execute (const string& s, bool print, bool verbose,
-		   const char *warn_for)
+parse_and_execute (const string& s, bool verbose, const char *warn_for)
 {
   begin_unwind_frame ("parse_and_execute_2");
 
@@ -239,7 +238,7 @@ parse_and_execute (const string& s, bool print, bool verbose,
 	  cout.flush ();
 	}
 
-      parse_and_execute (f, print);
+      parse_and_execute (f);
 
       if (verbose)
 	cout << "done." << endl;
@@ -283,7 +282,7 @@ main_loop (void)
 
       if (retval == 0 && global_command)
 	{
-	  global_command->eval (true);
+	  global_command->eval ();
 
 	  delete global_command;
 
@@ -340,7 +339,7 @@ script file but without requiring the file to be named `FILE.m'.")
 	{
 	  file = oct_tilde_expand (file);
 
-	  parse_and_execute (file, 1, 0, "source");
+	  parse_and_execute (file, false, "source");
 
 	  if (error_state)
 	    error ("source: error sourcing file `%s'", file.c_str ());
@@ -530,7 +529,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
 }
 
 static octave_value_list
-eval_string (const string& s, bool print, int& parse_status, int nargout)
+eval_string (const string& s, bool silent, int& parse_status, int nargout)
 {
   begin_unwind_frame ("eval_string");
 
@@ -569,7 +568,7 @@ eval_string (const string& s, bool print, int& parse_status, int nargout)
 
   if (parse_status == 0 && command)
     {
-      retval = command->eval (print, nargout);
+      retval = command->eval (silent, nargout);
       delete command;
     }
 
@@ -577,11 +576,11 @@ eval_string (const string& s, bool print, int& parse_status, int nargout)
 }
 
 octave_value
-eval_string (const string& s, bool print, int& parse_status)
+eval_string (const string& s, bool silent, int& parse_status)
 {
   octave_value retval;
 
-  octave_value_list tmp = eval_string (s, print, parse_status, 1);
+  octave_value_list tmp = eval_string (s, silent, parse_status, 1);
 
   retval = tmp(0);
 
@@ -589,7 +588,7 @@ eval_string (const string& s, bool print, int& parse_status)
 }
 
 static octave_value_list
-eval_string (const octave_value& arg, bool print, int& parse_status,
+eval_string (const octave_value& arg, bool silent, int& parse_status,
 	     int nargout)
 {
   string s = arg.string_value ();
@@ -600,7 +599,7 @@ eval_string (const octave_value& arg, bool print, int& parse_status,
       return -1.0;
     }
 
-  return eval_string (s, print, parse_status, nargout);
+  return eval_string (s, silent, parse_status, nargout);
 }
 
 DEFUN (eval, args, nargout,
@@ -625,7 +624,7 @@ string CATCH.")
 
       int parse_status = 0;
 
-      retval = eval_string (args(0), Vdefault_eval_print_flag,
+      retval = eval_string (args(0), ! Vdefault_eval_print_flag,
 			    parse_status, nargout);
 
       if (nargin > 1 && (parse_status != 0 || error_state))

@@ -103,7 +103,7 @@ public:
 
   Array2<T>& operator = (const Array2<T>& a)
     {
-      if (this != &a && rep != a.rep)
+      if (this != &a)
 	{
 	  Array<T>::operator = (a);
 	  d1 = a.d1;

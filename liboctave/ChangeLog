@@ -1,3 +1,8 @@
+2001-05-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2.h (Array2<T>::operator = (const Array2<T>&)):
+	Don't check for rep != a.rep.
+
 2001-05-02  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* oct-fftw.h, oct-fftw.cc: New files.

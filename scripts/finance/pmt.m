@@ -19,7 +19,7 @@
 ## Return the amount of periodic payment necessary to amortize a loan
 ## of amount a with interest rate @var{r} in @var{n} periods.
 ##
-## The optional argument @var{l} may be used to specify an terminal
+## The optional argument @var{l} may be used to specify a terminal
 ## lump-sum payment.
 ##
 ## The optional argument @var{method} may be used to specify whether

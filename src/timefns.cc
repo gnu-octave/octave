@@ -25,12 +25,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#include <time.h>
-
 #include "dMatrix.h"
 
 #include "tree-const.h"
 #include "oct-obj.h"
+#include "systime.h"
 #include "defun.h"
 
 DEFUN ("clock", Fclock, Sclock, 1, 0,
@@ -40,8 +39,17 @@ DEFUN ("clock", Fclock, Sclock, 1, 0,
 {
   time_t now;
   struct tm *tm;
+  double fraction = 0.0;
 
+#ifdef HAVE_GETTIMEOFDAY
+  struct timeval tp;
+  gettimeofday (&tp, 0);
+  now = tp.tv_sec;
+  fraction = tp.tv_usec / 1e6;
+#else
   time (&now);
+#endif
+
   tm = localtime (&now);
 
   Matrix m (1, 6);
@@ -50,7 +58,7 @@ DEFUN ("clock", Fclock, Sclock, 1, 0,
   m.elem (0, 2) = tm->tm_mday;
   m.elem (0, 3) = tm->tm_hour;
   m.elem (0, 4) = tm->tm_min;
-  m.elem (0, 5) = tm->tm_sec;
+  m.elem (0, 5) = tm->tm_sec + fraction;
 
   return m;
 }

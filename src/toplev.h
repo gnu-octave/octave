@@ -71,6 +71,9 @@ extern char *editor;
 // If nonzero, don't do fancy line editing.
 extern int no_line_editing;
 
+// If nonzero, print verbose info in some cases.
+extern int verbose_flag;
+
 // Command number, counting from the beginning of this session.
 extern int current_command_number;
 

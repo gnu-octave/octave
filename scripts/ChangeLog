@@ -1,3 +1,8 @@
+Mon Aug  2 16:39:04 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/bar.m: Compute bar widths correctly when x-values are not
+	evenly spaced.
+
 Mon Jul 12 22:48:34 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/cond.m: Avoid returning NaN for matrices that

@@ -26,7 +26,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdlib>
 #include <cstring>
-#include <ctime>
 
 #include <string>
 
@@ -42,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
+#include "oct-time.h"
 
 command_editor *command_editor::instance = 0;
 
@@ -786,9 +786,9 @@ command_editor::do_decode_prompt_string (const string& s)
 	    case 'd':
 	      // Make the current time/date into a string.
 	      {
-		time_t now = time (0);
+		octave_time now;
 
-		temp = ctime (&now);
+		temp = now.ctime ();
 
 		if (c == 't')
 		  {

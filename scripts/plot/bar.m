@@ -69,24 +69,34 @@ function [xb, yb] = bar (x, y)
       if (xlen == ylen)
         len = 3 * xlen + 1;
         tmp_xb = tmp_yb = zeros (len, 1);
-        delta = (x(2) - x(1)) / 2.0;
-        tmp_xb(1) = x(1) - delta;
+        cutoff = zeros (1, xlen-1);
+        for i = 1:xlen-1
+          cutoff(i) = (x(i) + x(i+1)) / 2.0;
+        endfor
+        delta_p = cutoff(1) - x(1);
+        delta_m = delta_p;
+        tmp_xb(1) = x(1) - delta_m;
         tmp_yb(1) = 0.0;
 	k = 1;
         for i = 2:3:len
           tmp_xb(i) = tmp_xb(i-1);
-          tmp_xb(i+1) = tmp_xb(i) + 2.0 * delta;
+          tmp_xb(i+1) = x(k) + delta_p;
           tmp_xb(i+2) = tmp_xb(i+1);
 	  tmp_yb(i) = y(k);
 	  tmp_yb(i+1) = y(k);
 	  tmp_yb(i+2) = 0.0;
           if (k < xlen)
-            delta = (x(k+1) - x(k)) / 2.0;
             if (x(k+1) < x(k))
               error ("bar: x vector values must be in ascending order");
             endif
-          endif
-          k++;
+	    delta_m = x(k+1) - cutoff(k);
+            k++;
+            if (k < xlen)
+              delta_p = cutoff(k) - x(k);
+	    else
+	      delta_p = delta_m;
+            endif
+	  endif
 	endfor
       else
         error ("bar: arguments must be the same length");

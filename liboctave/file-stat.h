@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "oct-time.h"
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -92,9 +94,9 @@ public:
 
   off_t size (void) const { return fs_size; }
 
-  time_t atime (void) const { return fs_atime; }
-  time_t mtime (void) const { return fs_mtime; }
-  time_t ctime (void) const { return fs_ctime; }
+  octave_time atime (void) const { return fs_atime; }
+  octave_time mtime (void) const { return fs_mtime; }
+  octave_time ctime (void) const { return fs_ctime; }
 
 #if defined (HAVE_ST_RDEV)
   dev_t rdev (void) const { return fs_rdev; }
@@ -119,11 +121,11 @@ public:
   string error (void) const { return ok () ? string () : errmsg; }
 
   // Has the file referenced by this object been modified since TIME?
-  bool is_newer (time_t time) const { return fs_mtime > time; }
+  bool is_newer (const octave_time& time) const { return fs_mtime > time; }
 
   // It's nice to be able to hide the file_stat object if we don't
   // really care about it.
-  static int is_newer (const string&, time_t);
+  static int is_newer (const string&, const octave_time&);
 
 private:
 
@@ -165,13 +167,13 @@ private:
   off_t fs_size;
 
   // time of last access
-  time_t fs_atime;
+  octave_time fs_atime;
 
   // time of last modification
-  time_t fs_mtime;
+  octave_time fs_mtime;
 
   // time of last file status change
-  time_t fs_ctime;
+  octave_time fs_ctime;
 
 #if defined (HAVE_ST_RDEV)
   // device number for special files

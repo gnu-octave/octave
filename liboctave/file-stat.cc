@@ -137,7 +137,7 @@ file_stat::mode_as_string (void) const
 // and -1 for any error.
 
 int
-file_stat::is_newer (const string& file, time_t time)
+file_stat::is_newer (const string& file, const octave_time& time)
 {
   file_stat fs (file);
 

@@ -1,5 +1,9 @@
 Tue Jan 28 09:48:32 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (help): New target.
+	(header-msg): extract from all.
+	(all, help): Depend on header-msg.
+
 	* aclocal.m4 (ld_run_path): Fix typo in last fix.
 
 Mon Jan 27 00:10:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

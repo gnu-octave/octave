@@ -1,5 +1,8 @@
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* TEMPLATE-INST/Array-tc.cc (resize_fill_value): Use modern
+	specialization syntax.
+
 	* ov-cell.cc (octave_cell::print_raw): Use dim_vector::str.
 
 	* Cell.cc, Cell.h, debug.cc, file-io.cc, load-save.cc,

@@ -377,6 +377,16 @@ decode_prompt_string (const char *string)
 	      temp = strsave (geteuid () == 0 ? "#" : "$");
 	      goto add_string;
 
+	    case '[':
+	    case ']':
+	      temp = new char[3];
+              temp[0] = '\001';
+              temp[1] = ((c == '[')
+			 ? RL_PROMPT_START_IGNORE
+			 : RL_PROMPT_END_IGNORE);
+              temp[2] = '\0';
+	      goto add_string;
+
 	    case '\\':
 	      temp = strsave ("\\");
 	      goto add_string;

@@ -627,6 +627,9 @@ symbol_record::push_context (void)
 {
   context.push (definition);
   definition = (symbol_def *) NULL;
+
+  global_link_context.push ((unsigned) linked_to_global);
+  linked_to_global = 0;
 }
 
 void
@@ -647,6 +650,7 @@ symbol_record::pop_context (void)
     }
 
   definition = context.pop ();
+  linked_to_global = global_link_context.pop ();
 }
 
 int

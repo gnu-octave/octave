@@ -563,6 +563,10 @@ tree_parameter_list : public tree
 
   tree_identifier *define (tree_constant *t);
 
+  void define_from_arg_vector (const tree_constant *args, int nargin);
+
+  tree_constant *convert_to_const_vector (void);
+
   tree_parameter_list *next_elem (void);
 
   tree_constant eval (int print);

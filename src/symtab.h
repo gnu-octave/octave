@@ -192,7 +192,11 @@ private:
   sv_Function sv_fcn;
   symbol_def *definition;
   symbol_record *next_elem;
+
+// This should maybe be one stack with a structure containing all the
+// items we need to save for recursive calls...
   SLStack <symbol_def *> context;
+  SLStack <unsigned> global_link_context;
 
   void init_state (void);
 

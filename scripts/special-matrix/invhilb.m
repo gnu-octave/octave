@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2002 Dirk Laurie
 ##
 ## This file is part of Octave.
 ##
@@ -19,14 +19,53 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} invhilb (@var{n})
-## Return the inverse of a Hilbert matrix of order @var{n}.  This is exact.
-## Compare with the numerical calculation of @code{inverse (hilb (n))},
+## Return the inverse of a Hilbert matrix of order @var{n}.  This can be 
+## computed computed exactly using
+## @tex
+## $$\eqalign{
+##   A_{ij} &= -1^{i+j} (i+j-1)
+##              \left( \matrix{n+i-1 \cr n-j } \right)
+##              \left( \matrix{n+j-1 \cr n-i } \right)
+##              \left( \matrix{i+j-2 \cr i-2 } \right)^2 \cr
+##          &= { p(i)p(j) \over (i+j-1) }
+## }$$
+## where
+## $$
+##   p(k) = -1^k \left( \matrix{ k+n-1 \cr k-1 } \right)
+##               \left( \matrix{ n \cr k } \right)
+##$$
+## @end tex
+## @ifinfo
+## @example
+##
+##             (i+j)         /n+i-1\  /n+j-1\   /i+j-2\ 2
+##  A(i,j) = -1      (i+j-1)(       )(       ) (       )
+##                           \ n-j /  \ n-i /   \ i-2 /
+##
+##         = p(i) p(j) / (i+j-1)
+##
+## @end example
+## where
+## @example
+##              k  /k+n-1\   /n\
+##     p(k) = -1  (       ) (   )
+##                 \ k-1 /   \k/
+## @end example
+## @end ifinfo
+##
+## The validity of this formula can easily be checked by expanding 
+## the binomial coefficients in both formulas as factorials.  It can 
+## be derived more directly via the theory of Cauchy matrices: 
+## see J. W. Demmel, Applied Numerical Linear Algebra, page 92.
+##
+## Compare this with the numerical calculation of @code{inverse (hilb (n))},
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
 ## finite precision of your computer's floating point arithmetic.
+##
 ## @end deftypefn
 ## @seealso{hankel, vander, sylvester_matrix, hilb, and toeplitz}
 
-## Author: jwe
+## Author: Dirk Laurie <dirk@siegfried.wisk.sun.ac.za>
 
 function retval = invhilb (n)
 
@@ -36,34 +75,36 @@ function retval = invhilb (n)
 
   nmax = length (n);
   if (nmax == 1)
-    retval = zeros (n);
-    for l = 1:n
-      for k = l:n
-        tmp = 1;
-        for i = 1:n
-          tmp = tmp * (i + k - 1);
-        endfor
-        for i = 1:n
-          if (i != k)
-            tmp = tmp * (l + i - 1);
-          endif
-        endfor
-        for i = 1:n
-          if (i != l)
-            tmp = tmp / (i - l);
-          endif
-        endfor
-        for i = 1:n
-          if (i != k)
-            tmp = tmp / (i - k);
-          endif
-        endfor
-        retval (k, l) = tmp;
-        retval (l, k) = tmp;
+
+    ## The point about the second formula above is that when vectorized,
+    ## p(k) is evaluated for k=1:n which involves O(n) calls to bincoeff 
+    ## instead of O(n^2).
+    ##
+    ## We evaluate the expression as (-1)^(i+j)*(p(i)*p(j))/(i+j-1) except
+    ## when p(i)*p(j) would overflow.  In cases where p(i)*p(j) is an exact
+    ## machine number, the result is also exact.  Otherwise we calculate
+    ## (-1)^(i+j)*p(i)*(p(j)/(i+j-1)).
+    ##
+    ## The Octave bincoeff routine uses transcendental functions (lgamma
+    ## and exp) rather than multiplications, for the sake of speed.  
+    ## However, it rounds the answer to the nearest integer, which 
+    ## justifies the claim about exactness made above.
+
+    retval = zeros (n); 
+    k = [1:n]; 
+    p = k .* bincoeff (k+n-1, k-1) .* bincoeff (n, k);
+    p(2:2:n) = -p(2:2:n);
+    if (n < 203)
+      for l = 1:n
+        retval(l,:) = (p(l) * p) ./ [l:l+n-1];
       endfor
-    endfor
+    else
+      for l = 1:n
+        retval(l,:) = p(l) * (p ./ [l:l+n-1]);
+      endfor
+    endif
   else
-    error ("hilb: expecting scalar argument, found something else");
+    error ("invhilb: expecting scalar argument, found something else");
   endif
 
 endfunction

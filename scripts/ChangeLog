@@ -1,3 +1,8 @@
+2002-04-04  Dirk Laurie <dirk@calvyn.puk.ac.za>
+
+	* special-matrix/invhilb.m: New version that is faster and more
+	accurate.
+
 2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
 
 	* configure.in: Update for autoconf 2.5x.

@@ -401,7 +401,6 @@ symbol_record::define (tree_constant *t)
     {
 // Would be nice to be able to avoid this cast.  XXX FIXME XXX
       definition->define ((tree_constant *) saved_def);
-      delete t;
       return 0;
     }
 

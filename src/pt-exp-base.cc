@@ -120,16 +120,10 @@ print_constant (tree_constant& tc, char *name, int print_padding = 1)
   int pad_after = 0;
   if (user_pref.print_answer_id_name)
     {
-      if (print_as_scalar (tc))
+      if (print_as_scalar (tc) || print_as_structure (tc))
 	{
 	  ostrstream output_buf;
 	  output_buf << name << " = " << ends;
-	  maybe_page_output (output_buf);
-	}
-      else if (print_as_structure (tc))
-	{
-	  ostrstream output_buf;
-	  output_buf << name << " = {\n" << ends;
 	  maybe_page_output (output_buf);
 	}
       else
@@ -1935,8 +1929,7 @@ tree_simple_assignment_expression::eval (int print)
 	}
     }
 
-  if (! error_state && print && retval.is_defined ()
-      && user_pref.print_answer_id_name) 
+  if (! error_state && print && retval.is_defined ())
     print_constant (retval, lhs->name ());
 
   return retval;
@@ -2070,7 +2063,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 		  maybe_page_output (output_buf);
 		}
 
-	      if (print && user_pref.print_answer_id_name)
+	      if (print)
 		print_constant (results(i), lhs_expr->name (), 0);
 
 	      pad_after++;

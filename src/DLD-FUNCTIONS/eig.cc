@@ -81,7 +81,7 @@ Schur decomposition.\n\
       if (error_state)
 	return retval;
       else
-	result = EIG (tmp);
+	result = EIG (tmp, nargout > 1);
     }
   else if (arg.is_complex_type ())
     {
@@ -90,7 +90,7 @@ Schur decomposition.\n\
       if (error_state)
 	return retval;
       else
-	result = EIG (ctmp);
+	result = EIG (ctmp, nargout > 1);
     }
   else
     {

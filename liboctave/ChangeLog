@@ -1,3 +1,10 @@
+2004-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* EIG.cc, EIG.h (EIG::init, EIG::symmetric_init, EIG::hermitian_init):
+	New arg, calc_eigenvectors.
+	* EIG.h (EIG:EIG): New optional arg, calc_eigenvectors.
+	Based on patch from David Bateman <dbateman@free.fr>.
+
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::assign2, Array<T>::assignN):

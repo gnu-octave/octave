@@ -44,13 +44,17 @@ public:
   EIG (void)
     : lambda (), v () { }
 
-  EIG (const Matrix& a) { init (a); }
+  EIG (const Matrix& a, bool calc_eigenvectors = true)
+    { init (a, calc_eigenvectors); }
 
-  EIG (const Matrix& a, int& info) { info = init (a); }
+  EIG (const Matrix& a, int& info, bool calc_eigenvectors = true)
+    { info = init (a, calc_eigenvectors); }
 
-  EIG (const ComplexMatrix& a) { init (a); }
+  EIG (const ComplexMatrix& a, bool calc_eigenvectors = true)
+    { init (a, calc_eigenvectors); }
 
-  EIG (const ComplexMatrix& a, int& info) { info = init (a); }
+  EIG (const ComplexMatrix& a, int& info, bool calc_eigenvectors = true)
+    { info = init (a, calc_eigenvectors); }
 
   EIG (const EIG& a)
     : lambda (a.lambda), v (a.v) { }
@@ -78,11 +82,11 @@ private:
   ComplexColumnVector lambda;
   ComplexMatrix v;
 
-  int init (const Matrix& a);
-  int init (const ComplexMatrix& a);
+  int init (const Matrix& a, bool calc_eigenvectors);
+  int init (const ComplexMatrix& a, bool calc_eigenvectors);
 
-  int symmetric_init (const Matrix& a);
-  int hermitian_init (const ComplexMatrix& a);
+  int symmetric_init (const Matrix& a, bool calc_eigenvectors);
+  int hermitian_init (const ComplexMatrix& a, bool calc_eigenvectors);
 };
 
 #endif

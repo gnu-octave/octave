@@ -71,10 +71,10 @@ extern "C"
 }
 
 int
-EIG::init (const Matrix& a)
+EIG::init (const Matrix& a, bool calc_ev)
 {
   if (a.is_symmetric ())
-    return symmetric_init (a);
+    return symmetric_init (a, calc_ev);
 
   int n = a.rows ();
 
@@ -95,7 +95,8 @@ EIG::init (const Matrix& a)
   Array<double> wi (n);
   double *pwi = wi.fortran_vec ();
 
-  Matrix vr (n, n);
+  int nvr = calc_ev ? n : 0;
+  Matrix vr (nvr, nvr);
   double *pvr = vr.fortran_vec ();
 
   // XXX FIXME XXX -- it might be possible to choose a better value of
@@ -109,7 +110,7 @@ EIG::init (const Matrix& a)
   int idummy = 1;
 
   F77_XFCN (dgeev, DGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			   F77_CONST_CHAR_ARG2 ("V", 1),
+			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
 			   n, tmp_data, n, pwr, pwi, dummy,
 			   idummy, pvr, n, pwork, lwork, info
 			   F77_CHAR_ARG_LEN (1)
@@ -124,14 +125,14 @@ EIG::init (const Matrix& a)
       else
 	{
 	  lambda.resize (n);
-	  v.resize (n, n);
+	  v.resize (nvr, nvr);
 
 	  for (int j = 0; j < n; j++)
 	    {
 	      if (wi.elem (j) == 0.0)
 		{
 		  lambda.elem (j) = Complex (wr.elem (j));
-		  for (int i = 0; i < n; i++)
+		  for (int i = 0; i < nvr; i++)
 		    v.elem (i, j) = vr.elem (i, j);
 		}
 	      else
@@ -146,7 +147,7 @@ EIG::init (const Matrix& a)
 		  lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
 		  lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
 
-		  for (int i = 0; i < n; i++)
+		  for (int i = 0; i < nvr; i++)
 		    {
 		      double real_part = vr.elem (i, j);
 		      double imag_part = vr.elem (i, j+1);
@@ -163,7 +164,7 @@ EIG::init (const Matrix& a)
 }
 
 int
-EIG::symmetric_init (const Matrix& a)
+EIG::symmetric_init (const Matrix& a, bool calc_ev)
 {
   int n = a.rows ();
 
@@ -188,7 +189,7 @@ EIG::symmetric_init (const Matrix& a)
   Array<double> work (lwork);
   double *pwork = work.fortran_vec ();
 
-  F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 ("V", 1),
+  F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
 			   F77_CONST_CHAR_ARG2 ("U", 1),
 			   n, tmp_data, n, pwr, pwork, lwork, info
 			   F77_CHAR_ARG_LEN (1)
@@ -201,17 +202,17 @@ EIG::symmetric_init (const Matrix& a)
   else
     {
       lambda = ComplexColumnVector (wr);
-      v = ComplexMatrix (atmp);
+      v = calc_ev ? ComplexMatrix (atmp) : ComplexMatrix ();
     }
 
   return info;
 }
 
 int
-EIG::init (const ComplexMatrix& a)
+EIG::init (const ComplexMatrix& a, bool calc_ev)
 {
   if (a.is_hermitian ())
-    return hermitian_init (a);
+    return hermitian_init (a, calc_ev);
 
   int n = a.rows ();
 
@@ -229,7 +230,8 @@ EIG::init (const ComplexMatrix& a)
   ComplexColumnVector w (n);
   Complex *pw = w.fortran_vec ();
 
-  ComplexMatrix vtmp (n, n);
+  int nvr = calc_ev ? n : 0;
+  ComplexMatrix vtmp (nvr, nvr);
   Complex *pv = vtmp.fortran_vec ();
 
   // XXX FIXME XXX -- it might be possible to choose a better value of
@@ -247,7 +249,7 @@ EIG::init (const ComplexMatrix& a)
   int idummy = 1;
 
   F77_XFCN (zgeev, ZGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
-			   F77_CONST_CHAR_ARG2 ("V", 1),
+			   F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
 			   n, tmp_data, n, pw, dummy, idummy,
 			   pv, n, pwork, lwork, prwork, info
 			   F77_CHAR_ARG_LEN (1)
@@ -267,7 +269,7 @@ EIG::init (const ComplexMatrix& a)
 }
 
 int
-EIG::hermitian_init (const ComplexMatrix& a)
+EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
 {
   int n = a.rows ();
 
@@ -296,7 +298,7 @@ EIG::hermitian_init (const ComplexMatrix& a)
   Array<double> rwork (lrwork);
   double *prwork = rwork.fortran_vec ();
 
-  F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 ("V", 1),
+  F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_ev ? "V" : "N", 1),
 			   F77_CONST_CHAR_ARG2 ("U", 1),
 			   n, tmp_data, n, pwr, pwork, lwork, prwork, info
 			   F77_CHAR_ARG_LEN (1)
@@ -309,7 +311,7 @@ EIG::hermitian_init (const ComplexMatrix& a)
   else
     {
       lambda = ComplexColumnVector (wr);
-      v = ComplexMatrix (atmp);
+      v = calc_ev ? ComplexMatrix (atmp) : ComplexMatrix ();
     }
 
   return info;

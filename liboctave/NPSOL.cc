@@ -1,7 +1,7 @@
 // NPSOL.cc                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -306,15 +306,6 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   // See how it went.
 
   return x;
-}
-
-NPSOL&
-NPSOL::option (char *)
-{
-  cerr << "This function no longer has any effect.\n"
-       << "Use the NPSOL_option class instead\n";
-
-  return *this;
 }
 
 NPSOL_options::NPSOL_options (void)

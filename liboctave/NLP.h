@@ -65,23 +65,25 @@ class NLP : public base_minimizer
        const NLConst& nl)
     : base_minimizer (x), phi (obj), bnds (b), nlc (nl) { }
 
+  NLP (const NLP& a)
+    : base_minimizer (a), phi (a.phi), bnds (a.bnds), lc (a.lc), nlc (a.nlc)
+      { }
+
   NLP& operator = (const NLP& a)
     {
       if (this != &a)
 	{
-	  x = a.x;
+	  base_minimizer::operator = (a);
+
 	  phi = a.phi;  
 	  bnds = a.bnds;
 	  lc = a.lc;
 	  nlc = a.nlc;
 	}
-
       return *this;
     }
 
   virtual ~NLP (void) { }
-
-  int size (void) const { return x.capacity (); }
 
  protected:
 

@@ -31,17 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "LPsolve.h"
 #include "dColVector.h"
+#include "lo-error.h"
 
 ColumnVector
 LPsolve::do_minimize (double&, int&, ColumnVector&)
 {
+  (*current_liboctave_error_handler) ("sorry, not implemented");
   return ColumnVector ();
-}
-
-void
-LPsolve::set_default_options (void)
-{
-  // Maybe this isn't needed?
 }
 
 /*

@@ -165,8 +165,11 @@ class NPSOL : public NLP, public NPSOL_options
 
   NPSOL& operator = (const NPSOL& a)
     {
-      NLP::operator = (a);
-      NPSOL_options::operator = (a);
+      if (this != &a)
+	{
+	  NLP::operator = (a);
+	  NPSOL_options::operator = (a);
+	}
       return *this;
     }
 

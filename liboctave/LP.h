@@ -1,7 +1,7 @@
 // LP.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,6 +46,24 @@ class LP : public base_minimizer
 
   LP (const ColumnVector& c_arg, const LinConst& l)
     : base_minimizer (), c (c_arg), lc (l) { }
+
+  LP (const LP& a)
+    : base_minimizer (a), c (a.c), bnds (a.bnds), lc (a.lc) { }
+
+  LP& operator = (const LP& a)
+    {
+      if (this != &a)
+	{
+	  base_minimizer::operator = (a);
+
+	  c = a.c;
+	  bnds = a.bnds;
+	  lc = a.lc;
+	}
+      return *this;
+    }
+
+  ~LP (void) { }
 
  protected:
 

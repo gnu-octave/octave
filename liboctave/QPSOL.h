@@ -1,7 +1,7 @@
 // QPSOL.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -72,42 +72,44 @@ class QPSOL : public QP, public QPSOL_options
 {
  public:
 
-  QPSOL (void) : QP () { }
+  QPSOL (void)
+    : QP (), QPSOL_options () { }
 
-  QPSOL (const ColumnVector& x, const Matrix& H) : QP (x, H) { }
+  QPSOL (const ColumnVector& x, const Matrix& H)
+    : QP (x, H), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c)
-    : QP (x, H, c) { }
+    : QP (x, H, c), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const Bounds& b)
-    : QP (x, H, b) { }
+    : QP (x, H, b), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const LinConst& lc)
-    : QP (x, H, lc) { }
+    : QP (x, H, lc), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
-	 const Bounds& b) : QP (x, H, c, b) { }
+	 const Bounds& b)
+    : QP (x, H, c, b), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
-	 const LinConst& lc) : QP (x, H, c, lc) { }
+	 const LinConst& lc)
+    : QP (x, H, c, lc), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const Bounds& b,
 	 const LinConst& lc)
-    : QP (x, H, b, lc) { }
+    : QP (x, H, b, lc), QPSOL_options () { }
 
   QPSOL (const ColumnVector& x, const Matrix& H, const ColumnVector& c,
-	 const Bounds& b, const LinConst& lc) : QP (x, H, c, b, lc) { }
+	 const Bounds& b, const LinConst& lc)
+    : QP (x, H, c, b, lc), QPSOL_options () { }
 
-  QPSOL (const QPSOL& a) : QP (a.x, a.H, a.c, a.bnds, a.lc) { }
+  QPSOL (const QPSOL& a)
+    : QP (a), QPSOL_options (a) { }
 
   QPSOL& operator = (const QPSOL& a)
     {
-      x = a.x;
-      H = a.H;
-      c = a.c;
-      bnds = a.bnds;
-      lc = a.lc;
-
+      QP::operator = (a);
+      QPSOL_options::operator = (a);
       return *this;
     }
 

@@ -1,3 +1,7 @@
+2005-02-02  John W. Eaton  <jwe@octave.org>
+
+	* config.guess, config.sub: Update from FSF sources.
+
 2005-01-18  John W. Eaton  <jwe@octave.org>
 
 	* octave-bug.in: Try harder to find default editor (stolen from

@@ -64,49 +64,49 @@ octave.info: $(TEXINFO) conf.texi
 	-makeinfo -I$(srcdir) octave.texi
 
 octave.dvi: $(TEXINFO) conf.texi
-	texi2dvi $(srcdir)/octave.texi
+	-texi2dvi $(srcdir)/octave.texi
 
 octave.ps: octave.dvi
-	dvips -o octave.ps octave.dvi
+	-dvips -o octave.ps octave.dvi
 
 FAQ.info: FAQ.texi
 	-makeinfo -I$(srcdir) FAQ.texi
 
 FAQ.dvi: FAQ.texi
-	texi2dvi $(srcdir)/FAQ.texi
+	-texi2dvi $(srcdir)/FAQ.texi
 
 FAQ.ps: FAQ.dvi
-	dvips -o FAQ.ps FAQ.dvi
+	-dvips -o FAQ.ps FAQ.dvi
 
 liboctave.info: $(LIB_TEXINFO) conf.texi
 	-makeinfo -I$(srcdir) liboctave.texi
 
 liboctave.dvi: $(LIB_TEXINFO) conf.texi
-	texi2dvi $(srcdir)/liboctave.texi
+	-texi2dvi $(srcdir)/liboctave.texi
 
 liboctave.ps: liboctave.dvi
-	dvips -o liboctave.ps liboctave.dvi
+	-dvips -o liboctave.ps liboctave.dvi
 
 refcard-a4.dvi: refcard-a4.tex refcard.tex
-	TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
+	-TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
 	  tex $(srcdir)/refcard-a4.tex
 
 refcard-a4.ps: refcard-a4.dvi
-	dvips -T 297mm,210mm -o refcard-a4.ps refcard-a4.dvi
+	-dvips -T 297mm,210mm -o refcard-a4.ps refcard-a4.dvi
 
 refcard-legal.dvi: refcard-legal.tex refcard.tex
-	TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
+	-TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
 	  tex $(srcdir)/refcard-legal.tex
 
 refcard-legal.ps: refcard-legal.dvi
-	dvips -T 14in,8.5in -o refcard-legal.ps refcard-legal.dvi
+	-dvips -T 14in,8.5in -o refcard-legal.ps refcard-legal.dvi
 
 refcard-letter.dvi: refcard-letter.tex refcard.tex
-	TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
+	-TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
 	  tex $(srcdir)/refcard-letter.tex
 
 refcard-letter.ps: refcard-letter.dvi
-	dvips -T 11in,8.5in -o refcard-letter.ps refcard-letter.dvi
+	-dvips -T 11in,8.5in -o refcard-letter.ps refcard-letter.dvi
 
 ../INSTALL.OCTAVE: install1.texi install.texi
 	-makeinfo --no-header -I$(srcdir)/doc install1.texi

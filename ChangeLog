@@ -1,5 +1,8 @@
 2000-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* aclocal.m4 (OCTAVE_PROG_GPERF): Check that gperf supports flags
+	we use.
+
 	* missing: New file, modified from the missing script provided by
 	automake (never create files, just exit with failure status).
 	* aclocal.m4 (OCTAVE_PROG_BISON, OCTAVE_PROG_FLEX, OCTAVE_PROG_GPERF): 

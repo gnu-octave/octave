@@ -1,3 +1,8 @@
+2000-10-31  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* Array2.cc (Array2<T>::transpose): Avoid copy for empty matrices
+	and vectors.
+
 2000-10-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc (ComplexMatrix::cumsum, ComplexMatrix::cumprod):

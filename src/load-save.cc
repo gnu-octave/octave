@@ -333,7 +333,7 @@ skip_comments (std::istream& is)
 
   for (;;)
     {
-      if (is && c == '#')
+      if (is && (c == '%' || c == '#'))
 	while (is.get (c) && c != '\n')
 	  ; // Skip to beginning of next line, ignoring everything.
       else
@@ -346,7 +346,7 @@ skip_comments (std::istream& is)
 //
 // Input should look something like:
 //
-//  #[ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
+//  [%#][ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
 
 static char *
 extract_keyword (std::istream& is, const char *keyword)
@@ -356,11 +356,11 @@ extract_keyword (std::istream& is, const char *keyword)
   char c;
   while (is.get (c))
     {
-      if (c == '#')
+      if (c == '%' || c == '#')
 	{
 	  std::ostrstream buf;
 	
-	  while (is.get (c) && (c == ' ' || c == '\t' || c == '#'))
+	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
 
 	  if (isalpha (c))
@@ -413,7 +413,7 @@ extract_keyword (std::istream& is, const char *keyword)
 //
 // Input should look something like:
 //
-//  [ \t]*keyword[ \t]*int-value.*\n
+//  [%#][ \t]*keyword[ \t]*int-value.*\n
 
 static bool
 extract_keyword (std::istream& is, const char *keyword, int& value)
@@ -424,11 +424,11 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
   char c;
   while (is.get (c))
     {
-      if (c == '#')
+      if (c == '%' || c == '#')
 	{
 	  std::ostrstream buf;
 
-	  while (is.get (c) && (c == ' ' || c == '\t' || c == '#'))
+	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
 
 	  if (isalpha (c))

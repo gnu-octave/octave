@@ -1,3 +1,10 @@
+2000-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (skip_comments): Allow % as comment character too.
+	(extract_keyword): Likewise.
+
+	* Makefile.in (oct-gperf.h): Remove -a, -g, and -p flags for gperf.
+
 2000-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (do_load): Allow result to be returned instead of

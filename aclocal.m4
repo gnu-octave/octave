@@ -869,14 +869,25 @@ dnl
 dnl Is gperf installed?
 dnl
 dnl OCTAVE_PROG_GPERF
-AC_DEFUN(OCTAVE_PROG_GPERF,
-[AC_CHECK_PROG(GPERF, gperf, gperf, [])
-if test -z "$GPERF"; then
-  GPERF='$(top_srcdir)/missing gperf'
-  warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
-  AC_MSG_WARN($warn_gperf)
-fi
-AC_SUBST(GPERF)
+AC_DEFUN(OCTAVE_PROG_GPERF, [
+  AC_CHECK_PROG(GPERF, gperf, gperf, [])
+  if test -n "$GPERF"; then
+    if echo "%{
+%}
+%%
+" | $GPERF -t -C -D -E -G -L ANSI-C -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
+      true
+    else
+      GPERF=""
+      warn_gperf="I found gperf, but it does not support all of the following options: -t -C -D -E -G -L ANSI-C -H -N; you need gperf 2.7 or a more recent version"
+      AC_MSG_WARN($warn_gperf)
+    fi
+  else
+    GPERF='$(top_srcdir)/missing gperf'
+    warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
+    AC_MSG_WARN($warn_gperf)
+  fi
+  AC_SUBST(GPERF)
 ])
 dnl
 dnl Find nm.

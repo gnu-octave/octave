@@ -228,8 +228,6 @@ extern void mark_for_deletion (const char *filename);
 
 extern void cleanup_tmp_files (void);
 
-extern int send_to_plot_stream (const char *cmd);
-
 extern void close_plot_stream (void);
 
 #endif

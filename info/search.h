@@ -52,13 +52,16 @@ extern int looking_at ();
    after the string. */
 extern int string_in_line ();
 
-/* Unix doesn't have stricmp () functions. */
+#ifndef HAVE_STRICMP
 /* strcmp (), but caseless. */
 extern int stricmp ();
+#endif
 
+#ifndef HAVE_STRNICMP
 /* Compare at most COUNT characters from STRING1 to STRING2.  Case
    doesn't matter. */
 extern int strnicmp ();
+#endif
 
 /* Function names that start with "skip" are passed a string, and return
    an offset from the start of that string.  Function names that start

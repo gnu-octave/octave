@@ -372,7 +372,7 @@ skip_node_characters (string, newlines_okay)
   return (i);
 }
 
-/* Unix doesn't have stricmp () functions. */
+#ifndef HAVE_STRICMP
 int
 stricmp (string1, string2)
      char *string1, *string2;
@@ -394,7 +394,9 @@ stricmp (string1, string2)
 	return (ch1 - ch2);
     }
 }
+#endif
 
+#ifdef HAVE_STRNICMP
 /* Compare at most COUNT characters from string1 to string2.  Case
    doesn't matter. */
 int
@@ -419,6 +421,7 @@ strnicmp (string1, string2, count)
     }
   return (count);
 }
+#endif
 
 /* **************************************************************** */
 /*								    */

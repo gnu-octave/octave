@@ -21,7 +21,7 @@ dnl Copyright (C) 1992, 1993, 1994 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.80 $)
+AC_REVISION($Revision: 1.81 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -400,12 +400,8 @@ if test -n "$F77"; then
   export F77
   FLIBS=`sh $srcdir/flibs.sh`
   AC_MSG_RESULT([defining FLIBS to be $FLIBS])
-  DOT_O_DOT_F_C1=
-  DOT_O_DOT_F_C2=
-  DOT_O_DOT_F_C3=
-  DOT_O_DOT_F_C4=
-  DEFAULT_DOT_C_FROM_DOT_F=
-  DEFAULT_DOT_O_FROM_DOT_F=
+  DOT_C_FROM_DOT_F_CMD=
+  DOT_O_FROM_DOT_F_PAT=
 elif test -n "$F2C" || $use_f2c; then
   AC_CHECK_LIB(f2c, main, FLIBS=-lf2c, [])
   if test -z "$FLIBS" ; then
@@ -417,16 +413,10 @@ elif test -n "$F2C" || $use_f2c; then
   if test -z "$FLIBS" ; then
     AC_MSG_WARN([I found f2c but not libf2c.a, or libF77.a and libI77.a])
   fi
-DEFAULT_DOT_C_FROM_DOT_F='# A rule for making C source from Fortran source.\
-# If we are using f2c we should also turn off the default rule for\
-# making objects from .f files so that we do not invoke the fortran\
-# compiler by mistake.\
-\
-\%.c : \%.f\
-	cat $< | $(F2C) $(F2CFLAGS) > $(@F)'
-  AC_MSG_RESULT([defining DEFAULT_DOT_C_FROM_DOT_F to be $DEFAULT_DOT_C_FROM_DOT_F])
-  DEFAULT_DOT_O_FROM_DOT_F='%.o : %.f'
-  AC_MSG_RESULT([defining DEFAULT_DOT_O_FROM_DOT_F to be $DEFAULT_DOT_O_FROM_DOT_F])
+  DOT_C_FROM_DOT_F_CMD='	cat $< | $(F2C) $(F2CFLAGS) > $(@F)'
+  AC_MSG_RESULT([defining DOT_C_FROM_DOT_F_CMD to be $DOT_C_FROM_DOT_F_CMD])
+  DOT_O_FROM_DOT_F_PAT='%.o : %.f'
+  AC_MSG_RESULT([defining DOT_O_FROM_DOT_F_PAT to be $DOT_O_FROM_DOT_F_PAT])
   AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
 else
   AC_MSG_WARN([in order to build octave, you must have a compatible])
@@ -440,8 +430,8 @@ AC_SUBST(FFLAGS)
 AC_SUBST(FLIBS)
 AC_SUBST(F2C)
 AC_SUBST(F2CFLAGS)
-AC_SUBST(DEFAULT_DOT_C_FROM_DOT_F)
-AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)
+AC_SUBST(DOT_C_FROM_DOT_F_CMD)
+AC_SUBST(DOT_O_FROM_DOT_F_PAT)
 
 ### Extract libraries and directories from FLIBS and CXXLIBS.
 ###

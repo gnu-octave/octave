@@ -20,7 +20,8 @@ Here is a list of current problems (and workarounds, where available).
 
 * On Windows 95 systems, there is a bug that causes redirections to
   /dev/null to fail.  You can work around the problem by substituting
-  /dev/nul for /dev/null in all of the files that use it.
+  /dev/nul for /dev/null in all of the files that use it.  (This
+  problem is fixed in the b17.1 release of the tools.)
 
 * You will need to have f2c and libf2c.a or g77 installed.  You can get
   a copy of f2c from ftp://netlib.att.com/netlib/f2c.

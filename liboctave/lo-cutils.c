@@ -42,6 +42,8 @@ oct_strptime (const char *buf, const char *format, struct tm *tm)
   return strptime (buf, format, tm);
 }
 
+
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

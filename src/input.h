@@ -31,6 +31,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-time.h"
 
+class octave_value;
+class octave_value_list;
+
 extern int octave_read (char *buf, unsigned max_size);
 extern FILE *get_input_from_file (const std::string& name, int warn = 1);
 extern FILE *get_input_from_stdin (void);
@@ -74,6 +77,8 @@ extern bool octave_completion_matches_called;
 extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 
 extern void initialize_command_input (void);
+
+extern octave_value do_keyboard (const octave_value_list& args);
 
 extern std::string Vps4;
 

@@ -504,14 +504,14 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
   std::string prompt ("debug> ");
 
   if (nargin > 0)
-   {
-     prompt = args(0).string_value ();
+    {
+      prompt = args(0).string_value ();
 
-     if (error_state)
-       {
-	 error ("input: unrecognized argument");
-	 return retval;
-       }
+      if (error_state)
+	{
+	  error ("input: unrecognized argument");
+	  return retval;
+	}
     }
 
  again:
@@ -640,6 +640,35 @@ restore_command_history (void *)
   command_history::ignore_entries (! Vsaving_history);
 }
 
+octave_value
+do_keyboard (const octave_value_list& args)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  assert (nargin == 0 || nargin == 1);
+
+  unwind_protect::begin_frame ("do_keyboard");
+
+  // XXX FIXME XXX -- we shouldn't need both the
+  // command_history object and the
+  // Vsaving_history variable...
+  command_history::ignore_entries (false);
+
+  unwind_protect::add (restore_command_history, 0);
+
+  unwind_protect_bool (Vsaving_history);
+
+  Vsaving_history = true;
+
+  retval = get_user_input (args, true, 0);
+
+  unwind_protect::run_frame ("do_keyboard");
+
+  return retval;
+}
+
 DEFUN (keyboard, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} keyboard (@var{prompt})\n\
@@ -660,24 +689,7 @@ If @code{keyboard} is invoked without any arguments, a default prompt of\n\
   int nargin = args.length ();
 
   if (nargin == 0 || nargin == 1)
-    {
-      unwind_protect::begin_frame ("keyboard");
-
-      // XXX FIXME XXX -- we shouldn't need both the
-      // command_history object and the
-      // Vsaving_history variable...
-      command_history::ignore_entries (false);
-
-      unwind_protect::add (restore_command_history, 0);
-
-      unwind_protect_bool (Vsaving_history);
-
-      Vsaving_history = true;
-
-      retval = get_user_input (args, true, 0);
-
-      unwind_protect::run_frame ("keyboard");
-    }
+    do_keyboard (args);
   else
     print_usage ("keyboard");
 

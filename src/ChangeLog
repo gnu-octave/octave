@@ -1,3 +1,23 @@
+2000-07-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	Debug-on-error stuff based on a patch submitted by Paul Kienzle
+	<pkienzle@kienzle.powernet.co.uk> for 2.0.x.
+
+	* error.cc (Vdebug_on_warning): New static flag variable.
+	(debug_on_warning): New function.
+	(symbols_of_warning): DEFVAR debug_on_warning.
+	(warning): Handle debug_on_warning here.
+
+	* input.cc (do_keyboard): New function.
+	(Fkeyboard): Use it to do the real work.
+	* pt-stmt.cc (curr_statement): New static variable.
+	(tree_statement::eval): Save and restore it here.
+	* error.cc (Vdebug_on_error): New static flag variable.
+	(debug_on_error): New function.
+	(symbols_of_error): DEFVAR debug_on_error.
+	(pr_where, pr_where_1): New functions.
+	(error): Handle debug_on_error here.
+
 2000-07-20  Joao Cardoso  <jcardoso@inescporto.pt>
 
 	* Makefile.in (octave): Link with $(LD_CXX) instead of $(CXX)

@@ -146,6 +146,9 @@ private:
   tree_statement_list& operator = (const tree_statement_list&);
 };
 
+// Pointer to the current statement being executed.
+extern tree_statement *curr_statement;
+
 #endif
 
 /*

@@ -43,12 +43,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
 // If TRUE, turn off printing of results in functions (as if a
 // semicolon has been appended to each statement).
 static bool Vsilent_functions;
+
+// Pointer to the current statement being executed.
+tree_statement *curr_statement = 0;
 
 // A list of commands to be executed.
 
@@ -154,7 +158,12 @@ tree_statement_list::eval (bool silent, int nargout)
 	  bool silent_flag =
 	    silent ? true : (function_body ? Vsilent_functions : false);
 
+	  unwind_protect_ptr (curr_statement);
+	  curr_statement = elt;
+
 	  retval = elt->eval (silent_flag, nargout, function_body);
+
+	  unwind_protect::run ();
 
 	  if (error_state)
 	    break;
@@ -168,6 +177,8 @@ tree_statement_list::eval (bool silent, int nargout)
 	}
       else
 	error ("invalid statement found in statement list!");
+
+
     }
 
   return retval;

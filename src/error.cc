@@ -32,15 +32,30 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun.h"
 #include "error.h"
+#include "input.h"
 #include "pager.h"
 #include "oct-obj.h"
 #include "utils.h"
 #include "ov.h"
+#include "ov-usr-fcn.h"
+#include "pt-pr-code.h"
+#include "pt-stmt.h"
+#include "toplev.h"
+#include "unwind-prot.h"
 #include "variables.h"
 
 // TRUE means that Octave will try to beep obnoxiously before printing
 // error messages.
 static bool Vbeep_on_error;
+
+// TRUE means that Octave will try to enter the debugger when an error
+// is encountered.  This will also inhibit printing of the normal
+// traceback message (you will only see the top-level error message).
+static bool Vdebug_on_error;
+
+// TRUE means that Octave will try to enter the debugger when a warning
+// is encountered.
+static bool Vdebug_on_warning;
 
 // Current error state.
 int error_state = 0;
@@ -195,6 +210,50 @@ usage (const char *fmt, ...)
   va_end (args);
 }
 
+static void
+pr_where_1 (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_1 (0, fmt, args);
+  va_end (args);
+}
+
+static void
+pr_where (void)
+{
+  if (curr_statement)
+    {
+      std::string fcn_name = curr_function->function_name ();
+      std::string file_name = curr_function->fcn_file_name ();
+
+      const char *nm
+	= file_name.empty () ? fcn_name.c_str () : file_name.c_str ();
+
+      int l = curr_statement->line ();
+      int c = curr_statement->column ();
+
+      pr_where_1 ("error: in %s near line %d, column %d:", nm, l, c);
+
+      // Oops, note that the column number may not be correct
+      // since the code is being reproduced from the parse tree.
+
+      std::ostrstream output_buf;
+
+      tree_print_code tpc (output_buf, "    ");
+
+      curr_statement->accept (tpc);
+
+      output_buf << ends;
+
+      char *msg = output_buf.str ();
+
+      pr_where_1 (msg);
+
+      delete [] msg;
+    }
+}
+
 void
 warning (const char *fmt, ...)
 {
@@ -203,15 +262,45 @@ warning (const char *fmt, ...)
   warning_state = 1;
   vwarning ("warning", fmt, args);
   va_end (args);
+
+  if ((interactive || forced_interactive)
+      && Vdebug_on_warning && curr_function)
+    {
+      unwind_protect_bool (Vdebug_on_warning);
+      Vdebug_on_warning = false;
+
+      pr_where ();
+
+      do_keyboard (octave_value_list ());
+
+      unwind_protect::run ();
+    }
 }
 
 void
 error (const char *fmt, ...)
 {
+  int init_state = error_state;
+
   va_list args;
   va_start (args, fmt);
   error_1 ("error", fmt, args);
   va_end (args);
+
+  if ((interactive || forced_interactive)
+      && Vdebug_on_error && init_state == 0 && curr_function)
+    {
+      unwind_protect_bool (Vdebug_on_error);
+      Vdebug_on_error = false;
+
+      pr_where ();
+
+      error_state = 0;
+
+      do_keyboard (octave_value_list ());
+
+      unwind_protect::run ();
+    }
 }
 
 void
@@ -435,6 +524,22 @@ beep_on_error (void)
   return 0;
 }
 
+static int
+debug_on_error (void)
+{
+  Vdebug_on_error = check_preference ("debug_on_error");
+
+  return 0;
+}
+
+static int
+debug_on_warning (void)
+{
+  Vdebug_on_warning = check_preference ("debug_on_warning");
+
+  return 0;
+}
+
 void
 symbols_of_error (void)
 {
@@ -444,6 +549,23 @@ symbols_of_error (void)
 If the value of @code{beep_on_error} is nonzero, Octave will try\n\
 to ring your terminal's bell before printing an error message.  The\n\
 default value is 0.\n\
+@end defvr");
+
+  DEFVAR (debug_on_error, 0.0, debug_on_error,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} debug_on_error\n\
+If the value of @code{debug_on_error} is nonzero, Octave will try\n\
+to enter the debugger when an error is encountered.  This will also\n\
+inhibit printing of the normal traceback message (you will only see\n\
+the top-level error message).  The default value is 0.\n\
+@end defvr");
+
+  DEFVAR (debug_on_warning, 0.0, debug_on_warning,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} debug_on_warning\n\
+If the value of @code{debug_on_warning} is nonzero, Octave will try\n\
+to enter the debugger when a warning is encountered.  The default\n\
+value is 0.\n\
 @end defvr");
 
   DEFCONST (error_text, "",

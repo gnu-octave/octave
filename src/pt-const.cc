@@ -1596,9 +1596,11 @@ tree_constant_rep::rows (void) const
     {
     case scalar_constant:
     case complex_scalar_constant:
+      retval = 1;
+      break;
     case string_constant:
     case range_constant:
-      retval = 1;
+      retval = (columns () > 0) ? 1 : 0;
       break;
     case matrix_constant:
       retval = matrix->rows ();

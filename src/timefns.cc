@@ -36,24 +36,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Date and time functions.
 
 static Octave_map
-mk_tm_map (struct tm& tm, double fraction)
+mk_tm_map (struct tm *tm, double fraction)
 {
   Octave_map m;
 
   m ["usec"] = fraction * 1e6;
-  m ["sec"] = (double) tm.tm_sec;
-  m ["min"] = (double) tm.tm_min;
-  m ["hour"] = (double) tm.tm_hour;
-  m ["mday"] = (double) tm.tm_mday;
-  m ["mon"] = (double) tm.tm_mon;
-  m ["year"] = (double) tm.tm_year;
-  m ["wday"] = (double) tm.tm_wday;
-  m ["yday"] = (double) tm.tm_yday;
-  m ["isdst"] = (double) tm.tm_isdst;
+  m ["sec"] = (double) tm->tm_sec;
+  m ["min"] = (double) tm->tm_min;
+  m ["hour"] = (double) tm->tm_hour;
+  m ["mday"] = (double) tm->tm_mday;
+  m ["mon"] = (double) tm->tm_mon;
+  m ["year"] = (double) tm->tm_year;
+  m ["wday"] = (double) tm->tm_wday;
+  m ["yday"] = (double) tm->tm_yday;
+  m ["isdst"] = (double) tm->tm_isdst;
 #if defined (HAVE_TM_ZONE)
-  m ["zone"]  = tm.tm_zone;
+  m ["zone"]  = tm->tm_zone;
 #elif defined (HAVE_TZNAME)
-  if (tm.tm_isdst && tzname[1] && *tzname[1])
+  if (tm->tm_isdst && tzname[1] && *tzname[1])
     m ["zone"] = tzname[1];
   else
     m ["zone"] = tzname[0];
@@ -137,7 +137,7 @@ DEFUN ("gmtime", Fgmtime, Sgmtime, 1, 1,
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
-	  retval = tree_constant (mk_tm_map (gmtime (timeval), fraction));
+	  retval = tree_constant (mk_tm_map (gmtime (&timeval), fraction));
 	}
     }
   else
@@ -176,7 +176,7 @@ DEFUN ("localtime", Flocaltime, Slocaltime, 1, 1,
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
-	  retval = tree_constant (mk_tm_map (localtime (timeval), fraction));
+	  retval = tree_constant (mk_tm_map (localtime (&timeval), fraction));
 	}
     }
   else

@@ -31,8 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 
-liboctave_error_handler current_liboctave_error_handler = liboctave_fatal;
-
 static void
 verror (const char *name, const char *fmt, va_list args)
 {

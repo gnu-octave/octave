@@ -24,9 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DAE_h)
 #define octave_DAE_h 1
 
+#include "Matrix.h"
 #include "ODE.h"
 #include "DAEFunc.h"
-#include "Matrix.h"
 
 extern "C++" {
 

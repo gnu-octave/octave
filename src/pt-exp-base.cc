@@ -2928,6 +2928,7 @@ tree_function::print_code (ostream& os)
     {
       increment_indent_level ();
       cmd_list->print_code (os);
+      decrement_indent_level ();
     }
 
   print_code_function_trailer (os);

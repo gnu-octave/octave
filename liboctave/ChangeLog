@@ -1,3 +1,7 @@
+2002-09-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc (acosh): Call xdacosh, not dacosh.
+
 2002-09-27  Per Persson <persquare@mac.com>
 
 	* oct-group.cc (octave_group::octave_group): Dont' forget to set

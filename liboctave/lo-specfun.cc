@@ -95,7 +95,7 @@ double
 acosh (double x)
 {
   double retval;
-  F77_XFCN (dacosh, DACOSH, (x, retval));
+  F77_XFCN (xdacosh, XDACOSH, (x, retval));
   return retval;
 }
 #endif

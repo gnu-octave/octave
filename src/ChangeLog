@@ -1,5 +1,7 @@
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (INCLUDES): Don't forget base-list.h.
+
 	* symtab.cc (symbol_record::define): If definition already exists,
 	redefine it instead of replacing it.
 

@@ -24,7 +24,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "f77-fcn.h"
+
 #include "octave.h"
+
+// Kluge.
+extern "C" void F77_FUNC (xerbla, XERBLA) (const char *, int);
 
 int
 main (int argc, char **argv)

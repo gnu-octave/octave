@@ -1,3 +1,10 @@
+2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Set FPICFLAG, Also set CXXPICFLAG, CPICFLAG,
+	FPICFLAG, and INCLUDE_LINK_DEPS for OS X.
+
+	* acx_blas.m4 (LIBS): Also check for Apple vecLib framework.
+
 2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AH_BOTTOM): Define USE_EXCEPTIONS_FOR_INTERRUPTS.

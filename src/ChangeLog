@@ -1,5 +1,7 @@
 2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* main.c: Move decl for xerbla here from octave.cc.
+
 	* cutils.c (octave_vsnprintf): Use portable_snprintf to avoid
 	having to cope with all kinds of buggy implementations.
 

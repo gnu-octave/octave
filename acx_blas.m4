@@ -82,6 +82,17 @@ if test $acx_blas_ok = no; then
 			[], [-latlas])])
 fi
 
+# BLAS in Apple vecLib framework? (Mac OS X)
+if test $acx_blas_ok = no; then
+	vlib_flags="-framework vecLib"
+	save_LIBS="$LIBS"; LIBS="$vlib_flags $LIBS"
+	AC_MSG_CHECKING([for $sgemm in $vlib_flags])
+	AC_TRY_LINK_FUNC($sgemm, [acx_blas_ok=yes; BLAS_LIBS="$vlib_flags"],
+			 [BLAS_LIBS=""])
+	AC_MSG_RESULT($acx_blas_ok)
+	LIBS="$save_LIBS"
+fi
+
 # BLAS in PhiPACK libraries? (requires generic BLAS lib, too)
 if test $acx_blas_ok = no; then
 	AC_CHECK_LIB(blas, $sgemm,

@@ -82,16 +82,18 @@ vwarning (const char *name, const char *fmt, va_list args)
   std::ostrstream output_buf;
 
   if (name)
-    {
-      octave_diary << name << ": ";
-      std::cerr << name << ": ";
-    }
+    output_buf << name << ": ";
 
-  octave_vformat (octave_diary, fmt, args);
-  octave_vformat (std::cerr, fmt, args);
+  octave_vformat (output_buf, fmt, args);
 
-  octave_diary << std::endl;
-  std::cerr << std::endl;
+  output_buf << std::endl << std::ends;
+
+  char *msg = output_buf.str ();
+
+  octave_diary << msg;
+  std::cerr << msg;
+
+  delete [] msg;
 }
 
 static void

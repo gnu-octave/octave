@@ -489,7 +489,13 @@ TC_REP::fortran_style_matrix_index (const Matrix& mi) const
 
       idx_vector iv (mi, 1, "", len);
       if (! iv)
-	return tree_constant ();
+	return retval;
+
+      if (iv.max () >= nr * nc || iv.min () < 0)
+	{
+	  error ("matrix index out of range");
+	  return retval;
+	}
 
       int result_size = iv.length ();
 

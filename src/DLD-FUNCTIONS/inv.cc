@@ -30,11 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD (inv, args, ,
+DEFUN_DLD (inv, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} inv (@var{a})\n\
-@deftypefnx {Loadable Function} {} inverse (@var{a})\n\
-Compute the inverse of the square matrix @var{a}.\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } inv (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{x}, @var{rcond}] = } inverse (@var{a})\n\
+Compute the inverse of the square matrix @var{a}.  Return an estimate\n\
+of the reciprocal condition number if requested, otherwise warn of an\n\
+ill-conditioned matrix if the reciprocal condition number is small.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -74,9 +76,14 @@ Compute the inverse of the square matrix @var{a}.\n\
 	  int info;
 	  double rcond = 0.0;
 
-	  retval = m.inverse (info, rcond, 1);
+	  Matrix result = m.inverse (info, rcond, 1);
 
-	  if (info == -1)
+	  if (nargout > 1)
+	    retval(1) = rcond;
+
+	  retval(0) = result;
+
+	  if (nargout < 2 && info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	}
@@ -90,9 +97,14 @@ Compute the inverse of the square matrix @var{a}.\n\
 	  int info;
 	  double rcond = 0.0;
 
-	  retval = m.inverse (info, rcond, 1);
+	  ComplexMatrix result = m.inverse (info, rcond, 1);
 
-	  if (info == -1)
+	  if (nargout > 1)
+	    retval(1) = rcond;
+
+	  retval(0) = result;
+
+	  if (nargout < 2 && info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	}

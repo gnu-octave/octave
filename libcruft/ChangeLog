@@ -1,3 +1,15 @@
+2001-03-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/xstopx.f: Delete.
+	* misc/dostop.c: Delete.
+	* misc/Makefile.in (SPECIAL, SPECIAL_DEPEND): Delete dostop.c and
+	dostop.o from lists.
+	* Makefile.in (MISC_OBJ): Delete misc/dostop.o from the list.
+
+	* misc/dostop.c (dostop): Use F77_FCN macro for function definition.
+	Specify length in error format to avoid need for copying string.
+	From Paul Kienzle <pkienzle@kienzle.powernet.co.uk>.
+
 2000-12-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lapack/dgelss.f (DGELSS): Use correct leading dimension for

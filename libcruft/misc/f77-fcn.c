@@ -24,14 +24,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "f77-fcn.h"
+#include "lo-error.h"
 
 void
 copy_f77_context (void *from, void *to, unsigned int size)
 {
   memcpy (to, from, size);
+}
+
+/* All the STOP statements in the Fortran routines have been replaced
+   with a call to XSTOPX.
+
+   XSTOPX jumps back to the entry point for the Fortran function that
+   called us.  Then the calling function should do whatever cleanup
+   is necessary. */
+
+volatile void
+F77_FCN (xstopx, XSTOPX) (const char *s, long int slen)
+{
+  if (s && slen > 0)
+    (*current_liboctave_error_handler) ("%.*s", s, slen);
+
+  longjmp (f77_context, 1);
 }
 
 /*

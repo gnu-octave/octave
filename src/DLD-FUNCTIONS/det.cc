@@ -33,10 +33,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-DEFUN_DLD (det, args, ,
+DEFUN_DLD (det, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} det (@var{a})\n\
-Compute the determinant of @var{a} using @sc{Linpack}.\n\
+@deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } det (@var{a})\n\
+Compute the determinant of @var{a} using @sc{Linpack}.  Return an estimate\n\
+of the reciprocal condition number if requested.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -83,15 +84,10 @@ Compute the determinant of @var{a} using @sc{Linpack}.\n\
 
 	  DET det = m.determinant (info, rcond);
 
-	  double d = 0.0;
+	  if (nargout > 1)
+	    retval(1) = rcond;
 
-	  if (info == -1)
-	    warning ("det: matrix singular to machine precision, rcond = %g",
-		     rcond);
-	  else
-	    d = det.value ();
-
-	  retval = d;
+	  retval(0) = (info == -1 ? 0.0 : det.value ());
 	}
     }
   else if (arg.is_complex_type ())
@@ -105,15 +101,10 @@ Compute the determinant of @var{a} using @sc{Linpack}.\n\
 
 	  ComplexDET det = m.determinant (info, rcond);
 
-	  Complex c = 0.0;
+	  if (nargout > 1)
+	    retval(1) = rcond;
 
-	  if (info == -1)
-	    warning ("det: matrix singular to machine precision, rcond = %g",
-		     rcond);
-	  else
-	    c = det.value ();
-
-	  retval = c;
+	  retval(0) = (info == -1 ? 0.0 : det.value ());
 	}
     }
   else

@@ -1,3 +1,13 @@
+2001-03-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/det.cc (Fdet): Only return rcond if nargout > 1.
+	* DLD-FUNCTIONS/inv.cc (Finv): Only return rcond if nargout > 1.
+
+2001-03-26  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* DLD-FUNCTIONS/det.cc (Fdet): Suppress warning, but return rcond.
+	* DLD_FUNCTIONS/inv.cc (Finv): Return rcond if requested.
+
 2001-02-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt.h (tree::break_statement): New static member.

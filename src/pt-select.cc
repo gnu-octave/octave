@@ -128,7 +128,7 @@ tree_switch_case::label_matches (const octave_value& val)
     {
       if (label_value.is_defined ())
 	{
-	  octave_value tmp = do_binary_op (octave_value::eq,
+	  octave_value tmp = do_binary_op (octave_value::op_eq,
 					   val, label_value);
 
 	  if (! error_state)

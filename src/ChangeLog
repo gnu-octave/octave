@@ -1,5 +1,8 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h (unary_op, binary_op, assign_op): Prepend `op_' to elts.
+	Change all usses
+
 	* All source files: Sprinkle with std:: qualifier as needed.
 
 2000-01-31  John W. Eaton  <jwe@bevo.che.wisc.edu>

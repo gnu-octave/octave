@@ -1823,83 +1823,83 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
   switch (op)
     {
     case POW:
-      t = octave_value::pow;
+      t = octave_value::op_pow;
       break;
 
     case EPOW:
-      t = octave_value::el_pow;
+      t = octave_value::op_el_pow;
       break;
 
     case '+':
-      t = octave_value::add;
+      t = octave_value::op_add;
       break;
 
     case '-':
-      t = octave_value::sub;
+      t = octave_value::op_sub;
       break;
 
     case '*':
-      t = octave_value::mul;
+      t = octave_value::op_mul;
       break;
 
     case '/':
-      t = octave_value::div;
+      t = octave_value::op_div;
       break;
 
     case EMUL:
-      t = octave_value::el_mul;
+      t = octave_value::op_el_mul;
       break;
 
     case EDIV:
-      t = octave_value::el_div;
+      t = octave_value::op_el_div;
       break;
 
     case LEFTDIV:
-      t = octave_value::ldiv;
+      t = octave_value::op_ldiv;
       break;
 
     case ELEFTDIV:
-      t = octave_value::el_ldiv;
+      t = octave_value::op_el_ldiv;
       break;
 
     case LSHIFT:
-      t = octave_value::lshift;
+      t = octave_value::op_lshift;
       break;
 
     case RSHIFT:
-      t = octave_value::rshift;
+      t = octave_value::op_rshift;
       break;
 
     case EXPR_LT:
-      t = octave_value::lt;
+      t = octave_value::op_lt;
       break;
 
     case EXPR_LE:
-      t = octave_value::le;
+      t = octave_value::op_le;
       break;
 
     case EXPR_EQ:
-      t = octave_value::eq;
+      t = octave_value::op_eq;
       break;
 
     case EXPR_GE:
-      t = octave_value::ge;
+      t = octave_value::op_ge;
       break;
 
     case EXPR_GT:
-      t = octave_value::gt;
+      t = octave_value::op_gt;
       break;
 
     case EXPR_NE:
-      t = octave_value::ne;
+      t = octave_value::op_ne;
       break;
 
     case EXPR_AND:
-      t = octave_value::el_and;
+      t = octave_value::op_el_and;
       break;
 
     case EXPR_OR:
-      t = octave_value::el_or;
+      t = octave_value::op_el_or;
       break;
 
     default:
@@ -1958,19 +1958,19 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
   switch (op)
     {
     case EXPR_NOT:
-      t = octave_value::not;
+      t = octave_value::op_not;
       break;
 
     case '-':
-      t = octave_value::uminus;
+      t = octave_value::op_uminus;
       break;
 
     case PLUS_PLUS:
-      t = octave_value::incr;
+      t = octave_value::op_incr;
       break;
 
     case MINUS_MINUS:
-      t = octave_value::decr;
+      t = octave_value::op_decr;
       break;
 
     default:
@@ -1997,19 +1997,19 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
   switch (op)
     {
     case QUOTE:
-      t = octave_value::hermitian;
+      t = octave_value::op_hermitian;
       break;
 
     case TRANSPOSE:
-      t = octave_value::transpose;
+      t = octave_value::op_transpose;
       break;
 
     case PLUS_PLUS:
-      t = octave_value::incr;
+      t = octave_value::op_incr;
       break;
 
     case MINUS_MINUS:
-      t = octave_value::decr;
+      t = octave_value::op_decr;
       break;
 
     default:
@@ -2277,55 +2277,55 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
   switch (op)
     {
     case '=':
-      t = octave_value::asn_eq;
+      t = octave_value::op_asn_eq;
       break;
 
     case ADD_EQ:
-      t = octave_value::add_eq;
+      t = octave_value::op_add_eq;
       break;
 
     case SUB_EQ:
-      t = octave_value::sub_eq;
+      t = octave_value::op_sub_eq;
       break;
 
     case MUL_EQ:
-      t = octave_value::mul_eq;
+      t = octave_value::op_mul_eq;
       break;
 
     case DIV_EQ:
-      t = octave_value::div_eq;
+      t = octave_value::op_div_eq;
       break;
 
     case LEFTDIV_EQ:
-      t = octave_value::ldiv_eq;
+      t = octave_value::op_ldiv_eq;
       break;
 
     case LSHIFT_EQ:
-      t = octave_value::lshift_eq;
+      t = octave_value::op_lshift_eq;
       break;
 
     case RSHIFT_EQ:
-      t = octave_value::rshift_eq;
+      t = octave_value::op_rshift_eq;
       break;
 
     case EMUL_EQ:
-      t = octave_value::el_mul_eq;
+      t = octave_value::op_el_mul_eq;
       break;
 
     case EDIV_EQ:
-      t = octave_value::el_div_eq;
+      t = octave_value::op_el_div_eq;
       break;
 
     case ELEFTDIV_EQ:
-      t = octave_value::el_ldiv_eq;
+      t = octave_value::op_el_ldiv_eq;
       break;
 
     case AND_EQ:
-      t = octave_value::el_and_eq;
+      t = octave_value::op_el_and_eq;
       break;
 
     case OR_EQ:
-      t = octave_value::el_or_eq;
+      t = octave_value::op_el_or_eq;
       break;
 
     default:

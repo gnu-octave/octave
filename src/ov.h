@@ -85,58 +85,58 @@ public:
 
   enum unary_op
   {
-    not,
-    uminus,
-    transpose,
-    hermitian,
-    incr,
-    decr,
+    op_not,
+    op_uminus,
+    op_transpose,
+    op_hermitian,
+    op_incr,
+    op_decr,
     num_unary_ops,
     unknown_unary_op
   };
 
   enum binary_op
   {
-    add,
-    sub,
-    mul,
-    div,
-    pow,
-    ldiv,
-    lshift,
-    rshift,
-    lt,
-    le,
-    eq,
-    ge,
-    gt,
-    ne,
-    el_mul,
-    el_div,
-    el_pow,
-    el_ldiv,
-    el_and,
-    el_or,
-    struct_ref,
+    op_add,
+    op_sub,
+    op_mul,
+    op_div,
+    op_pow,
+    op_ldiv,
+    op_lshift,
+    op_rshift,
+    op_lt,
+    op_le,
+    op_eq,
+    op_ge,
+    op_gt,
+    op_ne,
+    op_el_mul,
+    op_el_div,
+    op_el_pow,
+    op_el_ldiv,
+    op_el_and,
+    op_el_or,
+    op_struct_ref,
     num_binary_ops,
     unknown_binary_op
   };
 
   enum assign_op
   {
-    asn_eq,
-    add_eq,
-    sub_eq,
-    mul_eq,
-    div_eq,
-    ldiv_eq,
-    lshift_eq,
-    rshift_eq,
-    el_mul_eq,
-    el_div_eq,
-    el_ldiv_eq,
-    el_and_eq,
-    el_or_eq,
+    op_asn_eq,
+    op_add_eq,
+    op_sub_eq,
+    op_mul_eq,
+    op_div_eq,
+    op_ldiv_eq,
+    op_lshift_eq,
+    op_rshift_eq,
+    op_el_mul_eq,
+    op_el_div_eq,
+    op_el_ldiv_eq,
+    op_el_and_eq,
+    op_el_or_eq,
     num_assign_ops,
     unknown_assign_op
   };
@@ -578,11 +578,11 @@ private:
   OV_UNOP_FN (name) \
   OV_UNOP_OP (name, op)
 
-OV_UNOP_FN_OP (not, !)
-OV_UNOP_FN_OP (uminus, -)
+OV_UNOP_FN_OP (op_not, !)
+OV_UNOP_FN_OP (op_uminus, -)
 
-OV_UNOP_FN (transpose)
-OV_UNOP_FN (hermitian)
+OV_UNOP_FN (op_transpose)
+OV_UNOP_FN (op_hermitian)
 
 // No simple way to define these for prefix and suffix ops?
 //
@@ -607,31 +607,31 @@ OV_UNOP_FN (hermitian)
   OV_BINOP_FN (name) \
   OV_BINOP_OP (name, op)
 
-OV_BINOP_FN_OP (add, +)
-OV_BINOP_FN_OP (sub, -)
-OV_BINOP_FN_OP (mul, *)
-OV_BINOP_FN_OP (div, /)
+OV_BINOP_FN_OP (op_add, +)
+OV_BINOP_FN_OP (op_sub, -)
+OV_BINOP_FN_OP (op_mul, *)
+OV_BINOP_FN_OP (op_div, /)
 
-OV_BINOP_FN (pow)
-OV_BINOP_FN (ldiv)
-OV_BINOP_FN (lshift)
-OV_BINOP_FN (rshift)
+OV_BINOP_FN (op_pow)
+OV_BINOP_FN (op_ldiv)
+OV_BINOP_FN (op_lshift)
+OV_BINOP_FN (op_rshift)
 
-OV_BINOP_FN_OP (lt, <)
-OV_BINOP_FN_OP (le, <=)
-OV_BINOP_FN_OP (eq, ==)
-OV_BINOP_FN_OP (ge, >=)
-OV_BINOP_FN_OP (gt, >)
-OV_BINOP_FN_OP (ne, !=)
+OV_BINOP_FN_OP (op_lt, <)
+OV_BINOP_FN_OP (op_le, <=)
+OV_BINOP_FN_OP (op_eq, ==)
+OV_BINOP_FN_OP (op_ge, >=)
+OV_BINOP_FN_OP (op_gt, >)
+OV_BINOP_FN_OP (op_ne, !=)
 
-OV_BINOP_FN (el_mul)
-OV_BINOP_FN (el_div)
-OV_BINOP_FN (el_pow)
-OV_BINOP_FN (el_ldiv)
-OV_BINOP_FN (el_and)
-OV_BINOP_FN (el_or)
+OV_BINOP_FN (op_el_mul)
+OV_BINOP_FN (op_el_div)
+OV_BINOP_FN (op_el_pow)
+OV_BINOP_FN (op_el_ldiv)
+OV_BINOP_FN (op_el_and)
+OV_BINOP_FN (op_el_or)
 
-OV_BINOP_FN (struct_ref)
+OV_BINOP_FN (op_struct_ref)
 
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.

@@ -2509,7 +2509,7 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err)
 }
 
 int
-octave_stream::seek (streamoff offset, std::ios::seek_dir origin)
+octave_stream::seek (std::streamoff offset, std::ios::seek_dir origin)
 {
   int retval = -1;
 

@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_iostream::seek (streamoff, std::ios::seek_dir)
+octave_base_iostream::seek (std::streamoff, std::ios::seek_dir)
 {
   invalid_operation ();
   return -1;

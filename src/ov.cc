@@ -532,6 +532,7 @@ octave_value *
 octave_value::clone (void)
 {
   panic_impossible ();
+  return 0;
 }
 
 void

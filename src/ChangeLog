@@ -1,5 +1,13 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-idx.cc (tree_index_expression::tree_index_expression):
+	Delete default arg values.
+
+	* siglist.h, siglist.c: New files.
+	* Makefile.in: Add them to the appropriate lists.
+	* siglist.c (sys_siglist): Move definition here from sighandlers.cc.
+	* siglist.h (sys_siglist): Move declaration here from sighandlers.h.
+
 	* ov.h, ov-bool.h, ov-bool-mat.h (bool_matrix_value):
 	Delete unnecessary arg.
 

@@ -36,6 +36,7 @@ Free Software Foundation, Inc.
 #include <Array.h>
 
 #include "syswait.h"
+#include "siglist.h"
 
 // Signal handler return type.
 #ifndef RETSIGTYPE
@@ -102,12 +103,6 @@ extern void octave_save_signal_mask (void);
 extern void octave_restore_signal_mask (void);
 
 // extern void ignore_sigchld (void);
-
-// This is taken directly from Emacs 19:
-
-#ifndef SYS_SIGLIST_DECLARED
-extern char *sys_siglist[];
-#endif
 
 // Maybe this should be in a separate file?
 

@@ -239,7 +239,7 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  virtual int seek (streamoff offset, std::ios::seek_dir origin) = 0;
+  virtual int seek (std::streamoff offset, std::ios::seek_dir origin) = 0;
 
   // Return current stream position.
 
@@ -398,7 +398,7 @@ public:
   std::string gets (int max_len, bool& err);
   std::string gets (const octave_value& max_len, bool& err);
 
-  int seek (streamoff offset, std::ios::seek_dir origin);
+  int seek (std::streamoff offset, std::ios::seek_dir origin);
   int seek (const octave_value& offset, const octave_value& origin);
 
   long tell (void) const;

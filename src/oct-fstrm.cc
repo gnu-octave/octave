@@ -59,7 +59,7 @@ octave_fstream::octave_fstream
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_fstream::seek (streamoff offset, std::ios::seek_dir origin)
+octave_fstream::seek (std::streamoff offset, std::ios::seek_dir origin)
 {
   int retval = -1;
 

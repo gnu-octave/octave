@@ -1152,6 +1152,8 @@ warn_implicit_conversion (const char *from, const char *to)
   warning ("implicit conversion from %s to %s", from, to);
 }
 
+// XXX FIXME XXX -- we need a better way of handling conversions.
+
 double
 TC_REP::double_value (bool force_string_conv) const
 {

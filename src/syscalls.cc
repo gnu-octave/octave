@@ -307,12 +307,13 @@ DEFUN(getppid, args, ,
 }
 
 DEFUN (lstat, args, ,
-  "lstat (NAME)\n\
+  "[S, ERR, MSG] = lstat (NAME)\n\
 \n\
-  Like stat (NAME), but if NAME refers to a symbolic link, returns\n\
-  information about the link itself, not the file that it points to.")
+Like [S, ERR, MSG] = stat (NAME), but if NAME refers to a symbolic\n\
+link, returns information about the link itself, not the file that it\n\
+points to.")
 {
-  octave_value retval = -1.0;
+  octave_value retval;
 
   if (args.length () == 1)
     {
@@ -322,8 +323,17 @@ DEFUN (lstat, args, ,
 	{
 	  file_stat fs (fname, false);
 
-	  if (fs)
-	    retval = octave_value (mk_stat_map (fs));
+	    {
+	      retval(2) = string ();
+	      retval(1) = 0.0;
+	      retval(0) = octave_value (mk_stat_map (fs));
+	    }
+	  else
+	    {
+	      retval(2) = fs.error ();
+	      retval(1) = -1.0;
+	      retval(0) = Matrix ();
+	    }
 	}
     }
   else
@@ -413,9 +423,9 @@ DEFUN (pipe, args, ,
 }
 
 DEFUN (stat, args, ,
-  "stat (NAME)\n\
+  "[S, ERR, MSG] = stat (NAME)\n\
 \n\
-  Given the name of a file, return a structure with the following
+  Given the name of a file, return a structure S with the following
   elements:\n\
 \n\
     dev     : id of device containing a directory entry for this file\n\
@@ -432,9 +442,13 @@ DEFUN (stat, args, ,
     blksize : size of blocks in the file\n\
     blocks  : number of blocks allocated for file\n\
 \n\
-  If the file does not exist, -1 is returned.")
+  If the call is successful, ERR is 0 and MSG is an empty string.\n\
+\n\
+  If the file does not exist, or some other error occurs, S is an\n\
+  empty matrix, ERR is -1, and MSG contains the corresponding\n\
+  system error message.")
 {
-  octave_value retval = -1.0;
+  octave_value_list retval;
 
   if (args.length () == 1)
     {
@@ -445,7 +459,17 @@ DEFUN (stat, args, ,
 	  file_stat fs (fname);
 
 	  if (fs)
-	    retval = octave_value (mk_stat_map (fs));
+	    {
+	      retval(2) = string ();
+	      retval(1) = 0.0;
+	      retval(0) = octave_value (mk_stat_map (fs));
+	    }
+	  else
+	    {
+	      retval(2) = fs.error ();
+	      retval(1) = -1.0;
+	      retval(0) = Matrix ();
+	    }
 	}
     }
   else

@@ -1,8 +1,10 @@
 2004-11-04  John W. Eaton  <jwe@octave.org>
 
-	* DLD-FUNCTIONS/inv.cc (Finv): Declare rcond volatile and check	value.
+	* DLD-FUNCTIONS/inv.cc (Finv): Check rcond value returned from
+	LAPACK routines, and be careful to avoid optimizing away the
+	1+rcond == 1.0 check.
 	* DLD-FUNCTIONS/det.cc (Fdet): Likewise.
-	
+
 2004-11-03  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (Fsize): Return 1 if requested dimension is larger than

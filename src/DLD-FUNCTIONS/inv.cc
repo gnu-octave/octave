@@ -74,7 +74,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
       if (! error_state)
 	{
 	  int info;
-	  volatile double rcond = 0.0;
+	  double rcond = 0.0;
 
 	  Matrix result = m.inverse (info, rcond, 1);
 
@@ -83,7 +83,9 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
 	  retval(0) = result;
 
-	  if (nargout < 2 && (info == -1 || 1.0 + rcond == 1.0))
+	  volatile double xrcond = rcond;
+	  xrcond += 1.0;
+	  if (nargout < 2 && (info == -1 || xrcond == 1.0))
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	}
@@ -95,7 +97,7 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
       if (! error_state)
 	{
 	  int info;
-	  volatile double rcond = 0.0;
+	  double rcond = 0.0;
 
 	  ComplexMatrix result = m.inverse (info, rcond, 1);
 
@@ -104,7 +106,9 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
 	  retval(0) = result;
 
-	  if (nargout < 2 && (info == -1 || 1.0 + rcond == 1.0))
+	  volatile double xrcond = rcond;
+	  xrcond += 1.0;
+	  if (nargout < 2 && (info == -1 || xrcond == 1.0))
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	}

@@ -106,17 +106,25 @@ int in_plot_using = 0;
 // Nonzero means we're looking at the style part of a plot command.
 int in_plot_style = 0;
 
-// Check to see that end statements are properly matched.
-static int check_end (token *tok, token::end_tok_type expected);
-
-// Error mesages for mismatched end statements.
-static void end_error (char *type, token::end_tok_type ettype, int l, int c);
+// Forward declarations for some functions defined at the bottom of
+// the file.
 
 // Generic error messages.
 static void yyerror (char *s);
 
-static tree *maybe_convert_to_ans_assign (tree *expr);
-static void maybe_warn_assign_as_truth_value (tree *expr);
+// Error mesages for mismatched end statements.
+static void end_error (char *type, token::end_tok_type ettype, int l, int c);
+
+// Check to see that end statements are properly matched.
+static int check_end (token *tok, token::end_tok_type expected);
+
+// Try to figure out early if an expression should become an
+// assignment to the builtin variable ans.
+static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
+
+// Maybe print a warning if an assignment expression is used as the
+// test in a logical expression.
+static void maybe_warn_assign_as_truth_value (tree_expression *expr);
 
 #define ABORT_PARSE \
   do \
@@ -143,6 +151,7 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 
 // Types for the nonterminals we generate.
   tree *tree_type;
+  tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
   tree_matrix *tree_matrix_type;
   tree_identifier *tree_identifier_type;
@@ -186,8 +195,8 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 
 // Nonterminals we construct.
 %type <tree_type> input command 
-%type <tree_type> ans_expression expression simple_expr simple_expr1
-%type <tree_type> title
+%type <tree_expression_type> expression simple_expr simple_expr1
+%type <tree_expression_type> ans_expression title
 %type <tree_matrix_type> matrix
 %type <tree_identifier_type> identifier
 %type <tree_function_type> func_def func_def1 func_def2 func_def3
@@ -327,6 +336,7 @@ opt_list	: // empty
 		  { $$ = new tree_command_list (); }
 		| list
 		  { $$ = $1; }
+		;
 
 list		: list1
 		  { $$ = $1->reverse (); }
@@ -475,13 +485,13 @@ plot_options	: using
 
 using		: using1
 		  {
-		    $$ = $1;
 		    in_plot_using = 0;
+		    $$ = $1;
 		  }
 		| using1 expression
 		  {
-		    $$ = $1->set_format ($2);
 		    in_plot_using = 0;
+		    $$ = $1->set_format ($2);
 		  }
 		;
 
@@ -796,14 +806,14 @@ simple_expr1	: NUM
 		  { $$ = new tree_constant (Complex (0.0, $1->number ())); }
 		| TEXT
 		  { $$ = new tree_constant ($1->string ()); }
-		| word_list_cmd
-		  { $$ = $1; }
 		| '(' expression ')'
 		  {
 		    if ($2->is_assignment_expression ())
 		      ((tree_assignment_expression *) $2) -> in_parens++;
 		    $$ = $2;
 		  }
+		| word_list_cmd
+		  { $$ = $1; }
 		| variable
 		  { $$ = $1; }
 		| matrix
@@ -1179,6 +1189,34 @@ yyerror (char *s)
     fprintf (stderr, "\n\n");
 }
 
+static void
+end_error (char *type, token::end_tok_type ettype, int l, int c)
+{
+  static char *fmt = "%s command matched by `%s' near line %d column %d";
+
+  switch (ettype)
+    {
+    case token::simple_end:
+      error (fmt, type, "end", l, c);
+      break;
+    case token::for_end:
+      error (fmt, type, "endfor", l, c);
+      break;
+    case token::function_end:
+      error (fmt, type, "endfunction", l, c);
+      break;
+    case token::if_end:
+      error (fmt, type, "endif", l, c);
+      break;
+    case token::while_end:
+      error (fmt, type, "endwhile", l, c); 
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+}
+
 static int
 check_end (token *tok, token::end_tok_type expected)
 {
@@ -1214,34 +1252,6 @@ check_end (token *tok, token::end_tok_type expected)
     return 0;
 }
 
-static void
-end_error (char *type, token::end_tok_type ettype, int l, int c)
-{
-  static char *fmt = "%s command matched by `%s' near line %d column %d";
-
-  switch (ettype)
-    {
-    case token::simple_end:
-      error (fmt, type, "end", l, c);
-      break;
-    case token::for_end:
-      error (fmt, type, "endfor", l, c);
-      break;
-    case token::function_end:
-      error (fmt, type, "endfunction", l, c);
-      break;
-    case token::if_end:
-      error (fmt, type, "endif", l, c);
-      break;
-    case token::while_end:
-      error (fmt, type, "endwhile", l, c); 
-      break;
-    default:
-      panic_impossible ();
-      break;
-    }
-}
-
 /*
  * Need to make sure that the expression isn't already an identifier
  * that has a name, or an assignment expression.
@@ -1255,8 +1265,8 @@ end_error (char *type, token::end_tok_type ettype, int l, int c)
  *
  * XXX FIXME XXX -- we should probably delay doing this until eval-time.
  */
-tree *
-maybe_convert_to_ans_assign (tree *expr)
+static tree_expression *
+maybe_convert_to_ans_assign (tree_expression *expr)
 {
   if (expr->is_index_expression ())
     {
@@ -1280,8 +1290,8 @@ maybe_convert_to_ans_assign (tree *expr)
     }
 }
 
-void
-maybe_warn_assign_as_truth_value (tree *expr)
+static void
+maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
   if (user_pref.warn_assign_as_truth_value
       && expr->is_assignment_expression ()

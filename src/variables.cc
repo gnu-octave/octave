@@ -189,8 +189,13 @@ otherwise, return 0.")
 DEFUN ("exist", Fexist, Sexist, 10,
   "exist (NAME): check if variable or file exists\n\
 \n\
-return 0 if NAME is undefined, 1 if it is a variable, or 2 if it is\n\
-a function.")
+returns:\n\
+\n\
+   0 : NAME is undefined\n\
+   1 : NAME is a variable\n\
+   2 : NAME is a function\n\
+   3 : NAME is a .oct file in the current LOADPATH\n\
+   5 : NAME is a built-in function")
 {
   Octave_object retval;
 

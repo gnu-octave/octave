@@ -100,6 +100,27 @@ BSD_init (void)
 }
 #endif
 
+#if defined (__CYGWIN__)
+
+#include <limits.h>
+#include <sys/cygwin.h>
+
+static void
+CYGWIN_init (void)
+{
+  std::string tmpdir = octave_env::getenv ("TMPDIR");
+
+  if (tmpdir.empty ())
+    {
+      char buf [PATH_MAX];
+
+      cygwin32_conv_to_win32_path ("/tmp", buf);
+
+      octave_env::putenv ("TMPDIR", buf);
+    }
+}
+#endif
+
 #if defined (NeXT)
 extern "C"
 {
@@ -147,6 +168,8 @@ sysdep_init (void)
 {
 #if defined (__386BSD__) || defined (__FreeBSD__)
   BSD_init ();
+#elif defined (__CYGWIN__)
+  CYGWIN_init ();
 #elif defined (NeXT)
   NeXT_init ();
 #elif defined (__EMX__)

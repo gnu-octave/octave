@@ -42,14 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-#ifndef MIN
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#endif
-
-#ifndef ABS
-#define ABS(x) (((x) < 0) ? (-x) : (x))
-#endif
-
 #define ANY_ALL(FCN) \
  \
   octave_value retval; \
@@ -454,7 +446,7 @@ make_diag (const Matrix& v, int k)
 
   if (nr == 1)
     {
-      int n = nc + ABS (k);
+      int n = nc + std::abs (k);
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
 	m (i+roff, i+coff) = v (0, i);
@@ -462,7 +454,7 @@ make_diag (const Matrix& v, int k)
     }
   else
     {
-      int n = nr + ABS (k);
+      int n = nr + std::abs (k);
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
 	m (i+roff, i+coff) = v (i, 0);
@@ -496,7 +488,7 @@ make_diag (const ComplexMatrix& v, int k)
 
   if (nr == 1)
     {
-      int n = nc + ABS (k);
+      int n = nc + std::abs (k);
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
 	m (i+roff, i+coff) = v (0, i);
@@ -504,7 +496,7 @@ make_diag (const ComplexMatrix& v, int k)
     }
   else
     {
-      int n = nr + ABS (k);
+      int n = nr + std::abs (k);
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
 	m (i+roff, i+coff) = v (i, 0);

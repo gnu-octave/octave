@@ -1,5 +1,7 @@
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (make_diag): Use std::abs instead of our own ABS macro.
+
 	* utils.cc (identity_matrix): Move here from data.cc.
 	(identity_matrix): Use std::min instead of our own MIN macro.
 

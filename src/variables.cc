@@ -597,7 +597,7 @@ symbol_exist (const std::string& name, const std::string& type)
 	  octave_function *f = t.function_value (true);
 	  std::string s = f ? f->fcn_file_name () : std::string ();
 
-	  retval = s.empty () ? 103 : 2;
+	  retval = s.empty () ? 103 : (sr->is_user_function () ? 2 : 3);
 	}
     }
 

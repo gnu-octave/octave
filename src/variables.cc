@@ -1369,7 +1369,7 @@ character, but may not be combined.")
 
   int argc = tmp_args.length () + 1;
 
-  string_vector argv = args.make_argv ("whos");
+  string_vector argv = tmp_args.make_argv ("whos");
 
   if (error_state)
     return retval;

@@ -151,6 +151,13 @@ install: all
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
 	done
+	linkdir=`echo $(includedir) | sed 's/-$(version)$$//'` ; \
+	if [ "$$linkdir" = $(includedir) ] ; then \
+	  true ; \
+	else \
+	  rm -rf $$linkdir ; \
+	fi ; \
+	$(LN_S) $(includedir) $$linkdir
 .PHONY: install
 
 uninstall:

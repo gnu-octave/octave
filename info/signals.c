@@ -140,13 +140,15 @@ info_signal_handler (sig)
 #if defined (SIGTSTP)
 	if (sig == SIGTSTP)
 	  old_signal_handler = &old_TSTP;
-	if (sig == SIGTTOU)
+	else if (sig == SIGTTOU)
 	  old_signal_handler = &old_TTOU;
-	if (sig == SIGTTIN)
+	else if (sig == SIGTTIN)
 	  old_signal_handler = &old_TTIN;
 #endif /* SIGTSTP */
-	if (sig == SIGINT)
+#if defined (SIGINT)
+	else if (sig == SIGINT)
 	  old_signal_handler = &old_INT;
+#endif
 
 	/* For stop signals, restore the terminal IO, leave the cursor
 	   at the bottom of the window, and stop us. */
@@ -154,13 +156,14 @@ info_signal_handler (sig)
 	terminal_clear_to_eol ();
 	fflush (stdout);
 	terminal_unprep_terminal ();
-	signal (sig, *old_signal_handler);
  	UNBLOCK_SIGNAL (sig);
+	signal (sig, *old_signal_handler);
 	kill (getpid (), sig);
 
 	/* The program is returning now.  Restore our signal handler,
 	   turn on terminal handling, redraw the screen, and place the
 	   cursor where it belongs. */
+	
 	terminal_prep_terminal ();
 	*old_signal_handler = (SigHandler *) signal (sig, info_signal_handler);
 	redisplay_after_signal ();

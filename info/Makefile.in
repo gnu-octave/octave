@@ -1,7 +1,7 @@
 # Makefile for Octave's info directory.  Adapted from the makefile for
 # texinfo/info.
 #
-# Copyright (C) 1993 Free Software Foundation, Inc.
+# Copyright (C) 1993, 1994 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,6 +26,10 @@ top_srcdir = @top_srcdir@
 VPATH  = @srcdir@:@srcdir@/../src
 
 include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
 
 common = @srcdir@/../src
 

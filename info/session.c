@@ -4158,8 +4158,19 @@ info_get_input_char ()
   else if (info_get_key_from_typeahead (&keystroke) == 0)
     {
       int rawkey;
+      int ignoreeof = 7;
 
-      rawkey = getc (info_input_stream);
+ /* Ugh.  After returning from a C-z that interrupted us while we were
+    waiting on input, Ultrix (and other?) systems return EOF from getc
+    instead of continuing to wait.  Hack around that by trying to read
+    atain up to IGNOREEOF times. */
+
+      do
+	{
+	  rawkey = getc (info_input_stream);
+	}
+      while (rawkey == EOF && --ignoreeof);
+
       keystroke = rawkey;
 
       if (rawkey == EOF)
@@ -4177,6 +4188,7 @@ info_get_input_char ()
 
 	  if (rawkey == EOF)
 	    {
+	      keystroke = '\0';
 	      terminal_unprep_terminal ();
 	      close_dribble_file ();
 	      exit (0);

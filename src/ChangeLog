@@ -1,3 +1,7 @@
+2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strfns.cc (Fischar): rename from Fisstr.
+
 2003-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pr-output.cc (PRINT_ND_ARRAY): New macro.

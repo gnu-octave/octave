@@ -139,6 +139,8 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(str2mat)
 
+@DOCSTRING(ischar)
+
 @DOCSTRING(isstr)
 
 @node Searching and Replacing

@@ -1,3 +1,7 @@
+2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* deprecated/isstr.m: New function.
+
 2003-10-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__axis_label__.m, plot/xlabel.m, plot/ylabel.m,

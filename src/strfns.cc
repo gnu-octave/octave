@@ -123,9 +123,9 @@ of the string array have the same length.\n\
   return retval;
 }
 
-DEFUN (isstr, args, ,
+DEFUN (ischar, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isstr (@var{a})\n\
+@deftypefn {Built-in Function} {} ischar (@var{a})\n\
 Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
 @end deftypefn")
 {
@@ -136,7 +136,7 @@ Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
   if (nargin == 1 && args(0).is_defined ())
     retval = args(0).is_string ();
   else
-    print_usage ("isstr");
+    print_usage ("ischar");
 
   return retval;
 }

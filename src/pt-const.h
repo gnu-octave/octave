@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-alloc.h"
 
+#include "pt-bp.h"
 #include "pt-exp.h"
 
 class octave_value_list;
@@ -77,7 +78,10 @@ public:
     { return true; }
 
   octave_value rvalue (void)
-    { return val; }
+    {
+      MAYBE_DO_BREAKPOINT;
+      return val;
+    }
 
   octave_value_list rvalue (int nargout);
 

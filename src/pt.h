@@ -40,7 +40,7 @@ tree
 {
 public:
 
-  tree (int l = -1, int c = -1)
+  tree (int l = -1, int c = -1) : break_point(false)
     {
       line_num = l;
       column_num = c;
@@ -58,12 +58,24 @@ public:
 
   std::string str_print_code (void);
 
+  virtual void set_breakpoint (void)
+    { break_point = true; }
+  
+  virtual void delete_breakpoint (void)
+    { break_point = false; }
+
+  virtual bool is_breakpoint (void) const 
+    { return break_point; }
+
 private:
 
   // The input line and column where we found the text that was
   // eventually converted to this tree node.
   int line_num;
   int column_num;
+
+  // Stop before executing this tree node
+  bool break_point;
 
   // No copying!
 

@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-lvalue.h"
 #include "ov.h"
 #include "pager.h"
+#include "pt-bp.h"
 #include "pt-indir.h"
 #include "pt-walk.h"
 #include "utils.h"
@@ -59,6 +60,8 @@ octave_value_list
 tree_indirect_ref::rvalue (int nargout)
 {
   octave_value_list retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (nargout > 1)
     error ("invalid number of output arguments for structure reference");

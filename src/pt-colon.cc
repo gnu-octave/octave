@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "ov.h"
+#include "pt-bp.h"
 #include "pt-colon.h"
 #include "pt-walk.h"
 
@@ -88,6 +89,8 @@ tree_colon_expression::rvalue (void)
 {
   octave_value retval;
 
+  MAYBE_DO_BREAKPOINT;
+  
   if (error_state || ! op_base || ! op_limit)
     return retval;
 

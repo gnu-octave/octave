@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-obj.h"
 #include "pt-arg-list.h"
+#include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-mat.h"
 #include "pt-walk.h"
@@ -435,6 +436,8 @@ octave_value_list
 tree_matrix::rvalue (int nargout)
 {
   octave_value_list retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (nargout > 1)
     error ("invalid number of output arguments for matrix list");

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-lvalue.h"
 #include "ov.h"
+#include "pt-bp.h"
 #include "pt-cmd.h"
 #include "pt-except.h"
 #include "pt-exp.h"
@@ -78,6 +79,8 @@ void
 tree_try_catch_command::eval (void)
 {
   unwind_protect::begin_frame ("tree_try_catch::eval");
+  
+  MAYBE_DO_BREAKPOINT;
 
   if (catch_code)
     {
@@ -207,6 +210,8 @@ void
 tree_unwind_protect_command::eval (void)
 {
   unwind_protect::add (do_unwind_protect_cleanup_code, cleanup_code);
+
+  MAYBE_DO_BREAKPOINT;
 
   if (unwind_protect_code)
     unwind_protect_code->eval ();

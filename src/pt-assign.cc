@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "ov.h"
 #include "pt-arg-list.h"
+#include "pt-bp.h"
 #include "pt-assign.h"
 #include "pt-walk.h"
 #include "utils.h"
@@ -61,6 +62,8 @@ octave_value_list
 tree_simple_assignment::rvalue (int nargout)
 {
   octave_value_list retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (nargout > 1)
     error ("invalid number of output arguments for expression X = RHS");

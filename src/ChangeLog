@@ -1,3 +1,38 @@
+2001-02-01  Ben Sapp  <bsapp@lanl.gov>
+
+        * DLD-FUNCTIONS/debug.cc: New file.
+        * pt-bp.h, pt-bp.cc: New files, for breakpoints.
+	* Makefile.in: Add them to the appropriate lists.
+
+        * pt-stmt.cc (tree_statement_list::set_breakpoint,
+	tree_statement_list::delete_breakpoint,
+	tree_statement_list::list_breakpoints): New functions.
+
+	* pt.h (tree::break_point): New data member.
+	(tree::set_breakpoint, tree::delete_breakpoint, tree::is_breakpoint):
+	New virtual functions.
+
+	* pt-mat.cc (tree_matrix::rvalue): Check for breakpoint here.
+	* pt-unop.cc (tree_prefix_expression::rvalue): Likewise.
+	(tree_postfix_expression::rvalue): Likewise.
+	* pt-loop.cc (tree_do_until_command::eval): Likewise.
+	(DO_LOOP): Likewise.
+	(tree_simple_for_command::eval): Likewise.
+	(tree_complex_for_command::eval): Likewise.
+	* pt-assign.cc (tree_simple_assignment::rvalue): Likewise.
+	* pt-binop.cc (tree_binary_expression::rvalue): Likewise.
+	(tree_boolean_expression::rvalue): Likewise.
+	* pt-cell.cc (tree_cell::rvalue): Likewise.
+	* pt-colon.cc (tree_colon_expression::rvalue): Likewise.
+	* pt-except.cc (tree_try_catch_command::eval): Likewise.
+	(tree_unwind_protect_command::eval): Likewise.
+	* pt-id.cc (tree_identifier::rvalue): Likewise.
+	(tree_identifier::lvalue): Likewise.
+	* pt-indir.cc (tree_indirect_ref::rvalue): Likewise.
+	* pt-jump.cc (tree_break_command::eval): Likewise.
+	(tree_continue_command::eval): Likewise.
+	(tree_return_command::eval): Likewise.
+
 2001-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Map.h, Map.cc (CHMap<C>::operator = (const CHMap&)): New function.
@@ -541,7 +576,7 @@
 
 2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* src/Makefile.in (LIBRARIES): Conditionally define.
+	* Makefile.in (LIBRARIES): Conditionally define.
 	(libraries): Depend on $(LIBRARIES).
 	(octave): Depend on $(LIBRARIES), not libraries.  Also depend on
 	stamp-prereq and stamp-oct-links.
@@ -551,7 +586,7 @@
 
 2000-03-21  Ben Sapp <bsapp@nua.lampf.lanl.gov>:
 
-	* src/Makefile.in (libraries): Depend only on library targets, not
+	* Makefile.in (libraries): Depend only on library targets, not
 	archive members.
 
 2000-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
@@ -1391,7 +1426,7 @@
 
 	* variables.cc (Fclear): Look for dld functions too.
 
-	* ov-dld-fcn.cc, src/ov-dld-fcn.h: New files.
+	* ov-dld-fcn.cc, ov-dld-fcn.h: New files.
 	* Makefile.in (OV_INCLUDES, OV_SRC): Add them to the lists.
 
 	* Makefile.in (DEFVAR_PATTERN): Also match DEFCONSTX.

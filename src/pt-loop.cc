@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-lvalue.h"
 #include "ov.h"
 #include "pt-arg-list.h"
+#include "pt-bp.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"
 #include "pt-jump.h"
@@ -130,6 +131,8 @@ tree_do_until_command::eval (void)
 
   for (;;)
     {
+      MAYBE_DO_BREAKPOINT;
+
       if (list)
 	{
 	  list->eval ();
@@ -200,6 +203,8 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
     { \
       for (int i = 0; i < steps; i++) \
 	{ \
+	  MAYBE_DO_BREAKPOINT; \
+ \
 	  octave_value val (arg); \
  \
 	  bool quit = false; \
@@ -244,6 +249,8 @@ tree_simple_for_command::eval (void)
 
       for (int i = 0; i < steps; i++)
 	{
+	  MAYBE_DO_BREAKPOINT;
+
 	  double tmp_val = b + i * increment;
 
 	  octave_value val (tmp_val);
@@ -259,6 +266,8 @@ tree_simple_for_command::eval (void)
   else if (rhs.is_scalar_type ())
     {
       bool quit = false;
+      
+      MAYBE_DO_BREAKPOINT;
 
       do_for_loop_once (ult, rhs, quit);
     }
@@ -277,6 +286,8 @@ tree_simple_for_command::eval (void)
 	{
 	  for (int i = 0; i < steps; i++)
 	    {
+	      MAYBE_DO_BREAKPOINT;
+
 	      octave_value val (chm_tmp.extract (0, i, nr-1, i), true);
 
 	      bool quit = false;
@@ -333,6 +344,8 @@ tree_simple_for_command::eval (void)
 
       for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
 	{
+	  MAYBE_DO_BREAKPOINT;
+
 	  octave_value val = tmp_val.contents (p);
 
 	  bool quit = false;
@@ -434,6 +447,8 @@ tree_complex_for_command::eval (void)
 	{
 	  octave_value key = tmp_val.key (p);
 	  octave_value val = tmp_val.contents (p);
+
+	  MAYBE_DO_BREAKPOINT;
 
 	  bool quit = false;
 

@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "pager.h"
+#include "pt-bp.h"
 #include "pt-const.h"
 #include "pt-id.h"
 #include "pt-walk.h"
@@ -140,6 +141,8 @@ tree_identifier::rvalue (int nargout)
 {
   octave_value_list retval;
 
+  MAYBE_DO_BREAKPOINT;
+
   if (error_state)
     return retval;
 
@@ -199,6 +202,8 @@ tree_identifier::rvalue (void)
 octave_lvalue
 tree_identifier::lvalue (void)
 {
+  MAYBE_DO_BREAKPOINT;
+
   return sym->variable_reference ();
 }
 

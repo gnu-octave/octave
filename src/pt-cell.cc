@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-obj.h"
 #include "pt-arg-list.h"
+#include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-cell.h"
 #include "pt-walk.h"
@@ -47,6 +48,8 @@ octave_value
 tree_cell::rvalue (void)
 {
   octave_value retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   int nr = length ();
   int nc = -1;

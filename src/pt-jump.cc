@@ -29,8 +29,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
+#include "oct-obj.h"
+#include "pt-bp.h"
 #include "pt-jump.h"
 #include "pt-walk.h"
+
+class octave_value_list;
 
 // Break.
 
@@ -40,6 +44,9 @@ int tree_break_command::breaking = 0;
 void
 tree_break_command::eval (void)
 {
+  // Even if we have an error we should still enter debug mode.
+  MAYBE_DO_BREAKPOINT;
+
   if (! error_state)
     breaking = 1;
 }
@@ -58,6 +65,8 @@ int tree_continue_command::continuing = 0;
 void
 tree_continue_command::eval (void)
 {
+  MAYBE_DO_BREAKPOINT;
+
   if (! error_state)
     continuing = 1;
 }
@@ -77,6 +86,8 @@ int tree_return_command::returning = 0;
 void
 tree_return_command::eval (void)
 {
+  MAYBE_DO_BREAKPOINT;
+
   if (! error_state)
     returning = 1;
 }

@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "ov.h"
+#include "pt-bp.h"
 #include "pt-unop.h"
 #include "pt-walk.h"
 
@@ -63,6 +64,8 @@ octave_value
 tree_prefix_expression::rvalue (void)
 {
   octave_value retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (error_state)
     return retval;
@@ -142,6 +145,8 @@ octave_value
 tree_postfix_expression::rvalue (void)
 {
   octave_value retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (error_state)
     return retval;

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-lvalue.h"
 #include "input.h"
 #include "pager.h"
+#include "pt-bp.h"
 #include "pt-cmd.h"
 #include "pt-id.h"
 #include "pt-idx.h"
@@ -182,6 +183,31 @@ tree_statement_list::eval (bool silent, int nargout)
     }
 
   return retval;
+}
+
+int
+tree_statement_list::set_breakpoint (int line)
+{
+  tree_breakpoint tbp (line, tree_breakpoint::set);
+  accept (tbp);
+  
+  return tbp.get_line ();
+}
+
+void
+tree_statement_list::delete_breakpoint (int line)
+{
+  tree_breakpoint tbp (line, tree_breakpoint::clear); 
+  accept(tbp);
+}
+
+octave_value_list
+tree_statement_list::list_breakpoints (void)
+{
+  tree_breakpoint tbp (0, tree_breakpoint::list);
+  accept (tbp);
+
+  return tbp.get_list ();
 }
 
 void

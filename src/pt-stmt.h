@@ -100,7 +100,6 @@ private:
   bool print_flag;
 
   // No copying!
-
   tree_statement (const tree_statement&);
 
   tree_statement& operator = (const tree_statement&);
@@ -131,6 +130,12 @@ public:
   void mark_as_function_body (void) { function_body = true; }
 
   octave_value_list eval (bool silent = false, int nargout = 0);
+
+  int set_breakpoint (int line);
+
+  void delete_breakpoint (int line);
+
+  octave_value_list list_breakpoints (void);
 
   void accept (tree_walker& tw);
 

@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov.h"
 #include "pt-binop.h"
+#include "pt-bp.h"
 #include "pt-walk.h"
 
 // Binary expressions.
@@ -54,6 +55,8 @@ octave_value
 tree_binary_expression::rvalue (void)
 {
   octave_value retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (error_state)
     return retval;
@@ -118,6 +121,8 @@ octave_value_list
 tree_boolean_expression::rvalue (int nargout)
 {
   octave_value_list retval;
+
+  MAYBE_DO_BREAKPOINT;
 
   if (nargout > 1)
     error ("binary operator `%s': invalid number of output arguments",

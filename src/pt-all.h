@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
+#include "pt-bp.h"
 #include "pt-binop.h"
 #include "pt-check.h"
 #include "pt-cmd.h"

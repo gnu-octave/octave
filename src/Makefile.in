@@ -40,7 +40,7 @@ ifeq ($(OCTAVE_LITE), true)
 endif
 
 DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc dassl.cc \
-	det.cc eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc \
+	debug.cc det.cc eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc \
 	fsolve.cc gammainc.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc \
 	lsode.cc lu.cc minmax.cc pinv.cc qr.cc quad.cc qz.cc rand.cc \
@@ -72,10 +72,10 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-list.h \
 	ov-base-nd-array.h ov-re-nd-array.h ov-typeinfo.h
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
-	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h pt-decl.h \
-	pt-except.h pt-exp.h pt-id.h pt-idx.h pt-indir.h \
+        pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
+	pt-decl.h pt-except.h pt-exp.h pt-id.h pt-idx.h pt-indir.h \
 	pt-jump.h pt-loop.h pt-mat.h pt-misc.h pt-plot.h \
-	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h
+	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h \
 
 INCLUDES := BaseSLList.h Cell.h DLList.h Map.h Pix.h SLList.h \
 	SLStack.h Stack.h c-file-ptr-stream.h comment-list.h defun-dld.h \
@@ -114,7 +114,7 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-usr-fcn.cc ov-base-nd-array.cc ov-re-nd-array.cc \
 	ov-typeinfo.cc
 
-PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-cell.cc \
+PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc pt-cell.cc \
 	pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc pt-decl.cc \
 	pt-except.cc pt-exp.cc pt-id.cc pt-idx.cc pt-indir.cc pt-jump.cc \
 	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \

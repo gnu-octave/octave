@@ -133,6 +133,8 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
+  symbol_table *sym_table (void) { return sym_tab; }
+
   void accept (tree_walker& tw);
 
 private:

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.469 $)
+AC_REVISION($Revision: 1.470 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -366,41 +366,68 @@ case "$canonical_host_type" in
   ;;
 esac
 
-### Check for HDF5 library.
+### Check for ZLIB library.
 
-### XXX FIXME XXX -- how can user specify a set of libraries here?
+WITH_ZLIB=true
+AC_ARG_WITH(zlib,
+  [  --without-zlib          don't use zlib],
+  with_zlib=$withval, with_zlib=yes)
 
-WITH_HDF5=true
-AC_ARG_WITH(hdf5,
-  [  --without-hdf5          don't use HDF5],
-  with_hdf5=$withval, with_hdf5=yes)
-
-hdf5_lib=
-if test "$with_hdf5" = yes; then
-  hdf5_lib="hdf5"
-elif test "$with_hdf5" != no; then
-  hdf5_lib="$with_hdf5"
+zlib_lib=
+if test "$with_zlib" = yes; then
+  zlib_lib="z"
+elif test "$with_zlib" != no; then
+  zlib_lib="$with_zlib"
 fi
 
-HDF5_LIBS=
-WITH_HDF5=false
-if test -n "$hdf5_lib"; then
-  AC_CHECK_LIB($hdf5_lib, H5Pcreate, [
-    AC_CHECK_LIB(z, deflate, [
+ZLIB_LIBS=
+WITH_ZLIB=false
+if test -n "$zlib_lib"; then
+  AC_CHECK_LIB($zlib_lib, deflate, [
+      AC_CHECK_HEADERS(zlib.h, [
+	WITH_ZLIB=true
+        ZLIB_LIBS="-l$zlib_lib"
+        LIBS="$ZLIB_LIBS $LIBS"
+        AC_DEFINE(HAVE_ZLIB, 1, [Define if ZLIB is available.])])])
+fi
+
+if $WITH_ZLIB; then
+  ### Check for HDF5 library.
+
+  WITH_HDF5=true
+  AC_ARG_WITH(hdf5,
+    [  --without-hdf5          don't use HDF5],
+    with_hdf5=$withval, with_hdf5=yes)
+
+  hdf5_lib=
+  if test "$with_hdf5" = yes; then
+    hdf5_lib="hdf5"
+  elif test "$with_hdf5" != no; then
+    hdf5_lib="$with_hdf5"
+  fi
+
+  HDF5_LIBS=
+  WITH_HDF5=false
+  if test -n "$hdf5_lib"; then
+    AC_CHECK_LIB($hdf5_lib, H5Pcreate, [
       AC_CHECK_HEADERS(hdf5.h, [
-	WITH_HDF5=true
-        HDF5_LIBS="-l$hdf5_lib -lz"
+        WITH_HDF5=true
+        HDF5_LIBS="-l$hdf5_lib"
         LIBS="$HDF5_LIBS $LIBS"
         AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])
 	AC_CHECK_LIB($hdf5_lib, H5Gget_num_objs, [
-	  AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])])])])])
+	  AC_DEFINE(HAVE_H5GGET_NUM_OBJS, 1, [Define if HDF5 has H5Gget_num_objs.])])])])
+  fi
+
+  if $WITH_HDF5; then
+    true
+  else
+    warn_hdf5="HDF5 library not found.  Octave will not be able to save or load HDF5 data files."
+  fi
+else
+  warn_zlib="ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files."
 fi
 
-if $WITH_HDF5; then
-  true
-else
-  warn_hdf5="HDF5 library not found.  Octave will not be able to save or load HDF5 data files."
-fi
 
 # Checks for FFTW header and library.
 
@@ -652,15 +679,17 @@ if test "$with_umfpack" = "yes"; then
   AC_CHECK_HEADER(umfpack/umfpack.h, [have_umfpack_header=yes; break])
   if test "$have_umfpack_header" = yes; then
     AC_CHECK_LIB(amd, amd_postorder, [
-      LIBS="-lamd $LIBS"
       AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-        LIBS="-lumfpack $LIBS"
-        UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
+        UMFPACK_LIBS="-lamd -lumfpack"; with_umfpack=yes], [
 	  ## Invalidate the cache.
 	  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
 	  AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-	    LIBS="-lumfpack -lcblas $LIBS"
-            UMFPACK_LIBS="-lumfpack -lcblas"; with_umfpack=yes], [], -lcblas)])])
+            UMFPACK_LIBS="-lamd -lumfpack"; with_umfpack=yes], [
+
+	    ## Invalidate the cache.
+	    $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+	    AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
+              UMFPACK_LIBS="-lamd -lumfpack -lcblas"; with_umfpack=yes], [], -lamd -lcblas $BLAS_LIBS)], -lamd $BLAS_LIBS $FLIBS)]), -lamd])
     if test "$with_umfpack" = yes; then
       # For now the code needed for this is not in umfpack, will add
       # a test later that will probably have to be based on version
@@ -1646,6 +1675,11 @@ fi
 
 if test -n "$warn_hdf5"; then
   AC_MSG_WARN($warn_hdf5)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_zlib"; then
+  AC_MSG_WARN($warn_zlib)
   warn_msg_printed=true
 fi
 

@@ -107,8 +107,8 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
-  char in_align = ((int) in) & 0xF;
-  char out_align = ((int) out) & 0xF;
+  char in_align = (static_cast<int> (in)) & 0xF;
+  char out_align = (static_cast<int (out)) & 0xF;
 
   if (plan[which] == 0 || d[which] != dist || s[which] != stride ||
       r[which] != rank || h[which] != howmany ||
@@ -144,8 +144,8 @@ octave_fftw_planner::create_plan (int dir, const int rank,
       *cur_plan_p =
 	fftw_plan_many_dft (rank, tmp, howmany,
 	      reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-	      NULL, stride, dist, reinterpret_cast<fftw_complex *> (out),
-	      NULL, stride, dist, dir, plan_flags);
+	      0, stride, dist, reinterpret_cast<fftw_complex *> (out),
+	      0, stride, dist, dir, plan_flags);
 
       if (*cur_plan_p == 0)
 	(*current_liboctave_error_handler) ("Error creating fftw plan");
@@ -161,8 +161,8 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
 {
   fftw_plan *cur_plan_p = &rplan;
   bool create_new_plan = false;
-  char in_align = ((int) in) & 0xF;
-  char out_align = ((int) out) & 0xF;
+  char in_align = (static_cast<int> (in)) & 0xF;
+  char out_align = (static_cast<int (out)) & 0xF;
 
   if (rplan == 0 || rd != dist || rs != stride ||
       rr != rank || rh != howmany ||
@@ -198,8 +198,8 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
       *cur_plan_p =
 	fftw_plan_many_dft_r2c (rank, tmp, howmany,
 	      (const_cast<double *> (in)),
-	      NULL, stride, dist, reinterpret_cast<fftw_complex *> (out),
-	      NULL, stride, dist, plan_flags);
+	      0, stride, dist, reinterpret_cast<fftw_complex *> (out),
+	      0, stride, dist, plan_flags);
 
       if (*cur_plan_p == 0)
 	(*current_liboctave_error_handler) ("Error creating fftw plan");

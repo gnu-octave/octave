@@ -16,23 +16,30 @@ include $(TOPDIR)/Makeconf
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
 EL_FILES = octave-hlp.el octave-inf.el octave-mod.el
 
 ELC_FILES = octave-hlp.elc octave-inf.elc octave-mod.elc
 
-SOURCES = $(EL_FILES)
+SOURCES = $(EL_FILES) otags
 
-DISTFILES = Makefile.in $(EL_FILES) $(ELC_FILES) NEWS TODO
+DISTFILES = Makefile.in $(EL_FILES) $(ELC_FILES) otags NEWS TODO
 
-BINDISTFILES = $(addprefix $(srcdir)/, $(EL_FILES) $(ELC_FILES) NEWS TODO)
+BINDISTFILES = \
+	$(addprefix $(srcdir)/, $(EL_FILES) $(ELC_FILES) otags NEWS TODO)
 
 all:
 .PHONY: all
 
 install install-strip:
+	$(INSTALL_SCRIPT) otags $(bindir)/otags
 .PHONY: install install-strip
+
+uninstall:
+	rm -f $(bindir)/otags
+.PHONY: uninstall
 
 tags:
 	ctags $(SOURCES)

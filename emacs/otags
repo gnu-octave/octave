@@ -1,0 +1,24 @@
+#! /bin/sh
+
+# Generate a TAGS file from a set of Octave .m files for use with Emacs.
+#
+# Run as '$ otags' in the given Octave directory to generate a
+# TAGS file.  If you want to include another directory, add a line
+# prior to the "*.m" line containing something like
+#  `--include=/path/to/other/directory/TAGS" \'.
+
+# Tags are generated for function names and for global variables. For
+# global variables it doesn't work for more than one line global
+# variables.  :-(
+
+# Tags are also created for lines of the form '###key foobar' so that
+# you can jump to this specific place just by typing `M-. foobar'.
+# Note that tags are not generated for scripts so that you have to add
+# a line by yourself of the form `###key <script-name>' if you want to
+# jump to it.  :-(
+
+etags --lang=none \
+      --regex='/[ \t]*function.*=[ \t]*\([^ \t]*\)[ \t]*(/\1/' \
+      --regex='/###key \(.*\)/\1/' \
+      --regex='/[ \t]*global[ \t].*/' \
+      *.m

@@ -62,11 +62,29 @@ set test floor-4
 set prog_output "error:.*"
 do_test floor-4.m
 
-# gcd
-# lcm
-# log
-# log10
-# log2
+set test gcd-1
+set prog_output "ans = 1"
+do_test gcd-1.m
+
+set test gcd-2
+set prog_output "usage:.*"
+do_test gcd-2.m
+
+set test gcd-3
+set prog_output "usage:.*"
+do_test gcd-3.m
+
+set test lcm-1
+set prog_output "ans = 1"
+do_test lcm-1.m
+
+set test lcm-2
+set prog_output "usage:.*"
+do_test lcm-2.m
+
+set test lcm-3
+set prog_output "usage:.*"
+do_test lcm-3.m
 
 set test max-1
 set prog_output "ans = 1"
@@ -271,30 +289,341 @@ set test real-4
 set prog_output "error:.*"
 do_test real-4.m
 
-# sin
-# cos
-# tan
-# sec
-# csc
-# cot
-# asin
-# acos
-# atan
-# asec
-# acsc
-# acot
-# cosh
-# tanh
-# sech
-# csch
-# coth
-# asinh
-# acosh
-# atanh
-# asech
-# acsch
-# acoth
-# atan2
+set test log-1
+set prog_output "ans = 1"
+do_test log-1.m
+
+set test log-2
+set prog_output "error:.*"
+do_test log-2.m
+
+set test log-3
+set prog_output "error:.*"
+do_test log-3.m
+
+set test log10-1
+set prog_output "ans = 1"
+do_test log10-1.m
+
+set test log10-2
+set prog_output "error:.*"
+do_test log10-2.m
+
+set test log10-3
+set prog_output "error:.*"
+do_test log10-3.m
+
+set test log2-1
+set prog_output "ans = 1"
+do_test log2-1.m
+
+set test log2-2
+set prog_output "error:.*"
+do_test log2-2.m
+
+set test log2-3
+set prog_output "error:.*"
+do_test log2-3.m
+
+set test sin-1
+set prog_output "ans = 1"
+do_test sin-1.m
+
+set test sin-2
+set prog_output "error:.*"
+do_test sin-2.m
+
+set test sin-3
+set prog_output "error:.*"
+do_test sin-3.m
+
+set test cos-1
+set prog_output "ans = 1"
+do_test cos-1.m
+
+set test cos-2
+set prog_output "error:.*"
+do_test cos-2.m
+
+set test cos-3
+set prog_output "error:.*"
+do_test cos-3.m
+
+set test tan-1
+set prog_output "ans = 1"
+do_test tan-1.m
+
+set test tan-2
+set prog_output "error:.*"
+do_test tan-2.m
+
+set test tan-3
+set prog_output "error:.*"
+do_test tan-3.m
+
+set test sec-1
+set prog_output "ans = 1"
+do_test sec-1.m
+
+set test sec-2
+set prog_output "error:.*"
+do_test sec-2.m
+
+set test sec-3
+set prog_output "error:.*"
+do_test sec-3.m
+
+set test csc-1
+set prog_output "ans = 1"
+do_test csc-1.m
+
+set test csc-2
+set prog_output "error:.*"
+do_test csc-2.m
+
+set test csc-3
+set prog_output "error:.*"
+do_test csc-3.m
+
+set test cot-1
+set prog_output "ans = 1"
+do_test cot-1.m
+
+set test cot-2
+set prog_output "error:.*"
+do_test cot-2.m
+
+set test cot-3
+set prog_output "error:.*"
+do_test cot-3.m
+
+set test asin-1
+set prog_output "ans = 1"
+do_test asin-1.m
+
+set test asin-2
+set prog_output "error:.*"
+do_test asin-2.m
+
+set test asin-3
+set prog_output "error:.*"
+do_test asin-3.m
+
+set test acos-1
+set prog_output "ans = 1"
+do_test acos-1.m
+
+set test acos-2
+set prog_output "error:.*"
+do_test acos-2.m
+
+set test acos-3
+set prog_output "error:.*"
+do_test acos-3.m
+
+set test atan-1
+set prog_output "ans = 1"
+do_test atan-1.m
+
+set test atan-2
+set prog_output "error:.*"
+do_test atan-2.m
+
+set test atan-3
+set prog_output "error:.*"
+do_test atan-3.m
+
+set test asec-1
+set prog_output "ans = 1"
+do_test asec-1.m
+
+set test asec-2
+set prog_output "error:.*"
+do_test asec-2.m
+
+set test asec-3
+set prog_output "error:.*"
+do_test asec-3.m
+
+set test acsc-1
+set prog_output "ans = 1"
+do_test acsc-1.m
+
+set test acsc-2
+set prog_output "error:.*"
+do_test acsc-2.m
+
+set test acsc-3
+set prog_output "error:.*"
+do_test acsc-3.m
+
+set test acot-1
+set prog_output "ans = 1"
+do_test acot-1.m
+
+set test acot-2
+set prog_output "error:.*"
+do_test acot-2.m
+
+set test acot-3
+set prog_output "error:.*"
+do_test acot-3.m
+
+set test sinh-1
+set prog_output "ans = 1"
+do_test sinh-1.m
+
+set test sinh-2
+set prog_output "error:.*"
+do_test sinh-2.m
+
+set test sinh-3
+set prog_output "error:.*"
+do_test sinh-3.m
+
+set test cosh-1
+set prog_output "ans = 1"
+do_test cosh-1.m
+
+set test cosh-2
+set prog_output "error:.*"
+do_test cosh-2.m
+
+set test cosh-3
+set prog_output "error:.*"
+do_test cosh-3.m
+
+set test tanh-1
+set prog_output "ans = 1"
+do_test tanh-1.m
+
+set test tanh-2
+set prog_output "error:.*"
+do_test tanh-2.m
+
+set test tanh-3
+set prog_output "error:.*"
+do_test tanh-3.m
+
+set test sech-1
+set prog_output "ans = 1"
+do_test sech-1.m
+
+set test sech-2
+set prog_output "error:.*"
+do_test sech-2.m
+
+set test sech-3
+set prog_output "error:.*"
+do_test sech-3.m
+
+set test csch-1
+set prog_output "ans = 1"
+do_test csch-1.m
+
+set test csch-2
+set prog_output "error:.*"
+do_test csch-2.m
+
+set test csch-3
+set prog_output "error:.*"
+do_test csch-3.m
+
+set test coth-1
+set prog_output "ans = 1"
+do_test coth-1.m
+
+set test coth-2
+set prog_output "error:.*"
+do_test coth-2.m
+
+set test coth-3
+set prog_output "error:.*"
+do_test coth-3.m
+
+set test asinh-1
+set prog_output "ans = 1"
+do_test asinh-1.m
+
+set test asinh-2
+set prog_output "error:.*"
+do_test asinh-2.m
+
+set test asinh-3
+set prog_output "error:.*"
+do_test asinh-3.m
+
+set test acosh-1
+set prog_output "ans = 1"
+do_test acosh-1.m
+
+set test acosh-2
+set prog_output "error:.*"
+do_test acosh-2.m
+
+set test acosh-3
+set prog_output "error:.*"
+do_test acosh-3.m
+
+set test atanh-1
+set prog_output "ans = 1"
+do_test atanh-1.m
+
+set test atanh-2
+set prog_output "error:.*"
+do_test atanh-2.m
+
+set test atanh-3
+set prog_output "error:.*"
+do_test atanh-3.m
+
+set test asech-1
+set prog_output "ans = 1"
+do_test asech-1.m
+
+set test asech-2
+set prog_output "error:.*"
+do_test asech-2.m
+
+set test asech-3
+set prog_output "error:.*"
+do_test asech-3.m
+
+set test acsch-1
+set prog_output "ans = 1"
+do_test acsch-1.m
+
+set test acsch-2
+set prog_output "error:.*"
+do_test acsch-2.m
+
+set test acsch-3
+set prog_output "error:.*"
+do_test acsch-3.m
+
+set test acoth-1
+set prog_output "ans = 1"
+do_test acoth-1.m
+
+set test acoth-2
+set prog_output "error:.*"
+do_test acoth-2.m
+
+set test acoth-3
+set prog_output "error:.*"
+do_test acoth-3.m
+
+set test atan2-1
+set prog_output "ans = 1"
+do_test atan2-1.m
+
+set test atan2-2
+set prog_output "\n... atan2:.*"
+do_test atan2-2.m
+
+set test atan2-3
+set prog_output "\n... atan2:.*"
+do_test atan2-3.m
 
 set test sum-1
 set prog_output "ans = 1"
@@ -378,7 +707,19 @@ do_test sumsq-4.m
 
 # beta
 # betai
-# bincoeff
+
+set test bincoeff-1
+set prog_output "ans = 1"
+do_test bincoeff-1.m
+
+set test bincoeff-2
+set prog_output "usage:.*"
+do_test bincoeff-2.m
+
+set test bincoeff-3
+set prog_output "usage.*"
+do_test bincoeff-3.m
+
 # erf
 # erfc
 # erfinv

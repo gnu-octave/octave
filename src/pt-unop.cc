@@ -69,7 +69,7 @@ tree_prefix_expression::rvalue (void)
 
   if (op)
     {
-      if (etype == octave_value::incr || etype == octave_value::decr)
+      if (etype == octave_value::op_incr || etype == octave_value::op_decr)
 	{
 	  octave_lvalue ref = op->lvalue ();
 
@@ -148,7 +148,7 @@ tree_postfix_expression::rvalue (void)
 
   if (op)
     {
-      if (etype == octave_value::incr || etype == octave_value::decr)
+      if (etype == octave_value::op_incr || etype == octave_value::op_decr)
 	{
 	  octave_lvalue ref = op->lvalue ();
 

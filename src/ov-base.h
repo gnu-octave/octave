@@ -165,7 +165,7 @@ public:
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
-  Cell cell_value (bool = false) const;
+  Cell cell_value (void) const;
 
   Matrix matrix_value (bool = false) const;
 

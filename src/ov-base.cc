@@ -198,7 +198,7 @@ octave_base_value::double_value (bool) const
 }
 
 Cell
-octave_base_value::cell_value (bool) const
+octave_base_value::cell_value () const
 {
   Cell retval;
   gripe_wrong_type_arg ("octave_base_value::cell_value()", type_name ());

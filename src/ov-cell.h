@@ -74,6 +74,8 @@ public:
 
   bool is_constant (void) const { return true; }
 
+  Cell cell_value (void) const { return cell_val; }
+
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

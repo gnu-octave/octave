@@ -79,9 +79,9 @@ extern "C" int octave_strcasecmp (const char *s1, const char *s2);
 
 extern "C" int octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
-extern "C" char *octave_snprintf (size_t n, const char *fmt, ...);
+extern "C" char *octave_snprintf (const char *fmt, ...);
 
-extern "C" char *octave_vsnprintf (size_t n, const char *fmt, va_list args);
+extern "C" char *octave_vsnprintf (const char *fmt, va_list args);
 
 #endif
 

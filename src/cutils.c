@@ -96,7 +96,7 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
 }
 
 char *
-octave_vsnprintf (size_t n, const char *fmt, va_list args)
+octave_vsnprintf (const char *fmt, va_list args)
 {
 #if defined (HAVE_VSNPRINTF)
   size_t size = 100;
@@ -121,7 +121,7 @@ octave_vsnprintf (size_t n, const char *fmt, va_list args)
 }
 
 char *
-octave_snprintf (size_t n, const char *fmt, ...)
+octave_snprintf (const char *fmt, ...)
 {
   char *retval = 0;
 

@@ -58,22 +58,27 @@ function [ret, files] = testls (input)
 
   ret = 0;
 
+  files = {"ascii.mat", "binary.mat", "mat5.mat", "mat7.mat"};
+  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
+
+  vars = "a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20";
   if (! input)
-    save -z -text ascii.mat a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 
-    save -z -binary binary.mat a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 
-    save -z -mat mat5.mat a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 
-    save -v7 mat7.mat a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20 
+    for i = 1:length(files)
+      eval (["save " opts{i} files{i} vars]);
+    endfor
   else
-    b1 = a1; b2 = a2; b3 = a3; b4 = a4; b5 = a5; b6 = a6; b7 = a7; b8 = a8;
-    b9 = a9; b10 = a10; b11 = a11; b12 = a12; b13 = a13; b14 = a14; b15 = a15;
+    b1 = a1; b2 = a2; b3 = a3; b4 = a4; b5 = a5;
+    b6 = a6; b7 = a7; b8 = a8; b9 = a9;
+    b10 = a10; b11 = a11; b12 = a12; b13 = a13; b14 = a14; b15 = a15;
     b16 = a16; b17 = a17; b18 = a18; b19 = a19; b20 = a20;
 
-    files = {"ascii"; "binary"; "mat5"; "mat7"};
-    for i = 1:length(files)
+    for f = files
+
       clear a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a19 a20;
 
-      file = files{i};
-      eval(["load -force " file ".mat;"]);
+      file = f{1};
+
+      eval(["load -force " file]);
 
       if (a1 != b1)
 	error(["failed: " file " scalar"])
@@ -178,7 +183,7 @@ endfunction
 [load_status, load_files] = testls (1);
 
 for f = [save_files, load_files]
-  unlink (sprintf ("%s.mat", f));
+  unlink (f{1});
 endfor
 
 save_status && load_status

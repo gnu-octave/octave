@@ -200,8 +200,8 @@ static NLEQN_OPTIONS fsolve_option_table [] =
   { "tolerance",
     { "tolerance", 0, },
     { 1, 0, }, 1,
-    NLEqn_options::set_tolerance,
-    NLEqn_options::tolerance, },
+    &NLEqn_options::set_tolerance,
+    &NLEqn_options::tolerance, },
 
   { 0,
     { 0, 0, },

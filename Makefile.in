@@ -7,7 +7,7 @@
 # Department of Chemical Engineering
 
 TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea dlfcn \
-	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
+	readline src scripts doc check octave.info INSTALL.OCTAVE BUGS \
 	install install-strip uninstall tags TAGS dist conf-dist \
 	snapshot snapshot-version
 
@@ -39,23 +39,25 @@ binary-dist: FORCE
 
 header-msg: FORCE
 	@echo ""
-	@echo "**********************************************************"
-	@echo "*                                                        *"
-	@echo "*  To compile Octave, you will need a recent version of  *"
-	@echo "*  GNU Make.                                             *"
-	@echo "*                                                        *"
-	@echo "*  You will also need g++ and libg++.                    *"
-	@echo "*                                                        *"
-	@echo "*  This version of Octave has been developed with        *"
-	@echo "*  version 2.7.2.   You probably won't get very far      *"
-	@echo "*  with earlier versions.  Later versions may work,      *"
-	@echo "*  but C++ is still evolving, so don't be too surprised  *"
-	@echo "*  if you run into some trouble.                         *"
-	@echo "*                                                        *"
-	@echo "*  Now would be a good time to read INSTALL.OCTAVE if    *"
-	@echo "*  you have not done so already.                         *"
-	@echo "*                                                        *"
-	@echo "**********************************************************"
+	@echo "***********************************************************"
+	@echo "*                                                         *"
+	@echo "*  To compile Octave, you will need a recent version of   *"
+	@echo "*  GNU Make.                                              *"
+	@echo "*                                                         *"
+	@echo "*  You will also need g++ 2.7.2 or later.  Version 2.8.0  *"
+	@echo "*  or egcs 1.0.x should work.  Later versions may work,   *"
+	@echo "*  but C++ is still evolving, so don't be too surprised   *"
+	@echo "*  if you run into some trouble.                          *"
+	@echo "*                                                         *"
+	@echo "*  libg++ is no longer required (if you are using g++     *"
+	@echo "*  2.7.2, libstdc++ is distributed along with libg++,     *"
+	@echo "*  but for later versions, libstdc++ is distributed       *"
+	@echo "*  separately).                                           *"
+	@echo "*                                                         *"
+	@echo "*  Now would be a good time to read INSTALL.OCTAVE if     *"
+	@echo "*  you have not done so already.                          *"
+	@echo "*                                                         *"
+	@echo "***********************************************************"
 	@echo ""
 
 help: header-msg

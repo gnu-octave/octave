@@ -257,7 +257,7 @@ public:
 
   virtual ostream *output_stream (void) { return 0; }
 
-  int fileno (void);
+  int file_number (void);
 
   bool ok (void) const { return ! fail; }
 
@@ -412,7 +412,7 @@ public:
       return error (clear, err_num);
     }
 
-  int fileno (void) { return rep ? rep->fileno () : -1; }
+  int file_number (void) { return rep ? rep->file_number () : -1; }
 
   bool ok (void) const { return rep && rep->ok (); }
 

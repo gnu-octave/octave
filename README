@@ -2,7 +2,7 @@ GNU Octave -- a high-level language for numerical computations.
 
 Copyright (C) 1996, 1997 John W. Eaton
 
-Last updated: Tue May 20 14:16:45 1997
+Last updated: Fri Feb  6 02:23:36 1998
 
 Overview
 --------
@@ -41,12 +41,16 @@ requires approximately 65MB of disk space (again, considerably less if
 you don't build shared libraries or the binaries and libraries do not
 include debugging symbols).
 
-In order to build Octave, you will need a current version of g++,
-libg++, and GNU make.  Recommended versions are
+To compile Octave, you will need a recent version of GNU Make.  You
+will also need g++ 2.7.2 or later.  Version 2.8.0 or egcs 1.0.x should
+work.  Later versions may work, but C++ is still evolving, so don't be
+too surprised if you run into some trouble.
 
-  g++ 2.7.2 or 2.7.2.1
-  libg++ 2.7.1 or 2.7.2
-  make 3.75
+It is no longer necessary to have libg++, but you do need to have the
+GNU implementation of libstdc++.  If you are using g++ 2.7.2,
+libstdc++ is distributed along with libg++, but for later versions,
+libstdc++ is distributed separately.  For egcs, libstdc++ is included
+with the compiler distribution.
 
 YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
 features of GNU Make that are not present in other versions of make.
@@ -75,9 +79,9 @@ Implementation
 
 Octave is being developed with the Free Software Foundation's make,
 bison (a replacement for YACC), flex (a replacement for lex), gcc/g++,
-and libg++ on an Intel Pentium 133 system running Debian Linux/GNU.
-It should be possible to install it on any machine that runs GCC/G++.
-It may also be possible to install it using other implementations of
+and libstdc++ on an Intel Pentium II system running Linux/GNU.  It
+should be possible to install it on any machine that runs GCC/G++.  It
+may also be possible to install it using other implementations of
 these tools, but it will most certainly require much more work.  Do
 yourself a favor and get the GNU development tools, either via
 anonymous ftp from prep.ai.mit.edu or by writing the Free Software

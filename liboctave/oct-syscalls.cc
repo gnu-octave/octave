@@ -156,7 +156,7 @@ octave_syscalls::vfork (string& msg)
 #if defined (HAVE_VFORK)
   status = ::vfork ();
 #else
-  status = ::vfork ();
+  status = ::fork ();
 #endif
 
   if (status < 0)

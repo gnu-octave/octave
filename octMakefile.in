@@ -166,7 +166,9 @@ dist: dist-info-files
 	find `cat .fname` \( \( -name RCS -a -type d \) \
 	  -o \( -name CVS -a -type d \) -o \( -name OLD -a -type d \) \
 	  -o -name "=*" -o -name '*~' -o -name '#*#' -o -name config.log \
-	  -o -name config.status -o -name c-auto.h \) -print | xargs rm -rf
+	  -o -name config.status -o -name config.cache -o-name config.h \
+	  -o -name Makefile -o -name stamp-h -o -name klibtool.config \
+	  -o -name c-auto.h \) -print | xargs rm -rf
 	rm -f `cat .fname`/test/octave.test/*.m
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`

@@ -111,8 +111,8 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 
       if (! error_state)
 	{
-	  int i_old = old_stream->fileno ();
-	  int i_new = new_stream->fileno ();
+	  int i_old = old_stream->file_number ();
+	  int i_new = new_stream->file_number ();
 
 	  if (i_old >= 0 && i_new >= 0)
 	    {

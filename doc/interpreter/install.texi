@@ -59,10 +59,10 @@ probably want to use this option.  It will make your @file{.oct} files
 much smaller and on some systems it may be necessary to build shared
 libraries in order to use dynamically linked functions.
 
-You may also want to build a shared version of @code{libg++}, if your
+You may also want to build a shared version of @code{libstdc++}, if your
 system doesn't already have one.  Note that a patch is needed to build
-shared versions of version 2.7.2 of @code{libg++} and @code{libstdc++}
-on the HP-PA architecture.  You can find the patch at
+shared versions of version 2.7.2 of @code{libstdc++} on the HP-PA
+architecture.  You can find the patch at
 @url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
 
 @item --enable-dl
@@ -105,23 +105,29 @@ Gnuplot is copyrighted, but freely distributable.  The `gnu' in gnuplot
 is a coincidence---it is not related to the GNU project or the FSF in
 any but the most peripheral sense.
 
-For reading the on-line documentation, you will need the GNU Info reader
-from the GNU Texinfo package, version 3.11 or later.
+To compile Octave, you will need a recent version of GNU Make.  You
+will also need @code{g++} 2.7.2 or later.  Version 2.8.0 or @code{egcs}
+1.0.x should work.  Later versions may work, but C++ is still evolving,
+so don't be too surprised if you run into some trouble.
 
-For version @value{VERSION}, you must have the GNU C++ compiler
-(@code{gcc}) version 2.7.2 or later to compile Octave.  You will also
-need version 2.7.1 or 2.7.2 of the GNU C++ class library
-(@code{libg++}).  If you plan to modify the parser you will also need
-GNU @code{bison} and @code{flex}.  If you modify the documentation, you
-will need the @code{makeinfo} from the GNU Texinfo package.
+It is no longer necessary to have @code{libg++}, but you do need to have
+the GNU implementation of @code{libstdc++}.  If you are using @code{g++}
+2.7.2, @code{libstdc++} is distributed along with @code{libg++}, but for
+later versions, @code{libstdc++} is distributed separately.  For
+@code{egcs}, @code{libstdc++} is included with the compiler
+distribution.
 
-GNU Make, @code{gcc}, and @code{libg++}, @code{gnuplot}, @code{bison},
-@code{flex}, and Texinfo are all available from many anonymous ftp
-archives.  The primary site is @url{prep.ai.mit.edu}, but it is often
-very busy.  A list of sites that mirror the software on @code{prep} is
-available by anonymous ftp from
-@url{ftp://prep.ai.mit.edu/pub/gnu/GNUinfo/FTP}, or by fingering 
-@email{fsf@@prep.ai.mit.edu}.
+If you plan to modify the parser you will also need GNU @code{bison} and
+@code{flex}.  If you modify the documentation, you will need GNU
+Texinfo, along with the patch for the @code{makeinfo} program that is
+distributed with Octave.
+
+GNU Make, @code{gcc}, and @code{libstdc++}, @code{gnuplot},
+@code{bison}, @code{flex}, and Texinfo are all available from many
+anonymous ftp archives.  The primary site is @url{ftp.gnu.org}, but it
+is often very busy.  A list of sites that mirror the software on
+@url{ftp.gnu.org} is available by anonymous ftp from
+@url{ftp://ftp.gnu.org/pub/gnu/GNUinfo/FTP}.
 
 If you don't have a Fortran compiler, or if your Fortran compiler
 doesn't work like the traditional Unix f77, you will need to have the
@@ -228,9 +234,9 @@ For Linux/GNU systems, the source for @file{dlfcn.h} is in the
 @item
 Building @file{.oct} files doesn't work.
 
-You should probably have a shared version of @code{libg++}.  A patch is
-needed to build shared versions of version 2.7.2 of @code{libg++} and
-@code{libstdc++} on the HP-PA architecture.  You can find the patch at
+You should probably have a shared version of @code{libstdc++}.  A patch
+is needed to build shared versions of version 2.7.2 of @code{libstdc++}
+on the HP-PA architecture.  You can find the patch at
 @url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
 
 @item

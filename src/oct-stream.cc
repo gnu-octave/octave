@@ -721,7 +721,7 @@ printf_format_list::printme (void) const
 }
 
 int
-octave_base_stream::fileno (void)
+octave_base_stream::file_number (void)
 {
   // Kluge alert!
 

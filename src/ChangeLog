@@ -1,3 +1,10 @@
+Fri Feb  6 01:23:18 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_base_stream::file_number): Rename from fileno.
+	Change all uses.
+
+	* fsolve.cc (fsolve_option_table): Add missing & to function names.
+
 Thu Feb  5 02:27:18 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dirfns.cc (Fls): If first attempt at reading process output

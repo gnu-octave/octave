@@ -1,3 +1,7 @@
+Fri Feb  6 00:29:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/popen2.m: Use vfork instead of fork.
+
 Tue Feb  3 00:18:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* special-matrix/sylvester_matrix.m: Rename from hadamard.m

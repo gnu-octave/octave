@@ -63,7 +63,7 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 // vector since it will normally destroy the equally-spaced property
 // of the range elements.
 
-  if (! is_numeric_type ())
+  if (is_defined () && ! is_numeric_type ())
     force_numeric ();
 
   if (error_state)

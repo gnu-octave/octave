@@ -127,7 +127,7 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
 	      ("unrecoverable error in zungqr");
 	  else
 	    {
-	      q = ComplexMatrix (tmp_data, m, m);
+	      q = A_fact;
 	      q.resize (m, n2);
 	    }
 	}

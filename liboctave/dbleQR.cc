@@ -125,7 +125,7 @@ QR::QR (const Matrix& a, QR::type qr_type)
 	      ("unrecoverable error in dorgqr");
 	  else
 	    {
-	      q = Matrix (tmp_data, m, m);
+	      q = A_fact;
 	      q.resize (m, n2);
 	    }
 	}

@@ -165,7 +165,7 @@ SH_LIBS_TO_INSTALL = liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
 
 LIBS = @LIBS@
 
-DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links.in \
+DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TI_SRC)
@@ -253,12 +253,6 @@ check: all
 install: install-bin install-oct install-lib install-inc
 .PHONY: install
 
-mk-oct-links: mk-oct-links.in
-	sed < $< > $@.tmp \
-	  -e "s;%LN_S%;${LN_S};"
-	$(top_srcdir)/move-if-change $@.tmp $@
-	chmod a+rx mk-oct-links
-
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave$(EXE)
@@ -266,14 +260,15 @@ install-bin:
 	cd $(bindir) ; $(LN_S) octave-$(version)$(EXE) octave$(EXE)
 .PHONY: install-bin
 
-install-oct: mk-oct-links
+install-oct:
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(top_srcdir)/mkinstalldirs $(octfiledir) ; \
 	  xfiles="$(OCT_FILES)" ; \
 	  for f in $$xfiles ; do \
 	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
 	  done ; \
-	  ./mk-oct-links $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)) ; \
+	  $(srcdir)/mk-oct-links \
+	    $(octfiledir) $(addprefix $(srcdir)/, $(DLD_SRC)) ; \
 	fi
 .PHONY: install-oct
 
@@ -337,7 +332,7 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave .fname so_locations mk-oct-links
+	rm -f Makefile octave .fname so_locations
 	rm -f stamp-picdir stamp-tinst stamp-interp stamp-prereq
 	-rmdir pic
 .PHONY: distclean
@@ -358,12 +353,12 @@ conf-dist:
 	ln octave.cc Makefile.in ../`cat ../.fname`/src
 .PHONY: conf-dist
 
-bin-dist: mk-oct-links
+bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
 	  ln $(BINDISTFILES) ../`cat ../.fname`/src ; \
 	fi
 	if [ -n "$(OCT_FILES)" ]; then \
-	  ./mk-oct-links -p $(octfiledir) \
+	  $(srcdir)/mk-oct-links -p $(octfiledir) \
 	    $(addprefix $(srcdir)/, $(DLD_SRC)) \
 	    > ../`cat ../.fname`/src/links-to-make ; \
 	fi

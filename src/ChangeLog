@@ -1,5 +1,15 @@
 Wed Jan 29 08:25:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pager.cc (do_sync): Flush the cout stream after writing if
+	running in interactive or forced_interactive mode.
+
+	* mk-oct-links: Rename from mk-oct-links.in.
+	Don't use symbolic links.
+	* Makefile.in: Distribute mk-oct-links, not mk-oct-links.in
+	(mk-oct-links): Delete target.
+	(install-oct, bin-dist): Don't depend on mk-oct-links.
+	Run $(srcdir)/mk-oct-links, not ./mk-oct-links.
+
 	* qr.cc (qr): Doc fix.
 
 Tue Jan 28 10:48:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -127,7 +127,12 @@ do_sync (const char *msg, bool bypass_pager)
   if (msg && *msg)
     {
       if (bypass_pager)
-	cout << msg;
+	{
+	  cout << msg;
+
+	  if (interactive || forced_interactive)
+	    cout.flush ();
+	}
       else
 	{
 	  if (! external_pager)
@@ -167,7 +172,12 @@ do_sync (const char *msg, bool bypass_pager)
 		}
 	    }
 	  else
-	    cout << msg;
+	    {
+	      cout << msg;
+
+	      if (interactive || forced_interactive)
+		cout.flush ();
+	    }
 	}
     }
 }

@@ -2,6 +2,10 @@ Tue Feb 18 00:27:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.3 released.
 
+	* toplev.cc (system): Shift then mask exit status.
+
+	* help.cc (try_info): Shift first, then mask exit status.
+
 	* toplev.cc (octave_config_info): Handle option argument.
 
 Fri Feb 14 16:23:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -681,7 +681,7 @@ run_command_and_return_output (const string& cmd_str)
       // the command.  Otherwise, return 127 as a failure code.
 
       if ((status & 0xff) == 0)
-	status = (status & 0xff00) >> 8;
+	status = (status >> 8) & 0xff;
 
       output_buf << ends;
 
@@ -788,7 +788,7 @@ or\n\
 	      // failure code.
 
 	      if ((status & 0xff) == 0)
-		status = (status & 0xff00) >> 8;
+		status = (status >> 8) & 0xff;
 
 	      retval = (double) status;
 	    }

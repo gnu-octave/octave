@@ -560,7 +560,7 @@ try_info (const string& nm)
   octave_set_interrupt_handler (old_interrupt_handler);
 
   if ((status & 0xff) == 0)
-    status = (signed char) ((status & 0xff00) >> 8);
+    status = (status >> 8) & 0xff;
   else
     status = 127;
 

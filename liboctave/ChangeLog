@@ -1,5 +1,9 @@
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* file-ops.cc (file_ops::symlink): Cope with systems that expect
+	non-const args for symlink system call.
+	(file_ops::readlink): Likewise, for readlink.
+
 	* DASRT.cc (DASRT::integrate): Fix typo in Fortran function name.
 
 2003-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>

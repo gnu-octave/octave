@@ -87,13 +87,13 @@ extern int f77_exception_encountered;
 #define F77_CHAR_ARG(x) octave_make_cray_ftn_ch_dsc (x, strlen (x))
 #define F77_CONST_CHAR_ARG(x) \
   octave_make_cray_const_ftn_ch_dsc (x, strlen (x))
-#define F77_CHAR_ARG2(x, l) octave_make_cray_fcd (x, l)
-#define F77_CONST_CHAR_ARG2(x, l) octave_make_cray_const_fcd (x, l)
+#define F77_CHAR_ARG2(x, l) octave_make_cray_ftn_ch_dsc (x, l)
+#define F77_CONST_CHAR_ARG2(x, l) octave_make_cray_const_ftn_ch_dsc (x, l)
 #define F77_CXX_STRING_ARG(x) \
   octave_make_cray_const_ftn_ch_dsc (x.c_str (), x.length ())
 #define F77_CHAR_ARG_LEN(l)
-#define F77_CHAR_ARG_DECL octave_cray_fcd
-#define F77_CONST_CHAR_ARG_DECL octave_cray_fcd
+#define F77_CHAR_ARG_DECL octave_cray_ftn_ch_dsc
+#define F77_CONST_CHAR_ARG_DECL octave_cray_ftn_ch_dsc
 #define F77_CHAR_ARG_LEN_DECL
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;

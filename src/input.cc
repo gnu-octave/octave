@@ -20,17 +20,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-/*
-
-The 2 functions listed below were adapted from similar functions
-from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
-Free Software Foundation, Inc.
-
-  read_octal    decode_prompt_string
-
-*/
-
-// Use the GNU readline library for command line editing and hisory.
+// Get command input interactively or from files.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -20,14 +20,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-/*
-
-The function builtin_pwd adapted from a similar function from GNU
-Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991 Free
-Software Foundation, Inc.
-
-*/
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

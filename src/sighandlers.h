@@ -20,6 +20,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+/*
+
+The signal blocking macros defined below were adapted from similar
+functions from GNU Bash, the Bourne Again SHell, copyright (C) 1994
+Free Software Foundation, Inc.
+
+*/
+
 // This file should always be included after config.h!
 
 #if !defined (octave_sighandlers_h)
@@ -36,8 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef BADSIG
 #define BADSIG (RETSIGTYPE (*)(int))-1
 #endif
-
-// The following signal blocking stuff is stolen from bash:
 
 #define BLOCK_SIGNAL(sig, nvar, ovar) \
   do \

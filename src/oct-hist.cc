@@ -18,6 +18,10 @@ You should have received a copy of the GNU General Public License
 along with Octave; see the file COPYING.  If not, write to the Free
 Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+*/
+
+/*
+
 The functions listed below were adapted from similar functions from
 GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991 Free
 Software Foundation, Inc.

@@ -39,8 +39,9 @@ function fmt = __pltopt1__ (caller, opt)
   set_boxes = 0;
   set_yerrbars = 0;
   set_xerrbars = 0;
-  set_key = 0;
   set_linestyle = "solid";
+
+  key_title = "";
 
   more_opts = 1;
 
@@ -157,9 +158,7 @@ function fmt = __pltopt1__ (caller, opt)
       set_symbol = 1;
       symbol = "4";
     elseif (strcmp (char, ";"))  # title mode.
-      set_key = 1;
       working = 1;
-      key_title = "";
       while (working)
         if (max (size (opt)) > 1)
           char = opt(1);
@@ -244,7 +243,6 @@ function fmt = __pltopt1__ (caller, opt)
     fmt = strcat (fmt, " 1 ", symbol);
   endif
 
-  if (set_key)
-    fmt = sprintf ("%s %s \"%s\" ", fmt, TITLE, key_title);
-  endif
+  fmt = sprintf ("%s %s \"%s\" ", fmt, TITLE, key_title);
+
 endfunction

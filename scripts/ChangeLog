@@ -1,3 +1,8 @@
+2004-03-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__pltopt1__.m: Always add title clause to plot command with
+	default of "" (so it is off unless explicitly set by the user).
+
 2004-03-12  Stefan van der Walt  <stefan@sun.ac.za>
 
 	* image/imshow.m: Accept "truesize" argument.

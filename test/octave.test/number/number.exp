@@ -1,0 +1,207 @@
+set test is_matrix-1
+set prog_output "ans = 1"
+do_test is_matrix-1.m
+
+set test is_matrix-2
+set prog_output "ans = 1"
+do_test is_matrix-2.m
+
+set test is_matrix-3
+set prog_output "ans = 1"
+do_test is_matrix-3.m
+
+set test is_matrix-4
+set prog_output "ans = 1"
+do_test is_matrix-4.m
+
+set test is_matrix-5
+set prog_output "ans = 1"
+do_test is_matrix-5.m
+
+set test is_matrix-6
+set prog_output "ans = 1"
+do_test is_matrix-6.m
+
+set test is_matrix-7
+set prog_output "ans = 1"
+do_test is_matrix-7.m
+
+set test is_matrix-8
+set prog_output "ans = 0"
+do_test is_matrix-8.m
+
+set test is_matrix-9
+set prog_output "error:.*"
+do_test is_matrix-9.m
+
+set test is_matrix-10
+set prog_output "error:.*"
+do_test is_matrix-10.m
+
+set test is_vector-1
+set prog_output "ans = 1"
+do_test is_vector-1.m
+
+set test is_vector-2
+set prog_output "ans = 1"
+do_test is_vector-2.m
+
+set test is_vector-3
+set prog_output "ans = 0"
+do_test is_vector-3.m
+
+set test is_vector-4
+set prog_output "ans = 0"
+do_test is_vector-4.m
+
+set test is_vector-5
+set prog_output "ans = 1"
+do_test is_vector-5.m
+
+set test is_vector-6
+set prog_output "ans = 1"
+do_test is_vector-6.m
+
+set test is_vector-7
+set prog_output "ans = 0"
+do_test is_vector-7.m
+
+set test is_vector-8
+set prog_output "ans = 0"
+do_test is_vector-8.m
+
+set test is_vector-9
+set prog_output "error:.*"
+do_test is_vector-9.m
+
+set test is_vector-10
+set prog_output "error:.*"
+do_test is_vector-10.m
+
+set test is_scalar-1
+set prog_output "ans = 1"
+do_test is_scalar-1.m
+
+set test is_scalar-2
+set prog_output "ans = 0"
+do_test is_scalar-2.m
+
+set test is_scalar-3
+set prog_output "ans = 0"
+do_test is_scalar-3.m
+
+set test is_scalar-4
+set prog_output "ans = 0"
+do_test is_scalar-4.m
+
+set test is_scalar-5
+set prog_output "ans = 1"
+do_test is_scalar-5.m
+
+set test is_scalar-6
+set prog_output "ans = 0"
+do_test is_scalar-6.m
+
+set test is_scalar-7
+set prog_output "ans = 0"
+do_test is_scalar-7.m
+
+set test is_scalar-8
+set prog_output "ans = 0"
+do_test is_scalar-8.m
+
+set test is_scalar-9
+set prog_output "error:.*"
+do_test is_scalar-9.m
+
+set test is_scalar-10
+set prog_output "error:.*"
+do_test is_scalar-10.m
+
+set test is_square-1
+set prog_output "ans = 1"
+do_test is_square-1.m
+
+set test is_square-2
+set prog_output "ans = 0"
+do_test is_square-2.m
+
+set test is_square-3
+set prog_output "ans = 0"
+do_test is_square-3.m
+
+set test is_square-4
+set prog_output "ans = 1"
+do_test is_square-4.m
+
+set test is_square-5
+set prog_output "ans = 1"
+do_test is_square-5.m
+
+set test is_square-6
+set prog_output "ans = 0"
+do_test is_square-6.m
+
+set test is_square-7
+set prog_output "ans = 1"
+do_test is_square-7.m
+
+set test is_square-8
+set prog_output "ans = 0"
+do_test is_square-8.m
+
+set test is_square-9
+set prog_output "ans = 0"
+do_test is_square-9.m
+
+set test is_square-10
+set prog_output "error:.*"
+do_test is_square-10.m
+
+set test is_square-11
+set prog_output "error:.*"
+do_test is_square-11.m
+
+set test is_symmetric-1
+set prog_output "ans = 1"
+do_test is_symmetric-1.m
+
+set test is_symmetric-2
+set prog_output "ans = 0"
+do_test is_symmetric-2.m
+
+set test is_symmetric-3
+set prog_output "ans = 0"
+do_test is_symmetric-3.m
+
+set test is_symmetric-4
+set prog_output "ans = 1"
+do_test is_symmetric-4.m
+
+set test is_symmetric-5
+set prog_output "ans = 1"
+do_test is_symmetric-5.m
+
+set test is_symmetric-6
+set prog_output "ans = 0"
+do_test is_symmetric-6.m
+
+set test is_symmetric-7
+set prog_output "ans = 1"
+do_test is_symmetric-7.m
+
+set test is_symmetric-8
+set prog_output "ans = 0"
+do_test is_symmetric-8.m
+
+set test is_symmetric-9
+set prog_output "ans = 1"
+do_test is_symmetric-9.m
+
+set test is_symmetric-10
+set prog_output "error:.*"
+do_test is_symmetric-10.m
+
+set test is_symmetric-11
+set prog_output "error:.*"
+do_test is_symmetric-11.m

@@ -1,14 +1,16 @@
 ## The following functions need to have tests written for them:
 
 # disp
-# save
-# load
 # fputs
 # fgetl
 # fgets
 # fprintf
 # fscanf
 # ferror
+
+set test load-save-1
+set prog_output "^ans = 1"
+do_test load-save.m
 
 set test puts-1
 set prog_output "foo\nans = 0"

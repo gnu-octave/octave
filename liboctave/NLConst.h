@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_NLConst_h)
 #define octave_NLConst_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 class ColumnVector;
 
 #include "Bounds.h"

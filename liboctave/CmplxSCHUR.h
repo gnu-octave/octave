@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexSCHUR_h)
 #define octave_ComplexSCHUR_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 class ostream;
 
 #include "CMatrix.h"

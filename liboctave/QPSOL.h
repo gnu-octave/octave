@@ -26,10 +26,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifndef QPSOL_MISSING
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include "dMatrix.h"
 #include "dColVector.h"
 #include "QP.h"

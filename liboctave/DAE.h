@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DAE_h)
 #define octave_DAE_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include "dColVector.h"
 #include "ODE.h"
 #include "DAEFunc.h"

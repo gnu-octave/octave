@@ -26,10 +26,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifndef NPSOL_MISSING
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include "dColVector.h"
 #include "NLP.h"
 

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Matrix_int_h)
 #define octave_Matrix_int_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 // For FILE...
 #include <stdio.h>
 

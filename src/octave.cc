@@ -74,6 +74,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include <version.h>
 
+// Kluge.
+extern "C" void F77_FUNC (xerbla, XERBLA) (const char *, int, long);
+
 extern void install_builtins (void);
 
 #if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
@@ -374,6 +377,14 @@ octave_main (int argc, char **argv)
   // defaults by calling bind_builtin_variable.
 
   sysdep_init ();
+
+  // The idea here is to force xerbla to be referenced so that we will
+  // link to our own version instead of the one provided by the BLAS
+  // library.  But octave_NaN should never be -1, so we should never
+  // actually call xerbla.
+
+  if (octave_NaN == -1)
+    F77_FUNC (xerbla, XERBLA) ("octave", 13, 6L);
 
   initialize_error_handlers ();
 

@@ -227,15 +227,17 @@ all: octave$(EXEEXT) stamp-oct-links DOCSTRINGS
 objects: $(OBJECTS)
 
 XERBLA = ../libcruft/blas-xtra/xerbla.o
+ifdef FPICFLAG
+  PIC_XERBLA = ../libcruft/blas-xtra/pic/xerbla.o
+else
+  PIC_XERBLA = $(XERBLA)
+endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
     LIBRARIES = liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT_VER)
   else
     LIBRARIES = liboctinterp.$(SHLEXT_VER)
-    ifdef FPICFLAG
-      XERBLA = ../libcruft/blas-xtra/pic/xerbla.o
-    endif
   endif
 else
   ifeq ($(STATIC_LIBS), true)
@@ -243,14 +245,13 @@ else
   else
     ## This is not going to work, but hey, you asked for it...
     LIBRARIES =
-    XERBLA =
   endif
 endif
 
 libraries: $(LIBRARIES)
 .PHONY: libraries
 
-liboctinterp.$(LIBEXT): $(OBJECTS)
+liboctinterp.$(LIBEXT): $(OBJECTS) $(XERBLA)
 	rm -f $@
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
@@ -259,7 +260,7 @@ liboctinterp.$(SHLEXT_VER): liboctinterp.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-liboctinterp.$(SHLEXT): $(PICOBJ)
+liboctinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
@@ -275,7 +276,7 @@ stamp-prereq: defaults.h oct-conf.h $(OPT_HANDLERS)
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o $@ \
-	main.o $(XERBLA) $(DLD_STATIC_OBJ) \
+	main.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBS) $(FLIBS)

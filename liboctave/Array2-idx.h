@@ -334,6 +334,22 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
     }
 }
 
+#define MAYBE_RESIZE_LHS \
+  do \
+    { \
+      if (liboctave_rre_flag) \
+	{ \
+	  int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1; \
+	  int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1; \
+ \
+	  int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
+	  int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
+ \
+	  lhs.resize (new_nr, new_nc, 0.0); \
+	} \
+    } \
+  while (0)
+
 template <class LT, class RT>
 int
 assign (Array2<LT>& lhs, const Array2<RT>& rhs)
@@ -378,19 +394,10 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	    }
 	  else
 	    {
-	      if (liboctave_rre_flag)
-		{
-		  int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1;
-		  int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1;
-
-		  int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr;
-		  int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc;
-
-		  lhs.resize (new_nr, new_nc, 0.0);
-		}
-
 	      if (rhs_nr == 1 && rhs_nc == 1 && n > 0 && m > 0)
 		{
+		  MAYBE_RESIZE_LHS;
+
 		  RT scalar = rhs.elem (0, 0);
 
 		  for (int j = 0; j < m; j++)
@@ -405,6 +412,8 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 		}
 	      else if (n == rhs_nr && m == rhs_nc)
 		{
+		  MAYBE_RESIZE_LHS;
+
 		  for (int j = 0; j < m; j++)
 		    {
 		      int jj = idx_j.elem (j);

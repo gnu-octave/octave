@@ -1,3 +1,8 @@
+Fri Dec 13 02:38:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.cc (octave_value::convert_and_assign): Preserve lhs value if
+	assignment fails.
+
 Wed Dec 11 12:33:16 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-plot.cc (GPLOT_CMD_END): Don't put semicolons at the end of

@@ -590,18 +590,23 @@ octave_value::convert_and_assign (const octave_value_list& idx,
 
 	  if (tmp)
 	    {
-	      if (tmp != rep)
+	      octave_value *old_rep = rep;
+	      rep = tmp;
+	      rep->count = 1;
+
+	      assignment_ok = try_assignment (idx, rhs);
+
+	      if (! assignment_ok && old_rep)
 		{
 		  if (--rep->count == 0)
 		    delete rep;
 
-		  rep = tmp;
-		  rep->count = 1;
+		  rep = old_rep;
+		  old_rep = 0;
 		}
-	      else
-		delete tmp;
 
-	      assignment_ok = try_assignment (idx, rhs);
+	      if (old_rep && --old_rep->count == 0)
+		delete old_rep;
 	    }
 	  else
 	    gripe_conversion_failed (type_name (), rhs.type_name ());

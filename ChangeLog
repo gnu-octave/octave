@@ -2,6 +2,7 @@
 
 	* Makeconf.in (MKOCTFILE_INCFLAGS): New macro.
 	(do-subst-conf-vals): Substitute it.
+	* mkoctfile.in: Set INCFLAGS from OCTAVE_CONF_MKOCTFILE_INCFLAGS.
 
 	* mkoctfile.in: Fix names in substititions.
 	* octave-bug.in: Likewise.

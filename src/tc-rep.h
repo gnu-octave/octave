@@ -209,6 +209,7 @@ private:
   void maybe_mutate (void);
 
   void print (void);
+  void print (ostream& os);
 
   void print_code (ostream& os);
 

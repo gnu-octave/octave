@@ -92,6 +92,9 @@ Software Foundation, Inc.
 extern "C"
 {
 #include <readline/readline.h>
+
+extern char *term_clrpag;
+extern void _rl_output_character_function ();
 }
 
 #ifndef MAXPATHLEN
@@ -203,7 +206,18 @@ builtin_clc (const tree_constant *args, int nargin, int nargout)
 {
   rl_beg_of_line ();
   rl_kill_line (1);
-  rl_clear_screen ();
+
+#if ! defined (_GO32_)
+  if (term_clrpag)
+    tputs (term_clrpag, 1, _rl_output_character_function);
+  else
+    crlf ();
+#else
+  crlf ();
+#endif
+
+  fflush (rl_outstream);
+
   return NULL_TREE_CONST;
 }
 
@@ -1763,7 +1777,7 @@ builtin_va_arg (const tree_constant *args, int nargin, int nargout)
 	  if (curr_function->takes_varargs ())
 	    {
 	      retval = new tree_constant [2];
-	      retval[0] = curr_function->va_arg ();
+	      retval[0] = curr_function->octave_va_arg ();
 	    }
 	  else
 	    {
@@ -1789,7 +1803,7 @@ builtin_va_start (const tree_constant *args, int nargin, int nargout)
       if (curr_function != (tree_function *) NULL)
 	{
 	  if (curr_function->takes_varargs ())
-	    curr_function->va_start ();
+	    curr_function->octave_va_start ();
 	  else
 	    {
 	      error ("va_start only valid within function taking variable");

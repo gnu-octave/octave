@@ -1,3 +1,8 @@
+2004-02-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (execute_startup_files): Don't find current directory
+	for absolute name of local_rc until after executing home_rc.
+
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (input_event_hook): Return type is now int.  Return 0.

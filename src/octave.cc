@@ -235,7 +235,7 @@ execute_startup_files (void)
       // $OCTAVE_INITFILE.  If $OCTAVE_INITFILE is not set, .octaverc
       // is assumed.
 
-      int home_rc_already_executed = 0;
+      bool home_rc_already_executed = false;
 
       std::string initfile = octave_env::getenv ("OCTAVE_INITFILE");
 
@@ -244,9 +244,9 @@ execute_startup_files (void)
 
       std::string home_dir = octave_env::get_home_directory ();
 
-      std::string home_rc = home_dir + file_ops::dir_sep_str + initfile;
-      std::string local_rc
-	= octave_env::getcwd () + file_ops::dir_sep_str + initfile;
+      std::string home_rc = octave_env::make_absolute (initfile, home_dir);
+
+      std::string local_rc;
 
       if (! home_dir.empty ())
 	{
@@ -258,15 +258,31 @@ execute_startup_files (void)
 
 	  if (fs_home_rc)
 	    {
+	      // We want to check for curr_dir after executing home_rc
+	      // because doing that may change the working directory.
+
+	      std::string curr_dir = octave_env::getcwd ();
+
+	      local_rc = octave_env::make_absolute (initfile, curr_dir);
+
 	      file_stat fs_dot_rc (local_rc);
 
 	      if (fs_dot_rc && fs_home_rc.ino () == fs_dot_rc.ino ())
-		home_rc_already_executed = 1;
+		home_rc_already_executed = true;
 	    }
 	}
 
       if (! home_rc_already_executed)
-	parse_and_execute (local_rc, verbose);
+	{
+	  if (local_rc.empty ())
+	    {
+	      std::string curr_dir = octave_env::getcwd ();
+
+	      local_rc = octave_env::make_absolute (initfile, curr_dir);
+	    }
+
+	  parse_and_execute (local_rc, verbose);
+	}
     }
 
   unwind_protect::run_frame ("execute_startup_files");

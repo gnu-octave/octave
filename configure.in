@@ -21,10 +21,10 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.29 $)dnl
+AC_REVISION($Revision: 1.30 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
-AC_CONFIG_HEADER(config.h)dnl
+AC_CONFIG_HEADER(config.h)
 dnl
 AC_DEFINE(OCTAVE_SOURCE, 1)dnl
 dnl
@@ -72,6 +72,22 @@ dnl
 dnl Allow the user to experiment with dynamic linking using GNU dld.
 dnl
 AC_ENABLE(dld, use_dld=true, use_dld=false)dnl
+dnl
+dnl Makes Octave look for info and function files in the same
+dnl directory tree as the sources
+dnl
+AC_ENABLE(run-in-place, run_in_place=true, run_in_place=false)dnl
+if test -n "$prefix"
+  AC_DEFINE(OCTAVE_HOME, $prefix)dnl
+else
+  AC_DEFINE(OCTAVE_HOME, /usr/local)dnl
+fi
+if $run_in_place
+  AC_DEFINE(RUN_IN_PLACE, 1)dnl
+  AC_DEFINE(OCTAVE_HOME, $srcdir)dnl
+  AC_DEFINE(OCTAVE_LIB_DIR, $srcdir/scripts)dnl
+  AC_DEFINE(OCTAVE_INFO_DIR, $srcdir/doc)dnl
+fi
 dnl
 DYNAMIC_LD_OBJ=
 DLD_DIR=

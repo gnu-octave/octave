@@ -57,6 +57,18 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 }
 
 void
+octave_lvalue::set_index (const octave_value_list& i)
+{
+  if (! index_set)
+    {
+      idx = i;
+      index_set = true;
+    }
+  else
+    error ("invalid index expression in assignment");
+}
+
+void
 octave_lvalue::do_unary_op (octave_value::unary_op op)
 {
   octave_value saved_val;

@@ -37,15 +37,15 @@ octave_lvalue
 public:
 
   octave_lvalue (octave_value *v = 0, symbol_record::change_function f = 0)
-    : val (v), idx (), chg_fcn (f), struct_elt_name () { }
+    : val (v), idx (), chg_fcn (f), struct_elt_name (), index_set (false) { }
 
   octave_lvalue (octave_value *v, const string& nm,
 		 symbol_record::change_function f = 0)
-    : val (v), idx (), chg_fcn (f), struct_elt_name (nm) { }
+    : val (v), idx (), chg_fcn (f), struct_elt_name (nm), index_set (false) { }
 
   octave_lvalue (const octave_lvalue& vr)
     : val (vr.val), idx (vr.idx), chg_fcn (vr.chg_fcn),
-      struct_elt_name (vr.struct_elt_name) { }
+      struct_elt_name (vr.struct_elt_name), index_set (vr.index_set) { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
     {
@@ -55,6 +55,7 @@ public:
 	  idx = vr.idx;
 	  chg_fcn = vr.chg_fcn;
 	  struct_elt_name = vr.struct_elt_name;
+	  index_set = vr.index_set;
 	}
 
       return *this;
@@ -78,7 +79,7 @@ public:
       return val->struct_elt_ref (nm);
     }
 
-  void set_index (const octave_value_list& i) { idx = i; }
+  void set_index (const octave_value_list& i);
 
   void clear_index (void) { idx = octave_value_list (); }
 
@@ -104,6 +105,8 @@ private:
   symbol_record::change_function chg_fcn;
 
   string struct_elt_name;
+
+  bool index_set;
 };
 
 #endif

@@ -1,5 +1,7 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-procbuf.h: Include fstream, not streambuf.h.
+
 	* load-save.cc (Fsave): Call pubseekoff instead of seekoff.	
 	* oct-strstrm.cc (octave_base_strstream::tell): Likewise.
 	(octave_base_strstream::seek): Likewise.

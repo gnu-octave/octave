@@ -66,7 +66,7 @@ octave_fstream::seek (std::streamoff offset, std::ios::seek_dir origin)
     {
       fs.clear ();
 
-      filebuf *fb = fs.rdbuf ();
+      std::filebuf *fb = fs.rdbuf ();
 
       if (fb)
 	{
@@ -87,7 +87,7 @@ octave_fstream::tell (void) const
 
   if (fs)
     {
-      filebuf *fb = fs.rdbuf ();
+      std::filebuf *fb = fs.rdbuf ();
       retval = static_cast<long> (fb->seekoff (0, std::ios::cur));
     }
 

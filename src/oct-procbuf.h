@@ -26,22 +26,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_procbuf_h)
 #define octave_octave_procbuf_h 1
 
-#include <streambuf.h>
+#include <fstream>
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 
 class
-octave_procbuf : public filebuf
+octave_procbuf : public std::filebuf
 {
 public:
 
   octave_procbuf (void)
-    : filebuf (), wstatus (-1), proc_pid (-1), next (0) { }
+    : std::filebuf (), wstatus (-1), proc_pid (-1), next (0) { }
 
   octave_procbuf (const char *command, int mode)
-    : filebuf (), wstatus (-1), proc_pid (-1), next (0)
+    : std::filebuf (), wstatus (-1), proc_pid (-1), next (0)
   { open (command, mode); }
 
   ~octave_procbuf (void) { close (); }
@@ -49,7 +49,7 @@ public:
   octave_procbuf *open (const char *command, int mode);
 
   octave_procbuf *close (void)
-    { return static_cast<octave_procbuf *> (filebuf::close ()); }
+    { return static_cast<octave_procbuf *> (std::filebuf::close ()); }
 
   virtual int sys_close (void);
 

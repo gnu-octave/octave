@@ -1971,7 +1971,7 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
     case EXPR_OR:
       t = octave_value::op_el_or;
       if (Vwarn_precedence_change
-          && op1->paren_count () == 0 && op2->is_binary_expression ())
+          && op2->paren_count () == 0 && op2->is_binary_expression ())
         {
 	  tree_binary_expression *e
 	    = dynamic_cast<tree_binary_expression *> (op2);
@@ -2012,7 +2012,7 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
     case EXPR_OR_OR:
       t = tree_boolean_expression::bool_or;
       if (Vwarn_precedence_change
-          && op1->paren_count () == 0 && op2->is_boolean_expression ())
+          && op2->paren_count () == 0 && op2->is_boolean_expression ())
         {
 	  tree_boolean_expression *e
 	    = dynamic_cast<tree_boolean_expression *> (op2);

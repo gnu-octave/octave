@@ -408,6 +408,24 @@ xisxdigit (int c)
   return isxdigit (c);
 }
 
+int
+xtoascii (int c)
+{
+  return toascii (c);
+}
+
+int
+xtolower (int c)
+{
+  return tolower (c);
+}
+
+int
+xtoupper (int c)
+{
+  return toupper (c);
+}
+
 void
 install_mapper_functions (void)
 {
@@ -548,6 +566,15 @@ install_mapper_functions (void)
 
   DEFUN_MAPPER (tanh, 0, tanh, 0, tanh, 0.0, 0.0, 0,
     "tanh (X): compute tanh (X) for each element of X");
+
+  DEFUN_MAPPER (toascii, xtoascii, 0, 0, 0, 0.0, 0.0, 1,
+    "toascii (STRING): return ASCII representation of STRING in a matrix");
+
+  DEFUN_MAPPER (tolower, xtolower, 0, 0, 0, 0.0, 0.0, 2,
+    "tolower (STRING): convert upper case characters to lower case in STRING");
+
+  DEFUN_MAPPER (toupper, xtoupper, 0, 0, 0, 0.0, 0.0, 2,
+    "toupper (STRING): convert lower case characters to upper case in STRING");
 
   DEFALIAS (gammaln, lgamma);
 }

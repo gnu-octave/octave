@@ -66,32 +66,6 @@ DEFUN (setstr, args, ,
   return retval;
 }
 
-DEFUN (toascii, args, ,
-  "toascii (STRING): return ASCII representation of STRING in a matrix")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_string ())
-	{
-	  charMatrix chm = args(0).all_strings ();
-
-	  retval = Matrix (chm);
-	}
-      else
-	gripe_wrong_type_arg ("toascii", arg);
-    }
-  else
-    print_usage ("toascii");
-
-  return retval;
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -658,17 +658,54 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 	      int nr = chm.rows ();
 	      int nc = chm.cols ();
 
-	      Matrix result (nr, nc);
+	      switch (m_fcn.flag)
+		{
+		case 0:
+		  {
+		    Matrix result (nr, nc);
 
-	      // islapha and friends can return any nonzero value to
-	      // mean true.
+		    // islapha and friends can return any nonzero value
+		    // to mean true, but we want to return 1 or 0 only.
 
-	      for (int j = 0; j < nc; j++)
-		for (int i = 0; i < nr; i++)
-		  result.elem (i, j)
-		    = (*m_fcn.ch_mapper) (chm.elem (i, j)) ? 1 : 0;
+		    for (int j = 0; j < nc; j++)
+		      for (int i = 0; i < nr; i++)
+			result.elem (i, j)
+			  = (*m_fcn.ch_mapper) (chm.elem (i, j)) ? 1 : 0;
 
-	      retval = result;
+		    retval = result;
+		  }
+		  break;
+
+		case 1:
+		  {
+		    Matrix result (nr, nc);
+
+		    for (int j = 0; j < nc; j++)
+		      for (int i = 0; i < nr; i++)
+			result.elem (i, j)
+			  = (*m_fcn.ch_mapper) (chm.elem (i, j));
+
+		    retval = result;
+		  }
+		  break;
+
+		case 2:
+		  {
+		    charMatrix result (nr, nc);
+
+		    for (int j = 0; j < nc; j++)
+		      for (int i = 0; i < nr; i++)
+			result.elem (i, j)
+			  = (*m_fcn.ch_mapper) (chm.elem (i, j));
+
+		    retval = octave_value (result, true);
+		  }
+		  break;
+
+		default:
+		  panic_impossible ();
+		  break;
+		}
 	    }
 	}
     }
@@ -680,7 +717,7 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 	    {
 	      double d = arg.double_value ();
 
-	      if (m_fcn.can_return_complex_for_real_arg
+	      if (m_fcn.flag
 		  && (d < m_fcn.lower_limit || d > m_fcn.upper_limit))
 		{
 		  if (m_fcn.c_c_mapper)
@@ -702,7 +739,7 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 	      if (error_state)
 		return retval;
 
-	      if (m_fcn.can_return_complex_for_real_arg
+	      if (m_fcn.flag
 		  && (any_element_less_than (m, m_fcn.lower_limit)
 		      || any_element_greater_than (m, m_fcn.upper_limit)))
 		{

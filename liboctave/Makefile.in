@@ -99,9 +99,17 @@ stamp-prereq: safe-stat.h safe-lstat.h
 	touch stamp-prereq
 
 stamp-picdir:
-	if [ -n "$(CXXPICFLAG)" ]; then \
-	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
-	else true; fi
+	if [ "$(SHARED_LIBS)" = true ]; then \
+	  if [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
+	    if [ -d pic ]; then \
+	      true ; \
+	    else \
+	      mkdir pic ; \
+	    fi ; \
+	  fi ; \
+	else \
+	  true ; \
+	fi
 	touch stamp-picdir
 
 liboctave.a: $(OBJECTS)
@@ -111,8 +119,10 @@ liboctave.a: $(OBJECTS)
 stamp-shared: $(PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CXX) -shared -o liboctave.$(SHLEXT) $(PICOBJ) \
-	  $(LIBOCTAVE_LFLAGS) $(LIBOCTAVE_LIBS); \
-	else true; fi
+	    $(LIBOCTAVE_LFLAGS) $(LIBOCTAVE_LIBS) ; \
+	else \
+	  true ; \
+	fi
 	touch stamp-shared
 
 extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'

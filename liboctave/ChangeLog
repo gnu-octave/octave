@@ -1,5 +1,8 @@
 Tue Aug 20 17:38:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (stamp-picdir): Only create a pic subdirectory if
+	SHARED_LIBS is true AND CPICFLAG or CXXPICFLAG is not empty.
+
 	* idx-vector.cc (IDX_VEC_REP::is_colon_equiv): Rename arg sort to
 	sort_uniq.  If sort_uniq is nonzero, sort the elements and make
 	them uniq.

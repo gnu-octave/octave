@@ -1,5 +1,11 @@
 Tue Aug 20 17:41:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in: Only define pattern rules for making .oct files if
+	OCTAVE_LITE is true.
+	Only add pic/ to $(TI_OBJ) if $(SHARED_LIBS) is true.
+	(stamp-picdir): Only create a pic subdirectory if SHARED_LIBS or
+	OCTAVE_LITE is true AND CPICFLAG or CXXPICFLAG is not empty.
+
 	* minmax.cc (Fmin, Fmax): Deal with changes to Matrix class
 	min/max methods.
 

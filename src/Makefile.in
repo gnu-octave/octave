@@ -44,18 +44,20 @@ XALL_CXXFLAGS = $(subst -fno-implicit-templates, , $(XALL_CXXFLAGS_1))
 
 # How to make a .oct file from a .o file:
 
-ifdef CXXPICFLAG
-%.oct : pic/%.o
-	$(CXX) -shared -o $@ $< \
-	  $(OCTAVE_LFLAGS) \
-	  $(OCTAVE_LIBS) \
-	  $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
-else
-%.oct : %.o
-	$(CXX) -shared -o $@ $< \
-	  $(OCTAVE_LFLAGS) \
-	  $(OCTAVE_LIBS) \
-	  $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+ifeq ($(OCTAVE_LITE), true)
+  ifdef CXXPICFLAG
+    %.oct : pic/%.o
+	  $(CXX) -shared -o $@ $< \
+	    $(OCTAVE_LFLAGS) \
+	    $(OCTAVE_LIBS) \
+	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+  else
+    %.oct : %.o
+	  $(CXX) -shared -o $@ $< \
+	    $(OCTAVE_LFLAGS) \
+	    $(OCTAVE_LIBS) \
+	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+  endif
 endif
 
 DLD_SRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
@@ -93,7 +95,10 @@ INCLUDES := arith-ops.h builtins.h data.h defun.h defun-dld.h \
 	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
 	unwind-prot.h utils.h variables.h version.h \
-	xdiv.h xpow.h Map.h SLStack.h Stack.h
+	xdiv.h xpow.h Map.h SLStack.h Stack.h \
+	matrix.h complex-matrix.h char-matrix.h struct.h scalar.h \
+	range.h complex.h all-va-args.h magic-colon.h base-value.h \
+	char-matrix-str.h value.h
 
 TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
@@ -104,8 +109,10 @@ TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
 TI_PICOBJ := $(TI_OBJ)
-ifdef CXXPICFLAG
-  TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
+ifeq ($(SHARED_LIBS), true)
+  ifdef CXXPICFLAG
+    TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
+  endif
 endif
 
 SOURCES := arith-ops.cc data.cc defaults.cc dirfns.cc dynamic-ld.cc \
@@ -119,8 +126,10 @@ SOURCES := arith-ops.cc data.cc defaults.cc dirfns.cc dynamic-ld.cc \
 	pt-mvr-base.cc pt-mvr.cc pt-plot.cc pt-pr-code.cc resource.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
 	symtab.cc syscalls.cc sysdep.cc timefns.cc token.cc toplev.cc \
-	unwind-prot.cc utils.cc variables.cc xdiv.cc \
-	xpow.cc
+	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
+	base-value.cc char-matrix.cc matrix.cc complex-matrix.cc \
+	range.cc scalar.cc complex.cc char-matrix-str.cc struct.cc \
+	value.cc
 
 TEMPLATE_SRC = Map.cc SLStack.cc
 
@@ -185,9 +194,17 @@ octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
 	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
 
 stamp-picdir:
-	if [ -n "$(CPICFLAG)" ]; then \
-	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
-	else true; fi
+	if [ "$(SHARED_LIBS)" = true ] || [ "$(OCTAVE_LITE)" = true ]; then \
+	  if [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
+	    if [ -d pic ]; then \
+	      true ; \
+	    else \
+	      mkdir pic ; \
+	    fi ; \
+	  fi ; \
+	else \
+	  true ; \
+	fi
 	touch stamp-picdir
 
 libraries: liboctinterp.a libtinst.a stamp-interp stamp-tinst
@@ -205,8 +222,10 @@ stamp-interp: $(PICOBJ)
 	  $(CXX) -shared -o liboctinterp.$(SHLEXT) $(PICOBJ) \
 	    $(OCTAVE_LFLAGS) \
 	    -loctave -lcruft -ltinst -lreadline -lkpathsea \
-	    $(SH_TERMLIBS) $(SH_LIBS) -lg++; \
-	else true; fi
+	    $(SH_TERMLIBS) $(SH_LIBS) -lg++ ; \
+	else \
+	  true ; \
+	fi
 	touch stamp-interp
 
 stamp-tinst: $(TI_PICOBJ)
@@ -214,8 +233,10 @@ stamp-tinst: $(TI_PICOBJ)
 	  $(CXX) -shared -o libtinst.$(SHLEXT) $(TI_PICOBJ) \
 	    $(OCTAVE_LFLAGS) \
 	    -loctinterp -loctave -lcruft -lreadline -lkpathsea \
-	    $(SH_TERMLIBS) $(SH_LIBS) -lg++; \
-	else true; fi
+	    $(SH_TERMLIBS) $(SH_LIBS) -lg++ ; \
+	else \
+	  true ; \
+	fi
 	touch stamp-tinst
 
 builtins.cc: $(DEF_FILES) mkbuiltins

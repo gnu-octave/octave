@@ -57,17 +57,8 @@ double octave_NaN;
 // Octave's idea of a missing value.
 double octave_NA;
 
-static int lo_ieee_hw;
-static int lo_ieee_lw;
-
-typedef union
-{
-  double value;
-  unsigned int word[2];
-} lo_ieee_double;
-
-#define LO_IEEE_NA_HW 0x7ff00000
-#define LO_IEEE_NA_LW 1954
+int lo_ieee_hw;
+int lo_ieee_lw;
 
 void
 octave_ieee_init (void)
@@ -128,20 +119,6 @@ octave_ieee_init (void)
   octave_NA = t.value;
 
 #endif
-}
-
-int
-lo_ieee_is_NA (double x)
-{
-  lo_ieee_double t;
-  t.value = x;
-  return (lo_ieee_isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
-}
-
-int
-lo_ieee_is_NaN_or_NA (double x)
-{
-  return lo_ieee_isnan (x);
 }
 
 /*

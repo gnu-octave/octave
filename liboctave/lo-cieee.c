@@ -72,7 +72,7 @@ int
 lo_ieee_isnan (double x)
 {
 #if defined (HAVE_ISNAN)
-  return lo_ieee_isnan (x) ? ! lo_ieee_is_NA (x) : 0;
+  return isnan (x) ? ! lo_ieee_is_NA (x) : 0;
 #else
   return 0;
 #endif
@@ -100,6 +100,20 @@ lo_ieee_isinf (double x)
 #else
   return 0;
 #endif
+}
+
+int
+lo_ieee_is_NA (double x)
+{
+  lo_ieee_double t;
+  t.value = x;
+  return (isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
+}
+
+int
+lo_ieee_is_NaN_or_NA (double x)
+{
+  return lo_ieee_isnan (x);
 }
 
 /*

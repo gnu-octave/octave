@@ -27,6 +27,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C" {
 #endif
 
+extern int lo_ieee_hw;
+extern int lo_ieee_lw;
+
+typedef union
+{
+  double value;
+  unsigned int word[2];
+} lo_ieee_double;
+
+#define LO_IEEE_NA_HW 0x7ff00000
+#define LO_IEEE_NA_LW 1954
+
 // Octave's idea of infinity.
 extern double octave_Inf;
 
@@ -38,9 +50,6 @@ extern double octave_NA;
 
 extern void octave_ieee_init (void);
 
-extern int lo_ieee_is_NA (double);
-extern int lo_ieee_is_NaN_or_NA (double);
-
 #if defined (SCO)
 extern int isnan (double);
 extern int isinf (double);
@@ -49,6 +58,9 @@ extern int isinf (double);
 extern int lo_ieee_isnan (double x);
 extern int lo_ieee_finite (double x);
 extern int lo_ieee_isinf (double x);
+
+extern int lo_ieee_is_NA (double);
+extern int lo_ieee_is_NaN_or_NA (double);
 
 #ifdef	__cplusplus
 }

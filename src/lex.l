@@ -85,12 +85,17 @@ static int convert_spaces_to_comma = 1;
 // `title', and `with' keywords.
 static int cant_be_identifier = 0;
 
+#define BRACE 1
+#define PAREN 2
+
 // Is the closest nesting level a square brace or a paren?
 //
-//  1 -> brace, spaces are important (they can turn into commas)
-//  0 -> paren, spaces are not important
+//  BRACE -> spaces are important (they can turn into commas)
+//           new lines are important (they can turn into semicolons)
 //
-static SLStack <int> in_brace_or_paren;
+//  PAREN -> spaces and new lines are not important
+
+static SLStack <int> nesting_level;
 
 // Forward declarations for functions defined at the bottom of this
 // file.
@@ -216,29 +221,48 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 <MATRIX>{S}+ {
-    if (user_pref.commas_in_literal_matrix != 2)
+    if (user_pref.whitespace_in_literal_matrix != 2)
       {
 	int bin_op = next_token_is_bin_op (1, yytext);
 	int postfix_un_op = next_token_is_postfix_unary_op (1, yytext);
 
-	if (! (postfix_un_op || bin_op || in_brace_or_paren.empty ())
-	    && in_brace_or_paren.top ()
+	if (! (postfix_un_op || bin_op || nesting_level.empty ())
+	    && nesting_level.top () == BRACE
 	    && convert_spaces_to_comma)
 	  TOK_RETURN (',');
       }
   }
 
 %{
-// New lines and semicolons are both handled as row seprators in
-// matrix constants.
+// Semicolons are both handled as row seprators in matrix constants.
 %}
 
-<MATRIX>{SNLCMT}*[\n;]{SNLCMT}* {
+<MATRIX>{SNLCMT}*;{SNLCMT}* {
     fixup_column_count (yytext);
     quote_is_transpose = 0;
     cant_be_identifier = 0;
     convert_spaces_to_comma = 1;
     return ';';
+  }
+
+%{
+// In some cases, new lines can also become row separators.
+%}
+
+<MATRIX>{SNLCMT}*\n{SNLCMT}* {
+    if (user_pref.whitespace_in_literal_matrix != 2)
+      {
+	fixup_column_count (yytext);
+	quote_is_transpose = 0;
+	cant_be_identifier = 0;
+	convert_spaces_to_comma = 1;
+
+	if (nesting_level.empty ())
+	  return LEXICAL_ERROR;
+
+	if (nesting_level.top () == BRACE)
+	  return ';';
+      }
   }
 
 %{
@@ -250,7 +274,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 \[{S}* {
     fixup_column_count (yytext);
 
-    in_brace_or_paren.push (1);
+    nesting_level.push (BRACE);
 
     promptflag--;
     eat_whitespace ();
@@ -272,8 +296,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 \] {
     promptflag++;
 
-    if (! in_brace_or_paren.empty ())
-      in_brace_or_paren.pop ();
+    if (! nesting_level.empty ())
+      nesting_level.pop ();
 
     if (plotting && ! past_plot_range)
       {
@@ -356,7 +380,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 %{
 // A new line character.  New line characters inside matrix constants
-// are handled by the <MATRIX> start state code above.
+// are handled by the <MATRIX> start state code above.  If closest
+// nesting is inside parentheses, don't return a row separator.
 %}
 
 {NL} {
@@ -364,7 +389,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     cant_be_identifier = 0;
     current_input_column = 1;
     convert_spaces_to_comma = 1;
-    return '\n';
+
+    if (nesting_level.empty ())
+      return '\n';
+
+    if (nesting_level.top () == BRACE)
+      return LEXICAL_ERROR;
   }
 
 %{
@@ -407,11 +437,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// Gobble comments.
-%}
+// Gobble comments.  If closest nesting is inside parentheses, don't
+// return a new line.
+%} 
 
 {CCHAR} {
-    if (in_brace_or_paren.empty () && beginning_of_function)
+    if (nesting_level.empty () && beginning_of_function)
       {
 	grab_help_text ();
 	beginning_of_function = 0;
@@ -427,7 +458,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     cant_be_identifier = 0;
     current_input_column = 1;
     convert_spaces_to_comma = 1;
-    return '\n';
+
+    if (nesting_level.empty () || nesting_level.top () == BRACE)
+      return '\n';
   }
 
 %{
@@ -494,19 +527,23 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 "(" {
     if (plotting && ! in_plot_range)
       past_plot_range = 1;
-    in_brace_or_paren.push (0);
+    nesting_level.push (PAREN);
+    promptflag--;
     TOK_RETURN ('(');
   }
 
 ")" {
-    if (! in_brace_or_paren.empty ())
-      in_brace_or_paren.pop ();
+    if (! nesting_level.empty ())
+      {
+	nesting_level.pop ();
+	promptflag++;
+      }
     do_comma_insert_check ();
     current_input_column++;
     cant_be_identifier = 1;
     quote_is_transpose = 1;
-    convert_spaces_to_comma = (! in_brace_or_paren.empty ()
-			       && in_brace_or_paren.top ());
+    convert_spaces_to_comma = (! nesting_level.empty ()
+			       && nesting_level.top () == BRACE);
     return ')';
   }
 
@@ -581,7 +618,7 @@ reset_parser (void)
   looking_at_indirect_ref = 0;
 
 // Error may have occurred inside some parentheses or braces.
-  in_brace_or_paren.clear ();
+  nesting_level.clear ();
 
 // Not initially defining a matrix list.
   braceflag = 0;
@@ -594,9 +631,11 @@ reset_parser (void)
     delete token_stack.pop ();
 
 // Can be reset by defining a function.
-  current_input_column = 1;
-  if (! reading_script_file)
-    input_line_number = current_command_number - 1;
+  if (! (reading_script_file || reading_fcn_file))
+    {
+      current_input_column = 1;
+      input_line_number = current_command_number - 1;
+    }
 
 // Only ask for input from stdin if we are expecting interactive
 // input.
@@ -947,7 +986,8 @@ is_keyword (char *s)
 	  promptflag--;
 	  beginning_of_function = 1;
 	  help_buf[0] = '\0';
-	  input_line_number = 1;
+	  if (! (reading_fcn_file || reading_script_file))
+	    input_line_number = 1;
 	  return FCN;
 	}
     }
@@ -1316,6 +1356,8 @@ handle_number (char *yytext)
   double value;
   int nread = sscanf (yytext, "%lf", &value);
 
+// If yytext doesn't contain a valid number, we are in deep doo doo.
+
   assert (nread == 1);
 
   quote_is_transpose = 1;
@@ -1504,9 +1546,9 @@ handle_close_brace (char *yytext)
 {
   fixup_column_count (yytext);
 
-  if (! in_brace_or_paren.empty ())
+  if (! nesting_level.empty ())
     {
-      in_brace_or_paren.pop ();
+      nesting_level.pop ();
       braceflag--;
     }
 
@@ -1538,7 +1580,7 @@ handle_close_brace (char *yytext)
     {
       unput (c1);
 
-      if (braceflag && user_pref.commas_in_literal_matrix != 2)
+      if (braceflag && user_pref.whitespace_in_literal_matrix != 2)
 	{
 	  int c0 = yytext[yyleng-1];
 	  int spc_prev = (c0 == ' ' || c0 == '\t');
@@ -1549,8 +1591,8 @@ handle_close_brace (char *yytext)
 	  int other_op = match_any (c1, ",;\n]");
 
 	  if (! (postfix_un_op || bin_op || other_op
-		 || in_brace_or_paren.empty ())
-	      && in_brace_or_paren.top ()
+		 || nesting_level.empty ())
+	      && nesting_level.top () == BRACE
 	      && convert_spaces_to_comma)
 	    {
 	      unput (',');
@@ -1683,9 +1725,9 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
 // Check to see if we should insert a comma.
 
-  if (user_pref.commas_in_literal_matrix != 2
-      && ! in_brace_or_paren.empty ()
-      && in_brace_or_paren.top ()) 
+  if (user_pref.whitespace_in_literal_matrix != 2
+      && ! nesting_level.empty ()
+      && nesting_level.top () == BRACE) 
     {
       int c0 = yytext[yyleng-1];
       int spc_prev = (c0 == ' ' || c0 == '\t');
@@ -1698,7 +1740,7 @@ handle_identifier (char *tok, int next_tok_is_eq)
       unput (c1);
       int other_op = match_any (c1, ".,;\n]");
       int index_op = (c1 == '('
-		      && (user_pref.commas_in_literal_matrix == 0
+		      && (user_pref.whitespace_in_literal_matrix == 0
 			  || ! spc_prev));
 
       if (! (postfix_un_op || bin_op || other_op || index_op))

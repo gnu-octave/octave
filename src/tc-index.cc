@@ -58,48 +58,83 @@ tree_constant_rep::do_scalar_index (tree_constant *args, int nargs)
       else
 	panic_impossible ();
     }
-  else if (nargs != 2)
+  else
     {
-      error ("illegal number of arguments for scalar type");
-      jump_to_top_level ();
-    }
-  else if (args[1].is_matrix_type ())
-    {
-      Matrix mi = args[1].matrix_value ();
+      int rows = 0;
+      int cols = 0;
 
-      idx_vector i (mi, user_pref.do_fortran_indexing, "");
-
-      int len = i.length ();
-      if (len == i.ones_count ())
+      switch (nargs)
 	{
-	  if (type_tag == scalar_constant)
-	    {
-	      if (user_pref.prefer_column_vectors)
-		{
-		  Matrix m (len, 1, scalar);
-		  return tree_constant (m);
-		}
-	      else
-		{
-		  Matrix m (1, len, scalar);
-		  return tree_constant (m);
-		}
-	    }
-	  else if (type_tag == complex_scalar_constant)
-	    {
-	      if (user_pref.prefer_column_vectors)
-		{
-		  ComplexMatrix m (len, 1, *complex_scalar);
-		  return tree_constant (m);
-		}
-	      else
-		{
-		  ComplexMatrix m (1, len, *complex_scalar);
-		  return tree_constant (m);
-		}
-	    }
-	  else
-	    panic_impossible ();
+	case 3:
+	  {
+	    if (args[2].is_matrix_type ())
+	      {
+		Matrix mj = args[2].matrix_value ();
+
+		idx_vector j (mj, user_pref.do_fortran_indexing, "");
+
+		int len = j.length ();
+		if (len == j.ones_count ())
+		  cols = len;
+	      }
+	    else if (args[2].is_scalar_type ()
+		     && NINT (args[2].double_value ()) == 1)
+	      {
+		cols = 1;
+	      }
+	    else
+	      break;
+	  }
+// Fall through...
+	case 2:
+	  {
+	    if (args[1].is_matrix_type ())
+	      {
+		Matrix mi = args[1].matrix_value ();
+
+		idx_vector i (mi, user_pref.do_fortran_indexing, "");
+
+		int len = i.length ();
+		if (len == i.ones_count ())
+		  rows = len;
+	      }
+	    else if (args[1].is_scalar_type ()
+		     && NINT (args[1].double_value ()) == 1)
+	      {
+		rows = 1;
+	      }
+	    else
+	      break;
+
+	    if (cols == 0)
+	      {
+		if (user_pref.prefer_column_vectors)
+		  cols = 1;
+		else
+		  {
+		    cols = rows;
+		    rows = 1;
+		  }
+	      }
+
+	    if (type_tag == scalar_constant)
+	      {
+		Matrix m (rows, cols, scalar);
+		return tree_constant (m);
+	      }
+	    else if (type_tag == complex_scalar_constant)
+	      {
+		ComplexMatrix cm (rows, cols, *complex_scalar);
+		return tree_constant (cm);
+	      }
+	    else
+	      panic_impossible ();
+	  }
+	  break;
+	default:
+	  error ("illegal number of arguments for scalar type");
+	  jump_to_top_level ();
+	  break;
 	}
     }
 

@@ -711,6 +711,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
  same number of elements as range"); 
 	    return;
 	  }
+
 	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, i, 1);
@@ -821,6 +822,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
  must match the number of elements in range");  
 	    return;
 	  }
+
 	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, iv, 1);
@@ -838,14 +840,19 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
     case magic_colon:
       {
 	int nc = columns ();
-	if (! indexed_assign_conforms (iv.capacity (), nc, rhs_nr, rhs_nc))
+	int new_nc = nc;
+	if (nc == 0 || rows () == 0)
+	  new_nc = rhs_nc;
+
+	if (! indexed_assign_conforms (iv.capacity (), new_nc,
+				       rhs_nr, rhs_nc))
 	  {
 	    error ("A(matrix,:) = X: the number of rows in X must\
  match the number of elements in matrix, and the number of columns in\
  X must match the number of columns in A");
 	    return;
 	  }
-	maybe_resize (iv.max (), nc-1);
+	maybe_resize (iv.max (), new_nc-1);
 	do_matrix_assignment (rhs, iv, magic_colon);
       }
       break;
@@ -917,6 +924,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
  columns in X must match the number of elements in c_range\n");
 	    return;
 	  }
+
 	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, ri, 1);
@@ -934,14 +942,18 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
     case magic_colon:
       {
 	int nc = columns ();
-	if (! indexed_assign_conforms (ri.nelem (), nc, rhs_nr, rhs_nc))
+	int new_nc = nc;
+	if (nc == 0 || rows () == 0)
+	  new_nc = rhs_nc;
+
+	if (! indexed_assign_conforms (ri.nelem (), new_nc, rhs_nr, rhs_nc))
 	  {
 	    error ("A(range,:) = X: the number of rows in X must match\
  the number of elements in range, and the number of columns in X must\
  match the number of columns in A");  
 	    return;
 	  }
-	maybe_resize (imax, nc-1);
+	maybe_resize (imax, new_nc-1);
 	do_matrix_assignment (rhs, ri, magic_colon);
       }
       break;
@@ -1005,14 +1017,19 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column",
 		       columns ());
 	int nr = rows ();
-	if (! indexed_assign_conforms (nr, jv.capacity (), rhs_nr, rhs_nc))
+	int new_nr = nr;
+	if (nr == 0 || columns () == 0)
+	  new_nr = rhs_nr;
+
+	if (! indexed_assign_conforms (new_nr, jv.capacity (),
+				       rhs_nr, rhs_nc))
 	  {
 	    error ("A(:,matrix) = X: the number of rows in X must\
  match the number of rows in A, and the number of columns in X must\
  match the number of elements in matrix");   
 	    return;
 	  }
-	maybe_resize (nr-1, jv.max ());
+	maybe_resize (new_nr-1, jv.max ());
 	do_matrix_assignment (rhs, magic_colon, jv);
       }
       break;
@@ -1023,13 +1040,18 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
       {
 	Range rj = tmp_j.range_value ();
 	int nr = rows ();
-	if (! indexed_assign_conforms (nr, rj.nelem (), rhs_nr, rhs_nc))
+	int new_nr = nr;
+	if (nr == 0 || columns () == 0)
+	  new_nr = rhs_nr;
+
+	if (! indexed_assign_conforms (new_nr, rj.nelem (), rhs_nr, rhs_nc))
 	  {
 	    error ("A(:,range) = X: the number of rows in X must match\
  the number of rows in A, and the number of columns in X must match\
  the number of elements in range");
 	    return;
 	  }
+
 	if (columns () == 2 && is_zero_one (rj) && rhs_nc == 1)
 	  {
 	    do_matrix_assignment (rhs, magic_colon, 1);
@@ -1039,7 +1061,7 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    int jmax;
 	    if (index_check (rj, jmax, "column") < 0)
 	      return;
-	    maybe_resize (nr-1, jmax);
+	    maybe_resize (new_nr-1, jmax);
 	    do_matrix_assignment (rhs, magic_colon, rj);
 	  }
       }
@@ -1416,4 +1438,3 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */
-

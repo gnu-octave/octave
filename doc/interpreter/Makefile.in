@@ -137,10 +137,13 @@ spell: $(SPELL)
 
 clean:
 	rm -f *.info *.info-* octave.cp octave.fn octave.ky \
-	octave.pg octave.tp octave.vr octave.aux octave.log \
-	octave.toc octave.dvi octave.ps liboctave.cp liboctave.fn \
-	liboctave.pg liboctave.tp liboctave.aux liboctave.log \
-	liboctave.toc liboctave.dvi liboctave.ps
+	octave.op octave.pg octave.tp octave.vr octave.cps \
+	octave.fns octave.kys octave.ops octave.pgs octave.tps \
+	octave.vrs octave.aux octave.log octave.toc octave.dvi \
+	octave.ps liboctave.cp liboctave.fn liboctave.pg \
+	liboctave.tp liboctave.cps liboctave.fns liboctave.pgs \
+	liboctave.tps liboctave.aux liboctave.log liboctave.toc \
+	liboctave.dvi liboctave.ps
 .PHONY: clean
 
 mostlyclean:

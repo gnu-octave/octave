@@ -1107,6 +1107,25 @@ is_keyword (char *s)
       token_stack.push (yylval.tok_val);
       return WHILE;
     }
+  else if (strcmp ("unwind_protect", s) == 0)
+    {
+      promptflag--;
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
+      return UNWIND_PROTECT;
+    }
+  else if (strcmp ("unwind_protect_cleanup", s) == 0)
+    {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
+      return UNWIND_PROTECT_CLEANUP;
+    }
+  else if (strcmp ("end_unwind_protect", s) == 0)
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::unwind_protect_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
 
   if (end_found)
     {

@@ -47,6 +47,7 @@ int returning = 0;
 #include "tree-cmd.h"
 #include "tree-misc.h"
 #include "tree-const.h"
+#include "unwind-prot.h"
 
 // Decide if it's time to quit a for or while loop.
 static int
@@ -431,6 +432,85 @@ tree_if_command::print_code (ostream& os)
   print_code_indent (os);
 
   os << "endif";
+}
+
+// Simple exception handling.
+
+tree_unwind_protect_command::~tree_unwind_protect_command (void)
+{
+  delete unwind_protect_code;
+  delete cleanup_code;
+}
+
+static void
+do_unwind_protect_cleanup_code (void *ptr)
+{
+  tree_statement_list *list = (tree_statement_list *) ptr;
+
+// We want to run the cleanup code without error_state being set, but
+// we need to restore its value, so that any errors encountered in
+// the first part of the unwind_protect are not completely ignored.
+
+  unwind_protect_int (error_state);
+
+  error_state = 0;
+
+  if (list)
+    list->eval (1);
+
+// We don't want to ignore errors that occur in the cleanup code, so
+// if an error is encountered there, leave error_state alone.
+// Otherwise, set it back to what it was before.
+
+  if (error_state)
+    discard_unwind_protect ();
+  else
+    run_unwind_protect ();
+}
+
+void
+tree_unwind_protect_command::eval (void)
+{
+  add_unwind_protect (do_unwind_protect_cleanup_code, cleanup_code);
+
+  if (unwind_protect_code)
+    unwind_protect_code->eval (1);
+
+  run_unwind_protect ();
+}
+
+void
+tree_unwind_protect_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "unwind_protect";
+
+  print_code_new_line (os);
+
+  if (unwind_protect_code)
+    {
+      increment_indent_level ();
+      unwind_protect_code->print_code (os);
+      decrement_indent_level ();
+    }
+
+  print_code_indent (os);
+
+  os << "cleanup_code";
+
+  print_code_new_line (os);
+
+  if (cleanup_code)
+    {
+      increment_indent_level ();
+      cleanup_code->print_code (os);
+      decrement_indent_level ();
+    }
+
+  print_code_indent (os);
+
+  os << "end_unwind_protect";
 }
 
 // Break.

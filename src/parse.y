@@ -223,6 +223,7 @@ static tree_index_expression *make_index_expression
 %token <tok_val> PLOT
 %token <tok_val> TEXT STYLE
 %token <tok_val> FOR WHILE IF ELSEIF ELSE BREAK CONTINUE FUNC_RET
+%token <tok_val> UNWIND_PROTECT UNWIND_PROTECT_CLEANUP
 %token <tok_val> GLOBAL
 %token <tok_val> TEXT_ID
 
@@ -600,6 +601,15 @@ command		: plot_command
 		  {
 		    iffing--;
 		    $$ = $1;
+		  }
+
+		| UNWIND_PROTECT opt_list UNWIND_PROTECT_CLEANUP opt_list END
+		  {
+		    if (check_end ($5, token::unwind_protect_end))
+		      ABORT_PARSE;
+
+		    $$ = new tree_unwind_protect_command ($2, $4, $1->line (),
+							  $1->column ());
 		  }
 		| WHILE expression optsep opt_list END
 		  {

@@ -39,6 +39,7 @@ class tree_global_command;
 class tree_while_command;
 class tree_for_command;
 class tree_if_command;
+class tree_unwind_protect_command;
 class tree_break_command;
 class tree_continue_command;
 class tree_return_command;
@@ -59,7 +60,7 @@ public:
 class
 tree_global_command : public tree_command
 {
- public:
+public:
   tree_global_command (int l = -1, int c = -1) : tree_command (l, c)
     { init_list = 0; }
 
@@ -82,7 +83,7 @@ private:
 class
 tree_while_command : public tree_command
 {
- public:
+public:
   tree_while_command (int l = -1, int c = -1) : tree_command (l, c)
     {
       expr = 0;
@@ -112,7 +113,7 @@ tree_while_command : public tree_command
 
   void print_code (ostream& os);
 
- private:
+private:
   tree_expression *expr;	// Expression to test.
   tree_statement_list *list;	// List of commands to execute.
 };
@@ -122,7 +123,7 @@ tree_while_command : public tree_command
 class
 tree_for_command : public tree_command
 {
- public:
+public:
   tree_for_command (int l = -1, int c = -1) : tree_command (l, c)
     {
       id = 0;
@@ -147,7 +148,7 @@ tree_for_command : public tree_command
 
   void print_code (ostream& os);
 
- private:
+private:
   void do_for_loop_once (tree_constant *rhs, int& quit);
 
   tree_index_expression *id;	// Identifier to modify.
@@ -160,7 +161,7 @@ tree_for_command : public tree_command
 class
 tree_if_command : public tree_command
 {
- public:
+public:
   tree_if_command (int l = -1, int c = -1) : tree_command (l, c)
     { list = 0; }
 
@@ -176,8 +177,40 @@ tree_if_command : public tree_command
 
   void print_code (ostream& os);
 
- private:
+private:
   tree_if_command_list *list;
+};
+
+// Simple exception handling.
+
+class
+tree_unwind_protect_command : public tree_command
+{
+public:
+  tree_unwind_protect_command (int l = -1, int c = -1) : tree_command (l, c)
+    {
+      unwind_protect_code = 0;
+      cleanup_code = 0;
+    }
+
+  tree_unwind_protect_command (tree_statement_list *tc,
+			       tree_statement_list *cc,
+			       int l = -1, int c = -1)
+    : tree_command (l, c)
+      {
+	unwind_protect_code = tc;
+	cleanup_code = cc;
+      }
+
+  ~tree_unwind_protect_command (void);
+
+  void eval (void);
+
+  void print_code (ostream& os);
+
+private:
+  tree_statement_list *unwind_protect_code;
+  tree_statement_list *cleanup_code;
 };
 
 // Break.
@@ -185,7 +218,7 @@ tree_if_command : public tree_command
 class
 tree_break_command : public tree_command
 {
- public:
+public:
   tree_break_command (int l = -1, int c = -1) : tree_command (l, c) { }
 
   ~tree_break_command (void) { }
@@ -200,7 +233,7 @@ tree_break_command : public tree_command
 class
 tree_continue_command : public tree_command
 {
- public:
+public:
   tree_continue_command (int l = -1, int c = -1) : tree_command (l, c) { }
 
   ~tree_continue_command (void) { }

@@ -1,3 +1,16 @@
+2002-12-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (search_path_for_all_files): New function.
+	(Ffile_in_loadpath, Ffile_in_path): Allow search to return all
+	files in the path.
+
+	* Cell.cc (Cell (const string_vector&)): New constructor.
+
+	* oct-obj.cc (octave_value_list::assign): Allow optional fill
+	value for resizing.
+	* oct-map.cc (Octave_map::assign): Pass fill_value in initial
+	assignment too.
+
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* TEMPLATE-INST/Map-tc.cc, TEMPLATE-INST/Map-fnc.cc: Delete.

@@ -53,6 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pathsearch.h"
 #include "str-vec.h"
 
+#include "Cell.h"
 #include <defaults.h>
 #include "defun.h"
 #include "dirfns.h"
@@ -237,15 +238,50 @@ search_path_for_file (const std::string& path, const std::string& name)
   return octave_env::make_absolute (p.find (name), octave_env::getcwd ());
 }
 
+// Find all locations of the given file in the path.
+
+string_vector
+search_path_for_all_files (const std::string& path, const std::string& name)
+{
+  dir_path p (path);
+
+  string_vector sv = p.find_all (name);
+
+  int len = sv.length ();
+
+  for (int i = 0; i < len; i++)
+    sv[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
+
+  return sv;
+}
+
+static string_vector
+make_absolute (const string_vector& sv)
+{
+  int len = sv.length ();
+
+  for (int i = 0; i < len; i++)
+    sv[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
+
+  return sv;
+}
+
 DEFUN (file_in_loadpath, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} file_in_loadpath (@var{name})\n\
+@deftypefn {Built-in Function} {} file_in_loadpath (@var{file})\n\
+@deftypefnx {Built-in Function} {} file_in_loadpath (@var{file}, \"all\")\n\
 \n\
-Look up @var{name} in Octave's @code{LOADPATH}.\n\
+Return the absolute name name of @var{file} if it can be found in\n\
+the list of directories specified by @code{LOADPATH}.\n\
+If no file is found, return an empty matrix.\n\
+\n\
+If the second optional argument @code{\"all\"} is supplied, return\n\
+a cell array containing the list of all files that have the same\n\
+name in the path.  If no files are found, return an empty cell array.\n\
 @end deftypefn\n\
 @seealso{file_in_path}")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int argc = args.length () + 1;
 
@@ -255,8 +291,17 @@ Look up @var{name} in Octave's @code{LOADPATH}.\n\
     return retval;
 
   if (argc == 2)
-    retval = octave_env::make_absolute (Vload_path_dir_path.find (argv[1]),
-					octave_env::getcwd ());
+    {
+      std::string fname
+	= octave_env::make_absolute (Vload_path_dir_path.find (argv[1]),
+				     octave_env::getcwd ());
+      if (fname.empty ())
+	retval = Matrix ();
+      else
+	retval = fname;
+    }
+  else if (argc == 3 && argv[2] == "all")
+    retval = Cell (make_absolute (Vload_path_dir_path.find_all (argv[1])));
   else
     print_usage ("file_in_loadpath");
 
@@ -266,21 +311,24 @@ Look up @var{name} in Octave's @code{LOADPATH}.\n\
 DEFUN (file_in_path, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
+@deftypefnx {Built-in Function} {} file_in_path (@var{path}, @var{file}, \"all\")\n\
 Return the absolute name name of @var{file} if it can be found in\n\
 @var{path}.  The value of @var{path} should be a colon-separated list of\n\
 directories in the format described for the built-in variable\n\
-@code{LOADPATH}.\n\
-\n\
-If the file cannot be found in the path, an empty matrix is returned.\n\
+@code{LOADPATH}.  If no file is found, return an empty matrix.\n\
 For example,\n\
 \n\
 @example\n\
 file_in_path (LOADPATH, \"nargchk.m\")\n\
      @result{} \"@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m\"\n\
 @end example\n\
+\n\
+If the third optional argument @code{\"all\"} is supplied, return\n\
+a cell array containing the list of all files that have the same\n\
+name in the path.  If no files are found, return an empty cell array.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int argc = args.length () + 1;
 
@@ -298,6 +346,8 @@ file_in_path (LOADPATH, \"nargchk.m\")\n\
       else
 	retval = fname;
     }
+  else if (argc == 4 && argv[3] == "all")
+    retval = Cell (make_absolute (search_path_for_all_files (argv[1], argv[2])));
   else
     print_usage ("file_in_path");
 

@@ -156,10 +156,11 @@ octave_value_list::index (idx_vector& i, int resize_ok) const
 
 octave_value_list&
 octave_value_list::assign (const idx_vector& i,
-			   const octave_value_list& rhs)
+			   const octave_value_list& rhs,
+			   const octave_value& fill_val)
 {
   data.set_index (i);
-  ::assign (data, rhs.data);
+  ::assign (data, rhs.data, fill_val);
   return *this;
 }
 

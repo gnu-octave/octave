@@ -151,7 +151,8 @@ public:
   octave_value_list index (idx_vector& i, int resize_ok = 0) const;
 
   octave_value_list& assign (const idx_vector& i,
-			     const octave_value_list& rhs);
+			     const octave_value_list& rhs,
+			     const octave_value& fill_val = octave_value ());
 
   bool all_strings_p (void) const;
 

@@ -55,6 +55,8 @@ public:
   Cell (const Array<octave_value>& c, int nr, int nc)
     : Array2<octave_value> (c, nr, nc) { }
 
+  Cell (const string_vector& sv);
+
   Cell (const Cell& c)
     : Array2<octave_value> (c) { }
 

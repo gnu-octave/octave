@@ -126,15 +126,15 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
 {
   octave_value_list tmp = map[key];
 
-  tmp.assign (idx, rhs);
+  octave_value fill_value = Matrix ();
+
+  tmp.assign (idx, rhs, fill_value);
 
   if (! error_state)
     {
       int rhs_len = tmp.length ();
 
       int len = array_length ();
-
-      octave_value fill_value = Matrix ();
 
       if (rhs_len < len)
 	{

@@ -30,6 +30,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Cell.h"
 
+Cell::Cell (const string_vector& sv)
+  : Array2<octave_value> ()
+{
+  int n = sv.length ();
+
+  if (n > 0)
+    {
+      resize (n, 1);
+
+      for (int i = 0; i < n; i++)
+	elem(i,0) = sv[i];
+    }
+}
 
 /*
 ;;; Local Variables: ***

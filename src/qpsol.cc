@@ -49,6 +49,12 @@ builtin_qpsol_2 (const tree_constant *args, int nargin, int nargout)
 {
   return qpsol (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_qpsol_options_2 (const tree_constant *args, int nargin, int nargout)
+{
+  return qpsol_options (args, nargin, nargout);
+}
 #endif
 
 tree_constant *
@@ -182,6 +188,16 @@ Handle all of the following:
   if (nargout > 3)
     retval[3] = tree_constant (lambda);
 
+  return retval;
+}
+
+tree_constant *
+qpsol_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("qpsol_options: not implemented yet");
   return retval;
 }
 

@@ -1,7 +1,7 @@
 // g-builtins.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -326,6 +326,20 @@ builtin_dassl (const tree_constant *args, int nargin, int nargout)
 		 retval = dassl (args, nargin, nargout);)
   else
     print_usage ("dassl");
+
+  return retval;
+}
+
+tree_constant *
+builtin_dassl_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, dassl_options,
+		 retval = dassl_options (args, nargin, nargout);)
+  else
+    print_usage ("dassl_options");
 
   return retval;
 }
@@ -778,6 +792,20 @@ builtin_fsolve (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+builtin_fsolve_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, fsolve_options,
+		 retval = fsolve_options (args, nargin, nargout);)
+  else
+    print_usage ("fsolve_options");
+
+  return retval;
+}
+
 /*
  * NLPs.
  */
@@ -797,6 +825,20 @@ builtin_fsqp (const tree_constant *args, int nargin, int nargout)
   else
     print_usage ("fsolve");
 #endif
+
+  return retval;
+}
+
+tree_constant *
+builtin_fsqp_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, fsqp_options,
+		 retval = fsqp_options (args, nargin, nargout);)
+  else
+    print_usage ("fsqp_options");
 
   return retval;
 }
@@ -1001,6 +1043,20 @@ builtin_lpsolve (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+builtin_lpsolve_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, lpsolve_options,
+		 retval = lpsolve_options (args, nargin, nargout);)
+  else
+    print_usage ("lpsolve_options");
+
+  return retval;
+}
+
 /*
  * ODEs.
  */
@@ -1014,6 +1070,20 @@ builtin_lsode (const tree_constant *args, int nargin, int nargout)
 		 retval = lsode (args, nargin, nargout);)
   else
     print_usage ("lsode");
+
+  return retval;
+}
+
+tree_constant *
+builtin_lsode_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, lsode_options,
+		 retval = lsode_options (args, nargin, nargout);)
+  else
+    print_usage ("lsode_options");
 
   return retval;
 }
@@ -1095,6 +1165,20 @@ builtin_npsol (const tree_constant *args, int nargin, int nargout)
   else
     print_usage ("npsol");
 #endif
+
+  return retval;
+}
+
+tree_constant *
+builtin_npsol_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, npsol_options,
+		 retval = npsol_options (args, nargin, nargout);)
+  else
+    print_usage ("npsol_options");
 
   return retval;
 }
@@ -1260,6 +1344,20 @@ builtin_qpsol (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+builtin_qpsol_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, qpsol_options,
+		 retval = qpsol_options (args, nargin, nargout);)
+  else
+    print_usage ("qpsol_options");
+
+  return retval;
+}
+
 /*
  * QR factorization.
  */
@@ -1307,6 +1405,20 @@ builtin_quad (const tree_constant *args, int nargin, int nargout)
 		 retval = do_quad (args, nargin, nargout);)
   else
     print_usage ("quad");
+
+  return retval;
+}
+
+tree_constant *
+builtin_quad_options (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin >= 3 && nargin <= 7 && nargout >= 1 && nargout <= 3)
+    DLD_BUILTIN (args, nargin, nargout, quad_options,
+		 retval = quad_options (args, nargin, nargout);)
+  else
+    print_usage ("quad_options");
 
   return retval;
 }
@@ -1722,7 +1834,7 @@ builtin_warranty (const tree_constant *args, int nargin, int nargout)
 {
   ostrstream output_buf;
   output_buf << "\n    Octave, version " << version_string
-	     << ".  Copyright (C) 1992, 1993, John W. Eaton\n"
+	     << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton\n"
 	     << "\n\
     This program is free software; you can redistribute it and/or modify\n\
     it under the terms of the GNU General Public License as published by\n\

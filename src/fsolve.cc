@@ -43,6 +43,12 @@ builtin_fsolve (const tree_constant *args, int nargin, int nargout)
 {
   return fsolve (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_fsolve_options (const tree_constant *args, int nargin, int nargout)
+{
+  return fsolve_options (args, nargin, nargout);
+}
 #endif
 
 int
@@ -162,10 +168,19 @@ fsolve (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+fsolve_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("fsolve_options: not implemented yet");
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */
-

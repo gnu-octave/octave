@@ -262,6 +262,9 @@ compute the vector of residuals.  It must have the form\n\
 \n\
 where x, xdot, and res are vectors, and t is a scalar.", },
 
+  { "dassl_options", -1, 1, builtin_dassl_options,
+    "dassl_options (keyword, value): set or show options for dassl", },
+
   { "date", 1, 0, builtin_date,
     "date (): return current date in a string", },
 
@@ -354,6 +357,9 @@ compute the vector of function values.  It must have the form\n\
 \n\
 where y and x are vectors.", },
 
+  { "fsolve_options", -1, 1, builtin_fsolve_options,
+    "fsolve_options (keyword, value): set or show options for fsolve", },
+
   { "fsqp", 11, 3, builtin_fsqp,
 #if defined (FSQP_MISSING)
     "This function requires FSQP, which is not freely\n\
@@ -364,6 +370,9 @@ where y and x are vectors.", },
   Groups of arguments surrounded in `[]' are optional, but\n\
   must appear in the same relative order shown above.", },
 #endif
+
+  { "fsqp_options", -1, 1, builtin_fsqp_options,
+    "fsqp_options (keyword, value): set or show options for fsqp", },
 
   { "ftell", 2, 1, builtin_ftell,
     "position = ftell (\"filename\" or filenum): returns the current file position", },
@@ -410,6 +419,9 @@ where y and x are vectors.", },
   { "lp_solve", 11, 3, builtin_lpsolve,
     "lp_solve (): solve linear programs using lp_solve.", },
 
+  { "lp_solve_options", -1, 1, builtin_lpsolve_options,
+    "lp_solve_options (keyword, value): set or show options for lp_solve", },
+
   { "lsode", 6, 1, builtin_lsode,
     "lsode (\"function_name\", x0, t_out, t_crit)\n\
 \n\
@@ -419,6 +431,9 @@ compute the vector of right hand sides.  It must have the form\n\
   xdot = f (x, t)\n\
 \n\
 where xdot and x are vectors and t is a scalar.\n", },
+
+  { "lsode_options", -1, 1, builtin_lsode_options,
+    "lsode_options (keyword, value): set or show options for lsode", },
 
   { "lu", 2, 3, builtin_lu,
     "[L, U, P] = lu (A): LU factorization", },
@@ -446,6 +461,9 @@ where xdot and x are vectors and t is a scalar.\n", },
 \n\
   where x is a vector and y is a scalar.", },
 #endif
+
+  { "npsol_options", -1, 1, builtin_npsol_options,
+    "npsol_options (keyword, value): set or show options for npsol", },
 
   { "ones", 3, 1, builtin_ones,
     "ones (n), ones (n, m), ones (x): create a matrix of all ones", },
@@ -477,6 +495,9 @@ where xdot and x are vectors and t is a scalar.\n", },
   must appear in the same relative order shown above.", },
 #endif
 
+  { "qpsol_options", -1, 1, builtin_qpsol_options,
+    "qpsol_options (keyword, value): set or show options for qpsol", },
+
   { "qr", 2, 2, builtin_qr,
     "[q, r] = qr (X): form QR factorization of X", },
 
@@ -494,6 +515,9 @@ The second and third arguments are limits of integration.  Either or\n\
 both may be infinite.  The optional argument tol specifies the desired\n\
 accuracy of the result.  The optional argument sing is a vector of\n\
 at which the integrand is singular.\n", },
+
+  { "quad_options", -1, 1, builtin_quad_options,
+    "quad_options (keyword, value): set or show options for quad", },
 
   { "quit", 1, 0, builtin_quit,
     "quit (): exit Octave gracefully", },

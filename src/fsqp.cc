@@ -43,6 +43,12 @@ builtin_fsqp_2 (const tree_constant *args, int nargin, int nargout)
 {
   return fsqp (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_fsqp_options_2 (const tree_constant *args, int nargin, int nargout)
+{
+  return fsqp_options (args, nargin, nargout);
+}
 #endif
 
 double
@@ -80,6 +86,16 @@ Handle all of the following:
 
   tree_constant *retval = NULL_TREE_CONST;
   error ("fsqp: not implemented yet");
+  return retval;
+}
+
+tree_constant *
+fsqp_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("fsqp_options: not implemented yet");
   return retval;
 }
 

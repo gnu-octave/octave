@@ -43,6 +43,12 @@ builtin_dassl_2 (const tree_constant *args, int nargin, int nargout)
 {
   return dassl (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_dassl_options_2 (const tree_constant *args, int nargin, int nargout)
+{
+  return dassl_options (args, nargin, nargout);
+}
 #endif
 
 ColumnVector
@@ -162,10 +168,19 @@ dassl (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+dassl_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("dassl_options: not implemented yet");
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */
-

@@ -43,6 +43,12 @@ builtin_lsode_2 (const tree_constant *args, int nargin, int nargout)
 {
   return lsode (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_lsode_options_2 (const tree_constant *args, int nargin, int nargout)
+{
+  return lsode_options (args, nargin, nargout);
+}
 #endif
 
 ColumnVector
@@ -141,6 +147,16 @@ lsode (const tree_constant *args, int nargin, int nargout)
 
   retval = new tree_constant [2];
   retval[0] = tree_constant (output);
+  return retval;
+}
+
+tree_constant *
+lsode_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("lsode_options: not implemented yet");
   return retval;
 }
 

@@ -46,6 +46,12 @@ builtin_npsol_2 (const tree_constant *args, int nargin, int nargout)
 {
   return npsol (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_npsol_options_2 (const tree_constant *args, int nargin, int nargout)
+{
+  return npsol_options (args, nargin, nargout);
+}
 #endif
 
 double
@@ -477,6 +483,16 @@ Handle all of the following:
   if (nargout > 3)
     retval[3] = tree_constant (lambda);
 
+  return retval;
+}
+
+tree_constant *
+npsol_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("npsol_options: not implemented yet");
   return retval;
 }
 

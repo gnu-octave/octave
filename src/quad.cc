@@ -44,6 +44,12 @@ builtin_quad_2 (const tree_constant *args, int nargin, int nargout)
 {
   return do_quad (args, nargin, nargout);
 }
+
+tree_constant *
+builtin_quad_options_2 (const tree_constant *args, int nargin, int nargout)
+{
+  return quad_options (args, nargin, nargout);
+}
 #endif
 
 double
@@ -189,10 +195,19 @@ do_quad (const tree_constant *args, int nargin, int nargout)
   return retval;
 }
 
+tree_constant *
+quad_options (const tree_constant *args, int nargin, int nargout)
+{
+// Assumes that we have been given the correct number of arguments.
+
+  tree_constant *retval = NULL_TREE_CONST;
+  error ("quad_options: not implemented yet");
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */
-

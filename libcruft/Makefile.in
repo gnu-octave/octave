@@ -31,12 +31,13 @@ SUBDIRS = $(CRUFT_DIRS)
 
 DISTFILES = Makefile.in Makerules.in $(SOURCES) STOP.patch
 
-all: make-objects libcruft.a
+all: $(SUBDIRS) libcruft.a
 .PHONY: all
 
-make-objects:
-	for dir in $(SUBDIRS); do echo making all in $$dir; cd $$dir; $(MAKE) $(MDEFINES) all; cd ..; done
-.PHONY: make-objects
+$(SUBDIRS):
+	echo making all in $@
+	cd $@; $(MAKE) all
+.PHONY: $(SUBDIRS)
 
 CRUFT_FSRC = $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))
 CRUFT_OBJ3 = $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
@@ -55,7 +56,7 @@ check: all
 .PHONY: check
 
 install:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	$(top_srcdir)/mkinstalldirs $(libdir)
 	rm -f $(libdir)/libcruft.a
 	$(INSTALL_DATA) libcruft.a $(libdir)/libcruft.a
@@ -63,25 +64,25 @@ install:
 .PHONY: install
 
 uninstall:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	rm -f $(libdir)/libcruft.a
 .PHONY: uninstall
 
 tags: $(SOURCES)
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	ctags $(SOURCES)
 
 TAGS: $(SOURCES)
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	etags $(SOURCES)
 
 clean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	rm -f *.a *.o
 .PHONY: clean
 
 mostlyclean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	rm -f *.a *.o
 .PHONY: mostlyclean
 
@@ -90,7 +91,7 @@ distclean:
 .PHONY: distclean
 
 realclean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	rm -f *.a *.o tags TAGS Makefile
 .PHONY: realclean
 

@@ -29,26 +29,25 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 # Complete directory trees to distribute.
 DISTDIRS = kpathsea
 
-# Subdirectories to run make in for the primary targets.
+# Subdirectories in which to run `make all'.
 SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src \
 	scripts doc 
 
-# Subdirectories to run `make dist' in
+# Subdirectories in which to run `make dist'.
 DISTSUBDIRS = libcruft liboctave info readline src scripts dld test doc 
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 	BUGS PROJECTS octave-bug octave.sh octave-mode.el doinstall.sh \
 	mkinstalldirs
 
-# Subdirectories to run `make dist' in
+# Subdirectories in which to run `make dist'.
 BINDISTSUBDIRS = scripts doc
 
 DIRS_TO_MAKE = $(bindir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
 
-all: octave-bug
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+all: octave-bug $(SUBDIRS)
 .PHONY: all
 
 octave-bug: octave-bug.in
@@ -68,41 +67,10 @@ octave-bug: octave-bug.in
 	  -e "s;%DEFS%;${UGLY_DEFS};")
 	@mv $@.tmp $@
 
-libcruft:
-	cd libcruft ; $(MAKE) all
-.PHONY: libcruft
-
-liboctave:
-	cd liboctave ; $(MAKE) all
-.PHONY: liboctave
-
-kpathsea:
-	cd kpathsea ; $(MAKE) all
-.PHONY: kpathsea
-
-dld:
-	cd dld ; $(MAKE) all
-.PHONY: dld
-
-info:
-	cd info ; $(MAKE) all
-.PHONY: info
-
-readline:
-	cd readline ; $(MAKE) all
-.PHONY: readline
-
-src:
-	cd src ; $(MAKE) all
-.PHONY: src
-
-scripts:
-	cd scripts ; $(MAKE) all
-.PHONY: scripts
-
-doc:
-	cd doc ; $(MAKE) all
-.PHONY: doc
+$(SUBDIRS):
+	echo making all in $@
+	cd $@ ; $(MAKE) all
+.PHONY: $(SUBDIRS)
 
 check:
 	cd test; $(MAKE) check

@@ -57,7 +57,6 @@ protected:
 
   nonlinear_fcn fun;
   jacobian_fcn jac;
-
 };
 
 #endif

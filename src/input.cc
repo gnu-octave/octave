@@ -38,6 +38,8 @@ extern "C"
 {
 #include "readline/readline.h"
 
+extern char *xmalloc ();
+
 /*
  * Yes, this sucks, but it avoids a conflict with another readline
  * function declared in iostream.h.

@@ -50,6 +50,9 @@ hybrd_info_to_fsolve_info (int info)
 {
   switch (info)
     {
+    case -1:
+      info = -2;
+      break;
     case 0:
       info = -1;
       break;
@@ -103,13 +106,16 @@ fsolve_user_function (const ColumnVector& x)
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
 	  retval = tmp[0].to_vector ();
+
 	  delete [] tmp;
+
+	  if (retval.length () <= 0)
+	    gripe_user_supplied_eval ("fsolve");
 	}
       else
 	{
 	  delete [] tmp;
 	  gripe_user_supplied_eval ("fsolve");
-	  jump_to_top_level ();
 	}
     }
 

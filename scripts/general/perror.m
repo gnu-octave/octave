@@ -41,8 +41,10 @@ function perror (name, err)
 
   if (strcmp (name, "fsolve"))
 
-    if (err == -1)
+    if (err == -2)
       printf ("input error\n");
+    elseif (err == -1)
+      printf ("error encountered in user-supplied function\n");
     elseif (err == 1)
       printf ("solution converged to requested tolerance\n");
     elseif (err == 4)

@@ -62,7 +62,6 @@ class NLEqn : public NLFunc
   Vector x;
 
   void error (const char* msg);
-
 };
 
 #endif

@@ -527,7 +527,8 @@ get_user_input (void)
   if (retval)
     current_input_line = retval;
 
-  input_line_number++;
+  if (! get_input_from_eval_string)
+    input_line_number++;
 
   return retval;
 }

@@ -1489,99 +1489,92 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
 double
 tree_constant_rep::double_value (void)
 {
-  assert (type_tag == scalar_constant || type_tag == complex_scalar_constant);
-
-  if (type_tag == scalar_constant)
-    return scalar;
-  else if (type_tag == complex_scalar_constant)
+  switch (type_tag)
     {
-      int flag = user_pref.ok_to_lose_imaginary_part;
-      if (flag == -1)
-	warning ("implicit conversion of complex value to real value");
+    case scalar_constant:
+      return scalar;
+    case complex_scalar_constant:
+      {
+	int flag = user_pref.ok_to_lose_imaginary_part;
+	if (flag == -1)
+	  warning ("implicit conversion of complex value to real value");
 
-      if (flag != 0)
-	return real (*complex_scalar);
-      else
-	{
-	  error ("implicit conversion of complex value to real value not allowed");
-	  jump_to_top_level ();
-	}
+	if (flag != 0)
+	  return real (*complex_scalar);
+
+	error ("implicit conversion of complex value to real value not allowed");
+	jump_to_top_level ();
+      }
+    default:
+      panic_impossible ();
+      break;
     }
 }
 
 Matrix
 tree_constant_rep::matrix_value (void)
 {
-  assert (type_tag == matrix_constant || type_tag == complex_matrix_constant);
-
-  if (type_tag == matrix_constant)
-    return *matrix;
-  else if (type_tag == complex_matrix_constant)
+  switch (type_tag)
     {
-      int flag = user_pref.ok_to_lose_imaginary_part;
-      if (flag == -1)
-	warning ("implicit conversion of complex matrix to real matrix"); 
+    case matrix_constant:
+      return *matrix;
+    case complex_matrix_constant:
+      {
+	int flag = user_pref.ok_to_lose_imaginary_part;
+	if (flag == -1)
+	  warning ("implicit conversion of complex matrix to real matrix"); 
 
-      if (flag != 0)
-	return real (*complex_matrix);
-      else
-	{
+	if (flag != 0)
+	  return real (*complex_matrix);
+	else
 	  error ("implicit conversion of complex matrix to real matrix not allowed");
-	  jump_to_top_level ();
-	}
+	jump_to_top_level ();
+      }
+    default:
+      panic_impossible ();
+      break;
     }
 }
 
 Complex
 tree_constant_rep::complex_value (void)
 {
-  Complex retval;
   switch (type_tag)
     {
     case complex_scalar_constant:
-      retval = *complex_scalar;
-      break;
+      return *complex_scalar;
     case scalar_constant:
-      retval = Complex (scalar);
-      break;
+      return Complex (scalar);
     default:
       panic_impossible ();
       break;
     }
-  return retval;
 }
 
 ComplexMatrix
 tree_constant_rep::complex_matrix_value (void)
 {
-  ComplexMatrix retval;
-  switch (arg.const_type ())
+  switch (type_tag)
     {
     case scalar_constant:
       {
-	retval.resize (1, 1);
-	double tmp =  arg.double_value ();
-        retval.elem (0, 0) = Complex (tmp);
+	return ComplexMatrix (scalar);
       }
-      break;
     case complex_scalar_constant:
-      retval.resize (1, 1);
-      retval.elem (0, 0) = arg.complex_value ();
-      break;
+      {
+	return ComplexMatrix (*complex_scalar);
+      }
     case matrix_constant:
       {
-        Matrix tmp = arg.matrix_value ();
-        retval = ComplexMatrix (tmp);
+        return ComplexMatrix (*matrix);
       }
-      break;
     case complex_matrix_constant:
-      retval = arg.complex_matrix_value ();
+      return *complex_matrix;
       break;
     default:
       panic_impossible ();
       break;
     }
-  return retval;
 }
 
 char *

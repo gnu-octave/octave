@@ -128,7 +128,6 @@ private:
   int qualifier_count;
   tree_expression *x[4];
   tree_expression *scanf_fmt;
-  int have_values;
   ColumnVector val;
 };
 

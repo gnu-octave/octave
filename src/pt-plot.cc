@@ -497,7 +497,6 @@ subplot_using::subplot_using (void)
   qualifier_count = 0;
   x[0] = x[1] = x[2] = x[3] = 0;
   scanf_fmt = 0;
-  have_values = 0;
 }
 
 subplot_using::subplot_using (tree_expression *fmt) : val (4, -1)
@@ -505,7 +504,6 @@ subplot_using::subplot_using (tree_expression *fmt) : val (4, -1)
   qualifier_count = 0;
   x[0] = x[1] = x[2] = x[3] = 0;
   scanf_fmt = fmt;
-  have_values = 0;
 }
 
 subplot_using::~subplot_using (void)
@@ -537,9 +535,6 @@ subplot_using::eval (int ndim, int n_max)
   if ((ndim == 2 && qualifier_count > 4)
       || (ndim == 3 && qualifier_count > 3))
     return -1;
-
-  if (have_values)
-    return 1;
 
   if (qualifier_count > 0)
     val.resize (qualifier_count);
@@ -589,8 +584,6 @@ subplot_using::eval (int ndim, int n_max)
   if (scanf_fmt)
     warning ("ignoring scanf format in plot command");
 
-  have_values = 1;
-
   return 0;
 }
 
@@ -599,7 +592,7 @@ subplot_using::values (int ndim, int n_max)
 {
   int status = eval (ndim, n_max);
 
-  if (status < 0 || ! have_values)
+  if (status < 0)
     return -1;
 
   return val;
@@ -610,7 +603,7 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 {
   int status = eval (ndim, n_max);
 
-  if (status < 0 || ! have_values)
+  if (status < 0)
     return -1;
 
   for (int i = 0; i < qualifier_count; i++)

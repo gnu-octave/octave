@@ -190,9 +190,21 @@ target_host_type = @target_host_type@
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
-@DEFAULT_DOT_C_FROM_DOT_F@
+# Rules for making C source from Fortran source (if necessary).
+#
+# If we are using f2c there will be a command for the `%.c : %.f'
+# pattern and no command for the `%.o : %.f' pattern, so that make
+# will not invoke the fortran compiler by mistake.
+#
+# If we are not using f2c, it should be ok to have an empty rule for
+# the pattern `%.c : %.f', but we don't want to replace make's default
+# rule for making object from Fortran source files, so there should be
+# no pattern or command for that.
 
-@DEFAULT_DOT_O_FROM_DOT_F@
+%.c : %.f
+@DEFAULT_DOT_C_FROM_DOT_F_CMD@
+
+@DEFAULT_DOT_O_FROM_DOT_F_PAT@
 
 # How to make .o files from .c files:
 

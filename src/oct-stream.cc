@@ -2306,12 +2306,13 @@ octave_base_stream::printf (const std::string& fmt, const octave_value_list& arg
 
 	    if (elt)
 	      {
-		os.form (elt->text);
+		retval = octave_format (os, elt->text);
 
-		if (os)
-		  retval = 0;
-		else
-		  error ("fprintf: write error");
+		if (! os)
+		  {
+		    retval = -1;
+		    error ("fprintf: write error");
+		  }
 	      }
 	  }
 	  break;

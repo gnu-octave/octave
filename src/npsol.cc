@@ -358,14 +358,14 @@ Handle all of the following:
 
   npsol_constraints = 0;
   if (nargin == 5 || nargin == 7 || nargin == 8 || nargin == 10)
-    npsol_constraints = is_valid_function (args(nargin-1), "npsol", 0);
+    npsol_constraints = is_valid_function (args(nargin-2), "npsol", 0);
 
   if (nargin == 7 || nargin == 5)
     {
       if (! npsol_constraints)
 	{
-	  ColumnVector lub = args(nargin).vector_value ();
-	  ColumnVector llb = args(nargin-2).vector_value ();
+	  ColumnVector lub = args(nargin-1).vector_value ();
+	  ColumnVector llb = args(nargin-3).vector_value ();
 
 	  if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	    {
@@ -373,7 +373,7 @@ Handle all of the following:
 	      return retval;
 	    }
 
-	  Matrix c = args(nargin-1).matrix_value ();
+	  Matrix c = args(nargin-2).matrix_value ();
 
 	  if (error_state)
 	    {
@@ -408,8 +408,8 @@ Handle all of the following:
 	{
 	  if (takes_correct_nargs (npsol_constraints, 1, "npsol", 1))
 	    {
-	      ColumnVector nlub = args(nargin).vector_value ();
-	      ColumnVector nllb = args(nargin-2).vector_value ();
+	      ColumnVector nlub = args(nargin-1).vector_value ();
+	      ColumnVector nllb = args(nargin-3).vector_value ();
 
 	      if (error_state
 		  || (! nonlinear_constraints_ok
@@ -445,14 +445,14 @@ Handle all of the following:
       if (! npsol_constraints)
 	{
 	  // Produce error message.
-	  is_valid_function (args(nargin-1), "npsol", 1);
+	  is_valid_function (args(nargin-2), "npsol", 1);
 	}
       else
 	{
 	  if (takes_correct_nargs (npsol_constraints, 1, "npsol", 1))
 	    {
-	      ColumnVector nlub = args(nargin).vector_value ();
-	      ColumnVector nllb = args(nargin-2).vector_value ();
+	      ColumnVector nlub = args(nargin-1).vector_value ();
+	      ColumnVector nllb = args(nargin-3).vector_value ();
 
 	      if (error_state
 		  || (! nonlinear_constraints_ok
@@ -462,8 +462,8 @@ Handle all of the following:
 	      NLFunc const_func (npsol_constraint_function);
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
-	      ColumnVector lub = args(nargin-3).vector_value ();
-	      ColumnVector llb = args(nargin-5).vector_value ();
+	      ColumnVector lub = args(nargin-4).vector_value ();
+	      ColumnVector llb = args(nargin-6).vector_value ();
 
 	      if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 		{
@@ -471,7 +471,7 @@ Handle all of the following:
 		  return retval;
 		}
 	      
-	      Matrix c = args(nargin-4).matrix_value ();
+	      Matrix c = args(nargin-5).matrix_value ();
 
 	      if (error_state)
 		{

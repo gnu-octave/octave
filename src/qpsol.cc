@@ -172,8 +172,8 @@ Handle all of the following:
 
   if (nargin == 6 || nargin == 8)
     {
-      ColumnVector lub = args(nargin).vector_value ();
-      ColumnVector llb = args(nargin-2).vector_value ();
+      ColumnVector lub = args(nargin-1).vector_value ();
+      ColumnVector llb = args(nargin-3).vector_value ();
 
       if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	{
@@ -181,7 +181,7 @@ Handle all of the following:
 	  return retval;
 	}
 
-      Matrix A = args(nargin-1).matrix_value ();
+      Matrix A = args(nargin-2).matrix_value ();
 
       if (error_state)
 	{

@@ -213,7 +213,8 @@ static tree_index_expression *make_index_expression
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
-%token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV QUOTE TRANSPOSE
+%token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV EPLUS EMINUS
+%token <tok_val> QUOTE TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok_val> NUM IMAG_NUM
 %token <tok_val> NAME SCREW
@@ -271,7 +272,7 @@ static tree_index_expression *make_index_expression
 %left EXPR_AND EXPR_OR
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
 %left ':'
-%left '-' '+'
+%left '-' '+' EPLUS EMINUS
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
 %left QUOTE TRANSPOSE
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
@@ -767,6 +768,10 @@ simple_expr	: simple_expr1
 		  { $$ = make_binary_op ('*', $1, $2, $3); }
 		| simple_expr '/' simple_expr
 		  { $$ = make_binary_op ('/', $1, $2, $3); }
+		| simple_expr EPLUS simple_expr
+		  { $$ = make_binary_op ('+', $1, $2, $3); }
+		| simple_expr EMINUS simple_expr
+		  { $$ = make_binary_op ('-', $1, $2, $3); }
 		| simple_expr EMUL simple_expr
 		  { $$ = make_binary_op (EMUL, $1, $2, $3); }
 		| simple_expr EDIV simple_expr

@@ -142,8 +142,6 @@ SNLCMT	({SNL}|{COMMENT})
 NOTEQ	((~=)|(!=)|(<>))
 POW	((\*\*)|(\^))
 EPOW	(\.{POW})
-PLUS	((\+)|(\.\+))
-MINUS	((\-)|(\.\-))
 NOT	((\~)|(\!))
 IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
@@ -503,6 +501,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // Other operators.
 %}
 
+".+"		{ BIN_OP_RETURN (EPLUS, 0); }
+".-"		{ BIN_OP_RETURN (EMINUS, 0); }
 ".*"		{ BIN_OP_RETURN (EMUL, 0); }
 "./"		{ BIN_OP_RETURN (EDIV, 0); }
 ".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
@@ -548,13 +548,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     BIN_OP_RETURN (EXPR_NOT, 0);
   }
 
-{PLUS} { 
+"+" { 
     if (plotting && ! in_plot_range)
       past_plot_range = 1;
     BIN_OP_RETURN ('+', 0);
   }
 
-{MINUS} { 
+"-" { 
     if (plotting && ! in_plot_range)
       past_plot_range = 1;
     BIN_OP_RETURN ('-', 0);
@@ -1239,96 +1239,49 @@ next_token_is_postfix_unary_op (int spc_prev, char *yytext)
 
 // Try to determine if the next token should be treated as a binary
 // operator.  This is even uglier, but it also seems to do the right
-// thing.
+// thing.  Note that it is only necessary to check the spacing for `+'
+// and `-', since those are the only tokens that can appear as unary
+// ops too.
 
 static int
 next_token_is_bin_op (int spc_prev, char *yytext)
 {
   int bin_op = 0;
-  int spc_next = 0;
 
   int c0 = yyinput ();
-  int c1 = yyinput ();
 
   switch (c0)
     {
     case '+':
     case '-':
+      {
+	int c1 = yyinput ();
+	yyunput (c1, yytext);
+	int spc_next = (c1 == ' ' || c1 == '\t');
+	bin_op = looks_like_bin_op (spc_prev, spc_next);
+      }
+      break;
+
     case '/':
     case ':':
     case '\\':
     case '^':
-      spc_next = (c1 == ' ' || c1 == '\t');
-      break;
-
     case '&':
-      if (c1 == '&')
-	spc_next = next_char_is_space ();
-      else
-	spc_next = (c1 == ' ' || c1 == '\t');
-      break;
-
     case '*':
-      if (c1 == '*')
-	spc_next = next_char_is_space ();
-      else
-	spc_next = (c1 == ' ' || c1 == '\t');
-      break;
-	
     case '|':
-      if (c1 == '|')
-	spc_next = next_char_is_space ();
-      else
-	spc_next = (c1 == ' ' || c1 == '\t');
-      break;
-
     case '<':
-      if (c1 == '=' || c1 == '>')
-	spc_next = next_char_is_space ();
-      else
-	spc_next = (c1 == ' ' || c1 == '\t');
-      break;
-
     case '>':
-      if (c1 == '=')
-	spc_next = next_char_is_space ();
-      else
-	spc_next = (c1 == ' ' || c1 == '\t');
-      break;
-
     case '~':
     case '!':
     case '=':
-      if (c1 == '=')
-	spc_next = next_char_is_space ();
-      else
-	goto done;
-      break;
-
     case '.':
-      if (c1 == '*')
-	{
-	  int c2 = yyinput ();
-	  if (c2 == '*')
-	    spc_next = next_char_is_space ();
-	  else
-	    spc_next = (c2 == ' ' || c2 == '\t');
-	  yyunput (c2, yytext);
-	}
-      else if (c1 == '/' || c1 == '\\' || c1 == '^')
-	spc_next = next_char_is_space ();
-      else
-	goto done;
+      bin_op = 1;
       break;
 
     default:
-      goto done;
+      break;
     }
 
-  bin_op = looks_like_bin_op (spc_prev, spc_next);
-
- done:
-  yyunput (c1, yytext);
   yyunput (c0, yytext);
 
   return bin_op;

@@ -40,7 +40,10 @@ function m = split (s, t)
     usage ("split (s, t)");
   endif
 
-  if (isstr (s) && isstr (t))
+  if not(ischar (s) && ischar (t))
+    error ("split: both s and t must be strings");
+  endif
+
 
   l_s = length (s);
   l_t = length (t);
@@ -48,41 +51,35 @@ function m = split (s, t)
   if (l_s == 0)
     m = "";
     return;
+  elseif (l_t == 0)
+    m = s';
+	return;
   elseif (l_s < l_t)
     error ("split: s must not be shorter than t");
   endif
-
-  if (l_t == 0)
-    ind = 1 : (l_s + 1);
-  else
-    ind = findstr (s, t, 0);
-    if (length (ind) == 0)
-      m = s;
-      return;
-    endif
-    ind = [1 - l_t, ind, l_s + 1];
+  
+  if (min(size(s)) ~= 1 | min(size(t)) ~= 1)
+    error("split: multible strings are not supported");
   endif
 
-  cmd = "";
-
-  limit = length (ind) - 1;
-
-  for k = 1 : limit
-
-    range = (ind (k) + l_t) : ind (k + 1) - 1;
-
-    if (k != limit)
-      cmd = sprintf ("%s\"%s\", ", cmd, undo_string_escapes (s (range)));
-    else
-      cmd = sprintf ("%s\"%s\"", cmd, undo_string_escapes (s (range)));
-    endif
-
-  endfor
-
-  m = eval (sprintf ("str2mat (%s);", cmd));
-
-  else
-    error ("split: both s and t must be strings");
+  ind = findstr (s, t, 0);
+  if (length (ind) == 0)
+    m = s;
+    return;
   endif
+  ind2 = [1, ind+l_t];
+  ind  = [ind, l_s+1];
+
+  ind_diff = ind-ind2;
+  % Create a matrix of the correct size that's filled with spaces
+  m_rows = length(ind);
+  m_cols = max(ind_diff);
+  m = char( zeros(m_rows, m_cols) + ' ' );
+
+  % Copy the strings to the matrix
+  for i = 1:length(ind)
+    tmp = ind2(i):(ind(i)-1);
+    m(i, 1:length(tmp)) = s(tmp);
+  end
 
 endfunction

@@ -1,3 +1,9 @@
+2005-03-16  Soren Hauberg  <soren@hauberg.org>
+
+	* strings/split.m: Quick return for empty second arg.
+	Improve warning for multi-line strings.
+	Speed up by avoiding sprintf in loop and eval.
+
 2005-03-16  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* polynomial/polyderiv.m : Accept a*b, a/b.  Auto-reduce common terms.

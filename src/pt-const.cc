@@ -393,12 +393,12 @@ tree_constant_rep::tree_constant_rep (double b, double l, double i)
   int nel = range->nelem ();
   if (nel < 0)
     {
+      delete range;
+      type_tag = unknown_constant;
       if (nel == -1)
 	error ("number of elements in range exceeds INT_MAX");
       else
 	error ("invalid range");
-
-      jump_to_top_level ();
     }
   else if (nel > 1)
     type_tag = range_constant;
@@ -582,14 +582,11 @@ tree_constant_rep::maybe_resize (int i, int j)
       else
 	{
 	  if (i > nr)
-	    message ((char *) NULL,
-		     "row index = %d exceeds max row dimension = %d", i, nr);
-	  if (j > nc)
-	    message ((char *) NULL,
-		     "column index = %d exceeds max column dimension = %d",
-		     j, nc);
+	    error ("row index = %d exceeds max row dimension = %d", i, nr);
 
-	  jump_to_top_level ();
+	  if (j > nc)
+	    error ("column index = %d exceeds max column dimension = %d",
+		   j, nc);
 	}
     }
 }
@@ -618,33 +615,21 @@ tree_constant_rep::maybe_resize (int i, force_orient f_orient = no_orient)
 	    resize (1, i, 0.0);
 	}
       else
-	{
-	  message ((char *) NULL,
-		   "matrix index = %d exceeds max dimension = %d", i, nc);
-	  jump_to_top_level ();
-	}
+	error ("matrix index = %d exceeds max dimension = %d", i, nc);
     }
   else if (nr == 1 && i > nc)
     {
       if (user_pref.resize_on_range_error)
 	resize (1, i, 0.0);
       else
-	{
-	  message ((char *) NULL,
-		   "matrix index = %d exceeds max dimension = %d", i, nc);
-	  jump_to_top_level ();
-	}
+	error ("matrix index = %d exceeds max dimension = %d", i, nc);
     }
   else if (nc == 1 && i > nr)
     {
       if (user_pref.resize_on_range_error)
 	resize (i, 1, 0.0);
       else
-	{
-	  message ((char *) NULL,
-		   "matrix index = %d exceeds max dimension = ", i, nc);
-	  jump_to_top_level ();
-	}
+	error ("matrix index = %d exceeds max dimension = ", i, nc);
     }
 }
 
@@ -2318,15 +2303,6 @@ tree_constant_rep::diag (const tree_constant& a) const
       break;
     }
   return retval;
-}
-
-void
-tree_constant_rep::print_if_string (ostream& os, int warn)
-{
-  if (type_tag == string_constant)
-    os << string << "\n";
-  else if (warn)
-    warning ("expecting string, found numeric constant");
 }
 
 tree_constant

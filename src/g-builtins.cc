@@ -432,19 +432,26 @@ builtin_eig (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Print error message and jump to top level.
+ * Print error message and set the error state.  This should
+ * eventually take us up to the top level, possibly printing traceback
+ * messages as we go.
  */
 tree_constant *
 builtin_error (tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin == 2 && args != NULL_TREE_CONST && args[1].is_defined ())
-    args[1].print_if_string (cerr, 1);
-  else
-    message ((char *) NULL, "unspecified error, jumping to top level...");
+  char *msg = "unspecified_error";
 
-  jump_to_top_level ();
+  if (nargin == 2
+      && args != NULL_TREE_CONST
+      && args[1].is_defined ()
+      && args[1].is_string_type ())
+    {
+      msg = args[1].string_value ();
+    }
+
+  error (msg);
 
   return retval;
 }

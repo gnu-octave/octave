@@ -102,6 +102,9 @@ tree_plot_command::eval (int print)
   if (range != (tree_plot_limits *) NULL)
     range->print (ndim, plot_buf);
 
+  if (error_state)
+    return retval;
+
   plot_line_count = 0;
   tree_subplot_list *ptr = plot_list;
   for ( ; ptr != NULL_TREE ; ptr = ptr->next_elem ())
@@ -238,7 +241,7 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
   if (plot_data != NULL_TREE)
     {
       tree_constant data = plot_data->eval (0);
-      if (data.is_defined ())
+      if (! error_state && data.is_defined ())
 	{
 	  char *file = (char *) NULL;
 	  if (data.is_string_type ())
@@ -301,7 +304,7 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
   if (title != NULL_TREE)
     {
       tree_constant tmp = title->eval (0);
-      if (tmp.is_string_type ())
+      if (! error_state && tmp.is_string_type ())
 	plot_buf << " title " << '"' << tmp.string_value () << '"';
       else
 	{
@@ -420,8 +423,16 @@ tree_plot_range::print (ostrstream& plot_buf)
   if (lower != NULL_TREE)
     {
       tree_constant lower_val = lower->eval (0);
-      double lo = lower_val.to_scalar ();
-      plot_buf << lo;
+      if (error_state)
+	{
+	  error ("evaluating lower bound of plot range");
+	  return;
+	}
+      else
+	{
+	  double lo = lower_val.to_scalar ();
+	  plot_buf << lo;
+	}
     }
 
   plot_buf << ":";
@@ -429,8 +440,16 @@ tree_plot_range::print (ostrstream& plot_buf)
   if (upper != NULL_TREE)
     {
       tree_constant upper_val = upper->eval (0);
-      double hi = upper_val.to_scalar ();
-      plot_buf << hi;
+      if (error_state)
+	{
+	  error ("evaluating upper bound of plot range");
+	  return;
+	}
+      else
+	{
+	  double hi = upper_val.to_scalar ();
+	  plot_buf << hi;
+	}
     }
 
   plot_buf << "]";
@@ -498,6 +517,12 @@ tree_subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
       if (x[i] != NULL_TREE)
 	{
 	  tree_constant tmp = x[i]->eval (0);
+	  if (error_state)
+	    {
+	      error ("evaluating plot using command");
+	      return -1;
+	    }
+
 	  double val;
 	  if (tmp.is_defined ())
 	    {
@@ -582,25 +607,31 @@ tree_subplot_style::print (ostrstream& plot_buf)
       if (linetype != NULL_TREE)
 	{
 	  tree_constant tmp = linetype->eval (0);
-	  if (tmp.is_defined ())
+	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.to_scalar ();
 	      plot_buf << " " << NINT (val);
 	    }
 	  else
-	    return -1;
+	    {
+	      error ("evaluating plot style command");
+	      return -1;
+	    }
 	}
 
       if (pointtype != NULL_TREE)
 	{
 	  tree_constant tmp = pointtype->eval (0);
-	  if (tmp.is_defined ())
+	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.to_scalar ();
 	      plot_buf << " " << NINT (val);
 	    }
 	  else
-	    return -1;
+	    {
+	      error ("evaluating plot style command");
+	      return -1;
+	    }
 	}
     }
   else

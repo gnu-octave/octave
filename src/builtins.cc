@@ -579,6 +579,9 @@ static builtin_string_variables string_variables[] =
   { "Inf", "??", NULL,
     "infinity", },
 
+  { "INFO_FILE", "??", sv_info_file,
+    "name of the Octave info file", },
+
   { "J", "??", NULL,
     "sqrt (-1)", },
 
@@ -841,6 +844,10 @@ install_builtins (void)
   tmp = new tree_constant (load_path);
   bind_variable ("LOADPATH", tmp);
   make_eternal ("LOADPATH");
+
+  tmp = new tree_constant (info_file);
+  bind_variable ("INFO_FILE", tmp);
+  make_eternal ("INFO_FILE");
 
   tmp = new tree_constant (default_pager ());
   bind_variable ("PAGER", tmp);

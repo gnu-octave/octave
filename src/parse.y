@@ -172,9 +172,10 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 %token <tok_val> END
 %token <tok_val> PLOT
 %token <tok_val> TEXT STYLE
+%token <tok_val> FOR WHILE IF ELSEIF ELSE BREAK CONTINUE FUNC_RET
 
 // Other tokens.
-%token FOR WHILE IF ELSEIF ELSE FCN BREAK CONTINUE FUNC_RET SCREW_TWO
+%token FCN SCREW_TWO
 %token END_OF_INPUT GLOBAL
 %token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE
 
@@ -193,6 +194,7 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 %type <tree_command_type> statement
 %type <tree_if_command_type> elseif
 %type <tree_command_list_type> simple_list simple_list1 list list1 opt_list
+%type <tree_command_list_type> global_decl global_decl1
 %type <tree_word_list_command_type> word_list_cmd
 %type <tree_plot_command_type> plot_command 
 %type <tree_subplot_list_type> plot_command1 plot_command2 plot_options
@@ -345,7 +347,7 @@ command		: plot_command
 		| func_def
 		  { $$ = $1; }
 		| global_decl
-		  { $$ = NULL_TREE; }
+		  { $$ = $1; }
 		;
 
 plot_command	: PLOT plot_command1
@@ -475,11 +477,14 @@ ans_expression	: expression
 		;
 
 global_decl	: GLOBAL global_decl1
-		  { }
+		  { $$ = $2->reverse (); }
 		;
 
 global_decl1	: NAME
-		  { force_global ($1->sym_rec()->name ()); }
+		  {
+		    force_global ($1->sym_rec()->name ());
+		    $$ = new tree_command_list ();
+		  }
 		| NAME '=' expression
 		  {
 		    symbol_record *sr = force_global ($1->sym_rec()->name ());
@@ -488,10 +493,13 @@ global_decl1	: NAME
 		    tree_simple_assignment_expression *expr =
 		      new tree_simple_assignment_expression
 			(id, $3, $2->line (), $2->column ());
-		    expr->eval (0);
+		    $$ = new tree_command_list (expr);
 		  }
 		| global_decl1 optcomma NAME
-		  { force_global ($3->sym_rec()->name ()); }
+		  {
+		    force_global ($3->sym_rec()->name ());
+		    $$ = $1;
+		  }
 		| global_decl1 optcomma NAME '=' expression
 		  {
 		    symbol_record *sr = force_global ($3->sym_rec()->name ());
@@ -500,7 +508,7 @@ global_decl1	: NAME
 		    tree_simple_assignment_expression *expr =
 		      new tree_simple_assignment_expression
 			(id, $5, $4->line (), $4->column ());
-		    expr->eval (0);
+		    $$ = $1->chain (expr);
 		  }
 		;
 
@@ -519,14 +527,16 @@ statement	: WHILE expression optsep opt_list END
 		    if (check_end ($5, token::while_end))
 		      ABORT_PARSE;
 		    looping--;
-		    $$ = new tree_while_command ($2, $4);
+		    $$ = new tree_while_command ($2, $4, $1->line (),
+						 $1->column ());
 		  }
 		| FOR variable '=' expression optsep opt_list END
 		  {
 		    if (check_end ($7, token::for_end))
 		      ABORT_PARSE;
 		    looping--;
-		    $$ = new tree_for_command ($2, $4, $6);
+		    $$ = new tree_for_command ($2, $4, $6,
+					       $1->line (), $1->column ());
 		  }
 		| IF expression optsep opt_list END
 		  {
@@ -534,7 +544,8 @@ statement	: WHILE expression optsep opt_list END
 		    if (check_end ($5, token::if_end))
 		      ABORT_PARSE;
 		    iffing--;
-		    $$ = new tree_if_command ($2, $4);
+		    $$ = new tree_if_command ($2, $4,
+					      $1->line (), $1->column ());
 		  }
 		| IF expression optsep opt_list ELSE optsep opt_list END
 		  {
@@ -542,8 +553,9 @@ statement	: WHILE expression optsep opt_list END
 		    if (check_end ($8, token::if_end))
 		      ABORT_PARSE;
 		    iffing--;
-		    tree_if_command *t1 = new tree_if_command ($7);
-		    $$ = t1->chain ($2, $4);
+		    tree_if_command *t1 = new tree_if_command
+					    ($7, $5->line (), $5->column ());
+		    $$ = t1->chain ($2, $4, $1->line (), $1->column ());
 		  }
 		| IF expression optsep opt_list elseif END
 		  {
@@ -554,7 +566,7 @@ statement	: WHILE expression optsep opt_list END
 		    tree_if_command *t1 = $5->reverse ();
 		    // Add the if list to the new head of the elseif
 		    // list, and return the list.
-		    $$ = t1->chain ($2, $4);
+		    $$ = t1->chain ($2, $4, $1->line (), $1->column ());
 		  }
 		| IF expression optsep opt_list elseif ELSE optsep opt_list END
 		  {
@@ -564,11 +576,12 @@ statement	: WHILE expression optsep opt_list END
 		    iffing--;
 		    // Add the else list to the head of the elseif list,
 		    // then reverse the list.
-		    tree_if_command *t1 = $5->chain ($8);
+		    tree_if_command *t1 = $5->chain ($8, $6->line (),
+						     $6->column ());
 		    t1 = t1->reverse ();
 		    // Add the if list to the new head of the elseif
 		    // list, and return the list.
-		    $$ = t1->chain ($2, $4);
+		    $$ = t1->chain ($2, $4, $1->line (), $1->column ());
 		  }
 		| BREAK
 		  {
@@ -579,7 +592,7 @@ statement	: WHILE expression optsep opt_list END
  or `while' loop");
 			ABORT_PARSE;
 		      }
-		    $$ = new tree_break_command ();
+		    $$ = new tree_break_command ($1->line (), $1->column ());
 		  }
 		| CONTINUE
 		  {
@@ -590,7 +603,8 @@ statement	: WHILE expression optsep opt_list END
  `for' or `while' loop");
 			ABORT_PARSE;
 		      }
-		    $$ = new tree_break_command ();
+		    $$ = new tree_continue_command ($1->line (),
+						    $1->column ());
 		  }
 		| FUNC_RET
 		  {
@@ -600,19 +614,20 @@ statement	: WHILE expression optsep opt_list END
 			error ("return: only meaningful within a function");
 			ABORT_PARSE;
 		      }
-		    $$ = new tree_return_command ();
+		    $$ = new tree_return_command ($1->line (), $1->column ());
 		  }
 		;
 
 elseif		: ELSEIF optsep expression optsep opt_list
 		  {
 		    maybe_warn_assign_as_truth_value ($3);
-		    $$ = new tree_if_command ($3, $5);
+		    $$ = new tree_if_command ($3, $5, $1->line (),
+					      $1->column ());
 		  }
 		| elseif ELSEIF optsep expression optsep opt_list
 		  {
 		    maybe_warn_assign_as_truth_value ($4);
-		    $$ = $1->chain ($4, $6);
+		    $$ = $1->chain ($4, $6, $2->line (), $2->column ());
 		  }
 		;
 
@@ -927,13 +942,20 @@ fcn_end_or_eof	: END
 		;
 
 variable	: identifier
-		  { $$ = new tree_index_expression ($1); }
+		  {
+		    $$ = new tree_index_expression
+			   ($1, $1->line (), $1->column ());
+		  }
 		| identifier '(' arg_list ')'
-		  { $$ = new tree_index_expression ($1, $3); }
+		  {
+		    $$ = new tree_index_expression
+			   ($1, $3, $1->line (), $1->column ());
+		  }
 		| identifier '(' ')'
 		  {
 		    $$ = new tree_index_expression
-			       ($1, (tree_argument_list *) NULL);
+		           ($1, (tree_argument_list *) NULL,
+			    $1->line (), $1->column ());
 		  }
 		| identifier '['
 		  {

@@ -28,7 +28,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <stdlib.h>
 #include <assert.h>
 
 #define FAIL assert(0) /* XXX FIXME XXX */
@@ -44,13 +43,15 @@ public:
   idx_vector (const idx_vector& a);
 
   idx_vector (const Matrix& m, int do_ftn_idx,
-	      const char *rc = (char *) NULL, int z_len = 0);
+	      const char *rc = (char *) 0, int z_len = 0);
 
   idx_vector (const Range& r);
 
  ~idx_vector (void);
 
   idx_vector& operator = (const idx_vector& a);
+
+  operator void * () const;
 
   int capacity (void) const;
   int length (void) const;
@@ -80,30 +81,38 @@ private:
   int num_ones;
   int max_val;
   int min_val;
+  int initialized;
   int *data;
 
-  void init_state (const char *rc = (char *) NULL, int z_len = 0);
+  void init_state (const char *rc = (char *) 0, int z_len = 0);
   void convert_one_zero_to_idx (void);
 };
 
 inline idx_vector::idx_vector (void)
-  {
-    len = 0;
-    data = 0;
-    num_zeros = 0;
-    num_ones = 0;
-    one_zero = 0;
-  }
+{
+  len = 0;
+  data = (int *) 0;
+  num_zeros = 0;
+  num_ones = 0;
+  one_zero = 0;
+  initialized = 0;
+}
 
 inline idx_vector::~idx_vector (void)
-  {
-    delete [] data;
-    data = 0;
-    num_zeros = 0;
-    num_ones = 0;
-    len = 0;
-    one_zero = 0;
-  }
+{
+  delete [] data;
+  data = (int *) 0;
+  num_zeros = 0;
+  num_ones = 0;
+  len = 0;
+  one_zero = 0;
+  initialized = 0;
+}
+
+inline idx_vector::operator void * () const
+{
+  return initialized ? (void *) 1 : (void *) 0;
+}
 
 inline int idx_vector::capacity (void) const { return len; }
 inline int idx_vector::length (void) const { return len; }

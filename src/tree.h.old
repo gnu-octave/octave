@@ -650,13 +650,15 @@ class
 tree_while_command : public tree_command
 {
  public:
-  tree_while_command (void);
-  tree_while_command (tree *e);
-  tree_while_command (tree *e, tree *lst);
+  tree_while_command (int l = -1, int c = -1);
+  tree_while_command (tree *e, int l = -1, int c = -1);
+  tree_while_command (tree *e, tree *lst, int l = -1, int c = -1);
 
   ~tree_while_command (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree *expr;			// Expression to test.
@@ -670,12 +672,15 @@ class
 tree_for_command : public tree_command
 {
  public:
-  tree_for_command (void);
-  tree_for_command (tree_index_expression *id, tree *e, tree *lst);
+  tree_for_command (int l = -1, int c = -1);
+  tree_for_command (tree_index_expression *id, tree *e, tree *lst,
+		    int l = -1, int c = -1);
 
   ~tree_for_command (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree_index_expression *id;	// Identifier to modify.
@@ -690,17 +695,19 @@ class
 tree_if_command : public tree_command
 {
  public:
-  tree_if_command (void);
-  tree_if_command (tree *t);
-  tree_if_command (tree *e, tree *t);
+  tree_if_command (int l = -1, int c = -1);
+  tree_if_command (tree *t, int l = -1, int c = -1);
+  tree_if_command (tree *e, tree *t, int l = -1, int c = -1);
 
   ~tree_if_command (void);
 
-  tree_if_command *chain (tree *t);
-  tree_if_command *chain (tree *t1, tree *t2);
+  tree_if_command *chain (tree *t, int l = -1, int c = -1);
+  tree_if_command *chain (tree *t1, tree *t2, int l = -1, int c = -1);
   tree_if_command *reverse (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree *expr;			// Expression to test.
@@ -715,7 +722,7 @@ class
 tree_break_command : public tree_command
 {
  public:
-  tree_break_command (void);
+  tree_break_command (int l = -1, int c = -1);
 
   ~tree_break_command (void);
 
@@ -729,7 +736,7 @@ class
 tree_continue_command : public tree_command
 {
  public:
-  tree_continue_command (void);
+  tree_continue_command (int l = -1, int c = -1);
 
   ~tree_continue_command (void);
 
@@ -743,7 +750,7 @@ class
 tree_return_command : public tree_command
 {
  public:
-  tree_return_command (void);
+  tree_return_command (int l = -1, int c = -1);
 
   ~tree_return_command (void);
 

@@ -207,6 +207,7 @@ parse_and_execute (FILE *f, int print)
   int retval;
   do
     {
+      reset_parser ();
       retval = yyparse ();
       if (retval == 0 && global_command != NULL_TREE)
 	{

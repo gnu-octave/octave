@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_tree_base_h)
 #define _tree_base_h 1
 
+#include <stdio.h>
+#include <time.h>
+#include <assert.h>
+
 // NOTE: don\'t put #pragma interface here because there is no
 // corresponding tree-base.cc file that implements this class!
 
@@ -34,9 +38,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifndef NULL_TREE_CONST
 #define NULL_TREE_CONST (tree_constant *)NULL
 #endif
-
-#include <time.h>
-#include <assert.h>
 
 class ostream;
 class tree_constant;

@@ -36,6 +36,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 idx_vector::idx_vector (const idx_vector& a)
 {
+  initialized = a.initialized;
+
   len = a.len;
   if (len > 0)
     {
@@ -51,7 +53,7 @@ idx_vector::idx_vector (const idx_vector& a)
       min_val = a.min_val;
     }
   else
-    data = 0;
+    data = (int *) 0;
 }
 
 static inline int
@@ -66,16 +68,19 @@ tree_to_mat_idx (double x)
 idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
 			const char *rc, int z_len = 0)
 {
+  initialized = 0;
+
   int nr = m.rows ();
   int nc = m.columns ();
 
   if (nr == 0 || nc == 0)
     {
       len = 0;
-      data = 0;
+      data = (int *) 0;
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;
+      initialized = 1;
       return;
     }
   else if (nr > 1 && nc > 1 && do_ftn_idx)
@@ -102,8 +107,8 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
     }
   else
     {
-      message ((char *) NULL, "invalid matrix index");
-      jump_to_top_level ();
+      error ("invalid matrix used as index");
+      return;
     }
 
   init_state (rc, z_len);
@@ -111,9 +116,24 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
 
 idx_vector::idx_vector (const Range& r)
 {
+  initialized = 0;
+
   len = r.nelem ();
 
-  assert (len != 0);
+  if (len < 0)
+    {
+      error ("invalid range used as index");
+      return;
+    }
+  else if (len == 0)
+    {
+      data = (int *) 0;
+      num_zeros = 0;
+      num_ones = 0;
+      one_zero = 0;
+      initialized = 1;
+      return;
+    }
 
   double b = r.base ();
   double step = r.inc ();
@@ -134,6 +154,8 @@ idx_vector::operator = (const idx_vector& a)
 {
   if (this != &a)
     {
+      initialized = a.initialized;
+
       delete [] data;
       len = a.len;
       data = new int [len];
@@ -184,7 +206,7 @@ idx_vector::init_state (const char *rc, int z_len = 0)
 	{
 	  delete [] data;
 	  len = 0;
-	  data = 0;
+	  data = (int *) 0;
 	  num_zeros = 0;
 	  num_ones = 0;
 	  one_zero = 0;
@@ -195,8 +217,11 @@ idx_vector::init_state (const char *rc, int z_len = 0)
   else if (min_val < 0)
     {
       error ("%s index %d out of range", rc, min_val+1);
-      jump_to_top_level ();
+      initialized = 0;
+      return;
     }
+
+  initialized = 1;
 }
 
 void

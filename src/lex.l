@@ -161,7 +161,7 @@ EXPON	([DdEe][+-]?{D}+)
 			}
 
 <TEXT_FCN>[\;\,]	{
-			  if (doing_set)
+			  if (doing_set && strcmp (yytext, ",") == 0)
 			    {
 			      yylval.tok_val = new token (yytext);
 			      token_stack.push (yylval.tok_val);
@@ -170,7 +170,10 @@ EXPON	([DdEe][+-]?{D}+)
 			  else
 			    {
 			      BEGIN 0;
-			      TOK_RETURN (',');
+			      if (strcmp (yytext, ",") == 0)
+				TOK_RETURN (',');
+			      else
+				TOK_RETURN (';');
 			    }
 		        }
 
@@ -895,18 +898,26 @@ is_keyword (char *s)
   int end_found = 0;
   if (strcmp ("break", s) == 0)
     {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return BREAK;
     }
   else if (strcmp ("continue", s) == 0)
     {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return CONTINUE;
     }
   else if (strcmp ("else", s) == 0)
     {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return ELSE;
     }
   else if (strcmp ("elseif", s) == 0)
     {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return ELSEIF;
     }
   else if (strcmp ("end", s) == 0)
@@ -943,14 +954,25 @@ is_keyword (char *s)
     {
       promptflag--;
       looping++;
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return FOR;
     }
   else if (strcmp ("function", s) == 0)
     {
       if (defining_func)
 	{
-	  error ("sorry, nested functions are a no-no...");
-	  jump_to_top_level ();
+	  error ("function keyword invalid within a function body");
+
+	  if ((reading_m_file || reading_script_file)
+	      && curr_m_file_name != (char *) NULL)
+	    error ("defining new function near line %d of file `%s'",
+		   input_line_number,
+		   curr_m_file_name);
+	  else
+	    error ("defining new function near line %d", input_line_number);
+
+	  jump_to_top_level ();  // XXX FIXME XXX
 	}
       else
 	{
@@ -985,16 +1007,22 @@ is_keyword (char *s)
     {
       iffing++;
       promptflag--;
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return IF;
     }
   else if (strcmp ("return", s) == 0)
     {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return FUNC_RET;
     }
   else if (strcmp ("while", s) == 0)
     {
       promptflag--;
       looping++;
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
       return WHILE;
     }
 

@@ -502,8 +502,8 @@ symbol_record::alias (symbol_record *s, int force = 0)
 {
   sv_fcn = s->sv_fcn; // Maybe this should go in the var symbol_def?
 
-  formal_param = s->formal_param; // Hmm.
-  forced_global = s->forced_global; // Hmm.
+//  formal_param = s->formal_param; // Hmm.
+//  forced_global = s->forced_global; // Hmm.
 
   if (force && s->var == (symbol_def *) NULL
       && s->fcn == (symbol_def *) NULL)
@@ -619,7 +619,7 @@ symbol_table::bind_globals (void)
 	{
 	  char *nm = ptr->name ();
 	  symbol_record *sr = global_sym_tab->lookup (nm, 0, 0);
-	  if (sr != (symbol_record *) NULL)
+	  if (sr != (symbol_record *) NULL && sr->is_forced_global ())
 	    ptr->alias (sr, 1);
 	  ptr = ptr->next ();
 	}

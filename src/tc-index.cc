@@ -72,6 +72,8 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 		Matrix mj = args[2].matrix_value ();
 
 		idx_vector j (mj, user_pref.do_fortran_indexing, "");
+		if (! j)
+		  return tree_constant ();
 
 		int len = j.length ();
 		if (len == j.ones_count ())
@@ -93,6 +95,8 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 		Matrix mi = args[1].matrix_value ();
 
 		idx_vector i (mi, user_pref.do_fortran_indexing, "");
+		if (! i)
+		  return tree_constant ();
 
 		int len = i.length ();
 		if (len == i.ones_count ())
@@ -283,6 +287,8 @@ tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
       double *cop_out_index = mi.fortran_vec ();
 
       idx_vector iv (mi, 1, "", len);
+      if (! iv)
+	return tree_constant ();
 
       int result_size = iv.length ();
 
@@ -392,6 +398,9 @@ tree_constant_rep::do_vector_index (const tree_constant& i_arg) const
 	else
 	  {
 	    idx_vector iv (mi, user_pref.do_fortran_indexing, "", len);
+	    if (! iv)
+	      return tree_constant ();
+
 	    int imax = iv.max ();
 	    if (swap_indices)
 	      {
@@ -481,6 +490,9 @@ tree_constant_rep::do_matrix_index (const tree_constant& i_arg,
       {
 	Matrix mi = tmp_i.matrix_value ();
 	idx_vector iv (mi, user_pref.do_fortran_indexing, "row", rows ());
+	if (! iv)
+	  return tree_constant ();
+
 	if (iv.length () == 0)
 	  {
 	    Matrix mtmp;
@@ -550,6 +562,9 @@ tree_constant_rep::do_matrix_index (int i, const tree_constant& j_arg) const
       {
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column", nc);
+	if (! jv)
+	  return tree_constant ();
+
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
@@ -628,6 +643,9 @@ tree_constant_rep::do_matrix_index (const idx_vector& iv,
       {
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column", nc);
+	if (! jv)
+	  return tree_constant ();
+
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
@@ -706,6 +724,9 @@ tree_constant_rep::do_matrix_index (const Range& ri, int imax,
       {
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column", nc);
+	if (! jv)
+	  return tree_constant ();
+
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;
@@ -782,6 +803,9 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
       {
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column", nc);
+	if (! jv)
+	  return tree_constant ();
+
 	if (jv.length () == 0)
 	  {
 	    Matrix mtmp;

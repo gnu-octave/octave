@@ -507,8 +507,6 @@ public:
 				       int nargin, int nargout,
 				       int debug = 0);
 
-  void print_if_string (ostream& os, int warn);
-
   constant_type const_type (void) const { return type_tag; }
 
   tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
@@ -716,9 +714,6 @@ public:
 
   tree_constant diag (void) const { return rep->diag (); }
   tree_constant diag (const tree_constant& a) const { return rep->diag (a); }
-
-  void print_if_string (ostream& os, int warn)
-    { rep->print_if_string (os, warn); }
 
   tree_constant_rep::constant_type const_type (void) const
     { return rep->const_type (); }

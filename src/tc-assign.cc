@@ -246,7 +246,11 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 	if (index_check (i-1, "") < 0)
 	  return;
 	if (nr <= 1 || nc <= 1)
-	  maybe_resize (i-1);
+	  {
+	    maybe_resize (i-1);
+	    if (error_state)
+	      return;
+	  }
 	else if (range_max_check (i-1, nr * nc) < 0)
 	  return;
 
@@ -269,10 +273,17 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 	Matrix mi = tmp_i.matrix_value ();
 	int len = nr * nc;
 	idx_vector ii (mi, 1, "", len);  // Always do fortran indexing here...
+	if (! ii)
+	  return;
+
 	int imax = ii.max ();
 
 	if (nr <= 1 || nc <= 1)
-	  maybe_resize (imax-1);
+	  {
+	    maybe_resize (imax-1);
+	    if (error_state)
+	      return;
+	  }
 	else if (range_max_check (imax-1, len) < 0)
 	  return;
 
@@ -330,6 +341,9 @@ tree_constant_rep::vector_assignment (tree_constant& rhs, tree_constant& i_arg)
 	Matrix mi = tmp_i.matrix_value ();
 	int len = nr * nc;
 	idx_vector iv (mi, user_pref.do_fortran_indexing, "", len);
+	if (! iv)
+	  return;
+
 	do_vector_assign (rhs, iv);
       }
       break;
@@ -413,6 +427,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, int i)
     }
 
   maybe_resize (i);
+  if (error_state)
+    return;
 
   int nr = rows ();
   int nc = columns ();
@@ -448,6 +464,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, idx_vector& iv)
     f_orient = column_orient;
 
   maybe_resize (iv.max (), f_orient);
+  if (error_state)
+    return;
 
   int nr = rows ();
   int nc = columns ();
@@ -485,6 +503,8 @@ tree_constant_rep::do_vector_assign (tree_constant& rhs, Range& ri, int imax)
     f_orient = column_orient;
 
   maybe_resize (imax, f_orient);
+  if (error_state)
+    return;
 
   int nr = rows ();
   int nc = columns ();
@@ -629,6 +649,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
       {
 	Matrix mi = tmp_i.matrix_value ();
 	idx_vector iv (mi, user_pref.do_fortran_indexing, "row", rows ());
+	if (! iv)
+	  return;
+
 	do_matrix_assignment (rhs, iv, j_arg);
       }
       break;
@@ -685,6 +708,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	    return;
 	  }
 	maybe_resize (i, j);
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, i, j);
       }
       break;
@@ -694,6 +720,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column",
 		       columns ());
+	if (! jv)
+	  return;
+
 	if (! indexed_assign_conforms (1, jv.capacity (), rhs_nr, rhs_nc))
 	  {
 	    error ("A(int,matrix) = X: X must be a row vector with the\
@@ -701,6 +730,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	    return;
 	  }
 	maybe_resize (i, jv.max ());
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, i, jv);
       }
       break;
@@ -727,6 +759,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	    if (index_check (rj, jmax, "column") < 0)
 	      return;
 	    maybe_resize (i, jmax);
+	    if (error_state)
+	      return;
+
 	    do_matrix_assignment (rhs, i, rj);
 	  }
       }
@@ -747,9 +782,15 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 		type_tag = matrix_constant;
 	      }
 	    maybe_resize (i, rhs_nc-1);
+	    if (error_state)
+	      return;
 	  }
 	else if (indexed_assign_conforms (1, nc, rhs_nr, rhs_nc))
-	  maybe_resize (i, nc-1);
+	  {
+	    maybe_resize (i, nc-1);
+	    if (error_state)
+	      return;
+	  }
 	else
 	  {
 	    error ("A(int,:) = X: X must be a row vector with the\
@@ -792,6 +833,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	    return;
 	  }
 	maybe_resize (iv.max (), j);
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, iv, j);
       }
       break;
@@ -801,6 +845,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column",
 		       columns ());
+	if (! jv)
+	  return;
+
 	if (! indexed_assign_conforms (iv.capacity (), jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
@@ -810,6 +857,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	    return;
 	  }
 	maybe_resize (iv.max (), jv.max ());
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, iv, jv);
       }
       break;
@@ -838,6 +888,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	    if (index_check (rj, jmax, "column") < 0)
 	      return;
 	    maybe_resize (iv.max (), jmax);
+	    if (error_state)
+	      return;
+
 	    do_matrix_assignment (rhs, iv, rj);
 	  }
       }
@@ -858,6 +911,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	    return;
 	  }
 	maybe_resize (iv.max (), new_nc-1);
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, iv, magic_colon);
       }
       break;
@@ -894,6 +950,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    return;
 	  }
 	maybe_resize (imax, j);
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, ri, j);
       }
       break;
@@ -903,6 +962,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column",
 		       columns ());
+	if (! jv)
+	  return;
+
 	if (! indexed_assign_conforms (ri.nelem (), jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
@@ -912,6 +974,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    return;
 	  }
 	maybe_resize (imax, jv.max ());
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, ri, jv);
       }
       break;
@@ -940,6 +1005,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    if (index_check (rj, jmax, "column") < 0)
 	      return;
 	    maybe_resize (imax, jmax);
+	    if (error_state)
+	      return;
+
 	    do_matrix_assignment (rhs, ri, rj);
 	  }
       }
@@ -959,6 +1027,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    return;
 	  }
 	maybe_resize (imax, new_nc-1);
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, ri, magic_colon);
       }
       break;
@@ -1002,9 +1073,15 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 		type_tag = matrix_constant;
 	      }
 	    maybe_resize (rhs_nr-1, j);
+	    if (error_state)
+	      return;
 	  }
 	else if (indexed_assign_conforms (nr, 1, rhs_nr, rhs_nc))
-	  maybe_resize (nr-1, j);
+	  {
+	    maybe_resize (nr-1, j);
+	    if (error_state)
+	      return;
+	  }
 	else
 	  {
 	    error ("A(:,int) = X: X must be a column vector with the\
@@ -1021,6 +1098,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	Matrix mj = tmp_j.matrix_value ();
 	idx_vector jv (mj, user_pref.do_fortran_indexing, "column",
 		       columns ());
+	if (! jv)
+	  return;
+
 	int nr = rows ();
 	int new_nr = nr;
 	if (nr == 0)
@@ -1035,6 +1115,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    return;
 	  }
 	maybe_resize (new_nr-1, jv.max ());
+	if (error_state)
+	  return;
+
 	do_matrix_assignment (rhs, magic_colon, jv);
       }
       break;
@@ -1067,6 +1150,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	    if (index_check (rj, jmax, "column") < 0)
 	      return;
 	    maybe_resize (new_nr-1, jmax);
+	    if (error_state)
+	      return;
+
 	    do_matrix_assignment (rhs, magic_colon, rj);
 	  }
       }

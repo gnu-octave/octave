@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "pager.h"
 
 // Where we stash output headed for the screen.
-static ostrstream *pager_buf;
+static ostrstream *pager_buf = (ostrstream *) NULL;
 
 static int
 line_count (char *s)

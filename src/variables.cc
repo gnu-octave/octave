@@ -189,7 +189,9 @@ octave_string_variable (char *name)
   if (defn != NULL_TREE)
     {
       tree_constant val = defn->eval (0);
-      if (val.is_string_type ())
+      if (error_state)
+	return retval;
+      else if (val.is_string_type ())
 	{
 	  char *s = val.string_value ();
 	  if (s != (char *) NULL)
@@ -222,7 +224,9 @@ octave_real_scalar_variable (char *name, double& d)
   if (defn != NULL_TREE)
     {
       tree_constant val = defn->eval (0);
-      if (val.const_type () == tree_constant_rep::scalar_constant)
+      if (error_state)
+	return status;
+      else if (val.const_type () == tree_constant_rep::scalar_constant)
 	{
 	  d = val.double_value ();
 	  status = 0;

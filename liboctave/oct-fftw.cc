@@ -24,9 +24,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (HAVE_FFTW3)
 
+#include <iostream>
+#include <vector>
+
 #include "oct-fftw.h"
 #include "lo-error.h"
-#include <iostream>
 
 // Helper class to create and cache fftw plans for both 1d and 2d. This
 // implementation uses FFTW_ESTIMATE to create the plans, which in theory
@@ -107,8 +109,8 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
-  char in_align = (static_cast<int> (in)) & 0xF;
-  char out_align = (static_cast<int (out)) & 0xF;
+  char in_align = (X_CAST (int, in)) & 0xF;
+  char out_align = (X_CAST (int, out)) & 0xF;
 
   if (plan[which] == 0 || d[which] != dist || s[which] != stride ||
       r[which] != rank || h[which] != howmany ||
@@ -161,8 +163,8 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
 {
   fftw_plan *cur_plan_p = &rplan;
   bool create_new_plan = false;
-  char in_align = (static_cast<int> (in)) & 0xF;
-  char out_align = (static_cast<int (out)) & 0xF;
+  char in_align = (X_CAST (int, in)) & 0xF;
+  char out_align = (X_CAST (int, out)) & 0xF;
 
   if (rplan == 0 || rd != dist || rs != stride ||
       rr != rank || rh != howmany ||
@@ -210,8 +212,9 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
 
 static octave_fftw_planner fftw_planner;
 
-static inline void convert_packcomplex_1d (Complex *out, size_t nr, 
-					   size_t nc, int stride, int dist)
+static inline void
+convert_packcomplex_1d (Complex *out, size_t nr, size_t nc,
+			int stride, int dist)
 {
   // Fill in the missing data
   for (size_t i = 0; i < nr; i++)
@@ -219,8 +222,8 @@ static inline void convert_packcomplex_1d (Complex *out, size_t nr,
       out[j*stride + i*dist] = conj(out[(nc - j)*stride + i*dist]);
 }
 
-static inline void convert_packcomplex_Nd (Complex *out, 
-					   const dim_vector &dv)
+static inline void
+convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
 {
   size_t nc = dv(0);
   size_t nr = dv(1);

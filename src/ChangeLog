@@ -1,3 +1,8 @@
+2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.54.
+	(OCTAVE_API_VERSION): Now api-v5.
+
 2004-02-16 David Bateman <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/fft.cc: Adapt for Nd arrays, combine with ifft.cc.

@@ -387,6 +387,10 @@ run_command_and_return_output (const std::string& cmd_str)
 	  // character at a time and find a way to avoid the call to
 	  // octave_usleep as well?
 
+	  // This is a bit of a kluge...
+
+	  octave_usleep (100);
+
 	  char ch;
 
 	  for (;;)

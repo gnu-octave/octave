@@ -187,6 +187,10 @@ from system to system.\n\
 
   if (cmd && *cmd)
     {
+      // This is a bit of a kluge...
+
+      octave_usleep (100);
+
       char ch;
 
       for (;;)

@@ -143,16 +143,16 @@ Matrix::Matrix (const charMatrix& a)
       elem (i, j) = a.elem (i, j);
 }
 
-int
+bool
 Matrix::operator == (const Matrix& a) const
 {
   if (rows () != a.rows () || cols () != a.cols ())
-    return 0;
+    return false;
 
   return equal (data (), a.data (), length ());
 }
 
-int
+bool
 Matrix::operator != (const Matrix& a) const
 {
   return !(*this == a);
@@ -1418,10 +1418,13 @@ Matrix::operator += (const Matrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
+      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -1440,10 +1443,13 @@ Matrix::operator -= (const Matrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
+      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -1460,10 +1466,15 @@ Matrix::operator -= (const Matrix& a)
 Matrix&
 Matrix::operator += (const DiagMatrix& a)
 {
-  if (rows () != a.rows () || cols () != a.cols ())
+  int nr = rows ();
+  int nc = cols ();
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
+      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -1476,10 +1487,15 @@ Matrix::operator += (const DiagMatrix& a)
 Matrix&
 Matrix::operator -= (const DiagMatrix& a)
 {
-  if (rows () != a.rows () || cols () != a.cols ())
+  int nr = rows ();
+  int nc = cols ();
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
+      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -1517,8 +1533,7 @@ operator * (const ColumnVector& v, const RowVector& a)
   int a_len = a.length ();
 
   if (len != a_len)
-    (*current_liboctave_error_handler)
-      ("nonconformant vector multiplication attempted");
+    gripe_nonconformant ("operator *", len, 1, 1, a_len);
   else
     {
       if (len != 0)
@@ -1578,10 +1593,13 @@ operator + (const Matrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
+      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
       return Matrix ();
     }
 
@@ -1601,10 +1619,13 @@ operator - (const Matrix& m, const DiagMatrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
+      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
       return Matrix ();
     }
 
@@ -1631,8 +1652,7 @@ operator * (const Matrix& m, const DiagMatrix& a)
   int a_nc = a.cols ();
 
   if (nc != a_nr)
-    (*current_liboctave_error_handler)
-      ("nonconformant matrix multiplication attempted");
+    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
   else
     {
       if (nr == 0 || nc == 0 || a_nc == 0)
@@ -1686,10 +1706,13 @@ operator + (const DiagMatrix& m, const Matrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
+      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
       return Matrix ();
     }
 
@@ -1708,10 +1731,13 @@ operator - (const DiagMatrix& m, const Matrix& a)
 {
   int nr = m.rows ();
   int nc = m.cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
+      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
       return Matrix ();
     }
 
@@ -1734,8 +1760,7 @@ operator * (const DiagMatrix& m, const Matrix& a)
   int a_nc = a.cols ();
   if (nc != a_nr)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
+      gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
       return Matrix ();
     }
 
@@ -1787,8 +1812,7 @@ operator * (const Matrix& m, const Matrix& a)
   int a_nc = a.cols ();
 
   if (nc != a_nr)
-    (*current_liboctave_error_handler)
-      ("nonconformant matrix multiplication attempted");
+    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
   else
     {
       if (nr == 0 || nc == 0 || a_nc == 0)
@@ -1845,10 +1869,60 @@ Matrix::map (d_d_Mapper f)
     d[i] = f (d[i]);
 }
 
+bool
+Matrix::any_element_is_negative (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      if (elem (i, j) < 0.0)
+	return true;
+
+  return false;
+}
+
+
+bool
+Matrix::any_element_is_inf_or_nan (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double val = elem (i, j);
+	if (xisinf (val) || xisnan (val))
+	  return 1;
+      }
+  return 0;
+}
+
+bool
+Matrix::all_elements_are_int_or_inf_or_nan (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double val = elem (i, j);
+	if (xisnan (val) || D_NINT (val) == val)
+	  continue;
+	else
+	  return false;
+      }
+
+  return true;
+}
+
 // Return nonzero if any element of M is not an integer.  Also extract
 // the largest and smallest values and return them in MAX_VAL and MIN_VAL.
 
-int
+bool
 Matrix::all_integers (double& max_val, double& min_val) const
 {
   int nr = rows ();
@@ -1860,7 +1934,7 @@ Matrix::all_integers (double& max_val, double& min_val) const
       min_val = elem (0, 0);
     }
   else
-    return 0;
+    return false;
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
@@ -1874,16 +1948,17 @@ Matrix::all_integers (double& max_val, double& min_val) const
 	  min_val = val;
 
 	if (D_NINT (val) != val)
-	  return 0;
+	  return false;
       }
-  return 1;
+
+  return true;
 }
 
-int
+bool
 Matrix::too_large_for_float (void) const
 {
   int nr = rows ();
-  int nc = columns ();
+  int nc = cols ();
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
@@ -1891,10 +1966,10 @@ Matrix::too_large_for_float (void) const
 	double val = elem (i, j);
 
 	if (val > FLT_MAX || val < FLT_MIN)
-	  return 1;
+	  return true;
       }
 
-  return 0;
+  return false;
 }
 
 // XXX FIXME XXX Do these really belong here?  They should maybe be
@@ -2246,6 +2321,21 @@ Matrix::sumsq (void) const
 	    }
 	}
     }
+  return retval;
+}
+
+Matrix
+Matrix::abs (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  Matrix retval (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval (i, j) = fabs (elem (i, j));
+
   return retval;
 }
 
@@ -3196,7 +3286,7 @@ Qzval (const Matrix& a, const Matrix& b)
 	    }
 	}
       else
-	(*current_liboctave_error_handler) ("nonconformant matrices");
+	gripe_nonconformant ("qzval", a_nr, a_nc, b_nr, b_nc);
     }
   else
     (*current_liboctave_error_handler) ("qzval: square matrices required");

@@ -55,8 +55,8 @@ public:
       return *this;
     }
 
-  int operator == (const DiagMatrix& a) const;
-  int operator != (const DiagMatrix& a) const;
+  bool operator == (const DiagMatrix& a) const;
+  bool operator != (const DiagMatrix& a) const;
 
   DiagMatrix& fill (double val);
   DiagMatrix& fill (double val, int beg, int end);

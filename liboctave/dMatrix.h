@@ -68,8 +68,8 @@ public:
       return *this;
     }
 
-  int operator == (const Matrix& a) const;
-  int operator != (const Matrix& a) const;
+  bool operator == (const Matrix& a) const;
+  bool operator != (const Matrix& a) const;
 
   // destructive insert/delete/reorder operations
 
@@ -173,7 +173,7 @@ public:
 
   // column vector by row vector -> matrix operations
 
-  friend Matrix operator * (const ColumnVector& a, const RowVector& a);
+  friend Matrix operator * (const ColumnVector& a, const RowVector& b);
 
   // diagonal matrix by scalar -> matrix operations
 
@@ -207,8 +207,11 @@ public:
   friend Matrix map (d_c_Mapper f, const ComplexMatrix& a);
   void map (d_d_Mapper f);
 
-  int all_integers (double& max_val, double& min_val) const;
-  int too_large_for_float (void) const;
+  bool any_element_is_negative (void) const;
+  bool any_element_is_inf_or_nan (void) const;
+  bool all_elements_are_int_or_inf_or_nan (void) const;
+  bool all_integers (double& max_val, double& min_val) const;
+  bool too_large_for_float (void) const;
  
   Matrix all (void) const;
   Matrix any (void) const;
@@ -218,6 +221,7 @@ public:
   Matrix prod (void) const;
   Matrix sum (void) const;
   Matrix sumsq (void) const;
+  Matrix abs (void) const;
 
   ColumnVector diag (void) const;
   ColumnVector diag (int k) const;

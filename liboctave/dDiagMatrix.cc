@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Diagonal Matrix class.
 
-int
+bool
 DiagMatrix::operator == (const DiagMatrix& a) const
 {
   if (rows () != a.rows () || cols () != a.cols ())
@@ -47,7 +47,7 @@ DiagMatrix::operator == (const DiagMatrix& a) const
   return equal (data (), a.data (), length ());
 }
 
-int
+bool
 DiagMatrix::operator != (const DiagMatrix& a) const
 {
   return !(*this == a);
@@ -309,10 +309,13 @@ DiagMatrix::operator += (const DiagMatrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
+      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -330,10 +333,13 @@ DiagMatrix::operator -= (const DiagMatrix& a)
 {
   int nr = rows ();
   int nc = cols ();
-  if (nr != a.rows () || nc != a.cols ())
+
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+
+  if (nr != a_nr || nc != a_nc)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
+      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
       return *this;
     }
 
@@ -353,12 +359,13 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
 {
   int nr_a = a.rows ();
   int nc_a = a.cols ();
+
   int nr_b = b.rows ();
   int nc_b = b.cols ();
+
   if (nc_a != nr_b)
     {
-      (*current_liboctave_error_handler)
-        ("nonconformant matrix multiplication attempted");
+      gripe_nonconformant ("operaotr *", nr_a, nc_a, nr_b, nc_b);
       return DiagMatrix ();
     }
 

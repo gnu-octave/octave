@@ -38,7 +38,7 @@ function zr = tzero (a, b, c, d, bal)
 
   if (n > 0 && m > 0 && p > 0)
     if (m != p)
-      fprintf (stderr "tzero: number of inputs,outputs differ.  squaring up");
+      fprintf (stderr, "tzero: number of inputs,outputs differ.  squaring up");
       if (p > m)
 	fprintf (stderr, "       by padding b and d with zeros.");
 	b = [b, zeros (n, p-m)];

@@ -52,9 +52,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "mappers.h"
 #include "variables.h"
 
-// keeps a count of how many files are open and in the file list
-static int file_count = 0;
-
 // keeps a count of args sent to printf or scanf
 static int fmt_arg_count = 0;
 
@@ -140,8 +137,6 @@ initialize_file_io (void)
   file_list.append (octave_stdin);
   file_list.append (octave_stdout);
   file_list.append (octave_stderr);
-
-  file_count = 3;
 }
 
 // Given a file name or number, return a pointer to the corresponding
@@ -154,6 +149,7 @@ return_valid_file (const tree_constant& arg)
     {
       Pix p = file_list.first ();
       file_info file;
+      int file_count = file_list.length ();
       for (int i = 0; i < file_count; i++)
 	{
 	  char *file_name = arg.string_value ();
@@ -175,6 +171,7 @@ return_valid_file (const tree_constant& arg)
 	    {
 	      Pix p = file_list.first ();
 	      file_info file;
+	      int file_count = file_list.length ();
 	      for (int i = 0; i < file_count; i++)
 		{
 		  file = file_list (p);
@@ -199,12 +196,14 @@ fopen_file_for_user (const char *name, const char *mode,
   FILE *file_ptr = fopen (name, mode);
   if (file_ptr)
     {
-      file_info file (++file_count, name, file_ptr, mode);
+      int file_number = file_list.length () + 1;
+
+      file_info file (file_number, name, file_ptr, mode);
       file_list.append (file);
       
       Pix p = file_list.first ();
       file_info file_from_list;
-      
+      int file_count = file_list.length ();
       for (int i = 0; i < file_count; i++)
 	{
 	  file_from_list = file_list (p);
@@ -288,7 +287,6 @@ fclose_internal (const Octave_object& args)
 
   int success = fclose (file.fptr ());
   file_list.del (p);
-  file_count--;
 
   if (success == 0)
     retval(0) = 1.0; // succeeded
@@ -505,12 +503,12 @@ fopen_internal (const Octave_object& args)
       return retval;
     }
 
-  int number = file_count++;
+  int file_number =  file_list.length () + 1;
 
-  file_info file (number, name, file_ptr, mode);
+  file_info file (file_number, name, file_ptr, mode);
   file_list.append (file);
 
-  retval(0) = (double) number;
+  retval(0) = (double) file_number;
 
   return retval;
 }
@@ -539,6 +537,8 @@ freport_internal (void)
   ostrstream output_buf;
 
   output_buf << "\n number  mode  name\n\n";
+
+  int file_count = file_list.length ();
   for (int i = 0; i < file_count; i++)
     {
       file_info file = file_list (p);
@@ -713,16 +713,27 @@ close_files (void)
 {
   Pix p = file_list.first ();
 
+  int file_count = file_list.length ();
   for (int i = 0; i < file_count; i++)
     {
-      file_info file = file_list (p);
-      if (i > 2)   // do not close stdin, stdout, stderr!
+      if (p)
 	{
-	  int success = fclose (file.fptr ());
-	  if (success != 0)
-	    error ("closing %s", file.name ());
+	  file_info file = file_list (p);
+
+	  if (i > 2)   // do not close stdin, stdout, stderr!
+	    {
+	      int success = fclose (file.fptr ());
+	      if (success != 0)
+		error ("closing %s", file.name ());
+	    }
+
+	  file_list.del (p);
 	}
-      file_list.del (p);
+      else
+	{
+	  error ("inconsistent state for internal file list!");
+	  break;
+	}
     }
 }
 

@@ -58,6 +58,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "oct-cmplx.h"
 #include "str-vec.h"
 
+#include "defaults.h"
 #include "defun.h"
 #include "dir-ops.h"
 #include "dirfns.h"
@@ -73,7 +74,6 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -266,7 +266,7 @@ get_fcn_file_names (int no_suffix)
 
   string_vector retval (num_max);
 
-  dir_path p (user_pref.loadpath);
+  dir_path p (Vload_path);
 
   string_vector dirs = p.all_directories ();
 
@@ -331,7 +331,7 @@ search_path_for_file (const string& path, const string& name)
 {
   dir_path p (path);
 
-  return make_absolute (p.find (name), the_current_working_directory);
+  return make_absolute (p.find (name), Vcurrent_directory);
 }
 
 DEFUN (file_in_path, args, ,
@@ -369,10 +369,10 @@ file_in_path (const string& name, const string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  if (the_current_working_directory.empty ())
+  if (Vcurrent_directory.empty ())
     get_working_directory ("file_in_path");
 
-  return search_path_for_file (user_pref.loadpath, nm);
+  return search_path_for_file (Vload_path, nm);
 }
 
 // See if there is an function file in the path.  If so, return the
@@ -572,6 +572,40 @@ oct_putenv (const char *var_name, const char *value)
   delete [] old_item;
 
 #endif
+}
+
+// Check the value of a string variable to see if it it's ok to do
+// something.
+//
+//   return of  1 => always ok.
+//   return of  0 => never ok.
+//   return of -1 => ok, but give me warning (default).
+
+int
+check_preference (const string& var)
+{
+  int pref = -1;
+
+  string val = builtin_string_variable (var);
+
+  if (val.empty ())
+    {
+      double dval = 0;
+      if (builtin_real_scalar_variable (var, dval))
+	pref = NINT (dval);
+    }
+  else
+    {
+      if (val.compare ("yes", 0, 3) == 0
+	  || val.compare ("true", 0, 4) == 0)
+	pref = 1;
+      else if (val.compare ("never", 0, 5) == 0
+	       || val.compare ("no", 0, 2) == 0
+	       || val.compare ("false", 0, 5) == 0)
+	pref = 0;
+    }
+
+  return pref;
 }
 
 /*

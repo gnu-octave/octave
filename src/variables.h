@@ -130,20 +130,6 @@ extern void bind_builtin_variable (const string&, const octave_value&,
 
 extern void install_builtin_variables (void);
 
-extern string maybe_add_default_load_path (const string& p);
-
-extern string octave_lib_dir (void);
-extern string octave_arch_lib_dir (void);
-extern string octave_fcn_file_dir (void);
-extern string octave_bin_dir (void);
-extern string default_exec_path (void);
-extern string default_path (void);
-extern string default_info_file (void);
-extern string default_info_prog (void);
-extern string default_editor (void);
-extern string get_local_site_defaults (void);
-extern string get_site_defaults (void);
-
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;
 
@@ -152,6 +138,16 @@ extern symbol_table *curr_sym_tab;
 
 // Symbol table for global symbols.
 extern symbol_table *global_sym_tab;
+
+enum echo_state
+{
+  ECHO_OFF = 0,
+  ECHO_SCRIPTS = 1,
+  ECHO_FUNCTIONS = 2,
+  ECHO_CMD_LINE = 4
+};
+
+extern int Vecho_executing_commands;
 
 #endif
 

@@ -62,6 +62,8 @@ extern string undo_string_escapes (const string& s);
 
 extern void oct_putenv (const char *, const char *);
 
+extern int check_preference (const string& var);
+
 #endif
 
 /*

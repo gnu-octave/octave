@@ -73,7 +73,7 @@ Free Software Foundation, Inc.
 #include "variables.h"
 
 // The current working directory.
-static string Vcurrent_directory;
+string Vcurrent_directory;
 
 // Non-zero means follow symbolic links that point to directories just
 // as if they are real directories.
@@ -116,9 +116,9 @@ polite_directory_format (const string& name)
 {
   string retval;
 
-  size_t len = home_directory.length ();
+  size_t len = Vhome_directory.length ();
 
-  if (len > 1 && home_directory.compare (name, 0, len) == 0
+  if (len > 1 && Vhome_directory.compare (name, 0, len) == 0
       && (name.length () == len || name[len] == '/'))
     {
       retval = "~";
@@ -243,17 +243,17 @@ string
 get_working_directory (const string& for_whom)
 {
   if (! follow_symbolic_links)
-    the_current_working_directory = "";
+    Vcurrent_directory = "";
 
-  if (the_current_working_directory.empty ())
+  if (Vcurrent_directory.empty ())
     {
-      the_current_working_directory = octave_getcwd ();
+      Vcurrent_directory = octave_getcwd ();
 
-      if (the_current_working_directory.empty ())
+      if (Vcurrent_directory.empty ())
 	warning ("%s: can't find current directory!", for_whom.c_str ());
     }
 
-  return the_current_working_directory;
+  return Vcurrent_directory;
 }
 
 // Do the work of changing to the directory NEWDIR.  Handle symbolic
@@ -266,13 +266,13 @@ change_to_directory (const string& newdir)
 
   if (follow_symbolic_links)
     {
-      if (the_current_working_directory.empty ())
+      if (Vcurrent_directory.empty ())
 	get_working_directory ("cd_links");
 
-      if (the_current_working_directory.empty ())
+      if (Vcurrent_directory.empty ())
 	tmp = newdir;
       else
-	tmp = make_absolute (newdir, the_current_working_directory);
+	tmp = make_absolute (newdir, Vcurrent_directory);
 
       // Get rid of trailing `/'.
 
@@ -288,7 +288,7 @@ change_to_directory (const string& newdir)
 	return 0;
       else
 	{
-	  the_current_working_directory = tmp;
+	  Vcurrent_directory = tmp;
 	  return 1;
 	}
     }
@@ -337,8 +337,8 @@ users home directory")
     }
   else
     {
-      if (home_directory.empty ()
-	  || ! octave_change_to_directory (home_directory))
+      if (Vhome_directory.empty ()
+	  || ! octave_change_to_directory (Vhome_directory))
 	{
 	  return retval;
 	}

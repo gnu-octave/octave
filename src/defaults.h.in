@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_defaults_h)
 #define octave_defaults_h 1
 
+#include <string>
+
 #ifndef DEFAULT_PAGER
 #define DEFAULT_PAGER %DEFAULT_PAGER%
 #endif
@@ -112,7 +114,35 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CXXLIB_PATH %CXXLIB_PATH%
 #endif
 
+extern string Voctave_home;
+
+extern string Vbin_dir;
+extern string Vlib_dir;
+extern string Vinfo_dir;
+extern string Varch_lib_dir;
+extern string Vfcn_file_dir;
+
+// The path that will be searched for programs that we execute.
+// (--exec-path path)
+extern string Vexec_path;
+
+// Load path specified on command line.
+// (--path path; -p path)
+extern string Vload_path;
+
+// Name of the editor to be invoked by the edit_history command.
+extern string Veditor;
+
+extern string Vimagepath;
+
+extern string Vlocal_site_defaults_file;
+extern string Vsite_defaults_file;
+
+extern string maybe_add_default_load_path (const string& pathstring);
+
 extern void install_defaults (void);
+
+extern void symbols_of_defaults (void);
 
 #endif
 

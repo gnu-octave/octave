@@ -48,37 +48,19 @@ extern int main_loop (void);
 extern void do_octave_atexit (void);
 
 // argv[0] for this program.
-extern string raw_prog_name;
+extern string Vprogram_invocation_name;
 
 // Cleaned-up name of this program, not including path information.
-extern string prog_name;
+extern string Vprogram_name;
 
 // Login name for user running this program.
-extern string user_name;
+extern string Vuser_name;
 
 // Name of the host we are running on.
-extern string host_name;
+extern string Vhost_name;
 
-// User's home directory.
-extern string home_directory;
-
-// Guess what?
-extern string the_current_working_directory;
-
-// The path that will be searched for programs that we execute.
-extern string exec_path;
-
-// Load path specified on command line.
-extern string load_path;
-
-// Name of the info file specified on command line.
-extern string info_file;
-
-// Name of the info reader we'd like to use.
-extern string info_prog;
-
-// Name of the editor to be invoked by the edit_history command.
-extern string editor;
+// Home directory for the current user.
+extern string Vhome_directory;
 
 // Nonzero means we are using readline.
 extern int using_readline;

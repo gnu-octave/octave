@@ -48,7 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-mvr.h"
 #include "pt-walk.h"
 #include "pt-pr-code.h"
-#include "user-prefs.h"
+#include "variables.h"
 
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;
@@ -83,7 +83,7 @@ void
 tree_statement::maybe_echo_code (bool in_function_body)
 {
   if (in_function_body
-      && (user_pref.echo_executing_commands & ECHO_FUNCTIONS))
+      && (Vecho_executing_commands & ECHO_FUNCTIONS))
     {
       tree_print_code tpc (octave_stdout);
 

@@ -32,6 +32,8 @@ extern string base_pathname (const string&);
 extern string make_absolute (const string&, const string&);
 extern string get_working_directory (const string&);
 
+extern string Vcurrent_directory;
+
 extern void symbols_of_dirfns (void);
 
 #endif

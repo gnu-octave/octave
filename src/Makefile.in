@@ -92,7 +92,7 @@ INCLUDES := arith-ops.h builtins.h data.h defun.h defun-dld.h \
 	pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h pt-mvr.h \
 	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
-	unwind-prot.h user-prefs.h utils.h variables.h version.h \
+	unwind-prot.h utils.h variables.h version.h \
 	xdiv.h xpow.h Map.h SLStack.h Stack.h
 
 TI_SRC := Array-os.cc Array-tc.cc Map-tc.cc \
@@ -108,8 +108,8 @@ ifdef CXXPICFLAG
   TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
 endif
 
-SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc error.cc \
-	file-io.cc gripes.cc help.cc input.cc lex.l \
+SOURCES := arith-ops.cc data.cc defaults.cc dirfns.cc dynamic-ld.cc \
+	error.cc file-io.cc gripes.cc help.cc input.cc lex.l \
 	load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc oct-iostrm.cc \
 	oct-map.cc oct-obj.cc oct-prcstrm.cc oct-procbuf.cc \
 	oct-stdstrm.cc oct-stream.cc oct-strstrm.cc pager.cc \
@@ -119,7 +119,7 @@ SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc error.cc \
 	pt-mvr-base.cc pt-mvr.cc pt-plot.cc pt-pr-code.cc resource.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
 	symtab.cc syscalls.cc sysdep.cc timefns.cc token.cc toplev.cc \
-	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
+	unwind-prot.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc
 
 TEMPLATE_SRC = Map.cc SLStack.cc
@@ -329,10 +329,10 @@ conf-dist:
 
 # Special rules -- these files need special things to be defined.
 
-defaults.h: ../Makeconf Makefile
+defaults.h: defaults.h.in ../Makeconf Makefile
 	@$(do-subst-default-vals)
 
-oct-conf.h: ../Makeconf Makefile
+oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 	@$(do-subst-config-vals)
 
 oct-gperf.h: octave.gperf

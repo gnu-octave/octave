@@ -68,47 +68,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
 
 // argv[0] for this program.
-string raw_prog_name;
+string Vprogram_invocation_name;
 
 // Cleaned-up name of this program, not including path information.
-string prog_name;
+string Vprogram_name;
 
 // Login name for user running this program.
-string user_name;
+string Vuser_name;
 
 // Name of the host we are running on.
-string host_name;
+string Vhost_name;
 
 // User's home directory.
-string home_directory;
-
-// Guess what?
-string the_current_working_directory;
-
-// The path that will be searched for programs that we execute.
-// (--exec-path path)
-string exec_path;
-
-// Load path specified on command line.
-// (--path path; -p path)
-string load_path;
-
-// Name of the info file specified on command line.
-// (--info-file file)
-string info_file;
-
-// Name of the info reader we'd like to use.
-// (--info-program program)
-string info_prog;
-
-// Name of the editor to be invoked by the edit_history command.
-string editor;
+string Vhome_directory;
 
 // Nonzero means we are using readline.
 // (--no-line-editing)

@@ -144,10 +144,9 @@ initialize_file_io (void)
   file_count = 3;
 }
 
-/*
- * Given a file name or number, return a pointer to the corresponding
- * open file.  If the file has not already been opened, return NULL.
- */
+// Given a file name or number, return a pointer to the corresponding
+// open file.  If the file has not already been opened, return NULL.
+
 Pix
 return_valid_file (const tree_constant& arg)
 {
@@ -669,9 +668,8 @@ fseek_internal (const Octave_object& args)
   return retval;
 }
 
-/*
- * Tell current position of file.
- */
+// Tell current position of file.
+
 DEFUN ("ftell", Fftell, Sftell, 1, 1,
   "POSITION = ftell (FILENAME or FILENUM): returns the current file position")
 {
@@ -926,10 +924,8 @@ process_printf_format (const char *s, const Octave_object& args,
   return -1;
 }
 
+// Formatted printing to a file.
 
-/*
- * Formatted printing to a file.
- */
 DEFUN ("fprintf", Ffprintf, Sfprintf, -1, 1,
   "fprintf (FILENAME or FILENUM, FORMAT, ...)")
 {
@@ -945,9 +941,8 @@ DEFUN ("fprintf", Ffprintf, Sfprintf, -1, 1,
   return retval;
 }
 
-/*
- * Formatted printing.
- */
+// Formatted printing.
+
 DEFUN ("printf", Fprintf, Sprintf, -1, 1,
   "printf (FORMAT, ...)")
 {
@@ -963,9 +958,8 @@ DEFUN ("printf", Fprintf, Sprintf, -1, 1,
   return retval;
 }
 
-/*
- * Formatted printing to a string.
- */
+// Formatted printing to a string.
+
 DEFUN ("sprintf", Fsprintf, Ssprintf, -1, 1,
   "s = sprintf (FORMAT, ...)")
 {
@@ -1251,9 +1245,8 @@ process_scanf_format (const char *s, ostrstream& fmt,
   return -1;
 }
 
-/*
- * Formatted reading from a file.
- */
+// Formatted reading from a file.
+
 DEFUN ("fscanf", Ffscanf, Sfscanf, 2, -1,
   "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT)")
 {
@@ -1269,9 +1262,8 @@ DEFUN ("fscanf", Ffscanf, Sfscanf, 2, -1,
   return retval;
 }
 
-/*
- * Formatted reading.
- */
+// Formatted reading.
+
 DEFUN ("scanf", Fscanf, Sscanf, 1, -1,
   "[A, B, C, ...] = scanf (FORMAT)")
 {
@@ -1287,9 +1279,8 @@ DEFUN ("scanf", Fscanf, Sscanf, 1, -1,
   return retval;
 }
 
-/*
- * Formatted reading from a string.
- */
+// Formatted reading from a string.
+
 DEFUN ("sscanf", Fsscanf, Ssscanf, 2, -1,
   "[A, B, C, ...] = sscanf (STRING, FORMAT)")
 {
@@ -1441,9 +1432,8 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
   return retval;
 }
 
-/*
- * Find out how many elements are left to read.
- */
+// Find out how many elements are left to read.
+
 static long
 num_items_remaining (FILE *fptr, char *type)
 {
@@ -1511,29 +1501,28 @@ DEFUN ("fread", Ffread, Sfread, 3, 2,
   return retval;
 }
 
-/*
- * Read binary data from a file.
- *
- *   [data, count] = fread (fid, size, 'precision')
- *
- *     fid       : the file id from fopen
- *     size      : the size of the matrix or vector or scaler to read
- *
- *                 n	  : reads n elements of a column vector
- *                 inf	  : reads to the end of file (default)
- *                 [m, n] : reads enough elements to fill the matrix
- *                          the number of columns can be inf
- *
- *     precision : type of the element.  Can be:
- *
- *                 char, uchar, schar, short, ushort, int, uint,
- *                 long, ulong, float, double
- *
- *                 Default  is uchar.
- *
- *     data	 : output data
- *     count	 : number of elements read
- */
+// Read binary data from a file.
+//
+//   [data, count] = fread (fid, size, 'precision')
+//
+//     fid       : the file id from fopen
+//     size      : the size of the matrix or vector or scaler to read
+//
+//                 n	  : reads n elements of a column vector
+//                 inf	  : reads to the end of file (default)
+//                 [m, n] : reads enough elements to fill the matrix
+//                          the number of columns can be inf
+//
+//     precision : type of the element.  Can be:
+//
+//                 char, uchar, schar, short, ushort, int, uint,
+//                 long, ulong, float, double
+//
+//                 Default  is uchar.
+//
+//     data	 : output data
+//     count	 : number of elements read
+
 Octave_object
 fread_internal (const Octave_object& args, int nargout)
 {
@@ -1676,22 +1665,21 @@ DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
   return retval;
 }
 
-/*
- * Write binary data to a file.
- *
- *   count = fwrite (fid, data, 'precision')
- *
- *    fid	: file id from fopen
- *    Data	: data to be written
- *    precision	: type of output element.  Can be:
- *
- *                char, uchar, schar, short, ushort, int, uint,
- *                long, float, double
- *
- *                 Default is uchar.
- *
- *    count     : the number of elements written
- */
+// Write binary data to a file.
+//
+//   count = fwrite (fid, data, 'precision')
+//
+//    fid	: file id from fopen
+//    Data	: data to be written
+//    precision	: type of output element.  Can be:
+//
+//                char, uchar, schar, short, ushort, int, uint,
+//                long, float, double
+//
+//                 Default is uchar.
+//
+//    count     : the number of elements written
+
 Octave_object
 fwrite_internal (const Octave_object& args, int nargout)
 {
@@ -1699,7 +1687,7 @@ fwrite_internal (const Octave_object& args, int nargout)
 
   int nargin = args.length ();
 
-  Pix p = file_io_get_file (args(1), "a+", "fwrite");
+  Pix p = file_io_get_file (args(0), "a+", "fwrite");
 
   if (! p)
     return retval;
@@ -1708,7 +1696,7 @@ fwrite_internal (const Octave_object& args, int nargout)
   char *prec = "uchar";
   if (nargin > 2)
     {
-      prec = args(3).string_value ();
+      prec = args(2).string_value ();
 
       if (error_state)
 	{
@@ -1719,7 +1707,7 @@ fwrite_internal (const Octave_object& args, int nargout)
 
   file_info file = file_list (p);
 
-  Matrix m = args(2).matrix_value ();
+  Matrix m = args(1).matrix_value ();
 
   if (! error_state)
     {
@@ -1749,14 +1737,13 @@ DEFUN ("feof", Ffeof, Sfeof, 1, 1,
   return retval;
 }
 
-/*
- * Check for an EOF condition on a file opened by fopen.
- *
- *   eof = feof (fid)
- *
- *     fid : file id from fopen
- *     eof : non zero for an end of file condition
- */
+// Check for an EOF condition on a file opened by fopen.
+//
+//   eof = feof (fid)
+//
+//     fid : file id from fopen
+//     eof : non zero for an end of file condition
+
 Octave_object
 feof_internal (const Octave_object& args, int nargout)
 {
@@ -1793,15 +1780,14 @@ DEFUN ("ferror", Fferror, Sferror, 1, 1,
   return retval;
 }
 
-/*
- * Check for an error condition on a file opened by fopen.
- *
- *   [message, errnum] = ferror (fid)
- *
- *     fid     : file id from fopen
- *     message : system error message
- *     errnum  : error number
- */
+// Check for an error condition on a file opened by fopen.
+//
+//   [message, errnum] = ferror (fid)
+//
+//     fid     : file id from fopen
+//     message : system error message
+//     errnum  : error number
+
 Octave_object
 ferror_internal (const Octave_object& args, int nargout)
 {

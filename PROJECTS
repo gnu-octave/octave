@@ -53,6 +53,15 @@ Numerical:
 
   * Allow user-supplied gradient information to be passed to NPSOL.
 
+  * Actually allow control of the derivative level in NPSOL.  It can
+    be changed with npsol_options(), but then NPSOL::do_minimize()
+    sets it based on whether gradient and jacobian functions are
+    available. 
+
+  * When constructing NLConst (and other) objects, make sure that
+    there are sufficient checks to ensure that the dimensions all
+    conform.
+
   * Support for FSQP.
 
   * Convert FSQP style NLP statement to NPSOL style.
@@ -86,6 +95,10 @@ Numerical:
     been speicified, for compatibility with Matlab, at least when some
     preference variable is set.
 
+  * Make operations with empty matrices produce empty matrices, for
+    compatibility with Matlab (but only if Matlab 5 still does things
+    this way). For example:  [1, 2] * [] ==> [].
+
   * Improve design of ODE, DAE, classes.
 
   * Make it possible to specify a time which dassl and lsode should
@@ -107,6 +120,12 @@ Numerical:
 
   * On systems that support matherr(), make it possible for users to
     enable the printing of warning messages.
+
+  * Make it possible to solve b = L \ x efficiently, either by
+    providing an explicit function call, or by automatically
+    determining that L is triangular.  If it is done automatically,
+    provide some means for determining whether Octave has actually
+    detected that the matrix is triangular.
 
 --------
 Graphics:
@@ -133,11 +152,18 @@ Graphics:
 
   * If possible, pass data to gnuplot without using temporary files.
 
+  * If using temporary files, delete them when gnuplot exits.
+
   * If possible, pass binary data to gnuplot to speed things up.
 
 -------
 Strings:
 -------
+
+  * Improve performance of string functions, particularly for
+    searching and replacing.
+
+  * Provide some regex matching functions.
 
   * Convert string functions to work on string arrays.
 
@@ -201,7 +227,8 @@ Input/Output:
 
   * Use HDF for binary data.
 
-  * Make ascii load and save work for Inf and NaN.
+  * Make ascii load and save work for Inf and NaN.  (This is really a
+    problem with the functions for reading floats in the GNU iolib.)
 
   * Complain if there is not enough disk space available (I think
     there is simply not enough error checking in the code that handles
@@ -363,6 +390,9 @@ Interpreter:
 
   * Fix all function files to check for bogus inputs (wrong number or
     types of input arguments, wrong number of output arguments).
+
+  * Reduce the memory and time required to parse very large matrix
+    lists.
 
   * Handle options for built-in functions more consistently.
 
@@ -643,6 +673,10 @@ Miscellaneous:
   * Add a function like strptime() which is the opposite of
     strftime().  A C version is apparently in recent releases of the
     Linux C library.
+
+  * Add a definition to lgrind so that it supports Octave.
+    (See http://www.tex.ac.uk/tex-archive/support/lgrind/ for more
+    information about lgrind.)
 
 ------
 Always:

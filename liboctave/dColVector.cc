@@ -201,7 +201,7 @@ ColumnVector::operator += (const ColumnVector& a)
     {
       (*current_liboctave_error_handler)
 	("nonconformant vector += operation attempted");
-      *this;
+      return *this;
     }
 
   if (len == 0)

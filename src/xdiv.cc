@@ -51,29 +51,53 @@ result_ok (int info, double rcond, int warn = 1)
     return 1;
 }
 
-static inline int
-mx_leftdiv_conform (int a_nr, int b_nr)
+template <class T1, class T2>
+bool
+mx_leftdiv_conform (T1 a, T2 b)
 {
+  int a_nr = a.rows ();
+  int b_nr = b.rows ();
+
   if (a_nr != b_nr)
     {
-      error ("number of rows must be the same for left division");
-      return 0;
+      int a_nc = a.cols ();
+      int b_nc = b.cols ();
+
+      gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
+      return false;
     }
 
-  return 1;
+  return true;
 }
 
-static inline int
-mx_div_conform (int b_nc, int a_nc)
+template bool mx_leftdiv_conform (const Matrix&, const Matrix&);
+template bool mx_leftdiv_conform (const Matrix&, const ComplexMatrix&);
+template bool mx_leftdiv_conform (const ComplexMatrix&, const ComplexMatrix&);
+template bool mx_leftdiv_conform (const ComplexMatrix&, const Matrix&);
+
+template <class T1, class T2>
+bool
+mx_div_conform (T1 a, T2 b)
 {
+  int a_nc = a.cols ();
+  int b_nc = b.cols ();
+
   if (a_nc != b_nc)
     {
-      error ("number of columns must be the same for right division");
-      return 0;
+      int a_nr = a.rows ();
+      int b_nr = b.rows ();
+
+      gripe_nonconformant ("operator /", a_nr, a_nc, b_nr, b_nc);
+      return false;
     }
 
-  return 1;
+  return true;
 }
+
+template bool mx_div_conform (const Matrix&, const Matrix&);
+template bool mx_div_conform (const Matrix&, const ComplexMatrix&);
+template bool mx_div_conform (const ComplexMatrix&, const ComplexMatrix&);
+template bool mx_div_conform (const ComplexMatrix&, const Matrix&);
 
 // Right division functions.
 //
@@ -88,7 +112,7 @@ mx_div_conform (int b_nc, int a_nc)
 Matrix
 xdiv (const Matrix& a, const Matrix& b)
 {
-  if (! mx_div_conform (b.columns (), a.columns ()))
+  if (! mx_div_conform (a, b))
     return Matrix ();
 
   Matrix atmp = a.transpose ();
@@ -113,7 +137,7 @@ xdiv (const Matrix& a, const Matrix& b)
 ComplexMatrix
 xdiv (const Matrix& a, const ComplexMatrix& b)
 {
-  if (! mx_div_conform (b.columns (), a.columns ()))
+  if (! mx_div_conform (a, b))
     return ComplexMatrix ();
 
   Matrix atmp = a.transpose ();
@@ -138,7 +162,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
 ComplexMatrix
 xdiv (const ComplexMatrix& a, const Matrix& b)
 {
-  if (! mx_div_conform (b.columns (), a.columns ()))
+  if (! mx_div_conform (a, b))
     return ComplexMatrix ();
 
   ComplexMatrix atmp = a.hermitian ();
@@ -163,7 +187,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
 ComplexMatrix
 xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
-  if (! mx_div_conform (b.columns (), a.columns ()))
+  if (! mx_div_conform (a, b))
     return ComplexMatrix ();
 
   ComplexMatrix atmp = a.hermitian ();
@@ -266,7 +290,7 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 Matrix
 xleftdiv (const Matrix& a, const Matrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
+  if (! mx_leftdiv_conform (a, b))
     return Matrix ();
 
   int info;
@@ -286,7 +310,7 @@ xleftdiv (const Matrix& a, const Matrix& b)
 ComplexMatrix
 xleftdiv (const Matrix& a, const ComplexMatrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
+  if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
   int info;
@@ -306,7 +330,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
 ComplexMatrix
 xleftdiv (const ComplexMatrix& a, const Matrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
+  if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
   int info;
@@ -326,7 +350,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
 ComplexMatrix
 xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
+  if (! mx_leftdiv_conform (a, b))
     return ComplexMatrix ();
 
   int info;

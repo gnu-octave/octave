@@ -37,18 +37,20 @@ Free Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <ctime>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cassert>
+#include <csignal>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
+
 #include <iostream.h>
 #include <strstream.h>
-#include <string.h>
-#include <assert.h>
-#include <signal.h>
 
 // This must come before anything that includes iostream.h...
 extern "C"

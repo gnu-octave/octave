@@ -25,8 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <ctype.h>
-#include <string.h>
+#include <cctype>
+#include <cstring>
+
 #include <fstream.h>
 #include <iostream.h>
 

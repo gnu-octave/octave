@@ -25,19 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#if 0
-#include <ctype.h>
-#include <iostream.h>
-
-#include "mappers.h"
-#endif
+#include <cfloat>
+#include <cstring>
 
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <float.h>
-#include <string.h>
 #include <strstream.h>
 
 #include "defaults.h"
@@ -1556,6 +1550,9 @@ install_builtin_variables (void)
   DEFVAR ("ans", SBV_ans, , 0, 0, 1, 0,
     "");
 
+  DEFVAR ("argv", SBV_argv, , 0, 1, 1, 0,
+    "the command line arguments this program was invoked with");
+
   DEFVAR ("automatic_replot", SBV_automatic_replot, "false",
 	  0, 0, 1, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
@@ -1650,6 +1647,14 @@ default_return_value");
   DEFVAR ("print_empty_dimensions", SBV_print_empty_dimensions, "true",
 	  0, 0, 1, print_empty_dimensions,
     "also print dimensions of empty matrices");
+
+  DEFVAR ("program_invocation_name", SBV_program_invocation_name,
+	  raw_prog_name, 0, 1, 1, 0,
+    "the full name of the current program or script, including the\n\
+directory specification");
+
+  DEFVAR ("program_name", SBV_program_name, prog_name, 0, 1, 1, 0,
+    "the name of the current program or script");
 
   DEFVAR ("propagate_empty_matrices", SBV_propagate_empty_matrices,
 	  "true", 0, 0, 1, propagate_empty_matrices,

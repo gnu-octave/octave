@@ -32,14 +32,16 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <cstdlib>
+#include <cstring>
+#include <csignal>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <fcntl.h>
-#include <stdlib.h>
-#include <string.h>
-#include <signal.h>
+
 #include <fstream.h>
 #include <strstream.h>
 

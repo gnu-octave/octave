@@ -33,16 +33,17 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <cmath>
+#include <cfloat>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <math.h>
-#include <float.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 
 #include "tree-const.h"
 #include "octave.h"

@@ -29,6 +29,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstring>
+#include <climits>
+#include <cctype>
+#include <cstdio>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -36,10 +41,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 #include <strstream.h>
-#include <string.h>
-#include <limits.h>
-#include <ctype.h>
-#include <stdio.h>
 
 #include "variables.h"
 #include "user-prefs.h"
@@ -336,8 +337,7 @@ tree_matrix::eval (int print)
   Matrix m;
   ComplexMatrix cm;
 
-  char *string = 0;
-  char *str_ptr = 0;
+  Octave_str_obj string;
 
 // Eliminate empties and gather stats.
 
@@ -450,7 +450,7 @@ tree_matrix::eval (int print)
 
 	    case md_down:
 	      {
-		if (cols_this_row != col_total)
+		if (cols_this_row != col_total && ! all_strings)
 		  {
 		    ::error ("number of columns must match");
 		    goto done;
@@ -471,7 +471,7 @@ tree_matrix::eval (int print)
 
 // Don\'t forget to check to see if the last element will fit.
 
-  if (cols_this_row != col_total)
+  if (cols_this_row != col_total && ! all_strings)
     {
       ::error ("number of columns must match");
       goto done;
@@ -480,11 +480,8 @@ tree_matrix::eval (int print)
 // Now, extract the values from the individual elements and insert
 // them in the result matrix.
 
-  if (all_strings && row_total == 1 && col_total > 0)
-    {
-      string = str_ptr = new char [col_total + 1];
-      string[col_total] = '\0';
-    }
+  if (all_strings)
+    string.resize (row_total);
   else if (found_complex)
     cm.resize (row_total, col_total, 0.0);
   else
@@ -554,10 +551,26 @@ tree_matrix::eval (int print)
 	    {
 	      m (put_row, put_col) = tmp.double_value ();
 	    }
-	  else if (tmp.is_string () && all_strings && str_ptr)
+	  else if (tmp.is_string () && all_strings)
 	    {
-	      memcpy (str_ptr, tmp.string_value (), nc);
-	      str_ptr += nc;
+	      switch (list[i].direction)
+		{
+		case md_right:
+		  if (nr == 1)
+		    string.append_right (put_row, tmp.string_value ());
+		  else
+		    string.append_right (tmp.all_strings ());
+		  break;
+
+		case md_none:
+		case md_down:
+		  string.append_down (put_row, tmp.all_strings ());
+		  break;
+		  
+		default:
+		  panic_impossible ();
+		  break;
+		}
 	    }
 	  else
 	    {
@@ -574,12 +587,12 @@ tree_matrix::eval (int print)
       prev_nc = nc;
     }
 
-  if (all_strings && string)
-    retval = tree_constant (string);
+  if (all_strings && string.num_strings () > 0)
+    retval = string;
   else if (found_complex)
-    retval = tree_constant (cm);
+    retval = cm;
   else
-    retval = tree_constant (m);
+    retval = m;
 
  done:
   delete [] list;

@@ -25,13 +25,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cnew>
+#include <csignal>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <sys/wait.h>
-#include <new.h>
-#include <signal.h>
+
 #include <iostream.h>
 
 #include "sighandlers.h"

@@ -25,11 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstring>
+#include <cmath>
+#include <cfloat>
+
 #include <iostream.h>
 #include <strstream.h>
-#include <string.h>
-#include <math.h>
-#include <float.h>
+
 #include <Complex.h>
 
 #include "dMatrix.h"
@@ -41,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "pr-output.h"
 #include "mappers.h"
+#include "oct-str.h"
 #include "sysdep.h"
 #include "pager.h"
 #include "help.h"
@@ -1389,7 +1392,6 @@ octave_print_internal (ostream& os, const Range& r,
 
       if (pr_as_read_syntax)
 	{
-	  
 	  if (free_format)
 	    {
 	      os << base << " : ";
@@ -1449,6 +1451,32 @@ octave_print_internal (ostream& os, const Range& r,
 	    }
 	}
     }
+}
+
+void
+octave_print_internal (ostream& os, Octave_str_obj& s,
+		       int pr_as_read_syntax)
+{
+  int nstr = s.num_strings ();
+
+  if (pr_as_read_syntax && nstr > 1)
+    os << "[ ";
+
+  for (int i = 0; i < nstr; i++)
+    {
+      if (pr_as_read_syntax)
+	{
+	  os << "\"" << s.elem (i) << "\"";
+
+	  if (i < nstr - 1)
+	    os << "; ";
+	}
+      else
+	os << s.elem (i) << "\n";
+    }
+
+  if (pr_as_read_syntax && nstr > 1)
+    os << " ]";
 }
 
 DEFUN ("disp", Fdisp, Sdisp, 1, 1,

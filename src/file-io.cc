@@ -33,16 +33,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cstdlib>
+#include <cctype>
+
 #include <sys/types.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <strstream.h>
+#endif
 #include <sys/wait.h>
 #include <fcntl.h>
-#include <ctype.h>
+
+#include <strstream.h>
 
 #include <DLList.h>
 

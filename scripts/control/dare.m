@@ -32,8 +32,8 @@
 ##
 ## If c is not square, then the function attempts to use c'*c instead.
 ##
-## Solution method: Laub's Schur method (IEEE Trans Auto Contr, 1979) applied
-## to the appropriate symplectic matrix.
+## Solution method: Generalized eigenvalue approach (Van Dooren; SIAM J.
+## Sci. Stat. Comput., Vol 2) applied  to the appropriate symplectic pencil.
 ##
 ## See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
 ## Algebraic Riccati Equations," Mathematics of Control, Signals and
@@ -47,10 +47,15 @@
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993
 ## Adapted-By: jwe
+## $Revision: 1.15 $
+## $Log: dare.m,v $
+## Revision 1.15  1998-11-06 16:15:36  jwe
+## *** empty log message ***
+##
 
 function x = dare (a, b, c, r, opt)
 
-  if (nargin == 4 || nargin == 5)
+  if (nargin == 4 | nargin == 5)
     if (nargin == 5)
       if (opt != "N" || opt != "P" || opt != "S" || opt != "B")
 	warning ("dare: opt has an invalid value -- setting to B");
@@ -60,26 +65,10 @@ function x = dare (a, b, c, r, opt)
       opt = "B";
     endif
 
-    ## Check a matrix dimensions
-    if ((n = is_square (a)) == 0)
-      error ("dare: a is not square");
-    endif
-
-    ## Check a,b compatibility.
-
-    [n1, m] = size (b);
-
-    if (n1 != n)
-      warning ("dare: a,b are not conformable");
-    endif
-
+    # dimension checks are done in is_controllable, is_observable
     if (is_controllable (a, b) == 0)
       warning ("dare: a,b are not controllable");
-    endif
-
-    ## Check a,c compatibility.
-
-    if (is_observable (a, c) == 0)
+    elseif (is_observable (a, c) == 0)
       warning ("dare: a,c are not observable");
     endif
 
@@ -88,22 +77,19 @@ function x = dare (a, b, c, r, opt)
       p = rows (c);
     endif
 
-    if (n != p)
-      error ("dare: a,c are not conformable");
-    endif
-
     ## Check r dimensions.
-
+    n = rows(a);
+    m = columns(b);
     if ((m1 = is_square (r)) == 0)
       warning ("dare: r is not square");
     elseif (m1 != m)
       warning ("b,r are not conformable");
     endif
 
-    brb = (b/r)*b';
-    atc = a'\c;
-    [d, sy] = balance ([a + brb*atc, -brb/(a'); -atc, (inv (a'))], opt);
-    [u, s] = schur (sy, 'D');
+    s1 = [a, zeros(n) ; -c, eye(n)];
+    s2 = [eye(n), (b/r)*b' ; zeros(n), a'];
+    [c,d,s1,s2] = balance(s1,s2,opt);
+    [aa,bb,u,lam] = qz(s1,s2,"S");
     u = d*u;
     n1 = n+1;
     n2 = 2*n;

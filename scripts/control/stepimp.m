@@ -1,0 +1,302 @@
+# Copyright (C) 1996 A. Scottedward Hodel
+#
+# This file is part of Octave. 
+#
+# Octave is free software; you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the 
+# Free Software Foundation; either version 2, or (at your option) any 
+# later version. 
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT 
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License 
+# along with Octave; see the file COPYING.  If not, write to the Free 
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+ 
+function [y, t] = stepimp(sitype, sys, inp, tstop, n)
+# step: Impulse or step response for a linear system.
+#       The system can be discrete or multivariable (or both).
+#       This m-file contains the "common code" of step and impulse.
+#
+# [y, t] = stepimp(sitype, sys[, inp, tstop, n])
+# Produces a plot or the response data for system sys.
+#
+# Limited argument checking; "do not attempt to do this at home".
+# Use step or impulse instead.
+#
+# See also:  step, impulse
+
+# Written by Kai P. Mueller October 2, 1997
+# based on lsim.m of Scottedward Hodel
+# $Revision: 1.1.1.1 $
+# $Log: stepimp.m,v $
+# Revision 1.1.1.1  1998/05/19 20:24:08  jwe
+#
+# Revision 1.4  1998/05/05 17:04:35  scotte
+# minor corrections by Kai Mueller 5 May 1998
+#
+# Revision 1.1  1998/05/04  15:12:42  mueller
+# Initial revision
+#
+# Revision 1.3  1997/12/01 16:51:50  scotte
+# updated by Mueller 27 Nov 97
+#
+# Revision 1.4  1997/11/26  17:41:18  mueller
+# impulse gives now expected results for continuous and discrete systems
+#
+# Revision 1.3  1997/11/24  18:57:57  mueller
+# gset autoscale for proper scaling
+#
+# Revision 1.2  1997/11/24  17:23:38  mueller
+# call to oneplot() and gset nokey added
+#
+# Revision 1.1  1997/11/11  17:34:50  mueller
+# Initial revision
+#
+
+  if (sitype == 1)
+    IMPULSE = 0;
+  elseif (sitype == 2)
+    IMPULSE = 1;
+  else
+    error("stepimp: illegal sitype argument.")
+  endif
+  sys = sysupdate(sys,"ss");
+
+  USE_DEF = 0;   # default tstop and n if we have to give up
+  N_MIN = 50;    # minimum number of points
+  N_MAX = 2000;  # maximum number of points
+  T_DEF = 10.0;  # default simulation time
+  # collect useful information about the system
+  NOUT = rows(sys.c);
+  NIN = columns(sys.b);
+  if (nargin < 3)
+    inp = 1;
+  elseif ((inp < 1) || (inp > NIN))
+    error("Argument inp out of range")
+  endif
+  DIGITAL = is_digital(sys);
+  if (DIGITAL)
+    NSTATES = sys.nz;
+    TSAMPLE = sys.tsam;
+    if (TSAMPLE < eps)
+      error("stepimp: sampling time of discrete system too small.")
+    endif
+  else
+    NSTATES = sys.n;
+  endif
+  if (NSTATES < 1)
+    error("step: n < 1, step response is trivial")
+  endif
+  if (nargin < 5)
+    # we have to compute the time when the system reaches steady state
+    # and the step size
+    ev = eig(sys.a);
+    if (DIGITAL)
+      # perform bilinear transformation on poles in z
+      for i = 1:NSTATES
+        pole = ev(i);
+	if (abs(pole + 1) < 1.0e-10)
+	  ev(i) = 0;
+	else
+	  ev(i) = 2 / TSAMPLE * (pole - 1) / (pole + 1);
+	endif
+      endfor
+    endif
+    # remove poles near zero from eigenvalue array ev
+    nk = NSTATES;
+    for i = 1:NSTATES
+      if (abs(ev(i)) < 1.0e-10)
+        ev(i) = 0;
+        nk = nk - 1;
+      endif
+    endfor
+    if (nk == 0)
+      USE_DEF = 1;
+      #printf("##STEPIMP-DEBUG: using defaults.\n");
+    else
+      ev = ev(find(ev));
+      x = max(abs(ev));
+      t_step = 0.2 * pi / x;
+      x = min(abs(real(ev)));
+      t_sim = 5.0 / x;
+      # round up
+      yy = 10^(ceil(log10(t_sim)) - 1);
+      t_sim = yy * ceil(t_sim / yy);
+      #printf("##STEPIMP-DEBUG: nk=%d   t_step=%f  t_sim=%f\n",
+      #       nk, t_step, t_sim);  
+    endif
+  endif
+
+  if (DIGITAL)
+    # ---- sampled system
+    if (nargin == 5)
+      n = round(n);
+      if (n < 2)
+        error("stepimp: n must not be less than 2.")
+      endif
+    else
+      if (nargin == 4)
+        # n is unknown
+      elseif (nargin >= 1)
+        # tstop and n are unknown
+        if (USE_DEF)
+          tstop = (N_MIN - 1) * TSAMPLE;
+        else
+          tstop = t_sim;
+        endif
+      endif
+      n = floor(tstop / TSAMPLE) + 1;
+      if (n < 2)  n = 2;  endif
+      if (n > N_MAX)
+	n = N_MAX;
+	printf("Hint: number of samples limited to %d by default.\n", \
+	       N_MAX);
+	printf("  ==> increase \"n\" parameter for longer simulations.\n");
+      endif
+    endif
+    tstop = (n - 1) * TSAMPLE;
+    t_step = TSAMPLE;
+  else
+    # ---- continuous system
+    if (nargin == 5)
+      n = round(n);
+      if (n < 2)
+        error("step: n must not be less than 2.")
+      endif
+      t_step = tstop / (n - 1);
+    else
+      if (nargin == 4)
+        # only n in unknown
+        if (USE_DEF)
+          n = N_MIN;
+	  t_step = tstop / (n - 1);
+        else
+          n = floor(tstop / t_step) + 1;
+        endif
+      else
+        # tstop and n are unknown
+        if (USE_DEF)
+          tstop = T_DEF;
+	  n = N_MIN;
+	  t_step = tstop / (n - 1);
+        else
+          tstop = t_sim;
+          n = floor(tstop / t_step) + 1;
+        endif
+      endif
+      if (n < N_MIN)
+	n = N_MIN;
+        t_step = tstop / (n - 1);
+      endif
+      if (n > N_MAX)
+    	tstop = (n - 1) * t_step;
+	t_step = tstop / (N_MAX - 1);
+	n = N_MAX;
+      endif
+    endif
+    tstop = (n - 1) * t_step;
+    B = sys.b(:,inp);
+    sys = c2d(sys, t_step);
+  endif
+  #printf("##STEPIMP-DEBUG: t_step=%f n=%d  tstop=%f\n", t_step, n, tstop);
+
+  F = sys.a;
+  G = sys.b(:,inp);
+  C = sys.c;
+  D = sys.d(:,inp);
+  y = zeros(NOUT, n);
+  t = linspace(0, tstop, n);
+
+  if (IMPULSE)
+    if (!DIGITAL && (D'*D > 0))
+      error("impulse: D matrix is nonzero, impulse response infinite.")
+    endif
+    if (DIGITAL)
+      y(:,1) = D;
+      x = G / t_step;
+    else
+      x = B;
+      y(:,1) = C * x;
+      x = F * x;
+    endif
+    for i = 2:n
+      y(:,i) = C * x;
+      x = F * x;
+    endfor
+  else
+    x = zeros(NSTATES, 1);
+    for i = 1:n
+      y(:,i) = C * x + D;
+      x = F * x + G;
+    endfor
+  endif
+
+  if(nargout == 0)
+    # Plot the information
+    oneplot();
+    gset nogrid
+    gset nologscale
+    gset autoscale
+    gset nokey
+    clearplot();
+    if (gnuplot_has_multiplot)
+      if (IMPULSE)
+        gm = zeros(NOUT, 1);
+	tt = "impulse";
+      else
+        ssys = ss2sys(F, G, C, D, t_step);
+        gm = dcgain(ssys);
+	tt = "step";
+      endif
+      ncols = floor(sqrt(NOUT));
+      nrows = ceil(NOUT / ncols);
+      for i = 1:NOUT
+        subplot(nrows, ncols, i);
+	title([tt, ": | ", sys.inname(inp,:), " -> ", sys.outname(i,:)]);
+	if (DIGITAL)
+	  [ts, ys] = stairs(t, y(i,:));
+	  ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
+	  if (length(gm) > 0)
+	    yy = [ys; gm(i)*ones(size(ts))];
+	  else
+	    yy = ys;
+	  endif
+	  grid("on");
+	  xlabel("time [s]");
+	  ylabel("y(t)");
+          plot(ts, yy);
+	else
+	  if (length(gm) > 0)
+	    yy = [y(i,:); gm(i)*ones(size(t))];
+	  else
+	    yy = y(i,:);
+	  endif
+	  grid("on");
+	  xlabel("time [s]");
+	  ylabel("y(t)");
+	  plot(t, yy);
+	endif
+      endfor
+      # leave gnuplot in multiplot mode is bad style
+      oneplot();
+    else
+      # plot everything in one diagram
+      title([tt, " response | ", sys.inname(inp,:), " -> all outputs"]);
+      if (DIGITAL)
+        stairs(t, y(i,:));
+      else
+	grid("on");
+	xlabel("time [s]");
+	ylabel("y(t)");
+	plot(t, y(i,:));
+      endif
+    endif
+    y=[];
+    t=[];
+  endif
+  #printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
+endfunction

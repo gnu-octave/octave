@@ -1,66 +1,130 @@
-## Copyright (C) 1996, 1997 John W. Eaton
-##
-## This file is part of Octave.
-##
-## Octave is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-##
-## Octave is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-## 02111-1307, USA.
+# Copyright (C) 1996 A. Scottedward Hodel 
+#
+# This file is part of Octave. 
+#
+# Octave is free software; you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the 
+# Free Software Foundation; either version 2, or (at your option) any 
+# later version. 
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT 
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License 
+# along with Octave; see the file COPYING.  If not, write to the Free 
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+ 
+function [zer, gain] = tzero(A,B,C,D)
+  # [zer{,gain}] = tzero(A,B,C,D) -or-
+  # [zer{,gain}] = tzero(Asys)
+  # Compute transmission zeros of a continuous
+  #      .
+  #      x = Ax + Bu
+  #      y = Cx + Du
+  #
+  # or discrete
+  #      x(k+1) = A x(k) + B u(k)
+  #      y(k)   = C x(k) + D u(k)
+  #
+  # system.
+  #
+  # outputs: 
+  #   zer: transmission zeros of the system
+  #   gain: leading coefficient (pole-zero form) of SISO transfer function
+  #         returns gain=0 if system is multivariable
+  # References:
+  # Hodel, "Computation of Zeros with Balancing," 1992 Lin. Alg. Appl.
+  
+  # R. Bruce Tenison July 4, 1994
+  # A. S. Hodel Aug 1995: allow for MIMO and system data structures
+  # $Revision: 1.16 $ 
+  # $Log: tzero.m,v $
+  # Revision 1.16  1998-11-06 16:15:37  jwe
+  # *** empty log message ***
+  #
+  # Revision 1.7  1998/08/24 15:50:30  hodelas
+  # updated documentation
+  #
+  # Revision 1.4  1998/08/12 20:34:36  hodelas
+  # Updated to use system access calls instead of direct structure access
+  #
+  # Revision 1.3  1998/07/21 14:53:11  hodelas
+  # use isempty instead of size tests; use sys calls to reduce direct
+  # access to system structure elements
+  #
+  # Revision 1.2  1997/02/13 11:58:05  hodel
+  # tracked down error in zgfslv; added Log message
 
-## Usage: zr = tzero (a, b, c, d, bal)
-##
-## Compute the transmission zeros of a, b, c, d.
-##
-## bal = balancing option (see balance); default is "B".
-##
-## Needs to incorporate mvzero algorithm to isolate finite zeros.
-
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
-
-function zr = tzero (a, b, c, d, bal)
-
-  if (nargin == 4)
-    bal = "B";
-  elseif (nargin != 5)
-    error ("tzero: invalid number of arguments");
-  endif
-
-  [n, m, p] = abcddim (a, b, c, d);
-
-  if (n > 0 && m > 0 && p > 0)
-    if (m != p)
-      warning ("tzero: number of inputs,outputs differ.  squaring up");
-      if (p > m)
-	warning ("       by padding b and d with zeros.");
-	b = [b, (zeros (n, p-m))];
-	d = [d, (zeros (p, p-m))];
-	m = p;
-      else
-	warning ("       by padding c and d with zeros.");
-	c = [c; (zeros (m-p, n))];
-	d = [d; (zeros (m-p, m))];
-	p = m;
-      endif
-      warning ("This is a kludge.  Try again with SISO system.");
-    endif
-    ab = [-a, -b; c, d];
-    bb = [(eye (n)), (zeros (n, m)); (zeros (p, n)), (zeros (p, m))];
-    [ab, bb] = balance (ab, bb);
-    zr = -qzval (ab, bb);
+  # get A,B,C,D and Asys variables, regardless of initial form
+  if(nargin == 4)
+    Asys = ss2sys(A,B,C,D);
+  elseif( (nargin == 1) && (! is_struct(A)))
+    usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");
+  elseif(nargin != 1)
+    usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");
   else
-    error ("tzero: a, b, c, d not compatible");
+    Asys = A;
+    [A,B,C,D] = sys2ss(Asys);
   endif
 
+  Ao = Asys;			# save for leading coefficient
+  siso = is_siso(Asys);
+  digital = is_digital(Asys);	# check if it's mixed or not
+
+  # see if it's a gain block
+  if(isempty(A))
+    zer = [];
+    gain = D;
+    return;
+  endif
+
+  # First, balance the system via the zero computation generalized eigenvalue
+  # problem balancing method (Hodel and Tiller, Linear Alg. Appl., 1992)
+
+  Asys = zgpbal(Asys); [A,B,C,D] = sys2ss(Asys);   # balance coefficients
+  meps = 2*eps*norm([A B; C D],'fro');
+  Asys = zgreduce(Asys,meps);  [A, B, C, D] = sys2ss(Asys); # ENVD algorithm
+  if(!isempty(A))
+    # repeat with dual system
+    Asys = ss2sys(A', C', B', D');   Asys = zgreduce(Asys,meps);
+
+    # transform back
+    [A,B,C,D] = sys2ss(Asys);    Asys = ss2sys(A', C', B', D');
+  endif
+
+  zer = [];			# assume none
+  [A,B,C,D] = sys2ss(Asys);
+  if( !isempty(C) )
+    [W,r,Pi] = qr([C D]');
+    [nonz,ztmp] = zgrownorm(r,meps);
+    if(nonz)
+      # We can now solve the generalized eigenvalue problem.
+      [pp,mm] = size(D);
+      nn = rows(A);
+      Afm = [A , B ; C D] * W';
+      Bfm = [eye(nn), zeros(nn,mm); zeros(pp,nn+mm)]*W';
+
+      jdx = (mm+1):(mm+nn);
+      Af = Afm(1:nn,jdx);
+      Bf = Bfm(1:nn,jdx);
+      zer = qz(Af,Bf);
+    endif
+  endif
+  
+  mz = length(zer);
+  [A,B,C,D] = sys2ss(Ao);		# recover original system
+  #compute leading coefficient
+  if ( (nargout == 2) && siso)
+    n = rows(A);
+    if ( mz == n)
+      gain = D;
+    elseif ( mz < n )
+      gain = C*(A^(n-1-mz))*B;
+    endif
+  else
+    gain = [];
+  endif
 endfunction
+

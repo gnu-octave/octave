@@ -1,0 +1,133 @@
+# Copyright (C) 1997 Jose Daniel Munoz Frias
+#
+# This file is part of Octave. 
+#
+# Octave is free software; you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the 
+# Free Software Foundation; either version 2, or (at your option) any 
+# later version. 
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT 
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License 
+# along with Octave; see the file COPYING.  If not, write to the Free 
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+ 
+function K = place(sys, P) 
+
+%PLACE K =  place(sys,P) Computes the matrix  K such that if the state
+%is feedback with gain K, then the eigenvalues  of the closed loop
+%system (i.e. A-BK) are those specified in the vector P.
+%
+% Version: Beta (May-1997): If you have any comments, please let me know.
+%			    (see the file place.m for my address)
+%
+% Written by: Jose Daniel Munoz Frias.
+
+%	      Universidad Pontificia Comillas
+%	      ICAIdea
+%	      Alberto Aguilera, 23
+%	      28015 Madrid, Spain
+%
+%	      E-Mail: daniel@dea.icai.upco.es
+%
+%	      Phone: 34-1-5422800   Fax: 34-1-5596569
+%
+% Algorithm taken from "The Control Handbook", IEEE press pp. 209-212
+#
+# code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
+# toolbox
+# $Revision: 1.1.1.1 $
+# $Log: place.m,v $
+# Revision 1.1.1.1  1998/05/19 20:24:08  jwe
+#
+# Revision 1.2  1997/03/10 21:41:10  scotte
+# *** empty log message ***
+#
+# Revision 1.1  1997/03/10 20:38:53  scotte
+# Initial revision
+#
+
+  sav_val = empty_list_elements_ok;
+  empty_list_elements_ok = 1;
+  #
+  # check arguments
+  #
+  if(!is_struct(sys))
+    error("sys must be in system data structure format (see ss2sys)");
+  endif
+  sys = sysupdate(sys,"ss");	# make sure it has state space form up to date
+  if(!is_controllable(sys))
+    error("sys is not controllable.");
+  elseif( min(size(P)) != 1)
+    error("P must be a vector")
+  else
+    P = reshape(P,length(P),1);	# make P a column vector
+  endif
+  # system must be purely continuous or discrete
+  is_digital(sys);
+  [n,nz,m,p] = sysdimensions(sys);
+  nx = n+nz;	# already checked that it's not a mixed system.
+  if(m != 1)
+    error(["sys has ", num2str(m)," inputs; need only 1"]);
+  endif
+
+  # takes the A and B matrix from the system representation
+  [A,B]=sys2ss(sys);
+  sp = length(P);
+  if(nx == 0)
+    error("place: A matrix is empty (0x0)");
+  elseif(nx != length(P))
+    error(["A=(",num2str(nx),"x",num2str(nx),", P has ", num2str(length(P)), ...
+	"entries."])
+  endif
+
+  # arguments appear to be compatible; let's give it a try!
+  %The second step is the calculation of the characteristic polynomial ofA
+  PC=poly(A);
+
+  %Third step: Calculate the transformation matrix T that transforms the state
+  %equation in the controllable canonical form.
+
+  %first we must calculate the controllability matrix M:
+  M=B;
+  AA=A;
+  for n = 2:nx
+    M(:,n)=AA*B;
+    AA=AA*A;
+  endfor
+
+  %second, construct the matrix W
+  PCO=PC(nx:-1:1);
+  PC1=PCO; 	%Matrix to shift and create W row by row
+
+  for n = 1:nx
+    W(n,:) = PC1;
+    PC1=[PCO(n+1:nx),zeros(1,n)];
+  endfor
+
+  T=M*W;
+
+  %finaly the matrix K is calculated 
+  PD = poly(P); %The desired characteristic polynomial
+  PD = PD(nx+1:-1:2);
+  PC = PC(nx+1:-1:2);
+  
+  K = (PD-PC)/T;
+
+  %Check if the eigenvalues of (A-BK) are the same specified in P
+  Pcalc = eig(A-B*K);
+
+  Pcalc = sortcom(Pcalc);
+  P = sortcom(P);
+
+  if(max( (abs(Pcalc)-abs(P))./abs(P) ) > 0.1)
+    disp("Place: Pole placed at more than 10% relative error from specified");
+  endif
+
+  empty_list_elements_ok = sav_val;
+endfunction
+

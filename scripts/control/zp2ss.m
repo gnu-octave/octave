@@ -1,0 +1,140 @@
+# Copyright (C) 1996 A. Scottedward Hodel 
+#
+# This file is part of Octave. 
+#
+# Octave is free software; you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the 
+# Free Software Foundation; either version 2, or (at your option) any 
+# later version. 
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT 
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License 
+# along with Octave; see the file COPYING.  If not, write to the Free 
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+ 
+function [a,b,c,d] = zp2ss(zer,pol,k)
+# Conversion from zero / pole to state space.
+# The state space system
+#      .
+#      x = Ax + Bu
+#      y = Cx + Du
+#
+# is obtained from a vector of zeros and a vector of poles via the
+# function call [a,b,c,d] = zp2ss(zer,pol,k).  The vectors 'zer' and 
+# 'pol' may either be row or column vectors.  Each zero and pole that
+# has an imaginary part must have a conjugate in the list.
+# The number of poles must at least equal the number of zeros.
+# k is a gain that is associated with the zero vector.
+
+# Written by David Clem August 15, 1994
+# $Revision: 1.4 $
+# $Log: zp2ss.m,v $
+# Revision 1.4  1998/07/10 17:51:29  hodelas
+# Fixed bug in zp2ss system construction; overhauled zp2ssg2
+#
+#
+# calls: tf2sys, sysmult
+
+  sav_val = empty_list_elements_ok;
+  empty_list_elements_ok = 1;
+
+  if(nargin != 3)
+    error("Incorrect number of input arguments");
+  endif
+ 
+  if(! (is_vector(zer) | isempty(zer)) )
+    error(["zer(",num2str(rows(zer)),",",num2str(columns(zer)), ...
+	") should be a vector"]);
+  elseif(! (is_vector(pol) | isempty(pol) ) )
+    error(["pol(",num2str(rows(pol)),",",num2str(columns(pol)), ...
+	") should be a vector"]);
+  elseif(! is_scalar(k))
+    error(["k(",num2str(rows(k)),",",num2str(columns(k)), ...
+	") should be a scalar"]);
+  elseif( k != real(k))
+    warning("zp2ss: k is complex")
+  endif
+
+  zpsys = ss2sys([],[],[],k);
+
+  # Find the number of zeros and the number of poles
+  nzer=length(zer);
+  npol =length(pol);
+
+  if(nzer > npol)
+    error([num2str(nzer)," zeros, exceeds number of poles=",num2str(npol)]);
+  endif
+
+  # Sort to place complex conjugate pairs together
+  zer=sortcom(zer);
+  pol=sortcom(pol);
+
+  # construct the system as a series connection of poles and zeros
+  # problem: poles and zeros may come in conjugate pairs, and not
+  # matched up!
+
+  # approach: remove poles/zeros from the list as they are included in
+  # the ss system
+ 
+  while(length(pol))
+
+    # search for complex poles, zeros
+    cpol=[];    czer = [];
+    if(!isempty(pol))
+      cpol = find(imag(pol) != 0);
+    endif
+    if(!isempty(zer))
+      czer = find(imag(zer) != 0);
+    endif
+
+    if(isempty(cpol) & isempty(czer))
+      pcnt = 1;
+    else 
+      pcnt = 2;
+    endif
+
+    num=1;	# assume no zeros left.
+    switch(pcnt)
+    case(1)
+      # real pole/zero combination
+      if(length(zer))
+        num = [1 -zer(1)];  
+        zer = zer(2:length(zer));
+      endif
+      den = [1 -pol(1)];
+      pol = pol(2:length(pol));
+    case(2)
+      # got a complex pole or zero, need two roots (if available)
+      if(length(zer) > 1)
+        [num,zer] = zp2ssg2(zer);	# get two zeros
+      elseif(length(zer) == 1)
+        num = [1 -zer];			# use last zero (better be real!)
+        zer = [];
+      endif
+      [den,pol] = zp2ssg2(pol);		# get two poles
+    otherwise
+      error(["pcnt = ",num2str(pcnt)])
+    endswitch
+
+    # pack tf into system form and put in series with earlier realization
+    zpsys1 = tf2sys(num,den,0,"u","yy");
+
+    # change names to avoid warning messages from sysgroup
+    zpsys = syschnames(zpsys,"in",1,"u1");
+    zpsys1 = sysupdate(zpsys1,"ss");
+    zpsys = syschnames(zpsys,"st",(1:zpsys.n),sysdefioname(zpsys.n,"x"));
+    zpsys1 = syschnames(zpsys1,"st",(1:zpsys1.n),sysdefioname(zpsys1.n,"xx"));
+
+    zpsys = sysmult(zpsys,zpsys1);
+
+  endwhile 
+
+  [a,b,c,d] = sys2ss(zpsys);
+
+  empty_list_elements_ok = sav_val;
+endfunction
+

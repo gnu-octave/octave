@@ -1,76 +1,96 @@
-## Copyright (C) 1996, 1997 John W. Eaton
-##
-## This file is part of Octave.
-##
-## Octave is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2, or (at your option)
-## any later version.
-##
-## Octave is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-## 02111-1307, USA.
+# Copyright (C) 1993, 1994, 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-## Usage: is_controllable (a, b {,tol})
-##
-## Returns 1 if the pair (a, b) is controllable, or 0 if not.
-##
-## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-##
-## This should really use the method below, but I'm being lazy for now:
-##
-## Controllability is determined by applying Arnoldi iteration with
-## complete re-orthogonalization to obtain an orthogonal basis of the
-## Krylov subspace.
-##
-## (FIX ME... The Krylov subspace approach is not done yet!)
-##                      n-1
-##   span ([b,a*b,...,a^   b]).
-##
-## tol is a roundoff paramter, set to 2*eps if omitted.
+function [retval,U] = is_controllable (a, b, tol)
+# [retval, U] = is_controllable (a, b {,tol})
+#             = is_controllable (sys{, tol})
+#      Returns retval=1 if the system sys or the pair (a, b) is controllable
+#                     0 if not.
+# U is an orthogonal basis of the controllable subspace. 
+#
+# Controllability is determined by applying Arnoldi iteration with
+# complete re-orthogonalization to obtain an orthogonal basis of the
+# Krylov subspace.
+#
+#   span ([b,a*b,...,a^   b]).
+#
+# tol is a roundoff paramter, set to 10*eps if omitted.
+#
+# See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
+#     is_observable, is_stabilizable, is_detectable, krylov, krylovb
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
-## Created: August 1993
-## Adapted-By: jwe
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
+# Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
+# Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
+# SYS_INTERNAL accesses members of packed system structure
+# $Revision: 1.14 $
 
-function retval = is_controllable (a, b, tol)
-
-  if (nargin == 2 || nargin == 3)
-
-    n = is_square (a);
-    [nr, nc] = size (b);
-
-    if (n == 0 || n != nr || nc == 0)
-      retval = 0;
-    else
-
-      m = b;
-      tmp = b;
-      for ii = 1:(n-1)
-        tmp = a * tmp;
-        m = [m, tmp];
-      endfor
-
-      ## If n is of any significant size, m will be low rank, so be careful!
-
-      if (nargin == 3)
-        if (is_scalar (tol))
-          retval = (rank (m, tol) == n);
-        else
-          error ("is_controllable: tol must be a scalar");
-        endif
-      else
-        retval = (rank (m) == n);
-      endif
+  deftol = 1;    # assume default tolerance
+  if(nargin < 1 | nargin > 3)
+    usage(sprintf("[retval,U] = %s\n\t%s", "is_controllable(a {, b ,tol})", ...
+	"is_controllable(sys{,tol})"));
+  elseif(is_struct(a))
+    # system structure passed.
+    sys = sysupdate(a,"ss");
+    [a,bs] = sys2ss(sys);
+    if(nargin > 2)
+      usage("[retval,U] = is_controllable(sys{,tol})");
+    elseif(nargin == 2)
+      tol = b;		% get tolerance
+      deftol = 0;
     endif
+    b = bs;
   else
-    usage ("is_controllable (a, b)");
+    # a,b arguments sent directly.
+    if(nargin < 2)
+      usage("[retval,U] = is_controllable(a {, b ,tol})");
+    else
+      deftol = 1;
+    endif
   endif
 
+  # check for default tolerance
+  if(deftol) tol = 1000*eps; endif
+
+  # check tol dimensions
+  if( !is_sample(tol) )
+    error("is_controllable: tol must be a positive scalar!");
+  endif
+
+  # check dimensions compatibility
+  n = is_square (a);
+  [nr, nc] = size (b);
+
+  if (n == 0 | n != nr | nc == 0)
+    warning(["is_controllable: a=(",num2str(rows(a)),"x", ...
+      num2str(columns(a)),"), b=(",num2str(nr),"x",num2str(nc),")"])
+    retval = 0;
+  else
+    # call block-krylov subspace routine to get an orthogonal basis
+    # of the controllable subspace.
+    if(nc == 1)
+      [U,H,Ucols] = krylov(a,b,n,tol);
+      U = U(:,1:Ucols);
+    else
+      [U,Ucols] = krylovb(a,b,n,tol);
+      U = U(:,1:Ucols);
+    endif
+
+    retval = (Ucols == n);
+  endif
 endfunction

@@ -164,7 +164,11 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  bind_builtin_variable ("__nargin__", argc-1, true, true, 0);
+  symbol_record *nargin_sr = top_level_sym_tab->lookup ("__nargin__", true);
+
+  nargin_sr->mark_as_static ();
+
+  nargin_sr->define (argc-1);
 
   Cell args;
 

@@ -1,3 +1,10 @@
+2004-05-07  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (intern_argv): Insert __nargin__ in top_level_sym_tab
+	instead of making it a builtin variable.  Mark it static.
+	* ov-usr-fcn.cc (install_automatic_vars): Mark local automatic
+	variables static.
+
 2004-04-30  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_base_stream::clearerr): New function.

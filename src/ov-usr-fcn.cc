@@ -556,8 +556,15 @@ octave_user_function::install_automatic_vars (void)
       nargin_sr = sym_tab->lookup ("__nargin__", true);
       nargout_sr = sym_tab->lookup ("__nargout__", true);
 
+      argn_sr->mark_as_static ();
+      nargin_sr->mark_as_static ();
+      nargout_sr->mark_as_static ();
+
       if (takes_varargs ())
-	varargin_sr = sym_tab->lookup ("varargin", true);
+	{
+	  varargin_sr = sym_tab->lookup ("varargin", true);
+	  varargin_sr->mark_as_static ();
+	}
     }
 }
 

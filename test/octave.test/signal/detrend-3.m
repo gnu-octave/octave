@@ -7,4 +7,4 @@ N=32;
 t = (0:1:N-1)/N;
 x = [t;4*t-3]';
 y = detrend(x);
-all (all (abs (y) < 10*eps))
+all (all (abs (y) < 20*eps))

@@ -1,3 +1,10 @@
+2003-02-21  Paul Kienzle <pkienzle@users.sf.net>
+
+	* utils.cc (octave_vsnprintf): Return value of vsnprintf is int,
+	not size_t.  Make sure there is some space left in the buffer for
+	vsnprintf versions which return the number of characters written
+	even when the buffer is too short.
+
 2003-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* debug.cc (get_user_function): Use dynamic_cast, not static_cast.

@@ -914,7 +914,7 @@ octave_vsnprintf (const char *fmt, va_list args)
 
   static char *buf = 0;
 
-  size_t nchars;
+  int nchars;
 
   if (! buf)
     buf = new char [size];
@@ -958,7 +958,7 @@ octave_vsnprintf (const char *fmt, va_list args)
 
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      if (nchars > -1)
+      if (nchars > -1 && nchars < size-1)
        return buf;
       else
        {

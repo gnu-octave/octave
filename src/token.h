@@ -51,6 +51,7 @@ public:
       function_end,
       if_end,
       while_end,
+      try_catch_end,
       unwind_protect_end,
     };
 

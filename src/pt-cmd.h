@@ -47,6 +47,7 @@ class tree_global_command;
 class tree_while_command;
 class tree_for_command;
 class tree_if_command;
+class tree_try_catch_command;
 class tree_unwind_protect_command;
 class tree_break_command;
 class tree_continue_command;
@@ -241,6 +242,38 @@ public:
 private:
   tree_statement_list *unwind_protect_code;
   tree_statement_list *cleanup_code;
+};
+
+// Simple exception handling.
+
+class
+tree_try_catch_command : public tree_command
+{
+public:
+  tree_try_catch_command (int l = -1, int c = -1) : tree_command (l, c)
+    {
+      try_code = 0;
+      catch_code = 0;
+    }
+
+  tree_try_catch_command (tree_statement_list *tc,
+			       tree_statement_list *cc,
+			       int l = -1, int c = -1)
+    : tree_command (l, c)
+      {
+	try_code = tc;
+	catch_code = cc;
+      }
+
+  ~tree_try_catch_command (void);
+
+  void eval (void);
+
+  void print_code (ostream& os);
+
+private:
+  tree_statement_list *try_code;
+  tree_statement_list *catch_code;
 };
 
 // Break.

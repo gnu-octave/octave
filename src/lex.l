@@ -1092,6 +1092,25 @@ is_keyword (char *s)
       yylval.tok_val = new token (token::unwind_protect_end, l, c);
       token_stack.push (yylval.tok_val);
     }
+  else if (strcmp ("try", s) == 0)
+    {
+      promptflag--;
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
+      return TRY;
+    }
+  else if (strcmp ("catch", s) == 0)
+    {
+      yylval.tok_val = new token (l, c);
+      token_stack.push (yylval.tok_val);
+      return CATCH;
+    }
+  else if (strcmp ("end_try_catch", s) == 0)
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::try_catch_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
   else if (strcmp ("all_va_args", s) == 0)
     {
       yylval.tok_val = new token (l, c);

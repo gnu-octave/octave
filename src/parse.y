@@ -223,6 +223,7 @@ static tree_index_expression *make_index_expression
 %token <tok_val> TEXT STYLE
 %token <tok_val> FOR WHILE IF ELSEIF ELSE BREAK CONTINUE FUNC_RET
 %token <tok_val> UNWIND CLEANUP
+%token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL
 %token <tok_val> TEXT_ID
 
@@ -611,6 +612,14 @@ command		: plot_command
 
 		    $$ = new tree_unwind_protect_command ($3, $6, $1->line (),
 							  $1->column ());
+		  }
+		| TRY optsep opt_list CATCH optsep opt_list END
+		  {
+		    if (check_end ($7, token::try_catch_end))
+		      ABORT_PARSE;
+
+		    $$ = new tree_try_catch_command ($3, $6, $1->line (),
+						     $1->column ());
 		  }
 		| WHILE expression optsep opt_list END
 		  {
@@ -1316,6 +1325,14 @@ check_end (token *tok, token::end_tok_type expected)
 
 	case token::if_end:
 	  end_error ("if", ettype, l, c);
+	  break;
+
+	case token::try_catch_end:
+	  end_error ("try", ettype, l, c);
+	  break;
+
+	case token::unwind_protect_end:
+	  end_error ("unwind_protect", ettype, l, c);
 	  break;
 
 	case token::while_end:

@@ -507,7 +507,11 @@ is printed.")
 	}
       else
 	{
-	  DIR *dir = opendir (dirname);
+	  char *tmp = tilde_expand (dirname);
+
+	  DIR *dir = opendir (tmp);
+
+	  free (tmp);
 
 	  if (dir)
 	    {
@@ -579,10 +583,19 @@ otherwise prints an error message.")
 
       if (error_state)
 	gripe_wrong_type_arg ("mkdir", args(0));
-      else if (mkdir (dirname, 0777) < 0)
+      else
 	{
-	  status = -1;
-	  error ("%s", strerror (errno));
+	  char *tmp = tilde_expand (dirname);
+
+	  int mkdir_retval = mkdir (tmp, 0777);
+
+	  free (tmp);
+
+	  if (mkdir_retval < 0)
+	    {
+	      status = -1;
+	      error ("%s", strerror (errno));
+	    }
 	}
     }
   else
@@ -610,10 +623,19 @@ otherwise prints an error message.")
 
       if (error_state)
 	gripe_wrong_type_arg ("rmdir", args(0));
-      else if (rmdir (dirname) < 0)
+      else
 	{
-	  status = -1;
-	  error ("%s", strerror (errno));
+	  char *tmp = tilde_expand (dirname);
+
+	  int rmdir_retval = rmdir (tmp);
+
+	  free (tmp);
+
+	  if (rmdir_retval < 0)
+	    {
+	      status = -1;
+	      error ("%s", strerror (errno));
+	    }
 	}
     }
   else

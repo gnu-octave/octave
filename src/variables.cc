@@ -1479,6 +1479,31 @@ bind_ans (const tree_constant& val, int print)
   tmp_ass.eval (print);
 }
 
+void
+bind_global_error_variable (void)
+{
+  *error_message_buffer << ends;
+
+  char *error_text = error_message_buffer->str ();
+
+  bind_builtin_variable ("__error_text__", error_text, 1);
+
+  delete [] error_text;
+
+  delete error_message_buffer;
+
+  error_message_buffer = 0;
+}
+
+void
+clear_global_error_variable (void *)
+{
+  delete error_message_buffer;
+  error_message_buffer = 0;
+
+  bind_builtin_variable ("__error_text__", "", 1);
+}
+
 // Give a global variable a definition.  This will insert the symbol
 // in the global table if necessary.
 
@@ -1604,6 +1629,13 @@ install_builtin_variables (void)
 	  0, sv_completion_append_char,
     "the string to append after successful command-line completion\n\
 attempts");
+
+  DEFCONST ("error_text", SBV_current_error_text, "", 0, 0,
+    "the text of error messages that would have been printed in the
+body of the most recent unwind_protect statement or the TRY part of\n\
+the most recent eval() command.  Outside of unwind_protect and\n\
+eval(), or if no error has ocurred within them, the value of\n\
+__error_text__ is guaranteed to be the empty string.");
 
   DEFVAR ("default_return_value", SBV_default_return_value, Matrix (),
 	  0, 0,

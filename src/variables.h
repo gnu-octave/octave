@@ -108,6 +108,10 @@ extern void bind_nargin_and_nargout (symbol_table *sym_tab,
 
 extern void bind_ans (const tree_constant& val, int print);
 
+extern void bind_global_error_variable (void);
+
+extern void clear_global_error_variable (void *);
+
 extern void bind_builtin_variable (const char *, tree_constant *,
 				   int protect = 0, int eternal = 0,
 				   sv_Function f = (sv_Function) 0,

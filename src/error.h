@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_error_h)
 #define octave_error_h 1
 
+class ostrstream;
+
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \
 	 __FILE__, __LINE__)
@@ -38,8 +40,13 @@ extern void panic (const char *fmt, ...) NORETURN;
 // Current error state.
 extern int error_state;
 
-// XXX FIXME XXX
-extern int suppress_octave_error_messages;
+// Tell the error handler whether to print messages, or just store
+// them for later.  Used for handling errors in eval() and
+// the `unwind_protect' statement.
+extern int buffer_error_messages;
+
+// The message buffer
+extern ostrstream *error_message_buffer;
 
 #endif
 

@@ -195,6 +195,9 @@ static help_list keywords[] =
   { "break",
     "Exit the innermost enclosing while or for loop.", },
 
+  { "catch",
+    "begin the cleanup part of a try-catch block", },
+
   { "continue",
     "Jump to the end of the innermost enclosing while or for loop.", },
 
@@ -206,6 +209,9 @@ static help_list keywords[] =
 
   { "end",
     "Mark the end of any for, if, while, or function block.", },
+
+  { "end_try_catch",
+    "Mark the end of an try-catch block.", }, 
 
   { "end_unwind_protect",
     "Mark the end of an unwind_protect block.", }, 
@@ -242,6 +248,9 @@ static help_list keywords[] =
 
   { "return",
     "Return from a function.", },
+
+  { "try",
+    "Begin a try-catch block.", }, 
 
   { "unwind_protect",
     "Begin an unwind_protect block.", }, 

@@ -979,8 +979,8 @@ string CATCH.")
 
       if (nargin > 1)
 	{
-	  unwind_protect_int (suppress_octave_error_messages);
-	  suppress_octave_error_messages = 1;
+	  unwind_protect_int (buffer_error_messages);
+	  buffer_error_messages = 1;
 	}
 
       int parse_status = 0;
@@ -990,7 +990,16 @@ string CATCH.")
       if (nargin > 1 && (parse_status != 0 || error_state))
 	{
 	  error_state = 0;
+
+	  // Set up for letting the user print any messages from
+	  // errors that occurred in the first part of this eval().
+
+	  buffer_error_messages = 0;
+	  bind_global_error_variable ();
+	  add_unwind_protect (clear_global_error_variable, 0);
+
 	  eval_string (args(1), parse_status, nargout);
+
 	  retval = Octave_object ();
 	}
 

@@ -40,8 +40,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Current error state.
 int error_state = 0;
 
-// XXX FIXME XXX
-int suppress_octave_error_messages = 0;
+// Tell the error handler whether to print messages, or just store
+// them for later.  Used for handling errors in eval() and
+// the `unwind_protect' statement.
+int buffer_error_messages;
+
+// The message buffer
+ostrstream *error_message_buffer = 0;
 
 static void
 verror (const char *name, const char *fmt, va_list args)
@@ -49,13 +54,6 @@ verror (const char *name, const char *fmt, va_list args)
   flush_output_to_pager ();
 
   int to_beep_or_not_to_beep = user_pref.beep_on_error && ! error_state;
-
-  if (to_beep_or_not_to_beep)
-    cerr << "\a";
-  if (name)
-    cerr << name << ": ";
-  cerr.vform (fmt, args);
-  cerr << endl;
 
   ostrstream output_buf;
 
@@ -68,7 +66,32 @@ verror (const char *name, const char *fmt, va_list args)
 
   char *msg = output_buf.str ();
 
-  maybe_write_to_diary_file (msg);
+  if (buffer_error_messages)
+    {
+      char *ptr = msg;
+
+      if (! error_message_buffer)
+	{
+	  error_message_buffer = new ostrstream;
+
+	  // XXX FIXME XXX -- this is ugly, but it prevents
+	  //
+	  //   eval ("error (\"msg\")", "error (__error_text__)");
+	  //
+	  // from printing `error: ' twice.  Assumes that the NAME we
+	  // have been given doesn't contain `:'.
+
+	  ptr = strchr (msg, ':') + 2;
+	  ptr = ptr ? ptr : msg;	  
+	}
+
+      *error_message_buffer << ptr;
+    }
+  else
+    {
+      maybe_write_to_diary_file (msg);
+      cerr << msg;
+    }
 
   delete [] msg;
 }
@@ -82,32 +105,29 @@ error_1 (const char *name, const char *fmt, va_list args)
 {
   if (error_state != -2)
     {
-      if (! suppress_octave_error_messages)
+      if (fmt)
 	{
-	  if (fmt)
+	  if (*fmt)
 	    {
-	      if (*fmt)
+	      int len = strlen (fmt);
+	      if (fmt[len - 1] == '\n')
 		{
-		  int len = strlen (fmt);
-		  if (fmt[len - 1] == '\n')
+		  if (len > 1)
 		    {
-		      if (len > 1)
-			{
-			  char *tmp_fmt = strsave (fmt);
-			  tmp_fmt[len - 1] = '\0';
-			  verror (name, tmp_fmt, args);
-			  delete [] tmp_fmt;
-			}
-
-		      error_state = -2;
+		      char *tmp_fmt = strsave (fmt);
+		      tmp_fmt[len - 1] = '\0';
+		      verror (name, tmp_fmt, args);
+		      delete [] tmp_fmt;
 		    }
-		  else
-		    verror (name, fmt, args);
+
+		  error_state = -2;
 		}
+	      else
+		verror (name, fmt, args);
 	    }
-	  else
-	    panic ("error_1: invalid format");
 	}
+      else
+	panic ("error_1: invalid format");
 
       if (! error_state)
 	error_state = 1;
@@ -172,94 +192,79 @@ panic (const char *fmt, ...)
   abort ();
 }
 
-DEFUN ("error", Ferror, Serror, 10,
-  "error (MESSAGE): print MESSAGE and set the error state.\n\
-This should eventually take us up to the top level, possibly\n\
-printing traceback messages as we go.\n\
-\n\
-If MESSAGE ends in a newline character, traceback messages are not\n\
-printed.") 
+typedef void (*error_fun)(const char *, ...);
+
+extern Octave_object Fsprintf (const Octave_object&, int);
+
+static Octave_object
+handle_message (error_fun f, const char *msg, const Octave_object& args)
 {
   Octave_object retval;
 
-  const char *msg = "unspecified error";
-
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_defined ())
+  tree_constant arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
+
+  if (arg.is_defined ())
     {
-      if (args(0).is_string ())
+      if (arg.is_string ())
 	{
-	  msg = args(0).string_value ();
+	  msg = arg.string_value ();
 
 	  if (! msg)
 	    return retval;
 	}
-      else if (args(0).is_empty ())
+      else if (arg.is_empty ())
 	return retval;
     }
 
-  error (msg);
+// Ugh.
+
+  int len = strlen (msg);
+  if (msg[len - 1] == '\n')
+    {
+      if (len > 1)
+	{
+	  char *tmp_msg = strsave (msg);
+	  tmp_msg[len - 1] = '\0';
+	  f ("%s\n", tmp_msg);
+	  delete [] tmp_msg;
+	}
+    }
+  else
+    f ("%s", msg);
 
   return retval;
+}
+
+DEFUN ("error", Ferror, Serror, 10,
+  "error (FMT, ...): print message according to FMT and set error state.\n\
+\n\
+This should eventually take us up to the top level, possibly\n\
+printing traceback messages as we go.\n\
+\n\
+If MESSAGE ends in a newline character, traceback messages are not\n\
+printed.\n\
+\n\
+See also: printf") 
+{
+  return handle_message (error, "unspecified error", args);
 }
 
 DEFUN ("warning", Fwarning, Swarning, 10,
-  "warning (MESSAGE): print a warning MESSAGE.\n\
+  "warning (FMT, ...): print a warning message according to FMT.\n\
 \n\
-See also: error")
+See also: error, printf")
 {
-  Octave_object retval;
-
-  const char *msg = "unspecified warning";
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    {
-      if (args(0).is_string ())
-	{
-	  msg = args(0).string_value ();
-
-	  if (! msg || ! *msg)
-	    return retval;
-	}
-      else if (args(0).is_empty ())
-	return retval;
-    }
-
-  warning (msg);
-
-  return retval;
+  return handle_message (warning, "unspecified warning", args);
 }
 
 DEFUN ("usage", Fusage, Susage, 10,
-  "usage (MESSAGE): print a usage MESSAGE.\n\
+  "usage (FMT, ...): print a usage message according to FMT.\n\
 \n\
-See also: error")
+See also: error, printf")
 {
-  Octave_object retval;
-
-  const char *msg = "unknown";
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    {
-      if (args(0).is_string ())
-	{
-	  msg = args(0).string_value ();
-
-	  if (! msg || ! *msg)
-	    return retval;
-	}
-      else if (args(0).is_empty ())
-	return retval;
-    }
-
-  usage (msg);
-
-  return retval;
+  return handle_message (usage, "unknown", args);
 }
 
 /*

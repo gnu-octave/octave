@@ -638,6 +638,123 @@ tree_if_command::print_code (ostream& os)
 
 // Simple exception handling.
 
+tree_try_catch_command::~tree_try_catch_command (void)
+{
+  delete try_code;
+  delete catch_code;
+}
+
+static void
+do_catch_code (void *ptr)
+{
+  tree_statement_list *list = (tree_statement_list *) ptr;
+
+  // Set up for letting the user print any messages from errors that
+  // occurred in the body of the try_catch statement.
+
+  buffer_error_messages = 0;
+  bind_global_error_variable ();
+  add_unwind_protect (clear_global_error_variable, 0);
+
+  // Similarly, if we have seen a return or break statement, allow all
+  // the catch code to run before returning or handling the break.
+  // We don't have to worry about continue statements because they can
+  // only occur in loops.
+
+  unwind_protect_int (returning);
+  returning = 0;
+
+  unwind_protect_int (breaking);
+  breaking = 0;
+
+  if (list)
+    list->eval (1);
+
+  // This is the one for breaking.  (The unwind_protects are popped
+  // off the stack in the reverse of the order they are pushed on).
+
+  // XXX FIXME XXX -- inside a try-catch, should break work like
+  // a return, or just jump to the end of the try_catch block?
+  // The following code makes it just jump to the end of the block.
+
+  run_unwind_protect ();
+  if (breaking)
+    breaking--;
+
+  // This is the one for returning.
+
+  if (returning)
+    discard_unwind_protect ();
+  else
+    run_unwind_protect ();
+
+  run_unwind_protect ();
+}
+
+void
+tree_try_catch_command::eval (void)
+{
+  begin_unwind_frame ("tree_try_catch::eval");
+
+  add_unwind_protect (do_catch_code, catch_code);
+
+  if (catch_code)
+    {
+      unwind_protect_int (buffer_error_messages);
+      buffer_error_messages = 1;
+    }
+
+  if (try_code)
+    try_code->eval (1);
+
+  if (catch_code && error_state)
+    {
+      error_state = 0;
+      run_unwind_frame ("tree_try_catch::eval");
+    }
+  else
+    {
+      error_state = 0;
+      discard_unwind_frame ("tree_try_catch::eval");
+    }
+}
+
+void
+tree_try_catch_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "try_catch";
+
+  print_code_new_line (os);
+
+  if (try_code)
+    {
+      increment_indent_level ();
+      try_code->print_code (os);
+      decrement_indent_level ();
+    }
+
+  print_code_indent (os);
+
+  os << "catch_code";
+
+  print_code_new_line (os);
+
+  if (catch_code)
+    {
+      increment_indent_level ();
+      catch_code->print_code (os);
+      decrement_indent_level ();
+    }
+
+  print_code_indent (os);
+
+  os << "end_try_catch";
+}
+
+// Simple exception handling.
+
 tree_unwind_protect_command::~tree_unwind_protect_command (void)
 {
   delete unwind_protect_code;
@@ -702,23 +819,12 @@ do_unwind_protect_cleanup_code (void *ptr)
 void
 tree_unwind_protect_command::eval (void)
 {
-  begin_unwind_frame ("tree_unwind_protect::eval");
-
   add_unwind_protect (do_unwind_protect_cleanup_code, cleanup_code);
-
-  if (cleanup_code)
-    {
-      unwind_protect_int (suppress_octave_error_messages);
-      suppress_octave_error_messages = 1;
-    }
 
   if (unwind_protect_code)
     unwind_protect_code->eval (1);
 
-  if (cleanup_code && error_state)
-    error_state = 0;
-
-  run_unwind_frame ("tree_unwind_protect::eval");
+  run_unwind_protect ();
 }
 
 void

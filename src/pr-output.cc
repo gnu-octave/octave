@@ -27,6 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include <strstream.h>
+#include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <float.h>

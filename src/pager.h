@@ -39,6 +39,8 @@ public:
 
   octave_pager_buf (int size = 0) : strstreambuf (size) { }
 
+  void flush_current_contents_to_diary (void);
+
 protected:
 
   int sync (void);
@@ -54,6 +56,8 @@ protected:
 public:
 
   ~octave_pager_stream (void);
+
+  void flush_current_contents_to_diary (void);
 
   static octave_pager_stream& stream (void);
 

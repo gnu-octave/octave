@@ -1,5 +1,12 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pager.cc (octave_pager_buf::flush_current_contents_to_diary):
+	New function.
+	(octave_pager_stream::flush_current_contents_to_diary):
+	Ditto.
+	(close_diary_file): Use the new octave_pager_stream function to
+	try to flush the current buffer to the diary when it is closed.
+
 	* variables.cc (Fexist): Return 6 for built-in constants.
 
 	* pt-plot.cc (Fgshow): Don't append " " after last arg.

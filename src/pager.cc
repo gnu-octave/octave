@@ -250,6 +250,16 @@ octave_pager_buf::sync (void)
   return 0;
 }
 
+void
+octave_pager_buf::flush_current_contents_to_diary (void)
+{
+  char *buf = eback ();
+
+  int len = pptr () - buf;
+
+  octave_diary.write (buf, len);
+}
+
 int
 octave_diary_buf::sync (void)
 {
@@ -288,6 +298,13 @@ octave_pager_stream::stream (void)
     instance = new octave_pager_stream ();
 
   return *instance;
+}
+
+void
+octave_pager_stream::flush_current_contents_to_diary (void)
+{
+  if (pb)
+    pb->flush_current_contents_to_diary ();
 }
 
 octave_diary_stream *octave_diary_stream::instance = 0;
@@ -339,6 +356,19 @@ flush_octave_stdout (void)
 static void
 close_diary_file (void)
 {
+  // Try to flush the current buffer to the diary now, so that things
+  // like
+  //
+  // function foo ()
+  //   diary on;
+  //   ...
+  //   diary off;
+  // endfunction
+  //
+  // will do the right thing.
+
+  octave_stdout.flush_current_contents_to_diary ();
+
   if (external_diary_file.is_open ())
     {
       octave_diary.flush ();

@@ -1161,7 +1161,7 @@ maybe_list (const char *header, const string_vector& argv, int argc,
       if (symbols.length () > 0 && count > 0)
 	{
 	  output_buf << "\n" << header << "\n\n";
-	  list_in_columns (output_buf, symbols);
+	  symbols.list_in_columns (output_buf);
 	  status = 1;
 	}
     }

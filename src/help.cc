@@ -355,9 +355,11 @@ display_names_from_help_list (ostrstream& output_buf, help_list *list,
 {
   int count = 0;
   string_vector symbols = names (list, count);
-  output_buf << "\n*** " << desc << ":\n\n";
-  if (symbols.length () > 0)
-    list_in_columns (output_buf, symbols);
+  if (! symbols.empty ())
+    {
+      output_buf << "\n*** " << desc << ":\n\n";
+      symbols.list_in_columns (output_buf);
+    }
 }
 
 static string
@@ -437,9 +439,11 @@ static void
 display_symtab_names (ostrstream& output_buf, const string_vector& names,
 		      int /* count */, const string& desc)
 {
-  output_buf << "\n*** " << desc << ":\n\n";
-  if (names.length () > 0)
-    list_in_columns (output_buf, names);
+  if (! names.empty ())
+    {
+      output_buf << "\n*** " << desc << ":\n\n";
+      names.list_in_columns (output_buf);
+    }
 }
 
 static void
@@ -497,7 +501,7 @@ simple_help (void)
 		     << make_absolute (dirs[i], the_current_working_directory)
 		     << ":\n\n";
 
-	  list_in_columns (output_buf, names);
+	  names.list_in_columns (output_buf);
 	}
     }
 

@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.46 $)dnl
+AC_REVISION($Revision: 1.47 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -140,21 +140,21 @@ if $run_in_place; then
   fcnfilepath='.:$(fcnfiledir)//'
   imagepath='.:$(fcnfiledir)/imagelib//'
 fi
-AC_VERBOSE([setting prefix to $prefix])
-AC_VERBOSE([setting exec_prefix to $exec_prefix])
-AC_VERBOSE([setting bindir to $bindir])
-AC_VERBOSE([setting datadir to $datadir])
-AC_VERBOSE([setting libdir to $libdir])
-AC_VERBOSE([setting includedir to $includedir])
-AC_VERBOSE([setting mandir to $mandir])
-AC_VERBOSE([setting infodir to $infodir])
-AC_VERBOSE([setting fcnfiledir to $fcnfiledir])
-AC_VERBOSE([setting localfcnfilepath to $localfcnfilepath])
-AC_VERBOSE([setting archlibdir to $archlibdir])
-AC_VERBOSE([setting octfiledir to $octfiledir])
-AC_VERBOSE([setting localoctfilepath to $localoctfilepath])
-AC_VERBOSE([setting fcnfilepath to $fcnfilepath])
-AC_VERBOSE([setting imagepath to $imagepath])
+AC_VERBOSE([defining prefix to be $prefix])
+AC_VERBOSE([defining exec_prefix to be $exec_prefix])
+AC_VERBOSE([defining bindir to be $bindir])
+AC_VERBOSE([defining datadir to be $datadir])
+AC_VERBOSE([defining libdir to be $libdir])
+AC_VERBOSE([defining includedir to be $includedir])
+AC_VERBOSE([defining mandir to be $mandir])
+AC_VERBOSE([defining infodir to be $infodir])
+AC_VERBOSE([defining fcnfiledir to be $fcnfiledir])
+AC_VERBOSE([defining localfcnfilepath to be $localfcnfilepath])
+AC_VERBOSE([defining archlibdir to be $archlibdir])
+AC_VERBOSE([defining octfiledir to be $octfiledir])
+AC_VERBOSE([defining localoctfilepath to be $localoctfilepath])
+AC_VERBOSE([defining fcnfilepath to be $fcnfilepath])
+AC_VERBOSE([defining imagepath to be $imagepath])
 AC_SUBST(exec_prefix)
 AC_SUBST(bindir)
 AC_SUBST(datadir)
@@ -188,19 +188,19 @@ if $use_dld; then
   AC_DEFINE(WITH_DLD, 1)dnl
 fi
 if test -n "$DYNAMIC_LD_OBJ"; then
-  AC_VERBOSE([setting DYNAMIC_LD_OBJ to $DYNAMIC_LD_OBJ])
+  AC_VERBOSE([defining DYNAMIC_LD_OBJ to be $DYNAMIC_LD_OBJ])
 fi
 if test -n "$DLD_DIR"; then
-  AC_VERBOSE([setting DLD_DIR to $DLD_DIR])
+  AC_VERBOSE([defining DLD_DIR to be $DLD_DIR])
 fi
 if test -n "$LIBDLD"; then
-  AC_VERBOSE([setting LIBDLD to $LIBDLD])
+  AC_VERBOSE([defining LIBDLD to be $LIBDLD])
 fi
 if test -n "$LIBOCTDLD"; then
-  AC_VERBOSE([setting LIBOCTDLD to $LIBOCTDLD])
+  AC_VERBOSE([defining LIBOCTDLD to be $LIBOCTDLD])
 fi
 if test -n "$LD_STATIC_FLAG"; then
-  AC_VERBOSE([setting LD_STATIC_FLAG to $LD_STATIC_FLAG])
+  AC_VERBOSE([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
 fi
 AC_SUBST(DYNAMIC_LD_OBJ)dnl
 AC_SUBST(DLD_DIR)dnl
@@ -243,9 +243,9 @@ gxx_version=`$CXX -v 2>&1 | grep "^g.. version" | sed 's/^g.. version *//'`
 case "$gxx_version" in
   2.5.*|2.6.*|2.7.*|2.8.*|2.9.*)
     CXXFLAGS="-g -O"
-    AC_VERBOSE([setting CXXFLAGS to $CXXFLAGS])
+    AC_VERBOSE([defining CXXFLAGS to be $CXXFLAGS])
     EXTERNAL_TEMPLATES="-fexternal-templates"
-    AC_VERBOSE([setting EXTERNAL_TEMPLATES to $EXTERNAL_TEMPLATES])
+    AC_VERBOSE([defining EXTERNAL_TEMPLATES to be $EXTERNAL_TEMPLATES])
     ADD_CXX_WALL=true
     AC_DEFINE(USE_EXTERNAL_TEMPLATES, 1)dnl
   ;;
@@ -257,8 +257,15 @@ case "$gxx_version" in
   ;;
 esac
 dnl
+dnl See what libraries are used by the C++ compiler.  Need this for
+dnl dynamic linking.
+dnl
+CXXLIBS=`sh $srcdir/cxxlibs.sh`
+AC_VERBOSE([defining CXXLIBS to be $CXXLIBS])
+dnl
 AC_SUBST(CXXFLAGS)dnl
 AC_SUBST(EXTERNAL_TEMPLATES)dnl
+AC_SUBST(CXXLIBS)dnl
 dnl
 dnl See which C compiler to use (we expect to find gcc).
 dnl
@@ -273,9 +280,9 @@ gcc_version=`$CC -v 2>&1 | grep "^gcc version" | sed 's/^gcc version *//'`
 case "$gcc_version" in
   2.*)
     CFLAGS="-g -O"
-    AC_VERBOSE([setting CFLAGS to $CFLAGS])
+    AC_VERBOSE([defining CFLAGS to be $CFLAGS])
     LDFLAGS="-g"
-    AC_VERBOSE([setting LDFLAGS to $LDFLAGS])
+    AC_VERBOSE([defining LDFLAGS to be $LDFLAGS])
     ADD_CC_WALL=true
   ;;
   1.*)
@@ -295,7 +302,7 @@ dnl
 case "$canonical_host_type" in
   i386-*-linux | i486-*-linux | i586-*-linux)
     GCC_IEEE_FP_FLAG="-mieee-fp"
-    AC_VERBOSE([setting GCC_IEEE_FP_FLAG to $GCC_IEEE_FP_FLAG])
+    AC_VERBOSE([defining GCC_IEEE_FP_FLAG to be $GCC_IEEE_FP_FLAG])
   ;;
 esac
 dnl
@@ -403,13 +410,13 @@ if test -z "$F77"; then
 fi
 dnl
 F2CFLAGS=
-AC_VERBOSE([setting F2CFLAGS to $F2CFLAGS])
+AC_VERBOSE([defining F2CFLAGS to be $F2CFLAGS])
 FFLAGS="-O"
-AC_VERBOSE([setting FFLAGS to $FFLAGS])
+AC_VERBOSE([defining FFLAGS to be $FFLAGS])
 if test -n "$F77"; then
   export F77
   FLIBS=`sh $srcdir/flibs.sh`
-  AC_VERBOSE([setting FLIBS to $FLIBS])
+  AC_VERBOSE([defining FLIBS to be $FLIBS])
   DOT_O_DOT_F_C1=
   DOT_O_DOT_F_C2=
   DOT_O_DOT_F_C3=
@@ -434,9 +441,9 @@ DEFAULT_DOT_C_FROM_DOT_F='# A rule for making C source from Fortran source.\
 \
 \%.c : \%.f\
 	cat $< | $(F2C) $(F2CFLAGS) > $(@F)'
-  AC_VERBOSE([setting DEFAULT_DOT_C_FROM_DOT_F to $DEFAULT_DOT_C_FROM_DOT_F])
+  AC_VERBOSE([defining DEFAULT_DOT_C_FROM_DOT_F to be $DEFAULT_DOT_C_FROM_DOT_F])
   DEFAULT_DOT_O_FROM_DOT_F='\%.o : \%.f'
-  AC_VERBOSE([setting DEFAULT_DOT_O_FROM_DOT_F to $DEFAULT_DOT_O_FROM_DOT_F])
+  AC_VERBOSE([defining DEFAULT_DOT_O_FROM_DOT_F to be $DEFAULT_DOT_O_FROM_DOT_F])
   AC_DEFINE(F77_APPEND_UNDERSCORE, 1)dnl
 else
   AC_WARN([in order to build octave, you must have a compatible])
@@ -451,6 +458,43 @@ AC_SUBST(F2C)dnl
 AC_SUBST(F2CFLAGS)dnl
 AC_SUBST(DEFAULT_DOT_C_FROM_DOT_F)dnl
 AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)dnl
+dnl
+dnl Extract libraries and directories from FLIBS and CXXLIBS.
+dnl
+dnl Leave only libraries, with -lfoo converted to libfoo.a:
+dnl
+changequote(,)dnl
+FLIB_LIST=`echo "$FLIBS" | sed -e 's/-L *[^ ]*//g' \
+	-e 's/-l *\([^ ]*\)/lib\1.a/g' -e 's/-u *[^ ]*//' \
+	-e 's/^ *//' -e 's/ *$//' -e 's/  */:/'`
+dnl
+CXXLIB_LIST=`echo "$CXXLIBS" | sed -e 's/-L *[^ ]*//g' \
+	-e 's/-l *\([^ ]*\)/lib\1.a/g' -e 's/-u *[^ ]*//' \
+	-e 's/^ *//' -e 's/ *$//' -e 's/  */:/g'`
+dnl
+dnl Leave only directories where libraries might be found:
+dnl
+FLIB_PATH=`echo "$FLIBS" | sed -e 's/-L *\([^ ]*\)/\1/g' \
+	-e 's/-l *[^ ]*//g' -e 's/-u *[^ ]*//' -e 's/^ *//' \
+	-e 's/ *$//' -e 's/  */:/'`
+dnl
+CXXLIB_PATH=`echo "$CXXLIBS" | sed -e 's/-L *\([^ ]*\)/\1/g' \
+	-e 's/-l *[^ ]*//g' -e 's/-u *[^ ]*//' -e 's/^ *//' \
+	-e 's/ *$//' -e 's/  */:/g'`
+dnl
+changequote([,])dnl
+dnl
+AC_VERBOSE([defining FLIB_LIST to be $FLIB_LIST])
+AC_VERBOSE([defining FLIB_PATH to be $FLIB_PATH])
+dnl
+AC_VERBOSE([defining CXXLIB_LIST to be $CXXLIB_LIST])
+AC_VERBOSE([defining CXXLIB_PATH to be $CXXLIB_PATH])
+dnl
+AC_SUBST(FLIB_LIST)dnl
+AC_SUBST(FLIB_PATH)dnl
+dnl
+AC_SUBST(CXXLIB_LIST)dnl
+AC_SUBST(CXXLIB_PATH)dnl
 dnl
 dnl Checks for header files.
 dnl
@@ -597,7 +641,7 @@ for termlib in termcap terminfo curses termlib ; do
   AC_HAVE_LIBRARY(${termlib}, [TERMLIBS="${TERMLIBS} -l${termlib}"])
   case "${TERMLIBS}" in
     *-l${termlib}*)
-      AC_VERBOSE([setting TERMLIBS to $TERMLIBS])
+      AC_VERBOSE([defining TERMLIBS to be $TERMLIBS])
       break
     ;;
   esac
@@ -636,12 +680,12 @@ AC_PROG_LEX
 case "$LEX" in
   flex*)
     LFLAGS="-t -I"
-    AC_VERBOSE([setting LFLAGS to be $LFLAGS])
+    AC_VERBOSE([defining LFLAGS to be $LFLAGS])
     LEXLIB=
   ;;
   *)
     LFLAGS="-t"
-    AC_VERBOSE([setting LFLAGS to be $LFLAGS])
+    AC_VERBOSE([defining LFLAGS to be $LFLAGS])
     AC_WARN([I didn't find flex, but that's only a problem])
     AC_WARN([if you need to reconstruct lex.cc])
   ;;
@@ -688,7 +732,7 @@ if test -z "$DEFAULT_PAGER"; then
   AC_WARN([I couldn't find `less', `more', `page', or `pg'])
 elif test "$DEFAULT_PAGER" = less; then
   DEFAULT_PAGER="less -e"
-  AC_VERBOSE([setting DEFAULT_PAGER to be $DEFAULT_PAGER])
+  AC_VERBOSE([defining DEFAULT_PAGER to be $DEFAULT_PAGER])
 fi
 dnl
 dnl Even though we include config.h in most files, some need to be
@@ -696,7 +740,7 @@ dnl compiled with the -D options on the compiler command line.  Use
 dnl UGLY_DEFS for that.
 dnl
 UGLY_DEFS="$DEFS"
-AC_VERBOSE([setting UGLY_DEFS to be $UGLY_DEFS])
+AC_VERBOSE([defining UGLY_DEFS to be $UGLY_DEFS])
 AC_SUBST(UGLY_DEFS)dnl
 dnl
 dnl Maybe add -Wall to compiler flags now that we're done feature

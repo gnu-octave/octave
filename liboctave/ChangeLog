@@ -1,5 +1,11 @@
 Fri Oct 25 01:24:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* str-vec.h (str_vec_compare): Declare args as const void *, then
+	cast them to const string * in the body of the function.
+
+	* file-ops.cc (file_stat::mode_as_string): Explicitly construct
+	string from buf.
+
 	* Array3.h (Array3::checkelem): Tag bogus return value with
 	GCC_ATTRIBUTE_UNUSED.
 	* Array2.h (Array2::checkelem): Likewise.

@@ -1,5 +1,17 @@
 Fri Oct 25 01:10:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-ch-mat.h (octave_char_matrix::any): Return 0.0 instead of false.
+	(octave_char_matrix::all): Likewise.
+
+	* input.cc (Fecho): When binding value of echo_executing_commands,
+	cast ECHO_* to double.
+
+	* sighandlers.cc (octave_child_list::do_remove): Delete unused
+	variable `enlarge'.
+
+	* pt-const.h (tree_constant::tree_constant (const tree_constant&)):
+	Don't pass arg to tree_fvc constructor.
+
 	* resource.cc (getrusage): [HAVE_GETRUSAGE && RUSAGE_TIMES_ONLY]:
 	Only fill in time values.
 

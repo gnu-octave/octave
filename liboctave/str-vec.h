@@ -30,8 +30,11 @@ class ostream;
 #include "Array.h"
 
 static int
-str_vec_compare (const string *a, const string *b)
+str_vec_compare (const void *a_arg, const void *b_arg)
 {
+  const string *a = (const string *) a_arg;
+  const string *b = (const string *) b_arg;
+
   return a->compare (*b);
 }
 

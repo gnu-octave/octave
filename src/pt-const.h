@@ -142,7 +142,7 @@ public:
     : tree_fvc (l, c), val (v), orig_text () { }
 
   tree_constant (const tree_constant& a)
-    : tree_fvc (a), val (a.val), orig_text () { }
+    : tree_fvc (), val (a.val), orig_text () { }
 
   ~tree_constant (void) { }
 

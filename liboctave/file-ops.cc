@@ -100,7 +100,7 @@ file_stat::mode_as_string (void) const
 
   buf[10] = '\0';
 
-  return buf;
+  return string (buf);
 }
 
 // Private stuff:

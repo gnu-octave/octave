@@ -87,8 +87,8 @@ public:
   bool is_char_matrix (void) const { return true; }
 
   // XXX FIXME XXX
-  octave_value all (void) const { return false; }
-  octave_value any (void) const { return false; }
+  octave_value all (void) const { return 0.0; }
+  octave_value any (void) const { return 0.0; }
 
   bool is_real_type (void) const { return true; }
 

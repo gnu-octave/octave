@@ -508,8 +508,6 @@ octave_child_list::do_remove (pid_t pid)
 {
   // Mark the record for PID invalid.
 
-  bool enlarge = true;
-
   for (int i = 0; i < curr_len; i++)
     {
       octave_child& tmp = list (i);

@@ -1158,9 +1158,11 @@ Without any arguments, toggle the current echo state.")
       {
 	if ((Vecho_executing_commands & ECHO_SCRIPTS)
 	    || (Vecho_executing_commands & ECHO_FUNCTIONS))
-	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	  bind_builtin_variable ("echo_executing_commands",
+				 (double) ECHO_OFF);
 	else
-	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
+	  bind_builtin_variable ("echo_executing_commands",
+				 (double) ECHO_SCRIPTS);
       }
       break;
 
@@ -1169,9 +1171,11 @@ Without any arguments, toggle the current echo state.")
 	string arg = argv[1];
 
 	if (arg == "on")
-	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
+	  bind_builtin_variable ("echo_executing_commands",
+				 (double) ECHO_SCRIPTS);
 	else if (arg == "off")
-	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	  bind_builtin_variable ("echo_executing_commands",
+				 (double) ECHO_OFF);
 	else
 	  print_usage ("echo");
       }
@@ -1183,9 +1187,10 @@ Without any arguments, toggle the current echo state.")
 
 	if (arg == "on" && argv[2] == "all")
 	  bind_builtin_variable ("echo_executing_commands",
-				 (ECHO_SCRIPTS | ECHO_FUNCTIONS));
+				 (double) (ECHO_SCRIPTS | ECHO_FUNCTIONS));
 	else if (arg == "off" && argv[2] == "all")
-	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
+	  bind_builtin_variable ("echo_executing_commands",
+				 (double) ECHO_OFF);
 	else
 	  print_usage ("echo");
       }

@@ -65,6 +65,9 @@ symbol_table *top_level_sym_tab = 0;
 // Symbol table for the current scope.
 symbol_table *curr_sym_tab = 0;
 
+// Symbol table for the current caller scope.
+symbol_table *curr_caller_sym_tab = 0;
+
 // Symbol table for global symbols.
 symbol_table *global_sym_tab = 0;
 
@@ -94,7 +97,7 @@ initialize_symbol_tables (void)
   if (! top_level_sym_tab)
     top_level_sym_tab = new symbol_table (4096, "TOP");
 
-  curr_sym_tab = top_level_sym_tab;
+  curr_caller_sym_tab = curr_sym_tab = top_level_sym_tab;
 }
 
 // Attributes of variables and functions.

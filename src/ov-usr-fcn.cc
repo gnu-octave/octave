@@ -400,6 +400,9 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
+  unwind_protect_ptr (curr_caller_sym_tab);
+  curr_caller_sym_tab = curr_sym_tab;
+
   unwind_protect_ptr (curr_sym_tab);
   curr_sym_tab = sym_tab;
 

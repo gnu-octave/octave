@@ -1,3 +1,13 @@
+2002-12-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (Fevalin): New function.
+
+	* variables.cc (curr_caller_sym_tab): New global variable.
+	* variables.h: Provide decl.
+	(initialize_symbol_tables): Initialize it.
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Protect	and set it here.
+
 2002-12-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (search_path_for_file): Second arg now string_vector.

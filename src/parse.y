@@ -3732,6 +3732,75 @@ variable @code{default_eval_print_flag}.\n\
   return retval;
 }
 
+DEFUN (evalin, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
+Like @code{eval}, except that the expressions are evaluated in the\n\
+context @var{context}, which may be either @code{\"caller\"} or\n\
+@code{\"base\"}.
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 1)
+    {
+      std::string context = args(0).string_value ();
+
+      if (! error_state)
+        {
+	  unwind_protect::begin_frame ("Fevalin");
+
+	  unwind_protect_ptr (curr_sym_tab);
+
+	  if (context == "caller")
+	    curr_sym_tab = curr_caller_sym_tab;
+	  else if (context == "base")
+	    curr_sym_tab = top_level_sym_tab;
+	  else
+	    error ("evalin: context must be \"caller\" or \"base\"");
+
+	  if (nargin > 2)
+	    {
+	      unwind_protect_bool (buffer_error_messages);
+	      buffer_error_messages = true;
+	    }
+
+	  int parse_status = 0;
+
+	  retval = eval_string (args(1), ! Vdefault_eval_print_flag,
+				parse_status, nargout);
+
+	  if (nargin > 2 && (parse_status != 0 || error_state))
+	    {
+	      error_state = 0;
+
+	      // Set up for letting the user print any messages from
+	      // errors that occurred in the first part of this eval().
+
+	      buffer_error_messages = false;
+
+	      bind_global_error_variable ();
+
+	      unwind_protect::add (clear_global_error_variable, 0);
+
+	      eval_string (args(2), 0, parse_status, nargout);
+
+	      retval = octave_value_list ();
+	    }
+
+	  unwind_protect::run_frame ("Fevalin");
+	}
+      else
+        error ("evalin: expecting string as first argument");
+    }
+  else
+    print_usage ("evalin");
+
+  return retval;
+}
+
 static int
 default_eval_print_flag (void)
 {

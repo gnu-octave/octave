@@ -116,6 +116,9 @@ extern symbol_table *top_level_sym_tab;
 // Symbol table for the current scope.
 extern symbol_table *curr_sym_tab;
 
+// Symbol table for the current caller scope.
+extern symbol_table *curr_caller_sym_tab;
+
 // Symbol table for global symbols.
 extern symbol_table *global_sym_tab;
 

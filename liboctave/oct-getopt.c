@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 2000 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,41 +24,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "oct-getopt.h"
-
-#include "prog-args.h"
+#include "getopt.h"
 
 int
-prog_args::getopt (void)
+octave_getopt (int argc, char *const *argv, const char *optstring)
 {
-  if (long_opts)
-    return ::octave_getopt_long (xargc, xargv, short_opts,
-				 X_CAST (const struct option *, long_opts), 0);
-  else
-    return ::octave_getopt (xargc, xargv, short_opts);
-}
-
-const char *
-prog_args::optarg (void)
-{
-  return ::optarg;
+  return getopt (argc, argv, optstring);
 }
 
 int
-prog_args::optind (void)
+octave_getopt_long (int argc, char *const *argv, const char *options,
+		    const struct option *long_options, int *opt_index)
 {
-  return ::optind;
+  return getopt_long (argc, argv, options, long_options, opt_index);
 }
 
-// This is intended to communicate to getopt that it is supposed to
-// start over on the next call, but it may not be portable.  See the
-// comments in getopt.c for more information.
-
-void
-prog_args::init (void)
-{
-  ::optind = 0;
-}
 
 /*
 ;;; Local Variables: ***

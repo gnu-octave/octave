@@ -29,25 +29,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "lo-utils.h"
+#include "oct-kpse.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 #include "str-vec.h"
-
-extern "C"
-{
-// Have to redefine these because they conflict with new C++ keywords
-// or otherwise cause trouble...
-#define string kpse_string
-
-#include <kpathsea/default.h>
-#include <kpathsea/expand.h>
-#include <kpathsea/pathsearch.h>
-#include <kpathsea/progname.h>
-
-extern unsigned int kpathsea_debug;
-
-#undef string
-}
 
 static bool octave_kpathsea_initialized = false;
 
@@ -73,7 +58,8 @@ dir_path::all_directories (void)
 
       for (int i = 0; i < len; i++)
 	{
-	  str_llist_type *elt_dirs = kpse_element_dirs (pv[i].c_str ());
+	  str_llist_type *elt_dirs
+	    = ::octave_kpse_element_dirs (pv[i].c_str ());
 
 	  if (elt_dirs)
 	    {
@@ -109,7 +95,7 @@ dir_path::find_first (const std::string& nm)
 
   if (initialized)
     {
-      char *tmp = kpse_path_search (p.c_str (), nm.c_str (), true);
+      char *tmp = ::octave_kpse_path_search (p.c_str (), nm.c_str (), true);
       if (tmp)
 	{
 	  retval = tmp;
@@ -127,12 +113,12 @@ dir_path::find_all (const std::string& nm)
 
   if (initialized)
     {
-      kpse_string *tmp = kpse_all_path_search (p.c_str (), nm.c_str ());
+      char **tmp = ::octave_kpse_all_path_search (p.c_str (), nm.c_str ());
 
       if (tmp)
 	{
 	  int count = 0;
-	  kpse_string *ptr = tmp;
+	  char **ptr = tmp;
 	  while (*ptr++)
 	    count++;
 
@@ -149,7 +135,7 @@ dir_path::find_all (const std::string& nm)
 void
 dir_path::set_program_name (const std::string& nm)
 {
-  kpse_set_progname (nm.c_str ());
+  ::octave_kpse_set_progname (nm.c_str ());
 }
 
 void
@@ -165,17 +151,18 @@ dir_path::init (void)
       octave_kpathsea_initialized = true;
     }
 
-  kpse_clear_dir_cache ();
+  ::octave_kpse_clear_dir_cache ();
 
   char *t1 = 0;
 
   if (p_default.empty ())
-    t1 = kpse_path_expand (p_orig.c_str ());
+    t1 = ::octave_kpse_path_expand (p_orig.c_str ());
   else
     {
-      char *t2 = kpse_expand_default (p_orig.c_str (), p_default.c_str ());
+      char *t2
+	= ::octave_kpse_expand_default (p_orig.c_str (), p_default.c_str ());
 
-      t1 = kpse_path_expand (t2);
+      t1 = ::octave_kpse_path_expand (t2);
 
       if (t2)
 	free (t2);
@@ -190,21 +177,21 @@ dir_path::init (void)
     p = std::string ();
 
   int count = 0;
-  char *path_elt = kpse_path_element (p.c_str ());
+  char *path_elt = ::octave_kpse_path_element (p.c_str ());
   while (path_elt)
     {
-      path_elt = kpse_path_element (0);
+      path_elt = ::octave_kpse_path_element (0);
       count++;
     }
 
   pv.resize (count);
 
-  path_elt = kpse_path_element (p.c_str ());
+  path_elt = ::octave_kpse_path_element (p.c_str ());
 
   for (int i = 0; i < count; i++)
     {
       pv[i] = path_elt;
-      path_elt = kpse_path_element (0);
+      path_elt = ::octave_kpse_path_element (0);
     }
 
   initialized = true;

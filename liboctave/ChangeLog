@@ -1,5 +1,9 @@
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-getopt.h, oct-getopt.c: New files for interface to getopt.
+
+	* oct-kpse.h, oct-kpse.c: New files for interface to kpathsearch.
+
 	* dMatrix.cc (write_int, read_int): No longer declared static.
 
 	* CDiagMatrix.h: Delete decls for friend operators that are

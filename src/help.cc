@@ -613,7 +613,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 
       OSSTREAM buf;
 
-      buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | "
+      buf << "sed -e 's/^[#%]* *//' -e 's/^ *@/@/' | "
 	  << Vmakeinfo_prog
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
@@ -623,7 +623,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 	  << " --no-validate"
 	  << " --no-headers"
 	  << " --force"
-	  << " --output " << tmp_file_name
+	  << " --output \"" << tmp_file_name << "\""
 	  << " > /dev/null 2>&1"
 	  << OSSTREAM_ENDS;
 

@@ -1,5 +1,13 @@
 2002-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* help.cc (display_help_text): Quote output file name for Cygwin.
+
+	* Makefile.in (install-lib): Don't bother with versions for
+	$(SHLBIN) files.
+
+	* help.cc (display_help_text): Match zero or more comment
+	characters instead of one or more.
+
 	* Makefile.in (install-oct): Process files from $(DLD_DEF_FILES),
 	not $(DLD_SRC).  Look for them in current directory, not $(srcdir).
 

@@ -912,6 +912,11 @@ do_who (int argc, const string_vector& argv)
   if (show_functions)
     {
       pad_after += fbi_sym_tab->maybe_list
+	("*** dynamically linked functions:", pats,
+	 octave_stdout, show_verbose, symbol_record::DLD_FUNCTION,
+	 SYMTAB_ALL_SCOPES);
+
+      pad_after += fbi_sym_tab->maybe_list
 	("*** currently compiled functions:", pats,
 	 octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
 	 SYMTAB_ALL_SCOPES);

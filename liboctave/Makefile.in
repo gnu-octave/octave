@@ -249,11 +249,9 @@ install-lib:
 	  rm -f $(octlibdir)/liboctave.$(SHLLIB); \
 	  $(LN_S) liboctave.$(SHLLIB_VER) $(octlibdir)/liboctave.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(bindir)/liboctave.$(SHLBIN_VER); \
-	    $(INSTALL_PROGRAM) \
-	      liboctave.$(SHLBIN) $(bindir)/liboctave.$(SHLBIN_VER); \
 	    rm -f $(bindir)/liboctave.$(SHLBIN); \
-	    $(LN_S) liboctave.$(SHLBIN_VER) $(bindir)/liboctave.$(SHLBIN); \
+	    $(INSTALL_PROGRAM) \
+	      liboctave.$(SHLBIN) $(bindir)/liboctave.$(SHLBIN); \
 	  fi; \
 	fi
 .PHONY: install-lib

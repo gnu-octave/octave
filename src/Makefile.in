@@ -381,11 +381,9 @@ install-lib:
 	  rm -f $(octlibdir)/liboctinterp.$(SHLLIB); \
 	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(octlibdir)/liboctinterp.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
-	      rm -f $(bindir)/liboctinterp.$(SHLBIN_VER); \
-	      $(INSTALL_PROGRAM) \
-	        liboctinterp.$(SHLBIN) $(bindir)/liboctinterp.$(SHLBIN_VER); \
-	      rm -f $(bindir)/liboctinterp.$(SHLBIN); \
-	      $(LN_S) liboctinterp.$(SHLBIN_VER) $(bindir)/liboctinterp.$(SHLBIN); \
+	    rm -f $(bindir)/liboctinterp.$(SHLBIN); \
+	    $(INSTALL_PROGRAM) \
+	      liboctinterp.$(SHLBIN) $(bindir)/liboctinterp.$(SHLBIN); \
 	  fi; \
 	fi
 .PHONY: install-lib

@@ -132,11 +132,9 @@ install::
 	  rm -f $(octlibdir)/libcruft.$(SHLLIB); \
 	  $(LN_S) libcruft.$(SHLLIB_VER) $(octlibdir)/libcruft.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(bindir)/libcruft.$(SHLBIN_VER); \
-	    $(INSTALL_PROGRAM) \
-	      libcruft.$(SHLBIN) $(bindir)/libcruft.$(SHLBIN_VER); \
 	    rm -f $(bindir)/libcruft.$(SHLBIN); \
-	    $(LN_S) libcruft.$(SHLBIN_VER) $(bindir)/libcruft.$(SHLBIN); \
+	    $(INSTALL_PROGRAM) \
+	      libcruft.$(SHLBIN) $(bindir)/libcruft.$(SHLBIN); \
 	  fi; \
 	fi
 

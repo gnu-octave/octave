@@ -252,7 +252,9 @@ DEFUN (file_in_path, args, ,
 
   if (argc == 3)
     {
-      string fname = search_path_for_file (argv[1], argv[2]);
+      string path = maybe_add_default_load_path (argv[1]);
+
+      string fname = search_path_for_file (path, argv[2]);
 
       if (fname.empty ())
 	retval = Matrix ();

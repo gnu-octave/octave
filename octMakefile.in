@@ -56,49 +56,10 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(fcnfiledir) $(octfiledir) $(archlibdir) \
 all: octave-bug $(SUBDIRS)
 .PHONY: all
 
-define do-subst-config-vals
-echo making $@ from $(srcdir)/$@.in
-sed < $(srcdir)/$@.in > $@.tmp \
-  -e "s;%VERSION%;${version};" \
-  -e "s;%config_opts%;${config_opts};" \
-  -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
-  -e "s;%F77%;${F77};" \
-  -e "s;%FFLAGS%;${FFLAGS};" \
-  -e "s;%FPICFLAG%;${FPICFLAG};" \
-  -e "s;%F2C%;${F2C};" \
-  -e "s;%F2CFLAGS%;${F2CFLAGS};" \
-  -e "s;%FLIBS%;${FLIBS};" \
-  -e "s;%CPPFLAGS%;${CPPFLAGS};" \
-  -e "s;%INCFLAGS%;-I${topincludedir} -I${includedir};" \
-  -e "s;%CC%;${CC};" \
-  -e "s;%CC_VERSION%;${CC_VERSION};" \
-  -e "s;%CFLAGS%;${BUG_CFLAGS};" \
-  -e "s;%CPICFLAG%;${CPICFLAG};" \
-  -e "s;%CXX%;${CXX};" \
-  -e "s;%CXX_VERSION%;${CXX_VERSION};" \
-  -e "s;%CXXFLAGS%;${CXXFLAGS};" \
-  -e "s;%CXXPICFLAG%;${CXXPICFLAG};" \
-  -e "s;%BUG_CXXFLAGS%;${BUG_CXXFLAGS};" \
-  -e "s;%HOST_CXXFLAGS%;${HOST_CXXFLAGS};" \
-  -e "s;%NO_IMPLICIT_TEMPLATES%;${NO_IMPLICIT_TEMPLATES};" \
-  -e "s;%GCC_IEEE_FP_FLAG%;${GCC_IEEE_FP_FLAG};" \
-  -e "s;%LDFLAGS%;${LDFLAGS};" \
-  -e "s;%LIBFLAGS%;-L${libdir};" \
-  -e "s;%RLD_FLAG%;${RLD_FLAG};" \
-  -e "s;%CXXLIBS%;${CXXLIBS};" \
-  -e "s;%TERMLIBS%;${TERMLIBS};" \
-  -e "s;%LIBS%;${LIBS};" \
-  -e "s;%LEXLIB%;${LEXLIB};" \
-  -e "s;%LIBPLPLOT%;${LIBPLPLOT};" \
-  -e "s;%LIBDLFCN%;${LIBDLFCN};" \
-  -e "s;%DEFS%;${UGLY_DEFS};"
-$(top_srcdir)/move-if-change $@.tmp $@
-endef
-
-octave-bug:
+octave-bug: Makeconf octMakefile
 	@$(do-subst-config-vals)
 
-mkoctfile:
+mkoctfile: Makeconf octMakefile
 	@$(do-subst-config-vals)
 
 $(SUBDIRS):

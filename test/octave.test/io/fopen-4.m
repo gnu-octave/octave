@@ -1,0 +1,1 @@
+fopen ("foo", "w", "noodle")

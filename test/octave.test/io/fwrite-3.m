@@ -1,0 +1,1 @@
+fwrite ("foo", 1)

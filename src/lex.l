@@ -1,4 +1,4 @@
-/* lex.l                                                -*- C++ -*-
+/*
 
 Copyright (C) 1996 John W. Eaton
 
@@ -1805,3 +1805,9 @@ lexical_feedback::init (void)
 // ".*="	return EMUL_EQ;
 // "./="	return EDIV_EQ;
 // ".\\="	return ELEFTDIV_EQ;
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

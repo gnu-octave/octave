@@ -1,4 +1,3 @@
-// parse.y						-*- text -*-
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -2071,3 +2070,9 @@ maybe_warn_missing_semi (tree_statement_list *t)
 		 curr_fcn_file_full_name.c_str ());
     }
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: text ***
+;;; End: ***
+*/

@@ -1,4 +1,3 @@
-/* oct-math.h                                    -*- C -*- */
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -47,3 +46,10 @@ extern double gamma ();
 #endif
 
 #endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

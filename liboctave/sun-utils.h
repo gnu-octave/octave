@@ -72,7 +72,7 @@ assign_double (double *unaligned_ptr, double value)
 
 /*
 ;;; Local Variables: ***
-;;; mode: C++ ***
+;;; mode: C ***
 ;;; page-delimiter: "^/\\*" ***
 ;;; End: ***
 */

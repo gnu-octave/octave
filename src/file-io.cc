@@ -1151,6 +1151,28 @@ printed.")
   return retval;
 }
 
+void
+symbols_of_file_io (void)
+{
+  DEFCONST (SEEK_SET, 0.0, 0, 0,
+    "used with fseek to position file relative to the beginning");
+
+  DEFCONST (SEEK_CUR, 1.0, 0, 0,
+    "used with fseek to position file relative to the current position");
+
+  DEFCONST (SEEK_END, 2.0, 0, 0,
+    "used with fseek to position file relative to the end");
+
+  DEFCONSTX ("stdin", SBV_stdin, 0.0, 0, 0,
+    "file number of the standard input stream");
+
+  DEFCONSTX ("stdout", SBV_stdout, 1.0, 0, 0,
+    "file number of the standard output stream");
+
+  DEFCONSTX ("stderr", SBV_stderr, 2.0, 0, 0,
+    "file number of the standard error stream");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

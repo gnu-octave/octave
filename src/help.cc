@@ -59,6 +59,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+// If TRUE, don't print additional help message in help and usage
+// functions.
+static bool Vsuppress_verbose_help_message;
+
 static help_list operators[] =
 {
   { "!",
@@ -320,7 +324,7 @@ static void
 additional_help_message (ostream& os)
 {
 #ifdef USE_GNU_INFO
-  if (! user_pref.suppress_verbose_help_message)
+  if (! Vsuppress_verbose_help_message)
     os << VERBOSE_HELP_MESSAGE;
 #endif
 }
@@ -891,6 +895,25 @@ file, print the full name of the file.")
     print_usage ("which");
 
   return retval;
+}
+
+static int
+suppress_verbose_help_message (void)
+{
+  Vsuppress_verbose_help_message
+    = check_preference ("suppress_verbose_help_message");
+
+  return 0;
+}
+
+void
+symbols_of_help (void)
+{
+#ifdef USE_GNU_INFO
+  DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
+    "suppress printing of message pointing to additional help in the\n\
+help and usage functions");
+#endif
 }
 
 /*

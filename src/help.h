@@ -47,6 +47,8 @@ extern int help_from_list (ostrstream& output_buf,
 			   const help_list *list, const string& nm,
 			   int usage);
 
+extern void symbols_of_help (void);
+
 #endif
 
 /*

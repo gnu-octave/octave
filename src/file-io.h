@@ -29,6 +29,8 @@ extern void initialize_file_io (void);
 
 extern void close_files (void);
 
+extern void symbols_of_file_io (void);
+
 #endif
 
 /*

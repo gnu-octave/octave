@@ -47,11 +47,10 @@ function retval = str2mat (...)
   nc = zeros (nargin, 1);
   for k = 1 : nargin
     s = va_arg ();
-    if (isstr (s))
-      [nr(k), nc(k)] = size (s);
-    else
-      error ("str2mat: all arguments must be strings");
+    if (! isstr (s))
+      s = setstr (s);
     endif
+    [nr(k), nc(k)] = size (s);
   endfor
 
   tmp = find (nr == 0);
@@ -70,6 +69,9 @@ function retval = str2mat (...)
   row_offset = 0;
   for k = 1 : nargin
     s = va_arg ();
+    if (! isstr (s))
+      s = setstr (s);
+    endif
     if (nc(k) > 0)
       retval ((row_offset + 1) : (row_offset + nr(k)), 1:nc(k)) = s;
     endif

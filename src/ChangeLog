@@ -1,3 +1,7 @@
+2000-07-20  Joao Cardoso  <jcardoso@inescporto.pt>
+
+	* Makefile.in (octave): Link with $(LD_CXX) instead of $(CXX)
+
 2000-07-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (octave_base_stream::oscanf): Advance to next

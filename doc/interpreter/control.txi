@@ -456,6 +456,8 @@ References:
 
 @DOCSTRING(dlqr)
 
+@DOCSTRING(dkalman)
+
 @DOCSTRING(h2syn)
 
 @DOCSTRING(hinf_ctr)

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.332 $)
+AC_REVISION($Revision: 1.333 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -711,6 +711,8 @@ case "$canonical_host_type" in
 changequote(,)dnl
   i[3456]86-*-sco3.2v5*)
 changequote([,])dnl
+    SONAME_FLAGS='-Xlinker -h -Xlinker $@'
+    RLD_FLAG=
     SH_LDFLAGS=-G
   ;;
   rs6000-ibm-aix* | powerpc-ibm-aix*)
@@ -918,6 +920,7 @@ AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
 
 OCTAVE_SMART_PUTENV
 
+LD_CXX='$(CXX)'
 LIBDLFCN=
 DLFCN_INCFLAGS=
 RDYNAMIC_FLAG=
@@ -931,6 +934,7 @@ if test "$WITH_DL" = yes || test "$WITH_DL" = maybe; then
 changequote(,)dnl
     i[3456]86-*-sco3.2v5*)
 changequote([,])dnl
+      LD_CXX='LD_RUN_PATH=$LD_RUN_PATH:$(octlibdir) $(CXX)'
       WITH_DL=true
     ;;
     *)
@@ -960,6 +964,7 @@ AC_SUBST(WITH_DL)
 AC_SUBST(LIBDLFCN)
 AC_SUBST(DLFCN_INCFLAGS)
 AC_SUBST(RDYNAMIC_FLAG)
+AC_SUBST(LD_CXX)
 
 if test "$WITH_SHL" = yes || test "$WITH_SHL" = maybe; then
   AC_CHECK_LIB(dld, shl_load)

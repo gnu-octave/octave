@@ -1,3 +1,9 @@
+2000-07-20  Joao Cardoso  <jcardoso@inescn.pt>
+
+	* configure.in: (LD_CXX): Define and substitute.
+	For sco3.2v5 systems, set SONAME_FLAGS and RLD_FLAG.
+	* Makeconf.in (LD_CXX): Allow substitution.
+
 2000-07-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (DISTSUBDIRS): Define in terms of $(ALL_SUBDIRS).

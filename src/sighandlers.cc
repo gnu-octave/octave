@@ -77,6 +77,16 @@ octave_restore_signal_mask (void)
 #endif
 }
 
+#if 0
+void
+ignore_sigchld (void)
+{
+#if defined (SIGCHLD)
+  octave_set_signal_handler (SIGCHLD, SIG_IGN);
+#endif
+}
+#endif
+
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {
@@ -153,7 +163,7 @@ sigchld_handler (int /* sig */)
 	{
 	  int status;
 
-	  if (waitpid (pid, &status, 0) > 0)
+	  if (waitpid (pid, &status, WNOHANG) > 0)
 	    {
 	      elt.pid = -1;
 
@@ -454,7 +464,7 @@ octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
 
   for (int i = 0; i < curr_len; i++)
     {
-      octave_child tmp = list.elem (i);
+      octave_child& tmp = list.elem (i);
 
       if (tmp.pid < 0)
 	{
@@ -489,6 +499,37 @@ octave_child_list::insert (pid_t pid, octave_child::dead_child_handler f)
 
   if (instance)
     instance->do_insert (pid, f);
+  else
+    panic_impossible ();
+}
+
+void
+octave_child_list::do_remove (pid_t pid)
+{
+  // Mark the record for PID invalid.
+
+  bool enlarge = true;
+
+  for (int i = 0; i < curr_len; i++)
+    {
+      octave_child& tmp = list.elem (i);
+
+      if (tmp.pid == pid)
+	{
+	  tmp.pid = -1;
+	  break;
+	}
+    }
+}
+
+void
+octave_child_list::remove (pid_t pid)
+{
+  if (! instance)
+    instance = new octave_child_list ();
+
+  if (instance)
+    instance->do_remove (pid);
   else
     panic_impossible ();
 }

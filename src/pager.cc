@@ -80,6 +80,8 @@ static int flushing_output_to_pager = 0;
 static void
 clear_external_pager (void)
 {
+  octave_child_list::remove (octave_pager_pid);
+
   octave_pager_pid = -1;
 
   delete external_pager;

@@ -1,5 +1,7 @@
 Fri Nov 15 13:48:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-plot.cc: Put semicolons at the ends of all plot commands.
+
 	* defaults.cc (subst_octave_home): Start subsequent searchs from
 	the end of the replaced text.
 

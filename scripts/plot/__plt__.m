@@ -28,7 +28,7 @@ function __plt__ (caller, ...)
   elseif (nargin > 2)
 
     first_plot = 1;
-    hold_state = ishold;
+    hold_state = ishold ();
 
     unwind_protect
 
@@ -83,6 +83,12 @@ function __plt__ (caller, ...)
 	  __plt1__ (x, fmt);
 	endif
       endif
+
+      ## Something fishy is going on.  I don't think this should be
+      ## necessary, but without it, sometimes not all the lines from a
+      ## given plot command appear on the screen.
+
+      replot;
 
     unwind_protect_cleanup
 

@@ -1,3 +1,8 @@
+Fri Nov 15 18:13:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__plt__.m: Add explicit replot after last command is
+	issued, to force all lines to be displayed.  Hmm.
+
 Thu Nov 14 00:06:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/axis.m, plot/bottom_title.m, plot/contour.m,

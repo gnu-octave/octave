@@ -102,28 +102,32 @@ static pid_t plot_stream_pid = 0;
 // Use shortest possible abbreviations to minimize trouble caused by
 // gnuplot's fixed-length command line buffer.
 
-#ifndef GNUPLOT_COMMAND_PLOT  
-#define GNUPLOT_COMMAND_PLOT   "pl"
+#ifndef GPLOT_CMD_PLOT  
+#define GPLOT_CMD_PLOT   "pl"
 #endif
 
-#ifndef GNUPLOT_COMMAND_REPLOT 
-#define GNUPLOT_COMMAND_REPLOT "rep"
+#ifndef GPLOT_CMD_REPLOT 
+#define GPLOT_CMD_REPLOT "rep"
 #endif
 
-#ifndef GNUPLOT_COMMAND_SPLOT 
-#define GNUPLOT_COMMAND_SPLOT  "sp"
+#ifndef GPLOT_CMD_SPLOT 
+#define GPLOT_CMD_SPLOT  "sp"
 #endif
 
-#ifndef GNUPLOT_COMMAND_USING
-#define GNUPLOT_COMMAND_USING  "u"
+#ifndef GPLOT_CMD_USING
+#define GPLOT_CMD_USING  "u"
 #endif
 
-#ifndef GNUPLOT_COMMAND_WITH 
-#define GNUPLOT_COMMAND_WITH   "w"
+#ifndef GPLOT_CMD_WITH 
+#define GPLOT_CMD_WITH   "w"
 #endif
 
-#ifndef GNUPLOT_COMMAND_TITLE
-#define GNUPLOT_COMMAND_TITLE  "t"
+#ifndef GPLOT_CMD_TITLE
+#define GPLOT_CMD_TITLE  "t"
+#endif
+
+#ifndef GPLOT_CMD_END
+#define GPLOT_CMD_END ";\n"
 #endif
 
 static void
@@ -199,7 +203,7 @@ open_plot_stream (void)
       *plot_stream << "set data style lines\n";
 
       if (gnuplot_terminal_type)
-	*plot_stream << "set term " << gnuplot_terminal_type << "\n";
+	*plot_stream << "set term " << gnuplot_terminal_type << GPLOT_CMD_END;
     }
 }
 
@@ -214,13 +218,13 @@ send_to_plot_stream (const char *cmd)
 	return -1;
     }
 
-  int replot_len = strlen (GNUPLOT_COMMAND_REPLOT);
-  int splot_len = strlen (GNUPLOT_COMMAND_SPLOT);
-  int plot_len = strlen (GNUPLOT_COMMAND_PLOT);
+  int replot_len = strlen (GPLOT_CMD_REPLOT);
+  int splot_len = strlen (GPLOT_CMD_SPLOT);
+  int plot_len = strlen (GPLOT_CMD_PLOT);
 
-  bool is_replot = (strncmp (cmd, GNUPLOT_COMMAND_REPLOT, replot_len) == 0);
-  bool is_splot = (strncmp (cmd, GNUPLOT_COMMAND_SPLOT, splot_len) == 0);
-  bool is_plot = (strncmp (cmd, GNUPLOT_COMMAND_PLOT, plot_len) == 0);
+  bool is_replot = (strncmp (cmd, GPLOT_CMD_REPLOT, replot_len) == 0);
+  bool is_splot = (strncmp (cmd, GPLOT_CMD_SPLOT, splot_len) == 0);
+  bool is_plot = (strncmp (cmd, GPLOT_CMD_PLOT, plot_len) == 0);
 
   if (plot_line_count == 0 && is_replot)
     error ("replot: no previous plot");
@@ -231,7 +235,7 @@ send_to_plot_stream (const char *cmd)
       if (! (is_replot || is_splot || is_plot)
 	  && plot_line_count > 0
 	  && Vautomatic_replot)
-	*plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
+	*plot_stream << GPLOT_CMD_REPLOT << GPLOT_CMD_END;
 
       plot_stream->flush ();
     }
@@ -263,7 +267,7 @@ tree_plot_command::eval (void)
       if (plot_line_count == 0)
 	{
 	  if (plot_list)
-	    plot_buf << GNUPLOT_COMMAND_PLOT;
+	    plot_buf << GPLOT_CMD_PLOT;
 	  else
 	    {
 	      ::error ("replot: must have something to plot");
@@ -271,27 +275,27 @@ tree_plot_command::eval (void)
 	    }
 	}
       else
-	plot_buf << GNUPLOT_COMMAND_REPLOT;
+	plot_buf << GPLOT_CMD_REPLOT;
       break;
 
     case 2:
       if (clear_before_plotting || plot_line_count == 0)
 	{
 	  plot_line_count = 0;
-	  plot_buf << GNUPLOT_COMMAND_PLOT;
+	  plot_buf << GPLOT_CMD_PLOT;
 	}
       else
-	plot_buf << GNUPLOT_COMMAND_REPLOT;
+	plot_buf << GPLOT_CMD_REPLOT;
       break;
 
     case 3:
       if (clear_before_plotting || plot_line_count == 0)
 	{
 	  plot_line_count = 0;
-	  plot_buf << GNUPLOT_COMMAND_SPLOT;
+	  plot_buf << GPLOT_CMD_SPLOT;
 	}
       else
-	plot_buf << GNUPLOT_COMMAND_REPLOT;
+	plot_buf << GPLOT_CMD_REPLOT;
       break;
 
     default:
@@ -319,7 +323,7 @@ tree_plot_command::eval (void)
 	return;
     }
 
-  plot_buf << "\n" << ends;
+  plot_buf << GPLOT_CMD_END << ends;
 
   // Just testing...
   //  char *message = plot_buf.str ();
@@ -518,7 +522,7 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
   for (int i = 0; i < qual_count; i++)
     {
       if (i == 0)
-	plot_buf << " " << GNUPLOT_COMMAND_USING << " ";
+	plot_buf << " " << GPLOT_CMD_USING << " ";
       else
 	plot_buf << ":";
 
@@ -545,7 +549,7 @@ subplot_style::print (ostrstream& plot_buf)
 {
   if (! sp_style.empty ())
     {
-      plot_buf << " " << GNUPLOT_COMMAND_WITH << " " << sp_style;
+      plot_buf << " " << GPLOT_CMD_WITH << " " << sp_style;
 
       if (sp_linetype)
 	{
@@ -753,17 +757,17 @@ subplot::print (int ndim, ostrstream& plot_buf)
     {
       octave_value tmp = sp_title_clause->eval (false);
       if (! error_state && tmp.is_string ())
-	plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
+	plot_buf << " " << GPLOT_CMD_TITLE << " "
 	  << '"' << tmp.string_value () << '"';
       else
 	{
 	  warning ("line title must be a string");
-	  plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
+	  plot_buf << " " << GPLOT_CMD_TITLE << " "
 	    << '"' << "line " << plot_line_count << '"';
 	}
     }
   else
-    plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
+    plot_buf << " " << GPLOT_CMD_TITLE << " "
       << '"' << "line " << plot_line_count << '"';
 
   if (sp_style_clause)
@@ -892,7 +896,7 @@ do_external_plotter_cd (const string& newdir)
   if (plot_stream && *plot_stream)
     {
       ostrstream plot_buf;
-      plot_buf << "cd \"" << newdir << "\"\n" << ends;
+      plot_buf << "cd \"" << newdir << "\"" GPLOT_CMD_END << ends;
       char *message = plot_buf.str ();
       send_to_plot_stream (message);
       delete [] message;
@@ -1015,7 +1019,7 @@ set plotting options for gnuplot")
 	  ostrstream buf;
 	  for (int i = 2; i < argc; i++)
 	    buf << argv[i] << " ";
-	  buf << "\n" << ends;
+	  buf << GPLOT_CMD_END << ends;
 	  gnuplot_terminal_type = buf.str ();
 	}
     }
@@ -1023,7 +1027,7 @@ set plotting options for gnuplot")
   for (int i = 0; i < argc; i++)
     plot_buf << argv[i] << " ";
 
-  plot_buf << "\n" << ends;
+  plot_buf << GPLOT_CMD_END << ends;
 
   char *plot_command = plot_buf.str ();
   send_to_plot_stream (plot_command);
@@ -1059,7 +1063,7 @@ show plotting options")
   for (int i = 0; i < argc; i++)
     plot_buf << argv[i] << " ";
 
-  plot_buf << "\n" << ends;
+  plot_buf << GPLOT_CMD_END << ends;
 
   char *plot_command = plot_buf.str ();
   send_to_plot_stream (plot_command);

@@ -54,17 +54,20 @@ public:
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
   MArray<T>& operator = (const MArray<T>& a)
-    { return Array<T>::operator = (a); }
+    {
+      Array<T>::operator = (a);
+      return *this;
+    }
 
 // Element by element MArray by scalar ops.
 
-  MArray<T>& operator += (const T& s) { /* XXX FIXME XXX */ }
-  MArray<T>& operator -= (const T& s) { /* XXX FIXME XXX */ }
+  MArray<T>& operator += (const T& s);
+  MArray<T>& operator -= (const T& s);
 
 // Element by element MArray by MArray ops.
 
-  MArray<T>& operator += (const MArray<T>& a) { /* XXX FIXME XXX */ }
-  MArray<T>& operator -= (const MArray<T>& a) { /* XXX FIXME XXX */ }
+  MArray<T>& operator += (const MArray<T>& a);
+  MArray<T>& operator -= (const MArray<T>& a);
 
 // Element by element MArray by scalar ops.
 
@@ -113,17 +116,20 @@ public:
   MArray2 (const MDiagArray<T>& a);
 
   MArray2<T>& operator = (const MArray2<T>& a)
-    { return Array2<T>::operator = (a); }
+    {
+      Array2<T>::operator = (a);
+      return *this;
+    }
 
 // Element by element MArray2 by scalar ops.
 
-  MArray2<T>& operator += (const T& s) { /* XXX FIXME XXX */ }
-  MArray2<T>& operator -= (const T& s) { /* XXX FIXME XXX */ }
+  MArray2<T>& operator += (const T& s);
+  MArray2<T>& operator -= (const T& s);
 
 // Element by element MArray2 by MArray2 ops.
 
-  MArray2<T>& operator += (const MArray2<T>& a) { /* XXX FIXME XXX */ }
-  MArray2<T>& operator -= (const MArray2<T>& a) { /* XXX FIXME XXX */ }
+  MArray2<T>& operator += (const MArray2<T>& a);
+  MArray2<T>& operator -= (const MArray2<T>& a);
 
 // Element by element MArray2 by scalar ops.
 
@@ -173,10 +179,15 @@ public:
   MDiagArray (const MArray<T>& a) : DiagArray<T> (a) { }
 
   MDiagArray<T>& operator = (const MDiagArray<T>& a)
-    { return DiagArray<T>::operator = (a); }
+    {
+      DiagArray<T>::operator = (a);
+      return *this;
+    }
 
-  MDiagArray<T>& operator += (const MDiagArray<T>& a) { /* XXX FIXME XXX */ }
-  MDiagArray<T>& operator -= (const MDiagArray<T>& a) { /* XXX FIXME XXX */ }
+// Element by element MDiagArray by MDiagArray ops.
+
+  MDiagArray<T>& operator += (const MDiagArray<T>& a);
+  MDiagArray<T>& operator -= (const MDiagArray<T>& a);
 
 // Element by element MDiagArray by scalar ops.
 
@@ -200,10 +211,6 @@ public:
 
   friend MDiagArray<T> operator - (const MDiagArray<T>& a);
 };
-
-#ifdef __GNUG__
-#include "MArray.cc"
-#endif
 
 } // extern "C++"
 

@@ -32,9 +32,9 @@ INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
 	Quad.h Range.h lo-error.h f77-uscore.h sun-utils.h \
 	$(MATRIX_INC)
 
-TEMPLATE_SRC = Array.cc
+TEMPLATE_SRC = Array.cc MArray.cc
 
-TI_SRC = Array-C.cc Array-d.cc
+TI_SRC = Array-C.cc Array-d.cc MArray-C.cc MArray-d.cc
 
 MATRIX_SRC = CColVector.cc CDiagMatrix.cc CMatrix.cc CRowVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc CmplxLU.cc \
@@ -49,7 +49,7 @@ SOURCES = Bounds.cc CollocWt.cc DAE.cc DAEFunc.cc FEGrid.cc FSQP.cc \
 	Quad.cc Range.cc lo-error.cc sun-utils.cc $(TEMPLATE_SRC) \
 	$(TI_SRC) $(MATRIX_SRC)
 
-EXTRAS = MArray.cc mx-kludge.cc mx-inlines.cc
+EXTRAS = mx-kludge.cc mx-inlines.cc
 
 DISTFILES = Makefile.in $(SOURCES) $(INCLUDES) $(EXTRAS)
 

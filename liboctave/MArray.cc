@@ -76,6 +76,25 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 	result[i] = -x[i]; \
     }
 
+#define DO_VS_OP2(OP) \
+  int l = length (); \
+  if (l > 0) \
+    { \
+      T *tmp = fortran_vec (); \
+      for (int i = 0; i < l; i++) \
+	tmp[i] OP s; \
+    }
+
+#define DO_VV_OP2(OP) \
+  do \
+    { \
+      T *tmp = fortran_vec (); \
+      const T *rhs = a.data (); \
+      for (int i = 0; i < l; i++) \
+	tmp[i] += rhs[i]; \
+    } \
+  while (0)
+
 /*
  * One dimensional array with math ops.
  */
@@ -83,148 +102,111 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // Element by element MArray by scalar ops.
 
 template <class T>
-MArray<T>
-operator + (const MArray<T>& a, const T& s)
+MArray<T>&
+MArray<T>::operator += (const T& s)
 {
-  DO_VS_OP (+);
-  return MArray<T> (result, l);
+  DO_VS_OP2 (+=)
+  return *this;
 }
 
 template <class T>
-MArray<T>
-operator - (const MArray<T>& a, const T& s)
+MArray<T>&
+MArray<T>::operator -= (const T& s)
 {
-  DO_VS_OP (-);
-  return MArray<T> (result, l);
-}
-
-template <class T>
-MArray<T>
-operator * (const MArray<T>& a, const T& s)
-{
-  DO_VS_OP (*);
-  return MArray<T> (result, l);
-}
-
-template <class T>
-MArray<T>
-operator / (const MArray<T>& a, const T& s)
-{
-  DO_VS_OP (/);
-  return MArray<T> (result, l);
-}
-
-// Element by element scalar by MArray ops.
-
-template <class T>
-MArray<T>
-operator + (const T& s, const MArray<T>& a)
-{
-  DO_SV_OP (+);
-  return MArray<T> (result, l);
-}
-
-template <class T>
-MArray<T>
-operator - (const T& s, const MArray<T>& a)
-{
-  DO_SV_OP (-);
-  return MArray<T> (result, l);
-}
-
-template <class T>
-MArray<T>
-operator * (const T& s, const MArray<T>& a)
-{
-  DO_SV_OP (*);
-  return MArray<T> (result, l);
-}
-
-template <class T>
-MArray<T>
-operator / (const T& s, const MArray<T>& a)
-{
-  DO_SV_OP (/);
-  return MArray<T> (result, l);
+  DO_VS_OP2 (-=)
+  return *this;
 }
 
 // Element by element MArray by MArray ops.
 
 template <class T>
-MArray<T>
-operator + (const MArray<T>& a, const MArray<T>& b)
+MArray<T>&
+MArray<T>::operator += (const MArray<T>& a)
 {
-  int l = a.length ();
-  if (l != b.length ())
+  int l = length ();
+  if (l > 0)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant array addition attempted");
-      return MArray<T> ();
+      if (l != a.length ())
+	(*current_liboctave_error_handler) \
+	  ("nonconformant += array operation attempted"); \
+      else
+	DO_VV_OP2 (+=);
     }
-
-  if (l == 0)
-    return MArray<T> ();
-
-  DO_VV_OP (+);
-  return MArray<T> (result, l);
+  return *this;
 }
 
 template <class T>
-MArray<T>
-operator - (const MArray<T>& a, const MArray<T>& b)
+MArray<T>&
+MArray<T>::operator -= (const MArray<T>& a)
 {
-  int l = a.length ();
-  if (l != b.length ())
+  int l = length ();
+  if (l > 0)
     {
-      (*current_liboctave_error_handler)
-	("nonconformant array subtraction attempted");
-      return MArray<T> ();
+      if (l != a.length ())
+	(*current_liboctave_error_handler) \
+	  ("nonconformant -= array operation attempted"); \
+      else
+	DO_VV_OP2 (-=);
     }
-
-  if (l == 0)
-    return MArray<T> ();
-
-  DO_VV_OP (-);
-  return MArray<T> (result, l);
+  return *this;
 }
 
-template <class T>
-MArray<T>
-product (const MArray<T>& a, const MArray<T>& b)
-{
-  int l = a.length ();
-  if (l != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array product attempted");
-      return MArray<T> ();
-    }
+// Element by element MArray by scalar ops.
 
-  if (l == 0)
-    return MArray<T> ();
+#define MARRAY_AS_OP(OP) \
+  template <class T> \
+  MArray<T> \
+  operator OP (const MArray<T>& a, const T& s) \
+  { \
+    DO_VS_OP (OP); \
+    return MArray<T> (result, l); \
+  }
 
-  DO_VV_OP (*);
-  return MArray<T> (result, l);
-}
+MARRAY_AS_OP (+)
+MARRAY_AS_OP (-)
+MARRAY_AS_OP (*)
+MARRAY_AS_OP (/)
 
-template <class T>
-MArray<T>
-quotient (const MArray<T>& a, const MArray<T>& b)
-{
-  int l = a.length ();
-  if (l != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array quotient attempted");
-      return MArray<T> ();
-    }
+// Element by element scalar by MArray ops.
 
-  if (l == 0)
-    return MArray<T> ();
+#define MARRAY_SA_OP(OP) \
+  template <class T> \
+  MArray<T> \
+  operator OP (const T& s, const MArray<T>& a) \
+  { \
+    DO_SV_OP (OP); \
+    return MArray<T> (result, l); \
+ }
 
-  DO_VV_OP (/);
-  return MArray<T> (result, l);
-}
+MARRAY_SA_OP(+)
+MARRAY_SA_OP(-)
+MARRAY_SA_OP(*)
+MARRAY_SA_OP(/)
+
+// Element by element MArray by MArray ops.
+
+#define MARRAY_AA_OP(FCN, OP, OP_STR) \
+  template <class T> \
+  MArray<T> \
+  FCN (const MArray<T>& a, const MArray<T>& b) \
+  { \
+    int l = a.length (); \
+    if (l != b.length ()) \
+      { \
+	(*current_liboctave_error_handler) \
+	  ("nonconformant array " OP_STR " attempted"); \
+	return MArray<T> (); \
+      } \
+    if (l == 0) \
+      return MArray<T> (); \
+    DO_VV_OP (OP); \
+    return MArray<T> (result, l); \
+  }
+
+MARRAY_AA_OP (operator +, +, "addition")
+MARRAY_AA_OP (operator -, -, "subtraction")
+MARRAY_AA_OP (product,    *, "multiplication")
+MARRAY_AA_OP (quotient,   /, "division")
 
 // Unary MArray ops.
 
@@ -251,156 +233,125 @@ MArray2<T>::MArray2 (const MDiagArray<T>& a)
 // Element by element MArray2 by scalar ops.
 
 template <class T>
-MArray2<T>
-operator + (const MArray2<T>& a, const T& s)
+MArray2<T>&
+MArray2<T>::operator += (const T& s)
 {
-  DO_VS_OP (+);
-  return MArray2<T> (result, a.rows (), a.cols ());
+  DO_VS_OP2 (+=)
+  return *this;
 }
 
 template <class T>
-MArray2<T>
-operator - (const MArray2<T>& a, const T& s)
+MArray2<T>&
+MArray2<T>::operator -= (const T& s)
 {
-  DO_VS_OP (-);
-  return MArray2<T> (result, a.rows (), a.cols ());
-}
-
-template <class T>
-MArray2<T>
-operator * (const MArray2<T>& a, const T& s)
-{
-  DO_VS_OP (*);
-  return MArray2<T> (result, a.rows (), a.cols ());
-}
-
-template <class T>
-MArray2<T>
-operator / (const MArray2<T>& a, const T& s)
-{
-  DO_VS_OP (/);
-  return MArray2<T> (result, a.rows (), a.cols ());
-}
-
-// Element by element scalar by MArray2 ops.
-
-template <class T>
-MArray2<T>
-operator + (const T& s, const MArray2<T>& a)
-{
-  DO_SV_OP (+);
-  return MArray2<T> (result, a.rows (), a.cols ());
-}
-
-template <class T>
-MArray2<T>
-operator - (const T& s, const MArray2<T>& a)
-{
-  DO_SV_OP (-);
-  return MArray2<T> (result, a.rows (), a.cols ());
-}
-
-template <class T>
-MArray2<T>
-operator * (const T& s, const MArray2<T>& a)
-{
-  DO_SV_OP (*);
-  return MArray2<T> (result, a.rows (), a.cols ());
-}
-
-template <class T>
-MArray2<T>
-operator / (const T& s, const MArray2<T>& a)
-{
-  DO_SV_OP (/);
-  return MArray2<T> (result, a.rows (), a.cols ());
+  DO_VS_OP2 (-=)
+  return *this;
 }
 
 // Element by element MArray2 by MArray2 ops.
 
 template <class T>
-MArray2<T>
-operator + (const MArray2<T>& a, const MArray2<T>& b)
+MArray2<T>&
+MArray2<T>::operator += (const MArray2<T>& a)
 {
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
+  int r = rows ();
+  int c = cols ();
+  if (r != a.rows () || c != a.cols ())
     {
       (*current_liboctave_error_handler)
-	("nonconformant array addition attempted");
-      return MArray2<T> ();
+	("nonconformant += array operation attempted");
     }
-
-  if (r == 0 || c == 0)
-    return MArray2<T> ();
-
-  int l = a.length ();
-  DO_VV_OP (+);
-  return MArray2<T> (result, r, c);
+  else
+    {
+      if (r > 0 && c > 0)
+	{
+	  int l = a.length ();
+	  DO_VV_OP2 (+=);
+	}
+    }
+  return *this;
 }
 
 template <class T>
-MArray2<T>
-operator - (const MArray2<T>& a, const MArray2<T>& b)
+MArray2<T>&
+MArray2<T>::operator -= (const MArray2<T>& a)
 {
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
+  int r = rows ();
+  int c = cols ();
+  if (r != a.rows () || c != a.cols ())
     {
       (*current_liboctave_error_handler)
-	("nonconformant array subtraction attempted");
-      return MArray2<T> ();
+	("nonconformant -= array operation attempted");
     }
-
-  if (r == 0 || c == 0)
-    return MArray2<T> ();
-
-  int l = a.length ();
-  DO_VV_OP (-);
-  return MArray2<T> (result, r, c);
-}
-
-template <class T>
-MArray2<T>
-product (const MArray2<T>& a, const MArray2<T>& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant array product attempted");
-      return MArray2<T> ();
+      if (r > 0 && c > 0)
+	{
+	  int l = a.length ();
+	  DO_VV_OP2 (-=);
+	}
     }
-
-  if (r == 0 || c == 0)
-    return MArray2<T> ();
-
-  int l = a.length ();
-  DO_VV_OP (*);
-  return MArray2<T> (result, r, c);
+  return *this;
 }
 
-template <class T>
-MArray2<T>
-quotient (const MArray2<T>& a, const MArray2<T>& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant array quotient attempted");
-      return MArray2<T> ();
-    }
+// Element by element MArray2 by scalar ops.
 
-  if (r == 0 || c == 0)
-    return MArray2<T> ();
+#define MARRAY_A2S_OP(OP) \
+  template <class T> \
+  MArray2<T> \
+  operator OP (const MArray2<T>& a, const T& s) \
+  { \
+    DO_VS_OP (OP); \
+    return MArray2<T> (result, a.rows (), a.cols ()); \
+  }
 
-  int l = a.length ();
-  DO_VV_OP (/);
-  return MArray2<T> (result, r, c);
-}
+MARRAY_A2S_OP (+)
+MARRAY_A2S_OP (-)
+MARRAY_A2S_OP (*)
+MARRAY_A2S_OP (/)
+
+// Element by element scalar by MArray2 ops.
+
+#define MARRAY_SA2_OP(OP) \
+  template <class T> \
+  MArray2<T> \
+  operator OP (const T& s, const MArray2<T>& a) \
+  { \
+    DO_SV_OP (OP); \
+    return MArray2<T> (result, a.rows (), a.cols ()); \
+  }
+
+MARRAY_SA2_OP (+)
+MARRAY_SA2_OP (-)
+MARRAY_SA2_OP (*)
+MARRAY_SA2_OP (/)
+
+// Element by element MArray2 by MArray2 ops.
+
+#define MARRAY_A2A2_OP(FCN, OP, OP_STR) \
+  template <class T> \
+  MArray2<T> \
+  FCN (const MArray2<T>& a, const MArray2<T>& b) \
+  { \
+    int r = a.rows (); \
+    int c = a.cols (); \
+    if (r != b.rows () || c != b.cols ()) \
+      { \
+	(*current_liboctave_error_handler) \
+	  ("nonconformant array " OP_STR " attempted"); \
+	return MArray2<T> (); \
+      } \
+    if (r == 0 || c == 0) \
+      return MArray2<T> (); \
+    int l = a.length (); \
+    DO_VV_OP (OP); \
+    return MArray2<T> (result, r, c); \
+  }
+
+MARRAY_A2A2_OP (operator +, +, "addition")
+MARRAY_A2A2_OP (operator -, -, "subtraction")
+MARRAY_A2A2_OP (product,    *, "product")
+MARRAY_A2A2_OP (quotient,   /, "quotient")
 
 // Unary MArray2 ops.
 
@@ -416,23 +367,37 @@ operator - (const MArray2<T>& a)
  * Two dimensional diagonal array with math ops.
  */
 
+// Element by element MDiagArray by MDiagArray ops.
+
+template <class T>
+MDiagArray<T>&
+MDiagArray<T>::operator += (const MDiagArray<T>& a)
+{
+  // XXX FIXME XXX
+  return *this;
+}
+
+template <class T>
+MDiagArray<T>&
+MDiagArray<T>::operator -= (const MDiagArray<T>& a)
+{
+  // XXX FIXME XXX
+  return *this;
+}
+
 // Element by element MDiagArray by scalar ops.
 
-template <class T>
-MDiagArray<T>
-operator * (const MDiagArray<T>& a, const T& s)
-{
-  DO_VS_OP (*);
-  return MDiagArray<T> (result, a.rows (), a.cols ());
-}
+#define MARRAY_DAS_OP(OP) \
+  template <class T> \
+  MDiagArray<T> \
+  operator OP (const MDiagArray<T>& a, const T& s) \
+  { \
+    DO_VS_OP (OP); \
+    return MDiagArray<T> (result, a.rows (), a.cols ()); \
+  }
 
-template <class T>
-MDiagArray<T>
-operator / (const MDiagArray<T>& a, const T& s)
-{
-  DO_VS_OP (/);
-  return MDiagArray<T> (result, a.rows (), a.cols ());
-}
+MARRAY_DAS_OP (*)
+MARRAY_DAS_OP (/)
 
 // Element by element scalar by MDiagArray ops.
 
@@ -446,68 +411,29 @@ operator * (const T& s, const MDiagArray<T>& a)
 
 // Element by element MDiagArray by MDiagArray ops.
 
-template <class T>
-MDiagArray<T>
-operator + (const MDiagArray<T>& a, const MDiagArray<T>& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant diagonal array addition attempted");
-      return MDiagArray<T> ();
-    }
+#define MARRAY_DADA_OP(FCN, OP, OP_STR) \
+  template <class T> \
+  MDiagArray<T> \
+  FCN (const MDiagArray<T>& a, const MDiagArray<T>& b) \
+  { \
+    int r = a.rows (); \
+    int c = a.cols (); \
+    if (r != b.rows () || c != b.cols ()) \
+      { \
+	(*current_liboctave_error_handler) \
+	  ("nonconformant diagonal array " OP_STR " attempted"); \
+	return MDiagArray<T> (); \
+      } \
+    if (c == 0 || r == 0) \
+      return MDiagArray<T> (); \
+    int l = a.length (); \
+    DO_VV_OP (OP); \
+    return MDiagArray<T> (result, r, c); \
+  }
 
-  if (c == 0 || r == 0)
-    return MDiagArray<T> ();
-
-  int l = a.length ();
-  DO_VV_OP (+);
-  return MDiagArray<T> (result, r, c);
-}
-
-template <class T>
-MDiagArray<T>
-operator - (const MDiagArray<T>& a, const MDiagArray<T>& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant diagonal array subtraction attempted");
-      return MDiagArray<T> ();
-    }
-
-  if (c == 0 || r == 0)
-    return MDiagArray<T> ();
-
-  int l = a.length ();
-  DO_VV_OP (-);
-  return MDiagArray<T> (result, r, c);
-}
-
-template <class T>
-MDiagArray<T>
-product (const MDiagArray<T>& a, const MDiagArray<T>& b)
-{
-  int r = a.rows ();
-  int c = a.cols ();
-  if (r != b.rows () || c != b.cols ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant diagonal array product attempted");
-      return MDiagArray<T> ();
-    }
-
-  if (c == 0 || r == 0)
-    return MDiagArray<T> ();
-
-  int l = a.length ();
-  DO_VV_OP (*);
-  return MDiagArray<T> (result, r, c);
-}
+MARRAY_DADA_OP (operator +, +, "addition")
+MARRAY_DADA_OP (operator -, -, "subtraction")
+MARRAY_DADA_OP (product,    *, "product")
 
 // Unary MDiagArray ops.
 
@@ -518,24 +444,6 @@ operator - (const MDiagArray<T>& a)
   NEG_V;
   return MDiagArray<T> (result, a.rows (), a.cols ());
 }
-
-#undef DO_SV_OP
-#undef DO_VS_OP
-#undef DO_VV_OP
-#undef NEG_V
-
-#if 0
-#ifdef OCTAVE
-typedefMArray<double>      octave_mad_template_type;
-typedefMArray2<double>     octave_ma2d_template_type;
-typedefMDiagArray<double>  octave_mdad_template_type;
-
-#include <Complex.h>
-typedefMArray<Complex>     octave_mac_template_type;
-typedefMArray2<Complex>    octave_ma2c_template_type;
-typedefMDiagArray<Complex> octave_mdac_template_type;
-#endif
-#endif
 
 /*
 ;;; Local Variables: ***

@@ -1,7 +1,7 @@
 // Range.cc                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -116,8 +116,8 @@ operator >> (istream& is, Range& a)
 int
 Range::nelem_internal (void) const
 {
-// Find an approximate number of elements, then do the best we can to
-// find the number of elements that we would get if we had done
+// Find an approximate number of intervals, then do the best we can to
+// find the number of intervals that we would get if we had done
 // something like
 //
 //   nelem = 0;
@@ -125,46 +125,69 @@ Range::nelem_internal (void) const
 //     nelem++;
 //
 // (for limit > base && inc > 0)
+//
+// The number of elements in the range is one greater than the number
+// of intervals.
 
-  double ntry = (rng_limit - rng_base) / rng_inc;
-  double max_val = (double) INT_MAX;
+// We can't have more than INT_MAX elements in the range.
 
-  if (ntry > max_val)
+  double d_n_intervals = (rng_limit - rng_base) / rng_inc;
+  int max_intervals = INT_MAX - 1;
+  double d_max_val = (double) max_intervals;
+
+  if (d_n_intervals > d_max_val)
     return -1;
+
+  int n_intervals = (d_n_intervals > 0)
+    ? ((int) (d_n_intervals + 0.5))
+    : ((int) (d_n_intervals - 0.5)); 
 
   if (rng_limit > rng_base && rng_inc > 0)
     {
 // Our approximation may have been too big.
 
-      while (rng_base + ntry * rng_inc > rng_limit && ntry > 0)
-	ntry = ntry - 1;
+      while (rng_base + n_intervals * rng_inc > rng_limit && n_intervals > 0)
+	n_intervals--;
 
-// Now that we are close, get the actual number.
+// Now that we are close, get the actual number.  Try to avoid
+// problems with extended precision registers.
 
-      while (rng_base + ntry * rng_inc <= rng_limit && ntry <= max_val)
-	ntry = ntry + 1;
+      for (;;)
+	{
+	  volatile double tmp_inc = (n_intervals + 1) * rng_inc;
+	  volatile double tmp_val = rng_base + tmp_inc;
+	  if (tmp_val <= rng_limit && n_intervals < max_intervals)
+	    n_intervals++;
+	  else
+	    break;
+	}
     }
   else if (rng_limit < rng_base && rng_inc < 0)
     {
 // Our approximation may have been too big.
 
-      while (rng_base + ntry * rng_inc < rng_limit && ntry > 0)
-	ntry = ntry - 1;
+      while (rng_base + n_intervals * rng_inc < rng_limit && n_intervals > 0)
+	n_intervals--;
 
-// Now that we are close, get the actual number.
+// Now that we are close, get the actual number.  Try to avoid
+// problems with extended precision registers.
 
-      while (rng_base + ntry * rng_inc >= rng_limit && ntry <= max_val)
-	ntry = ntry + 1;
+      for (;;)
+	{
+	  volatile double tmp_inc = (n_intervals + 1) * rng_inc;
+	  volatile double tmp_val = rng_base + tmp_inc;
+	  if (tmp_val >= rng_limit && n_intervals < max_intervals)
+	    n_intervals++;
+	  else
+	    break;
+	}
     }
   else if (rng_limit == rng_base)
-    ntry = 1;
+    n_intervals = 0;
   else
-    ntry = 0;
+    n_intervals = -1;
 
-  if (ntry > max_val)
-    return -1;
-  else
-    return (int) ntry;
+  return (n_intervals >= max_intervals) ? -1 : n_intervals + 1;
 }
 
 /*

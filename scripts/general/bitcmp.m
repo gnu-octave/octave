@@ -39,25 +39,47 @@ function X = bitcmp (A, n)
     usage ("bitcmp (A, n)");
   endif
 
-  cname = class (A);
-  if (strcmp (cname, "double"))
+  if (isa (A, "double"))
     Bmax = bitmax;
     Amax = log2 (Bmax) + 1;
-  elseif strcmp ("uint", substr (cname, 1, 4))
-    Bmax = intmax (cname);
-    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 1);"]);
+    _conv = @double;
   else
-    Bmax = eval ([cname, " (-1);"]);
-    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 2);"]);
+    if (isa (A, "uint8"))
+      Amax = 8;
+      _conv = @uint8;
+    elseif (isa (A, "uint16"))
+      Amax = 16;
+      _conv = @uint16;
+    elseif (isa (A, "uint32"))
+      Amax = 32;
+      _conv = @uint32;
+    elseif (isa (A, "uint64"))
+      Amax = 64;
+      _conv = @uint64;
+    elseif (isa (A, "int8"))
+      Amax = 8;
+      _conv = @int8;
+    elseif (isa (A, "int16"))
+      Amax = 16;
+      _conv = @int16;
+    elseif (isa (A, "int32"))
+      Amax = 32;
+      _conv = @int32;
+    elseif (isa (A, "int64"))
+      Amax = 64;
+      _conv = @int64;
+    else
+      error ("invalid class %s", class (A));
+    endif
+    Bmax = intmax (class (A));
   endif
 
-  Aone = eval ([ cname, "(1);"]);
   if (nargin == 2)
-    m = eval ([cname, " (n(:));"]);
-    if (any (m < Aone) || any (m > Amax))
+    m = double (n(:));
+    if (any (m < 1) || any (m > Amax))
       error ("n must be in the range [1,%d]", Amax);
     endif
-    X = bitxor (A, bitshift (Bmax, -n));
+    X = bitxor (A, bitshift (Bmax, -int8(n)));
   else
     X = bitxor (A, Bmax);
   endif

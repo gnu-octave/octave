@@ -1,6 +1,17 @@
-2004-08-31  2004-08-30 David Bateman  <dbateman@free.fr>
+2004-08-31  John W. Eaton  <jwe@octave.org>
 
-	* (general/repmat.m): Adapt to allow integer types.
+	* general/isa.m: New function, from Octave-forge.
+
+2004-08-31  David Bateman  <dbateman@free.fr>
+
+	* general/bitcmp.m, general/bitget.m, general/bitset.m: Remove 
+	limitation on the use of int64 and uint64 types, and the use
+	of the eval.
+
+	* general/bitset.m: Remove superfluous cast to return type, as bug
+	in .^ with integer types is fixed.
+
+	* general/repmat.m: Adapt to allow integer types.
 
 2004-08-31  Paul Kienzle  <pkienzle@users.sf.net>
 

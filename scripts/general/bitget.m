@@ -34,21 +34,43 @@ function X = bitget (A, n)
     usage ("bitget (A, n)");
   endif
 
-  cname = class (A);
-  if (strcmp (cname, "double"))
-    Amax = log2 (bitmax) + 1;
-  elseif strcmp ("uint", substr (cname, 1, 4))
-    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 1);"]);
+  if (isa (A, "double"))
+    Amax = log2 (Bmax) + 1;
+    _conv = @double;
   else
-    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 2);"]);
+    if (isa (A, "uint8"))
+      Amax = 8;
+      _conv = @uint8;
+    elseif (isa (A, "uint16"))
+      Amax = 16;
+      _conv = @uint16;
+    elseif (isa (A, "uint32"))
+      Amax = 32;
+      _conv = @uint32;
+    elseif (isa (A, "uint64"))
+      Amax = 64;
+      _conv = @uint64;
+    elseif (isa (A, "int8"))
+      Amax = 8;
+      _conv = @int8;
+    elseif (isa (A, "int16"))
+      Amax = 16;
+      _conv = @int16;
+    elseif (isa (A, "int32"))
+      Amax = 32;
+      _conv = @int32;
+    elseif (isa (A, "int64"))
+      Amax = 64;
+      _conv = @int64;
+    else
+      error ("invalid class %s", class (A));
+    endif
   endif
 
-  Aone = eval ([ cname, "(1);"]);
-  m = eval ([cname, " (n(:));"]);
-  if (any (m < Aone) || any (m > Amax))
+  m = double (n(:));
+  if (any (m < 1) || any (m > Amax))
     error ("n must be in the range [1,%d]", Amax);
   endif
 
-  X = eval (["bitand (A, ", cname, " (2) .^ (", cname, " (n) - Aone)) != ", cname, "(0);"]);
-
+  X = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);
 endfunction

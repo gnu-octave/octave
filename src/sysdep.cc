@@ -190,8 +190,8 @@ matherr (struct exception *x)
 void
 sysdep_init (void)
 {
-#if defined (HAVE_FPSETMASK) && defined (HAVE_FLOATINGPOINT_H)
 #if defined (__386BSD__) || defined (__FreeBSD__)
+#if defined (HAVE_FLOATINGPOINT_H)
 // Disable trapping on common exceptions.
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
 #endif

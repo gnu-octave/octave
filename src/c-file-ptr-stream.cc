@@ -28,7 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "c_file_ptr_stream.h"
+#include "c-file-ptr-stream.h"
 
 #ifndef SEEK_SET
 #define SEEK_SET 0

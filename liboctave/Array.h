@@ -219,11 +219,7 @@ public:
 
   Array<T>& qsort (int (*compare) (const void *, const void *))
     {
-      if (rep->count > 1)
-	{
-	  --rep->count;
-	  rep = new ArrayRep (*rep);
-	}
+      make_unique ();
 
       rep->qsort (compare);
 

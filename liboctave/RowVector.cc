@@ -895,9 +895,20 @@ operator * (const ComplexRowVector& v, const ColumnVector& a)
 Complex
 operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 {
-// XXX FIXME XXX -- need function body
-  assert (0);
-  return Complex ();
+  int len = v.length ();
+  if (len != a.length ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector multiplication attempted");
+      return 0.0;
+    }
+
+  Complex retval (0.0, 0.0);
+
+  for (int i = 0; i < len; i++)
+    retval += v.elem (i) * a.elem (i);
+
+  return retval;
 }
 
 // row vector by matrix -> row vector

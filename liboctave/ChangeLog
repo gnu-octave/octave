@@ -1,3 +1,13 @@
+2002-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* LSODE.h (LSODE_options::x_absolute_tolerance): Now Array<double>.
+	Change all uses.
+	(LSODE_OPTIONS::absolute_tolerance): Return Array<double>, not double.
+	(LSODE_OPTIONS::set_absolute_tolerance (const Array<double>&)):
+	New function.
+
+	* Array.h (Array::fortran_vec): New const version.
+
 2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.cc (gnu_readline::history_search_backward): New function.

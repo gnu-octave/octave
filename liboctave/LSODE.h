@@ -54,7 +54,8 @@ public:
   void init (void)
     {
       double sqrt_eps = ::sqrt (DBL_EPSILON);
-      x_absolute_tolerance = sqrt_eps;
+      x_absolute_tolerance.resize (1);
+      x_absolute_tolerance(0) = sqrt_eps;
       x_initial_step_size = -1.0;
       x_maximum_step_size = -1.0;
       x_minimum_step_size = 0.0;
@@ -80,7 +81,13 @@ public:
   void set_default_options (void) { init (); }
 
   void set_absolute_tolerance (double val)
-    { x_absolute_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
+    {
+      x_absolute_tolerance.resize (1);
+      x_absolute_tolerance(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
+    }
+
+  void set_absolute_tolerance (const Array<double>& val)
+    { x_absolute_tolerance = val; }
 
   void set_initial_step_size (double val)
     { x_initial_step_size = (val >= 0.0) ? val : -1.0; }
@@ -97,27 +104,27 @@ public:
   void set_step_limit (int val)
     { x_step_limit = val; }
 
-  double absolute_tolerance (void)
+  Array<double> absolute_tolerance (void) const
     { return x_absolute_tolerance; }
 
-  double initial_step_size (void)
+  double initial_step_size (void) const
     { return x_initial_step_size; }
 
-  double maximum_step_size (void)
+  double maximum_step_size (void) const
     { return x_maximum_step_size; }
 
-  double minimum_step_size (void)
+  double minimum_step_size (void) const
     { return x_minimum_step_size; }
 
-  double relative_tolerance (void)
+  double relative_tolerance (void) const
     {  return x_relative_tolerance; }
 
-  int step_limit (void)
+  int step_limit (void) const
     { return x_step_limit; }
 
 private:
 
-  double x_absolute_tolerance;
+  Array<double> x_absolute_tolerance;
   double x_initial_step_size;
   double x_maximum_step_size;
   double x_minimum_step_size;
@@ -162,7 +169,6 @@ private:
   Array<int> iwork;
   Array<double> rwork;
   int istate;
-  int itol;
   int itask;
   int iopt;
   int liw;

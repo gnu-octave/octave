@@ -1,3 +1,14 @@
+2002-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/lsode.cc (LSODE_options::da_set_opt_mf,
+	LSODE_options::da_get_opt_mf): New typedefs.
+	(LSODE_OPTIONS::da_set_fcn, LSODE_OPTIONS::da_get_fcn): New fields.
+	(lsode_option_table): Fill them in.
+	(set_lsode_option (const Array<double>&)): New function.
+	(print_lsode_option_list): Handle vector options.
+	(show_lsode_option_list): Likewise.
+	(Flsode_options): Likewise.
+
 2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* c-file-ptr-stream.h (c_file_ptr_buf::fclose): New function.

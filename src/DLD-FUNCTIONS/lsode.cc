@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "pager.h"
+#include "pr-output.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -294,10 +295,12 @@ discontinuity in the derivative.\n\
   return retval;
 }
 
+typedef void (LSODE_options::*da_set_opt_mf) (const Array<double>&);
 typedef void (LSODE_options::*d_set_opt_mf) (double);
 typedef void (LSODE_options::*i_set_opt_mf) (int);
-typedef double (LSODE_options::*d_get_opt_mf) (void);
-typedef int (LSODE_options::*i_get_opt_mf) (void);
+typedef Array<double> (LSODE_options::*da_get_opt_mf) (void) const;
+typedef double (LSODE_options::*d_get_opt_mf) (void) const;
+typedef int (LSODE_options::*i_get_opt_mf) (void) const;
 
 #define MAX_TOKENS 3
 
@@ -307,8 +310,10 @@ struct LSODE_OPTIONS
   const char *kw_tok[MAX_TOKENS + 1];
   int min_len[MAX_TOKENS + 1];
   int min_toks_to_match;
+  da_set_opt_mf da_set_fcn;
   d_set_opt_mf d_set_fcn;
   i_set_opt_mf i_set_fcn;
+  da_get_opt_mf da_get_fcn;
   d_get_opt_mf d_get_fcn;
   i_get_opt_mf i_get_fcn;
 };
@@ -318,43 +323,43 @@ static LSODE_OPTIONS lsode_option_table [] =
   { "absolute tolerance",
     { "absolute", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    &LSODE_options::set_absolute_tolerance, 0,
-    &LSODE_options::absolute_tolerance, 0, },
+    &LSODE_options::set_absolute_tolerance, 0, 0,
+    &LSODE_options::absolute_tolerance, 0, 0, },
 
   { "initial step size",
     { "initial", "step", "size", 0, },
     { 1, 0, 0, 0, }, 1,
-    &LSODE_options::set_initial_step_size, 0,
-    &LSODE_options::initial_step_size, 0, },
+    0, &LSODE_options::set_initial_step_size, 0,
+    0, &LSODE_options::initial_step_size, 0, },
 
   { "maximum step size",
     { "maximum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    &LSODE_options::set_maximum_step_size, 0,
-    &LSODE_options::maximum_step_size, 0, },
+    0, &LSODE_options::set_maximum_step_size, 0,
+    0, &LSODE_options::maximum_step_size, 0, },
 
   { "minimum step size",
     { "minimum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    &LSODE_options::set_minimum_step_size, 0,
-    &LSODE_options::minimum_step_size, 0, },
+    0, &LSODE_options::set_minimum_step_size, 0,
+    0, &LSODE_options::minimum_step_size, 0, },
 
   { "relative tolerance",
     { "relative", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    &LSODE_options::set_relative_tolerance, 0,
-    &LSODE_options::relative_tolerance, 0, },
+    0, &LSODE_options::set_relative_tolerance, 0,
+    0, &LSODE_options::relative_tolerance, 0, },
 
   { "step limit",
     { "step", "limit", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    0, &LSODE_options::set_step_limit,
-    0, &LSODE_options::step_limit, },
+    0, 0, &LSODE_options::set_step_limit,
+    0, 0, &LSODE_options::step_limit, },
 
   { 0,
     { 0, 0, 0, 0, },
     { 0, 0, 0, 0, }, 0,
-    0, 0, 0, 0, },
+    0, 0, 0, 0, 0, 0, },
 };
 
 static void
@@ -378,7 +383,26 @@ print_lsode_option_list (std::ostream& os)
 	 << std::resetiosflags (std::ios::left)
 	 << " ";
 
-      if (list->d_get_fcn)
+      if (list->da_get_fcn)
+	{
+	  Array<double> val = (lsode_opts.*list->da_get_fcn) ();
+	  if (val.length () == 1)
+	    {
+	      if (val(0) < 0.0)
+		os << "computed automatically";
+	      else
+		os << val(0);
+	    }
+	  else
+	    {
+	      os << "\n\n";
+	      // XXX FIXME XXX
+	      Matrix tmp = Matrix (ColumnVector (val));
+	      octave_print_internal (os, tmp, false, 2);
+	      os << "\n";
+	    }
+	}
+      else if (list->d_get_fcn)
 	{
 	  double val = (lsode_opts.*list->d_get_fcn) ();
 	  if (val < 0.0)
@@ -431,6 +455,29 @@ set_lsode_option (const std::string& keyword, double val)
   warning ("lsode_options: no match for `%s'", keyword.c_str ());
 }
 
+static void
+set_lsode_option (const std::string& keyword, const Array<double>& val)
+{
+  LSODE_OPTIONS *list = lsode_option_table;
+
+  while (list->keyword != 0)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  if (list->da_set_fcn)
+	    (lsode_opts.*list->da_set_fcn) (val);
+	  else
+	    error ("lsode_options: no function to handle vector option");
+
+	  return;
+	}
+      list++;
+    }
+
+  warning ("lsode_options: no match for `%s'", keyword.c_str ());
+}
+
 static octave_value_list
 show_lsode_option (const std::string& keyword)
 {
@@ -443,7 +490,20 @@ show_lsode_option (const std::string& keyword)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  if (list->d_get_fcn)
+	  if (list->da_get_fcn)
+	    {
+	      Array<double> val = (lsode_opts.*list->da_get_fcn) ();
+	      if (val.length () == 1)
+		{
+		  if (val(0) < 0.0)
+		    retval = "computed automatically";
+		  else
+		    retval = val(0);
+		}
+	      else
+		retval = ColumnVector (val);
+	    }
+	  else if (list->d_get_fcn)
 	    {
 	      double val = (lsode_opts.*list->d_get_fcn) ();
 	      if (val < 0.0)
@@ -487,7 +547,6 @@ their current values are displayed.\n\
   if (nargin == 0)
     {
       print_lsode_option_list (octave_stdout);
-      return retval;
     }
   else if (nargin == 1 || nargin == 2)
     {
@@ -496,21 +555,28 @@ their current values are displayed.\n\
       if (! error_state)
 	{
 	  if (nargin == 1)
-	    return show_lsode_option (keyword);
+	    retval = show_lsode_option (keyword);
 	  else
 	    {
-	      double val = args(1).double_value ();
-
-	      if (! error_state)
+	      if (args(1).is_scalar_type ())
 		{
-		  set_lsode_option (keyword, val);
-		  return retval;
+		  double val = args(1).double_value ();
+
+		  if (! error_state)
+		    set_lsode_option (keyword, val);
+		}
+	      else
+		{
+		  Array<double> val = args(1).vector_value ();
+
+		  if (! error_state)
+		    set_lsode_option (keyword, val);
 		}
 	    }
 	}
     }
-
-  print_usage ("lsode_options");
+  else
+    print_usage ("lsode_options");
 
   return retval;
 }

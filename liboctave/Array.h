@@ -222,6 +222,8 @@ public:
 
   const T *data (void) const { return rep->data; }
 
+  const T *fortran_vec (void) const { return data (); }
+
   T *fortran_vec (void);
 
   Array<T>& qsort (int (*compare) (const void *, const void *))

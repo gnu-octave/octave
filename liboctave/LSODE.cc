@@ -46,9 +46,9 @@ typedef int (*lsode_jac_ptr) (const int&, const double&, double*,
 
 extern "C"
 int F77_FUNC (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
-			    double&, int&, double&, double&, int&,
-			    int&, int&, double*, int&, int*, int&,
-			    lsode_jac_ptr, int&);
+			     double&, int&, double&, const double*, int&,
+			     int&, int&, double*, int&, int*, int&,
+			     lsode_jac_ptr, int&);
 
 static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;
@@ -65,7 +65,6 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
   restart = 1;
 
   istate = 1;
-  itol = 1;
   itask = 1;
   iopt = 0;
 
@@ -87,7 +86,6 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
   restart = 1;
 
   istate = 1;
-  itol = 1;
   itask = 1;
   iopt = 0;
 
@@ -229,8 +227,26 @@ LSODE::do_integrate (double tout)
       itask = 1;
     }
 
-  double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
+
+  const Array<double> abs_tol = absolute_tolerance ();
+
+  int abs_tol_len = abs_tol.length ();
+
+  int itol;
+
+  if (abs_tol_len == 1)
+    itol = 1;
+  else if (abs_tol_len == n)
+    itol == 2;
+  else
+    {
+      (*current_liboctave_error_handler)
+	("lsode: inconsistent sizes for state and absolute tolerance vectors");
+
+      integration_error = 1;
+      return retval;
+    }
 
   if (initial_step_size () >= 0.0)
     {
@@ -256,11 +272,12 @@ LSODE::do_integrate (double tout)
       iopt = 1;
     }
 
+  const double *pabs_tol = abs_tol.fortran_vec ();
   int *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();
 
   F77_XFCN (lsode, LSODE, (lsode_f, n, xp, t, tout, itol, rel_tol,
-			   abs_tol, itask, istate, iopt, prwork, lrw,
+			   pabs_tol, itask, istate, iopt, prwork, lrw,
 			   piwork, liw, lsode_j, method_flag));
 
   if (f77_exception_encountered)

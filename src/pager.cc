@@ -41,8 +41,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "sighandlers.h"
+#include "tree-const.h"
 #include "user-prefs.h"
 #include "utils.h"
+#include "variables.h"
 
 // Where we stash output headed for the screen.
 static ostrstream *pager_buf = 0;
@@ -201,7 +203,7 @@ redirect all input and screen output to a file.")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("diary");
+  DEFINE_ARGV ("diary");
 
   if (! diary_file)
     diary_file = strsave ("diary");
@@ -236,6 +238,35 @@ redirect all input and screen output to a file.")
       print_usage ("diary");
       break;
     }
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN_TEXT ("more", Fmore, Smore, -1, 1,
+  "more on\n\
+more off\n\
+\n\
+Turn output pagination on or off.")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV ("more");
+
+  if (argc == 2)
+    {
+      char *arg = argv[1];
+
+      if (strcmp (arg, "on") == 0)
+	bind_builtin_variable ("page_screen_output", "true");
+      else if (strcmp (arg, "off") == 0)
+	bind_builtin_variable ("page_screen_output", "false");
+      else
+	error ("more: unrecognized argument `%s'", arg);
+    }
+  else
+    print_usage ("more");
 
   DELETE_ARGV;
 

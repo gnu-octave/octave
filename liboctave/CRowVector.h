@@ -133,6 +133,8 @@ public:
   friend RowVector map (d_c_Mapper f, const ComplexRowVector& a);
   void map (c_c_Mapper f);
 
+  ComplexRowVector linspace (const Complex& x1, const Complex& x2, int n);
+
   Complex min (void) const;
   Complex max (void) const;
 

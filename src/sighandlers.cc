@@ -27,9 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #include <csignal>
 
+#include <iostream>
 #include <new>
-
-#include <iostream.h>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -382,7 +381,7 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler& h)
 void
 install_signal_handlers (void)
 {
-  set_new_handler (octave_new_handler);
+  std::set_new_handler (octave_new_handler);
 
   octave_catch_interrupts ();
 

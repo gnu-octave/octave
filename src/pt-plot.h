@@ -27,8 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-class ostream;
-class ostrstream;
+#include <iostream>
+#include <strstream>
 
 class tree_expression;
 class tree_plot_command;

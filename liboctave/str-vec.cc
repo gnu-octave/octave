@@ -32,9 +32,8 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include <config.h>
 #endif
 
+#include <iostream>
 #include <string>
-
-#include <iostream.h>
 
 #include "cmd-edit.h"
 #include "lo-utils.h"

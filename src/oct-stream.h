@@ -28,10 +28,8 @@ class string_vector;
 class octave_value;
 class octave_value_list;
 
-class istream;
-class ostream;
-class ostrstream;
-
+#include <iostream>
+#include <strstream>
 #include <string>
 
 #include "Array.h"

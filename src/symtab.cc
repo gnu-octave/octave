@@ -32,8 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cctype>
 #include <climits>
 
-#include <iomanip.h>
-#include <fstream.h>
+#include <iomanip>
+#include <fstream>
 
 #include "glob-match.h"
 #include "str-vec.h"

@@ -72,9 +72,6 @@ class ComplexQR;
 
 #include "oct-cmplx.h"
 
-class istream;
-class ostream;
-
 #ifndef MAPPER_FCN_TYPEDEFS
 #define MAPPER_FCN_TYPEDEFS 1
 

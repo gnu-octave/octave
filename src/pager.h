@@ -23,10 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_pager_h)
 #define octave_pager_h 1
 
+#include <iostream>
+#include <strstream>
 #include <string>
-
-#include <iostream.h>
-#include <strstream.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

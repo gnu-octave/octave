@@ -32,9 +32,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <ctime>
 
-#include <fstream.h>
-#include <iostream.h>
-#include <strstream.h>
+#include <fstream>
+#include <iostream>
+#include <strstream>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H

@@ -23,8 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_help_h)
 #define octave_help_h 1
 
-class ostrstream;
-
+#include <iostream>
 #include <string>
 
 class string_vector;

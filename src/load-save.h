@@ -23,11 +23,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_load_save_h)
 #define octave_load_save_h 1
 
-class ostream;
-
-class octave_value;
+#include <iostream>
 
 #include <string>
+
+class octave_value;
 
 extern bool save_ascii_data (ostream& os, const octave_value& t,
 			     const string& name = string (),

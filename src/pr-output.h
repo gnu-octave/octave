@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_pr_output_h)
 #define octave_pr_output_h 1
 
-class ostream;
+#include <iostream>
 
 #include "oct-cmplx.h"
 

@@ -91,8 +91,8 @@ octave_allocator::grow (void)
     {
       typedef void (*error_handler_function) (void);
 
-      error_handler_function f = set_new_handler (0);
-      set_new_handler (f);
+      error_handler_function f = std::set_new_handler (0);
+      std::set_new_handler (f);
 
       if (f)
 	f ();

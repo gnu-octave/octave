@@ -41,7 +41,7 @@ Software Foundation, Inc.
 
 #include <string>
 
-#include <fstream.h>
+#include <fstream>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H

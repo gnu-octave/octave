@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_error_h)
 #define octave_error_h 1
 
-class ostrstream;
+#include <strstream>
 
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \

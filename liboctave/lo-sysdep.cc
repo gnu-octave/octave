@@ -32,9 +32,8 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <iostream>
 #include <string>
-
-#include <iostream.h>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H

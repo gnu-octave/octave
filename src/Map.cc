@@ -41,7 +41,7 @@ License as published by the Free Software Foundation.
 #include <config.h>
 #endif
 
-#include <iostream.h>
+#include <iostream>
 
 #include "Map.h"
 

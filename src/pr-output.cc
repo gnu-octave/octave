@@ -29,11 +29,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <cstring>
 
+#include <iomanip>
+#include <iostream>
+#include <strstream>
 #include <string>
-
-#include <iomanip.h>
-#include <iostream.h>
-#include <strstream.h>
 
 #include "CMatrix.h"
 #include "Range.h"

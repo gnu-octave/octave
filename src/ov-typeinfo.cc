@@ -254,8 +254,6 @@ octave_value_typeinfo::do_register_widening_op
   return false;
 }
 
-#include <iostream.h>
-
 unary_op_fcn
 octave_value_typeinfo::do_lookup_unary_op (octave_value::unary_op op, int t)
 {

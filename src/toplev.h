@@ -25,13 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 
+#include <string>
+
 class octave_value;
 class octave_value_list;
 class octave_user_function;
 class tree_statement_list;
 class charMatrix;
-
-#include <string>
 
 extern void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;

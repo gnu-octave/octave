@@ -39,7 +39,7 @@ command_history *command_history::instance = 0;
 
 #include <cstdlib>
 
-#include <strstream.h>
+#include <strstream>
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>

@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cfloat>
 
-#include <iostream.h>
+#include <iostream>
 
 // XXX FIXME XXX
 #ifdef HAVE_SYS_TYPES_H

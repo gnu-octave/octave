@@ -1,3 +1,12 @@
+2000-01-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-alloc.cc (octave_allocator::grow): Add std:: qualifier for
+	set_net_handler.
+
+	* All source files: Include iostream, fstream, strstream,
+	etc. as needed instead of using forward declarations for these
+	classes.
+
 2000-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc: Declare strptime extern "C".

@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_fstream_h)
 #define octave_octave_fstream_h 1
 
-#include <fstream.h>
+#include <fstream>
 
 #include "oct-stream.h"
 

@@ -27,9 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdarg>
 #include <cstring>
 
+#include <strstream>
 #include <string>
-
-#include <strstream.h>
 
 #include "defun.h"
 #include "error.h"

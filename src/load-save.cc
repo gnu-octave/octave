@@ -28,12 +28,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <cctype>
 
+#include <iomanip>
+#include <iostream>
+#include <fstream>
+#include <strstream>
 #include <string>
-
-#include <iomanip.h>
-#include <iostream.h>
-#include <fstream.h>
-#include <strstream.h>
 
 #include "byte-swap.h"
 #include "data-conv.h"

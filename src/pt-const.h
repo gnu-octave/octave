@@ -300,6 +300,14 @@ public:
 					    int force_vec_conv = 0) const
     { return rep->complex_vector_value (); }
 
+// Binary and unary operations.
+
+  friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
+				     tree_expression::type t);
+
+  friend tree_constant do_unary_op (tree_constant& a,
+				    tree_expression::type t);
+
 // Conversions.  These should probably be private.  If a user of this
 // class wants a certain kind of constant, he should simply ask for
 // it, and we should convert it if possible.

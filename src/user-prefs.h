@@ -50,6 +50,7 @@ struct user_preferences
   int warn_comma_in_global_decl;
   int warn_divide_by_zero;
 
+  char *default_save_format;
   char *editor;
   char *gnuplot_binary;
   char *info_file;
@@ -87,6 +88,7 @@ extern int set_output_max_field_width (void);
 extern int set_output_precision (void);
 extern int set_save_precision (void);
 
+extern int sv_default_save_format (void);
 extern int sv_editor (void);
 extern int sv_gnuplot_binary (void);
 extern int sv_info_file (void);

@@ -1,1165 +1,265 @@
-// builtins.cc                                           -*- C++ -*-
-/*
-
-Copyright (C) 1992, 1993, 1994 John W. Eaton
-
-This file is part of Octave.
-
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 2, or (at your option) any
-later version.
-
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
-
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, write to the Free
-Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+// DO NOT EDIT!  Generated automatically by mkbuiltins.
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#include <iostream.h>
-#include <strstream.h>
-#include <math.h>
-#include <float.h>
-
-#include "tree-const.h"
-#include "t-builtins.h"
-#include "g-builtins.h"
-#include "builtins.h"
-#include "octave.h"
-#include "utils.h"
-#include "tree.h"
-#include "help.h"
-#include "pager.h"
-#include "sysdep.h"
 #include "mappers.h"
 #include "variables.h"
-#include "user-prefs.h"
-#include "missing-math.h"
+#include "builtins.h"
+#include "oct-obj.h"
 
-// NOTE: nargin == 1 means that the function takes no arguments (just
-// like C, the first argument is (or should be, anyway) the function
-// name).  Also, -1 is shorthand for infinity.
-
-// The following initializations may eventually need to be reworked
-// like the builtin functions in bash were around version 1.12...
-
-static builtin_mapper_functions mapper_functions[] =
+static void
+install_builtin_functions (void)
 {
-  { "abs", 0, 0.0, 0.0, fabs, abs, NULL,
-    "abs (X): compute abs (X) for each element of X", },
-
-  { "acos", 1, -1.0, 1.0, acos, NULL, acos,
-    "acos (X): compute acos (X) for each element of X", },
-
-  { "acosh", 1, 1.0, DBL_MAX, acosh, NULL, acosh,
-    "acosh (X): compute acosh (X) for each element of X", },
-
-  { "angle", 0, 0.0, 0.0, arg, arg, NULL,
-    "angle (X): compute arg (X) for each element of X", },
-
-  { "arg", 0, 0.0, 0.0, arg, arg, NULL,
-    "arg (X): compute arg (X) for each element of X", },
-
-  { "asin", 1, -1.0, 1.0, asin, NULL, asin,
-    "asin (X): compute asin (X) for each element of X", },
-
-  { "asinh", 0, 0.0, 0.0, asinh, NULL, asinh,
-    "asinh (X): compute asinh (X) for each element of X", },
-
-  { "atan", 0, 0.0, 0.0, atan, NULL, atan,
-    "atan (X): compute atan (X) for each element of X", },
-
-  { "atanh", 1, -1.0, 1.0, atanh, NULL, atanh,
-    "atanh (X): compute atanh (X) for each element of X", },
-
-  { "ceil", 0, 0.0, 0.0, ceil, NULL, ceil,
-    "ceil (X): round elements of X toward +Inf", },
-
-  { "conj", 0, 0.0, 0.0, conj, NULL, conj,
-    "conj (X): compute complex conjugate for each element of X", },
-
-  { "cos", 0, 0.0, 0.0, cos, NULL, cos,
-    "cos (X): compute cos (X) for each element of X", },
-
-  { "cosh", 0, 0.0, 0.0, cosh, NULL, cosh,
-    "cosh (X): compute cosh (X) for each element of X", },
-
-  { "exp", 0, 0.0, 0.0, exp, NULL, exp,
-    "exp (X): compute exp (X) for each element of X", },
-
-  { "finite", 0, 0.0, 0.0, xfinite, xfinite, NULL,
-    "finite (X): return 1 for finite elements of X", },
-
-  { "fix", 0, 0.0, 0.0, fix, NULL, fix,
-    "fix (X): round elements of X toward zero", },
-
-  { "floor", 0, 0.0, 0.0, floor, NULL, floor,
-    "floor (X): round elements of X toward -Inf", },
-
-  { "isinf", 0, 0.0, 0.0, xisinf, xisinf, NULL,
-    "isinf (X): return 1 for elements of X infinite", },
-
-  { "imag", 0, 0.0, 0.0, imag, imag, NULL,
-    "imag (X): return imaginary part for each elements of X", },
-
-#ifdef HAVE_ISNAN
-  { "isnan", 0, 0.0, 0.0, xisnan, xisnan, NULL,
-    "isnan (X): return 1 where elements of X are NaNs", },
-#endif
-
-  { "log", 1, 0.0, DBL_MAX, log, NULL, log,
-    "log (X): compute log (X) for each element of X", },
-
-  { "log10", 1, 0.0, DBL_MAX, log10, NULL, log10,
-    "log10 (X): compute log10 (X) for each element of X", },
-
-  { "real", 0, 0.0, 0.0, real, real, NULL,
-    "real (X): return real part for each element of X", },
-
-  { "round", 0, 0.0, 0.0, round, NULL, round,
-    "round (X): round elements of X to nearest integer", },
-
-  { "sign", 0, 0.0, 0.0, signum, NULL, signum,
-    "sign (X): apply signum function to elements of X", },
-
-  { "sin", 0, 0.0, 0.0, sin, NULL, sin,
-    "sin (X): compute sin (X) for each element of X", },
-
-  { "sinh", 0, 0.0, 0.0, sinh, NULL, sinh,
-    "sinh (X): compute sinh (X) for each element of X", },
-
-  { "sqrt", 1, 0.0, DBL_MAX, sqrt, NULL, sqrt,
-    "sqrt (X): compute sqrt (X) for each element of X", },
-
-  { "tan", 0, 0.0, 0.0, tan, NULL, tan,
-    "tan (X): compute tan (X) for each element of X", },
-
-  { "tanh", 0, 0.0, 0.0, tanh, NULL, tanh,
-    "tanh (X): compute tanh (X) for each element of X", },
-
-  { NULL, -1, 0.0, 0.0, NULL, NULL, NULL, NULL, },
-};
-
-static builtin_text_functions text_functions[] =
-{
-  { "casesen", 2, builtin_casesen,
-    "casesen [on|off]", },
-
-  { "cd", 2, builtin_cd,
-    "cd [dir]\n\n\
-change current working directory\n\
-if no arguments are given, the current directory is changed to the\n\
-users home directory", },
-
-  { "clear", -1, builtin_clear,
-    "clear [name ...]\n\n\
-clear symbol(s) matching a list of regular expressions\n\
-if no arguments are given, clear all user-defined variables and functions", },
-
-  { "dir", -1, builtin_ls,
-    "dir [options]\n\nprint a directory listing", },
-
-  { "document", -1, builtin_document,
-    "document symbol string ...\n\n", },
-
-  { "edit_history", -1, builtin_edit_history,
-    "edit_history [first] [last]\n\nedit commands from the history list", },
-
-  { "format", -1, builtin_format,
-    "format [style]\n\nset output formatting style", },
-
-  { "help", -1, builtin_help,
-    "help [-i] [topic ...]\n\nprint cryptic yet witty messages", },
-
-  { "history", -1, builtin_history,
-    "history [N] [-w file] [-r file] [-q]\n\n\
-display, save, or load command history", },
-
-  { "hold", -1, builtin_hold,
-    "hold [on|off]\n\n\
-determine whether the plot window is cleared before the next line is drawn", },
-
-  { "load", -1, builtin_load,
-    "load [-force] file\n\nload variables from a file", },
-
-  { "ls", -1, builtin_ls,
-    "ls [options]\n\nprint a directory listing", },
-
-  { "run_history", -1, builtin_run_history,
-    "run_history [first] [last]\n\nrun commands from the history list", },
-
-  { "save", -1, builtin_save,
-    "save file [var ...]\n\nsave variables in a file", },
-
-  { "set", -1, builtin_set,
-    "set [options]\n\nset plotting options", },
-
-  { "show", -1, builtin_show,
-    "show [options]\n\nshow plotting options", },
-
-  { "who", -1, builtin_who,
-    "who [-all] [-builtins] [-functions] [-long] [-variables]\n\n\
-List currently defined symbol(s).  Options may be shortened to one\n\
-character, but may not be combined.", },
-
-  { NULL, -1, NULL, NULL, },
-};
-
-static builtin_general_functions general_functions[] =
-{
-  { "all", 2, 1, builtin_all,
-    "all (X): are all elements of X nonzero?", },
-
-  { "any", 2, 1, builtin_any,
-    "any (X): are any elements of X nonzero?", },
-
-  { "balance", 4, 4, builtin_balance,
-    "aa = balance (a [, opt]) or [[dd,] aa] =  balance (a [, opt])\n\
-  generalized eigenvalue problem:\n\
-    [cc, dd, aa, bb] = balance (a, b [, opt])\n\
-where \"opt\" is an optional single character argument as follows: \n\
-  \"N\" or \"n\": no balancing; arguments copied, transformation(s) \n\
-              set to identity\n\
-  \"P\" or \"p\": permute argument(s) to isolate eigenvalues where possible\n\
-  \"S\" or \"s\": scale to improve accuracy of computed eigenvalues\n\
-  \"B\" or \"b\": (default) permute and scale, in that order. Rows/columns of a \n\
-              (and b) that are isolated by permutation are not scaled\n\
-[dd, aa] = balance (a, opt) returns aa = dd\a*dd,\n\
-[cc, dd, aa, bb] = balance (a, b, opt) returns aa (bb) = cc*a*dd (cc*b*dd)", },
-
-  { "chol", 2, 1, builtin_chol,
-    "chol (X): cholesky factorization", },
-
-  { "clc", 1, 0, builtin_clc,
-    "clc (): clear screen", },
-
-  { "clock", 1, 0, builtin_clock,
-    "clock (): return current date and time in vector", },
-
-  { "closeplot", 1, 0, builtin_closeplot,
-    "closeplot (): close the stream to plotter", },
-
-  { "colloc", 7, 4, builtin_colloc,
-    "[r, A, B, q] = colloc (n [, \"left\"] [, \"right\"]): collocation weights", },
-
-  { "cumprod", 2, 1, builtin_cumprod,
-    "cumprod (X): cumulative products", },
-
-  { "cumsum", 2, 1, builtin_cumsum,
-    "cumsum (X): cumulative sums", },
-
-  { "dassl", 5, 1, builtin_dassl,
-    "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
-  dassl (\"function_name\", x_0, xdot_0, t_out, t_crit)\n\
-\n\
-The first argument is the name of the function to call to\n\
-compute the vector of residuals.  It must have the form\n\
-\n\
-  res = f (x, xdot, t)\n\
-\n\
-where x, xdot, and res are vectors, and t is a scalar.", },
-
-  { "dassl_options", -1, 1, builtin_dassl_options,
-    "dassl_options (keyword, value)\n\n\
-       Set or show options for dassl.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-
-  { "date", 1, 0, builtin_date,
-    "date (): return current date in a string", },
-
-  { "det", 2, 1, builtin_det,
-    "det (X): determinant of a square matrix", },
-
-  { "diag", 3, 1, builtin_diag,
-    "diag (X [,k]): form/extract diagonals", },
-
-  { "disp", 3, 1, builtin_disp,
-    "disp (X): display value", },
-
-  { "eig", 2, 1, builtin_eig,
-    "eig (x) or [v, d] = eig (x): compute eigenvalues and eigenvectors of x", },
-
-  { "error", 2, 1, builtin_error,
-    "error (\"message\"): print message and jump to top level", },
-
-  { "eval", 2, 1, builtin_eval,
-    "eval (\"string\"): evaluate text as octave source", },
-
-  { "exist", 2, 1, builtin_exist,
-    "exist (\"name\"): check if variable or file exists", },
-
-  { "exit", 1, 0, builtin_quit,
-    "exit (): exit Octave gracefully", },
-
-  { "expm", 2, 1, builtin_expm,
-    "expm (X): matrix exponential, e^A", },
-
-  { "eye", 3, 1, builtin_eye,
-    "eye (n), eye (n, m), eye (X): create an identity matrix", },
-
-  { "fclose", 2, 1, builtin_fclose,
-    "fclose (\"filename\" or filenum): close a file", },
-
-  { "feof", 2, 1, builtin_feof,
-    "error = feof (\"filename\" or filenum)\n\n\
- Returns a non zero value for an end of file condition for the\n\
- file specified by \"filename\" filenum from fopen", },
-
-  { "ferror", 2, 1, builtin_ferror,
-    "error = ferror (\"filename\" or filenum)\n\n\
- Returns a non zero value for an error condition on the\n\
- file specified by \"filename\" or filenum from fopen", },
-
-  { "feval", -1, 1, builtin_feval,
-    "feval (\"name\", args, ...): evaluate first argument as function", },
-
-  { "fflush", 2, 1, builtin_fflush,
-    "fflush (\"filename\" or filenum): flush buffered data to output file", },
-
-  { "fft", 2, 1, builtin_fft,
-    "fft (X): fast fourier transform of a vector", },
-
-  { "fgets",3, 2, builtin_fgets,
-    "[string, length] = fgets (\"filename\" or filenum, length): read a string from a file", },
-
-  { "find", 2, 3, builtin_find,
-    "find (x) or [i, j, v] = find (x): Return indices of nonzero elements", },
-
-  { "flops", 2, 1, builtin_flops,
-    "flops (): count floating point operations", },
-
-  { "fopen", 3, 1, builtin_fopen,
-    "filenum = fopen (\"filename\", \"mode\"): open a file\n\n\
-  Valid values for mode include:\n\n\
-   r  : open text file for reading\n\
-   w  : open text file for writing; discard previous contents if any\n\
-   a  : append; open or create text file for writing at end of file\n\
-   r+ : open text file for update (i.e., reading and writing)\n\
-   w+ : create text file for update; discard previous contents if any\n\
-   a+ : append; open or create text file for update, writing at end\n\n\
- Update mode permits reading from and writing to the same file.\n", },
-
-  { "fprintf", -1, 1, builtin_fprintf,
-    "fprintf (\"file\", \"fmt\", ...)", },
-
-  { "fread", 4, 2, builtin_fread,
-    "[data, count] = fread (filenum, size, \"precision\")\n\n\
- Reads data in binary form of type \"precision\" from a file.\n\n\
- filenum   : file number from fopen\n\
- size      : size specification for the Data matrix\n\
- precision : type of data to read, valid types are\n\n\
-               'char',   'schar', 'short',  'int',  'long', 'float'\n\
-               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\n\
- data      : matrix in which the data is stored\n\
- count     : number of elements read", },
-
-  { "freport", 1, 1, builtin_freport,
-    "freport (): list open files and their status", },
-
-  { "frewind", 2, 1, builtin_frewind,
-    "frewind (\"filename\" or filenum): set file position at beginning of file", },
-
-  { "fscanf", 3, -1, builtin_fscanf,
-    "[a, b, c, ...] = fscanf (\"file\", \"fmt\")", },
-
-  { "fseek", 4, 1, builtin_fseek,
-    "fseek (\"filename\" or filenum, offset [, origin]): set file position for reading or writing", },
-
-  { "fsolve", 5, 1, builtin_fsolve,
-    "Solve nonlinear equations using Minpack.  Usage:\n\
-\n\
-  [x, info] = fsolve (\"f\", x0)\n\
-\n\
-Where the first argument is the name of the  function to call to\n\
-compute the vector of function values.  It must have the form\n\
-\n\
-  y = f (x)
-\n\
-where y and x are vectors.", },
-
-  { "fsolve_options", -1, 1, builtin_fsolve_options,
-    "fsolve_options (keyword, value)\n\n\
-       Set or show options for fsolve.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-
-  { "fsqp", 11, 3, builtin_fsqp,
-#if defined (FSQP_MISSING)
-    "This function requires FSQP, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/fsqp/README.MISSING in the source distribution.", },
-#else
-  "[x, phi] = fsqp (x, \"phi\" [, lb, ub] [, lb, A, ub] [, lb, \"g\", ub])\n\n\
-  Groups of arguments surrounded in `[]' are optional, but\n\
-  must appear in the same relative order shown above.", },
-#endif
-
-  { "fsqp_options", -1, 1, builtin_fsqp_options,
-#if defined (FSQP_MISSING)
-    "This function requires FSQP, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/fsqp/README.MISSING in the source distribution.", },
-#else
-    "fsqp_options (keyword, value)\n\n\
-       Set or show options for fsqp.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-#endif
-
-  { "ftell", 2, 1, builtin_ftell,
-    "position = ftell (\"filename\" or filenum): returns the current file position", },
-
-  { "fwrite", 4, 1, builtin_fwrite,
-    "count = fwrite (filenum, Data, \"precision\")\n\n\
- Writes data to a file in binary form of size \"precision\"\n\n\
- filenum   : file number from fopen\n\
- Data      : matrix of elements to be written\n\
- precision : type of data to read, valid types are\n\n\
-               'char',   'schar', 'short',  'int',  'long', 'float'\n\
-               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\n\
- count     : number of elements written", },
-
-  { "getenv", 2, 1, builtin_getenv,
-    "getenv (\"string\"): get environment variable values", },
-
-  { "givens", 3, 2, builtin_givens,
-    "G = givens (x, y): compute orthogonal matrix G = [c s; -conj (s) c]\n\
-      such that G [x; y] = [*; 0]  (x, y scalars)\n\n\
-      [c, s] = givens (x, y) returns the (c, s) values themselves.", },
-
-  { "hess", 2, 2, builtin_hess,
-    "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition", },
-
-  { "home", 1, 0, builtin_clc,
-    "home (): clear screen", },
-
-  { "input", 3, 1, builtin_input,
-    "input (\"prompt\" [, \"s\"]): prompt user for [string] input", },
-
-  { "ifft", 2, 1, builtin_ifft,
-    "ifft (X): inverse fast fourier transform of a vector", },
-
-  { "inv", 2, 1, builtin_inv,
-    "inv (X): inverse of a square matrix", },
-
-  { "inverse", 2, 1, builtin_inv,
-    "inverse (X): inverse of a square matrix", },
-
-  { "is_global", 2, 1, builtin_is_global,
-    "is_global (X): return 1 if the string X names a global variable", },
-
-  { "isstr", 2, 1, builtin_isstr,
-    "isstr (X): return 1 if X is a string", },
-
-  { "kbhit", 1, 1, builtin_kbhit,
-    "kbhit: get a single character from the terminal", },
-
-  { "keyboard", 2, 1, builtin_keyboard,
-    "keyboard (\"prompt\"): maybe help in debugging function files", },
-
-  { "logm", 2, 1, builtin_logm,
-    "logm (x): matrix logarithm", },
-
-  { "lp_solve", 11, 3, builtin_lpsolve,
-    "lp_solve (): solve linear programs using lp_solve.", },
-
-  { "lp_solve_options", -1, 1, builtin_lpsolve_options,
-    "lp_solve_options (keyword, value)\n\n\
-       Set or show options for lp_solve.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-
-  { "lsode", 6, 1, builtin_lsode,
-    "lsode (\"function_name\", x0, t_out, t_crit)\n\
-\n\
-The first argument is the name of the function to call to\n\
-compute the vector of right hand sides.  It must have the form\n\
-\n\
-  xdot = f (x, t)\n\
-\n\
-where xdot and x are vectors and t is a scalar.\n", },
-
-  { "lsode_options", -1, 1, builtin_lsode_options,
-    "lsode_options (keyword, value)\n\n\
-       Set or show options for lsode.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-
-  { "lu", 2, 3, builtin_lu,
-    "[L, U, P] = lu (A): LU factorization", },
-
-  { "max", 3, 2, builtin_max,
-    "max (x): maximum value(s) of a vector (matrix)", },
-
-  { "min", 3, 2, builtin_min,
-    "min (x): minimum value(s) of a vector (matrix)", },
-
-  { "npsol", 11, 3, builtin_npsol,
-#if defined (NPSOL_MISSING)
-    "This function requires NPSOL, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/npsol/README.MISSING in the source distribution.", },
-#else
-    "[x, obj, info, lambda] = npsol (x, \"phi\" [, lb, ub] [, lb, A, ub] [, lb, \"g\", ub])\n\n\
-  Groups of arguments surrounded in `[]' are optional, but\n\
-  must appear in the same relative order shown above.\n\
-\n\
-  The second argument is a string containing the name of the objective\n\
-  function to call.  The objective function must be of the form\n\
-\n\
-    y = phi (x)\n\
-\n\
-  where x is a vector and y is a scalar.", },
-#endif
-
-  { "npsol_options", -1, 1, builtin_npsol_options,
-#if defined (NPSOL_MISSING)
-    "This function requires NPSOL, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/npsol/README.MISSING in the source distribution.", },
-#else
-    "npsol_options (keyword, value)\n\n\
-       Set or show options for npsol.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-#endif
-
-  { "ones", 3, 1, builtin_ones,
-    "ones (n), ones (n, m), ones (x): create a matrix of all ones", },
-
-  { "pause", 1, 1, builtin_pause,
-    "pause (seconds): suspend program execution", },
-
-  { "purge_tmp_files", 5, 1, builtin_purge_tmp_files,
-    "delete temporary data files used for plotting", },
-
-  { "printf", -1, 1, builtin_printf,
-    "printf (\"fmt\", ...)", },
-
-  { "prod", 2, 1, builtin_prod,
-    "prod (X): products", },
-
-  { "pwd", 1, 0, builtin_pwd,
-    "pwd (): print current working directory", },
-
-  { "qpsol", 9, 3, builtin_qpsol,
-#if defined (QPSOL_MISSING)
-    "This function requires QPSOL, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/qpsol/README.MISSING in the source distribution.", },
-#else
-    "[x, obj, info, lambda] = qpsol (x, H, c [, lb, ub] [, lb, A, ub])\n\
-\n\
-  Groups of arguments surrounded in `[]' are optional, but\n\
-  must appear in the same relative order shown above.", },
-#endif
-
-  { "qpsol_options", -1, 1, builtin_qpsol_options,
-#if defined (QPSOL_MISSING)
-    "This function requires QPSOL, which is not freely\n\
-       redistributable.  For more information, read the file\n\
-       libcruft/qpsol/README.MISSING in the source distribution.", },
-#else
-    "qpsol_options (keyword, value)\n\n\
-       Set or show options for qpsol.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-#endif
-
-  { "qr", 2, 2, builtin_qr,
-    "[q, r] = qr (X): form QR factorization of X", },
-
-  { "quad", 6, 3, builtin_quad,
-    "[v, ier, nfun] = quad (\"f\", a, b [, tol] [, sing])\n\
-\n\
-Where the first argument is the name of the  function to call to\n\
-compute the value of the integrand.  It must have the form\n\
-\n\
-  y = f (x)
-\n\
-where y and x are scalars.\n\
-\n\
-The second and third arguments are limits of integration.  Either or\n\
-both may be infinite.  The optional argument tol specifies the desired\n\
-accuracy of the result.  The optional argument sing is a vector of\n\
-at which the integrand is singular.\n", },
-
-  { "quad_options", -1, 1, builtin_quad_options,
-    "quad_options (keyword, value)\n\n\
-       Set or show options for quad.  Keywords may be abbreviated\n\
-       to the shortest match.", },
-
-  { "quit", 1, 0, builtin_quit,
-    "quit (): exit Octave gracefully", },
-
-  { "qzval", 3, 1, builtin_qzval,
-    "x = qzval (A,B): compute generalized eigenvalues of \n\
-  the matrix pencil (A - lambda B).  A and B must be real matrices.", },
-
-  { "rand", 2, 1, builtin_rand,
-    "rand                  -- generate a random value\n\
-       rand (n)              -- generate N x N matrix\n\
-       rand (A)              -- generate matrix the size of A\n\
-       rand (n, m)           -- generate N x M matrix\n\
-       rand (\"dist\")         -- get current distribution\n\
-       rand (\"distribution\") -- set distribution\n\
-       rand (\"seed\")         -- get current seed\n\
-       rand (\"seed\", n)      -- set seed", },
-
-  { "scanf", 2, -1, builtin_scanf,
-    "[a, b, c, ...] = scanf (\"fmt\")", },
-
-  { "setstr", 2, 1, builtin_setstr,
-    "setstr (v): convert a vector to a string", },
-
-  { "shell_cmd", 2, 1, builtin_shell_command,
-    "shell_cmd (string [, return_output]): execute shell commands", },
-
-  { "schur", 3, 2, builtin_schur,
-    "[U, S] = schur (A) or S = schur (A)\n\n\
- or, for ordered Schur:\n\n\
-       [U, S] = schur (A, \"A, D, or U\") or S = schur (A, \"A, D, or U\")\n\
- where:\n\n\
-   A = continuous time poles\n\
-   D = discrete time poles\n\
-   U = unordered schur (default)", },
-
-
-  { "size", 2, 1, builtin_size,
-    "[m, n] = size (x): return rows and columns of X", },
-
-  { "sort", 2, 2, builtin_sort,
-    "[s, i] = sort (x): sort the columns of x, optionally return sort index", },
-
-  { "sqrtm", 2, 1, builtin_sqrtm,
-    "sqrtm (x): matrix sqrt", },
-
-  { "sprintf", -1, 1, builtin_sprintf,
-    "s = sprintf (\"fmt\", ...)", },
-
-  { "sscanf", 3, -1, builtin_sscanf,
-    "[a, b, c, ...] = sscanf (string, \"fmt\")", },
-
-  { "sum", 2, 1, builtin_sum,
-    "sum (X): sum of elements", },
-
-  { "sumsq", 2, 1, builtin_sumsq,
-    "sumsq (X): sum of squares of elements", },
-
-  { "svd", 2, 3, builtin_svd,
-    "s = svd (x) or [u, s, v] = svd (x): return SVD of x", },
-
-  { "syl", 4, 1, builtin_syl,
-    "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0", },
-
-  { "va_arg", 1, 1, builtin_va_arg,
-    "va_arg (): return next argument in function taking varible\n\
-number of parameters", },
-
-  { "va_start", 1, 0, builtin_va_start,
-    "va_start (): reset the pointer to the list of optional arguments\n\
-to the beginning", },
-
-  { "warranty", 1, 0, builtin_warranty,
-    "warranty (): describe copying conditions", },
-
-  { "zeros", 3, 1, builtin_zeros,
-    "zeros (n), zeros (n, m), zeros (x): create a matrix of all zeros", },
-
-  { NULL, -1, -1, NULL, NULL, },
-};
-
-// This is a lie.  Some of these get reassigned to be numeric
-// variables.  See below.
-
-static builtin_string_variables string_variables[] =
-{
-  { "EDITOR", "??", sv_editor,
-    "name of the editor to be invoked by the edit_history command", },
-
-  { "I", "??", NULL,
-    "sqrt (-1)", },
-
-  { "Inf", "??", NULL,
-    "infinity", },
-
-  { "INFO_FILE", "??", sv_info_file,
-    "name of the Octave info file", },
-
-  { "J", "??", NULL,
-    "sqrt (-1)", },
-
-#if defined (HAVE_ISNAN)
-  { "NaN", "??", NULL,
-    "not a number", },
-#endif
-
-  { "LOADPATH", "??", sv_loadpath,
-    "colon separated list of directories to search for scripts", },
-
-  { "PAGER", "??", sv_pager_binary,
-    "path to pager binary", },
-
-  { "PS1", "\\s:\\#> ", sv_ps1,
-    "primary prompt string", },
-
-  { "PS2", "> ", sv_ps2,
-    "secondary prompt string", },
-
-  { "PWD", "??PWD??", sv_pwd,
-    "current working directory", },
-
-  { "SEEK_SET", "??", NULL,
-    "used with fseek to position file relative to the beginning", },
-
-  { "SEEK_CUR", "??", NULL,
-    "used with fseek to position file relative to the current position", },
-
-  { "SEEK_END", "??", NULL,
-    "used with fseek to position file relative to the end", },
-
-  { "commas_in_literal_matrix", "", commas_in_literal_matrix,
-    "control auto-insertion of commas in literal matrices", },
-
-  { "do_fortran_indexing", "false", do_fortran_indexing,
-    "allow single indices for matrices", },
-
-  { "empty_list_elements_ok", "warn", empty_list_elements_ok,
-    "ignore the empty element in expressions like `a = [[], 1]'", },
-
-  { "eps", "??", NULL,
-    "machine precision", },
-
-  { "gnuplot_binary", "gnuplot", sv_gnuplot_binary,
-    "path to gnuplot binary", },
-
-  { "i", "??", NULL,
-    "sqrt (-1)", },
-
-  { "ignore_function_time_stamp", "system", ignore_function_time_stamp,
-    "don't check to see if function files have changed since they were\n\
-last compiled.  Possible values are \"system\" and \"all\"", },
-
-  { "implicit_str_to_num_ok", "false", implicit_str_to_num_ok,
-    "allow implicit string to number conversion", },
-
-  { "inf", "??", NULL,
-    "infinity", },
-
-  { "j", "??", NULL,
-    "sqrt (-1)", },
-
-#if defined (HAVE_ISNAN)
-  { "nan", "??", NULL,
-    "not a number", },
-#endif
-
-  { "ok_to_lose_imaginary_part", "warn", ok_to_lose_imaginary_part,
-    "silently convert from complex to real by dropping imaginary part", },
-
-  { "output_max_field_width", "??", set_output_max_field_width,
-    "maximum width of an output field for numeric output", },
-
-  { "output_precision", "??", set_output_precision,
-    "number of significant figures to display for numeric output", },
-
-  { "page_screen_output", "true", page_screen_output,
-    "if possible, send output intended for the screen through the pager", },
-
-  { "pi", "??", NULL,
-    "ratio of the circumference of a circle to its diameter", },
-
-  { "prefer_column_vectors", "true", prefer_column_vectors,
-    "prefer column/row vectors", },
-
-  { "prefer_zero_one_indexing", "false", prefer_zero_one_indexing,
-    "when there is a conflict, prefer zero-one style indexing", },
-
-  { "print_answer_id_name", "true", print_answer_id_name,
-    "set output style to print `var_name = ...'", },
-
-  { "print_empty_dimensions", "true", print_empty_dimensions,
-    "also print dimensions of empty matrices", },
-
-  { "propagate_empty_matrices", "true", propagate_empty_matrices,
-    "operations on empty matrices return an empty matrix, not an error", },
-
-  { "resize_on_range_error", "true", resize_on_range_error,
-    "enlarge matrices on assignment", },
-
-  { "return_last_computed_value", "false", return_last_computed_value,
-    "if a function does not return any values explicitly, return the\n\
-last computed value", },
-
-  { "save_precision", "??", set_save_precision,
-    "number of significant figures kept by the ASCII save command", },
-
-  { "silent_functions", "false", silent_functions,
-    "suppress printing results in called functions", },
-
-  { "split_long_rows", "true", split_long_rows,
-    "split long matrix rows instead of wrapping", },
-
-  { "stdin", "??", NULL,
-    "file number of the standard input stream", },
-
-  { "stdout", "??", NULL,
-    "file number of the standard output stream", },
-
-  { "stderr", "??", NULL,
-    "file number of the standard error stream", },
-
-  { "treat_neg_dim_as_zero", "false", treat_neg_dim_as_zero,
-    "convert negative dimensions to zero", },
-
-  { "warn_assign_as_truth_value", "true", warn_assign_as_truth_value,
-    "produce warning for assignments used as truth values", },
-
-  { "warn_comma_in_global_decl", "true", warn_comma_in_global_decl,
-    "produce warning for commas in global declarations", },
-
-  { "warn_divide_by_zero", "true", warn_divide_by_zero,
-    "on IEEE machines, allow divide by zero errors to be suppressed", },
-
-  { NULL, NULL, NULL, NULL, },
-};
+ extern Octave_object      Fall    (const Octave_object& args, int nargout) ; static builtin_function     Sall   = {   "all"  ,     2  ,     1  ,   0 ,     Fall  ,    
+  "all (X): are all elements of X nonzero?"   }; install_builtin_function (&    Sall  );   
+ extern Octave_object      Fany    (const Octave_object& args, int nargout) ; static builtin_function     Sany   = {   "any"  ,     2  ,     1  ,   0 ,     Fany  ,    
+  "any (X): are any elements of X nonzero?"   }; install_builtin_function (&    Sany  );   
+ extern Octave_object      Fcumprod    (const Octave_object& args, int nargout) ; static builtin_function     Scumprod   = {   "cumprod"  ,     2  ,     1  ,   0 ,     Fcumprod  ,    
+  "cumprod (X): cumulative products"   }; install_builtin_function (&    Scumprod  );   
+ extern Octave_object      Fcumsum    (const Octave_object& args, int nargout) ; static builtin_function     Scumsum   = {   "cumsum"  ,     2  ,     1  ,   0 ,     Fcumsum  ,    
+  "cumsum (X): cumulative sums"   }; install_builtin_function (&    Scumsum  );   
+ extern Octave_object      Fdiag    (const Octave_object& args, int nargout) ; static builtin_function     Sdiag   = {   "diag"  ,     3  ,     1  ,   0 ,     Fdiag  ,    
+  "diag (X [,k]): form/extract diagonals"   }; install_builtin_function (&    Sdiag  );   
+ extern Octave_object      Fisstr    (const Octave_object& args, int nargout) ; static builtin_function     Sisstr   = {   "isstr"  ,     2  ,     1  ,   0 ,     Fisstr  ,    
+  "isstr (X): return 1 if X is a string, 0 otherwise"   }; install_builtin_function (&    Sisstr  );   
+ extern Octave_object      Fprod    (const Octave_object& args, int nargout) ; static builtin_function     Sprod   = {   "prod"  ,     2  ,     1  ,   0 ,     Fprod  ,    
+  "prod (X): products"   }; install_builtin_function (&    Sprod  );   
+ extern Octave_object      Fsetstr    (const Octave_object& args, int nargout) ; static builtin_function     Ssetstr   = {   "setstr"  ,     2  ,     1  ,   0 ,     Fsetstr  ,    
+  "setstr (V): convert a vector to a string"   }; install_builtin_function (&    Ssetstr  );   
+ extern Octave_object      Fsize    (const Octave_object& args, int nargout) ; static builtin_function     Ssize   = {   "size"  ,     2  ,     1  ,   0 ,     Fsize  ,    
+  "[m, n] = size (x): return rows and columns of X"   }; install_builtin_function (&    Ssize  );   
+ extern Octave_object      Fsum    (const Octave_object& args, int nargout) ; static builtin_function     Ssum   = {   "sum"  ,     2  ,     1  ,   0 ,     Fsum  ,    
+  "sum (X): sum of elements"   }; install_builtin_function (&    Ssum  );   
+ extern Octave_object      Fsumsq    (const Octave_object& args, int nargout) ; static builtin_function     Ssumsq   = {   "sumsq"  ,     2  ,     1  ,   0 ,     Fsumsq  ,    
+  "sumsq (X): sum of squares of elements"   }; install_builtin_function (&    Ssumsq  );   
+ extern Octave_object      Fones    (const Octave_object& args, int nargout) ; static builtin_function     Sones   = {   "ones"  ,     3  ,     1  ,   0 ,     Fones  ,    
+  "ones (N), ones (N, M), ones (X): create a matrix of all ones"   }; install_builtin_function (&    Sones  );   
+ extern Octave_object      Fzeros    (const Octave_object& args, int nargout) ; static builtin_function     Szeros   = {   "zeros"  ,     3  ,     1  ,   0 ,     Fzeros  ,    
+  "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros"   }; install_builtin_function (&    Szeros  );   
+ extern Octave_object      Feye    (const Octave_object& args, int nargout) ; static builtin_function     Seye   = {   "eye"  ,     3  ,     1  ,   0 ,     Feye  ,    
+  "eye (N), eye (N, M), eye (X): create an identity matrix"   }; install_builtin_function (&    Seye  );   
+ extern Octave_object      Fcd    (const Octave_object& args, int nargout) ; static builtin_function     Scd   = {   "cd"  ,     2  ,     1  ,   1 ,     Fcd  ,    
+  "cd [dir]\n\nchange current working directory\nif no arguments are given, the current directory is changed to the\nusers home directory"   }; install_builtin_function (&    Scd  );   
+ extern Octave_object      Fls    (const Octave_object& args, int nargout) ; static builtin_function     Sls   = {   "ls"  ,     -1  ,     1  ,   1 ,     Fls  ,    
+  "ls [options]\n\nprint a directory listing"   }; install_builtin_function (&    Sls  );   
+ alias_builtin ("dir", "ls");   ;
+
+ extern Octave_object      Fpwd    (const Octave_object& args, int nargout) ; static builtin_function     Spwd   = {   "pwd"  ,     1  ,     0  ,   0 ,     Fpwd  ,    
+  "pwd (): print current working directory"   }; install_builtin_function (&    Spwd  );   
+ extern Octave_object      Ferror    (const Octave_object& args, int nargout) ; static builtin_function     Serror   = {   "error"  ,     2  ,     1  ,   0 ,     Ferror  ,    
+  "error (MESSAGE): print MESSAGE and set the error state.\nThis should eventually take us up to the top level, possibly\nprinting traceback messages as we go.\n\nIf MESSAGE ends in a newline character, traceback messages are not\nprinted."   }; install_builtin_function (&    Serror  );    
+ extern Octave_object      Ffclose    (const Octave_object& args, int nargout) ; static builtin_function     Sfclose   = {   "fclose"  ,     2  ,     1  ,   0 ,     Ffclose  ,    
+  "fclose (FILENAME or FILENUM): close a file"   }; install_builtin_function (&    Sfclose  );   
+ extern Octave_object      Ffflush    (const Octave_object& args, int nargout) ; static builtin_function     Sfflush   = {   "fflush"  ,     2  ,     1  ,   0 ,     Ffflush  ,    
+  "fflush (FILENAME or FILENUM): flush buffered data to output file"   }; install_builtin_function (&    Sfflush  );   
+ extern Octave_object      Ffgets    (const Octave_object& args, int nargout) ; static builtin_function     Sfgets   = {   "fgets"  ,     3  ,     2  ,   0 ,     Ffgets  ,    
+  "[STRING, LENGTH] = fgets (FILENAME or FILENUM, LENGTH)\n\nread a string from a file"   }; install_builtin_function (&    Sfgets  );   
+ extern Octave_object      Ffopen    (const Octave_object& args, int nargout) ; static builtin_function     Sfopen   = {   "fopen"  ,     3  ,     1  ,   0 ,     Ffopen  ,    
+  "FILENUM = fopen (FILENAME, MODE): open a file\n\n  Valid values for mode include:\n\n   r  : open text file for reading\n   w  : open text file for writing; discard previous contents if any\n   a  : append; open or create text file for writing at end of file\n   r+ : open text file for update (i.e., reading and writing)\n   w+ : create text file for update; discard previous contents if any\n   a+ : append; open or create text file for update, writing at end\n\n Update mode permits reading from and writing to the same file."   }; install_builtin_function (&    Sfopen  );   
+ extern Octave_object      Ffreport    (const Octave_object& args, int nargout) ; static builtin_function     Sfreport   = {   "freport"  ,     1  ,     1  ,   0 ,     Ffreport  ,    
+  "freport (): list open files and their status"   }; install_builtin_function (&    Sfreport  );   
+ extern Octave_object      Ffrewind    (const Octave_object& args, int nargout) ; static builtin_function     Sfrewind   = {   "frewind"  ,     2  ,     1  ,   0 ,     Ffrewind  ,    
+  "frewind (FILENAME or FILENUM): set file position at beginning of file"   }; install_builtin_function (&    Sfrewind  );   
+ extern Octave_object      Ffseek    (const Octave_object& args, int nargout) ; static builtin_function     Sfseek   = {   "fseek"  ,     4  ,     1  ,   0 ,     Ffseek  ,    
+  "fseek (FILENAME or FILENUM, OFFSET [, ORIGIN])\n\nset file position for reading or writing"   }; install_builtin_function (&    Sfseek  );   
+ extern Octave_object      Fftell    (const Octave_object& args, int nargout) ; static builtin_function     Sftell   = {   "ftell"  ,     2  ,     1  ,   0 ,     Fftell  ,    
+  "POSITION = ftell (FILENAME or FILENUM): returns the current file position"   }; install_builtin_function (&    Sftell  );   
+ extern Octave_object      Ffprintf    (const Octave_object& args, int nargout) ; static builtin_function     Sfprintf   = {   "fprintf"  ,     -1  ,     1  ,   0 ,     Ffprintf  ,    
+  "fprintf (FILENAME or FILENUM, FORMAT, ...)"   }; install_builtin_function (&    Sfprintf  );   
+ extern Octave_object      Fprintf    (const Octave_object& args, int nargout) ; static builtin_function     Sprintf   = {   "printf"  ,     -1  ,     1  ,   0 ,     Fprintf  ,    
+  "printf (FORMAT, ...)"   }; install_builtin_function (&    Sprintf  );   
+ extern Octave_object      Fsprintf    (const Octave_object& args, int nargout) ; static builtin_function     Ssprintf   = {   "sprintf"  ,     -1  ,     1  ,   0 ,     Fsprintf  ,    
+  "s = sprintf (FORMAT, ...)"   }; install_builtin_function (&    Ssprintf  );   
+ extern Octave_object      Ffscanf    (const Octave_object& args, int nargout) ; static builtin_function     Sfscanf   = {   "fscanf"  ,     3  ,     -1  ,   0 ,     Ffscanf  ,    
+  "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT)"   }; install_builtin_function (&    Sfscanf  );   
+ extern Octave_object      Fscanf    (const Octave_object& args, int nargout) ; static builtin_function     Sscanf   = {   "scanf"  ,     2  ,     -1  ,   0 ,     Fscanf  ,    
+  "[A, B, C, ...] = scanf (FORMAT)"   }; install_builtin_function (&    Sscanf  );   
+ extern Octave_object      Fsscanf    (const Octave_object& args, int nargout) ; static builtin_function     Ssscanf   = {   "sscanf"  ,     3  ,     -1  ,   0 ,     Fsscanf  ,    
+  "[A, B, C, ...] = sscanf (STRING, FORMAT)"   }; install_builtin_function (&    Ssscanf  );   
+ extern Octave_object      Ffread    (const Octave_object& args, int nargout) ; static builtin_function     Sfread   = {   "fread"  ,     4  ,     2  ,   0 ,     Ffread  ,    
+  "[DATA, COUNT] = fread (FILENUM, SIZE, PRECISION)\n\n Reads data in binary form of type PRECISION from a file.\n\n FILENUM   : file number from fopen\n SIZE      : size specification for the Data matrix\n PRECISION : type of data to read, valid types are\n\n               'char',   'schar', 'short',  'int',  'long', 'float'\n               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\n DATA      : matrix in which the data is stored\n COUNT     : number of elements read"   }; install_builtin_function (&    Sfread  );   
+ extern Octave_object      Ffwrite    (const Octave_object& args, int nargout) ; static builtin_function     Sfwrite   = {   "fwrite"  ,     4  ,     1  ,   0 ,     Ffwrite  ,    
+  "COUNT = fwrite (FILENUM, DATA, PRECISION)\n\n Writes data to a file in binary form of size PRECISION\n\n FILENUM   : file number from fopen\n DATA      : matrix of elements to be written\n PRECISION : type of data to read, valid types are\n\n               'char',   'schar', 'short',  'int',  'long', 'float'\n               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\n COUNT     : number of elements written"   }; install_builtin_function (&    Sfwrite  );   
+ extern Octave_object      Ffeof    (const Octave_object& args, int nargout) ; static builtin_function     Sfeof   = {   "feof"  ,     2  ,     1  ,   0 ,     Ffeof  ,    
+  "ERROR = feof (FILENAME or FILENUM)\n\n Returns a non zero value for an end of file condition for the\n file specified by FILENAME or FILENUM from fopen"   }; install_builtin_function (&    Sfeof  );   
+ extern Octave_object      Fferror    (const Octave_object& args, int nargout) ; static builtin_function     Sferror   = {   "ferror"  ,     2  ,     1  ,   0 ,     Fferror  ,    
+  "ERROR = ferror (FILENAME or FILENUM)\n\n Returns a non zero value for an error condition on the\n file specified by FILENAME or FILENUM from fopen"   }; install_builtin_function (&    Sferror  );   
+ extern Octave_object      Fhelp    (const Octave_object& args, int nargout) ; static builtin_function     Shelp   = {   "help"  ,     -1  ,     1  ,   1 ,     Fhelp  ,    
+  "help [-i] [topic ...]\n\nprint cryptic yet witty messages"   }; install_builtin_function (&    Shelp  );   
+ extern Octave_object      Ftype    (const Octave_object& args, int nargout) ; static builtin_function     Stype   = {   "type"  ,     -1  ,     1  ,   1 ,     Ftype  ,    
+  "type NAME ...]\n\ndisplay the definition of each NAME that refers to a function"   }; install_builtin_function (&    Stype  );   
+ extern Octave_object      Fwhich    (const Octave_object& args, int nargout) ; static builtin_function     Swhich   = {   "which"  ,     -1  ,     1  ,   1 ,     Fwhich  ,    
+  "which NAME ...]\n\ndisplay the type of each NAME.  If NAME is defined from an function\nfile, print the full name of the file."   }; install_builtin_function (&    Swhich  );   
+ extern Octave_object      Finput    (const Octave_object& args, int nargout) ; static builtin_function     Sinput   = {   "input"  ,     3  ,     1  ,   0 ,     Finput  ,    
+  "input (PROMPT [, S])\n\nPrompt user for input.  If the second argument is present, return
+value as a string."   }; install_builtin_function (&    Sinput  );   
+ extern Octave_object      Fkeyboard    (const Octave_object& args, int nargout) ; static builtin_function     Skeyboard   = {   "keyboard"  ,     2  ,     1  ,   0 ,     Fkeyboard  ,    
+  "keyboard (PROMPT)\n\nmaybe help in debugging function files"   }; install_builtin_function (&    Skeyboard  );   
+ extern Octave_object      Fload    (const Octave_object& args, int nargout) ; static builtin_function     Sload   = {   "load"  ,     -1  ,     1  ,   1 ,     Fload  ,    
+  "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n
+\nload variables from a file"   }; install_builtin_function (&    Sload  );   
+ extern Octave_object      Fsave    (const Octave_object& args, int nargout) ; static builtin_function     Ssave   = {   "save"  ,     -1  ,     1  ,   1 ,     Fsave  ,    
+  "save [-ascii] [-binary] [-save-builtins] file [pattern ...]\n\nsave variables in a file"   }; install_builtin_function (&    Ssave  );   
+ extern Octave_object      Fcasesen    (const Octave_object& args, int nargout) ; static builtin_function     Scasesen   = {   "casesen"  ,     2  ,     1  ,   1 ,     Fcasesen  ,    
+  "casesen [on|off]"   }; install_builtin_function (&    Scasesen  );   
+ extern Octave_object      Fflops    (const Octave_object& args, int nargout) ; static builtin_function     Sflops   = {   "flops"  ,     2  ,     1  ,   0 ,     Fflops  ,    
+  "flops (): count floating point operations"   }; install_builtin_function (&    Sflops  );   
+ extern Octave_object      Fquit    (const Octave_object& args, int nargout) ; static builtin_function     Squit   = {   "quit"  ,     1  ,     0  ,   0 ,     Fquit  ,    
+  "quit (): exit Octave gracefully"   }; install_builtin_function (&    Squit  );   
+ alias_builtin ("exit", "quit");   ;
+
+ extern Octave_object      Fwarranty    (const Octave_object& args, int nargout) ; static builtin_function     Swarranty   = {   "warranty"  ,     1  ,     0  ,   0 ,     Fwarranty  ,    
+  "warranty (): describe copying conditions"   }; install_builtin_function (&    Swarranty  );   
+ extern Octave_object      Ffeval    (const Octave_object& args, int nargout) ; static builtin_function     Sfeval   = {   "feval"  ,     -1  ,     1  ,   0 ,     Ffeval  ,    
+  "feval (NAME, ARGS, ...)\n\nevaluate NAME as a function, passing ARGS as its arguments"   }; install_builtin_function (&    Sfeval  );   
+ extern Octave_object      Feval    (const Octave_object& args, int nargout) ; static builtin_function     Seval   = {   "eval"  ,     2  ,     1  ,   0 ,     Feval  ,    
+  "eval (STRING): evaluate STRING as octave code"   }; install_builtin_function (&    Seval  );   
+ extern Octave_object      Fshell_cmd    (const Octave_object& args, int nargout) ; static builtin_function     Sshell_cmd   = {   "shell_cmd"  ,     2  ,     1  ,   0 ,     Fshell_cmd  ,    
+  "shell_cmd (string [, return_output]): execute shell commands"   }; install_builtin_function (&    Sshell_cmd  );   
+ extern Octave_object      Fedit_history    (const Octave_object& args, int nargout) ; static builtin_function     Sedit_history   = {   "edit_history"  ,     -1  ,     1  ,   1 ,     Fedit_history  ,    
+  "edit_history [first] [last]\n\nedit commands from the history list"   }; install_builtin_function (&    Sedit_history  );   
+ extern Octave_object      Fhistory    (const Octave_object& args, int nargout) ; static builtin_function     Shistory   = {   "history"  ,     -1  ,     1  ,   1 ,     Fhistory  ,    
+  "history [N] [-w file] [-r file] [-q]\n\ndisplay, save, or load command history"   }; install_builtin_function (&    Shistory  );   
+ extern Octave_object      Frun_history    (const Octave_object& args, int nargout) ; static builtin_function     Srun_history   = {   "run_history"  ,     -1  ,     1  ,   1 ,     Frun_history  ,    
+  "run_history [first] [last]\n\nrun commands from the history list"   }; install_builtin_function (&    Srun_history  );   
+ extern Octave_object      Fdiary    (const Octave_object& args, int nargout) ; static builtin_function     Sdiary   = {   "diary"  ,     -1  ,     1  ,   1 ,     Fdiary  ,    
+  "diary [on|off]\ndiary [file]\n\nredirect all input and screen output to a file."   }; install_builtin_function (&    Sdiary  );   
+ extern Octave_object      Fdisp    (const Octave_object& args, int nargout) ; static builtin_function     Sdisp   = {   "disp"  ,     3  ,     1  ,   0 ,     Fdisp  ,    
+  "disp (X): display value without name tag"   }; install_builtin_function (&    Sdisp  );   
+ extern Octave_object      Fformat    (const Octave_object& args, int nargout) ; static builtin_function     Sformat   = {   "format"  ,     -1  ,     1  ,   1 ,     Fformat  ,    
+  "format [style]\n\nset output formatting style"   }; install_builtin_function (&    Sformat  );   
+ extern Octave_object      Fclc    (const Octave_object& args, int nargout) ; static builtin_function     Sclc   = {   "clc"  ,     1  ,     0  ,   0 ,     Fclc  ,    
+  "clc (): clear screen"   }; install_builtin_function (&    Sclc  );   
+ alias_builtin ("home", "clc");   ;
+
+ extern Octave_object      Fgetenv    (const Octave_object& args, int nargout) ; static builtin_function     Sgetenv   = {   "getenv"  ,     2  ,     1  ,   0 ,     Fgetenv  ,    
+  "getenv (STRING): get environment variable values"   }; install_builtin_function (&    Sgetenv  );   
+ extern Octave_object      Fkbhit    (const Octave_object& args, int nargout) ; static builtin_function     Skbhit   = {   "kbhit"  ,     1  ,     1  ,   0 ,     Fkbhit  ,    
+  "kbhit: get a single character from the terminal"   }; install_builtin_function (&    Skbhit  );   
+ extern Octave_object      Fpause    (const Octave_object& args, int nargout) ; static builtin_function     Spause   = {   "pause"  ,     1  ,     1  ,   0 ,     Fpause  ,    
+  "pause (seconds): suspend program execution"   }; install_builtin_function (&    Spause  );   
+ extern Octave_object      Fclock    (const Octave_object& args, int nargout) ; static builtin_function     Sclock   = {   "clock"  ,     1  ,     0  ,   0 ,     Fclock  ,    
+  "clock (): return current date and time in vector with elements\n\n  [ year, month, day-of-month, hour, minute, second ]"   }; install_builtin_function (&    Sclock  );   
+ extern Octave_object      Fdate    (const Octave_object& args, int nargout) ; static builtin_function     Sdate   = {   "date"  ,     1  ,     0  ,   0 ,     Fdate  ,    
+  "date (): return current date in a string, in the form `18-Jul-94'"   }; install_builtin_function (&    Sdate  );   
+ extern Octave_object      Fva_arg    (const Octave_object& args, int nargout) ; static builtin_function     Sva_arg   = {   "va_arg"  ,     1  ,     1  ,   0 ,     Fva_arg  ,    
+  "va_arg (): return next argument in a function that takes a\nvariable number of parameters"   }; install_builtin_function (&    Sva_arg  );   
+ extern Octave_object      Fva_start    (const Octave_object& args, int nargout) ; static builtin_function     Sva_start   = {   "va_start"  ,     1  ,     0  ,   0 ,     Fva_start  ,    
+  "va_start (): reset the pointer to the list of optional arguments\nto the beginning"   }; install_builtin_function (&    Sva_start  );   
+ extern Octave_object      Fcloseplot    (const Octave_object& args, int nargout) ; static builtin_function     Scloseplot   = {   "closeplot"  ,     1  ,     0  ,   0 ,     Fcloseplot  ,    
+  "closeplot (): close the stream to plotter"   }; install_builtin_function (&    Scloseplot  );   
+ extern Octave_object      Fhold    (const Octave_object& args, int nargout) ; static builtin_function     Shold   = {   "hold"  ,     -1  ,     1  ,   1 ,     Fhold  ,    
+  "hold [on|off]\n\ndetermine whether the plot window is cleared before the next line is\ndrawn.  With no argument, toggle the current state."   }; install_builtin_function (&    Shold  );    
+ extern Octave_object      Fpurge_tmp_files    (const Octave_object& args, int nargout) ; static builtin_function     Spurge_tmp_files   = {   "purge_tmp_files"  ,     5  ,     1  ,   0 ,     Fpurge_tmp_files  ,    
+  "delete temporary data files used for plotting"   }; install_builtin_function (&    Spurge_tmp_files  );   
+ extern Octave_object      Fset    (const Octave_object& args, int nargout) ; static builtin_function     Sset   = {   "set"  ,     -1  ,     1  ,   1 ,     Fset  ,    
+  "set [options]\n\nset plotting options"   }; install_builtin_function (&    Sset  );   
+ extern Octave_object      Fshow    (const Octave_object& args, int nargout) ; static builtin_function     Sshow   = {   "show"  ,     -1  ,     1  ,   1 ,     Fshow  ,    
+  "show [options]\n\nshow plotting options"   }; install_builtin_function (&    Sshow  );   
+ extern Octave_object      Fis_global    (const Octave_object& args, int nargout) ; static builtin_function     Sis_global   = {   "is_global"  ,     2  ,     1  ,   0 ,     Fis_global  ,    
+  "is_global (X): return 1 if the string X names a global variable\notherwise, return 0."   }; install_builtin_function (&    Sis_global  );   
+ extern Octave_object      Fexist    (const Octave_object& args, int nargout) ; static builtin_function     Sexist   = {   "exist"  ,     2  ,     1  ,   0 ,     Fexist  ,    
+  "exist (NAME): check if variable or file exists\n\nreturn 0 if NAME is undefined, 1 if it is a variable, or 2 if it is\na function."   }; install_builtin_function (&    Sexist  );    
+ extern Octave_object      Fdocument    (const Octave_object& args, int nargout) ; static builtin_function     Sdocument   = {   "document"  ,     -1  ,     1  ,   1 ,     Fdocument  ,    
+  "document symbol string ...\n\nAssociate a cryptic message with a variable name."   }; install_builtin_function (&    Sdocument  );   
+ extern Octave_object      Fwho    (const Octave_object& args, int nargout) ; static builtin_function     Swho   = {   "who"  ,     -1  ,     1  ,   1 ,     Fwho  ,    
+  "who [-all] [-builtins] [-functions] [-long] [-variables]\n\nList currently defined symbol(s).  Options may be shortened to one\ncharacter, but may not be combined."   }; install_builtin_function (&    Swho  );   
+ extern Octave_object      Fwhos    (const Octave_object& args, int nargout) ; static builtin_function     Swhos   = {   "whos"  ,     -1  ,     1  ,   1 ,     Fwhos  ,    
+  "whos [-all] [-builtins] [-functions] [-long] [-variables]\n\nList currently defined symbol(s).  Options may be shortened to one\ncharacter, but may not be combined."   }; install_builtin_function (&    Swhos  );   
+ extern Octave_object      Fclear    (const Octave_object& args, int nargout) ; static builtin_function     Sclear   = {   "clear"  ,     -1  ,     1  ,   1 ,     Fclear  ,    
+  "clear [name ...]\n\nclear symbol(s) matching a list of globbing patterns\nif no arguments are given, clear all user-defined variables and functions"   }; install_builtin_function (&    Sclear  );   
+ extern Octave_object      Fbalance    (const Octave_object& args, int nargout) ; static builtin_function     Sbalance   = {   "balance"  ,     4  ,     4  ,   0 ,     Fbalance  ,    
+  "AA = balance (A [, OPT]) or [[DD,] AA] =  balance (A [, OPT])\n\ngeneralized eigenvalue problem:\n\n  [cc, dd, aa, bb] = balance (a, b [, opt])\n\nwhere OPT is an optional single character argument as follows: \n\n  N: no balancing; arguments copied, transformation(s) set to identity\n  P: permute argument(s) to isolate eigenvalues where possible\n  S: scale to improve accuracy of computed eigenvalues\n  B: (default) permute and scale, in that order.  Rows/columns\n     of a (and b) that are isolated by permutation are not scaled\n\n[DD, AA] = balance (A, OPT) returns aa = dd\a*dd,\n\n[CC, DD, AA, BB] = balance (A, B, OPT) returns AA (BB) = CC*A*DD (CC*B*DD)"   }; install_builtin_function (&    Sbalance  );   
+ extern Octave_object      Fchol    (const Octave_object& args, int nargout) ; static builtin_function     Schol   = {   "chol"  ,     2  ,     1  ,   0 ,     Fchol  ,    
+  "R = chol (X): cholesky factorization"   }; install_builtin_function (&    Schol  );   
+ extern Octave_object      Fcolloc    (const Octave_object& args, int nargout) ; static builtin_function     Scolloc   = {   "colloc"  ,     7  ,     4  ,   0 ,     Fcolloc  ,    
+  "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights"   }; install_builtin_function (&    Scolloc  );   
+ extern Octave_object      Fdassl    (const Octave_object& args, int nargout) ; static builtin_function     Sdassl   = {   "dassl"  ,     5  ,     1  ,   0 ,     Fdassl  ,    
+  "dassl (\"function_name\", x_0, xdot_0, t_out)\ndassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\nThe first argument is the name of the function to call to\ncompute the vector of residuals.  It must have the form\n\n  res = f (x, xdot, t)\n\nwhere x, xdot, and res are vectors, and t is a scalar."   }; install_builtin_function (&    Sdassl  );   
+ extern Octave_object      Fdassl_options    (const Octave_object& args, int nargout) ; static builtin_function     Sdassl_options   = {   "dassl_options"  ,     -1  ,     1  ,   0 ,     Fdassl_options  ,    
+  "dassl_options (KEYWORD, VALUE)\n\nSet or show options for dassl.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Sdassl_options  );   
+ extern Octave_object      Fdet    (const Octave_object& args, int nargout) ; static builtin_function     Sdet   = {   "det"  ,     2  ,     1  ,   0 ,     Fdet  ,    
+  "det (X): determinant of a square matrix"   }; install_builtin_function (&    Sdet  );   
+ extern Octave_object      Feig    (const Octave_object& args, int nargout) ; static builtin_function     Seig   = {   "eig"  ,     2  ,     1  ,   0 ,     Feig  ,    
+  "eig (X) or [V, D] = eig (X): compute eigenvalues and eigenvectors of X"   }; install_builtin_function (&    Seig  );   
+ extern Octave_object      Fexpm    (const Octave_object& args, int nargout) ; static builtin_function     Sexpm   = {   "expm"  ,     2  ,     1  ,   0 ,     Fexpm  ,    
+  "expm (X): matrix exponential, e^A"   }; install_builtin_function (&    Sexpm  );   
+ extern Octave_object      Ffft    (const Octave_object& args, int nargout) ; static builtin_function     Sfft   = {   "fft"  ,     2  ,     1  ,   0 ,     Ffft  ,    
+  "fft (X): fast fourier transform of a vector"   }; install_builtin_function (&    Sfft  );   
+ extern Octave_object      Ffind    (const Octave_object& args, int nargout) ; static builtin_function     Sfind   = {   "find"  ,     2  ,     3  ,   0 ,     Ffind  ,    
+  "find (X) or [I, J, V] = find (X): Return indices of nonzero elements"   }; install_builtin_function (&    Sfind  );   
+ extern Octave_object      Ffsolve    (const Octave_object& args, int nargout) ; static builtin_function     Sfsolve   = {   "fsolve"  ,     5  ,     1  ,   0 ,     Ffsolve  ,    
+  "Solve nonlinear equations using Minpack.  Usage:\n\n  [X, INFO] = fsolve (F, X0)\n\nWhere the first argument is the name of the  function to call to\ncompute the vector of function values.  It must have the form\n\n  y = f (x)
+\nwhere y and x are vectors."   }; install_builtin_function (&    Sfsolve  );   
+ extern Octave_object      Ffsolve_options    (const Octave_object& args, int nargout) ; static builtin_function     Sfsolve_options   = {   "fsolve_options"  ,     -1  ,     1  ,   0 ,     Ffsolve_options  ,    
+  "fsolve_options (KEYWORD, VALUE)\n\nSet or show options for fsolve.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Sfsolve_options  );   
+ extern Octave_object      Ffsqp    (const Octave_object& args, int nargout) ; static builtin_function     Sfsqp   = {   "fsqp"  ,     11  ,     3  ,   0 ,     Ffsqp  ,    
+  "[X, PHI] = fsqp (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\nGroups of arguments surrounded in `[]' are optional, but\nmust appear in the same relative order shown above."   }; install_builtin_function (&    Sfsqp  );   
+ extern Octave_object      Ffsqp_options    (const Octave_object& args, int nargout) ; static builtin_function     Sfsqp_options   = {   "fsqp_options"  ,     -1  ,     1  ,   0 ,     Ffsqp_options  ,    
+  "fsqp_options (KEYWORD, VALUE)\n\nSet or show options for fsqp.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Sfsqp_options  );   
+ extern Octave_object      Fgivens    (const Octave_object& args, int nargout) ; static builtin_function     Sgivens   = {   "givens"  ,     3  ,     2  ,   0 ,     Fgivens  ,    
+  "G = givens (X, Y)\n\ncompute orthogonal matrix G = [c s; -conj (s) c]\nsuch that G [x; y] = [*; 0]  (x, y scalars)\n\n[c, s] = givens (x, y) returns the (c, s) values themselves."   }; install_builtin_function (&    Sgivens  );   
+ extern Octave_object      Fhess    (const Octave_object& args, int nargout) ; static builtin_function     Shess   = {   "hess"  ,     2  ,     2  ,   0 ,     Fhess  ,    
+  "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition"   }; install_builtin_function (&    Shess  );   
+ extern Octave_object      Fifft    (const Octave_object& args, int nargout) ; static builtin_function     Sifft   = {   "ifft"  ,    2  ,     1  ,   0 ,     Fifft  ,    
+  "ifft (X): inverse fast fourier transform of a vector"   }; install_builtin_function (&    Sifft  );   
+ extern Octave_object      Finv    (const Octave_object& args, int nargout) ; static builtin_function     Sinv   = {   "inv"  ,     2  ,     1  ,   0 ,     Finv  ,    
+  "inv (X): inverse of a square matrix"   }; install_builtin_function (&    Sinv  );   
+ extern Octave_object      Flogm    (const Octave_object& args, int nargout) ; static builtin_function     Slogm   = {   "logm"  ,     2  ,     1  ,   0 ,     Flogm  ,    
+  "logm (X): matrix logarithm"   }; install_builtin_function (&    Slogm  );   
+ extern Octave_object      Fsqrtm    (const Octave_object& args, int nargout) ; static builtin_function     Ssqrtm   = {   "sqrtm"  ,     2  ,     1  ,   0 ,     Fsqrtm  ,    
+ "sqrtm (X): matrix sqrt"   }; install_builtin_function (&    Ssqrtm  );   
+ extern Octave_object      Flpsolve    (const Octave_object& args, int nargout) ; static builtin_function     Slpsolve   = {   "lpsolve"  ,     11  ,     3  ,   0 ,     Flpsolve  ,    
+  "lp_solve (): solve linear programs using lp_solve."   }; install_builtin_function (&    Slpsolve  );   
+ extern Octave_object      Flpsolve_options    (const Octave_object& args, int nargout) ; static builtin_function     Slpsolve_options   = {   "lpsolve_options"  ,     -1  ,     1  ,   0 ,     Flpsolve_options  ,    
+  "lp_solve_options (KEYWORD, VALUE)\n\nSet or show options for lp_solve.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Slpsolve_options  );   
+ extern Octave_object      Flsode    (const Octave_object& args, int nargout) ; static builtin_function     Slsode   = {   "lsode"  ,     6  ,     1  ,   0 ,     Flsode  ,    
+  "lsode (F, X0, T_OUT, T_CRIT)\n\nThe first argument is the name of the function to call to\ncompute the vector of right hand sides.  It must have the form\n\n  xdot = f (x, t)\n\nwhere xdot and x are vectors and t is a scalar.\n"   }; install_builtin_function (&    Slsode  );   
+ extern Octave_object      Flsode_options    (const Octave_object& args, int nargout) ; static builtin_function     Slsode_options   = {   "lsode_options"  ,     -1  ,     1  ,   0 ,     Flsode_options  ,    
+  "lsode_options (KEYWORD, VALUE)\n\nSet or show options for lsode.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Slsode_options  );   
+ extern Octave_object      Flu    (const Octave_object& args, int nargout) ; static builtin_function     Slu   = {   "lu"  ,     2  ,     3  ,   0 ,     Flu  ,    
+  "[L, U, P] = lu (A): LU factorization"   }; install_builtin_function (&    Slu  );   
+ extern Octave_object      Fmin    (const Octave_object& args, int nargout) ; static builtin_function     Smin   = {   "min"  ,     3  ,     2  ,   0 ,     Fmin  ,    
+  "min (X): minimum value(s) of a vector (matrix)"   }; install_builtin_function (&    Smin  );   
+ extern Octave_object      Fmax    (const Octave_object& args, int nargout) ; static builtin_function     Smax   = {   "max"  ,     3  ,     2  ,   0 ,     Fmax  ,    
+  "max (X): maximum value(s) of a vector (matrix)"   }; install_builtin_function (&    Smax  );   
+ extern Octave_object      Fnpsol    (const Octave_object& args, int nargout) ; static builtin_function     Snpsol   = {   "npsol"  ,     11  ,     3  ,   0 ,     Fnpsol  ,    
+  "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\nGroups of arguments surrounded in `[]' are optional, but\nmust appear in the same relative order shown above.\n\nThe second argument is a string containing the name of the objective\nfunction to call.  The objective function must be of the form\n\n  y = phi (x)\n\nwhere x is a vector and y is a scalar.\n\nThe argument G is a string containing the name of the function that
+defines the nonlinear constraints.  It must be of the form\n\n  y = g (x)\n\nwhere x is a vector and y is a vector."   }; install_builtin_function (&    Snpsol  );   
+ extern Octave_object      Fnpsol_options    (const Octave_object& args, int nargout) ; static builtin_function     Snpsol_options   = {   "npsol_options"  ,     -1  ,     1  ,   0 ,     Fnpsol_options  ,    
+  "npsol_options (KEYWORD, VALUE)\n\nSet or show options for npsol.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Snpsol_options  );   
+ extern Octave_object      Fqpsol    (const Octave_object& args, int nargout) ; static builtin_function     Sqpsol   = {   "qpsol"  ,     9  ,     3  ,   0 ,     Fqpsol  ,    
+  "[X, OBJ, INFO, LAMBDA] = qpsol (X, H, C [, LB, UB] [, LB, A, UB])\n\nGroups of arguments surrounded in `[]' are optional, but\nmust appear in the same relative order shown above."   }; install_builtin_function (&    Sqpsol  );   
+ extern Octave_object      Fqpsol_options    (const Octave_object& args, int nargout) ; static builtin_function     Sqpsol_options   = {   "qpsol_options"  ,     -1  ,     1  ,   0 ,     Fqpsol_options  ,    
+  "qpsol_options (KEYWORD, VALUE)\n
+\nSet or show options for qpsol.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Sqpsol_options  );   
+ extern Octave_object      Fqr    (const Octave_object& args, int nargout) ; static builtin_function     Sqr   = {   "qr"  ,     2  ,     2  ,   0 ,     Fqr  ,    
+  "[Q, R] = qr (X):      form Q unitary and R upper triangular such\n                       that Q * R = X\n\n[Q, R] = qr (X, 0):    form the economy decomposition such that if X is\n                       if X is m by n then only the first n columns of Q\n                       are computed.\n\n[Q, R, P] = qr (X):    form QRP factorization of X where\n                       P is a permutation matrix such that\n                       A * P = Q * R\n\n[Q, R, P] = qr (X, 0): form the economy decomposition with \n                       permutation vector P such that Q * R = X (:, P)\n\nqr (X) alone returns the output of the LAPACK routine dgeqrf, such\nthat R = triu (qr (X))"   }; install_builtin_function (&    Sqr  );   
+ extern Octave_object      Fquad    (const Octave_object& args, int nargout) ; static builtin_function     Squad   = {   "quad"  ,     6  ,     3  ,   0 ,     Fquad  ,    
+  "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\nWhere the first argument is the name of the  function to call to\ncompute the value of the integrand.  It must have the form\n\n  y = f (x)
+\nwhere y and x are scalars.\n\nThe second and third arguments are limits of integration.  Either or\nboth may be infinite.  The optional argument TOL specifies the desired\naccuracy of the result.  The optional argument SING is a vector of\nat which the integrand is singular."   }; install_builtin_function (&    Squad  );   
+ extern Octave_object      Fquad_options    (const Octave_object& args, int nargout) ; static builtin_function     Squad_options   = {   "quad_options"  ,     -1  ,     1  ,   0 ,     Fquad_options  ,    
+  "quad_options (KEYWORD, VALUE)\n\nSet or show options for quad.  Keywords may be abbreviated\nto the shortest match."   }; install_builtin_function (&    Squad_options  );   
+ extern Octave_object      Fqzvalue    (const Octave_object& args, int nargout) ; static builtin_function     Sqzvalue   = {   "qzvalue"  ,     3  ,     1  ,   0 ,     Fqzvalue  ,    
+  "X = qzval (A, B)\n\ncompute generalized eigenvalues of the matrix pencil (A - lambda B).\nA and B must be real matrices."   }; install_builtin_function (&    Sqzvalue  );   
+ extern Octave_object      Frand    (const Octave_object& args, int nargout) ; static builtin_function     Srand   = {   "rand"  ,     2  ,     1  ,   0 ,     Frand  ,    
+  "rand                  -- generate a random value\n\nrand (N)              -- generate N x N matrix\nrand (A)              -- generate matrix the size of A\nrand (N, M)           -- generate N x M matrix\nrand (\"dist\")         -- get current distribution\nrand (DISTRIBUTION)   -- set distribution type (\"normal\" or \"uniform\"\nrand (SEED)           -- get current seed\nrand (SEED, N)        -- set seed"   }; install_builtin_function (&    Srand  );   
+ extern Octave_object      Fschur    (const Octave_object& args, int nargout) ; static builtin_function     Sschur   = {   "schur"  ,     3  ,     2  ,   0 ,     Fschur  ,    
+  "[U, S] = schur (A) or S = schur (A)\n\nor, for ordered Schur:\n\n  [U, S] = schur (A, TYPE) or S = schur (A, TYPE)\nwhere TYPE is a string that begins with one of the following\ncharacters:\n\n  A = continuous time poles\n  D = discrete time poles\n  U = unordered schur (default)"   }; install_builtin_function (&    Sschur  );   
+ extern Octave_object      Fsort    (const Octave_object& args, int nargout) ; static builtin_function     Ssort   = {   "sort"  ,     2  ,     2  ,   0 ,     Fsort  ,    
+  "[S, I] = sort (X)\n\nsort the columns of X, optionally return sort index"   }; install_builtin_function (&    Ssort  );   
+ extern Octave_object      Fsvd    (const Octave_object& args, int nargout) ; static builtin_function     Ssvd   = {   "svd"  ,     2  ,     3  ,   0 ,     Fsvd  ,    
+  "S = svd (X) or [U, S, V] = svd (X [, 0])\n\nCompute the singular value decomposition of X.  Given a second input\nargument, an `economy' sized factorization is computed that omits\nunnecessary rows and columns of U and V"   }; install_builtin_function (&    Ssvd  );   
+ extern Octave_object      Fsyl    (const Octave_object& args, int nargout) ; static builtin_function     Ssyl   = {   "syl"  ,     4  ,     1  ,   0 ,     Fsyl  ,    
+  "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0"   }; install_builtin_function (&    Ssyl  );   
+}
 
 void
 install_builtins (void)
 {
-// So that the clear function can't delete other builtin variables and
-// functions, they are given eternal life.
-
-  builtin_mapper_functions *mfptr = mapper_functions;
-  while (mfptr->name != (char *) NULL)
-    {
-      install_builtin_mapper_function (mfptr);
-      mfptr++;
-    }
-
-  builtin_text_functions *tfptr = text_functions;
-  while (tfptr->name != (char *) NULL)
-    {
-      install_builtin_text_function (tfptr);
-      tfptr++;
-    }
-
-  builtin_general_functions *gfptr = general_functions;
-  while (gfptr->name != (char *) NULL)
-    {
-      install_builtin_general_function (gfptr);
-      gfptr++;
-    }
-
-// Most built-in variables are not protected because the user should
-// be able to redefine them.
-
-  builtin_string_variables *svptr = string_variables;
-  while (svptr->name != (char *) NULL)
-    {
-      install_builtin_variable (svptr);
-      svptr++;
-    }
-
-// IMPORTANT: Always create a new tree_constant for each variable.
-
-  tree_constant *tmp = NULL_TREE_CONST;
-  bind_builtin_variable ("ans", tmp);
-
-  Complex ctmp (0.0, 1.0);
-  tmp = new tree_constant (ctmp);
-  bind_builtin_variable ("I", tmp, 1, 1);
-
-  tmp = new tree_constant (ctmp);
-  bind_builtin_variable ("J", tmp, 1, 1);
-
-// Let i and j be functions so they can be redefined without being
-// wiped out.
-
-  tmp = new tree_constant (ctmp);
-  install_builtin_variable_as_function ("i", tmp, 1, 1);
-
-  tmp = new tree_constant (ctmp);
-  install_builtin_variable_as_function ("j", tmp, 1, 1);
-
-  tmp = new tree_constant (get_working_directory ("initialize_globals"));
-  bind_builtin_variable ("PWD", tmp, 1, 1);
-
-  tmp = new tree_constant (load_path);
-  bind_builtin_variable ("LOADPATH", tmp, 0, 1);
-
-  tmp = new tree_constant (info_file);
-  bind_builtin_variable ("INFO_FILE", tmp, 0, 1);
-
-  tmp = new tree_constant (editor);
-  bind_builtin_variable ("EDITOR", tmp, 0, 1);
-
-  tmp = new tree_constant (default_pager ());
-  bind_builtin_variable ("PAGER", tmp, 0, 1);
-
-  tmp = new tree_constant (0.0);
-  bind_builtin_variable ("SEEK_SET", tmp, 1, 1);
-
-  tmp = new tree_constant (1.0);
-  bind_builtin_variable ("SEEK_CUR", tmp, 1, 1);
-
-  tmp = new tree_constant (2.0);
-  bind_builtin_variable ("SEEK_END", tmp, 1, 1);
-
-  tmp = new tree_constant (DBL_EPSILON);
-  bind_builtin_variable ("eps", tmp, 1, 1);
-
-  tmp =  new tree_constant (10.0);
-  bind_builtin_variable ("output_max_field_width", tmp, 0, 1);
-
-  tmp =  new tree_constant (5.0);
-  bind_builtin_variable ("output_precision", tmp, 0, 1);
-
-  tmp =  new tree_constant (4.0 * atan (1.0));
-  bind_builtin_variable ("pi", tmp, 1, 1);
-
-  tmp =  new tree_constant (17.0);
-  bind_builtin_variable ("save_precision", tmp, 0, 1);
-
-  tmp =  new tree_constant (0.0);
-  bind_builtin_variable ("stdin", tmp, 1, 1);
-
-  tmp =  new tree_constant (1.0);
-  bind_builtin_variable ("stdout", tmp, 1, 1);
-
-  tmp =  new tree_constant (2.0);
-  bind_builtin_variable ("stderr", tmp, 1, 1);
-
-  tmp = new tree_constant (octave_Inf);
-  bind_builtin_variable ("Inf", tmp, 1, 1);
-
-  tmp = new tree_constant (octave_Inf);
-  bind_builtin_variable ("inf", tmp, 1, 1);
-
-  tmp = new tree_constant (octave_NaN);
-  bind_builtin_variable ("NaN", tmp, 1, 1);
-
-  tmp = new tree_constant (octave_NaN);
-  bind_builtin_variable ("nan", tmp, 1, 1);
+  install_builtin_variables ();
+  install_mapper_functions ();
+  install_builtin_functions ();
 }
-
-int
-is_text_function_name (const char *s)
-{
-  int retval = 0;
-
-  builtin_text_functions *tfptr = text_functions;
-  while (tfptr->name != (char *) NULL)
-    {
-      if (strcmp (tfptr->name, s) == 0)
-	{
-	  retval = 1;
-	  break;
-	}
-      tfptr++;
-    }
-
-  return retval;
-}
-
-help_list *
-builtin_mapper_functions_help (void)
-{
-  int count = 0;
-  builtin_mapper_functions *mfptr;
-
-  mfptr = mapper_functions;
-  while (mfptr->name != (char *) NULL)
-    {
-      count++;
-      mfptr++;
-    }
-
-  if (count == 0)
-    return (help_list *) NULL;
-
-  help_list *hl = new help_list [count+1];
-
-  int i = 0;
-  mfptr = mapper_functions;
-  while (mfptr->name != (char *) NULL)
-    {
-      hl[i].name = mfptr->name;
-      hl[i].help = mfptr->help_string;
-      i++;
-      mfptr++;
-    }
-
-  hl[count].name = (char *) NULL;
-  hl[count].help = (char *) NULL;
-
-  return hl;
-}
-
-help_list *
-builtin_general_functions_help (void)
-{
-  int count = 0;
-  builtin_general_functions *gfptr;
-
-  gfptr = general_functions;
-  while (gfptr->name != (char *) NULL)
-    {
-      count++;
-      gfptr++;
-    }
-
-  if (count == 0)
-    return (help_list *) NULL;
-
-  help_list *hl = new help_list [count+1];
-
-  int i = 0;
-  gfptr = general_functions;
-  while (gfptr->name != (char *) NULL)
-    {
-      hl[i].name = gfptr->name;
-      hl[i].help = gfptr->help_string;
-      i++;
-      gfptr++;
-    }
-
-  hl[count].name = (char *) NULL;
-  hl[count].help = (char *) NULL;
-
-  return hl;
-}
-
-help_list *
-builtin_text_functions_help (void)
-{
-  int count = 0;
-  builtin_text_functions *tfptr;
-
-  tfptr = text_functions;
-  while (tfptr->name != (char *) NULL)
-    {
-      count++;
-      tfptr++;
-    }
-
-  if (count == 0)
-    return (help_list *) NULL;
-
-  help_list *hl = new help_list [count+1];
-
-  int i = 0;
-  tfptr = text_functions;
-  while (tfptr->name != (char *) NULL)
-    {
-      hl[i].name = tfptr->name;
-      hl[i].help = tfptr->help_string;
-      i++;
-      tfptr++;
-    }
-
-  hl[count].name = (char *) NULL;
-  hl[count].help = (char *) NULL;
-
-  return hl;
-}
-
-help_list *
-builtin_variables_help (void)
-{
-  int count = 0;
-  builtin_string_variables *svptr;
-
-  svptr = string_variables;
-  while (svptr->name != (char *) NULL)
-    {
-      count++;
-      svptr++;
-    }
-
-  if (count == 0)
-    return (help_list *) NULL;
-
-  help_list *hl = new help_list [count+1];
-
-  int i = 0;
-  svptr = string_variables;
-  while (svptr->name != (char *) NULL)
-    {
-      hl[i].name = svptr->name;
-      hl[i].help = svptr->help_string;
-      i++;
-      svptr++;
-    }
-
-  hl[count].name = (char *) NULL;
-  hl[count].help = (char *) NULL;
-
-  return hl;
-}
-
-int
-help_from_list (ostrstream& output_buf, const help_list *list,
-		const char *string, int usage)
-{
-  char *name;
-  while ((name = list->name) != (char *) NULL)
-    {
-      if (strcmp (name, string) == 0)
-	{
-	  if (usage)
-	    output_buf << "\nusage: ";
-	  else
-	    {
-	      output_buf << "\n*** " << string << ":\n\n";
-	    }
-
-	  output_buf << list->help << "\n";
-
-	  return 1;
-	}
-      list++;
-    }
-  return 0;
-}
-
-void
-additional_help_message (ostrstream& output_buf)
-{
-  output_buf
-    << "\n"
-    << "Additional help for builtin functions, operators, and variables\n"
-    << "is available in the on-line version of the manual.\n"
-    << "\n"
-    << "Use the command `help -i <topic>' to search the manual index.\n";
-}
-
-void
-print_usage (const char *string, int just_usage = 0)
-{
-  ostrstream output_buf;
-
-  help_list *gf_help_list = builtin_general_functions_help ();
-  help_list *tf_help_list = builtin_text_functions_help ();
-  help_list *mf_help_list = builtin_mapper_functions_help ();
-
-  if (help_from_list (output_buf, gf_help_list, string, 1)
-      || help_from_list (output_buf, tf_help_list, string, 1)
-      || help_from_list (output_buf, mf_help_list, string, 1))
-    {
-      if (! just_usage)
-	additional_help_message (output_buf);
-      output_buf << ends;
-      maybe_page_output (output_buf);
-    }
-}
-
-/*
-;;; Local Variables: ***
-;;; mode: C++ ***
-;;; page-delimiter: "^/\\*" ***
-;;; End: ***
-*/

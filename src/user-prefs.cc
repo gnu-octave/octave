@@ -501,6 +501,26 @@ sv_editor (void)
 }
 
 int
+sv_default_save_format (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("default_save_format");
+  if (s)
+    {
+      delete [] user_pref.default_save_format;
+      user_pref.default_save_format = s;
+    }
+  else
+    {
+      warning ("invalid value specified for default_save_format");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
 sv_gnuplot_binary (void)
 {
   int status = 0;

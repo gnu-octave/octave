@@ -110,6 +110,32 @@ private:
 
   int valid_as_scalar_index (void) const;
 
+// What type of constant am I?
+
+  int is_unknown (void) const
+    { return type_tag == tree_constant_rep::unknown_constant; }
+
+  int is_scalar (void) const
+    { return type_tag == tree_constant_rep::scalar_constant; }
+
+  int is_matrix (void) const
+    { return type_tag == tree_constant_rep::matrix_constant; }
+
+  int is_complex_scalar (void) const
+    { return type_tag == tree_constant_rep::complex_scalar_constant; }
+
+  int is_complex_matrix (void) const
+    { return type_tag == tree_constant_rep::complex_matrix_constant; }
+
+  int is_string (void) const
+    { return type_tag == tree_constant_rep::string_constant; }
+
+  int is_range (void) const
+    { return type_tag == tree_constant_rep::range_constant; }
+
+// Others tests, some more general, some just old names for the things
+// above.
+
   int is_defined (void) const
     { return type_tag != tree_constant_rep::unknown_constant; }
 
@@ -294,9 +320,6 @@ private:
   tree_constant do_matrix_index (constant_type i, const idx_vector& j) const;
   tree_constant do_matrix_index (constant_type i, const Range& j) const;
   tree_constant do_matrix_index (constant_type i, constant_type j) const;
-
-  int save (ostream& os, int mark_as_global, int precision);
-  int save_three_d (ostream& os, int parametric);
 
   double double_value (void) const;
   Matrix matrix_value (void) const;

@@ -126,6 +126,16 @@ public:
   int valid_as_scalar_index (void) const
     { return rep->valid_as_scalar_index (); }
 
+// What type of constant am I?
+
+  int is_unknown (void) const { return rep->is_unknown (); }
+  int is_scalar (void) const { return rep->is_scalar (); }
+  int is_matrix (void) const { return rep->is_matrix (); }
+  int is_complex_scalar (void) const { return rep->is_complex_scalar (); }
+  int is_complex_matrix (void) const { return rep->is_complex_matrix (); }
+  int is_string (void) const { return rep->is_string (); }
+  int is_range (void) const { return rep->is_range (); }
+
   int is_defined (void) const { return rep->is_defined (); }
   int is_undefined (void) const { return rep->is_undefined (); }
 
@@ -186,11 +196,6 @@ public:
       rep->assign (rhs, args);
       return *this;
     }
-
-  int save (ostream& os, int mark_as_global = 0, int precision = 17)
-    { return rep->save (os, mark_as_global, precision); }
-  int save_three_d (ostream& os, int parametric = 0)
-    { return rep->save_three_d (os, parametric); }
 
   double double_value (void) const { return rep->double_value (); }
   Matrix matrix_value (void) const { return rep->matrix_value (); }

@@ -86,8 +86,6 @@ public:
   char *help (void) const;
   void document (const char *h);
 
-  int save (ostream& os, int mark_as_global, int precision);
-
   enum TYPE
     {
       UNKNOWN = 0,
@@ -166,8 +164,6 @@ public:
   int define_builtin_var (tree_constant *t);
 
   void document (const char *h);
-
-  int save (ostream& os, int mark_as_global = 0, int precision = 17);
 
   int clear (void);
 
@@ -304,10 +300,6 @@ public:
   void clear (int clear_user_functions = 1);
   int clear (const char *nm, int clear_user_functions = 1);
 
-  int save (ostream& os, int mark_as_global = 0, int precision = 17);
-  int save (ostream& os, const char *name, int mark_as_global = 0,
-	    int precicion = 17);
-
   int size (void) const;
 
   symbol_record_info *long_list (int& count, int sort = 0,
@@ -316,7 +308,11 @@ public:
 
   char **list (int& count, int sort = 0,
 	       unsigned type = SYMTAB_ALL_TYPES,
-	       unsigned scope = SYMTAB_ALL_SCOPES) const;  
+	       unsigned scope = SYMTAB_ALL_SCOPES) const;
+
+  symbol_record **glob (int& count, char *pat = "*",
+			unsigned type = SYMTAB_ALL_TYPES,
+			unsigned scope = SYMTAB_ALL_SCOPES) const;
 
   void push_context (void);
   void pop_context (void);

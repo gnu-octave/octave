@@ -37,6 +37,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-expr.h"
 #include "tree-const.h"
 
+extern "C"
+{
+#include "fnmatch.h"
+}
+
 /*
  * Variables and functions.
  */
@@ -191,12 +196,6 @@ symbol_def::document (const char *h)
 {
   delete [] help_string;
   help_string = strsave (h);
-}
-
-int
-symbol_def::save (ostream& os, int mark_as_global, int precision)
-{
-  return definition->save (os, mark_as_global, precision);
 }
 
 int
@@ -518,30 +517,6 @@ symbol_record::document (const char *h)
       if (! is_defined ())
 	warning ("documenting undefined variable `%s'", nm);
     }
-}
-
-int
-symbol_record::save (ostream& os, int mark_as_global, int precision)
-{
-  int status = -1;
-
-// This is a kludge, but hey, it doesn't make sense to save them
-// anyway, does it?  Even if it did, we would just have trouble trying
-// to read NaN and Inf on lots of systems anyway...
-//
-// Should we also save the help string?  Maybe someday.
-
-  if (is_read_only ())
-    warning ("save: sorry, can't save read-only variable `%s'", nm);
-  else if (is_function ())
-    warning ("save: sorry, can't save function `%s'", nm);
-  else if (is_defined ())
-    {
-      os << "# name: " << nm << "\n";
-      status = definition->save (os, mark_as_global, precision);
-    }
-
-  return status;
 }
 
 int
@@ -988,37 +963,6 @@ symbol_table::clear (const char *nm, int clear_user_functions)
 }
 
 int
-symbol_table::save (ostream& os, int mark_as_global, int precision)
-{
-  int status = 0;
-  int count;
-  char **names = list (count, 1, symbol_def::USER_VARIABLE);
-  char **ptr = names;
-  if (ptr)
-    {
-      while (*ptr)
-	{
-	  if (save (os, *ptr, mark_as_global, precision))
-	    status++;
-	  delete [] *ptr++;
-	}
-      delete [] names;
-    }
-  return status;
-}
-
-int
-symbol_table::save (ostream& os, const char *name, int mark_as_global,
-		    int precision)
-{
-  int status = 0;
-  symbol_record *sr = lookup (name, 0, 0);
-  if (sr)
-    status = sr->save (os, mark_as_global, precision);
-  return status;
-}
-
-int
 symbol_table::size (void) const
 {
   int count = 0;
@@ -1099,10 +1043,14 @@ symbol_table::list (int& count, int sort, unsigned type,
       while (ptr)
 	{
 	  assert (count < n);
+
 	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+
 	  unsigned my_type = ptr->type ();
+
 	  if ((type & my_type) && (scope & my_scope))
 	    symbols[count++] = strsave (ptr->name ());
+
 	  ptr = ptr->next ();
 	}
     }
@@ -1111,6 +1059,41 @@ symbol_table::list (int& count, int sort, unsigned type,
   if (sort && symbols)
     qsort ((void **) symbols, count, sizeof (char *),
 	   (int (*)(const void*, const void*)) pstrcmp);
+
+  return symbols;
+}
+
+symbol_record **
+symbol_table::glob (int& count, char *pat, unsigned type,
+		    unsigned scope) const
+{
+  count = 0;
+  int n = size ();
+  if (n == 0)
+    return 0;
+
+  symbol_record **symbols = new symbol_record * [n+1];
+  for (int i = 0; i < HASH_TABLE_SIZE; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+      while (ptr)
+	{
+	  assert (count < n);
+
+	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+
+	  unsigned my_type = ptr->type ();
+
+	  if ((type & my_type) && (scope & my_scope)
+	      && fnmatch (pat, ptr->name (), __FNM_FLAGS) == 0)
+	    {
+	      symbols[count++] = ptr;
+	    }
+
+	  ptr = ptr->next ();
+	}
+    }
+  symbols[count] = 0;
 
   return symbols;
 }

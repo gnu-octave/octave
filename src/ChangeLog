@@ -1,5 +1,7 @@
 2005-04-05  John W. Eaton  <jwe@octave.org>
 
+	* ov-ch-mat.h (octave_char_matrix::index_vector): New function.
+
 	* oct-stream.cc (BEGIN_C_CONVERSION): Clear stream state if
 	we hit EOF after we read something.
 

@@ -39,8 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/poll.h>
 #endif
 
-void
-octave_usleep (unsigned int useconds)
+static void
+do_octave_usleep (unsigned int useconds)
 {
 #if defined (HAVE_USLEEP)
 
@@ -60,12 +60,22 @@ octave_usleep (unsigned int useconds)
   struct pollfd pfd;
   int delay = useconds / 1000;
 
-  if (delay <= 0)
-    delay = 1;
-
-  poll (&fd, 0, delay);
+  if (delay > 0)
+    poll (&fd, 0, delay);
 
 #endif
+}
+
+void
+octave_usleep (unsigned int useconds)
+{
+  unsigned int sec = useconds / 1000000;
+  unsigned int usec = useconds % 1000000;
+
+  if (sec > 0)
+    sleep (sec);
+
+  do_usleep (usec);
 }
 
 /*

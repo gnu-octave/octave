@@ -1,5 +1,7 @@
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* cutils.c (do_octave_usleep): Handle useconds > 1e6.
+
 	* variables.h (is_valid_function): Provide default values for the
 	string argument.
 

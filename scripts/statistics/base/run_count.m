@@ -19,43 +19,75 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} run_count (@var{x}, @var{n})
-## Count the upward runs in the columns of @var{x} of length 1, 2, ...,
-## @var{n}-1 and greater than or equal to @var{n}.
+## Count the upward runs along the first non-singleton dimension of
+## @var{x} of length 1, 2, ..., @var{n}-1 and greater than or equal 
+## to @var{n}. If the optional argument @var{dim} is given operate
+## along this dimension
 ## @end deftypefn
 
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Count upward runs
 
-function retval = run_count (x, n)
+function retval = run_count (x, n, dim)
 
-  [xr, xc] = size(x);
+  if (nargin != 2 && nargin != 3)
+    usage ("run_count (x, n) or run_count (x, n, dim)");
+  endif
 
-  tmp = zeros (xr,xc);
-  retval = zeros (n, xc);
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin != 3)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
+    endif
+  else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("run_count: dim must be an integer and valid dimension");
+    endif
+  endif
 
-  for j = 1 : xc
-    run = 1;
-    count = 1;
+  if (! (isscalar (n) && n == round (n)) && n > 0 )
+    error ("run_count: n must be a positive integer");
+  endif
+  
+  nd = ndims (x);
+  if (dim != 1)
+    perm = [1 : nd];
+    perm (1) = dim;
+    perm (dim) = 1;
+    x = permute (x, perm);
+  endif
 
-    for k = 2 : xr
-
-      if x(k, j) < x(k-1, j)
-        tmp(run, j) = count;
-        run = run + 1;
-        count = 0;
-      endif
-
-      count = count + 1;
-
-    endfor
-
-    tmp(run, j) = count;
-
+  sz = size (x);
+  idx = cell ();
+  for i = 1 : nd
+    idx {i} = 1 : sz(i);
   endfor
+  c = sz (1); 
+  tmp = zeros ([c + 1, sz(2 : end)]);
+  infvec = Inf * ones ([1, sz(2 : end)]);
 
+  ind = find (diff ([infvec; x; -infvec]) < 0);
+  tmp (ind (2 : end) - 1) = diff (ind);
+  tmp = tmp (idx {:});
+
+  sz (1) = n;
+  retval = zeros (sz);
   for k=1 : (n-1)
-    retval(k, :) = sum (tmp == k);
+    idx {1} = k;
+    retval (idx {:}) = sum (tmp == k);
   endfor
-  retval(n, :) = sum (tmp >= n);
+  idx {1} = n;
+  retval (idx {:}) = sum (tmp >= n);
+
+  if (dim != 1)
+    retval = ipermute (retval, perm);
+  endif
 
 endfunction

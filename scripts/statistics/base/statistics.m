@@ -29,27 +29,54 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Compute basic statistics
 
-function S = statistics (X)
+function S = statistics (X, dim)
 
-  if (nargin != 1)
-    usage ("S = statistics (X)");
+  if (nargin != 1 && nargin != 2)
+    usage ("S = statistics (X, dim)");
   endif
 
-  if (prod (size (X)) > 1)
-    if (isvector (X))
-      X = reshape (X, length (X), 1);
+  nd = ndims (X);
+  sz = size (X);
+  nel = numel (X);
+  if (nargin != 2)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
     endif
-    for k=1:columns(X)
-      S(:,k) = [(min (X(:,k)));
-                (empirical_inv ([0.25;0.5;0.75], X(:,k)));
-                (max (X(:,k)));
-                (mean (X(:,k)));
-                (std (X(:,k)));
-                (skewness (X(:,k)));
-                (kurtosis (X(:,k)))];
-    endfor
   else
-    error ("statistics: invalid argument");
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("statistics: dim must be an integer and valid dimension");
+    endif
   endif
+  
+  if (! ismatrix (X) || sz (dim) < 2)
+    error ("statistics: invalid argument");
+  endif    
+
+  ## This code is a bit heavy, but is needed until empirical_inv 
+  ## takes other than vector arguments.
+  c = sz (dim);
+  stride = prod (sz (1:dim-1));
+  sz (dim) = 3;
+  emp_inv = zeros (sz);
+  for i = 1 : nel / c;
+    offset = i;
+    offset2 = 0;
+    while (offset > stride)
+      offset -= stride;
+      offset2++;
+    endwhile
+    rng = [0 : c-1] * stride + offset + offset2 * stride * c;
+    rng2 = [0 : 2] * stride + offset + offset2 * stride * 3;
+    emp_inv(rng2) = empirical_inv ([0.25; 0.5; 0.75], X(rng));
+  endfor
+
+  S = cat (dim, min (X, [], dim), emp_inv, max (X, [], dim), mean (X, dim),
+	   std (X, [], dim), skewness (X, dim), kurtosis (X, dim));
 
 endfunction

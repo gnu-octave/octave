@@ -18,34 +18,50 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} studentize (@var{x})
+## @deftypefn {Function File} {} studentize (@var{x}, @var{dim})
 ## If @var{x} is a vector, subtract its mean and divide by its standard
 ## deviation.
 ##
-## If @var{x} is a matrix, do the above for each column.
+## If @var{x} is a matrix, do the above along the first non-singleton
+## dimension. If the optional argument @var{dim} is given then operate
+## along this dimension.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Subtract mean and divide by standard deviation
 
-function t = studentize (x)
+function t = studentize (x, dim)
 
-  if (nargin != 1)
-    usage ("studentize (x)");
+  if (nargin != 1 && nargin != 2)
+    usage ("studentize (x, dim)");
   endif
 
-  if isvector (x)
-    if (std (x) == 0)
-      t = zeros (size (x));
-    else
-      t = (x - mean (x)) / std (x);
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin != 2)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
     endif
-  elseif ismatrix (x)
-    l = ones (rows (x), 1);
-    t = x - l * mean (x);
-    t = t ./ (l * max ([(std (t)); (! any (t))]));
   else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("studentize: dim must be an integer and valid dimension");
+    endif
+  endif
+
+  if (! ismatrix (x))
     error ("studentize: x must be a vector or a matrix");
   endif
+
+  c = sz (dim);
+  idx = ones (1, nd);
+  idx (dim) = c;
+  t = x - repmat (mean (x, dim), idx);
+  t = t ./ repmat (max (cat (dim, std(t, [], dim), ! any (t, dim)), [], dim), idx);
 
 endfunction

@@ -1,3 +1,18 @@
+2004-04-29  David Bateman  <dbateman@free.fr>
+
+	* statistics/base/ranks.m, statistics/base/run_count.m,
+	statistics/base/studentize.m, statistics/base/kurtosis.m
+	statistics/base/statistics.m, statistics/base/skewness.m
+	statistics/base/iqr.m:
+	Make N-d array aware.  Allow optional argument to define the
+	dimension along which to operate.  Update the documentation.
+
+	* statistics/base/ranks.m: Change algorithm to use sort,
+	and adjust for the ties after.
+
+	* statistics/base/run_counts.m: Change algorithm to use
+	the a combination of diff and find, rather than a for-loop.
+
 2004-04-23  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* plot/hist.m: Correctly determine cutoffs.  New tests.

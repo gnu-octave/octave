@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} skewness (@var{x})
+## @deftypefn {Function File} {} skewness (@var{x}, @var{dim})
 ## If @var{x} is a vector of length @math{n}, return the skewness
 ## @iftex
 ## @tex
@@ -35,36 +35,52 @@
 ## @end ifinfo
 ##
 ## @noindent
-## of @var{x}.  If @var{x} is a matrix, return the row vector containing
-## the skewness of each column.
+## of @var{x}.  If @var{x} is a matrix, return the skewness along the
+## first non-singleton dimension of the matrix. If the optional
+## @var{dim} argument is given, operate along this dimension.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 29 July 1994
 ## Adapted-By: jwe
 
-function retval = skewness (x)
+function retval = skewness (x, dim)
 
-  if (nargin != 1)
-    usage ("skewness (x)");
+  if (nargin != 1 && nargin != 2)
+    usage ("skewness (x, dim)");
   endif
 
-  if (isvector (x))
-    x = x - mean (x);
-    if (! any (x))
-      retval = 0;
-    else
-      retval = sum (x .^ 3) / (length (x) * std (x) ^ 3);
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin != 2)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
     endif
-  elseif (ismatrix (x))
-    [nr, nc] = size (x);
-    x = x - ones (nr, 1) * mean (x);
-    retval = zeros (1, nc);
-    s      = std (x);
-    ind    = find (s > 0);
-    retval (ind) = sum (x (:, ind) .^ 3) ./ (nr * s (ind) .^ 3);
   else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("skewness: dim must be an integer and valid dimension");
+    endif
+  endif
+
+  if (! ismatrix (x))
     error ("skewness: x has to be a matrix or a vector");
   endif
 
+  c = sz (dim);
+  idx = ones (1, nd);
+  idx (dim) = c;
+  x = x - repmat (mean (x, dim), idx);
+  sz (dim) = 1;
+  retval = zeros (sz);
+  s = std (x, [], dim);
+  ind = find (s > 0);
+  x = sum (x .^ 3, dim);
+  retval (ind) = x (ind) ./ (c * s (ind) .^ 3);
+  
 endfunction

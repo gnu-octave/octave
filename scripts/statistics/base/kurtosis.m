@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} kurtosis (@var{x})
+## @deftypefn {Function File} {} kurtosis (@var{x}, @var{dim})
 ## If @var{x} is a vector of length @math{N}, return the kurtosis
 ## @iftex
 ## @tex
@@ -35,36 +35,53 @@
 ## @end ifinfo
 ##
 ## @noindent
-## of @var{x}.  If @var{x} is a matrix, return the row vector containing
-## the kurtosis of each column.
+## of @var{x}.  If @var{x} is a matrix, return the kurtosis over the
+## first non-singleton dimension. The optional argument @var{dim}
+## can be given to force the kurtosis to be given over that 
+## dimension.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 29 July 1994
 ## Adapted-By: jwe
 
-function retval = kurtosis (x)
+function retval = kurtosis (x, dim)
 
-  if (nargin != 1)
-    usage ("kurtosis (x)");
+  if (nargin != 1 && nargin != 2)
+    usage ("kurtosis (x, dim)");
   endif
 
-  if (isvector (x))
-    x = x - mean (x);
-    if (! any (x))
-      retval = 0;
-    else
-      retval = sum (x .^ 4) / (length (x) * std (x) ^ 4) - 3;
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin != 2)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
     endif
-  elseif (ismatrix (x))
-    [nr, nc] = size (x);
-    x = x - ones (nr, 1) * mean (x);
-    retval = zeros (1, nc);
-    s      = std (x);
-    ind    = find (s > 0);
-    retval (ind) = sum (x (:, ind) .^ 4) ./ (nr * s (ind) .^ 4) - 3;
   else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("kurtosis: dim must be an integer and valid dimension");
+    endif
+  endif
+  
+  if (! ismatrix (x))
     error ("kurtosis: x has to be a matrix or a vector");
   endif
+
+  c = sz (dim);
+  sz (dim) = 1;
+  idx = ones (1, nd);
+  idx (dim) = c;
+  x = x - repmat (mean (x, dim), idx);
+  retval = zeros (sz);
+  s = std (x, [], dim);
+  x = sum(x.^4, dim);
+  ind = find (s > 0);
+  retval (ind) = x (ind) ./ (c * s (ind) .^ 4) - 3;
 
 endfunction

@@ -18,31 +18,60 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} iqr (@var{x})
+## @deftypefn {Function File} {} iqr (@var{x}, @var{dim})
 ## If @var{x} is a vector, return the interquartile range, i.e., the
 ## difference between the upper and lower quartile, of the input data.
 ##
-## If @var{x} is a matrix, do the above for each column of @var{x}.
+## If @var{x} is a matrix, do the above for first non singleton
+## dimension of @var{x}.. If the option @var{dim} argument is given,
+## then operate along this dimension.
 ## @end deftypefn
 
 ## Author KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Interquartile range
 
-function y = iqr (x)
+function y = iqr (x, dim)
 
-  if (nargin != 1)
-    usage ("iqr (x)");
+  if (nargin != 1 && nargin != 2)
+    usage ("iqr (x, dim)");
   endif
 
-  if (rows (x) == 1)
-    x = x.';
+  nd = ndims (x);
+  sz = size (x);
+  nel = numel (x);
+  if (nargin != 2)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
+    endif
+  else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("iqr: dim must be an integer and valid dimension");
+    endif
   endif
 
-  [r, c] = size (x);
-  y = zeros (1, c);
+  ## This code is a bit heavy, but is needed until empirical_inv 
+  ## takes other than vector arguments.
+  c = sz (dim);
+  sz (dim) = 1;
+  y = zeros (sz);
+  stride = prod (sz (1:dim-1));
+  for i = 1 : nel / c;
+    offset = i;
+    offset2 = 0;
+    while (offset > stride)
+      offset -= stride;
+      offset2++;
+    endwhile
+    offset += offset2 * stride * c;
+    rng = [0 : c-1] * stride + offset;
 
-  for i = 1:c;
-    y(i) = empirical_inv (3/4, x(:,i)) - empirical_inv (1/4, x(:,i));
+    y (i) = empirical_inv (3/4, x(rng)) - empirical_inv (1/4, x(rng));
   endfor
 
 endfunction

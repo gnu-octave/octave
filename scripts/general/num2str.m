@@ -39,7 +39,11 @@ function retval = num2str (x, arg)
 	fmt = sprintf ("%%.%dg", arg);
       endif
     else
-      fmt = "%11.4g";
+      if (isscalar (x))
+	fmt = "%.4g";
+      else
+	fmt = "%11.4g";
+      endif
     endif
     if (iscomplex (x))
       error ("num2str: sorry, can't handle complex numbers yet");

@@ -1,3 +1,7 @@
+2003-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/num2str.m: Don't specify field width for scalars.
+
 2003-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (DISTFILES): Don't forget mkpkgadd.

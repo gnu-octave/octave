@@ -16,24 +16,25 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## retval = strappend(strlist,suffix);
-## append string suffix to each string in the list of strings strlist
+## -*- texinfo -*-
+## @deftypefn {Function File} strappend (@var{strlist}, @var{suffix})
+## Append string @var{suffix} to each string in the list @var{strlist}.
+## @end deftypefn
 
 function retval = strappend (strlist, suffix);
 
-  if(nargin != 2 | nargout > 1)
-    usage(" retval = strappend(strlist,suffix)");
-  elseif(!is_signal_list(strlist))
-    strlist
-    error("strlist must be a list of strings (see is_signal_list)");
-  elseif(!(isstr(suffix) & rows(suffix) == 1))
-    suffix
-    error("suffix must be a single string");
+  if (nargin != 2 || nargout > 1)
+    usage ("retval = strappend (strlist, suffix)");
+  elseif (! is_signal_list (strlist))
+    error ("strlist must be a list of strings (see is_signal_list)");
+  elseif (! (isstr (suffix) && rows (suffix) == 1))
+    error ("suffix must be a single string");
   endif
 
-  retval = list();
-  for ii=1:length(strlist)
-    retval(ii) = sprintf("%s%s",nth(strlist,ii),suffix);
+  retval = list ();
+
+  for ii = 1:length (strlist)
+    retval(ii) = sprintf ("%s%s", nth (strlist, ii), suffix);
   endfor
 
 endfunction

@@ -1,3 +1,11 @@
+2001-02-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (gobble_leading_white_space): Handle CRLF here too.
+	* lex.l (check_for_garbage_after_fcn_def): Likewise.
+
+	* lex.l: Add numeric value of character to error message for
+	unrecognized characters.
+
 2001-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/minmax.cc (EMPTY_RETURN_CHECK): For empty matrix

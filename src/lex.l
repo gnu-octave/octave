@@ -588,7 +588,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	    if (begin_comment && (c == '#' || c == '%'))
 	      ; /* Skip leading comment characters. */
 	    else
-	      buf += (char) c;
+	      buf += static_cast<char> (c);
 	  }
 
 	octave_comment_buffer::append (buf);
@@ -719,9 +719,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     current_input_column++;
 
-    error ("invalid character `%s' near line %d, column %d",
-	   undo_string_escape (yytext[0]), input_line_number,
-	   current_input_column);
+    error ("invalid character `%s' (ASCII %d) near line %d, column %d",
+	   undo_string_escape (yytext[0]), static_cast<int> (yytext[0]),
+	   input_line_number, current_input_column);
 
     return LEXICAL_ERROR;
   }
@@ -1228,7 +1228,7 @@ grab_help_text (void)
 
       if (in_comment)
 	{
-	  help_buf += (char) c;
+	  help_buf += static_cast<char> (c);
 
 	  if (c == '\n')
 	    {
@@ -1498,7 +1498,7 @@ scan_for_comments (const char *text)
 	  if (in_comment)
 	    {
 	      if (! beginning_of_comment)
-		comment_buf += (char) c;
+		comment_buf += static_cast<char> (c);
 	    }
 	  else
 	    {
@@ -1510,7 +1510,7 @@ scan_for_comments (const char *text)
 	case '\n':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      octave_comment_buffer::append (comment_buf);
 	      comment_buf.resize (0);
 	      in_comment = false;
@@ -1520,7 +1520,7 @@ scan_for_comments (const char *text)
 
 	case '\r':
 	  if (in_comment)
-	    comment_buf += (char) c;
+	    comment_buf += static_cast<char> (c);
 	  if (i < len)
 	    {
 	      c = text[i++];
@@ -1529,7 +1529,7 @@ scan_for_comments (const char *text)
 		{
 		  if (in_comment)
 		    {
-		      comment_buf += (char) c;
+		      comment_buf += static_cast<char> (c);
 		      octave_comment_buffer::append (comment_buf);
 		      in_comment = false;
 		      beginning_of_comment = false;
@@ -1540,7 +1540,7 @@ scan_for_comments (const char *text)
 	default:
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	    }
 	  break;
@@ -1581,7 +1581,7 @@ eat_whitespace (void)
 	case '\t':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	    }
 	  retval |= ATE_SPACE_OR_TAB;
@@ -1591,7 +1591,7 @@ eat_whitespace (void)
 	  retval |= ATE_NEWLINE;
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      octave_comment_buffer::append (comment_buf);
 	      comment_buf.resize (0);
 	      in_comment = false;
@@ -1605,7 +1605,7 @@ eat_whitespace (void)
 	  if (in_comment)
 	    {
 	      if (! beginning_of_comment)
-		comment_buf += (char) c;
+		comment_buf += static_cast<char> (c);
 	    }
 	  else
 	    {
@@ -1617,7 +1617,7 @@ eat_whitespace (void)
 	case '.':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	      break;
 	    }
@@ -1632,7 +1632,7 @@ eat_whitespace (void)
 	case '\\':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	      break;
 	    }
@@ -1647,7 +1647,7 @@ eat_whitespace (void)
 	default:
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	      break;
 	    }
@@ -1743,7 +1743,7 @@ have_continuation (bool trailing_comments_ok)
 
   while ((c = yyinput ()) != EOF)
     {
-      buf << (char) c;
+      buf << static_cast<char> (c);
 
       switch (c)
 	{
@@ -1751,7 +1751,7 @@ have_continuation (bool trailing_comments_ok)
 	case '\t':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	    }
 	  break;
@@ -1763,7 +1763,7 @@ have_continuation (bool trailing_comments_ok)
 	      if (in_comment)
 		{
 		  if (! beginning_of_comment)
-		    comment_buf += (char) c;
+		    comment_buf += static_cast<char> (c);
 		}
 	      else
 		{
@@ -1778,7 +1778,7 @@ have_continuation (bool trailing_comments_ok)
 	case '\n':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      octave_comment_buffer::append (comment_buf);
 	    }
 	  current_input_column = 0;
@@ -1787,7 +1787,7 @@ have_continuation (bool trailing_comments_ok)
 
 	case '\r':
 	  if (in_comment)
-	    comment_buf += (char) c;
+	    comment_buf += static_cast<char> (c);
 	  c = yyinput ();
 	  if (c == EOF)
 	    break;
@@ -1795,7 +1795,7 @@ have_continuation (bool trailing_comments_ok)
 	    {
 	      if (in_comment)
 		{
-		  comment_buf += (char) c;
+		  comment_buf += static_cast<char> (c);
 		  octave_comment_buffer::append (comment_buf);
 		}
 	      current_input_column = 0;
@@ -1803,10 +1803,12 @@ have_continuation (bool trailing_comments_ok)
 	      return true;
 	    }
 
+	  // Fall through...
+
 	default:
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	    }
 	  else
@@ -1894,7 +1896,7 @@ handle_string (char delim, int text_style)
 	{
 	  if (escape_pending)
 	    {
-	      buf << (char) c;
+	      buf << static_cast<char> (c);
 	      escape_pending = 0;
 	    }
 	  else
@@ -1903,7 +1905,7 @@ handle_string (char delim, int text_style)
 		escape_pending = 0;
 	      else
 		{
-		  buf << (char) c;
+		  buf << static_cast<char> (c);
 		  escape_pending = 1;
 		}
 	    }
@@ -1912,7 +1914,7 @@ handle_string (char delim, int text_style)
       else if (c == '.')
 	{
 	  if (! have_ellipsis_continuation (false))
-	    buf << (char) c;
+	    buf << static_cast<char> (c);
 	}
       else if (c == '\n')
 	{
@@ -1922,12 +1924,12 @@ handle_string (char delim, int text_style)
       else if (c == delim)
 	{
 	  if (escape_pending)
-	    buf << (char) c;
+	    buf << static_cast<char> (c);
 	  else
 	    {
 	      c = yyinput ();
 	      if (c == delim)
-		buf << (char) c;
+		buf << static_cast<char> (c);
 	      else
 		{
 		  unput (c);
@@ -1959,7 +1961,7 @@ handle_string (char delim, int text_style)
 	}
       else
 	{
-	  buf << (char) c;
+	  buf << static_cast<char> (c);
 	}
 
       escape_pending = 0;
@@ -2348,18 +2350,7 @@ check_for_garbage_after_fcn_def (void)
 	case ',':
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
-	      beginning_of_comment = false;
-	    }
-	  break;
-
-	case '\n':
-	  if (in_comment)
-	    {
-	      comment_buf += (char) c;
-	      octave_comment_buffer::append (comment_buf);
-	      comment_buf.resize (0);
-	      in_comment = false;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	    }
 	  break;
@@ -2369,7 +2360,7 @@ check_for_garbage_after_fcn_def (void)
 	  if (in_comment)
 	    {
 	      if (! beginning_of_comment)
-		comment_buf += (char) c;
+		comment_buf += static_cast<char> (c);
 	    }
 	  else
 	    {
@@ -2378,10 +2369,42 @@ check_for_garbage_after_fcn_def (void)
 	    }
 	  break;
 
+	case '\n':
+	  if (in_comment)
+	    {
+	      comment_buf += static_cast<char> (c);
+	      octave_comment_buffer::append (comment_buf);
+	      comment_buf.resize (0);
+	      in_comment = false;
+	      beginning_of_comment = false;
+	    }
+	  break;
+
+	case '\r':
+	  if (in_comment)
+	    comment_buf += static_cast<char> (c);
+	  c = yyinput ();
+	  if (c == EOF)
+	    break;
+	  else if (c == '\n')
+	    {
+	      if (in_comment)
+		{
+		  comment_buf += static_cast<char> (c);
+		  octave_comment_buffer::append (comment_buf);
+		  comment_buf.resize (0);
+		  in_comment = false;
+		  beginning_of_comment = false;
+		}
+	      break;
+	    }
+
+	  // Fall through...
+
 	default:
 	  if (in_comment)
 	    {
-	      comment_buf += (char) c;
+	      comment_buf += static_cast<char> (c);
 	      beginning_of_comment = false;
 	      break;
 	    }

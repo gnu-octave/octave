@@ -2886,11 +2886,22 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 {
   std::string help_txt;
 
+  // TRUE means we have already seen the first block of comments.
   bool first_comments_seen = false;
+
+  // TRUE means we are at the beginning of a comment block.
   bool begin_comment = false;
+
+  // TRUE means we have already cached the help text.
   bool have_help_text = false;
+
+  // TRUE means we are currently reading a comment block.
   bool in_comment = false;
+
+  // TRUE means we should discard the first space from the input
+  // (used to strip leading spaces from the help text).
   bool discard_space = true;
+
   int c;
 
   while ((c = getc (ffile)) != EOF)
@@ -2955,6 +2966,12 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 		have_help_text = true;
 	      break;
 
+	    case '%':
+	    case '#':
+	      begin_comment = true;
+	      in_comment = true;
+	      break;
+
 	    case '\n':
 	      if (first_comments_seen)
 		have_help_text = true;
@@ -2965,11 +2982,25 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 		}
 	      continue;
 
-	    case '%':
-	    case '#':
-	      begin_comment = true;
-	      in_comment = true;
-	      break;
+	    case '\r':
+	      c = getc (ffile);
+	      if (update_pos)
+		current_input_column++;
+	      if (c == EOF)
+		goto done;
+	      else if (c == '\n')
+		{
+		  if (first_comments_seen)
+		    have_help_text = true;
+		  if (update_pos)
+		    {
+		      input_line_number++;
+		      current_input_column = 0;
+		    } 
+		  continue;
+		}
+
+	      // Fall through...
 
 	    default:
 	      if (update_pos)

@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <string>
 
+#include "Array-util.h"
 #include "CMatrix.h"
 #include "Range.h"
 #include "cmd-edit.h"
@@ -1527,6 +1528,8 @@ octave_print_internal (std::ostream& os, const Matrix& m,
  \
           for (int i = 0; i < m; i++) \
             { \
+	      OCTAVE_QUIT; \
+ \
               std::string nm = "ans"; \
  \
               if (m > 1) \
@@ -1975,6 +1978,97 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
     default:
       PRINT_ND_ARRAY (os, nda, charNDArray, char, charMatrix);
       break;
+    }
+}
+
+void
+octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  // XXX FIXME XXX -- this mostly duplicates the code in the
+  // PRINT_ND_ARRAY macro.
+
+  if (nda.is_empty ())
+    print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
+  else if (nda.length () == 1)
+    {
+      os << nda(0);
+    }
+  else
+    {
+      int ndims = nda.ndims ();
+
+      dim_vector dims = nda.dims ();
+
+      Array<int> ra_idx (ndims, 0);
+
+      int m = 1;
+
+      for (int i = 2; i < ndims; i++)
+	m *= dims(i);
+
+      int nr = dims(0);
+      int nc = dims(1);
+
+      for (int i = 0; i < m; i++)
+	{
+	  std::string nm = "ans";
+
+	  if (m > 1)
+	    {
+	      nm += "(:,:,";
+
+	      OSSTREAM buf;
+
+	      for (int k = 2; k < ndims; k++)
+		{
+		  buf << ra_idx(k) + 1;
+
+		  if (k < ndims - 1)
+		    buf << ",";
+		  else
+		    buf << ")";
+		}
+
+	      buf << OSSTREAM_ENDS;
+
+	      nm += OSSTREAM_STR (buf);
+
+	      OSSTREAM_FREEZE (buf);
+	    }
+
+	  Array<idx_vector> idx (ndims);
+
+	  idx(0) = idx_vector (':');
+	  idx(1) = idx_vector (':');
+
+	  for (int k = 2; k < ndims; k++)
+	    idx(k) = idx_vector (ra_idx(k) + 1);
+
+	  Array2<std::string> page (nda.index (idx), nr, nc);
+
+	  // XXX FIXME XXX -- need to do some more work to put these
+	  // in neatly aligned columns...
+
+	  int n_rows = page.rows ();
+	  int n_cols = page.cols ();
+
+	  os << nm << " =\n\n";
+
+	  for (int ii = 0; ii < n_rows; ii++)
+	    {
+	      for (int jj = 0; jj < n_cols; jj++)
+		os << "  " << page(ii,jj);
+
+	      os << "\n";
+	    }
+
+	  if (i < m - 1)
+	    os << "\n";
+
+	  if (i < m)
+	    increment_index (ra_idx, dims, 2);
+	}
     }
 }
 

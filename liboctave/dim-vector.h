@@ -266,6 +266,12 @@ public:
     return retval;
   }
 
+  bool
+  all_ones (void) const
+  {
+    return (num_ones () == length ());
+  }
+
   // This is the number of elements that a matrix with this dimension
   // vector would have, NOT the number of dimensions (elements in the
   // dimension vector).

@@ -152,14 +152,8 @@ octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const
 void
 octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
-  dim_vector dv = matrix.dims ();
-  os << "<" << dv.str () << " function handle object>";
-
-#if 0
-  indent (os);
   octave_print_internal (os, name_array (), pr_as_read_syntax,
-			 current_print_indent_level (), true);
-#endif
+			 current_print_indent_level ());
 }
 
 octave_value

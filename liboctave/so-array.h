@@ -54,10 +54,10 @@ public:
 
   ~streamoff_array (void) { }
 
-  streamoff_array& operator = (const streamoff_array& a)
+  streamoff_array& operator = (const streamoff_array& sa)
     {
-      if (this != &a)
-	ArrayN<std::streamoff>::operator = (a);
+      if (this != &sa)
+	ArrayN<std::streamoff>::operator = (sa);
 
       return *this;
     }

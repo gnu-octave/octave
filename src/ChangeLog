@@ -1,5 +1,12 @@
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pr-output.h (octave_fcn_handle::print_as_scalar): Delete.
+
+	* pr-output.cc (octave_print_internal): New version for
+	ArrayN<std::string> objects.
+	* pr-output.h: Provide decl.
+	* ov-fcn-handle.cc (octave_fcn_handle::print_raw): Use it.
+
 	* OPERATORS/op-fcn-handle.cc: New file.
 	* Makefile.in (OP_XSRC): Add it to the list.
 

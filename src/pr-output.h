@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-cmplx.h"
 
+template <typename T> class ArrayN;
 class ComplexMatrix;
 class ComplexNDArray;
 class Matrix;
@@ -88,10 +89,15 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_string = false);
 
 extern void
-octave_print_internal (std::ostream& os, const charNDArray& chm,
+octave_print_internal (std::ostream& os, const charNDArray& nda,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);
+
+extern void
+octave_print_internal (std::ostream& os, const ArrayN<std::string>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
 
 extern void
 octave_print_internal (std::ostream& os, const Cell& cell,

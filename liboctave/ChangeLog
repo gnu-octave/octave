@@ -1,3 +1,7 @@
+2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dim-vector.h (dim_vector::all_ones): New function.
+
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.h (idx_vector::orig_empty): Check orig_dims for

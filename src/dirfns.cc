@@ -181,29 +181,30 @@ from system to system.\n\
 
   unwind_protect::add (cleanup_iprocstream, cmd);
 
-  // XXX FIXME XXX -- sometimes, the subprocess hasn't written
-  // anything before we try to read from the procstream.  The kluge
-  // below (simply waiting and trying again) is ugly, but it seems to
-  // work, at least most of the time.  It could probably still fail if
-  // the subprocess hasn't started writing after the snooze.  Isn't
-  // there a better way?  If there is, you should also fix the code
-  // for the system function in toplev.cc.
+  // XXX FIXME XXX -- Perhaps we should read more than one character
+  // at a time and find a way to avoid the call to octave_usleep as
+  // well?
 
   if (cmd && *cmd)
     {
       char ch;
 
-      if (cmd->get (ch))
-        octave_stdout << ch;
-      else
-        {
-          cmd->clear ();
+      for (;;)
+	{
+	  if (cmd->get (ch))
+	    octave_stdout << ch;
+	  else
+	    {
+	      if (! cmd->eof () && errno == EAGAIN)
+		{
+		  cmd->clear ();
 
-          octave_usleep (100);
-        }
-
-      while (cmd->get (ch))
-        octave_stdout << ch;
+		  octave_usleep (100);
+		}
+	      else
+		break;
+	    }
+	}
     }
   else
     error ("couldn't start process for ls!");

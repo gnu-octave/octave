@@ -1,3 +1,10 @@
+2003-08-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* refcard/Makefile.in (refcard-a4.pdf, refcard-legal.pdf,
+	refcard-letter.pdf): New targets.
+	(FORMATTED): Add them to the list.
+	* refcard/refcard.tex: Optionally set pdf paper size parameters.
+
 2003-08-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (octave_toc.html): Add "-I ." to texinfo

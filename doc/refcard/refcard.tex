@@ -115,6 +115,12 @@
   \fi
 \fi
 
+\ifx\pdfoutput\undefined
+\else
+  \pdfpageheight=\totalheight
+  \pdfpagewidth=\totalheight
+\fi
+
 % Change according to personal taste, not papersize dependent.
 
 \barwidth=.1pt       % width of the cropmark bar

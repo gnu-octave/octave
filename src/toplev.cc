@@ -25,6 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
+#include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <new>
@@ -382,28 +383,28 @@ run_command_and_return_output (const std::string& cmd_str)
 	{
 	  OSSTREAM output_buf;
 
-	  // XXX FIXME XXX -- sometimes, the subprocess hasn't written
-	  // anything before we try to read from the procstream.  The
-	  // kluge below (simply waiting and trying again) is ugly,
-	  // but it seems to work, at least most of the time.  It
-	  // could probably still fail if the subprocess hasn't
-	  // started writing after the snooze.  Isn't there a better
-	  // way?  If there is, you should also fix the code for the
-	  // ls function in dirfns.cc.
+	  // XXX FIXME XXX -- Perhaps we should read more than one
+	  // character at a time and find a way to avoid the call to
+	  // octave_usleep as well?
 
 	  char ch;
 
-	  if (cmd->get (ch))
-	    output_buf.put (ch);
-	  else
+	  for (;;)
 	    {
-	      cmd->clear ();
+	      if (cmd->get (ch))
+		output_buf.put (ch);
+	      else
+		{
+		  if (! cmd->eof () && errno == EAGAIN)
+		    {
+		      cmd->clear ();
 
-	      octave_usleep (100);
+		      octave_usleep (100);
+		    }
+		  else
+		    break;
+		}
 	    }
-
-	  while (cmd->get (ch))
-	    output_buf.put (ch);
 
 	  int cmd_status = cmd->close ();
 

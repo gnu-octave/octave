@@ -330,7 +330,7 @@ default_pager (void)
 
 	  if (! getenv ("LESS"))
 	    pager_binary.append
-	      (" -P-- less ?pB(%pB\%):--. (f)orward, (b)ack, (q)uit$");
+	      (" -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
 	}
     }
 #endif

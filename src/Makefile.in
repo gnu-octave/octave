@@ -318,7 +318,7 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o *.d *.df pic/*.o builtins.cc defaults.h oct-conf.h
+	rm -f *.a *.o *.d *.df *.oct pic/*.o builtins.cc defaults.h oct-conf.h
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 

@@ -92,6 +92,9 @@ string Vhost_name;
 // User's home directory.
 string Vhome_directory;
 
+// Nonzero means we print 
+static bool Vdefault_eval_print_flag = true;
+
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;
 
@@ -584,7 +587,8 @@ eval_string (const string& s, int print, int& parse_status)
 }
 
 static octave_value_list
-eval_string (const octave_value& arg, int& parse_status, int nargout)
+eval_string (const octave_value& arg, int print, int& parse_status,
+	     int nargout)
 {
   string s = arg.string_value ();
 
@@ -594,9 +598,7 @@ eval_string (const octave_value& arg, int& parse_status, int nargout)
       return -1.0;
     }
 
-  // Yes Virginia, we always print here...
-
-  return eval_string (s, 1, parse_status, nargout);
+  return eval_string (s, print, parse_status, nargout);
 }
 
 DEFUN (eval, args, nargout,
@@ -621,7 +623,7 @@ string CATCH.")
 
       int parse_status = 0;
 
-      retval = eval_string (args(0), parse_status, nargout);
+      retval = eval_string (args(0), 0, parse_status, nargout);
 
       if (nargin > 1 && (parse_status != 0 || error_state))
 	{
@@ -634,7 +636,8 @@ string CATCH.")
 	  bind_global_error_variable ();
 	  add_unwind_protect (clear_global_error_variable, 0);
 
-	  eval_string (args(1), parse_status, nargout);
+	  eval_string (args(1), Vdefault_eval_print_flag,
+		       parse_status, nargout);
 
 	  retval = octave_value_list ();
 	}
@@ -929,6 +932,7 @@ information.")
 }
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
+
 int debug_new_delete = 0;
 
 typedef void (*vfp)(void);
@@ -964,7 +968,25 @@ __builtin_delete (void *ptr)
   if (ptr)
     free (ptr);
 }
+
 #endif
+
+static int
+default_eval_print_flag (void)
+{
+  Vdefault_eval_print_flag = check_preference ("default_eval_print_flag");
+
+  return 0;
+}
+
+void
+symbols_of_toplev (void)
+{
+  DEFVAR (default_eval_print_flag, 1.0, 0, default_eval_print_flag,
+    "If the value of this variable is nonzero, Octave will print the\n\
+results of commands executed by eval() that do not end with semicolons.");
+
+}
 
 /*
 ;;; Local Variables: ***

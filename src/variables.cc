@@ -101,7 +101,7 @@ static int Vhistory_size;
 
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
-static bool Vignore_function_time_stamp;
+static int Vignore_function_time_stamp;
 
 // TRUE if we are saving history.
 static int Vsaving_history;
@@ -1667,6 +1667,7 @@ install_builtin_variables (void)
   symbols_of_pt_mat ();
   symbols_of_pt_plot ();
   symbols_of_syscalls ();
+  symbols_of_toplev ();
   symbols_of_value ();
   symbols_of_variables ();
 }

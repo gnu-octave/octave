@@ -1,16 +1,64 @@
+Mon Mar 10 22:38:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (clean): Delete .oct files too.
+
+	* toplev.cc (Vdefault_eval_print_flag): New static variable.
+	(eval_string): New arg, print.
+	(Feval): Pass Vdefault_eval_print_flag to eval_string.
+	(default_eval_print_flag): New function.
+	(symbols_of_toplev): New function.
+
+	* variables.cc (install_builtin_variables): Call it.
+
+	* pt-exp.h, pt-exp.cc (class tree_boolean_expression): Rename enum
+	fields `and' and `or' to `bool_and' and `bool_or'.
+	(tree_unary_expression): Rename enum field `not' to `unot'.
+	(class tree_binary_expression): Rename enum fields `and' and `or'
+	to `el_and' and `el_or'.
+	* parse.y: Change all uses.
+
+	* time.cc (extract_tm): Truncate field values instead of rounding.
+	(gmtime, localtime): Likewise, for timeval.
+
+	* ov.h (class octave_value): Delete unused variable freeptr.
+
+	* mappers.cc: Delete functions that are already in
+	liboctave/lo-mappers.cc.
+
+	* oct-strstrm.cc (octave_base_strstream::tell): Use const_cast,
+	not static_cast.
+
+	* help.cc (help_from_list): Add missing const qualifiers.
+	* help.h (struct help_list): Likewise.
+	* lex.l (match_any, plot_style_token): Likewise.
+	* load-save.cc (extract_keyword, ascii_save_type): Likewise.
+	* oct-hist.cc (mk_tmp_hist_file): Likewise.
+	* octave.cc (execute_startup_files): Likewise.
+	* octave.gperf (struct octave_kw): Likewise.
+	* pr-output.cc (pr_any_float): Likewise.
+	* pt-mvr.cc (tree_index_expression::eval_error): Likewise.
+	* pt-exp-base.h, pt-exp.h, pt-exp.cc: Likewise.
+	* parse.y: Likewise.
+
 Sun Mar  9 03:46:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	 * Map.cc, data.cc, dirfns.cc, dynamic-ld.cc, file-io.cc,
-	 fsolve.cc, getgrent.cc, getpwent.cc, getrusage.cc, help.cc,
-	 input.cc, load-save.cc, mappers.cc, minmax.cc, npsol.cc,
-	 oct-fstrm.cc, oct-procbuf.h, oct-stdstrm.cc, oct-stdstrm.h,
-	 oct-stream.cc, oct-stream.h, oct-strstrm.cc, octave.cc,
-	 ov-base.h, ov-range.cc, ov-typeinfo.cc, ov.cc, pr-output.cc,
-	 pt-cmd.cc, pt-exp.cc, pt-fcn.cc, pt-fvc.cc, pt-mat.cc,
-	 pt-misc.cc, pt-plot.cc, qpsol.cc, quad.cc, sort.cc, strfns.cc,
-	 symtab.cc, syscalls.cc, sysdep.cc, time.cc, toplev.cc,
-	 unwind-prot.cc, unwind-prot.h, variables.cc, xpow.cc:
-	 Use `static_cast<T> (val)' instead of old C-style `(T) val' casts.
+	* pt-exp-base.h (tree_expression): Delete extra comma at end of list.
+
+	* dirfns.cc error.cc file-io.cc fsolve.cc input.cc load-save.cc
+	npsol.cc pt-fcn.cc qpsol.cc quad.cc syscalls.cc toplev.cc
+	variables.cc: Eliminate embedded newlines in string constants.
+
+	* Map.cc, data.cc, dirfns.cc, dynamic-ld.cc, file-io.cc,
+	fsolve.cc, getgrent.cc, getpwent.cc, getrusage.cc, help.cc,
+	input.cc, load-save.cc, mappers.cc, minmax.cc, npsol.cc,
+	oct-fstrm.cc, oct-procbuf.h, oct-stdstrm.cc, oct-stdstrm.h,
+	oct-stream.cc, oct-stream.h, oct-strstrm.cc, octave.cc,
+	ov-base.h, ov-range.cc, ov-typeinfo.cc, ov.cc, pr-output.cc,
+	pt-cmd.cc, pt-exp.cc, pt-fcn.cc, pt-fvc.cc, pt-mat.cc,
+	pt-misc.cc, pt-plot.cc, qpsol.cc, quad.cc, sort.cc, strfns.cc,
+	symtab.cc, syscalls.cc, sysdep.cc, time.cc, toplev.cc,
+	unwind-prot.cc, unwind-prot.h, variables.cc, xpow.cc:
+	Use `static_cast<T> (val)' instead of old C-style `(T) val' casts.
 
 Sat Mar  8 02:35:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

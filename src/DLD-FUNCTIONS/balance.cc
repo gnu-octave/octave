@@ -55,7 +55,7 @@ where OPT is an optional single character argument as follows: \n\
   B: (default) permute and scale, in that order.  Rows/columns\n\
      of a (and b) that are isolated by permutation are not scaled\n\
 \n\
-[DD, AA] = balance (A, OPT) returns aa = dd*a*dd,\n\
+[DD, AA] = balance (A, OPT) returns aa = inv(dd)*a*dd,\n\
 \n\
 [CC, DD, AA, BB] = balance (A, B, OPT) returns AA (BB) = CC*A*DD (CC*B*DD)")
 {

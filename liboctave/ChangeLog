@@ -1,3 +1,11 @@
+2004-02-13  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::maybe_delete_elements):
+	Check for index out of bounds.	Handle one index.
+
+	* Array.cc (Array<T>::indexN): Use dim_vector (0, 0) instead of
+	dim_vector (0) to create empty return vector.
+
 2004-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::assignN): Don't crash if trying to resize a

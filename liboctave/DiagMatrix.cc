@@ -334,8 +334,7 @@ DiagMatrix::row (int i) const
     FAIL;
 
   RowVector retval (nc, 0.0);
-  if (nr < nc ||
-      (nr > nc && i < nc))
+  if (nr <= nc || (nr > nc && i < nc))
     retval.data [i] = data[i];
 
   return retval;
@@ -363,8 +362,7 @@ DiagMatrix::column (int i) const
     FAIL;
 
   ColumnVector retval (nr, 0.0);
-  if (nr > nc ||
-      (nr < nc && i < nr))
+  if (nr >= nc || (nr < nc && i < nr))
     retval.data [i] = data[i];
 
   return retval;
@@ -902,9 +900,9 @@ operator << (ostream& os, const DiagMatrix& a)
       for (int j = 0; j < a.nc; j++)
 	{
 	  if (i == j)
-	    os << /* setw (field_width) << */ a.data[i];
+	    os << " " /* setw (field_width) */ << a.data[i];
 	  else
-	    os << /* setw (field_width) << */ ZERO;
+	    os << " " /* setw (field_width) */ << ZERO;
 	}
       os << "\n";
     }
@@ -1440,8 +1438,7 @@ ComplexDiagMatrix::row (int i) const
     FAIL;
 
   ComplexRowVector retval (nc, 0.0);
-  if (nr < nc ||
-      (nr > nc && i < nc))
+  if (nr <= nc || (nr > nc && i < nc))
     retval.data [i] = data[i];
 
   return retval;
@@ -1469,8 +1466,7 @@ ComplexDiagMatrix::column (int i) const
     FAIL;
 
   ComplexColumnVector retval (nr, 0.0);
-  if (nr > nc ||
-      (nr < nc && i < nr))
+  if (nr >= nc || (nr < nc && i < nr))
     retval.data [i] = data[i];
 
   return retval;
@@ -2057,9 +2053,9 @@ operator << (ostream& os, const ComplexDiagMatrix& a)
       for (int j = 0; j < a.nc; j++)
 	{
 	  if (i == j)
-	    os << /* setw (field_width) << */ a.data[i];
+	    os << " " /* setw (field_width) */ << a.data[i];
 	  else
-	    os << /* setw (field_width) << */ ZERO;
+	    os << " " /* setw (field_width) */ << ZERO;
 	}
       os << "\n";
     }

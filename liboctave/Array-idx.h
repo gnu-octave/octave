@@ -152,7 +152,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 		delete rep;
 
 	      rep = new ArrayRep<T> (new_data, new_len);
-	      rep->count = 1;
+
 	      set_max_indices (1);
 	    }
 	  else
@@ -434,8 +434,9 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			delete rep;
 
 		      rep = new ArrayRep<T> (new_data, nr * new_nc);
-		      rep->count = 1;
+
 		      d2 = new_nc;
+
 		      set_max_indices (2);
 		    }
 		  else
@@ -482,8 +483,9 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			delete rep;
 
 		      rep = new ArrayRep<T> (new_data, new_nr * nc);
-		      rep->count = 1;
+
 		      d1 = new_nr;
+
 		      set_max_indices (2);
 		    }
 		  else

@@ -1,5 +1,9 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (Array<T>::indexN): Correctly handle single colon index.
+	Omit special case for ra_idx.capacity () == 1.
+	Always allow single index for matrix args with optional warning.
+
 	* idx-vector.h, idx-vector.cc: Convert boolMatrix functions to use
 	boolNDArray.  Likewise, convert Matrix functions to use	NDArray.
 

@@ -1803,9 +1803,9 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
   if (ra_idx.is_colon ())
     {
-      dim_vector iidx (orig_len);
+      // Fast magic colon processing.
 
-      retval = Array<T> (*this, iidx);
+      retval = Array<T> (*this, dim_vector (orig_len, 1));
     }
   else if (length () == 1)
     {
@@ -1868,11 +1868,14 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	    ("I do not know what to do here yet!");
 	}
     }
-  else if (liboctave_wfi_flag || 
-	   (ra_idx.one_zero_only () && equal_arrays (idx_orig_dims, dims ())))
+  else
     {
-      // This code is only for indexing nd-arrays.  The vector
-      // cases are handled above.
+      if (liboctave_wfi_flag
+	  && ! (ra_idx.is_colon ()
+		|| (ra_idx.one_zero_only ()
+		    && equal_arrays (idx_orig_dims, dims ()))))
+	(*current_liboctave_warning_handler)
+	  ("single index used for N-d array");
 
       ra_idx.freeze (orig_len, "nd-array", resize_ok);
 
@@ -1882,15 +1885,10 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
 	  if (ra_idx.one_zero_only ())
 	    {
-	      for (int i = 0; i < result_dims.length(); i++)
-	        {
-		  if (i == 0)
-		    result_dims(i) = ra_idx.ones_count ();
-		  else if (result_dims(0) > 0)
-		    result_dims(i) = 1;
-		  else
-		    result_dims(i) = 0;
-		}
+	      result_dims.resize (2);
+	      int ntot = ra_idx.ones_count ();
+	      result_dims(0) = ntot;
+	      result_dims(1) = (ntot > 0 ? 1 : 0);
 	    }
 
 	  retval.resize (result_dims);
@@ -1920,36 +1918,6 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	    }
 	}
     }
-  else if (ra_idx.capacity () == 1)
-    {
-      // i.e. A(8) for A(3x3x3)
-
-      ra_idx.freeze (orig_len, "nd-array", resize_ok);
-
-      if (ra_idx)
-        {
-	  int r_idx = ra_idx(0);
-
-          Array<int> iidx = get_ra_idx (r_idx, dims ());
-
-          dim_vector new_dims (1);
-
-	  // This shouldn't be needed.
-
-	  Array<int> e (iidx.length ());
-
-	  for (int i = 0; i < iidx.length();i++)
-	    e(i) = iidx(i);
-
-	  // Should be able to call elem (iidx).
-
-          retval = Array<T> (new_dims, elem (e));
-	}
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("single index only valid for row or column vector. ra_idx.cap () = &d",
-       ra_idx.capacity ());
 
   return retval;
 }

@@ -575,8 +575,10 @@ DEFUN (inline, args, ,
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
 If called with a single argument, the generated function is\n\
-assumed to have a single argument and will be defined\n\
-as the first isolated lower case character, except i or j.\n\
+assumed to have a single argument and will be defined as the\n\
+isolated lower case character, except i or j, that is closest\n\
+to x. If more than argument is the same distance from x, the\n\
+one later in the alphabet is chosen.\n\
 \n\
 If the second and subsequent arguments are character strings,\n\
 they are the names of the arguments of the function.\n\
@@ -600,13 +602,32 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
 	  if (nargin == 1)
 	    {
+	      int dist = -1;
+	      char c;
+
 	      fargs.resize (1);
-
-	      // Find the first isolated string as the argument of the
-	      // function.
-
-	      // XXX FIXME XXX -- use just "x" for now.
 	      fargs(0) = "x";
+
+	      for (int i = 0; i < fun.length(); i++)
+		{
+		  if (islower (fun [i]) && 
+		      (i == 0 ? true : !islower (fun [i-1])) &&
+		      (i == fun.length() ? true : !islower (fun [i+1])))
+		    {
+		      char new_c = fun [i];
+
+		      if (new_c == 'i' || new_c == 'j') 
+			continue;
+		      int new_dist = std::abs(new_c - 'x');
+		      if (dist == -1 || (new_dist < dist) ||
+			  ((new_dist == dist) && (c < new_c)))
+			{
+			  fargs(0) = new_c;
+			  dist = new_dist;
+			  c = new_c;
+			}
+		    }
+		}
 	    }
 	  else if (nargin == 2 && args(1).is_numeric_type ())
 	    {

@@ -1,3 +1,8 @@
+2004-09-22  David Bateman  <dbateman@free.fr>
+
+	* ov-fcn-inline.cc (Finline): When called with a single arg, derive
+	argument of inline function in a compatible manner.
+
 2004-09-22  Federico Zenith  <zenith@chemeng.ntnu.no>
 
 	* DLD-FUNCTIONS/qz.cc (Fqz): New @tex section(s) in doc string for

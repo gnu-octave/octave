@@ -225,6 +225,12 @@ idx_vector::init_state (const char *rc, int z_len)
       initialized = 0;
       return;
     }
+  else if (max_val >= z_len)
+    {
+      ::error ("%s index %d out of range", rc, max_val+1);
+      initialized = 0;
+      return;
+    }
 
   initialized = 1;
 }

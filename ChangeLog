@@ -1,3 +1,7 @@
+2003-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for mkstemp too.
+
 2003-02-13  Arno Klaassen  <arno@scito.com>
 
         * configure.in: Fix SH_LD and SH_LDFLAGS for -*-*-freebsd*.

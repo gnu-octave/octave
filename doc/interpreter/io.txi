@@ -816,6 +816,10 @@ as the data are read.
 @node Temporary Files
 @subsection Temporary Files
 
+@DOCSTRING(mkstemp)
+
+@DOCSTRING(tmpfile)
+
 @DOCSTRING(tmpnam)
 
 @node EOF and Errors

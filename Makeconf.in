@@ -252,6 +252,9 @@ imagepath = @imagepath@
 # The type of computer we are running on.
 canonical_host_type = @canonical_host_type@
 
+# The -I flags to use for the mkoctfile script.
+MKOCTFILE_INCFLAGS = -I$(octincludedir) -I$(includedir)
+
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
@@ -361,6 +364,7 @@ sed < $< \
   -e "s;%OCTAVE_CONF_LIBREADLINE%;\"${LIBREADLINE}\";" \
   -e "s;%OCTAVE_CONF_LIBS%;\"${LIBS}\";" \
   -e "s;%OCTAVE_CONF_LN_S%;\"${LN_S}\";" \
+  -e "s;%OCTAVE_CONF_MKOCTFILE_INCFLAGS%;\"${MKOCTFILE_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_OCTAVE_LITE%;\"${OCTAVE_LITE}\";" \
   -e "s;%OCTAVE_CONF_RANLIB%;\"${RANLIB}\";" \
   -e "s;%OCTAVE_CONF_RDYNAMIC_FLAG%;\"${RDYNAMIC_FLAG}\";" \

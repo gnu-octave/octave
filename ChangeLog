@@ -1,5 +1,8 @@
 2000-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (MKOCTFILE_INCFLAGS): New macro.
+	(do-subst-conf-vals): Substitute it.
+
 	* mkoctfile.in: Fix names in substititions.
 	* octave-bug.in: Likewise.
 

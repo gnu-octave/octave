@@ -1,3 +1,8 @@
+2000-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (octave_config_info): Add MKOCTFILE_INCFLAGS to the struct.
+	* oct-conf.h.in (OCTAVE_CONF_MKOCTFILE_INCFLAGS): Define.
+
 2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/balance.cc (Fbalance): Explicitly request

@@ -1,4 +1,4 @@
-v/*
+/*
 
 Copyright (C) 1996, 1997 John W. Eaton
 Copyright (C) 2004 David Bateman
@@ -59,10 +59,10 @@ mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
     return retval;
 
   dim_vector dv = m.dims ();
-  unsigned int ns = dv (dim);
+  unsigned int ns = dv(dim);
   unsigned int iter = dv.numel () / ns;
   unsigned int stride = 1;
-  for (unsigned int i = 0; i < (unsigned int)dim; i++)
+  for (unsigned int i = 0; i < static_cast<unsigned int> (dim); i++)
     stride *= dv(i);
 
   T *v = m.fortran_vec ();
@@ -120,10 +120,10 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
     return retval;
 
   dim_vector dv = m.dims ();
-  unsigned int ns = dv (dim);
+  unsigned int ns = dv(dim);
   unsigned int iter = dv.numel () / ns;
   unsigned int stride = 1;
-  for (unsigned int i = 0; i < (unsigned int)dim; i++)
+  for (unsigned int i = 0; i < static_cast<unsigned int> (dim); i++)
     stride *= dv(i);
 
   T *v = m.fortran_vec ();
@@ -208,13 +208,14 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 static inline unsigned EIGHT_BYTE_INT
 FloatFlip (unsigned EIGHT_BYTE_INT f)
 {
-  unsigned EIGHT_BYTE_INT mask = -(EIGHT_BYTE_INT)(f >> 63) | 
-    0x8000000000000000ULL;
+  unsigned EIGHT_BYTE_INT mask
+    = -(EIGHT_BYTE_INT)(f >> 63) | 0x8000000000000000ULL;
 
   return f ^ mask;
 }
 
-inline unsigned EIGHT_BYTE_INT IFloatFlip(unsigned EIGHT_BYTE_INT f)
+inline unsigned EIGHT_BYTE_INT
+IFloatFlip (unsigned EIGHT_BYTE_INT f)
 {
   unsigned EIGHT_BYTE_INT mask = ((f >> 63) - 1) | 0x8000000000000000ULL;
 
@@ -263,7 +264,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
     return retval;
 
   dim_vector dv = m.dims ();
-  unsigned int ns = dv (dim);
+  unsigned int ns = dv(dim);
   unsigned int iter = dv.numel () / ns;
   unsigned int stride = 1;
   for (unsigned int i = 0; i < (unsigned int)dim; i++)
@@ -380,10 +381,10 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
     return retval;
 
   dim_vector dv = m.dims ();
-  unsigned int ns = dv (dim);
+  unsigned int ns = dv(dim);
   unsigned int iter = dv.numel () / ns;
   unsigned int stride = 1;
-  for (unsigned int i = 0; i < (unsigned int)dim; i++)
+  for (unsigned int i = 0; i < static_cast<unsigned int> (dim); i++)
     stride *= dv(i);
 
   double *v = m.fortran_vec ();
@@ -599,7 +600,8 @@ DEFUN_DLD (sort, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@dots{}, @var{mode})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
 Return a copy of @var{x} with the elements elements arranged in\n\
 increasing order.  For matrices, @code{sort} orders the elements in each\n\
 column.\n\
@@ -673,7 +675,7 @@ ordered lists.\n\
 	    smode = DESCENDING;
 	  else
 	    {
-	      error ("sort: mode must be either `ascend' or `descend'");
+	      error ("sort: mode must be either \"ascend\" or \"descend\"");
 	      return retval;
 	    }
 	}
@@ -701,7 +703,7 @@ ordered lists.\n\
 	smode = DESCENDING;
       else
 	{
-	  error ("sort: mode must be either `ascend' or `descend'");
+	  error ("sort: mode must be either \"ascend\" or \"descend\"");
 	  return retval;
 	}
     }

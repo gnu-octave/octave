@@ -22,6 +22,15 @@
 /* Define if you don't have FSQP. */
 #undef FSQP_MISSING
 
+/* Define if you have finite.  */
+#undef HAVE_FINITE
+
+/* Define if you have isinf.  */
+#undef HAVE_ISINF
+
+/* Define if you have isnan.  */
+#undef HAVE_ISNAN
+
 /* Define if you have sgtty.h. */
 #undef HAVE_SGTTY_H
 

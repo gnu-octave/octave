@@ -565,13 +565,13 @@ Once the end of the data has been reached, @code{getpwent} returns 0.
 @deftypefn {Built-in Function} {passwd_struct =} getpwuid (@var{uid}).
 Return the first entry from the password database with the user ID
 @var{uid}.  If the user ID does not exist in the database,
-code{getpwuid} returns 0.
+@code{getpwuid} returns 0.
 @end deftypefn
 
 @deftypefn {Built-in Function} {passwd_struct =} getpwnam (@var{name})
 Return the first entry from the password database with the user name
 @var{name}.  If the user name does not exist in the database,
-code{getpwname} returns 0.
+@code{getpwname} returns 0.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} setpwent ()

@@ -95,38 +95,35 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
       pa = clin.fortran_vec ();
     }
 
-  double *pbl = new double [nctotl];
-  double *pbu = new double [nctotl];
+  ColumnVector bl (n+nclin);
+  ColumnVector bu (n+nclin);
 
   if (bnds.size () > 0)
     {
-      for (int i = 0; i < n; i++)
-	{
-	  pbl[i] = bnds.lower_bound (i);
-	  pbu[i] = bnds.upper_bound (i);
-	}
+      bl.insert (bnds.lower_bounds (), 0);
+      bu.insert (bnds.upper_bounds (), 0);
     }
   else
     {
-      for (int i = 0; i < n; i++)
-	{
-	  pbl[i] = -bigbnd;
-	  pbu[i] = bigbnd;
-	}
+      bl.fill (-bigbnd);
+      bu.fill (bigbnd);
     }
 
-  for (int i = 0; i < nclin; i++)
+  if (nclin > 0)
     {
-      pbl[i+n] = lc.lower_bound (i);
-      pbu[i+n] = lc.upper_bound (i);
+      bl.insert (lc.lower_bounds (), 0);
+      bu.insert (lc.upper_bounds (), 0);
     }
+
+  double *pbl = bl.fortran_vec ();
+  double *pbu = bu.fortran_vec ();
 
   double *pc = c.fortran_vec ();
 
-  double *featol = new double [nctotl];
   double tmp = feasibility_tolerance ();
-  for (int i = 0; i < nctotl; i++)
-    featol[i] = tmp;
+
+  Array<double> afeatol (nctotl, tmp);
+  double *featol = afeatol.fortran_vec ();
 
   double *ph = H.fortran_vec ();
 
@@ -134,7 +131,8 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   int lp = 0;
   int orthog = 1;
 
-  int *istate = new int [nctotl];
+  Array<int> aistate (nctotl);
+  int *istate = aistate.fortran_vec ();
 
   double *px = x.fortran_vec ();
 
@@ -151,21 +149,17 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   else
     lenw = 2*ncon*(1 + ncon) + 4*n + nclin;
 
-  int *iw = new int [leniw];
-  double *w = new double [lenw];
+  Array<int> aiw (leniw);
+  int *iw = aiw.fortran_vec ();
+
+  Array<double> aw (lenw);
+  double *w = aw.fortran_vec ();
 
   F77_FCN (qpsol, QPSOL) (itmax, msglvl, n, nclin, nctotl, ncon, n,
 			  n, bigbnd, pa, pbl, pbu, pc, featol, ph,
 			  qphess, cold, lp, orthog, istate, px,
 			  inform, iter, objf, pclambda, iw, leniw, w,
 			  lenw);
-
-  delete [] pbl;
-  delete [] pbu;
-  delete [] featol;
-  delete [] istate;
-  delete [] iw;
-  delete [] w;
 
   return x;
 }

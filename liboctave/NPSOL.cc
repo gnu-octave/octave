@@ -174,23 +174,23 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   // Informative stuff.
 
   int iter;
-  int *istate = new int [n+nclin+ncnln];
+
+  Array<int> aistate (n+nclin+ncnln);
+  int *istate = aistate.fortran_vec ();
 
   // User defined function stuff is defined above in the functions
   // npsol_confun() and npsol_objfun();
 
   // Constraint stuff.
 
-  double *pclin = 0;
-  Matrix clin;
-  if (nclin > 0)
-    {
-      clin = lc.constraint_matrix ();
-      pclin  = clin.fortran_vec ();
-    }
+  Matrix clin = lc.constraint_matrix ();
+  double *pclin = clin.fortran_vec ();
 
-  double *clow = new double [n+nclin+ncnln];
-  double *cup = new double [n+nclin+ncnln];
+  Array<double> aclow (n+nclin+ncnln);
+  double *clow = aclow.fortran_vec ();
+
+  Array<double> acup (n+nclin+ncnln);
+  double *cup = acup.fortran_vec ();
 
   if (bnds.size () > 0)
     {
@@ -222,21 +222,21 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
       cup[i+n+nclin] = nlc.upper_bound (i);
     }
 
-  double *c = 0;
-  double *cjac = 0;
-  if (ncnln > 0)
-    {
-      c = new double [ncnln];
-      cjac = new double [nrowj*n];
-    }
+  Array<double> ac (ncnln);
+  double *c = ac.fortran_vec ();
+
+  Array<double> acjac (nrowj*n);
+  double *cjac = acjac.fortran_vec ();
 
   // Objective stuff.
 
-  double *objgrd = new double [n];
+  Array<double> aobjgrd (n);
+  double *objgrd = aobjgrd.fortran_vec ();
 
   // Other stuff.
 
-  double *r = new double [n*n];
+  Array<double> ar (n*n);
+  double *r = ar.fortran_vec ();
 
   lambda.resize (n+nclin+ncnln);
   double *pclambda = lambda.fortran_vec ();
@@ -256,8 +256,11 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   else
     lenw = 2*n*(n + 10) + nclin*(n + 11) + ncnln*(2*n + 21);
 
-  int *iw = new int [leniw];
-  double *w = new double [lenw];
+  Array<int> aiw (leniw);
+  int *iw = aiw.fortran_vec ();
+
+  Array<double> aw (lenw);
+  double *w = aw.fortran_vec ();
 
   user_phi  = phi.objective_function ();
   user_grad = phi.gradient_function ();
@@ -275,7 +278,7 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   else if (user_jac && user_grad)
     F77_FCN (npoptn, NPOPTN) ("Derivative Level 3", 18L);
 
-  int attempt = 0;
+  attempt = 0;
   while (attempt++ < 5)
     {
 
@@ -292,20 +295,6 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
       else
 	break;
     }
-
-  // Clean up.
-
-  delete [] istate;
-  delete [] clow;
-  delete [] cup;
-  delete [] c;
-  delete [] cjac;
-  delete [] objgrd;
-  delete [] r;
-  delete [] iw;
-  delete [] w;
-
-  // See how it went.
 
   return x;
 }

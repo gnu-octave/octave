@@ -280,6 +280,10 @@ public:
   ~NPSOL (void) { }
 
   ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
+
+private:
+
+  int attempt;
 };
 
 // XXX FIXME XXX -- would be nice to not have to have this global

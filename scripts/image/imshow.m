@@ -69,8 +69,8 @@ function imshow (varargin)
   if (mvars != 3)
     I = varargin{1};
     if (iscomplex (I))
-	warning ("imshow: displaying real part of complex image");
-	I = real (I);
+      warning ("imshow: displaying real part of complex image");
+      I = real (I);
     endif      
     if (max (I(:)) <= 1)
       ## image in [0-1]; scale to [0-255]
@@ -109,9 +109,9 @@ function imshow (varargin)
     endif    
     if (max (tmp(:)) > 1)
       ## Normalise to [0-1].
-      r = r/255;
-      g = g/255;
-      b = b/255;
+      r = r / 255;
+      g = g / 255;
+      b = b / 255;
     endif
     [I, M] = rgb2ind (r, g, b);
   endif

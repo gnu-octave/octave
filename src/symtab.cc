@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 #include <cctype>
 #include <climits>
+#include <cstdio>
 
 #include <iomanip>
 #include <fstream>
@@ -51,7 +52,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-mappers.h"
 
 #include "parse.h"
-#include <stdio.h>
 
 unsigned long int symbol_table::symtab_count = 0;
 
@@ -200,9 +200,6 @@ SYMBOL_DEF::print_info (std::ostream& os, const std::string& prefix) const
 }
 
 // Individual records in a symbol table.
-
-// XXX FIXME XXX -- there are lots of places below where we should
-// probably be temporarily ignoring interrupts.
 
 void
 symbol_record::rename (const std::string& new_name)
@@ -419,24 +416,27 @@ symbol_record::pop_context (void)
     }
 }
 
+// Calculate how much space needs to be reserved for the first part of
+// the dimensions string.  For example,
+//
+//   mat is a 12x3 matrix
+//            ^^  => 2 columns
+
 int
-symbol_record::dimensions_string_req_first_space (int print_dims) const 
+symbol_record::dimensions_string_req_first_space (int print_dims) const
 {
-  // This method calculates how much space needs to be reserved for the
-  // first part of the dimensions string.
-  // Example: mat is a 12x3 matrix
-  //                   ^^  => 2 columns
   long dim = 0;
   int first_param_space = 0;
 
-  // Calculating dimensions
+  // Calculating dimensions.
+
   std::string dim_str = "";
   std::stringstream ss;
   dim_vector dimensions;
 
   if (is_variable ())
     {
-      if (is_matrix_type ()) 
+      if (is_matrix_type ())
         {
 	  dimensions = dims ();
 	  dim = dimensions.length ();
@@ -445,23 +445,26 @@ symbol_record::dimensions_string_req_first_space (int print_dims) const
 
   first_param_space = (first_param_space >= 1 ? first_param_space : 1);
 
-  // Preparing dimension string
+  // Preparing dimension string.
+
   if ((dim <= print_dims || print_dims < 0) && print_dims != 0)
     {
-      // Dimensions string must be printed like this: 2x3x4x2
+      // Dimensions string must be printed like this: 2x3x4x2.
+
       if (dim == 0 || dim == 1)
-	first_param_space = 1; // First parameter is 1
+	first_param_space = 1; // First parameter is 1.
       else
         {
 	  ss << dimensions (0);
-	  
+	 
 	  dim_str = ss.str ();
 	  first_param_space = dim_str.length ();
 	}
     }
-  else 
+  else
     {
-      // Printing dimension string as: a-D
+      // Printing dimension string as: a-D.
+
       ss << dim;
 
       dim_str = ss.str ();
@@ -471,14 +474,15 @@ symbol_record::dimensions_string_req_first_space (int print_dims) const
   return first_param_space;
 }
 
+// Calculate how much space needs to be reserved for the the
+// dimensions string.  For example,
+//
+//   mat is a 12x3 matrix
+//            ^^^^ => 4 columns
+
 int
 symbol_record::dimensions_string_req_total_space (int print_dims) const
 {
-  // This method calculates how much space needs to be reserved for the
-  // the dimensions string.
-  // Example: mat is a 12x3 matrix
-  //                   ^^^^ => 4 columns
-
   std::string dim_str = "";
   std::stringstream ss;
 
@@ -488,56 +492,62 @@ symbol_record::dimensions_string_req_total_space (int print_dims) const
   return dim_str.length ();
 }
 
-std::string
-symbol_record::make_dimensions_string (int print_dims) const 
-{
-  // This method makes the dimensions-string, which is a string that tells
-  // how large a object is, dimensionally.
-  // Example: mat is a 2x3 matrix
-  //                   ^^^ 
+// Make the dimensions-string.  For example: mat is a 2x3 matrix.
+//                                                    ^^^
 
+std::string
+symbol_record::make_dimensions_string (int print_dims) const
+{
   long dim = 0;
 
-  // Calculating dimensions
+  // Calculating dimensions.
+
   std::string dim_str = "";
   std::stringstream ss;
   dim_vector dimensions;
 
   if (is_variable ())
     {
-      if (is_matrix_type ()) 
+      if (is_matrix_type ())
         {
 	  dimensions = dims ();
 	  dim = dimensions.length ();
 	}
     }
 
-  // Preparing dimension string
+  // Preparing dimension string.
+
   if ((dim <= print_dims || print_dims < 0) && print_dims != 0)
     {
       // Only printing the dimension string as: axbxc...
+
       if (dim == 0)
 	ss << "1x1";
       else
         {
-	  for (int i = 0; i < dim; i++) 
+	  for (int i = 0; i < dim; i++)
 	    {
 	      if (i == 0)
 		{
 		  if (dim == 1)
-		    // Looks like this is not going to happen in Octave, but ...
-		    ss << "1x" << dimensions (i);
+		    {
+		      // Looks like this is not going to happen in
+		      // Octave, but ...
+
+		      ss << "1x" << dimensions (i);
+		    }
 		  else
 		    ss << dimensions (i);
 		}
-	      else if (i < dim && dim != 1) 
+	      else if (i < dim && dim != 1)
 		ss << "x" << dimensions (i);
 	    }
 	}
     }
-  else 
+  else
     {
-      // Printing dimension string as: a-D
+      // Printing dimension string as: a-D.
+
       ss << dim << "-D";
     }
 
@@ -546,11 +556,12 @@ symbol_record::make_dimensions_string (int print_dims) const
   return dim_str;
 }
 
+// Print a line of information on a given symbol.
+
 void
 symbol_record::print_symbol_info_line (std::ostream& os,
 				       std::list<whos_parameter>& params) const
 {
-  // This method prints a line of information on a given symbol
   std::list<whos_parameter>::iterator i = params.begin ();
   while (i != params.end ())
     {
@@ -558,35 +569,40 @@ symbol_record::print_symbol_info_line (std::ostream& os,
 
       if (param.command != '\0')
         {
-	  // Do the actual printing
+	  // Do the actual printing.
+
 	  switch (param.modifier)
 	    {
 	    case 'l':
-	      os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
+	      os << std::setiosflags (std::ios::left)
+		 << std::setw (param.parameter_length);
 	      break;
 
 	    case 'r':
-	      os << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
+	      os << std::setiosflags (std::ios::right)
+		 << std::setw (param.parameter_length);
 	      break;
 
 	    case 'c':
 	      if (param.command == 's')
 	        {
-		  int front = param.first_parameter_length -
-		      dimensions_string_req_first_space (param.dimensions);
-		  int back = param.parameter_length -
-		      dimensions_string_req_total_space (param.dimensions) -
-		      front;
+		  int front = param.first_parameter_length
+		    - dimensions_string_req_first_space (param.dimensions);
+		  int back = param.parameter_length
+		    - dimensions_string_req_total_space (param.dimensions)
+		    - front;
 		  front = (front > 0) ? front : 0;
 		  back = (back > 0) ? back : 0;
 
-		  os << std::setiosflags (std::ios::left) 
+		  os << std::setiosflags (std::ios::left)
 		     << std::setw (front)
-		     << "" << std::resetiosflags (std::ios::left)
+		     << ""
+		     << std::resetiosflags (std::ios::left)
 		     << make_dimensions_string (param.dimensions)
 		     << std::setiosflags (std::ios::left)
 		     << std::setw (back)
-		     << "" << std::resetiosflags (std::ios::left);
+		     << ""
+		     << std::resetiosflags (std::ios::left);
 		}
 	      else
 	        {
@@ -596,7 +612,9 @@ symbol_record::print_symbol_info_line (std::ostream& os,
 	      break;
 
 	    default:
-	      error ("whos_line_format: modifier `%c' unknown", param.modifier);
+	      error ("whos_line_format: modifier `%c' unknown",
+		     param.modifier);
+
 	      os << std::setiosflags (std::ios::right)
 		 << std::setw (param.parameter_length);
 	    }
@@ -636,8 +654,8 @@ symbol_record::print_symbol_info_line (std::ostream& os,
 	    case 't':
 	      os << type_name ();
 	      break;
-	     
-	    default: 
+	    
+	    default:
 	      error ("whos_line_format: command `%c' unknown", param.command);
 	    }
 
@@ -1090,9 +1108,9 @@ symbol_table::subsymbol_list (const string_vector& pats,
 		      symbol_record *sym_ptr = new symbol_record ();
 		      octave_value value;
 		      int parse_status;
-	  
+	 
 		      value = eval_string (var_name, true, parse_status);
-	  
+	 
 		      sym_ptr->define (value);
 		      sym_ptr->rename (var_name);
 		      subsymbols(count++) = sym_ptr;
@@ -1212,7 +1230,7 @@ symbol_table::print_descriptor (std::ostream& os,
 	      break;
 
 	    case 'c':
-	      if (param.command != 's') 
+	      if (param.command != 's')
 	        {
 		  os << std::setiosflags (std::ios::left)
 		     << std::setw (param.parameter_length);
@@ -1229,7 +1247,7 @@ symbol_table::print_descriptor (std::ostream& os,
 	  if (param.command == 's' && param.modifier == 'c')
 	    {
 	      int a, b;
-	      
+	     
 	      if (param.modifier == 'c')
 	        {
 		  a = param.first_parameter_length - param.balance;
@@ -1345,8 +1363,8 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
       param.command = '\0';
 
       if (Vwhos_line_format[idx] == '%')
-        {  
-	  bool _error = false;
+        {
+	  bool error_encountered = false;
 	  param.modifier = 'r';
 	  param.parameter_length = 0;
 	  param.dimensions = 8;
@@ -1365,18 +1383,21 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	    error ("parameter without ; in whos_line_format");
 
 	  idx += cmd.length ();
-	  
+
+	  // XXX FIXME XXX -- use iostream functions instead of sscanf!
+
 	  if (cmd.find_first_of ("crl") != 1)
 	    items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d:%d;",
 			    &garbage, &param.command, &a, &b, &c, &balance);
 	  else
 	    items = sscanf (cmd.c_str (), "%c%c%c:%d:%d:%d:%d;",
-			    &garbage, &param.modifier, &param.command, &a, &b, &c, &balance) - 1;
-	  
+			    &garbage, &param.modifier, &param.command,
+			    &a, &b, &c, &balance) - 1;
+	 
 	  if (items < 2)
 	    {
 	      error ("whos_line_format: parameter structure without command in whos_line_format");
-	      _error = true;
+	      error_encountered = true;
 	    }
 
 	  // Insert data into parameter
@@ -1392,7 +1413,7 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	    {
 	      error ("whos_line_format: '%c' is not a command",
 		     param.command);
-	      _error = true;
+	      error_encountered = true;
 	    }
 
 	  if (param.command == 's')
@@ -1403,7 +1424,7 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	      // recalculated for each Size-command
 	      int j, first = 0, rest = 0, total = 0;
 	      param.dimensions = c;
-	      
+	     
 	      for (j = 0; j < len; j++)
 	      {
 		int first1 = symbols(j)->dimensions_string_req_first_space (param.dimensions);
@@ -1435,7 +1456,7 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 	    {
 	      error ("whos_line_format: modifier 'c' not available for command '%c'",
 		     param.command);
-	      _error = true;
+	      error_encountered = true;
 	    }
 
 	  // What happens if whos_line_format contains negative numbers
@@ -1445,12 +1466,12 @@ symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
 					  param.first_parameter_length);
 	  param.parameter_length = ((a < 0) ? 0 :
 				    (param.parameter_length <
-				     param_length (pos_s)) ? 
+				     param_length (pos_s)) ?
 				    param_length (pos_s) :
 				    param.parameter_length);
 
 	  // Parameter will not be pushed into parameter list if ...
-	  if (! _error)
+	  if (! error_encountered)
 	    params.push_back (param);
 	}
       else
@@ -1479,23 +1500,24 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 			  std::ostream& os, bool show_verbose,
 			  unsigned type, unsigned scope)
 {
-  // This method prints information for sets of symbols, but only one set
-  // at a time (like, for instance: all variables, og all
-  // built-in-functions)
+  // This method prints information for sets of symbols, but only one
+  // set at a time (like, for instance: all variables, or all
+  // built-in-functions).
 
-  // This method invokes print_symbol_info_line to print info on every symbol
+  // This method invokes print_symbol_info_line to print info on every
+  // symbol.
 
   int status = 0;
 
   if (show_verbose)
     {
-      // XXX FIXME XXX Should separate argv to lists with and without dots
-      Array<symbol_record *> _symbols = symbol_list (argv, type, scope);
-      Array<symbol_record *> _subsymbols = subsymbol_list (argv, type, scope);
+      // XXX FIXME XXX Should separate argv to lists with and without dots.
+      Array<symbol_record *> xsymbols = symbol_list (argv, type, scope);
+      Array<symbol_record *> xsubsymbols = subsymbol_list (argv, type, scope);
 
-      int sym_len = _symbols.length (), subsym_len = _subsymbols.length (), 
+      int sym_len = xsymbols.length (), subsym_len = xsubsymbols.length (),
 	len = sym_len + subsym_len;
-  
+ 
       Array<symbol_record *> symbols (len);
 
       if (len > 0)
@@ -1503,12 +1525,12 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 	  int bytes = 0, elements = 0, i;
 	  std::list<whos_parameter> params;
 
-	  // Joining symbolic tables
+	  // Joining symbolic tables.
 	  for (i = 0; i < sym_len; i++)
-	    symbols(i) = _symbols(i);
+	    symbols(i) = xsymbols(i);
 
 	  for (i = 0; i < subsym_len; i++)
-	    symbols(i+sym_len) = _subsymbols(i);
+	    symbols(i+sym_len) = xsubsymbols(i);
 
 	  os << "\n" << header << "\n\n";
 
@@ -1527,7 +1549,7 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 	      bytes += symbols(j)->byte_size ();
 	    }
 
-	  os << "\nTotal is " << elements 
+	  os << "\nTotal is " << elements
 	     << " element" << ((elements > 1) ? "s" : "") << " using "
 	     << bytes << " byte" << ((bytes > 1) ? "s" : "") << "\n";
 
@@ -1539,7 +1561,7 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
       string_vector symbols = name_list (argv, 1, type, scope);
 
       if (! symbols.empty ())
-	{     
+	{
 	  os << "\n" << header << "\n\n";
 
 	  symbols.list_in_columns (os);

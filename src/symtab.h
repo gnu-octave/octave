@@ -48,8 +48,12 @@ class symbol_table;
 struct
 whos_parameter
 {
-  char command, modifier;
-  int parameter_length, first_parameter_length, dimensions, balance;
+  char command;
+  char modifier;
+  int parameter_length;
+  int first_parameter_length;
+  int dimensions;
+  int balance;
   std::string text;
   std::string line;
 };

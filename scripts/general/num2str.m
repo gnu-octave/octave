@@ -50,7 +50,7 @@ function retval = num2str (x, arg)
       ## Setup a suitable format string
       if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
 	dgt1 = ceil (log10 (max (max (abs (real (x(:)))),
-			     max (abs (imag (x(:))))))) + 1;
+				 max (abs (imag (x(:))))))) + 1;
 	dgt2 = dgt1 - (min (real (x(:))) >= 0);
 	fmt = sprintf("%%%dd%%+-%ddi  ", dgt2, dgt1);
       elseif (isscalar (x))
@@ -61,27 +61,27 @@ function retval = num2str (x, arg)
     endif
 
     ## Manipulate the complex value to have real values in the odd
-    ## columns and imaginary values in the even columns
+    ## columns and imaginary values in the even columns.
     sz = size (x);
-    nc = sz (2);
+    nc = sz(2);
     nd = ndims (x);
-    perm = fix ([1 : 0.5 : nc + 0.5]);
-    perm (2 : 2 : 2*nc) = perm(2 : 2 : 2*nc) + nc;
+    perm = fix ([1:0.5:nc+0.5]);
+    perm(2:2:2*nc) = perm(2:2:2*nc) + nc;
     idx = cell ();
     for i = 1:nd
       idx {i} = 1:sz(i);
     endfor
-    idx {2} = perm;
+    idx{2} = perm;
     x = horzcat (real(x), imag(x));
-    x = x (idx{:});
+    x = x(idx{:});
     
-    fmt = strcat (deblank(repmat (fmt, 1, nc)), "\n");
-    tmp = sprintf (fmt, permute (x, [2, 1, 3 : nd]));
+    fmt = strcat (deblank (repmat (fmt, 1, nc)), "\n");
+    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
 
     ## Put the "i"'s where they are supposed to be.
     while (true)
       tmp2 = strrep (tmp, " i\n", "i\n");
-      if (length(tmp) == length(tmp2))
+      if (length (tmp) == length (tmp2))
 	break;
       else
 	tmp = tmp2;
@@ -107,12 +107,12 @@ function retval = num2str (x, arg)
       endif
     else
       if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
-	if (max(abs(x(:))) == 0)
+	if (max (abs (x(:))) == 0)
 	  dgt = 1;
 	else
-	  dgt = floor(log10(max(abs(x(:))))) + (min (real (x(:))) < 0) + 1;
+	  dgt = floor (log10 (max (abs(x(:))))) + (min (real (x(:))) < 0) + 1;
 	endif
-	fmt = sprintf("%%%dd  ",dgt);
+	fmt = sprintf ("%%%dd  ", dgt);
       elseif (isscalar (x))
 	fmt = "%.4g";
       else
@@ -120,7 +120,8 @@ function retval = num2str (x, arg)
       endif
     endif
     fmt = strcat (deblank (repmat (fmt, 1, columns (x))), "\n");
-    tmp = sprintf (fmt, permute (x, [2, 1, 3 : ndims(x)]));
+    nd = ndims (x);
+    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
     tmp(length (tmp)) = "";
     retval = split (tmp, "\n");
   endif

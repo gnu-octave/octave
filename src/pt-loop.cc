@@ -246,7 +246,7 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
     { \
       int ndims = dv.length (); \
       Array<idx_vector> idx; \
-      int steps = dv.numel () / dv (0);	\
+      int steps = dv.numel () / dv (0); \
       idx.resize (ndims, idx_vector (1)); \
       idx (0) = idx_vector (':'); \
  \
@@ -254,7 +254,7 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 	{ \
 	  MAYBE_DO_BREAKPOINT; \
  \
-	  octave_value val (arg.index(idx));	\
+	  octave_value val (arg.index(idx)); \
  \
 	  bool quit = false; \
  \
@@ -266,11 +266,11 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
  \
 	  for (int j = 1; j < ndims; j++) \
 	    { \
-	      idx(j) = idx_vector (idx(j)(0) + 2);	\
-	      if (idx(j)(0) < dv(j))			\
+	      idx(j) = idx_vector (idx(j)(0) + 2); \
+	      if (idx(j)(0) < dv(j)) \
 		break; \
 	      else \
-		idx(j) = idx_vector (1);	\
+		idx(j) = idx_vector (1); \
 	    } \
 	} \
     } \

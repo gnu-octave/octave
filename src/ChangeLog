@@ -1,3 +1,7 @@
+2004-07-23  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (whos_parameter): Move decl here, from symtab.h.
+
 2004-07-23  Oyvind Kristiansen  <oyvinkri@stud.ntnu.no>
 
 	* symtab.cc (symbol_record::subsymbols_list): New method.

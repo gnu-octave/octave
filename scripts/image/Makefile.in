@@ -27,8 +27,11 @@ DISTFILES = Makefile.in $(SOURCES)
 FCN_FILES = $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-all:
+all: octtopnm
 .PHONY: all
+
+octtopnm: octtopnm.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o octave
 
 install: all
 	if test -d $(fcnfiledir)/$(script_sub_dir) ; then true ; \
@@ -37,12 +40,16 @@ install: all
 	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	done
+	if test -d $(archlibdir) ; then true ; \
+	else $(TOPDIR)/mkpath $(archlibdir) ; fi
+	$(INSTALL_PROGRAM) octtopnm $(archlibdir)/octtopnm
 .PHONY: install
 
 uninstall:
 	for f in $(FCN_FILES_NO_DIR) ; \
 	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	done
+	rm -f $(archlibdir)/octtopnm
 .PHONY: uninstall
 
 clean:

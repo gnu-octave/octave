@@ -501,6 +501,9 @@ get_fcn_file_names (int& num, int no_suffix)
   return retval;
 }
 
+// Convert X to the nearest integer value.  Should not pass NaN to
+// this function.
+
 int
 NINT (double x)
 {

@@ -357,7 +357,15 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
     case complex_scalar_constant:
     case scalar_constant:
       {
-	int i = NINT (tmp_i.double_value ());
+	double dval = tmp_i.double_value ();
+
+	if (xisnan (dval))
+	  {
+	    error ("NaN is invalid as a matrix index");
+	    return;
+	  }
+
+	int i = NINT (dval);
 	int idx = i - 1;
 
 	if (rhs_nr == 0 && rhs_nc == 0)

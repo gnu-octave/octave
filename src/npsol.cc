@@ -729,8 +729,15 @@ do_npsol_option (char *keyword, double val)
 	  if (list->d_set_fcn)
 	    (npsol_opts.*list->d_set_fcn) (val);
 	  else
-	    (npsol_opts.*list->i_set_fcn) (NINT (val));
-
+	    {
+	      if (xisnan (val))
+		{
+		  error ("npsol_options: %s: expecting integer, found NaN",
+			 keyword);
+		}
+	      else
+		(npsol_opts.*list->i_set_fcn) (NINT (val));
+	    }
 	  return;
 	}
       list++;

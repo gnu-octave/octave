@@ -455,9 +455,14 @@ DEFUN ("pause", Fpause, Spause, 1, 1,
 
 	    if (! error_state)
 	      {
-		int delay = NINT (dval);
-		if (delay > 0)
-		  sleep (delay);
+		if (xisnan (dval))
+		  warning ("pause: NaN is an invalid delay");
+		else
+		  {
+		    int delay = NINT (dval);
+		    if (delay > 0)
+		      sleep (delay);
+		  }
 	      }
 	  }
 	  break;

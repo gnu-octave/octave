@@ -165,7 +165,7 @@ return_valid_file (const tree_constant& arg)
 
       if (! error_state)
 	{
-	  if ((double) NINT (file_num) != file_num)
+	  if (D_NINT (file_num) != file_num)
 	    error ("file number not an integer value");
 	  else
 	    {
@@ -398,6 +398,12 @@ fgets_internal (const Octave_object& args, int nargout)
   if (error_state)
     return retval;
 
+  if (xisnan (dlen))
+    {
+      error ("fgets: NaN invalid as length");
+      return retval;
+    }
+
   int length = NINT (dlen);
 
   if ((double) length != dlen)
@@ -620,6 +626,12 @@ fseek_internal (const Octave_object& args)
   if (error_state)
     return retval;
 
+  if (xisnan (doff))
+    {
+      error ("fseek: NaN invalid as offset");
+      return retval;
+    }
+
   long offset = NINT (doff);
 
   if ((double) offset != doff)
@@ -634,6 +646,12 @@ fseek_internal (const Octave_object& args)
 
       if (error_state)
 	return retval;
+
+      if (xisnan (dorig))
+	{
+	  error ("fseek: NaN invalid as origin");
+	  return retval;
+	}
 
       origin = NINT (dorig);
 
@@ -774,7 +792,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
       double tmp_len = args(fmt_arg_count++).double_value ();
 
-      if (error_state)
+      if (error_state || xisnan (tmp_len))
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
@@ -815,7 +833,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
       double tmp_len = args(fmt_arg_count++).double_value ();
 
-      if (error_state)
+      if (error_state || xisnan (tmp_len))
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
@@ -858,9 +876,12 @@ process_printf_format (const char *s, const Octave_object& args,
       {
 	double d = args(fmt_arg_count++).double_value ();
 
+	if (error_state || xisnan (d))
+	  goto invalid_conversion;
+
 	int val = NINT (d);
 
-	if (error_state || (double) val != d)
+	if ((double) val != d)
 	  goto invalid_conversion;
 	else
 	  {
@@ -1618,24 +1639,53 @@ fread_internal (const Octave_object& args, int nargout)
 
       if (xisinf (dnr))
 	{
-	  nc = NINT (dnc);
-	  int n = num_items_remaining (fptr, prec);
-	  nr = n / nc;
-	  if (n > nr * nc)
-	    nr++;
+	  if (xisnan (dnc))
+	    {
+	      error ("fread: NaN invalid as the number of columns");
+	      return retval;
+	    }
+	  else
+	    {
+	      nc = NINT (dnc);
+	      int n = num_items_remaining (fptr, prec);
+	      nr = n / nc;
+	      if (n > nr * nc)
+		nr++;
+	    }
 	}
       else if (xisinf (dnc))
 	{
-	  nr = NINT (dnr);
-	  int n = num_items_remaining (fptr, prec);
-	  nc = n / nr;
-	  if (n > nc * nr)
-	    nc++;
+	  if (xisnan (dnr))
+	    {
+	      error ("fread: NaN invalid as the number of rows");
+	      return retval;
+	    }
+	  else
+	    {
+	      nr = NINT (dnr);
+	      int n = num_items_remaining (fptr, prec);
+	      nc = n / nr;
+	      if (n > nc * nr)
+		nc++;
+	    }
 	}
       else
 	{
-	  nr = NINT (dnr);
-	  nc = NINT (dnc);
+	  if (xisnan (dnr))
+	    {
+	      error ("fread: NaN invalid as the number of rows");
+	      return retval;
+	    }
+	  else
+	    nr = NINT (dnr);
+
+	  if (xisnan (dnc))
+	    {
+	      error ("fread: NaN invalid as the number of columns");
+	      return retval;
+	    }
+	  else
+	    nc = NINT (dnc);
 	}
     }
   else

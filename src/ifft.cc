@@ -58,7 +58,13 @@ DEFUN_DLD_BUILTIN ("ifft", Fifft, Sifft, 3, 1,
     n_points = arg.columns ();
 
   if (nargin == 2)
-    n_points = NINT (args(1).double_value ());
+    {
+      double dval = args(1).double_value ();
+      if (xisnan (dval))
+	error ("fft: NaN is invalid as the N_POINTS");
+      else
+	n_points = NINT (dval);
+    }
 
   if (error_state)
     return retval;

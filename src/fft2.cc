@@ -57,14 +57,26 @@ two dimensional fast fourier transform of a vector")
 
   int n_rows = arg.rows ();
   if (nargin > 1)
-    n_rows = NINT (args(1).double_value ());
+    {
+      double dval = args(1).double_value ();
+      if (xisnan (dval))
+	error ("fft2: NaN is invalid as N_ROWS");
+      else
+	n_rows = NINT (dval);
+    }
 
   if (error_state)
     return retval;
 
   int n_cols = arg.columns ();
   if (nargin > 2)
-    n_cols = NINT (args(2).double_value ());
+    {
+      double dval = args(2).double_value ();
+      if (xisnan (dval))
+	error ("fft2: NaN is invalid as N_COLS");
+      else
+	n_cols = NINT (dval);
+    }
 
   if (error_state)
     return retval;

@@ -339,8 +339,15 @@ do_qpsol_option (char *keyword, double val)
 	  if (list->d_set_fcn)
 	    (qpsol_opts.*list->d_set_fcn) (val);
 	  else
-	    (qpsol_opts.*list->i_set_fcn) (NINT (val));
-
+	    {
+	      if (xisnan (val))
+		{
+		  error ("qpsol_options: %s: expecting integer, found NaN",
+			 keyword);
+		}
+	      else
+		(qpsol_opts.*list->i_set_fcn) (NINT (val));
+	    }
 	  return;
 	}
       list++;

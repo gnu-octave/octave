@@ -164,11 +164,25 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 		    return retval;
 		  }
 	      }
-	    else if (arg.const_type () == magic_colon
-		     || (arg.is_scalar_type ()
-			 && NINT (arg.double_value ()) == 1))
+	    else if (arg.const_type () == magic_colon)
 	      {
 		cols = 1;
+	      }
+	    else if (arg.is_scalar_type ())
+	      {
+		double dval = arg.double_value ();
+		if (! xisnan (dval))
+		  {
+		    int ival = NINT (dval);
+		    if (ival == 1)
+		      cols = 1;
+		    else if (ival == 0)
+		      cols = 0;
+		    else
+		      break;;
+		  }
+		else
+		  break;
 	      }
 	    else
 	      break;
@@ -198,16 +212,26 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 		    return retval;
 		  }
 	      }
-	    else if (arg.const_type () == magic_colon
-		     || (arg.is_scalar_type ()
-			 && NINT (arg.double_value ()) == 1))
+	    else if (arg.const_type () == magic_colon)
 	      {
 		rows = 1;
 	      }
-	    else if (arg.is_scalar_type ()
-		     && NINT (arg.double_value ()) == 0)
+	    else if (arg.is_scalar_type ())
 	      {
-		return Matrix ();
+		double dval = arg.double_value ();
+
+		if (! xisnan (dval))
+		  {
+		    int ival = NINT (dval);
+		    if (ival == 1)
+		      rows = 1;
+		    else if (ival == 0)
+		      rows = 0;
+		    else
+		      break;
+		  }
+		else
+		  break;
 	      }
 	    else
 	      break;
@@ -441,14 +465,24 @@ TC_REP::fortran_style_matrix_index (const tree_constant& i_arg) const
     case complex_scalar_constant:
     case scalar_constant:
       {
-	int i = NINT (tmp_i.double_value ());
-	int ii = fortran_row (i, nr) - 1;
-	int jj = fortran_column (i, nr) - 1;
-	if (index_check (i-1, "") < 0)
-	  return tree_constant ();
-	if (range_max_check (i-1, nr * nc) < 0)
-	  return tree_constant ();
-	retval = do_matrix_index (ii, jj);
+	double dval = tmp_i.double_value ();
+
+	if (xisnan (dval))
+	  {
+	    ::error ("NaN is invalid as a matrix index");
+	    return tree_constant ();
+	  }
+	else
+	  {
+	    int i = NINT (dval);
+	    int ii = fortran_row (i, nr) - 1;
+	    int jj = fortran_column (i, nr) - 1;
+	    if (index_check (i-1, "") < 0)
+	      return tree_constant ();
+	    if (range_max_check (i-1, nr * nc) < 0)
+	      return tree_constant ();
+	    retval = do_matrix_index (ii, jj);
+	  }
       }
       break;
 

@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string.h>
 
 #include "user-prefs.h"
+#include "mappers.h"
 #include "error.h"
 #include "variables.h"
 #include "utils.h"
@@ -483,7 +484,8 @@ set_output_max_field_width (void)
   static int kludge = 0;
 
   double val;
-  if (builtin_real_scalar_variable ("output_max_field_width", val) == 0)
+  if (builtin_real_scalar_variable ("output_max_field_width", val) == 0
+      && ! xisnan (val))
     {
       int ival = NINT (val);
       if (ival > 0 && (double) ival == val)
@@ -512,7 +514,8 @@ set_output_precision (void)
   static int kludge = 0;
 
   double val;
-  if (builtin_real_scalar_variable ("output_precision", val) == 0)
+  if (builtin_real_scalar_variable ("output_precision", val) == 0
+      && ! xisnan (val))
     {
       int ival = NINT (val);
       if (ival >= 0 && (double) ival == val)
@@ -541,7 +544,8 @@ set_save_precision (void)
   static int kludge = 0;
 
   double val;
-  if (builtin_real_scalar_variable ("save_precision", val) == 0)
+  if (builtin_real_scalar_variable ("save_precision", val) == 0
+      && ! xisnan (val))
     {
       int ival = NINT (val);
       if (ival >= 0 && (double) ival == val)

@@ -57,6 +57,12 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 7, 4,
   if (error_state)
     return retval;
 
+  if (xisnan (tmp))
+    {
+      error ("colloc: NaN is invalid as NCOL");
+      return retval;
+    }
+
   int ncol = NINT (tmp);
   if (ncol < 0)
     {

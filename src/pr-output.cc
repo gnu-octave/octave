@@ -667,7 +667,8 @@ all_elements_are_ints (const Range& r)
   double b = r.base ();
   double i = r.inc ();
 
-  return ((double) NINT (b) == b && (double) NINT (i) == i);
+  return (! (xisnan (b) || xisnan (i))
+	  && (double) NINT (b) == b && (double) NINT (i) == i);
 }
 
 static inline void

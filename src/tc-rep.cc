@@ -646,19 +646,28 @@ int
 TC_REP::valid_as_scalar_index (void) const
 {
   return (type_tag == magic_colon
-	  || (type_tag == scalar_constant && NINT (scalar) == 1)
+	  || (type_tag == scalar_constant 
+	      && ! xisnan (scalar)
+	      && NINT (scalar) == 1)
 	  || (type_tag == range_constant
-	      && range->nelem () == 1 && NINT (range->base ()) == 1));
+	      && range->nelem () == 1
+	      && ! xisnan (range->base ())
+	      && NINT (range->base ()) == 1));
 }
 
 int
 TC_REP::valid_as_zero_index (void) const
 {
-  return ((type_tag == scalar_constant  && NINT (scalar) == 0)
+  return ((type_tag == scalar_constant
+	   && ! xisnan (scalar)
+	   && NINT (scalar) == 0)
 	  || (type_tag == matrix_constant
-	      && matrix->rows () == 0 && matrix->columns () == 0)
+	      && matrix->rows () == 0
+	      && matrix->columns () == 0)
 	  || (type_tag == range_constant
-	      && range->nelem () == 1 && NINT (range->base ()) == 0));
+	      && range->nelem () == 1
+	      && ! xisnan (range->base ())
+	      && NINT (range->base ()) == 0));
 }
 
 int
@@ -1156,12 +1165,21 @@ TC_REP::convert_to_str (void) const
     case scalar_constant:
       {
 	double d = double_value ();
-	int i = NINT (d);
+
+	if (xisnan (d))
+	  {
+	    ::error ("invalid conversion from NaN to character");
+	    return retval;
+	  }
+	else
+	  {
+	    int i = NINT (d);
 // Warn about out of range conversions?
-	char s[2];
-	s[0] = (char) i;
-	s[1] = '\0';
-	retval = tree_constant (s);
+	    char s[2];
+	    s[0] = (char) i;
+	    s[1] = '\0';
+	    retval = tree_constant (s);
+	  }
       }
       break;
 
@@ -1189,9 +1207,19 @@ TC_REP::convert_to_str (void) const
 		for (int i = 0; i < len; i++)
 		  {
 		    double d = v.elem (i);
-		    int ival = NINT (d);
+
+		    if (xisnan (d))
+		      {
+			::error ("invalid conversion from NaN to character");
+			delete [] s;
+			return retval;
+		      }
+		    else
+		      {
+			int ival = NINT (d);
 // Warn about out of range conversions?
-		    s[i] = (char) ival;
+			s[i] = (char) ival;
+		      }
 		  }
 		retval = tree_constant (s);
 		delete [] s;
@@ -1211,9 +1239,19 @@ TC_REP::convert_to_str (void) const
 	for (int i = 0; i < nel; i++)
 	  {
 	    double d = b + i * incr;
-	    int ival = NINT (d);
+
+	    if (xisnan (d))
+	      {
+		::error ("invalid conversion from NaN to character");
+		delete [] s;
+		return retval;
+	      }
+	    else
+	      {
+		int ival = NINT (d);
 // Warn about out of range conversions?
-	    s[i] = (char) ival;
+		s[i] = (char) ival;
+	      }
 	  }
 	retval = tree_constant (s);
 	delete [] s;

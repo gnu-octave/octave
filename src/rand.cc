@@ -185,22 +185,31 @@ rand (SEED, N)        -- set seed")
 	}
       else if (tmp.is_scalar_type ())
 	{
-	  m = n = NINT (tmp.double_value ());
+	  double dval = tmp.double_value ();
 
-	  if (! error_state)
-	    goto gen_matrix;
+	  if (xisnan (dval))
+	    {
+	      error ("rand: NaN is invalid a matrix dimension");
+	    }
+	  else
+	    {
+	      m = n = NINT (tmp.double_value ());
+
+	      if (! error_state)
+		goto gen_matrix;
+	    }
 	}
       else if (tmp.is_range ())
 	{
 	  Range r = tmp.range_value ();
 	  n = 1;
-	  m = NINT (r.nelem ());
+	  m = r.nelem ();
 	  goto gen_matrix;
 	}
       else if (tmp.is_matrix_type ())
 	{
-	  n = NINT (args(0).rows ());
-	  m = NINT (args(0).columns ());
+	  n = args(0).rows ();
+	  m = args(0).columns ();
 	  goto gen_matrix;
 	}
       else
@@ -221,14 +230,23 @@ rand (SEED, N)        -- set seed")
 	}
       else
 	{
-	  n = NINT (args(0).double_value ());
+	  double dval = args(0).double_value ();
 
-	  if (! error_state)
+	  if (xisnan (dval))
 	    {
-	      m = NINT (args(1).double_value ());
+	      error ("rand: NaN is invalid as a matrix dimension");
+	    }
+	  else
+	    {
+	      n = NINT (dval);
 
 	      if (! error_state)
-		goto gen_matrix;
+		{
+		  m = NINT (args(1).double_value ());
+
+		  if (! error_state)
+		    goto gen_matrix;
+		}
 	    }
 	}
     }

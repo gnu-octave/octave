@@ -563,7 +563,14 @@ subplot_using::eval (int ndim, int n_max)
 	      if (error_state)
 		return -1;
 
+	      if (xisnan (val_tmp))
+		{
+		  ::error ("NaN is invalid as a column specifier");
+		  return -1;
+		}
+
 	      int n = NINT (val_tmp);
+
 	      if (n < 1 || n_max > 0 && n > n_max)
 		{
 		  ::error ("using: column %d out of range", n); 
@@ -682,7 +689,13 @@ subplot_style::print (ostrstream& plot_buf)
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
-	      plot_buf << " " << NINT (val);
+	      if (xisnan (val))
+		{
+		  ::error ("NaN is invalid a plotting line style");
+		  return -1;
+		}
+	      else
+		plot_buf << " " << NINT (val);
 	    }
 	  else
 	    {
@@ -697,7 +710,13 @@ subplot_style::print (ostrstream& plot_buf)
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
-	      plot_buf << " " << NINT (val);
+	      if (xisnan (val))
+		{
+		  ::error ("NaN is invalid a plotting point style");
+		  return -1;
+		}
+	      else
+		plot_buf << " " << NINT (val);
 	    }
 	  else
 	    {

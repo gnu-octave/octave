@@ -8,7 +8,7 @@
 # The University of Texas at Austin
 
 # ask octave to tell us the version number
-version=`./octave -v 2>/dev/null | sed -e 's/[^0-9.]*\([0-9.]*\).*/\1/' -e q`
+version=`./octave -v 2>/dev/null | awk '/version/ { print $NF }'`
 
 if test -z "$version"
 then
@@ -115,6 +115,7 @@ Installing octave in subdirectories of $prefix.
 
        Binaries: $bindir
  Function files: $fcnfiledir
+    Demo images: $imagedir
      Info files: $infodir
        Man page: $mandir
 
@@ -144,11 +145,20 @@ fi
 
 echo "installing function files in $fcnfiledir"
 ( cd scripts
-  ../mkinstalldirs `find . -type d | sed "s,^,$fcnfiledir/,"`
+  ../mkinstalldirs `find . -type d | sed -e 's,^\./,,' -e "s,^,$fcnfiledir/,"`
   for f in `find . -name '*.m'`
   do
     cp $f $fcnfiledir/$f
     chmod 644 $fcnfiledir/$f
+  done )
+
+echo "installing image files in $imagedir"
+( cd scripts
+  ../mkinstalldirs `find . -type d | sed -e 's,^\./,,' -e "s,^,$imagedir/,"`
+  for f in `find . -name '*.img'`
+  do
+    cp $f $iamgedir/$f
+    chmod 644 $imagedir/$f
   done )
 
 echo "installing info files in $infodir"

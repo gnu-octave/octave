@@ -438,6 +438,8 @@ install_mapper_functions (void)
 
   DEFUN_MAPPER ("tanh", Stanh, 0, 0.0, 0.0, tanh, 0, tanh,
     "tanh (X): compute tanh (X) for each element of X");
+
+  DEFALIAS (gammaln, lgamma);
 }
 
 /*

@@ -58,9 +58,11 @@
 	* Cell.h (Cell::reshape (const dim_vector&)): New forwarding
 	function for return type conversion.
 
-	* ov-int16.cc, ov-int32.cc, ov-int64.cc, ov-int8.cc, ov-uint16.cc,
-	ov-uint32.cc, ov-uint64.cc, ov-uint8.cc, ov-type-conv.h,
-	OPERATORS/op-int-conv.cc, OPERATORS/op-double-conv.cc, 
+	* ov-int16.cc, ov-int16.h, ov-int32.cc, ov-int32.h, ov-int64.cc,
+	ov-int64.h, ov-int8.cc, ov-int8.h, ov-uint16.cc, ov-uint16.h,
+	ov-uint32.cc, ov-uint32.h, ov-uint64.cc, ov-uint64.h, ov-uint8.cc,
+	ov-uint8.h, ov-type-conv.h, ov-int-traits.h,
+	OPERATORS/op-int-conv.cc, OPERATORS/op-double-conv.cc,
 	OPERATORS/op-i16-i16.cc, OPERATORS/op-i32-i32.cc,
 	OPERATORS/op-i64-i64.cc, OPERATORS/op-i8-i8.cc,
 	OPERATORS/op-ui16-ui16.cc, OPERATORS/op-ui32-ui32.cc,

@@ -757,10 +757,19 @@ parse_fcn_file (int exec_script, const string& ff)
 	{
 	  // The value of `reading_fcn_file' will be restored to the
 	  // proper value when we unwind from this frame.
-
 	  reading_fcn_file = old_reading_fcn_file_state;
 
+	  // XXX FIXME XXX -- we shouldn't need both the
+	  // octave_command_history object and the
+	  // user_pref.saving_history variable...
+	  octave_command_history.ignore_entries ();
+
+	  add_unwind_protect (restore_command_history, 0);
+
+	  unwind_protect_int (user_pref.saving_history);
 	  unwind_protect_int (reading_script_file);
+
+	  user_pref.saving_history = 0;
 	  reading_script_file = 1;
 
 	  parse_and_execute (ffile, 1);

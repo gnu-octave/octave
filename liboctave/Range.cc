@@ -194,7 +194,7 @@ tfloor (double x, double ct)
   t1 = ct > t1 ? ct : t1;
   t1 = floor (x + t1);
 
-  if (x <= 0.0 || t1 - x < rmax)
+  if (x <= 0.0 || (t1 - x) < rmax)
     return t1;
   else
     return t1 - 1.0;
@@ -217,7 +217,7 @@ Range::nelem_internal (void) const
 {
   double ct = 3.0 * DBL_EPSILON;
 
-  double tmp = round ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
+  double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 
   int n_intervals = (int) (tmp > 0.0 ? tmp : 0);
 

@@ -99,7 +99,7 @@ force_global (char *name)
 	{
 	  retval = global_sym_tab->lookup (name, 1, 0);
 	  retval->mark_as_forced_global ();
-	  retval->alias (sr);
+	  retval->alias (sr, 1);
 	  curr_sym_tab->clear (name);
 	}
     }

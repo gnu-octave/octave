@@ -20,7 +20,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-%x HELP_FCN
 %s TEXT_FCN
 %s MATRIX
 
@@ -154,7 +153,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // parser too.
 %}
 
-<HELP_FCN>{NL} |
 <TEXT_FCN>{NL} {
     BEGIN 0;
     current_input_column = 1;
@@ -184,7 +182,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     return handle_string (yytext[0], 1);
   }
 
-<HELP_FCN>[^ \t\n]*{S}*	|
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
     char *tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, TEXT);
@@ -1759,9 +1756,7 @@ handle_identifier (char *tok, int spc_gobbled)
     {
       BEGIN TEXT_FCN;
 
-      if (strcmp (tok, "help") == 0)
-	BEGIN HELP_FCN;
-      else if (strcmp (tok, "set") == 0)
+      if (strcmp (tok, "set") == 0)
 	doing_set = 1;
     }
 

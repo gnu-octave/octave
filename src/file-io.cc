@@ -201,7 +201,8 @@ return_valid_file (const tree_constant& arg)
 }
 
 static Pix 
-fopen_file_for_user (const tree_constant& arg, const char *mode)
+fopen_file_for_user (const tree_constant& arg, const char *mode,
+		     const char *warn_for)
 {
   char *file_name = arg.string_value ();
 
@@ -223,7 +224,7 @@ fopen_file_for_user (const tree_constant& arg, const char *mode)
 	}
     }
 
-  error ("problems automatically opening file for user");
+  error ("%s: unable to open file `%s'", warn_for, file_name);
 
   return (Pix) NULL;
 }
@@ -246,7 +247,7 @@ file_io_get_file (const tree_constant arg, const char *mode,
 	  if (status == 0)
 	    {
 	      if ((buffer.st_mode & S_IFREG) == S_IFREG)
-		p = fopen_file_for_user (arg, mode);
+		p = fopen_file_for_user (arg, mode, warn_for);
 	      else
 		error ("%s: invalid file type", warn_for);
 	    }
@@ -418,7 +419,7 @@ fopen_internal (const tree_constant *args)
 
   if (! args[2].is_string_type ())
     {
-      error ("fopen: mode must be a string");
+      error ("fopen: file mode must be a string");
       return retval;
     }
 
@@ -442,7 +443,7 @@ fopen_internal (const tree_constant *args)
 
   if (file_ptr == (FILE *) NULL)
     {
-      error ("fopen: file does not exist");
+      error ("fopen: unable to open file `%s'", name);
       return retval;
     }
 

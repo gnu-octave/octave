@@ -46,10 +46,11 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 	ColumnVector tmp (count);
 	for (int i = 0; i < count; i++)
 	  tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i);
-	retval(0) = tree_constant (tmp, 1);
-// If you want this to work more like Matlab, use the following line
-// instead of the previous one.
-//	retval(0) = tree_constant (tmp, (nr != 1));
+
+// If the original argument was a row vector, force a row vector of
+// indices to be returned.
+
+	retval(0) = tree_constant (tmp, (nr != 1));
       }
       break;
 

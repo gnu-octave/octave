@@ -5,7 +5,7 @@
 ;; Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
 ;; Maintainer: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-;; Version: 0.8.5
+;; Version: 0.8.6
 ;; Keywords: languages
 
 ;; This file is not yet a part of GNU Emacs.  It is part of Octave.
@@ -34,7 +34,7 @@
 
 ;;; Code:
 
-(defconst octave-version "0.8.5")
+(defconst octave-version "0.8.6")
 (defconst octave-help-address
   "Kurt.Hornik@ci.tuwien.ac.at"
   "Address for Octave mode bug reports")
@@ -483,10 +483,6 @@ including a reproducible test case and send the message."
   (setq comment-start-skip octave-comment-start-skip)
   (make-local-variable 'comment-indent-function)
   (setq comment-indent-function 'octave-comment-indent)
-  (make-local-variable 'block-comment-start)
-  (setq block-comment-start octave-block-comment-start)
-  (make-local-variable 'block-comment-end)
-  (setq block-comment-end "")
 
   (make-local-variable 'parse-sexp-ignore-comments)
   (setq parse-sexp-ignore-comments t)
@@ -1131,7 +1127,7 @@ automatically breaks the line at a previous space, inserting
 	       (delete-region (match-beginning 0) (match-end 0))
 	       (fixup-whitespace)
 	       (move-to-column cfc))))
-       (skip-syntax-forward "\\w")
+       (forward-word 1)
        (delete-horizontal-space)
        (if (or (< (current-column) cfc)
 	       (and (= (current-column) cfc) (eolp)))

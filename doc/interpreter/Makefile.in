@@ -40,7 +40,7 @@ TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO)
 
 FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
 
-DISTFILES = Makefile.in dir munge-texi.cc octave.1 \
+DISTFILES = Makefile.in dir munge-texi.cc Map-s.cc octave.1 \
   $(SOURCES) $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
@@ -67,6 +67,9 @@ all: octave.info octave.dvi octave.ps octave_toc.html
 DOCSTRINGS = $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
 
 $(TEXINFO): $(DOCSTRINGS) munge-texi
+
+munge-texi: munge-texi.o Map-s.o
+	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_LDFLAGS) -o $@ $^
 
 # Kluge: if the DOCSTRING files are present, assume they are current.
 $(DOCSTRINGS):

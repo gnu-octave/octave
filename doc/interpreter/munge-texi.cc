@@ -1,12 +1,37 @@
+/*
+
+Copyright (C) 1999 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
 #include <iostream.h>
 #include <fstream.h>
 #include <string>
 #include <cctype>
-#include <map>
+
+// Someday, I hope that standard template library stuff will just
+// work.  Until then...
+#include "Map.h"
 
 static const char doc_delim = '';
 
-static map<string, string> help_text;
+static CHMap<string> help_text = CHMap<string> (string ());
 
 static void
 fatal (const string& msg)
@@ -66,7 +91,7 @@ process_doc_file (const string& fname)
 	    {
 	      string doc_string = extract_docstring (infile);
 
-	      if (help_text.find (symbol_name) != help_text.end ())
+	      if (help_text.contains (symbol_name))
 		cerr << "ignoring duplicate entry for " << symbol_name << "\n";
 	      else
 		help_text[symbol_name] = doc_string;
@@ -177,3 +202,9 @@ main (int argc, char **argv)
 
   return 0;
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

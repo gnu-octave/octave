@@ -435,7 +435,7 @@ public:
 
   void resize (int n) { resize_no_fill (n); }
 
-  //  void resize (int n, const T& val) { resize_and_fill (n, val); }
+  void resize (int n, const T& val) { resize_and_fill (n, val); }
 
   void resize (const dim_vector& dv) { resize_no_fill (dv); }
 

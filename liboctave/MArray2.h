@@ -66,13 +66,6 @@ public:
       return *this;
     }
 
-  void resize (int r, int c) { Array2<T>::resize_no_fill (r, c); }
-
-  void resize (int r, int c, const T& val)
-  {
-    Array<T>::resize_and_fill (r, c, val);
-  }
-
   MArray2<T>& insert (const Array2<T>& a, int r, int c)
   {
     Array2<T>::insert (a, r, c);

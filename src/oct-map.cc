@@ -190,12 +190,12 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
 
       if (new_dims != rhs_dims)
 	{
-	  tmp.resize_and_fill (new_dims, fill_value);
+	  tmp.resize (new_dims, fill_value);
 	}
       else if (new_dims != curr_dims)
 	{
 	  for (iterator p = begin (); p != end (); p++)
-	    contents(p).resize_and_fill (rhs_dims, fill_value);
+	    contents(p).resize (rhs_dims, fill_value);
 	}
 
       dimensions = new_dims;

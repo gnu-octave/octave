@@ -39,7 +39,7 @@ Cell::Cell (const string_vector& sv)
 
   if (n > 0)
     {
-      resize_no_fill (n, 1);
+      resize (dim_vector (n, 1));
 
       for (int i = 0; i < n; i++)
 	elem(i,0) = sv[i];

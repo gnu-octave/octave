@@ -1,3 +1,11 @@
+2003-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.h (Array<T>::resize (int, const T&)): Reinstate.
+	* MArray.h (resize): Delete.
+	* MArray2.h (resize): Delete.
+	* DASRT.cc (DASRT::integrate): Use resize, not resize_and_fill.
+	* ODESSA (ODESSA::integrate): Likewise.
+
 2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (dist): Depend on stamp-prereq.

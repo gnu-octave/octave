@@ -73,15 +73,15 @@ INCLUDES := builtins.h data.h defun.h defun-dld.h \
 	pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h pt-mvr.h \
 	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
-	unwind-prot.h utils.h variables.h version.h \
-	xdiv.h xpow.h BaseSLList.h Map.h SLList.h SLStack.h Stack.h \
-	ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-struct.h ov-scalar.h \
+	unwind-prot.h utils.h variables.h version.h xdiv.h xpow.h \
+	BaseSLList.h Map.h SLList.h SLStack.h Stack.h ov-re-mat.h \
+	ov-cx-mat.h ov-ch-mat.h ov-list.h ov-struct.h ov-scalar.h \
 	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov.h ov-typeinfo.h ops.h \
 	op-b-b.h op-bm-bm.h op-cm-cm.h op-cm-cs.h op-cm-m.h op-cm-s.h \
 	op-cs-cm.h op-cs-cs.h op-cs-m.h op-cs-s.h op-m-cm.h op-m-cs.h \
 	op-m-m.h op-m-s.h op-s-cm.h op-s-cs.h op-s-m.h op-s-s.h \
-	op-str-str.h
+	op-str-str.h oct-sym.h oct-fcn.h oct-builtin.h oct-mapper.h
 
 TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
@@ -110,13 +110,14 @@ SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	strcasecmp.c strncase.c strfns.cc strftime.c symtab.cc \
 	syscalls.cc sysdep.cc token.cc toplev.cc unwind-prot.cc \
 	utils.cc variables.cc xdiv.cc xpow.cc ov-base.cc ov-ch-mat.cc \
-	ov-re-mat.cc ov-cx-mat.cc ov-range.cc ov-scalar.cc \
+	ov-list.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc ov-scalar.cc \
 	ov-complex.cc ov-str-mat.cc ov-struct.cc ov-va-args.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov.cc ov-typeinfo.cc \
 	ops.cc op-b-b.cc op-bm-bm.cc op-cm-cm.cc op-cm-cs.cc \
 	op-cm-m.cc op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
 	op-cs-s.cc op-m-cm.cc op-m-cs.cc op-m-m.cc op-m-s.cc \
-	op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc op-str-str.cc
+	op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc op-str-str.cc \
+	oct-fcn.cc oct-builtin.cc oct-mapper.cc
 
 OBJECTS_4 := $(SOURCES)
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))

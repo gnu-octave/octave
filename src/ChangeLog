@@ -1,3 +1,71 @@
+Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-sym.h: New file.
+	* ov.h (class octave_value): Derive from octave_symbol class.
+
+	* pt-const.h, pt-const.cc: Delete lots of old useless cruft.
+
+	* pt-exp.h, pt-exp.cc (tree_binary_expression): Use type codes for
+	operators from octave_value instead of repeating them here.
+
+	* pt-fvc-base.cc (tree_fvc::increment, tree_fvc::decrement): Delete.
+	* pt-fvc.cc (tree_identifier::increment): Get reference to value
+	and increment that instead of using virutal tree_fvc::increment
+	function.
+
+	* lex.l: Handle +=, -=, *=, /=, .+=, .-=, .*=, ./=, &=, and |= ops.
+	* pt-misc.cc (initialize_undefined_elements): Pass op to assign.
+	* pt-cmd.cc (tree_for_command::do_for_command_once): Likewise.
+	* pt-fvc.cc (tree_identifier::assign): Pass op.
+	* pt-exp.cc (tree_simple_assignment_expression): Handle new ops.
+	* variables.cc (octave_variable_reference::assign): Likewise.
+	* ov.h (class octave_value): Likewise.
+	* ov.cc (octave_value::assign_op_as_string): New function.
+	(octave_value::assign, octave_value::convert_and_assign,
+	octave_value::try_assignment_with_conversion,
+	octave_value::try_assignment): Pass op.
+	* pt-pr-code.cc (tree_print_code::visit_simple_assignment_expression):
+	Use expr.oper() instead of printing "=".
+	* op-cm-cm.cc, op-cm-cs.cc, op-cm-m.cc, op-cm-s.cc, op-m-m.cc,
+	op-m-s.cc, op-str-str.cc: Pass op to INSTALL_ASSIGNOP.
+	* ops.h (INSTALL_ASSIGNOP): Pass op.
+
+	* ops.h (INSTALL_UNOP): Delete.
+
+	* lex.h (class lexical_feedback): Delete maybe_screwed field.
+	New field, parsed_function name.
+	* lex.l (lexical_feedback::init): Initialize it.
+	(handle_identifier): Don't return SCREW.  Handle switching
+	symbol table context properly for `function f ()' vs `function x ='.
+	(is_keyword): If looking at function keyword, don't set current
+	symbol table to point to the local table.
+
+	* input.cc (generate_struct_completions, looks_like_struct):
+	Disable, since they don't work now anyway.
+
+	* help.cc (Ftype): Work with octave_value instead of a pointer to
+	tree_constant.
+	* symtab.cc (symbol_record_info::symbol_record_info): Likewise.
+
+
+Tue Apr 22 22:59:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (Ffprintf): If first arg is a string, assume FID = 1.
+
+Fri Apr 18 20:16:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-obj.h, oct-obj.cc: Implement octave_value_list with
+	Array<octave_value> as a data member, not as a class derived from
+	Array<octave_value>.
+	(octave_value_list::length, octave_value_list::resize,
+	octave_value_list::prepend, octave_value_list::append,
+	octave_value_list::reverse): New functions.
+
+	* op-cm-cm.cc, op-cm-cs.cc, op-cm-m.cc, op-cm-s.cc, op-cs-cm.cc,
+	op-cs-m.cc, op-m-cm.cc, op-m-cs.cc, op-m-m.cc, op-m-s.cc,
+	op-s-cm.cc, op-s-m.cc: Use new bool ops from liboctave instead of
+	the macros defined in ops.h.
+
 Thu Apr 17 13:12:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (ABORT_PARSE): Handle forced_interactive the same as
@@ -114,9 +182,7 @@ Wed Mar 26 17:08:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Tue Mar 25 17:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* ov-bool-mat.cc (octave_bool_matrix::is_true): Write guts.
-
-	* ov-bool-mat.h (octave_bool_matrix): Implement all() and any().
+	* ov-bool-mat.cc, ov-bool-mat.h, ov-bool.cc, ov-bool.h: New files.
 
 	* defaults.cc (symbols_of_defaults): DEFCONST OCTAVE_HOME.
 

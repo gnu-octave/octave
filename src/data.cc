@@ -999,21 +999,6 @@ the same as the arguments for @code{eye}.\n\
   return fill_matrix (args, 0.0, "zeros");
 }
 
-static Matrix
-identity_matrix (int nr, int nc)
-{
-  Matrix m (nr, nc, 0.0);
-
-  if (nr > 0 && nc > 0)
-    {
-      int n = MIN (nr, nc);
-      for (int i = 0; i < n; i++)
-	m (i, i) = 1.0;
-    }
-
-  return m;
-}
-
 DEFUN (eye, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eye (@var{x})\n\

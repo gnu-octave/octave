@@ -198,16 +198,7 @@ octave_base_matrix<MT>::is_true (void) const
 {
   bool retval = false;
 
-  if (rows () == 0 || columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty matrix used in conditional expression");
-      else if (flag == 0)
-	error ("empty matrix used in conditional expression");
-    }
-  else
+  if (rows () > 0 && columns () > 0)
     {
       boolMatrix m = (matrix.all () . all ());
 

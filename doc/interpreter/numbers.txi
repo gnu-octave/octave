@@ -331,8 +331,6 @@ When Octave parses a matrix expression, it examines the elements of the
 list to determine whether they are all constants.  If they are, it
 replaces the list with a single matrix constant.
 
-@DOCSTRING(propagate_empty_matrices)
-
 @node Ranges
 @section Ranges
 @cindex range expressions

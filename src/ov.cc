@@ -99,12 +99,6 @@ int Vwarn_str_to_num;
 // If TRUE, print the name along with the value.
 bool Vprint_answer_id_name;
 
-// Should operations on empty matrices return empty matrices or an
-// error?  A positive value means yes.  A negative value means yes,
-// but print a warning message.  Zero means it should be considered an
-// error.
-int Vpropagate_empty_matrices;
-
 // How many levels of structure elements should we print?
 int Vstruct_levels_to_print;
 
@@ -413,6 +407,13 @@ octave_value::octave_value (const Matrix& m)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<double>& a)
+  : rep (new octave_double_nd_array (a))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const DiagMatrix& d)
   : rep (new octave_matrix (d))
 {
@@ -447,6 +448,15 @@ octave_value::octave_value (const ComplexMatrix& m)
   rep->count = 1;
   maybe_mutate ();
 }
+
+#if 0
+octave_value::octave_value (const ArrayN<Complex>& a)
+  : rep (new octave_complex_nd_array (a))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+#endif
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
   : rep (new octave_complex_matrix (d))
@@ -1796,14 +1806,6 @@ print_answer_id_name (void)
 }
 
 static int
-propagate_empty_matrices (void)
-{
-  Vpropagate_empty_matrices = check_preference ("propagate_empty_matrices");
-
-  return 0;
-}
-
-static int
 warn_resize_on_range_error (void)
 {
   Vwarn_resize_on_range_error
@@ -1857,14 +1859,6 @@ symbols_of_ov (void)
 If the value of @code{print_answer_id_name} is nonzero, variable\n\
 names are printed along with the result.  Otherwise, only the result\n\
 values are printed.  The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (propagate_empty_matrices, true, propagate_empty_matrices,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} propagate_empty_matrices\n\
-If the value of @code{propagate_empty_matrices} is nonzero,\n\
-functions like @code{inverse} and @code{svd} will return an empty matrix\n\
-if they are given one as an argument.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (silent_functions, false, silent_functions,

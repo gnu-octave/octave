@@ -76,7 +76,6 @@ function dump_prefs (file)
               "print_answer_id_name";
               "print_empty_dimensions";
               "print_rhs_assign_val";
-              "propagate_empty_matrices";
               "return_last_computed_value";
               "save_precision";
               "saving_history";

@@ -128,79 +128,87 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
   octave_value arg = args(0);
 
-  int arg_is_empty = empty_arg ("svd", arg.rows (), arg.columns ());
+  int nr = arg.rows ();
+  int nc = arg.columns ();
 
-  if (arg_is_empty < 0)
-    return retval;
-  else if (arg_is_empty > 0)
-    return octave_value_list (3, Matrix ());
-
-  SVD::type type = ((nargout == 0 || nargout == 1)
-		    ? SVD::sigma_only
-		    : (nargin == 2) ? SVD::economy : SVD::std);
-
-  if (arg.is_real_type ())
+  if (nr == 0 || nc == 0)
     {
-      Matrix tmp = arg.matrix_value ();
-
-      if (! error_state)
+      if (nargout == 3)
 	{
-	  if (tmp.any_element_is_inf_or_nan ())
-	    {
-	      error ("svd: cannot take SVD of matrix containing Inf or\
- NaN values"); 
-	      return retval;
-	    }
-
-	  SVD result (tmp, type);
-
-	  DiagMatrix sigma = result.singular_values ();
-
-	  if (nargout == 0 || nargout == 1)
-	    {
-	      retval(0) = sigma.diag ();
-	    }
-	  else
-	    {
-	      retval(2) = result.right_singular_matrix ();
-	      retval(1) = sigma;
-	      retval(0) = result.left_singular_matrix ();
-	    }
+	  retval(3) = identity_matrix (nr, nr);
+	  retval(2) = Matrix (nr, nc);
+	  retval(1) = identity_matrix (nc, nc);
 	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      ComplexMatrix ctmp = arg.complex_matrix_value ();
-
-      if (! error_state)
-	{
-	  if (ctmp.any_element_is_inf_or_nan ())
-	    {
-	      error ("svd: cannot take SVD of matrix containing Inf or\
- NaN values"); 
-	      return retval;
-	    }
-
-	  ComplexSVD result (ctmp, type);
-
-	  DiagMatrix sigma = result.singular_values ();
-
-	  if (nargout == 0 || nargout == 1)
-	    {
-	      retval(0) = sigma.diag ();
-	    }
-	  else
-	    {
-	      retval(2) = result.right_singular_matrix ();
-	      retval(1) = sigma;
-	      retval(0) = result.left_singular_matrix ();
-	    }
-	}
+      else
+	retval(0) = Matrix (0, 1);
     }
   else
     {
-      gripe_wrong_type_arg ("svd", arg);
-      return retval;
+      SVD::type type = ((nargout == 0 || nargout == 1)
+			? SVD::sigma_only
+			: (nargin == 2) ? SVD::economy : SVD::std);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      if (tmp.any_element_is_inf_or_nan ())
+		{
+		  error ("svd: cannot take SVD of matrix containing Inf or NaN values"); 
+		  return retval;
+		}
+
+	      SVD result (tmp, type);
+
+	      DiagMatrix sigma = result.singular_values ();
+
+	      if (nargout == 0 || nargout == 1)
+		{
+		  retval(0) = sigma.diag ();
+		}
+	      else
+		{
+		  retval(2) = result.right_singular_matrix ();
+		  retval(1) = sigma;
+		  retval(0) = result.left_singular_matrix ();
+		}
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix ctmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    {
+	      if (ctmp.any_element_is_inf_or_nan ())
+		{
+		  error ("svd: cannot take SVD of matrix containing Inf or NaN values"); 
+		  return retval;
+		}
+
+	      ComplexSVD result (ctmp, type);
+
+	      DiagMatrix sigma = result.singular_values ();
+
+	      if (nargout == 0 || nargout == 1)
+		{
+		  retval(0) = sigma.diag ();
+		}
+	      else
+		{
+		  retval(2) = result.right_singular_matrix ();
+		  retval(1) = sigma;
+		  retval(0) = result.left_singular_matrix ();
+		}
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("svd", arg);
+	  return retval;
+	}
     }
 
   return retval;

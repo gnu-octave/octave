@@ -183,11 +183,13 @@ public:
   octave_value (double d);
   octave_value (const Cell& m);
   octave_value (const Matrix& m);
+  octave_value (const ArrayN<double>& m);
   octave_value (const DiagMatrix& d);
   octave_value (const RowVector& v);
   octave_value (const ColumnVector& v);
   octave_value (const Complex& C);
   octave_value (const ComplexMatrix& m);
+  octave_value (const ArrayN<Complex>& m);
   octave_value (const ComplexDiagMatrix& d);
   octave_value (const ComplexRowVector& v);
   octave_value (const ComplexColumnVector& v);
@@ -743,12 +745,6 @@ extern int Vwarn_imag_to_real;
 
 // If TRUE, print the name along with the value.
 extern bool Vprint_answer_id_name;
-
-// Should operations on empty matrices return empty matrices or an
-// error?  A positive value means yes.  A negative value means yes,
-// but print a warning message.  Zero means it should be considered an
-// error.
-extern int Vpropagate_empty_matrices;
 
 // How many levels of structure elements should we print?
 extern int Vstruct_levels_to_print;

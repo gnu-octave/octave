@@ -147,7 +147,7 @@ All Octave abbrevs start with a grave accent (`).")
     "inf" "nan" "nargin" "output_max_field_width" "output_precision"
     "page_output_immediately" "page_screen_output" "pi"
     "print_answer_id_name" "print_empty_dimensions"
-    "program_invocation_name" "program_name" "propagate_empty_matrices"
+    "program_invocation_name" "program_name"
     "realmax" "realmin" "return_last_computed_value" "save_precision"
     "saving_history" "sighup_dumps_octave_core" "sigterm_dumps_octave_core"
     "silent_functions" "split_long_rows" "stderr" "stdin" "stdout"

@@ -94,12 +94,10 @@ set test print-empty-dimensions-2
 set prog_output "[](3x0)"
 do_test prefer-22.m
 
-## propagate_empty_matrices
-
-## This should maybe test more functions...
+## These tests maybe don't belong here now...
 
 set test propagate-empty-matrices-1
-set prog_output "^error:.*"
+set prog_output "^ans = 1"
 do_test prefer-23.m
 
 set test propagate-empty-matrices-2

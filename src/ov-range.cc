@@ -172,16 +172,7 @@ octave_range::is_true (void) const
 {
   bool retval = false;
 
-  if (range.nelem () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty range used in conditional expression");
-      else if (flag == 0)
-	error ("empty range used in conditional expression");
-    }
-  else
+  if (range.nelem () != 0)
     {
       // XXX FIXME XXX -- this is a potential waste of memory.
 

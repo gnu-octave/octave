@@ -229,27 +229,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
 int
 empty_arg (const char *name, int nr, int nc)
 {
-  int is_empty = 0;
-
-  if (nr == 0 || nc == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	{
-	  gripe_empty_arg (name, 0);
-	  is_empty = 1;
-	}
-      else if (flag == 0)
-	{
-	  gripe_empty_arg (name, 1);
-	  is_empty = -1;
-	}
-      else
-	is_empty = 1;
-    }
-
-  return is_empty;
+  return (nr == 0 || nc == 0);
 }
 
 // See if the given file is in the path.
@@ -826,6 +806,22 @@ get_dimensions (const octave_value& a, const octave_value& b,
     error ("%s: expecting two scalar arguments", warn_for);
   else
     check_dimensions (nr, nc, warn_for); // May set error_state.
+}
+
+Matrix
+identity_matrix (int nr, int nc)
+{
+  Matrix m (nr, nc, 0.0);
+
+  if (nr > 0 && nc > 0)
+    {
+      int n = std::min (nr, nc);
+
+      for (int i = 0; i < n; i++)
+	m (i, i) = 1.0;
+    }
+
+  return m;
 }
 
 extern int

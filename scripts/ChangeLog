@@ -1,8 +1,13 @@
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* linear-algebra/cond.m: Behave as though old built-in variable
+	propagate_empty_matrices is always 1.  Also handle empty matrices
+	with one non-zero dimension.
+
 	* miscellaneous/dump_prefs.m: Add warn_separator_insert and
 	warn_single_quote_string to the list.
-	Delete whitespace_in_literal_matrix from the list.
+	Delete whitespace_in_literal_matrix and propagate_empty_matrices
+	from the list.
 
 2003-07-25  Paul Kienzle <pkienzle@users.sf.net>
 

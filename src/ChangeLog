@@ -1,14 +1,42 @@
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* utils.cc (identity_matrix): Move here from data.cc.
+	(identity_matrix): Use std::min instead of our own MIN macro.
+
+	* utils.h (identity_matrix): Provide decl.
+
+	* DLD-FUNCTIONS/svd.cc (Fsvd): Improve handling of empty matrix arg.
+
+	* ov.cc (octave_value(const ArrayN<Complex>&)): New constructor.
+	* ov.h (octave_value(const ArrayN<Complex>&)): Provide decl.
+
+2003-07-30  Heine Kolltveit <kolltvei@idi.ntnu.no>
+
+	* ov.cc (octave_value(const ArrayN<double>&)): New constructor.
+	* ov.h (octave_value(const ArrayN<double>&)): Provide decl.
+
+2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (Vpropagate_empty_matrices): Delete decl.
+	* ov.cc: (Vpropagate_empty_matrices): Delete.
+	(propagate_empty_matrices): Delete.
+	(symbols_of_ov): Delete DEFVAR for propagate_empty_matrices.
+
+	* utils.cc (empty_arg): Behave as though propagate_empty_matrices
+	is always 1.
+	* ov-range.cc (octave_range::is_true): Likewise.
+	* ov-base-mat.cc (octave_base_matrix<MT>::is_true): Likewise.
+
 	* octave.cc (maximum_braindamage): Also set
 	warn_matlab_incompatible to TRUE.
 
-	* lex.l (whitespace_in_literal_matrix): Delete.
+	* lex.l (Vwhitespace_in_literal_matrix): Delete.
+	(whitespace_in_literal_matrix): Delete.
 	(symbols_of_lex): Delete DEFVAR for whitespace_in_literal_matrix.
 	(<MATRIX_START>{S}*\,{S}*, <MATRIX_START>{S}+,
 	(<MATRIX_START>{S}*{COMMENT}{SNLCMT}*,
 	<MATRIX_START>{S}*{NL}{SNLCMT}*, maybe_unput_comma): Behave as though
-	Vwhitespace_in_literal_matrix is always 1.
+	old Vwhitespace_in_literal_matrix varaible is always 1.
 
 	* octave.cc (maximum_braindamage): Don't set
 	whitespace_in_literal_matrix.

@@ -1,3 +1,7 @@
+2003-07-30  Heine Kolltveit  <kolltvei@idi.ntnu.no>
+
+	* mx-base.h: Include ArrayN.h.
+
 2003-30-07  Heine Kolltveit  <kolltvei@idi.ntnu.no>
 
         * ArrayN.cc (operator <<): Corrected output.

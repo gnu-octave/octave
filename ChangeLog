@@ -1,5 +1,8 @@
 2003-07-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* emacs/octave-mod.el (octave-variables): Delete
+	propagate_empty_matrices from the list.
+
 	* ck-oct-fcns.m: Delete.
 
 2003-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>

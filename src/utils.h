@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <string>
 
+#include "dMatrix.h"
 #include "lo-utils.h"
 
 class octave_value;
@@ -72,6 +73,8 @@ get_dimensions (const octave_value& a, const octave_value& b,
 extern void
 get_dimensions (const octave_value& a,
 		const char *warn_for, int& nr, int& nc);
+
+extern Matrix identity_matrix (int nr, int nc);
 
 extern int
 octave_format (std::ostream& os, const char *fmt, ...);

@@ -1,15 +1,14 @@
 Thu Mar  6 03:26:41 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 
-	* emacs/octave-hlp.el: Don't provide octave-hlp.
-	* emacs/octave-inf.el: Don't provide octave-inf.
+	* emacs/octave-hlp.el: Provide octave-hlp.
+	* emacs/octave-inf.el: Provide octave-inf.
 
-	* examples/info-emacs-octave-help: Load octave-hlp instead of
-	requiring it.
+	* examples/info-emacs-octave-help: Require octave-hlp instead of
+	loading it.
 
-Tue Mar  4 12:19:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Tue Mar  4 12:19:24 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 
-	* emacs/octave-mod.el: Update from Kurt Hornik to handle switch
-	statement.
+	* emacs/octave-mod.el: Properly indent switch statement.
 
 Mon Mar  3 15:44:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

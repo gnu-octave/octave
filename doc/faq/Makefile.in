@@ -37,7 +37,7 @@ all: FAQ.info FAQ.dvi FAQ.ps
 .PHONY: all
 
 FAQ.info: FAQ.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. FAQ.texi
+	-makeinfo -I$(srcdir) $(srcdir)/FAQ.texi
 
 FAQ.dvi: FAQ.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \

@@ -66,7 +66,7 @@ conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
 	fi
 
 octave.info: $(TEXINFO) conf.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. octave.texi
+	-makeinfo -I$(srcdir) $(srcdir)/octave.texi
 
 octave.dvi: $(TEXINFO) conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
@@ -76,13 +76,15 @@ octave.dvi: $(TEXINFO) conf.texi
 octave.ps: octave.dvi
 	-dvips -o octave.ps octave.dvi
 
-../INSTALL.OCTAVE: install1.texi install.texi
-	-makeinfo --no-header --output INSTALL \
-	  -I$(srcdir)/doc install1.texi && mv INSTALL ../INSTALL.OCTAVE
+../../INSTALL.OCTAVE: install1.texi install.texi
+	-makeinfo --no-header --output INSTALL -I$(srcdir) \
+	  $(srcdir)/install1.texi
+	mv INSTALL ../../INSTALL.OCTAVE
 
-../BUGS: bugs1.texi bugs.texi
-	-makeinfo --no-header --output BUGS \
-	  -I$(srcdir)/doc bugs1.texi && mv BUGS ../BUGS
+../../BUGS: bugs1.texi bugs.texi
+	-makeinfo --no-header --output BUGS -I$(srcdir) \
+	  $(srcdir)/bugs1.texi
+	mv BUGS ../../BUGS
 
 check: all
 .PHONY: check

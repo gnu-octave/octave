@@ -51,10 +51,6 @@
 
 function [a, b, c, d] = zp2ss (zer, pol, k)
 
-  save_warn_empty_list_elements = warn_empty_list_elements;
-  unwind_protect
-    warn_empty_list_elements = 0;
-
     if(nargin != 3)
       error("Incorrect number of input arguments");
     endif
@@ -72,7 +68,7 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
       warning("zp2ss: k is complex")
     endif
 
-    zpsys = ss2sys([],[],[],k);
+    zpsys = ss2sys (zeros (0, 0), zeros (0, 1), zeros (1, 0), k);
 
     ## Find the number of zeros and the number of poles
     nzer=length(zer);
@@ -149,10 +145,6 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
     endwhile
 
     [a,b,c,d] = sys2ss(zpsys);
-
-  unwind_protect_cleanup
-    warn_empty_list_elements = save_warn_empty_list_elements;
-  end_unwind_protect
 
 endfunction
 

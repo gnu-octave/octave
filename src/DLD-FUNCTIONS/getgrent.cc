@@ -51,10 +51,10 @@ mk_gr_map (const octave_group& gr)
     {
       Octave_map m;
 
-      m ["name"](0) = gr.name ();
-      m ["passwd"](0) = gr.passwd ();
-      m ["gid"](0) = static_cast<double> (gr.gid ());
-      m ["mem"](0) = gr.mem ();
+      m.assign ("name", gr.name ());
+      m.assign ("passwd", gr.passwd ());
+      m.assign ("gid", static_cast<double> (gr.gid ()));
+      m.assign ("mem", octave_value (gr.mem ()));
 
       retval = m;
     }

@@ -51,13 +51,13 @@ mk_pw_map (const octave_passwd& pw)
     {
       Octave_map m;
 
-      m ["name"](0) = pw.name ();
-      m ["passwd"](0) = pw.passwd ();
-      m ["uid"](0) = static_cast<double> (pw.uid ());
-      m ["gid"](0) = static_cast<double> (pw.gid ());
-      m ["gecos"](0) = pw.gecos ();
-      m ["dir"](0) = pw.dir ();
-      m ["shell"](0) = pw.shell ();
+      m.assign ("name", pw.name ());
+      m.assign ("passwd", pw.passwd ());
+      m.assign ("uid", static_cast<double> (pw.uid ()));
+      m.assign ("gid", static_cast<double> (pw.gid ()));
+      m.assign ("gecos", pw.gecos ());
+      m.assign ("dir", pw.dir ());
+      m.assign ("shell", pw.shell ());
 
       retval = m;
     }

@@ -194,19 +194,19 @@ Return a struct containing information about the function handle\n\
 
 	      std::string fh_nm = fh->name ();
 
-	      m ["function"](0) = fh_nm.substr (1);
+	      m.assign ("function", fh_nm.substr (1));
 
 	      if (fcn->is_nested_function ())
-		m ["type"](0) = "subfunction";
+		m.assign ("type", "subfunction");
 	      else
-		m ["type"](0) = "simple";
+		m.assign ("type", "simple");
 
 	      std::string nm = fcn->fcn_file_name ();
 
 	      if (nm.empty ())
-		m ["file"](0) = "built-in function";
+		m.assign ("file", "built-in function");
 	      else
-		m ["file"](0) = nm;
+		m.assign ("file", nm);
 
 	      retval = m;
 	    }

@@ -76,10 +76,6 @@ Octave_map
 
   int empty (void) const { return map.empty (); }
 
-  Cell& operator [] (const std::string& k) { return map[k]; }
-
-  Cell operator [] (const std::string& k) const;
-
   void del (const std::string& k)
     {
       iterator p = map.find (k);
@@ -95,11 +91,10 @@ Octave_map
 
   std::string key (const_iterator p) const { return p->first; }
 
-  Cell& contents (const_iterator p)
-    { return operator [] (key(p)); }
+  Cell contents (const std::string& k) const;
 
   Cell contents (const_iterator p) const
-    { return operator [] (key(p)); }
+    { return contents (key(p)); }
 
   const_iterator seek (const std::string& k) const { return map.find (k); }
 
@@ -124,6 +119,8 @@ Octave_map
 
   Octave_map& assign (const octave_value_list& idx, const std::string& k,
 		      const Cell& rhs);
+
+  Octave_map& assign (const std::string& k, const octave_value& rhs);
 
   Octave_map& assign (const std::string& k, const Cell& rhs);
 

@@ -1,3 +1,12 @@
+2003-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/system/zp2ss.m: Don't save and restore
+	warn_empty_list_elements.
+
+2003-12-15  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
+
+        * control/system/zp2ss.m: Correct definition of pure gain system.
+
 2003-12-10  Quentin Spencer  <qspencer@ieee.org>
 
 	* statistics/base/mean.m: Remove special case for row vectors.

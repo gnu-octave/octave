@@ -1,3 +1,36 @@
+2003-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-map.cc (Octave_map::assign): Use Octave_map::contents member
+	function instead of operator [].
+	* ov-struct.cc (octave_struct::subsasgn): Likewise.
+	* DLD-FUNCTIONS/time.cc (extract_tm): Likewise.
+
+	* DLD-FUNCTIONS/time.cc	(mk_tm_map): Use Octave_map::assign member
+	function instead of operator [].
+	* DLD-FUNCTIONS/getrusage.cc (Fgetrusage): Likewise.
+	* DLD-FUNCTIONS/getgrent.cc (mk_gr_map): Likewise.
+	* DLD-FUNCTIONS/getpwent.cc (mk_pw_map): Likewise.
+	* load-save.cc (do_load): Likewise.
+	* ls-hdf5.cc (hdf5_read_next_data): Likewise.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+	* oct-map.cc (Octave_map::reshape): Likewise.
+	* oct-map.cc (Octave_map::index): Likewise.
+	* ov-fcn-handle.cc (Ffunctions): Likewise.
+	* pt-idx.cc (make_arg_struct): Likewise.
+	* sighandlers.cc (make_sig_struct): Likewise.
+	* syscalls.cc (mk_stat_map): Likewise.
+	* toplev.cc (Foctave_config_info): Likewise.
+
+	* ls-hdf5.cc (add_hdf5_data): Temporary Octave_map is now const.
+	* ls-mat5.cc (save_mat5_binary_element): Likewise.
+
+	* oct-map.cc (Octave_map::assign (const std::string&, const
+	octave_value&)): New function.
+	* oct-map.h: Provide decl.
+	(Octave_map::contents (const std::string&)): New function.
+	(Octave_map::operator [] (const std::string&) const): Delete.
+	(Octave_map::operator [] (const std::string&)): Delete.
+
 2003-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* OPERATORS/op-cell.cc: Allow transpose for cell arrays.

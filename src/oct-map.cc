@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 Cell
-Octave_map::operator [] (const std::string& k) const
+Octave_map::contents (const std::string& k) const
 {
   const_iterator p = seek (k);
 
@@ -64,7 +64,7 @@ Octave_map::reshape (const dim_vector& new_dims) const
   if (new_dims != dims ())
     {
       for (const_iterator p = begin (); p != end (); p++)
-	retval[key(p)] = contents(p).reshape (new_dims);
+	retval.assign (key(p), contents(p).reshape (new_dims));
 
       dimensions = new_dims;
     }
@@ -126,7 +126,7 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
 	{
 	  std::string k = t_keys[i];
 
-	  Cell t_rhs = rhs[k];
+	  Cell t_rhs = rhs.contents (k);
 
 	  assign (idx, k, t_rhs);
 
@@ -207,6 +207,28 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
 }
 
 Octave_map&
+Octave_map::assign (const std::string& k, const octave_value& rhs)
+{
+  if (empty ())
+    {
+      map[k] = Cell (rhs);
+
+      dimensions = dim_vector (1, 1);
+    }
+  else
+    {
+      dim_vector dv = dims ();
+
+      if (dv.all_ones ())
+	map[k] = Cell (rhs);
+      else
+	error ("invalid structure assignment");
+    }
+
+  return *this;
+}
+
+Octave_map&
 Octave_map::assign (const std::string& k, const Cell& rhs)
 {
   if (empty ())
@@ -238,7 +260,7 @@ Octave_map::index (const octave_value_list& idx)
       if (error_state)
 	break;
 
-      retval[key(p)] = tmp;
+      retval.assign (key(p), tmp);
     }
 
   return error_state ? Octave_map () : retval;

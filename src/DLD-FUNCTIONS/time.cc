@@ -40,17 +40,17 @@ mk_tm_map (const octave_base_tm& t)
 {
   Octave_map m;
 
-  m ["usec"](0) = static_cast<double> (t.usec ());
-  m ["sec"](0) = static_cast<double> (t.sec ());
-  m ["min"](0) = static_cast<double> (t.min ());
-  m ["hour"](0) = static_cast<double> (t.hour ());
-  m ["mday"](0) = static_cast<double> (t.mday ());
-  m ["mon"](0) = static_cast<double> (t.mon ());
-  m ["year"](0) = static_cast<double> (t.year ());
-  m ["wday"](0) = static_cast<double> (t.wday ());
-  m ["yday"](0) = static_cast<double> (t.yday ());
-  m ["isdst"](0) = static_cast<double> (t.isdst ());
-  m ["zone"](0) = t.zone ();
+  m.assign ("usec", static_cast<double> (t.usec ()));
+  m.assign ("sec", static_cast<double> (t.sec ()));
+  m.assign ("min", static_cast<double> (t.min ()));
+  m.assign ("hour", static_cast<double> (t.hour ()));
+  m.assign ("mday", static_cast<double> (t.mday ()));
+  m.assign ("mon", static_cast<double> (t.mon ()));
+  m.assign ("year", static_cast<double> (t.year ()));
+  m.assign ("wday", static_cast<double> (t.wday ()));
+  m.assign ("yday", static_cast<double> (t.yday ()));
+  m.assign ("isdst", static_cast<double> (t.isdst ()));
+  m.assign ("zone", t.zone ());
 
   return m;
 }
@@ -60,17 +60,17 @@ extract_tm (Octave_map &m)
 {
   octave_base_tm tm;
 
-  tm.usec (m ["usec"](0) . int_value ());
-  tm.sec (m ["sec"](0) . int_value ());
-  tm.min (m ["min"](0) . int_value ());
-  tm.hour (m ["hour"](0) . int_value ());
-  tm.mday (m ["mday"](0) . int_value ());
-  tm.mon (m ["mon"](0) . int_value ());
-  tm.year (m ["year"](0) . int_value ());
-  tm.wday (m ["wday"](0) . int_value ());
-  tm.yday (m ["yday"](0) . int_value ());
-  tm.isdst (m ["isdst"](0) . int_value ());
-  tm.zone (m ["zone"](0) . string_value ());
+  tm.usec (m.contents ("usec")(0) . int_value ());
+  tm.sec (m.contents ("sec")(0) . int_value ());
+  tm.min (m.contents ("min")(0) . int_value ());
+  tm.hour (m.contents ("hour")(0) . int_value ());
+  tm.mday (m.contents ("mday")(0) . int_value ());
+  tm.mon (m.contents ("mon")(0) . int_value ());
+  tm.year (m.contents ("year")(0) . int_value ());
+  tm.wday (m.contents ("wday")(0) . int_value ());
+  tm.yday (m.contents ("yday")(0) . int_value ());
+  tm.isdst (m.contents ("isdst")(0) . int_value ());
+  tm.zone (m.contents ("zone")(0) . string_value ());
 
   return tm;
 }

@@ -425,8 +425,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  {
 	    const char *key = elname + j*field_name_length;
 
+	    Cell c (dim_vector (n, 1));
+
 	    for (int k = n-1; k >=0; k--)
-	      m[key](k) = field_elts(j,k);
+	      c(k) = field_elts(j,k);
+
+	    m.assign (key, c);
 	  }
 
 	tc = m;
@@ -851,21 +855,21 @@ save_mat5_binary_element (std::ostream& os,
     {
       // an Octave structure */
       // recursively write each element of the structure
-      Octave_map m = tc.map_value ();
+      const Octave_map m = tc.map_value ();
 
       {
 	char buf[32];
 	FOUR_BYTE_INT maxfieldnamelength = 32;
 	int fieldcnt = 0;
 
-	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
+	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	  fieldcnt++;
 
 	write_mat5_tag (os, miINT32, 4);
 	os.write ((char *)&maxfieldnamelength, 4);
 	write_mat5_tag (os, miINT8, fieldcnt*32);
 
-	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
+	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the name of each element
 	    std::string tstr = m.key (i);
@@ -876,7 +880,7 @@ save_mat5_binary_element (std::ostream& os,
 
 	int len = m.numel ();
 
-	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
+	for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the data of each element
 	    Cell elts = m.contents (i);

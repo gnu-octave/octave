@@ -65,24 +65,24 @@ mk_stat_map (const file_stat& fs)
 {
   Octave_map m;
 
-  m["dev"](0) = static_cast<double> (fs.dev ());
-  m["ino"](0) = fs.ino ();
-  m["modestr"](0) = fs.mode_as_string ();
-  m["nlink"](0) = fs.nlink ();
-  m["uid"](0) = fs.uid ();
-  m["gid"](0) = fs.gid ();
+  m.assign ("dev", static_cast<double> (fs.dev ()));
+  m.assign ("ino", fs.ino ());
+  m.assign ("modestr", fs.mode_as_string ());
+  m.assign ("nlink", fs.nlink ());
+  m.assign ("uid", fs.uid ());
+  m.assign ("gid", fs.gid ());
 #if defined (HAVE_STRUCT_STAT_ST_RDEV)
-  m["rdev"](0) = static_cast<double> (fs.rdev ());
+  m.assign ("rdev", static_cast<double> (fs.rdev ()));
 #endif
-  m["size"](0) = fs.size ();
-  m["atime"](0) = fs.atime ();
-  m["mtime"](0) = fs.mtime ();
-  m["ctime"](0) = fs.ctime ();
+  m.assign ("size", fs.size ());
+  m.assign ("atime", fs.atime ());
+  m.assign ("mtime", fs.mtime ());
+  m.assign ("ctime", fs.ctime ());
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-  m["blksize"](0) = fs.blksize ();
+  m.assign ("blksize", fs.blksize ());
 #endif
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-  m["blocks"](0) = fs.blocks ();
+  m.assign ("blocks", fs.blocks ());
 #endif
 
   return m;

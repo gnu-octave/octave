@@ -546,143 +546,143 @@ make_sig_struct (void)
   Octave_map m;
 
 #ifdef SIGABRT
-  m ["ABRT"](0) = SIGABRT;
+  m.assign ("ABRT", SIGABRT);
 #endif
 
 #ifdef SIGALRM
-  m ["ALRM"](0) = SIGALRM;
+  m.assign ("ALRM", SIGALRM);
 #endif
 
 #ifdef SIGBUS
-  m ["BUS"](0) = SIGBUS;
+  m.assign ("BUS", SIGBUS);
 #endif
 
 #ifdef SIGCHLD
-  m ["CHLD"](0) = SIGCHLD;
+  m.assign ("CHLD", SIGCHLD);
 #endif
 
 #ifdef SIGCLD
-  m ["CLD"](0) = SIGCLD;
+  m.assign ("CLD", SIGCLD);
 #endif
 
 #ifdef SIGCONT
-  m ["CONT"](0) = SIGCONT;
+  m.assign ("CONT", SIGCONT);
 #endif
 
 #ifdef SIGEMT
-  m ["EMT"](0) = SIGEMT;
+  m.assign ("EMT", SIGEMT);
 #endif
 
 #ifdef SIGFPE
-  m ["FPE"](0) = SIGFPE;
+  m.assign ("FPE", SIGFPE);
 #endif
 
 #ifdef SIGHUP
-  m ["HUP"](0) = SIGHUP;
+  m.assign ("HUP", SIGHUP);
 #endif
 
 #ifdef SIGILL
-  m ["ILL"](0) = SIGILL;
+  m.assign ("ILL", SIGILL);
 #endif
 
 #ifdef SIGINFO
-  m ["INFO"](0) = SIGINFO;
+  m.assign ("INFO", SIGINFO);
 #endif
 
 #ifdef SIGINT
-  m ["INT"](0) = SIGINT;
+  m.assign ("INT", SIGINT);
 #endif
 
 #ifdef SIGIOT
-  m ["IOT"](0) = SIGIOT;
+  m.assign ("IOT", SIGIOT);
 #endif
 
 #ifdef SIGLOST
-  m ["LOST"](0) = SIGLOST;
+  m.assign ("LOST", SIGLOST);
 #endif
 
 #ifdef SIGPIPE
-  m ["PIPE"](0) = SIGPIPE;
+  m.assign ("PIPE", SIGPIPE);
 #endif
 
 #ifdef SIGPOLL
-  m ["POLL"](0) = SIGPOLL;
+  m.assign ("POLL", SIGPOLL);
 #endif
 
 #ifdef SIGPROF
-  m ["PROF"](0) = SIGPROF;
+  m.assign ("PROF", SIGPROF);
 #endif
 
 #ifdef SIGPWR
-  m ["PWR"](0) = SIGPWR;
+  m.assign ("PWR", SIGPWR);
 #endif
 
 #ifdef SIGQUIT
-  m ["QUIT"](0) = SIGQUIT;
+  m.assign ("QUIT", SIGQUIT);
 #endif
 
 #ifdef SIGSEGV
-  m ["SEGV"](0) = SIGSEGV;
+  m.assign ("SEGV", SIGSEGV);
 #endif
 
 #ifdef SIGSTOP
-  m ["STOP"](0) = SIGSTOP;
+  m.assign ("STOP", SIGSTOP);
 #endif
 
 #ifdef SIGSYS
-  m ["SYS"](0) = SIGSYS;
+  m.assign ("SYS", SIGSYS);
 #endif
 
 #ifdef SIGTERM
-  m ["TERM"](0) = SIGTERM;
+  m.assign ("TERM", SIGTERM);
 #endif
 
 #ifdef SIGTRAP
-  m ["TRAP"](0) = SIGTRAP;
+  m.assign ("TRAP", SIGTRAP);
 #endif
 
 #ifdef SIGTSTP
-  m ["TSTP"](0) = SIGTSTP;
+  m.assign ("TSTP", SIGTSTP);
 #endif
 
 #ifdef SIGTTIN
-  m ["TTIN"](0) = SIGTTIN;
+  m.assign ("TTIN", SIGTTIN);
 #endif
 
 #ifdef SIGTTOU
-  m ["TTOU"](0) = SIGTTOU;
+  m.assign ("TTOU", SIGTTOU);
 #endif
 
 #ifdef SIGURG
-  m ["URG"](0) = SIGURG;
+  m.assign ("URG", SIGURG);
 #endif
 
 #ifdef SIGUSR1
-  m ["USR1"](0) = SIGUSR1;
+  m.assign ("USR1", SIGUSR1);
 #endif
 
 #ifdef SIGUSR2
-  m ["USR2"](0) = SIGUSR2;
+  m.assign ("USR2", SIGUSR2);
 #endif
 
 #ifdef SIGVTALRM
-  m ["VTALRM"](0) = SIGVTALRM;
+  m.assign ("VTALRM", SIGVTALRM);
 #endif
 
 #ifdef SIGIO
-  m ["IO"](0) = SIGIO;
+  m.assign ("IO", SIGIO);
 #endif
 
 #ifdef SIGWINCH
-  m ["WINCH"](0) = SIGWINCH;
+  m.assign ("WINCH", SIGWINCH);
 #endif
 
 #ifdef SIGXCPU
-  m ["XCPU"](0) = SIGXCPU;
+  m.assign ("XCPU", SIGXCPU);
 #endif
 
 #ifdef SIGXFSZ
-  m ["XFSZ"](0) = SIGXFSZ;
+  m.assign ("XFSZ", SIGXFSZ);
 #endif
 
   return m;

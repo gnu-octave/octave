@@ -200,7 +200,7 @@ octave_struct::subsasgn (const std::string& type,
 		  u = octave_value::empty_conv (type.substr (2), rhs);
 		else
 		  {
-		    Cell map_val = map[key];
+		    Cell map_val = map.contents (key);
 
 		    Cell map_elt = map_val.index (idx.front (), true);
 
@@ -241,7 +241,7 @@ octave_struct::subsasgn (const std::string& type,
 	      u = octave_value::empty_conv (type.substr (1), rhs);
 	    else
 	      {
-		Cell map_val = map[key];
+		Cell map_val = map.contents (key);
 
 		u = numeric_conv (map_val, type.substr (1));
 	      }

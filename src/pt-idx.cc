@@ -202,6 +202,7 @@ tree_index_expression::make_arg_struct (void) const
 {
   int n = args.size ();
 
+  // XXX FIXME XXX -- why not just make these Cell objects?
   octave_value_list subs_list (n, octave_value ());
   octave_value_list type_list (n, octave_value ());
 
@@ -244,8 +245,8 @@ tree_index_expression::make_arg_struct (void) const
       p_dyn_field++;
     }
 
-  m ["subs"] = subs_list;
-  m ["type"] = type_list;
+  m.assign ("subs", Cell (subs_list));
+  m.assign ("type", Cell (type_list));
 
   return m;
 }

@@ -471,7 +471,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 			  if (format == LS_MAT_ASCII)
 			    retval = tc;
 			  else
-			    retstruct[name] = tc;
+			    retstruct.assign (name, tc);
 			}
 		      else
 			install_loaded_variable (force, name, tc, global, doc);

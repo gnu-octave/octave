@@ -670,10 +670,6 @@ specified option.\n\
   bool octave_supports_dynamic_linking = false;
 #endif
 
-  // We do it this way instead of using a series of "m[KEY](0) = VAL"
-  // statements to avoid problems with gcc 2.96 (and possibly other
-  // compilers) that can't handle a long series of lines like that.
-
   static bool initialized = false;
   static Octave_map m;
 
@@ -786,7 +782,7 @@ specified option.\n\
 
   if (! initialized)
     {
-      m ["dld"](0) = octave_value (octave_supports_dynamic_linking);
+      m.assign ("dld", octave_value (octave_supports_dynamic_linking));
 
       int i = 0;
 
@@ -795,7 +791,7 @@ specified option.\n\
 	  const char *key = conf_info[i++];
 
 	  if (key)
-	    m [key](0) = octave_value (conf_info[i++]);
+	    m.assign (key, octave_value (conf_info[i++]));
 	  else
 	    break;
 	}
@@ -810,7 +806,10 @@ specified option.\n\
       std::string arg = args(0).string_value ();
 
       if (! error_state)
-	retval = m [arg.c_str ()](0);
+	{
+	  Cell c = m.contents (arg.c_str ());
+	  retval = c(0);
+	}
     }
   else if (nargin == 0)
     retval = m;

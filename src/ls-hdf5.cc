@@ -715,9 +715,9 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	      octave_value ov = dsub.tc;
 
 	      if (ov.is_list ())
-		m [dsub.name] = ov.list_value ();
+		m.assign (dsub.name, octave_value (ov.list_value ()));
 	      else
-		m [dsub.name] = ov;
+		m.assign (dsub.name, ov);
 	    }
 
 	  if (have_h5giterate_bug)
@@ -1165,8 +1165,8 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
       data_is_group = 1;
 
       // recursively add each element of the structure to this group
-      Octave_map m = tc.map_value ();
-      Octave_map::iterator i = m.begin ();
+      const Octave_map m = tc.map_value ();
+      Octave_map::const_iterator i = m.begin ();
       while (i != m.end ())
 	{
 	  // XXX FIXME XXX -- if the length of the structure array is

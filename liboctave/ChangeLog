@@ -1,3 +1,8 @@
+2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::assignN): Require RHS == 0x0 matrix for
+	deleting elements.
+
 2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (Array<T>::assignN): Accept assignment of a vector

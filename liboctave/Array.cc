@@ -2604,7 +2604,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   bool idx_is_empty = any_zero_len (frozen_len);
 
-  if (rhs_is_empty)
+  if (rhs_dims.length () == 2 && rhs_dims(0) == 0 && rhs_dims(1) == 0)
     {
       lhs.maybe_delete_elements (idx, rfv);
     }

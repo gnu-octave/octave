@@ -25,7 +25,8 @@ SOURCES = # *.m
 DISTFILES = Makefile.in $(SOURCES)
 
 SUBDIRS = control elfun general image linear-algebra miscellaneous \
-	plot polynomial set signal specfun special-matrix statistics
+	plot polynomial set signal specfun special-matrix startup \
+	statistics
 
 DISTSUBDIRS = $(SUBDIRS)
 

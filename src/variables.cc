@@ -445,10 +445,8 @@ default_editor (void)
 char *
 get_site_defaults (void)
 {
-  static char *sd = 0;
-  delete [] sd;
-  char *libdir = octave_lib_dir ();
-  sd = strconcat (libdir, "/octaverc");
+  static char *startupdir = subst_octave_home (OCTAVE_STARTUPFILEDIR);
+  static char *sd = strconcat (startupdir, "/octaverc");
   return sd;
 }
 

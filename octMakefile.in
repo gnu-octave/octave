@@ -30,8 +30,8 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 DISTDIRS = kpathsea make
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src \
-	scripts doc 
+SUBDIRS = libcruft liboctave @DLD_DIR@ @INFO_DIR@ @READLINE_DIR@ \
+	kpathsea src scripts doc 
 
 # Subdirectories in which to run `make dist'.
 DISTSUBDIRS = libcruft liboctave info readline src scripts dld test doc 

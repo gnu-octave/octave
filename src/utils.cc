@@ -407,6 +407,7 @@ octave_lib_dir (void)
   char *oh = octave_home ();
   char *tmp = strconcat (oh, "/lib/octave/");
   ol = strconcat (tmp, version_string);
+  delete [] tmp;
   return ol;
 }
 
@@ -420,19 +421,52 @@ octave_info_dir (void)
   return oi;
 }
 
+/*
+ * Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
+ * If the path starts with `:', prepend the standard path.  If it ends
+ * with `:' append the standard path.  If it begins and ends with
+ * `:', do both (which is useless, but the luser asked for it...).
+ *
+ * This function may eventually be called more than once, so be
+ * careful not to create memory leaks. 
+ */
 char *
 default_path (void)
 {
   static char *pathstring = (char *) NULL;
   delete [] pathstring;
+
+  static char *std_path = (char *) NULL;
+  delete [] std_path;
+
+  char *libdir = octave_lib_dir ();
+
+  std_path = strconcat (".:", libdir);
+
   char *oct_path = getenv ("OCTAVE_PATH");
+
   if (oct_path != (char *) NULL)
-    pathstring = strsave (oct_path);
-  else
     {
-      char *libdir = octave_lib_dir ();
-      pathstring = strconcat (".:", libdir);
+      pathstring = strsave (oct_path);
+
+      if (pathstring[0] == ':')
+	{
+	  char *tmp = pathstring;
+	  pathstring = strconcat (std_path, pathstring);
+	  delete [] tmp;
+	}
+
+      int tmp_len = strlen (pathstring);
+      if (pathstring[tmp_len-1] == ':')
+	{
+	  char *tmp = pathstring;
+	  pathstring = strconcat (pathstring, std_path);
+	  delete [] tmp;
+	}
     }
+  else
+    pathstring = strsave (std_path);
+
   return pathstring;
 }
 

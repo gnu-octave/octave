@@ -45,7 +45,7 @@ tree_decl_elt
 {
 public:
 
-  typedef void (*eval_fcn) (tree_decl_elt &, bool);
+  typedef void (*eval_fcn) (tree_decl_elt &);
 
   tree_decl_elt (tree_identifier *i = 0, tree_expression *e = 0)
     : id (i), expr (e) { }
@@ -95,7 +95,7 @@ public:
 	}
     }
 
-  void eval (tree_decl_elt::eval_fcn, bool);
+  void eval (tree_decl_elt::eval_fcn);
 
   void accept (tree_walker& tw);
 
@@ -169,6 +169,8 @@ public:
 
 private:
 
+  static void do_init (tree_decl_elt& elt);
+
   // No copying!
 
   tree_global_command (const tree_global_command&);
@@ -194,6 +196,8 @@ public:
   void eval (void);
 
 private:
+
+  static void do_init (tree_decl_elt& elt);
 
   // No copying!
 

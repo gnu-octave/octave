@@ -54,11 +54,11 @@ tree_decl_elt::accept (tree_walker& tw)
 // Initializer lists for declaration statements.
 
 void
-tree_decl_init_list::eval (tree_decl_elt::eval_fcn f, bool skip_init)
+tree_decl_init_list::eval (tree_decl_elt::eval_fcn f)
 {
   for (Pix p = first (); p != 0; next (p))
     {
-      f (*(this->operator () (p)), skip_init);
+      f (*(this->operator () (p)));
 
       if (error_state)
 	break;
@@ -86,8 +86,8 @@ tree_decl_command::accept (tree_walker& tw)
 
 // Global.
 
-static void
-do_global_init (tree_decl_elt& elt, bool skip_initializer)
+void
+tree_global_command::do_init (tree_decl_elt& elt)
 {
   tree_identifier *id = elt.ident ();
 
@@ -113,7 +113,7 @@ tree_global_command::eval (void)
 {
   if (init_list)
     {
-      init_list->eval (do_global_init, initialized);
+      init_list->eval (do_init);
 
       initialized = true;
     }
@@ -125,8 +125,8 @@ tree_global_command::eval (void)
 
 // Static.
 
-static void
-do_static_init (tree_decl_elt& elt, bool)
+void
+tree_static_command::do_init (tree_decl_elt& elt)
 {
   tree_identifier *id = elt.ident ();
 
@@ -154,7 +154,7 @@ tree_static_command::eval (void)
 
   if (init_list && ! initialized)
     {
-      init_list->eval (do_static_init, initialized);
+      init_list->eval (do_init);
 
       initialized = true;
 

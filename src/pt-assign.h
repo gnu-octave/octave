@@ -104,10 +104,9 @@ private:
 
   // No copying!
 
-  tree_simple_assignment_expression (const tree_simple_assignment_expression&);
+  tree_simple_assignment (const tree_simple_assignment&);
 
-  tree_simple_assignment_expression&
-  operator = (const tree_simple_assignment_expression&);
+  tree_simple_assignment& operator = (const tree_simple_assignment&);
 };
 
 // Multi-valued assignment expressions.
@@ -152,10 +151,9 @@ private:
 
   // No copying!
 
-  tree_multi_assignment_expression (const tree_multi_assignment_expression&);
+  tree_multi_assignment (const tree_multi_assignment&);
 
-  tree_multi_assignment_expression&
-  operator = (const tree_multi_assignment_expression&);
+  tree_multi_assignment& operator = (const tree_multi_assignment&);
 };
 
 #endif

@@ -52,20 +52,7 @@ public:
   tree_constant (const octave_value& v, int l = -1, int c = -1)
     : tree_expression (l, c), val (v), orig_text () { }
 
-  tree_constant (const tree_constant& a)
-    : tree_expression (-1, -1), val (a.val), orig_text () { }
-
   ~tree_constant (void) { }
-
-  tree_constant& operator = (const tree_constant& a)
-    {
-      if (this != &a)
-	{
-	  tree_expression::operator = (a);
-	  val = a.val;
-	}
-      return *this;
-    }
 
   void *operator new (size_t size)
     { return allocator.alloc (size); }

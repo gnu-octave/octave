@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.467 $)
+AC_REVISION($Revision: 1.468 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -430,49 +430,6 @@ if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
   AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
 fi
 
-# Check for UMFPACK library.
-
-UMFPACK_LIBS=
-AC_SUBST(UMFPACK_LIBS)
-
-AC_ARG_WITH(umfpack,
-  [  --without-umfpack          don't use UMFPACK, disable some sparse functionality],
-  with_umfpack=$withval, with_umfpack=yes)
-
-if test "$with_umfpack" = "yes"; then
-  have_umfpack_header=no
-  with_umfpack=no
-  AC_CHECK_HEADER(umfpack/umfpack.h, [have_umfpack_header=yes; break])
-  if test "$have_umfpack_header" = yes; then
-    AC_CHECK_LIB(amd, amd_postorder, [
-      LIBS="-lamd $LIBS"
-      AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-        LIBS="-lumfpack $LIBS"
-        UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
-	  ## Invalidate the cache.
-	  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
-	  AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
-	    LIBS="-lumfpack -lcblas $LIBS"
-            UMFPACK_LIBS="-lumfpack -lcblas"; with_umfpack=yes], [], -lcblas)])])
-    if test "$with_umfpack" = yes; then
-      # For now the code needed for this is not in umfpack, will add
-      # a test later that will probably have to be based on version
-      # numbers as there is no interface changes that are visible at
-      # compile time.
-      with_umfpack_split=no
-    fi
-  fi
-fi
-
-if test "$with_umfpack" = yes; then
-  AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
-  if test "$with_umfpack_split" = yes; then
-    AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
-  fi
-else
-  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
-fi
-
 WITH_MPI=true
 AC_ARG_WITH(mpi,
   [  --without-mpi           don't use MPI],
@@ -655,6 +612,49 @@ ACX_BLAS([], [BLAS_DIR="blas"])
 ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
 AC_SUBST(BLAS_DIR)
 AC_SUBST(LAPACK_DIR)
+
+# Check for UMFPACK library.
+
+UMFPACK_LIBS=
+AC_SUBST(UMFPACK_LIBS)
+
+AC_ARG_WITH(umfpack,
+  [  --without-umfpack          don't use UMFPACK, disable some sparse functionality],
+  with_umfpack=$withval, with_umfpack=yes)
+
+if test "$with_umfpack" = "yes"; then
+  have_umfpack_header=no
+  with_umfpack=no
+  AC_CHECK_HEADER(umfpack/umfpack.h, [have_umfpack_header=yes; break])
+  if test "$have_umfpack_header" = yes; then
+    AC_CHECK_LIB(amd, amd_postorder, [
+      LIBS="-lamd $LIBS"
+      AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
+        LIBS="-lumfpack $LIBS"
+        UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
+	  ## Invalidate the cache.
+	  $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
+	  AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
+	    LIBS="-lumfpack -lcblas $LIBS"
+            UMFPACK_LIBS="-lumfpack -lcblas"; with_umfpack=yes], [], -lcblas)])])
+    if test "$with_umfpack" = yes; then
+      # For now the code needed for this is not in umfpack, will add
+      # a test later that will probably have to be based on version
+      # numbers as there is no interface changes that are visible at
+      # compile time.
+      with_umfpack_split=no
+    fi
+  fi
+fi
+
+if test "$with_umfpack" = yes; then
+  AC_DEFINE(HAVE_UMFPACK, 1, [Define if the UMFPACK library is used.])
+  if test "$with_umfpack_split" = yes; then
+    AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
+  fi
+else
+  warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
+fi
 
 ### Handle shared library options.
 

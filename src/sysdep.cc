@@ -81,7 +81,7 @@ extern "C" void _rl_output_character_function ();
 #include "mappers.h"
 #include "oct-obj.h"
 #include "pathlen.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "utils.h"

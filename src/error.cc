@@ -34,9 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "pager.h"
-#include "pt-const.h"
 #include "oct-obj.h"
 #include "utils.h"
+#include "ov.h"
+#include "variables.h"
 
 // TRUE means that Octave will try to beep obnoxiously before printing
 // error messages.

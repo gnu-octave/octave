@@ -106,7 +106,7 @@ public:
 
 private:
 
-  static octave_fcn_file_name_cache *instance;
+  static octave_fcn_file_name_cache* instance;
 
   // An associative array of all the directory names in the load path
   // and the corresponding cache elements.

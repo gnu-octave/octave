@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lo-error.h"
+#include "lo-mappers.h"
 #include "str-vec.h"
 
 #include "builtins.h"
@@ -61,7 +62,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "pt-const.h"
+#include "ov.h"
+#include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
 #include "sighandlers.h"

@@ -73,6 +73,22 @@ octave_fcn_file_name_cache::update (const string& path)
   return something_changed;
 }
 
+string_vector
+octave_fcn_file_name_cache::list (const string& path, bool no_suffix)
+{
+  string_vector retval;
+
+  if (! instance)
+    instance = new octave_fcn_file_name_cache ();
+
+  if (instance)
+    retval = instance->do_list (path, no_suffix);
+  else
+    panic_impossible ();
+
+  return retval;
+}
+
 // Check to see if any of the elements in the cache need to be
 // updated, then return the list of names in the cache.
 
@@ -146,22 +162,6 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
     }
 
   return no_suffix ? fcn_file_names_no_suffix : fcn_file_names;
-}
-
-string_vector
-octave_fcn_file_name_cache::list (const string& path, bool no_suffix)
-{
-  string_vector retval;
-
-  if (! instance)
-    instance = new octave_fcn_file_name_cache ();
-
-  if (instance)
-    retval = instance->do_list (path, no_suffix);
-  else
-    panic_impossible ();
-
-  return retval;
 }
 
 // Create a list of the function names in a given directory.  Returns

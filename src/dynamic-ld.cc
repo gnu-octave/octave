@@ -49,7 +49,7 @@ extern "C"
 #include "error.h"
 #include "toplev.h"
 #include "pathsearch.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "utils.h"
 #include "variables.h"
 

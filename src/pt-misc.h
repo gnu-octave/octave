@@ -183,7 +183,7 @@ public:
   int varargs_only (void)
     { return (marked_for_varargs < 0); }
 
-  void initialize_undefined_elements (const tree_constant& val);
+  void initialize_undefined_elements (tree_constant& val);
 
   void define_from_arg_vector (const Octave_object& args);
 

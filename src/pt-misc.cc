@@ -295,7 +295,7 @@ tree_parameter_list::mark_as_formal_parameters (void)
 }
 
 void
-tree_parameter_list::initialize_undefined_elements (const tree_constant& val)
+tree_parameter_list::initialize_undefined_elements (tree_constant& val)
 {
   for (Pix p = first (); p != 0; next (p))
     {

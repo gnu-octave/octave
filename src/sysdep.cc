@@ -111,16 +111,29 @@ BSD_init (void)
 static void
 CYGWIN_init (void)
 {
+  // Make sure TMPDIR contains an absolute windows path.  Use '/'
+  // rather than '\\' so that sh expansion won't mess file names.
+
   std::string tmpdir = octave_env::getenv ("TMPDIR");
 
   if (tmpdir.empty ())
+    tmpdir = "/tmp";
+
+  char buf [PATH_MAX];
+
+  if (cygwin32_conv_to_full_win32_path (tmpdir.c_str (), buf) < 0)
+    panic ("CYGWIN_init: unable to convert TMPDIR (= \"%s\") to Windows directory name",
+	   tmpdir.c_str ());
+  else
     {
-      char buf [PATH_MAX];
+      tmpdir = buf;
 
-      cygwin32_conv_to_win32_path ("/tmp", buf);
-
-      octave_env::putenv ("TMPDIR", buf);
+      for (size_t i = 0; i < tmpdir.length (); i++)
+	if (tmpdir[i] == '\\')
+	  tmpdir[i] = '/';
     }
+
+  octave_env::putenv ("TMPDIR", tmpdir);
 }
 #endif
 

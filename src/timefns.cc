@@ -86,7 +86,7 @@ extract_tm (Octave_map &m, double& fraction)
   return &tm;
 }
 
-DEFUN ("time", Ftime, Stime, 1, 0,
+DEFUN ("time", Ftime, Stime, 00,
   "time ()\n\
 \n\
   Return current time.  On Unix systems, this is the number of\n\
@@ -118,7 +118,7 @@ DEFUN ("time", Ftime, Stime, 1, 0,
   return (double) now + fraction;
 }
 
-DEFUN ("gmtime", Fgmtime, Sgmtime, 1, 1,
+DEFUN ("gmtime", Fgmtime, Sgmtime, 10,
   "gmtime (TIME)\n\
 \n\
   Given a value returned from time(), return a structure like that\n\
@@ -146,7 +146,7 @@ DEFUN ("gmtime", Fgmtime, Sgmtime, 1, 1,
   return retval;
 }
 
-DEFUN ("localtime", Flocaltime, Slocaltime, 1, 1,
+DEFUN ("localtime", Flocaltime, Slocaltime, 10,
   "localtime (TIME)\n\
 \n\
   Given a value returned from time(), return a structure with\n\
@@ -185,7 +185,7 @@ DEFUN ("localtime", Flocaltime, Slocaltime, 1, 1,
   return retval;
 }
 
-DEFUN ("mktime", Fmktime, Smktime, 1, 2,
+DEFUN ("mktime", Fmktime, Smktime, 10,
   "mktime (TMSTRUCT)")
 {
   Octave_object retval;
@@ -207,7 +207,7 @@ DEFUN ("mktime", Fmktime, Smktime, 1, 2,
   return retval;
 }
 
-DEFUN ("strftime", Fstrftime, Sstrftime, 1, 2,
+DEFUN ("strftime", Fstrftime, Sstrftime, 10,
   "strftime (FMT, TMSTRUCT)\n\
 \n\
   Performs `%' substitutions similar to those in printf.  Except where\n\

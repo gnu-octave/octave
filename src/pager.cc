@@ -204,7 +204,7 @@ maybe_write_to_diary_file (const char *s)
     diary_stream << s;
 }
 
-DEFUN_TEXT ("diary", Fdiary, Sdiary, -1, 1,
+DEFUN_TEXT ("diary", Fdiary, Sdiary, 10,
   "diary [on|off]\n\
 diary [file]\n\
 \n\
@@ -253,7 +253,7 @@ redirect all input and screen output to a file.")
   return retval;
 }
 
-DEFUN_TEXT ("more", Fmore, Smore, -1, 1,
+DEFUN_TEXT ("more", Fmore, Smore, 10,
   "more on\n\
 more off\n\
 \n\

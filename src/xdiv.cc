@@ -55,7 +55,7 @@ result_ok (int info, double rcond, int warn = 1)
 }
 
 static inline int
-mx_leftdiv_conform (int a_nr, int a_nc, int b_nr, int warn = 1)
+mx_leftdiv_conform (int a_nr, int b_nr)
 {
   if (a_nr != b_nr)
     {
@@ -67,7 +67,7 @@ mx_leftdiv_conform (int a_nr, int a_nc, int b_nr, int warn = 1)
 }
 
 static inline int
-mx_div_conform (int b_nr, int b_nc, int a_nc, int warn = 1)
+mx_div_conform (int b_nc, int a_nc)
 {
   if (a_nc != b_nc)
     {
@@ -91,7 +91,7 @@ mx_div_conform (int b_nr, int b_nc, int a_nc, int warn = 1)
 tree_constant
 xdiv (const Matrix& a, const Matrix& b)
 {
-  if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
+  if (! mx_div_conform (b.columns (), a.columns ()))
     return tree_constant ();
 
   Matrix atmp = a.transpose ();
@@ -116,7 +116,7 @@ xdiv (const Matrix& a, const Matrix& b)
 tree_constant
 xdiv (const Matrix& a, const ComplexMatrix& b)
 {
-  if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
+  if (! mx_div_conform (b.columns (), a.columns ()))
     return tree_constant ();
 
   Matrix atmp = a.transpose ();
@@ -141,7 +141,7 @@ xdiv (const Matrix& a, const ComplexMatrix& b)
 tree_constant
 xdiv (const ComplexMatrix& a, const Matrix& b)
 {
-  if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
+  if (! mx_div_conform (b.columns (), a.columns ()))
     return tree_constant ();
 
   ComplexMatrix atmp = a.hermitian ();
@@ -166,7 +166,7 @@ xdiv (const ComplexMatrix& a, const Matrix& b)
 tree_constant
 xdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
-  if (! mx_div_conform (b.rows (), b.columns (), a.columns ()))
+  if (! mx_div_conform (b.columns (), a.columns ()))
     return tree_constant ();
 
   ComplexMatrix atmp = a.hermitian ();
@@ -269,7 +269,7 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 tree_constant
 xleftdiv (const Matrix& a, const Matrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
+  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
     return tree_constant ();
 
   int info;
@@ -291,7 +291,7 @@ xleftdiv (const Matrix& a, const Matrix& b)
 tree_constant
 xleftdiv (const Matrix& a, const ComplexMatrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
+  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
     return tree_constant ();
 
   int info;
@@ -313,7 +313,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b)
 tree_constant
 xleftdiv (const ComplexMatrix& a, const Matrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
+  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
     return tree_constant ();
 
   int info;
@@ -335,7 +335,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b)
 tree_constant
 xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b)
 {
-  if (! mx_leftdiv_conform (a.rows (), a.columns (), b.rows ()))
+  if (! mx_leftdiv_conform (a.rows (), b.rows ()))
     return tree_constant ();
 
   int info;

@@ -119,7 +119,7 @@ fsolve_user_function (const ColumnVector& x)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("fsolve", Ffsolve, Sfsolve, 2, 1,
+DEFUN_DLD_BUILTIN ("fsolve", Ffsolve, Sfsolve, 11,
   "Solve nonlinear equations using Minpack.  Usage:\n\
 \n\
   [X, INFO] = fsolve (F, X0)\n\
@@ -142,7 +142,7 @@ where y and x are vectors.")
     }
 
   fsolve_fcn = is_valid_function (args(0), "fsolve", 1);
-  if (! fsolve_fcn || takes_correct_nargs (fsolve_fcn, 1, "fsolve", 1) != 1)
+  if (! fsolve_fcn)
     return retval;
 
   ColumnVector x = args(1).vector_value ();
@@ -281,7 +281,7 @@ show_fsolve_option (const char *keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("fsolve_options", Ffsolve_options, Sfsolve_options, -1, 1,
+DEFUN_DLD_BUILTIN ("fsolve_options", Ffsolve_options, Sfsolve_options, 10,
   "fsolve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for fsolve.  Keywords may be abbreviated\n\

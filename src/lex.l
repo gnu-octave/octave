@@ -1198,8 +1198,8 @@ looks_like_bin_op (int spc_prev, int spc_next)
   return ((spc_prev && spc_next) || ! spc_prev);
 }
 
-// Duh.
-
+// Duh.  This seems to no longer be needed.
+#if 0
 static int
 next_char_is_space (void)
 {
@@ -1207,6 +1207,7 @@ next_char_is_space (void)
   yyunput (c, yytext);
   return (c == ' ' || c == '\t');
 }
+#endif
 
 // Try to determine if the next token should be treated as a postfix
 // unary operator.  This is ugly, but it seems to do the right thing.

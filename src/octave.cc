@@ -745,7 +745,7 @@ main (int argc, char **argv)
   clean_up_and_exit (retval);
 }
 
-DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 2, 1,
+DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 10,
   "casesen [on|off]")
 {
   Octave_object retval;
@@ -764,7 +764,7 @@ DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 2, 1,
   return retval;
 }
 
-DEFUN ("computer", Fcomputer, Scomputer, 1, 0,
+DEFUN ("computer", Fcomputer, Scomputer, 11,
   "computer ():\n\
 \n\
 Have Octave ask the system, \"What kind of computer are you?\"")
@@ -799,7 +799,7 @@ Have Octave ask the system, \"What kind of computer are you?\"")
   return retval;
 }
 
-DEFUN ("flops", Fflops, Sflops, 0, 1,
+DEFUN ("flops", Fflops, Sflops, 10,
   "flops (): count floating point operations")
 {
   int nargin = args.length ();
@@ -812,7 +812,7 @@ DEFUN ("flops", Fflops, Sflops, 0, 1,
   return 0.0;
 }
 
-DEFUN ("quit", Fquit, Squit, 0, 0,
+DEFUN ("quit", Fquit, Squit, 00,
   "quit (): exit Octave gracefully")
 {
   Octave_object retval;
@@ -823,7 +823,7 @@ DEFUN ("quit", Fquit, Squit, 0, 0,
 
 DEFALIAS (exit, quit);
 
-DEFUN ("warranty", Fwarranty, Swarranty, 0, 0,
+DEFUN ("warranty", Fwarranty, Swarranty, 00,
   "warranty (): describe copying conditions")
 {
   Octave_object retval;
@@ -872,7 +872,7 @@ feval (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("feval", Ffeval, Sfeval, -1, 1,
+DEFUN ("feval", Ffeval, Sfeval, 11,
   "feval (NAME, ARGS, ...)\n\
 \n\
 evaluate NAME as a function, passing ARGS as its arguments")
@@ -890,8 +890,8 @@ evaluate NAME as a function, passing ARGS as its arguments")
 }
 
 static Octave_object
-eval_string (const char *string, int print, int ans_assign,
-	     int& parse_status, int nargout)
+eval_string (const char *string, int print, int& parse_status,
+	     int nargout) 
 {
   begin_unwind_frame ("eval_string");
 
@@ -936,13 +936,11 @@ eval_string (const char *string, int print, int ans_assign,
 }
 
 tree_constant
-eval_string (const char *string, int print, int ans_assign,
-	     int& parse_status)
+eval_string (const char *string, int print, int& parse_status)
 {
   tree_constant retval;
 
-  Octave_object tmp = eval_string (string, print, ans_assign,
-				   parse_status, 1);
+  Octave_object tmp = eval_string (string, print, parse_status, 1);
 
   retval = tmp(0);
 
@@ -962,10 +960,10 @@ eval_string (const tree_constant& arg, int& parse_status, int nargout)
 
   // Yes Virginia, we always print here...
 
-  return eval_string (string, 1, 1, parse_status, nargout);
+  return eval_string (string, 1, parse_status, nargout);
 }
 
-DEFUN ("eval", Feval, Seval, 2, 1,
+DEFUN ("eval", Feval, Seval, 11,
   "eval (TRY, CATCH)\n\
 \n\
 Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
@@ -1006,7 +1004,7 @@ string CATCH.")
 
 // Execute a shell command.
 
-DEFUN ("system", Fsystem, Ssystem, 2, 1,
+DEFUN ("system", Fsystem, Ssystem, 11,
   "system (string [, return_output]): execute shell commands")
 {
   Octave_object retval;

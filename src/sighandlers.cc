@@ -146,7 +146,7 @@ sigchld_handler (int sig)
 
 #if defined (__alpha__)
 static RETSIGTYPE
-sigfpe_handler (int sig)
+sigfpe_handler (int /* sig */)
 {
   // Can this ever cause trouble on systems that don't forget signal
   // handlers when they are invoked?
@@ -175,7 +175,7 @@ sigfpe_handler (int sig)
 // signal interface if it is available.
 
 static RETSIGTYPE
-sigint_handler (int sig)
+sigint_handler (int /* sig */)
 {
   // Can this ever cause trouble on systems that don't forget signal
   // handlers when they are invoked?
@@ -196,7 +196,7 @@ sigint_handler (int sig)
 }
 
 static RETSIGTYPE
-sigpipe_handler (int sig)
+sigpipe_handler (int /* sig */)
 {
   // Can this ever cause trouble on systems that don't forget signal
   // handlers when they are invoked?

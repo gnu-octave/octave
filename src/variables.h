@@ -55,8 +55,6 @@ typedef Octave_object (*Octave_builtin_fcn)(const Octave_object&, int);
 struct builtin_function
 {
   char *name;
-  int nargin_max;
-  int nargout_max;
   int is_text_fcn;
   Octave_builtin_fcn fcn;
   char *help_string;
@@ -86,7 +84,6 @@ extern int is_globally_visible (const char *name);
 
 extern tree_fvc *is_valid_function (const tree_constant&, char *,
 				    int warn = 0); 
-extern int takes_correct_nargs (tree_fvc *, int, char *, int warn = 0);
 
 extern char **make_name_list (void);
 

@@ -872,14 +872,14 @@ union equiv
     { \
       unsigned char ctmp = c; \
       char stmp[9]; \
-      stmp[0] = (c & 0x80) ? '1' : '0'; \
-      stmp[1] = (c & 0x40) ? '1' : '0'; \
-      stmp[2] = (c & 0x20) ? '1' : '0'; \
-      stmp[3] = (c & 0x10) ? '1' : '0'; \
-      stmp[4] = (c & 0x08) ? '1' : '0'; \
-      stmp[5] = (c & 0x04) ? '1' : '0'; \
-      stmp[6] = (c & 0x02) ? '1' : '0'; \
-      stmp[7] = (c & 0x01) ? '1' : '0'; \
+      stmp[0] = (ctmp & 0x80) ? '1' : '0'; \
+      stmp[1] = (ctmp & 0x40) ? '1' : '0'; \
+      stmp[2] = (ctmp & 0x20) ? '1' : '0'; \
+      stmp[3] = (ctmp & 0x10) ? '1' : '0'; \
+      stmp[4] = (ctmp & 0x08) ? '1' : '0'; \
+      stmp[5] = (ctmp & 0x04) ? '1' : '0'; \
+      stmp[6] = (ctmp & 0x02) ? '1' : '0'; \
+      stmp[7] = (ctmp & 0x01) ? '1' : '0'; \
       stmp[8] = '\0'; \
       os.form ("%s", stmp); \
     } \
@@ -890,14 +890,14 @@ union equiv
     { \
       unsigned char ctmp = c; \
       char stmp[9]; \
-      stmp[0] = (c & 0x01) ? '1' : '0'; \
-      stmp[1] = (c & 0x02) ? '1' : '0'; \
-      stmp[2] = (c & 0x04) ? '1' : '0'; \
-      stmp[3] = (c & 0x08) ? '1' : '0'; \
-      stmp[4] = (c & 0x10) ? '1' : '0'; \
-      stmp[5] = (c & 0x20) ? '1' : '0'; \
-      stmp[6] = (c & 0x40) ? '1' : '0'; \
-      stmp[7] = (c & 0x80) ? '1' : '0'; \
+      stmp[0] = (ctmp & 0x01) ? '1' : '0'; \
+      stmp[1] = (ctmp & 0x02) ? '1' : '0'; \
+      stmp[2] = (ctmp & 0x04) ? '1' : '0'; \
+      stmp[3] = (ctmp & 0x08) ? '1' : '0'; \
+      stmp[4] = (ctmp & 0x10) ? '1' : '0'; \
+      stmp[5] = (ctmp & 0x20) ? '1' : '0'; \
+      stmp[6] = (ctmp & 0x40) ? '1' : '0'; \
+      stmp[7] = (ctmp & 0x80) ? '1' : '0'; \
       stmp[8] = '\0'; \
       os.form ("%s", stmp); \
     } \
@@ -1479,7 +1479,7 @@ octave_print_internal (ostream& os, Octave_str_obj& s,
     os << " ]";
 }
 
-DEFUN ("disp", Fdisp, Sdisp, 1, 1,
+DEFUN ("disp", Fdisp, Sdisp, 10,
   "disp (X): display value without name tag")
 {
   Octave_object retval;
@@ -1641,7 +1641,7 @@ set_format_style (int argc, char **argv)
     }
 }
 
-DEFUN_TEXT ("format", Fformat, Sformat, -1, 1,
+DEFUN_TEXT ("format", Fformat, Sformat, 10,
   "format [style]\n\
 \n\
 set output formatting style")

@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("det", Fdet, Sdet, 2, 1,
+DEFUN_DLD_BUILTIN ("det", Fdet, Sdet, 10,
   "det (X): determinant of a square matrix")
 {
   Octave_object retval;

@@ -356,7 +356,7 @@ octave_change_to_directory (const char *newdir)
   return cd_ok;
 }
 
-DEFUN_TEXT ("cd", Fcd, Scd, 2, 1,
+DEFUN_TEXT ("cd", Fcd, Scd, 10,
   "cd [dir]\n\
 \n\
 change current working directory\n\
@@ -404,7 +404,7 @@ DEFALIAS (chdir, cd);
 
 // Get a directory listing.
 
-DEFUN_TEXT ("ls", Fls, Sls, -1, 1,
+DEFUN_TEXT ("ls", Fls, Sls, 10,
   "ls [options]\n\
 \n\
 print a directory listing")
@@ -454,7 +454,7 @@ print a directory listing")
 
 DEFALIAS (dir, ls);
 
-DEFUN ("pwd", Fpwd, Spwd, 1, 0,
+DEFUN ("pwd", Fpwd, Spwd, 00,
   "pwd (): print current working directory")
 {
   Octave_object retval;
@@ -485,7 +485,7 @@ DEFUN ("pwd", Fpwd, Spwd, 1, 0,
   return retval;
 }
 
-DEFUN ("readdir", Freaddir, Sreaddir, 1, 0,
+DEFUN ("readdir", Freaddir, Sreaddir, 10,
   "readdir (NAME)\n\
 \n\
 Return an array of strings containing the list of all files in the
@@ -563,7 +563,7 @@ is printed.")
 // XXX FIXME XXX -- should probably also allow second arg to specify
 // mode.
 
-DEFUN ("mkdir", Fmkdir, Smkdir, 1, 0,
+DEFUN ("mkdir", Fmkdir, Smkdir, 10,
   "mkdir (NAME)\n\
 \n\
 Create the directory named by NAME.  If successful, returns 0;\n\
@@ -594,7 +594,7 @@ otherwise prints an error message.")
   return retval;
 }
 
-DEFUN ("rmdir", Frmdir, Srmdir, 1, 0,
+DEFUN ("rmdir", Frmdir, Srmdir, 10,
   "rmdir (NAME)\n\
 \n\
 Remove the directory named by NAME.  If successful, returns 0;\n\
@@ -625,7 +625,7 @@ otherwise prints an error message.")
   return retval;
 }
 
-DEFUN ("rename", Frename, Srename, 1, 0,
+DEFUN ("rename", Frename, Srename, 10,
   "rename (FROM, TO)\n\
 \n\
 Rename a file.  If successful, returns 0;\n\

@@ -37,7 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tree-const.h"
 #include "utils.h"
 
-DEFUN ("isstr", Fisstr, Sisstr, 1, 1,
+DEFUN ("isstr", Fisstr, Sisstr, 10,
   "isstr (X): return 1 if X is a string, 0 otherwise")
 {
   Octave_object retval;
@@ -52,7 +52,7 @@ DEFUN ("isstr", Fisstr, Sisstr, 1, 1,
   return retval;
 }
 
-DEFUN ("setstr", Fsetstr, Ssetstr, 1, 1,
+DEFUN ("setstr", Fsetstr, Ssetstr, 10,
   "setstr (V): convert a vector to a string")
 {
   Octave_object retval;
@@ -67,7 +67,7 @@ DEFUN ("setstr", Fsetstr, Ssetstr, 1, 1,
   return retval;
 }
 
-DEFUN ("toascii", Ftoascii, Stoascii, 1, 1,
+DEFUN ("toascii", Ftoascii, Stoascii, 10,
   "toascii (STRING): return ASCII representation of STRING in a matrix")
 {
   Octave_object retval;

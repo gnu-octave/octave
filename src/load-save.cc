@@ -214,19 +214,19 @@ IEEE_big_double_to_IEEE_little_double (double *d, int len)
 }
 
 static void
-VAX_D_double_to_IEEE_little_double (double *d, int len)
+VAX_D_double_to_IEEE_little_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
-VAX_G_double_to_IEEE_little_double (double *d, int len)
+VAX_G_double_to_IEEE_little_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
-Cray_to_IEEE_little_double (double *d, int len)
+Cray_to_IEEE_little_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE little endian format");
 }
@@ -238,19 +238,19 @@ IEEE_big_float_to_IEEE_little_float (float *d, int len)
 }
 
 static void
-VAX_D_float_to_IEEE_little_float (float *d, int len)
+VAX_D_float_to_IEEE_little_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE little endian format");
 }
 
 static void
-VAX_G_float_to_IEEE_little_float (float *d, int len)
+VAX_G_float_to_IEEE_little_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE little endian format");
 }
 
 static void
-Cray_to_IEEE_little_float (float *d, int len)
+Cray_to_IEEE_little_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE little endian format");
 }
@@ -262,19 +262,19 @@ IEEE_little_double_to_IEEE_big_double (double *d, int len)
 }
 
 static void
-VAX_D_double_to_IEEE_big_double (double *d, int len)
+VAX_D_double_to_IEEE_big_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
-VAX_G_double_to_IEEE_big_double (double *d, int len)
+VAX_G_double_to_IEEE_big_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big_double (double *d, int len)
+Cray_to_IEEE_big_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
@@ -286,115 +286,115 @@ IEEE_little_float_to_IEEE_big_float (float *d, int len)
 }
 
 static void
-VAX_D_float_to_IEEE_big_float (float *d, int len)
+VAX_D_float_to_IEEE_big_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "IEEE big endian format");
 }
 
 static void
-VAX_G_float_to_IEEE_big_float (float *d, int len)
+VAX_G_float_to_IEEE_big_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big_float (float *d, int len)
+Cray_to_IEEE_big_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
 static void
-IEEE_little_double_to_VAX_D_double (double *d, int len)
+IEEE_little_double_to_VAX_D_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
-IEEE_big_double_to_VAX_D_double (double *d, int len)
+IEEE_big_double_to_VAX_D_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
-VAX_G_double_to_VAX_D_double (double *d, int len)
+VAX_G_double_to_VAX_D_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
-Cray_to_VAX_D_double (double *d, int len)
+Cray_to_VAX_D_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
-IEEE_little_float_to_VAX_D_float (float *d, int len)
+IEEE_little_float_to_VAX_D_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX D");
 }
 
 static void
-IEEE_big_float_to_VAX_D_float (float *d, int len)
+IEEE_big_float_to_VAX_D_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX D");
 }
 
 static void
-VAX_G_float_to_VAX_D_float (float *d, int len)
+VAX_G_float_to_VAX_D_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX D");
 }
 
 static void
-Cray_to_VAX_D_float (float *d, int len)
+Cray_to_VAX_D_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
 
 static void
-IEEE_little_double_to_VAX_G_double (double *d, int len)
+IEEE_little_double_to_VAX_G_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
-IEEE_big_double_to_VAX_G_double (double *d, int len)
+IEEE_big_double_to_VAX_G_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
-VAX_D_double_to_VAX_G_double (double *d, int len)
+VAX_D_double_to_VAX_G_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
-Cray_to_VAX_G_double (double *d, int len)
+Cray_to_VAX_G_double (double * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX G");
 }
 
 static void
-IEEE_little_float_to_VAX_G_float (float *d, int len)
+IEEE_little_float_to_VAX_G_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE little endian", "VAX G");
 }
 
 static void
-IEEE_big_float_to_VAX_G_float (float *d, int len)
+IEEE_big_float_to_VAX_G_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("IEEE big endian", "VAX G");
 }
 
 static void
-VAX_D_float_to_VAX_G_float (float *d, int len)
+VAX_D_float_to_VAX_G_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX D float", "VAX G");
 }
 
 static void
-Cray_to_VAX_G_float (float *d, int len)
+Cray_to_VAX_G_float (float * /* d */, int /* len */)
 {
   gripe_data_conversion ("VAX G float", "VAX G");
 }
@@ -2162,7 +2162,7 @@ do_load (istream& stream, const char *orig_fname, int force,
   return retval;
 }
 
-DEFUN_TEXT ("load", Fload, Sload, -1, 1,
+DEFUN_TEXT ("load", Fload, Sload, 11,
   "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n\
 \n\
 Load variables from a file.\n\
@@ -2993,7 +2993,7 @@ save_user_variables (void)
     warning ("unable to open `%s' for writing...", fname);
 }
 
-DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
+DEFUN_TEXT ("save", Fsave, Ssave, 10,
   "save [-ascii] [-binary] [-float-binary] [-mat-binary] \n\
      [-save-builtins] file [pattern ...]\n\
 \n\

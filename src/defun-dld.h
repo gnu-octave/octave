@@ -38,20 +38,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (OCTAVE_LITE) && defined (MAKE_BUILTINS)
 #if defined (WITH_DLD)
-#define DEFUN_DLD_BUILTIN(name, fname, sname, nargin_max, nargout_max, doc) \
+#define DEFUN_DLD_BUILTIN(name, fname, sname, unused_arg_flags, doc) \
   BEGIN_INSTALL_BUILTIN \
-    DEFINE_FUN_STRUCT (name, 0, sname, nargin_max, nargout_max, 0, doc); \
+    DEFINE_FUN_STRUCT (name, 0, sname, unused_arg_flags, 0, doc); \
     install_builtin_function (&sname); \
   END_INSTALL_BUILTIN
 #else
-#define DEFUN_DLD_BUILTIN(name, fname, sname, nargin_max, nargout_max, doc) \
+#define DEFUN_DLD_BUILTIN(name, fname, sname, unused_arg_flags, doc) \
   BEGIN_INSTALL_BUILTIN \
     const char *sname = name " not included with --enable-lite-kernel"; \
   END_INSTALL_BUILTIN
 #endif
 #else
-#define DEFUN_DLD_BUILTIN(name, fname, sname, nargin_max, nargout_max, doc) \
-  DEFUN_INTERNAL (name, fname, sname, nargin_max, nargout_max, 0, doc)
+#define DEFUN_DLD_BUILTIN(name, fname, sname, unused_arg_flags, doc) \
+  DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 0, doc)
 #endif
 
 // Define a function that may be loaded dynamically at run time.
@@ -63,9 +63,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // definition of the function.
 
 #if ! defined (MAKE_BUILTINS)
-#define DEFUN_DLD(name, fname, sname, fsname, nargin_max, nargout_max, doc) \
+#define DEFUN_DLD(name, fname, sname, fsname, unused_arg_flags, doc) \
   DECLARE_FUN (fname); \
-  DEFINE_FUN_STRUCT (name, fname, sname, nargin_max, nargout_max, 0, doc); \
+  DEFINE_FUN_STRUCT (name, fname, sname, unused_arg_flags, 0, doc); \
   DEFINE_FUN_STRUCT_FUN (sname, fsname) \
   DECLARE_FUN (fname)
 #endif

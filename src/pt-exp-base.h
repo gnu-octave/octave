@@ -263,9 +263,6 @@ public:
   virtual tree_constant lookup_map_element (SLList<char*>& list,
 					    int insert = 0, int silent = 0);
 
-  virtual int max_expected_args (void)
-    { panic_impossible (); return 0; }
-  
   virtual char *fcn_file_name (void)
     { return 0; }
 
@@ -810,11 +807,9 @@ tree_builtin : public tree_fvc
 public:
   tree_builtin (const char *nm = 0);
 
-  tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
-		const char *nm = 0);
+  tree_builtin (Mapper_fcn& m_fcn, const char *nm = 0);
 
-  tree_builtin (int i_max, int o_max, Octave_builtin_fcn f,
-		const char *nm = 0);
+  tree_builtin (Octave_builtin_fcn f, const char *nm = 0);
 
   ~tree_builtin (void) { }  // XXX ?? XXX
 
@@ -830,16 +825,12 @@ public:
   char *name (void) const
     { return my_name; }
 
-  int max_expected_args (void);
-
   void print_code (ostream& os)
     {
       os << my_name << " can't be printed because it is a builtin function\n";
     }
 
 private:
-  int nargin_max;
-  int nargout_max;
   int is_mapper;
   Mapper_fcn mapper_fcn;
   Octave_builtin_fcn fcn;
@@ -930,8 +921,6 @@ public:
   tree_constant eval (int print);
 
   Octave_object eval (int print, int nargout, const Octave_object& args);
-
-  int max_expected_args (void);
 
   void traceback_error (void);
 

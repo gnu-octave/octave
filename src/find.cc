@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 static Octave_object
 find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
-		     const tree_constant& val, int nr, int nc, int nargout)
+		     const tree_constant& val, int nr, int nargout)
 {
   Octave_object retval;
 
@@ -115,7 +115,7 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
       }
 
   tree_constant tmp (v, 1);
-  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, m_nc, nargout);
+  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, nargout);
 }
 
 static Octave_object
@@ -155,10 +155,10 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
       }
 
   tree_constant tmp (v, 1);
-  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, m_nc, nargout);
+  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, nargout);
 }
 
-DEFUN_DLD_BUILTIN ("find", Ffind, Sfind, 2, 3,
+DEFUN_DLD_BUILTIN ("find", Ffind, Sfind, 11,
   "find (X) or [I, J, V] = find (X): Return indices of nonzero elements")
 {
   Octave_object retval;

@@ -246,6 +246,7 @@ load_octave_builtin (const char *name)
 #ifdef WITH_DLD
   return dld_octave_builtin (name);
 #else
+  (void) name;
   return 0;
 #endif
 }
@@ -256,6 +257,7 @@ load_octave_oct_file (const char *name)
 #ifdef WITH_DLD
   return dld_octave_oct_file (name);
 #endif
+  (void) name;
   return 0;
 }
 

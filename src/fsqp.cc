@@ -54,12 +54,12 @@ fsqp_constraint_function (const ColumnVector& x)
 #endif
 
 #if defined (FSQP_MISSING)
-DEFUN_DLD_BUILTIN ("fsqp", Ffsqp, Sfsqp, 11, 3,
+DEFUN_DLD_BUILTIN ("fsqp", Ffsqp, Sfsqp, 00,
   "This function requires FSQP, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/fsqp/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("fsqp", Ffsqp, Sfsqp, 11, 3,
+DEFUN_DLD_BUILTIN ("fsqp", Ffsqp, Sfsqp, 00,
   "[X, PHI] = fsqp (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
@@ -89,12 +89,12 @@ Handle all of the following:
 }
 
 #if defined (FSQP_MISSING)
-DEFUN_DLD_BUILTIN ("fsqp_options", Ffsqp_options, Sfsqp_options, -1, 1,
+DEFUN_DLD_BUILTIN ("fsqp_options", Ffsqp_options, Sfsqp_options, 00,
   "This function requires FSQP, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/fsqp/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("fsqp_options", Ffsqp_options, Sfsqp_options, -1, 1,
+DEFUN_DLD_BUILTIN ("fsqp_options", Ffsqp_options, Sfsqp_options, 00,
   "fsqp_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for fsqp.  Keywords may be abbreviated\n\

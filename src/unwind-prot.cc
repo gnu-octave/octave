@@ -200,7 +200,6 @@ class saved_variable
   saved_variable (void);
   saved_variable (int *p, int v);
   saved_variable (void **p, void *v);
-  saved_variable (void *p, void *v, size_t sz);
   ~saved_variable (void);
 
   void restore_value (void);
@@ -245,14 +244,6 @@ saved_variable::saved_variable (void **p, void *v)
   ptr_to_gen_ptr = p;
   gen_ptr_value = v;
   size = sizeof (void *);
-}
-
-saved_variable::saved_variable (void *p, void *v, size_t sz)
-{
-  gen_ptr = v;
-  gen_ptr_value = new char [sz];
-  memcpy (gen_ptr_value, v, sz);
-  size = sz;
 }
 
 saved_variable::~saved_variable (void)
@@ -303,13 +294,6 @@ void
 unwind_protect_ptr_internal (void **ptr, void *value)
 {
   saved_variable *s = new saved_variable (ptr, value);
-  add_unwind_protect (restore_saved_variable, (void *) s);
-}
-
-void
-unwind_protect_var_internal (void *ptr, void *value, size_t size)
-{
-  saved_variable *s = new saved_variable (ptr, value, size);
   add_unwind_protect (restore_saved_variable, (void *) s);
 }
 

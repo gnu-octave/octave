@@ -154,25 +154,7 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
   return ans;
 }
 
-// Does this function take the right number of arguments?
-
-int
-takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
-		     int warn)
-{
-  int nargin = fcn->max_expected_args ();
-  int e_nargin = expected_nargin;
-  if (nargin != e_nargin)
-    {
-      if (warn)
-	error ("%s: expecting function to take %d argument%s",
-	       warn_for, e_nargin, (e_nargin == 1 ? "" : "s"));
-      return 0;
-    }
-  return 1;
-}
-
-DEFUN ("is_global", Fis_global, Sis_global, 1, 1,
+DEFUN ("is_global", Fis_global, Sis_global, 10,
   "is_global (X): return 1 if the string X names a global variable\n\
 otherwise, return 0.")
 {
@@ -201,7 +183,7 @@ otherwise, return 0.")
   return retval;
 }
 
-DEFUN ("exist", Fexist, Sexist, 1, 1,
+DEFUN ("exist", Fexist, Sexist, 10,
   "exist (NAME): check if variable or file exists\n\
 \n\
 return 0 if NAME is undefined, 1 if it is a variable, or 2 if it is\n\
@@ -1188,7 +1170,7 @@ maybe_list (const char *header, char **argv, int argc,
   return status;
 }
 
-DEFUN_TEXT ("document", Fdocument, Sdocument, -1, 1,
+DEFUN_TEXT ("document", Fdocument, Sdocument, 10,
   "document symbol string ...\n\
 \n\
 Associate a cryptic message with a variable name.")
@@ -1226,7 +1208,7 @@ Associate a cryptic message with a variable name.")
 // naming the variables to look for.
 
 static Octave_object
-do_who (int argc, char **argv, int nargout)
+do_who (int argc, char **argv)
 {
   Octave_object retval;
 
@@ -1322,7 +1304,7 @@ do_who (int argc, char **argv, int nargout)
   return retval;
 }
 
-DEFUN_TEXT ("who", Fwho, Swho, -1, 1,
+DEFUN_TEXT ("who", Fwho, Swho, 10,
   "who [-all] [-builtins] [-functions] [-long] [-variables]\n\
 \n\
 List currently defined symbol(s).  Options may be shortened to one\n\
@@ -1332,14 +1314,14 @@ character, but may not be combined.")
 
   DEFINE_ARGV("who");
 
-  retval = do_who (argc, argv, nargout);
+  retval = do_who (argc, argv);
 
   DELETE_ARGV;
 
   return retval;
 }
 
-DEFUN_TEXT ("whos", Fwhos, Swhos, -1, 1,
+DEFUN_TEXT ("whos", Fwhos, Swhos, 10,
   "whos [-all] [-builtins] [-functions] [-long] [-variables]\n\
 \n\
 List currently defined symbol(s).  Options may be shortened to one\n\
@@ -1360,7 +1342,7 @@ character, but may not be combined.")
   if (error_state)
     return retval;
 
-  retval = do_who (argc, argv, nargout);
+  retval = do_who (argc, argv);
 
   while (--argc >= 0)
     delete [] argv[argc];
@@ -1386,7 +1368,7 @@ install_builtin_mapper (builtin_mapper_function *mf)
   mfcn.d_c_mapper = mf->d_c_mapper;
   mfcn.c_c_mapper = mf->c_c_mapper;
 
-  tree_builtin *def = new tree_builtin (1, 1, mfcn, mf->name);
+  tree_builtin *def = new tree_builtin (mfcn, mf->name);
 
   sym_rec->define (def);
 
@@ -1401,8 +1383,7 @@ install_builtin_function (builtin_function *f)
   symbol_record *sym_rec = global_sym_tab->lookup (f->name, 1);
   sym_rec->unprotect ();
 
-  tree_builtin *def = new tree_builtin (f->nargin_max, f->nargout_max,
-					f->fcn, f->name);
+  tree_builtin *def = new tree_builtin (f->fcn, f->name);
 
   sym_rec->define (def, f->is_text_fcn);
 
@@ -1812,7 +1793,7 @@ help and usage functions");
 
 // Deleting names from the symbol tables.
 
-DEFUN_TEXT ("clear", Fclear, Sclear, -1, 1,
+DEFUN_TEXT ("clear", Fclear, Sclear, 10,
   "clear [-x] [name ...]\n\
 \n\
 Clear symbol(s) matching a list of globbing patterns.\n\

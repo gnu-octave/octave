@@ -636,7 +636,7 @@ current_history_number (void)
 
 }
 
-DEFUN_TEXT ("edit_history", Fedit_history, Sedit_history, -1, 1,
+DEFUN_TEXT ("edit_history", Fedit_history, Sedit_history, 10,
   "edit_history [first] [last]\n\
 \n\
 edit commands from the history list")
@@ -652,7 +652,7 @@ edit commands from the history list")
   return retval;
 }
 
-DEFUN_TEXT ("history", Fhistory, Shistory, -1, 1,
+DEFUN_TEXT ("history", Fhistory, Shistory, 10,
   "history [N] [-w file] [-r file] [-q]\n\
 \n\
 display, save, or load command history")
@@ -668,7 +668,7 @@ display, save, or load command history")
   return retval;
 }
 
-DEFUN_TEXT ("run_history", Frun_history, Srun_history, -1, 1,
+DEFUN_TEXT ("run_history", Frun_history, Srun_history, 10,
   "run_history [first] [last]\n\
 \n\
 run commands from the history list")

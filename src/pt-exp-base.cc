@@ -182,7 +182,7 @@ any_arg_is_magic_colon (const Octave_object& args)
 // Expressions.
 
 tree_constant
-tree_expression::eval (int print)
+tree_expression::eval (int /* print */)
 {
   panic ("invalid evaluation of generic expression");
   return tree_constant ();
@@ -291,7 +291,7 @@ struct const_matrix_list
 // Less ugly than before, anyway.
 
 tree_constant
-tree_matrix::eval (int print)
+tree_matrix::eval (int /* print */)
 {
   tree_constant retval;
 
@@ -647,7 +647,7 @@ tree_matrix::print_code (ostream& os)
 // A base class for objects that can be return multiple values
 
 tree_constant
-tree_multi_val_ret::eval (int print)
+tree_multi_val_ret::eval (int /* print */)
 {
   panic ("invalid evaluation of generic expression");
   return tree_constant ();
@@ -656,13 +656,14 @@ tree_multi_val_ret::eval (int print)
 // Used internally.
 
 tree_constant
-tree_oct_obj::eval (int print)
+tree_oct_obj::eval (int /* print */)
 {
   return values(0);
 }
 
 Octave_object
-tree_oct_obj::eval (int print, int nargout, const Octave_object& args)
+tree_oct_obj::eval (int /* print */, int /* nargout */,
+		    const Octave_object& /* args */)
 {
   return values;
 }
@@ -670,14 +671,15 @@ tree_oct_obj::eval (int print, int nargout, const Octave_object& args)
 // A base class for objects that can be evaluated with argument lists.
 
 tree_constant
-tree_fvc::assign (tree_constant& t, const Octave_object& args)
+tree_fvc::assign (tree_constant& /* t */, const Octave_object& /* args */)
 {
   panic_impossible ();
   return tree_constant ();
 }
 
 tree_constant
-tree_fvc::lookup_map_element (SLList<char*>& list, int insert, int silent)
+tree_fvc::lookup_map_element (SLList<char*>& /* list */,
+			      int /* insert */, int /* silent */)
 {
   static tree_constant retval;
 
@@ -1253,8 +1255,6 @@ tree_index_expression::eval (int print)
 	eval_error ();
       else
 	{
-	  int nargin = args.length ();
-
 	  if (error_state)
 	    eval_error ();
 	  else
@@ -1288,7 +1288,8 @@ tree_index_expression::eval (int print)
 }
 
 Octave_object
-tree_index_expression::eval (int print, int nargout, const Octave_object& args)
+tree_index_expression::eval (int print, int nargout,
+			     const Octave_object& /* args */)
 {
   Octave_object retval;
 
@@ -1300,21 +1301,19 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
       // Extract the arguments into a simple vector.  Don't pass null
       // args.
 
-      Octave_object args = list->convert_to_const_vector ();
+      Octave_object tmp_args = list->convert_to_const_vector ();
 
       if (error_state)
 	eval_error ();
       else
 	{
-	  int nargin = args.length ();
-
 	  if (error_state)
 	    eval_error ();
 	  else
 	    {
-	      if (all_args_defined (args))
+	      if (all_args_defined (tmp_args))
 		{
-		  retval = id->eval (print, nargout, args);
+		  retval = id->eval (print, nargout, tmp_args);
 
 		  if (error_state)
 		    eval_error ();
@@ -1545,7 +1544,7 @@ tree_postfix_expression::print_code (ostream& os)
 // Unary expressions.
 
 tree_constant
-tree_unary_expression::eval (int print)
+tree_unary_expression::eval (int /* print */)
 {
   if (error_state)
     return tree_constant ();
@@ -1663,7 +1662,7 @@ tree_unary_expression::print_code (ostream& os)
 // Binary expressions.
  
 tree_constant
-tree_binary_expression::eval (int print)
+tree_binary_expression::eval (int /* print */)
 {
   if (error_state)
     return tree_constant ();
@@ -2051,7 +2050,7 @@ tree_multi_assignment_expression::eval (int print)
 
 Octave_object
 tree_multi_assignment_expression::eval (int print, int nargout,
-					const Octave_object& args)
+					const Octave_object& /* args */)
 {
   assert (etype == tree_expression::multi_assignment);
 
@@ -2199,7 +2198,7 @@ tree_colon_expression::chain (tree_expression *t)
 }
 
 tree_constant
-tree_colon_expression::eval (int print)
+tree_colon_expression::eval (int /* print */)
 {
   tree_constant retval;
 
@@ -2313,37 +2312,29 @@ tree_colon_expression::print_code (ostream& os)
 
 tree_builtin::tree_builtin (const char *nm)
 {
-  nargin_max = -1;
-  nargout_max = -1;
   is_mapper = 0;
   fcn = 0;
   if (nm)
     my_name = strsave (nm);
 }
 
-tree_builtin::tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
-			    const char *nm)
+tree_builtin::tree_builtin (Mapper_fcn& m_fcn, const char *nm)
 {
-  nargin_max = i_max;
-  nargout_max = o_max;
   mapper_fcn = m_fcn;
   is_mapper = 1;
   fcn = 0;
   my_name = nm ? strsave (nm) : 0;
 }
 
-tree_builtin::tree_builtin (int i_max, int o_max, Octave_builtin_fcn g_fcn,
-			    const char *nm)
+tree_builtin::tree_builtin (Octave_builtin_fcn g_fcn, const char *nm)
 {
-  nargin_max = i_max;
-  nargout_max = o_max;
   is_mapper = 0;
   fcn = g_fcn;
   my_name = nm ? strsave (nm) : 0;
 }
 
 tree_constant
-tree_builtin::eval (int print)
+tree_builtin::eval (int /* print */)
 {
   tree_constant retval;
 
@@ -2377,7 +2368,8 @@ tree_builtin::eval (int print)
 }
 
 static tree_constant
-apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
+apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
+		  int /* print */)
 {
   tree_constant retval;
 
@@ -2457,7 +2449,7 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn, int print)
 }
 
 Octave_object
-tree_builtin::eval (int print, int nargout, const Octave_object& args)
+tree_builtin::eval (int /* print */, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -2477,9 +2469,12 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
     }
   else if (is_mapper)
     {
-      if (nargin > nargin_max)
-	::error ("%s: too many arguments", my_name);
-      else if (nargin > 0 && args(0).is_defined ())
+// XXX FIXME XXX -- should we just assume nargin_max == 1?
+//
+//      if (nargin > nargin_max)
+//	::error ("%s: too many arguments", my_name);
+//      else
+      if (nargin > 0 && args(0).is_defined ())
 	{
 	  tree_constant tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
 	  retval(0) = tmp;
@@ -2496,17 +2491,6 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
     }
 
   return retval;
-}
-
-int
-tree_builtin::max_expected_args (void)
-{
-  int ea = nargin_max;
-  if (nargin_max < 0)
-    ea = INT_MAX;
-  else
-    ea = nargin_max;
-  return ea;
 }
 
 // User defined functions.
@@ -2707,7 +2691,7 @@ clear_symbol_table (void *table)
 }
 
 Octave_object
-tree_function::eval (int print, int nargout, const Octave_object& args)
+tree_function::eval (int /* print */, int nargout, const Octave_object& args)
 {
   Octave_object retval;
 
@@ -2825,20 +2809,6 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
   return retval;
 }
 
-int
-tree_function::max_expected_args (void)
-{
-  if (param_list)
-    {
-      if (param_list->takes_varargs ())
-	return -1;
-      else
-	return param_list->length ();
-    }
-  else
-    return 1;
-}
-
 void
 tree_function::traceback_error (void)
 {
@@ -2918,7 +2888,7 @@ tree_function::print_code (ostream& os)
   print_code_new_line (os);
 }
 
-DEFUN ("va_arg", Fva_arg, Sva_arg, 0, 1,
+DEFUN ("va_arg", Fva_arg, Sva_arg, 10,
   "va_arg (): return next argument in a function that takes a\n\
 variable number of parameters")
 {
@@ -2947,7 +2917,7 @@ variable number of parameters")
   return retval;
 }
 
-DEFUN ("va_start", Fva_start, Sva_start, 0, 0,
+DEFUN ("va_start", Fva_start, Sva_start, 10,
   "va_start (): reset the pointer to the list of optional arguments\n\
 to the beginning")
 {
@@ -2976,7 +2946,7 @@ to the beginning")
   return retval;
 }
 
-DEFUN ("vr_val", Fvr_val, Svr_val, 1, 0,
+DEFUN ("vr_val", Fvr_val, Svr_val, 10,
   "vr_val (X): append X to the list of optional return values for a
 function that allows a variable number of return values")
 {

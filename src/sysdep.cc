@@ -508,7 +508,7 @@ octave_chdir (const char *path)
 #endif
 }
 
-DEFUN ("clc", Fclc, Sclc, 0, 0,
+DEFUN ("clc", Fclc, Sclc, 00,
   "clc (): clear screen")
 {
   Octave_object retval;
@@ -532,7 +532,7 @@ DEFUN ("clc", Fclc, Sclc, 0, 0,
 
 DEFALIAS (home, clc);
 
-DEFUN ("getenv", Fgetenv, Sgetenv, 1, 1,
+DEFUN ("getenv", Fgetenv, Sgetenv, 10,
   "getenv (STRING): get environment variable values")
 {
   Octave_object retval;
@@ -558,7 +558,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 1, 1,
   return retval;
 }
 
-DEFUN ("kbhit", Fkbhit, Skbhit, 0, 1,
+DEFUN ("kbhit", Fkbhit, Skbhit, 00,
   "kbhit: get a single character from the terminal")
 {
   Octave_object retval;
@@ -577,7 +577,7 @@ DEFUN ("kbhit", Fkbhit, Skbhit, 0, 1,
   return retval;
 }
 
-DEFUN ("pause", Fpause, Spause, 1, 1,
+DEFUN ("pause", Fpause, Spause, 10,
   "pause (seconds): suspend program execution")
 {
   Octave_object retval;
@@ -625,7 +625,7 @@ DEFUN ("pause", Fpause, Spause, 1, 1,
 // XXX FIXME XXX -- maybe this should only return 1 if IEEE floating
 // point functions really work.
 
-DEFUN ("isieee", Fisieee, Sisieee, 1, 1,
+DEFUN ("isieee", Fisieee, Sisieee, 00,
   "isieee (): return 1 if host uses IEEE floating point")
 {
   return (double) (native_float_format == OCTAVE_IEEE_LITTLE

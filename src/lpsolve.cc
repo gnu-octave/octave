@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "tree-const.h"
 
-DEFUN_DLD_BUILTIN ("lp_solve", Flp_solve, Slp_solve, 11, 3,
+DEFUN_DLD_BUILTIN ("lp_solve", Flp_solve, Slp_solve, 00,
   "lp_solve (): solve linear programs using lp_solve.")
 {
   Octave_object retval;
@@ -50,7 +50,7 @@ DEFUN_DLD_BUILTIN ("lp_solve", Flp_solve, Slp_solve, 11, 3,
 }
 
 DEFUN_DLD_BUILTIN ("lp_solve_options", Flp_solve_options,
-		   Slp_solve_options, -1, 1, 
+		   Slp_solve_options, 00, 
   "lp_solve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for lp_solve.  Keywords may be abbreviated\n\

@@ -54,9 +54,6 @@ void unwind_protect_var_internal (void *ptr, void *value, size_t size);
 #define unwind_protect_ptr(p) \
   unwind_protect_ptr_internal ((void **) &(p), (void *) (p))
 
-#define unwind_protect_var(i) \
-  unwind_protect_var_internal ((void *) &(i), (void *) &(i), sizeof (int))
-
 class
 unwind_elem
 {

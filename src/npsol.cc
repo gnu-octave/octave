@@ -228,12 +228,12 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 10, 4,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 11,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 10, 4,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 11,
   "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
@@ -302,8 +302,7 @@ Handle all of the following:
     }
 
   npsol_objective = is_valid_function (args(1), "npsol", 1);
-  if (! npsol_objective
-      || takes_correct_nargs (npsol_objective, 1, "npsol", 1) != 1)
+  if (! npsol_objective)
     return retval;
 
   Objective func (npsol_objective_function);
@@ -407,37 +406,34 @@ Handle all of the following:
 	}
       else
 	{
-	  if (takes_correct_nargs (npsol_constraints, 1, "npsol", 1))
+	  ColumnVector nlub = args(nargin-1).vector_value ();
+	  ColumnVector nllb = args(nargin-3).vector_value ();
+
+	  if (error_state
+	      || (! nonlinear_constraints_ok
+		  (x, nllb, npsol_constraint_function, nlub, "npsol", 1)))
+	    return retval;
+
+	  NLFunc const_func (npsol_constraint_function);
+	  NLConst nonlinear_constraints (nllb, const_func, nlub);
+
+	  if (nargin == 5)
 	    {
-	      ColumnVector nlub = args(nargin-1).vector_value ();
-	      ColumnVector nllb = args(nargin-3).vector_value ();
+	      // 8. npsol (x, phi, nllb, g, nlub)
 
-	      if (error_state
-		  || (! nonlinear_constraints_ok
-		      (x, nllb, npsol_constraint_function, nlub, "npsol", 1)))
-		return retval;
-
-	      NLFunc const_func (npsol_constraint_function);
-	      NLConst nonlinear_constraints (nllb, const_func, nlub);
-
-	      if (nargin == 5)
-		{
-		  // 8. npsol (x, phi, nllb, g, nlub)
-
-		  NPSOL nlp (x, func, nonlinear_constraints);
-		  nlp.copy (npsol_opts);
-		  soln = nlp.minimize (objf, inform, lambda);
-		}
-	      else
-		{
-		  // 5. npsol (x, phi, lb, ub, nllb, g, nlub)
-
-		  NPSOL nlp (x, func, bounds, nonlinear_constraints);
-		  nlp.copy (npsol_opts);
-		  soln = nlp.minimize (objf, inform, lambda);
-		}
-	      goto solved;
+	      NPSOL nlp (x, func, nonlinear_constraints);
+	      nlp.copy (npsol_opts);
+	      soln = nlp.minimize (objf, inform, lambda);
 	    }
+	  else
+	    {
+	      // 5. npsol (x, phi, lb, ub, nllb, g, nlub)
+
+	      NPSOL nlp (x, func, bounds, nonlinear_constraints);
+	      nlp.copy (npsol_opts);
+	      soln = nlp.minimize (objf, inform, lambda);
+	    }
+	  goto solved;
 	}
     }
 
@@ -451,61 +447,58 @@ Handle all of the following:
 	}
       else
 	{
-	  if (takes_correct_nargs (npsol_constraints, 1, "npsol", 1))
+	  ColumnVector nlub = args(nargin-1).vector_value ();
+	  ColumnVector nllb = args(nargin-3).vector_value ();
+
+	  if (error_state
+	      || (! nonlinear_constraints_ok
+		  (x, nllb, npsol_constraint_function, nlub, "npsol", 1)))
+	    return retval;
+
+	  NLFunc const_func (npsol_constraint_function);
+	  NLConst nonlinear_constraints (nllb, const_func, nlub);
+
+	  ColumnVector lub = args(nargin-4).vector_value ();
+	  ColumnVector llb = args(nargin-6).vector_value ();
+
+	  if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	    {
-	      ColumnVector nlub = args(nargin-1).vector_value ();
-	      ColumnVector nllb = args(nargin-3).vector_value ();
-
-	      if (error_state
-		  || (! nonlinear_constraints_ok
-		      (x, nllb, npsol_constraint_function, nlub, "npsol", 1)))
-		return retval;
-
-	      NLFunc const_func (npsol_constraint_function);
-	      NLConst nonlinear_constraints (nllb, const_func, nlub);
-
-	      ColumnVector lub = args(nargin-4).vector_value ();
-	      ColumnVector llb = args(nargin-6).vector_value ();
-
-	      if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
-		{
-		  error ("npsol: bounds for linear constraints must be vectors");
-		  return retval;
-		}
-	      
-	      Matrix c = args(nargin-5).matrix_value ();
-
-	      if (error_state)
-		{
-		  error ("npsol: invalid linear constraint matrix");
-		  return retval;
-		}
-
-	      if (! linear_constraints_ok (x, llb, c, lub, "npsol", 1))
-		return retval;
-
-	      LinConst linear_constraints (llb, c, lub);
-
-	      if (nargin == 8)
-		{
-		  // 6. npsol (x, phi, llb, c, lub, nllb, g, nlub)
-
-		  NPSOL nlp (x, func, linear_constraints,
-			     nonlinear_constraints);
-		  nlp.copy (npsol_opts);
-		  soln = nlp.minimize (objf, inform, lambda);
-		}
-	      else
-		{
-		  // 4. npsol (x, phi, lb, ub, llb, c, lub, nllb, g, nlub)
-
-		  NPSOL nlp (x, func, bounds, linear_constraints,
-			     nonlinear_constraints);
-		  nlp.copy (npsol_opts);
-		  soln = nlp.minimize (objf, inform, lambda);
-		}
-	      goto solved;
+	      error ("npsol: bounds for linear constraints must be vectors");
+	      return retval;
 	    }
+	      
+	  Matrix c = args(nargin-5).matrix_value ();
+
+	  if (error_state)
+	    {
+	      error ("npsol: invalid linear constraint matrix");
+	      return retval;
+	    }
+
+	  if (! linear_constraints_ok (x, llb, c, lub, "npsol", 1))
+	    return retval;
+
+	  LinConst linear_constraints (llb, c, lub);
+
+	  if (nargin == 8)
+	    {
+	      // 6. npsol (x, phi, llb, c, lub, nllb, g, nlub)
+
+	      NPSOL nlp (x, func, linear_constraints,
+			 nonlinear_constraints);
+	      nlp.copy (npsol_opts);
+	      soln = nlp.minimize (objf, inform, lambda);
+	    }
+	  else
+	    {
+	      // 4. npsol (x, phi, lb, ub, llb, c, lub, nllb, g, nlub)
+
+	      NPSOL nlp (x, func, bounds, linear_constraints,
+			 nonlinear_constraints);
+	      nlp.copy (npsol_opts);
+	      soln = nlp.minimize (objf, inform, lambda);
+	    }
+	  goto solved;
 	}
     }
 
@@ -776,12 +769,12 @@ show_npsol_option (const char *keyword)
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, -1, 1,
+DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, 10,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, -1, 1,
+DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, 10,
   "npsol_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for npsol.  Keywords may be abbreviated\n\

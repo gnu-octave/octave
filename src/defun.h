@@ -102,16 +102,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //     table.  By convention, it is constructed by prefixing name with
 //     the character S.
 //
-//   nargin_max is the maximum number of arguments this function can
-//     accept. XXX FIXME XXX -- is this really used now?
+//   unused_arg_flags is used to decide how to declare the function so
+//     that g++ doesn't complain about unused arguments.  It can be
+//     one of:
 //
-//   nargout_max is the maximum number of outputs this function can
-//     produce.  XXX FIXME XXX -- is this really used now?
+//     00:            Both of the arguments args and nargout are unused.
+//     10:            The argument args is unused.
+//     01:            The argument nargout is unused.
+//     11 or missing: Both of the arguments args and nargout are used.
 //
 //   doc is the simple help text for the function.
 
-#define DEFUN(name, fname, sname, nargin_max, nargout_max, doc) \
-  DEFUN_INTERNAL (name, fname, sname, nargin_max, nargout_max, 0, doc)
+#define DEFUN(name, fname, sname, unused_arg_flags, doc) \
+  DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 0, doc)
 
 // Define a builtin text-style function.
 //
@@ -119,8 +122,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // called from the Octave language without using parenthesis to
 // surround the arguments). 
 
-#define DEFUN_TEXT(name, fname, sname, nargin_max, nargout_max, doc) \
-  DEFUN_INTERNAL (name, fname, sname, nargin_max, nargout_max, 1, doc)
+#define DEFUN_TEXT(name, fname, sname, unused_arg_flags, doc) \
+  DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 1, doc)
 
 // Define a mapper function.
 //

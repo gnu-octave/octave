@@ -52,12 +52,12 @@ static QPSOL_options qpsol_opts;
 #endif
 
 #if defined (QPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, 9, 3,
+DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, 11,
   "This function requires QPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/qpsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, 9, 3,
+DEFUN_DLD_BUILTIN ("qpsol", Fqpsol, Sqpsol, 11,
   "[X, OBJ, INFO, LAMBDA] = qpsol (X, H, C [, LB, UB] [, LB, A, UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
@@ -385,12 +385,12 @@ show_qpsol_option (const char *keyword)
 #endif
 
 #if defined (QPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("qpsol_options", Fqpsol_options, Sqpsol_options, -1, 1,
+DEFUN_DLD_BUILTIN ("qpsol_options", Fqpsol_options, Sqpsol_options, 10,
   "This function requires QPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/qpsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("qpsol_options", Fqpsol_options, Sqpsol_options, -1, 1,
+DEFUN_DLD_BUILTIN ("qpsol_options", Fqpsol_options, Sqpsol_options, 10,
   "qpsol_options (KEYWORD, VALUE)\n
 \n\
 Set or show options for qpsol.  Keywords may be abbreviated\n\

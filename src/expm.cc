@@ -55,7 +55,7 @@ extern "C"
 				   const int&, double*); 
 }
 
-DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
+DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
   "expm (X): matrix exponential, e^A")
 {
   Octave_object retval;

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tree-const.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 7, 4,
+DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 10,
   "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights")
 {
   Octave_object retval;

@@ -96,7 +96,7 @@ tree_constant::operator new (size_t size)
 }
 
 void
-tree_constant::operator delete (void *p, size_t size)
+tree_constant::operator delete (void *p, size_t /* size */)
 {
   tree_constant *tmp = (tree_constant *) p;
   tmp->freeptr = tc_newlist;
@@ -843,7 +843,7 @@ TC_REP::operator new (size_t size)
 }
 
 void
-TC_REP::operator delete (void *p, size_t size)
+TC_REP::operator delete (void *p, size_t /* size */)
 {
   TC_REP *tmp = (TC_REP *) p;
   tmp->freeptr = tc_rep_newlist;
@@ -3599,7 +3599,7 @@ TC_REP::do_matrix_index (const Range& ri,
 }
 
 tree_constant
-TC_REP::do_matrix_index (TC_REP::constant_type mci,
+TC_REP::do_matrix_index (TC_REP::constant_type /* mci */,
 			 const tree_constant& j_arg) const
 {
   tree_constant retval;
@@ -5658,7 +5658,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri,
 // -*- MA4 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
-			      TC_REP::constant_type i,
+			      TC_REP::constant_type /* i */,
 			      const tree_constant& j_arg)
 {
   tree_constant tmp_j = j_arg.make_numeric_or_range_or_magic ();

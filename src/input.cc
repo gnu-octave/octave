@@ -159,9 +159,6 @@ char *current_input_line = 0;
 // A line of input from readline.
 static char *octave_gets_line = 0;
 
-extern tree_constant eval_string (const char *string, int print,
-				  int ans_assign, int& parse_status);
-
 // Append SOURCE to TARGET at INDEX.  SIZE is the current amount of
 // space allocated to TARGET.  SOURCE can be NULL, in which case
 // nothing happens.  Gets rid of SOURCE by free ()ing it.  Returns
@@ -852,7 +849,7 @@ command_generator (const char *text, int state)
 }
 
 static char **
-command_completer (char *text, int start, int end)
+command_completer (char *text, int /* start */, int /* end */)
 {
   char **matches = 0;
   matches = completion_matches (text, command_generator);
@@ -902,7 +899,7 @@ set_saved_history (void)
 }
 
 static void
-operate_and_get_next (int count, int c)
+operate_and_get_next (int /* count */, int /* c */)
 {
   int where;
 
@@ -972,7 +969,7 @@ match_sans_spaces (const char *standard, const char *test)
 // If the user simply hits return, this will produce an empty matrix.
 
 static Octave_object
-get_user_input (const Octave_object& args, int nargout, int debug = 0)
+get_user_input (const Octave_object& args, int debug = 0)
 {
   tree_constant retval;
 
@@ -1033,7 +1030,7 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
       else
 	{
 	  int parse_status = 0;
-	  retval = eval_string (input_buf, 0, 0, parse_status);
+	  retval = eval_string (input_buf, 0, parse_status);
 	  if (retval.is_defined ())
 	    {
 	      if (debug)
@@ -1052,7 +1049,7 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
   return retval;
 }
 
-DEFUN ("input", Finput, Sinput, 2, 1,
+DEFUN ("input", Finput, Sinput, 10,
   "input (PROMPT [, S])\n\
 \n\
 Prompt user for input.  If the second argument is present, return
@@ -1063,14 +1060,14 @@ value as a string.")
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = get_user_input (args, nargout);
+    retval = get_user_input (args);
   else
     print_usage ("input");
 
   return retval;
 }
 
-DEFUN ("keyboard", Fkeyboard, Skeyboard, 1, 1,
+DEFUN ("keyboard", Fkeyboard, Skeyboard, 10,
   "keyboard (PROMPT)\n\
 \n\
 maybe help in debugging function files")
@@ -1080,7 +1077,7 @@ maybe help in debugging function files")
   int nargin = args.length ();
 
   if (nargin == 0 || nargin == 1)
-    retval = get_user_input (args, nargout, 1);
+    retval = get_user_input (args, 1);
   else
     print_usage ("keyboard");
 

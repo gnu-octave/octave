@@ -53,7 +53,7 @@ token::token (char *s, int l, int c)
   orig_text = 0;
 }
 
-token::token (double d, char *s, int l, int c)
+token::token (double d, char * /* s */, int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -149,13 +149,13 @@ token::text_rep (void)
   return orig_text;
 }
 
-token::token (const token& tok)
+token::token (const token& /* tok */)
 {
   panic_impossible ();
 }
 
 token&
-token::operator = (const token& tok)
+token::operator = (const token& /* tok */)
 {
   panic_impossible ();
 }

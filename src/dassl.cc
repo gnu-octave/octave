@@ -103,7 +103,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("dassl", Fdassl, Sdassl, 5, 2,
+DEFUN_DLD_BUILTIN ("dassl", Fdassl, Sdassl, 10,
   "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
 dassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\
 \n\
@@ -125,7 +125,7 @@ where x, xdot, and res are vectors, and t is a scalar.")
     }
 
   dassl_fcn = is_valid_function (args(0), "dassl", 1);
-  if (! dassl_fcn || takes_correct_nargs (dassl_fcn, 3, "dassl", 1) != 1)
+  if (! dassl_fcn)
     return retval;
 
   ColumnVector state = args(1).vector_value ();
@@ -315,7 +315,7 @@ show_dassl_option (const char *keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("dassl_options", Fdassl_options, Sdassl_options, -1, 1,
+DEFUN_DLD_BUILTIN ("dassl_options", Fdassl_options, Sdassl_options, 10,
   "dassl_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for dassl.  Keywords may be abbreviated\n\

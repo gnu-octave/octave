@@ -100,7 +100,7 @@ mk_ru_map (struct rusage *ru)
   return m;
 }
 
-DEFUN ("getrusage", Fgetrusage, Sgetrusage, 0, 0,
+DEFUN ("getrusage", Fgetrusage, Sgetrusage, 00,
   "getrusage ()\n\
 \n\
 Return system resource statistics.")

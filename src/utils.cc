@@ -181,7 +181,7 @@ octave_tmp_file_name (void)
 }
 
 DEFUN ("octave_tmp_file_name", Foctave_tmp_file_name,
-       Soctave_tmp_file_name, 0, 1,
+       Soctave_tmp_file_name, 10,
  "octave_tmp_file_name ()")
 {
   tree_constant retval;
@@ -646,7 +646,7 @@ search_path_for_file (const char *path, const char *name)
   return retval;
 }
 
-DEFUN ("file_in_path", Ffile_in_path, Sfile_in_path, 3, 1,
+DEFUN ("file_in_path", Ffile_in_path, Sfile_in_path, 10,
   "file_in_path (PATH, NAME)")
 {
   Octave_object retval;
@@ -790,7 +790,7 @@ undo_string_escapes (const char *s)
 }
 
 DEFUN ("undo_string_escapes", Fundo_string_escapes,
-       Sundo_string_escapes, 1, 1,
+       Sundo_string_escapes, 10,
   "undo_string_escapes (STRING)")
 {
   tree_constant retval;

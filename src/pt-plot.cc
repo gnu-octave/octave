@@ -1109,7 +1109,7 @@ do_external_plotter_cd (const char *newdir)
     }
 }
 
-DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
+DEFUN ("clearplot", Fclearplot, Sclearplot, 00,
   "clearplot (): clear the plot window")
 {
   Octave_object retval;
@@ -1135,7 +1135,7 @@ DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
 
 DEFALIAS (clg, clearplot);
 
-DEFUN ("closeplot", Fcloseplot, Scloseplot, 0, 0,
+DEFUN ("closeplot", Fcloseplot, Scloseplot, 00,
   "closeplot (): close the stream to plotter")
 {
   Octave_object retval;
@@ -1143,7 +1143,7 @@ DEFUN ("closeplot", Fcloseplot, Scloseplot, 0, 0,
   return retval;
 }
 
-DEFUN_TEXT ("hold", Fhold, Shold, 1, 0,
+DEFUN_TEXT ("hold", Fhold, Shold, 10,
   "hold [on|off]\n\
 \n\
 determine whether the plot window is cleared before the next line is\n\
@@ -1178,7 +1178,7 @@ drawn.  With no argument, toggle the current state.")
   return retval;
 }
 
-DEFUN ("ishold", Fishold, Sishold, 0, 1,
+DEFUN ("ishold", Fishold, Sishold, 00,
   "ishold\n\
 \n\
 Return 1 if hold is on, otherwise return 0.")
@@ -1186,7 +1186,7 @@ Return 1 if hold is on, otherwise return 0.")
   return (double) (! clear_before_plotting);
 }
 
-DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 0, 0,
+DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 00,
   "delete temporary data files used for plotting")
 {
   Octave_object retval;
@@ -1194,7 +1194,7 @@ DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 0, 0,
   return retval;
 }
 
-DEFUN_TEXT ("set", Fset, Sset, -1, 0,
+DEFUN_TEXT ("set", Fset, Sset, 10,
   "set [options]\n\
 \n\
 set plotting options")
@@ -1237,7 +1237,7 @@ set plotting options")
   return retval;
 }
 
-DEFUN_TEXT ("show", Fshow, Sshow, -1, 0,
+DEFUN_TEXT ("show", Fshow, Sshow, 10,
   "show [options]\n\
 \n\
 show plotting options")

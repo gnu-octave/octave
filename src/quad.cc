@@ -83,7 +83,7 @@ quad_user_function (double x)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("quad", Fquad, Squad, 5, 3,
+DEFUN_DLD_BUILTIN ("quad", Fquad, Squad, 11,
   "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
 \n\
 Where the first argument is the name of the  function to call to\n\
@@ -115,7 +115,7 @@ integrand is singular.")
     }
 
   quad_fcn = is_valid_function (args(0), "quad", 1);
-  if (! quad_fcn || takes_correct_nargs (quad_fcn, 1, "quad", 1) != 1)
+  if (! quad_fcn)
     return retval;
 
   double a = args(1).double_value ();
@@ -353,7 +353,7 @@ show_quad_option (const char *keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("quad_options", Fquad_options, Squad_options, -1, 1,
+DEFUN_DLD_BUILTIN ("quad_options", Fquad_options, Squad_options, 10,
   "quad_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for quad.  Keywords may be abbreviated\n\

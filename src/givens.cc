@@ -47,7 +47,7 @@ extern "C"
 				double&, Complex&, Complex&);
 }
 
-DEFUN_DLD_BUILTIN ("givens", Fgivens, Sgivens, 3, 2,
+DEFUN_DLD_BUILTIN ("givens", Fgivens, Sgivens, 11,
   "G = givens (X, Y)\n\
 \n\
 compute orthogonal matrix G = [c s; -conj (s) c]\n\

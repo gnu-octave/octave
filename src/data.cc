@@ -50,7 +50,7 @@ Software Foundation, Inc.
 #define ABS(x) (((x) < 0) ? (-x) : (x))
 #endif
 
-DEFUN ("all", Fall, Sall, 1, 1,
+DEFUN ("all", Fall, Sall, 10,
   "all (X): are all elements of X nonzero?")
 {
   Octave_object retval;
@@ -65,7 +65,7 @@ DEFUN ("all", Fall, Sall, 1, 1,
   return retval;
 }
 
-DEFUN ("any", Fany, Sany, 1, 1,
+DEFUN ("any", Fany, Sany, 10,
   "any (X): are any elements of X nonzero?")
 {
   Octave_object retval;
@@ -134,7 +134,7 @@ map (d_dd_fcn f, const Matrix& x, const Matrix& y)
   return retval;
 }
 
-DEFUN ("atan2", Fatan2, Satan2, 2, 1,
+DEFUN ("atan2", Fatan2, Satan2, 10,
   "atan2 (Y, X): atan (Y / X) in range -pi to pi")
 {
   Octave_object retval;
@@ -220,7 +220,7 @@ DEFUN ("atan2", Fatan2, Satan2, 2, 1,
   return retval;
 }
 
-DEFUN ("cumprod", Fcumprod, Scumprod, 1, 1,
+DEFUN ("cumprod", Fcumprod, Scumprod, 10,
   "cumprod (X): cumulative products")
 {
   Octave_object retval;
@@ -257,7 +257,7 @@ DEFUN ("cumprod", Fcumprod, Scumprod, 1, 1,
   return retval;
 }
 
-DEFUN ("cumsum", Fcumsum, Scumsum, 1, 1,
+DEFUN ("cumsum", Fcumsum, Scumsum, 10,
   "cumsum (X): cumulative sums")
 {
   Octave_object retval;
@@ -539,7 +539,7 @@ make_diag (const tree_constant& a, const tree_constant& b)
   return retval;
 }
 
-DEFUN ("diag", Fdiag, Sdiag, 2, 1,
+DEFUN ("diag", Fdiag, Sdiag, 10,
   "diag (X [,k]): form/extract diagonals")
 {
   Octave_object retval;
@@ -556,7 +556,7 @@ DEFUN ("diag", Fdiag, Sdiag, 2, 1,
   return retval;
 }
 
-DEFUN ("prod", Fprod, Sprod, 1, 1,
+DEFUN ("prod", Fprod, Sprod, 10,
   "prod (X): products")
 {
   Octave_object retval;
@@ -593,7 +593,7 @@ DEFUN ("prod", Fprod, Sprod, 1, 1,
   return retval;
 }
 
-DEFUN ("size", Fsize, Ssize, 2, 1,
+DEFUN ("size", Fsize, Ssize, 11,
   "[m, n] = size (x): return rows and columns of X\n\
 \n\
 d = size (x): return number of rows and columns of x as a row vector\n\
@@ -645,7 +645,7 @@ m = size (x, 2): return number of columns in x")
   return retval;
 }
 
-DEFUN ("sum", Fsum, Ssum, 1, 1,
+DEFUN ("sum", Fsum, Ssum, 10,
   "sum (X): sum of elements")
 {
   Octave_object retval;
@@ -682,7 +682,7 @@ DEFUN ("sum", Fsum, Ssum, 1, 1,
   return retval;
 }
 
-DEFUN ("sumsq", Fsumsq, Ssumsq, 1, 1,
+DEFUN ("sumsq", Fsumsq, Ssumsq, 10,
   "sumsq (X): sum of squares of elements")
 {
   Octave_object retval;
@@ -719,7 +719,7 @@ DEFUN ("sumsq", Fsumsq, Ssumsq, 1, 1,
   return retval;
 }
 
-DEFUN ("is_struct", Fis_struct, Sis_struct, 1, 1,
+DEFUN ("is_struct", Fis_struct, Sis_struct, 10,
   "is_struct (x): return nonzero if x is a structure")
 {
   Octave_object retval;
@@ -741,7 +741,7 @@ DEFUN ("is_struct", Fis_struct, Sis_struct, 1, 1,
   return retval;
 }
 
-DEFUN ("struct_elements", Fstruct_elements, Sstruct_elements, 1, 1,
+DEFUN ("struct_elements", Fstruct_elements, Sstruct_elements, 10,
   "struct_elements (S)\n\
 \n\
 Return a list of the names of the elements of the structure S.")
@@ -776,7 +776,7 @@ Return a list of the names of the elements of the structure S.")
   return retval;
 }
 
-DEFUN ("struct_contains", Fstruct_contains, Sstruct_contains, 1, 2,
+DEFUN ("struct_contains", Fstruct_contains, Sstruct_contains, 10,
   "struct_contains (S, NAME)\n\
 \n\
 return nonzero if S is a structure with element NAME")
@@ -894,7 +894,7 @@ fill_matrix (const tree_constant& a, const tree_constant& b,
   return m;
 }
 
-DEFUN ("ones", Fones, Sones, 2, 1,
+DEFUN ("ones", Fones, Sones, 10,
   "ones (N), ones (N, M), ones (X): create a matrix of all ones")
 {
   Octave_object retval;
@@ -923,7 +923,7 @@ DEFUN ("ones", Fones, Sones, 2, 1,
   return retval;
 }
 
-DEFUN ("zeros", Fzeros, Szeros, 2, 1,
+DEFUN ("zeros", Fzeros, Szeros, 10,
   "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
 {
   Octave_object retval;
@@ -994,7 +994,7 @@ identity_matrix (const tree_constant& a, const tree_constant& b)
   return m;
 }
 
-DEFUN ("eye", Feye, Seye, 2, 1,
+DEFUN ("eye", Feye, Seye, 10,
   "eye (N), eye (N, M), eye (X): create an identity matrix")
 {
   Octave_object retval;
@@ -1023,7 +1023,7 @@ DEFUN ("eye", Feye, Seye, 2, 1,
   return retval;
 }
 
-DEFUN ("linspace", Flinspace, Slinspace, 2, 1,
+DEFUN ("linspace", Flinspace, Slinspace, 10,
   "usage: linspace (x1, x2, n)\n\
 \n\
 Return a vector of n equally spaced points between x1 and x2\n\

@@ -26,14 +26,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 
-class tree_statement_list;
+class tree_constant;
 class tree_function;
+class tree_statement_list;
 class Octave_str_obj;
 
 extern void clean_up_and_exit (int) NORETURN;
 
 extern void parse_and_execute (FILE *f, int print = 0);
 extern void parse_and_execute (char *s, int print = 0, int verbose = 0);
+
+extern tree_constant eval_string (const char *string, int print,
+				  int& parse_status);
 
 // argv[0] for this program.
 extern char *raw_prog_name;

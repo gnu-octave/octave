@@ -236,7 +236,7 @@ fclose_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("fclose", Ffclose, Sfclose, 1, 1,
+DEFUN ("fclose", Ffclose, Sfclose, 10,
   "fclose (FILENAME or FILENUM):  close a file")
 {
   Octave_object retval;
@@ -287,7 +287,7 @@ fflush_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("fflush", Ffflush, Sfflush, 1, 1,
+DEFUN ("fflush", Ffflush, Sfflush, 10,
   "fflush (FILENAME or FILENUM): flush buffered data to output file")
 {
   Octave_object retval;
@@ -406,7 +406,7 @@ fgets_internal (const Octave_object& args, int nargin, int nargout,
   return retval;
 }
 
-DEFUN ("fgetl", Ffgetl, Sfgetl, 2, 2,
+DEFUN ("fgetl", Ffgetl, Sfgetl, 11,
   "[STRING, LENGTH] = fgetl (FILENAME or FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
@@ -423,7 +423,7 @@ read a string from a file")
   return retval;
 }
 
-DEFUN ("fgets", Ffgets, Sfgets, 2, 2,
+DEFUN ("fgets", Ffgets, Sfgets, 11,
   "[STRING, LENGTH] = fgets (FILENAME or FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
@@ -503,7 +503,7 @@ fopen_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("fopen", Ffopen, Sfopen, 2, 1,
+DEFUN ("fopen", Ffopen, Sfopen, 10,
   "FILENUM = fopen (FILENAME, MODE): open a file\n\
 \n\
   Valid values for mode include:\n\
@@ -553,7 +553,7 @@ freport_internal (void)
   return retval;
 }
 
-DEFUN ("freport", Ffreport, Sfreport, 0, 1,
+DEFUN ("freport", Ffreport, Sfreport, 10,
   "freport (): list open files and their status")
 {
   Octave_object retval;
@@ -584,7 +584,7 @@ frewind_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("frewind", Ffrewind, Sfrewind, 1, 1,
+DEFUN ("frewind", Ffrewind, Sfrewind, 10,
   "frewind (FILENAME or FILENUM): set file position at beginning of file")
 {
   Octave_object retval;
@@ -680,7 +680,7 @@ fseek_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("fseek", Ffseek, Sfseek, 3, 1,
+DEFUN ("fseek", Ffseek, Sfseek, 10,
   "fseek (FILENAME or FILENUM, OFFSET [, ORIGIN])\n\
 \n\
 set file position for reading or writing")
@@ -720,7 +720,7 @@ ftell_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("ftell", Fftell, Sftell, 1, 1,
+DEFUN ("ftell", Fftell, Sftell, 10,
   "POSITION = ftell (FILENAME or FILENUM): returns the current file position")
 {
   Octave_object retval;
@@ -970,7 +970,7 @@ process_printf_format (const char *s, const Octave_object& args,
 // Formatted printing to a file.
 
 static Octave_object
-do_printf (const char *type, const Octave_object& args, int nargout)
+do_printf (const char *type, const Octave_object& args)
 {
   Octave_object retval;
   fmt_arg_count = 0;
@@ -1072,7 +1072,7 @@ do_printf (const char *type, const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("fprintf", Ffprintf, Sfprintf, -1, 1,
+DEFUN ("fprintf", Ffprintf, Sfprintf, 10,
   "fprintf (FILENAME or FILENUM, FORMAT, ...)")
 {
   Octave_object retval;
@@ -1082,14 +1082,14 @@ DEFUN ("fprintf", Ffprintf, Sfprintf, -1, 1,
   if (nargin < 2)
     print_usage ("fprintf");
   else
-    retval = do_printf ("fprintf", args, nargout);
+    retval = do_printf ("fprintf", args);
 
   return retval;
 }
 
 // Formatted printing.
 
-DEFUN ("printf", Fprintf, Sprintf, -1, 1,
+DEFUN ("printf", Fprintf, Sprintf, 10,
   "printf (FORMAT, ...)")
 {
   Octave_object retval;
@@ -1099,14 +1099,14 @@ DEFUN ("printf", Fprintf, Sprintf, -1, 1,
   if (nargin < 1)
     print_usage ("printf");
   else
-    retval = do_printf ("printf", args, nargout);
+    retval = do_printf ("printf", args);
 
   return retval;
 }
 
 // Formatted printing to a string.
 
-DEFUN ("sprintf", Fsprintf, Ssprintf, -1, 1,
+DEFUN ("sprintf", Fsprintf, Ssprintf, 10,
   "s = sprintf (FORMAT, ...)")
 {
   Octave_object retval;
@@ -1116,7 +1116,7 @@ DEFUN ("sprintf", Fsprintf, Ssprintf, -1, 1,
   if (nargin < 1)
     print_usage ("sprintf");
   else
-    retval = do_printf ("sprintf", args, nargout);
+    retval = do_printf ("sprintf", args);
 
   return retval;
 }
@@ -1438,7 +1438,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("fscanf", Ffscanf, Sfscanf, 2, -1,
+DEFUN ("fscanf", Ffscanf, Sfscanf, 11,
   "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT)")
 {
   Octave_object retval;
@@ -1455,7 +1455,7 @@ DEFUN ("fscanf", Ffscanf, Sfscanf, 2, -1,
 
 // Formatted reading.
 
-DEFUN ("scanf", Fscanf, Sscanf, 1, -1,
+DEFUN ("scanf", Fscanf, Sscanf, 11,
   "[A, B, C, ...] = scanf (FORMAT)")
 {
   Octave_object retval;
@@ -1472,7 +1472,7 @@ DEFUN ("scanf", Fscanf, Sscanf, 1, -1,
 
 // Formatted reading from a string.
 
-DEFUN ("sscanf", Fsscanf, Ssscanf, 2, -1,
+DEFUN ("sscanf", Fsscanf, Ssscanf, 11,
   "[A, B, C, ...] = sscanf (STRING, FORMAT)")
 {
   Octave_object retval;
@@ -1696,7 +1696,7 @@ fread_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("fread", Ffread, Sfread, 3, 2,
+DEFUN ("fread", Ffread, Sfread, 11,
   "[DATA, COUNT] = fread (FILENUM, SIZE, PRECISION)\n\
 \n\
  Reads data in binary form of type PRECISION from a file.\n\
@@ -1739,7 +1739,7 @@ DEFUN ("fread", Ffread, Sfread, 3, 2,
 //    count     : the number of elements written
 
 static Octave_object
-fwrite_internal (const Octave_object& args, int nargout)
+fwrite_internal (const Octave_object& args)
 {
   Octave_object retval;
 
@@ -1778,7 +1778,7 @@ fwrite_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
+DEFUN ("fwrite", Ffwrite, Sfwrite, 10,
   "COUNT = fwrite (FILENUM, DATA, PRECISION)\n\
 \n\
  Writes data to a file in binary form of size PRECISION\n\
@@ -1799,7 +1799,7 @@ DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
   if (nargin < 2 || nargin > 3)
     print_usage ("fwrite");
   else
-    retval = fwrite_internal (args, nargout);
+    retval = fwrite_internal (args);
 
   return retval;
 }
@@ -1812,7 +1812,7 @@ DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
 //     eof : non zero for an end of file condition
 
 static Octave_object
-feof_internal (const Octave_object& args, int nargout)
+feof_internal (const Octave_object& args)
 {
   Octave_object retval;
 
@@ -1828,7 +1828,7 @@ feof_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("feof", Ffeof, Sfeof, 1, 1,
+DEFUN ("feof", Ffeof, Sfeof, 10,
   "ERROR = feof (FILENAME or FILENUM)\n\
 \n\
  Returns a non zero value for an end of file condition for the\n\
@@ -1841,7 +1841,7 @@ DEFUN ("feof", Ffeof, Sfeof, 1, 1,
   if (nargin != 1)
     print_usage ("feof");
   else
-    retval = feof_internal (args, nargout);
+    retval = feof_internal (args);
 
   return retval;
 }
@@ -1876,7 +1876,7 @@ ferror_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("ferror", Fferror, Sferror, 1, 1,
+DEFUN ("ferror", Fferror, Sferror, 11,
   "ERROR = ferror (FILENAME or FILENUM)\n\
 \n\
  Returns a non zero value for an error condition on the\n\
@@ -1956,7 +1956,7 @@ popen_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("popen", Fpopen, Spopen, 2, 1,
+DEFUN ("popen", Fpopen, Spopen, 10,
   "FILENUM = popen (FILENAME, MODE)\n\
 \n\
   start a process and create a pipe.  Valid values for mode are:\n\
@@ -2008,7 +2008,7 @@ pclose_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("pclose", Fpclose, Spclose, 1, 1,
+DEFUN ("pclose", Fpclose, Spclose, 10,
   "pclose (FILENAME or FILENUM)\n\
 \n\
   Close a pipe and terminate the associated process")
@@ -2026,7 +2026,7 @@ DEFUN ("pclose", Fpclose, Spclose, 1, 1,
 }
 
 static Octave_object
-execute_internal (const Octave_object& args, int nargout)
+execute_internal (const Octave_object& args)
 {
   Octave_object retval (3, tree_constant (-1.0));
 
@@ -2108,7 +2108,7 @@ execute_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("execute", Fexecute, Sexecute, 1, 3,
+DEFUN ("execute", Fexecute, Sexecute, 10,
   "[STDIN, STDOUT, PID] = execute (COMMAND)\n\
 \n\
   Start a program and redirect its stdin to STDIN and its stdout to STDOUT")
@@ -2120,7 +2120,7 @@ DEFUN ("execute", Fexecute, Sexecute, 1, 3,
   if (nargin != 1)
     print_usage ("execute");
   else
-    retval = execute_internal (args, nargout);
+    retval = execute_internal (args);
 
   return retval;
 }
@@ -2142,7 +2142,7 @@ sync_system_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("sync_system", Fsync_system, Ssync_system, 1, 1,
+DEFUN ("sync_system", Fsync_system, Ssync_system, 10,
   "RETCODE = sync_system (FILENAME)\n\
 \n\
   Start a program and wait until it terminates")
@@ -2195,7 +2195,7 @@ async_system_internal (const Octave_object& args)
     }
 }
 
-DEFUN ("async_system", Fasync_system, Sasync_system, 1, 1,
+DEFUN ("async_system", Fasync_system, Sasync_system, 10,
   "PID = async_system (FILENAME)\n\
 \n\
   Create a new process and start FILENAME")
@@ -2254,7 +2254,7 @@ waitpid_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("waitpid", Fwaitpid, Swaitpid, 1, 1,
+DEFUN ("waitpid", Fwaitpid, Swaitpid, 10,
   "STATUS = waitpid (PID, OPTIONS)\n\
 \n\
   wait for process PID to terminate\n\
@@ -2319,7 +2319,7 @@ mkfifo_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("mkfifo", Fmkfifo, Smkfifo, 2, 1,
+DEFUN ("mkfifo", Fmkfifo, Smkfifo, 10,
   "STATUS = mkfifo (NAME, MODE)\n\
 \n\
   Create a FIFO special file named NAME with file mode MODE\n\
@@ -2360,7 +2360,7 @@ unlink_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("unlink", Funlink, Sunlink, 1, 1,
+DEFUN ("unlink", Funlink, Sunlink, 10,
   "STATUS = unlink (NAME)\n\
 \n\
   Delete the file NAME\n\
@@ -2414,7 +2414,7 @@ mk_stat_map (struct stat& st)
   return m;
 }
 
-DEFUN ("stat", Fstat, Sstat, 1, 1,
+DEFUN ("stat", Fstat, Sstat, 10,
   "stat (NAME)\n\
 \n\
   Given the name of a file, return a structure with the following
@@ -2465,7 +2465,7 @@ DEFUN ("stat", Fstat, Sstat, 1, 1,
   return retval;
 }
 
-DEFUN ("lstat", Flstat, Slstat, 1, 1,
+DEFUN ("lstat", Flstat, Slstat, 10,
   "lstat (NAME)\n\
 \n\
   Like stat (NAME), but if NAME refers to a symbolic link, returns\n\
@@ -2529,7 +2529,7 @@ convert (int x, int ibase, int obase)
   return retval;
 }
 
-DEFUN ("umask", Fumask, Sumask, 2, 1,
+DEFUN ("umask", Fumask, Sumask, 10,
   "umask (MASK)\n\
 \n\
 Change the file permission mask for file creation for the current

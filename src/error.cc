@@ -172,7 +172,7 @@ panic (const char *fmt, ...)
   abort ();
 }
 
-DEFUN ("error", Ferror, Serror, 1, 1,
+DEFUN ("error", Ferror, Serror, 10,
   "error (MESSAGE): print MESSAGE and set the error state.\n\
 This should eventually take us up to the top level, possibly\n\
 printing traceback messages as we go.\n\
@@ -204,7 +204,7 @@ printed.")
   return retval;
 }
 
-DEFUN ("warning", Fwarning, Swarning, 1, 1,
+DEFUN ("warning", Fwarning, Swarning, 10,
   "warning (MESSAGE): print a warning MESSAGE.\n\
 \n\
 See also: error")
@@ -233,7 +233,7 @@ See also: error")
   return retval;
 }
 
-DEFUN ("usage", Fusage, Susage, 1, 1,
+DEFUN ("usage", Fusage, Susage, 10,
   "usage (MESSAGE): print a usage MESSAGE.\n\
 \n\
 See also: error")

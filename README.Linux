@@ -13,7 +13,7 @@ Debian or RPM packages that are available at other sites.  For
 example, Dirk Eddelbuettel <edd@debian.org> maintains the Debian
 Octave package and usually has them ready within a day or so of new
 Octave releases.  They are available via the WWW at
-http://www.debian.org/Packages/dist/math/octave.html.
+http://www.debian.org/packages.html.
 
 If for some reason you can't (or choose not to) install Octave from
 one of the binary distributions or by using one of the Debian or RPM

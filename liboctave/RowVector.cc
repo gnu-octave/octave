@@ -31,6 +31,40 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "Matrix.h"
 #include "mx-inlines.cc"
 #include "lo-error.h"
+#include "f77-uscore.h"
+
+// Fortran functions we call.
+
+extern "C"
+{
+  int F77_FCN (dgemv) (const char*, const int*, const int*,
+		       const double*, const double*, const int*,
+		       const double*, const int*, const double*,
+		       double*, const int*, long);
+
+  double F77_FCN (ddot) (const int*, const double*, const int*,
+			 const double*, const int*);
+
+/*
+ * f2c translates complex*16 as
+ *
+ *   typedef struct { doublereal re, im; } doublecomplex;
+ *
+ * and Complex.h from libg++ uses
+ *
+ *   protected:
+ *     double re;
+ *     double im;
+ *
+ * as the only data members, so this should work (fingers crossed that
+ * things don't change).
+ */
+
+  int F77_FCN (zgemv) (const char*, const int*, const int*,
+		       const Complex*, const Complex*, const int*,
+		       const Complex*, const int*, const Complex*,
+		       Complex*, const int*, long);
+}
 
 /*
  * Row Vector class.

@@ -31,7 +31,7 @@ function retval = cond (a)
   if (nargin == 1)
     [nr, nc] = size (a);
     if (nr == 0 && nc == 0)
-      if (strcmp (propagate_empty_matrices, "false"))
+      if (! propagate_empty_matrices)
         error ("cond: empty matrix is invalid as argument");
       endif
       if (strcmp (propagate_empty_matrices, "warn"))

@@ -1,3 +1,17 @@
+Thu Oct 10 17:31:01 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/subplot.m, plot/multiplot.m, plot/mplot.m:
+	Don't check for string value of automatic_replot.
+
+	* image/ind2ind.m, image/ind2rgb.m, image/ind2gray.m:
+	Temporarily set do_fortran_indexing to 1, not "true".
+
+	* miscellaneous/menu.m: Temporarily set page_screen_output to 0,
+	not "false".
+
+	* linear-algebra/cond.m: Don't compare propagate_empty_matrices to
+	"false".
+
 Tue Aug 20 18:27:36 1996  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* strings/substr.m: Allow negative OFFSET.  LEN is now optional.

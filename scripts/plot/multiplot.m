@@ -58,8 +58,7 @@ function multiplot (xn, yn)
     error ("multiplot: xn and yn have to be scalars");
   endif
 
-  if ((isstr (automatic_replot) && strcmp (automatic_replot,"true"))
-       || automatic_replot)
+  if (automatic_replot)
     warning ("turning off automatic replot for multiplot mode");
     multiplot_save_auto_replot = automatic_replot;
     automatic_replot = 0;

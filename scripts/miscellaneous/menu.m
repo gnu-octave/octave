@@ -40,7 +40,7 @@ function num = menu (t, ...)
 
   unwind_protect
 
-    page_screen_output = "false";
+    page_screen_output = 0;
 
     if (! isempty (t))
       disp (t);

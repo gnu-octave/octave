@@ -49,7 +49,7 @@ function [X, map] = rgb2ind (R, G, B)
 
   unwind_protect
 
-    do_fortran_indexing = "true";
+    do_fortran_indexing = 1;
 
     map(:,1) = R(:);
     map(:,2) = G(:);

@@ -45,7 +45,7 @@ function [R, G, B] = ind2rgb (X, map)
 
   unwind_protect
 
-    do_fortran_indexing = "true";
+    do_fortran_indexing = 1;
 
     R = map (X(:), 1);
     G = map (X(:), 2);

@@ -52,7 +52,7 @@ function Y = ind2gray (X, map)
 
   unwind_protect
 
-    do_fortran_indexing = "true";
+    do_fortran_indexing = 1;
 
     ## Replace indices in the input matrix with indexed values in the output
     ## matrix.

@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_PATHSEARCH_H
 #define KPATHSEA_PATHSEARCH_H
 
+#include <string>
+
 /* Lists of strings; used for, e.g., directory lists.  */
 
 typedef struct
@@ -114,14 +116,14 @@ extern char **kpse_all_path_find_first_of (const char *path,
 
 /* Call kpse_var_expand and kpse_tilde_expand (in that order).  Result
    is always in fresh memory, even if no expansions were done.  */
-extern char *kpse_expand (const char *s);
+extern std::string kpse_expand (const std::string& s);
 
 /* Do brace expansion and call `kpse_expand' on each element of the
    result; return the final expansion (always in fresh memory, even if
    no expansions were done).  We don't call `kpse_expand_default'
    because there is a whole sequence of defaults to run through; see
    `kpse_init_format'.  */
-extern char *kpse_brace_expand (const char *path);
+extern std::string kpse_brace_expand (const char *path);
 
 /* Do brace expansion and call `kpse_expand' on each argument of the
    result, then expand any `//' constructs.  The final expansion (always

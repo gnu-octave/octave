@@ -1,5 +1,7 @@
 2003-04-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* kpse.cc, kpse.h: Replace fn_type with std::string.
+
 	* lo-ieee.h (lo_ieee_signbit): Provide signbit decl for MinGW systems.
 
 	* kpse.cc (xclosedir): Don't define or declare for Windows.

@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <config.h>
 #endif
 
+#include <string>
+
 #include "kpse-config.h"
 #include "kpse-xfns.h"
 #include "kpse.h"
@@ -235,25 +237,6 @@ static hash_table_type hash_create (unsigned size);
 extern int kpse_debug_hash_lookup_int;
 #endif
 
-/* fn.h: arbitrarily long filenames (or just strings).  */
-
-/* Arbitrarily long filenames; it's inconvenient to use obstacks here,
-   because we want to maintain a null terminator.  Also used for
-   dynamically growing strings even when the null byte isn't necessary,
-   e.g., in `variable.c', since I don't want to pass obstacks around
-   everywhere, and one can't free parts of an obstack arbitrarily.  */
-
-typedef struct
-{
-  char *str;
-  unsigned allocated;
-  unsigned length; /* includes the terminating null byte, if any */
-} fn_type;
-
-#define FN_STRING(fn) ((fn).str)
-#define FN_ALLOCATED(fn) ((fn).allocated)
-#define FN_LENGTH(fn) ((fn).length)
-
 /* lib.h: other stuff.  */
 
 /* Define common sorts of messages.  */
@@ -370,8 +353,6 @@ static char *concat (const char *s1, const char *s2);
 
 static char *concat3 (const char *s1, const char *s2, const char *s3);
 
-static char *concatn (const char *str1, ...);
-
 static char *find_suffix (const char *name);
 
 static char *kpse_truncate_filename (const char *name);
@@ -392,31 +373,13 @@ static void str_llist_add (str_llist_type *l, char *str);
 
 static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
 
-static fn_type fn_init (void);
-
-static fn_type fn_copy0 (const char *s, unsigned len);
-
-static void fn_free (fn_type *f);
-
-static void grow (fn_type *f, unsigned len);
-
-static void fn_1grow (fn_type *f, char c);
-
-static void fn_grow (fn_type *f, void *source, unsigned len);
-
-static void fn_str_grow (fn_type *f, const char *s);
-
-static void fn_shrink_to (fn_type *f, unsigned loc);
-
-static char *kpse_var_value (const char *var);
+static std::string kpse_var_value (const char *var);
 
 static void expanding (const char *var, int xp);
 
 static int expanding_p (const char *var);
 
-static void expand (fn_type *expansion, const char *start, const char *end);
-
-static char *kpse_var_expand (const char *src);
+static std::string kpse_var_expand (const std::string& src);
 
 #include <ctime> /* for `time' */
 
@@ -442,13 +405,12 @@ log_search (str_list_type filenames)
   
   if (first_time) {
     /* Get name from either envvar or config file.  */
-    char *log_name = kpse_var_value ("TEXMFLOG");
+    std::string log_name = kpse_var_value ("TEXMFLOG");
     first_time = false;
-    if (log_name) {
-      log_file = xfopen (log_name, "a");
+    if (! log_name.empty ()) {
+      log_file = xfopen (log_name.c_str (), "a");
       if (!log_file)
-        perror (log_name);
-      free (log_name);
+        perror (log_name.c_str ());
     }
   }
 
@@ -652,11 +614,11 @@ search (const char *path, const char *original_name,
 	bool must_exist, bool all)
 {
   str_list_type ret_list;
-  char *name;
   bool absolute_p;
 
   /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
-  name = kpse_expand (original_name);
+  std::string tmp = kpse_expand (original_name);
+  char *name = xstrdup (tmp.c_str ());
   
   /* If the first name is absolute or explicitly relative, no need to
      consider PATH at all.  */
@@ -944,31 +906,28 @@ kpse_all_path_find_first_of (const char *path, const char **names)
    home directory, and return a new malloced string.  If no ~, or no
    <pwd.h>, just return NAME.  */
 
-static char *
-kpse_tilde_expand (const char *name)
+static std::string
+kpse_tilde_expand (const std::string& name)
 {
-  const char *expansion;
-  const char *home;
+  std::string expansion;
   
-  assert (name);
+  assert (! name.empty ());
   
   /* If no leading tilde, do nothing.  */
-  if (*name != '~') {
+  if (name[0] != '~') {
     expansion = name;
   
   /* If a bare tilde, return the home directory or `.'.  (Very unlikely
      that the directory name will do anyone any good, but ...  */
-  } else if (name[1] == 0) {
-    expansion = xstrdup (getenv ("HOME"));
-    if (!expansion) {
-      expansion = xstrdup (".");
-    }
+  } else if (name.length () == 1) {
+    char *tmp = getenv ("HOME");
+    expansion = tmp ? tmp : ".";
   
   /* If `~/', remove any trailing / or replace leading // in $HOME.
      Should really check for doubled intermediate slashes, too.  */
   } else if (IS_DIR_SEP (name[1])) {
     unsigned c = 1;
-    home = getenv ("HOME");
+    char *home = getenv ("HOME");
     if (!home) {
       home = ".";
     }
@@ -978,7 +937,7 @@ kpse_tilde_expand (const char *name)
     if (IS_DIR_SEP (home[strlen (home) - 1])) {        /* omit / after ~ */
       c++;
     }
-    expansion = concat (home, name + c);
+    expansion = std::string (home) + name.substr (c);
   
   /* If `~user' or `~user/', look up user in the passwd database (but
      OS/2 doesn't have this concept.  */
@@ -986,55 +945,42 @@ kpse_tilde_expand (const char *name)
 #ifdef HAVE_PWD_H
     {
       struct passwd *p;
-      char *user;
       unsigned c = 2;
       while (!IS_DIR_SEP (name[c]) && name[c] != 0) /* find user name */
         c++;
       
-      user = (char *) xmalloc (c);
-      strncpy (user, name + 1, c - 1);
-      user[c - 1] = 0;
+      std::string user = name.substr (2, c-1);
       
       /* We only need the cast here for (deficient) systems
          which do not declare `getpwnam' in <pwd.h>.  */
-      p = (struct passwd *) getpwnam (user);
-      free (user);
+      p = (struct passwd *) getpwnam (user.c_str ());
 
       /* If no such user, just use `.'.  */
-      home = p ? p->pw_dir : ".";
+      const char *home = p ? p->pw_dir : ".";
       if (IS_DIR_SEP (*home) && IS_DIR_SEP (home[1])) { /* handle leading // */
         home++;
       }
       if (IS_DIR_SEP (home[strlen (home) - 1]) && name[c] != 0)
         c++; /* If HOME ends in /, omit the / after ~user. */
 
-      expansion = name[c] == 0 ? xstrdup (home) : concat (home, name + c);
+      expansion = name[c] == 0
+	? std::string (home) : std::string (home) + name.substr (c);
     }
 #else /* not HAVE_PWD_H */
     expansion = name;
 #endif /* not HAVE_PWD_H */
 
-  /* We may return the same thing as the original, and then we might not
-     be returning a malloc-ed string.  Callers beware.  Sorry.  */
-  return (char *) expansion;
+  return expansion;
 }
 
 /* Do variable expansion first so ~${USER} works.  (Besides, it's what the
    shells do.)  */
 
-char *
-kpse_expand (const char *s)
+std::string
+kpse_expand (const std::string& s)
 {
-  char *var_expansion = kpse_var_expand (s);
-  char *tilde_expansion = kpse_tilde_expand (var_expansion);
-  
-  /* `kpse_var_expand' always gives us new memory; `kpse_tilde_expand'
-     doesn't, necessarily.  So be careful that we don't free what we are
-     about to return.  */
-  if (tilde_expansion != var_expansion)
-    free (var_expansion);
-  
-  return tilde_expansion;
+  std::string var_expansion = kpse_var_expand (s);
+  return kpse_tilde_expand (var_expansion);
 }
 
 
@@ -1045,10 +991,11 @@ static void free_array (char **);
 /* If $KPSE_DOT is defined in the environment, prepend it to any relative
    path components. */
 
-static char *
-kpse_expand_kpse_dot (char *path)
+static std::string
+kpse_expand_kpse_dot (const std::string& path)
 {
-  char *ret, *elt;
+  std::string ret;
+  char *elt;
   char *kpse_dot = getenv("KPSE_DOT");
 #ifdef MSDOS
   bool malloced_kpse_dot = false;
@@ -1056,8 +1003,6 @@ kpse_expand_kpse_dot (char *path)
   
   if (kpse_dot == NULL)
     return path;
-  ret = (char *) xmalloc(1);
-  *ret = 0;
 
 #ifdef MSDOS
   /* Some setups of ported Bash force $KPSE_DOT to have the //d/foo/bar
@@ -1073,27 +1018,32 @@ kpse_expand_kpse_dot (char *path)
   }
 #endif
 
-  for (elt = kpse_path_element (path); elt; elt = kpse_path_element (NULL)) {
-    char *save_ret = ret;
+  char *tmp = xstrdup (path.c_str ());
+
+  for (elt = kpse_path_element (tmp); elt; elt = kpse_path_element (NULL)) {
     /* We assume that the !! magic is only used on absolute components.
        Single "." get special treatment, as does "./" or its equivalent. */
     if (kpse_absolute_p (elt, false) || (elt[0] == '!' && elt[1] == '!')) {
-      ret = concat3(ret, elt, ENV_SEP_STRING);
+      ret += std::string (elt) + ENV_SEP_STRING;
     } else if (elt[0] == '.' && elt[1] == 0) {
-      ret = concat3 (ret, kpse_dot, ENV_SEP_STRING);
+      ret += std::string (kpse_dot) + ENV_SEP_STRING;
     } else if (elt[0] == '.' && IS_DIR_SEP(elt[1])) {
-      ret = concatn (ret, kpse_dot, elt + 1, ENV_SEP_STRING, NULL);
+      ret += std::string (kpse_dot) + (elt + 1) + ENV_SEP_STRING;
     } else {
-      ret = concatn (ret, kpse_dot, DIR_SEP_STRING, elt, ENV_SEP_STRING, NULL);
+      ret += std::string (kpse_dot) + DIR_SEP_STRING + elt + ENV_SEP_STRING;
     }
-    free (save_ret);
   }
+
+  free (tmp);
 
 #ifdef MSDOS
   if (malloced_kpse_dot) free (kpse_dot);
 #endif
 
-  ret[strlen (ret) - 1] = 0;
+  int len = ret.length ();
+  if (len > 0)
+    ret.resize (len - 1);
+
   return ret;
 }
 
@@ -1102,43 +1052,36 @@ kpse_expand_kpse_dot (char *path)
    variable definition contained braces (e.g., $TEXMF).  Return a
    string comprising all of the results separated by ENV_SEP_STRING.  */
 
-static char *
+static std::string
 kpse_brace_expand_element (const char *elt)
 {
   unsigned i;
   char **expansions = brace_expand (elt);
-  char *ret = (char *) xmalloc (1);
-  *ret = 0;
+  std::string ret;
 
   for (i = 0; expansions[i]; i++) {
     /* Do $ and ~ expansion on each element.  */
-    char *x = kpse_expand (expansions[i]);
-    char *save_ret = ret;
-    if (!STREQ (x, expansions[i])) {
+    std::string x = kpse_expand (expansions[i]);
+    if (x != expansions[i]) {
       /* If we did any expansions, do brace expansion again.  Since
          recursive variable definitions are not allowed, this recursion
          must terminate.  (In practice, it's unlikely there will ever be
          more than one level of recursion.)  */
-      char *save_x = x;
-      x = kpse_brace_expand_element (x);
-      free (save_x);
+      x = kpse_brace_expand_element (x.c_str ());
     }
-    ret = concat3 (ret, x, ENV_SEP_STRING);
-    free (save_ret);
-    free (x);
+    ret += x + ENV_SEP_STRING;
   }
 
   free_array (expansions);
-  ret[strlen (ret) - 1] = 0; /* waste the trailing null */
+  ret.resize (ret.length () - 1);
   return ret;
 }
 
 /* Be careful to not waste all the memory we allocate for each element.  */
 
-char *
+std::string
 kpse_brace_expand (const char *path)
 {
-  char *kpse_dot_expansion;
   char *elt;
   unsigned len;
   /* Must do variable expansion first because if we have
@@ -1147,30 +1090,22 @@ kpse_brace_expand (const char *path)
      we want to end up with TEXINPUTS = .:/home/karl.
      Since kpse_path_element is not reentrant, we must get all
      the path elements before we start the loop.  */
-  char *xpath = kpse_var_expand (path);
-  char *ret = (char *) xmalloc (1);
-  *ret = 0;
+  std::string tmp = kpse_var_expand (path);
+  const char *xpath = tmp.c_str ();
+  std::string ret;
 
   for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
-    char *save_ret = ret;
     /* Do brace expansion first, so tilde expansion happens in {~ka,~kb}.  */
-    char *expansion = kpse_brace_expand_element (elt);
-    ret = concat3 (ret, expansion, ENV_SEP_STRING);
-    free (expansion);
-    free (save_ret);
+    std::string expansion = kpse_brace_expand_element (elt);
+    ret += expansion + ENV_SEP_STRING;
   }
 
   /* Waste the last byte by overwriting the trailing env_sep with a null.  */
-  len = strlen (ret);
-  if (len != 0)
-    ret[len - 1] = 0;
-  free (xpath);
+  len = ret.length ();
+  if (len > 0)
+    ret.resize (len - 1);
 
-  kpse_dot_expansion = kpse_expand_kpse_dot (ret);
-  if (kpse_dot_expansion != ret)
-    free (ret);
-
-  return kpse_dot_expansion;
+  return kpse_expand_kpse_dot (ret);
 }
 
 /* Expand all special constructs in a path, and include only the actually
@@ -1179,7 +1114,6 @@ char *
 kpse_path_expand (const char *path)
 {
   char *ret;
-  char *xpath;
   char *elt;
   unsigned len;
 
@@ -1189,7 +1123,8 @@ kpse_path_expand (const char *path)
   len = 0;
   
   /* Expand variables and braces first.  */
-  xpath = kpse_brace_expand (path);
+  std::string tmp = kpse_brace_expand (path);
+  const char *xpath = tmp.c_str ();
 
   /* Now expand each of the path elements, printing the results */
   for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
@@ -1657,7 +1592,8 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
   if (var)
     EXPAND_DEFAULT (getenv (var), concat (var, " environment variable"));
   EXPAND_DEFAULT (info->override_path, "application override variable");
-  info->path = kpse_brace_expand (info->path);
+  std::string tmp = kpse_brace_expand (info->path);
+  info->path = tmp.c_str ();
 }
 
 
@@ -2469,76 +2405,66 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
   DIR *dir;
   struct dirent *e;
 #endif /* not WIN32 */
-  fn_type name;
-  
-  /* Some old compilers don't allow aggregate initialization.  */
-  name = fn_copy0 (elt, elt_length);
-  
+
+  std::string name (elt, elt_length);
+
   assert (IS_DIR_SEP (elt[elt_length - 1])
           || IS_DEVICE_SEP (elt[elt_length - 1]));
   
 #if defined (WIN32)
-  strcpy(dirname, FN_STRING(name));
+  strcpy(dirname, name.c_str ());
   strcat(dirname, "/*.*");         /* "*.*" or "*" -- seems equivalent. */
   hnd = FindFirstFile(dirname, &find_file_data);
 
-  if (hnd == INVALID_HANDLE_VALUE) {
-    fn_free(&name);
+  if (hnd == INVALID_HANDLE_VALUE)
     return;
-  }
 
   /* Include top level before subdirectories, if nothing to match.  */
   if (*post == 0)
-    dir_list_add (str_list_ptr, FN_STRING (name));
+    dir_list_add (str_list_ptr, name.c_str ());
   else {
     /* If we do have something to match, see if it exists.  For
        example, POST might be `pk/ljfour', and they might have a
        directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
-    fn_str_grow (&name, post);
-    expand_elt (str_list_ptr, FN_STRING (name), elt_length);
-    fn_shrink_to (&name, elt_length);
+    name += post;
+    expand_elt (str_list_ptr, name.c_str (), elt_length);
+    name.resize (elt_length);
   }
   proceed = 1;
   while (proceed) {
     if (find_file_data.cFileName[0] != '.') {
       /* Construct the potential subdirectory name.  */
-      fn_str_grow (&name, find_file_data.cFileName);
+      name += find_file_data.cFileName;
       if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-	unsigned potential_len = FN_LENGTH (name);
-	
 	/* It's a directory, so append the separator.  */
-	fn_str_grow (&name, DIR_SEP_STRING);
-
-	do_subdir (str_list_ptr, FN_STRING (name),
+	name += DIR_SEP_STRING;
+	unsigned potential_len = name.length ();
+	do_subdir (str_list_ptr, name.c_str (),
 		   potential_len, post);
       }
-      fn_shrink_to (&name, elt_length);
+      name.resize (elt_length);
     }
     proceed = FindNextFile (hnd, &find_file_data);
   }
-  fn_free (&name);
   FindClose(hnd);
 
 #else /* not WIN32 */
 
   /* If we can't open it, quit.  */
-  dir = opendir (FN_STRING (name));
+  dir = opendir (name.c_str ());
   if (dir == NULL)
-    {
-      fn_free (&name);
-      return;
-    }
+    return;
   
   /* Include top level before subdirectories, if nothing to match.  */
   if (*post == 0)
-    dir_list_add (str_list_ptr, FN_STRING (name));
+    dir_list_add (str_list_ptr, name.c_str ());
   else
     { /* If we do have something to match, see if it exists.  For
          example, POST might be `pk/ljfour', and they might have a
          directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
-      fn_str_grow (&name, post);
-      expand_elt (str_list_ptr, FN_STRING (name), elt_length);
-      fn_shrink_to (&name, elt_length);
+      name += post;
+      expand_elt (str_list_ptr, name.c_str (), elt_length);
+      name.resize (elt_length);
     }
 
   while ((e = readdir (dir)) != NULL)
@@ -2549,17 +2475,16 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
           int links;
           
           /* Construct the potential subdirectory name.  */
-          fn_str_grow (&name, e->d_name);
+          name += e->d_name;
           
           /* If we can't stat it, or if it isn't a directory, continue.  */
-          links = dir_links (FN_STRING (name));
+          links = dir_links (name.c_str ());
 
           if (links >= 0)
             { 
-              unsigned potential_len = FN_LENGTH (name);
-              
               /* It's a directory, so append the separator.  */
-              fn_str_grow (&name, DIR_SEP_STRING);
+              name += DIR_SEP_STRING;
+              unsigned potential_len = name.length ();
               
               /* Should we recurse?  To see if the subdirectory is a
                  leaf, check if it has two links (one for . and one for
@@ -2582,22 +2507,21 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
 #endif /* not AMIGA */
 #endif /* not ST_NLINK_TRICK */
                 /* All criteria are met; find subdirectories.  */
-                do_subdir (str_list_ptr, FN_STRING (name),
+                do_subdir (str_list_ptr, name.c_str (),
                            potential_len, post);
 #ifdef ST_NLINK_TRICK
               else if (*post == 0)
                 /* Nothing to match, no recursive subdirectories to
                    look for: we're done with this branch.  Add it.  */
-                dir_list_add (str_list_ptr, FN_STRING (name));
+                dir_list_add (str_list_ptr, name.c_str ());
 #endif
             }
 
           /* Remove the directory entry we just checked from `name'.  */
-          fn_shrink_to (&name, elt_length);
+          name.resize (elt_length);
         }
     }
   
-  fn_free (&name);
   xclosedir (dir);
 #endif /* not WIN32 */
 }
@@ -3135,36 +3059,6 @@ concat3 (const char *s1, const char *s2, const char *s3)
   return answer;
 }
 
-/* concatn.c: Concatenate an arbitrary number of strings.  */
-
-/* OK, it would be epsilon more efficient to compute the total length
-   and then do the copying ourselves, but I doubt it matters in reality.  */
-
-char *
-concatn (const char *str1, ...)
-{
-  char *arg;
-  char *ret;
-  va_list ap;
-
-  va_start (ap, str1);
-
-  if (!str1)
-    return NULL;
-  
-  ret = xstrdup (str1);
-  
-  while ((arg = va_arg (ap, char *)) != NULL)
-    {
-      char *temp = concat (ret, arg);
-      free (ret);
-      ret = temp;
-    }
-  va_end (ap);
-  
-  return ret;
-}
-
 /* debug.c: Help the user discover what's going on.  */
 
 #ifdef KPSE_DEBUG
@@ -3491,114 +3385,23 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
   STR_LLIST_MOVED (*mover) = 1;
 }
 
-/* fn.c: arbitrarily long filenames (or just strings).  */
-
-/* /usr/local/lib/texmf/fonts/public/cm/pk/ljfour/cmr10.300pk is 58
-   chars, so ASCII `K' seems a good choice. */
-#define CHUNK_SIZE 75
-
-fn_type
-fn_init (void)
-{
-  fn_type ret;
-  
-  FN_ALLOCATED (ret) = FN_LENGTH (ret) = 0;
-  FN_STRING (ret) = NULL;
-  
-  return ret;
-}
-
-fn_type
-fn_copy0 (const char *s, unsigned len)
-{
-  fn_type ret;
-  
-  FN_ALLOCATED (ret) = CHUNK_SIZE > len ? CHUNK_SIZE : len + 1;
-  FN_STRING (ret) = (char *) xmalloc (FN_ALLOCATED (ret));
-  
-  strncpy (FN_STRING (ret), s, len);
-  FN_STRING (ret)[len] = 0;
-  FN_LENGTH (ret) = len + 1;
-  
-  return ret;
-}
-
-/* Don't think we ever try to free something that might usefully be
-   empty, so give fatal error if nothing allocated.  */
-
-void
-fn_free (fn_type *f)
-{
-  assert (FN_STRING (*f) != NULL);
-  free (FN_STRING (*f));
-  FN_STRING (*f) = NULL;
-  FN_ALLOCATED (*f) = 0;
-  FN_LENGTH (*f) = 0;
-}
-
-/* An arithmetic increase seems more reasonable than geometric.  We
-   don't increase the length member since it may be more convenient for
-   the caller to add than subtract when appending the stuff that will
-   presumably follow.  */
-
-static void
-grow (fn_type *f, unsigned len)
-{
-  while (FN_LENGTH (*f) + len > FN_ALLOCATED (*f))
-    {
-      FN_ALLOCATED (*f) += CHUNK_SIZE;
-      XRETALLOC (FN_STRING (*f), FN_ALLOCATED (*f), char);
-    }
-}
-
-void
-fn_1grow (fn_type *f, char c)
-{
-  grow (f, 1);
-  FN_STRING (*f)[FN_LENGTH (*f)] = c;
-  FN_LENGTH (*f)++;
-}
-
-void
-fn_grow (fn_type *f, void *source, unsigned len)
-{
-  grow (f, len);
-  strncpy (FN_STRING (*f) + FN_LENGTH (*f), (char *) source, len);
-  FN_LENGTH (*f) += len;
-}
-
-void
-fn_str_grow (fn_type *f, const char *s)
-{
-  unsigned more_len = strlen (s);
-  grow (f, more_len);
-  strcat (FN_STRING (*f), s);
-  FN_LENGTH (*f) += more_len;
-}
-
-void
-fn_shrink_to (fn_type *f, unsigned loc)
-{
-  assert (FN_LENGTH (*f) > loc);
-  FN_STRING (*f)[loc] = 0;
-  FN_LENGTH (*f) = loc + 1;
-}
-
 /* variable.c: variable expansion.  */
 
 /* Here's the simple one, when a program just wants a value.  */
 
-char *
+std::string
 kpse_var_value (const char *var)
 {
-  char *ret = getenv (var);
+  std::string ret;
 
-  if (ret)
+  char *tmp = getenv (var);
+
+  if (tmp)
     ret = kpse_var_expand (ret);
 
 #ifdef KPSE_DEBUG
   if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
-    DEBUGF2("variable: %s = %s\n", var, ret ? ret : "(nil)");
+    DEBUGF2("variable: %s = %s\n", var, tmp ? tmp : "(nil)");
 #endif
 
   return ret;
@@ -3655,9 +3458,8 @@ expanding_p (const char *var)
    This is a subroutine for the more complicated expansion function.  */
 
 static void
-expand (fn_type *expansion, const char *start, const char *end)
+expand (std::string &expansion, const char *start, const char *end)
 {
-  char *value;
   unsigned len = end - start + 1;
   char *var = (char *) xmalloc (len + 1);
   strncpy (var, start, len);
@@ -3667,14 +3469,13 @@ expand (fn_type *expansion, const char *start, const char *end)
     WARNING1 ("kpathsea: variable `%s' references itself (eventually)", var);
   } else {
     /* Check for an environment variable.  */
-    value = getenv (var);
+    char *value = getenv (var);
 
     if (value) {
       expanding (var, 1);
-      value = kpse_var_expand (value);
+      std::string tmp = kpse_var_expand (value);
       expanding (var, 0);
-      fn_grow (expansion, value, strlen (value));
-      free (value);
+      expansion += tmp;
     }
 
     free (var);
@@ -3700,13 +3501,12 @@ expand (fn_type *expansion, const char *start, const char *end)
 /* Maybe we should support some or all of the various shell ${...}
    constructs, especially ${var-value}.  */
 
-char *
-kpse_var_expand (const char *src)
+std::string
+kpse_var_expand (const std::string& src_arg)
 {
-  const char *s;
-  char *ret;
-  fn_type expansion;
-  expansion = fn_init ();
+  const char *src = src_arg.c_str ();
+  const char *s = src;
+  std::string expansion;
   
   /* Copy everything but variable constructs.  */
   for (s = src; *s; s++) {
@@ -3723,7 +3523,7 @@ kpse_var_expand (const char *src)
         } while (IS_VAR_CHAR (*var_end));
 
         var_end--; /* had to go one past */
-        expand (&expansion, s, var_end);
+        expand (expansion, s, var_end);
         s = var_end;
 
       } else if (IS_VAR_BEGIN_DELIMITER (*s)) {
@@ -3737,7 +3537,7 @@ kpse_var_expand (const char *src)
           WARNING1 ("%s: No matching } for ${", src);
           s = var_end - 1; /* will incr to null at top of loop */
         } else {
-          expand (&expansion, s, var_end - 1);
+          expand (expansion, s, var_end - 1);
           s = var_end; /* will incr past } at top of loop*/
         }
 
@@ -3747,10 +3547,8 @@ kpse_var_expand (const char *src)
         /* Just ignore those chars and keep going.  */
       }
     } else
-     fn_1grow (&expansion, *s);
+      expansion += *s;
   }
-  fn_1grow (&expansion, 0);
-          
-  ret = FN_STRING (expansion);
-  return ret;
+
+  return expansion;
 }

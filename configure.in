@@ -4,70 +4,67 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Requires GNU autoconf 1.8 or later.
 dnl
 dnl Copyright (C) 1992, 1993, 1994 John W. Eaton
-dnl 
-dnl This file is part of Octave.
-dnl 
-dnl Octave is free software; you can redistribute it and/or modify it
-dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 2, or (at your option) any
-dnl later version.
-dnl 
-dnl Octave is distributed in the hope that it will be useful, but WITHOUT
-dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-dnl for more details.
-dnl 
-dnl You should have received a copy of the GNU General Public License
-dnl along with Octave; see the file COPYING.  If not, write to the Free
-dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-dnl
-AC_REVISION($Revision: 1.69 $)dnl
+### 
+### This file is part of Octave.
+### 
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by the
+### Free Software Foundation; either version 2, or (at your option) any
+### later version.
+### 
+### Octave is distributed in the hope that it will be useful, but WITHOUT
+### ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+### FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+### for more details.
+### 
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+AC_REVISION($Revision: 1.70 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
-dnl
-AC_DEFINE(OCTAVE_SOURCE, 1)dnl
-dnl
-dnl See if we were given the target host type.  If not, use
-dnl config.guess to try to guess the target host type.
-dnl
+
+AC_DEFINE(OCTAVE_SOURCE, 1)
+
 AC_CANONICAL_HOST
 target_host_type=${host:=unknown}
 canonical_host_type=${host:=unknown}
 if test "$host" = "unknown"; then
-AC_MSG_WARN([configuring Octave for unknown system type
+  AC_MSG_WARN([configuring Octave for unknown system type
 ])
 fi
-AC_SUBST(target_host_type)dnl
-dnl
-dnl Allow the user to force us to use f2c.
-dnl
+AC_SUBST(target_host_type)
+
+### Allow the user to force us to use f2c.
+
 AC_ARG_WITH(f2c,
   [  --with-f2c              use f2c even if Fortran compiler is available],
-  use_f2c=true, use_f2c=false)dnl
-dnl
-dnl Allow the user to experiment with dynamic linking using GNU dld.
-dnl
+  use_f2c=true, use_f2c=false)
+
+### Allow the user to experiment with dynamic linking using GNU dld.
+
 AC_ARG_ENABLE(dld,
   [  --enable-dld            use DLD for dynamic linking (not all systems)],
-  use_dld=true, use_dld=false)dnl
-AC_SUBST(use_dld)dnl
-dnl
-dnl Allow compilation of smaller kernel.  This only works if some form
-dnl of dynamic linking is also supported and used.
-dnl
+  use_dld=true, use_dld=false)
+AC_SUBST(use_dld)
+
+### Allow compilation of smaller kernel.  This only works if some form
+### of dynamic linking is also supported and used.
+
 AC_ARG_ENABLE(lite-kernel,
   [  --enable-lite-kernel    compile smaller kernel (requires DLD)],
-  lite_kernel=true, lite_kernel=false)dnl
+  lite_kernel=true, lite_kernel=false)
 if $lite_kernel; then
-  AC_DEFINE(OCTAVE_LITE, 1)dnl
+  AC_DEFINE(OCTAVE_LITE, 1)
 fi
-AC_SUBST(lite_kernel)dnl
-dnl
-dnl some defaults
-dnl
+AC_SUBST(lite_kernel)
+
+### some defaults
+
 AC_PREFIX_DEFAULT(/usr/local)
-dnl
+
 exec_prefix='$(prefix)'
 bindir='$(exec_prefix)/bin'
 datadir='$(prefix)/lib'
@@ -85,7 +82,7 @@ localoctfilepath='$(localoctfiledir)//'
 fcnfilepath='.:$(localoctfilepath):$(localfcnfilepath):$(octfiledir)//:$(fcnfiledir)//'
 imagedir='$(datadir)/octave/$(version)/imagelib'
 imagepath='.:$(imagedir)//'
-dnl
+
 AC_MSG_RESULT([defining prefix to be $prefix])
 AC_MSG_RESULT([defining exec_prefix to be $exec_prefix])
 AC_MSG_RESULT([defining bindir to be $bindir])
@@ -121,9 +118,9 @@ AC_SUBST(localoctfilepath)
 AC_SUBST(fcnfilepath)
 AC_SUBST(imagedir)
 AC_SUBST(imagepath)
-dnl
-dnl Do special stuff if using dld.
-dnl
+
+### Do special stuff if using dld.
+
 DLD_DIR=
 LIBDLD=
 LIBOCTDLD='liboctdld.a'
@@ -137,17 +134,17 @@ if $use_dld; then
     LIBOCTDLD=
   fi
   LD_STATIC_FLAG=-static
-  AC_DEFINE(WITH_DLD, 1)dnl
+  AC_DEFINE(WITH_DLD, 1)
 fi
-dnl
-dnl Also use -static if compiling on Alpha OSF/1 1.3 systems.
-dnl
+
+### Also use -static if compiling on Alpha OSF/1 1.3 systems.
+
 case "$canonical_host_type" in
   alpha-dec-osf1.3)
     LD_STATIC_FLAG=-static
   ;;
 esac
-dnl
+
 if test -n "$DLD_DIR"; then
   AC_MSG_RESULT([defining DLD_DIR to be $DLD_DIR])
 fi
@@ -160,44 +157,44 @@ fi
 if test -n "$LD_STATIC_FLAG"; then
   AC_MSG_RESULT([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
 fi
-AC_SUBST(DLD_DIR)dnl
-AC_SUBST(LIBDLD)dnl
-AC_SUBST(LIBOCTDLD)dnl
-AC_SUBST(LD_STATIC_FLAG)dnl
-dnl
-dnl See if the optional nonlinear programming code is present.
-dnl
+AC_SUBST(DLD_DIR)
+AC_SUBST(LIBDLD)
+AC_SUBST(LIBOCTDLD)
+AC_SUBST(LD_STATIC_FLAG)
+
+### See if the optional nonlinear programming code is present.
+
 AC_MSG_CHECKING([for npsol])
 if test -f $srcdir/libcruft/npsol/npsol.f; then
   AC_MSG_RESULT([yes])
 else
   AC_MSG_RESULT([no])
-  AC_DEFINE(NPSOL_MISSING, 1)dnl
+  AC_DEFINE(NPSOL_MISSING, 1)
 fi
-dnl
+
 AC_MSG_CHECKING([for qpsol])
 if test -f $srcdir/libcruft/qpsol/qpsol.f; then
   AC_MSG_RESULT([yes])
 else
   AC_MSG_RESULT([no])
-  AC_DEFINE(QPSOL_MISSING, 1)dnl
+  AC_DEFINE(QPSOL_MISSING, 1)
 fi
-dnl
+
 AC_MSG_CHECKING([for fsqp])
 if test -f $srcdir/libcruft/fsqp/fsqpd.f; then
   AC_MSG_RESULT([yes])
 else
   AC_MSG_RESULT([no])
-  AC_DEFINE(FSQP_MISSING, 1)dnl
+  AC_DEFINE(FSQP_MISSING, 1)
 fi
-dnl
-dnl See which C++ compiler to use (we expect to find g++).
-dnl
+
+### See which C++ compiler to use (we expect to find g++).
+
 AC_PROG_CXX
 AC_PROG_CXXCPP
-dnl
-dnl Do special things for g++.
-dnl
+
+### Do special things for g++.
+
 ADD_CXX_WALL=false
 NO_IMPLICIT_TEMPLATES=
 gxx_version=`$CXX -v 2>&1 | grep "^g.. version" | sed 's/^g.. version *//'`
@@ -220,25 +217,25 @@ changequote([,])dnl
     AC_MSG_WARN([Octave has only been tested with g++, and I can't find it])
   ;;
 esac
-dnl
-dnl See what libraries are used by the C++ compiler.  Need this for
-dnl dynamic linking.
-dnl
+
+### See what libraries are used by the C++ compiler.  Need this for
+### dynamic linking.
+
 CXXLIBS=`sh $srcdir/cxxlibs.sh`
 AC_MSG_RESULT([defining CXXLIBS to be $CXXLIBS])
-dnl
-AC_SUBST(CXXFLAGS)dnl
-AC_SUBST(NO_IMPLICIT_TEMPLATES)dnl
-AC_SUBST(CXXLIBS)dnl
-dnl
-dnl See which C compiler to use (we expect to find gcc).
-dnl
+
+AC_SUBST(CXXFLAGS)
+AC_SUBST(NO_IMPLICIT_TEMPLATES)
+AC_SUBST(CXXLIBS)
+
+### See which C compiler to use (we expect to find gcc).
+
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
-dnl
-dnl Do special things for gcc.
-dnl
+
+### Do special things for gcc.
+
 ADD_CC_WALL=false
 gcc_version=`$CC -v 2>&1 | grep "^gcc version" | sed 's/^gcc version *//'`
 case "$gcc_version" in
@@ -256,41 +253,41 @@ case "$gcc_version" in
     AC_MSG_WARN([Octave has only been tested with gcc, and I can't find it])
   ;;
 esac
-dnl
-AC_SUBST(CFLAGS)dnl
-AC_SUBST(LDFLAGS)dnl
-dnl
-dnl On Linux systems we need to compile with -mieee-fp to get full
-dnl support for IEEE floating point.
-dnl
+
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
+
+### On Linux systems we need to compile with -mieee-fp to get full
+### support for IEEE floating point.
+
 case "$canonical_host_type" in
   i386-*-linux | i486-*-linux | i586-*-linux)
     GCC_IEEE_FP_FLAG="-mieee-fp"
     AC_MSG_RESULT([defining GCC_IEEE_FP_FLAG to be $GCC_IEEE_FP_FLAG])
   ;;
 esac
-dnl
-AC_SUBST(GCC_IEEE_FP_FLAG)dnl
-dnl
-dnl Special checks for odd OS specific things.
-dnl
+
+AC_SUBST(GCC_IEEE_FP_FLAG)
+
+### Special checks for odd OS specific things.
+
 AC_ISC_POSIX
 AC_MINIX
 AC_AIX
 AC_FUNC_STRFTIME
 AC_CHECK_LIB(sun, getpwnam)
-dnl
-dnl How big are ints and how are they oriented?  These could probably
-dnl be eliminated in favor of run-time checks.
-dnl
+
+### How big are ints and how are they oriented?  These could probably
+### be eliminated in favor of run-time checks.
+
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long)
 AC_C_BIGENDIAN
-dnl
-dnl Try to determine the floating point format.  This could probably
-dnl be eliminated in favor of run-time checks.
-dnl
+
+### Try to determine the floating point format.  This could probably
+### be eliminated in favor of run-time checks.
+
 AC_MSG_CHECKING([floating point format])
 changequote(,)dnl
 XCFLAGS=`echo $CFLAGS | sed 's/-O[^ \t]*//'`
@@ -300,59 +297,59 @@ FLOAT_FORMAT=`./conftest`
 case "$FLOAT_FORMAT" in
   IEEE_BIG_ENDIAN)
     AC_MSG_RESULT([IEEE big endian])
-    AC_DEFINE(IEEE_BIG_ENDIAN, 1)dnl
+    AC_DEFINE(IEEE_BIG_ENDIAN, 1)
   ;;
   IEEE_LITTLE_ENDIAN)
     AC_MSG_RESULT([IEEE little endian])
-    AC_DEFINE(IEEE_LITTLE_ENDIAN, 1)dnl
+    AC_DEFINE(IEEE_LITTLE_ENDIAN, 1)
   ;;
   VAX_D_FLOAT)
     AC_MSG_RESULT([VAX D floating])
-    AC_DEFINE(VAX_D_FLOAT, 1)dnl
+    AC_DEFINE(VAX_D_FLOAT, 1)
   ;;
   VAX_G_FLOAT)
     AC_MSG_RESULT([VAX G floating])
-    AC_DEFINE(VAX_G_FLOAT, 1)dnl
+    AC_DEFINE(VAX_G_FLOAT, 1)
   ;;
   *)
     AC_MSG_RESULT()
     AC_MSG_WARN("unrecognized floating point format!")
   ;;
 esac
-dnl
-dnl Does the C compiler handle alloca() and const correctly?
-dnl
+
+### Does the C compiler handle alloca() and const correctly?
+
 AC_ALLOCA
-dnl
-dnl This one is for kpathsea.
-dnl
-dnl It would be nicer to test for the requisite putenv features directly,
-dnl but can't figure out how to do that.
-dnl
+
+### This one is for kpathsea.
+###
+### It would be nicer to test for the requisite putenv features directly,
+### but can't figure out how to do that.
+
 if test "`(uname) 2>/dev/null`" = NetBSD \
    || test "`(uname) 2>/dev/null`" = FreeBSD; then
   AC_DEFINE(SMART_PUTENV)
 fi
-dnl
+
 AC_C_CONST
-dnl
-dnl If we haven't been forced to use f2c, try to find a Fortran compiler
-dnl under any one of several common Un*x Fortran compiler names. 
-dnl Put fc last to avoid confusion with some vendor's /bin/sh fc
-dnl builtin.
-dnl
-dnl    xlf : IBM / AIX
-dnl   cf77 : Cray / Unicos
-dnl    g77 : GNU Fortran (someday...)
-dnl     fc : Convex
-dnl
-dnl I don't think the Cray compiler will ever work like f2c...
-dnl
+
+### If we haven't been forced to use f2c, try to find a Fortran compiler
+### under any one of several common Un*x Fortran compiler names. 
+### Put fc last to avoid confusion with some vendor's /bin/sh fc
+### builtin.
+###
+###    xlf : IBM / AIX
+###   cf77 : Cray / Unicos
+###    g77 : GNU Fortran (someday...)
+###     fc : Convex
+###
+### I don't think the Cray compiler will ever work like f2c...
+
 if $use_f2c; then
   true
 else
   F77=
-  AC_CHECK_PROGS(F77, xlf cf77 f77 g77 fc)dnl
+  AC_CHECK_PROGS(F77, xlf cf77 f77 g77 fc)
 
   # If it looks like we have a Fortran compiler, try to determine
   # whether it might be compatible with f2c.
@@ -366,7 +363,7 @@ else
     if test $status -eq 0; then
       AC_MSG_RESULT([yes])
       if test "$tmpdef" = '-DF77_APPEND_UNDERSCORE=1'; then
-        AC_DEFINE(F77_APPEND_UNDERSCORE, 1)dnl
+        AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
       fi
     else
       AC_MSG_RESULT([no])
@@ -374,14 +371,14 @@ else
     fi
   fi
 fi
-dnl
-dnl If we can't find a Fortran compiler, or if it looks like it isn't
-dnl compatible with f2c, try to find f2c.
-dnl
+
+### If we can't find a Fortran compiler, or if it looks like it isn't
+### compatible with f2c, try to find f2c.
+
 if test -z "$F77"; then
-  AC_CHECK_PROG(F2C, f2c, f2c, [])dnl
+  AC_CHECK_PROG(F2C, f2c, f2c, [])
 fi
-dnl
+
 F2CFLAGS=
 FFLAGS="-O"
 AC_MSG_RESULT([defining FFLAGS to be $FFLAGS])
@@ -396,11 +393,11 @@ if test -n "$F77"; then
   DEFAULT_DOT_C_FROM_DOT_F=
   DEFAULT_DOT_O_FROM_DOT_F=
 elif test -n "$F2C" || $use_f2c; then
-  AC_CHECK_LIB(f2c, main, FLIBS=-lf2c, [])dnl
+  AC_CHECK_LIB(f2c, main, FLIBS=-lf2c, [])
   if test -z "$FLIBS" ; then
-    AC_CHECK_LIB(F77, main, FLIBS=-lF77, [])dnl
+    AC_CHECK_LIB(F77, main, FLIBS=-lF77, [])
     if test -n "$FLIBS" ; then
-      AC_CHECK_LIB(I77, main, FLIBS="$FLIBS -lI77", [])dnl
+      AC_CHECK_LIB(I77, main, FLIBS="$FLIBS -lI77", [])
     fi
   fi
   if test -z "$FLIBS" ; then
@@ -416,163 +413,160 @@ DEFAULT_DOT_C_FROM_DOT_F='# A rule for making C source from Fortran source.\
   AC_MSG_RESULT([defining DEFAULT_DOT_C_FROM_DOT_F to be $DEFAULT_DOT_C_FROM_DOT_F])
   DEFAULT_DOT_O_FROM_DOT_F='\%.o : \%.f'
   AC_MSG_RESULT([defining DEFAULT_DOT_O_FROM_DOT_F to be $DEFAULT_DOT_O_FROM_DOT_F])
-  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)dnl
+  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
 else
   AC_MSG_WARN([in order to build octave, you must have a compatible])
   AC_MSG_WARN([Fortran compiler or f2c installed and in your path.])
   AC_MSG_WARN([See the file INSTALL for more information.])
   AC_MSG_WARN([Continuing anyway...])
 fi
-dnl
-AC_SUBST(F77)dnl
-AC_SUBST(FFLAGS)dnl
-AC_SUBST(FLIBS)dnl
-AC_SUBST(F2C)dnl
-AC_SUBST(F2CFLAGS)dnl
-AC_SUBST(DEFAULT_DOT_C_FROM_DOT_F)dnl
-AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)dnl
-dnl
-dnl Extract libraries and directories from FLIBS and CXXLIBS.
-dnl
-dnl Leave only libraries, with -lfoo converted to libfoo.a:
-dnl
+
+AC_SUBST(F77)
+AC_SUBST(FFLAGS)
+AC_SUBST(FLIBS)
+AC_SUBST(F2C)
+AC_SUBST(F2CFLAGS)
+AC_SUBST(DEFAULT_DOT_C_FROM_DOT_F)
+AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)
+
+### Extract libraries and directories from FLIBS and CXXLIBS.
+###
+### Leave only libraries, with -lfoo converted to libfoo.a:
+
 changequote(,)dnl
 FLIB_LIST=`echo " $FLIBS " | sed -e 's/ -Xlinker *[^ ]*/ /g' \
 	-e 's/ -L *[^ ]*/ /g' \
 	-e 's/ -l *\([^ ]*\)/ lib\1.a/g' -e 's/ -u *[^ ]*/ /g' \
 	-e 's/^ *//' -e 's/ *$//' -e 's/  */:/g'`
-dnl
+
 CXXLIB_LIST=`echo " $CXXLIBS " | sed -e 's/ -Xlinker *[^ ]*/ /g' \
 	-e 's/ -L *[^ ]*/ /g' \
 	-e 's/ -l *\([^ ]*\)/ lib\1.a/g' -e 's/ -u *[^ ]*/ /g' \
 	-e 's/^ *//' -e 's/ *$//' -e 's/  */:/g'`
-dnl
-dnl Leave only directories where libraries might be found:
-dnl
+
+### Leave only directories where libraries might be found:
+
 FLIB_PATH=`echo " $FLIBS " | sed \
 	-e 's/ /  /g' -e 's/ -Xlinker *[^ ]*/ /g' \
 	-e 's/ -L *\([^ ]*\)/ \1/g' -e 's, /[^ ]*\.a , ,g' \
 	-e 's/ -l *[^ ]*/ /g' -e 's/ -u *[^ ]*/ /g' -e 's/^ *//' \
 	-e 's/ *$//' -e 's/  */:/g'`
-dnl
+
 CXXLIB_PATH=`echo " $CXXLIBS " | sed -e 's/ -Xlinker *[^ ]*/ /g' \
 	-e 's/ -L *\([^ ]*\)/ \1/g' -e 's, /[^ ]*\.a , ,g' \
 	-e 's/ /  /g' -e 's/ -Xlinker *[^ ]*/ /g' \
 	-e 's/ -l *[^ ]*/ /g' -e 's/ -u *[^ ]*/ /g' -e 's/^ *//' \
 	-e 's/ *$//' -e 's/  */:/g'`
 changequote([,])dnl
-dnl
+
 AC_MSG_RESULT([defining FLIB_LIST to be $FLIB_LIST])
 AC_MSG_RESULT([defining FLIB_PATH to be $FLIB_PATH])
-dnl
+
 AC_MSG_RESULT([defining CXXLIB_LIST to be $CXXLIB_LIST])
 AC_MSG_RESULT([defining CXXLIB_PATH to be $CXXLIB_PATH])
-dnl
-AC_SUBST(FLIB_LIST)dnl
-AC_SUBST(FLIB_PATH)dnl
-dnl
-AC_SUBST(CXXLIB_LIST)dnl
-AC_SUBST(CXXLIB_PATH)dnl
-dnl
-dnl Checks for header files.
-dnl
+
+AC_SUBST(FLIB_LIST)
+AC_SUBST(FLIB_PATH)
+
+AC_SUBST(CXXLIB_LIST)
+AC_SUBST(CXXLIB_PATH)
+
+### Checks for header files.
+
 AC_HEADER_STDC
-AC_CHECK_HEADERS(assert.h float.h limits.h memory.h pwd.h stdlib.h)dnl
-AC_CHECK_HEADERS(string.h varargs.h unistd.h floatingpoint.h)dnl
-AC_CHECK_HEADERS(sys/utsname.h sys/time.h sys/fcntl.h)dnl
-AC_CHECK_HEADERS(sys/ttold.h sys/ptem.h sys/select.h)dnl
+AC_CHECK_HEADERS(assert.h float.h limits.h memory.h pwd.h stdlib.h)
+AC_CHECK_HEADERS(string.h varargs.h unistd.h floatingpoint.h)
+AC_CHECK_HEADERS(sys/utsname.h sys/time.h sys/fcntl.h)
+AC_CHECK_HEADERS(sys/ttold.h sys/ptem.h sys/select.h)
 AC_HEADER_DIRENT
 AC_TIME_WITH_SYS_TIME
-dnl
-dnl Use sgtty on Ultrix so that using DEC Migrate to convert a Mips
-dnl binary to an Alpha binary will work.  Also on Alpha/OSF to avoid
-dnl a readline bug.
-dnl
-OCTAVE_HAVE_TERM_HEADER=false
+
+### Use sgtty on Ultrix so that using DEC Migrate to convert a Mips
+### binary to an Alpha binary will work.  Also on Alpha/OSF to avoid
+### a readline bug.
+
 case "$canonical_host_type" in
   mips-dec-ultrix* | alpha-dec-osf*)
-    AC_CHECK_HEADER(sgtty.h, [AC_DEFINE(HAVE_SGTTY_H, 1)
-      OCTAVE_HAVE_TERM_HEADER=true], [])
+    AC_CHECK_HEADER(sgtty.h, [AC_DEFINE(HAVE_SGTTY_H, 1)], [])
+
+    if test "$ac_cv_header_sgtty_h" = no; then
+      AC_CHECK_HEADERS(termios.h termio.h sgtty.h, [break], [])
+    fi
+  ;;
+  *)
+    AC_CHECK_HEADERS(termios.h termio.h sgtty.h, [break], [])
   ;;
 esac
-dnl
-if $OCTAVE_HAVE_TERM_HEADER; then
-  true
-else
-  AC_CHECK_HEADER(termios.h, [AC_DEFINE(HAVE_TERMIOS_H, 1)
-    OCTAVE_HAVE_TERM_HEADER=true],
-    AC_CHECK_HEADER(termio.h, [AC_DEFINE(HAVE_TERMIO_H, 1)
-      OCTAVE_HAVE_TERM_HEADER=true],
-      AC_CHECK_HEADER(sgtty.h, [AC_DEFINE(HAVE_SGTTY_H, 1)
-	OCTAVE_HAVE_TERM_HEADER=true], [])))
-fi
-if $OCTAVE_HAVE_TERM_HEADER; then
+
+if test "$ac_cv_header_termios_h" = yes \
+    || test "$ac_cv_header_termio_h" = yes \
+    || test "$ac_cv_header_sgtty_h" = yes; then
   true
 else
   AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
-dnl
-dnl Checks for functions.
-dnl
-AC_CHECK_FUNCS(setvbuf getcwd gethostname bzero rindex vfprintf vsprintf)dnl
-AC_CHECK_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror)dnl
-AC_CHECK_FUNCS(atexit on_exit tempnam memmove putenv gettimeofday)dnl
-dnl
+
+### Checks for functions.
+
+AC_CHECK_FUNCS(setvbuf getcwd gethostname bzero rindex vfprintf vsprintf)
+AC_CHECK_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror)
+AC_CHECK_FUNCS(atexit on_exit tempnam memmove putenv gettimeofday)
+
 dnl Would like to get rid of this cruft, and just have
 dnl
 dnl   AC_CHECK_FUNCS(finite isnan isinf)
 dnl
 dnl instead, but that used to fail on some systems...
 dnl
-dnl Check to see if we have IEEE math functions, and if so, which ones.
-dnl
-dnl For Linux: add -mieee-fp flag to CFLAGS when checking for IEEE FP
-dnl functions, otherwise we may not find them.
-dnl
 dnl Also just using AC_CHECK_FUNCS doesn't seem to work to find isinf
 dnl and isnan on Linux systems, so we use AC_CHECK_FUNC, and if that
 dnl fails, we try again by including math.h and invoking the function
 dnl with an argument. 
-dnl
-dnl Also check for some additional trig functions that aren't ANSI but
-dnl are often available.  If they are missing, we try to replace them
-dnl with functions from the BSD/NET2 math library.
-dnl
-AC_CHECK_LIB(sunmath, main)dnl
-AC_CHECK_LIB(m, main)dnl
-dnl
+
+### Check to see if we have IEEE math functions, and if so, which ones.
+###
+### For Linux: add -mieee-fp flag to CFLAGS when checking for IEEE FP
+### functions, otherwise we may not find them.
+###
+### Also check for some additional trig functions that aren't ANSI but
+### are often available.  If they are missing, we try to replace them
+### with functions from the BSD/NET2 math library.
+
+AC_CHECK_LIB(sunmath, main)
+AC_CHECK_LIB(m, main)
+
 XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
-dnl
-AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan erf erfc lgamma)dnl
-dnl
+
+AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan erf erfc lgamma)
+
 AC_MSG_CHECKING([for signgam declaration in math.h])
 AC_TRY_LINK([#include <math.h>],
   [int foo = signgam + 1;],
   AC_MSG_RESULT(yes)
   AC_DEFINE(SIGNGAM_DECLARED, 1),
-  AC_MSG_RESULT(no))dnl
-dnl
+  AC_MSG_RESULT(no))
+
 CFLAGS="$XCFLAGS"
-dnl
-dnl Check for nonstandard but common trig functions that we need.
-dnl If they are missing, we replace them using functions from the BSD
-dnl math library, and we may need to replace some other functions too.
-dnl
+
+### Check for nonstandard but common trig functions that we need.
+### If they are missing, we replace them using functions from the BSD
+### math library, and we may need to replace some other functions too.
+
 AC_REPLACE_FUNCS(acosh asinh atanh)
-dnl
+
 if test -n "$LIBOBJS"; then
   for func in $LIBOBJS
   do
     case "$func" in
       *acosh.o*)
-	AC_DEFINE(ACOSH_MISSING, 1)dnl
+	AC_DEFINE(ACOSH_MISSING, 1)
       ;;
       *asinh.o*)
-	AC_DEFINE(ASINH_MISSING, 1)dnl
+	AC_DEFINE(ASINH_MISSING, 1)
       ;;
       *atanh.o*)
-	AC_DEFINE(ATANH_MISSING, 1)dnl
+	AC_DEFINE(ATANH_MISSING, 1)
       ;;
     esac
   done
@@ -602,9 +596,9 @@ if test -n "$LIBOBJS"; then
     ;;
   esac
 fi
-dnl
-dnl Checks for OS specific cruft.
-dnl
+
+### Checks for OS specific cruft.
+
 AC_STRUCT_TM
 AC_FUNC_SETVBUF_REVERSED
 TERMLIBS=""
@@ -617,23 +611,23 @@ for termlib in termcap terminfo curses termlib ; do
     ;;
   esac
 done
-dnl
+
 AC_MSG_CHECKING([for struct exception in math.h])
 AC_TRY_LINK([#include <math.h>],
   [struct exception *x; x->type; x->name;],
   AC_MSG_RESULT(yes)
   AC_DEFINE(EXCEPTION_IN_MATH, 1),
-  AC_MSG_RESULT(no))dnl
-dnl
+  AC_MSG_RESULT(no))
+
 AC_SUBST(TERMLIBS)
-dnl
-dnl Signal stuff.
-dnl
+
+### Signal stuff.
+
 AC_TYPE_SIGNAL
 AC_SYS_SIGLIST_DECLARED
-dnl
-dnl Define VOID_SIGHANDLER for readline.
-dnl
+
+### Define VOID_SIGHANDLER for readline.
+
 case "$RETSIGTYPE" in
   int)
   ;;
@@ -642,17 +636,17 @@ case "$RETSIGTYPE" in
     AC_MSG_RESULT([defining VOID_SIGHANDLER to be 1])
   ;;
 esac
-AC_SUBST(VOID_SIGHANDLER)dnl
-dnl
-dnl Checks for other programs used for building, testing, installing,
-dnl and running Octave.
-dnl
-dnl For now, don't define LEXLIB to be -lfl -- we don't use anything in
-dnl it, and it might not be installed.
-dnl
-dnl Also make sure that we generate an interactive scanner if we are
-dnl using flex.
-dnl
+AC_SUBST(VOID_SIGHANDLER)
+
+### Checks for other programs used for building, testing, installing,
+### and running Octave.
+###
+### For now, don't define LEXLIB to be -lfl -- we don't use anything in
+### it, and it might not be installed.
+###
+### Also make sure that we generate an interactive scanner if we are
+### using flex.
+
 AC_PROG_LEX
 case "$LEX" in
   flex*)
@@ -667,8 +661,8 @@ case "$LEX" in
     AC_MSG_WARN([if you need to reconstruct lex.cc])
   ;;
 esac
-AC_SUBST(LFLAGS)dnl
-dnl
+AC_SUBST(LFLAGS)
+
 AC_PROG_YACC
 case "$YACC" in
   bison*)
@@ -678,19 +672,19 @@ case "$YACC" in
     AC_MSG_WARN([if you need to reconstruct parse.cc])
   ;;
 esac
-dnl
+
 AC_PROG_RANLIB
-dnl
-AC_CHECK_PROG(RUNTEST, runtest, runtest, [])dnl
-AC_CHECK_PROG(EXPECT, expect, expect, [])dnl
+
+AC_CHECK_PROG(RUNTEST, runtest, runtest, [])
+AC_CHECK_PROG(EXPECT, expect, expect, [])
 if test -z "$EXPECT" ; then
   RUNTEST=
 fi
-AC_SUBST(RUNTEST)dnl
-dnl
+AC_SUBST(RUNTEST)
+
 AC_PROG_INSTALL
-dnl
-AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])dnl
+
+AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])
 if test -z "$GNUPLOT_BINARY"; then
   AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
   AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
@@ -703,47 +697,47 @@ if test -z "$GNUPLOT_BINARY"; then
   AC_MSG_WARN([])
   AC_MSG_WARN([at the Octave prompt.])
 fi
-dnl
-AC_CHECK_PROGS(DEFAULT_PAGER, less more page pg, [])dnl
+
+AC_CHECK_PROGS(DEFAULT_PAGER, less more page pg, [])
 if test -z "$DEFAULT_PAGER"; then
   AC_MSG_WARN([I couldn't find `less', `more', `page', or `pg'])
 elif test "$DEFAULT_PAGER" = less; then
   DEFAULT_PAGER="less -e"
   AC_MSG_RESULT([defining DEFAULT_PAGER to be $DEFAULT_PAGER])
 fi
-dnl
-dnl Even though we include config.h in most files, some need to be
-dnl compiled with the -D options on the compiler command line.  Use
-dnl UGLY_DEFS for that.
-dnl
+
+### Even though we include config.h in most files, some need to be
+### compiled with the -D options on the compiler command line.  Use
+### UGLY_DEFS for that.
+
 AC_OUTPUT_MAKE_DEFS
 UGLY_DEFS="$DEFS"
 AC_MSG_RESULT([defining UGLY_DEFS to be $UGLY_DEFS])
-AC_SUBST(UGLY_DEFS)dnl
-dnl
-dnl Maybe add -Wall to compiler flags now that we're done feature
-dnl testing. 
-dnl
-dnl To get gcc and g++ to be really picky, try these adding these
-dnl options to CFLAGS and CXXFLAGS along with -Wall:
-dnl
-dnl   -ansi
-dnl   -pedantic
-dnl   -Wwrite-strings
-dnl   -Wid-clash-31
-dnl   -Wpointer-arith
-dnl   -Wcast-qual
-dnl   -Wenum-clash
-dnl   -Wcast-align
-dnl   -Wtraditional
-dnl   -Wstrict-prototypes
-dnl   -Wmissing-prototypes
-dnl   -Wnested-externs
-dnl   -Woverloaded-virtual
-dnl   -Winline
-dnl   -felide-constructors
-dnl   -fnonnull-objects
-dnl
+AC_SUBST(UGLY_DEFS)
+
+### Maybe add -Wall to compiler flags now that we're done feature
+### testing. 
+###
+### To get gcc and g++ to be really picky, try these adding these
+### options to CFLAGS and CXXFLAGS along with -Wall:
+###
+###   -ansi
+###   -pedantic
+###   -Wwrite-strings
+###   -Wid-clash-31
+###   -Wpointer-arith
+###   -Wcast-qual
+###   -Wenum-clash
+###   -Wcast-align
+###   -Wtraditional
+###   -Wstrict-prototypes
+###   -Wmissing-prototypes
+###   -Wnested-externs
+###   -Woverloaded-virtual
+###   -Winline
+###   -felide-constructors
+###   -fnonnull-objects
+
 if $ADD_CXX_WALL; then
   CXXFLAGS="$CXXFLAGS -Wall"
   AC_MSG_RESULT([adding -Wall to CXXFLAGS])
@@ -752,9 +746,9 @@ if $ADD_CC_WALL; then
   CFLAGS="$CFLAGS -Wall"
   AC_MSG_RESULT([adding -Wall to CFLAGS])
 fi
-dnl
-dnl Do the substitutions in all the Makefiles.
-dnl
+
+### Do the substitutions in all the Makefiles.
+
 define([tmpA], [Makefile octMakefile Makeconf])dnl
 define([tmpB], [libcruft/Makefile libcruft/Makerules])dnl
 define([tmpC], [liboctave/Makefile src/Makefile dld/Makefile])dnl
@@ -762,7 +756,7 @@ define([tmpD], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
 define([tmpE], [readline/examples/Makefile doc/Makefile])dnl
 define([tmpF], [test/Makefile kpathsea/Makefile])dnl
 define([srcdirs], [tmpA tmpB tmpC tmpD tmpE tmpF])dnl
-dnl
+
 define([tmpa], [libcruft/blas/Makefile libcruft/balgen/Makefile])dnl
 define([tmpb], [libcruft/dassl/Makefile libcruft/eispack/Makefile])dnl
 define([tmpc], [libcruft/fftpack/Makefile libcruft/fsqp/Makefile])dnl
@@ -770,11 +764,11 @@ define([tmpd], [libcruft/lapack/Makefile libcruft/linpack/Makefile])dnl
 define([tmpe], [libcruft/minpack/Makefile libcruft/misc/Makefile])dnl
 define([tmpf], [libcruft/npsol/Makefile libcruft/odepack/Makefile])dnl
 define([tmpg], [libcruft/qpsol/Makefile libcruft/quadpack/Makefile])dnl
-define([tmph], [libcruft/ranlib/Makefile libcruft/villad/Makefile])dnl 
-dnl
+define([tmph], [libcruft/ranlib/Makefile libcruft/villad/Makefile])dnl
+
 define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph])dnl
 define([tmpSA], [scripts/Makefile scripts/control/Makefile])dnl
-define([tmpSB], [scripts/general/Makefile scripts/image/Makefile])dnl
+define([tmpSB], [scripts/general/Makefile scripts/image/Makefile])
 define([tmpSC], [scripts/linear-algebra/Makefile])dnl
 define([tmpSD], [scripts/miscellaneous/Makefile scripts/plot/Makefile])dnl
 define([tmpSE], [scripts/polynomial/Makefile scripts/set/Makefile])dnl
@@ -782,5 +776,5 @@ define([tmpSF], [scripts/signal/Makefile scripts/special-matrix/Makefile])dnl
 define([tmpSG], [scripts/startup/Makefile scripts/statistics/Makefile])dnl
 define([tmpSH], [scripts/elfun/Makefile scripts/specfun/Makefile])dnl
 define([scriptdirs], [tmpSA tmpSB tmpSC tmpSD tmpSE tmpSF tmpSG tmpSH])dnl
-dnl
-AC_OUTPUT([srcdirs cruftdirs scriptdirs])dnl
+
+AC_OUTPUT([srcdirs cruftdirs scriptdirs])

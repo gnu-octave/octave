@@ -956,6 +956,46 @@ template void
 do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
 	       int&, int, int, bool);
 
+#define FINISH_CHARACTER_CONVERSION() \
+  do \
+    { \
+      width = strlen (tmp); \
+ \
+      if (is) \
+	{ \
+	  int i = 0; \
+ \
+	  if (! discard) \
+	    { \
+	      conversion_count++; \
+ \
+	      while (i < width && tmp[i] != '\0') \
+		{ \
+		  if (data_index == max_size) \
+		    { \
+		      max_size *= 2; \
+ \
+		      if (nr > 0) \
+			mval.resize (nr, max_size / nr, 0.0); \
+		      else \
+			{ \
+			  if (all_char_conv && one_elt_size_spec) \
+			    mval.resize (1, max_size, 0.0); \
+			  else \
+			    mval.resize (max_size, 1, 0.0); \
+			} \
+ \
+		      data = mval.fortran_vec (); \
+		    } \
+ \
+		  data[data_index++] = tmp[i++]; \
+		} \
+	    } \
+	} \
+ \
+      delete [] tmp; \
+    } \
+  while (0)
 
 octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
@@ -992,20 +1032,18 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
     {
       if (one_elt_size_spec)
 	{
-	  mval.resize (1, 512, 0.0);
-	  data = mval.fortran_vec ();
 	  max_size = 512;
-	  
+	  mval.resize (1, max_size, 0.0);
+	  data = mval.fortran_vec ();
+
 	  if (nr > 0)
 	    max_conv = nr;
 	}
       else if (nr > 0 && nc > 0)
 	{
-	  mval.resize (nr, 32, 0.0);
+	  mval.resize (nr, nc, 0.0);
 	  data = mval.fortran_vec ();
-	  max_size = nr * 32;
-
-	  max_conv = nr * nc;
+	  max_size = max_conv = nr * nc;
 	}
     }
   else if (nr > 0)
@@ -1061,18 +1099,19 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		}
 	      else if (data_index == max_size)
 		{
+		  max_size *= 2;
+
 		  if (nr > 0)
-		    {
-		      max_size *= 2;
-		      mval.resize (nr, max_size / nr, 0.0);
-		      data = mval.fortran_vec ();
-		    }
+		    mval.resize (nr, max_size / nr, 0.0);
 		  else
 		    {
-		      max_size *= 2;
-		      mval.resize (max_size, 1, 0.0);
-		      data = mval.fortran_vec ();
+		      if (all_char_conv && one_elt_size_spec)
+			mval.resize (1, max_size, 0.0);
+		      else
+			mval.resize (max_size, 1, 0.0);
 		    }
+
+		  data = mval.fortran_vec ();
 		}
 
 	      const char *fmt = elt->text;
@@ -1134,15 +1173,31 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		break;
 
 		case 'c':
-		  is.unsetf (ios::skipws);
-		  // Fall through...
+		  {
+		    is.unsetf (ios::skipws);
+
+		    int width = elt->width;
+
+		    if (width == 0)
+		      width = 1;
+
+		    char *tmp = new char[width+1];
+
+		    int c = EOF;
+		    int n = 0;
+
+		    while (is && n < width && (c = is.get ()) != EOF)
+		      tmp[n++] = (char) c;
+
+		    tmp[n] = '\0';
+
+		    FINISH_CHARACTER_CONVERSION ();
+		  }
+		  break;
 
 		case 's':
 		  {
 		    int width = elt->width;
-
-		    if (elt->type == 'c' && width == 0)
-		      width = 1;
 
 		    char *tmp = 0;
 
@@ -1178,36 +1233,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 			tmp = buf.str ();
 		      }
 
-		    width = strlen (tmp);
-
-		    if (is)
-		      {
-			int i = 0;
-
-			if (! discard)
-			  {
-			    conversion_count++;
-
-			    while (i < width && tmp[i] != '\0')
-			      {
-				if (data_index == max_size)
-				  {
-				    max_size *= 2;
-
-				    if (nr > 0)
-				      mval.resize (nr, max_size / nr, 0.0);
-				    else
-				      mval.resize (max_size, 1, 0.0);
-
-				    data = mval.fortran_vec ();
-				  }
-
-				data[data_index++] = tmp[i++];
-			      }
-			  }
-		      }
-
-		    delete [] tmp;
+		    FINISH_CHARACTER_CONVERSION ();
 
 		    is.setf (flags);
 		  }

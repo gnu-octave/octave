@@ -1,5 +1,8 @@
 2000-01-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (do_scanf): Do the right thing again for character
+	conversions.
+
 	* help.cc (display_help_text): Also strip out leading spaces
 	before Texinfo @-commands before sending doc string to makeinfo.
 	(display_help_text): Improve format of `See also' string.

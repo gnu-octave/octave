@@ -35,12 +35,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (lsode) (int (*)(int*, double*, double*, double*, int*),
-		       int *, double *, double *, double *,
-		       int *, double *, double *, int *, int *, int *,
-		       double *, int *, int *, int *,
-		       int (*)(int*, double*, double*, int*, int*,
-			       double*, int*), int *);
+  int F77_FCN (lsode) (int (*)(const int&, const double&, double*,
+			       double*, int&),
+		       int&, double*, double&, double&, int&,
+		       double&, double&, int&, int&, int&,
+		       double*, int&, int*, int&,
+		       int (*)(const int&, const double&, double*,
+			       const int&, const int&, double*,
+			       const int&), int&);
 }
 
 static ODEFunc::ODERHSFunc user_fun;
@@ -148,23 +150,23 @@ ODE::~ODE (void)
 }
 
 int
-lsode_f (int *neq, double *time, double *state, double *deriv, int *ierr)
+lsode_f (const int& neq, const double& time, double *state,
+	 double *deriv, int& ierr) 
 {
-  int nn = *neq;
-  ColumnVector tmp_deriv (nn);
+  ColumnVector tmp_deriv (neq);
 
   /*
    * NOTE: this won't work if LSODE passes copies of the state vector.
    *       In that case we have to create a temporary vector object
    *       and copy.
    */
-  tmp_deriv = (*user_fun) (*tmp_x, *time);
+  tmp_deriv = (*user_fun) (*tmp_x, time);
 
   if (tmp_deriv.length () == 0)
-    *ierr = -1;
+    ierr = -1;
   else
     {
-      for (int i = 0; i < nn; i++)
+      for (int i = 0; i < neq; i++)
 	deriv [i] = tmp_deriv.elem (i);
     }
 
@@ -172,22 +174,21 @@ lsode_f (int *neq, double *time, double *state, double *deriv, int *ierr)
 }
 
 int
-lsode_j (int *neq, double *time, double *state, int *ml, int *mu,
-         double *pd, int *nrowpd)
+lsode_j (const int& neq, const double& time, double *state,
+	 const int& ml, const int& mu, double *pd, const int& nrowpd)
 {
-  int nn = *neq;
-  Matrix tmp_jac (nn, nn);
+  Matrix tmp_jac (neq, neq);
 
   /*
    * NOTE: this won't work if LSODE passes copies of the state vector.
    *       In that case we have to create a temporary vector object
    *       and copy.
    */
-  tmp_jac = (*user_jac) (*tmp_x, *time);
+  tmp_jac = (*user_jac) (*tmp_x, time);
 
-  for (int j = 0; j < nn; j++)
-    for (int i = 0; i < nn; i++)
-      pd [*nrowpd * j + i] = tmp_jac (i, j);
+  for (int j = 0; j < neq; j++)
+    for (int i = 0; i < neq; i++)
+      pd [nrowpd * j + i] = tmp_jac (i, j);
 
   return 0;
 }
@@ -242,10 +243,9 @@ ODE::integrate (double tout)
 
  again:
 
-  (void) F77_FCN (lsode) (lsode_f, &n, xp, &t, &tout, &itol,
-			  &rel_tol, &abs_tol, &itask, &istate, &iopt,
-			  rwork, &lrw, iwork, &liw, lsode_j,
-			  &method_flag);
+  (void) F77_FCN (lsode) (lsode_f, n, xp, t, tout, itol, rel_tol,
+			  abs_tol, itask, istate, iopt, rwork, lrw,
+			  iwork, liw, lsode_j, method_flag);
 
   switch (istate)
     {

@@ -33,10 +33,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (jcobi) (int*, int*, int*, int*, double*, double*,
+  int F77_FCN (jcobi) (int&, int&, int&, int&, double&, double&,
 		       double*, double*, double*, double*); 
 
-  int F77_FCN (dfopr) (int*, int*, int*, int*, int*, int*,
+  int F77_FCN (dfopr) (int&, int&, int&, int&, int&, int&,
 		       double*, double*, double*, double*, double*);
 }
 
@@ -275,7 +275,7 @@ CollocWt::init (void)
 
 // Compute roots.
 
-  F77_FCN (jcobi) (&nt, &n, &inc_left, &inc_right, &Alpha, &Beta,
+  F77_FCN (jcobi) (nt, n, inc_left, inc_right, Alpha, Beta,
 		   dif1, dif2, dif3, pr);
 
   int id;
@@ -286,7 +286,7 @@ CollocWt::init (void)
   id = 1;
   for (i = 1; i <= nt; i++)
     {
-      F77_FCN (dfopr) (&nt, &n, &inc_left, &inc_right, &i, &id, dif1,
+      F77_FCN (dfopr) (nt, n, inc_left, inc_right, i, id, dif1,
 		       dif2, dif3, pr, vect); 
 
       for (j = 0; j < nt; j++)
@@ -298,7 +298,7 @@ CollocWt::init (void)
   id = 2;
   for (i = 1; i <= nt; i++)
     {
-      F77_FCN (dfopr) (&nt, &n, &inc_left, &inc_right, &i, &id, dif1,
+      F77_FCN (dfopr) (nt, n, inc_left, inc_right, i, id, dif1,
 		       dif2, dif3, pr, vect); 
 
       for (j = 0; j < nt; j++)
@@ -309,7 +309,7 @@ CollocWt::init (void)
 
   id = 3;
   double *pq = q.fortran_vec ();
-  F77_FCN (dfopr) (&nt, &n, &inc_left, &inc_right, &i, &id, dif1,
+  F77_FCN (dfopr) (nt, n, inc_left, inc_right, i, id, dif1,
 		   dif2, dif3, pr, pq);
 
   delete [] dif1;

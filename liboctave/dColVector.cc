@@ -38,10 +38,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgemv) (const char*, const int*, const int*,
-		       const double*, const double*, const int*,
-		       const double*, const int*, const double*,
-		       double*, const int*, long);
+  int F77_FCN (dgemv) (const char*, const int&, const int&,
+		       const double&, const double*, const int&,
+		       const double*, const int&, const double&,
+		       double*, const int&, long);
 }
 
 /*
@@ -221,16 +221,12 @@ operator * (const Matrix& m, const ColumnVector& a)
   if (nr == 0 || nc == 0)
     return ColumnVector (0);
 
-  char trans = 'N';
   int ld = nr;
-  double alpha = 1.0;
-  double beta  = 0.0;
-  int i_one = 1;
 
   double *y = new double [nr];
 
-  F77_FCN (dgemv) (&trans, &nr, &nc, &alpha, m.data (), &ld, a.data (),
-		   &i_one, &beta, y, &i_one, 1L); 
+  F77_FCN (dgemv) ("N", nr, nc, 1.0, m.data (), ld, a.data (), 1, 0.0,
+		   y, 1, 1L);
 
   return ColumnVector (y, nr);
 }

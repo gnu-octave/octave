@@ -42,16 +42,16 @@ int quad_integration_error = 0;
 
 extern "C"
 {
-  int F77_FCN (dqagp) (const double (*)(double*, int*), const double*,
-		       const double*, const int*, const double*,
-		       const double*, const double*, double*, double*,
-		       int*, int*, const int*, const int*, int*, int*,
-		       double*);
+  int F77_FCN (dqagp) (const double (*)(double*, int&),
+		       const double&, const double&, const int&,
+		       const double*, const double&, const double&,
+		       double&, double&, int&, int&, const int&,
+		       const int&, int&, int*, double*);
 
-  int F77_FCN (dqagi) (const double (*)(double*, int*), const double*,
-		       const int*, const double*, const double*,
-		       double*, double*, int*, int*, const int*,
-		       const int*, int*, int*, double*);
+  int F77_FCN (dqagi) (const double (*)(double*, int&), const double&,
+		       const int&, const double&, const double&,
+		       double&, double&, int&, int&, const int&,
+		       const int&, int&, int*, double*); 
 }
 
 Quad::Quad (integrand_fcn fcn)
@@ -88,7 +88,7 @@ Quad::integrate (int& ier, int& neval)
 }
 
 static double
-user_function (double *x, int *ierr)
+user_function (double *x, int& ierr)
 {
 #if defined (sun) && defined (__GNUC__)
   double xx = access_double (x);
@@ -101,7 +101,7 @@ user_function (double *x, int *ierr)
   double retval = (*user_fcn) (xx);
 
   if (quad_integration_error)
-    *ierr = -1;
+    ierr = -1;
 
   return retval;
 }
@@ -175,9 +175,9 @@ DefQuad::integrate (int& ier, int& neval, double& abserr)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  F77_FCN (dqagp) (user_function, &lower_limit, &upper_limit, &npts,
-		   points, &abs_tol, &rel_tol, &result, &abserr,
-		   &neval, &ier, &leniw, &lenw, &last, iwork, work);
+  F77_FCN (dqagp) (user_function, lower_limit, upper_limit, npts,
+		   points, abs_tol, rel_tol, result, abserr,
+		   neval, ier, leniw, lenw, last, iwork, work);
 
   delete [] iwork;
   delete [] work;
@@ -243,9 +243,9 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  F77_FCN (dqagi) (user_function, &bound, &inf, &abs_tol, &rel_tol,
-		   &result, &abserr, &neval, &ier, &leniw, &lenw,
-		   &last, iwork, work);
+  F77_FCN (dqagi) (user_function, bound, inf, abs_tol, rel_tol,
+		   result, abserr, neval, ier, leniw, lenw,
+		   last, iwork, work);
 
   delete [] iwork;
   delete [] work;

@@ -38,10 +38,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgemv) (const char*, const int*, const int*,
-		       const Complex*, const Complex*, const int*,
-		       const Complex*, const int*, const Complex*,
-		       Complex*, const int*, long);
+  int F77_FCN (zgemv) (const char*, const int&, const int&,
+		       const Complex&, const Complex*, const int&,
+		       const Complex*, const int&, const Complex&,
+		       Complex*, const int&, long);
 }
 
 /*
@@ -438,16 +438,12 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  char trans = 'T';
   int ld = a_nr;
-  Complex alpha (1.0);
-  Complex beta (0.0);
-  int i_one = 1;
 
   Complex *y = new Complex [len];
 
-  F77_FCN (zgemv) (&trans, &a_nc, &a_nr, &alpha, a.data (), &ld,
-		   v.data (), &i_one, &beta, y, &i_one, 1L); 
+  F77_FCN (zgemv) ("T", a_nc, a_nr, 1.0, a.data (), ld, v.data (), 1,
+		   0.0, y, 1, 1L); 
 
   return ComplexRowVector (y, len);
 }

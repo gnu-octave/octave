@@ -36,10 +36,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (qld) (int*, int*, int*, int*, int*, double*, double*,
+  int F77_FCN (qld) (int&, int&, int&, int&, int&, double*, double*,
 		     double*, double*, double*, double*, double*,
-		     double*, int*, int*, int*, double*, int*, int*,
-		     int*);
+		     double*, int&, int&, int&, double*, int&, int*,
+		     int&);
 }
 
 Vector
@@ -107,12 +107,12 @@ QLD::minimize (double& objf, int& inform)
   int mmax = m > 0 ? m : 1;
 
   iprint = 1;
-  F77_FCN (qld) (&m, &me, &mmax, &n, &n, ph, pc, pa, pb, pxl, pxu, px,
-		 u, &iout, &inform, &iprint, war, &lwar, iwar, &liwar);
+  F77_FCN (qld) (m, me, mmax, n, n, ph, pc, pa, pb, pxl, pxu, px,
+		 u, iout, inform, iprint, war, lwar, iwar, liwar);
 
-  delete war;
-  delete iwar;
-  delete u;
+  delete [] war;
+  delete [] iwar;
+  delete [] u;
 
   objf = (x.transpose () * H * x) / 2.0;
   if (c.capacity () > 0)

@@ -32,14 +32,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgeqrf) (const int*, const int*, double*, const int*,
-			double*, double*, const int*, int*);
+  int F77_FCN (dgeqrf) (const int&, const int&, double*, const int&,
+			double*, double*, const int&, int&);
 
-  int F77_FCN (dorgqr) (const int*, const int*, const int*, double*,
-			const int*, double*, double*, const int*, int*);
-
-  int F77_FCN (dgeqpf) (const int*, const int*, double*, const int*,
-			int*, double*, double*, int*);
+  int F77_FCN (dorgqr) (const int&, const int&, const int&, double*,
+			const int&, double*, double*, const int&, int&);
 }
 
 QR::QR (const Matrix& a, QR::type qr_type)
@@ -68,7 +65,7 @@ QR::QR (const Matrix& a, QR::type qr_type)
   else
     tmp_data = dup (a.data (), a.length ());
 
-  F77_FCN (dgeqrf) (&m, &n, tmp_data, &m, tau, work, &lwork, &info);
+  F77_FCN (dgeqrf) (m, n, tmp_data, m, tau, work, lwork, info);
 
   delete [] work;
 
@@ -105,8 +102,7 @@ QR::QR (const Matrix& a, QR::type qr_type)
       lwork = 32*m;
       work = new double[lwork];
 
-      F77_FCN (dorgqr) (&m, &m, &min_mn, tmp_data, &m, tau, work,
-			&lwork, &info);
+      F77_FCN (dorgqr) (m, m, min_mn, tmp_data, m, tau, work, lwork, info);
 
       q = Matrix (tmp_data, m, m);
       q.resize (m, n2);

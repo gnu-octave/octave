@@ -43,36 +43,35 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgemm) (const char*, const char*, const int*,
-		       const int*, const int*, const double*,
-		       const double*, const int*, const double*,
-		       const int*, const double*, double*, const int*,
+  int F77_FCN (dgemm) (const char*, const char*, const int&,
+		       const int&, const int&, const double&,
+		       const double*, const int&, const double*,
+		       const int&, const double&, double*, const int&,
 		       long, long);
 
-  int F77_FCN (dgeco) (double*, const int*, const int*, int*, double*,
+  int F77_FCN (dgeco) (double*, const int&, const int&, int*, double&,
 		       double*);
 
-  int F77_FCN (dgesl) (const double*, const int*, const int*,
-		       const int*, double*, const int*); 
+  int F77_FCN (dgesl) (const double*, const int&, const int&,
+		       const int*, double*, const int&); 
 
-  int F77_FCN (dgedi) (double*, const int*, const int*, const int*,
-		       double*, double*, const int*);
+  int F77_FCN (dgedi) (double*, const int&, const int&, const int*,
+		       double*, double*, const int&);
 
-  int F77_FCN (dgelss) (const int*, const int*, const int*, double*,
-			const int*, double*, const int*, double*,
-			const double*, int*, double*, const int*,
-			int*);
+  int F77_FCN (dgelss) (const int&, const int&, const int&, double*,
+			const int&, double*, const int&, double*,
+			double&, int&, double*, const int&, int&);
 
 // Note that the original complex fft routines were not written for
 // double complex arguments.  They have been modified by adding an
 // implicit double precision (a-h,o-z) statement at the beginning of
 // each subroutine.
 
-  int F77_FCN (cffti) (const int*, Complex*);
+  int F77_FCN (cffti) (const int&, Complex*);
 
-  int F77_FCN (cfftf) (const int*, Complex*, Complex*);
+  int F77_FCN (cfftf) (const int&, Complex*, Complex*);
 
-  int F77_FCN (cfftb) (const int*, Complex*, Complex*);
+  int F77_FCN (cfftb) (const int&, Complex*, Complex*);
 }
 
 /*
@@ -515,7 +514,7 @@ Matrix::inverse (int& info, double& rcond) const
   double *z = new double [nr];
   double *tmp_data = dup (data (), len);
 
-  F77_FCN (dgeco) (tmp_data, &nr, &nc, ipvt, &rcond, z);
+  F77_FCN (dgeco) (tmp_data, nr, nc, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
   if (rcond_plus_one == 1.0)
@@ -525,10 +524,9 @@ Matrix::inverse (int& info, double& rcond) const
     }
   else
     {
-      int job = 1;
-      double dummy;
+      double *dummy;
 
-      F77_FCN (dgedi) (tmp_data, &nr, &nc, ipvt, &dummy, z, &job);
+      F77_FCN (dgedi) (tmp_data, nr, nc, ipvt, dummy, z, 1);
     }
 
   delete [] ipvt;
@@ -595,10 +593,10 @@ Matrix::fourier (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti) (&npts, wsave);
+  F77_FCN (cffti) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf) (&npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftf) (npts, &tmp_data[npts*j], wsave);
 
   delete [] wsave;
 
@@ -626,10 +624,10 @@ Matrix::ifourier (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti) (&npts, wsave);
+  F77_FCN (cffti) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb) (&npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftb) (npts, &tmp_data[npts*j], wsave);
 
   for (j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / (double) npts;
@@ -660,10 +658,10 @@ Matrix::fourier2d (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti) (&npts, wsave);
+  F77_FCN (cffti) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf) (&npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftf) (npts, &tmp_data[npts*j], wsave);
 
   delete [] wsave;
 
@@ -673,14 +671,14 @@ Matrix::fourier2d (void) const
   wsave = new Complex [nn];
   Complex *row = new Complex[npts];
 
-  F77_FCN (cffti) (&npts, wsave);
+  F77_FCN (cffti) (npts, wsave);
 
   for (j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	row[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftf) (&npts, row, wsave);
+      F77_FCN (cfftf) (npts, row, wsave);
 
       for (i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = row[i];
@@ -713,10 +711,10 @@ Matrix::ifourier2d (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti) (&npts, wsave);
+  F77_FCN (cffti) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb) (&npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftb) (npts, &tmp_data[npts*j], wsave);
 
   delete [] wsave;
 
@@ -729,14 +727,14 @@ Matrix::ifourier2d (void) const
   wsave = new Complex [nn];
   Complex *row = new Complex[npts];
 
-  F77_FCN (cffti) (&npts, wsave);
+  F77_FCN (cffti) (npts, wsave);
 
   for (j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	row[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftb) (&npts, row, wsave);
+      F77_FCN (cfftb) (npts, row, wsave);
 
       for (i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = row[i] / (double) npts;
@@ -786,7 +784,7 @@ Matrix::determinant (int& info, double& rcond) const
       double *z = new double [nr];
       double *tmp_data = dup (data (), length ());
 
-      F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
+      F77_FCN (dgeco) (tmp_data, nr, nr, ipvt, rcond, z);
 
       volatile double rcond_plus_one = rcond + 1.0;
       if (rcond_plus_one == 1.0)
@@ -796,9 +794,8 @@ Matrix::determinant (int& info, double& rcond) const
 	}
       else
 	{
-	  int job = 10;
 	  double d[2];
-	  F77_FCN (dgedi) (tmp_data, &nr, &nr, ipvt, d, z, &job);
+	  F77_FCN (dgedi) (tmp_data, nr, nr, ipvt, d, z, 10);
 	  retval = DET (d);
 	}
 
@@ -845,7 +842,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
   double *z = new double [nr];
   double *tmp_data = dup (data (), length ());
 
-  F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
+  F77_FCN (dgeco) (tmp_data, nr, nr, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
   if (rcond_plus_one == 1.0)
@@ -854,13 +851,11 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
     }
   else
     {
-      int job = 0;
-
       double *result = dup (b.data (), b.length ());
 
       int b_nc = b.cols ();
       for (int j = 0; j < b_nc; j++)
-	F77_FCN (dgesl) (tmp_data, &nr, &nr, ipvt, &result[nr*j], &job);
+	F77_FCN (dgesl) (tmp_data, nr, nr, ipvt, &result[nr*j], 0);
 
       retval = Matrix (result, b.rows (), b_nc);
     }
@@ -927,7 +922,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
   double *z = new double [nr];
   double *tmp_data = dup (data (), length ());
 
-  F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
+  F77_FCN (dgeco) (tmp_data, nr, nr, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
   if (rcond_plus_one == 1.0)
@@ -936,13 +931,11 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
     }
   else
     {
-      int job = 0;
-
       int b_len = b.length ();
 
       double *result = dup (b.data (), b_len);
 
-      F77_FCN (dgesl) (tmp_data, &nr, &nr, ipvt, result, &job);
+      F77_FCN (dgesl) (tmp_data, nr, nr, ipvt, result, 0);
 
       retval = ColumnVector (result, b_len);
     }
@@ -1028,8 +1021,8 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 
   double *work = new double [lwork];
 
-  F77_FCN (dgelss) (&m, &n, &nrhs, tmp_data, &m, presult, &nrr, s,
-		    &rcond, &rank, work, &lwork, &info);
+  F77_FCN (dgelss) (m, n, nrhs, tmp_data, m, presult, nrr, s, rcond,
+		    rank, work, lwork, info);
 
   Matrix retval (n, nrhs);
   for (j = 0; j < nrhs; j++)
@@ -1115,8 +1108,8 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 
   double *work = new double [lwork];
 
-  F77_FCN (dgelss) (&m, &n, &nrhs, tmp_data, &m, presult, &nrr, s,
-		    &rcond, &rank, work, &lwork, &info);
+  F77_FCN (dgelss) (m, n, nrhs, tmp_data, m, presult, nrr, s, rcond,
+		    rank, work, lwork, info);
 
   ColumnVector retval (n);
   for (i = 0; i < n; i++)
@@ -1260,17 +1253,10 @@ operator * (const ColumnVector& v, const RowVector& a)
   if (len == 0)
     return Matrix (len, len, 0.0);
 
-  char transa = 'N';
-  char transb = 'N';
-  double alpha = 1.0;
-  double beta  = 0.0;
-  int anr = 1;
-
   double *c = new double [len * a_len];
 
-  F77_FCN (dgemm) (&transa, &transb, &len, &a_len, &anr, &alpha,
-		   v.data (), &len, a.data (), &anr, &beta, c, &len,
-		   1L, 1L); 
+  F77_FCN (dgemm) ("N", "N", len, a_len, 1, 1.0, v.data (),
+		   len, a.data (), 1, 0.0, c, len, 1L, 1L);
 
   return Matrix (c, len, a_len);
 }
@@ -1519,19 +1505,13 @@ operator * (const Matrix& m, const Matrix& a)
   if (nr == 0 || nc == 0 || a_nc == 0)
     return Matrix (nr, a_nc, 0.0);
 
-  char trans  = 'N';
-  char transa = 'N';
-
   int ld  = nr;
   int lda = a_nr;
 
-  double alpha = 1.0;
-  double beta  = 0.0;
-
   double *c = new double [nr*a_nc];
 
-  F77_FCN (dgemm) (&trans, &transa, &nr, &a_nc, &nc, &alpha, m.data (),
-		   &ld, a.data (), &lda, &beta, c, &nr, 1L, 1L);
+  F77_FCN (dgemm) ("N", "N", nr, a_nc, nc, 1.0, m.data (),
+		   ld, a.data (), lda, 0.0, c, nr, 1L, 1L);
 
   return Matrix (c, nr, a_nc);
 }

@@ -30,13 +30,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgebal) (const char*, const int*, double*,
-                        const int*, int*, int*, double*,
-                        int*, long, long);
+  int F77_FCN (dgebal) (const char*, const int&, double*,
+                        const int&, int&, int&, double*,
+                        int&, long, long);
 
-  int F77_FCN (dgebak) (const char*, const char*, const int*, const int*,
-			const int*, double*, const int*, double*, const int*,
-			int*, long, long);
+  int F77_FCN (dgebak) (const char*, const char*, const int&, const int&,
+			const int&, double*, const int&, double*, const int&,
+			int&, long, long);
 }
 
 int
@@ -62,8 +62,8 @@ AEPBALANCE::init (const Matrix& a, const char *balance_job)
 
   balanced_mat = a;
 
-  F77_FCN (dgebal) (balance_job, &n, balanced_mat.fortran_vec (), 
-		    &n, &ilo, &ihi, scale, &info, 1L, 1L);
+  F77_FCN (dgebal) (balance_job, n, balanced_mat.fortran_vec (), 
+		    n, ilo, ihi, scale, info, 1L, 1L);
 
 // Initialize balancing matrix to identity.
 
@@ -71,8 +71,8 @@ AEPBALANCE::init (const Matrix& a, const char *balance_job)
   for (int i = 0; i < n; i++)
     balancing_mat.elem (i ,i) = 1.0;
 
-  F77_FCN (dgebak) (balance_job, "R", &n, &ilo, &ihi, scale, &n, 
-		    balancing_mat.fortran_vec (), &n, &info, 1L, 1L);
+  F77_FCN (dgebak) (balance_job, "R", n, ilo, ihi, scale, n, 
+		    balancing_mat.fortran_vec (), n, info, 1L, 1L);
 
   delete [] scale;
 

@@ -32,8 +32,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zpotrf) (const char*, const int*, Complex*, const int*,
-			int*, long);
+  int F77_FCN (zpotrf) (const char*, const int&, Complex*, const int&,
+			int&, long);
 }
 
 int
@@ -48,14 +48,12 @@ ComplexCHOL::init (const ComplexMatrix& a)
        return -1;
      }
 
-   char uplo = 'U';
-
    int n = a_nc;
    int info;
 
    Complex *h = dup (a.data (), a.length ());
 
-   F77_FCN (zpotrf) (&uplo, &n, h, &n, &info, 1L);
+   F77_FCN (zpotrf) ("U", n, h, n, info, 1L);
 
    chol_mat = ComplexMatrix (h, n, n);
 

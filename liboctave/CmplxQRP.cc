@@ -34,11 +34,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgeqpf) (const int*, const int*, Complex*, const int*,
-			int*, Complex*, Complex*, double*, int*);
+  int F77_FCN (zgeqpf) (const int&, const int&, Complex*, const int&,
+			int*, Complex*, Complex*, double*, int&);
 
-  int F77_FCN (zungqr) (const int*, const int*, const int*, Complex*,
-			const int*, Complex*, Complex*, const int*, int*);
+  int F77_FCN (zungqr) (const int&, const int&, const int&, Complex*,
+			const int&, Complex*, Complex*, const int&, int&);
 }
 
 // It would be best to share some of this code with ComplexQR class...
@@ -83,7 +83,7 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
   for (int i = 0; i < n; i++)
     jpvt[i] = 0;      
 
-  F77_FCN (zgeqpf) (&m, &n, tmp_data, &m, jpvt, tau, work, rwork, &info);
+  F77_FCN (zgeqpf) (m, n, tmp_data, m, jpvt, tau, work, rwork, info);
 
 // Form Permutation matrix (if economy is requested, return the
 // indices only!)
@@ -126,8 +126,7 @@ ComplexQRP::ComplexQRP (const ComplexMatrix& a, QR::type qr_type)
   lwork = 32*m;
   work = new Complex[lwork];
 
-  F77_FCN (zungqr) (&m, &m, &min_mn, tmp_data, &m, tau, work,
-		    &lwork, &info);
+  F77_FCN (zungqr) (m, m, min_mn, tmp_data, m, tau, work, lwork, info);
 
   q = ComplexMatrix (tmp_data, m, m);
   q.resize (m, n2);

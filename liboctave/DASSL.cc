@@ -31,14 +31,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (ddassl) (int (*)(double*, double*, double*, double*,
-				int*, double*, int*),
-			const int*, double*, double*, double*,
-			double*, const int*, const double*,
-			const double*, int*, double*, const int*, 
-			int*, const int*, const double*, const int*,
-			int (*)(double*, double*, double*, double*,
-				double*, double*, int*));
+  int F77_FCN (ddassl) (int (*)(const double&, double*, double*,
+				double*, int&, double*, int*),
+			const int&, double&, double*, double*,
+			double&, const int*, const double&,
+			const double&, int&, double*, const int&, 
+			int*, const int&, const double*, const int*,
+			int (*)(const double&, double*, double*,
+				double*, const double&, double*, int*));
 }
 
 static DAEFunc::DAERHSFunc user_fun;
@@ -190,8 +190,8 @@ DAE::initialize (const Vector& state, const Vector& deriv, double time)
 }
 
 int
-ddassl_f (double *time, double *state, double *deriv, double *delta,
-	  int *ires, double *rpar, int *ipar)
+ddassl_f (const double& time, double *state, double *deriv,
+	  double *delta, int& ires, double *rpar, int *ipar)
 {
   Vector tmp_deriv (nn);
   Vector tmp_state (nn);
@@ -203,10 +203,10 @@ ddassl_f (double *time, double *state, double *deriv, double *delta,
       tmp_state.elem (i) = state [i];
     }
 
-  tmp_delta = user_fun (tmp_state, tmp_deriv, *time);
+  tmp_delta = user_fun (tmp_state, tmp_deriv, time);
 
   if (tmp_delta.length () == 0)
-    *ires = -2;
+    ires = -2;
   else
     {
       for (i = 0; i < nn; i++)
@@ -217,8 +217,8 @@ ddassl_f (double *time, double *state, double *deriv, double *delta,
 }
 
 int
-ddassl_j (double *time, double *state, double *deriv, double *pd,
-	  double *cj, double *rpar, int *ipar)
+ddassl_j (const double& time, double *state, double *deriv, double *pd,
+	  const double& cj, double *rpar, int *ipar)
 {
   Vector tmp_state (nn);
   Vector tmp_deriv (nn);
@@ -232,11 +232,11 @@ ddassl_j (double *time, double *state, double *deriv, double *pd,
   tmp_jac.dfdxdot = &tmp_dfdxdot;
   tmp_jac.dfdx    = &tmp_dfdx;
 
-  tmp_jac = user_jac (tmp_state, tmp_deriv, *time);
+  tmp_jac = user_jac (tmp_state, tmp_deriv, time);
 
   // Fix up the matrix of partial derivatives for dassl.
 
-  tmp_dfdx = tmp_dfdx + (tmp_dfdxdot * (*cj));
+  tmp_dfdx = tmp_dfdx +  cj * tmp_dfdxdot;
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)
@@ -289,8 +289,8 @@ DAE::integrate (double tout)
   else
     info[6] = 0;
 
-  double dummy;
-  int idummy;
+  double *dummy;
+  int *idummy;
 
   if (restart)
     {
@@ -300,9 +300,9 @@ DAE::integrate (double tout)
 
 // again:
 
-  F77_FCN (ddassl) (ddassl_f, &n, &t, px, pxdot, &tout, info,
-		    &rel_tol, &abs_tol, &idid, rwork, &lrw, iwork,
-		    &liw, &dummy, &idummy, ddassl_j);
+  F77_FCN (ddassl) (ddassl_f, n, t, px, pxdot, tout, info,
+		    rel_tol, abs_tol, idid, rwork, lrw, iwork,
+		    liw, dummy, idummy, ddassl_j);
 
   switch (idid)
     {

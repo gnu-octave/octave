@@ -32,23 +32,23 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgeesx) (const char*, const char*, int (*)(Complex*),
-			const char*, const int*, Complex*, const int*,
-			int*, Complex*, Complex*, const int*, double*,
-			double*, Complex*, const int*, double*, int*,
-			int*, long, long);
+  int F77_FCN (zgeesx) (const char*, const char*, int (*)(const Complex&),
+			const char*, const int&, Complex*, const int&,
+			int&, Complex*, Complex*, const int&, double&,
+			double&, Complex*, const int&, double*, int*,
+			int&, long, long);
 }
 
 static int
-complex_select_ana (Complex *a)
+complex_select_ana (const Complex& a)
 {
-  return a->real () < 0.0;
+  return a.real () < 0.0;
 }
 
 static int
-complex_select_dig (Complex *a)
+complex_select_dig (const Complex& a)
 {
-  return (abs (*a) < 1.0);
+  return (abs (a) < 1.0);
 }
 
 int
@@ -63,14 +63,14 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
       return -1;
     }
 
-  char jobvs = 'V';
-  char sort;
+  char *jobvs = "V";
+  char *sort;
   if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
-     sort = 'S';
+     sort = "S";
    else
-     sort = 'N';
+     sort = "N";
 
-  char sense = 'N';
+  char *sense = "N";
 
   int n = a_nc;
   int lwork = 8 * n;
@@ -95,21 +95,21 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 
   if (*ord == 'A' || *ord == 'a')
     {
-      F77_FCN (zgeesx) (&jobvs, &sort, complex_select_ana, &sense,
-			&n, s, &n, &sdim, w, q, &n, &rconde, &rcondv,
-			work, &lwork, rwork, bwork, &info, 1L, 1L);
+      F77_FCN (zgeesx) (jobvs, sort, complex_select_ana, sense,
+			n, s, n, sdim, w, q, n, rconde, rcondv,
+			work, lwork, rwork, bwork, info, 1L, 1L);
     }
   else if (*ord == 'D' || *ord == 'd')
     {
-      F77_FCN (zgeesx) (&jobvs, &sort, complex_select_dig, &sense,
-			&n, s, &n, &sdim, w, q, &n, &rconde, &rcondv,
-			work, &lwork, rwork, bwork, &info, 1L, 1L);
+      F77_FCN (zgeesx) (jobvs, sort, complex_select_dig, sense,
+			n, s, n, sdim, w, q, n, rconde, rcondv,
+			work, lwork, rwork, bwork, info, 1L, 1L);
     }
   else
     {
-      F77_FCN (zgeesx) (&jobvs, &sort, (void *) 0, &sense, &n, s,
-			&n, &sdim, w, q, &n, &rconde, &rcondv, work,
-			&lwork, rwork, bwork, &info, 1L, 1L);
+      F77_FCN (zgeesx) (jobvs, sort, (void *) 0, sense, n, s,
+			n, sdim, w, q, n, rconde, rcondv, work,
+			lwork, rwork, bwork, info, 1L, 1L);
     }
 
   schur_mat = ComplexMatrix (s, n, n);

@@ -31,10 +31,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgesvd) (const char*, const char*, const int*,
-			const int*, double*, const int*, double*,
-			double*, const int*, double*, const int*,
-			double*, const int*, int*, long, long);
+  int F77_FCN (dgesvd) (const char*, const char*, const int&,
+			const int&, double*, const int&, double*,
+			double*, const int&, double*, const int&,
+			double*, const int&, int&, long, long);
 }
 
 int
@@ -50,8 +50,8 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
 
-  char jobu = 'A';
-  char jobv = 'A';
+  char *jobu = "A";
+  char *jobv = "A";
 
   int ncol_u = m;
   int nrow_vt = n;
@@ -60,7 +60,7 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   if (svd_type == SVD::economy)
     {
-      jobu = jobv = 'S';
+      jobu = jobv ="S";
       ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
     }
 
@@ -73,8 +73,8 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   int lwork = tmp1 > tmp2 ? tmp1 : tmp2;
   double *work = new double[lwork];
 
-  F77_FCN (dgesvd) (&jobu, &jobv, &m, &n, tmp_data, &m, s_vec, u, &m,
-		    vt, &nrow_vt, work, &lwork, &info, 1L, 1L);
+  F77_FCN (dgesvd) (jobu, jobv, m, n, tmp_data, m, s_vec, u, m,
+		    vt, nrow_vt, work, lwork, info, 1L, 1L);
 
   left_sm = Matrix (u, m, ncol_u);
   sigma = DiagMatrix (s_vec, nrow_s, ncol_s);

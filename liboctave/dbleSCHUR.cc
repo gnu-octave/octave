@@ -33,23 +33,23 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 extern "C"
 {
   int F77_FCN (dgeesx) (const char*, const char*,
-			int (*)(double*, double*), const char*,
-			const int*, double*, const int*, int*, double*,
-			double*, double*, const int*, double*, double*, 
-			double*, const int*, int*, const int*, int*,
-			int*, long, long);
+			int (*)(const double&, const double&),
+			const char*, const int&, double*, const int&,
+			int&, double*, double*, double*, const int&,
+			double&, double&, double*, const int&, int*,
+			const int&, int*, int&, long, long);
 }
 
 static int
-select_ana (double *a, double *b)
+select_ana (const double& a, const double& b)
 {
-   return (*a < 0.0);
+   return (a < 0.0);
 }
 
 static int
-select_dig (double *a, double *b)
+select_dig (const double& a, const double& b)
 {
-  return (hypot (*a, *b) < 1.0);
+  return (hypot (a, b) < 1.0);
 }
 
 int
@@ -63,15 +63,15 @@ SCHUR::init (const Matrix& a, const char *ord)
       return -1;
     }
 
-  char jobvs = 'V';
-  char sort;
+  char *jobvs = "V";
+  char *sort;
 
   if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
-    sort = 'S';
+    sort = "S";
   else
-    sort = 'N';
+    sort = "N";
 
-  char sense = 'N';
+  char *sense = "N";
 
   int n = a_nc;
   int lwork = 8 * n;
@@ -100,22 +100,22 @@ SCHUR::init (const Matrix& a, const char *ord)
 
   if (*ord == 'A' || *ord == 'a')
     {
-      F77_FCN (dgeesx) (&jobvs, &sort, select_ana, &sense, &n, s, &n,
-			&sdim, wr, wi, q, &n, &rconde, &rcondv, work,
-			&lwork, iwork, &liwork, bwork, &info, 1L, 1L);
+      F77_FCN (dgeesx) (jobvs, sort, select_ana, sense, n, s, n,
+			sdim, wr, wi, q, n, rconde, rcondv, work,
+			lwork, iwork, liwork, bwork, info, 1L, 1L);
     }
   else if (*ord == 'D' || *ord == 'd')
     {
-      F77_FCN (dgeesx) (&jobvs, &sort, select_dig, &sense, &n, s, &n,
-			&sdim, wr, wi, q, &n, &rconde, &rcondv, work,
-			&lwork, iwork, &liwork, bwork, &info, 1L, 1L);
+      F77_FCN (dgeesx) (jobvs, sort, select_dig, sense, n, s, n,
+			sdim, wr, wi, q, n, rconde, rcondv, work,
+			lwork, iwork, liwork, bwork, info, 1L, 1L);
       
     }
   else
     {
-      F77_FCN (dgeesx) (&jobvs, &sort, (void *) 0, &sense, &n, s,
-			&n, &sdim, wr, wi, q, &n, &rconde, &rcondv,
-			work, &lwork, iwork, &liwork, bwork, &info,
+      F77_FCN (dgeesx) (jobvs, sort, (void *) 0, sense, n, s,
+			n, sdim, wr, wi, q, n, rconde, rcondv,
+			work, lwork, iwork, liwork, bwork, info,
 			1L, 1L);
     }
 

@@ -40,17 +40,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (npoptn) (char *, long);
+  int F77_FCN (npoptn) (const char*, long);
 
-  int F77_FCN (npsol) (int *, int *, int *, int *, int *, int *,
-		       double *, double *, double *,
-		       int (*)(int*, int*, int*, int*, int*, double*,
-			       double*, double*, int*),
-		       int (*)(int*, int*, double*, double*, double*, int*),
-		       int *, int *, int *, double *,
-		       double *, double *, double *, double *,
-		       double *, double *, int *, int *, double *,
-		       int *);
+  int F77_FCN (npsol) (int&, int&, int&, int&, int&, int&, double*,
+		       double*, double*,
+		       int (*)(int&, const int&, const int&, const
+			       int&, int*, double*, double*, double*,
+			       int*),
+		       int (*)(int&, const int&, double*, double*,
+			       double*, int*),
+		       int&, int&, int*, double*, double*, double*,
+		       double&, double*, double*, double*, int*, int&,
+		       double*, int&);
 }
 
 // XXX FIXME XXX -- would be nice to not have to have this global
@@ -65,24 +66,23 @@ static nonlinear_fcn user_g;
 static jacobian_fcn user_jac;
 
 int
-npsol_objfun (int *mode, int *n, double *xx, double *objf,
-	      double *objgrd, int *nstate)
+npsol_objfun (int& mode, const int& n, double *xx, double *objf,
+	      double *objgrd, int* nstate)
 {
-  int nn = *n;
-  Vector tmp_x (nn);
+  Vector tmp_x (n);
 
   npsol_objective_error = 0;
 
-  for (int i = 0; i < nn; i++)
+  for (int i = 0; i < n; i++)
     tmp_x.elem (i) = xx[i];
 
-  if (*mode == 0 || *mode == 2)
+  if (mode == 0 || mode == 2)
     {
       double value = (*user_phi) (tmp_x);
 
       if (npsol_objective_error)
 	{
-	  *mode = -1;
+	  mode = -1;
 	  return 0;
 	}
 
@@ -93,17 +93,17 @@ npsol_objfun (int *mode, int *n, double *xx, double *objf,
 #endif
     }
 
-  if ((*mode == 1 || *mode == 2) && user_grad)
+  if ((mode == 1 || mode == 2) && user_grad)
     {
-      Vector tmp_grad (nn);
+      Vector tmp_grad (n);
 
       tmp_grad = (*user_grad) (tmp_x);
 
       if (tmp_grad.length () == 0)
-	*mode = -1;
+	mode = -1;
       else
 	{
-	  for (i = 0; i < nn; i++)
+	  for (i = 0; i < n; i++)
 	    objgrd[i] = tmp_grad.elem (i);
 	}
     }
@@ -112,42 +112,42 @@ npsol_objfun (int *mode, int *n, double *xx, double *objf,
 }
 
 int
-npsol_confun (int *mode, int *ncnln, int *n, int *nrowj, int *needc,
-	      double *xx, double *cons, double *cjac, int *nstate)
+npsol_confun (int& mode, const int& ncnln, const int& n,
+	      const int& nrowj, int* needc, double *xx,
+	      double *cons, double *cjac, int* nstate) 
 {
-  int nn = *n, nncnln = *ncnln;
-  Vector tmp_x (nn);
-  Vector tmp_c (nncnln);
+  Vector tmp_x (n);
+  Vector tmp_c (ncnln);
 
-  for (int i = 0; i < nn; i++)
+  for (int i = 0; i < n; i++)
     tmp_x.elem (i) = xx[i];
 
   tmp_c = (*user_g) (tmp_x);
 
   if (tmp_c.length () == 0)
     {
-      *mode = -1;
+      mode = -1;
       return 0;
     }
   else
     {
-      for (i = 0; i < nncnln; i++)
+      for (i = 0; i < ncnln; i++)
 	cons[i] = tmp_c.elem (i);
     }
 
   if (user_jac)
     {
-      Matrix tmp_jac (nncnln, nn);
+      Matrix tmp_jac (ncnln, n);
 
       tmp_jac = (*user_jac) (tmp_x);
 
       if (tmp_jac.rows () == 0 || tmp_jac.columns () == 0)
-	*mode = -1;
+	mode = -1;
       else
 	{
-	  int ld = *nrowj;
-	  for (int j = 0; j < nn; j++)
-	    for (i = 0; i < nncnln; i++)
+	  int ld = nrowj;
+	  for (int j = 0; j < n; j++)
+	    for (i = 0; i < ncnln; i++)
 	      cjac[i+j*ld] = tmp_jac (i, j);
 	}
     }
@@ -300,10 +300,10 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   while (attempt++ < 5)
     {
 
-      F77_FCN (npsol) (&n, &nclin, &ncnln, &nrowa, &nrowj, &nrowr, pclin,
-		       clow, cup, npsol_confun, npsol_objfun, &inform,
-		       &iter, istate, c, cjac, pclambda, &objf, objgrd, r,
-		       px, iw, &leniw, w, &lenw);
+      F77_FCN (npsol) (n, nclin, ncnln, nrowa, nrowj, nrowr, pclin,
+		       clow, cup, npsol_confun, npsol_objfun, inform,
+		       iter, istate, c, cjac, pclambda, objf, objgrd, r,
+		       px, iw, leniw, w, lenw);
 
       if (inform == 6 || inform == 1)
 	continue;

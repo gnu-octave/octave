@@ -2238,6 +2238,14 @@ next_token_is_assign_op (void)
   return retval;
 }
 
+static bool
+next_token_is_index_op (void)
+{
+  int c = yyinput ();
+  yyunput (c, yytext);
+  return c == '(' || c == '{';
+}
+
 static int
 handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
@@ -2270,18 +2278,31 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
 	       || (nesting_level.is_brace ()
 		   && ! lexer_flags.looking_at_object_index)))
     {
-      int bin_op = next_token_is_bin_op (spc_gobbled);
+      bool index_op = next_token_is_index_op ();
 
-      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
+      // Don't insert comma if we are looking at something like
+      //
+      //   [x{i}{j}] or [x{i}(j)]
+      //
+      // but do if we are looking at
+      //
+      //   [x{i} {j}] or [x{i} (j)]
 
-      int sep_op = next_token_is_sep_op ();
-
-      if (! (postfix_un_op || bin_op || sep_op))
+      if (spc_gobbled || ! (bracket_type == '}' && index_op))
 	{
-	  maybe_warn_separator_insert (',');
+	  bool bin_op = next_token_is_bin_op (spc_gobbled);
 
-	  yyunput (',', yytext);
-	  return retval;
+	  bool postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
+
+	  bool sep_op = next_token_is_sep_op ();
+
+	  if (! (postfix_un_op || bin_op || sep_op))
+	    {
+	      maybe_warn_separator_insert (',');
+
+	      yyunput (',', yytext);
+	      return retval;
+	    }
 	}
     }
 

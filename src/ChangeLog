@@ -1,3 +1,14 @@
+2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (next_token_is_index_op): New function.
+	(handle_close_bracket): Use it.
+
+	* ls-hdf5.cc, ls-mat-ascii.cc, ls-mat4.cc, ls-mat5.cc,
+	ls-oct-ascii.cc, ls-oct-binary.cc, ls-utils.cc, ls-hdf5.h,
+	ls-mat-ascii.h, ls-mat4.h, ls-mat5.h, ls-oct-ascii.h,
+	ls-oct-binary.h, ls-utils.h: New files, extracted from load-save.cc.
+	* Makefile.in: Add them to the appropriate lists.
+
 2003-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pr-output.cc (octave_print_internal): Don't indent rows for

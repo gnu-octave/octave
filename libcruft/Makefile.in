@@ -105,7 +105,7 @@ clean mostlyclean::
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 distclean:: clean
-	rm -f Makefile Makerules
+	rm -f Makefile Makerules so_locations
 
 maintainer-clean:: distclean
 	rm -f tags TAGS

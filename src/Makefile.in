@@ -268,7 +268,7 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave .fname
+	rm -f Makefile octave .fname so_locations
 .PHONY: distclean
 
 maintainer-clean: distclean

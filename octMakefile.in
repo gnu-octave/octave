@@ -109,9 +109,13 @@ maintainer-clean::
 	@echo "************************************************************"
 	@echo ""
 
-install uninstall tags TAGS clean mostlyclean distclean maintainer-clean::
+install uninstall tags TAGS::
 	@$(subdir-for-command)
-.PHONY: install uninstall tags clean mostlyclean distclean maintainer-clean
+.PHONY: install uninstall tags
+
+clean mostlyclean distclean maintainer-clean::
+	$(foreach d, $(SUBDIRS) test, $(do-subdir-for-command))
+.PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
 	rm -f octMakefile octave-bug Makefile Makeconf config.cache \

@@ -658,8 +658,7 @@ tree_fvc::assign (tree_constant& t, const Octave_object& args)
 }
 
 tree_constant
-tree_fvc::lookup_map_element (SLList<char*>& list, int insert = 0,
-			      int silent = 0)
+tree_fvc::lookup_map_element (SLList<char*>& list, int insert, int silent)
 {
   static tree_constant retval;
   return retval;

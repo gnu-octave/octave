@@ -384,10 +384,9 @@ Matrix::stack (const DiagMatrix& a) const
 Matrix
 Matrix::transpose (void) const
 {
-  Matrix result;
+  Matrix result (nc, nr);
   if (len > 0)
     {
-      result.resize (nc, nr);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  result.data[nc*i+j] = data[nr*j+i];
@@ -2580,10 +2579,9 @@ ComplexMatrix::hermitian (void) const
 ComplexMatrix
 ComplexMatrix::transpose (void) const
 {
-  ComplexMatrix result;
+  ComplexMatrix result (nc, nr);
   if (len > 0)
     {
-      result.resize (nc, nr);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  result.data[nc*i+j] = data[nr*j+i];

@@ -188,56 +188,46 @@ tree_expression::is_logically_true (const char *warn_for)
 
   tree_constant t1 = eval (0);
 
-  if (error_state)
+  if (! error_state)
     {
-// XXX FIXME XXX
-//
-//      eval_error ();
-//
-      return expr_value;
-    }
-
-  if (t1.is_undefined ())
-    {
-      ::error ("%s: undefined value used in conditional expression\
- near line %d, column %d", warn_for, line (), column ());
-      return expr_value;
-    }
-
-  if (t1.rows () == 0 || t1.columns () == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag < 0)
-	warning ("%s: empty matrix used in conditional expression\
- near line %d, column %d", warn_for, line (), column ());
-      else if (flag == 0)
+      if (t1.is_defined ())
 	{
-	  ::error ("%s: empty matrix used in conditional expression\
- near line %d, column %d", warn_for, line (), column ());
-	  return expr_value;
-	}
-      t1 = 0.0;
-    }
-  else if (! t1.is_scalar_type ())
-    {
-      tree_constant t2 = t1.all ();
-      if (! error_state)
-	t1 = t2.all ();
+	  if (t1.rows () == 0 || t1.columns () == 0)
+	    {
+	      t1 = 0.0;
+	      int flag = user_pref.propagate_empty_matrices;
+	      if (flag < 0)
+		warning ("%s: empty matrix used in conditional expression");
+	      else if (flag == 0)
+		{
+		  ::error ("%s: empty matrix used in conditional expression");
+		  return expr_value;
+		}
+	    }
+	  else if (! t1.is_scalar_type ())
+	    {
+	      tree_constant t2 = t1.all ();
+	      if (! error_state)
+		t1 = t2.all ();
+	    }
 
-      if (error_state)
-	{
-	  ::error ("%s: invalid type in conditional expression near\
- line %d, column %d", warn_for, line (), column ());
-	  return expr_value;
+	  if (! error_state)
+	    {
+	      if (t1.is_real_scalar ())
+		expr_value = (int) t1.double_value ();
+	      else if (t1.is_complex_scalar ())
+		expr_value = t1.complex_value () != 0.0;
+	      else
+		panic_impossible ();
+	    }
+	  else
+	    ::error ("%s: invalid type in conditional expression");
 	}
+      else
+	::error ("%s: undefined value used in conditional expression");
     }
-
-  if (t1.is_real_scalar ())
-    expr_value = (int) t1.double_value ();
-  else if (t1.is_complex_scalar ())
-    expr_value = t1.complex_value () != 0.0;
   else
-    panic_impossible ();
+    ::error ("%s: error evaluating conditional expression");
 
   return expr_value;
 }

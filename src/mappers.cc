@@ -333,6 +333,81 @@ tanh (const Complex& x)
   return retval;
 }
 
+// XXX FIXME XXX -- perhaps this could be avoided by determining
+// whether the is* functions are actually functions or just macros.
+
+int
+xisalnum (int c)
+{
+  return isalnum (c);
+}
+
+int
+xisalpha (int c)
+{
+  return isalpha (c);
+}
+
+int
+xisascii (int c)
+{
+  return isascii (c);
+}
+
+int
+xiscntrl (int c)
+{
+  return iscntrl (c);
+}
+
+int
+xisdigit (int c)
+{
+  return isdigit (c);
+}
+
+int
+xisgraph (int c)
+{
+  return isgraph (c);
+}
+
+int
+xislower (int c)
+{
+  return islower (c);
+}
+
+int
+xisprint (int c)
+{
+  return isprint (c);
+}
+
+int
+xispunct (int c)
+{
+  return ispunct (c);
+}
+
+int
+xisspace (int c)
+{
+  return isspace (c);
+}
+
+int
+xisupper (int c)
+{
+  return isupper (c);
+}
+
+int
+xisxdigit (int c)
+{
+  return isxdigit (c);
+}
+
 void
 install_mapper_functions (void)
 {
@@ -399,46 +474,46 @@ install_mapper_functions (void)
   DEFUN_MAPPER (imag, 0, imag, imag, 0, 0.0, 0.0, 0,
     "imag (X): return imaginary part for each elements of X");
 
-  DEFUN_MAPPER (isalnum, isalnum, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isalnum, xisalnum, 0, 0, 0, 0.0, 0.0, 0,
     "isalnum (X): ");
 
-  DEFUN_MAPPER (isalpha, isalpha, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isalpha, xisalpha, 0, 0, 0, 0.0, 0.0, 0,
     "isalpha (X): ");
 
-  DEFUN_MAPPER (isascii, isascii, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isascii, xisascii, 0, 0, 0, 0.0, 0.0, 0,
     "isascii (X): ");
 
-  DEFUN_MAPPER (iscntrl, iscntrl, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (iscntrl, xiscntrl, 0, 0, 0, 0.0, 0.0, 0,
     "iscntrl (X): ");
 
-  DEFUN_MAPPER (isdigit, isdigit, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isdigit, xisdigit, 0, 0, 0, 0.0, 0.0, 0,
     "isdigit (X): ");
 
   DEFUN_MAPPER (isinf, 0, xisinf, xisinf, 0, 0.0, 0.0, 0,
     "isinf (X): return 1 for elements of X infinite");
 
-  DEFUN_MAPPER (isgraph, isgraph, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isgraph, xisgraph, 0, 0, 0, 0.0, 0.0, 0,
     "isgraph (X): ");
 
-  DEFUN_MAPPER (islower, islower, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (islower, xislower, 0, 0, 0, 0.0, 0.0, 0,
     "islower (X): ");
 
   DEFUN_MAPPER (isnan, 0, xisnan, xisnan, 0, 0.0, 0.0, 0,
     "isnan (X): return 1 where elements of X are NaNs");
 
-  DEFUN_MAPPER (isprint, isprint, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isprint, xisprint, 0, 0, 0, 0.0, 0.0, 0,
     "isprint (X): ");
 
-  DEFUN_MAPPER (ispunct, ispunct, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (ispunct, xispunct, 0, 0, 0, 0.0, 0.0, 0,
     "ispunct (X): ");
 
-  DEFUN_MAPPER (isspace, isspace, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isspace, xisspace, 0, 0, 0, 0.0, 0.0, 0,
     "isspace (X): ");
 
-  DEFUN_MAPPER (isupper, isupper, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isupper, xisupper, 0, 0, 0, 0.0, 0.0, 0,
     "isupper (X): ");
 
-  DEFUN_MAPPER (isxdigit, isxdigit, 0, 0, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (isxdigit, xisxdigit, 0, 0, 0, 0.0, 0.0, 0,
     "isxdigit (X): ");
 
   DEFUN_MAPPER (lgamma, 0, xlgamma, 0, 0, 0.0, 0.0, 0,

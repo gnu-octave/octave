@@ -48,51 +48,61 @@ function saveimage (filename, X, img_form, map)
 
   if (nargin < 2 || nargin > 4)
     usage ("saveimage (filename, matrix, [format, [colormap]])");
-  elseif (nargin == 2)
-    if (! isstr (filename))
-      error ("file name must be a string");
-    endif
-    map = colormap;
+  endif
+
+  if (nargin < 4)
+    map = colormap ();
+  endif
+  if (columns (map) != 3)
+    error ("colormap should be an N x 3 matrix");
+  endif
+
+  if (nargin < 3)
     img_form = "img";
-  elseif (nargin == 3)
-    if (! isstr (img_form))
-      error ("image format specification must be a string");
-    endif
-    map = colormap;
+  elseif (! isstr (img_form))
+    error ("image format specification must be a string");
+  elseif (! (strcmp (img_form, "img")
+             || strcmp (img_form, "ppm")
+	     || strcmp (img_form, "ps")))
+    error ("unsupported image format specification");     
   endif
 
-# XXX FIXME XXX -- we should check the remaining args.
-
-# XXX FIXME XXX -- we should use octave_tmp_file_name here.
-
-  if (strcmp (img_form, "img") == 1)
-    oct_file = filename;
-  elseif (strcmp (img_form, "ppm") == 1)
-    oct_file = sprintf ("image.%s.img", num2str (fix (rand * 10000)));
-    ppm_file = filename;
-  elseif (strcmp (img_form, "ps") == 1)
-    oct_file = sprintf ("image.%s.img", num2str (fix (rand *10000)));
-    ps_file = filename;
+  if (! is_matrix (X))
+    warning ("image variable is not a matrix");
   endif
 
-# Save image in octave image file format
+  if (! isstr (filename))
+    error ("file name must be a string");
+  endif
 
-  eval (['save -ascii ', oct_file, ' map X']);
+# If we just want Octave image format, save and return.
+
+  if (strcmp (img_form, "img"))
+    eval (strcat ("save -ascii ", filename, " map X"));
+    return;
+  endif
+
+  unwind_protect
+
+    oct_file = octave_tmp_file_name ();
+
+# Save image in Octave image file format
+
+    eval (strcat ("save -ascii ", oct_file, " map X"));
 
 # Convert to another format if requested.
 
-  if (strcmp (img_form, "ppm") == 1)
-    octtopnm = sprintf ("octtopnm %s > %s", oct_file, filename);
-    rm = sprintf("rm -f %s", oct_file);
-    shell_cmd (octtopnm);
-    shell_cmd (rm);
-  elseif (strcmp (img_form, "ps") == 1)
-    octtopnm = sprintf ("octtopnm %s", oct_file);
-    ppmtops = sprintf ("pnmtops > %s 2> /dev/null", filename);
-    octtops = [ octtopnm, " | ", ppmtops ];
-    rm = sprintf ("rm -f %s", oct_file);
-    shell_cmd (octtops);
-    shell_cmd (rm);
-  endif
+    if (strcmp (img_form, "ppm"))
+      shell_cmd (sprintf ("octtopnm %s > %s", oct_file, filename));
+    elseif (strcmp (img_form, "ps") == 1)
+      shell_cmd (sprintf ("octtopnm %s | pnmtops > %s 2> /dev/null",
+                          oct_file, filename));
+    endif
+
+  unwind_protect_cleanup
+
+    shell_cmd (sprintf ("rm -f %s", oct_file));
+
+  end_unwind_protect
 
 endfunction

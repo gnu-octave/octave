@@ -75,19 +75,23 @@ dir_path::all_directories (void)
 	{
 	  str_llist_type *elt_dirs = kpse_element_dirs (pv[i].c_str ());
 
-	  str_llist_elt_type *dir;
-	  for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
+	  if (elt_dirs)
 	    {
-	      char *elt_dir = STR_LLIST (*dir);
+	      str_llist_elt_type *dir;
 
-	      if (elt_dir)
+	      for (dir = *elt_dirs; dir; dir = STR_LLIST_NEXT (*dir))
 		{
-		  if (count == nmax)
-		    nmax *= 2;
+		  char *elt_dir = STR_LLIST (*dir);
 
-		  retval.resize (nmax);
+		  if (elt_dir)
+		    {
+		      if (count == nmax)
+			nmax *= 2;
 
-		  retval[count++] = elt_dir;
+		      retval.resize (nmax);
+
+		      retval[count++] = elt_dir;
+		    }
 		}
 	    }
 	}

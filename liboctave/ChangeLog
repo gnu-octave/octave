@@ -1,3 +1,8 @@
+2000-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.cc (dir_path::all_directories): Avoid dereferencing
+	NULL directory list returned from kpse_element_dirs
+
 1999-12-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dbleLU.cc (LU::LU): Call DGETRF directly instead of calling DGESV.

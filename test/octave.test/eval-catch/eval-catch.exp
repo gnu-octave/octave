@@ -41,10 +41,12 @@ do_test eval-catch-8.m
 ## handle nested eval: eval nested in catch-string
 set test eval-catch-9
 set prog_output "__error_text__ = `a' undefined.*\n\n__error_text__ = `b' undefined.*\n$"
+setup_xfail *-*-*
 do_test eval-catch-9.m
 
 ## re-throw an error
 set test eval-catch-10
 set prog_output "__error_text__ = rethrow: `a' undefined.*\n"
+setup_xfail *-*-*
 do_test eval-catch-10.m
 

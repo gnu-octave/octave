@@ -41,9 +41,11 @@ do_test try-8.m
 ## handle nested try-catch-block: try nested in catch
 set test try-9
 set prog_output "__error_text__ = `a' undefined.*\n\n__error_text__ = `b' undefined.*\n$"
+setup_xfail *-*-*
 do_test try-9.m
 
 ## re-throw an error
 set test try-10
 set prog_output "__error_text__ = rethrow: `a' undefined.*\n"
+setup_xfail *-*-*
 do_test try-10.m

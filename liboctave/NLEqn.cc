@@ -33,12 +33,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (hybrd1) (int (*)(), const int*, double*, double*,
-			const double*, int*, double*, const int*);
+  int F77_FCN (hybrd1) (int (*)(int*, double*, double*, int*),
+			const int*, double*, double*, const double*,
+			int*, double*, const int*);
 
-  int F77_FCN (hybrj1) (int (*)(), const int*, double*, double*,
-			double*, const int*, const double*, int*,
-			double*, const int*);
+  int F77_FCN (hybrj1) (int (*)(int*, double*, double*, double*, int*, int*),
+			const int*, double*, double*, double*, const int*,
+			const double*, int*, double*, const int*);
 }
 
 static nonlinear_fcn user_fun;
@@ -143,8 +144,13 @@ hybrd1_fcn (int *n, double *x, double *fvec, int *iflag)
 
   tmp_f = (*user_fun) (tmp_x);
 
-  for (i = 0; i < nn; i++)
-    fvec[i] = tmp_f.elem (i);
+  if (tmp_f.length () == 0)
+    *iflag = -1;
+  else
+    {
+      for (i = 0; i < nn; i++)
+	fvec[i] = tmp_f.elem (i);
+    }
 
   return 0;
 }
@@ -166,8 +172,13 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 
       tmp_f = (*user_fun) (tmp_x);
 
-      for (i = 0; i < nn; i++)
-	fvec[i] = tmp_f.elem (i);
+      if (tmp_f.length () == 0)
+	*iflag = -1;
+      else
+	{
+	  for (i = 0; i < nn; i++)
+	    fvec[i] = tmp_f.elem (i);
+	}
     }
   else
     {
@@ -175,10 +186,15 @@ hybrj1_fcn (int *n, double *x, double *fvec, double *fjac,
 
       tmp_fj = (*user_jac) (tmp_x);
 
-      int ld = *ldfjac;
-      for (int j = 0; j < nn; j++)
-	for (i = 0; i < nn; i++)
-	  fjac[j*ld+i] = tmp_fj.elem (i, j);
+      if (tmp_fj.rows () == 0 || tmp_fj.columns () == 0)
+	*iflag = -1;
+      else
+	{
+	  int ld = *ldfjac;
+	  for (int j = 0; j < nn; j++)
+	    for (i = 0; i < nn; i++)
+	      fjac[j*ld+i] = tmp_fj.elem (i, j);
+	}
     }
 
   return 0;
@@ -227,12 +243,17 @@ NLEqn::solve (int& info)
       delete [] fjac;
     }
 
+  Vector retval;
+
   info = tmp_info;
 
-  Vector retval (n);
+  if (info >= 0)
+    {
+      retval.resize (n);
 
-  for (i = 0; i < n; i++)
-    retval.elem (i) = px[i];
+      for (i = 0; i < n; i++)
+	retval.elem (i) = px[i];
+    }
 
   return retval;
 }

@@ -57,12 +57,6 @@ octave_kpse_set_progname (const char *name)
   kpse_set_progname (name);
 }
 
-void
-octave_kpse_clear_dir_cache (void)
-{
-  kpse_clear_dir_cache ();
-}
-
 char *
 octave_kpse_expand_default (const char *path, const char *dflt)
 {

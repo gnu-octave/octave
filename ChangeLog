@@ -1,3 +1,9 @@
+2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Also set SHLEXT_VER, SHLLIB_VER, SHLBIN_VER.
+	* Makeconf.in: Substitute them here.
+	Also substitute SHLLINKEXT.
+
 2002-10-25  Per Persson <persquare@mac.com>
 
 	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): Fix

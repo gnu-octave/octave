@@ -1,3 +1,10 @@
+2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-kpse.c (octave_kpse_clear_dir_cache): Delete.
+	* oct-kpse.h: Delete decl.
+	* pathsearch.cc (dir_path::init): Delete unnecessary call to
+	::octave_kpse_clear_dir_cache.
+
 2002-10-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-sstream.h: Undef HAVE_SSTREAM if using a version of g++

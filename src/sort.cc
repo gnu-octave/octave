@@ -36,6 +36,122 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // XXX FIXME XXX -- there is way too much duplicated code here given
 // that the sort algorithms are all the same, and only the type of the
 // data and the comparison changes...
+//
+// Maybe some cpp abuse will make it better.
+
+static Array<int>
+create_index_array (int n)
+{
+  Array<int> l (n+1);
+
+  l.elem (0) = 1;
+
+  for (int i = 1; i < n - 1; i++)
+    l.elem (i) = -(i+2);
+
+  l.elem (n-1) = 0;
+  l.elem (n) = 0;
+  l.elem (n+1) = 2;
+
+  return l;
+}
+
+#define SORT_INIT_PHASE(n) \
+  int s = 0; \
+  int t = n + 1; \
+  int p = l.elem (s); \
+  int q = l.elem (t); \
+  if (q == 0) \
+     break
+
+#define SORT_COMMON_CODE \
+  p = -p; \
+  q = -q; \
+  if (q == 0) \
+    { \
+      l.elem (s) = (l.elem (s) < 0) \
+	? ((p < 0) ? p : -p) \
+	  : ((p >= 0) ? p : -p); \
+      l.elem (t) = 0; \
+      break; \
+    } \
+
+#define SORT_REORDER_PHASE_ONE \
+  l.elem (s) = (l.elem (s) < 0) \
+    ? ((q < 0) ? q : -q) \
+      : ((q >= 0) ? q : -q); \
+  s = q; \
+  q = l.elem (q); \
+  if (q <= 0) \
+    { \
+      l.elem (s) = p; \
+      s = t; \
+      do \
+	{ \
+	  t = p; \
+	  p = l.elem (p); \
+	} \
+      while (p > 0); \
+      SORT_COMMON_CODE; \
+    } \
+
+#define SORT_REORDER_PHASE_TWO \
+  l.elem (s) = (l.elem (s) < 0) \
+    ? ((p < 0) ? p : -p) \
+      : ((p >= 0) ? p : -p); \
+  s = p; \
+  p = l.elem (p); \
+  if (p <= 0) \
+    { \
+      l.elem (s) = q; \
+      s = t; \
+      do \
+	{ \
+	  t = q; \
+	  q = l.elem (q); \
+	} \
+      while (q > 0); \
+      SORT_COMMON_CODE; \
+    }
+
+#define DO_SORT(n, condition) \
+  while (1) \
+    { \
+      SORT_INIT_PHASE(n); \
+      while (1) \
+	{ \
+	  if (condition) \
+	    { \
+	      SORT_REORDER_PHASE_ONE; \
+	    } \
+	  else \
+	    { \
+	      SORT_REORDER_PHASE_TWO; \
+	    } \
+	} \
+    }
+
+#define VECTOR_CREATE_RETURN_VALUES(vs, v) \
+  int k = l.elem (0); \
+  idx.elem (0) = k; \
+  vs.elem (0) = v.elem (k-1); \
+  for (int i = 1; i < n; i++) \
+    { \
+      k = l.elem ((int) idx.elem (i-1)); \
+      idx.elem (i) = k; \
+      vs.elem (i) = v.elem (k-1); \
+    }
+
+#define MATRIX_CREATE_RETURN_VALUES(ms, m) \
+  int k = l.elem (0); \
+  idx.elem (0, j) = k; \
+  ms.elem (0, j) = m.elem (k-1, j); \
+  for (int i = 1; i < nr; i++) \
+    { \
+      k = l.elem ((int) idx.elem (i-1, j)); \
+      idx.elem (i, j) = k; \
+      ms.elem (i, j) = m.elem (k-1, j); \
+    }
 
 static Octave_object
 mx_sort (const Matrix& m)
@@ -52,97 +168,11 @@ mx_sort (const Matrix& m)
     {
       for (int j = 0; j < nc; j++)
 	{
-	  Array<int> l (nr+2);
+	  Array<int> l = create_index_array (nr);
 
-	  l (0) = 1;
-	  for (int i = 1; i < nr - 1; i++)
-	    l (i) = -(i+2);
-	  l (nr-1) = 0;
-	  l (nr) = 0;
-	  l (nr+1) = 2;
+	  DO_SORT (nr, (m.elem (p-1, j) > m.elem (q-1, j)));
 
-	  while (1)
-	    {
-	      int s = 0;
-	      int t = nr + 1;
-	      int p = l (s);
-	      int q = l (t);
-
-	      if (q == 0)
-		break;
-
-	      while (1)
-		{
-		  if (m (p-1, j) > m (q-1, j))
-		    {
-		      l (s) = (l (s) < 0)
-			? ((q < 0) ? q : -q)
-			  : ((q >= 0) ? q : -q);
-		      s = q;
-		      q = l (q);
-		      if (q <= 0)
-			{
-			  l (s) = p;
-			  s = t;
-			  do
-			    {
-			      t = p;
-			      p = l (p);
-			    }
-			  while (p > 0);
-			  p = -p;
-			  q = -q;
-			  if (q == 0)
-			    {
-			      l (s) = (l (s) < 0)
-				? ((p < 0) ? p : -p)
-				  : ((p >= 0) ? p : -p);
-			      l (t) = 0;
-			      break;
-			    }
-			}
-		    }
-		  else
-		    {
-		      l (s) = (l (s) < 0)
-			? ((p < 0) ? p : -p)
-			  : ((p >= 0) ? p : -p);
-		      s = p;
-		      p = l (p);
-		      if (p <= 0)
-			{
-			  l (s) = q;
-			  s = t;
-			  do
-			    {
-			      t = q;
-			      q = l (q);
-			    }
-			  while (q > 0);
-			  p = -p;
-			  q = -q;
-			  if (q == 0)
-			    {
-			      l (s) = (l (s) < 0)
-				? ((p < 0) ? p : -p)
-				  : ((p >= 0) ? p : -p);
-			      l (t) = 0;
-			      break;
-			    }		      
-			}
-		    }
-		}
-	    }
-
-	  int k = l (0);
-	  idx (0, j) = k;
-	  ms (0, j) = m (k-1, j);
-	  for (int i = 1; i < nr; i++)
-	    {
-	      k = l ((int) idx (i-1, j));
-	      idx (i, j) = k;
-	      ms (i, j) = m (k-1, j);
-	    }
+	  MATRIX_CREATE_RETURN_VALUES (ms, m);
 	}
     }
 
@@ -164,97 +194,11 @@ mx_sort (const RowVector& v)
 
   if (n > 0)
     {
-      Array<int> l (n+2);
+      Array<int> l = create_index_array (n);
 
-      l (0) = 1;
-      for (int i = 1; i < n - 1; i++)
-	l (i) = -(i+2);
-      l (n-1) = 0;
-      l (n) = 0;
-      l (n+1) = 2;
+      DO_SORT (n, (v.elem (p-1) > v.elem (q-1)));
 
-      while (1)
-	{
-	  int s = 0;
-	  int t = n + 1;
-	  int p = l (s);
-	  int q = l (t);
-
-	  if (q == 0)
-	    break;
-
-	  while (1)
-	    {
-	      if (v (p-1) > v (q-1))
-		{
-		  l (s) = (l (s) < 0)
-		    ? ((q < 0) ? q : -q)
-		      : ((q >= 0) ? q : -q);
-		  s = q;
-		  q = l (q);
-		  if (q <= 0)
-		    {
-		      l (s) = p;
-		      s = t;
-		      do
-			{
-			  t = p;
-			  p = l (p);
-			}
-		      while (p > 0);
-		      p = -p;
-		      q = -q;
-		      if (q == 0)
-			{
-			  l (s) = (l (s) < 0)
-			    ? ((p < 0) ? p : -p)
-			      : ((p >= 0) ? p : -p);
-			  l (t) = 0;
-			  break;
-			}
-		    }
-		}
-	      else
-		{
-		  l (s) = (l (s) < 0)
-		    ? ((p < 0) ? p : -p)
-		      : ((p >= 0) ? p : -p);
-		  s = p;
-		  p = l (p);
-		  if (p <= 0)
-		    {
-		      l (s) = q;
-		      s = t;
-		      do
-			{
-			  t = q;
-			  q = l (q);
-			}
-		      while (q > 0);
-		      p = -p;
-		      q = -q;
-		      if (q == 0)
-			{
-			  l (s) = (l (s) < 0)
-			    ? ((p < 0) ? p : -p)
-			      : ((p >= 0) ? p : -p);
-			  l (t) = 0;
-			  break;
-			}		      
-		    }
-		}
-	    }
-	}
-
-      int k = l (0);
-      idx (0) = k;
-      vs (0) = v (k-1);
-      for (int i = 1; i < n; i++)
-	{
-	  k = l ((int) idx (i-1));
-	  idx (i) = k;
-	  vs (i) = v (k-1);
-	}
+      VECTOR_CREATE_RETURN_VALUES (vs, v);
     }
 
   retval (1) = tree_constant (idx, 0);
@@ -278,107 +222,21 @@ mx_sort (const ComplexMatrix& cm)
     {
       for (int j = 0; j < nc; j++)
 	{
-	  Array<int> l (nr+2);
-
-	  l (0) = 1;
-	  for (int i = 1; i < nr - 1; i++)
-	    l (i) = -(i+2);
-	  l (nr-1) = 0;
-	  l (nr) = 0;
-	  l (nr+1) = 2;
+	  Array<int> l = create_index_array (nr);
 
 	  int all_elts_real = 1;
 	  for (int i = 0; i < nr; i++)
-	    if (imag (cm (i, j)) != 0.0)
+	    if (imag (cm.elem (i, j)) != 0.0)
 	      {
 		all_elts_real = 0;
 		break;
 	      }
 
-	  while (1)
-	    {
-	      int s = 0;
-	      int t = nr + 1;
-	      int p = l (s);
-	      int q = l (t);
+	  DO_SORT (nr, ((all_elts_real
+			 && real (cm.elem (p-1, j)) > real (cm.elem (q-1, j)))
+			|| abs (cm.elem (p-1, j)) > abs (cm.elem (q-1, j))));
 
-	      if (q == 0)
-		break;
-
-	      while (1)
-		{
-		  if ((all_elts_real
-		       && real (cm (p-1, j)) > real (cm (q-1, j)))
-		      || abs (cm (p-1, j)) > abs (cm (q-1, j)))
-		    {
-		      l (s) = (l (s) < 0)
-			? ((q < 0) ? q : -q)
-			  : ((q >= 0) ? q : -q);
-		      s = q;
-		      q = l (q);
-		      if (q <= 0)
-			{
-			  l (s) = p;
-			  s = t;
-			  do
-			    {
-			      t = p;
-			      p = l (p);
-			    }
-			  while (p > 0);
-			  p = -p;
-			  q = -q;
-			  if (q == 0)
-			    {
-			      l (s) = (l (s) < 0)
-				? ((p < 0) ? p : -p)
-				  : ((p >= 0) ? p : -p);
-			      l (t) = 0;
-			      break;
-			    }
-			}
-		    }
-		  else
-		    {
-		      l (s) = (l (s) < 0)
-			? ((p < 0) ? p : -p)
-			  : ((p >= 0) ? p : -p);
-		      s = p;
-		      p = l (p);
-		      if (p <= 0)
-			{
-			  l (s) = q;
-			  s = t;
-			  do
-			    {
-			      t = q;
-			      q = l (q);
-			    }
-			  while (q > 0);
-			  p = -p;
-			  q = -q;
-			  if (q == 0)
-			    {
-			      l (s) = (l (s) < 0)
-				? ((p < 0) ? p : -p)
-				  : ((p >= 0) ? p : -p);
-			      l (t) = 0;
-			      break;
-			    }		      
-			}
-		    }
-		}
-	    }
-
-	  int k = l (0);
-	  idx (0, j) = k;
-	  cms (0, j) = cm (k-1, j);
-	  for (int i = 1; i < nr; i++)
-	    {
-	      k = l ((int) idx (i-1, j));
-	      idx (i, j) = k;
-	      cms (i, j) = cm (k-1, j);
-	    }
+	  MATRIX_CREATE_RETURN_VALUES (cms, cm);
 	}
     }
 
@@ -400,106 +258,21 @@ mx_sort (ComplexRowVector& cv)
 
   if (n > 0)
     {
-      Array<int> l (n+2);
-
-      l (0) = 1;
-      for (int i = 1; i < n - 1; i++)
-	l (i) = -(i+2);
-      l (n-1) = 0;
-      l (n) = 0;
-      l (n+1) = 2;
+      Array<int> l = create_index_array (n);
 
       int all_elts_real = 1;
       for (int i = 0; i < n; i++)
-	if (imag (cv (i)) != 0.0)
+	if (imag (cv.elem (i)) != 0.0)
 	  {
 	    all_elts_real = 0;
 	    break;
 	  }
 
-      while (1)
-	{
-	  int s = 0;
-	  int t = n + 1;
-	  int p = l (s);
-	  int q = l (t);
+      DO_SORT (n, ((all_elts_real
+		    && real (cv.elem (p-1)) > real (cv.elem (q-1)))
+		   || abs (cv.elem (p-1)) > abs (cv.elem (q-1))));
 
-	  if (q == 0)
-	    break;
-
-	  while (1)
-	    {
-	      if ((all_elts_real && real (cv (p-1)) > real (cv (q-1)))
-		  || abs (cv (p-1)) > abs (cv (q-1)))
-		{
-		  l (s) = (l (s) < 0)
-		    ? ((q < 0) ? q : -q)
-		      : ((q >= 0) ? q : -q);
-		  s = q;
-		  q = l (q);
-		  if (q <= 0)
-		    {
-		      l (s) = p;
-		      s = t;
-		      do
-			{
-			  t = p;
-			  p = l (p);
-			}
-		      while (p > 0);
-		      p = -p;
-		      q = -q;
-		      if (q == 0)
-			{
-			  l (s) = (l (s) < 0)
-			    ? ((p < 0) ? p : -p)
-			      : ((p >= 0) ? p : -p);
-			  l (t) = 0;
-			  break;
-			}
-		    }
-		}
-	      else
-		{
-		  l (s) = (l (s) < 0)
-		    ? ((p < 0) ? p : -p)
-		      : ((p >= 0) ? p : -p);
-		  s = p;
-		  p = l (p);
-		  if (p <= 0)
-		    {
-		      l (s) = q;
-		      s = t;
-		      do
-			{
-			  t = q;
-			  q = l (q);
-			}
-		      while (q > 0);
-		      p = -p;
-		      q = -q;
-		      if (q == 0)
-			{
-			  l (s) = (l (s) < 0)
-			    ? ((p < 0) ? p : -p)
-			      : ((p >= 0) ? p : -p);
-			  l (t) = 0;
-			  break;
-			}		      
-		    }
-		}
-	    }
-	}
-
-      int k = l (0);
-      idx (0) = k;
-      cvs (0) = cv (k-1);
-      for (int i = 1; i < n; i++)
-	{
-	  k = l ((int) idx (i-1));
-	  idx (i) = k;
-	  cvs (i) = cv (k-1);
-	}
+      VECTOR_CREATE_RETURN_VALUES (cvs, cv);
     }
 
   retval (1) = tree_constant (idx, 0);

@@ -919,7 +919,9 @@ plot_style_token (char *s)
 }
 
 // Check to see if a character string matches any one of the plot
-// option keywords. 
+// option keywords.  Don't match abbreviations for clear, since that's
+// not a gnuplot keyword (users will probably only expect to be able
+// to abbreviate actual gnuplot keywords).
 
 static int
 is_plot_keyword (char *s)
@@ -931,18 +933,15 @@ is_plot_keyword (char *s)
   else if (almost_match ("using", s))
     {
       in_plot_using = 1;
-      past_plot_range = 1;
       return USING;
     }
   else if (almost_match ("with", s))
     {
       in_plot_style = 1;
-      past_plot_range = 1;
       return WITH;
     }
-  else if (almost_match ("clear", s))
+  else if (strcmp ("clear", s) == 0)
     {
-      past_plot_range = 1;
       return CLEAR;
     }
   else
@@ -1425,17 +1424,21 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
 // See if we have a plot keyword (title, using, with, or clear).
 
-  int plot_option_kw = is_plot_keyword (tok);
-  if (plotting && cant_be_identifier && plot_option_kw)
-    TOK_RETURN (plot_option_kw);
-
+  if (plotting)
+    {
 // Yes, we really do need both of these plot_range variables.  One
 // is used to mark when we are past all possiblity of a plot range,
 // the other is used to mark when we are actually between the square
 // brackets that surround the range.
 
-  if (plotting && ! in_plot_range)
-    past_plot_range = 1;
+      if (! in_plot_range)
+	past_plot_range = 1;
+
+      int plot_option_kw = is_plot_keyword (tok);
+
+      if (cant_be_identifier && plot_option_kw)
+	TOK_RETURN (plot_option_kw);
+    }
 
 // If we are looking at a text style function, set up to gobble its
 // arguments.  These are also reserved words, but only because it

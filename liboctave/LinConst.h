@@ -32,7 +32,7 @@ class ostream;
 
 class ColumnVector;
 
-#include <float.h>
+#include <cfloat>
 
 #include "dMatrix.h"
 #include "Bounds.h"

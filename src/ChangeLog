@@ -1,3 +1,14 @@
+2004-08-31  David Bateman  <dbateman@free.fr>
+
+	* data.cc (Fzeros, Fones, Feye): Update help text for optional
+	class argument.
+	(static octave_value identity_matrix (int, int, const std::string&)):
+	New function to create identity matrices with an arbitrary type.
+	(Feye): Call new version of identity matrix function, even for scalars.
+	(static octave_value fill_matrix (const octave_value_list&, double,
+	const char *)): Update to allow arbitrary classes of matrices to be
+	created.
+
 2004-08-31  John W. Eaton  <jwe@octave.org>
 
 	* ls-mat5.cc (read_int): New function.

@@ -31,7 +31,10 @@
 ## automatically by setting the built-in variable @code{automatic_replot}
 ## to a nonzero value.
 ##
-## Without any arguments, @code{axis} turns autoscaling on.
+## Without any arguments, @code{axis} turns autoscaling on.  
+##
+## With one output argument, @code{x=axis} returns the current axes 
+## (this is not yet implemented for automatic axes).
 ##
 ## The vector argument specifying limits is optional, and additional
 ## string arguments may be used to specify various axis properties.  For
@@ -110,6 +113,7 @@
 ## @item "xy" 
 ## Restore y-axis, so higher values are nearer the top. 
 ## @end table
+## 
 ## @end deftypefn
 
 ## Author: jwe
@@ -129,8 +133,11 @@ function curr_axis = axis (ax, varargin)
   ## limits.
 
   if (nargin == 0)
-    gset autoscale;
-    curr_axis = __current_axis__;
+    if (nargout == 0)
+      gset autoscale;
+    else
+      curr_axis = __current_axis__;
+    endif
 
   elseif (isstr (ax))
     ax = tolower (ax);

@@ -55,13 +55,17 @@ function x = repmat (a, m, n)
     if (isstr (a))
       x = setstr (toascii (a) * ones (idx));
     else
-      x = a * ones(idx);
+      x = a * ones(idx, class(a));
     endif
   elseif (ndims (a) == 2 && length (idx) < 3)
     if (isstr (a))
       x = setstr (kron (ones (idx), toascii (a)));
-    else
+    elseif (strcmp (class(a), "double")) 
       x = kron (ones (idx), a);
+    else
+      aidx = size(a);
+      x = a (kron (ones (1, idx(1)), 1:aidx(1)),  
+	     kron (ones (1, idx(2)), 1:aidx(2)));
     endif
   else
     aidx = size(a);
@@ -70,7 +74,7 @@ function x = repmat (a, m, n)
     elseif (length(aidx) < length(idx))
       aidx = [aidx, ones(1,length(idx)-length(aidx))];
     endif
-    cidx = cell ();
+    cidx = cell (1, length (aidx));
     for i=1:length(aidx)
       cidx{i} = kron (ones (1, idx(i)), 1:aidx(i));
     endfor

@@ -1208,8 +1208,9 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   int nargin = args.length ();
 
+  std::string nm = "double";
+
   int ndim = 0;
-  int type = 0;
 
   dim_vector dims;
   
@@ -1217,15 +1218,13 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
+      nm = args(nargin-1).string_value();
       nargin--;
 
-      // XXX FIXME XXX -- allow type of the resulting matrix to be
-      // specified, e.g.
-      //
-      //   zeros(n1, n2, ..., 'real')
-      //   zeros(n1, n2, ..., 'complex')
-      //
-      // type = get_type (args(nargin).string_value ());
+      if (nm != "int8" && nm != "int16" && nm != "int32" && nm != "int64" &&
+	  nm != "uint8" && nm != "uint16" && nm != "uint32" && nm != "uint64"
+	  && nm != "double")
+	error ("%s: Unrecognized or illegal classname", fcn);
     }
 
   // determine matrix dimension
@@ -1234,7 +1233,6 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
     {
     case 0:
       ndim = 0;
-      type = 0;
       break;
 
     case 1:
@@ -1277,26 +1275,62 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
       if (! error_state)
 	{
-	  // Construct either scalar, matrix or N-d array.
 
-	  switch (ndim)
+#define INT_FILL_MATRIX(TYPE) \
+	  { \
+	    switch (ndim)	\
+	      { \
+	      case 0: \
+	        retval = octave_ ## TYPE (val); \
+	        break; \
+		  \
+	      default: \
+	        retval = TYPE ## NDArray (dims, val); \
+	        break; \
+	      } \
+	  }
+
+	  if (nm == "int8")
+	    INT_FILL_MATRIX (int8)
+	  else if (nm == "int16")
+	    INT_FILL_MATRIX (int16)
+	  else if (nm == "int32")
+	    INT_FILL_MATRIX (int32)
+	  else if (nm == "int64")
+	    INT_FILL_MATRIX (int64)
+	  else if (nm == "uint8")
+	    INT_FILL_MATRIX (uint8)
+	  else if (nm == "uint16")
+	    INT_FILL_MATRIX (uint16)
+	  else if (nm == "uint32")
+	    INT_FILL_MATRIX (uint32)
+	  else if (nm == "uint64")
+	    INT_FILL_MATRIX (uint64)
+	  else
 	    {
-	    case 0:
-	      retval = val;
-	      break;
+	      // Construct either scalar, matrix or N-d array.
+	      switch (ndim)
+		{
+		case 0:
+		  retval = val;
+		  break;
 
-	    case 1:
-	      retval = Matrix (dims(0), dims(0), val);
-	      break;
+		case 1:
+		  retval = Matrix (dims(0), dims(0), val);
+		  break;
 
-	    case 2:
-	      retval = Matrix (dims(0), dims(1), val);
-	      break;
+		case 2:
+		  retval = Matrix (dims(0), dims(1), val);
+		  break;
 
-	    default:
-	      retval = NDArray (dims, val);
-	      break;
+		default:
+		  retval = NDArray (dims, val);
+		  break;
+		}
 	    }
+
+#undef INT_FILL_MATRIX
+
 	}
     }
 
@@ -1308,6 +1342,7 @@ DEFUN (ones, args, ,
 @deftypefn {Built-in Function} {} ones (@var{x})\n\
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k},...)\n\
+@deftypefnx {Built-in Function} {} ones (..., @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 1.\n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
 \n\
@@ -1316,6 +1351,13 @@ use an expression like\n\
 \n\
 @example\n\
 val_matrix = val * ones (n, m)\n\
+@end example\n\
+\n\
+The optional argument @var{class}, allows @code{ones} to return an array of\n\
+the specified type, like\n\
+\n\
+@example\n\
+val = ones (n,m, \"uint8\")\n\
 @end example\n\
 @end deftypefn")
 {
@@ -1327,17 +1369,92 @@ DEFUN (zeros, args, ,
 @deftypefn {Built-in Function} {} zeros (@var{x})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k},...)\n\
+@deftypefnx {Built-in Function} {} zeros (..., @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
 The arguments are handled the same as the arguments for @code{eye}.\n\
+\n\
+The optional argument @var{class}, allows @code{zeros} to return an array of\n\
+the specified type, like\n\
+\n\
+@example\n\
+val = zeros (n,m, \"uint8\")\n\
+@end example\n\
 @end deftypefn")
 {
   return fill_matrix (args, 0.0, "zeros");
+}
+
+static octave_value
+identity_matrix (int nr, int nc, const std::string& nm)
+{
+  octave_value retval;
+
+#define INT_EYE_MATRIX(TYPE) \
+  { \
+    if (nr == 1 && nc == 1) \
+      retval = octave_ ## TYPE (1); \
+    else \
+      { \
+	dim_vector dims (nr, nc); \
+	TYPE ## NDArray m (dims, octave_ ## TYPE (0));\
+	if (nr > 0 && nc > 0) \
+	  { \
+	    int n = std::min (nr, nc); \
+		\
+	    for (int i = 0; i < n; i++)	\
+	      m (i, i) = octave_ ## TYPE (1); \
+	  } \
+	retval = m; \
+      } \
+  }
+
+  if (nm == "int8")
+    INT_EYE_MATRIX (int8)
+  else if (nm == "int16")
+    INT_EYE_MATRIX (int16)
+  else if (nm == "int32")
+    INT_EYE_MATRIX (int32)
+  else if (nm == "int64")
+    INT_EYE_MATRIX (int64)
+  else if (nm == "uint8")
+    INT_EYE_MATRIX (uint8)
+  else if (nm == "uint16")
+    INT_EYE_MATRIX (uint16)
+  else if (nm == "uint32")
+    INT_EYE_MATRIX (uint32)
+  else if (nm == "uint64")
+    INT_EYE_MATRIX (uint64)
+  else
+    {
+      if (nr == 1 && nc == 1)
+	retval = 1.0;
+      else
+	{
+
+	  Matrix m (nr, nc, 0.0);
+      
+	  if (nr > 0 && nc > 0)
+	    {
+	      int n = std::min (nr, nc);
+
+	      for (int i = 0; i < n; i++)
+		m (i, i) = 1.0;
+	    }
+
+	  retval = m;
+	}
+    }
+
+#undef INT_EYE_MATRIX
+
+  return retval;
 }
 
 DEFUN (eye, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eye (@var{x})\n\
 @deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})\n\
+@deftypefnx {Built-in Function} {} eye (..., @var{class})\n\
 Return an identity matrix.  If invoked with a single scalar argument,\n\
 @code{eye} returns a square matrix with the dimension specified.  If you\n\
 supply two scalar arguments, @code{eye} takes them to be the number of\n\
@@ -1366,18 +1483,40 @@ eye (size ([1, 2; 3, 4])\n\
 @end group\n\
 @end example\n\
 \n\
+The optional argument @var{class}, allows @code{eye} to return an array of\n\
+the specified type, like\n\
+\n\
+@example\n\
+val = zeros (n,m, \"uint8\")\n\
+@end example\n\
+\n\
 For compatibility with @sc{Matlab}, calling @code{eye} with no arguments\n\
 is equivalent to calling it with an argument of 1.\n\
 @end deftypefn")
 {
   octave_value retval;
 
+  std::string nm = "double";
+
   int nargin = args.length ();
+
+  // Check for type information.
+
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      nm = args(nargin-1).string_value();
+      nargin--;
+
+      if (nm != "int8" && nm != "int16" && nm != "int32" && nm != "int64" &&
+	  nm != "uint8" && nm != "uint16" && nm != "uint32" && nm != "uint64"
+	  && nm != "double")
+	error ("eye: Unrecognized or illegal classname");
+    }
 
   switch (nargin)
     {
     case 0:
-      retval = 1.0;
+      retval = identity_matrix (1, 1, nm);
       break;
 
     case 1:
@@ -1386,7 +1525,7 @@ is equivalent to calling it with an argument of 1.\n\
 	get_dimensions (args(0), "eye", nr, nc);
 
 	if (! error_state)
-	  retval = identity_matrix (nr, nc);
+	  retval = identity_matrix (nr, nc, nm);
       }
       break;
 
@@ -1396,7 +1535,7 @@ is equivalent to calling it with an argument of 1.\n\
 	get_dimensions (args(0), args(1), "eye", nr, nc);
 
 	if (! error_state)
-	  retval = identity_matrix (nr, nc);
+	  retval = identity_matrix (nr, nc, nm);
       }
       break;
 

@@ -1047,28 +1047,32 @@ ComplexMatrix
 Matrix::lssolve (const ComplexMatrix& b) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b);
+  int info;
+  int rank;
+  return tmp.lssolve (b, info, rank);
 }
 
 ComplexMatrix
 Matrix::lssolve (const ComplexMatrix& b, int& info) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b);
+  int rank;
+  return tmp.lssolve (b, info, rank);
 }
 
 ComplexMatrix
 Matrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b);
+  return tmp.lssolve (b, info, rank);
 }
 
 ColumnVector
 Matrix::lssolve (const ColumnVector& b) const
 {
   int info;
-  int rank; return lssolve (b, info, rank);
+  int rank;
+  return lssolve (b, info, rank);
 }
 
 ColumnVector

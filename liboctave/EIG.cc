@@ -95,7 +95,7 @@ EIG::init (const Matrix& a, bool calc_ev)
   Array<double> wi (n);
   double *pwi = wi.fortran_vec ();
 
-  int nvr = calc_ev ? n : 0;
+  volatile int nvr = calc_ev ? n : 0;
   Matrix vr (nvr, nvr);
   double *pvr = vr.fortran_vec ();
 

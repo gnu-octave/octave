@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_strstream::seek (long offset, int origin)
+octave_base_strstream::seek (long, int)
 {
   error ("fseek: invalid operation");
   return -1;

@@ -694,8 +694,6 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 
   int result = -1;
 
-  bool return_char_count = true;
-
   int nargin = args.length ();
 
   if (nargin > 1 || (nargin > 0 && args(0).is_string ()))

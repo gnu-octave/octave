@@ -23,6 +23,7 @@ like built-in functions.
 * Function Files::              
 * Script Files::                
 * Dynamically Linked Functions::  
+* Function Handles and Inline::
 * Organization of Functions::   
 @end menu
 
@@ -323,12 +324,12 @@ along with a warning if the value of the built-in variable
 
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
-@cindex Variable-length argument lists
+@cindex variable-length argument lists
 @cindex @code{...}
 
 @node Variable-length Return Lists
 @section Variable-length Return Lists
-@cindex Variable-length return lists
+@cindex variable-length return lists
 @cindex @code{...}
 
 @node Returning From a Function
@@ -772,6 +773,39 @@ linking.  To define your own dynamically linked functions you should use
 There is currently no detailed description of all the functions that you
 can call in a built-in function.  For the time being, you will have to
 read the source code for Octave.
+
+@node Function Handles and Inline
+@section Function Handles and Inline
+@cindex handle, function handles
+@cindex inline, inline functions
+
+This is a place holder for the description of function handles and
+inline functions.
+
+@menu
+* Function Handles::
+* Inline Functions::
+@end menu
+
+@node Function Handles
+@subsection Function Handles
+
+@DOCSTRING(functions)
+
+@DOCSTRING(func2str)
+
+@DOCSTRING(str2func)
+
+@node Inline Functions
+@subsection Inline Functions
+
+@DOCSTRING(inline)
+
+@DOCSTRING(argnames)
+
+@DOCSTRING(formula)
+
+@DOCSTRING(vectorize)
 
 @node Organization of Functions
 @section Organization of Functions Distributed with Octave

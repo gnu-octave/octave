@@ -1,3 +1,29 @@
+2004-08-05  David Bateman  <dbateman@free.fr>
+
+	* ov.cc (octave_value::fcn_inline_value): New virtual function.
+	* ov.h (octave_value::fcn_inline_value): Provide decl.
+	* ov-base.cc (octave_base_value::fcn_inline_value): New function
+	* ov-base.h (octave_base_value::fcn_inline_value): Provide decl.
+	* ov-fcn-handle.cc (octave_fcn_handle::octave_fcn_handle 
+	(const std::string&, const string_vector&, const std::string&),
+	octave_fcn_handle::convert_to_str_internal, Finline, Fargnames,
+	Fformula, Fvectorize): Delete.
+	(octave_fcn_handle::print_raw): Remove inline case.
+	* ov-fcn-handle.h (octave_fcn_handle::fcn_type,
+	octave_fcn_handle::octave_fcn_handle (const std::string&, const
+	string_vector&, const std::string&),
+	octave_fcn_handle::inline_fcn_name,
+	octave_fcn_handle::inline_fcn_text,
+	octave_fcn_handle::inline_fcn_arg_names,
+	octave_fcn_handle::is_inline,
+	octave_fcn_handle::convert_to_str_internal,
+	octave_fcn_handle::typ, octave_fcn_handle::iftext,
+	octave_fcn_handle::ifargs): Delete constructors,
+	functions, and data members (moved to ov-fcn-inline.h).
+	* Makefile.in: Include ov-fcn-inline.h and ov-fcn-inline.cc where
+	appropriate.
+	* ov-fcn-inline.h, ov-fcn-inline.cc: New class.
+
 2004-08-05  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-int.cc (octave_base_int_matrix<T>::save_ascii,

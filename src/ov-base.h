@@ -102,7 +102,7 @@ public:
 
   octave_value permute (const Array<int>& vec, bool = false) const;
 
-  octave_value resize (const dim_vector& dv) const;
+  octave_value resize (const dim_vector&) const;
 
   bool is_defined (void) const { return false; }
 
@@ -273,6 +273,8 @@ public:
   octave_user_function *user_function_value (bool silent = false);
 
   octave_fcn_handle *fcn_handle_value (bool silent = false);
+
+  octave_fcn_inline *fcn_inline_value (bool silent = false);
 
   octave_value_list list_value (void) const;
 

@@ -1,5 +1,7 @@
 2004-08-05  John W. Eaton  <jwe@octave.org>
 
+	* EIG.cc (EIG::init): Add volatile qualifier to nvr decl.
+
 	* intNDArray.cc (intNDArray<T>::operator !, intNDArray<T>::all,
 	intNDArray<T>::any): Sprinkle with this-> as needed.
 	* mx-inlines.cc (MX_ND_REDUCTION, MX_ND_CUMULATIVE_OP): Likewise.

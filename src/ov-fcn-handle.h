@@ -36,7 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base-mat.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
-#include "symtab.h"
 
 // Function handles.
 
@@ -44,16 +43,11 @@ class
 octave_fcn_handle : public octave_base_value
 {
 public:
-  enum fcn_type { fcn_handle = 1, fcn_inline = 2 };
-
   octave_fcn_handle (void)
-    : typ (fcn_handle), fcn (), nm (), iftext (), ifargs () { }
+    : fcn (), nm () { }
 
   octave_fcn_handle (const octave_value& f,  const std::string& n)
-    : typ (fcn_handle), fcn (f), nm (n), iftext (), ifargs () { }
-
-  octave_fcn_handle (const std::string& f, const string_vector& a, 
-		     const std::string& n = std::string ());
+    : fcn (f), nm (n) { }
 
   ~octave_fcn_handle (void) { }
 
@@ -75,17 +69,9 @@ public:
   octave_function *function_value (bool = false)
     { return fcn.function_value (); }
 
-  std::string inline_fcn_name (void) const { return nm; }
-
-  std::string inline_fcn_text (void) const { return iftext; }
-
-  string_vector inline_fcn_arg_names (void) const { return ifargs; }
-
-  bool is_inline (void) const { return (typ == fcn_inline); }
-
   octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
 
-  octave_value convert_to_str_internal (bool, bool) const;
+  std::string fcn_name (void) const { return nm; }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -103,20 +89,13 @@ private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 
-  // The type of function handle 
-  fcn_type typ;
+protected:
 
   // The function we are handling.
   octave_value fcn;
 
   // The name of the handle, including the "@".
   std::string nm;
-
-  // The expression of an inline function
-  std::string iftext;
-
-  // The args of an inline function
-  string_vector ifargs;
 };
 
 extern octave_value make_fcn_handle (const std::string& nm);

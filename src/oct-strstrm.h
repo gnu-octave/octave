@@ -41,7 +41,7 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (long offset, int origin);
+  int seek (long, int);
 
   // Return current stream position.
 

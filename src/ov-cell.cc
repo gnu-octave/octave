@@ -718,7 +718,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   OCTAVE_LOCAL_BUFFER (int, hdims, rank);
 
   // Octave uses column-major, while HDF5 uses row-major ordering
-  for (int i = 0; i < rank; i++)
+  for (hsize_t i = 0; i < rank; i++)
     hdims[i] = dv(rank-i-1);
 
   size_hid = H5Dcreate (data_hid, "dims", H5T_NATIVE_INT, space_hid, 

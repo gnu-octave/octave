@@ -52,6 +52,7 @@ class octave_streamoff;
 class octave_function;
 class octave_user_function;
 class octave_fcn_handle;
+class octave_fcn_inline;
 class octave_value_list;
 class octave_lvalue;
 
@@ -636,6 +637,8 @@ public:
   virtual octave_user_function *user_function_value (bool silent = false);
 
   virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
+
+  virtual octave_fcn_inline *fcn_inline_value (bool silent = false);
 
   virtual octave_value_list list_value (void) const;
 

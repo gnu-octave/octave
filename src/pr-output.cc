@@ -2121,8 +2121,7 @@ PRINT_CONV (octave_uint8, octave_uint16);
 template <class T>
 void
 octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
-		       bool pr_as_read_syntax = false,
-		       int extra_indent = 0)
+		       bool pr_as_read_syntax, int)
 {
   // XXX FIXME XXX -- this mostly duplicates the code in the
   // PRINT_ND_ARRAY macro.
@@ -2247,8 +2246,7 @@ octave_print_internal (std::ostream&, const intNDArray<octave_uint64>&,
 
 template <class T>
 void
-octave_print_internal (std::ostream& os, const octave_int<T>& val,
-		       bool pr_as_read_syntax)
+octave_print_internal (std::ostream& os, const octave_int<T>& val, bool)
 {
   // XXX FIXME XXX -- we need to handle various formats here...
 

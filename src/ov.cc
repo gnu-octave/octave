@@ -1083,6 +1083,12 @@ octave_value::fcn_handle_value (bool silent)
   return rep->fcn_handle_value (silent);
 }
 
+octave_fcn_inline *
+octave_value::fcn_inline_value (bool silent)
+{
+  return rep->fcn_inline_value (silent);
+}
+
 octave_value_list
 octave_value::list_value (void) const
 {

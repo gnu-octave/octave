@@ -191,7 +191,7 @@ octave_base_value::permute (const Array<int>&, bool) const
 }
 
 octave_value
-octave_base_value::resize (const dim_vector& dv) const
+octave_base_value::resize (const dim_vector&) const
 {
   gripe_wrong_type_arg ("octave_base_value::resize ()", type_name ());
   return octave_value ();
@@ -672,6 +672,17 @@ octave_base_value::fcn_handle_value (bool silent)
 
   if (! silent)
     gripe_wrong_type_arg ("octave_base_value::fcn_handle_value()",
+			  type_name ());
+  return retval;
+}
+
+octave_fcn_inline *
+octave_base_value::fcn_inline_value (bool silent)
+{
+  octave_fcn_inline *retval = 0;
+
+  if (! silent)
+    gripe_wrong_type_arg ("octave_base_value::fcn_inline_value()",
 			  type_name ());
   return retval;
 }

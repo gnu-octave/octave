@@ -25,8 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#ifndef QPSOL_MISSING
-
 #include <strstream.h>
 
 #include "QPSOL.h"
@@ -395,8 +393,6 @@ to the shortest match.")
 
   return retval;
 }
-
-#endif
 
 /*
 ;;; Local Variables: ***

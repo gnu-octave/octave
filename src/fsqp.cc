@@ -25,8 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#ifndef FSQP_MISSING
-
 #include "FSQP.h"
 
 #include "tree-const.h"
@@ -105,8 +103,6 @@ to the shortest match.")
 
   return retval;
 }
-
-#endif
 
 /*
 ;;; Local Variables: ***

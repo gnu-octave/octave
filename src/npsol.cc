@@ -25,8 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#ifndef NPSOL_MISSING
-
 #include <strstream.h>
 
 #include "NPSOL.h"
@@ -789,8 +787,6 @@ to the shortest match.")
 
   return retval;
 }
-
-#endif
 
 /*
 ;;; Local Variables: ***

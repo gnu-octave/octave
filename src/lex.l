@@ -1791,7 +1791,11 @@ handle_identifier (char *tok, int spc_gobbled)
       if (! in_plot_range)
 	past_plot_range = 1;
 
-      int plot_option_kw = is_plot_keyword (tok);
+      // Option keywords can't appear in parentheses or braces.
+
+      int plot_option_kw = 0;
+      if (nesting_level.empty ())
+	plot_option_kw = is_plot_keyword (tok);
 
       if (cant_be_identifier && plot_option_kw)
 	TOK_RETURN (plot_option_kw);

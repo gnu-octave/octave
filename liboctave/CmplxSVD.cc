@@ -100,7 +100,7 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
     case SVD::sigma_only:
       jobu = jobv ="N";
-      ncol_u = nrow_vt = 0;
+      ncol_u = nrow_vt = 1;
       break;
 
     default:
@@ -109,9 +109,9 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   type_computed = svd_type;
 
-  Complex *u = (ncol_u > 0 ? new Complex[m * ncol_u] : 0);
+  Complex *u = (*jobu == 'N' ? 0 : new Complex[m * ncol_u]);
   double *s_vec  = new double[min_mn];
-  Complex *vt = (nrow_vt > 0 ? new Complex[nrow_vt * n] : 0);
+  Complex *vt = (*jobv == 'N' ? 0 : new Complex[nrow_vt * n]);
 
   int lwork = 2*min_mn + max_mn;
   Complex *work = new Complex[lwork];
@@ -123,12 +123,12 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 			    m, vt, nrow_vt, work, lwork, rwork, info,
 			    1L, 1L);
 
-  if (ncol_u > 0)
+  if (*jobu != 'N')
     left_sm = ComplexMatrix (u, m, ncol_u);
 
   sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
 
-  if (nrow_vt > 0)
+  if (*jobv != 'N')
     {
       ComplexMatrix vt_m (vt, nrow_vt, n);
       right_sm = vt_m.hermitian ();

@@ -43,7 +43,7 @@ extern "C"
 }
 
 Matrix
-left_singular_matrix (void) const
+SVD::left_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
     {
@@ -56,7 +56,7 @@ left_singular_matrix (void) const
 }
 
 Matrix
-right_singular_matrix (void) const
+SVD::right_singular_matrix (void) const
 {
   if (type_computed == SVD::sigma_only)
     {
@@ -98,7 +98,7 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
     case SVD::sigma_only:
       jobu = jobv ="N";
-      ncol_u = nrow_vt = 0;
+      ncol_u = nrow_vt = 1;
       break;
 
     default:
@@ -107,9 +107,9 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   type_computed = svd_type;
 
-  double *u = (ncol_u > 0 ? new double[m * ncol_u] : 0);
+  double *u = (*jobu == 'N' ? 0 : new double[m * ncol_u]);
   double *s_vec  = new double[min_mn];
-  double *vt = (ncol_vt > 0 ? new double[nrow_vt * n] : 0);
+  double *vt = (*jobv == 'N' ? 0 : new double[nrow_vt * n]);
 
   int tmp1 = 3*min_mn + max_mn;
   int tmp2 = 5*min_mn - 4;
@@ -120,12 +120,12 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 			    m, vt, nrow_vt, work, lwork, info, 1L,
 			    1L);
 
-  if (ncol_u > 0)
+  if (*jobu != 'N')
     left_sm = Matrix (u, m, ncol_u);
 
   sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
 
-  if (nrow_vt > 0)
+  if (*jobv != 'N')
     {
       Matrix vt_m (vt, nrow_vt, n);
       right_sm = vt_m.transpose ();

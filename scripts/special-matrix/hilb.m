@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -35,10 +35,9 @@ function retval = hilb (n)
   nmax = length (n);
   if (nmax == 1)
     retval = zeros (n);
-    for j = 1:n
-      for i = 1:n
-        retval (i, j) = 1 / (i + j - 1);
-      endfor
+    tmp = 1:n;
+    for i = 1:n
+      retval (i, :) = 1.0 ./ (tmp + (i - 1));
     endfor
   else
     error ("hilb: expecting scalar argument, found something else");

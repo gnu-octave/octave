@@ -692,20 +692,22 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	    info = -1;
 	  else if (calc_cond) 
 	    {
+	      int dgecon_info = 0;
+
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
 	      Array<int> iz (nc);
 	      int *piz = iz.fortran_vec ();
 	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, info
+					 rcond, pz, piz, dgecon_info
 					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in dgecon");
 
-	      if (info != 0) 
+	      if (dgecon_info != 0) 
 		info = -1;
 	    }
 
@@ -713,14 +715,16 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	    retval = *this; // Restore matrix contents.
 	  else
 	    {
+	      int dgetri_info = 0;
+
 	      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
-					 pz, lwork, info));
+					 pz, lwork, dgetri_info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)
 		  ("unrecoverable error in dgetri");
 
-	      if (info != 0) 
+	      if (dgetri_info != 0) 
 		info = -1;
 	    }
 	}

@@ -406,6 +406,10 @@ DEFUN (cumprod, args, ,
 Cumulative product of elements along dimension @var{dim}.  If\n\
 @var{dim} is omitted, it defaults to 1 (column-wise cumulative\n\
 products).\n\
+\n\
+As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
+return the cumulative product of the elements as a vector with the\n\
+same orientation as @var{x}.\n\
 @end deftypefn")
 {
   DATA_REDUCTION (cumprod);
@@ -416,6 +420,10 @@ DEFUN (cumsum, args, ,
 @deftypefn {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise cumulative sums).\n\
+\n\
+As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
+return the cumulative sum of the elements as a vector with the\n\
+same orientation as @var{x}.\n\
 @end deftypefn")
 {
   DATA_REDUCTION (cumsum);
@@ -663,6 +671,9 @@ DEFUN (prod, args, ,
 @deftypefn {Built-in Function} {} prod (@var{x}, @var{dim})\n\
 Product of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to 1 (column-wise products).\n\
+\n\
+As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
+return the product of the elements.\n\
 @end deftypefn")
 {
   DATA_REDUCTION (prod);
@@ -1058,6 +1069,9 @@ DEFUN (sum, args, ,
 @deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\
 Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to 1 (column-wise sum).\n\
+\n\
+As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
+return the sum of the elements.\n\
 @end deftypefn")
 {
   DATA_REDUCTION (sum);
@@ -1069,7 +1083,10 @@ DEFUN (sumsq, args, ,
 Sum of squares of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to 1 (column-wise sum of squares).\n\
 \n\
-This function is equivalent to computing\n\
+As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
+return the sum of squares of the elements.\n\
+\n\
+This function is conceptually equivalent to computing\n\
 @example\n\
 sum (x .* conj (x), dim)\n\
 @end example\n\

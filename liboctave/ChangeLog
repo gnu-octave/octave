@@ -1,3 +1,8 @@
+2004-11-03  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.cc (Matrix::inverse): Return info == -1 for any failure.
+	* CMatrix.cc (ComplexMatrix::inverse): Likewise.
+
 2004-10-19  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assignN): Avoid resizing if assignment will fail.

@@ -1025,19 +1025,20 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 	  else if (calc_cond) 
 	    {
 	      // Now calculate the condition number for non-singular matrix.
+	      int zgecon_info = 0;
 	      char job = '1';
 	      Array<double> rz (2 * nc);
 	      double *prz = rz.fortran_vec ();
 	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, prz, info
+					 rcond, pz, prz, zgecon_info
 					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
 		  ("unrecoverable error in zgecon");
 
-	      if (info != 0) 
+	      if (zgecon_info != 0) 
 		info = -1;
 	    }
 
@@ -1045,14 +1046,16 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 	    retval = *this;  // Restore contents.
 	  else
 	    {
+	      int zgetri_info = 0;
+
 	      F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
-					 pz, lwork, info));
+					 pz, lwork, zgetri_info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)
 		  ("unrecoverable error in zgetri");
 
-	      if (info != 0) 
+	      if (zgetri_info != 0) 
 		info = -1;
 	    }
 	}

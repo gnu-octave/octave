@@ -24,13 +24,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Array_h)
 #define octave_Array_h 1
 
-#include "lo-error.h"
+#include <assert.h>
 
-extern "C++" {
+#include "lo-error.h"
 
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
 #pragma interface
 #endif
+
+extern "C++" {
 
 // Classes we declare.
 
@@ -259,7 +261,7 @@ private:
 
     inline operator T () const
     {
-      if (object)
+      if (object && i == j)
 	return object->get (i);
       else
 	{

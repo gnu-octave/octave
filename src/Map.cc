@@ -125,7 +125,7 @@ index_to_CHptr (int i)
 }
 
 template <class C>
-static int
+static unsigned int
 CHptr_to_index (CHNode<C> *t)
 {
   return ((unsigned) t) >> 1;

@@ -170,7 +170,9 @@ public:
 	  rep = new tree_constant_rep (*rep);
 	  rep->count = 1;
 	}
+
       rep->assign (rhs, args);
+
       return *this;
     }
 
@@ -311,6 +313,7 @@ public:
 	  rep = new tree_constant_rep (*rep);
 	  rep->count = 1;
 	}
+
       rep->bump_value (et);
     }
 
@@ -319,9 +322,12 @@ public:
 
   tree_constant eval (int print)
     {
-      rep->maybe_mutate ();
+      if (! is_scalar_type ())
+	rep->maybe_mutate ();
+
       if (print)
 	rep->print ();
+
       return *this;
     }
 
@@ -331,6 +337,7 @@ public:
 
 // XXX FIXME XXX -- make it safe to call do_index() with
 // args.length () == 0
+
       if (args.length () > 0)
 	retval(0) = rep->do_index (args);
       else
@@ -338,6 +345,7 @@ public:
 
       if (retval(0).is_defined ())
 	retval(0).eval (print);
+
       return retval;
     }
 

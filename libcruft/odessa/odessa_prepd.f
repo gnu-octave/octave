@@ -36,7 +36,7 @@ C-----------------------------------------------------------------------
       GO TO (100, 200), IDF1
 C IDF = 0, CALL F TO APPROXIMATE DFDP. ---------------------------------
  100  RPAR = PAR(JPAR)
-      R = MAX(SRUR*ABS(RPAR),SRUR)
+      R = DMAX1(SRUR*DABS(RPAR),SRUR)
       PAR(JPAR) = RPAR + R
       FAC = 1.0D0/R
       CALL F (NEQ, TN, Y, PAR, FTEM)
@@ -52,3 +52,12 @@ C IDF = 1, CALL USER SUPPLIED DF. --------------------------------------
       RETURN
 C -------------------- END OF SUBROUTINE ODESSA_PREPDF ------------------------
       END
+
+
+
+
+
+
+
+
+

@@ -1468,7 +1468,7 @@ C MAXORD WAS REDUCED BELOW NQ.  COPY YH(*,MAXORD+2) INTO SAVF. ---------
       DO 80 I = 1,N
  80     RWORK(I+LSAVF-1) = RWORK(I+LWM-1)
 C RELOAD WM(1) = RWORK(LWM), SINCE LWM MAY HAVE CHANGED. ---------------
- 90   IF (MITER .GT. 0) RWORK(LWM) = SQRT(UROUND)
+ 90   IF (MITER .GT. 0) RWORK(LWM) = DSQRT(UROUND)
       GO TO 200
 C-----------------------------------------------------------------------
 C BLOCK C.
@@ -1486,7 +1486,7 @@ C-----------------------------------------------------------------------
       IF (H0 .NE. ZERO .AND. (T + H0 - TCRIT)*H0 .GT. ZERO)
      1   H0 = TCRIT - T
  105  JSTART = 0
-      IF (MITER .GT. 0) RWORK(LWM) = SQRT(UROUND)
+      IF (MITER .GT. 0) RWORK(LWM) = DSQRT(UROUND)
       NHNIL = 0
       NST = 0
       NJE = 0
@@ -1547,29 +1547,29 @@ C        YWT(I) = EWT(I)/TOL  (A WEIGHT FOR Y(I)).
 C THE SIGN OF H0 IS INFERRED FROM THE INITIAL VALUES OF TOUT AND T.
 C-----------------------------------------------------------------------
  125  IF (H0 .NE. ZERO) GO TO 180
-      TDIST = ABS(TOUT - T)
-      W0 = MAX(ABS(T),ABS(TOUT))
+      TDIST = DABS(TOUT - T)
+      W0 = DMAX1(DABS(T),DABS(TOUT))
       IF (TDIST .LT. TWO*UROUND*W0) GO TO 622
       TOL = RTOL(1)
       IF (ITOL .LE. 2) GO TO 140
       DO 130 I = 1,N
- 130    TOL = MAX(TOL,RTOL(I))
+ 130    TOL = DMAX1(TOL,RTOL(I))
  140   IF (TOL .GT. ZERO) GO TO 160
       ATOLI = ATOL(1)
       DO 150 I = 1,N
         IF (ITOL .EQ. 2 .OR. ITOL .EQ. 4) ATOLI = ATOL(I)
-        AYI = ABS(Y(I))
-        IF (AYI .NE. ZERO) TOL = MAX(TOL,ATOLI/AYI)
+        AYI = DABS(Y(I))
+        IF (AYI .NE. ZERO) TOL = DMAX1(TOL,ATOLI/AYI)
  150    CONTINUE
- 160   TOL = MAX(TOL,100.0D0*UROUND)
-      TOL = MIN(TOL,0.001D0)
+ 160   TOL = DMAX1(TOL,100.0D0*UROUND)
+      TOL = DMIN1(TOL,0.001D0)
       SUM = ODESSA_VNORM (N, RWORK(LF0), RWORK(LEWT))
       SUM = ONE/(TOL*W0*W0) + TOL*SUM**2
-      H0 = ONE/SQRT(SUM)
+      H0 = ONE/DSQRT(SUM)
       H0 = MIN(H0,TDIST)
-      H0 = SIGN(H0,TOUT-T)
+      H0 = DSIGN(H0,TOUT-T)
 C ADJUST H0 IF NECESSARY TO MEET HMAX BOUND. ---------------------------
- 180   RH = ABS(H0)*HMXI
+ 180   RH = DABS(H0)*HMXI
       IF (RH .GT. ONE) H0 = H0/RH
 C LOAD H WITH H0 AND SCALE YH(*,2) BY H0. ------------------------------
       H = H0
@@ -1602,8 +1602,8 @@ C-----------------------------------------------------------------------
       GO TO 420
  240   TCRIT = RWORK(1)
       IF ((TN - TCRIT)*H .GT. ZERO) GO TO 624
- 245   HMX = ABS(TN) + ABS(H)
-      IHIT = ABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
+ 245   HMX = DABS(TN) + DABS(H)
+      IHIT = DABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
       IF (IHIT) GO TO 400
       TNEXT = TN + H*(ONE + FOUR*UROUND)
       IF ((TNEXT - TCRIT)*H .LE. ZERO) GO TO 250
@@ -1677,8 +1677,8 @@ C ITASK = 4.  SEE IF TOUT OR TCRIT WAS REACHED.  ADJUST H IF NECESSARY.
       CALL ODESSA_INTDY (TOUT, 0, RWORK(LYH), NYH, Y, IFLAG)
       T = TOUT
       GO TO 420
- 345   HMX = ABS(TN) + ABS(H)
-      IHIT = ABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
+ 345   HMX = DABS(TN) + DABS(H)
+      IHIT = DABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
       IF (IHIT) GO TO 400
       TNEXT = TN + H*(ONE + FOUR*UROUND)
       IF ((TNEXT - TCRIT)*H .LE. ZERO) GO TO 250
@@ -1686,8 +1686,8 @@ C ITASK = 4.  SEE IF TOUT OR TCRIT WAS REACHED.  ADJUST H IF NECESSARY.
       JSTART = -2
       GO TO 250
 C ITASK = 5.  SEE IF TCRIT WAS REACHED AND JUMP TO EXIT. ---------------
- 350   HMX = ABS(TN) + ABS(H)
-      IHIT = ABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
+ 350   HMX = DABS(TN) + DABS(H)
+      IHIT = DABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
 C-----------------------------------------------------------------------
 C BLOCK G.
 C THE FOLLOWING BLOCK HANDLES ALL SUCCESSFUL RETURNS FROM ODESSA.
@@ -1770,7 +1770,7 @@ C COMPUTE IMXER IF RELEVANT. -------------------------------------------
  560   BIG = ZERO
       IMXER = 1
       DO 570 I = 1,NYH
-        SIZE = ABS(RWORK(I+LACOR-1)*RWORK(I+LEWT-1))
+        SIZE = DABS(RWORK(I+LACOR-1)*RWORK(I+LEWT-1))
         IF (BIG .GE. SIZE) GO TO 570
         BIG = SIZE
         IMXER = I

@@ -110,8 +110,8 @@ C-----------------------------------------------------------------------
         IF (L .EQ. LMAX) GO TO 70
         DO 60 I= 1,N
  60       Y(I,J) = ACOR(I,J) - YH(I,J,LMAX)
-        DUPS = MAX(DUPS,ODESSA_VNORM(N,Y(1,J),EWT(1,J))*TI3)
- 70     DSMS = MAX(DSMS,ERR)
+        DUPS = DMAX1(DUPS,ODESSA_VNORM(N,Y(1,J),EWT(1,J))*TI3)
+ 70     DSMS = DMAX1(DSMS,ERR)
  100  CONTINUE
       RETURN
 C-----------------------------------------------------------------------

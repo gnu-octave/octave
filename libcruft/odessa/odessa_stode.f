@@ -164,14 +164,14 @@ C-----------------------------------------------------------------------
       NQNYH = NQ*NYH
       RC = RC*EL(1)/EL0
       EL0 = EL(1)
-      CONIT = 0.5D0/REAL(NQ+2)
+      CONIT = 0.5D0/DBLE(NQ+2)
       DDN = ODESSA_VNORM (N, SAVF, EWT)/TESCO(1,L)
-      EXDN = ONE/REAL(L)
+      EXDN = ONE/DBLE(L)
       RHDN = ONE/(1.3D0*DDN**EXDN + 0.0000013D0)
-      RH = MIN(RHDN,ONE)
+      RH = DMIN1(RHDN,ONE)
       IREDO = 3
       IF (H .EQ. HOLD) GO TO 170
-      RH = MIN(RH,ABS(H/HOLD))
+      RH = DMIN1(RH,DABS(H/HOLD))
       H = HOLD
       GO TO 175
 C-----------------------------------------------------------------------
@@ -185,7 +185,7 @@ C-----------------------------------------------------------------------
       NQNYH = NQ*NYH
       RC = RC*EL(1)/EL0
       EL0 = EL(1)
-      CONIT = 0.5D0/REAL(NQ+2)
+      CONIT = 0.5D0/DBLE(NQ+2)
       GO TO (160, 170, 200), IRET
 C-----------------------------------------------------------------------
 C IF H IS BEING CHANGED, THE H RATIO RH IS CHECKED AGAINST
@@ -198,9 +198,9 @@ C-----------------------------------------------------------------------
       H = HOLD
       IREDO = 3
       GO TO 175
- 170   RH = MAX(RH,HMIN/ABS(H))
- 175   RH = MIN(RH,RMAX)
-      RH = RH/MAX(ONE,ABS(H)*HMXI*RH)
+ 170   RH = DMAX1(RH,HMIN/DABS(H))
+ 175   RH = DMIN1(RH,RMAX)
+      RH = RH/DMAX1(ONE,DABS(H)*HMXI*RH)
       R = ONE
       DO 180 J = 2,L
         R = R*RH
@@ -219,7 +219,7 @@ C TO FORCE PJAC TO BE CALLED, IF A JACOBIAN IS INVOLVED.
 C IN ANY CASE, PJAC IS CALLED AT LEAST EVERY MSBP STEPS FOR ISOPT = 0,
 C AND AT LEAST ONCE EVERY STEP FOR ISOPT = 1.
 C-----------------------------------------------------------------------
- 200  IF (ABS(RC-ONE) .GT. CCMAX) IPUP = MITER
+ 200  IF (DABS(RC-ONE) .GT. CCMAX) IPUP = MITER
       IF (NST .GE. NSLP+MSBP) IPUP = MITER
       TN = TN + H
       I1 = NQNYH + 1
@@ -288,8 +288,8 @@ C-----------------------------------------------------------------------
 C TEST FOR CONVERGENCE.  IF M.GT.0, AN ESTIMATE OF THE CONVERGENCE
 C RATE CONSTANT IS STORED IN CRATE, AND THIS IS USED IN THE TEST.
 C-----------------------------------------------------------------------
- 400   IF (M .NE. 0) CRATE = MAX(0.2D0*CRATE,DEL/DELP)
-      DCON = DEL*MIN(ONE,1.5D0*CRATE)/(TESCO(2,NQ)*CONIT)
+ 400   IF (M .NE. 0) CRATE = DMAX1(0.2D0*CRATE,DEL/DELP)
+      DCON = DEL*DMIN1(ONE,1.5D0*CRATE)/(TESCO(2,NQ)*CONIT)
       IF (DCON .LE. ONE) GO TO 450
       M = M + 1
       IF (M .EQ. MAXCOR) GO TO 410
@@ -320,7 +320,7 @@ C-----------------------------------------------------------------------
  440      YH1(I) = YH1(I) - YH1(I+NYH)
  445    CONTINUE
       IF (IERPJ .LT. 0 .OR. IERSL .LT. 0) GO TO 680
-      IF (ABS(H) .LE. HMIN*1.00001D0) GO TO 670
+      IF (DABS(H) .LE. HMIN*1.00001D0) GO TO 670
       IF (NCF .EQ. MXNCF) GO TO 670
       RH = 0.25D0
       IPUP = MITER
@@ -393,7 +393,7 @@ C-----------------------------------------------------------------------
  510      YH1(I) = YH1(I) - YH1(I+NYH)
  515    CONTINUE
       RMAX = 2.0D0
-      IF (ABS(H) .LE. HMIN*1.00001D0) GO TO 660
+      IF (DABS(H) .LE. HMIN*1.00001D0) GO TO 660
       IF (KFLAG .LE. -3) GO TO 640
       IREDO = 2
       RHUP = ZERO
@@ -415,23 +415,23 @@ C-----------------------------------------------------------------------
       DO 530 I = 1,N
  530    SAVF(I) = ACOR(I) - YH(I,LMAX)
       DUP = ODESSA_VNORM (N, SAVF, EWT)/TESCO(3,NQ)
-      DUP = MAX(DUP,DUPS)
-      EXUP = ONE/REAL(L+1)
+      DUP = DMAX1(DUP,DUPS)
+      EXUP = ONE/DBLE(L+1)
       RHUP = ONE/(1.4D0*DUP**EXUP + 0.0000014D0)
- 540   EXSM = ONE/REAL(L)
-      DSM = MAX(DSM,DSMS)
+ 540   EXSM = ONE/DBLE(L)
+      DSM = DMAX1(DSM,DSMS)
       RHSM = ONE/(1.2D0*DSM**EXSM + 0.0000012D0)
       RHDN = ZERO
       IF (NQ .EQ. 1) GO TO 560
       JPOINT = 1
       DO 550 J = 1,NSV
         DDN = ODESSA_VNORM (N, YH(JPOINT,L), EWT(JPOINT))/TESCO(1,NQ)
-        DDNS = MAX(DDNS,DDN)
+        DDNS = DMAX1(DDNS,DDN)
         JPOINT = JPOINT + N
  550  CONTINUE
       DDN = DDNS
       DDNS = ZERO
-      EXDN = ONE/REAL(NQ)
+      EXDN = ONE/DBLE(NQ)
       RHDN = ONE/(1.3D0*DDN**EXDN + 0.0000013D0)
  560   IF (RHSM .GE. RHUP) GO TO 570
       IF (RHUP .GT. RHDN) GO TO 590
@@ -447,14 +447,14 @@ C-----------------------------------------------------------------------
  590   NEWQ = L
       RH = RHUP
       IF (RH .LT. 1.1D0) GO TO 610
-      R = EL(L)/REAL(L)
+      R = EL(L)/DBLE(L)
       DO 600 I = 1,NYH
  600    YH(I,NEWQ+1) = ACOR(I)*R
       GO TO 630
  610   IALTH = 3
       GO TO 700
  620   IF ((KFLAG .EQ. 0) .AND. (RH .LT. 1.1D0)) GO TO 610
-      IF (KFLAG .LE. -2) RH = MIN(RH,0.2D0)
+      IF (KFLAG .LE. -2) RH = DMIN1(RH,0.2D0)
 C-----------------------------------------------------------------------
 C IF THERE IS A CHANGE OF ORDER, RESET NQ, L, AND THE COEFFICIENTS.
 C IN ANY CASE H IS RESET ACCORDING TO RH AND THE YH ARRAY IS RESCALED.
@@ -476,7 +476,7 @@ C UNTIL IT SUCCEEDS OR H REACHES HMIN.
 C-----------------------------------------------------------------------
  640   IF (KFLAG .EQ. -10) GO TO 660
       RH = 0.1D0
-      RH = MAX(HMIN/ABS(H),RH)
+      RH = DMAX1(HMIN/DABS(H),RH)
       H = H*RH
       DO 645 I = 1,NYH
  645    Y(I) = YH(I,1)

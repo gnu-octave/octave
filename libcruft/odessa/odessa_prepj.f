@@ -63,13 +63,13 @@ C IF MITER = 1, CALL JAC AND MULTIPLY BY SCALAR. -----------------------
       GO TO 240
 C IF MITER = 2, MAKE N CALLS TO F TO APPROXIMATE J. --------------------
  200   FAC = ODESSA_VNORM (N, SAVF, EWT)
-      R0 = 1000.0D0*ABS(H)*UROUND*REAL(N)*FAC
+      R0 = 1000.0D0*DABS(H)*UROUND*DBLE(N)*FAC
       IF (R0 .EQ. ZERO) R0 = ONE
       SRUR = WM(1)
       J1 = 2
       DO 230 J = 1,N
         YJ = Y(J)
-        R = MAX(SRUR*ABS(YJ),R0/EWT(J))
+        R = DMAX1(SRUR*DABS(YJ),R0/EWT(J))
         Y(J) = Y(J) + R
         FAC = -HL0/R
         CALL F (NEQ, TN, Y, PAR, FTEM)
@@ -100,8 +100,8 @@ C IF MITER = 3, CONSTRUCT A DIAGONAL APPROXIMATION TO J AND P. ---------
         R0 = H*SAVF(I) - YH(I,2)
         DI = 0.1D0*R0 - H*(WM(I+2) - SAVF(I))
         WM(I+2) = 1.0D0
-        IF (ABS(R0) .LT. UROUND/EWT(I)) GO TO 320
-        IF (ABS(DI) .EQ. ZERO) GO TO 330
+        IF (DABS(R0) .LT. UROUND/EWT(I)) GO TO 320
+        IF (DABS(DI) .EQ. ZERO) GO TO 330
         WM(I+2) = 0.1D0*R0/DI
  320    CONTINUE
       RETURN
@@ -126,26 +126,26 @@ C IF MITER = 5, MAKE MBAND CALLS TO F TO APPROXIMATE J. ----------------
  500   ML = IWM(1)
       MU = IWM(2)
       MBAND = ML + MU + 1
-      MBA = MIN(MBAND,N)
+      MBA = MIN0(MBAND,N)
       MEBAND = MBAND + ML
       MEB1 = MEBAND - 1
       SRUR = WM(1)
       FAC = ODESSA_VNORM (N, SAVF, EWT)
-      R0 = 1000.0D0*ABS(H)*UROUND*REAL(N)*FAC
+      R0 = 1000.0D0*DABS(H)*UROUND*DBLE(N)*FAC
       IF (R0 .EQ. ZERO) R0 = ONE
       DO 560 J = 1,MBA
         DO 530 I = J,N,MBAND
           YI = Y(I)
-          R = MAX(SRUR*ABS(YI),R0/EWT(I))
+          R = DMAX1(SRUR*DABS(YI),R0/EWT(I))
  530      Y(I) = Y(I) + R
         CALL F (NEQ, TN, Y, PAR, FTEM)
         DO 550 JJ = J,N,MBAND
           Y(JJ) = YH(JJ,1)
           YJJ = Y(JJ)
-          R = MAX(SRUR*ABS(YJJ),R0/EWT(JJ))
+          R = DMAX1(SRUR*DABS(YJJ),R0/EWT(JJ))
           FAC = -HL0/R
-          I1 = MAX(JJ-MU,1)
-          I2 = MIN(JJ+ML,N)
+          I1 = MAX0(JJ-MU,1)
+          I2 = MIN0(JJ+ML,N)
           II = JJ*MEB1 - ML + 2
           DO 540 I = I1,I2
  540        WM(II+I) = (FTEM(I) - SAVF(I))*FAC

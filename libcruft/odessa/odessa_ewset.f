@@ -12,7 +12,7 @@ C-----------------------------------------------------------------------
       DO 10 I = 1,N
         IF (ITOL .GE. 3) RTOLI = RTOL(I)
         IF (ITOL .EQ. 2 .OR. ITOL .EQ. 4) ATOLI = ATOL(I)
-        EWT(I) = RTOLI*ABS(YCUR(I)) + ATOLI
+        EWT(I) = RTOLI*DABS(YCUR(I)) + ATOLI
  10     CONTINUE
       RETURN
 C----------------------- END OF SUBROUTINE ODESSA_EWSET -----------------------

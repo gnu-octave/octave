@@ -47,9 +47,9 @@ C    P(X) = (X+1)*(X+2)*...*(X+NQ-1).
 C INITIALLY, P(X) = 1.
 C-----------------------------------------------------------------------
         RQ1FAC = RQFAC
-        RQFAC = RQFAC/REAL(NQ)
+        RQFAC = RQFAC/DBLE(NQ)
         NQM1 = NQ - 1
-        FNQM1 = REAL(NQM1)
+        FNQM1 = DBLE(NQM1)
         NQP1 = NQ + 1
 C FORM COEFFICIENTS OF P(X)*(X+NQ-1). ----------------------------------
         PC(NQ) = ZERO
@@ -63,17 +63,17 @@ C COMPUTE INTEGRAL, -1 TO 0, OF P(X) AND X*P(X). -----------------------
         TSIGN = ONE
         DO 120 I = 2,NQ
           TSIGN = -TSIGN
-          PINT = PINT + TSIGN*PC(I)/REAL(I)
- 120      XPIN = XPIN + TSIGN*PC(I)/REAL(I+1)
+          PINT = PINT + TSIGN*PC(I)/DBLE(I)
+ 120      XPIN = XPIN + TSIGN*PC(I)/DBLE(I+1)
 C STORE COEFFICIENTS IN ELCO AND TESCO. --------------------------------
         ELCO(1,NQ) = PINT*RQ1FAC
         ELCO(2,NQ) = ONE
         DO 130 I = 2,NQ
- 130      ELCO(I+1,NQ) = RQ1FAC*PC(I)/REAL(I)
+ 130      ELCO(I+1,NQ) = RQ1FAC*PC(I)/DBLE(I)
         AGAMQ = RQFAC*XPIN
         RAGQ = ONE/AGAMQ
         TESCO(2,NQ) = RAGQ
-        IF (NQ .LT. 12) TESCO(1,NQP1) = RAGQ*RQFAC/REAL(NQP1)
+        IF (NQ .LT. 12) TESCO(1,NQP1) = RAGQ*RQFAC/DBLE(NQP1)
         TESCO(3,NQM1) = RAGQ
  140    CONTINUE
       RETURN
@@ -86,7 +86,7 @@ C THE PC ARRAY WILL CONTAIN THE COEFFICIENTS OF THE POLYNOMIAL
 C    P(X) = (X+1)*(X+2)*...*(X+NQ).
 C INITIALLY, P(X) = 1.
 C-----------------------------------------------------------------------
-        FNQ = REAL(NQ)
+        FNQ = DBLE(NQ)
         NQP1 = NQ + 1
 C FORM COEFFICIENTS OF P(X)*(X+NQ). ------------------------------------
         PC(NQP1) = ZERO
@@ -99,8 +99,8 @@ C STORE COEFFICIENTS IN ELCO AND TESCO. --------------------------------
  220      ELCO(I,NQ) = PC(I)/PC(2)
         ELCO(2,NQ) = ONE
         TESCO(1,NQ) = RQ1FAC
-        TESCO(2,NQ) = REAL(NQP1)/ELCO(1,NQ)
-        TESCO(3,NQ) = REAL(NQ+2)/ELCO(1,NQ)
+        TESCO(2,NQ) = DBLE(NQP1)/ELCO(1,NQ)
+        TESCO(3,NQ) = DBLE(NQ+2)/ELCO(1,NQ)
         RQ1FAC = RQ1FAC/FNQ
  230    CONTINUE
       RETURN

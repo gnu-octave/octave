@@ -34,38 +34,38 @@ C  BLAS ALGORITHM
       I = 1
 20    SX = V(I)*W(I)
       GO TO (30,40,70,80),NEXT
-30    IF (ABS(SX).GT.CUTLO) GO TO 110
+30    IF (DABS(SX).GT.CUTLO) GO TO 110
       NEXT = 2
       XMAX = ZERO
 40    IF (SX.EQ.ZERO) GO TO 130
-      IF (ABS(SX).GT.CUTLO) GO TO 110
+      IF (DABS(SX).GT.CUTLO) GO TO 110
       NEXT = 3
       GO TO 60
 50    I=J
       NEXT = 4
       SUM = (SUM/SX)/SX
-60    XMAX = ABS(SX)
+60    XMAX = DABS(SX)
       GO TO 90
-70    IF(ABS(SX).GT.CUTLO) GO TO 100
-80    IF(ABS(SX).LE.XMAX) GO TO 90
+70    IF(DABS(SX).GT.CUTLO) GO TO 100
+80    IF(DABS(SX).LE.XMAX) GO TO 90
       SUM = ONE + SUM * (XMAX/SX)**2
-      XMAX = ABS(SX)
+      XMAX = DABS(SX)
       GO TO 130
 90    SUM = SUM + (SX/XMAX)**2
       GO TO 130
 100   SUM = (SUM*XMAX)*XMAX
-110   HITEST = CUTHI/REAL(N)
+110   HITEST = CUTHI/DBLE(N)
       DO 120 J = I,N
          SX = V(J)*W(J)
-         IF(ABS(SX).GE.HITEST) GO TO 50
+         IF(DABS(SX).GE.HITEST) GO TO 50
          SUM = SUM + SX**2
 120   CONTINUE
-      ODESSA_VNORM = SQRT(SUM)
+      ODESSA_VNORM = DSQRT(SUM)
       GO TO 140
 130   CONTINUE
       I = I + 1
       IF (I.LE.N) GO TO 20
-      ODESSA_VNORM = XMAX * SQRT(SUM)
+      ODESSA_VNORM = XMAX * DSQRT(SUM)
 140   CONTINUE
       RETURN
 C----------------------- END OF FUNCTION ODESSA_VNORM -------------------------

@@ -43,7 +43,7 @@ C
       R = HL0/PHL0
       DO 320 I = 1,N
         DI = ONE - R*(ONE - ONE/WM(I+2))
-        IF (ABS(DI) .EQ. ZERO) GO TO 390
+        IF (DABS(DI) .EQ. ZERO) GO TO 390
  320    WM(I+2) = ONE/DI
  330   DO 340 I = 1,N
  340    X(I) = WM(I+2)*X(I)

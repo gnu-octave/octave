@@ -37,7 +37,7 @@ C
       JJ1 = L - K
       DO 10 JJ = JJ1,NQ
  10     IC = IC*JJ
- 15   C = REAL(IC)
+ 15   C = DBLE(IC)
       DO 20 I = 1,NYH
  20     DKY(I) = C*YH(I,L)
       IF (K .EQ. NQ) GO TO 55
@@ -50,7 +50,7 @@ C
         JJ1 = JP1 - K
         DO 30 JJ = JJ1,J
  30       IC = IC*JJ
- 35     C = REAL(IC)
+ 35     C = DBLE(IC)
         DO 40 I = 1,NYH
  40       DKY(I) = C*YH(I,JP1) + S*DKY(I)
  50     CONTINUE

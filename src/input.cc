@@ -635,6 +635,8 @@ get_input_from_stdin (void)
   return rl_instream;
 }
 
+// XXX FIXME XXX -- this should return a string_vector.
+
 static const char **
 generate_struct_completions (const char *text, char *& prefix,
 			     char *& hint)
@@ -711,6 +713,7 @@ generate_struct_completions (const char *text, char *& prefix,
 }
 
 // XXX FIXME XXX -- make this generate file names when appropriate.
+// XXX FIXME XXX -- this should return a string_vector.
 
 static const char **
 generate_possible_completions (const char *text, char *& prefix,
@@ -786,6 +789,10 @@ looks_like_struct (const char *nm)
 
   return retval;	
 }
+
+// XXX FIXME XXX -- this has to return a pointer to char, but it
+// should be converted to use a generating function that returns a
+// string_vector.
 
 static char *
 command_generator (const char *text, int state)
@@ -1223,13 +1230,16 @@ DEFUN (completion_matches, args, nargout,
 
 	      if (cmd)
 		{
-		  if (k > n)
+		  if (*cmd)
 		    {
-		      n *= 2;
-		      list.resize (n);
-		    }
+		      if (k == n)
+			{
+			  n *= 2;
+			  list.resize (n);
+			}
 
-		  list[k++] = cmd;
+		      list[k++] = cmd;
+		    }
 		}
 	      else
 		{
@@ -1242,6 +1252,10 @@ DEFUN (completion_matches, args, nargout,
 	    retval = list;
 	  else
 	    {
+	      // We don't use string_vector::list_in_columns here
+	      // because it will be easier for Emacs if the names
+	      // appear in a single column.
+
 	      int len = list.length ();
 
 	      for (int i = 0; i < len; i++)

@@ -79,8 +79,6 @@ octave_user_function::octave_user_function
     curr_va_arg_number (0), vr_list (0), symtab_entry (0),
     argn_sr (0), nargin_sr (0), nargout_sr (0), varargin_sr (0)
 {
-  install_automatic_vars ();
-
   if (param_list)
     {
       num_named_args = param_list->length ();
@@ -379,6 +377,8 @@ octave_user_function::do_multi_index_op (int nargout,
   if (vr_list)
     vr_list->clear ();
 
+  install_automatic_vars ();
+
   // Force symbols to be undefined again when this function exits.
 
   unwind_protect::add (clear_symbol_table, sym_tab);
@@ -556,15 +556,8 @@ octave_user_function::install_automatic_vars (void)
       nargin_sr = sym_tab->lookup ("__nargin__", true);
       nargout_sr = sym_tab->lookup ("__nargout__", true);
 
-      argn_sr->mark_as_static ();
-      nargin_sr->mark_as_static ();
-      nargout_sr->mark_as_static ();
-
       if (takes_varargs ())
-	{
-	  varargin_sr = sym_tab->lookup ("varargin", true);
-	  varargin_sr->mark_as_static ();
-	}
+	varargin_sr = sym_tab->lookup ("varargin", true);
     }
 }
 

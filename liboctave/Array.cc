@@ -71,50 +71,45 @@ Array<T>::squeeze (void) const
 {
   Array<T> retval = *this;
 
-  bool dims_changed = false;
-
-  dim_vector new_dimensions = dimensions;
-
-  int k = 0;
-
-  for (int i = 0; i < ndims (); i++)
+  if (ndims () > 2)
     {
-      if (dimensions(i) == 1)
-	dims_changed = true;
-      else
-	new_dimensions(k++) = dimensions(i);
-    }
+      bool dims_changed = false;
 
-  if (dims_changed)
-    {
-      switch (k)
+      dim_vector new_dimensions = dimensions;
+
+      int k = 0;
+
+      for (int i = 0; i < ndims (); i++)
 	{
-	case 0:
-	  new_dimensions = dim_vector (1, 1);
-	  break;
+	  if (dimensions(i) == 1)
+	    dims_changed = true;
+	  else
+	    new_dimensions(k++) = dimensions(i);
+	}
 
-	case 1:
-	  {
-	    int tmp = new_dimensions(0);
+      if (dims_changed)
+	{
+	  switch (k)
+	    {
+	    case 0:
+	      new_dimensions = dim_vector (1, 1);
+	      break;
 
-	    new_dimensions.resize (2);
-
-	    if (dimensions(0) == 1)
+	    case 1:
 	      {
-		new_dimensions(0) = 1;
-		new_dimensions(1) = tmp;
-	      }
-	    else
-	      {
+		int tmp = new_dimensions(0);
+
+		new_dimensions.resize (2);
+
 		new_dimensions(0) = tmp;
 		new_dimensions(1) = 1;
 	      }
-	  }
-	  break;
+	      break;
 
-	default:
-	  new_dimensions.resize (k);
-	  break;
+	    default:
+	      new_dimensions.resize (k);
+	      break;
+	    }
 	}
 
       retval.make_unique ();

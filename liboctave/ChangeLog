@@ -1,3 +1,9 @@
+2004-08-03  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::squeeze): Do nothing for 2-d arrays.  For
+	arrays with more than two dimensions and only one non-singleton
+	dimension, return a column vector.
+
 2004-07-28  John W. Eaton  <jwe@octave.org>
 
 	* oct-cmplx.h (pow (const Complex&, const double&):

@@ -1,5 +1,11 @@
 2004-08-03  John W. Eaton  <jwe@octave.org>
 
+	* ov-usr-fcn.cc (octave_user_fcn::do_multi_index_op): Call
+	install_automatic_vars here.
+	(octave_user_fcn::octave_user_fcn): Not here.
+	(install_automatic_vars): Don't mark argn_sr, nargin_sr,
+	nargout_sr, or varargin_sr as static.
+
 	* oct-stream.cc (octave_scan): Avoid need for pushing two
 	characters back on the input stream.
 

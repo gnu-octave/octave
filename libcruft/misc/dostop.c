@@ -40,9 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 volatile void
 #if defined (F77_APPEND_UNDERSCORE)
-dostop_ (const char *s, int slen)
+dostop_ (const char *s, long slen)
 #else
-dostop (const char *s, int slen)
+dostop (const char *s, long slen)
 #endif
 {
   if (slen > 0)

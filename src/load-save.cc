@@ -2661,10 +2661,9 @@ save_ascii_data (ostream& os, const tree_constant& tc,
     {
       ascii_save_type (os, "complex matrix", mark_as_global);
       os << "# rows: " << tc.rows () << "\n"
-	 << "# columns: " << tc.columns () << "\n"
-	 << tc.complex_matrix_value () ;
+	 << "# columns: " << tc.columns () << "\n";
 
-      ComplexMatrix tmp = tc.matrix_value ();
+      ComplexMatrix tmp = tc.complex_matrix_value ();
       if (strip_nan_and_inf)
 	tmp = strip_infnan (tmp);
 

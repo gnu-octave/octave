@@ -27,13 +27,17 @@ endif
 CWD = $(shell pwd)
 THISDIR = $(notdir $(CWD))
 
-LIBCRUFT = ../libcruft.a
+LIBCRUFT := ../libcruft.$(LIBEXT)
+
+ifeq ($(STATIC_LIBS), true)
+  LIBCRUFT_DEPEND := $(LIBCRUFT)
+endif
 
 LIBCRUFT_OBJS = $(CRUFT_OBJ) $(SPECIAL_DEPEND)
 
 LIBCRUFT_DEPS = $(LIBCRUFT)($(LIBCRUFT_OBJS))
 
-all: pic $(LIBCRUFT) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
+all: pic $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
 .PHONY: all
 
 # Cancel the default action for when an archive member is out of

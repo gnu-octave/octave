@@ -1,5 +1,7 @@
 Thu Jun  5 01:40:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in, Makerules.in: Make building of static library optional.
+
 	* Makerules.in (stamp-picdir): Delete.
 	(pic): New target.  Don't worry so much about creating pic
 	directory only when it is really needed.

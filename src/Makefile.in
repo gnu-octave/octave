@@ -215,9 +215,17 @@ pic:
 	fi
 
 ifeq ($(SHARED_LIBS), true)
-libraries: liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
+  ifeq ($(STATIC_LIBS), true)
+    libraries: liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
+  else
+    libraries: liboctinterp.$(SHLEXT)
+  endif
 else
-libraries: liboctinterp.$(LIBEXT)
+  ifeq ($(STATIC_LIBS), true)
+    libraries: liboctinterp.$(LIBEXT)
+  else
+    libraries:
+  endif
 endif
 .PHONY: libraries
 
@@ -230,7 +238,7 @@ liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
 	$(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
 
 liboctinterp.$(SHLEXT_VER): stamp-prereq $(PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) -o liboctinterp.$(SHLEXT_VER) $(PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) -o $@ $(PICOBJ)
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@
@@ -283,9 +291,12 @@ install-oct:
 
 install-lib:
 	$(top_srcdir)/mkinstalldirs $(libdir)
-	rm -f $(libdir)/liboctinterp.$(LIBEXT)
-	$(INSTALL_DATA) liboctinterp.$(LIBEXT) \
-	  $(libdir)/liboctinterp.$(LIBEXT)
+	if $(STATIC_LIBS); then \
+	  rm -f $(libdir)/liboctinterp.$(LIBEXT); \
+	  $(INSTALL_DATA) liboctinterp.$(LIBEXT) \
+	    $(libdir)/liboctinterp.$(LIBEXT); \
+	  $(RANLIB) $(libdir)/liboctinterp.$(LIBEXT); \
+	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(libdir)/liboctinterp.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \

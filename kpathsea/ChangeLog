@@ -1,3 +1,8 @@
+Thu Jun  5 12:38:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* acklibtool.m4: For use with Octave, ignore --enable-static and
+	--enable-shared and only build static libraries.
+
 Wed Jun  4 12:14:38 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* progname.c (selfdir): Handle dir/exename case here.

@@ -1,5 +1,8 @@
 Thu Jun  5 01:38:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (STATIC_LIBS): New variable.
+	* configure.in: Handle --enable-static.
+
 	* Makeconf.in (LIBEXT, SHLEXT_VER): New macros.
 	(octlibdir, mk-libdir-link): Delete.
 

@@ -80,7 +80,7 @@ libcruft.$(SHLEXT): libcruft.$(SHLEXT_VER)
 	$(LN_S) libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT)
 
 libcruft.$(SHLEXT_VER): $(CRUFT_PICOBJ)
-	$(SH_LD) $(SH_LDFLAGS) -o libcruft.$(SHLEXT_VER) $(CRUFT_PICOBJ)
+	$(SH_LD) $(SH_LDFLAGS) -o $@ $(CRUFT_PICOBJ)
 
 $(CRUFT_OBJ):
 
@@ -92,9 +92,11 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 
 install::
 	$(top_srcdir)/mkinstalldirs $(libdir)
-	rm -f $(libdir)/libcruft.$(LIBEXT)
-	$(INSTALL_DATA) libcruft.$(LIBEXT) $(libdir)/libcruft.$(LIBEXT)
-	$(RANLIB) $(libdir)/libcruft.a
+	if $(STATIC_LIBS); then \
+	  rm -f $(libdir)/libcruft.$(LIBEXT) ; \
+	  $(INSTALL_DATA) libcruft.$(LIBEXT) $(libdir)/libcruft.$(LIBEXT) ; \
+	  $(RANLIB) $(libdir)/libcruft.$(LIBEXT) ; \
+	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(libdir)/libcruft.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \

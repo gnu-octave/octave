@@ -1,5 +1,7 @@
 Thu Jun  5 01:42:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in: Make building of static library optional.
+
 	* dynamic-ld.cc (octave_shl_load_dynamic_loader::resolve_reference): 
 	Call shl_findsym with type set to TYPE_UNDEFINED.
 

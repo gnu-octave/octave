@@ -136,7 +136,7 @@ Return a struct containing information about the function handle\n\
 
 	      std::string fh_nm = fh->fcn_name ();
 
-	      m.assign ("function", fh_nm.substr (1));
+	      m.assign ("function", fh_nm);
 
 	      if (fcn->is_nested_function ())
 		m.assign ("type", "subfunction");
@@ -185,7 +185,7 @@ the function handle @var{fcn_handle}.\n\
       if (! error_state && fh)
 	{
 	  std::string fh_nm = fh->fcn_name ();
-	  retval = fh_nm.substr (1);
+	  retval = fh_nm;
 	}
       else
 	error ("func2str: expecting valid function handle as first argument");

@@ -1,5 +1,8 @@
 2004-09-08  John W. Eaton  <jwe@octave.org>
 
+	* ov-fcn-handle.cc (Ffunc2str, Ffunctions): Don't call substr(1)
+	on fh_nm, since we no longer need to skip "@" in the name.
+
 	* error.cc (pr_where): Do a better job of printing location info.
 
 	* input.cc (get_user_input): Print location info before the debug

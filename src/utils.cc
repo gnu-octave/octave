@@ -857,7 +857,7 @@ decode_prompt_string (const char *string)
 
 	    case '#':
 	      {
-		char number_buffer[20];
+		char number_buffer[128];
 		sprintf (number_buffer, "%d", current_command_number);
 		temp = strsave (number_buffer);
 		goto add_string;
@@ -865,7 +865,7 @@ decode_prompt_string (const char *string)
 
 	    case '!':
 	      {
-		char number_buffer[20];
+		char number_buffer[128];
 		int num = current_history_number ();
 		if (num > 0)
                   sprintf (number_buffer, "%d", num);

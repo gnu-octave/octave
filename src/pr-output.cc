@@ -189,7 +189,7 @@ set_format (double d, int& fw)
   if (free_format)
     return;
 
-  static char fmt_buf[32];
+  static char fmt_buf[128];
 
   int sign = (d < 0.0);
 
@@ -280,7 +280,7 @@ set_format (const Matrix& m, int& fw)
   if (free_format)
     return;
 
-  static char fmt_buf[32];
+  static char fmt_buf[128];
 
   int sign = any_element_is_negative (m);
 
@@ -394,8 +394,8 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   if (free_format)
     return;
 
-  static char r_fmt_buf[32];
-  static char i_fmt_buf[32];
+  static char r_fmt_buf[128];
+  static char i_fmt_buf[128];
 
   double rp = c.real ();
   double ip = c.imag ();
@@ -533,8 +533,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
   if (free_format)
     return;
 
-  static char r_fmt_buf[32];
-  static char i_fmt_buf[32];
+  static char r_fmt_buf[128];
+  static char i_fmt_buf[128];
 
   Matrix rp = real (cm);
   Matrix ip = imag (cm);
@@ -683,7 +683,7 @@ set_format (const Range& r, int& fw)
   if (free_format)
     return;
 
-  static char fmt_buf[32];
+  static char fmt_buf[128];
 
   double r_min = r.base ();
   double r_max = r.limit ();

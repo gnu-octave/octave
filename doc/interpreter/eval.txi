@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Evaluation, Statements, Expressions, Top
+@node Evaluation
 @chapter Evaluation
 
 Normally, you evaluate expressions simply by typing them at the Octave

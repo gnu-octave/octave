@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Getting Started, Data Types, Introduction, Top
+@node Getting Started
 @chapter Getting Started
 
 This chapter explains some of Octave's basic features, including how to
@@ -20,7 +20,7 @@ from your shell.
 * Comments::                    
 @end menu
 
-@node Invoking Octave, Quitting Octave, Getting Started, Getting Started
+@node Invoking Octave
 @section Invoking Octave
 
 Normally, Octave is used interactively by running the program
@@ -42,7 +42,7 @@ shorter equivalent).
 * Startup Files::               
 @end menu
 
-@node Command Line Options, Startup Files, Invoking Octave, Invoking Octave
+@node Command Line Options
 @subsection Command Line Options
 @cindex Octave command options
 @cindex command options
@@ -213,7 +213,7 @@ printf ("\n");
 arrays of strings and substrings in Octave, and @xref{Defining Functions},
 for information about the variable @code{nargin}.
 
-@node Startup Files,  , Command Line Options, Invoking Octave
+@node Startup Files
 @subsection Startup Files
 @cindex initialization
 @cindex startup
@@ -265,7 +265,7 @@ invoke Octave with the @code{--verbose} option but without the
 Startup files may contain any valid Octave commands, including function
 definitions.
 
-@node Quitting Octave, Getting Help, Invoking Octave, Getting Started
+@node Quitting Octave
 @section Quitting Octave
 @cindex exiting octave
 @cindex quitting octave
@@ -274,7 +274,7 @@ definitions.
 
 @DOCSTRING(atexit)
 
-@node Getting Help, Command Line Editing, Quitting Octave, Getting Started
+@node Getting Help
 @section Commands for Getting Help
 @cindex on-line help
 @cindex help, on-line
@@ -301,7 +301,7 @@ for those, you must type @kbd{help comma} or @kbd{help semicolon}.
 
 @DOCSTRING(suppress_verbose_help_message)
 
-@node Command Line Editing, Errors, Getting Help, Getting Started
+@node Command Line Editing
 @section Command Line Editing
 @cindex command-line editing
 @cindex editing the command line
@@ -342,7 +342,7 @@ characters such as @kbd{Meta-u} are written as @kbd{M-u}.
 * Diary and Echo Commands::     
 @end menu
 
-@node Cursor Motion, Killing and Yanking, Command Line Editing, Command Line Editing
+@node Cursor Motion
 @subsection Cursor Motion
 
 The following commands allow you to position the cursor.
@@ -401,7 +401,7 @@ within Octave programs.
 
 @DOCSTRING(clc)
 
-@node Killing and Yanking, Commands For Text, Cursor Motion, Command Line Editing
+@node Killing and Yanking
 @subsection Killing and Yanking
 
 @dfn{Killing} text means to delete the text from the line, but to save
@@ -448,7 +448,7 @@ ring is not line specific; the text that you killed on a previously
 typed line is available to be yanked back later, when you are typing
 another line.
 
-@node Commands For Text, Commands For Completion, Killing and Yanking, Command Line Editing
+@node Commands For Text
 @subsection Commands For Changing Text
 
 The following commands can be used for entering characters that would
@@ -487,7 +487,7 @@ next word if the cursor is between words), moving the cursor to the end
 of the word.
 @end table
 
-@node Commands For Completion, Commands For History, Commands For Text, Command Line Editing
+@node Commands For Completion
 @subsection Letting Readline Type For You
 @cindex command completion
 
@@ -507,7 +507,7 @@ List the possible completions of the text before the cursor.
 
 @DOCSTRING(completion_matches)
 
-@node Commands For History, Customizing readline, Commands For Completion, Command Line Editing
+@node Commands For History
 @subsection Commands For Manipulating The History
 @cindex command history
 @cindex input history
@@ -572,14 +572,14 @@ re-running chunks of commands from the history list.
 
 @DOCSTRING(saving_history)
 
-@node Customizing readline, Customizing the Prompt, Commands For History, Command Line Editing
+@node Customizing readline
 @subsection Customizing @code{readline}
 
 @c XXX FIXME XXX -- need a brief description of the ~/.inputrc file here.
 
 @DOCSTRING(read_readline_init_file)
 
-@node Customizing the Prompt, Diary and Echo Commands, Customizing readline, Command Line Editing
+@node Customizing the Prompt
 @subsection Customizing the Prompt
 @cindex prompt customization
 @cindex customizing the prompt
@@ -641,7 +641,7 @@ A backslash.
 
 @DOCSTRING(PS4)
 
-@node Diary and Echo Commands,  , Customizing the Prompt, Command Line Editing
+@node Diary and Echo Commands
 @subsection Diary and Echo Commands
 @cindex diary of commands and output
 @cindex command and ouput logs
@@ -663,7 +663,7 @@ some kinds of problems.
 
 @DOCSTRING(echo_executing_commands)
 
-@node Errors, Executable Octave Programs, Command Line Editing, Getting Started
+@node Errors
 @section How Octave Reports Errors
 @cindex error messages
 @cindex messages, error
@@ -746,7 +746,7 @@ These lists of function calls usually make it fairly easy to trace the
 path your program took before the error occurred, and to correct the
 error before trying again.
 
-@node Executable Octave Programs, Comments, Errors, Getting Started
+@node Executable Octave Programs
 @section Executable Octave Programs
 @cindex executable scripts
 @cindex scripts
@@ -822,7 +822,7 @@ printf ("\n");
 @end group
 @end example
 
-@node Comments,  , Executable Octave Programs, Getting Started
+@node Comments
 @section Comments in Octave Programs
 @cindex @samp{#}
 @cindex @samp{%}

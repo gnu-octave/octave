@@ -6,7 +6,7 @@
 @c in the Octave distribution, as well as in the Octave manual.
 
 @ifclear BUGSONLY
-@node Trouble, Installation, Tips, Top
+@node Trouble
 @appendix Known Causes of Trouble
 @end ifclear
 
@@ -20,7 +20,7 @@ Copyright (C) 1996, 1997 John W. Eaton.  You may copy, distribute, and
 modify it freely as long as you preserve this copyright notice and
 permission notice.
 
-@node Trouble,  , Trouble
+@node Trouble
 @chapter Known Causes of Trouble with Octave
 @end ifset
 
@@ -47,7 +47,7 @@ where people's opinions differ as to what is best.
 * Service::                     
 @end menu
 
-@node Actual Bugs, Reporting Bugs, Trouble, Trouble
+@node Actual Bugs
 @appendixsec Actual Bugs We Haven't Fixed Yet
 
 @itemize @bullet
@@ -132,7 +132,7 @@ A list of ideas for future enhancements is distributed with Octave.  See
 the file @file{PROJECTS} in the top level directory in the source
 distribution.
 
-@node Reporting Bugs, Bug Criteria, Actual Bugs, Trouble
+@node Reporting Bugs
 @appendixsec Reporting Bugs
 @cindex bugs
 @cindex reporting bugs
@@ -167,7 +167,7 @@ for you.
 * Patches: Sending Patches.     How to send a patch for Octave.
 @end menu
 
-@node Bug Criteria, Bug Lists, Reporting Bugs, Trouble
+@node Bug Criteria
 @appendixsec Have You Found a Bug?
 @cindex bug criteria
 
@@ -219,7 +219,7 @@ If you are an experienced user of programs like Octave, your suggestions
 for improvement are welcome in any case.
 @end itemize
 
-@node Bug Lists, Bug Reporting, Bug Criteria, Trouble
+@node Bug Lists
 @appendixsec Where to Report Bugs
 @cindex bug report mailing lists
 @cindex reporting bugs
@@ -251,7 +251,7 @@ Department of Chemical Engineering
 Madison, Wisconsin 53706  USA
 @end example
 
-@node Bug Reporting, Sending Patches, Bug Lists, Trouble
+@node Bug Reporting
 @appendixsec How to Report Bugs
 @cindex bugs, reporting
 
@@ -388,7 +388,7 @@ A patch for the bug.  Patches can be helpful, but if you find a bug, you
 should report it, even if you cannot send a fix for the problem.
 @end itemize
 
-@node Sending Patches, Service, Bug Reporting, Trouble
+@node Sending Patches
 @appendixsec Sending Patches for Octave
 @cindex improving Octave
 @cindex diffs, submitting
@@ -457,7 +457,7 @@ If you would like your name to appear in the header line for who made
 the change, send us the header line.
 @end itemize
 
-@node Service,  , Sending Patches, Trouble
+@node Service
 @appendixsec How To Get Help with Octave
 @cindex help, where to find
 

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node System Utilities, Tips, Quaternions, Top
+@node System Utilities
 @chapter System Utilities
 
 This chapter describes the functions that are available to allow you to
@@ -23,7 +23,7 @@ and even start other programs from the Octave prompt.
 * System Information::          
 @end menu
 
-@node Timing Utilities, Filesystem Utilities, System Utilities, System Utilities
+@node Timing Utilities
 @section Timing Utilities
 
 Octave's core set of functions for manipulating time values are
@@ -108,7 +108,7 @@ useful.
 
 @DOCSTRING(usleep)
 
-@node Filesystem Utilities, Controlling Subprocesses, Timing Utilities, System Utilities
+@node Filesystem Utilities
 @section Filesystem Utilities
 
 Octave includes the following functions for renaming and deleting files,
@@ -143,7 +143,7 @@ about the status of files.
 
 @DOCSTRING(tilde_expand)
 
-@node Controlling Subprocesses, Process ID Information, Filesystem Utilities, System Utilities
+@node Controlling Subprocesses
 @section Controlling Subprocesses
 
 Octave includes some high-level commands like @code{system} and
@@ -182,7 +182,7 @@ they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(fcntl)
 
-@node Process ID Information, Environment Variables, Controlling Subprocesses, System Utilities
+@node Process ID Information
 @section Process, Group, and User IDs
 
 @DOCSTRING(getpgrp)
@@ -199,14 +199,14 @@ they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(getgid)
 
-@node Environment Variables, Current Working Directory, Process ID Information, System Utilities
+@node Environment Variables
 @section Environment Variables
 
 @DOCSTRING(getenv)
 
 @DOCSTRING(putenv)
 
-@node Current Working Directory, Password Database Functions, Environment Variables, System Utilities
+@node Current Working Directory
 @section Current Working Directory
 
 @DOCSTRING(cd)
@@ -215,7 +215,7 @@ they can be used, look at the definition of the function @code{popen2}.
 
 @DOCSTRING(pwd)
 
-@node Password Database Functions, Group Database Functions, Current Working Directory, System Utilities
+@node Password Database Functions
 @section Password Database Functions
 
 Octave's password database functions return information in a structure
@@ -257,7 +257,7 @@ referred to as a @var{pw_struct}.
 
 @DOCSTRING(endpwent)
 
-@node Group Database Functions, System Information, Password Database Functions, System Utilities
+@node Group Database Functions
 @section Group Database Functions
 
 Octave's group database functions return information in a structure
@@ -290,7 +290,7 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(endgrent)
 
-@node System Information,  , Group Database Functions, System Utilities
+@node System Information
 @section System Information
 
 @DOCSTRING(computer)

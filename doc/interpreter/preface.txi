@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Preface, Introduction, Top, Top
+@node Preface
 @unnumbered Preface
 @cindex contributors
 @cindex history
@@ -53,7 +53,7 @@ it, and by reporting any problems you may have.
 * Distribution::                
 @end menu
 
-@node Acknowledgements, How You Can Contribute to Octave, Preface, Preface
+@node Acknowledgements
 @unnumberedsec Acknowledgements
 @cindex acknowledgements
 
@@ -255,7 +255,7 @@ Richard Stallman, for writing GNU.
 This project would not have been possible without the GNU software used
 in and used to produce Octave.
 
-@node How You Can Contribute to Octave, Distribution, Acknowledgements, Preface
+@node How You Can Contribute to Octave
 @unnumberedsec How You Can Contribute to Octave
 @cindex contributing to Octave
 @cindex funding Octave development
@@ -275,7 +275,7 @@ make Octave better and more reliable by reporting any bugs you find and
 by offering suggestions for ways to improve Octave.  @xref{Trouble}, for
 tips on how to write useful bug reports.
 
-@node Distribution,  , How You Can Contribute to Octave, Preface
+@node Distribution
 @unnumberedsec Distribution
 @cindex distribution of Octave
 

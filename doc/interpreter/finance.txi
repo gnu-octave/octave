@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Financial Functions, Sets, Statistics, Top
+@node Financial Functions
 @chapter Financial Functions
 @cindex financial functions
 @cindex money

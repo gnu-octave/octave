@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Matrix Manipulation, Arithmetic, Plotting, Top
+@node Matrix Manipulation
 @chapter Matrix Manipulation
 
 There are a number of functions available for checking to see if the
@@ -19,7 +19,7 @@ lower-triangular parts, or sort the columns of a matrix.
 * Famous Matrices::             
 @end menu
 
-@node Finding Elements and Checking Conditions, Rearranging Matrices, Matrix Manipulation, Matrix Manipulation
+@node Finding Elements and Checking Conditions
 @section Finding Elements and Checking Conditions
 
 The functions @code{any} and @code{all} are useful for determining
@@ -66,7 +66,7 @@ Note that in conditional contexts (like the test clause of @code{if} and
         
 @DOCSTRING(common_size)
 
-@node Rearranging Matrices, Special Utility Matrices, Finding Elements and Checking Conditions, Matrix Manipulation
+@node Rearranging Matrices
 @section Rearranging Matrices
 
 @DOCSTRING(fliplr)
@@ -110,7 +110,7 @@ a (i, :)
 
 @DOCSTRING(prepad)
 
-@node Special Utility Matrices, Famous Matrices, Rearranging Matrices, Matrix Manipulation
+@node Special Utility Matrices
 @section Special Utility Matrices
 
 @DOCSTRING(eye)
@@ -194,7 +194,7 @@ create vectors with evenly or logarithmically spaced elements.
 
 @DOCSTRING(ok_to_lose_imaginary_part)
 
-@node Famous Matrices,  , Special Utility Matrices, Matrix Manipulation
+@node Famous Matrices
 @section Famous Matrices
 
 The following functions return famous matrix forms.

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Containers, I/O Streams, Data Structures, Top
+@node Containers
 @chapter Containers
 @cindex containers
 
@@ -11,7 +11,7 @@
 * Cell Arrays::                 
 @end menu
 
-@node Lists, Cell Arrays, Containers, Containers
+@node Lists
 @section Lists
 @cindex lists
 
@@ -27,7 +27,7 @@
 
 @DOCSTRING(islist)
 
-@node Cell Arrays,  , Lists, Containers
+@node Cell Arrays
 @section Cell Arrays
 @cindex cell arrays
 

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Data Types, Numeric Data Types, Getting Started, Top
+@node Data Types
 @chapter Data Types
 @cindex data types
 
@@ -26,7 +26,7 @@ to define a new data type for Octave.
 * Object Sizes::                
 @end menu
 
-@node Built-in Data Types, User-defined Data Types, Data Types, Data Types
+@node Built-in Data Types
 @section Built-in Data Types
 @cindex data types, built-in
 @cindex built-in data types
@@ -44,7 +44,7 @@ type and contribute it for distribution in a future release of Octave.
 * Data Structure Objects::      
 @end menu
 
-@node Numeric Objects, String Objects, Built-in Data Types, Built-in Data Types
+@node Numeric Objects
 @subsection Numeric Objects
 @cindex numeric constant
 @cindex numeric value
@@ -79,7 +79,7 @@ using a variety of powerful indexing features.  @xref{Index Expressions}.
 
 @xref{Numeric Data Types}, for more information.
 
-@node String Objects, Data Structure Objects, Numeric Objects, Built-in Data Types
+@node String Objects
 @subsection String Objects
 @cindex strings
 @cindex character strings
@@ -93,7 +93,7 @@ indexing operations that work for matrix objects also work for strings.
 
 @xref{Strings}, for more information.
 
-@node Data Structure Objects,  , String Objects, Built-in Data Types
+@node Data Structure Objects
 @subsection Data Structure Objects
 @cindex structures
 @cindex data structures
@@ -105,7 +105,7 @@ structures.
 
 @xref{Data Structures}, for more information.
 
-@node User-defined Data Types, Object Sizes, Built-in Data Types, Data Types
+@node User-defined Data Types
 @section User-defined Data Types
 @cindex user-defined data types
 @cindex data types, user-defined
@@ -116,7 +116,7 @@ feature is documented here, you will have to make do by reading the code
 in the @file{ov.h}, @file{ops.h}, and related files from Octave's
 @file{src} directory.
 
-@node Object Sizes,  , User-defined Data Types, Data Types
+@node Object Sizes
 @section Object Sizes
 
 The following functions allow you to determine the size of a variable or

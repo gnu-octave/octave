@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Numeric Data Types, Strings, Data Types, Top
+@node Numeric Data Types
 @chapter Numeric Data Types
 @cindex numeric constant
 @cindex numeric value
@@ -72,7 +72,7 @@ You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 * Predicates for Numeric Objects::  
 @end menu
 
-@node Matrices, Ranges, Numeric Data Types, Numeric Data Types
+@node Matrices
 @section Matrices
 @cindex matrices
 
@@ -259,7 +259,7 @@ easily be misinterpreted.
 * Empty Matrices::              
 @end menu
 
-@node Empty Matrices,  , Matrices, Matrices
+@node Empty Matrices
 @subsection Empty Matrices
 
 A matrix may have one or both dimensions zero, and operations on empty
@@ -327,7 +327,7 @@ replaces the list with a single matrix constant.
 
 @DOCSTRING(propagate_empty_matrices)
 
-@node Ranges, Logical Values, Matrices, Numeric Data Types
+@node Ranges
 @section Ranges
 @cindex range expressions
 @cindex expression, range
@@ -374,14 +374,14 @@ When Octave parses a range expression, it examines the elements of the
 expression to determine whether they are all constants.  If they are, it
 replaces the range expression with a single range constant.
 
-@node Logical Values, Predicates for Numeric Objects, Ranges, Numeric Data Types
+@node Logical Values
 @section Logical Values
 
 @DOCSTRING(true)
 
 @DOCSTRING(false)
 
-@node Predicates for Numeric Objects,  , Logical Values, Numeric Data Types
+@node Predicates for Numeric Objects
 @section Predicates for Numeric Objects
 
 @DOCSTRING(isnumeric)

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Concept Index, Variable Index, Copying, Top
+@node Concept Index
 @unnumbered Concept Index
 
 @printindex cp

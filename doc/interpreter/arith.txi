@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Arithmetic, Linear Algebra, Matrix Manipulation, Top
+@node Arithmetic
 @chapter Arithmetic
 
 Unless otherwise noted, all of the functions described in this chapter

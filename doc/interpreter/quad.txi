@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Quadrature, Differential Equations, Nonlinear Equations, Top
+@node Quadrature
 @chapter Quadrature
 
 @menu
@@ -10,7 +10,7 @@
 * Orthogonal Collocation::      
 @end menu
 
-@node Functions of One Variable, Orthogonal Collocation, Quadrature, Quadrature
+@node Functions of One Variable
 @section Functions of One Variable
 
 @DOCSTRING(quad)
@@ -70,7 +70,7 @@ Although @code{quad} returns a nonzero value for @var{ier}, the result
 is reasonably accurate (to see why, examine what happens to the result
 if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
-@node Orthogonal Collocation,  , Functions of One Variable, Quadrature
+@node Orthogonal Collocation
 @section Orthogonal Collocation
 
 @DOCSTRING(colloc)

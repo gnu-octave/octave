@@ -107,7 +107,7 @@ Software Foundation, 59 Temple Place---Suite 330, Boston, MA
 @contents
 
 @ifinfo
-@node Top, Preface, (dir), (dir)
+@node Top
 @top
 
 This manual documents how to run, install and port GNU Octave, as well
@@ -495,6 +495,7 @@ Grammar
 @include stmt.texi
 @include func.texi
 @include errors.texi
+@include debug.texi
 @include io.texi
 @include plot.texi
 @include matrix.texi

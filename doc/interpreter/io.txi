@@ -53,7 +53,7 @@ variable @code{page_screen_output} to 0.
 * C-Style I/O Functions::       
 @end menu
 
-@node Basic Input and Output, C-Style I/O Functions, Input and Output, Input and Output
+@node Basic Input and Output
 @section Basic Input and Output
 
 @menu
@@ -62,7 +62,7 @@ variable @code{page_screen_output} to 0.
 * Simple File I/O::             
 @end menu
 
-@node Terminal Output, Terminal Input, Basic Input and Output, Basic Input and Output
+@node Terminal Output
 @subsection Terminal Output
 
 Since Octave normally prints the value of an expression as soon as it
@@ -93,7 +93,7 @@ values with @code{disp} and through the normal echoing mechanism.
 
 @DOCSTRING(print_answer_id_name)
 
-@node Terminal Input, Simple File I/O, Terminal Output, Basic Input and Output
+@node Terminal Input
 @subsection Terminal Input
 
 Octave has three functions that make it easy to prompt users for
@@ -116,7 +116,7 @@ carriage return.
 
 @DOCSTRING(kbhit)
 
-@node Simple File I/O,  , Terminal Input, Basic Input and Output
+@node Simple File I/O
 @subsection Simple File I/O
 
 The @code{save} and @code{load} commands allow data to be written to and
@@ -142,7 +142,7 @@ that controls whether variables are saved when Octave exits unexpectedly.
 
 @DOCSTRING(load)
 
-@node C-Style I/O Functions,  , Basic Input and Output, Input and Output
+@node C-Style I/O Functions
 @section C-Style I/O Functions
 
 Octave's C-style input and output functions provide most of the
@@ -186,28 +186,28 @@ make your programs easier to understand.
 * File Positioning::            
 @end menu
 
-@node Opening and Closing Files, Simple Output, C-Style I/O Functions, C-Style I/O Functions
+@node Opening and Closing Files
 @subsection Opening and Closing Files
 
 @DOCSTRING(fopen)
 
 @DOCSTRING(fclose)
 
-@node Simple Output, Line-Oriented Input, Opening and Closing Files, C-Style I/O Functions
+@node Simple Output
 @subsection Simple Output
 
 @DOCSTRING(fputs)
 
 @DOCSTRING(puts)
 
-@node Line-Oriented Input, Formatted Output, Simple Output, C-Style I/O Functions
+@node Line-Oriented Input
 @subsection Line-Oriented Input
 
 @DOCSTRING(fgetl)
 
 @DOCSTRING(fgets)
 
-@node Formatted Output, Output Conversion for Matrices, Line-Oriented Input, C-Style I/O Functions
+@node Formatted Output
 @subsection Formatted Output
 
 This section describes how to call @code{printf} and related functions.
@@ -276,7 +276,7 @@ The specific flags and modifiers that are permitted and their
 interpretation vary depending on the particular conversion.  They're all
 described in more detail in the following sections.
 
-@node Output Conversion for Matrices, Output Conversion Syntax, Formatted Output, C-Style I/O Functions
+@node Output Conversion for Matrices
 @subsection Output Conversion for Matrices
 
 When given a matrix value, Octave's formatted output functions cycle
@@ -310,7 +310,7 @@ printf ("%4.2f %10.2e %8.4g\n", [1, 2], [3, 4]);
 
 If this is not what you want, use a series of calls instead of just one.
 
-@node Output Conversion Syntax, Table of Output Conversions, Output Conversion for Matrices, C-Style I/O Functions
+@node Output Conversion Syntax
 @subsection Output Conversion Syntax
 
 This section provides details about the precise syntax of conversion
@@ -385,7 +385,7 @@ between the different conversion specifiers.  See the descriptions of the
 individual conversions for information about the particular options that
 they use.
 
-@node Table of Output Conversions, Integer Conversions, Output Conversion Syntax, C-Style I/O Functions
+@node Table of Output Conversions
 @subsection Table of Output Conversions
 @cindex output conversions, for @code{printf}
 
@@ -444,7 +444,7 @@ the correct types, the results are unpredictable.  If you supply more
 arguments than conversion specifications, the extra argument values are
 simply ignored; this is sometimes useful.
 
-@node Integer Conversions, Floating-Point Conversions, Table of Output Conversions, C-Style I/O Functions
+@node Integer Conversions
 @subsection Integer Conversions
 
 This section describes the options for the @samp{%d}, @samp{%i},
@@ -494,7 +494,7 @@ precision, the number is printed with as many digits as it needs.  If
 you convert a value of zero with an explicit precision of zero, then no
 characters at all are produced.
 
-@node Floating-Point Conversions, Other Output Conversions, Integer Conversions, C-Style I/O Functions
+@node Floating-Point Conversions
 @subsection Floating-Point Conversions
 
 This section discusses the conversion specifications for floating-point
@@ -562,7 +562,7 @@ If the precision is @code{0} or not specified for @samp{%g} or
 printed cannot be expressed precisely in the specified number of digits,
 the value is rounded to the nearest number that fits.
 
-@node Other Output Conversions, Formatted Input, Floating-Point Conversions, C-Style I/O Functions
+@node Other Output Conversions
 @subsection Other Output Conversions
 
 This section describes miscellaneous conversions for @code{printf}.
@@ -594,7 +594,7 @@ printf ("%3s%-6s", "no", "where");
 @noindent
 prints @samp{ nowhere } (note the leading and trailing spaces).
 
-@node Formatted Input, Input Conversion Syntax, Other Output Conversions, C-Style I/O Functions
+@node Formatted Input
 @subsection Formatted Input
 
 Octave provides the @code{scanf}, @code{fscanf}, and @code{sscanf}
@@ -631,7 +631,7 @@ formatted output functions.  Partly, this is because it takes some care
 to use them properly.  Another reason is that it is difficult to recover
 from a matching error.
 
-@node Input Conversion Syntax, Table of Input Conversions, Formatted Input, C-Style I/O Functions
+@node Input Conversion Syntax
 @subsection Input Conversion Syntax
 
 A @code{scanf} template string is a string that contains ordinary
@@ -693,7 +693,7 @@ between the different conversion specifiers.  See the descriptions of the
 individual conversions for information about the particular options that
 they allow.
 
-@node Table of Input Conversions, Numeric Input Conversions, Input Conversion Syntax, C-Style I/O Functions
+@node Table of Input Conversions
 @subsection Table of Input Conversions
 @cindex input conversions, for @code{scanf}
 
@@ -746,7 +746,7 @@ that perform assignments, or if the arguments are not of the correct
 types, the behavior is also undefined.  On the other hand, extra
 arguments are simply ignored.
 
-@node Numeric Input Conversions, String Input Conversions, Table of Input Conversions, C-Style I/O Functions
+@node Numeric Input Conversions
 @subsection Numeric Input Conversions
 
 This section describes the @code{scanf} conversions for reading numeric
@@ -772,7 +772,7 @@ both permit either uppercase or lowercase letters to be used as digits.
 Unlike the C language @code{scanf}, Octave ignores the @samp{h},
 @samp{l}, and @samp{L} modifiers.
 
-@node String Input Conversions, Binary I/O, Numeric Input Conversions, C-Style I/O Functions
+@node String Input Conversions
 @subsection String Input Conversions
 
 This section describes the @code{scanf} input conversions for reading
@@ -800,7 +800,7 @@ with the conversion @samp{%10c} produces @code{" hello, wo"}, but
 reading the same input with the conversion @samp{%10s} produces
 @code{"hello,"}.
 
-@node Binary I/O, Temporary Files, String Input Conversions, C-Style I/O Functions
+@node Binary I/O
 @subsection Binary I/O
 
 Octave can read and write binary data using the functions @code{fread}
@@ -813,12 +813,12 @@ as the data are read.
 
 @DOCSTRING(fwrite)
 
-@node Temporary Files, EOF and Errors, Binary I/O, C-Style I/O Functions
+@node Temporary Files
 @subsection Temporary Files
 
 @DOCSTRING(tmpnam)
 
-@node EOF and Errors, File Positioning, Temporary Files, C-Style I/O Functions
+@node EOF and Errors
 @subsection End of File and Errors
 
 @DOCSTRING(feof)
@@ -827,7 +827,7 @@ as the data are read.
 
 @DOCSTRING(freport)
 
-@node File Positioning,  , EOF and Errors, C-Style I/O Functions
+@node File Positioning
 @subsection File Positioning
 
 Three functions are available for setting and determining the position of

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Tips, Trouble, System Utilities, Top
+@node Tips
 @appendix Tips and Standards
 @cindex tips
 @cindex standards of coding style
@@ -20,7 +20,7 @@ previous chapters.
 * Function Headers::            Standard headers for functions.
 @end menu
 
-@node Style Tips, Coding Tips, Tips, Tips
+@node Style Tips
 @section Writing Clean Octave Programs
 
 Here are some tips for avoiding common errors in writing Octave code
@@ -61,7 +61,7 @@ distributed with Octave.  If you have not signed papers to assign the
 copyright to anyone else, then place your name in the copyright notice.
 @end itemize
 
-@node Coding Tips, Documentation Tips, Style Tips, Tips
+@node Coding Tips
 @section Tips for Making Code Run Faster.
 @cindex execution speed
 @cindex speedups
@@ -121,7 +121,7 @@ waste a lot of time checking to see if you have updated your function
 files.
 @end itemize
 
-@node Documentation Tips, Comment Tips, Coding Tips, Tips
+@node Documentation Tips
 @section Tips for Documentation Strings
 
 Here are some tips for the writing of documentation strings.
@@ -199,7 +199,7 @@ the decomposition of a list or vector into subunits, some of which may
 vary.
 @end itemize
 
-@node Comment Tips, Function Headers, Documentation Tips, Tips
+@node Comment Tips
 @section Tips on Writing Comments
 
 Here are the conventions to follow when writing comments.
@@ -227,7 +227,7 @@ automatically indent comments according to these conventions,
 depending on the number of semicolons.  @xref{Comments,,
 Manipulating Comments, emacs, The GNU Emacs Manual}.
 
-@node Function Headers,  , Comment Tips, Tips
+@node Function Headers
 @section Conventional Headers for Octave Functions
 @cindex header comments
 

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Optimization, Statistics, Differential Equations, Top
+@node Optimization
 @chapter Optimization
 
 @menu
@@ -19,13 +19,13 @@
 @cindex QP
 @cindex NLP
 
-@node Quadratic Programming, Nonlinear Programming, Optimization, Optimization
+@node Quadratic Programming
 @section Quadratic Programming
 
-@node Nonlinear Programming, Linear Least Squares, Quadratic Programming, Optimization
+@node Nonlinear Programming
 @section Nonlinear Programming
 
-@node Linear Least Squares,  , Nonlinear Programming, Optimization
+@node Linear Least Squares
 @section Linear Least Squares
 
 @DOCSTRING(gls)

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Functions and Scripts, Error Handling, Statements, Top
+@node Functions and Scripts
 @chapter Functions and Script Files
 @cindex defining functions
 @cindex user-defined functions
@@ -26,7 +26,7 @@ like built-in functions.
 * Organization of Functions::   
 @end menu
 
-@node Defining Functions, Multiple Return Values, Functions and Scripts, Functions and Scripts
+@node Defining Functions
 @section Defining Functions
 @cindex @code{function} statement
 @cindex @code{endfunction} statement
@@ -231,7 +231,7 @@ were passed to Octave.
 
 @DOCSTRING(warn_missing_semicolon)
 
-@node Multiple Return Values, Variable-length Argument Lists, Defining Functions, Functions and Scripts
+@node Multiple Return Values
 @section Multiple Return Values
 
 Unlike many other computer languages, Octave allows you to define
@@ -351,7 +351,7 @@ At the top level, @code{nargout} is undefined.
 
 @DOCSTRING(nargchk)
 
-@node Variable-length Argument Lists, Variable-length Return Lists, Multiple Return Values, Functions and Scripts
+@node Variable-length Argument Lists
 @section Variable-length Argument Lists
 @cindex Variable-length argument lists
 @cindex @code{...}
@@ -419,7 +419,7 @@ that take a variable number of arguments.  It is an error to use it in
 other contexts.
 @end defvr
 
-@node Variable-length Return Lists, Returning From a Function, Variable-length Argument Lists, Functions and Scripts
+@node Variable-length Return Lists
 @section Variable-length Return Lists
 @cindex Variable-length return lists
 @cindex @code{...}
@@ -451,7 +451,7 @@ list of returned values.
 
 @DOCSTRING(vr_val)
 
-@node Returning From a Function, Function Files, Variable-length Return Lists, Functions and Scripts
+@node Returning From a Function
 @section Returning From a Function
 
 The body of a user-defined function can contain a @code{return} statement.
@@ -501,7 +501,7 @@ at the end of every function definition.
 
 @DOCSTRING(return_last_computed_value)
 
-@node Function Files, Script Files, Returning From a Function, Functions and Scripts
+@node Function Files
 @section Function Files
 @cindex function file
 
@@ -570,7 +570,7 @@ else, Octave will check the time stamps on all function files.
 
 @DOCSTRING(warn_future_time_stamp)
 
-@node Script Files, Dynamically Linked Functions, Function Files, Functions and Scripts
+@node Script Files
 @section Script Files
 
 A script file is a file containing (almost) any sequence of Octave
@@ -673,7 +673,7 @@ execute commands from any file.
 
 @DOCSTRING(source)
 
-@node Dynamically Linked Functions, Organization of Functions, Script Files, Functions and Scripts
+@node Dynamically Linked Functions
 @section Dynamically Linked Functions
 @cindex dynamic linking
 
@@ -893,7 +893,7 @@ There is currently no detailed description of all the functions that you
 can call in a built-in function.  For the time being, you will have to
 read the source code for Octave.
 
-@node Organization of Functions,  , Dynamically Linked Functions, Functions and Scripts
+@node Organization of Functions
 @section Organization of Functions Distributed with Octave
 
 Many of Octave's standard functions are distributed as function files.

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Linear Algebra, Nonlinear Equations, Arithmetic, Top
+@node Linear Algebra
 @chapter Linear Algebra
 
 This chapter documents the linear algebra functions of Octave.
@@ -16,7 +16,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 * Functions of a Matrix::       
 @end menu
 
-@node Basic Matrix Functions, Matrix Factorizations, Linear Algebra, Linear Algebra
+@node Basic Matrix Functions
 @section Basic Matrix Functions
 
 @DOCSTRING(balance)
@@ -47,7 +47,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @DOCSTRING(trace)
 
-@node Matrix Factorizations, Functions of a Matrix, Basic Matrix Functions, Linear Algebra
+@node Matrix Factorizations
 @section Matrix Factorizations
 
 @DOCSTRING(chol)
@@ -72,7 +72,7 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @DOCSTRING(krylov)
 
-@node Functions of a Matrix,  , Matrix Factorizations, Linear Algebra
+@node Functions of a Matrix
 @section Functions of a Matrix
 
 @DOCSTRING(expm)

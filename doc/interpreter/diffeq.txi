@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Differential Equations, Optimization, Quadrature, Top
+@node Differential Equations
 @chapter Differential Equations
 
 Octave has two built-in functions for solving differential equations.
@@ -17,7 +17,7 @@ Both are based on reliable ODE solvers written in Fortran.
 @cindex ODE
 @cindex DAE
 
-@node Ordinary Differential Equations, Differential-Algebraic Equations, Differential Equations, Differential Equations
+@node Ordinary Differential Equations
 @section Ordinary Differential Equations
 
 The function @code{lsode} can be used to solve ODEs of the form
@@ -99,7 +99,7 @@ See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
 Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
 more information about the inner workings of @code{lsode}.
 
-@node Differential-Algebraic Equations,  , Ordinary Differential Equations, Differential Equations
+@node Differential-Algebraic Equations
 @section Differential-Algebraic Equations
 
 The function @code{daspk} can be used to solve DAEs of the form

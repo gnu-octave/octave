@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Control Theory, Signal Processing, Polynomial Manipulations, Top
+@node Control Theory
 @chapter Control Theory
 
 The Octave Control Systems Toolbox (OCST) was initially developed
@@ -38,7 +38,7 @@ beginning OCST users should start with this program.
 * misc::                        
 @end menu
 
-@node sysstruct, sysinterface, Control Theory, Control Theory
+@node sysstruct
 @section System Data Structure
 
 @menu
@@ -67,7 +67,7 @@ used are consistent with one another.
 
 @DOCSTRING(sysrepdemo)
 
-@node sysstructvars, sysstructtf, sysstruct, sysstruct
+@node sysstructvars
 @subsection Variables common to all OCST system formats
 
 The data structure elements (and variable types) common to all  system
@@ -126,7 +126,7 @@ changed when calls are made to the @code{sysupdate} command.
 The remaining variables of the  system data structure are only present
 if the corresponding entry of the @code{sys} vector is true (=1).
 
-@node sysstructtf, sysstructzp, sysstructvars, sysstruct
+@node sysstructtf
 @subsection @code{tf} format variables
 
 @table @var
@@ -138,7 +138,7 @@ if the corresponding entry of the @code{sys} vector is true (=1).
 
 @end table
 
-@node sysstructzp, sysstructss, sysstructtf, sysstruct
+@node sysstructzp
 @subsection @code{zp} format variables
 
 @table @var
@@ -153,7 +153,7 @@ if the corresponding entry of the @code{sys} vector is true (=1).
 
 @end table
 
-@node sysstructss,  , sysstructzp, sysstruct
+@node sysstructss
 @subsection @code{ss} format variables
 
 @table @var
@@ -173,7 +173,7 @@ names of system states   (list of strings)
 
 @end table
 
-@node sysinterface, sysdisp, sysstruct, Control Theory
+@node sysinterface
 @section System Construction and Interface Functions
 
 Construction and manipulations of the OCST system data structure
@@ -192,35 +192,35 @@ data structures are given in @ref{sysdisp}.
 * structintern::                
 @end menu
 
-@node fir2sys, ss2sys, sysinterface, sysinterface
+@node fir2sys
 @subsection Finite impulse response system interface functions
 
 @DOCSTRING(fir2sys)
 
 @DOCSTRING(sys2fir)
 
-@node ss2sys, tf2sys, fir2sys, sysinterface
+@node ss2sys
 @subsection State space system interface functions
 
 @DOCSTRING(ss2sys)
 
 @DOCSTRING(sys2ss)
 
-@node tf2sys, zp2sys, ss2sys, sysinterface
+@node tf2sys
 @subsection Transfer function system interface functions
 
 @DOCSTRING(tf2sys)
 
 @DOCSTRING(sys2tf)
 
-@node zp2sys, structaccess, tf2sys, sysinterface
+@node zp2sys
 @subsection Zero-pole system interface functions
 
 @DOCSTRING(zp2sys)
 
 @DOCSTRING(sys2zp)
 
-@node structaccess, structintern, zp2sys, sysinterface
+@node structaccess
 @subsection Data structure access functions
 
 @DOCSTRING(syschnames)
@@ -241,7 +241,7 @@ data structures are given in @ref{sysdisp}.
 
 @DOCSTRING(sysgettsam)
 
-@node structintern,  , structaccess, sysinterface
+@node structintern
 @subsection Data structure internal functions
 
 @DOCSTRING(syschnamesl)
@@ -252,7 +252,7 @@ data structures are given in @ref{sysdisp}.
 
 @DOCSTRING(tf2sysl)
 
-@node sysdisp, blockdiag, sysinterface, Control Theory
+@node sysdisp
 @section System display functions
 
 @DOCSTRING(sysout)
@@ -263,7 +263,7 @@ data structures are given in @ref{sysdisp}.
 
 @DOCSTRING(outlist)
 
-@node blockdiag, numerical, sysdisp, Control Theory
+@node blockdiag
 @section Block Diagram Manipulations
 
 @xref{systime}.
@@ -315,7 +315,7 @@ system data structures.
 
 @DOCSTRING(sysmin)
 
-@node numerical, sysprop, blockdiag, Control Theory
+@node numerical
 @section Numerical Functions
 
 @DOCSTRING(are)
@@ -361,7 +361,7 @@ References:
  Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
 @end table
 
-@node sysprop, systime, numerical, Control Theory
+@node sysprop
 @section System Analysis-Properties
 
 @DOCSTRING(analdemo)
@@ -402,7 +402,7 @@ References:
 
 @DOCSTRING(is_stable)
 
-@node systime, sysfreq, sysprop, Control Theory
+@node systime
 @section System Analysis-Time Domain
 
 @DOCSTRING(c2d)
@@ -421,7 +421,7 @@ References:
 
 @DOCSTRING(stepimp)
 
-@node sysfreq, cacsd, systime, Control Theory
+@node sysfreq
 @section System Analysis-Frequency Domain
 
 @strong{Demonstration/tutorial script}
@@ -445,7 +445,7 @@ References:
 
 @DOCSTRING(tzero2)
 
-@node cacsd, misc, sysfreq, Control Theory
+@node cacsd
 @section Controller Design
 
 @DOCSTRING(dgkfdemo)
@@ -478,7 +478,7 @@ References:
 
 @DOCSTRING(place)
 
-@node misc,  , cacsd, Control Theory
+@node misc
 @section Miscellaneous Functions (Not yet properly filed/documented)
 
 @DOCSTRING(axis2dlim)

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Strings, Data Structures, Numeric Data Types, Top
+@node Strings
 @chapter Strings
 @cindex strings
 @cindex character strings
@@ -122,7 +122,7 @@ Data Types}, for more information about creating matrices.
 * Character Class Functions::   
 @end menu
 
-@node Creating Strings, Searching and Replacing, Strings, Strings
+@node Creating Strings
 @section Creating Strings
 
 @DOCSTRING(blanks)
@@ -141,7 +141,7 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(isstr)
 
-@node Searching and Replacing, String Conversions, Creating Strings, Strings
+@node Searching and Replacing
 @section Searching and Replacing
 
 @DOCSTRING(deblank)
@@ -160,7 +160,7 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(substr)
 
-@node String Conversions, Character Class Functions, Searching and Replacing, Strings
+@node String Conversions
 @section String Conversions
 
 @DOCSTRING(bin2dec)
@@ -195,7 +195,7 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(warn_single_quote_string)
 
-@node Character Class Functions,  , String Conversions, Strings
+@node Character Class Functions
 @section Character Class Functions
 
 Octave also provides the following character class test functions

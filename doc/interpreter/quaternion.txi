@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Quaternions, System Utilities, Audio Processing, Top
+@node Quaternions
 @chapter Quaternions
 
 Quaternions are hypercomplex numbers used to represent spatial

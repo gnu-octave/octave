@@ -4,7 +4,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Emacs, Grammar, Installation, Top
+@node Emacs
 @appendix Emacs Octave Support
 
 The development of Octave code can greatly be facilitated using Emacs
@@ -35,7 +35,7 @@ or suggestions on using EOS.
 * Using the Emacs Info Reader for Octave::  
 @end menu
 
-@node Installing EOS, Using Octave Mode, Emacs, Emacs
+@node Installing EOS
 @appendixsec Installing EOS
 
 The Emacs package EOS consists of the three files @file{octave-mod.el},
@@ -52,7 +52,7 @@ the Octave distribution to a place where Emacs can find them (this
 depends on how your Emacs was installed).  Byte-compile them for speed
 if you want.
 
-@node Using Octave Mode, Running Octave From Within Emacs, Installing EOS, Emacs
+@node Using Octave Mode
 @appendixsec Using Octave Mode
 
 If you are lucky, your sysadmins have already arranged everything so
@@ -354,7 +354,7 @@ automatically sets up a mail buffer with version information already
 added.  You just need to add a description of the problem, including a
 reproducible test case and send the message.
 
-@node Running Octave From Within Emacs, Using the Emacs Info Reader for Octave, Using Octave Mode, Emacs
+@node Running Octave From Within Emacs
 @appendixsec Running Octave From Within Emacs
 
 The package @file{octave} provides commands for running an inferior
@@ -465,7 +465,7 @@ Otherwise, @emph{nothing} will work, because Emacs will have no idea
 when Octave is waiting for input, or done sending output.
 @end quotation
 
-@node Using the Emacs Info Reader for Octave,  , Running Octave From Within Emacs, Emacs
+@node Using the Emacs Info Reader for Octave
 @appendixsec Using the Emacs Info Reader for Octave
 
 You can also set up the Emacs Info reader for dealing with the results

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Nonlinear Equations, Quadrature, Linear Algebra, Top
+@node Nonlinear Equations
 @chapter Nonlinear Equations
 @cindex nonlinear equations
 @cindex equations, nonlinear

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Error Handling, Input and Output, Functions and Scripts, Top
+@node Error Handling
 @chapter Error Handling
 
 Octave includes several functions for printing error and warning

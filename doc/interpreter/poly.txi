@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Polynomial Manipulations, Control Theory, Sets, Top
+@node Polynomial Manipulations
 @chapter Polynomial Manipulations
 
 In Octave, a polynomial is represented by its coefficients (arranged

@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Plotting, Matrix Manipulation, Input and Output, Top
+@node Plotting
 @chapter Plotting
 
 All of Octave's plotting functions use @code{gnuplot} to handle the
@@ -24,7 +24,7 @@ low-level plotting functions.
 * Interaction with gnuplot::    
 @end menu
 
-@node Two-Dimensional Plotting, Specialized Two-Dimensional Plots, Plotting, Plotting
+@node Two-Dimensional Plotting
 @section Two-Dimensional Plotting
 
 @deffn {Command} gplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
@@ -196,7 +196,7 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 
 @DOCSTRING(axis)
 
-@node Specialized Two-Dimensional Plots, Three-Dimensional Plotting, Two-Dimensional Plotting, Plotting
+@node Specialized Two-Dimensional Plots
 @section Specialized Two-Dimensional Plots
 
 @DOCSTRING(bar)
@@ -215,7 +215,7 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 
 @DOCSTRING(stairs)
 
-@node Three-Dimensional Plotting, Plot Annotations, Specialized Two-Dimensional Plots, Plotting
+@node Three-Dimensional Plotting
 @section Three-Dimensional Plotting
 
 @deffn {Command} gsplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
@@ -298,7 +298,7 @@ The @sc{Matlab}-style three-dimensional plotting commands are:
 
 @DOCSTRING(meshdom)
 
-@node Plot Annotations, Multiple Plots on One Page, Three-Dimensional Plotting, Plotting
+@node Plot Annotations
 @section Plot Annotations
 
 @DOCSTRING(grid)
@@ -309,7 +309,7 @@ The @sc{Matlab}-style three-dimensional plotting commands are:
 
 @DOCSTRING(xlabel)
 
-@node Multiple Plots on One Page, Multiple Plot Windows, Plot Annotations, Plotting
+@node Multiple Plots on One Page
 @section Multiple Plots on One Page
 
 The following functions all require a version of @code{gnuplot} that
@@ -329,12 +329,12 @@ supports the multiplot feature.
 
 @DOCSTRING(top_title)
 
-@node Multiple Plot Windows, Interaction with gnuplot, Multiple Plots on One Page, Plotting
+@node Multiple Plot Windows
 @section Multiple Plot Windows
 
 @DOCSTRING(figure)
 
-@node Interaction with gnuplot,  , Multiple Plot Windows, Plotting
+@node Interaction with gnuplot
 @section Interaction with @code{gnuplot}
 
 @DOCSTRING(gnuplot_binary)

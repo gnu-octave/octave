@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Variables, Expressions, I/O Streams, Top
+@node Variables
 @chapter Variables
 @cindex variables, user-defined
 @cindex user-defined variables
@@ -60,7 +60,7 @@ before they have been given a value.  Doing so results in an error.
 * Defaults from the Environment::  
 @end menu
 
-@node Global Variables, Status of Variables, Variables, Variables
+@node Global Variables
 @section Global Variables
 @cindex global variables
 @cindex @code{global} statement
@@ -144,7 +144,7 @@ the function works with a @emph{copy} of its argument.
 
 @DOCSTRING(isglobal)
 
-@node Status of Variables, Summary of Built-in Variables, Global Variables, Variables
+@node Status of Variables
 @section Status of Variables
 
 @DOCSTRING(clear)
@@ -159,7 +159,7 @@ the function works with a @emph{copy} of its argument.
 
 @DOCSTRING(which)
 
-@node Summary of Built-in Variables, Defaults from the Environment, Status of Variables, Variables
+@node Summary of Built-in Variables
 @section Summary of Built-in Variables
 
 Here is a summary of all of Octave's built-in variables along with
@@ -433,7 +433,7 @@ Default value: @code{""}.
 @end vtable
 
 
-@node Defaults from the Environment,  , Summary of Built-in Variables, Variables
+@node Defaults from the Environment
 @section Defaults from the Environment
 
 Octave uses the values of the following environment variables to set the

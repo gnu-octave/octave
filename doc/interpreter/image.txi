@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Image Processing, Audio Processing, Signal Processing, Top
+@node Image Processing
 @chapter Image Processing
 
 Octave can display images with the X Window System using the

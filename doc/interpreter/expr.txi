@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Expressions, Evaluation, Variables, Top
+@node Expressions
 @chapter Expressions
 @cindex expressions
 
@@ -28,7 +28,7 @@ combinations of these with various operators.
 * Operator Precedence::         
 @end menu
 
-@node Index Expressions, Calling Functions, Expressions, Expressions
+@node Index Expressions
 @section Index Expressions
 
 @opindex (
@@ -212,7 +212,7 @@ endfor
 particularly for large matrices because Octave does not have to
 repeatedly resize the result.
 
-@node Calling Functions, Arithmetic Ops, Index Expressions, Expressions
+@node Calling Functions
 @section Calling Functions
 
 A @dfn{function} is a name for a particular calculation.  Because it has
@@ -280,7 +280,7 @@ expressions.  See also @ref{Index Expressions}, and @ref{Assignment Ops}.
 * Recursion::                   
 @end menu
 
-@node Call by Value, Recursion, Calling Functions, Calling Functions
+@node Call by Value
 @subsection Call by Value
 
 In Octave, unlike Fortran, function arguments are passed by value, which
@@ -344,7 +344,7 @@ value outside the scope of the function @code{f}, or attempting (and
 probably failing!) to modify the value of a constant or the value of a
 temporary result.
 
-@node Recursion,  , Call by Value, Calling Functions
+@node Recursion
 @subsection Recursion
 @cindex factorial function
 
@@ -384,7 +384,7 @@ the recursion depth and prevents Octave from recursing infinitely.
 
 @DOCSTRING(max_recursion_depth)
 
-@node Arithmetic Ops, Comparison Ops, Calling Functions, Expressions
+@node Arithmetic Ops
 @section Arithmetic Operators
 @cindex arithmetic operators
 @cindex operators, arithmetic
@@ -546,7 +546,7 @@ useful in this case.
 
 @DOCSTRING(warn_divide_by_zero)
 
-@node Comparison Ops, Boolean Expressions, Arithmetic Ops, Expressions
+@node Comparison Ops
 @section Comparison Operators
 @cindex comparison expressions
 @cindex expressions, comparison
@@ -612,7 +612,7 @@ String comparisons may also be performed with the @code{strcmp}
 function, not with the comparison operators listed above.
 @xref{Strings}.
 
-@node Boolean Expressions, Assignment Ops, Comparison Ops, Expressions
+@node Boolean Expressions
 @section Boolean Expressions
 @cindex expressions, boolean
 @cindex boolean expressions
@@ -631,7 +631,7 @@ function, not with the comparison operators listed above.
 * Short-circuit Boolean Operators::  
 @end menu
 
-@node Element-by-element Boolean Operators, Short-circuit Boolean Operators, Boolean Expressions, Boolean Expressions
+@node Element-by-element Boolean Operators
 @subsection Element-by-element Boolean Operators
 @cindex element-by-element evaluation
 
@@ -706,7 +706,7 @@ the value of the variable @var{b} is incremented even if the variable
 This behavior is necessary for the boolean operators to work as
 described for matrix-valued operands.
 
-@node Short-circuit Boolean Operators,  , Element-by-element Boolean Operators, Boolean Expressions
+@node Short-circuit Boolean Operators
 @subsection Short-circuit Boolean Operators
 @cindex short-circuit evaluation
 
@@ -791,7 +791,7 @@ would result in an error if @code{f} were called with one or two
 arguments because Octave would be forced to try to evaluate both of the
 operands for the operator @samp{&}.
 
-@node Assignment Ops, Increment Ops, Boolean Expressions, Expressions
+@node Assignment Ops
 @section Assignment Expressions
 @cindex assignment expressions
 @cindex assignment operators
@@ -965,7 +965,7 @@ it to get rid of such nesting of assignments.  This is never very hard.
 @cindex operators, increment
 @cindex operators, decrement
 
-@node Increment Ops, Operator Precedence, Assignment Ops, Expressions
+@node Increment Ops
 @section Increment Operators
 
 @emph{Increment operators} increase or decrease the value of a variable
@@ -1019,7 +1019,7 @@ increment the fourth element of the vector @var{v}, but instead it
 results in a parse error.  This problem may be fixed in a future
 release of Octave.
 
-@node Operator Precedence,  , Increment Ops, Expressions
+@node Operator Precedence
 @section Operator Precedence
 @cindex operator precedence
 

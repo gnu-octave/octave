@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Statements, Functions and Scripts, Evaluation, Top
+@node Statements
 @chapter Statements
 @cindex statements
 
@@ -44,7 +44,7 @@ The list of statements contained between keywords like @code{if} or
 * Continuation Lines::          
 @end menu
 
-@node The if Statement, The switch Statement, Statements, Statements
+@node The if Statement
 @section The @code{if} Statement
 @cindex @code{if} statement
 @cindex @code{else} statement
@@ -195,7 +195,7 @@ using the indentation to show how Octave groups the statements.
 
 @DOCSTRING(warn_assign_as_truth_value)
 
-@node The switch Statement, The while Statement, The if Statement, Statements
+@node The switch Statement
 @section The @code{switch} Statement
 @cindex @code{switch} statement
 @cindex @code{case} statement
@@ -294,7 +294,7 @@ using a jump table.
 
 @DOCSTRING(warn_variable_switch_label)
 
-@node The while Statement, The do-until Statement, The switch Statement, Statements
+@node The while Statement
 @section The @code{while} Statement
 @cindex @code{while} statement
 @cindex @code{endwhile} statement
@@ -366,7 +366,7 @@ simple.
 @xref{The if Statement}, for a description of the variable
 @code{warn_assign_as_truth_value}.
 
-@node The do-until Statement, The for Statement, The while Statement, Statements
+@node The do-until Statement
 @section The @code{do-until} Statement
 @cindex @code{do-until} statement
 
@@ -416,7 +416,7 @@ simple.
 @xref{The if Statement}, for a description of the variable
 @code{warn_assign_as_truth_value}.
 
-@node The for Statement, The break Statement, The do-until Statement, Statements
+@node The for Statement
 @section The @code{for} Statement
 @cindex @code{for} statement
 @cindex @code{endfor} statement
@@ -481,7 +481,7 @@ something to do inside the loop.
 * Looping Over Structure Elements::  
 @end menu
 
-@node Looping Over Structure Elements,  , The for Statement, The for Statement
+@node Looping Over Structure Elements
 @subsection Looping Over Structure Elements
 @cindex structure elements, looping over
 @cindex looping over structure elements
@@ -535,7 +535,7 @@ also optional.  This is useful for cycling through the values of all the
 structure elements when the names of the elements do not need to be
 known.
 
-@node The break Statement, The continue Statement, The for Statement, Statements
+@node The break Statement
 @section The @code{break} Statement
 @cindex @code{break} statement
 
@@ -590,7 +590,7 @@ endwhile
 @end group
 @end example
 
-@node The continue Statement, The unwind_protect Statement, The break Statement, Statements
+@node The continue Statement
 @section The @code{continue} Statement
 @cindex @code{continue} statement
 
@@ -639,7 +639,7 @@ endfor
 @end group
 @end example
 
-@node The unwind_protect Statement, The try Statement, The continue Statement, Statements
+@node The unwind_protect Statement
 @section The @code{unwind_protect} Statement
 @cindex @code{unwind_protect} statement
 @cindex @code{unwind_protect_cleanup}
@@ -687,7 +687,7 @@ would not be restored if an error occurs while performing the indexing
 operation because evaluation would stop at the point of the error and
 the statement to restore the value would not be executed.
 
-@node The try Statement, Continuation Lines, The unwind_protect Statement, Statements
+@node The try Statement
 @section The @code{try} Statement
 @cindex @code{try} statement
 @cindex @code{catch}
@@ -732,7 +732,7 @@ powerful as condition-case in Lisp.
 @cindex @code{...} continuation marker
 @cindex @code{\} continuation marker
 
-@node Continuation Lines,  , The try Statement, Statements
+@node Continuation Lines
 @section Continuation Lines
 
 In the Octave language, most statements end with a newline character and

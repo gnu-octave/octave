@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Introduction, Getting Started, Preface, Top
+@node Introduction
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
@@ -33,7 +33,7 @@ This document corresponds to Octave version @value{VERSION}.
 * Conventions::                 
 @end menu
 
-@node Running Octave, Simple Examples, Introduction, Introduction
+@node Running Octave
 @section Running Octave
 
 On most systems, the way to invoke Octave is with the shell command
@@ -54,7 +54,7 @@ To exit Octave, type @kbd{quit}, or @kbd{exit} at the Octave prompt.
 On systems that support job control, you can suspend Octave by sending
 it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
 
-@node Simple Examples, Conventions, Running Octave, Introduction
+@node Simple Examples
 @section Simple Examples
 
 The following chapters describe all of Octave's features in detail, but
@@ -343,7 +343,7 @@ program called Info.  When you invoke Info you will be put into a menu
 driven program that contains the entire Octave manual.  Help for using
 Info is provided in this manual in @ref{Getting Help}.
 
-@node Conventions,  , Simple Examples, Introduction
+@node Conventions
 @section Conventions
 
 This section explains the notational conventions that are used in this
@@ -357,7 +357,7 @@ manual.  You may want to skip this section and refer back to it later.
 * Format of Descriptions::      
 @end menu
 
-@node Fonts, Evaluation Notation, Conventions, Conventions
+@node Fonts
 @subsection Fonts
 @cindex fonts
 
@@ -370,7 +370,7 @@ prompt sometimes appear in this font or form: @kbd{foo --bar --baz}.
 Specific keys on your keyboard appear in this font or form: @key{ANY}.
 @cindex any key
 
-@node Evaluation Notation, Printing Notation, Fonts, Conventions
+@node Evaluation Notation
 @subsection Evaluation Notation
 @cindex evaluation notation
 @cindex documentation notation
@@ -427,7 +427,7 @@ rot90 ([1, 2; 3, 4], 7)
 @end group
 @end example
 
-@node Printing Notation, Error Messages, Evaluation Notation, Conventions
+@node Printing Notation
 @subsection Printing Notation
 @cindex printing notation
 
@@ -445,7 +445,7 @@ printf ("foo %s\n", "bar")
 @end group
 @end example
 
-@node Error Messages, Format of Descriptions, Printing Notation, Conventions
+@node Error Messages
 @subsection Error Messages
 @cindex error message notation
 
@@ -460,7 +460,7 @@ error: struct_elements: wrong type argument `matrix'
 @end group
 @end example
 
-@node Format of Descriptions,  , Error Messages, Conventions
+@node Format of Descriptions
 @subsection Format of Descriptions
 @cindex description format
 
@@ -483,7 +483,7 @@ The description follows on succeeding lines, sometimes with examples.
 * A Sample Variable Description::  
 @end menu
 
-@node A Sample Function Description, A Sample Command Description, Format of Descriptions, Format of Descriptions
+@node A Sample Function Description
 @subsubsection A Sample Function Description
 @cindex function descriptions
 
@@ -555,7 +555,7 @@ The function described works element-by-element for matrix and vector
 arguments.
 @end table
 
-@node A Sample Command Description, A Sample Variable Description, A Sample Function Description, Format of Descriptions
+@node A Sample Command Description
 @subsubsection A Sample Command Description
 @cindex command descriptions
 
@@ -573,7 +573,7 @@ Change the current working directory to @var{dir}.  For example,
 printed and the working directory is not changed.
 @end deffn
 
-@node A Sample Variable Description,  , A Sample Command Description, Format of Descriptions
+@node A Sample Variable Description
 @subsubsection A Sample Variable Description
 @cindex variable descriptions
 

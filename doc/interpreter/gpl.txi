@@ -4,7 +4,7 @@
 
 @cindex warranty
 @cindex copyright
-@node Copying, Concept Index, Grammar, Top
+@node Copying
 @appendix GNU GENERAL PUBLIC LICENSE
 @center Version 2, June 1991
 

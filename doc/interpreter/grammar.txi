@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Grammar, Copying, Emacs, Top
+@node Grammar
 @appendix Grammar
 @cindex grammar rules
 @cindex language definition
@@ -14,7 +14,7 @@ Octave's language.
 * Keywords::                    
 @end menu
 
-@node Keywords,  , Grammar, Grammar
+@node Keywords
 @section Keywords
 @cindex keywords
 

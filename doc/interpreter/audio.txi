@@ -3,7 +3,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Audio Processing, Quaternions, Image Processing, Top
+@node Audio Processing
 @chapter Audio Processing
 
 Octave provides a few functions for dealing with audio data.  An audio

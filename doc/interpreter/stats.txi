@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Statistics, Financial Functions, Optimization, Top
+@node Statistics
 @chapter Statistics
 
 I hope that someday Octave will include more statistics functions.  If
@@ -16,7 +16,7 @@ you would like to help improve Octave in this area, please contact
 * Distributions::               
 @end menu
 
-@node Basic Statistical Functions, Tests, Statistics, Statistics
+@node Basic Statistical Functions
 @section Basic Statistical Functions
 
 @DOCSTRING(mean)
@@ -79,7 +79,7 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(center)
 
-@node Tests, Models, Basic Statistical Functions, Statistics
+@node Tests
 @section Tests
 
 @DOCSTRING(anova)
@@ -132,12 +132,12 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(z_test_2)
 
-@node Models, Distributions, Tests, Statistics
+@node Models
 @section Models
 
 @DOCSTRING(logistic_regression)
 
-@node Distributions,  , Models, Statistics
+@node Distributions
 @section Distributions
 
 @DOCSTRING(beta_cdf)

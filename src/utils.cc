@@ -487,6 +487,14 @@ oct_putenv (const char *var_name, const char *value)
 #endif
 }
 
+static void
+warn_old_style_preference (bool val, const string& sval)
+{
+  warning
+    ("preference of \"%s\" is obsolete -- use numeric value of %d instead",
+     sval.c_str (), (val ? 1 : 0));
+}
+
 // Check the value of a string variable to see if it it's ok to do
 // something.
 //
@@ -511,11 +519,17 @@ check_preference (const string& var)
     {
       if (val.compare ("yes", 0, 3) == 0
 	  || val.compare ("true", 0, 4) == 0)
-	pref = 1;
+	{
+	  warn_old_style_preference (true, val);
+	  pref = 1;
+	}
       else if (val.compare ("never", 0, 5) == 0
 	       || val.compare ("no", 0, 2) == 0
 	       || val.compare ("false", 0, 5) == 0)
-	pref = 0;
+	{
+	  warn_old_style_preference (false, val);
+	  pref = 0;
+	}
     }
 
   return pref;

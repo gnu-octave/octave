@@ -902,6 +902,7 @@ plot_style_token (char *s)
       "lines",
       "linespoints",
       "points",
+      "steps",
       0,
     };
 

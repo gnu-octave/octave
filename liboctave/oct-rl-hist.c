@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 octave_add_history (const char *line)
 {
-  return add_history (line);
+  add_history (line);
 }
 
 int
@@ -64,7 +64,7 @@ octave_history_base (void)
 void
 octave_stifle_history (int n)
 {
-  return stifle_history (n);
+  stifle_history (n);
 }
 
 int
@@ -94,7 +94,7 @@ octave_read_history (const char *f)
 void
 octave_using_history (void)
 {
-  return using_history ();
+  using_history ();
 }
 
 int

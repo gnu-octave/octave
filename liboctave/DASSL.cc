@@ -119,10 +119,10 @@ DASSL::force_restart (void)
 }
 
 void
-DASSL::set_stop_time (double t)
+DASSL::set_stop_time (double tt)
 {
   stop_time_set = 1;
-  stop_time = t;
+  stop_time = tt;
 }
 
 void

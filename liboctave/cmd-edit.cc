@@ -139,7 +139,7 @@ gnu_readline::gnu_readline ()
   // XXX FIXME XXX -- need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
 
-  string term = octave_env::getenv ("TERM");
+  std::string term = octave_env::getenv ("TERM");
 
   octave_rl_set_terminal_name (term.c_str ());
 

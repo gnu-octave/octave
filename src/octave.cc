@@ -113,6 +113,7 @@ char *editor = 0;
 int no_line_editing = 0;
 
 // If nonzero, print verbose info in some cases.
+// (--verbose; -V)
 int verbose_flag = 0;
 
 // Command number, counting from the beginning of this session.
@@ -160,9 +161,9 @@ static int inhibit_startup_message = 0;
 
 // Usage message
 static const char *usage_string = 
-  "octave [-?Vdfhiqvx] [-p path] [--debug] [--help] [--interactive]\n\
-         [--info-file file] [--norc] [--path path] [--quiet] [--verbose]\n\
-         [--version] [--echo-commands] [file]";
+  "octave [-?Vdfhiqvx] [-p path] [--debug] [--help] [--ignore-init-file]\n\
+       [--info-file file] [--interactive] [--path path] [--silent]\n\
+       [--verbose] [--version] [--echo-commands] [file]";
 
 // This is here so that it\'s more likely that the usage message and
 // the real set of options will agree.
@@ -372,6 +373,7 @@ verbose_usage (void)
        << "\n"
        << "  usage: " << usage_string
        << "\n\n"
+       << "     V : enable verbose output in some cases\n"
        << "     d : enter parser debugging mode\n"
        << "     f : don't read ~/.octaverc or .octaverc at startup\n"
        << "   h|? : print short help message and exit\n"

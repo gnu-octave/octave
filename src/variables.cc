@@ -350,7 +350,10 @@ link_to_global_variable (symbol_record *sr)
     {
 // Would be nice not to have this cast.  XXX FIXME XXX
       tree_constant *tmp = (tree_constant *) sr->def ();
-      tmp = new tree_constant (*tmp);
+      if (tmp == NULL_TREE_CONST)
+	tmp = new tree_constant ();
+      else
+	tmp = new tree_constant (*tmp);
       gsr->define (tmp);
     }
   else

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function s = menu (t, ...)
+function num = menu (t, ...)
 
 # usage: menu (title, opt1, ...)
 #
@@ -43,19 +43,22 @@ function s = menu (t, ...)
 
   nopt = nargin - 1;
 
-  s = 0;
   while (1)
-    page_screen_output = "false";
     va_start ();
     for i = 1:nopt
       printf ("  [%2d] ", i);
       disp (va_arg ());
     endfor
     printf ("\n");
-    page_screen_output = save_page_screen_output;
-    s = input ("pick a number, any number: ");
-    if (s < 1 || s > nopt)
-      printf ("\nerror: input out of range\n\n");
+    s = "";
+    s = input ("pick a number, any number: ", "s");
+    if (strcmp (s, ""))
+      printf ("\n");
+      continue;
+    endif
+    eval (sprintf ("num = %s;", s));
+    if (! is_scalar (num) || num < 1 || num > nopt)
+      printf ("\nerror: input invalid or out of range\n\n");
     else
       break;
     endif

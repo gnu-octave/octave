@@ -1044,7 +1044,7 @@ octave_base_stream::read (const Array<double>& size,
 
       if (! error_state)
 	{
-	  if (ffmt == oct_mach_info::unknown)
+	  if (ffmt == oct_mach_info::flt_fmt_unknown)
 	    ffmt = float_format ();
 
 	  int tmp = retval.read (is, nr, nc, dt, skip, ffmt);
@@ -2035,7 +2035,7 @@ octave_base_stream::write (const octave_value& data,
 
       if (! error_state)
 	{
-	  if (ffmt == oct_mach_info::unknown)
+	  if (ffmt == oct_mach_info::flt_fmt_unknown)
 	    ffmt = float_format ();
 
 	  int tmp = mval.write (os, dt, skip, ffmt);
@@ -2901,7 +2901,7 @@ octave_stream::mode (void) const
 oct_mach_info::float_format
 octave_stream::float_format (void) const
 {
-  oct_mach_info::float_format retval = oct_mach_info::unknown;
+  oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
 
   if (stream_ok ("float_format"))
     retval = rep->float_format ();

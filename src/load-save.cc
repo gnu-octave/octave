@@ -2287,32 +2287,32 @@ read_mat_file_header (std::istream& is, bool& swap, FOUR_BYTE_INT& mopt,
 static oct_mach_info::float_format
 mopt_digit_to_float_format (int mach)
 {
-  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
 
   switch (mach)
     {
     case 0:
-      flt_fmt = oct_mach_info::ieee_little_endian;
+      flt_fmt = oct_mach_info::flt_fmt_ieee_little_endian;
       break;
 
     case 1:
-      flt_fmt = oct_mach_info::ieee_big_endian;
+      flt_fmt = oct_mach_info::flt_fmt_ieee_big_endian;
       break;
 
     case 2:
-      flt_fmt = oct_mach_info::vax_d;
+      flt_fmt = oct_mach_info::flt_fmt_vax_d;
       break;
 
     case 3:
-      flt_fmt = oct_mach_info::vax_g;
+      flt_fmt = oct_mach_info::flt_fmt_vax_g;
       break;
 
     case 4:
-      flt_fmt = oct_mach_info::cray;
+      flt_fmt = oct_mach_info::flt_fmt_cray;
       break;
 
     default:
-      flt_fmt = oct_mach_info::unknown;
+      flt_fmt = oct_mach_info::flt_fmt_unknown;
       break;
     }
 
@@ -2326,23 +2326,23 @@ float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
 
   switch (flt_fmt)
     {
-    case oct_mach_info::ieee_little_endian:
+    case oct_mach_info::flt_fmt_ieee_little_endian:
       retval = 0;
       break;
 
-    case oct_mach_info::ieee_big_endian:
+    case oct_mach_info::flt_fmt_ieee_big_endian:
       retval = 1;
       break;
 
-    case oct_mach_info::vax_d:
+    case oct_mach_info::flt_fmt_vax_d:
       retval = 2;
       break;
 
-    case oct_mach_info::vax_g:
+    case oct_mach_info::flt_fmt_vax_g:
       retval = 3;
       break;
 
-    case oct_mach_info::cray:
+    case oct_mach_info::flt_fmt_cray:
       retval = 4;
       break;
 
@@ -2374,7 +2374,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   // initialization of variable.
 
   Matrix re;
-  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
   bool swap = false;
   int type = 0;
   int prec = 0;
@@ -2403,7 +2403,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 
   flt_fmt = mopt_digit_to_float_format (mach);
 
-  if (flt_fmt == oct_mach_info::unknown)
+  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
     {
       error ("load: unrecognized binary format!");
       return retval;
@@ -2615,7 +2615,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   // initialization of variable.
 
   Matrix re;
-  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
   int type = 0;
   bool imag;
   bool logicalvar;
@@ -2635,9 +2635,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   // MAT files always use IEEE floating point
   if ((number == 1) ^ swap)
-    flt_fmt = oct_mach_info::ieee_big_endian;
+    flt_fmt = oct_mach_info::flt_fmt_ieee_big_endian;
   else
-    flt_fmt = oct_mach_info::ieee_little_endian;
+    flt_fmt = oct_mach_info::flt_fmt_ieee_little_endian;
 
   // element type and length
   if (read_mat5_tag (is, swap, type, element_length))
@@ -3002,7 +3002,7 @@ read_binary_file_header (std::istream& is, bool& swap,
 
   flt_fmt = mopt_digit_to_float_format (tmp);
 
-  if (flt_fmt == oct_mach_info::unknown)
+  if (flt_fmt == oct_mach_info::flt_fmt_unknown)
     {
       if (! quiet)
         error ("load: unrecognized binary format!");
@@ -3032,7 +3032,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
       return retval;
     }
 
-  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
@@ -3401,7 +3401,7 @@ lists of lists of matrices, or ...).\n\
 
   std::string orig_fname = argv[i];
 
-  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
 
   bool swap = false;
 

@@ -74,31 +74,31 @@ oct_mach_info::init_float_format (void) const
 {
   float_params fp[5];
 
-  INIT_FLT_PAR (fp[0], oct_mach_info::ieee_big_endian,
+  INIT_FLT_PAR (fp[0], oct_mach_info::flt_fmt_ieee_big_endian,
 		   1048576,  0,
 		2146435071, -1,
 		1017118720,  0,
 		1018167296,  0);
 
-  INIT_FLT_PAR (fp[1], oct_mach_info::ieee_little_endian,
+  INIT_FLT_PAR (fp[1], oct_mach_info::flt_fmt_ieee_little_endian,
 		 0,    1048576,
 		-1, 2146435071,
 		 0, 1017118720,
 		 0, 1018167296);
 
-  INIT_FLT_PAR (fp[2], oct_mach_info::vax_d,
+  INIT_FLT_PAR (fp[2], oct_mach_info::flt_fmt_vax_d,
 		   128,  0,
 		-32769, -1,
 		  9344,  0,
 		  9344,  0);
 
-  INIT_FLT_PAR (fp[3], oct_mach_info::vax_g,
+  INIT_FLT_PAR (fp[3], oct_mach_info::flt_fmt_vax_g,
 		    16,  0,
 		-32769, -1,
 		 15552,  0,
 		 15552,  0);
 
-  INIT_FLT_PAR (fp[4], oct_mach_info::unknown,
+  INIT_FLT_PAR (fp[4], oct_mach_info::flt_fmt_unknown,
 		0, 0,
 		0, 0,
 		0, 0,
@@ -120,7 +120,7 @@ oct_mach_info::init_float_format (void) const
 	  break;
 	}
     }
-  while (fp[++i].fp_fmt != oct_mach_info::unknown);
+  while (fp[++i].fp_fmt != oct_mach_info::flt_fmt_unknown);
 }
 
 void
@@ -168,7 +168,7 @@ oct_mach_info::float_format
 oct_mach_info::native_float_format (void)
 {
   return (instance_ok ())
-    ? instance->native_float_fmt : oct_mach_info::unknown;
+    ? instance->native_float_fmt : oct_mach_info::flt_fmt_unknown;
 }
 
 bool
@@ -188,22 +188,22 @@ oct_mach_info::words_little_endian (void)
 oct_mach_info::float_format
 oct_mach_info::string_to_float_format (const std::string& s)
 {
-  oct_mach_info::float_format retval = oct_mach_info::unknown;
+  oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
 
   if (s == "native" || s == "n")
-    retval = oct_mach_info::native;
+    retval = oct_mach_info::flt_fmt_native;
   else if (s == "ieee-be" || s == "b")
-    retval = oct_mach_info::ieee_big_endian;
+    retval = oct_mach_info::flt_fmt_ieee_big_endian;
   else if (s == "ieee-le" || s == "l")
-    retval = oct_mach_info::ieee_little_endian;
+    retval = oct_mach_info::flt_fmt_ieee_little_endian;
   else if (s == "vaxd" || s == "d")
-    retval = oct_mach_info::vax_d;
+    retval = oct_mach_info::flt_fmt_vax_d;
   else if (s == "vaxg" || s == "g")
-    retval = oct_mach_info::vax_g;
+    retval = oct_mach_info::flt_fmt_vax_g;
   else if (s == "cray" || s == "c")
-    retval = oct_mach_info::cray;
+    retval = oct_mach_info::flt_fmt_cray;
   else if (s == "unknown")
-    retval = oct_mach_info::unknown;
+    retval = oct_mach_info::flt_fmt_unknown;
   else
     (*current_liboctave_error_handler)
       ("invalid architecture type specified");
@@ -218,27 +218,27 @@ oct_mach_info::float_format_as_string (float_format flt_fmt)
 
   switch (flt_fmt)
     {
-    case native:
+    case flt_fmt_native:
       retval = "native";
       break;
 
-    case ieee_big_endian:
+    case flt_fmt_ieee_big_endian:
       retval = "ieee_big_endian";
       break;
 
-    case ieee_little_endian:
+    case flt_fmt_ieee_little_endian:
       retval = "ieee_little_endian";
       break;
 
-    case vax_d:
+    case flt_fmt_vax_d:
       retval = "vax_d_float";
       break;
 
-    case vax_g:
+    case flt_fmt_vax_g:
       retval = "vax_g_float";
       break;
 
-    case cray:
+    case flt_fmt_cray:
       retval = "cray";
       break;
 

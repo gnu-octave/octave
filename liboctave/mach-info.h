@@ -36,13 +36,13 @@ public:
 
   enum float_format
     {
-      native,
-      unknown,
-      ieee_little_endian,
-      ieee_big_endian,
-      vax_d,
-      vax_g,
-      cray
+      flt_fmt_native,
+      flt_fmt_unknown,
+      flt_fmt_ieee_little_endian,
+      flt_fmt_ieee_big_endian,
+      flt_fmt_vax_d,
+      flt_fmt_vax_g,
+      flt_fmt_cray
     };
 
   static bool instance_ok (void);

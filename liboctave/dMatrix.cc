@@ -2736,11 +2736,11 @@ Matrix::read (std::istream& is, int nr, int nc,
   bool swap_bytes = false;
 
   if (oct_mach_info::words_big_endian ())
-    swap_bytes = (flt_fmt == oct_mach_info::ieee_little_endian
-		 || flt_fmt == oct_mach_info::vax_g
-		 || flt_fmt == oct_mach_info::vax_g);
+    swap_bytes = (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
+		 || flt_fmt == oct_mach_info::flt_fmt_vax_g
+		 || flt_fmt == oct_mach_info::flt_fmt_vax_g);
   else
-    swap_bytes = (flt_fmt == oct_mach_info::ieee_big_endian);
+    swap_bytes = (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
   for (;;)
     {
@@ -2970,11 +2970,11 @@ Matrix::write (std::ostream& os, oct_data_conv::data_type dt, int skip,
   bool swap_bytes = false;
 
   if (oct_mach_info::words_big_endian ())
-    swap_bytes = (flt_fmt == oct_mach_info::ieee_little_endian
-		 || flt_fmt == oct_mach_info::vax_g
-		 || flt_fmt == oct_mach_info::vax_g);
+    swap_bytes = (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
+		 || flt_fmt == oct_mach_info::flt_fmt_vax_g
+		 || flt_fmt == oct_mach_info::flt_fmt_vax_g);
   else
-    swap_bytes = (flt_fmt == oct_mach_info::ieee_big_endian);
+    swap_bytes = (flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 
   for (int i = 0; i < n; i++)
     {

@@ -86,7 +86,7 @@ octave_ieee_init (void)
 
   oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
 
-  if (ff == oct_mach_info::ieee_big_endian)
+  if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
     {
       lo_ieee_hw = 0;
       lo_ieee_lw = 1;

@@ -33,7 +33,7 @@ public:
 
   octave_stdiostream (const std::string& n, FILE *f = 0,
 		      std::ios::openmode arg_md = std::ios::in|std::ios::out,
-		      oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+		      oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_native,
 		      c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
     : octave_base_stream (arg_md, flt_fmt), nm (n), md (arg_md), s(0)
   {
@@ -44,7 +44,7 @@ public:
   static octave_stream
   create (const std::string& n, FILE *f = 0,
 	  std::ios::openmode arg_md = std::ios::in|std::ios::out,
-	  oct_mach_info::float_format flt_fmt = oct_mach_info::native,
+	  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_native,
 	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
   {
     return octave_stream (new octave_stdiostream (n, f, arg_md, flt_fmt, cf));

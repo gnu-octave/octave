@@ -1,3 +1,8 @@
+2003-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mach-info.h (oct_mach_info): Prefix enum elements with flt_fmt_.
+	Change all uses.
+
 2003-10-29  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* dNDArray.cc (NDArray::cumprod, NDArray::cumsum, NDArray::prod,

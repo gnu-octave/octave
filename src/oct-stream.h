@@ -323,7 +323,7 @@ friend class octave_stream;
 public:
 
   octave_base_stream (std::ios::openmode arg_md = std::ios::in|std::ios::out,
-		      oct_mach_info::float_format ff = oct_mach_info::native)
+		      oct_mach_info::float_format ff = oct_mach_info::flt_fmt_native)
     : count (0), md (arg_md), flt_fmt (ff), fail (false), open_state (true)
   { }
 

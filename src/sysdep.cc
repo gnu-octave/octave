@@ -633,8 +633,8 @@ floating point calculations.\n\
   oct_mach_info::float_format flt_fmt =
     oct_mach_info::native_float_format ();
 
-  return octave_value (flt_fmt == oct_mach_info::ieee_little_endian
-		       || flt_fmt == oct_mach_info::ieee_big_endian);
+  return octave_value (flt_fmt == oct_mach_info::flt_fmt_ieee_little_endian
+		       || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 }
 
 DEFUN (tilde_expand, args, ,

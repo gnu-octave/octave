@@ -64,24 +64,20 @@ function subplot (rows, columns, index)
 
   ## global variables to keep track of multiplot options
 
-  global multiplot_mode
-  global multiplot_xsize multiplot_ysize
-  global multiplot_xn multiplot_yn
-  global multiplot_xi multiplot_yi
+  global __multiplot_mode__
+  global __multiplot_xsize__
+  global __multiplot_ysize__
+  global __multiplot_xn__
+  global __multiplot_yn__
+  global __multiplot_xi__
+  global __multiplot_yi__
 
-  ## This is a real kludge.  We gnuplot should be made so that replot can
-  ## be executed while doing multiple plots...
-
-  global multiplot_save_auto_replot = automatic_replot
+  if (! exist ("__multiplot_mode__"))
+    __multiplot_mode__ = 0;
+  endif
 
   if (nargin != 3 && nargin != 1)
     usage ("subplot (rows, columns, index) or subplot (rcn)");
-  endif
-
-  if (automatic_replot)
-    warning ("turning off automatic replot for multiplot mode");
-    multiplot_save_auto_replot = automatic_replot;
-    automatic_replot = 0;
   endif
 
   if (nargin == 1)
@@ -117,58 +113,44 @@ function subplot (rows, columns, index)
 
     ## switching to single plot ?
 
-    gset nomultiplot;
-    gset size 1, 1;
-    gset origin 0, 0;
+    oneplot ();
 
-    multiplot_xn = 1;
-    multiplot_yn = 1;
-    multiplot_mode = 0;
+    ## XXX FIXME XXX -- do we really need to reset these here?
 
-    ## Someone may have reset it betweeen calls...
-
-    if (! isstr (automatic_replot) && ! automatic_replot)
-      automatic_replot = multiplot_save_auto_replot;
-    endif
+    __multiplot_xn__ = 1;
+    __multiplot_yn__ = 1;
 
   else
 
     ## doing multiplot plots
 
-    doagain = 0;
+    if (! __multiplot_mode__
+ 	|| __multiplot_xn__ != columns
+	|| __multiplot_yn__ != rows)
 
-    if (exist ("multiplot_mode") != 1)
-      doagain = 1;
-    elseif (multiplot_mode != 1 || multiplot_xn != columns
-	    || multiplot_yn != rows)
-      doagain = 1;
-    endif
-
-    if (doagain)
-
-      multiplot_mode = 1;
-      multiplot_xn = columns;
-      multiplot_yn = rows;
-      multiplot_xsize = 1.0 ./ columns;
-      multiplot_ysize = 1.0 ./ rows;
+      __multiplot_mode__ = 1;
+      __multiplot_xn__ = columns;
+      __multiplot_yn__ = rows;
+      __multiplot_xsize__ = 1.0 ./ columns;
+      __multiplot_ysize__ = 1.0 ./ rows;
 
       gset multiplot;
 
-      eval (sprintf ("gset size %g, %g", multiplot_xsize, multiplot_ysize));
-
+      eval (sprintf ("gset size %g, %g", __multiplot_xsize__,
+		     __multiplot_ysize__));
     endif
 
     ## get the sub plot location
 
     yp = fix ((index-1)/columns);
     xp = index - yp*columns - 1;
-    multiplot_xi = ++xp;
-    multiplot_yi = ++yp;
+    __multiplot_xi__ = ++xp;
+    __multiplot_yi__ = ++yp;
 
     ## set the origin
 
-    xo = (xp - 1.0)*multiplot_xsize;
-    yo = (rows - yp)*multiplot_ysize;
+    xo = (xp - 1.0) * __multiplot_xsize__;
+    yo = (rows - yp) * __multiplot_ysize__;
 
     eval (sprintf ("gset origin %g, %g", xo, yo));
 

@@ -52,6 +52,8 @@ extern int empty_arg (const char *name, int nr, int nc);
 
 extern const char *undo_string_escape (char c);
 
+extern string do_string_escapes (const string& s);
+
 extern string undo_string_escapes (const string& s);
 
 extern int check_preference (const string& var);

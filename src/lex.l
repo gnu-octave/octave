@@ -166,7 +166,6 @@ static bool Vbackslash_escapes;
 // Forward declarations for functions defined at the bottom of this
 // file.
 
-static void do_string_escapes (char *s);
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
 static int is_plot_keyword (const string& s);
@@ -717,82 +716,6 @@ reset_parser (void)
 
   // Reset other flags.
   lexer_flags.init ();
-}
-
-// Replace backslash escapes in a string with the real values.
-
-static void
-do_string_escapes (char *s)
-{
-  if (! Vbackslash_escapes)
-    return;
-
-  char *p1 = s;
-  char *p2 = s;
-
-  while (*p2 != '\0')
-    {
-      if (*p2 == '\\' && *(p2+1) != '\0')
-	{
-	  switch (*++p2)
-	    {
-	    case 'a':
-	      *p1 = '\a';
-	      break;
-
-	    case 'b': // backspace
-	      *p1 = '\b';
-	      break;
-
-	    case 'f': // formfeed
-	      *p1 = '\f';
-	      break;
-
-	    case 'n': // newline
-	      *p1 = '\n';
-	      break;
-
-	    case 'r': // carriage return
-	      *p1 = '\r';
-	      break;
-
-	    case 't': // horizontal tab
-	      *p1 = '\t';
-	      break;
-
-	    case 'v': // vertical tab
-	      *p1 = '\v';
-	      break;
-
-	    case '\\': // backslash
-	      *p1 = '\\';
-	      break;
-
-	    case '\'': // quote
-	      *p1 = '\'';
-	      break;
-
-	    case '"': // double quote
-	      *p1 = '"';
-	      break;
-
-	    default:
-	      warning ("unrecognized escape sequence `\\%c' --\
- converting to `%c'", *p2, *p2);
-	      *p1 = *p2;
-	      break;
-	    }
-	}
-      else
-	{
-	  *p1 = *p2;
-	}
-
-      p1++;
-      p2++;
-    }
-
-  *p1 = '\0';
 }
 
 // If we read some newlines, we need figure out what column we're
@@ -1590,22 +1513,15 @@ handle_string (char delim, int text_style)
 		{
 		  yyunput (c, yytext);
 		  buf << ends;
-		  char *tok = buf.str ();
-		  do_string_escapes (tok);
+		  char *tmp = buf.str ();
+		  string tok = Vbackslash_escapes
+		    ? do_string_escapes (tmp) : string (tmp);
+		  delete [] tmp;
 
 		  if (text_style && lexer_flags.doing_set)
 		    {
-		      if (tok)
-			{
-			  int len = strlen (tok) + 3;
-			  char *tmp = tok;
-			  tok = new char [len];
-			  tok[0] = delim;
-			  strcpy (tok+1, tmp);
-			  tok[len-2] = delim;
-			  tok[len-1] = '\0';
-			  delete [] tmp;
-			}
+		      if (! tok.empty ())
+			tok = string (delim, 1) + tok + string (delim, 1);
 		    }
 		  else
 		    {
@@ -1615,7 +1531,6 @@ handle_string (char delim, int text_style)
 		    }
 
 		  yylval.tok_val = new token (tok);
-		  delete [] tok;
 		  token_stack.push (yylval.tok_val);
 		  return TEXT;
 		}

@@ -321,6 +321,106 @@ oct_file_in_path (const string& name)
   return retval;
 }
 
+// Replace backslash escapes in a string with the real values.
+
+string
+do_string_escapes (const string& s)
+{
+  string retval;
+
+  size_t i = 0;
+  size_t j = 0;
+  size_t len = s.length ();
+
+  retval.resize (len);
+
+  while (j < len)
+    {
+      if (s[j] == '\\' && j+1 < len)
+	{
+	  switch (s[++j])
+	    {
+	    case 'a':
+	      retval[i] = '\a';
+	      break;
+
+	    case 'b': // backspace
+	      retval[i] = '\b';
+	      break;
+
+	    case 'f': // formfeed
+	      retval[i] = '\f';
+	      break;
+
+	    case 'n': // newline
+	      retval[i] = '\n';
+	      break;
+
+	    case 'r': // carriage return
+	      retval[i] = '\r';
+	      break;
+
+	    case 't': // horizontal tab
+	      retval[i] = '\t';
+	      break;
+
+	    case 'v': // vertical tab
+	      retval[i] = '\v';
+	      break;
+
+	    case '\\': // backslash
+	      retval[i] = '\\';
+	      break;
+
+	    case '\'': // quote
+	      retval[i] = '\'';
+	      break;
+
+	    case '"': // double quote
+	      retval[i] = '"';
+	      break;
+
+	    default:
+	      warning ("unrecognized escape sequence `\\%c' --\
+ converting to `%c'", s[j], s[j]);
+	      retval[i] = s[j];
+	      break;
+	    }
+	}
+      else
+	{
+	  retval[i] = s[j];
+	}
+
+      i++;
+      j++;
+    }
+
+  retval.resize (j);
+
+  return retval;
+}
+
+DEFUN (do_string_escapes, args, ,
+  "do_string_escapes (STRING)")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      if (args(0).is_string ())
+	retval = do_string_escapes (args(0).string_value ());
+      else
+	error ("do_string_escapes: argument must be a string");
+    }
+  else
+    print_usage ("do_string_escapes");
+
+  return retval;
+}
+
 const char *
 undo_string_escape (char c)
 {
@@ -384,8 +484,13 @@ DEFUN (undo_string_escapes, args, ,
 
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_string ())
-    retval = undo_string_escapes (args(0).string_value ());
+  if (nargin == 1)
+    {
+      if (args(0).is_string ())
+	retval = undo_string_escapes (args(0).string_value ());
+      else
+	error ("undo_string_escapes: argument must be a string");
+    }
   else
     print_usage ("undo_string_escapes");
 

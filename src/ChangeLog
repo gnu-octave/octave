@@ -1,3 +1,16 @@
+Tue Nov 18 04:27:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (do_string_escapes): Move here, from lex.l.
+	Arg is now const string& instead of char*.
+	Return new string object instead of modifying arg in place.
+	(Fdo_string_escapes): New function.
+	* lex.l (handle_string): Use new version of do_string_escapes.
+	* lex.l (Vbackslash_escapes): No longer static.
+	* oct-stream.cc (octave_base_stream::scanf): If !Vbackslash_escapes,
+	call do_backslash_escapes on format string here.
+	* oct-stream.cc (octave_base_stream::oscanf): Likewise.
+	* oct-stream.cc (octave_base_stream::printf): Likewise.
+
 Fri Nov 14 01:53:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (eval_string (const string&, bool, int&, int)): No

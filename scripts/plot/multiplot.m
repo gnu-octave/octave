@@ -40,15 +40,17 @@ function multiplot (xn, yn)
 
   ## global variables to keep track of multiplot options
 
-  global multiplot_mode
-  global multiplot_xsize multiplot_ysize
-  global multiplot_xn multiplot_yn
-  global multiplot_xi multiplot_yi
+  global __multiplot_mode__
+  global __multiplot_xsize__
+  global __multiplot_ysize__
+  global __multiplot_xn__
+  global __multiplot_yn__
+  global __multiplot_xi__
+  global __multiplot_yi__
 
-  ## This is a real kludge.  We gnuplot should be made so that replot can
-  ## be executed while doing multiple plots...
-
-  global multiplot_save_auto_replot = automatic_replot
+  if (! exist ("__multiplot_mode__"))
+    __multiplot_mode__ = 0;
+  endif
 
   if (nargin != 2)
     usage ("multiplot (xn, yn)");
@@ -58,36 +60,21 @@ function multiplot (xn, yn)
     error ("multiplot: xn and yn have to be scalars");
   endif
 
-  if (automatic_replot)
-    warning ("turning off automatic replot for multiplot mode");
-    multiplot_save_auto_replot = automatic_replot;
-    automatic_replot = 0;
-  endif
-
   xn = round (xn);
   yn = round (yn);
 
   if (xn == 0 && yn == 0)
 
-    gset nomultiplot;
-    gset size 1, 1;
-    gset origin 0, 0;
+    oneplot ();
 
-    multiplot_mode = 0;
-    multiplot_xsize = 1;
-    multiplot_ysize = 1;
-    multiplot_xn = 1;
-    multiplot_yn = 1;
-    multiplot_xi = 1;
-    multiplot_yi = 1;
+    ## XXX FIXME XXX -- do we really need to reset these here?
 
-    ## Someone may have reset it betweeen calls...
-
-    if (! isstr (automatic_replot) && ! automatic_replot)
-      automatic_replot = multiplot_save_auto_replot;
-    endif
-
-    return;
+    __multiplot_xsize__ = 1;
+    __multiplot_ysize__ = 1;
+    __multiplot_xn__ = 1;
+    __multiplot_yn__ = 1;
+    __multiplot_xi__ = 1;
+    __multiplot_yi__ = 1;
 
   else
 
@@ -107,13 +94,13 @@ function multiplot (xn, yn)
 
     eval (sprintf ("gset origin %g, %g", xo, yo));
 
-    multiplot_mode = 1;
-    multiplot_xsize = xsize;
-    multiplot_ysize = ysize;
-    multiplot_xn = xn;
-    multiplot_yn = yn;
-    multiplot_xi = 1;
-    multiplot_yi = 1;
+    __multiplot_mode__ = 1;
+    __multiplot_xsize__ = xsize;
+    __multiplot_ysize__ = ysize;
+    __multiplot_xn__ = xn;
+    __multiplot_yn__ = yn;
+    __multiplot_xi__ = 1;
+    __multiplot_yi__ = 1;
 
   endif
 

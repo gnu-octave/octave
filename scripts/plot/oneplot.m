@@ -22,7 +22,7 @@
 ## NOTE: this will work only with gnuplot installed with
 ##       multiplot patch
 ##
-## Switches from multiplot (if in  multiplot mode) to single plot
+## Switches from multiplot (if in multiplot mode) to single plot
 ## mode
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
@@ -31,15 +31,21 @@
 
 function oneplot ()
 
-  if (! gnuplot_has_multiplot)
-    error ("oneplot: gnuplot does not appear to support this feature");
+  if (gnuplot_has_multiplot)
+
+    global __multiplot_mode__
+
+    if (! exist ("__multiplot_mode__"))
+      __multiplot_mode__ = 0;
+    endif
+
+    if (__multiplot_mode__)
+      gset nomultiplot;
+      gset size 1, 1;
+      gset origin 0, 0;
+      __multiplot_mode__ = 0;
+    endif
+
   endif
-
-  global multiplot_mode
-
-  gset nomultiplot;
-  gset size 1, 1;
-  gset origin 0, 0;
-  multiplot_mode = 0;
 
 endfunction

@@ -41,20 +41,16 @@ function mplot (...)
 
   ## global variables to keep track of multiplot options
 
-  global multiplot_mode
-  global multiplot_xsize multiplot_ysize
-  global multiplot_xn multiplot_yn
-  global multiplot_xi multiplot_yi
+  global __multiplot_mode__
+  global __multiplot_xsize__
+  global __multiplot_ysize__
+  global __multiplot_xn__
+  global __multiplot_yn__
+  global __multiplot_xi__
+  global __multiplot_yi__
 
-  ## This is a real kludge.  We gnuplot should be made so that replot can
-  ## be executed while doing multiple plots...
-
-  global multiplot_save_auto_replot = automatic_replot
-
-  if (automatic_replot)
-    warning ("turning off automatic replot for multiplot mode");
-    multiplot_save_auto_replot = automatic_replot;
-    automatic_replot = 0;
+  if (! exist ("__multiplot_mode__"))
+    __multiplot_mode__ = 0;
   endif
 
   gset nologscale;
@@ -64,23 +60,23 @@ function mplot (...)
 
   ## update the plot position
 
-  if (multiplot_mode)
+  if (__multiplot_mode__)
 
-    if (multiplot_xi < multiplot_xn)
-      multiplot_xi++;
+    if (__multiplot_xi__ < __multiplot_xn__)
+      __multiplot_xi__++;
     else
-      multiplot_xi = 1;
-      if (multiplot_yi < multiplot_xn)
-	multiplot_yi++;
+      __multiplot_xi__ = 1;
+      if (__multiplot_yi__ < multiplot_xn__)
+	__multiplot_yi__++;
       else
-	multiplot_yi = 1;
+	__multiplot_yi__ = 1;
       endif
     endif
 
-    xo = (multiplot_xi - 1.0)*multiplot_xsize;
-    yo = (multiplot_yn - multiplot_yi)*multiplot_ysize;
+    xo = (__multiplot_xi__ - 1.0) * __multiplot_xsize__;
+    yo = (__multiplot_yn__ - __multiplot_yi) * __multiplot_ysize__;
 
-    eval (sprintf ("gset origin %g, %g", xo,yo));
+    eval (sprintf ("gset origin %g, %g", xo, yo));
 
   endif
 

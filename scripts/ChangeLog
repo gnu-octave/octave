@@ -1,3 +1,23 @@
+Tue Nov 18 01:35:50 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* time/tic.m: Rename _time_tic_called to __tic_toc_timestamp__.
+	* time/toc.m: Likewise.
+
+	* image/colormap.m: Rename CURRENT_COLOR_MAP to __current_color_map__.
+
+	* plot/mplot.m, plot/multiplot.m, plot/subplot.m: Don't do
+	anything special for automatic_replot when in multiplot mode --
+	recent 3.6beta releases handle this correctly.
+
+	* plot/figure.m: Ensure that we are not in multiplot mode before
+	setting the terminal type.
+
+	* plot/mplot.m, plot/multiplot.m, plot/oneplot.m, plot/subplot.m,
+ 	plot/subwindow.m: Use leading and trailing underscores for
+ 	`private' globals.
+
+	* plot/oneplot.m: Don't do anything if gnuplot_has_multiplot is false.
+
 Fri Nov 14 10:53:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__pltopt__.m: Use sprintf instead of strcat when adding TITLE.

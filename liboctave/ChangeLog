@@ -1,5 +1,8 @@
 2005-02-09  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.cc (file_ops::canonicalize_file_name): New functions.
+	* file-ops.h: Provide decls.
+
 	* kpse.cc (kpse_tilde_expand): Simply return NAME if it is empty.
 
 2005-02-08  John W. Eaton  <jwe@octave.org>

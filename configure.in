@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.459 $)
+AC_REVISION($Revision: 1.460 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -981,15 +981,16 @@ AC_SUBST(GLOB_INCFLAGS)
 
 ### Checks for functions and variables.
 
-AC_CHECK_FUNCS(atexit basename bcopy bzero dup2 endgrent endpwent execvp \
-  fcntl fork getcwd getegid geteuid getgid getgrent getgrgid \
-  getgrnam getpgrp getpid getppid getpwent getpwuid gettimeofday \
-  getuid getwd _kbhit kill link localtime_r lstat memmove mkdir \
-  mkfifo mkstemp on_exit pipe poll putenv raise readlink rename \
-  rindex rmdir round select setgrent setpwent setvbuf sigaction \
-  siglongjmp sigpending sigprocmask sigsuspend stat strcasecmp strdup \
-  strerror strftime stricmp strncasecmp strnicmp strptime symlink \
-  tempnam umask unlink usleep vfprintf vsprintf vsnprintf waitpid)
+AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
+  dup2 endgrent endpwent execvp fcntl fork getcwd getegid geteuid \
+  getgid getgrent getgrgid getgrnam getpgrp getpid getppid getpwent \
+  getpwuid gettimeofday getuid getwd _kbhit kill link localtime_r \
+  lstat memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise \
+  readlink rename resolvepath rindex rmdir round select setgrent \
+  setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
+  sigsuspend stat strcasecmp strdup strerror strftime stricmp \
+  strncasecmp strnicmp strptime symlink tempnam umask unlink usleep \
+  vfprintf vsprintf vsnprintf waitpid)
 
 OCTAVE_SMART_PUTENV
 

@@ -311,6 +311,88 @@ file_ops::rmdir (const std::string& name, std::string& msg)
   return status;
 }
 
+std::string
+file_ops::canonicalize_file_name (const std::string& name)
+{
+  std::string msg;
+  return canonicalize_file_name (name, msg);
+}
+
+std::string
+file_ops::canonicalize_file_name (const std::string& name, std::string& msg)
+{
+  msg = std::string ();
+
+  std::string retval;
+
+#if defined (HAVE_CANONICALIZE_FILE_NAME)
+
+  char *tmp = ::canonicalize_file_name (name.c_str ());
+
+  if (tmp)
+    {
+      retval = tmp;
+      ::free (tmp);
+    }
+
+#elif defined (HAVE_RESOLVEPATH)
+
+#if !defined (errno)
+extern int errno;
+#endif
+
+#if !defined (__set_errno)
+# define __set_errno(Val) errno = (Val)
+#endif
+
+  if (name.empty ())
+    {
+      __set_errno (ENOENT);
+      return retval;
+    }
+
+  // All known hosts with resolvepath (e.g. Solaris 7) don't turn
+  // relative names into absolute ones, so prepend the working
+  // directory if the path is not absolute.
+
+  name = octave_env::make_absolute (name);
+
+  size_t resolved_size = name.length ();
+
+  while (1)
+    {
+      resolved_size = 2 * resolved_size + 1;
+
+      OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
+
+      resolved_len = ::resolvepath (name, resolved, resolved_size);
+
+      if (resolved_len < 0)
+	break;
+
+      if (resolved_len < resolved_size)
+	{
+	  retval = resolved;
+	  break;
+	}
+    }
+
+#else
+
+  // XXX FIXME XXX -- provide replacement here...
+  retval = name;
+
+#endif
+
+  if (retval.empty ())
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
+
+  return retval;
+}
+
 // We provide a replacement for tempnam().
 
 std::string

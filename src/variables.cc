@@ -957,6 +957,20 @@ Check only for directories.\n\
   return retval;
 }
 
+// Return TRUE if F and G are both names for the same file.
+
+static bool
+same_file (const std::string& f, const std::string& g)
+{
+  std::string c_f = file_ops::canonicalize_file_name (f);
+  std::string c_g = file_ops::canonicalize_file_name (g);
+
+  file_stat f_fs (c_f);
+  file_stat g_fs (c_g);
+
+  return (f_fs.ino () == g_fs.ino () && f_fs.dev () == g_fs.dev ());
+}
+
 // Is there a corresponding function file that is newer than the
 // symbol definition?
 
@@ -994,9 +1008,7 @@ symbol_out_of_date (symbol_record *sr)
 		    (Vload_path_dir_path.find_first_of (names),
 		     octave_env::getcwd ());
 
-		  if (file != ff)
-		    retval = true;
-		  else
+		  if (same_file (file, ff))
 		    {
 		      tmp->mark_fcn_file_up_to_date (octave_time ());
 
@@ -1005,6 +1017,8 @@ symbol_out_of_date (symbol_record *sr)
 		      if (fs && fs.is_newer (tp))
 			retval = true;
 		    }
+		  else
+		    retval = true;
 		}
 	    }
 	}

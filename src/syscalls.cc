@@ -190,7 +190,7 @@ error message.\n\
 		    exec_args[i+1] = tmp[i];
 		}
 	      else
-		error ("exec: arguments must be strings");
+		error ("exec: arguments must be character strings");
 	    }
 	  else
 	    {
@@ -938,6 +938,37 @@ message.\n\
     }
   else
     print_usage ("waitpid");
+
+  return retval;
+}
+
+DEFUN (canonicalize_file_name, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}]} canonicalize_file_name (@var{name})\n\
+Return the canonical name of file @var{name}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  std::string msg;
+
+	  std::string result = file_ops::canonicalize_file_name (name, msg);
+
+	  retval(2) = msg;
+	  retval(1) = msg.empty () ? 0 : -1;
+	  retval(0) = result;
+	}
+      else
+	error ("canonicalize_file_name: argument must be a character string");
+    }
+  else
+    print_usage ("canonicalize_file_name");
 
   return retval;
 }

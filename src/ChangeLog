@@ -1,3 +1,10 @@
+2005-02-09  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (same_file): New static function.
+	(symbol_out_of_date): Use it.
+
+	* syscalls.cc (Fcanonicalize_file_name): New function.
+
 2005-02-08  Walter Landry  <landry@osc.edu>
 
 	* symtab.h (symbol_record::mark_as_command): Avoid AIX compiler error.

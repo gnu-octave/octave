@@ -369,28 +369,31 @@ valid_identifier (char *s)
 int
 identifier_exists (char *name)
 {
-  int status = 0;
+  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  if (sr == (symbol_record *) NULL)
+    sr = global_sym_tab->lookup (name, 0, 0);
 
-  if (curr_sym_tab->lookup (name, 0, 0) != (symbol_record *) NULL
-      || global_sym_tab->lookup (name, 0, 0) != (symbol_record *) NULL)
-    status = 1;
+  if (sr != (symbol_record *) NULL && sr->is_variable ())
+    return 1;
+  else if (sr != (symbol_record *) NULL && sr->is_function ())
+    return 2;
   else
     {
       char *path = m_file_in_path (name);
       if (path != (char *) NULL)
 	{
 	  delete [] path;
-	  status = 2;
+	  return 2;
 	}
       else
 	{
 	  struct stat buf;
 	  if (stat (name, &buf) == 0 && S_ISREG (buf.st_mode))
-	    status = 2;
+	    return 2;
 	}
 	
     }
-  return status;
+  return 0;
 }
 
 /*

@@ -1,6 +1,7 @@
 2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/deal.m: New function.
+	Add tests from Paul Kienzle.
 
 2004-03-03  Stefan van der Walt  <stefan@sun.ac.za>
 

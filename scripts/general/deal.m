@@ -66,15 +66,19 @@ function [varargout] = deal (varargin)
 
   if (nargin == 0)
     usage ("[a, b, c, d] = deal (x, y, z, a)");
-  elseif (nargin == 1)
-    v = varargin{1};
-    for i = 1:nargout
-      varargout{i} = v;
-    endfor
-  elseif (nargin == nargout)
-    varargout = varargin;
+  elseif (nargin == 1 || nargin == nargout)
+    varargout(:) = varargin;
   else
     error ("deal: nargin > 1 and nargin != nargout");
   endif
 
 endfunction
+
+%!test
+%! [a,b]=deal(1,2);
+%! assert(a,1);
+%! assert(b,2);
+%!test
+%! [a,b]=deal(1);
+%! assert(a,1);
+%! assert(b,1);

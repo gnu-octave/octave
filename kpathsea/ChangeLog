@@ -1,3 +1,7 @@
+Thu Dec  5 18:59:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.sub: Update to current version from FSF.
+
 Sun Nov  3 15:35:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* c-std.h: Use #ifdef, not #if to checm HAVE_STDLIB_H

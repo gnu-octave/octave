@@ -1,5 +1,7 @@
 Thu Dec  5 11:05:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* config.sub: Update to current version from FSF.
+
 	* Makeconf.in (ALL_LDFLAGS): Add $(FORTRAN_MAIN_FLAG).
 	* configure.in (FORTRAN_MAIN_FLAG): Substitute it.
 

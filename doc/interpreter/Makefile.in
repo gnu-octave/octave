@@ -67,13 +67,13 @@ liboctave.ps: liboctave.dvi
 	dvips -o liboctave.ps liboctave.dvi
 
 refcard.tex: refcard.tex.in
-	sed 's/@LOCAL@.*$//' refcard.tex.in > refcard.tex.tmp
+	sed 's/@LOCAL@.*$$//' refcard.tex.in > refcard.tex.tmp
 	mv refcard.tex.tmp refcard.tex
 	rm -f refcard.tex.tmp
 
 refcard-local.tex: refcard.tex.in
 	sed 's/@LOCAL@//' refcard.tex.in > refcard-local.tex.tmp
-	mv refcard-local.tex.tmp refcard.tex
+	mv refcard-local.tex.tmp refcard-local.tex
 	rm -f refcard-local.tex.tmp
 
 refcard.dvi: refcard.tex
@@ -158,7 +158,7 @@ clean:
 	liboctave.fn liboctave.pg liboctave.tp liboctave.cps \
 	liboctave.fns liboctave.pgs liboctave.tps liboctave.aux \
 	liboctave.log liboctave.toc liboctave.dvi liboctave.ps \
-	refcard.dvi refcard.ps
+	refcard.dvi refcard.ps refcard-local.dvi refcard-local.ps
 .PHONY: clean
 
 mostlyclean:
@@ -166,11 +166,11 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile refcard-local.tex
 .PHONY: distclean
 
 realclean: distclean
-	rm -f tags TAGS
+	rm -f tags TAGS refcard.tex
 .PHONY: realclean
 
 local-dist: all

@@ -1,7 +1,7 @@
 // QLD.cc                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,8 +25,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#include <math.h>
+#if defined (__GNUG__)
+#pragma implementation
+#endif
 
+#include <math.h>
+#include <iostream.h>
+
+#include "dMatrix.h"
+#include "dColVector.h"
+#include "dRowVector.h"
 #include "QLD.h"
 #include "f77-uscore.h"
 
@@ -78,15 +86,15 @@ QLD::minimize (double& objf, int& inform)
   cout << H;
   cout << c;
 
-  double *pc = (double *) NULL;
+  double *pc = 0;
   if (c.capacity () > 0)
     pc = c.fortran_vec ();
 
-  double *pa = (double *) NULL;
+  double *pa = 0;
   if (A1.rows () > 0 && A1.columns () > 0)
     pa = A1.fortran_vec ();
 
-  double *pb = (double *) NULL;
+  double *pb = 0;
   if (b1.capacity () > 0)
     pb = b1.fortran_vec ();
 

@@ -1,7 +1,7 @@
 // Objective.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,18 +25,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include "Objective.h"
 
 Objective::Objective (void)
 {
-  phi = (objective_fcn) NULL;
-  grad = (gradient_fcn) NULL;
+  phi = 0;
+  grad = 0;
 }
 
 Objective::Objective (const objective_fcn obj)
 {
   phi = obj;
-  grad = (gradient_fcn) NULL;
+  grad = 0;
 }
 
 Objective::Objective (const objective_fcn obj, const gradient_fcn g)

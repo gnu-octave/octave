@@ -25,8 +25,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include <math.h>
 #include <float.h>
+#include <iostream.h>
 
 #include "ODE.h"
 #include "f77-uscore.h"
@@ -73,8 +78,8 @@ ODE::ODE (void)
       rwork[i] = 0.0;
     }
 
-  fun = NULL;
-  jac = NULL;
+  fun = 0;
+  jac = 0;
 }
 
 ODE::ODE (int size)
@@ -104,8 +109,8 @@ ODE::ODE (int size)
       rwork[i] = 0.0;
     }
 
-  fun = NULL;
-  jac = NULL;
+  fun = 0;
+  jac = 0;
 }
 
 ODE::ODE (const ColumnVector& state, double time, const ODEFunc& f)
@@ -194,10 +199,10 @@ lsode_j (int *neq, double *time, double *state, int *ml, int *mu,
 ColumnVector
 ODE::integrate (double tout)
 {
-  if (jac == NULL)
-    method_flag = 22;
-  else
+  if (jac)
     method_flag = 21;
+  else
+    method_flag = 22;
 
   integration_error = 0;
 

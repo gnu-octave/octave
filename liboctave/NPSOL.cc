@@ -25,12 +25,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include <math.h>
 #include <float.h>
 #include <string.h>
 #include <strstream.h>
 
 #ifndef NPSOL_MISSING
+
+#include "dMatrix.h"
 
 #include "NPSOL.h"
 #include "f77-uscore.h"

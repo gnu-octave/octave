@@ -1,5 +1,7 @@
 Wed Jan 29 08:25:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defaults.cc (exec_path): Don't include bin_dir in std_path.
+
 	* pager.cc (do_sync): Flush the cout stream after writing if
 	running in interactive or forced_interactive mode.
 

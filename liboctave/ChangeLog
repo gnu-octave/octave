@@ -2,6 +2,8 @@
 
 	* Array.cc (Array<T>::assignN): Require RHS == 0x0 matrix for
 	deleting elements.
+	(Array<T>::index): Remove trailing singletons in ra_idx, but leave
+	at least ndims elements.
 
 2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
 

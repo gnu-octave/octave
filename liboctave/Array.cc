@@ -2025,6 +2025,21 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 
   int n_dims = dimensions.length ();
 
+  // Remove trailing singletons in ra_idx, but leave at least ndims
+  // elements.
+
+  int ra_idx_len = ra_idx.length ();
+
+  while (ra_idx_len > n_dims)
+    {
+      if (ra_idx(ra_idx_len-1) == 1)
+	ra_idx_len--;
+      else
+	break;
+    }
+
+  ra_idx.resize (ra_idx_len);
+
   if (n_dims < ra_idx.length ())
     {
       (*current_liboctave_error_handler)

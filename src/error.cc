@@ -154,7 +154,7 @@ vwarning (const char *name, const char *fmt, va_list args)
 }
 
 static void
-verror (const char *name, const char *fmt, va_list args)
+verror (bool save_last_error, const char *name, const char *fmt, va_list args)
 {
   if (discard_error_messages)
     return;
@@ -184,7 +184,7 @@ verror (const char *name, const char *fmt, va_list args)
 
   OSSTREAM_FREEZE (output_buf);
 
-  if (! error_state && name && ! strcmp (name, "error"))
+  if (! error_state && save_last_error)
     {
       // This is the first error in a possible series.
       Vlast_error_message = msg_string;
@@ -240,14 +240,14 @@ error_1 (const char *name, const char *fmt, va_list args)
 		    {
 		      char *tmp_fmt = strsave (fmt);
 		      tmp_fmt[len - 1] = '\0';
-		      verror (name, tmp_fmt, args);
+		      verror (true, name, tmp_fmt, args);
 		      delete [] tmp_fmt;
 		    }
 
 		  error_state = -2;
 		}
 	      else
-		verror (name, fmt, args);
+		verror (true, name, fmt, args);
 	    }
 	}
       else
@@ -263,7 +263,7 @@ message (const char *name, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (name, fmt, args);
+  verror (false, name, fmt, args);
   va_end (args);
 }
 
@@ -272,8 +272,8 @@ usage (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
+  verror (true, "usage", fmt, args);
   error_state = -1;
-  verror ("usage", fmt, args);
   va_end (args);
 }
 
@@ -291,12 +291,12 @@ pr_where_2 (const char *fmt, va_list args)
 		{
 		  char *tmp_fmt = strsave (fmt);
 		  tmp_fmt[len - 1] = '\0';
-		  verror (0, tmp_fmt, args);
+		  verror (false, 0, tmp_fmt, args);
 		  delete [] tmp_fmt;
 		}
 	    }
 	  else
-	    verror (0, fmt, args);
+	    verror (false, 0, fmt, args);
 	}
     }
   else
@@ -433,7 +433,7 @@ panic (const char *fmt, ...)
   va_start (args, fmt);
   buffer_error_messages = 0;
   discard_error_messages = false;
-  verror ("panic", fmt, args);
+  verror (false, "panic", fmt, args);
   va_end (args);
   abort ();
 }

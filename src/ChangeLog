@@ -1,5 +1,8 @@
 2004-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* error.cc (verror): New arg, save_last_error.  Change all callers.
+	(usage): Set error_state after calling verror.
+
 	* oct-map.cc (Octave_map::assign (const std::string, const Cell&)):
 	Set dimensions to RHS dimensions, not 1x1.
 

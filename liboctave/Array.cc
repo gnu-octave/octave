@@ -1950,7 +1950,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
 		    (*current_liboctave_error_handler)
 		      ("attempt to grow array along ambiguous dimension");
 		  else
-		    retval.Array<T>::checkelem (numelem_result) = Array<T>::checkelem (numelem_elt);
+		    retval.checkelem (numelem_result) = checkelem (numelem_elt);
 		
 		  increment_index (result_idx, frozen_lengths);
 	
@@ -2460,7 +2460,14 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       if (n_idx == 0)
 	(*current_liboctave_error_handler)
 	  ("number of indices is zero");
+      else if (n_idx == 1)
+	{
+	  Array<int> one_arg_temp (1, 0);
 
+	  RT scalar = rhs.elem (one_arg_temp);
+
+	  lhs.fill (scalar);
+	}
       else if (n_idx < lhs_dims.length ())
 	{
 	  // Number of indices is less than dimensions.
@@ -2519,7 +2526,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		(*current_liboctave_error_handler)
 		  ("attempt to grow array along ambiguous dimension");
 	      else
-		lhs.Array<LT>::checkelem (numelem) = scalar;
+		lhs.checkelem (numelem) = scalar;
 	    }
 	}
       else
@@ -2554,7 +2561,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	}
     }
-  else if (rhs_dims.length () >= 2)
+  else if (rhs_dims.length () > 1)
     {
       // RHS is matrix or higher dimension.
 

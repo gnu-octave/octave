@@ -1,5 +1,7 @@
 2003-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (assignN): Allow lhs(:) = scalar.
+
 	* CNDArray.cc (ComplexNDArray::increment_index): New function.
 	* dNDArray.cc (NDArray::increment_index): Likewise.
 	* boolNDArray.cc (boolNDArray::increment_index): Likewise.

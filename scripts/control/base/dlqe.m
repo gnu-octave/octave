@@ -1,4 +1,4 @@
-## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
+## Copyright (C) 1993, 1994, 1995, 2000 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -49,14 +49,14 @@
 ## @iftex
 ## @tex
 ## $$
-##  z_{k+1} = A z_k + B u_k + k (y_k - C z_k - D u_k)
+##  z_{k+1} = A z_k + B u_k + L (y_k - C z_k - D u_k)
 ## $$
 ## @end tex
 ## @end iftex
 ## @ifinfo
 ##
 ## @example
-## z[k+1] = A z[k] + B u[k] + k (y[k] - C z[k] - D u[k])
+## z[k+1] = A z[k] + B u[k] + L (y[k] - C z[k] - D u[k])
 ## @end example
 ## @end ifinfo
 ##
@@ -65,16 +65,17 @@
 ##
 ## @table @var
 ## @item l
-## The observer gain,
+## The observer gain.  The estimator state matrix
 ## @iftex
 ## @tex
-## $(A - ALC)$.
+## $(A - LC)$
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## (@var{a} - @var{a}@var{l}@var{c}).
+## (@var{a} - @var{l}@var{c})
 ## @end ifinfo
-## is stable.
+## is stable.   NOTE: This differs from the MATLAB dlqe function, which 
+## returns L such that (A - A L C) is stable.
 ##
 ## @item m
 ## The Riccati equation solution.
@@ -86,11 +87,11 @@
 ## The closed loop poles of
 ## @iftex
 ## @tex
-## $(A - ALC)$.
+## $(A - LC)$.
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## (@var{a} - @var{a}@var{l}@var{c}).
+## (@var{a} - @var{l}@var{c}).
 ## @end ifinfo
 ## @end table
 ## @end deftypefn

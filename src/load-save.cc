@@ -2619,8 +2619,8 @@ save variables in a file")
       return retval;
     }
 
-  static ostream stream;
-  static ofstream file;
+  ostream stream;
+  ofstream file;
   if (strcmp (*argv, "-") == 0)
     {
 // XXX FIXME XXX -- should things intended for the screen end up in a 
@@ -2663,10 +2663,10 @@ save variables in a file")
 #else
       stream << "Octave-1-L";
 #endif
-    }
 
-  char tmp = (char) NATIVE_FLOAT_FORMAT;
-  stream.write (&tmp, 1);
+      char tmp = (char) NATIVE_FLOAT_FORMAT;
+      stream.write (&tmp, 1);
+    }
 
   if (argc == 0)
     {

@@ -1,4 +1,4 @@
-// MArray-c.cc                                            -*- C++ -*-
+// MArray-ch.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994, 1995 John W. Eaton

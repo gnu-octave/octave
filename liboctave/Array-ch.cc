@@ -1,4 +1,4 @@
-// Array-c.cc                                            -*- C++ -*-
+// Array-ch.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994, 1995 John W. Eaton

@@ -5,6 +5,10 @@
 	Report index values.
 
 	* Array.cc (Array<T>::index): Delete unused arg names.
+	* ODESSA.cc (odessa_j): Likewise.
+	* DASRT.cc (ddasrt_f, ddasrt_g): Likewise.
+	* DASPK.cc (ddaspk_psol): Likewise.
+	* lo-mappers.cc (imag): Likewise.
 
 	* dim-vector.h (dim_vector::all_ones): New function.
 

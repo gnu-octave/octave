@@ -105,8 +105,8 @@ odessa_f (int* neq, const double& t, double *state,
 
 static int
 odessa_j (int* neq, const double& t, double *state,
-	  double *par, const int& ml, const int& mu, double *pd,
-	  const int& nrowpd)
+	  double *par, const int& /* ml */, const int& /* mu */,
+	  double *pd, const int& nrowpd)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 

@@ -105,11 +105,10 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 //C                          WP, IWP, B, EPLIN, IER, RPAR, IPAR)
 
 static int
-ddaspk_psol (const int& neq, const double& time, const double *state,
-	     const double *deriv, const double *savr,
-	     const double& cj, const double *wght, double *wp,
-	     int *iwp, double *b, const double& eplin, int& ier,
-	     double *, int*)
+ddaspk_psol (const int&, const double&, const double *,
+	     const double *, const double *, const double&,
+	     const double *, double *, int *, double *,
+	     const double&, int&, double *, int*)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 

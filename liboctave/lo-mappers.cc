@@ -65,7 +65,7 @@ fix (double x)
 }
 
 double
-imag (double x)
+imag (double)
 {
   return 0.0;
 }

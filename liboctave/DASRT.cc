@@ -65,7 +65,7 @@ static int nn;
 
 static int
 ddasrt_f (const double& t, const double *state, const double *deriv,
-	  double *delta, int& ires, double *rpar, int *ipar)
+	  double *delta, int& ires, double *, int *)
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
@@ -123,7 +123,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
 static int
 ddasrt_g (const int& neq, const double& t, const double *state,
-	  const int& ng, double *gout, double *rpar, int *ipar) 
+	  const int& ng, double *gout, double *, int *) 
 {
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 

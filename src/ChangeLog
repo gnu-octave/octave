@@ -6,7 +6,6 @@
 	* ov.h (octave_value::all_strings): Pass second arg to rep function.
 
 	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_f): Delete unused arg names.
-	* load-save.cc (do_load): Likewise.
 	* ls-utils.cc (get_save_type): Likewise.
 	* parse.y (Fassignin): Likewise.
 	* utils.cc (empty_arg): Likewise.

@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#include "infomap.h"
 #include "terminal.h"
 #include "termdep.h"
 
@@ -647,10 +648,10 @@ terminal_prep_terminal ()
   ttybuff.c_cc[VMIN] = 1;
   ttybuff.c_cc[VTIME] = 0;
 
-  if (ttybuff.c_cc[VINTR] == '\177')
+  if (ttybuff.c_cc[VINTR] == DEL || ttybuff.c_cc[VINTR] == Control ('c'))
     ttybuff.c_cc[VINTR] = -1;
 
-  if (ttybuff.c_cc[VQUIT] == '\177')
+  if (ttybuff.c_cc[VQUIT] == DEL || ttybuff.c_cc[VQUIT] == Control ('c'))
     ttybuff.c_cc[VQUIT] = -1;
 #endif
 
@@ -698,10 +699,10 @@ terminal_prep_terminal ()
 
     /* If the a quit or interrupt character conflicts with one of our
        commands, then make it go away. */
-    if (temp.t_intrc == '\177')
+    if (temp.t_intrc == DEL || temp.t_intrc == Control ('c'))
       temp.t_intrc = -1;
 
-    if (temp.t_quitc == '\177')
+    if (temp.t_quitc == DEL || temp.t_quitc == Control ('c'))
       temp.t_quitc = -1;
 
     ioctl (tty, TIOCSETC, &temp);

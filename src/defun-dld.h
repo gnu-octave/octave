@@ -36,12 +36,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // If Octave is not configured for dynamic linking of builtin
 // functions, this is exactly like DEFUN.
 
-#if defined (WITH_DLD) && defined (OCTAVE_LITE) && defined (MAKE_BUILTINS)
+#if defined (OCTAVE_LITE) && defined (MAKE_BUILTINS)
+#if defined (WITH_DLD)
 #define DEFUN_DLD_BUILTIN(name, fname, sname, nargin_max, nargout_max, doc) \
   BEGIN_INSTALL_BUILTIN \
     DEFINE_FUN_STRUCT (name, 0, sname, nargin_max, nargout_max, 0, doc); \
     install_builtin_function (&sname); \
   END_INSTALL_BUILTIN
+#else
+#define DEFUN_DLD_BUILTIN(name, fname, sname, nargin_max, nargout_max, doc) \
+  BEGIN_INSTALL_BUILTIN \
+    const char *sname = name " not included with --enable-lite-kernel"; \
+  END_INSTALL_BUILTIN
+#endif
 #else
 #define DEFUN_DLD_BUILTIN(name, fname, sname, nargin_max, nargout_max, doc) \
   DEFUN_INTERNAL (name, fname, sname, nargin_max, nargout_max, 0, doc)

@@ -1,5 +1,8 @@
 2000-12-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	(Range::nelem_internal): Call tfloor, not round, but then try
+	harder to compute correct number of elements.
+
 	* dMatrix.cc (Matrix::lssolve): Ask DGELSS for size of work vector.
 	* CMatrix.cc (ComplexMatrix::lssolve): Likewise, for ZGELSS.
 

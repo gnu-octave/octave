@@ -230,14 +230,41 @@ round (double x, double ct)
   return tfloor (x+0.5, ct);
 }
 
+static inline bool
+teq (double u, double v, double ct = 3.0 * DBL_EPSILON)
+{
+  double tu = fabs (u);
+  double tv = fabs (v);
+
+  return fabs (u - v) < ((tu > tv ? tu : tv) * ct);
+}
+
 int
 Range::nelem_internal (void) const
 {
   double ct = 3.0 * DBL_EPSILON;
 
-  double tmp = round ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
+  double tmp = tfloor ((rng_limit - rng_base + rng_inc) / rng_inc, ct);
 
   int n_elt = (tmp > 0.0 ? static_cast<int> (tmp) : 0);
+
+  // If the final element that we would compute for the range is equal
+  // to the limit of the range, or is an adjacent floating point
+  // number, accept it.  Otherwise, try a range with one fewer
+  // element.  If that fails, try again with one more element.
+  //
+  // I'm not sure this is very good, but it seems to work better than
+  // just using tfloor as above.  For example, without it, the
+  // expression 1.8:0.05:1.9 fails to produce the expected result of
+  // [1.8, 1.85, 1.9].
+
+  if (! teq (rng_base + (n_elt - 1) * rng_inc, rng_limit))
+    {
+      if (teq (rng_base + (n_elt - 2) * rng_inc, rng_limit))
+	n_elt--;
+      else if (teq (rng_base + n_elt * rng_inc, rng_limit))
+	n_elt++;
+    }
 
   return (n_elt >= INT_MAX - 1) ? -1 : n_elt;
 }

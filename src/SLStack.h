@@ -52,7 +52,7 @@ SLStack : public Stack<T>
   SLStack (const SLStack<T>& s);
   ~SLStack (void);
 
-  void operator = (const SLStack<T>&);
+  SLStack<T>& operator = (const SLStack<T>&);
 
   void push (const T& item);
   T pop (void);

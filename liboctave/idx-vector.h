@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_idx_vector_h)
 #define octave_idx_vector_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 class ostream;
 class Matrix;
 class Range;

@@ -24,10 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_unwind_prot_h)
 #define octave_unwind_prot_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include <stddef.h>
 
 typedef void (*cleanup_func)(void *ptr);

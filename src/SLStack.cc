@@ -71,10 +71,11 @@ SLStack<T>::del_top (void)
 }
 
 template <class T>
-void
+SLStack<T>&
 SLStack<T>::operator = (const SLStack<T>& s)
 {
   p = s.p;
+  return *this;
 }
 
 template <class T>

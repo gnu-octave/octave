@@ -145,10 +145,10 @@ then
     status=1
   else
     rmail $BUGADDR < $TEMP > /dev/null 2>&1 || \
-    mailx -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
-    Mail -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
-    /usr/ucb/mail -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
-    /bin/mail  -s $SUBJECT $BUGADDR < $TEMP /dev/null 2>&1 || \
+    mailx -s $SUBJECT $BUGADDR < $TEMP > /dev/null 2>&1 || \
+    Mail -s $SUBJECT $BUGADDR < $TEMP > /dev/null 2>&1 || \
+    /usr/ucb/mail -s $SUBJECT $BUGADDR < $TEMP > /dev/null 2>&1 || \
+    /bin/mail  -s $SUBJECT $BUGADDR < $TEMP > /dev/null 2>&1 || \
     ( echo "unable to send mail -- saving message in \$HOME/dead.octave-bug"; \
       cat $TEMP >> $HOME/dead.octave-bug )
   fi

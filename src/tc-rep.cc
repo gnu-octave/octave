@@ -486,12 +486,7 @@ TC_REP::rows (void) const
       retval = complex_matrix->rows ();
       break;
 
-    case magic_colon:
-      ::error ("invalid use of colon operator");
-      break;
-
     default:
-      retval = -1;
       break;
     }
 
@@ -526,12 +521,7 @@ TC_REP::columns (void) const
       retval = range->nelem ();
       break;
 
-    case magic_colon:
-      ::error ("invalid use of colon operator");
-      break;
-
     default:
-      retval = -1;
       break;
     }
 

@@ -104,10 +104,17 @@ CollocWt::init (void)
   else if (nt == 0)
     return;
 
-  double *dif1 = new double [nt];
-  double *dif2 = new double [nt];
-  double *dif3 = new double [nt];
-  double *vect = new double [nt];
+  Array<double> dif1 (nt);
+  double *pdif1 = dif1.fortran_vec ();
+
+  Array<double> dif2 (nt);
+  double *pdif2 = dif2.fortran_vec ();
+
+  Array<double> dif3 (nt);
+  double *pdif3 = dif3.fortran_vec ();
+
+  Array<double> vect (nt);
+  double *pvect = vect.fortran_vec ();
 
   r.resize (nt);
   q.resize (nt);
@@ -119,7 +126,7 @@ CollocWt::init (void)
   // Compute roots.
 
   F77_FCN (jcobi, JCOBI) (nt, n, inc_left, inc_right, Alpha, Beta,
-			  dif1, dif2, dif3, pr);
+			  pdif1, pdif2, pdif3, pr);
 
   int id;
 
@@ -128,11 +135,11 @@ CollocWt::init (void)
   id = 1;
   for (int i = 1; i <= nt; i++)
     {
-      F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
-			      dif2, dif3, pr, vect); 
+      F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, pdif1,
+			      pdif2, pdif3, pr, pvect); 
 
       for (int j = 0; j < nt; j++)
-	A (i-1, j) = vect[j];
+	A (i-1, j) = vect.elem (j);
     }
 
   // Second derivative weights.
@@ -140,24 +147,19 @@ CollocWt::init (void)
   id = 2;
   for (int i = 1; i <= nt; i++)
     {
-      F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
-			      dif2, dif3, pr, vect); 
+      F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, pdif1,
+			      pdif2, pdif3, pr, pvect); 
 
       for (int j = 0; j < nt; j++)
-	B (i-1, j) = vect[j];
+	B (i-1, j) = vect.elem (j);
     }
 
   // Gaussian quadrature weights.
 
   id = 3;
   double *pq = q.fortran_vec ();
-  F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, id, id, dif1,
-			  dif2, dif3, pr, pq);
-
-  delete [] dif1;
-  delete [] dif2;
-  delete [] dif3;
-  delete [] vect;
+  F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, id, id, pdif1,
+			  pdif2, pdif3, pr, pq);
 
   initialized = 1;
 }

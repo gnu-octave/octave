@@ -42,7 +42,7 @@ FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
 	FAQ.info FAQ.dvi FAQ.ps
 #	liboctave.info liboctave.info-[0-9]*
 
-DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex \
+DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex dir \
 	octave.1 $(REFCARD) $(ALL_TEXINFO) $(FORMATTED)
 
 SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
@@ -149,6 +149,18 @@ install: all
 	    for f in $(srcdir)/octave.info* ; do \
 	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
 	    done ; \
+	  fi ; \
+	  if test -f $(infodir)/dir ; then \
+	    echo "" ; \
+	    echo "You should add the following entry" ; \
+	    echo "" ; \
+	    echo "* Octave: (octave)." ; \
+	    echo "	Interactive language for numerical computations." ; \
+	    echo "" ; \
+	    echo "to $(infodir)/dir." ; \
+	    echo "" ; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir ; \
 	  fi ; \
 	fi
 	if test -d $(mandir) ; then \

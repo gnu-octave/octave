@@ -434,6 +434,10 @@ public:
 
   static string mode_as_string (int mode);
 
+  istream *input_stream (void) { return rep->input_stream (); }
+
+  ostream *output_stream (void) { return rep->output_stream (); }
+
 private:
 
   // The actual representation of this stream.
@@ -490,7 +494,7 @@ public:
 
   ~octave_stream_list (void) { }
 
-  static int insert (octave_base_stream *obs);
+  static octave_value insert (octave_base_stream *obs);
 
   static octave_stream *lookup (int fid);
   static octave_stream *lookup (const octave_value& fid);
@@ -517,7 +521,7 @@ private:
 
   static octave_stream_list *instance;
 
-  int do_insert (octave_base_stream *obs);
+  octave_value do_insert (octave_base_stream *obs);
 
   octave_stream *do_lookup (int fid) const;
   octave_stream *do_lookup (const octave_value& fid) const;

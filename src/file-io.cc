@@ -66,6 +66,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+static octave_value stdin_file;
+static octave_value stdout_file;
+static octave_value stderr_file;
+
 void
 initialize_file_io (void)
 {
@@ -81,9 +85,9 @@ initialize_file_io (void)
   octave_ostream *stderr_stream
     = new octave_ostream (&cerr, "stderr");
 
-  octave_stream_list::insert (stdin_stream);
-  octave_stream_list::insert (stdout_stream);
-  octave_stream_list::insert (stderr_stream);
+  stdin_file = octave_stream_list::insert (stdin_stream);
+  stdout_file = octave_stream_list::insert (stdout_stream);
+  stderr_file = octave_stream_list::insert (stderr_stream);
 }
 
 void
@@ -405,8 +409,7 @@ DEFUN (fopen, args, ,
 	  if (os->ok () && ! error_state)
 	    {
 	      retval(1) = "";
-	      retval(0)
-		= static_cast<double> (octave_stream_list::insert (os));
+	      retval(0) = octave_stream_list::insert (os);
 	    }
 	  else
 	    {
@@ -1206,7 +1209,7 @@ DEFUN (popen, args, ,
   \"r\" : connect stdout of process to pipe\n\
   \"w\" : connect stdin of process to pipe")
 {
-  double retval = -1.0;
+  octave_value retval = -1.0;
 
   int nargin = args.length ();
 
@@ -1378,13 +1381,13 @@ symbols_of_file_io (void)
   DEFCONST (SEEK_END, 1.0, 0, 0,
     "used with fseek to position file relative to the end");
 
-  DEFCONSTX ("stdin", SBV_stdin, 0.0, 0, 0,
+  DEFCONSTX ("stdin", SBV_stdin, stdin_file, 0, 0,
     "file number of the standard input stream");
 
-  DEFCONSTX ("stdout", SBV_stdout, 1.0, 0, 0,
+  DEFCONSTX ("stdout", SBV_stdout, stdout_file, 0, 0,
     "file number of the standard output stream");
 
-  DEFCONSTX ("stderr", SBV_stderr, 2.0, 0, 0,
+  DEFCONSTX ("stderr", SBV_stderr, stderr_file, 0, 0,
     "file number of the standard error stream");
 }
 

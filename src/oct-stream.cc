@@ -42,9 +42,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Possible values for conv_err:
 //
 //   1 : not a real scalar
-//   2 : error extracting scalar value (should not happen)
-//   3 : value is NaN
-//   4 : value is not an integer
+//   2 : value is NaN
+//   3 : value is not an integer
 
 static int
 convert_to_valid_int (const octave_value& tc, int& conv_err)
@@ -53,21 +52,16 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 
   conv_err = 0;
 
-  if (tc.is_real_scalar ())
+  double dval = tc.double_value ();
+
+  if (! error_state)
     {
-      double dval = tc.double_value ();
-
-      if (! error_state)
+      if (! xisnan (dval))
 	{
-	  if (! xisnan (dval))
-	    {
-	      int ival = NINT (dval);
+	  int ival = NINT (dval);
 
-	      if (ival == dval)
-		retval = ival;
-	      else
-		conv_err = 4;
-	    }
+	  if (ival == dval)
+	    retval = ival;
 	  else
 	    conv_err = 3;
 	}
@@ -2372,14 +2366,16 @@ octave_stream::invalid_stream_error (const char *op) const
 
 octave_stream_list *octave_stream_list::instance = 0;
 
-int
+octave_value
 octave_stream_list::do_insert (octave_base_stream *obs)
 {
-  int retval = -1;
+  int stream_number = -1;
+
+  octave_stream *os = 0;
 
   if (obs)
     {
-      octave_stream *os = new octave_stream (obs);
+      os = new octave_stream (obs);
 
       // Insert item in first open slot, increasing size of list if
       // necessary.
@@ -2391,12 +2387,12 @@ octave_stream_list::do_insert (octave_base_stream *obs)
 	  if (! tmp)
 	    {
 	      list (i) = os;
-	      retval = i;
+	      stream_number = i;
 	      break;
 	    }
 	}
 
-      if (retval < 0)
+      if (stream_number < 0)
 	{
 	  int total_len = list.length ();
 
@@ -2404,20 +2400,20 @@ octave_stream_list::do_insert (octave_base_stream *obs)
 	    list.resize (total_len * 2);
 
 	  list (curr_len) = os;
-	  retval = curr_len;
+	  stream_number = curr_len;
 	  curr_len++;
 	}
     }
   else
     ::error ("octave_stream_list: attempt to insert invalid stream");
 
-  return retval;
+  return octave_value (os, stream_number);
 }
 
-int
+octave_value
 octave_stream_list::insert (octave_base_stream *obs)
 {
-  int retval = -1;
+  octave_value retval = -1.0;
 
   if (! instance)
     instance = new octave_stream_list ();

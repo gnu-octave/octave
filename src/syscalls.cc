@@ -547,10 +547,10 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (pipe, args, ,
-  "[FILE_IDS, STATUS, MSG] = pipe (): create an interprocess channel.\n\
+  "[FILE_LIST, STATUS, MSG] = pipe (): create an interprocess channel.\n\
 \n\
-Return the FILE_IDS corresponding to the reading and writing ends of\n\
-the pipe, as a vector.\n\
+Return the file objects corresponding to the reading and writing ends of\n\
+the pipe, as a two-element list.\n\
 \n\
 If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
 STATUS is nonzero and MSG contains a system-dependent error message.")
@@ -585,13 +585,13 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	  octave_ostdiostream *os
 	    = new octave_ostdiostream (string (), out_file);
 
-	  Matrix file_ids (1, 2);
+	  octave_value_list file_ids;
 
-	  file_ids (0, 0) = octave_stream_list::insert (is);
-	  file_ids (0, 1) = octave_stream_list::insert (os);
+	  file_ids(1) = octave_stream_list::insert (os);
+	  file_ids(0) = octave_stream_list::insert (is);
 
-          retval(0) = file_ids;
 	  retval(1) = static_cast<double> (status);
+          retval(0) = octave_value (file_ids);
 	}
 #else
       gripe_not_supported ("pipe");

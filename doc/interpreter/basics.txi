@@ -66,6 +66,10 @@ probably only useful if you are actually trying to debug the parser.
 @cindex @code{-x}
 Echo commands as they are executed.
 
+@item --eval @var{code}
+Evaluate @var{code} and exit when done unless @code{--persist} is also
+specified.
+
 @item --exec-path @var{path}
 @cindex @code{--exec-path @var{path}}
 Specify the path to search for programs to run.  The value of @var{path}
@@ -139,6 +143,10 @@ specified on the command line will override any value of
 @code{OCTAVE_PATH} found in the environment, but not any commands in the
 system or user startup files that set the built-in variable @code{LOADPATH}.
 
+@item --persist
+Go to interactive mode after @code{--eval} or reading from a file
+named on the command line.
+
 @item --silent
 @itemx --quiet
 @itemx -q
@@ -181,7 +189,8 @@ Turn on verbose output.
 Print the program version number and exit.
 
 @item @var{file}
-Execute commands from @var{file}.
+Execute commands from @var{file}.  Exit when done unless
+@code{--persist} is also specified.
 @end table
 
 Octave also includes several built-in variables that contain information

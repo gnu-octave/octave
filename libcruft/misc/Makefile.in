@@ -16,6 +16,16 @@ SPECIAL := gen-d1mach.c d1mach-tst.for dostop.c f77-extern.cc lo-error.cc
 
 SPECIAL_DEPEND := d1mach.o dostop.o f77-extern.o lo-error.o
 
+ifeq ($(SHARED_LIBS), true)
+  ifdef CPICFLAG
+    CPICDEP := pic/d1mach.o pic/dostop.o
+  endif
+  ifdef CXXPICFLAG
+    CXXPICDEP := pic/f77-extern.o pic/lo-error.o
+  endif
+  SPECIAL_PICDEPEND := $(CPICDEP) $(CXXPICDEP)
+endif
+
 DISTFILES := $(subst d1mach.f, , $(DISTFILES))
 
 EXTERNAL_DISTFILES = $(DISTFILES)

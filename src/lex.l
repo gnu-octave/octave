@@ -480,7 +480,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {EL} {
-    return ELLIPSIS;
+    if (lexer_flags.looking_at_parameter_list)
+      return VARARGIN;
+    else if (lexer_flags.looking_at_return_list)
+      return VARARGOUT;
+    else
+      return LEXICAL_ERROR;
   }
 
 %{

@@ -398,7 +398,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN ELLIPSIS ALL_VA_ARGS
+%token FCN VARARGIN VARARGOUT ALL_VA_ARGS
 %token USING TITLE WITH AXES COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
 // Nonterminals we construct.
@@ -1103,7 +1103,7 @@ param_list	: param_list_beg param_list_end
 		    lexer_flags.quote_is_transpose = false;
 		    $$ = 0;
 		  }
-		| param_list_beg ELLIPSIS param_list_end
+		| param_list_beg VARARGIN param_list_end
 		  {
 		    lexer_flags.quote_is_transpose = false;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
@@ -1116,7 +1116,7 @@ param_list	: param_list_beg param_list_end
 		    $1->mark_as_formal_parameters ();
 		    $$ = $1;
 		  }
-		| param_list1 ',' ELLIPSIS param_list_end
+		| param_list1 ',' VARARGIN param_list_end
 		  {
 		    lexer_flags.quote_is_transpose = false;
 		    $1->mark_as_formal_parameters ();
@@ -1158,7 +1158,7 @@ return_list	: return_list_beg return_list_end
 		    lexer_flags.looking_at_return_list = false;
 		    $$ = new tree_parameter_list ();
 		  }
-		| return_list_beg ELLIPSIS return_list_end
+		| return_list_beg VARARGOUT return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
@@ -1170,7 +1170,7 @@ return_list	: return_list_beg return_list_end
 		    lexer_flags.looking_at_return_list = false;
 		    $$ = $2;
 		  }
-		| return_list_beg return_list1 ',' ELLIPSIS return_list_end
+		| return_list_beg return_list1 ',' VARARGOUT return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    $2->mark_varargs ();

@@ -26,7 +26,7 @@ TEXINFO = array.texi bugs.texi cp-idx.texi dae.texi diffeq.texi \
 	optim.texi preface.texi quad.texi range.texi
 
 FORMATTED = liboctave.dvi liboctave.ps liboctave.info \
-	liboctave.info-[0-9]* liboctave_*.html
+	liboctave.info-[0-9]* liboctave*.html
 
 DISTFILES = Makefile.in gpl.texi $(TEXINFO) $(FORMATTED)
 

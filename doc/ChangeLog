@@ -1,3 +1,11 @@
+2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* liboctave/Makefile.in (FORMATTED): Use liboctave*.html instead
+	of liboctave_*.html.
+
+	* faq/Makefile.in (FORMATTED): Use Octave-FAQ*.html instead of
+	Octave-FAQ_*.html.
+
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* faq/Makefile.in (maintainer-clean): Remove Octave-FAQ*.html

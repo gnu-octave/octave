@@ -50,8 +50,8 @@ public:
 
   ~octave_function (void) { }
 
-  octave_function *clone (void) const;
-  octave_function *empty_clone (void) const;
+  octave_value *clone (void) const;
+  octave_value *empty_clone (void) const;
 
   bool is_defined (void) const { return true; }
 

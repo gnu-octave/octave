@@ -1,3 +1,9 @@
+2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-fcn.cc, ov-fcn.h (octave_value::clone,
+	octave_value::empty_clone): Return type is octave_value*, not
+	octave_function*.
+
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-str-mat.h (octave_char_matrix_str::reshape): New function.

@@ -34,14 +34,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_function);
 
-octave_function *
+octave_value *
 octave_function::clone (void) const
 {
   panic_impossible ();
   return 0;
 }
 
-octave_function *
+octave_value *
 octave_function::empty_clone (void) const
 {
   panic_impossible ();

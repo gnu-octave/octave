@@ -1,0 +1,99 @@
+#
+# Makefile for octave's libcruft directory
+#
+# John W. Eaton
+# jwe@che.utexas.edu
+# Department of Chemical Engineering
+# The University of Texas at Austin
+
+TOPDIR = ..
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+# List of the directories that contain Fortran source.  Simply copying
+# a new .f file into one of these directories is sufficient to have it
+# added to libcruft.a.  If you add a new directory here, you also need
+# generate a new configure script (edit configure.in and run autoconf).
+
+CRUFT_DIRS = blas dassl fftpack fsqp lapack linpack minpack misc \
+	npsol odepack qpsol quadpack ranlib villad
+
+SUBDIRS = $(CRUFT_DIRS)
+
+DISTFILES = Makefile.in Makerules.in $(SOURCES) STOP.patch
+
+all: make-objects ../libcruft.a
+.PHONY: all
+
+make-objects:
+	for dir in $(SUBDIRS); do echo making all in $$dir; cd $$dir; $(MAKE) $(MDEFINES) all; cd ..; done
+.PHONY: make-objects
+
+CRUFT_FSRC = $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))
+CRUFT_OBJ3 = $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
+CRUFT_OBJ2 = $(patsubst %.f, %.o, $(CRUFT_OBJ3))
+CRUFT_OBJ1 = $(subst misc/d1mach.o, , $(CRUFT_OBJ2))
+CRUFT_OBJ = $(CRUFT_OBJ1) misc/d1mach.o misc/dostop.o
+
+../libcruft.a: $(CRUFT_OBJ)
+	rm -f ../libcruft.a
+	$(AR) $(ARFLAGS) ../libcruft.a $(CRUFT_OBJ)
+	$(RANLIB) ../libcruft.a
+
+$(CRUFT_OBJ):
+
+check: all
+.PHONY: check
+
+install:
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	if test -d $(libdir) ; then true ; else $(TOPDIR)/mkpath $(libdir) ; fi
+	rm -f $(libdir)/libcruft.a
+	$(INSTALL_DATA) ../libcruft.a $(libdir)/libcruft.a
+	$(RANLIB) $(libdir)/libcruft.a
+.PHONY: install
+
+uninstall:
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	rm -f $(libdir)/libcruft.a
+.PHONY: uninstall
+
+tags: $(SOURCES)
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	etags $(SOURCES)
+
+clean:
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	rm -f *.a *.o
+.PHONY: clean
+
+mostlyclean:
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	rm -f *.a *.o
+.PHONY: mostlyclean
+
+distclean:
+	rm -f *.a *.o ../libcruft.a Makefile
+.PHONY: distclean
+
+realclean:
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
+	rm -f *.a *.o ../libcruft.a tags TAGS Makefile
+.PHONY: realclean
+
+local-dist:
+	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	ln $(DISTFILES) ../`cat ../.fname`/libcruft
+.PHONY: local-dist
+
+dist:
+	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	ln $(DISTFILES) ../`cat ../.fname`/libcruft
+.PHONY: dist

@@ -1,0 +1,54 @@
+#
+# Common rules for octave's libcruft directories.
+#
+# John W. Eaton
+# jwe@che.utexas.edu
+# Department of Chemical Engineering
+# The University of Texas at Austin
+
+SOURCES = *.f
+
+DISTFILES = Makefile.in $(SOURCES) $(SPECIAL)
+
+CRUFT_FSRC = $(wildcard $(srcdir)/*.f)
+CRUFT_BASE = $(notdir $(CRUFT_FSRC))
+CRUFT_CSRC = $(patsubst %.f, %.c, $(CRUFT_BASE))
+CRUFT_OBJ = $(patsubst %.f, %.o, $(CRUFT_BASE))
+
+CWD = $(shell pwd)
+THISDIR = $(notdir $(CWD))
+
+all: $(CRUFT_OBJ) $(SPECIAL_DEPEND)
+.PHONY: all
+
+install: all
+.PHONY: install
+
+uninstall:
+.PHONY: uninstall
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+clean:
+	rm -f *.a *.o
+.PHONY: clean
+
+mostlyclean:
+	rm -f *.o
+.PHONY: mostlyclean
+
+realclean: clean
+	rm -f tags TAGS Makefile
+.PHONY: realclean
+
+local-dist:
+	ln $(DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)
+.PHONY: local-dist
+
+dist:
+	ln $(EXTERNAL_DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)
+.PHONY: dist

@@ -51,26 +51,27 @@ function r = mod (x, y)
   ## Matlab allows complex arguments, but as far as I can tell, that's a
   ## bunch of hooey.
 
-  if (any (any (imag (x))) || any (any (imag (y))))
-    error ("mod: complex arguments are not allowed");
-  endif
-
-  nz = y != 0.0;
-  if (all (nz(:)))
-    ## No elements of y are zero.
-    r = x - y .* floor (x ./ y);
-  elseif (is_scalar (y))
-    ## y must be zero.
-    r = x;
-  else
-    ## Some elements of y are zero.
-    if (is_scalar (x))
-      r = x * ones (size (y));
-    else
+  if (isreal (x) && isreal (y))
+    nz = y != 0.0;
+    if (all (nz(:)))
+      ## No elements of y are zero.
+      r = x - y .* floor (x ./ y);
+    elseif (is_scalar (y))
+      ## y must be zero.
       r = x;
-      x = x(nz);
+    else
+      ## Some elements of y are zero.
+      if (is_scalar (x))
+	r = x * ones (size (y));
+      else
+	r = x;
+	x = x(nz);
+      endif
+      y = y(nz);
+      r(nz) = x - y .* floor (x ./ y);
     endif
-    r(nz) = x - y .* floor (x ./ y);
+  else
+    error ("mod: complex arguments are not allowed");
   endif
 
 endfunction

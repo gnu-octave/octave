@@ -1,3 +1,7 @@
+2003-03-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.h (octave_cell::is_matrix_type): New function.
+
 2003-03-09  Duncan Temple Lang <duncan@research.bell-labs.com>
 
 	* octave.cc (octave_main): New arg, embedded.

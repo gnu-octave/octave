@@ -104,13 +104,16 @@ tree_global_command::do_init (tree_decl_elt& elt)
 
       octave_lvalue ult = id->lvalue ();
 
-      if (ult.is_undefined () && Vinitialize_global_variables)
+      if (ult.is_undefined ())
 	{
 	  tree_expression *expr = elt.expression ();
 
-	  octave_value init_val = expr
-	    ? expr->rvalue ()
-	    : builtin_any_variable ("default_global_variable_value");
+	  octave_value init_val;
+
+	  if (expr)
+	    init_val = expr->rvalue ();
+	  else if (Vinitialize_global_variables)
+	    init_val = builtin_any_variable ("default_global_variable_value");
 
 	  ult.assign (octave_value::asn_eq, init_val);
 	}

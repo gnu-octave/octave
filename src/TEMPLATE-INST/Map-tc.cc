@@ -36,7 +36,7 @@ template class CHNode<octave_value>;
 template class CHMap<octave_value>;
 
 template static int goodCHptr (CHNode<octave_value> *t);
-template static int CHptr_to_index (CHNode<octave_value> *t);
+template static unsigned int CHptr_to_index (CHNode<octave_value> *t);
 
 /*
 ;;; Local Variables: ***

@@ -149,8 +149,8 @@ do_rand (const octave_value_list& args, int nargin)
 {
   octave_value_list retval;
 
-  int n = 0;
-  int m = 0;
+  volatile int n = 0;
+  volatile int m = 0;
 
   if (nargin == 0)
     {
@@ -295,9 +295,13 @@ do_rand (const octave_value_list& args, int nargin)
     }
   else if (n > 0 && m > 0)
     {
+      volatile int i;
+      volatile int j;
+
       Matrix rand_mat (n, m);
-      for (int j = 0; j < m; j++)
-	for (int i = 0; i < n; i++)
+
+      for (j = 0; j < m; j++)
+	for (i = 0; i < n; i++)
 	  {
 	    double val;
 	    switch (current_distribution)

@@ -237,6 +237,11 @@ octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
       // XXX FIXME XXX -- this should probably be handled correctly by
       // mangle_octave_oct_file_name using a configure test.
 
+      // Perhaps we should always check for both forms of the name and
+      // issue a warning if they both exist?  (I still think it would
+      // be best to use some configure test to determine exactly what
+      // form of the symbol name we should be looking for...)
+
       if (! f)
 	{
 	  string t = "_";

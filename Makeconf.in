@@ -73,6 +73,7 @@ ALL_FFLAGS = $(FFLAGS)
 # cc and associated flags.
 
 DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
+GLOB_INCFLAGS = @DLFCN_INCFLAGS@
 
 # Clean up INCFLAGS a bit if we are not compiling in a separate
 # directory.

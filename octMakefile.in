@@ -26,7 +26,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
 	README README.NLP ROADMAP SENDING-PATCHES THANKS move-if-change \
 	octave.sh octave-bug.in doinstall.sh mkinstalldirs mkoctfile.in \
-	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
+	INFO.PATCH MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
 DISTDIRS = emacs glob kpathsea make # plplot

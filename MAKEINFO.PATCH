@@ -73,9 +73,10 @@ with the contents:
     bar-function
 
 Here is a patch that will cause makeinfo to behave more like
-TeX/texinfo.tex.
+TeX/texinfo.tex.  It is relative to the versionof makeinfo distributed
+with texinfo 3.9.
 
-Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+Tue Nov 12 22:20:22 1996  John Eaton  <jwe@bevo.che.wisc.edu>
 
 	* makeinfo.c (INDEX_ALIST): Use two indices, read_index and
 	write_index, instead of just one.
@@ -93,10 +94,11 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 	(cm_synindex): Don't merge indcies, just make the write_index for
 	redirectee the same as the write_index for redirector.
 
-*** makeinfo.c.orig	Sat Dec 23 16:18:37 1995
---- makeinfo.c	Sat Dec 30 15:51:17 1995
+diff -cNr texinfo-3.9/makeinfo/makeinfo.c texinfo-3.9.local/makeinfo/makeinfo.c
+*** texinfo-3.9/makeinfo/makeinfo.c	Fri Oct  4 13:20:54 1996
+--- texinfo-3.9.local/makeinfo/makeinfo.c	Thu Nov  7 13:12:59 1996
 ***************
-*** 7408,7421 ****
+*** 7472,7485 ****
     int defining_line;		/* Line number where this entry was written. */
   } INDEX_ELT;
   
@@ -111,7 +113,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
     int code;
   } INDEX_ALIST;
   
---- 7408,7447 ----
+--- 7472,7511 ----
     int defining_line;		/* Line number where this entry was written. */
   } INDEX_ELT;
   
@@ -153,7 +155,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   } INDEX_ALIST;
   
 ***************
-*** 7480,7486 ****
+*** 7544,7550 ****
     for (i = 0; i < defined_indices; i++)
       if (name_index_alist[i] &&
   	strcmp (name, name_index_alist[i]->name) == 0)
@@ -161,7 +163,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
     return (-1);
   }
   
---- 7506,7513 ----
+--- 7570,7577 ----
     for (i = 0; i < defined_indices; i++)
       if (name_index_alist[i] &&
   	strcmp (name, name_index_alist[i]->name) == 0)
@@ -171,7 +173,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   }
   
 ***************
-*** 7506,7512 ****
+*** 7570,7576 ****
     INDEX_ALIST *which = find_index (name);
   
     if (which)
@@ -179,7 +181,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
     else
       return (-1);
   }
---- 7533,7539 ----
+--- 7597,7603 ----
     INDEX_ALIST *which = find_index (name);
   
     if (which)
@@ -188,7 +190,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
       return (-1);
   }
 ***************
-*** 7539,7545 ****
+*** 7603,7609 ****
       }
   }
   
@@ -196,7 +198,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   void
   undefindex (name)
        char *name;
---- 7566,7573 ----
+--- 7630,7637 ----
       }
   }
   
@@ -206,7 +208,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   undefindex (name)
        char *name;
 ***************
-*** 7550,7556 ****
+*** 7614,7620 ****
     if (which < 0)
       return;
   
@@ -214,7 +216,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   
     free_index (the_indices[i]);
     the_indices[i] = (INDEX_ELT *) NULL;
---- 7578,7584 ----
+--- 7642,7648 ----
     if (which < 0)
       return;
   
@@ -223,7 +225,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
     free_index (the_indices[i]);
     the_indices[i] = (INDEX_ELT *) NULL;
 ***************
-*** 7598,7604 ****
+*** 7662,7668 ****
     /* We have a slot.  Start assigning. */
     name_index_alist[slot] = (INDEX_ALIST *) xmalloc (sizeof (INDEX_ALIST));
     name_index_alist[slot]->name = strdup (name);
@@ -231,7 +233,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
     name_index_alist[slot]->code = code;
   
     the_indices[slot] = (INDEX_ELT *) NULL;
---- 7626,7633 ----
+--- 7690,7697 ----
     /* We have a slot.  Start assigning. */
     name_index_alist[slot] = (INDEX_ALIST *) xmalloc (sizeof (INDEX_ALIST));
     name_index_alist[slot]->name = strdup (name);
@@ -241,7 +243,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   
     the_indices[slot] = (INDEX_ELT *) NULL;
 ***************
-*** 7615,7621 ****
+*** 7679,7685 ****
   
     tem = find_index (name);
   
@@ -249,7 +251,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   
   #if defined (HAVE_MACROS)
     if (macro_expansion_output_stream)
---- 7644,7650 ----
+--- 7708,7714 ----
   
     tem = find_index (name);
   
@@ -258,7 +260,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   #if defined (HAVE_MACROS)
     if (macro_expansion_output_stream)
 ***************
-*** 7718,7739 ****
+*** 7782,7803 ****
       }
   }
   
@@ -281,9 +283,9 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
   /* Expects 2 args, on the same line.  Both are index abbreviations.
      Make the first one be a synonym for the second one, i.e. make the
      first one have the same index as the second one. */
---- 7747,7752 ----
+--- 7811,7816 ----
 ***************
-*** 7757,7778 ****
+*** 7821,7842 ****
       }
     else
       {
@@ -306,7 +308,7 @@ Sat Dec 30 15:57:34 1995  John Eaton  <jwe@bevo.che.wisc.edu>
       }
   }
   
---- 7770,7777 ----
+--- 7834,7841 ----
       }
     else
       {

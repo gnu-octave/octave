@@ -1,5 +1,10 @@
 Tue Nov 12 21:50:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* MAKEINFO.PATCH: Update to use patch relative to texinfo-3.9.
+
+	* INFO.PATCH: New file.
+	* octMakefile.in (DISTFILES): Add it.
+
 	* info: Update to current release from texinfo-3.9.
 
 Mon Nov 11 23:56:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

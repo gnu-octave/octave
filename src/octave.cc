@@ -374,7 +374,7 @@ static void
 verbose_usage (void)
 {
   cout << "\n"
-       << OCTAVE_STARTUP_BANNER
+       << OCTAVE_STARTUP_MESSAGE
        << "\n\n"
        << "  usage: " << usage_string
        << "\n\n"

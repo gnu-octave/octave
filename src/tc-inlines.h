@@ -139,6 +139,160 @@ fortran_column (int i, int nr)
   return c;
 }
 
+// How about a few macros?
+
+#define TC_REP tree_constant::tree_constant_rep
+
+#ifndef MAX
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#endif
+
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
+#ifndef ABS
+#define ABS(x) (((x) < 0) ? (-x) : (x))
+#endif
+
+// The following are used by some of the functions in the
+// tree_constant_rep class that must deal with real and complex
+// matrices.  This was not done with overloaded or virtual functions
+// from the Matrix class because there is no clean way to do that --
+// the necessary functions (like elem) need to return values of
+// different types...
+
+// Given a tree_constant, and the names to be used for the real and
+// complex matrix and their dimensions, declare a real or complex
+// matrix, and initialize it from the tree_constant.  Note that m, cm,
+// nr, and nc must not be previously declared, and they must not be
+// expressions.  Since only one of the matrices will be defined after
+// this macro is used, only one set of dimesions is declared.
+
+// This macro only makes sense inside a friend or member function of
+// the tree_constant_rep class
+
+#define REP_RHS_MATRIX(tc,m,cm,nr,nc) \
+  int nr = 0; \
+  int nc = 0; \
+  Matrix m; \
+  ComplexMatrix cm; \
+  if ((tc).const_type () == TC_REP::complex_matrix_constant) \
+    { \
+      cm = (tc).complex_matrix_value (); \
+      nr = (cm).rows (); \
+      nc = (cm).columns (); \
+    } \
+  else if ((tc).const_type () == TC_REP::matrix_constant) \
+    { \
+      m = (tc).matrix_value (); \
+      nr = (m).rows (); \
+      nc = (m).columns (); \
+    } \
+  else \
+    abort ();
+
+// Assign a real or complex value to a tree_constant.
+//
+// This macro only makes sense inside a friend or member function of
+// the tree_constant_rep class.
+
+#define REP_ELEM_ASSIGN(i,j,rval,cval,real_type) \
+  do \
+    { \
+      if (type_tag == TC_REP::matrix_constant) \
+        { \
+          if (real_type) \
+            matrix->elem ((i), (j)) = (rval); \
+          else \
+            abort (); \
+        } \
+      else \
+        { \
+          if (real_type) \
+            complex_matrix->elem ((i), (j)) = (rval); \
+          else \
+            complex_matrix->elem ((i), (j)) = (cval); \
+        } \
+    } \
+  while (0)
+
+// Given a real and complex matrix and row and column dimensions,
+// declare both and size one of them.  Only one of the matrices should
+// be used after this macro has been used.
+
+// This macro only makes sense inside a friend or member function of
+// the tree_constant_rep class.
+
+#define CRMATRIX(m,cm,nr,nc) \
+  Matrix m; \
+  ComplexMatrix cm; \
+  if (type_tag == TC_REP::matrix_constant) \
+    (m).resize ((nr), (nc)); \
+  else if (type_tag == complex_matrix_constant) \
+    (cm).resize ((nr), (nc)); \
+  else \
+    abort (); \
+
+// Assign a real or complex matrix to a tree constant.
+
+// This macro only makes sense inside a friend or member function of
+// the tree_constant_rep class.
+
+#define ASSIGN_CRMATRIX_TO(tc,m,cm) \
+  do \
+    { \
+      if (type_tag == matrix_constant) \
+        tc = tree_constant (m); \
+      else \
+        tc = tree_constant (cm); \
+    } \
+  while (0)
+
+// Assign an element of this tree_constant_rep's real or complex
+// matrix to another real or complex matrix.
+
+// This macro only makes sense inside a friend or member function of
+// the tree_constant_rep class.
+
+#define CRMATRIX_ASSIGN_REP_ELEM(m,cm,i1,j1,i2,j2) \
+  do \
+    { \
+      if (type_tag == matrix_constant) \
+        (m).elem ((i1), (j1)) = matrix->elem ((i2), (j2)); \
+      else \
+        (cm).elem ((i1), (j1)) = complex_matrix->elem ((i2), (j2)); \
+    } \
+  while (0)
+
+// Assign a value to an element of a real or complex matrix.  Assumes
+// that the lhs and rhs are either both real or both complex types.
+
+#define CRMATRIX_ASSIGN_ELEM(m,cm,i,j,rval,cval,real_type) \
+  do \
+    { \
+      if (real_type) \
+        (m).elem ((i), (j)) = (rval); \
+      else \
+        (cm).elem ((i), (j)) = (cval); \
+    } \
+  while (0)
+
+
+// One more...
+
+static inline int
+valid_scalar_indices (const Octave_object& args)
+{
+  int nargin = args.length ();
+
+  return ((nargin == 2
+	   && args(1).valid_as_scalar_index ()
+	   && args(0).valid_as_scalar_index ())
+	  || (nargin == 1
+	      && args(0).valid_as_scalar_index ()));
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 
 #include "builtins.h"
+#include "utils.h"
 #include "help.h"
 
 static help_list operators[] =
@@ -217,6 +218,9 @@ static help_list keywords[] =
   { (char *) NULL, (char *) NULL, },
 };
 
+/*
+ * Return a copy of the operator or keyword names.
+ */
 char **
 names (help_list *lst, int& count)
 {
@@ -237,7 +241,7 @@ names (help_list *lst, int& count)
   int i = 0;
   while (ptr->name != (char *) NULL)
     {
-      name_list[i++] = ptr->name;
+      name_list[i++] = strsave (ptr->name);
       ptr++;
     }
 

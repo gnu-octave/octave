@@ -40,7 +40,7 @@ case "$canonical_host_type" in
   ;;
   alpha-dec-osf*)
     CPICFLAG=
-    SH_LDFLAGS="-Xlinker -expect_unresolved -Xlinker '*'"
+    SH_LDFLAGS="-shared -Xlinker -expect_unresolved -Xlinker '*'"
   ;;
   rs6000-ibm-aix* | powerpc-ibm-aix*)
     CPICFLAG=

@@ -4,8 +4,8 @@ Octave version 2.0.4 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
-  -rw-r--r--   1 jwe  3314916 Feb 19 15:32 octave-2.0.4.tar.gz
-  -rw-r--r--   1 jwe     9795 Feb 19 15:55 octave-2.0.3-2.0.4.patch.gz
+  -rw-r--r--   1 jwe  3315120 Feb 20 04:06 octave-2.0.4.tar.gz
+  -rw-r--r--   1 jwe    29456 Feb 20 04:07 octave-2.0.3-2.0.4.patch.gz
 
 Version 2.0.4 fixes some problems with the configure scripts and
 Makefiles that were present in 2.0.3.  It will probably be the last

@@ -1,10 +1,8 @@
-Thu Feb 20 02:42:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
-
-	* configure.in (SH_LDFLAGS): Add -fPIC for HP-UX.
-
-Wed Feb 19 22:58:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Thu Feb 20 02:58:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.4 released.
+
+	* configure.in (SH_LDFLAGS): Add -fPIC for HP-UX.
 
 Tue Feb 18 09:22:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

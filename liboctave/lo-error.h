@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_liboctave_error_h)
 #define octave_liboctave_error_h 1
 
-// Tell g++ that fatal doesn't return;
+/* Tell g++ that fatal doesn't return */
 
 #if defined (__GNUG__)
 typedef void v_fcn_cpc_x (const char *, ...);
@@ -34,8 +34,8 @@ extern void liboctave_fatal (const char *fmt, ...);
 
 typedef void (*liboctave_error_handler) (const char *, ...);
 
-// Would be nice to make this private, but we want to share it among
-// all the liboctave classes.
+/* Would be nice to make this private, but we want to share it among
+   all the liboctave classes. */
 extern liboctave_error_handler current_liboctave_error_handler;
 
 extern void set_liboctave_error_handler (liboctave_error_handler f);

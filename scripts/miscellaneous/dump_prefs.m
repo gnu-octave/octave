@@ -58,7 +58,6 @@ function dump_prefs (file)
   dump_1_pref (file, "output_precision");
   dump_1_pref (file, "page_screen_output");
   dump_1_pref (file, "prefer_column_vectors");
-  dump_1_pref (file, "prefer_zero_one_indexing");
   dump_1_pref (file, "print_answer_id_name");
   dump_1_pref (file, "print_empty_dimensions");
   dump_1_pref (file, "propagate_empty_matrices");

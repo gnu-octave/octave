@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel
+# Copyright (C) 1996 Auburn University.  All Rights Reserved
 #
 # This file is part of Octave. 
 #

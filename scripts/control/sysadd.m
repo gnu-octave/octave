@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1999 Auburn University.  All Rights Reserved.
 #
 # This file is part of Octave. 
 #
@@ -16,16 +16,16 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function sys = sysadd(Gsys,Hsys)
+function sys = sysadd(...)
 # 
-# [sys] = sysadd(Gsys,Hsys)
+# sys = sysadd(Gsys{,Hsys,...})
 #
+# returns transfer function sys = Gsys + Hsys + ...
 #
-# returns transfer function sys = Gsys + Hsys
-#
-# Method: Gsys and Hsys are connected in parallel
-# The vector are connected to both systems; the outputs will be 
-# added.  The names given to the system will be the G systems names.
+# Method: sysgroup used to connect systems in parallel
+# The input vector is connected to all systems; the outputs are summed.
+# Returned system input/output signal names are those of Gsys.  For
+# example, sysadd(Gsys,Hsys) results in
 #
 #                  ________
 #             ----|  Gsys  |---
@@ -36,62 +36,78 @@ function sys = sysadd(Gsys,Hsys)
 #                  --------
 
 # Written by John Ingram July 1996
+# Updated for variable number of arguments July 1999 A. S. Hodel
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
 
-  if(nargin != 2)
-    usage("sysadd:  [sys] = sysysadd(Gsys,Hsys)");
+  if(nargin < 1)
+    usage("sysadd: sys = sysysadd(Gsys{,Hsys, ...})");
   endif
 
-  # check inputs
-  if(!is_struct(Gsys) | !is_struct(Hsys))
-    error("Both Gsys and Hsys must be in system data structure form");
-  endif
-
-  # check for compatibility
-  [n,nz,mg,pg] = sysdimensions(Gsys);
-  [n,nz,mh,ph] = sysdimensions(Hsys);
-  if(mg != mh)
-    error(sprintf("Gsys inputs(%d) != Hsys inputs (%d)",mg,mh));
-  elseif(pg != ph)
-    error(sprintf("Gsys outputs(%d) != Hsys outputs (%d)",pg,ph));
-  endif
-
-  [Gst, Gin, Gout, Gyd] = sysgetsignals(Gsys);
-  [Hst, Hin, Hout, Hyd] = sysgetsignals(Hsys);
-
-  # check for digital to continuous addition
-  if (Gyd != Hyd)
-    error("can not add a discrete output to a continuous output");
-  endif
-
-  if( strcmp(sysgettype(Gsys),"tf") | strcmp(sysgettype(Hsys),"tf") )
-    # see if adding  transfer functions with identical denominators
-    [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
-    [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
-    if( (Hden == Gden) & (HT == GT) )
-      sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
-      return
+  # collect all arguments
+  arglist = list();
+  va_start();
+  for kk=1:nargin
+    arglist(kk) = va_arg();
+    if(!is_struct(nth(arglist,kk)))
+      error("sysadd: argument %d is not a data structure",kk);
     endif
-    # if not, we go on and do the usual thing...
-  endif
+  endfor
 
-  # make sure in ss form
-  Gsys = sysupdate(Gsys,"ss");
-  Hsys = sysupdate(Hsys,"ss");
+  # check system dimensions
+  [n,nz,mg,pg,Gyd] = sysdimensions(nth(arglist,1));
+  for kk=2:nargin
+    [n,nz,mh,ph,Hyd] = sysdimensions(nth(arglist,kk));
+    if(mg != mh)
+      error("arg 1 has %d inputs; arg %d has vs %d inputs",mg,kk,mh);
+    elseif(pg != ph)
+      error("arg 1 has %d outputs; arg %d has vs %d outputs",pg,kk,ph);
+    elseif(norm(Gyd - Hyd))
+      warning("cannot add a discrete output to a continuous output");
+      error("Output type mismatch: arguments 1 and %d\n",kk);
+    endif
+  endfor
 
-  # change signal names to avoid warning messages from sysgroup
-  Gsys = syssetsignals(Gsys,"in",sysdefioname(length(Gin),"Gin_u"));
-  Gsys = syssetsignals(Gsys,"out",sysdefioname(length(Gout),"Gout_u"));
-  Hsys = syssetsignals(Hsys,"in",sysdefioname(length(Hin),"Hin_u"));
-  Hsys = syssetsignals(Hsys,"out",sysdefioname(length(Hout),"Hout_u"));
+  # perform the add
+  if(nargin == 2)
+    Gsys = nth(arglist,1);   Hsys = nth(arglist,2);
+    if( strcmp(sysgettype(Gsys),"tf") | strcmp(sysgettype(Hsys),"tf") )
+      # see if adding  transfer functions with identical denominators
+      [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
+      [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
+      if(length(Hden) == length(Gden) )
+        if( (Hden == Gden) & (HT == GT) )
+          sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
+          return
+        endif
+        # if not, we go on and do the usual thing...
+      endif
+    endif
   
-  sys = sysgroup(Gsys,Hsys);
-
-  eyin = eye(mg);
-  eyout = eye(pg);
-
-  sys = sysscale(sys,[eyout, eyout],[eyin;eyin],Gout,Gin);
-
+    # make sure in ss form
+    Gsys = sysupdate(Gsys,"ss");
+    Hsys = sysupdate(Hsys,"ss");
+  
+    # change signal names to avoid warning messages from sysgroup
+    Gsys = syssetsignals(Gsys,"in",sysdefioname(length(Gin),"Gin_u"));
+    Gsys = syssetsignals(Gsys,"out",sysdefioname(length(Gout),"Gout_u"));
+    Hsys = syssetsignals(Hsys,"in",sysdefioname(length(Hin),"Hin_u"));
+    Hsys = syssetsignals(Hsys,"out",sysdefioname(length(Hout),"Hout_u"));
+    
+    sys = sysgroup(Gsys,Hsys);
+  
+    eyin = eye(mg);
+    eyout = eye(pg);
+  
+    sys = sysscale(sys,[eyout, eyout],[eyin;eyin],Gout,Gin);
+  
+  else
+    # multiple systems (or a single system); combine together one by one
+    sys = nth(arglist,1);
+    for kk=2:length(arglist)
+      sys = sysadd(sys,nth(arglist,kk));
+    endfor
+  endif
 endfunction
+

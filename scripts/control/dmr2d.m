@@ -1,4 +1,4 @@
-# Copyright (C) 1998 A. S. Hodel
+# Copyright (C) 1998 Auburn University.  All Rights Reserved
 # 
 # This file is part of Octave.
 # 

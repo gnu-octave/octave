@@ -1,4 +1,4 @@
-# Copyright (C) 1996,1998 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
 #
 # This file is part of Octave. 
 #
@@ -41,12 +41,16 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
   if( ! (is_vector(zer) | isempty(zer) ) )
     error("zer must be a vector or empty");
   endif
-  zer = reshape(zer,1,length(zer));		# make it a row vector
+  if(!isempty(zer))
+    zer = reshape(zer,1,length(zer));		# make it a row vector
+  endif
 
   if( ! (is_vector(pol) | isempty(pol)))
     error("pol must be a vector");
   endif
-  pol = reshape(pol,1,length(pol));
+  if(!isempty(pol))
+    pol = reshape(pol,1,length(pol));
+  endif
 
   if (! is_scalar(k))
      error('k must be a scalar');

@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996 Auburn University.  All Rights Reserved.
 #
 # This file is part of Octave. 
 #
@@ -25,8 +25,17 @@ function old_names = syschnamesl(olist,old_names,inames,listname)
   #
   # combines the two string lists old_names and inames
 
-  # $Revision: 1.2 $
+  # $Revision: 2.1.14.5 $
   # $Log: syschnamesl.m,v $
+# Revision 2.1.14.5  1999/09/22  21:55:46  scotte
+# Auburn copyright fixed; krylov.m patched to fix bug
+#
+# Revision 2.1.14.4  1999/07/21  19:49:21  scotte
+# sysgroup, sysadd, sysmult, syssub accept variable # of input args
+#
+  # Revision 1.3  1998/07/17 15:08:50  hodelas
+  # use isempty instead of max(size(...))
+  #
   # Revision 1.2  1998/07/01 16:23:39  hodelas
   # Updated c2d, d2c to perform bilinear transforms.
   # Updated several files per bug updates from users.

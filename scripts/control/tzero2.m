@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993 Auburn University.  All Rights Reserved
 # 
 # This file is part of Octave.
 # 
@@ -41,19 +41,19 @@ function zr = tzero2 (a, b, c, d, bal)
       fprintf (stderr, "tzero: number of inputs,outputs differ.  squaring up");
       if (p > m)
 	fprintf (stderr, "       by padding b and d with zeros.");
-	b = [b, zeros (n, p-m)];
-	d = [d, zeros (p, p-m)];
+	b = [b, (zeros (n, p-m))];
+	d = [d, (zeros (p, p-m))];
 	m = p;
       else
 	fprintf (stderr, "       by padding c and d with zeros.");
-	c = [c; zeros (m-p, n)];
-	d = [d; zeros (m-p, m)];
+	c = [c; (zeros (m-p, n))];
+	d = [d; (zeros (m-p, m))];
 	p = m;
       endif
       fprintf (stderr, "This is a kludge.  Try again with SISO system.");
     endif
     ab = [-a, -b; c, d];
-    bb = [eye (n), zeros (n, m); zeros (p, n), zeros (p, m)];
+    bb = [(eye (n)), (zeros (n, m)); (zeros (p, n)), (zeros (p, m))];
     [ab,bb] = balance (ab, bb);
     zr = -qz (ab, bb);
   else

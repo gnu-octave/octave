@@ -1,4 +1,4 @@
-# Copyright (C) 1996, 1999 A. Scottedward Hodel 
+# Copyright (C) 1996, 1999 Auburn University.  All Rights Reserved
 #
 # This file is part of Octave. 
 #
@@ -36,7 +36,7 @@ function DIGITAL = is_digital(sys,eflg)
   switch(nargin)
   case(1),  eflg = 0;
   case(2),  
-    if( isempty(find(eflg == [0 1 2])) )
+    if( isempty(find(eflg == [0, 1, 2])) )
       error("Illegal value of eflg=%d (%e)",eflg,eflg);
     endif
   otherwise,

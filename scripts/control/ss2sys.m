@@ -1,4 +1,4 @@
-# Copyright (C) 1996,1998 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
 #
 # This file is part of Octave. 
 #
@@ -105,6 +105,8 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   # check for continuous states
   if( (nargin < 6) & (tsam == 0) )               n = na;
   elseif(nargin < 6)                             n = 0;
+  elseif((!is_matrix(n)) | isstr(n))
+    error("Parameter n is not a numerical value.");
   elseif( (!is_scalar(n)) | (n < 0 ) | (n != round(n)) )
     if(is_scalar(n))     error("illegal value of n=%d,%e",n,n);
     else                 error("illegal value of n=(%dx%d)", ...
@@ -114,6 +116,8 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   # check for num discrete states
   if( (nargin < 7) & (tsam == 0)) 		nz = 0;
   elseif(nargin < 7)				nz = na - n;
+  elseif((!is_matrix(nz)) | isstr(nz))
+    error("Parameter nz is not a numerical value.");
   elseif( (!is_scalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
     if(is_scalar(nz))
       error(["illegal value of nz=",num2str(nz)]);

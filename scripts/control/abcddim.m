@@ -1,4 +1,4 @@
-# Copyright (C) 1993, 1994, 1995 John W. Eaton
+# Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved.
 # 
 # This file is part of Octave.
 # 

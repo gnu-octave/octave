@@ -1,6 +1,10 @@
 Summary of changes for version 2.1:
 ----------------------------------
 
+  * Commas in global statements are no longer special.  They are now
+    treated as command separators.  This removes a conflict in the
+    grammar and is consistent with the way Matlab behaves.
+
   * It is now possible to declare static variables that retain their
     values across function calls.  For example,
 

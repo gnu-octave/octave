@@ -75,12 +75,6 @@ static bool Vwarn_assign_as_truth_value;
 // If TRUE, generate a warning for variable swich labels.
 static bool Vwarn_variable_switch_label;
 
-// If TRUE, generate a warning for the comma in things like
-//
-//   octave> global a, b = 2
-//
-static bool Vwarn_comma_in_declaration;
-
 // If TRUE, generate warning if declared function name disagrees with
 // the name of the file in which it is defined.
 static bool Vwarn_function_name_clash;
@@ -248,9 +242,6 @@ static tree_expression *finish_matrix (tree_matrix *m);
 
 // Maybe print a warning.  Duh.
 static void maybe_warn_missing_semi (tree_statement_list *);
-
-// Maybe print a warning.  Duh.
-static void maybe_warn_comma_in_decl (void);
 
 // Set the print flag for a statement based on the separator type.
 static void set_stmt_print_flag (tree_statement_list *, char, bool);
@@ -612,12 +603,6 @@ decl1		: decl2
 		| decl1 decl2
 		  {
 		    $1->append ($2);
-		    $$ = $1;
-		  }
-		| decl1 ',' decl2
-		  {
-		    maybe_warn_comma_in_decl ();
-		    $1->append ($3);
 		    $$ = $1;
 		  }
 		;
@@ -2393,32 +2378,11 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
     }
 }
 
-static void
-maybe_warn_comma_in_decl (void)
-{
-  if (Vwarn_comma_in_declaration)\
-    {
-      warning ("comma in declaration not interpreted as a command separator"); 
-
-      if (reading_fcn_file || reading_script_file)
-	warning ("near line %d of file `%s'", input_line_number,
-		 curr_fcn_file_full_name.c_str ());
-    }
-}
-
 static int
 warn_assign_as_truth_value (void)
 {
   Vwarn_assign_as_truth_value
     = check_preference ("warn_assign_as_truth_value");
-
-  return 0;
-}
-
-static int
-warn_comma_in_declaration (void)
-{
-  Vwarn_comma_in_declaration = check_preference ("warn_comma_in_declaration");
 
   return 0;
 }
@@ -2453,9 +2417,6 @@ symbols_of_parse (void)
 {
   DEFVAR (warn_assign_as_truth_value, 1.0, 0, warn_assign_as_truth_value,
     "produce warning for assignments used as truth values");
-
-  DEFVAR (warn_comma_in_declaration, 1.0, 0, warn_comma_in_declaration,
-    "produce warning for commas in declaration statements");
 
   DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");

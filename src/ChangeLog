@@ -1,5 +1,9 @@
 Fri Mar 28 15:33:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (Vwarn_comma_in_declaration): Delete.
+	(symbols_of_parse): Delete DEFVAR for warn_comma_in_declaration.
+	(decl1): Don't allow commas in declarations.
+
 	* lsode.cc (struct LSODE_OPTIONS): Handle integer options.
 	(print_lsode_option_list, set_lsode_option, show_lsode_option): Ditto.
 	(lsode_option_table): Add element for step limit.

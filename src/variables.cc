@@ -1613,6 +1613,11 @@ install_builtin_variables (void)
 	  beep_on_error,
     "if true, beep before printing error messages");
 
+  DEFVAR ("completion_append_char", SBV_completion_append_char, " ",
+	  0, sv_completion_append_char,
+    "the string to append after successful command-line completion\n\
+attempts");
+
   DEFVAR ("default_return_value", SBV_default_return_value, Matrix (),
 	  0, 0,
     "the default for value for unitialized variables returned from\n\

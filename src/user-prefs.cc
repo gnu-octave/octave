@@ -75,6 +75,8 @@ init_user_prefs (void)
   user_pref.warn_function_name_clash = 0;
   user_pref.whitespace_in_literal_matrix = 0;
 
+  user_pref.completion_append_char = '\0';
+
   user_pref.default_save_format = 0;
   user_pref.editor = 0;
   user_pref.gnuplot_binary = 0;
@@ -601,19 +603,24 @@ set_save_precision (void)
 }
 
 int
-sv_editor (void)
+sv_completion_append_char (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("EDITOR");
+  char *s = builtin_string_variable ("completion_append_char");
   if (s)
     {
-      delete [] user_pref.editor;
-      user_pref.editor = s;
+      if (s[0] == '\0' || (s[0] && s[1] == '\0'))
+	user_pref.completion_append_char = s[0];
+      else
+	{
+	  warning ("completion_append_char must be a single character");
+	  status = -1;
+	}
     }
   else
     {
-      gripe_invalid_value_specified ("EDITOR");
+      gripe_invalid_value_specified ("completion_append_char");
       status = -1;
     }
 
@@ -634,6 +641,26 @@ sv_default_save_format (void)
   else
     {
       gripe_invalid_value_specified ("default_save_format");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+sv_editor (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("EDITOR");
+  if (s)
+    {
+      delete [] user_pref.editor;
+      user_pref.editor = s;
+    }
+  else
+    {
+      gripe_invalid_value_specified ("EDITOR");
       status = -1;
     }
 

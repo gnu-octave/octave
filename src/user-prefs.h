@@ -57,6 +57,8 @@ struct user_preferences
   int warn_function_name_clash;
   int whitespace_in_literal_matrix;
 
+  char completion_append_char;
+
   char *default_save_format;
   char *editor;
   char *gnuplot_binary;
@@ -105,6 +107,8 @@ extern int whitespace_in_literal_matrix (void);
 extern int set_output_max_field_width (void);
 extern int set_output_precision (void);
 extern int set_save_precision (void);
+
+extern int sv_completion_append_char (void);
 
 extern int sv_default_save_format (void);
 extern int sv_editor (void);

@@ -23,6 +23,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Lists of various values.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <SLList.h>
 
 #include "tree-expr.h"

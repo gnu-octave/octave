@@ -118,7 +118,6 @@ octave_struct::print_name_tag (ostream& os, const string& name) const
 {
   indent (os);
   os << name << " =";
-  newline (os);
   return false;
 }
 

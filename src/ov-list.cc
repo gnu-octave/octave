@@ -91,6 +91,7 @@ octave_list::print_raw (ostream& os, bool) const
   begin_unwind_frame ("octave_list_print");
 
   indent (os);
+  newline (os);
   os << "(";
   newline (os);
 
@@ -121,7 +122,6 @@ octave_list::print_name_tag (ostream& os, const string& name) const
 {
   indent (os);
   os << name << " =";
-  newline (os);
   return false;
 }
 

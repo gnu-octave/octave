@@ -38,10 +38,12 @@ ALL_CFLAGS = $(LOCAL_INCLUDES) $(DEFS) $(CFLAGS)
 
 # Here is a rule for making .o files from .c files that doesn't force
 # the type of the machine (like -sun3) into the flags.
-.c.o:
-	[ -z "$(CPICFLAG)" ] ||\
-	  $(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o pic/$@
+
+%.o : %.c
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
+
+pic/%.o : %.c
+	$(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o $@
 
 # ==================== Where To Install Things ====================
 

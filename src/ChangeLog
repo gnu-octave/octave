@@ -1,3 +1,10 @@
+2002-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-map.h (Octave_map::operator[]): New const version.
+	* oct-map.cc (equiv_keys): New function.
+	(assign (const idx_vector&, const Octave_map&)): New function.
+	* ov-struct.cc (octave_struct::subsasgn): Use it.
+
 2002-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.40.

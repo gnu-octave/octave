@@ -67,6 +67,8 @@ Octave_map
 
   octave_value_list& operator [] (const std::string& key) { return map[key]; }
 
+  octave_value_list operator [] (const std::string& key) const;
+
   void del (const std::string& key) { map.del (key); }
 
   Pix first (void) const { return map.first (); }
@@ -85,6 +87,8 @@ Octave_map
   string_vector keys (void) const;
 
   int array_length () const;
+
+  Octave_map& assign (const idx_vector& idx, const Octave_map& rhs);
 
   Octave_map& assign (const idx_vector& idx, const std::string& key,
 		      const octave_value_list& rhs);

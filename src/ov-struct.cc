@@ -331,7 +331,28 @@ octave_struct::subsasgn (const std::string type,
 		  gripe_failed_assignment ();
 	      }
 	    else
-	      gripe_invalid_index_for_assignment ();
+	      {
+		octave_value_list t_idx = idx.front ();
+
+		if (t_idx.length () == 1)
+		  {
+		    idx_vector i = t_idx(0).index_vector ();
+
+		    Octave_map rhs_map = t_rhs.map_value ();
+
+		    if (! error_state)
+		      {
+			map.assign (i, rhs_map);
+
+			if (! error_state)
+			  retval = octave_value (this, count + 1);
+			else
+			  gripe_failed_assignment ();
+		      }
+		    else
+		      error ("invalid structure assignment");
+		  }
+	      }
 	  }
 	  break;
 

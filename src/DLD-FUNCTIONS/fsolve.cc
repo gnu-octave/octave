@@ -229,9 +229,9 @@ $$ J = {\\partial f_i \\over \\partial x_j} $$\n\
 @ifinfo\n\
 \n\
 @example\n\
-      df_i
-jac = ----
-      dx_j
+           df_i\n\
+jac(i,j) = ----\n\
+           dx_j\n\
 @end example\n\
 @end ifinfo\n\
 \n\

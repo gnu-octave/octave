@@ -1,3 +1,9 @@
+2002-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (symtab_context): Now extern.
+	* parse.h: Provide decl.
+	* lex.l (reset_parser): Set it to 0.
+
 2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-bp.cc (octave_debug_on_interrupt_state): New global variable.

@@ -808,6 +808,7 @@ reset_parser (void)
   error_state = 0;
   warning_state = 0;
   parser_end_of_input = false;
+  symtab_context = 0;
 
   // We do want a prompt by default.
   promptflag = 1;

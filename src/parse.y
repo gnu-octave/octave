@@ -134,7 +134,7 @@ bool input_from_command_line_file = true;
 bool evaluating_function_body = false;
 
 // Keep track of symbol table information when parsing functions.
-static symbol_table *symtab_context = 0;
+symbol_table *symtab_context = 0;
 
 // Forward declarations for some functions defined at the bottom of
 // the file.

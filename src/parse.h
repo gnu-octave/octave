@@ -74,6 +74,9 @@ extern bool input_from_command_line_file;
 // an eval() statement.
 extern bool evaluating_function_body;
 
+// Keep track of symbol table information when parsing functions.
+extern symbol_table *symtab_context;
+
 // TRUE means warn about function files that have time stamps in the future.
 extern bool Vwarn_future_time_stamp;
 

@@ -20,7 +20,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-%x NEW_MATRIX
 %x HELP_FCN
 %s TEXT_FCN
 %s MATRIX
@@ -108,8 +107,9 @@ static int match_any (char c, char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
+static void eat_whitespace (void);
 static void handle_number (char *yytext);
-static int handle_string (char delim);
+static int handle_string (char delim, int text_style = 0);
 static int handle_close_brace (char *yytext);
 static int handle_identifier (char *s, int next_tok_is_eq);
 
@@ -132,31 +132,10 @@ EPOW	(\.{POW})
 PLUS	((\+)|(\.\+))
 MINUS	((\-)|(\.\-))
 NOT	((\~)|(\!))
-QQ	(\'\')
-ECHAR	(\\.)
-QSTR	([^\n\'\\]*({QQ}|{ECHAR})*)
-DQSTR	([^\n\"\\]*{ECHAR}*)
 IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %%
-
-%{
-// XXX FIXME XXX -- this probably doesn't need to be an exclusive
-// start state since it always matches.  Also, we can probably
-// eliminate it by doing the check below using yyinput() in the only
-// place where we actually set this start state.
-%}
-
-<NEW_MATRIX>[^ \t\n#%] {
-    yyless (0);
-    BEGIN MATRIX;
-  }
-
-<NEW_MATRIX>{SNLCMT}* {
-    fixup_column_count (yytext);
-    BEGIN MATRIX;
-  }
 
 %{
 // Help and other text-style functions are a pain in the ass.  This
@@ -191,6 +170,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
       }
   }
 
+<TEXT_FCN>[\"\'] {
+    current_input_column++;
+    return handle_string (yytext[0], 1);
+  }
+
 <HELP_FCN>[^ \t\n]*{S}*	|
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
     static char *tok = 0;
@@ -199,52 +183,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     yylval.tok_val = new token (tok);
     token_stack.push (yylval.tok_val);
     TOK_RETURN (TEXT);
-  }
-
-<TEXT_FCN>\'{QSTR}*[\n\'] {
-    if (yytext[yyleng-1] == '\n')
-      {
-	error ("unterminated string constant");
-	current_input_column = 1;
-	return LEXICAL_ERROR;
-      }
-    else
-      {
-	static char *tok = 0;
-	delete [] tok;
-	int off1 = doing_set ? 0 : 1;
-	int off2 = doing_set ? 0 : 2;
-	tok = strsave (&yytext[off1]);
-	tok[yyleng-off2] = '\0';
-	do_string_escapes (tok);
-	yylval.tok_val = new token (tok);
-	token_stack.push (yylval.tok_val);
-	current_input_column += yyleng;
-      }
-    return TEXT;
-  }
-
-<TEXT_FCN>\"{DQSTR}*[\n\"] {
-    if (yytext[yyleng-1] == '\n')
-      {
-	error ("unterminated string constant");
-	current_input_column = 1;
-	return LEXICAL_ERROR;
-      }
-    else
-      {
-	static char *tok = 0;
-	delete [] tok;
-	int off1 = doing_set ? 0 : 1;
-	int off2 = doing_set ? 0 : 2;
-	tok = strsave (&yytext[off1]);
-	tok[yyleng-off2] = '\0';
-	do_string_escapes (tok);
-	yylval.tok_val = new token (tok);
-	token_stack.push (yylval.tok_val);
-	current_input_column += yyleng;
-      }
-    return TEXT;
   }
 
 %{
@@ -306,10 +244,17 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %{
 // Open and close brace are handled differently if we are in the range
 // part of a plot command.
+//
 %}
 
 \[{S}* {
+    fixup_column_count (yytext);
+
     in_brace_or_paren.push (1);
+
+    promptflag--;
+    eat_whitespace ();
+
     if (plotting && ! past_plot_range)
       {
 	in_plot_range = 1;
@@ -319,13 +264,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
       {
 	mlnm.push (1);
 	braceflag++;
-	promptflag--;
-	BEGIN NEW_MATRIX;
+	BEGIN MATRIX;
 	TOK_RETURN ('[');
       }
   }
 
 \] {
+    promptflag++;
+
     if (! in_brace_or_paren.empty ())
       in_brace_or_paren.pop ();
 
@@ -1327,6 +1273,44 @@ strip_trailing_whitespace (char *s)
 }
 
 static void
+eat_whitespace (void)
+{
+  int in_comment = 0;
+  int c;
+  while ((c = yyinput ()) != EOF)
+    {
+      current_input_column++;
+
+      switch (c)
+	{
+	case ' ':
+	case '\t':
+	  break;
+
+	case '\n':
+	  in_comment = 0;
+	  current_input_column = 0;
+	  break;
+
+	case '#':
+	case '%':
+	  in_comment = 1;
+	  break;
+
+	default:
+	  if (in_comment)
+	    break;
+	  else
+	    goto done;
+	}
+    }
+
+ done:
+  yyunput (c, yytext);
+  return;
+}
+
+static void
 handle_number (char *yytext)
 {
   double value;
@@ -1379,6 +1363,7 @@ have_continuation (void)
 	  break;
 
 	case '\n':
+	  current_input_column = 0;
 	  return 1;
 
 	default:
@@ -1427,7 +1412,7 @@ have_ellipsis_continuation (void)
 }
 
 static int
-handle_string (char delim)
+handle_string (char delim, int text_style)
 {
   ostrstream buf;
 
@@ -1473,12 +1458,31 @@ handle_string (char delim)
 		  buf << ends;
 		  char *tok = buf.str ();
 		  do_string_escapes (tok);
+
+		  if (text_style && doing_set)
+		    {
+		      if (tok)
+			{
+			  int len = strlen (tok) + 3;
+			  char *tmp = tok;
+			  tok = new char [len];
+			  tok[0] = delim;
+			  strcpy (tok+1, tmp);
+			  tok[len-2] = delim;
+			  tok[len-1] = '\0';
+			  delete [] tmp;
+			}
+		    }
+		  else
+		    {
+		      quote_is_transpose = 1;
+		      cant_be_identifier = 1;
+		      convert_spaces_to_comma = 1;
+		    }
+
 		  yylval.tok_val = new token (tok);
 		  delete [] tok;
 		  token_stack.push (yylval.tok_val);
-		  quote_is_transpose = 1;
-		  cant_be_identifier = 1;
-		  convert_spaces_to_comma = 1;
 		  return TEXT;
 		}
 	    }

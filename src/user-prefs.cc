@@ -86,7 +86,7 @@ check_str_pref (char *var)
  *
  *   [eye, (2)]
  *
- * and will result in an error since the eye function will be
+ * and will result in an error since the `eye' function will be
  * called with no arguments.  To get around this, you would have to
  * omit the space between `eye' and the `('.
  *
@@ -96,7 +96,7 @@ check_str_pref (char *var)
  *
  *   [eye (2)]
  *
- * will result in a call to linspace with the argument `2'. 
+ * will result in a call to `eye' with the argument `2'. 
  */
 int
 commas_in_literal_matrix (void)

@@ -24,13 +24,15 @@ all: computer.m
 .PHONY: all
 
 computer.m: computer.in
+	rm -f computer.m
 	if test "$(target_host_type)" = unknown ; then \
 	  sed -e "s/%target_host_type%/Hi Dave, I'm a HAL-9000/" \
-	    $(srcdir)/computer.in > computer.m ; \
+	    $(srcdir)/computer.in > computer.t ; \
 	else \
 	  sed -e "s/%target_host_type%/$(target_host_type)/" \
-	    $(srcdir)/computer.in > computer.m ; \
+	    $(srcdir)/computer.in > computer.t ; \
 	fi
+	mv computer.t computer.m
 
 check: all
 .PHONY: check
@@ -51,7 +53,7 @@ uninstall:
 .PHONY: uninstall
 
 clean:
-	rm -f computer.m
+	rm -f computer.m computer.t
 .PHONY: clean
 
 tags: $(SOURCES)

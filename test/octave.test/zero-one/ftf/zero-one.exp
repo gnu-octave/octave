@@ -1,10 +1,10 @@
-# Tests with:
-#
-# prefer_zero_one_indexing == "false"
-# prefer_column_vectors    == "true"
-# do_fortran_indexing      == "false"
+## Tests with:
+##
+## prefer_zero_one_indexing == "false"
+## prefer_column_vectors    == "true"
+## do_fortran_indexing      == "false"
 
-# scalar tests
+## scalar tests
 
 set test zero-one-ftf-s-1
 set prog_output "error:.*"
@@ -22,7 +22,7 @@ set test zero-one-ftf-s-4
 set prog_output "ans = *1"
 do_test s-4.m
 
-# vector tests
+## vector tests
 
 set test zero-one-ftf-v-1
 set prog_output "ans = *1"
@@ -40,7 +40,7 @@ set test zero-one-ftf-v-4
 set prog_output "ans = *1"
 do_test v-4.m
 
-# matrix tests
+## matrix tests
 
 set test zero-one-ftf-m-1
 set prog_output "error:.*"

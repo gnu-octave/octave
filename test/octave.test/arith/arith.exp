@@ -77,11 +77,11 @@ set prog_output "ans = 1"
 do_test max-2.m
 
 set test max-3
-set prog_output "error:.*"
+set prog_output "\n... max:.*"
 do_test max-3.m
 
 set test max-4
-set prog_output "error:.*"
+set prog_output "\n... max:.*"
 do_test max-4.m
 
 set test min-1
@@ -93,17 +93,39 @@ set prog_output "ans = 1"
 do_test min-2.m
 
 set test min-3
-set prog_output "error:.*"
+set prog_output "\n... min:.*"
 do_test min-3.m
 
 set test min-4
-set prog_output "error:.*"
+set prog_output "\n... min:.*"
 do_test min-4.m
 
 # nexpow2
 # pow2
 
-# rem
+set test rem-1
+set prog_output "ans = 1"
+do_test rem-1.m
+
+set test rem-2
+set prog_output "ans = 1"
+do_test rem-2.m
+
+set test rem-3
+set prog_output "usage:.*"
+do_test rem-3.m
+
+set test rem-4
+set prog_output "usage:.*"
+do_test rem-4.m
+
+set test rem-5
+set prog_output "error:.*"
+do_test rem-5.m
+
+set test rem-6
+set prog_output "error:.*"
+do_test rem-6.m
 
 set test round-1
 set prog_output "ans = 1"
@@ -274,11 +296,85 @@ do_test real-4.m
 # acoth
 # atan2
 
-# sum
-# prod
-# cumsum
-# cumprod
-# sumsq
+set test sum-1
+set prog_output "ans = 1"
+do_test sum-1.m
+
+set test sum-2
+set prog_output "ans = 1"
+do_test sum-2.m
+
+set test sum-3
+set prog_output "\n... sum:.*"
+do_test sum-3.m
+
+set test sum-4
+set prog_output "\n... sum:.*"
+do_test sum-4.m
+
+set test prod-1
+set prog_output "ans = 1"
+do_test prod-1.m
+
+set test prod-2
+set prog_output "ans = 1"
+do_test prod-2.m
+
+set test prod-3
+set prog_output "\n... prod:.*"
+do_test prod-3.m
+
+set test prod-4
+set prog_output "\n... prod:.*"
+do_test prod-4.m
+
+set test cumsum-1
+set prog_output "ans = 1"
+do_test cumsum-1.m
+
+set test cumsum-2
+set prog_output "ans = 1"
+do_test cumsum-2.m
+
+set test cumsum-3
+set prog_output "\n... cumsum:.*"
+do_test cumsum-3.m
+
+set test cumsum-4
+set prog_output "\n... cumsum:.*"
+do_test cumsum-4.m
+
+set test cumprod-1
+set prog_output "ans = 1"
+do_test cumprod-1.m
+
+set test cumprod-2
+set prog_output "ans = 1"
+do_test cumprod-2.m
+
+set test cumprod-3
+set prog_output "\n... cumprod:.*"
+do_test cumprod-3.m
+
+set test cumprod-4
+set prog_output "\n... cumprod:.*"
+do_test cumprod-4.m
+
+set test sumsq-1
+set prog_output "ans = 1"
+do_test sumsq-1.m
+
+set test sumsq-2
+set prog_output "ans = 1"
+do_test sumsq-2.m
+
+set test sumsq-3
+set prog_output "\n... sumsq:.*"
+do_test sumsq-3.m
+
+set test sumsq-4
+set prog_output "\n... sumsq:.*"
+do_test sumsq-4.m
 
 # beta
 # betai

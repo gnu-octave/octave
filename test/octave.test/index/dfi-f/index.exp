@@ -1,6 +1,6 @@
-# Tests with do_fortran_indexing == "false"
+## Tests with do_fortran_indexing == "false"
 
-# scalar tests
+## scalar tests
 
 set test index-s-1
 set prog_output "ans = 1"
@@ -82,7 +82,7 @@ set test index-s-20
 set prog_output "error:.*"
 do_test s-20.m
 
-# vector tests
+## vector tests
 
 set test index-v-1
 set prog_output "ans = 4"
@@ -144,7 +144,7 @@ set test index-v-15
 set prog_output "ans = 1"
 do_test v-15.m
 
-# matrix tests
+## matrix tests
 
 set test index-m-1
 set prog_output "ans = 1"

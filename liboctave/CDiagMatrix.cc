@@ -37,30 +37,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  * Complex Diagonal Matrix class
  */
 
-#define KLUDGE_DIAG_MATRICES
-#define TYPE Complex
-#define KL_DMAT_TYPE ComplexDiagMatrix
-#include "mx-kludge.cc"
-#undef KLUDGE_DIAG_MATRICES
-#undef TYPE
-#undef KL_DMAT_TYPE
-
 ComplexDiagMatrix::ComplexDiagMatrix (const RowVector& a)
-  : DiagArray<Complex> (a.length ())
+  : MDiagArray<Complex> (a.length ())
 {
   for (int i = 0; i < length (); i++)
     elem (i, i) = a.elem (i);
 }
 
 ComplexDiagMatrix::ComplexDiagMatrix (const ColumnVector& a)
-  : DiagArray<Complex> (a.length ())
+  : MDiagArray<Complex> (a.length ())
 {
   for (int i = 0; i < length (); i++)
     elem (i, i) = a.elem (i);
 }
 
 ComplexDiagMatrix::ComplexDiagMatrix (const DiagMatrix& a)
-  : DiagArray<Complex> (a.rows (), a.cols ())
+  : MDiagArray<Complex> (a.rows (), a.cols ())
 {
   for (int i = 0; i < length (); i++)
     elem (i, i) = a.elem (i, i);

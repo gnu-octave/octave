@@ -24,7 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DiagMatrix_h)
 #define octave_DiagMatrix_h 1
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "dRowVector.h"
 #include "dColVector.h"
@@ -33,31 +33,29 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C++" {
 
-class DiagMatrix : public DiagArray<double>
+class DiagMatrix : public MDiagArray<double>
 {
 friend class SVD;
 friend class ComplexSVD;
 
 public:
 
-  DiagMatrix (void) : DiagArray<double> () { }
-  DiagMatrix (int n) : DiagArray<double> (n) { }
-  DiagMatrix (int n, double val) : DiagArray<double> (n, val) { }
-  DiagMatrix (int r, int c) : DiagArray<double> (r, c) { }
-  DiagMatrix (int r, int c, double val) : DiagArray<double> (r, c, val) { }
-  DiagMatrix (const RowVector& a) : DiagArray<double> (a) { }
-  DiagMatrix (const ColumnVector& a) : DiagArray<double> (a) { }
-  DiagMatrix (const DiagArray<double>& a) : DiagArray<double> (a) { }
-  DiagMatrix (const DiagMatrix& a) : DiagArray<double> (a) { }
-//  DiagMatrix (double a) : DiagArray<double> (1, a) { }
+  DiagMatrix (void) : MDiagArray<double> () { }
+  DiagMatrix (int n) : MDiagArray<double> (n) { }
+  DiagMatrix (int n, double val) : MDiagArray<double> (n, val) { }
+  DiagMatrix (int r, int c) : MDiagArray<double> (r, c) { }
+  DiagMatrix (int r, int c, double val) : MDiagArray<double> (r, c, val) { }
+  DiagMatrix (const RowVector& a) : MDiagArray<double> (a) { }
+  DiagMatrix (const ColumnVector& a) : MDiagArray<double> (a) { }
+  DiagMatrix (const MDiagArray<double>& a) : MDiagArray<double> (a) { }
+  DiagMatrix (const DiagMatrix& a) : MDiagArray<double> (a) { }
+//  DiagMatrix (double a) : MDiagArray<double> (1, a) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
     {
-      DiagArray<double>::operator = (a);
+      MDiagArray<double>::operator = (a);
       return *this;
     }
-
-//  operator DiagArray<double>& () const { return *this; }
 
   int operator == (const DiagMatrix& a) const;
   int operator != (const DiagMatrix& a) const;
@@ -108,17 +106,9 @@ public:
 
   friend ostream& operator << (ostream& os, const DiagMatrix& a);
 
-#define KLUDGE_DIAG_MATRICES
-#define TYPE double
-#define KL_DMAT_TYPE DiagMatrix
-#include "mx-kludge.h"
-#undef KLUDGE_DIAG_MATRICES
-#undef TYPE
-#undef KL_DMAT_TYPE
-
 private:
 
-  DiagMatrix (double *d, int nr, int nc) : DiagArray<double> (d, nr, nc) { }
+  DiagMatrix (double *d, int nr, int nc) : MDiagArray<double> (d, nr, nc) { }
 };
 
 } // extern "C++"

@@ -27,13 +27,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // For FILE...
 #include <stdio.h>
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "mx-defs.h"
 
 extern "C++" {
 
-class Matrix : public Array2<double>
+class Matrix : public MArray2<double>
 {
 friend class ComplexMatrix;
 friend class AEPBAL;
@@ -48,17 +48,17 @@ friend class SVD;
 
 public:
 
-  Matrix (void) : Array2<double> () { }
-  Matrix (int r, int c) : Array2<double> (r, c) { }
-  Matrix (int r, int c, double val) : Array2<double> (r, c, val) { }
-  Matrix (const Array2<double>& a) : Array2<double> (a) { }
-  Matrix (const Matrix& a) : Array2<double> (a) { }
-  Matrix (const DiagArray<double>& a) : Array2<double> (a) { }
+  Matrix (void) : MArray2<double> () { }
+  Matrix (int r, int c) : MArray2<double> (r, c) { }
+  Matrix (int r, int c, double val) : MArray2<double> (r, c, val) { }
+  Matrix (const MArray2<double>& a) : MArray2<double> (a) { }
+  Matrix (const Matrix& a) : MArray2<double> (a) { }
+  Matrix (const MDiagArray<double>& a) : MArray2<double> (a) { }
   Matrix (const DiagMatrix& a);
 
   Matrix& operator = (const Matrix& a)
     {
-      Array2<double>::operator = (a);
+      MArray2<double>::operator = (a);
       return *this;
     }
 
@@ -233,17 +233,9 @@ public:
 
 // Until templates really work with g++:
 
-#define KLUDGE_MATRICES
-#define TYPE double
-#define KL_MAT_TYPE Matrix
-#include "mx-kludge.h"
-#undef KLUDGE_MATRICES
-#undef TYPE
-#undef KL_MAT_TYPE
-
 private:
 
-  Matrix (double *d, int r, int c) : Array2<double> (d, r, c) { }
+  Matrix (double *d, int r, int c) : MArray2<double> (d, r, c) { }
 };
 
 } // extern "C++"

@@ -74,20 +74,12 @@ extern "C"
   int F77_FCN (cfftb) (const int*, Complex*, Complex*);
 }
 
-#define KLUDGE_MATRICES
-#define TYPE Complex
-#define KL_MAT_TYPE ComplexMatrix
-#include "mx-kludge.cc"
-#undef KLUDGE_MATRICES
-#undef TYPE
-#undef KL_MAT_TYPE
-
 /*
  * Complex Matrix class
  */
 
 ComplexMatrix::ComplexMatrix (const Matrix& a)
-  : Array2<Complex> (a.rows (), a.cols ())
+  : MArray2<Complex> (a.rows (), a.cols ())
 {
   for (int j = 0; j < cols (); j++)
     for (int i = 0; i < rows (); i++)
@@ -95,14 +87,14 @@ ComplexMatrix::ComplexMatrix (const Matrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
-  : Array2<Complex> (a.rows (), a.cols (), 0.0)
+  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
-  : Array2<Complex> (a.rows (), a.cols (), 0.0)
+  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);

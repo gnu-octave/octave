@@ -48,14 +48,6 @@ extern "C"
  * Column Vector class.
  */
 
-#define KLUDGE_VECTORS
-#define TYPE double
-#define KL_VEC_TYPE ColumnVector
-#include "mx-kludge.cc"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 int
 ColumnVector::operator == (const ColumnVector& a) const
 {

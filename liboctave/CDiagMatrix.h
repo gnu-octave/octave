@@ -24,7 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexDiagMatrix_h)
 #define octave_ComplexDiagMatrix_h 1
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "dRowVector.h"
 #include "CRowVector.h"
@@ -35,30 +35,30 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C++" {
 
-class ComplexDiagMatrix : public DiagArray<Complex>
+class ComplexDiagMatrix : public MDiagArray<Complex>
 {
 public:
 
-  ComplexDiagMatrix (void) : DiagArray<Complex> () { }
-  ComplexDiagMatrix (int n) : DiagArray<Complex> (n) { }
+  ComplexDiagMatrix (void) : MDiagArray<Complex> () { }
+  ComplexDiagMatrix (int n) : MDiagArray<Complex> (n) { }
   ComplexDiagMatrix (int n, const Complex& val)
-    : DiagArray<Complex> (n, val) { }
-  ComplexDiagMatrix (int r, int c) : DiagArray<Complex> (r, c) { }
+    : MDiagArray<Complex> (n, val) { }
+  ComplexDiagMatrix (int r, int c) : MDiagArray<Complex> (r, c) { }
   ComplexDiagMatrix (int r, int c, const Complex& val)
-    : DiagArray<Complex> (r, c, val) { }
+    : MDiagArray<Complex> (r, c, val) { }
   ComplexDiagMatrix (const RowVector& a);
-  ComplexDiagMatrix (const ComplexRowVector& a) : DiagArray<Complex> (a) { }
+  ComplexDiagMatrix (const ComplexRowVector& a) : MDiagArray<Complex> (a) { }
   ComplexDiagMatrix (const ColumnVector& a);
   ComplexDiagMatrix (const ComplexColumnVector& a)
-    : DiagArray<Complex> (a) { }
+    : MDiagArray<Complex> (a) { }
   ComplexDiagMatrix (const DiagMatrix& a);
-  ComplexDiagMatrix (const DiagArray<Complex>& a)
-    : DiagArray<Complex> (a) { }
-  ComplexDiagMatrix (const ComplexDiagMatrix& a) : DiagArray<Complex> (a) { }
+  ComplexDiagMatrix (const MDiagArray<Complex>& a)
+    : MDiagArray<Complex> (a) { }
+  ComplexDiagMatrix (const ComplexDiagMatrix& a) : MDiagArray<Complex> (a) { }
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
     {
-      DiagArray<Complex>::operator = (a);
+      MDiagArray<Complex>::operator = (a);
       return *this;
     }
 
@@ -154,18 +154,10 @@ public:
 
   friend ostream& operator << (ostream& os, const ComplexDiagMatrix& a);
 
-#define KLUDGE_DIAG_MATRICES
-#define TYPE Complex
-#define KL_DMAT_TYPE ComplexDiagMatrix
-#include "mx-kludge.h"
-#undef KLUDGE_DIAG_MATRICES
-#undef TYPE
-#undef KL_DMAT_TYPE
-
 private:
 
   ComplexDiagMatrix (Complex *d, int nr, int nc)
-    : DiagArray<Complex> (d, nr, nc) { }
+    : MDiagArray<Complex> (d, nr, nc) { }
 };
 
 } // extern "C++"

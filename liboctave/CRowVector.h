@@ -24,28 +24,28 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexRowVector_h)
 #define octave_ComplexRowVector_h 1
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "mx-defs.h"
 
 extern "C++" {
 
-class ComplexRowVector : public Array<Complex>
+class ComplexRowVector : public MArray<Complex>
 {
 friend class ComplexColumnVector;
 
 public:
 
-  ComplexRowVector (void) : Array<Complex> () { }
-  ComplexRowVector (int n) : Array<Complex> (n) { }
-  ComplexRowVector (int n, const Complex& val) : Array<Complex> (n, val) { }
+  ComplexRowVector (void) : MArray<Complex> () { }
+  ComplexRowVector (int n) : MArray<Complex> (n) { }
+  ComplexRowVector (int n, const Complex& val) : MArray<Complex> (n, val) { }
   ComplexRowVector (const RowVector& a);
-  ComplexRowVector (const Array<Complex>& a) : Array<Complex> (a) { }
-  ComplexRowVector (const ComplexRowVector& a) : Array<Complex> (a) { }
+  ComplexRowVector (const MArray<Complex>& a) : MArray<Complex> (a) { }
+  ComplexRowVector (const ComplexRowVector& a) : MArray<Complex> (a) { }
 
   ComplexRowVector& operator = (const ComplexRowVector& a)
     {
-      Array<Complex>::operator = (a);
+      MArray<Complex>::operator = (a);
       return *this;
     }
 
@@ -149,17 +149,9 @@ public:
   friend ostream& operator << (ostream& os, const ComplexRowVector& a);
   friend istream& operator >> (istream& is, ComplexRowVector& a);
 
-#define KLUDGE_VECTORS
-#define TYPE Complex
-#define KL_VEC_TYPE ComplexRowVector
-#include "mx-kludge.h"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 private:
 
-  ComplexRowVector (Complex *d, int l) : Array<Complex> (d, l) { }
+  ComplexRowVector (Complex *d, int l) : MArray<Complex> (d, l) { }
 };
 
 // row vector by column vector -> scalar

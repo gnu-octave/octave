@@ -24,28 +24,28 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ColumnVector_h)
 #define octave_ColumnVector_h 1
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "mx-defs.h"
 
 extern "C++" {
 
-class ColumnVector : public Array<double>
+class ColumnVector : public MArray<double>
 {
 friend class Matrix;
 friend class RowVector;
 
 public:
 
-  ColumnVector (void) : Array<double> () { }
-  ColumnVector (int n) : Array<double> (n) { }
-  ColumnVector (int n, double val) : Array<double> (n, val) { }
-  ColumnVector (const Array<double>& a) : Array<double> (a) { }
-  ColumnVector (const ColumnVector& a) : Array<double> (a) { }
+  ColumnVector (void) : MArray<double> () { }
+  ColumnVector (int n) : MArray<double> (n) { }
+  ColumnVector (int n, double val) : MArray<double> (n, val) { }
+  ColumnVector (const MArray<double>& a) : MArray<double> (a) { }
+  ColumnVector (const ColumnVector& a) : MArray<double> (a) { }
 
   ColumnVector& operator = (const ColumnVector& a)
     {
-      Array<double>::operator = (a);
+      MArray<double>::operator = (a);
       return *this;
     }
 
@@ -97,17 +97,9 @@ public:
   friend ostream& operator << (ostream& os, const ColumnVector& a);
   friend istream& operator >> (istream& is, ColumnVector& a);
 
-#define KLUDGE_VECTORS
-#define TYPE double
-#define KL_VEC_TYPE ColumnVector
-#include "mx-kludge.h"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 private:
 
-  ColumnVector (double *d, int l) : Array<double> (d, l) { }
+  ColumnVector (double *d, int l) : MArray<double> (d, l) { }
 };
 
 } // extern "C++"

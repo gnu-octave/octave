@@ -26,13 +26,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <Complex.h>
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "mx-defs.h"
 
 extern "C++" {
 
-class ComplexMatrix : public Array2<Complex>
+class ComplexMatrix : public MArray2<Complex>
 {
 friend class Matrix;
 friend class ComplexCHOL;
@@ -45,20 +45,20 @@ friend class ComplexSVD;
 
 public:
  
-  ComplexMatrix (void) : Array2<Complex> () { }
-  ComplexMatrix (int r, int c) : Array2<Complex> (r, c) { }
+  ComplexMatrix (void) : MArray2<Complex> () { }
+  ComplexMatrix (int r, int c) : MArray2<Complex> (r, c) { }
   ComplexMatrix (int r, int c, const Complex& val)
-    : Array2<Complex> (r, c, val) { }
+    : MArray2<Complex> (r, c, val) { }
   ComplexMatrix (const Matrix& a);
-  ComplexMatrix (const Array2<Complex>& a) : Array2<Complex> (a) { }
-  ComplexMatrix (const ComplexMatrix& a) : Array2<Complex> (a) { }
+  ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }
+  ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const DiagMatrix& a);
-  ComplexMatrix (const DiagArray<Complex>& a) : Array2<Complex> (a) { }
+  ComplexMatrix (const MDiagArray<Complex>& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const ComplexDiagMatrix& a);
 
   ComplexMatrix& operator = (const ComplexMatrix& a)
     {
-      Array2<Complex>::operator = (a);
+      MArray2<Complex>::operator = (a);
       return *this;
     }
 
@@ -340,17 +340,9 @@ public:
   friend ostream& operator << (ostream& os, const ComplexMatrix& a);
   friend istream& operator >> (istream& is, ComplexMatrix& a);
 
-#define KLUDGE_MATRICES
-#define TYPE Complex
-#define KL_MAT_TYPE ComplexMatrix
-#include "mx-kludge.h"
-#undef KLUDGE_MATRICES
-#undef TYPE
-#undef KL_MAT_TYPE
-
 private:
 
-  ComplexMatrix (Complex *d, int r, int c) : Array2<Complex> (d, r, c) { }
+  ComplexMatrix (Complex *d, int r, int c) : MArray2<Complex> (d, r, c) { }
 };
 
 } // extern "C++"

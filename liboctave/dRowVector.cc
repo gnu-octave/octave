@@ -51,14 +51,6 @@ extern "C"
  * Row Vector class.
  */
 
-#define KLUDGE_VECTORS
-#define TYPE double
-#define KL_VEC_TYPE RowVector
-#include "mx-kludge.cc"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 int
 RowVector::operator == (const RowVector& a) const
 {

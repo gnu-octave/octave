@@ -48,16 +48,8 @@ extern "C"
  * Complex Row Vector class
  */
 
-#define KLUDGE_VECTORS
-#define TYPE Complex
-#define KL_VEC_TYPE ComplexRowVector
-#include "mx-kludge.cc"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 ComplexRowVector::ComplexRowVector (const RowVector& a)
-  : Array<Complex> (a.length ())
+  : MArray<Complex> (a.length ())
 {
   for (int i = 0; i < length (); i++)
     elem (i) = a.elem (i);

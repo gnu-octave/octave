@@ -37,14 +37,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  * Diagonal Matrix class.
  */
 
-#define KLUDGE_DIAG_MATRICES
-#define TYPE double
-#define KL_DMAT_TYPE DiagMatrix
-#include "mx-kludge.cc"
-#undef KLUDGE_DIAG_MATRICES
-#undef TYPE
-#undef KL_DMAT_TYPE
-
 int
 DiagMatrix::operator == (const DiagMatrix& a) const
 {

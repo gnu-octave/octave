@@ -48,16 +48,8 @@ extern "C"
  * Complex Column Vector class
  */
 
-#define KLUDGE_VECTORS
-#define TYPE Complex
-#define KL_VEC_TYPE ComplexColumnVector
-#include "mx-kludge.cc"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 ComplexColumnVector::ComplexColumnVector (const ColumnVector& a)
-   : Array<Complex> (a.length ())
+   : MArray<Complex> (a.length ())
 {
   for (int i = 0; i < length (); i++)
     elem (i) = a.elem (i);

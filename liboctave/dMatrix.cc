@@ -75,20 +75,12 @@ extern "C"
   int F77_FCN (cfftb) (const int*, Complex*, Complex*);
 }
 
-#define KLUDGE_MATRICES
-#define TYPE double
-#define KL_MAT_TYPE Matrix
-#include "mx-kludge.cc"
-#undef KLUDGE_MATRICES
-#undef TYPE
-#undef KL_MAT_TYPE
-
 /*
  * Matrix class.
  */
 
 Matrix::Matrix (const DiagMatrix& a)
-  : Array2<double> (a.rows (), a.cols (), 0.0)
+  : MArray2<double> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);

@@ -19,7 +19,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 MATRIX_INC = Array.h MArray.h Matrix.h mx-base.h mx-defs.h mx-ext.h \
-	mx-kludge.h CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h \
+	CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h \
 	CmplxAEPBAL.h CmplxCHOL.h CmplxDET.h CmplxHESS.h CmplxLU.h \
 	CmplxQR.h CmplxQRP.h CmplxSCHUR.h CmplxSVD.h EIG.h \
 	dColVector.h dDiagMatrix.h dMatrix.h dRowVector.h dbleAEPBAL.h \
@@ -49,7 +49,7 @@ SOURCES = Bounds.cc CollocWt.cc DAE.cc DAEFunc.cc FEGrid.cc FSQP.cc \
 	Quad.cc Range.cc lo-error.cc sun-utils.cc $(TEMPLATE_SRC) \
 	$(TI_SRC) $(MATRIX_SRC)
 
-EXTRAS = mx-kludge.cc mx-inlines.cc
+EXTRAS = mx-inlines.cc
 
 DISTFILES = Makefile.in $(SOURCES) $(INCLUDES) $(EXTRAS)
 

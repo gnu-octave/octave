@@ -24,33 +24,31 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexColumnVector_h)
 #define octave_ComplexColumnVector_h 1
 
-#include "Array.h"
+#include "MArray.h"
 
 #include "mx-defs.h"
 
 extern "C++" {
 
-class ComplexColumnVector : public Array<Complex>
+class ComplexColumnVector : public MArray<Complex>
 {
 friend class ComplexMatrix;
 friend class ComplexRowVector;
 
 public:
 
-  ComplexColumnVector (void) : Array<Complex> () { }
-  ComplexColumnVector (int n) : Array<Complex> (n) { }
-  ComplexColumnVector (int n, const Complex& val) : Array<Complex> (n, val) { }
+  ComplexColumnVector (void) : MArray<Complex> () { }
+  ComplexColumnVector (int n) : MArray<Complex> (n) { }
+  ComplexColumnVector (int n, const Complex& val) : MArray<Complex> (n, val) { }
   ComplexColumnVector (const ColumnVector& a);
-  ComplexColumnVector (const Array<Complex>& a) : Array<Complex> (a) { }
-  ComplexColumnVector (const ComplexColumnVector& a) : Array<Complex> (a) { }
+  ComplexColumnVector (const MArray<Complex>& a) : MArray<Complex> (a) { }
+  ComplexColumnVector (const ComplexColumnVector& a) : MArray<Complex> (a) { }
 
   ComplexColumnVector& operator = (const ComplexColumnVector& a)
     {
-      Array<Complex>::operator = (a);
+      MArray<Complex>::operator = (a);
       return *this;
     }
-
-//  operator Array<Complex>& () const { return *this; }
 
   int operator == (const ComplexColumnVector& a) const;
   int operator != (const ComplexColumnVector& a) const;
@@ -184,17 +182,9 @@ public:
   friend ostream& operator << (ostream& os, const ComplexColumnVector& a);
   friend istream& operator >> (istream& is, ComplexColumnVector& a);
 
-#define KLUDGE_VECTORS
-#define TYPE Complex
-#define KL_VEC_TYPE ComplexColumnVector
-#include "mx-kludge.h"
-#undef KLUDGE_VECTORS
-#undef TYPE
-#undef KL_VEC_TYPE
-
 private:
 
-  ComplexColumnVector (Complex *d, int l) : Array<Complex> (d, l) { }
+  ComplexColumnVector (Complex *d, int l) : MArray<Complex> (d, l) { }
 };
 
 } // extern "C++"

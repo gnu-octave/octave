@@ -1035,6 +1035,8 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T valptr)
 
   error ("formatted input only works when Octave is compiled with G++");
 
+  is.setstate (std::ios::failbit);
+
   return is;
 }
 

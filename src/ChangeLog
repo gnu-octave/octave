@@ -1,5 +1,13 @@
 2000-03-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (OCTAVE_SCAN_0, OCTAVE_SCAN_1): New macros.
+	(do_scanf_conv, BEGIN_S_CONVERSION, BEGIN_CHAR_CLASS_CONVERSION,
+	do_scanf, scanf, do_oscanf, do_oscanf, oscanf): Use them instead
+	of calling istream::scan directly.
+	(octave_scan): New function.
+	(do_scanf_conv): Second arg is now scanf_format_elt instead of char*.
+	Change all callers.
+
 	* oct-procbuf.h, oct-procbuf.cc (octave_procbuf):
 	Derive from c_file_ptr_buf instead of filebuf.
 

@@ -20,13 +20,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifdef sun
+#if defined (sun) || defined (linux)
 
 #include <cassert>
 
 // I think that this is really only needed if linking to Fortran
-// compiled libraries on a Sun.  It should never be called.
-// There should probably be a sysdep.cc file, eh?
+// compiled libraries on a Sun.  It also seems to be needed on Linux
+// systems with g77.  It should never be called.
 
 extern "C"
 {

@@ -323,7 +323,7 @@ int main ()
   return (! forsub (s, &d, len));
 #endif
 }
-#ifdef sun
+#if defind (sun) || defined (linux)
 int MAIN_ () { return 0; }
 #endif
 EOF

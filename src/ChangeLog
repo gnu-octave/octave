@@ -1,3 +1,14 @@
+2001-11-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-conf.h.in (FFTW_LIBS, LD_CXX, LIBOCT_PATHSEARCH,
+	LIBOCT_READLINE, MKOCTFILE_LFLAGS): Substitute.
+	* toplev.cc (octave_config_info): Add them to the map.
+
+2001-11-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/lsode.cc (Flsode): Don't bother to give OUTPUT
+	matrix a size before calling integration function.
+
 2001-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	Makefile.in (OCTAVE_LIBS): Add $(LIBOCT_READLINE) and

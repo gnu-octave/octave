@@ -272,6 +272,9 @@ canonical_host_type = @canonical_host_type@
 MKOCTFILE_INCFLAGS = \
   -I$(octincludedir) -I$(octincludedir)/octave -I$(includedir)
 
+# The -L flags to use for the mkoctfile scrip (for --link-stand-alone)
+MKOCTFILE_LFLAGS = -L$(octlibdir)
+
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
@@ -369,11 +372,13 @@ sed < $< \
   -e "s;%OCTAVE_CONF_F77%;\"${F77}\";" \
   -e "s;%OCTAVE_CONF_FC%;\"${FC}\";" \
   -e "s;%OCTAVE_CONF_FFLAGS%;\"${FFLAGS}\";" \
+  -e "s;%OCTAVE_CONF_FFTW_LIBS%;\"${FFTW_LIBS}\";" \
   -e "s;%OCTAVE_CONF_FLIBS%;\"${FLIBS}\";" \
   -e "s;%OCTAVE_CONF_FORTRAN_MAIN_FLAG%;\"${FORTRAN_MAIN_FLAG}\";" \
   -e "s;%OCTAVE_CONF_FPICFLAG%;\"${FPICFLAG}\";" \
   -e "s;%OCTAVE_CONF_GLOB_INCFLAGS%;\"${GLOB_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_INCFLAGS%;\"${INCFLAGS}\";" \
+  -e "s;%OCTAVE_CONF_LD_CXX%;\"${LD_CXX}\";" \
   -e "s;%OCTAVE_CONF_LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%OCTAVE_CONF_LD_STATIC_FLAG%;\"${LD_STATIC_FLAG}\";" \
   -e "s;%OCTAVE_CONF_LEX%;\"${LEX}\";" \
@@ -387,10 +392,13 @@ sed < $< \
   -e "s;%OCTAVE_CONF_LIBKPATHSEA%;\"${LIBKPATHSEA}\";" \
   -e "s;%OCTAVE_CONF_LIBOCTAVE%;\"${LIBOCTAVE}\";" \
   -e "s;%OCTAVE_CONF_LIBOCTINTERP%;\"${LIBOCTINTERP}\";" \
+  -e "s;%OCTAVE_CONF_LIBOCT_PATHSEARCH%;\"${LIBOCT_PATHSEARCH}\";" \
+  -e "s;%OCTAVE_CONF_LIBOCT_READLINE%;\"${LIBOCT_READLINE}\";" \
   -e "s;%OCTAVE_CONF_LIBPLPLOT%;\"${LIBPLPLOT}\";" \
   -e "s;%OCTAVE_CONF_LIBS%;\"${LIBS}\";" \
   -e "s;%OCTAVE_CONF_LN_S%;\"${LN_S}\";" \
   -e "s;%OCTAVE_CONF_MKOCTFILE_INCFLAGS%;\"${MKOCTFILE_INCFLAGS}\";" \
+  -e "s;%OCTAVE_CONF_MKOCTFILE_LFLAGS%;\"${MKOCTFILE_LFLAGS}\";" \
   -e "s;%OCTAVE_CONF_OCTAVE_LITE%;\"${OCTAVE_LITE}\";" \
   -e "s;%OCTAVE_CONF_RANLIB%;\"${RANLIB}\";" \
   -e "s;%OCTAVE_CONF_RDYNAMIC_FLAG%;\"${RDYNAMIC_FLAG}\";" \

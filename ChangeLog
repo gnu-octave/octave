@@ -1,3 +1,18 @@
+2001-11-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave-bug.in (BLAS_LIBS, FFTW_LIBS, LD_CXX): Substitute and
+	print values.
+	* mkoctfile.in: Accept --compile as an alias for -c.
+	New option, --link-stand-alone.
+	New option, --no-pathsearch.
+	New option, --no-readline.
+	Substitute RLD_FLAG, FLIBS, LIBKPATHSEA, LIBOCTINTERP,
+	LIBOCTAVE, LIBOCT_READLINE, LIBOCT_PATHSEARCH, LIBCRUFT,
+	BLAS_LIBS, FFTW_LIBS, and LIBS.
+	* Makeconf.in (MKOCTFILE_LFLAGS): New variable.
+	(do-subst-config-vals): Substitute FFTW_LIBS, LD_CXX,
+	LIBOCT_PATHSEARCH, LIBOCT_READLINE, MKOCTFILE_LFLAGS.
+
 2001-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (LIBOCT_READLINE, LIBOCT_PATHSEARCH): New variables.

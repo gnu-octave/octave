@@ -32,11 +32,30 @@ set -e
 : ${SH_LD=%OCTAVE_CONF_SH_LD%}
 : ${SH_LDFLAGS=%OCTAVE_CONF_SH_LDFLAGS%}
 
+: ${RLD_FLAG=%OCTAVE_CONF_RLD_FLAG%}
+: ${RDYNAMIC_FLAG=%OCTAVE_CONF_RDYNAMIC_FLAG%}
+: ${LIBOCTAVE=%OCTAVE_CONF_LIBOCTAVE%}
+: ${LIBOCT_READLINE=%OCTAVE_CONF_LIBOCT_READLINE%}
+: ${LIBCRUFT=%OCTAVE_CONF_LIBCRUFT%}
+: ${BLAS_LIBS=%OCTAVE_CONF_BLAS_LIBS%}
+: ${FFTW_LIBS=%OCTAVE_CONF_FFTW_LIBS%}
+: ${LIBS=%OCTAVE_CONF_LIBS%}
+: ${FLIBS=%OCTAVE_CONF_FLIBS%}
+: ${FORTRAN_MAIN_FLAG=%OCTAVE_CONF_FORTRAN_MAIN_FLAG%}
+: ${LD_CXX=%OCTAVE_CONF_LD_CXX%}
+: ${LDFLAGS=%OCTAVE_CONF_LDFLAGS%}
+: ${LD_STATIC_FLAG=%OCTAVE_CONF_LD_STATIC_FLAG%}
+: ${LFLAGS=%OCTAVE_CONF_MKOCTFILE_LFLAGS%}
+
 : ${ALL_FFLAGS="$FFLAGS"}
 
 : ${ALL_CFLAGS="$INCFLAGS $XTRA_CFLAGS $CFLAGS"}
 
 : ${ALL_CXXFLAGS="$INCFLAGS $XTRA_CXXFLAGS $CXXFLAGS"}
+
+: ${ALL_LDFLAGS="$FORTRAN_MAIN_FLAG $LD_STATIC_FLAG $CPICFLAG $LDFLAGS"}
+
+: ${OCTAVE_LIBS="$LIBOCTAVE $LIBOCT_READLINE $SPECIAL_MATH_LIB $LIBCRUFT"}
 
 # Local variables.
 
@@ -54,6 +73,7 @@ ldflags=
 dbg=:
 strip=false
 link=true
+link_stand_alone=false
 depend=false
 compile=true
 
@@ -103,9 +123,10 @@ Options:
   -M, --depend            Generate dependency files (.d) for C and C++
                           source files.
 
-  -c                      Compile, but do not link.
+  -c, --compile           Compile, but do not link.
 
-  -o FILE, --output FILE  Output file name.  Default extension is .oct.
+  -o FILE, --output FILE  Output file name.  Default extension is .oct
+                          unless linking a stand-alone executable.
 
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
@@ -119,7 +140,20 @@ Options:
                             FPICFLAG    SHLEXT
                             CC          SH_LD
                             CFLAGS      SH_LDFLAGS
-                            
+
+                            LD_CXX      LFLAGS
+                            LDFLAGS     LD_STATIC_FLAG
+                            RLD_FLAG    RDYNAMIC_FLAG
+
+                            FORTRAN_MAIN_FLAG
+
+                            LIBOCTAVE   LIBOCT_READLINE
+                            LIBCRUFT    BLAS_LIBS
+                            FFTW_LIBS   LIBS
+                            FLIBS       OCTAVE_LIBS
+
+  --link-stand-alone      Link a stand-alone executable file.
+
   -s, --strip             Strip output file.
 
   -v, --verbose           Echo commands as they are executed.
@@ -153,7 +187,7 @@ EOF
     -o | --output)
       shift
       if [ $# -gt 0 ]; then
-        octfile=`echo $1 | sed 's,\.[^.]*$,,'`.oct
+        octfile="$1"
       else
         echo "mkoctfile: output file name missing" 1>&2
       fi
@@ -171,8 +205,11 @@ EOF
     -s | --strip)
       strip=true
     ;;
-    -c)
+    -c | --compile)
       link=false
+    ;;
+    --link-stand-alone)
+      link_stand_alone=true
     ;;
     *)
       echo "mkoctfile: unrecognized argument $1" 1>&2
@@ -181,11 +218,17 @@ EOF
   esac
   if [ -n "$file" ]; then
     if [ -z "$octfile" ]; then
-      octfile=`echo $file | sed 's,\.[^.]*$,,'`.oct
+      octfile="$file"
     fi
   fi
   shift
 done
+
+if $link_stand_alone; then
+  true
+else
+  octfile=`echo $octfile | sed 's,\.[^.]*$,,'`.oct
+fi
 
 # Generate dependency files for C and C++ files.
 
@@ -318,9 +361,20 @@ fi
 # Link all the object files.
 
 if $link; then
-  cmd="$SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags"
-  $dbg $cmd
-  eval $cmd
+  if $link_stand_alone; then
+    if [ -n "$LD_CXX" ]; then
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
+      $dbg $cmd
+      eval $cmd
+    else
+      echo "mkoctfile: no way to link stand-alone executable file" 1>&2
+      exit 1
+    fi
+  else
+    cmd="$SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags"
+    $dbg $cmd
+    eval $cmd
+  fi
 
 # Maybe strip it.
 

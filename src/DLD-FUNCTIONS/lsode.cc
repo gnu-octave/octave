@@ -275,9 +275,7 @@ discontinuity in the derivative.\n\
 
       ode.copy (lsode_opts);
 
-      int nstates = state.capacity ();
-      Matrix output (nsteps, nstates + 1);
-
+      Matrix output;
       if (crit_times_set)
 	output = ode.integrate (out_times, crit_times);
       else

@@ -1236,11 +1236,10 @@ eval_string (const char *string, int print, int ans_assign,
   switch_to_buffer (new_buf);
 
   unwind_protect_ptr (curr_sym_tab);
-  symbol_table *prev_sym_tab = curr_sym_tab;
+
+  reset_parser ();
 
   parse_status = yyparse ();
-
-  curr_sym_tab = prev_sym_tab;
 
 // Important to reset the idea of where input is coming from before
 // trying to eval the command we just parsed -- it might contain the

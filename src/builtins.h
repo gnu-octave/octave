@@ -86,7 +86,7 @@ extern int help_from_list (ostrstream& output_buf,
 
 extern void additional_help_message (ostrstream& output_buf);
 
-extern void print_usage (const char *s);
+extern void print_usage (const char *s, int just_usage = 0);
 
 #endif
 

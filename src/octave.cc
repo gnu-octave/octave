@@ -128,6 +128,9 @@ typedef void (*one_arg_error_handler_t) (const char*);
 extern one_arg_error_handler_t set_Complex_error_handler
   (one_arg_error_handler_t f);
 
+// This is from readline's paren.c:
+extern int rl_blink_matching_paren;
+
 static void
 octave_Complex_error_handler (const char* msg)
 {
@@ -324,8 +327,6 @@ verbose_usage (void)
        << "  file : execute commands from named file\n"
        << "\n";
 
-  cout.flush ();
-
   exit (1);
 }
 
@@ -473,7 +474,10 @@ main (int argc, char **argv)
       if (infile == (FILE *) NULL)
 	clean_up_and_exit (1);
       else
-	switch_to_buffer (create_buffer (infile));
+	{
+	  rl_blink_matching_paren = 0;
+	  switch_to_buffer (create_buffer (infile));
+	}
     }
   else
     {
@@ -489,7 +493,10 @@ main (int argc, char **argv)
 // has forced interactive behavior.
 
   if (!interactive && forced_interactive)
-    echo_input = 1;
+    {
+      rl_blink_matching_paren = 0;
+      echo_input = 1;
+    }
 
   if (! (interactive || forced_interactive))
     using_readline = 0;
@@ -502,7 +509,7 @@ main (int argc, char **argv)
 	   << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton.\n"
 	   << "This is free software with ABSOLUTELY NO WARRANTY.\n"
 	   << "For details, type `warranty'.\n"
-	   << "\n";
+	   << endl;
     }
 
 // Allow the user to interrupt us without exiting.
@@ -525,8 +532,12 @@ main (int argc, char **argv)
   int retval;
   do
     {
+      curr_sym_tab = top_level_sym_tab;
+
       reset_parser ();
+
       retval = yyparse ();
+
       if (retval == 0 && global_command != NULL_TREE)
 	{
 	  global_command->eval (1);

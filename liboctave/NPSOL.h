@@ -33,47 +33,134 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define Vector ColumnVector
 #endif
 
-class NPSOL : public NLP
+class NPSOL_options
 {
  public:
 
-  NPSOL (void) : NLP ()
-    { set_default_options (); }
+  NPSOL_options (void);
+  NPSOL_options (const NPSOL_options& opt);
 
-  NPSOL (const Vector& x, const Objective& phi) : NLP (x, phi)
-    { set_default_options (); }
+  NPSOL_options& operator = (const NPSOL_options& opt);
+
+  ~NPSOL_options (void);
+
+  void init (void);
+  void copy (const NPSOL_options& opt);
+
+  void set_default_options (void);
+
+  void set_central_difference_interval (double val);
+  void set_crash_tolerance (double val);
+  void set_difference_interval (double val);
+  void set_function_precision (double val);
+  void set_infinite_bound (double val);
+  void set_infinite_step (double val);
+  void set_linear_feasibility_tolerance (double val);
+  void set_linesearch_tolerance (double val);
+  void set_nonlinear_feasibility_tolerance (double val);
+  void set_optimality_tolerance (double val);
+
+  void set_derivative_level (int val);
+  void set_major_iteration_limit (int val);
+  void set_minor_iteration_limit (int val);
+  void set_major_print_level (int val);
+  void set_minor_print_level (int val);
+  void set_start_objective_check (int val);
+  void set_start_constraint_check (int val);
+  void set_stop_objective_check (int val);
+  void set_stop_constraint_check (int val);
+  void set_verify_level (int val);
+
+  double central_difference_interval (void) const;
+  double crash_tolerance (void) const;
+  double difference_interval (void) const;
+  double function_precision (void) const;
+  double infinite_bound (void) const;
+  double infinite_step (void) const;
+  double linear_feasibility_tolerance (void) const;
+  double linesearch_tolerance (void) const;
+  double nonlinear_feasibility_tolerance (void) const;
+  double optimality_tolerance (void) const;
+
+  int derivative_level (void) const;
+  int major_iteration_limit (void) const;
+  int minor_iteration_limit (void) const;
+  int major_print_level (void) const;
+  int minor_print_level (void) const;
+  int start_objective_check (void) const;
+  int start_constraint_check (void) const;
+  int stop_objective_check (void) const;
+  int stop_constraint_check (void) const;
+  int verify_level (void) const;
+
+ protected:
+
+  void pass_options_to_npsol (void);
+
+  void set_option (const char *key, int opt);
+  void set_option (const char *key, double opt);
+
+ private:
+
+  double x_central_difference_interval;
+  double x_crash_tolerance;
+  double x_difference_interval;
+  double x_function_precision;
+  double x_infinite_bound;
+  double x_infinite_step;
+  double x_linear_feasibility_tolerance;
+  double x_linesearch_tolerance;
+  double x_nonlinear_feasibility_tolerance;
+  double x_optimality_tolerance;
+  int x_derivative_level;
+  int x_major_iteration_limit;
+  int x_minor_iteration_limit;
+  int x_major_print_level;
+  int x_minor_print_level;
+  int x_start_objective_check;
+  int x_start_constraint_check;
+  int x_stop_objective_check;
+  int x_stop_constraint_check;
+  int x_verify_level;
+};
+
+class NPSOL : public NLP, public NPSOL_options
+{
+ public:
+
+  NPSOL (void) : NLP () { }
+
+  NPSOL (const Vector& x, const Objective& phi) : NLP (x, phi) { }
 
   NPSOL (const Vector& x, const Objective& phi,
 	 const Bounds& b) : NLP (x, phi, b)
-    { set_default_options (); }
+    { }
 
   NPSOL (const Vector& x, const Objective& phi, const Bounds& b,
 	 const LinConst& lc) : NLP (x, phi, b, lc)
-    { set_default_options (); }
+    { }
 
   NPSOL (const Vector& x, const Objective& phi, const Bounds& b,
 	 const LinConst& lc, const NLConst& nlc) : NLP (x, phi, b, lc, nlc)
-    { set_default_options (); }
+    { }
 
   NPSOL (const Vector& x, const Objective& phi,
 	 const LinConst& lc) : NLP (x, phi, lc)
-    { set_default_options (); }
+    { }
 
   NPSOL (const Vector& x, const Objective& phi, const LinConst& lc,
 	 const NLConst& nlc) : NLP (x, phi, lc, nlc)
-    { set_default_options (); }
+    { }
 
   NPSOL (const Vector& x, const Objective& phi,
 	 const NLConst& nlc) : NLP (x, phi, nlc)
-    { set_default_options (); }
+    { }
 
   NPSOL (const Vector& x, const Objective& phi, const Bounds& b,
 	 const NLConst& nlc) : NLP (x, phi, b, nlc)
-    { set_default_options (); }
+    { }
 
   NPSOL (const NPSOL& a);
-
-  NPSOL& operator = (const NPSOL& a);
 
   Vector minimize (void);
   Vector minimize (double& objf);
@@ -87,9 +174,7 @@ class NPSOL : public NLP
 
   NPSOL& option (char *s);
 
-private:
-  void set_default_options (void);
-
+ private:
 };
 
 // XXX FIXME XXX -- would be nice to not have to have this global
@@ -99,23 +184,7 @@ private:
 extern int npsol_objective_error;
 
 inline NPSOL::NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc)
-  { set_default_options (); }
-
-inline NPSOL&
-NPSOL::operator = (const NPSOL& a)
-{
-  x = a.x;
-  phi = a.phi;
-  bnds = a.bnds;
-  lc = a.lc;
-  nlc = a.nlc;
-
-  cerr << "warning: NPSOL options reset to default values\n";
-
-  set_default_options ();
-
-  return *this;
-}
+  { }
 
 #endif /* NPSOL_MISSING */
 

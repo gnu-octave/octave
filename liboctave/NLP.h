@@ -60,6 +60,10 @@ class NLP
   NLP (const Vector& x, const Objective& phi, const Bounds& b, const
        NLConst& nlc);
 
+  ~NLP (void);
+
+  NLP& operator = (const NLP& a);
+
   int size (void) const;
 
  protected:
@@ -100,6 +104,23 @@ inline NLP::NLP (const Vector& xx, const Objective& obj, const NLConst& nl)
 inline NLP::NLP (const Vector& xx, const Objective& obj, const Bounds& b,
 		 const NLConst& nl) 
   : x (xx), phi (obj), bnds (b), nlc (nl) {}
+
+inline NLP::~NLP (void) { }
+
+inline NLP&
+NLP::operator = (const NLP& a)
+{
+  if (this != &a)
+    {
+      x = a.x;
+      phi = a.phi;  
+      bnds = a.bnds;
+      lc = a.lc;
+      nlc = a.nlc;
+    }
+
+  return *this;
+}
 
 inline int
 NLP::size (void) const

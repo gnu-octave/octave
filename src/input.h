@@ -28,7 +28,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdio.h>
 
-extern char *octave_gets (void);
 extern int octave_read (char *buf, int max_size);
 extern FILE *get_input_from_file (char *name, int warn = 1);
 extern FILE *get_input_from_stdin (void);

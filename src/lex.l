@@ -627,43 +627,72 @@ do_comma_insert_check (void)
 }
 
 /*
- * Fix things up for errors or interrupts.  This could use a few
- * comments now, eh?
+ * Fix things up for errors or interrupts.  The parser is never called
+ * recursively, so it is always safe to reinitialize its state before
+ * doing any parsing.
  */
 void
 reset_parser (void)
 {
+// Start off on the right foot.
   BEGIN 0;
   error_state = 0;
+
+// We do want a prompt by default.
   promptflag = 1;
-  doing_set = 0;
-  braceflag = 0;
+
+// Not initially screwed by `function [...] = f (...)' syntax.
   maybe_screwed = 0;
   maybe_screwed_again = 0;
+
+// Not initially inside a loop or if statement.
   looping = 0;
   iffing = 0;
-  ml.clear ();
-  mlnm.clear ();
-  defining_func = 0;
-  curr_sym_tab = top_level_sym_tab;
-  get_input_from_eval_string = 0;
+
+// Quote marks strings intially.
   quote_is_transpose = 0;
-  current_input_column = 1;
-// Might have been reset by defining a function.
-  input_line_number = current_command_number - 1;
+
+// Next token can be identifier.
+  cant_be_identifier = 0;
+
+// No need to do comma insert or convert spaces to comma at beginning
+// of input. 
   do_comma_insert = 0;
+  convert_spaces_to_comma = 1;
+
+// Not initially defining a function.
+  beginning_of_function = 0;
+  defining_func = 0;
+
+// Not initially doing any plotting or setting of plot attributes.
   plotting = 0;
-  past_plot_range = 0;
   in_plot_range = 0;
+  past_plot_range = 0;
   in_plot_using = 0;
   in_plot_style = 0;
-  cant_be_identifier = 0;
-  convert_spaces_to_comma = 1;
-  beginning_of_function = 0;
+  doing_set = 0;
+
+// Error may have occurred inside some parentheses or braces.
   in_brace_or_paren.clear ();
+
+// Not initially defining a matrix list.
+  braceflag = 0;
+  ml.clear ();
+  mlnm.clear ();
+
+// Clear out the stack of token info used to track line and column
+// numbers.
   while (! token_stack.empty ())
     delete token_stack.pop ();
-  yyrestart (stdin);
+
+// Can be reset by defining a function.
+  current_input_column = 1;
+  input_line_number = current_command_number - 1;
+
+// Only ask for input from stdin if we are expecting interactive
+// input.
+  if (interactive && ! (reading_m_file || get_input_from_eval_string))
+    yyrestart (stdin);
 }
 
 /*
@@ -761,9 +790,14 @@ fixup_column_count (char *s)
 static int
 yywrap (void)
 {
-  return 0;
+  return 1;
 }
 
+/*
+ * These are not needed with flex-2.4.6, but may be needed with
+ * earlier 2.4.x versions.
+ */
+#if 0
 static void *
 yy_flex_alloc (int size)
 {
@@ -781,6 +815,7 @@ yy_flex_free (void *ptr)
 {
   free (ptr);
 }
+#endif
 
 /*
  * Tell us all what the current buffer is.

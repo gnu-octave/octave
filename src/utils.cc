@@ -57,6 +57,20 @@ Free Software Foundation, Inc.
 #include <fstream.h>
 #include <dirent.h>
 
+#ifndef HAVE_STRCASECMP
+extern "C"
+{
+extern int strcasecmp (const char*, const char*);
+}
+#endif
+
+#ifndef HAVE_STRNCASECMP
+extern "C"
+{
+extern int strncasecmp (const char*, const char*, size_t);
+}
+#endif
+
 #define NLENGTH(dirent) (strlen((dirent)->d_name))
 
 extern "C"
@@ -217,7 +231,7 @@ raw_mode (int on)
   int tty_fd = STDIN_FILENO;
   if (! isatty (tty_fd))
     {
-      if (interactive || forced_interactive)
+      if (interactive)
 	error ("stdin is not a tty!");
       return;
     }
@@ -1271,14 +1285,107 @@ close_plot_stream (void)
 }
 
 int
-almost_match (const char *std, const char *s, int min_match_len = 1)
+almost_match (const char *std, const char *s,
+	      int min_match_len = 1, int case_sens = 1)
 {
   int stdlen = strlen (std);
   int slen = strlen (s);
 
   return (slen <= stdlen
 	  && slen >= min_match_len
-	  && strncmp (std, s, slen) == 0);
+	  && (case_sens
+	      ? (strncmp (std, s, slen) == 0)
+	      : (strncasecmp (std, s, slen) == 0)));
+}
+
+/*
+ * Ugh.
+ */
+int
+keyword_almost_match (const char **std, int *min_len, const char *s,
+		      int min_toks_to_match, int max_toks)
+{
+  int status = 0;
+  int tok_count = 0;
+  int toks_matched = 0;
+
+  if (s == NULL || *s == '\0' || max_toks < 1)
+    return status;
+
+  char *kw = strsave (s);
+
+  char *t = kw;
+  while (*t != '\0')
+    {
+      if (*t == '\t')
+	*t = ' ';
+      t++;
+    }
+
+  char *beg = kw;
+  while (*beg == ' ')
+    beg++;
+
+  if (*beg == '\0')
+    return status;
+
+
+  char **to_match = new char * [max_toks + 1];
+  char **s1 = std;
+  char **s2 = to_match;
+
+  if (s1 == NULL || s2 == NULL)
+    goto done;
+
+  s2[tok_count] = beg;
+  char *end;
+  while ((end = strchr (beg, ' ')) != NULL)
+    {
+      *end = '\0';
+      beg = end + 1;
+
+      while (*beg == ' ')
+	beg++;
+
+      if (*beg == '\0')
+	break;
+
+      tok_count++;
+      if (tok_count >= max_toks)
+	goto done;
+
+      s2[tok_count] = beg;
+    }
+  s2[tok_count+1] = NULL;
+
+  s2 = to_match;
+
+  for (;;)
+    {
+      if (! almost_match (*s1, *s2, min_len[toks_matched], 0))
+	goto done;
+
+      toks_matched++;
+
+      s1++;
+      s2++;
+
+      if (! *s2)
+	{
+	  status = (toks_matched >= min_toks_to_match);
+	  goto done;
+	}
+
+      if (! *s1)
+	goto done;
+    }
+
+ done:
+
+  delete [] kw;
+  delete [] to_match;
+
+  return status;
 }
 
 char **

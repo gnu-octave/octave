@@ -59,7 +59,7 @@ LIBOBJS = @LIBOBJS@
 	fi
 
 INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in \
-	defaults.h f-balance.h f-chol.h f-colloc.h f-dassl.h \
+	defaults.h error.h f-balance.h f-chol.h f-colloc.h f-dassl.h \
 	f-det.h f-eig.h f-expm.h f-fft.h f-fsolve.h f-fsqp.h f-givens.h \
 	f-hess.h f-ifft.h f-inv.h f-lpsolve.h f-lsode.h f-lu.h \
 	f-npsol.h f-qpsol.h f-qr.h f-quad.h f-qzval.h f-rand.h \
@@ -71,7 +71,7 @@ INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in \
 	unwind-prot.h user-prefs.h utils.h variables.h version.h \
 	xdiv.h xpow.h SLStack.h Stack.h
 
-SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc f-chol.cc \
+SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc error.cc f-chol.cc \
 	f-colloc.cc f-balance.cc f-dassl.cc f-det.cc f-eig.cc \
 	f-expm.cc f-fft.cc f-fsolve.cc f-fsqp.cc f-givens.cc \
 	f-hess.cc f-ifft.cc f-inv.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
@@ -80,10 +80,11 @@ SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc f-chol.cc \
 	g-builtins.cc getopt.c getopt1.c gripes.cc help.cc \
 	idx-vector.cc input.cc lex.l mappers.cc octave.cc \
 	octave-hist.cc pager.cc parse.y pr-output.cc procstream.cc \
-	sighandlers.cc symtab.cc sysdep.cc t-builtins.cc tc-assign.cc \
-	tc-extras.cc tc-index.cc tc-inlines.cc token.cc tree.cc \
-	tree-const.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
-	utils.cc variables.cc xdiv.cc xpow.cc SLStack.cc
+	sighandlers.cc strcasecmp.c strncase.c symtab.cc sysdep.cc \
+	t-builtins.cc tc-assign.cc tc-extras.cc tc-index.cc \
+	tc-inlines.cc token.cc tree.cc tree-const.cc tree-plot.cc \
+	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
+	xpow.cc SLStack.cc
 
 DEP_SOURCES_2 = $(patsubst %.l, %.cc, $(SOURCES))
 DEP_SOURCES_1 = $(patsubst %.y, %.cc, $(DEP_SOURCES_2))
@@ -99,11 +100,11 @@ DLD_OBJECTS = f-balance.o f-chol.o f-colloc.o f-dassl.o f-det.o \
 OBJECTS = arith-ops.o builtins.o error.o file-io.o fnmatch.o \
 	g-builtins.o getopt.o getopt1.o gripes.o help.o idx-vector.o \
 	input.o lex.o mappers.o octave.o octave-hist.o pager.o \
-	parse.o pr-output.o procstream.o sighandlers.o symtab.o \
-	sysdep.o t-builtins.o tc-assign.o tc-extras.o tc-index.o \
-	token.o tree.o tree-const.o tree-plot.o unwind-prot.o \
-	user-prefs.o utils.o variables.o xdiv.o xpow.o SLStack.o \
-	@DYNAMIC_LD_OBJ@
+	parse.o pr-output.o procstream.o sighandlers.o strcasecmp.o \
+	strncase.o symtab.o sysdep.o t-builtins.o tc-assign.o \
+	tc-extras.o tc-index.o token.o tree.o tree-const.o tree-plot.o \
+	unwind-prot.o user-prefs.o utils.o variables.o xdiv.o xpow.o \
+	SLStack.o @DYNAMIC_LD_OBJ@
 
 OCTAVE_LIBS = ../liboctave.a ../libcruft.a ../libinfo.a \
 	../libreadline.a @LIBDLD@

@@ -75,7 +75,10 @@ extern void cleanup_tmp_files (void);
 extern int send_to_plot_stream (const char *cmd);
 extern void close_plot_stream (void);
 extern int almost_match (const char *std, const char *s,
-			 int min_match_len = 1); 
+			 int min_match_len = 1, int case_sens = 1);
+extern int keyword_almost_match (const char **std, int *min_len,
+				 const char *s, int min_toks_to_match,
+				 int max_toks);
 extern char **get_m_file_names (int& mfl_len, const char *dir, int no_suffix);
 extern char **get_m_file_names (int& mfl_len, int no_suffix);
 extern int NINT (double x);

@@ -27,12 +27,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifndef NPSOL_MISSING
 
+#include <strstream.h>
+
 #include "NPSOL.h"
 
 #include "tree-const.h"
 #include "variables.h"
+#include "builtins.h"
 #include "gripes.h"
 #include "error.h"
+#include "pager.h"
 #include "utils.h"
 #include "f-npsol.h"
 
@@ -53,6 +57,8 @@ builtin_npsol_options_2 (const tree_constant *args, int nargin, int nargout)
   return npsol_options (args, nargin, nargout);
 }
 #endif
+
+static NPSOL_options npsol_opts;
 
 double
 npsol_objective_function (const ColumnVector& x)
@@ -322,6 +328,7 @@ Handle all of the following:
       // 1. npsol (x, phi)
 
       NPSOL nlp (x, func);
+      nlp.copy (npsol_opts);
       soln = nlp.minimize (objf, inform, lambda);
 
       goto solved;
@@ -332,6 +339,7 @@ Handle all of the following:
       // 2. npsol (x, phi, lb, ub)
 
       NPSOL nlp (x, func, bounds);
+      nlp.copy (npsol_opts);
       soln = nlp.minimize (objf, inform, lambda);
 
       goto solved;
@@ -365,6 +373,7 @@ Handle all of the following:
 	      // 7. npsol (x, phi, llb, c, lub)
 
 	      NPSOL nlp (x, func, linear_constraints);
+	      nlp.copy (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  else
@@ -372,6 +381,7 @@ Handle all of the following:
 	      // 3. npsol (x, phi, lb, ub, llb, c, lub)
 
 	      NPSOL nlp (x, func, bounds, linear_constraints);
+	      nlp.copy (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  goto solved;
@@ -396,6 +406,7 @@ Handle all of the following:
 		  // 8. npsol (x, phi, nllb, g, nlub)
 
 		  NPSOL nlp (x, func, nonlinear_constraints);
+		  nlp.copy (npsol_opts);
 		  soln = nlp.minimize (objf, inform, lambda);
 		}
 	      else
@@ -403,6 +414,7 @@ Handle all of the following:
 		  // 5. npsol (x, phi, lb, ub, nllb, g, nlub)
 
 		  NPSOL nlp (x, func, bounds, nonlinear_constraints);
+		  nlp.copy (npsol_opts);
 		  soln = nlp.minimize (objf, inform, lambda);
 		}
 	      goto solved;
@@ -453,7 +465,7 @@ Handle all of the following:
 
 		  NPSOL nlp (x, func, linear_constraints,
 			     nonlinear_constraints);
-
+		  nlp.copy (npsol_opts);
 		  soln = nlp.minimize (objf, inform, lambda);
 		}
 	      else
@@ -462,7 +474,7 @@ Handle all of the following:
 
 		  NPSOL nlp (x, func, bounds, linear_constraints,
 			     nonlinear_constraints);
-
+		  nlp.copy (npsol_opts);
 		  soln = nlp.minimize (objf, inform, lambda);
 		}
 	      goto solved;
@@ -486,13 +498,243 @@ Handle all of the following:
   return retval;
 }
 
+typedef void (NPSOL_options::*d_set_opt_mf) (double);
+typedef void (NPSOL_options::*i_set_opt_mf) (int);
+typedef double (NPSOL_options::*d_get_opt_mf) (void);
+typedef int (NPSOL_options::*i_get_opt_mf) (void);
+
+#define MAX_TOKENS 5
+
+struct NPSOL_OPTIONS
+{
+  char *keyword;
+  char *kw_tok[MAX_TOKENS + 1];
+  int min_len[MAX_TOKENS + 1];
+  int min_toks_to_match;
+  d_set_opt_mf d_set_fcn;
+  i_set_opt_mf i_set_fcn;
+  d_get_opt_mf d_get_fcn;
+  i_get_opt_mf i_get_fcn;
+};
+
+static NPSOL_OPTIONS npsol_option_table[] =
+{
+  { "central difference interval",
+    { "central", "difference", "interval", NULL, NULL, NULL, },
+    { 2, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_central_difference_interval, NULL,
+    NPSOL_options::central_difference_interval, NULL, },
+
+  { "crash tolerance",
+    { "crash", "tolerance", NULL, NULL, NULL, NULL, },
+    { 2, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_crash_tolerance, NULL,
+    NPSOL_options::crash_tolerance, NULL, },
+
+  { "derivative level",
+    { "derivative", "level", NULL, NULL, NULL, NULL, },
+    { 1, 0, 0, 0, 0, 0, }, 1,
+    NULL, NPSOL_options::set_derivative_level,
+    NULL, NPSOL_options::derivative_level, },
+
+  { "difference interval",
+    { "difference", "interval", NULL, NULL, NULL, NULL, },
+    { 3, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_difference_interval, NULL,
+    NPSOL_options::difference_interval, NULL, },
+
+  { "function precision",
+    { "function", "precision", NULL, NULL, NULL, NULL, },
+    { 2, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_function_precision, NULL,
+    NPSOL_options::function_precision, NULL, },
+
+  { "infinite bound size",
+    { "infinite", "bound", "size", NULL, NULL, NULL, },
+    { 1, 1, 0, 0, 0, 0, }, 2,
+    NPSOL_options::set_infinite_bound, NULL,
+    NPSOL_options::infinite_bound, NULL, },
+
+  { "infinite step size",
+    { "infinite", "step", "size", NULL, NULL, NULL, },
+    { 1, 1, 0, 0, 0, 0, }, 2,
+    NPSOL_options::set_infinite_step, NULL,
+    NPSOL_options::infinite_step, NULL, },
+
+  { "linear feasibility tolerance",
+    { "linear", "feasibility", "tolerance", NULL, NULL, NULL, },
+    { 5, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_linear_feasibility_tolerance, NULL,
+    NPSOL_options::linear_feasibility_tolerance, NULL, },
+
+  { "linesearch tolerance",
+    { "linesearch", "tolerance", NULL, NULL, NULL, NULL, },
+    { 5, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_linesearch_tolerance, NULL,
+    NPSOL_options::linesearch_tolerance, NULL, },
+
+  { "major iteration limit",
+    { "major", "iteration", "limit", NULL, NULL, NULL, },
+    { 2, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_major_iteration_limit,
+    NULL, NPSOL_options::major_iteration_limit, },
+
+  { "minor iteration limit",
+    { "minor", "iteration", "limit", NULL, NULL, NULL, },
+    { 2, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_minor_iteration_limit,
+    NULL, NPSOL_options::minor_iteration_limit, },
+
+  { "major print level",
+    { "major", "print", "level", NULL, NULL, NULL, },
+    { 2, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_major_print_level,
+    NULL, NPSOL_options::major_print_level, },
+
+  { "minor print level",
+    { "minor", "print", "level", NULL, NULL, NULL, },
+    { 2, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_minor_print_level,
+    NULL, NPSOL_options::minor_print_level, },
+
+  { "nonlinear feasibility tolerance",
+    { "nonlinear", "feasibility", "tolerance", NULL, NULL, },
+    { 1, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_nonlinear_feasibility_tolerance, NULL,
+    NPSOL_options::nonlinear_feasibility_tolerance, NULL, },
+
+  { "optimality tolerance",
+    { "optimality", "tolerance", NULL, NULL, NULL, NULL, },
+    { 1, 0, 0, 0, 0, 0, }, 1,
+    NPSOL_options::set_optimality_tolerance, NULL,
+    NPSOL_options::optimality_tolerance, NULL, },
+
+  { "start objective check at variable",
+    { "start", "objective", "check", "at", "variable", NULL, },
+    { 3, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_start_objective_check,
+    NULL, NPSOL_options::start_objective_check, },
+
+  { "start constraint check at variable",
+    { "start", "constraint", "check", "at", "variable", NULL, },
+    { 3, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_start_constraint_check,
+    NULL, NPSOL_options::start_constraint_check, },
+
+  { "stop objective check at variable",
+    { "stop", "objective", "check", "at", "variable", NULL, },
+    { 3, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_stop_objective_check,
+    NULL, NPSOL_options::stop_objective_check, },
+
+  { "stop constraint check at variable",
+    { "stop", "constraint", "check", "at", "variable", NULL, },
+    { 3, 1, 0, 0, 0, 0, }, 2,
+    NULL, NPSOL_options::set_stop_constraint_check,
+    NULL, NPSOL_options::stop_constraint_check, },
+
+  { "verify level",
+    { "verify", "level", NULL, NULL, NULL, NULL, },
+    { 1, 0, 0, 0, 0, 0, }, 1,
+    NULL, NPSOL_options::set_verify_level,
+    NULL, NPSOL_options::verify_level, },
+
+  { NULL,
+    { NULL, NULL, NULL, NULL, NULL, NULL, },
+    { 0, 0, 0, 0, 0, 0, }, 0,
+    NULL, NULL, NULL, NULL, },
+};
+
+static void
+print_npsol_option_list (void)
+{
+  ostrstream output_buf;
+
+  print_usage ("npsol_options", 1);
+
+  output_buf << "\n"
+	     << "Options for npsol include:\n\n"
+	     << "  keyword                                  value\n"
+	     << "  -------                                  -----\n\n";
+
+  NPSOL_OPTIONS *list = npsol_option_table;
+
+  char *keyword;
+  while ((keyword = list->keyword) != (char *) NULL)
+    {
+      output_buf.form ("  %-40s ", keyword);
+      if (list->d_get_fcn)
+	{
+	  double val = (npsol_opts.*list->d_get_fcn) ();
+	  if (val < 0.0)
+	    output_buf << "computed automatically";
+	  else
+	    output_buf << val;
+	}
+      else
+	{
+	  int val = (npsol_opts.*list->i_get_fcn) ();
+	  if (val < 0)
+	    output_buf << "depends on problem size";
+	  else
+	    output_buf << val;
+	}
+      output_buf << "\n";
+      list++;
+    }
+
+  output_buf << "\n" << ends;
+  maybe_page_output (output_buf);
+}
+
+static void
+do_npsol_option (char *keyword, double val)
+{
+  NPSOL_OPTIONS *list = npsol_option_table;
+
+  while (list->keyword != (char *) NULL)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  if (list->d_set_fcn)
+	    (npsol_opts.*list->d_set_fcn) (val);
+	  else
+	    (npsol_opts.*list->i_set_fcn) (NINT (val));
+
+	  return;
+	}
+      list++;
+    }
+
+  warning ("npsol_options: no match for `%s'", keyword);
+}
+
 tree_constant *
 npsol_options (const tree_constant *args, int nargin, int nargout)
 {
-// Assumes that we have been given the correct number of arguments.
-
   tree_constant *retval = NULL_TREE_CONST;
-  error ("npsol_options: not implemented yet");
+
+  if (nargin == 1)
+    {
+      print_npsol_option_list ();
+    }
+  else if (nargin == 3)
+    {
+      if (args[1].is_string_type ())
+	{
+	  char *keyword = args[1].string_value ();
+	  double val = args[2].double_value ();
+	  do_npsol_option (keyword, val);
+	}
+      else
+	print_usage ("npsol_options");
+    }
+  else
+    {
+      print_usage ("npsol_options");
+    }
+
   return retval;
 }
 

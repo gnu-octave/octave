@@ -130,7 +130,7 @@ static char *octave_gets_line = (char *) NULL;
  * Use GNU readline to get an input line and store it in the history
  * list.
  */
-char *
+static char *
 octave_gets (void)
 {
   if (octave_gets_line != NULL)
@@ -164,10 +164,10 @@ octave_gets (void)
 
       if (echo_input)
 	{
-	  if (!forced_interactive)
+	  if (! forced_interactive)
 	    cout << "+ ";
-	  if (octave_gets_line != (char *) NULL)
-	    cout << octave_gets_line << "\n";
+
+	  cout << octave_gets_line << "\n";
 	}
     }
   return octave_gets_line;
@@ -254,6 +254,14 @@ octave_read (char *buf, int max_size)
 
       stashed_line = strsave (buf);
       current_input_line = stashed_line;
+
+      if (echo_input && current_input_line && *current_input_line)
+	{
+	  if (! forced_interactive)
+	    cout << "+ ";
+
+	  cout << current_input_line << "\n";
+	}
     }
   input_line_number++;
   return status;

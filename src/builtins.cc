@@ -263,7 +263,9 @@ compute the vector of residuals.  It must have the form\n\
 where x, xdot, and res are vectors, and t is a scalar.", },
 
   { "dassl_options", -1, 1, builtin_dassl_options,
-    "dassl_options (keyword, value): set or show options for dassl", },
+    "dassl_options (keyword, value)\n\n\
+       Set or show options for dassl.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 
   { "date", 1, 0, builtin_date,
     "date (): return current date in a string", },
@@ -358,7 +360,9 @@ compute the vector of function values.  It must have the form\n\
 where y and x are vectors.", },
 
   { "fsolve_options", -1, 1, builtin_fsolve_options,
-    "fsolve_options (keyword, value): set or show options for fsolve", },
+    "fsolve_options (keyword, value)\n\n\
+       Set or show options for fsolve.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 
   { "fsqp", 11, 3, builtin_fsqp,
 #if defined (FSQP_MISSING)
@@ -377,7 +381,9 @@ where y and x are vectors.", },
        redistributable.  For more information, read the file\n\
        libcruft/fsqp/README.MISSING in the source distribution.", },
 #else
-    "fsqp_options (keyword, value): set or show options for fsqp", },
+    "fsqp_options (keyword, value)\n\n\
+       Set or show options for fsqp.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 #endif
 
   { "ftell", 2, 1, builtin_ftell,
@@ -426,7 +432,9 @@ where y and x are vectors.", },
     "lp_solve (): solve linear programs using lp_solve.", },
 
   { "lp_solve_options", -1, 1, builtin_lpsolve_options,
-    "lp_solve_options (keyword, value): set or show options for lp_solve", },
+    "lp_solve_options (keyword, value)\n\n\
+       Set or show options for lp_solve.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 
   { "lsode", 6, 1, builtin_lsode,
     "lsode (\"function_name\", x0, t_out, t_crit)\n\
@@ -439,7 +447,9 @@ compute the vector of right hand sides.  It must have the form\n\
 where xdot and x are vectors and t is a scalar.\n", },
 
   { "lsode_options", -1, 1, builtin_lsode_options,
-    "lsode_options (keyword, value): set or show options for lsode", },
+    "lsode_options (keyword, value)\n\n\
+       Set or show options for lsode.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 
   { "lu", 2, 3, builtin_lu,
     "[L, U, P] = lu (A): LU factorization", },
@@ -474,7 +484,9 @@ where xdot and x are vectors and t is a scalar.\n", },
        redistributable.  For more information, read the file\n\
        libcruft/npsol/README.MISSING in the source distribution.", },
 #else
-    "npsol_options (keyword, value): set or show options for npsol", },
+    "npsol_options (keyword, value)\n\n\
+       Set or show options for npsol.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 #endif
 
   { "ones", 3, 1, builtin_ones,
@@ -513,7 +525,9 @@ where xdot and x are vectors and t is a scalar.\n", },
        redistributable.  For more information, read the file\n\
        libcruft/qpsol/README.MISSING in the source distribution.", },
 #else
-    "qpsol_options (keyword, value): set or show options for qpsol", },
+    "qpsol_options (keyword, value)\n\n\
+       Set or show options for qpsol.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 #endif
 
   { "qr", 2, 2, builtin_qr,
@@ -535,7 +549,9 @@ accuracy of the result.  The optional argument sing is a vector of\n\
 at which the integrand is singular.\n", },
 
   { "quad_options", -1, 1, builtin_quad_options,
-    "quad_options (keyword, value): set or show options for quad", },
+    "quad_options (keyword, value)\n\n\
+       Set or show options for quad.  Keywords may be abbreviated\n\
+       to the shortest match.", },
 
   { "quit", 1, 0, builtin_quit,
     "quit (): exit Octave gracefully", },
@@ -1116,7 +1132,7 @@ additional_help_message (ostrstream& output_buf)
 }
 
 void
-print_usage (const char *string)
+print_usage (const char *string, int just_usage = 0)
 {
   ostrstream output_buf;
 
@@ -1128,7 +1144,8 @@ print_usage (const char *string)
       || help_from_list (output_buf, tf_help_list, string, 1)
       || help_from_list (output_buf, mf_help_list, string, 1))
     {
-      additional_help_message (output_buf);
+      if (! just_usage)
+	additional_help_message (output_buf);
       output_buf << ends;
       maybe_page_output (output_buf);
     }

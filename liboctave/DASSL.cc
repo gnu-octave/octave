@@ -56,53 +56,7 @@ static DAEFunc::DAEJacFunc user_jac;
 
 static int nn;
 
-DASSL::DASSL (void) : DAE ()
-{
-  liw = 0;
-  lrw = 0;
-
-  sanity_checked = false;
-
-  info.resize (15);
-
-  for (int i = 0; i < 15; i++)
-    info.elem (i) = 0;
-}
-
-DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
-  : DAE (state, time, f)
-{
-  n = size ();
-
-  liw = 20 + n;
-  lrw = 40 + 9*n + n*n;
-
-  sanity_checked = false;
-
-  info.resize (15, 0);
-}
-
-DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
-	      double time, DAEFunc& f)
-  : DAE (state, deriv, time, f)
-{
-  n = size ();
-
-  DAEFunc::set_function (f.function ());
-  DAEFunc::set_jacobian_function (f.jacobian_function ());
-
-  liw = 20 + n;
-  lrw = 40 + 9*n + n*n;
-
-  sanity_checked = false;
-
-  info.resize (15);
-
-  for (int i = 0; i < 15; i++)
-    info.elem (i) = 0;
-}
-
-int
+static int
 ddassl_f (const double& time, const double *state, const double *deriv,
 	  double *delta, int& ires, double *, int *)
 {
@@ -134,7 +88,7 @@ ddassl_f (const double& time, const double *state, const double *deriv,
   return 0;
 }
 
-int
+static int
 ddassl_j (const double& time, const double *state, const double *deriv,
 	  double *pd, const double& cj, double *, int *)
 {
@@ -161,140 +115,158 @@ ddassl_j (const double& time, const double *state, const double *deriv,
 ColumnVector
 DASSL::do_integrate (double tout)
 {
-  // XXX FIXME XXX -- should handle all this option stuff just once
-  // for each new problem.
-
   ColumnVector retval;
 
-  if (restart)
+  if (! initialized || restart || DAEFunc::reset|| DASSL_options::reset)
     {
-      restart = false;
-      info.elem (0) = 0;
-    }
+      integration_error = false;
 
-  if (iwork.length () != liw)
-    iwork.resize (liw);
+      initialized = true;
 
-  if (rwork.length () != lrw)
-    rwork.resize (lrw);
+      info.resize (15);
 
-  integration_error = false;
+      for (int i = 0; i < 15; i++)
+	info(i) = 0;
 
-  user_fun = DAEFunc::fun;
-  user_jac = DAEFunc::jac;
+      pinfo = info.fortran_vec ();
 
-  if (user_jac)
-    info.elem (4) = 1;
-  else
-    info.elem (4) = 0;
+      int n = size ();
 
-  double *px = x.fortran_vec ();
-  double *pxdot = xdot.fortran_vec ();
+      liw = 20 + n;
+      lrw = 40 + 9*n + n*n;
 
-  nn = n;
+      nn = n;
 
-  if (! sanity_checked)
-    {
-      int ires = 0;
+      iwork.resize (liw);
+      rwork.resize (lrw);
 
-      ColumnVector res = (*user_fun) (x, xdot, t, ires);
+      info(0) = 0;
 
-      if (res.length () != x.length ())
+      if (stop_time_set)
 	{
-	  (*current_liboctave_error_handler)
-	    ("dassl: inconsistent sizes for state and residual vectors");
-
-	  integration_error = true;
-	  return retval;
+	  rwork(0) = stop_time;
+	  info(3) = 1;
 	}
+      else
+	info(3) = 0;
 
-      sanity_checked = true;
-    }
-  
-  if (stop_time_set)
-    {
-      rwork.elem (0) = stop_time;
-      info.elem (3) = 1;
-    }
-  else
-    info.elem (3) = 0;
+      px = x.fortran_vec ();
+      pxdot = xdot.fortran_vec ();
 
-  Array<double> abs_tol = absolute_tolerance ();
-  Array<double> rel_tol = relative_tolerance ();
+      piwork = iwork.fortran_vec ();
+      prwork = rwork.fortran_vec ();
 
-  int abs_tol_len = abs_tol.length ();
-  int rel_tol_len = rel_tol.length ();
+      restart = false;
 
-  if (abs_tol_len == 1 && rel_tol_len == 1)
-    {
-      info.elem (1) = 0;
-    }
-  else if (abs_tol_len == n && rel_tol_len == n)
-    {
-      info.elem (1) = 1;
-    }
-  else
-    {
-      (*current_liboctave_error_handler)
-	("dassl: inconsistent sizes for tolerance arrays");
+      // DAEFunc
 
-      integration_error = true;
-      return retval;
-    }
+      user_fun = DAEFunc::function ();
+      user_jac = DAEFunc::jacobian_function ();
 
-  double hmax = maximum_step_size ();
-  if (hmax >= 0.0)
-    {
-      rwork.elem (1) = hmax;
-      info.elem (6) = 1;
-    }
-  else
-    info.elem (6) = 0;
-
-  double h0 = initial_step_size ();
-  if (h0 >= 0.0)
-    {
-      rwork.elem (2) = h0;
-      info.elem (7) = 1;
-    }
-  else
-    info.elem (7) = 0;
-
-  int maxord = maximum_order ();
-  if (maxord >= 0)
-    {
-      if (maxord > 0 && maxord < 6)
+      if (user_fun)
 	{
-	  info(8) = 1;
-	  iwork(2) = maxord;
+	  int ires = 0;
+
+	  ColumnVector res = (*user_fun) (x, xdot, t, ires);
+
+	  if (res.length () != x.length ())
+	    {
+	      (*current_liboctave_error_handler)
+		("dassl: inconsistent sizes for state and residual vectors");
+
+	      integration_error = true;
+	      return retval;
+	    }
 	}
       else
 	{
 	  (*current_liboctave_error_handler)
-	    ("dassl: invalid value for maximum order");
+	    ("dassl: no user supplied RHS subroutine!");
+
 	  integration_error = true;
 	  return retval;
 	}
+
+      info(4) = user_jac ? 1 : 0;
+  
+      DAEFunc::reset = false;
+
+      // DASSL_options
+
+      double hmax = maximum_step_size ();
+      if (hmax >= 0.0)
+	{
+	  rwork(1) = hmax;
+	  info(6) = 1;
+	}
+      else
+	info(6) = 0;
+
+      double h0 = initial_step_size ();
+      if (h0 >= 0.0)
+	{
+	  rwork(2) = h0;
+	  info(7) = 1;
+	}
+      else
+	info(7) = 0;
+
+      int maxord = maximum_order ();
+      if (maxord >= 0)
+	{
+	  if (maxord > 0 && maxord < 6)
+	    {
+	      info(8) = 1;
+	      iwork(2) = maxord;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("dassl: invalid value for maximum order");
+	      integration_error = true;
+	      return retval;
+	    }
+	}
+
+      int enc = enforce_nonnegativity_constraints ();
+      info(9) = enc ? 1 : 0;
+
+      int ccic = compute_consistent_initial_condition ();
+      info(10) = ccic ? 1 : 0;
+
+      abs_tol = absolute_tolerance ();
+      rel_tol = relative_tolerance ();
+
+      int abs_tol_len = abs_tol.length ();
+      int rel_tol_len = rel_tol.length ();
+
+      if (abs_tol_len == 1 && rel_tol_len == 1)
+	{
+	  info(1) = 0;
+	}
+      else if (abs_tol_len == n && rel_tol_len == n)
+	{
+	  info(1) = 1;
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("dassl: inconsistent sizes for tolerance arrays");
+
+	  integration_error = true;
+	  return retval;
+	}
+
+      pabs_tol = abs_tol.fortran_vec ();
+      prel_tol = rel_tol.fortran_vec ();
+
+      DASSL_options::reset = false;
     }
 
-  int enc = enforce_nonnegativity_constraints ();
-  info (9) = enc ? 1 : 0;
+  static double *dummy = 0;
+  static int *idummy = 0;
 
-  int ccic = compute_consistent_initial_condition ();
-  info(10) = ccic ? 1 : 0;
-
-  double *dummy = 0;
-  int *idummy = 0;
-
-  int *pinfo = info.fortran_vec ();
-  int *piwork = iwork.fortran_vec ();
-  double *prwork = rwork.fortran_vec ();
-  double *pabs_tol = abs_tol.fortran_vec ();
-  double *prel_tol = rel_tol.fortran_vec ();
-
-// again:
-
-  F77_XFCN (ddassl, DDASSL, (ddassl_f, n, t, px, pxdot, tout, pinfo,
+  F77_XFCN (ddassl, DDASSL, (ddassl_f, nn, t, px, pxdot, tout, pinfo,
 			     prel_tol, pabs_tol, istate, prwork, lrw,
 			     piwork, liw, dummy, idummy, ddassl_j));
 
@@ -366,7 +338,9 @@ Matrix
 DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
+
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {
@@ -409,7 +383,9 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 		  const ColumnVector& tcrit) 
 {
   Matrix retval;
+
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {

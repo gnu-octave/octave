@@ -33,22 +33,22 @@ public:
   typedef ColumnVector (*DAERTConstrFunc) (const ColumnVector& x, double t);
 
   DAERTFunc (void)
-    : DAEFunc (), constr (0) { }
+    : DAEFunc (), constr (0), reset (true) { }
 
   DAERTFunc (DAERHSFunc f)
-    : DAEFunc (f), constr (0) { }
+    : DAEFunc (f), constr (0), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAEJacFunc j)
-    : DAEFunc (f, j), constr (0) { }
+    : DAEFunc (f, j), constr (0), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAERTConstrFunc cf)
-    : DAEFunc (f), constr (cf) { }
+    : DAEFunc (f), constr (cf), reset (true) { }
 
   DAERTFunc (DAERHSFunc f, DAERTConstrFunc cf, DAEJacFunc j)
-    : DAEFunc (f, j), constr (cf) { }
+    : DAEFunc (f, j), constr (cf), reset (true) { }
 
   DAERTFunc (const DAERTFunc& a)
-    : DAEFunc (a), constr (a.constr) { }
+    : DAEFunc (a), constr (a.constr), reset (a.reset) { }
 
   DAERTFunc& operator = (const DAERTFunc& a)
     {
@@ -56,6 +56,7 @@ public:
 	{
 	  DAEFunc::operator = (a);
 	  constr = a.constr;
+	  reset = a.reset;
 	}
       return *this;
     }
@@ -67,12 +68,20 @@ public:
   DAERTFunc& set_constraint_function (DAERTConstrFunc cf)
     {
       constr = cf;
+      reset = true;
       return *this;
     }
 
 protected:
 
   DAERTConstrFunc constr;
+
+  // This variable is TRUE when this object is constructed, and also
+  // after any internal data has changed.  Derived classes may use
+  // this information (and change it) to know when to (re)initialize
+  // their own internal data related to this object.
+
+  bool reset;
 };
 
 #endif

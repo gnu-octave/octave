@@ -374,7 +374,8 @@ public:
         }
     }
 
-  print "    }\n";
+  print "      reset = true;
+    }\n";
 
   print "\n  void copy (const ${class_name}& opt)\n    {\n";
 
@@ -383,7 +384,8 @@ public:
       print "      $optvar[$i] = opt.$optvar[$i];\n";
     }
 
-  print "    }\n";
+  print "      reset = opt.reset;
+    }\n";
 
   print "\n  void set_default_options (void) { init (); }\n";
 
@@ -393,7 +395,7 @@ public:
         {
           &emit_set_decl ($i);
 
-          print "\n    { $optvar[$i] = $set_expr[$i]; }\n";
+          print "\n    { $optvar[$i] = $set_expr[$i]; reset = true; }\n";
         }
       elsif ($set_body[$i])
         {
@@ -403,7 +405,7 @@ public:
           chop ($s);
           $s =~ s/^/  /g;
           $s =~ s/\n/\n  /g;
-          print "\n    {\n$s\n    }\n";
+          print "\n    {\n$s\n      reset = true;\n    }\n";
         }
       elsif ($set_code[$i])
         {
@@ -427,7 +429,7 @@ public:
       print "  $type[$i] $optvar[$i];\n";
     }
 
-  print "};\n\n#endif\n";
+  print "\nprotected:\n\n  bool reset;\n};\n\n#endif\n";
 }
 
 sub emit_set_decl

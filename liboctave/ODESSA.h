@@ -109,13 +109,12 @@ private:
   int n;
   int npar;
 
-  // Hey, check out this crap: ZZZZ
+  // XXX FIXME XXX -- ???
   Array<double> par;
 
   Matrix sx0;
 
   Matrix y;
-
 
   double *py;
   double *ppar;

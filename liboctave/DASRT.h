@@ -74,12 +74,14 @@ DASRT : public DAERT, public DASRT_options
 {
 public:
 
-  DASRT (void);
+  DASRT (void) : DAERT (), DASRT_options (), initialized (false) { }
 
-  DASRT (const ColumnVector& state, double time, DAERTFunc& f);
+  DASRT (const ColumnVector& state, double time, DAERTFunc& f)
+    : DAERT (state, time, f), DASRT_options (), initialized (false) { }
 
   DASRT (const ColumnVector& state, const ColumnVector& deriv,
-	 double time, DAERTFunc& f);
+	 double time, DAERTFunc& f)
+    : DAERT (state, deriv, time, f), DASRT_options (), initialized (false) { }
 
   ~DASRT (void) { }
 
@@ -94,12 +96,9 @@ private:
 
   bool initialized;
 
-  bool sanity_checked;
-
   int liw;  
   int lrw;
 
-  int n;
   int ng;
 
   Array<int> info;

@@ -37,12 +37,14 @@ DASPK : public DAE, public DASPK_options
 {
 public:
 
-  DASPK (void);
+  DASPK (void) : DAE (), DASPK_options (), initialized (false) { }
 
-  DASPK (const ColumnVector& x, double time, DAEFunc& f);
+  DASPK (const ColumnVector& state, double time, DAEFunc& f)
+    : DAE (state, time, f), DASPK_options (), initialized (false) { }
 
-  DASPK (const ColumnVector& x, const ColumnVector& xdot,
-	 double time, DAEFunc& f);
+  DASPK (const ColumnVector& state, const ColumnVector& deriv,
+	 double time, DAEFunc& f)
+    : DAE (state, deriv, time, f), DASPK_options (), initialized (false) { }
 
   ~DASPK (void) { }
 
@@ -61,20 +63,26 @@ public:
 
 private:
 
-  int n;
+  bool initialized;
+
   int liw;  
   int lrw;
-  int sanity_checked;
+
   Array<int> info;
   Array<int> iwork;
+
   Array<double> rwork;
 
-  friend int ddaspk_j (double *time, double *state, double *deriv,
-		       double *pd, double *cj, double *rpar, int *ipar);
+  Array<double> abs_tol;
+  Array<double> rel_tol;
 
-  friend int ddaspk_f (double *time, double *state, double *deriv,
-		       double *delta, int *ires, double *rpar, int *ipar);
-
+  double *px;
+  double *pxdot;
+  double *pabs_tol;
+  double *prel_tol;
+  int *pinfo;
+  int *piwork;
+  double *prwork;
 };
 
 #endif

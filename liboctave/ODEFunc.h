@@ -35,16 +35,16 @@ public:
   typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
   ODEFunc (void)
-    : fun (0), jac (0) { }
+    : fun (0), jac (0), reset (true) { }
 
   ODEFunc (ODERHSFunc f)
-    : fun (f), jac (0) { }
+    : fun (f), jac (0), reset (true) { }
 
   ODEFunc (ODERHSFunc f, ODEJacFunc j)
-    : fun (f), jac (j) { }
+    : fun (f), jac (j), reset (true) { }
 
   ODEFunc (const ODEFunc& a)
-    : fun (a.fun), jac (a.jac) { }
+    : fun (a.fun), jac (a.jac), reset (true) { }
 
   ODEFunc& operator = (const ODEFunc& a)
     {
@@ -52,6 +52,7 @@ public:
 	{
 	  fun = a.fun;
 	  jac = a.jac;
+	  reset = a.reset;
 	}
       return *this;
     }
@@ -63,6 +64,7 @@ public:
   ODEFunc& set_function (ODERHSFunc f)
     {
       fun = f;
+      reset = true;
       return *this;
     }
 
@@ -71,6 +73,7 @@ public:
   ODEFunc& set_jacobian_function (ODEJacFunc j)
     {
       jac = j;
+      reset = true;
       return *this;
     }
 
@@ -78,6 +81,13 @@ protected:
 
   ODERHSFunc fun;
   ODEJacFunc jac;
+
+  // This variable is TRUE when this object is constructed, and also
+  // after any internal data has changed.  Derived classes may use
+  // this information (and change it) to know when to (re)initialize
+  // their own internal data related to this object.
+
+  bool reset;
 };
 
 #endif

@@ -15,10 +15,11 @@ OPTION
       {
         $OPTVAR.resize (1);
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
+        reset = true;
       }
 
     void set_$OPT (const $TYPE& val)
-      { $OPTVAR = val; }
+      { $OPTVAR = val; reset = true; }
   END_SET_CODE
 END_OPTION
 
@@ -35,10 +36,11 @@ OPTION
       {
         $OPTVAR.resize (1);
         $OPTVAR(0) = (val > 0.0) ? val : ::sqrt (DBL_EPSILON);
+        reset = true;
       }
 
     void set_$OPT (const $TYPE& val)
-      { $OPTVAR = val; }
+      { $OPTVAR = val; reset = true; }
   END_SET_CODE
 END_OPTION
 

@@ -44,16 +44,16 @@ public:
 				double t, double cj);
 
   DAEFunc (void)
-    : fun (0), jac (0) { }
+    : fun (0), jac (0), reset (true) { }
 
   DAEFunc (DAERHSFunc f)
-    : fun (f), jac (0) { }
+    : fun (f), jac (0), reset (true) { }
 
   DAEFunc (DAERHSFunc f, DAEJacFunc j)
-    : fun (f), jac (j) { }
+    : fun (f), jac (j), reset (true) { }
 
   DAEFunc (const DAEFunc& a)
-    : fun (a.fun), jac (a.jac) { }
+    : fun (a.fun), jac (a.jac), reset (a.reset) { }
 
   DAEFunc& operator = (const DAEFunc& a)
     {
@@ -61,6 +61,7 @@ public:
 	{
 	  fun = a.fun;
 	  jac = a.jac;
+	  reset = a.reset;
 	}
       return *this;
     }
@@ -72,6 +73,7 @@ public:
   DAEFunc& set_function (DAERHSFunc f)
     {
       fun = f;
+      reset = true;
       return *this;
     }
 
@@ -80,6 +82,7 @@ public:
   DAEFunc& set_jacobian_function (DAEJacFunc j)
     {
       jac = j;
+      reset = true;
       return *this;
     }
 
@@ -87,6 +90,13 @@ protected:
 
   DAERHSFunc fun;
   DAEJacFunc jac;
+
+  // This variable is TRUE when this object is constructed, and also
+  // after any internal data has changed.  Derived classes may use
+  // this information (and change it) to know when to (re)initialize
+  // their own internal data related to this object.
+
+  bool reset;
 };
 
 #endif

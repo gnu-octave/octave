@@ -37,12 +37,14 @@ DASSL : public DAE, public DASSL_options
 {
 public:
 
-  DASSL (void);
+  DASSL (void) : DAE (), DASSL_options (), initialized (false) { }
 
-  DASSL (const ColumnVector& state, double time, DAEFunc& f);
+  DASSL (const ColumnVector& state, double time, DAEFunc& f)
+    : DAE (state, time, f), DASSL_options (), initialized (false) { }
 
-  DASSL (const ColumnVector& state, const ColumnVector& xdot,
-	 double time, DAEFunc& f);
+  DASSL (const ColumnVector& state, const ColumnVector& deriv,
+	 double time, DAEFunc& f)
+    : DAE (state, deriv, time, f), DASSL_options (), initialized (false) { }
 
   ~DASSL (void) { }
 
@@ -61,20 +63,26 @@ public:
 
 private:
 
-  int n;
+  bool initialized;
+
   int liw;  
   int lrw;
-  bool sanity_checked;
+
   Array<int> info;
   Array<int> iwork;
+
   Array<double> rwork;
 
-  friend int ddassl_j (double *time, double *state, double *deriv,
-		       double *pd, double *cj, double *rpar, int *ipar);
+  Array<double> abs_tol;
+  Array<double> rel_tol;
 
-  friend int ddassl_f (double *time, double *state, double *deriv,
-		       double *delta, int *ires, double *rpar, int *ipar);
-
+  double *px;
+  double *pxdot;
+  double *pabs_tol;
+  double *prel_tol;
+  int *pinfo;
+  int *piwork;
+  double *prwork;
 };
 
 #endif

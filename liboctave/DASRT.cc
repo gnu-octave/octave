@@ -48,10 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
-#ifndef F77_FUNC
-#define F77_FUNC(x, X) F77_FCN (x, X)
-#endif
-
 typedef int (*dasrt_fcn_ptr) (const double&, const double*, const double*,
 			      double*, int&, double*, int*);
 
@@ -142,102 +138,63 @@ ddasrt_g (const int& neq, const double& t, const double *state,
   return 0;
 }
 
-DASRT::DASRT (void)
-  : DAERT ()
-{
-  initialized = false;
-
-  sanity_checked = false;
-
-  info.resize (30, 0);
-
-  ng = 0;
-
-  liw = 0;
-  lrw = 0;
-}
-
-DASRT::DASRT (const ColumnVector& state, double time, DAERTFunc& f)
-  : DAERT (state, time, f)
-{
-  n = size ();
-
-  initialized = false;
-
-  liw = 20 + n;
-  lrw = 50 + 9*n + n*n;
-
-  sanity_checked = false;
-
-  info.resize (15, 0);
-
-  DAERTFunc::DAERTConstrFunc tmp_csub = DAERTFunc::constraint_function ();
-  
-  if (tmp_csub)
-    {
-      ColumnVector tmp = tmp_csub (state, time);
-      ng = tmp.length ();
-    }
-  else
-    ng = 0;
-
-  jroot.resize (ng, 1);
-}
-
-DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
-	      double time, DAERTFunc& f)
-  : DAERT (state, deriv, time, f)
-{
-  n = size ();
-
-  initialized = false;
-
-  sanity_checked = false;
-
-  info.resize (30, 0);
-
-  DAERTFunc::DAERTConstrFunc tmp_csub = DAERTFunc::constraint_function ();
-  
-  if (tmp_csub)
-    {
-      ColumnVector tmp = tmp_csub (state, time);
-      ng = tmp.length ();
-    }
-  else
-    ng = 0;
-
-  liw = 20 + n + 1000;
-  lrw = 50 + 9*n + n*n + 1000;
-
-  jroot.resize (ng, 1);
-}
-
 void
 DASRT::integrate (double tout)
 {
   DASRT_result retval;
 
-  if (! initialized)
-    {
-      info(0) = 0;
+  // I suppose this is the safe thing to do.  If this is the first
+  // call, or if anything about the problem has changed, we should
+  // start completely fresh.
 
+  if (! initialized || restart
+      || DAEFunc::reset || DAERTFunc::reset || DASRT_options::reset)
+    {
       integration_error = false;
 
-      user_fsub = DAEFunc::function ();
-      user_jsub = DAEFunc::jacobian_function ();
-      user_csub = DAERTFunc::constraint_function ();
+      initialized = true;
 
-      if (user_jsub)
-	info(4) = 1;
+      info.resize (15);
+
+      for (int i = 0; i < 15; i++)
+	info(i) = 0;
+
+      pinfo = info.fortran_vec ();
+
+      int n = size ();
+
+      nn = n;
+
+      liw = 20 + n;
+      lrw = 50 + 9*n + n*n;
+
+      iwork.resize (liw);
+      rwork.resize (lrw);
+
+      info(0) = 0;
+
+      if (stop_time_set)
+	{
+	  info(3) = 1;
+	  rwork(0) = stop_time;
+	}
       else
-	info(4) = 0;
+	info(3) = 0;
 
       px = x.fortran_vec ();
       pxdot = xdot.fortran_vec ();
 
-      nn = n;
+      piwork = iwork.fortran_vec ();
+      prwork = rwork.fortran_vec ();
 
-      if (! sanity_checked)
+      restart = false;
+
+      // DAEFunc
+
+      user_fsub = DAEFunc::function ();
+      user_jsub = DAEFunc::jacobian_function ();
+
+      if (user_fsub)
 	{
 	  int ires = 0;
 
@@ -246,20 +203,85 @@ DASRT::integrate (double tout)
 	  if (fval.length () != x.length ())
 	    {
 	      (*current_liboctave_error_handler)
-		("dassl: inconsistent sizes for state and residual vectors");
+		("dasrt: inconsistent sizes for state and residual vectors");
 
 	      integration_error = true;
 	      return;
 	    }
-
-	  sanity_checked = true;
 	}
-  
-      if (iwork.length () != liw)
-	iwork.resize (liw);
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("dasrt: no user supplied RHS subroutine!");
 
-      if (rwork.length () != lrw)
-	rwork.resize (lrw);
+	  integration_error = true;
+	  return;
+	}
+
+      info(4) = user_jsub ? 1 : 0;
+
+      DAEFunc::reset = false;
+
+      // DAERTFunc
+
+      user_csub = DAERTFunc::constraint_function ();
+
+      if (user_csub)
+	{
+	  ColumnVector tmp = (*user_csub) (x, t);
+	  ng = tmp.length ();
+	}
+      else
+	ng = 0;
+
+      jroot.resize (ng, 1);
+
+      pjroot = jroot.fortran_vec ();
+
+      DAERTFunc::reset = false;
+
+      // DASRT_options
+
+      if (maximum_step_size () >= 0.0)
+	{
+	  rwork(1) = maximum_step_size ();
+	  info(6) = 1;
+	}
+      else
+	info(6) = 0;
+
+      if (initial_step_size () >= 0.0)
+	{
+	  rwork(2) = initial_step_size ();
+	  info(7) = 1;
+	}
+      else
+	info(7) = 0;
+
+      int maxord = maximum_order ();
+      if (maxord >= 0)
+	{
+	  if (maxord > 0 && maxord < 6)
+	    {
+	      info(8) = 1;
+	      iwork(2) = maxord;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("dassl: invalid value for maximum order");
+	      integration_error = true;
+	      return;
+	    }
+	}
+
+      if (step_limit () >= 0)
+	{
+	  info(11) = 1;
+	  iwork(18) = step_limit ();
+	}
+      else
+	info(11) = 0;
 
       abs_tol = absolute_tolerance ();
       rel_tol = relative_tolerance ();
@@ -278,65 +300,22 @@ DASRT::integrate (double tout)
       else
 	{
 	  (*current_liboctave_error_handler)
-	    ("dassl: inconsistent sizes for tolerance arrays");
+	    ("dasrt: inconsistent sizes for tolerance arrays");
 
 	  integration_error = true;
 	  return;
 	}
 
-      if (initial_step_size () >= 0.0)
-	{
-	  rwork(2) = initial_step_size ();
-	  info(7) = 1;
-	}
-      else
-	info(7) = 0;
-
-      if (step_limit () >= 0)
-	{
-	  info(11) = 1;
-	  iwork(18) = step_limit ();
-	}
-      else
-	info(11) = 0;
-
-      if (maximum_step_size () >= 0.0)
-	{
-	  rwork(1) = maximum_step_size ();
-	  info(6) = 1;
-	}
-      else
-	info(6) = 0;
-
-      pinfo = info.fortran_vec ();
-      piwork = iwork.fortran_vec ();
       pabs_tol = abs_tol.fortran_vec ();
       prel_tol = rel_tol.fortran_vec ();
-      prwork = rwork.fortran_vec ();
-      pjroot = jroot.fortran_vec ();
 
-      info(5) = 0;
-      info(8) = 0;
-      initialized = true;
+      DASRT_options::reset = false;
     }
 
-  if (restart)
-    {
-      info(0) = 0;
+  static double *dummy = 0;
+  static int *idummy = 0;
 
-      if (stop_time_set)
-	{
-	  info(3) = 1;
-	  rwork(0) = stop_time;
-	}
-      else
-	info(3) = 0;
-    }
-
-  double *dummy = 0;
-  int *idummy = 0;
-
-  F77_XFCN (ddasrt, DASRT, (ddasrt_f, n, t, px, pxdot, tout, pinfo,
+  F77_XFCN (ddasrt, DASRT, (ddasrt_f, nn, t, px, pxdot, tout, pinfo,
 			    prel_tol, pabs_tol, istate, prwork, lrw,
 			    piwork, liw, dummy, idummy, ddasrt_j,
 			    ddasrt_g, ng, pjroot));
@@ -344,7 +323,7 @@ DASRT::integrate (double tout)
   if (f77_exception_encountered)
     {
       integration_error = true;
-      (*current_liboctave_error_handler) ("unrecoverable error in dassl");
+      (*current_liboctave_error_handler) ("unrecoverable error in dasrt");
     }
   else
     {
@@ -409,6 +388,7 @@ DASRT::integrate (const ColumnVector& tout)
   ColumnVector t_out = tout;
 
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {
@@ -467,6 +447,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   ColumnVector t_outs = tout;
 
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {

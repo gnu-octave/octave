@@ -64,47 +64,7 @@ static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
 static int nn;
 
-DASPK::DASPK (void) : DAE ()
-{
-  sanity_checked = 0;
-
-  info.resize (20);
-
-  for (int i = 0; i < 20; i++)
-    info.elem (i) = 0;
-}
-
-DASPK::DASPK (const ColumnVector& state, double time, DAEFunc& f)
-  : DAE (state, time, f)
-{
-  n = size ();
-
-  sanity_checked = 0;
-
-  info.resize (20);
-
-  for (int i = 0; i < 20; i++)
-    info.elem (i) = 0;
-}
-
-DASPK::DASPK (const ColumnVector& state, const ColumnVector& deriv,
-	  double time, DAEFunc& f)
-  : DAE (state, deriv, time, f)
-{
-  n = size ();
-
-  DAEFunc::set_function (f.function ());
-  DAEFunc::set_jacobian_function (f.jacobian_function ());
-
-  sanity_checked = 0;
-
-  info.resize (20);
-
-  for (int i = 0; i < 20; i++)
-    info.elem (i) = 0;
-}
-
-int
+static int
 ddaspk_f (const double& time, const double *state, const double *deriv,
 	  const double&, double *delta, int& ires, double *, int *)
 {
@@ -137,7 +97,7 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 //NEQ, T, Y, YPRIME, SAVR, WK, CJ, WGHT,
 //C                          WP, IWP, B, EPLIN, IER, RPAR, IPAR)
 
-int
+static int
 ddaspk_psol (const int& neq, const double& time, const double *state,
 	     const double *deriv, const double *savr,
 	     const double& cj, const double *wght, double *wp,
@@ -149,7 +109,7 @@ ddaspk_psol (const int& neq, const double& time, const double *state,
 }
 
 
-int
+static int
 ddaspk_j (const double& time, const double *state, const double *deriv,
 	  double *pd, const double& cj, double *, int *)
 {
@@ -181,178 +141,220 @@ DASPK::do_integrate (double tout)
 
   ColumnVector retval;
 
-  if (restart)
+  if (! initialized || restart || DAEFunc::reset|| DASPK_options::reset)
     {
-      restart = false;
-      info.elem (0) = 0;
-    }
+      integration_error = false;
 
-  liw = 40 + n;
-  if (info(9) == 1 || info(9) == 3)
-    liw += n;
-  if (info (10) == 1 || info(15) == 1)
-    liw += n;
+      initialized = true;
 
-  lrw = 50 + 9*n;
-  if (info(5) == 0)
-    lrw += n*n;
-  if (info(15) == 1)
-    lrw += n;
+      info.resize (20);
 
-  if (iwork.length () != liw)
-    iwork.resize (liw);
+      for (int i = 0; i < 20; i++)
+	info(i) = 0;
 
-  if (rwork.length () != lrw)
-    rwork.resize (lrw);
+      pinfo = info.fortran_vec ();
 
-  integration_error = false;
+      int n = size ();
 
-  if (DAEFunc::jacobian_function ())
-    info.elem (4) = 1;
-  else
-    info.elem (4) = 0;
+      nn = n;
 
-  double *px    = x.fortran_vec ();
-  double *pxdot = xdot.fortran_vec ();
+      info(0) = 0;
 
-  nn = n;
-  user_fun = DAEFunc::fun;
-  user_jac = DAEFunc::jac;
-
-  if (! sanity_checked)
-    {
-      int ires = 0;
-
-      ColumnVector res = (*user_fun) (x, xdot, t, ires);
-
-      if (res.length () != x.length ())
+      if (stop_time_set)
 	{
-	  (*current_liboctave_error_handler)
-	    ("daspk: inconsistent sizes for state and residual vectors");
-
-	  integration_error = true;
-	  return retval;
+	  rwork(0) = stop_time;
+	  info(3) = 1;
 	}
+      else
+	info(3) = 0;
 
-      sanity_checked = 1;
-    }
-  
-  if (stop_time_set)
-    {
-      rwork.elem (0) = stop_time;
-      info.elem (3) = 1;
-    }
-  else
-    info.elem (3) = 0;
+      px = x.fortran_vec ();
+      pxdot = xdot.fortran_vec ();
 
-  Array<double> abs_tol = absolute_tolerance ();
-  Array<double> rel_tol = relative_tolerance ();
+      // DAEFunc
 
-  int abs_tol_len = abs_tol.length ();
-  int rel_tol_len = rel_tol.length ();
+      user_fun = DAEFunc::function ();
+      user_jac = DAEFunc::jacobian_function ();
 
-  if (abs_tol_len == 1 && rel_tol_len == 1)
-    {
-      info.elem (1) = 0;
-    }
-  else if (abs_tol_len == n && rel_tol_len == n)
-    {
-      info.elem (1) = 1;
-    }
-  else
-    {
-      (*current_liboctave_error_handler)
-	("daspk: inconsistent sizes for tolerance arrays");
-
-      integration_error = true;
-      return retval;
-    }
-
-  double hmax = maximum_step_size ();
-  if (hmax >= 0.0)
-    {
-      rwork.elem (1) = hmax;
-      info.elem (6) = 1;
-    }
-  else
-    info.elem (6) = 0;
-
-  double h0 = initial_step_size ();
-  if (h0 >= 0.0)
-    {
-      rwork.elem (2) = h0;
-      info.elem (7) = 1;
-    }
-  else
-    info.elem (7) = 0;
-
-  int maxord = maximum_order ();
-  if (maxord >= 0)
-    {
-      if (maxord > 0 && maxord < 6)
+      if (user_fun)
 	{
-	  info(8) = 1;
-	  iwork(2) = maxord;
+	  int ires = 0;
+
+	  ColumnVector res = (*user_fun) (x, xdot, t, ires);
+
+	  if (res.length () != x.length ())
+	    {
+	      (*current_liboctave_error_handler)
+		("daspk: inconsistent sizes for state and residual vectors");
+
+	      integration_error = true;
+	      return retval;
+	    }
 	}
       else
 	{
 	  (*current_liboctave_error_handler)
-	    ("daspk: invalid value for maximum order");
+	    ("daspk: no user supplied RHS subroutine!");
+
 	  integration_error = true;
 	  return retval;
 	}
-    }
+  
+      info(4) = user_jac ? 1 : 0;
 
-  int eiq = enforce_inequality_constraints ();
-  switch (eiq)
-    {
-    case 1:
-    case 3:
-      {
-	Array<int> ict = inequality_constraint_types ();
+      DAEFunc::reset = false;
 
-	if (ict.length () == n)
+      // DASPK_options
+
+      Array<double> abs_tol = absolute_tolerance ();
+      Array<double> rel_tol = relative_tolerance ();
+
+      int abs_tol_len = abs_tol.length ();
+      int rel_tol_len = rel_tol.length ();
+
+      if (abs_tol_len == 1 && rel_tol_len == 1)
+	{
+	  info(1) = 0;
+	}
+      else if (abs_tol_len == n && rel_tol_len == n)
+	{
+	  info(1) = 1;
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("daspk: inconsistent sizes for tolerance arrays");
+
+	  integration_error = true;
+	  return retval;
+	}
+
+      double hmax = maximum_step_size ();
+      if (hmax >= 0.0)
+	{
+	  rwork(1) = hmax;
+	  info(6) = 1;
+	}
+      else
+	info(6) = 0;
+
+      double h0 = initial_step_size ();
+      if (h0 >= 0.0)
+	{
+	  rwork(2) = h0;
+	  info(7) = 1;
+	}
+      else
+	info(7) = 0;
+
+      int maxord = maximum_order ();
+      if (maxord >= 0)
+	{
+	  if (maxord > 0 && maxord < 6)
+	    {
+	      info(8) = 1;
+	      iwork(2) = maxord;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("daspk: invalid value for maximum order");
+	      integration_error = true;
+	      return retval;
+	    }
+	}
+
+      int eiq = enforce_inequality_constraints ();
+      switch (eiq)
+	{
+	case 1:
+	case 3:
 	  {
-	    for (int i = 0; i < n; i++)
+	    Array<int> ict = inequality_constraint_types ();
+
+	    if (ict.length () == n)
 	      {
-		int val = ict(i);
-		if (val < -2 || val > 2)
+		for (int i = 0; i < n; i++)
 		  {
-		    (*current_liboctave_error_handler)
-		      ("daspk: invalid value for inequality constraint type");
-		    integration_error = true;
-		    return retval;
+		    int val = ict(i);
+		    if (val < -2 || val > 2)
+		      {
+			(*current_liboctave_error_handler)
+			  ("daspk: invalid value for inequality constraint type");
+			integration_error = true;
+			return retval;
+		      }
+		    iwork(40+i) = val;
 		  }
-		iwork(40+i) = val;
+	      }
+	    else
+	      {
+		(*current_liboctave_error_handler)
+		  ("daspk: inequality constraint types size mismatch");
+		integration_error = true;
+		return retval;
 	      }
 	  }
-	else
-	  {
-	    (*current_liboctave_error_handler)
-	      ("daspk: inequality constraint types size mismatch");
-	    integration_error = true;
-	    return retval;
-	  }
-      }
-      // Fall through...
+	  // Fall through...
 
-    case 2:
-      info(9) = eiq;
-      break;
+	case 2:
+	  info(9) = eiq;
+	  break;
 
-    default:
-      (*current_liboctave_error_handler)
-	("daspk: invalid value for enforce inequality constraints option");
-      integration_error = true;
-      return retval;
-    }
+	default:
+	  (*current_liboctave_error_handler)
+	    ("daspk: invalid value for enforce inequality constraints option");
+	  integration_error = true;
+	  return retval;
+	}
 
-  int ccic = compute_consistent_initial_condition ();
-  if (ccic)
-    {
-      if (ccic == 1)
+      int ccic = compute_consistent_initial_condition ();
+      if (ccic)
 	{
-	  // XXX FIXME XXX -- this code is duplicated below.
+	  if (ccic == 1)
+	    {
+	      // XXX FIXME XXX -- this code is duplicated below.
+
+	      Array<int> av = algebraic_variables ();
+
+	      if (av.length () == n)
+		{
+		  int lid;
+		  if (eiq == 0 || eiq == 2)
+		    lid = 40;
+		  else if (eiq == 1 || eiq == 3)
+		    lid = 40 + n;
+		  else
+		    abort ();
+
+		  for (int i = 0; i < n; i++)
+		    iwork(lid+i) = av(i) ? -1 : 1;
+		}
+	      else
+		{
+		  (*current_liboctave_error_handler)
+		    ("daspk: algebraic variables size mismatch");
+		  integration_error = true;
+		  return retval;
+		}
+	    }
+	  else if (ccic != 2)
+	    {
+	      (*current_liboctave_error_handler)
+		("daspk: invalid value for compute consistent initial condition option");
+	      integration_error = true;
+	      return retval;
+	    }
+
+	  info(10) = ccic;
+	}
+
+      int eavfet = exclude_algebraic_variables_from_error_test ();
+      if (eavfet)
+	{
+	  info(15) = 1;
+
+	  // XXX FIXME XXX -- this code is duplicated above.
 
 	  Array<int> av = algebraic_variables ();
 
@@ -369,102 +371,77 @@ DASPK::do_integrate (double tout)
 	      for (int i = 0; i < n; i++)
 		iwork(lid+i) = av(i) ? -1 : 1;
 	    }
+	}
+
+      if (use_initial_condition_heuristics ())
+	{
+	  Array<double> ich = initial_condition_heuristics ();
+
+	  if (ich.length () == 6)
+	    {
+	      iwork(31) = NINT (ich(0));
+	      iwork(32) = NINT (ich(1));
+	      iwork(33) = NINT (ich(2));
+	      iwork(34) = NINT (ich(3));
+
+	      rwork(13) = ich(4);
+	      rwork(14) = ich(5);
+	    }
 	  else
 	    {
 	      (*current_liboctave_error_handler)
-		("daspk: algebraic variables size mismatch");
+		("daspk: invalid initial condition heuristics option");
 	      integration_error = true;
 	      return retval;
 	    }
+
+	  info(16) = 1;
 	}
-      else if (ccic != 2)
+
+      int pici = print_initial_condition_info ();
+      switch (pici)
 	{
+	case 0:
+	case 1:
+	case 2:
+	  info(17) = pici;
+	  break;
+
+	default:
 	  (*current_liboctave_error_handler)
-	    ("daspk: invalid value for compute consistent initial condition option");
+	    ("daspk: invalid value for print initial condition info option");
 	  integration_error = true;
 	  return retval;
+	  break;
 	}
 
-      info(10) = ccic;
+      DASPK_options::reset = false;
+
+      liw = 40 + n;
+      if (eiq == 1 || eiq == 3)
+	liw += n;
+      if (ccic == 1 || eavfet == 1)
+	liw += n;
+
+      lrw = 50 + 9*n;
+      if (! user_jac)
+	lrw += n*n;
+      if (eavfet == 1)
+	lrw += n;
+
+      iwork.resize (liw);
+      rwork.resize (lrw);
+
+      piwork = iwork.fortran_vec ();
+      prwork = rwork.fortran_vec ();
+
+      restart = false;
     }
 
-  if (exclude_algebraic_variables_from_error_test ())
-    {
-      info(15) = 1;
+  static double *dummy = 0;
+  static int *idummy = 0;
 
-      // XXX FIXME XXX -- this code is duplicated above.
-
-      Array<int> av = algebraic_variables ();
-
-      if (av.length () == n)
-	{
-	  int lid;
-	  if (eiq == 0 || eiq == 2)
-	    lid = 40;
-	  else if (eiq == 1 || eiq == 3)
-	    lid = 40 + n;
-	  else
-	    abort ();
-
-	  for (int i = 0; i < n; i++)
-	    iwork(lid+i) = av(i) ? -1 : 1;
-	}
-    }
-
-  if (use_initial_condition_heuristics ())
-    {
-      Array<double> ich = initial_condition_heuristics ();
-
-      if (ich.length () == 6)
-	{
-	  iwork(31) = NINT (ich(0));
-	  iwork(32) = NINT (ich(1));
-	  iwork(33) = NINT (ich(2));
-	  iwork(34) = NINT (ich(3));
-
-	  rwork(13) = ich(4);
-	  rwork(14) = ich(5);
-	}
-      else
-	{
-	  (*current_liboctave_error_handler)
-	    ("daspk: invalid initial condition heuristics option");
-	  integration_error = true;
-	  return retval;
-	}
-
-      info(16) = 1;
-    }
-
-  int pici = print_initial_condition_info ();
-  switch (pici)
-    {
-    case 0:
-    case 1:
-    case 2:
-      info(17) = pici;
-      break;
-
-    default:
-      (*current_liboctave_error_handler)
-	("daspk: invalid value for print initial condition info option");
-      integration_error = true;
-      return retval;
-      break;
-    }
-
-  double *dummy = 0;
-  int *idummy = 0;
-
-  int *pinfo = info.fortran_vec ();
-  int *piwork = iwork.fortran_vec ();
-  double *prwork = rwork.fortran_vec ();
-  double *pabs_tol = abs_tol.fortran_vec ();
-  double *prel_tol = rel_tol.fortran_vec ();
-
-// again:
-
-  F77_XFCN (ddaspk, DDASPK, (ddaspk_f, n, t, px, pxdot, tout, pinfo,
+  F77_XFCN (ddaspk, DDASPK, (ddaspk_f, nn, t, px, pxdot, tout, pinfo,
 			     prel_tol, pabs_tol, istate, prwork, lrw,
 			     piwork, liw, dummy, idummy, ddaspk_j,
 			     ddaspk_psol));
@@ -546,7 +523,9 @@ Matrix
 DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
+
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {
@@ -589,7 +568,9 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 		  const ColumnVector& tcrit) 
 {
   Matrix retval;
+
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {

@@ -54,28 +54,7 @@ static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
 
-LSODE::LSODE (void) : ODE (), LSODE_options ()
-{
-  n = size ();
-
-  itask = 1;
-  iopt = 0;
-
-  sanity_checked = false;
-}
-
-LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
-  : ODE (state, time, f), LSODE_options ()
-{
-  n = size ();
-
-  itask = 1;
-  iopt = 0;
-
-  sanity_checked = false;
-}
-
-int
+static int
 lsode_f (const int& neq, const double& time, double *,
 	 double *deriv, int& ierr) 
 {
@@ -98,7 +77,7 @@ lsode_f (const int& neq, const double& time, double *,
   return 0;
 }
 
-int
+static int
 lsode_j (const int& neq, const double& time, double *,
 	 const int&, const int&, double *pd, const int& nrowpd)
 {
@@ -122,60 +101,77 @@ LSODE::do_integrate (double tout)
 {
   ColumnVector retval;
 
-  if (restart)
+  static int nn = 0;
+
+  if (! initialized || restart || ODEFunc::reset || LSODE_options::reset)
     {
-      restart = false;
+      integration_error = false;
+
+      initialized = true;
+
       istate = 1;
-    }
 
-  if (integration_method () == "stiff")
-    {
-      if (jac)
-	method_flag = 21;
+      int n = size ();
+
+      nn = n;
+
+      if (integration_method () == "stiff")
+	{
+	  if (jac)
+	    method_flag = 21;
+	  else
+	    method_flag = 22;
+
+	  liw = 20 + n;
+	  lrw = 22 + n * (9 + n);
+	}
       else
-	method_flag = 22;
+	{
+	  method_flag = 10;
 
-      liw = 20 + n;
-      lrw = 22 + n * (9 + n);
-    }
-  else
-    {
-      method_flag = 10;
+	  liw = 20;
+	  lrw = 22 + 16 * n;
+	}
 
-      liw = 20;
-      lrw = 22 + 16 * n;
-    }
-
-  if (iwork.length () != liw)
-    {
       iwork.resize (liw);
 
       for (int i = 4; i < 9; i++)
-	iwork.elem (i) = 0;
-    }
+	iwork(i) = 0;
 
-  if (rwork.length () != lrw)
-    {
       rwork.resize (lrw);
 
       for (int i = 4; i < 9; i++)
-	rwork.elem (i) = 0;
-    }
+	rwork(i) = 0;
 
-  integration_error = false;
+      if (stop_time_set)
+	{
+	  itask = 4;
+	  rwork(0) = stop_time;
+	  iopt = 1;
+	}
+      else
+	{
+	  itask = 1;
+	}
 
-  double *xp = x.fortran_vec ();
+      px = x.fortran_vec ();
 
-  // NOTE: this won't work if LSODE passes copies of the state vector.
-  //       In that case we have to create a temporary vector object
-  //       and copy.
+      piwork = iwork.fortran_vec ();
+      prwork = rwork.fortran_vec ();
 
-  tmp_x = &x;
-  user_fun = function ();
-  user_jac = jacobian_function ();
+      restart = false;
 
-  if (! sanity_checked)
-    {
+      // ODEFunc
+
+      // NOTE: this won't work if LSODE passes copies of the state vector.
+      //       In that case we have to create a temporary vector object
+      //       and copy.
+
+      tmp_x = &x;
+
+      user_fun = function ();
+      user_jac = jacobian_function ();
+
       ColumnVector xdot = (*user_fun) (x, t);
 
       if (x.length () != xdot.length ())
@@ -187,70 +183,62 @@ LSODE::do_integrate (double tout)
 	  return retval;
 	}
 
-      sanity_checked = true;
+      ODEFunc::reset = false;
+
+      // LSODE_options
+
+      rel_tol = relative_tolerance ();
+      abs_tol = absolute_tolerance ();
+
+      int abs_tol_len = abs_tol.length ();
+
+      if (abs_tol_len == 1)
+	itol = 1;
+      else if (abs_tol_len == n)
+	itol = 2;
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("lsode: inconsistent sizes for state and absolute tolerance vectors");
+
+	  integration_error = true;
+	  return retval;
+	}
+
+      double iss = initial_step_size ();
+      if (iss >= 0.0)
+	{
+	  rwork(4) = iss;
+	  iopt = 1;
+	}
+
+      double maxss = maximum_step_size ();
+      if (maxss >= 0.0)
+	{
+	  rwork(5) = maxss;
+	  iopt = 1;
+	}
+
+      double minss = minimum_step_size ();
+      if (minss >= 0.0)
+	{
+	  rwork(6) = minss;
+	  iopt = 1;
+	}
+
+      int sl = step_limit ();
+      if (sl > 0)
+	{
+	  iwork(5) = sl;
+	  iopt = 1;
+	}
+
+      pabs_tol = abs_tol.fortran_vec ();
+
+      LSODE_options::reset = false;
     }
 
-  if (stop_time_set)
-    {
-      itask = 4;
-      rwork.elem (0) = stop_time;
-      iopt = 1;
-    }
-  else
-    {
-      itask = 1;
-    }
-
-  double rel_tol = relative_tolerance ();
-
-  const Array<double> abs_tol = absolute_tolerance ();
-
-  int abs_tol_len = abs_tol.length ();
-
-  int itol;
-
-  if (abs_tol_len == 1)
-    itol = 1;
-  else if (abs_tol_len == n)
-    itol = 2;
-  else
-    {
-      (*current_liboctave_error_handler)
-	("lsode: inconsistent sizes for state and absolute tolerance vectors");
-
-      integration_error = true;
-      return retval;
-    }
-
-  if (initial_step_size () >= 0.0)
-    {
-      rwork.elem (4) = initial_step_size ();
-      iopt = 1;
-    }
-
-  if (maximum_step_size () >= 0.0)
-    {
-      rwork.elem (5) = maximum_step_size ();
-      iopt = 1;
-    }
-
-  if (minimum_step_size () >= 0.0)
-    {
-      rwork.elem (6) = minimum_step_size ();
-      iopt = 1;
-    }
-
-  if (step_limit () > 0)
-    {
-      iwork.elem (5) = step_limit ();
-      iopt = 1;
-    }
-
-  const double *pabs_tol = abs_tol.fortran_vec ();
-  int *piwork = iwork.fortran_vec ();
-  double *prwork = rwork.fortran_vec ();
-
-  F77_XFCN (lsode, LSODE, (lsode_f, n, xp, t, tout, itol, rel_tol,
+  F77_XFCN (lsode, LSODE, (lsode_f, nn, px, t, tout, itol, rel_tol,
 			   pabs_tol, itask, istate, iopt, prwork, lrw,
 			   piwork, liw, lsode_j, method_flag));
 
@@ -365,7 +353,9 @@ Matrix
 LSODE::do_integrate (const ColumnVector& tout)
 {
   Matrix retval;
+
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {
@@ -393,7 +383,9 @@ Matrix
 LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   Matrix retval;
+
   int n_out = tout.capacity ();
+  int n = size ();
 
   if (n_out > 0 && n > 0)
     {

@@ -82,9 +82,14 @@ public:
     {
       stop_time_set = true;
       stop_time = t;
+      force_restart ();
     }
 
-  void clear_stop_time (void) { stop_time_set = false; }
+  void clear_stop_time (void)
+    {
+      stop_time_set = false;
+      force_restart ();
+    }
 
   virtual void force_restart (void) { restart = true; }
 

@@ -37,11 +37,10 @@ LSODE : public ODE, public LSODE_options
 {
 public:
 
-  LSODE (void);
+  LSODE (void) : ODE (), LSODE_options (), initialized (false) { }
 
-  LSODE (int n);
-  
-  LSODE (const ColumnVector& state, double time, const ODEFunc& f);
+  LSODE (const ColumnVector& state, double time, const ODEFunc& f)
+    : ODE (state, time, f), LSODE_options (), initialized (false) { }
 
   ~LSODE (void) { }
 
@@ -55,20 +54,27 @@ public:
 
 private:
 
-  int n;
+  bool initialized;
+
   int method_flag;
-  Array<int> iwork;
-  Array<double> rwork;
   int itask;
   int iopt;
+  int itol;
+
   int liw;
   int lrw;
-  bool sanity_checked;
 
-  friend int lsode_f (int *neq, double *t, double *y, double *ydot);
+  Array<int> iwork;
+  Array<double> rwork;
 
-  friend int lsode_j (int *neq, double *t, double *y, int *ml, int *mu,
-		      double *pd, int *nrowpd);
+  double rel_tol;
+
+  Array<double> abs_tol;
+
+  double *px;
+  double *pabs_tol;
+  int *piwork;
+  double *prwork;
 };
 
 #endif

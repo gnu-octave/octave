@@ -1,4 +1,28 @@
+2002-08-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* LSODE.h (rel_tol, abs_tol, px, pabs_tol, piwork, prwork, itol):
+	New data members.
+	(LSODE::sanity_checked): Delete unused data member.
+
+	* DASPKL.h (initialized, abs_tol, rel_tol, px, pxdot, pabs_tol,
+	prel_tol, pinfo, piwork, prwork): New data members.
+	* DASSL.h (DASSL): Likewise.
+
+	* DASRT.h (DASRT::sanity_checked): Delete unused data member.
+
+	* DASRT.cc (DASRT::integrate (double)): Better handling of
+	initialization, changes in options, etc.
+	* DASPK.cc (DASPK::do_integrate): Likewise.
+	* DASSL.cc (DASSL::do_integrate): Likewise.
+	* LSODE.cc (LSODE::do_integrate): Likewise.
+
 2002-08-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DAEFunc.h (DAEFunc::reset): New data member.
+	* DAERTFunc.h (DAERTFunc::reset): Likewise.
+
+	* base-de.h (base_diff_eqn::set_stop_time): Force restart here.
+	(base_diff_eqn::clear_stop_time): Likewise.
 
 	* DASSL.cc (DASSL::do_integrate (double)): Handle more optoins.
 	* DASPK.cc (DASPK::do_integrate (double)): Likewise.

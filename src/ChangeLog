@@ -1,5 +1,11 @@
 2002-08-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (doc-files): Use mv, not move-if-change here.
+
+	* variables.cc (symbol_exist): New function.
+	(Fexist): Use it.  Handle optional type arg.  Make return codes
+	more compatible with Matlab.
+
 	* data.cc (ANY_ALL): New macro.
 	(Fany, Fall): Replace guts with ANY_ALL.
 

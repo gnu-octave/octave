@@ -106,6 +106,10 @@ bind_builtin_variable (const std::string&, const octave_value&,
 		       symbol_record::change_function f = 0,
 		       const std::string& help = std::string ());
 
+extern int
+symbol_exist (const std::string& name,
+	      const std::string& type = std::string ());
+
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;
 

@@ -303,7 +303,7 @@ doc-files: $(DOC_FILES)
 	@echo making $@
 	@echo DOC_FILES = $(DOC_FILES)
 	@echo $(DOC_FILES) > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@mv $@-t $@
 
 gendoc.cc: doc-files mkgendoc
 	@echo making $@

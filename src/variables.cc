@@ -364,37 +364,10 @@ is_global (\"x\")\n\
   return retval;
 }
 
-DEFUN (exist, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} exist (@var{name})\n\
-Return 1 if the name exists as a variable, 2 if the name (after\n\
-appending @samp{.m}) is a function file in the path, 3 if the name is a\n\
-@samp{.oct} file in the path, 5 if the name is a built-in function, or\n\
-6 is the name is a built-in constant.  Otherwise, return 0.\n\
-\n\
-This function also returns 2 if a regular file called @var{name}\n\
-exists in Octave's @code{LOADPATH}.  If you want information about\n\
-other types of files, you should use some combination of the functions\n\
-@code{file_in_path} and @code{stat} instead.\n\
-@end deftypefn")
+int
+symbol_exist (const std::string& name, const std::string& type)
 {
-  octave_value retval = 0.0;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    {
-      print_usage ("exist");
-      return retval;
-    }
-
-  std::string name = args(0).string_value ();
-
-  if (error_state)
-    {
-      error ("exist: expecting std::string argument");
-      return retval;
-    }
+  int retval = 0;
 
   std::string struct_elts;
   std::string symbol_name = name;
@@ -418,54 +391,146 @@ other types of files, you should use some combination of the functions\n\
 
   if (sr && sr->is_defined ())
     {
-      if (sr->is_variable ())
+      if (! retval
+	  && (type == "any" || type == "var")
+	  && sr->is_variable ()
+	  && (struct_elts.empty () || sr->is_map_element (struct_elts)))
 	{
-	  if (struct_elts.empty () || sr->is_map_element (struct_elts))
-	    retval = 1.0;
+	  retval = 1;
 	}
-      else if (sr->is_builtin_function ())
+
+      if (! retval
+	  && (type == "any" || type == "builtin"))
 	{
-	  retval = 5.0;
+	  if (sr->is_builtin_function ())
+	    {
+	      retval = 5;
+	    }
+	  else if (sr->is_builtin_variable ())
+	    {
+	      retval = 101;
+	    }
+	  else if (sr->is_builtin_constant ())
+	    {
+	      retval = 102;
+	    }
 	}
-      else if (sr->is_builtin_constant ())
+
+      if (! retval
+	  && (type == "any" || type == "file")
+	  && (sr->is_user_function () || sr->is_dld_function ()))
 	{
-	  retval = 6.0;
-	}
-      else if (sr->is_user_function ())
-	{
-	  retval = 2.0;
+	  octave_value& t = sr->def ();
+	  octave_function *f = t.function_value (true);
+	  std::string s = f ? f->fcn_file_name () : std::string ();
+
+	  retval = s.empty () ? 103 : 2;
 	}
     }
-  else
-    {
-      std::string path = fcn_file_in_path (name);
 
-      if (path.length () > 0)
+  if (! retval)
+    {
+      std::string file_name = fcn_file_in_path (name);
+
+      if ((type == "any" || type == "file") && ! file_name.empty ())
 	{
-	  retval = 2.0;
+	  retval = 2;
+	}
+    }
+
+  if (! retval)
+    {
+      std::string file_name = oct_file_in_path (name);
+
+      if ((type == "any" || type == "file") && ! file_name.empty ())
+	{
+	  retval = 3;
+	}
+    }
+
+  if (! retval)
+    {
+      std::string file_name = file_in_path (name, "");
+
+      if (file_name.empty ())
+	file_name = name;
+
+      file_stat fs (file_name);
+
+      if (fs)
+	{
+	  if ((type == "any" || type == "file")
+	      && fs.is_reg ())
+	    {
+	      retval = 2;
+	    }
+	  else if ((type == "any" || type == "dir")
+		   && fs.is_dir ())
+	    {
+	      retval = 7;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+DEFUN (exist, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
+Return 1 if the name exists as a variable, 2 if the name (after\n\
+appending @samp{.m}) is a function file in Octave's LOADPATH, 3 if the\n\
+name is a @samp{.oct} file in Octave's LOADPATH, 5 if the name is a\n\
+built-in function, 7 if the name is a directory, 101 if the name is\n\
+a built-in variable, 102 if the name is a built-in constant, or 103\n\
+if the name is a function not associated with a file (entered on\n\
+the command line).\n\
+\n\
+Otherwise, return 0.\n\
+\n\
+This function also returns 2 if a regular file called @var{name}\n\
+exists in Octave's @code{LOADPATH}.  If you want information about\n\
+other types of files, you should use some combination of the functions\n\
+@code{file_in_path} and @code{stat} instead.\n\
+\n\
+If the optional argument @var{type} is supplied, check only for\n\
+symbols of the specified type.  Valid types are\n\
+\n\
+@table @samp\n\
+@item \"var\"\n\
+Check only for variables.\n\
+@item \"builtin\"\n\
+Check only for built-in functions.\n\
+@item \"file\"\n\
+Check only for files.\n\
+@item \"dir\"\n\
+Check only for directories.\n\
+@end table\n\
+@end deftypefn")
+{
+  octave_value retval = 0.0;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  std::string type
+	    = (nargin == 2) ? args(1).string_value () : std::string ("any");
+
+	  if (! error_state)
+	    retval = static_cast<double> (symbol_exist (name, type));
+	  else
+	    error ("exist: expecting second argument to be a string");
 	}
       else
-	{
-	  path = oct_file_in_path (name);
-
-	  if (path.length () > 0)
-	    {
-	      retval = 3.0;
-	    }
-	  else
-	    {
-	      std::string file_name = file_in_path (name, "");
-
-	      if (! file_name.empty ())
-		{
-		  file_stat fs (file_name);
-
-		  if (fs && fs.is_reg ())
-		    retval = 2.0;
-		}
-	    }
-	}
+	error ("exist: expecting first argument to be a string");
     }
+  else
+    print_usage ("exist");
 
   return retval;
 }
@@ -1365,6 +1430,7 @@ DEFUN_TEXT (clear, args, ,
 @deffn {Command} clear [-x] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\
 pattern may contain the following special characters:\n\
+\n\
 @table @code\n\
 @item ?\n\
 Match any single character.\n\

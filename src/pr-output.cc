@@ -1064,7 +1064,6 @@ print_empty_matrix (ostream& os, int nr, int nc, bool pr_as_read_syntax)
       os << "[]";
       if (Vprint_empty_dimensions)
 	os << "(" << nr << "x" << nc << ")";
-      os << "\n";
     }
 }
 
@@ -1087,9 +1086,6 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
 	os << " Columns " << col + 1 << " and " << lim << ":\n";
       else
 	os << " Columns " << col + 1 << " through " << lim << ":\n";
-
-      if (! compact_format)
-	os << "\n";
     }
 }
 
@@ -1111,9 +1107,6 @@ octave_print_internal (ostream& os, double d, bool pr_as_read_syntax)
       else
 	pr_float (os, d);
     }
-
-  if (! pr_as_read_syntax)
-    os << "\n";
 }
 
 void
@@ -1263,9 +1256,6 @@ octave_print_internal (ostream& os, const Complex& c,
       else
 	pr_complex (os, c);
     }
-
-  if (! pr_as_read_syntax)
-    os << "\n";
 }
 
 void
@@ -1542,7 +1532,7 @@ DEFUN (disp, args, ,
   int nargin = args.length ();
 
   if (nargin == 1)
-    args(0).print ();
+    args(0).print (octave_stdout);
   else
     print_usage ("disp");
 

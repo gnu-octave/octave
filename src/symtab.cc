@@ -36,7 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-sym.h"
 #include "oct-fcn.h"
-#include "pt-const.h"
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"

@@ -41,6 +41,7 @@ class ostream;
 #include "str-vec.h"
 
 class Octave_map;
+class octave_stream;
 class octave_value_list;
 
 // Constants.
@@ -83,6 +84,8 @@ public:
     div,
     pow,
     ldiv,
+    lshift,
+    rshift,
     lt,
     le,
     eq,
@@ -107,6 +110,8 @@ public:
     sub_eq,
     mul_eq,
     div_eq,
+    lshift_eq,
+    rshift_eq,
     el_mul_eq,
     el_div_eq,
     el_and_eq,
@@ -142,6 +147,7 @@ public:
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
+  octave_value (octave_stream *s, int n);
   octave_value (const octave_value_list& m);
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);
@@ -355,6 +361,10 @@ public:
 
   virtual Octave_map map_value (void) const;
 
+  virtual octave_stream *stream_value (void) const;
+
+  virtual int stream_number (void) const;
+
   virtual octave_value_list list_value (void) const;
 
   virtual bool bool_value (void) const
@@ -402,15 +412,17 @@ public:
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
 
-  void print (bool pr_as_read_syntax = false);
-
-  virtual void print (ostream& os, bool pr_as_read_syntax = false)
+  virtual void print (ostream& os, bool pr_as_read_syntax = false) const
     { rep->print (os, pr_as_read_syntax); }
 
-  void print_with_name (const string& name, bool print_padding = true);
+  virtual void print_raw (ostream& os, bool pr_as_read_syntax = false) const
+    { rep->print_raw (os, pr_as_read_syntax); }
+
+  virtual bool print_name_tag (ostream& os, const string& name) const
+    { return rep->print_name_tag (os, name); }
 
   void print_with_name (ostream& os, const string& name,
-			bool print_padding = true);
+			bool print_padding = true) const;
 
   virtual int type_id (void) const { return rep->type_id (); }
 
@@ -422,13 +434,27 @@ public:
 				    const octave_value&,
 				    const octave_value&);
 
-  // Can we make these go away?
-
-  bool print_as_scalar (void);
-
 protected:
 
   octave_value (const octave_xvalue&) : rep (0) { }
+
+  void reset_indent_level (void) const
+    { curr_print_indent_level = 0; }
+
+  void increment_indent_level (void) const
+    { curr_print_indent_level += 2; }
+
+  void decrement_indent_level (void) const
+    { curr_print_indent_level -= 2; }
+
+  int current_print_indent_level (void) const
+    { return curr_print_indent_level; }
+
+  void newline (ostream& os) const;
+
+  void indent (ostream& os) const;
+
+  void reset (void) const;
 
 private:
 
@@ -449,6 +475,9 @@ private:
 
   bool try_assignment (assign_op, const octave_value_list& idx,
 		       const octave_value& rhs);
+
+  static int curr_print_indent_level;
+  static bool beginning_of_line;
 };
 
 // If TRUE, allow assignments like

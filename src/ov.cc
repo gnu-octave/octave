@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-str-mat.h"
 #include "ov-range.h"
 #include "ov-struct.h"
+#include "ov-file.h"
 #include "ov-list.h"
 #include "ov-colon.h"
 #include "ov-va-args.h"
@@ -110,37 +111,6 @@ int Vstruct_levels_to_print;
 // Allow divide by zero errors to be suppressed.
 bool Vwarn_divide_by_zero;
 
-// Indentation level for structures.
-int struct_indent = 0;
-
-// XXX FIXME XXX
-void
-increment_struct_indent (void)
-{
-  struct_indent += 2;
-}
-
-void
-decrement_struct_indent (void)
-{
-  struct_indent -= 2;
-}
-
-// Indentation level for lists.
-int list_indent = 0;
-
-void
-increment_list_indent (void)
-{
-  list_indent += 2;
-}
-
-void
-decrement_list_indent (void)
-{
-  list_indent -= 2;
-}
-
 // XXX FIXME XXX
 
 // Octave's value type.
@@ -174,6 +144,14 @@ octave_value::binary_op_as_string (binary_op op)
 
     case ldiv:
       retval = "\\";
+      break;
+
+    case lshift:
+      retval = "<<";
+      break;
+
+    case rshift:
+      retval = ">>";
       break;
 
     case lt:
@@ -260,6 +238,14 @@ octave_value::assign_op_as_string (assign_op op)
 
     case div_eq:
       retval = "/=";
+      break;
+
+    case lshift_eq:
+      retval = "<<=";
+      break;
+
+    case rshift_eq:
+      retval = ">>=";
       break;
 
     case el_mul_eq:
@@ -426,6 +412,12 @@ octave_value::octave_value (const Octave_map& m)
   rep->count = 1;
 }
 
+octave_value::octave_value (octave_stream *s, int n)
+  : rep (new octave_file (s, n))
+{
+  rep->count = 1;
+}
+
 octave_value::octave_value (const octave_value_list& l)
   : rep (new octave_list (l))
 {
@@ -488,7 +480,7 @@ octave_value::maybe_mutate (void)
 static void
 gripe_no_conversion (const string& tn1, const string& tn2)
 {
-  error ("no suitable conversion found for assignment of %s to indexed %s",
+  error ("no suitable conversion found for assignment of `%s' to indexed `%s'",
 	 tn2.c_str (), tn1.c_str ());
 }
 
@@ -533,6 +525,18 @@ Octave_map
 octave_value::map_value (void) const
 {
   return rep->map_value ();
+}
+
+octave_stream *
+octave_value::stream_value (void) const
+{
+  return rep->stream_value ();
+}
+
+int
+octave_value::stream_number (void) const
+{
+  return rep->stream_number ();
 }
 
 octave_value_list
@@ -630,70 +634,28 @@ octave_value::complex_vector_value (bool force_string_conv,
 }
 
 void
-octave_value::print (bool pr_as_read_syntax)
-{
-  print (octave_stdout, pr_as_read_syntax);
-}
-
-void
-octave_value::print_with_name (const string& name, bool print_padding)
-{
-  print_with_name (octave_stdout, name, print_padding);
-}
-
-void
 octave_value::print_with_name (ostream& output_buf, const string& name,
-			       bool print_padding) 
+			       bool print_padding) const
 {
-  bool pad_after = false;
-
-  if (Vprint_answer_id_name)
-    {
-      if (print_as_scalar ())
-	output_buf << name << " = ";
-      else if (is_map ())
-	{
-	  pad_after = true;
-	  output_buf << name << " =";
-	}
-      else
-	{
-	  pad_after = true;
-	  output_buf << name << " =\n\n";
-	}
-    }
+  bool pad_after = print_name_tag (output_buf, name);
 
   print (output_buf);
 
   if (print_padding && pad_after)
-    output_buf << "\n";
-}
-
-bool
-octave_value::print_as_scalar (void)
-{
-  int nr = rows ();
-  int nc = columns ();
-
-  return (is_scalar_type ()
-	  || (is_string () && nr <= 1)
-	  || (is_matrix_type ()
-	      && ((nr == 1 && nc == 1)
-		  || nr == 0
-		  || nc == 0)));
+    newline (output_buf);
 }
 
 static void
 gripe_indexed_assignment (const string& tn1, const string& tn2)
 {
-  error ("assignment of %s to indexed %s not implemented",
+  error ("assignment of `%s' to indexed `%s' not implemented",
 	 tn2.c_str (), tn1.c_str ());
 }
 
 static void
 gripe_conversion_failed (const string& tn1, const string& tn2)
 {
-  error ("type conversion for assignment of %s to indexed %s failed",
+  error ("type conversion for assignment of `%s' to indexed `%s' failed",
 	 tn2.c_str (), tn1.c_str ());
 }
 
@@ -826,7 +788,7 @@ octave_value::try_assignment (octave_value::assign_op op,
 static void
 gripe_binary_op (const string& on, const string& tn1, const string& tn2)
 {
-  error ("binary operator %s not implemented for %s by %s operations",
+  error ("binary operator `%s' not implemented for `%s' by `%s' operations",
 	 on.c_str (), tn1.c_str (), tn2.c_str ());
 }
 
@@ -886,6 +848,52 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
   return retval;
 }
 
+// Current indentation.
+int octave_value::curr_print_indent_level = 0;
+
+// Nonzero means we are at the beginning of a line.
+bool octave_value::beginning_of_line = true;
+
+// Each print() function should call this before printing anything.
+//
+// This doesn't need to be fast, but isn't there a better way?
+
+void
+octave_value::indent (ostream& os) const
+{
+  assert (curr_print_indent_level >= 0);
+ 
+  if (beginning_of_line)
+    {
+      // XXX FIXME XXX -- do we need this?
+      // os << prefix;
+
+      for (int i = 0; i < curr_print_indent_level; i++)
+	os << " ";
+
+      beginning_of_line = false;
+    }
+}
+
+// All print() functions should use this to print new lines.
+
+void
+octave_value::newline (ostream& os) const
+{
+  os << "\n";
+
+  beginning_of_line = true;
+}
+
+// For ressetting print state.
+
+void
+octave_value::reset (void) const
+{
+  beginning_of_line = true;
+  curr_print_indent_level = 0;
+}
+
 void
 install_types (void)
 {
@@ -900,6 +908,7 @@ install_types (void)
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
   octave_struct::register_type ();
+  octave_file::register_type ();
   octave_list::register_type ();
   octave_all_va_args::register_type ();
   octave_magic_colon::register_type ();

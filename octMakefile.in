@@ -198,6 +198,7 @@ doc-dist:
 dist-z:
 	echo octave-$(version).tar > .fname
 	gzip --best `cat .fname`
+	rm -f .fname
 .PHONY: dist-z
 
 split-dist:
@@ -212,7 +213,7 @@ split-local-dist:
 	rm -f .fname
 .PHONY: split-local-dist
 
-snapshot: snapshot-version dist
+snapshot: snapshot-version dist dist-z
 .PHONY: snapshot
 
 snapshot-version:

@@ -44,6 +44,8 @@ function [y, w] = filter(b,a,x,w)
 #  amr@mpl.ucsd.edu
 #  June 1994
 
+# Bug fix by FL (Friedrich.Leisch@ci.tuwien.ac.at) on Oct 12, 1994
+
   if(nargin < 3 || nargin > 4)
     error("usage: [y, sf] = filter(b,a,x[,si])");
   endif
@@ -59,12 +61,15 @@ function [y, w] = filter(b,a,x,w)
   MN = max([N M]);
   lw = MN - 1;
 
+  # It's convenient to pad the coefficient vectors to the same length.
+  b = postpad(b,MN);
+
   # Ensure that all vectors have the assumed dimension.
   if(columns(a) > 1)
     a = reshape(a,N,1);
   endif
   if(columns(b) > 1)
-    b = reshape(b,M,1);
+    b = reshape(b,MN,1);
   endif
 
   if(nargin == 3)
@@ -81,9 +86,6 @@ function [y, w] = filter(b,a,x,w)
 
   # Allocate space for result.
   y = zeros(1,L);
-
-  # It's convenient to pad the coefficient vectors to the same length.
-  b = postpad(b,MN);
 
   norm = a(1);
   if (norm == 0.)

@@ -94,10 +94,10 @@ public:
     { return ArrayN<octave_value>::reshape (new_dims); }
 
   // XXX FIXME XXX
-  boolMatrix all (int dim = 0) const { return boolMatrix (); }
+  boolMatrix all (int /* dim */ = 0) const { return boolMatrix (); }
 
   // XXX FIXME XXX
-  boolMatrix any (int dim = 0) const { return boolMatrix (); }
+  boolMatrix any (int /* dim */ = 0) const { return boolMatrix (); }
 
   friend Cell concat (const Cell& ra, const Cell& rb, const Array<int>& ra_idx);
 

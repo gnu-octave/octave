@@ -1,3 +1,9 @@
+2004-08-05  John W. Eaton  <jwe@octave.org>
+
+	* intNDArray.cc (intNDArray<T>::operator !, intNDArray<T>::all,
+	intNDArray<T>::any): Sprinkle with this-> as needed.
+	* mx-inlines.cc (MX_ND_REDUCTION, MX_ND_CUMULATIVE_OP): Likewise.
+
 2004-08-03  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::squeeze): Do nothing for 2-d arrays.  For

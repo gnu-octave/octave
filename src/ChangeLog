@@ -1,5 +1,26 @@
 2004-08-05  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-int.cc (octave_base_int_matrix<T>::save_ascii,
+	octave_base_int_matrix<T>::load_ascii,
+	octave_base_int_matrix<T>::save_binary,
+	octave_base_int_matrix<T>::load_binary,
+	octave_base_int_matrix<T>::save_hdf5,
+	octave_base_int_matrix<T>::load_hdf5,
+	octave_base_int_matrix<T>::try_narrowing_conversion,
+	octave_base_int_scalar<T>::print_raw,
+	octave_base_int_scalar<T>::save_ascii,
+	octave_base_int_scalar<T>::load_ascii,
+	octave_base_int_scalar<T>::save_binary,
+	octave_base_int_scalar<T>::load_binary,
+	octave_base_int_scalar<T>::save_hdf5,
+	octave_base_int_scalar<T>::load_hdf5):
+	Sprinkle with this-> as needed.
+
+	* Makefile.in (EXTRAS): New macro.  Move ov-base-int.cc here from
+	OV_INTTYPE_SRC.
+	(INCLUDES_FOR_INSTALL): New macro.
+	(install-inc, uninstall): Use it instead of INCLUDES.
+
 	* variables.h (symbol_exist): Default for type is now "any".
 
 2004-08-05  David Bateman  <dbateman@free.fr>

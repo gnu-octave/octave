@@ -39,10 +39,10 @@ template <class T>
 boolNDArray
 intNDArray<T>::operator ! (void) const
 {
-  boolNDArray b (dims ());
+  boolNDArray b (this->dims ());
 
-  for (int i = 0; i < length (); i++)
-    b.elem (i) = ! elem (i);
+  for (int i = 0; i < this->length (); i++)
+    b.elem (i) = ! this->elem (i);
 
   return b;
 }
@@ -53,14 +53,14 @@ template <class T>
 boolNDArray
 intNDArray<T>::all (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (elem (iter_idx) == T (0)), true);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (this->elem (iter_idx) == T (0)), true);
 }
 
 template <class T>
 boolNDArray
 intNDArray<T>::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (elem (iter_idx) == T (0)), false);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (this->elem (iter_idx) == T (0)), false);
 }
 
 template <class T>

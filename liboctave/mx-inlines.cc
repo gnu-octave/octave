@@ -383,7 +383,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   RET_TYPE retval; \
  \
-  dim_vector dv = dims (); \
+  dim_vector dv = this->dims (); \
  \
   int empty = true; \
  \
@@ -454,7 +454,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
     dv(dim) = 1; \
  \
   /* This finds the number of elements in retval */ \
-  int num_iter = (numel () / dim_length); \
+  int num_iter = (this->numel () / dim_length); \
  \
   /* Make sure retval has correct dimensions */ \
   retval.resize (dv, RET_ELT_TYPE ()); \
@@ -501,7 +501,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 #define MX_ND_CUMULATIVE_OP(RET_TYPE, ACC_TYPE, VAL, OP) \
   RET_TYPE retval; \
  \
-  dim_vector dv = dims (); \
+  dim_vector dv = this->dims (); \
  \
   int empty = true; \
  \
@@ -574,7 +574,7 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   dv (dim) = 1; \
  \
   /* This finds the number of elements in retval */ \
-  int num_iter = (numel () / dim_length); \
+  int num_iter = (this->numel () / dim_length); \
  \
   Array<int> iter_idx (dv.length (), 0); \
  \

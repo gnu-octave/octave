@@ -108,7 +108,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 NOT	((\~)|(\!))
 /* NOT is not strictly a binary operator, but is close enough for us. */
 BINOP   (({NOT})|(\.?([\*/\\^+-]|\*\*)=?)|([<=~!>&|]=)|([=&|<>]{1,2})|(<<=)|(>>=)|(\.))
-UNOP    ((\+\+)|(\-\-)|(\.'))   /* ' */
+/* single quote (') transpose operator is handled separately. */
+UNOP    ((\+\+)|(\-\-)|(\.'))
 
 %%
 

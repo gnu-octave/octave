@@ -66,16 +66,21 @@ of Octave or helped out in various other ways.
 
 @itemize @bullet
 @item
+Andy Adler @email{adler@@site.uottawa.ca} wrote the initial implementation of
+the sparse matrix data type.
+
+@item
 Thomas Baier @email{baier@@ci.tuwien.ac.at} wrote the original versions
 of @code{popen}, @code{pclose}, @code{execute}, @code{sync_system}, and
 @code{async_system}.
 
 @item
-David Bateman @email{dbateman@@free.fr} improved the sort and min/max
-functions, made many functions N-d aware, converted several built-in
-functions to use Lapack instead of Linpack, split the functionality of
-@file{load-save.cc} out into the @code{octave_value} classes, and has
-contributed in many other ways.
+David Bateman @email{dbateman@@free.fr} improved the @code{sort} and
+@code{min}/@code{max} functions, made many functions N-d aware,
+converted several built-in functions to use Lapack instead of Linpack,
+split the functionality of @file{load-save.cc} out into the
+@code{octave_value} classes, provided much of the code for the sparse
+matrix data type, and has contributed in many other ways.
 
 @item
 Karl Berry @email{karl@@cs.umb.edu} wrote the @code{kpathsea} library
@@ -122,6 +127,11 @@ documentation for these and numerous other functions, rewrote the Emacs
 mode for editing Octave code and provided its documentation, and has
 helped tremendously with testing.  He has also been a constant source of
 new ideas for improving Octave.
+
+@item
+Teemu Ikonen @email{tpikonen@@pcu.helsinki.fi} contributed changes to
+separate the @code{gnuplot} command parser from the main Octave language
+parser.
 
 @item
 Cai Jianming @email{caijianming@@yahoo.co.uk} contributed the inital

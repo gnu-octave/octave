@@ -55,45 +55,35 @@ $(CRUFT_OBJ):
 check: all
 .PHONY: check
 
-install:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+install uninstall clean mostlyclean distclean realclean::
+	$(SUBDIR_FOR_COMMAND)
+
+install::
 	$(top_srcdir)/mkinstalldirs $(libdir)
 	rm -f $(libdir)/libcruft.a
 	$(INSTALL_DATA) libcruft.a $(libdir)/libcruft.a
 	$(RANLIB) $(libdir)/libcruft.a
-.PHONY: install
 
-uninstall:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+uninstall::
 	rm -f $(libdir)/libcruft.a
-.PHONY: uninstall
 
-tags: $(SOURCES)
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+tags TAGS:: $(SOURCES)
+	$(SUBDIR_FOR_COMMAND)
+
+tags::
 	ctags $(SOURCES)
 
-TAGS: $(SOURCES)
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-clean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+clean mostlyclean::
 	rm -f *.a *.o
-.PHONY: clean
 
-mostlyclean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	rm -f *.a *.o
-.PHONY: mostlyclean
-
-distclean:
+distclean::
 	rm -f *.a *.o Makefile
-.PHONY: distclean
 
-realclean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+realclean::
 	rm -f *.a *.o tags TAGS Makefile
-.PHONY: realclean
 
 local-dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done

@@ -31,7 +31,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 char **
 Octave_map::make_name_list (void)
 {
-  char **names = new char * [length () + 1];
+  int len = length ();
+
+  char **names = new char * [len + 1];
 
   int i = 0;
   for (Pix p = first (); p != 0; next (p))

@@ -32,14 +32,92 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "data-conv.h"
 #include "lo-error.h"
 
+#define CHECK_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
+  do \
+    { \
+      int sz = BITS / CHAR_BIT; \
+      if (sizeof (TQ char) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## char; \
+      else if (sizeof (TQ short) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## short; \
+      else if (sizeof (TQ int) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## int; \
+      else if (sizeof (TQ long) == sz) \
+	VAL = oct_data_conv::dt_ ## Q ## long; \
+      else \
+        VAL = oct_data_conv::dt_unknown; \
+    } \
+  while (0)
+
+#define CHECK_SIZED_FLOAT_TYPE(VAL, BITS) \
+  do \
+    { \
+      int sz = BITS / CHAR_BIT; \
+      if (sizeof (float) == sz) \
+	VAL = oct_data_conv::dt_float; \
+      else if (sizeof (double) == sz) \
+	VAL = oct_data_conv::dt_double; \
+      else \
+        VAL = oct_data_conv::dt_unknown; \
+    } \
+  while (0)
+
+// I'm not sure it is worth the trouble, but let's use a lookup table
+// for the types that are supposed to be a specific number of bits
+// wide.  Given the macros above, this should work as long as CHAR_BIT
+// is a multiple of 8 and there are types with the right sizes.
+//
+// The sized data type lookup table has the following format:
+//
+//                            bits
+//                    +----+----+----+----+
+//                    |  8 | 16 | 32 | 64 |
+//                    +----+----+----+----+
+//     signed integer |    |    |    |    |
+//                    +----+----+----+----+
+//   unsigned integer |    |    |    |    |
+//                    +----+----+----+----+
+//     floating point |    |    |    |    |
+//                    +----+----+----+----+
+//
+// So, the 0,3 element is supposed to contain the oct_data_conv enum
+// value corresponding to the correct native data type for a signed
+// 32-bit integer.
+
+static void
+init_sized_type_lookup_table (oct_data_conv::data_type table[3][4])
+{
+  int bits = 8;
+
+  for (int i = 0; i < 4; i++)
+    {
+      CHECK_SIZED_INT_TYPE (table[0][i], bits, , );
+
+      CHECK_SIZED_INT_TYPE (table[1][i], bits, unsigned, u);
+
+      CHECK_SIZED_FLOAT_TYPE (table[2][i], bits);
+
+      bits *= 2;
+    }
+}
+
 oct_data_conv::data_type
 oct_data_conv::string_to_data_type (const string& str)
 {
   data_type retval = dt_unknown;
 
-    // XXX FIXME XXX -- finish implementing this.
+  static bool initialized = false;
 
-  // XXX FIXME XXX -- before checking s, need to strip spaces and downcase.
+  static data_type sized_type_table[3][4];
+
+  if (! initialized)
+    {
+      init_sized_type_lookup_table (sized_type_table);
+
+      initialized = true;
+    }
+
+  // XXX FIXME XXX -- finish implementing this.
 
   int n = str.length ();
 
@@ -53,7 +131,7 @@ oct_data_conv::string_to_data_type (const string& str)
 
   s.resize (k);
 
-  if (s == "char" || s == "char*1" || s == "integer*1" || s == "int8")
+  if (s == "char")
     retval = dt_char;
   else if (s == "schar" || s == "signedchar")
     retval = dt_schar;
@@ -71,52 +149,36 @@ oct_data_conv::string_to_data_type (const string& str)
     retval = dt_long;
   else if (s == "ulong" || s == "unsignedlong")
     retval = dt_ulong;
-  else if (s == "float" || s == "float32" || s == "real*4")
+  else if (s == "float")
     retval = dt_float;
-  else if (s == "double" || s == "float64" || s == "real*8")
+  else if (s == "double")
     retval = dt_double;
+  else if (s == "int8" || s == "char*1" || s == "integer*1")
+    retval = sized_type_table[0][0];
   else if (s == "int16" || s == "integer*2")
-    {
-      if (sizeof (short) == 2)
-	retval = dt_short;
-      else if (sizeof (int) == 2)
-	retval = dt_int;
-      else
-	(*current_liboctave_error_handler)
-	  ("unable to find matching native data type for %s", s.c_str ());
-    }
+    retval = sized_type_table[0][1];
   else if (s == "int32" || s == "integer*4")
-    {
-      if (sizeof (int) == 4)
-	retval = dt_int;
-      else if (sizeof (long) == 4)
-	retval = dt_long;
-      else
-	(*current_liboctave_error_handler)
-	  ("unable to find matching native data type for %s", s.c_str ());
-    }
+    retval = sized_type_table[0][2];
+  else if (s == "int64" || s == "integer*8")
+    retval = sized_type_table[0][3];
+  else if (s == "uint8")
+    retval = sized_type_table[1][0];
   else if (s == "uint16")
-    {
-      if (sizeof (unsigned short) == 2)
-        retval = dt_ushort;
-      else if (sizeof (unsigned int) == 2)
-        retval = dt_uint;
-      else
-       (*current_liboctave_error_handler)
-         ("unable to find matching native data type for %s", s.c_str ());
-    }
+    retval = sized_type_table[1][1];
   else if (s == "uint32")
-    {
-      if (sizeof (unsigned int) == 4)
-        retval = dt_uint;
-      else if (sizeof (unsigned long) == 4)
-        retval = dt_ulong;
-      else
-       (*current_liboctave_error_handler)
-         ("unable to find matching native data type for %s", s.c_str ());
-    }
+    retval = sized_type_table[1][2];
+  else if (s == "uint64")
+    retval = sized_type_table[1][3];
+  else if (s == "float32" || s == "real*4")
+    retval = sized_type_table[2][2];
+  else if (s == "float64" || s == "real*8")
+    retval = sized_type_table[2][3];
   else
     (*current_liboctave_error_handler) ("invalid data type specified");
+
+  if (retval == dt_unknown)
+    (*current_liboctave_error_handler)
+      ("unable to find matching native data type for %s", s.c_str ());
 
   return retval;
 }

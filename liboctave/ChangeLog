@@ -1,3 +1,8 @@
+1999-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data-conv.cc (init_sized_type_lookup_table): New function.
+	(string_to_data_type): Use it to improve lookup of data types.
+
 1999-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (is_symmetric): Move here from Array2.cc.

@@ -1,5 +1,12 @@
 2003-01-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-arg-list.cc (tree_argument_list::append): New function.
+	(tree_argument_list::convert_to_const_vector): Don't save and
+	set pointer to indexed object if list_includes_magic_end is false.
+	* pt-arg-list.h (tree_argument_list::append): Provide decl.
+	(tree_argument_list::list_includes_magic_end): New data member.
+	(tree_argument_list::tree_argument_list): Initialize it.
+
 	* ov-base.cc (octave_base_value::char_matrix_value,
 	octave_base_value::all_strings,	octave_base_value::string_value):
 	Attempt conversions here if Vimplicit_num_to_num_ok is true.

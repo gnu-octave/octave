@@ -45,9 +45,13 @@ tree_argument_list : public octave_base_list<tree_expression *>
 {
 public:
 
-  tree_argument_list (void) { }
+  typedef tree_expression* element_type;
 
-  tree_argument_list (tree_expression *t) { append (t); }
+  tree_argument_list (void)
+    : list_includes_magic_end (false) { }
+
+  tree_argument_list (tree_expression *t)
+    : list_includes_magic_end (false) { append (t); }
 
   ~tree_argument_list (void);
 
@@ -58,6 +62,8 @@ public:
       erase (p);
       return retval;
     }
+
+  void append (const element_type& s);
 
   int nargout_count (void) const;
 
@@ -70,6 +76,8 @@ public:
   void accept (tree_walker& tw);
 
 private:
+
+  bool list_includes_magic_end;
 
   // No copying!
 

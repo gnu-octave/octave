@@ -57,6 +57,15 @@ tree_argument_list::~tree_argument_list (void)
     }
 }
 
+void
+tree_argument_list::append (const element_type& s)
+{
+  octave_base_list<tree_expression *>::append (s);
+
+  if (s && s->is_identifier () && s->name () == "__end__")
+    list_includes_magic_end = true;
+}
+
 int
 tree_argument_list::nargout_count (void) const
 {
@@ -154,7 +163,8 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
   // END doesn't make sense for functions.  Maybe we need a different
   // way of asking an octave_value object this question?
 
-  bool stash_object = (object && object->is_constant ());
+  bool stash_object = (list_includes_magic_end
+		       && object && object->is_constant ());
 
   if (stash_object)
     {

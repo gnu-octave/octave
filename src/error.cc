@@ -113,7 +113,6 @@ panic (const char *fmt, ...)
   verror ("panic", fmt, args);
   va_end (args);
   abort ();
-  exit (1);
 }
 
 /*

@@ -1,3 +1,8 @@
+2003-08-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (octave_vsnprintf): Copy va_list to avoid using more
+	than once.
+
 2003-08-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (octave_vsnprintf): Call octave_raw_vsnprintf instead

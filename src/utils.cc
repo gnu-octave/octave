@@ -950,6 +950,14 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   octave_throw_interrupt_exception (); \
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
 
+#if defined __GNUC__ && defined __va_copy
+#define SAVE_ARGS(saved_args, args) __va_copy (saved_args, args)
+#elif defined va_copy
+#define SAVE_ARGS(saved_args, args) va_copy (saved_args, args)
+#else
+#define SAVE_ARGS(saved_args, args) saved_args = args
+#endif
+
 char *
 octave_vsnprintf (const char *fmt, va_list args)
 {
@@ -973,6 +981,13 @@ octave_vsnprintf (const char *fmt, va_list args)
 
 #if defined (HAVE_C99_VSNPRINTF)
 
+  // Note that the caller is responsible for calling va_end on args.
+  // We will do it for saved_args.
+
+  va_list saved_args;
+
+  SAVE_ARGS (saved_args, args);
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
 
   nchars = octave_raw_vsnprintf (buf, size, fmt, args);
@@ -991,19 +1006,27 @@ octave_vsnprintf (const char *fmt, va_list args)
 	{
 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
 
-	  octave_raw_vsnprintf (buf, size, fmt, args);
+	  octave_raw_vsnprintf (buf, size, fmt, saved_args);
 
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}
     }
 
+  va_end (saved_args);
+
 #else
 
   while (1)
     {
+      va_list saved_args;
+
+      SAVE_ARGS (saved_args, args);
+
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
 
-      nchars = octave_raw_vsnprintf (buf, size, fmt, args);
+      nchars = octave_raw_vsnprintf (buf, size, fmt, saved_args);
+
+      va_end (saved_args);
 
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 

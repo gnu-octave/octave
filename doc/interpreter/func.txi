@@ -220,12 +220,7 @@ use a variable that has not been given a value will result in an error.
 To avoid such problems and to provide useful messages, we check for both
 possibilities and issue our own error message.
 
-@defvr {Automatic Variable} nargin
-When a function is called, this local variable is automatically
-initialized to the number of arguments passed to the function.  At the
-top level, @code{nargin} holds the number of command line arguments that
-were passed to Octave.
-@end defvr
+@DOCSTRING(nargin)
 
 @DOCSTRING(silent_functions)
 
@@ -320,29 +315,7 @@ c = 2
 along with a warning if the value of the built-in variable
 @code{warn_undefined_return_values} is nonzero.
 
-@defvr {Automatic Variable} nargout
-When a function is called, this local variable is automatically
-initialized to the number of arguments expected to be returned.  For
-example, 
-
-@example
-f ()
-@end example
-
-@noindent
-will result in @code{nargout} being set to 0 inside the function
-@code{f} and
-
-@example
-[s, t] = f ()
-@end example
-
-@noindent
-will result in @code{nargout} being set to 2 inside the function
-@code{f}.
-
-At the top level, @code{nargout} is undefined.
-@end defvr
+@DOCSTRING(nargout)
 
 @DOCSTRING(warn_undefined_return_values)
 

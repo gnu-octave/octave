@@ -561,8 +561,8 @@ octave_user_function::install_automatic_vars (void)
   if (sym_tab)
     {
       argn_sr = sym_tab->lookup ("argn", true);
-      nargin_sr = sym_tab->lookup ("nargin", true);
-      nargout_sr = sym_tab->lookup ("nargout", true);
+      nargin_sr = sym_tab->lookup ("__nargin__", true);
+      nargout_sr = sym_tab->lookup ("__nargout__", true);
 
       if (takes_varargs ())
 	varargin_sr = sym_tab->lookup ("varargin", true);
@@ -591,6 +591,133 @@ octave_user_function::bind_automatic_vars
 
       varargin_sr->define (varargin);
     }
+}
+
+DEFUN (nargin, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} nargin ()\n\
+@deftypefnx {Built-in Function} {} nargin (@var{fcn_name})\n\
+Within a function, return the number of arguments passed to the function.\n\
+At the top level, return the number of command line arguments passed to\n\
+Octave.  If called with the optional argument @var{fcn_name}, return the\n\
+maximum number of arguments the named function can accept, or -1 if the\n\
+function accepts a variable number of arguments.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string fname = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  octave_user_function *fcn = lookup_user_function (fname);
+
+	  if (fcn)
+	    {
+	      if (fcn->takes_varargs ())
+		retval = -1;
+	      else
+		{
+		  tree_parameter_list *param_list = fcn->parameter_list ();
+
+		  retval = param_list ? param_list->length () : 0;
+		}
+	    }
+	  else
+	    error ("nargin: invalid function");
+	}
+      else
+	error ("nargin: expecting string as first argument");
+    }
+  else if (nargin == 0)
+    {
+      symbol_record *sr = curr_sym_tab->lookup ("__nargin__");
+
+      retval = sr ? sr->def () : 0;
+    }
+  else
+    print_usage ("nargin");
+
+  return retval;
+}
+
+DEFUN (nargout, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} nargout ()\n\
+@deftypefnx {Built-in Function} {} nargout (@var{fcn_name})\n\
+Within a function, return the number of values the caller expects to\n\
+receive.  If called with the optional argument @var{fcn_name}, return the\n\
+maximum number of values the named function can produce, or -1 if the\n\
+function can produce a variable number of values.\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+f ()\n\
+@end example\n\
+\n\
+@noindent\n\
+will cause @code{nargout} to return 0 inside the function code{f} and\n\
+\n\
+@example\n\
+[s, t] = f ()\n\
+@end example\n\
+\n\
+@noindent\n\
+will cause @code{nargout} to return 2 inside the function\n\
+@code{f}.\n\
+\n\
+At the top level, @code{nargout} is undefined.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string fname = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  octave_user_function *fcn = lookup_user_function (fname);
+
+	  if (fcn)
+	    {
+	      if (fcn->takes_var_return ())
+		retval = -1;
+	      else
+		{
+		  tree_parameter_list *ret_list = fcn->return_list ();
+
+		  retval = ret_list ? ret_list->length () : 0;
+		}
+	    }
+	  else
+	    error ("nargout: invalid function");
+	}
+      else
+	error ("nargout: expecting string as first argument");
+    }
+  else if (nargin == 0)
+    {
+      if (! at_top_level ())
+	{
+	  symbol_record *sr = curr_sym_tab->lookup ("__nargout__");
+
+	  retval = sr ? sr->def () : 0;
+	}
+      else
+	error ("nargout: invalid call at top level");
+    }
+  else
+    print_usage ("nargout");
+
+  return retval;
 }
 
 DEFUNX ("va_arg", Fva_arg, args, ,

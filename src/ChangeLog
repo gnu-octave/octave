@@ -1,5 +1,25 @@
 2004-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (is_valid_function): If warn, also print error
+	message if arg is not a string.
+
+	* ov-usr-fcn.cc (Fnargin, Fnargout): New functions.
+
+	* octave.cc (intern_argv): Lookup __nargin__ instead of nargin.
+	* ov-usr-fcn.cc (octave_user_function::install_automatic_vars):
+	Lookup __nargin__ and __nargout__ instead of nargin and nargout.
+
+	* variables.h (at_top_level): Now extern.
+	(lookup_user_function): New function.
+	* variables.cc: Provide decls.
+
+	* ov.h, ov.cc (octave_value::user_function_value):
+	New virtual function.
+	* ov-base.h, ov-base.cc (octave_base_value::user_function_value):
+	Provide default version.
+	* ov-usr-fcn.h (octave_user_function::user_function_value):
+	New function.
+
 	* ov-re-mat.cc (complex_array_value): New function.
 	* ov-re-mat.h: Provide decl.
 

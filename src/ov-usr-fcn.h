@@ -63,6 +63,8 @@ public:
 
   octave_function *function_value (bool = false) { return this; }
 
+  octave_user_function *user_function_value (bool = false) { return this; }
+
   octave_user_function *define_param_list (tree_parameter_list *t);
 
   octave_user_function *define_ret_list (tree_parameter_list *t);

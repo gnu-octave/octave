@@ -51,6 +51,7 @@ class Octave_map;
 class octave_stream;
 class octave_streamoff;
 class octave_function;
+class octave_user_function;
 class octave_fcn_handle;
 class octave_value_list;
 class octave_lvalue;
@@ -561,6 +562,8 @@ public:
   virtual streamoff_array streamoff_array_value (void) const;
 
   virtual octave_function *function_value (bool silent = false);
+
+  virtual octave_user_function *user_function_value (bool silent = false);
 
   virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
 

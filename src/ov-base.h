@@ -234,6 +234,8 @@ public:
 
   octave_function *function_value (bool silent = false);
 
+  octave_user_function *user_function_value (bool silent = false);
+
   octave_fcn_handle *fcn_handle_value (bool silent = false);
 
   octave_value_list list_value (void) const;

@@ -164,7 +164,7 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  bind_builtin_variable ("nargin", argc-1, true, true, 0);
+  bind_builtin_variable ("__nargin__", argc-1, true, true, 0);
 
   Cell args;
 

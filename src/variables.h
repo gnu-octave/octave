@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_variables_h 1
 
 class octave_function;
+class octave_user_function;
 class symbol_record;
 class symbol_table;
 
@@ -39,6 +40,8 @@ class string_vector;
 #include "ov.h"
 #include "ov-builtin.h"
 #include "symtab.h"
+
+extern bool at_top_level (void);
 
 extern void initialize_symbol_tables (void);
 
@@ -82,6 +85,9 @@ lookup_by_name (const std::string& nm, bool exec_script = true);
 
 extern octave_function *
 lookup_function (const std::string& nm);
+
+extern octave_user_function *
+lookup_user_function (const std::string& nm);
 
 extern octave_value get_global_value (const std::string& nm);
 

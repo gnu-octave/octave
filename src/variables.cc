@@ -76,7 +76,7 @@ symbol_table *global_sym_tab = 0;
 // Symbol table for functions and built-in symbols.
 symbol_table *fbi_sym_tab = 0;
 
-static inline bool
+bool
 at_top_level (void)
 {
   return (curr_sym_tab == top_level_sym_tab);
@@ -299,10 +299,14 @@ is_valid_function (const octave_value& arg,
   std::string fcn_name;
 
   if (arg.is_string ())
-    fcn_name = arg.string_value ();
+    {
+      fcn_name = arg.string_value ();
 
-  if (! error_state)
-    ans = is_valid_function (fcn_name, warn_for, warn);
+      if (! error_state)
+	ans = is_valid_function (fcn_name, warn_for, warn);
+      else if (warn)
+	error ("%s: expecting function name as argument", warn_for.c_str ());
+    }
   else if (warn)
     error ("%s: expecting function name as argument", warn_for.c_str ());
 
@@ -835,6 +839,38 @@ lookup_function (const std::string& nm)
 
       if (v.is_function ())
 	retval = v.function_value ();
+    }
+
+  return retval;
+}
+
+octave_user_function *
+lookup_user_function (const std::string& nm)
+{
+  octave_user_function *retval = 0;
+
+  symbol_record *sr = 0;
+
+  if (curr_parent_function)
+    {
+      std::string parent = curr_parent_function->function_name ();
+
+      sr = fbi_sym_tab->lookup (parent + ":" + nm);
+    }
+
+  if (! sr || ! sr->is_user_function ())
+    {
+      sr = fbi_sym_tab->lookup (nm, true);
+
+      if (sr && ! sr->is_user_function ())
+	load_fcn_from_file (sr, false);
+    }
+
+  if (sr)
+    {
+      octave_value v = sr->def ();
+
+      retval = v.user_function_value (true);
     }
 
   return retval;

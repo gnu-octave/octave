@@ -1,3 +1,11 @@
+Mon Nov  4 10:09:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lapack/dlag2.f, lapack/dggbal.f, lapack/dgghrd.f, lapack/dhgeqz.f:
+	New files.
+
+	* Makefile.in (install): Use INSTALL_PROGRAM for shared version of
+	libcruft.	
+
 Sun Nov  3 19:37:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in (distclean): Delete target, since there is

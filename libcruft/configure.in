@@ -27,8 +27,7 @@ AC_INIT(misc/xstopx.f)
 AC_PROG_INSTALL
 
 AC_OUTPUT(Makefile Makerules blas/Makefile balgen/Makefile
-          dassl/Makefile eispack/Makefile fftpack/Makefile
-          fsqp/Makefile lapack/Makefile linpack/Makefile
-          minpack/Makefile misc/Makefile npsol/Makefile
-          odepack/Makefile qpsol/Makefile quadpack/Makefile
-          ranlib/Makefile slatec-fn/Makefile villad/Makefile)
+  dassl/Makefile eispack/Makefile fftpack/Makefile fsqp/Makefile
+  lapack/Makefile linpack/Makefile minpack/Makefile misc/Makefile
+  npsol/Makefile odepack/Makefile qpsol/Makefile quadpack/Makefile
+  ranlib/Makefile slatec-fn/Makefile villad/Makefile)

@@ -1066,9 +1066,10 @@ files to hold the plot data.\n\
 
 
 DEFUN (graw, args, ,
-  "graw (string)\n\
-\n\
-Send STRING directly to gnuplot subprocess.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} graw (@var{string})\n\
+Send @var{string} directly to gnuplot subprocess.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1093,9 +1094,10 @@ Send STRING directly to gnuplot subprocess.")
 }
 
 DEFUN_TEXT (gset, args, ,
-  "gset [options]\n\
-\n\
-set plotting options for gnuplot")
+  "-*- texinfo -*-\n\
+@deffn {Command} gset options\n\
+Set plotting options for gnuplot\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -1146,9 +1148,10 @@ DEFUN_TEXT (set, args, nargout,
 }
 
 DEFUN_TEXT (gshow, args, ,
-  "gshow [options]\n\
-\n\
-show plotting options")
+  "-*- texinfo -*-\n\
+@deffn {Command} gshow options\n\
+Show plotting options.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -1297,28 +1300,44 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @end defvr");
 
   DEFVAR (gnuplot_command_plot, "pl", gnuplot_command_plot,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_plot\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_replot, "rep", gnuplot_command_replot,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_replot\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_splot, "sp", gnuplot_command_splot,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_splot\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_using, "u", gnuplot_command_using,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_using\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_with, "w", gnuplot_command_with,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_with\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_axes, "ax", gnuplot_command_axes,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_axes\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_title, "t", gnuplot_command_title,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_title\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_end, "\n", gnuplot_command_end,
-    "");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_command_end\n\
+@end defvr");
 
 #ifdef GNUPLOT_HAS_FRAMES
   double with_frames = 1.0;

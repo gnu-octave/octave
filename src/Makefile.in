@@ -158,7 +158,7 @@ dist: parse.cc lex.cc
 
 defaults.h: ../Makeconf defaults.h.in
 	@echo "Making defaults.h from defaults.h.in..."
-	(sed < $(srcdir)/defaults.h.in > defaults.h.tmp \
+	@(sed < $(srcdir)/defaults.h.in > defaults.h.tmp \
 	-e 's;%DEFAULT_PAGER%;${DEFAULT_PAGER};' \
 	-e 's;%OCTAVE_HOME%;${prefix};')
 	@$(srcdir)/move-if-change defaults.h.tmp defaults.h

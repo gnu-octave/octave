@@ -89,6 +89,10 @@ static int cant_be_identifier = 0;
 #define BRACE 1
 #define PAREN 2
 
+// Did eat_whitespace() eat a space or tab, or a newline, or both?
+#define ATE_SPACE_OR_TAB 1
+#define ATE_NEWLINE 2
+
 // Is the closest nesting level a square brace or a paren?
 //
 //  BRACE -> spaces are important (they can turn into commas)
@@ -211,34 +215,56 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// Commas are element separators in matrix constants.
+// Commas are element separators in matrix constants.  If we don't
+// check for continuations here we can end up inserting too many
+// commas.
 %}
 
 <MATRIX>{S}*\,{S}* {
-    TOK_RETURN (',');
+    current_input_column += yyleng;
+    int tmp = eat_continuation ();
+    quote_is_transpose = 0;
+    cant_be_identifier = 0;
+    convert_spaces_to_comma = 1;
+    if (user_pref.whitespace_in_literal_matrix != 2
+	&& (tmp & ATE_NEWLINE) == ATE_NEWLINE)
+      unput (';');
+    return (',');
   }
 
 %{
 // In some cases, spaces in matrix constants can turn into commas.
 // If commas are required, spaces are not important in matrix
-// constants so we just eat them.
+// constants so we just eat them.  If we don't check for continuations
+// here we can end up inserting too many commas.
 %}
 
 <MATRIX>{S}+ {
+    current_input_column += yyleng;
     if (user_pref.whitespace_in_literal_matrix != 2)
       {
+	int tmp = eat_continuation ();
 	int bin_op = next_token_is_bin_op (1, yytext);
 	int postfix_un_op = next_token_is_postfix_unary_op (1, yytext);
 
 	if (! (postfix_un_op || bin_op || nesting_level.empty ())
 	    && nesting_level.top () == BRACE
 	    && convert_spaces_to_comma)
-	  TOK_RETURN (',');
+	  {
+	    quote_is_transpose = 0;
+	    cant_be_identifier = 0;
+	    convert_spaces_to_comma = 1;
+	    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+	      unput (';');
+	    return (',');
+	  }
       }
   }
 
 %{
-// Semicolons are handled as row seprators in matrix constants.
+// Semicolons are handled as row seprators in matrix constants.  If we
+// don't eat whitespace here we can end up inserting too many
+// semicolons.
 %}
 
 <MATRIX>{SNLCMT}*;{SNLCMT}* {
@@ -251,11 +277,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// In some cases, new lines can also become row separators.
+// In some cases, new lines can also become row separators.  If we
+// don't eat whitespace here we can end up inserting too many
+// semicolons.
 %}
 
 <MATRIX>{SNLCMT}*\n{SNLCMT}* {
     fixup_column_count (yytext);
+    eat_whitespace ();
     if (user_pref.whitespace_in_literal_matrix != 2)
       {
 	quote_is_transpose = 0;
@@ -1324,7 +1353,11 @@ strip_trailing_whitespace (char *s)
 }
 
 // Discard whitespace, including comments and continuations.
-// Return 1 if whitespace appeared in the input, 0 otherwise.
+//
+// Return value is logical OR of the following values:
+//
+//  ATE_SPACE_OR_TAB : space or tab in input
+//  ATE_NEWLINE      : bare new line in input
 
 static int
 eat_whitespace (void)
@@ -1340,11 +1373,11 @@ eat_whitespace (void)
 	{
 	case ' ':
 	case '\t':
-	  retval = 1;
+	  retval |= ATE_SPACE_OR_TAB;
 	  break;
 
 	case '\n':
-	  retval = 1;
+	  retval |= ATE_NEWLINE;
 	  in_comment = 0;
 	  current_input_column = 0;
 	  break;
@@ -1504,7 +1537,8 @@ have_ellipsis_continuation (void)
 
 // See if we have a continuation line.  If so, eat it and the leading
 // whitespace on the next line.
-// Return 1 if whitespace appeared in the input, 0 otherwise.
+//
+// Return value is the same as described for eat_whitespace().
 
 static int
 eat_continuation (void)

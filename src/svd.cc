@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("svd", Fsvd, Ssvd, 11,
+DEFUN_DLD_BUILTIN ("svd", Fsvd, Ssvd, FSsvd, 11,
   "S = svd (X) or [U, S, V] = svd (X [, 0])\n\
 \n\
 Compute the singular value decomposition of X.  Given a second input\n\

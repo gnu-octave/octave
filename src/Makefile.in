@@ -40,33 +40,58 @@ XALL_CXXFLAGS = $(subst -fno-implicit-templates, , $(XALL_CXXFLAGS_1))
 	@echo making $@ from $<
 	@$(CXXCPP) -c $(CPPFLAGS) $(XALL_CXXFLAGS) -DMAKE_BUILTINS $< \
 	  | $(srcdir)/mkdefs > $@.tmp
-	@if test `wc $@.tmp | sed 's%[^0-9]*\([0-9]*\).*%\1%'` -ne 0 ; then \
-	  mv $@.tmp $@ ; \
-	else \
-	  echo "error: $@ is empty!" 1>&2 ; \
-	  rm -f $@.tmp ; \
-	  exit 1 ; \
-	fi
+	@mv $@.tmp $@
 
-DLD_SRC := f-balance.cc f-chol.cc f-colloc.cc f-dassl.cc f-det.cc \
-	f-eig.cc f-expm.cc f-fft.cc f-fft2.cc f-filter.cc f-find.cc \
-	f-fsolve.cc f-fsqp.cc f-givens.cc f-hess.cc f-ifft.cc \
-	f-ifft2.cc f-inv.cc f-log.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
-	f-minmax.cc f-npsol.cc f-pinv.cc f-qpsol.cc f-qr.cc f-quad.cc \
-	f-qzval.cc f-rand.cc f-schur.cc f-sort.cc f-svd.cc f-syl.cc
+# How to make a .oct file from a .o file:
+
+ifdef CXXPICFLAG
+%.oct: pic/%.o
+	$(CXX) -shared -o $@ $< \
+	  $(OCTAVE_LFLAGS) \
+	  $(OCTAVE_LIBS) \
+	  $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+else
+%.oct: %.o
+	$(CXX) -shared -o $@ $< \
+	  $(OCTAVE_LFLAGS) \
+	  $(OCTAVE_LIBS) \
+	  $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
+endif
+
+DLD_SRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
+	   expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
+	   fsqp.cc givens.cc hess.cc ifft.cc ifft2.cc inv.cc log.cc \
+	   lpsolve.cc lsode.cc lu.cc minmax.cc npsol.cc pinv.cc \
+	   qpsol.cc qr.cc quad.cc qzval.cc rand.cc schur.cc sort.cc \
+	   svd.cc syl.cc
 
 DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
+
+ifeq ($(OCTAVE_LITE), true)
+  OCT_FILES := $(patsubst %.o, %.oct, $(DLD_OBJ))
+  ifdef CXXPICFLAG
+    DLD_PICOBJ := $(addprefix pic/, $(DLD_OBJ))
+  else
+    DLD_PICOBJ := $(DLD_OBJ)
+  endif
+  ifeq ($(WITH_DYNAMIC_LINKING), false)
+    DLD_STATIC_OBJ := $(DLD_OBJ)
+  endif
+else
+  DLD_STATIC_OBJ := $(DLD_OBJ)
+endif
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
 	file-io.h fnmatch.h getopt.h gripes.h help.h input.h lex.h \
-	load-save.h mappers.h missing-math.h oct-gperf.h octave.h \
-	octave-hist.h oct-map.h oct-obj.h pager.h parse.h \
-	pathlen.h pathsearch.h pr-output.h procstream.h sighandlers.h \
+	load-save.h mappers.h missing-math.h oct-gperf.h \
+	octave-hist.h oct-map.h oct-obj.h pager.h parse.h pathlen.h \
+	pathsearch.h pr-output.h procstream.h sighandlers.h \
 	statdefs.h symtab.h sysdep.h sysdir.h systime.h syswait.h \
-	token.h tree-base.h tree-cmd.h tree-const.h tree-expr.h \
-	tree-misc.h tree-plot.h unwind-prot.h user-prefs.h utils.h \
-	variables.h version.h xdiv.h xpow.h Map.h SLStack.h Stack.h 
+	token.h toplev.h tree-base.h tree-cmd.h tree-const.h \
+	tree-expr.h tree-misc.h tree-plot.h unwind-prot.h \
+	user-prefs.h utils.h variables.h version.h xdiv.h xpow.h \
+	Map.h SLStack.h Stack.h  
 
 TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
@@ -75,25 +100,38 @@ TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
 
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
+TI_PICOBJ := $(TI_OBJ)
+ifdef CXXPICFLAG
+  TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
+endif
+
 SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	dynamic-ld.cc erf.c erfc.c error.cc file-info.cc file-io.cc \
 	filemode.c fnmatch.c getopt.c getopt1.c gripes.cc help.cc \
-	input.cc lex.l load-save.cc mappers.cc mkdir.c octave.cc \
-	octave-hist.cc oct-map.cc oct-obj.cc pager.cc \
-	parse.y pr-output.cc procstream.cc rename.c resource.cc \
-	rmdir.c sighandlers.cc strcasecmp.c strncase.c strfns.cc \
-	strftime.c symtab.cc sysdep.cc tempname.c timefns.cc \
-	tempnam.c token.cc tree-base.cc tree-cmd.cc tree-const.cc \
+	input.cc lex.l load-save.cc mappers.cc mkdir.c \
+	octave-hist.cc oct-map.cc oct-obj.cc pager.cc parse.y \
+	pr-output.cc procstream.cc rename.c resource.cc rmdir.c \
+	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
+	symtab.cc sysdep.cc tempname.c timefns.cc tempnam.c token.cc \
+	toplev.cc tree-base.cc tree-cmd.cc tree-const.cc \
 	tree-expr.cc tree-misc.cc tree-plot.cc unwind-prot.cc \
 	user-prefs.cc utils.cc variables.cc xdiv.cc xpow.cc
 
 TEMPLATE_SRC = Map.cc SLStack.cc
 
-OBJECTS_4 := $(SOURCES) builtins.o
+OBJECTS_4 := $(SOURCES)
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
 OBJECTS_2 := $(patsubst %.y, %.o, $(OBJECTS_3))
 OBJECTS_1 := $(patsubst %.c, %.o, $(OBJECTS_2))
 OBJECTS := $(patsubst %.cc, %.o, $(OBJECTS_1))
+
+ifeq ($(SHARED_LIBS), true)
+  ifdef CXXPICFLAG
+    PICOBJ := $(addprefix pic/, $(OBJECTS))
+  else
+    PICOBJ := $(OBJECTS)
+  endif
+endif
 
 # Ugh.
 
@@ -110,37 +148,68 @@ DEF_FILES_2 := $(patsubst %.y, %.def, $(DEF_FILES_3))
 DEF_FILES_1 := $(patsubst %.l, %.def, $(DEF_FILES_2))
 DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 
-# Don't leave the LIBDLD thing on a line by itself.  It may expand to
-# nothing.
+OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
+	-L../kpathsea -L. $(RLD_FLAG)
 
-OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
-	../libcruft/libcruft.a @LIBREADLINE@ @LIBPLPLOT@ \
-	../kpathsea/kpathsea.a @LIBDLD@
+OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
+	@LIBPLPLOT@ -lreadline -lkpathsea
+
+LIBS_TO_INSTALL = liboctinterp.a libtinst.a \
+	liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
 
 TERMLIBS = @TERMLIBS@
 
 LIBS = @LIBS@
 
-DISTFILES = Makefile.in mkdefs mkbuiltins octave.gperf parse.cc \
-	lex.cc y.tab.h safe-xstat.cin safe-xstat.hin \
+DISTFILES = Makefile.in mkdefs mkbuiltins octave.gperf octave.cc \
+	parse.cc lex.cc y.tab.h safe-xstat.cin safe-xstat.hin \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
-all: defaults.h safe-stat.h safe-lstat.h octave
+all: defaults.h safe-stat.h safe-lstat.h stamp-picdir libraries \
+	$(OCT_FILES) octave
 .PHONY: all
 
-octave: $(OBJECTS) $(DLD_OBJ) $(OCTAVE_LIBS) liboctdld.a
+octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
 	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_LDFLAGS) -o octave \
-	$(OBJECTS) \
+	octave.o builtins.o $(DLD_STATIC_OBJ) \
+	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS) -lg++
 
-liboctdld.a: $(DLD_OBJ)
-	$(AR) $(ARFLAGS) liboctdld.a $(DLD_OBJ)
-	$(RANLIB) liboctdld.a
+
+stamp-picdir:
+	if [ -n "$(CPICFLAG)" ]; then \
+	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
+	else true; fi
+	touch stamp-picdir
+
+libraries: liboctinterp.a libtinst.a stamp-interp stamp-tinst
+
+liboctinterp.a: $(OBJECTS)
+	$(AR) $(ARFLAGS) liboctinterp.a $(OBJECTS)
+	$(RANLIB) liboctinterp.a
 
 libtinst.a: $(TI_OBJ)
 	$(AR) $(ARFLAGS) libtinst.a $(TI_OBJ)
 	$(RANLIB) libtinst.a
+
+stamp-interp: $(PICOBJ)
+	if $(SHARED_LIBS); then \
+	  $(CXX) -shared -o liboctinterp.$(SHLEXT) $(PICOBJ) \
+	    $(OCTAVE_LFLAGS) \
+	    -loctave -lcruft -ltinst -lreadline -lkpathsea \
+	    $(TERMLIBS) $(LIBS) -lg++; \
+	else true; fi
+	touch stamp-interp
+
+stamp-tinst: $(TI_PICOBJ)
+	if $(SHARED_LIBS); then \
+	  $(CXX) -shared -o libtinst.$(SHLEXT) $(TI_PICOBJ) \
+	    $(OCTAVE_LFLAGS) \
+	    -loctinterp -loctave -lcruft -lreadline -lkpathsea \
+	    $(TERMLIBS) $(LIBS) -lg++; \
+	else true; fi
+	touch stamp-tinst
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@ from $(DEF_FILES)
@@ -154,15 +223,29 @@ $(MAKEDEPS): defaults.h
 check: all
 .PHONY: check
 
-install: all
-	$(top_srcdir)/mkinstalldirs $(bindir) $(libdir)
+install: all install-bin install-lib install-oct
+.PHONY: install
+
+install-bin:
+	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave
 	$(INSTALL) octave $(bindir)/octave-$(version)
 	ln $(bindir)/octave-$(version) $(bindir)/octave
-	if $(OCTAVE_LITE) && $(WITH_DLD) ; then \
-	  $(INSTALL_DATA) liboctdld.a $(libdir)/liboctdld.a ; \
-	fi
-.PHONY: install
+.PHONY: install-bin
+
+install-lib:
+	$(top_srcdir)/mkinstalldirs $(libdir)
+	for f in $(LIBS_TO_INSTALL); do \
+	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
+	done
+.PHONY: install-lib
+
+install-oct:
+	$(top_srcdir)/mkinstalldirs $(octfiledir)
+	for f in $(OCT_FILES); do $(INSTALL_DATA) $$f $(octfiledir)/$$f; done
+	$(srcdir)/mk-oct-links $(octfiledir) \
+	  $(addprefix $(srcdir)/, $(DLD_SRC))
+.PHONY: install-oct
 
 uninstall:
 	rm -f $(bindir)/octave

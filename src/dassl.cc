@@ -103,7 +103,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("dassl", Fdassl, Sdassl, 10,
+DEFUN_DLD_BUILTIN ("dassl", Fdassl, Sdassl, FSdassl, 10,
   "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
 dassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\
 \n\
@@ -315,7 +315,8 @@ show_dassl_option (const char *keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("dassl_options", Fdassl_options, Sdassl_options, 10,
+DEFUN_DLD_BUILTIN ("dassl_options", Fdassl_options, Sdassl_options,
+		   FSdassl_options, 10,
   "dassl_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for dassl.  Keywords may be abbreviated\n\

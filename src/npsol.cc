@@ -228,12 +228,12 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 00,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, FSnpsol, 00,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, 11,
+DEFUN_DLD_BUILTIN ("npsol", Fnpsol, Snpsol, FSnpsol, 11,
   "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
 \n\
 Groups of arguments surrounded in `[]' are optional, but\n\
@@ -769,12 +769,14 @@ show_npsol_option (const char *keyword)
 #endif
 
 #if defined (NPSOL_MISSING)
-DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, 00,
+DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options,
+		   FSnpsol_options, 00,
   "This function requires NPSOL, which is not freely\n\
 redistributable.  For more information, read the file\n\
 libcruft/npsol/README.MISSING in the source distribution.")
 #else
-DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options, 10,
+DEFUN_DLD_BUILTIN ("npsol_options", Fnpsol_options, Snpsol_options,
+		   FSnpsol_options, 10,
   "npsol_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for npsol.  Keywords may be abbreviated\n\

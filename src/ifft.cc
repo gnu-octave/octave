@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // This function should be merged with Ffft.
 
-DEFUN_DLD_BUILTIN ("ifft", Fifft, Sifft, 10,
+DEFUN_DLD_BUILTIN ("ifft", Fifft, Sifft, FSifft, 10,
   "ifft (X [, N]): inverse fast fourier transform of a vector")
 {
   Octave_object retval;

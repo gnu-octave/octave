@@ -151,7 +151,7 @@ filter (Array<T>& b, Array<T>& a, Array<T>& x)
   return filter (b, a, x, si);
 }
 
-DEFUN_DLD_BUILTIN ("filter", Ffilter, Sfilter, 10,
+DEFUN_DLD_BUILTIN ("filter", Ffilter, Sfilter, FSfilter, 10,
   "usage: [y [, sf]] = filter (b, a, x [, si])\n\
 \n\
 y = filter (b, a, x) returns the solution to the following linear,\n\

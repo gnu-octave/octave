@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("pinv", Fpinv, Spinv, 10,
+DEFUN_DLD_BUILTIN ("pinv", Fpinv, Spinv, FSpinv, 10,
   "pinv ( [, tol])\n\
 Returns the pseudoinverse of X; singular values less than tol are ignored.")
 {

@@ -36,21 +36,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // If Octave is not configured for dynamic linking of builtin
 // functions, this is exactly like DEFUN.
 
-#if defined (OCTAVE_LITE) && defined (MAKE_BUILTINS)
-#if defined (WITH_DLD)
-#define DEFUN_DLD_BUILTIN(name, fname, sname, unused_arg_flags, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    DEFINE_FUN_STRUCT (name, 0, sname, unused_arg_flags, 0, doc); \
-    install_builtin_function (&sname); \
-  END_INSTALL_BUILTIN
-#else
-#define DEFUN_DLD_BUILTIN(name, fname, sname, unused_arg_flags, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    const char *sname = name " not included with --enable-lite-kernel"; \
-  END_INSTALL_BUILTIN
+#if defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING)
+#if ! defined (MAKE_BUILTINS)
+#define DEFUN_DLD_BUILTIN(name, fname, sname, fsname, unused_arg_flags, doc) \
+  DEFUN_DLD(name, fname, sname, fsname, unused_arg_flags, doc)
 #endif
 #else
-#define DEFUN_DLD_BUILTIN(name, fname, sname, unused_arg_flags, doc) \
+#define DEFUN_DLD_BUILTIN(name, fname, fsname, sname, unused_arg_flags, doc) \
   DEFUN_INTERNAL (name, fname, sname, unused_arg_flags, 0, doc)
 #endif
 
@@ -64,10 +56,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if ! defined (MAKE_BUILTINS)
 #define DEFUN_DLD(name, fname, sname, fsname, unused_arg_flags, doc) \
-  DECLARE_FUN (fname); \
-  DEFINE_FUN_STRUCT (name, fname, sname, unused_arg_flags, 0, doc); \
+  DECLARE_FUN_ ## unused_arg_flags(fname); \
+  DEFINE_FUN_STRUCT (name, fname, sname, 0, doc); \
   DEFINE_FUN_STRUCT_FUN (sname, fsname) \
-  DECLARE_FUN (fname)
+  DECLARE_FUN_ ## unused_arg_flags (fname)
 #endif
 
 #endif

@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("balance", Fbalance, Sbalance, 11,
+DEFUN_DLD_BUILTIN ("balance", Fbalance, Sbalance, FSbalance, 11,
   "AA = balance (A [, OPT]) or [[DD,] AA] =  balance (A [, OPT])\n\
 \n\
 generalized eigenvalue problem:\n\

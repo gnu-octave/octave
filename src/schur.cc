@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-DEFUN_DLD_BUILTIN ("schur", Fschur, Sschur, 11,
+DEFUN_DLD_BUILTIN ("schur", Fschur, Sschur, FSschur, 11,
   "[U, S] = schur (A) or S = schur (A)\n\
 \n\
 or, for ordered Schur:\n\

@@ -119,7 +119,7 @@ fsolve_user_function (const ColumnVector& x)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("fsolve", Ffsolve, Sfsolve, 11,
+DEFUN_DLD_BUILTIN ("fsolve", Ffsolve, Sfsolve, FSfsolve, 11,
   "Solve nonlinear equations using Minpack.  Usage:\n\
 \n\
   [X, INFO] = fsolve (F, X0)\n\
@@ -281,7 +281,8 @@ show_fsolve_option (const char *keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("fsolve_options", Ffsolve_options, Sfsolve_options, 10,
+DEFUN_DLD_BUILTIN ("fsolve_options", Ffsolve_options, Sfsolve_options,
+		   FSfsolve_options, 10,
   "fsolve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for fsolve.  Keywords may be abbreviated\n\

@@ -1,3 +1,7 @@
+2003-12-09  Eric S. Raymond  <esr@thyrsus.com>
+
+	* interpreter/mkoctfile.1: Use .I instead of .f for markup of ".oct".
+
 2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/munge-texi.cc (process_texi_input_file):

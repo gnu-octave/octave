@@ -502,7 +502,7 @@ tree_if_clause::eval (void)
       else if (t1.is_complex_scalar ())
 	expr_value = t1.complex_value () != 0.0;
       else
-	panic_impossible ();
+	error ("if: all (all (cond)) is not a scalar");
 
       if (expr_value)
 	{

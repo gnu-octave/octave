@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Map.h"
 
-#include "tree-const.h"
+#include "pt-const.h"
 
 class
 Octave_map : public CHMap<tree_constant>

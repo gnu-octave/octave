@@ -717,7 +717,7 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
     case LS_FLOAT:
       {
 	volatile float *ptr = X_CAST (float *, data);
-	is.read (data, 4 * len);
+	is.read (X_CAST (char *, data), 4 * len);
 	do_float_format_conversion (X_CAST (float *, data), len, fmt);
 	float tmp = ptr[0];
 	for (int i = len - 1; i > 0; i--)
@@ -727,7 +727,7 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
       break;
 
     case LS_DOUBLE: // No conversion necessary.
-      is.read (data, 8 * len);
+      is.read (X_CAST (char *, data), 8 * len);
       do_double_format_conversion (data, len, fmt);
       break;
 
@@ -774,7 +774,7 @@ write_doubles (std::ostream& os, const double *data, save_type type, int len)
       {
 	char tmp_type = X_CAST (char, type);
 	os.write (&tmp_type, 1);
-	os.write (data, 8 * len);
+	os.write (X_CAST (char *, data), 8 * len);
       }
       break;
 

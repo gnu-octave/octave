@@ -109,16 +109,6 @@ install: all
 	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
 	    done ; \
 	  fi ; \
-#	  rm -f $(infodir)/liboctave.info* ; \
-#	  if test -f liboctave.info ; then \
-#	    for f in liboctave.info* ; do \
-#	      $(INSTALL_DATA) $$f $(infodir)/$$f ; \
-#	    done ; \
-#	  else \
-#	    for f in $(srcdir)/liboctave.info* ; do \
-#	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
-#	    done ; \
-#	  fi ; \
 	fi
 .PHONY: install
 

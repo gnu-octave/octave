@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.121 $)
+AC_REVISION($Revision: 1.122 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -188,13 +188,14 @@ LD_STATIC_FLAG=
 if $use_dld; then
   DLD_DIR=dld
   LIBDLD='../dld/libdld.a'
-# don't link them in only if doing dynamic linking and small kernel
-# requested.
-  if $lite_kernel; then
-    LIBOCTDLD=
-  fi
   LD_STATIC_FLAG=-static
   AC_DEFINE(WITH_DLD, 1)
+fi
+
+### Don't link these functions if small kernel option requested.
+
+if $lite_kernel; then
+  LIBOCTDLD=
 fi
 
 ### Also use -static if compiling on Alpha OSF/1 1.3 systems.
@@ -572,7 +573,15 @@ fi
 
 AC_CHECK_FUNCS(setvbuf getcwd gethostname bzero bcopy rindex vfprintf vsprintf)
 AC_CHECK_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror atexit)
-AC_CHECK_FUNCS(on_exit tempnam memmove putenv gettimeofday getrusage)
+AC_CHECK_FUNCS(on_exit tempnam memmove putenv getrusage)
+
+### There is more than one possible prototype for gettimeofday.  See
+### which one (if any) appears in sys/time.h.
+
+AC_CHECK_FUNC(gettimeofday,
+  AC_TRY_COMPILE([#include <sys/time.h>],
+  [gettimeofday ((struct timeval *) 0,(struct timezone *) 0);],
+  [], AC_DEFINE(GETTIMEOFDAY_NO_TZ)))
 
 dnl Would like to get rid of this cruft, and just have
 dnl

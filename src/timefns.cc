@@ -99,7 +99,11 @@ DEFUN ("time", Ftime, Stime, 1, 0,
 
   struct timeval tp;
 
+#ifdef GETTIMEOFDAY_NO_TZ
+  gettimeofday (&tp);
+#else
   gettimeofday (&tp, 0);
+#endif
 
   now = tp.tv_sec;
 

@@ -20,6 +20,9 @@
 /* Define if you don't have FSQP. */
 #undef FSQP_MISSING
 
+/* Define if your system has a single-arg prototype for gettimeofday. */
+#undef GETTIMEOFDAY_NO_TZ
+
 /* Define if you have finite.  */
 #undef HAVE_FINITE
 
@@ -50,6 +53,9 @@
 /* Define if this is Octave. */
 #undef OCTAVE_SOURCE
 
+/* Define if you don't have QPSOL. */
+#undef QPSOL_MISSING
+
 /* Define this to be the path separator for your system, as a
    character constant */
 #undef SEPCHAR
@@ -58,20 +64,17 @@
    character string */
 #undef SEPCHAR_STR
 
-/* Define if you don't have QPSOL. */
-#undef QPSOL_MISSING
+/* Define if math.h declares signgam. */
+#undef SIGNGAM_DECLARED
+
+/* To quiet autoheader. */
+#undef SMART_PUTENV
 
 /* Use GNU info for extended help system. */
 #undef USE_GNU_INFO
 
 /* Use GNU readline for command line editing and history. */
 #undef USE_READLINE
-
-/* Define if math.h declares signgam. */
-#undef SIGNGAM_DECLARED
-
-/* To quiet autoheader. */
-#undef SMART_PUTENV
 
 /* Define if using dld for dynamic linking of object files. */
 #undef WITH_DLD

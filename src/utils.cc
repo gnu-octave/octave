@@ -59,20 +59,20 @@ Free Software Foundation, Inc.
 
 #define NLENGTH(dirent) (strlen((dirent)->d_name))
 
-#ifdef HAVE_TERMIO_H
+extern "C"
+{
+#if defined (HAVE_TERMIOS_H)
+#include <termios.h>
+#elif defined (HAVE_TERMIO_H)
 #include <termio.h>
-#else
-#ifdef HAVE_SGTTY_H
+#elif defined (HAVE_SGTTY_H)
 #include <sgtty.h>
 #else
 LOSE! LOSE!
 #endif
-#endif
 
-extern "C"
-{
-  extern int ioctl (int, int, ...);
-  char *tilde_expand (char *s); /* From readline's tilde.c */
+extern int ioctl (int, int, ...);
+char *tilde_expand (char *s); /* From readline's tilde.c */
 }
 
 #include "SLStack.h"
@@ -90,6 +90,10 @@ extern "C"
 #include "tree-const.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
+
+#ifndef STDIN_FILENO
+#define STDIN_FILENO 1
+#endif
 
 // Top level context (?)
 extern jmp_buf toplevel;
@@ -211,23 +215,26 @@ raw_mode (int on)
 {
   static int curr_on = 0;
 
-// HACK! HACK!
-
-  int tty_fd = 1;
+  int tty_fd = STDIN_FILENO;
+  if (! isatty (tty_fd))
+    {
+      error ("stdin is not a tty!");
+      return;
+    }
 
   if (on == curr_on)
     return;
 
-#ifdef HAVE_TERMIO_H
+#if defined (HAVE_TERMIOS_H)
   {
-    struct termio s;
-    static struct termio save_term;
+    struct termios s;
+    static struct termios save_term;
 
     if (on)
       {
 // Get terminal modes.
 
-	ioctl(tty_fd, TCGETA, &s);
+	tcgetattr (tty_fd, &s);
 
 // Save modes and set certain variables dependent on modes.
 
@@ -249,10 +256,42 @@ raw_mode (int on)
 // Restore saved modes.
 	s = save_term;
       }
-    ioctl(tty_fd, TCSETAW, &s);
+    tcsetattr (tty_fd, TCSAFLUSH, &s);
   }
-#else
-#ifdef HAVE_SGTTY_H
+#elif defined (HAVE_TERMIO_H)
+  {
+    struct termio s;
+    static struct termio save_term;
+
+    if (on)
+      {
+// Get terminal modes.
+
+	ioctl (tty_fd, TCGETA, &s);
+
+// Save modes and set certain variables dependent on modes.
+
+	save_term = s;
+//	ospeed = s.c_cflag & CBAUD;
+//	erase_char = s.c_cc[VERASE];
+//	kill_char = s.c_cc[VKILL];
+
+// Set the modes to the way we want them.
+
+	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
+	s.c_oflag |=  (OPOST|ONLCR|TAB3);
+	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
+	s.c_cc[VMIN] = 1;
+	s.c_cc[VTIME] = 0;
+      }      
+    else
+      {
+// Restore saved modes.
+	s = save_term;
+      }
+    ioctl (tty_fd, TCSETAW, &s);
+  }
+#elif defined (HAVE_SGTTY_H)
   {
     struct sgttyb s;
     static struct sgttyb save_term;
@@ -261,7 +300,7 @@ raw_mode (int on)
       {
 // Get terminal modes.
 
-	ioctl(tty_fd, TIOCGETP, &s);
+	ioctl (tty_fd, TIOCGETP, &s);
 
 // Save modes and set certain variables dependent on modes.
 
@@ -280,11 +319,10 @@ raw_mode (int on)
 // Restore saved modes.
 	s = save_term;
       }
-    ioctl(tty_fd, TIOCSETN, &s);
+    ioctl (tty_fd, TIOCSETN, &s);
   }
 #else
 LOSE! LOSE!
-#endif
 #endif
 
   curr_on = on;

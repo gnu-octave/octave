@@ -114,7 +114,7 @@ DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
 # nothing.
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
-	../libcruft/libcruft.a @LIBREADLINE@ \
+	../libcruft/libcruft.a @LIBREADLINE@ @LIBPLPLOT@ \
 	../kpathsea/kpathsea.a @LIBDLD@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins \

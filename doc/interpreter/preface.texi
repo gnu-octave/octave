@@ -82,7 +82,8 @@ documents it.
 
 @item
 Klaus Gebhardt <gebhardt@@crunch.ikp.physik.th-darmstadt.de> ported
-Octave to OS/2.
+Octave to OS/2 and worked with Michel Juillard <juillard@@msh-paris.fr>
+on the port to DOS.
 
 @item
 A. Scottedward Hodel (scotte@@eng.auburn.edu) contributed a number

@@ -89,6 +89,10 @@ Numerical:
     columns as M, then either w .* M or M .* w scales the columns of
     M.
 
+  * Given two vectors x and y of length m and n, implement a function
+    outer (x, y, f) that returns an m-by-n matrix with entries
+    f (x(i), y(j)).  If f is omitted, multiplication is the default.
+
 --------
 Graphics:
 --------

@@ -1,3 +1,8 @@
+Mon Nov 11 23:56:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.h.bot: Only check value of __GNUC__ and __GNUC_MINOR__ if
+	__GNUC__ is defined.
+
 Fri Nov  8 11:15:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (version): Look in $(TOPDIR)/src then

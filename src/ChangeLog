@@ -1,3 +1,9 @@
+Mon Nov 11 22:52:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_binary_data): Don't forget teminating NUL for
+	string that we plan to insert.
+	(read_ascii_data): Likewise.
+
 Sun Nov 10 16:58:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dirfns.cc (Ffnmatch): New function.

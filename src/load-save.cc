@@ -562,7 +562,7 @@ read_ascii_data (istream& is, const string& filename, int& global,
 		  int len;
 		  if (extract_keyword (is, "length", len) && len > 0)
 		    {
-		      char *tmp = new char [len];
+		      char *tmp = new char [len+1];
 		      if (! is.read (tmp, len))
 			{
 			  error ("load: failed to load string constant");
@@ -570,6 +570,7 @@ read_ascii_data (istream& is, const string& filename, int& global,
 			}
 		      else
 			{
+			  tmp [len] = '0';
 			  if (len > max_len)
 			    {
 			      max_len = len;
@@ -878,7 +879,7 @@ read_binary_data (istream& is, int swap,
 	      goto data_read_error;
 	    if (swap)
 	      swap_4_bytes ((char *) &len);
-	    char *tmp = new char [len];
+	    char *tmp = new char [len+1];
 	    if (! is.read (tmp, len))
 	      {
 		delete [] tmp;
@@ -889,6 +890,7 @@ read_binary_data (istream& is, int swap,
 		max_len = len;
 		chm.resize (elements, max_len, 0);
 	      }
+	    tmp [len] = '\0';
 	    chm.insert (tmp, i, 0);
 	    delete [] tmp;
 	  }

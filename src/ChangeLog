@@ -1,4 +1,21 @@
+Fri Nov 14 01:53:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (have_continuation, have_ellipsis_continuation): Declare
+	arg as bool, not int.  Change callers.
+
+	* lex.l (Vbackslash_escapes): New static variable.
+	(backslash_escapes): New function.
+	(do_string_escapes): Return immediately if ! Vbackslash_escapes.
+	(eat_whitespace, eat_continuation): Only call have_continuation if
+	Vbackslash_escapes.
+	(handle_string): Backslash is only special if Vbackslash_escapes.
+	(symbols_of_lex): Add DEFVAR for backslash_escapes.
+	* octave.cc (maximum_braindamage): Set backslash_escapes to 0.
+
 Thu Nov 13 16:20:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fexist): Also return 2 if NAME is a regular file
+	somewhere in the LOADPATH.
 
 	* data.cc (sumsq): Fix doc string.
 

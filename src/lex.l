@@ -159,6 +159,9 @@ static brace_paren_nesting_level nesting_level;
 
 static int Vwhitespace_in_literal_matrix;
 
+// Should Octave treat backslashes in strings as escapes that
+// introduce special characters like newline (\n), tab (\t), etc.?
+static bool Vbackslash_escapes;
 
 // Forward declarations for functions defined at the bottom of this
 // file.
@@ -179,8 +182,8 @@ static void handle_number (char *yytext);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_brace (int spc_gobbled);
 static int handle_identifier (const string& tok, int spc_gobbled);
-static bool have_continuation (int trailing_comments_ok = 1);
-static bool have_ellipsis_continuation (int trailing_comments_ok = 1);
+static bool have_continuation (bool trailing_comments_ok = true);
+static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 static yum_yum eat_whitespace (void);
 static yum_yum eat_continuation (void);
 
@@ -721,6 +724,9 @@ reset_parser (void)
 static void
 do_string_escapes (char *s)
 {
+  if (! Vbackslash_escapes)
+    return;
+
   char *p1 = s;
   char *p2 = s;
 
@@ -1367,7 +1373,7 @@ eat_whitespace (void)
 	    break;
 	  else
 	    {
-	      if (have_continuation ())
+	      if (Vbackslash_escapes && have_continuation ())
 		break;
 	      else
 		goto done;
@@ -1433,7 +1439,7 @@ handle_number (char *yytext)
 // characters, return 0.  Otherwise, return 1.
 
 static bool
-have_continuation (int trailing_comments_ok)
+have_continuation (bool trailing_comments_ok)
 {
   ostrstream buf;
 
@@ -1472,7 +1478,7 @@ have_continuation (int trailing_comments_ok)
   yyunput (c, yytext);
   return false;
 
- cleanup:
+cleanup:
   buf << ends;
   char *s = buf.str ();
   if (s)
@@ -1482,6 +1488,7 @@ have_continuation (int trailing_comments_ok)
 	yyunput (s[len], yytext);
     }
   delete [] s;
+
   return false;
 }
 
@@ -1490,7 +1497,7 @@ have_continuation (int trailing_comments_ok)
 // line character.
 
 static bool
-have_ellipsis_continuation (int trailing_comments_ok)
+have_ellipsis_continuation (bool trailing_comments_ok)
 {
   char c1 = yyinput ();
   if (c1 == '.')
@@ -1521,7 +1528,7 @@ eat_continuation (void)
   int retval = ATE_NOTHING;
   int c = yyinput ();
   if ((c == '.' && have_ellipsis_continuation ())
-      || (c == '\\' && have_continuation ()))
+      || (c == '\\' && Vbackslash_escapes && have_continuation ()))
     retval = eat_whitespace ();
   else
     yyunput (c, yytext);
@@ -1541,7 +1548,7 @@ handle_string (char delim, int text_style)
     {
       current_input_column++;
 
-      if (c == '\\')
+      if (c == '\\' && Vbackslash_escapes)
 	{
 	  if (escape_pending)
 	    {
@@ -1550,7 +1557,7 @@ handle_string (char delim, int text_style)
 	    }
 	  else
 	    {
-	      if (have_continuation (0))
+	      if (have_continuation (false))
 		escape_pending = 0;
 	      else
 		{
@@ -1562,7 +1569,7 @@ handle_string (char delim, int text_style)
 	}
       else if (c == '.')
 	{
-	  if (! have_ellipsis_continuation (0))
+	  if (! have_ellipsis_continuation (false))
 	    buf << (char) c;
 	}
       else if (c == '\n')
@@ -1955,6 +1962,14 @@ lexical_feedback::init (void)
 }
 
 int
+backslash_escapes (void)
+{
+  Vbackslash_escapes = check_preference ("backslash_escapes");
+
+  return 0;
+}
+
+int
 whitespace_in_literal_matrix (void)
 {
   int pref = 0;
@@ -1977,6 +1992,10 @@ whitespace_in_literal_matrix (void)
 void
 symbols_of_lex (void)
 {
+  DEFVAR (backslash_escapes, 1.0, 0, backslash_escapes,
+    "if nonzero, Octave recognizes backslashes in strings as escapes that\n\
+introduce special characters like newline (\\n), tab (\\t), etc.");
+
   DEFVAR (whitespace_in_literal_matrix, "", 0, whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
 }

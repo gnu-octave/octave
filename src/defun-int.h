@@ -100,7 +100,7 @@ alias_builtin (const string& alias, const string& name);
       { \
 	check_version (OCTAVE_VERSION, #name); \
 	install_builtin_function (F ## name, #name, doc); \
-	installed = true;
+	installed = true; \
       } \
     return installed; \
   }

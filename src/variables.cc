@@ -398,7 +398,12 @@ returns:\n\
    1 : NAME is a variable\n\
    2 : NAME is a function\n\
    3 : NAME is a .oct file in the current LOADPATH\n\
-   5 : NAME is a built-in function")
+   5 : NAME is a built-in function\n\
+\n\
+This function also returns 2 if a regular file called NAME exists in\n\
+Octave's LOADPATH.  If you want information about other types of\n\
+files, you should use some combination of the functions file_in_path\n\
+and stat instead.")
 {
   octave_value_list retval;
 
@@ -466,10 +471,15 @@ returns:\n\
 	    }
 	  else
 	    {
-	      file_stat fs (name);
+	      string file_name = file_in_path (name, "");
 
-	      if (fs && fs.is_reg ())
-		retval = 2.0;
+	      if (! file_name.empty ())
+		{
+		  file_stat fs (file_name);
+
+		  if (fs && fs.is_reg ())
+		    retval = 2.0;
+		}
 	    }
 	}
     }

@@ -60,7 +60,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
-// quoted string, and the name of the structure has to be passed too.
+// quoted string, and the name of the structure must to be passed too.
 
 #define DEFCONSTX(name, sname, defn, doc) \
   DEFCONSTX_INTERNAL (name, sname, defn, doc)
@@ -79,6 +79,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define DEFUN(name, args_name, nargout_name, doc) \
   DEFUN_INTERNAL (name, args_name, nargout_name, false, doc)
+
+// This one can be used when `name' cannot be used directly (if it is
+// already defined as a macro).  In that case, name is already a
+// quoted string, and the internal name of the function must be passed
+// too (the convetion is to use a prefix of "F", so "foo" becomes "Ffoo").
+
+#define DEFUNX(name, fname, args_name, nargout_name, doc) \
+  DEFUNX_INTERNAL (name, fname, args_name, nargout_name, false, doc)
 
 // Define a builtin text-style function.
 //

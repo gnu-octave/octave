@@ -62,9 +62,12 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 extern void
 alias_builtin (const std::string& alias, const std::string& name);
 
-#define DECLARE_FUN(name, args_name, nargout_name) \
+#define DECLARE_FUNX(name, args_name, nargout_name) \
   octave_value_list \
-  F ## name (const octave_value_list& args_name, int nargout_name)
+  name (const octave_value_list& args_name, int nargout_name)
+
+#define DECLARE_FUN(name, args_name, nargout_name) \
+  DECLARE_FUNX (F ## name, args_name, nargout_name)
 
 // Define the code that will be used to insert the new function into
 // the symbol table.  We look for this name instead of the actual
@@ -92,6 +95,12 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 // or DEFUN_TEXT.
 
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+  BEGIN_INSTALL_BUILTIN \
+    XDEFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+  END_INSTALL_BUILTIN
+
+#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
+			is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
     XDEFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
   END_INSTALL_BUILTIN
@@ -143,6 +152,10 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
+
+#define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
+			is_text_fcn, doc) \
+  DECLARE_FUNX (fname, args_name, nargout_name)
 
 // No definition is required for an alias.
 

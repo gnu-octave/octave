@@ -1,5 +1,9 @@
 2000-11-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defun.h (DEFUNX): New macro.
+	* defun-int.h (DEFUNX_INTERNAL, DECLARE_FUNX): New macro.
+	(DECLARE_FUN): Define in terms of DECLARE_FUNX.
+
 	* mkdefs: Read and print one line at a time, so we can force
 	patterns to match only at the beginning of a line.
 

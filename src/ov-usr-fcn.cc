@@ -486,7 +486,7 @@ octave_user_function::bind_automatic_vars
   nargout_sr->define (static_cast<double> (nargout));
 }
 
-DEFUN (va_arg, args, ,
+DEFUNX ("va_arg", Fva_arg, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} va_arg ()\n\
 Return the value of hte next available argument and move the internal\n\

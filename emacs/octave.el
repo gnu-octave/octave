@@ -729,18 +729,11 @@ lines."
 	  (octave-blink-matching-function)))))
 
 (defun octave-indent-new-line ()
-  "Reindent the current Octave line, insert a newline and indent the newline.
+  "Reindent the current Octave line, insert a newline and indent the new line.
 An abbrev before point is expanded if `abbrev-mode' is non-nil."
   (interactive)
   (if abbrev-mode (expand-abbrev))
-  (save-excursion
-    (beginning-of-line)
-    (skip-chars-forward " \t")
-    (if (or (looking-at "end")	;Reindent only where it is most
-	    (looking-at "else")	;likely to be necessary
-	    (looking-at octave-continuation-regexp))
-	(octave-indent-line)))
-  (end-of-line)
+  (octave-indent-line)
   (newline)
   (octave-indent-line))
 

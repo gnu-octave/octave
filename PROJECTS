@@ -97,12 +97,10 @@ Graphics:
   * It would be nice to be able to check that a plot is currently
     being displayed.
 
-  * Implement figure, clf, gcf, get, set, orient, print, close,
-    etc. in Matlab-compatible ways.
+  * Implement clf, gcf, get, set, orient, print, close, etc. in
+    Matlab-compatible ways.
 
   * Make it possible to check the current graphics terminal type.
-
-  * Merge patch that allows more than one gnuplot window to be open.
 
 -------
 Strings:

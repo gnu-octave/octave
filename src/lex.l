@@ -164,9 +164,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 <TEXT_FCN>[\;\,] {
     if (doing_set && strcmp (yytext, ",") == 0)
       {
-	yylval.tok_val = new token (yytext);
-	token_stack.push (yylval.tok_val);
-	TOK_RETURN (TEXT);
+	TOK_PUSH_AND_RETURN (yytext, TEXT);
       }
     else
       {
@@ -188,9 +186,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     static char *tok = 0;
     delete [] tok;
     tok = strip_trailing_whitespace (yytext);
-    yylval.tok_val = new token (tok);
-    token_stack.push (yylval.tok_val);
-    TOK_RETURN (TEXT);
+    TOK_PUSH_AND_RETURN (tok, TEXT);
   }
 
 %{
@@ -379,7 +375,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     static char *tok = 0;
     delete [] tok;
     tok = strip_trailing_whitespace (yytext);
-    current_input_column += yyleng;
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
@@ -1688,11 +1683,7 @@ handle_identifier (char *tok, int spc_gobbled)
 // TEXT_ID, which is a string that is also a valid identifier.
 
   if (looking_at_indirect_ref)
-    {
-      yylval.tok_val = new token (tok);
-      token_stack.push (yylval.tok_val);
-      TOK_RETURN (TEXT_ID);
-    }
+    TOK_PUSH_AND_RETURN (tok, TEXT_ID);
 
 // If we have a regular keyword, or a plot STYLE, return it.  Keywords
 // can be followed by identifiers (TOK_RETURN handles that).
@@ -1702,6 +1693,7 @@ handle_identifier (char *tok, int spc_gobbled)
     {
       if (kw_token == STYLE)
 	{
+	  current_input_column += yyleng;
 	  quote_is_transpose = 0;
 	  convert_spaces_to_comma = 1;
 	  return kw_token;
@@ -1776,6 +1768,7 @@ handle_identifier (char *tok, int spc_gobbled)
 
   if (next_tok_is_eq)
     {
+      current_input_column += yyleng;
       if (defining_func && maybe_screwed)
 	return SCREW;
       else
@@ -1813,6 +1806,7 @@ handle_identifier (char *tok, int spc_gobbled)
 	unput (',');
     }
 
+  current_input_column += yyleng;
   return NAME;
 }
 

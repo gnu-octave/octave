@@ -635,17 +635,17 @@ command		: plot_command
 		  }
 		| BREAK
 		  {
-		    if (!looping)
+		    if (! (looping || defining_func))
 		      {
-			yyerror ("break: only meaningful within a `for'\
- or `while' loop");
+			yyerror ("break: only meaningful within a loop\
+ or function body");
 			ABORT_PARSE;
 		      }
 		    $$ = new tree_break_command ($1->line (), $1->column ());
 		  }
 		| CONTINUE
 		  {
-		    if (!looping)
+		    if (! looping)
 		      {
 			yyerror ("continue: only meaningful within a\
  `for' or `while' loop");
@@ -656,7 +656,7 @@ command		: plot_command
 		  }
 		| FUNC_RET
 		  {
-		    if (!defining_func)
+		    if (! defining_func)
 		      {
 			yyerror ("return: only meaningful within a function");
 			ABORT_PARSE;
@@ -1186,8 +1186,6 @@ yyerror (char *s)
 {
   char *line = current_input_line;
   int err_col = current_input_column - 1;
-  if (err_col == 0 && line)
-    err_col = strlen (line) + 1;
 
   ostrstream output_buf;
 
@@ -1205,6 +1203,7 @@ yyerror (char *s)
   if (line)
     {
       int len = strlen (line);
+
       if (line[len-1] == '\n')
         {
           len--;
@@ -1213,13 +1212,15 @@ yyerror (char *s)
 
 // Print the line, maybe with a pointer near the error token.
 
-      output_buf << "  " << line << "\n";
-      if (err_col <= len)
-	{
-	  for (int i = 0; i < err_col + 1; i++)
-	    output_buf << " ";
-	  output_buf << "^";
-	}
+      output_buf << ">>> " << line << "\n";
+
+      if (err_col == 0)
+	err_col = len;
+
+      for (int i = 0; i < err_col + 3; i++)
+	output_buf << " ";
+
+      output_buf << "^";
     }
 
   output_buf << "\n" << ends;

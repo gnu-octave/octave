@@ -57,6 +57,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
     } \
   while (0)
 
+#define TOK_PUSH_AND_RETURN(name,tok) \
+  do \
+    { \
+      yylval.tok_val = new token (input_line_number, current_input_column); \
+      token_stack.push (yylval.tok_val); \
+      TOK_RETURN (tok); \
+    } \
+  while (0)
+
 #define BIN_OP_RETURN(tok,convert) \
   do \
     { \

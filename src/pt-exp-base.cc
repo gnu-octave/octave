@@ -61,6 +61,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // Nonzero means we're returning from a function.
 extern int returning;
 
+// Nonzero means we're breaking out of a loop or function body.
+extern int breaking;
+
 // But first, some extra functions used by the tree classes.
 
 // We seem to have no use for this now.  Maybe it will be needed at
@@ -2772,6 +2775,9 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 
     if (returning)
       returning = 0;
+
+    if (breaking)
+      breaking--;
 
     if (error_state)
       {

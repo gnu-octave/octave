@@ -42,8 +42,6 @@ public:
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
-  void do_close (void);
-
 protected:
 
   ~octave_iprocstream (void);
@@ -70,8 +68,6 @@ public:
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
-
-  void do_close (void);
 
 protected:
 

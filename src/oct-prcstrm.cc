@@ -38,30 +38,14 @@ octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_iprocstream::octave_iprocstream (const std::string& n,
 					std::ios::openmode arg_md,
 					oct_mach_info::float_format flt_fmt)
-  : octave_istdiostream (n, 0, arg_md, flt_fmt)
+  : octave_istdiostream (n, ::popen (n.c_str (), "r"), ::pclose,
+			 arg_md, flt_fmt)
 {
-  fp = popen (n.c_str (), "r");
-
-  if (fp)
-    {
-      delete is;
-      is = new i_c_file_ptr_stream (fp);
-    }
 }
 
 octave_iprocstream::~octave_iprocstream (void)
 {
   do_close ();
-}
-
-void
-octave_iprocstream::do_close (void)
-{
-  if (fp)
-    {
-      pclose (fp);
-      fp = 0;
-    }
 }
 
 octave_stream
@@ -74,30 +58,14 @@ octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_oprocstream::octave_oprocstream (const std::string& n,
 					std::ios::openmode arg_md,
 					oct_mach_info::float_format flt_fmt)
-  : octave_ostdiostream (n, 0, arg_md, flt_fmt)
+  : octave_ostdiostream (n, ::popen (n.c_str (), "w"), ::pclose,
+			 arg_md, flt_fmt)
 {
-  fp = popen (n.c_str (), "w");
-
-  if (fp)
-    {
-      delete os;
-      os = new o_c_file_ptr_stream (fp);
-    }
 }
 
 octave_oprocstream::~octave_oprocstream (void)
 {
   do_close ();
-}
-
-void
-octave_oprocstream::do_close (void)
-{
-  if (fp)
-    {
-      pclose (fp);
-      fp = 0;
-    }
 }
 
 /*

@@ -1,3 +1,23 @@
+2000-09-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (FERRNO): New function (currently commented out).
+
+	* c-file-ptr-stream.cc (c_file_ptr_buf::close): Call flush here.
+	(c_file_ptr_buf::~c_file_ptr_buf): Not here.
+	* c-file-ptr-stream.h (c_fie_ptr_buf::close_fcn): New typedef.
+	(c_file_ptr_buf::cf): New data member.  Add default constructor arg.
+	(class c_file_ptr_buf): Derive from filebuf, not streambuf.
+	(i_c_file_ptr_stream, o_c_file_ptr_stream): Handle close function here.
+	* oct-procstrm.cc (octave_iprocstream, octave_oprocstream): Likewise.
+	(octave_iprocstream::do_close, octave_oprocstream::do_close): Delete.
+	* oct-stdstrm.cc (octave_base_stdiostream::~octave_base_stdiostream):
+	Don't do anything.
+	(octave_istdiostream::create): Handle close function here.
+	(octave_istdiostream::octave_istdiostream): Likewise.
+	(octave_ostdiostream::create): Likewise.
+	(octave_ostdiostream::octave_ostdiostream): Likewise.
+	(class octave_base_stdiostream): Don't cache FILE pointer here.
+
 2000-09-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* syscalls.cc (Ffcntl): Don't assume that the file id passed in is

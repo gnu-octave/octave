@@ -32,10 +32,10 @@ octave_base_stdiostream : public octave_base_stream
 public:
 
   octave_base_stdiostream
-    (const std::string& n, FILE *f,
+    (const std::string& n,
      std::ios::openmode arg_md = std::ios::in|std::ios::out,
      oct_mach_info::float_format flt_fmt = oct_mach_info::native)
-    : octave_base_stream (arg_md, flt_fmt), nm (n), fp (f) { }
+    : octave_base_stream (arg_md, flt_fmt), nm (n) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -59,9 +59,7 @@ protected:
 
   std::string nm;
 
-  FILE *fp;
-
-  ~octave_base_stdiostream (void);
+  ~octave_base_stdiostream (void) { }
 
   // No copying!
 
@@ -76,12 +74,14 @@ octave_istdiostream : public octave_base_stdiostream
 public:
 
   octave_istdiostream (const std::string& n, FILE *f = 0,
+		       c_file_ptr_buf::close_fcn cf = ::fclose,
 		       std::ios::openmode arg_md = std::ios::in,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
+	  c_file_ptr_buf::close_fcn cf = ::fclose,
 	  std::ios::openmode arg_md = std::ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
@@ -128,12 +128,14 @@ octave_ostdiostream : public octave_base_stdiostream
 public:
 
   octave_ostdiostream (const std::string& n, FILE *f = 0,
+		       c_file_ptr_buf::close_fcn cf = ::fclose,
 		       std::ios::openmode arg_md = std::ios::out,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
+	  c_file_ptr_buf::close_fcn cf = ::fclose,
 	  std::ios::openmode arg_md = std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 

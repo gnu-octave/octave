@@ -894,6 +894,7 @@ octave_base_stream::file_number (void)
   std::istream *is = input_stream ();
   std::ostream *os = output_stream ();
 
+  // XXX FIXME XXX -- there must be a better way...
   int i_fid = is ? ((std::filebuf *) (is->rdbuf ()))->fd () : -1;
   int o_fid = os ? ((std::filebuf *) (os->rdbuf ()))->fd () : -1;
 

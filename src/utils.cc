@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cerrno>
 #include <climits>
 #include <cstring>
 
@@ -565,6 +566,29 @@ representation.\n\
 
   return retval;
 }
+
+#if 0
+
+// Octave could use some way to access the value of ERRNO, but this is
+// probably not the best interface, so don't depend on it...
+
+DEFUN (ERRNO, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{system_error_number}} errno ()\n\
+Return the current value of the system-dependent variable errno.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 0)
+    retval = static_cast<double> (errno);
+  else
+    print_usage ("errno");
+
+  return retval;
+}
+
+#endif
 
 static void
 warn_old_style_preference (bool val, const std::string& sval)

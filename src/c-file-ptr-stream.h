@@ -31,13 +31,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 
 class
-c_file_ptr_buf : public std::streambuf
+c_file_ptr_buf : public std::filebuf
 {
 public:
 
+  typedef int (*close_fcn) (FILE *);
+
   FILE* stdiofile (void) const { return f; }
 
-  c_file_ptr_buf (FILE *f_arg) : std::streambuf (), f (f_arg) { }
+  c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = ::fclose)
+    : std::filebuf (f_arg ? fileno (f_arg) : -1), f (f_arg), cf (cf_arg) { }
 
   ~c_file_ptr_buf (void);
 
@@ -68,6 +71,8 @@ public:
 protected:
 
   FILE *f;
+
+  close_fcn cf;
 };
 
 class
@@ -75,8 +80,8 @@ i_c_file_ptr_stream : public std::istream
 {
 public:
 
-  i_c_file_ptr_stream (FILE* f)
-    : std::istream (), buf (new c_file_ptr_buf (f)) { init (buf); }
+  i_c_file_ptr_stream (FILE* f, c_file_ptr_buf::close_fcn cf = ::fclose)
+    : std::istream (), buf (new c_file_ptr_buf (f, cf)) { init (buf); }
 
   ~i_c_file_ptr_stream (void) { delete buf; buf = 0; }
 
@@ -94,8 +99,8 @@ o_c_file_ptr_stream : public std::ostream
 {
 public:
 
-  o_c_file_ptr_stream (FILE* f)
-    : std::ostream (), buf (new c_file_ptr_buf (f)) { init (buf); }
+  o_c_file_ptr_stream (FILE* f, c_file_ptr_buf::close_fcn cf = ::fclose)
+    : std::ostream (), buf (new c_file_ptr_buf (f, cf)) { init (buf); }
 
   ~o_c_file_ptr_stream (void) { delete buf; buf = 0; }
 

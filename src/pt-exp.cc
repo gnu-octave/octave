@@ -788,15 +788,6 @@ tree_simple_assignment_expression::accept (tree_walker& tw)
 
 // Colon expressions.
 
-bool
-tree_colon_expression::is_range_constant (void) const
-{
-  bool tmp = (op_base && op_base->is_constant ()
-	      && op_limit && op_limit->is_constant ());
-
-  return op_increment ? (tmp && op_increment->is_constant ()) : tmp;
-}
-
 tree_colon_expression *
 tree_colon_expression::chain (tree_expression *t)
 {

@@ -33,6 +33,9 @@ GPERF = @GPERF@
 AR = @AR@
 ARFLAGS = @ARFLAGS@ 
 
+TEMPLATE_AR = @TEMPLATE_AR@
+TEMPLATE_ARFLAGS = @TEMPLATE_ARFLAGS@
+
 RANLIB = @RANLIB@
 
 LN_S = @LN_S@
@@ -108,6 +111,9 @@ CPICFLAG = @CPICFLAG@
 XTRA_CFLAGS = @XTRA_CFLAGS@
 ALL_CFLAGS = $(INCFLAGS) $(DEFS) $(XTRA_CFLAGS) $(CFLAGS)
 BUG_CFLAGS = $(DEFS) $(XTRA_CFLAGS) $(CFLAGS)
+
+DEPEND_FLAGS = @DEPEND_FLAGS@
+DEPEND_EXTRA_SED_PATTERN = @DEPEND_EXTRA_SED_PATTERN@
 
 CXX = @CXX@
 CXX_VERSION = @CXX_VERSION@
@@ -300,8 +306,10 @@ pic/%.o : %.cc
 %.d : %.cc
 	@echo making $@ from $<
 	@rm -f $@
-	@$(CXX) -M $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	  sed -e 's,^[^:]*/\(.*\.o\):,\1:,' \
+	@$(CXX) $(DEPEND_FLAGS) $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
+	  sed \
+              $(DEPEND_EXTRA_SED_PATTERN) \
+	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
 	      -e 's,$*\.o,pic/& & $@,g' > $@.tmp
 	@mv $@.tmp $@
 
@@ -310,8 +318,10 @@ pic/%.o : %.cc
 %.d : %.c
 	@echo making $@ from $<
 	@rm -f $@
-	@$(CC) -M $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	  sed -e 's,^[^:]*/\(.*\.o\):,\1:,' \
+	@$(CC) $(DEPEND_FLAGS) $(CPPFLAGS) $(ALL_CFLAGS) $< | \
+	  sed \
+              $(DEPEND_EXTRA_SED_PATTERN) \
+	      -e 's,^[^:]*/\(.*\.o\):,\1:,' \
 	      -e 's,$*\.o,pic/& & $@,g' > $@.tmp
 	@mv $@.tmp $@
 

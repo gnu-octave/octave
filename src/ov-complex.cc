@@ -55,7 +55,7 @@ octave_complex::try_narrowing_conversion (void)
   octave_value *retval = 0;
 
   if (imag (scalar) == 0.0)
-    retval = new octave_scalar (::real (scalar));
+    retval = new octave_scalar (real (scalar));
 
   return retval;
 }
@@ -113,7 +113,7 @@ octave_complex::double_value (bool force_conversion) const
     gripe_implicit_conversion ("complex scalar", "real scalar");
 
   if (flag)
-    retval = ::real (scalar);
+    retval = std::real (scalar);
   else
     gripe_invalid_conversion ("complex scalar", "real scalar");
 
@@ -134,7 +134,7 @@ octave_complex::matrix_value (bool force_conversion) const
     gripe_implicit_conversion ("complex scalar", "real matrix");
 
   if (flag)
-    retval = Matrix (1, 1, ::real (scalar));
+    retval = Matrix (1, 1, std::real (scalar));
   else
     gripe_invalid_conversion ("complex scalar", "real matrix");
 

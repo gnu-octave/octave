@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_octave_fstream_h 1
 
 #include <fstream>
+#include <string>
 
 #include "oct-stream.h"
 
@@ -44,7 +45,7 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (std::streamoff offset, std::ios::seek_dir origin);
+  int seek (std::streamoff offset, std::ios::seekdir origin);
 
   // Return current stream position.
 

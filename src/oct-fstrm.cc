@@ -42,10 +42,18 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 				oct_mach_info::float_format flt_fmt)
   : octave_base_stream (arg_md, flt_fmt), nm (nm_arg)
 {
+
+#if CXX_ISO_COMPLIANT_LIBRARY
+
+  fs.open (nm.c_str (), arg_md);
+
+#else
   // Override default protection of 0664 so that umask will appear to
   // do the right thing.
 
   fs.open (nm.c_str (), arg_md, 0666);
+
+#endif
 
   if (! fs)
     {
@@ -58,7 +66,7 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_fstream::seek (std::streamoff offset, std::ios::seek_dir origin)
+octave_fstream::seek (std::streamoff offset, std::ios::seekdir origin)
 {
   int retval = -1;
 

@@ -3287,7 +3287,7 @@ lists of lists of matrices, or ...).\n\
 	{
 	  i++;
 
-	  unsigned mode = std::ios::in;
+	  std::ios::openmode mode = std::ios::in;
 	  if (format == LS_BINARY ||
 	      format == LS_MAT_BINARY ||
 	      format == LS_MAT5_BINARY)
@@ -4749,7 +4749,7 @@ write_header (std::ostream& os, load_save_format format)
 
     case LS_MAT5_BINARY:
       {
-	char *versionmagic;
+	char const * versionmagic;
 	TWO_BYTE_INT number = *(TWO_BYTE_INT *)"\x00\x01";
 	struct tm bdt;
 	time_t now;
@@ -4846,7 +4846,7 @@ save_user_variables (void)
 
       load_save_format format = get_default_save_format ();
 
-      unsigned mode = std::ios::out|std::ios::trunc;
+      std::ios::openmode mode = std::ios::out|std::ios::trunc;
       if (format == LS_BINARY ||
 	  format == LS_MAT_BINARY ||
 	  format == LS_MAT5_BINARY)
@@ -5088,7 +5088,7 @@ the file @file{data} in Octave's binary format.\n\
 
       i++;
 
-      unsigned mode = std::ios::out;
+      std::ios::openmode mode = std::ios::out;
       if (format == LS_BINARY ||
 	  format == LS_MAT_BINARY ||
 	  format == LS_MAT5_BINARY)
@@ -5123,7 +5123,7 @@ the file @file{data} in Octave's binary format.\n\
 	  if (file)
 	    {
 	      bool write_header_info
-		= ((file.rdbuf ())->seekoff (0, std::ios::cur)
+		= ((file.rdbuf ())->pubseekoff (0, std::ios::cur)
 		   == static_cast<std::streampos> (0));
 	      
 	      save_vars (argv, i, argc, file, save_builtins, format,

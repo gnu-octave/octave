@@ -49,34 +49,50 @@ c_file_ptr_buf::~c_file_ptr_buf (void)
 
 // XXX FIXME XXX -- I'm sure there is room for improvement here...
 
-int
-c_file_ptr_buf::overflow (int c)
+c_file_ptr_buf::int_type
+c_file_ptr_buf::overflow (int_type c)
 {
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+  if (f)
+    return (c != traits_type::eof ()) ? fputc (c, f) : flush ();
+  else
+    return traits_type::not_eof (c);
+#else
   if (f)
     return (c != EOF) ? fputc (c, f) : flush ();
   else
     return EOF;
+#endif
 }
 
-int
+c_file_ptr_buf::int_type
 c_file_ptr_buf::underflow (void)
 {
   if (f)
     return fgetc (f);
   else
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+    return traits_type::eof ();
+#else
     return EOF;
+#endif
 }
 
-int
+c_file_ptr_buf::int_type
 c_file_ptr_buf::uflow (void)
 {
   return underflow ();
 }
 
-int
-c_file_ptr_buf::pbackfail (int c)
+c_file_ptr_buf::int_type
+c_file_ptr_buf::pbackfail (int_type c)
 {
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+  return (c != traits_type::eof () && f) ? ungetc (c, f) : 
+    traits_type::not_eof (c);
+#else
   return (c != EOF && f) ? ungetc (c, f) : EOF;
+#endif
 }
 
 std::streamsize

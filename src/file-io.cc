@@ -318,7 +318,9 @@ do_stream_open (const std::string& name, const std::string& mode,
 	oct_mach_info::string_to_float_format (arch);
 
       if (! error_state)
-	retval = octave_fstream::create (name, md, flt_fmt);
+	retval = octave_fstream::create (name,
+	                                 static_cast<std::ios::openmode> (md), 
+					 flt_fmt);
     }
 
   return retval;

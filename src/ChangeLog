@@ -1,3 +1,61 @@
+2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* oct-stream.cc (octave_scan): Implement, and specialize for
+	char*. Delete the old template instantiations.
+	(BEGIN_S_CONVERSION): Use strings instead of ostrstreambuf.
+	(octave_base_stream::do_scanf): Pass correct parameter to
+	do_scan_conv.
+
+	* Makefile.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): Use to create
+	archive libraries containing templates.
+
+	* c-file-ptr-stream.h: Include <fstream>. Use <cstdio> instead of
+	<stdio.h>
+	(c_file_ptr_buf::int_type): Compat typedef for non-ISO libstdc++.
+	(c_file_ptr_buf::{overflow, underflow, uflow, pbackfail): Use.
+	(c_file_ptr_buf::c_file_ptr_buf): Handle various compilers.
+	(c_file_ptr_buf::file_number): New member function.
+	(c_file_ptr_buf::fd): New private data.
+	(i_c_file_ptr_stream::i_c_file_ptr_stream): Initialize stream
+	correctly.
+	(o_c_file_ptr_stream::o_c_file_ptr_stream): Likewise.
+	* c-file-ptr-stream.cc 
+	(c_file_ptr_buf::{overflow, underflow, uflow, pbackfail): Add
+	ISO-compliant EOF handling.
+	* oct-stream.cc (octave_base_stream::file_number): Use 
+	c_file_ptr_buf::file_number to get underlying file descriptor.
+
+	* comment-list.cc: Add missing class qualifier.
+
+	* file-io.cc, load-save.cc, mappers.cc, oct-fstrm.cc, oct-fstrm.h,
+	oct-iostrm.cc, oct-iostrm.h, oct-stdstrm.cc, oct-stdstrm.h,
+	oct-stream.cc, oct-stream.h, oct-strstrm.cc, oct-strstrm.h,
+	ov-base-nd-array.cc, ov-base-scalar.h, ov-complex.cc, ov-cx-mat.cc,
+	pager.cc, pr-output.cc, procstream.h, pt-bp.h, utils.cc:
+	Add std:: namespace qualifier as needed, and replace
+	deprecated or invalid libstdc++-v2 names with standard ones
+	where appropriate.
+
+	* DLD-FUNCTIONS/minmax.cc: Fix docstring.
+
+	* oct-fstrm.cc (octave_fstream::octave_fstream): Maintain fix for
+	libstdc++-v2.
+
+	* oct-stdstrm.cc (octave_ostdiostream::create): Remove default
+	parameter value in definition.
+
+	* oct-stream.cc (octave_stream::mode_as_string): Don't assume 
+	std::iso::openmode is an integral quantity.
+
+	* pager.cc, procstream.h: Initialize streams correctly.
+
+	* utils.cc: Use CXX_ISO_COMPLIANT_LIBRARY guard.
+
+	* ov-base-nd-array.cc (idx_list_to_idx_array): Inline. 
+
+	* ov-base-scalar.h (octave_base_scalar::octave_base_scalar): Use
+	``const ST& s'' instead of ST to workaround gcc3 complex bug.
+
 2001-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (next_token_is_bin_op): Remove Checks for spacing except

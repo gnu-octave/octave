@@ -169,7 +169,7 @@ tree_breakpoint : public tree_walker
       if (tree::break_next || is_breakpoint ()) \
         { \
           tree::break_next = false; \
-          octave_stdout << "line: " << line () << endl; \
+          octave_stdout << "line: " << line () << std::endl; \
           do_keyboard (); \
         } \
     } \

@@ -64,7 +64,7 @@ octave_complex_matrix::try_narrowing_conversion (void)
       Complex c = matrix (0, 0);
 
       if (imag (c) == 0.0)
-	retval = new octave_scalar (::real (c));
+	retval = new octave_scalar (std::real (c));
       else
 	retval = new octave_complex (c);
     }
@@ -182,7 +182,7 @@ octave_complex_matrix::double_value (bool force_conversion) const
     {
       if ((rows () == 1 && columns () == 1)
 	  || (Vdo_fortran_indexing && rows () > 0 && columns () > 0))
-	retval = ::real (matrix (0, 0));
+	retval = std::real (matrix (0, 0));
       else
 	gripe_invalid_conversion ("complex matrix", "real scalar");
     }

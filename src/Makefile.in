@@ -232,7 +232,7 @@ libraries: $(LIBRARIES)
 
 liboctinterp.$(LIBEXT): $(OBJECTS)
 	rm -f $@
-	$(AR) $(ARFLAGS) $@ $^
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)

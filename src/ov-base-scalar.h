@@ -51,7 +51,7 @@ public:
   octave_base_scalar (void)
     : octave_base_value () { }
 
-  octave_base_scalar (ST s)
+  octave_base_scalar (const ST& s)
     : octave_base_value (), scalar (s) { }
 
   octave_base_scalar (const octave_base_scalar& s)

@@ -184,7 +184,9 @@ operator << (std::ostream& os, const pr_formatted_float& pff)
   if (pff.f.prec >= 0)
     os << std::setprecision (pff.f.prec);
 
-  std::ios::fmtflags oflags = os.flags (pff.f.fmt | pff.f.up | pff.f.sp);
+  std::ios::fmtflags oflags = 
+    os.flags (static_cast<std::ios::fmtflags> 
+              (pff.f.fmt | pff.f.up | pff.f.sp));
 
   os << pff.val;
 

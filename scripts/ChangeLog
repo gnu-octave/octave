@@ -1,3 +1,7 @@
+2001-02-05  Ondrej Popp <ondrej@geocities.com>
+
+	* control/system/c2d.m: Add missing endif.
+
 2000-12-15  Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
 
 	* strings/index.m: Return 0 if either string is empty.

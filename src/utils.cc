@@ -718,7 +718,7 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 {
   int retval = -1;
 
-#if defined (__GNUG__)
+#if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
 
   std::ostrstream buf;
 

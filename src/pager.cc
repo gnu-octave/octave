@@ -284,7 +284,7 @@ octave_diary_buf::sync (void)
 
 octave_pager_stream *octave_pager_stream::instance = 0;
 
-octave_pager_stream::octave_pager_stream (void) : std::ostream (), pb (0)
+octave_pager_stream::octave_pager_stream (void) : std::ostream (0), pb (0)
 {
   pb = new octave_pager_buf;
   rdbuf (pb);
@@ -322,7 +322,7 @@ octave_pager_stream::set_diary_skip (void)
 
 octave_diary_stream *octave_diary_stream::instance = 0;
 
-octave_diary_stream::octave_diary_stream (void) : std::ostream (), db (0)
+octave_diary_stream::octave_diary_stream (void) : std::ostream (0), db (0)
 {
   db = new octave_diary_buf;
   rdbuf (db);

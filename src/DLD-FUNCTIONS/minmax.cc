@@ -556,7 +556,7 @@ comparison.\n\
 \n\
 If called with two output arguments, also returns the index of the\n\
 minimum value(s). Thus,\n\
-@example\n
+@example\n\
 [x, ix] = min ([1, 3, 0, 2, 5])\n\
 @end example\n\
 \n\
@@ -580,11 +580,11 @@ max (max (@var{x}))\n\
 returns the largest element of @var{x}.\n\
 \n\
 For complex arguments, the magnitude of the elements are used for\n\
-comparison.
+comparison.\n\
 \n\
 If called with two output arguments, also returns the index of the\n\
 maximum value(s). Thus,\n\
-@example\n
+@example\n\
 [x, ix] = max([1, 3, 5, 2, 5])\n\
 @end example\n\
 \n\

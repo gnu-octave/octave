@@ -257,12 +257,6 @@ floor (const Complex& x)
 }
 
 Complex
-log10 (const Complex& x)
-{
-  return M_LOG10E * log (x);
-}
-
-Complex
 round (const Complex& x)
 {
   return Complex (D_NINT (real (x)), D_NINT (imag (x)));
@@ -272,12 +266,6 @@ Complex
 signum (const Complex& x)
 {
   return x / abs (x);
-}
-
-Complex
-tan (const Complex& x)
-{
-  return sin (x) / cos (x);
 }
 
 Complex

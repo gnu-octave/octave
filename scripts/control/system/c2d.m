@@ -176,6 +176,7 @@ function dsys = c2d (sys, opt, T)
       D = d + (c*iab);
       stnamed = strappend(stname,"_d");
       dsys = ss2sys(A,B,C,D,T,0,rows(A),stnamed,inname,outname);
+     endif
    elseif(strcmp(opt,"matched"))
      if(is_digital(sys))
        error("c2d: system is already digital");

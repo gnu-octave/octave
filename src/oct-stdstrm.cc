@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_stdiostream::seek (std::streamoff offset, std::ios::seek_dir origin)
+octave_base_stdiostream::seek (std::streamoff offset, std::ios::seekdir origin)
 {
   int retval = -1;
 
@@ -107,7 +107,7 @@ octave_istdiostream::do_close (void)
 
 octave_stream
 octave_ostdiostream::create (const std::string& n, FILE *f,
-			     c_file_ptr_buf::close_fcn cf = ::fclose,
+			     c_file_ptr_buf::close_fcn cf,
 			     std::ios::openmode arg_md,
 			     oct_mach_info::float_format flt_fmt)
 {

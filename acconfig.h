@@ -14,6 +14,9 @@
    internal array and matrix classes. */
 #undef BOUNDS_CHECKING
 
+/* Define if your C++ runtime library is ISO compliant. */
+#undef CXX_ISO_COMPLIANT_LIBRARY
+
 /* Define if your compiler supports `<>' stuff for template friends. */
 #undef CXX_NEW_FRIEND_TEMPLATE_DECL
 

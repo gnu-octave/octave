@@ -1,3 +1,24 @@
+2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* Makefile.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): Use to create
+	archive libraries containing templates.
+
+	* ArrayN-idx.h (freeze, all_ok, any_orig_empty, any_zero_len,
+	get_zero_len_size, all_colon_equiv): Inline. 
+	(ArrayN<T>::index): Rename idx to arr_idx.
+	* ArrayN.cc (ArrayN<T>::index, ArrayN<T>::compute_index, 
+	ArrayN<T>::get_size, ArrayN<T>::range_error, ArrayN<T>::range_error,
+	increment_index, ArrayN<T>::resize, ArrayN<T>::insert): Likewise.
+
+2001-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.h, lo-mappers.cc (tan (const Complex&),
+	log10 (const Complex&)): Delete.
+
+	* oct-cmplx.h: Define forwarding functions for real, imag, abs,
+	arg, norm, conj, polar, cos, cosh, exp, log, log10, pow, sin,
+	sinh, sqrt, tan, and tanh.
+
 2001-01-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc, help.cc, load-save.cc, pr-output.cc, utils.cc:

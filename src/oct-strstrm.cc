@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_strstream::seek (std::streamoff offset, std::ios::seek_dir origin)
+octave_base_strstream::seek (std::streamoff offset, std::ios::seekdir origin)
 {
   int retval = -1;
 

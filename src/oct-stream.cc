@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "input.h"
+#include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "oct-obj.h"
 #include "utils.h"
@@ -894,9 +895,17 @@ octave_base_stream::file_number (void)
   std::istream *is = input_stream ();
   std::ostream *os = output_stream ();
 
-  // XXX FIXME XXX -- there must be a better way...
-  int i_fid = is ? ((std::filebuf *) (is->rdbuf ()))->fd () : -1;
-  int o_fid = os ? ((std::filebuf *) (os->rdbuf ()))->fd () : -1;
+  // There is no standard way to get the underlying file descriptor from 
+  // std::filebuf (nor in the GNU libstdc++-v3 implementation). We cache
+  // the descriptor in c_file_ptr_buf, and then extract it here.
+
+  c_file_ptr_buf *ibuf = is ?
+    dynamic_cast<c_file_ptr_buf *> (is->rdbuf ()) : 0;
+  c_file_ptr_buf *obuf = os ?
+    dynamic_cast<c_file_ptr_buf *> (os->rdbuf ()) : 0;
+
+  int i_fid = ibuf ? ibuf->file_number () : -1;
+  int o_fid = obuf ? obuf->file_number () : -1;
 
   if (i_fid >= 0)
     {
@@ -1055,7 +1064,7 @@ octave_base_stream::read (const Matrix& size,
   return retval;
 }
 
-#if defined (__GNUG__)
+#if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
 
 #define OCTAVE_SCAN(is, fmt, arg) is.scan ((fmt).text, arg)
 
@@ -2513,7 +2522,7 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err)
 }
 
 int
-octave_stream::seek (std::streamoff offset, std::ios::seek_dir origin)
+octave_stream::seek (std::streamoff offset, std::ios::seekdir origin)
 {
   int retval = -1;
 
@@ -2535,7 +2544,7 @@ octave_stream::seek (const octave_value& tc_offset,
 
   if (! conv_err)
     {
-      std::ios::seek_dir origin = std::ios::beg;
+      std::ios::seekdir origin = std::ios::beg;
 
       if (tc_origin.is_string ())
 	{
@@ -2765,62 +2774,36 @@ std::string
 octave_stream::mode_as_string (int mode)
 {
   std::string retval = "???";
+  std::ios::openmode in_mode = static_cast<std::ios::openmode> (mode);
 
-  switch (mode)
-    {
-    case std::ios::in:
-      retval = "r";
-      break;
-
-    case std::ios::out:
-    case std::ios::out | std::ios::trunc:
-      retval = "w";
-      break;
-
-    case std::ios::out | std::ios::app:
-      retval = "a";
-      break;
-
-    case std::ios::in | std::ios::out:
-      retval = "r+";
-      break;
-
-    case std::ios::in | std::ios::out | std::ios::trunc:
-      retval = "w+";
-      break;
-
-    case std::ios::in | std::ios::out | std::ios::app:
-      retval = "a+";
-      break;
-
-    case std::ios::in | std::ios::binary:
-      retval = "rb";
-      break;
-
-    case std::ios::out | std::ios::binary:
-    case std::ios::out | std::ios::trunc | std::ios::binary:
-      retval = "wb";
-      break;
-
-    case std::ios::out | std::ios::app | std::ios::binary:
-      retval = "ab";
-      break;
-
-    case std::ios::in | std::ios::out | std::ios::binary:
-      retval = "r+b";
-      break;
-
-    case std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary:
-      retval = "w+b";
-      break;
-
-    case std::ios::in | std::ios::out | std::ios::app | std::ios::binary:
-      retval = "a+b";
-      break;
-
-    default:
-      break;
-    }
+  if (in_mode == std::ios::in)
+    retval = "r";
+  else if (in_mode == std::ios::out 
+           || in_mode == std::ios::out | std::ios::trunc)
+    retval = "w";
+  else if (in_mode == std::ios::out | std::ios::app)
+    retval = "a";
+  else if (in_mode == std::ios::in | std::ios::out)
+    retval = "r+";
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::trunc)
+    retval = "w+";
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::app)
+    retval = "a+";
+  else if (in_mode == std::ios::in | std::ios::binary)
+    retval = "rb";
+  else if (in_mode == std::ios::out | std::ios::binary
+           || in_mode == std::ios::out | std::ios::trunc | std::ios::binary)
+    retval = "wb";
+  else if (in_mode == std::ios::out | std::ios::app | std::ios::binary)
+    retval = "ab";
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::binary)
+    retval = "r+b";
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::trunc 
+           | std::ios::binary)
+    retval = "w+b";
+  else if (in_mode == std::ios::in | std::ios::out | std::ios::app
+           | std::ios::binary)
+    retval = "a+b";
 
   return retval;
 }

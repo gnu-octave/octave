@@ -51,10 +51,8 @@ extern Complex atanh (const Complex& x);
 extern Complex ceil (const Complex& x);
 extern Complex fix (const Complex& x);
 extern Complex floor (const Complex& x);
-extern Complex log10 (const Complex& x);
 extern Complex round (const Complex& x);
 extern Complex signum (const Complex& x);
-extern Complex tan (const Complex& x);
 extern Complex tanh (const Complex& x);
 
 extern bool xisnan (const Complex& x);

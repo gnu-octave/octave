@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base-nd-array.h"
 #include "pr-output.h"
 
-static Array<idx_vector>
+static inline Array<idx_vector>
 idx_list_to_idx_array (const octave_value_list& idx)
 {
   int n = idx.length ();

@@ -1,3 +1,20 @@
+2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* configure.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): New variables.
+	* Makeconf.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): Likewise.
+	
+	* configure.in (XTRA_CXXFLAGS): Use -fno-implicit templates for
+	pre-gcc3 compilers. Remove -fno-rtti and -fno-exceptions.
+	(DEPEND_FLAGS, DEPEND_EXTRA_SED_PATTERN): New macros.
+	(BLAS_LIBS): Fix test for sunperf library on Sun Solaris.
+	(CPICFLAG, CXXPICFLAG, FPICFLAG, SH_LDFLAGS, RLD_FLAG): Add Sun
+	compiler support.
+	* Makefile.in (DEPEND_FLAGS, DEPEND_EXTRA_SED_PATTERN): New
+	variables.
+	(%.d : %.cc): Use.
+	(%.d : %.c): Likewise.
+	* acconfig.h (CXX_ISO_COMPLIANT_LIBRARY): Add #undef.
+
 2001-01-31  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* Makeconf.in (%.d : %.cc): Strip the directory portion of the

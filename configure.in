@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.338 $)
+AC_REVISION($Revision: 1.339 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -184,11 +184,23 @@ AC_PROG_CXXCPP
 gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
   sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
 
+# 
+# Auto instantiate all templates, other than those that are explicitly
+# instantiated in Octave. Octave currently instantiates all needed
+# templates for GCC-2.8.x and EGCS-1.1.x, but not for newer GNU releases
+# nor for other supported compilers.
+#
+cxx_auto_instantiate_templates=yes
 case "$gxx_version" in
 changequote(,)dnl
   1.* | 2.[0123456].* | 2.7.[01]*)
 changequote([,])dnl
     AC_MSG_ERROR([g++ version $gxx_version will not work to compile Octave])
+  ;;
+changequote(,)dnl
+  2.8* | 2.9[1-6]*)
+changequote([,])dnl
+    cxx_auto_instantiate_templates=no
   ;;
 esac
 
@@ -232,6 +244,24 @@ if test -n "$gcc_version"; then
 fi
 AC_SUBST(CC_VERSION)
 
+### The flag to create dependency varies depending on the compier.
+
+# Assume GCC.
+DEPEND_FLAGS="-M"
+DEPEND_EXTRA_SED_PATTERN=""
+case "$canonical_host_type" in
+  sparc-sun-solaris2* | i386-pc-solaris2*)
+    if test "$GCC" = "yes"; then
+      true
+    else
+      DEPEND_FLAGS="-xM1"
+      DEPEND_EXTRA_SED_PATTERN="-e '/\/opt\/SUNWspro/d'"
+    fi
+  ;;
+esac
+AC_SUBST(DEPEND_FLAGS)
+AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
+
 ### On Intel systems with gcc, we may need to compile with -mieee-fp to
 ### get full support for IEEE floating point.
 ###
@@ -272,22 +302,13 @@ changequote([,])dnl
   ;;
 esac
 
-### Octave doesn't use run-time type identification or exceptions yet,
-### so disable them for somewhat faster and smaller code.
+### We do our own template instantiation for specific compilers.
 
-OCTAVE_CXX_FLAG(-fno-rtti, [
-  XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-rtti"
-  AC_MSG_RESULT([adding -fno-rtti to XTRA_CXXFLAGS])])
-
-OCTAVE_CXX_FLAG(-fno-exceptions, [
-  XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-exceptions"
-  AC_MSG_RESULT([adding -fno-exceptions to XTRA_CXXFLAGS])])
-
-### We do our own template instantiation.
-
-OCTAVE_CXX_FLAG(-fno-implicit-templates, [
-  XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-implicit-templates"
-  AC_MSG_RESULT([adding -fno-implicit-templates to XTRA_CXXFLAGS])])
+if test "$cxx_auto_instantiate_templates" = "no"; then
+  OCTAVE_CXX_FLAG(-fno-implicit-templates, [
+    XTRA_CXXFLAGS="$XTRA_CXXFLAGS -fno-implicit-templates"
+    AC_MSG_RESULT([adding -fno-implicit-templates to XTRA_CXXFLAGS])])
+fi
 
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
@@ -571,8 +592,11 @@ fi
 if test "x$BLAS_LIBS" = x; then
   # Check for BLAS in Sun Performance library:
   AC_CHECK_LIB(sunmath, acosp, BLAS_LIBS="-lsunmath")
-  AC_CHECK_LIB(sunperf, $dgemm_func, BLAS_LIBS="-xlic_lib=sunperf $BLAS_LIBS",
-               , $BLAS_LIBS)
+  # Don't use AC_CHECK_LIB here.
+  saved_LIBS="$LIBS"
+  LIBS="$LIBS $BLAS_LIBS -xlic_lib=sunperf"
+  AC_CHECK_FUNC($dgemm_func, BLAS_LIBS="-xlic_lib=sunperf $BLAS_LIBS",)
+  LIBS="$saved_LIBS"
 fi
 
 if test "x$BLAS_LIBS" = x; then
@@ -692,6 +716,8 @@ SH_LD="$CXX"
 SH_LDFLAGS=-shared
 SONAME_FLAGS=
 RLD_FLAG=
+TEMPLATE_AR="$AR"
+TEMPLATE_ARFLAGS="$ARFLAGS"
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-openbsd* | *-*-netbsd* | *-*-freebsd*)
     SH_LD=ld
@@ -752,9 +778,28 @@ changequote([,])dnl
     if test "$octave_cv_f77_is_g77" = yes; then
       FPICFLAG=-fPIC
     else
-      FPICFLAG=-PIC
+      FPICFLAG=-KPIC
     fi
-    RLD_FLAG='-Xlinker -R -Xlinker $(octlibdir)'
+    if test "$GCC" = yes; then
+      CPICFLAG=-fPIC
+    else
+      CPICFLAG=-KPIC
+    fi
+    if test "$GXX" = yes; then
+      CXXPICFLAG=-fPIC
+      SH_LDFLAGS=-shared
+    else
+      CXXPICFLAG=-KPIC
+      SH_LDFLAGS=-G
+    fi
+    RLD_FLAG='-R $(octlibdir)'
+    # Template closures in archive libraries need a different mechanism.
+    if test "$GXX" = "yes"; then
+      true
+    else
+      TEMPLATE_AR="$CXX"
+      TEMPLATE_ARFLAGS="-xar -o"
+    fi
   ;;
 esac
 
@@ -773,6 +818,8 @@ AC_MSG_RESULT([defining SH_LD to be $SH_LD])
 AC_MSG_RESULT([defining SH_LDFLAGS to be $SH_LDFLAGS])
 AC_MSG_RESULT([defining SONAME_FLAGS to be $SONAME_FLAGS])
 AC_MSG_RESULT([defining RLD_FLAG to be $RLD_FLAG])
+AC_MSG_RESULT([defining TEMPLATE_AR to be $TEMPLATE_AR])
+AC_MSG_RESULT([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
@@ -782,6 +829,8 @@ AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)
 AC_SUBST(SONAME_FLAGS)
 AC_SUBST(RLD_FLAG)
+AC_SUBST(TEMPLATE_AR)
+AC_SUBST(TEMPLATE_ARFLAGS)
 
 ### Allow compilation of smaller kernel.  This only works if some form
 ### of dynamic linking is also supported and used.

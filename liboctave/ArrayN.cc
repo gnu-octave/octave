@@ -46,32 +46,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template <class T>
 int
-ArrayN<T>::compute_index (const Array<int>& idx) const
+ArrayN<T>::compute_index (const Array<int>& arr_idx) const
 {
   int retval = -1;
 
   int n = dimensions.length ();
 
-  if (n > 0 && n == idx.length ())
+  if (n > 0 && n == arr_idx.length ())
     {
-      retval = idx(--n);
+      retval = arr_idx(--n);
 
       while (--n >= 0)
 	{
 	  retval *= dimensions(n);
-	  retval += idx(n);
+	  retval += arr_idx(n);
 	}
     }
   else
     (*current_liboctave_error_handler)
-      ("ArrayN<T>::compute_index: invalid indexing operation");
+      ("ArrayN<T>::compute_index: invalid arr_idxing operation");
 
   return retval;
 }
 
 template <class T>
 int
-ArrayN<T>::get_size (const Array<int>& idx)
+ArrayN<T>::get_size (const Array<int>& arr_idx)
 {
   // XXX KLUGE XXX
 
@@ -97,18 +97,18 @@ ArrayN<T>::get_size (const Array<int>& idx)
 
   int retval = max_items;
 
-  int n = idx.length ();
+  int n = arr_idx.length ();
 
   int nt = 0;
   double dt = 1;
 
   for (int i = 0; i < n; i++)
     {
-      int nidx;
-      double didx = frexp (static_cast<double> (idx(i)), &nidx);
+      int narr_idx;
+      double darr_idx = frexp (static_cast<double> (arr_idx(i)), &narr_idx);
 
-      nt += nidx;
-      dt *= didx;
+      nt += narr_idx;
+      dt *= darr_idx;
     }
 
   if (dt <= 0.5)
@@ -125,7 +125,7 @@ ArrayN<T>::get_size (const Array<int>& idx)
       retval = 1;
 
       for (int i = 0; i < n; i++)
-	retval *= idx(i);
+	retval *= arr_idx(i);
     }
 
   return retval;
@@ -133,7 +133,7 @@ ArrayN<T>::get_size (const Array<int>& idx)
 
 template <class T>
 T
-ArrayN<T>::range_error (const char *fcn, const Array<int>& idx) const
+ArrayN<T>::range_error (const char *fcn, const Array<int>& arr_idx) const
 {
   // XXX FIXME XXX -- report index values too!
 
@@ -144,7 +144,7 @@ ArrayN<T>::range_error (const char *fcn, const Array<int>& idx) const
 
 template <class T>
 T&
-ArrayN<T>::range_error (const char *fcn, const Array<int>& idx)
+ArrayN<T>::range_error (const char *fcn, const Array<int>& arr_idx)
 {
   // XXX FIXME XXX -- report index values too!
 
@@ -155,17 +155,17 @@ ArrayN<T>::range_error (const char *fcn, const Array<int>& idx)
 }
 
 static inline bool
-index_in_bounds (const Array<int>& idx, const Array<int>& dimensions)
+index_in_bounds (const Array<int>& arr_idx, const Array<int>& dimensions)
 {
   bool retval = true;
 
-  int n = idx.length ();
+  int n = arr_idx.length ();
 
   if (n == dimensions.length ())
     {
       for (int i = 0; i < n; i++)
 	{
-	  if (idx(i) < 0 || idx(i) >= dimensions (i))
+	  if (arr_idx(i) < 0 || arr_idx(i) >= dimensions (i))
 	    {
 	      retval = false;
 	      break;
@@ -179,20 +179,20 @@ index_in_bounds (const Array<int>& idx, const Array<int>& dimensions)
 }
 
 static inline void
-increment_index (Array<int>& idx, const Array<int>& dimensions)
+increment_index (Array<int>& arr_idx, const Array<int>& dimensions)
 {
-  idx(0)++;
+  arr_idx(0)++;
 
-  int n = idx.length () - 1;
+  int n = arr_idx.length () - 1;
 
   for (int i = 0; i < n; i++)
     {
-      if (idx(i) < dimensions(i))
+      if (arr_idx(i) < dimensions(i))
 	break;
       else
 	{
-	  idx(i) = 0;
-	  idx(i+1)++;
+	  arr_idx(i) = 0;
+	  arr_idx(i+1)++;
 	}
     }
 }
@@ -238,14 +238,14 @@ ArrayN<T>::resize (const Array<int>& dims)
 
   dimensions = dims;
 
-  Array<int> idx (dimensions.length (), 0);
+  Array<int> arr_idx (dimensions.length (), 0);
 
   for (int i = 0; i < old_len; i++)
     {
-      if (index_in_bounds (idx, dimensions))
-	xelem (idx) = old_data[i];
+      if (index_in_bounds (arr_idx, dimensions))
+	xelem (arr_idx) = old_data[i];
 
-      increment_index (idx, dimensions);
+      increment_index (arr_idx, dimensions);
     }
 
   if (--old_rep->count <= 0)
@@ -295,17 +295,17 @@ ArrayN<T>::resize (const Array<int>& dims, const T& val)
 
   dimensions = dims;
 
-  Array<int> idx (dimensions.length (), 0);
+  Array<int> arr_idx (dimensions.length (), 0);
 
   for (int i = 0; i < len; i++)
     rep->elem (i) = val;
 
   for (int i = 0; i < old_len; i++)
     {
-      if (index_in_bounds (idx, dimensions))
-	xelem (idx) = old_data[i];
+      if (index_in_bounds (arr_idx, dimensions))
+	xelem (arr_idx) = old_data[i];
 
-      increment_index (idx, dimensions);
+      increment_index (arr_idx, dimensions);
     }
 
   if (--old_rep->count <= 0)
@@ -314,9 +314,9 @@ ArrayN<T>::resize (const Array<int>& dims, const T& val)
 
 template <class T>
 ArrayN<T>&
-ArrayN<T>::insert (const ArrayN<T>& a, const Array<int>& idx)
+ArrayN<T>::insert (const ArrayN<T>& a, const Array<int>& arr_idx)
 {
-  int n = idx.length ();
+  int n = arr_idx.length ();
 
   if (n == dimensions.length ())
     {
@@ -324,7 +324,7 @@ ArrayN<T>::insert (const ArrayN<T>& a, const Array<int>& idx)
 
       for (int i = 0; i < n; i++)
 	{
-	  if (idx(i) < 0 || idx(i) + a_dims(i) > dimensions(i))
+	  if (arr_idx(i) < 0 || arr_idx(i) + a_dims(i) > dimensions(i))
 	    {
 	      (*current_liboctave_error_handler)
 		("ArrayN<T>::insert: range error for insert");

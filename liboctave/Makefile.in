@@ -163,7 +163,7 @@ endif
 
 liboctave.$(LIBEXT): $(OBJECTS)
 	rm -f $@
-	$(AR) $(ARFLAGS) $@ $^
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
 
 liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)

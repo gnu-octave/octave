@@ -66,14 +66,15 @@ private:
 };
 
 class
-iprocstream : public procstreambase, public std::istream
+iprocstream : public std::istream, public procstreambase
+// iprocstream : public procstreambase, public std::istream
 {
 public:
 
-  iprocstream (void) : procstreambase () { }
+  iprocstream (void) : std::istream (0), procstreambase () { }
 
   iprocstream (const char *name, int mode = std::ios::in)
-    : procstreambase (name, mode) { }
+    : std::istream (0), procstreambase (name, mode) { }
 
   ~iprocstream (void) { }
 
@@ -88,14 +89,15 @@ private:
 };
 
 class
-oprocstream : public procstreambase, public std::ostream
+oprocstream : public std::ostream, public procstreambase
+// oprocstream : public procstreambase, public std::ostream
 {
 public:
  
-  oprocstream (void) : procstreambase () { }
+  oprocstream (void) : std::ostream (0), procstreambase () { }
 
   oprocstream (const char *name, int mode = std::ios::out)
-    : procstreambase(name, mode) { }
+    : std::ostream (0), procstreambase(name, mode) { }
 
   ~oprocstream (void) { }
 
@@ -110,14 +112,15 @@ private:
 };
 
 class
-procstream : public procstreambase, public std::iostream
+procstream : public std::iostream, public procstreambase
+// procstream : public procstreambase, public std::iostream
 {
 public:
 
-  procstream (void) : procstreambase () { }
+  procstream (void) : std::iostream (0), procstreambase () { }
 
   procstream (const char *name, int mode)
-    : procstreambase (name, mode) { }
+    : std::iostream (0), procstreambase (name, mode) { }
 
   ~procstream (void) { }
 

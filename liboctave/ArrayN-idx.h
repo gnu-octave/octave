@@ -77,7 +77,7 @@ ArrayN<T>::index (idx_vector& idx) const
   return retval;
 }
 
-static Array<int>
+static inline Array<int>
 freeze (Array<idx_vector>& idx, const Array<int>& dimensions)
 {
   Array<int> retval;
@@ -94,7 +94,7 @@ freeze (Array<idx_vector>& idx, const Array<int>& dimensions)
   return retval;
 }
 
-static bool
+static inline bool
 all_ok (const Array<idx_vector>& idx)
 {
   bool retval = true;
@@ -113,7 +113,7 @@ all_ok (const Array<idx_vector>& idx)
   return retval;
 }
 
-static bool
+static inline bool
 any_orig_empty (const Array<idx_vector>& idx)
 {
   bool retval = false;
@@ -132,7 +132,7 @@ any_orig_empty (const Array<idx_vector>& idx)
   return retval;
 }
 
-static bool
+static inline bool
 any_zero_len (const Array<int>& frozen_lengths)
 {
   bool retval = false;
@@ -151,7 +151,7 @@ any_zero_len (const Array<int>& frozen_lengths)
   return retval;
 }
 
-static Array<int>
+static inline Array<int>
 get_zero_len_size (const Array<int>& frozen_lengths,
 		   const Array<int>& dimensions)
 {
@@ -160,7 +160,7 @@ get_zero_len_size (const Array<int>& frozen_lengths,
   return retval;
 }
 
-static bool
+static inline bool
 all_colon_equiv (const Array<idx_vector>& idx,
 		 const Array<int>& frozen_lengths)
 {
@@ -199,19 +199,19 @@ get_elt_idx (const Array<idx_vector>& idx, const Array<int>& result_idx)
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (Array<idx_vector>& idx) const
+ArrayN<T>::index (Array<idx_vector>& arr_idx) const
 {
   ArrayN<T> retval;
 
   int n_dims = dimensions.length ();
 
-  Array<int> frozen_lengths = freeze (idx, dimensions);
+  Array<int> frozen_lengths = freeze (arr_idx, dimensions);
 
   if (frozen_lengths.length () == n_dims)
     {
-      if (all_ok (idx))
+      if (all_ok (arr_idx))
 	{
-	  if (any_orig_empty (idx))
+	  if (any_orig_empty (arr_idx))
 	    {
 	      retval.resize (frozen_lengths);
 	    }
@@ -222,7 +222,7 @@ ArrayN<T>::index (Array<idx_vector>& idx) const
 
 	      retval.resize (new_size);
 	    }
-	  else if (all_colon_equiv (idx, frozen_lengths))
+	  else if (all_colon_equiv (arr_idx, frozen_lengths))
 	    {
 	      retval = *this;
 	    }

@@ -1697,5 +1697,6 @@ maybe_warn_missing_semi (tree_statement_list *t)
 
 	warning ("missing semicolon near line %d, column %d",
 		 tmp->line (), tmp->column ());
+	warning ("reading file `%s', curr_fcn_file_name);
     }
 }

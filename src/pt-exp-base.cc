@@ -777,9 +777,7 @@ tree_identifier::eval_undefined_error (void)
 tree_fvc *
 tree_identifier::do_lookup (int& script_file_executed)
 {
-  script_file_executed = 0;
-
-  int script_file_executed = lookup (sym);
+  script_file_executed = lookup (sym);
 
   tree_fvc *ans = 0;
 

@@ -60,13 +60,13 @@ C
  60     DKY(I) = R*DKY(I)
       RETURN
 C
- 80   CALL XERR('ODESSA_INTDY--  K (=I1) ILLEGAL',
+ 80   CALL XERRWD('ODESSA_INTDY--  K (=I1) ILLEGAL',
      1  51, 1, 1, K, 0, 0, ZERO,ZERO)
       IFLAG = -1
       RETURN
- 90   CALL XERR ('ODESSA_INTDY--  T (=R1) ILLEGAL',
+ 90   CALL XERRWD ('ODESSA_INTDY--  T (=R1) ILLEGAL',
      1   52, 1, 0, 0, 0, 1, T, ZERO)
-      CALL XERR('T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)',
+      CALL XERRWD('T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)',
      1   52, 1, 0, 0, 0, 2, TP, TN)
       IFLAG = -2
       RETURN

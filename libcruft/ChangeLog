@@ -1,5 +1,10 @@
 2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* odessa/odessa.f (ODESSA): Use XERRWD instead of XERR.
+	* odessa/intdy.f (ODESSA_INTDY): Likewise.
+	* odessa_rscom.f (ODESSA_RSCOM): Delete unused common block EH0001.
+	* odessa_svcom.f (ODESSA_SVCOM): Likewise.
+
 	* dasrt/xerrwv.f, odepack/xerrwv.f: Delete.
 	* slatec-err/xerrwd.f (XERRWD): Call XSTOPX instead of using STOP.
 

@@ -1,7 +1,7 @@
       SUBROUTINE ODESSA_RSCOM (RSAV, ISAV)
 C-----------------------------------------------------------------------
 C THIS ROUTINE RESTORES FROM RSAV AND ISAV THE CONTENTS OF COMMON BLOCKS
-C ODE001, ODE002 AND EH0001, WHICH ARE USED INTERNALLY IN THE ODESSSA
+C ODE001 AND ODE002, WHICH ARE USED INTERNALLY IN THE ODESSSA
 C PACKAGE.  THIS PRESUMES THAT RSAV AND ISAV WERE LOADED BY MEANS
 C OF SUBROUTINE ODESSA_SVCOM OR THE EQUIVALENT.
 C-----------------------------------------------------------------------
@@ -9,7 +9,6 @@ C-----------------------------------------------------------------------
       DIMENSION RSAV(*), ISAV(*)
       COMMON /ODE001/ RODE1(219), IODE1(39)
       COMMON /ODE002/ RODE2(3), IODE2(11)
-      COMMON /EH0001/ IEH(2)
       DATA LRODE1/219/, LIODE1/39/, LRODE2/3/, LIODE2/11/
 C
       DO 10 I = 1,LRODE1
@@ -22,8 +21,6 @@ C
       DO 40 I = 1,LODE2
         J = LIODE1 + I
  40     IODE2(I) = ISAV(J)
-      IEH(1) = ISAV(LIODE1+LIODE2+1)
-      IEH(2) = ISAV(LIODE1+LIODE2+2)
       RETURN
 C----------------------- END OF SUBROUTINE ODESSA_RSCOM -----------------------
       END

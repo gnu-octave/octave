@@ -1229,6 +1229,30 @@ octave_value::do_non_const_unary_op (octave_value::unary_op op)
     }
 }
 
+static void
+gripe_unary_op_failed_or_no_method (const string& on, const string& tn)
+{
+  error ("operator %s: no method, or unable to evaluate for %s operand",
+	 on.c_str (), tn.c_str ());
+}
+
+void
+octave_value::do_non_const_unary_op (octave_value::unary_op op,
+				     const octave_value_list& idx)
+{
+  // XXX FIXME XXX -- only do the following stuff if we can't find a
+  // specific function to call to handle the op= operation for the
+  // types we have.
+
+  assign_op assop = unary_op_to_assign_op (op);
+
+  if (! error_state)
+    assign (assop, idx, 1.0);
+  else
+    gripe_unary_op_failed_or_no_method (unary_op_as_string (op),
+					type_name ());
+}
+
 // Current indentation.
 int octave_value::curr_print_indent_level = 0;
 
@@ -1273,6 +1297,31 @@ octave_value::reset (void) const
 {
   beginning_of_line = true;
   curr_print_indent_level = 0;
+}
+
+octave_value::assign_op
+octave_value::unary_op_to_assign_op (unary_op op)
+{
+  assign_op binop = unknown_assign_op;
+
+  switch (op)
+    {
+    case incr:
+      binop = add_eq;
+      break;
+
+    case decr:
+      binop = sub_eq;
+      break;
+
+    default:
+      {
+	string on = unary_op_as_string (op);
+	error ("operator %s: no assign operator found", on.c_str ());
+      }
+    }
+
+  return binop;
 }
 
 octave_value::binary_op 

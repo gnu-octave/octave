@@ -1,6 +1,14 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * The ++ and -- operators now work for indexed matrices, and the
+    following operators now work:
+
+      +=, -=, *=, /=, \=, <<=, >>=, .*=, ./=, .\=, &=, |=
+
+    These operators are currently implemented using a relatively
+    inefficient brute-force method but hey, they work.
+
   * The built-in variable argv is now a list of strings instead of a
     string vector.
 

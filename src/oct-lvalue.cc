@@ -67,11 +67,7 @@ octave_lvalue::do_unary_op (octave_value::unary_op op)
   if (idx.empty ())
     val->do_non_const_unary_op (op);
   else
-    {
-      string on = octave_value::unary_op_as_string (op);
-      error ("indexed operations not implemented yet for operator `%s'",
-	     on.c_str ());
-    }
+    val->do_non_const_unary_op (op, idx);
 
   if (chg_fcn && ! error_state && chg_fcn () < 0)
     *val = saved_val;

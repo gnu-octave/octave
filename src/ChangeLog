@@ -1,5 +1,10 @@
 Fri Oct 30 08:39:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-lvalue.cc (octave_lvalue::do_unary_op): Make it work for
+	indexed ops too.
+	* ov.cc (octave_value::unary_op_to_assign_op): New function.
+	(octave_value::do_non_const_unary_op): New function for	indexed ops.
+
 	* parse.y (LEFTDIV_EQ, ELEFTDIV_EQ): New tokens.
 	(assign_expr): Add rules for them.
 	(make_assign_op): Handle them here too.

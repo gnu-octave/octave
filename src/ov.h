@@ -471,6 +471,9 @@ public:
 
   void do_non_const_unary_op (octave_value::unary_op);
 
+  void do_non_const_unary_op (octave_value::unary_op,
+			      const octave_value_list& idx);
+
   friend octave_value do_binary_op (octave_value::binary_op,
 				    const octave_value&,
 				    const octave_value&);
@@ -519,6 +522,8 @@ private:
 
   static int curr_print_indent_level;
   static bool beginning_of_line;
+
+  assign_op unary_op_to_assign_op (unary_op op);
 
   binary_op op_eq_to_binary_op (assign_op op);
 

@@ -39,6 +39,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
+// TRUE means that Octave will try to beep obnoxiously before printing
+// error messages.
+static bool Vbeep_on_error;
+
 // Current error state.
 int error_state = 0;
 
@@ -55,11 +59,11 @@ verror (const char *name, const char *fmt, va_list args)
 {
   flush_octave_stdout ();
 
-  int to_beep_or_not_to_beep = user_pref.beep_on_error && ! error_state;
+  bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
 
   ostrstream output_buf;
 
-  if (to_beep_or_not_to_beep)
+  if (to_beep_or_not_to_beep_p)
     output_buf << "\a";
   if (name)
     output_buf << name << ": ";
@@ -270,6 +274,21 @@ DEFUN (usage, args, ,
 See also: error, printf")
 {
   return handle_message (usage, "unknown", args);
+}
+
+static int
+beep_on_error (void)
+{
+  Vbeep_on_error = check_preference ("beep_on_error");
+
+  return 0;
+}
+
+void
+symbols_of_error (void)
+{
+  DEFVAR (beep_on_error, 0.0, 0, beep_on_error,
+    "if true, beep before printing error messages");
 }
 
 /*

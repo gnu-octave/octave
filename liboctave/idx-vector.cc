@@ -26,6 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <iostream.h>
+#include <stdlib.h>
 
 #include "Matrix.h"
 #include "Range.h"
@@ -261,6 +262,19 @@ idx_vector::convert_one_zero_to_idx (void)
 	}
       while (++i < len);
     }
+}
+
+static inline int
+intcmp (int *i, int *j)
+{
+  return (*i - *j);
+}
+
+void
+idx_vector::sort (void)
+{
+  qsort ((void *) data, len, sizeof (int),
+	 (int (*)(void*, void*)) intcmp); 
 }
 
 ostream&

@@ -116,3 +116,5 @@ config-check:
 	fi
 
 FORCE:
+
+.NOTPARALLEL:

@@ -4,6 +4,7 @@
 	(libraries): Depend on $(SUBDIRS) only.
 	Make $(LIBRARIES) using a recursive invocation of make once
 	$(SUBDIRS) are up to date.
+	(.NOTPARALLEL): New target, for GNU Make 3.79.
 
 2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -5,6 +5,9 @@
 	(all): Depend on src instead of $(SUBDIRS).
 	(src): New target.  Depend on $(SUBDIRS).
 
+	* Makefile.in (.NOTPARALLEL): New target, for GNU Make 3.79.
+	* octMakefile.in (.NOTPARALLEL): Likewise.
+
 2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for vsnprintf.

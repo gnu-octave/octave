@@ -246,3 +246,5 @@ binary-dist: VERSION ARCH octave-bug dist-info-files
 	gzip --best `cat .fname`.tar
 	rm -f .fname
 .PHONY: binary-dist
+
+.NOTPARALLEL:

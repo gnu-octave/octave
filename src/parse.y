@@ -2583,7 +2583,7 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
       octave_time now;
 
       fcn->stash_function_name (id_name);
-      fcn->stash_fcn_file_name ();
+      fcn->stash_fcn_file_name (curr_fcn_file_full_name);
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
 

@@ -1,3 +1,7 @@
+2003-02-20  Paul Kienzle <pkienzle@users.sf.net>
+
+	* dassl/ddaslv.f: Fortran doesn't use ; in statements.
+
 2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* libcruft/blas/dtbsv.f: New file.

@@ -801,6 +801,12 @@ octave_value::function_value (bool silent)
   return rep->function_value (silent);
 }
 
+octave_fcn_handle
+octave_value::fcn_handle_value (bool silent)
+{
+  return rep->fcn_handle_value (silent);
+}
+
 octave_value_list
 octave_value::list_value (void) const
 {

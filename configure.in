@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.412 $)
+AC_REVISION($Revision: 1.413 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -417,6 +417,29 @@ fi
 if test "$with_fftw" = yes; then
   FFT_DIR=''
   AC_DEFINE(HAVE_FFTW, 1, [Define if the FFTW library is available.])
+fi
+
+WITH_MPI=true
+AC_ARG_WITH(mpi,
+  [  --without-mpi           don't use MPI],
+  with_mpi=$withval, with_mpi=yes)
+
+mpi_lib=
+if test "$with_mpi" = yes; then
+  mpi_lib="mpi"
+elif test "$with_mpi" != no; then
+  mpi_lib="$with_mpi"
+fi
+
+MPI_LIBS=
+WITH_MPI=false
+if test -n "$mpi_lib"; then
+  AC_CHECK_LIB($mpi_lib, MPI_Init, [
+    AC_CHECK_HEADERS(mpi.h, [
+      WITH_MPI=true
+      MPI_LIBS="-l$mpi_lib"
+      LIBS="$MPI_LIBS $LIBS"
+      AC_DEFINE(HAVE_MPI, 1, [Define if MPI is available.])])])
 fi
 
 # ----------------------------------------------------------------------
@@ -1409,6 +1432,7 @@ Octave is now configured for $canonical_host_type
   BLAS libraries:       $BLAS_LIBS
   FFTW libraries:       $FFTW_LIBS
   HDF5 libraries:       $HDF5_LIBS
+  MPI libraries:        $MPI_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT_BINARY

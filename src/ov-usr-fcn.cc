@@ -119,12 +119,9 @@ octave_user_function::define_ret_list (tree_parameter_list *t)
 }
 
 void
-octave_user_function::stash_fcn_file_name (void)
+octave_user_function::stash_fcn_file_name (const std::string& nm)
 {
-  if (fcn_name.empty ())
-    file_name = "";
-  else
-    file_name = fcn_file_in_path (fcn_name);
+  file_name = nm;
 }
 
 void

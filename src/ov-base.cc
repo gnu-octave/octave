@@ -50,6 +50,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
+#include "ov-fcn-handle.h"
 #include "variables.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
@@ -398,6 +399,17 @@ octave_base_value::function_value (bool silent)
 
   if (! silent)
     gripe_wrong_type_arg ("octave_base_value::function_value()",
+			  type_name ());
+  return retval;
+}
+
+octave_fcn_handle
+octave_base_value::fcn_handle_value (bool silent)
+{
+  octave_fcn_handle retval;
+
+  if (! silent)
+    gripe_wrong_type_arg ("octave_base_value::fcn_handle_value()",
 			  type_name ());
   return retval;
 }

@@ -67,7 +67,7 @@ public:
 
   octave_user_function *define_ret_list (tree_parameter_list *t);
 
-  void stash_fcn_file_name (void);
+  void stash_fcn_file_name (const std::string& nm);
 
   void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
 

@@ -1,3 +1,19 @@
+2003-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.cc: Include kpse.cc here.
+
+	* kpse.cc: All functions are now static.  Massive surgery to
+	condense kpathsearch library to a single file of just the
+	essentials for Octave and convert to using C++ strings (no more
+	calls to malloc, very few calls to new, so there should be much
+	less potential for introducing memory leaks now).
+
+	* Makefile.in (EXTRAS): Move kpse.cc here from
+	LIBOCT_PATHSEARCH_CXX_SOURCES.
+
+	* kpse.h, kpse-config.h: Delete.
+	* Makefile.in (INCLUDES): Delete them from the list.
+
 2003-04-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* str-vec.cc (string_vector::append (const std::string&),

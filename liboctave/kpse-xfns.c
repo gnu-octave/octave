@@ -1,4 +1,4 @@
-/* xfns.c: All the x* functions from kpathsearch in one file.
+/*
 
 Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
 Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include "kpse-xfns.h"
 
-/* basename.c: return the last element in a path.  */
+/* Return the last element in a path.  */
 
 #ifndef HAVE_BASENAME
 
@@ -55,8 +55,8 @@ basename (const char *name)
 
 #endif
 
-char *
-xbasename (const char *name)
+const char *
+octave_basename (const char *name)
 {
-  return (char *) basename (name);
+  return (const char *) basename (name);
 }

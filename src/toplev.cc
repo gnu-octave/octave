@@ -95,9 +95,6 @@ octave_user_function *curr_function = 0;
 // Pointer to parent function that is currently being evaluated.
 octave_user_function *curr_parent_function = 0;
 
-// Original value of TEXMFDBS environment variable.
-std::string octave_original_texmfdbs;
-
 static void
 recover_from_exception (void)
 {
@@ -429,14 +426,6 @@ run_command_and_return_output (const std::string& cmd_str)
   return retval;
 }
 
-static void
-restore_texmfdbs_envvar (void *ptr)
-{
-  std::string *s = static_cast<std::string *> (ptr);
-
-  octave_env::putenv ("TEXMFDBS", *s);
-}
-
 DEFUN (system, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})\n\
@@ -519,22 +508,6 @@ variable @code{status} to the integer @samp{2}.\n\
 
       if (! error_state)
 	{
-	  // The value of TEXMFDBS that Octave puts in the environment
-	  // will cause trouble if we are asked to run TeX, so we
-	  // should reset it to whatever it was before Octave started.
-	  //
-	  // XXX FIXME XXX -- it would be better to fix the
-	  // kpathsearch library to not always do TeX-specific
-	  // things...
-
-	  static std::string odb;
-
-	  odb = octave_env::getenv ("TEXMFDBS");
-
-	  unwind_protect::add (restore_texmfdbs_envvar, &odb);
-
-	  octave_env::putenv ("TEXMFDBS", octave_original_texmfdbs);
-
 	  if (type == async)
 	    {
 #ifdef HAVE_FORK

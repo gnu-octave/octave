@@ -58,7 +58,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	ODESSA.h Objective.h QP.h Quad.h Range.h base-dae.h \
 	base-de.h base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
 	data-conv.h dir-ops.h file-ops.h file-stat.h getopt.h \
-	glob-match.h idx-vector.h kpse.h kpse-config.h kpse-xfns.h \
+	glob-match.h idx-vector.h kpse-xfns.h \
 	lo-ieee.h lo-mappers.h lo-specfun.h lo-sstream.h \
 	lo-sysdep.h lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-passwd.h \
@@ -123,7 +123,7 @@ LIBOCT_READLINE_C_SOURCES := oct-rl-edit.c oct-rl-hist.c
 
 LIBOCT_READLINE_SOURCES := $(LIBOCT_READLINE_CXX_SOURCES) $(LIBOCT_READLINE_C_SOURCES)
 
-LIBOCT_PATHSEARCH_CXX_SOURCES := pathsearch.cc kpse.cc
+LIBOCT_PATHSEARCH_CXX_SOURCES := pathsearch.cc
 
 LIBOCT_PATHSEARCH_C_SOURCES := kpse-xfns.c
 
@@ -135,7 +135,7 @@ SOURCES := \
 	$(LIBOCT_READLINE_SOURCES) \
 	$(LIBOCT_PATHSEARCH_SOURCES)
 
-EXTRAS := mx-inlines.cc
+EXTRAS := mx-inlines.cc kpse.cc
 
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 

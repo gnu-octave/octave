@@ -199,10 +199,6 @@ initialize_pathsearch (void)
   if (odb.empty ())
     odb = Vdata_dir + file_ops::dir_sep_str + "octave:"
       + Vlibexec_dir + file_ops::dir_sep_str + "octave";
-
-  octave_original_texmfdbs = octave_env::getenv ("TEXMFDBS");
-
-  octave_env::putenv ("TEXMFDBS", odb);
 }
 
 // Initialize by reading startup files.

@@ -48,7 +48,7 @@
 
 #include <octave/config.h>
 
-#include <iostream.h>
+#include <iostream>
 
 #include <octave/defun-dld.h>
 #include <octave/error.h>

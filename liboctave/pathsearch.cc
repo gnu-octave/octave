@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 #include "str-vec.h"
 
-#include "kpse.h"
+#include "kpse.cc"
 
 static bool octave_kpathsea_initialized = false;
 

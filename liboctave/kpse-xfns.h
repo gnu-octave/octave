@@ -1,4 +1,4 @@
-/* lib.h: declarations for common, low-level routines in kpathsea.
+/*
 
 Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
 Copyright (C) 1993, 94, 95, 96 Karl Berry.
@@ -18,7 +18,10 @@ You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
-/* c-pathch.h: define the characters which separate components of
+#if !defined (octave_kpse_xfns_h)
+#define octave_kpse_xfns_h 1
+
+/* Define the characters which separate components of
    filenames and environment variable paths.  */
 
 /* What separates filename components?  */
@@ -47,3 +50,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef NAME_BEGINS_WITH_DEVICE
 #define NAME_BEGINS_WITH_DEVICE(name) 0 
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern const char *octave_basename (const char *name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C ***
+;;; End: ***
+*/

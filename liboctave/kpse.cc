@@ -1,8 +1,11 @@
-/* pathsearch.c: look up a filename in a path.
+// This file is not compiled to a separate object file.  It is
+// included in pathsearch.cc.
+
+/* Look up a filename in a path.
 
 Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
-Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
+Copyright (C) 1992, 93, 94, 95, 96, 97 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -25,16 +28,70 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <map>
 #include <string>
 
-#include "kpse-config.h"
+/* System defines are for non-Unix systems only.  (Testing for all Unix
+   variations should be done in configure.)  Presently the defines used
+   are: DOS OS2 WIN32.  I do not use any of these systems
+   myself; if you do, I'd be grateful for any changes. --kb@mail.tug.org */
+
+/* If we have either DOS or OS2, we are DOSISH.  */
+#if defined (DOS) || defined (OS2) || defined (WIN32) || defined(__MSDOS__)
+#define DOSISH
+#endif
+
+#if defined (DOSISH)
+#define MONOCASE_FILENAMES	/* case-insensitive filename comparisons */
+#endif
+
+extern "C" {
+#if defined(__MINGW32__)
+#include <windows.h>
+#include <fcntl.h>
+#include <dirent.h>
+#elif defined(WIN32)
+#define __STDC__ 1
+#include "win32lib.h"
+#endif /* not WIN32 */
+
+#ifdef __DJGPP__
+#include <fcntl.h>	/* for long filenames' stuff */
+#include <dir.h>	/* for `getdisk' */
+#include <io.h>		/* for `setmode' */
+#endif
+}
+
+/* Some drivers have partially integrated kpathsea changes.  */
+#ifndef KPATHSEA
+#define KPATHSEA 32
+#endif
+ 
+/* System dependencies that are figured out by `configure'.  If we are
+   compiling standalone, we get our c-auto.h.  Otherwise, the package
+   containing us must provide this (unless it can somehow generate ours
+   from c-auto.in).  We use <...> instead of "..." so that the current
+   cpp directory (i.e., kpathsea/) won't be searched. */
+
+/* If you want to find subdirectories in a directory with non-Unix
+   semantics (specifically, if a directory with no subdirectories does
+   not have exactly two links), define this.  */
+#if !defined (DOSISH) || defined(__DJGPP__)
+/* Surprise!  DJGPP returns st_nlink exactly like on Unix.  */
+#define ST_NLINK_TRICK
+#endif /* either not DOSISH or __DJGPP__ */
+
+#ifdef OS2
+#define access ln_access
+#define fopen ln_fopen
+#define rename ln_rename
+#define stat ln_stat
+#endif /* OS2 */
+
 #include "kpse-xfns.h"
-#include "kpse.h"
 
 #include "lo-error.h"
 #include "lo-sstream.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
-
-/* c-std.h: the first header files.  */
+#include "str-vec.h"
 
 /* Header files that essentially all of our sources need, and
    that all implementations have.  We include these first, to help with
@@ -42,7 +99,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
-#include <cstring>
 #include <climits>
 #include <cerrno>
 #include <cassert>
@@ -71,8 +127,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define NAME_MAX _POSIX_NAME_MAX
 #endif
 
-/* c-ctype.h: ASCII-safe versions of the <ctype.h> macros.  */
-
 #include <cctype>
 
 /* What separates elements in environment variable path lists?  */
@@ -90,9 +144,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
 #endif
 
-/* c-pathmx.h: define PATH_MAX, the maximum length of a filename.
-   Since no such limit may exist, it's preferable to dynamically grow
-   filenames as needed.  */
+/* define PATH_MAX, the maximum length of a filename.  Since no such
+   limit may exist, it's preferable to dynamically grow filenames as
+   needed.  */
 
 /* Cheat and define this as a manifest constant no matter what, instead
    of using pathconf.  I forget why we want to do this.  */
@@ -108,8 +162,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define PATH_MAX _POSIX_PATH_MAX
 #endif
 #endif /* not PATH_MAX */
-
-/* debug.h: Runtime tracing.  */
 
 /* If NO_DEBUG is defined (not recommended), skip all this.  */
 #ifndef NO_DEBUG
@@ -146,12 +198,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #undef fopen
 #define fopen kpse_fopen_trace
-extern FILE *fopen (const char *filename, const char *mode);
+static FILE *fopen (const char *filename, const char *mode);
 #undef fclose
 #define fclose kpse_fclose_trace
-extern int fclose (FILE *);
+static int fclose (FILE *);
 
 #endif /* not NO_DEBUG */
+
+#ifdef KPSE_DEBUG
+static unsigned int kpathsea_debug = 0;
+#endif
 
 #if defined (WIN32) && !defined (__MINGW32__)
 
@@ -175,9 +231,7 @@ extern int fclose (FILE *);
 
 #define access  _access
 #define stat    _stat
-#define strcasecmp _stricmp
 #define strdup  _strdup
-#define strncasecmp _strnicmp
 
 #define S_IFMT   _S_IFMT
 #define S_IFDIR  _S_IFDIR
@@ -197,8 +251,6 @@ extern int fclose (FILE *);
 /* ============================================================ */
 
 #endif /* WIN32 */
-
-/* lib.h: other stuff.  */
 
 /* Define common sorts of messages.  */
 
@@ -223,11 +275,28 @@ extern int fclose (FILE *);
     } \
   while (0)
 
-extern "C" char *xbasename (const char *name);
-
 #ifndef WIN32
 static void xclosedir (DIR *d);
 #endif
+
+/* It's a little bizarre to be using the same type for the list and the
+   elements of the list, but no reason not to in this case, I think --
+   we never need a NULL string in the middle of the list, and an extra
+   NULL/NULL element always at the end is inconsequential.  */
+
+struct str_llist_elt
+{
+  std::string str;
+  int moved;
+  struct str_llist_elt *next;
+};
+
+typedef str_llist_elt str_llist_elt_type;
+typedef str_llist_elt *str_llist_type;
+
+#define STR_LLIST(sl) ((sl).str)
+#define STR_LLIST_MOVED(sl) ((sl).moved)
+#define STR_LLIST_NEXT(sl) ((sl).next)
 
 static void str_llist_add (str_llist_type *l, const std::string& str);
 
@@ -235,68 +304,22 @@ static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
 
 static std::string kpse_var_expand (const std::string& src);
 
+static str_llist_type *kpse_element_dirs (const std::string& elt);
+
+static std::string kpse_expand (const std::string& s);
+
+static std::string kpse_expand_default (const std::string& path,
+					const std::string& dflt);
+
+static string_vector kpse_db_search (const std::string& name,
+				     const std::string& path_elt, bool all);
+
 #include <ctime> /* for `time' */
 
-bool
+static bool
 kpse_is_env_sep (char c)
 {
   return IS_ENV_SEP (c);
-}
-
-/* xmalloc.c: malloc with error checking.  */
-
-static void *
-xmalloc (unsigned size)
-{
-  void *new_mem = (void *) malloc (size);
-
-  if (! new_mem)
-    {
-      fprintf (stderr, "fatal: memory exhausted (xmalloc of %u bytes).\n",
-               size);
-      /* 1 means success on VMS, so pick a random number (ASCII `K').  */
-      exit (75);
-    }
-
-  return new_mem;
-}
-
-/* xrealloc.c: realloc with error checking.  */
-
-static void *
-xrealloc (void *old_ptr, unsigned size)
-{
-  void *new_mem;
-
-  if (! old_ptr)
-    new_mem = xmalloc (size);
-  else
-    {
-      new_mem = (void *) realloc (old_ptr, size);
-
-      if (! new_mem)
-        {
-          /* We used to print OLD_PTR here using %x, and casting its
-             value to unsigned, but that lost on the Alpha, where
-             pointers and unsigned had different sizes.  Since the info
-             is of little or no value anyway, just don't print it.  */
-          fprintf (stderr, "fatal: memory exhausted (realloc of %u bytes).\n",
-                   size);
-          /* 1 means success on VMS, so pick a random number (ASCII `B').  */
-          exit (66);
-        }
-    }
-
-  return new_mem;
-}
-
-/* Return a copy of S in new storage.  */
-
-static char *
-xstrdup (const char *s)
-{
-  char *new_string = (char *) xmalloc (strlen (s) + 1);
-  return strcpy (new_string, s);
 }
 
 /* These routines just check the return status from standard library
@@ -486,6 +509,65 @@ hash_print (hash_table_type table, int summary_only)
 	   total_elements,
 	   total_buckets ? total_elements / (double) total_buckets : 0.0);
 }
+
+/* A way to step through a path, extracting one directory name at a
+   time.  */
+
+class kpse_path_iterator
+{
+public:
+
+  kpse_path_iterator (const std::string& p)
+    : path (p), b (0), e (0), len (path.length ()) { set_end (); }
+
+  kpse_path_iterator (const kpse_path_iterator& pi)
+    : path (pi.path), b (pi.b), e (pi.e), len (pi.len) { }
+
+  kpse_path_iterator operator ++ (int)
+    {
+      kpse_path_iterator retval (*this);
+      next ();
+      return retval;
+    }
+
+  std::string operator * (void) { return path.substr (b, e-b); }
+
+  bool operator != (const size_t sz) { return b != sz; }
+
+private:
+
+  const std::string& path;
+  size_t b;
+  size_t e;
+  size_t len;
+
+  void set_end (void)
+    {
+      e = b + 1;
+
+      if (e >= len)
+	b = e = NPOS;
+      else
+	{
+	  /* Find the next colon not enclosed by braces (or the end of
+	     the path).  */
+
+	  int brace_level = 0;
+	  while (e < len && ! (brace_level == 0 && kpse_is_env_sep (path[e])))
+	    e++;
+	}
+    }
+
+  void next (void)
+    {
+      b = e + 1;
+
+      if (b >= len)
+	b = e = NPOS;
+      else
+	set_end ();
+    }
+};
 
 /* Here's the simple one, when a program just wants a value.  */
 
@@ -891,7 +973,25 @@ search (const std::string& path, const std::string& original_name,
 
 /* Search PATH for the first NAME.  */
 
-std::string
+/* Call `kpse_expand' on NAME.  If the result is an absolute or
+   explicitly relative filename, check whether it is a readable
+   (regular) file.
+   
+   Otherwise, look in each of the directories specified in PATH (also do
+   tilde and variable expansion on elements in PATH), using a prebuilt
+   db (see db.h) if it's relevant for a given path element.
+   
+   If the prebuilt db doesn't exist, or if MUST_EXIST is true and NAME
+   isn't found in the prebuilt db, look on the filesystem.  (I.e., if
+   MUST_EXIST is false, and NAME isn't found in the db, do *not* look on
+   the filesystem.)
+   
+   The caller must expand PATH. This is because it makes more sense to
+   do this once, in advance, instead of for every search using it.
+   
+   In any case, return the complete filename if found, otherwise NULL.  */
+
+static std::string
 kpse_path_search (const std::string& path, const std::string& name,
 		  bool must_exist)
 {
@@ -903,7 +1003,10 @@ kpse_path_search (const std::string& path, const std::string& name,
 /* Search all elements of PATH for files named NAME.  Not sure if it's
    right to assert `must_exist' here, but it suffices now.  */
 
-string_vector
+/* Like `kpse_path_search' with MUST_EXIST true, but return a list of
+   all the filenames (or NULL if none), instead of taking the first.  */
+
+static string_vector
 kpse_all_path_search (const std::string& path, const std::string& name)
 {
   return search (path, name, true, true);
@@ -1087,7 +1190,10 @@ find_first_of (const std::string& path, const string_vector& names,
 /* Search each element of PATH for each element of NAMES.  Return the
    first one found.  */
 
-std::string
+/* Search each element of PATH for each element in the list of NAMES.
+   Return the first one found.  */
+
+static std::string
 kpse_path_find_first_of (const std::string& path, const string_vector& names,
 			 bool must_exist)
 {
@@ -1099,14 +1205,18 @@ kpse_path_find_first_of (const std::string& path, const string_vector& names,
 /* Search each element of PATH for each element of NAMES and return a
    list containing everything found, in the order found.  */
 
-string_vector
+/* Like `kpse_path_find_first_of' with MUST_EXIST true, but return a
+   list of all the filenames (or NULL if none), instead of taking the
+   first.  */
+
+static string_vector
 kpse_all_path_find_first_of (const std::string& path,
 			     const string_vector& names)
 {
   return find_first_of (path, names, true, true);
 }
 
-/* expand.c: general expansion.  Some of this file (the brace-expansion
+/* General expansion.  Some of this file (the brace-expansion
    code from bash) is covered by the GPL; this is the only GPL-covered
    code in kpathsea.  The part of the file that I wrote (the first
    couple of functions) is covered by the LGPL.  */
@@ -1205,7 +1315,10 @@ kpse_tilde_expand (const std::string& name)
 /* Do variable expansion first so ~${USER} works.  (Besides, it's what the
    shells do.)  */
 
-std::string
+/* Call kpse_var_expand and kpse_tilde_expand (in that order).  Result
+   is always in fresh memory, even if no expansions were done.  */
+
+static std::string
 kpse_expand (const std::string& s)
 {
   std::string var_expansion = kpse_var_expand (s);
@@ -1288,9 +1401,13 @@ kpse_brace_expand_element (const std::string& elt)
   return ret;
 }
 
-/* Be careful to not waste all the memory we allocate for each element.  */
+/* Do brace expansion and call `kpse_expand' on each element of the
+   result; return the final expansion (always in fresh memory, even if
+   no expansions were done).  We don't call `kpse_expand_default'
+   because there is a whole sequence of defaults to run through; see
+   `kpse_init_format'.  */
 
-std::string
+static std::string
 kpse_brace_expand (const std::string& path)
 {
   /* Must do variable expansion first because if we have
@@ -1321,7 +1438,13 @@ kpse_brace_expand (const std::string& path)
 
 /* Expand all special constructs in a path, and include only the actually
    existing directories in the result. */
-std::string
+
+/* Do brace expansion and call `kpse_expand' on each argument of the
+   result, then expand any `//' constructs.  The final expansion (always
+   in fresh memory) is a path of all the existing directories that match
+   the pattern. */
+
+static std::string
 kpse_path_expand (const std::string& path)
 {
   std::string ret;
@@ -1609,7 +1732,7 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   return c;
 }
 
-/* db.c: an external database to avoid filesystem lookups.  */
+/* An external database to avoid filesystem lookups.  */
 
 #ifndef DEFAULT_TEXMFDBS
 #define DEFAULT_TEXMFDBS "/usr/local/share/texmf:/var/tmp/texfonts"
@@ -1622,7 +1745,7 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
    it via variable expansion, but not now, maybe not ever:
    ${PKFONTS-${TEXFONTS-/usr/local/lib/texmf/fonts//}}.  */
 
-typedef struct
+struct kpse_format_info_type
 {
   std::string type;	     /* Human-readable description.  */
   std::string path;	     /* The search path to use.  */
@@ -1633,7 +1756,7 @@ typedef struct
   std::string cnf_path;	     /* From texmf.cnf.  */
   std::string default_path;  /* If all else fails.  */
   string_vector suffix;	     /* For kpse_find_file to check for/append.  */
-} kpse_format_info_type;
+};
 
 /* The sole variable of that type, indexed by `kpse_file_format_type'.
    Initialized by calls to `kpse_find_file' for `kpse_init_format'.  */
@@ -1837,16 +1960,17 @@ static string_vector db_dir_list;
    directories -- ones that don't get searched.  */
 
 static bool
-ignore_dir_p (const std::string& dirname_arg)
+ignore_dir_p (const std::string& dirname)
 {
-  const char *dirname = dirname_arg.c_str ();
+  size_t dot_pos = 0;
+  size_t len = dirname.length ();
 
-  const char *dot_pos = dirname;
-
-  while ((dot_pos = strchr (dot_pos + 1, '.')))
+  while ((dot_pos = dirname.find ('.', dot_pos + 1)) != NPOS)
     {
-      /* If / before and no / after, skip it. */
-      if (IS_DIR_SEP (dot_pos[-1]) && dot_pos[1] && !IS_DIR_SEP (dot_pos[1]))
+      /* If / before and no / after, skip it.  But don't skip xxx/../yyy.  */
+      if (IS_DIR_SEP (dirname[dot_pos-1])
+	  && dot_pos + 1 < len
+	  && ! (IS_DIR_SEP (dirname[dot_pos+1]) || dirname[dot_pos+1] == '.'))
 	return true;
     }
 
@@ -2002,20 +2126,20 @@ db_build (hash_table_type *table, const std::string& db_filename)
    during a run.  We wouldn't want to reread all of ls-R, even if it got
    rebuilt.  */
 
-void
+static void
 kpse_db_insert (const std::string& passed_fname)
 {
   /* We might not have found ls-R, or even had occasion to look for it
      yet, so do nothing if we have no hash table.  */
   if (db.buckets)
     {
-      const char *dir_part;
-      char *fname = xstrdup (passed_fname.c_str ());
-      char *baseptr = xbasename (fname);
-      const char *file_part = xstrdup (baseptr);
+      const char *fname = passed_fname.c_str ();
+      const char *baseptr = octave_basename (fname);
 
-      *baseptr = '\0';  /* Chop off the filename.  */
-      dir_part = fname; /* That leaves the dir, with the trailing /.  */
+      size_t len = baseptr - fname;
+
+      std::string file_part = passed_fname.substr (len);
+      std::string dir_part = passed_fname.substr (0, len);
 
       hash_insert (&db, file_part, dir_part);
     }
@@ -2206,9 +2330,10 @@ alias_build (hash_table_type *table, const std::string& alias_filename)
 }
 
 /* Initialize the path for ls-R files, and read them all into the hash
-   table `db'.  If no usable ls-R's are found, set db.buckets to NULL.  */
+   table `db'.  If no usable ls-R's are found, set db.buckets to NULL.
+   Until this is called, no ls-R matches will be found.  */
 
-void
+static void
 kpse_init_db (void)
 {
   bool ok = false;
@@ -2264,7 +2389,13 @@ kpse_init_db (void)
 
 /* Avoid doing anything if this PATH_ELT is irrelevant to the databases. */
 
-string_vector
+/* Return list of matches for NAME in the ls-R file matching PATH_ELT.  If
+   ALL is set, return (null-terminated list) of all matches, else just
+   the first.  If no matches, return a pointer to an empty list.  If no
+   databases can be read, or PATH_ELT is not in any of the databases,
+   return NULL.  */
+
+static string_vector
 kpse_db_search (const std::string& name_arg,
 		const std::string& orig_path_elt, bool all)
 {
@@ -2386,12 +2517,16 @@ kpse_db_search (const std::string& name_arg,
   return ret;
 }
 
-/* kdefault.c: Expand extra colons.  */
+/* Expand extra colons.  */
 
 /* Check for leading colon first, then trailing, then doubled, since
    that is fastest.  Usually it will be leading or trailing.  */
 
-std::string
+/* Replace a leading or trailing or doubled : in PATH with DFLT.  If
+   no extra colons, return PATH.  Only one extra colon is replaced.
+   DFLT may not be NULL.  */
+
+static std::string
 kpse_expand_default (const std::string& path, const std::string& fallback)
 {
   std::string expansion;
@@ -2440,8 +2575,7 @@ kpse_expand_default (const std::string& path, const std::string& fallback)
   return expansion;
 }
 
-/* elt-dirs.c: Translate a path element to its corresponding
-   director{y,ies}.  */
+/* Translate a path element to its corresponding director{y,ies}.  */
 
 /* To avoid giving prototypes for all the routines and then their real
    definitions, we give all the subroutines first.  The entry point is
@@ -2511,7 +2645,7 @@ cache (const std::string key, str_llist_type *value)
 {
   cache_entry *new_cache = new cache_entry [cache_length+1];
 
-  for (int i = 0; i < cache_length; i++)
+  for (unsigned i = 0; i < cache_length; i++)
     {
       new_cache[i].key = the_cache[i].key;
       new_cache[i].value = the_cache[i].value;
@@ -2776,7 +2910,16 @@ expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
 
 /* Here is the entry point.  Returns directory list for ELT.  */
 
-str_llist_type *
+/* Given a path element ELT, return a pointer to a NULL-terminated list
+   of the corresponding (existing) directory or directories, with
+   trailing slashes, or NULL.  If ELT is the empty string, check the
+   current working directory.
+   
+   It's up to the caller to expand ELT.  This is because this routine is
+   most likely only useful to be called from `kpse_path_search', which
+   has already assumed expansion has been done.  */
+
+static str_llist_type *
 kpse_element_dirs (const std::string& elt)
 {
   str_llist_type *ret;
@@ -2834,16 +2977,14 @@ xclosedir (DIR *d)
 }
 #endif
 
-/* debug.c: Help the user discover what's going on.  */
+/* Help the user discover what's going on.  */
 
 #ifdef KPSE_DEBUG
-
-unsigned int kpathsea_debug = 0;
 
 /* If the real definitions of fopen or fclose are macros, we lose -- the
    #undef won't restore them. */
 
-FILE *
+static FILE *
 fopen (const char *filename, const char *mode)
 {
 #undef fopen
@@ -2855,7 +2996,7 @@ fopen (const char *filename, const char *mode)
   return ret;
 }
 
-int
+static int
 fclose (FILE *f)
 {
 #undef fclose
@@ -2869,7 +3010,7 @@ fclose (FILE *f)
 
 #endif
 
-/* str-llist.c: Implementation of a linked list of strings.  */
+/* Implementation of a linked list of strings.  */
 
 /* Add the new string STR to the end of the list L.  */
 
@@ -2943,7 +3084,7 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
   STR_LLIST_MOVED (*mover) = 1;
 }
 
-/* variable.c: variable expansion.  */
+/* Variable expansion.  */
 
 /* We have to keep track of variables being expanded, otherwise
    constructs like TEXINPUTS = $TEXINPUTS result in an infinite loop.
@@ -3081,3 +3222,9 @@ kpse_var_expand (const std::string& src)
 
   return expansion;
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

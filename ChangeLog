@@ -1,3 +1,7 @@
+2003-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't define WITH_KPATHSEARCH.
+
 2003-04-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Look for wsock32 library on MinGW systems.

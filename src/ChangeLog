@@ -1,3 +1,13 @@
+2003-04-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (initialize_pathsearch): Don't save old and set new
+	value of TEXMFDBS.
+
+	* toplev.cc (restore_texmfdbs_envvar): Delete function.
+	(Fsystem): Don't set and reset TEXMFDBS.
+
+	* toplev.h, toplev.cc (octave_original_texmfdbs): Delete variable.
+
 2003-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/getpwent.cc (Fgetpwnam): Delete unnecessary

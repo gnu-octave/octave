@@ -787,7 +787,7 @@ set_format (const Range& r)
 }
 
 static inline void
-pr_any_float (const char *fmt, ostrstream& os, double d, int fw = 0)
+pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 {
   if (d == -0.0)
     d = 0.0;
@@ -822,19 +822,19 @@ pr_any_float (const char *fmt, ostrstream& os, double d, int fw = 0)
 }
 
 static inline void
-pr_float (ostrstream& os, double d, int fw = 0)
+pr_float (ostream& os, double d, int fw = 0)
 {
   pr_any_float (curr_real_fmt, os, d, fw);
 }
 
 static inline void
-pr_imag_float (ostrstream& os, double d, int fw = 0)
+pr_imag_float (ostream& os, double d, int fw = 0)
 {
   pr_any_float (curr_imag_fmt, os, d, fw);
 }
 
 static inline void
-pr_complex (ostrstream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
+pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 {
   double r = c.real ();
   pr_float (os, r, r_fw);
@@ -856,8 +856,30 @@ pr_complex (ostrstream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
     }
 }
 
+static void
+print_empty_matrix (ostream& os, int nr, int nc, int pr_as_read_syntax)
+{
+  assert (nr == 0 || nc == 0);
+
+  if (pr_as_read_syntax)
+    {
+      if (nr == 0 && nc == 0)
+	os << "[]";
+      else
+	os << "zeros (" << nr << ", " << nc << ")";
+    }
+  else
+    {
+      os << "[]";
+      if (user_pref.print_empty_dimensions)
+	os << "(" << nr << "x" << nc << ")";
+      os << "\n";
+    }
+}
+
 void
-octave_print_internal (ostrstream& os, double d)
+octave_print_internal (ostream& os, double d,
+		       int pr_as_read_syntax)
 {
   if (plus_format)
     {
@@ -874,16 +896,21 @@ octave_print_internal (ostrstream& os, double d)
       else
 	pr_float (os, d);
     }
-  os << "\n";
+
+  if (! pr_as_read_syntax)
+    os << "\n";
 }
 
 void
-octave_print_internal (ostrstream& os, const Matrix& m)
+octave_print_internal (ostream& os, const Matrix& m,
+		       int pr_as_read_syntax)
 {
   int nr = m.rows ();
   int nc = m.columns ();
 
-  if (plus_format)
+  if (nr == 0 || nc == 0)
+    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
+  else if (plus_format && ! pr_as_read_syntax)
     {
       for (int i = 0; i < nr; i++)
 	{
@@ -908,9 +935,19 @@ octave_print_internal (ostrstream& os, const Matrix& m)
       int total_width = nc * column_width;
       int max_width = terminal_columns ();
 
+      if (pr_as_read_syntax)
+	max_width -= 4;
+
       if (free_format)
 	{
+	  if (pr_as_read_syntax)
+	    os << "[\n";
+
 	  os << m;
+
+	  if (pr_as_read_syntax)
+	    os << "]";
+
 	  return;
 	}
 
@@ -922,41 +959,85 @@ octave_print_internal (ostrstream& os, const Matrix& m)
 	    inc++;
 	}
 
-      int col = 0;
-      while (col < nc)
+      if (pr_as_read_syntax)
 	{
-	  int lim = col + inc < nc ? col + inc : nc;
-
-	  if (total_width > max_width && user_pref.split_long_rows)
-	    {
-	      if (col != 0)
-		os << "\n";
-
-	      int num_cols = lim - col;
-	      if (num_cols == 1)
-		os << " Column " << col + 1 << ":\n\n";
-	      else if (num_cols == 2)
-		os << " Columns " << col + 1 << " and " << lim << ":\n\n";
-	      else
-		os << " Columns " << col + 1 << " through " << lim << ":\n\n";
-	    }
-
 	  for (int i = 0; i < nr; i++)
 	    {
-	      for (int j = col; j < lim; j++)
+	      int col = 0;
+	      while (col < nc)
 		{
-		  os << "  ";
-		  pr_float(os, m.elem (i, j), fw);
+		  int lim = col + inc < nc ? col + inc : nc;
+
+		  for (int j = col; j < lim; j++)
+		    {
+		      if (i == 0 && j == 0)
+			os << "[ ";
+		      else
+			{
+			  if (j > col && j < lim)
+			    os << ", ";
+			  else
+			    os << "  ";
+			}
+
+		      pr_float (os, m.elem (i, j));
+		    }
+
+		  col += inc;
+
+		  if (col >= nc)
+		    {
+		      if (i == nr - 1)
+			os << " ]";
+		      else
+			os << ";\n";
+		    }
+		  else
+		    os << " ...\n";
 		}
-	      os << "\n";
 	    }
-	  col += inc;
+	}
+      else
+	{
+	  for (int col = 0; col < nc; col += inc)
+	    {
+	      int lim = col + inc < nc ? col + inc : nc;
+
+	      if (total_width > max_width && user_pref.split_long_rows)
+		{
+		  if (col != 0)
+		    os << "\n";
+
+		  int num_cols = lim - col;
+		  if (num_cols == 1)
+		    os << " Column " << col + 1 << ":\n\n";
+		  else if (num_cols == 2)
+		    os << " Columns " << col + 1 << " and " << lim
+		      << ":\n\n";
+		  else
+		    os << " Columns " << col + 1 << " through " << lim
+		      << ":\n\n";
+		}
+
+	      for (int i = 0; i < nr; i++)
+		{
+		  for (int j = col; j < lim; j++)
+		    {
+		      os << "  ";
+
+		      pr_float (os, m.elem (i, j), fw);
+		    }
+
+		  os << "\n";
+		}
+	    }
 	}
     }
 }
 
 void
-octave_print_internal (ostrstream& os, const Complex& c)
+octave_print_internal (ostream& os, const Complex& c,
+		       int pr_as_read_syntax)
 {
   if (plus_format)
     {
@@ -973,16 +1054,21 @@ octave_print_internal (ostrstream& os, const Complex& c)
       else
 	pr_complex (os, c);
     }
-  os << "\n";
+
+  if (! pr_as_read_syntax)
+    os << "\n";
 }
 
 void
-octave_print_internal (ostrstream& os, const ComplexMatrix& cm)
+octave_print_internal (ostream& os, const ComplexMatrix& cm,
+		       int pr_as_read_syntax)
 {
   int nr = cm.rows ();
   int nc = cm.columns ();
 
-  if (plus_format)
+  if (nr == 0 || nc == 0)
+    print_empty_matrix (os, nr, nc, pr_as_read_syntax);
+  else if (plus_format && ! pr_as_read_syntax)
     {
       for (int i = 0; i < nr; i++)
 	{
@@ -1008,9 +1094,19 @@ octave_print_internal (ostrstream& os, const ComplexMatrix& cm)
       int total_width = nc * column_width;
       int max_width = terminal_columns ();
 
+      if (pr_as_read_syntax)
+	max_width -= 4;
+
       if (free_format)
 	{
+	  if (pr_as_read_syntax)
+	    os << "[\n";
+
 	  os << cm;
+
+	  if (pr_as_read_syntax)
+	    os << "]";
+
 	  return;
 	}
 
@@ -1022,55 +1118,96 @@ octave_print_internal (ostrstream& os, const ComplexMatrix& cm)
 	    inc++;
 	}
 
-      int col = 0;
-      while (col < nc)
+      if (pr_as_read_syntax)
 	{
-	  int lim = col + inc < nc ? col + inc : nc;
-
-	  if (total_width > max_width && user_pref.split_long_rows)
-	    {
-	      if (col != 0)
-		os << "\n";
-
-	      int num_cols = lim - col;
-	      if (num_cols == 1)
-		os << " Column " << col + 1 << ":\n\n";
-	      else if (num_cols == 2)
-		os << " Columns " << col + 1 << " and " << lim << ":\n\n";
-	      else
-		os << " Columns " << col + 1 << " through " << lim << ":\n\n";
-	    }
-
 	  for (int i = 0; i < nr; i++)
 	    {
-	      for (int j = col; j < lim; j++)
+	      int col = 0;
+	      while (col < nc)
 		{
-		  if (bank_format)
-		    os << "  ";
+		  int lim = col + inc < nc ? col + inc : nc;
+
+		  for (int j = col; j < lim; j++)
+		    {
+		      if (i == 0 && j == 0)
+			os << "[ ";
+		      else
+			{
+			  if (j > col && j < lim)
+			    os << ", ";
+			  else
+			    os << "  ";
+			}
+
+		      pr_complex (os, cm.elem (i, j));
+		    }
+
+		  col += inc;
+
+		  if (col >= nc)
+		    {
+		      if (i == nr - 1)
+			os << " ]";
+		      else
+			os << ";\n";
+		    }
 		  else
-		    os << "   ";
-		  pr_complex (os, cm.elem (i, j), r_fw, i_fw);
+		    os << " ...\n";
 		}
-	      os << "\n";
 	    }
-	  col += inc;
+	}
+      else
+	{
+	  for (int col = 0; col < nc; col += inc)
+	    {
+	      int lim = col + inc < nc ? col + inc : nc;
+
+	      if (total_width > max_width && user_pref.split_long_rows)
+		{
+		  if (col != 0)
+		    os << "\n";
+
+		  int num_cols = lim - col;
+		  if (num_cols == 1)
+		    os << " Column " << col + 1 << ":\n\n";
+		  else if (num_cols == 2)
+		    os << " Columns " << col + 1 << " and " << lim
+		      << ":\n\n";
+		  else
+		    os << " Columns " << col + 1 << " through " << lim
+		      << ":\n\n";
+		}
+
+	      for (int i = 0; i < nr; i++)
+		{
+		  for (int j = col; j < lim; j++)
+		    {
+		      os << "  ";
+
+		      pr_complex (os, cm.elem (i, j));
+		    }
+		  os << "\n";
+		}
+	    }
 	}
     }
 }
 
 void
-octave_print_internal (ostrstream& os, const Range& r)
+octave_print_internal (ostream& os, const Range& r,
+		       int pr_as_read_syntax)
 {
-  double b = r.base ();
+  double base = r.base ();
   double increment = r.inc ();
+  double limit = r.limit ();
   int num_elem = r.nelem ();
 
-  if (plus_format)
+  if (plus_format && ! pr_as_read_syntax)
     {
       os << "  ";
       for (int i = 0; i < num_elem; i++)
 	{
-	  double val = b + i * increment;
+	  double val = base + i * increment;
 	  if (val == 0.0)
 	    os << " ";
 	  else
@@ -1081,53 +1218,81 @@ octave_print_internal (ostrstream& os, const Range& r)
     {
       int fw;
       set_format (r, fw);
-      int column_width = fw + 2;
-      int total_width = num_elem * column_width;
-      int max_width = terminal_columns ();
 
-      if (free_format)
+      if (pr_as_read_syntax)
 	{
-	  os << r;
-	  return;
+	  
+	  if (free_format)
+	    {
+	      os << base << " : ";
+	      if (increment != 1.0)
+		os << increment << " : ";
+	      os << limit;
+	    }
+	  else
+	    {
+	      pr_float (os, base, fw);
+	      os << " : ";
+	      if (increment != 1.0)
+		{
+		  pr_float (os, increment, fw);
+		  os << " : ";
+		}
+	      pr_float (os, limit, fw);
+	    }
 	}
-
-      int inc = num_elem;
-      if (total_width > max_width && user_pref.split_long_rows)
+      else
 	{
-	  inc = max_width / column_width;
-	  if (inc == 0)
-	    inc++;
-	}
+	  int column_width = fw + 2;
+	  int total_width = num_elem * column_width;
+	  int max_width = terminal_columns ();
 
-      int col = 0;
-      while (col < num_elem)
-	{
-	  int lim = col + inc < num_elem ? col + inc : num_elem;
+	  if (free_format)
+	    {
+	      os << r;
+	      return;
+	    }
 
+	  int inc = num_elem;
 	  if (total_width > max_width && user_pref.split_long_rows)
 	    {
-	      if (col != 0)
-		os << "\n";
-
-	      int num_cols = lim - col;
-	      if (num_cols == 1)
-		os << " Column " << col + 1 << ":\n\n";
-	      else if (num_cols == 2)
-		os << " Columns " << col + 1 << " and " << lim << ":\n\n";
-	      else
-		os << " Columns " << col + 1 << " through " << lim << ":\n\n";
+	      inc = max_width / column_width;
+	      if (inc == 0)
+		inc++;
 	    }
 
-	  for (int i = col; i < lim; i++)
+	  int col = 0;
+	  while (col < num_elem)
 	    {
-	      double val = b + i * increment;
-	      os << "  ";
-	      pr_float (os, val, fw);
+	      int lim = col + inc < num_elem ? col + inc : num_elem;
+
+	      if (total_width > max_width && user_pref.split_long_rows)
+		{
+		  if (col != 0)
+		    os << "\n";
+
+		  int num_cols = lim - col;
+		  if (num_cols == 1)
+		    os << " Column " << col + 1 << ":\n\n";
+		  else if (num_cols == 2)
+		    os << " Columns " << col + 1 << " and " << lim
+		      << ":\n\n";
+		  else
+		    os << " Columns " << col + 1 << " through " << lim
+		      << ":\n\n";
+		}
+
+	      for (int i = col; i < lim; i++)
+		{
+		  double val = base + i * increment;
+		  os << "  ";
+		  pr_float (os, val, fw);
+		}
+
+	      os << "\n";
+
+	      col += inc;
 	    }
-
-	  os << "\n";
-
-	  col += inc;
 	}
     }
 }

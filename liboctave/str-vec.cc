@@ -67,6 +67,15 @@ string_vector::string_vector (const char * const *s, int n)
     elem (i) = s[i];
 }
 
+int
+string_vector::compare (const void *a_arg, const void *b_arg)
+{
+  const std::string *a = (const std::string *) a_arg;
+  const std::string *b = (const std::string *) b_arg;
+
+  return a->compare (*b);
+}
+
 string_vector&
 string_vector::uniq (void)
 {

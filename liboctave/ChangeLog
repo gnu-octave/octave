@@ -1,5 +1,10 @@
 2002-12-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* str-vec.cc (string_vector::compare): New static member function.
+	* str-vec.h: Provide decl.
+	(string_vector::sort): Use it.
+	(str_vec_compare): Delete static function.
+
 	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): Also declare and define
 	a placement operator new.
 

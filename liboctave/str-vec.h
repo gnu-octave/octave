@@ -28,15 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array.h"
 
-static int
-str_vec_compare (const void *a_arg, const void *b_arg)
-{
-  const std::string *a = (const std::string *) a_arg;
-  const std::string *b = (const std::string *) b_arg;
-
-  return a->compare (*b);
-}
-
 class
 string_vector : public Array<std::string>
 {
@@ -88,9 +79,11 @@ public:
 
   std::string operator[] (int i) const { return Array<std::string>::elem (i); }
 
+  static int compare (const void *a_arg, const void *b_arg);
+
   string_vector& qsort (bool make_unique = false)
   {
-    Array<std::string>::qsort (str_vec_compare);
+    Array<std::string>::qsort (compare);
 
     if (make_unique)
       uniq ();

@@ -1,7 +1,7 @@
-// DAE.cc                                               -*- C++ -*-
+// DASSL.cc                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -29,7 +29,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "DAE.h"
+#include <cfloat>
+#include <cmath>
+
+#include "DASSL.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
 
@@ -52,19 +55,10 @@ static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;
 static int nn;
 
-DAE::DAE (void)
+DASSL::DASSL (void) : DAE ()
 {
-  n = 0;
-  t = 0.0;
-
   stop_time_set = 0;
   stop_time = 0.0;
-
-  integration_error = 0;
-  restart = 1;
-
-  DAEFunc::set_function (0);
-  DAEFunc::set_jacobian_function (0);
 
   liw = 0;
   lrw = 0;
@@ -77,19 +71,13 @@ DAE::DAE (void)
     info [i] = 0;
 }
 
-DAE::DAE (int size)
+DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
+  : DAE (state, time, f)
 {
-  n = size;
-  t = 0.0;
+  n = size ();
 
   stop_time_set = 0;
   stop_time = 0.0;
-
-  integration_error = 0;
-  restart = 1;
-
-  DAEFunc::set_function (0);
-  DAEFunc::set_jacobian_function (0);
 
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
@@ -102,49 +90,11 @@ DAE::DAE (int size)
     info [i] = 0;
 }
 
-DAE::DAE (const ColumnVector& state, double time, DAEFunc& f)
-{
-  n = state.capacity ();
-  t = time;
-  x = state;
-  xdot.resize (n, 0.0);
-
-  stop_time_set = 0;
-  stop_time = 0.0;
-
-  integration_error = 0;
-  restart = 1;
-
-  DAEFunc::set_function (f.function ());
-  DAEFunc::set_jacobian_function (f.jacobian_function ());
-
-  liw = 20 + n;
-  lrw = 40 + 9*n + n*n;
-
-  info  = new int [15];
-  iwork = new int [liw];
-  rwork = new double [lrw];
-
-  for (int i = 0; i < 15; i++)
-    info [i] = 0;
-}
-
-DAE::DAE (const ColumnVector& state, const ColumnVector& deriv,
+DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
 	  double time, DAEFunc& f)
+  : DAE (state, deriv, time, f)
 {
-  if (deriv.capacity () != state.capacity ())
-    {
-      (*current_liboctave_error_handler)
-	("x, xdot size mismatch in DAE constructor");
-      n = 0;
-      t = 0.0;
-      return;
-    }
-
-  n = state.capacity ();
-  t = time;
-  xdot = deriv;
-  x = state;
+  n = size ();
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -163,39 +113,31 @@ DAE::DAE (const ColumnVector& state, const ColumnVector& deriv,
     info [i] = 0;
 }
 
-DAE::~DAE (void)
+DASSL::~DASSL (void)
 {
   delete info;
   delete rwork;
   delete iwork;
 }
 
-ColumnVector
-DAE::deriv (void)
+void
+DASSL::force_restart (void)
 {
-  return xdot;
+  restart = 1;
+  integration_error = 0;
 }
 
 void
-DAE::initialize (const ColumnVector& state, double time)
+DASSL::set_stop_time (double t)
 {
-  integration_error = 0;
-  restart = 1;
-  x = state;
-  int nx = x.capacity ();
-  xdot.resize (nx, 0.0);
-  t = time;
+  stop_time_set = 1;
+  stop_time = t;
 }
 
 void
-DAE::initialize (const ColumnVector& state,
-		 const ColumnVector& deriv, double time)
+DASSL::clear_stop_time (void)
 {
-  integration_error = 0;
-  restart = 1;
-  xdot = deriv;
-  x = state;
-  t = time;
+  stop_time_set = 0;
 }
 
 int
@@ -255,7 +197,7 @@ ddassl_j (const double& time, double *, double *, double *pd, const
 }
 
 ColumnVector
-DAE::integrate (double tout)
+DASSL::do_integrate (double tout)
 {
   integration_error = 0;
 
@@ -363,7 +305,14 @@ DAE::integrate (double tout)
 }
 
 Matrix
-DAE::integrate (const ColumnVector& tout, Matrix& xdot_out)
+DASSL::do_integrate (const ColumnVector& tout)
+{
+  Matrix dummy;
+  return integrate (tout, dummy);
+}
+
+Matrix
+DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
 {
   Matrix retval;
   int n_out = tout.capacity ();
@@ -381,7 +330,7 @@ DAE::integrate (const ColumnVector& tout, Matrix& xdot_out)
 
       for (int j = 1; j < n_out; j++)
 	{
-	  ColumnVector x_next = integrate (tout.elem (j));
+	  ColumnVector x_next = do_integrate (tout.elem (j));
 
 	  if (integration_error)
 	    return retval;
@@ -398,8 +347,8 @@ DAE::integrate (const ColumnVector& tout, Matrix& xdot_out)
 }
 
 Matrix
-DAE::integrate (const ColumnVector& tout, Matrix& xdot_out,
-		const ColumnVector& tcrit) 
+DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
+		  const ColumnVector& tcrit) 
 {
   Matrix retval;
   int n_out = tout.capacity ();
@@ -469,7 +418,7 @@ DAE::integrate (const ColumnVector& tout, Matrix& xdot_out,
 		  i_out++;
 		}
 
-	      ColumnVector x_next = integrate (t_out);
+	      ColumnVector x_next = do_integrate (t_out);
 
 	      if (integration_error)
 		return retval;
@@ -497,6 +446,116 @@ DAE::integrate (const ColumnVector& tout, Matrix& xdot_out,
     }
 
   return retval;
+}
+
+DASSL_options::DASSL_options (void)
+{
+  init ();
+}
+
+DASSL_options::DASSL_options (const DASSL_options& opt)
+{
+  copy (opt);
+}
+
+DASSL_options&
+DASSL_options::operator = (const DASSL_options& opt)
+{
+  if (this != &opt)
+    copy (opt);
+
+  return *this;
+}
+
+DASSL_options::~DASSL_options (void)
+{
+}
+
+void
+DASSL_options::init (void)
+{
+  double sqrt_eps = sqrt (DBL_EPSILON);
+  x_absolute_tolerance = sqrt_eps;
+  x_initial_step_size = -1.0;
+  x_maximum_step_size = -1.0;
+  x_minimum_step_size = 0.0;
+  x_relative_tolerance = sqrt_eps;
+}
+
+void
+DASSL_options::copy (const DASSL_options& opt)
+{
+  x_absolute_tolerance = opt.x_absolute_tolerance;
+  x_initial_step_size = opt.x_initial_step_size;
+  x_maximum_step_size = opt.x_maximum_step_size;
+  x_minimum_step_size = opt.x_minimum_step_size;
+  x_relative_tolerance = opt.x_relative_tolerance;
+}
+
+void
+DASSL_options::set_default_options (void)
+{
+  init ();
+}
+
+void
+DASSL_options::set_absolute_tolerance (double val)
+{
+  x_absolute_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+void
+DASSL_options::set_initial_step_size (double val)
+{
+  x_initial_step_size = (val >= 0.0) ? val : -1.0;
+}
+
+void
+DASSL_options::set_maximum_step_size (double val)
+{
+  x_maximum_step_size = (val >= 0.0) ? val : -1.0;
+}
+
+void
+DASSL_options::set_minimum_step_size (double val)
+{
+  x_minimum_step_size = (val >= 0.0) ? val : 0.0;
+}
+
+void
+DASSL_options::set_relative_tolerance (double val)
+{
+  x_relative_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
+}
+
+double
+DASSL_options::absolute_tolerance (void)
+{
+  return x_absolute_tolerance;
+}
+
+double
+DASSL_options::initial_step_size (void)
+{
+  return x_initial_step_size;
+}
+
+double
+DASSL_options::maximum_step_size (void)
+{
+  return x_maximum_step_size;
+}
+
+double
+DASSL_options::minimum_step_size (void)
+{
+  return x_minimum_step_size;
+}
+
+double
+DASSL_options::relative_tolerance (void)
+{
+  return x_relative_tolerance;
 }
 
 /*

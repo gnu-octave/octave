@@ -1,7 +1,7 @@
 // ODE.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,112 +24,33 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_ODE_h)
 #define octave_ODE_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
-class ostream;
-
-#include "dMatrix.h"
-#include "dColVector.h"
 #include "ODEFunc.h"
+#include "base-de.h"
 
-class ODE_options
-{
- public:
-
-  ODE_options (void);
-  ODE_options (const ODE_options& opt);
-
-  ODE_options& operator = (const ODE_options& opt);
-
-  ~ODE_options (void);
-
-  void init (void);
-  void copy (const ODE_options& opt);
-
-  void set_default_options (void);
-
-  void set_absolute_tolerance (double);
-  void set_initial_step_size (double);
-  void set_maximum_step_size (double);
-  void set_minimum_step_size (double);
-  void set_relative_tolerance (double);
-
-  double absolute_tolerance (void);
-  double initial_step_size (void);
-  double maximum_step_size (void);
-  double minimum_step_size (void);
-  double relative_tolerance (void);
-
- private:
-
-  double x_absolute_tolerance;
-  double x_initial_step_size;
-  double x_maximum_step_size;
-  double x_minimum_step_size;
-  double x_relative_tolerance;
-};
-
-class ODE : public ODEFunc, public ODE_options
+class ODE : public base_diff_eqn, public ODEFunc
 {
 public:
 
-  ODE (void);
+  ODE (void)
+    : base_diff_eqn (), ODEFunc () { }
 
-  ODE (int n);
-  
-  ODE (const ColumnVector& state, double time, const ODEFunc& f);
+  ODE (const ColumnVector& state, double time, const ODEFunc& f)
+    : base_diff_eqn (state, time), ODEFunc (f) { }
 
-  virtual ~ODE (void);
+  ODE (const ODE& a)
+    : base_diff_eqn (a), ODEFunc (a) { }
 
-  virtual int size (void) const;
-  virtual ColumnVector state (void) const;
-  virtual double time (void) const;
+  ODE& operator = (const ODE& a)
+    {
+      if (this != &a)
+	{
+	  base_diff_eqn::operator = (a);
+	  ODEFunc::operator = (a);
+	}
+      return *this;
+    }
 
-  virtual void force_restart (void);
-  virtual void initialize (const ColumnVector& x, double t);
-  virtual void set_stop_time (double t);
-  virtual void clear_stop_time (void);
-
-  virtual ColumnVector integrate (double t);
-
-  void integrate (int nsteps, double tstep, ostream& s);
-
-  Matrix integrate (const ColumnVector& tout);
-  Matrix integrate (const ColumnVector& tout, const ColumnVector& tcrit);
-
-protected:
-
-  // Some of this is probably too closely related to LSODE, but hey,
-  // this is just a first attempt...
-
-  int n;
-  double t;
-  ColumnVector x;
-
-  double stop_time;
-  int stop_time_set;
-
-private:
-
-  int integration_error;
-  int restart;
-  int method_flag;
-  int *iwork;
-  double *rwork;
-  int istate;
-  int itol;
-  int itask;
-  int iopt;
-  int liw;
-  int lrw;
-
-  friend int lsode_f (int *neq, double *t, double *y, double *ydot);
-
-  friend int lsode_j (int *neq, double *t, double *y, int *ml, int *mu,
-		      double *pd, int *nrowpd);
-
+  ~ODE (void) { }
 };
 
 #endif

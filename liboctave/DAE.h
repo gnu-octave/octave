@@ -1,7 +1,7 @@
 // DAE.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -28,61 +28,49 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include "dColVector.h"
-#include "ODE.h"
 #include "DAEFunc.h"
+#include "base-de.h"
 
-class DAE : public ODE, public DAEFunc
+class DAE : public base_diff_eqn, public DAEFunc
 {
 public:
 
-  DAE (void);
+  DAE (void)
+    : base_diff_eqn (), DAEFunc (), xdot () { }
 
-  DAE (int);
+  DAE (const ColumnVector& x, double t, DAEFunc& f)
+    : base_diff_eqn (x, t), DAEFunc (f), xdot (x.capacity (), 0.0) { }
 
-  DAE (const ColumnVector& x, double time, DAEFunc& f);
+  DAE (const ColumnVector& x, const ColumnVector& xxdot,
+       double t, DAEFunc& f);
 
-  DAE (const ColumnVector& x, const ColumnVector& xdot,
-       double time, DAEFunc& f);
+  DAE (const DAE& a)
+    : base_diff_eqn (a), DAEFunc (a), xdot (a.xdot) { }
 
- ~DAE (void);
+  DAE& operator = (const DAE& a)
+    {
+      if (this != &a)
+	{
+	  base_diff_eqn::operator = (a);
+	  DAEFunc::operator = (a);
 
-  ColumnVector deriv (void);
+	  xdot = a.xdot;
+	}
+      return *this;
+    }
 
-  virtual void initialize (const ColumnVector& x, double t);
-  virtual void initialize (const ColumnVector& x,
-			   const ColumnVector& xdot, double t);
+  ~DAE (void) { }
 
-  ColumnVector integrate (double t);
+  ColumnVector state_derivative (void) { return xdot; }
 
-  Matrix integrate (const ColumnVector& tout, Matrix& xdot_out);
-  Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,
-		    const ColumnVector& tcrit); 
+  void initialize (const ColumnVector& x, double t);
+
+  void initialize (const ColumnVector& x, const ColumnVector& xxdot,
+		   double t);
 
 protected:
 
-  // Some of this is probably too closely related to DASSL, but hey,
-  // this is just a first attempt...
-
   ColumnVector xdot;
-
-private:
-
-  int integration_error;
-  int restart;
-  int liw;  
-  int lrw;
-  int idid;
-  int *info;
-  int *iwork;
-  double *rwork;
-
-  friend int ddassl_j (double *time, double *state, double *deriv,
-		       double *pd, double *cj, double *rpar, int *ipar);
-
-  friend int ddassl_f (double *time, double *state, double *deriv,
-		       double *delta, int *ires, double *rpar, int *ipar);
-
 };
 
 #endif

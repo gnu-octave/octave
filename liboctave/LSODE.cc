@@ -1,4 +1,4 @@
-// ODE.cc                                                -*- C++ -*-
+// LSODE.cc                                                -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include "ODE.h"
+#include "LSODE.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
 
@@ -55,10 +55,9 @@ static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;
 static ColumnVector *tmp_x;
 
-ODE::ODE (void)
+LSODE::LSODE (void) : ODE (), LSODE_options ()
 {
-  n = 0;
-  t = 0.0;
+  n = size ();
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -81,15 +80,12 @@ ODE::ODE (void)
       iwork[i] = 0;
       rwork[i] = 0.0;
     }
-
-  fun = 0;
-  jac = 0;
 }
 
-ODE::ODE (int size)
+LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
+  : ODE (state, time, f), LSODE_options ()
 {
-  n = size;
-  t = 0.0;
+  n = size ();
 
   stop_time_set = 0;
   stop_time = 0.0;
@@ -112,47 +108,31 @@ ODE::ODE (int size)
       iwork[i] = 0;
       rwork[i] = 0.0;
     }
-
-  fun = 0;
-  jac = 0;
 }
 
-ODE::ODE (const ColumnVector& state, double time, const ODEFunc& f)
-{
-  n = state.capacity ();
-  t = time;
-  x = state;
-
-  stop_time_set = 0;
-  stop_time = 0.0;
-
-  integration_error = 0;
-  restart = 1;
-
-  istate = 1;
-  itol = 1;
-  itask = 1;
-  iopt = 1;
-
-  liw = 20 + n;
-  lrw = 22 + n * (9 + n);
-
-  iwork = new int [liw];
-  rwork = new double [lrw];
-  for (int i = 4; i < 9; i++)
-    {
-      iwork[i] = 0;
-      rwork[i] = 0.0;
-    }
-
-  fun = f.function ();
-  jac = f.jacobian_function ();
-}
-
-ODE::~ODE (void)
+LSODE::~LSODE (void)
 {
   delete [] rwork;
   delete [] iwork;
+}
+
+void
+LSODE::force_restart (void)
+{
+  restart = 1;
+}
+
+void
+LSODE::set_stop_time (double time)
+{
+  stop_time_set = 1;
+  stop_time = time;
+}
+
+void
+LSODE::clear_stop_time (void)
+{
+  stop_time_set = 0;
 }
 
 int
@@ -198,7 +178,7 @@ lsode_j (const int& neq, const double& time, double *,
 }
 
 ColumnVector
-ODE::integrate (double tout)
+LSODE::do_integrate (double tout)
 {
   if (jac)
     method_flag = 21;
@@ -214,8 +194,8 @@ ODE::integrate (double tout)
   //       and copy.
 
   tmp_x = &x;
-  user_fun = fun;
-  user_jac = jac;
+  user_fun = function ();
+  user_jac = jacobian_function ();
 
   // Try 5000 steps before giving up.
 
@@ -295,8 +275,9 @@ ODE::integrate (double tout)
   return x;
 }
 
+#if 0
 void
-ODE::integrate (int nsteps, double tstep, ostream& s)
+LSODE::integrate (int nsteps, double tstep, ostream& s)
 {
   int time_to_quit = 0;
   double tout = t;
@@ -320,9 +301,10 @@ ODE::integrate (int nsteps, double tstep, ostream& s)
 	return;
     }
 }
+#endif
 
 Matrix
-ODE::integrate (const ColumnVector& tout)
+LSODE::do_integrate (const ColumnVector& tout)
 {
   Matrix retval;
   int n_out = tout.capacity ();
@@ -336,7 +318,7 @@ ODE::integrate (const ColumnVector& tout)
 
       for (int j = 1; j < n_out; j++)
 	{
-	  ColumnVector x_next = integrate (tout.elem (j));
+	  ColumnVector x_next = do_integrate (tout.elem (j));
 
 	  if (integration_error)
 	    return retval;
@@ -350,7 +332,7 @@ ODE::integrate (const ColumnVector& tout)
 }
 
 Matrix
-ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
+LSODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   Matrix retval;
   int n_out = tout.capacity ();
@@ -416,7 +398,7 @@ ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 		  i_out++;
 		}
 
-	      ColumnVector x_next = integrate (t_out);
+	      ColumnVector x_next = do_integrate (t_out);
 
 	      if (integration_error)
 		return retval;
@@ -433,7 +415,7 @@ ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 	}
       else
 	{
-	  retval = integrate (tout);
+	  retval = do_integrate (tout);
 
 	  if (integration_error)
 	    return retval;
@@ -443,62 +425,18 @@ ODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
   return retval;
 }
 
-int
-ODE::size (void) const
-{
-  return n;
-}
-
-ColumnVector
-ODE::state (void) const
-{
-  return x;
-}
-
-double ODE::time (void) const
-{
-  return t;
-}
-
-void
-ODE::force_restart (void)
-{
-  restart = 1;
-}
-
-void
-ODE::initialize (const ColumnVector& state, double time)
-{
-  restart = 1;
-  x = state;
-  t = time;
-}
-
-void
-ODE::set_stop_time (double time)
-{
-  stop_time_set = 1;
-  stop_time = time;
-}
-
-void
-ODE::clear_stop_time (void)
-{
-  stop_time_set = 0;
-}
-
-ODE_options::ODE_options (void)
+LSODE_options::LSODE_options (void)
 {
   init ();
 }
 
-ODE_options::ODE_options (const ODE_options& opt)
+LSODE_options::LSODE_options (const LSODE_options& opt)
 {
   copy (opt);
 }
 
-ODE_options&
-ODE_options::operator = (const ODE_options& opt)
+LSODE_options&
+LSODE_options::operator = (const LSODE_options& opt)
 {
   if (this != &opt)
     copy (opt);
@@ -506,12 +444,12 @@ ODE_options::operator = (const ODE_options& opt)
   return *this;
 }
 
-ODE_options::~ODE_options (void)
+LSODE_options::~LSODE_options (void)
 {
 }
 
 void
-ODE_options::init (void)
+LSODE_options::init (void)
 {
   double sqrt_eps = sqrt (DBL_EPSILON);
   x_absolute_tolerance = sqrt_eps;
@@ -522,7 +460,7 @@ ODE_options::init (void)
 }
 
 void
-ODE_options::copy (const ODE_options& opt)
+LSODE_options::copy (const LSODE_options& opt)
 {
   x_absolute_tolerance = opt.x_absolute_tolerance;
   x_initial_step_size = opt.x_initial_step_size;
@@ -532,67 +470,67 @@ ODE_options::copy (const ODE_options& opt)
 }
 
 void
-ODE_options::set_default_options (void)
+LSODE_options::set_default_options (void)
 {
   init ();
 }
 
 void
-ODE_options::set_absolute_tolerance (double val)
+LSODE_options::set_absolute_tolerance (double val)
 {
   x_absolute_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
 }
 
 void
-ODE_options::set_initial_step_size (double val)
+LSODE_options::set_initial_step_size (double val)
 {
   x_initial_step_size = (val >= 0.0) ? val : -1.0;
 }
 
 void
-ODE_options::set_maximum_step_size (double val)
+LSODE_options::set_maximum_step_size (double val)
 {
   x_maximum_step_size = (val >= 0.0) ? val : -1.0;
 }
 
 void
-ODE_options::set_minimum_step_size (double val)
+LSODE_options::set_minimum_step_size (double val)
 {
   x_minimum_step_size = (val >= 0.0) ? val : 0.0;
 }
 
 void
-ODE_options::set_relative_tolerance (double val)
+LSODE_options::set_relative_tolerance (double val)
 {
   x_relative_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
 }
 
 double
-ODE_options::absolute_tolerance (void)
+LSODE_options::absolute_tolerance (void)
 {
   return x_absolute_tolerance;
 }
 
 double
-ODE_options::initial_step_size (void)
+LSODE_options::initial_step_size (void)
 {
   return x_initial_step_size;
 }
 
 double
-ODE_options::maximum_step_size (void)
+LSODE_options::maximum_step_size (void)
 {
   return x_maximum_step_size;
 }
 
 double
-ODE_options::minimum_step_size (void)
+LSODE_options::minimum_step_size (void)
 {
   return x_minimum_step_size;
 }
 
 double
-ODE_options::relative_tolerance (void)
+LSODE_options::relative_tolerance (void)
 {
   return x_relative_tolerance;
 }

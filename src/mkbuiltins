@@ -25,8 +25,6 @@ cat << \EOF
 #include "config.h"
 #endif
 
-#include "builtins.h"
-#include "mappers.h"
 #include "oct-builtin.h"
 #include "oct-obj.h"
 #include "variables.h"
@@ -75,6 +73,8 @@ done
 
 cat << \EOF
 }
+
+extern void install_mapper_functions (void);
 
 void
 install_builtins (void)

@@ -50,7 +50,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-error.h"
 #include "str-vec.h"
 
-#include "builtins.h"
 #include <defaults.h>
 #include "defun.h"
 #include "dynamic-ld.h"
@@ -76,6 +75,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 #include <version.h>
+
+extern void install_builtins (void);
 
 #if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
 extern "C" int on_exit ();

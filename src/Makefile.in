@@ -370,7 +370,7 @@ dist: parse.cc lex.cc oct-gperf.h
 	done
 	ln $(DLD_SRC) ../`cat ../.fname`/src/DLD-FUNCTIONS
 	ln $(OP_SRC) ../`cat ../.fname`/src/OPERATORS
-	ln $(OP_SRC) ../`cat ../.fname`/src/TEMPLATE-INST
+	ln $(TI_SRC) ../`cat ../.fname`/src/TEMPLATE-INST
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
 	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.df builtins.cc
 .PHONY: dist

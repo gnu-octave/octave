@@ -31,7 +31,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = glob kpathsea # plplot
+DISTDIRS = glob kpathsea readline # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \

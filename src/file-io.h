@@ -30,30 +30,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "oct-obj.h"
 
-extern Pix return_valid_file (const tree_constant& arg);
-
-extern Octave_object fclose_internal (const Octave_object& args);
-extern Octave_object feof_internal (const Octave_object& args, int nargout);
-extern Octave_object ferror_internal (const Octave_object& args, int nargout);
-extern Octave_object fflush_internal (const Octave_object& args);
-extern Octave_object fgets_internal (const Octave_object& args, int nargout);
-extern Octave_object fopen_internal (const Octave_object& args);
-extern Octave_object fread_internal (const Octave_object& args, int nargout);
-extern Octave_object freport_internal (void);
-extern Octave_object frewind_internal (const Octave_object& args);
-extern Octave_object fseek_internal (const Octave_object& args);
-extern Octave_object ftell_internal (const Octave_object& args);
-extern Octave_object fwrite_internal (const Octave_object& args, int nargout);
-
 extern void initialize_file_io (void);
 
 extern void close_files (void);
-
-extern Octave_object do_printf (const char *type, const Octave_object& args,
-				int nargout);
-
-extern Octave_object do_scanf (const char *type, const Octave_object& args,
-			       int nargout);
 
 class
 file_info

@@ -252,22 +252,7 @@ file_io_get_file (const tree_constant& arg, const char *mode,
   return p;
 }
 
-DEFUN ("fclose", Ffclose, Sfclose, 1, 1,
-  "fclose (FILENAME or FILENUM): close a file")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("fclose");
-  else
-    retval = fclose_internal (args);
-
-  return retval;
-}
-
-Octave_object
+static Octave_object
 fclose_internal (const Octave_object& args)
 {
   Octave_object retval;
@@ -299,22 +284,22 @@ fclose_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("fflush", Ffflush, Sfflush, 1, 1,
-  "fflush (FILENAME or FILENUM): flush buffered data to output file")
+DEFUN ("fclose", Ffclose, Sfclose, 1, 1,
+  "fclose (FILENAME or FILENUM): close a file")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
   if (nargin != 1)
-    print_usage ("fflush");
+    print_usage ("fclose");
   else
-    retval = fflush_internal (args);
+    retval = fclose_internal (args);
 
   return retval;
 }
 
-Octave_object
+static Octave_object
 fflush_internal (const Octave_object& args)
 {
   Octave_object retval;
@@ -350,6 +335,21 @@ fflush_internal (const Octave_object& args)
   return retval;
 }
 
+DEFUN ("fflush", Ffflush, Sfflush, 1, 1,
+  "fflush (FILENAME or FILENUM): flush buffered data to output file")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("fflush");
+  else
+    retval = fflush_internal (args);
+
+  return retval;
+}
+
 static int
 valid_mode (const char *mode)
 {
@@ -365,24 +365,7 @@ valid_mode (const char *mode)
   return 0;
 }
 
-DEFUN ("fgets", Ffgets, Sfgets, 2, 2,
-  "[STRING, LENGTH] = fgets (FILENAME or FILENUM, LENGTH)\n\
-\n\
-read a string from a file")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
-    print_usage ("fgets");
-  else
-    retval = fgets_internal (args, nargout);
-
-  return retval;
-}
-
-Octave_object
+static Octave_object
 fgets_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
@@ -431,32 +414,24 @@ fgets_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("fopen", Ffopen, Sfopen, 2, 1,
-  "FILENUM = fopen (FILENAME, MODE): open a file\n\
+DEFUN ("fgets", Ffgets, Sfgets, 2, 2,
+  "[STRING, LENGTH] = fgets (FILENAME or FILENUM, LENGTH)\n\
 \n\
-  Valid values for mode include:\n\
-\n\
-   r  : open text file for reading\n\
-   w  : open text file for writing; discard previous contents if any\n\
-   a  : append; open or create text file for writing at end of file\n\
-   r+ : open text file for update (i.e., reading and writing)\n\
-   w+ : create text file for update; discard previous contents if any\n\
-   a+ : append; open or create text file for update, writing at end\n\n\
- Update mode permits reading from and writing to the same file.")
+read a string from a file")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
   if (nargin != 2)
-    print_usage ("fopen");
+    print_usage ("fgets");
   else
-    retval = fopen_internal (args);
+    retval = fgets_internal (args, nargout);
 
   return retval;
 }
 
-Octave_object
+static Octave_object
 fopen_internal (const Octave_object& args)
 {
   Octave_object retval;
@@ -519,22 +494,32 @@ fopen_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("freport", Ffreport, Sfreport, 0, 1,
-  "freport (): list open files and their status")
+DEFUN ("fopen", Ffopen, Sfopen, 2, 1,
+  "FILENUM = fopen (FILENAME, MODE): open a file\n\
+\n\
+  Valid values for mode include:\n\
+\n\
+   r  : open text file for reading\n\
+   w  : open text file for writing; discard previous contents if any\n\
+   a  : append; open or create text file for writing at end of file\n\
+   r+ : open text file for update (i.e., reading and writing)\n\
+   w+ : create text file for update; discard previous contents if any\n\
+   a+ : append; open or create text file for update, writing at end\n\n\
+ Update mode permits reading from and writing to the same file.")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin > 0)
-    warning ("freport: ignoring extra arguments");
-
-  retval = freport_internal ();
+  if (nargin != 2)
+    print_usage ("fopen");
+  else
+    retval = fopen_internal (args);
 
   return retval;
 }
 
-Octave_object
+static Octave_object
 freport_internal (void)
 {
   Octave_object retval;
@@ -559,22 +544,22 @@ freport_internal (void)
   return retval;
 }
 
-DEFUN ("frewind", Ffrewind, Sfrewind, 1, 1,
-  "frewind (FILENAME or FILENUM): set file position at beginning of file")
+DEFUN ("freport", Ffreport, Sfreport, 0, 1,
+  "freport (): list open files and their status")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ("frewind");
-  else
-    retval = frewind_internal (args);
+  if (nargin > 0)
+    warning ("freport: ignoring extra arguments");
+
+  retval = freport_internal ();
 
   return retval;
 }
 
-Octave_object
+static Octave_object
 frewind_internal (const Octave_object& args)
 {
   Octave_object retval;
@@ -590,24 +575,22 @@ frewind_internal (const Octave_object& args)
   return retval;
 }
 
-DEFUN ("fseek", Ffseek, Sfseek, 3, 1,
-  "fseek (FILENAME or FILENUM, OFFSET [, ORIGIN])\n\
-\n\
-set file position for reading or writing")
+DEFUN ("frewind", Ffrewind, Sfrewind, 1, 1,
+  "frewind (FILENAME or FILENUM): set file position at beginning of file")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2 && nargin != 3)
-    print_usage ("fseek");
+  if (nargin != 1)
+    print_usage ("frewind");
   else
-    retval = fseek_internal (args);
+    retval = frewind_internal (args);
 
   return retval;
 }
 
-Octave_object
+static Octave_object
 fseek_internal (const Octave_object& args)
 {
   Octave_object retval;
@@ -688,24 +671,26 @@ fseek_internal (const Octave_object& args)
   return retval;
 }
 
-// Tell current position of file.
-
-DEFUN ("ftell", Fftell, Sftell, 1, 1,
-  "POSITION = ftell (FILENAME or FILENUM): returns the current file position")
+DEFUN ("fseek", Ffseek, Sfseek, 3, 1,
+  "fseek (FILENAME or FILENUM, OFFSET [, ORIGIN])\n\
+\n\
+set file position for reading or writing")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 1)
-    print_usage ("ftell");
+  if (nargin != 2 && nargin != 3)
+    print_usage ("fseek");
   else
-    retval = ftell_internal (args);
+    retval = fseek_internal (args);
 
   return retval;
 }
 
-Octave_object
+// Tell current position of file.
+
+static Octave_object
 ftell_internal (const Octave_object& args)
 {
   Octave_object retval;
@@ -722,6 +707,21 @@ ftell_internal (const Octave_object& args)
       if (offset == -1L)
 	error ("ftell: write error");
     }
+
+  return retval;
+}
+
+DEFUN ("ftell", Fftell, Sftell, 1, 1,
+  "POSITION = ftell (FILENAME or FILENUM): returns the current file position")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("ftell");
+  else
+    retval = ftell_internal (args);
 
   return retval;
 }
@@ -960,56 +960,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
 // Formatted printing to a file.
 
-DEFUN ("fprintf", Ffprintf, Sfprintf, -1, 1,
-  "fprintf (FILENAME or FILENUM, FORMAT, ...)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 2)
-    print_usage ("fprintf");
-  else
-    retval = do_printf ("fprintf", args, nargout);
-
-  return retval;
-}
-
-// Formatted printing.
-
-DEFUN ("printf", Fprintf, Sprintf, -1, 1,
-  "printf (FORMAT, ...)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1)
-    print_usage ("printf");
-  else
-    retval = do_printf ("printf", args, nargout);
-
-  return retval;
-}
-
-// Formatted printing to a string.
-
-DEFUN ("sprintf", Fsprintf, Ssprintf, -1, 1,
-  "s = sprintf (FORMAT, ...)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1)
-    print_usage ("sprintf");
-  else
-    retval = do_printf ("sprintf", args, nargout);
-
-  return retval;
-}
-
-Octave_object
+static Octave_object
 do_printf (const char *type, const Octave_object& args, int nargout)
 {
   Octave_object retval;
@@ -1079,7 +1030,6 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 
 // We must be looking at a format specifier.  Extract it or fail.
 
-
       int status = process_printf_format (ptr, args, output_buf, type);
 
       if (status < 0)
@@ -1108,6 +1058,55 @@ do_printf (const char *type, const Octave_object& args, int nargout)
       retval(0) = msg;
       delete [] msg;
     }
+
+  return retval;
+}
+
+DEFUN ("fprintf", Ffprintf, Sfprintf, -1, 1,
+  "fprintf (FILENAME or FILENUM, FORMAT, ...)")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin < 2)
+    print_usage ("fprintf");
+  else
+    retval = do_printf ("fprintf", args, nargout);
+
+  return retval;
+}
+
+// Formatted printing.
+
+DEFUN ("printf", Fprintf, Sprintf, -1, 1,
+  "printf (FORMAT, ...)")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin < 1)
+    print_usage ("printf");
+  else
+    retval = do_printf ("printf", args, nargout);
+
+  return retval;
+}
+
+// Formatted printing to a string.
+
+DEFUN ("sprintf", Fsprintf, Ssprintf, -1, 1,
+  "s = sprintf (FORMAT, ...)")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin < 1)
+    print_usage ("sprintf");
+  else
+    retval = do_printf ("sprintf", args, nargout);
 
   return retval;
 }
@@ -1281,56 +1280,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 
 // Formatted reading from a file.
 
-DEFUN ("fscanf", Ffscanf, Sfscanf, 2, -1,
-  "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1 && nargin != 2)
-    print_usage ("fscanf");
-  else
-    retval = do_scanf ("fscanf", args, nargout);
-
-  return retval;
-}
-
-// Formatted reading.
-
-DEFUN ("scanf", Fscanf, Sscanf, 1, -1,
-  "[A, B, C, ...] = scanf (FORMAT)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("scanf");
-  else
-    retval = do_scanf ("scanf", args, nargout);
-
-  return retval;
-}
-
-// Formatted reading from a string.
-
-DEFUN ("sscanf", Fsscanf, Ssscanf, 2, -1,
-  "[A, B, C, ...] = sscanf (STRING, FORMAT)")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 2)
-    print_usage ("sscanf");
-  else
-    retval = do_scanf ("sscanf", args, nargout);
-
-  return retval;
-}
-
-Octave_object
+static Octave_object
 do_scanf (const char *type, const Octave_object& args, int nargout)
 {
   Octave_object retval;
@@ -1476,6 +1426,55 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
   return retval;
 }
 
+DEFUN ("fscanf", Ffscanf, Sfscanf, 2, -1,
+  "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT)")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1 && nargin != 2)
+    print_usage ("fscanf");
+  else
+    retval = do_scanf ("fscanf", args, nargout);
+
+  return retval;
+}
+
+// Formatted reading.
+
+DEFUN ("scanf", Fscanf, Sscanf, 1, -1,
+  "[A, B, C, ...] = scanf (FORMAT)")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("scanf");
+  else
+    retval = do_scanf ("scanf", args, nargout);
+
+  return retval;
+}
+
+// Formatted reading from a string.
+
+DEFUN ("sscanf", Fsscanf, Ssscanf, 2, -1,
+  "[A, B, C, ...] = sscanf (STRING, FORMAT)")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    print_usage ("sscanf");
+  else
+    retval = do_scanf ("sscanf", args, nargout);
+
+  return retval;
+}
+
 // Find out how many elements are left to read.
 
 static long
@@ -1518,33 +1517,6 @@ num_items_remaining (FILE *fptr, char *type)
   return len / size;
 }
 
-DEFUN ("fread", Ffread, Sfread, 3, 2,
-  "[DATA, COUNT] = fread (FILENUM, SIZE, PRECISION)\n\
-\n\
- Reads data in binary form of type PRECISION from a file.\n\
-\n\
- FILENUM   : file number from fopen\n\
- SIZE      : size specification for the Data matrix\n\
- PRECISION : type of data to read, valid types are\n\
-\n\
-               'char',   'schar', 'short',  'int',  'long', 'float'\n\
-               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\
-\n\
- DATA      : matrix in which the data is stored\n\
- COUNT     : number of elements read")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 3)
-    print_usage ("fread");
-  else
-    retval = fread_internal (args, nargout);
-
-  return retval;
-}
-
 // Read binary data from a file.
 //
 //   [data, count] = fread (fid, size, 'precision')
@@ -1567,7 +1539,7 @@ DEFUN ("fread", Ffread, Sfread, 3, 2,
 //     data	 : output data
 //     count	 : number of elements read
 
-Octave_object
+static Octave_object
 fread_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
@@ -1712,28 +1684,29 @@ fread_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
-DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
-  "COUNT = fwrite (FILENUM, DATA, PRECISION)\n\
+DEFUN ("fread", Ffread, Sfread, 3, 2,
+  "[DATA, COUNT] = fread (FILENUM, SIZE, PRECISION)\n\
 \n\
- Writes data to a file in binary form of size PRECISION\n\
+ Reads data in binary form of type PRECISION from a file.\n\
 \n\
  FILENUM   : file number from fopen\n\
- DATA      : matrix of elements to be written\n\
+ SIZE      : size specification for the Data matrix\n\
  PRECISION : type of data to read, valid types are\n\
 \n\
                'char',   'schar', 'short',  'int',  'long', 'float'\n\
                'double', 'uchar', 'ushort', 'uint', 'ulong'\n\
 \n\
- COUNT     : number of elements written")
+ DATA      : matrix in which the data is stored\n\
+ COUNT     : number of elements read")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 3)
-    print_usage ("fwrite");
+  if (nargin < 1 || nargin > 3)
+    print_usage ("fread");
   else
-    retval = fwrite_internal (args, nargout);
+    retval = fread_internal (args, nargout);
 
   return retval;
 }
@@ -1753,7 +1726,7 @@ DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
 //
 //    count     : the number of elements written
 
-Octave_object
+static Octave_object
 fwrite_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
@@ -1792,6 +1765,57 @@ fwrite_internal (const Octave_object& args, int nargout)
   return retval;
 }
 
+DEFUN ("fwrite", Ffwrite, Sfwrite, 3, 1,
+  "COUNT = fwrite (FILENUM, DATA, PRECISION)\n\
+\n\
+ Writes data to a file in binary form of size PRECISION\n\
+\n\
+ FILENUM   : file number from fopen\n\
+ DATA      : matrix of elements to be written\n\
+ PRECISION : type of data to read, valid types are\n\
+\n\
+               'char',   'schar', 'short',  'int',  'long', 'float'\n\
+               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\
+\n\
+ COUNT     : number of elements written")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
+    print_usage ("fwrite");
+  else
+    retval = fwrite_internal (args, nargout);
+
+  return retval;
+}
+
+// Check for an EOF condition on a file opened by fopen.
+//
+//   eof = feof (fid)
+//
+//     fid : file id from fopen
+//     eof : non zero for an end of file condition
+
+static Octave_object
+feof_internal (const Octave_object& args, int nargout)
+{
+  Octave_object retval;
+
+// Get file info.
+  Pix p = return_valid_file (args(0));
+
+  if (! p)
+    return retval;
+
+  file_info file = file_list (p);
+
+  retval(0) = (double) feof (file.fptr ());
+
+  return retval;
+}
+
 DEFUN ("feof", Ffeof, Sfeof, 1, 1,
   "ERROR = feof (FILENAME or FILENUM)\n\
 \n\
@@ -1810,49 +1834,6 @@ DEFUN ("feof", Ffeof, Sfeof, 1, 1,
   return retval;
 }
 
-// Check for an EOF condition on a file opened by fopen.
-//
-//   eof = feof (fid)
-//
-//     fid : file id from fopen
-//     eof : non zero for an end of file condition
-
-Octave_object
-feof_internal (const Octave_object& args, int nargout)
-{
-  Octave_object retval;
-
-// Get file info.
-  Pix p = return_valid_file (args(0));
-
-  if (! p)
-    return retval;
-
-  file_info file = file_list (p);
-
-  retval(0) = (double) feof (file.fptr ());
-
-  return retval;
-}
-
-DEFUN ("ferror", Fferror, Sferror, 1, 1,
-  "ERROR = ferror (FILENAME or FILENUM)\n\
-\n\
- Returns a non zero value for an error condition on the\n\
- file specified by FILENAME or FILENUM from fopen")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 1)
-    print_usage ("ferror");
-  else
-    retval = ferror_internal (args, nargout);
-
-  return retval;
-}
-
 // Check for an error condition on a file opened by fopen.
 //
 //   [message, errnum] = ferror (fid)
@@ -1861,7 +1842,7 @@ DEFUN ("ferror", Fferror, Sferror, 1, 1,
 //     message : system error message
 //     errnum  : error number
 
-Octave_object
+static Octave_object
 ferror_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
@@ -1880,6 +1861,24 @@ ferror_internal (const Octave_object& args, int nargout)
     retval(1) = (double) ierr;
 
   retval(0) = strsave (strerror (ierr));
+
+  return retval;
+}
+
+DEFUN ("ferror", Fferror, Sferror, 1, 1,
+  "ERROR = ferror (FILENAME or FILENUM)\n\
+\n\
+ Returns a non zero value for an error condition on the\n\
+ file specified by FILENAME or FILENUM from fopen")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ("ferror");
+  else
+    retval = ferror_internal (args, nargout);
 
   return retval;
 }

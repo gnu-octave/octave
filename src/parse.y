@@ -3376,7 +3376,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 
   std::string nm = sym_rec->name ();
 
-  static string_vector names (2);
+  string_vector names (2);
 
   names[0] = nm + ".oct";
   names[1] = nm + ".m";
@@ -3387,12 +3387,12 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 
   int len = file.length ();
 
-  if (file.substr (len-4, len-1) == ".oct")
+  if (len > 4 && file.substr (len-4, len-1) == ".oct")
     {
       if (octave_dynamic_loader::load (nm, file))
         force_link_to_function (nm);
     }
-  else
+  else if (len > 2)
     {
       // These are needed by yyparse.
 
@@ -3404,8 +3404,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
       curr_fcn_file_name = nm;
       curr_fcn_file_full_name = file;
 
-      if (file.length () > 0)
-	script_file_executed = parse_fcn_file (file, exec_script);
+      script_file_executed = parse_fcn_file (file, exec_script);
 
       if (! (error_state || script_file_executed))
 	force_link_to_function (nm);

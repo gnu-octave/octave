@@ -20,12 +20,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Instantiate stacks of int values.
+// Instantiate Stacks of int values.
 
-compl#include <list>
-#include <stack>
+#include "SLStack.h"
+#include "SLStack.cc"
 
-template class stack <list <int> >;
+template class SLNode<int>;
+template class SLList<int>;
+template class Stack<int>;
+template class SLStack<int>;
 
 /*
 ;;; Local Variables: ***

@@ -20,12 +20,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Instantiate stacks of char* values.
+// Instantiate Stacks of char* values.
 
-compl#include <list>
-#include <stack>
+#include "SLStack.h"
+#include "SLStack.cc"
 
-template class stack <list <char *> >;
+template class SLNode<char*>;
+template class SLList<char*>;
+template class Stack<char*>;
+template class SLStack<char*>;
 
 /*
 ;;; Local Variables: ***

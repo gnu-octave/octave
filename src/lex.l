@@ -1287,7 +1287,8 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
 // See if we have a plot keyword (title, using, or with).
 
-  if (plotting && cant_be_identifier && is_plot_keyword (tok);
+  int plot_option_kw = is_plot_keyword (tok);
+  if (plotting && cant_be_identifier && plot_option_kw)
     TOK_RETURN (plot_option_kw);
 
 // Yes, we really do need both of these plot_range variables.  One

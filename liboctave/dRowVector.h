@@ -53,7 +53,7 @@ public:
   int operator == (const RowVector& a) const;
   int operator != (const RowVector& a) const;
 
-// destructive insert/delete/reorder operations
+  // destructive insert/delete/reorder operations
 
   RowVector& insert (const RowVector& a, int c);
 
@@ -67,20 +67,20 @@ public:
   friend RowVector real (const ComplexRowVector& a);
   friend RowVector imag (const ComplexRowVector& a);
 
-// resize is the destructive equivalent for this one
+  // resize is the destructive equivalent for this one
 
   RowVector extract (int c1, int c2) const;
 
-// row vector by row vector -> row vector operations
+  // row vector by row vector -> row vector operations
 
   RowVector& operator += (const RowVector& a);
   RowVector& operator -= (const RowVector& a);
 
-// row vector by matrix -> row vector
+  // row vector by matrix -> row vector
 
   friend RowVector operator * (const RowVector& a, const Matrix& b);
 
-// other operations
+  // other operations
 
   friend RowVector map (d_d_Mapper f, const RowVector& a);
   friend RowVector map (d_c_Mapper f, const ComplexRowVector& a);
@@ -89,7 +89,7 @@ public:
   double min (void) const;
   double max (void) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const RowVector& a);
   friend istream& operator >> (istream& is, RowVector& a);

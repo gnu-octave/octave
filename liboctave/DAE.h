@@ -63,10 +63,8 @@ public:
 
 protected:
 
-/*
- * Some of this is probably too closely related to DASSL, but hey,
- * this is just a first attempt...
- */
+  // Some of this is probably too closely related to DASSL, but hey,
+  // this is just a first attempt...
 
   Vector xdot;
 

@@ -190,8 +190,7 @@ extern int npsol_objective_error;
 inline NPSOL::NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc)
   { }
 
-#endif /* NPSOL_MISSING */
-
+#endif
 #endif
 
 /*

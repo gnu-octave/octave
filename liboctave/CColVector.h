@@ -55,7 +55,7 @@ public:
   int operator == (const ComplexColumnVector& a) const;
   int operator != (const ComplexColumnVector& a) const;
 
-// destructive insert/delete/reorder operations
+  // destructive insert/delete/reorder operations
 
   ComplexColumnVector& insert (const ColumnVector& a, int r);
   ComplexColumnVector& insert (const ComplexColumnVector& a, int r);
@@ -73,11 +73,11 @@ public:
 
   friend ComplexColumnVector conj (const ComplexColumnVector& a);
 
-// resize is the destructive equivalent for this one
+  // resize is the destructive equivalent for this one
 
   ComplexColumnVector extract (int r1, int r2) const;
 
-// column vector by column vector -> column vector operations
+  // column vector by column vector -> column vector operations
 
   ComplexColumnVector& operator += (const ColumnVector& a);
   ComplexColumnVector& operator -= (const ColumnVector& a);
@@ -85,7 +85,7 @@ public:
   ComplexColumnVector& operator += (const ComplexColumnVector& a);
   ComplexColumnVector& operator -= (const ComplexColumnVector& a);
 
-// column vector by scalar -> column vector operations
+  // column vector by scalar -> column vector operations
 
   friend ComplexColumnVector operator + (const ComplexColumnVector& a,
 					 double s);
@@ -105,7 +105,7 @@ public:
   friend ComplexColumnVector operator / (const ColumnVector& a,
 					 const Complex& s);
 
-// scalar by column vector -> column vector operations
+  // scalar by column vector -> column vector operations
 
   friend ComplexColumnVector operator + (double s,
 					 const ComplexColumnVector& a); 
@@ -125,7 +125,7 @@ public:
   friend ComplexColumnVector operator / (const Complex& s,
 					 const ColumnVector& a);
 
-// matrix by column vector -> column vector operations
+  // matrix by column vector -> column vector operations
 
   friend ComplexColumnVector operator * (const ComplexMatrix& a,
 					 const ColumnVector& b);
@@ -133,7 +133,7 @@ public:
   friend ComplexColumnVector operator * (const ComplexMatrix& a,
 					 const ComplexColumnVector& b);
 
-// column vector by column vector -> column vector operations
+  // column vector by column vector -> column vector operations
 
   friend ComplexColumnVector operator + (const ComplexColumnVector& a,
 					 const ColumnVector& b);
@@ -155,12 +155,12 @@ public:
   friend ComplexColumnVector quotient (const ColumnVector& a,
 				       const ComplexColumnVector& b); 
 
-// matrix by column vector -> column vector operations
+  // matrix by column vector -> column vector operations
 
   friend ComplexColumnVector operator * (const Matrix& a,
 					 const ComplexColumnVector& b);
 
-// diagonal matrix by column vector -> column vector operations
+  // diagonal matrix by column vector -> column vector operations
 
   friend ComplexColumnVector operator * (const DiagMatrix& a,
 					 const ComplexColumnVector& b);
@@ -171,7 +171,7 @@ public:
   friend ComplexColumnVector operator * (const ComplexDiagMatrix& a,
 					 const ComplexColumnVector& b);
 
-// other operations
+  // other operations
 
   friend ComplexColumnVector map (c_c_Mapper f, const ComplexColumnVector& a);
   void map (c_c_Mapper f);
@@ -179,7 +179,7 @@ public:
   Complex min (void) const;
   Complex max (void) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const ComplexColumnVector& a);
   friend istream& operator >> (istream& is, ComplexColumnVector& a);

@@ -40,14 +40,13 @@ template <class T> class Array2;
 template <class T> class Array3;
 template <class T> class DiagArray;
 
-/*
- * The real representation of all arrays.
- */
+// The real representation of all arrays.
 
 template <class T>
 class ArrayRep
 {
-// Rethink resize()?
+  // Rethink resize()?
+
   friend class Array<T>;
   friend class Array2<T>;
   friend class Array3<T>;
@@ -80,10 +79,8 @@ private:
   int count;
 };
 
-/*
- * One dimensional array class.  Handles the reference counting for
- * all the derived classes.
- */
+// One dimensional array class.  Handles the reference counting for
+// all the derived classes.
 
 template <class T>
 class Array
@@ -113,7 +110,8 @@ public:
   T& checkelem (int n);
   T& operator () (int n);
 
-// No checking.
+  // No checking.
+
   T& xelem (int n);
 
   T elem (int n) const;
@@ -128,9 +126,7 @@ public:
   T *fortran_vec (void);
 };
 
-/*
- * Two dimensional array class.
- */
+// Two dimensional array class.
 
 template <class T>
 class Array2 : public Array<T>
@@ -165,7 +161,8 @@ public:
   T& checkelem (int i, int j);
   T& operator () (int i, int j);
 
-// No checking.
+  // No checking.
+
   T& xelem (int i, int j);
 
   T elem (int i, int j) const;
@@ -176,9 +173,7 @@ public:
   void resize (int n, int m, const T& val);
 };
 
-/*
- * Three dimensional array class.
- */
+// Three dimensional array class.
 
 template <class T>
 class Array3 : public Array2<T>
@@ -206,7 +201,8 @@ public:
   T& checkelem (int i, int j, int k);
   T& operator () (int i, int j, int k);
 
-// No checking.
+  // No checking.
+
   T& xelem (int i, int j, int k);
 
   T elem (int i, int j, int k) const;
@@ -217,20 +213,18 @@ public:
   void resize (int n, int m, int k, const T& val);
 };
 
-/*
- * A two-dimensional array with diagonal elements only.
- *
- * Idea and example code for Proxy class and functions from:
- *
- * From: kanze@us-es.sel.de (James Kanze)
- * Subject: Re: How to overload [] to do READ/WRITE differently ?
- * Message-ID: <KANZE.93Nov29151407@slsvhdt.us-es.sel.de>
- * Sender: news@us-es.sel.de
- * Date: 29 Nov 1993 14:14:07 GMT
- * --
- * James Kanze                             email: kanze@us-es.sel.de
- * GABI Software, Sarl., 8 rue du Faisan, F-67000 Strasbourg, France
- */
+// A two-dimensional array with diagonal elements only.
+//
+// Idea and example code for Proxy class and functions from:
+//
+// From: kanze@us-es.sel.de (James Kanze)
+// Subject: Re: How to overload [] to do READ/WRITE differently ?
+// Message-ID: <KANZE.93Nov29151407@slsvhdt.us-es.sel.de>
+// Sender: news@us-es.sel.de
+// Date: 29 Nov 1993 14:14:07 GMT
+// --
+// James Kanze                             email: kanze@us-es.sel.de
+// GABI Software, Sarl., 8 rue du Faisan, F-67000 Strasbourg, France
 
 template <class T>
 class DiagArray : public Array<T>
@@ -275,9 +269,9 @@ private:
 
   private:
 
-// XXX FIXME XXX -- this is declared private to keep the user from
-// taking the address of a Proxy.  Maybe it should be implemented by
-// means of a companion function in the DiagArray class.
+    // XXX FIXME XXX -- this is declared private to keep the user from
+    // taking the address of a Proxy.  Maybe it should be implemented
+    // by means of a companion function in the DiagArray class.
 
     inline T *operator& () const { assert (0); return (T *) 0; }
 
@@ -353,7 +347,8 @@ public:
   T& operator () (int r, int c);
 #endif
 
-// No checking.
+  // No checking.
+
   T& xelem (int r, int c);
 
   T elem (int r, int c) const;

@@ -101,10 +101,8 @@ public:
 
 protected:
 
-/*
- * Some of this is probably too closely related to LSODE, but hey,
- * this is just a first attempt...
- */
+  // Some of this is probably too closely related to LSODE, but hey,
+  // this is just a first attempt...
 
   int n;
   double t;

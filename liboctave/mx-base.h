@@ -24,30 +24,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_mx_base_h)
 #define octave_mx_base_h 1
 
-/*
- * Matrix classes.
- */
+// Matrix classes.
 
 #include "dMatrix.h"
 #include "CMatrix.h"
 
-/*
- * Column Vector classes.
- */
+// Column Vector classes.
 
 #include "dColVector.h"
 #include "CColVector.h"
 
-/*
- * Row Vector classes.
- */
+// Row Vector classes.
 
 #include "dRowVector.h"
 #include "CRowVector.h"
 
-/*
- * Diagonal Matrix classes.
- */
+// Diagonal Matrix classes.
 
 #include "dDiagMatrix.h"
 #include "CDiagMatrix.h"

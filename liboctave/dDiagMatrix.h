@@ -74,11 +74,11 @@ public:
   friend DiagMatrix real (const ComplexDiagMatrix& a);
   friend DiagMatrix imag (const ComplexDiagMatrix& a);
 
-// resize is the destructive analog for this one
+  // resize is the destructive analog for this one
 
   Matrix extract (int r1, int c1, int r2, int c2) const;
 
-// extract row or column i.
+  // extract row or column i.
 
   RowVector row (int i) const;
   RowVector row (char *s) const;
@@ -89,22 +89,22 @@ public:
   DiagMatrix inverse (void) const;
   DiagMatrix inverse (int& info) const;
 
-// diagonal matrix by diagonal matrix -> diagonal matrix operations
+  // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
   DiagMatrix& operator += (const DiagMatrix& a);
   DiagMatrix& operator -= (const DiagMatrix& a);
 
-// diagonal matrix by diagonal matrix -> diagonal matrix operations
+  // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
   friend DiagMatrix operator * (const DiagMatrix& a,
 				const DiagMatrix& b);
 
-// other operations
+  // other operations
 
   ColumnVector diag (void) const;
   ColumnVector diag (int k) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const DiagMatrix& a);
 

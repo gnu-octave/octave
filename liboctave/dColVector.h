@@ -54,7 +54,7 @@ public:
   int operator == (const ColumnVector& a) const;
   int operator != (const ColumnVector& a) const;
 
-// destructive insert/delete/reorder operations
+  // destructive insert/delete/reorder operations
 
   ColumnVector& insert (const ColumnVector& a, int r);
 
@@ -68,24 +68,24 @@ public:
   friend ColumnVector real (const ComplexColumnVector& a);
   friend ColumnVector imag (const ComplexColumnVector& a);
 
-// resize is the destructive equivalent for this one
+  // resize is the destructive equivalent for this one
 
   ColumnVector extract (int r1, int r2) const;
 
-// column vector by column vector -> column vector operations
+  // column vector by column vector -> column vector operations
 
   ColumnVector& operator += (const ColumnVector& a);
   ColumnVector& operator -= (const ColumnVector& a);
 
-// matrix by column vector -> column vector operations
+  // matrix by column vector -> column vector operations
 
   friend ColumnVector operator * (const Matrix& a, const ColumnVector& b);
 
-// diagonal matrix by column vector -> column vector operations
+  // diagonal matrix by column vector -> column vector operations
 
   friend ColumnVector operator * (const DiagMatrix& a, const ColumnVector& b);
 
-// other operations
+  // other operations
 
   friend ColumnVector map (d_d_Mapper f, const ColumnVector& a);
   friend ColumnVector map (d_c_Mapper f, const ComplexColumnVector& a);
@@ -94,7 +94,7 @@ public:
   double min (void) const;
   double max (void) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const ColumnVector& a);
   friend istream& operator >> (istream& is, ColumnVector& a);

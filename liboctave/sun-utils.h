@@ -26,21 +26,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (sun)
 
-/*
- * I think that this is really only needed if linking to Fortran
- * compiled libraries on a Sun.  It should never be called.
- * There should probably be a sysdep.cc file, eh?
- */
+// I think that this is really only needed if linking to Fortran
+// compiled libraries on a Sun.  It should never be called.
+// There should probably be a sysdep.cc file, eh?
 
 extern "C" int MAIN_ (void);
 
-/*
- * This is only needed to dereference pointers to doubles if mixing
- * GCC and Sun f77/cc compiled code.  See the GCC manual (where the
- * function access_double() is described) and the Sun f77 manual,
- * which explains that doubles are not always aligned on 8 byte
- * boundaries.
- */
+// This is only needed to dereference pointers to doubles if mixing
+// GCC and Sun f77/cc compiled code.  See the GCC manual (where the
+// function access_double() is described) and the Sun f77 manual,
+// which explains that doubles are not always aligned on 8 byte
+// boundaries.
 
 #if defined (__GNUC__)
 

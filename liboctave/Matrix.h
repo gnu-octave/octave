@@ -21,12 +21,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-/*
-
-Should probably say something here about why these classes are not
-represented by some sort of inheritance tree...
-
-*/
+// Should probably say something here about why these classes are not
+// represented by some sort of inheritance tree...
 
 #if !defined (octave_Matrix_h)
 #define octave_Matrix_h 1

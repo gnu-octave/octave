@@ -125,8 +125,7 @@ QPSOL::operator = (const QPSOL& a)
   return *this;
 }
 
-#endif /* QPSOL_MISSING */
-
+#endif
 #endif
 
 /*

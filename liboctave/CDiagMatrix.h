@@ -85,11 +85,11 @@ public:
 
   friend ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
-// resize is the destructive analog for this one
+  // resize is the destructive analog for this one
 
   ComplexMatrix extract (int r1, int c1, int r2, int c2) const;
 
-// extract row or column i.
+  // extract row or column i
 
   ComplexRowVector row (int i) const;
   ComplexRowVector row (char *s) const;
@@ -100,7 +100,7 @@ public:
   ComplexDiagMatrix inverse (int& info) const;
   ComplexDiagMatrix inverse (void) const;
 
-// diagonal matrix by diagonal matrix -> diagonal matrix operations
+  // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
   ComplexDiagMatrix& operator += (const DiagMatrix& a);
   ComplexDiagMatrix& operator -= (const DiagMatrix& a);
@@ -108,7 +108,7 @@ public:
   ComplexDiagMatrix& operator += (const ComplexDiagMatrix& a);
   ComplexDiagMatrix& operator -= (const ComplexDiagMatrix& a);
 
-// diagonal matrix by scalar -> diagonal matrix operations
+  // diagonal matrix by scalar -> diagonal matrix operations
 
   friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a, double s);
   friend ComplexDiagMatrix operator / (const ComplexDiagMatrix& a, double s);
@@ -116,13 +116,13 @@ public:
   friend ComplexDiagMatrix operator * (const DiagMatrix& a, const Complex& s);
   friend ComplexDiagMatrix operator / (const DiagMatrix& a, const Complex& s);
 
-// scalar by diagonal matrix -> diagonal matrix operations
+  // scalar by diagonal matrix -> diagonal matrix operations
 
   friend ComplexDiagMatrix operator * (double s, const ComplexDiagMatrix& a);
 
   friend ComplexDiagMatrix operator * (const Complex& s, const DiagMatrix& a);
 
-// diagonal matrix by diagonal matrix -> diagonal matrix operations
+  // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
   friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
 				       const ComplexDiagMatrix& b);
@@ -147,12 +147,12 @@ public:
   friend ComplexDiagMatrix product (const DiagMatrix& a,
 				    const ComplexDiagMatrix& b);
 
-// other operations
+  // other operations
 
   ComplexColumnVector diag (void) const;
   ComplexColumnVector diag (int k) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const ComplexDiagMatrix& a);
 

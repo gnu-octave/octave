@@ -67,7 +67,7 @@ public:
   int operator == (const Matrix& a) const;
   int operator != (const Matrix& a) const;
 
-// destructive insert/delete/reorder operations
+  // destructive insert/delete/reorder operations
 
   Matrix& insert (const Matrix& a, int r, int c);
   Matrix& insert (const RowVector& a, int r, int c);
@@ -92,11 +92,11 @@ public:
   friend Matrix real (const ComplexMatrix& a);
   friend Matrix imag (const ComplexMatrix& a);
 
-// resize is the destructive equivalent for this one
+  // resize is the destructive equivalent for this one
 
   Matrix extract (int r1, int c1, int r2, int c2) const;
 
-// extract row or column i.
+  // extract row or column i.
 
   RowVector row (int i) const;
   RowVector row (char *s) const;
@@ -161,41 +161,41 @@ public:
   Matrix& operator += (const DiagMatrix& a);
   Matrix& operator -= (const DiagMatrix& a);
 
-// unary operations
+  // unary operations
 
   Matrix operator ! (void) const;
 
-// column vector by row vector -> matrix operations
+  // column vector by row vector -> matrix operations
 
   friend Matrix operator * (const ColumnVector& a, const RowVector& a);
 
-// diagonal matrix by scalar -> matrix operations
+  // diagonal matrix by scalar -> matrix operations
 
   friend Matrix operator + (const DiagMatrix& a, double s);
   friend Matrix operator - (const DiagMatrix& a, double s);
 
-// scalar by diagonal matrix -> matrix operations
+  // scalar by diagonal matrix -> matrix operations
 
   friend Matrix operator + (double s, const DiagMatrix& a);
   friend Matrix operator - (double s, const DiagMatrix& a);
 
-// matrix by diagonal matrix -> matrix operations
+  // matrix by diagonal matrix -> matrix operations
 
   friend Matrix operator + (const Matrix& a, const DiagMatrix& b);
   friend Matrix operator - (const Matrix& a, const DiagMatrix& b);
   friend Matrix operator * (const Matrix& a, const DiagMatrix& b);
 
-// diagonal matrix by matrix -> matrix operations
+  // diagonal matrix by matrix -> matrix operations
 
   friend Matrix operator + (const DiagMatrix& a, const Matrix& b);
   friend Matrix operator - (const DiagMatrix& a, const Matrix& b);
   friend Matrix operator * (const DiagMatrix& a, const Matrix& b);
 
-// matrix by matrix -> matrix operations
+  // matrix by matrix -> matrix operations
 
   friend Matrix operator * (const Matrix& a, const Matrix& b);
 
-// other operations
+  // other operations
 
   friend Matrix map (d_d_Mapper f, const Matrix& a);
   friend Matrix map (d_c_Mapper f, const ComplexMatrix& a);
@@ -225,15 +225,13 @@ public:
   RowVector column_max (void) const;
   RowVector column_max_loc (void) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const Matrix& a);
   friend istream& operator >> (istream& is, Matrix& a);
 
   int read (FILE *fptr, char *type);
   int write (FILE *fptr, char *type);
-
-// Until templates really work with g++:
 
 private:
 

@@ -54,7 +54,7 @@ public:
   int operator == (const ComplexRowVector& a) const;
   int operator != (const ComplexRowVector& a) const;
 
-// destructive insert/delete/reorder operations
+  // destructive insert/delete/reorder operations
 
   ComplexRowVector& insert (const RowVector& a, int c);
   ComplexRowVector& insert (const ComplexRowVector& a, int c);
@@ -72,11 +72,11 @@ public:
 
   friend ComplexRowVector conj (const ComplexRowVector& a);
 
-// resize is the destructive equivalent for this one
+  // resize is the destructive equivalent for this one
 
   ComplexRowVector extract (int c1, int c2) const;
 
-// row vector by row vector -> row vector operations
+  // row vector by row vector -> row vector operations
 
   ComplexRowVector& operator += (const RowVector& a);
   ComplexRowVector& operator -= (const RowVector& a);
@@ -84,7 +84,7 @@ public:
   ComplexRowVector& operator += (const ComplexRowVector& a);
   ComplexRowVector& operator -= (const ComplexRowVector& a);
 
-// row vector by scalar -> row vector operations
+  // row vector by scalar -> row vector operations
 
   friend ComplexRowVector operator + (const ComplexRowVector& a, double s);
   friend ComplexRowVector operator - (const ComplexRowVector& a, double s);
@@ -96,7 +96,7 @@ public:
   friend ComplexRowVector operator * (const RowVector& a, const Complex& s);
   friend ComplexRowVector operator / (const RowVector& a, const Complex& s);
 
-// scalar by row vector -> row vector operations
+  // scalar by row vector -> row vector operations
 
   friend ComplexRowVector operator + (double s, const ComplexRowVector& a);
   friend ComplexRowVector operator - (double s, const ComplexRowVector& a);
@@ -108,7 +108,7 @@ public:
   friend ComplexRowVector operator * (const Complex& s, const RowVector& a);
   friend ComplexRowVector operator / (const Complex& s, const RowVector& a);
 
-// row vector by matrix -> row vector
+  // row vector by matrix -> row vector
 
   friend ComplexRowVector operator * (const ComplexRowVector& a,
 				      const ComplexMatrix& b);
@@ -116,7 +116,7 @@ public:
   friend ComplexRowVector operator * (const RowVector& a,
 				      const ComplexMatrix& b);
 
-// row vector by row vector -> row vector operations
+  // row vector by row vector -> row vector operations
 
   friend ComplexRowVector operator + (const ComplexRowVector& a,
 				      const RowVector& b);
@@ -138,7 +138,7 @@ public:
   friend ComplexRowVector quotient (const RowVector& a,
 				    const ComplexRowVector& b);
 
-// other operations
+  // other operations
 
   friend ComplexRowVector map (c_c_Mapper f, const ComplexRowVector& a);
   void map (c_c_Mapper f);
@@ -146,7 +146,7 @@ public:
   Complex min (void) const;
   Complex max (void) const;
 
-// i/o
+  // i/o
 
   friend ostream& operator << (ostream& os, const ComplexRowVector& a);
   friend istream& operator >> (istream& is, ComplexRowVector& a);

@@ -36,9 +36,7 @@ template <class T> class MArray;
 template <class T> class MArray2;
 template <class T> class MDiagArray;
 
-/*
- * One dimensional array with math ops.
- */
+// One dimensional array with math ops.
 
 template <class T>
 class MArray : public Array<T>
@@ -63,31 +61,31 @@ public:
       return *this;
     }
 
-// Element by element MArray by scalar ops.
+  // element by element MArray by scalar ops
 
   friend MArray<T>& operator += (MArray<T>& a, const T& s);
   friend MArray<T>& operator -= (MArray<T>& a, const T& s);
 
-// Element by element MArray by MArray ops.
+  // element by element MArray by MArray ops
 
   friend MArray<T>& operator += (MArray<T>& a, const MArray<T>& b);
   friend MArray<T>& operator -= (MArray<T>& a, const MArray<T>& b);
 
-// Element by element MArray by scalar ops.
+  // element by element MArray by scalar ops
 
   friend MArray<T> operator + (const MArray<T>& a, const T& s);
   friend MArray<T> operator - (const MArray<T>& a, const T& s);
   friend MArray<T> operator * (const MArray<T>& a, const T& s);
   friend MArray<T> operator / (const MArray<T>& a, const T& s);
 
-// Element by element scalar by MArray ops.
+  // element by element scalar by MArray ops
 
   friend MArray<T> operator + (const T& s, const MArray<T>& a);
   friend MArray<T> operator - (const T& s, const MArray<T>& a);
   friend MArray<T> operator * (const T& s, const MArray<T>& a);
   friend MArray<T> operator / (const T& s, const MArray<T>& a);
 
-// Element by element MArray by MArray ops.
+  // element by element MArray by MArray ops
 
   friend MArray<T> operator + (const MArray<T>& a, const MArray<T>& b);
 
@@ -99,9 +97,7 @@ public:
   friend MArray<T> operator - (const MArray<T>& a);
 };
 
-/*
- * Two dimensional array with math ops.
- */
+// Two dimensional array with math ops.
 
 template <class T>
 class MArray2 : public Array2<T>
@@ -127,31 +123,31 @@ public:
       return *this;
     }
 
-// Element by element MArray2 by scalar ops.
+  // element by element MArray2 by scalar ops
 
   friend MArray2<T>& operator += (MArray2<T>& a, const T& s);
   friend MArray2<T>& operator -= (MArray2<T>& a, const T& s);
 
-// Element by element MArray2 by MArray2 ops.
+  // element by element MArray2 by MArray2 ops
 
   friend MArray2<T>& operator += (MArray2<T>& a, const MArray2<T>& b);
   friend MArray2<T>& operator -= (MArray2<T>& a, const MArray2<T>& b);
 
-// Element by element MArray2 by scalar ops.
+  // element by element MArray2 by scalar ops
 
   friend MArray2<T> operator + (const MArray2<T>& a, const T& s);
   friend MArray2<T> operator - (const MArray2<T>& a, const T& s);
   friend MArray2<T> operator * (const MArray2<T>& a, const T& s);
   friend MArray2<T> operator / (const MArray2<T>& a, const T& s);
 
-// Element by element scalar by MArray2 ops.
+  // element by element scalar by MArray2 ops
 
   friend MArray2<T> operator + (const T& s, const MArray2<T>& a);
   friend MArray2<T> operator - (const T& s, const MArray2<T>& a);
   friend MArray2<T> operator * (const T& s, const MArray2<T>& a);
   friend MArray2<T> operator / (const T& s, const MArray2<T>& a);
 
-// Element by element MArray2 by MArray2 ops.
+  // element by element MArray2 by MArray2 ops
 
   friend MArray2<T> operator + (const MArray2<T>& a, const MArray2<T>& b);
   friend MArray2<T> operator - (const MArray2<T>& a, const MArray2<T>& b);
@@ -162,9 +158,7 @@ public:
   friend MArray2<T> operator - (const MArray2<T>& a);
 };
 
-/*
- * Two dimensional diagonal array with math ops.
- */
+// Two dimensional diagonal array with math ops.
 
 template <class T>
 class MDiagArray : public DiagArray<T>
@@ -192,21 +186,21 @@ public:
       return *this;
     }
 
-// Element by element MDiagArray by MDiagArray ops.
+  // element by element MDiagArray by MDiagArray ops
 
   friend MDiagArray<T>& operator += (MDiagArray<T>& a, const MDiagArray<T>& b);
   friend MDiagArray<T>& operator -= (MDiagArray<T>& a, const MDiagArray<T>& b);
 
-// Element by element MDiagArray by scalar ops.
+  // element by element MDiagArray by scalar ops
 
   friend MDiagArray<T> operator * (const MDiagArray<T>& a, const T& s);
   friend MDiagArray<T> operator / (const MDiagArray<T>& a, const T& s);
 
-// Element by element scalar by MDiagArray ops.
+  // element by element scalar by MDiagArray ops
 
   friend MDiagArray<T> operator * (const T& s, const MDiagArray<T>& a);
 
-// Element by element MDiagArray by MDiagArray ops.
+  // element by element MDiagArray by MDiagArray ops
 
   friend MDiagArray<T> operator + (const MDiagArray<T>& a,
 				   const MDiagArray<T>& b); 

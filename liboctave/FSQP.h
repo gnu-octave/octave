@@ -42,8 +42,7 @@ class FSQP : public NLP
  private:
 };
 
-#endif /* FSQP_MISSING */
-
+#endif
 #endif
 
 /*

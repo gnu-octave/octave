@@ -1,3 +1,8 @@
+2004-02-07  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* ov-struct.cc (Fcell2struct): New function.
+	(cell2struct_check_args, cell2struct_construct_idx): Likewise.
+
 2004-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-scalar.h (octave_scalar::empty_clone):

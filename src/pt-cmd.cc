@@ -45,7 +45,7 @@ int returning = 0;
 #include "oct-map.h"
 #include "symtab.h"
 #include "pt-cmd.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-exp.h"
 #include "pt-fvc.h"
 #include "pt-misc.h"
@@ -252,13 +252,15 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 {
   quit = false;
 
-  ident->assign (rhs);
+  octave_variable_reference tmp (ident);
 
   if (error_state)
     {
       eval_error ();
       return;
     }
+
+  tmp.assign (rhs);
 
   if (list)
     {

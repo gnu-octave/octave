@@ -12,12 +12,27 @@ cat << \EOF
 #include "oct-obj.h"
 #include "variables.h"
 
+EOF
+
+for file in "$@"; do
+  fcn=`echo $file | sed -e 's/\.df//' -e 's/-/_/g'`
+  echo "static void"
+  echo "install_${fcn}_fcns (void)"
+  echo "{"
+  cat $file
+  echo "}"
+done
+
+cat << \EOF
 static void
 install_builtin_functions (void)
 {
 EOF
 
-cat "$@"
+for file in "$@"; do
+  fcn=`echo $file | sed -e 's/\.df//' -e 's/-/_/g'`
+  echo "  install_${fcn}_fcns ();"
+done
 
 cat << \EOF
 }

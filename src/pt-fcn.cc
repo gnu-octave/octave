@@ -38,7 +38,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "symtab.h"
 #include "toplev.h"
-#include "pt-const.h"
 #include "pt-exp.h"
 #include "pt-fcn.h"
 #include "pt-misc.h"
@@ -46,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-walk.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "ov.h"
 #include "variables.h"
 
 // If TRUE, variables returned from functions have default values even
@@ -78,13 +78,8 @@ tree_function::install_nargin_and_nargout (void)
 void
 tree_function::bind_nargin_and_nargout (int nargin, int nargout)
 {
-  octave_value *tmp;
-
-  tmp = new octave_value (nargin);
-  nargin_sr->define (tmp);
-
-  tmp = new octave_value (nargout);
-  nargout_sr->define (tmp);
+  nargin_sr->define ((double) nargin);
+  nargout_sr->define ((double) nargout);
 }
 
 tree_function::~tree_function (void)

@@ -2262,7 +2262,7 @@ tree_constant_rep::diag (void) const
 	int nc = columns ();
 	if (nr == 0 || nc == 0)
 	  {
-	    Matrix mtmp (nr, nc);
+	    Matrix mtmp;
 	    retval = tree_constant (mtmp);
 	  }
 	else if (nr == 1 || nc == 1)
@@ -2284,7 +2284,7 @@ tree_constant_rep::diag (void) const
 	int nc = columns ();
 	if (nr == 0 || nc == 0)
 	  {
-	    Matrix mtmp (nr, nc);
+	    Matrix mtmp;
 	    retval = tree_constant (mtmp);
 	  }
 	else if (nr == 1 || nc == 1)
@@ -2353,7 +2353,7 @@ tree_constant_rep::diag (const tree_constant& a) const
 	  int nc = columns ();
 	  if (nr == 0 || nc == 0)
 	    {
-	      Matrix mtmp (nr, nc);
+	      Matrix mtmp;
 	      retval = tree_constant (mtmp);
 	    }
 	  else if (nr == 1 || nc == 1)
@@ -2397,7 +2397,7 @@ tree_constant_rep::diag (const tree_constant& a) const
 	  int nc = columns ();
 	  if (nr == 0 || nc == 0)
 	    {
-	      Matrix mtmp (nr, nc);
+	      Matrix mtmp;
 	      retval = tree_constant (mtmp);
 	    }
 	  else if (nr == 1 || nc == 1)

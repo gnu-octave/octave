@@ -544,12 +544,13 @@ looks_like_octave_copyright (char *s)
   return 0;
 }
 
-// Eat whitespace and comments from FFILE, returning the first block
-// of comments.  If SKIP_COPYRIGHT, keep reading until the first block
-// of comments that doesn't look like a copyright notice.
+// Eat whitespace and comments from FFILE, returning the text of the
+// comments read if it doesn't look like a copyright notice.  If
+// IN_PARTS, consider each block of comments separately; otherwise,
+// grab them all at once.
 
 static char *
-gobble_leading_white_space (FILE *ffile, int skip_copyright)
+gobble_leading_white_space (FILE *ffile, int in_parts)
 {
   ostrstream buf;
 
@@ -573,15 +574,18 @@ gobble_leading_white_space (FILE *ffile, int skip_copyright)
 	      input_line_number++;
 	      current_input_column = 0;
 	      in_comment = 0;
-	      if ((c = getc (ffile)) != EOF)
+	      if (in_parts)
 		{
-		  current_input_column--;
-		  ungetc (c, ffile);
-		  if (c == '\n')
+		  if ((c = getc (ffile)) != EOF)
+		    {
+		      current_input_column--;
+		      ungetc (c, ffile);
+		      if (c == '\n')
+			break;
+		    }
+		  else
 		    break;
 		}
-	      else
-		break;
 	    }
 	}
       else
@@ -619,10 +623,16 @@ gobble_leading_white_space (FILE *ffile, int skip_copyright)
   buf << ends;
   char *help_txt = buf.str ();
 
-  if (skip_copyright && help_txt && looks_like_octave_copyright (help_txt)) 
+  if (help_txt)
     {
-      delete [] help_txt;
-      help_txt = gobble_leading_white_space (ffile, skip_copyright);
+      if (looks_like_octave_copyright (help_txt)) 
+	{
+	  delete [] help_txt;
+	  help_txt = 0;
+	}
+
+      if (in_parts && ! help_txt)
+	help_txt = gobble_leading_white_space (ffile, in_parts);
     }
 
   if (help_txt && ! *help_txt)

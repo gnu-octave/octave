@@ -1,0 +1,1 @@
+ischar ("test", 1)

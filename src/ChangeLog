@@ -1,6 +1,15 @@
-Tue Feb 18 00:27:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Tue Feb 18 09:22:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.3 released.
+
+Tue Feb 18 00:27:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (run_command_and_return_output):
+	Block SIGCHLD while running subprocess.
+	(cleanup_iprocstream): Unblock it here.
+
+	* sighandlers.h (BLOCK_SIGNAL, BLOCK_CHILD, UNBLOCK_CHILD): Move here.
+	* sighandlers.cc: From here.
 
 	* toplev.cc (system): Shift then mask exit status.
 

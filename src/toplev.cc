@@ -70,6 +70,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-plot.h"
 #include "sighandlers.h"
 #include "sysdep.h"
+#include "syswait.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -649,9 +650,13 @@ string CATCH.")
 
 // Execute a shell command.
 
+static sigset_t signal_set, old_signal_set;
+
 static void
 cleanup_iprocstream (void *p)
 {
+  UNBLOCK_CHILD (old_signal_set);
+
   delete (iprocstream *) p;
 }
 
@@ -659,6 +664,8 @@ static octave_value_list
 run_command_and_return_output (const string& cmd_str)
 {
   octave_value_list retval;
+
+  BLOCK_CHILD (signal_set, old_signal_set);
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
@@ -680,8 +687,8 @@ run_command_and_return_output (const string& cmd_str)
       // process exited normally, extract the actual exit status of
       // the command.  Otherwise, return 127 as a failure code.
 
-      if ((status & 0xff) == 0)
-	status = (status >> 8) & 0xff;
+      if (WIFEXITED (status))
+	status = WEXITSTATUS (status);
 
       output_buf << ends;
 
@@ -787,8 +794,8 @@ or\n\
 	      // status of the command.  Otherwise, return 127 as a
 	      // failure code.
 
-	      if ((status & 0xff) == 0)
-		status = (status >> 8) & 0xff;
+	      if (WIFEXITED (status))
+		status = WEXITSTATUS (status);
 
 	      retval = (double) status;
 	    }

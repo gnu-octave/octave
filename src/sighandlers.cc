@@ -87,26 +87,6 @@ static sigset_t octave_signal_mask;
   do { } while (0)
 #endif
 
-// The following signal blocking stuff is stolen from bash:
-
-#define BLOCK_SIGNAL(sig, nvar, ovar) \
-  do \
-    { \
-      sigemptyset (&nvar); \
-      sigaddset (&nvar, sig); \
-      sigemptyset (&ovar); \
-      sigprocmask (SIG_BLOCK, &nvar, &ovar); \
-    } \
-  while (0)
-
-#if defined (HAVE_POSIX_SIGNALS)
-#define BLOCK_CHILD(nvar, ovar) BLOCK_SIGNAL (SIGCHLD, nvar, ovar)
-#define UNBLOCK_CHILD(ovar) sigprocmask (SIG_SETMASK, &ovar, 0)
-#else
-#define BLOCK_CHILD(nvar, ovar) ovar = sigblock (sigmask (SIGCHLD))
-#define UNBLOCK_CHILD(ovar) sigsetmask (ovar)
-#endif
-
 void
 octave_save_signal_mask (void)
 {

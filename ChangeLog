@@ -1,6 +1,8 @@
-Tue Feb 18 00:33:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Tue Feb 18 09:22:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.3 released.
+
+Tue Feb 18 00:33:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (binary-dist): Strip src/octave and info/info.
 

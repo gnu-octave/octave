@@ -252,6 +252,24 @@ tree_matrix::~tree_matrix (void)
   delete next;
 }
 
+int
+tree_matrix::is_matrix_constant (void) const
+{
+  const tree_matrix *list = this;
+
+  while (list)
+    {
+      tree_expression *elem = list->element;
+
+      if (! elem->is_constant ())
+	return 0;
+
+      list = list->next;
+    }
+
+  return 1;
+}
+
 tree_matrix *
 tree_matrix::chain (tree_expression *t, tree_matrix::dir d)
 {
@@ -2228,6 +2246,15 @@ tree_multi_assignment_expression::print_code (ostream& os)
 }
 
 // Colon expressions.
+
+int
+tree_colon_expression::is_range_constant (void) const
+{
+  int tmp = (op1 && op1->is_constant ()
+	     && op2 && op2->is_constant ());
+
+  return op3 ? (tmp && op3->is_constant ()) : tmp;
+}
 
 tree_colon_expression *
 tree_colon_expression::chain (tree_expression *t)

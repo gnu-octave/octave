@@ -120,6 +120,15 @@ public:
 
   virtual ~tree_expression (void) { }
 
+  virtual int is_constant (void) const
+    { return 0; }
+
+  virtual int is_matrix_constant (void) const
+    { return 0; }
+
+  virtual int is_range_constant (void) const
+    { return 0; }
+
   virtual int is_multi_val_ret_expression (void) const
     { return 0; }
 
@@ -178,6 +187,8 @@ public:
     }
 
   ~tree_matrix (void);
+
+  int is_matrix_constant (void) const;
 
   tree_matrix *chain (tree_expression *e, tree_matrix::dir d);
   tree_matrix *reverse (void);
@@ -249,9 +260,6 @@ public:
   tree_fvc (int l = -1, int c = -1) : tree_multi_val_ret (l, c) { }
 
   ~tree_fvc (void) { }
-
-  virtual int is_constant (void) const
-    { return 0; }
 
   virtual tree_constant assign (tree_constant& t,
 				const Octave_object& args);
@@ -786,6 +794,8 @@ tree_colon_expression : public tree_expression
       delete op2;
       delete op3;
     }
+
+  int is_range_constant (void) const;
 
   tree_colon_expression *chain (tree_expression *t);
 

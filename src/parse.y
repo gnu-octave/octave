@@ -126,12 +126,19 @@ static void end_error (char *type, token::end_tok_type ettype, int l, int c);
 static int check_end (token *tok, token::end_tok_type expected);
 
 // Try to figure out early if an expression should become an
-// assignment to the builtin variable ans.
+// assignment to the built-in variable ans.
 static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
 
 // Maybe print a warning if an assignment expression is used as the
 // test in a logical expression.
 static void maybe_warn_assign_as_truth_value (tree_expression *expr);
+
+// Create a plot command.
+static tree_plot_command *make_plot_command
+	 (token *tok, plot_limits *range, subplot_list *list);
+
+// Finish building a range.
+static tree_expression *finish_colon_expression (tree_colon_expression *e);
 
 // Build a constant.
 static tree_constant *make_constant (int op, token *tok_val);
@@ -152,13 +159,85 @@ static tree_expression *make_postfix_op
 static tree_expression *make_unary_op
 	 (int op, tree_expression *op1, token *tok_val);
 
+// Build an unwind-protect command.
+static tree_command *make_unwind_command
+	 (token *unwind_tok, tree_statement_list *body,
+	  tree_statement_list *cleanup, token *end_tok);
+
+// Build a try-catch command.
+static tree_command *make_try_command
+	 (token *try_tok, tree_statement_list *body,
+	  tree_statement_list *cleanup, token *end_tok);
+
+// Build a while command.
+static tree_command *make_while_command
+	 (token *while_tok, tree_expression *expr,
+	  tree_statement_list *body, token *end_tok);
+
+// Build a for command.
+static tree_command *make_for_command
+	 (token *for_tok, tree_index_expression *var,
+	  tree_expression *expr, tree_statement_list *body,
+	  token *end_tok);
+
+// Build a for command a different way.
+static tree_command *make_for_command
+	 (token *for_tok, tree_expression *expr,
+	  tree_statement_list *body, token *end_tok);
+
+// Build a break command.
+static tree_command *make_break_command (token *break_tok);
+
+// Build a continue command.
+static tree_command *make_continue_command (token *continue_tok);
+
+// Build a return command.
+static tree_command *make_return_command (token *return_tok);
+
+// Start an if command.
+static tree_if_command_list *start_if_command
+	 (tree_expression *expr, tree_statement_list *list);
+
+// Finish an if command.
+static tree_if_command *finish_if_command
+	 (token *if_tok, tree_if_command_list *list, token *end_tok);
+
+// Build an elseif clause.
+static tree_if_clause *make_elseif_clause
+	 (tree_expression *expr, tree_statement_list *list);
+
+// Build an assignment to a variable.
+static tree_expression *make_simple_assignment
+	 (tree_index_expression *var, token *eq_tok, tree_expression *expr);
+
 // Make an expression that handles assignment of multiple values.
 static tree_expression *make_multi_val_ret
-	(tree_matrix *m, tree_expression *rhs, int l = -1, int c = -1);
+	 (tree_expression *rhs, token *eq_tok);
+
+// Begin defining a function.
+static tree_function *start_function_def
+	 (tree_parameter_list *param_list, tree_statement_list *body);
+
+// Do most of the work for defining a function.
+static tree_function *frob_function_def
+	 (tree_identifier *id, tree_function *fcn);
+
+// Finish defining a function.
+static tree_function *finish_function_def (token *var, tree_function *fcn);
+
+// Finish defining a function a different way.
+static tree_function *finish_function_def
+	 (tree_parameter_list *ret_list, tree_function *fcn);
 
 // Make an index expression.
 static tree_index_expression *make_index_expression
 	 (tree_indirect_ref *indir, tree_argument_list *args);
+
+// Start building a matrix list.
+static void start_matrix (tree_expression *expr);
+
+// Finish building a matrix list.
+static tree_expression *finish_matrix (void);
 
 // Maybe print a warning.  Duh.
 static void maybe_warn_missing_semi (tree_statement_list *);
@@ -188,7 +267,6 @@ static void maybe_warn_missing_semi (tree_statement_list *);
   tree *tree_type;
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
-  tree_matrix *tree_matrix_type;
   tree_identifier *tree_identifier_type;
   tree_indirect_ref *tree_indirect_ref_type;
   tree_function *tree_function_type;
@@ -246,8 +324,7 @@ static void maybe_warn_missing_semi (tree_statement_list *);
 // Nonterminals we construct.
 %type <tree_type> input
 %type <tree_expression_type> expression simple_expr simple_expr1
-%type <tree_expression_type> ans_expression title
-%type <tree_matrix_type> matrix
+%type <tree_expression_type> ans_expression title matrix
 %type <tree_identifier_type> identifier
 %type <tree_indirect_ref_type> indirect_ref indirect_ref1
 %type <tree_function_type> func_def1 func_def2 func_def3
@@ -443,37 +520,13 @@ statement	: command
 
 plot_command	: PLOT plot_command1
 		  {
-		    if (! $2 && $1->pttype () != token::replot)
-		      {
-			yyerror ("must have something to plot");
-			ABORT_PARSE;
-		      }
-		    else
-		      {
-			$$ = new tree_plot_command ($2, $1->pttype ());
-			plotting = 0;
-			past_plot_range = 0;
-			in_plot_range = 0;
-			in_plot_using = 0;
-			in_plot_style = 0;
-		      }
+		    if (! ($$ = make_plot_command ($1, 0, $2)))
+		      ABORT_PARSE;
 		  }
 		| PLOT ranges plot_command1
 		  {
-		    if ($1->pttype () == token::replot)
-		      {
-			yyerror ("cannot specify new ranges with replot");
-			ABORT_PARSE;
-		      }
-		    else
-		      {
-			$$ = new tree_plot_command ($3, $2, $1->pttype ());
-			plotting = 0;
-			past_plot_range = 0;
-			in_plot_range = 0;
-			in_plot_using = 0;
-			in_plot_style = 0;
-		      }
+		    if (! ($$ = make_plot_command ($1, $2, $3)))
+		      ABORT_PARSE;
 		  }
 		;
 
@@ -508,10 +561,7 @@ plot_command1	: // empty
 plot_command2	: expression
 		  { $$ = new subplot ($1); }
 		| expression plot_options
-		  {
-		    $2->set_data ($1);
-		    $$ = $2;
-		  }
+		  { $$ = $2->set_data ($1); }
 		;
 
 plot_options	: using
@@ -629,89 +679,53 @@ command		: plot_command
 		    iffing--;
 		    $$ = $1;
 		  }
-
 		| UNWIND optsep opt_list CLEANUP optsep opt_list END
 		  {
-		    if (check_end ($7, token::unwind_protect_end))
+		    if (! ($$ = make_unwind_command ($1, $3, $6, $7)))
 		      ABORT_PARSE;
-
-		    $$ = new tree_unwind_protect_command ($3, $6, $1->line (),
-							  $1->column ());
 		  }
 		| TRY optsep opt_list CATCH optsep opt_list END
 		  {
-		    if (check_end ($7, token::try_catch_end))
+		    if (! ($$ = make_try_command ($1, $3, $6, $7)))
 		      ABORT_PARSE;
-
-		    $$ = new tree_try_catch_command ($3, $6, $1->line (),
-						     $1->column ());
 		  }
 		| WHILE expression optsep opt_list END
 		  {
-		    maybe_warn_assign_as_truth_value ($2);
-		    if (check_end ($5, token::while_end))
+		    if (! ($$ = make_while_command ($1, $2, $4, $5)))
 		      ABORT_PARSE;
-		    looping--;
-		    $$ = new tree_while_command ($2, $4, $1->line (),
-						 $1->column ());
 		  }
 		| FOR variable '=' expression optsep opt_list END
 		  {
-		    if (check_end ($7, token::for_end))
+		    if (! ($$ = make_for_command ($1, $2, $4, $6, $7)))
 		      ABORT_PARSE;
-		    looping--;
-		    $$ = new tree_for_command ($2, $4, $6,
-					       $1->line (), $1->column ());
 		  }
 		| FOR '[' screwed_again matrix_row SCREW_TWO '='
 		    expression optsep opt_list END
 		  {
-		    if (check_end ($10, token::for_end))
+		    if (! ($$ = make_for_command ($1, $7, $9, $10)))
 		      ABORT_PARSE;
-		    looping--;
-		    tree_matrix *tmp = ml.pop ();
-		    tmp = tmp->reverse ();
-		    tree_return_list *id_list = tmp->to_return_list ();
-		    $$ = new tree_for_command (id_list, $7, $9,
-					       $1->line (), $1->column ()); 
 		  }
 		| BREAK
 		  {
-		    if (! (looping || defining_func))
-		      {
-			yyerror ("break: only meaningful within a loop\
- or function body");
-			ABORT_PARSE;
-		      }
-		    $$ = new tree_break_command ($1->line (), $1->column ());
+		    if (! ($$ = make_break_command ($1)))
+		      ABORT_PARSE;
 		  }
 		| CONTINUE
 		  {
-		    if (! looping)
-		      {
-			yyerror ("continue: only meaningful within a\
- `for' or `while' loop");
-			ABORT_PARSE;
-		      }
-		    $$ = new tree_continue_command ($1->line (),
-						    $1->column ());
+		    if (! ($$ = make_continue_command ($1)))
+		      ABORT_PARSE;
 		  }
 		| FUNC_RET
 		  {
-		    if (! defining_func)
-		      {
-			yyerror ("return: only meaningful within a function");
-			ABORT_PARSE;
-		      }
-		    $$ = new tree_return_command ($1->line (), $1->column ());
+		    if (! ($$ = make_return_command ($1)))
+		      ABORT_PARSE;
 		  }
 		;
 
 if_command	: IF if_cmd_list END
 		  {
-		    if (check_end ($3, token::if_end))
+		    if (! ($$ = finish_if_command ($1, $2, $3)))
 		      ABORT_PARSE;
-		    $$ = new tree_if_command ($2, $1->line (), $1->column ());
 		  }
 		;
 
@@ -722,20 +736,13 @@ if_cmd_list	: if_cmd_list1
 		;
 
 if_cmd_list1	: expression optsep opt_list
-		  {
-		    maybe_warn_assign_as_truth_value ($1);
-		    tree_if_clause *t = new tree_if_clause ($1, $3);
-		    $$ = new tree_if_command_list (t);
-		  }
+		  { $$ = start_if_command ($1, $3); }
 		| if_cmd_list1 elseif_clause
 		  { $1->append ($2); }
 		;
 
 elseif_clause	: ELSEIF optsep expression optsep opt_list
-		  {
-		    maybe_warn_assign_as_truth_value ($3);
-		    $$ = new tree_if_clause ($3, $5);
-		  }
+		  { $$ = make_elseif_clause ($3, $5); }
 		;
 
 else_clause	: ELSE optsep opt_list
@@ -758,30 +765,72 @@ screwed_again	: // empty
 		  { maybe_screwed_again++; }
 		;
 
-expression	: variable '=' expression
-		  { $$ = new tree_simple_assignment_expression
-		      ($1, $3, 0, 0, $2->line (), $2->column ()); }
+expression	: simple_expr
+		  { $$ = $1; }
 		| NUM '=' expression
 		  {
 		    yyerror ("invalid assignment to a number");
 		    $$ = 0;
 		    ABORT_PARSE;
 		  }
-		| '[' screwed_again matrix_row SCREW_TWO '=' expression
-		  {
-		    tree_matrix *tmp = ml.pop ();
-		    tmp = tmp->reverse ();
-		    $$ = make_multi_val_ret (tmp, $6, $5->line (),
-					     $5->column ());
-		    if (! $$)
-		      ABORT_PARSE;
-		  }
-		| simple_expr
-		  { $$ = $1; }
 		;
 
+// Now that we do some simple constant folding, we have to make sure
+// that we get something valid back make_binary_op and make_unary_op.
+
 simple_expr	: simple_expr1
+		  {
+		    if (! ($$ = $1))
+		      ABORT_PARSE;
+		  }
+		;
+
+simple_expr1	: NUM
+		  { $$ = make_constant (NUM, $1); }
+		| IMAG_NUM
+		  { $$ = make_constant (IMAG_NUM, $1); }
+		| TEXT
+		  { $$ = make_constant (TEXT, $1); }
+		| '(' simple_expr ')'
+		  {
+		    $2->in_parens++;
+		    $$ = $2;
+		  }
+		| word_list_cmd
 		  { $$ = $1; }
+		| variable
+		  { $$ = $1; }
+		| matrix
+		  { $$ = $1; }
+		| '[' ']'
+		  {
+		    mlnm.pop ();
+		    $$ = new tree_constant (Matrix ());
+		  }
+		| '[' ';' ']'
+		  {
+		    mlnm.pop ();
+		    $$ = new tree_constant (Matrix ());
+		  }
+		| colon_expr
+		  { $$ = finish_colon_expression ($1); }
+		| PLUS_PLUS identifier %prec UNARY
+		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
+		| MINUS_MINUS identifier %prec UNARY
+		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
+		| EXPR_NOT simple_expr
+		  { $$ = make_unary_op (EXPR_NOT, $2, $1); }
+		| '+' simple_expr %prec UNARY
+		  { $$ = $2; }
+		| '-' simple_expr %prec UNARY
+		  { $$ = make_unary_op ('-', $2, $1); }
+		| variable '=' simple_expr
+		  { $$ = make_simple_assignment ($1, $2, $3); }
+		| '[' screwed_again matrix_row SCREW_TWO '=' simple_expr
+		  {
+		    if (! ($$ = make_multi_val_ret ($6, $5)))
+		      ABORT_PARSE;
+		  }
 		| identifier PLUS_PLUS
 		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
 		| identifier MINUS_MINUS
@@ -836,54 +885,14 @@ simple_expr	: simple_expr1
 		  { $$ = make_binary_op (EXPR_OR, $1, $2, $3); }
 		;
 
-simple_expr1	: NUM
-		  { $$ = make_constant (NUM, $1); }
-		| IMAG_NUM
-		  { $$ = make_constant (IMAG_NUM, $1); }
-		| TEXT
-		  { $$ = make_constant (TEXT, $1); }
-		| '(' expression ')'
-		  {
-		    $2->in_parens++;
-		    $$ = $2;
-		  }
-		| word_list_cmd
-		  { $$ = $1; }
-		| variable
-		  { $$ = $1; }
-		| matrix
-		  { $$ = $1; }
-		| '[' ']'
-		  {
-		    mlnm.pop ();
-		    $$ = new tree_constant (Matrix ());
-		  }
-		| '[' ';' ']'
-		  {
-		    mlnm.pop ();
-		    $$ = new tree_constant (Matrix ());
-		  }
-		| colon_expr
-		  { $$ = $1; }
-		| PLUS_PLUS identifier %prec UNARY
-		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
-		| MINUS_MINUS identifier %prec UNARY
-		  { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
-		| EXPR_NOT simple_expr
-		  { $$ = make_unary_op (EXPR_NOT, $2, $1); }
-		| '+' simple_expr %prec UNARY
-		  { $$ = $2; }
-		| '-' simple_expr %prec UNARY
-		  { $$ = make_unary_op ('-', $2, $1); }
-		;
-
 colon_expr	: simple_expr ':' simple_expr
-		  { $$ = new tree_colon_expression
-		      ($1, $3, $2->line (), $2->column ()); }
+		  {
+		    $$ = new tree_colon_expression
+		      ($1, $3, $2->line (), $2->column ());
+		  }
 		| colon_expr ':' simple_expr
 		  {
-		    $$ = $1->chain ($3);
-		    if (! $$)
+		    if (! ($$ = $1->chain ($3)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -891,7 +900,7 @@ colon_expr	: simple_expr ':' simple_expr
 word_list_cmd	: identifier word_list
 		  {
 		    $$ = new tree_index_expression
-			   ($1, $2, $1->line (), $1->column ());
+		      ($1, $2, $1->line (), $1->column ());
 		  }
 		;
 
@@ -940,18 +949,9 @@ func_def	: FCN g_symtab are_we_screwed func_def1
 		;
 
 func_def1	: SCREW safe g_symtab '=' func_def2
-		  {
-		    tree_identifier *tmp = new tree_identifier
-		      ($1->sym_rec (), $1->line (), $1->column ());
-		    tree_parameter_list *tpl = new tree_parameter_list (tmp);
-		    tpl->mark_as_formal_parameters ();
-		    $$ = $5->define_ret_list (tpl);
-		  }
+		  { $$ = finish_function_def ($1, $5); }
 		| return_list g_symtab '=' func_def2
-		  {
-		    $1->mark_as_formal_parameters ();
-		    $$ = $4->define_ret_list ($1);
-		  }
+		  { $$ = finish_function_def ($1, $4); }
 		;
 
 return_list_x	: '[' safe local_symtab
@@ -987,71 +987,15 @@ return_list1	: return_list_x identifier
 
 func_def2	: identifier safe local_symtab func_def3
 		  {
-		    char *id_name = $1->name ();
-//		    if (is_text_function_name (id_name))
-//		      {
-//			yyerror ("invalid use of reserved word %s", id_name);
-//			ABORT_PARSE;
-//		      }
-
-// If input is coming from a file, issue a warning if the name of the
-// file does not match the name of the function stated in the file.
-// Matlab doesn't provide a diagnostic (it ignores the stated name).
-
-		    $4->stash_function_name (id_name);
-
-		    if (reading_fcn_file)
-		      {
-			if (strcmp (curr_fcn_file_name, id_name) != 0)
-			  {
-			    if (user_pref.warn_function_name_clash)
-			      warning ("function name `%s' does not agree\
- with function file name `%s'", id_name, curr_fcn_file_full_name);
-
-			    global_sym_tab->rename (id_name,
-						    curr_fcn_file_name);
-
-			    if (error_state)
-			      ABORT_PARSE;
-
-			    id_name = $1->name ();
-			  }
-
-			$4->stash_function_name (id_name);
-			$4->stash_fcn_file_name ();
-			$4->stash_fcn_file_time (time (0));
-			$4->mark_as_system_fcn_file ();
-		      }
-		    else if (! (input_from_tmp_history_file
-				|| input_from_startup_file)
-			     && reading_script_file
-			     && curr_fcn_file_name
-			     && strcmp (curr_fcn_file_name, id_name) == 0)
-		      {
-			warning ("function `%s' defined within\
- script file `%s'", id_name, curr_fcn_file_full_name);
-		      }
-
-		    top_level_sym_tab->clear (id_name);
-
-		    $1->define ($4);
-		    $1->document (help_buf);
-
-		    $$ = $4;
+		    if (! ($$ = frob_function_def ($1, $4)))
+		      ABORT_PARSE;
 		  }
 		;
 
 func_def3	: param_list optsep opt_list fcn_end_or_eof
-		  {
-		    $3->mark_as_function_body ();
-		    tree_function *fcn = new tree_function ($3, curr_sym_tab);
-		    $$ = fcn->define_param_list ($1);
-		  }
+		  { $$ = start_function_def ($1, $3); }
 		| optsep opt_list fcn_end_or_eof
-		  {
-		    $2->mark_as_function_body ();
-		    $$ = new tree_function ($2, curr_sym_tab);
-		  }
+		  { $$ = start_function_def (0, $2); }
 		;
 
 fcn_end_or_eof	: END
@@ -1182,12 +1126,7 @@ arg_list	: ':'
 		;
 
 matrix		: '[' screwed_again rows ']'
-		  {
-		    mlnm.pop ();
-		    maybe_screwed_again--;
-		    tree_matrix *tmp = ml.pop ();
-		    $$ = tmp->reverse ();
-		  }
+		  { $$ = finish_matrix (); }
 		;
 
 rows		: rows1
@@ -1203,22 +1142,7 @@ matrix_row	: matrix_row1
 		;
 
 matrix_row1	: expression		// First element on row.
-		  {
-		    if (mlnm.top ())
-		      {
-			mlnm.pop ();
-			mlnm.push (0);
-			tree_matrix *tmp = new tree_matrix
-			  ($1, tree_matrix::md_none);
-			ml.push (tmp);
-		      }
-		    else
-		      {
-			tree_matrix *tmp = ml.pop ();
-			tmp = tmp->chain ($1, tree_matrix::md_down);
-			ml.push (tmp);
-		      }
-		  }
+		  { start_matrix ($1); }
 		| matrix_row1 ',' expression
 		  {
 		    tree_matrix *tmp = ml.pop ();
@@ -1371,19 +1295,14 @@ check_end (token *tok, token::end_tok_type expected)
 }
 
 // Try to figure out early if an expression should become an
-// assignment to the builtin variable ans.
+// assignment to the built-in variable ans.
 //
 // Need to make sure that the expression isn't already an identifier
 // that has a name, or an assignment expression.
 //
-// Note that an expression can't be just an identifier anymore -- it
+// Note that an expression can't be just an identifier now -- it
 // must at least be an index expression (see the definition of the
 // non-terminal `variable' above).
-//
-// XXX FIXME XXX.  This isn't quite sufficient.  For example, try the
-// command `x = 4, x' for `x' previously undefined.
-//
-// XXX FIXME XXX -- we should probably delay doing this until eval-time.
 
 static tree_expression *
 maybe_convert_to_ans_assign (tree_expression *expr)
@@ -1426,6 +1345,56 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
     {
       warning ("suggest parenthesis around assignment used as truth value");
     }
+}
+
+// Create a plot command.
+
+static tree_plot_command *
+make_plot_command (token *tok, plot_limits *range, subplot_list *list)
+{
+  if (range)
+    {
+      if (tok->pttype () == token::replot)
+	{
+	  yyerror ("cannot specify new ranges with replot");
+	  return 0;
+	}
+    }
+  else if (! list && tok->pttype () != token::replot)
+    {
+      yyerror ("must have something to plot");
+      return 0;
+    }
+
+  plotting = 0;
+  past_plot_range = 0;
+  in_plot_range = 0;
+  in_plot_using = 0;
+  in_plot_style = 0;
+  
+  return new tree_plot_command (list, range, tok->pttype ());
+}
+
+// Finish building a range.
+
+static tree_expression *
+finish_colon_expression (tree_colon_expression *e)
+{
+  tree_expression *retval = 0;
+
+  if (e->is_range_constant ())
+    {
+      tree_constant tmp = e->eval (0);
+
+      delete e;
+
+      if (! error_state)
+	retval = new tree_constant (tmp);
+    }
+  else
+    retval = e;
+
+  return retval;
 }
 
 // Make a constant.
@@ -1471,7 +1440,10 @@ static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
 		tree_expression *op2)
 {
+  tree_expression *retval;
+
   tree_expression::type t;
+
   switch (op)
     {
     case POW:
@@ -1562,7 +1534,20 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  return new tree_binary_expression (op1, op2, t, l, c);
+  retval = new tree_binary_expression (op1, op2, t, l, c);
+
+  if (op1->is_constant () && op2->is_constant ())
+    {
+      tree_constant tmp = retval->eval (0);
+
+      delete retval;
+      retval = 0;
+
+      if (! error_state)
+	retval = new tree_constant (tmp);
+    }
+
+  return retval;
 }
 
 // Build a prefix expression.
@@ -1624,7 +1609,10 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
 static tree_expression *
 make_unary_op (int op, tree_expression *op1, token *tok_val)
 {
+  tree_expression *retval;
+
   tree_expression::type t;
+
   switch (op)
     {
     case QUOTE:
@@ -1651,13 +1639,247 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  return new tree_unary_expression (op1, t, l, c);
+  retval = new tree_unary_expression (op1, t, l, c);
+
+  if (op1->is_constant ())
+    {
+      tree_constant tmp = retval->eval (0);
+
+      delete retval;
+      retval = 0;
+
+      if (! error_state)
+	retval = new tree_constant (tmp);
+    }
+
+  return retval;
+}
+
+// Build an unwind-protect command.
+
+static tree_command *
+make_unwind_command (token *unwind_tok, tree_statement_list *body,
+		     tree_statement_list *cleanup, token *end_tok)
+{
+  tree_command *retval = 0;
+
+  if (! check_end (end_tok, token::unwind_protect_end))
+    {
+      int l = unwind_tok->line ();
+      int c = unwind_tok->column ();
+
+      retval = new tree_unwind_protect_command (body, cleanup, l, c);
+    }
+
+  return retval;
+}
+
+// Build a try-catch command.
+
+static tree_command *
+make_try_command (token *try_tok, tree_statement_list *body,
+		  tree_statement_list *cleanup, token *end_tok)
+{
+  tree_command *retval = 0;
+
+  if (! check_end (end_tok, token::try_catch_end))
+    {
+      int l = try_tok->line ();
+      int c = try_tok->column ();
+
+      retval = new tree_try_catch_command (body, cleanup, l, c);
+    }
+
+  return retval;
+}
+
+// Build a while command.
+
+static tree_command *
+make_while_command (token *while_tok, tree_expression *expr,
+		    tree_statement_list *body, token *end_tok)
+{
+  tree_command *retval = 0;
+
+  maybe_warn_assign_as_truth_value (expr);
+
+  if (! check_end (end_tok, token::while_end))
+    {
+      looping--;
+
+      int l = while_tok->line ();
+      int c = while_tok->column ();
+
+      retval = new tree_while_command (expr, body, l, c);
+    }
+
+  return retval;
+}
+
+// Build a for command.
+
+static tree_command *
+make_for_command (token *for_tok, tree_index_expression *var,
+		  tree_expression *expr, tree_statement_list *body,
+		  token *end_tok)
+{
+  tree_command *retval = 0;
+
+  if (! check_end (end_tok, token::for_end))
+    {
+      looping--;
+
+      int l = for_tok->line ();
+      int c = for_tok->column ();
+
+      retval = new tree_for_command (var, expr, body, l, c);
+    }
+
+  return retval;
+}
+
+// Build a for command a different way.
+
+static tree_command *
+make_for_command (token *for_tok, tree_expression *expr,
+		  tree_statement_list *body, token *end_tok)
+{
+  tree_command *retval = 0;
+
+  if (! check_end (end_tok, token::for_end))
+    {
+      looping--;
+
+      tree_matrix *tmp = ml.pop ();
+      tmp = tmp->reverse ();
+      tree_return_list *id_list = tmp->to_return_list ();
+
+      int l = for_tok->line ();
+      int c = for_tok->column ();
+
+      retval = new tree_for_command (id_list, expr, body, l, c);
+    }
+
+  return retval;
+}
+
+// Build a break command.
+
+static tree_command *
+make_break_command (token *break_tok)
+{
+  tree_command *retval = 0;
+
+  if (! (looping || defining_func))
+    yyerror ("break: only meaningful within a loop or function body");
+  else
+    {
+      int l = break_tok->line ();
+      int c = break_tok->column ();
+
+      retval = new tree_break_command (l, c);
+    }
+
+  return retval;
+}
+
+// Build a continue command.
+
+static tree_command *
+make_continue_command (token *continue_tok)
+{
+  tree_command *retval = 0;
+
+  if (! looping)
+    yyerror ("continue: only meaningful within a `for' or `while' loop");
+  else
+    {
+      int l = continue_tok->line ();
+      int c = continue_tok->column ();
+
+      retval = new tree_continue_command (l, c);
+    }
+
+  return retval;
+}
+
+// Build a return command.
+
+static tree_command *
+make_return_command (token *return_tok)
+{
+  tree_command *retval = 0;
+
+  if (! defining_func)
+    yyerror ("return: only meaningful within a function");
+  else
+    {
+      int l = return_tok->line ();
+      int c = return_tok->column ();
+
+      retval = new tree_return_command (l, c);
+    }
+
+  return retval;
+}
+
+// Start an if command.
+
+static tree_if_command_list *
+start_if_command (tree_expression *expr, tree_statement_list *list)
+{
+  maybe_warn_assign_as_truth_value (expr);
+
+  tree_if_clause *t = new tree_if_clause (expr, list);
+
+  return new tree_if_command_list (t);
+}
+
+// Finish an if command.
+
+static tree_if_command *
+finish_if_command (token *if_tok, tree_if_command_list *list,
+		   token *end_tok)
+{
+  tree_if_command *retval = 0;
+
+  if (! check_end (end_tok, token::if_end))
+    {
+      int l = if_tok->line ();
+      int c = if_tok->column ();
+
+      retval = new tree_if_command (list, l, c);
+    }
+
+  return retval;
+}
+
+// Build an elseif clause.
+
+static tree_if_clause *
+make_elseif_clause (tree_expression *expr, tree_statement_list *list)
+{
+  maybe_warn_assign_as_truth_value (expr);
+
+  return new tree_if_clause (expr, list);
+}
+
+// Build an assignment to a variable.
+
+static tree_expression *
+make_simple_assignment (tree_index_expression *var, token *eq_tok,
+			tree_expression *expr)
+{
+  int l = eq_tok->line ();
+  int c = eq_tok->column ();
+
+  return new tree_simple_assignment_expression (var, expr, 0, 0, l, c);
 }
 
 // Make an expression that handles assignment of multiple values.
 
 static tree_expression *
-make_multi_val_ret (tree_matrix *m, tree_expression *rhs, int l, int c)
+make_multi_val_ret (tree_expression *rhs, token *eq_tok)
 {
 // Convert the matrix list to a list of identifiers.  If that fails,
 // we can abort here, without losing anything -- no other possible
@@ -1668,7 +1890,11 @@ make_multi_val_ret (tree_matrix *m, tree_expression *rhs, int l, int c)
 
   maybe_screwed_again--;
 
-  tree_return_list *id_list = m->to_return_list ();
+  tree_matrix *tmp = ml.pop ();
+
+  tmp = tmp->reverse ();
+
+  tree_return_list *id_list = tmp->to_return_list ();
 
   if (id_list)
     {
@@ -1677,15 +1903,22 @@ make_multi_val_ret (tree_matrix *m, tree_expression *rhs, int l, int c)
       if (list_len == 1)
 	{
 	  tree_index_expression *lhs = id_list->remove_front ();
+
+	  int l = eq_tok->line ();
+	  int c = eq_tok->column ();
+
 	  retval = new tree_simple_assignment_expression (lhs, rhs,
 							  0, 0, l, c);
-	  
 	}
       else if (list_len > 1)
 	{
 	  if (rhs->is_multi_val_ret_expression ())
 	    {
 	      tree_multi_val_ret *t = (tree_multi_val_ret *) rhs;
+
+	      int l = eq_tok->line ();
+	      int c = eq_tok->column ();
+
 	      retval = new tree_multi_assignment_expression (id_list, t,
 							     0, l, c);
 	    }
@@ -1699,6 +1932,102 @@ make_multi_val_ret (tree_matrix *m, tree_expression *rhs, int l, int c)
     yyerror ("invalid identifier list for assignment");
 
   return retval;
+}
+
+// Begin defining a function.
+
+static tree_function *
+start_function_def (tree_parameter_list *param_list,
+		    tree_statement_list *body)
+{
+  body->mark_as_function_body ();
+
+  tree_function *fcn = new tree_function (body, curr_sym_tab);
+
+  fcn->define_param_list (param_list);
+
+  return fcn;
+}
+
+// Do most of the work for defining a function.
+
+static tree_function *
+frob_function_def (tree_identifier *id, tree_function *fcn)
+{
+  char *id_name = id->name ();
+
+  // If input is coming from a file, issue a warning if the name of
+  // the file does not match the name of the function stated in the
+  // file.  Matlab doesn't provide a diagnostic (it ignores the stated
+  // name).
+
+  fcn->stash_function_name (id_name);
+
+  if (reading_fcn_file)
+    {
+      if (strcmp (curr_fcn_file_name, id_name) != 0)
+	{
+	  if (user_pref.warn_function_name_clash)
+	    warning ("function name `%s' does not agree with function\
+ file name `%s'", id_name, curr_fcn_file_full_name);
+
+	  global_sym_tab->rename (id_name, curr_fcn_file_name);
+
+	  if (error_state)
+	    return 0;
+
+	  id_name = id->name ();
+	}
+
+      fcn->stash_function_name (id_name);
+      fcn->stash_fcn_file_name ();
+      fcn->stash_fcn_file_time (time (0));
+      fcn->mark_as_system_fcn_file ();
+    }
+  else if (! (input_from_tmp_history_file || input_from_startup_file)
+	   && reading_script_file
+	   && curr_fcn_file_name
+	   && strcmp (curr_fcn_file_name, id_name) == 0)
+    {
+      warning ("function `%s' defined within script file `%s'",
+	       id_name, curr_fcn_file_full_name);
+    }
+
+  top_level_sym_tab->clear (id_name);
+
+  id->define (fcn);
+  id->document (help_buf);
+
+  return fcn;
+}
+
+// Finish defining a function.
+
+static tree_function *
+finish_function_def (token *var, tree_function *fcn)
+{
+  symbol_record *sr = var->sym_rec ();
+
+  int l = var->line ();
+  int c = var->column ();
+
+  tree_identifier *tmp = new tree_identifier (sr, l, c);
+
+  tree_parameter_list *tpl = new tree_parameter_list (tmp);
+
+  tpl->mark_as_formal_parameters ();
+
+  return fcn->define_ret_list (tpl);
+}
+
+// Finish defining a function a different way.
+
+static tree_function *
+finish_function_def (tree_parameter_list *ret_list, tree_function *fcn)
+{
+  ret_list->mark_as_formal_parameters ();
+
+  return fcn->define_ret_list (ret_list);
 }
 
 static tree_index_expression *
@@ -1717,6 +2046,56 @@ make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
     }
   else
     retval =  new tree_index_expression (indir, args, l, c);
+
+  return retval;
+}
+
+// Start building a matrix list.
+
+void
+start_matrix (tree_expression *expr)
+{
+  if (mlnm.top ())
+    {
+      mlnm.pop ();
+      mlnm.push (0);
+      tree_matrix *tmp = new tree_matrix (expr, tree_matrix::md_none);
+      ml.push (tmp);
+    }
+  else
+    {
+      tree_matrix *tmp = ml.pop ();
+      tmp = tmp->chain (expr, tree_matrix::md_down);
+      ml.push (tmp);
+    }
+}
+
+// Finish building a matrix list.
+
+static tree_expression *
+finish_matrix (void)
+{
+  tree_expression *retval = 0;
+
+  mlnm.pop ();
+
+  maybe_screwed_again--;
+
+  tree_matrix *list = ml.pop ();
+
+  list = list->reverse ();
+
+  if (list->is_matrix_constant ())
+    {
+      tree_constant tmp = list->eval (0);
+
+      delete list;
+
+      if (! error_state)
+	retval = new tree_constant (tmp);
+    }
+  else
+    retval = list;
 
   return retval;
 }

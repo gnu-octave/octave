@@ -78,6 +78,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // TRUE means we are exiting via the builtin exit or quit functions.
 static bool quitting_gracefully = false;
 
+// TRUE means we are ready to interpret commands, but not everything
+// is ready for interactive use.
+bool octave_interpreter_ready = false;
+
 // TRUE means we've processed all the init code and we are good to go.
 bool octave_initialized = false;
 

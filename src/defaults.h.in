@@ -186,6 +186,8 @@ extern std::string Vimagepath;
 extern std::string Vlocal_site_defaults_file;
 extern std::string Vsite_defaults_file;
 
+extern void execute_default_pkg_add_files (void);
+
 extern std::string maybe_add_default_load_path (const std::string& pathstring);
 
 extern void install_defaults (void);

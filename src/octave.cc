@@ -513,6 +513,10 @@ octave_main (int argc, char **argv)
   if (traditional)
     maximum_braindamage ();
 
+  octave_interpreter_ready = true;
+
+  execute_default_pkg_add_files ();
+
   execute_startup_files ();
 
   command_history::read (false);

@@ -37,7 +37,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "oct-env.h"
+#include "file-stat.h"
 #include "pathsearch.h"
+#include "str-vec.h"
 
 #include <defaults.h>
 #include "defun.h"
@@ -47,7 +49,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "parse.h"
 #include "toplev.h"
+#include "unwind-prot.h"
 #include "variables.h"
 #include <version.h>
 
@@ -83,6 +87,83 @@ std::string Vimagepath;
 
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
+
+// Each element of A and B should be directory names.  For each
+// element of A not in the list B, execute SCRIPT_FILE in that
+// directory if it exists.
+
+static void
+maybe_add_or_del_packages (const string_vector& a,
+			   const string_vector& b,
+			   const std::string script_file)
+{
+  if (! octave_interpreter_ready)
+    return;
+
+  unwind_protect::begin_frame ("maybe_add_or_del_packages");
+
+  unwind_protect_bool (input_from_startup_file);
+
+  input_from_startup_file = true;
+
+  int a_len = a.length ();
+  int b_len = b.length ();
+
+  for (int i = 0; i < a_len; i++)
+    {
+      std::string a_dir = a[i];
+
+      bool found = false;
+
+      for (int j = 0; j < b_len; j++)
+	{
+	  if (b[j] == a_dir)
+	    {
+	      found = true;
+	      break;
+	    }
+	}
+
+      if (! found)
+	{
+	  std::string file = a_dir + file_ops::dir_sep_str + script_file;
+
+	  file_stat fs = file_stat (file);
+
+	  if (fs.exists ())
+	    parse_and_execute (file);
+
+	  if (error_state)
+	    return;
+	}
+    }
+
+  unwind_protect::run_frame ("maybe_add_or_del_packages");
+}
+
+static void
+update_load_path_dir_path (void)
+{
+  string_vector old_dirs = Vload_path_dir_path.all_directories ();
+
+  Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
+
+  string_vector new_dirs = Vload_path_dir_path.all_directories ();
+
+  maybe_add_or_del_packages (old_dirs, new_dirs, "PKG_DEL");
+
+  if (! error_state)
+    maybe_add_or_del_packages (new_dirs, old_dirs, "PKG_ADD");
+}
+
+void
+execute_default_pkg_add_files (void)
+{
+  string_vector old_dirs;
+  string_vector new_dirs = Vload_path_dir_path.all_directories ();
+  
+  maybe_add_or_del_packages (new_dirs, old_dirs, "PKG_ADD");
+}
 
 static std::string
 subst_octave_home (const std::string& s)
@@ -191,7 +272,7 @@ set_default_path (void)
 
   Vload_path = oct_path.empty () ? std::string (":") : oct_path;
 
-  Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
+  update_load_path_dir_path ();
 }
 
 static void
@@ -423,7 +504,29 @@ loadpath (void)
 
       Vload_path = s;
 
-      Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
+      update_load_path_dir_path ();
+    }
+
+  return status;
+}
+
+static int
+default_load_path (void)
+{
+  int status = 0;
+
+  std::string s = builtin_string_variable ("DEFAULT_LOADPATH");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("DEFAULT_LOADPATH");
+      status = -1;
+    }
+  else
+    {
+      Vdefault_load_path = s;
+
+      update_load_path_dir_path ();
     }
 
   return status;
@@ -496,7 +599,7 @@ not a mixture of both.\n\
 directories that are distributed with Octave.\n\
 @end defvr");
 
-  DEFCONST (DEFAULT_LOADPATH, Vdefault_load_path,
+  DEFVAR (DEFAULT_LOADPATH, Vdefault_load_path, default_load_path,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} DEFAULT_LOADPATH\n\
 A colon separated list of directories in which to search for function\n\

@@ -1,5 +1,12 @@
 2002-12-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defaults.cc (maybe_add_or_del_packages, default_load_path,
+	update_load_path_dir_path): New static functions. 
+	(set_default_path, loadpath): Call update_load_path_dir_path.
+	(symbols_of_defaults): Use DEFVAR, not DEFCONST for DEFAULT_LOADPATH.
+	(execute_default_pkg_add_files): New function.
+	* defaults.h.in: Provide decl.
+
 	* utils.cc (search_path_for_all_files): New function.
 	(Ffile_in_loadpath, Ffile_in_path): Allow search to return all
 	files in the path.

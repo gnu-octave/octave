@@ -51,6 +51,10 @@ extern octave_user_function *curr_function;
 // Original value of TEXMFDBS environment variable.
 extern std::string octave_original_texmfdbs;
 
+// TRUE means we are ready to interpret commands, but not everything
+// is ready for interactive use.
+extern bool octave_interpreter_ready;
+
 // TRUE means we've processed all the init code and we are good to go.
 extern bool octave_initialized;
 

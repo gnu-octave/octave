@@ -1,5 +1,10 @@
 2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DASPK.cc (DASPK::do_integrate): Resize rwork and iwork before
+	using them.  Accept inequality contraint option of 0.  Assign
+	pabs_tol and prel_tol before calling DASPK.  Don't redeclare
+	abs_tol and rel_tol.
+
 	* cmd-edit.h (command_editor::filename_completion_desired): New
 	static function.
 	(command_editor::do_filename_completion_desired): New virtual function.

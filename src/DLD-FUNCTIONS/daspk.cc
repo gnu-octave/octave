@@ -266,7 +266,6 @@ scalar.\n\
 If @var{fcn} is a two-element string array, the first element names\n\
 the function @math{f} described above, and the second element names\n\
 a function to compute the modified Jacobian\n\
-\n\
 @tex\n\
 $$\n\
 J = {\\partial f \\over \\partial x}\n\
@@ -274,12 +273,12 @@ J = {\\partial f \\over \\partial x}\n\
 $$\n\
 @end tex\n\
 @ifinfo\n\
+\n\
+@example\n\
       df       df\n\
 jac = -- + c ------\n\
       dx     d xdot\n\
-@example\n\
 @end example\n\
-\n\
 @end ifinfo\n\
 \n\
 The modified Jacobian function must have the form\n\

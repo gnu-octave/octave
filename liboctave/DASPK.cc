@@ -203,10 +203,32 @@ DASPK::do_integrate (double tout)
 
       DAEFunc::reset = false;
 
+      int eiq = enforce_inequality_constraints ();
+      int ccic = compute_consistent_initial_condition ();
+      int eavfet = exclude_algebraic_variables_from_error_test ();
+
+      liw = 40 + n;
+      if (eiq == 1 || eiq == 3)
+	liw += n;
+      if (ccic == 1 || eavfet == 1)
+	liw += n;
+
+      lrw = 50 + 9*n;
+      if (! user_jac)
+	lrw += n*n;
+      if (eavfet == 1)
+	lrw += n;
+
+      iwork.resize (liw);
+      rwork.resize (lrw);
+
+      piwork = iwork.fortran_vec ();
+      prwork = rwork.fortran_vec ();
+
       // DASPK_options
 
-      Array<double> abs_tol = absolute_tolerance ();
-      Array<double> rel_tol = relative_tolerance ();
+      abs_tol = absolute_tolerance ();
+      rel_tol = relative_tolerance ();
 
       int abs_tol_len = abs_tol.length ();
       int rel_tol_len = rel_tol.length ();
@@ -227,6 +249,9 @@ DASPK::do_integrate (double tout)
 	  integration_error = true;
 	  return retval;
 	}
+
+      pabs_tol = abs_tol.fortran_vec ();
+      prel_tol = rel_tol.fortran_vec ();
 
       double hmax = maximum_step_size ();
       if (hmax >= 0.0)
@@ -263,7 +288,6 @@ DASPK::do_integrate (double tout)
 	    }
 	}
 
-      int eiq = enforce_inequality_constraints ();
       switch (eiq)
 	{
 	case 1:
@@ -296,6 +320,7 @@ DASPK::do_integrate (double tout)
 	  }
 	  // Fall through...
 
+	case 0:
 	case 2:
 	  info(9) = eiq;
 	  break;
@@ -307,7 +332,6 @@ DASPK::do_integrate (double tout)
 	  return retval;
 	}
 
-      int ccic = compute_consistent_initial_condition ();
       if (ccic)
 	{
 	  if (ccic == 1)
@@ -348,7 +372,6 @@ DASPK::do_integrate (double tout)
 	  info(10) = ccic;
 	}
 
-      int eavfet = exclude_algebraic_variables_from_error_test ();
       if (eavfet)
 	{
 	  info(15) = 1;
@@ -415,24 +438,6 @@ DASPK::do_integrate (double tout)
 	}
 
       DASPK_options::reset = false;
-
-      liw = 40 + n;
-      if (eiq == 1 || eiq == 3)
-	liw += n;
-      if (ccic == 1 || eavfet == 1)
-	liw += n;
-
-      lrw = 50 + 9*n;
-      if (! user_jac)
-	lrw += n*n;
-      if (eavfet == 1)
-	lrw += n;
-
-      iwork.resize (liw);
-      rwork.resize (lrw);
-
-      piwork = iwork.fortran_vec ();
-      prwork = rwork.fortran_vec ();
 
       restart = false;
     }

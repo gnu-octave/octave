@@ -219,6 +219,22 @@ Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
 and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
 equations such that @code{f(@var{x}) == 0}.\n\
 \n\
+If @var{fcn} is a two-element string array, the first element names\n\
+the function @math{f} described above, and the second element names\n\
+a function of the form @code{j (@var{x})} to compute the Jacobian\n\
+matrix with elements\n\
+@tex\n\
+$$ J = {\\partial f_i \\over \\partial x_j} $$\n\
+@end tex\n\
+@ifinfo\n\
+\n\
+@example\n\
+      df_i
+jac = ----
+      dx_j
+@end example\n\
+@end ifinfo\n\
+\n\
 You can use the function @code{fsolve_options} to set optional\n\
 parameters for @code{fsolve}.\n\
 @end deftypefn")

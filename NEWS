@@ -34,7 +34,7 @@ Summary of changes since version 2.0.5:
         my_stream = fopen ("foo", "w");
         my_stream << "x = " << pi << " marks the spot\n";
 
-      writes `x = 3.14159 marks the spot' in the file foo.
+      writes `x = 3.1416 marks the spot' in the file foo.
 
       The built-in variables stdin, stdout, and stderr are now also
       file objects instead of integers.

@@ -67,7 +67,7 @@ distclean::
 	rm -f Makefile config.log config.status
 
 maintainer-clean::
-	rm -f tags TAGS Makefile config.log config.status
+	rm -f tags TAGS configure Makefile config.log config.status
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts

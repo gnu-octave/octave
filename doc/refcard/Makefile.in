@@ -51,14 +51,18 @@ refcard-letter.dvi: refcard-letter.tex refcard.tex
 refcard-letter.ps: refcard-letter.dvi
 	-dvips -T 11in,8.5in -o refcard-letter.ps refcard-letter.dvi
 
-check install uninstall mostlyclean clean:
-.PHONY: check install uninstall mostlyclean clean
+check install uninstall
+.PHONY: check install uninstall
 
 tags: $(SOURCES)
 	ctags $(SOURCES)
 
 TAGS: $(SOURCES)
 	etags $(SOURCES)
+
+mostlyclean clean:
+	rm -f refcard-*.log
+.PHONY: mostlyclean clean
 
 distclean: clean
 	rm -f Makefile

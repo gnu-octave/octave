@@ -73,8 +73,10 @@ spell: $(SPELL)
 
 mostlyclean clean:
 	rm -f liboctave.cp liboctave.fn liboctave.pg liboctave.tp \
-	liboctave.cps liboctave.fns liboctave.pgs liboctave.tps \
-	liboctave.aux liboctave.log liboctave.toc
+	liboctave.vr liboctave.ky liboctave.op liboctave.vrs \
+	liboctave.kys liboctave.ops liboctave.cps liboctave.fns \
+	liboctave.pgs liboctave.tps liboctave.aux liboctave.log \
+	liboctave.toc
 .PHONY: mostlyclean clean
 
 distclean: clean

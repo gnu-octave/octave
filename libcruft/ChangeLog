@@ -1,3 +1,7 @@
+Wed Feb 26 12:08:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (maintainer-clean): Also remove configure.
+
 Thu Feb 20 02:58:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.4 released.

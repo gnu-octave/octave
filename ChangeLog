@@ -1,3 +1,7 @@
+Wed Feb 26 12:17:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (maintainer-clean): Delete some more stuff.
+
 Fri Feb 21 20:38:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (do-subst-config-vals): Remove extra -L from

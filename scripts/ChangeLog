@@ -1,5 +1,7 @@
 Wed Feb 26 01:48:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (maintainer-clean): Also remove configure.
+
 	* signal/fftconv.m: Check inputs with is_vector(), not is_matrix().
 
 	* general/is_matrix.m: Return zero for empty matrices.

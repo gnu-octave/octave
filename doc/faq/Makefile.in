@@ -49,8 +49,8 @@ FAQ.dvi: FAQ.texi
 FAQ.ps: FAQ.dvi
 	-dvips -o FAQ.ps FAQ.dvi
 
-check install uninstall mostlyclean clean:
-.PHONY: check install uninstall mostlyclean clean
+check install uninstall
+.PHONY: check install uninstall
 
 tags: $(SOURCES)
 	ctags $(SOURCES)
@@ -60,6 +60,12 @@ TAGS: $(SOURCES)
 
 spell: $(SPELL)
 .PHONY: spell
+
+mostlyclean clean:
+	rm -f faq.cp faq.fn faq.ky faq.pg faq.tp faq.vr \
+	faq.cps faq.fns faq.kys faq.pgs faq.tps faq.vrs \
+	faq.aux	faq.log faq.toc
+.PHONY: mostlyclean clean
 
 distclean: clean
 	rm -f Makefile

@@ -114,7 +114,7 @@ distclean::
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 maintainer-clean::
-	rm -f *.a *.o Makefile Makerules so_locations tags TAGS
+	rm -f *.a *.o configure Makefile Makerules so_locations tags TAGS
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 dist:

@@ -335,3 +335,69 @@ if ${CC-cc} -c ctest.c 1>&AC_FD_CC 2>&AC_FD_CC; then
 fi])
 rm -f ftest* ctest* core
 AC_MSG_RESULT([$octave_cv_f2c_f77_compat])])
+
+dnl The following test is from Karl Berry's Kpathseach library.  I'm
+dnl including it here in case we someday want to make the use of
+dnl kpathsea optional.
+
+# Some BSD putenv's, e.g., FreeBSD, do malloc/free's on the environment.
+# This test program is due to Mike Hibler <mike@cs.utah.edu>.
+# We don't actually need to run this if we don't have putenv, but it
+# doesn't hurt.
+AC_MSG_CHECKING(whether putenv uses malloc)
+AC_CACHE_VAL(octave_cv_func_putenv_malloc,
+[AC_TRY_RUN([
+#define VAR	"YOW_VAR"
+#define STRING1 "GabbaGabbaHey"
+#define STRING2 "Yow!!"		/* should be shorter than STRING1 */
+extern char *getenv (); /* in case char* and int don't mix gracefully */
+main ()
+{
+  char *str1, *rstr1, *str2, *rstr2;
+  str1 = getenv (VAR);
+  if (str1)
+    exit (1);
+  str1 = malloc (strlen (VAR) + 1 + strlen (STRING1) + 1);
+  if (str1 == 0)
+    exit (2);
+  strcpy (str1, VAR);
+  strcat (str1, "=");
+  strcat (str1, STRING1);
+  if (putenv (str1) < 0)
+    exit (3);
+  rstr1 = getenv (VAR);
+  if (rstr1 == 0)
+    exit (4);
+  rstr1 -= strlen (VAR) + 1;
+  if (strncmp (rstr1, VAR, strlen (VAR)))
+    exit (5);
+  str2 = malloc (strlen (VAR) + 1 + strlen (STRING2) + 1);
+  if (str2 == 0 || str1 == str2)
+    exit (6);
+  strcpy (str2, VAR);
+  strcat (str2, "=");
+  strcat (str2, STRING2);
+  if (putenv (str2) < 0)
+    exit (7);
+  rstr2 = getenv (VAR);
+  if (rstr2 == 0)
+    exit (8);
+  rstr2 -= strlen (VAR) + 1;
+#if 0
+  printf ("rstr1=0x%x, rstr2=0x%x\n", rstr1, rstr2);
+  /*
+   * If string from first call was reused for the second call,
+   * you had better not do a free on the first string!
+   */
+  if (rstr1 == rstr2)
+          printf ("#define SMART_PUTENV\n");
+  else
+          printf ("#undef SMART_PUTENV\n");
+#endif
+  exit (rstr1 == rstr2 ? 0 : 1);
+}], octave_cv_func_putenv_malloc=yes, octave_cv_func_putenv_malloc=no,
+    octave_cv_func_putenv_malloc=no)])dnl
+AC_MSG_RESULT($octave_cv_func_putenv_malloc)
+if test $octave_cv_func_putenv_malloc = yes; then
+  AC_DEFINE(SMART_PUTENV)
+fi

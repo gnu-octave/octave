@@ -427,10 +427,10 @@ for the file.  Valid values for @var{arch} are:\n\
 @samp{native}\n\
 The format of the current machine (this is the default).\n\
 \n\
-@samp{ieee-le}\n\
+@samp{ieee-be}\n\
 IEEE big endian format.\n\
 \n\
-@samp{ieee-be}\n\
+@samp{ieee-le}\n\
 IEEE little endian format.\n\
 \n\
 @samp{vaxd}\n\

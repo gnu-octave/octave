@@ -2239,6 +2239,7 @@ tree_colon_expression::eval (int print)
 
   if (error_state)
     {
+      error ("colon expression elements must be scalars");
       eval_error ("evaluating colon expression");
       return retval;
     }
@@ -2255,6 +2256,7 @@ tree_colon_expression::eval (int print)
 
   if (error_state)
     {
+      error ("colon expression elements must be scalars");
       eval_error ("evaluating colon expression");
       return retval;
     }
@@ -2274,6 +2276,7 @@ tree_colon_expression::eval (int print)
 
       if (error_state)
 	{
+	  error ("colon expression elements must be scalars");
 	  eval_error ("evaluating colon expression");
 	  return retval;
 	}

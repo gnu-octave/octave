@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstring>
+
 // Include signal.h, not csignal since the latter might only define
 // the ANSI standard C signal interface.
 

@@ -26,11 +26,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_file_info_h)
 #define octave_file_info_h 1
 
+#include <cstdio>
+
 #include <string>
 
 #include <Pix.h>
-
-#include "oct-obj.h"
 
 class
 file_info

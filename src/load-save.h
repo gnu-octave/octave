@@ -24,8 +24,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_load_save_h)
 #define octave_load_save_h 1
 
-class tree_constant;
 class ostream;
+
+class tree_constant;
 
 extern int save_ascii_data (ostream& os, const tree_constant& t,
 			    char *name = 0, int strip_nan_and_inf = 0,

@@ -29,18 +29,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Array.h"
-#include "mx-base.h"
 
-class tree_constant;
-class Matrix;
-class RowVector;
-class ColumnVector;
-class DiagMatrix;
-class ComplexMatrix;
-class ComplexRowVector;
-class ComplexColumnVector;
-class ComplexDiagMatrix;
-class Range;
+// Including this is all we need because pt-const.h gives us
+// declarations for all the data types Octave knows about.
+
+#include "pt-const.h"
 
 class
 Octave_object : public Array<tree_constant>

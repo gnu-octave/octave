@@ -28,10 +28,10 @@ class ostream;
 
 #include "oct-cmplx.h"
 
-class Matrix;
 class ComplexMatrix;
-class charMatrix;
+class Matrix;
 class Range;
+class charMatrix;
 
 extern void octave_print_internal (ostream& os, double d,
 				   int pr_as_read_syntax = 0);

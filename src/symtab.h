@@ -32,8 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "variables.h"
 
-class ostream;
-
 // Must be multiple of 2.
 #define HASH_TABLE_SIZE 1024
 #define HASH_MASK (HASH_TABLE_SIZE - 1)

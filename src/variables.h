@@ -24,18 +24,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_variables_h)
 #define octave_variables_h 1
 
-class istream;
-class ostrstream;
 class symbol_record;
 class symbol_table;
-class tree;
+
 class tree_fvc;
 class tree_constant;
 class Octave_object;
 
 struct builtin_mapper_function;
-struct builtin_function;
-struct builtin_variable;
 
 typedef int (*sv_Function)(void);
 

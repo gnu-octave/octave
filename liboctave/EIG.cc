@@ -125,10 +125,11 @@ EIG::init (const Matrix& a)
 		      return -1;
 		    }
 
+		  lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
+		  lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
+
 		  for (int i = 0; i < n; i++)
 		    {
-		      lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
-		      lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
 		      double real_part = vr.elem (i, j);
 		      double imag_part = vr.elem (i, j+1);
 		      v.elem (i, j) = Complex (real_part, imag_part);

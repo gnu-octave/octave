@@ -72,13 +72,6 @@ function __plt__ (caller, ...)
 	  x_set = 1;
 	endif
 
-	## Something fishy is going on.  I don't think this should be
-	## necessary, but without it, sometimes not all the lines from a
-	## given plot command appear on the screen.  Even with it, the
-	## delay might not be long enough for some systems...
-
-	usleep (1e5);
-
       endwhile
 
       ## Handle last plot.

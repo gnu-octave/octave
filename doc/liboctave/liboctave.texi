@@ -28,7 +28,7 @@
 @c This file doesn't include a chapter, so it must not be included
 @c if you want to run the Emacs function texinfo-multiple-files-update.
 
-@include conf.texi
+@c @include conf.texi
 
 @settitle Octave C++ Classes
 
@@ -98,7 +98,7 @@ library, and how to report bugs.  It corresponds to Octave version
 * Copying::                     
 * Introduction::                
 * Arrays::                      
-* Matrix and Vector @var{Operations}::  
+* Matrix and Vector Operations::  
 * Matrix Factorizations::       
 * Ranges::                      
 * Nonlinear Functions::         

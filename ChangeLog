@@ -1,3 +1,8 @@
+Thu Jun 18 20:24:40 1998  Roman Hodek <Roman.Hodek@informatik.uni-erlangen.de>
+
+	* configure.in (RLD_FLAG): Set correctly for Linux on all
+	architectures.  From 
+
 Thu May 28 10:17:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: When checking for glob stuff, make sure that the

@@ -1,4 +1,4 @@
-@node Matrix Factorizations, Ranges, Matrix and Vector @var{Operations}, Top
+@node Matrix Factorizations, Ranges, Matrix and Vector Operations, Top
 @chapter Matrix Factorizations
 @cindex matrix factorizations
 @cindex factorizations

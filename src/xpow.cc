@@ -194,8 +194,19 @@ xpow (const Matrix& a, double b)
 		atmp = a;
 
 	      Matrix result (atmp);
-	      for (int i = 1; i < btmp; i++)
-		result = result * atmp;
+
+	      btmp--;
+
+	      while (btmp > 0)
+		{
+		  if (btmp & 1)
+		    result = result * atmp;
+
+		  btmp >>= 1;
+
+		  if (btmp > 0)
+		    atmp = atmp * atmp;
+		}
 
 	      retval = result;
 	    }
@@ -379,8 +390,19 @@ xpow (const ComplexMatrix& a, double b)
 		atmp = a;
 
 	      ComplexMatrix result (atmp);
-	      for (int i = 1; i < btmp; i++)
-		result = result * atmp;
+
+	      btmp--;
+
+	      while (btmp > 0)
+		{
+		  if (btmp & 1)
+		    result = result * atmp;
+
+		  btmp >>= 1;
+
+		  if (btmp > 0)
+		    atmp = atmp * atmp;
+		}
 
 	      retval = result;
 	    }

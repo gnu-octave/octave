@@ -1,4 +1,4 @@
-@node Arrays, Matrix and Vector @var{Operations}, Introduction, Top
+@node Arrays, Matrix and Vector Operations, Introduction, Top
 @chapter Arrays
 @cindex arrays
 

@@ -252,7 +252,10 @@ LSODE::do_integrate (double tout)
 			   piwork, liw, lsode_j, method_flag));
 
   if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in lsode");
+    {
+      integration_error = 1;
+      (*current_liboctave_error_handler) ("unrecoverable error in lsode");
+    }
   else
     {
       switch (istate)

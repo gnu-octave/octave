@@ -1,3 +1,19 @@
+Mon Jun 22 17:04:27 1998  Tomislav Goles <tom@ait-tech.com>
+
+	* EIG.cc (EIG::init): Move invariant code outside loop.
+
+Thu Jun 18 11:08:23 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray2.cc (MARRAY_A2A2_OP): If operands are empty, make result
+	have the same size as the operands.
+	
+Thu May 28 10:41:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASSL.cc (DASSL::do_integrate): If an exception occurs in the
+	call to ddassl, set integration_error to 1 before calling the
+	error handler and returning.
+	* LSODE.cc (LSODE::do_integrate): Likewise.
+
 Wed May 27 13:46:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (assign): Allow A([],[]) = scalar and, if

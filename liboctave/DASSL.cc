@@ -276,7 +276,10 @@ DASSL::do_integrate (double tout)
 			     piwork, liw, dummy, idummy, ddassl_j));
 
   if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dassl");
+    {
+      integration_error = 1;
+      (*current_liboctave_error_handler) ("unrecoverable error in dassl");
+    }
   else
     {
       switch (idid)

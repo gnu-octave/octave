@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.306 $)
+AC_REVISION($Revision: 1.307 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -550,9 +550,7 @@ case "$canonical_host_type" in
     SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
     RLD_FLAG='-Xlinker -rpath -Xlinker $(octlibdir)'
   ;;
-changequote(,)dnl
-  i[3456789]86-*-linux*)
-changequote([,])dnl
+  *-*-linux*)
     SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
     RLD_FLAG='-Xlinker -rpath -Xlinker $(octlibdir)'
   ;;

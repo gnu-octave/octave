@@ -134,22 +134,9 @@ is_globally_visible (const string& name)
 // Is this octave_value a valid function?
 
 octave_function *
-is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
+is_valid_function (const string& fcn_name, const string& warn_for, bool warn)
 {
   octave_function *ans = 0;
-
-  string fcn_name;
-
-  if (arg.is_string ())
-    fcn_name = arg.string_value ();
-
-  if (fcn_name.empty () || error_state)
-    {
-      if (warn)
-	error ("%s: expecting function name as argument",
-	       warn_for.c_str ());
-      return ans;
-    }
 
   symbol_record *sr = 0;
 
@@ -169,6 +156,24 @@ is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
 	       warn_for.c_str (), fcn_name.c_str ());
       ans = 0;
     }
+
+  return ans;
+}
+
+octave_function *
+is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
+{
+  octave_function *ans = 0;
+
+  string fcn_name;
+
+  if (arg.is_string ())
+    fcn_name = arg.string_value ();
+
+  if (! error_state)
+    ans = is_valid_function (fcn_name, warn_for, warn);
+  else if (warn)
+    error ("%s: expecting function name as argument", warn_for.c_str ());
 
   return ans;
 }

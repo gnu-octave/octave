@@ -1,3 +1,22 @@
+Mon Jun 22 22:13:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (is_valid_function): Provide version that takes
+	function name as string.
+
+	* parse.y (binary_expr): Fix thinko that resulted in incorrect
+	evaluation of -x^y.  Thanks to Richard Allan Holcombe
+	<raholcom@unity.ncsu.edu>.
+	(feval): Don't attempt to copy nonexistent arg names.
+
+Mon Jun 22 21:35:50 1998  Richard Allan Holcombe <raholcom@unity.ncsu.edu>
+
+	* xpow.cc (xpow): Improve efficiency for matrix^(scalar int) case.
+
+Thu Jun  4 12:42:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-usr-fcn.cc (octave_user_function::octave_all_va_args): 
+	If num_args_passed < num_named_args, create zero length list.
+
 Thu May 14 16:23:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/getrusage.cc: Include sys/types.h too.

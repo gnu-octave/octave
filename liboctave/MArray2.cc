@@ -146,7 +146,7 @@ MARRAY_SA2_OP (/)
 	return MArray2<T> (); \
       } \
     if (r == 0 || c == 0) \
-      return MArray2<T> (); \
+      return MArray2<T> (r, c); \
     int l = a.length (); \
     DO_VV_OP (OP); \
     return MArray2<T> (result, r, c); \

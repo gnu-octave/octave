@@ -53,6 +53,9 @@ extern octave_function *
 is_valid_function (const octave_value&, const string&, bool warn = false); 
 
 extern octave_function *
+is_valid_function (const string&, const string&, bool warn = false); 
+
+extern octave_function *
 extract_function (const octave_value& arg, const string& warn_for,
 		  const string& fname, const string& header,
 		  const string& trailer);

@@ -171,11 +171,16 @@ octave_user_function::octave_all_va_args (void)
 {
   octave_value_list retval;
 
-  retval.resize (num_args_passed - num_named_args);
+  int n = num_args_passed - num_named_args;
 
-  int k = 0;
-  for (int i = num_named_args; i < num_args_passed; i++)
-    retval(k++) = args_passed(i);
+  if (n > 0)
+    {
+      retval.resize (n);
+
+      int k = 0;
+      for (int i = num_named_args; i < num_args_passed; i++)
+	retval(k++) = args_passed(i);
+    }
 
   return retval;
 }

@@ -406,10 +406,10 @@ C----------------------------------------------------------------------
 C  Now have first one or two Y's
 C----------------------------------------------------------------------
             BY(1) = YA
-            BY(2) = YA1
-            IF (YA1 .EQ. ZERO) THEN
-                  NCALC = 1
-               ELSE
+            NCALC = 1
+            IF (NB .GT. 1) THEN
+              BY(2) = YA1
+              IF (YA1 .NE. ZERO) THEN
                   AYE = ONE + ALPHA
                   TWOBYX = TWO/EX
                   NCALC = 2
@@ -425,6 +425,7 @@ C----------------------------------------------------------------------
                      AYE = AYE + ONE
                      NCALC = NCALC + 1
   400             CONTINUE
+              END IF
             END IF
   450       DO 460 I = NCALC+1, NB
                BY(I) = ZERO

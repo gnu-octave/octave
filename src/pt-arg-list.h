@@ -53,6 +53,8 @@ public:
 
   ~tree_argument_list (void);
 
+  int nargout_count (void) const;
+
   bool all_elements_are_constant (void) const;
 
   octave_value_list convert_to_const_vector (void);

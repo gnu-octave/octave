@@ -208,84 +208,86 @@ tree_multi_assignment::rvalue (int)
 
   if (rhs)
     {
-      int n_out = lhs->length ();
+      int n_out = lhs->nargout_count ();
+
+      if (error_state)
+	return retval;
 
       octave_value_list rhs_val = rhs->rvalue (n_out);
 
-      if (! error_state)
+      if (error_state)
+	return retval;
+
+      if (rhs_val.empty ())
 	{
-	  if (rhs_val.empty ())
+	  error ("value on right hand side of assignment is undefined");
+	  eval_error ();
+	}
+      else
+	{
+	  int k = 0;
+
+	  int n = rhs_val.length ();
+
+	  retval.resize (n, octave_value ());
+
+	  for (Pix p = lhs->first (); p != 0; lhs->next (p))
 	    {
-	      error ("value on right hand side of assignment is undefined");
-	      eval_error ();
-	    }
-	  else
-	    {
-	      int k = 0;
+	      tree_expression *lhs_elt = lhs->operator () (p);
 
-	      int n = rhs_val.length ();
-
-	      retval.resize (n, octave_value ());
-
-	      for (Pix p = lhs->first (); p != 0; lhs->next (p))
+	      if (lhs_elt)
 		{
-		  tree_expression *lhs_elt = lhs->operator () (p);
+		  octave_lvalue ult = lhs_elt->lvalue ();
 
-		  if (lhs_elt)
+		  if (error_state)
+		    eval_error ();
+		  else if (k < n)
 		    {
-		      octave_lvalue ult = lhs_elt->lvalue ();
+		      ult.assign (etype, rhs_val(k));
 
-		      if (error_state)
-			eval_error ();
-		      else if (k < n)
+		      if (! error_state)
 			{
-			  ult.assign (etype, rhs_val(k));
-
-			  if (! error_state)
-			    {
-			      if (etype == octave_value::op_asn_eq)
-				retval(k) = rhs_val(k);
-			      else
-				retval(k) = ult.value ();
-			    }
-			}
-		      else
-			error ("element number %d undefined in return list",
-			       k+1);
-
-		      if (error_state)
-			eval_error ();
-		      else if (print_result ())
-			{
-			  if (Vprint_rhs_assign_val)
-			    retval(k).print_with_name
-			      (octave_stdout, lhs_elt->str_print_code ());
+			  if (etype == octave_value::op_asn_eq)
+			    retval(k) = rhs_val(k);
 			  else
-			    {
-			      // We clear any index here so that we can
-			      // get the new value of the referenced
-			      // object below, instead of the indexed
-			      // value (which should be the same as the
-			      // right hand side value).
-
-			      ult.clear_index ();
-
-			      octave_value lhs_val = ult.value ();
-
-			      if (! error_state)
-				lhs_val.print_with_name (octave_stdout,
-							 lhs_elt->name ());
-			    }
+			    retval(k) = ult.value ();
 			}
 		    }
 		  else
-		    eval_error ();
+		    error ("element number %d undefined in return list", k+1);
 
 		  if (error_state)
-		    break;
+		    eval_error ();
+		  else if (print_result ())
+		    {
+		      if (Vprint_rhs_assign_val)
+			retval(k).print_with_name
+			  (octave_stdout, lhs_elt->str_print_code ());
+		      else
+			{
+			  // We clear any index here so that we can
+			  // get the new value of the referenced
+			  // object below, instead of the indexed
+			  // value (which should be the same as the
+			  // right hand side value).
 
-		  k++;
+			  ult.clear_index ();
+
+			  octave_value lhs_val = ult.value ();
+
+			  if (! error_state)
+			    lhs_val.print_with_name (octave_stdout,
+						     lhs_elt->name ());
+			}
+		    }
 		}
+	      else
+		eval_error ();
+
+	      if (error_state)
+		break;
+
+	      k++;
 	    }
 	}
     }

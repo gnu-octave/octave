@@ -1,3 +1,23 @@
+2002-07-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-assign.cc (tree_multi_assignment::rvalue): Call
+	lhs->nargout_count, not lhs->length.
+
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector):
+	Handle cs-list objects here.
+	(tree_argument_list::nargout_count): New function.
+	* pt-arg-list.h: Provide decl.
+
+	* ov-cs-list.h, ov-cs-list.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* ov.cc: Include ov-cs-list.h.
+	New arg, is_cs_list for constructor taking octave_value_list arg.
+	(install_types): Register ov_cs_list.
+	* ov.h (octave_value::is_cs_list): New function.
+	* ov-base.h (octave_base_value::is_cs_list): Likewise.
+	* ov-cell.cc (octave_cell::subsref): Return cs-list for "{" indexing.
+
 2002-07-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-mat.cc (Vempty_list_elements_ok): Default value is now 1.

@@ -120,6 +120,8 @@ public:
 
   bool is_stream (void) const { return false; }
 
+  bool is_cs_list (void) const { return false; }
+
   bool is_list (void) const { return false; }
 
   bool is_magic_colon (void) const { return false; }

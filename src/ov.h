@@ -179,7 +179,7 @@ public:
   octave_value (const Octave_map& m);
   octave_value (const octave_stream& s, int n);
   octave_value (octave_function *f);
-  octave_value (const octave_value_list& m);
+  octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);
 
@@ -335,6 +335,9 @@ public:
 
   virtual bool is_stream (void) const
     { return rep->is_stream (); }
+
+  virtual bool is_cs_list (void) const
+    { return rep->is_cs_list (); }
 
   virtual bool is_list (void) const
     { return rep->is_list (); }

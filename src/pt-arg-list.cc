@@ -55,6 +55,25 @@ tree_argument_list::~tree_argument_list (void)
     }
 }
 
+int
+tree_argument_list::nargout_count (void) const
+{
+  int retval = 0;
+
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_expression *elt = this->operator () (p);
+
+      // XXX FIXME XXX -- need to be able to determine whether elt is
+      // an expression that could evaluate to a cs-list object, and if
+      // so, how many elements are in that list.  Ugly!
+
+      retval++;
+    }
+
+  return retval;
+}
+
 bool
 tree_argument_list::all_elements_are_constant (void) const
 {
@@ -79,7 +98,8 @@ tree_argument_list::convert_to_const_vector (void)
   // token.
 
   octave_value_list args;
-  args.resize (len);
+  int args_len = len;
+  args.resize (args_len);
 
   Pix p = first ();
   int j = 0;
@@ -106,6 +126,8 @@ tree_argument_list::convert_to_const_vector (void)
 		      octave_value_list tva;
 		      tva = curr_function->octave_all_va_args ();
 		      int n = tva.length ();
+		      args_len += n - 1;
+		      args.resize (args_len);
 		      for (int i = 0; i < n; i++)
 			args(j++) = tva(i);
 		    }
@@ -115,6 +137,15 @@ tree_argument_list::convert_to_const_vector (void)
 		      args = octave_value_list ();
 		      break;
 		    }
+		}
+	      else if (tmp.is_cs_list ())
+		{
+		  octave_value_list tl = tmp.list_value ();
+		  int n = tl.length ();
+		  args_len += n - 1;
+		  args.resize (args_len);
+		  for (int i = 0; i < n; i++)
+		    args(j++) = tl(i);
 		}
 	      else
 		args(j++) = tmp;

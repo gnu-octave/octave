@@ -47,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-struct.h"
 #include "ov-file.h"
 #include "ov-list.h"
+#include "ov-cs-list.h"
 #include "ov-colon.h"
 #include "ov-va-args.h"
 #include "ov-builtin.h"
@@ -489,9 +490,14 @@ octave_value::octave_value (octave_function *f)
   rep->count = 1;
 }
 
-octave_value::octave_value (const octave_value_list& l)
-  : rep (new octave_list (l))
+octave_value::octave_value (const octave_value_list& l, bool is_cs_list)
+  : rep (0)
 {
+  if (is_cs_list)
+    rep = new octave_cs_list (l);
+  else
+    new octave_list (l);
+
   rep->count = 1;
 }
 
@@ -1530,6 +1536,7 @@ install_types (void)
   octave_struct::register_type ();
   octave_file::register_type ();
   octave_list::register_type ();
+  octave_cs_list::register_type ();
   octave_all_va_args::register_type ();
   octave_magic_colon::register_type ();
   octave_builtin::register_type ();

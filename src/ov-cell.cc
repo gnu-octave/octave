@@ -79,7 +79,7 @@ octave_cell::subsref (const std::string type,
 	    for (int j = 0; j < nc; j++)
 	      for (int i = 0; i < nr; i++)
 		lst(k++) = tcell(i,j);
-	    retval = lst;
+	    retval = octave_value (lst, true);
 	  }
       }
       break;

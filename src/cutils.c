@@ -89,20 +89,24 @@ octave_usleep (unsigned int useconds)
 
 #elif defined (HAVE_SELECT)
 
-  struct timeval delay;
+  {
+    struct timeval delay;
 
-  delay.tv_sec = 0;
-  delay.tv_usec = usec;
+    delay.tv_sec = 0;
+    delay.tv_usec = usec;
 
-  select (0, 0, 0, 0, &delay);
+    select (0, 0, 0, 0, &delay);
+  }
 
 #elif defined (HAVE_POLL)
 
-  struct pollfd pfd;
-  int delay = usec / 1000;
+  {
+    struct pollfd pfd;
+    int delay = usec / 1000;
 
-  if (delay > 0)
-    poll (&fd, 0, delay);
+    if (delay > 0)
+      poll (&fd, 0, delay);
+  }
 
 #endif
 }

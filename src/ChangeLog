@@ -1,5 +1,9 @@
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* cutils.c (octave_usleep) [HAVE_SELECT]: Introduce new local
+	scope for declaration of delay.
+	[HAVE_POLL]: Likewise, for delay and pfd.
+
 	* ov-base.cc (octave_base_value::bool_array_value):
 	Function takes no args.
 	* ov-base.h: Likewise, for decl.

@@ -1,3 +1,7 @@
+2004-04-16  John W. Eaton  <jwe@octave.org>
+
+	* elfun/gcd.m: Delete.
+
 2004-04-15  David Bateman  <dbateman@free.fr>
 
 	* set/create_set.m, general/is_duplicate_entry.m: Make N-d array aware.

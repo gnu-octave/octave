@@ -1,3 +1,11 @@
+Thu Feb 13 16:25:09 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave-bug.in: Reinstate RLD_FLAG.
+	* mkoctfile.in: Likewise.
+	* Makeconf.in: Likewise.
+
+	* configure.in: Reinstate RLD_FLAG, but make it optional.
+
 Tue Feb  4 14:10:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (binary-dist): Use find and xargs instead of

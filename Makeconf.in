@@ -114,6 +114,8 @@ LD_STATIC_FLAG = @LD_STATIC_FLAG@
 ALL_LDFLAGS = $(LIBFLAGS) $(FORTRAN_MAIN_FLAG) $(GCC_IEEE_FP_FLAG) \
 	$(LD_STATIC_FLAG) $(CPICFLAG) $(LDFLAGS)
 
+RLD_FLAG = @RLD_FLAG@
+
 FLIBS = @FLIBS@
 
 CXXLIBS = @CXXLIBS@
@@ -323,6 +325,7 @@ sed < $< \
   -e "s;%GCC_IEEE_FP_FLAG%;\"${GCC_IEEE_FP_FLAG}\";" \
   -e "s;%LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%LIBFLAGS%;\"-L${libdir}\";" \
+  -e "s;%RLD_FLAG%;\"-L${RLD_FLAG}\";" \
   -e "s;%CXXLIBS%;\"${CXXLIBS}\";" \
   -e "s;%TERMLIBS%;\"${TERMLIBS}\";" \
   -e "s;%LIBS%;\"${LIBS}\";" \

@@ -33,7 +33,8 @@
 ##
 ## Without any arguments, @code{axis} turns autoscaling on.
 ##
-## A second argument may be used to specify various formats.  For
+## The vector argument specifying limits is optional, and additional
+## string arguments may be used to specify various axis properties.  For
 ## example,
 ##
 ## @example
@@ -41,7 +42,15 @@
 ## @end example
 ##
 ## @noindent
-## forces a square aspect ratio.
+## forces a square aspect ratio, and
+##
+## @example
+## axis ("labely", "tic");
+## @end example
+##
+## @noindent
+## turns tic marks on for all axes and tic mark labels on for the y-axis
+## only.
 ##
 ## @noindent
 ## The following options control the aspect ratio of the axes.
@@ -81,11 +90,11 @@
 ## @item "off"
 ## Turn tic marks off for all axes.
 ## @item "tic[xyz]"
-## Turn tic marks on for all axes, or turns them on for the
-## specified axes and turns them off the remainder.
+## Turn tic marks on for all axes, or turn them on for the
+## specified axes and off for the remainder.
 ## @item "label[xyz]"
-## Turn tic labels on for all axes, or turns them on for the 
-## specified axes and turns them off for the remainder.
+## Turn tic labels on for all axes, or turn them on for the 
+## specified axes and off for the remainder.
 ## @item "nolabel"
 ## Turn tic labels off for all axes.
 ## @end table

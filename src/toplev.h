@@ -81,6 +81,9 @@ extern int no_line_editing;
 // If nonzero, print verbose info in some cases.
 extern int verbose_flag;
 
+// Nonzero means we printed messages about reading startup files.
+extern int reading_startup_message_printed;
+
 // Command number, counting from the beginning of this session.
 extern int current_command_number;
 

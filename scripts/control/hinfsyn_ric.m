@@ -16,14 +16,17 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## usage: [Xinf,x_ha_err] = hinfsyn_ric(A,BB,C1,d1dot,R,ptol)
-##
-## forms
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{Xinf},@var{x_ha_err}] =} hinfsyn_ric(@var{A},@var{BB}.@var{C1},@var{d1dot},@var{R},@var{ptol})
+## @table 
+## @item forms
 ##        xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
 ##        Ha = [A 0*A; -C1'*C1 -A'] - xx;
+## @end table 
 ## and solves associated Riccati equation
 ## returns error code
-##  x_ha_err:
+## @table
+## @item x_ha_err
 ##    0: successful
 ##    1: Xinf has imaginary eigenvalues
 ##    2: Hx not Hamiltonian
@@ -31,7 +34,8 @@
 ##    4: Xinf not symmetric
 ##    5: Xinf not positive definite
 ##    6: R is singular
-
+## @end table
+## @end deftypefn 
 function [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol)
 
   x_ha_err = 0;        # assume success

@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{S} =} upper(@var{s})
 ## Transform all letters in a string to upper case.
 ## @end deftypefn

@@ -16,29 +16,58 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## [tvals,Plist] = dre(sys,Q,R,Qf,t0,tf{,Ptol,maxits});
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{tvals},@var{Plist}] =} dre(@var{sys},@var{Q},@var{R},@var{Qf},@var{t0},@var{tf}[,@var{Ptol},@var{maxits}]);
 ## Solve the differential Riccati equation
+## @ifinfo
+## @example 
 ##   -d P/dt = A'P + P A - P B inv(R) B' P + Q
 ##   P(tf) = Qf
+## @example 
+## @end ifinfo
+## @iftex
+## @tex
+## \(-\frac{dP}{dt} = A^{T}P+PA-PBR^{-1}B^{T}P+Q\)
+## @end tex
+## @end iftex
 ## for the LTI system sys.  Solution of standard LTI
 ## state feedback optimization
 ##   min \int_{t_0}^{t_f} x' Q x + u' R u dt + x(t_f)' Qf x(t_f)
 ## optimal input is
 ##   u = - inv(R) B' P(t) x
-## inputs:
-##   sys: continuous time system data structure
-##   Q: state integral penalty
-##   R: input integral penalty
-##   Qf: state terminal penalty
-##   t0,tf: limits on the integral
-##   Ptol: tolerance (used to select time samples; see below); default = 0.1
-##   max number of refinement iterations (default=10)
-## outputs:
-##   tvals: time values at which P(t) is computed
-##   Plist: list values of P(t); nth(Plist,ii) is P(tvals(ii)).
+## @strong{Inputs}
+## @table 
+## @item sys
+##     continuous time system data structure
+## @item Q
+##     state integral penalty
+## @item R 
+##     input integral penalty
+## @item Qf
+##     state terminal penalty
+## @item t0
+## @itemx tf
+##     limits on the integral
+## @item Ptol
+##     tolerance (used to select time samples; see below); default = 0.1
+## @item maxits 
+##     number of refinement iterations (default=10)
+## @end table
+## @strong{Outputs}
+## @table 
+## @item tvals
+##     time values at which @var{P}(@var{t}) is computed
+## @item Plist
+##     list values of @var{P}(@var{t}); nth(@var{Plist},@var{ii}) 
+##     is @var{P}(@var{tvals}(@var{ii})).
 ##
-##   tvals is selected so that || nth(Plist,ii) - nth(Plist,ii-1) || < Ptol
+## @item tvals 
+## @example
+##     is selected so that || nth(Plist,ii) - nth(Plist,ii-1) || < Ptol
 ##     for ii=2:length(tvals)
+## @end example 
+## @end table
+## @end deftypefn 
 
 function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 

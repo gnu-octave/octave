@@ -16,8 +16,12 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} { } controldemo
 ## Controls toolbox demo.
-## Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
+## @end deftypefn  
+## @seealso{Demo programs: bddemo.m, frdemo.m, analdemo.m, 
+## moddmeo.m, rldemo.m
 
 ## Author: David Clem
 ## Created: August 15, 1994

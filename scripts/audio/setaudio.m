@@ -17,9 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: setaudio ([w_type [, value]])
+## -*- texinfo -*-
+## @deftypefn{Function File} setaudio ([@var{w_type} [, @var{value}]])
 ##
-## executes the shell command `mixer [w_type [, value]]'
+## executes the shell command `mixer [@var{w_type} [, @var{value}]]'
+## @end deftypefn
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 5 October 1994

@@ -15,14 +15,21 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
-## usage retval = com2str(zz{,flg})
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{retval} =} com2str(@var{zz}[,@var{flg}])
 ##  
 ## convert complex number to a string
-## zz: complex number
-## flg: format flag
+## @strong{Inputs}
+## @table @var
+## @item zz
+##      complex number
+## @item flg
+##      format flag
 ##      0 (default):            -1, 0, 1,   1i,   1 + 0.5i
 ##      1 (for use with zpout): -1, 0, + 1, + 1i, + 1 + 0.5i
+## @end table
+## @end deftypefn
 
 function retval = com2str (zz, flg)
 

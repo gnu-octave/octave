@@ -1,3 +1,15 @@
+2000-01-11  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* strings/upper.m: Add missing `-*- texinfo -*-' tag to doc string.
+
+	* audio/setaudio.m: Texinfoize doc string.
+	* control/com2str.m: Likewise.
+	* control/controldemo.m: Likewise.
+	* control/DEMOcontrol.m: Likewise.
+	* control/dezero.m: Likewise.
+	* control/dre.m: Likewise.
+	* control/hinfsyn_ric.m: Likewise.
+
 2000-01-05  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* io/printf.m: Add @seealso{...} to doc string.

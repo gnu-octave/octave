@@ -38,8 +38,8 @@
 ## Command examples are interactively run for users to observe the use
 ## of OCST functions.
 ## @end deftypefn
-
-## Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
+## @seealso{Demo Programs: bddemo.m, frdemo.m, analdemo.m, 
+## moddmeo.m, rldemo.m}
 
 ## Author: David Clem
 ## Created: August 15, 1994

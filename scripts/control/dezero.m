@@ -17,9 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  dezero (s)
-##
+## -*- texinfo -*- 
+## @deftypefn {Functin File} {@var{t} =} dezero (@var{s})
 ## Remove trailing blank entries and all zero entries from the string s.
+## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Adapted-By: jwe

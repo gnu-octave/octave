@@ -1,0 +1,87 @@
+set test is_struct-1
+set prog_output "ans = 0"
+do_test is_struct-1.m
+
+set test is_struct-2
+set prog_output "ans = 0"
+do_test is_struct-2.m
+
+set test is_struct-3
+set prog_output "ans = 0"
+do_test is_struct-3.m
+
+set test is_struct-4
+set prog_output "ans = 0"
+do_test is_struct-4.m
+
+set test is_struct-5
+set prog_output "ans = 0"
+do_test is_struct-5.m
+
+set test is_struct-6
+set prog_output "ans = 0"
+do_test is_struct-6.m
+
+set test is_struct-7
+set prog_output "ans = 0"
+do_test is_struct-7.m
+
+set test is_struct-8
+set prog_output "ans = 1"
+do_test is_struct-8.m
+
+set test is_struct-9
+set prog_output "ans = 1"
+do_test is_struct-9.m
+
+set test is_struct-10
+set prog_output "\n... is_struct:.*"
+do_test is_struct-10.m
+
+set test is_struct-11
+set prog_output "\n... is_struct:.*"
+do_test is_struct-11.m
+
+set test struct_contains-1
+set prog_output "ans = 1"
+do_test struct_contains-1.m
+
+set test struct_contains-2
+set prog_output "ans = 0"
+do_test struct_contains-2.m
+
+set test struct_contains-3
+set prog_output "\n... struct_contains:.*"
+do_test struct_contains-3.m
+
+set test struct_contains-4
+set prog_output "\n... struct_contains:.*"
+do_test struct_contains-4.m
+
+set test struct_contains-5
+set prog_output "\n... struct_contains:.*"
+do_test struct_contains-5.m
+
+set test struct_contains-6
+set prog_output "\n... struct_contains:.*"
+do_test struct_contains-6.m
+
+set test struct_elements-1
+set prog_output "ans = 1"
+do_test struct_elements-1.m
+
+set test struct_elements-2
+set prog_output "ans = 1"
+do_test struct_elements-2.m
+
+set test struct_elements-3
+set prog_output "\n... struct_elements:.*"
+do_test struct_elements-3.m
+
+set test struct_elements-4
+set prog_output "\n... struct_elements:.*"
+do_test struct_elements-4.m
+
+set test struct_elements-5
+set prog_output "error:.*"
+do_test struct_elements-5.m

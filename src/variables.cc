@@ -331,18 +331,19 @@ returns:\n\
     }
 
   string struct_elts;
+  string symbol_name = name;
 
   size_t pos = name.find ('.');
 
-  if (pos != NPOS)
+  if (pos != NPOS && pos > 0)
     {
       struct_elts = name.substr (pos+1);
-      name = name.substr (0, pos);
+      symbol_name = name.substr (0, pos);
     }
 
-  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (symbol_name, 0, 0);
   if (! sr)
-    sr = global_sym_tab->lookup (name, 0, 0);
+    sr = global_sym_tab->lookup (symbol_name, 0, 0);
 
   retval = 0.0;
 

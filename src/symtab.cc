@@ -1190,6 +1190,12 @@ valid_identifier (const char *s)
   return 1;
 }
 
+int
+valid_identifier (const string& s)
+{
+  return valid_identifier (s.c_str ());
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

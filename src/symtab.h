@@ -321,6 +321,8 @@ private:
 
 extern int valid_identifier (const char *s);
 
+extern int valid_identifier (const string& s);
+
 #endif
 
 /*

@@ -1,3 +1,10 @@
+Tue Mar  4 20:36:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fexist): Don't let files with `.' in their names
+	confuse us.
+
+	* symtab.cc (valid_identifier (const string&)): New function.
+
 Sat Mar  1 15:23:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.5 released.

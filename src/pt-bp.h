@@ -166,8 +166,9 @@ tree_breakpoint : public tree_walker
 #define MAYBE_DO_BREAKPOINT \
   do \
     { \
-      if (is_breakpoint ()) \
+      if (tree::break_next || is_breakpoint ()) \
         { \
+          tree::break_next = false; \
           octave_stdout << "line: " << line () << endl; \
           do_keyboard (); \
         } \

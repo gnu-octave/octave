@@ -35,6 +35,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt.h"
 #include "pt-pr-code.h"
 
+// If true, stop executing at the next possible point.
+bool tree::break_next = false;
+
 // Hide the details of the string buffer so that we are less likely to
 // create a memory leak.
 

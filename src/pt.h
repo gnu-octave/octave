@@ -67,6 +67,9 @@ public:
   virtual bool is_breakpoint (void) const 
     { return break_point; }
 
+  // If true, stop executing at the next possible point.
+  static bool break_next;
+
 private:
 
   // The input line and column where we found the text that was

@@ -38,8 +38,8 @@ class tree_matrix;
 class tree_identifier;
 class symbol_record;
 class symbol_table;
-class octave_value;
-class octave_value_list;
+
+#include "oct-obj.h"
 
 // Temporary symbol table pointer used to cope with bogus function syntax.
 extern symbol_table *tmp_local_sym_tab;
@@ -90,10 +90,12 @@ extern bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
 extern octave_value_list
-feval (const std::string& name, const octave_value_list& args, int nargout);
+feval (const std::string& name,
+       const octave_value_list& args = octave_value_list (),
+       int nargout = 0);
 
 extern octave_value_list
-feval (const octave_value_list& args, int nargout);
+feval (const octave_value_list& args, int nargout = 0);
 
 extern octave_value_list
 eval_string (const std::string&, bool silent, int& parse_status, int hargout);

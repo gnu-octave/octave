@@ -58,6 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "parse.h"
 #include "pathlen.h"
+#include "pt.h"
 #include "pt-const.h"
 #include "sighandlers.h"
 #include "symtab.h"
@@ -540,14 +541,23 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	    }
 	}
 
-      if (debug
-	  && (match_sans_spaces ("exit", input_buf)
-	      || match_sans_spaces ("quit", input_buf)
-	      || match_sans_spaces ("return", input_buf)))
+      if (debug)
 	{
-	  return retval;
+	  if (match_sans_spaces ("exit", input_buf)
+	      || match_sans_spaces ("quit", input_buf)
+	      || match_sans_spaces ("return", input_buf)
+	      || match_sans_spaces ("dbg_cont", input_buf))
+	    {
+	      return retval;
+	    }
+	  else if (match_sans_spaces ("dbg_step", input_buf))
+	    {
+	      tree::break_next = true;
+	      return retval;
+	    }
 	}
-      else if (read_as_string)
+
+      if (read_as_string)
 	{
 	  // XXX FIXME XXX -- fix gnu_readline and octave_gets instead!
 	  if (input_buf.length () == 1 && input_buf[0] == '\n')

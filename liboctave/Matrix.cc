@@ -1,7 +1,7 @@
 // Matrix manipulations.                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -185,7 +185,8 @@ extern "C"
  * Matrix class.
  */
 
-Matrix::Matrix (const DiagMatrix& a) : Array2<double> (a.rows (), a.cols ())
+Matrix::Matrix (const DiagMatrix& a)
+  : Array2<double> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
@@ -2318,14 +2319,14 @@ ComplexMatrix::ComplexMatrix (const Matrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
-  : Array2<Complex> (a.rows (), a.cols ())
+  : Array2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
-  : Array2<Complex> (a.rows (), a.cols ())
+  : Array2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.length (); i++)
     elem (i, i) = a.elem (i, i);

@@ -450,7 +450,7 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit)
 	    }
 	}
       else
-	retval = integrate (tout);
+	retval = integrate (tout, xdot_out);
     }
 
   return retval;

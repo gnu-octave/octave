@@ -353,6 +353,48 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
   fi
 ])
 dnl
+dnl Check to see if GNU C++ barfs on #pragma interface/#pragma implementation.
+dnl
+dnl OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION
+AC_DEFUN(OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION, [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_MSG_CHECKING([for C++ support for pragma interface/implementation])
+  AC_CACHE_VAL(octave_cv_cxx_pragma_interface_implementation, [
+    AC_LANG_PUSH(C++)
+    rm -f conftest.h
+    cat > conftest.h <<EOB
+#include <iostream>
+#if defined (__GNUG__)
+#pragma interface
+#endif
+template <class T> class A
+{
+public:
+  A (void) {}
+  ~A (void);
+};
+
+class B : public A<int>
+{
+public:
+
+  B (void) : A<int> () { }
+};
+EOB
+    AC_TRY_LINK([#include "conftest.h"], [
+      ], 
+      octave_cv_cxx_pragma_interface_implementation=yes,
+      octave_cv_cxx_pragma_interface_implementation=no
+    )
+    AC_LANG_POP(C++)
+  ])
+  AC_MSG_RESULT($octave_cv_cxx_pragma_interface_implementation)
+  if test $octave_cv_cxx_pragma_interface_implementation = no; then
+    XTRA_CXXFLAGS="$XTRA_CXXFLAGS -DNO_PRAGMA_INTERFACE_IMPLEMENTATION=1"
+    AC_SUBST(XTRA_CXXFLAGS)
+  fi
+])
+dnl
 dnl Check for flex
 dnl
 AC_DEFUN(OCTAVE_PROG_FLEX, [

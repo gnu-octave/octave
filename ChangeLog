@@ -1,5 +1,11 @@
 2002-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): New macro.
+	* configure.in: Use it.
+
+	* configure.in (BUILD_CC, BUILD_CFLAGS, BUILD_CXX, BUILD_CXXFLAGS): 
+	Set default values if cross compiling.
+
 	* aclocal.m4 (OCTAVE_PROG_NM): Do the right thing for cross compiling.
 	(OCTAVE_CXX_PREPENDS_UNDERSCORE): Require OCTAVE_PROG_NM.
 	(OCTAVE_CXX_ABI): Likewise.

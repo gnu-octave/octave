@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.372 $)
+AC_REVISION($Revision: 1.373 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -318,6 +318,27 @@ fi
 AC_SUBST(LD_STATIC_FLAG)
 
 OCTAVE_CXX_PREPENDS_UNDERSCORE
+OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION
+
+### Defaults for cross compiling.  BUILD_CC and BUILD_CXX are
+### the compilers that we use for building tools on the build system.
+
+if test "$cross_compiling" = yes; then
+  BUILD_CC="gcc"
+  BUILD_CFLAGS="-O2 -g"
+  BUILD_CXX="g++"
+  BUILD_CXXFLAGS="-O2 -g"
+else
+  BUILD_CC=$CC
+  BUILD_CFLAGS="-O2 -g"
+  BUILD_CXX="g++"
+  BUILD_CXXFLAGS="-O2 -g"
+fi
+
+AC_ARG_VAR(BUILD_CC, [build system C compiler (used if cross compiling)])
+AC_ARG_VAR(BUILD_CFLAGS, [build system C compiler flags (used if cross compiling)])
+AC_ARG_VAR(BUILD_CXX, [build system C++ compiler (used if cross compiling)])
+AC_ARG_VAR(BUILD_CXXFLAGS, [build system C++ compiler flags (used if cross compiling)])
 
 dnl This is bogus.  We shouldn't have to explicitly add libc too!
 

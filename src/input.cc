@@ -661,84 +661,17 @@ get_input_from_stdin (void)
   return rl_instream;
 }
 
-static string_vector
-generate_struct_completions (const char *text, char *& prefix,
-			     char *& hint)
-{
-  string_vector names;
-
-  // XXX FIXME XXX -- this needs some work, eh?
-
-#if 0
-  assert (text);
-
-  char *id = strsave (text);
-  char *ptr = strchr (id, '.');
-  *ptr = '\0';
-
-  char *elts = ptr + 1;
-  ptr = strrchr (elts, '.');
-  if (ptr)
-    *ptr = '\0';
-  else
-    elts = 0;
-
-  prefix = strsave (text);
-  ptr = strrchr (prefix, '.');
-  *ptr = '\0';
-
-  delete [] hint;
-  hint = strsave (ptr + 1);
-
-  symbol_record *sr = curr_sym_tab->lookup (id);
-  if (! sr)
-    sr = global_sym_tab->lookup (id);
-
-  if (sr && sr->is_defined ())
-    {
-      tree_fvc *tmp_fvc = sr->def ();
-
-      tree_constant *def = 0;
-      if (tmp_fvc->is_constant ())
-	def = static_cast<tree_constant *> (tmp_fvc);
-
-      if (def && def->is_map ())
-	{
-	  if (elts && *elts)
-	    {
-	      octave_value ult = def->lookup_map_element (elts, false, true);
-
-	      if (ult.is_map ())
-		{
-		  Octave_map m = ult.map_value ();
-		  names = m.make_name_list ();
-		}
-	    }
-	  else
-	    {
-	      Octave_map m = def->map_value ();
-	      names = m.make_name_list ();
-	    }
-	}
-    }
-
-  delete [] id;
-#endif
-
-  return names;
-}
-
 // XXX FIXME XXX -- make this generate file names when appropriate.
 
 static string_vector
-generate_possible_completions (const char *text, char *& prefix,
-			       char *& hint)
+generate_possible_completions (const string& text, string& prefix,
+			       string& hint)
 {
   string_vector names;
 
-  prefix = 0;
+  prefix = "";
 
-  if (text && *text && *text != '.' && strrchr (text, '.'))
+  if (! text.empty () && text != "." && text.rfind ('.') != NPOS)
     names = generate_struct_completions (text, prefix, hint);
   else
     names = make_name_list ();
@@ -769,72 +702,17 @@ generate_possible_completions (const char *text, char *& prefix,
   return names;
 }
 
-static int
-looks_like_struct (const char *nm)
-{
-  int retval = 0;
-
-  // XXX FIXME XXX -- this needs some work, eh?
-
-#if 0
-  assert (nm);
-
-  char *id = strsave (nm);
-  char *elts = 0;
-  char *ptr = strchr (id, '.');
-  if (ptr)
-    {
-      *ptr = '\0';
-      elts = ptr + 1;
-    }
-
-  symbol_record *sr = curr_sym_tab->lookup (id);
-  if (! sr)
-    sr = global_sym_tab->lookup (id);
-
-  if (sr && sr->is_defined ())
-    {
-      tree_fvc *tmp_fvc = sr->def ();
-
-      tree_constant *def = 0;
-      if (tmp_fvc->is_constant ())
-	def = static_cast<tree_constant *> (tmp_fvc);
-
-      if (def && def->is_map ())
-	{
-	  if (elts && *elts)
-	    {
-	      octave_value ult = def->lookup_map_element (elts, false, true);
-
-	      if (ult.is_map ())
-		retval = 1;
-	    }
-	  else
-	    retval = 1;
-	}
-    }
-
-  delete [] id;
-#endif
-
-  return retval;	
-}
-
-// XXX FIXME XXX -- this has to return a pointer to char, but it
-// should be converted to use a generating function that returns a
-// string_vector.
-
 static char *
 command_generator (const char *text, int state)
 {
-  static char *prefix = 0;
-  static char *hint = 0;
+  static string prefix;
+  static string hint;
 
-  static int prefix_len = 0;
-  static int hint_len = 0;
+  static size_t prefix_len = 0;
+  static size_t hint_len = 0;
 
   static int list_index = 0;
-  static int list_length = 0;
+  static int name_list_len = 0;
   static string_vector name_list;
 
   static int matches = 0;
@@ -843,53 +721,47 @@ command_generator (const char *text, int state)
     {
       list_index = 0;
 
-      delete [] prefix;
-      prefix = 0;
+      prefix = "";
 
-      delete [] hint;
-      hint = strsave (text);
+      hint = text;
 
       name_list = generate_possible_completions (text, prefix, hint);
 
-      prefix_len = 0;
-      if (prefix)
-	prefix_len = strlen (prefix);
+      name_list_len = name_list.length ();
+
+      prefix_len = prefix.length ();
 	
-      assert (hint);
-      hint_len = strlen (hint);
+      hint_len = hint.length ();
 
       matches = 0;
 
-      list_length = name_list.length ();
-
-      for (int i = 0; i < list_length; i++)
-	if (name_list[i].compare (hint, 0, hint_len))
+      for (int i = 0; i < name_list_len; i++)
+	if (! name_list[i].compare (hint, 0, hint_len))
 	  matches++;
     }
 
-  if (list_length > 0 && matches > 0)
+  if (name_list_len > 0 && matches > 0)
     {
-      const char *name;
-
-      while (list_index < list_length)
+      while (list_index < name_list_len)
 	{
-	  name = name_list[list_index].c_str ();
+	  string name = name_list[list_index];
 
 	  list_index++;
 
-	  if (strncmp (name, hint, hint_len) == 0)
+	  if (! name.compare (hint, 0, hint_len))
 	    {
-	      int len = 2 + prefix_len + strlen (name);
+	      int len = 2 + prefix_len + name.length ();
+
 	      char *buf = static_cast<char *> (malloc (len));
 
-	      if (prefix)
+	      if (! prefix.empty ())
 		{
-		  strcpy (buf, prefix);
+		  strcpy (buf, prefix.c_str ());
 		  strcat (buf, ".");
-		  strcat (buf, name);
+		  strcat (buf, name.c_str ());
 		}
 	      else
-		strcpy (buf, name);
+		strcpy (buf, name.c_str ());
 
 	      if (matches == 1 && looks_like_struct (buf))
 		rl_completion_append_character = '.';

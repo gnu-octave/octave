@@ -122,10 +122,20 @@ extern bool is_globally_visible (const string&);
 extern octave_symbol *
 is_valid_function (const octave_value&, const string&, bool warn = false); 
 
-octave_symbol *
+extern octave_symbol *
 extract_function (const octave_value& arg, const string& warn_for,
 		  const string& fname, const string& header,
 		  const string& trailer);
+
+extern string_vector
+get_struct_elts (const string& text);
+
+extern bool
+looks_like_struct (const string& text);
+
+extern string_vector
+generate_struct_completions (const string& text, string& prefix,
+			     string& hint);
 
 extern string_vector make_name_list (void);
 

@@ -318,6 +318,153 @@ extract_function (const octave_value& arg, const string& warn_for,
   return retval;
 }
 
+string_vector
+get_struct_elts (const string& text)
+{
+  int n = 1;
+
+  size_t pos = 0;
+
+  size_t len = text.length ();
+
+  while ((pos = text.find ('.', pos)) != NPOS)
+    {
+      if (++pos == len)
+	break;
+
+      n++;
+    }
+
+  string_vector retval (n);
+
+  pos = 0;
+
+  for (int i = 0; i < n; i++)
+    {
+      size_t len = text.find ('.', pos);
+
+      if (len != NPOS)
+	len -= pos;
+
+      retval[i] = text.substr (pos, len);
+
+      if (len != NPOS)
+	pos += len + 1;
+    }
+
+  return retval;
+}
+
+string_vector
+generate_struct_completions (const string& text, string& prefix, string& hint)
+{
+  string_vector names;
+
+  size_t pos = text.rfind ('.');
+
+  string id;
+  string_vector elts;
+
+  if (pos == NPOS)
+    {
+      hint = text;
+      prefix = text;
+      elts.resize (1, text);
+    }
+  else
+    {
+      if (pos == text.length ())
+	hint = "";
+      else
+	hint = text.substr (pos+1);
+
+      prefix = text.substr (0, pos);
+
+      elts = get_struct_elts (prefix);
+    }
+
+  id = elts[0];
+
+  symbol_record *sr = curr_sym_tab->lookup (id);
+
+  if (! sr)
+    sr = global_sym_tab->lookup (id);
+
+  if (sr && sr->is_defined ())
+    {
+      octave_symbol *tmp = sr->def ();
+
+      octave_value vtmp;
+
+      if (tmp->is_constant ())
+	vtmp = tmp->eval ();
+
+      if (vtmp.is_map ())
+	{
+	  for (int i = 1; i < elts.length (); i++)
+	    {
+	      vtmp = vtmp.struct_elt_val (elts[i], true);
+
+	      if (! vtmp.is_map ())
+		break;
+	    }
+
+	  if (vtmp.is_map ())
+	    {
+	      Octave_map m = vtmp.map_value ();
+
+	      names = m.make_name_list ();
+	    }
+	}
+    }
+
+  return names;
+}
+
+bool
+looks_like_struct (const string& text)
+{
+  bool retval = true;
+
+  string_vector elts = get_struct_elts (text);
+
+  string id = elts[0];
+
+  symbol_record *sr = curr_sym_tab->lookup (id);
+
+  if (! sr)
+    sr = global_sym_tab->lookup (id);
+
+  if (sr && sr->is_defined ())
+    {
+      octave_symbol *tmp = sr->def ();
+
+      octave_value vtmp;
+
+      if (tmp->is_constant ())
+	vtmp = tmp->eval ();
+
+      if (vtmp.is_map ())
+	{
+	  for (int i = 1; i < elts.length (); i++)
+	    {
+	      vtmp = vtmp.struct_elt_val (elts[i], true);
+
+	      if (! vtmp.is_map ())
+		{
+		  retval = false;
+		  break;
+		}
+	    }
+	}
+      else
+	retval = false;
+    }
+  else
+    retval = false;
+
+  return retval;	
+}
 
 DEFUN (is_global, args, ,
   "is_global (X): return 1 if the string X names a global variable\n\

@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.424 $)
+AC_REVISION($Revision: 1.425 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1389,14 +1389,16 @@ typedef int sig_atomic_t;
 #define OCTAVE_HAVE_SIG_JUMP
 #endif
 
+/* Always use new, since we sometimes allocate large chunks of memory
+   and that can cause trouble due to stack size limits.
 #if defined (HAVE_DYNAMIC_AUTO_ARRAYS)
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   T buf[size]
-#else
+#else */
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   std::auto_ptr<T> buf ## _auto_ptr (new T [size]); \
   T *buf = buf ## _auto_ptr.get ()
-#endif
+/* #endif */
 
 #if defined (__DECCXX)
 #define __USE_STD_IOSTREAM

@@ -26,7 +26,7 @@ OCTAVE_SCRIPT_PATH = .:$(TOPDIR)/src//:$(srcdir)/../scripts//
 
 ifeq ($(SHARED_LIBS), true)
   OCTAVE_LD_LIBRARY_PATH = `pwd`/../src:`pwd`/../liboctave:`pwd`/../libcruft
-  ifneq ($(LD_LIBRARY_PATH),)
+  ifeq ($(LD_LIBRARY_PATH),)
     XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH)
   else
     XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH):$(LD_LIBRARY_PATH)

@@ -241,15 +241,12 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 	(*current_liboctave_error_handler)
 	  ("A(:) = X: A must be the same size as X");
     }
-  else
+  else if (! (rhs_len == 1 || rhs_len == 0))
     {
-      if (rhs_len != 0)
- 	{
-	  (*current_liboctave_error_handler)
-	    ("A([]) = X: X must also be an empty matrix");
-
-	  retval = 0;
-	}
+      (*current_liboctave_error_handler)
+	("A([]) = X: X must also be an empty matrix or a scalar");
+  
+      retval = 0;
     }
 
   lhs.clear_index ();

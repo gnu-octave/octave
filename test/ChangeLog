@@ -1,3 +1,12 @@
+Wed May 27 00:38:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/diffeq/dassl-1.m, octave.test/diffeq/dassl-2.m,
+	octave.test/diffeq/lsode-1.m: New tests, from David Billinghurst
+	<David.Billinghurst@riotinto.com.au>.
+
+	* octave.test/diffeq/lsode-2.m, octave.test/diffeq/lsode-3.m:
+ 	New tests, from Peter Hopfgartner <phopfgartner@memc.inet.it>.
+
 Thu Apr 23 01:45:16 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: If $(SHARED_LIBS), set LD_LIBRARY_PATH for running

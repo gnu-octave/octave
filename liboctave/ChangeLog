@@ -1,3 +1,9 @@
+Wed May 27 13:46:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (assign): Allow A([],[]) = scalar and, if
+	do_fortran_indexing is set, A([]) = scalar.
+	* Array-idx.h (assign): Allow A([]) = scalar.
+
 Thu May 14 11:50:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-op-defs.h (MDM_MULTIPLY_OP): Compute result if dm_nc > 0, not

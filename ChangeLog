@@ -1,3 +1,9 @@
+Thu May 28 10:17:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: When checking for glob stuff, make sure that the
+	systsem header file has all the definitions that we need.  If not,
+	set up to use our replacement library.
+
 Mon May 18 11:33:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Fix typos in case statement.

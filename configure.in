@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.305 $)
+AC_REVISION($Revision: 1.306 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -696,20 +696,41 @@ else
   AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
 
+
 GLOB_DIR=glob
 LIBGLOB='$(TOPDIR)/glob/libglob.$(LIBEXT)'
 GLOB_INCFLAGS='-I$(top_srcdir)/glob -I$(TOPDIR)/glob'
 if test "$ac_cv_header_fnmatch_h" = yes \
   && test "$ac_cv_header_glob_h" = yes; then
-  GLOB_DIR=
-  AC_CHECK_LIB(glob, glob)
-  AC_CHECK_FUNCS(fnmatch glob)
-  if test "$ac_cv_func_fnmatch" = yes \
-    && test "$ac_cv_func_glob" = yes; then
-    GLOB_DIR=
-    LIBGLOB=
-    GLOB_INCFLAGS=
-  fi
+  AC_EGREP_CPP(yes,
+    [#ifdef FNM_NOESCAPE
+     #ifdef FNM_FOOBAR_PATHNAME
+     #ifdef FNM_PERIOD
+       yes
+     #endif
+     #endif
+     #endif
+    ], [
+      GLOB_DIR=
+      AC_CHECK_LIB(glob, glob)
+      AC_CHECK_FUNCS(fnmatch glob)
+      if test "$ac_cv_func_fnmatch" = yes \
+	&& test "$ac_cv_func_glob" = yes; then
+	GLOB_DIR=
+	LIBGLOB=
+	GLOB_INCFLAGS=
+      fi
+    ], [
+### We provide replacements, so we should set these to "yes".
+    AC_CACHE_VAL(ac_cv_func_fnmatch, ac_cv_func_fnmatch=yes)
+    AC_CACHE_VAL(ac_cv_func_glob, ac_cv_func_glob=yes)
+    ])
+else
+### We provide replacements, so we should set these to "yes".
+  ac_cv_header_fnmatch_h=yes
+  ac_cv_header_glob_h=yes
+  AC_CACHE_VAL(ac_cv_func_fnmatch, ac_cv_func_fnmatch=yes)
+  AC_CACHE_VAL(ac_cv_func_glob, ac_cv_func_glob=yes)
 fi
 AC_SUBST(GLOB_DIR)
 AC_SUBST(LIBGLOB)

@@ -442,6 +442,17 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			}
 		    }
 		}
+	      else if (n == 0 && m == 0)
+		{
+		  if (! ((rhs_nr == 1 && rhs_nc == 1)
+			 || (rhs_nr == 0 && rhs_nc == 0)))
+		    {
+		      (*current_liboctave_error_handler)
+		("A([], []) = X: X must be an empty matrix or a scalar");
+
+		      retval = 0;
+		    }
+		}
 	      else
 		{
 		  (*current_liboctave_error_handler)
@@ -535,6 +546,13 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			      lhs.d1 = lhs.length ();
 			      lhs.d2 = 1;
 			    }
+			  else if (idx_nr == 0 && idx_nc == 0)
+			    {
+			      if (! ((rhs.d1 == 1 && rhs.d2 == 1)
+				     || (rhs.d1 == 0 && rhs.d2 == 0)))
+				(*current_liboctave_error_handler)
+			  ("A([]) = X: X must be an empty matrix or scalar");
+			    }
 			  else
 			    (*current_liboctave_error_handler)
       ("A(I) = X: X must be a scalar or a matrix with the same size as I");
@@ -623,6 +641,13 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			  lhs.elem (fr, fc) = rhs.elem (i, j);
 			}
 		    }
+		}
+	      else if (len == 0)
+		{
+		  if (! ((rhs_nr == 1 && rhs_nc == 1)
+			 || (rhs_nr == 0 && rhs_nc == 0)))
+		    (*current_liboctave_error_handler)
+		      ("A([]) = X: X must be an empty matrix or scalar");
 		}
 	      else
 		{

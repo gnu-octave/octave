@@ -248,8 +248,8 @@ if test -n "$oct_files"; then
     cp $f $octfiledir/$file
     chmod 755 $octfiledir/$file
   done
-  if test -f links-to-make; then
-    cat links-to-make | while read src dest
+  if test -f src/links-to-make; then
+    cat src/links-to-make | while read src dest
     do
       if test -n "$src" && test -n "$dest"; then
 	cd $octfiledir

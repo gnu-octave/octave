@@ -18,6 +18,3 @@ Things to do before making a release:
 
   * Update the NEWS and README.octave files in the anonymous ftp
     directory.
-
-  * Don't forget to use -static when linking the binaries for the
-    binary distributions.

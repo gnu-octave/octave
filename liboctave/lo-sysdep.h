@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern std::string octave_getcwd (void);
 
-extern bool octave_chdir (const std::string&);
+extern int octave_chdir (const std::string&);
 
 #if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 extern int gethostname (char *, int);

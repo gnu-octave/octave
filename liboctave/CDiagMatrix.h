@@ -103,9 +103,6 @@ public:
   ComplexDiagMatrix& operator += (const DiagMatrix& a);
   ComplexDiagMatrix& operator -= (const DiagMatrix& a);
 
-  ComplexDiagMatrix& operator += (const ComplexDiagMatrix& a);
-  ComplexDiagMatrix& operator -= (const ComplexDiagMatrix& a);
-
   // other operations
 
   ComplexColumnVector diag (void) const;
@@ -131,6 +128,8 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b);
 
 ComplexDiagMatrix
 operator * (const DiagMatrix& a, const ComplexDiagMatrix& b);
+
+MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, ComplexDiagMatrix, Complex)
 
 #endif
 

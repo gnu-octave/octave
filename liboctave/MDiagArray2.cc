@@ -152,6 +152,13 @@ MARRAY_DADA_OP (product,    *)
 
 template <class T>
 MDiagArray2<T>
+operator + (const MDiagArray2<T>& a)
+{
+  return a;
+}
+
+template <class T>
+MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
   int l = a.length ();

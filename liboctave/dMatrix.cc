@@ -1536,56 +1536,6 @@ Matrix::expm (void) const
 }
 
 Matrix&
-Matrix::operator += (const Matrix& a)
-{
-  int nr = rows ();
-  int nc = cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  add2 (d, a.data (), length ());
-
-  return *this;
-}
-
-Matrix&
-Matrix::operator -= (const Matrix& a)
-{
-  int nr = rows ();
-  int nc = cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  subtract2 (d, a.data (), length ());
-
-  return *this;
-}
-
-Matrix&
 Matrix::operator += (const DiagMatrix& a)
 {
   int nr = rows ();

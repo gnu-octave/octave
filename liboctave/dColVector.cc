@@ -163,52 +163,6 @@ ColumnVector::extract (int r1, int r2) const
   return result;
 }
 
-// column vector by column vector -> column vector operations
-
-ColumnVector&
-ColumnVector::operator += (const ColumnVector& a)
-{
-  int len = length ();
-
-  int a_len = a.length ();
-
-  if (len != a_len)
-    {
-      gripe_nonconformant ("operator +=", len, a_len);
-      return *this;
-    }
-
-  if (len == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  add2 (d, a.data (), len);
-  return *this;
-}
-
-ColumnVector&
-ColumnVector::operator -= (const ColumnVector& a)
-{
-  int len = length ();
-
-  int a_len = a.length ();
-
-  if (len != a_len)
-    {
-      gripe_nonconformant ("operator -=", len, a_len);
-      return *this;
-    }
-
-  if (len == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  subtract2 (d, a.data (), len);
-  return *this;
-}
-
 // matrix by column vector -> column vector operations
 
 ColumnVector

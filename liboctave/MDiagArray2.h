@@ -31,48 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "DiagArray2.h"
 #include "MArray2.h"
 
-#if defined (LTGT)
-#undef LTGT
-#endif
-
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-#define LTGT
-#else
-
-#define LTGT <>
-
-template <class T>
-class MDiagArray2;
-
-template <typename T> MDiagArray2<T>&
-operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-template <typename T> MDiagArray2<T>&
-operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-template <typename T> MDiagArray2<T> 
-operator * (const MDiagArray2<T>& a, const T& s);
-
-template <typename T> MDiagArray2<T> 
-operator / (const MDiagArray2<T>& a, const T& s);
-
-template <typename T> MDiagArray2<T> 
-operator * (const T& s, const MDiagArray2<T>& a);
-
-template <typename T> MDiagArray2<T>
-operator + (const MDiagArray2<T>& a, const MDiagArray2<T>& b); 
-
-template <typename T> MDiagArray2<T>
-operator - (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-template <typename T> MDiagArray2<T>
-product (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-template <typename T> MDiagArray2<T> 
-operator - (const MDiagArray2<T>& a);
-#endif
-
 // Two dimensional diagonal array with math ops.
+
+// But first, some preprocessor abuse...
+
+#include "MArray-defs.h"
+
+MDIAGARRAY2_OPS_FORWARD_DECLS (MDiagArray2)
 
 template <class T>
 class MDiagArray2 : public DiagArray2<T>
@@ -109,20 +74,13 @@ public:
 
       return retval;
     }
+
+  // Currently, the OPS functions don't need to be friends, but that
+  // may change.
+
+  MDIAGARRAY2_OPS_FRIEND_DECLS (MDiagArray2)
+
 };
-
-#undef LTGT
-
-#define INSTANTIATE_MDIAGARRAY_FRIENDS(T) \
-  template MDiagArray2<T>& operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b); \
-  template MDiagArray2<T>& operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b); \
-  template MDiagArray2<T> operator * (const MDiagArray2<T>& a, const T& s); \
-  template MDiagArray2<T> operator / (const MDiagArray2<T>& a, const T& s); \
-  template MDiagArray2<T> operator * (const T& s, const MDiagArray2<T>& a); \
-  template MDiagArray2<T> operator + (const MDiagArray2<T>& a, const MDiagArray2<T>& b); \
-  template MDiagArray2<T> operator - (const MDiagArray2<T>& a, const MDiagArray2<T>& b); \
-  template MDiagArray2<T> product (const MDiagArray2<T>& a, const MDiagArray2<T>& b); \
-  template MDiagArray2<T> operator - (const MDiagArray2<T>& a);
 
 #endif
 

@@ -165,9 +165,6 @@ public:
 
   Matrix expm (void) const;
 
-  Matrix& operator += (const Matrix& a);
-  Matrix& operator -= (const Matrix& a);
-
   Matrix& operator += (const DiagMatrix& a);
   Matrix& operator -= (const DiagMatrix& a);
 

@@ -60,19 +60,16 @@
   MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, LTGT, RHS_T);
 
 // Generate forward declarations for OP= operators.
-#define MARRAY_OP_ASSIGN_FWD_DECLS(A_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T>, , T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T>, , A_T<T>) \
+#define MARRAY_OP_ASSIGN_FWD_DECLS(A_T, RHS_T) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T>, , RHS_T)
 
 // Generate friend declarations for the OP= operators.
-#define MARRAY_OP_ASSIGN_FRIENDS(A_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, friend, <>, T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, friend, <>, A_T<T>)
+#define MARRAY_OP_ASSIGN_FRIENDS(A_T, RHS_T) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, T, friend, <>, RHS_T)
 
 // Instantiate the OP= operators.
-#define MARRAY_OP_ASSIGN_DEFS(A_T, E_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , E_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , A_T<E_T>)
+#define MARRAY_OP_ASSIGN_DEFS(A_T, E_T, RHS_T) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , RHS_T)
 
 // A function that can be used to forward OP= operations from derived
 // classes back to us.
@@ -144,11 +141,28 @@
   MARRAY_BINOP_DECL (A_T, E_T, quotient,   PFX, LTGT, A_T<E_T>, A_T<E_T>); \
   MARRAY_BINOP_DECL (A_T, E_T, product,    PFX, LTGT, A_T<E_T>, A_T<E_T>);
 
+#define MDIAGARRAY2_DAS_BINOP_DECLS(A_T, E_T, PFX, LTGT, X_T, Y_T) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, LTGT, X_T, Y_T); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator /, PFX, LTGT, X_T, Y_T);
+
+#define MDIAGARRAY2_SDA_BINOP_DECLS(A_T, E_T, PFX, LTGT, X_T, Y_T) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, LTGT, X_T, Y_T);
+
+#define MDIAGARRAY2_DADA_BINOP_DECLS(A_T, E_T, PFX, LTGT) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, product,    PFX, LTGT, A_T<E_T>, A_T<E_T>);
+
 // Generate forward declarations for binary operators.
 #define MARRAY_BINOP_FWD_DECLS(A_T) \
   MARRAY_BINOP_DECLS (A_T, T, template <typename T>, , A_T<T>, T) \
   MARRAY_BINOP_DECLS (A_T, T, template <typename T>, , T, A_T<T>) \
   MARRAY_AA_BINOP_DECLS (A_T, T, template <typename T>, )
+
+#define MDIAGARRAY2_BINOP_FWD_DECLS(A_T) \
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, template <typename T>, , A_T<T>, T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, T, template <typename T>, , T, A_T<T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, T, template <typename T>, )
 
 // Generate friend declarations for the binary operators.
 #define MARRAY_BINOP_FRIENDS(A_T) \
@@ -156,11 +170,21 @@
   MARRAY_BINOP_DECLS (A_T, T, friend, <>, T, A_T<T>) \
   MARRAY_AA_BINOP_DECLS (A_T, T, friend, <>)
 
+#define MDIAGARRAY2_BINOP_FRIENDS(A_T) \
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, friend, <>, A_T<T>, T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, T, friend, <>, T, A_T<T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, T, friend, <>)
+
 // Instantiate the binary operators.
 #define MARRAY_BINOP_DEFS(A_T, E_T) \
   MARRAY_BINOP_DECLS (A_T, E_T, template, , A_T<E_T>, E_T) \
   MARRAY_BINOP_DECLS (A_T, E_T, template, , E_T, A_T<E_T>) \
   MARRAY_AA_BINOP_DECLS (A_T, E_T, template, )
+
+#define MDIAGARRAY2_BINOP_DEFS(A_T, E_T) \
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, E_T, template, , A_T<E_T>, E_T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, E_T, template, , E_T, A_T<E_T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, E_T, template, )
 
 // A function that can be used to forward binary operations from derived
 // classes back to us.
@@ -186,34 +210,69 @@
   MARRAY_BINOP_FWD_FCN (R, product,    T, C_X, X_T, C_Y, Y_T) \
   MARRAY_BINOP_FWD_FCN (R, quotient,   T, C_X, X_T, C_Y, Y_T)
 
+#define MDIAGARRAY2_DAS_BINOP_FWD_DEFS(R, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_BINOP_FWD_FCN (R, operator *, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_BINOP_FWD_FCN (R, operator /, T, C_X, X_T, C_Y, Y_T)
+
+#define MDIAGARRAY2_SDA_BINOP_FWD_DEFS(R, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_BINOP_FWD_FCN (R, operator *, T, C_X, X_T, C_Y, Y_T)
+
+#define MDIAGARRAY2_DADA_BINOP_FWD_DEFS(R, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_BINOP_FWD_FCN (R, operator +, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_BINOP_FWD_FCN (R, operator -, T, C_X, X_T, C_Y, Y_T) \
+  MARRAY_BINOP_FWD_FCN (R, product,    T, C_X, X_T, C_Y, Y_T)
+
 // Forward declarations for the MArray operators.
 #define MARRAY_OPS_FORWARD_DECLS(A_T) \
   template <class T> \
   class A_T; \
  \
-  MARRAY_OP_ASSIGN_FWD_DECLS (A_T) \
+  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, T) \
+  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>) \
   MARRAY_UNOP_FWD_DECLS (A_T) \
   MARRAY_BINOP_FWD_DECLS (A_T)
 
+#define MDIAGARRAY2_OPS_FORWARD_DECLS(A_T) \
+  template <class T> \
+  class A_T; \
+ \
+  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>) \
+  MARRAY_UNOP_FWD_DECLS (A_T) \
+  MDIAGARRAY2_BINOP_FWD_DECLS (A_T)
+
 // Friend declarations for the MArray operators.
 #define MARRAY_OPS_FRIEND_DECLS(A_T) \
-  MARRAY_OP_ASSIGN_FRIENDS (A_T) \
+  MARRAY_OP_ASSIGN_FRIENDS (A_T, T) \
+  MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>) \
   MARRAY_UNOP_FRIENDS (A_T) \
   MARRAY_BINOP_FRIENDS (A_T)
+
+#define MDIAGARRAY2_OPS_FRIEND_DECLS(A_T) \
+  MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>) \
+  MARRAY_UNOP_FRIENDS (A_T) \
+  MDIAGARRAY2_BINOP_FRIENDS (A_T)
 
 // The following macros are for external use.
 
 // Instantiate all the MArray friends for MArray element type T.
 #define INSTANTIATE_MARRAY_FRIENDS(T) \
   MARRAY_OP_ASSIGN_DEFS (MArray, T) \
+  MARRAY_OP_ASSIGN_DEFS (MArray, MArray<T>) \
   MARRAY_UNOP_DEFS (MArray, T) \
   MARRAY_BINOP_DEFS (MArray, T)
 
 // Instantiate all the MArray friends for MArray element type T.
 #define INSTANTIATE_MARRAY2_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T) \
+  MARRAY_OP_ASSIGN_DEFS (MArray2, T, T) \
+  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>) \
   MARRAY_UNOP_DEFS (MArray2, T) \
   MARRAY_BINOP_DEFS (MArray2, T)
+
+// Instantiate all the MArray friends for MArray element type T.
+#define INSTANTIATE_MDIAGARRAY2_FRIENDS(T) \
+  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>) \
+  MARRAY_UNOP_DEFS (MArray2, T) \
+  MDIAGARRAY2_BINOP_DEFS (MArray2, T)
 
 // Define all the MArray forwarding functions for return type R and
 // MArray element type T
@@ -235,6 +294,23 @@
     (R, T, , T, dynamic_cast<const B<T>&>, R) \
  \
   MARRAY_AA_BINOP_FWD_DEFS \
+    (R, T, dynamic_cast<const B<T>&>, R, dynamic_cast<const B<T>&>, R)
+
+#define MDIAGARRAY2_FORWARD_DEFS(B, R, T) \
+  MARRAY_OP_ASSIGN_FWD_DEFS \
+    (R, T, \
+     dynamic_cast<B<T>&>, R, dynamic_cast<const B<T>&>, R) \
+ \
+  MARRAY_UNOP_FWD_DEFS \
+    (R, T, dynamic_cast<const B<T>&>, R) \
+ \
+  MDIAGARRAY2_DAS_BINOP_FWD_DEFS \
+    (R, T, dynamic_cast<const B<T>&>, R, , T) \
+ \
+  MDIAGARRAY2_SDA_BINOP_FWD_DEFS \
+    (R, T, , T, dynamic_cast<const B<T>&>, R) \
+ \
+  MDIAGARRAY2_DADA_BINOP_FWD_DEFS \
     (R, T, dynamic_cast<const B<T>&>, R, dynamic_cast<const B<T>&>, R)
 
 // Now we have all the definitions we need.

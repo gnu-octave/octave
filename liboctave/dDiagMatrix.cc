@@ -304,54 +304,6 @@ DiagMatrix::inverse (int &info) const
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
-DiagMatrix&
-DiagMatrix::operator += (const DiagMatrix& a)
-{
-  int r = rows ();
-  int c = cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (r != a_nr || c != a_nc)
-    {
-      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
-      return *this;
-    }
-
-  if (c == 0 || r == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  add2 (d, a.data (), length ());
-  return *this;
-}
-
-DiagMatrix&
-DiagMatrix::operator -= (const DiagMatrix& a)
-{
-  int r = rows ();
-  int c = cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (r != a_nr || c != a_nc)
-    {
-      gripe_nonconformant ("operator -=", r, c, a_nr, a_nc);
-      return *this;
-    }
-
-  if (r == 0 || c == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  subtract2 (d, a.data (), length ());
-  return *this;
-}
-
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
 DiagMatrix

@@ -85,11 +85,6 @@ public:
   DiagMatrix inverse (void) const;
   DiagMatrix inverse (int& info) const;
 
-  // diagonal matrix by diagonal matrix -> diagonal matrix operations
-
-  DiagMatrix& operator += (const DiagMatrix& a);
-  DiagMatrix& operator -= (const DiagMatrix& a);
-
   // other operations
 
   ColumnVector diag (void) const;
@@ -108,6 +103,8 @@ private:
 
 DiagMatrix
 operator * (const DiagMatrix& a, const DiagMatrix& b);
+
+MDIAGARRAY2_FORWARD_DEFS (MDiagArray2, DiagMatrix, double)
 
 #endif
 

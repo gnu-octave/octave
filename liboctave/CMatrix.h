@@ -196,9 +196,6 @@ public:
   ComplexMatrix& operator += (const Matrix& a);
   ComplexMatrix& operator -= (const Matrix& a);
 
-  ComplexMatrix& operator += (const ComplexMatrix& a);
-  ComplexMatrix& operator -= (const ComplexMatrix& a);
-
   // unary operations
 
   boolMatrix operator ! (void) const;

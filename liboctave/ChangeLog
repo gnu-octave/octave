@@ -1,3 +1,8 @@
+2000-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray-defs.h: More new macros to handle MDiagArray operators.
+	* dDiagMatrix.h, CDiagMatrix.h: Use the op-forwarding macros.
+
 2000-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rl-edit.c (octave_rl_set_event_hook): Take address of

@@ -164,52 +164,6 @@ RowVector::extract (int c1, int c2) const
   return result;
 }
 
-// row vector by row vector -> row vector operations
-
-RowVector&
-RowVector::operator += (const RowVector& a)
-{
-  int len = length ();
-
-  int a_len = a.length ();
-
-  if (len != a_len)
-    {
-      gripe_nonconformant ("operator +=", len, a_len);
-      return *this;
-    }
-
-  if (len == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  add2 (d, a.data (), len);
-  return *this;
-}
-
-RowVector&
-RowVector::operator -= (const RowVector& a)
-{
-  int len = length ();
-
-  int a_len = a.length ();
-
-  if (len != a_len)
-    {
-      gripe_nonconformant ("operator -=", len, a_len);
-      return *this;
-    }
-
-  if (len == 0)
-    return *this;
-
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  subtract2 (d, a.data (), len);
-  return *this;
-}
-
 // row vector by matrix -> row vector
 
 RowVector

@@ -1961,54 +1961,6 @@ ComplexMatrix::operator -= (const Matrix& a)
   return *this;
 }
 
-ComplexMatrix&
-ComplexMatrix::operator += (const ComplexMatrix& a)
-{
-  int nr = rows ();
-  int nc = cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  add2 (d, a.data (), length ());
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator -= (const ComplexMatrix& a)
-{
-  int nr = rows ();
-  int nc = cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  subtract2 (d, a.data (), length ());
-  return *this;
-}
-
 // unary operations
 
 boolMatrix

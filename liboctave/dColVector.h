@@ -68,11 +68,6 @@ public:
 
   ColumnVector extract (int r1, int r2) const;
 
-  // column vector by column vector -> column vector operations
-
-  ColumnVector& operator += (const ColumnVector& a);
-  ColumnVector& operator -= (const ColumnVector& a);
-
   // matrix by column vector -> column vector operations
 
   friend ColumnVector operator * (const Matrix& a, const ColumnVector& b);

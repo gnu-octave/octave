@@ -68,11 +68,6 @@ public:
 
   RowVector extract (int c1, int c2) const;
 
-  // row vector by row vector -> row vector operations
-
-  RowVector& operator += (const RowVector& a);
-  RowVector& operator -= (const RowVector& a);
-
   // row vector by matrix -> row vector
 
   friend RowVector operator * (const RowVector& a, const Matrix& b);

@@ -104,7 +104,8 @@ public:
 
   double double_value (bool = false) const;
 
-  double scalar_value (bool = false) const { return double_value (); }
+  double scalar_value (bool frc_str_conv = false) const
+    { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 

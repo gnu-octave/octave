@@ -754,7 +754,7 @@ read_binary_data (istream& is, bool swap,
   if (! is)
     return 0;
   if (swap)
-    swap_4_bytes (static_cast<char *> (&name_len));
+    swap_4_bytes (X_CAST (char *, &name_len));
 
   name = new char [name_len+1];
   name[name_len] = '\0';
@@ -765,7 +765,7 @@ read_binary_data (istream& is, bool swap,
   if (! is)
     goto data_read_error;
   if (swap)
-    swap_4_bytes (static_cast<char *> (&doc_len));
+    swap_4_bytes (X_CAST (char *, &doc_len));
 
   doc = new char [doc_len+1];
   doc[doc_len] = '\0';
@@ -787,7 +787,7 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&tmp, 1))
 	  goto data_read_error;
 	double dtmp;
-	read_doubles (is, &dtmp, static_cast<save_type> (tmp), 1, swap, fmt);
+	read_doubles (is, &dtmp, X_CAST (save_type, tmp), 1, swap, fmt);
 	if (error_state || ! is)
 	  goto data_read_error;
 	tc = dtmp;
@@ -800,17 +800,17 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&nr, 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (static_cast<char *> (&nr));
+	  swap_4_bytes (X_CAST (char *, &nr));
 	if (! is.read (&nc, 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (static_cast<char *> (&nc));
+	  swap_4_bytes (X_CAST (char *, &nc));
 	if (! is.read (&tmp, 1))
 	  goto data_read_error;
 	Matrix m (nr, nc);
 	double *re = m.fortran_vec ();
 	int len = nr * nc;
-	read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
+	read_doubles (is, re, X_CAST (save_type, tmp), len, swap, fmt);
 	if (error_state || ! is)
 	  goto data_read_error;
 	tc = m;
@@ -822,8 +822,8 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&tmp, 1))
 	  goto data_read_error;
 	Complex ctmp;
-	read_doubles (is, static_cast<double *> (&ctmp),
-		      static_cast<save_type> (tmp), 2, swap, fmt);
+	read_doubles (is, X_CAST (double *, &ctmp),
+		      X_CAST (save_type, tmp), 2, swap, fmt);
 	if (error_state || ! is)
 	  goto data_read_error;
 	tc = ctmp;
@@ -836,18 +836,18 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&nr, 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (static_cast<char *> (&nr));
+	  swap_4_bytes (X_CAST (char *, &nr));
 	if (! is.read (&nc, 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (static_cast<char *> (&nc));
+	  swap_4_bytes (X_CAST (char *, &nc));
 	if (! is.read (&tmp, 1))
 	  goto data_read_error;
 	ComplexMatrix m (nr, nc);
 	Complex *im = m.fortran_vec ();
 	int len = nr * nc;
-	read_doubles (is, static_cast<double *> (im),
-		      static_cast<save_type> (tmp), 2*len, swap, fmt);
+	read_doubles (is, X_CAST (double *, im),
+		      X_CAST (save_type, tmp), 2*len, swap, fmt);
 	if (error_state || ! is)
 	  goto data_read_error;
 	tc = m;
@@ -860,7 +860,7 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&len, 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (static_cast<char *> (&len));
+	  swap_4_bytes (X_CAST (char *, &len));
 	char *s = new char [len+1];
 	if (! is.read (s, len))
 	  {
@@ -880,15 +880,15 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&bas, 8))
 	  goto data_read_error;
 	if (swap)
-	  swap_8_bytes (static_cast<char *> (&bas));
+	  swap_8_bytes (X_CAST (char *, &bas));
 	if (! is.read (&lim, 8))
 	  goto data_read_error;
 	if (swap)
-	  swap_8_bytes (static_cast<char *> (&lim));
+	  swap_8_bytes (X_CAST (char *, &lim));
 	if (! is.read (&inc, 8))
 	  goto data_read_error;
 	if (swap)
-	  swap_8_bytes (static_cast<char *> (&inc));
+	  swap_8_bytes (X_CAST (char *, &inc));
 	Range r (bas, lim, inc);
 	tc = r;
       }
@@ -900,7 +900,7 @@ read_binary_data (istream& is, bool swap,
 	if (! is.read (&elements, 4))
 	  goto data_read_error;
 	if (swap)
-	  swap_4_bytes (static_cast<char *> (&elements));
+	  swap_4_bytes (X_CAST (char *, &elements));
 	charMatrix chm (elements, 0);
 	int max_len = 0;
 	for (int i = 0; i < elements; i++)
@@ -909,7 +909,7 @@ read_binary_data (istream& is, bool swap,
 	    if (! is.read (&len, 4))
 	      goto data_read_error;
 	    if (swap)
-	      swap_4_bytes (static_cast<char *> (&len));
+	      swap_4_bytes (X_CAST (char *, &len));
 	    char *tmp = new char [len+1];
 	    if (! is.read (tmp, len))
 	      {
@@ -1152,11 +1152,11 @@ read_mat_file_header (istream& is, bool& swap, FOUR_BYTE_INT& mopt,
 
   if (swap)
     {
-      swap_4_bytes (static_cast<char *> (&mopt));
-      swap_4_bytes (static_cast<char *> (&nr));
-      swap_4_bytes (static_cast<char *> (&nc));
-      swap_4_bytes (static_cast<char *> (&imag));
-      swap_4_bytes (static_cast<char *> (&len));
+      swap_4_bytes (X_CAST (char *, &mopt));
+      swap_4_bytes (X_CAST (char *, &nr));
+      swap_4_bytes (X_CAST (char *, &nc));
+      swap_4_bytes (X_CAST (char *, &imag));
+      swap_4_bytes (X_CAST (char *, &len));
     }
 
   if (mopt > 9999 || mopt < 0 || imag > 1 || imag < 0)
@@ -1918,7 +1918,7 @@ save_binary_data (ostream& os, const octave_value& tc,
 	    st = get_save_type (max_val, min_val);
 	}
       const Complex *mtmp = m.data ();
-      write_doubles (os, static_cast<const double *> (mtmp), st, 2*len);
+      write_doubles (os, X_CAST (const double *, mtmp), st, 2*len);
     }
   else if (tc.is_string ())
     {

@@ -161,11 +161,7 @@ public:
   Pix first (void) const { return rep->first (); }
   void next (Pix& p) const { rep->next (p); }
   
-  operator void* () const
-  {
-    return (rep && rep->ok)
-      ? static_cast<void *> (-1) : static_cast<void *> (0);
-  }
+  operator bool () const { return (rep && rep->ok); }
 
 private:
 
@@ -287,8 +283,7 @@ public:
   bool complex_p (void) const { return is_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
 
-  operator void* () const
-    { return ok ? static_cast<void *> (-1) : static_cast<void *> (0); }
+  operator bool () const { return ok; }
 
 private:
 

@@ -277,7 +277,7 @@ gnu_readline::do_set_completion_function (completion_fcn f)
 
   rl_attempted_completion_function
     = completion_function
-    ? static_cast<foo> (gnu_readline::command_completer) : 0;
+    ? reinterpret_cast<foo> (gnu_readline::command_completer) : 0;
 }
 
 gnu_readline::completion_fcn

@@ -112,7 +112,9 @@ octave_bool_matrix::do_index_op (const octave_value_list& idx)
   return retval;
 }
 
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void assign (Array2<bool>&, const Array2<bool>&);
+#endif
 
 void
 octave_bool_matrix::assign (const octave_value_list& idx,

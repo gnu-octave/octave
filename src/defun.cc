@@ -69,10 +69,8 @@ check_version (const string& version, const string& fcn)
 // Install variables and functions in the symbol tables.
 
 void
-install_builtin_mapper (void *mf_arg)
+install_builtin_mapper (octave_mapper *mf)
 {
-  octave_mapper *mf = static_cast<octave_mapper *> (mf_arg);
-
   symbol_record *sym_rec = global_sym_tab->lookup (mf->name (), true);
 
   unsigned int t
@@ -86,11 +84,9 @@ install_builtin_mapper (void *mf_arg)
 }
 
 void
-install_builtin_function (void *f_arg, const string& name,
+install_builtin_function (octave_builtin::fcn f, const string& name,
 			  const string& doc, bool is_text_fcn)
 {
-  octave_builtin::fcn f = static_cast<octave_builtin::fcn> (f_arg);
-
   symbol_record *sym_rec = global_sym_tab->lookup (name, true);
 
   unsigned int t = symbol_record::BUILTIN_FUNCTION;
@@ -129,13 +125,11 @@ install_builtin_variable_as_function (const string& name,
 
 void
 install_builtin_variable (const string& name, const octave_value& value,
-			  bool install_as_function, bool protect,
-			  bool eternal, void *chg_fcn_arg,
+			  bool install_as_function,
+			  bool protect, bool eternal,
+			  symbol_record::change_function chg_fcn,
 			  const string& help_string)
 {
-  symbol_record::change_function chg_fcn
-    = static_cast<symbol_record::change_function> (chg_fcn_arg);
-
   if (install_as_function)
     install_builtin_variable_as_function (name, value, protect,
 					  eternal, help_string);

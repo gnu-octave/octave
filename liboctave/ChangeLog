@@ -1,3 +1,28 @@
+Thu Feb  5 02:12:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dir-ops.h (dir_entry::operator bool ()): Return bool, not void*.
+	* file-stat.h (file_stat::operator bool ()): Likewise.
+	* idx-vector.h (idx_vector::operator bool ()): Likewise.
+	* oct-group.h (octave_group::operator bool ()): Likewise.
+	* oct-passwd.h (octave_passwd::operator bool ()): Likewise.
+
+	* data-conv.cc (IEEE_little_double_to_IEEE_big_double):
+	Don't cast arg in call to swap_8_bytes.
+	(IEEE_big_double_to_IEEE_little_double): Ditto
+	(IEEE_big_float_to_IEEE_little_float): Don't cast arg in call to
+	swap_4_bytes.
+	(IEEE_little_float_to_IEEE_big_float): Ditto
+
+	* oct-alloc.cc (grow): Use X_CAST, not static_cast.
+	* prog-args.cc (prog_args::getopt): Likewise.
+	* dMatrix.cc (read_int, do_read, write_int, do_write): Likewise.
+	* cmd-edit.cc (gnu_readline::do_set_completion_function): Likewise.
+	* data-conv.cc (LS_DO_READ, LS_DO_WRITE, read_doubles, write_doubles):
+	Likewise.
+
+	* byte-swap.h (swap_bytes, swap_2_bytes, swap_4_bytes,
+	swap_8_bytes): Declare ptr arg as void*, then use cast.
+
 Mon Feb  2 01:42:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install, uninstall): Use $(octlibdir), not $(libdir).

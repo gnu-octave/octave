@@ -127,16 +127,17 @@ public:
   // XXX DO ME XXX
   bool is_true (void) const;
 
-  double double_value (bool) const;
+  double double_value (bool = false) const;
 
-  double scalar_value (bool) const { return double_value (); }
+  double scalar_value (bool frc_str_conv = false) const
+    { return double_value (frc_str_conv); }
 
-  Matrix matrix_value (bool) const
+  Matrix matrix_value (bool = false) const
     { return range.matrix_value (); }
 
-  Complex complex_value (bool) const;
+  Complex complex_value (bool = false) const;
 
-  ComplexMatrix complex_matrix_value (bool) const
+  ComplexMatrix complex_matrix_value (bool = false) const
     { return range.matrix_value (); }
 
   Range range_value (void) const { return range; }

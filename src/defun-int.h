@@ -25,6 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "ov-builtin.h"
+#include "ov-mapper.h"
+#include "symtab.h"
 #include "version.h"
 
 class octave_value;
@@ -33,19 +36,17 @@ extern void print_usage (const string& nm, bool just_usage = false);
 
 extern void check_version (const string& version, const string& fcn);
 
-// XXX FIXME XXX -- change to use actual pointer types instead of void*
-// when things are not changing as rapidly.
+extern void
+install_builtin_mapper (octave_mapper *mf);
 
 extern void
-install_builtin_mapper (void *mf);
-
-extern void
-install_builtin_function (void *f, const string& name, const string& doc,
-			  bool is_text_fcn = false);
+install_builtin_function (octave_builtin::fcn f, const string& name,
+			  const string& doc, bool is_text_fcn = false);
 
 extern void
 install_builtin_variable (const string& n, const octave_value& v,
-			  bool iaf, bool p, bool e, void *svf,
+			  bool iaf, bool p, bool e,
+			  symbol_record::change_function chg_fcn,
 			  const string& h);
 
 extern void

@@ -1,3 +1,47 @@
+Thu Feb  5 02:27:18 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-bool-mat.cc: Only declare assign function if
+	CXX_NEW_FRIEND_TEMPLATE_DECL is not defined.
+
+	* ov-base.h, ov-bool-mat.h, ov-bool.h, ov-ch-mat.h, ov-complex.h,
+	ov-cx-mat.h, ov-range.h, ov-re-mat.h, ov-scalar.h: Handle default
+	args for *_value functions consistently.
+
+	* symtab.cc (maybe_list_cmp_fcn): Declare args as void*, not
+	void**, then use X_CAST.
+
+	* OPERATORS/op-s-cm.cc: Include mx-cm-s.h.
+
+	* defun-int.h: Include ov-builtin.h, ov-mapper.h, and symtab.h.
+	(install_builtin_mapper, install_builtin_function,
+	install_builtin_variable) Use specific types rather than void * in
+	declaration.
+	* defun.cc (install_builtin_mapper, install_builtin_function,
+	install_builtin_variable): Likewise.  Eliminate casts.
+
+	* load-save.cc (read_binary_data, read_mat_file_header,
+	save_binary_data): Use X_CAST, not static_cast.
+	* unwind-prot.h (unwind_protect::save_ptr): Likewise.
+	* Map.cc (goodCHptr, index_to_CHptr, CHptr_to_index): Likewise.
+	* dynamic-ld.cc (octave_dlopen_dynamic_loder::resolve_reference):
+	Likewise.
+
+	* pt-mat.cc (tm_const::operator bool ()): 
+	(tm_row_const::operator bool ()): Likewise.
+	* oct-stream.cc (printf_value_cache::operator bool ()): Likewise.
+	(scanf_format_list::operator bool ()): Likewise.
+	(printf_format_list::operator bool ()): Likewise.
+	(octave_stream::operator bool ()): Likewise.
+
+Wed Feb  4 13:08:29 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/minmax.cc: Include cmath, not oct-math.h.
+
+	* syscalls.cc (Fdup2): Convert stream to actual system file id.
+
+	* oct-stream.cc (octave_base_stream::fileno, octave_stream::fileno): 
+	New functions.
+
 Tue Feb  3 00:24:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.cc (exec_path): Append Vbin_dir to std_path.

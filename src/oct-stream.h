@@ -93,11 +93,7 @@ public:
 
   bool ok (void) const { return (nconv >= 0); }
 
-  operator void* () const
-    {
-      return ok ()
-	? static_cast<void *> (-1) : static_cast<void *> (0);
-    }
+  operator bool () const { return ok (); }
 
   bool all_character_conversions (void);
 
@@ -182,11 +178,7 @@ public:
 
   bool ok (void) const { return (nconv >= 0); }
 
-  operator void* () const
-    {
-      return ok ()
-	? static_cast<void *> (-1) : static_cast<void *> (0);
-    }
+  operator bool () const { return ok (); }
 
 private:
 
@@ -264,6 +256,8 @@ public:
   // automatically work for this stream.
 
   virtual ostream *output_stream (void) { return 0; }
+
+  int fileno (void);
 
   bool ok (void) const { return ! fail; }
 
@@ -418,13 +412,11 @@ public:
       return error (clear, err_num);
     }
 
+  int fileno (void) { return rep ? rep->fileno () : -1; }
+
   bool ok (void) const { return rep && rep->ok (); }
 
-  operator void* () const
-    {
-      return ok ()
-	? static_cast<void *> (-1) : static_cast<void *> (0);
-    }
+  operator bool () const { return ok (); }
 
   string name (void);
 

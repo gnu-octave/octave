@@ -2377,7 +2377,7 @@ template <class T>
 static void
 read_int (istream& is, bool swap_bytes, T& val)
 {
-  is.read (static_cast<char *> (&val), sizeof (T));
+  is.read (X_CAST (char *, &val), sizeof (T));
 
   if (swap_bytes)
     {
@@ -2387,15 +2387,15 @@ read_int (istream& is, bool swap_bytes, T& val)
 	  break;
 
 	case 2:
-	  swap_2_bytes (static_cast<char *> (&val));
+	  swap_2_bytes (X_CAST (char *, &val));
 	  break;
 
 	case 4:
-	  swap_4_bytes (static_cast<char *> (&val));
+	  swap_4_bytes (X_CAST (char *, &val));
 	  break;
 
 	case 8:
-	  swap_8_bytes (static_cast<char *> (&val));
+	  swap_8_bytes (X_CAST (char *, &val));
 	  break;
 
 	default:
@@ -2500,7 +2500,7 @@ do_read (istream& is, oct_data_conv::data_type dt,
       {
 	float f;
 
-	is.read (static_cast<char *> (&f), sizeof (float));
+	is.read (X_CAST (char *, &f), sizeof (float));
 
 	if (do_float_conversion)
 	  do_float_format_conversion (&f, 1, flt_fmt);
@@ -2511,7 +2511,7 @@ do_read (istream& is, oct_data_conv::data_type dt,
 
     case oct_data_conv::dt_double:
       {
-	is.read (static_cast<char *> (&val), sizeof (double));
+	is.read (X_CAST (char *, &val), sizeof (double));
 
 	if (do_float_conversion)
 	  do_double_format_conversion (&val, 1, flt_fmt);
@@ -2691,15 +2691,15 @@ write_int (ostream& os, bool swap_bytes, T val)
 	  break;
 
 	case 2:
-	  swap_2_bytes (static_cast<char *> (&val));
+	  swap_2_bytes (X_CAST (char *, &val));
 	  break;
 
 	case 4:
-	  swap_4_bytes (static_cast<char *> (&val));
+	  swap_4_bytes (X_CAST (char *, &val));
 	  break;
 
 	case 8:
-	  swap_8_bytes (static_cast<char *> (&val));
+	  swap_8_bytes (X_CAST (char *, &val));
 	  break;
 
 	default:
@@ -2708,7 +2708,7 @@ write_int (ostream& os, bool swap_bytes, T val)
 	}
     }
 
-  os.write (static_cast<char *> (&val), sizeof (T));
+  os.write (X_CAST (char *, &val), sizeof (T));
 }
 
 template void write_int (ostream&, bool, char);
@@ -2731,39 +2731,39 @@ do_write (ostream& os, double d, oct_data_conv::data_type dt,
   switch (dt)
     {
     case oct_data_conv::dt_char:
-      write_int (os, swap_bytes, static_cast<char> (d));
+      write_int (os, swap_bytes, X_CAST (char, d));
       break;
 
     case oct_data_conv::dt_schar:
-      write_int (os, swap_bytes, static_cast<signed char> (d));
+      write_int (os, swap_bytes, X_CAST (signed char, d));
       break;
 
     case oct_data_conv::dt_uchar:
-      write_int (os, swap_bytes, static_cast<unsigned char> (d));
+      write_int (os, swap_bytes, X_CAST (unsigned char, d));
       break;
 
     case oct_data_conv::dt_short:
-      write_int (os, swap_bytes, static_cast<short> (d));
+      write_int (os, swap_bytes, X_CAST (short, d));
       break;
 
     case oct_data_conv::dt_ushort:
-      write_int (os, swap_bytes, static_cast<unsigned short> (d));
+      write_int (os, swap_bytes, X_CAST (unsigned short, d));
       break;
 
     case oct_data_conv::dt_int:
-      write_int (os, swap_bytes, static_cast<int> (d));
+      write_int (os, swap_bytes, X_CAST (int, d));
       break;
 
     case oct_data_conv::dt_uint:
-      write_int (os, swap_bytes, static_cast<unsigned int> (d));
+      write_int (os, swap_bytes, X_CAST (unsigned int, d));
       break;
 
     case oct_data_conv::dt_long:
-      write_int (os, swap_bytes, static_cast<long> (d));
+      write_int (os, swap_bytes, X_CAST (long, d));
       break;
 
     case oct_data_conv::dt_ulong:
-      write_int (os, swap_bytes, static_cast<unsigned long> (d));
+      write_int (os, swap_bytes, X_CAST (unsigned long, d));
       break;
 
     case oct_data_conv::dt_float:
@@ -2773,7 +2773,7 @@ do_write (ostream& os, double d, oct_data_conv::data_type dt,
 	if (do_float_conversion)
 	  do_float_format_conversion (&f, 1, flt_fmt);
 
-	os.write (static_cast<char *> (&f), sizeof (float));
+	os.write (X_CAST (char *, &f), sizeof (float));
       }
       break;
 
@@ -2782,7 +2782,7 @@ do_write (ostream& os, double d, oct_data_conv::data_type dt,
 	if (do_float_conversion)
 	  do_double_format_conversion (&d, 1, flt_fmt);
 
-	os.write (static_cast<char *> (&d), sizeof (double));
+	os.write (X_CAST (char *, &d), sizeof (double));
       }
       break;
 

@@ -116,22 +116,20 @@ template <class C>
 static int
 goodCHptr (CHNode<C> *t)
 {
-  return (((static_cast<unsigned> (t)) & 1) == 0);
+  return (((X_CAST (unsigned, t)) & 1) == 0);
 }
-
-// This sucks, but avoids g++ 2.6.0 `type unification failed' errors.
 
 static void *
 index_to_CHptr (int i)
 {
-  return static_cast<void *> ((i << 1) + 1);
+  return X_CAST (void *, (i << 1) + 1);
 }
 
 template <class C>
 static unsigned int
 CHptr_to_index (CHNode<C> *t)
 {
-  return (static_cast<unsigned> (t)) >> 1;
+  return (X_CAST (unsigned, t)) >> 1;
 }
 
 template <class C>

@@ -79,13 +79,13 @@ octave_allocator::grow (void)
       while (p < last)
 	{
 	  char *next = p + item_size;
-	  (static_cast<link *> (p)) -> next = static_cast<link *> (next);
+	  (X_CAST (link *, p)) -> next = X_CAST (link *, next);
 	  p = next;
 	}
 
-      (static_cast<link *> (last)) -> next = 0;
+      (X_CAST (link *, last)) -> next = 0;
 
-      head = static_cast<link *> (start);
+      head = X_CAST (link *, start);
     }
   else
     {

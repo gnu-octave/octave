@@ -24,29 +24,37 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_byte_swap_h 1
 
 static inline void
-swap_bytes (char *t, unsigned int i, unsigned int j)
+swap_bytes (void *ptr, unsigned int i, unsigned int j)
 {
+  char *t = static_cast<char *> (ptr);
+
   char tmp = t[i];
   t[i] = t[j];
   t[j] = tmp;
 }
 
 static inline void
-swap_2_bytes (char *t)
+swap_2_bytes (void *ptr)
 {
+  char *t = static_cast<char *> (ptr);
+
   swap_bytes (t, 0, 1);
 }
 
 static inline void
-swap_4_bytes (char *t)
+swap_4_bytes (void *ptr)
 {
+  char *t = static_cast<char *> (ptr);
+
   swap_bytes (t, 0, 3);
   swap_bytes (t, 1, 2);
 }
 
 static inline void
-swap_8_bytes (char *t)
+swap_8_bytes (void *ptr)
 {
+  char *t = static_cast<char *> (ptr);
+
   swap_bytes (t, 0, 7);
   swap_bytes (t, 1, 6);
   swap_bytes (t, 2, 5);
@@ -54,35 +62,38 @@ swap_8_bytes (char *t)
 }
 
 static inline void
-swap_2_bytes (char *t, int len)
+swap_2_bytes (void *ptr, int len)
 {
-  char *ptr = t;
+  char *t = static_cast<char *> (ptr);
+
   for (int i = 0; i < len; i++)
     {
-      swap_2_bytes (ptr);
-      ptr += 2;
+      swap_2_bytes (t);
+      t += 2;
     }
 }
 
 static inline void
-swap_4_bytes (char *t, int len)
+swap_4_bytes (void *ptr, int len)
 {
-  char *ptr = t;
+  char *t = static_cast<char *> (ptr);
+
   for (int i = 0; i < len; i++)
     {
-      swap_4_bytes (ptr);
-      ptr += 4;
+      swap_4_bytes (t);
+      t += 4;
     }
 }
 
 static inline void
-swap_8_bytes (char *t, int len)
+swap_8_bytes (void *ptr, int len)
 {
-  char *ptr = t;
+  char *t = static_cast<char *> (ptr);
+
   for (int i = 0; i < len; i++)
     {
-      swap_8_bytes (ptr);
-      ptr += 8;
+      swap_8_bytes (t);
+      t += 8;
     }
 }
 

@@ -33,7 +33,7 @@ prog_args::getopt (void)
 {
   if (long_opts)
     return ::getopt_long (xargc, xargv, short_opts,
-			  static_cast<const struct option *> (long_opts), 0);
+			  X_CAST (const struct option *, long_opts), 0);
   else
     return ::getopt (xargc, xargv, short_opts);
 }

@@ -212,8 +212,7 @@ public:
       return *this;
     }
 
-  operator void * () const
-    { return static_cast<void *> (rep->ok ()); }
+  operator bool () const { return rep->ok (); }
 
   int capacity (void) const { return rep->capacity (); }
   int length (int cl) const { return rep->length (cl); }

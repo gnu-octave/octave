@@ -58,7 +58,7 @@ public:
 
   bool ok (void) const { return dir && ! fail; }
 
-  operator void* () const { return ok () ? (void *) -1 : (void *) 0; }
+  operator bool () const { return ok (); }
 
   string error (void) const { return ok () ? string () : errmsg; }
 

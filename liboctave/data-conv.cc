@@ -106,10 +106,10 @@ oct_data_conv::string_to_data_type (const string& str)
 #define LS_DO_READ(TYPE,swap,data,size,len,stream) \
   do \
     { \
-      volatile TYPE *ptr = (TYPE *) data; \
-      stream.read ((TYPE *) ptr, size * len); \
+      volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
+      stream.read (X_CAST (TYPE *, ptr), size * len); \
       if (swap) \
-        swap_ ## size ## _bytes (static_cast<char *> (ptr), len); \
+        swap_ ## size ## _bytes (ptr, len); \
       TYPE tmp = ptr[0]; \
       for (int i = len - 1; i > 0; i--) \
         data[i] = ptr[i]; \
@@ -127,8 +127,8 @@ oct_data_conv::string_to_data_type (const string& str)
       stream.write (&tmp_type, 1); \
       TYPE *ptr = new TYPE [len]; \
       for (int i = 0; i < len; i++) \
-        ptr[i] = (TYPE) data[i]; \
-      stream.write ((TYPE *) ptr, size * len); \
+        ptr[i] = X_CAST (TYPE, data[i]); \
+      stream.write (ptr, size * len); \
       delete [] ptr ; \
     } \
   while (0)
@@ -161,7 +161,7 @@ gripe_data_conversion (const char *from, const char *to)
 static void
 IEEE_big_double_to_IEEE_little_double (double *d, int len)
 {
-  swap_8_bytes (static_cast<char *> (d), len);
+  swap_8_bytes (d, len);
 }
 
 static void
@@ -185,7 +185,7 @@ Cray_to_IEEE_little_double (double * /* d */, int /* len */)
 static void
 IEEE_big_float_to_IEEE_little_float (float *d, int len)
 {
-  swap_4_bytes (static_cast<char *> (d), len);
+  swap_4_bytes (d, len);
 }
 
 static void
@@ -209,7 +209,7 @@ Cray_to_IEEE_little_float (float * /* d */, int /* len */)
 static void
 IEEE_little_double_to_IEEE_big_double (double *d, int len)
 {
-  swap_8_bytes (static_cast<char *> (d), len);
+  swap_8_bytes (d, len);
 }
 
 static void
@@ -233,7 +233,7 @@ Cray_to_IEEE_big_double (double * /* d */, int /* len */)
 static void
 IEEE_little_float_to_IEEE_big_float (float *d, int len)
 {
-  swap_4_bytes (static_cast<char *> (d), len);
+  swap_4_bytes (d, len);
 }
 
 static void
@@ -634,9 +634,9 @@ read_doubles (istream& is, double *data, save_type type, int len,
 
     case LS_FLOAT:
       {
-	volatile float *ptr = static_cast<float *> (data);
+	volatile float *ptr = X_CAST (float *, data);
 	is.read (data, 4 * len);
-	do_float_format_conversion (static_cast<float *> (data), len, fmt);
+	do_float_format_conversion (X_CAST (float *, data), len, fmt);
 	float tmp = ptr[0];
 	for (int i = len - 1; i > 0; i--)
 	  data[i] = ptr[i];
@@ -690,7 +690,7 @@ write_doubles (ostream& os, const double *data, save_type type, int len)
 
     case LS_DOUBLE:
       {
-	char tmp_type = static_cast<char> (type);
+	char tmp_type = X_CAST (char, type);
 	os.write (&tmp_type, 1);
 	os.write (data, 8 * len);
       }

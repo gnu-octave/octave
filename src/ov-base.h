@@ -146,17 +146,18 @@ public:
 
   bool is_function (void) const { return false; }
 
-  double double_value (bool) const;
+  double double_value (bool = false) const;
 
-  double scalar_value (bool) const { return double_value (); }
+  double scalar_value (bool frc_str_conv = false) const
+    { return double_value (frc_str_conv); }
 
-  Matrix matrix_value (bool frc_str_conv = false) const;
+  Matrix matrix_value (bool = false) const;
 
-  Complex complex_value (bool frc_str_conv = false) const;
+  Complex complex_value (bool = false) const;
 
-  ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const;
+  ComplexMatrix complex_matrix_value (bool = false) const;
 
-  charMatrix char_matrix_value (bool frc_str_conv = false) const;
+  charMatrix char_matrix_value (bool = false) const;
 
   string_vector all_strings (void) const;
 

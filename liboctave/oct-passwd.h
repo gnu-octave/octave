@@ -80,9 +80,7 @@ public:
 
   bool ok (void) const { return valid; }
 
-  operator void* () const
-    { return ok ()
-	? static_cast<void *> (-1) : static_cast<void *> (0); }
+  operator bool () const { return ok (); }
 
   static octave_passwd getpwent (void);
   static octave_passwd getpwent (string& msg);

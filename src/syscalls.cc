@@ -106,32 +106,28 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 
   if (nargin == 2)
     {
-      double d_old = args(0).double_value ();
-      double d_new = args(1).double_value ();
+      octave_stream *old_stream = octave_stream_list::lookup (args(0));
+      octave_stream *new_stream = octave_stream_list::lookup (args(1));
 
       if (! error_state)
 	{
-	  if (D_NINT (d_old) == d_old && D_NINT (d_new) == d_new)
+	  int i_old = old_stream->fileno ();
+	  int i_new = new_stream->fileno ();
+
+	  if (i_old >= 0 && i_new >= 0)
 	    {
-	      int i_old = NINT (d_old);
-	      int i_new = NINT (d_new);
+	      string msg;
 
-	      // XXX FIXME XXX -- are these checks sufficient?
-	      if (i_old >= 0 && i_new >= 0)
-		{
-		  string msg;
+	      int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-		  int status = octave_syscalls::dup2 (i_old, i_new, msg);
-
-		  retval(0) = static_cast<double> (status);
-		  retval(1) = msg;
-		}
-	      else
-		error ("dup2: invalid file id");
+	      retval(0) = static_cast<double> (status);
+	      retval(1) = msg;
 	    }
 	  else
-	    error ("dup2: arguments must be integer values");
+	    error ("dup2: invalid file id");
 	}
+      else
+	error ("dup2: invalid stream");
     }
   else
     print_usage ("dup2");

@@ -562,12 +562,15 @@ symbol_table::name_list (int& count, const string_vector& pats, bool sort,
 }
 
 static int
-maybe_list_cmp_fcn (symbol_record **a_arg, symbol_record **b_arg)
+maybe_list_cmp_fcn (const void *a_arg, const void *b_arg)
 {
-  string a = (*a_arg)->name ();
-  string b = (*b_arg)->name ();
+  const symbol_record *a = *(X_CAST (const symbol_record **, a_arg));
+  const symbol_record *b = *(X_CAST (const symbol_record **, b_arg));
 
-  return a.compare (b);
+  string a_nm = a->name ();
+  string b_nm = b->name ();
+
+  return a_nm.compare (b_nm);
 }
 
 int

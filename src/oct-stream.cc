@@ -720,6 +720,41 @@ printf_format_list::printme (void) const
     }
 }
 
+int
+octave_base_stream::fileno (void)
+{
+  // Kluge alert!
+
+  if (name () == "stdin")
+    return 0;
+
+  if (name () == "stdout")
+    return 1;
+
+  if (name () == "stderr")
+    return 2;
+
+  int retval = -1;
+
+  istream *is = input_stream ();
+  ostream *os = output_stream ();
+
+  int i_fid = is ? ((filebuf *) (is->rdbuf ()))->fd () : -1;
+  int o_fid = os ? ((filebuf *) (os->rdbuf ()))->fd () : -1;
+
+  if (i_fid >= 0)
+    {
+      if (o_fid >= 0)
+	retval = (i_fid == o_fid) ? i_fid : -1;
+      else
+	retval = i_fid;
+    }
+  else if (o_fid >= 0)
+    retval = o_fid;
+
+  return retval;
+}
+
 void
 octave_base_stream::error (const string& msg)
 {
@@ -1541,11 +1576,7 @@ public:
   // Get the current value as a string and advance the internal pointer.
   string string_value (void);
 
-  operator void* () const
-    {
-      return (curr_state == ok)
-	? static_cast<void *> (-1) : static_cast<void *> (0);
-    }
+  operator bool () const { return (curr_state == ok); }
 
   bool no_more_values (void) { return curr_state == list_exhausted; }
 

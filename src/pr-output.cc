@@ -199,7 +199,8 @@ set_format (double d, int& fw)
 
   double d_abs = d < 0.0 ? -d : d;
 
-  int digits = d_abs == 0.0 ? 0 : (int) floor (log10 (d_abs) + 1.0);
+  int digits = (inf_or_nan || d_abs == 0.0) ? 0
+    : (int) floor (log10 (d_abs) + 1.0);
 
   int prec = user_pref.output_precision;
 

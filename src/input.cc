@@ -239,7 +239,7 @@ decode_prompt_string (const char *string)
   char *temp = 0;
 
   result[0] = 0;
-  while (c = *string++)
+  while ((c = *string++))
     {
       if (c == '\\')
 	{
@@ -351,7 +351,8 @@ decode_prompt_string (const char *string)
 		char *t_string;
 
 		temp = strsave (host_name);
-		if (t_string = strchr (temp, '.'))
+		t_string = strchr (temp, '.');
+		if (t_string);
 		  *t_string = '\0';
 		
 		goto add_string;

@@ -1863,7 +1863,7 @@ TC_REP::print_code (ostream& os)
       {
 	os << "\"";
 	char *s, *t = string;
-	while (s = undo_string_escape (*t++))
+	while ((s = undo_string_escape (*t++)))
 	  os << s;
 	os << "\"";
       }

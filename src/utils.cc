@@ -802,7 +802,7 @@ undo_string_escapes (char *s)
   ostrstream buf;
 
   char *t;
-  while (t = undo_string_escape (*s++))
+  while ((t = undo_string_escape (*s++)))
     buf << t;
   buf << ends;
 

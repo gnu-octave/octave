@@ -277,8 +277,14 @@ raw_mode (int on)
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
 	s.c_oflag |=  (OPOST|ONLCR);
-#if ! defined (NeXT)
-	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
+#if defined (OCRNL)
+	s.c_oflag &= ~(OCRNL);
+#endif
+#if defined (ONOCR)
+	s.c_oflag &= ~(ONOCR);
+#endif
+#if defined (ONLRET)
+	s.c_oflag &= ~(ONLRET);
 #endif
 	s.c_cc[VMIN] = 1;
 	s.c_cc[VTIME] = 0;
@@ -312,8 +318,14 @@ raw_mode (int on)
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
 	s.c_oflag |=  (OPOST|ONLCR);
-#if ! defined (NeXT)
-	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
+#if defined (OCRNL)
+	s.c_oflag &= ~(OCRNL);
+#endif
+#if defined (ONOCR)
+	s.c_oflag &= ~(ONOCR);
+#endif
+#if defined (ONLRET)
+	s.c_oflag &= ~(ONLRET);
 #endif
 	s.c_cc[VMIN] = 1;
 	s.c_cc[VTIME] = 0;

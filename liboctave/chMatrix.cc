@@ -62,12 +62,12 @@ charMatrix::charMatrix (const string& s)
 }
 
 charMatrix::charMatrix (const string_vector& s)
-  : MArray2<char> (s.length (), s.max_length ())
+  : MArray2<char> (s.length (), s.max_length (), 0)
 {
+  int nr = rows ();
   for (int i = 0; i < nr; i++)
     {
       int nc = s[i].length ();
-
       for (int j = 0; j < nc; j++)
 	elem (i, j) = s[i][j];
     }

@@ -525,7 +525,8 @@ DEFUN (lstat, args, ,
 
 
 DEFUN (mkfifo, args, ,
-  "@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name})\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name})\n\
 Create a @var{fifo} special file named @var{name} with file mode @var{mode}\n\\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\

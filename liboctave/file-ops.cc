@@ -153,6 +153,38 @@ file_stat::update_internal (bool force)
     }
 }
 
+void
+file_stat::copy (const file_stat& fs)
+{
+  file_name = fs.file_name;
+  follow_links = fs.follow_links;
+  initialized = fs.initialized;
+  fail = fs.fail;
+  errmsg = fs.errmsg;
+  fs_mode = fs.fs_mode;
+  fs_ino = fs.fs_ino;
+  fs_dev = fs.fs_dev;
+  fs_nlink = fs.fs_nlink;
+  fs_uid = fs.fs_uid;
+  fs_gid = fs.fs_gid;
+  fs_size = fs.fs_size;
+  fs_atime = fs.fs_atime;
+  fs_mtime = fs.fs_mtime;
+  fs_ctime = fs.fs_ctime;
+
+#if defined (HAVE_ST_RDEV)
+  fs_rdev = fs.fs_rdev;
+#endif
+
+#if defined (HAVE_ST_BLKSIZE)
+  fs_blksize = fs.fs_blksize;
+#endif
+
+#if defined (HAVE_ST_BLOCKS)
+  fs_blocks = fs.fs_blocks;
+#endif
+}
+
 // Functions for octave.
 
 // Has FILE been modified since TIME?  Returns 1 for yes, 0 for no,

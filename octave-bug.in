@@ -42,6 +42,8 @@ LIBPLPLOT=%LIBPLPLOT%
 LIBDLFCN=%LIBDLFCN%
 DEFS=%DEFS%
 
+: ${USER=$LOGNAME}
+
 CC_AND_VERSION=
 if test -n "$CC_VERSION"; then
   CC_AND_VERSION="$CC, version $CC_VERSION"
@@ -125,6 +127,13 @@ fi
 
 cat > $TEMP << EOF
 To: $BUGADDR
+EOF
+if test -n "$USER"; then
+cat >> $TEMP << EOF
+Cc: $USER
+EOF
+fi
+cat >> $TEMP << EOF
 Subject: $SUBJECT
 --------
 Bug report for Octave $VERSION configured for $MACHINE
@@ -294,8 +303,19 @@ if test $status -eq 0; then
 fi
 
 if test $status -ne 0; then
-  echo "saving message in \$HOME/dead.octave-bug";
-  cat $TEMP >> $HOME/dead.octave-bug;
+  dead_bug_file=$HOME/dead-octave-bug
+  looking_for_file=true;
+  n=1
+  while $looking_for_file; do
+    if test -f "$dead_bug_file-$n"; then
+      n=`expr $n + 1`
+    else
+      looking_for_file=false
+      dead_bug_file=$dead_bug_file-$n
+    fi
+  done
+  echo "saving message in $dead_bug_file";
+  cat $TEMP >> $dead_bug_file;
   exit 1
 else
   echo "bug report sent to: $TO_ADDR"

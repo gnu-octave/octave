@@ -1,3 +1,12 @@
+Tue Aug 26 13:30:36 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave-bug.in: CC bug report to user if $USER or $LOGNAME is set.
+
+Mon Aug 25 11:06:54 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave-bug.in: Avoid clobbering existing dead bug report files
+	by numbering them.
+
 Wed Aug 13 20:34:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave-mod.el (octave-before-magic-comment-p): New function.

@@ -66,7 +66,7 @@ liboctave.info: $(TEXINFO) conf.texi
 liboctave.dvi: $(TEXINFO) conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
 	  export TEXINPUTS ; \
-	  texi2dvi $(srcdir)/liboctave.texi
+	  $(TEXI2DVI) $(srcdir)/liboctave.texi
 
 liboctave.ps: liboctave.dvi
 	-dvips -o liboctave.ps liboctave.dvi

@@ -27,6 +27,8 @@ LN_S = @LN_S@
 
 RUNTEST = @RUNTEST@
 
+TEXI2DVI = $(top_srcdir)/texi2dvi
+
 DEFAULT_PAGER = @DEFAULT_PAGER@
 
 WITH_DL = @WITH_DL@

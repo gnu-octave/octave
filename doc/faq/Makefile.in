@@ -42,7 +42,7 @@ FAQ.info: FAQ.texi
 FAQ.dvi: FAQ.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
 	  export TEXINPUTS ; \
-	  texi2dvi $(srcdir)/FAQ.texi
+	  $(TEXI2DVI) $(srcdir)/FAQ.texi
 
 FAQ.ps: FAQ.dvi
 	-dvips -o FAQ.ps FAQ.dvi

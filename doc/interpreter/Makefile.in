@@ -73,7 +73,7 @@ octave.info: $(TEXINFO) conf.texi
 octave.dvi: $(TEXINFO) conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
 	  export TEXINPUTS ; \
-	  texi2dvi $(srcdir)/octave.texi
+	  $(TEXI2DVI) $(srcdir)/octave.texi
 
 octave.ps: octave.dvi
 	-dvips -o octave.ps octave.dvi

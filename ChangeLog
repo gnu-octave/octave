@@ -1,5 +1,10 @@
 Thu Nov 14 00:07:31 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (TEXI2DVI): Define to be our own private version.
+
+	* texi2dvi: New file.
+	* octMakefile.in (DISTFILES): Add it to the list.
+
 	* configure.in: Don't substitute values in src/mk-oct-links.in.
 
 	* emacs/octave.el: Update to version 0.8.6, from Kurt Hornik.

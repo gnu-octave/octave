@@ -1,3 +1,7 @@
+1999-10-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTFILES): Add mkgendoc to the list.
+
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (stmp-pic): New target.

@@ -1,3 +1,8 @@
+1999-10-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTFILES): Add move-if-change, mkdoc, and
+	gethelp.cc to the list.
+
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* time/asctime.m: Texinfoize help text.

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2bin (@var{n})
+## @deftypefn {Function File} {} dec2bin (@var{n}, @var{len})
 ## Return a binary number corresponding the nonnegative decimal number
 ## @var{n}, as a string of ones and zeros.  For example,
 ##
@@ -29,19 +29,24 @@
 ##
 ## If @var{n} is a vector, returns a string matrix, one row per value,
 ## padded with leading zeros to the width of the largest value.
+##
+## The optional second argument, @var{len}, specifies the minimum
+## number of digits in the result.
 ## @end deftypefn
 ##
 ## @seealso{bin2dec, dec2base, base2dec, hex2dec, dec2hex}
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
-## 2001-02-02 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
+## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function h = dec2bin (d)
+function retval = dec2bin (n, len)
 
-  if (nargin != 1)
-    usage ("dec2bin (b)");
+  if (nargin == 1)
+    retval = dec2base (n, 2);
+  elseif (nargin == 2)
+    retval = dec2base (n, 2, len);
   else
-    h = dec2base (d, 2);
+    usage ("dec2bin (n [, len])");
   endif
 
 endfunction

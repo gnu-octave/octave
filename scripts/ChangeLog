@@ -1,3 +1,8 @@
+2003-08-29  David Castelow  <DCastelow@Airspan.com>
+
+	* strings/dec2base.m, strings/dec2bin.m, strings/dec2hex.m:
+	Allow optional length argument.
+
 2003-08-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* polynomial/polyfit.m: Avoid calling flipud.

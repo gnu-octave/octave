@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2hex (@var{n})
+## @deftypefn {Function File} {} dec2hex (@var{n}, @var{len})
 ## Return the hexadecimal string corresponding to the nonnegative 
 ## integer @var{n}.  For example,
 ##
@@ -29,6 +29,9 @@
 ##
 ## If @var{n} is a vector, returns a string matrix, one row per value,
 ## padded with leading zeros to the width of the largest value.
+##
+## The optional second argument, @var{len}, specifies the minimum
+## number of digits in the result.
 ## @end deftypefn
 ##
 ## @seealso{hex2dec, dec2base, base2dec, bin2dec, dec2bin}
@@ -36,12 +39,14 @@
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function h = dec2hex (d)
+function retval = dec2hex (n, len)
 
-  if (nargin != 1)
-    usage ("dec2hex (b)");
+  if (nargin == 1)
+    retval = dec2base (n, 16);
+  elseif (nargin == 2)
+    retval = dec2base (n, 16, len);
   else
-    h = dec2base (d, 16);
+    usage ("dec2hex (n [, len])");
   endif
 
 endfunction

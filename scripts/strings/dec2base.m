@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dec2base (@var{n}, @var{b})
+## @deftypefn {Function File} {} dec2base (@var{n}, @var{b}, @var{len})
 ## Return a string of symbols in base @var{b} corresponding to the
 ## the nonnegative integer @var{n}.
 ##
@@ -38,6 +38,9 @@
 ## dec2base (123, "aei")
 ##      @result{} "eeeia"
 ## @end example
+##
+## The optional third argument, @var{len}, specifies the minimum
+## number of digits in the result.
 ## @end deftypefn
 ##
 ## @seealso{base2dec, dec2bin, bin2dec, hex2dec, dec2hex}
@@ -45,16 +48,16 @@
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
-function out = dec2base (d, base)
+function retval = dec2base (n, base, len)
 
-  if (nargin != 2)
-    usage("dec2base (n, base)");
+  if (nargin < 2 || nargin > 3)
+    usage ("dec2base (n, base [, len])");
   endif
 
-  if (prod (size (d)) != length (d))
-    error("dec2base: cannot convert matrices.");
-  elseif (any (d < 0 | d != fix (d)))
-    error("dec2base: can only convert non-negative integers.")
+  if (prod (size (n)) != length (n))
+    error ("dec2base: cannot convert matrices.");
+  elseif (any (n < 0 | n != fix (n)))
+    error ("dec2base: can only convert non-negative integers.")
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -71,14 +74,18 @@ function out = dec2base (d, base)
   endif
   
   ## determine number of digits required to handle all numbers
-  maxLen = floor (log (max (max (d), 1)) ./ log (base)) + 1;
+  max_len = floor (log (max (max (n), 1)) ./ log (base)) + 1;
+
+  if (nargin == 3)
+    max_len = max (max_len, len);
+  endif
   
   ## determine digits for each number
-  power = ones (length (d), 1) * (base .^ (maxLen-1 : -1 : 0));
-  d = d(:) * ones (1, maxLen);
-  digits = floor (rem (d, base*power) ./ power);
+  power = ones (length (n), 1) * (base .^ (max_len-1 : -1 : 0));
+  n = n(:) * ones (1, max_len);
+  digits = floor (rem (n, base*power) ./ power);
 
   ## convert digits to symbols
-  out = reshape (symbols (digits+1), size (digits));
+  retval = reshape (symbols (digits+1), size (digits));
 
 endfunction

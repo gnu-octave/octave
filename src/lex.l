@@ -1020,7 +1020,8 @@ lookup_identifier (char *name)
     return lsr;
 
   symbol_record *gsr = global_sym_tab->lookup (name, 0, 0);
-  if (curr_sym_tab == top_level_sym_tab && gsr != (symbol_record *) NULL)
+  if (curr_sym_tab == top_level_sym_tab && gsr != (symbol_record *) NULL
+      && ! (looping || iffing))
     return gsr;
 
   return curr_sym_tab->lookup (name, 1, 0);

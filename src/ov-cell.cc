@@ -201,7 +201,10 @@ octave_cell::subsasgn (const std::string& type,
 	    if (t_rhs.is_cell ())
 	      octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
 	    else
-	      octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+	      if (t_rhs.is_empty ())
+		octave_base_matrix<Cell>::assign (i, Cell());
+	      else
+		octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
 	    retval = octave_value (this, count + 1);
 	  }

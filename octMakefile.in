@@ -151,6 +151,12 @@ clean-tar:
 	rm -rf `cat .fname` .fname
 .PHONY: clean-tar
 
+dist-z:
+	echo octave-$(version).tar > .fname
+	gzip --best `cat .fname`
+	rm -f .fname
+.PHONY: dist-z
+
 # Rules for making a source distribution.
 
 links-for-dist: octave.info INSTALL.info BUGS.info
@@ -238,11 +244,7 @@ clean-local-dist-tar: local-dist-tar
 local-dist: clean-local-dist-tar
 .PHONY: local-dist
 
-dist-z:
-	echo octave-$(version).tar > .fname
-	gzip --best `cat .fname`
-	rm -f .fname
-.PHONY: dist-z
+# Rules for splitting a distribution.
 
 split-dist:
 	echo octave-$(version).tar.gz > .fname
@@ -256,7 +258,14 @@ split-local-dist:
 	rm -f .fname
 .PHONY: split-local-dist
 
-snapshot: snapshot-version dist dist-z
+# Rules for making a snapshot.
+
+snapshot-z: snapshot-version
+	$(MAKE) dist
+	$(MAKE) dist-z
+.PHONY: snapshot-z
+
+snapshot: snapshot-z
 .PHONY: snapshot
 
 snapshot-version:

@@ -1,16 +1,18 @@
-# Makefile for texinfo/info.	-*- Indented-Text -*-
+# Makefile for Octave's info directory.  Adapted from the makefile for
+# texinfo/info.
+#
 # Copyright (C) 1993 Free Software Foundation, Inc.
-
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
 # any later version.
-
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -38,22 +40,21 @@ SHELL = /bin/sh
 
 #### End of system configuration section. ####
 
-SRCS =	dir.c		display.c	echo_area.c	filesys.c \
-	info-utils.c	info.c		infodoc.c	infomap.c \
-	m-x.c		nodes.c		search.c	session.c \
-	signals.c	terminal.c	tilde.c		window.c \
-	xmalloc.c	indices.c	makedoc.c	nodemenu.c \
-	footnotes.c	dribble.c	variables.c	gc.c \
+SOURCES = dir.c display.c echo_area.c filesys.c info-utils.c info.c \
+	infodoc.c infomap.c m-x.c nodes.c search.c session.c \
+	signals.c terminal.c tilde.c window.c xmalloc.c	indices.c \
+	makedoc.c nodemenu.c footnotes.c dribble.c variables.c gc.c \
 	error.c
 
-HDRS =	display.h	doc.h		echo_area.h	filesys.h \
-	general.h	getopt.h	info-utils.h	info.h \
-	infomap.h	nodes.h		search.h 	session.h \
-	signals.h	termdep.h	terminal.h	tilde.h \
-	indices.h	window.h	footnotes.h	dribble.h \
-	variables.h	gc.h
+INCLUDES = display.h doc.h echo_area.h filesys.h general.h getopt.h \
+	info-utils.h info.h infomap.h nodes.h search.h session.h \
+	signals.h termdep.h terminal.h tilde.h indices.h window.h \
+	footnotes.h dribble.h variables.h gc.h
 
-DISTFILES = $(SRCS) $(HDRS)
+TEXI = info-stnd.texi info.texi userdoc.texi
+
+DISTFILES = Makefile.in README NEWS info.1 \
+	  $(SOURCES) $(INCLUDES) $(TEXINFO)
 
 GETOPT_OBJS = getopt.o getopt1.o
 
@@ -62,7 +63,7 @@ LIBOBJS = dir.o display.o doc.o echo_area.o filesys.o info-utils.o \
 	terminal.o tilde.o window.o indices.o xmalloc.o nodemenu.o \
 	footnotes.o dribble.o variables.o gc.o error.o
 
-OBJS = info.o $(LIBOBJS) $(GETOPT_OBJS)
+OBJECTS = info.o $(LIBOBJS) $(GETOPT_OBJS)
 
 # The names of files which declare info commands.
 CMDFILES = $(srcdir)/session.c $(srcdir)/echo_area.c $(srcdir)/infodoc.c \
@@ -77,28 +78,33 @@ MAKEDOC_SOURCE = makedoc.c xmalloc.c
 	$(CC) -c $(CPPFLAGS) $(LDEFS) -I$(common) $(ALL_CFLAGS) $<
 
 all: ../libinfo.a # info.info info-stnd.info
+.PHONY: all
+
 sub-all: all
+.PHONY: sub-all
 
 install: all
-	$(INSTALL_PROGRAM) info $(datadir)/info
+#	$(INSTALL_PROGRAM) info $(datadir)/info
 #	-d=$(srcdir); test -f ./info.info && d=.; \
 #	    $(INSTALL_DATA) $$d/info.info $(infodir)/info.info
 #	-d=$(srcdir); test -f ./info-stnd.info && d=.; \
 #	    $(INSTALL_DATA) $$d/info-stnd.info $(infodir)/info-stnd.info
 #	-$(INSTALL_DATA) $(srcdir)/info.1 $(mandir)/info.$(manext)
+.PHONY: install
 
 uninstall:
-	rm -f $(libexecdir)/info
+#	rm -f $(datadir)/info
 #	rm -f $(infodir)/info.info
 #	rm -f $(infodir)/info-stnd.info
 #	rm -f $(mandir)/info.$(manext)
+.PHONY: uninstall
 
 ../libinfo.a: $(LIBOBJS)
 	$(AR) $(ARFLAGS) ../libinfo.a $(LIBOBJS)
 	$(RANLIB) ../libinfo.a
 
-info: $(OBJS)
-	$(CC) $(LDFLAGS) -o info $(OBJS) $(LOADLIBES)
+info: $(OBJECTS)
+	$(CC) $(LDFLAGS) -o info $(OBJECTS) $(LOADLIBES)
 
 info.info: info.texi
 	$(MAKEINFO) --no-split -I$(srcdir) info.texi
@@ -109,11 +115,8 @@ info-stnd.info: info-stnd.texi
 makedoc: $(MAKEDOC_OBJECTS)
 	$(CC) $(LDFLAGS) -o makedoc $(MAKEDOC_OBJECTS) $(LOADLIBES)
 
-Makefile: $(srcdir)/Makefile.in ../config.status
-	cd ..; sh config.status
-
 clean:
-	rm -f info funs.h doc.c makedoc $(OBJS) $(MAKEDOC_OBJECTS)
+	rm -f info funs.h doc.c makedoc $(OBJECTS) $(MAKEDOC_OBJECTS)
 
 distclean: clean texclean
 	rm -f Makefile config.status *~ core core.* *.BAK TAGS
@@ -132,8 +135,8 @@ dist:
 	ln $(DISTFILES) ../`cat ../.fname`/info
 .PHONY: dist
 
-TAGS: $(SRCS) makedoc-TAGS
-	etags $(SRCS)
+TAGS: $(SOURCES) makedoc-TAGS
+	etags $(SOURCES)
 	cat makedoc-TAGS >>TAGS && rm -f makedoc-TAGS
 
 makedoc-TAGS: $(CMDFILES)

@@ -387,7 +387,7 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort)
 	{
 	  colon_equiv = 1;
 	}
-      else if (len > 0)
+      else if (len > 0 && len > 1 && ! one_zero)
 	{
 	  int *tmp_data = copy_data (data, len);
 

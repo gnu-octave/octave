@@ -491,6 +491,27 @@ operator << (ostream& os, const RowVector& a)
   return os;
 }
 
+istream&
+operator >> (istream& is, RowVector& a)
+{
+  int len = a.length();
+
+  if (len < 1)
+    is.clear (ios::badbit);
+  else
+    {
+      double tmp;
+      for (int i = 0; i < len; i++)
+        {
+          is >> tmp;
+          if (is)
+            a.elem (i) = tmp;
+          else
+            break;
+        }
+    }
+}
+
 /*
  * Complex Row Vector class
  */
@@ -1092,6 +1113,27 @@ operator << (ostream& os, const ComplexRowVector& a)
   for (int i = 0; i < a.length (); i++)
     os << " " /* setw (field_width) */ << a.elem (i);
   return os;
+}
+
+istream&
+operator >> (istream& is, ComplexRowVector& a)
+{
+  int len = a.length();
+
+  if (len < 1)
+    is.clear (ios::badbit);
+  else
+    {
+      Complex tmp;
+      for (int i = 0; i < len; i++)
+        {
+          is >> tmp;
+          if (is)
+            a.elem (i) = tmp;
+          else
+            break;
+        }
+    }
 }
 
 /*

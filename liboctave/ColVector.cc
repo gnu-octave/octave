@@ -1,7 +1,7 @@
 // ColumnVector manipulations.                            -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -467,6 +467,27 @@ operator << (ostream& os, const ColumnVector& a)
   for (int i = 0; i < a.length (); i++)
     os << /* setw (field_width) << */ a.elem (i) << "\n";
   return os;
+}
+
+istream&
+operator >> (istream& is, ColumnVector& a)
+{
+  int len = a.length();
+
+  if (len < 1)
+    is.clear (ios::badbit);
+  else
+    {
+      double tmp;
+      for (int i = 0; i < len; i++)
+        {
+          is >> tmp;
+          if (is)
+            a.elem (i) = tmp;
+          else
+            break;
+        }
+    }
 }
 
 /*
@@ -1040,6 +1061,27 @@ operator << (ostream& os, const ComplexColumnVector& a)
   for (int i = 0; i < a.length (); i++)
     os << /* setw (field_width) << */ a.elem (i) << "\n";
   return os;
+}
+
+istream&
+operator >> (istream& is, ComplexColumnVector& a)
+{
+  int len = a.length();
+
+  if (len < 1)
+    is.clear (ios::badbit);
+  else
+    {
+      double tmp;
+      for (int i = 0; i < len; i++)
+        {
+          is >> tmp;
+          if (is)
+            a.elem (i) = tmp;
+          else
+            break;
+        }
+    }
 }
 
 /*

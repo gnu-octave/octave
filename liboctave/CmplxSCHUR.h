@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include "CMatrix.h"
 
 class ComplexSCHUR
@@ -40,12 +42,12 @@ public:
 
   ComplexSCHUR (void) { }
 
-  ComplexSCHUR (const ComplexMatrix& a, const char *ord)
+  ComplexSCHUR (const ComplexMatrix& a, const string& ord)
     {
       init (a,ord);
     }
 
-  ComplexSCHUR (const ComplexMatrix& a, const char *ord, int& info)
+  ComplexSCHUR (const ComplexMatrix& a, const string& ord, int& info)
     {
       info = init (a,ord);
     }
@@ -78,7 +80,7 @@ public:
 
 private:
 
-  int init (const ComplexMatrix& a, const char *ord);
+  int init (const ComplexMatrix& a, const string& ord);
 
   ComplexMatrix schur_mat;
   ComplexMatrix unitary_mat;

@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <string>
+
 #include "dMatrix.h"
 
 class SCHUR
@@ -40,9 +42,9 @@ public:
 
   SCHUR (void) { }
 
-  SCHUR (const Matrix& a, const char *ord) { init (a, ord); }
+  SCHUR (const Matrix& a, const string& ord) { init (a, ord); }
 
-  SCHUR (const Matrix& a, const char *ord, int& info)
+  SCHUR (const Matrix& a, const string& ord, int& info)
     {
       info = init (a, ord);
     }
@@ -69,7 +71,7 @@ public:
 
 private:
 
-  int init (const Matrix& a, const char *ord);
+  int init (const Matrix& a, const string& ord);
 
   Matrix schur_mat;
   Matrix unitary_mat;

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define HEAVYWEIGHT_INDEXING 1
 
 #include <cassert>
+#include <cstdlib>
 
 #include "lo-error.h"
 
@@ -86,6 +87,11 @@ private:
     T& elem (int n) { return data[n]; }
 
     T elem (int n) const { return data[n]; }
+
+    void qsort (int (*compare) (const void *, const void *))
+      {
+	::qsort (data, len, sizeof (T), compare);
+      }
   };
 
 #ifdef HEAVYWEIGHT_INDEXING
@@ -181,6 +187,17 @@ public:
   const T *data (void) const { return rep->data; }
 
   T *fortran_vec (void);
+
+  void qsort (int (*compare) (const void *, const void *))
+    {
+      if (rep->count > 1)
+	{
+	  --rep->count;
+	  rep = new ArrayRep (*rep);
+	}
+
+      rep->qsort (compare);
+    }
 
 #ifdef HEAVYWEIGHT_INDEXING
   void set_max_indices (int mi) { max_indices = mi; }

@@ -60,7 +60,7 @@ select_dig (const double& a, const double& b)
 }
 
 int
-SCHUR::init (const Matrix& a, const char *ord)
+SCHUR::init (const Matrix& a, const string& ord)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -73,7 +73,9 @@ SCHUR::init (const Matrix& a, const char *ord)
   char *jobvs = "V";
   char *sort;
 
-  if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
+  char ord_char = ord.empty () ? 'U' : ord[0];
+
+  if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     sort = "S";
   else
     sort = "N";
@@ -99,20 +101,20 @@ SCHUR::init (const Matrix& a, const char *ord)
 
   int *iwork = 0;
   int *bwork = 0;
-  if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
+  if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     {
       iwork = new int [liwork];
       bwork = new int [n];
     }
 
-  if (*ord == 'A' || *ord == 'a')
+  if (ord_char == 'A' || ord_char == 'a')
     {
       F77_FCN (dgeesx, DGEESX) (jobvs, sort, select_ana, sense, n, s,
 				n, sdim, wr, wi, q, n, rconde, rcondv,
 				work, lwork, iwork, liwork, bwork,
 				info, 1L, 1L);
     }
-  else if (*ord == 'D' || *ord == 'd')
+  else if (ord_char == 'D' || ord_char == 'd')
     {
       F77_FCN (dgeesx, DGEESX) (jobvs, sort, select_dig, sense, n, s,
 				n, sdim, wr, wi, q, n, rconde, rcondv,

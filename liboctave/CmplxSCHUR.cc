@@ -58,7 +58,7 @@ complex_select_dig (const Complex& a)
 }
 
 int
-ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
+ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -71,7 +71,10 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 
   char *jobvs = "V";
   char *sort;
-  if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
+
+  char ord_char = ord.empty () ? 'U' : ord[0];
+
+  if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
      sort = "S";
    else
      sort = "N";
@@ -90,7 +93,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
   // bwork is not referenced for non-ordered Schur.
 
   int *bwork = 0;
-  if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
+  if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     bwork = new int [n];
 
   Complex *s = dup (a.data (), a.length ());
@@ -99,14 +102,14 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
   Complex *q = new Complex [n*n];
   Complex *w = new Complex [n];
 
-  if (*ord == 'A' || *ord == 'a')
+  if (ord_char == 'A' || ord_char == 'a')
     {
       F77_FCN (zgeesx, ZGEESX) (jobvs, sort, complex_select_ana,
 				sense, n, s, n, sdim, w, q, n, rconde,
 				rcondv, work, lwork, rwork, bwork,
 				info, 1L, 1L);
     }
-  else if (*ord == 'D' || *ord == 'd')
+  else if (ord_char == 'D' || ord_char == 'd')
     {
       F77_FCN (zgeesx, ZGEESX) (jobvs, sort, complex_select_dig,
 				sense, n, s, n, sdim, w, q, n, rconde,

@@ -39,6 +39,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "unwind-prot.h"
 #include "load-save.h"
+#include "sysdep.h"
 #include "symtab.h"
 #include "pager.h"
 #include "error.h"
@@ -88,16 +89,6 @@ enum load_save_format
     LS_UNKNOWN,
   };
 
-enum floating_point_format
-  {
-    LS_IEEE_LITTLE,
-    LS_IEEE_BIG,
-    LS_VAX_D,
-    LS_VAX_G,
-    LS_CRAY,
-    LS_UNKNOWN_FLT_FMT,
-  };
-
 // Not all of the following are currently used.
 
 enum save_type
@@ -111,18 +102,6 @@ enum save_type
     LS_FLOAT,
     LS_DOUBLE,
   };
-
-#if defined (IEEE_LITTLE_ENDIAN)
-#define NATIVE_FLOAT_FORMAT LS_IEEE_LITTLE
-#elif defined (IEEE_BIG_ENDIAN)
-#define NATIVE_FLOAT_FORMAT LS_IEEE_BIG
-#elif defined (VAX_D_FLOAT)
-#define NATIVE_FLOAT_FORMAT LS_VAX_D
-#elif defined (VAX_G_FLOAT)
-#define NATIVE_FLOAT_FORMAT LS_VAX_G
-#else
-LOSE! LOSE!
-#endif
 
 #define swap_1_bytes(x,y)
 
@@ -230,8 +209,6 @@ swap_8_bytes (char *t, int len)
 // XXX FIXME XXX -- assumes sizeof (double) == 8
 // XXX FIXME XXX -- assumes sizeof (float) == 4
 
-#if defined (IEEE_LITTLE_ENDIAN)
-
 static void
 IEEE_big_double_to_IEEE_little_double (double *d, int len)
 {
@@ -279,8 +256,6 @@ Cray_to_IEEE_little_float (float *d, int len)
 {
   gripe_data_conversion ("Cray", "IEEE little endian format");
 }
-
-#elif defined (IEEE_BIG_ENDIAN)
 
 static void
 IEEE_little_double_to_IEEE_big_double (double *d, int len)
@@ -330,8 +305,6 @@ Cray_to_IEEE_big_float (float *d, int len)
   gripe_data_conversion ("Cray", "IEEE big endian format");
 }
 
-#elif defined (VAX_D_FLOAT)
-
 static void
 IEEE_little_double_to_VAX_D_double (double *d, int len)
 {
@@ -379,8 +352,6 @@ Cray_to_VAX_D_float (float *d, int len)
 {
   gripe_data_conversion ("Cray", "VAX D");
 }
-
-#elif defined (VAX_G_FLOAT)
 
 static void
 IEEE_little_double_to_VAX_G_double (double *d, int len)
@@ -430,105 +401,122 @@ Cray_to_VAX_G_float (float *d, int len)
   gripe_data_conversion ("VAX G float", "VAX G");
 }
 
-#endif
-
 static void
 do_double_format_conversion (double *data, int len,
 			     floating_point_format fmt)
 {
-  switch (fmt)
+  switch (native_float_format)
     {
-#if defined (IEEE_LITTLE_ENDIAN)
+    case OCTAVE_IEEE_LITTLE:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  break;
 
-    case LS_IEEE_LITTLE:
-      break;
+	case OCTAVE_IEEE_BIG:
+	  IEEE_big_double_to_IEEE_little_double (data, len);
+	  break;
 
-    case LS_IEEE_BIG:
-      IEEE_big_double_to_IEEE_little_double (data, len);
-      break;
+	case OCTAVE_VAX_D:
+	  VAX_D_double_to_IEEE_little_double (data, len);
+	  break;
 
-    case LS_VAX_D:
-      VAX_D_double_to_IEEE_little_double (data, len);
-      break;
+	case OCTAVE_VAX_G:
+	  VAX_G_double_to_IEEE_little_double (data, len);
+	  break;
 
-    case LS_VAX_G:
-      VAX_G_double_to_IEEE_little_double (data, len);
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_IEEE_little_double (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_IEEE_little_double (data, len);
-      break;
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
-#elif defined (IEEE_BIG_ENDIAN)
+    case OCTAVE_IEEE_BIG:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  IEEE_little_double_to_IEEE_big_double (data, len);
+	  break;
 
-    case LS_IEEE_LITTLE:
-      IEEE_little_double_to_IEEE_big_double (data, len);
-      break;
+	case OCTAVE_IEEE_BIG:
+	  break;
 
-    case LS_IEEE_BIG:
-      break;
+	case OCTAVE_VAX_D:
+	  VAX_D_double_to_IEEE_big_double (data, len);
+	  break;
 
-    case LS_VAX_D:
-      VAX_D_double_to_IEEE_big_double (data, len);
-      break;
+	case OCTAVE_VAX_G:
+	  VAX_G_double_to_IEEE_big_double (data, len);
+	  break;
 
-    case LS_VAX_G:
-      VAX_G_double_to_IEEE_big_double (data, len);
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_IEEE_big_double (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_IEEE_big_double (data, len);
-      break;
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
-#elif defined (VAX_D_FLOAT)
+    case OCTAVE_VAX_D:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  IEEE_little_double_to_VAX_D_double (data, len);
+	  break;
 
-    case LS_IEEE_LITTLE:
-      IEEE_little_double_to_VAX_D_double (data, len);
-      break;
+	case OCTAVE_IEEE_BIG:
+	  IEEE_big_double_to_VAX_D_double (data, len);
+	  break;
 
-    case LS_IEEE_BIG:
-      IEEE_big_double_to_VAX_D_double (data, len);
-      break;
+	case OCTAVE_VAX_D:
+	  break;
 
-    case LS_VAX_D:
-      break;
+	case OCTAVE_VAX_G:
+	  VAX_G_double_to_VAX_D_double (data, len);
+	  break;
 
-    case LS_VAX_G:
-      VAX_G_double_to_VAX_D_double (data, len);
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_VAX_D_double (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_VAX_D_double (data, len);
-      break;
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
-#elif defined (VAX_G_FLOAT)
+    case OCTAVE_VAX_G:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  IEEE_little_double_to_VAX_G_double (data, len);
+	  break;
 
-    case LS_IEEE_LITTLE:
-      IEEE_little_double_to_VAX_G_double (data, len);
-      break;
+	case OCTAVE_IEEE_BIG:
+	  IEEE_big_double_to_VAX_G_double (data, len);
+	  break;
 
-    case LS_IEEE_BIG:
-      IEEE_big_double_to_VAX_G_double (data, len);
-      break;
+	case OCTAVE_VAX_D:
+	  VAX_D_double_to_VAX_G_double (data, len);
+	  break;
 
-    case LS_VAX_D:
-      VAX_D_double_to_VAX_G_double (data, len);
-      break;
+	case OCTAVE_VAX_G:
+	  break;
 
-    case LS_VAX_G:
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_VAX_G_double (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_VAX_G_double (data, len);
-      break;
-
-#else
-LOSE! LOSE!
-#endif
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
     default:
-      gripe_unrecognized_float_fmt ();
-      break;
+      panic_impossible ();
     }
 }
 
@@ -536,99 +524,118 @@ static void
 do_float_format_conversion (float *data, int len,
 			    floating_point_format fmt)
 {
-  switch (fmt)
+  switch (native_float_format)
     {
-#if defined (IEEE_LITTLE_ENDIAN)
+    case OCTAVE_IEEE_LITTLE:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  break;
 
-    case LS_IEEE_LITTLE:
-      break;
+	case OCTAVE_IEEE_BIG:
+	  IEEE_big_float_to_IEEE_little_float (data, len);
+	  break;
 
-    case LS_IEEE_BIG:
-      IEEE_big_float_to_IEEE_little_float (data, len);
-      break;
+	case OCTAVE_VAX_D:
+	  VAX_D_float_to_IEEE_little_float (data, len);
+	  break;
 
-    case LS_VAX_D:
-      VAX_D_float_to_IEEE_little_float (data, len);
-      break;
+	case OCTAVE_VAX_G:
+	  VAX_G_float_to_IEEE_little_float (data, len);
+	  break;
 
-    case LS_VAX_G:
-      VAX_G_float_to_IEEE_little_float (data, len);
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_IEEE_little_float (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_IEEE_little_float (data, len);
-      break;
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
-#elif defined (IEEE_BIG_ENDIAN)
+    case OCTAVE_IEEE_BIG:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  IEEE_little_float_to_IEEE_big_float (data, len);
+	  break;
 
-    case LS_IEEE_LITTLE:
-      IEEE_little_float_to_IEEE_big_float (data, len);
-      break;
+	case OCTAVE_IEEE_BIG:
+	  break;
 
-    case LS_IEEE_BIG:
-      break;
+	case OCTAVE_VAX_D:
+	  VAX_D_float_to_IEEE_big_float (data, len);
+	  break;
 
-    case LS_VAX_D:
-      VAX_D_float_to_IEEE_big_float (data, len);
-      break;
+	case OCTAVE_VAX_G:
+	  VAX_G_float_to_IEEE_big_float (data, len);
+	  break;
 
-    case LS_VAX_G:
-      VAX_G_float_to_IEEE_big_float (data, len);
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_IEEE_big_float (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_IEEE_big_float (data, len);
-      break;
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
-#elif defined (VAX_D_FLOAT)
+    case OCTAVE_VAX_D:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  IEEE_little_float_to_VAX_D_float (data, len);
+	  break;
 
-    case LS_IEEE_LITTLE:
-      IEEE_little_float_to_VAX_D_float (data, len);
-      break;
+	case OCTAVE_IEEE_BIG:
+	  IEEE_big_float_to_VAX_D_float (data, len);
+	  break;
 
-    case LS_IEEE_BIG:
-      IEEE_big_float_to_VAX_D_float (data, len);
-      break;
+	case OCTAVE_VAX_D:
+	  break;
 
-    case LS_VAX_D:
-      break;
+	case OCTAVE_VAX_G:
+	  VAX_G_float_to_VAX_D_float (data, len);
+	  break;
 
-    case LS_VAX_G:
-      VAX_G_float_to_VAX_D_float (data, len);
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_VAX_D_float (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_VAX_D_float (data, len);
-      break;
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
-#elif defined (VAX_G_FLOAT)
+    case OCTAVE_VAX_G:
+      switch (fmt)
+	{
+	case OCTAVE_IEEE_LITTLE:
+	  IEEE_little_float_to_VAX_G_float (data, len);
+	  break;
 
-    case LS_IEEE_LITTLE:
-      IEEE_little_float_to_VAX_G_float (data, len);
-      break;
+	case OCTAVE_IEEE_BIG:
+	  IEEE_big_float_to_VAX_G_float (data, len);
+	  break;
 
-    case LS_IEEE_BIG:
-      IEEE_big_float_to_VAX_G_float (data, len);
-      break;
+	case OCTAVE_VAX_D:
+	  VAX_D_float_to_VAX_G_float (data, len);
+	  break;
 
-    case LS_VAX_D:
-      VAX_D_float_to_VAX_G_float (data, len);
-      break;
+	case OCTAVE_VAX_G:
+	  break;
 
-    case LS_VAX_G:
-      break;
+	case OCTAVE_CRAY:
+	  Cray_to_VAX_G_float (data, len);
+	  break;
 
-    case LS_CRAY:
-      Cray_to_VAX_G_float (data, len);
-      break;
-
-#else
-LOSE! LOSE!
-#endif
+	default:
+	  gripe_unrecognized_float_fmt ();
+	  break;
+	}
 
     default:
-      gripe_unrecognized_float_fmt ();
-      break;
+      panic_impossible ();
     }
 }
 
@@ -1717,32 +1724,32 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 static floating_point_format
 get_floating_point_format (int mach)
 {
-  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
+  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
 
   switch (mach)
     {
     case 0:
-      flt_fmt = LS_IEEE_LITTLE;
+      flt_fmt = OCTAVE_IEEE_LITTLE;
       break;
 
     case 1:
-      flt_fmt = LS_IEEE_BIG;
+      flt_fmt = OCTAVE_IEEE_BIG;
       break;
 
     case 2:
-      flt_fmt = LS_VAX_D;
+      flt_fmt = OCTAVE_VAX_D;
       break;
 
     case 3:
-      flt_fmt = LS_VAX_G;
+      flt_fmt = OCTAVE_VAX_G;
       break;
 
     case 4:
-      flt_fmt = LS_CRAY;
+      flt_fmt = OCTAVE_CRAY;
       break;
 
     default:
-      flt_fmt = LS_UNKNOWN_FLT_FMT;
+      flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
       break;
     }
 
@@ -1768,7 +1775,7 @@ read_mat_binary_data (istream& is, const char *filename,
 // initialization of variable.
 
   Matrix re;
-  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
+  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
   char *name = 0;
   int swap = 0, type = 0, prec = 0, mach = 0, dlen = 0;
 
@@ -1790,7 +1797,7 @@ read_mat_binary_data (istream& is, const char *filename,
   mach = mopt % 10; // IEEE, VAX, etc.
 
   flt_fmt = get_floating_point_format (mach);
-  if (flt_fmt == LS_UNKNOWN_FLT_FMT)
+  if (flt_fmt == OCTAVE_UNKNOWN_FLT_FMT)
     {
       error ("load: unrecognized binary format!");
       return 0;
@@ -1910,7 +1917,7 @@ read_binary_file_header (istream& is, int& swap,
   is.read (&tmp, 1);
 
   flt_fmt = get_floating_point_format (tmp);
-  if (flt_fmt == LS_UNKNOWN_FLT_FMT)
+  if (flt_fmt == OCTAVE_UNKNOWN_FLT_FMT)
     {
       if (! quiet)
         error ("load: unrecognized binary format!");
@@ -1934,7 +1941,7 @@ get_file_format (const char *fname, const char *orig_fname)
     }
 
   int swap;
-  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
+  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
 
   if (read_binary_file_header (file, swap, flt_fmt, 1) == 0)
     retval = LS_BINARY;
@@ -2158,7 +2165,7 @@ found in the file will be replaced with the values read from the file.")
 
   char *orig_fname = *argv;
 
-  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
+  floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
 
   int swap = 0;
 
@@ -2445,7 +2452,7 @@ save_mat_binary_data (ostream& os, const tree_constant& tc, char *name)
   FOUR_BYTE_INT mopt = 0;
 
   mopt += tc.is_string () ? 1 : 0;
-  mopt += 1000 * get_floating_point_format (NATIVE_FLOAT_FORMAT);
+  mopt += 1000 * get_floating_point_format (native_float_format);
 
   os.write (&mopt, 4);
   
@@ -2845,7 +2852,7 @@ write_binary_header (ostream& stream, load_save_format format)
       stream << "Octave-1-L";
 #endif
 
-      char tmp = (char) NATIVE_FLOAT_FORMAT;
+      char tmp = (char) native_float_format;
       stream.write (&tmp, 1);
     }
 }

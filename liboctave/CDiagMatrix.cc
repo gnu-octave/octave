@@ -99,7 +99,7 @@ ComplexDiagMatrix::fill (double val, int beg, int end)
       return *this;
     }
 
-  for (int i = beg; i < end; i++)
+  for (int i = beg; i <= end; i++)
     elem (i, i) = val;
 
   return *this;
@@ -114,7 +114,7 @@ ComplexDiagMatrix::fill (const Complex& val, int beg, int end)
       return *this;
     }
 
-  for (int i = beg; i < end; i++)
+  for (int i = beg; i <= end; i++)
     elem (i, i) = val;
 
   return *this;

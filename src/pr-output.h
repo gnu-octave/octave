@@ -55,12 +55,6 @@ extern void octave_print_internal (ostream& os, const charMatrix& chm,
 				   bool pr_as_string = false,
 				   int extra_indent = 0);
 
-// XXX FIXME XXX -- these should probably be somewhere else.
-
-extern int any_element_is_inf_or_nan (const Matrix& a);
-
-extern int any_element_is_inf_or_nan (const ComplexMatrix& a);
-
 extern void symbols_of_pr_output (void);
 
 #endif

@@ -49,7 +49,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "pr-output.h"
-#include "pt-const.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
@@ -78,101 +77,30 @@ static char *curr_real_fmt = 0;
 static char *curr_imag_fmt = 0;
 
 // Nonzero means don't do any fancy formatting.
-static int free_format = 0;
+static bool free_format = false;
 
 // Nonzero means print plus sign for nonzero, blank for zero.
-static int plus_format = 0;
+static bool plus_format = false;
 
 // Nonzero means always print like dollars and cents.
-static int bank_format = 0;
+static bool bank_format = false;
 
 // Nonzero means print data in hexadecimal format.
-static int hex_format = 0;
+static bool hex_format = false;
 
 // Nonzero means print data in binary-bit-pattern format.
 static int bit_format = 0;
 
 // Nonzero means don't put newlines around the column number headers.
-static int compact_format = 0;
+static bool compact_format = false;
 
 // Nonzero means use an e format.
-static int print_e = 0;
+static bool print_e = false;
 
 // Nonzero means print E instead of e for exponent field.
-static int print_big_e = 0;
-
-static int
-any_element_is_negative (const Matrix& a)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      if (a (i, j) < 0.0)
-	return 1;
-  return 0;
-}
+static bool print_big_e = false;
 
 // XXX FIXME XXX -- these should probably be somewhere else.
-
-int
-any_element_is_inf_or_nan (const Matrix& a)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = a (i, j);
-	if (xisinf (val) || xisnan (val))
-	  return 1;
-      }
-  return 0;
-}
-
-int
-any_element_is_inf_or_nan (const ComplexMatrix& a)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	Complex val = a (i, j);
-	if (xisinf (val) || xisnan (val))
-	  return 1;
-      }
-  return 0;
-}
-
-static int
-all_elements_are_int_or_inf_or_nan (const Matrix& a)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = a (i, j);
-	if (xisnan (val) || D_NINT (val) == val)
-	  continue;
-	else
-	  return 0;
-      }
-  return 1;
-}
-
-static Matrix
-abs (const Matrix& a)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-  Matrix retval (nr, nc);
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      retval (i, j) = fabs (a (i, j));
-  return retval;
-}
 
 static double
 pr_max_internal (const Matrix& m)
@@ -220,7 +148,7 @@ pr_min_internal (const Matrix& m)
 // functions,..
 
 static void
-set_real_format (int sign, int digits, int inf_or_nan, int nan_or_int,
+set_real_format (bool sign, int digits, bool inf_or_nan, bool nan_or_int,
 		 int &fw)
 {
   static char fmt_buf[128];
@@ -310,11 +238,11 @@ set_format (double d, int& fw)
   if (free_format)
     return;
 
-  int sign = (d < 0.0);
+  bool sign = (d < 0.0);
 
-  int inf_or_nan = (xisinf (d) || xisnan (d));
+  bool inf_or_nan = (xisinf (d) || xisnan (d));
 
-  int nan_or_int = (xisnan (d) || D_NINT (d) == d);
+  bool nan_or_int = (xisnan (d) || D_NINT (d) == d);
 
   double d_abs = d < 0.0 ? -d : d;
 
@@ -332,8 +260,8 @@ set_format (double d)
 }
 
 static void
-set_real_matrix_format (int sign, int x_max, int x_min,
-			int inf_or_nan, int int_or_inf_or_nan, int& fw)
+set_real_matrix_format (bool sign, int x_max, int x_min,
+			bool inf_or_nan, int int_or_inf_or_nan, int& fw)
 {
   static char fmt_buf[128];
 
@@ -442,13 +370,13 @@ set_format (const Matrix& m, int& fw)
   if (free_format)
     return;
 
-  int sign = any_element_is_negative (m);
+  bool sign = m.any_element_is_negative ();
 
-  int inf_or_nan = any_element_is_inf_or_nan (m);
+  bool inf_or_nan = m.any_element_is_inf_or_nan ();
 
-  int int_or_inf_or_nan = all_elements_are_int_or_inf_or_nan (m);
+  bool int_or_inf_or_nan = m.all_elements_are_int_or_inf_or_nan ();
 
-  Matrix m_abs = abs (m);
+  Matrix m_abs = m.abs ();
   double max_abs = pr_max_internal (m_abs);
   double min_abs = pr_min_internal (m_abs);
 
@@ -467,8 +395,8 @@ set_format (const Matrix& m)
 }
 
 static void
-set_complex_format (int sign, int x_max, int x_min, int r_x,
-		    int inf_or_nan, int int_only, int& r_fw, int& i_fw)
+set_complex_format (bool sign, int x_max, int x_min, int r_x,
+		    bool inf_or_nan, int int_only, int& r_fw, int& i_fw)
 {
   static char r_fmt_buf[128];
   static char i_fmt_buf[128];
@@ -592,11 +520,11 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double rp = c.real ();
   double ip = c.imag ();
 
-  int sign = (rp < 0.0);
+  bool sign = (rp < 0.0);
 
-  int inf_or_nan = (xisinf (c) || xisnan (c));
+  bool inf_or_nan = (xisinf (c) || xisnan (c));
 
-  int int_only = (D_NINT (rp) == rp && D_NINT (ip) == ip);
+  bool int_only = (D_NINT (rp) == rp && D_NINT (ip) == ip);
 
   double r_abs = rp < 0.0 ? -rp : rp;
   double i_abs = ip < 0.0 ? -ip : ip;
@@ -629,8 +557,8 @@ set_format (const Complex& c)
 }
 
 static void
-set_complex_matrix_format (int sign, int x_max, int x_min,
-			   int r_x_max, int r_x_min, int inf_or_nan,
+set_complex_matrix_format (bool sign, int x_max, int x_min,
+			   int r_x_max, int r_x_min, bool inf_or_nan,
 			   int int_or_inf_or_nan, int& r_fw, int& i_fw)
 {
   static char r_fmt_buf[128];
@@ -755,18 +683,18 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
   Matrix rp = real (cm);
   Matrix ip = imag (cm);
 
-  int sign = any_element_is_negative (rp);
+  bool sign = rp.any_element_is_negative ();
 
-  int inf_or_nan = any_element_is_inf_or_nan (cm);
+  bool inf_or_nan = cm.any_element_is_inf_or_nan ();
 
-  int int_or_inf_or_nan = (all_elements_are_int_or_inf_or_nan (rp)
-			   && all_elements_are_int_or_inf_or_nan (ip));
+  bool int_or_inf_or_nan = (rp.all_elements_are_int_or_inf_or_nan ()
+			    && ip.all_elements_are_int_or_inf_or_nan ());
 
-  Matrix r_m_abs = abs (rp);
+  Matrix r_m_abs = rp.abs ();
   double r_max_abs = pr_max_internal (r_m_abs);
   double r_min_abs = pr_min_internal (r_m_abs);
 
-  Matrix i_m_abs = abs (ip);
+  Matrix i_m_abs = ip.abs ();
   double i_max_abs = pr_max_internal (i_m_abs);
   double i_min_abs = pr_min_internal (i_m_abs);
 
@@ -783,19 +711,6 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
 			     inf_or_nan, int_or_inf_or_nan, r_fw, i_fw);
 }
 
-static int
-all_elements_are_ints (const Range& r)
-{
-  // If the base and increment are ints, the final value in the range
-  // will also be an integer, even if the limit is not.
-
-  double b = r.base ();
-  double i = r.inc ();
-
-  return (! (xisnan (b) || xisnan (i))
-	  && (double) NINT (b) == b && (double) NINT (i) == i);
-}
-
 static inline void
 set_format (const ComplexMatrix& cm)
 {
@@ -804,7 +719,7 @@ set_format (const ComplexMatrix& cm)
 }
 
 static void
-set_range_format (int sign, int x_max, int x_min, int all_ints, int& fw)
+set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
 {
   static char fmt_buf[128];
 
@@ -911,9 +826,9 @@ set_format (const Range& r, int& fw)
       r_min = tmp;
     }
 
-  int sign = (r_min < 0.0);
+  bool sign = (r_min < 0.0);
 
-  int all_ints = all_elements_are_ints (r);
+  bool all_ints = r.all_elements_are_ints ();
 
   double max_abs = r_max < 0.0 ? -r_max : r_max;
   double min_abs = r_min < 0.0 ? -r_min : r_min;
@@ -1186,7 +1101,9 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
   int nr = m.rows ();
   int nc = m.columns ();
 
-  if (nr == 0 || nc == 0)
+  if (nr == 1 && nc == 1 && ! pr_as_read_syntax)
+    octave_print_internal (os, m (0, 0), pr_as_read_syntax);
+  else if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
@@ -1338,7 +1255,9 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
   int nr = cm.rows ();
   int nc = cm.columns ();
 
-  if (nr == 0 || nc == 0)
+  if (nr == 1 && nc == 1 && ! pr_as_read_syntax)
+    octave_print_internal (os, cm (0, 0), pr_as_read_syntax);
+  else if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
@@ -1600,7 +1519,7 @@ DEFUN (disp, args, ,
   int nargin = args.length ();
 
   if (nargin == 1)
-    args(0).eval (1);
+    args(0).print ();
   else
     print_usage ("disp");
 
@@ -1610,25 +1529,20 @@ DEFUN (disp, args, ,
 static void
 init_format_state (void)
 {
-  free_format = 0;
-  plus_format = 0;
-  bank_format = 0;
-  hex_format = 0;
+  free_format = false;
+  plus_format = false;
+  bank_format = false;
+  hex_format = false;
   bit_format = 0;
-  print_e = 0;
-  print_big_e = 0;
+  print_e = false;
+  print_big_e = false;
 }
 
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  octave_value *tmp = 0;
-
-  tmp = new octave_value ((double) prec);
-  bind_builtin_variable ("output_precision", tmp);
-
-  tmp = new octave_value ((double) fw);
-  bind_builtin_variable ("output_max_field_width", tmp);
+  bind_builtin_variable ("output_precision", (double) prec);
+  bind_builtin_variable ("output_max_field_width", (double) fw);
 }
 
 static void
@@ -1648,13 +1562,13 @@ set_format_style (int argc, const string_vector& argv)
 	      if (arg == "e")
 		{
 		  init_format_state ();
-		  print_e = 1;
+		  print_e = true;
 		}
 	      else if (arg == "E")
 		{
 		  init_format_state ();
-		  print_e = 1;
-		  print_big_e = 1;
+		  print_e = true;
+		  print_big_e = true;
 		}
 	      else
 		{
@@ -1677,13 +1591,13 @@ set_format_style (int argc, const string_vector& argv)
 	      if (arg == "e")
 		{
 		  init_format_state ();
-		  print_e = 1;
+		  print_e = true;
 		}
 	      else if (arg == "E")
 		{
 		  init_format_state ();
-		  print_e = 1;
-		  print_big_e = 1;
+		  print_e = true;
+		  print_big_e = true;
 		}
 	      else
 		{
@@ -1700,7 +1614,7 @@ set_format_style (int argc, const string_vector& argv)
       else if (arg == "hex")
 	{
 	  init_format_state ();
-	  hex_format = 1;
+	  hex_format = true;
 	}
       else if (arg == "native-hex")
 	{
@@ -1720,30 +1634,30 @@ set_format_style (int argc, const string_vector& argv)
       else if (arg == "+" || arg == "plus")
 	{
 	  init_format_state ();
-	  plus_format = 1;
+	  plus_format = true;
 	}
       else if (arg == "bank")
 	{
 	  init_format_state ();
-	  bank_format = 1;
+	  bank_format = true;
 	}
       else if (arg == "free")
 	{
 	  init_format_state ();
-	  free_format = 1;
+	  free_format = true;
 	}
       else if (arg == "none")
 	{
 	  init_format_state ();
-	  free_format = 1;
+	  free_format = true;
 	}
       else if (arg == "compact")
 	{
-	  compact_format = 1;
+	  compact_format = true;
 	}
       else if (arg == "loose")
 	{
-	  compact_format = 0;
+	  compact_format = false;
 	}
       else
 	error ("format: unrecognized format state `%s'", arg.c_str ());

@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-expr.h"
 #include "tree-const.h"
 #include "user-prefs.h"
+#include "unwind-prot.h"
 #include "load-save.h"
 #include "symtab.h"
 #include "pager.h"
@@ -2371,6 +2372,78 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
   return (os && ! fail);
 }
 
+// Save the data from TC along with the corresponding NAME on stream OS 
+// in the MatLab binary format.
+
+static int
+save_mat_binary_data (ostream& os, const tree_constant& tc, char *name) 
+{
+  int fail = 0;
+
+  FOUR_BYTE_INT mopt = 0;
+
+  mopt += tc.is_string () ? 1 : 0;
+  mopt += 1000 * get_floating_point_format (NATIVE_FLOAT_FORMAT);
+
+  os.write (&mopt, 4);
+  
+  FOUR_BYTE_INT nr = tc.rows ();
+  os.write (&nr, 4);
+
+  FOUR_BYTE_INT nc = tc.columns ();
+  os.write (&nc, 4);
+
+  int len = nr * nc;
+
+  FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
+  os.write (&imag, 4);
+
+  FOUR_BYTE_INT name_len = name ? strlen (name) + 1 : 0;
+
+  os.write (&name_len, 4);
+  os.write (name, name_len);
+
+  if (tc.is_real_scalar ())
+    {
+      double tmp = tc.double_value ();
+      os.write (&tmp, 8);
+    }
+  else if (tc.is_real_matrix ())
+    {
+      Matrix m = tc.matrix_value ();
+      os.write (m.data (), 8 * len);
+    }
+  else if (tc.is_complex_scalar ())
+    {
+      Complex tmp = tc.complex_value ();
+      os.write (&tmp, 16);
+    }
+  else if (tc.is_complex_matrix ())
+    {
+      ComplexMatrix m_cmplx = tc.complex_matrix_value ();
+      Matrix m = ::real(m_cmplx);
+      os.write (m.data (), 8 * len);
+      m = ::imag(m_cmplx);
+      os.write (m.data (), 8 * len);
+    }
+  else if (tc.is_string ())
+    {
+      begin_unwind_frame ("save_mat_binary_data");
+      unwind_protect_int (user_pref.implicit_str_to_num_ok);
+      user_pref.implicit_str_to_num_ok = 1;
+      Matrix m = tc.matrix_value ();
+      os.write (m.data (), 8 * len);
+      run_unwind_frame ("save_mat_binary_data");
+    }
+  else
+    {
+      gripe_wrong_type_arg ("save", tc);
+      fail = 1;
+    }
+
+  return (os && ! fail);
+}
+
 static void
 ascii_save_type (ostream& os, char *type, int mark_as_global)
 {
@@ -2485,6 +2558,10 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
       save_binary_data (os, tc, name, help, global, save_as_floats);
       break;
 
+    case LS_MAT_BINARY:
+      save_mat_binary_data (os, tc, name);
+      break;
+
     default:
       panic_impossible ();
       break;
@@ -2553,7 +2630,8 @@ get_default_save_format (void)
 }
 
 DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
-  "save [-ascii] [-binary] [-float-binary] [-save-builtins] file [pattern ...]\n\
+  "save [-ascii] [-binary] [-float-binary] [-mat-binary] \
+     [-save-builtins] file [pattern ...]\n\
 \n\
 save variables in a file")
 {
@@ -2584,6 +2662,12 @@ save variables in a file")
       else if (strcmp (*argv, "-binary") == 0 || strcmp (*argv, "-b") == 0)
 	{
 	  format = LS_BINARY;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-mat-binary") == 0 || strcmp (*argv, "-m") == 0)
+	{
+	  format = LS_MAT_BINARY;
 	  argc--;
 	  argv++;
 	}

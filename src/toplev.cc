@@ -906,7 +906,6 @@ information.")
   m ["LDFLAGS"] = LDFLAGS;
   m ["LIBFLAGS"] = LIBFLAGS;
   m ["RLD_FLAG"] = RLD_FLAG;
-  m ["CXXLIBS"] = CXXLIBS;
   m ["TERMLIBS"] = TERMLIBS;
   m ["LIBS"] = LIBS;
   m ["LEXLIB"] = LEXLIB;

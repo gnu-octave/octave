@@ -50,7 +50,7 @@ function bug_report ()
     cmd = "octave-bug";
 
     if (length (subject) > 0)
-      cmd = sprintf ("%s -s \"%s\"", cmd, subject);
+      cmd = sprintf ("%s/bin/%s -s \"%s\"", __OCTAVE_HOME__, cmd, subject);
     endif
 
     if (! isempty (prefs))

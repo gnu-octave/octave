@@ -15,6 +15,15 @@ Summary of changes for version 2.0.6:
     Lapack subroutine for symmetric matrices for a significant
     increase in performance.
 
+  * Octave now has a logical data type.  A true value is represented
+    by 1, and false value by 0.  Comparison operations like <, <=, ==,
+    >, >=, and != now return logical values.  Indexing operations that
+    use zero-one style indexing must now use logical values.  You can
+    use the new function logical() to convert a numeric value to a
+    logical value.  This avoids the need for the built-in variable
+    prefer_zero_one_indexing, so it has been removed.  Logical values
+    are automatically converted to numeric values where appropriate.
+
 Summary of changes for version 2.0.5:
 ------------------------------------
 

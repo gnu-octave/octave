@@ -435,6 +435,9 @@ symbols_of_defaults (void)
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0, imagepath,
     "colon separated list of directories to search for image files");
 
+  DEFCONST (OCTAVE_HOME, Voctave_home, 0, 0,
+    "top-level Octave installation directory");
+
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
     "Octave version");
 }

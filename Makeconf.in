@@ -121,8 +121,6 @@ RLD_FLAG = @RLD_FLAG@
 
 FLIBS = @FLIBS@
 
-CXXLIBS = @CXXLIBS@
-
 TERMLIBS = @TERMLIBS@
 LIBPLPLOT = @LIBPLPLOT@
 LIBDLFCN = @LIBDLFCN@
@@ -325,7 +323,6 @@ sed < $< \
   -e "s;%LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%LIBFLAGS%;\"-L${libdir}\";" \
   -e "s;%RLD_FLAG%;\"${RLD_FLAG}\";" \
-  -e "s;%CXXLIBS%;\"${CXXLIBS}\";" \
   -e "s;%TERMLIBS%;\"${TERMLIBS}\";" \
   -e "s;%LIBS%;\"${LIBS}\";" \
   -e "s;%LEXLIB%;\"${LEXLIB}\";" \

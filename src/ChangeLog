@@ -1,5 +1,10 @@
 Tue Mar 25 17:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defaults.cc (symbols_of_defaults): DEFCONST OCTAVE_HOME.
+
+	* toplev.cc (octave_config_info): Delete use of CXXLIBS.
+	* oct-conf.h.in: Ditto.
+
 	* octave.cc (maximum_braindamage): Don't bind prefer_zero_one_indexing.
 	* ov.h: Don't declare Vprefer_zero_one_indexing.
 	* ov.cc: Don't define Vprefer_zero_one_indexing.

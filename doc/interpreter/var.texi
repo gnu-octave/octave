@@ -423,11 +423,6 @@ Default value: 1.
 
 Default value: 0.
 
-@item prefer_zero_one_indexing
-@xref{Index Expressions}.
-
-Default value: 0.
-
 @item print_answer_id_name
 @xref{Terminal Output}.
 

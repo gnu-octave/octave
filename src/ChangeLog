@@ -1,26 +1,32 @@
 1999-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* balance.cc (Fbalance): Texinfoize doc string.
-	* det.cc (Fdet): Ditto.
-	* eig.cc (Feig): Ditto.
-	* givens.cc (Fgivens): Ditto.
-	* inv.cc (Finv): Ditto.
-	* chol.cc (Fchol): Ditto.
-	* hess.cc (Fhess): Ditto.
-	* lu.cc (Flu): Ditto.
-	* qr.cc (Fqr): Ditto.
-	* schur.cc (Fschur): Ditto.
-	* svd.cc (Fsvd): Ditto.
-	* expm.cc (Fexpm): Ditto.
-	* log.cc (Flogm, Fsqrtm): Ditto.
-	* syl.cc (Fsyl): Ditto.
-	* pinv.cc (Fpinv): Ditto.
-	* qz.cc (Fqz): Ditto.
+	* DLD-FUNCTIONS/balance.cc (Fbalance): Texinfoize doc string.
+	* DLD-FUNCTIONS/det.cc (Fdet): Ditto.
+	* DLD-FUNCTIONS/eig.cc (Feig): Ditto.
+	* DLD-FUNCTIONS/givens.cc (Fgivens): Ditto.
+	* DLD-FUNCTIONS/inv.cc (Finv): Ditto.
+	* DLD-FUNCTIONS/chol.cc (Fchol): Ditto.
+	* DLD-FUNCTIONS/hess.cc (Fhess): Ditto.
+	* DLD-FUNCTIONS/lu.cc (Flu): Ditto.
+	* DLD-FUNCTIONS/qr.cc (Fqr): Ditto.
+	* DLD-FUNCTIONS/schur.cc (Fschur): Ditto.
+	* DLD-FUNCTIONS/svd.cc (Fsvd): Ditto.
+	* DLD-FUNCTIONS/expm.cc (Fexpm): Ditto.
+	* DLD-FUNCTIONS/log.cc (Flogm, Fsqrtm): Ditto.
+	* DLD-FUNCTIONS/syl.cc (Fsyl): Ditto.
+	* DLD-FUNCTIONS/pinv.cc (Fpinv): Ditto.
+	* DLD-FUNCTIONS/qz.cc (Fqz): Ditto.
+	* DLD-FUNCTIONS/dassl.cc (Fdassl, Fdassl_options): Ditto.
+	* DLD-FUNCTIONS/lsode.cc (Flsode, Flsode_options): Ditto.
+	* data.cc (Flength, Fsize, Fisempty): Ditto.
 	* sysdep.cc (Fkbhit): Ditto.
 	* input.cc (Fkeyboard, Finput): Ditto.
 	* variables.cc (ans): Ditto.
 	* pr-output.cc (Fdisp, Fformat): Ditto.
 	* ov.cc (Vprint_answer_id_name): Ditto.
+	* defaults.cc (IMAGEPATH): Ditto.
+	* error.cc (Ferror, Fwarning, Fusage, error_text, beep_on_error):
+	Ditto.
 	* load-save.cc (Fload, Fsave, Vdefault_save_format,
 	Vsave_precision): Ditto.
 	* file-io.cc (Ffflush, Ffopen, Ffclose, Ffputs, Ffgetl, Ffgets,

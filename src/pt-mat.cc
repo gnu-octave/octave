@@ -663,7 +663,6 @@ string_fill_char = \"X\";\n\
 @end group\n\
 @end example\n\
 @end defvr");
-
 }
 
 /*

@@ -123,52 +123,13 @@ expression.  These functions are defined for all objects.  They return
 data structure type doesn't have rows or columns, so the @code{rows} and
 @code{columns} functions return @minus{}1 for structure arguments.
 
-@deftypefn {Function File} {} columns (@var{a})
-Return the number of columns of @var{a}.
-@end deftypefn
+@DOCSTRING(columns)
 
-@deftypefn {Function File} {} rows (@var{a})
-Return the number of rows of @var{a}.
-@end deftypefn
+@DOCSTRING(rows)
 
-@deftypefn {Function File} {} length (@var{a})
-Return the number of rows of @var{a} or the number of columns of
-@var{a}, whichever is larger.
-@end deftypefn
+@DOCSTRING(length)
 
-@deftypefn {Function File} {} size (@var{a}, @var{n})
-Return the number rows and columns of @var{a}.
+@DOCSTRING(size)
 
-With one input argument and one output argument, the result is returned
-in a 2 element row vector.  If there are two output arguments, the
-number of rows is assigned to the first, and the number of columns to
-the second.  For example,
-
-@example
-@group
-size ([1, 2; 3, 4; 5, 6])
-     @result{} [ 3, 2 ]
-
-[nr, nc] = size ([1, 2; 3, 4; 5, 6])
-     @result{} nr = 3
-     @result{} nc = 2
-@end group
-@end example
-
-If given a second argument of either 1 or 2, @code{size} will return
-only the row or column dimension.  For example
-
-@example
-size ([1, 2; 3, 4; 5, 6], 2)
-     @result{} 2
-@end example
-
-@noindent
-returns the number of columns in the given matrix.
-@end deftypefn
-
-@deftypefn {Function File} {} isempty (@var{a})
-Return 1 if @var{a} is an empty matrix (either the number of rows, or
-the number of columns, or both are zero).  Otherwise, return 0.
-@end deftypefn
+@DOCSTRING(isempty)
 

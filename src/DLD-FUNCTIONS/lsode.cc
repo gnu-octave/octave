@@ -157,14 +157,30 @@ lsode_user_jacobian (const ColumnVector& x, double t)
   while (0)
 
 DEFUN_DLD (lsode, args, nargout,
-  "lsode (F, X0, T_OUT, T_CRIT)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})\n\
+Return a matrix of @var{x} as a function of @var{t}, given the initial\n\
+state of the system @var{x0}.  Each row in the result matrix corresponds\n\
+to one of the elements in the vector @var{t}.  The first element of\n\
+@var{t} corresponds to the initial state @var{x0}, so that the first row\n\
+of the output is @var{x0}.\n\
 \n\
-The first argument is the name of the function to call to\n\
-compute the vector of right hand sides.  It must have the form\n\
+The first argument, @var{fcn}, is a string that names the function to\n\
+call to compute the vector of right hand sides for the set of equations.\n\
+It must have the form\n\
 \n\
-  xdot = f (x, t)\n\
+@example\n\
+@var{xdot} = f (@var{x}, @var{t})\n\
+@end example\n\
 \n\
-where xdot and x are vectors and t is a scalar.\n")
+@noindent\n\
+where @var{xdot} and @var{x} are vectors and @var{t} is a scalar.\n\
+\n\
+The fourth argument is optional, and may be used to specify a set of\n\
+times that the ODE solver should not integrate past.  It is useful for\n\
+avoiding difficulties with singularities and points where there is a\n\
+discontinuity in the derivative.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -452,10 +468,14 @@ show_lsode_option (const string& keyword)
 }
 
 DEFUN_DLD (lsode_options, args, ,
-  "lsode_options (KEYWORD, VALUE)\n\
-\n\
-Set or show options for lsode.  Keywords may be abbreviated\n\
-to the shortest match.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} lsode_options (@var{opt}, @var{val})\n\
+When called with two arguments, this function allows you set options\n\
+parameters for the function @code{lsode}.  Given one argument,\n\
+@code{lsode_options} returns the value of the corresponding option.  If\n\
+no arguments are supplied, the names of all the available options and\n\
+their current values are displayed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

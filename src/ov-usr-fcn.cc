@@ -641,7 +641,6 @@ will either return nothing, if the value of\n\
 @code{return_last_computed_value} is 0, or 4, if the value of\n\
 @code{return_last_computed_value} is nonzero.\n\
 @end defvr");
-
 }
 
 /*

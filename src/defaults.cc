@@ -489,17 +489,20 @@ built-in variable @code{LOADPATH}.\n\
 @end defvr");
   
   DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, imagepath,
-    "colon separated list of directories to search for image files");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} IMAGEPATH
+A colon separated list of directories in which to search for image\n\
+files.\n\
+@end defvr");
 
   DEFCONST (OCTAVE_HOME, Voctave_home,
     "top-level Octave installation directory");
 
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
     "-*- texinfo -*-\n\
-@defvr\n\
+@defvr {Built-in Variable} OCTAVE_VERSION\n\
 The version number of Octave, as a string.\n\
 @end defvr");
-
 }
 
 DEFUN (rehash, , ,

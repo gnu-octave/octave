@@ -209,7 +209,6 @@ endfunction\n\
 is executed, Octave will either print @samp{ans = 4} or nothing\n\
 depending on the value of @code{silent_functions}.\n\
 @end defvr");
-
 }
 
 /*

@@ -265,31 +265,105 @@ handle_message (error_fun f, const char *msg, const octave_value_list& args)
 }
 
 DEFUN (error, args, ,
-  "error (FMT, ...): print message according to FMT and set error state.\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} error (@var{template}, @dots{})\n\
+The @code{error} function formats the optional arguments under the\n\
+control of the template string @var{template} using the same rules as\n\
+the @code{printf} family of functions (@pxref{Formatted Output}).\n\
+The resulting message is prefixed by the string @samp{error: } and\n\
+printed on the @code{stderr} stream.\n\
 \n\
-This should eventually take us up to the top level, possibly\n\
-printing traceback messages as we go.\n\
+Calling @code{error} also sets Octave's internal error state such that\n\
+control will return to the top level without evaluating any more\n\
+commands.  This is useful for aborting from functions or scripts.\n\
 \n\
-If the resulting error message ends in a newline character, traceback\n\
-messages are not printed.\n\
+If the error message does not end with a new line character, Octave will\n\
+print a traceback of all the function calls leading to the error.  For\n\
+example, given the following function definitions:\n\
 \n\
-See also: printf") 
+@example\n\
+@group\n\
+function f () g () end\n\
+function g () h () end\n\
+function h () nargin == 1 || error (\"nargin != 1\"); end\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+calling the function @code{f} will result in a list of messages that\n\
+can help you to quickly locate the exact location of the error:\n\
+\n\
+@example\n\
+@group\n\
+f ()\n\
+error: nargin != 1\n\
+error: evaluating index expression near line 1, column 30\n\
+error: evaluating binary operator `||' near line 1, column 27\n\
+error: called from `h'\n\
+error: called from `g'\n\
+error: called from `f'\n\
+@end group\n\
+@end example\n\
+\n\
+If the error message ends in a new line character, Octave will print the\n\
+message but will not display any traceback messages as it returns\n\
+control to the top level.  For example, modifying the error message\n\
+in the previous example to end in a new line causes Octave to only print\n\
+a single message:\n\
+\n\
+@example\n\
+@group\n\
+function h () nargin == 1 || error (\"nargin != 1\\n\"); end\n\
+f ()\n\
+error: nargin != 1\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   return handle_message (error, "unspecified error", args);
 }
 
 DEFUN (warning, args, ,
-  "warning (FMT, ...): print a warning message according to FMT.\n\
-\n\
-See also: error, printf")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} warning (@var{msg})\n\
+Print a warning message @var{msg} prefixed by the string @samp{warning: }.  \n\
+After printing the warning message, Octave will continue to execute\n\
+commands.  You should use this function should when you want to notify\n\
+the user of an unusual condition, but only when it makes sense for your\n\
+program to go on.\n\
+@end deftypefn")
 {
   return handle_message (warning, "unspecified warning", args);
 }
 
 DEFUN (usage, args, ,
-  "usage (FMT, ...): print a usage message according to FMT.\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} usage (@var{msg})\n\
+Print the message @var{msg}, prefixed by the string @samp{usage: }, and\n\
+set Octave's internal error state such that control will return to the\n\
+top level without evaluating any more commands.  This is useful for\n\
+aborting from functions.\n\
 \n\
-See also: error, printf")
+After @code{usage} is evaluated, Octave will print a traceback of all\n\
+the function calls leading to the usage message.\n\
+\n\
+You should use this function for reporting problems errors that result\n\
+from an improper call to a function, such as calling a function with an\n\
+incorrect number of arguments, or with arguments of the wrong type.  For\n\
+example, most functions distributed with Octave begin with code like\n\
+this\n\
+\n\
+@example\n\
+@group\n\
+if (nargin != 2)\n\
+  usage (\"foo (a, b)\");\n\
+endif\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+to check for the proper number of arguments.\n\
+@end deftypefn")
 {
   return handle_message (usage, "unknown", args);
 }
@@ -331,14 +405,31 @@ void
 symbols_of_error (void)
 {
   DEFVAR (beep_on_error, 0.0, beep_on_error,
-    "if true, beep before printing error messages");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} beep_on_error\n\
+If the value of @code{beep_on_error} is nonzero, Octave will try\n\
+to ring your terminal's bell before printing an error message.  The\n\
+default value is 0.\n\
+@end defvr");
 
   DEFCONST (error_text, "",
-    "the text of error messages that would have been printed in the\n\
-body of the most recent unwind_protect statement or the TRY part of\n\
-the most recent eval() command.  Outside of unwind_protect and\n\
-eval(), or if no error has ocurred within them, the value of\n\
-__error_text__ is guaranteed to be the empty string.");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} error_text\n\
+This variable contains the text of error messages that would have\n\
+been printed in the body of the most recent @code{unwind_protect} or\n\
+@code{try} statement or the @var{try} part of the most recent call to\n\
+the @code{eval} function.  Outside of the @code{unwind_protect} and\n\
+@code{try} statements or the @code{eval} function, or if no error has\n\
+occurred within them, the value of @code{error_text} is guaranteed to be\n\
+the empty string.\n\
+\n\
+Note that the message does not include the first @samp{error: } prefix,\n\
+so that it may easily be passed to the @code{error} function without\n\
+additional processing@footnote{Yes, it's a kluge, but it seems to be a\n\
+reasonably useful one.}.\n\
+\n\
+@xref{The try Statement} and @ref{The unwind_protect Statement}.\n\
+@end defvr");
 }
 
 /*

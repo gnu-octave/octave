@@ -190,7 +190,7 @@ symbols_of_pt_decl (void)
 {
   DEFVAR (default_global_variable_value, , 0,
     "-*- texinfo -*-\n\
-@defvr default_global_variable_value\n\
+@defvr {Built-in Variable} default_global_variable_value\n\
 The default for value for otherwise uninitialized global variables.\n\
 Only used if the variable initialize_global_variables is nonzero.\n\
 If @code{initialize_global_variables} is nonzero, the value of\n\

@@ -1337,7 +1337,6 @@ Octave will always check to see if functions defined in function files\n\
 need to recompiled.  The default value of @code{ignore_function_time_stamp} is\n\
 @code{\"system\"}.\n\
 @end defvr");
-
 }
 
 /*

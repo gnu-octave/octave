@@ -17,7 +17,9 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Image format conversion
+## @deftypefn {Function File} {[@var{img}, @var{map}] =} gray2ind (@var{})
+## Convert a gray scale intensity image to an Octave indexed image.
+## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

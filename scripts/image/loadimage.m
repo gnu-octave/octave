@@ -17,12 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Load an image file.
-##
-## [img, map] = loadimage (img_file) loads an image and it's associated
-## color map from file img_file.  The image must be in stored in
-## octave's image format.
-##
+## @deftypefn {Function File} {[@var{x}, @var{map}] =} loadimage (@var{file})
+## Load an image file and it's associated color map from the specified
+## @var{file}.  The image must be stored in Octave's image format.
+## @end deftypefn
+
 ## SEE ALSO: saveimage, load, save
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

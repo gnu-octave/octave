@@ -592,13 +592,12 @@ DEFUN (prod, args, ,
 }
 
 DEFUN (length, args, ,
-  "length (x): return the `length' of the object X\n\
-\n\
-For matrix objects, the length is the number of rows or columns,\n\
-whichever is greater (this odd definition is used for compatibility\n\
-with Matlab).\n\
-\n\
-See also: size, rows, columns, is_scalar, is_vector, is_matrix")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} length (@var{a})\n\
+Return the `lenghth' of the object @var{a}.  For matrix objects, the\n\
+length is the number of rows or columns, whichever is greater (this\n\
+odd definition is used for compatibility with Matlab).\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -616,12 +615,37 @@ See also: size, rows, columns, is_scalar, is_vector, is_matrix")
 }
 
 DEFUN (size, args, nargout,
-  "[m, n] = size (x): return rows and columns of X\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} size (@var{a}, @var{n})\n\
+Return the number rows and columns of @var{a}.\n\
 \n\
-d = size (x): return number of rows and columns of x as a row vector\n\
+With one input argument and one output argument, the result is returned\n\
+in a 2 element row vector.  If there are two output arguments, the\n\
+number of rows is assigned to the first, and the number of columns to\n\
+the second.  For example,\n\
 \n\
-m = size (x, 1): return number of rows in x\n\
-m = size (x, 2): return number of columns in x")
+@example\n\
+@group\n\
+size ([1, 2; 3, 4; 5, 6])\n\
+     @result{} [ 3, 2 ]\n\
+\n\
+[nr, nc] = size ([1, 2; 3, 4; 5, 6])\n\
+     @result{} nr = 3\n\
+     @result{} nc = 2\n\
+@end group\n\
+@end example\n\
+\n\
+If given a second argument of either 1 or 2, @code{size} will return\n\
+only the row or column dimension.  For example\n\
+\n\
+@example\n\
+size ([1, 2; 3, 4; 5, 6], 2)\n\
+     @result{} 2\n\
+@end example\n\
+\n\
+@noindent\n\
+returns the number of columns in the given matrix.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -789,7 +813,11 @@ DEFUN (isreal, args, ,
 }
 
 DEFUN (isempty, args, ,
-  "isempty (x): return nonzero if x is an empty matrix, string, or list")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isempty (@var{a})\n\
+Return 1 if @var{a} is an empty matrix (either the number of rows, or\n\
+the number of columns, or both are zero).  Otherwise, return 0.\n\
+@end deftypefn")
 {
   double retval = 0.0;
 
@@ -836,7 +864,7 @@ DEFUN (is_list, args, ,
 
 DEFUN (is_matrix, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Usage} {} is_matrix (@var{a})\n\
+@deftypefn {Built-in Function} {} is_matrix (@var{a})\n\
 Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 @end deftypefn")
 {

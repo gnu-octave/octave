@@ -17,7 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Colormap.
+## @deftypefn {Function File} {} gray (@var{n})
+## Return a gray colormap with @var{n} entries corresponding to values from
+## 0 to @var{n}-1.  The argument @var{n} should be a scalar.  If it is
+## omitted, 64 is assumed.
+## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

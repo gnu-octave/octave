@@ -17,122 +17,32 @@ other image formats are welcome.  If you can provide them, or would like
 to improve Octave's image processing capabilities in other ways, please
 contact @email{bug-octave@@bevo.che.wisc.edu}.
 
-@deftypefn {Function File} {} colormap (@var{map})
-@deftypefnx {Function File} {} colormap ("default")
-Set the current colormap.
+@DOCSTRING(colormap)
 
-@code{colormap (@var{map})} sets the current colormap to @var{map}.  The
-color map should be an @var{n} row by 3 column matrix.  The columns
-contain red, green, and blue intensities respectively.  All entries
-should be between 0 and 1 inclusive.  The new colormap is returned.
+@DOCSTRING(gray)
 
-@code{colormap ("default")} restores the default colormap (a gray scale
-colormap with 64 entries).  The default colormap is returned.
+@DOCSTRING(gray2ind)
 
-With no arguments, @code{colormap} returns the current color map.
-@end deftypefn
+@DOCSTRING(image)
 
-@deftypefn {Function File} {} gray (@var{n})
-Return a gray colormap with @var{n} entries corresponding to values from
-0 to @var{n}-1.  The argument @var{n} should be a scalar.  If it is
-omitted, 64 is assumed.
-@end deftypefn
+@DOCSTRING(imagesc)
 
-@deftypefn {Function File} {[@var{img}, @var{map}] =} gray2ind (@var{})
-Convert a gray scale intensity image to an Octave indexed image.
-@end deftypefn
+@DOCSTRING(imshow)
 
-@deftypefn {Function File} {} image (@var{x}, @var{zoom})
-Display a matrix as a color image.  The elements of @var{x} are indices
-into the current colormap and should have values between 1 and the
-length of the colormap.  If @var{zoom} is omitted, a value of 4 is
-assumed. 
-@end deftypefn
+@DOCSTRING(ind2gray)
 
-@deftypefn {Function File} {} imagesc (@var{x}, @var{zoom})
-Display a scaled version of the matrix @var{x} as a color image.  The
-matrix is scaled so that its entries are indices into the current
-colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
-value of 4 is assumed.
-@end deftypefn
+@DOCSTRING(ind2rgb)
 
-@deftypefn {Function File} {} imshow (@var{x}, @var{map})
-@deftypefnx {Function File} {} imshow (@var{x}, @var{n})
-@deftypefnx {Function File} {} imshow (@var{i}, @var{n})
-@deftypefnx {Function File} {} imshow (@var{r}, @var{g}, @var{b})
-Display images.
+@DOCSTRING(loadimage)
 
-@code{imshow (@var{x})} displays an indexed image using the current
-colormap.
+@DOCSTRING(rgb2ntsc)
 
-@code{imshow (@var{x}, @var{map})} displays an indexed image using the
-specified colormap.
+@DOCSTRING(ntsc2rgb)
 
-@code{imshow (@var{i}, @var{n})} displays a gray scale intensity image.
+@DOCSTRING(ocean)
 
-@code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
-@end deftypefn
+@DOCSTRING(rgb2ind)
 
-@deftypefn {Function File} {} ind2gray (@var{x}, @var{map})
-Convert an Octave indexed image to a gray scale intensity image.
-If @var{map} is omitted, the current colormap is used to determine the
-intensities.
-@end deftypefn
+@DOCSTRING(saveimage)
 
-@deftypefn {Function File} {[@var{r}, @var{g}, @var{b}] =} ind2rgb (@var{x}, @var{map})
-Convert an indexed image to red, green, and blue color components.
-If @var{map} is omitted, the current colormap is used for the conversion.
-@end deftypefn
-
-@deftypefn {Function File} {[@var{x}, @var{map}] =} loadimage (@var{file})
-Load an image file and it's associated color map from the specified
-@var{file}.  The image must be stored in Octave's image format.
-@end deftypefn
-
-@deftypefn {Function File} {} rgb2ntsc (@var{rgb})
-Image format conversion.
-@end deftypefn
-
-@deftypefn {Function File} {} ntsc2rgb (@var{yiq})
-Image format conversion.
-@end deftypefn
-
-@deftypefn {Function File} {} ocean (@var{n})
-Create color colormap.  The argument @var{n} should be a scalar.  If it
-is omitted, 64 is assumed.
-@end deftypefn
-
-@deftypefn {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{r}, @var{g}, @var{b})
-Convert and RGB image to an Octave indexed image.
-@end deftypefn
-
-@deftypefn {Function File} {} saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})
-Save the matrix @var{x} to @var{file} in image format @var{fmt}.  Valid
-values for @var{fmt} are
-
-@table @code
-@item "img"
-Octave's image format.  The current colormap is also saved in the file.
-
-@item "ppm"
-Portable pixmap format.
-
-@item "ps"
-PostScript format.  Note that images saved in PostScript format can not
-be read back into Octave with loadimage.
-@end table
-
-If the fourth argument is supplied, the specified colormap will also be
-saved along with the image.
-
-Note: if the colormap contains only two entries and these entries are
-black and white, the bitmap ppm and PostScript formats are used.  If the
-image is a gray scale image (the entries within each row of the colormap
-are equal) the gray scale ppm and PostScript image formats are used,
-otherwise the full color formats are used.
-@end deftypefn
-
-@defvr {Built-in Variable} IMAGEPATH			
-A colon separated list of directories in which to search for image
-files.
-@end defvr
+@DOCSTRING(IMAGEPATH)

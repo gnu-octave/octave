@@ -17,10 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Convert and RGB image to an octave indexed image.
-##
-## [X, map] = rgb2ind (R, G, B)
-##
+## @deftypefn {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{r}, @var{g}, @var{b})
+## Convert and RGB image to an Octave indexed image.
+## @end deftypefn
+
 ## SEE ALSO: ind2rgb, rgb2ntsc.
 ##
 ## Bugs: The color map may have duplicate entries.

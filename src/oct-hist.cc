@@ -725,7 +725,6 @@ If the value of @code{saving_history} is nonzero, command entered\n\
 on the command line are saved in the file specified by the variable\n\
 @code{history_file}.\n\
 @end defvr");
-
 }
 
 /*

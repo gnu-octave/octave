@@ -17,10 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: perror (name, err)
-##
-## Print an error message for error number `err' from function "name".
-##
+## @deftypefn {Function File} {} perror (@var{name}, @var{num})
+## Print the error message for function @var{name} corresponding to the
+## error number @var{num}.  This function is intended to be used to print
+## useful error messages for those functions that return numeric error
+## codes.
+## @end deftypefn
+
 ## See also: strerror
 
 ## Author: jwe

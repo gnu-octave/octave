@@ -17,16 +17,23 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## @deftypefn {Function File} {} imshow (@var{x}, @var{map})
+## @deftypefnx {Function File} {} imshow (@var{x}, @var{n})
+## @deftypefnx {Function File} {} imshow (@var{i}, @var{n})
+## @deftypefnx {Function File} {} imshow (@var{r}, @var{g}, @var{b})
 ## Display images.
-##
-## imshow (X) displays an indexed image using the current colormap.
-##
-## imshow (X, map) displays an indexed image using the specified colormap.
-##
-## imshow (I, n) displays a gray scale intensity image.
-##
-## imshow (R, G, B) displays an RGB image.
-##
+## 
+## @code{imshow (@var{x})} displays an indexed image using the current
+## colormap.
+## 
+## @code{imshow (@var{x}, @var{map})} displays an indexed image using the
+## specified colormap.
+## 
+## @code{imshow (@var{i}, @var{n})} displays a gray scale intensity image.
+## 
+## @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
+## @end deftypefn
+
 ## SEE ALSO: image, imagesc, colormap, gray2ind, rgb2ind.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

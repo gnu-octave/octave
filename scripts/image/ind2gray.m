@@ -17,15 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Convert an octave indexed image to a gray scale intensity image.
-##
-## Y = ind2gray (X) converts an indexed image to a gray scale intensity
-## image.  The current colormap is used to determine the intensities.
-## The intensity values lie between 0 and 1 inclusive.
-##
-## Y = ind2gray (X, map) uses the specified colormap instead of the
-## current one in the conversion process.
-##
+## @deftypefn {Function File} {} ind2gray (@var{x}, @var{map})
+## Convert an Octave indexed image to a gray scale intensity image.
+## If @var{map} is omitted, the current colormap is used to determine the
+## intensities.
+## @end deftypefn
+
 ## SEE ALSO: gray2ind, rgb2ntsc, image, colormap
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

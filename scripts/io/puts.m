@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
--*- texinfo -*-\n\
-## @deftypefn {Built-in Function} {} puts (@var{string})
+## -*- texinfo -*-
+## @deftypefn {Function File} {} puts (@var{string})
 ## Write a string to the standard output with no formatting.
 ## @end deftypefn
 

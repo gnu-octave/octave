@@ -1064,7 +1064,6 @@ If the value of @code{suppress_verbose_help_message} is nonzero, Octave\n\
 will not add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
 @end defvr");
-
 }
 
 /*

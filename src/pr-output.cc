@@ -2083,7 +2083,6 @@ ans =\n\
 @noindent\n\
 The default value of @code{split_long_rows} is nonzero.\n\
 @end defvr");
-
 }
 
 /*

@@ -340,7 +340,6 @@ clear all the functions before any one of them can be reloaded.  If\n\
 @code{warn_reload_forces_clear}, Octave will warn you when this happens,\n\
 and print a list of the additional functions that it is forced to clear.\n\
 @end defvr");
-
 }
 
 /*

@@ -221,7 +221,7 @@ atanh (X): compute the inverse hyperbolic tanget of X for each element of X\n\
 
   DEFUN_MAPPER (ceil, 0, 0, 0, ceil, 0, ceil, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Usage} {} ceil (@var{x})\n\
+@deftypefn {Mapping Function} {} ceil (@var{x})\n\
 Return the smallest integer not less than @var{x}.  If @var{x} is\n\
 complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 @end deftypefn");
@@ -297,7 +297,7 @@ See also: erf, erfinv");
 
   DEFUN_MAPPER (exp, 0, 0, 0, exp, 0, exp, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Usage} {} exp (@var{x})\n\
+@deftypefn {Mapping Function} {} exp (@var{x})\n\
 Compute the exponential of @var{x}.  To compute the matrix exponential,\n\
 see @ref{Linear Algebra}.\n\
 @end deftypefn");
@@ -318,14 +318,14 @@ finite ([13, Inf, NaN])\n\
 
   DEFUN_MAPPER (fix, 0, 0, 0, fix, 0, fix, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Usage} {} fix (@var{x})\n\
+@deftypefn {Mapping Function} {} fix (@var{x})\n\
 Truncate @var{x} toward zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (floor, 0, 0, 0, floor, 0, floor, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
-@deftypefn {Usage} {} floor (@var{x})\n\
+@deftypefn {Mapping Function} {} floor (@var{x})\n\
 Return the largest integer not greater than @var{x}.  If @var{x} is\n\
 complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
 @end deftypefn");

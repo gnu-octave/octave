@@ -17,7 +17,9 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## @deftypefn {Function File} {} rgb2ntsc (@var{rgb})
 ## Image format conversion.
+## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

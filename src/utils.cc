@@ -694,7 +694,6 @@ produce an empty matrix (i.e., row and column dimensions are zero).\n\
 Otherwise, an error message is printed and control is returned to the\n\
 top level.  The default value is 0.\n\
 @end defvr");
-
 }
 
 /*

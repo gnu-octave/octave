@@ -17,14 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Scale and display a matrix as an image.
-##
-## imagesc(x) displays a scaled version of the matrix x.  The matrix is
-## scaled so that its entries are indices into the current colormap.
-## The scaled matrix is returned.
-##
-## imagesc (x, zoom) sets the magnification, the default value is 4.
-##
+## @deftypefn {Function File} {} imagesc (@var{x}, @var{zoom})
+## Display a scaled version of the matrix @var{x} as a color image.  The
+## matrix is scaled so that its entries are indices into the current
+## colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
+## value of 4 is assumed.
+## @end deftypefn
+
 ## SEE ALSO: image, imshow
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

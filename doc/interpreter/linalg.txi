@@ -19,58 +19,58 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 @node Basic Matrix Functions, Matrix Factorizations, Linear Algebra, Linear Algebra
 @section Basic Matrix Functions
 
-DOCSTRING(balance)
+@DOCSTRING(balance)
 
-DOCSTRING(cond)
+@DOCSTRING(cond)
 
-DOCSTRING(det)
+@DOCSTRING(det)
 
-DOCSTRING(eig)
+@DOCSTRING(eig)
 
-DOCSTRING(givens)
+@DOCSTRING(givens)
 
-DOCSTRING(inv)
+@DOCSTRING(inv)
 
-DOCSTRING(norm)
+@DOCSTRING(norm)
 
-DOCSTRING(null)
+@DOCSTRING(null)
 
-DOCSTRING(orth)
+@DOCSTRING(orth)
 
-DOCSTRING(pinv)
+@DOCSTRING(pinv)
 
-DOCSTRING(rank)
+@DOCSTRING(rank)
 
-DOCSTRING(trace)
+@DOCSTRING(trace)
 
 @node Matrix Factorizations, Functions of a Matrix, Basic Matrix Functions, Linear Algebra
 @section Matrix Factorizations
 
-DOCSTRING(chol)
+@DOCSTRING(chol)
 
-DOCSTRING(hess)
+@DOCSTRING(hess)
 
-DOCSTRING(lu)
+@DOCSTRING(lu)
 
-DOCSTRING(qr)
+@DOCSTRING(qr)
 
-DOCSTRING(qz)
+@DOCSTRING(qz)
 
-DOCSTRING(qzhess)
+@DOCSTRING(qzhess)
 
-DOCSTRING(schur)
+@DOCSTRING(schur)
 
-DOCSTRING(svd)
+@DOCSTRING(svd)
 
 @node Functions of a Matrix,  , Matrix Factorizations, Linear Algebra
 @section Functions of a Matrix
 
-DOCSTRING(expm)
+@DOCSTRING(expm)
 
-DOCSTRING(logm)
+@DOCSTRING(logm)
 
-DOCSTRING(sqrtm)
+@DOCSTRING(sqrtm)
 
-DOCSTRING(kron)
+@DOCSTRING(kron)
 
-DOCSTRING(syl)
+@DOCSTRING(syl)

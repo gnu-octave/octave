@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Usage} {} is_vector (@var{a})
+## @deftypefn {Function File} {} is_vector (@var{a})
 ## Return 1 if @var{a} is a vector.  Otherwise, return 0.
 ## @end deftypefn
 

@@ -2864,7 +2864,6 @@ initial default save format is Octave's text format.\n\
 This variable specifies the number of digits to keep when saving data in\n\
 text format.  The default value is 17.\n\
 @end defvr");
-
 }
 
 /*

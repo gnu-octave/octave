@@ -17,10 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: columns (x)
-##
-## Return the the number of columns in x.
-##
+## @deftypefn {Function File} {} columns (@var{a})
+## Return the number of columns of @var{a}.
+## @end deftypefn
+
 ## See also: size, rows, length, is_scalar, is_vector, is_matrix
 
 ## Author: jwe

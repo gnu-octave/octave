@@ -133,15 +133,42 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   while (0)
 
 DEFUN_DLD (dassl, args, ,
-  "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
-dassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})\n\
+Return a matrix of states and their first derivatives with respect to\n\
+@var{t}.  Each row in the result matrices correspond to one of the\n\
+elements in the vector @var{t}.  The first element of @var{t}\n\
+corresponds to the initial state @var{x0} and derivative @var{xdot0}, so\n\
+that the first row of the output @var{x} is @var{x0} and the first row\n\
+of the output @var{xdot} is @var{xdot0}.\n\
 \n\
-The first argument is the name of the function to call to\n\
-compute the vector of residuals.  It must have the form\n\
+The first argument, @var{fcn}, is a string that names the function to\n\
+call to compute the vector of residuals for the set of equations.\n\
+It must have the form\n\
 \n\
-  res = f (x, xdot, t)\n\
+@example\n\
+@var{res} = f (@var{x}, @var{xdot}, @var{t})\n\
+@end example\n\
 \n\
-where x, xdot, and res are vectors, and t is a scalar.")
+@noindent\n\
+where @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a\n\
+scalar.\n\
+\n\
+The second and third arguments to @code{dassl} specify the initial\n\
+condition of the states and their derivatives, and the fourth argument\n\
+specifies a vector of output times at which the solution is desired, \n\
+including the time corresponding to the initial condition.\n\
+\n\
+The set of initial states and derivatives are not strictly required to\n\
+be consistent.  In practice, however, @sc{Dassl} is not very good at\n\
+determining a consistent set for you, so it is best if you ensure that\n\
+the initial values result in the function evaluating to zero.\n\
+\n\
+The fifth argument is optional, and may be used to specify a set of\n\
+times that the DAE solver should not integrate past.  It is useful for\n\
+avoiding difficulties with singularities and points where there is a\n\
+discontinuity in the derivative.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -351,10 +378,14 @@ show_dassl_option (const string& keyword)
 }
 
 DEFUN_DLD (dassl_options, args, ,
-  "dassl_options (KEYWORD, VALUE)\n\
-\n\
-Set or show options for dassl.  Keywords may be abbreviated\n\
-to the shortest match.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} dassl_options (@var{opt}, @var{val})\n\
+When called with two arguments, this function allows you set options\n\
+parameters for the function @code{lsode}.  Given one argument,\n\
+@code{dassl_options} returns the value of the corresponding option.  If\n\
+no arguments are supplied, the names of all the available options and\n\
+their current values are displayed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

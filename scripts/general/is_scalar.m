@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Usage} {} is_scalar (@var{a})
+## @deftypefn {Function File} {} is_scalar (@var{a})
 ## Return 1 if @var{a} is a scalar.  Otherwise, return 0.
 ## @end deftypefn
 

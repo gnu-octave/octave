@@ -1351,7 +1351,6 @@ of gnuplot has the multiplot support that is included in recent\n\
 can be changed in your startup script or at the command line in case\n\
 configure got it wrong, or if you upgrade your gnuplot installation.\n\
 @end defvr");
-
 }
 
 /*

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Usage} {} is_square (@var{x})
+## @deftypefn {Function File} {} is_square (@var{x})
 ## If @var{x} is a square matrix, then return the dimension of @var{x}.
 ## Otherwise, return 0.
 ## @end deftypefn

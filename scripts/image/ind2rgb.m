@@ -17,12 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## @deftypefn {Function File} {[@var{r}, @var{g}, @var{b}] =} ind2rgb (@var{x}, @var{map})
 ## Convert an indexed image to red, green, and blue color components.
-##
-## [R G B] = ind2rgb(X) uses the current colormap for the conversion.
-##
-## [R G B] = ind2rgb(X,map) uses the specified colormap.
-##
+## If @var{map} is omitted, the current colormap is used for the conversion.
+## @end deftypefn
+
 ## SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

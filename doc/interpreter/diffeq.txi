@@ -40,29 +40,7 @@ dt
 @noindent
 using Hindmarsh's ODE solver @sc{Lsode}.
 
-@deftypefn {Loadable Function} {} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})
-Return a matrix of @var{x} as a function of @var{t}, given the initial
-state of the system @var{x0}.  Each row in the result matrix corresponds
-to one of the elements in the vector @var{t}.  The first element of
-@var{t} corresponds to the initial state @var{x0}, so that the first row
-of the output is @var{x0}.
-
-The first argument, @var{fcn}, is a string that names the function to
-call to compute the vector of right hand sides for the set of equations.
-It must have the form
-
-@example
-@var{xdot} = f (@var{x}, @var{t})
-@end example
-
-@noindent
-where @var{xdot} and @var{x} are vectors and @var{t} is a scalar.
-
-The fourth argument is optional, and may be used to specify a set of
-times that the ODE solver should not integrate past.  It is useful for
-avoiding difficulties with singularities and points where there is a
-discontinuity in the derivative.
-@end deftypefn
+@DOCSTRING(lsode)
 
 Here is an example of solving a set of three differential equations using
 @code{lsode}.  Given the function
@@ -107,13 +85,7 @@ t = [0, logspace (-1, log10(303), 150), \
 @end group
 @end example
 
-@deftypefn {Loadable Function} {} lsode_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{lsode}.  Given one argument,
-@code{lsode_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
+@DOCSTRING(lsode_options)
 
 See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
 Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
@@ -140,49 +112,9 @@ $$
 @noindent
 using Petzold's DAE solver @sc{Dassl}.
 
-@deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})
-Return a matrix of states and their first derivatives with respect to
-@var{t}.  Each row in the result matrices correspond to one of the
-elements in the vector @var{t}.  The first element of @var{t}
-corresponds to the initial state @var{x0} and derivative @var{xdot0}, so
-that the first row of the output @var{x} is @var{x0} and the first row
-of the output @var{xdot} is @var{xdot0}.
+@DOCSTRING(dassl)
 
-The first argument, @var{fcn}, is a string that names the function to
-call to compute the vector of residuals for the set of equations.
-It must have the form
-
-@example
-@var{res} = f (@var{x}, @var{xdot}, @var{t})
-@end example
-
-@noindent
-where @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a
-scalar.
-
-The second and third arguments to @code{dassl} specify the initial
-condition of the states and their derivatives, and the fourth argument
-specifies a vector of output times at which the solution is desired, 
-including the time corresponding to the initial condition.
-
-The set of initial states and derivatives are not strictly required to
-be consistent.  In practice, however, @sc{Dassl} is not very good at
-determining a consistent set for you, so it is best if you ensure that
-the initial values result in the function evaluating to zero.
-
-The fifth argument is optional, and may be used to specify a set of
-times that the DAE solver should not integrate past.  It is useful for
-avoiding difficulties with singularities and points where there is a
-discontinuity in the derivative.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} dassl_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{lsode}.  Given one argument,
-@code{dassl_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
+@DOCSTRING(dassl_options)
 
 See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
 Problems in Differential-Algebraic Equations}, North-Holland (1989) for

@@ -9,6 +9,24 @@
 	* linear-algebra/trace.m: Ditto.
 	* linear-algebra/qzhess.m: Ditto.
 	* miscellaneous/menu.m: Ditto.
+	* general/perror.m: Ditto.
+	* general/strerror.m: Ditto.
+	* general/columns.m: Ditto.
+	* general/rows.m: Ditto.
+	* image/colormap.m: Ditto.
+	* image/gray.m: Ditto.
+	* image/gray2ind.m: Ditto.
+	* image/image.m: Ditto.
+	* image/imagesc.m: Ditto.
+	* image/imshow.m: Ditto.
+	* image/ind2gray.m: Ditto.
+	* image/ind2rgb.m: Ditto.
+	* image/loadimage.m: Ditto.
+	* image/rgb2ntsc.m: Ditto.
+	* image/ntsc2rgb.m: Ditto.
+	* image/ocean.m: Ditto.
+	* image/rgb2ind.m: Ditto.
+	* image/saveimage.m: Ditto.
 	* io/printf.m: Ditto.
 	* io/puts.m: Ditto.
 

@@ -555,7 +555,6 @@ pager.  This allows you to view one screenful at a time.  Some pagers\n\
 (such as @code{less}---see @ref{Installation}) are also capable of moving\n\
 backward on the output.  The default value is 1.\n\
 @end defvr");
-
 }
 
 /*

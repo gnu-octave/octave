@@ -17,14 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## Display an octave image matrix.
-##
-## image (x) displays a matrix as a color image. The elements of x are
-## indices into the current colormap and should have values between 1
-## and the length of the colormap.
-##
-## image (x, zoom) changes the zoom factor.  The default value is 4.
-##
+## @deftypefn {Function File} {} image (@var{x}, @var{zoom})
+## Display a matrix as a color image.  The elements of @var{x} are indices
+## into the current colormap and should have values between 1 and the
+## length of the colormap.  If @var{zoom} is omitted, a value of 4 is
+## assumed. 
+## @end deftypefn
+
 ## SEE ALSO: imshow, imagesc, colormap.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

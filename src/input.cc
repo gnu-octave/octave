@@ -1014,7 +1014,6 @@ equivalent to the command @kbd{echo on all}.\n\
 The value of @code{echo_executing_commands} is set by the @kbd{echo}\n\
 command and the command line option @code{--echo-input}.\n\
 @end defvr");
-
 }
 
 /*

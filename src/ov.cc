@@ -1616,7 +1616,6 @@ If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
 is issued when Octave encounters a division by zero.  If the value is\n\
 0, the warning is omitted.  The default value is 1.\n\
 @end defvr");
-
 }
 
 /*

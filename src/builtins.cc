@@ -524,7 +524,7 @@ where xdot and x are vectors and t is a scalar.\n", },
   { "ones", 3, 1, builtin_ones,
     "ones (n), ones (n, m), ones (x): create a matrix of all ones", },
 
-  { "pause", 1, 0, builtin_pause,
+  { "pause", 1, 1, builtin_pause,
     "pause (seconds): suspend program execution", },
 
   { "purge_tmp_files", 5, 1, builtin_purge_tmp_files,

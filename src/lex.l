@@ -855,6 +855,7 @@ plot_style_token (const std::string& s)
 {
   std::string retval;
 
+  // XXX FIXME XXX -- specify minimum match length for these.
   static const char *plot_styles[] = 
     {
       "boxes",
@@ -901,6 +902,7 @@ plot_axes_token (const std::string& s)
 {
   std::string retval;
 
+  // XXX FIXME XXX -- specify minimum match length for these.
   static const char *plot_axes[] = 
     {
       "x1y1",
@@ -934,21 +936,21 @@ static int
 is_plot_keyword (const std::string& s)
 {
   const char *t = s.c_str ();
-  if (almost_match ("title", t))
+  if (almost_match ("title", t, 1))
     {
       return TITLE;
     }
-  else if (almost_match ("using", t))
+  else if (almost_match ("using", t, 1))
     {
       lexer_flags.in_plot_using = true;
       return USING;
     }
-  else if (almost_match ("with", t))
+  else if (almost_match ("with", t, 1))
     {
       lexer_flags.in_plot_style = true;
       return WITH;
     }
-  else if (almost_match ("axes", t) || almost_match ("axis", t))
+  else if (almost_match ("axes", t, 2) || almost_match ("axis", t, 2))
     {
       lexer_flags.in_plot_axes = true;
       return AXES;
@@ -1568,7 +1570,7 @@ handle_number (void)
   lexer_flags.convert_spaces_to_comma = 1;
 
   if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-    lexer_flags.past_plot_range = 1;
+    lexer_flags.past_plot_range = true;
 
   yylval.tok_val = new token (value, yytext, input_line_number,
 			      current_input_column);
@@ -2047,7 +2049,7 @@ handle_identifier (const std::string& tok, int spc_gobbled)
 
       if (nesting_level.none ())
 	plot_option_kw = is_plot_keyword (tok);
-
+      
       if (lexer_flags.cant_be_identifier && plot_option_kw)
 	TOK_RETURN (plot_option_kw);
     }

@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <cctype>
 
@@ -31,26 +31,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 static const char doc_delim = '';
 
-static CHMap<string> help_text = CHMap<string> (string ());
+static CHMap<std::string> help_text = CHMap<std::string> (std::string ());
 
 static void
-fatal (const string& msg)
+fatal (const std::string& msg)
 {
-  cerr << msg << "\n";
+  std::cerr << msg << "\n";
   exit (1);
 }
 
 static void
 usage (void)
 {
-  cerr << "usage: munge-texi -d DOCSTRING-FILE file ...\n";
+  std::cerr << "usage: munge-texi -d DOCSTRING-FILE file ...\n";
   exit (1);
 }
 
-static string
+static std::string
 extract_symbol_name (istream& is)
 {
-  string symbol_name;
+  std::string symbol_name;
 
   int c;
   while ((c = is.get ()) != EOF && c != '\n')
@@ -59,10 +59,10 @@ extract_symbol_name (istream& is)
   return symbol_name;
 }
 
-static string
-extract_docstring (istream& is)
+static std::string
+extract_docstring (std::istream& is)
 {
-  string doc;
+  std::string doc;
 
   int c;
   while ((c = is.get ()) != EOF && c != doc_delim)
@@ -72,16 +72,16 @@ extract_docstring (istream& is)
 }
 
 static void
-process_doc_file (const string& fname)
+process_doc_file (const std::string& fname)
 {
-  ifstream infile (fname.c_str ());
+  std::ifstream infile (fname.c_str ());
 
   if (infile)
     {
       if (infile.get () != doc_delim)
 	fatal ("invalid doc file format");
 
-      string symbol_name;
+      std::string symbol_name;
 
       do
 	{
@@ -89,10 +89,11 @@ process_doc_file (const string& fname)
 
 	  if (! symbol_name.empty ())
 	    {
-	      string doc_string = extract_docstring (infile);
+	      std::string doc_string = extract_docstring (infile);
 
 	      if (help_text.contains (symbol_name))
-		cerr << "ignoring duplicate entry for " << symbol_name << "\n";
+		std::cerr << "ignoring duplicate entry for "
+			  << symbol_name << "\n";
 	      else
 		help_text[symbol_name] = doc_string;
 	    }
@@ -104,7 +105,7 @@ process_doc_file (const string& fname)
 }
 
 static void
-process_texi_input_file (istream& is, ostream& os)
+process_texi_input_file (std::istream& is, std::ostream& os)
 {
   os << "@c DO NOT EDIT!  Generated automatically by munge-texi.\n\n";
 
@@ -117,7 +118,7 @@ process_texi_input_file (istream& is, ostream& os)
 	{
 	  if (c == '@')
 	    {
-	      string symbol_name;
+	      std::string symbol_name;
 
 	      char buf[16];
 	      int i = 0;
@@ -141,7 +142,7 @@ process_texi_input_file (istream& is, ostream& os)
 		    fatal ("end of file while reading @DOCSTRING command");
 		  else
 		    {
-		      string doc_string = help_text[symbol_name];
+		      std::string doc_string = help_text[symbol_name];
 
 		      int i = 0;
 		      while (doc_string[i] == ' ')
@@ -204,7 +205,7 @@ main (int argc, char **argv)
 	break;
     }
 
-  process_texi_input_file (cin, cout);
+  process_texi_input_file (std::cin, std::cout);
 
   return 0;
 }

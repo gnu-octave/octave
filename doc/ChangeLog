@@ -1,3 +1,7 @@
+2000-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/munge-texi.cc: Sprinkle with std:: qualifier.
+
 2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (clean-texi): Avoid removing octave.texi.

@@ -1,16 +1,16 @@
 #include <string>
-#include <iostream.h>
+#include <iostream>
 
 #ifndef NPOS
-#define NPOS string::npos
+#define NPOS std::string::npos
 #endif
 
 static bool
-looks_like_octave_copyright (const string& s)
+looks_like_octave_copyright (const std::string& s)
 {
   bool retval = false;
 
-  string t = s.substr (0, 14);
+  std::string t = s.substr (0, 14);
 
   if (t == "Copyright (C) ")
     {
@@ -39,10 +39,10 @@ looks_like_octave_copyright (const string& s)
 // Eat whitespace and comments from FFILE, returning the text of the
 // first block of comments that doesn't look like a copyright notice,
 
-static string
+static std::string
 extract_help_text (void)
 {
-  string help_txt;
+  std::string help_txt;
 
   bool first_comments_seen = false;
   bool begin_comment = false;
@@ -51,7 +51,7 @@ extract_help_text (void)
   bool discard_space = true;
   int c;
 
-  while ((c = cin.get ()) != EOF)
+  while ((c = std::cin.get ()) != EOF)
     {
       if (begin_comment)
 	{
@@ -79,7 +79,7 @@ extract_help_text (void)
 	      in_comment = false;
 	      discard_space = true;
 
-	      if ((c = cin.get ()) != EOF)
+	      if ((c = std::cin.get ()) != EOF)
 		{
 		  if (c == '\n')
 		    break;
@@ -132,17 +132,17 @@ extract_help_text (void)
 int
 main (int argc, char **argv)
 {
-  string name;
+  std::string name;
 
   if (argc != 2)
     {
-      cerr << "usage: gethelp name\n";
+      std::cerr << "usage: gethelp name\n";
       return 1;
     }
   else
     name = argv[1];
 
-  string help_text = extract_help_text ();  
+  std::string help_text = extract_help_text ();  
 
   if (! help_text.empty ())
     {

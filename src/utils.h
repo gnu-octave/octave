@@ -38,7 +38,7 @@ extern string file_in_path (const string&, const string&);
 extern string fcn_file_in_path (const string&);
 extern string oct_file_in_path (const string&);
 
-extern "C" void jump_to_top_level (void) GCC_ATTR_NORETURN;
+extern void jump_to_top_level (void) GCC_ATTR_NORETURN;
 
 extern int almost_match (const string& std, const string& s,
 			 int min_match_len = 1, int case_sens = 1);
@@ -59,6 +59,10 @@ extern string undo_string_escapes (const string& s);
 extern int check_preference (const string& var);
 
 extern "C" void octave_usleep (unsigned int useconds);
+
+extern "C" int octave_strcasecmp (const char *s1, const char *s2);
+
+extern "C" int octave_strncasecmp (const char *s1, const char *s2, size_t n);
 
 #endif
 

@@ -1,3 +1,11 @@
+1999-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (jump_to_top_level): No longer declared extern "C".
+
+	* cutils.c (octave_strcasecmp, octave_strncasecmp): New functions.
+	* utils.cc (almost_match): Call octave_strncasecmp instead of
+	calling strncasecmp directly.
+
 1999-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y: Don't define warn_reload_forces_clear here.

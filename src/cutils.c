@@ -39,6 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/poll.h>
 #endif
 
+#include <string.h>
+
 static void
 do_octave_usleep (unsigned int useconds)
 {
@@ -76,6 +78,18 @@ octave_usleep (unsigned int useconds)
     sleep (sec);
 
   do_octave_usleep (usec);
+}
+
+int
+octave_strcasecmp (const char *s1, const char *s2)
+{
+  return strcasecmp (s1, s2);
+}
+
+int
+octave_strncasecmp (const char *s1, const char *s2, size_t n)
+{
+  return strncasecmp (s1, s2, n);
 }
 
 /*

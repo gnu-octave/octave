@@ -51,10 +51,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 LOSE! LOSE!
 #endif
 
-#ifndef HAVE_STRNCASECMP
-extern "C" int strncasecmp (const char*, const char*, size_t);
-#endif
-
 #include "SLStack.h"
 
 #include "dir-ops.h"
@@ -85,7 +81,7 @@ extern jmp_buf toplevel;
 
 // Return to the main command loop in octave.cc.
 
-extern "C" void
+void
 jump_to_top_level (void)
 {
   unwind_protect::run_all ();
@@ -104,7 +100,7 @@ almost_match (const string& std, const string& s, int min_match_len,
 	  && slen >= min_match_len
 	  && (case_sens
 	      ? (strncmp (std.c_str (), s.c_str (), slen) == 0)
-	      : (strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
+	      : (octave_strncasecmp (std.c_str (), s.c_str (), slen) == 0)));
 }
 
 // Ugh.

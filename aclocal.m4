@@ -979,6 +979,7 @@ AC_DEFUN(OCTAVE_ENABLE_READLINE, [
     [  --enable-readline       use readline library (default is yes)],
     [if test "$enableval" = no; then
        USE_READLINE=false
+       warn_readline="command editing and history features require GNU Readline"
      fi])
   if $USE_READLINE; then
     AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [

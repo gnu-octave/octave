@@ -1231,7 +1231,7 @@ tree_index_expression::eval (int print)
 
 	  if (error_state)
 	    eval_error ();
-	  else if (nargin > 0)
+	  else
 	    {
 	      if (all_args_defined (args))
 		{
@@ -1248,8 +1248,6 @@ tree_index_expression::eval (int print)
 		  eval_error ();
 		}
 	    }
-	  else
-	    panic_impossible ();  // XXX FIXME XXX -- is this correct?
 	}
     }
   else
@@ -1285,7 +1283,7 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 
 	  if (error_state)
 	    eval_error ();
-	  else if (nargin > 0)
+	  else
 	    {
 	      if (all_args_defined (args))
 		{
@@ -1300,8 +1298,6 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 		  eval_error ();
 		}
 	    }
-	  else
-	    panic_impossible ();  // XXX FIXME XXX -- is this correct?
 	}
     }
   else

@@ -1,5 +1,7 @@
 Fri Oct 25 01:13:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* config.h.bot: Add definition for GCC_ATTRIBUTE_UNUSED.
+
 	* configure.in: Define RUSAGE_TIMES_ONLY if cygwin32.
 
 Thu Oct 24 21:17:53 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

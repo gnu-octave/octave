@@ -1,3 +1,9 @@
+Fri Oct 25 01:24:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array3.h (Array3::checkelem): Tag bogus return value with
+	GCC_ATTRIBUTE_UNUSED.
+	* Array2.h (Array2::checkelem): Likewise.
+	
 Thu Oct 24 19:40:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Quad.h (Quad): Define virtual destructor.

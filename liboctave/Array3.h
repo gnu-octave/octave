@@ -132,8 +132,7 @@ public:
       if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
 	{
 	  (*current_liboctave_error_handler) ("range error");
-	  T foo;
-	  static T *bar = &foo;
+	  T foo GCC_ATTRIBUTE_UNUSED;
 	  return foo;
 	}
       return Array2<T>::elem (i, d1*k+j);

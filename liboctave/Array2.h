@@ -151,8 +151,7 @@ public:
 	{
 	  (*current_liboctave_error_handler)
 	    ("T Array2<T>::checkelem (%d, %d): range error", i, j);
-	  T foo;
-	  static T *bar = &foo;
+	  T foo GCC_ATTRIBUTE_UNUSED;
 	  return foo;
 	}
       else

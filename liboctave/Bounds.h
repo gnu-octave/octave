@@ -1,7 +1,7 @@
 // Bounds.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,37 +32,46 @@ class ostream;
 
 #include "dColVector.h"
 
-class Bounds
+class
+Bounds
 {
 public:
 
-  Bounds (void) { nb = 0; }
+  Bounds (void)
+    : lb (), ub () { }
 
-  Bounds (int n) : lb (nb, 0.0), ub (nb, 0.0) { nb = n; }
+  Bounds (int n)
+    : lb (n, 0.0), ub (n, 0.0) { }
 
-  Bounds (const ColumnVector lb, const ColumnVector ub);
+  Bounds (const ColumnVector l, const ColumnVector u)
+    : lb (l), ub (u)
+      {
+        if (lb.capacity () != ub.capacity ())
+	  {
+	    error ("inconsistent sizes for lower and upper bounds");
+	    return;
+	  }
+      }
 
   Bounds (const Bounds& a)
-    {
-      nb = a.size ();
-      lb = a.lower_bounds ();
-      ub = a.upper_bounds ();
-    }
+    : lb (a.lb), ub (a.ub) { }
 
   Bounds& operator = (const Bounds& a)
     {
-      nb = a.size ();
-      lb = a.lower_bounds ();
-      ub = a.upper_bounds ();
-
+      if (this != &a)
+	{
+	  lb = a.lower_bounds ();
+	  ub = a.upper_bounds ();
+	}
       return *this;
     }
 
+  ~Bounds (void) { }
+
   Bounds& resize (int n)
     {
-      nb = n;
-      lb.resize (nb);
-      ub.resize (nb);
+      lb.resize (n);
+      ub.resize (n);
 
       return *this;
     }
@@ -73,7 +82,7 @@ public:
   ColumnVector lower_bounds (void) const { return lb; }
   ColumnVector upper_bounds (void) const { return ub; }
 
-  int size (void) const { return nb; }
+  int size (void) const { return lb.capacity (); }
 
   Bounds& set_bound (int index, double low, double high)
     {
@@ -125,12 +134,9 @@ protected:
   ColumnVector lb;
   ColumnVector ub;
 
-  int nb;
-
 private:
 
   void error (const char *msg);
-
 };
 
 #endif

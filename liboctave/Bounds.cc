@@ -42,19 +42,6 @@ Bounds::error (const char* msg)
   (*current_liboctave_error_handler) ("fatal bounds error: ", msg);
 }
 
-Bounds::Bounds (const ColumnVector l, const ColumnVector u)
-{
-  if (l.capacity () != u.capacity ())
-    {
-      error ("inconsistent sizes for lower and upper bounds");
-      return;
-    }
-
-  nb = l.capacity ();
-  lb = l;
-  ub = u;
-}
-
 Bounds&
 Bounds::set_bounds (const ColumnVector l, const ColumnVector u)
 {

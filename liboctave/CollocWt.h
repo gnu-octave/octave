@@ -1,7 +1,7 @@
 // CollocWt.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,117 +33,58 @@ class ostream;
 #include "dMatrix.h"
 #include "dColVector.h"
 
-class CollocWt
+class
+CollocWt
 {
 public:
 
   CollocWt::CollocWt (void)
-    {
-      n = 0;
-      inc_left = 0;
-      inc_right = 0;
-      lb = 0.0;
-      rb = 1.0;
-
-      Alpha = 0.0;
-      Beta = 0.0;
-
-      initialized = 0;
-    }
+    : n (0), inc_left (0), inc_right (0), lb (0.0), rb (1.0),
+      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
   CollocWt::CollocWt (int nc, int il, int ir)
-    {
-      n = nc;
-      inc_left = il;
-      inc_right = ir;
-      lb = 0.0;
-      rb = 1.0;
-
-      Alpha = 0.0;
-      Beta = 0.0;
-
-      initialized = 0;
-    }
+    : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
+      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
   CollocWt::CollocWt (int nc, int il, int ir, double l, double r)
-    {
-      n = nc;
-      inc_left = il;
-      inc_right = ir;
-      lb = l;
-      rb = r;
-
-      Alpha = 0.0;
-      Beta = 0.0;
-
-      initialized = 0;
-    }
+    : n (nc), inc_left (il), inc_right (ir), lb (l), rb (r),
+      Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
   CollocWt::CollocWt (int nc, double a, double b, int il, int ir)
-    {
-      n = nc;
-      inc_left = il;
-      inc_right = ir;
-      lb = 0.0;
-      rb = 1.0;
-
-      Alpha = a;
-      Beta = b;
-
-      initialized = 0;
-    }
+    : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
+      Alpha (a), Beta (b), initialized (0) { }
 
   CollocWt::CollocWt (int nc, double a, double b, int il, int ir,
 		      double l, double r)  
-    {
-      n = nc;
-      inc_left = il;
-      inc_right = ir;
-      lb = l;
-      rb = r;
-
-      Alpha = a;
-      Beta = b;
-
-      initialized = 0;
-    }
+    : n (nc), inc_left (il), inc_right (ir), lb (l), rb (r),
+      Alpha (a), Beta (b), r (), q (), A (), B (), initialized (0) { }
 
   CollocWt::CollocWt (const CollocWt& a)
-    {
-      n = a.n;
-      inc_left = a.inc_left;
-      inc_right = a.inc_right;
-      lb = a.lb;
-      rb = a.rb;
-      r = a.r;
-      q = a.q;
-      A = a.A;
-      B = a.B;
-
-      nt = n + inc_left + inc_right;
-
-      initialized = a.initialized;
-    }
+    : n (a.n), inc_left (a.inc_left), inc_right (a.inc_right),
+      lb (a.lb), rb (a.rb), Alpha (a.Alpha), Beta (a.Beta),
+      r (a.r), q (a.q), A (a.A), B (a.B),
+      initialized (a.initialized) { } 
 
   CollocWt&
   CollocWt::operator = (const CollocWt& a)
     {
-      n = a.n;
-      inc_left = a.inc_left;
-      inc_right = a.inc_right;
-      lb = a.lb;
-      rb = a.rb;
-      r = a.r;
-      q = a.q;
-      A = a.A;
-      B = a.B;
-
-      nt = a.nt;
-
-      initialized = a.initialized;
-
+      if (this != &a)
+	{
+	  n = a.n;
+	  inc_left = a.inc_left;
+	  inc_right = a.inc_right;
+	  lb = a.lb;
+	  rb = a.rb;
+	  r = a.r;
+	  q = a.q;
+	  A = a.A;
+	  B = a.B;
+	  initialized = a.initialized;
+	}
       return *this;
     }
+
+  ~CollocWt (void) { }
 
   CollocWt& resize (int ncol)
     {
@@ -225,7 +166,6 @@ public:
 protected:
 
   int n;
-  int nt;
 
   int inc_left;
   int inc_right;

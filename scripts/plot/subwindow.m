@@ -38,15 +38,11 @@ function subwindow (xn, yn)
 
   ## global variables to keep track of multiplot options
 
-  global __multiplot_mode__
-  global __multiplot_xsize__
-  global __multiplot_ysize__
-  global __multiplot_xn__
-  global __multiplot_yn__
-
-  if (! exist ("__multiplot_mode__"))
-    __multiplot_mode__ = 0;
-  endif
+  global __multiplot_mode__ = 0;
+  global __multiplot_xsize__;
+  global __multiplot_ysize__;
+  global __multiplot_xn__;
+  global __multiplot_yn__;
 
   ## check calling argument count
 

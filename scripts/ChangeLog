@@ -1,3 +1,13 @@
+Wed Nov 19 00:19:18 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/colormap.m: Initialize __current_color_map__ in global
+	statement.
+	* miscellaneous/toc.m: Initialize __tic_toc_timestamp__ in global
+	statement.
+	* plot/axis.m: Initialize __current_axis__ in global statement.
+	* plot/mplot.m, plot/multiplot.m, plot/oneplot.m, plot/subplot.m,
+	plot/subwindow.m: Initialize __multiplot_mode__ in global statement.
+
 Tue Nov 18 01:35:50 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* time/tic.m: Rename _time_tic_called to __tic_toc_timestamp__.

@@ -33,11 +33,7 @@ function oneplot ()
 
   if (gnuplot_has_multiplot)
 
-    global __multiplot_mode__
-
-    if (! exist ("__multiplot_mode__"))
-      __multiplot_mode__ = 0;
-    endif
+    global __multiplot_mode__ = 0;
 
     if (__multiplot_mode__)
       gset nomultiplot;

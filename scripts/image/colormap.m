@@ -35,7 +35,7 @@
 
 function cmap = colormap (map)
 
-  global __current_color_map__
+  global __current_color_map__ = gray ();
 
   if (nargin > 1)
     usage ("colormap (map)");
@@ -44,7 +44,7 @@ function cmap = colormap (map)
   if (nargin == 1)
     if (isstr (map))
       if (strcmp (map, "default"))
-        __current_color_map__ = gray;
+        __current_color_map__ = gray ();
       else
         error ("invalid argument");
       endif
@@ -52,9 +52,6 @@ function cmap = colormap (map)
       ## Set the new color map
       __current_color_map__ = map;
     endif
-  elseif (! exist ("__current_color_map__"))
-    ## If global color map doesn't exist, create the default map.
-    __current_color_map__ = gray;
   endif
 
   ## Return current color map.

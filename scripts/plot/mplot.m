@@ -41,17 +41,13 @@ function mplot (...)
 
   ## global variables to keep track of multiplot options
 
-  global __multiplot_mode__
-  global __multiplot_xsize__
-  global __multiplot_ysize__
-  global __multiplot_xn__
-  global __multiplot_yn__
-  global __multiplot_xi__
-  global __multiplot_yi__
-
-  if (! exist ("__multiplot_mode__"))
-    __multiplot_mode__ = 0;
-  endif
+  global __multiplot_mode__ = 0;
+  global __multiplot_xsize__;
+  global __multiplot_ysize__;
+  global __multiplot_xn__;
+  global __multiplot_yn__;
+  global __multiplot_xi__;
+  global __multiplot_yi__;
 
   gset nologscale;
   gset nopolar;

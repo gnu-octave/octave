@@ -36,11 +36,7 @@ function curr_axis = axis (ax)
   ## This may not be correct if someone has used the gnuplot interface
   ## directly...
 
-  global __current_axis__;
-
-  if (! exist ("__current_axis__"))
-    __current_axis__ = [-10, 10, -10, 10];
-  endif
+  global __current_axis__ = [-10, 10, -10, 10];
 
   if (nargin > 1)
     usage ("axis ([xmin, xmax, ymin, ymax, zmin, zmax])");

@@ -32,7 +32,9 @@ extern int kbhit (void);
 extern char *octave_getcwd (char *, int);
 extern int octave_chdir (const char *);
 
-extern "C" int gethostname ();
+#if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
+extern int gethostname ();
+#endif
 
 // Octave's idea of infinity.
 extern double octave_Inf;

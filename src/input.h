@@ -69,10 +69,7 @@ extern int promptflag;
 // A line of input.
 extern char *current_input_line;
 
-extern "C"
-{
 char *gnu_readline (const char *s);
-}
 
 #endif
 

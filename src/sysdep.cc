@@ -633,7 +633,6 @@ DEFUN ("isieee", Fisieee, Sisieee, 1, 1,
 }
 
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-extern "C"
 int
 gethostname (char *name, int namelen)
 {

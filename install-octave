@@ -211,7 +211,7 @@ cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug
 
 echo "installing info as $archlibdir/info"
-cp info $archlibdir/info
+cp info/info $archlibdir/info
 chmod 755 $archlibdir/info
 
 echo "installing shared libraries in $libdir"

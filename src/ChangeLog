@@ -1,5 +1,8 @@
 2002-07-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-mat.cc (Vempty_list_elements_ok): Default value is now 1.
+	* octave.cc (maximum_braindamage): No longer need to set value here.
+
 	* ov-usr-fcn.cc (Fva_arg, Fva_start, Fvr_val): Warn that these
 	functions are deprecated.
 	* lex.l (EL): Warn that `...' is deprecated.

@@ -624,7 +624,7 @@ string_fill_char (void)
 void
 symbols_of_pt_mat (void)
 {
-  DEFVAR (empty_list_elements_ok, "warn", empty_list_elements_ok,
+  DEFVAR (empty_list_elements_ok, 1.0, empty_list_elements_ok,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} empty_list_elements_ok\n\
 This variable controls whether Octave ignores empty matrices in a matrix\n\
@@ -640,7 +640,7 @@ a = [1, [], 3, [], 5]\n\
 @noindent\n\
 and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.\n\
 \n\
-The default value is @code{\"warn\"}.\n\
+The default value is 1.\n\
 @end defvr");
 
   DEFVAR (implicit_num_to_str_ok, 0.0, implicit_num_to_str_ok,

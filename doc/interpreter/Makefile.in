@@ -18,21 +18,22 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES =
+SOURCES = arith.txi audio.txi basics.txi bugs.txi control.txi \
+	cp-idx.txi data.txi diffeq.txi emacs.txi errors.txi \
+	eval.txi expr.txi fn-idx.txi func.txi gpl.txi \
+	grammar.txi image.txi install.txi intro.txi io.txi \
+	linalg.txi matrix.txi nonlin.txi numbers.txi octave.txi \
+	op-idx.txi optim.txi plot.txi poly.txi preface.txi \
+	quad.txi set.txi signal.txi stats.txi stmt.txi \
+	strings.txi struct.txi system.txi tips.txi var.txi \
+	vr-idx.txi
 
-TEXINFO = arith.texi audio.texi basics.texi bugs.texi control.texi \
-	cp-idx.texi data.texi diffeq.texi emacs.texi errors.texi \
-	eval.texi expr.texi fn-idx.texi func.texi gpl.texi \
-	grammar.texi image.texi install.texi intro.texi io.texi \
-	linalg.texi matrix.texi nonlin.texi numbers.texi octave.texi \
-	op-idx.texi optim.texi plot.texi poly.texi preface.texi \
-	quad.texi set.texi signal.texi stats.texi stmt.texi \
-	strings.texi struct.texi system.texi tips.texi var.texi \
-	vr-idx.texi
+
+TEXINFO = $(SOURCES:.txi=.texi)
 
 FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
 
-DISTFILES = Makefile.in dir octave.1 $(TEXINFO) $(FORMATTED)
+DISTFILES = Makefile.in dir octave.1 $(SOURCES) $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
   BINDISTFILES = $(addprefix $(srcdir)/, octave.1 $(FORMATTED))
@@ -55,13 +56,21 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 all: octave.info octave.dvi octave.ps octave_toc.html
 .PHONY: all
 
+$(TEXINFO): munge-texi
+
+%.texi : %.txi
+	./munge-texi \
+	  -d $(TOPDIR)/src/DOCSTRINGS \
+	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
+	$(top_srcdir)/move-if-change $@.t $@
+
 octave.info: $(TEXINFO) ../conf.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/octave.texi
+	-makeinfo -I$(srcdir) -I$(srcdir)/.. octave.texi
 
 octave.dvi: $(TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
 	  export TEXINPUTS; \
-	  $(TEXI2DVI) $(srcdir)/octave.texi
+	  $(TEXI2DVI) octave.texi
 
 octave.ps: octave.dvi
 	-dvips -o octave.ps octave.dvi
@@ -82,7 +91,7 @@ octave.ps: octave.dvi
 
 octave_toc.html:
 	-texi2html -expandinfo -split_chapter -I$(srcdir)/.. \
-	  $(srcdir)/octave.texi
+	  octave.texi
 
 check: all
 .PHONY: check

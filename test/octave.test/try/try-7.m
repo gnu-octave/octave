@@ -6,5 +6,5 @@ try
   clear a
   a;
 catch
-  mangle (__error_text__)
+  mangle (lasterr)
 end_try_catch

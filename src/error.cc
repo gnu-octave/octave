@@ -95,7 +95,7 @@ int warning_state = 0;
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
-bool buffer_error_messages = false;
+int buffer_error_messages = 0;
 
 // TRUE means error messages are turned off.
 bool discard_error_messages = false;
@@ -111,7 +111,7 @@ reset_error_handler (void)
 {
   error_state = 0;
   warning_state = 0;
-  buffer_error_messages = false;
+  buffer_error_messages = 0;
   discard_error_messages = false;
 }
 
@@ -200,7 +200,7 @@ verror (const char *name, const char *fmt, va_list args)
 
 	  // XXX FIXME XXX -- this is ugly, but it prevents
 	  //
-	  //   eval ("error (\"msg\")", "error (__error_text__)");
+	  //   eval ("error (\"msg\")", "error (lasterr ())");
 	  //
 	  // from printing `error: ' twice.  Assumes that the NAME we
 	  // have been given doesn't contain `:'.
@@ -428,7 +428,7 @@ panic (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  buffer_error_messages = false;
+  buffer_error_messages = 0;
   discard_error_messages = false;
   verror ("panic", fmt, args);
   va_end (args);
@@ -669,6 +669,10 @@ argument, set the last warning message to @var{msg}.\n\
   return retval;  
 }
 
+// For backward compatibility.
+DEFALIAS (error_text, lasterr);
+DEFALIAS (__error_text__, lasterr);
+
 DEFUN (lastwarn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} lastwarn ()\n\
@@ -727,37 +731,6 @@ to check for the proper number of arguments.\n\
   return retval;
 }
 
-void
-bind_global_error_variable (void)
-{
-  if (error_message_buffer)
-    {
-      *error_message_buffer << OSSTREAM_ENDS;
-
-      bind_builtin_variable ("__error_text__",
-			     OSSTREAM_STR (*error_message_buffer),
-			     true);
-
-      OSSTREAM_FREEZE (*error_message_buffer);
-
-      delete error_message_buffer;
-
-      error_message_buffer = 0;
-    }
-  else
-    bind_builtin_variable ("__error_text__", "", true);
-}
-
-void
-clear_global_error_variable (void *)
-{
-  delete error_message_buffer;
-
-  error_message_buffer = 0;
-
-  bind_builtin_variable ("__error_text__", "", true);
-}
-
 static int
 beep_on_error (void)
 {
@@ -808,25 +781,6 @@ the top-level error message).  The default value is 0.\n\
 If the value of @code{debug_on_warning} is nonzero, Octave will try\n\
 to enter the debugger when a warning is encountered.  The default\n\
 value is 0.\n\
-@end defvr");
-
-  DEFCONST (error_text, "",
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} error_text\n\
-This variable contains the text of error messages that would have\n\
-been printed in the body of the most recent @code{unwind_protect} or\n\
-@code{try} statement or the @var{try} part of the most recent call to\n\
-the @code{eval} function.  Outside of the @code{unwind_protect} and\n\
-@code{try} statements or the @code{eval} function, or if no error has\n\
-occurred within them, the value of @code{error_text} is guaranteed to be\n\
-the empty string.\n\
-\n\
-Note that the message does not include the first @samp{error: } prefix,\n\
-so that it may easily be passed to the @code{error} function without\n\
-additional processing@footnote{Yes, it's a kluge, but it seems to be a\n\
-reasonably useful one.}.\n\
-\n\
-@xref{The try Statement}, and @ref{The unwind_protect Statement}.\n\
 @end defvr");
 }
 

@@ -101,6 +101,8 @@ public:
 
   ComplexMatrix complex_matrix_value (bool = false) const;
 
+  ComplexNDArray complex_array_value (bool = false) const;
+
   NDArray array_value (bool = false) const { return matrix; }
 
   streamoff_array streamoff_array_value (void) const;

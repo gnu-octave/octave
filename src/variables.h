@@ -98,10 +98,6 @@ extern void force_link_to_function (const std::string&);
 
 extern void bind_ans (const octave_value& val, bool print);
 
-extern void bind_global_error_variable (void);
-
-extern void clear_global_error_variable (void *);
-
 extern void
 bind_builtin_constant (const std::string&, const octave_value&,
 		       bool protect = false, bool eternal = false,

@@ -2,6 +2,6 @@ try
   clear a;
   a;
 catch
-  __error_text__
+  lasterr
 end_try_catch
-__error_text__
+lasterr

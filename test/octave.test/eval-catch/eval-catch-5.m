@@ -1,2 +1,2 @@
-eval ("clear a; a;", "__error_text__");
-__error_text__
+eval ("clear a; a;", "lasterr");
+lasterr

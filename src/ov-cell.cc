@@ -980,10 +980,12 @@ Return true if every element of the cell array @var{cell} is a\n\
 character string\n\
 @end deftypefn")
 {
-  octave_value retval = true;
+  octave_value retval;
 
   if (args.length () == 1)
     {
+      retval = true;
+
       octave_value arg = args (0);
 
       if (arg.is_cell ())

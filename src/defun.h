@@ -157,8 +157,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // must be used in the same file where name is defined, after the
 // definition for name.
 
-#define DEFALIAS(name, alias) \
-  DEFALIAS_INTERNAL (name, alias)
+#define DEFALIAS(alias, name) \
+  DEFALIAS_INTERNAL (alias, name)
 
 #endif
 

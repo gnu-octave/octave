@@ -136,7 +136,7 @@ All Octave abbrevs start with a grave accent (`).")
     "__O_CREAT__" "__O_EXCL__" "__O_NONBLOCK__" "__O_RDONLY__"
     "__O_RDWR__" "__O_TRUNC__" "__O_WRONLY__" "__PWD__" "__SEEK_CUR__"
     "__SEEK_END__" "__SEEK_SET__" "__argv__" "__e__" "__eps__"
-    "__error_text__" "__i__" "__inf__" "__j__" "__nan__" "__pi__"
+    "__i__" "__inf__" "__j__" "__nan__" "__pi__"
     "__program_invocation_name__" "__program_name__" "__realmax__"
     "__realmin__" "__stderr__" "__stdin__" "__stdout__" "ans" "argv"
     "automatic_replot" "beep_on_error" "completion_append_char"

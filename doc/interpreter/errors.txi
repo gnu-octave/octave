@@ -12,8 +12,6 @@ messages using the functions described in this chapter.
 
 @DOCSTRING(error)
 
-@DOCSTRING(error_text)
-
 @DOCSTRING(beep_on_error)
 
 @DOCSTRING(warning)

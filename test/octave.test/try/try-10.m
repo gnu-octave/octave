@@ -3,8 +3,8 @@ try
     clear a
     a;
   catch
-    error (strcat ("rethrow: ", __error_text__));
+    error (strcat ("rethrow: ", lasterr));
   end_try_catch
 catch
-  __error_text__
+  lasterr
 end_try_catch

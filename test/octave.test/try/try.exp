@@ -18,34 +18,32 @@ set test try-4
 set prog_output "^ans = 1"
 do_test try-4.m
 
-## define __error_text__ *only* within catch-clause
+## lasterr works in and out of the catch string.
 set test try-5
-set prog_output "__error_text__ = `a' undefined.*\n\n__error_text__ = $"
+set prog_output "ans = error: `a' undefined.*\n\nans = error: `a' undefined"
 do_test try-5.m
 
 ## throw user-defined error
 set test try-6
-set prog_output "__error_text__ = user-defined error\n"
+set prog_output "ans = error: user-defined error\n"
 do_test try-6.m
 
-## pass __error_text__ to user-defined subroutine
+## pass lasterr to user-defined subroutine
 set test try-7
-set prog_output "^ans = <`a' undefined.*\n>"
+set prog_output "^ans = <error: `a' undefined.*\n>"
 do_test try-7.m
 
 ## handle nested try-catch-block: try nested in try
 set test try-8
-set prog_output "__error_text__ = `a' undefined.*\n\n__error_text__ = `b' undefined.*\n$"
+set prog_output "ans = error: `a' undefined.*\n\nans = error: `b' undefined.*\n$"
 do_test try-8.m
 
 ## handle nested try-catch-block: try nested in catch
 set test try-9
-set prog_output "__error_text__ = `a' undefined.*\n\n__error_text__ = `b' undefined.*\n$"
-setup_xfail *-*-*
+set prog_output "ans = error: `b' undefined.*\n\nans = error: `b' undefined.*\n$"
 do_test try-9.m
 
 ## re-throw an error
 set test try-10
-set prog_output "__error_text__ = rethrow: `a' undefined.*\n"
-setup_xfail *-*-*
+set prog_output "ans = error: rethrow: error: `a' undefined.*\n"
 do_test try-10.m

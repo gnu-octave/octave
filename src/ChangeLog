@@ -1,3 +1,29 @@
+2004-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-re-mat.cc (complex_array_value): New function.
+	* ov-re-mat.h: Provide decl.
+
+	* ov-cell.cc (Fiscellstr): Don't return value on usage error.
+
+	* error.cc: (symbols_of_error): Delete DEFVAR for error_text.
+	Define __error_text__ and error_text as aliases for lasterr.
+
+	* error.cc (bind_global_error_variable,	clear_global_error_variable):
+	Delete.
+	* variables.h: Delete decls.
+
+	* parse.y (Feval, Fevalin): Don't call bind_global_error_variable.
+	Don't add clear_global_error_variable to the unwind_protect stack.
+	Increment buffer_error_messages before evaluating "eval" code,
+	decrement it before evaluating "catch" code.	
+
+	* pt-except.cc (do_catch_code): Don't call bind_global_error_variable.
+	Don't add clear_global_error_variable to the unwind_protect stack.
+	Decrement buffer_error_messages here.
+	(tree_try_catch_command::eval): Increment buffer_error_messages here.
+
+	* error.cc, error.h (buffer_error_messages): Now an int.
+
 2004-01-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (octave_config_info): Add float_format,

@@ -1,1 +1,1 @@
-isstr (glob ("/*"))
+iscell (glob ("/*"))

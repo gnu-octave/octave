@@ -176,7 +176,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 // No definition is required for an alias.
 
-#define DEFALIAS_INTERNAL(name, alias)
+#define DEFALIAS_INTERNAL(alias, name)
 
 // How builtin variables are actually installed.
 

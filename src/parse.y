@@ -3780,8 +3780,8 @@ so any results remain available after @code{eval} returns.\n\
 
       if (nargin > 1)
 	{
-	  unwind_protect_bool (buffer_error_messages);
-	  buffer_error_messages = true;
+	  unwind_protect_int (buffer_error_messages);
+	  buffer_error_messages++;
 	}
 
       int parse_status = 0;
@@ -3799,11 +3799,7 @@ so any results remain available after @code{eval} returns.\n\
 	  // Set up for letting the user print any messages from
 	  // errors that occurred in the first part of this eval().
 
-	  buffer_error_messages = false;
-
-	  bind_global_error_variable ();
-
-	  unwind_protect::add (clear_global_error_variable, 0);
+	  buffer_error_messages--;
 
 	  eval_string (args(1), 0, parse_status, nargout);
 
@@ -3917,8 +3913,8 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 	    {
 	      if (nargin > 2)
 	        {
-		  unwind_protect_bool (buffer_error_messages);
-		  buffer_error_messages = true;
+		  unwind_protect_int (buffer_error_messages);
+		  buffer_error_messages++;
 		}
 
 	      int parse_status = 0;
@@ -3936,11 +3932,7 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 		  // Set up for letting the user print any messages from
 		  // errors that occurred in the first part of this eval().
 
-		  buffer_error_messages = false;
-
-		  bind_global_error_variable ();
-
-		  unwind_protect::add (clear_global_error_variable, 0);
+		  buffer_error_messages--;
 
 		  eval_string (args(2), 0, parse_status, nargout);
 

@@ -138,6 +138,12 @@ octave_matrix::complex_matrix_value (bool) const
   return ComplexMatrix (matrix.matrix_value ());
 }
 
+ComplexNDArray
+octave_matrix::complex_array_value (bool) const
+{
+  return ComplexNDArray (matrix);
+}
+
 streamoff_array
 octave_matrix::streamoff_array_value (void) const
 {

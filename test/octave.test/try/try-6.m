@@ -1,5 +1,5 @@
 try
   error ("user-defined error")
 catch
-  __error_text__
+  lasterr
 end_try_catch

@@ -62,22 +62,13 @@ do_catch_code (void *ptr)
 
   tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
-  unwind_protect::begin_frame ("do_catch_code");
-
   // Set up for letting the user print any messages from errors that
   // occurred in the body of the try_catch statement.
 
-  unwind_protect_bool (buffer_error_messages);
-  buffer_error_messages = false;
-
-  bind_global_error_variable ();
-
-  unwind_protect::add (clear_global_error_variable, 0);
+  buffer_error_messages--;
 
   if (list)
     list->eval ();
-
-  unwind_protect::run_frame ("do_catch_code");
 }
 
 void
@@ -89,8 +80,8 @@ tree_try_catch_command::eval (void)
 
   if (catch_code)
     {
-      unwind_protect_bool (buffer_error_messages);
-      buffer_error_messages = true;
+      unwind_protect_int (buffer_error_messages);
+      buffer_error_messages++;
     }
 
   unwind_protect::add (do_catch_code, catch_code);
@@ -106,6 +97,9 @@ tree_try_catch_command::eval (void)
   else
     {
       error_state = 0;
+
+      // Unwind stack elements must be cleared or run in the reverse
+      // order in which they were added to the stack.
 
       // For clearing the do_catch_code cleanup function.
       unwind_protect::discard ();

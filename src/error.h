@@ -47,7 +47,7 @@ extern int warning_state;
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
-extern bool buffer_error_messages;
+extern int buffer_error_messages;
 
 // TRUE means error messages are turned off.
 extern bool discard_error_messages;

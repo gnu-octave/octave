@@ -3732,6 +3732,72 @@ variable @code{default_eval_print_flag}.\n\
   return retval;
 }
 
+DEFUN (assignin, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
+Assign @var{value} to @var{varname} in context @var{context}, which\n\
+may be either @code{\"base\"} or @code{\"caller\"}.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 3)
+    {
+      std::string context = args(0).string_value ();
+
+      if (! error_state)
+        {
+	  unwind_protect::begin_frame ("Fassignin");
+
+	  unwind_protect_ptr (curr_sym_tab);
+
+	  if (context == "caller")
+	    curr_sym_tab = curr_caller_sym_tab;
+	  else if (context == "base")
+	    curr_sym_tab = top_level_sym_tab;
+	  else
+	    error ("assignin: context must be \"caller\" or \"base\"");
+
+	  if (! error_state)
+	    {
+	      std::string nm = args(1).string_value ();
+
+	      if (! error_state)
+		{
+		  if (valid_identifier (nm))
+		    {
+		      symbol_record *sr = curr_sym_tab->lookup (nm, true);
+
+		      if (sr)
+			{
+			  tree_identifier *id = new tree_identifier (sr);
+			  tree_constant *rhs = new tree_constant (args(2));
+		      
+			  tree_simple_assignment tsa (id, rhs);
+
+			  tsa.rvalue ();
+			}
+		    }
+		  else
+		    error ("assignin: invalid variable name");
+		}
+	      else
+		error ("assignin: expecting variable name as second argument");
+	    }
+
+	  unwind_protect::run_frame ("Fassignin");
+	}
+      else
+        error ("assignin: expecting string as first argument");
+    }
+  else
+    print_usage ("assignin");
+
+  return retval;
+}
+
 DEFUN (evalin, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
@@ -3761,33 +3827,36 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 	  else
 	    error ("evalin: context must be \"caller\" or \"base\"");
 
-	  if (nargin > 2)
+	  if (! error_state)
 	    {
-	      unwind_protect_bool (buffer_error_messages);
-	      buffer_error_messages = true;
-	    }
+	      if (nargin > 2)
+	        {
+		  unwind_protect_bool (buffer_error_messages);
+		  buffer_error_messages = true;
+		}
 
-	  int parse_status = 0;
+	      int parse_status = 0;
 
-	  retval = eval_string (args(1), ! Vdefault_eval_print_flag,
-				parse_status, nargout);
+	      retval = eval_string (args(1), ! Vdefault_eval_print_flag,
+				    parse_status, nargout);
 
-	  if (nargin > 2 && (parse_status != 0 || error_state))
-	    {
-	      error_state = 0;
+	      if (nargin > 2 && (parse_status != 0 || error_state))
+		{
+		  error_state = 0;
 
-	      // Set up for letting the user print any messages from
-	      // errors that occurred in the first part of this eval().
+		  // Set up for letting the user print any messages from
+		  // errors that occurred in the first part of this eval().
 
-	      buffer_error_messages = false;
+		  buffer_error_messages = false;
 
-	      bind_global_error_variable ();
+		  bind_global_error_variable ();
 
-	      unwind_protect::add (clear_global_error_variable, 0);
+		  unwind_protect::add (clear_global_error_variable, 0);
 
-	      eval_string (args(2), 0, parse_status, nargout);
+		  eval_string (args(2), 0, parse_status, nargout);
 
-	      retval = octave_value_list ();
+		  retval = octave_value_list ();
+		}
 	    }
 
 	  unwind_protect::run_frame ("Fevalin");

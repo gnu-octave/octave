@@ -1,3 +1,7 @@
+2003-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (Fassignin): New function.
+
 2003-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.cc (make_sig_struct): New function.

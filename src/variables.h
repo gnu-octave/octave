@@ -87,6 +87,8 @@ extern void force_link_to_function (const string&);
 
 extern bool is_builtin_variable (const string&);
 extern bool is_text_function_name (const string&);
+extern bool is_mapper_function_name (const string&);
+extern bool is_builtin_function_name (const string&);
 extern bool is_globally_visible (const string&);
 
 extern tree_fvc *is_valid_function (const octave_value&, const string&,

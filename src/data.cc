@@ -669,10 +669,12 @@ static bool
 cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
 {
   // dv_arg is []
+
   if (dv_arg.all_zero ())
     return true;
   
   // dv_new is []
+
   if (dv_new.all_zero ())
     {
       dv_new = dv_arg;
@@ -683,12 +685,14 @@ cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
   int n_args = dv_arg.length ();
   
   // Find the max and min value of n_new and n_args
+
   int n_max = n_new > n_args ? n_new : n_args;
   int n_min = n_new < n_args ? n_new : n_args;  
 
   // The elements of the dimension vectors can only differ
   // if the dim variable differs from the actual dimension
   // they differ.
+
   for (int i = 0; i < n_min; i++)
     {
       if (dv_new(i) != dv_arg(i) && dim != i)
@@ -698,7 +702,8 @@ cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
 	}
     }
   
-  // Ditto
+  // Ditto.
+
   for (int i = n_min; i < n_max; i++)
     {
       if (n_new > n_min)
@@ -722,9 +727,11 @@ cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
   // If we want to add the dimension vectors at a dimension
   // larger than both, then we need to set n_max to this number
   // so that we resize dv_new to the right dimension.
+
   n_max = n_max > (dim + 1) ? n_max : (dim + 1);
   
   // Resize dv_new to new the appropriate dimensions.
+
   if (n_max > n_new)
     {
       dv_new.resize (n_max);
@@ -733,7 +740,9 @@ cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
 	dv_new.elem (i) = 1;
     }
   
-  if (dim > n_args)
+  // Larger or equal since dim has been decremented by one.
+
+  if (dim >= n_args)
     dv_new.elem (dim) = dv_new.elem (dim)++;
   else
     dv_new.elem (dim) += dv_arg(dim);

@@ -212,7 +212,7 @@ octave_history_list (int limit, int number_lines)
 
 	  if (number_lines)
 	    sprintf (tmp, "%5d%c%s", i + history_base,
-		     hlist[i]->data ? '*' : ' '
+		     hlist[i]->data ? '*' : ' ',
 		     line ? line : "");
 
 	  retval[k++] = tmp;

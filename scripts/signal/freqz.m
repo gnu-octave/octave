@@ -53,55 +53,104 @@
 ##
 ## For fastest computation, @var{n} should factor into a small number of
 ## small primes.
+##
+## @deftypefnx {Function File} {@var{h} =} freqz (@var{b}, @var{a}, @var{w})
+## Evaluate the response at the specific frequencies in the vector @var{w}.
+## The values for @var{w} are measured in radians.
+##
+## @deftypefnx {Function File} {[@dots{}] =} freqz (@dots{}, @var{Fs})
+## Return frequencies in Hz instead of radians assuming a sampling rate
+## @var{Fs}.  If you are evaluating the response at specific frequencies 
+## @var{w}, those frequencies should be requested in Hz rather than radians.
+##
 ## @end deftypefn
 
 ## Author: jwe ???
 
-function [h, w] = freqz(b,...)
+function [h, w] = freqz (b, a, n, region, Fs)
 
-  if (nargin == 1)
+  if (nargin < 1 || nargin > 5)
+    usage ("[h, w] = freqz (b, a, n [, \"whole\"] [, Fs])");
+  elseif (nargin == 1)
     ## Response of an FIR filter.
-    a = 1;
-    n = 512;
-    region = "half";
+    a = n = region = Fs = [];
   elseif (nargin == 2)
     ## Response of an IIR filter
-    a = va_arg();
-    n = 512;
-    region = "half";
+    n = region = Fs = [];
   elseif (nargin == 3)
-    a = va_arg();
-    n = va_arg();
-    region = "half";
+    region = Fs = [];
   elseif (nargin == 4)
-    a = va_arg();
-    n = va_arg();
-    region = va_arg();
+    Fs = [];
+    if (! isstr (region) && ! isempty (region))
+      Fs = region; 
+      region = [];
+    endif
   endif
 
-  la = length(a);
-  a = reshape(a,1,la);
-  lb = length(b);
-  b = reshape(b,1,lb);
-
-  k = max([la, lb]);
-
-  if (n >= k)
-    if (strcmp(region,"whole"))
-      h = fft(postpad(b,n)) ./ fft(postpad(a,n));
-      w = 2*pi*[0:(n-1)]/n;
+  if (isempty (a)) 
+    a = 1; 
+  endif
+  if (isempty (n))
+    n = 512; 
+  endif
+  if (isempty (region))
+    if (isreal (b) && isreal (a))
+      region = "half";
     else
-      h = fft(postpad(b,2*n)) ./ fft(postpad(a,2*n));
-      h = h(1:n);
-      w = pi*[0:(n-1)]/n;
+      region = "whole";
     endif
+  endif
+  if (isempty (Fs)) 
+    if (nargout == 0) 
+      Fs = 2; 
+    else 
+      Fs = 2*pi; 
+    endif
+  endif
+
+  la = length (a);
+  a = reshape (a, 1, la);
+  lb = length (b);
+  b = reshape (b, 1, lb);
+  k = max ([la, lb]);
+
+  if (! is_scalar (n))
+    if (nargin == 4) ## Fs was specified
+      w = 2*pi*n/Fs;
+    else
+      w = n;
+    endif
+    n = length (n);
+    extent = 0;
+  elseif (strcmp (region, "whole"))
+    w = 2 * pi * (0:n-1) / n;
+    extent = n;
   else
-    if (strcmp(region,"whole"))
-      w = 2*pi*[0:(n-1)]/n;
-    else
-      w = pi*[0:(n-1)]/n;
-    endif
-    h = polyval(postpad(b,k),exp(j*w)) ./ polyval(postpad(a,k),exp(j*w));
+    w = pi * (0:n-1) / n;
+    extent = 2 * n;
   endif
+
+  if (length (b) == 1)
+    if (length (a) == 1)
+      hb = b * ones (1, n);
+    else
+      hb = b;
+    endif
+  elseif (extent >= k) 
+    hb = fft (postpad (b, extent));
+    hb = hb(1:n);
+  else
+    hb = polyval (postpad (b, k), exp (j*w));
+  endif
+  if (length (a) == 1)
+    ha = a;
+  elseif (extent >= k)
+    ha = fft (postpad (a, extent));
+    ha = ha(1:n);
+  else
+    ha = polyval (postpad (a, k), exp (j*w));
+  endif
+  h = hb ./ ha;
+  w = Fs * w / (2*pi);
 
 endfunction

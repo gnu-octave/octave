@@ -382,6 +382,10 @@ do_string_escapes (const std::string& s)
 	{
 	  switch (s[++j])
 	    {
+	    case '0':
+	      retval[i] = '\0';
+	      break;
+
 	    case 'a':
 	      retval[i] = '\a';
 	      break;
@@ -474,6 +478,9 @@ undo_string_escape (char c)
 
   switch (c)
     {
+    case '\0':
+      return "\\0";
+
     case '\a':
       return "\\a";
 

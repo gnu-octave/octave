@@ -733,7 +733,7 @@ eval_string (const char *string, int print, int ans_assign,
 tree_constant
 eval_string (const tree_constant& arg, int& parse_status)
 {
-  if (! arg.is_string_type ())
+  if (! arg.is_string ())
     {
       error ("eval: expecting string argument");
       return -1;
@@ -773,7 +773,7 @@ DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(1).is_string_type ())
+  if (nargin == 2 && args(1).is_string ())
     {
       iprocstream cmd (args(1).string_value ());
       char ch;

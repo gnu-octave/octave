@@ -200,7 +200,7 @@ rand (SEED, N)        -- set seed")
     }
   else if (nargin == 3)
     {
-      if (args(1).is_string_type ()
+      if (args(1).is_string ()
 	  && strcmp (args(1).string_value (), "seed") == 0)
 	{
 	  double d = args(2).to_scalar ();

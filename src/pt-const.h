@@ -121,8 +121,6 @@ public:
   int is_numeric_or_range_type (void) const
     { return rep->is_numeric_or_range_type (); }
 
-  int is_string_type (void) const { return rep->is_string_type (); }
-
   int valid_as_scalar_index (void) const
     { return rep->valid_as_scalar_index (); }
 

@@ -396,7 +396,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(1).is_string_type ())
+  if (nargin == 2 && args(1).is_string ())
     {
       char *value = getenv (args(1).string_value ());
       if (value)

@@ -283,7 +283,7 @@ to the shortest match.")
     }
   else if (nargin == 3)
     {
-      if (args(1).is_string_type ())
+      if (args(1).is_string ())
 	{
 	  char *keyword = args(1).string_value ();
 	  double val = args(2).double_value ();

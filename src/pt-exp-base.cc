@@ -94,7 +94,7 @@ print_as_scalar (const tree_constant& val)
   int nr = val.rows ();
   int nc = val.columns ();
   return (val.is_scalar_type ()
-	  || val.is_string_type ()
+	  || val.is_string ()
 	  || (val.is_matrix_type ()
 	      && ((nr == 1 && nc == 1)
 		  || nr == 0
@@ -356,7 +356,7 @@ tree_matrix::eval (int print)
       list[len].nr = nr;
       list[len].nc = nc;
 
-      if (all_strings && ! tmp.is_string_type ())
+      if (all_strings && ! tmp.is_string ())
 	all_strings = 0;
 
       if (! found_complex && tmp.is_complex_type ())

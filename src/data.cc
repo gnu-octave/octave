@@ -339,6 +339,9 @@ DEFUN ("ones", Fones, Sones, 3, 1,
 
   switch (nargin)
     {
+    case 1:
+      retval = 1.0;
+      break;
     case 2:
       retval = fill_matrix (args(1), 1.0, "ones");
       break;
@@ -362,6 +365,9 @@ DEFUN ("zeros", Fzeros, Szeros, 3, 1,
 
   switch (nargin)
     {
+    case 1:
+      retval = 0.0;
+      break;
     case 2:
       retval = fill_matrix (args(1), 0.0, "zeros");
       break;
@@ -427,6 +433,9 @@ DEFUN ("eye", Feye, Seye, 3, 1,
 
   switch (nargin)
     {
+    case 1:
+      retval = 1.0;
+      break;
     case 2:
       retval = identity_matrix (args(1));
       break;

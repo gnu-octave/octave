@@ -483,7 +483,7 @@ all_strings (const Octave_object& args)
 {
   int n = args.length ();
   for (int i = 1; i < n; i++)
-    if (! args(i).is_string_type ())
+    if (! args(i).is_string ())
       return 0;
   return 1;
 }

@@ -76,7 +76,7 @@ where OPT is an optional single character argument as follows: \n\
 
   // determine if balancing option is listed
   // set my_nargin to the number of matrix inputs
-  if (args(nargin-1).const_type () == tree_constant_rep::string_constant)
+  if (args(nargin-1).is_string ())
     {
       bal_job = args(nargin-1).string_value ();
       my_nargin = nargin-2;

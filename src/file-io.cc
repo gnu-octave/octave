@@ -177,7 +177,7 @@ initialize_file_io (void)
 Pix
 return_valid_file (const tree_constant& arg)
 {
-  if (arg.is_string_type ())
+  if (arg.is_string ())
     {
       Pix p = file_list.first ();
       file_info file;
@@ -252,7 +252,7 @@ file_io_get_file (const tree_constant arg, const char *mode,
 
   if (! p)
     {
-      if (arg.is_string_type ())
+      if (arg.is_string ())
 	{
 	  char *name = arg.string_value ();
 
@@ -488,7 +488,7 @@ fopen_internal (const Octave_object& args)
   Octave_object retval;
   Pix p;
 
-  if (! args(1).is_string_type ())
+  if (! args(1).is_string ())
     {
       error ("fopen: file name must be a string");
       return retval;
@@ -506,7 +506,7 @@ fopen_internal (const Octave_object& args)
       return retval;
     }
 
-  if (! args(2).is_string_type ())
+  if (! args(2).is_string ())
     {
       error ("fopen: file mode must be a string");
       return retval;
@@ -895,7 +895,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 's':
 
-      if (! args(fmt_arg_count).is_string_type ())
+      if (! args(fmt_arg_count).is_string ())
 	goto invalid_conversion;
       else
 	{
@@ -909,7 +909,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 'c':
 
-      if (! args(fmt_arg_count).is_string_type ())
+      if (! args(fmt_arg_count).is_string ())
 	goto invalid_conversion;
       else
 	{
@@ -1005,7 +1005,7 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 
   if (strcmp (type, "fprintf") == 0)
     {
-      if (args(2).is_string_type ())
+      if (args(2).is_string ())
 	{
 	  fmt = args(2).string_value ();
 	  fmt_arg_count++;
@@ -1033,7 +1033,7 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 
       fmt_arg_count++;
     }
-  else if (args(1).is_string_type ())
+  else if (args(1).is_string ())
     {
       fmt = args(1).string_value ();
       fmt_arg_count++;
@@ -1326,7 +1326,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 
   if (strcmp (type, "scanf") != 0)
     {
-      if (args(2).is_string_type ())
+      if (args(2).is_string ())
 	scanf_fmt = args(2).string_value ();
       else
 	{
@@ -1355,7 +1355,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
       fptr = file.fptr ();
     }
 
-  if ((! fptr && args(1).is_string_type ())
+  if ((! fptr && args(1).is_string ())
       || (doing_fscanf && file.number () == 0))
     {
       char *string;
@@ -1557,7 +1557,7 @@ fread_internal (const Octave_object& args, int nargout)
   char *prec = "uchar";
   if (nargin > 3)
     {
-      if (args(3).is_string_type ())
+      if (args(3).is_string ())
 	prec = args(3).string_value ();
       else
 	{
@@ -1719,7 +1719,7 @@ fwrite_internal (const Octave_object& args, int nargout)
   char *prec = "uchar";
   if (nargin > 3)
     {
-      if (args(3).is_string_type ())
+      if (args(3).is_string ())
 	prec = args(3).string_value ();
       else
 	{

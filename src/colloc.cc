@@ -68,7 +68,7 @@ DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
     {
       if (args(i).is_defined ())
 	{
-	  if (! args(i).is_string_type ())
+	  if (! args(i).is_string ())
 	    {
 	      error ("colloc: expecting string argument");
 	      return retval;

@@ -142,9 +142,6 @@ private:
   int is_undefined (void) const
     { return type_tag == tree_constant_rep::unknown_constant; }
 
-  int is_string_type (void) const
-    { return type_tag == tree_constant_rep::string_constant; }
-
   int is_scalar_type (void) const
     { return type_tag == scalar_constant
              || type_tag == complex_scalar_constant; }

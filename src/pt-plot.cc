@@ -651,7 +651,7 @@ subplot::print (int ndim, ostrstream& plot_buf)
       if (! error_state && data.is_defined ())
 	{
 	  char *file = 0;
-	  if (data.is_string_type ())
+	  if (data.is_string ())
 	    {
 	      file = tilde_expand (data.string_value ());
 	      ifstream ftmp (file);
@@ -711,7 +711,7 @@ subplot::print (int ndim, ostrstream& plot_buf)
   if (title)
     {
       tree_constant tmp = title->eval (0);
-      if (! error_state && tmp.is_string_type ())
+      if (! error_state && tmp.is_string ())
 	plot_buf << " title " << '"' << tmp.string_value () << '"';
       else
 	{

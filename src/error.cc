@@ -144,7 +144,7 @@ printed.")
 
   if (nargin == 2 && args(1).is_defined ())
     {
-      if (args(1).is_string_type ())
+      if (args(1).is_string ())
 	{
 	  msg = args(1).string_value ();
 

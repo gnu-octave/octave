@@ -133,7 +133,7 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
 {
   tree_fvc *ans = 0;
 
-  if (! arg.is_string_type ())
+  if (! arg.is_string ())
     {
       if (warn)
 	error ("%s: expecting function name as argument", warn_for);
@@ -186,7 +186,7 @@ otherwise, return 0.")
 
   int nargin = args.length ();
 
-  if (nargin != 2 || ! args(1).is_string_type ())
+  if (nargin != 2 || ! args(1).is_string ())
     {
       print_usage ("is_global");
       return retval;
@@ -211,7 +211,7 @@ a function.")
 
   int nargin = args.length ();
 
-  if (nargin != 2 || ! args(1).is_string_type ())
+  if (nargin != 2 || ! args(1).is_string ())
     {
       print_usage ("exist");
       return retval;
@@ -675,7 +675,7 @@ builtin_string_variable (const char *name)
     {
       tree_constant val = defn->eval (0);
 
-      if (! error_state && val.is_string_type ())
+      if (! error_state && val.is_string ())
 	{
 	  char *s = val.string_value ();
 	  if (s)

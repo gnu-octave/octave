@@ -2823,6 +2823,9 @@ OCT_VAL_REP::set_index (char c)
 void
 OCT_VAL_REP::set_index (const octave_value_list& args, bool rhs_is_complex)
 {
+  // XXX FIXME XXX -- it's not good that we have to list all the types
+  // that can be indexed here.
+
   switch (type_tag)
     {
     case unknown_constant:
@@ -2832,35 +2835,45 @@ OCT_VAL_REP::set_index (const octave_value_list& args, bool rhs_is_complex)
       convert_to_matrix_type (rhs_is_complex);
       break;
 
+    case matrix_constant:
+    case complex_matrix_constant:
+    case char_matrix_constant:
+    case char_matrix_constant_str:
+      break;
+
     default:
+      ::error ("indexing %s type not implemented", type_as_string ());
       break;
     }
 
-  int n = args.length ();
-
-  for (int i = 0; i < n; i++)
+  if (! error_state)
     {
-      octave_value arg = args (i);
+      int n = args.length ();
 
-      switch (arg.const_type ())
+      for (int i = 0; i < n; i++)
 	{
-	case range_constant:
-	  set_index (arg.range_value ());
-	  break;
+	  octave_value arg = args (i);
 
-	case magic_colon:
-	  set_index (':');
-	  break;
+	  switch (arg.const_type ())
+	    {
+	    case range_constant:
+	      set_index (arg.range_value ());
+	      break;
 
-	default:
-	  set_index (arg.matrix_value ());
-	  break;
-	}
+	    case magic_colon:
+	      set_index (':');
+	      break;
 
-      if (error_state)
-	{
-	  clear_index ();
-	  break;
+	    default:
+	      set_index (arg.matrix_value ());
+	      break;
+	    }
+
+	  if (error_state)
+	    {
+	      clear_index ();
+	      break;
+	    }
 	}
     }
 }

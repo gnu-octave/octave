@@ -392,8 +392,9 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
     }
   else if (n_idx == 1)
     {
-      if (lhs_nr == 0 || lhs_nc == 0
-	  || (lhs_nr == 1 && lhs_nc == 1))
+      int lhs_is_empty = lhs_nr == 0 || lhs_nc == 0;
+
+      if (lhs_is_empty || (lhs_nr == 1 && lhs_nc == 1))
 	{
 	  idx_vector *tmp = lhs.get_idx ();
 
@@ -414,6 +415,13 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 		      lhs.maybe_delete_elements (idx, tmp);
 		    }
 		}
+	      else if (! liboctave_dfi_flag && lhs_is_empty
+		       && idx.is_colon ()
+		       && ! (rhs_nr == 1 || rhs_nc == 1))
+		{
+		  (*current_liboctave_error_handler)
+		    ("A(:) = X: X must be a vector");
+		}
 	      else
 		{
 		  if (assign ((Array<LT>&) lhs, (Array<RT>&) rhs))
@@ -424,6 +432,9 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			{
 			  int idx_nr = idx.orig_rows ();
 			  int idx_nc = idx.orig_columns ();
+
+			  // lhs_is_empty now means that lhs was
+			  // *originally* empty.
 
 			  if (liboctave_dfi_flag
 			      || (idx_nr == 1 && idx_nc == 1))
@@ -438,6 +449,11 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 				  lhs.d1 = 1;
 				  lhs.d2 = lhs.length ();
 				}
+			    }
+			  else if (lhs_is_empty && idx.is_colon ())
+			    {
+			      lhs.d1 = rhs.d1;
+			      lhs.d2 = rhs.d2;
 			    }
 			  else if (idx_nr == 1 && rhs_nr == 1)
 			    {

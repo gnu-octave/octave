@@ -204,6 +204,19 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 	  retval = 0;
 	}
     }
+  else if (idx.is_colon ())
+    {
+      if (lhs_len == 0)
+	{
+	  lhs.resize (rhs_len);
+
+	  for (int i = 0; i < rhs_len; i++)
+	    lhs.elem (i) = rhs.elem (i);
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("A(:) = X: A must be the same size as X");
+    }
   else
     {
       (*current_liboctave_error_handler)

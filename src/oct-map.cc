@@ -116,25 +116,27 @@ Octave_map::resize (const dim_vector& dv) const
 Octave_map
 concat (const Octave_map& ra, const Octave_map& rb, const Array<int>& ra_idx)
 {
-  if (ra.length() != rb.length())
-    {
-      error ("field name mismatch in structure concatenation");
-      return Octave_map ();
-    }
-
   Octave_map retval;
-  for (Octave_map::const_iterator pa = ra.begin (); pa != ra.end (); pa++)
+
+  if (ra.length() == rb.length())
     {
-      Octave_map::const_iterator pb = rb.seek (ra.key(pa));
-      if (pa == rb.end())
+      for (Octave_map::const_iterator pa = ra.begin (); pa != ra.end (); pa++)
 	{
-	  error ("field name mismatch in structure concatenation");
-	  return Octave_map ();
-	}
+	  Octave_map::const_iterator pb = rb.seek (ra.key(pa));
+
+	  if (pa == rb.end ())
+	    {
+	      error ("field name mismatch in structure concatenation");
+	      break;
+	    }
 	
-      retval.assign (ra.key(pa), ra.contents(pa).insert(rb.contents(pb), 
-							ra_idx));
+	  retval.assign (ra.key(pa),
+			 ra.contents(pa).insert (rb.contents(pb), ra_idx));
+	}
     }
+  else
+    error ("field name mismatch in structure concatenation");
+
   return retval;
 }
 

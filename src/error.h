@@ -44,6 +44,9 @@ extern void panic (const char *fmt, ...);
 // Current error state.
 extern int error_state;
 
+// XXX FIXME XXX
+extern int suppress_octave_error_messages;
+
 #endif
 
 /*

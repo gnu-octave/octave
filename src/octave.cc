@@ -726,9 +726,9 @@ evaluate NAME as a function, passing ARGS as its arguments")
   return retval;
 }
 
-tree_constant
+static Octave_object
 eval_string (const char *string, int print, int ans_assign,
-	     int& parse_status)
+	     int& parse_status, int nargout)
 {
   begin_unwind_frame ("eval_string");
 
@@ -761,11 +761,11 @@ eval_string (const char *string, int print, int ans_assign,
 
   run_unwind_frame ("eval_string");
 
-  tree_constant retval;
+  Octave_object retval;
 
   if (parse_status == 0 && command)
     {
-      retval = command->eval (print);
+      retval = command->eval (print, nargout);
       delete command;
     }
 
@@ -773,32 +773,67 @@ eval_string (const char *string, int print, int ans_assign,
 }
 
 tree_constant
-eval_string (const tree_constant& arg, int& parse_status)
+eval_string (const char *string, int print, int ans_assign,
+	     int& parse_status)
+{
+  tree_constant retval;
+
+  Octave_object tmp = eval_string (string, print, ans_assign,
+				   parse_status, 1);
+
+  retval = tmp(0);
+
+  return retval;
+}
+
+static Octave_object
+eval_string (const tree_constant& arg, int& parse_status, int nargout)
 {
   char *string = arg.string_value ();
 
   if (error_state)
     {
       error ("eval: expecting string argument");
-      return -1;
+      return -1.0;
     }
 
 // Yes Virginia, we always print here...
 
-  return eval_string (string, 1, 1, parse_status);
+  return eval_string (string, 1, 1, parse_status, nargout);
 }
 
-DEFUN ("eval", Feval, Seval, 2, 1,
-  "eval (STRING): evaluate STRING as octave code")
+DEFUN ("eval", Feval, Seval, 3, 1,
+  "eval (TRY, CATCH)\n\
+\n\
+Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
+string CATCH.")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2)
+  if (nargin > 1)
     {
+      begin_unwind_frame ("Feval");
+
+      if (nargin > 2)
+	{
+	  unwind_protect_int (suppress_octave_error_messages);
+	  suppress_octave_error_messages = 1;
+	}
+
       int parse_status = 0;
-      retval = eval_string (args(1), parse_status);
+
+      retval = eval_string (args(1), parse_status, nargout);
+
+      if (nargin > 2 && (parse_status != 0 || error_state))
+	{
+	  error_state = 0;
+	  eval_string (args(2), parse_status, nargout);
+	  retval = Octave_object ();
+	}
+
+      run_unwind_frame ("Feval");
     }
   else
     print_usage ("eval");

@@ -130,6 +130,66 @@ tree_statement_list::eval (int print)
   return retval;
 }
 
+Octave_object
+tree_statement_list::eval (int print, int nargout)
+{
+  Octave_object retval;
+
+  if (nargout > 1)
+    {
+      int pf;
+
+      if (error_state)
+	return retval;
+
+      for (Pix p = first (); p != 0; next (p))
+	{
+	  tree_statement *elt = this->operator () (p);
+
+	  if (print == 0)
+	    pf = 0;
+	  else
+	    pf = elt->print_flag;
+
+	  tree_command *cmd = elt->command;
+	  tree_expression *expr = elt->expression;
+
+	  if (cmd || expr)
+	    {
+	      if (cmd)
+		cmd->eval ();
+	      else
+		{
+		  if (expr->is_multi_val_ret_expression ())
+		    {
+		      Octave_object args;
+		      tree_multi_val_ret *t = (tree_multi_val_ret *) expr;
+		      retval = t->eval (pf, nargout, args);
+		    }
+		  else
+		    retval = expr->eval (pf);
+		}
+
+	      if (error_state)
+		return tree_constant ();
+
+	      if (breaking || continuing)
+		break;
+
+	      if (returning)
+		break;
+	    }
+	  else
+	    retval = Octave_object ();
+	}
+      return retval;
+    }
+  else
+    retval = eval (print);
+
+  return retval;
+}
+
 void
 tree_statement_list::print_code (ostream& os)
 {

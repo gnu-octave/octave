@@ -113,6 +113,8 @@ public:
 
   tree_constant eval (int print);
 
+  Octave_object eval (int print, int nargout);
+
   void print_code (ostream& os);
 };
 

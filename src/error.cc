@@ -36,7 +36,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "defun.h"
 
 // Current error state.
-int error_state;
+int error_state = 0;
+
+// XXX FIXME XXX
+int suppress_octave_error_messages = 0;
 
 static void
 verror (const char *name, const char *fmt, va_list args)
@@ -95,6 +98,9 @@ error (const char *fmt, ...)
 
   if (! error_state)
     error_state = 1;
+
+  if (suppress_octave_error_messages)
+    return;
 
   flush_output_to_pager ();
 

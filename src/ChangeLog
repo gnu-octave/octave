@@ -1,3 +1,11 @@
+2000-10-12  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* ov-cell.h (octave_cell::is_cell): New function.
+
+	* pt-select.cc (equal): New static function.
+	(tree_switch_case::label_matches): Use it to compare case label
+	against arg.  Handle cell arrays as case labels.
+
 2000-10-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	Change patterned after patch by Cai Jianming

@@ -36,6 +36,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-select.h"
 #include "pt-stmt.h"
 #include "pt-walk.h"
+#include "Cell.h"
+#include "ov-typeinfo.h"
 
 // If clauses.
 
@@ -121,37 +123,78 @@ tree_switch_case::~tree_switch_case (void)
   delete lead_comm;
 }
 
-bool
-tree_switch_case::label_matches (const octave_value& val)
+
+// Compare two octave values, returning true if equal, false if not
+// XXX FIXME XXX --- should be member or friend of octave_value class.
+
+static bool
+equal (const octave_value& val, const octave_value& test)
 {
   bool retval = false;
 
+  int t1 = val.type_id ();
+  int t2 = test.type_id ();
+
+  binary_op_fcn f
+    = octave_value_typeinfo::lookup_binary_op (octave_value::op_eq, t1, t2);
+
+  // If there is no op_eq for these types, we can't compare values.
+
+  if (f && val.rows () == test.rows () && val.columns () == test.columns ())
+    {
+      octave_value tmp = do_binary_op (octave_value::op_eq, val, test);
+
+      if (! error_state && tmp.is_defined ())
+	retval = tmp.is_true ();
+    }
+
+  return retval;
+}
+
+bool
+tree_switch_case::label_matches (const octave_value& val)
+{
   octave_value label_value = label->rvalue ();
 
-  if (! error_state)
+  if (! error_state && label_value.is_defined() )
     {
-      if (label_value.is_defined ())
+      if (label_value.is_cell ())
 	{
-	  octave_value tmp = do_binary_op (octave_value::op_eq,
-					   val, label_value);
+	  Cell cell (label_value.cell_value ());
 
-	  if (! error_state)
+	  for (int i = 0; i < cell.rows (); i++)
 	    {
-	      if (tmp.is_defined ())
-		retval = tmp.is_true ();
-	      else
-		eval_error ();
+	      for (int j = 0; j < cell.columns (); j++)
+		{
+		  bool match = equal (val, cell(i,j));
+
+		  if (error_state)
+		    {
+		      eval_error ();
+		      return false;
+		    }
+		  else if (match)
+		    return true;
+		}
 	    }
-	  else
-	    eval_error ();
 	}
       else
-	eval_error ();
+	{
+	  bool match = equal (val, label_value);
+
+	  if (error_state)
+	    {
+	      eval_error ();
+	      return false;
+	    }
+	  else
+	    return match;
+	}
     }
   else
     eval_error ();
 
-  return retval;
+  return false;
 }
 
 int

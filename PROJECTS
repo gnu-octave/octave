@@ -165,13 +165,7 @@ Strings:
 Other Data Types:
 ----------------
 
-  * New types (char, short, etc.).
-
-  * 3d matrix stuff.
-
   * Template functions for mixed-type ops.
-
-  * Stuff for arithmetic using charMatrix, intMatrix, etc.
 
 ------------------------
 Graphical User Interface:
@@ -192,7 +186,7 @@ Input/Output:
     working on them, it would be good to support other size
     specifications (integer*2, etc.).
 
-  * Make load and save work for structures.
+  * Make fread and fopen look in LOADPATH for files.
 
   * Make load and save look for <file>.mat if only given <file>.
 
@@ -238,6 +232,8 @@ Interpreter:
       debug> x = 1; return
 
     will work as expected.
+
+  * Handle multi-line input at the keyboard/debug prompt correctly.
 
   * Fix the parser so that
 

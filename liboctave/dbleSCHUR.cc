@@ -63,7 +63,7 @@ select_dig (const double& a, const double& b)
 }
 
 int
-SCHUR::init (const Matrix& a, const std::string& ord)
+SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -77,9 +77,14 @@ SCHUR::init (const Matrix& a, const std::string& ord)
   // Workspace requirements may need to be fixed if any of the
   // following change.
 
-  char jobvs = 'V';
+  char jobvs;
   char sense = 'N';
   char sort = 'N';
+
+  if (calc_unitary)
+    jobvs = 'V';
+  else
+    jobvs = 'N';
 
   char ord_char = ord.empty () ? 'U' : ord[0];
 
@@ -102,7 +107,9 @@ SCHUR::init (const Matrix& a, const std::string& ord)
   double rcondv;
 
   schur_mat = a;
-  unitary_mat.resize (n, n);
+
+  if (calc_unitary)
+    unitary_mat.resize (n, n);
 
   double *s = schur_mat.fortran_vec ();
   double *q = unitary_mat.fortran_vec ();

@@ -61,7 +61,8 @@ select_dig (const Complex& a)
 }
 
 int
-ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord)
+ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord, 
+		    bool calc_unitary)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -76,9 +77,14 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord)
   // Workspace requirements may need to be fixed if any of the
   // following change.
 
-  char jobvs = 'V';
+  char jobvs;
   char sense = 'N';
   char sort = 'N';
+
+  if (calc_unitary)
+    jobvs = 'V';
+  else
+    jobvs = 'N';
 
   char ord_char = ord.empty () ? 'U' : ord[0];
 
@@ -100,7 +106,8 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord)
   double rcondv;
 
   schur_mat = a;
-  unitary_mat.resize (n, n);
+  if (calc_unitary)
+    unitary_mat.resize (n, n);
 
   Complex *s = schur_mat.fortran_vec ();
   Complex *q = unitary_mat.fortran_vec ();

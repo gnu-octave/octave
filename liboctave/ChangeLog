@@ -1,3 +1,10 @@
+2004-09-17  David Bateman  <dbateman@free.fr>
+
+	* CmplxSCHUR.cc (CmplxSCHUR::init): New arg, calc_unitary to make the
+	calculation of the unitary matrix optional.
+	* dbleSCHUR.cc (SCHUR::init): Ditto.
+	* CmplxSCHUR.h, dbleSCHUR.h: Update decls.
+
 2004-09-15  David Bateman  <dbateman@free.fr>
 
 	* oct-sort.h (octave_sort<T>::set_compare (bool (*comp) (T, T))):

@@ -300,14 +300,14 @@ $S$.\n\
 
       if (! error_state)
 	{
-	  SCHUR result (tmp, ord);
-
 	  if (nargout == 0 || nargout == 1)
 	    {
+	      SCHUR result (tmp, ord, false);
 	      retval(0) = result.schur_matrix ();
 	    }
 	  else
 	    {
+	      SCHUR result (tmp, ord, true);
 	      retval(1) = result.schur_matrix ();
 	      retval(0) = result.unitary_matrix ();
 	    }
@@ -319,14 +319,15 @@ $S$.\n\
 
       if (! error_state)
 	{
-	  ComplexSCHUR result (ctmp, ord);
  
 	  if (nargout == 0 || nargout == 1)
 	    {
+	      ComplexSCHUR result (ctmp, ord, false);
 	      retval(0) = result.schur_matrix ();
 	    }
 	  else
 	    {
+	      ComplexSCHUR result (ctmp, ord, true);
 	      retval(1) = result.schur_matrix ();
 	      retval(0) = result.unitary_matrix ();
 	    }

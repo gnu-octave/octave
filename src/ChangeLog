@@ -1,3 +1,11 @@
+2004-09-17  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/det.cc (Fdet): Only compute estimate of the
+	condition number if requested as output.
+
+	* DLD-FUNCTIONS/schur.cc (Fschur): Only compute unitary matrix if
+	requested as output.
+
 2004-09-17  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-inline.cc (octave_fcn_inline::octave_fcn_inline):

@@ -20,13 +20,13 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
 	configure.in config.guess config.sub aclocal.m4 config.h.in \
-	acconfig.h config.h.bot
+	acconfig.h config.h.bot install-sh
 
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS PROJECTS README \
 	README.NLP ROADMAP SENDING-PATCHES THANKS move-if-change \
-	octave.sh octave-bug.in install-sh doinstall.sh \
-	mkinstalldirs MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
+	octave.sh octave-bug.in doinstall.sh mkinstalldirs \
+	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
 DISTDIRS = emacs glob kpathsea make plplot

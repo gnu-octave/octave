@@ -1,3 +1,25 @@
+2000-06-29  James R. Van Zandt  <jrv@vanzandt.mv.com>
+
+	* load-save.cc (read_int): New template function.  Instantiate it
+	for various integer types.
+	(load_save_format): New value, LS_MAT5_BINARY.
+	(arrayclasstype, mat5_data_type): New enums.
+	(read_mat5_binary_data): New function.
+	(read_mat5_tag): New function.
+	(read_mat5_binary_element): New function.
+	(read_mat5_binary_file_header): New function.
+	(get_file_format): Check for mat5 binary format too.
+	(do_load): Handle mat5 binary format.
+	(write_mat5_tag): New function.
+	(write_mat5_array): New function.
+	(class mat5_callback): New class.
+	(save_mat5_binary_element): New functnon.
+	(do_save): Handle mat5 binary format.
+	(write_header): Handle LS_MAT5_BINARY case too.
+	(save_user_variables): Handle LS_MAT5_BINARY case too.
+	(Fsave): Handle LS_MAT5_BINARY case too.
+	(Fload): Handle LS_MAT5_BINARY case too.
+
 2000-06-29  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
 
 	All of the following changes are protected by #ifdef HAVE_HDF5.

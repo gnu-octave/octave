@@ -65,6 +65,52 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
+#include "dMatrix.h"
+
+#define PAD(l) (((l)<=4)?4:(((l)+7)/8)*8)
+#define TAGLENGTH(l) ((l)<=4?4:8)
+
+template <class T>
+void
+read_int (std::istream& is, bool swap_bytes, T& val)
+{
+  is.read (X_CAST (char *, &val), sizeof (T));
+
+  if (swap_bytes)
+    {
+      switch (sizeof (T))
+	{
+	case 1:
+	  break;
+
+	case 2:
+	  swap_2_bytes (X_CAST (char *, &val));
+	  break;
+
+	case 4:
+	  swap_4_bytes (X_CAST (char *, &val));
+	  break;
+
+	case 8:
+	  swap_8_bytes (X_CAST (char *, &val));
+	  break;
+
+	default:
+	  (*current_liboctave_error_handler)
+	    ("read_int: unrecognized data format!");
+	}
+    }
+}
+
+template void read_int (std::istream&, bool, char&);
+template void read_int (std::istream&, bool, signed char&);
+template void read_int (std::istream&, bool, unsigned char&);
+template void read_int (std::istream&, bool, short&);
+template void read_int (std::istream&, bool, unsigned short&);
+template void read_int (std::istream&, bool, int&);
+template void read_int (std::istream&, bool, unsigned int&);
+template void read_int (std::istream&, bool, long&);
+template void read_int (std::istream&, bool, unsigned long&);
 
 // Write octave-core file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core;
@@ -88,10 +134,46 @@ enum load_save_format
     LS_BINARY,
     LS_MAT_ASCII,
     LS_MAT_BINARY,
+    LS_MAT5_BINARY,
 #ifdef HAVE_HDF5
     LS_HDF5,
 #endif /* HAVE_HDF5 */
     LS_UNKNOWN
+  };
+
+  enum arrayclasstype
+  {
+    mxCELL_CLASS=1,		// cell array
+    mxSTRUCT_CLASS,		// structure
+    mxOBJECT_CLASS,		// object
+    mxCHAR_CLASS,		// character array
+    mxSPARSE_CLASS,		// sparse array
+    mxDOUBLE_CLASS,		// double precision array
+    mxSINGLE_CLASS,		// single precision floating point
+    mxINT8_CLASS,		// 8 bit signed integer
+    mxUINT8_CLASS,		// 8 bit unsigned integer
+    mxINT16_CLASS,		// 16 bit signed integer
+    mxUINT16_CLASS,		// 16 bit unsigned integer
+    mxINT32_CLASS,		// 32 bit signed integer
+    mxUINT32_CLASS		// 32 bit unsigned integer
+  };
+
+enum mat5_data_type
+  {
+    miINT8=1,			// 8 bit signed
+    miUINT8,			// 8 bit unsigned
+    miINT16,			// 16 bit signed
+    miUINT16,			// 16 bit unsigned
+    miINT32,			// 32 bit signed
+    miUINT32,			// 32 bit unsigned
+    miSINGLE,			// IEEE 754 single precision float
+    miRESERVE1,
+    miDOUBLE,			// IEEE 754 double precision float
+    miRESERVE2,
+    miRESERVE3,
+    miINT64,			// 64 bit signed
+    miUINT64,			// 64 bit unsigned
+    miMATRIX			// MATLAB array
   };
 
 // Return TRUE if S is a valid identifier.
@@ -1225,7 +1307,7 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
   H5Eget_auto (&err_func, &err_func_data);
   H5Eset_auto (NULL, NULL);
 
-  hid_t attr_id = H5Aopen_name(loc_id, attr_name);
+  hid_t attr_id = H5Aopen_name (loc_id, attr_name);
 
   if (attr_id >= 0)
     {
@@ -1290,7 +1372,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 
   strcpy (vname, name);
 
-  if (!ident_valid && d->import)
+  if (! ident_valid && d->import)
     {
       // fix the identifier, replacing invalid chars with underscores
       make_valid_identifier (vname);
@@ -1600,7 +1682,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       H5Tclose (type_id);
 
       // check for OCTAVE_GLOBAL attribute:
-      d->global = hdf5_check_attr(data_id, "OCTAVE_GLOBAL");
+      d->global = hdf5_check_attr (data_id, "OCTAVE_GLOBAL");
 
       H5Dclose (data_id);
     }
@@ -1621,7 +1703,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       // default (since that preserves name information), and an
       // octave list otherwise.
 
-      bool is_list = hdf5_check_attr(subgroup_id, "OCTAVE_LIST");
+      bool is_list = hdf5_check_attr (subgroup_id, "OCTAVE_LIST");
 
       hdf5_callback_data dsub;
       dsub.name = dsub.doc = (char*) NULL;
@@ -1655,7 +1737,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	retval = retval2;
       else
 	{
-	  d->global = hdf5_check_attr(group_id, "OCTAVE_GLOBAL");
+	  d->global = hdf5_check_attr (group_id, "OCTAVE_GLOBAL");
 
 	  if (is_list)
 	    d->tc = lst;
@@ -2157,8 +2239,8 @@ float_format_to_mopt_digit (oct_mach_info::float_format flt_fmt)
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.
 //
-// The data is expected to be in Matlab's .mat format, though not all
-// the features of that format are supported.
+// The data is expected to be in Matlab version 4 .mat format, though
+// not all the features of that format are supported.
 //
 // FILENAME is used for error messages.
 //
@@ -2285,6 +2367,420 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   return 0;
 }
 
+// Read COUNT elements of data from IS in the format specified by TYPE,
+// placing the result in DATA.  If SWAP is TRUE, swap the bytes of
+// each element before copying to DATA.  FLT_FMT specifies the format
+// of the data if we are reading floating point numbers.
+
+static void
+read_mat5_binary_data (std::istream& is, double *data,
+		       int count, bool swap, mat5_data_type type,
+		       oct_mach_info::float_format flt_fmt)
+{
+  
+  switch (type)
+    {
+    case miINT8:
+      read_doubles (is, data, LS_CHAR, count, swap, flt_fmt);
+      break;
+
+    case miUINT8:
+      read_doubles (is, data, LS_U_CHAR, count, swap, flt_fmt);
+      break;
+
+    case miINT16:
+      read_doubles (is, data, LS_SHORT, count, swap, flt_fmt);
+      break;
+
+    case miUINT16:
+      read_doubles (is, data, LS_U_SHORT, count, swap, flt_fmt);
+      break;
+
+    case miINT32:
+      read_doubles (is, data, LS_INT, count, swap, flt_fmt);
+      break;
+
+    case miUINT32:
+      read_doubles (is, data, LS_U_INT, count, swap, flt_fmt);
+      break;
+
+    case miSINGLE:
+      read_doubles (is, data, LS_FLOAT, count, swap, flt_fmt);
+      break;
+
+    case miRESERVE1:
+      break;
+
+    case miDOUBLE:
+      read_doubles (is, data, LS_DOUBLE, count, swap, flt_fmt);
+      break;
+
+    case miRESERVE2:
+    case miRESERVE3:
+      break;
+
+    case miINT64:
+#ifdef EIGHT_BYTE_INT
+      read_doubles (is, data, LS_LONG, count, swap, flt_fmt);
+#endif
+      break;
+
+    case miUINT64:
+#ifdef EIGHT_BYTE_INT
+      read_doubles (is, data, LS_U_LONG, count, swap, flt_fmt);
+#endif
+      break;
+
+    case miMATRIX:
+    default:
+      break;
+    }
+}
+
+// Read one element tag from stream IS, 
+// place the type code in TYPE and the byte count in BYTES
+// return nonzero on error
+static int
+read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
+{
+  unsigned int upper;
+  FOUR_BYTE_INT temp;
+
+  if (! is.read (X_CAST (char *, &temp), 4 ))
+    goto data_read_error;
+
+  if (swap)
+    swap_4_bytes ((char *)&temp);
+
+  upper = (temp >> 16) & 0xffff;
+  type = temp & 0xffff;
+
+  if (upper)
+    {
+      // "compressed" format
+      bytes = upper;
+    }
+  else
+    {
+      if (! is.read (X_CAST (char *, &temp), 4 ))
+	goto data_read_error;
+      if (swap)
+	swap_4_bytes ((char *)&temp);
+      bytes = temp;
+    }
+
+  return 0;
+
+ data_read_error:
+  return 1;
+}
+
+// Extract one data element (scalar, matrix, string, etc.) from stream
+// IS and place it in TC, returning the name of the variable.
+//
+// The data is expected to be in Matlab's "Version 5" .mat format,
+// though not all the features of that format are supported.
+//
+// FILENAME is used for error messages.
+
+static char *
+read_mat5_binary_element (std::istream& is, const std::string& filename,
+			  bool swap, bool& global, octave_value& tc)
+{
+  // These are initialized here instead of closer to where they are
+  // first used to avoid errors from gcc about goto crossing
+  // initialization of variable.
+
+  Matrix re;
+  oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
+  char *name = 0;
+  int type = 0;
+  bool imag;
+  bool logicalvar;
+  enum arrayclasstype arrayclass;
+  FOUR_BYTE_INT junk;
+  FOUR_BYTE_INT flags;
+  FOUR_BYTE_INT nr;
+  FOUR_BYTE_INT nc;
+  FOUR_BYTE_INT dimension_length;
+  int len;
+  int element_length;
+  std::streampos pos;
+  TWO_BYTE_INT number;
+  number = *(TWO_BYTE_INT *)"\x00\x01";
+
+  // MAT files always use IEEE floating point
+  if ((number == 1) ^ swap)
+    flt_fmt = oct_mach_info::ieee_big_endian;
+  else
+    flt_fmt = oct_mach_info::ieee_little_endian;
+
+  // element type and length
+  if (read_mat5_tag (is, swap, type, element_length))
+    return 0;			// EOF
+
+  if (type != miMATRIX)
+    {
+      error ("load: invalid element type");
+      goto early_read_error;
+    }
+  pos = is.tellg ();
+
+  // array flags subelement
+  if (read_mat5_tag (is, swap, type, len) || type != miUINT32 || len != 8)
+    {
+      error ("load: invalid array flags subelement");
+      goto early_read_error;
+    }
+
+  read_int (is, swap, flags);
+  imag = (flags & 0x0800) != 0;	// has an imaginary part?
+  global = (flags & 0x0400) != 0; // global variable?
+  logicalvar = (flags & 0x0200) != 0; // we don't use this yet
+  arrayclass = (arrayclasstype)(flags & 0xff);
+  read_int (is, swap, junk);	// an "undefined" entry
+  
+  // dimensions array subelement
+  {
+    std::streampos pos;
+
+    if (read_mat5_tag (is, swap, type, dimension_length) || type != miINT32)
+      {
+	error ("load: invalid dimensions array subelement");
+	goto early_read_error;
+      }
+
+    pos = is.tellg ();
+    read_int (is, swap, nr);
+    read_int (is, swap, nc);
+    re.resize (nr, nc);
+
+    // delay checking for a multidimensional array until we have read
+    // the variable name
+    is.seekg (pos + dimension_length);
+  }
+
+  // array name subelement
+  {
+    std::streampos pos;
+      
+    if (read_mat5_tag (is, swap, type, len) || type != miINT8)
+      {
+	error ("load: invalid array name subelement");
+	goto early_read_error;
+      }
+
+    pos = is.tellg ();
+    name = new char[len+1];
+
+    if (len)			// structure field subelements have
+				// zero-length array name subelements
+      {
+	if (! is.read (X_CAST (char *, name), len ))
+	  goto data_read_error;
+	
+	is.seekg (pos + PAD (len));
+      }
+
+    name[len] = '\0';
+  }  
+
+  if (dimension_length != 8)
+    {
+      error ("load: multidimension arrays are not implemented");
+      goto skip_ahead;
+    }
+
+  switch (arrayclass)
+    {
+    case mxCELL_CLASS:
+      warning ("load: cell arrays are not implemented");
+      goto skip_ahead;
+
+    case mxOBJECT_CLASS:
+      warning ("load: objects are not implemented");
+      goto skip_ahead;
+
+    case mxSPARSE_CLASS:
+      warning ("load: sparse arrays are not implemented");
+      goto skip_ahead;
+
+    case mxSTRUCT_CLASS:
+      {
+	Octave_map m;
+	FOUR_BYTE_INT type;
+	FOUR_BYTE_INT len;
+	FOUR_BYTE_INT field_name_length;
+	int i;
+	char *elname;
+
+	// field name length subelement -- actually the maximum length
+	// of a field name.  The Matlab docs promise this will always
+	// be 32.  We read and use the actual value, on the theory
+	// that eventually someone will recognize that's a waste of
+	// space.
+	if (read_mat5_tag (is, swap, type, len) || type != miINT32)
+	  {
+	    error ("load: invalid field name subelement");
+	    goto data_read_error;
+	  }
+
+	if (! is.read (X_CAST (char *, &field_name_length), len ))
+	  goto data_read_error;
+
+	if (swap)
+	  swap_4_bytes ((char *)&field_name_length);
+
+	// field name subelement.  The length of this subelement tells
+	// us how many fields there are.
+	if (read_mat5_tag (is, swap, type, len) || type != miINT8)
+	  {
+	    error ("load: invalid field name subelement");
+	    goto data_read_error;
+	  }
+
+	elname = new char[len];
+
+	if (! is.read (elname, len))
+	  goto data_read_error;
+
+	// fields subelements
+	for (i=0; i < len/field_name_length; i++)
+	  {
+	    char *thename;
+	    octave_value fieldtc;
+	    thename = read_mat5_binary_element (is, filename, swap,
+						global, fieldtc);
+	    m[elname + i*field_name_length] = fieldtc;
+	    delete [] thename;
+	  }
+
+	delete [] elname;
+	tc = m;
+      }
+      break;
+
+    case mxCHAR_CLASS:
+      // handle as a numerical array to start with
+
+    case mxDOUBLE_CLASS:
+    case mxSINGLE_CLASS:
+    case mxINT8_CLASS:
+    case mxUINT8_CLASS:
+    case mxINT16_CLASS:
+    case mxUINT16_CLASS:
+    case mxINT32_CLASS:
+    case mxUINT32_CLASS:
+    default:
+      // handle all these numerical formats as double arrays
+      
+      // real data subelement
+      {
+	std::streampos pos;
+	
+	if (read_mat5_tag (is, swap, type, len))
+	  {
+	    error ("load: reading matrix data for `%s'", name);
+	    goto data_read_error;
+	  }
+
+	pos = is.tellg ();
+	read_mat5_binary_data (is, re.fortran_vec (), nr*nc, swap,
+			       (enum mat5_data_type) type, flt_fmt);
+
+	if (! is || error_state)
+	  {
+	    error ("load: reading matrix data for `%s'", name);
+	    goto data_read_error;
+	  }
+
+	is.seekg (pos + PAD (len));
+      }
+      
+      // imaginary data subelement
+      if (imag)
+	{
+	  Matrix im (nr, nc);
+	  
+	  if (read_mat5_tag (is, swap, type, len))
+	    {
+	      error ("load: reading matrix data for `%s'", name);
+	      goto data_read_error;
+	    }
+
+	  read_mat5_binary_data (is, im.fortran_vec (), nr*nc, swap,
+				 (enum mat5_data_type) type, flt_fmt);
+
+	  if (! is || error_state)
+	    {
+	      error ("load: reading imaginary matrix data for `%s'", name);
+	      goto data_read_error;
+	    }
+
+	  ComplexMatrix ctmp (nr, nc);
+
+	  for (int j = 0; j < nc; j++)
+	    for (int i = 0; i < nr; i++)
+	      ctmp (i, j) = Complex (re (i, j), im (i, j));
+
+	  tc = ctmp;
+	}
+      else
+	tc = re;
+
+      if (arrayclass == mxCHAR_CLASS)
+	tc = tc.convert_to_str ();
+    }
+
+  is.seekg (pos + element_length);
+
+  return name;
+
+ data_read_error:
+  delete [] name;
+
+ early_read_error:
+  error ("load: trouble reading binary file `%s'", filename.c_str ());
+  return 0;
+
+ skip_ahead:
+  warning ("      skipping over `%s'", name);
+  delete [] name;
+  is.seekg (pos + element_length);
+  return read_mat5_binary_element (is, filename, swap, global, tc);
+}
+
+static int
+read_mat5_binary_file_header (std::istream& is, bool& swap,
+			      bool quiet = false)
+{
+  TWO_BYTE_INT version=0, magic=0;
+
+  is.seekg (124, std::ios::beg);
+  is.read (X_CAST (char *, &version), 2);
+  is.read (X_CAST (char *, &magic), 2);
+
+  if (magic == 0x4d49)
+    swap = 0;
+  else if (magic == 0x494d)
+    swap = 1;
+  else
+    {
+      if (! quiet)
+	error ("load: can't read binary file");
+      return -1;
+    }
+
+  if (! swap)			// version number is inverse swapped!
+    version = ((version >> 8) & 0xff) + ((version & 0xff) << 8);
+
+  if (version != 1 && !quiet)
+    warning ("load: found version %d binary MAT file, "
+	     "but only prepared for version 1", version);
+
+  return 0;
+}
+
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
 
 static bool
@@ -2298,6 +2794,7 @@ matches_patterns (const std::string_vector& patterns, int pat_idx,
       if (pattern.match (name))
 	return true;
     }
+
   return false;
 }
 
@@ -2310,6 +2807,7 @@ read_binary_file_header (std::istream& is, bool& swap,
   char magic[magic_len+1];
   is.read (X_CAST (char *, magic), magic_len);
   magic[magic_len] = '\0';
+
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
     swap = oct_mach_info::words_big_endian ();
   else if (strncmp (magic, "Octave-1-B", magic_len) == 0)
@@ -2330,6 +2828,7 @@ read_binary_file_header (std::istream& is, bool& swap,
     {
       if (! quiet)
         error ("load: unrecognized binary format!");
+
       return -1;
     }
 
@@ -2342,7 +2841,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
   load_save_format retval = LS_UNKNOWN;
 
 #ifdef HAVE_HDF5
- // check this before we open the file
+  // check this before we open the file
   if (H5Fis_hdf5 (fname.c_str ()) > 0)
     return LS_HDF5;
 #endif /* HAVE_HDF5 */
@@ -2376,24 +2875,38 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 	  file.clear ();
 	  file.seekg (0, std::ios::beg);
 
-	  char *tmp = extract_keyword (file, "name");
+	  err = read_mat5_binary_file_header (file, swap, false);
 
-	  if (tmp)
-	    {
-	      retval = LS_ASCII;
+	  if (! err)
+  	    {
+	      file.clear ();
+	      file.seekg (0, std::ios::beg);
+	      retval = LS_MAT5_BINARY;
+  	    }
+  	  else
+  	    {
+	      file.clear ();
+	      file.seekg (0, std::ios::beg);
 
-	      delete [] tmp;
-	    }
-	  else
-	    {
-	      // Try reading the file as numbers only, determining the
-	      // number of rows and columns from the data.  We don't
-	      // even bother to check to see if the first item in the
-	      // file is a number, so that get_complete_line () can
-	      // skip any comments that might appear at the top of the
-	      // file.
+	      char *tmp = extract_keyword (file, "name");
 
-	      retval = LS_MAT_ASCII;
+	      if (tmp)
+		{
+		  retval = LS_ASCII;
+
+		  delete [] tmp;
+		}
+	      else
+		{
+		  // Try reading the file as numbers only, determining the
+		  // number of rows and columns from the data.  We don't
+		  // even bother to check to see if the first item in the
+		  // file is a number, so that get_complete_line() can
+		  // skip any comments that might appear at the top of the
+		  // file.
+		  
+		  retval = LS_MAT_ASCII;
+		}
 	    }
 	}
     }
@@ -2450,6 +2963,11 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 				 global, tc, doc, import);
 	  break;
 #endif /* HAVE_HDF5 */
+
+	case LS_MAT5_BINARY:
+	  name = read_mat5_binary_element (stream, orig_fname, swap,
+					   global, tc);
+	  break;
 
 	default:
 	  gripe_unrecognized_data_fmt ("load");
@@ -2600,6 +3118,10 @@ Force Octave to assume the file is in Octave's binary format.\n\
 @item -mat-binary\n\
 Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 \n\
+@item -mat4-binary\n\
+Force Octave to assume the file is in the binary format written by\n\
+@sc{Matlab} version 4.\n\
+\n\
 @item -hdf5\n\
 Force Octave to assume the file is in HDF5 format.\n\
 (HDF5 is a free, portable binary format developed by the National\n\
@@ -2666,6 +3188,10 @@ lists of lists of matrices, or ...).\n\
 	  format = LS_BINARY;
 	}
       else if (argv[i] == "-mat-binary" || argv[i] == "-m")
+	{
+	  format = LS_MAT5_BINARY;
+	}
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-4")
 	{
 	  format = LS_MAT_BINARY;
 	}
@@ -2756,7 +3282,9 @@ lists of lists of matrices, or ...).\n\
 	  i++;
 
 	  unsigned mode = std::ios::in;
-	  if (format == LS_BINARY || format == LS_MAT_BINARY)
+	  if (format == LS_BINARY ||
+	      format == LS_MAT_BINARY ||
+	      format == LS_MAT5_BINARY)
 	    mode |= std::ios::binary;
 
 	  std::ifstream file (fname.c_str (), mode);
@@ -2766,6 +3294,14 @@ lists of lists of matrices, or ...).\n\
 	      if (format == LS_BINARY)
 		{
 		  if (read_binary_file_header (file, swap, flt_fmt) < 0)
+		    {
+		      file.close ();
+		      return retval;
+		    }
+		}
+	      else if (format == LS_MAT5_BINARY)
+		{
+		  if (read_mat5_binary_file_header (file, swap, false) < 0)
 		    {
 		      file.close ();
 		      return retval;
@@ -3301,7 +3837,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 
       // mark with an attribute "OCTAVE_LIST" with value 1
       // to distinguish from structures (also stored as HDF5 groups):
-      if (hdf5_add_attr(data_id, "OCTAVE_LIST") < 0)
+      if (hdf5_add_attr (data_id, "OCTAVE_LIST") < 0)
 	goto error_cleanup;
     }
   else if (tc.is_map ())
@@ -3343,7 +3879,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 
   // if it's global, add an attribute "OCTAVE_GLOBAL" with value 1
   if (mark_as_global)
-    retval = hdf5_add_attr(data_id, "OCTAVE_GLOBAL") >= 0;
+    retval = hdf5_add_attr (data_id, "OCTAVE_GLOBAL") >= 0;
 
  error_cleanup:
 
@@ -3383,8 +3919,348 @@ save_hdf5_data (std::ostream& os, const octave_value& tc,
 
 #endif /* HAVE_HDF5 */
 
+static int 
+write_mat5_tag (std::ostream& is, int type, int bytes)
+{
+  FOUR_BYTE_INT temp;
+
+  if (bytes <= 4)
+    temp = (bytes << 16) + type;
+  else
+    {
+      temp = type;
+      if (! is.write ((char *)&temp, 4))
+	goto data_write_error;
+      temp = bytes;
+    }
+
+  if (! is.write ((char *)&temp, 4))
+    goto data_write_error;
+
+  return 0;
+
+ data_write_error:
+  return 1;
+}
+
+// write out the numeric values in M to OS,
+// preceded by the appropriate tag.
+static void 
+write_mat5_array (std::ostream& os, Matrix& m, const int save_as_floats)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+  double max_val, min_val;
+  save_type st = LS_DOUBLE;
+  mat5_data_type mst;
+  int size;
+  unsigned len;
+  double *data = m.fortran_vec ();
+
+// Have to use copy here to avoid writing over data accessed via
+// Matrix::data().
+
+#define MAT5_DO_WRITE(TYPE, data, count, stream)			\
+  do									\
+    {									\
+      TYPE *ptr = new TYPE [count];					\
+      for (int i = 0; i < count; i++)					\
+        ptr[i] = X_CAST (TYPE, data[i]);				\
+      stream.write (X_CAST (char *, ptr), count * sizeof (TYPE));	\
+      delete [] ptr ;							\
+    }									\
+  while (0)
+
+  if (save_as_floats)
+    {
+      if (m.too_large_for_float ())
+	{
+	  warning ("save: some values too large to save as floats --");
+	  warning ("save: saving as doubles instead");
+	}
+      else
+	st = LS_FLOAT;
+    }
+
+  if (m.all_integers (max_val, min_val))
+    st = get_save_type (max_val, min_val);
+
+  switch (st)
+    {
+    default:
+    case LS_DOUBLE:  mst = miDOUBLE; size = 8; break;
+    case LS_FLOAT:   mst = miSINGLE; size = 4; break;
+    case LS_U_CHAR:  mst = miUINT8;  size = 1; break;
+    case LS_U_SHORT: mst = miUINT16; size = 2; break;
+    case LS_U_INT:   mst = miUINT32; size = 4; break;
+    case LS_CHAR:    mst = miINT8;   size = 1; break;
+    case LS_SHORT:   mst = miINT16;  size = 2; break;
+    case LS_INT:     mst = miINT32;  size = 4; break;
+    }
+
+  len = nr*nc*size;
+  write_mat5_tag (os, mst, len);
+
+  {
+    switch (st)
+      {
+      case LS_U_CHAR:
+	MAT5_DO_WRITE (unsigned char, data, nr*nc, os);
+	break;
+	
+      case LS_U_SHORT:
+	MAT5_DO_WRITE (unsigned TWO_BYTE_INT, data, nr*nc, os);
+	break;
+	
+      case LS_U_INT:
+	MAT5_DO_WRITE (unsigned FOUR_BYTE_INT, data, nr*nc, os);
+	break;
+	
+	// provide for 64 bit ints, even though get_save_type does
+	// not yet implement them
+#ifdef EIGHT_BYTE_INT
+      case LS_U_LONG:
+	MAT5_DO_WRITE (unsigned EIGHT_BYTE_INT, data, nr*nc, os);
+	break;
+#endif
+
+      case LS_CHAR:
+	MAT5_DO_WRITE (signed char, data, nr*nc, os);
+	break;
+	
+      case LS_SHORT:
+	MAT5_DO_WRITE (TWO_BYTE_INT, data, nr*nc, os);
+	break;
+
+      case LS_INT:
+	MAT5_DO_WRITE (FOUR_BYTE_INT, data, nr*nc, os);
+	break;
+
+#ifdef EIGHT_BYTE_INT
+      case LS_LONG:
+	MAT5_DO_WRITE (EIGHT_BYTE_INT, data, nr*nc, os);
+	break;
+#endif
+
+      case LS_FLOAT:
+	MAT5_DO_WRITE (float, data, nr*nc, os);
+	break;
+
+      case LS_DOUBLE: // No conversion necessary.
+	os.write (X_CAST (char *, data), len);
+	break;
+
+      default:
+	(*current_liboctave_error_handler)
+	  ("unrecognized data format requested");
+	break;
+      }
+  }
+  if (PAD (len) > len)
+    {
+      static char buf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+      os.write (buf, PAD (len) - len);
+    }
+}
+
+// save the data from TC along with the corresponding NAME on stream
+// OS in the MatLab version 5 binary format.  Return true on success.
+
+static bool
+save_mat5_binary_element (std::ostream& os,
+			  const octave_value& tc, const std::string& name,
+			  bool mark_as_global, bool save_as_floats) 
+{
+  FOUR_BYTE_INT flags=0;
+  FOUR_BYTE_INT junk=0;
+  FOUR_BYTE_INT nr;
+  FOUR_BYTE_INT nc;
+  streampos fixup, contin;
+
+  // element type and length
+  fixup = os.tellp ();
+  write_mat5_tag (os, miMATRIX, 99); // we don't know the real length yet
+  
+  // array flags subelement
+  write_mat5_tag (os, miUINT32, 8);
+
+  if (mark_as_global)
+    flags |= 0x0400;
+
+  if (tc.is_complex_scalar () || tc.is_complex_matrix ())
+    flags |= 0x0800;
+
+  if (tc.is_string ())
+    flags |= mxCHAR_CLASS;
+  else if (tc.is_real_scalar ())
+    flags |= mxDOUBLE_CLASS;
+  else if (tc.is_real_matrix ())
+    flags |= mxDOUBLE_CLASS;
+  else if (tc.is_complex_scalar ())
+    flags |= mxDOUBLE_CLASS;
+  else if (tc.is_complex_matrix ())
+    flags |= mxDOUBLE_CLASS;
+  else if (tc.is_map ()) 
+    flags |= mxSTRUCT_CLASS;
+  else
+    {
+      gripe_wrong_type_arg ("save", tc, false);
+      goto error_cleanup;
+    }
+
+  os.write ((char *)&flags, 4);
+  os.write ((char *)&junk, 4);
+  
+  // dimensions array subelement
+  {
+    if (tc.is_string ())
+      {
+	charMatrix chm = tc.char_matrix_value ();
+	nr = tc.rows ();
+	nc = chm.cols ();
+      }
+    else if (tc.is_real_scalar () || tc.is_complex_scalar () || tc.is_map ()) 
+      {
+	nr = nc = 1;
+      }
+    else if (tc.is_real_matrix ())
+      {
+	Matrix m = tc.matrix_value ();
+	nr = m.rows ();
+	nc = m.columns ();
+      }
+    else if (tc.is_complex_matrix ())
+      {
+	ComplexMatrix m = tc.complex_matrix_value ();
+	nr = m.rows ();
+	nc = m.columns ();
+      }
+
+    write_mat5_tag (os, miINT32, 8);
+    os.write ((char *)&nr, 4);
+    os.write ((char *)&nc, 4);
+  }
+
+  // array name subelement
+  {
+    int namelen = name.length ();
+
+    if (namelen > 31)
+      namelen = 31; // only 31 char names permitted in mat file
+
+    int paddedlength = PAD (namelen);
+
+    write_mat5_tag (os, miINT8, namelen);
+    char * paddedname = new char [paddedlength];
+    memset (paddedname, 0, paddedlength);
+    strncpy (paddedname, name.c_str (), namelen);
+    os.write (paddedname, paddedlength);
+    delete [] paddedname;
+  }
+
+  // data element
+  if (tc.is_string ())
+    {
+      charMatrix chm = tc.char_matrix_value ();
+      int nc = chm.cols ();
+      int len = nr*nc*2;
+      int paddedlength = PAD (nr*nc*2);
+
+      TWO_BYTE_INT *buf = new TWO_BYTE_INT[nc+3];
+      write_mat5_tag (os, miUINT16, len);
+
+      for (int i = 0; i < nr; i++)
+	{
+	  std::string tstr = chm.row_as_string (i);
+	  const char *s = tstr.data ();
+
+	  for (int j = 0; j < nc; j++)
+	    buf[j] = *s++;
+
+	  os.write ((char *)buf, nc*2);
+	}
+      
+      if (paddedlength > len)
+	os.write ((char *)buf, paddedlength - len);
+
+      delete [] buf;
+    }
+  else if (tc.is_real_scalar () || tc.is_real_matrix ())
+    {
+      Matrix m = tc.matrix_value ();
+
+      write_mat5_array (os, m, save_as_floats);
+    }
+  else if (tc.is_complex_scalar () || tc.is_complex_matrix ()) 
+    {
+      ComplexMatrix m_cmplx = tc.complex_matrix_value ();
+      Matrix m = ::real (m_cmplx);
+
+      for (int part=0; part < 2; part++)
+	{
+	  // real part, then complex part
+	  write_mat5_array (os, m, save_as_floats);
+	  m = ::imag (m_cmplx);
+	}
+    }
+  else if (tc.is_map ()) 
+    {
+      // an Octave structure */
+      // recursively write each element of the structure
+      Octave_map m = tc.map_value ();
+      Pix i;
+
+      {
+	char buf[32];
+	FOUR_BYTE_INT maxfieldnamelength = 32;
+	int fieldcnt = 0;
+
+	for (i = m.first (); i; m.next (i))
+	  fieldcnt++;
+
+	write_mat5_tag (os, miINT32, 4);
+	os.write ((char *)&maxfieldnamelength, 4);
+	write_mat5_tag (os, miINT8, fieldcnt*32);
+	 
+	for (i = m.first (); i; m.next (i))
+	  {
+	    // write the name of each element
+	    string tstr = m.key (i);
+	    memset (buf, 0, 32);
+	    strncpy (buf, tstr.c_str (), 31); // only 31 char names permitted
+	    os.write (buf, 32);
+	  }
+
+	for (i = m.first (); i; m.next (i))
+	  {
+	    // write the data of each element
+	    bool retval2 = save_mat5_binary_element (os, m.contents (i), "",
+						     mark_as_global,
+						     save_as_floats);
+
+	    if (! retval2)
+	      goto error_cleanup;
+	  }
+      }
+    }
+  else
+    gripe_wrong_type_arg ("save", tc, false);
+
+  contin = os.tellp ();
+  os.seekp (fixup);
+  write_mat5_tag (os, miMATRIX, contin - fixup - 8); // the actual length
+  os.seekp (contin);
+
+  return true;
+
+ error_cleanup:
+  error ("save: error while writing `%s' to MAT file", name.c_str ());
+
+  return false;
+}
+
 // Save the data from TC along with the corresponding NAME on stream OS 
-// in the MatLab binary format.
+// in the MatLab version 4 binary format.
 
 static bool
 save_mat_binary_data (std::ostream& os, const octave_value& tc,
@@ -3459,9 +4335,9 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   else if (tc.is_complex_matrix ())
     {
       ComplexMatrix m_cmplx = tc.complex_matrix_value ();
-      Matrix m = ::real(m_cmplx);
+      Matrix m = ::real (m_cmplx);
       os.write (X_CAST (char *, m.data ()), 8 * len);
-      m = ::imag(m_cmplx);
+      m = ::imag (m_cmplx);
       os.write (X_CAST (char *, m.data ()), 8 * len);
     }
   else
@@ -3729,6 +4605,10 @@ do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
       break;
 #endif /* HAVE_HDF5 */
 
+    case LS_MAT5_BINARY:
+      save_mat5_binary_element (os, tc, name, global, save_as_floats);
+      break;
+
     default:
       gripe_unrecognized_data_fmt ("save");
       break;
@@ -3787,6 +4667,8 @@ get_default_save_format (void)
   if (fmt == "binary")
     retval = LS_BINARY;
   else if (fmt == "mat-binary" || fmt =="mat_binary")
+    retval = LS_MAT5_BINARY;
+  else if (fmt == "mat4-binary" || fmt =="mat4_binary")
     retval = LS_MAT_BINARY;
 #ifdef HAVE_HDF5
   else if (fmt == "hdf5")
@@ -3813,7 +4695,40 @@ write_header (std::ostream& os, load_save_format format)
 
 	os.write (X_CAST (char *, &tmp), 1);
       }
-    break;
+      break;
+
+    case LS_MAT5_BINARY:
+      {
+	char *versionmagic;
+	TWO_BYTE_INT number = *(TWO_BYTE_INT *)"\x00\x01";
+	struct tm bdt;
+	time_t now;
+	char headertext[128];
+
+	time (&now);
+	bdt = *gmtime (&now);
+	memset (headertext, ' ', 124);
+	// ISO 8601 format date
+	strftime (headertext, 124, "MATLAB 5.0 MAT-file, written by Octave "
+		 OCTAVE_VERSION ", %Y-%m-%d %T UTC", &bdt);
+
+	// The first pair of bytes give the version of the MAT file
+	// format.  The second pair of bytes form a magic number which
+	// signals a MAT file.  MAT file data are always written in
+	// native byte order.  The order of the bytes in the second
+	// pair indicates whether the file was written by a big- or
+	// little-endian machine.  However, the version number is
+	// written in the *opposite* byte order from everything else!
+	if (number == 1)
+	  versionmagic = "\x01\x00\x4d\x49"; // this machine is big endian
+	else
+	  versionmagic = "\x00\x01\x49\x4d"; // this machine is little endian
+
+	memcpy (headertext+124, versionmagic, 4);
+	os.write (headertext, 128);
+      }
+
+      break;
 
 #ifdef HAVE_HDF5
     case LS_HDF5:
@@ -3898,7 +4813,9 @@ save_user_variables (void)
       load_save_format format = get_default_save_format ();
 
       unsigned mode = std::ios::out|std::ios::trunc;
-      if (format == LS_BINARY || format == LS_MAT_BINARY)
+      if (format == LS_BINARY ||
+	  format == LS_MAT_BINARY ||
+	  format == LS_MAT5_BINARY)
 	mode |= std::ios::binary;
 
 #ifdef HAVE_HDF5
@@ -3963,6 +4880,9 @@ values to be saved can be represented in single precision.\n\
 \n\
 @item -mat-binary\n\
 Save the data in @sc{Matlab}'s binary data format.\n\
+\n\
+@item -mat4-binary\n\
+Save the data in the binary format written by @sc{Matlab} version 4.\n\
 \n\
 @item -hdf5\n\
 Save the data in HDF5 format.\n\
@@ -4060,6 +4980,10 @@ the file @file{data} in Octave's binary format.\n\
 	}
       else if (argv[i] == "-mat-binary" || argv[i] == "-m")
 	{
+	  format = LS_MAT5_BINARY;
+	}
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-4")
+	{
 	  format = LS_MAT_BINARY;
 	}
       else if (argv[i] == "-float-binary" || argv[i] == "-f")
@@ -4131,7 +5055,9 @@ the file @file{data} in Octave's binary format.\n\
       i++;
 
       unsigned mode = std::ios::out;
-      if (format == LS_BINARY || format == LS_MAT_BINARY)
+      if (format == LS_BINARY ||
+	  format == LS_MAT_BINARY ||
+	  format == LS_MAT5_BINARY)
 	mode |= std::ios::binary;
 
       mode |= append ? std::ios::ate : std::ios::trunc;

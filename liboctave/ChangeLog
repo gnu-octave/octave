@@ -1,3 +1,10 @@
+2000-06-29  James R. Van Zandt  <jrv@vanzandt.mv.com>
+
+	* data-conv.cc (read_doubles): Handle EIGHT_BYTE_INT cases.
+	(write_doubles): Ditto.
+	* data-conv.h: Ditto.
+	(enum save_type): New values, LS_U_LONG and LS_LONG.
+
 2000-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* boolMatrix.h: Declare MM_CMP_OPS here.

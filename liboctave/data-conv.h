@@ -49,6 +49,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #error "No 4 byte integer type found!"
 #endif
 
+#if SIZEOF_LONG == 8
+#define EIGHT_BYTE_INT long
+#else
+#if SIZEOF_LONG_LONG == 8
+// if `long long' is not implemented, then SIZEOF_LONG_LONG will be 0
+#define EIGHT_BYTE_INT long long
+// if no 8 byte integer type is found, then EIGHT_BYTE_INT is not defined
+#endif
+#endif
+
 class
 oct_data_conv
 {
@@ -80,9 +90,15 @@ enum save_type
     LS_U_CHAR,
     LS_U_SHORT,
     LS_U_INT,
+#ifdef EIGHT_BYTE_INT
+    LS_U_LONG,
+#endif
     LS_CHAR,
     LS_SHORT,
     LS_INT,
+#ifdef EIGHT_BYTE_INT
+    LS_LONG,
+#endif
     LS_FLOAT,
     LS_DOUBLE
   };

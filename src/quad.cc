@@ -39,7 +39,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-quad.h"
 
 // Global pointer for user defined function required by quadrature functions.
-static tree *quad_fcn;
+static tree_fvc *quad_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
@@ -67,9 +67,9 @@ quad_user_function (double x)
 //  args[0] = name;
   args[1] = tree_constant (x);
 
-  if (quad_fcn != NULL_TREE)
+  if (quad_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = quad_fcn->eval (args, 2, 1, 0);
+      tree_constant *tmp = quad_fcn->eval (0, 1, args, 2);
 
       delete [] args;
 
@@ -105,7 +105,7 @@ do_quad (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   quad_fcn = is_valid_function (args[1], "fsolve", 1);
-  if (quad_fcn == NULL_TREE
+  if (quad_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
     return retval;
 

@@ -38,7 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-lsode.h"
 
 // Global pointer for user defined function required by lsode.
-static tree *lsode_fcn;
+static tree_fvc *lsode_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
@@ -83,9 +83,9 @@ lsode_user_function (const ColumnVector& x, double t)
       args[1] = state;
     }
 
-  if (lsode_fcn != NULL_TREE)
+  if (lsode_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = lsode_fcn->eval (args, 3, 1, 0);
+      tree_constant *tmp = lsode_fcn->eval (0, 1, args, 3);
 
       delete [] args;
 
@@ -122,7 +122,7 @@ lsode (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   lsode_fcn = is_valid_function (args[1], "lsode", 1);
-  if (lsode_fcn == NULL_TREE
+  if (lsode_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (lsode_fcn, 3, "lsode", 1) != 1)
     return retval;
 

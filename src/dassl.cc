@@ -38,7 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-dassl.h"
 
 // Global pointer for user defined function required by dassl.
-static tree *dassl_fcn;
+static tree_fvc *dassl_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
@@ -94,9 +94,9 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
       args[2] = deriv;
     }
 
-  if (dassl_fcn != NULL_TREE)
+  if (dassl_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = dassl_fcn->eval (args, 4, 1, 0);
+      tree_constant *tmp = dassl_fcn->eval (0, 1, args, 4);
 
       delete [] args;
 
@@ -133,7 +133,7 @@ dassl (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   dassl_fcn = is_valid_function (args[1], "dassl", 1);
-  if (dassl_fcn == NULL_TREE
+  if (dassl_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (dassl_fcn, 4, "dassl", 1) != 1)
     return retval;
 

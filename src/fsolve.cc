@@ -38,7 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-fsolve.h"
 
 // Global pointer for user defined function required by hybrd1.
-static tree *fsolve_fcn;
+static tree_fvc *fsolve_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
@@ -110,9 +110,9 @@ fsolve_user_function (const ColumnVector& x)
       args[1] = vars;
     }
 
-  if (fsolve_fcn != NULL_TREE)
+  if (fsolve_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = fsolve_fcn->eval (args, 2, 1, 0);
+      tree_constant *tmp = fsolve_fcn->eval (0, 1, args, 2);
       delete [] args;
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
@@ -141,7 +141,7 @@ fsolve (const tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   fsolve_fcn = is_valid_function (args[1], "fsolve", 1);
-  if (fsolve_fcn == NULL_TREE
+  if (fsolve_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
     return retval;
 

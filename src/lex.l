@@ -52,6 +52,8 @@ static SLStack <token*> token_stack;
 #include "error.h"
 #include "utils.h"
 #include "tree.h"
+#include "tree-plot.h"
+#include "tree-const.h"
 #include "y.tab.h"
 #include "parse.h"
 #include "lex.h"

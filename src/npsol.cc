@@ -41,8 +41,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-npsol.h"
 
 // Global pointers for user defined functions required by npsol.
-static tree *npsol_objective;
-static tree *npsol_constraints;
+static tree_fvc *npsol_objective;
+static tree_fvc *npsol_constraints;
 
 #ifdef WITH_DLD
 tree_constant *
@@ -88,9 +88,9 @@ npsol_objective_function (const ColumnVector& x)
   retval = 0.0;
 
   tree_constant objective_value;
-  if (npsol_objective != NULL_TREE)
+  if (npsol_objective != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = npsol_objective->eval (args, 2, 1, 0);
+      tree_constant *tmp = npsol_objective->eval (0, 1, args, 2);
 
       delete [] args;
 
@@ -168,9 +168,9 @@ npsol_constraint_function (const ColumnVector& x)
 //  args[0] = name;
   args[1] = decision_vars;
 
-  if (npsol_constraints != NULL_TREE)
+  if (npsol_constraints != (tree_fvc *)NULL)
     {
-      tree_constant *tmp = npsol_constraints->eval (args, 2, 1, 0);
+      tree_constant *tmp = npsol_constraints->eval (0, 1, args, 2);
 
       delete [] args;
 
@@ -291,7 +291,7 @@ Handle all of the following:
     }
 
   npsol_objective = is_valid_function (args[2], "npsol", 1);
-  if (npsol_objective == NULL_TREE
+  if (npsol_objective == (tree_fvc *) NULL
       || takes_correct_nargs (npsol_objective, 2, "npsol", 1) != 1)
     return retval;
 
@@ -345,13 +345,13 @@ Handle all of the following:
       goto solved;
     }
 
-  npsol_constraints = NULL_TREE;
+  npsol_constraints = (tree_fvc *) NULL;
   if (nargin == 6 || nargin == 8 || nargin == 9 || nargin == 11)
     npsol_constraints = is_valid_function (args[nargin-2], "npsol", 0);
 
   if (nargin == 8 || nargin == 6)
     {
-      if (npsol_constraints == NULL_TREE)
+      if (npsol_constraints == (tree_fvc *) NULL)
 	{
 	  ColumnVector lub = args[nargin-1].to_vector ();
 	  Matrix c = args[nargin-2].to_matrix ();
@@ -424,7 +424,7 @@ Handle all of the following:
 
   if (nargin == 9 || nargin == 11)
     {
-      if (npsol_constraints == NULL_TREE)
+      if (npsol_constraints == (tree_fvc *) NULL)
 	{
 	  // Produce error message.
 	  is_valid_function (args[nargin-2], "npsol", 1);

@@ -153,11 +153,6 @@ public:
 
   ~LSODE (void) { }
 
-  void force_restart (void);
-
-  void set_stop_time (double t);
-  void clear_stop_time (void);
-
   ColumnVector do_integrate (double t);
 
   Matrix do_integrate (const ColumnVector& tout);
@@ -166,18 +161,11 @@ public:
 
   int integration_state (void) const { return istate; }
 
-  bool integration_ok (void) const { return ! integration_error; }
-
   std::string error_message (void) const;
 
 private:
 
-  double stop_time;
-  int stop_time_set;
-
   int n;
-  int integration_error;
-  int restart;
   int method_flag;
   Array<int> iwork;
   Array<double> rwork;
@@ -186,7 +174,7 @@ private:
   int iopt;
   int liw;
   int lrw;
-  int sanity_checked;
+  bool sanity_checked;
 
   friend int lsode_f (int *neq, double *t, double *y, double *ydot);
 

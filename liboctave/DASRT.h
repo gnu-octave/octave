@@ -165,28 +165,18 @@ public:
 
   ~DASRT (void) { }
 
-  void force_restart (void);
-
-  void set_stop_time (double t);
-  void clear_stop_time (void);
-
   DASRT_result integrate (const ColumnVector& tout);
 
   DASRT_result integrate (const ColumnVector& tout,
 			  const ColumnVector& tcrit); 
+
+  std::string error_message (void) const;
 
 private:
 
   bool initialized;
 
   bool sanity_checked;
-
-  bool stop_time_set;
-  double stop_time;
-
-  bool restart;
-
-  bool integration_error;
 
   int liw;  
   int lrw;

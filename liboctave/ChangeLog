@@ -1,5 +1,15 @@
 2002-07-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* base-de.h (base_diff_eqn::stop_time,
+	base_diff_eqn::stop_time_set, base_diff_eqn::restart,
+	base_diff_eqn::integration_error): New data members.
+	(base_diff_eqn::set_stop_time, base_diff_eqn::clear_stop_time,
+	base_diff_eqn::force_restart, base_diff_eqn::integration_ok,
+	base_diff_eqn::error_message): New member functions.
+	* LSODE.h, LSODE.cc, DASSL.h, DASSL.cc, DASPK.h, DASPK.cc,
+	DASRT.h, DASRT.cc, ODESSA.h, ODESSA.cc: Delete corresponding data
+	members and functions.
+
 	* DASRT.h (DASRT::set_ng, DASRT::get_ng): Delete
 	* DASRT.cc (DASRT::DASRT): Set ng here.
 	(DASRT::integrate): Don't forget to set nn.

@@ -64,9 +64,6 @@ static int nn;
 
 DASPK::DASPK (void) : DAE ()
 {
-  stop_time_set = 0;
-  stop_time = 0.0;
-
   sanity_checked = 0;
 
   info.resize (15);
@@ -79,9 +76,6 @@ DASPK::DASPK (const ColumnVector& state, double time, DAEFunc& f)
   : DAE (state, time, f)
 {
   n = size ();
-
-  stop_time_set = 0;
-  stop_time = 0.0;
 
   sanity_checked = 0;
 
@@ -97,9 +91,6 @@ DASPK::DASPK (const ColumnVector& state, const ColumnVector& deriv,
 {
   n = size ();
 
-  stop_time_set = 0;
-  stop_time = 0.0;
-
   DAEFunc::set_function (f.function ());
   DAEFunc::set_jacobian_function (f.jacobian_function ());
 
@@ -109,26 +100,6 @@ DASPK::DASPK (const ColumnVector& state, const ColumnVector& deriv,
 
   for (int i = 0; i < 20; i++)
     info.elem (i) = 0;
-}
-
-void
-DASPK::force_restart (void)
-{
-  restart = 1;
-  integration_error = 0;
-}
-
-void
-DASPK::set_stop_time (double tt)
-{
-  stop_time_set = 1;
-  stop_time = tt;
-}
-
-void
-DASPK::clear_stop_time (void)
-{
-  stop_time_set = 0;
 }
 
 int
@@ -207,7 +178,7 @@ DASPK::do_integrate (double tout)
 
   if (restart)
     {
-      restart = 0;
+      restart = false;
       info.elem (0) = 0;
     }
 
@@ -229,7 +200,7 @@ DASPK::do_integrate (double tout)
   if (rwork.length () != lrw)
     rwork.resize (lrw);
 
-  integration_error = 0;
+  integration_error = false;
 
   if (DAEFunc::jacobian_function ())
     info.elem (4) = 1;
@@ -254,7 +225,7 @@ DASPK::do_integrate (double tout)
 	  (*current_liboctave_error_handler)
 	    ("daspk: inconsistent sizes for state and residual vectors");
 
-	  integration_error = 1;
+	  integration_error = true;
 	  return retval;
 	}
 
@@ -304,7 +275,7 @@ DASPK::do_integrate (double tout)
 
   if (f77_exception_encountered)
     {
-      integration_error = 1;
+      integration_error = true;
       (*current_liboctave_error_handler) ("unrecoverable error in daspk");
     }
   else
@@ -346,7 +317,7 @@ DASPK::do_integrate (double tout)
 		  // and control is returned to the calling program. For
 		  // example, this occurs when invalid input is detected.
 	default:
-	  integration_error = 1;
+	  integration_error = true;
 	  break;
 	}
     }
@@ -500,6 +471,21 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 	  if (integration_error)
 	    return retval;
 	}
+    }
+
+  return retval;
+}
+
+std::string
+DASPK::error_message (void) const
+{
+  std::string retval;
+
+  switch (idid)
+    {
+    default:
+      retval = "unknown error state";
+      break;
     }
 
   return retval;

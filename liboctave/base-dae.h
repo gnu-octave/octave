@@ -58,8 +58,7 @@ public:
   void initialize (const ColumnVector& x0, double t0)
     {
       base_diff_eqn::initialize (x0, t0);
-      xdot.resize (x0.length (), 0.0);
-      force_restart ();
+      xdot = ColumnVector (x0.length (), 0.0);
     }
 
   void initialize (const ColumnVector& x0, const ColumnVector& xdot0,
@@ -67,7 +66,6 @@ public:
     {
       base_diff_eqn::initialize (x0, t0);
       xdot = xdot0;
-      force_restart ();
     }
 
   ColumnVector state_derivative (void) { return xdot; }

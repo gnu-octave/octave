@@ -70,17 +70,11 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
 {
   n = size ();
 
-  stop_time_set = 0;
-  stop_time = 0.0;
-
-  integration_error = 0;
-  restart = 1;
-
   istate = 1;
   itask = 1;
   iopt = 0;
 
-  sanity_checked = 0;
+  sanity_checked = false;
 }
 
 LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
@@ -88,36 +82,11 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
 {
   n = size ();
 
-  stop_time_set = 0;
-  stop_time = 0.0;
-
-  integration_error = 0;
-  restart = 1;
-
   istate = 1;
   itask = 1;
   iopt = 0;
 
-  sanity_checked = 0;
-}
-
-void
-LSODE::force_restart (void)
-{
-  restart = 1;
-}
-
-void
-LSODE::set_stop_time (double time)
-{
-  stop_time_set = 1;
-  stop_time = time;
-}
-
-void
-LSODE::clear_stop_time (void)
-{
-  stop_time_set = 0;
+  sanity_checked = false;
 }
 
 int
@@ -169,7 +138,7 @@ LSODE::do_integrate (double tout)
 
   if (restart)
     {
-      restart = 0;
+      restart = false;
       istate = 1;
     }
 
@@ -207,7 +176,7 @@ LSODE::do_integrate (double tout)
 	rwork.elem (i) = 0;
     }
 
-  integration_error = 0;
+  integration_error = false;
 
   double *xp = x.fortran_vec ();
 
@@ -228,11 +197,11 @@ LSODE::do_integrate (double tout)
 	  (*current_liboctave_error_handler)
 	    ("lsode: inconsistent sizes for state and derivative vectors");
 
-	  integration_error = 1;
+	  integration_error = true;
 	  return retval;
 	}
 
-      sanity_checked = 1;
+      sanity_checked = true;
     }
 
   if (stop_time_set)
@@ -263,7 +232,7 @@ LSODE::do_integrate (double tout)
       (*current_liboctave_error_handler)
 	("lsode: inconsistent sizes for state and absolute tolerance vectors");
 
-      integration_error = 1;
+      integration_error = true;
       return retval;
     }
 
@@ -301,14 +270,14 @@ LSODE::do_integrate (double tout)
 
   if (f77_exception_encountered)
     {
-      integration_error = 1;
+      integration_error = true;
       (*current_liboctave_error_handler) ("unrecoverable error in lsode");
     }
   else
     {
       switch (istate)
 	{
-	case -13: // Return requested in user-supplied function.
+	case -13: // return requested in user-supplied function.
 	case -6:  // error weight became zero during problem. (solution
 	          // component i vanished, and atol or atol(i) = 0.)
 	case -5:  // repeated convergence failures (perhaps bad jacobian
@@ -317,7 +286,7 @@ LSODE::do_integrate (double tout)
 	case -3:  // illegal input detected (see printed message).
 	case -2:  // excess accuracy requested (tolerances too small).
 	case -1:  // excess work done on this call (perhaps wrong mf).
-	  integration_error = 1;
+	  integration_error = true;
 	  break;
 
 	case 2:  // lsode was successful
@@ -443,7 +412,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 	  double next_out;
 	  while (i_out < n_out)
 	    {
-	      int do_restart = 0;
+	      bool do_restart = false;
 
 	      next_out = tout.elem (i_out);
 	      if (i_crit < n_crit)
@@ -459,7 +428,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 		  save_output = 1;
 		  i_out++;
 		  i_crit++;
-		  do_restart = 1;
+		  do_restart = true;
 		}
 	      else if (next_crit < next_out)
 		{
@@ -469,7 +438,7 @@ LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 		      t_out = next_crit;
 		      save_output = 0;
 		      i_crit++;
-		      do_restart = 1;
+		      do_restart = true;
 		    }
 		  else
 		    {

@@ -56,9 +56,6 @@ static int nn;
 
 DASSL::DASSL (void) : DAE ()
 {
-  stop_time_set = false;
-  stop_time = 0.0;
-
   liw = 0;
   lrw = 0;
 
@@ -75,9 +72,6 @@ DASSL::DASSL (const ColumnVector& state, double time, DAEFunc& f)
 {
   n = size ();
 
-  stop_time_set = false;
-  stop_time = 0.0;
-
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
 
@@ -92,9 +86,6 @@ DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
 {
   n = size ();
 
-  stop_time_set = false;
-  stop_time = 0.0;
-
   DAEFunc::set_function (f.function ());
   DAEFunc::set_jacobian_function (f.jacobian_function ());
 
@@ -107,26 +98,6 @@ DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
 
   for (int i = 0; i < 15; i++)
     info.elem (i) = 0;
-}
-
-void
-DASSL::force_restart (void)
-{
-  restart = 1;
-  integration_error = false;
-}
-
-void
-DASSL::set_stop_time (double tt)
-{
-  stop_time_set = true;
-  stop_time = tt;
-}
-
-void
-DASSL::clear_stop_time (void)
-{
-  stop_time_set = false;
 }
 
 int
@@ -192,7 +163,7 @@ DASSL::do_integrate (double tout)
 
   if (restart)
     {
-      restart = 0;
+      restart = false;
       info.elem (0) = 0;
     }
 
@@ -472,6 +443,21 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 	  if (integration_error)
 	    return retval;
 	}
+    }
+
+  return retval;
+}
+
+std::string
+DASSL::error_message (void) const
+{
+  std::string retval;
+
+  switch (idid)
+    {
+    default:
+      retval = "unknown error state";
+      break;
     }
 
   return retval;

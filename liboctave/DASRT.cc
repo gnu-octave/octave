@@ -147,10 +147,6 @@ DASRT::DASRT (void)
   : DAERT ()
 {
   initialized = false;
-  restart = false;
-
-  stop_time_set = false;
-  stop_time = 0.0;
 
   sanity_checked = false;
 
@@ -168,10 +164,6 @@ DASRT::DASRT (const ColumnVector& state, double time, DAERTFunc& f)
   n = size ();
 
   initialized = false;
-  restart = false;
-
-  stop_time_set = false;
-  stop_time = 0.0;
 
   liw = 20 + n;
   lrw = 50 + 9*n + n*n;
@@ -200,10 +192,6 @@ DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
   n = size ();
 
   initialized = false;
-  restart = false;
-
-  stop_time_set = false;
-  stop_time = 0.0;
 
   sanity_checked = false;
 
@@ -223,26 +211,6 @@ DASRT::DASRT (const ColumnVector& state, const ColumnVector& deriv,
   lrw = 50 + 9*n + n*n + 1000;
 
   jroot.resize (ng, 1);
-}
-
-void
-DASRT::force_restart (void)
-{
-  restart = true;
-  integration_error = false;
-}
-
-void
-DASRT::set_stop_time (double t)
-{
-  stop_time_set = true;
-  stop_time = t;
-}
-
-void
-DASRT::clear_stop_time (void)
-{
-  stop_time_set = false;
 }
 
 void
@@ -418,8 +386,6 @@ DASRT::integrate (const ColumnVector& tout)
   Matrix xdot_out;
   ColumnVector t_out = tout;
 
-  int oldj = 0;
-
   int n_out = tout.capacity ();
 
   if (n_out > 0 && n > 0)
@@ -582,6 +548,21 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 	  if (integration_error)
 	    return retval;
 	}
+    }
+
+  return retval;
+}
+
+std::string
+DASRT::error_message (void) const
+{
+  std::string retval;
+
+  switch (idid)
+    {
+    default:
+      retval = "unknown error state";
+      break;
     }
 
   return retval;

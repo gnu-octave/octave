@@ -120,11 +120,6 @@ public:
 
   ~DASSL (void) { }
 
-  void force_restart (void);
-
-  void set_stop_time (double t);
-  void clear_stop_time (void);
-
   ColumnVector do_integrate (double t);
 
   Matrix do_integrate (const ColumnVector& tout);
@@ -136,18 +131,15 @@ public:
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,
 		    const ColumnVector& tcrit); 
 
+  std::string error_message (void) const;
+
 private:
 
-  double stop_time;
-  int stop_time_set;
-
   int n;
-  int integration_error;
-  int restart;
   int liw;  
   int lrw;
   int idid;
-  int sanity_checked;
+  bool sanity_checked;
   Array<int> info;
   Array<int> iwork;
   Array<double> rwork;

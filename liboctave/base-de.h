@@ -23,6 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_base_de_h)
 #define octave_base_de_h 1
 
+#include <string>
+
 #include "dColVector.h"
 #include "dMatrix.h"
 
@@ -31,11 +33,17 @@ base_diff_eqn
 {
 public:
 
-  base_diff_eqn (void) : x (), t (0.0) { }
+  base_diff_eqn (void)
+    : x (), t (0.0), stop_time (0.0), stop_time_set (false),
+      restart (true), integration_error (false) { } 
 
-  base_diff_eqn (const ColumnVector& xx, double tt) : x (xx), t (tt) { }
+  base_diff_eqn (const ColumnVector& xx, double tt)
+    : x (xx), t (tt), stop_time (0.0), stop_time_set (false),
+      restart (true), integration_error (false) { }
 
-  base_diff_eqn (const base_diff_eqn& a) : x (a.x), t (a.t) { }
+  base_diff_eqn (const base_diff_eqn& a)
+    : x (a.x), t (a.t), stop_time (0.0), stop_time_set (false),
+      restart (true), integration_error (false) { }
 
   virtual ~base_diff_eqn (void) { }
 
@@ -45,18 +53,20 @@ public:
 	{
 	  x = a.x;
 	  t = a.t;
+	  stop_time = a.stop_time;
+	  stop_time_set = a.stop_time_set;
+	  restart = a.restart;
+	  integration_error = a.integration_error;
 	}
+
       return *this;
     }
-
-  // There must be a way for us to force the integration to restart.
-
-  virtual void force_restart (void) = 0;
 
   void initialize (const ColumnVector& x0, double t0)
     {
       x = x0;
       t = t0;
+      integration_error = false;
       force_restart ();
     }
 
@@ -66,10 +76,33 @@ public:
 
   double time (void) const { return t; }
 
+  void set_stop_time (double t)
+    {
+      stop_time_set = true;
+      stop_time = t;
+    }
+
+  void clear_stop_time (void) { stop_time_set = false; }
+
+  virtual void force_restart (void) { restart = true; }
+
+  bool integration_ok (void) const { return ! integration_error; }
+
+  virtual std::string error_message (void) const = 0;
+
 protected:
 
   ColumnVector x;
+
   double t;
+
+  double stop_time;
+
+  bool stop_time_set;
+
+  bool restart;
+
+  bool integration_error;
 };
 
 #endif

@@ -176,11 +176,6 @@ ODESSA::ODESSA (void) : ODES (), ODESSA_options ()
   neq.resize(2);
   n = size ();
 
-  stop_time_set = false;
-  stop_time = 0.0;
-
-  integration_error = false;
-  restart = true;
   iopt.resize(4);
 
   istate = 1;
@@ -200,14 +195,6 @@ ODESSA::ODESSA (const ColumnVector& state, double time, ODESFunc& f)
 {
   neq.resize(2);
   n = size ();
-
-  stop_time_set = false;
-  stop_time = 0.0;
- 
-  ODESFunc::operator = (f);
-
-  integration_error = false;
-  restart = true;
 
   iopt.resize(4);
   istate = 1;
@@ -230,7 +217,6 @@ ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& theta,
   : ODES (state, theta, time, f)
 {
   initialized = false;
-  restart = false;
 
   neq.resize(2);
   n = state.length();
@@ -238,11 +224,6 @@ ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& theta,
 
   neq(0) = n;
   neq(1) = npar;
-
-  stop_time_set = false;
-  stop_time = 0.0;
-
-  ODESFunc::operator = (f);
 
   sx0 = sensitivity_guess;
   par.resize (npar);
@@ -264,25 +245,6 @@ ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& theta,
   iopt(1) = isopt;
 
   y.resize (n, npar+1, 0.0);
-}
-
-void
-ODESSA::force_restart (void)
-{
-  restart = true;
-}
-
-void
-ODESSA::set_stop_time (double time)
-{
-  stop_time_set = true;
-  stop_time = time;
-}
-
-void
-ODESSA::clear_stop_time (void)
-{
-  stop_time_set = 0;
 }
 
 void

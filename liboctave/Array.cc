@@ -395,6 +395,26 @@ Array2<T>::resize (int r, int c, const T& val)
     delete old_rep;
 }
 
+template <class T>
+Array2<T>&
+Array2<T>::insert (const Array2<T>& a, int r, int c)
+{
+  int a_rows = a.rows ();
+  int a_cols = a.cols ();
+  if (r < 0 || r + a_rows - 1 > rows ()
+      || c < 0 || c + a_cols - 1 > cols ())
+    {
+      (*current_liboctave_error_handler) ("range error for insert");
+      return *this;
+    }
+
+  for (int j = 0; j < a_cols; j++)
+    for (int i = 0; i < a_rows; i++)
+      elem (r+i, c+j) = a.elem (i, j);
+
+  return *this;
+}
+
 // Three dimensional array class.
 
 template <class T>

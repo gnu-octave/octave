@@ -536,13 +536,15 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 		}
 	      else if (rhs_nr == 1 && rhs_nc == 1)
 		{
+		  RT scalar = rhs.elem (0, 0);
+
 		  for (int j = 0; j < m; j++)
 		    {
 		      int jj = idx_j.elem (j);
 		      for (int i = 0; i < n; i++)
 			{
 			  int ii = idx_i.elem (i);
-			  lhs.elem (ii, jj) = rhs.elem (0, 0);
+			  lhs.elem (ii, jj) = scalar;
 			}
 		    }
 		}

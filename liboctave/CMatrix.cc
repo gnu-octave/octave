@@ -191,18 +191,7 @@ ComplexMatrix::insert (const DiagMatrix& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const ComplexMatrix& a, int r, int c)
 {
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-  if (r < 0 || r + a_nr - 1 > rows () || c < 0 || c + a_nc - 1 > cols ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
-
-  for (int j = 0; j < a_nc; j++)
-    for (int i = 0; i < a_nr; i++)
-      elem (r+i, c+j) = a.elem (i, j);
-
+  Array2<Complex>::insert (a, r, c);
   return *this;
 }
 

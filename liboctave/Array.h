@@ -330,6 +330,8 @@ public:
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
 
+  Array2<T>& insert (const Array2<T>& a, int r, int c);
+
 #ifdef HEAVYWEIGHT_INDEXING
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
 

@@ -111,19 +111,7 @@ Matrix::operator != (const Matrix& a) const
 Matrix&
 Matrix::insert (const Matrix& a, int r, int c)
 {
-  int a_rows = a.rows ();
-  int a_cols = a.cols ();
-  if (r < 0 || r + a_rows - 1 > rows ()
-      || c < 0 || c + a_cols - 1 > cols ())
-    {
-      (*current_liboctave_error_handler) ("range error for insert");
-      return *this;
-    }
-
-  for (int j = 0; j < a_cols; j++)
-    for (int i = 0; i < a_rows; i++)
-      elem (r+i, c+j) = a.elem (i, j);
-
+  Array2<double>::insert (a, r, c);
   return *this;
 }
 

@@ -18,7 +18,7 @@ C
  20     RODE2(I) = RSAV(J)
       DO 30 I = 1,LIODE1
  30     IODE1(I) = ISAV(I)
-      DO 40 I = 1,LODE2
+      DO 40 I = 1,LIODE2
         J = LIODE1 + I
  40     IODE2(I) = ISAV(J)
       RETURN

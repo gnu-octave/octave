@@ -1,5 +1,10 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dbleDET.cc (DET::value_will_overflow): We want det[1], not det[2].
+	(DET::value_will_underflow): Likewise.
+	* CmplxDET.cc (ComplexDET::value_will_overflow): Likewise.
+	(ComplexDET::value_will_underflow): Likewise.
+
 	* Makefile.in (distclean): Also remove stamp-prereq.
 
 	* Array2-idx.h (assign): If assignment conforms but the RHS and

@@ -1,6 +1,7 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Default value of BUILD_CXX is $CXX, not g++.
+	(AH_BOTTOM): Define __USE_STD_IOSTREAM if using Compaq C++ compiler.
 
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

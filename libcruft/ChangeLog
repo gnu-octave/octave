@@ -1,5 +1,8 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* odessa/odessa_rscom.f (ODESSA_RSCOM): Fix apparent typo (LODE2
+	should probably be LIODE2).
+
 	* Makerules.in (clean, mostlyclean): Also remove *.d.
 
 	* misc/quit.cc: Add std:: qualifiers to memcpy calls.

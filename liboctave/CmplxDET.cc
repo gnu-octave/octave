@@ -37,13 +37,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int
 ComplexDET::value_will_overflow (void) const
 {
-  return det[2].real () + 1 > log10 (DBL_MAX) ? 1 : 0;
+  return det[1].real () + 1 > log10 (DBL_MAX) ? 1 : 0;
 }
 
 int
 ComplexDET::value_will_underflow (void) const
 {
-  return det[2].real () - 1 < log10 (DBL_MIN) ? 1 : 0;
+  return det[1].real () - 1 < log10 (DBL_MIN) ? 1 : 0;
 }
 
 Complex

@@ -21,6 +21,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+/*
+
+The classes in this file are derived from the old `genclass' versions
+of Map and CHMap from libg++, originally:
+
+  Copyright (C) 1988 Free Software Foundation
+    written by Doug Lea (dl@rocky.oswego.edu)
+
+and distributed under the terms of the GNU Library General Public
+License as published by the Free Software Foundation.
+
+*/
+
 #if ! defined (octave_Map_h)
 #define octave_Map_h 1
 
@@ -29,6 +42,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <Pix.h>
+
+#include "utils.h"
 
 template <class C>
 class Map
@@ -56,7 +71,7 @@ public:
   virtual Pix first (void) const = 0;		// Pix of first item or 0
   virtual void next (Pix& i) const = 0;		// advance to next or 0
   virtual const char *key (Pix i) const = 0;	// access key at i
-  virtual const C& contents (Pix i) const = 0;	// access contents at i
+  virtual C& contents (Pix i) const = 0;	// access contents at i
 
   virtual int owns (Pix i) const;		// is i a valid Pix  ?
   virtual Pix seek (const char *key) const;	// Pix of key
@@ -72,19 +87,21 @@ template <class C>
 struct CHNode
 {
   CHNode *tl;
-  const char *hd;
+  char *hd;
   C cont;
 
-  CHNode (void) { }
+  CHNode (void) : tl (0), hd (0) { }
 
   CHNode (const char *h, const C& c, CHNode *t = 0)
-    : hd (h), cont (c), tl (t) { }
+    : tl (t), cont (c)
+      { hd = strsave (h); }
 
-  ~CHNode (void) { }
+  ~CHNode (void)
+    { delete [] hd; }
 };
 
 #ifndef DEFAULT_INITIAL_CAPACITY
-#define DEFAULT_INITIAL_CAPACITY 32
+#define DEFAULT_INITIAL_CAPACITY 8
 #endif
 
 template <class C>
@@ -120,7 +137,7 @@ public:
       return ((CHNode<C> *) p)->hd;
     }
 
-  const C& contents (Pix p) const
+  C& contents (Pix p) const
     {
       if (p == 0)
 	error ("null Pix");

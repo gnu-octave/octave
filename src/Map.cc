@@ -21,6 +21,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+/*
+
+The classes in this file are derived from the old `genclass' versions
+of Map and CHMap from libg++, originally:
+
+  Copyright (C) 1988 Free Software Foundation
+    written by Doug Lea (dl@rocky.oswego.edu)
+
+and distributed under the terms of the GNU Library General Public
+License as published by the Free Software Foundation.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -271,9 +284,10 @@ CHMap<C>::OK (void) const
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
 #if defined (OCTAVE_SOURCE)
 
-//typedef Map<double> map_type_double;
-//typedef CHNode<double> chnode_type_double;
-typedef CHMap<double> chmap_type_double;
+#include "tree-const.h"
+typedef Map<tree_constant> map_type_tree_constant;
+typedef CHNode<tree_constant> chnode_type_tree_constant;
+typedef CHMap<tree_constant> chmap_type_tree_constant;
 
 #elif defined (USER_TYPEDEFS)
 

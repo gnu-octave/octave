@@ -42,6 +42,7 @@ private:
       complex_matrix_constant,
       string_constant,
       range_constant,
+      map_constant,
       magic_colon,
     };
 
@@ -70,6 +71,8 @@ private:
 
   tree_constant_rep (double base, double limit, double inc);
   tree_constant_rep (const Range& r);
+
+  tree_constant_rep (const Octave_map& m);
 
   tree_constant_rep (tree_constant_rep::constant_type t);
 
@@ -111,6 +114,9 @@ private:
 
   int is_range (void) const
     { return type_tag == tree_constant_rep::range_constant; }
+
+  int is_map (void) const
+    { return type_tag == tree_constant_rep::map_constant; }
 
   int is_magic_colon (void) const
     { return type_tag == tree_constant_rep::magic_colon; }
@@ -173,6 +179,9 @@ private:
   ComplexMatrix complex_matrix_value (int force_string_conversion = 0) const;
   char *string_value (void) const;
   Range range_value (void) const;
+  Octave_map map_value (void) const;
+
+  tree_constant& lookup_map_element (const char *name, int insert = 0);
 
   ColumnVector vector_value (int force_string_conversion = 0,
 			     int force_vector_conversion = 0) const;
@@ -193,6 +202,51 @@ private:
   void maybe_resize (int imax, int jmax);
 
   void stash_original_text (char *s);
+
+  void maybe_mutate (void);
+
+  void print (void);
+
+  void print_code (ostream& os);
+
+  char *type_as_string (void) const;
+
+// Binary and unary operations.
+
+  friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
+				     tree_expression::type t);
+
+  friend tree_constant do_unary_op (tree_constant& a,
+				    tree_expression::type t);
+
+// -------------------------------------------------------------------
+
+// These may not need to be member functions.
+
+  tree_constant cumprod (void) const;
+  tree_constant cumsum (void) const;
+  tree_constant prod (void) const;
+  tree_constant sum (void) const;
+  tree_constant sumsq (void) const;
+
+  tree_constant diag (void) const;
+  tree_constant diag (const tree_constant& a) const;
+
+  tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
+
+// -------------------------------------------------------------------
+
+// We want to eliminate this.
+
+  constant_type const_type (void) const { return type_tag; }
+
+// We want to get rid of these too:
+
+#if defined (__GNUG__) && __GNUC_MINOR__ < 6
+public:
+#endif
+  void force_numeric (int force_str_conv = 0);
+  tree_constant make_numeric (int force_str_conv = 0) const;
 
 // Indexing.
 
@@ -327,22 +381,6 @@ private:
   void delete_columns (idx_vector& j);
   void delete_columns (Range& j);
 
-  void maybe_mutate (void);
-
-  void print (void);
-
-  void print_code (ostream& os);
-
-  char *type_as_string (void) const;
-
-// Binary and unary operations.
-
-  friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
-				     tree_expression::type t);
-
-  friend tree_constant do_unary_op (tree_constant& a,
-				    tree_expression::type t);
-
 // Data.
 
   int count;
@@ -357,38 +395,10 @@ private:
       ComplexMatrix *complex_matrix;	// A real matrix constant.
       char *string;			// A character string constant.
       Range *range;			// A set of evenly spaced values.
+      Octave_map *a_map;		// An associative array.
     };
 
   char *orig_text;
-
-// -------------------------------------------------------------------
-
-// These may not need to be member functions.
-
-  tree_constant cumprod (void) const;
-  tree_constant cumsum (void) const;
-  tree_constant prod (void) const;
-  tree_constant sum (void) const;
-  tree_constant sumsq (void) const;
-
-  tree_constant diag (void) const;
-  tree_constant diag (const tree_constant& a) const;
-
-  tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
-
-// -------------------------------------------------------------------
-
-// We want to eliminate this.
-
-  constant_type const_type (void) const { return type_tag; }
-
-// We want to get rid of these too:
-
-#if defined (__GNUG__) && __GNUC_MINOR__ < 6
-public:
-#endif
-  void force_numeric (int force_str_conv = 0);
-  tree_constant make_numeric (int force_str_conv = 0) const;
 };
 
 #endif

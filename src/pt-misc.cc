@@ -410,12 +410,15 @@ tree_global::eval (void)
     }
   else if (assign_expr)
     {
-      tree_identifier *id = assign_expr->left_hand_side ();
-
-      if (id)
-	id->link_to_global ();
-
-      assign_expr->eval (0);
+      tree_identifier *id = 0;
+      if (assign_expr->left_hand_side_is_identifier_only ()
+	  && (id = assign_expr->left_hand_side_id ()))
+	{
+	  id->link_to_global ();
+	  assign_expr->eval (0);
+	}
+      else
+	error ("global: unable to make individual structure elements global");
     }
 }
 

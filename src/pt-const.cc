@@ -353,13 +353,19 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 	ColumnVector tmp (count);
 	for (int i = 0; i < count; i++)
 	  tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i);
-	retval(0) = tree_constant (tmp, (nr != 1)); // Blame it on Matlab...
+	retval(0) = tree_constant (tmp, 1);
+// If you want this to work more like Matlab, use the following line
+// instead of the previous one.
+//	retval(0) = tree_constant (tmp, (nr != 1));
       }
       break;
     case 3:
-      retval(2) = val;
+      retval(2) = tree_constant (val, 1);
     case 2:
-      retval(0) = tree_constant (i_idx, (nr != 1)); // Blame it on Matlab...
+      retval(0) = tree_constant (tmp, 1);
+// If you want this to work more like Matlab, use the following line
+// instead of the previous one.
+//    retval(0) = tree_constant (tmp, (nr != 1));
       retval(1) = tree_constant (j_idx, 1);
       break;
     default:

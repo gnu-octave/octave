@@ -455,9 +455,10 @@ The marks are pushed."
 
 (defun octave-is-continuation-line ()
   "Returns t if the current line is a continuation line, nil otherwise."
+  (interactive)
   (save-excursion
     (beginning-of-line)
-    (looking-at "^\\S<*\\(\\\\\\|\\.\\.\\.\\)[ \t]*\\(\\s<.*\\)?$")))
+    (looking-at "[^\\s<\n]*\\(\\\\\\|\\.\\.\\.\\)[ \t]*\\(\\s<.*\\)?$")))
 
 (defun octave-point (position)
   "Returns the value of point at certain positions." 
@@ -476,10 +477,9 @@ The marks are pushed."
 skips past all empty and comment lines."
   (interactive)
   (beginning-of-line)
-  (while (progn
-	   (forward-line -1)
-	   (or (looking-at octave-comment-line-start-skip)
-	       (looking-at "[ \t]*$")))))
+  (while (and (not (= (forward-line -1) 0))
+	      (or (looking-at octave-comment-line-start-skip)
+		  (looking-at "[ \t]*$")))))
 
 (defun octave-previous-statement ()
   "Moves point to beginning of the previous Octave statement.
@@ -700,14 +700,18 @@ lines."
 	(prev-column (current-column)))
     (if (save-excursion
 	  (beginning-of-line)
-	  (and (not (looking-at octave-comment-line-start-skip))
-	       (not (octave-find-comment-start-skip))))
+	  (not (looking-at octave-comment-line-start-skip)))
 	(progn
 	  (beginning-of-line)
 	  (delete-horizontal-space)
 	  (indent-to cfi)
 	  (if (> prev-column prev-indent)
-	      (goto-char (+ (point) (- prev-column prev-indent)))))
+	      (goto-char (+ (point) (- prev-column prev-indent))))
+	  (if (save-excursion
+		(beginning-of-line)
+		(octave-find-comment-start-skip))
+	      (save-excursion
+		(octave-indent-comment))))
       (octave-indent-comment))
     (if (and auto-fill-function
 	     (> (save-excursion (end-of-line) (current-column))

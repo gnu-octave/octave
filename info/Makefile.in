@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.29 1996-11-13 03:50:37 jwe Exp $
+# $Id: Makefile.in,v 1.30 1996-11-13 03:55:40 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -97,8 +97,10 @@ MAKEDOC_SOURCE = makedoc.c clib.c xmalloc.c
 
 infofiles = info.info info-stnd.info
 
+TEXINFO = info.texi info-stnd.texi
+
 DISTFILES = Makefile.in ChangeLog README NEWS info.1 configure.in \
-	configure mkinstalldirs $(SOURCES) $(INCLUDES) $(TEXINFO)
+  configure mkinstalldirs $(SRCS) $(HDRS) $(infofiles) $(TEXINFO)
 
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(LDEFS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
@@ -148,6 +150,14 @@ mostlyclean: clean
 
 realclean: distclean
 	$(RM) info.info info-stnd.info
+
+local-dist:
+	ln $(DISTFILES) ../`cat ../.fname`/info
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/info
+.PHONY: dist
 
 TAGS: $(SRCS) makedoc-TAGS
 	etags $(SRCS)

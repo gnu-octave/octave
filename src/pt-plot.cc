@@ -113,10 +113,6 @@ tree_plot_command::eval (int print)
 	return retval;
     }
 
-// We need to make sure the buffer is null-terminated because it seems
-// that the libg++-2.3 ostrstream::str() function doesn\'t guarantee
-// that it will be...
-
   plot_buf << "\n" << ends;
 
 // Just testing...
@@ -250,12 +246,17 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
 		{
 		  plot_buf << " \"" << file << '"';
 		  free (file);
-		  goto have_existing_file;
+		  goto have_existing_file_or_command;
 		}
 	      else
 		{
 		  free (file);
 		  file = (char *) NULL;
+
+// Opening as a file failed.  Let's try passing it along as a plot
+// command.
+		  plot_buf << " " << data.string_value ();
+		  goto have_existing_file_or_command;
 		}
 	    }
 
@@ -285,7 +286,7 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
   else
     return -1;
 
- have_existing_file:
+ have_existing_file_or_command:
 
   if (using != (tree_subplot_using *) NULL)
     {

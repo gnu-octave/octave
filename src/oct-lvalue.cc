@@ -53,11 +53,6 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 
   if (chg_fcn && chg_fcn () < 0)
     *val = saved_val;
-
-  // Clear index so subsequent value() operations will not perform an
-  // indexing operation.
-
-  idx = octave_value_list ();
 }
 
 /*

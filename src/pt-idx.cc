@@ -110,7 +110,7 @@ tree_index_expression::lvalue (void)
 	  if (list)
 	    args = list->convert_to_const_vector ();
 
-	  retval.index (args);
+	  retval.set_index (args);
 	}
     }
 

@@ -1,3 +1,13 @@
+Fri May 16 00:07:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-assign.cc (tree_simple_assignment_expression::eval,
+	tree_multi_assignment_expression::eval): Clear lvalue index here.
+
+	* oct-lvalue.cc (octave_lvalue::assign): Don't clear index here.
+	* oct-lvalue.h (octave_lvalue::clear_index): New function.
+	(octave_lvalue::set_index): Rename from octave_lvalue::index.
+	Change all callers.
+
 Thu May 15 11:48:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-select.h, pt-select.cc (class tree_if_command_list,

@@ -75,7 +75,11 @@ public:
   octave_lvalue struct_elt_ref (const string& nm)
     { return val->struct_elt_ref (nm); }
 
-  void index (const octave_value_list& i) { idx = i; }
+  void set_index (const octave_value_list& i) { idx = i; }
+
+  void clear_index (void) { idx = octave_value_list (); }
+
+  // XXX FIXME XXX -- need to handle index increment and decrement too.
 
   void increment (void) { val->increment (); }
 

@@ -77,6 +77,9 @@ tree_simple_assignment::rvalue (int nargout)
   return retval;
 }
 
+// XXX FIXME XXX -- this works, but it would look a little better if
+// it were broken up into a couple of separate functions.
+
 octave_value
 tree_simple_assignment::rvalue (void)
 {
@@ -107,6 +110,13 @@ tree_simple_assignment::rvalue (void)
 	      else
 		{
 		  ult.assign (etype, rhs_val);
+
+		  // We clear any index here so that we can get the
+		  // new value of the referenced object below, instead
+		  // of the indexed value (which should be the same as
+		  // the right hand side value).
+
+		  ult.clear_index ();
 
 		  if (error_state)
 		    eval_error ();
@@ -196,6 +206,9 @@ tree_multi_assignment::rvalue (void)
   return retval;
 }
 
+// XXX FIXME XXX -- this works, but it would look a little better if
+// it were broken up into a couple of separate functions.
+
 octave_value_list
 tree_multi_assignment::rvalue (int)
 {
@@ -242,6 +255,15 @@ tree_multi_assignment::rvalue (int)
 			    {
 			      // XXX FIXME XXX -- handle other assignment ops.
 			      ult.assign (octave_value::asn_eq, tmp);
+
+			      // We clear any index here so that we
+			      // can get the new value of the
+			      // referenced object below, instead of
+			      // the indexed value (which should be
+			      // the same as the right hand side
+			      // value).
+
+			      ult.clear_index ();
 			    }
 			  else
 			    error ("element number %d undefined in return list", k);

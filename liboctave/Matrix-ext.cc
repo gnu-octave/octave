@@ -26,6 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <iostream.h>
+#include <float.h>
 
 #include "Matrix.h"
 #include "mx-inlines.cc"
@@ -850,13 +851,13 @@ ComplexSVD::init (const ComplexMatrix& a)
 int
 DET::value_will_overflow (void) const
 {
-  return det[2] + 1 > log10 (MAXDOUBLE) ? 1 : 0;
+  return det[2] + 1 > log10 (DBL_MAX) ? 1 : 0;
 }
 
 int
 DET::value_will_underflow (void) const
 {
-  return det[2] - 1 < log10 (MINDOUBLE) ? 1 : 0;
+  return det[2] - 1 < log10 (DBL_MIN) ? 1 : 0;
 }
 
 double
@@ -880,13 +881,13 @@ DET::value (void) const
 int
 ComplexDET::value_will_overflow (void) const
 {
-  return det[2].real () + 1 > log10 (MAXDOUBLE) ? 1 : 0;
+  return det[2].real () + 1 > log10 (DBL_MAX) ? 1 : 0;
 }
 
 int
 ComplexDET::value_will_underflow (void) const
 {
-  return det[2].real () - 1 < log10 (MINDOUBLE) ? 1 : 0;
+  return det[2].real () - 1 < log10 (DBL_MIN) ? 1 : 0;
 }
 
 Complex

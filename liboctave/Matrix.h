@@ -34,7 +34,6 @@ represented by some sort of inheritance tree...
 #include <stdlib.h>
 #include <stddef.h>
 #include <math.h>
-#include <values.h>
 #include <assert.h>
 #include <iostream.h>
 // #include <iomanip.h>  // We don\'t use this yet.

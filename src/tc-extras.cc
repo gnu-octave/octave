@@ -163,8 +163,18 @@ get_dimensions (const tree_constant& a, const char *warn_for,
     }
   else
     {
-      nr = a.rows ();
-      nc = a.columns ();
+      nr = tmpa.rows ();
+      nc = tmpa.columns ();
+
+      if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
+	{
+	  ColumnVector v = tmpa.to_vector ();
+
+	  nr = NINT (v.elem (0));
+	  nc = NINT (v.elem (1));
+	}
+      else
+	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
     }
 
   check_dimensions (nr, nc, warn_for); // May set error_state.

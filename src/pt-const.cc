@@ -503,8 +503,16 @@ TC_REP::tree_constant_rep (const ColumnVector& v, int prefer_column_vector)
 
 TC_REP::tree_constant_rep (const Complex& c)
 {
-  complex_scalar = new Complex (c);
-  type_tag = complex_scalar_constant;
+  if (::imag (c) == 0.0)
+    {
+      scalar = ::real (c);
+      type_tag = scalar_constant;
+    }
+  else
+    {
+      complex_scalar = new Complex (c);
+      type_tag = complex_scalar_constant;
+    }
   orig_text = 0;
 }
 
@@ -512,8 +520,18 @@ TC_REP::tree_constant_rep (const ComplexMatrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
-      complex_scalar = new Complex (m.elem (0, 0));
-      type_tag = complex_scalar_constant;
+      Complex c = m.elem (0, 0);
+
+      if (::imag (c) == 0.0)
+	{
+	  scalar = ::real (c);
+	  type_tag = scalar_constant;
+	}
+      else
+	{
+	  complex_scalar = new Complex (c);
+	  type_tag = complex_scalar_constant;
+	}
     }
   else
     {
@@ -527,8 +545,18 @@ TC_REP::tree_constant_rep (const ComplexDiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
-      complex_scalar = new Complex (d.elem (0, 0));
-      type_tag = complex_scalar_constant;
+      Complex c = d.elem (0, 0);
+
+      if (::imag (c) == 0.0)
+	{
+	  scalar = ::real (c);
+	  type_tag = scalar_constant;
+	}
+      else
+	{
+	  complex_scalar = new Complex (c);
+	  type_tag = complex_scalar_constant;
+	}
     }
   else
     {
@@ -544,8 +572,18 @@ TC_REP::tree_constant_rep (const ComplexRowVector& v,
   int len = v.capacity ();
   if (len == 1)
     {
-      complex_scalar = new Complex (v.elem (0));
-      type_tag = complex_scalar_constant;
+      Complex c = v.elem (0);
+
+      if (::imag (c) == 0.0)
+	{
+	  scalar = ::real (c);
+	  type_tag = scalar_constant;
+	}
+      else
+	{
+	  complex_scalar = new Complex (c);
+	  type_tag = complex_scalar_constant;
+	}
     }
   else
     {
@@ -579,8 +617,18 @@ TC_REP::tree_constant_rep (const ComplexColumnVector& v, int
   int len = v.capacity ();
   if (len == 1)
     {
-      complex_scalar = new Complex (v.elem (0));
-      type_tag = complex_scalar_constant;
+      Complex c = v.elem (0);
+
+      if (::imag (c) == 0.0)
+	{
+	  scalar = ::real (c);
+	  type_tag = scalar_constant;
+	}
+      else
+	{
+	  complex_scalar = new Complex (c);
+	  type_tag = complex_scalar_constant;
+	}
     }
   else
     {
@@ -2837,11 +2885,6 @@ TC_REP::do_index (const Octave_object& args)
 	      break;
 	    }
 	}
-
-// This is a fairly expensive operation.
-
-      if (originally_scalar_type)
-	maybe_mutate ();
     }
 
   return retval;

@@ -67,34 +67,34 @@ class file_info
   const char *mode (void) const;
 
  private:
-  int _number;
-  char *_name;
-  FILE *_fptr;
-  char *_mode;
+  int file_number;
+  char *file_name;
+  FILE *file_fptr;
+  char *file_mode;
 };
 
 file_info::file_info (void)
 {
-  _number = -1;
-  _name = (char *) NULL;
-  _fptr = (FILE *) NULL;
-  _mode = (char *) NULL;
+  file_number = -1;
+  file_name = (char *) NULL;
+  file_fptr = (FILE *) NULL;
+  file_mode = (char *) NULL;
 }
 
 file_info::file_info (int n, const char *nm, FILE *t, const char *md)
 {
-  _number = n;
-  _name = strsave (nm);
-  _fptr = t;
-  _mode = strsave (md);
+  file_number = n;
+  file_name = strsave (nm);
+  file_fptr = t;
+  file_mode = strsave (md);
 }
 
 file_info::file_info (const file_info& f)
 {
-  _number = f._number;
-  _name = strsave (f._name);
-  _fptr = f._fptr;
-  _mode = strsave (f._mode);
+  file_number = f._number;
+  file_name = strsave (f._name);
+  file_fptr = f._fptr;
+  file_mode = strsave (f._mode);
 }
 
 file_info&
@@ -102,44 +102,44 @@ file_info::operator = (const file_info& f)
 {
   if (this != & f)
     {
-      _number = f._number;
-      delete [] _name;
-      _name = strsave (f._name);
-      _fptr = f._fptr;
-      delete [] _mode;
-      _mode = strsave (f._mode);
+      file_number = f._number;
+      delete [] file_name;
+      file_name = strsave (f.file_name);
+      file_fptr = f.file_fptr;
+      delete [] file_mode;
+      file_mode = strsave (f.file_mode);
     }
   return *this;
 }
 
 file_info::~file_info (void)
 {
-  delete [] _name;
-  delete [] _mode;
+  delete [] file_name;
+  delete [] file_mode;
 }
 
 int
 file_info::number (void) const
 {
-  return _number;
+  return file_number;
 }
 
 const char *
 file_info::name (void) const
 {
-  return _name;
+  return file_name;
 }
 
 FILE *
 file_info::fptr (void) const
 {
-  return _fptr;
+  return file_fptr;
 }
 
 const char *
 file_info::mode (void) const
 {
-  return _mode;
+  return file_mode;
 }
 
 
@@ -149,13 +149,13 @@ static DLList <file_info> file_list;
 void
 initialize_file_io (void)
 {
-  file_info _stdin (0, "stdin", stdin, "r");
-  file_info _stdout (1, "stdout", stdout, "w");
-  file_info _stderr (2, "stderr", stderr, "w");
+  file_info octave_stdin (0, "stdin", stdin, "r");
+  file_info octave_stdout (1, "stdout", stdout, "w");
+  file_info octave_stderr (2, "stderr", stderr, "w");
 
-  file_list.append (_stdin);
-  file_list.append (_stdout);
-  file_list.append (_stderr);
+  file_list.append (octave_stdin);
+  file_list.append (octave_stdout);
+  file_list.append (octave_stderr);
 
   file_count = 3;
 }

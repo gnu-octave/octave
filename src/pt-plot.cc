@@ -1071,6 +1071,19 @@ close_plot_stream (void)
   plot_line_count = 0;
 }
 
+void
+do_external_plotter_cd (const char *newdir)
+{
+  if (plot_stream.is_open ())
+    {
+      ostrstream plot_buf;
+      plot_buf << "cd \"" << newdir << "\"\n" << ends;
+      char *message = plot_buf.str ();
+      send_to_plot_stream (message);
+      delete [] message;
+    }
+}
+
 DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   "clearplot (): clear the plot window")
 {

@@ -72,6 +72,7 @@ Free Software Foundation, Inc.
 #include "statdefs.h"
 #include "procstream.h"
 #include "tree-const.h"
+#include "tree-plot.h"
 #include "oct-obj.h"
 #include "sysdep.h"
 #include "octave.h"
@@ -366,6 +367,19 @@ change_to_directory (const char *newdir)
     }
 }
 
+static int
+octave_change_to_directory (const char *newdir)
+{
+  int cd_ok = change_to_directory (newdir);
+
+  if (cd_ok)
+    do_external_plotter_cd (newdir);
+  else
+    error ("%s: %s", newdir, strerror (errno));
+
+  return cd_ok;
+}
+
 DEFUN_TEXT ("cd", Fcd, Scd, 2, 1,
   "cd [dir]\n\
 \n\
@@ -386,29 +400,20 @@ users home directory")
 
       dirname = tilde_expand (argv[1]);
 
-      if (dirname && ! change_to_directory (dirname))
+      if (dirname && ! octave_change_to_directory (dirname))
 	{
-	  error ("%s: %s", dirname, strerror (errno));
 	  DELETE_ARGV;
 	  return retval;
 	}
     }
   else
     {
-      if (!home_directory)
+      if (! home_directory || ! octave_change_to_directory (home_directory))
 	{
-	  DELETE_ARGV;
-	  return retval;
-	}
-
-      if (!change_to_directory (home_directory))
-	{
-          error ("%s: %s", home_directory, strerror (errno));
 	  DELETE_ARGV;
 	  return retval;
 	}
     }
-
 
   char *directory = get_working_directory ("cd");
   tree_constant *dir = new tree_constant (directory);

@@ -217,6 +217,8 @@ extern void cleanup_tmp_files (void);
 
 extern void close_plot_stream (void);
 
+extern void do_external_plotter_cd (const char *newdir);
+
 #endif
 
 /*

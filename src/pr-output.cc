@@ -929,7 +929,7 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	    }
 	  else
 	    {
-	      for (size_t i = sizeof (double) - 1; i >= 0; i--)
+	      for (int i = sizeof (double) - 1; i >= 0; i--)
 		os.form ("%02x", (int) tmp.i[i]);
 	    }
 	}
@@ -955,7 +955,7 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	    {
 	      if (bit_format > 1)
 		{
-		  for (int i = 0; i < sizeof (double); i++)
+		  for (size_t i = 0; i < sizeof (double); i++)
 		    PRINT_CHAR_BITS_SWAPPED (os, tmp.i[i]);
 		}
 	      else

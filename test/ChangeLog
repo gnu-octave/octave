@@ -1,3 +1,8 @@
+Thu Apr 23 01:45:16 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: If $(SHARED_LIBS), set LD_LIBRARY_PATH for running
+	Octave before installation is complete.
+
 Wed Apr 15 15:23:43 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/index/dfi-f/m-2.m, octave.test/index/dfi-f/index.exp:

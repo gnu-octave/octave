@@ -35,8 +35,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "lo-mappers.h"
+#include "lo-utils.h"
 #include "oct-procbuf.h"
 #include "syswait.h"
+
+#include "defun.h"
+#include "gripes.h"
+
+// Number of microseconds to delay in the parent after forking.
+#if defined (__CYGWIN32__)
+static int Vkluge_procbuf_delay = 500000;
+#else
+static int Vkluge_procbuf_delay = 0;
+#endif
 
 // This class is based on the procbuf class from libg++, written by
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
@@ -98,6 +110,14 @@ octave_procbuf::open (const char *command, int mode)
 
       exit (127);
     }
+
+#if defined (HAVE_USLEEP)
+  if (Vkluge_procbuf_delay > 0)
+    usleep (Vkluge_procbuf_delay);
+#else
+  if (Vkluge_procbuf_delay > 499999)
+    sleep ((Vkluge_procbuf_delay + 500000) / 1000000);
+#endif
 
   ::close (child_end);
 
@@ -163,6 +183,31 @@ octave_procbuf::sys_close (void)
   return -1;
 
 #endif
+}
+
+static int
+kluge_procbuf_delay (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("kluge_procbuf_delay", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  Vkluge_procbuf_delay = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("kluge_procbuf_delay");
+  return -1;
+}
+
+static void
+symbols_of_oct_procbuf (void)
+{
+  DEFVAR (kluge_procbuf_delay, Vkluge_procbuf_delay, 0, kluge_procbuf_delay,
+    "number of microseconds to delay in the parent after forking");
 }
 
 /*

@@ -33,7 +33,7 @@ class ostrstream;
 class octave_value_list;
 class string_vector;
 
-extern string search_path_for_file (const string&, const string&, bool = true);
+extern string search_path_for_file (const string&, const string&);
 extern string file_in_path (const string&, const string&);
 extern string fcn_file_in_path (const string&);
 extern string oct_file_in_path (const string&);

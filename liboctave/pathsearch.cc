@@ -47,7 +47,7 @@ extern unsigned int kpathsea_debug;
 #undef string
 }
 
-bool dir_path::kpathsea_debug_initialized = false;
+static bool octave_kpathsea_initialized = false;
 
 string_vector
 dir_path::elements (void)
@@ -119,42 +119,54 @@ dir_path::find_all (const string& nm)
 {
   string_vector retval;
 
-  kpse_string *tmp = kpse_all_path_search (p.c_str (), nm.c_str ());
-
-  if (tmp)
+  if (initialized)
     {
-      int count = 0;
-      kpse_string *ptr = tmp;
-      while (*ptr++)
-	count++;
+      kpse_string *tmp = kpse_all_path_search (p.c_str (), nm.c_str ());
 
-      retval.resize (count);
+      if (tmp)
+	{
+	  int count = 0;
+	  kpse_string *ptr = tmp;
+	  while (*ptr++)
+	    count++;
 
-      for (int i = 0; i < count; i++)
-	retval[i] = tmp[i];
+	  retval.resize (count);
+
+	  for (int i = 0; i < count; i++)
+	    retval[i] = tmp[i];
+	}
     }
 
   return retval;
 }
 
 void
-dir_path::set_program_name (const char *nm)
+dir_path::set_program_name (const string& nm)
 {
-  kpse_set_progname (nm);
+  kpse_set_progname (nm.c_str ());
 }
 
 void
 dir_path::init (void)
 {
-  initialized = false;
-
-  if (! kpathsea_debug_initialized)
+  if (! octave_kpathsea_initialized)
     {
       char *s = getenv ("KPATHSEA_DEBUG");
 
       if (s)
 	kpathsea_debug |= atoi (s);
+
+      octave_kpathsea_initialized = true;
     }
+
+  char *tmp = kpse_path_expand (p_orig.c_str ());
+  if (tmp)
+    {
+      p = tmp;
+      free (tmp);
+    }
+  else
+    p = string ();
 
   int count = 0;
   char *path_elt = kpse_path_element (p.c_str ());

@@ -1,3 +1,15 @@
+Tue Apr 28 14:28:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Really do skip -lkernel32.
+
+Thu Apr 23 23:26:19 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* kpathsea: Update to version 3.2.
+
+Mon Apr 20 21:58:39 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (dlfcn.h): Add check.
+
 Sat Apr 18 20:15:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (USE_GNU_INFO): Delete everything related to this.

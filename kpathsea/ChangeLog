@@ -1,5 +1,8 @@
 Thu Apr 23 15:08:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* withenable.ac (texmfmain): Don't print warning if main temf
+	directory tree can't be found.
+
 	* version.c (kpse_bug_address): Change address as requested.
 
 	* Makefile.in: Do acincludes by hand.

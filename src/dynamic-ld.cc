@@ -36,6 +36,11 @@ extern "C"
 #if defined (WITH_DL)
 #if defined (HAVE_DLFCN_H)
 #include <dlfcn.h>
+#else
+extern void *dlopen (const char *, int);
+extern const char *dlerror (void);
+extern void *dlsym (void *, const char *);
+extern int dlclose (void *);
 #endif
 #ifndef RTLD_LAZY
 #define RTLD_LAZY 1

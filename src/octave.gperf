@@ -23,6 +23,8 @@ enum octave_kw_id
   gplot_kw,
   gsplot_kw,
   if_kw,
+  magic_file_kw,
+  magic_line_kw,
   otherwise_kw,
   replot_kw,
   return_kw,
@@ -67,3 +69,5 @@ try, TRY, try_kw
 unwind_protect, UNWIND, unwind_protect_kw
 unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
 while, WHILE, while_kw
+__FILE__, TEXT, magic_file_kw
+__LINE__, NUM, magic_line_kw

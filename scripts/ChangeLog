@@ -1,3 +1,16 @@
+Wed Apr 22 12:11:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/flops.m: Allow a single argument too.
+
+Tue Apr 21 10:18:20 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/str2mat.m: Also handle case when there are no empty
+	strings correctly.
+
+Mon Apr 20 22:14:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/isletter.m: New function, for Matlab compatibility.
+
 Fri Apr 17 10:53:39 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/str2mat.m: Handle string matrices too.

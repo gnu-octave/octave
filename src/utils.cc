@@ -228,12 +228,9 @@ empty_arg (const char *name, int nr, int nc)
 // See if the given file is in the path.
 
 string
-search_path_for_file (const string& path, const string& name,
-		      bool do_tilde_expansion)
+search_path_for_file (const string& path, const string& name)
 {
-  string tmp_path = do_tilde_expansion ? file_ops::tilde_expand (path) : path;
-
-  dir_path p (tmp_path);
+  dir_path p (path);
 
   return octave_env::make_absolute (p.find (name), octave_env::getcwd ());
 }
@@ -275,7 +272,8 @@ file_in_path (const string& name, const string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return search_path_for_file (Vload_path, nm, false);
+  return octave_env::make_absolute (Vload_path_dir_path.find (nm),
+				    octave_env::getcwd ());
 }
 
 // See if there is an function file in the path.  If so, return the

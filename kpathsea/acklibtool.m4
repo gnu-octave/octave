@@ -1,5 +1,5 @@
 dnl Autoconf support for Klibtool.
-dnl $Id: acklibtool.m4,v 1.3 1998-04-24 04:24:35 jwe Exp $
+dnl $Id: acklibtool.m4,v 1.4 1998-05-04 16:36:19 jwe Exp $
 dnl
 dnl
 dnl Find the script, check for subprogs, etc.
@@ -43,7 +43,7 @@ test "$enable_static" = yes && LIBTOOL_OBJTYPES=STATIC:$LIBTOOL_OBJTYPES
 #
 ## Finally: Run the klibtool configure command.
 LIBTOOL_OBJTYPES=$LIBTOOL_OBJTYPES RANLIB=$RANLIB \
-  $LIBTOOL --source-dir $ac_aux_dir --config-dir .. configure "$host"
+  $LIBTOOL --source-dir $ac_aux_dir --config-dir . configure "$host"
 AC_MSG_RESULT($LIBTOOL_OBJTYPES)
 ])dnl
 dnl

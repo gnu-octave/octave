@@ -1,8 +1,15 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * Running `make check' should work now before you run `make install', 
+    even if you build a copy of Octave that depends on shared versions
+    of the Octave libraries.
+
   * For matrices, x(:) now works no matter what the value of
     do_fortran_indexing is.
+
+  * New keywords __FILE__ and __LINE__ expand to the name of the file
+    that is being read and the current input line number, respectively.
 
   * Octave's expression parser is more general and consistent.  It is
     now possible to access structure elements and index arbitrary
@@ -177,7 +184,7 @@ Summary of changes for version 2.1.x:
     prevent Octave from attempting infinite recursion.  The default
     value is 256.
 
-  * Octave now uses readline version 2.1 and kpathsea 3.0.
+  * Octave now uses kpathsea 3.2.
 
   * New configure option, --enable-readline.
 
@@ -203,6 +210,15 @@ Summary of changes for version 2.0.6:
 
   * Octave no longer includes functions to work with NPSOL or QPSOL,
     because they are not free software.
+
+  * The new built-in variable called kluge_procbuf_delay specifies the
+    number of microseconds to delay in the parent process after
+    forking.  By default on gnu-win32 systems, it's set to 500000 (1/2
+    second).  On other systems, the default value is 0.  Delaying for
+    a short time in the parent after forking seems to avoid problems
+    in which communicating with subprocesses via pipes would sometimes
+    cause Octave to hang.  I doubt that the delay is really the right
+    solution.  If anyone has a better idea, I'd love to hear it.
 
 Summary of changes for version 2.0.5:
 ------------------------------------

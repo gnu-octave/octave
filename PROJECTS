@@ -16,6 +16,9 @@ so check with bug-octave@bevo.che.wisc.edu before you start.
 Numerical:
 ---------
 
+  * Allow sum, prod, cumsum, and cumprod to take a second argument
+    that specifies the dimension over which to operate.
+
   * Merge control stuff.
 
   * Improve logm, and sqrtm.
@@ -276,9 +279,6 @@ Interpreter:
 
     is parsed as IF expr STRING END.
 
-  * Consider making x(:) work no matter what the value of
-    do_fortran_indexing.
-
   * For indexing operations, allow `$' to indicate the last element.
     For example, b = a (3:$, 1:$-1).  This means b is a, except for
     its first 2 rows and last column.  Note that `$' must be able to
@@ -318,17 +318,11 @@ Interpreter:
   * Allow `octave -c STRING' to execute commands from STRING then
     exit.
 
-  * Handle DOS style CRLFs in M files.  This should probably be
-    optional.
-
   * Make the interpreter run faster.
 
   * Make it possible to disable or enable all warnings on an
     individual basis from the command line or via some built-in
     structure variable.
-
-  * Warn about complex comparisons?  Could just use double_value() or
-    matrix_value() instead of explicit conversions to real types.
 
   * Make warnings also give some indication about the location of the
     code that triggers the warning.
@@ -458,14 +452,11 @@ Interpreter:
   * Make the type command handle script files too, by just reading and
     printing them.
 
-  * The wich and type commands should distinguish between dynamically
+  * The which and type commands should distinguish between dynamically
     linked functions and built-in functions.  For dynamically linked
     functions, the location of the .oct file should be displayed.
 
   * Clean up eye, eval, feval, keyboard, input, ones, zeros.
-
-  * Turn off printing when evaluating expressions in an eval()
-    statement, for compatibility with Matlab.
 
   * It would be nice to have an interactive debugger.
 
@@ -521,8 +512,6 @@ History:
 Configuration and Installation:
 ------------------------------
 
-  * Handle USE_READLINE so that --enable-readline will work.
-
   * Make Octave as independent of the particular readline version as
     possible.
 
@@ -536,8 +525,6 @@ Configuration and Installation:
 
   * Should --enable-dl imply --enable-shared?
 
-  * Make it possible to configure without readline.
-
   * Makefile changes:
       -- eliminate for loops
       -- define shell commands or eliminate them
@@ -546,8 +533,6 @@ Configuration and Installation:
 
   * Make it possible to configure so that installed binaries and
     shared libraries are stripped.
-
-  * Make installation of the static libraries optional.
 
   * Create a docs-only distribution?
 

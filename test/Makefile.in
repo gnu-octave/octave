@@ -24,6 +24,16 @@ OCTAVE_BINARY = ../src/octave
 
 OCTAVE_SCRIPT_PATH = .:$(TOPDIR)/src//:$(srcdir)/../scripts//
 
+ifeq ($(SHARED_LIBS), true)
+  OCTAVE_LD_LIBRARY_PATH = `pwd`/../src:`pwd`/../liboctave:`pwd`/../libcruft
+  ifneq ($(LD_LIBRARY_PATH),)
+    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH)
+  else
+    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH):$(LD_LIBRARY_PATH)
+  endif
+  SET_LD_LIBRARY_PATH = LD_LIBRARY_PATH="$(XLD_LIBRARY_PATH)"
+endif
+
 # Complete directory trees to distribute.
 DISTDIRS = config octave.test
 
@@ -32,7 +42,7 @@ all: check
 
 check:
 	@if test -n "$(RUNTEST)"; then \
-	  $(RUNTEST) \
+	  $(SET_LD_LIBRARY_PATH) $(RUNTEST) \
 	    OCTAVE="$(OCTAVE_BINARY)" \
 	    OCTAVE_SCRIPT_PATH="$(OCTAVE_SCRIPT_PATH)" \
 	    --tool octave --srcdir $(srcdir) $(RUNTEST_FLAGS); \

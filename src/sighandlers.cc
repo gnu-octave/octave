@@ -391,6 +391,9 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
 #endif
 
+  // SIGCLD
+  // SIGCONT
+
 #ifdef SIGEMT
   octave_set_signal_handler (SIGEMT, generic_sig_handler);
 #endif
@@ -410,6 +413,9 @@ install_signal_handlers (void)
 #ifdef SIGILL
   octave_set_signal_handler (SIGILL, generic_sig_handler);
 #endif
+
+  // SIGINFO
+  // SIGINT
 
 #ifdef SIGIOT
   octave_set_signal_handler (SIGIOT, generic_sig_handler);
@@ -431,6 +437,8 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGPROF, generic_sig_handler);
 #endif
 
+  // SIGPWR
+
 #ifdef SIGQUIT
   octave_set_signal_handler (SIGQUIT, generic_sig_handler);
 #endif
@@ -438,6 +446,8 @@ install_signal_handlers (void)
 #ifdef SIGSEGV
   octave_set_signal_handler (SIGSEGV, generic_sig_handler);
 #endif
+
+  // SIGSTOP
 
 #ifdef SIGSYS
   octave_set_signal_handler (SIGSYS, generic_sig_handler);
@@ -450,6 +460,11 @@ install_signal_handlers (void)
 #ifdef SIGTRAP
   octave_set_signal_handler (SIGTRAP, generic_sig_handler);
 #endif
+
+  // SIGTSTP
+  // SIGTTIN
+  // SIGTTOU
+  // SIGURG
 
 #ifdef SIGUSR1
   octave_set_signal_handler (SIGUSR1, generic_sig_handler);
@@ -466,6 +481,8 @@ install_signal_handlers (void)
 #ifdef SIGIO
   octave_set_signal_handler (SIGIO, SIG_IGN);
 #endif
+
+  // SIGWINCH
 
 #ifdef SIGXCPU
   octave_set_signal_handler (SIGXCPU, generic_sig_handler);

@@ -207,6 +207,7 @@ dnl
 	      -lkernel32)
 		case "$canonical_host_type" in
 		  *-*-cygwin32)
+		    arg=
 		  ;;
 		  *)
 		    lflags="$lflags $arg"

@@ -704,7 +704,9 @@ reset_parser (void)
 
   // Only ask for input from stdin if we are expecting interactive
   // input.
-  if (interactive && ! (reading_fcn_file || get_input_from_eval_string))
+  if ((interactive || forced_interactive)
+      && ! (reading_fcn_file || get_input_from_eval_string
+	    || input_from_startup_file))
     yyrestart (stdin);
 
   // Clear the buffer for help text.
@@ -1055,6 +1057,20 @@ is_keyword (const string& s)
 	      if (! (reading_fcn_file || reading_script_file))
 		input_line_number = 1;
 	    }
+	  break;
+
+        case magic_file_kw:
+	  {
+	    if ((reading_fcn_file || reading_script_file)
+		&& ! curr_fcn_file_full_name.empty ())
+	      yylval.tok_val = new token (curr_fcn_file_full_name, l, c);
+	    else
+	      yylval.tok_val = new token ("stdin", l, c);
+	  }
+	  break;
+
+        case magic_line_kw:
+	  yylval.tok_val = new token (static_cast<double> (l), "", l, c);
 	  break;
 
 	default:

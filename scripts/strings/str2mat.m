@@ -47,7 +47,12 @@ function retval = str2mat (...)
     endif
   endfor
 
-  nr(find (nr == 0)) = 1;
+  tmp = find (nr == 0);
+
+  if (! isempty (tmp))
+    nr(tmp) = 1;
+  endif
+
   retval_nr = sum (nr);
   retval_nc = max (nc);
 

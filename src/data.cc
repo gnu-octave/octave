@@ -864,8 +864,8 @@ static void
 get_dimensions (const octave_value& a, const octave_value& b,
 		const char *warn_for, int& nr, int& nc)
 {
-  nr = NINT (a.double_value ());
-  nc = NINT (b.double_value ());
+  nr = (a.is_empty ()) ? 0 : NINT (a.double_value ());
+  nc = (b.is_empty ()) ? 0 : NINT (b.double_value ());
 
   if (error_state)
     error ("%s: expecting two scalar arguments", warn_for);

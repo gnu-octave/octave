@@ -1,3 +1,42 @@
+Sun May  3 19:54:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (reset_parser): Also call yyrestart if forced_interactive
+	is true, but not if input_from_startup_file is true.
+
+Tue Apr 28 14:06:20 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-procbuf.cc (Vkluge_procbuf_delay): New static variable.
+	(kluge_procbuf_delay): New function.
+	(symbols_of_oct_procbuf): New function.
+	(octave_procbuf::open): Delay Vkluge_procbuf_delay microseconds
+	after forking.
+
+Thu Apr 23 15:41:08 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (Vload_path_dir_path): New variable.
+	* utils.cc (file_in_path): Use it.
+
+	* utils.cc (search_path_for_file): Undo previous change.
+	(file_in_path): Undo previous change.
+	* defaults.cc (loadpath): Undo previous change.  Tilde expansion
+	is once again handled correctly by the code in
+	liboctave/pathsearch.cc.
+
+Mon Apr 20 21:50:34 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (get_dimensions): Allow zeros ([], 3) to work, for
+	compatibility with Matlab.
+
+	* dynamic-ld.cc [WITH_DL && ! HAVE_DLFCN_H]: Add declarations for
+	dlopen, dlerror, dlsym, and dlclose.
+
+	* octave.gperf: Handle __FILE__ and __LINE__.
+	* lex.l (is_keyword): Likewise.
+	* Makefile.in (oct-gperf.h): Pass -D option to gperf.
+	Postprocess output of gperf to convert name of static variable
+	from lookup to gperf_lookup, to avoid conflict with our	function
+	of the same name defined in variables.cc.
+
 Sat Apr 18 20:17:10 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (USE_GNU_INFO): Delete uses of this macro.

@@ -71,11 +71,13 @@ if test -n "$texmfmain"; then
   AC_MSG_RESULT("$texmfmain")
 else
   AC_MSG_RESULT([not found])
-  AC_MSG_WARN([The main texmf tree was not found.
-  Specify the location of its parent directory with the --datadir option.
-  If you do not have the files, you can retrieve a minimal set from
-  ftp://ftp.tug.org/tex/texmflib.tar.gz, which is mirrored on CTAN hosts
-  in systems/web2c.  Winging it by using the default location.])
-  texmfmain="$datadir/texmf"
+dnl Octave doesn't need this, so don't worry users if it can't be found.
+dnl
+dnl  AC_MSG_WARN([The main texmf tree was not found.
+dnl  Specify the location of its parent directory with the --datadir option.
+dnl  If you do not have the files, you can retrieve a minimal set from
+dnl  ftp://ftp.tug.org/tex/texmflib.tar.gz, which is mirrored on CTAN hosts
+dnl  in systems/web2c.  Winging it by using the default location.])
+dnl  texmfmain="$datadir/texmf"
 fi
 AC_SUBST(texmfmain)

@@ -417,8 +417,8 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
-	@gperf -a -C -E -G -H octave_kw_hash -g -N octave_kw_lookup -p -t \
-	  $< > $@.t
+	@gperf -a -C -D -E -G -H octave_kw_hash -g -N octave_kw_lookup -p -t \
+	  $< | sed 's,lookup\[,gperf_lookup[,' > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
 check: all

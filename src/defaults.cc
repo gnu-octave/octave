@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "oct-env.h"
+#include "pathsearch.h"
 
 #include <defaults.h>
 #include "defun.h"
@@ -67,6 +68,9 @@ string Vexec_path;
 // Load path specified on command line.
 // (--path path; -p path)
 string Vload_path;
+
+// And the cached directory path corresponding to Vload_path.
+dir_path Vload_path_dir_path;
 
 // Name of the editor to be invoked by the edit_history command.
 string Veditor;
@@ -181,6 +185,8 @@ set_default_path (void)
   string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
   Vload_path = oct_path.empty () ? std_path : oct_path;
+
+  Vload_path_dir_path = dir_path (Vload_path);
 }
 
 static void
@@ -390,7 +396,11 @@ loadpath (void)
       status = -1;
     }
   else
-    Vload_path = file_ops::tilde_expand (maybe_add_default_load_path (s));
+    {
+      Vload_path = maybe_add_default_load_path (s);
+
+      Vload_path_dir_path = dir_path (Vload_path);
+    }
 
   return status;
 }

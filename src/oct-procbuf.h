@@ -61,6 +61,8 @@ protected:
   octave_procbuf *next;
 };
 
+extern void symbols_of_oct_procbuf (void);
+
 #endif
 
 /*

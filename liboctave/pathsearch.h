@@ -32,19 +32,22 @@ dir_path
 {
 public:
 
-  dir_path (const string& s = string ()) : p (s), initialized (false)
+  dir_path (const string& s = string ())
+    : p_orig (s), initialized (false)
     {
-      if (! p.empty ())
+      if (! p_orig.empty ())
 	init ();
     }
 
   dir_path (const dir_path& dp)
-    : p (dp.p), initialized (dp.initialized), pv (dp.pv) { }
+    : p_orig (dp.p_orig), initialized (dp.initialized), p (dp.p), pv (dp.pv)
+  { }
 
   dir_path& operator = (const dir_path& dp)
     {
-      p = dp.p;
+      p_orig = dp.p_orig;
       initialized = dp.initialized;
+      p = dp.p;
       pv = dp.pv;
       return *this;
     }
@@ -54,7 +57,7 @@ public:
   void set (const string& s)
     {
       initialized = false;
-      p = s;
+      p_orig = s;
       init ();
     }
 
@@ -66,21 +69,22 @@ public:
 
   string_vector find_all (const string&);
 
-  static void set_program_name (const char *);
+  static void set_program_name (const string&);
 
 private:
 
-  // The colon separated list.
-  string p;
+  // The colon separated list that we were given.
+  string p_orig;
 
   // TRUE means we've unpacked p.
   bool initialized;
 
+  // A version of the colon separate list on which we have performed
+  // tilde and variable expansion.
+  string p;
+
   // The elements of the list.
   string_vector pv;
-
-  // TRUE means we've set the global value of kpathsea_debug.
-  static bool kpathsea_debug_initialized;
 
   void init (void);
 };

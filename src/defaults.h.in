@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "pathsearch.h"
+
 #ifndef DEFAULT_PAGER
 #define DEFAULT_PAGER %DEFAULT_PAGER%
 #endif
@@ -131,6 +133,9 @@ extern string Vexec_path;
 // Load path specified on command line.
 // (--path path; -p path)
 extern string Vload_path;
+
+// And the cached directory path corresponding to Vload_path.
+extern dir_path Vload_path_dir_path;
 
 // Name of the editor to be invoked by the edit_history command.
 extern string Veditor;

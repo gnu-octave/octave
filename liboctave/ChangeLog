@@ -1,3 +1,10 @@
+Thu Apr 23 16:15:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.h (dir_path::p_orig): New field.
+	* pathsearch.cc (dir_path::init): Perform variable and tilde
+	expansion on the original path here.
+	(dir_path::find_all): Don't do anything if not initialized.
+
 Tue Apr 14 14:41:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (index): Allow x(:) even when do_fortran_indexing

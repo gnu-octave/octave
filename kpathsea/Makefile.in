@@ -342,8 +342,10 @@ tex-file.o:
 check: kpsewhich
 	./kpsewhich -expand-var '$$TEXMF'
 
-install: install-exec install-data
-uninstall: uninstall-exec uninstall-data
+#install: install-exec install-data
+#uninstall: uninstall-exec uninstall-data
+
+install uninstall:
 
 install-exec: kpsewhich
 	$(SHELL) $(top_srcdir)/../mkinstalldirs $(bindir) $(scriptdir) \

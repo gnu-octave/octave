@@ -4254,7 +4254,8 @@ save_mat5_binary_element (std::ostream& os,
 
   contin = os.tellp ();
   os.seekp (fixup);
-  write_mat5_tag (os, miMATRIX, contin - fixup - 8); // the actual length
+  write_mat5_tag (os, miMATRIX, 
+                  static_cast<int>(contin - fixup) - 8); // the actual length
   os.seekp (contin);
 
   return true;
@@ -4473,7 +4474,7 @@ save_ascii_data (std::ostream& os, const octave_value& tc,
       os << "# elements: " << elements << "\n";
       for (int i = 0; i < elements; i++)
 	{
-	  int len = chm.cols ();
+	  unsigned len = chm.cols ();
 	  os << "# length: " << len << "\n";
 	  std::string tstr = chm.row_as_string (i, false, true);
 	  const char *tmp = tstr.data ();

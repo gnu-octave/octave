@@ -482,7 +482,7 @@ variable @code{status} to the integer @samp{2}.\n\
 	  // kpathsearch library to not always do TeX-specific
 	  // things...
 
-	  static string odb;
+	  static std::string odb;
 
 	  odb = octave_env::getenv ("TEXMFDBS");
 

@@ -46,11 +46,10 @@ public:
 
   c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = ::fclose)
     : 
-#ifdef __SUNPRO_CC
-    std::filebuf (f_arg ? fileno (f_arg) : -1),
+#if defined __GNUC__ && __GNUC__ >= 3
+    std::filebuf (f_arg, std::ios::in | std::ios::out),
 #else
-    std::filebuf (f_arg ? fileno (f_arg) : -1,
-                  0, std::ios::in | std::ios::out),
+    std::filebuf (f_arg ? fileno (f_arg) : -1),
 #endif
     f (f_arg), cf (cf_arg),
     fd (f_arg ? fileno (f_arg) : -1)

@@ -1,3 +1,12 @@
+2001-06-26  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* c-file-ptr-stream.h (c_file_ptr_buf::c_file_ptr_buf): Add GCC3
+	libstdc++-v3 support.
+	* load-save.cc (save_mat5_binary_element): Cast arguments to the
+	correct type.
+	(save_ascii_data): Eliminate compiler warning.
+	* toplev.cc (system): Prefix std::.
+
 2001-05-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cx-mat.cc: Deleve unnecessary instantiation of assign function.

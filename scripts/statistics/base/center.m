@@ -29,10 +29,12 @@ function retval = center (x)
     usage ("center (x)");
   endif
 
-  if is_vector (x)
-    retval = x - mean(x);
-  elseif is_matrix (x)
-    retval = x - ones (rows (x), 1) * mean(x);
+  if (is_vector (x))
+    retval = x - mean (x);
+  elseif (is_matrix (x))
+    retval = x - ones (rows (x), 1) * mean (x);
+  elseif (isempty (x))
+    retval = x;
   else
     error ("center: x must be a vector or a matrix");
   endif

@@ -334,8 +334,9 @@ octave_user_function::do_multi_index_op (int nargout,
   unwind_protect_int (num_args_passed);
   num_args_passed = nargin;
 
-  unwind_protect_int (num_named_args);
   unwind_protect_int (curr_va_arg_number);
+
+  curr_va_arg_number = num_named_args;
 
   if (param_list && ! param_list->varargs_only ())
     {

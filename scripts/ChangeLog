@@ -1,3 +1,7 @@
+2002-03-07  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+ 
+ 	* statistics/base/center.m: Accept and return empty matrix.
+ 	
 2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/erfinv.m: Fix usage message.

@@ -1,3 +1,23 @@
+2002-03-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Don't unwind_protect num_named_args (it doesn't change on
+	recursive calls).
+	Do re-initialize curr_va_arg_number to num_named_args after
+	unwind_protecting.
+
+	* ov-usr-fcn.h (octave_user_function::clear_args_passed): Delete.
+	(octave_user_function::saved_args): New data member.
+	(octave_user_function::save_args_passed): New function.
+	(octave_user_function::restore_args_passed): Ditto.
+	* ov-usr-fcn.cc (clear_args_passed): Delete.
+	(restore_args_passed): New function.
+	(octave_user_function::do_multi_index_op): Correctly save and
+	restore args passed for recursive calls.
+
+	* TEMPLATE-INST/SLStack-ovl.cc: New file.
+	* Makefile.in: Add it to the list.
+
 2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):

@@ -1,3 +1,7 @@
+1999-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-env.cc (do_get_user_name): Reverse sense of test.
+
 1999-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc (Fstrftime): Undo previous change.

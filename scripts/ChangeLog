@@ -1,3 +1,7 @@
+1999-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTFILES): Include DOCSTRINGS.
+
 1999-11-02  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* scripts/audio/lin2mu.m: Texinfoize doc string.

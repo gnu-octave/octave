@@ -20,36 +20,34 @@ Center as part of an in-house CACSD environment.  Additional important
 contributions were made by Dr. Kai Mueller @email{mueller@@ifr.ing.tu-bs.de}
 and Jose Daniel Munoz Frias (@code{place.m}).
 
-An on-line menu-driven tutorial is available via @ref{DEMOcontrol}; 
+An on-line menu-driven tutorial is available via @code{DEMOcontrol};
 beginning OCST users should start with this program. 
 
-@menu
-* OCST demonstration/tutorial:DEMOcontrol.
-* System Data Structure:sysstruct.
-* System Construction and Interface Functions:sysinterface.
-* System display functions:sysdisp.
-* Block Diagram Manipulations:blockdiag.
-* Numerical Functions:numerical.
-* System Analysis-Properties:sysprop.
-* System Analysis-Time Domain:systime.
-* System Analysis-Frequency Domain:sysfreq.
-* Controller Design:cacsd.
-* Miscellaneous Functions:misc.
-@end menu
-
-@node DEMOcontrol, sysstruct, Control Theory, Control Theory
-@unnumberedsec OCST demo program
 @DOCSTRING(DEMOcontrol)
 
-@node sysstruct, sysinterface, DEMOcontrol, Control Theory
-@section System Data Structure
 @menu
-* Demo program:sysrepdemo.
-* Variables common to all OCST system formats:sysstructvars. 
-* tf format variables:sysstructtf.
-* zp format variables:sysstructzp.
-* ss format variables:sysstructss.
+* sysstruct::                   
+* sysinterface::                
+* sysdisp::                     
+* blockdiag::                   
+* numerical::                   
+* sysprop::                     
+* systime::                     
+* sysfreq::                     
+* cacsd::                       
+* misc::                        
 @end menu
+
+@node sysstruct, sysinterface, Control Theory, Control Theory
+@section System Data Structure
+
+@menu
+* sysstructvars::               
+* sysstructtf::                 
+* sysstructzp::                 
+* sysstructss::                 
+@end menu
+
 The OCST stores all dynamic systems in
 a single data structure format that can represent continuous systems,
 discrete-systems, and mixed (hybrid) systems in state-space form, and
@@ -67,11 +65,9 @@ system representation(s) used.  More than one system representation
 can be used for SISO systems; the OCST m-files ensure that all representations
 used are consistent with one another.
 
-@node sysrepdemo, sysstructvars, sysstruct, sysstruct
-@unnumberedsec System representation demo program
 @DOCSTRING(sysrepdemo)
 
-@node sysstructvars, sysstructtf, sysrepdemo, sysstruct
+@node sysstructvars, sysstructtf, sysstruct, sysstruct
 @subsection Variables common to all OCST system formats
 
 The data structure elements (and variable types) common to all  system
@@ -87,12 +83,12 @@ in the system (scalar)
 list of name(s) of the system input, output signal(s). (list of strings)
 
 @item sys
- System status vector.  (vector)
+System status vector.  (vector)
 
-This vector indicates both what
-     representation was used to initialize the  system data structure
-     (called the primary system type) and which other representations
-     are currently up-to-date with the primary system type (@xref{sysupdate}).
+This vector indicates both what representation was used to initialize
+the system data structure (called the primary system type) and which
+other representations are currently up-to-date with the primary system
+type (@xref{structaccess}).
 
 @table @var
 
@@ -142,6 +138,7 @@ if the corresponding entry of the @code{sys} vector is true (=1).
 
 @node sysstructzp, sysstructss, sysstructtf, sysstruct
 @subsection @code{zp} format variables
+
 @table @var
 @item zer
  system zeros   (vector)
@@ -156,6 +153,7 @@ if the corresponding entry of the @code{sys} vector is true (=1).
 
 @node sysstructss,  , sysstructzp, sysstruct
 @subsection @code{ss} format variables
+
 @table @var
 @item a,b,c,d
 The usual state-space matrices. If a system has both
@@ -170,7 +168,7 @@ names of system states   (list of strings)
 
 @end table
 
-@node sysinterface, sysdisp, sysstruct,  Control Theory
+@node sysinterface, sysdisp, sysstruct, Control Theory
 @section System Construction and Interface Functions
 
 Construction and manipulations of the OCST system data structure
@@ -181,85 +179,62 @@ in this section.  Functions for the formatted display in of system
 data structures are given in @ref{sysdisp}.
 
 @menu
-* Finite impulse response system interface functions:fir2sys.
-* sys2fir::
-* State space system interface functions:ss2sys.
-* sys2ss::
-* Transfer function system interface functions:tf2sys.
-* sys2tf::
-* Zero-pole system interface functions:zp2sys.
-* sys2zp::
-* Data structure access functions:structaccess.
-* Data structure internal functions:structintern
+* fir2sys::                     
+* ss2sys::                      
+* tf2sys::                      
+* zp2sys::                      
+* structaccess::                
+* structintern::                
 @end menu
 
-@node fir2sys,sys2fir,sysinterface,sysinterface
+@node fir2sys, ss2sys, sysinterface, sysinterface
 @subsection Finite impulse response system interface functions
 
 @DOCSTRING(fir2sys)
 
-@node sys2fir,ss2sys,fir2sys, sysinterface
 @DOCSTRING(sys2fir)
 
-@node ss2sys, sys2ss, sys2fir, sysinterface
+@node ss2sys, tf2sys, fir2sys, sysinterface
 @subsection State space system interface functions
 
 @DOCSTRING(ss2sys)
 
-@node sys2ss,tf2sys,ss2sys,sysinterface
 @DOCSTRING(sys2ss)
 
-@node tf2sys,sys2tf,sys2ss,sysinterface
+@node tf2sys, zp2sys, ss2sys, sysinterface
 @subsection Transfer function system interface functions
+
 @DOCSTRING(tf2sys)
 
-@node sys2tf,zp2sys,tf2sys,sysinterface
 @DOCSTRING(sys2tf)
 
-@node zp2sys,sys2zp,sys2tf,sysinterface
+@node zp2sys, structaccess, tf2sys, sysinterface
 @subsection Zero-pole system interface functions
+
 @DOCSTRING(zp2sys)
 
-@node sys2zp, structaccess, zp2sys, sysinterface
 @DOCSTRING(sys2zp)
 
-@node structaccess, structintern, sys2zp, sysinterface
+@node structaccess, structintern, zp2sys, sysinterface
 @subsection Data structure access functions
 
-@menu
-* syschnames::
-* syschtsam::
-* sysdimensions::
-* sysgetsignals::
-* sysgettsam::
-* sysgettype::
-* syssetsignals::
-* sysupdate::
-@end menu
-
-@node syschnames, syschtsam, structaccess, structaccess
 @DOCSTRING(syschnames)
 
-@node syschtsam, sysdimensions, syschnames, structaccess
 @DOCSTRING(syschtsam)
 
-@node sysdimensions, sysgetsignals, syschtsam, structaccess
 @DOCSTRING(sysdimensions)
 
-@node sysgetsignals, sysgettsam, sysdimensions, structaccess
 @DOCSTRING(sysgetsignals)
 
-@node sysgettype, syssetsignals, sysgettsam, structaccess
 @DOCSTRING(sysgettype)
 
-@node syssetsignals, sysupdate, sysgettype, structaccess
 @DOCSTRING(syssetsignals)
 
-@node sysupdate, , syssetsignals, structaccess
 @DOCSTRING(sysupdate)
 
-@node structintern, , structaccess, sysinterface
+@node structintern,  , structaccess, sysinterface
 @subsection Data structure internal functions
+
 @DOCSTRING(syschnamesl)
 
 @DOCSTRING(sysdefioname)
@@ -281,94 +256,57 @@ data structures are given in @ref{sysdisp}.
 
 @DOCSTRING(outlist)
 
-@node blockdiag, numerical,  sysdisp, Control Theory
+@node blockdiag, numerical, sysdisp, Control Theory
 @section Block Diagram Manipulations
 
 @xref{systime}
 
 Unless otherwise noted, all parameters (input,output) are
 system data structures.
-@menu
-* buildssic::
-* jet707::
-* ord2::
-* parallel::
-* sysadd::
-* sysappend::
-* sysconnect::
-* syscont::
-* syscont_disc::
-* sysdisc::
-* sysdup::
-* sysgroup::
-* sysgroupn::
-* sysmult::
-* sysprune::
-* sysreorder::
-* sysscale::
-* syssub::
-@end menu
 
 @DOCSTRING(bddemo)
 
-@node buildssic, jet707, blockdiag, blockdiag
 @DOCSTRING(buildssic)
 
-@node jet707, ord2,  buildssic, blockdiag
 @DOCSTRING(jet707)
 
-@node ord2, parallel, jet707, blockdiag
 @DOCSTRING(ord2)
 
-@node sysadd, sysappend,  parallel, blockdiag
 @DOCSTRING(sysadd)
 
-@node sysappend, sysconnect, sysadd,  blockdiag
 @DOCSTRING(sysappend)
 
-@node sysconnect, syscont, sysappend,  blockdiag
 @DOCSTRING(sysconnect)
-
-@node syscont, syscont_disc,  sysconnect, blockdiag
 
 @DOCSTRING(syscont)
 
-@node syscont_disc, sysdisc,  syscont, blockdiag
 @DOCSTRING(syscont_disc)
 
-@node sysdisc, sysdup,  syscont_disc, blockdiag
 @DOCSTRING(sysdisc)
 
-@node sysdup, sysgroup,  sysdisc, blockdiag
 @DOCSTRING(sysdup) 
 
-@node sysgroup, sysgroupn,  sysdup, blockdiag
 @DOCSTRING(sysgroup)
 
-@node sysgroupn, sysmult,  sysgroup, blockdiag
 @DOCSTRING(sysgroupn)
 
-@node sysmult, sysprune,  sysgroupn, blockdiag
 @DOCSTRING(sysmult)
 
-@node sysprune, sysreorder, sysmult, blockdiag
 @DOCSTRING(sysprune)
 
-@node sysreorder, sysscale,  sysprune, blockdiag
 @DOCSTRING(sysreorder)
 
-@node sysscale, syssub,  sysreorder, blockdiag
 @DOCSTRING(sysscale)
 
-@node syssub, ,  sysscale, blockdiag
 @DOCSTRING(syssub)
 
 @DOCSTRING(ugain)
 
 @DOCSTRING(wgt1o)
 
-@node numerical,  sysprop, blockdiag, Control Theory
+@node numerical, sysprop, blockdiag, Control Theory
 @section Numerical Functions
+
 @DOCSTRING(are)
 
 @DOCSTRING(dare)
@@ -386,13 +324,21 @@ system data structures.
 @DOCSTRING(qzval)
 
 @DOCSTRING(zgfmul)
+
 @DOCSTRING(zgfslv)
+
 @DOCSTRING(zginit)
+
 @DOCSTRING(zgpbal)
+
 @DOCSTRING(zgreduce)
+
 @DOCSTRING(zgrownorm)
+
 @DOCSTRING(zgscal)
+
 @DOCSTRING(zgsgiv)
+
 @DOCSTRING(zgshsr)
 
 References:
@@ -404,7 +350,7 @@ References:
  Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
 @end table
 
-@node sysprop, systime, numerical,  Control Theory
+@node sysprop, systime, numerical, Control Theory
 @section System Analysis-Properties
 
 @DOCSTRING(analdemo)
@@ -468,7 +414,7 @@ Return controller signal names based in plant signal names and dimensions
 
 @DOCSTRING(stepimp)
 
-@node sysfreq, cacsd, systime,  Control Theory
+@node sysfreq, cacsd, systime, Control Theory
 @section System Analysis-Frequency Domain
 
 @strong{Demonstration/tutorial script}
@@ -569,7 +515,7 @@ See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
 
 @DOCSTRING(place)
 
-@node misc, , cacsd, Control Theory
+@node misc,  , cacsd, Control Theory
 @section Miscellaneous Functions (Not yet properly filed/documented)
 
 @DOCSTRING(axis2dlim)

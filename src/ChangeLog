@@ -1,3 +1,9 @@
+1999-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y: Don't define warn_reload_forces_clear here.
+
+	* Makefile.in (DISTFILES): Include DOCSTRINGS.
+
 1999-11-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.cc (install_signal_handlers): Don't install

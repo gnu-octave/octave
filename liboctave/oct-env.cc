@@ -380,7 +380,7 @@ octave_env::do_get_user_name (void) const
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      user_name = pw ? string ("unknown") : pw.name ();
+      user_name = pw ? pw.name () : string ("unknown");
     }
 
   return user_name;

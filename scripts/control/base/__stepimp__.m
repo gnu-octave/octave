@@ -224,60 +224,46 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       gset autoscale
       gset nokey
       clearplot();
-      if (gnuplot_has_multiplot)
-	if (IMPULSE)
-          gm = zeros(NOUT, 1);
-          tt = "impulse";
-	else
-          ssys = ss2sys(F, G, C, D, t_step);
-          gm = dcgain(ssys);
-          tt = "step";
-	endif
-	ncols = floor(sqrt(NOUT));
-	nrows = ceil(NOUT / ncols);
-	for i = 1:NOUT
-          subplot(nrows, ncols, i);
-          title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
-			sysgetsignals(sys,"out",i,1)));
-          if (DIGITAL)
-            [ts, ys] = stairs(t, y(i,:));
-            ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
-            if (length(gm) > 0)
-              yy = [ys; gm(i)*ones(size(ts))];
-            else
-              yy = ys;
-            endif
-            grid("on");
-            xlabel("time [s]");
-            ylabel("y(t)");
-            plot(ts, yy);
-          else
-            if (length(gm) > 0)
-              yy = [y(i,:); gm(i)*ones(size(t))];
-            else
-              yy = y(i,:);
-            endif
-            grid("on");
-            xlabel("time [s]");
-            ylabel("y(t)");
-            plot(t, yy);
-          endif
-	endfor
-	## leave gnuplot in multiplot mode is bad style
-	oneplot();
+      if (IMPULSE)
+	gm = zeros(NOUT, 1);
+	tt = "impulse";
       else
-	## plot everything in one diagram
-	title([tt, " response | ", sysgetsignals(sys,"in",inp,1), ...
-               " -> all outputs"]);
-	if (DIGITAL)
-          stairs(t, y(i,:));
-	else
-          grid("on");
-          xlabel("time [s]");
-          ylabel("y(t)");
-          plot(t, y(i,:));
-	endif
+	ssys = ss2sys(F, G, C, D, t_step);
+	gm = dcgain(ssys);
+	tt = "step";
       endif
+      ncols = floor(sqrt(NOUT));
+      nrows = ceil(NOUT / ncols);
+      for i = 1:NOUT
+	subplot(nrows, ncols, i);
+	title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
+		      sysgetsignals(sys,"out",i,1)));
+	if (DIGITAL)
+	  [ts, ys] = stairs(t, y(i,:));
+	  ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
+	  if (length(gm) > 0)
+	    yy = [ys; gm(i)*ones(size(ts))];
+	  else
+	    yy = ys;
+	  endif
+	  grid("on");
+	  xlabel("time [s]");
+	  ylabel("y(t)");
+	  plot(ts, yy);
+	else
+	  if (length(gm) > 0)
+	    yy = [y(i,:); gm(i)*ones(size(t))];
+	  else
+	    yy = y(i,:);
+	  endif
+	  grid("on");
+	  xlabel("time [s]");
+	  ylabel("y(t)");
+	  plot(t, yy);
+	endif
+      endfor
+      ## leave gnuplot in multiplot mode is bad style
+      oneplot();
       y=[];
       t=[];
     endif

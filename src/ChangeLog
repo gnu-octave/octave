@@ -1,3 +1,9 @@
+2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-plot.cc (Vgnuplot_has_multiplot): Delete variable.
+	(gnuplot_has_multiplot): Delete.
+	(symbols_of_pt_plot): Delete DEFVAR for gnuplot_has_multiplot.
+
 2003-05-28  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 
 	* load-save.cc (save_mat5_binary_element, save_mat_binary_data):

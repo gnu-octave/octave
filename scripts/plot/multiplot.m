@@ -33,10 +33,6 @@
 
 function multiplot (xn, yn)
 
-  if (! gnuplot_has_multiplot)
-    error ("multiplot: gnuplot does not appear to support this feature");
-  endif
-
   ## global variables to keep track of multiplot options
 
   global __multiplot_mode__ = 0;

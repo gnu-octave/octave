@@ -28,18 +28,14 @@
 
 function oneplot ()
 
-  if (gnuplot_has_multiplot)
+  global __multiplot_mode__ = 0;
 
-    global __multiplot_mode__ = 0;
-
-    if (__multiplot_mode__)
-      gset nomultiplot;
-      gset size 1, 1;
-      gset origin 0, 0;
-      __multiplot_mode__ = 0;
-      gnuplot_command_replot = "rep";
-    endif
-
+  if (__multiplot_mode__)
+    gset nomultiplot;
+    gset size 1, 1;
+    gset origin 0, 0;
+    __multiplot_mode__ = 0;
+    gnuplot_command_replot = "rep";
   endif
 
 endfunction

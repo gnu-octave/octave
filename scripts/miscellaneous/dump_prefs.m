@@ -68,7 +68,6 @@ function dump_prefs (file)
               "gnuplot_command_using";
               "gnuplot_command_with";
               "gnuplot_has_frames";
-              "gnuplot_has_multiplot";
               "history_file";
               "history_size";
               "ignore_function_time_stamp";

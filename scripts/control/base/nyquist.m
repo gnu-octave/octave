@@ -129,10 +129,8 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
   if (nargout == 0)
     dnplot = 0;
     while(!dnplot)
-      if(gnuplot_has_multiplot)
-        oneplot();
-        gset key;
-      endif
+      oneplot();
+      gset key;
       clearplot();
       grid ("on");
       gset data style lines;

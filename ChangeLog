@@ -1,3 +1,8 @@
+2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-variables): Eliminate
+	gnuplot_has_multiplot.
+
 2003-05-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: In check for f_open in libf2c, only use

@@ -72,9 +72,6 @@ static std::string Vgnuplot_binary;
 // TRUE if gnuplot appears to support multiple plot windows with X11.
 static bool Vgnuplot_has_frames;
 
-// TRUE if gnuplot appears to support multiplot.
-static bool Vgnuplot_has_multiplot;
-
 // The number of lines we've plotted so far.
 static int plot_line_count = 0;
 
@@ -1272,14 +1269,6 @@ gnuplot_has_frames (void)
   return 0;
 }
 
-static int
-gnuplot_has_multiplot (void)
-{
-  Vgnuplot_has_multiplot = check_preference ("gnuplot_has_multiplot");
-
-  return 0;
-}
-
 void
 symbols_of_pt_plot (void)
 {
@@ -1350,22 +1339,6 @@ is @code{\"gnuplot\"}.  @xref{Installation}.\n\
 @defvr {Built-in Variable} gnuplot_has_frames\n\
 If the value of this variable is nonzero, Octave assumes that your copy\n\
 of gnuplot has support for multiple frames that is included in recent\n\
-3.6beta releases.  It's initial value is determined by configure, but it\n\
-can be changed in your startup script or at the command line in case\n\
-configure got it wrong, or if you upgrade your gnuplot installation.\n\
-@end defvr");
-
-#if defined (GNUPLOT_HAS_MULTIPLOT)
-  bool with_multiplot = true;
-#else
-  bool with_multiplot = false;
-#endif
-
-  DEFVAR (gnuplot_has_multiplot, with_multiplot, gnuplot_has_multiplot,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} gnuplot_has_multiplot\n\
-If the value of this variable is nonzero, Octave assumes that your copy\n\
-of gnuplot has the multiplot support that is included in recent\n\
 3.6beta releases.  It's initial value is determined by configure, but it\n\
 can be changed in your startup script or at the command line in case\n\
 configure got it wrong, or if you upgrade your gnuplot installation.\n\

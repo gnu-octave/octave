@@ -148,13 +148,9 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     save_automatic_replot = automatic_replot;
     unwind_protect
       automatic_replot = 0;
-      if(gnuplot_has_multiplot)
-	oneplot();
-      endif
+      oneplot();
       gset autoscale;
-      if(gnuplot_has_multiplot)
-	gset nokey;
-      endif
+      gset nokey;
       clearplot();
       gset data style lines;
       if(is_digital(sys))
@@ -166,9 +162,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
       endif
       xlabel(xlstr);
       if(is_siso(sys))
-	if (gnuplot_has_multiplot)
-	  subplot(2,1,1);
-	endif
+	subplot(2,1,1);
 	title(["|[Y/U]",tistr,"|, u=", nth(inname,1),", y=",nth(outname,1)]);
       else
 	title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
@@ -196,11 +190,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 	loglog(w,md);
       endif
       if (is_siso(sys))
-	if (gnuplot_has_multiplot)
-	  subplot(2,1,2);
-	else
-	  prompt("Press any key for phase plot");
-	endif
+	subplot(2,1,2);
 	axvec = axis2dlim([vec(w),vec(phase)]);
 	axvec(1:2) = wv;
 	axis(axvec);
@@ -211,9 +201,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 	grid("on");
 	semilogx(w,phase);
 	## This should be the default for subsequent plot commands.
-	if(gnuplot_has_multiplot)
-	  oneplot();
-	endif
+	oneplot();
       endif
     unwind_protect_cleanup
       automatic_replot = save_automatic_replot;

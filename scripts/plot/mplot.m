@@ -34,10 +34,6 @@
 
 function mplot (varargin)
 
-  if (! gnuplot_has_multiplot)
-    error ("mplot: gnuplot does not appear to support this feature");
-  endif
-
   ## global variables to keep track of multiplot options
 
   global __multiplot_mode__ = 0;

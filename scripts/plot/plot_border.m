@@ -53,10 +53,6 @@
 
 function plot_border (varargin)
 
-  if (! gnuplot_has_multiplot)
-    error ("plot_border: gnuplot does not appear to support this feature");
-  endif
-
   south = 0;
   west = 0;
   north = 0;

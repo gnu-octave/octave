@@ -78,13 +78,9 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
 
   if (nargout < 1),
     ## Plot the information
-    if(gnuplot_has_multiplot)
-      oneplot();
-    endif
+    oneplot();
     gset autoscale;
-    if(gnuplot_has_multiplot)
-      gset nokey;
-    endif
+    gset nokey;
     clearplot();
     grid("on");
     gset data style lines;

@@ -41,25 +41,19 @@ function freqz_plot(w,h)
 
       ## Protect graph state.
 
-      if (gnuplot_has_multiplot)
-      	subplot (311);
-      	gset lmargin 10;
-	axis ("labely");
-	xlabel ("");
-      endif
+      subplot (311);
+      gset lmargin 10;
+      axis ("labely");
+      xlabel ("");
       grid ("on");
       axis ([ w(1), w(n), maxmag-3, maxmag ]);
       plot (w, mag, ";Pass band (dB);");
 
-      if (gnuplot_has_multiplot)
-      	subplot (312);
-	axis ("labely");
-	title ("");
-	xlabel ("");
-      	gset tmargin 0;
-      else
-	input ("press any key for the next plot: ");
-      endif
+      subplot (312);
+      axis ("labely");
+      title ("");
+      xlabel ("");
+      gset tmargin 0;
       grid ("on");
       if (maxmag - min (mag) > 100)
       	axis ([ w(1), w(n), maxmag-100, maxmag ]);
@@ -68,13 +62,9 @@ function freqz_plot(w,h)
       endif
       plot (w, mag, ";Stop band (dB);");
       
-      if (gnuplot_has_multiplot)
-      	subplot (313);
-	axis ("label");
-	title ("");
-      else
-	input ("press any key for the next plot: ");
-      endif
+      subplot (313);
+      axis ("label");
+      title ("");
       grid ("on");
       axis ("autoy");
       xlabel ("Frequency");

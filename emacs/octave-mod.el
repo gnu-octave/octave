@@ -142,7 +142,7 @@ All Octave abbrevs start with a grave accent (`).")
     "default_return_value" "default_save_format"
     "define_all_return_values" "do_fortran_indexing" "e"
     "echo_executing_commands" "empty_list_elements_ok" "eps"
-    "error_text" "gnuplot_binary" "gnuplot_has_multiplot" "history_file"
+    "error_text" "gnuplot_binary" "history_file"
     "history_size" "ignore_function_time_stamp" "implicit_str_to_num_ok"
     "inf" "nan" "nargin" "ok_to_lose_imaginary_part"
     "output_max_field_width" "output_precision"

@@ -349,8 +349,6 @@ supports the multiplot feature.
 
 @DOCSTRING(gnuplot_has_frames)
 
-@DOCSTRING(gnuplot_has_multiplot)
-
 @DOCSTRING(graw)
 
 @DOCSTRING(gnuplot_command_plot)

@@ -1,3 +1,12 @@
+2003-06-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/base/__stepimp__.m, control/base/nichols.m,
+	control/base/nyquist.m, miscellaneous/dump_prefs.m,
+	plot/bottom_title.m, plot/mplot.m, plot/multiplot.m,
+	plot/oneplot.m, plot/plot_border.m, plot/subplot.m,
+	plot/subwindow.m, plot/top_title.m, signal/freqz_plot.m:
+	Eliminate gnuplot_has_multiplot (assume it is always true).
+
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in, image/Makefile.in, startup/Makefile.in: Handle DESTDIR.

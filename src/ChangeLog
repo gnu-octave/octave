@@ -1,5 +1,9 @@
 Tue Nov 19 12:01:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* help.cc (Ftype): If a function is defined from a file and
+	transformed text has not been requested, just print the contents
+	of the file.
+
 	* parse.y (fold): New functions for constant folding for binary
 	and unary expressions.  Keep track of original text even when
 	transformations occur.

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include <iostream.h>
+#include <fstream.h>
 #include <strstream.h>
 
 #ifdef HAVE_UNISTD_H
@@ -782,12 +783,39 @@ display the definition of each NAME that refers to a function")
 		{
 		  tree_fvc *defn = sym_rec->def ();
 
-		  if (nargout == 0 && ! quiet)
-		    output_buf << argv[i] << " is a user-defined function\n";
+		  string fn = defn->fcn_file_name ();
+		  string ff = fcn_file_in_path (fn);
 
-		  tree_print_code tpc (output_buf, "", pr_orig_txt);
+		  if (pr_orig_txt && ! ff.empty ())
+		    {
+		      ifstream fs (ff.c_str (), ios::in);
 
-		  defn->accept (tpc);
+		      if (fs)
+			{
+			  if (nargout == 0 && ! quiet)
+			    output_buf << argv[i]
+				       << " is the function defined from:\n"
+				       << ff << "\n\n";
+
+			  char ch;
+
+			  while (fs.get (ch))
+			    output_buf << ch;
+			}
+		      else
+			output_buf << "unable to open `" << ff
+				   << "' for reading!\n";
+		    }
+		  else
+		    {
+		      if (nargout == 0 && ! quiet)
+			output_buf << argv[i]
+				   << " is a user-defined function:\n\n";
+
+		      tree_print_code tpc (output_buf, "", pr_orig_txt);
+
+		      defn->accept (tpc);
+		    }
 		}
 
 	      // XXX FIXME XXX -- this code should be shared with
@@ -836,7 +864,7 @@ display the definition of each NAME that refers to a function")
 			      << "' has no member `" << elts << "'\n";
 			  else
 			    output_buf << "type: `" << id
-			      << "' has unknown type!";
+			      << "' has unknown type!\n";
 			}
 		    }
 		  if (! tmp->is_map ())

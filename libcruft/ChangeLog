@@ -1,3 +1,9 @@
+Mon May 11 12:33:42 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* fftpack/passb3.f, fftpack/passb5.f, fftpack/passf3.f,
+	fftpack/passf5.f: Use double precision constants in data
+	statements.
+
 Tue Apr 14 14:01:22 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* slatec-fn/xdgamit.f (xdgamit): New file.

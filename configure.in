@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.304 $)
+AC_REVISION($Revision: 1.305 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -247,6 +247,13 @@ changequote([,])dnl
       ieee_fp_flag=-mieee-with-inexact
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mieee-with-inexact"
       AC_MSG_RESULT([adding -mieee-with-inexact to XTRA_CXXFLAGS])])
+  ;;
+  *ibm-aix4*)
+    OCTAVE_CC_FLAG(-mno-fp-in-toc, [
+      XTRA_CFLAGS="$XTRA_CFLAGS -mno-fp-in-toc"])
+
+    OCTAVE_CXX_FLAG(-mno-fp-in-toc, [
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mno-fp-in-toc"])
   ;;
 esac
 
@@ -1120,6 +1127,8 @@ AC_OUTPUT(Makefile octMakefile Makeconf install-octave
   libcruft/quadpack/Makefile libcruft/ranlib/Makefile
   libcruft/specfun/Makefile libcruft/slatec-fn/Makefile
   libcruft/slatec-err/Makefile libcruft/villad/Makefile)
+
+chmod 755 install-octave
 
 ### Print a summary so that important information isn't missed.
 

@@ -517,6 +517,9 @@ including a reproducible test case and send the message."
   (make-local-variable 'imenu-generic-expression)
   (setq imenu-generic-expression octave-mode-imenu-generic-expression)
 
+  (make-local-variable 'comment-multi-line)
+  (setq comment-multi-line nil)
+
   (octave-add-octave-menu)
   (octave-initialize-completions)
   (run-hooks 'octave-mode-hook))

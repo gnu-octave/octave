@@ -222,12 +222,18 @@ octave_gets (void)
       if (! input_from_startup_file)
 	command_history::add (current_input_line);
 
-      octave_diary << current_input_line;
+      if (! (reading_fcn_file || reading_script_file))
+	{
+	  octave_diary << current_input_line;
+
+	  if (current_input_line[current_input_line.length () - 1] != '\n')
+	    octave_diary << "\n";
+	}
 
       do_input_echo (current_input_line);
     }
-
-  octave_diary << "\n";
+  else if (! (reading_fcn_file || reading_script_file))
+    octave_diary << "\n";
   
   return retval;
 }

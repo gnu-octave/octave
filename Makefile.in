@@ -24,14 +24,14 @@ $(NO_DEP_TARGETS): FORCE
 
 binary-dist: FORCE
 	@if test -f configure && test -f octMakefile.in; then \
-	  ./configure --disable-shared --disable-dl --disable-shl; \
+	  ./configure --enable-shared --enable-lite-kernel ; \
 	else \
 	  echo ""; \
 	  echo "*** You must run make binary-dist in the source directory."; \
 	  echo ""; \
 	  exit 1; \
 	fi
-	$(MAKE) -f octMakefile CFLAGS=-O CXXFLAGS=-O LDFLAGS=-static all
+	$(MAKE) -f octMakefile CFLAGS=-O CXXFLAGS=-O all
 	$(MAKE) -f octMakefile binary-dist
 
 # Maybe this message will prevent people from asking why the

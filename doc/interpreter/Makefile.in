@@ -67,12 +67,16 @@ octave.ps: octave.dvi
 	-dvips -o octave.ps octave.dvi
 
 ../../INSTALL.OCTAVE: install.texi
-	-makeinfo -D INSTALLONLY --no-headers --no-split --output INSTALL \
+	rm -f INSTALL
+	-makeinfo -D INSTALLONLY \
+	  --no-validate --no-headers --no-split --output INSTALL \
 	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/install.texi
 	mv INSTALL ../../INSTALL.OCTAVE
 
 ../../BUGS: bugs.texi
-	-makeinfo -D BUGSONLY --no-headers --no-split --output BUGS \
+	rm -f BUGS
+	-makeinfo -D BUGSONLY \
+	  --no-validate --no-headers --no-split --output BUGS \
 	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/bugs.texi
 	mv BUGS ../../BUGS
 

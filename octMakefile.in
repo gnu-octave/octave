@@ -25,8 +25,8 @@ CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in configure \
 
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
-	README README.Linux README.Windows ROADMAP SENDING-PATCHES \
-	THANKS move-if-change octave-sh octave-bug.in \
+	README README.Linux README.Windows README.MachTen ROADMAP \
+	SENDING-PATCHES THANKS move-if-change octave-sh octave-bug.in \
 	install-octave.in mkinstalldirs mkoctfile.in texi2dvi \
 	ChangeLog ChangeLog.[0-9]
 
@@ -49,7 +49,7 @@ DISTSUBDIRS = libcruft liboctave dlfcn src scripts \
 	test doc emacs examples
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
-	PROJECTS README README.Linux README.NLP README.Windows \
+	PROJECTS README README.Linux README.Windows README.MachTen \
 	SENDING-PATCHES THANKS octave-sh install-octave mkinstalldirs \
 	ChangeLog ChangeLog.[0-9]
 

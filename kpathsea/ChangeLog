@@ -1,3 +1,8 @@
+Thu May 14 12:20:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* acklibtool.m4: For use with Octave, disable support for shared
+	libraries.
+
 Thu Apr 23 15:08:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* withenable.ac (texmfmain): Don't print warning if main temf

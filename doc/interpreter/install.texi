@@ -442,14 +442,6 @@ immediately available for some platforms.  (Please contact
 @email{bug-octave@@bevo.che.wisc.edu} if you are interested in helping
 make a binary distribution available for your system.)
 
-Also, binary distributions are limited to static binaries that do not
-support dynamic linking.  For earlier versions of Octave, I tried
-distributing dynamically linked binaries but that proved to be too much
-trouble to support.  If you want to have a copy of Octave that includes
-all the features described in this manual, you will have to build it
-from the sources yourself, or find someone else who is willing to do it
-for you.
-
 @menu
 * Installing Octave from a Binary Distribution::  
 * Creating a Binary Distribution::  
@@ -569,6 +561,6 @@ make binary-dist
 @end example
 
 This will create a compressed tar file ready for distribution.
-It will contain statically linked binaries and have a name like
+It will have a name like
 @file{octave-@value{VERSION}-@value{TARGETHOSTTYPE}.tar.gz}
 @end itemize

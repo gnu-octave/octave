@@ -40,8 +40,6 @@ class boolMatrix;
 #define FBM boolMatrix (1, 1, false)
 #define NBM boolMatrix ()
 
-#if 0
-
 // vector by scalar operations.
 
 #define VS_BIN_OP_DECLS(R, V, S) \
@@ -593,7 +591,7 @@ operator * (const M& m, const DM& dm) \
     { \
       r.resize (m_nr, dm_nc, 0.0); \
  \
-      if (m_nr > 0 && m_nc > 0 && dm_nc == 0) \
+      if (m_nr > 0 && m_nc > 0 && dm_nc > 0) \
 	{ \
 	  for (int j = 0; j < dm.length (); j++) \
 	    { \
@@ -750,8 +748,6 @@ operator * (const DM& dm, const M& m) \
 
 #define DMDM_OP_DECLS(R, DM1, DM2) \
   DMDM_BIN_OP_DECLS (R, DM1, DM2)
-
-#endif
 
 /*
 ;;; Local Variables: ***

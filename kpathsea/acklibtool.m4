@@ -1,5 +1,5 @@
 dnl Autoconf support for Klibtool.
-dnl $Id: acklibtool.m4,v 1.4 1998-05-04 16:36:19 jwe Exp $
+dnl $Id: acklibtool.m4,v 1.5 1998-05-18 20:33:34 jwe Exp $
 dnl
 dnl
 dnl Find the script, check for subprogs, etc.
@@ -20,14 +20,18 @@ if test ! -r $LIBTOOL; then
   exit 1
 fi
 #
+## For use with Octave, ignore these options and only build static libraries.
+##
 ## Argument parsing: we support --enable-shared and --enable-static.
-AC_ARG_ENABLE(shared,
-[  --enable-shared              build shared libraries [default=no]],,
-  enable_shared=no)
-#
-AC_ARG_ENABLE(static,
-[  --enable-static              build static libraries [default=yes]],,
-  enable_static=yes)
+#AC_ARG_ENABLE(shared,
+#[  --enable-shared              build shared libraries [default=no]],,
+#  enable_shared=no)
+##
+#AC_ARG_ENABLE(static,
+#[  --enable-static              build static libraries [default=yes]],,
+#  enable_static=yes)
+enable_shared=no
+enable_static=yes
 #
 # If they explicitly --enable-static, make that the link type.
 # More commonly, they will just --enable-shared; make that the link type.

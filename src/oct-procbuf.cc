@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-utils.h"
 #include "oct-procbuf.h"
 #include "syswait.h"
+#include "variables.h"
 
 #include "defun.h"
 #include "gripes.h"
@@ -206,7 +207,8 @@ kluge_procbuf_delay (void)
 static void
 symbols_of_oct_procbuf (void)
 {
-  DEFVAR (kluge_procbuf_delay, Vkluge_procbuf_delay, 0, kluge_procbuf_delay,
+  DEFVAR (kluge_procbuf_delay, static_cast<double> (Vkluge_procbuf_delay),
+	  0, kluge_procbuf_delay,
     "number of microseconds to delay in the parent after forking");
 }
 

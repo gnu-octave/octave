@@ -115,6 +115,21 @@ Here is a list of current problems (and workarounds, where available).
   Then you can set your LOADPATH to include /D_DRIVE/subdir instead of
   //d/subdir.
 
+* If you see error messages like the following:
+
+    The heap has been split, CYGWIN can't fork this process. Increase
+    the heap_chunk_size in the registry and try again.
+
+  you can increase the heap size by saving the follwoing text to a
+  file (delete the leading white space) and then double click on the
+  file.  Try changing the value to something larger than 4 (MB).
+
+    REGEDIT4
+
+    [HKEY_CURRENT_USER\Software\Cygnus Solutions\CYGWIN.DLL setup\b15.0]
+    "heap_chunk_in_mb"=dword:00000004
+
+
 If you know of solutions for any of the problems mentioned above,
 please contact bug-octave@bevo.che.wisc.edu.
 

@@ -103,10 +103,10 @@ EOF
       exit 0
     ;;
     -I*)
-      incflags="$incflags $1";;
+      incflags="$incflags $1"
     ;;
     -[lL]*)
-      ldflags="$ldflags $1";;
+      ldflags="$ldflags $1"
     ;;
     -o | --output)
       shift

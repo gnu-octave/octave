@@ -384,6 +384,7 @@ redirect all input and screen output to a file.")
 	else
 	  {
 	    diary_file = arg;
+	    write_to_diary_file = true;
 	    open_diary_file ();
 	  }
       }

@@ -1,3 +1,17 @@
+Thu May 14 16:23:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/getrusage.cc: Include sys/types.h too.
+
+Mon May 11 00:38:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.cc (Fdiary): Don't forget to set write_to_diary file if
+	just given a file name.
+
+	* input.cc (octave_gets): Only send new line character to
+	octave_diary if current_input_line is empty or doesn't already end
+	with a new line character..
+	Don't send input from function files or	scripts to octave_diary.
+
 Sun May  3 19:54:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (reset_parser): Also call yyrestart if forced_interactive

@@ -38,7 +38,7 @@ template int assign (Array<bool>&, const Array<bool>&);
 
 template class Array2<bool>;
 
-template void assign (Array2<bool>&, const Array2<bool>&);
+template int assign (Array2<bool>&, const Array2<bool>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

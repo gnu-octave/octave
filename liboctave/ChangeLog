@@ -1,3 +1,8 @@
+Thu May 14 11:50:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-op-defs.h (MDM_MULTIPLY_OP): Compute result if dm_nc > 0, not
+	if dm_nc == 0.
+
 Thu Apr 23 16:15:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pathsearch.h (dir_path::p_orig): New field.

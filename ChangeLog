@@ -1,3 +1,41 @@
+Mon May 18 11:33:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Fix typos in case statement.
+
+Fri May 15 00:34:54 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Make sure install-octave is executable.
+
+	* install-octave.in (oct_files): Don't cd to src.
+	(have_find): Delete variable (assume all systems have find).
+
+Thu May 14 10:29:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_SET_DEFAULT): Allow values to come from the
+	environment.
+
+	* Makefile.in (binary-dist): Don't set LDFLAGS to -static.
+	Run configure with --enable-shared and --enable-lite-kernel.
+
+	* octMakefile.in (DISTFILES): Include README.MachTen in the list.
+	(XBINDISTFILES): Include README.MachTen in the list.
+	Delete README.NLP from the list
+	* README.MachTen: New file.
+
+	* configure.in: Add -mno-fp-in-toc on ibm-aix4 systems.
+	From Philippe.Defert@cern.ch <Philippe.Defert@cern.ch>.
+
+Tue May  5 14:43:36 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_PROG_G77): Compile trivial program instead of
+	just running ${f77-f77} -v on nothing.
+	Convert all uses of $F77 to ${F77-f77}.
+
+Mon May  4 12:08:36 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-mode): Make comment-multi-line local
+	and set to nil.
+
 Tue Apr 28 14:28:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_FLIBS): Really do skip -lkernel32.

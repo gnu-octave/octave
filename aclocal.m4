@@ -40,7 +40,7 @@ dnl Set default value for a variable and substitute it.
 dnl
 dnl OCTAVE_SET_DEFAULT
 AC_DEFUN(OCTAVE_SET_DEFAULT,
-[ifelse($#, 2, [$1=$2
+[ifelse($#, 2, [: ${$1=$2}
 ])dnl
 AC_MSG_RESULT([defining $1 to be $$1])
 AC_SUBST($1)])
@@ -80,8 +80,9 @@ octave_cv_f77_is_g77,
 [if $use_g77; then
   octave_cv_f77_is_g77=yes
 else
-  f77_output=`$F77 -v 2>&1 | grep "GNU F77"`
-  if test -n "$f77_output"; then
+  echo "      END" > conftest.f
+  foutput=`${F77-f77} -v 2>&1 | grep "GNU F77"`
+  if test -n "$foutput"; then
     octave_cv_f77_is_g77=yes
   else
     octave_cv_f77_is_g77=no
@@ -292,7 +293,7 @@ dnl See if the Fortran compiler uses uppercase external names.
 dnl
 dnl OCTAVE_F77_UPPERCASE_NAMES()
 AC_DEFUN(OCTAVE_F77_UPPERCASE_NAMES,
-[AC_MSG_CHECKING([whether $F77 uses uppercase external names])
+[AC_MSG_CHECKING([whether ${F77-f77} uses uppercase external names])
 AC_CACHE_VAL(octave_cv_f77_uppercase_names,
 [octave_cv_f77_uppercase_names=no
 cat > conftest.f <<EOF
@@ -314,7 +315,7 @@ dnl See if the Fortran compiler appends underscores to external names.
 dnl
 dnl OCTAVE_F77_APPEND_UNDERSCORE()
 AC_DEFUN(OCTAVE_F77_APPEND_UNDERSCORE,
-[AC_MSG_CHECKING([whether $F77 appends underscores to external names])
+[AC_MSG_CHECKING([whether ${F77-f77} appends underscores to external names])
 AC_REQUIRE([OCTAVE_F77_UPPERCASE_NAMES])
 AC_CACHE_VAL(octave_cv_f77_append_underscore,
 [octave_cv_f77_append_underscore=no
@@ -357,7 +358,7 @@ if test "$cross_compiling" = yes; then
     AC_MSG_WARN([assuming ${F77-f77} cross compiler is f2c compatible])
   fi
 else
-  AC_CACHE_CHECK([$F77/f2c compatibility], octave_cv_f2c_f77_compat,
+  AC_CACHE_CHECK([${F77-f77}/f2c compatibility], octave_cv_f2c_f77_compat,
   [trap 'rm -f ftest* ctest* core; exit 1' 1 3 15
   octave_cv_f2c_f77_compat=no
   cat > ftest.f <<EOF

@@ -37,13 +37,6 @@ EOF
   exit 1
 fi
 
-have_find=true
-case "$canonical_host_type" in
-  *-*-cygwin32)
-    have_find=false
-  ;;
-esac
-
 distdir=`pwd`
 
 # Check whether to use -n or \c to keep echo from printing a newline
@@ -246,37 +239,32 @@ if test -f LIBRARIES; then
   done
 fi
 
-if $have_find; then
-  oct_files=`find . -name '*.oct' -print`
-  if test -n "$oct_files"; then
-    echo "installing .oct files in $octfiledir"
-    cd src
-    for f in $oct_files
+oct_files=`find . -name '*.oct' -print`
+if test -n "$oct_files"; then
+  echo "installing .oct files in $octfiledir"
+  for f in $oct_files
+  do
+    file=`basename $f`
+    cp $f $octfiledir/$file
+    chmod 755 $octfiledir/$file
+  done
+  if test -f links-to-make; then
+    cat links-to-make | while read src dest
     do
-      file=`basename $f`
-      cp $f $octfiledir/$file
-      chmod 755 $octfiledir/$file
+      if test -n "$src" && test -n "$dest"; then
+	cd $octfiledir
+	ln $src $dest
+      fi
     done
-    if test -f links-to-make; then
-      cat links-to-make | while read src dest
-      do
-	if test -n "$src" && test -n "$dest"; then
-	  cd $octfiledir
-	  ln $src $dest
-	fi
-      done
-    fi
-    cd $distdir
   fi
+  cd $distdir
 fi
 
 echo "installing .m files in $fcnfiledir"
 cd scripts
 tar cf - . | ( cd $fcnfiledir ; tar xf - )
-if $have_find; then
-  find $fcnfiledir -type f -print | xargs chmod 0644
-  find $fcnfiledir -name '*.img' -print | xargs rm -f
-fi
+find $fcnfiledir -type f -print | xargs chmod 0644
+find $fcnfiledir -name '*.img' -print | xargs rm -f
 cd $distdir
 
 echo "installing image files in $imagedir"

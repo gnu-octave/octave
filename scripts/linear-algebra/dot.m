@@ -37,9 +37,9 @@ function z = dot (x, y)
       endif
     else
       if (y_nr == 1)
-	z = y * x';
-      else
 	z = y * x;
+      else
+	z = y' * x;
       endif
     endif
   else

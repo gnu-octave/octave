@@ -1,5 +1,20 @@
 # balance
-# cond
+
+set test cond-1
+set prog_output "ans = 1"
+do_test cond-1.m
+
+set test cond-2
+set prog_output "ans = 1"
+do_test cond-2.m
+
+set test cond-3
+set prog_output "usage:.*"
+do_test cond-3.m
+
+set test cond-4
+set prog_output "usage:.*"
+do_test cond-4.m
 
 set test det-1
 set prog_output "ans = 1"
@@ -60,9 +75,62 @@ do_test inv-4.m
 # orth
 # pinv
 # rank
-# trace
-# chol
-# hess
+
+set test trace-1
+set prog_output "ans = 1"
+do_test trace-1.m
+
+set test trace-2
+set prog_output "ans = 1"
+do_test trace-2.m
+
+set test trace-3
+set prog_output "ans = 1"
+do_test trace-3.m
+
+set test trace-4
+set prog_output "usage:.*"
+do_test trace-4.m
+
+set test trace-5
+set prog_output "usage:.*"
+do_test trace-5.m
+
+set test chol-1
+set prog_output "ans = 1"
+do_test chol-1.m
+
+set test chol-2
+set prog_output "error:.*"
+do_test chol-2.m
+
+set test chol-3
+set prog_output "error:.*"
+do_test chol-3.m
+
+set test chol-4
+set prog_output "\n... chol:.*"
+do_test chol-4.m
+
+set test chol-5
+set prog_output "\n... chol:.*"
+do_test chol-5.m
+
+set test hess-1
+set prog_output "ans = 1"
+do_test hess-1.m
+
+set test hess-2
+set prog_output "\n... hess:.*"
+do_test hess-2.m
+
+set test hess-3
+set prog_output "\n... hess:.*"
+do_test hess-3.m
+
+set test hess-4
+set prog_output "error:.*"
+do_test hess-4.m
 
 set test lu-1
 set prog_output "ans = 1"
@@ -112,7 +180,21 @@ set test qr-6
 set prog_output "\n... qr:.*"
 do_test qr-6.m
 
-# schur
+set test schur-1
+set prog_output "ans = 1"
+do_test schur-1.m
+
+set test schur-2
+set prog_output "\n... schur:.*"
+do_test schur-2.m
+
+set test schur-3
+set prog_output "error:.*"
+do_test schur-3.m
+
+set test schur-4
+set prog_output "error:.*"
+do_test schur-4.m
 
 set test svd-1
 set prog_output "ans = 1"
@@ -156,4 +238,19 @@ do_test svd-9.m
 # kron
 # qzhess
 # qzval
-# syl
+
+set test syl-1
+set prog_output "ans = 1"
+do_test syl-1.m
+
+set test syl-2
+set prog_output "\n... syl:.*"
+do_test syl-2.m
+
+set test syl-3
+set prog_output "\n... syl:.*"
+do_test syl-3.m
+
+set test syl-4
+set prog_output "error:.*"
+do_test syl-4.m

@@ -2049,7 +2049,7 @@ OCT_VAL_REP::make_numeric (bool force_string_conv) const
 
 	if (flag)
 	  {
-	    retval = *char_matrix;
+	    retval = octave_value (*char_matrix, true);
 	    retval.force_numeric (force_string_conv);
 	  }
 	else
@@ -2430,12 +2430,20 @@ do_binary_op (octave_value& a, octave_value& b, tree_expression::type t)
 	}
     }
 
-  octave_value tmp_a = a.make_numeric ();
+  int force = (a.is_string () && b.is_string ()
+	       && (t == tree_expression::cmp_lt
+		   || t == tree_expression::cmp_le
+		   || t == tree_expression::cmp_eq
+		   || t == tree_expression::cmp_ge
+		   || t == tree_expression::cmp_gt
+		   || t == tree_expression::cmp_ne));
+
+  octave_value tmp_a = a.make_numeric (force);
 
   if (error_state)
     return retval;
 
-  octave_value tmp_b = b.make_numeric ();
+  octave_value tmp_b = b.make_numeric (force);
 
   if (error_state)
     return retval;

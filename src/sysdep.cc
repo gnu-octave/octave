@@ -363,6 +363,38 @@ kbhit (void)
   return c;
 }
 
+char *
+octave_getcwd (const char *buf, int len)
+{
+#if defined (EMX)
+  return _getcwd2 (buf, len);
+#else
+  return getcwd (buf, len);
+#endif
+}
+
+int
+octave_chdir (const char *path)
+{
+#if defined (EMX)
+  int retval = -1;
+
+  if (strlen (path) == 2 && path[1] == ':')
+    {
+      char *upper_case_dir_name = strupr (path);
+      _chdrive (upper_case_dir_name[0]);
+      if (_getdrive () == upper_case_dir_name[0])
+	retval = _chdir2 ("/");
+    }
+  else
+    retval = _chdir2 (path);
+
+  return retval;
+#else
+  return chdir (path);
+#endif
+}
+
 DEFUN ("clc", Fclc, Sclc, 0, 0,
   "clc (): clear screen")
 {

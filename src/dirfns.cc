@@ -73,6 +73,7 @@ Free Software Foundation, Inc.
 #include "procstream.h"
 #include "tree-const.h"
 #include "oct-obj.h"
+#include "sysdep.h"
 #include "octave.h"
 #include "dirfns.h"
 #include "pager.h"
@@ -302,7 +303,7 @@ get_working_directory (const char *for_whom)
       char *directory;
 
       the_current_working_directory = new char [MAXPATHLEN];
-      directory = getcwd (the_current_working_directory, MAXPATHLEN);
+      directory = octave_getcwd (the_current_working_directory, MAXPATHLEN);
       if (! directory)
 	{
 	  message (for_whom, the_current_working_directory);
@@ -344,7 +345,7 @@ change_to_directory (const char *newdir)
 	  }
       }
 
-      if (chdir (t) < 0)
+      if (octave_chdir (t) < 0)
 	{
 	  delete [] t;
 	  return 0;
@@ -358,7 +359,7 @@ change_to_directory (const char *newdir)
     }
   else
     {
-      if (chdir (newdir) < 0)
+      if (octave_chdir (newdir) < 0)
 	return 0;
       else
 	return 1;
@@ -470,7 +471,7 @@ DEFUN ("pwd", Fpwd, Spwd, 1, 0,
   if (verbatim_pwd)
     {
       char *buffer = new char [MAXPATHLEN];
-      directory = getcwd (buffer, MAXPATHLEN);
+      directory = octave_getcwd (buffer, MAXPATHLEN);
 
       if (!directory)
 	{

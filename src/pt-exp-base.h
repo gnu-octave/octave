@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_tree_expr_h)
 #define octave_tree_expr_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <time.h>
 #include <stdio.h>
 #include <iostream.h>

@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_token_h)
 #define octave_token_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class symbol_record;
 
 class

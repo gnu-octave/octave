@@ -569,10 +569,10 @@ octave_value::octave_value (octave_value::all_va_args)
   rep->count = 1;
 }
 
-octave_value::octave_value (octave_value *new_rep, int count)
+octave_value::octave_value (octave_value *new_rep, int cnt)
   : rep (new_rep)
 {
-  rep->count = count;
+  rep->count = cnt;
 }
 
 octave_value::~octave_value (void)

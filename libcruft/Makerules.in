@@ -74,13 +74,13 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean::
-	rm -f *.a *.o pic/*.o
+	rm -f *.d *.a *.o pic/*.o
 	-rmdir pic
 	rm -f stmp-pic
 .PHONY: clean
 
 mostlyclean::
-	rm -f *.o pic/*.o
+	rm -f *.d *.o pic/*.o
 	-rmdir pic
 	rm -f stmp-pic
 .PHONY: mostlyclean

@@ -426,7 +426,7 @@ mostlyclean: clean
 
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations
-	rm -f stamp-prereq stamp-oct-links
+	rm -f stamp-prereq stamp-oct-links doc-files gendoc.cc
 .PHONY: distclean
 
 maintainer-clean: distclean

@@ -306,7 +306,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations
+	rm -f Makefile so_locations stamp-prereq
 .PHONY: distclean
 
 maintainer-clean: distclean

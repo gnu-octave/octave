@@ -1,5 +1,7 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (distclean): Also remove stamp-prereq.
+
 	* Array2-idx.h (assign): If assignment conforms but the RHS and
 	index are empty matrices, don't do anything.
 

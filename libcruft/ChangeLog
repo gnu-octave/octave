@@ -1,5 +1,7 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makerules.in (clean, mostlyclean): Also remove *.d.
+
 	* misc/quit.cc: Add std:: qualifiers to memcpy calls.
 
 2003-01-03  Paul Kienzle <pkienzle@users.sf.net>

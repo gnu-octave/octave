@@ -1,0 +1,412 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl
+AC_INIT([[src]]/octave.cc)dnl
+
+# See if we were given the target host type.  If not, guess.
+
+if test $# -gt 0; then
+  TARGET=`eval echo $\{\`echo $#\`\}`
+  case $TARGET in
+    -*) target_host_type= ;;
+    *) target_host_type=$TARGET ;;
+  esac
+fi
+
+if test -z "$target_host_type" -o "$target_host_type" = unknown; then
+  target_host_type=`sh $srcdir/config.guess`
+  if test -z "$target_host_type"; then
+    echo "warning: unable to guess system type"
+    target_host_type=unknown
+  fi
+fi
+
+case "$target_host_type" in
+  unknown)
+    echo "configuring Octave for an unknown system type"
+  ;;
+  *)
+    echo "configuring Octave for a $target_host_type"
+  ;;
+esac
+AC_SUBST(target_host_type)dnl
+
+# Set up to handle --with-FOO options.
+
+AC_WITH(f2c, use_f2c=true, use_f2c=false)dnl
+AC_WITH(dld, use_dld=true, use_dld=false)dnl
+
+DYNAMIC_LD_OBJ=
+DLD_DIR=
+LIBDLD=
+DLD_OBJECTS='$(DLD_OBJECTS)'
+LD_STATIC_FLAG=
+if $use_dld; then
+  DYNAMIC_LD_OBJ='dynamic-ld.o'
+  DLD_DIR=dld
+  LIBDLD='../libdld.a'
+  DLD_OBJECTS= : # don't link them in if doing dynamic linking
+  DEFS="$DEFS -DWITH_DLD=1"
+  LD_STATIC_FLAG=-static
+fi
+AC_SUBST(DYNAMIC_LD_OBJ)dnl
+AC_SUBST(DLD_DIR)dnl
+AC_SUBST(LIBDLD)dnl
+AC_SUBST(DLD_OBJECTS)dnl
+AC_SUBST(LD_STATIC_FLAG)dnl
+
+echo "checking for npsol"
+if test -f $srcdir/libcruft/npsol/npsol.f; then
+  :
+else
+  DEFS="$DEFS -DNPSOL_MISSING=1"
+fi
+
+echo "checking for qpsol"
+if test -f $srcdir/libcruft/qpsol/qpsol.f; then
+  :
+else
+  DEFS="$DEFS -DQPSOL_MISSING=1"
+fi
+
+echo "checking for fsqp"
+if test -f $srcdir/libcruft/fsqp/fsqpd.f; then
+  :
+else
+  DEFS="$DEFS -DFSQP_MISSING=1"
+fi
+
+AC_PROG_CC
+AC_GCC_TRADITIONAL
+AC_AIX
+
+# Do special things for gcc.
+
+case "$CC" in
+  gcc*)
+    CFLAGS="-g -O -Wall"
+    LDFLAGS="-g -O"
+    gcc_version=`gcc -v 2>&1 | grep "^gcc version" | sed 's/^gcc version *//'`
+    case "$gcc_version" in
+      1.*)
+        cat << EOF
+warning: gcc version $gcc_version is likely to cause problems --
+         you should probably consider getting version 2.x
+EOF
+        ;;
+    esac
+    ;;
+  *)
+    CFLAGS="-g"
+    LDFLAGS="-g"
+    ;;
+esac
+AC_SUBST(CFLAGS)dnl
+AC_SUBST(LDFLAGS)dnl
+
+AC_PROGRAM_CHECK(GXX, g++, g++, [])dnl
+if test "$GXX" = g++ ; then
+  CXXFLAGS="-g -O -Wall"
+  gxx_version=`g++ -v 2>&1 | grep "^g.. version" | sed 's/^g.. version *//'`
+  case "$gxx_version" in
+    1.*)
+      cat << EOF
+warning: g++ version $gxx_version is likely to cause problems --
+         you should probably consider getting version 2.x
+EOF
+      ;;
+    esac
+else
+  cat << EOF
+warning: Octave has only been tested with g++, and I can't
+         seem to find it.
+EOF
+fi
+AC_SUBST(CXXFLAGS)dnl
+
+# If we haven't been forced to use f2c, try to find a Fortran compiler
+# under any one of several common Un*x Fortran compiler names. 
+# Put fc last to avoid confusion with some vendor's /bin/sh fc
+# builtin.
+#
+#    g77 : GNU Fortran (someday...)
+#    xlf : IBM / AIX
+#   cf77 : Cray / Unicos
+#     fc : Convex
+#
+# I don't think the Cray compiler will ever work like f2c...
+
+if $use_f2c; then
+  true
+else
+  F77=
+  AC_PROGRAMS_CHECK(F77, g77 xlf cf77 f77 fc)dnl
+
+  # If it looks like we have a Fortran compiler, try to determine
+  # whether it might be compatible with f2c.
+
+  if test -n "$F77"; then
+    echo "checking $F77/f2c compatibility"
+    export F77
+    export CC
+    tmpdef=`sh $srcdir/f2c-compat.sh $srcdir/flibs.sh`
+    status=$?
+    if test $status -eq 0; then
+      if test "$tmpdef" = '-DF77_APPEND_UNDERSCORE=1'; then
+        DEFS="$DEFS $tmpdef"
+      fi
+    else
+      F77=
+    fi
+  fi
+fi
+
+# If we can't find a Fortran compiler, or if it looks like it isn't
+# compatible with f2c, try to find f2c.
+
+if test -z "$F77"; then
+  AC_PROGRAM_CHECK(F2C, f2c, f2c, [])dnl
+fi
+
+F2CFLAGS=
+FFLAGS="-O"
+if test -n "$F77"; then
+  export F77
+  FLIBS=`sh $srcdir/flibs.sh`
+  DOT_O_DOT_F_C1=
+  DOT_O_DOT_F_C2=
+  DOT_O_DOT_F_C3=
+  DOT_O_DOT_F_C4=
+  DEFAULT_DOT_C_FROM_DOT_F=
+  DEFAULT_DOT_O_FROM_DOT_F=
+elif test -n "$F2C" || $use_f2c; then
+  AC_HAVE_LIBRARY(f2c, FLIBS=-lf2c, [])dnl
+  if test -z "$FLIBS" ; then
+    AC_HAVE_LIBRARY(F77, FLIBS=-lF77, [])dnl
+    if test -n "$FLIBS" ; then
+      AC_HAVE_LIBRARY(I77, FLIBS="$FLIBS -lI77", [])dnl
+    fi
+  fi
+  if test -z "$FLIBS" ; then
+    cat << EOF
+warning: I found f2c but I couldn't find libf2c.a, or
+         libF77.a and libI77.a
+EOF
+  fi
+DEFAULT_DOT_C_FROM_DOT_F='# A rule for making C source from Fortran source.\
+# If we are using f2c we should also turn off the default rule for\
+# making objects from .f files so that we do not invoke the fortran\
+# compiler by mistake.\
+\
+\%.c : \%.f\
+	cat $< | $(F2C) $(F2CFLAGS) > $(@F)'
+  DEFAULT_DOT_O_FROM_DOT_F='\%.o : \%.f'
+  DEFS="$DEFS -DF77_APPEND_UNDERSCORE=1"
+else
+  cat << EOF
+warning: in order to build octave, you must have a compatible
+         Fortran compiler or f2c installed and in your path.
+         See the file INSTALL for more information.
+         Continuing anyway...
+EOF
+fi
+
+AC_SUBST(FFLAGS)dnl
+AC_SUBST(FLIBS)dnl
+AC_SUBST(F2C)dnl
+AC_SUBST(F2CFLAGS)dnl
+AC_SUBST(DEFAULT_DOT_C_FROM_DOT_F)dnl
+AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)dnl
+
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+AC_STDC_HEADERS
+AC_UNISTD_H
+AC_DIR_HEADER
+
+# For now, don't define LEXLIB to be -lfl -- we don't use anything in
+# it, and it might not be installed.
+#
+# Also make sure that we generate an interactive scanner if we are
+# using flex.
+
+AC_PROG_LEX
+case "$LEX" in
+  flex*)
+    LFLAGS="-t -I"
+    LEXLIB=
+  ;;
+  *)
+    LFLAGS="-t"
+    cat << EOF
+warning: I didn't find flex, but that's only a problem
+         if you need to reconstruct lex.cc
+EOF
+  ;;
+esac
+AC_SUBST(LFLAGS)dnl
+
+AC_PROG_YACC
+case "$YACC" in
+  bison*)
+  ;;
+  *)
+    cat << EOF
+warning: I didn't find bison, but that's only a problem
+         if you need to reconstruct parse.cc
+EOF
+  ;;
+esac
+
+# Define VOID_SIGHANDLER for readline.
+
+AC_RETSIGTYPE
+case "$RETSIGTYPE" in
+  int)
+  ;;
+  *)
+    VOID_SIGHANDLER="-DVOID_SIGHANDLER=1"
+  ;;
+esac
+AC_SUBST(VOID_SIGHANDLER)dnl
+
+AC_HAVE_HEADERS(termio.h)dnl
+case "$DEFS" in
+  *HAVE_TERMIO_H*)
+  ;;
+  *)
+    AC_HAVE_HEADERS(sgtty.h)dnl
+    case "$DEFS" in
+      *HAVE_SGTTY_H*)
+      ;;
+      *)
+        echo "I couldn't find either termio.h or sgtty.h!"
+        exit 1
+        ;;
+    esac
+    ;;
+esac
+
+# Hack for readline's sysdep.h
+
+case "$target_host_type" in
+  *next*)
+    echo "using BSD version of readline/sysdep.h on the NeXT"
+    rm -f readline/sysdep.h
+    cp readline/sysdep-obsd.h readline/sysdep.h
+  ;;
+esac
+
+# Check to see if we have IEEE math functions, and if so, which ones.
+#
+# Also check for some additional trig functions that aren't ANSI but
+# are often available.  If they are missing, we try to replace them
+# with functions from the BSD/NET2 math library.
+
+XLIBS="$LIBS"
+LIBS="$XLIBS -lm"
+AC_HAVE_FUNCS(finite isnan isinf)dnl
+AC_REPLACE_FUNCS(acosh asinh atanh)dnl
+LIBS="$XLIBS"
+
+if test -n "$LIBOBJS"; then
+  for func in $LIBOBJS
+  do
+    case "$func" in
+      *acosh.o*)
+	DEFS="$DEFS -DACOSH_MISSING=1"
+	;;
+      *asinh.o*)
+	DEFS="$DEFS -DASINH_MISSING=1"
+	;;
+      *atanh.o*)
+	DEFS="$DEFS -DATANH_MISSING=1"
+	;;
+    esac
+  done
+
+  case $LIBOBJS in
+    *acosh.o* | *asinh.o*)
+      AC_REPLACE_FUNCS(copysign)dnl
+      ;;
+  esac
+
+  case $LIBOBJS in
+    *acosh.o* | *asinh.o* | *atanh.o*)
+      AC_REPLACE_FUNCS(log1p)dnl
+      ;;
+  esac
+
+  case $LIBOBJS in
+    *log1p*)
+      AC_REPLACE_FUNCS(log__L)dnl
+      ;;
+  esac
+
+  case $LIBOBJS in
+    *log1p*)
+      AC_REPLACE_FUNCS(finite)dnl
+      ;;
+  esac
+
+  case $LIBOBJS in
+    *copysign* | *finite* | *log1p*)
+      AC_REPLACE_FUNCS(logb scalb)dnl
+      ;;
+  esac
+fi
+
+AC_PROGRAM_CHECK(GNUPLOT_BINARY, gnuplot, gnuplot, [])dnl
+if test -z "$GNUPLOT_BINARY"; then
+  cat << EOF
+warning: I didn't find gnuplot.  It isn't necessary to have gnuplot
+         installed, but you won't be able to use any of Octave's
+         plotting commands without it.
+
+         If gnuplot is installed but it isn't in your path, you can
+         tell Octave where to find it by typing the command
+
+           gnuplot_binary = '/full/path/to/gnuplot/binary'
+
+         at the Octave prompt.
+EOF
+fi
+
+AC_PROGRAM_CHECK(DEFAULT_PAGER, less, less, [])dnl
+if test -z "$DEFAULT_PAGER"; then
+  AC_PROGRAM_CHECK(DEFAULT_PAGER, more, more, [])dnl
+fi
+if test -z "$DEFAULT_PAGER"; then
+  AC_PROGRAM_CHECK(DEFAULT_PAGER, page, page, [])dnl
+fi
+if test -z "$DEFAULT_PAGER"; then
+  AC_PROGRAM_CHECK(DEFAULT_PAGER, pg, pg, [])dnl
+fi
+if test -z "$DEFAULT_PAGER"; then
+  echo "warning: I couldn't find less(1), more(1), page(1), or pg(1)"
+fi
+AC_SUBST(DEFAULT_PAGER)dnl
+
+AC_PROGRAM_CHECK(RUNTEST, runtest, runtest, [])dnl
+AC_PROGRAM_CHECK(EXPECT, expect, expect, [])dnl
+if test -z "$EXPECT" ; then
+  RUNTEST=
+fi
+AC_SUBST(RUNTEST)dnl
+
+define([tmpa], [libcruft/blas/Makefile libcruft/dassl/Makefile])dnl
+define([tmpb], [libcruft/fftpack/Makefile])dnl
+define([tmpc], [libcruft/fsqp/Makefile libcruft/lapack/Makefile])dnl
+define([tmpd], [libcruft/linpack/Makefile libcruft/minpack/Makefile])dnl
+define([tmpe], [libcruft/misc/Makefile libcruft/npsol/Makefile])dnl
+define([tmpf], [libcruft/odepack/Makefile libcruft/qpsol/Makefile])dnl
+define([tmpg], [libcruft/quadpack/Makefile libcruft/ranlib/Makefile])dnl
+define([tmph], [libcruft/villad/Makefile])dnl 
+define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph])dnl
+define([tmpA], [Makefile Makeconf libcruft/Makefile libcruft/Makerules])dnl
+define([tmpB], [liboctave/Makefile src/Makefile])dnl
+define([tmpC], [dld/Makefile readline/Makefile readline/doc/Makefile])dnl
+define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
+define([tmpE], [scripts/Makefile test/Makefile])dnl
+define([tmpF], [test/config/Makefile test/octave/Makefile])dnl
+define([srcdirs], [tmpA tmpB tmpC tmpD tmpE tmpF])dnl
+AC_OUTPUT([srcdirs cruftdirs])dnl

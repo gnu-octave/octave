@@ -27,6 +27,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma implementation
 #endif
 
+#include <float.h>
+
 #include "Matrix.h"
 
 #include "tree-const.h"

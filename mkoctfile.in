@@ -83,6 +83,7 @@ Options:
 
   -h, -? --help           Print this message.
   -lLIB                   Add library LIB to link command.
+  -LDIR                   Add -LDIR to link command.
   -o FILE, --output FILE  Output file name.  Default extension is .oct.
   -s, --strip             Strip output file.
   -v, --verbose           Echo commands as they are executed.
@@ -100,7 +101,7 @@ Options:
 EOF
       exit 0
     ;;
-    -l*)
+    -[lL]*)
       ldflags="$ldflags $1";;
     "")
       break
@@ -181,8 +182,8 @@ fi
 
 # Link all the object files.
 
-$dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles
-eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles
+$dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
+eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
 
 # Maybe strip it.
 

@@ -2100,56 +2100,60 @@ printf_value_cache::string_value (void)
 // Ugh again and again.
 
 template <class T>
-void
+int
 do_printf_conv (std::ostream& os, const char *fmt, int nsa, int sa_1,
 		int sa_2, bool have_arg, T arg)
 {
+  int retval = 0;
+
   switch (nsa)
     {
     case 2:
       if (have_arg)
-	os.form (fmt, sa_1, sa_2, arg);
+	retval = octave_format (os, fmt, sa_1, sa_2, arg);
       else
-	os.form (fmt, sa_1, sa_2);
+	retval = octave_format (os, fmt, sa_1, sa_2);
       break;
 
     case 1:
       if (have_arg)
-	os.form (fmt, sa_1, arg);
+	retval = octave_format (os, fmt, sa_1, arg);
       else
-	os.form (fmt, sa_1);
+	retval = octave_format (os, fmt, sa_1);
       break;
 
     case 0:
       if (have_arg)
-	os.form (fmt, arg);
+	retval = octave_format (os, fmt, arg);
       else
-	os.form (fmt);
+	retval = octave_format (os, fmt);
       break;
 
     default:
       ::error ("fprintf: internal error handling format");
       break;
     }
+
+  return retval;
 }
 
-template void
+template int
 do_printf_conv (std::ostream&, const char*, int, int, int, bool, int);
 
-template void
+template int
 do_printf_conv (std::ostream&, const char*, int, int, int, bool, long);
 
-template void
+template int
 do_printf_conv (std::ostream&, const char*, int, int, int, bool, double);
 
-template void
+template int
 do_printf_conv (std::ostream&, const char*, int, int, int, bool, const char*);
 
 int
 octave_base_stream::do_printf (printf_format_list& fmt_list,
 			       const octave_value_list& args)
 {
-  int retval = -1;
+  int retval = 0;
 
   std::ostream *osp = output_stream ();
 
@@ -2197,7 +2201,8 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 	      const char *fmt = elt->text;
 
 	      if (doing_percent || args == 0)
-		do_printf_conv (os, fmt, nsa, sa_1, sa_2, false, 0.0);
+		retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2,
+					  false, 0.0);
 	      else
 		{
 		  if (elt->type == 's' && val_cache.looking_at_string ())
@@ -2205,8 +2210,8 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		      std::string val = val_cache.string_value ();
 
 		      if (val_cache)
-			do_printf_conv (os, fmt, nsa, sa_1, sa_2, true,
-					val.c_str ());
+			retval += do_printf_conv (os, fmt, nsa, sa_1,
+						  sa_2, true, val.c_str ());
 		      else
 			break;
 		    }
@@ -2222,20 +2227,23 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			    case 'X': case 'u': case 'c':
 			      {
 				if (elt->modifier == 'l')
-				  do_printf_conv (os, fmt, nsa, sa_1,
-						  sa_2, true,
-						  static_cast<long> (val));
+				  retval
+				    += do_printf_conv (os, fmt, nsa,
+						       sa_1, sa_2, true,
+						       static_cast<long> (val));
 				else
-				  do_printf_conv (os, fmt, nsa, sa_1,
-						  sa_2, true,
-						  static_cast<int> (val));
+				  retval
+				    += do_printf_conv (os, fmt, nsa,
+						       sa_1, sa_2, true,
+						       static_cast<int> (val));
 			      }
 			      break;
 
 			    case 'f': case 'e': case 'E':
 			    case 'g': case 'G':
-			      do_printf_conv (os, fmt, nsa, sa_1,
-					      sa_2, true, val);
+			      retval
+				+= do_printf_conv (os, fmt, nsa, sa_1,
+						   sa_2, true, val);
 			      break;
 
 			    default:
@@ -2249,15 +2257,10 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		    }
 
 		  if (val_cache.no_more_values ())
-		    {
-		      retval = 0;
-		      break;
-		    }
+		    break;
 		}
 
-	      if (os)
-		retval += nsa + (doing_percent ? 0 : 1);
-	      else
+	      if (! os)
 		{
 		  error ("fprintf: write error");
 		  retval = -1;

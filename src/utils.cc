@@ -674,6 +674,56 @@ get_dimensions (const octave_value& a, const octave_value& b,
     check_dimensions (nr, nc, warn_for); // May set error_state.
 }
 
+extern int
+octave_format (ostream& os, const char *fmt, ...)
+{
+  int retval = -1;
+
+  va_list args;
+  va_start (args, fmt);
+
+  retval = octave_vformat (os, fmt, args);
+
+  va_end (args);
+
+  return retval;
+}
+
+extern int
+octave_vformat (ostream& os, const char *fmt, va_list args)
+{
+  int retval = -1;
+
+#if defined (__GNUG__)
+
+  ostrstream buf;
+
+  buf.vform (fmt, args);
+
+  buf << ends;
+
+  char *s = buf.str ();
+
+  retval = strlen (s);
+
+  os << s;
+
+#else
+
+  char *s = octave_vsnprintf (fmt, args);
+
+  if (s)
+    {
+      os << s;
+
+      retval = strlen (s);
+    }
+
+#endif
+
+  return retval;
+}
+
 static int
 treat_neg_dim_as_zero (void)
 {

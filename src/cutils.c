@@ -39,6 +39,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/poll.h>
 #endif
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static void
@@ -90,6 +93,46 @@ int
 octave_strncasecmp (const char *s1, const char *s2, size_t n)
 {
   return strncasecmp (s1, s2, n);
+}
+
+char *
+octave_vsnprintf (size_t n, const char *fmt, va_list args)
+{
+#if defined (HAVE_VSNPRINTF)
+  size_t size = 100;
+
+  char *buf = malloc (size);
+
+  while (1)
+    {
+      int nchars = vsnprintf (buf, size, fmt, args);
+
+      if (nchars > -1)
+	return buf;
+      else
+	{
+	  size *= 2;
+	  buf = realloc (buf, size);
+	}
+    }
+#else
+  return 0;
+#endif
+}
+
+char *
+octave_snprintf (size_t n, const char *fmt, ...)
+{
+  char *retval = 0;
+
+  va_list args;
+  va_start (args, fmt);
+
+  retval = octave_vsnprintf (n, fmt, args);
+
+  va_end (args);
+
+  return retval;
 }
 
 /*

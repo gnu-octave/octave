@@ -72,8 +72,8 @@ vwarning (const char *name, const char *fmt, va_list args)
       std::cerr << name << ": ";
     }
 
-  octave_diary.vform (fmt, args);
-  std::cerr.vform (fmt, args);
+  octave_vformat (octave_diary, fmt, args);
+  octave_vformat (std::cerr, fmt, args);
 
   octave_diary << std::endl;
   std::cerr << std::endl;
@@ -91,9 +91,12 @@ verror (const char *name, const char *fmt, va_list args)
 
   if (to_beep_or_not_to_beep_p)
     output_buf << "\a";
+
   if (name)
     output_buf << name << ": ";
-  output_buf.vform (fmt, args);
+
+  octave_vformat (output_buf, fmt, args);
+
   output_buf << std::endl << std::ends;
 
   char *msg = output_buf.str ();

@@ -1,5 +1,15 @@
 2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (do_printf_conv): Use octave_format instead of
+	ostream::form.  Return number of characters written.
+	(octave_base_stream::do_printf): Return number of characters written.
+
+	* error.cc (verror, vwarning): Use octave_format instead of
+	ostream::vform.
+
+	* utils.cc (octave_format, octave_vformat): New functions.
+	* cutils.c (octave_snprintf, octave_vsnprintf): New functions.
+
 	* oct-lvalue.h (dummy_val): New static variable.
 	(octave_lvalue::octave_lvalue): Use it to initialize val.
 

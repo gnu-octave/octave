@@ -23,6 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_utils_h)
 #define octave_utils_h 1
 
+#include <cstdarg>
+
 #include <iostream>
 #include <string>
 
@@ -65,11 +67,21 @@ extern void
 get_dimensions (const octave_value& a,
 		const char *warn_for, int& nr, int& nc);
 
+extern int
+octave_format (ostream& os, const char *fmt, ...);
+
+extern int
+octave_vformat (ostream& os, const char *fmt, va_list args);
+
 extern "C" void octave_usleep (unsigned int useconds);
 
 extern "C" int octave_strcasecmp (const char *s1, const char *s2);
 
 extern "C" int octave_strncasecmp (const char *s1, const char *s2, size_t n);
+
+extern "C" char *octave_snprintf (size_t n, const char *fmt, ...);
+
+extern "C" char *octave_vsnprintf (size_t n, const char *fmt, va_list args);
 
 #endif
 

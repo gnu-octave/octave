@@ -171,10 +171,23 @@ linear_constraints_ok (const ColumnVector& x, const ColumnVector& llb,
   int lub_len = lub.capacity ();
   int c_rows = c.rows ();
   int c_cols = c.columns ();
-  int ok = x_len == c_cols && llb_len == lub_len && llb_len == c_rows;
 
-  if (! ok && warn)
-    message (warn_for, "linear constraints have inconsistent dimensions");
+  int ok = 1;
+  if (warn)
+    {
+      if (c_rows == 0 || c_cols == 0 || llb_len == 0 || lub_len == 0)
+	{
+	  ok = 0;
+	  message (warn_for,
+		   "linear constraints must have nonzero dimensions");
+	}
+      else if (x_len != c_cols || llb_len != lub_len || llb_len != c_rows)
+	{
+	  ok = 0;
+	  message (warn_for,
+		   "linear constraints have inconsistent dimensions");
+	}
+    }
 
   return ok;
 }
@@ -188,10 +201,23 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
   int nlub_len = nlub.capacity ();
   ColumnVector c = (*g) (x);
   int c_len = c.capacity ();
-  int ok = nllb_len == nlub_len && nllb_len == c_len;
+  int ok = 
 
-  if (! ok && warn)
-    message (warn_for, "nonlinear constraints have inconsistent dimensions");
+  int ok = 1;
+  if (warn)
+    {
+      if (nllb_len == 0 || nlub_len == 0 || c_len == 0)
+	{
+	  ok = 0;
+	  message (warn_for,
+		   "nonlinear constraints have nonzero dimensions");
+	}
+      else if (nllb_len != nlub_len || nllb_len != c_len)
+	{
+	  ok = 0;
+	  message (warn_for,
+		   "nonlinear constraints have inconsistent dimensions");
+	}
 
   return ok;
 }

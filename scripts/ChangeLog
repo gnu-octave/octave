@@ -7,6 +7,7 @@
 	* control/frdemo.m: Ditto.
 	* control/sysrepdemo.m: Ditto.
 	* control/moddemo.m: Ditto.
+	* control/zp2tf.m: Ditto.
 
 	* control/dezero.m: Use toascii to convert string to ASCII value
 	instead of multiplying it by 1.

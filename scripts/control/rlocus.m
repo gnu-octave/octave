@@ -51,7 +51,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     usage("rlocus(sys[,inc,mink,maxk])");
   endif
   
-  [num,den] = sys2tf(sys);		# extract numerator/denom polyomials
+  [num,den] = sys2tf(sys)		# extract numerator/denom polyomials
   lnum = length(num);      lden = length(den);
   if(lden < 2)
     error(sprintf("length of derivative=%d, doesn't make sense",lden));

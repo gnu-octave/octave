@@ -58,14 +58,14 @@ function [num, den] = zp2tf (zer, pol, k)
 
   while(!isempty(zer))
     if( max(abs(imag(zer))) )     [poly,zer] = zp2ssg2(zer);
-    else                          poly = [1 -zer(1)];  
+    else                          poly = [1, -zer(1)];  
                                   zer = zer(2:length(zer));      endif
     num = conv(num,poly);
   endwhile
 
   while(!isempty(pol))
     if( max(abs(imag(pol))) )     [poly,pol] = zp2ssg2(pol);
-    else                          poly = [1 -pol(1)];  
+    else                          poly = [1, -pol(1)];  
                                   pol = pol(2:length(pol));      endif
     den = conv(den,poly);
   endwhile

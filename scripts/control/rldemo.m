@@ -42,7 +42,7 @@ function rldemo ()
       clc
       disp("Display continuous system's open loop poles and zeros (pzmap)\n");
       disp("Example #1, Consider the following continuous transfer function:");
-      cmd = "sys1 = tf2sys([1.5 18.5 6],[1 4 155 302 5050]);";
+      cmd = "sys1 = tf2sys([1.5, 18.5, 6], [1, 4, 155, 302, 5050]);";
       disp(cmd);
       eval(cmd);
       cmd ="sysout(sys1);";
@@ -59,7 +59,7 @@ function rldemo ()
 
       clc
       disp("Example #2, Consider the following set of poles and zeros:");
-      cmd = "sys2 = zp2sys([-1 5 -23],[-1 -10 -7+5i -7-5i],5);";
+      cmd = "sys2 = zp2sys([-1, 5, -23],[-1, -10, -7+5i, -7-5i],5);";
       disp(cmd);
       eval(cmd);
       cmd = "sysout(sys2);";
@@ -74,7 +74,7 @@ function rldemo ()
 
       clc
       disp("Example #3, Consider the following state space system:\n");
-      cmd = "sys3=ss2sys([0 1; -10 -11], [0;1], [0 -2], 1);";
+      cmd = "sys3=ss2sys([0, 1; -10, -11], [0; 1], [0, -2], 1);";
       disp(cmd); 
       eval(cmd);
       cmd = "sysout(sys3);";
@@ -103,7 +103,7 @@ function rldemo ()
       cmd = "Tsam = 1;";
       run_cmd;
       disp("Example #1, Consider the following discrete transfer function:");
-      cmd = "sys1 = tf2sys([1.05 -0.09048],[1 -2 1],Tsam);";
+      cmd = "sys1 = tf2sys([1.05, -0.09048], [1, -2, 1],Tsam);";
       disp(cmd);
       eval(cmd);
       cmd ="sysout(sys1);";
@@ -120,7 +120,7 @@ function rldemo ()
 
       clc
       disp("Example #2, Consider the following set of discrete poles and zeros:");
-      cmd = "sys2 = zp2sys([-0.717],[1 -0.368],3.68,Tsam);";
+      cmd = "sys2 = zp2sys(-0.717, [1, -0.368], 3.68, Tsam);";
       disp(cmd);
       eval(cmd);
       cmd = "sysout(sys2);";
@@ -135,7 +135,7 @@ function rldemo ()
 
       clc
       disp("Example #3, Consider the following discrete state space system:\n");
-      cmd = "sys3=ss2sys([1 0.0952;0 0.905], [0.00484; 0.0952], [1 0], 0, Tsam);";
+      cmd = "sys3=ss2sys([1, 0.0952; 0, 0.905], [0.00484; 0.0952], [1, 0], 0, Tsam);";
       disp(cmd); 
       eval(cmd);
       cmd = "sysout(sys3);";
@@ -161,7 +161,7 @@ function rldemo ()
       clc
       disp("Display root locus of a continuous SISO system (rlocus)\n")
       disp("Example #1, Consider the following continuous transfer function:");
-      cmd = "sys1 = tf2sys([1.5 18.5 6],[1 4 155 302 5050]);";
+      cmd = "sys1 = tf2sys([1.5, 18.5, 6],[1, 4, 155, 302, 5050]);";
       disp(cmd);
       eval(cmd);
       cmd ="sysout(sys1);";
@@ -184,7 +184,7 @@ function rldemo ()
 
       clc
       disp("Example #2, Consider the following set of poles and zeros:");
-      cmd = "sys2 = zp2sys([],[0 -20 -2 -0.1],5);";
+      cmd = "sys2 = zp2sys([],[0, -20, -2, -0.1],5);";
       disp(cmd);
       eval(cmd);
       cmd = "sysout(sys2);";
@@ -199,7 +199,7 @@ function rldemo ()
 
       clc
       disp("Example #3, Consider the following state space system:\n");
-      cmd = "sys3=ss2sys([0 1; -10 -11], [0;1], [0 -2], 0);";
+      cmd = "sys3=ss2sys([0, 1; -10, -11], [0; 1], [0, -2], 0);";
       disp(cmd); 
       eval(cmd);
       cmd = "sysout(sys3);";
@@ -231,7 +231,7 @@ function rldemo ()
       cmd = "Tsam = 1;";
       run_cmd;
       disp("Example #1, Consider the following discrete transfer function:");
-      cmd = "sys1 = tf2sys([1.05 -0.09048],[1 -2 1],Tsam);";
+      cmd = "sys1 = tf2sys([1.05, -0.09048],[1, -2, 1],Tsam);";
       disp(cmd);
       eval(cmd);
       cmd ="sysout(sys1);";
@@ -254,7 +254,7 @@ function rldemo ()
 
       clc
       disp("Example #2, Consider the following set of discrete poles and zeros:");
-      cmd = "sys2 = zp2sys([-0.717],[1 -0.368],3.68,Tsam);";
+      cmd = "sys2 = zp2sys(-0.717, [1, -0.368], 3.68, Tsam);";
       disp(cmd);
       eval(cmd);
       cmd = "sysout(sys2);";
@@ -271,7 +271,7 @@ function rldemo ()
 
       clc
       disp("Example #3, Consider the following discrete state space system:\n");
-      cmd = "sys3=ss2sys([1 0.0952;0 0.905], [0.00484; 0.0952], [1 0], 0, Tsam);";
+      cmd = "sys3=ss2sys([1, 0.0952; 0, 0.905], [0.00484; 0.0952], [1, 0], 0, Tsam);";
       disp(cmd); 
       eval(cmd);
       cmd = "sysout(sys3);";

@@ -23,11 +23,12 @@ LIBOCTAVE_LFLAGS = -L../libcruft -L../readline -L../kpathsea \
 
 LIBOCTAVE_LIBS = -lcruft -lreadline -lkpathsea -lglob
 
-MATRIX_INC := Array.h Array-flags.h Array-idx.h MArray.h Matrix.h \
-	mx-base.h mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h \
-	CMatrix.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h CmplxDET.h \
-	CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h CmplxSCHUR.h \
-	CmplxSVD.h EIG.h chMatrix.h \
+MATRIX_INC := Array.h Array2.h Array3.h DiagArray2.h Array-flags.h \
+	Array-idx.h MArray-defs.h MArray.h MArray2.h MDiagArray2.h \
+	Matrix.h base-lu.h mx-base.h mx-defs.h mx-ext.h CColVector.h \
+	CDiagMatrix.h CMatrix.h CRowVector.h CmplxAEPBAL.h \
+	CmplxCHOL.h CmplxDET.h CmplxHESS.h CmplxLU.h CmplxQR.h \
+	CmplxQRP.h CmplxSCHUR.h CmplxSVD.h EIG.h chMatrix.h \
 	dColVector.h dDiagMatrix.h dMatrix.h dRowVector.h dbleAEPBAL.h \
 	dbleCHOL.h dbleDET.h dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h \
 	dbleQRP.h dbleSCHUR.h dbleSVD.h
@@ -42,7 +43,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \
 	$(MATRIX_INC)
 
-TEMPLATE_SRC := Array.cc MArray.cc
+TEMPLATE_SRC := Array.cc Array2.cc Array3.cc DiagArray2.cc \
+	MArray.cc MArray2.cc MDiagArray2.cc base-lu.cc
 
 TI_SRC := Array-C.cc Array-ch.cc Array-i.cc Array-d.cc Array-s.cc \
 	Array-str.cc \

@@ -20,11 +20,15 @@ function status = strcmp (s1, s2)
 
 # usage: strcmp (s1, s2)
 #
-# Compare two strings.
+# Compare two strings.  Trailing blanks are significant.
 #
 # WARNING:  Unlike the C function of the same name, this function
 # returns 1 for equal and zero for not equal.  Why?  To be compatible
 # with Matlab, of course. 
+#
+# Why doesn't this always return a scalar instead of vector with
+# elements corresponding to the rows of the string array?  To be
+# compatible with Matlab, of course. 
 
   if (nargin != 2)
     usage ("strcmp (s, t)");
@@ -32,13 +36,13 @@ function status = strcmp (s1, s2)
 
   status = 0;
   if (isstr (s1) && isstr(s2))
-    len_s1 = columns (s1);
-    len_s2 = columns (s2);
-    if (len_s1 == len_s2)
-      if (len_s1 == 0)
+    c1 = columns (s1);
+    c2 = columns (s2);
+    if (c1 == c2)
+      if (c1 == 0)
         status = 1;
       else
-        status = all (s1 == s2);
+        status = all (all (s1 == s2));
       endif
     endif
   endif

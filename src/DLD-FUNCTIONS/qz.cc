@@ -789,9 +789,10 @@ See also: balance, dare, eig, schur\n\
 
 	  ComplexColumnVector tmp(cnt);
 
+	  cnt = 0;
 	  for (int ii = 0; ii < nn; ii++)
 	    if (betar(ii) != 0)
-	      tmp(ii) = Complex(alphar(ii), alphai(ii))/betar(ii);
+	      tmp(cnt++) = Complex(alphar(ii), alphai(ii))/betar(ii);
 	  gev = tmp;
 	}
     }

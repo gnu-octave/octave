@@ -1,3 +1,8 @@
+2000-05-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/qz.cc (Fqz): When computing finite generalized
+	eigenvalues, don't write past the end of the array.
+
 2000-05-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-base-nd-array.h, ov-base-nd-array.cc, ov-re-nd-array.h,

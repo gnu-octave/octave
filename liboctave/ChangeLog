@@ -1,3 +1,8 @@
+2000-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strptime.c: Surround everything after including config.h in
+	#ifndef HAVE_STRPTIME ... #endif.
+
 2000-11-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array-idx.h (assign): When resizing, cast fill value to LT.

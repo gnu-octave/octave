@@ -1,3 +1,8 @@
+2000-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4: Give gperf a keyword, to avoid complaints from newer
+	versions.
+
 2000-11-27  Marcus.Brinkmann  <Marcus.Brinkmann@ruhr-uni-bochum.de>
 
 	* configure.in: Handle *-*-gnu* the same as *-*-linux* for shared

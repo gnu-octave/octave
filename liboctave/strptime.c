@@ -27,6 +27,8 @@
 # include <config.h>
 #endif
 
+#ifndef HAVE_STRPTIME
+
 #include <ctype.h>
 #ifdef _LIBC
 #  include <langinfo.h>
@@ -869,3 +871,5 @@ strptime (buf, format, tm)
 #endif
   return strptime_internal (buf, format, tm, &decided);
 }
+
+#endif

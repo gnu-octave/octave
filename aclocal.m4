@@ -875,7 +875,7 @@ AC_DEFUN(OCTAVE_PROG_GPERF, [
     if echo "%{
 %}
 %%
-" | $GPERF -t -C -D -E -G -L ANSI-C -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
+foo" | $GPERF -t -C -D -E -G -L ANSI-C -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
       true
     else
       GPERF=""

@@ -1,3 +1,9 @@
+Thu Jul 25 01:42:38 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat_binary_data): Expect to read terminating
+	NUL character in the variable name.
+	(save_mat_binary_data): Likewise, save it here.
+
 Wed Jul 24 05:08:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lsode.cc (Flsode): Don't set the return value if an error

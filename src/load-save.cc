@@ -1147,8 +1147,10 @@ read_mat_binary_data (istream& is, const string& filename,
       return 0;
     }
 
-  name = new char [len+1];
-  name[len] = '\0';
+  // LEN includes the terminating character, and the file is also
+  // supposed to include it.
+
+  name = new char [len];
   if (! is.read (name, len))
     goto data_read_error;
 
@@ -1784,10 +1786,13 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
   FOUR_BYTE_INT imag = tc.is_complex_type () ? 1 : 0;
   os.write (&imag, 4);
 
-  FOUR_BYTE_INT name_len = name.length ();
+  // LEN includes the terminating character, and the file is also
+  // supposed to include it.
+
+  FOUR_BYTE_INT name_len = name.length () + 1;
 
   os.write (&name_len, 4);
-  os << name;
+  os << name << '\0';
 
   if (tc.is_real_scalar ())
     {

@@ -58,7 +58,7 @@ public:
     { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   OCTAVE_INT_NDARRAY_T
-  OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (bool = false) const
+  OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
     { return matrix; }
 
 private:
@@ -91,12 +91,12 @@ public:
     { return new OCTAVE_VALUE_INT_SCALAR_T (); }
 
   OCTAVE_INT_T
-  OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION (bool = false) const
+  OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION (void) const
     { return scalar; }
 
   OCTAVE_INT_NDARRAY_T
-  OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (bool = false) const
-    { return scalar; }
+  OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
+    { return OCTAVE_INT_NDARRAY_T (dim_vector (1, 1), scalar); }
 
 private:
 

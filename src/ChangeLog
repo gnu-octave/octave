@@ -1,3 +1,27 @@
+2004-07-12  John W. Eaton  <jwe@octave.org>
+
+	* ov-intx.h: N-d array and scalar extractor functions take no args.
+
+	* ov.h (octave_value::int8_scalar_value,
+	octave_value::int16_scalar_value, octave_value::int32_scalar_value,
+	octave_value::int64_scalar_value, octave_value::uint8_scalar_value,
+	octave_value::uint16_scalar_value, octave_value::uint32_scalar_value,
+	octave_value::uint64_scalar_value): New functions.
+	* ov-base.cc (octave_base_value::int8_scalar_value,
+	octave_base_value::int16_scalar_value,
+	octave_base_value::int32_scalar_value,
+	octave_base_value::int64_scalar_value,
+	octave_base_value::uint8_scalar_value,
+	octave_base_value::uint16_scalar_value,
+	octave_base_value::uint32_scalar_value,
+	octave_base_value::uint64_scalar_value): New functions.
+	* ov-base.h: Provide decls.
+
+	* lex.l: (Vtoken_count): New static variable.
+	(COUNT_TOK_AND_RETURN): New macro.  Use it everywhere a token is
+	returned to the parser.
+	(F__token_count__): New function.
+
 2004-06-25  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-int-conv.cc: Add conversions for range type.

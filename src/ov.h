@@ -213,20 +213,20 @@ public:
   octave_value (const charMatrix& chm, bool is_string = false);
   octave_value (const charNDArray& chnda, bool is_string = false);
   octave_value (const octave_int8& i);
-  octave_value (const octave_uint8& i);
   octave_value (const octave_int16& i);
-  octave_value (const octave_uint16& i);
   octave_value (const octave_int32& i);
-  octave_value (const octave_uint32& i);
   octave_value (const octave_int64& i);
+  octave_value (const octave_uint8& i);
+  octave_value (const octave_uint16& i);
+  octave_value (const octave_uint32& i);
   octave_value (const octave_uint64& i);
   octave_value (const int8NDArray& inda);
-  octave_value (const uint8NDArray& inda);
   octave_value (const int16NDArray& inda);
-  octave_value (const uint16NDArray& inda);
   octave_value (const int32NDArray& inda);
-  octave_value (const uint32NDArray& inda);
   octave_value (const int64NDArray& inda);
+  octave_value (const uint8NDArray& inda);
+  octave_value (const uint16NDArray& inda);
+  octave_value (const uint32NDArray& inda);
   octave_value (const uint64NDArray& inda);
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
@@ -556,6 +556,30 @@ public:
 
   virtual charNDArray char_array_value (bool frc_str_conv = false) const
     { return rep->char_array_value (frc_str_conv); }
+
+  virtual octave_int8 int8_scalar_value (void) const
+    { return rep->int8_scalar_value (); }
+
+  virtual octave_int16 int16_scalar_value (void) const
+    { return rep->int16_scalar_value (); }
+
+  virtual octave_int32 int32_scalar_value (void) const
+    { return rep->int32_scalar_value (); }
+
+  virtual octave_int64 int64_scalar_value (void) const
+    { return rep->int64_scalar_value (); }
+
+  virtual octave_uint8 uint8_scalar_value (void) const
+    { return rep->uint8_scalar_value (); }
+
+  virtual octave_uint16 uint16_scalar_value (void) const
+    { return rep->uint16_scalar_value (); }
+
+  virtual octave_uint32 uint32_scalar_value (void) const
+    { return rep->uint32_scalar_value (); }
+
+  virtual octave_uint64 uint64_scalar_value (void) const
+    { return rep->uint64_scalar_value (); }
 
   virtual int8NDArray int8_array_value (void) const
     { return rep->int8_array_value (); }

@@ -48,6 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "cmd-edit.h"
 #include "quit.h"
+#include "lo-mappers.h"
 #include "lo-sstream.h"
 
 // These would be alphabetical, but y.tab.h must be included before
@@ -60,6 +61,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "comment-list.h"
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "input.h"
 #include "lex.h"
 #include "ov.h"
@@ -106,6 +108,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   while (0)
 
+#define COUNT_TOK_AND_RETURN(tok) \
+  do \
+    { \
+      Vtoken_count++; \
+      return tok; \
+    } \
+  while (0)
+
 #define TOK_RETURN(tok) \
   do \
     { \
@@ -113,7 +123,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       lexer_flags.quote_is_transpose = false; \
       lexer_flags.cant_be_identifier = false; \
       lexer_flags.convert_spaces_to_comma = true; \
-      return (tok); \
+      COUNT_TOK_AND_RETURN (tok); \
     } \
   while (0)
 
@@ -136,7 +146,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       lexer_flags.quote_is_transpose = false; \
       lexer_flags.cant_be_identifier = true; \
       lexer_flags.convert_spaces_to_comma = convert; \
-      return (tok); \
+      COUNT_TOK_AND_RETURN (tok); \
     } \
   while (0)
 
@@ -223,6 +233,8 @@ static bool Vwarn_separator_insert = false;
 
 static bool Vwarn_single_quote_string = false;
 
+static unsigned int Vtoken_count = 0;
+
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -280,14 +292,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <NESTED_FUNCTION_END>. {
     BEGIN (NESTED_FUNCTION_BEGIN);
     yyunput (yytext[0], yytext);
-    return ';';
+    COUNT_TOK_AND_RETURN (';');
   }
 
 <NESTED_FUNCTION_BEGIN>. {
     BEGIN (INITIAL);
     yyunput (yytext[0], yytext);
     prep_for_nested_function ();
-    return FCN;
+    COUNT_TOK_AND_RETURN (FCN);
   }
 
 %{
@@ -302,7 +314,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
-    return '\n';
+    COUNT_TOK_AND_RETURN ('\n');
   }
 
 <COMMAND_START>[\;\,] {
@@ -322,7 +334,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <COMMAND_START>[\"\'] {
     current_input_column++;
-    return handle_string (yytext[0], true);
+    COUNT_TOK_AND_RETURN (handle_string (yytext[0], true));
   }
 
 <COMMAND_START>[^#% \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
@@ -348,7 +360,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    return handle_close_bracket (spc_gobbled, ']');
+    COUNT_TOK_AND_RETURN (handle_close_bracket (spc_gobbled, ']'));
   }
 
 <MATRIX_START>{SNLCMT}*\}{S}* {
@@ -357,7 +369,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     bool spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    return handle_close_bracket (spc_gobbled, '}');
+    COUNT_TOK_AND_RETURN (handle_close_bracket (spc_gobbled, '}'));
   }
 
 %{
@@ -382,7 +394,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	yyunput (';', yytext);
       }
 
-    return (',');
+    COUNT_TOK_AND_RETURN (',');
   }
 
 %{
@@ -416,7 +428,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 	maybe_warn_separator_insert (',');
 
-	return (',');
+	COUNT_TOK_AND_RETURN (',');
       }
   }
 
@@ -433,7 +445,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = false;
     lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
-    return ';';
+    COUNT_TOK_AND_RETURN (';');
   }
 
 %{
@@ -459,7 +471,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
 	maybe_warn_separator_insert (';');
 
-	return ';';
+	COUNT_TOK_AND_RETURN (';');
       }
   }
 
@@ -483,13 +495,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
       {
 	lexer_flags.in_plot_range = true;
-	return OPEN_BRACE;
+	COUNT_TOK_AND_RETURN (OPEN_BRACE);
       }
     else
       {
 	lexer_flags.bracketflag++;
 	BEGIN (MATRIX_START);
-	return '[';
+	COUNT_TOK_AND_RETURN ('[');
       }
   }
 
@@ -511,7 +523,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {NUMBER}{Im} {
     handle_number ();
-    return IMAG_NUM;
+    COUNT_TOK_AND_RETURN (IMAG_NUM);
   }
 
 %{
@@ -522,7 +534,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {D}+/\.[\*/\\^'] |
 {NUMBER} {
     handle_number ();
-    return NUM;
+    COUNT_TOK_AND_RETURN (NUM);
   }
 
 %{
@@ -556,12 +568,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (lexer_flags.looking_at_parameter_list)
       {
 	warning ("`...' is deprecated; use varargin instead");
-	return VARARGIN;
+	COUNT_TOK_AND_RETURN (VARARGIN);
       }
     else if (lexer_flags.looking_at_return_list)
       {
 	warning ("`...' is deprecated; use varargout instead");
-	return VARARGOUT;
+	COUNT_TOK_AND_RETURN (VARARGOUT);
       }
     else
       return LEXICAL_ERROR;
@@ -584,7 +596,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int id_tok = handle_identifier ();
 
     if (id_tok >= 0)
-      return id_tok;
+      COUNT_TOK_AND_RETURN (id_tok);
   }
 
 %{
@@ -608,7 +620,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.convert_spaces_to_comma = true;
 
     if (nesting_level.none ())
-      return '\n';
+      COUNT_TOK_AND_RETURN ('\n');
     else if (nesting_level.is_paren ())
       gripe_matlab_incompatible ("bare newline inside parentheses");
     else if (nesting_level.is_bracket_or_brace ())
@@ -627,10 +639,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (lexer_flags.quote_is_transpose)
       {
 	do_comma_insert_check ();
-	return QUOTE;
+	COUNT_TOK_AND_RETURN (QUOTE);
       }
     else
-      return handle_string ('\'');
+      COUNT_TOK_AND_RETURN (handle_string ('\''));
   }
 
 %{
@@ -639,7 +651,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 \" {
     current_input_column++;
-    return handle_string ('"');
+    COUNT_TOK_AND_RETURN (handle_string ('"'));
 }
 
 %{
@@ -710,9 +722,9 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       BEGIN (INITIAL);
 
     if (nesting_level.none ())
-      return '\n';
+      COUNT_TOK_AND_RETURN ('\n');
     else if (nesting_level.is_bracket_or_brace ())
-      return ';';
+      COUNT_TOK_AND_RETURN (';');
   }
 
 %{
@@ -790,7 +802,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.quote_is_transpose = true;
     lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket_or_brace ();
     do_comma_insert_check ();
-    return ')';
+    COUNT_TOK_AND_RETURN (')');
   }
 
 "." {
@@ -827,7 +839,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     lexer_flags.braceflag++;
     BEGIN (MATRIX_START);
-    return '{';
+    COUNT_TOK_AND_RETURN ('{');
   }
 
 "}" {
@@ -2755,6 +2767,16 @@ gripe_matlab_incompatible_operator (const std::string& op)
   if (t[n-1] == '\n')
     t.resize (n-1);
   gripe_matlab_incompatible (t + " used as operator");
+}
+
+DEFUN (__token_count__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} disp (@var{x})\n\
+@deftypefn {Built-in Function} {} __token_count__\n\
+Number of language tokens processed since Octave startup.\n\
+@end deftypefn")
+{
+  return octave_value (Vtoken_count);
 }
 
 static int

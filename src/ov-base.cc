@@ -409,12 +409,85 @@ octave_base_value::char_array_value (bool) const
   return retval;
 }
 
+octave_int8
+octave_base_value::int8_scalar_value (void) const
+{
+  octave_int8 retval;
+  gripe_wrong_type_arg ("octave_base_value::int8_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_int16
+octave_base_value::int16_scalar_value (void) const
+{
+  octave_int16 retval;
+  gripe_wrong_type_arg ("octave_base_value::int16_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_int32
+octave_base_value::int32_scalar_value (void) const
+{
+  octave_int32 retval;
+  gripe_wrong_type_arg ("octave_base_value::int32_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_int64
+octave_base_value::int64_scalar_value (void) const
+{
+  octave_int64 retval;
+  gripe_wrong_type_arg ("octave_base_value::int64_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_uint8
+octave_base_value::uint8_scalar_value (void) const
+{
+  octave_uint8 retval;
+  gripe_wrong_type_arg ("octave_base_value::uint8_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_uint16
+octave_base_value::uint16_scalar_value (void) const
+{
+  octave_uint16 retval;
+  gripe_wrong_type_arg ("octave_base_value::uint16_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_uint32
+octave_base_value::uint32_scalar_value (void) const
+{
+  octave_uint32 retval;
+  gripe_wrong_type_arg ("octave_base_value::uint32_scalar_value()",
+			type_name ());
+  return retval;
+}
+
+octave_uint64
+octave_base_value::uint64_scalar_value (void) const
+{
+  octave_uint64 retval;
+  gripe_wrong_type_arg ("octave_base_value::uint64_scalar_value()",
+			type_name ());
+  return retval;
+}
+
 int8NDArray
 octave_base_value::int8_array_value (void) const
 {
   int8NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::int8_array_value()",
 			type_name ());
+  return retval;
 }
 
 int16NDArray
@@ -423,6 +496,7 @@ octave_base_value::int16_array_value (void) const
   int16NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::int16_array_value()",
 			type_name ());
+  return retval;
 }
 
 int32NDArray
@@ -431,6 +505,7 @@ octave_base_value::int32_array_value (void) const
   int32NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::int32_array_value()",
 			type_name ());
+  return retval;
 }
 
 int64NDArray
@@ -439,6 +514,7 @@ octave_base_value::int64_array_value (void) const
   int64NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::int64_array_value()",
 			type_name ());
+  return retval;
 }
 
 uint8NDArray
@@ -447,6 +523,7 @@ octave_base_value::uint8_array_value (void) const
   uint8NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::uint8_array_value()",
 			type_name ());
+  return retval;
 }
 
 uint16NDArray
@@ -455,6 +532,7 @@ octave_base_value::uint16_array_value (void) const
   uint16NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::uint16_array_value()",
 			type_name ());
+  return retval;
 }
 
 uint32NDArray
@@ -463,6 +541,7 @@ octave_base_value::uint32_array_value (void) const
   uint32NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::uint32_array_value()",
 			type_name ());
+  return retval;
 }
 
 uint64NDArray
@@ -471,6 +550,7 @@ octave_base_value::uint64_array_value (void) const
   uint64NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::uint64_array_value()",
 			type_name ());
+  return retval;
 }
 
 string_vector

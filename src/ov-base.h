@@ -216,6 +216,22 @@ public:
 
   charNDArray char_array_value (bool = false) const;
 
+  octave_int8 int8_scalar_value (void) const;
+
+  octave_int16 int16_scalar_value (void) const;
+
+  octave_int32 int32_scalar_value (void) const;
+
+  octave_int64 int64_scalar_value (void) const;
+
+  octave_uint8 uint8_scalar_value (void) const;
+
+  octave_uint16 uint16_scalar_value (void) const;
+
+  octave_uint32 uint32_scalar_value (void) const;
+
+  octave_uint64 uint64_scalar_value (void) const;
+
   int8NDArray int8_array_value (void) const;
 
   int16NDArray int16_array_value (void) const;

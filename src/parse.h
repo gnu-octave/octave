@@ -51,6 +51,8 @@ extern int current_input_column;
 // Buffer for help text snagged from function files.
 extern string help_buf;
 
+extern void symbols_of_parse (void);
+
 #endif
 
 /*

@@ -61,6 +61,8 @@ extern int any_element_is_inf_or_nan (const Matrix& a);
 
 extern int any_element_is_inf_or_nan (const ComplexMatrix& a);
 
+extern void symbols_of_pr_output (void);
+
 #endif
 
 /*

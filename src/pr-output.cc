@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "mappers.h"
 #include "oct-obj.h"
@@ -53,6 +54,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
+
+// The maximum field width for a number printed by the default output
+// routines.
+static int Voutput_max_field_width;
+
+// The precision of the numbers printed by the default output
+// routines.
+static int Voutput_precision;
+
+// TRUE means that the dimensions of empty matrices should be printed
+// like this: x = [](2x0).
+static bool Vprint_empty_dimensions;
+
+// TRUE means that the rows of big matrices should be split into
+// smaller slices that fit on the screen.
+static bool Vsplit_long_rows;
 
 // Current format string for real numbers and the real part of complex
 // numbers.
@@ -209,7 +226,7 @@ set_real_format (int sign, int digits, int inf_or_nan, int nan_or_int,
 {
   static char fmt_buf[128];
 
-  int prec = user_pref.output_precision;
+  int prec = Voutput_precision;
 
   int ld, rd;
 
@@ -261,7 +278,7 @@ set_real_format (int sign, int digits, int inf_or_nan, int nan_or_int,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (fw > user_pref.output_max_field_width || print_e))
+      && (fw > Voutput_max_field_width || print_e))
     {
       int exp_field = 4;
       if (digits > 100)
@@ -321,7 +338,7 @@ set_real_matrix_format (int sign, int x_max, int x_min,
 {
   static char fmt_buf[128];
 
-  int prec = user_pref.output_precision;
+  int prec = Voutput_precision;
 
   int ld, rd;
 
@@ -393,7 +410,7 @@ set_real_matrix_format (int sign, int x_max, int x_min,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (fw > user_pref.output_max_field_width || print_e))
+      && (fw > Voutput_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -457,7 +474,7 @@ set_complex_format (int sign, int x_max, int x_min, int r_x,
   static char r_fmt_buf[128];
   static char i_fmt_buf[128];
 
-  int prec = user_pref.output_precision;
+  int prec = Voutput_precision;
 
   int ld, rd;
 
@@ -532,7 +549,7 @@ set_complex_format (int sign, int x_max, int x_min, int r_x,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (r_fw > user_pref.output_max_field_width || print_e))
+      && (r_fw > Voutput_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -620,7 +637,7 @@ set_complex_matrix_format (int sign, int x_max, int x_min,
   static char r_fmt_buf[128];
   static char i_fmt_buf[128];
 
-  int prec = user_pref.output_precision;
+  int prec = Voutput_precision;
 
   int ld, rd;
 
@@ -695,7 +712,7 @@ set_complex_matrix_format (int sign, int x_max, int x_min,
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (r_fw > user_pref.output_max_field_width || print_e))
+      && (r_fw > Voutput_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -792,7 +809,7 @@ set_range_format (int sign, int x_max, int x_min, int all_ints, int& fw)
 {
   static char fmt_buf[128];
 
-  int prec = user_pref.output_precision;
+  int prec = Voutput_precision;
 
   int ld, rd;
 
@@ -855,7 +872,7 @@ set_range_format (int sign, int x_max, int x_min, int all_ints, int& fw)
     }
 
   if (! (bank_format || hex_format || bit_format)
-      && (fw > user_pref.output_max_field_width || print_e))
+      && (fw > Voutput_max_field_width || print_e))
     {
       int exp_field = 4;
       if (x_max > 100 || x_min > 100)
@@ -1103,7 +1120,7 @@ print_empty_matrix (ostream& os, int nr, int nc, bool pr_as_read_syntax)
   else
     {
       os << "[]";
-      if (user_pref.print_empty_dimensions)
+      if (Vprint_empty_dimensions)
 	os << "(" << nr << "x" << nc << ")";
       os << "\n";
     }
@@ -1113,7 +1130,7 @@ static void
 pr_col_num_header (ostream& os, int total_width, int max_width,
 		   int lim, int col, int extra_indent)
 {
-  if (total_width > max_width && user_pref.split_long_rows)
+  if (total_width > max_width && Vsplit_long_rows)
     {
       if (col != 0 && ! compact_format)
 	os << "\n";
@@ -1213,7 +1230,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 	}
 
       int inc = nc;
-      if (total_width > max_width && user_pref.split_long_rows)
+      if (total_width > max_width && Vsplit_long_rows)
 	{
 	  inc = max_width / column_width;
 	  if (inc == 0)
@@ -1366,7 +1383,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	}
 
       int inc = nc;
-      if (total_width > max_width && user_pref.split_long_rows)
+      if (total_width > max_width && Vsplit_long_rows)
 	{
 	  inc = max_width / column_width;
 	  if (inc == 0)
@@ -1497,7 +1514,7 @@ octave_print_internal (ostream& os, const Range& r,
 	    }
 
 	  int inc = num_elem;
-	  if (total_width > max_width && user_pref.split_long_rows)
+	  if (total_width > max_width && Vsplit_long_rows)
 	    {
 	      inc = max_width / column_width;
 	      if (inc == 0)
@@ -1750,6 +1767,74 @@ set output formatting style")
   set_format_style (argc, argv);
 
   return retval;
+}
+
+static int
+output_max_field_width (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("output_max_field_width", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival > 0 && (double) ival == val)
+	{
+	  Voutput_max_field_width = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("output_max_field_width");
+  return -1;
+}
+
+static int
+output_precision (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("output_precision", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  Voutput_precision = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("output_precision");
+  return -1;
+}
+
+static int
+print_empty_dimensions (void)
+{
+  Vprint_empty_dimensions = check_preference ("print_empty_dimensions");
+
+  return 0;
+}
+
+static int
+split_long_rows (void)
+{
+  Vsplit_long_rows = check_preference ("split_long_rows");
+
+  return 0;
+}
+
+void
+symbols_of_pr_output (void)
+{
+  DEFVAR (output_max_field_width, 10.0, 0, output_max_field_width,
+    "maximum width of an output field for numeric output");
+
+  DEFVAR (output_precision, 5.0, 0, output_precision,
+    "number of significant figures to display for numeric output");
+
+  DEFVAR (print_empty_dimensions, 1.0, 0, print_empty_dimensions,
+    "also print dimensions of empty matrices");
+
+  DEFVAR (split_long_rows, 1.0, 0, split_long_rows,
+    "split long matrix rows instead of wrapping");
 }
 
 /*

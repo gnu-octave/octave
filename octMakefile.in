@@ -205,6 +205,8 @@ bin-dist-tar: links-for-bin-dist
 	strip src/octave
 	echo octave-$(version) > .fname
 	ln src/octave `cat .fname`/octave
+	strip scripts/image/octtopnm
+	ln scripts/image/octtopnm `cat .fname`/octtopnm
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
 .PHONY: bin-dist-tar

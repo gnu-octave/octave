@@ -155,6 +155,10 @@ else
   chmod 755 $bindir/octave.bin
 fi
 
+echo "installing octtopnm as $archlibdir/octtopnm"
+cp octtopnm $archlibdir/octtopnm
+chmod 755 $archlibdir/octtopnm
+
 echo "installing octave-bug as $bindir/octave-bug"
 cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug

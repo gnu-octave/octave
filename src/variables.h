@@ -159,8 +159,6 @@ bind_builtin_variable (const string&, const octave_value&,
 		       sv_Function f = (sv_Function) 0,
 		       const string& help = string ());
 
-extern void install_builtin_variables (void);
-
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;
 

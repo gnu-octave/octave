@@ -182,8 +182,6 @@ private:
   void bind_nargin_and_nargout (int nargin, int nargout);
 };
 
-extern void symbols_of_oct_usr_fcn (void);
-
 #endif
 
 /*

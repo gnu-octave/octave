@@ -74,8 +74,6 @@ char *gnu_readline (const char *s, bool force_readline = false);
 
 extern string Vps4;
 
-extern void symbols_of_input (void);
-
 #endif
 
 /*

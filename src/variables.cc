@@ -1692,31 +1692,6 @@ directory specification");
     "save command history");
 }
 
-void
-install_builtin_variables (void)
-{
-  symbols_of_data ();
-  symbols_of_defaults ();
-  symbols_of_dirfns ();
-  symbols_of_error ();
-  symbols_of_file_io ();
-  symbols_of_help ();
-  symbols_of_input ();
-  symbols_of_lex ();
-  symbols_of_load_save ();
-  symbols_of_oct_usr_fcn ();
-  symbols_of_pager ();
-  symbols_of_parse ();
-  symbols_of_pr_output ();
-  symbols_of_pt_mat ();
-  symbols_of_pt_misc ();
-  symbols_of_pt_plot ();
-  symbols_of_syscalls ();
-  symbols_of_toplev ();
-  symbols_of_value ();
-  symbols_of_variables ();
-}
-
 // Deleting names from the symbol tables.
 
 DEFUN_TEXT (clear, args, ,

@@ -47,8 +47,6 @@ extern int buffer_error_messages;
 // The message buffer
 extern ostrstream *error_message_buffer;
 
-extern void symbols_of_error (void);
-
 #endif
 
 /*

@@ -315,8 +315,6 @@ extern void close_plot_stream (void);
 
 extern void do_external_plotter_cd (const string& newdir);
 
-extern void symbols_of_pt_plot (void);
-
 #endif
 
 /*

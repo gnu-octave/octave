@@ -39,12 +39,14 @@ ifeq ($(OCTAVE_LITE), true)
   endif
 endif
 
-DLD_SRC := balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
-	   expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
-	   fsqp.cc getgrent.cc getpwent.cc getrusage.cc givens.cc \
-	   hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc lsode.cc \
-	   lu.cc minmax.cc npsol.cc pinv.cc qpsol.cc qr.cc quad.cc \
-	   qzval.cc rand.cc schur.cc sort.cc svd.cc syl.cc time.cc 
+DLD_SRC := 
+
+#balance.cc chol.cc colloc.cc dassl.cc det.cc eig.cc \
+#	   expm.cc fft.cc fft2.cc filter.cc find.cc fsolve.cc \
+#	   fsqp.cc getgrent.cc getpwent.cc getrusage.cc givens.cc \
+#	   hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc lsode.cc \
+#	   lu.cc minmax.cc npsol.cc pinv.cc qpsol.cc qr.cc quad.cc \
+#	   qzval.cc rand.cc schur.cc sort.cc svd.cc syl.cc time.cc 
 
 DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
 
@@ -62,7 +64,7 @@ else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif
 
-INCLUDES := builtins.h data.h defun.h defun-dld.h \
+INCLUDES := builtins.h defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-io.h \
 	fn-cache.h gripes.h help.h input.h lex.h load-save.h \
 	mappers.h oct.h oct-fstrm.h oct-hist.h oct-iostrm.h \
@@ -72,17 +74,18 @@ INCLUDES := builtins.h data.h defun.h defun-dld.h \
 	pt-const.h pt-exp-base.h pt-exp.h pt-id.h pt-indir.h \
 	pt-mat.h pt-misc.h pt-mvr-base.h pt-mvr.h \
 	pt-plot.h pt-pr-code.h pt-walk.h sighandlers.h symtab.h \
-	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
+	sysdep.h systime.h syswait.h token.h toplev.h \
 	unwind-prot.h utils.h variables.h version.h xdiv.h xpow.h \
 	BaseSLList.h Map.h SLList.h SLStack.h Stack.h ov-re-mat.h \
 	ov-cx-mat.h ov-ch-mat.h ov-list.h ov-struct.h ov-scalar.h \
 	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
-	ov-str-mat.h ov-bool-mat.h ov-bool.h ov.h ov-typeinfo.h ops.h \
-	op-b-b.h op-bm-bm.h op-cm-cm.h op-cm-cs.h op-cm-m.h op-cm-s.h \
-	op-cs-cm.h op-cs-cs.h op-cs-m.h op-cs-s.h op-m-cm.h op-m-cs.h \
-	op-m-m.h op-m-s.h op-s-cm.h op-s-cs.h op-s-m.h op-s-s.h \
-	op-str-str.h oct-sym.h oct-fcn.h oct-builtin.h oct-mapper.h \
-	oct-usr-fcn.h
+	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
+	ov-typeinfo.h ops.h op-b-b.h op-bm-bm.h op-cm-cm.h \
+	op-cm-cs.h op-cm-m.h op-cm-s.h op-cs-cm.h op-cs-cs.h \
+	op-cs-m.h op-cs-s.h op-m-cm.h op-m-cs.h op-m-m.h \
+	op-m-s.h op-s-cm.h op-s-cs.h op-s-m.h op-s-s.h \
+	op-str-str.h oct-sym.h oct-fcn.h oct-builtin.h \
+	oct-mapper.h oct-usr-fcn.h
 
 TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
@@ -113,12 +116,13 @@ SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	utils.cc variables.cc xdiv.cc xpow.cc ov-base.cc ov-ch-mat.cc \
 	ov-list.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc ov-scalar.cc \
 	ov-complex.cc ov-str-mat.cc ov-struct.cc ov-va-args.cc \
-	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov.cc ov-typeinfo.cc \
-	ops.cc op-b-b.cc op-bm-bm.cc op-cm-cm.cc op-cm-cs.cc \
-	op-cm-m.cc op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
-	op-cs-s.cc op-m-cm.cc op-m-cs.cc op-m-m.cc op-m-s.cc \
-	op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc op-str-str.cc \
-	oct-fcn.cc oct-builtin.cc oct-mapper.cc oct-usr-fcn.cc
+	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc \
+	ov-typeinfo.cc ops.cc op-b-b.cc op-bm-bm.cc op-cm-cm.cc \
+	op-cm-cs.cc op-cm-m.cc op-cm-s.cc op-cs-cm.cc op-cs-cs.cc \
+	op-cs-m.cc op-cs-s.cc op-m-cm.cc op-m-cs.cc op-m-m.cc \
+	op-m-s.cc op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc \
+	op-str-str.cc oct-fcn.cc oct-builtin.cc oct-mapper.cc \
+	oct-usr-fcn.cc
 
 OBJECTS_4 := $(SOURCES)
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
@@ -136,18 +140,25 @@ endif
 
 # Ugh.
 
-DEP_SOURCES_3 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc octave.cc
-DEP_SOURCES_2 := $(patsubst %.l, %.cc, $(DEP_SOURCES_3))
-DEP_SOURCES_1 := $(patsubst %.y, %.cc, $(DEP_SOURCES_2))
-DEP_SOURCES := $(patsubst %.c, %.d, $(DEP_SOURCES_1))
-MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_SOURCES))
+DEP_4 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc octave.cc
+DEP_3 := $(patsubst %.l, %.cc, $(DEP_4))
+DEP_2 := $(patsubst %.y, %.cc, $(DEP_3))
+DEP_1 := $(patsubst %.c, %.d, $(DEP_2))
+MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 
-DEF_FILES_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
-DEF_FILES_4 := $(addprefix $(srcdir)/, $(DEF_FILES_5))
-DEF_FILES_3 := $(notdir $(shell grep -l "^DEFUN" $(DEF_FILES_4)))
-DEF_FILES_2 := $(patsubst %.y, %.df, $(DEF_FILES_3))
-DEF_FILES_1 := $(patsubst %.l, %.df, $(DEF_FILES_2))
-DEF_FILES := $(patsubst %.cc, %.df, $(DEF_FILES_1))
+DEF_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
+DEF_4 := $(addprefix $(srcdir)/, $(DEF_5))
+DEF_3 := $(notdir $(shell grep -l "^DEFUN" $(DEF_4)))
+DEF_2 := $(patsubst %.y, %.df, $(DEF_3))
+DEF_1 := $(patsubst %.l, %.df, $(DEF_2))
+DEF_FILES := $(patsubst %.cc, %.df, $(DEF_1))
+
+VAR_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
+VAR_4 := $(addprefix $(srcdir)/, $(VAR_5))
+VAR_3 := $(notdir $(shell egrep -l "^[\t ]*DEF(VAR|CONST)" $(VAR_4)))
+VAR_2 := $(patsubst %.y, %, $(VAR_3))
+VAR_1 := $(patsubst %.l, %, $(VAR_2))
+VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
 
 OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
 	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
@@ -234,8 +245,12 @@ stamp-tinst: stamp-prereq $(TI_PICOBJ)
 	touch stamp-tinst
 
 builtins.cc: $(DEF_FILES) mkbuiltins
-	@echo making $@ from $(DEF_FILES)
-	@$(srcdir)/mkbuiltins $(DEF_FILES) > $@.t
+	@echo making $@
+	@echo DEF_FILES = $(DEF_FILES)
+	@echo VAR_FILES = $(VAR_FILES)
+	@echo $(DEF_FILES) > def-files
+	@echo $(VAR_FILES) > var-files
+	@$(srcdir)/mkbuiltins def-files var-files > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
 $(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
@@ -324,7 +339,8 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o *.d *.df *.oct pic/*.o builtins.cc defaults.h oct-conf.h
+	rm -f *.a *.o *.d *.df *.oct pic/*.o
+	rm -f builtins.cc defaults.h oct-conf.h def-files var-files
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 

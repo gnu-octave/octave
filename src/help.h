@@ -55,8 +55,6 @@ extern string Vinfo_file;
 // (--info-program program)
 extern string Vinfo_prog;
 
-extern void symbols_of_help (void);
-
 #endif
 
 /*

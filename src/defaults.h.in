@@ -135,8 +135,6 @@ extern string maybe_add_default_load_path (const string& pathstring);
 
 extern void install_defaults (void);
 
-extern void symbols_of_defaults (void);
-
 #endif
 
 /*

@@ -1,5 +1,23 @@
 #!/bin/sh
 
+if test $# -ne 2; then
+  echo "usage: mkbuiltins f1 f2" 1>&2
+  exit 1
+fi
+
+DEF_FILES=`cat $1`
+VAR_FILES=`cat $2`
+
+if test -z "$DEF_FILES"; then
+  echo "mkbuiltins: DEF_FILES is empty!" 1>&2
+  exit 1
+fi
+
+if test -z "$VAR_FILES"; then
+  echo "mkbuiltins: VAR_FILES is empty!" 1>&2
+  exit 1
+fi
+
 cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkbuiltins.
 
@@ -15,23 +33,43 @@ cat << \EOF
 
 EOF
 
-for file in "$@"; do
-  fcn=`echo $file | sed -e 's/\.df//' -e 's/-/_/g'`
+for file in $DEF_FILES; do
+  fcn=`echo $file | sed 's/\.df//; s/-/_/g'`
   echo "static void"
   echo "install_${fcn}_fcns (void)"
   echo "{"
   cat $file
   echo "}"
+  echo ""
+done
+
+for file in $VAR_FILES; do
+  file=`echo $file | sed 's/-/_/g'`
+  echo "extern void symbols_of_${file} (void);"
 done
 
 cat << \EOF
+
+static void
+install_builtin_variables (void)
+{
+EOF
+
+for file in $VAR_FILES; do
+  file=`echo $file | sed 's/-/_/g'`
+  echo "  symbols_of_${file} ();"
+done
+
+cat << \EOF
+}
+
 static void
 install_builtin_functions (void)
 {
 EOF
 
-for file in "$@"; do
-  fcn=`echo $file | sed -e 's/\.df//' -e 's/-/_/g'`
+for file in $DEF_FILES; do
+  fcn=`echo $file | sed 's/\.df//; s/-/_/g'`
   echo "  install_${fcn}_fcns ();"
 done
 

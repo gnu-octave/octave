@@ -55,8 +55,6 @@ extern void octave_print_internal (ostream& os, const charMatrix& chm,
 				   bool pr_as_string = false,
 				   int extra_indent = 0);
 
-extern void symbols_of_pr_output (void);
-
 #endif
 
 /*

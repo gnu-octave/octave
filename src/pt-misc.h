@@ -436,8 +436,6 @@ public:
   void accept (tree_walker& tw);
 };
 
-extern void symbols_of_pt_misc (void);
-
 #endif
 
 /*

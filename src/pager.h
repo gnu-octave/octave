@@ -114,8 +114,6 @@ private:
 
 extern void flush_octave_stdout (void);
 
-extern void symbols_of_pager (void);
-
 #endif
 
 /*

@@ -1132,7 +1132,9 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 	      else
 		os << "+";
 	    }
-	  os << "\n";
+
+	  if (i < nr - 1)
+	    os << "\n";
 	}
     }
   else
@@ -1230,7 +1232,8 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 		      pr_float (os, m (i, j), fw);
 		    }
 
-		  os << "\n";
+		  if (i < nr - 1)
+		    os << "\n";
 		}
 	    }
 	}
@@ -1281,7 +1284,9 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	      else
 		os << "+";
 	    }
-	  os << "\n";
+
+	  if (i < nr - 1)
+	    os << "\n";
 	}
     }
   else
@@ -1379,7 +1384,9 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 
 		      pr_complex (os, cm (i, j));
 		    }
-		  os << "\n";
+
+		  if (i < nr - 1) 
+		    os << "\n";
 		}
 	    }
 	}
@@ -1475,9 +1482,10 @@ octave_print_internal (ostream& os, const Range& r,
 		  pr_float (os, val, fw);
 		}
 
-	      os << "\n";
-
 	      col += inc;
+
+	      if (col < num_elem)
+		os << "\n";
 	    }
 	}
     }
@@ -1495,9 +1503,7 @@ octave_print_internal (ostream& os, const charMatrix& chm,
       if (pr_as_read_syntax && nstr > 1)
 	os << "[ ";
 
-      if (nstr == 0)
-	os << "\n";
-      else
+      if (nstr != 0)
 	{
 	  for (int i = 0; i < nstr; i++)
 	    {
@@ -1511,7 +1517,12 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 		    os << "; ";
 		}
 	      else
-		os << row << "\n";
+		{
+		  os << row;
+
+		  if (i < nstr - 1)
+		    os << "\n";
+		}
 	    }
 	}
 

@@ -52,9 +52,6 @@ main_loop (void);
 extern void
 do_octave_atexit (void);
 
-extern void
-symbols_of_toplev (void);
-
 // argv[0] for this program.
 extern string Vprogram_invocation_name;
 

@@ -1,3 +1,7 @@
+2004-10-19  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assignN): Avoid resizing if assignment will fail.
+
 2004-10-18  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assign2): Save result of squeeze operation.

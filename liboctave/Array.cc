@@ -2940,7 +2940,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       if (n_idx < lhs_dims_len)
 	{
-	  // Collapse dimensions beyond last index.
+	  // Collapse dimensions beyond last index.  Note that we
+	  // delay resizing LHS until we know that the assignment will
+	  // succeed.
 
 	  if (liboctave_wfi_flag && ! (idx(n_idx-1).is_colon ()))
 	    (*current_liboctave_warning_handler)
@@ -2950,10 +2952,6 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    lhs_dims(n_idx-1) *= lhs_dims(i);
 
 	  lhs_dims.resize (n_idx);
-
-	  lhs.resize (lhs_dims);
-
-	  lhs_dims = lhs.dims ();
 
 	  lhs_dims_len = lhs_dims.length ();
 	}
@@ -3010,6 +3008,11 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	  else
 	    {
+	      // Determine final dimensions for LHS and reset the
+	      // current size of the LHS.  Note that we delay actually
+	      // resizing LHS until we know that the assignment will
+	      // succeed.
+
 	      if (n_idx < orig_lhs_dims_len)
 		{
 		  for (int i = 0; i < n_idx-1; i++)
@@ -3018,9 +3021,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      else
 		final_lhs_dims = new_dims;
 
-	      lhs.resize_and_fill (new_dims, rfv);
-
-	      lhs_dims = lhs.dims ();
+	      lhs_dims = new_dims;
 
 	      lhs_dims_len = lhs_dims.length ();
 
@@ -3028,6 +3029,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	      if (rhs_is_scalar)
 		{
+		  lhs.resize_and_fill (new_dims, rfv);
+
 		  if  (! final_lhs_dims.any_zero ())
 		    {
 		      int n = Array<LT>::get_size (frozen_len);
@@ -3085,6 +3088,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		    }
 		  else
 		    {
+		      lhs.resize_and_fill (new_dims, rfv);
+
 		      if  (! final_lhs_dims.any_zero ())
 			{
 			  int n = Array<LT>::get_size (frozen_len);
@@ -3105,10 +3110,12 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	}
 
-      lhs.resize (final_lhs_dims);
+      if (retval != 0)
+	lhs.resize (final_lhs_dims);
     }
 
-  lhs.chop_trailing_singletons ();
+  if (retval != 0)
+    lhs.chop_trailing_singletons ();
 
   lhs.clear_index ();
 

@@ -3151,8 +3151,6 @@ octave_stream_list::do_list_open_files (void) const
 {
   std::string retval;
 
-  // XXX FIXME XXX -- this should probably be converted to use sstream
-  // when that is available.
   OSSTREAM buf;
 
   buf << "\n"

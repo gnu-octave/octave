@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.245 $)
+AC_REVISION($Revision: 1.246 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -409,14 +409,26 @@ changequote([,])dnl
     RLD_FLAG='-Xlinker +b -Xlinker $(libdir)'
   ;;
   *-sgi-*)
-    FPICFLAG=-KPIC
+    if $use_g77; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=-KPIC
+    fi
   ;;
   sparc-sun-sunos4*)
-    FPICFLAG=-PIC
+    if $use_g77; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=-PIC
+    fi
     RLD_FLAG='-L$(libdir)'
   ;;
   sparc-sun-solaris2*)
-    FPICFLAG=-PIC
+    if $use_g77; then
+      FPICFLAG=-fPIC
+    else
+      FPICFLAG=-PIC
+    fi
     RLD_FLAG='-Xlinker -R -Xlinker $(libdir)'
   ;;
 esac

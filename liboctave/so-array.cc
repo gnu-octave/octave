@@ -30,10 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
-#include "Array.h"
-#include "Array.cc"
 #include "ArrayN.h"
-#include "ArrayN.cc"
+#include "Array-util.h"
 // XXX FIXME XXX -- we are including the MArray{,2,N}.h files just for
 // their gripe_nonconformant function decls.
 #include "MArray.h"
@@ -44,10 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "boolNDArray.h"
 #include "mx-op-defs.h"
 #include "so-array.h"
-
-INSTANTIATE_ARRAY_AND_ASSIGN (std::streamoff);
-
-template class ArrayN<std::streamoff>;
 
 boolNDArray
 streamoff_array::all (int dim) const

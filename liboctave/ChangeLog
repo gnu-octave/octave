@@ -1,5 +1,8 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array-so.cc: New file.  Move instantiations here from so-array.h.
+	* Makefile.in (TI_SRC): Add it to the list.
+
 	* MArray-defs.h (DO_VS_OP2, DO_VV_OP2): Accept args for element
 	type and the names of the left and right operands.  Change all uses.
 

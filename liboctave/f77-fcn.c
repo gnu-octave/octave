@@ -28,12 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "f77-fcn.h"
 
-/* So we can check to see if an exception has occurred. */
-int f77_exception_encountered = 0;
-
-/* For setjmp/longjmp. */
-jmp_buf f77_context;
-
 void
 copy_f77_context (void *from, void *to, unsigned int size)
 {

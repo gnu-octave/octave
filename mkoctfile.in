@@ -27,21 +27,8 @@ HOST_CXXFLAGS=%HOST_CXXFLAGS%
 NO_IMPLICIT_TEMPLATES=%NO_IMPLICIT_TEMPLATES%
 GCC_IEEE_FP_FLAG=%GCC_IEEE_FP_FLAG%
 
-LDFLAGS=%LDFLAGS%
-LIBFLAGS=%LIBFLAGS%
-RLD_FLAG=%RLD_FLAG%
-FLIBS=%FLIBS%
-LIBS=%LIBS%
-LEXLIB=%LEXLIB%
-TERMLIBS=%TERMLIBS%
-LIBPLPLOT=%LIBPLPLOT%
-LIBDLFCN=%LIBDLFCN%
-
-# For now, leave -lglob out (glob/Makefile.in needs to be fixed to
-# install it.
-
-OCTAVE_LIBS="-loctinterp -loctave -ltinst -lcruft \
-  $LIBPLPLOT -lreadline -lkpathsea $LIBDLFCN"
+SH_LD=%SH_LD%
+SH_LDFLAGS=%SH_LDFLAGS%
 
 ALL_CXXFLAGS="$INCFLAGS $HOST_CXXFLAGS $NO_IMPLICIT_TEMPLATES \
   $GCC_IEEE_FP_FLAG $CXXFLAGS"
@@ -52,4 +39,4 @@ $CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $srcfile -o $objfile
 
 echo "making $octfile from $objfile"
 
-$CXX -shared -o $octfile $objfile $LIBFLAGS $RLD_FLAG $OCTAVE_LIBS $FLIBS $LEXLIB $TERMLIBS $LIBS
+$SH_LD $SH_LDFLAGS -o $octfile $objfile

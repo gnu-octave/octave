@@ -1,3 +1,13 @@
+Tue Apr  8 12:38:18 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Do substitute SH_LD and SH_LDFLAGS.  Don't
+	substitute or use LIBFLAGS, RLD_FLAG, OCTAVE_LIBS, FLIBS, LEXLIB,
+	TERMLIBS, LIBS, LDFLAGS, LIBPLPLOT, or LIBDLFCN.  Use $SH_LD and
+	$SH_LDFLAGS, not $CXX -shared.
+
+	* Makeconf.in (do-subst-config-vals): Also substitute SH_LD and
+	SH_LDFLAGS.
+
 Fri Mar 28 16:53:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't add -fpe1 to FFLAGS on Alpha OSF/1 systems

@@ -54,13 +54,12 @@ mk_tm_map (struct tm *tm, double fraction)
   m ["wday"] = static_cast<double> (tm->tm_wday);
   m ["yday"] = static_cast<double> (tm->tm_yday);
   m ["isdst"] = static_cast<double> (tm->tm_isdst);
+
 #if defined (HAVE_TM_ZONE)
   m ["zone"]  = tm->tm_zone;
 #elif defined (HAVE_TZNAME)
   if (tm->tm_isdst == 0 || tm->tm_isdst == 1)
     m ["zone"] = tzname[tm->tm_isdst];
-#else
-  m ["zone"] = zone_name (tm);
 #endif
 
   return m;
@@ -81,7 +80,8 @@ extract_tm (Octave_map &m, double& fraction)
   tm.tm_wday = static_cast<int> (m ["wday"] . double_value ());
   tm.tm_yday = static_cast<int> (m ["yday"] . double_value ());
   tm.tm_isdst = static_cast<int> (m ["isdst"] . double_value ());
-#ifdef HAVE_TMZONE
+
+#if defined (HAVE_TM_ZONE)
   string tstr = m ["zone"] . string_value ();
   tm.tm_zone = tstr.c_str ();
 #endif
@@ -98,11 +98,11 @@ seconds since the epoch.")
   time_t now;
   double fraction = 0.0;
 
-#ifdef HAVE_GETTIMEOFDAY
+#if defined (HAVE_GETTIMEOFDAY)
 
   struct timeval tp;
 
-#ifdef GETTIMEOFDAY_NO_TZ
+#if defined  (GETTIMEOFDAY_NO_TZ)
   gettimeofday (&tp);
 #else
   gettimeofday (&tp, 0);

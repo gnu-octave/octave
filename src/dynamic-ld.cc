@@ -49,6 +49,7 @@ extern "C"
 #include "error.h"
 #include "toplev.h"
 #include "pathsearch.h"
+#include "oct-obj.h"
 #include "ov.h"
 #include "utils.h"
 #include "variables.h"
@@ -56,12 +57,6 @@ extern "C"
 typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
 
 #if defined (WITH_DYNAMIC_LINKING)
-
-// XXX FIXME XXX -- need to provide some way to ensure that functions
-// that we are going to use will use the same naming convention as
-// Octave's internal functions.  It needs to be simpler than the
-// current DEFUN_DLD() macro, which assumes you know how to name the
-// function, the struct, and the helper function.
 
 static string
 mangle_octave_oct_file_name (const string& name)
@@ -198,12 +193,6 @@ load_octave_oct_file (const string& name)
 #endif
 
   return retval;
-}
-
-void
-init_dynamic_linker (void)
-{
-  // Nothing to do anymore...
 }
 
 /*

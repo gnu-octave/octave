@@ -60,6 +60,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <oct-conf.h>
 #include "oct-hist.h"
 #include "oct-map.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"

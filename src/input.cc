@@ -444,12 +444,13 @@ gnu_readline (const char *s, bool force_readline)
 
       char *buf = static_cast<char *> (malloc (max_size));
       char *bufptr = buf;
+      int len = 0;
 
       do
 	{
 	  if (fgets (bufptr, grow_size, curr_stream))
 	    {
-	      int len = strlen (bufptr);
+	      len = strlen (bufptr);
 
 	      if (len == grow_size - 1)
 		{
@@ -475,7 +476,12 @@ gnu_readline (const char *s, bool force_readline)
 		retval = buf;
 	    }
 	  else
-	    break;
+	    {
+	      if (len == 0)
+		free (buf);
+
+	      break;
+	    }
 	}
       while (! retval);
     }
@@ -607,7 +613,15 @@ octave_read (char *buf, unsigned max_size)
 	}
     }
   else if (chars_left == 0)
-    status = 0;
+    {
+      if (input_buf)
+	{
+	  free (input_buf);
+	  input_buf = 0;
+	}
+
+      status = 0;
+    }
   else    
     status = -1;
 

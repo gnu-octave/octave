@@ -155,7 +155,7 @@ for arg in $foutput; do
 	      exists=true
 	    fi
 	  done
-	  if $exists
+	  if $exists; then
 	    arg=
 	  else
 	    case "$arg" in

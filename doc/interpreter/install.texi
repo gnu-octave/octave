@@ -56,18 +56,27 @@ Use @code{g77} to compile Fortran code.
 Create shared libraries.  If you are planning to use
 @code{--enable-lite-kernelel} or the dynamic loading features, you will
 probably want to use this option.  It will make your @file{.oct} files
-much smaller.  You may also want to build a shared version of
-@code{libg++}, if your system doesn't already have one.
+much smaller.
+
+You may also want to build a shared version of @code{libg++}, if your
+system doesn't already have one.  Note that a patch is needed to build
+shared versions of version 2.7.2 of @code{libg++} and @code{libstdc++}
+on the HP-PA architecture.  You can find the patch at
+@url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
 
 @item --enable-dl
 Use @code{dlopen} and friends to make Octave capable of dynamically
 linking externally compiled functions.  This only works on systems that
-actually have these functions.
+actually have these functions.  If you plan on using this feature, you
+should probably also use @code{--enable-shared} to reduce the size of
+your @file{.oct} files.
 
 @item --enable-shl
 Use @code{shl_load} and friends to make Octave capable of dynamically
 linking externally compiled functions.  This only works on systems that
-actually have these functions (only HP-UX systems).
+actually have these functions (only HP-UX systems).  If you plan on
+using this feature, you should probably also use @code{--enable-shared}
+to reduce the size of your @file{.oct} files.
 
 @item --enable-lite-kernel
 Compile smaller kernel.  This currently requires the dynamic linking
@@ -229,6 +238,14 @@ find the source for the header file and install it in the directory
 @file{usr/include}.  This is reportedly a problem with Slackware 3.1.
 For Linux/GNU systems, the source for @file{dlfcn.h} is in the
 @code{ldso} package.
+
+@item
+Building @file{.oct} files doesn't work.
+
+You should probably have a shared version of @code{libg++}.  A patch is
+needed to build shared versions of version 2.7.2 of @code{libg++} and
+@code{libstdc++} on the HP-PA architecture.  You can find the patch at
+@url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
 
 @item
 If you encounter errors like

@@ -522,8 +522,6 @@ main (int argc, char **argv)
 
   initialize_readline ();
 
-  init_dynamic_linker ();
-
   if (! inhibit_startup_message)
     cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
 

@@ -381,10 +381,6 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
 %right POW EPOW
 
-// There are 18 shift/reduce conflicts, ok?  But this only works with
-// bison...
-// %expect 18
-
 // Where to start.
 %start input
 

@@ -440,7 +440,7 @@ Interpreter:
   * Eliminate force_numeric and make_numeric functions.
 
   * Is Matrix::fortran_vec() really necessary?
-b
+
   * print_usage() should set error_state in most cases?
 
   * Make statements like this
@@ -476,12 +476,19 @@ b
   * On systems that support matherr(), make it possible for users to
     enable the printing of warning messages.
 
+  * Make it possible to mark variables and functions as read-only.
+
 -------
 History:
 -------
 
   * Add an option to allow saving input from script files in the
     history list.
+
+  * Add an option to include information about the Octave session in
+    the history list.  Possibly a time/date stamp and the current
+    Octave line number, appended as a comment (users should probably
+    be able to control the format).
 
   * Fix history problems -- core dump if multiple processes are
     writing to the same history file?

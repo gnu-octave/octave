@@ -20,15 +20,16 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-TEXINFO = amuse.texi arith.texi bugs.texi bugs1.texi control.texi \
-	cp-idx.texi diffeq.texi expr.texi extend.texi fn-idx.texi \
-	func.texi gnuinfo.texi help.texi history.texi \
-	hsuser.texi image.texi in-idx.texi install.texi install1.texi \
-	intro.texi invoke.texi io.texi linalg.texi matrix.texi \
-	nonlin.texi octave.texi op-idx.texi optim.texi plot.texi \
-	poly.texi preface.texi program.texi quad.texi rd-idx.texi \
-	rluser.texi set.texi signal.texi special.texi stats.texi \
-	stmt.texi strings.texi system.texi var.texi vr-idx.texi
+TEXINFO = amuse.texi arith.texi audio.texi bugs.texi bugs1.texi \
+	control.texi cp-idx.texi diffeq.texi emacs.texi expr.texi \
+	extend.texi fn-idx.texi func.texi gnuinfo.texi help.texi \
+	history.texi hsuser.texi image.texi in-idx.texi install.texi \
+	install1.texi intro.texi invoke.texi io.texi linalg.texi \
+	matrix.texi nonlin.texi octave.texi op-idx.texi optim.texi \
+	plot.texi poly.texi preface.texi program.texi quad.texi \
+	rd-idx.texi rluser.texi set.texi signal.texi special.texi \
+	stats.texi stmt.texi strings.texi system.texi var.texi \
+	vr-idx.texi
 
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
 

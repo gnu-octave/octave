@@ -478,8 +478,8 @@ public:
   virtual charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }
 
-  virtual string_vector all_strings (void) const
-    { return rep->all_strings (); }
+  virtual string_vector all_strings (bool pad = false) const
+    { return rep->all_strings (pad); }
 
   virtual std::string string_value (void) const
     { return rep->string_value (); }
@@ -536,8 +536,8 @@ public:
   // class wants a certain kind of constant, he should simply ask for
   // it, and we should convert it if possible.
 
-  virtual octave_value convert_to_str (void) const
-    { return rep->convert_to_str (); }
+  virtual octave_value convert_to_str (bool pad = false) const
+    { return rep->convert_to_str (pad); }
 
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }

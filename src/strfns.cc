@@ -35,6 +35,93 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
+DEFUN (char, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} char (@var{x})\n\
+@deftypefnx {Built-in Function} {} char (@var{cell_array})\n\
+@deftypefnx {Built-in Function} {} char (@var{s1}, @var{s2}, @dots{})\n\
+Create a string array from a numeric matrix, cell array, or list of\n\
+\n\
+If the argument is a numeric matrix, each element of the matrix is\n\
+converted to the corresponding ASCII character.  For example,\n\
+\n\
+@example\n\
+@group\n\
+setstr ([97, 98, 99])\n\
+     @result{} \"abc\"\n\
+@end group\n\
+@end example\n\
+\n\
+If the argument is a cell array of strings, the result is a string array\n\
+with each element corresponding to one element of the cell array.\n\
+\n\
+For multiple string arguments, the result is a string array with each\n\
+element corresponding to the arguments.\n\
+\n\
+The returned values are padded with blanks as needed to make each row\n\
+of the string array have the same length.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    retval = args(0).convert_to_str (true);
+  else if (nargin > 1)
+    {
+      int n_elts = 0;
+
+      int max_len = 0;
+
+      for (int i = 0; i < nargin; i++)
+	{
+	  string_vector s = args(i).all_strings ();
+
+	  if (error_state)
+	    {
+	      error ("char: expecting arguments to be strings");
+	      return retval;
+	    }
+
+	  n_elts += s.length ();
+
+	  int s_max_len = s.max_length ();
+
+	  if (s_max_len > max_len)
+	    max_len = s_max_len;
+	}
+
+      string_vector result (n_elts);
+
+      int k = 0;
+
+      for (int i = 0; i < nargin; i++)
+	{
+	  string_vector s = args(i).all_strings ();
+
+	  int n = s.length ();
+
+	  for (int j = 0; j < n; j++)
+	    {
+	      std::string t = s[j];
+	      int t_len = t.length ();
+
+	      if (max_len > t_len)
+		t += std::string (max_len - t_len, ' ');
+
+	      result[k++] = t;
+	    }
+	}
+
+      retval = result;
+    }
+  else
+    print_usage ("char");
+
+  return retval;
+}
+
 DEFUN (isstr, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isstr (@var{a})\n\
@@ -49,33 +136,6 @@ Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
     retval = args(0).is_string ();
   else
     print_usage ("isstr");
-
-  return retval;
-}
-
-DEFUN (setstr, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} setstr (@var{x})\n\
-Convert a matrix to a string.  Each element of the matrix is converted\n\
-to the corresponding ASCII \n\
-character.  For example,\n\
-\n\
-@example\n\
-@group\n\
-setstr ([97, 98, 99])\n\
-     @result{} \"abc\"\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).convert_to_str ();
-  else
-    print_usage ("setstr");
 
   return retval;
 }

@@ -1,3 +1,8 @@
+2003-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* deprecated/struct_contains.m, deprecated/struct_elements.m:
+	New files.
+
 2003-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/tests/kolmogorov_smirnov_test.m: Use str2func to make

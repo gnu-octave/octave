@@ -100,7 +100,7 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-  string_vector all_strings (void) const;
+  string_vector all_strings (bool pad = false) const;
 
   std::string string_value (void) const;
 

@@ -36,7 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "oct-map.h"
 #include "ov.h"
 #include "ov-re-nd-array.h"
 #include "variables.h"
@@ -926,86 +925,6 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
     }
   else
     print_usage ("ismatrix");
-
-  return retval;
-}
-
-DEFUN (isstruct, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isstruct (@var{expr})\n\
-Return 1 if the value of the expression @var{expr} is a structure.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    retval = args(0).is_map ();
-  else
-    print_usage ("isstruct");
-
-  return retval;
-}
-
-DEFUN (struct_elements, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct_elements (@var{struct})\n\
-Return a list of strings naming the elements of the structure\n\
-@var{struct}.  It is an error to call @code{struct_elements} with an\n\
-argument that is not a structure.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      if (args (0).is_map ())
-	{
-	  Octave_map m = args(0).map_value ();
-	  retval = m.keys ();
-	}
-      else
-	gripe_wrong_type_arg ("struct_elements", args (0));
-    }
-  else
-    print_usage ("struct_elements");
-
-  return retval;
-}
-
-DEFUN (struct_contains, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} struct_contains (@var{expr}, @var{name})\n\
-Return 1 if the expression @var{expr} is a structure and it includes an\n\
-element named @var{name}.  The first argument must be a structure and\n\
-the second must be a string.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 2)
-    {
-      retval = false;
-
-      // XXX FIXME XXX -- should this work for all types that can do
-      // structure reference operations?
-
-      if (args(0).is_map () && args(1).is_string ())
-	{
-	  std::string key = args(1).string_value ();
-
-	  Octave_map m = args(0).map_value ();
-
-	  retval = m.contains (key);
-	}
-      else
-	print_usage ("struct_contains");
-    }
-  else
-    print_usage ("struct_contains");
 
   return retval;
 }

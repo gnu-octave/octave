@@ -249,12 +249,39 @@ octave_cell::list_value (void) const
 }
 
 string_vector
-octave_cell::all_strings (void) const
+octave_cell::all_strings (bool pad) const
 {
+  string_vector retval;
+
   int nr = rows ();
   int nc = columns ();
 
-  string_vector retval (nr * nc);
+  int n_elts = 0;
+
+  int max_len = 0;
+
+  if (pad)
+    {
+      for (int j = 0; j < nc; j++)
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      string_vector s = matrix(i,j).all_strings ();
+
+	      if (error_state)
+		return retval;
+
+	      n_elts += s.length ();
+
+	      int s_max_len = s.max_length ();
+
+	      if (s_max_len > max_len)
+		max_len = s_max_len;
+	    }
+	}
+    }
+
+  retval.resize (n_elts);
 
   int k = 0;
 
@@ -262,12 +289,24 @@ octave_cell::all_strings (void) const
     {
       for (int i = 0; i < nr; i++)
 	{
-	  retval[k++] = matrix(i,j).string_value ();
+	  string_vector s = matrix(i,j).all_strings ();
 
-	  if (error_state)
-	    return string_vector ();
+	  int n = s.length ();
+
+	  for (int ii = 0; ii < n; ii++)
+	    {
+	      std::string t = s[ii];
+	      int t_len = t.length ();
+
+	      if (pad && max_len > t_len)
+		t += std::string (max_len - t_len, ' ');
+
+	      retval[k++] = t;
+	    }
 	}
     }
+
+
 
   return retval;
 }
@@ -402,6 +441,30 @@ rows and columns, respectively.\n\
       print_usage ("cell");
       break;
     }
+
+  return retval;
+}
+
+DEFUN (cellstr, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cellstr (@var{string})\n\
+Create a new cell array object from the elements of the string\n\
+array @var{string}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      string_vector s = args(0).all_strings ();
+
+      if (! error_state)
+	retval = Cell (s);
+      else
+	error ("cellstr: expecting argument to be a string");
+    }
+  else
+    print_usage ("cellstr");
 
   return retval;
 }

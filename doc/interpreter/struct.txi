@@ -183,6 +183,6 @@ structures.
 
 @DOCSTRING(isstruct)
 
-@DOCSTRING(struct_contains)
+@DOCSTRING(fieldnames)
 
-@DOCSTRING(struct_elements)
+@DOCSTRING(isfield)

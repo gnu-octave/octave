@@ -31,7 +31,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "Cell.h"
+#include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "oct-lvalue.h"
 #include "ov-list.h"
 #include "ov-struct.h"
@@ -463,6 +465,86 @@ octave_struct::print_name_tag (std::ostream& os, const std::string& name) const
       newline (os);
       retval = true;
     }
+
+  return retval;
+}
+
+DEFUN (isstruct, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isstruct (@var{expr})\n\
+Return 1 if the value of the expression @var{expr} is a structure.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_map ();
+  else
+    print_usage ("isstruct");
+
+  return retval;
+}
+
+DEFUN (fieldnames, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fieldnames (@var{struct})\n\
+Return a cell array of strings naming the elements of the structure\n\
+@var{struct}.  It is an error to call @code{fieldnames} with an\n\
+argument that is not a structure.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      if (args(0).is_map ())
+	{
+	  Octave_map m = args(0).map_value ();
+	  retval = Cell (m.keys ());
+	}
+      else
+	gripe_wrong_type_arg ("fieldnames", args(0));
+    }
+  else
+    print_usage ("fieldnames");
+
+  return retval;
+}
+
+DEFUN (isfield, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isfield (@var{expr}, @var{name})\n\
+Return true if the expression @var{expr} is a structure and it includes an\n\
+element named @var{name}.  The first argument must be a structure and\n\
+the second must be a string.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      retval = false;
+
+      // XXX FIXME XXX -- should this work for all types that can do
+      // structure reference operations?
+
+      if (args(0).is_map () && args(1).is_string ())
+	{
+	  std::string key = args(1).string_value ();
+
+	  Octave_map m = args(0).map_value ();
+
+	  retval = m.contains (key) != 0;
+	}
+      else
+	print_usage ("isfield");
+    }
+  else
+    print_usage ("isfield");
 
   return retval;
 }

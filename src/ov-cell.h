@@ -96,7 +96,10 @@ public:
 
   octave_value_list list_value (void) const;
 
-  string_vector all_strings (void) const;
+  octave_value convert_to_str (bool pad = false) const
+    { return all_strings (pad); }
+
+  string_vector all_strings (bool pad = false) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

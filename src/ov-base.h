@@ -195,7 +195,7 @@ public:
 
   charMatrix char_matrix_value (bool = false) const;
 
-  string_vector all_strings (void) const;
+  string_vector all_strings (bool pad = false) const;
 
   std::string string_value (void) const;
 
@@ -219,7 +219,7 @@ public:
 
   boolMatrix bool_matrix_value (void) const;
 
-  octave_value convert_to_str (void) const;
+  octave_value convert_to_str (bool pad = false) const;
 
   void convert_to_row_or_column_vector (void);
 

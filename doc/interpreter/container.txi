@@ -33,4 +33,6 @@
 
 @DOCSTRING(cell)
 
+@DOCSTRING(cellstr)
+
 @DOCSTRING(iscell)

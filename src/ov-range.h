@@ -154,7 +154,7 @@ public:
 
   Range range_value (void) const { return range; }
 
-  octave_value convert_to_str (void) const;
+  octave_value convert_to_str (bool pad = false) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

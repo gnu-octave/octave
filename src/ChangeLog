@@ -1,3 +1,18 @@
+2003-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strfns.cc (Fchar): New function.
+
+	* ov-cell.cc (octave_cell::all_strings): Allow elements to be
+	string arrays.
+	* ov.cc (octave_value::all_strings, octave_value::convert_to_str):
+	New optional arg, pad.  Change all derived classes.
+
+	* ov-struct.cc (Ffieldnames, Fisfield): Move here from data.cc.
+
+	* data.cc (Ffieldnames): Rename from Fstruct_elements.  Return
+	cell array instead of a string array.
+	(Fisfield): Rename from struct_contains.
+
 2003-02-22  Paul Kienzle <pkienzle@users.sf.net>
 
 	* toplev.cc: Put config info in array of strings, then convert to map.

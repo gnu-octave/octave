@@ -155,7 +155,7 @@ octave_base_value::subsasgn (const std::string& type,
 }
 
 octave_value
-octave_base_value::convert_to_str (void) const
+octave_base_value::convert_to_str (bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::convert_to_str ()",
 			type_name ());
@@ -317,13 +317,13 @@ octave_base_value::char_matrix_value (bool) const
 }
 
 string_vector
-octave_base_value::all_strings (void) const
+octave_base_value::all_strings (bool pad) const
 {
   string_vector retval;
 
   if (Vimplicit_num_to_str_ok)
     {
-      octave_value tmp = convert_to_str ();
+      octave_value tmp = convert_to_str (pad);
 
       if (! error_state)
 	retval = tmp.all_strings ();

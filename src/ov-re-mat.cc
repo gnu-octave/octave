@@ -112,7 +112,7 @@ octave_matrix::complex_value (bool) const
 }
 
 octave_value
-octave_matrix::convert_to_str (void) const
+octave_matrix::convert_to_str (bool) const
 {
   octave_value retval;
 

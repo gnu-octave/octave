@@ -169,7 +169,7 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
 }
 
 string_vector
-octave_char_matrix_str::all_strings (void) const
+octave_char_matrix_str::all_strings (bool) const
 {
   int n = matrix.rows ();
 

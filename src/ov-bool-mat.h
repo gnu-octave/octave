@@ -98,7 +98,7 @@ public:
   boolMatrix bool_matrix_value (void) const
     { return matrix; }
 
-  octave_value convert_to_str (void) const
+  octave_value convert_to_str (bool = false) const
     { return octave_value (matrix); }
 
 protected:

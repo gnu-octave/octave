@@ -101,7 +101,7 @@ public:
   charMatrix char_matrix_value (bool = false) const
     { return matrix; }
 
-  octave_value convert_to_str (void) const
+  octave_value convert_to_str (bool = false) const
     { return octave_value (matrix, true); }
 
 protected:

@@ -127,11 +127,11 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(blanks)
 
+@DOCSTRING(char)
+
 @DOCSTRING(int2str)
 
 @DOCSTRING(com2str)
-
-@DOCSTRING(setstr)
 
 @DOCSTRING(strcat)
 

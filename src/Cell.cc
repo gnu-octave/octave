@@ -100,6 +100,12 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
   return *this;
 }
 
+int
+Cell::cat (const Cell& ra_arg, int dim, int iidx, int move)
+{
+  return ::cat_ra (*this, ra_arg, dim, iidx, move);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

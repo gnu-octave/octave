@@ -48,10 +48,10 @@ charNDArray::any (int dim) const
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (elem (iter_idx) != ' '), false);
 }
 
-bool
-charNDArray::cat (const charNDArray& ra_arg, int dim, int add_dim)
+int
+charNDArray::cat (const charNDArray& ra_arg, int dim, int iidx, int move)
 {
-  MX_ND_CAT;  
+  return ::cat_ra(*this, ra_arg, dim, iidx, move);  
 }
 
 charMatrix

@@ -1,3 +1,8 @@
+2004-03-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/horzcat.m: Delete.
+	* miscellaneous/vertcat.m: Delete.
+
 2004-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/figure.m: Also look for GNUTERM in the environment and use

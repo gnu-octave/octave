@@ -607,34 +607,6 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 \
   return retval
 
-#define MX_ND_CAT \
- bool retval = false;\
- \
-  dim_vector dv = ra_arg.dims (); \
- \
-   Array<int> ra_idx (dv.length (), 0); \
- \
-   for (int i = 0; i < ra_arg.length (); i++) \
-     { \
-       if (i != 0) \
-	 increment_index (ra_idx, dv, 0); \
- \
-       Array<int> ra_idx2 = ra_idx; \
- \
-       if (dim >= ra_idx2.length ()) \
-	 { \
-	   ra_idx2.resize_and_fill (dim + 1, 0); \
- \
-	   retval = true; \
-	 } \
- \
-       ra_idx2.elem (dim) = ra_idx2.elem (dim) + add_dim; \
- \
-       elem (ra_idx2) =  ra_arg.elem (ra_idx); \
-     } \
- \
-   return retval
-
 #endif
 
 /*

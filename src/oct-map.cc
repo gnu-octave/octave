@@ -88,6 +88,13 @@ Octave_map::numel (void) const
   return retval;
 }
 
+int
+Octave_map::cat (const Octave_map& ra_arg, int dim, int iidx, int move)
+{
+  //return ::cat_ra (*this, ra_arg, dim, iidx, move);
+  return 0;
+}
+
 static string_vector
 equiv_keys (const Octave_map& a, const Octave_map& b)
 {

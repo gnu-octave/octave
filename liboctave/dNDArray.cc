@@ -656,11 +656,10 @@ NDArray::sum (int dim) const
   MX_ND_REAL_OP_REDUCTION (+= elem (iter_idx), 0);
 }
 
-bool
-NDArray::cat (const NDArray& ra_arg, int dim, int add_dim)
+int
+NDArray::cat (const NDArray& ra_arg, int dim, int iidx, int move)
 {
-  //  MX_ND_CAT;
-  return ::cat_ra (*this, ra_arg, dim, add_dim);
+  return ::cat_ra (*this, ra_arg, dim, iidx, move);
 }
 
 NDArray

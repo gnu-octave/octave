@@ -1,3 +1,17 @@
+2004-03-01  Petter Risholm  <risholm@idi.ntnu.no>
+
+	* Array.cc (Array<T>::insertN): Eliminate N-d indexing.
+
+        * mx-inlines.cc (MX_ND_CAT): Delete macro.
+
+        * dNDArray.h, chNDArray.h, CNDArray.h (cat): Change declaration.
+        * dNDArray.cc (NDArray<T>::cat): Call new form of cat function.
+        * chNDArray.cc (charNDArray<T>::cat): Ditto.
+        * CNDArray.cc (ComplexNDArray<T>::cat): Ditto.
+
+        * Array.h (cat_ra): Return int.  Accept idx and move args, not add_dim.
+        * Array.cc (cat_ra): Speed up implementation by avoiding N-d indexing.
+
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rl-edit.c (octave_rl_set_startup_hook,

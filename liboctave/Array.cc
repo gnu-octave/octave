@@ -966,6 +966,8 @@ template <class T>
 Array<T>&
 Array<T>::insertN (const Array<T>& a, int r, int c)
 {
+  dim_vector dv = dims ();
+
   dim_vector a_dv = a.dims ();
 
   int n = a_dv.length ();
@@ -979,7 +981,7 @@ Array<T>::insertN (const Array<T>& a, int r, int c)
 
       for (int i = 0; i < n; i++)
 	{
-	  if (a_ra_idx (i) < 0 || (a_ra_idx (i) + a_dv (i)) > dimensions (i))
+	  if (a_ra_idx(i) < 0 || (a_ra_idx(i) + a_dv(i)) > dv(i))
 	    {
 	      (*current_liboctave_error_handler)
 		("Array<T>::insert: range error for insert");
@@ -987,21 +989,29 @@ Array<T>::insertN (const Array<T>& a, int r, int c)
 	    }
 	}
 
-      a_ra_idx.elem (0) = 0;
-      a_ra_idx.elem (1) = 0;
-
       int n_elt = a.numel ();
+      
+      const T *a_data = a.data ();   
+   
+      int iidx = 0;
+	  
+      int a_rows = a_dv(0);
 
+      int this_rows = dv(0);
+	  
+      int numel_page = a_dv(0) * a_dv(1);	  
+
+      int count_pages = 0;
+	  
       for (int i = 0; i < n_elt; i++)
 	{
-	  Array<int> ra_idx = a_ra_idx;
+	  if (i != 0 && i % a_rows == 0)
+	    iidx += (this_rows - a_rows);	      
+	  
+	  if (i % numel_page == 0)
+	    iidx = c * dv(0) + r + dv(0) * dv(1) * count_pages++;
 
-	  ra_idx.elem (0) = a_ra_idx (0) + r;
-	  ra_idx.elem (1) = a_ra_idx (1) + c;
-
-	  elem (ra_idx) = a.elem (a_ra_idx);
-
-	  increment_index (a_ra_idx, a_dv);
+	  elem (iidx++) = a_data[i];
 	}
     }
   else
@@ -3066,35 +3076,26 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 }
 
 template <class T>
-bool
-cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, int dim, int add_dim)
+int
+cat_ra (Array<T>& ra, const Array<T>& ra_arg, int dim, int idx, int move)
 {
-  bool retval = false;
+  dim_vector dv_arg = ra_arg.dims (); 
+  
+  const T *arg_data = ra_arg.data ();
+  
+  int numel_to_move = dv_arg(0);
 
-  dim_vector dv = ra_arg.dims ();
+  int numel_arg = dv_arg.length ();
 
-  Array<int> ra_idx (dv.length (), 0);
+  int ii_limit = dim+1 > numel_arg ? numel_arg : dim + 1;
+  
+  for (int ii = 1; ii < ii_limit; ii++)
+    numel_to_move *= dv_arg(ii);
 
-  for (int i = 0; i < ra_arg.length (); i++)
-    {
-      if (i != 0)
-	increment_index (ra_idx, dv);
-
-      Array<int> ra_idx2 = ra_idx;
-
-      if (dim >= ra_idx2.length ())
-	{
-	  ra_idx2.resize_and_fill (dim + 1, 0);
-
-	  retval = true;
-	}
-
-      ra_idx2(dim) = ra_idx2(dim) + add_dim;
-
-      ra_cat(ra_idx2) = ra_arg(ra_idx);
-    }
-
-  return retval;
+  for (int j = 0; j < numel_to_move; j++)
+    ra.elem (idx++) = arg_data[numel_to_move * move + j];
+  
+  return idx;
 }
 
 template <class T>

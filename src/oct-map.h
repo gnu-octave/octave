@@ -118,6 +118,8 @@ Octave_map
 
   int numel (void) const;
 
+  int cat (const Octave_map& ra_arg, int dim, int iidx, int move);
+
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 
   Octave_map& assign (const octave_value_list& idx, const std::string& k,

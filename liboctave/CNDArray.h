@@ -87,7 +87,7 @@ public:
   ComplexNDArray prod (int dim = -1) const;
   ComplexNDArray sum (int dim = -1) const;
   ComplexNDArray sumsq (int dim = -1) const;
-  bool cat (const ComplexNDArray& ra_arg, int dim, int add_dim);
+  int cat (const ComplexNDArray& ra_arg, int dim, int iidx, int move);
 
   ComplexNDArray& insert (const NDArray& a, int r, int c);
   ComplexNDArray& insert (const ComplexNDArray& a, int r, int c);

@@ -86,7 +86,7 @@ public:
   NDArray prod (int dim = -1) const;
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
-  bool cat (const NDArray& ra_arg, int dim, int add_dim);
+  int cat (const NDArray& ra_arg, int dim, int iidx, int move);
      
   NDArray abs (void) const;
 

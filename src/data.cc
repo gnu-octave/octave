@@ -40,6 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include "oct-obj.h"
 #include "utils.h"
+#include "Cell.h"
+#include "oct-map.h"
 
 #define ANY_ALL(FCN) \
  \
@@ -750,10 +752,248 @@ cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
   return true;
 }
 
+octave_value do_cat (const octave_value_list& args)
+{
+  octave_value retval;
+ 
+  int dim = args(0).int_value () - 1;
+
+  int n_args = args.length ();
+ 
+  if (error_state)
+    {
+      error ("cat: expecting first argument to be a integer");
+      return retval;
+    }
+  
+  if (n_args > 2 && dim >= 0)
+    {      
+      dim_vector  dv = args(1).dims ();
+  
+      for (int i = 2; i < args.length (); i++)
+	{
+	  // add_dims constructs a dimension vector which holds the
+	  // dimensions of the final array after concatenation.
+
+	  if (! cat_add_dims (dv, args(i).dims (), dim))
+	    {
+	      // Dimensions do not match. 
+	      // cat_add_dims printed a error msg
+	      return retval;
+	    }
+	}
+
+      NDArray cat_re;
+      ComplexNDArray cat_cx;
+      charNDArray cat_ch;
+      Cell cat_cell;
+      Octave_map cat_map;
+
+      // The final array can be of three types:
+      //
+      //       re cx ch c
+      // ----------------
+      // re   |re cx ch X
+      // cx   |cx cx X  X
+      // ch   |ch X  ch X
+      // cell |X  X  X  c
+      // (X means incompatible).
+
+      enum types { REAL, COMPLEX, CHAR, CELL, MAP} t;      
+
+      // Initialize t to right value
+      if (args(1).is_cell ())
+	{
+	  t = CELL;
+	  cat_cell = Cell (dv);
+	}
+      else if (args(1).is_map ())
+	{
+	  error ("concatenation of structures is not yet implemented");
+	  return retval;
+	  // t = MAP;
+	  // cat_map = Octave_map (dv);
+	}
+      else 
+	{
+	  t = REAL;
+	  cat_re = NDArray (dv, 0);
+	}
+ 
+      int idx = 0;
+  
+      dim_vector dv_first = args(1).dims ();
+      
+      // n_moves tells us how many times we need to
+      // visit each argument.
+      //
+      // If we are concatenating a 2x2x2 array with a 2x2x2 array
+      // along the second dimensions, we do two iterations
+      // trough the arguments and move 2x2 elements from each
+      // of the arguments into the resulting array on each iteration.
+      int n_moves = 1;
+
+      for (int i = dim + 1; i < dv_first.length (); i++)
+	n_moves *= dv_first(i);
+      
+      for (int move = 0; move < n_moves ; move++)
+	{     
+	  for (int i = 1; i < n_args; i++)
+	    {
+	      octave_value tmp = args (i);
+
+	      if (t == MAP)
+		{
+		  error ("concatenation of structures is not yet implemented");
+		  return retval;
+		}
+	      else if (t == CELL)
+		{
+		  if (! tmp.is_cell ())
+		    {
+		      error ("cannot convert argument to cell");
+		      return retval;
+		    }
+		  else
+		    {
+			Cell ra_tmp = args(i).cell_value ();
+	  
+			if (error_state)
+			  return retval;
+
+			idx = cat_cell.cat (ra_tmp, dim, idx, move);
+		    }
+		}
+	      else if (t == REAL)
+		{
+		  if (tmp.is_complex_type ())
+		    {
+		      cat_cx = ComplexNDArray (cat_re);		  
+		  
+		      ComplexNDArray ra_tmp = tmp.complex_array_value ();
+	  
+		      if (error_state)
+			return retval;
+
+		      idx = cat_cx.cat (ra_tmp, dim, idx, move);
+
+		      t = COMPLEX;
+		    }
+		  else if (tmp.is_string ())
+		    {
+		      // This is a hack to be able to convert a dNDArray
+		      // to a chNDArray.
+
+		      cat_ch = charNDArray (octave_value (cat_re).char_array_value ());	  
+		  
+		      charNDArray ra_tmp = tmp.char_array_value ();
+	  
+		      if (error_state)
+			return retval;
+
+		      idx = cat_ch.cat (ra_tmp, dim, idx, move);
+	
+		      t = CHAR;
+		    }
+		  else //if (tmp.is_real_type ())
+		    { 
+		      NDArray ra_tmp = tmp.array_value ();
+	
+		      if (error_state)
+			return retval;
+		
+		      idx = cat_re.cat (ra_tmp, dim, idx, move);
+		    }  
+		}
+	      else if (t == COMPLEX)
+		{
+		  ComplexNDArray ra_tmp = tmp.complex_array_value ();
+	  
+		  if (error_state)
+		    return retval;
+
+		  idx = cat_cx.cat (ra_tmp, dim, idx, move);
+		}
+	      else if (t == CHAR)
+		{
+		  if (tmp.is_complex_type ())
+		    {
+		      error ("cannot convert complex type to character type");
+		      return retval;
+		    }
+		  else
+		    {
+		      charNDArray ra_tmp = tmp.char_array_value ();
+	  
+		      if (error_state)
+			return retval;
+
+		      cat_ch.cat (ra_tmp, dim, idx, move);
+		    }
+		}
+	    }
+	}
+      
+      if (t == REAL)
+	retval = octave_value (cat_re);
+      else if (t == COMPLEX)
+	retval = octave_value (cat_cx);
+      else if (t == CHAR)
+	retval = octave_value (cat_ch);
+      else if (t == CELL)
+	retval = octave_value (cat_cell);
+      else if (t == MAP)
+	retval = octave_value (cat_map);
+    }
+  else
+    print_usage ("cat");
+ 
+  return retval;
+}
+
+DEFUN (horzcat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
+Return the horizontal concatenation of N-d array objects, @var{array1},\n\
+@var{array2}, @dots{}, @var{arrayN} along dimension 2.\n\
+@end deftypefn\n\
+@seealso{cat and vertcat}")
+{
+  octave_value_list args_tmp = args;
+  
+  int dim = 2;
+  
+  octave_value d (dim);
+  
+  args_tmp.prepend (d);
+  
+  return do_cat (args_tmp);
+}
+
+DEFUN (vertcat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
+Return the vertical concatenation of N-d array objects, @var{array1},\n\
+@var{array2}, @dots{}, @var{arrayN} along dimension 1.\n\
+@end deftypefn\n\
+@seealso{cat and horzcat}")
+{
+  octave_value_list args_tmp = args;
+  
+  int dim = 1;
+  
+  octave_value d (dim);
+  
+  args_tmp.prepend (d);
+  
+  return do_cat (args_tmp);
+}
+
 DEFUN (cat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the concatenation of N-d array objects, @var{array1}, @var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
+Return the concatenation of N-d array objects, @var{array1},\n\
+@var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
 \n\
 @example\n\
 @group\n\
@@ -797,146 +1037,10 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 @end group\n\
 @end example\n\
 \n\
-@seealso{horzcat and vertcat}\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{horzcat and vertcat}")
 {
-  octave_value retval;
-
-  int dim = args(0).int_value () - 1;
-
-  if (error_state)
-    {
-      error ("cat: expecting first argument to be a integer");
-      return retval;
-    }
-
-  if (args.length () > 2 && (dim >= 0))
-    {      
-      dim_vector  dv = args(1).dims ();
-
-      // I need to look into these conversions.
-
-      for (int i = 2; i < args.length (); i++)
-	{
-	  // add_dims constructs a dimension vector which holds the
-	  // dimensions of the final array after concatenation.
-
-	  if (! cat_add_dims (dv, args(i).dims (), dim))
-	    {
-	      // Dimensions do not match.
-	      return retval;
-	    }
-	}
-
-      NDArray cat_re = NDArray (dv, 0);
-      ComplexNDArray cat_cx;
-      charNDArray cat_ch;
-
-      // The final array can be of three types:
-      //
-      //     re cx ch
-      // --------------
-      // re |re cx ch
-      // cx |cx cx X
-      // ch |ch X  ch
-      //
-      // (X means incompatible).
-
-      enum types { REAL, COMPLEX, CHAR } t = REAL;      
-
-      // Variable which tells us how much we have extended the
-      // variable along the dim dimension.
-
-      int curr_add_dims = 0;
-
-      // Tells us wether the array we concatenated had fewer dimensions
-      // than dim, such that we only add one dimension to
-      // curr_add_dims.
-
-      bool extended_dims = false;
-      
-      // Start filling in values.
-
-      for (int i = 1; i < args.length (); i++)
-	{
-	  octave_value tmp = args (i);
-
-	  dim_vector dv_arg = tmp.dims ();
-
-	  // This variable tells us wether the the new value is has a
-	  // number of dimension less than the final value.
-
-	  extended_dims = false;
-	  
-	  if (t == REAL)
-	    {
-	      if (tmp.is_complex_type ())
-		{
-		  cat_cx = ComplexNDArray (cat_re);
-		  
-		  extended_dims =
-		    cat_cx.cat (tmp.complex_array_value (), dim, curr_add_dims);
-		  
-		  t = COMPLEX;
-		}
-	      else if (tmp.is_string ())
-		{
-		  // This is a hack to be able to convert a dNDArray
-		  // to a chNDArray.
-
-		  cat_ch = charNDArray (octave_value (cat_re).char_array_value ());
-		  
-		  extended_dims =
-		    cat_ch.cat (tmp.char_array_value (), dim, curr_add_dims);
-		  
-		  t = CHAR;
-		}
-	      else
-		extended_dims = 
-		  cat_re.cat (tmp.array_value(), dim, curr_add_dims);
-	    }
-	  else if (t == COMPLEX)
-	    {
-	      extended_dims = 
-		cat_cx.cat (tmp.complex_array_value (), dim, curr_add_dims);
-	    }
-	  else if (t == CHAR)
-	    {
-	      if (tmp.is_complex_type ())
-		{
-		  error ("cannot convert complex type to character type");
-		  return retval;
-		}
-	      else
-		extended_dims =
-		  cat_ch.cat (tmp.char_array_value (), dim, curr_add_dims);
-	    }
-	  
-	  if (error_state)
-	    {
-	      // Wrong conversion in the last if statement.
-	      return retval;
-	    }
-
-	  // Keep track of how many dimensions have been added.
-
-	  if (extended_dims)
-	    curr_add_dims++;
-	  else
-	    curr_add_dims += dv_arg (dim);
-	}
-
-      if (t == REAL)
-	retval = octave_value (cat_re);
-      else if (t == COMPLEX)
-	retval = octave_value (cat_cx);
-      else if (t == CHAR)
-	retval = octave_value (cat_ch);
-    }
-  else
-    print_usage ("cat");
-
-  return retval;
+  return do_cat (args);
 }
 
 static octave_value

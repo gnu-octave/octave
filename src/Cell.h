@@ -96,6 +96,8 @@ public:
   // XXX FIXME XXX
   boolMatrix any (int dim = 0) const { return boolMatrix (); }
 
+  int cat (const Cell& ra_arg, int dim, int iidx, int move);
+
   // XXX FIXME XXX
   bool is_true (void) const { return false; }
 

@@ -526,8 +526,8 @@ public:
 // do that because of bugs in gcc prior to 3.3.
 
 template <class T>
-bool 
-cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, int dim, int add_dim);
+int 
+cat_ra (Array<T>& ra, const Array<T>& ra_arg, int dim, int idx, int move);
 
 template <class LT, class RT>
 /* friend */ int
@@ -564,9 +564,9 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   template class Array<T>; \
   template T resize_fill_value (const T&); \
 
-#define INSTANTIATE_CAT(T) \
-  template bool cat_ra (Array<T>& ra_cat, const Array<T>& ra_arg, \
-                        int dim, int add_dim)
+#define INSTANTIATE_ARRAY_CAT(T) \
+  template int cat_ra (Array<T>& ra, const Array<T>& ra_arg, \
+                       int dim, int idx, int move)
 
 #define INSTANTIATE_ARRAY_AND_ASSIGN(T) \
   INSTANTIATE_ARRAY (T); \

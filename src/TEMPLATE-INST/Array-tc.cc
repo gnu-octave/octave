@@ -51,6 +51,8 @@ template class Array<octave_value>;
 
 INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value);
 
+INSTANTIATE_ARRAY_CAT (octave_value);
+
 template class Array2<octave_value>;
 
 template class ArrayN<octave_value>;

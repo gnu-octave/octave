@@ -85,11 +85,9 @@ realclean: distclean
 .PHONY: realclean
 
 local-dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts
 .PHONY: local-dist
 
 dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts
 .PHONY: dist

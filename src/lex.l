@@ -112,11 +112,14 @@ static int match_any (char c, char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
-static void eat_whitespace (void);
 static void handle_number (char *yytext);
 static int handle_string (char delim, int text_style = 0);
-static int handle_close_brace (char *yytext);
-static int handle_identifier (char *s, int next_tok_is_eq);
+static int handle_close_brace (int spc_gobbled);
+static int handle_identifier (char *tok, int spc_gobbled);
+static int have_continuation (void);
+static int have_ellipsis_continuation (void);
+static int eat_whitespace (void);
+static int eat_continuation (void);
 
 %}
 
@@ -203,7 +206,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 <MATRIX>{SNL}*\]{S}* {
-  return handle_close_brace (yytext);
+    fixup_column_count (yytext);
+    int c = yytext[yyleng-1];
+    int cont_is_spc = eat_continuation ();
+    int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
+    return handle_close_brace (spc_gobbled);
   }
 
 %{
@@ -234,11 +241,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// Semicolons are both handled as row seprators in matrix constants.
+// Semicolons are handled as row seprators in matrix constants.
 %}
 
 <MATRIX>{SNLCMT}*;{SNLCMT}* {
     fixup_column_count (yytext);
+    eat_whitespace ();
     quote_is_transpose = 0;
     cant_be_identifier = 0;
     convert_spaces_to_comma = 1;
@@ -294,8 +302,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 \] {
-    promptflag++;
-
     if (! nesting_level.empty ())
       nesting_level.pop ();
 
@@ -373,9 +379,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     static char *tok = 0;
     delete [] tok;
     tok = strip_trailing_whitespace (yytext);
-    int c = yyinput ();
-    unput (c);
-    return handle_identifier (tok, (c == '='));
+    current_input_column += yyleng;
+    int c = yytext[yyleng-1];
+    int cont_is_spc = eat_continuation ();
+    int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
+    return handle_identifier (tok, spc_gobbled);
   }
 
 %{
@@ -534,16 +542,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 
 ")" {
     if (! nesting_level.empty ())
-      {
-	nesting_level.pop ();
-	promptflag++;
-      }
-    do_comma_insert_check ();
+      nesting_level.pop ();
+
     current_input_column++;
     cant_be_identifier = 1;
     quote_is_transpose = 1;
     convert_spaces_to_comma = (! nesting_level.empty ()
 			       && nesting_level.top () == BRACE);
+    do_comma_insert_check ();
     return ')';
   }
 
@@ -564,8 +570,11 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 void
 do_comma_insert_check (void)
 {
+  int spc_gobbled = eat_continuation ();
   int c = yyinput ();
   yyunput (c, yytext);
+  if (spc_gobbled)
+    yyunput (' ', yytext);
   do_comma_insert = (braceflag && c == '[');
 }
 
@@ -1070,11 +1079,7 @@ is_keyword (char *s)
     }
 
   if (end_found)
-    {
-      if (! defining_func && ! looping)
-	promptflag++;
-      return END;
-    }
+    return END;
 
   return 0;
 }
@@ -1318,9 +1323,13 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
-static void
+// Discard whitespace, including comments and continuations.
+// Return 1 if whitespace appeared in the input, 0 otherwise.
+
+static int
 eat_whitespace (void)
 {
+  int retval = 0;
   int in_comment = 0;
   int c;
   while ((c = yyinput ()) != EOF)
@@ -1331,9 +1340,11 @@ eat_whitespace (void)
 	{
 	case ' ':
 	case '\t':
+	  retval = 1;
 	  break;
 
 	case '\n':
+	  retval = 1;
 	  in_comment = 0;
 	  current_input_column = 0;
 	  break;
@@ -1342,6 +1353,28 @@ eat_whitespace (void)
 	case '%':
 	  in_comment = 1;
 	  break;
+
+	case '.':
+	  if (in_comment)
+	    break;
+	  else
+	    {
+	      if (have_ellipsis_continuation ())
+		break;
+	      else
+		goto done;
+	    }
+
+	case '\\':
+	  if (in_comment)
+	    break;
+	  else
+	    {
+	      if (have_continuation ())
+		break;
+	      else
+		goto done;
+	    }
 
 	default:
 	  if (in_comment)
@@ -1353,7 +1386,7 @@ eat_whitespace (void)
 
  done:
   yyunput (c, yytext);
-  return;
+  return retval;
 }
 
 static void
@@ -1383,6 +1416,10 @@ handle_number (char *yytext)
   do_comma_insert_check ();
 }
 
+// We have seen a backslash and need to find out if it should be
+// treated as a continuation character.  If so, this eats it, up to
+// and including the new line character.
+//
 // Match whitespace only, followed by a comment character or newline.
 // Once a comment character is found, discard all input until newline.
 // If non-whitespace characters are found before comment
@@ -1412,6 +1449,7 @@ have_continuation (void)
 
 	case '\n':
 	  current_input_column = 0;
+	  promptflag--;
 	  return 1;
 
 	default:
@@ -1438,6 +1476,10 @@ have_continuation (void)
   return 0;
 }
 
+// We have seen a `.' and need to see if it is the start of a
+// continuation.  If so, this eats it, up to and including the new
+// line character.
+
 static int
 have_ellipsis_continuation (void)
 {
@@ -1459,6 +1501,24 @@ have_ellipsis_continuation (void)
   return 0;
 }
 
+// See if we have a continuation line.  If so, eat it and the leading
+// whitespace on the next line.
+// Return 1 if whitespace appeared in the input, 0 otherwise.
+
+static int
+eat_continuation (void)
+{
+  int retval = 0;
+  int c = yyinput ();
+  if ((c == '.' && have_ellipsis_continuation ())
+      || (c == '\\' && have_continuation ()))
+    retval = eat_whitespace ();
+  else
+    yyunput (c, yytext);
+
+  return retval;
+}
+
 static int
 handle_string (char delim, int text_style)
 {
@@ -1473,17 +1533,13 @@ handle_string (char delim, int text_style)
 
       if (c == '\\')
 	{
-	  if (have_continuation ())
-	    promptflag--;
-	  else
+	  if (! have_continuation ())
 	    buf << (char) c;
 	  goto next;
 	}
       else if (c == '.')
 	{
-	  if (have_ellipsis_continuation ())
-	    promptflag--;
-	  else
+	  if (! have_ellipsis_continuation ())
 	    buf << (char) c;
 	  goto next;
 	}
@@ -1548,10 +1604,8 @@ handle_string (char delim, int text_style)
 }
 
 static int
-handle_close_brace (char *yytext)
+handle_close_brace (int spc_gobbled)
 {
-  fixup_column_count (yytext);
-
   if (! nesting_level.empty ())
     {
       nesting_level.pop ();
@@ -1559,14 +1613,9 @@ handle_close_brace (char *yytext)
     }
 
   if (braceflag == 0)
-    {
-      if (! defining_func)
-	promptflag++;
-      BEGIN 0;
-    }
-     
-  int c1 = yyinput ();
+    BEGIN 0;
 
+  int c1 = yyinput ();
   if (c1 == '=')
     {
       quote_is_transpose = 0;
@@ -1588,11 +1637,9 @@ handle_close_brace (char *yytext)
 
       if (braceflag && user_pref.whitespace_in_literal_matrix != 2)
 	{
-	  int c0 = yytext[yyleng-1];
-	  int spc_prev = (c0 == ' ' || c0 == '\t');
-	  int bin_op = next_token_is_bin_op (spc_prev, yytext);
+	  int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
 	  int postfix_un_op = next_token_is_postfix_unary_op
-	    (spc_prev, yytext);
+	    (spc_gobbled, yytext);
 
 	  int other_op = match_any (c1, ",;\n]");
 
@@ -1617,7 +1664,7 @@ handle_close_brace (char *yytext)
 // an identifier.  Handles keywords.
 
 static int
-handle_identifier (char *tok, int next_tok_is_eq)
+handle_identifier (char *tok, int spc_gobbled)
 {
 // It is almost always an error for an identifier to be followed
 // directly by another identifier.  Special cases are handled below.
@@ -1642,7 +1689,6 @@ handle_identifier (char *tok, int next_tok_is_eq)
     {
       if (kw_token == STYLE)
 	{
-	  current_input_column += yyleng;
 	  quote_is_transpose = 0;
 	  convert_spaces_to_comma = 1;
 	  return kw_token;
@@ -1684,6 +1730,10 @@ handle_identifier (char *tok, int next_tok_is_eq)
 	doing_set = 1;
     }
 
+  int c = yyinput ();
+  yyunput (c, yytext);
+  int next_tok_is_eq = (c == '=');
+
 // Make sure we put the return values of a function in the symbol
 // table that is local to the function.
 
@@ -1702,7 +1752,6 @@ handle_identifier (char *tok, int next_tok_is_eq)
 // (if needed).
 
   convert_spaces_to_comma = 1;
-  current_input_column += yyleng;
 
 // If we are defining a function and we have not seen the parameter
 // list yet and the next token is `=', return a token that represents
@@ -1735,11 +1784,9 @@ handle_identifier (char *tok, int next_tok_is_eq)
       && ! nesting_level.empty ()
       && nesting_level.top () == BRACE) 
     {
-      int c0 = yytext[yyleng-1];
-      int spc_prev = (c0 == ' ' || c0 == '\t');
-      int bin_op = next_token_is_bin_op (spc_prev, yytext);
+      int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
 
-      int postfix_un_op = next_token_is_postfix_unary_op (spc_prev,
+      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled,
 							  yytext);
 
       int c1 = yyinput ();
@@ -1747,7 +1794,7 @@ handle_identifier (char *tok, int next_tok_is_eq)
       int other_op = match_any (c1, ".,;\n]");
       int index_op = (c1 == '('
 		      && (user_pref.whitespace_in_literal_matrix == 0
-			  || ! spc_prev));
+			  || ! spc_gobbled));
 
       if (! (postfix_un_op || bin_op || other_op || index_op))
 	unput (',');

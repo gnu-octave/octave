@@ -1,3 +1,7 @@
+Wed Jun 25 21:26:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/mesh.m: Set noparametric plot mode after plotting.
+
 Wed Jun 25 21:06:10 1997  Rick Niles <niles@axp745.gsfc.nasa.gov>
 
 	* plot/__pltopt__.m: Handle key/legend names.

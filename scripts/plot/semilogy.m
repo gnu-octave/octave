@@ -33,6 +33,10 @@
 
 function semilogy (...)
 
+  ## XXX FIXME XXX -- these plot states should really just be set
+  ## temporarily, probably inside an unwind_protect block, but there is
+  ## no way to determine their current values.
+
   gset nologscale x;
   gset logscale y;
   gset nopolar;

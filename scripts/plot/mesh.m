@@ -32,6 +32,10 @@
 
 function mesh (x, y, z)
 
+  ## XXX FIXME XXX -- the plot states should really just be set
+  ## temporarily, probably inside an unwind_protect block, but there is
+  ## no way to determine their current values.
+
   if (nargin == 1)
     z = x;
     if (is_matrix (z))
@@ -69,6 +73,7 @@ function mesh (x, y, z)
 	gset parametric;
         gset view 60, 30, 1, 1
 	gsplot (zz);
+	gset noparametric;
       else
         msg = "mesh: rows (z) must be the same as length (x) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);
@@ -95,6 +100,7 @@ function mesh (x, y, z)
 	gset parametric;
         gset view 60, 30, 1, 1
 	gsplot (zz);
+	gset noparametric;
       else
         error ("mesh: x, y, and z must have same dimensions");
       endif

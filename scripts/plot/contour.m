@@ -26,10 +26,13 @@
 
 function contour (z, n, x, y)
 
-
   if (nargin == 1)
     n = 10;
   endif
+
+  ## XXX FIXME XXX -- these plot states should really just be set
+  ## temporarily, probably inside an unwind_protect block, but there is
+  ## no way to determine their current values.
 
   if (nargin == 1 || nargin == 2)
     if (is_matrix (z))
@@ -42,7 +45,7 @@ function contour (z, n, x, y)
       gset view 0, 0, 1, 1;
       gsplot z w l 1;
     else
-      error ("mesh: argument must be a matrix");
+      error ("contour: argument must be a matrix");
     endif
   elseif (nargin == 4)
     if (is_vector (x) && is_vector (y) && is_matrix (z))
@@ -70,15 +73,15 @@ function contour (z, n, x, y)
         gset view 0, 0, 1, 1;
 	gsplot zz w l 1;
       else
-        msg = "mesh: rows (z) must be the same as length (x) and";
+        msg = "contour: rows (z) must be the same as length (x) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);
         error (msg);
       endif
     else
-      error ("mesh: x and y must be vectors and z must be a matrix");
+      error ("contour: x and y must be vectors and z must be a matrix");
     endif
   else
-    usage ("mesh (z, levels, x, y)");
+    usage ("contour (z, levels, x, y)");
   endif
 
 endfunction

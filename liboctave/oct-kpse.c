@@ -54,7 +54,7 @@ octave_kpse_all_path_search (const char *path, const char *name)
 void
 octave_kpse_set_progname (const char *name)
 {
-  octave_kpse_set_progname (name);
+  kpse_set_progname (name);
 }
 
 void

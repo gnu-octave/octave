@@ -66,7 +66,16 @@ Array2<T>::index (idx_vector& idx_arg) const
   int idx_orig_rows = idx_arg.orig_rows ();
   int idx_orig_columns = idx_arg.orig_columns ();
 
-  if (nr == 1 && nc == 1)
+  if (idx_arg.is_colon ())
+    {
+      // Fast magic colon processing.
+
+      int result_nr = nr * nc;
+      int result_nc = result_nr ? 1 : 0;
+
+      retval = Array2<T> (*this, result_nr, result_nc);
+    }
+  else if (nr == 1 && nc == 1)
     {
       Array<T> tmp = Array<T>::index (idx_arg);
 
@@ -77,7 +86,7 @@ Array2<T>::index (idx_vector& idx_arg) const
     }
   else if (nr == 1 || nc == 1)
     {
-      int result_is_column_vector = (nc == 1 || idx_arg.is_colon ());
+      int result_is_column_vector = (nc == 1);
 
       Array<T> tmp = Array<T>::index (idx_arg);
 
@@ -94,7 +103,6 @@ Array2<T>::index (idx_vector& idx_arg) const
 	}
     }
   else if (liboctave_dfi_flag
-	   || idx_arg.is_colon ()
 	   || (idx_arg.one_zero_only ()
 	       && idx_orig_rows == nr
 	       && idx_orig_columns == nc))
@@ -109,12 +117,7 @@ Array2<T>::index (idx_vector& idx_arg) const
 	  int result_nr = idx_orig_rows;
 	  int result_nc = idx_orig_columns;
 
-	  if (idx_arg.is_colon ())
-	    {
-	      result_nr = nr * nc;
-	      result_nc = result_nr ? 1 : 0;
-	    }
-	  else if (idx_arg.one_zero_only ())
+	  if (idx_arg.one_zero_only ())
 	    {
 	      result_nr = idx_arg.ones_count ();
 	      result_nc = (result_nr > 0 ? 1 : 0);

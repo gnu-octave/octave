@@ -1773,7 +1773,7 @@ feof_internal (const Octave_object& args, int nargout)
   Octave_object retval;
 
 // Get file info.
-  Pix p = return_valid_file (args(1));
+  Pix p = return_valid_file (args(0));
 
   if (! p)
     return retval;

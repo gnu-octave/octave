@@ -45,14 +45,14 @@ extern int linear_constraints_ok (const ColumnVector& x,
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_qpsol_2 (tree_constant *args, int nargin, int nargout)
+builtin_qpsol_2 (const tree_constant *args, int nargin, int nargout)
 {
   return qpsol (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-qpsol (tree_constant *args, int nargin, int nargout)
+qpsol (const tree_constant *args, int nargin, int nargout)
 {
 /*
 

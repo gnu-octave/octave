@@ -39,7 +39,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_matrix_exp_2 (tree_constant *args, int nargin, int nargout)
+builtin_matrix_exp_2 (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = new tree_constant [2];
   retval[0] = matrix_exp (args[1]);
@@ -57,7 +57,7 @@ extern "C"
 }
 
 tree_constant
-matrix_exp (tree_constant& a)
+matrix_exp (const tree_constant& a)
 {
   tree_constant retval;
   tree_constant tmp = a.make_numeric ();

@@ -39,7 +39,7 @@ static tree *lsode_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_lsode_2 (tree_constant *args, int nargin, int nargout)
+builtin_lsode_2 (const tree_constant *args, int nargin, int nargout)
 {
   return lsode (args, nargin, nargout);
 }
@@ -93,7 +93,7 @@ lsode_user_function (const ColumnVector& x, double t)
 }
 
 tree_constant *
-lsode (tree_constant *args, int nargin, int nargout)
+lsode (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

@@ -35,7 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_inv (tree_constant *args, int nargin, int nargout)
+builtin_inv (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = new tree_constant [2];
   retval[0] = inverse (args[1]);
@@ -44,7 +44,7 @@ builtin_inv (tree_constant *args, int nargin, int nargout)
 #endif
 
 tree_constant
-inverse (tree_constant& a)
+inverse (const tree_constant& a)
 {
   tree_constant retval;
 

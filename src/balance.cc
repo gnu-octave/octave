@@ -37,14 +37,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_balance_2 (tree_constant *args, int nargin, int nargout)
+builtin_balance_2 (const tree_constant *args, int nargin, int nargout)
 {
   return balance (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-balance (tree_constant *args, int nargin, int nargout)
+balance (const tree_constant *args, int nargin, int nargout)
 {
   char *bal_job;
   int my_nargin;		// # args w/o optional string arg

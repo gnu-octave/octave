@@ -52,14 +52,14 @@ extern "C"
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_syl_2 (tree_constant *args, int nargin, int nargout)
+builtin_syl_2 (const tree_constant *args, int nargin, int nargout)
 {
   return syl (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-syl (tree_constant *args, int nargin, int nargout)
+syl (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 

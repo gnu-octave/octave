@@ -39,7 +39,7 @@ static tree *dassl_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_dassl_2 (tree_constant *args, int nargin, int nargout)
+builtin_dassl_2 (const tree_constant *args, int nargin, int nargout)
 {
   return dassl (args, nargin, nargout);
 }
@@ -104,7 +104,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 }
 
 tree_constant *
-dassl (tree_constant *args, int nargin, int nargout)
+dassl (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

@@ -39,27 +39,27 @@ static tree *fsqp_constraints;
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_fsqp_2 (tree_constant *args, int nargin, int nargout)
+builtin_fsqp_2 (const tree_constant *args, int nargin, int nargout)
 {
   return fsqp (args, nargin, nargout);
 }
 #endif
 
 double
-fsqp_objective_function (ColumnVector& x)
+fsqp_objective_function (const ColumnVector& x)
 {
   return 0.0;
 }
 
 ColumnVector
-fsqp_constraint_function (ColumnVector& x)
+fsqp_constraint_function (const ColumnVector& x)
 {
   ColumnVector retval;
   return retval;
 }
 
 tree_constant *
-fsqp (tree_constant *args, int nargin, int nargout)
+fsqp (const tree_constant *args, int nargin, int nargout)
 {
 /*
 

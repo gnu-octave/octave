@@ -56,14 +56,14 @@ int F77_FCN (zunghr) (const int*, const int*, const int*, Complex*,
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_givens_2 (tree_constant *args, int nargin, int nargout)
+builtin_givens_2 (const tree_constant *args, int nargin, int nargout)
 {
   return givens (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-givens (tree_constant *args, int nargin, int nargout)
+givens (const tree_constant *args, int nargin, int nargout)
 {
 
   tree_constant *retval = NULL_TREE_CONST;

@@ -42,14 +42,14 @@ static tree *npsol_constraints;
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_npsol_2 (tree_constant *args, int nargin, int nargout)
+builtin_npsol_2 (const tree_constant *args, int nargin, int nargout)
 {
   return npsol (args, nargin, nargout);
 }
 #endif
 
 double
-npsol_objective_function (ColumnVector& x)
+npsol_objective_function (const ColumnVector& x)
 {
   int n = x.capacity ();
 
@@ -116,7 +116,7 @@ npsol_objective_function (ColumnVector& x)
 }
 
 ColumnVector
-npsol_constraint_function (ColumnVector& x)
+npsol_constraint_function (const ColumnVector& x)
 {
   ColumnVector retval;
 
@@ -214,15 +214,15 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
       else if (nllb_len != nlub_len || nllb_len != c_len)
 	{
 	  ok = 0;
-	  error ("%s: nonlinear constraints have inconsistent dimensions"
-		 warn_for,);
+	  error ("%s: nonlinear constraints have inconsistent dimensions",
+		 warn_for);
 	}
     }
   return ok;
 }
 
 tree_constant *
-npsol (tree_constant *args, int nargin, int nargout)
+npsol (const tree_constant *args, int nargin, int nargout)
 {
 /*
 

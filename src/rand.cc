@@ -47,7 +47,7 @@ extern "C"
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_rand_2 (tree_constant *args, int nargin, int nargout)
+builtin_rand_2 (const tree_constant *args, int nargin, int nargout)
 {
   return rand_internal (args, nargin, nargout);
 }
@@ -103,7 +103,7 @@ curr_rand_dist (void)
 }
 
 tree_constant *
-rand_internal (tree_constant *args, int nargin, int nargout)
+rand_internal (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

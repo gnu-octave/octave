@@ -39,7 +39,7 @@ static tree *fsolve_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_fsolve (tree_constant *args, int nargin, int nargout)
+builtin_fsolve (const tree_constant *args, int nargin, int nargout)
 {
   return fsolve (args, nargin, nargout);
 }
@@ -71,7 +71,7 @@ hybrd_info_to_fsolve_info (int info)
 }
 
 ColumnVector
-fsolve_user_function (ColumnVector& x)
+fsolve_user_function (const ColumnVector& x)
 {
   ColumnVector retval;
 
@@ -117,7 +117,7 @@ fsolve_user_function (ColumnVector& x)
 }
 
 tree_constant *
-fsolve (tree_constant *args, int nargin, int nargout)
+fsolve (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

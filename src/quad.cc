@@ -40,7 +40,7 @@ static tree *quad_fcn;
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_quad_2 (tree_constant *args, int nargin, int nargout)
+builtin_quad_2 (const tree_constant *args, int nargin, int nargout)
 {
   return do_quad (args, nargin, nargout);
 }
@@ -77,7 +77,7 @@ quad_user_function (double x)
 }
 
 tree_constant *
-do_quad (tree_constant *args, int nargin, int nargout)
+do_quad (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

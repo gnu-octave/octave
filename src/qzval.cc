@@ -51,14 +51,14 @@ extern "C"
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_qzvalue_2 (tree_constant *args, int nargin, int nargout)
+builtin_qzvalue_2 (const tree_constant *args, int nargin, int nargout)
 {
   return qzvalue (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-qzvalue (tree_constant *args, int nargin, int nargout)
+qzvalue (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 

@@ -33,14 +33,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_lpsolve_2 (tree_constant *args, int nargin, int nargout)
+builtin_lpsolve_2 (const tree_constant *args, int nargin, int nargout)
 {
   return lpsolve (args, nargin, nargout);
 }
 #endif
 
 tree_constant *
-lpsolve (tree_constant *args, int nargin, int nargout)
+lpsolve (const tree_constant *args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 

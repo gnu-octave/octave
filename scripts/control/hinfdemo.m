@@ -32,7 +32,7 @@
 ## 
 ## @table @asis
 ## @item SISO plant
-## @example
+## @display
 ## @group
 ##	           s - 2
 ##	G(s) = --------------
@@ -51,14 +51,14 @@
 ##	    -----| K |<-------
 ##	         +---+
 ## @end group
-## @end example
+## @end display
 ##	W1 und W2 are the robustness and performance weighting
 ##       functions
 ##
 ## @item MIMO plant
 ## The optimal controller minimizes the H_infinity norm of the
 ## augmented plant P (mixed-sensitivity problem):
-## @example
+## @display
 ## @group
 ##      w
 ##       1 -----------+
@@ -85,7 +85,7 @@
 ##                   | y  |           | u  |
 ##                   +    +           +    +
 ## @end group
-## @end example
+## @end display
 ##
 ## @item DISCRETE SYSTEM
 ##   This is not a true discrete design. The design is carried out
@@ -95,13 +95,16 @@
 ##   compared to the plant time constants.
 ##
 ## @item The continuous plant
+## @display
 ## @group
 ##	              1
 ##	G (s) = --------------
 ##	 k      (s + 2)(s + 1)
 ##
 ## @end group
+## @end display
 ## is discretised with a ZOH (Sampling period = Ts = 1 second):
+## @display
 ## @group
 ## 
 ##	          0.199788z + 0.073498
@@ -121,6 +124,7 @@
 ##	    -----| K |<-------
 ##	         +---+
 ## @end group
+## @end display
 ##	W1 and W2 are the robustness and performancs weighting
 ##       functions
 ## @end deftypefn

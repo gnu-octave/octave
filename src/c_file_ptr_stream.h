@@ -27,11 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 
 class
-c_file_ptr_buf : public streambuf
+c_file_ptr_buf : public std::streambuf
 {
 protected:
 
@@ -41,7 +41,7 @@ public:
 
   FILE* stdiofile (void) const { return f; }
 
-  c_file_ptr_buf (FILE *f_arg) : streambuf (), f (f_arg) { }
+  c_file_ptr_buf (FILE *f_arg) : std::streambuf (), f (f_arg) { }
 
   ~c_file_ptr_buf (void);
 

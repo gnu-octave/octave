@@ -1,3 +1,7 @@
+Thu Sep  2 11:54:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-obj.cc (make_argv): Correctly handle empty strings as args.
+
 Fri Aug 20 08:17:52 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/quad.cc (quad): Delete unused label.

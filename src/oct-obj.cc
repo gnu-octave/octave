@@ -166,7 +166,14 @@ octave_value_list::make_argv (const string& fcn_name) const
       int total_nr = 0;
 
       for (int i = 0; i < len; i++)
-	total_nr += elem(i).rows ();
+	{
+	  // An empty string ("") has zero columns and zero rows (a
+	  // change that was made for Matlab contemptibility.
+
+	  int n = elem(i).rows ();
+
+	  total_nr += n ? n : 1;
+	}
 
       argv.resize (total_nr+1);
 
@@ -177,7 +184,7 @@ octave_value_list::make_argv (const string& fcn_name) const
 	{
 	  int nr = elem(i).rows ();
 
-	  if (nr == 1)
+	  if (nr < 2)
 	    argv[k++] = elem(i).string_value ();
 	  else
 	    {

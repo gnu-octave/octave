@@ -180,7 +180,7 @@ base_pathname (const string& s)
 string
 make_absolute (const string& s, const string& dot_path)
 {
-  if (dot_path.empty () || s[0] == '/')
+  if (dot_path.empty () || s[0] == '/' || s.empty ())
     return s;
 
   string current_path = dot_path;

@@ -109,6 +109,7 @@ static int match_any (char c, char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
+static int handle_close_brace (char *yytext);
 static int handle_identifier (char *s, int next_tok_is_eq);
 
 %}
@@ -308,85 +309,19 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// It's also a pain in the ass to decide whether to insert a comma
-// after seeing a ']' character...
-//
 // For this and the next two rules, we're looking at ']', and we
-// need to know if the next token is '='.
-//
-// All this so we can handle the bogus syntax 
-//
-//   [x,y]                % an expression by itself
-//   [x,y] = expression   % assignment to a list of identifiers
-//   [x,y] == expression  % test for equality
+// need to know if the next token is `=' or `=='.
 //
 // It would have been so much easier if the delimiters were simply
 // different for the expression on the left hand side of the equals
 // operator.
+//
+// It's also a pain in the ass to decide whether to insert a comma
+// after seeing a ']' character...
 %}
 
 <MATRIX>{SNL}*\]{S}* {
-    fixup_column_count (yytext);
-
-    if (! in_brace_or_paren.empty ())
-      {
-	in_brace_or_paren.pop ();
-	braceflag--;
-      }
-
-    if (braceflag == 0)
-      {
-	if (! defining_func)
-	  promptflag++;
-	BEGIN 0;
-      }
-     
-    int c1 = yyinput ();
-
-    if (c1 == '=')
-      {
-	quote_is_transpose = 0;
-	cant_be_identifier = 0;
-	convert_spaces_to_comma = 1;
-
-	int c2 = yyinput ();
-        unput (c2);
-	unput (c1);
-
-	if (c2 != '=' && maybe_screwed_again)
-	  return SCREW_TWO;
-	else
-	  return ']';
-      }
-    else
-      {
-	unput (c1);
-
-	if (braceflag && user_pref.commas_in_literal_matrix != 2)
-	  {
-	    int c0 = yytext[yyleng-1];
-	    int spc_prev = (c0 == ' ' || c0 == '\t');
-	    int bin_op = next_token_is_bin_op (spc_prev, yytext);
-	    int postfix_un_op = next_token_is_postfix_unary_op
-	      (spc_prev, yytext);
-
-	    int other_op = match_any (c1, ",;\n]");
-
-	    if (! (postfix_un_op || bin_op || other_op
-		   || in_brace_or_paren.empty ())
-		&& in_brace_or_paren.top ()
-		&& convert_spaces_to_comma)
-	      {
-		unput (',');
-		return ']';
-	      }
-	  }
-      }
-
-    quote_is_transpose = 1;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
-    return ']';
+  return handle_close_brace (yytext);
   }
 
 %{
@@ -590,8 +525,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// Colon operator is handled differently if we are in the range part
-// of a plot command.
+// Double quotes always begin strings.
+%}
+
+\"		{ BEGIN DQSTRING; }
+
+%{
+// The colon operator is handled differently if we are in the range
+// part of a plot command.
 %}
 
 ":" {
@@ -629,7 +570,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // Other operators.
 %}
 
-\"		{ BEGIN DQSTRING; }
 ".*"		{ BIN_OP_RETURN (EMUL, 0); }
 "./"		{ BIN_OP_RETURN (EDIV, 0); }
 ".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
@@ -1471,6 +1411,72 @@ strip_trailing_whitespace (char *s)
     *t = '\0';
 
   return retval;
+}
+
+static int
+handle_close_brace (char *yytext)
+{
+  fixup_column_count (yytext);
+
+  if (! in_brace_or_paren.empty ())
+    {
+      in_brace_or_paren.pop ();
+      braceflag--;
+    }
+
+  if (braceflag == 0)
+    {
+      if (! defining_func)
+	promptflag++;
+      BEGIN 0;
+    }
+     
+  int c1 = yyinput ();
+
+  if (c1 == '=')
+    {
+      quote_is_transpose = 0;
+      cant_be_identifier = 0;
+      convert_spaces_to_comma = 1;
+
+      int c2 = yyinput ();
+      unput (c2);
+      unput (c1);
+
+      if (c2 != '=' && maybe_screwed_again)
+	return SCREW_TWO;
+      else
+	return ']';
+    }
+  else
+    {
+      unput (c1);
+
+      if (braceflag && user_pref.commas_in_literal_matrix != 2)
+	{
+	  int c0 = yytext[yyleng-1];
+	  int spc_prev = (c0 == ' ' || c0 == '\t');
+	  int bin_op = next_token_is_bin_op (spc_prev, yytext);
+	  int postfix_un_op = next_token_is_postfix_unary_op
+	    (spc_prev, yytext);
+
+	  int other_op = match_any (c1, ",;\n]");
+
+	  if (! (postfix_un_op || bin_op || other_op
+		 || in_brace_or_paren.empty ())
+	      && in_brace_or_paren.top ()
+	      && convert_spaces_to_comma)
+	    {
+	      unput (',');
+	      return ']';
+	    }
+	}
+    }
+
+  quote_is_transpose = 1;
+  cant_be_identifier = 0;
+  convert_spaces_to_comma = 1;
+  return ']';
 }
 
 // Figure out exactly what kind of token to return when we have seen

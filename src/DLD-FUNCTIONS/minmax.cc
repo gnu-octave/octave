@@ -100,20 +100,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   bool single_arg = (nargin == 1) || arg2.is_empty();	\
  \
-  if (single_arg) \
-    { \
-      dv(dim) = 1; \
-      int n_dims = dv.length (); \
-      for (int i = n_dims; i > 1; i--) \
-	{ \
-	  if (dv(i-1) == 1) \
-	    n_dims--; \
-	  else \
-	    break; \
-	} \
-      dv.resize (n_dims); \
-    } \
- \
   if (single_arg && (nargout == 1 || nargout == 0)) \
     { \
       if (arg1.is_real_type ()) \
@@ -123,7 +109,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  if (! error_state) \
 	    { \
 	      NDArray n = m. FCN (dim); \
-	      n.resize (dv); \
 	      retval(0) = n; \
 	    } \
 	} \
@@ -134,7 +119,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  if (! error_state) \
 	    { \
 	      ComplexNDArray n = m. FCN (dim); \
-	      n.resize (dv); \
 	      retval(0) = n; \
 	    } \
 	} \
@@ -152,7 +136,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  if (! error_state) \
 	    { \
 	      NDArray n = m. FCN (index, dim);	\
-	      n.resize (dv); \
 	      retval(0) = n; \
 	    } \
 	} \
@@ -163,7 +146,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  if (! error_state) \
 	    { \
 	      ComplexNDArray n = m. FCN (index, dim);	\
-	      n.resize (dv); \
 	      retval(0) = n; \
 	    } \
 	} \

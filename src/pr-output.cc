@@ -2142,17 +2142,14 @@ DEFUN (fdisp, args, ,
 Display the value of @var{x} on the stream @var{fid}.  For example,\n\
 \n\
 @example\n\
-disp (stdout, \"The value of pi is:\"), disp (stdout, pi)\n\
+fdisp (stdout, \"The value of pi is:\"), fdisp (stdout, pi)\n\
 \n\
      @print{} the value of pi is:\n\
      @print{} 3.1416\n\
 @end example\n\
 \n\
 @noindent\n\
-Note that the output from @code{disp} always ends with a newline.\n\
-\n\
-If an output value is requested, @code{disp} prints nothing and\n\
-returns the formatted output in a string.\n\
+Note that the output from @code{fdisp} always ends with a newline.\n\
 @end deftypefn\n\
 @seealso{disp}")
 {

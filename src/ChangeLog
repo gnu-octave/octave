@@ -1,3 +1,10 @@
+2004-04-21  David Bateman  <dbateman@free.fr>
+
+	* DLD_FUNCTIONS/fft.cc(do_fft): Correctly initialize the variable dim
+	for scalar arguments.
+
+	* DLD-FUNCTIONS/minmax.cc: Handle single vector arg correctly.
+
 2004-04-20  John W. Eaton  <jwe@octave.org>
 
 	* ls-mat-ascii.cc (read_mat_ascii_data): Prepend "X" to keywords.

@@ -71,10 +71,11 @@ of @code{popen}, @code{pclose}, @code{execute}, @code{sync_system}, and
 @code{async_system}.
 
 @item
-David Bateman @email{dbateman@@free.fr} converted several built-in
-functions to use Lapack instead of Linpack, and split the
-functionality of @file{load-save.cc} out into the @code{octave_value}
-classes.
+David Bateman @email{dbateman@@free.fr} improved the sort and min/max
+functions, made many functions N-d aware, converted several built-in
+functions to use Lapack instead of Linpack, split the functionality of
+@file{load-save.cc} out into the @code{octave_value} classes, and has
+contributed in many other ways.
 
 @item
 Karl Berry @email{karl@@cs.umb.edu} wrote the @code{kpathsea} library

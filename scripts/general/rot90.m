@@ -46,26 +46,36 @@
 ## rot90 ([1, 2; 3, 4], 7)
 ## @end group
 ## @end example
+##
+## Due to the difficulty of defining an axis about which to rotate the 
+## matrix @code{rot90} only work with 2-D arrays.  To rotate N-d arrays
+## use @code{rotdim} instead.
 ## @end deftypefn
-## @seealso{flipud and fliplr}
+## @seealso{rotdim, flipud, fliplr and flipdim}
 
 ## Author: jwe
 
 function y = rot90 (x, k)
 
-  if (nargin < 2)
-    k = 1;
-  endif
-
-  if (imag (k) != 0 || fix (k) != k)
-    error ("rot90: k must be an integer");
-  endif
-
   if (nargin == 1 || nargin == 2)
+    if (nargin < 2)
+      k = 1;
+    endif
+
+    if (ndims (x) > 2)
+      error ("rot90: Only works with 2-D arrays")
+    endif
+
+    if (imag (k) != 0 || fix (k) != k)
+      error ("rot90: k must be an integer");
+    endif
+
     k = rem (k, 4);
+
     if (k < 0)
       k = k + 4;
     endif
+
     if (k == 0)
       y = x;
     elseif (k == 1)

@@ -1,3 +1,19 @@
+2004-04-21  David Bateman  <dbateman@free.fr>
+
+	* general/diff.m: Make the code N-d array aware.  Allow an
+	optional argument to define the dimension along which to perform
+	the differences and allow the order of the differences to be larger
+	than the dimension itself.
+
+	* general/rotdim.m: New function for rotation of an N-d array in an
+	arbitrary plane.
+
+	* general/flipdim.m: New function to flip an N-d array about an 
+	arbitrary axis.
+
+	* general/rot90.m, general/fliplr.m, general/flipud.m: Limit the
+	use of these functions to 1- and 2-d arrays.
+
 2004-04-16  John W. Eaton  <jwe@octave.org>
 
 	* elfun/gcd.m: Delete.

@@ -30,7 +30,11 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso{flipud and rot90}
+##
+## Due to the difficult of define which axis about which to flip the 
+## matrix @code{fliplr} only work with 2-D arrays. To flip N-D arrays
+## use @code{flipdim} instead.
+## @seealso{flipud, flipdim, rot90 and rotdim}
 
 ## Author: jwe
 
@@ -38,6 +42,10 @@ function y = fliplr (x)
 
   if (nargin != 1)
     usage ("fliplr (x)");
+  endif
+
+  if (ndims (x) > 2)
+    error ("fliplr: Only works with 2-D arrays")
   endif
 
   nc = columns (x);

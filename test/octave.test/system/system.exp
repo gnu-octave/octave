@@ -156,7 +156,7 @@ set prog_output "\n... usleep:.*"
 do_test usleep-3.m
 
 set test rename-1
-set prog_output "^ans = 1"
+set prog_output "ans = 1"
 do_test rename-1.m
 
 set test rename-2
@@ -168,7 +168,7 @@ set prog_output "\n... rename:.*"
 do_test rename-3.m
 
 set test unlink-1
-set prog_output "^ans = 1"
+set prog_output "ans = 1"
 do_test unlink-1.m
 
 set test unlink-2
@@ -212,7 +212,7 @@ set prog_output "\n... rmdir:.*"
 do_test rmdir-2.m
 
 set test umask-1
-set prog_output "^ans = 1"
+set prog_output "ans = 1"
 do_test umask-1.m
 
 set test umask-2

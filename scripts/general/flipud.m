@@ -29,8 +29,12 @@
 ##          1  2
 ## @end group
 ## @end example
+##
+## Due to the difficulty of defining which axis about which to flip the 
+## matrix @code{flipud} only work with 2-d arrays.  To flip N-d arrays
+## use @code{flipdim} instead.
 ## @end deftypefn
-## @seealso{fliplr and rot90}
+## @seealso{fliplr, flipdim, rot90 and rotdim}
 
 ## Author: jwe
 
@@ -38,6 +42,10 @@ function y = flipud (x)
 
   if (nargin != 1)
     usage ("flipud (x)");
+  endif
+
+  if (ndims (x) > 2)
+    error ("flipud: Only works with 2-d arrays")
   endif
 
   nr = rows (x);

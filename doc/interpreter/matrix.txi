@@ -73,7 +73,11 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(flipud)
 
+@DOCSTRING(flipdim)
+
 @DOCSTRING(rot90)
+
+@DOCSTRING(rotdim)
 
 @DOCSTRING(cat)
 

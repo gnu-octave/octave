@@ -95,12 +95,18 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
       return retval;
 
   if (dim < 0)
-    for (int i = 0; i < dims.length (); i++)
-      if ( dims(i) > 1)
-	{
-	  dim = i;
-	  break;
-	}
+    {
+      for (int i = 0; i < dims.length (); i++)
+	if ( dims(i) > 1)
+	  {
+	    dim = i;
+	    break;
+	  }
+
+      // And if the first argument is scalar?
+      if (dim < 0)
+	dim = 1;
+    }
 
   if (n_points < 0)
     n_points = dims (dim);

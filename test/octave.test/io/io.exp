@@ -71,7 +71,7 @@ set prog_output "\n... sprintf:."
 do_test sprintf-3.m
 
 set test fopen-1
-set prog_output "^ans = 1"
+set prog_output "ans = 1"
 do_test fopen-1.m
 
 set test fopen-2
@@ -83,7 +83,7 @@ set prog_output "^error:.*"
 do_test fopen-3.m
 
 set test fopen-4
-set prog_output "^error:.*"
+set prog_output "error:.*"
 do_test fopen-4.m
 
 set test fopen-5

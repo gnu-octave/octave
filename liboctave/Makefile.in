@@ -31,13 +31,14 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
 	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h \
 	Quad.h Range.h base-min.h f77-uscore.h idx-vector.h \
-	lo-error.h oct-cmplx.h sun-utils.h \
+	lo-error.h oct-cmplx.h str-vec.h sun-utils.h \
 	$(MATRIX_INC)
 
 TEMPLATE_SRC := Array.cc MArray.cc
 
 TI_SRC := Array-C.cc Array-ch.cc Array-i.cc Array-d.cc Array-s.cc \
-	 MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
+	Array-str.cc \
+	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
 
 MATRIX_SRC := Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc \

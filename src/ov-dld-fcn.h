@@ -47,6 +47,8 @@ octave_dld_function : public octave_builtin
 {
 public:
 
+  octave_dld_function (void);
+
   octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
 		       const std::string& nm = std::string (),
 		       const std::string& ds = std::string ());
@@ -68,8 +70,6 @@ public:
   bool is_dld_function (void) const { return true; }
 
 private:
-
-  octave_dld_function (void);
 
   octave_dld_function (const octave_dld_function& m);
 

@@ -1,3 +1,12 @@
+2002-04-25  Paul Kienzle <pkienzle@users.sf.net>
+
+	* audio/lin2mu.m: Accept matrices and [-1,1] normalized audio.
+	Use optional parameter to specify the number of bits in the input.
+	* audio/mu2lin.m: Accept matrices, return n-bit integers or 
+	floats in the range [-1,1], 2x speedup.
+
+	* strings/index.m, strings/rindex.m: Vectorize for speed.
+
 2002-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/kron.m: Delete.

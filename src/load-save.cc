@@ -20,9 +20,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by John W. Eaton.
-// HDF5 support by Steven G. Johnson.
-// Matlab v5 support by James R. Van Zandt.
+// Author: John W. Eaton.
+// HDF5 support by Steven G. Johnson <stevenj@alum.mit.edu>
+// Matlab v5 support by James R. Van Zandt <jrv@vanzandt.mv.com>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -20,7 +20,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by A. S. Hodel <scotte@eng.auburn.edu>
+// Author: A. S. Hodel <scotte@eng.auburn.edu>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

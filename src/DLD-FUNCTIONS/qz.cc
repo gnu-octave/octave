@@ -21,7 +21,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // Generalized eigenvalue balancing via LAPACK
-// Written by A. S. Hodel <scotte@eng.auburn.edu>
+
+// Author: A. S. Hodel <scotte@eng.auburn.edu>
 
 #undef DEBUG
 #undef DEBUG_SORT

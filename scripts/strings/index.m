@@ -40,34 +40,61 @@ function n = index (s, t)
   if (nargin != 2)
     usage ("index (s, t)");
   endif
+  
+  if (!isstr (s) || !isstr (t) || all (size (s) > 1) || all (size (t) > 1) )
+    error ("index: expecting string arguments");
+  endif
 
-  n = 0;
+  l_s = length (s);
+  l_t = length (t);
+  
+  if ( l_s == 0 || l_s < l_t )
+    ## zero length source, or target longer than source
+    v = [];
+    
+  elseif ( l_t == 0 )
+    ## zero length target: return first
+    v = 1;
+    
+  elseif ( l_t == 1 )
+    ## length one target: simple find
+    v = find (s==t);
+    
+  elseif ( l_t == 2 )
+    ## length two target: find first at i and second at i+1
+    v = find (s (1 : l_s-1) == t (1) & s (2 : l_s) == t (2));
+    
+  else
+    ## length three or more: match the first three by find then go through
+    ## the much smaller list to determine which of them are real matches
+    limit = l_s - l_t + 1;
+    v = find (s (1 : limit) == t(1) & s (2 : limit+1) == t (2)
+	      & s (3 : limit+2) == t(3) );
+  endif
 
-  if (isstr (s) && isstr (t))
-
-    [nr_s, l_s] = size (s);
-    [nr_t, l_t] = size (t);
-
-    if (nr_s == 0 || nr_t == 0)
-      return;
+  if (l_t > 3)
+    
+    ## force strings to be both row vectors or both column vectors
+    if (all (size (s) != size (t)))
+      t = t.';
     endif
+    
+    ## search index vector for a match
+    ind = 0 : l_t - 1;
+    n = 0; # return 0 if loop terminates without finding any match
+    for idx = 1:length(v)
+      if (s (v(idx) + ind) == t)
+	n = v(idx);
+	break;
+      endif
+    endfor
 
-    if (nr_s != 1 || nr_t != 1)
-      error ("index: arguments cannot be string arrays");
-    endif
-
-    if (l_t <= l_s)
-      tmp = l_s - l_t + 1;
-      for idx = 1 : tmp
-        if (strcmp (substr (s, idx, l_t), t))
-          n = idx;
-          return;
-        endif
-      endfor
-    endif
+  elseif (length(v) > 0)
+    n = v(1);
 
   else
-    error ("index: expecting string arguments");
+    n = 0;
+
   endif
 
 endfunction

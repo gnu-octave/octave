@@ -1,3 +1,8 @@
+2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* daspk: New directory.
+	* Makefile.in (CRUFT_DIRS): Add it to the list
+
 2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
 
 	* misc/machar.c: Use F77_FUNC instead of checking

@@ -67,22 +67,22 @@ INCLUDES = arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-io.h fnmatch.h \
 	getopt.h gripes.h help.h idx-vector.h input.h lex.h \
 	load-save.h mappers.h missing-math.h octave.h octave-hist.h \
-	oct-obj.h pager.h parse.h pr-output.h procstream.h \
+	oct-map.h oct-obj.h pager.h parse.h pr-output.h procstream.h \
 	sighandlers.h statdefs.h symtab.h sysdep.h token.h \
 	tree-base.h tree-cmd.h tree-const.h tree-expr.h tree-misc.h \
 	tree-plot.h tc-rep.h unwind-prot.h user-prefs.h utils.h \
-	variables.h version.h xdiv.h xpow.h SLStack.h Stack.h
+	variables.h version.h xdiv.h xpow.h Map.h SLStack.h Stack.h
 
 SOURCES = arith-ops.cc data.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fnmatch.c getopt.c getopt1.c gripes.cc \
 	help.cc idx-vector.cc input.cc lex.l load-save.cc mappers.cc \
-	octave.cc oct-obj.cc octave-hist.cc pager.cc parse.y \
+	octave.cc octave-hist.cc oct-obj.cc pager.cc parse.y \
 	pr-output.cc procstream.cc sighandlers.cc strcasecmp.c \
 	strncase.c symtab.cc sysdep.cc tc-inlines.cc tc-rep.cc \
-	timefns.cc token.cc tree-base.cc tree-cmd.cc tree-const.cc \
-	tree-expr.cc tree-misc.cc tree-plot.cc unwind-prot.cc \
-	user-prefs.cc utils.cc variables.cc xdiv.cc xpow.cc \
-	SLStack.cc \
+	tc-rep-ass.cc tc-rep-idx.cc timefns.cc token.cc tree-base.cc \
+	tree-cmd.cc tree-const.cc tree-expr.cc tree-misc.cc \
+	tree-plot.cc unwind-prot.cc user-prefs.cc utils.cc \
+	variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc \
 	$(DLD_SRC)
 
 # Ugh.
@@ -106,9 +106,10 @@ OBJECTS = arith-ops.o builtins.o data.o dirfns.o dynamic-ld.o error.o \
 	idx-vector.o input.o lex.o load-save.o mappers.o octave.o \
 	octave-hist.o oct-obj.o pager.o parse.o pr-output.o \
 	procstream.o sighandlers.o strcasecmp.o strncase.o symtab.o \
-	sysdep.o tc-rep.o timefns.o token.o tree-base.o tree-cmd.o \
-	tree-const.o tree-expr.o tree-plot.o tree-misc.o unwind-prot.o \
-	user-prefs.o utils.o variables.o xdiv.o xpow.o SLStack.o
+	sysdep.o tc-rep.o tc-rep-ass.o tc-rep-idx.o timefns.o token.o \
+	tree-base.o tree-cmd.o tree-const.o tree-expr.o tree-plot.o \
+	tree-misc.o unwind-prot.o user-prefs.o utils.o variables.o \
+	xdiv.o xpow.o Map.o SLStack.o 
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave.a ../libcruft.a ../libinfo.a \
 	../libreadline.a ../libkpathsea.a @LIBDLD@

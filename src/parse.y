@@ -111,6 +111,10 @@ int in_plot_using = 0;
 // Nonzero means we're looking at the style part of a plot command.
 int in_plot_style = 0;
 
+// Nonzero means we're looking at an indirect reference to a structure
+// element.
+int looking_at_indirect_ref = 0;
+
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
@@ -132,25 +136,28 @@ static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
 static void maybe_warn_assign_as_truth_value (tree_expression *expr);
 
 // Build a binary expression.
-static tree_expression *make_binary_op (int op, tree_expression *op1,
-				    	token *tok_val,
-					tree_expression *op2);
+static tree_expression *make_binary_op
+	 (int op, tree_expression *op1,	token *tok_val, tree_expression *op2);
 
 // Build a prefix expression.
-static tree_expression *make_prefix_op (int op, tree_identifier *op1,
-					token *tok_val);
+static tree_expression *make_prefix_op
+	 (int op, tree_identifier *op1, token *tok_val);
 
 // Build a postfix expression.
-static tree_expression *make_postfix_op (int op, tree_identifier *op1,
-					 token *tok_val);
+static tree_expression *make_postfix_op
+	 (int op, tree_identifier *op1, token *tok_val);
 
 // Build a binary expression.
-static tree_expression *make_unary_op (int op, tree_expression *op1,
-				       token *tok_val);
+static tree_expression *make_unary_op
+	 (int op, tree_expression *op1, token *tok_val);
 
 // Make an expression that handles assignment of multiple values.
-static tree_expression *make_multi_val_ret (tree_expression *rhs,
-					    int l = -1, int c = -1);
+static tree_expression *make_multi_val_ret
+	 (tree_expression *rhs, int l = -1, int c = -1);
+
+// Make an index expression.
+static tree_index_expression *make_index_expression
+	 (tree_indirect_ref *indir, tree_argument_list *args);
 
 #define ABORT_PARSE \
   do \
@@ -180,6 +187,7 @@ static tree_expression *make_multi_val_ret (tree_expression *rhs,
   tree_constant *tree_constant_type;
   tree_matrix *tree_matrix_type;
   tree_identifier *tree_identifier_type;
+  tree_indirect_ref *tree_indirect_ref_type;
   tree_function *tree_function_type;
   tree_index_expression *tree_index_expression_type;
   tree_colon_expression *tree_colon_expression_type;
@@ -217,6 +225,7 @@ static tree_expression *make_multi_val_ret (tree_expression *rhs,
 %token <tok_val> TEXT STYLE
 %token <tok_val> FOR WHILE IF ELSEIF ELSE BREAK CONTINUE FUNC_RET
 %token <tok_val> GLOBAL
+%token <tok_val> TEXT_ID
 
 // Other tokens.
 %token LEXICAL_ERROR
@@ -231,6 +240,7 @@ static tree_expression *make_multi_val_ret (tree_expression *rhs,
 %type <tree_expression_type> ans_expression title
 %type <tree_matrix_type> matrix
 %type <tree_identifier_type> identifier
+%type <tree_indirect_ref_type> indirect_ref indirect_ref1
 %type <tree_function_type> func_def1 func_def2 func_def3
 %type <tree_index_expression_type> variable word_list_cmd
 %type <tree_colon_expression_type> colon_expr
@@ -999,22 +1009,28 @@ fcn_end_or_eof	: END
 		  }
 		;
 
-variable	: identifier
+indirect_ref	: indirect_ref1
 		  {
-		    $$ = new tree_index_expression
-			   ($1, $1->line (), $1->column ());
+		    looking_at_indirect_ref = 0;
+		    $$ = $1;
 		  }
-		| identifier '(' arg_list ')'
+
+indirect_ref1	: identifier
 		  {
-		    $$ = new tree_index_expression
-			   ($1, $3, $1->line (), $1->column ());
+		    $$ = new tree_indirect_ref ($1, $1->line (),
+						$1->column ());
 		  }
-		| identifier '(' ')'
-		  {
-		    $$ = new tree_index_expression ($1, 0, $1->line (),
-						    $1->column ()); 
-		  }
-		| identifier '['
+		| indirect_ref1 '.' { looking_at_indirect_ref = 1; } TEXT_ID
+		  { $$ = $1->chain ($4->string ()); }
+		;
+
+variable	: indirect_ref
+		  { $$ = make_index_expression ($1, 0); }
+		| indirect_ref '(' ')'
+		  { $$ = make_index_expression ($1, 0); }
+		| indirect_ref '(' arg_list ')'
+		  { $$ = make_index_expression ($1, $3); }
+		| indirect_ref '['
 		  {
 		    yyerror ("parse error");
 		    error ("use `(\' and `)\' as index operators, not\
@@ -1511,6 +1527,26 @@ make_multi_val_ret (tree_expression *rhs, int l, int c)
       yyerror ("parse error");
       error ("invalid identifier list for assignment");
     }
+
+  return retval;
+}
+
+static tree_index_expression *
+make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
+{
+  tree_index_expression *retval = 0;
+
+  int l = indir->line ();
+  int c = indir->column ();
+
+  if (indir->is_identifier_only ())
+    {
+      indir->preserve_identifier ();
+      retval = new tree_index_expression (indir->ident (), args, l, c);
+      delete indir;
+    }
+  else
+    retval =  new tree_index_expression (indir, args, l, c);
 
   return retval;
 }

@@ -1595,13 +1595,16 @@ With -x, exclude the named variables")
 
       if (argc > 0)
 	{
-	  lvars = curr_sym_tab->list (lcount, 0, symbol_def::USER_VARIABLE,
+	  lvars = curr_sym_tab->list (lcount, 0, 0, 0,
+				      symbol_def::USER_VARIABLE,
 				      SYMTAB_LOCAL_SCOPE);
 
-	  gvars = curr_sym_tab->list (gcount, 0, symbol_def::USER_VARIABLE,
+	  gvars = curr_sym_tab->list (gcount, 0, 0, 0,
+				      symbol_def::USER_VARIABLE,
 				      SYMTAB_GLOBAL_SCOPE);
 
-	  fcns = global_sym_tab->list (fcount, 0, symbol_def::USER_FUNCTION,
+	  fcns = global_sym_tab->list (fcount, 0, 0, 0,
+				       symbol_def::USER_FUNCTION,
 				       SYMTAB_ALL_SCOPES);
 	}
 

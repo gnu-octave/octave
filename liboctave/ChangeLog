@@ -1,5 +1,8 @@
 Mon May 12 02:14:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* idx-vector.cc (IDX_VEC_REP::is_colon_equiv): Make it work when
+	the vector is not sorted.
+
 	* CMatrix.cc (ComplexMatrix::operator !): Return boolMatrix.
 	* dMatrix.cc (Matrix::operator !): Likewise
 

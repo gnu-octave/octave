@@ -504,28 +504,39 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort_uniq)
 	{
 	  colon_equiv = 1;
 	}
-      else if (len > 0 && len > 1 && ! one_zero)
+      else if (len > 1 && ! one_zero)
 	{
-	  int *tmp_data = copy_data (data, len);
-
-	  int tmp_len = len;
-
 	  if (sort_uniq)
 	    {
+	      int *tmp_data = copy_data (data, len);
+
 	      sort_data (tmp_data, len);
 
-	      tmp_len = make_uniq (tmp_data, len);
-	    }
+	      int tmp_len = make_uniq (tmp_data, len);
 
-	  colon_equiv = ((tmp_len == 0 && n == 0)
-			 || (tmp_len == n
+	      colon_equiv = (tmp_len == n
 			     && tmp_data[0] == 0
-			     && tmp_data[tmp_len-1] == tmp_len - 1));
+			     && tmp_data[tmp_len-1] == tmp_len - 1);
 
-	  delete [] tmp_data;
+	      delete [] tmp_data;
+	    }
+	  else
+	    {
+	      if (len == n)
+		{
+		  colon_equiv = 1;
+
+		  for (int ii = 0; ii < n; ii++)
+		    if (data[ii] != ii)
+		      {
+			colon_equiv = 0;
+			break;
+		      }
+		}
+	    }
 	}
       else
-	colon_equiv = (len == 1 && n == 1 && data[0] == 0);
+	colon_equiv = (len == n && (n == 0 || (n == 1 && data[0] == 0)));
 
       colon_equiv_checked = 1;
     }

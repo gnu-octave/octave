@@ -159,17 +159,20 @@ distclean: clean
 .PHONY: distclean
 
 realclean: distclean
-	rm -f tags TAGS y.tab.c y.tab.h yy.lex.c lex.cc parse.cc *.d
+	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c \
+	lex.cc parse.cc defaults.h *.d
 .PHONY: realclean
 
 local-dist: parse.cc lex.cc
 	ln $(DISTFILES) ../`cat ../.fname`/src
-	rm -f parse.cc lex.cc y.tab.h
+	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c \
+	lex.cc parse.cc defaults.h
 .PHONY: local-dist
 
 dist: parse.cc lex.cc
 	ln $(DISTFILES) ../`cat ../.fname`/src
-	rm -f parse.cc lex.cc y.tab.h
+	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c \
+	lex.cc parse.cc defaults.h
 .PHONY: dist
 
 # Special rules -- these files need special things to be defined.

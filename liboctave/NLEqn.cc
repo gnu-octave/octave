@@ -144,47 +144,48 @@ NLEqn::solve (int& info)
 
   double tol = tolerance ();
 
-  double *fvec = new double [n];
-  double *px = new double [n];
-  for (int i = 0; i < n; i++)
-    px[i] = x.elem (i);
+  retval = x;
+  double *px = retval.fortran_vec ();
 
   user_fun = fun;
   user_jac = jac;
 
   if (jac)
     {
+      Array<double> fvec (n);
+      double *pfvec = fvec.fortran_vec ();
+
       int lwa = (n*(n+13))/2;
-      double *wa = new double [lwa];
-      double *fjac = new double [n*n];
+      Array<double> wa (lwa);
+      double *pwa = wa.fortran_vec ();
 
-      F77_FCN (hybrj1, HYBRJ1) (hybrj1_fcn, n, px, fvec, fjac, n, tol,
-				info, wa, lwa);
+      Array<double> fjac (n*n);
+      double *pfjac = fjac.fortran_vec ();
 
-      delete [] wa;
-      delete [] fjac;
+      F77_XFCN (hybrj1, HYBRJ1, (hybrj1_fcn, n, px, pfvec, pfjac, n,
+				 tol, info, pwa, lwa));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in hybrj1");
     }
   else
     {
+      Array<double> fvec (n);
+      double *pfvec = fvec.fortran_vec ();
+
       int lwa = (n*(3*n+13))/2;
-      double *wa = new double [lwa];
+      Array<double> wa (lwa);
+      double *pwa = wa.fortran_vec ();
 
-      F77_FCN (hybrd1, HYBRD1) (hybrd1_fcn, n, px, fvec, tol, info,
-				wa, lwa);
+      F77_XFCN (hybrd1, HYBRD1, (hybrd1_fcn, n, px, pfvec, tol, info,
+				 pwa, lwa));
 
-      delete [] wa;
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in hybrd1");
     }
 
-  if (info >= 0)
-    {
-      retval.resize (n);
-
-      for (int i = 0; i < n; i++)
-	retval.elem (i) = px[i];
-    }
-
-  delete [] fvec;
-  delete [] px;
+  if (info < 0)
+    retval.resize (0);
 
   return retval;
 }
